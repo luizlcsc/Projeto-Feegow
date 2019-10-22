@@ -2,19 +2,66 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2dd3aae2-9b45-4401-b729-ac93408c9c2c" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/ContaNewContent0404.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ContasCDContent2707.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ContasCDContent3006.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/connect - 06032018.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/connect - Copy (2).asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/connect - Copy.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/connect.asp09012052" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/connect.asp3011" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/connect09041009.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/connect2010.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/connect_0705.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/constante.asp2906" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/constante0108.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AgendaMultiplaConteudo_1010V.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AgendaParametros2210.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AnaliseReceitas1710.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Busca1707.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Caixa1812.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Caixa2610.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Convenios2406.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DefaultForm1004.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EditaPermissoes0808.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FuncoesRateio2007.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GradeAgenda-1_0411.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Home0404.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeBCK.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeERRO.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Horarios-12704.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImprimirPropostaCorpo1312silvioalterou.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MenuFinanceiro2105.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OcupacaoMultipla1305.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OcupacaoMultipla1305_2.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RecorrenteLista3006.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RepasseCalculo1711.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirConvenio1503.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirConvenio1512.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirParticular0305.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirParticular0312.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirParticular1512.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirParticular3001.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RepasseLinear1503.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RepassesConferidos1604.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RepassesConferidosOLD.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RepassesConferidosSEGURA.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/addHorario2704.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/atualizabanco2_2805.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculaRepasse1604.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/callForm1808.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/callForm2905.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/callNewForm1808.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/callNewForm2905.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/conteudoQD-antesdoar.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/conteudoQD-novo.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/conteudoQD-old.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/functionOcupacao0406.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/functionOcupacao1105.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/functionOcupacao1105aws.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/functionOcupacao1305.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/invoiceSaveMEU0812.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/listaLaudos1007.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/loginPadrao0909.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/loginPadraoMeu0911.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/menuEsquerdo1202.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/menuEsquerdo1509.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/menuEsquerdo2107.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/menuEsquerdoNOVO.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/menuEsquerdoold.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modalAgendaNOVA3012STANDBY.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modalSADT_2203.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/namAgenda1202.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/rFCaixa_0512.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/retornoXML2404.asp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/saveAgenda2210.asp" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,8 +78,8 @@
       <file leaf-file-name="connect.asp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/connect.asp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="1" selection-start-line="3" selection-end-line="3" selection-end-column="1" />
+            <state relative-caret-position="170">
+              <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -116,6 +163,9 @@
       </list>
     </option>
   </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="2dd3aae2-9b45-4401-b729-ac93408c9c2c" name="Default" comment="" />
@@ -123,17 +173,25 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571769529857</updated>
-      <workItem from="1571769535561" duration="530000" />
+      <workItem from="1571769535561" duration="1481000" />
     </task>
+    <task id="LOCAL-00001" summary="remove alguns arquivos">
+      <created>1571770206308</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1571770206308</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="530000" />
+    <option name="totallyTimeSpent" value="1481000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24962178" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24962178" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" weight="0.32843137" />
@@ -142,7 +200,7 @@
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" visible="true" weight="0.32843137" />
+      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.32843137" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" side_tool="true" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -157,6 +215,13 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="remove alguns arquivos" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove alguns arquivos" />
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/xml-retorno/.gitignore">
       <provider selected="true" editor-type-id="text-editor" />
@@ -166,8 +231,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/connect.asp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="1" selection-start-line="3" selection-end-line="3" selection-end-column="1" />
+        <state relative-caret-position="170">
+          <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
         </state>
       </provider>
     </entry>

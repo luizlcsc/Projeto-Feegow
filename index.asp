@@ -780,7 +780,14 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                  end if
                                  if session("Admin")=1 then
 
-                                 IF session("QuantidadeFaturasAbertas") = "" THEN %>
+                                 IF session("QuantidadeFaturasAbertas") = "" THEN
+                                    set shellExec = createobject("WScript.Shell")
+                                    Set objSystemVariables = shellExec.Environment("SYSTEM")
+                                    AppEnv = objSystemVariables("APP_ENV")
+
+                                    if AppEnv="production" then
+
+								 %>
                                     <!--#include file="connectCentral.asp"-->
                                     <%session("QuantidadeFaturasAbertas") = "0"
                                     set quantidadeFatura =  dbc.execute(" SELECT COUNT(*) as quant FROM clinic5459.sys_financialinvoices                                                                                      "&chr(13)&_
@@ -792,6 +799,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                                " AND sys_financialinvoices.Value > coalesce(clinic5459.sys_financialdiscountpayments.DiscountedValue,0);                                                ")
                                      IF NOT quantidadeFatura.EOF THEN
                                         session("QuantidadeFaturasAbertas") = quantidadeFatura("quant")
+                                     END IF
                                      END IF
                                  END IF
 

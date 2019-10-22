@@ -2,11 +2,11 @@
 function newConnection(customDatabase, customHost)
     set shellExec = createobject("WScript.Shell")
     Set objSystemVariables = shellExec.Environment("SYSTEM")
-    MySQLDriver = objSystemVariables("MYSQL_DRIVER")
-    MySQLServer = objSystemVariables("MYSQL_HOST")
-    MySQLDB = objSystemVariables("MYSQL_DATABASE")
-    MySQLUser = objSystemVariables("MYSQL_USER")
-    MySQLPassword = objSystemVariables("MYSQL_PASSWORD")
+    MySQLDriver			   = objSystemVariables("FC_MYSQL_DRIVER")
+    MySQLServer	 		   = objSystemVariables("FC_MYSQL_HOST")
+    MySQLDB		 		   = objSystemVariables("FC_MYSQL_DATABASE")
+    MySQLUser	 		   = objSystemVariables("FC_MYSQL_USER")
+    MySQLPassword		   = objSystemVariables("FC_MYSQL_PASSWORD")
 
     if customDatabase<>"" then
         MySQLDB=customDatabase

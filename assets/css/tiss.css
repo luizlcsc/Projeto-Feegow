@@ -1,0 +1,50 @@
+body {
+	font-family:Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size:8px;
+	margin:0;
+	padding:0;
+	color:#000;
+	-webkit-print-color-adjust: exact;
+}
+h2 {
+	text-align: center;
+	font-size:11px;
+	font-weight:bold;
+}
+label {
+	font-size:7px;
+	display:block;
+}
+table, tr, td {
+	padding:0;
+	margin:0;
+	border-spacing:5px 1px;
+}
+
+#logo {
+	max-width:140px;
+	max-height:40px;
+}
+
+.campo {
+	border:1px solid #000;
+	vertical-align:text-top;
+	height:15px;
+	padding:2px;
+}
+.titulo {
+	border:1px solid #999;
+	vertical-align:text-top;
+	padding:1px;
+}
+.thead {
+	background-color:#999;
+	padding:1px;
+	font-weight:bold;
+}
+.linha {
+	border-bottom:1px solid #000;
+/*	border-right:1px solid #000;
+	border-left:1px solid #000;*/
+	padding-left:3px;
+}

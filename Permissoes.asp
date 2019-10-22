@@ -1,0 +1,308 @@
+﻿<!--#include file="connect.asp"-->
+<!--#include file="connectCentral.asp"-->
+<%
+
+PessoaID = req("I")
+T = lcase(req("T"))
+if T="profissionais" then
+	NomeColuna = "NomeProfissional"
+elseif T="funcionarios" then
+	NomeColuna = "NomeFuncionario"
+end if
+set pnome = db.execute("select "&NomeColuna&" from "&T&" where id="&PessoaID)
+if not pnome.eof then
+	Nome = pnome(""&NomeColuna&"")
+end if
+
+
+
+if request.QueryString("ExcluiRegra")<>"" then
+	db_execute("delete from RegrasPermissoes where id = '"&request.QueryString("ExcluiRegra")&"'")
+end if
+
+if request.QueryString("AplicaRegra")<>"" then
+	set pr=db.execute("select * from regraspermissoes where id = '"&request.QueryString("AplicaRegra")&"'")
+	if not pr.eof then
+		db_execute("update sys_users set Permissoes='"&pr("Permissoes")&" ["&pr("id")&"]', limitarecpag='"& pr("limitarecpag") &"' where id = '"& req("UsId") &"'")
+		%>
+        <script type="text/javascript">
+        new PNotify({
+            title: 'Sucesso!',
+            text: 'Regra aplicada.',
+            type: 'success', 
+            delay: 1500
+        });
+		</script>
+		<%
+	end if
+end if
+
+if request.Form("e")<>"" then
+	if request.Form("Regra")<>"" then
+		set veseha=db.execute("select * from RegrasPermissoes where Regra like '"&trim(replace(request.Form("Regra")&" ","'","''"))&"'")
+		if veseha.eof then
+			db_execute("insert into RegrasPermissoes (Regra,Permissoes) values ('"&trim(replace(request.Form("Regra")&" ","'","''"))&"','"&request.Form("Permissoes")&"')")
+			set veseha = db.execute("select * from RegrasPermissoes order by id desc limit 1")
+			db_execute("update sys_users set OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"',limitarcontaspagar='"& ref("limitarcontaspagar") &"',Permissoes='"& ref("Permissoes")&" ["&veseha("id")&"]', limitarecpag='"& ref("limitarecpag") &"' where id="&ref("e"))
+		else
+			db_execute("update RegrasPermissoes set Permissoes='"& ref("Permissoes")&"', limitarecpag='"& ref("limitarecpag") &"' where id = '"&veseha("id")&"'")
+			db_execute("update sys_users set Permissoes='"&ref("Permissoes")&" ["&veseha("id")&"]',limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' limitarecpag='"& ref("limitarecpag") &"' where Permissoes like '%["&veseha("id")&"]%'")
+		end if
+	else
+		db_execute("update sys_users set Permissoes='"&request.Form("Permissoes")&"', limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' where id="&ref("e"))
+	end if
+	%>
+
+    <script type="text/javascript">
+        new PNotify({
+            title: 'Sucesso!',
+            text: 'Permiss&otilde;es salvas.',
+            type: 'success',
+            delay: 2000
+        });
+	</script>
+    <%
+end if
+
+
+set dadosUser = db.execute("select * from sys_users where `Table` like '"&request.QueryString("T")&"' and idInTable="&request.QueryString("I"))
+if dadosUser.EOF then
+	comAcesso = "N"
+	nuncaAcessou = "S"
+else
+	PermissoesUsuario = dadosUser("Permissoes")
+	set dadosAcesso = dbc.execute("select * from licencasusuarios where id="&dadosUser("id")&" and LicencaID="&replace(session("Banco"), "clinic", ""))
+	if dadosAcesso.eof then
+		comAcesso = "N"
+	else
+		if dadosAcesso("Email")="" then
+			comAcesso="N"
+		else
+			comAcesso = "S"
+			EmailAcesso = dadosAcesso("Email")
+		end if
+		UserID = dadosAcesso("id")
+	end if
+	if comAcesso="N" then
+	%>
+	<div class="panel">
+        <div class="panel-body">
+            Este usu&aacute;rio est&aacute; com seu acesso ao sistema desabilitado. Defina seu acesso na aba "Dados de Acesso". 
+        </div>
+	</div>
+	<%
+	end if
+end if
+%>
+<style>
+.pn{
+padding-left: 0 !important;
+}
+
+.success th{
+padding-left: 0!important;
+}
+.success th:first-child{
+padding-left: 9px !important;
+}
+
+</style>
+
+<%
+
+if nuncaAcessou="S" or UserID="" then
+	%><div class="clearfix form-actions">O acesso deste usu&aacute;rio ao sistema nunca foi habilitado, por isso suas permiss&otilde;es n&atilde;o podem ser alteradas. <br />
+	Habilite o acesso na aba "Dados de Acesso", e em seguida defina suas permiss&otilde;es.</div><%
+else
+	set pstr=db.execute("select * from sys_users where id="&UserID)
+	strP=pstr("Permissoes")
+	%>
+	
+	<form method="post" name="frmPermissoes" id="frmPermissoes" action="">
+	<input type="hidden" name="e" value="<%=UserID%>" />
+
+
+
+    <div class="panel">
+        <div class="panel-heading">
+            <span class="title">Permissões de <%=Nome%></span>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-offset-10 col-md-2">
+                <span class="checkbox-custom checkbox-alert  mn">
+                   <input type="checkbox" class="ace" name="checkAll" id="checkAll" /> <label for="checkAll">Selecionar tudo</label>
+                </span>
+            </div>
+            <br>
+            <br>
+
+
+            <table width="100%" class="table table-striped table-hover">
+	          <%
+	          set lista=db.execute("select * from cliniccentral.sys_permissoes where not Categoria like '' order by Categoria,Acao")
+	          while not lista.eof
+		          if Categoria<>lista("Categoria") then
+			        %><tr class="success">
+				        <th><%=lista("Categoria")%></th>
+                        <th>
+                            <span class="checkbox-custom checkbox-primary mn">
+                               <input type="checkbox" data-group="<%=lista("Categoria")%>" data-type="V" class="ace categoria-marcar-todos"  id="<%=lista("Categoria")%>V" /> <label for="<%=lista("Categoria")%>V">Visualizar</label>
+                            </span>
+                        </th>
+                        <th>
+                            <span class="checkbox-custom checkbox-success mn">
+                               <input type="checkbox" data-group="<%=lista("Categoria")%>" data-type="I" class="ace categoria-marcar-todos"  id="<%=lista("Categoria")%>I" /> <label for="<%=lista("Categoria")%>I">Inserir</label>
+                            </span>
+                        </th>
+                        <th>
+                            <span class="checkbox-custom checkbox-warning mn">
+                               <input type="checkbox" data-group="<%=lista("Categoria")%>" data-type="A" class="ace categoria-marcar-todos"  id="<%=lista("Categoria")%>A" /> <label for="<%=lista("Categoria")%>A">Alterar</label>
+                            </span>
+                        </th>
+                        <th>
+                            <span class="checkbox-custom checkbox-danger mn">
+                               <input type="checkbox" data-group="<%=lista("Categoria")%>" data-type="E" class="ace categoria-marcar-todos"  id="<%=lista("Categoria")%>E" /> <label for="<%=lista("Categoria")%>E">Excluir</label>
+                            </span>
+                        </th>
+			          </tr>
+		  	        <%
+		          end if
+	          Categoria=lista("Categoria")
+	          %>
+	          <tr>
+		        <td width="68%"><%=lista("Acao")%></td>
+		        <td style="vertical-align:top" width="8%" class="text-left pn">
+		          <%if lista("Visualizar")="s" then%>
+                    <span class="checkbox-custom checkbox-primary mn">
+                        <input class="ace checkbox-permissao" data-type="V" data-group="<%=lista("Categoria")%>" type="checkbox" name="Permissoes" id="<%=lista("Nome")%>V" value="|<%=lista("Nome")%>V|"<%
+		          if inStr(strP,"|"&lista("Nome")&"V|")>0 then%> checked="checked"<%end if%> /><%end if%><label for="<%=lista("Nome")%>V"></label>
+		          </span>
+		        </td>
+
+		        <td width="8%" class="text-left pn" style="vertical-align:top">
+		          <%if lista("Inserir")="s" then%>
+                    <span class="checkbox-custom checkbox-success mn">
+                        <input class="ace checkbox-permissao" data-type="I" data-group="<%=lista("Categoria")%>" type="checkbox" name="Permissoes" id="<%=lista("Nome")%>I" value="|<%=lista("Nome")%>I|" <%
+		          if inStr(strP,"|"&lista("Nome")&"I|")>0 then%> checked="checked"<%end if%> /><%end if%><label for="<%=lista("Nome")%>I"></label>
+                    </span>
+		        </td>
+
+		        <td width="8%" class="text-left pn" style="vertical-align:top">
+		          <%if lista("Alterar")="s" then%>
+                    <span class="checkbox-custom checkbox-warning mn">
+                        <input class="ace checkbox-permissao" data-type="A" data-group="<%=lista("Categoria")%>" type="checkbox" name="Permissoes" id="<%=lista("Nome")%>A" value="|<%=lista("Nome")%>A|" <%
+		          if inStr(strP,"|"&lista("Nome")&"A|")>0 then%> checked="checked"<%end if%> /><%end if%><label for="<%=lista("Nome")%>A"></label>
+                    </span>
+		        </td>
+
+		        <td width="8%" class="text-left pn" style="vertical-align:top">
+		          <%if lista("Excluir")="s" then%>
+                    <span class="checkbox-custom checkbox-danger mn">
+                        <input class="ace checkbox-permissao" data-type="E" data-group="<%=lista("Categoria")%>" type="checkbox" name="Permissoes" id="<%=lista("Nome")%>X" value="|<%=lista("Nome")%>X|" <%
+		          if inStr(strP,"|"&lista("Nome")&"X|")>0 then%> checked="checked"<%end if%> /><%end if%><label for="<%=lista("Nome")%>X"></label>
+                    </span>
+		        </td>
+	          </tr>
+	          <%
+	          lista.movenext
+	          wend
+	          lista.close
+	          set lista=nothing
+
+	          limitarcontaspagar = dadosUser("limitarcontaspagar")
+	          'limitarcontasreceber = dadosUser("limitarcontasreceber")
+	          OcultarLanctoParticular = dadosUser("OcultarLanctoParticular")
+	          %>
+	          <tr>
+                <td>Ocultar categorias contas a pagar</td>
+                <td colspan="4"><%= quickfield("multiple", "limitarcontaspagar", "", 12,limitarcontaspagar, "select id, Name from sys_financialexpensetype", "Name", "") %></td>
+              </tr>
+
+              <tr>
+                  <td>Ocultar lançamento de particular na conta do paciente</td>
+                  <td colspan="4">
+                      <%=quickField("simpleCheckbox", "OcultarLanctoParticular", "", "6", OcultarLanctoParticular, "", "", "")%>
+                  </td>
+              </tr>
+	          <tr class="info">
+		        <td>Se desejar utilizar estas mesmas permiss&otilde;es em outro usu&aacute;rio, d&ecirc; um nome a esta regra:</td>
+		        <td colspan="2"><input type="text" name="Regra" class="form-control" placeholder="Nome da regra (opcional)" /></td>
+		        <td colspan="2"><button class="btn btn-primary"><i class="fa fa-save"></i> Salvar permiss&otilde;es</button></td>
+	          </tr>
+	        </table>
+        </div>
+    </div>
+	
+	</form>
+    
+    <div class="panel">
+	<div class="panel-heading success">
+        <span class="panel-title">Voc&ecirc; tamb&eacute;m pode aplicar uma das regras predefinidas abaixo</span>
+        <span class="panel-controls">
+            <button type="button" class="btn btn-primary btn-sm" onClick="editaRegra('N')"><i class="fa fa-plus"></i>  Inserir Regra</button>
+        </span>
+	</div>
+	<%
+	set pr=db.execute("select * from regraspermissoes order by Regra")
+	if not pr.eof then%>
+    <div class="panel-body pn">
+        <table width="100%" class="table table-striped">
+        <%
+	    while not pr.eof
+	    %>
+	    <tr>
+        <td width="1%"><%if instr(PermissoesUsuario, "["&pr("id")&"]")>0 then%><i class="fa fa-check green"></i><%end if%></td>
+	    <td width="92%"><%=pr("Regra")%></td>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-info" onclick="ajxContent('Permissoes&T=<%=request.QueryString("T")%>&AplicaRegra=<%=pr("id")%>&UsId=<%=UserID%>', <%=request.QueryString("I")%>, 1, 'divPermissoes');"><i class="fa fa-check"></i> Aplicar</button></td>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-success" onclick="editaRegra(<%=pr("id")%>)"><i class="fa fa-edit"></i> Editar</button></td>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta regra de permissionamento?'))ajxContent('Permissoes&T=<%=request.QueryString("T")%>&ExcluiRegra=<%=pr("id")%>', <%=request.QueryString("I")%>, 1, 'divPermissoes');"><i class="fa fa-remove"></i> Excluir</button></td></tr>
+	    <%
+	    pr.movenext
+	    wend
+	    pr.close
+	    set pr=nothing
+	    %></table>
+    </div>
+	  <%
+	end if
+	%>
+	</div>
+	
+	<%
+end if
+%>
+<script language="javascript">
+$(document).ready(function(e) {
+	$("#frmPermissoes").submit(function(){
+		$.ajax({
+			type:"POST",
+			url:"Permissoes.asp?T=<%=request.QueryString("T")%>&I=<%=request.QueryString("I")%>",
+			data:$("#frmPermissoes").serialize(),
+			success:function(data){
+				$("#divPermissoes").html(data);
+			}
+		});
+		return false;
+	});
+});
+
+$("#checkAll").click(function(){
+		$(".checkbox-permissao,.categoria-marcar-todos").prop("checked", $(this).prop("checked"));
+});
+
+$(".categoria-marcar-todos").click(function(){
+    var group = $(this).data("group");
+    var type = $(this).data("type");
+
+    $(".checkbox-permissao[data-group='"+group+"'][data-type='"+type+"']").prop("checked", $(this).prop("checked"))
+
+});
+	
+function editaRegra(I){
+	$("#modal-table").modal("show");
+	$.post("EditaPermissoes.asp?I="+I+"&T=<%=req("T")%>&PessoaID=<%=req("I")%>", "", function(data, status){ $("#modal").html(data) });
+}
+
+	          <!--#include file="JQueryFunctions.asp"-->
+
+</script>

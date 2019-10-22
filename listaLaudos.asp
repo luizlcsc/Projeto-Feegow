@@ -1,0 +1,294 @@
+﻿<!--#include file="connect.asp"-->
+<%
+if ref("De")<>"" then
+    De = ref("De")
+else
+    De = date()-30
+end if
+if ref("Ate")<>"" then
+    Ate = ref("Ate")
+else
+    Ate = date()
+end if
+%>
+<table class="table table-condensed table-hover">
+    <thead>
+        <tr>
+            <th width="1%"><input type="checkbox" name="cklaudostodos" class="cklaudostodos" value="1" /></th>
+            <th>Identificação</th>
+            <th>Data</th>
+            <th>Prev. Entrega</th>
+            <th>Paciente</th>
+            <th>Profissional</th>
+            <th>Procedimento</th>
+            <th>Convênio</th>
+            <th>Status</th>
+            <th width="1%"></th>
+            <th width="1%"></th>
+        </tr>
+    </thead>
+    <tbody>
+    <%
+    set GroupConcat = db.execute("SET SESSION group_concat_max_len = 1000000;")
+    set pProcsLaudar = db.execute("select group_concat(id) ProcsLaudar from procedimentos WHERE Laudo=1 AND Ativo='on'")
+    procsLaudar = pProcsLaudar("ProcsLaudar")
+        'response.write(procsLaudar)
+
+    if isnull(procsLaudar) then
+        %>
+        <tr>
+            <td colspan="9">
+                <em>Nenhum procedimento com laudo habilitado. Habilite a opção de laudo no cadastro dos procedimentos em que deseja utilizar este recurso.</em>
+            </td>
+        </tr>
+        <%
+
+    else
+        if ref("ProcedimentoID")<>"0" then
+            if instr(ref("ProcedimentoID"), "G")=0 then
+                sqlProcP = " AND ii.ItemID="& ref("ProcedimentoID") &" "
+                sqlProcGS = " AND gps.ProcedimentoID="& ref("ProcedimentoID") &" "
+            else
+                set gp = db.execute("select group_concat(id) Procedimentos from procedimentos where Laudo=1 AND GrupoID="& replace(ref("ProcedimentoID"), "G", ""))
+                Procedimentos = gp("Procedimentos") &""
+                if Procedimentos="" then
+                    Procedimentos = 0
+                end if
+                sqlProcP = " AND ii.ItemID IN("& Procedimentos &") "
+                sqlProcGS = " AND gps.ProcedimentoID IN("& Procedimentos &") "
+            end if
+        end if
+        if ref("PacienteID")<>"" then
+            sqlPacP = " AND i.AccountID="& ref("PacienteID") &" "
+            sqlPacGS = " AND gs.PacienteID="& ref("PacienteID") &" "
+        end if
+
+        if ref("Unidades")<>"" then
+            Unidades = replace(ref("Unidades"),"|","")
+
+
+            sqlUnidadesP = " AND i.CompanyUnitID IN ("& Unidades &") "
+            sqlUnidadesG = " AND gs.UnidadeID IN ("& Unidades &") "
+        end if
+
+        if ref("Status")<>"" then
+            Status = replace(ref("Status"),"|","")
+            sqlStatus = " AND l.StatusID IN ("& Status &") "
+
+            if instr(replace(ref("Status"),"|",""), 1) then
+                sqlStatus = " AND ( l.StatusID IN ("& Status &") OR l.id IS NULL )"
+            end if
+
+
+        end if
+
+        if ref("ProfissionalID")<>"0" then
+            sqlProf = " AND (IFNULL(l.ProfissionalID, t.ProfissionalID)="& ref("ProfissionalID") &" "
+            if lcase(session("Table"))="profissionais" then
+                'sqlProf = sqlProf & " OR ISNULL(l.ProfissionalID) "
+            end if
+            sqlProf = sqlProf & ") "
+        end if
+
+        sqlDataII = ""
+        sqlDataI = ""
+        sqlDataGPS = ""
+        sqlPrevisao = " AND l.PrevisaoEntrega BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
+
+        if ref("TipoData")="1" then
+            sqlDataII = " AND ii.DataExecucao BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
+            sqlDataI = " and i.sysDate BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
+            sqlDataGPS = " AND gps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
+            sqlPrevisao = ""
+        end if
+
+
+        sql = "SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID LIMIT 1)TemArquivos, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, proc.DiasLaudo, IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional, pac.NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID  FROM ("&_
+            " SELECT ii.id, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
+            " UNION ALL "&_
+            " SELECT i.id, 'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
+            " UNION ALL "&_
+            " SELECT gps.id, 'tissprocedimentossadt', gps.Data, gps.ProcedimentoID, gs.PacienteID, gps.ProfissionalID, gps.Associacao, conv.NomeConvenio FROM tissguiasadt gs LEFT JOIN tissprocedimentossadt gps ON gps.GuiaID=gs.id LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE gps.ProcedimentoID IN("& procsLaudar &") "& sqlDataGPS & sqlProcGS & sqlPacGS & sqlUnidadesG &_
+            ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID INNER JOIN pacientes pac ON pac.id=t.PacienteID "&_
+            " LEFT JOIN Laudos l ON (l.Tabela=t.Tabela AND l.IDTabela=t.id) "&_
+            " LEFT JOIN labs_exames_procedimentos lep ON (lep.ProcedimentoID=t.ProcedimentoID) "&_
+            " LEFT JOIN profissionais prof ON prof.id=IFNULL(l.ProfissionalID, t.ProfissionalID) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id"
+
+
+        'response.write( sql )
+
+        set ii = db.execute( sql )
+        while not ii.eof
+            Status = ""
+            if not isnull(ii("DiasLaudo")) then
+                DiasLaudo = ii("DiasLaudo")
+            else
+                DiasLaudo = 0
+            end if
+            DataExecucao = ii("DataExecucao")
+            Tabela = ii("Tabela")
+            IDTabela = ii("IDTabela")
+            ProcedimentoID = ii("ProcedimentoID")
+            PacienteID = ii("PacienteID")
+
+            disabledEdit=""
+            
+
+            Previsao = dateAdd("d", DiasLaudo, DataExecucao)
+
+            set vca = db.execute("select l.id, ls.Status, l.PrevisaoEntrega from laudos l LEFT JOIN laudostatus ls ON ls.id=l.StatusID where l.Tabela='"& Tabela &"' and l.IDTabela="& IDTabela)
+            if not vca.eof then
+                Status = vca("Status")
+                Previsao = vca("PrevisaoEntrega")
+                IDLaudo = vca("id")
+                link = "I="& IDLaudo
+            else
+                link = "T="& Tabela &"&Pac="& PacienteID &"&IDT="& IDTabela &"&Proc="& ProcedimentoID &"&E="& DataExecucao
+                Status = "Pendente"
+            end if
+
+            NomeProfissional = ii("NomeProfissional")
+
+            if ii("Associacao")<>5 then
+                NomeProfissional=accountName(ii("Associacao"), ii("ProfissionalID"))
+            end if
+
+            if right("0000000"&ii("Identificacao") ,7) = right("0000000"&ref("id") ,7) or ref("id")&""="" then
+
+            if isnull(ii("Identificacao")) and Tabela="sys_financialinvoices" then
+                disabledEdit = " disabled "
+            end if
+
+            NomeProcedimento = ii("NomeProcedimento")
+            if NomeProcedimento = "Laboratório" then
+                sqlSiglas = "SELECT GROUP_CONCAT(DISTINCT ifnull(p.Sigla,'') SEPARATOR ', ') Siglas FROM itensinvoice ii INNER JOIN procedimentos p ON ii.ItemID = p.id WHERE ii.Executado = 'S' and p.TipoProcedimentoID = 3 and ii.InvoiceID="&IDTabela
+                set siglasSQL = db.execute(sqlSiglas)
+                if not siglasSQL.eof then
+                    NomeProcedimento = siglasSQL("Siglas")
+                end if
+            end if
+
+            %>
+            <tr>
+                <td><input type="checkbox" name="cklaudos" class="cklaudos" value="<%= link %>" /></td>
+                <td data-id="<%=ii("Identificacao")%>"><%= right("0000000"&ii("Identificacao") ,7)%></td>
+                <td><%= DataExecucao %></td>
+                <td><%= Previsao %></td>
+                <td><%= ii("NomePaciente") %></td>
+                <td><%= NomeProfissional %></td>
+                <td><%= NomeProcedimento %></td>
+                <td><%= ii("NomeConvenio") %></td>
+                <td><%= Status %> <% if cint(ii("TemArquivos")) > 0 then %> <span><i style="color: #36bf92" class="fa fa-paperclip"></i></span> <% end if %></td>
+                <td><a class="btn btn-xs btn-success" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%= link %>"><i class="fa fa-edit"></i></a></td>
+                <td><button class="btn btn-xs btn-info hidden"><i class="fa fa-print"></i></button></td>
+            </tr>
+            <%
+            end if
+        ii.movenext
+        wend
+        ii.close
+        set ii = nothing
+    end if
+    %>
+    </tbody>
+</table>
+<br>
+<br>
+
+<%
+  if recursoAdicional(24)=4 then
+  set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
+  if not labAutenticacao.eof then
+  set soliSQL = db.execute("SELECT DataHora FROM labs_solicitacoes WHERE TipoSolicitacao='request-results' ORDER BY DataHora DESC LIMIT 1")
+
+  UltSinc = "Não sincronizado"
+  if not soliSQL.eof then
+    UltSinc = soliSQL("DataHora")
+  end if
+%>
+    <div class="col-md-3">
+        <button class="btn btn-primary btn-block mt20 lab-sync" type="button"><i class="fa fa-flask bigger-110"></i> Sincronizar laboratório</button>
+        <p style="margin-top: 10px; opacity: 0.80">Última sincronização: <%=UltSinc%></p>
+    </div>
+<%
+    end if
+end if
+%>
+<div class="col-md-5">
+</div>
+<%= quickfield("simpleSelect", "StatusID", "Status", 2, "", "select id, Status FROM laudostatus ", "Status", " no-select2") %>
+<div class="col-md-2">
+    <button class="btn btn-success btn-block mt20 atualizarstatus" type="button"><i class="fa fa-repeat bigger-110"></i> Atualizar Status</button>
+</div>
+<script>
+$(document).ready(function(){
+   $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+<script>
+<!--#include file="jQueryFunctions.asp"-->
+
+$(".cklaudostodos").on('change', function(){
+    var value = $(this).prop("checked");
+    if(value == 1){
+        $(".cklaudos").each(function(i, value){
+            $(this).prop("checked", true);
+        });
+    }else{
+        $(".cklaudos").each(function(i, value){
+            $(this).prop("checked", false);
+        });
+    }
+});
+
+$(".lab-sync").on("click", function (){
+    const allowedLabs = ["laboratório são marcos"];
+    let invoices = [];
+
+    $("#divListaLaudos > table > tbody > tr").each(function(i, el) {
+        if(allowedLabs.includes($(el).find("td:nth-child(6)").html().toLowerCase())) {
+            invoices.push($(el).find("td:nth-child(2)").data("id"));
+        }
+    });
+
+    postUrl("labs-integration/matrix/sync-invoice", {
+        "invoices": invoices
+    }, function (data) {
+        $("#syncInvoiceResultsButton").prop("disabled", false);
+        if(data.success) {
+            location.reload();
+        } else {
+            alert(data.content)
+        }
+    })
+});
+
+
+    $(".atualizarstatus").on('click', function(){
+        var values = $("#StatusID").val();
+        if(values != null){
+            var todos = values.toString().split(",");
+
+            if( todos.length > 1){
+                showMessageDialog("Escolha apenas 1 status", "danger")
+            }else{
+                var ids = "";
+                $(".cklaudos").each(function(i, value){
+                    if(value.checked){
+                    $.post("atualizarLaudos.asp",  value.value + "&status=" + values, function(result){
+                        eval(result)
+                    });  
+                    }
+                });
+
+                $.post("listaLaudos.asp", $("#frmLaudos").serialize(), function (data) {
+                    $("#divListaLaudos").html(data);
+                });
+            }
+        }else{
+            showMessageDialog("Escolha 1 status", "warning")
+        }
+
+        return false;
+    })
+</script>

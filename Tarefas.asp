@@ -1,0 +1,484 @@
+﻿<!--#include file="connect.asp"-->
+<!--#include file="modal.asp"-->
+<!--#include file="Classes/Connection.asp"-->
+<%
+on error resume next
+%>
+<script src="assets/js/estrela.js" type="text/javascript"></script>
+
+<script>
+    function saveTarefa() {
+        let Solicitantes = "";
+        let frm = $("#frm").serialize();
+        let titulo = $("#Titulo").val();
+        let para = $("#Para").val();
+
+        if (titulo === "" || para === null) {
+            new PNotify({
+                title: 'ERRO!',
+                text: 'Preencha o "Título" e ao menos uma opção no "Para".',
+                type: 'danger',
+                delay:3000
+            });
+        } else {
+            $("input[name^=Solicitante]").each(function () {
+                Solicitantes += "," + $(this).val();
+            });
+
+
+            $.post("save.asp?I=<%=req("I")%><% if req("Helpdesk") <> "" then response.write("&Helpdesk=1") end if%>", frm+"&Solicitantes="+Solicitantes, function(data){
+                eval(data);
+            });
+
+            if ($("#msgInteracao").val('') !== "") {
+                $("#msgInteracao").val('');
+                $("#btnInteracao").html("<center><i class='fa fa-circle-o-notch fa-spin'></i></center>");
+
+                $.post("TarefasInteracoes.asp?I=<%=req("I")%><% if req("Helpdesk") <> "" then response.write("&Helpdesk=1") end if%>", frm, function(data){
+                    $("#interacoes").html(data);
+                    $("#btnInteracao").html("<i class='fa fa-send'></i> Enviar");
+                })
+            }
+
+            return false;
+        }
+
+    }
+</script>
+<style>
+.scroller, .scroller * {
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    user-select: auto !important;
+}
+
+.scroller-navbar {
+    max-height: 500px !important;
+}
+
+.panel .mn {
+    width: 98.5%;
+    margin: 0 auto !important;
+}
+.table-layout > aside {
+    display: initial !important;
+}
+</style>
+<form id="frm">
+<%
+
+set dblicense = newConnection("clinic5459", "")
+
+permissoesSession = db.execute("SELECT Permissoes FROM sys_users WHERE id = "&session("User"))
+if instr(permissoesSession("Permissoes"), "[15]") > 0 then
+    PermissaoSucesso = 1
+else
+    PermissaoSucesso = 0
+end if
+
+tabela = "tarefas"
+
+if req("Helpdesk") <> "" then
+    esconderHelpdesk = " style='display:none;' "
+    set reg = dblicense.execute("select t.*, tsDe.Classe ClasseDe, tsPara.Classe ClassePara, tt.Descricao AS TipoDescricao, tp.Prioridade AS PrioridadeDescricao from "&tabela&" t  LEFT JOIN cliniccentral.tarefasstatus tsDe on tsDe.id=t.StaDe LEFT JOIN cliniccentral.tarefasstatus tsPara on tsPara.id=t.StaPara LEFT JOIN tarefastipos tt ON tt.id = t.Tipo LEFT JOIN cliniccentral.tarefasprioridade tp ON tp.id = t.Urgencia where t.id="&req("I"))
+    'response.write("select t.*, tsDe.Classe ClasseDe, tsPara.Classe ClassePara, tt.Descricao AS TipoDescricao from "&tabela&" t  LEFT JOIN cliniccentral.tarefasstatus tsDe on tsDe.id=t.StaDe LEFT JOIN cliniccentral.tarefasstatus tsPara on tsPara.id=t.StaPara LEFT JOIN tarefastipos tt ON tt.id = t.Tipo where t.id="&req("I"))
+else
+    esconderHelpdesk = ""
+    call insertRedir(tabela, req("I"))
+    set reg = db.execute("select t.*, tsDe.Classe ClasseDe, tsPara.Classe ClassePara from "&tabela&" t  LEFT JOIN cliniccentral.tarefasstatus tsDe on tsDe.id=t.StaDe LEFT JOIN cliniccentral.tarefasstatus tsPara on tsPara.id=t.StaPara where t.id="&req("I"))
+end if
+
+'set reg = db.execute("select t.*, tsDe.Classe ClasseDe, tsPara.Classe ClassePara from "&tabela&" t  LEFT JOIN cliniccentral.tarefasstatus tsDe on tsDe.id=t.StaDe LEFT JOIN cliniccentral.tarefasstatus tsPara on tsPara.id=t.StaPara where t.id="&req("I"))
+'response.write("select t.*, tsDe.Classe ClasseDe, tsPara.Classe ClassePara from "&tabela&" t  LEFT JOIN cliniccentral.tarefasstatus tsDe on tsDe.id=t.StaDe LEFT JOIN cliniccentral.tarefasstatus tsPara on tsPara.id=t.StaPara where t.id="&req("I"))
+
+if reg("De")=0 then
+    De = session("User")
+    DtAbertura = date()
+    HrAbertura = time()
+else
+    De = reg("De")
+    Para = reg("Para")
+    DtAbertura = reg("DtAbertura")
+    HrAbertura = ft(reg("HrAbertura"))
+end if
+
+if De=session("User") then
+    Subtitulo = "recebida"
+else
+    Subtitulo = "enviada"
+end if
+
+if req("Helpdesk") <> "" then
+    set cc = dblicense.execute("select CentroCustoID from "&session("Table")&" where id="& session("idInTable"))
+else
+    set cc = db.execute("select CentroCustoID from "&session("Table")&" where id="& session("idInTable"))
+end if
+
+if not cc.eof then
+    CentroCustoID = cc("CentroCustoID")
+end if
+
+PermitirV = aut("tarefasgerenciarV")
+PermitirA = aut("tarefasgerenciarA")
+PermitirI = aut("tarefasgerenciarI")
+
+
+
+if req("Helpdesk") <> "" then
+    set dadosHelpdesk = dblicense.execute("SELECT * FROM tarefas WHERE sysUser = "&session("User")&" AND sysActive = 0 ORDER BY id DESC")
+    if dadosHelpdesk.EOF then
+        dblicense.execute("INSERT INTO tarefas (sysUser, sysActive) VALUES ("&session("User")&", 0)")
+        set dadosHelpdesk = dblicense.execute("SELECT * FROM tarefas WHERE sysUser = "&session("User")&" AND sysActive = 0 ORDER BY id DESC")
+    end if
+
+    idHelpdesk = dadosHelpdesk("id")
+end if
+
+%>
+<input type="hidden" name="P" value="tarefas" />
+<input type="hidden" name="I" value="<%= req("I") %>" />
+<input type="hidden" name="De" value="<%= De %>" />
+<input type="hidden" name="DtAbertura" value="<%= DtAbertura %>" />
+<input type="hidden" name="HrAbertura" value="<%= HrAbertura %>" />
+
+<script>
+function log(){$('#modal-table').modal('show');$.get('DefaultLog.asp?R=tarefas&I=<%= req("I")%>', function(data){$('#modal').html(data);})}
+
+$(".crumb-active a").html("Controle de Tarefas");
+$(".crumb-icon a span").attr("class", "fa fa-tasks");
+$(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
+<%
+    btnIncluir = ""
+    if PermitirI = 1 then
+        if req("Helpdesk") <> "" then
+            btnIncluir = " <a title='Novo' href='?P=tarefas&Pers=1&I="&idHelpdesk&"&Helpdesk=1' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
+        else
+            btnIncluir = " <a title='Novo' href='?P=tarefas&Pers=1&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
+        end if
+    end if
+%>
+<% if req("Helpdesk") <> "" then %>
+    $("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1&Helpdesk=1\" class=\"btn btn-sm btn-default\"><i class=\"fa fa-list\"></i></a> <%=btnIncluir%>");
+<% else %>
+    $("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1\" class=\"btn btn-sm btn-default\"><i class=\"fa fa-list\"></i></a> <a title=\"Histórico de Alterações\" href=\"javascript:log()\" class=\"btn btn-sm btn-default hidden-xs\"><i class=\"fa fa-history\"></i></a><%=btnIncluir%>");
+<% end if %>
+</script>
+
+<div class="row" style="margin-top: 10px;">
+    <div class="col-md-4">
+        <div class="panel">
+
+            <div class="panel-heading">
+            <%
+                if reg("sysActive")=0 then
+                    disabled=""'por enquanto nao usa
+                    DtPrazo = date()
+                    HrPrazo = "18:00"
+                    Solicitantes = req("Solicitantes")
+                    TempoEstimado = 1
+                    TipoEstimado="60"
+                else
+                    DtPrazo = reg("DtPrazo")
+                    HrPrazo = ft(reg("HrPrazo"))
+                    Solicitantes = reg("Solicitantes")
+                    if reg("TempoEstimado") then
+                        TempoEstimado = replace(reg("TempoEstimado"), ",", ".")
+                    else
+                        TempoEstimado = 0
+                    end if
+                    TipoEstimado = reg("TipoEstimado")
+                    %>
+                        <span class="panel-title"> Tarefa  <strong>#<%= req("I") %> </strong></span>
+                    <%
+                end if
+                %>
+                    <span class="panel-controls">
+                        <%if De=session("User") or reg("sysUser")=session("User") or PermitirA=1 then %>
+
+                                <button class="btn btn-sm btn-primary" id="save" type="button" onclick="saveTarefa()" <% if req("Helpdesk") <> "" AND reg("sysActive") = 1 then response.write("style='display:none'") end if %>>
+                                    <i class="fa fa-save"></i> <strong>SALVAR</strong>
+                                </button>
+                        <%end if %>
+                    </span>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <% if req("Helpdesk") <> "" then %>
+                        <% if not isnull(reg("Tipo")) then %>
+                            <%= quickfield("text", "Tipo", "", 6, reg("Tipo"), "", "", " style='display:none' ") %>
+                            <div class="col-md-6">
+                                <label>Tipo</label>
+                                <p><%=reg("TipoDescricao")%></p>
+                            </div>
+                        <% end if %>
+                    <% end if %>
+                    <%=quickfield("simpleSelect", "Tipo", "Tipo", 6, cstr(reg("Tipo")&""), "select '0' id, 'Sem Tipo' Descricao UNION ALL  select id, Descricao from tarefastipos order by id", "Descricao", " semVazio") %>
+                    <%
+                        projetoAux = reg("ProjetoID")
+                        projetoAuxQuery = ""
+                        if not isnull(projetoAux) then
+                            projetoAuxQuery = " OR id IN ("&reg("ProjetoID")&") "
+                        end if
+
+                        if PermissaoSucesso = 1 AND reg("Urgencia") <> 6 then
+                            whereAux = " WHERE id NOT IN (6) "
+                        end if
+
+                        if PermissaoSucesso = 1 AND instr(Para, "|-1|") = 0 then
+                            CentroCustoSQLAux = " AND cc.id NOT IN (1) "
+                        end if
+                     %>
+
+                     <% if req("Helpdesk") <> "" then %>
+                         <% if not isnull(reg("Urgencia")) then %>
+                             <%= quickfield("text", "Urgencia", "", 6, reg("Urgencia"), "", "", " style='display:none' ") %>
+                             <div class="col-md-6">
+                                 <label>Prioridade</label>
+                                 <p><%=reg("PrioridadeDescricao")%></p>
+                             </div>
+                         <% end if %>
+                    <% else %>
+                        <%=quickfield("simpleSelect", "Urgencia", "Prioridade", 6, cstr(reg("Urgencia")&""), "select id, Prioridade from cliniccentral.tarefasprioridade "& whereAux &" order by id", "Prioridade", " semVazio no-select2 ") %>
+                     <% end if %>
+
+
+                    <% if req("Helpdesk") <> "" then %>
+                        <input type="hidden" value="<%=Para%>" id="Para" name="Para">
+                        <%=Para%>
+
+                    <% else %>
+                        <%=quickField("multiple", "Para", "Para", 6, Para, "select su.id, t.Nome from (	select id, NomeProfissional Nome, 'profissionais' Tipo from profissionais where ativo='on'	UNION ALL	select id, NomeFuncionario, 'funcionarios' from funcionarios where ativo='on') t INNER JOIN sys_users su ON (su.idInTable=t.id AND lcase(su.`Table`)=t.Tipo)  UNION ALL select cc.id*(-1), concat('&raquo; ', cc.NomeCentroCusto) from centrocusto cc where cc.sysActive=1 "& CentroCustoSQLAux &" order by Nome", "Nome", " required")%>
+                    <% end if %>
+
+                    <% if req("Helpdesk") <> "" then %>
+                        <input type="hidden" value="<%=reg("ProjetoID")%>" id="ProjetoID" name="ProjetoID">
+                        <input type="hidden" value="<%=reg("SprintID")%>" id="SprintID" name="SprintID">
+                    <% else %>
+                        <%=quickfield("simpleSelect", "ProjetoID", "Projeto", 6, cstr(reg("ProjetoID")&""), "SELECT '0' AS id, '- NÃO SE APLICA -' AS Titulo UNION (SELECT id, Titulo FROM projetos WHERE StatusID NOT IN (3, 4) "&projetoAuxQuery&" ORDER BY Titulo)", "Titulo", " semVazio ") %>
+                        <%=quickfield("simpleSelect", "SprintID", "Sprint", 6, cstr(reg("SprintID")&""), "SELECT '0' AS id, '- NÃO SE APLICA -' AS Descricao UNION (SELECT id, Descricao FROM sprints WHERE StatusID NOT IN (3, 4) "&projetoAuxQuery&" ORDER BY Descricao)", "Descricao", " semVazio ") %>
+                    <% end if %>
+
+                    <%
+
+                        exibeDadosEstimativa = " disabled "
+                        if (reg("sysUser") = session("user")) OR (PermitirA = 1) then
+                            exibeDadosEstimativa = " "
+                        end if
+                    %>
+
+                    <% if req("Helpdesk") <> "" then %>
+                        <input type="hidden" value="<%=DtPrazo%>" id="DtPrazo" name="DtPrazo" autocomplete="off" class="form-control input-mask-date" data-date-format="dd/mm/yyyy">
+                    <% else %>
+                        <%=quickField("datepicker", "DtPrazo", "Data Prazo", 6, DtPrazo, "", "", " "& disabled &" ")%>
+                    <% end if %>
+
+                    <% if req("Helpdesk") <> "" then %>
+                        <input type="hidden" value="<%=HrPrazo%>" id="HrPrazo" name="HrPrazo">
+                    <% else %>
+                        <%=quickField("timepicker", "HrPrazo", "Hora Prazo", 6, HrPrazo, "", "", " "& disabled &" ")%>
+                    <% end if %>
+
+                    <% if req("Helpdesk") <> "" then %>
+                        <input type="hidden" value="<% if not isnull(reg("TempoEstimado")) then response.write(replace(reg("TempoEstimado"), ",", ".")) else response.write(0) end if%>" id="TempoEstimado" name="TempoEstimado">
+                    <% else %>
+                        <%=quickField("number", "TempoEstimado", "Tempo Estimado", 6, TempoEstimado, "", "", " min='0' step='0.01' "&exibeDadosEstimativa)%>
+                    <% end if %>
+
+                    <% if req("Helpdesk") <> "" then %>
+                        <input type="hidden" value="<%=reg("TipoEstimado")%>" id="TipoEstimado" name="TipoEstimado">
+                    <% else %>
+                        <%=quickfield("simpleSelect", "TipoEstimado", "Tipo Estimado", 6, TipoEstimado, "select '1' id, 'Minutos' Tipo UNION SELECT '60', 'Horas' UNION SELECT '1440', 'Dias'", "Tipo", " semVazio no-select2 "&exibeDadosEstimativa)%>
+                        <% if (reg("sysUser") <> session("user")) AND (session("admin") <> 1) then %>
+                            <input type="hidden" value="<% if not isnull(reg("TempoEstimado")) then response.write(replace(reg("TempoEstimado"), ",", ".")) else response.write(0) end if%>" id="TempoEstimado" name="TempoEstimado">
+                            <input type="hidden" value="<%=reg("TipoEstimado")%>" id="TipoEstimado" name="TipoEstimado">
+                        <% end if %>
+                    <% end if %>
+
+
+
+
+
+
+
+
+                </div>
+                <div class="panel" style="margin-top: 30px;" <% if req("Helpdesk") <> "" then response.write("hidden") end if%>>
+                    <div class="panel-heading">
+                        <span class="panel-title">Solicitantes</span>
+                        <span class="panel-controls">
+                            <button type="button" class="btn btn-xs btn-success mn" onclick="tsol('I');"><i class="fa fa-plus"></i></button>
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                          <div class="col-md-12" id="TarefasSolicitantes">
+                              <% server.execute("TarefasSolicitantes.asp") %>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <%if reg("sysActive")=1 then %>
+                <br>
+                <div class="panel">
+                    <div class="panel-heading">
+                        <span class="panel-title"><i class="fa fa-star-o blue"></i> Status desta Tarefa</span>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12" id="tarefasExecucao">
+                                <% server.Execute("tarefasExecucao.asp") %>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <%
+                            if reg("De")=session("User") then
+                                %>
+                                <%=quickfield("simpleSelect", "staDe", "Segundo você", 4, reg("staDe"), "select id, De from cliniccentral.tarefasstatus where not isnull(De)", "De", "") %>
+                                <%
+                            else
+                                %>
+                                <div class="col-md-4">
+                                    <label>Segundo o remetente</label><br />
+                                    <div class="label label-xlg btn-block arrowed-in arrewed-in-right label-<%=reg("classeDe") %>"><%=reg("staDe") %></div>
+                                    <input type="hidden" name="staDe" value="<%=reg("staDe") %>" />
+                                </div>
+                                <%
+                            end if
+                            if instr(Para, "|"& session("User") &"|")>0 or instr(Para, "|-"& CentroCustoID &"|")>0 then
+                                descPara = "Segundo o recebedor"
+                                %>
+                                <%=quickfield("simpleSelect", "staPara", descPara, 4, reg("staPara"), "select id, Para from cliniccentral.tarefasstatus where not isnull(Para)", "Para", "") %>
+                                <%
+                            else
+                                descPara = "Segundo você"
+                                    %>
+                                    <div class="col-md-4">
+                                        <label><%=descPara %></label><br />
+                                        <div class="label label-xlg btn-block arrowed-in arrowed-in-right label-<%=reg("classePara") %>"> <%=reg("staPara") %></div>
+                                        <input type="hidden" name="staPara" value="<%=reg("staPara") %>" />
+                                    </div>
+                                    <%
+                            end if
+                            %>
+                            <input type="hidden" id="AvaliacaoNota" name="AvaliacaoNota" value="<%=reg("AvaliacaoNota") %>" />
+                            <div class="col-md-4">
+                                <label>Nota</label><br />
+                                <div class="row lead">
+                                    <div class="col-md-12 blue">
+                                        <span style="cursor:pointer" id="stars-existing" class="starrr" data-rating='<%=reg("AvaliacaoNota") %>'></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%else %>
+                <input type="hidden" name="staDe" value="Enviada" />
+                <input type="hidden" name="staPara" value="Pendente" />
+                <%end if %>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="panel">
+            <div class="panel-body">
+                <div class="row">
+                    <div style="margin-top: 10px;float: right">
+                        <% if not isnull(reg("DtAbertura")) then %>
+                                <span class="text-primary">
+                                    <strong>Tarefa criada por <%=nameInTable(reg("De")) %> - <%=reg("DtAbertura") &" às "& ft(reg("HrAbertura")) %>&nbsp;&nbsp;</strong>
+                                </span>
+                        <% end if %>
+                    </div>
+                    <div class="col-md-12">
+                        <% if req("Helpdesk") <> "" then %>
+                            <% if not isnull(reg("Titulo")) then %>
+                                <%= reg("Titulo") %>
+                                <%= quickfield("text", "Titulo", "", 12, reg("Titulo"), "", "", " style='display:none' ") %>
+                            <% else %>
+                                <%= quickfield("text", "Titulo", "Título", 12, reg("Titulo"), "", "", "") %>
+                            <% end if %>
+                        <% else
+                            response.write(selectList("Título", "Titulo", reg("Titulo"), "tarefas", "Titulo", "location.href=""?P=tarefas&Pers=1&I=""+$(this).val()", " "& disabled &" required", ""))
+                        end if
+                         %>
+                    </div>
+                </div>
+                <hr class="short alt" />
+                <div class="row" style="margin: 5px">
+                    <div class="col-md-1">
+                        <div <% if req("Helpdesk") <> "" then response.write("hidden") end if %>>
+                            <label>Público</label>
+                            <div class="switch">
+                                <input type="checkbox" name="Publico" id="Publico" <% if req("Helpdesk") <> "" then response.write("checked") end if %>>
+                                <label for="Publico"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-10"></div>
+                    <div class="col-md-1" style="margin-top: 20px; right: 1%;">
+                        <button type="button" id="btnInteracao" class="btn btn-sm btn-success" onclick="saveTarefa()"><i class="fa fa-send"></i> Enviar</button>
+                    </div>
+                </div>
+                <div class="row" style="margin: 10px;" >
+                    <textarea hidden id="ta" name="ta"><%=reg("ta")%></textarea>
+                    <%=quickField("editor", "msgInteracao", "", 12, "", "200", "", " "&disabled&" ")%>
+                </div>
+                <hr class="short alt" />
+                <div id="interacoes" class="tab-pane chat-widget active" role="tabpanel">
+                    <%server.Execute("TarefasInteracoes.asp") %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+      setTimeout(function() {
+        $("#toggle_sidemenu_l").click()
+      }, 500);
+
+          <%if session("User")=reg("De") then %>
+        $('#stars-existing').on('starrr:change', function(e, value){
+          $('#AvaliacaoNota').val(value);
+        });
+          <%end if%>
+    });
+
+    function tsol(A) {
+        var Solicitantes = "";
+        $("input[name^=Solicitante]").each(function () {
+            Solicitantes += "," + $(this).val();
+        });
+        $.post("TarefasSolicitantes.asp?I=<%=req("I")%>&A="+ A, { Solicitantes: Solicitantes }, function (data) {
+            $("#TarefasSolicitantes").html(data);
+        });
+    }
+
+
+    $("#staDe, #staPara").change(function(){
+        $.get("tarefaSave.asp?I=<%=req("I")%>&onlySta="+$(this).attr("id")+"&Val="+$(this).val(), function(data){
+            eval(data);
+
+            let frm = $("#frm").serialize();
+            $.post("TarefasInteracoes.asp?I=<%=req("I")%>", frm, function(data){
+                $("#interacoes").html(data);
+            })
+        });
+    });
+
+    function executarTarefa(A){
+        $.post("tarefasexecucao.asp?I=<%=req("I")%>", {A: A, Texto: $('#TextoExecucao').val()}, function (data) {
+            $("#tarefasExecucao").html(data);
+        });
+    }
+</script>
+<!--    </div>-->
+<!--</div>-->
+</form>

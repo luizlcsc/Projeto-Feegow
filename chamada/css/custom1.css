@@ -1,0 +1,41 @@
+.page-header {border-bottom:0 !important; text-align:Center; margin:0 !important}
+.page-header h1{margin:0 0px 15px 0 !important}
+.table-custom td{height:100px; padding-left:25px !important;}
+.avatar_pac{float:left; display:inline-block; margin:15px; width:80px; height:80px}
+
+.ch-btn{font-size:16px !important; padding:15px 30px !important; margin-top:20px !important;  display: block;font-size: 200% !important;margin: 0 auto;
+  width: 80%;}
+
+.table-custom h4{margin-top:30px !important;}
+
+.col-md-8{padding-left:0 !important;
+padding-right:0 !important;}
+
+.col-md-4{padding-left:0 !important;
+padding-right:0 !important;}
+
+.carousel-caption h2, .carousel-caption  h1, .carousel-caption  h3{ background-color:rgba(22,157,38,0.5); padding:30px;}
+
+h1{font-size:800%; color:#045f12 !important;}
+
+.table-custom h2{font-size:350%; margin-top:0px !important; display:inline-block;}
+
+.page-header{margin-bottom:0 !important;}
+
+.btnh1{font-size:200%;
+
+  display: block;
+  
+    margin: 20px auto;
+	 
+  margin-bottom: 40px;
+	}
+	
+	.label-success{background-color:#060 !important;}
+	.table-custom{
+		text-transform:uppercase;}
+		
+		.table-striped>tbody>tr:nth-of-type(odd){
+			background-color:#f9ffe3 !important;}
+			
+.col-md-8{border-right: 1px solid #CCC}

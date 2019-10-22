@@ -1,0 +1,539 @@
+﻿<%
+if session("User")="" then
+    %>
+    $("#disc").html('<i class="fa fa-plug"></i> VOC&Ecirc; EST&Aacute; DESCONECTADO. <a class="btn btn-default" href="./?P=Login">VOLTAR AO LOGIN</a>');
+    $("#disc").removeClass('hidden');
+    <%
+else
+    %>
+    $("#disc").addClass('hidden');
+    <!--#include file="connect.asp"-->
+    <!--#include file="connectCentral.asp"-->
+    <%
+    
+    'Validar os descontos pendentes
+    'Procurar se ja foi exibido o modal para este usuario
+    modalConteudoSql = "select  DHUp from exibicao_conteudo where SysUser = "&session("User")&" AND conteudo = 'desconto_pendente' AND Data = CURDATE() order by DHUp DESC LIMIT 1 "
+    'Response.Write(modalConteudoSql)
+    set rsModalConteudo = db.execute(modalConteudoSql)
+
+    jaExibiuModal = 0
+    data = ""
+    if not rsModalConteudo.eof then
+        if rsModalConteudo("DHUp") <> "" then
+            data = rsModalConteudo("DHUp")
+        else
+            jaExibiuModal = 1
+            db.execute("insert into exibicao_conteudo(SysUser, conteudo, Data) values("&session("User")&", 'desconto_pendente', now()) ")
+        end if
+        rsModalConteudo.movenext
+    else
+        jaExibiuModal = 1
+    end if
+
+    if jaExibiuModal = 1 OR data <> "" then
+        'Verificar se existem descontos pendentes de aprovação e se este usuário pode acessar
+        descontoPendenteSql = "select *, dp.id as iddesconto, dp.ItensInvoiceID, CASE " &_
+                                    "WHEN ii.Tipo='O' THEN Descricao " &_
+                                    "WHEN ii.Tipo='S' THEN (select NomeProcedimento from procedimentos p where p.id = ii.ItemID ) " &_
+                                    "WHEN ii.Tipo='M' THEN (SELECT NomeProduto from produtos p where p.id = ii.ItemID ) " &_
+                                " END AS titulo, dp.Desconto DescontoPendente, Quantidade, ValorUnitario, " &_ 
+                                " Nome " &_ 
+                                " from descontos_pendentes dp inner join itensinvoice ii ON ii.id = dp.ItensInvoiceID " &_
+                                " inner join cliniccentral.licencasusuarios lu ON lu.id = dp.SysUser  " &_ 
+                                " where dp.SysUserAutorizado is null AND dp.STATUS = 0  "
+
+        if data <> "" then
+            descontoPendenteSql = descontoPendenteSql + " AND dp.DataHora >= " & myDateTime(data) & " " 
+        end if
+
+        'Response.write(descontoPendenteSql)
+
+        set rsDescontoPendente = db.execute(descontoPendenteSql)
+
+        set rsDescontosUsuario = db.execute("select suser.id, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto "&_
+                            " from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') "&_
+                            " WHERE suser.id = "&session("User")&" AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' )")
+
+        podePermitirDesconto = 0
+        if not rsDescontosUsuario.eof then
+            while not rsDescontoPendente.eof and podePermitirDesconto = 0
+                while not rsDescontosUsuario.eof and podePermitirDesconto = 0
+                    valorLimiteRegra = rsDescontosUsuario("DescontoMaximo")
+                    if rsDescontosUsuario("TipoDesconto") = "P" then
+                        valorLimiteRegra = rsDescontoPendente("ValorUnitario") * rsDescontosUsuario("DescontoMaximo") / 100
+                    end if
+                    if valorLimiteRegra >= rsDescontoPendente("DescontoPendente") then
+                        podePermitirDesconto = 1
+
+                    end if
+                    rsDescontosUsuario.movenext
+                wend
+
+                rsDescontosUsuario.movefirst
+                rsDescontoPendente.movenext
+            wend
+        end if
+        'Response.write("PODE PERMITIR" & podePermitirDesconto)
+        if podePermitirDesconto = 1 then
+        db.execute("insert into exibicao_conteudo(SysUser, conteudo, Data) values("&session("User")&", 'desconto_pendente', now()) ")
+    %>
+        //$("#modal-descontos-pendentes").modal("show");
+        //$("#div-descontos-pendentes").html("Existem descontos pendentes de aprovação. <br><a href='?P=DescontoPendente&Pers=1'>Ir para a tela</a>");
+        openModal("Existem descontos pendentes de aprovação. <br><a href='?P=DescontoPendente&Pers=1'>Ir para a tela</a>", "Descontos Pendentes", true, false, "lg")
+    <% 
+        end if 
+    end if 
+
+    '-----------------------------------------------
+
+
+    if session("OtherCurrencies")="phone" then
+	    %>
+	    <!--#include file="callsSoft.asp"-->
+	    <%
+    end if
+    set buscaAtu = db.execute("select * from sys_users where id="&session("User"))
+    if not buscaAtu.eof then
+        strUnid = "|"&session("UnidadeID")&","
+        if lcase(session("table"))="profissionais" then
+            Espera = buscaAtu("Espera")
+            EsperaVazia = buscaAtu("EsperaVazia")&""
+            if instr(EsperaVazia, strUnid)=0 then
+                evUnidade = 0
+            else
+                evSpl = split( EsperaVazia, strUnid )
+                evSpl2 = split(evSpl(1), "|")
+                evUnidade = ccur( evSpl2(0) )
+            end if
+            'faz o rodapé do aguardo
+            if Espera=0 and evUnidade=0 then
+            '    msgEspera = "Nenhum paciente aguardando"
+            '    corEspera = ""
+                msgEspera = ""
+                corEspera = ""
+            elseif Espera=0 and evUnidade<>0 then
+            '    msgEspera = evUnidade & " paciente"&plural(evUnidade, "")&" ger"&plural(evUnidade, "al")&" aguardando"
+            '    corEspera = ""
+                msgEspera = Espera
+                corEspera = ""
+            elseif Espera<>0 and evUnidade=0 then
+                'msgEspera = "<b><span class='text-success'>" & Espera & " paciente"& plural(Espera, "") &" seu"& plural(Espera, "") &" aguardando</span></b>"
+                'corEspera = "text-success"
+                msgEspera = Espera
+                corEspera = ""
+            else
+                'msgEspera = "<b><span class='text-success'>Pacientes aguardando: " & Espera &" seu"& plural(Espera, "") &" </span></b> - " & evUnidade & " ger"& plural(evUnidade, "al")
+                'corEspera = "text-success"
+                msgEspera = Espera
+                corEspera = ""
+            end if
+        else
+            EsperaTotal = buscaAtu("EsperaTotal")&""
+            if instr(EsperaTotal, strUnid)=0 then
+                etUnidade = 0
+            else
+                etSpl = split( EsperaTotal, strUnid )
+                etSpl2 = split(etSpl(1), "|")
+                etUnidade = ccur( etSpl2(0) )
+            end if
+            'faz o rodapé do aguardo
+            if etUnidade=0 then
+            '    msgEspera = "Nenhum paciente aguardando"
+            '    corEspera = ""
+                msgEspera = ""
+            else
+            '    msgEspera = etUnidade & " paciente"&plural(etUnidade, "")&" ger"&plural(etUnidade, "al")&" aguardando"
+            '    corEspera = ""
+                msgEspera = ""'pacientes da unidade esperando
+            end if
+        end if
+        'msgEspera = "<i class='fa fa-users "& corEspera &"'></i> " & msgEspera
+        %>
+        $('#espera').html("<%=msgEspera %>");
+        <%
+
+
+	    notiftarefas = buscaAtu("notiftarefas")
+	    if instr(notiftarefas, "|DISCONNECT|")>0 then
+		    db.execute("update sys_users set notiftarefas='"&replace(trim(notiftarefas&" "), "|DISCONNECT|", "")&"' where id="&buscaAtu("id"))
+
+		    session.Abandon()
+		    %>
+		    location.href='./?P=Login';
+		    <%
+	    end if
+	    'CHAMADA DE VOZ
+       
+	    if buscaAtu("chamar")<>"" and not isnull(buscaAtu("chamar")) then
+		    've se ainda está chamando ou se mudou o status
+
+
+            chamar = buscaAtu("chamar")
+
+            if chamar&""<>"" and instr(chamar, "|")=0 then
+                chamar="|"&chamar
+            end if
+
+            MyString = Mid(chamar, 2)
+            spl = split(MyString, "|")
+		    'spl = split(buscaAtu("chamar"), "_")
+
+            list = array()
+            for i=0 to ubound(spl)
+                ReDim Preserve list(UBound(list) + 1)
+                list(UBound(list)) = spl(i)            
+            next
+        
+            list2 = array()
+            for u=0 to ubound(list)
+                spl = split(list(u), "_")
+                ReDim Preserve list2(UBound(list2) + 1)
+                list2(UBound(list2)) = " (a.profissionalID="&spl(0)& " and  a.PacienteID="&spl(1)&") "            
+            next
+
+            JoinLike = Join(list2, " or ")
+
+		    StaChamando = 5
+            set RecursosAdicionaisSQL = db.execute("SELECT RecursosAdicionais FROM sys_config WHERE id=1")
+
+            if not RecursosAdicionaisSQL.eof then
+                if instr(RecursosAdicionaisSQL("RecursosAdicionais"), "|PreConsulta|") then
+		            StaChamando = "5,105,106"
+		        end if
+		    end if
+
+		    set seAinda = db.execute("select a.*, l.NomeLocal from agendamentos a LEFT JOIN locais l on l.id=a.LocalID where a.StaID IN ("&StaChamando&") and "&JoinLike)            		                    
+            
+            listPacientProfissionalId = array()
+            listPacientProfissionalNomeLocal = array()                  
+            while not seAinda.eof
+                ReDim Preserve listPacientProfissionalId(UBound(listPacientProfissionalId) + 1)
+                listPacientProfissionalId(UBound(listPacientProfissionalId)) = seAinda("ProfissionalID")&"_"&seAinda("PacienteID")              
+
+                ReDim Preserve listPacientProfissionalNomeLocal(UBound(listPacientProfissionalNomeLocal) + 1)
+                listPacientProfissionalNomeLocal(UBound(listPacientProfissionalNomeLocal)) = seAinda("NomeLocal")&""
+            seAinda.movenext
+            wend
+            seAinda.close
+            set seAinda=nothing
+
+            JoinLikeListPacientProfissionalId = Join(listPacientProfissionalId, "|")
+            JoinLikeListPacientProfissionalNomeLocal = Join(listPacientProfissionalNomeLocal, "|")
+
+            if JoinLikeListPacientProfissionalNomeLocal&""="" then
+                JoinLikeListPacientProfissionalNomeLocal = "|"
+            end if
+
+            if JoinLikeListPacientProfissionalId <> "" then              	
+			    %>
+			    $("#speak").attr("src", "speak.asp?C=<%=JoinLikeListPacientProfissionalId%>&NomeLocal=<%=JoinLikeListPacientProfissionalNomeLocal %>");
+
+			    /*$("#speak").fadeIn(2000);
+                setTimeout(function(){$("#speak").fadeOut(500)}, 27000);
+                setTimeout(function(){$("#legend").fadeOut(500)}, 27000);*/
+			    <%               
+		    end if
+		    db_execute("update sys_users set chamar='' where id="&session("User"))
+	    end if
+        'teste para atualizar lista de usuarios online no chat
+        %>
+        if($("#txtPesquisar").is(":focus")==false){
+        if($(".sb-r-o").length > 0){
+            chatUsers();
+        }
+        }
+        <%
+	    'ATUALIZA CHAT
+	    if not isnull(buscaAtu("novasmsgs")) and instr(buscaAtu("novasmsgs"), "|")>0 then
+		    spl = split(buscaAtu("novasmsgs"), "|")
+		    for i=0 to ubound(spl)
+			    if spl(i)<>"" and isnumeric(spl(i)) then
+                set buscaChatName = db.execute("select lu.Nome from sys_users u left join cliniccentral.licencasusuarios lu ON lu.id=u.id where u.id="&spl(i))
+				    if not buscaChatName.eof then
+				    msg = db.execute("SELECT Mensagem FROM chatmensagens WHERE De = "&spl(i)&" AND Para = "&session("User")&" ORDER BY id DESC LIMIT 1")
+				    %>
+                    if($("#chat_<%=spl(i)%>").parents(".dockmodal-body").length != 0){
+                        chatUpdate(<%=spl(i)%>);
+                    }else{
+                	    callWindow(<%=spl(i)%>, '<%=buscaChatName("Nome")%>');
+	                    //callTalk(<%=spl(i)%>, <%=session("User")%>, '', 'body_<%=spl(i)%>');
+                    }
+                    <% IF (getConfig("SonsNotificacao")) THEN %>
+                    document.getElementById("audioNotificacao").play();
+                    <% END IF %>
+                    chatNotificacao("Nova mensagem de <%=buscaChatName("Nome")%>", "<%=msg("Mensagem")%>");
+                    <%
+                    end if
+                    'modificação sanderson, update na mensagem ja lida, para não aparecer toda hora para o usuario
+				    'db_execute("update sys_users set novasmsgs='"&replace(buscaAtu("novasmsgs"), "|"&session("User")&"|", "")&"' where id="&spl(i))
+                    'db_execute("update sys_users set novasmsgs='"&replace(buscaAtu("novasmsgs"), "|"&spl(i)&"|", "")&"' where id="&session("User"))
+
+			    end if
+		    next
+	    end if
+	    'TAREFAS
+	    tarefasVencidas = 0
+	    if instr(notiftarefas, ",")>0 then
+		    spl = split(notiftarefas, "|")
+		    for i=0 to ubound(spl)
+			    if instr(spl(i), ",") then
+				    spl2 = split(spl(i), ",")
+				    if isdate(spl2(1)) and spl2(1)<>"" then
+					    if cdate(spl2(1))<now() then
+						    tarefasVencidas = tarefasVencidas+1
+					    end if
+				    elseif isnumeric(spl2(0)) and not isdate(spl2(1)) then
+					    tarefasVencidas = tarefasVencidas+1
+				    end if
+			    end if
+		    next
+	    end if
+	    if tarefasVencidas>0 then
+		    %>
+		    $("#notifTarefas").html("<i class='fa fa-tasks'></i><span class='badge badge-danger'><%=tarefasVencidas%></span>");
+		    <%
+	    end if
+        Notificacoes = ""
+        cNot = 0
+    
+	    if buscaAtu("TemNotificacao") then
+	        set NotificacoesSQL = db.execute("SELECT n.*, nt.TextoNotificacao FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1,2) AND n.UsuarioID="&buscaAtu("id"))
+
+	        while not NotificacoesSQL.eof
+	            cNot=cNot+1
+	            userName = left(nameInTable(NotificacoesSQL("CriadoPorID")),15)
+
+	            TextoNotificacao = replace(replace(NotificacoesSQL("TextoNotificacao"),chr(13),""),chr(10),"")
+
+	            TextoNotificacao = replace(TextoNotificacao, "[USUARIO_CRIADOR.NOME]", userName)
+	            TextoNotificacao = replace(TextoNotificacao, "[METADATA.TEXTO]", NotificacoesSQL("metadata"))
+	            TextoNotificacao = replace(TextoNotificacao, "[NOTIFICACAO.ID]", NotificacoesSQL("id"))
+	            TextoNotificacao = replace(TextoNotificacao, "[ID_RELATIVO]", NotificacoesSQL("NotificacaoIDRelativo"))
+
+                Notificacoes = Notificacoes & TextoNotificacao
+
+	        NotificacoesSQL.movenext
+	        wend
+	        NotificacoesSQL.close
+	        set NotificacoesSQL=nothing
+	    end if
+	
+        'Adicionar notificação se ouver ainda algum desconto para ser aprovado
+
+	    'NOTIFICAÇÕES DE COBRANÇA
+	    if 1=1 then
+		    notiflanctos = buscaAtu("notiflanctos")
+		    if len(notiflanctos)>2 then
+			    splnotiflanctos = split(notiflanctos, "|")
+			    for nl=0 to ubound(splnotiflanctos)
+				    if isnumeric(splnotiflanctos(nl)) and splnotiflanctos(nl)<>"" then
+					    set atend = db.execute("select at.*, p.NomePaciente, p.Foto from atendimentos as at left join pacientes as p on at.PacienteID=p.id where at.id="&splnotiflanctos(nl)&" and not isnull(p.NomePaciente)")
+					    if not atend.eof then
+						    if atend("Foto")<>"" and not isnull(atend("Foto")) then
+							    FotoNotif = "/uploads/"&atend("Foto")
+						    else
+							    FotoNotif = "assets/img/atFim.png"
+						    end if
+						    cNot = cNot+1
+
+
+
+                            Notificacoes = Notificacoes & "<div class='media'><a class='media-left' href='#'> <img src='"& FotoNotif &"' class='mw40' alt='avatar'> </a> <div class='media-body'> <h5 class='media-heading'>"&atend("NomePaciente")&" <small class='text-muted'></small> </h5> Por "&nameInTable(atend("sysUser"))&" </div> <div class='media-right'> <div class='media-response'> ATENDIMENTO</div> <div class='btn-group'> <button onclick=\""location.href='?P=Pacientes&Pers=1&I="&atend("PacienteID")&"&A="&atend("id")&"&Ct=1'\"" type='button' class='btn btn-default btn-xs light'> <i class='fa fa-check text-success'></i> FECHAR CONTA</button> <button type='button' class='btn btn-default btn-xs light hidden'> <i class='fa fa-remove'></i> </button> </div> </div> </div>"
+
+						    'Notificacoes = Notificacoes&"<li class=\""dropdown-header\""><img src=\"""
+						    'Notificacoes = Notificacoes&"\"" width=\""44\"" class=\""img-circle\"">Paciente: <strong id=\""lancto"&atend("id")&"\"">"&atend("NomePaciente")&"</strong> <br /><small>Por "&nameInTable(atend("sysUser"))&"</small><br /><button type=\""button\"" class=\""btn btn-xs btn-success btn-block\"" onclick=\""location.href='?P=Pacientes&Pers=1&I="&atend("PacienteID")&"&A="&atend("id")&"&Ct=1';\""><i class=\""fa fa-money\""></i> FECHAR CONTA</button></li>"
+					    end if
+				    end if
+			    next
+		    end if
+
+
+            ' Adicionar notificação se existem descontos pendentes de aprovação para este usuario
+            descontoPendenteSql = "select dp.Desconto DescontoPendente, ValorUnitario " &_
+                                " from descontos_pendentes dp inner join itensinvoice ii ON ii.id = dp.ItensInvoiceID " &_
+                                " inner join cliniccentral.licencasusuarios lu ON lu.id = dp.SysUser  " &_
+                                " where dp.SysUserAutorizado is null AND dp.STATUS = 0  "
+
+
+            set rsDescontoPendenteNotificacao = db.execute(descontoPendenteSql)
+
+            set rsDescontosUsuario = db.execute("select DescontoMaximo, TipoDesconto "&_
+                                " from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') "&_
+                                " WHERE suser.id = "&session("User")&" AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' )")
+
+            podePermitirDesconto = 0
+            if not rsDescontosUsuario.eof and not rsDescontoPendenteNotificacao.eof then
+            while not rsDescontoPendenteNotificacao.eof and podePermitirDesconto = 0
+                while not rsDescontosUsuario.eof and podePermitirDesconto = 0
+                    valorLimiteRegra = rsDescontosUsuario("DescontoMaximo")
+                    if rsDescontosUsuario("TipoDesconto") = "P" then
+                        valorLimiteRegra = rsDescontoPendenteNotificacao("ValorUnitario") * rsDescontosUsuario("DescontoMaximo") / 100
+                    end if
+
+                    if valorLimiteRegra >= rsDescontoPendenteNotificacao("DescontoPendente") then
+                        podePermitirDesconto = 1
+                        Notificacoes = Notificacoes & "<div class='media'> <div class='media-body'> <h5 class='media-heading'>Existem descontos pendentes de aprovação </h5> </div><button onclick=\""location.href='?P=DescontoPendente&Pers=1'\"" type='button' class='btn btn-default btn-xs light'> <i class='fa fa-check text-success'></i> VER DESCONTOS</button>  </div>"
+                        cNot = cNot+1
+                    end if
+
+                    rsDescontosUsuario.movenext
+                wend
+                rsDescontosUsuario.movefirst
+                rsDescontoPendenteNotificacao.movenext
+            wend
+            end if
+
+            'ja existe uma implementacao disso usando a cliniccentral.notificacoes_tipos
+            'Adicionar notificação para as requisições de estoque
+            sqlRequisicaoEstoque = "SELECT count(*) total FROM estoque_requisicao er WHERE er.StatusID = 1 AND er.sysActive = 1 "
+            set rsRequisicaoEstoque = db.execute(sqlRequisicaoEstoque)
+
+            if not rsRequisicaoEstoque.eof then
+                total = rsRequisicaoEstoque("total")
+                if cint(total) > 0 then
+                    Notificacoes = Notificacoes & "<div class='media'> <div class='media-body'> <h5 class='media-heading'>Existem requisições de estoque para você</h5> </div><button onclick=\""location.href='?P=ListaRequisicaoEstoque&Pers=1'\"" type='button' class='btn btn-default btn-xs light'> <i class='fa fa-check text-success'></i> VER REQUISIÇÕES DE ESTOQUE</button>  </div>"
+                    cNot = cNot+1
+                end if
+            end if
+
+
+		    if Notificacoes<>"" then
+			    %>
+    	        $("#Notificacoes").html("<%=Notificacoes%>");
+                $("#box-bell").addClass("purple");
+                $("#bell").addClass("fa-animated-bell");
+                $("#badge-bell").html("<%=cNot%>");
+        	    <%
+            end if
+	    else
+		    notiflanctos = buscaAtu("notiflanctos")
+		    if len(notiflanctos)>2 then
+			    splnotiflanctos = split(notiflanctos, "|")
+			    for nl=0 to ubound(splnotiflanctos)
+				    if isnumeric(splnotiflanctos(nl)) and splnotiflanctos(nl)<>"" then
+					    set atend = db.execute("select at.*, p.NomePaciente, p.Foto from atendimentos as at left join pacientes as p on at.PacienteID=p.id where at.id="&splnotiflanctos(nl))
+					    if not atend.eof then
+						    %>
+						    if($("#lancto<%=atend("id")%>").html()==null){
+							    $.gritter.add({
+								    title: 'ATENDIMENTO INFORMADO',
+								    text: 'Paciente: <strong id="lancto<%=atend("id")%>"><%=atend("NomePaciente")%></strong> <br /><small>Por <%=nameInTable(atend("sysUser"))%></small><br /><button type="button" class="btn btn-xs btn-success btn-block" onclick="location.href=\'?P=Conta&Pers=1&I=<%=atend("PacienteID")%>&A=<%=atend("id")%>\';"><i class="fa fa-money"></i> FECHAR CONTA</button>',
+								    class_name: 'gritter-error gritter-light',
+								    image: '<%if atend("Foto")<>"" and not isnull(atend("Foto")) then%>/uploads/<%=atend("Foto")%><%else%>assets/img/atFim.png<%end if%>',
+								    sticky: true
+							    });
+						    }
+						    <%
+					    end if
+				    end if
+			    next
+		    end if
+	    end if
+
+
+		if req("P")="Agenda-1" or req("P")="Agenda-S" or req("P")="AgendaMultipla" then
+			'grava o agendamento que está aberto
+			if req("AgAberto")<>"undefined" and req("AgAberto")<>"" then
+				db.execute("update sys_users set AgAberto='"& req("AgAberto") &"' where id="& session("User"))
+			else
+				db.execute("update sys_users set AgAberto='' where id="& session("User") &" and AgAberto<>''")
+			end if
+
+		end if
+    end if
+
+    if device()="" then
+        if session("MasterPwd")&"" <> "S" then
+	        db.execute("update sys_users set UltRef="&mydatetime(now())&" where id="&session("User"))
+        end if
+	    if not isnull(buscaAtu("UltPac")) then
+	    %>
+	    if($("#btnFicha").length === 0){
+            $.get("nullpac.asp", function(data){});
+        }
+	    <%
+	    end if
+    else
+	    db.execute("update sys_users set UltRefDevice="&mydatetime(now())&" where id="&session("User"))
+	    if not isnull(buscaAtu("UltPac"))  then
+		    set pac = db.execute("select id, NomePaciente from pacientes where id="&buscaAtu("UltPac"))
+		    if not pac.eof then
+			    %>
+
+			    if (mensagemPaciente && $("#btnFicha").length===0){
+                    new PNotify({
+                        title: 'Paciente no PC: <%=pac("NomePaciente")%>',
+                        text: "<a href='./?P=Pacientes&I=<%=pac("id")%>&Pers=1' class='btn btn-warning btn-block btn-default'>Paciente no PC: <%=pac("NomePaciente")%></a>",
+                        image: 'assets/img/Doctor.png',
+                        sticky: true,
+                        type: 'system'
+                    });
+                    mensagemPaciente=false;
+                }
+			    //$("#divDevice").css("display", "block");
+                //$("#divDevice").html("<a href='./?P=Pacientes&I=<%=pac("id")%>&Pers=1' class='btn btn-warning btn-block btn-default'>Paciente no PC: <%=pac("NomePaciente")%></a>");
+			    <%
+		    end if
+	    end if
+    end if
+
+    if req("SP")="TotemPrint" then
+        set vca = db.execute("select id, Senha from guiche where Sta='Imprimir' limit 1")
+        if not vca.eof then
+            %>
+            $("#bodyTicket").html("<h4 style='text-align:center'>SENHA</h4><h1 style='text-align:center'><%=zeroEsq(vca("Senha"), 4)%></h1><center><img src='logo/altaclinicas_pb.png' style='width:3cm' /></center>");
+            print();
+            <%
+            db_execute("update guiche set Sta='Espera' where id="&vca("id"))
+        else
+            %>
+            $("#bodyTicket").html("Prompt de impressão...");
+            <%
+        end if
+    end if
+    if req("SP")="Totem" then
+        set vca = db.execute("select id, Senha from guiche where Sta='Imprimir' limit 1")
+        if vca.eof then
+            %>
+            $("#btnGerar").removeClass("hidden");
+            $("#divImprimir").addClass("hidden");
+            <%
+        end if
+    end if
+    if req("P")="PreEspera" then
+        %>
+        listaPreEspera();
+        <%
+    end if
+
+    'db_execute("update cliniccentral.licencasusuarios set URL='"&Request.ServerVariables("URL")&"', UltRef=NOW() where id="&session("User"))
+
+
+    if right(minute(time()), 1)="5" or right(minute(time()), 1)="0" then
+
+        if session("Admin")=1 then
+            set LicencaSQL = dbc.execute("SELECT Status FROM cliniccentral.licencas WHERE id="&replace(session("Banco"), "clinic", "")&" AND Status='B'")
+
+            if not LicencaSQL.eof then
+                db.execute("update sys_users set notiftarefas=concat(notiftarefas, '|DISCONNECT|') where date(UltRef)=curdate() and DATE_SUB(CURTIME(), INTERVAL 2 MINUTE) <= UltRef ")
+            end if
+        end if
+
+        'db.execute("update cliniccentral.licencas set ultimoRefresh=now() where id="& replace(session("Banco"), "clinic", ""))
+    end if
+
+    %>
+    <!--#include file="disconnect.asp"-->
+
+<%
+end if
+
+if 0 then
+    on error resume next
+    %>
+    <!--#include file="atualizabanco2.asp"-->
+    <%
+end if
+%>
+$("#timeInat").val(0);

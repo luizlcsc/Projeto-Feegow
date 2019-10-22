@@ -1,0 +1,26 @@
+﻿@charset "utf-8";
+/* CSS Document */
+.campo {
+	border-color:#000;
+	border-style:solid;
+	border-width:0px;
+	color:#000;
+	font-size:12px;
+	padding-bottom:4px;
+	padding-left:4px;
+	padding-right:4px;
+	padding-top:4px;
+}
+.botoes{
+	display:none;
+	position:absolute;
+	right:0; top:0;
+	display:none;
+}
+.campo:hover .botoes {
+	display:block;
+}
+.valor {
+	background-color:#FFC;
+	width:30px;
+}

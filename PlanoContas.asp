@@ -1,0 +1,378 @@
+<!--#include file="connect.asp"-->
+<%
+
+if request.QueryString("CD")="D" then
+    table = "sys_financialexpensetype"
+else
+    table = "sys_financialincometype"
+end if
+
+%>
+		<link type="text/css" rel="stylesheet" href="assets/js/qtip/jquery.qtip.css" />
+		<link rel="shortcut icon" href="icon_clinic.png" type="image/x-icon" />
+		<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="assets/css/jquery-ui-1.10.3.custom.min.css" />
+		<link rel="stylesheet" href="assets/css/chosen.css" />
+		<link rel="stylesheet" href="assets/css/datepicker.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-timepicker.css" />
+		<link rel="stylesheet" href="assets/css/daterangepicker.css" />
+		<link rel="stylesheet" href="assets/css/colorpicker.css" />
+		<link rel="stylesheet" href="assets/css/jquery.gritter.css" />
+		<link rel="stylesheet" href="assets/css/select2.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-editable.css" />
+	<link rel="stylesheet" href="assets/css/ace-fonts.css" />
+
+		<!-- ace styles -->
+
+		<link rel="stylesheet" href="assets/css/ace.css" />
+		<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
+		<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
+
+
+<div class="clearfix form-actions">
+	<div class="col-xs-6">
+		<label>Adicionar Categoria</label><br />
+		<input type="text" name="Adicionar" id="Adicionar" class="form-control input-sm" />
+    </div>
+	<div class="col-xs-6">
+		<label>Categoria superior</label><br />
+		<select name="CategoriaSuperior" id="CategoriaSuperior" class="form-control">
+                <option value="0"></option>
+		    <%
+		        set CategoriasSQL = db.execute("SELECT * FROM "&table&" WHERE (sysActive!=0 and sysActive!=-1) and Category=0")
+
+		        while not CategoriasSQL.eof
+		            %>
+		            <option value="<%=CategoriasSQL("id")%>"><%=CategoriasSQL("Name")%></option>
+		            <%
+		        CategoriasSQL.movenext
+		        wend
+		        CategoriasSQL.close
+		        set CategoriasSQL=nothing
+		    %>
+        </select>
+    </div>
+    <div class="col-xs-4"><label>&nbsp;</label><br />
+    	<button type="button" class="btn btn-sm btn-success btn-block" onclick="arvore('<%=request.QueryString("CD")%>', '', $('#Adicionar').val(), $('#CategoriaSuperior').val());location.reload()"><i class="fa fa-plus"></i> Inserir</button>
+    </div>
+    <div class="col-xs-4"><label>&nbsp;</label><br />
+    	<button class="btn btn-primary btn-block btn-sm" type="submit" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar Ordem</button>
+	</div>
+</div>
+<%
+function li(id, Name, Rateio, Ordem)
+	%>
+	<li id="list_<%=id%>" class="dd-item"><div class="dd-handle"><span class="disclose"><span></span></span><%=Ordem%> - <%=Name%>
+        <div class="pull-right action-buttons">
+        	<i class="fa fa-move" style="cursor:move"></i>
+
+            <%
+            if request.QueryString("CD")="D" then
+                if Rateio=1 then
+                    chkRateio = " checked "
+                else
+                    chkRateio = ""
+                end if
+                %>
+                <label><input type="checkbox" title="Rateio" <%=chkRateio %> class="ace rateio" name="<%=id %>" value="S" /><span class="lbl"></span></label>
+                <%
+            end if
+            %>
+			<a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))arvore('<%=request.QueryString("CD")%>', <%=id%>, '')"><i class="fa fa-trash"></i></a>
+            <a class="btn btn-xs btn-success" onclick="editaPlanoDeContas('<%=id %>', '<%= request.QueryString("CD") %>', '<%=Name%>')" href="#"><i class="fa fa-edit"></i></a>
+		</div></div>
+    <%
+end function
+%>
+<div class="dd" id="nestable">
+	<ol class="sortable dd-list">
+    <%
+	if request.QueryString("I")<>"" then
+		db_execute("insert into "&table&" (Name, Category, Ordem, sysActive, sysUser) values ('"&replace(request.QueryString("I"), "'", "''")&"', "&treatvalzero(request.QueryString("CategoriaSuperior"))&",0, 1, "&session("User")&")")
+	    %>
+        <script type="text/javascript">
+        $(document).ready(function(e) {
+            new PNotify({
+                title: 'Salvo com sucesso!',
+                text: '',
+                type: 'success',
+                delay: 3000
+            });
+        });
+
+        </script>
+        <%
+	end if
+
+	if request.QueryString("E")<>"" then
+		db_execute("UPDATE "&table&" SET Name='"&request.QueryString("Name")&"' WHERE id="&treatvalnull(request.QueryString("E")))
+	    %>
+        <script type="text/javascript">
+        $(document).ready(function(e) {
+            new PNotify({
+                title: 'Salvo com sucesso!',
+                text: '',
+                type: 'success',
+                delay: 3000
+            });
+        });
+
+        </script>
+        <%
+	end if
+
+	if request.QueryString("X")<>"" and isnumeric(request.QueryString("X")) then
+		db_execute("delete from "&table&" where id="&request.QueryString("X"))
+	end if
+
+	contidos = ""
+	set reg1 = db.execute("select * from "&table&" where (Category=0 or isnull(Category)) and sysActive=1 order by Ordem")
+	reg1cont = 1
+	reg2cont = 1
+	reg3cont = 1
+	reg4cont = 1
+	reg5cont = 1
+	reg6cont = 1
+	while not reg1.eof
+		contidos = contidos&"|"&reg1("id")&"|"
+		%>
+		<%=li(reg1("id"), reg1("Name"), reg1("Rateio"), reg1cont)%>
+		<%
+ 		set reg2 = db.execute("select * from "&table&" where Category="&reg1("id")&" and sysActive=1 order by Ordem")
+		if not reg2.eof then
+ 		%>
+        	<ol>
+			<%
+			while not reg2.eof
+				contidos = contidos&"|"&reg2("id")&"|"
+				%>
+                <%=li(reg2("id"), reg2("Name"), reg2("Rateio"), reg1cont&"."&reg2cont)%>
+                <%
+				set reg3 = db.execute("select * from "&table&" where Category="&reg2("id")&" and sysActive=1 order by Ordem")
+				if not reg3.eof then
+					%><ol>
+                    	<%
+						while not reg3.eof
+							contidos = contidos&"|"&reg3("id")&"|"
+							%>
+							<%=li(reg3("id"), reg3("Name"), reg3("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont)%>
+							<%
+
+							set reg4 = db.execute("select * from "&table&" where Category="&reg3("id")&" and sysActive=1 order by Ordem")
+							if not reg4.eof then
+								%><ol>
+									<%
+									while not reg4.eof
+										contidos = contidos&"|"&reg4("id")&"|"
+										%>
+										<%=li(reg4("id"), reg4("Name"), reg4("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont&"."&reg4cont)%>
+										<%
+
+
+										set reg5 = db.execute("select * from "&table&" where Category="&reg4("id")&" and sysActive=1 order by Ordem")
+										if not reg5.eof then
+											%><ol>
+												<%
+												while not reg5.eof
+													contidos = contidos&"|"&reg5("id")&"|"
+													%>
+													<%=li(reg5("id"), reg5("Name"), reg5("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont&"."&reg4cont&"."&reg5cont)%>
+													<%
+
+													set reg6 = db.execute("select * from "&table&" where Category="&reg5("id")&" and sysActive=1 order by Ordem")
+                                                    if not reg6.eof then
+                                                        %><ol>
+                                                            <%
+                                                            while not reg6.eof
+                                                                contidos = contidos&"|"&reg6("id")&"|"
+                                                                %>
+                                                                <%=li(reg6("id"), reg6("Name"), reg6("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont&"."&reg4cont&"."&reg5cont&"."&reg6cont)%>
+                                                                <%
+															reg6cont = reg6cont+1
+                                                            reg6.movenext
+                                                            wend
+                                                            reg6.close
+                                                            set reg6 = nothing
+                                                            %>
+                                                        </ol>
+                                                        <%
+                                                    end if
+												reg5cont = reg5cont+1
+												reg6cont = 1
+												reg5.movenext
+												wend
+												reg5.close
+												set reg5 = nothing
+												%>
+											</ol>
+											<%
+										end if
+
+									reg4cont = reg4cont+1
+									reg5cont = 1	
+									reg4.movenext
+									wend
+									reg4.close
+									set reg4 = nothing
+									%>
+								</ol>
+								<%
+							end if
+
+
+						reg3cont = reg3cont+1	
+						reg4cont = 1
+						reg3.movenext
+						wend
+						reg3.close
+						set reg3 = nothing
+						%>
+                    </ol>
+                    <%
+				end if
+			reg2cont = reg2cont+1	
+			reg3cont = 1	
+			reg4cont = 1	
+			reg5cont = 1	
+			reg6cont = 1
+			reg2.movenext
+			wend
+			reg2.close
+			set reg2 = nothing
+			%>
+            </ol>
+		<%
+		end if
+	reg1cont = reg1cont+1
+	reg2cont = 1
+	reg3cont = 1	
+	reg4cont = 1	
+	reg5cont = 1	
+	reg6cont = 1
+	reg1.movenext
+	wend
+	reg1.close
+	set reg1 = nothing
+
+	set descategorizados = db.execute("select * from "&table&" where not Category=0 and not isnull(Category) and sysActive=1 order by Ordem")
+	while not descategorizados.eof
+		if instr(contidos, "|"&descategorizados("id")&"|")=0 then
+            db_execute("update "&table&" set Category=0 where id="&descategorizados("id"))
+			%>
+			<%=li(descategorizados("id"), descategorizados("Name"), descategorizados("Rateio"))%>
+			<%
+		end if
+	descategorizados.movenext
+    wend
+    descategorizados.close
+    set descategorizados = nothing
+    %>
+	</ol>
+</div>
+
+	<pre class="hidden" id="serializeOutput"></pre>
+
+
+
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.ui.touch-punch.js"></script>
+<script type="text/javascript" src="js/jquery.mjs.nestedSortable.js"></script>
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+
+		$('ol.sortable').nestedSortable({
+			forcePlaceholderSize: true,
+			handle: 'div',
+			helper:	'clone',
+			items: 'li',
+			opacity: .6,
+			placeholder: 'placeholder',
+			revert: 250,
+			tabSize: 25,
+			tolerance: 'pointer',
+			toleranceElement: '> div',
+			maxLevels: 6,
+
+			isTree: false,
+			expandOnHover: 700,
+			startCollapsed: false
+		});
+
+		$('.disclose').on('click', function() {
+			$(this).closest('li').toggleClass('mjs-nestedSortable-collapsed').toggleClass('mjs-nestedSortable-expanded');
+		});
+
+
+		$('#serialize').click(function(){
+			serialized = $('ol.sortable').nestedSortable('serialize');
+			$('#serializeOutput').text(serialized+'\n\n');
+			$.ajax({
+				type:"POST",
+				url:"savePlanoContas.asp?R=<%=table%>",
+				data:serialized,
+				success:function(data){
+					chamagritter();
+                    $("#content").find(".col-xs-12").html(data);
+
+				}
+			});
+		});
+
+		$(".rateio").click(function () {
+		    $.post("saveDataCat.asp", {I:$(this).attr('name'), Checked:$(this).prop('checked')}, function (data) { eval(data) });
+		})
+
+		$('#toHierarchy').click(function(e){
+			hiered = $('ol.sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
+			hiered = dump(hiered);
+			(typeof($('#toHierarchyOutput')[0].textContent) != 'undefined') ?
+			$('#toHierarchyOutput')[0].textContent = hiered : $('#toHierarchyOutput')[0].innerText = hiered;
+		})
+
+		$('#toArray').click(function(e){
+			arraied = $('ol.sortable').nestedSortable('toArray', {startDepthCount: 0});
+			arraied = dump(arraied);
+			(typeof($('#toArrayOutput')[0].textContent) != 'undefined') ?
+			$('#toArrayOutput')[0].textContent = arraied : $('#toArrayOutput')[0].innerText = arraied;
+		})
+
+	});
+
+	function dump(arr,level) {
+		var dumped_text = "";
+		if(!level) level = 0;
+
+		//The padding given at the beginning of the line.
+		var level_padding = "";
+		for(var j=0;j<level+1;j++) level_padding += "    ";
+
+		if(typeof(arr) == 'object') { //Array/Hashes/Objects
+			for(var item in arr) {
+				var value = arr[item];
+
+				if(typeof(value) == 'object') { //If it is an array,
+					dumped_text += level_padding + "'" + item + "' ...\n";
+					dumped_text += dump(value,level+1);
+				} else {
+					dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+				}
+			}
+		} else { //Strings/Chars/Numbers etc.
+			dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
+		}
+		return dumped_text;
+	}
+
+	function editaPlanoDeContas(id, cd, value) {
+        var newValue = prompt("Digite o nome do plano de contas", value);
+        $.post("EdiCat.asp", {id: id, CD: cd, value: newValue}, function() {
+            location.reload();
+        });
+	}
+</script>
+
+		<script src="assets/js/jquery.gritter.min.js"></script>

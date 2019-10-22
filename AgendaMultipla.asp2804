@@ -1,0 +1,111 @@
+﻿<!--#include file="connect.asp"-->
+<!--#include file="modalSecundario.asp"-->
+<style type="text/css">
+    .open:hover > .submenu {
+        display: block;
+    }
+body{
+//    overflow-y:hidden;
+}
+
+</style>
+
+<div class="panel">
+    <div class="panel-body">
+        <div class="row">
+            <form id="frmFiltros">
+                <%=quickField("select", "filtroProcedimentoID", "Procedimento", 2, "", "select '' id, '-' NomeProcedimento UNION ALL select id, NomeProcedimento from procedimentos where sysActive=1 and OpcoesAgenda!=3 order by NomeProcedimento", "NomeProcedimento", " empty ") %>
+                <%=quickField("multiple", "Especialidade", "Especialidades", 2, "", "SELECT t.EspecialidadeID id, IFNULL(e.nomeEspecialidade, e.especialidade) especialidade FROM (	SELECT EspecialidadeID from profissionais WHERE ativo='on'	UNION ALL	select pe.EspecialidadeID from profissionaisespecialidades pe LEFT JOIN profissionais p on p.id=pe.ProfissionalID WHERE p.Ativo='on') t LEFT JOIN especialidades e ON e.id=t.EspecialidadeID WHERE NOT ISNULL(especialidade) GROUP BY t.EspecialidadeID ORDER BY especialidade", "especialidade", " empty ") %>
+                <%=quickField("multiple", "Convenio", "Convênios", 2, "", "select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", " empty ") %>
+                <%=quickField("empresaMulti", "Unidades", "Unidades", 2, "", "", "", "") %>
+                <%=quickField("multiple", "Locais", "Visualizar Locais", 2, "", "SELECT id, NomeLocal FROM locais WHERE sysActive=1 ORDER BY NomeLocal", "NomeLocal", " empty ") %>
+                <%=quickField("multiple", "Equipamentos", "Visualizar Equipamentos", 2, "", "SELECT id, NomeEquipamento FROM equipamentos WHERE sysActive=1 ORDER BY NomeEquipamento", "NomeEquipamento", " empty ") %>
+                <input type="hidden" id="hData" name="hData" value="<%=date() %>" />
+            </form>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="LocalPre" name="LocalPre" value="" />
+<input type="hidden" id="ProfissionalPre" name="ProfissionalPre" value="" />
+
+    <div class="panel-body bg-light pn">
+       <div class="row col-xs-12" id="div-agendamento"></div>
+       <div class="row col-sm-12 mn" id="GradeAgenda">
+           <div class="col-md-12" id="contQuadro" style="border: 1px solid rgb(173, 173, 173); overflow: scroll; height: 914px;">
+                <center>
+                    <i class="fa fa-spinner fa-spin"></i> Carregando...
+                </center>
+            </div>
+       </div>
+    </div>
+
+
+<script type="text/javascript">
+    $("#frmFiltros select").change(function () {
+        loadAgenda();
+    });
+
+    function loadAgenda() {
+        $("#contQuadro").html("<center><i class='fa fa-spin fa-cog'></i> Carregando...</center>");
+        $.post("AgendaMultiplaConteudo.asp", $("#frmFiltros").serialize(), function (data) {
+            $("#contQuadro").html(data);
+        });
+    }
+
+    function changeMonth(newDate) {
+        $.ajax({
+            type: "GET",
+            url: "AgendamentoCalendarioMultipla.asp?Data=" + newDate,
+            success: function (data) {
+                $("#divCalendario").html(data);
+            }
+        });
+        loadAgenda();
+    }
+    $("#contQuadro").innerHeight(window.innerHeight - 300);
+
+    $(window).resize(function () {
+        $("#contQuadro").innerHeight(window.innerHeight - 300);
+    });
+
+    <!--#include file="funcoesAgenda1.asp"-->
+
+
+
+    function abreAgenda(horario, id, data, LocalID, ProfissionalID, EquipamentoID) {
+        if( $("#EquipamentoPre").val()!="" ){
+            var EquipamentoID = $("#EquipamentoPre").val();
+        }
+        if( $("#LocalPre").val()!="" ){
+            var LocalID = $("#LocalPre").val();
+        }
+        if ($("#ProfissionalPre").val() != "") {
+            var ProfissionalID = $("#ProfissionalPre").val();
+        }
+        if ($("#filtroProcedimentoID").val() != "") {
+            var ProcedimentoID = $("#filtroProcedimentoID").val();
+            var EquipamentoID = "";
+        }
+
+        $("#div-agendamento").html('<i class="fa fa-spinner fa-spin orange bigger-125"></i> Carregando...');
+        af('a');
+        $.ajax({
+            type: "POST",
+            url: "divAgendamento.asp?horario=" + horario + "&id=" + id + "&data=" + data + "&profissionalID=" + ProfissionalID + "&LocalID=" + LocalID + "&EquipamentoID=" + EquipamentoID + "&ProcedimentoID=" + ProcedimentoID,
+            success: function (data) {
+                $("#div-agendamento").html(data);
+            }
+        });
+    }
+
+    function imprimir() {
+        $("#modal-agenda").modal("show");
+        //	$("#div-agendamento").html("<div class='row'><div class='col-xs-12 text-right'><button class='btn btn-xs btn-default' data-dismiss='modal' type='button'><i class='fa fa-remove'></i> Fechar</button></div></div><div class='row'><div class='col-xs-12 text-right'><iframe src='GradeAgendaPrint.asp?Data="+$("#Data").val()+"&ProfissionalID="+$("#ProfissionalID").val()+"' width='100%' height='800' scrolling='auto' frameborder='0'></iframe></div></div>");
+        $("#div-agendamento").html("<div class='row'><div class='col-xs-12 text-right'><button class='btn btn-xs btn-default' data-dismiss='modal' type='button'><i class='fa fa-remove'></i> Fechar</button></div></div><div class='row'><div class='col-xs-12 text-right'><iframe src='GradeAgenda1Print.asp?Data=" + $("#Data").val() + "&ProfissionalID=" + $("#ProfissionalID").val() + "' width='100%' height='800' scrolling='auto' frameborder='0'></iframe></div></div>");
+    }
+
+    loadAgenda();
+
+
+</script>

@@ -1,0 +1,425 @@
+<style>
+.caret-up {
+    width: 0; 
+    height: 0; 
+    border-left: 4px solid rgba(0, 0, 0, 0);
+    border-right: 4px solid rgba(0, 0, 0, 0);
+    border-bottom: 4px solid;
+    
+    display: inline-block;
+    margin-left: 2px;
+    vertical-align: middle;
+}
+.ace-nav > li > a {
+	background:none;
+	color:#777;
+}
+.ace-nav > li > a > [class*="fa fa-"] {
+	color:#777;
+}
+.ace-nav > li {
+    border-left:none;
+}
+</style>
+<script>
+    $(function(){
+    $(".dropdown").hover(            
+            function() {
+                $('.dropdown-menu', this).stop( true, true ).fadeIn("fast");
+                $(this).toggleClass('open');
+                $('b', this).toggleClass("caret caret-up");                
+            },
+            function() {
+                $('.dropdown-menu', this).stop( true, true ).fadeOut("fast");
+                $(this).toggleClass('open');
+                $('b', this).toggleClass("caret caret-up");                
+            });
+    });
+</script>
+
+<div class="containerX  navbar-fixed-top" style="background-color:#fff;">
+  <div class="row">
+  <div class="container">
+  	<div class="col-xs-3">
+					<a href="?P=Home&Pers=1" class="navbar-brand" style="padding:3px 0 0 13px;">
+                    <%
+					if session("Logo")="" then
+						Logo = "assets/img/180_width.png"
+					else
+						Logo = "logo/"&session("Logo")
+					end if
+					%>
+						<img class="hidden-480 hidden-xs" src="<%= Logo %>" height="38" style="margin:6px 0 5px 0;" />
+					</a>
+	</div>
+    <div class="col-xs-9">
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+                <%
+				if notifTarefas>0 then
+					caixaTarefas = "red"
+					badgeTarefas = "important"
+				else
+					caixaTarefas = ""
+					badgeTarefas = "grey"
+				end if
+				
+				if notifGerais>0 then
+					caixaGerais = "purple"
+					badgeGerais = "important"
+					animadoGerais = "-alt icon-animated-bell"
+				else
+					caixaGerais = ""
+					badgeGerais = "grey"
+					animadoGerais = ""
+				end if
+				
+				if notifChat>0 then
+					caixaChat = "green"
+					badgeChat = "important"
+					animadoChat = "-alt icon-animated-comments"
+				else
+					caixaChat = ""
+					badgeChat = "grey"
+					animadoChat = ""
+				end if
+				%>
+				<div class="navbar-header pull-right" role="navigation">
+					<ul class="ace-nav">
+						<li class="hidden">
+							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+								<i class="fa fa-credit-card"></i>
+							</a>
+							<ul id="divLeitor" class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+                            	<li style="background-color:#09C"><img width="275" style="margin:2px -30px 0 -45px;" src="assets/img/card-swipe.gif" /></li>
+							</ul>
+						</li>
+
+						<li id="licaixa" title="Abrir/Fechar caixa" class="hidden">
+							<a href="javascript:Caixa();">
+								<i class="fa fa-inbox"></i>
+								<span class="hidden">R$ 0,00</span>
+							</a>
+						</li>
+
+						<li class="hidden">
+							<a href="./?P=listaEmails&Pers=1">
+								<i class="fa fa-envelope"></i>
+								<span class="badge badge-danger">4</span>
+							</a>
+						</li>
+
+						<li id="liTarefas" class="<%=caixaTarefas%>">
+							<a data-toggle="dropdown" id="notifTarefas" class="dropdown-toggle" href="#" onclick="notifTarefas();">
+								<i class="fa fa-tasks"></i>
+								<span class="badge badge-<%=badgeTarefas%>"><%=notifTarefas%></span>
+							</a>
+							<ul id="divNotiftarefas" class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+							</ul>
+						</li>
+
+						<li class="<%=caixaGerais%>" id="box-bell">
+							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+								<i id="bell" class="fa fa-bell<%=animadoGerais%>"></i>
+								<span class="badge badge-warning" id="badge-bell"><%=notifGerais%></span>
+							</a>
+
+							<ul id="Notificacoes" class="pull-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
+								<li class="dropdown-header">
+									<i class="fa fa-warning"></i>
+									Nenhuma Notifica&ccedil;&atilde;o
+								</li>
+
+							</ul>
+						</li>
+						<%
+						if Aut("chatI")=1 then
+						 'icon-animated-vertical na classe do i (ichat) e green no li principal(lichat) e  badge-success no badgeChat
+						%>
+						<li id="lichat">
+							<a data-toggle="dropdown" id="iconChat" onclick="chatUsers();" class="dropdown-toggle" href="#">
+								<i class="fa fa-comments<%=animadoChat%>" id="ichat"></i>
+								<span class="badge" id="badgeChat"><%=notifChat%></span>
+							</a>
+
+							<ul class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close" id="notifchat">
+							</ul>
+						</li>
+						<%
+						End If
+						'fim do chat
+						%>
+						<li>
+							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<img class="nav-user-photo" style="object-fit: fill;" width="40" height="40" src="http://clinic.feegow.com.br/<%=session("Photo")%>" alt="<%=session("NameUser")%>" />
+								<span class="user-info">
+									<%=session("NameUser")%>
+                                    <small><%=session("NomeEmpresa")%></small>
+								</span>
+
+								<i class="fa fa-caret-down"></i>
+							</a>
+
+							<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+								<li>
+									<a href="?P=<%=session("Table")%>&Pers=1&I=<%=session("idInTable")%>">
+										<i class="fa fa-user"></i>
+										Meu Perfil
+									</a>
+								</li>
+								<li>
+									<a href="javascript:Caixa()">
+										<i class="fa fa-inbox"></i>
+										Abrir/Fechar Caixa
+									</a>
+								</li>
+                             <%
+							 'end if
+							 if session("Admin")=1 then
+							 %>
+								<li>
+									<a href="?P=MinhasFaturas&Pers=1">
+										<i class="fa fa-barcode"></i>
+										Minhas Faturas
+									</a>
+								</li>
+                              <%
+							  end if
+							  %>
+
+								<li class="divider"></li>
+                                <%
+								if not isnull(session("Unidades")) and session("Unidades")<>"" then
+									if instr(session("Unidades"), "|0|")>0 then
+										sqlEmp = " UNION ALL select cast('0' as decimal), NomeEmpresa from empresa"
+									end if
+									sql = "select id, UnitName from sys_financialcompanyunits where id in("&replace(session("Unidades"), "|", "")&") "&sqlEmp&" ORDER BY id"
+									'response.Write("<!--"&sql&"-->")
+									set unid = db.execute(sql)
+									while not unid.eof
+										%>
+										<li>
+											<a href="?P=Home&Pers=1&MudaLocal=<%=unid("id")%>">
+												<i class="fa <%if ccur(unid("id"))=session("UnidadeID") then%>fa-check-square-o<%else%>fa-square-o<%end if%>"></i>
+												<%=unid("UnitName")%> <%'=unid("id")& " _ "& session("UnidadeID")%>
+											</a>
+										</li>
+										<%
+									unid.movenext
+									wend
+									unid.close
+									set unid=nothing
+								end if
+								%>
+								<li class="divider"></li>
+
+								<li>
+									<a href="./?P=Login&Log=Off">
+										<i class="fa fa-power-off"></i>
+										Sair
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<i class="fa fa-cog"></i>
+							</a>
+							<ul class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+                                <li class="dropdown-header">
+                                    <i class="fa fa-cog"></i>
+                                    Cadastros e Configura&ccedil;&otilde;es
+                                </li>
+
+
+			<%
+			if aut("profissionais")=1 then
+			%>
+						<li><a href="./?P=Profissionais&Pers=Follow"><i class="fa fa-user-md bigger-110"></i> Profissionais</a></li>
+			<%
+			end if
+			if aut("funcionarios")=1 then
+			%>
+						<li><a href="./?P=Funcionarios&Pers=Follow"><i class="fa fa-user bigger-110"></i> Funcion&aacute;rios</a></li>
+			<%
+			end if
+			if aut("fornecedores")=1 then
+			%>
+						<li><a href="./?P=Fornecedores&Pers=Follow"><i class="fa fa-user bigger-110"></i> Fornecedores</a></li>
+			<%
+			end if
+			if aut("procedimentos")=1 then
+			%>
+						<li><a href="./?P=Procedimentos&Pers=Follow"><i class="fa fa-stethoscope"></i> Procedimentos</a></li>
+						<li><a href="./?P=Pacotes&Pers=Follow"><i class="fa fa-stethoscope"></i> Pacotes</a></li>
+			<%
+			end if
+			if aut("convenios")=1 then
+			%>
+						<li><a href="./?P=Convenios&Pers=Follow"><i class="fa fa-credit-card"></i> Conv&ecirc;nios</a></li>
+			<%
+			end if
+			if aut("origens")=1 then
+			%>
+						<li><a href="./?P=Origens&Pers=0"><i class="fa fa-list"></i> Origens</a></li>
+			<%
+			end if
+			if aut("buiforms")=1 then
+			%>
+						<li><a href="./?P=buiforms&Pers=Follow"><i class="fa fa-bar-chart"></i> Formul&aacute;rios</a></li>
+			<%
+			end if
+			if aut("configimpressos")=1 then
+			%>
+						<li><a href="./?P=ConfigImpressos&Pers=1"><i class="fa fa-file bigger-110"></i> Impressos</a></li>
+			<%
+			end if
+			if aut("sys_financialcurrentaccounts")=1 then
+			%>
+						<li><a href="./?P=sys_financialcurrentaccounts&Pers=Follow"><i class="fa fa-money bigger-110"></i> Contas Correntes</a></li>
+			<%
+			end if
+			if aut("configrateio")=1 then
+			%>
+						<li><a href="./?P=Rateio&Pers=1"><i class="fa fa-puzzle-piece bigger-110"></i> Repasses e Rateio</a></li>
+			<%
+			end if
+			if aut("configconfirmacaoA")=1 then
+			%>
+						<li><a href="./?P=ConfigConfirmacoes&Pers=1"><i class="fa fa-mobile-phone bigger-110"></i> E-mail e SMS</a></li>
+			<%
+			end if
+			if aut("chamadaporvoz")=1 then
+			%>
+						<li><a href="./?P=ChamadaPorVoz&Pers=1"><i class="fa fa-volume-up bigger-110"></i> Chamada por Voz</a></li>
+            <%
+			end if
+			if aut("sys_financialcompanyunits")=1 then
+			%>
+						<li><a href="./?P=settings&Pers=1"><i class="fa fa-hospital-o bigger-110"></i> Empresa</a></li>
+            <%
+			end if
+			if aut("formasrecto")=1 then
+			%>
+            <li>
+                <a href="?P=FormaRecto&Pers=1"><i class="fa fa-credit-card"></i> Formas de Recebimento</a>
+            </li>
+            <%
+			end if
+			if aut("locais")=1 then
+			%>
+            <li>
+                <a href="?P=Locais&Pers=Follow"><i class="fa fa-map-marker"></i> Locais de Atendimento</a>
+            </li>
+            <li>
+                <a href="?P=LocaisGrupos"><i class="fa fa-crosshairs"></i> Grupos de Locais</a>
+            </li>
+            <%
+			end if
+			if session("Admin")=1 then
+			%>
+            <li>
+                <a href="?P=feriados&Pers=0"><i class="fa fa-road"></i> Feriados</a>
+            </li>
+            <li>
+                <a href="?P=TabelaParticular"><i class="fa fa-table"></i> Tabelas Particulares</a>
+            </li>
+            <li>
+                <a href="?P=OutrasConfiguracoes&Pers=1"><i class="fa fa-cogs"></i> Outras Configura&ccedil;&otilde;es</a>
+            </li>
+            <%
+			end if
+			%>
+            
+            <li></li>
+
+
+
+							</ul>
+						</li>
+					</ul>
+				</div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    </div>
+  </div>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+        </div>
+      
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="background-color:#2e6589">
+      <div class="container">
+        <ul class="nav navbar-nav">
+          <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+              <li class="divider"></li>
+              <li><a href="#">One more separated link</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog bigger-140"></i></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      </div>
+      <!-- /.navbar-collapse --> 
+      
+    </nav>
+  </div>
+</div>
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+

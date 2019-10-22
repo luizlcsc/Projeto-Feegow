@@ -1,0 +1,161 @@
+<!--#include file="connect.asp"-->
+<%
+if req("De")="" then
+	De=dateadd("m", -1, date())
+else
+	De=req("De")
+end if
+if req("Ate")="" then
+	Ate=dateadd("m", 1, date())
+else
+	Ate=req("Ate")
+end if
+%>
+<script type="text/javascript">
+    $(".crumb-active a").html("Cartões de Crédito e Débito");
+    $(".crumb-link").removeClass("hidden");
+    $(".crumb-link").html("administração de recebimento de cartões");
+    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+</script>
+
+<form id="frmCC" method="get">
+    <input type="hidden" name="P" value="<%=req("P")%>">
+    <input type="hidden" name="Pers" value="<%=req("Pers")%>">
+    <br>
+    <div class="panel hidden-print">
+        <div class="panel-body">
+            <div class="row">
+                <%= quickfield("multiple", "Conta", "Selecione o cartão", 4, req("Conta"), "select id, CONCAT(AccountName, ' ', IFNULL(IF(Empresa = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = Empresa)), '') ) NomeConta from sys_financialcurrentaccounts where AccountType in(3, 4) AND sysActive=1", "NomeConta", "") %>
+
+                <div class="col-md-2">
+                    <div class="checkbox-custom checkbox-success">
+                        <input type="checkbox" name="Baixados" id="Baixados" value="S" class="ace" <%if req("Baixados")="S" then%> checked <%end if%>><label class="checkbox" for="Baixados">Baixados</label>
+                    </div>
+                    <div class="checkbox-custom checkbox-warning">
+                        <input type="checkbox" name="Pendentes" id="Pendentes" value="S" class="ace" <%if req("Pendentes")="S" or req("De")="" then%> checked <%end if%>><label for="Pendentes" class="checkbox"> Pendentes</label></div>
+                </div>
+                <%= quickField("datepicker", "De", "Crédito de", 2, De, "", "", "") %>
+                <%= quickField("datepicker", "Ate", "até", 2, Ate, "", "", "") %>
+                <div class="col-md-2">
+                    <label>&nbsp;</label><br>
+                    <button id="btnBuscar" class="btn btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+                </div>
+            </div>
+            <div class="row">
+                <%=quickField("text", "Transacao", "Transação", 2, "", "", "", "")%>
+                <%=quickField("text", "Autorizacao", "Autorização", 2, "", "", "", "")%>
+                <div class="col-md-offset-6 col-md-1">
+                    <label>&nbsp;</label><br />
+                    <button class="btn btn-sm btn-info" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i> Imprimir</button>
+                </div>
+                <div class="col-md-1">
+                    <label>&nbsp;</label><br />
+                    <button class="btn btn-sm btn-success" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i> Excel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="panel">
+    <div class="panel-body pn" id="resultado">
+        <%server.Execute("CartaoCreditoResultado.asp") %>
+    </div>
+</div>
+
+<form id="formCartaoCredito" method="POST">
+    <input type="hidden" name="html" id="htmlTable">
+</form>
+<script>
+function downloadExcel(){
+    $("#htmlTable").val($("#resultado").html());
+    var tk = localStorage.getItem("tk");
+
+    $("#formCartaoCredito").attr("action", domain+"/reports/download-excel?title=CartaoCredito&tk="+tk).submit();
+}
+</script>
+
+<script type="text/javascript">
+    $("#frmCC").submit(function () {
+        $.post("CartaoCreditoResultado.asp", $(this).serialize(), function (data) {
+            $("#resultado").html(data);
+        });
+        return false;
+    });
+
+function baixa(I, A, Par, Pars){
+	$("#btn"+I).attr("disabled", "disabled");
+	$.post("CartaoCreditoBaixa.asp", {
+		I:I,
+		A:A,
+		Fee:$("#Fee"+I).val(),
+		Taxa:$("#Taxa"+I).val(),
+		ValorCredito:$("#ValorCredito"+I).val(),
+		ValorParcela:$("#parc"+I).val(),
+		DateToReceive:$("#DateToReceive"+I).val(),
+		Par:Par,
+		Pars:Pars
+	},
+	function(data){ eval(data) });
+}
+
+
+function treatval(valor){
+	valor = valor.replace('.', '');
+	valor = valor.replace(',', '.');
+	return valor;
+}
+function tvrev(valor){
+	valor = valor.replace('.', '');
+}
+
+$("#resultado").on("keyup", "input[id^='Fee']", function () {
+    var idParc = $(this).attr("data-id");
+    var perc = parseFloat(treatval($(this).val()));
+    var valParc = parseFloat(treatval($("#parc" + idParc).val()));
+    var juros = (valParc * perc) * 0.01;
+    var valFinal = (valParc - juros).toFixed(2).toString().replace('.', ',');
+
+    $("#ValorCredito" + idParc).val(valFinal);
+});
+
+
+/*$("input[id^='Fee']").keyup(function(){
+    var idParc = $(this).attr("data-id");
+    var perc = parseFloat( treatval( $(this).val() ) );
+    var valParc = parseFloat( treatval( $("#parc"+idParc).val() ) );
+    var juros = (valParc*perc)*0.01;
+    var valFinal = (valParc-juros).toFixed(2).toString().replace('.', ',');
+
+    $("#ValorCredito"+ idParc ).val( valFinal );
+});*/
+
+$("#resultado").on("keyup", "input[id^='ValorCredito']", function () {
+    var idParc = $(this).attr("data-id");
+    var valParc = parseFloat(treatval($("#parc" + idParc).val()));
+    var valFinal = parseFloat(treatval($(this).val()));
+    var fator = 100 / valParc;
+    var taxa = fator * valFinal;
+
+    $("#Fee" + idParc).val((100 - taxa).toFixed(2).toString().replace('.', ','));
+});
+    /*
+$("input[id^='ValorCredito']").keyup(function () {
+    var idParc = $(this).attr("data-id");
+    var valParc = parseFloat( treatval( $("#parc"+idParc).val() ) );
+    var valFinal = parseFloat( treatval( $(this).val() ) );
+    var fator = 100/valParc;
+    var taxa = fator*valFinal;
+    
+    $("#Fee"+ idParc ).val( (100-taxa).toFixed(2).toString().replace('.', ',') );
+});*/
+
+<!--#include file="jQueryFunctions.asp"-->
+
+// $(document).ready(function() {
+//   setTimeout(function() {
+//     $("#toggle_sidemenu_l").click()
+//   }, 500);
+// })
+
+</script>

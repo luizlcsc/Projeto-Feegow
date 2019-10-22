@@ -1,0 +1,307 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><script language="JavaScript"> 
+function f_d1(){ 
+d1=document.frm.d1.value.length;
+if (d1>9) 
+{ document.frm.d2.focus()} 
+} 
+function f_d2(){ 
+d2=document.frm.d2.value.length; 
+if (d2>1) 
+{ document.frm.tel1.focus()} 
+} 
+function f_tel1(){ 
+tel1=document.frm.tel1.value.length; 
+if (tel1>8) 
+{ document.frm.tel2.focus()} 
+} 
+function f_tel2(){ 
+tel2=document.frm.tel2.value.length; 
+if (tel2>8) 
+{ document.frm.celular.focus()} 
+} 
+function f_celular(){ 
+celular=document.frm.celular.value.length; 
+if (celular>8) 
+{ document.frm.data_admissao.focus()} 
+} 
+function f_data_admissao(){ 
+data_admissao=document.frm.data_admissao.value.length; 
+if (data_admissao>9) 
+{ document.frm.salario.focus()} 
+} 
+function f_dia_pagamento(){ 
+dia_pagamento=document.frm.dia_pagamento.value.length; 
+if (dia_pagamento>1) 
+{ document.frm.cargo.focus()} 
+} 
+function f_cpf(){ 
+cpf=document.frm.cpf.value.length; 
+if (cpf>13) 
+{ document.frm.rg.focus()} 
+} 
+function f_inicio_atividade(){ 
+inicio_atividade=document.frm.inicio_atividade.value.length; 
+if (inicio_atividade>9) 
+{ document.frm.data_desligamento.focus()} 
+} 
+function f_data_desligamento(){ 
+data_desligamento=document.frm.data_desligamento.value.length; 
+if (data_desligamento>9) 
+{ document.frm.observacoes.focus()} 
+} 
+function Mascara (formato, keypress, objeto){ 
+campo = eval (objeto); 
+// DATA 
+if (formato=='cnpj_emp'){ 
+separador1 = '.'; 
+separador2 = '/'; 
+separador3 = '-'; 
+conjunto1 = 2; 
+conjunto2 = 6; 
+conjunto3 = 10; 
+conjunto4 = 15; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto2){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto3){ 
+campo.value = campo.value + separador2; 
+} 
+if (campo.value.length == conjunto4){ 
+campo.value = campo.value + separador3; 
+} 
+} 
+if (formato=='cpf'){ 
+separador1 = '.'; 
+separador2 = '-'; 
+conjunto1 = 3; 
+conjunto2 = 7; 
+conjunto3 = 11; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto2){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto3){ 
+campo.value = campo.value + separador2; 
+}
+} 
+if (formato=='telefone'){ 
+separador1 = '-'; 
+conjunto1 = 4; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+} 
+if (formato=='hora'){ 
+separador1 = ':'; 
+conjunto1 = 2; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+} 
+if (formato=='cep1'){ 
+separador1 = '.'; 
+separador2 = '-'; 
+conjunto1 = 2; 
+conjunto2 = 6; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto2){ 
+campo.value = campo.value + separador2; 
+} 
+} 
+if (formato=='data'){ 
+separador1 = '/'; 
+conjunto1 = 2; 
+conjunto2 = 5; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto2){ 
+campo.value = campo.value + separador1; 
+} 
+} 
+} 
+function nm()
+{
+    if (event.keyCode == 44) return true
+    if (event.keyCode == 47) return true
+    if (event.keyCode == 45) return true
+    if (event.keyCode == 48) return true
+    if (event.keyCode == 49) return true
+    if (event.keyCode == 50) return true
+    if (event.keyCode == 51) return true
+    if (event.keyCode == 52) return true
+    if (event.keyCode == 53) return true
+    if (event.keyCode == 54) return true
+    if (event.keyCode == 55) return true
+    if (event.keyCode == 56) return true
+    if (event.keyCode == 57) return true
+    return false
+}
+function onm()
+{
+    if (event.keyCode == 48) return true
+    if (event.keyCode == 49) return true
+    if (event.keyCode == 50) return true
+    if (event.keyCode == 51) return true
+    if (event.keyCode == 52) return true
+    if (event.keyCode == 53) return true
+    if (event.keyCode == 54) return true
+    if (event.keyCode == 55) return true
+    if (event.keyCode == 56) return true
+    if (event.keyCode == 57) return true
+    return false
+}
+function lt()
+
+{
+    if (event.keyCode == 34) return false
+    if (event.keyCode == 39) return false
+    return true
+}
+</script>
+
+</head><body><table border="1">
+<tbody><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/FotoPaciente.asp" target="_blank">FotoPaciente.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=203';" type="button"></td>
+		<td>
+		
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/HistoricoPaciente.asp" target="_blank">HistoricoPaciente.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=222';" type="button"></td>
+		<td>
+		
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaMotivosReagendamento.asp" target="_blank">ListaMotivosReagendamento.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=267';" type="button"></td>
+		<td>
+		i - Cadastro principal (dados pessoais)<br>
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaPacienteAtestados.asp" target="_blank">ListaPacienteAtestados.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=269';" type="button"></td>
+		<td>
+		
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaPacienteReceita.asp" target="_blank">ListaPacienteReceita.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=270';" type="button"></td>
+		<td>
+		
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaPermissoes.asp" target="_blank">ListaPermissoes.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=273';" type="button"></td>
+		<td>
+		
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaRepasses.asp" target="_blank">ListaRepasses.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=282';" type="button"></td>
+		<td>
+		
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Mais.asp" target="_blank">Mais.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=310';" type="button"></td>
+		<td>
+		
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/MotivosReagendamento.asp" target="_blank">MotivosReagendamento.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=321';" type="button"></td>
+		<td>
+		a - Cadastro principal (dados pessoais)<br>a - Cadastro principal (dados pessoais)<br>
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Orcamento.asp" target="_blank">Orcamento.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=361';" type="button"></td>
+		<td>
+		a - Cadastro principal (dados pessoais)<br>a - Cadastro principal (dados pessoais)<br>
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Orcamentos.asp" target="_blank">Orcamentos.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=364';" type="button"></td>
+		<td>
+		i - Cadastro principal (dados pessoais)<br>
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/PacienteAtestado.asp" target="_blank">PacienteAtestado.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=367';" type="button"></td>
+		<td>
+		
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/PacienteReceita.asp" target="_blank">PacienteReceita.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=368';" type="button"></td>
+		<td>
+		
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Pedidos.asp" target="_blank">Pedidos.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=408';" type="button"></td>
+		<td>
+		
+		</td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Recibos.asp" target="_blank">Recibos.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=437';" type="button"></td>
+		<td>
+		v - Pedidos de exames<br>a - Pedidos de exames<br>
+		</td>
+	</tr></tbody></table>15</body></html>

@@ -1,0 +1,554 @@
+<!--#include file="connect.asp"-->
+<%
+id = req("id")'variavel de acordo com o tipo
+tipo = req("tipo")
+ProcedimentoID = ref("ProcedimentoID")
+ProfissionalID = ref("ProfissionalID")
+PacienteID = ref("PacienteID")
+
+
+FormaPagto = request.QueryString("FormaPagto")'Particular ou Convenio
+ProcedimentoTempoProfissional = request.QueryString("ProcedimentoTempoProfissional")
+
+if ProcedimentoTempoProfissional = "true" then    
+    idProcedimento = request.QueryString("idProcedimento")
+    idProfissional = request.QueryString("idProfissional")
+    
+    set ProcedimentoTempoProfissional = db.execute("SELECT * FROM procedimento_tempo_profissional where procedimentoId ="&treatvalzero(idProcedimento)&" and profissionalId = "&treatvalzero(idProfissional)&"")
+    response.ContentType = "application/json"
+
+    if ProcedimentoTempoProfissional.eof then
+        response.write("{}")
+        response.end
+    end if
+    
+    response.write("{""tempo"":"&ProcedimentoTempoProfissional("tempo")&"}")   
+    response.end
+end if
+
+if tipo="PacienteID" then
+	PacienteID = id
+
+	if PacienteID="-1" then
+	    Response.End
+	end if
+
+	set pac = db.execute("select * from pacientes where id="&PacienteID&" limit 1")
+	if not pac.eof then
+        LembrarPendencias = pac("lembrarPendencias")
+        Pendencias = pac("Pendencias")
+
+		camposPedir = "Tel1, Cel1, Email1"
+		if session("banco")="clinic811" or session("banco")="clinic5445" then
+			camposPedir = "Tel1, Cel1, Email1, Origem"
+		end if
+
+		set CamposPedirConfigSQL = db.execute("SELECT * FROM obrigacampos WHERE Recurso='Agendamento'")
+
+        if not CamposPedirConfigSQL.eof then
+            camposPedir= "Tel1, Cel1, Email1, " & replace(CamposPedirConfigSQL("Exibir"),"|","")
+        end if
+
+		splCamposPedir = split(camposPedir, ", ")
+        %>
+            $("#select2-PacienteID-container").html("<%=pac("NomePaciente") %>");
+        <%
+		
+		for i=0 to ubound(splCamposPedir)
+			if splCamposPedir(i)="Tel1" then
+				if pac("Tel1")<>"" and not isnull(pac("Tel1")) then
+					%>
+					$('#qfagetel1').html('<label for="ageTel1">Telefone</label><br><div class="input-group"><span class="input-group-addon"><i class="fa fa-phone bigger-110"></i></span><input id="ageTel1" class="form-control" type="text" maxlength="150" name="ageTel1" value="<%= pac("Tel1") %>" placeholder=""></div></div>');
+					<%
+				else
+					%>
+					$("#ageTel1").val("<%=pac("Tel1")%>");
+					<%
+				end if
+			elseif splCamposPedir(i)="Cel1" then
+				if pac("Cel1")<>"" and not isnull(pac("Cel1")) then
+					%>
+					$('#qfagecel1').html('<label for="ageCel1">Celular</label><br><div class="input-group"><span class="input-group-addon"><i class="fa fa-mobile-phone bigger-110"></i></span><input id="ageCel1" class="form-control" type="text" maxlength="150" name="ageCel1" value="<%= pac("Cel1") %>" placeholder=""></div></div>');
+					<%
+				else
+					%>
+					$("#ageCel1").val("<%=pac("Cel1")%>");
+					<%
+				end if
+			elseif splCamposPedir(i)&""<>"" then
+
+			    if splCamposPedir(i)<>"IndicadoPorSelecao" then
+				%>
+				$("#age<%=splCamposPedir(i)%>").val("<%=pac(""&splCamposPedir(i)&"")%>");
+				<%
+				end if
+			end if
+		next
+
+        %>
+        $("#ageTabela, #bageTabela").val("<%=pac("Tabela") %>");
+        <%
+
+        'verifica se tem agendamento pra retorno
+        if PacienteID<>"" then
+            set AgendamentoParaRetornoSQL = db.execute("SELECT age.id FROM agendamentos age INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE ProfissionalID="&treatvalzero(ref("ProfissionalID"))&" AND PacienteID="&PacienteID&" AND StaID IN (3) AND DATEDIFF("&mydatenull(ref("Data"))&", age.Data) BETWEEN 1 AND proc.DiasRetorno and proc.DiasRetorno>0")
+            if not AgendamentoParaRetornoSQL.eof then
+
+                %>
+                //$("#Retorno").prop("checked", true).change();
+                <%
+            end if
+        end if
+
+
+        'verifica se o paciente tem algum aviso ou pendencia na ficha e exibe no agendamento caso esteja com a opção de sinalizar
+		if LembrarPendencias="S" AND not isnull(Pendencias) AND trim(Pendencias)<>"" AND getConfig("AvisosPendenciasProntuario")=1 then
+            %>
+            new PNotify({
+                title: 'AVISOS E PENDÊNCIAS',
+                text: '<%=replace(replace(Pendencias, chr(10), "\n"), chr(13), "")%>',
+                sticky: true,
+                type: 'warning',
+                delay: 10000
+            });
+            <%
+        end if
+
+        set conv = db.execute("select id,NomeConvenio,RetornoConsulta, Prioridade FROM ( "&_
+                              "select id,NomeConvenio,RetornoConsulta, 1 Prioridade FROM convenios WHERE id="&treatvalzero(pac("ConvenioID1"))&" "&_
+                              "UNION ALL "&_
+                              "select id,NomeConvenio,RetornoConsulta, 2 Prioridade FROM convenios WHERE id="&treatvalzero(pac("ConvenioID2"))&" "&_
+                              "UNION ALL "&_
+                              "select id,NomeConvenio,RetornoConsulta, 3 Prioridade FROM convenios WHERE id="&treatvalzero(pac("ConvenioID3"))&" "&_
+                              ")conv "&_
+                              "ORDER BY Prioridade")
+
+		if not conv.EOF then
+			possuiConvenio = "S"
+
+			ObsConvenios = ""
+            set ConvenioSQL = db.execute("SELECT Obs FROM convenios WHERE id="&conv("id")&"")
+            if not ConvenioSQL.eof then
+
+                 planosOptions = getPlanosOptions(conv("id"), pac("PlanoID"&conv("Prioridade")))
+
+                 if planosOptions<>"" then
+                    %>
+$(document).ready(function() {
+
+    $("#divConvenioPlano").remove();
+    $("#divConvenio").after("<%=planosOptions%>");
+
+    $("#PlanoID").select2();
+})
+                    <%
+                end if
+
+                ObsConvenio = ConvenioSQL("Obs")
+
+                if ObsConvenio&""<>"" then
+                %>
+                var btnObs = '<button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="openModal(\'<%=replace(replace(ObsConvenio,chr(10),"<br>"),chr(13),"<br>")%>\', \'Observações do convênio\', true, false, \'md\')"><i class="fa fa-align-justify"></i></button>';
+                $("#ConvenioID").before(btnObs);
+                <%
+                end if
+            end if
+			%>
+			$("#divConvenio").show();
+			$("#divValor").hide();
+			$("#rdValorPlanoP").click();
+/*			$("#ConvenioID").val('<%=conv("id")%>');
+			$("#searchConvenioID").val("<%=conv("NomeConvenio")%>");
+*/
+            //to ajax select2
+            $("#ConvenioID option").val("<%=conv("id") %>");
+            $("#ConvenioID option").text("<%=conv("NomeConvenio") %>");
+            $("#ConvenioID").val("<%=conv("id") %>");
+
+            if($("#ConvenioID").length > 0){
+                $("#ConvenioID").select2("destroy");
+            }
+   	        s2aj("ConvenioID", 'convenios', 'NomeConvenio', '', '');
+			<%
+			if not isnull(conv("RetornoConsulta")) and conv("RetornoConsulta")<>"" and isnumeric(conv("RetornoConsulta")) then
+				RetornoConsulta=ccur(conv("RetornoConsulta"))
+				if RetornoConsulta>0 then
+					'pega o ultimo atendido deste paciente antes de hoje, se houve, ve quantos dias de retorno deste convenio e avisa
+					set agendAnt = db.execute("select Data from agendamentos where PacienteID="&PacienteID&" and Data<"&mydatenull(ref("Data"))&" and StaID=3 order by Data desc limit 1")
+					if not agendAnt.EOF then
+						TempoUltima = datediff("d", agendAnt("Data"), ref("Data"))
+						if TempoUltima<=RetornoConsulta then
+							%>
+
+                            new PNotify({
+                                title: 'ALERTA!',
+                                text: 'Atenção: Este paciente teve um atendimento com este profissional há <%=TempoUltima%> dia(s). \n A melhor data para retorno de consulta é a partir do dia <%=dateadd("d", RetornoConsulta+1, agendAnt("Data"))%>.',
+                                type: 'warning',
+                                delay: 10000
+                            });
+							<%
+						end if
+					end if
+				end if
+			end if
+		end if
+		
+		
+		
+	end if
+
+	if possuiConvenio <> "S" then
+		%>
+            $("#divConvenio").hide();
+            $("#rdValorPlanoV").attr("checked", "checked");
+            $("#divValor").show();
+			$("#ConvenioID").val('0');
+			$("#searchConvenioID").val("");
+		<%
+	end if
+	
+	set vcaItemInvoice = db.execute("select ii.ItemID, proc.NomeProcedimento, ii.ValorUnitario+ii.Acrescimo-ii.Desconto Valor FROM itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID LEFT JOIN procedimentos proc on proc.id=ii.ItemID WHERE Tipo='S' AND (Executado='' OR isnull(Executado)) AND i.AssociationAccountID=3 AND i.AccountID="&PacienteID&" LIMIT 1")
+
+	if not vcaItemInvoice.EOF then
+		%>
+		$("#rdValorPlanoV").click();
+        $("#ProcedimentoID option").text("<%=vcaItemInvoice("NomeProcedimento")%>");
+        $("#ProcedimentoID option").val("<%=vcaItemInvoice("ItemID")%>");
+        $("#ProcedimentoID").val("<%=vcaItemInvoice("ItemID")%>");
+        s2aj("ProcedimentoID", 'procedimentos', 'NomeProcedimento', '');
+        $("#Valor").val("<%=formatnumber(vcaItemInvoice("Valor"),2)%>");
+		<%
+	end if
+    if session("Banco")="clinic100000" or session("Banco")="clinic2901" or session("Banco")="clinic5355" or session("Banco")="clinic105" or session("Banco")="clinic5583" or session("Banco")="clinic5968" or session("Banco")="clinic5710" or session("Banco")="clinic5563" then
+        saldo = accountBalance("3_"&PacienteID, 0)
+
+        BoletoAberto=False
+        if recursoAdicional(24)=4 then
+            sqlBoleto = "SELECT  coalesce(sum(now() > boletos_emitidos.DueDate and StatusID <> 3),0) as vencido"&_
+                                                            "       ,coalesce(sum(boletos_emitidos.DueDate > now() and StatusID = 1),0) as aberto"&_
+                                                            "       ,coalesce(sum(StatusID  = 3),0) as pago"&_
+                                                            " FROM sys_financialinvoices"&_
+                                                            " JOIN boletos_emitidos ON boletos_emitidos.InvoiceID = sys_financialinvoices.id"&_
+                                                            " WHERE TRUE"&_
+                                                            " AND sys_financialinvoices.AccountID ="&PacienteID&" "&_
+                                                            " AND sys_financialinvoices.AssociationAccountID = 3;"
+            'response.write(sqlBoleto)
+            set getBoletos = db.execute(sqlBoleto)
+            if not getBoletos.eof then
+                if getBoletos("aberto") = "0" then
+                    BoletoAberto=True
+                end if
+            end if
+        else
+            BoletoAberto=True
+        end if
+
+
+        BloquearSalvar=False
+        mensagemDebitoFinanceiro = "Este paciente possui débitos financeiros. Para mais detalhes, clique na aba \'Conta\'."
+
+        if saldo>=0 and (session("Banco")="clinic5355" or session("Banco")="clinic100000" or session("Banco")="clinic105" or session("Banco")="clinic4421" or session("Banco")="clinic5968") then
+            'aqui verifica se os relativos estão devendo, os responsaveis
+            set PacientesRelativosSQL = db.execute("SELECT * FROM pacientesrelativos WHERE NomeID > 0 AND Dependente='S' AND PacienteID="&PacienteID)
+
+            while not PacientesRelativosSQL.eof
+                saldoRelativo = accountBalance("3_"&PacientesRelativosSQL("NomeID"), 0)
+                if saldoRelativo < 0 then
+                    BloquearSalvar = True
+                    mensagemDebitoFinanceiro = "O relativo \'"&PacientesRelativosSQL("Nome")&"\' deste paciente possui débitos financeiros."
+                    saldo = saldoRelativo
+                end if
+            PacientesRelativosSQL.movenext
+            wend
+            PacientesRelativosSQL.close
+            set PacientesRelativosSQL=nothing
+
+        end if
+
+        if saldo<0 AND  BoletoAberto then
+            %>
+
+            new PNotify({
+                title: 'ALERTA!',
+                text: '<%=mensagemDebitoFinanceiro%>',
+                type: 'danger',
+                delay: 7000
+            });
+
+            <%
+            if BloquearSalvar then
+                %>
+                $("#btnSalvarAgenda").attr("disabled", true);
+                <%
+            end if
+        end if
+    end if
+end if
+if left(tipo, 14)="ProcedimentoID" then
+    apID = replace(tipo, "ProcedimentoID", "")
+    TabelaID = ref("ageTabela")
+	ProcedimentoID = id
+    procValor = 0
+    
+    if ProcedimentoID="" then
+        Response.End
+    end if
+
+	set proc = db.execute("select * from procedimentos where id="&ProcedimentoID)
+	if not proc.EOF then
+		ObrigarTempo = proc("ObrigarTempo")
+		GrupoID = proc("GrupoID")
+		TempoProcedimento = proc("TempoProcedimento")
+		Valor = fn(proc("Valor"))
+		DiasRetorno = proc("DiasRetorno")
+        EquipamentoPadrao = proc("EquipamentoPadrao")
+        procValor = proc("Valor")
+        SomenteConvenios = proc("SomenteConvenios")
+        TipoProcedimentoID = proc("TipoProcedimentoID")
+
+        if not isnull(TipoProcedimentoID) then
+            if TipoProcedimentoID="9" then
+                %>
+                //$("#Retorno").prop("checked", true).change();
+                <%
+            end if
+        end if
+
+        if SomenteConvenios<>"" then
+            if instr(SomenteConvenios,"|NONE|")>0 then
+                SomenteConvenios = replace(SomenteConvenios, "|NONE|","")
+            end if
+            SomenteConvenios = replace(SomenteConvenios,"|","'")
+
+            if SomenteConvenios<>"" and SomenteConvenios<>"NONE" then
+                set ConveniosSQL = db.execute("SELECT NomeConvenio,id FROM convenios WHERE id IN("&SomenteConvenios&")")
+                %>
+                if($("#ConvenioID<%= apID %>").length > 0){
+                    $("#ConvenioID<%= apID %>").select2("destroy");
+                }
+                <%
+                optionsConvenio = "<option value=''>Selecione</option>"
+                while not ConveniosSQL.eof
+                    optionsConvenio = optionsConvenio & "<option value='"&ConveniosSQL("id")&"'>"&ConveniosSQL("NomeConvenio")&"</option>"
+                ConveniosSQL.movenext
+                wend
+                ConveniosSQL.close
+                set ConveniosSQL=nothing
+                %>
+                var ConvenioIDSelecionado = $("#ConvenioID<%= apID %>").val();
+
+                $("#ConvenioID<%= apID %>").html("<%=optionsConvenio%>").val(ConvenioIDSelecionado);
+                $("#ConvenioID<%= apID %>").select2();
+                <%
+            end if
+        end if
+
+        UnidadeID=0
+        set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(ref("LocalID")))
+        if not LocalSQL.eof then
+            UnidadeID=LocalSQL("UnidadeID")
+        end if
+
+        ValorAgendamento = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ref("ProfissionalID"), ref("EspecialidadeID"), GrupoID)
+		%>
+		 $("#Tempo<%= apID %>").val('<%=TempoProcedimento%>');
+		 if($("#EquipamentoID<%= apID %>").val() == "" || $("#EquipamentoID<%= apID %>").val() == "0"){
+		        $("#EquipamentoID<%= apID %>").val('<%=EquipamentoPadrao%>').change();
+             $("#EquipamentoID<%= apID %>").select2();
+		 }
+		<%
+		if PacienteID<>"" and not isnull(DiasRetorno) and isnumeric(DiasRetorno) then
+			set agendAnt = db.execute("select Data from agendamentos where PacienteID="&PacienteID&" and Data>"&mydatenull( dateadd("d", DiasRetorno*(-1), ref("Data")) )&" AND EspecialidadeID="&treatvalnull(ref("EspecialidadeID"))&" AND TipoCompromissoID="&ProcedimentoID&" and StaID=3 order by Data desc limit 1")
+			if not agendAnt.EOF then
+				%>
+
+                new PNotify({
+                    title: 'ATENÇÃO!',
+                    text: 'Este paciente teve um atendimento em <%=agendAnt("Data")%>. \n A melhor data para retorno é a partir do dia <%=dateadd("d", DiasRetorno+1, agendAnt("Data"))%>',
+                    type: 'warning',
+                    delay: 10000
+                });
+				<%
+			end if
+		end if
+	end if
+	AvisoAgenda = proc("AvisoAgenda")
+	if not isnull(AvisoAgenda) and trim(AvisoAgenda)<>"" then
+		%>
+
+        new PNotify({
+            title: 'ALERTA!',
+            text: '<%=replace(replace(AvisoAgenda, chr(10), "\n"), chr(13), "")%>',
+            type: 'dark',
+            delay: 10000
+        });
+		<%
+	end if
+
+	TextoPreparo = proc("TextoPreparo")
+    	if not isnull(TextoPreparo) and trim(TextoPreparo)<>"" then
+    	    TextoPreparo=replace(TextoPreparo, "'","")
+    		%>
+
+            new PNotify({
+                title: 'PREPARO:',
+                text: '<%=replace(replace(TextoPreparo, chr(10), "\n"), chr(13), "")%>',
+                type: 'warning',
+                delay: 10000
+            });
+    		<%
+    	end if
+
+    '>ve se ha valor diferenciado e muda o valor
+    PontoMaior = 0
+    pmTipo = ""
+    pmValor = ""
+    pmTipoValor = ""
+
+
+    if ref("Retorno")="1" then
+        'ValorAgendamento=0
+    end if
+
+    if not isnull(ValorAgendamento) then
+        if isnumeric(ValorAgendamento) then
+            %>
+
+             $("#Valor<%= apID %>").val('<%=fn(ValorAgendamento)%>');
+             $("#ValorText<%= apID %>").html('<%=fn(ValorAgendamento)%>');
+            <%
+        end if
+    end if
+
+    '<
+end if
+
+if tipo="Equipamento" then
+    msgEquip = dispEquipamento(ref("Data"), ref("Hora"), ref("Tempo"), ref("EquipamentoID"))
+    if msgEquip<>"" then
+        %>
+        new PNotify({
+            title: 'EQUIPAMENTO EM USO!',
+            text: '<%=msgEquip %>',
+            type: 'danger',
+            delay: 3000,
+            icon: 'fa fa-times'
+        });
+        $("#btnSalvarAgenda").attr("disabled", true);
+        <%
+    else
+        %>
+        if($("#btnSalvarAgenda").data("force-disabled") !== true){
+            $("#btnSalvarAgenda").attr("disabled", false);
+        }
+        <%
+    end if
+end if
+
+if left(tipo, 10)="ConvenioID" then
+    apID = replace(tipo, "ConvenioID", "")
+    ConvProc = split(req("id"),"_")
+    ConvenioID = ConvProc(0)
+
+    if ubound(ConvProc) > 0 then
+        ProcedimentoID = ConvProc(1)
+    end if
+
+    set ConvenioSQL = db.execute("SELECT Obs FROM convenios WHERE id="&ConvenioID)
+    if not ConvenioSQL.eof then
+
+         planosOptions = getPlanosOption(ConvenioID, PlanoID, apID)
+
+        %>
+            $("#divConvenioPlano<%=apID%>").remove();
+        <%
+         if planosOptions<>"" then
+
+            %>
+            $("#divConvenio<%=apID%>").after("<%=planosOptions%>");
+            $("#PlanoID<%=apID%>").select2();
+            <%
+        end if
+        ObsConvenio = ConvenioSQL("Obs")
+
+        if ObsConvenio&""<>"" then
+            %>
+            var btnObs = '<button title="Observações do convênio" id="ObsConvenios<%=apID%>" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="openModal(\'<%=replace(replace(ObsConvenio,chr(10),"<br>"),chr(13),"<br>")%>\', \'Observações do convênio\', true, false, \'md\')"><i class="fa fa-align-justify"></i></button>';
+            $("#ConvenioID<%=apID%>").before(btnObs);
+            <%
+        else
+            %>
+            $("#ObsConvenios<%=apID%>").remove();
+            <%
+        end if
+    else
+        %>
+        $("#ObsConvenios<%=apID%>").remove();
+        <%
+    end if
+
+
+    if session("Banco")="clinic100000" or session("Banco")="clinic5304" then
+        set PlanosQueCobreSQL = db.execute("SELECT cp.NomePlano, IF(pvp.NaoCobre is null or pvp.NaoCobre = '', 1,0)Cobre FROM conveniosplanos cp LEFT JOIN tissprocedimentosvalores pv ON pv.ConvenioID = cp.id LEFT JOIN tissprocedimentosvaloresplanos pvp ON pvp.AssociacaoID = pv.id WHERE cp.ConvenioID = "&ConvenioID&" GROUP BY cp.id")
+        'response.write("SELECT cp.NomePlano, IF(pvp.NaoCobre is null or pvp.NaoCobre = '', 1,0)Cobre FROM conveniosplanos cp LEFT JOIN tissprocedimentosvalores pv ON pv.ConvenioID = cp.id LEFT JOIN tissprocedimentosvaloresplanos pvp ON pvp.AssociacaoID = pv.id WHERE pv.ProcedimentoID="&ProcedimentoID&" AND cp.ConvenioID = "&ConvenioID&" GROUP BY cp.id")
+        PlanosQueCobre = ""
+        if not PlanosQueCobreSQL.eof then
+                while not PlanosQueCobreSQL.eof
+                    if not isnull(PlanosQueCobreSQL("Cobre")) and PlanosQueCobreSQL("Cobre")<>"" then
+                        if PlanosQueCobreSQL("Cobre")&""="1" then
+                            if PlanosQueCobre="" then
+                                PlanosQueCobre = PlanosQueCobreSQL("NomePlano")
+                            else
+                                PlanosQueCobre = PlanosQueCobre & "<br> "&PlanosQueCobreSQL("NomePlano")
+                            end if
+                        end if
+                    end if
+                PlanosQueCobreSQL.movenext
+                wend
+                PlanosQueCobreSQL.close
+                set PlanosQueCobreSQL=nothing
+
+            if(PlanosQueCobre<>"") then
+                %>
+
+                <%
+            else
+            %>
+                $(".aviso-planos").remove();
+            <%
+            end if
+        else
+            %>
+                $(".aviso-planos").remove();
+            <%
+        end if
+    end if
+end if
+
+
+
+function getPlanosOption(ConvenioID, PlanoID, CampoID)
+    set PlanosConvenioSQL = db.execute("SELECT NomePlano, id FROM conveniosplanos WHERE sysActive=1 and NomePlano!='' and ConvenioID="&ConvenioID)
+    if not PlanosConvenioSQL.eof then
+
+        planosOption="<option value=''>Selecione</option>"
+
+        while not PlanosConvenioSQL.eof
+            planoSelected = ""
+            if PlanoID=PlanosConvenioSQL("id") then
+                planoSelected=" selected "
+            end if
+
+            planosOption= planosOption&"<option "&planoSelected&" value='"&PlanosConvenioSQL("id")&"'>"&PlanosConvenioSQL("NomePlano")&"</option>"
+        PlanosConvenioSQL.movenext
+        wend
+        PlanosConvenioSQL.close
+        set PlanosConvenioSQL=nothing
+
+        getPlanosOption = "<div id='divConvenioPlano"&CampoID&"' class='col-md-12 mt5' ><label for='PlanoID"&CampoID&"'>Plano</label><select name='PlanoID"&CampoID&"' id='PlanoID"&CampoID&"' class='form-control'>"& planosOption &"</select></div>"
+    else
+        getPlanosOption=""
+    end if
+end function
+
+%>

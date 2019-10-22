@@ -1,0 +1,503 @@
+﻿    <!--#include file="connect.asp"-->
+<%
+
+totalRepasses = 0
+totalMateriais = 0
+totalProcedimentos = 0
+
+
+private function tituloTabelaRepasseConvenio(Classe, Titulo, ItemGuiaID, GuiaConsultaID, ItemHonorarioID, Tabela, PagtoID, ValorRecebido, Extras)
+    %>
+    <td width="50%">
+        <%if Classe<>"dark" then %>
+            <div class="checkbox-custom checkbox-<%= Classe %> ptn mtn">
+                <input type="checkbox" name="linhaRepasse" value="<%= ItemGuiaID & GuiaConsultaID & ItemHonorarioID &"_"& Tabela %>" id="<%= ItemGuiaID & GuiaConsultaID & ItemHonorarioID &"_"& Tabela %>"><label for="<%= ItemGuiaID & GuiaConsultaID & ItemHonorarioID &"_"& Tabela %>"> <%= Titulo %>: <%= FormaPagto %></label>
+            </div>
+        <% end if %>
+        <div><%= Titulo %>: <%= FormaPagto %></div>
+        <div>Recebido: <%= fn(ValorRecebido) %></div>
+        <div><%= Extras %></div>
+    </td>
+    <%
+
+end function
+
+private function calcCreditado(ContaCredito, ProfissionalExecutante)
+    if ContaCredito="PRO" then
+        calcCreditado = ProfissionalExecutante
+    elseif ContaCredito="LAU" then
+        calcCreditado = ProfissionalExecutante
+    else
+        calcCreditado = ContaCredito
+    end if
+end function
+
+private function calcValor(Valor, TipoValor, ValorBase, modo)
+    if modo="calc" then
+        if TipoValor="P" then
+            calcValor = Valor/100 * ValorBase
+        else
+            calcValor = Valor
+        end if
+    else
+        if TipoValor="P" then
+            calcValor = fn(Valor) &"%"
+        else
+            calcValor = "R$ "& fn(Valor)
+        end if
+    end if
+end function
+
+
+
+
+private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePaciente, rItemGuiaID, rValorProcedimento, rValorRecebido, rPercentual, Tabela )
+
+    coefPerc = rPercentual / 100
+    'conferir -> FormaID pode ser |P| para todos particulares, |C| para todos convênios, |00_0| para forma predefinida de recto e > |0| para qualquer id de convênio
+    set fd = db.execute("select * from rateiofuncoes where DominioID="&DominioID&" order by Sobre")
+    nLinha = 0
+    while not fd.eof
+        '-> Começa a coletar os dados pra temprepasses (antiga rateiorateios)
+        Funcao = fd("Funcao")
+        TipoValor = fd("TipoValor")
+        Valor = fd("Valor")
+        ContaPadrao = fd("ContaPadrao")
+        ContaCredito = fd("ContaPadrao")
+        Sobre = fd("Sobre")
+        FormaID = 0 'Resolver
+        FM = fd("FM")
+        ProdutoID = fd("ProdutoID")
+        ValorUnitario = fd("ValorUnitario")
+        Quantidade = fd("Quantidade")
+        sysUser = session("User")
+        FuncaoID = fd("id")
+        modoCalculo = fd("modoCalculo")
+        gravaTemp = 0
+        if ultimoSobre<>Sobre then
+            ValorBase = ValorBase - somaDesteSobre
+            somaDesteSobre = 0
+        end if
+        '<-
+        'Funcao da arvore para conta crédito (F ou M)
+        if fd("FM")="F" or fd("FM")="M" then
+            if ContaPadrao="PRO" then
+                ContaCredito = ii("ProfissionalID")
+            elseif ContaPadrao="LAU" then
+                ContaCredito = ii("ProfissionalID")
+            else
+                ContaCredito = fd("ContaPadrao")
+            end if
+
+            if fd("FM")="M" then
+                'Produto variável
+                if fd("ProdutoID")=0 then
+                    if not iio.eof then
+                        ProdutoID = iio("ProdutoID")
+                    end if
+                end if
+                'Valor variável
+                if fd("ValorVariavel")="S" then
+                    if not iio.eof then
+                        ValorUnitario = iio("ValorUnitario")
+                    end if
+                end if
+            end if
+            gravaTemp = 1
+        end if
+
+        'Funções estampadas
+        if fd("FM")="F" then
+            Creditado = calcCreditado(ContaCredito, ProfissionalExecutante)
+            ShowValor = calcValor(Valor, TipoValor, ValorBase, "show")
+            ValorItem = calcValor(Valor, TipoValor, ValorBase, "calc")
+                                
+            if Creditado<>"" then
+                somaDesteSobre = somaDesteSobre+ValorItem
+                if Creditado<>"0" then
+                    Despesas = Despesas + ValorItem
+                    if instr( Creditado, "_")=0 then
+                        Creditado = "5_"& Creditado
+                    end if
+                end if
+
+
+                'linhaRepasseG = ItemInvoiceID &"|"& ItemDescontadoID &"|"& ItemGuiaID &"|"& GuiaConsultaID &"|"& ItemHonorarioID &"|"& Funcao &"|"& ValorItem*coefPerc &"|"& Creditado &"|"& Parcela &"|"& FormaID &"|"& Sobre &"|"& FM &"|"& ProdutoID &"|"& ValorUnitario &"|"& Quantidade &"|"& FuncaoID &"|"& Percentual &"|"& ParcelaID
+                linhaRepasse = "||"& ItemGuiaID &"|"& GuiaConsultaID &"|"& ItemHonorarioID &"|"& Funcao &"|"& ValorItem*coefPerc &"|"& Creditado &"|"& Parcela &"|"& FormaID &"|"& Sobre &"|"& FM &"|"& ProdutoID &"|"& ValorUnitario &"|"& Quantidade &"|"& FuncaoID &"|"& Percentual &"|"& ParcelaID &"|"& modoCalculo
+
+                %>
+                <input type="hidden" name="linhaRepasse<%= ItemGuiaID & GuiaConsultaID & ItemHonorarioID &"_"& Tabela %>" value="<%= linhaRepasse %>" />
+                <%
+                nLinha = nLinha+1
+
+                'lrResult( lrDataExecucao, lrNomeFuncao, lrInvoiceID, lrNomeProcedimento, lrNomePaciente, lrFormaPagto, lrCreditado, lrValorProcedimento, lrValorRecebido, lrValorRepasse )
+                call lrResult( "Calculo", rDataExecucao, DominioID & ": "& fd("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
+            end if
+        end if
+
+        'Materiais da árvore (M)
+        if fd("FM")="M" then
+            Creditado = calcCreditado(ContaCredito, ProfissionalExecutante)
+            ShowValor = calcValor(Valor, TipoValor, ValorBase, "show")
+            ValorItem = calcValor(Valor, TipoValor, ValorBase, "calc")
+        end if
+
+
+        'Materiais de Kit do Procedimento (K)
+        if fd("FM")="K" then
+            'primeiro puxa só os produtos que não possuem variação (ver se quando nao muda ele grava)
+            'depois sai listando as variações
+            set kit = db.execute("select pdk.id ProdutoDoKitID, pdk.Valor, pdk.ContaPadrao, pdk.Quantidade, pdk.ProdutoID, pdk.Variavel from procedimentoskits pk LEFT JOIN produtosdokit pdk ON pk.KitID=pdk.KitID WHERE pk.Casos LIKE '%|P|%' AND pk.ProcedimentoID="& ProcedimentoID)
+            while not kit.eof
+                NomeProduto = ""
+                Quantidade = kit("Quantidade")
+                ValorUnitario = kit("Valor")
+                ContaPadrao = kit("ContaPadrao")
+                ContaCredito = ContaPadrao
+                ProdutoID = kit("ProdutoID")
+                TipoValor = "V"
+                if not isnull(ProdutoID) then
+                    set prod = db.execute("select NomeProduto from produtos where id="& ProdutoID)
+                    if not prod.eof then
+                        NomeProduto = prod("NomeProduto")
+                    end if
+                end if
+                Creditado = calcCreditado(ContaCredito, ProfissionalExecutante)
+                if ProdutoID<>0 and not isnull(ProdutoID) and Creditado<>"" then
+                    somaDesteSobre = somaDesteSobre + (Quantidade * ValorUnitario)
+                    'if Creditado<>"0" then
+                        Despesas = Despesas + (Quantidade*ValorUnitario)
+                    'end if
+                    ValorItem = ValorUnitario
+
+                end if
+            kit.movenext
+            wend
+            kit.close
+            set kit = nothing
+        end if
+    
+
+
+        ultimoSobre = Sobre
+    fd.movenext
+    wend
+    fd.close
+    set fd=nothing
+
+end function
+
+De = req("De")
+Ate = req("Ate")
+StatusBusca = req("Status")
+if req("Unidades")="" then
+    Unidades = session("Unidades")&""
+else
+    Unidades = req("Unidades")
+end if
+%>
+
+
+<form method="post" id="frmRepasses" name="frmRepasses">
+    <div class="panel">
+        <div class="panel-heading">
+            <span class="panel-title">Repasses de Convênio</span>
+        </div>
+        <div class="panel-body">
+                <table class="table table-condensed table-bordered table-hover">
+                    <thead>
+                        <th width="2%"></th>
+                        <th>Execução</th>
+                        <th>Paciente</th>
+                        <th>Procedimento</th>
+                        <th>Valor</th>
+                    </thead>
+                    <tbody>
+
+
+            <%
+            'db_execute("delete from temprepasse where sysUser="&session("User"))
+            ContaProfissional = ""
+            if instr(req("AccountID"), "_") then
+                ContaProfissionalSplt =split(req("AccountID"),"_")
+                gsContaProfissional = " AND ps.ProfissionalID="& ContaProfissionalSplt(1)
+                gcContaProfissional = " AND ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID)="& ContaProfissionalSplt(1)
+            end if
+
+            
+            if req("ProcedimentoID")<>"0" then
+                if instr(req("ProcedimentoID"), "G")>0 then
+                    set procsGP = db.execute("select group_concat(id) procs from procedimentos where GrupoID="& replace(req("ProcedimentoID"), "G", ""))
+                    if isnull(procsGP("procs")) then
+                        sqlProcedimento = " WHERE t.ProcedimentoID IN (-1) "
+                    else
+                        sqlProcedimento = " WHERE t.ProcedimentoID IN ("& procsGP("procs") &") "
+                    end if
+                else
+                    sqlProcedimento = " WHERE t.ProcedimentoID="& req("ProcedimentoID") &" "
+                end if
+            end if
+
+            if Unidades<>"" then
+                sqlUnidadesGC = " AND gc.UnidadeID IN ("& replace(Unidades, "|", "") &") "
+                sqlUnidadesGS = " AND gs.UnidadeID IN ("& replace(Unidades, "|", "") &") "
+                sqlUnidadesGH = " AND gh.UnidadeID IN ("& replace(Unidades, "|", "") &") "
+            end if
+
+            if req("TipoData")="Exec" then
+                sqlII = "select link, Tipo, ConvenioID, t.id, t.PacienteID, ProfissionalID, GuiaID, t.ProcedimentoID, `Data`, ValorTotal, t.UnidadeID, ValorPago, proc.NomeProcedimento, pac.NomePaciente, c.NomeConvenio FROM "&_
+                                "(select gs.PacienteID, gs.ConvenioID, 'tissguiasadt' link, 'SP/SADT' Tipo, ps.id, ps.ProfissionalID, ps.GuiaID, ps.ProcedimentoID, ps.`Data`, ps.ValorTotal, gs.UnidadeID, ifnull(gs.ValorPago, 0) ValorPago from tissguiasadt gs "&_
+                                 "INNER JOIN tissprocedimentossadt ps on ps.GuiaID=gs.id WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND ps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &" "&_
+                                 "UNION ALL select gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, ps.id, ps.ProfissionalID, ps.GuiaID, ps.ProcedimentoID, ps.`Data`, ps.ValorTotal, gh.UnidadeID, ifnull(gh.ValorPago, 0) ValorPago from tissguiahonorarios gh "&_
+                                 "INNER JOIN tissprocedimentoshonorarios ps on ps.GuiaID=gh.id WHERE gh.sysActive=1 AND gh.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND ps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGH &" "&_
+                                 "UNION ALL select gc.PacienteID, gc.ConvenioID, 'tissguiaconsulta' link, 'Consulta' Tipo, gc.id, ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID), gc.id GuiaID, gc.ProcedimentoID, gc.DataAtendimento `Data`, gc.ValorProcedimento ValorTotal, gc.UnidadeID, ifnull(gc.ValorPago, 0) ValorPago from tissguiaconsulta gc "&_
+                                 "WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND gc.DataAtendimento BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gcContaProfissional & sqlUnidadesGC &" ) t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID "& sqlProcedimento &" ORDER BY t.Data"
+            else
+                sqlII = "select link, Tipo, ConvenioID, t.id, t.PacienteID, t.ProfissionalID, GuiaID, ProcedimentoID, `Data`, ValorTotal, t.UnidadeID, ValorPago, proc.NomeProcedimento, pac.NomePaciente, c.NomeConvenio FROM ("&_
+"select gc.PacienteID, gc.ConvenioID, 'tissguiaconsulta' link, 'Consulta' Tipo, gc.id, ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID) ProfissionalID, gc.id GuiaID, gc.ProcedimentoID, gc.DataAtendimento `Data`, gc.ValorProcedimento ValorTotal, gc.UnidadeID, ifnull(gc.ValorPago, 0) ValorPago from sys_financialmovement m "&_
+"LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
+"LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
+"LEFT JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID=ii.id "&_
+"LEFT JOIN tissguiaconsulta gc ON gc.id=tgi.GuiaID "&_
+"WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiaconsulta' AND "&_
+"m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gcContaProfissional & sqlUnidadesGC &_
+                "UNION ALL "&_
+"select gs.PacienteID, gs.ConvenioID, 'tissguiasadt' link, 'SADT' Tipo, gs.id, ps.ProfissionalID, gs.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gs.UnidadeID, ifnull(gs.ValorPago, 0) ValorPago FROM sys_financialmovement m "&_
+"LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
+"LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
+"LEFT JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID=ii.id "&_
+"LEFT JOIN tissguiasadt gs ON gs.id=tgi.GuiaID "&_
+"LEFT JOIN tissprocedimentossadt ps ON ps.GuiaID=gs.id "&_
+"WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiasadt' AND "&_
+"m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &_
+                "UNION ALL "&_
+"select gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, gh.id, ps.ProfissionalID, gs.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gs.UnidadeID, ifnull(gh.ValorPago, 0) ValorPago FROM sys_financialmovement m "&_
+"LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
+"LEFT JOIN tissguiahonorarios gh ON gh.id=tgi.GuiaID "&_
+"LEFT JOIN tissprocedimentoshonorarios ps ON ps.GuiaID=gh.id "&_
+"WHERE gs.sysActive=1 AND gh.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiahonorarios' AND "&_
+"m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGH &_
+                ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID"&_
+                " "
+                'response.write( sqlii )
+            end if
+            set ii = db.execute( sqlII )
+                'se ii("Repassado")=0 joga pra temprepasse, else exibe o q ja foi pra rateiorateios
+                if session("Banco")="clinic5351" then
+                    'response.write( sqlII )
+                end if
+            while not ii.eof
+
+                ProfissionalExecutante = ii("ProfissionalID")
+                Link = ii("Link")
+                ItemGuiaID = ii("id")
+                ItemHonorarioID = ii("id")
+                GuiaID = ii("GuiaID")
+                ProcedimentoID = ii("ProcedimentoID")
+                DataExecucao = ii("Data")
+                NomeProcedimento = ii("NomeProcedimento")
+                ValorProcedimento = ii("ValorTotal")
+                NomePaciente = ii("NomePaciente")
+                NomeConvenio = ii("NomeConvenio")
+                ValorPago = ii("ValorPago")
+                ConvenioID = ii("ConvenioID")
+                btnExtra = ""
+                desfazBtnCons = ""
+
+                PercentualPago = 0
+                TotalPago = 0
+                TotalRepassado = 0
+                PercentualRepassado = 0
+
+                contaLR = 0
+
+
+
+                sqlrr = ""
+
+                if Link="tissguiaconsulta" then
+                    GuiaConsultaID = GuiaID
+                    ItemGuiaID = ""
+                    ItemHonorarioID = ""
+                    sqlrr = " rr.GuiaConsultaID="& GuiaConsultaID &" "
+                    ColunaRR = "GuiaConsultaID"
+                elseif Link="tissguiasadt" then
+                    ItemHonorarioID = ""
+                    GuiaConsultaID = ""
+                    sqlrr = " rr.ItemGuiaID="& ItemGuiaID &" "
+                    ColunaRR = "ItemGuiaID"
+                elseif Link="tissguiahonorarios" then
+                    ItemGuiaID = ""
+                    GuiaConsultaID = ""
+                    ColunaRR = "ItemHonorarioID"
+                    sqlrr = " rr.ItemHonorarioID="& ItemHonorarioID &" "
+                end if
+
+                idPanel = GuiaConsultaID &"_"& ItemGuiaID &"_"& ItemHonorarioID
+                %>
+            <tr class="panel<%= idPanel %>">
+                <td rowspan="2" valign="top" style="vertical-align:top">
+                    <a target="_blank" class="btn btn-xs text-dark mn" href="./?P=<%= Link %>&Pers=1&I=<%= GuiaID %>">
+                        <i class="fa fa-chevron-right"></i>
+                    </a>
+                </td>
+                <td> <%= DataExecucao %></td>
+                <td><%= NomePaciente %></td>
+                <td><%= NomeProcedimento %></td>
+                <td><%= fn(ValorProcedimento) %></td>
+            </tr>
+            <tr class="panel<%= idPanel %>">
+                <td colspan="4">
+                    <table class="table table-hover table-condensed">
+                <%
+
+                        ultimoSobre = ""
+                        somaDesteSobre = 0
+                        ValorBase = ValorProcedimento
+                        DominioID = dominioRepasse("|"& ConvenioID &"|", ii("ProfissionalID"), ProcedimentoID, ii("UnidadeID"), "", "")
+
+                        Despesas = 0
+                        ItemDescontadoID = 0
+
+                        Percentual = PercentualNaoPago
+                        Exibir = 1
+                        if ValorPago>0 then
+                            if StatusBusca="C" then
+                                Exibir=0
+                            end if
+                            if StatusBusca="S" then
+                                Exibir=1
+                            end if
+                            if StatusBusca="N" then
+                                Exibir=0
+                            end if
+
+                            Classe = "success"
+                        else
+                            if StatusBusca="C" then
+                                Exibir=0
+                            end if
+                            if StatusBusca="S" then
+                                Exibir=0
+                            end if
+                            if StatusBusca="N" then
+                                Exibir=1
+                            end if
+                            Classe = "danger"
+                        end if
+
+                        set rr = db.execute("select rr.id, GuiaConsultaID, Funcao, ItemGuiaID, ItemHonorarioID, GrupoConsolidacao, ItemContaAPagar, ItemContaAReceber, Valor, CreditoID, ContaCredito, FM, Sobre, modoCalculo from rateiorateios rr where "& sqlrr )
+                        if not rr.eof then
+                            if StatusBusca="C" then
+                                Exibir=1
+                            end if
+                            if StatusBusca="S" then
+                                Exibir=0
+                            end if
+                            if StatusBusca="N" then
+                                Exibir=0
+                            end if
+                            Classe = "dark"
+                            IDColunaRR = rr(""& ColunaRR &"")
+                            GrupoConsolidacao = rr("GrupoConsolidacao")
+                            ItemContaAPagar = rr("ItemContaAPagar")
+                            ItemContaAReceber = rr("ItemContaAReceber")
+                            CreditoID = rr("CreditoID")
+                        end if
+                        
+                        if Exibir=1 or StatusBusca="" then
+                            if Classe="dark" then
+                                valBtnDesc = "C|"& ColunaRR &"|"& IDColunaRR &"|"& GrupoConsolidacao
+                                idBtnDesc = replace(valBtnDesc, "|", "_")
+                        btnExtra = "<div class='checkbox-custom pull-right ptn mtn'><input type='checkbox' name='desconsAll' value='"& valBtnDesc &"' id='"& idBtnDesc &"'><label for='"& idBtnDesc &"'></label></div>"&_ 
+                    
+                    
+                    "<button type='button' onclick=""desconsolida('C', '"& ColunaRR &"', "& IDColunaRR &", "& GrupoConsolidacao &")"" id='desconsolidar"& ColunaRR &"_"& IDColunaRR &"_"& GrupoConsolidacao &"' class='btn btn-xs btn-danger pull-right hidden-print mt10'>Desconsolidar</button>"
+                            end if
+                            %>
+                            <tr class="<%= Classe %>">
+                                <%= tituloTabelaRepasseConvenio(Classe, NomeConvenio, ItemGuiaID, GuiaConsultaID, ItemHonorarioID, Link, ValorProcedimento, ValorPago, btnExtra) %>
+                                <td width="50%" class="<%= Classe %>">
+                                    <table class="table table-condensed">
+
+
+
+                                        <%
+                                        if rr.eof then
+                                            
+                                            call repasse( DataExecucao, InvoiceID, NomeProcedimento, NomePaciente, "Pendente", ValorProcedimento, ValorPago, 100, Link ) 
+                                        else
+                                            while not rr.eof
+                                                call lrResult( "RateioRateios", rDataExecucao, rr("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rr("ContaCredito"), ValorProcedimento, ValorPago, rr("Valor"), nLinha, rr("FM"), rr("Sobre"), rr("modoCalculo") )
+                                            rr.movenext
+                                            wend
+                                            rr.close
+                                            set rr = nothing
+                                        end if
+                                        %>
+
+
+
+
+                                        
+
+
+
+
+
+
+
+
+
+                                    </table>
+                                </td>
+                            </tr>
+                            <%
+                            if not isnull(ItemContaAPagar) or not isnull(ItemContaAReceber) or not isnull(CreditoID) then
+                                desfazBtnCons = desfazBtnCons & "$('#desconsolidar"& ColunaRR &"_"& IDColunaRR &"_"& GrupoConsolidacao &", #"& idBtnDesc &"').prop('disabled', true);"
+                                %>
+                                <script><%=desfazBtnCons %></script>
+                                <%
+                            end if
+
+                        end if
+                    %>
+                        </table>
+                    </div>
+                </div>
+                    <%
+                    if contaLR=0 then
+                        %>
+                        <script type="text/javascript">$(".panel<%=idPanel %>").css("display", "none");</script>
+                        <%
+                    else
+                        totalProcedimentos = totalProcedimentos + ValorProcedimento
+                    end if
+            ii.movenext
+            wend
+            ii.close
+            set ii = nothing
+
+            %>
+                </tbody>
+            </table>
+            <hr class="short alt" />
+            <table class="table table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th width="25%" class="text-center">Total Serviços</th>
+                        <th width="25%" class="text-center">Total Repasses</th>
+                        <th width="25%" class="text-center">Total Materiais</th>
+                        <th width="25%" class="text-center">Total Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <th width="25%" class="text-right"><%= fn(totalProcedimentos) %></th>
+                        <th width="25%" class="text-right"><%= fn(totalRepasses) %></th>
+                        <th width="25%" class="text-right"><%= fn(totalMateriais) %></th>
+                        <th width="25%" class="text-right"><%= fn( totalProcedimentos - totalRepasses - totalMateriais ) %></th>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>

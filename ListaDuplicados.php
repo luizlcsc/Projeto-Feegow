@@ -1,0 +1,1 @@
+select trim(NomePaciente) from pacientes where not isnull(NomePaciente) and NomePaciente<>'' order by trim(NomePaciente)

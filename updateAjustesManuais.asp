@@ -1,0 +1,5 @@
+<%
+tabela = comparar("tabela")
+
+
+%>

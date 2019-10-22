@@ -1,0 +1,2345 @@
+-> Análise de despesas
+Análise de receitas
+DMED
+Área de relatórios dar um visual
+	-> listar e executar
+Fluxo de Caixa
+Cards e drag no funil
+Funil gráfico
+FAZER VIDEOS URGENTE E APLICAR EM TODO O SISTEMA
+mais gráfico (no minimo igual icliic)  na home
+
+
+
+
+995572175 Wallace - GVT
+
+
+
+mostrar menu de grupos de medicamentos e formulas [Grupo:nome]
+emitir soinzinho assim q vai fazer a busca
+tela vendedora no login e video
+ANÁLISE DE RECEITA/DESPESA ATUALIZAR URGENTE
+SUBIR RECEITAS DRA GRAÇA
+
+desconto do cartão no repasse
+
+lugares onde tem que aplicar:
+- exclusão de gia de consutla
+- exclusao de guia sadt
+- informar atendimento finalizando
+Colocar também os itens SADT
+timeout na agenda
+BACKUP das fotos
+
+
+Tabela de particulares URGENTE
+
+13 -> 104718 fabio
+15 -> 104721 celso
+
+9 -> Trial
+
+no funil padrao vencido
+mostrar nos chamaos o status atual
+
+-------------------------------------------------------
+
+19 99887-0133  -  André  - tem software de gestao mas nao tem prontuario,m quer fazer parceria (GRANDE)
+
+futura distribuidora - rasacchi@gmail.com; rogerio@farmasamp.com.br
+
+
+
+
+
+1. separar paciente por unidade (visivel ou em x unidades ou em todasseparadas pra uma unidade nao ver a outra)
+2. relatório q mostre quem tá na terceira sessão -> botao pos atendimento, escolhe a unidade, o numero da sessao -> abre a ficha do paciente e preenche (exibir se tem pos atendimento ou nao)
+
+
+clausula com continuidade de comissao enquanto o cliente for cliente (4.1 criando um 4.2 e clausula 12, criando o 12.5)
+
+http://www.goldencross.com.br/TISSWS/tissVerificaElegibilidade?wsdl
+https://goldentiss.com.br/tissLoteGuias.asmx
+
+
+cobranca direto pro banco
+
+samuel@visanacomunicacao.com.br sites medicos
+
+uro, gineco e mastologia
+
+Ernesto Haberkorn
+
+https://appear.in/vitta
+
+Quando abrir encaixe colocar de acordo com o horário colocar no local q esta na grade em vez de ficar automatico a grade
+
+
+
+infohealth
+
+
+
+data e convenio no paciente la em cima
+email no celular
+
+
+
+820 055 388
+7ttq71
+
+
+
+atendente no rel de prod
+mudar unidade
+
+adriano.vieira@saudenamao.com.br
+
+
+C:\inetpub\weegow\feegowclinic\uploads\f78f9b83710c2bd9e3087bf01954805f.jpg
+
+
+ronaldo.fraga@sdedistribuidora.com.br
+
+alerta por sala
+
+=====================================================================================================================================
+	27-09-2016
+	PARECERES DO DIA: Anderson, Cris Camanducci, Bruna, Nilo, Fernando Google, treinamento Katia 13h
+
+	Itens da agenda de equipamentos
+		Grade está mudando grade de profissional
+		No encaixe ou em alguma situação está gritando equipamento em uso
+	Notificações de pagto da agenda fácil
+		funcao atualizaStatusPagto
+			Roda todos os procedimentos diferentes envolvidos no agendamento e ap de hoje
+			Verifica pra cada procedimento diferenciado se tem guia ou iteminvoice
+				Se for a receber, se ele esta pago
+			Somente nos status Atendido, Aguardando e Dilatando que ele marca
+	Colocar dilatando pra aparecer na lista de espera
+	Repasse novo funcionando perfeitamente inclusive com regeração de repasse (repopular)
+	Resolver itens com valores zerados para faturado (ou simplesmente colocar o check faturado)
+	Tem lugares q modal pagar e detalhes pagto nao abre, inclusive no relatorio
+	Fazer um teste dando treinamento e repopular
+	Testar se sem permissões de financeiro e com caixa aberto só vê o necessário
+	folha do antonio
+	Gerar o mesmo particular a partir domesmo agendamento ta dando pau
+	Agenda Google do Fernando
+	Na lista de funcionários mostrar q nao tem acesso na parte de perfil
+	Receita/desp fixa
+	Contrato e promissórias do Odonto Mais (Popular)
+	Ver layout de muitas parcelas na nova agenda se não estour e colocar link pra exibir tudo
+	transf banc nao aparecer pra se tiver lancando recto com cx aberto
+	Colocar pra alterar no próprio histórico de não faturados, guardando histórico de como era anteriormente e listando no detalhamento
+	Aviary Vinícius
+	Filtros e busca na proposta
+	Colocar pra respeitar a versão da TISS de acordo com o selecionado no convênio
+	Resolver o fator 1 na guia mantendo o valor reduzido no total
+
+=============================================================================================================================================
+
+	calendario no Pagto [chrome] - nao abria na hora de fazer o pagto (conferir todas as etapas o jqueryfunctions e mask)
+	Forms confirmar envio e salvar no fundo
+	Abertura de caixa com administração perfeita do mesmo
+		Permissão para alguns verem caixas abertos daquela unidade e transferirem o dinheiro para si
+		Extrato pelo administrador dos caixas que estão abertos, com transferência de valores do mesmo pra alguma conta
+	Itens da Cris Camanducci
+	Fechamento de caixa informando a quem foi entregue o dinheiro, solicitando confirmação (pensar e detalhar)
+	Exclusão com botão excluir mais evidente (mostrando movimentos vinculados de acordo com a permissao pra serem apagados junto)
+		-> particular
+			-> Excluir pagamentos e todos os movimentos vinculados a ele
+			-> Excluir a invoice e todos os movimentos vinculados a ela
+		-> convênio
+			-> Exclui a guia desde que não esteja em lote
+	Aparecer o preco ao lado do procedimento (pensar, pois teve cliente  q nao gostou)
+	Respeitar a pre-selecao da forma de pagamento e nao repetir na hora de pagar (só exibir se fizer diferença)
+	URGENTÍSSIMO -> MELISSA ROXO!!!! RÁPIDO
+	Check de guia Finalizada
+	VOLTAR BACKUPS DRA GRACA E APAGAR EXCLUIR RECEITA
+	MSG do chat nao lida quando nao sobe (notificação tipo Facebook)
+	Avisos e pendencias ( ) Ficha ( ) Agenda {Celso Roxo}
+	Agenda de equipamentos
+	Finalizar rateio
+	No modal de inf, colocar link pra conta do paciente
+	Ao apagar movimenta;áo, apagar cheque
+	Apagar movimentação quando tem crédito dando erro, ver pq ta desabilitado o 1 cende excluir da Adelia Espindola
+	Gerar repasse verificando a forma como exibe particular e o respeito às parcelas (Repopular)
+	Repasse de convenio verificando se está respeitando perfeitamente (listar detalhamento)
+	Listar os repasses no item invoice
+	Equipe do próprio procedimento entrar na guia de SADT automaticamente
+	Nome e saldo ficar em cima a direita em toda a div agendamento de acordo com a permissão
+	Link do fechar conta ir direto pro agendamento
+	Iframe recibo em alguns casos bichando erro asp
+	update cd etc no produto baseado no q preencheu da guia
+	rearrumar sadt com subitens igual ao layout 
+	ordenar na conta por data de execucao (ver viabilidade de tabela ordenável)
+	cpf dos medicos ta saindo com ponto e hifen na guia
+	procedimentos q nao aceitam convenio, igual no profissional
+	Contas de múltiplas unidades (resolver pagto por de onde é a conta, e nao por onde ta logado - ve se eh assim)
+	Quando apaga todos os pagtos de uma invoice nao ta liberando o excluir
+	Mudar a lista de atendimentosprocedimentos de modo a acabar com a tabela Atendimentos
+	Resolver acumulo de msgs no chat
+
+
+
+adobe aviary
+99fdd9d8-0e6d-4201-a4bf-50a5f738ea69
+57c1ed50e3774cc08714eaf25343a993
+
+011 - 2367-2970 atila, eduardo, caio
+
+
+PARA COLOCAR NO AR
+
+mais de um proc na agenda
+repasse por tabela
+integração omie testar
+filtro no a receber por procedimento
+funcoes do repasse em algum momento vindo null rateiofuncoes->FM (tinha q vir F)
+
+	Aparecer já na agenda a informação de que está (verifica ao dar update no status pra Aguardando/Atendido, invoiceSave, informandoProcedimento): Nada lançado e agendamento feito,Procedimento informado e nenhuma guia/ii emitido - execucao hoje, por causa do pacote)
+	Ao mudar o status do cheque para sem fundos, invalidar a movimentação
+	O saldo aparecer já na invoice (ajax chamando o getSaldo)
+	Ao salvar guia, melhor finalizacao a partir de lançamento e a partir da conta do paciente
+	REPOPULAR ITENS DO FINANCEIRO
+	Itens da Bruna e Alex listados abaixo
+	Alerta pra conta se tá agendado e nao tem nenhum lançamento financeiro
+	Se tem alerta, manda ao abrir particular já trazendo a consulta
+	Opção na funcao repasse de não incidir descontos adicionais por forma de recebimento
+
+
+	GerarRateio.asp:
+		Não aparecer checkbox se a despesa ja tem rateio vinculado
+		Percentual na bruta e na líquida
+		Lupa exibir quanto fia pra cada médico
+	Ao agrupar os repasses num conta a receber, listar os itens que constituem aquele iteminvoice
+	Relatório de repasses (lançados e não lançados)
+	Ao excluir aquele item, dissociar os repasses e os rateios
+	Não deixar excluir item se tiver repasse já consolidado ou rateio consolidado
+
+	Operação básica de repasse convênio
+
+	Erro ao salvar da primeira vez profissional externo (BOLFREDO EXTERNO O INPUT FICAVA VAZIO CONVENIO AMEPLAN)
+	
+
+*** atestado longtext
+
+
+URGENTE
+	GERENCIADOR DE GLOSAS
+	Estoque
+	Fluxo de caixa
+	DRE - DEMONSTRAÇÃO DO RESULTADO DO EXERCÍCIO - vide Omie
+	Balanço patrimonial
+	Rateio de contas a pagar por centro de custos
+	Form de pos atendimento (campo estrelinha) com disparo por email apos mudar pra atendido
+	Se tentar pagar sem caixa aberto e obriga caixa já obrigar
+	Não mostrar as contas se tiver com caixa aberto e o dinheiro ir pro caixa
+	Só poder pagar com caixa fechado se tiver permissao de lançar contas a receber
+	Se pagar com caixa fechado e na sua unidade nao tiver conta cadastrada criar caixa fisico Tesouraria(Unidade)
+	Lançamento direto pela conta do paciente não está correto
+
+RELATÓRIOS FINANCEIROS TAPA
+-----------------------------------------------
+21.	Gestão financeira dos custos: 
+	Rastreamento completo de cada atendimento identificando-o (número/código), informando a data de atendimento, convênio, paciente, profissional, recursos (se houver),  data do pagamento  feito pelo convenio, data do repasse ao médico, e  vinculando-os com a nota fiscal emitida ao convênio. 
+	Por fim a compilação desses dados num único relatório, com visualização consolidada e/ou por médico.
+	Emissão do demonstrativo para Imposto de Renda, que será enviado aos médicos no final do ano.
+-----------------------------------------------
+
+	
+	Gerar o repasse corretamente efetivamente
+	Nao aplicou o desconto da forma automaticamente
+	Quando tirou de cartao e jogou de volta pra diversas, veio sem numero de parcelas e sem intervalo e 
+		tipointervalo=dias
+	Excluir cheque junto com a movimentação vinculada
+	Fazer a exceção cascateada de preços de tabela (pensar se regras na tabela ou arvore tipo repasse) - não complicar - 3 colunas (Profissional, Unidade, Tabela = Valor)
+	Descontar quando tarifa de cartão
+	Ao salvar, o que era disable continuar disable
+	limitar 100 guias no lote
+	enviado no lote
+	observacoes escondidas na guia
+
+
+Lançamento do repasse
+	- No post, para cada iteminvoice, se F ve se tem algum com o mesmo nome de funcao e da update, se M ve se tem com o mesmo ProdutoID e da update, e 
+	  guarda todos esses ids numa variavel pra no fim dar delete nos outros
+	- Fazer isso também apagando os itens não executados
+	- Todos os itens que já foram lançados no contas a pagar ficam bloqueados
+
+Colocar o extrato em aba na invoice, ativando tipo na agenda
+Tem que criar sozinho um caixinha pra cada unidade
+Nas formas de recebimento colocar unidade
+Colocar descontos adicionais de acordo com a forma de pagto na regra de repasse
+
+Formas de recebimento dinheiro e cheque nao seleciona conta
+exclusão de todos os lançamentos financeiros
+javascript da quantidade no FuncoesRateio.asp
+
+LEADS
+Tabela de leads com origem e dados da pessoa
+Tabela de acoes do lead
+Cada vez que insere um paciente ve se ele tem historico como lead e vincula
+Funil de acordo com as etapas do lead desde a chegada por qualquer meio até o fechamento
+Sempre tem 1 usuário vinculado a esse lead
+Habilitar gerenciamento de leads
+Distribuir alternadamente os leads recebidos conforme as permissoes da origem pra cada usuário
+PRAZO DIA 24
+
+relatorio de estoque
+ana paula analise de receitas
+relatorio completo de entradas e despesas das entradas com lucro liquido
+
+clinica do shopping
+
+allainchagas@gmail.com + Alanemagnos2
+
+AferNANDO.SANTosa@CAIXA.GOV.BR
+ANDREIA MATHEUS erros de resume next: _9 e 
+IFRRECIBOINTEGRADO URGENTE
+
+licenca odontomais
+codigo de barras com produto
+
+No item da conta a pagar, listar os repasses que estão vinculados a ela, e se apagar o item ou a conta, libera o repasse novamente para esses itens
+Listar na conta as guias atreladas às suas execuções
+Informar execução de procedimento
+Repasse por unidade
+Colocar a rotina pra regerar repasse na hora de ver o repasse, ignorando o material variavel (pois ja foi lancado)
+Consertar a visualizacao do repasse, retirando unimed da ana paula
+botao fechar na jamile do cheque
+soma dos inputs tem q ser igual ao valor do pagto
+excluir direto pelo crédito tem q ser pelo xMov(MovimentoID)
+Colocar as guias a principio como no sistema atual
+Só poder excluir uma invoice se tiver permissao pra exclusao ou se for uma invoice do momento de seu caixa aberto
+Só poder excluir um pagamento se tiver permissao pra exclusao ou se for um pagamento do momento de seu caixa aberto
+Só poder alterar uma invoice se tiver permissao pra alteração ou se for uma invoice do momento de seu caixa aberto
+Extrato com exclusãoi do seu próprio caixinha
+Contas a pagar inserir do seu próprio caixinha
+Permissão de insersões e exclusões só durante seu caixinha
+Desabilitar/habilitar de acordo com o geraParcelas
+Testado o a pagar novo só com dinheiro, testar todo o resto das formas
+Lista de codigo na tabela e valor na tabela ja no cadastro do produto
+BRUNA -> Em financeira, na parte de cartão teria como colocar pra buscar todos. E No final, aparecer o totalizador?
+
+
+Colocar materiais no procedimento
+Colocar no repasse quan
+
+
+
+Ajustes finais novo recebimento:
+- Itens quitados, esconde
+- Se só um item, esconde
+
+
+Proposta oficial UNIMED
+
+
+
+-> inibir os dados do paciente
+quando salvar estando no ajax, vai para a conta do paciente
+excluir a invoice de dentro do ajax indo pra conta do paciente
+nova forma de pagto dentro da invoice
+testar o recebimento e fazer testes
+testar o pagto e fazer testes
+inserir automatico ja preenchido baseado na sugestão
+relistar...
+
+TODOS COM FORMULARIO LONG, E REIMPORTAR COMO LONG
+
+qr code, codigo de barras
+
+
+
+
+
+
+
+
+Grau de participação padrão no profissional
+Remover completamente caracteres especiais
+Numero de caracteres da carteirinha liberar
+Nao abrir modal na adicao de itens
+Jogar as datas lá pra baixo (procedimentos em série)
+Total geral embaixo de tudo
+70 vira com o valor final
+Aviso de vencimento
+Obrigatório validade e tipo de plano - e campos
+Orizon 
+Pesquisar os numeros das tabelas
+--------> Xilocaina -> 2,21/5ml, associa valor geral do medicamento/produto CONFIRMAR TABELA SIMPRO
+Cadastro de taxas -> Valor geral e excecoes por convenio
+Aplicar taxa de sala para todos os procedimentos, exceto. Ou para nenhum procedimento, exceto
+A ordem do lote nao esta respeitando
+Poder enfiar guia num lotesc v2
+Puxar a indicação direto do que o médico escreveu quando finaliza o atendimento
+No cadastro do convenio -> Regras para adição de despesas extras : 1. Concatenar as despesas, 2. Somar as despesas, 3. Prevalecer o de valor mais alto
+Tirar todas as guias de um lote e excluir o lote deixando as guias sem lote
+Se o lote/guia enviado, so aparece se colocar Exibir enviados
+Buscar lotes enviados
+Capa de lote usar o modelo deles, e o atual muda pra detalhamento do lote (Capa de lote completa (Atual), Padrão (Orizon), Resumida(Deles))
+Colocar de qual unidade eh o lote
+Colocar no cadastro do convênio para selecionar os procedimentos que exigem senha
+Máximo de 100 guias por lote
+Aviso de retorno bichado (verificar)
+Bloquear a guia de consulta caso esteja no período de retorno
+Imprimir todas as guias de uma vez
+Filtrar as guias por unidade
+Ignorar o fator 0.7 e colocar no valor final no XML e na impressão
+Enviado nao furunfa
+Aparecer a data em que o lote foi criado e por quem foi criado
+Aparecer quem fez a guia
+Na volta da guia nao ficar aparecendo um milhão de guias
+Travar configurações de acordo com as permissões
+Não puxa o CNPJ assim que troca, só se clicar em outro pra depois voltar nele
+Tem guia de despesa que não vem com data: tem que abrir o procedimento, salvar e aí as despesas entrar
+Sequenciar a guia por unidade
+Consulta e SADT não podem ter número igual
+
+
+
+Controle de glosas
+Permitir somente números
+
+
+
+fernando ory pedo
+
+marcia@bisio
+0800-7272744
+10544 conecta 189243
+
+
+fornecedores
+profissionais
+relatorio de origem
+
+
+logo cedo: login e topo e saveacesso2
+
+3490-0301 sra Bianca
+
+anderson - moderna hospital visao
+
+carina.amaral.fisio@gmail.com
+
+niloneto@epcor.com.br
+1234
+
+Configurador das formas de pagamento totalmente personalizado (como no gerador de propostas)
+Na hora que a pessoa selecionar as parcelas distribui automaticamente e atrela a forma predefinida
+Na hora da quitacao de recto rápido, já aparecer o ícone da forma predefinida ao lado
+Se na invoice, ao colocar um item q tem forma de recto excepcional, avisar com um exclamation q aquele item possui formas exclusivas de pagto, para fazer invoice separada para que a forma apareca
+quando listar os movs em aberto (conta.asp), ao clicar num pagto cuja forma predefinida seja incompativel com outras, desabilita as incompatíveis e ao passar o mouse por cima das outras avisa pq desativou
+
+
+
+
+Nao poder fazer transferencia pra unidades ou de pessoas pra qual nao esteja habilitada - Fazer sangria
+Detalhes da transfer~encia bichado
+caixas so das unidades q a pessoa tem acesso
+fornecedor com senha
+receitas/despesas fixas
+permissao pra administrar repasses
+desvincular repasse de um a pagar
+permissao pra cheque
+cheques recebidos por unidade
+cartao por unidade e permissao pra administrar cartoes
+separar o financeiro todo por unidade
+questao das formas de pagto predefinidas respeitar quando selelcionar pra usar so aquelas formas pre, com opcao pra marcar se os usuarios terao obrigacao de usar a pre ou permissao pra escolher diversas
+bloquear profissional e flag do executado depois de enviado pro repasse
+gerar guia sem ter permisao
+controle dos cheques
+Agendar mais de um procedimento
+Agenda por especialidade
+busca com acento bugado
+Relatório por origem sint. e explicar Igor
+Visualizacao movimentacao duplicando
+Listar os repasses no item do contas a pagar
+Total no bruto do repasse
+medico ve so os repasses dele
+Relatório com todos os repasses de todos os médicos
+Zero quitado
+Ver onde exclui atendimento orfao
+voltar a tela do financeiro
+Levar em consideracao um repasse para cada parcela, e mostrar se ela ja foi paga ou nao
+Sinalizar o recebido ou nao na lista de repasses
+Colocar um input pra nao desvincular mais atendimentos q ja foram vinculados no repasse
+_________________________________________________________________________________________________________________________
+|-----------------------------------------------------------------------------------------------------------------------|
+|---------------------------------------------------FAZER A NOITE-------------------------------------------------------|
+|-----------------------------------------------------------------------------------------------------------------------|
+|--- Procedimentos limitar a profissionais, tabelas de valores, valores diferenciados por profissional e por unidade ---|
+|--- fazer permissao ja marcada pra propostas e aplicar								     ---|
+|-----------------------------------------------------------------------------------------------------------------------|
+|-----------------------------------------------------------------------------------------------------------------------|
+|_______________________________________________________________________________________________________________________|
+terminar o casamento automatico da finalizacao de consulta com o atendimento em forma de funcao
+colocar pra gerar atendimento quando salva dizendo q foi executado
+
+tirar o avancar da invoice
+total no creditos pendentes
+
+
+mandar respostas unimed
+
+
+passar WIZARD pro vinicius (passos básicos)
+timeline
+Telefones sumindo Celso
+chat nao mostrar usuarios inativos
+Barra de riolagem da agenda múltipla
+inativos nao conseguirem fazer login
+Importacao Nilson
+-> Fazer a nova forma de salvamento das anamneses
+Repreencher a planilha da Unimed
+Papel timbrado do Gustavo
+Lista de recuperados dra Graça
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AUTOMACAO = HUBSPOT
+
+
+mensagem se estiver marcando fora da grade - nilo quaresma
+
+monica maria bauer
+soni drumond de souza
+ANA CAROLINA MAFFRA DA ROSA E SILVA NATALIZI
+EDUARDO DE MIRANDA BRABO
+
+
+
+
+TELA DOS ADRIANOS URGENTEEEEEEEEEE ADRIANOS ADRIANOS
+
+20/07 - 11h - (77) 3424-2709 / 98868-0010 Felipe Vit Conq / 15 clin odont jpegs desktop
+
+
+relatorios orcamentos dt feito e dt fechado
+
+edmara nao aparece a palavra particular
+
+Quando salva o iteminvoice, grava nele o dominioID. O repasse só apaga e recria se mudaro DominioID
+Formatnumber ao calcular a quantidade de seringa e calculador pra descontar
+
+GERA NORMALMENTE O REPASSE COMO É HOJE, E LOGO EM SEGUIDA PERCENTUALIZA POR CADA PARCELA
+
+
+TRABALHANDO COM PEQUENAS SIMULAÇÕES DE RESULTADOS ESPERADOS
+Ao inserir o iteminvoice, atribui um dominioID a ele. Depois quando dá o update, somente atualiza os itens dele
+Quando do mesmo domínio, só dá o update da conta crédito nas funções que forem PRO ou ''(desde que não tenham sido lançadas pro contas a pagar, senão não pode nem atualizar o iteminvoice)
+-> Terminar rotina pra regerar repasse
+Repasse levar em consideracao a parcela
+Funcao de repasse levar em consideracao a forma
+Tem que ter opção pra buscar o item de repasse pela data de vencimento da parcela
+Gravar também o número da parcela
+
+
+
+
+ANDERSON CAMPINAS TELEMARKETING COM DISPARO DE SMS E EMAIL
+
+
+pep unico
+
+sms pros faltosos com repescagem
+
+
+
+
+
+Voltar tudo baseado no 105 q ta no ar
+
+
+Fazer forma rápida de pagamento (lançar pagto direto fazendo as mesmas coisas que já faz)
+Repasses em todos os lugares sem esquecer de nada
+Rotina de ajuste de repasses
+Nas formas predefinidas de receita, só fazer diferença a predefinição se houver desconto, acréscimo ou exceção de permissão, dando aviso de que mudando a forma haverá alteração no preço. Se tiver itens inseridos nao aceitos em alguma, avisar que nao aparecerá essa forma na hora do pagamento pois a forma não é aceita pra esses itens, se deseja separar em outra invoice. Avisa também que o item terá desconto/acrescimo em determinadas formas. Na hora de lançar o pagamento, recalcular e informa os descontos/acrescimos que serao aplicados naquela forma. Manda os descontos/acrescimos pro item e realiza o pagamento.
+Opção de emitir boleto se esta opção estiver habilitada. Colocar mostrando que existe mas desabilitada
+
+
+terminar importação dr nilson
+terminar importacao da andreia matheus baseado no email de observações 
+
+
+
+
+
+
+
+
+
+
+
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+
+
+
+
+
+
+
+
+
+
+subcascateado no delete de financeiro/repasse ou bloquear deletes de itens q tenham pendencia
+
+permissao pente fino
+
+
+estoque
+
+
+enviar sobre a seguranca e clientes de clinica popular -> reiville@gmail.com - terca 10h treinamento - 81 99208-6457
+
+lista rel marcado dar geral
+faltando total
+exibir ou nao zerado
+nao totalizando
+para na coordenacao
+
+encaixe
+arquivos
+
+rateio
+balancete
+lucro liquido
+aurea@revisarconsultoria.com.br
+
+-> Ao tocar, verifca na tabela pacientes se existe alguém com este número e exibe o nome, último agendamento e próximo agendamento
+Se não existe, aparecem as opções pra cadastrar o nome e o marcar o tipo (paciente, prospect, contato, fornecedor, profissional, funcionario), com botão Salvar
+Ao salvar, abre janela em cima perguntando motivo da ligação e detalhes, salvando inclusive quem atendeu
+Ao finalizar salva o tempo que levou a ligação
+
+Permissao
+
+grupo mineiro -> nome do medico pra nome do cirurgiao | tirar obs e colocar convenio | 
+
+-> Se ao lançar invoice marcar item executado, a cada item executado ve se tem um atendimento procedimento coincidente e associar, caso contrário cria
+	verifica se ha ap coincidente lancado por outro usuario
+		se existe, altera o usuario q lancou, a hora inicio e fim
+		se nao existe, cria
+Ao finalizar atendimento, já deixar ticado o crédito que coincide com o agendamento, limitado a um
+Se ao iniciar atendimento já tiver lançado atendimento procedimento que coincida com o agendamento, não insere um novo
+Ao salvar a finalização do atendimento, verifica se existe algum atendimento procedimento equivalente ao agendamento que tenha sido lançado por outro usuário, e somente altera os horários
+Repasses sem ticar em todos os lugares
+Na conta o agendamento de hoje aparecer antes da lista dos anteriores (tirar lista de anteriores), com botao de lançar do lado marcando
+Colocar as contas fixas
+Demonstrar no repasse se tá pago ou não
+Demonstrativo de glosa na administração do lote
+10 itens
+---------------------------------------
+GUARINO - EMAIL
+---------------------------------------
+
+---------------------------------------
+agenda quinta 30~6		
+---------------------------------------
+finalizar execucao casando com atendimento ticado
+repasse medico especoifico
+poder trocar senha, e no primeiro login pedir pra trocar
+fazer o upload assim que confirma execucao
+repasse nisso
+data barra / hora pontinho
+na excecao colocar opcao de substituir ou adicionar
+agenda por especialidade
+exibir somente com agendamento
+ocultar tiss
+detalhamento ser completo no modal de detalhe de pagto
+em caixas so quem ja abriu caixa aparecer
+setar como nao executado
+transferencia bancaria
+botao excluir
+mudar pay pra pagto
+
+---------------------------------------
+
+17 3363-8555 - Unity Clinica Medica Ltda
+
+controle do seu caixinha
+perm rel
+
+
+15h da manha - eu ligo
+---------------------------------------
+CAIXA
+Tirar inserção de contas a receber/pagar definitivamente de acordo com as permissões, inclusive nos relatórios
+Fazer a tela onde a pessoa vê seu caixa aberto naquele momento (se tiver permissão pra visualizar)
+---------------------------------------
+Consertar o mesclar contas da dermobarra
+CONSERTAR AS CONTAS DA DERMOBARRA
+FOTOS Q FALTARAM DAS IMPORTACOES (Daniele Balbi e Fulvio)(ROTINA GENERICA)
+---------------------------------------
+BAITELLO
+Gerenciador de arquivos
+Esconder itens do whatsapp q ele pediu
+
+
+
+---------------------------------------
+CAMANDUCCI - WHATSAPP
+
+
+
+---------------------------------------
+PAINEL LIVENOTE
+
+
+
+---------------------------------------
+WIZARD
+
+
+
+---------------------------------------
+VÍDEO AULAS
+
+
+
+---------------------------------------
+
+1=atestado
+3=pedidos
+4, 6, 7=prescricoes
+5=recibos
+
+
+
+felipe10
+
+
+aparecerem só os profissionais de unidades que batam com as unidades que ele tem
+nao sugerir formulario que ele nao tenha acesso
+
+EXCLUIDOS TANTO NA AGENDA QUANTO NO RELATORIO de agendamentos
+
+-------------------------------------------------------------------------------------------------
+
+RAFAEL BISPO - grma@grupomineiro.com.br
+
+Só podem aparecer os próximos 30 dias
+Não pode agendar mais de um paciente no mesmo horário se não estiver habilitado
+Personalizar o horário que ele quer habilitar no site
+As informações do paciente - prncipalmento o convenio e on umero da carteirinha
+
+------------------------------------------------------------------------------------------------
+
+-> erro de duplicar procedimento lançando antes e depois
+msg pro pedro
+itens simples pedrosa
+itens simples guarino
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+FECHAMENTO DE CAIXA
+-> Para a pessoa que está com caixa aberto, ver o sintético de seus lançamentos (extrato de seu caixa - pode ser o extrato atual já com os campos predefinidos)
+   Todo lugar por onde entra repasse
+   Relatório de tudo que gerou e cada repasse e que possa ser editado em modal cada item de repasse
+   Ver situações em que ainda não está vinculando atendimento
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+katynh2002@gmail.com - Dra. Andréia Mateus
+
+amanha 12pm unity
+
+13 a 16 unity - alvaro
+botoes imprimir
+
+Horario q agendou, chegou e foi atendido - tirar media dashboard
+Horas trabalhadas no período
+
+65 99940-0701 wagner
+
+Valença - Clipop
+Tancredo - Clipop
+
+
+
+recto c cred trial buga
+
+
+3 funcionarios - 2 rec 1 ger
+11 dent
+esc 8
+
+162 usuários
+
+
+centro de custo - URGENTE
+
+obrigatoriedade das formas de recebimento
+
+Já surgiu dúvidas. Para definir qual o dente em que será realizado o procedimento , exemplo: restauração - dente 35 , como faria?
+
+mascara na cvalidade convenio - avisar quiando validade vencer - tarja validade vencida
+
+urgente sadt ta vindo 12 clinico tem q ser vazio
+
+FELIPE GUARINO
+11 4554-0817
+vincular procedimento ao formulário
+laudo padrão de acordo com o procedimento
+ativar o log
+duplicador de formulário
+mudar o timbrado de acordo com a unidade
+ficar no log as impressoes feitas do formulário
+Trocar a palavra laudado por assinado
+Colocar ao selecionar pra escrever a assinatura do médico
+
+grupos de procedimentos
+
+
+VINCULAR MEDICO NA MAO -> anamnese
+
+
+Cadastro de equipamentos com seleção dos locais (ou todos) em que esse equipamento pode ser usado
+No cadastro do procedimento, associar equipamentos
+Ao salvar, verificar se aquele local/aquele equipamento já está sendo usado por outro agendamento e criticar
+Criar agenda de equipamentos
+Ecoar o agendamento de outro local para o médico
+
+acabar com o arrastar
+ALINE RANGEL
+
+Ao inserir um bloqueio na agenda, automaticamente remover as mensagens de SMS programadas
+Poder inserir uma mensagem pra todos da agenda
+
+
+Indicado por e origem relatorio de agendamntos
+Telinha com admin pra ver quem veio por determinado indicador, admin do cara q cadastrou o médico
+
+FELIPE GUARINO E TAIS PEDROSO
+controle de glosas
+fcsouza16@gmail.com - Fabio Souza - Parceiro
+
+Indicador na regra de repasse
+
+ordenar lote por nome nao funciona
+
+ao ordenar no fechamento de lote pelo nome nao esta ordenando
+
+
+carlos clubcaare 96494-9593
+
+NÃO PODE BOTÃO DE APAGAR PARCELA NO EXTRATO NEM NO LISTA CONTAS, TEM Q ENTRAR NA INVOICE (NAO MOSTRAR EXIBIR SE TIPO BILL)
+
+CONTA AZUL
+gráfico/relatorio abrir de cara e depois filtrar
+Cadastro da conta corrente igual ao deles
+Importação do arquivo da conciliação
+Colocar logos dos bancos e buscar pelo número
+Presente pra assinar ainda hoje e ganhar 36% de desconto
+Anexar documento ao lançamento (invoice)
+Copiar plano de contas (maia.silvio.rj@... pipoca)
+Copiar o recibo de vendas
+Já entrar um item na invoice e botão adicionar mais uma linha
+Enviar venda por email e copiar layout da venda
+Mais vendidos
+Tudo com link para tudo
+Dinamismo do conta azul
+Colocar resumo no extrato/lista de movimentos
+
+VER RELATORIOS DO CONTA AZUL E
+
+aumentar o campo unidade e filtro
+
+ OMIE
+
+Impressao do marcionagahashi@contato.com -> consertar
+
+CNES e conselho tem q ficar digitando o tempo inteiro - fisioterapia419@gmail.com - Sao Marcos
+
+Espera pra recepçao e pra triagem - SEXTA-FEIRA DIA 10 - 14:00h
+
+trim no salvar
+
+https://clinic.feegow.com.br/?P=pacientes&I=2775&Pers=1
+
+https://clinic.feegow.com.br/?P=NovoHistoricoPaciente&Pers=1&PacienteID=2775
+
+GUARINO
+
+
+segunda-feira 1h Adriano Conectando Pessoas - Colocar logo
+
+Camp obrgatório (nãssui emm, nõ quis informar)
+
+relatorio de atendimento por CID
+
+sala de espera misturando tudo
+teste -> teste
+precos sumir
+reimportar aline rangel
+ananmnese imagens ficha paciente impressao -> contato@marcionagahashi.com.br
+
+
+TERÇA-FEIRA -> 10h treinamento  joao aline sabe ddd 79 ergometria
+
+relatorios so de agendamento
+sala de espera nao ver
+profissional externo
+gerenciar modelos sumir
+
+assessoriamorone@gmail.com -> Roberto Figueiredo - 1o de maio até 30 de maio - Duplicando os repasses
+
+DR VIDA
+-> Ao mudar o status pra atendid?
+	1. Verifica se h[a atendimento pra aquele dia, se nao houver pergunta hora inicio e fim e ao salvar cria
+		1.1. Verifica se existe iteminvoice com mesmo dia e profissional e vincula a este atendimento
+		1.2. Mesma coisa pra guia SADT
+		1.3 Mesma coisa pra guia consulta
+... Refazer o processo treinando de várias formas e a cada forma que der inconsistente relistar as correções
+
+
+Horários na agenda múltipla desproporcionais
+
+Bug que nao está vinculando o procedimento pré-pago ao atendimento realizado
+No caso de o medico nao acessar, a recepcionista clicar em executado na agenda e já baixar direto
+Ao agendar ja procurar se tem algo em credito e preencher o procedimento e o valor de acordo com o contratado
+Quando informa procedimento depois não podem aparecer as informações do finalizar atendimento
+
+COMANDOS AT - TODO MODEM TEM
+
+sigla bichada - unificar cliniccentral
+
+ag cod cedente 6015/19664-2
+nosso numero 109/-1
+
+4062-7501 andressa 3
+
+
+Clinic velho ao inserir procedimento BUGA
+
+-> Finalizar atendimento dando baixa na execução 
+-  primeiro mostra o que contratou nao executado
+Colocar no ar a separa;áo do financeiro
+Separar o paciente por unidade
+Separar a sala de espera
+Performance por unidade
+Faturamento bruto por unidade
+Fluxo de caixa individualizado
+Grafico de evolucao mensal
+Graficos do conta azul
+Relatório Produção Médica Sintético e o atual se chama analítico com filtro por procedimento
+Colocar gráfico no sintético e atribuir percentual representativo
+Quando o procedimento nao eh coberto pelo convenio, nao aparecer
+Opção Não exibir procedimentos não cobertos pelo convênio
+Alerta na validade da carteirinha
+Repasse da guia SADT dá funções em branco
+Repasse na guia consulta não existe
+Relatorio de tempo de atendimento
+adriano repasse 60
+Pagamento pelo convenio
+Percentual permitido para agendamento de convênios
+Controle glosa
+Refaturar (ver como funciona)
+
+-> Finalizar atendimento marcando que o procedimento foi executado
+Assim que lança pela agenta/conta o a receber está vindo desvinculado do atendimento
+3 botoes prescricoes
+
+PLASTICA - ANDERSON LIBERAR LICENCA  E SIMULACAO DO CRM TELEFONIA - led at[e segunda mandar prints trello e sistema baitello 30/05/2016
+
+meio-dia - Andreia Mateus - Omar Lupi - Visc. de Piraja, 595, 907/908
+2521-5812
+
+--------------------------------------------------------------
+PBELLo
+--------------------------------------------------------------
+Rateio de custos
+Rateio pelos profissionais'/funcionários - Por unidade
+Equipamento vinculado a profissional x local
+Pesquisar sobre integração direta com a Cielo
+Alocação de despesa
+--------------------------------------------------------------
+
+visiomed - quarta 11 da manhã
+
+--------------------------------------------------------------
+DR VIDA
+--------------------------------------------------------------
+Colocar filtro por tipo de despesa e unidade e comparar -> Relatório do plano de contas apresenta duplicidade (levar em conta somente a última categoria)
+Repasse 
+Pente fino em todos os relatórios
+-> Ver a questão do repasse reportada por ele via whatsapp
+Ver a questão dos caixas da Unity
+cores na agenda múltipla
+colocar abreviação e código do procedimento - lista imprimir dos procedimentos
+associar paciente a uma ou mais unidades
+verificar plano de contas -  não totalizou pelo grupo superior
+verificar se é data de hoje no repasse
+omitir nao flegados na impressao do formulario
+separar a senho em um voucher e abrir uma tela pra configurar o voucher
+só gerar voucher se tiver itens não executados
+vincular procedimentos ao parceiro
+selectinsert
+link de autorizacao
+5x 500 - site + extranet
+--------------------------------------------------------------
+ALTER Procedimentos Dias retorno
+INSERT resourcesfields ResourceID=26 (id=480)
+==============================================================
+
+telefone voip - Skype
+Itens urgentes do dr vida: proposta, tirar contrato, ocupacao agenda multipla so pra ele
+btn do camanducci
+No finalizar atendimento marcar o executado não mostrando dados de financeiro
+Lebrar-me
+
+Agendamento excluido perder o vinculo na home
+Extrato Unity errado
+Sumir o botao de Gerar guia da conta do paciente está aparecendo
+Legenda da forma de recebimento diretamente no detalhe do caixa
+Popup de detalhes do pagamento não está exibindo todas as informações
+
+Taxa de antecipação do cartão de crédito
+Aparecer a unidade do lado do nome do cartão
+Lógica de antecipação se consome 100% de parcelas ou x% sobre tudo, com botão antecipação
+Detalhes na busca do contas a pagar/receber (unidades, valor de a, cliente, plano de contas)
+Unidades no fluxo de caixa
+Detalhar o fluxo de caixa
+Opção pra mostrar o previsto ou não
+
+Receitas no fechar conta nao respeita valor nem quitacao correta - ver paciente ene alguma coisa
+Ligar para o Igor e enfrentar
+
+testar o contratar expirado e antes de expirar
+testar o livenote
+toda a parte de atendimento do médico
+
+Pré atendimento
+Curva com erro faltando tabelas
+Gráficos do formulário
+Formulários respeitando padrão e especialidade
+Tela de contratação se código hospitalar 10% e aviso de primeiro mês grátis
+Mailmarketing fachada pronto pra ser o definitivo
+Odontograma
+Wizard
+contrato impresso urgente
+
+assessoriamorone@gmail.com
+21 3796-8881 - 99538-4553 - Selma (Sebrae)
+
+Lembrete suniu dra graça
+cintia 16 e 1620, 
+
+97129-0279
+Heloísa - av. jorn ricardo marinho 360/128
+11h - Eugenio
+
+21 99572-1758 whatsapp / 
+
+quarta 18 de maio 14h - 
+gabriela.flores@compasshtp.com.br
+
+===================================================
+SISTEMA DE INVOICES (NUMERO DA LICENCA 1752)
+
+coluna SalaDeEspera informando em tempo real no botão
+
+-> Liberar profissional externo
+Alter table para login e senha do profissional externo
+Salvar login e senha do profissional externo
+Colocar profissional externo no rateio
+Fazer tela de login e senha pro profissional externo, com 2 links: VERIFICAR AUTORIZAÇÃO e LISTAR PROCEDIMENTOS EXECUTADOS, com filtro por data
+Colocar para anexar arquivo ao informar execução
+===================================================
+silia cominondas prescricoes e conta
+
+
+S17:34 08/05/201617:34 08/05/2016olicitante externo recebe email de novo laudo
+Aos solic int avisar no proprio sistema q esta laudado
+Definir login e senha do prof externo
+Colocar função de profissional laudador
+Pago ao médico x Recebido do convênio - data e valor do pagto, e data e valor do recto
+Abrir já no laudo certo
+Profissional solicitante como na guia TISS
+Laudos pendentes
+Lista de laudos pelo admin com filtro (duplicar pendentes e colocar filtro de Profissional e Data)
+Prioridade para o laudo (Urgente, Emergente e Normal)
+Erro ao carregar laudo
+Imagem padrão nos forms
+Profissionais externos (deixar liberado) e colocar no solicitante (e-mail deles) e dispara um e-mail dizendo q o exame q ele solicitou está disponível
+impressao de laudo ferra por causa do laudado
+Imprimir tags nos formularios
+Código de barras ser de acordo com o que a pessoa digitou no item associado
+Data dos formulários vindo 1869
+Formulário vinculado 
+
+
+Título gigante, diminuir
+Nome fantasia no nome da empresa
+Colocar os tipos de conta que quer que cada um tenha autorização de fazer
+
+Cep dos clinics velhos
+
+cliente nao tem e-mail ou não quis informar
+
+GUARINO - campo 54 do modelo 9 - clinic1560
+
+-> colocar numero da sessao pra aparecer
+
+--------------------------------------------------
+questão da finalização de atendimento
+- lista todas as guias cujo atendimento seja 0 (nao executado), onde clicando em executado já associa a esse atendimento
+- lista todas as guias cujo atendimento seja hoje e executado pelo session(profissional)
+- lista todos os itens cujo atendimento seja 0
+- lista todos os itens particulares cujo atendimento seja hoje pelo profissional da session(profissional)
+- ao adicionar o procedimento lateral:
+-- se for guia sadt, verifica se tem algum procedimento igual e vincula o atendimento. 
+-- se for de consulta, ver se o item adicionado é do tipo consulta e faz o vínculo.
+-- se for particular, ver se o item é igual ao contratado órfão e vincular
+--------------------------------------------------
+
+
+dissociar nutri da larissa e abrir lc nutricao com o mesmo bd e associar a livenote
+
+
+
+forms dra graça bloq alt e deixar inserir so os modelos
+sergio felix da silva 21/09/2015
+
+
+juliana felix lamonier - camila - dia hoje - chat abrindo varios!
+
+Exibir apresentacao na receita dra graca
+Formularios q mandam pra secretaria
+
+profissionais do pagnin eric
+perm form e alt form baitello
+inativo nao faz login - apaga dados de acesso com confim js
+lista de espera só da unidade
+aparecendo valor pra quem nao tem permissao na agenda
+
+tirar inativos do chat
+
+isolar planos por profissionais
+
+bloquear!
+marcar todos os profissionais nos relatórios
+
+carta na agenda múltipla
+
+iphone - hoje a noite do paciente sem falta dra graça -  e LEMBRAR-ME URGENTE NA FICHA DA DRA GRAÇA (enviar pra recepcionista)
+
+
+ 
+19 98146-4969
+
+aparecer os grupos no medicamento
+
+COBRAR SMS URGENTE!!!!!!!!!
+reordenar itens do select do form
+itens no finalizar consulta pro médico configurar - alertas do atendimento
+impresso da agenda
+NUMERO NA OPERADORA DA GUIA DREAMCARE
+consertar relatório de faturamento (a receber previsto / realizado) - partiular
+larissa subir imagens e aumentar o tamanho do upload
+AUMENTAR LETRA GRAÇA URGENTE
+quanto fechou
+imagem nos formularios e imagem fixa
+mandar sms de bloqueio
+grafico de financeiro de funcionario que nao carrega
+impressão de agenda
+anamneses uroclin vieram erradas a ultima mais copleta tem q predominar
+unidade no relatorio detalhado e se fechou e quanto
+grafico no mac nao esta aparecendo
+trocar topo
+prescricoes do leparada
+cobrar sms e detalhar
+receitas fixas
+proposta na ficha
+tirar contrato
+mailmarketing
+larissa imagens lc nutricao
+conselho ant
+
+CRISTOVAO URGENTE!!!
+
+tela eric livenote
+permitir 2 logados
+pegar layout GV
+guarino e contatar
+
+
+opcao todos na producao
+voltar itens graça
+ligar Jairo -> importar Jairo
+unidade ser por nome curto e não pela razao social
+00394035720
+voltar primeria consilta da camila camozato
+ '						
+no filtro por procedimentos executados fazer uma query antes dos procedimentos e a data e criar um WHERE id in(.........) com os pacientes que fizeram aquele procedimento que foi filtrado
+
+ITENS SIMPLES PEDROSA
+
+--> COMUNS A VARIOS
+- Precisamos começar a utilizar o e-mail marketing, preciso ativar esse recurso.
+- DMED, precisa oferecer esse relatório, pois esse é requisitado pela receita federal no final do ano;
+- No cadastro da paciente é necessário um campo para identificar qual o médico a que está vinculada, para futuras consultas individuais e para gerar relatório de pacientes p/ médico;
+> - Ainda em relação aos materiais, temos que cadastrar todos os materiais de cada procedimento com seus respectivos valores várias vezes no sistema (para cada convênio e para cada procedimento realizado por profissional) e como os valores são reajustados periodicamente todo esse trabalho (que a meu ver é desnecessário) é feito várias vezes no ano. O sistema deveria ter um local para cadastramento desses valores de cada material que alimentasse todos os outros locais que precisassem dessa informação no sistema.
+
+--> URGENTES
+- Precisamos de uma guia SADT para procedimentos realizado em hospitais e cobrados na clínica;
+--> COMPLEMENTARES
+- Nos campos referentes à matricula dos convênios precisamos limitar o número de dígitos de acordo com cada convênio;
+- No relatório de materiais que é impresso com a guia SADT, os materiais utilizados que possuem acento no nome saem com caracteres estranhos, dificultando a leitura, o que pode servir de justificativa do plano para uma possível glosa;
+- No financeiro preciso gerar arquivos dos relatórios em xls;
+- Ainda no financeiro preciso de relatório por categoria;
+- Preciso saber se o sistema tem pretensão de gerar Notas Fiscais;
+- Os relatórios do financeiro não estão funcionando, a exemplo do fluxo de caixa;
+- A relação de aniversariantes por período está gerando erro;
+------------- fim pedrosa -----------------------
+ITENS SIMPLES BAITELLO
+ITENS SIMPLES GUARINO
+repeticao eterna de agendamento
+insercao do erick retirar urgente
+
+
+data nos forms velhos e novos
+Cep do clinic velho
+Aumentar as mensalidades de mais de um ano e menos de 35
+Gerar automáticoas mensalidades do mês que vem
+dar uma pincelada no ck editor recarregando
+Mandar máscara gustavo
+
+Colocar a operadora do cliente no rolover no tel enviado pre pela cor
+Colocar resultado do email no email enviado identificado pre pela cor 
+melhorar logs
+
+
+tirar fonetica do comparativo
+mesclagem de conta
+lista posicionar onde ta o registro
+
+finalizar consulta da graça gera varios
+eliane lima bind
+tela pro livenote criar, excluir, bloquear usuarios
+aumentar o limite do mysql
+permissao do form integrar com a regra de permissao
+
+trocar a constante por asp com variaveis e ver como o servidor se comporta, deixando a constante anterior em standby
+
+filtros no a pagar/a receber com links do fluxo e do sintético pra lá
+Fluxo de caixa com unidades e link pro a receber/a pagar
+
+quando cria um novo form ta vindo 1960
+data nos forms novos
+dropdown do ck ao recarregar - dra graça urgente
+
+Titulo Categoria no plano de contas a pagar/rec
+
+explicacao da calculadora de propostas rapidinho faz
+versao da lista no paciente
+
+finalizar da dra graca, fonte das prescricoes q nao aumenta, entre outros
+contrate agora
+despesas/receitas fixas (simples gerador por periodicidade)
+wizard simples
+Disparador de cobrança
+trocar a cosntante por arquivo
+
+rodar o atualizabanco em todos toda vez que atualizar (criar script pra isso com location.href)
+
+Convenio dra Graca ao lado do paciente
+imagem no form
+bloqueio na agenda multipla
+topo novo
+remetente nome da clinica
+selectinsert novo
+da fila de espera pra agenda pro google faltou
+
+pensar no NAS e na performance do servidor
+Deixar server novo igual ao atual
+
+itens simples do Roger
+
+
+dra.mariafernanda@gmail.com - habilitar email
+
+
+letras form aumentar, data chat
+
+id logo no agendamento
+link direto da agenda
+
+Erro mesclagem com conta dando erro
+
+SMS so nao confirmado
+
+6 simultaneos - 18 - Monique - Tamires - 
+
+wenisson 61 91911652 tec wenissonti@gmail.com
+
+segunda dia 14 -> 16h - Rua Barao de Lucena 48 3o andar sala 20 = Ana - 3577-0077
+
+Receita fixa: adicionar o numero na invoice q foi gerada, o vencimento nao vai importar quando conta o numero
+Relatórios em excel simples
+Itens mais simples e rápidos da Tais Pedrosa
+
+status atendido cria numero de prontuario
+
+Retirar SMS do procedimento (por procedimento)
+Impressos serem diferentes
+Recurso de pós atendimento
+
+Guia SADT obrigações da execução e do profissional
+Impressão de formulário novo
+
+Colocar logo o contratar antes de expirar
+Exibir nome fantasia
+Relatório parte do sintético e vai aumentando até analítico vide Excel Sanfona
+
+
+-> Está lançando na conta do paciente pelo convênio do agendamento, tem q ser pelo convênio do paciente
+Google agenda
+E-mail diário dos médicos
+Agrupado por paciente (tudo que o cada paciente fez)
+
+Testar se os 70% estão entrando na guia
+
+11 99935-1800 Alcio - Resumir dados
+
+CLINICA DA HIPNOSE
+-> Voltar o relatório por origem (por causa do sintético)
+Chamada está chamando todas as unidades
+Listar contratos (não executados, sessões restantes)
+Lista antiga, revisar
+Não consegue encerrar consulta
+Chat demora mensagem a chegar e não faz barulho
+
+
+Algum bug no pegar CNES assim que gera a guia
+
+Prontuários alteráveis [Já colocar Nome, tel, cel, origem na agenda]
+Geração do paciente só se ele for
+
+link direto, evolucao embaixo, telefone faltando
+
+Alexander - globalnetsis - ver import: smoticatere@gmail.com - 11 users | 15 c/6 simultâneos 
+
+socorroamorim27@yahoo.com.br
+unginocg@hotmail.com - 83 3099-4911
+
+ids diferentes do prontuário [alterável pelo cliente] - tem q resolver e colocar esses ids em update pro enokibara
+
+Memorizar login e senha
+-> ag multipla, lista espera, financeiro, tiss, padrao semanal, (paciente novo cor diferente) avaliacao meia hora alcio.akio@terra.com.br
+atalho direto da agenda pra ficha
+
+Funcao na guia SADT diferente e nao permitir horario igual ou menor, ja levar horario do atendimento
+
+
+pagador no repasse entrar o nome do paciente quando convenio
+
+Primeira vez muda de cor
+
+Check de que está lançado/pago
+Do convenio pro a receber
+Receitas fixas como no antigo
+Colocar o botão transferência e fazer a transferência
+Limitar a parcela quando for forma de recto
+Fazer todos os cascateamentos de deleção das movimentações para não deixar nada órfão
+Quando seleciona uma conta, apaparecer seu saldo (accountbalance)
+Bug se selecionar Lancar pagto com forma debito e depois trocar pra diversas
+No caso do débito, entrar diretamente na conta bancária
+Filtros do repasse funcionarem perfeitamente
+Colocar para filtrar todos os caixas que foram abertos e detalhá-los
+Colocar para listar todos os caixas que estão abertos para ver como estão
+Caixas abertos aparecerem nas listas de transações para tranferências
+Exibir direito a taxa no extrato (CCFee)
+Fechou o caixa/reabrir, não poder lançar mais nada em caixa fechado
+Icone do banco (pelo número) no extrato e no contas a pagar/receber
+Pensar no topo e layout do caixa aberto, gravando o saldo em session
+Recalcular em tempo real o percent do cartao versus valor
+Link do resumo pro extrato (accountbalance)
+Gerar o repasse e mandar pro contas a pagar
+Pensar e tratar o pagto em cartão de crédito
+Pensar e tratar o recto em cartão de crédito
+
+
+jplaber@uol.com.br mandar contrato
+
+controle de cartão Luiz Camanducci - POPULAR TODOS OS ITENS NECESSÁRIOS PARA APRESENTAÇÃO
+tirar a rolagem do memorando ao imprimir
+Imagem na criação
+Criar form no upload da primeira imagem (se for N cria o form e recarrega por ajax [callform])
+CSS audiometria impressão
+Rolagem na impressão
+Lembrete no form
+Duas pessoas com mesmo nome na agenda
+Desconto está somando em algum lugar (ver print do Anderson)
+Retrabalhar questão do rateio
+
+
+Rodrigo Pagano - fundo de investimentos
+
+
+Contas recorrentes
+Tirar os segundos
+Mostrar se é primeira vez no agendamento e na ficha
+Listar os formulários de acordo com o que foi lançado na conta do paciente
+Aparecido vinculando atendimento cobrado ao valor
+Consertar e garantir o envio de email e sms pra nao confirmados
+
+
+Relatório em cima do form
+Lista de profissionais no form (select, puxando profissionais, funcionario, e/ou procedimento)
+
+DA PUBLICAÇÃO
+
+Email diário com agenda dos médicos
+Extrato com defeito
+Envio de e-mail
+Mostrar na conta só os de hoje com botão ver mais
+Já vir marcado o procedimento padrão
+
+Marcar todos no relatório de perfil e resolver o limite
+agenda semanal mais visivel  fixa
+solicitar autorização
+hora da chegada
+nao leva em conta o plano do paciente na lista (colocar função)
+
+PERMISSÕES URGENTE NO PAINEL FINANCEIRO
+Comparar banco a banco - e refazer as tabelas de sistema
+
+Paginar relatório de pacientes (200 per page)
+
+
+formularios bugs:
+	- Adicionar linha na tabela
+	- grupo omitir
+	- colorpicker no estilo
+	- autosalvar na permissao do form
+	- Trocar o gráfico dá erro
+
+criar banco livenote
+
+274 - 
+refazer a tela de associacao de valores apagando lixos
+
+ç na busca
+
+colocar limite de agenda por convenio associado a grade
+
+Não ser paciente até que preencha a ficha
+Hora do agendamento da Bruna
+CONSERTAR A ULTIMA CONSULTA NA BUSCA QUANDO VALOR GRANDE
+
+Falar com antonio sobre pessoa para pre-configurar TISS
+
+Criar orçamento simples com visual totalmente predefinido imitando diretamente do Ricardo
+Criar contrato predefinido imitando visual do Ricardo
+Enviar do contrato pro contas a receber, gravando direto e salvando
+
+Layout cru dos relatórios (só tabela vazia com colunas sem loop)
+Ajustar o menu para simplesmente responsivo, sem alterar sua ordem e estrutura
+Permissões do financeiro na tela nova
+
+Otimizar todas as tabelas de banco de dados e acabar com as innodb e colocar urgente pra parar de criar innodb
+remover trials mt velhos
+
+Colocar pacientes de hoje na tela do médico e o que está acontecendo com eles
+
+------------------------------------------------------------------------------------------------------
+aparecer procedimentosaparecer procedimentos somente q forem admitidos pelo convenio da pessoa, tanto no agendamento quanto no lancto de conta
+ somente q forem admitidos pelo convenio da pessoa, tanto no agendamento quanto no lancto de conta
+
+
+Testar o lançto de regras de rateio, consertar
+Ao lançar cada item da receita, faz a regra abaixo, dando updates e inserts, e depois esconde
+Atrelar o executado a um atendimentoProcedimentoID
+Terminar o lançamento consolidado de contas do paciente
+
+Colocar no ar as permissoes novas URGENTE
+Editor de imagens urgente
+Colocar para inserir os sms enviados na fatura
+Estender o prazo pra quem entrou menos de 5 vezes
+Tirar alert se for trial
+
+
+Colocar contratacao online no ar e testar
+-> corrigir o repetir
+Wizard
+
+SMS
+Trocar o padrão para vir 23:00:00
+
+Lançar de acordo unidade com o agendamento
+
+narjara jamil gonçalves da silva - conta nao bate, teve 2015 e 2013
+
+
+> mostrar na grade do quadro do medico que ele está e outra sala na agenda dele tb
+ordenar
+se for outra unidade da grade e agendar para outra, alertar. reconfigurar grade de atendimentos
+faturamento pelo agendamento
+sms e alertas na multipla
+balao
+
+grade preenchida no trial e funcionario padrao
+
+-> Página que gera as faturas (fatura fecha com 7 dias antes do vencimento)
+Ao abrir a página de lista clientes, enviar o e-mails de 7 dias antes do vencimento pra quem não pagou e é boleto
+No dia do vencimento, enviar novo e-mail pra quem ainda não pagou e é boleto
+3 dias depois do vencimento, manda cobrança pra todo mundo que não pagou, inclusive quem é cartão, com boleto
+5 dias depois do vencimento, manda aviso de corte
+7 dias corta
+Criar modal quando bloqueado o sistema
+Botão para pessoa informar que pagou (dando aviso que será bloqueado de novo)
+Ao baixar pagamento, desbloqueia se tiver bloqueado
+Juros e multa após vencimento
+
+
+575686, 575716, 575697
+Resolver camera com flash
+
+aumentar e melhorar os gráficos da home de acordo com o perfil e as permissões
+
+REABILITAR PARA UM EXPIRADO IR PRO ARQUIVO MORTO E PODER CRIAR NOVAMENTE A SENHA DE TESTE
+Colocar o esqueceu sua senha
+
+----------------------------------------------------------------
+Criar tabela de log pra cada ação de inserção ou exclusao de pacientes, que altera cada vez que o cliente adiciona ou remove usuários
+
+No remarcar e repetir nao grava log e atualizar sms
+
+ANOTACOES: Ultimo fechamento (periodo de 30 dias anteriores)
+Colocar o bafim de volta para o servidor 43
+Alterar o valor da receita fixa e das a vencer de acordo com o número de usuários
+
+Finalizar o modal entrando com todos os valores (repopular)...
+Link no relatório para a conta do paciente em outra janela
+Consertar os checks de Marcar todos os convênios
+Mesclagem de financeiro com histórico de quem foi mesclado
+
+Ao mudar a grade, verifica a agenda futura e pergunta se quer alterar os agendamentos para aquele novo local
+
+Agrupado por convênio
+Selecionar TODOS OS PROFISSIONAIS no relatório e vir desmarcando (com checkbox eh melhor)
+Não está vinculando atendimento com recebimento
+Update no valor final em cima de todo rd V
+No relatorio atualizar o valor final dos planos, depois os fatores e depois gerar o relatorio em cima de dados chapados
+Na agenda, já mostrar com ícone o status do pagamento
+Colocar coluna da forma no extrato de conta
+Colocar link pro relatório detalhado do caixa
+Transferência pro caixa
+Arquivo anexar no contas a pagar/receber
+Plano de contas tem q ser limitado a unidades
+
+
+Nome do profissional, funcionário e empresa reduzidos
+Agenda mensal
+Certificado e form de contratação URGENTE
+Exceção na agenda URGENTE
+Não permitir agendar se tiver bloqueado
+Exceções em tudo
+
+Sinalizar na agenda sobre o financeiro/faturamento
+
+Gravar já os novos campos criados na tabela de atendimentospro procedimentos
+Colocar pra ajustar valores zerados na emissão do relatório baseado no convênio do paciente
+Reemitir e conferir com dados atualizados baixados do backup novo da Dermobarra
+
+Telefone do paciente na agenda tirar a máscara (mesma lógica da ficha)
+
+TAÍS PEDREGULHO
+sms na multipla
+
+gravar na pacientes mesclados os dados do paciente, se é principal ou secundário, ids mesclados (vai concatenando), tabelas e registros afetados
+função para desmesclar usando os dados de cima, com delete no final
+testar
+create table de pacientes_mesclados na home
+publicar e testar
+
+exclusão em massa pra quem pode excluir
+chat parar de atualizar enquanto a pessoa escreve
+lista de espera atualizar por ajax
+
+listrado no historico forms pela data
+
+THALES ATÉ SEGUNDA
+Agenda Google
+Agenda semanal
+Agenda mensal
+Bloqueio múltipla
+Local em outro local se estiver praquele profissional (grade passar a puxar por profissional dentro do local)
+
+... agenda multiple
+sõ ativa quando clica na agenda
+
+dra. graça pacientes Bangu atualizacao de ficha
+relatórios em construção e vai liberando conforme termina
+fazer os relatórios
+
+226169247
+1014
+
+apagar automaticamente planos em branco dos sistemas
+mesclar automatico mesmo nome com mesma data de nascimento, priorizando o cadastro mais recente
+
+-> Comparativo de javascript no contas a receber está dando erro ao salvar
+-> quando entra na ficha do paciente completo, verifica se o id unidade tem evolucao e as evoluções do banco original
+-> roda mesclagem do obs
+
+-> Colocar o refino de unidade no relatório
+-> Ajustar a unidade da Dermobarra manualmente
+-> Salvar o relatório em Excel
+
+mccf-m@hotmail.com
+
+prontuário hidden
+
+filtro completo		60min
+	-> Características físicas
+	-> Escolaridade e profissão
+	-> Origem
+	-> Endereço
+	-> Data de aniversário
+	
+analise de despesas	40min
+análise de receitas	10min
+d-med			40min
+débitos pendentes	40min
+créditos pendentes	10min
+cancelamentos		40min
+fluxo de caixa		120min
+
+nao aparecer no fechamento de caixa as parcelas
+listando as parcelas na conta e nao a invoice
+se mudar a forma de pagto pra uma invoice ja salva ele salva automaticamente a invpoic enm questao
+apagar credito juntoi ao exclueirt o pagto
+transferencia de paciente pra outro esta invertido (verificar)
+
+ver se o finalizar do proprio medico grava o id dele como profissional
+696183737
+1499
+
+
+atualiza2 alterando rdValorPlano pra INT trocando todos os V pra 0 e todos os P pra -1
+update em todos os ValorPlano cujo rdValorPlano=-1 onde verifica o plano do paciente e update ValorPlano para o valor pago pelo plano naquele momento
+70%
+respeitar tempo
+excluir form preenchido (só falta link)
+
+1. pegar todos os bancos atualizados
+2. rotina que sanitiza a anamnese
+3. importar pro mac todas as anamneses juntas em uma tabela soh associando ao novo id do profissioanl, informando qual a unidadeid
+
+
+
+plic no nome no agendamento
+listar, editar e excluir os bloqueios existentes
+
+VM39 MAIN	MAIN IP 43
+VM40 BACK	BACK IP 45
+
+excluir contrato callcenter
+
+HISTÓRICO MANUAL PRIMEIRO DRA. ALINE E DRA. GRAÇA
+
+observacoes do prodoctor
+historico anamnese
+foto
+unificar
+
+excluir cheque
+respeitar o tempo do procedimento
+agenda semanal
+agenda mensal
+
+rolinha 1242
+
+
+loginPrestador
+senhaPrestador
+identificadorBeneficiario	ok (sadt)
+nomeContratado
+nomeProfissional
+codigoProcedimento
+descricaoProcedimento
+
+WEBCEMESS1
+3f7fcceb08c67d2e66f311cd6ed4e58d
+
+
+Copiar o finalizar consulta tradicional edição, com todos os itens normais, mudando o médico que executou
+Colocar neste da conta a data e hora início e fim do atendimento
+Colocar insert caso sysUser seja negativo
+Colocar obs do atendimento
+
+Audiometria
+Grifado azul no relatório que está marcado
+botão excluir cheque
+Colocar locais e grupos nas configurações (rapidinho)
+
+ver agendamentos do paciente a partir da lista de pacientes (coluna Histórico de Agendamentos)
+função pra mesclar pacientes
+
+Quando apaga um apaga tudo
+Se apagar 1 ta sumindo
+Gravar unidade no atendimento
+Criar a coluna profissionalID padrão NULL
+no atualiza dar um update nos profissionais do atualizaBanco pra ProfissionalID e o q nao tiver coloca 0
+Colocar no finalizar do médico pra gravar ProfissionalID
+Colocar a inserção/edição do finalizar atendimento igual a tela do médico
+
+
+no finalizar, aparecer e salvar obs do atendimento e quantidade padrao 1 pra cada procedimento
+ao listar mostrar as obs do atendimento e a quantidade nos procedimentos
+ao adicionar atendimento manualmente colocar igual ao finalizar consulta
+bloquear tempo
+Firulas iphone
+
+arrastar a agenda e reordenar
+excluir atendimento
+fotos dos pacientes
+
+importacao
+
+breadcrumbs urgente
+
+barra = +140500
+atendimentos barra + 15000
+ultimo paciente barra imp 73630
+ultimo paciente bangu = 93393
+
+Professor Kimura atende na Ilha do Governador e em Copacabana 2236-4993 ou 3393-0380
+
+pedra borda piscina
+pastilha borda
+piso quintal
+piso lavatorio banheirao
+pastilhas lavabo
+grafiato branco
+
+
+
+COLOCAR SEGUNDO PROCEDIMENTO URGENTE
+URGENTE UNIDADEID NOS ATENDIMENTOS - DERMOBARRA JA TEM
+visualizar perfil de cobranca na fila ao lado
+
+--->PAGAR BRADESCO GALERIA DO COMERCIO
+comparar bancos
+recolocar o atualiza banco com o que mudou. testar performance antes
+se ao mesclar, o item não estiver marcado como executado, preenche os dados
+---> assim que entra com ii ou guias a partir de atendimento, gravar o atendimentoid já pré-vinculado
+sinalizar se der qualquer tipo de conflito no comparativo das informações entre atendimento e cobrança
+no finalizar consulta, mostrar o que já tem desvinculado de atendimento (pensar e informar)
+repopular...
+
+0800-880-8087
+
+ROTINA DE OPERAÇÃO EM GRUPO
+CONVERTER TODO MUNDO PRA AGENDA NOVA
+TRIAL ABRINDO NA AGENDA NOVA
+BLOQUEAR HORÁRIOS SEGUINTES NA AGENDA NOVA
+
+pastas de álbuns de imagens
+
+bairro, profissao, cidade, endereço com cadastro oficial a selecionar
+
+insere o atendimento ou pega o id do atendimento que já existe, e guarda o atendimento id
+grava o procedimento naquele atendimentoid
+
+recuperar dia 14
+forma como exibe as anamneses
+contato de todo mundo listar telefones e email - tirar sexo
+
+Trial precisa ser perfeito, com vídeos e gráficos
+
+EMERGÊNCIA
+Nos forms retirar o on error resume
+Colocar try catch no ajax que manda, e só aparecer salvo com sucesso se realmente for salvo
+
+Já nos agendamentos, nome, tel1, cel1, email1 dos pacientes de modo que a grade não consulte mais os pacientes
+Separar histórico de agendamentos, de agendamentosfuturos (uma tem q ser espelho da outra)
+Passar rotina pegando nome dos pacientes nos agendamentos antigos
+Colocar no sistema em todas as instruções de agendamentos para buscar os futuros e os antigos
+Quando se loga naquele dia verifica se teve agendamento de dia anterior e joga pro histórico
+ID do histórico de agendamentos não pode ser autoincrement
+Procurar mais tabelas que sejam críticas (com muitos dados) e que sejam muito usadas e suavizar seu uso
+Colocar as contagens de forms, prescricoes, etc. para um único campo dos pacientes, atualizando a cada insert e delete
+Migrar pra SQL Server
+Separar banco de dados em HD disco
+
+hilton moutinho
+
+- listar todas as oaginas de form que fazem chamada no salvamento:
+- qualquer chamada que se faça de update tem q verificar primeiro se o form ta criado, se nao, cria
+- na criação do form inicial, verificar se roda todas as rotinas de salvamento (tabelas, etc.)
+- verificar impressão do form, com timbrado
+- ligar pra maubasper
+
+----------------------------------
+tais pedrosa = nao consegue editar origem adm@clinicafeminita.com.br 1169
+----------------------------------
+
+quando abrir encaixe, gravar que é encaixe e colocar o local
+
+
+atualizar a taxa de ocupacao e o sms/email a cada salvar, remarcar, excluir, repetir
+nomefantasia nas filiais/empresa
+imprimir agendamentos luiz augusto
+rotina de programação de retorno (dra. Graça e dr. Luiz Augusto)
+
+duplicados dermobarra
+voltar anamneses velhas dermobarra em tabelas separadas
+voltar backup dos dias perdidos
+refaturar buiformspreenchidos
+
+poder excluir formulário novo (avisar baitello)
+3o digito no peso do grafico rapidinho mask e aplicar classe com formatnumber 3
+contatos barra dida
+
+tiss verificar questao de cnpjContratado/cpfContratado/codigoNaOperadora
+
+66 3569-1047 silvani
+
+Dra. Ana Rabelo (amiga dra. Graça) -> 98661-2408
+excessão na grade
+
+
+
+mandar por email pros representantes interessados
+
+PSMED
+-> nAO ESTÁ SALVANDO AS LINHAS DA TABELA
+-> Quando salva um campo nao salva outro no create do value not null
+-> valores padrao com replacetags ao insert
+-> Rolagem na impressão
+-> Editor de imagens não funciona
+-> Título no form simplesmente nao aparece
+
+-> Margem da folha na criação
+
+user: silvio
+silvio##123
+
+imprimir prescr. oculos
+tags estao aparecendo
+nao salva a linha da tabela
+
+
+ao remarcar colocar status marcado nao confirmado
+hora livre pra rem/rep
+
+lembrar-me nos forms novos
+
+quando passa mouse agenda tel tirar do medico
+
+observações e pendencias de todos os pacientes nao vieram
+conta de todos os pacientes nao veio (pelo menos os ultimos anos)
+medico na fila de espera
+colocar preto quando ta cheio
+agenda de contatos do prodoctor
+ordem alfabética nas tarefas
+cor da unidade verde em questão na agenda
+subir as fotos
+
+digita os dados imprimir da erro quando em branco - 98819-6075 dr mauricio
+id de acordo prontuario nao esta batendo
+Prescri d eoculos psmed, para perto adic esferica nao aceita negativa
+
+nomepac e pront sempre no hist
+
+tirar nao compareceu da conta
+
+paginação do clinic está horrorosa
+historico conta e contatos prodoctor dermobarra
+encaixe urgente (colocar hora de chegada e encaixe separados bem definidos, com botoes de status separados)
+
+salvar os dados padrão do form assim que cria o form no savenewform baseado no primeiro campo que foi salvo (dando replacetags quando der o select * from no banco nos campos que possuem valor padrão
+
+hora q chegou
+lancto de obs nas contas do medico e da secretaria
+ao redirecionar pra guia de convênio, verifica o convenio com dados mais completos do paciente e gera a guia, ignorando os null
+o q ja foi lancado dar um ok (via jquery?) na lista ao lado
+poder lancar a partir diretamente da conta do paciente com botão de adicionar
+relatório rápido de produtividade baseado no informado
+logo nos forms
+histórico mais bonito nos forms
+dividir forms importados da Dermobarra por unidades (já é suficiente)
+ver se melhor se acabar com a buiformspreenchidos (trocar por union all)
+remover os duplicados da dermobarra
+rotina para mesclar os pacientes duplicados da dermobarra
+separar agendamentos atuais e futuros de agendamentos passados
+
+
+rel pelo financeiro x origem - hipno
+arquivos gerais ao lado dos pacientes - hipno e roxo
+
+colocar pra gravar conta do paciente obs pela secretária
+fator automático a partir do segundo procedimento
+criar lista de contas lançadas pela secretária
+limitar os itens da conta do paciente (passados exibir somente os atendidos)
+ver pq o salvar ta lento, otimizar o salvamento do agendamento
+
+-> Impressão dos formulários
+
+-> REPOPULAR FORMS AO PRIMEIRO SALVAR
+
+3495-1342 alexandre
+
+000.948.917-70
+
+=> Contrato
+=> Nao esta respeitando tempo da agenda
+
+Hipnoterapeuta não ve agenda do outro nem valor
+
+roberto@drrobertodiniz.com.br
+=> A partir da sexta não está subindo
+
+lixa de parede 100 e 120 - folhas cada
+selador de parede
+massa corrida
+
+40% sobre o site
+
+Iframe definitivo
+-> Terminar formulário (listar itens)
+URGENTE -> REFAZER A LISTA DE LOGS POR GROUP BY CONSULTAID
+
+paulo henrique coimbra de oliveira, melissa vitiello, consulta, 25-09-2015, 14:00
+99388-5333 allan
+
+select p.*, (select count(id) from pacientesprescricoes where PacienteID=127635 ) as totalprescricoes, (select count(id) from pacientesatestados where PacienteID=127635 ) as totalatestados, (select count(id) from pacientespedidos where PacienteID=127635 ) as totalpedidos, (select count(id) from pacientesdiagnosticos where PacienteID=127635 ) as totaldiagnosticos, (select count(id) from arquivos where PacienteID=127635 and Tipo='A' ) as totalarquivos, (select count(id) from arquivos where PacienteID=127635 and Tipo='I' ) as totalimagens, (select count(id) from recibos where PacienteID=127635 ) as totalrecibos, (select count(fpae.id) from buiformspreenchidos as fpae left join buiforms as mae on fpae.ModeloID=mae.id where fpae.PacienteID=127635 and (mae.Tipo=1 or mae.Tipo=2 or isnull(mae.Tipo))) as totalae, (select count(fplf.id) from buiformspreenchidos as fplf left join buiforms as mlf on fplf.ModeloID=mlf.id where fplf.PacienteID=127635 and (mlf.Tipo=3 or mlf.Tipo=4)) as totallf from Pacientes as p where id=127635
+
+
+URGENTISSIMO:
+Exibir somente as ultimas 4 contas com botao de mais pra ver mais
+
+- Agenda nova pra quem tem agenda antiga (inclusive Clinic antigo)
+- Verificar UNION ALL da conta
+
+link direto da conta pro a receber
+origem aoi cdastrar paciente nao esta aparecendo
+
+
+Form preenchido da barra comeca em 270.000
+
+backup assim q subir todos os pacientes
+testar um update de cidade (Rio de Janeiro), se rodar, roda o com 3 outras cidades
+salva todos os pacientes e agendamentos da barra, gravando nos pacientes e nos agendamentos o idBarra
+salva todos os agendamentos atualizados do recreio gravando idrecreio
+salva os pacientes do recreio q ficaram faltando com uma faixa acima do inervalo que passoi
+incrementa o intervalo q passou a partir do id x
+
+209852427
+687bvf
+
+NOTEBOOK ANTONIO EXCEL
+
+Critica pessoa no mesmo local
+
+impressao dos retornos
+
+2m de pedra
+
+Exceção na grade
+
+Salvar os dados dos memorandos
+Salvar os dados dos checkbox
+Salvar os dados dos radios
+Salvar os dados das tabelas
+Abrir os subforms e salvá-los
+Definir o padrão oficial dos forms
+Ver se tá criando e alterando
+Bloquear os forms de acordo com a lógica antiga
+Salvar as imagens
+Colocar o editor simples de imagens
+Gerar o gráfico
+repopular...
+
+Retícula no calendário de local
+Feriados cadastro
+Cadastro de profissoes do ibge
+Chat quem ta online, filtrar...
+Cadeado agenda trancada no calendário
+
+
+Site simples -> 800,00 | Intermediário -> 1.500,00 | Avançado -> 2.500,00 (50% comissão)
+Versões -> Sem financeiro, sem multiclínica -> 29,00 | Completa -> 39,00
+Versáo gratuita at[e 15 usuarios
+1 - 9		0%
+10 - 19		10%
+20 - 29		15%
+30 - 39		20%
+40+		25%
+
+Versão gratuita só agenda - até 500 pacientes
+
+
+=> 1- Colocar a função Débito na Forma de Recebimento (Cartão MasterCard e Visa).
+2- Elaborar a Guia do Convênio Golden Cross. (Guia e Boletim diferenciados.)
+3- Status remarcado para paciente que não compareceram e foram remarcados.
+4- Colocar seta Voltar e Avançar.
+5- Modificar mensagem de SMS. Colocando somente o primeiro nome e programar 1 (confirmar) e 2 (desmarcar).
+6- Colocar a data de nascimento na lista de nomes na hora do agendamento.
+7- Colocar na Busca Rápida a lista de nomes.
+8- Rever as falhas da Agenda Múltipla.
+9- Colocar repasse nos valores de procedimentos a partir do segundo procedimento. (1º: 100%, 2º: 70% , 3º: 50% e 4º: 25%)
+
+HIPNOSE
+1. Permissões nas formas de recebimento
+2. Omitir dados do paciente na lista
+3. Pessoas conseguem ver a empresa principal
+4. Recepcionistas nao podem ver finalizacao de hipnot, mas devem ver indicativo de hipno
+5. Hipnos estão vendo relatórios, não devem ver
+6. 
+
+126.382.997-07
+Aline Gomes Maia da Silva
+
+2.350,00
+
+Escolha do nome
+Criação da logo
+Layout do aplicativo
+Programação do aplicativo
+Cadastro e teste com os clientes Feegow
+Criação de material promocional - panfleto, adesivo para colar nas clínicas, etc
+Criação do Feegow Agenda
+Criação de modelos de iframe para implementação no website
+Lançamento independente do Feegow Agenda gratuito
+Sistema de comunicação conselho/profissional
+Parceria com os conselhos, a fim de consolidar a propaganda e as abordagens via e-mail, telefone e pessoalmente
+Anúncio em revistas médicas
+Promotores com meta mínima e meta desejável
+Envio de e-mail e carta a todos os médicos
+Telefone para todos os consultórios, com cadastro pelo telefone
+Oferta de site gratuito pré-criado
+
+Meta mínima -> 5 mil novos profissionais/mês progressivo
+20 mil profissionais até dezembro
+100 mil agendamentos mensais até dezembro
+
+Formas de receita
+Feegow Clinic (migração para versão paga a partir da gratuita - meta mínima de 20% de conversão)
+Mensalidade para melhoria de posicionamento
+Propaganda em banners no portal
+Propaganda em banners no aplicativo
+
+===================================//=======================================//========================================
+no remarcar, ter a opção de colocar manualmente o horário
+relatorio sintetico de faturamento fechamento dia
+relatorios separados por unidade e por profissional
+email de confirmacao ta indo pra tela de login do feegow
+permissao medico so ve a produtividade dele
+lentidao agenda
+AntonioCarlos
+
+Agrupado por Usuario -> Agrupado por Profissional (mudar layout)
+
+ignorar mascaras
+mudar plano ou convenio nos procedimentos executados
+filtro nos executados
+FORMULÁRIOS RUINS URGENTE
+
+Adicionar item ao que o profissional fez (se possível)
+Agendamentos que não tem prontuário, ver quantos são, criar o cliente e importar
+
+Opção de adicionar checkbox na frente do título
+Observações em input ou textarea para cada opção de checkbox ou radio
+Texto complementar nos inputs
+
+Trocar o local onde está
+Colocar máscara de tempo e spin
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+achaclinica.com.br
+procuraclinica.com.br
+procuraconsulta.com.br
+marcadoutor.com.br
+pesquisagenda.com.br
+pesquisaconsulta.com.br
+marcadissimo.com.br
+guiaconsulta.com.br
+centralconsulta
+consultaagil
+consultahoje
+seumedicoaqui
+localizemedico
+agendehoje
+
+comunicacaoemarketing@cremerj-rj.gov.br
+
+filtro nos executados
+convenios que não foram (provavelmente 2 e 3)
+mudar plano ou convenio nos procedimentos executados
+Adicionar item ao que o profissional fez (se possível)
+Agendamentos que não tem prontuário, criar o cliente e importar
+
+Opção de adicionar checkbox na frente do título
+Observações em input ou textarea para cada opção de checkbox ou radio
+Texto complementar nos inputs
+
+-> Colocar texto complementar
+-> Fazer todos os tipos de campos adicionarem no form de qualquer jeito
+-> Estilizar cada tipode campo individualmente
+-> Renderizar para view e impressão o formulário
+-> Colocar estilos diferenciados para cada tipo de campo
+-> Não atualizar a própria div quando do update
+-> Fazer a calculadora calcular
+-> Fazer calculadora entre campos (mecanismo)
+
+Atualizar as tags
+Agenda múltipla separar locais pelas unidades que a pessoa tem acesso
+Inativos conseguem se logar
+Está em uma unidade e também consegue estar na empresa principal
+Tag de valor pago e valor pendente no recibo
+
+EMAIL DE BOAS VINDAS
+FALTOU ALGO???? SUGIRA, NOSSA EQUIPE NÃO CANSA DE APERFEIÇOAR O FEEGOW CLINIC
+SITEPAL DANDO BOAS VINDAS
+Modal com o extrato direto a partir do a pagar/receber (no componente)
+*********** Recibo (impressao do contas a receber)
+Impressão do agendamento
+Recibo salvar e imprimir, podendo antes alterar as informações
+Link pra agendamento direto da previsão retorno
+Remarcação
+Repasses de materiais e profissionais no contas a receber - refazer no modal do executado
+Conta recorrente
+Filtros dos relatórios prontos que eles pediram
+Relatório sintético financeiro não está bom
+Se tiver data programada de retorno futuro e nao tiver agendamento futuro............. AVISA NA CONTA
+Busca de paciente na agenda
+Obrigar inserir paciente quando pelo lançar pagamento
+Na conta, cria linha quando tem conta a receber do paciente em determinado dia independente de ter agendamento/atendimento (adicionar ao UNION JOIN talvez)
+Ainda na conta, Colocar botão em cima pra adicionar guia/conta a receber em cima, desvinculado de qualquer histórico
+Formulários
+Odontograma
+
+OK Quando chegar na guia que nao esta salva (sysActive=0), deleta todos os rateios cujo Temp=1
+-> Loopa todos os procedimentos que ela tem, e gera rateio pra cada um, colocando Temp=1
+-- Ao salvar, muda Temp=0 nos rateios
+-- Ao excluir o procedimento ou a guia, excluir todos os rateios relativos
+
+-- Nos repasses passa a levar em consideração somente os Temp=0
+
+IBDATA1 SOMENTE E AS PASTAS QUE QUER RECUPERAR
+
+totalizacao online no a pagar e a receber com grafico
+notificacao com treinamento/link de confirmacao
+
+order by prontuario na ficha de pacientes
+editar prontuário
+
+log do sistema
+cadastro so depois q chega - nao gera ficha de cara
+
+
+Na produção médica (tirar agrupado) e colocar o filtro de data, unidade, médico, convênio, procedimentos
+todos colocar um coloridinho
+Relatorios convenio e particular 
+perfis predefinidos
+
+- Inserir coluna de Acréscimo e Desconto no Fechamento do caixa (E o Usuário que fez o desconto/acrescimo)
+- Limitar qual usuário terá acesso a utilização de desconto e acréscimo - só campo
+
+RELATÓRIOS:
+-> Separar todos por unidade
+
+cemess73	orizon30
+
+dreamc326	Dreamc326
+www.
+
+luciana botafogo
+
+COLOCAR GERENCIADOR DE ARQUIVOS PRA TODO MUNDO NO SISTEMA
+
+invoice quando imprime a 681 multiplica na impressao
+relatorio de receitas e despesas (despesas gerais) retirar
+embarque completo - recebido, mudar faturamento-despesa
+
+diminui a fonte, medico - especialidade -> autopreencher -> origem campo EEG -> indicação em branco pra escrever -> validade, titular nao puxa -> queixa princ : 2 linhas pra escrever até o final
+faz algum tipo de mdicacao 2 linhas
+subir monitoramento, obs 3 ou 4 linhas
+
+linhas
+data ddmmaaaa -> aaa
+idade arred
+prescrição de óculos
+receita
+
+callcenter/pos atendimento
+avaliacao online
+estatisticas
+15h segunda
+Alessandro -> 
+
+imp do agendamento: retorno data medico e hora
+
+jeanmalia@gmail.com -> interessado dermato esposa joinville
+
+
+gabriel franco belga lacerda
+
+bangu 
+
+22 consultorio bloqueando tempo
+
+sexta 9h
+
+===> Ao cadastrar paciente mostrar os com mesmo nome
+transferir do caixa em aberto para qualquer lugar (listar caixas em aberto nas contas)
+guia de outras despesas print
+ver o q precisa pra por no ar e por no ar...
+
+usb wireless nano 300mpbs dlink
+
+
+astolfo e dra julia
+
+Listar pelo admin quem estão com os caixas abertos
+===> Colocar resumo das movimentações ao fechar o caixa
+Colocar crédito quando fecha
+Mostrar no extrato movimentações de/para o caixa
+Relatório detalhado de fechamento de caixa (Google)
+Confirmar débito e crédito do caixa
+Colocar extrato como da alliance
+Cosertar forma de exibição do caixa
+Verificar crédito duplicado entre contas tipo 1 (cartão para conta corrente)
+Poder definir as datas de vencimento no novo a receber
+
+Backup do AMLIEN
+
+cpanel testar backup de emails
+emails automaticos
+firulas do sistema pra vender mais
+responder interessado
+
+3085-1000 mkt amc
+2506-9500 
+
+radiocef
+easydent
+
+=> relatorio com versao e valor pago, data de adesao, e numero de usuarios, valor por usuario, valor da adesao
+
+Jsteuliana 27 99961-4537
+
+===> Ao marcar o executado, gera o rateio momentaneo já preenchendo pela igualdade o que tem, salvando no temprr e no rr
+Ao abrir a folha completa, gera os rateios momentâneos e preenche o que já foi predefinido
+
+Se não tiver nenhuma forma predefinida cadastrada a indefinida já vai vir como hidden 0_0 e geraparcelas 1 só pedindo o número de parcelas
+Agora que não salva mais depois de pagto lançado, quando marcar o executado tem que pedir os itens que gastou na caixa de executado 9ver se pode ficar só assim)
+Salvar antes de lançar pagto
+Bloquear tudo se já tiver qualquer pagto lançadosem acréscimo e sem desconto
+Nos casos de formas predefinidas de pagamento excluídas, vira diversas
+Não poder mudar nada na invoice se já tiver lançado qualquer pagto em qualquer das parcelas
+Nao da aviso quando marca sem salvar
+Erro pra valores de parcelas que não coicidem
+Não está gravando os dados do cheque - Estão indo todos pra Issued
+Verificar se está gravando os dados do cartão e outras formas a parte adjacente
+Breadcrumbs manualmente e criteriosamente
+menu no iphone
+Colocar as tags no form
+Aumentar as opções do editor
+cristiane 5% indicou botox do antoniobertato
+2 ml de 500 por ml
+1 seringa 5,00
+2.169,00
+No repasses, o desconto e acrescimo, materiais, outras despesas
+
+nao fechar o caixa 
+
+
+2. Efetivar o pagamento seguindo a mesma lógica do pagamento atual.
+3. Fazer busca de cheques e atribuir a eles um borderô
+4. Fazer relatório de fechamento do dia com produtividade, como no prodoctor. Não ousar.
+5. Relatório mostrando o que o médico informou e o que a secretária lançou, com o resultado líquido.
+6. Fazer o processo do início ao fim puxando o resultado final e repopular.
+
+
+7. Colocar a coluna FuncaoRateioID na tabela rateiorateios, que vai casar com a coluna ItemInvoiceID, evitando o insert contínuo e usando o update no modalRepasses.asp
+
+Colocar ajax mandando fotinho no final de cada quadro
+emissao do documento de crédito
+	-> descontar nota de crédito, pra uma conta "Notas de crédito"
+	-> Nota de débito
+
+- No rateio de materiais, se foi baixado do estoque ou baixar, assim como link de baixar pelo atendimento
+
+-> Ao salvar a invoice, lista todos os procedimentos que foram inseridos nela, e ve em cada um qual regra de rateio se aplica
+- Ao identificar a regra de rateio, verifica as funções da regra (while)
+- Verifica se pra essa função existe um rateio lançado
+- ModalRepasse=""
+- Se for função then
+	- Se já houver lançamento pra essa função, ignora, else
+		- Se for profissional executor, preenche, lança e ignora
+		- Se for vazio, response.write linha e ModalRepasse="S"
+- Elseif for material
+	- Se ContaPadrao="" then printa linha e ModaRepasse="S"
+	- Variavel="" then printa linha e ModalRepasse="S"
+if ModalRepasse="S" then Exibe o modal com o que tem gravado, ao salvar dá update ou insert
+
+
+- Nesse modal, verifica se nessa regra de rateio tem algum item "Informar no lancto", se houver, lista
+- No modal de informação de rateio no momento do lancto, se tiver material, pegar o fator de unidade e multiplicar pelo valor informado para lançar o rateio
+- Fazer o lancto de receita indo agora pra nova invoice gravando os temps dos itens
+- Relatório de fechamento do dia por profissional -> Lista cada paciente, forma de pagto, valor total, repasses, resultado
+- Colocar a caixa aberta no estoque
+- Dar saída no estoque no lancto de conta a receber listando os itens disponíveis e as caixas abertas
+- Botão separado de adição de pacotes
+
+Opção de inibir contas bancarias (pra cada opcao de pagto colocar pra onde o crédito pode entrar)
+Conta destino
+--------------------------------
+
+Colocar aba com o reverso em procedimentos de valores pagos e o rótulo de Valor no Particular, com hard embaixo das tabelas de particular existentes embaixo
+Colocar os pacotes pra listar em botão ao lado de procedimentos e botão de outros na invoice para inserir separadamente
+
+---------------------feito------------------------------------------------
+Colocar dias que não atende vermelho na agenda
+Colocar hard material gasto quando adiciona botox no finalizar procedimento
+Inibir a regra de rateio atual ao lançar receita e colocar hard material gasto x quant., Indicador (que lança na hora)
+Colocar na conta a receber para aparecer o select com as formas de pagto disponíveis (com a obs. embaixo q ao mudar altera valor)
+Colocar no rateio a opção "Variável"
+Apaga os rateio lixo
+
+BOTOX - Usou Botox (cx.688) 0,2 ml e Botox (cx.689) 0,7 ml (Drª graça não cobrou)
+
+* Data, Médico, Convênio, Valor, Procedimento
+
+O que muda quando troca a forma de pagto:
+	- Preço
+	- Itens ocultos do rateio
+	- Itens do rateio informados no lançamento
+	- Materiais gastos informados
+
+ERROS*:	Se na forma de recto selecionar a opção todos, e nao as contas especificas, depois salvar, no rateio não puxa
+	No rateio não mostra a descrição das formasrecto
+
+4032 2549 3293 4976
+06-19
+568
+antonio c m santos
+
+65987926734
+
+21931-580
+Rua Haroldo Lobo  192  303
+Portuguesa
+17-09-1961
+
+70818

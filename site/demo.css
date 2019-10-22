@@ -1,0 +1,135 @@
+/*
+.gridster * {
+  margin:0;
+  padding:0;
+}
+*/
+
+ul {
+  list-style-type: none;
+}
+
+
+/*/
+/* demo
+/*/
+
+
+.controls {
+    margin-bottom: 20px;
+}
+
+/*/
+/* gridster
+/*/
+
+.gridster ul {
+    /*background-color: #EFEFEF;*/
+	/*border:1px #ccc dotted;DESABILITADO PARA IMPRESSAO*/
+}
+
+.gridster li {
+    font-size: 1em;
+    text-align: center;
+    line-height: 100%;
+}
+
+
+.gridster {
+    margin: 0 auto;
+
+    opacity: .8;
+
+    -webkit-transition: opacity .6s;
+    -moz-transition: opacity .6s;
+    -o-transition: opacity .6s;
+    -ms-transition: opacity .6s;
+    transition: opacity .6s;
+}
+.gridster .gs-w {
+    cursor: pointer;
+    /*background: #DDD;
+	border:1px solid #000;
+	color:#000;
+	font-family:Arial, Helvetica, sans-serif;
+	font-weight:normal;
+	font-size:13px;
+	padding:4px;
+	vertical-align:middle;*/
+}
+/*.gridster .gs-w:hover {*/
+/*	border:1px dotted #CCC;*/
+}
+/*.gridster .gs-w .line {*/
+/*	border:none;
+	border-bottom:1px solid #333;
+	width:100%;
+	font-family:Arial, Helvetica, sans-serif;
+	font-weight:bold;
+	font-size:13px;
+	padding:0;
+	vertical-align:;
+	height:20px;*/
+}
+
+.cel_input {
+	padding-left:6px;
+}
+.cel_label {
+	padding-bottom:1px;
+}
+
+.gridster .player {
+    background: #BBB;
+}
+
+.gridster .preview-holder {
+    border: none!important;
+    background: red!important;
+}
+
+
+/****************************************/
+
+.gridster2 * {
+  margin:0;
+  padding:0;
+}
+
+.gridster2 ul {
+    background-color: #EFEFEF;
+}
+
+.gridster2 li {
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    line-height: 100%;
+}
+
+
+.gridster2 {
+    margin: 0 auto;
+
+    opacity: .8;
+
+    -webkit-transition: opacity .6s;
+    -moz-transition: opacity .6s;
+    -o-transition: opacity .6s;
+    -ms-transition: opacity .6s;
+    transition: opacity .6s;
+}
+
+.gridster2 .gs-w {
+    background: #DDD;
+    cursor: pointer;
+}
+
+.gridster2 .player {
+    background: #BBB;
+}
+
+.gridster2 .preview-holder {
+    border: none!important;
+    background: red!important;
+}

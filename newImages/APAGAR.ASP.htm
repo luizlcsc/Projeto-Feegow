@@ -1,0 +1,682 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"><script language="JavaScript"> 
+function f_d1(){ 
+d1=document.frm.d1.value.length;
+if (d1>9) 
+{ document.frm.d2.focus()} 
+} 
+function f_d2(){ 
+d2=document.frm.d2.value.length; 
+if (d2>1) 
+{ document.frm.tel1.focus()} 
+} 
+function f_tel1(){ 
+tel1=document.frm.tel1.value.length; 
+if (tel1>8) 
+{ document.frm.tel2.focus()} 
+} 
+function f_tel2(){ 
+tel2=document.frm.tel2.value.length; 
+if (tel2>8) 
+{ document.frm.celular.focus()} 
+} 
+function f_celular(){ 
+celular=document.frm.celular.value.length; 
+if (celular>8) 
+{ document.frm.data_admissao.focus()} 
+} 
+function f_data_admissao(){ 
+data_admissao=document.frm.data_admissao.value.length; 
+if (data_admissao>9) 
+{ document.frm.salario.focus()} 
+} 
+function f_dia_pagamento(){ 
+dia_pagamento=document.frm.dia_pagamento.value.length; 
+if (dia_pagamento>1) 
+{ document.frm.cargo.focus()} 
+} 
+function f_cpf(){ 
+cpf=document.frm.cpf.value.length; 
+if (cpf>13) 
+{ document.frm.rg.focus()} 
+} 
+function f_inicio_atividade(){ 
+inicio_atividade=document.frm.inicio_atividade.value.length; 
+if (inicio_atividade>9) 
+{ document.frm.data_desligamento.focus()} 
+} 
+function f_data_desligamento(){ 
+data_desligamento=document.frm.data_desligamento.value.length; 
+if (data_desligamento>9) 
+{ document.frm.observacoes.focus()} 
+} 
+function Mascara (formato, keypress, objeto){ 
+campo = eval (objeto); 
+// DATA 
+if (formato=='cnpj_emp'){ 
+separador1 = '.'; 
+separador2 = '/'; 
+separador3 = '-'; 
+conjunto1 = 2; 
+conjunto2 = 6; 
+conjunto3 = 10; 
+conjunto4 = 15; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto2){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto3){ 
+campo.value = campo.value + separador2; 
+} 
+if (campo.value.length == conjunto4){ 
+campo.value = campo.value + separador3; 
+} 
+} 
+if (formato=='cpf'){ 
+separador1 = '.'; 
+separador2 = '-'; 
+conjunto1 = 3; 
+conjunto2 = 7; 
+conjunto3 = 11; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto2){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto3){ 
+campo.value = campo.value + separador2; 
+}
+} 
+if (formato=='telefone'){ 
+separador1 = '-'; 
+conjunto1 = 4; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+} 
+if (formato=='hora'){ 
+separador1 = ':'; 
+conjunto1 = 2; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+} 
+if (formato=='cep1'){ 
+separador1 = '.'; 
+separador2 = '-'; 
+conjunto1 = 2; 
+conjunto2 = 6; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto2){ 
+campo.value = campo.value + separador2; 
+} 
+} 
+if (formato=='data'){ 
+separador1 = '/'; 
+conjunto1 = 2; 
+conjunto2 = 5; 
+if (campo.value.length == conjunto1){ 
+campo.value = campo.value + separador1; 
+} 
+if (campo.value.length == conjunto2){ 
+campo.value = campo.value + separador1; 
+} 
+} 
+} 
+function nm()
+{
+    if (event.keyCode == 44) return true
+    if (event.keyCode == 47) return true
+    if (event.keyCode == 45) return true
+    if (event.keyCode == 48) return true
+    if (event.keyCode == 49) return true
+    if (event.keyCode == 50) return true
+    if (event.keyCode == 51) return true
+    if (event.keyCode == 52) return true
+    if (event.keyCode == 53) return true
+    if (event.keyCode == 54) return true
+    if (event.keyCode == 55) return true
+    if (event.keyCode == 56) return true
+    if (event.keyCode == 57) return true
+    return false
+}
+function onm()
+{
+    if (event.keyCode == 48) return true
+    if (event.keyCode == 49) return true
+    if (event.keyCode == 50) return true
+    if (event.keyCode == 51) return true
+    if (event.keyCode == 52) return true
+    if (event.keyCode == 53) return true
+    if (event.keyCode == 54) return true
+    if (event.keyCode == 55) return true
+    if (event.keyCode == 56) return true
+    if (event.keyCode == 57) return true
+    return false
+}
+function lt()
+
+{
+    if (event.keyCode == 34) return false
+    if (event.keyCode == 39) return false
+    return true
+}
+</script>
+
+</head><body><table border="1">
+<tbody><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/agendacontatos.asp" target="_blank">agendacontatos.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=10';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/BuscaAjax.asp" target="_blank">BuscaAjax.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=44';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Calendario.asp" target="_blank">Calendario.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=63';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/CalendarioReceita.asp" target="_blank">CalendarioReceita.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=66';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Contas.asp" target="_blank">Contas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=101';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ContasAPagar.asp" target="_blank">ContasAPagar.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=102';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ContasFixas.asp" target="_blank">ContasFixas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=103';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Convenios.asp" target="_blank">Convenios.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=110';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/DispBusca.asp" target="_blank">DispBusca.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=127';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/DivAgendamento.asp" target="_blank">DivAgendamento.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=128';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiAgendaContatos.asp" target="_blank">EdiAgendaContatos.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=136';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiContasAPagar.asp" target="_blank">EdiContasAPagar.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=138';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiContasFixas.asp" target="_blank">EdiContasFixas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=139';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiDoutores.asp" target="_blank">EdiDoutores.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=140';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiEstoqueMatMed.asp" target="_blank">EdiEstoqueMatMed.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=141';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiHorario.asp" target="_blank">EdiHorario.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=144';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiLocais.asp" target="_blank">EdiLocais.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=146';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiPaciente.asp" target="_blank">EdiPaciente.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=147';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/edireceitasAReceber.asp" target="_blank">edireceitasAReceber.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=149';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiShip.asp" target="_blank">EdiShip.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=151';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiTarefaPor.asp" target="_blank">EdiTarefaPor.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=156';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiTiposDespesas.asp" target="_blank">EdiTiposDespesas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=159';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EdiTiposReceitas.asp" target="_blank">EdiTiposReceitas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=160';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/EstoqueLancamento.asp" target="_blank">EstoqueLancamento.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=167';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Formulas.asp" target="_blank">Formulas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=200';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/FotoGrande.asp" target="_blank">FotoGrande.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=202';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/FotoPaciente.asp" target="_blank">FotoPaciente.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=203';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/funcoesRateio.asp" target="_blank">funcoesRateio.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=207';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Guias.asp" target="_blank">Guias.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=218';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/HistoricoPaciente.asp" target="_blank">HistoricoPaciente.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=222';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Imagens.asp" target="_blank">Imagens.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=229';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaAgendaContatos.asp" target="_blank">ListaAgendaContatos.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=244';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaAnamneses.asp" target="_blank">ListaAnamneses.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=245';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaContas.asp" target="_blank">ListaContas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=249';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaContasAPagar.asp" target="_blank">ListaContasAPagar.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=250';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaContasFixas.asp" target="_blank">ListaContasFixas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=251';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaConvenios.asp" target="_blank">ListaConvenios.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=252';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaDoutores.asp" target="_blank">ListaDoutores.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=253';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaEstoqueLancamento.asp" target="_blank">ListaEstoqueLancamento.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=256';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaEstoqueMatMed.asp" target="_blank">ListaEstoqueMatMed.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=257';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaForms.asp" target="_blank">ListaForms.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=260';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaFormulas.asp" target="_blank">ListaFormulas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=261';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaGuias.asp" target="_blank">ListaGuias.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=262';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaLocais.asp" target="_blank">ListaLocais.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=266';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaMotivosReagendamento.asp" target="_blank">ListaMotivosReagendamento.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=267';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaPaciente.asp" target="_blank">ListaPaciente.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=268';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaPacienteAtestados.asp" target="_blank">ListaPacienteAtestados.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=269';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaPacienteReceita.asp" target="_blank">ListaPacienteReceita.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=270';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaPedidoExame.asp" target="_blank">ListaPedidoExame.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=272';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaPermissoes.asp" target="_blank">ListaPermissoes.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=273';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaReceitasAReceber.asp" target="_blank">ListaReceitasAReceber.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=280';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaReceitasFixas.asp" target="_blank">ListaReceitasFixas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=281';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaRepasses.asp" target="_blank">ListaRepasses.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=282';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListasConvenios.asp" target="_blank">ListasConvenios.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=283';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaShip.asp" target="_blank">ListaShip.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=285';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListasProcedimentosExecutadosResumido.asp" target="_blank">ListasProcedimentosExecutadosResumido.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=287';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaTarefa.asp" target="_blank">ListaTarefa.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=295';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaTarefaParaMim.asp" target="_blank">ListaTarefaParaMim.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=296';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaTiposDespesas.asp" target="_blank">ListaTiposDespesas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=298';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ListaTiposReceitas.asp" target="_blank">ListaTiposReceitas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=299';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Locais.asp" target="_blank">Locais.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=301';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Mais.asp" target="_blank">Mais.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=310';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Menu.asp" target="_blank">Menu.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=314';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/MotivosReagendamento.asp" target="_blank">MotivosReagendamento.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=321';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/MovimentosPagar.asp" target="_blank">MovimentosPagar.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=322';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/NovaAgenda.asp" target="_blank">NovaAgenda.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=325';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/NovaAnamnese.asp" target="_blank">NovaAnamnese.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=331';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Orcamento.asp" target="_blank">Orcamento.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=361';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Orcamentos.asp" target="_blank">Orcamentos.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=364';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/PacienteAtestado.asp" target="_blank">PacienteAtestado.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=367';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/PacienteReceita.asp" target="_blank">PacienteReceita.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=368';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Pagamento.asp" target="_blank">Pagamento.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=384';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Papeis.asp" target="_blank">Papeis.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=396';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/PedidoExame.asp" target="_blank">PedidoExame.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=406';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Pedidos.asp" target="_blank">Pedidos.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=408';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ReceitasAReceber.asp" target="_blank">ReceitasAReceber.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=432';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/ReceitasFixas.asp" target="_blank">ReceitasFixas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=433';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Recibos.asp" target="_blank">Recibos.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=437';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/sConvenios.asp" target="_blank">sConvenios.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=462';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/sProcedimentosExecutadosResumido.asp" target="_blank">sProcedimentosExecutadosResumido.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=471';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Tarefa.asp" target="_blank">Tarefa.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=480';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/TiposReceitas.asp" target="_blank">TiposReceitas.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=492';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Topo.asp" target="_blank">Topo.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=493';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/UsuarioMaster.asp" target="_blank">UsuarioMaster.asp</a></td>
+		<td>
+		
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=506';" type="button"></td>
+	</tr><tr>
+		<td><a href="http://sistema.feegowclinic.com.br/newClinic/Usuarios.asp" target="_blank">Usuarios.asp</a></td>
+		<td>
+		Sim
+		</td>
+		<td><input value="Excluir" onclick="location.href='?X=507';" type="button"></td>
+	</tr></tbody></table>85</body></html>

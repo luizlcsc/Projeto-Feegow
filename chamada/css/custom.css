@@ -1,0 +1,24 @@
+.page-header {border-bottom:0 !important; text-align:Center;}
+
+.table-custom td{height:100px; padding-left:25px !important;}
+.avatar_pac{float:left; display:inline-block; margin:15px; width:80px; height:80px}
+
+.ch-btn{font-size:16px !important; padding:15px 30px !important; margin-top:20px !important;  display: inline-block;font-size: 80% !important;}
+
+.table-custom h4{margin-top:30px !important;}
+
+.col-md-8{padding-left:0 !important;
+padding-right:0 !important;}
+
+.col-md-4{padding-left:0 !important;
+padding-right:0 !important;}
+
+.carousel-caption h2, .carousel-caption  h1, .carousel-caption  h3{ background-color:rgba(22,157,38,0.5); padding:30px;}
+
+h1{font-size:500%; color:#045f12 !important;}
+
+.table-custom h2{font-size:300%; margin-top:35px !important;}
+
+.page-header{margin-bottom:0 !important;}
+
+.btnh1{font-size:200%;}

@@ -1,0 +1,29 @@
+/* General */
+   BODY {font-family: Arial, Helvetica, sans-serif;
+   font-size: 10pt;
+   background: #ffffff;
+   margin:0;
+   padding:0;
+   }
+   
+
+/* Contenido */
+   H1 {font-size: 9pt; font-weight: bold; color: #0D2270;}
+   H2 {font-size: 9pt; font-weight: bold; font-style: italic; color: #0D2270;}
+   H3 {font-size: 8pt; font-weight: bold; color: #0D2270;}
+   P.parrafocentrado {text-align: center;}
+   
+/* Formulario */
+   FORM.borde {border: 1px dotted #0066CC; padding: 0.5em 0.2em; width: 95%;}
+   FORM.entrada {border: 1px dotted #0066CC; margin-right: 2%; margin-left: 2%;
+      padding: 0.3em}
+   FORM P {clear: left; margin: 0.2em; padding: 0.1em;}
+   FORM P LABEL {float: left; width: 20%; font-weight: bold;}
+   FORM P LABEL.etiqueta-entrada {float: left; width: 2%; font-weight: bold;}
+   .error {color: red;}
+
+/* Tablas */
+   TH {font-size: 9pt; color: #0D2270; background: #ffffff; text-align: center;}
+   TD {font-size: 9pt; color: #0D2270; background: #ffffff;}
+   TD.derecha {font-size: 9pt; text-align: right; background: #f5fdd9;}
+   TD.izquierda {font-size: 9pt; text-align: left; background: #f5fdd9;}

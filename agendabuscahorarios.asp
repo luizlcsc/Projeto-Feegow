@@ -17,5 +17,6 @@ for i=0 to ubound(spl)
         end if
     end if
 next
+'teste
 %>
 ocor(<%= req("ocor") %>);

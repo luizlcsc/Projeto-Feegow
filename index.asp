@@ -766,8 +766,10 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 										Logs de Ações
 									</a>
 								</li>
+								
                                  <%
                                  end if
+								 'teste
 								 if aut("aberturacaixinha")=1 then
 								 %>
 								   <li class="list-group-item menu-click-meu-perfil-abrir-fechar-baixa">

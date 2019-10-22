@@ -33,6 +33,7 @@
 	width:80%;
 	min-width:380px;
 	max-width:990px;
+	/* asdsd */
 }
 </style>
 <link rel="stylesheet" href="assets/css/fullcalendar.css" />

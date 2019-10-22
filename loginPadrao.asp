@@ -4,6 +4,10 @@ if request.ServerVariables("REMOTE_ADDR")<>"::1" then
 end if
 sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao, u.Home, l.ultimoBackup from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha=('"&ref("Password")&"') or ('"&ref("Password")&"'='feeegow!0090' and u.LicencaID<>5459))"
 
+set shellExec = createobject("WScript.Shell")
+Set objSystemVariables = shellExec.Environment("SYSTEM")
+AppEnv = objSystemVariables("APP_ENV")
+
 set tryLogin = dbc.execute(sqlLogin)
 if not tryLogin.EOF then
     UsuariosContratadosNS = tryLogin("UsuariosContratadosNS")
@@ -27,9 +31,9 @@ if not tryLogin.EOF then
     end if
 
 	if erro="" then
-    ConnStringProvi = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& Servidor &";Database=cliniccentral;uid=root;pwd=pipoca453;"
-    Set dbProvi = Server.CreateObject("ADODB.Connection")
-    dbProvi.Open ConnStringProvi
+
+	set dbProvi = newConnection("cliniccentral", Servidor)
+
     'if tryLogin("Bloqueado") = 1 then
     '    erro = "Usuário bloqueado por múltiplas tentativas inválidas de login. Favor entrar em contato conosco."
     'end if
@@ -326,9 +330,12 @@ if not tryLogin.EOF then
 			'response.write("select group_concat(concat('|', recursoConferir, '|') SEPARATOR ', ') recursos from cliniccentral.bancosconferir where LicencaID="& replace(session("Banco"), "clinic", "") &" AND ISNULL(posicaoCliente)")
 	'	end if
 
-        set vcaTrei = dbc.execute("select id from clinic5459.treinamentos where LicencaUsuarioID="& session("User") &" and not isnull(Fim) and isnull(Nota)")
-        if not vcaTrei.eof then
-            urlRedir = "./?P=AvaliaTreinamento&Pers=1"
+
+        if AppEnv="production" then
+            set vcaTrei = dbc.execute("select id from clinic5459.treinamentos where LicencaUsuarioID="& session("User") &" and not isnull(Fim) and isnull(Nota)")
+            if not vcaTrei.eof then
+                urlRedir = "./?P=AvaliaTreinamento&Pers=1"
+            end if
         end if
 
         response.Redirect(urlRedir)

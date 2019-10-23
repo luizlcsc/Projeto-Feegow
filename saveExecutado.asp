@@ -26,7 +26,7 @@ end if
 
 
 if ref("Executado"&ItemInvoiceID)="S" then
-    if validaProcedimentoProfissional(Associacao, ProfissionalID, EspecialidadeID, iinv("ProcedimentoID"))=False then
+    if validaProcedimentoProfissional(Associacao, ProfissionalID, EspecialidadeID, iinv("ProcedimentoID"), 0)=False then
     %>
     new PNotify({
             title: 'ERRO AO TENTAR SALVAR!',

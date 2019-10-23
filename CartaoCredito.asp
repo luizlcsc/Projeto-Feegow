@@ -44,6 +44,7 @@ end if
             <div class="row">
                 <%=quickField("text", "Transacao", "Transação", 2, "", "", "", "")%>
                 <%=quickField("text", "Autorizacao", "Autorização", 2, "", "", "", "")%>
+                <%= quickfield("multiple", "Bandeira", "Selecione a bandeira", 4, req("Bandeira"), "SELECT Bandeira,Bandeira as id FROM cliniccentral.bandeiras_cartao", "Bandeira", "") %>
                 <div class="col-md-offset-6 col-md-1">
                     <label>&nbsp;</label><br />
                     <button class="btn btn-sm btn-info" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i> Imprimir</button>

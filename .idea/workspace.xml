@@ -1,67 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2dd3aae2-9b45-4401-b729-ac93408c9c2c" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/AgendaMultiplaConteudo_1010V.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AgendaParametros2210.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AnaliseReceitas1710.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Busca1707.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Caixa1812.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Caixa2610.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Convenios2406.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DefaultForm1004.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EditaPermissoes0808.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FuncoesRateio2007.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GradeAgenda-1_0411.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Home0404.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeBCK.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeERRO.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Horarios-12704.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImprimirPropostaCorpo1312silvioalterou.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MenuFinanceiro2105.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OcupacaoMultipla1305.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OcupacaoMultipla1305_2.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RecorrenteLista3006.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RepasseCalculo1711.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirConvenio1503.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirConvenio1512.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirParticular0305.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirParticular0312.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirParticular1512.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RepasseCalculoAConferirParticular3001.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RepasseLinear1503.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RepassesConferidos1604.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RepassesConferidosOLD.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RepassesConferidosSEGURA.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/addHorario2704.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atualizabanco2_2805.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calculaRepasse1604.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/callForm1808.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/callForm2905.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/callNewForm1808.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/callNewForm2905.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conteudoQD-antesdoar.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conteudoQD-novo.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conteudoQD-old.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/functionOcupacao0406.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/functionOcupacao1105.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/functionOcupacao1105aws.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/functionOcupacao1305.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/invoiceSaveMEU0812.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/listaLaudos1007.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/loginPadrao0909.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/loginPadraoMeu0911.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/menuEsquerdo1202.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/menuEsquerdo1509.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/menuEsquerdo2107.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/menuEsquerdoNOVO.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/menuEsquerdoold.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modalAgendaNOVA3012STANDBY.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modalSADT_2203.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/namAgenda1202.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rFCaixa_0512.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/retornoXML2404.asp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/saveAgenda2210.asp" beforeDir="false" />
+    <list default="true" id="2dd3aae2-9b45-4401-b729-ac93408c9c2c" name="Default" comment="remove alguns arquivos">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -70,24 +12,37 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/pdf_lixo/composer.json</pharConfigPath>
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="connect.asp" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/connect.asp">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="Devolucao.asp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Classes/Devolucao.asp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
+            <state relative-caret-position="187">
+              <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>5459</find>
+    </findStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/index.asp" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+      </list>
+    </option>
   </component>
   <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
   <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
@@ -101,38 +56,20 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths>
       <path value="$PROJECT_DIR$/jquery-maskmoney-master/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/hogan.js/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/htmlparser2/node_modules/domelementtype/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/htmlparser2/node_modules/domhandler/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/htmlparser2/node_modules/domutils/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/htmlparser2/node_modules/readable-stream/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/htmlparser2/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/mustache/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/require-csv/node_modules/csv2array/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/require-csv/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/node_modules/argparse/node_modules/underscore.string/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/node_modules/argparse/node_modules/underscore/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/node_modules/argparse/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/node_modules/superagent/node_modules/cookiejar/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/node_modules/superagent/node_modules/debug/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/node_modules/superagent/node_modules/emitter-component/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/node_modules/superagent/node_modules/formidable/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/node_modules/superagent/node_modules/methods/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/node_modules/superagent/node_modules/mime/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/node_modules/superagent/node_modules/qs/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/node_modules/superagent/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/w3cjs/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/xtend/package.json" />
-      <path value="$PROJECT_DIR$/mustache/js/node_modules/yuicompressor/package.json" />
       <path value="$PROJECT_DIR$/mustache/js/package.json" />
     </packageJsonPaths>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1382" />
+    <option name="height" value="784" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -149,7 +86,17 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="SearchEverywhereHistoryKey" value="devoluca&#9;FILE&#9;file://C:/inetpub/wwwroot/feegowclinic-v7/Classes/Devolucao.asp&#10;index&#9;FILE&#9;file://C:/inetpub/wwwroot/feegowclinic-v7/index.asp&#10;indexas&#9;FILE&#9;file://C:/inetpub/wwwroot/feegowclinic-v7/index.asp&#10;homeas&#9;FILE&#9;file://C:/inetpub/wwwroot/feegowclinic-v7/Home.asp" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -173,7 +120,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571769529857</updated>
-      <workItem from="1571769535561" duration="1481000" />
+      <workItem from="1571769535561" duration="1553000" />
+      <workItem from="1571771122556" duration="2855000" />
+      <workItem from="1571847337419" duration="30000" />
     </task>
     <task id="LOCAL-00001" summary="remove alguns arquivos">
       <created>1571770206308</created>
@@ -186,34 +135,61 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1481000" />
+    <option name="totallyTimeSpent" value="4438000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24962178" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" weight="0.32843137" />
-      <window_info anchor="right" id="Database" />
-      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.32843137" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.39052287" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32843137" />
+      <window_info active="true" anchor="right" id="Remote Host" order="3" visible="true" weight="0.32980332" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25718608" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="right" id="Database" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.32843137" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info id="Favorites" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
@@ -223,16 +199,59 @@
     <option name="LAST_COMMIT_MESSAGE" value="remove alguns arquivos" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/xml-retorno/.gitignore">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ofx/.gitignore">
-      <provider selected="true" editor-type-id="text-editor" />
+    <entry file="file://$PROJECT_DIR$/Classes/Devolucao.asp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="22" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/connect.asp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/connect.asp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Classes/Connection.asp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="20" lean-forward="true" selection-start-line="8" selection-start-column="20" selection-end-line="8" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Home.asp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="10" column="31" selection-start-line="10" selection-start-column="27" selection-end-line="10" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.asp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="42" column="22" lean-forward="true" selection-start-line="42" selection-start-column="22" selection-end-line="42" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="6" selection-start-column="6" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Classes/Devolucao.asp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
         </state>
       </provider>
     </entry>

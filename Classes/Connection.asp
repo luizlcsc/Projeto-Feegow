@@ -1,4 +1,5 @@
 <%
+'Arquivo de conexão
 function newConnection(customDatabase, customHost)
     set shellExec = createobject("WScript.Shell")
     Set objSystemVariables = shellExec.Environment("SYSTEM")

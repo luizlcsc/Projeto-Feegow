@@ -5,6 +5,10 @@ var mainDomain = urlSplit[0] + ".br/";
 
 
 var env = "production";
+if(window.location.href.indexOf('local') == 7){
+    env = "local";
+}
+
 var domain = null;
 
 switch (env){

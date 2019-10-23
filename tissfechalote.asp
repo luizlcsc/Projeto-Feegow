@@ -136,13 +136,15 @@ if request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaConsu
                 <%
             end if
             %>
-            <th nowrap>N&deg; da Guia</th>
+            <th nowrap>N&deg; da Guia Operadora</th>
+            <th nowrap>N&deg; da Guia Prestador</th>
             <th nowrap>Cód. na Operadora</th>
             <th nowrap>Procedimento</th>
             <th nowrap>Paciente</th>
             <th nowrap>N&deg; da Carteira</th>
             <th nowrap>Valor da Guia</th>
             <th nowrap>Usuário</th>
+            <th nowrap>Observações</th>
         </tr>
     </thead>
     <tbody>
@@ -186,7 +188,6 @@ if request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaConsu
 
     sqlGuia = "select g.*, proc.NomeProcedimento from tissguiaconsulta g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN procedimentos proc ON proc.id = g.ProcedimentoID where g.sysActive=1"&sqlLote&sqlContratados&sqlPlanos&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia &orderBy
 
-
 	set guias = db.execute(sqlGuia)
 	while not guias.EOF
 		set pac = db.execute("select NomePaciente from pacientes where id="&guias("PacienteID"))
@@ -220,12 +221,14 @@ if request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaConsu
                 end if
             %>
             <td><a href="./?P=tissguiaconsulta&I=<%=guias("id")%>&Pers=1" target="_blank"><%= guias("NGuiaPrestador") %></a></td>
+            <td><%= guias("NGuiaOperadora") %></td>
             <td><%= guias("CodigoNaOperadora") %></td>
             <td><%= guias("NomeProcedimento") %></td>
 	        <td><%=NomePaciente%></td>
             <td><%=guias("NumeroCarteira")%></td>
             <td class="text-right">R$ <%=formatnumber(guias("ValorProcedimento"),2)%></td>
             <td><%=nameInTable(guias("SysUser"))%></td>
+            <td><%=guias("Observacoes")%></td>
         </tr>
 		<%
 		response.Flush()

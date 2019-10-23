@@ -136,13 +136,15 @@ if request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaConsu
                 <%
             end if
             %>
-            <th nowrap>N&deg; da Guia</th>
+            <th nowrap>Nº da Guia<br/> Operadora</th>
+            <th nowrap>Nº da Guia<br/> Prestador</th>
             <th nowrap>Cód. na Operadora</th>
             <th nowrap>Procedimento</th>
             <th nowrap>Paciente</th>
             <th nowrap>N&deg; da Carteira</th>
             <th nowrap>Valor da Guia</th>
             <th nowrap>Usuário</th>
+            <th nowrap>Observações</th>
         </tr>
     </thead>
     <tbody>
@@ -186,7 +188,6 @@ if request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaConsu
 
     sqlGuia = "select g.*, proc.NomeProcedimento from tissguiaconsulta g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN procedimentos proc ON proc.id = g.ProcedimentoID where g.sysActive=1"&sqlLote&sqlContratados&sqlPlanos&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia &orderBy
 
-
 	set guias = db.execute(sqlGuia)
 	while not guias.EOF
 		set pac = db.execute("select NomePaciente from pacientes where id="&guias("PacienteID"))
@@ -220,12 +221,14 @@ if request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaConsu
                 end if
             %>
             <td><a href="./?P=tissguiaconsulta&I=<%=guias("id")%>&Pers=1" target="_blank"><%= guias("NGuiaPrestador") %></a></td>
+            <td><%= guias("NGuiaOperadora") %></td>
             <td><%= guias("CodigoNaOperadora") %></td>
             <td><%= guias("NomeProcedimento") %></td>
 	        <td><%=NomePaciente%></td>
             <td><%=guias("NumeroCarteira")%></td>
             <td class="text-right">R$ <%=formatnumber(guias("ValorProcedimento"),2)%></td>
             <td><%=nameInTable(guias("SysUser"))%></td>
+            <td><%=guias("Observacoes")%></td>
         </tr>
 		<%
 		response.Flush()
@@ -250,7 +253,8 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaH
                 <%
             end if
             %>
-            <th nowrap>N&deg; da Guia</th>
+            <th nowrap>Nº da Guia<br/> Operadora</th>
+            <th nowrap>Nº da Guia<br/> Prestador</th>
             <th nowrap>Cód. na Operadora</th>
             <th nowrap>Procedimentos</th>
             <th nowrap>Paciente</th>
@@ -258,7 +262,7 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaH
             <th nowrap>Valor da Guia</th>
             <th nowrap>Senha</th>
             <th nowrap>Usuário</th>
-
+            <th nowrap>Observações</th>
         </tr>
     </thead>
     <tbody>
@@ -352,6 +356,7 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaH
                 <%
             end if
             %>
+            <td><a href="./?P=tissguiahonorarios&I=<%=guias("id")%>&Pers=1" target="_blank"><%= guias("NGuiaOperadora") %></a></td>
             <td><a href="./?P=tissguiahonorarios&I=<%=guias("id")%>&Pers=1" target="_blank"><%= guias("NGuiaPrestador") %></a></td>
             <td><%= guias("CodigoNaOperadora") %></td>
             <td><%=guias("NomeProcedimentos") %></td>
@@ -360,6 +365,7 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaH
             <td class="text-right">R$ <%=formatnumber(guias("Procedimentos"),2)%></td>
             <td><%=guias("Senha")%></td>
             <td><%=nameInTable(guias("SysUser"))%></td>
+            <td><%=guias("Observacoes")%></td>
         </tr>
 		<%
 		response.Flush()
@@ -384,7 +390,8 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaS
                 <%
             end if
             %>
-            <th nowrap>N&deg; da Guia</th>
+            <th nowrap>Nº da Guia<br/> Operadora</th>
+            <th nowrap>Nº da Guia<br/> Prestador</th>
             <th nowrap>Cód. na Operadora</th>
             <th nowrap>Procedimentos</th>
             <th nowrap>Paciente</th>
@@ -392,6 +399,7 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaS
             <th nowrap>Valor da Guia</th>
             <th nowrap>Senha</th>
             <th nowrap>Usuário</th>
+            <th nowrap>Observação</th>
         </tr>
     </thead>
     <tbody>
@@ -483,6 +491,7 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaS
             end if
             %>
             <td><a href="./?P=tissguiasadt&I=<%=guias("id")%>&Pers=1" target="_blank"><%= guias("NGuiaPrestador") %></a></td>
+            <td><a href="./?P=tissguiasadt&I=<%=guias("id")%>&Pers=1" target="_blank"><%= guias("NGuiaOperadora") %></a></td>
             <td><%=guias("CodigoNaOperadora") %></td>
             <td><%=guias("Procedimentos") %></td>
 	        <td><%=NomePaciente%></td>
@@ -490,6 +499,7 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaS
             <td class="text-right">R$ <%=fn(guias("TotalGeral"))%></td>
             <td><%=guias("senha")%></td>
             <td><%=nameInTable(guias("SysUser"))%></td>
+            <td><%=guias("Observacoes")%></td>
         </tr>
 		<%
 		response.Flush()

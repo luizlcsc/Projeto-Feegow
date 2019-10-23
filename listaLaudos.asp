@@ -103,12 +103,12 @@ end if
         end if
 
 
-        sql = "SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID LIMIT 1)TemArquivos, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, proc.DiasLaudo, IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional, pac.NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID  FROM ("&_
-            " SELECT ii.id, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
+        sql = "SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID LIMIT 1)TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, proc.DiasLaudo, IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional, pac.NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID  FROM ("&_
+            " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
             " UNION ALL "&_
-            " SELECT i.id, 'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
+            " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
             " UNION ALL "&_
-            " SELECT gps.id, 'tissprocedimentossadt', gps.Data, gps.ProcedimentoID, gs.PacienteID, gps.ProfissionalID, gps.Associacao, conv.NomeConvenio FROM tissguiasadt gs LEFT JOIN tissprocedimentossadt gps ON gps.GuiaID=gs.id LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE gps.ProcedimentoID IN("& procsLaudar &") "& sqlDataGPS & sqlProcGS & sqlPacGS & sqlUnidadesG &_
+            " SELECT gps.id, gps.Quantidade quantidade,  'tissprocedimentossadt', gps.Data, gps.ProcedimentoID, gs.PacienteID, gps.ProfissionalID, gps.Associacao, conv.NomeConvenio FROM tissguiasadt gs LEFT JOIN tissprocedimentossadt gps ON gps.GuiaID=gs.id LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE gps.ProcedimentoID IN("& procsLaudar &") "& sqlDataGPS & sqlProcGS & sqlPacGS & sqlUnidadesG &_
             ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID INNER JOIN pacientes pac ON pac.id=t.PacienteID "&_
             " LEFT JOIN Laudos l ON (l.Tabela=t.Tabela AND l.IDTabela=t.id) "&_
             " LEFT JOIN labs_exames_procedimentos lep ON (lep.ProcedimentoID=t.ProcedimentoID) "&_
@@ -119,71 +119,98 @@ end if
 
         set ii = db.execute( sql )
         while not ii.eof
-            Status = ""
-            if not isnull(ii("DiasLaudo")) then
-                DiasLaudo = ii("DiasLaudo")
-            else
-                DiasLaudo = 0
-            end if
-            DataExecucao = ii("DataExecucao")
-            Tabela = ii("Tabela")
-            IDTabela = ii("IDTabela")
-            ProcedimentoID = ii("ProcedimentoID")
-            PacienteID = ii("PacienteID")
+            quantidade = ii("quantidade")
+            ExibirSufixoQuantidade=False
 
-            disabledEdit=""
-            
+            for contador = 1 to quantidade
 
-            Previsao = dateAdd("d", DiasLaudo, DataExecucao)
-
-            set vca = db.execute("select l.id, ls.Status, l.PrevisaoEntrega from laudos l LEFT JOIN laudostatus ls ON ls.id=l.StatusID where l.Tabela='"& Tabela &"' and l.IDTabela="& IDTabela)
-            if not vca.eof then
-                Status = vca("Status")
-                Previsao = vca("PrevisaoEntrega")
-                IDLaudo = vca("id")
-                link = "I="& IDLaudo
-            else
-                link = "T="& Tabela &"&Pac="& PacienteID &"&IDT="& IDTabela &"&Proc="& ProcedimentoID &"&E="& DataExecucao
-                Status = "Pendente"
-            end if
-
-            NomeProfissional = ii("NomeProfissional")
-
-            if ii("Associacao")<>5 then
-                NomeProfissional=accountName(ii("Associacao"), ii("ProfissionalID"))
-            end if
-
-            if right("0000000"&ii("Identificacao") ,7) = right("0000000"&ref("id") ,7) or ref("id")&""="" then
-
-            if isnull(ii("Identificacao")) and Tabela="sys_financialinvoices" then
-                disabledEdit = " disabled "
-            end if
-
-            NomeProcedimento = ii("NomeProcedimento")
-            if NomeProcedimento = "Laboratório" then
-                sqlSiglas = "SELECT GROUP_CONCAT(DISTINCT ifnull(p.Sigla,'') SEPARATOR ', ') Siglas FROM itensinvoice ii INNER JOIN procedimentos p ON ii.ItemID = p.id WHERE ii.Executado = 'S' and p.TipoProcedimentoID = 3 and ii.InvoiceID="&IDTabela
-                set siglasSQL = db.execute(sqlSiglas)
-                if not siglasSQL.eof then
-                    NomeProcedimento = siglasSQL("Siglas")
+                Status = ""
+                if not isnull(ii("DiasLaudo")) then
+                    DiasLaudo = ii("DiasLaudo")
+                else
+                    DiasLaudo = 0
                 end if
-            end if
 
-            %>
-            <tr>
-                <td><input type="checkbox" name="cklaudos" class="cklaudos" value="<%= link %>" /></td>
-                <td data-id="<%=ii("Identificacao")%>"><%= right("0000000"&ii("Identificacao") ,7)%></td>
-                <td><%= DataExecucao %></td>
-                <td><%= Previsao %></td>
-                <td><%= ii("NomePaciente") %></td>
-                <td><%= NomeProfissional %></td>
-                <td><%= NomeProcedimento %></td>
-                <td><%= ii("NomeConvenio") %></td>
-                <td><%= Status %> <% if cint(ii("TemArquivos")) > 0 then %> <span><i style="color: #36bf92" class="fa fa-paperclip"></i></span> <% end if %></td>
-                <td><a class="btn btn-xs btn-success" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%= link %>"><i class="fa fa-edit"></i></a></td>
-                <td><button class="btn btn-xs btn-info hidden"><i class="fa fa-print"></i></button></td>
-            </tr>
-            <%
-            end if
+                DataExecucao = ii("DataExecucao")
+                Tabela = ii("Tabela")
+                IDTabela = ii("IDTabela")
+                ProcedimentoID = ii("ProcedimentoID")
+                PacienteID = ii("PacienteID")
+                ItemN = contador
+                disabledEdit=""
+                'Identificacao = ii("Identificacao")
+
+                Previsao = dateAdd("d", DiasLaudo, DataExecucao)
+
+                set vca = db.execute("select l.id, ls.Status, l.PrevisaoEntrega from laudos l LEFT JOIN laudostatus ls ON ls.id=l.StatusID where l.Tabela='"& Tabela &"' and l.IDTabela="& IDTabela &" and l.Serie="&ItemN)
+                if not vca.eof then
+                    Status = vca("Status")
+                    Previsao = vca("PrevisaoEntrega")
+                    IDLaudo = vca("id")
+                    link = "I="& IDLaudo
+                    adicionaLinha = 1
+
+                else
+                    link = "T="& Tabela &"&Pac="& PacienteID &"&IDT="& IDTabela &"&Proc="& ProcedimentoID &"&E="& DataExecucao&"&IT="&ItemN
+                    Status = "Pendente"
+                    'Identificacao = 0
+
+                    adicionaLinha = 1
+
+                    if ItemN>1 then
+                        adicionaLinha = 0
+                    end if
+
+                    if ii("SepararLaudoQtd") = 1 then
+                        adicionaLinha = 1
+                        ExibirSufixoQuantidade=True
+                    end if
+
+                end if
+
+                NomeProfissional = ii("NomeProfissional")
+
+                if ii("Associacao")<>5 then
+                    NomeProfissional=accountName(ii("Associacao"), ii("ProfissionalID"))
+                end if
+
+                if right("0000000"&ii("Identificacao") ,7) = right("0000000"&ref("id") ,7) or ref("id")&""="" then
+
+
+                    if isnull(ii("Identificacao")) and Tabela="sys_financialinvoices" then
+                        disabledEdit = " disabled "
+                    end if
+
+                    NomeProcedimento = ii("NomeProcedimento")
+                    if NomeProcedimento = "Laboratório" then
+                        sqlSiglas = "SELECT GROUP_CONCAT(DISTINCT ifnull(p.Sigla,'') SEPARATOR ', ') Siglas FROM itensinvoice ii INNER JOIN procedimentos p ON ii.ItemID = p.id WHERE ii.Executado = 'S' and p.TipoProcedimentoID = 3 and ii.InvoiceID="&IDTabela
+                        set siglasSQL = db.execute(sqlSiglas)
+                        if not siglasSQL.eof then
+                            NomeProcedimento = siglasSQL("Siglas")
+                        end if
+                    end if
+
+                    if adicionaLinha =1 then
+                    %>
+                    <tr>
+                        <td><input type="checkbox" name="cklaudos" class="cklaudos" value="<%= link %>" /></td>
+                        <td data-id="<%=ii("Identificacao")%>"><%= right("0000000"&ii("Identificacao") ,7)%><% if ExibirSufixoQuantidade then %>-<%=ItemN%><% end if %></td>
+                        <td><%= DataExecucao %></td>
+                        <td><%= Previsao %></td>
+                        <td><%= ii("NomePaciente") %></td>
+                        <td><%= NomeProfissional %></td>
+                        <td><%= NomeProcedimento %></td>
+                        <td><%= ii("NomeConvenio") %></td>
+                        <td><%= Status %> <% if cint(ii("TemArquivos")) > 0 then %> <span><i style="color: #36bf92" class="fa fa-paperclip"></i></span> <% end if %></td>
+                        <td><a class="btn btn-xs btn-success" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%= link %>"><i class="fa fa-edit"></i></a></td>
+                        <td><button class="btn btn-xs btn-info hidden"><i class="fa fa-print"></i></button></td>
+                    </tr>
+                    <%
+                    end if
+
+                end if
+            next
+
         ii.movenext
         wend
         ii.close

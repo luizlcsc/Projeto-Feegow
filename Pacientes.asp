@@ -4,6 +4,19 @@
 
 
 <%
+isProposta = req("isProposta")
+if isProposta = "S" then 
+%>
+<script>
+$(function(){
+	$("#tabPropostas").trigger("click")
+});
+</script>
+<%
+end if
+%>
+
+<%
     if req("Agenda")="" then
     %>
     <link rel="stylesheet" href="vendor/plugins/dropzone/css/dropzone.css">
@@ -115,9 +128,6 @@ end if
 		}
 	});
 
-	$(document).ready(function(){
-		
-	});
 </script>
 
 <script type="text/javascript">

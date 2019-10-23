@@ -62,7 +62,9 @@
 <script>
 $(document).ready(function(){
 	var urlClinic7 = "https://clinic7.feegow.com.br/v7/ping.asp",
+		urlLoginClinic7 = "https://clinic7.feegow.com.br/v7/?P=Login",
 		urlClinic8 = "https://clinic8.feegow.com.br/v7/ping.asp",
+		urlLoginClinic8 = "https://clinic8.feegow.com.br/v7/?P=Login",
 		$btnLogin = $("#pagina-login-btn");
 	
 	$.ajax({
@@ -71,10 +73,10 @@ $(document).ready(function(){
     url:      urlClinic7,
     dataType: "text",
     error: function (request, error) {
-		$btnLogin.attr("href", urlClinic8);
+		$btnLogin.attr("href", urlLoginClinic8);
     },
     success: function () {
-		$btnLogin.attr("href", urlClinic7);
+		$btnLogin.attr("href", urlLoginClinic7);
     }
 	});
 });

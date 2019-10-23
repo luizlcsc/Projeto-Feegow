@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" type="image/png" href="https://clinic.feegow.com.br/components/public/favicon-error.ico"/>
+
+<title>500 - Ocorreu um erro</title>
+
+<link href="https://fonts.googleapis.com/css?family=Quicksand:700" rel="stylesheet">
+
+<link type="text/css" rel="stylesheet" href="errors/css/font-awesome.min.css" />
+
+<link type="text/css" rel="stylesheet" href="errors/css/style.css" />
+
+
+<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+</head>
+<body>
+<div id="notfound">
+<div class="logo-left">
+<a href="https://feegowclinic.com.br/">
+<img src="https://site.feegowclinic.com.br/wp-content/uploads/2019/05/logo-feegow-clinic.png"/></a>
+</div>
+<div class="notfound">
+<div class="notfound-bg">
+<div></div>
+<div></div>
+<div></div>
+</div>
+<h1>oops!</h1>
+<h2>Erro 503 : Erro interno</h2>
+<a href="#" class="btn" id="pagina-login-btn">Página de login</a>
+
+<div class="notfound-social">
+<a href="https://www.facebook.com/feegowclinic/"><i class="fa fa-facebook"></i></a>
+<a href="https://www.linkedin.com/company/feegowtechnologies?originalSubdomain=br"><i class="fa fa-linkedin"></i></a>
+<a href="https://www.instagram.com/feegowclinic/"><i class="fa fa-instagram"></i></a>
+<a href="https://www.youtube.com/channel/UChS9aIWBsx3Nvpgws0D0Txg"><i class="fa fa-youtube"></i></a>
+</div>
+<div>
+	<a class="ajuda" href="https://feegowclinic.com.br/fale-com-a-feegow/">Ajuda</a>
+</div>
+</div>
+</div>	
+<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+  
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13" type="d50ce990dcbf86fbbb9b71ac-text/javascript"></script>
+
+<script src="https://ajax.cloudflare.com/cdn-cgi/scripts/95c75768/cloudflare-static/rocket-loader.min.js" data-cf-settings="d50ce990dcbf86fbbb9b71ac-|49" defer=""></script></body>
+</html>
+
+<script src="//code.jivosite.com/widget.js" data-jv-id="3j2XOJKoQb" async></script>
+
+<script>
+$(document).ready(function(){
+	var urlClinic7 = "https://clinic7.feegow.com.br/v7/ping.asp",
+		urlLoginClinic7 = "https://clinic7.feegow.com.br/v7/?P=Login",
+		urlClinic8 = "https://clinic8.feegow.com.br/v7/ping.asp",
+		urlLoginClinic8 = "https://clinic8.feegow.com.br/v7/?P=Login",
+		$btnLogin = $("#pagina-login-btn");
+	
+	$.ajax({
+    type:     "get",
+    cache:    false,
+    url:      urlClinic7,
+    dataType: "text",
+    error: function (request, error) {
+		$btnLogin.attr("href", urlLoginClinic8);
+    },
+    success: function () {
+		$btnLogin.attr("href", urlLoginClinic7);
+    }
+	});
+});
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-54670639-4"></script>
+<script>
+ window.dataLayer = window.dataLayer || [];
+ function gtag(){dataLayer.push(arguments);}
+ gtag('js', new Date());
+ gtag('config', 'UA-54670639-4');
+</script>

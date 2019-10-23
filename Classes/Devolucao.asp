@@ -183,27 +183,108 @@ Class Devolucao
         end if
     end function
 
-    function validarRegrasExcluirPagamento(pInvoiceID)
+    function validarRegrasExcluirPagamento(pInvoiceID,ByRef MsgValidacao)
+
         validarRegrasExcluirPagamento = true
         'Validar se esta invoice ja teve devolução em dinheiro de algum valor
         sqlDevolucao = "select count(id) total from devolucoes where invoiceID = " & pInvoiceID & " and sysActive = 1 and tipoOperacao = 1"
         set rsDevolucao = db.execute(sqlDevolucao)
-        if not rsDevolucao.eof then
-            if ccur(rsDevolucao("total")) > 0 then
+        if not rsDevolucao.eof then 
+            if ccur(rsDevolucao("total")) > 0 then 
                 validarRegrasExcluirPagamento = false
+                MsgValidacao = "Já existe devoluções para esta conta."
             end if
         end if
 
-        if validarRegrasExcluirPagamento then
+         set sqlValidacao = db.execute("SELECT COUNT(*) > 0 existem FROM nfe_notasemitidas WHERE InvoiceID = "&pInvoiceID&" AND situacao = 1;")
+
+         if not sqlValidacao.eof then
+            if sqlValidacao("existem") then
+                validarRegrasExcluirPagamento = false
+                MsgValidacao = "Existe nota emitida para esta conta."
+            end if
+         end if
+
+         set sqlValidacao = db.execute("SELECT count(*) > 0 existem FROM rateiorateios JOIN itensinvoice ON itensinvoice.id = rateiorateios.ItemInvoiceID WHERE itensinvoice.InvoiceID = "&pInvoiceID&";")
+         if not sqlValidacao.eof then
+             if sqlValidacao("existem") then
+                 MsgValidacao = "Existe repasse para esta conta."
+             end if
+          end if
+
+
+        if validarRegrasExcluirPagamento then 
             sqlDevlucao = "select totalDevolucao from devolucoes where invoiceID = " & pInvoiceID & " and sysActive = 1"
             set rsDevolucao = db.execute(sqlDevolucao)
-            if not rsDevolucao.eof then
-
-
+            if not rsDevolucao.eof then 
 
             end if
 
         end if
+    end function
+
+    function replaceTagsDevolucao(textoModeloDevolucao, InvoiceID) 
+
+        'Retorna os dados da devolucao 
+        sqlDadosdaInvoice = "SELECT mov.date," &_
+	                        " d.id as iddevolucao, " &_
+                            " invoice.id as invoiceID, " &_
+                            "    totalDevolucao, " &_
+                            "    u.Nome AS usuario, " &_
+                            "    clin.id AS unidadeID," &_
+                            "    clin.nome AS unidade," &_
+                            "    d.sysDate, " &_
+                            "    d.sysUser, " &_
+                            " concat('R$ ',FORMAT((SELECt SUM(ii.Quantidade * (ii.ValorUnitario + ii.Acrescimo - ii.Desconto)) FROM itensinvoice as ii WHERE ii.invoiceid = d.invoiceID), 2, 'pt_BR')) AS valor, " &_
+                            " IF(tipoOperacao = 1,'Devolver (Dinheiro)', 'Deixar de Crédito') op ," &_
+                            " invoice.AccountID,  " &_  
+                            " invoice.AssociationAccountID,  " &_
+                            " nfe.numeronfse, " &_
+                            " nfe.numero " &_                    
+                            " FROM  devolucoes d " &_
+                            " INNER JOIN motivo_devolucao md ON (md.id = d.motivoDevolucaoID) " &_ 
+                            " INNER JOIN sys_financialmovement AS mov ON (mov.InvoiceID = d.InvoiceID)" &_
+                            " INNER JOIN cliniccentral.licencasusuarios AS u ON (u.id = d.sysUser )" &_
+                            " INNER JOIN sys_financialdiscountpayments  AS disc ON (disc.InstallmentID= mov.id)" &_
+                            " INNER JOIN sys_financialmovement AS mov2 ON (mov2.id=disc.MovementID)" &_
+                            " INNER JOIN sys_financialinvoices AS invoice ON (invoice.id = d.InvoiceID)" &_
+                            " LEFT JOIN nfe_notasemitidas  AS nfe ON (nfe.InvoiceID = invoice.id) " &_
+                            " INNER JOIN (SELECT id  *-1 AS id, unitname AS nome from sys_financialcompanyunits" &_
+                            "             UNION" &_
+                            "             SELECT 0 AS id, nomeempresa AS nome FROM empresa" &_
+                            "             UNION" &_
+                            "             SELECT id AS id, NomeProfissional FROM profissionais) AS clin ON (clin.id  = invoice.CompanyUnitID)" &_
+                            " WHERE d.invoiceID =  " & InvoiceID & "  " &_
+                            " ORDER BY mov2.Date DESC LIMIT 1"
+        set rsDevolucao = db.execute(sqlDadosdaInvoice)
+        
+        'replaceTags(valor, PacienteID, UserID, UnidadeID)
+        impresso = replaceTags(textoModeloDevolucao, rsDevolucao("AssociationAccountID")&"_"&rsDevolucao("AccountID") ,rsDevolucao("sysUser"), rsDevolucao("unidadeID"))
+
+        impresso = replace(impresso,"[Devolucoes.unidade]",rsDevolucao("unidade"))
+
+        if rsDevolucao("invoiceID") <> "" then
+            impresso = replace(impresso,"[Devolucoes.guianro]",rsDevolucao("invoiceID"))
+        else 
+            impresso = replace(impresso,"[Devolucoes.guianro]","Não Informado")
+        end if 
+
+        if rsDevolucao("numero") <> "" then
+            impresso = replace(impresso,"[Devolucoes.rpa]",rsDevolucao("numero"))
+        else
+            impresso = replace(impresso,"[Devolucoes.rpa]","Não Informado")
+        end if 
+
+        if rsDevolucao("numeronfse") <> "" then
+            impresso = replace(impresso,"[Devolucoes.nfe]",rsDevolucao("numeronfse"))
+        else 
+            impresso = replace(impresso,"[Devolucoes.nfe]","Não Informado")
+        end if
+
+        impresso = replace(impresso,"[Devolucoes.Valor]",rsDevolucao("valor"))
+        impresso = replace(impresso,"[Devolucoes.data]",rsDevolucao("date"))     
+        replaceTagsDevolucao = impresso
+
     end function
 
 End Class

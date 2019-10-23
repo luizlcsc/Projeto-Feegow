@@ -260,7 +260,7 @@ if erro="" then
             if procedimentoID<>"" and Executado="S" then
                 if Associacao="5" or Associacao="2" or Associacao="8"  then
 
-                    if validaProcedimentoProfissional(Associacao, ProfissionalID, EspecialidadeID, ProcedimentoID)=False then
+                    if validaProcedimentoProfissional(Associacao, ProfissionalID, EspecialidadeID, ProcedimentoID,0)=False then
                     %>
                     new PNotify({
                             title: 'ERRO AO TENTAR SALVAR!',

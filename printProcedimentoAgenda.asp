@@ -13,26 +13,29 @@ if TipoImpresso="Protocolo" then
     set ProcedimentoLaudoSQL = db.execute("SELECT Laudo, DiasLaudo FROM procedimentos WHERE id="&ProcedimentoID&" AND Laudo=1")
     if not ProcedimentoLaudoSQL.eof then
         'imprime o protocolo do exame
-
-        set LaudoExisteSQL = db.execute("SELECT l.id FROM laudos l LEFT JOIN itensinvoice ii ON ii.id=l.IDTabela WHERE l.PacienteID="&PacienteID&" AND l.ProcedimentoID="&ProcedimentoID&" AND ii.DataExecucao='"&DataAgendamento&"'")
+        set LaudoExisteSQL = db.execute("SELECT l.id, t.DataExecucao FROM laudos l "&_
+                                        "LEFT JOIN (SELECT id, DataExecucao, 'itensinvoice' Tabela FROM itensinvoice  UNION ALL SELECT id, Data DataExecucao, 'tissprocedimentossadt' Tabela FROM tissprocedimentossadt ) t ON t.id=l.IDTabela AND t.Tabela=l.Tabela "&_
+                                        "WHERE l.PacienteID="&PacienteID&" AND l.ProcedimentoID="&ProcedimentoID&" AND t.DataExecucao="&mydatenull(DataAgendamento)&" LIMIT 1")
 
 
         if not LaudoExisteSQL.eof then
             LaudoID=LaudoExisteSQL("id")
         else
-            set ItemInvoiceSQL = db.execute("SELECT ii.id FROM itensinvoice ii INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE i.AssociationAccountID=3 AND i.AccountID="&PacienteID&" AND ii.ProfissionalID="&ProfissionalID&" AND ii.Associacao in (5,0) AND ii.ItemID="&ProcedimentoID&" AND ii.Tipo='S' AND ii.DataExecucao=CURDATE()")
-            if not ItemInvoiceSQL.eof then
-                ItemInvoiceID=ItemInvoiceSQL("id")
-                PrazoEntrega=ProcedimentoLaudoSQL("DiasLaudo")
+            if ProfissionalID&""<>"" then
+                set ItemInvoiceSQL = db.execute("SELECT ii.id FROM itensinvoice ii INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE i.AssociationAccountID=3 AND i.AccountID="&PacienteID&" AND ii.ProfissionalID="&ProfissionalID&" AND ii.Associacao in (5,0) AND ii.ItemID="&ProcedimentoID&" AND ii.Tipo='S' AND ii.DataExecucao=CURDATE()")
+                if not ItemInvoiceSQL.eof then
+                    ItemInvoiceID=ItemInvoiceSQL("id")
+                    PrazoEntrega=ProcedimentoLaudoSQL("DiasLaudo")
 
-                if isnull(PrazoEntrega) then
-                    PrazoEntrega=1
+                    if isnull(PrazoEntrega) then
+                        PrazoEntrega=1
+                    end if
+
+                    db.execute("INSERT INTO laudos (PacienteID, ProcedimentoID, PrevisaoEntrega, ProfissionalID, StatusID, Tabela, IDTabela) VALUES ("&PacienteID&", "&ProcedimentoID&", "&mydatenull(dateadd("d", PrazoEntrega, date()))&","&ProfissionalID&",1,'itensinvoice', "&ItemInvoiceID&")")
+
+                    set LaudoSQL = db.execute("SELECT id FROM laudos ORDER BY id DESC LIMIT 1")
+                    LaudoID=LaudoSQL("id")
                 end if
-
-                db.execute("INSERT INTO laudos (PacienteID, ProcedimentoID, PrevisaoEntrega, ProfissionalID, StatusID, Tabela, IDTabela) VALUES ("&PacienteID&", "&ProcedimentoID&", "&mydatenull(dateadd("d", PrazoEntrega, date()))&","&ProfissionalID&",1,'itensinvoice', "&ItemInvoiceID&")")
-
-                set LaudoSQL = db.execute("SELECT id FROM laudos ORDER BY id DESC LIMIT 1")
-                LaudoID=LaudoSQL("id")
             end if
         end if
 

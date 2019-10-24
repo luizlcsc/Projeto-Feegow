@@ -1,4 +1,5 @@
 <!--#include file="Classes/Restricao.asp"-->
+<!--#include file="Classes/Json.asp"-->
 <%
 function linhaPagtoCheckin(strTipoGuia, rdValorPlano)
     %>
@@ -43,6 +44,11 @@ function linhaPagtoCheckin(strTipoGuia, rdValorPlano)
     </tr>
     <%
 end function
+
+if req("validaParticular") <> "" then
+    response.write(recordToJSON(db.execute("SELECT *, SomenteConvenios like '%|NOTPARTICULAR|%' as NaoParticular FROM procedimentos WHERE id ="&req("validaParticular")&" ")))
+    response.end
+end if
 
 if req("Checkin")="1" then
     staPagto = "danger"
@@ -300,7 +306,7 @@ else
                 </thead>
                 <tbody id="bprocs">
                     <tr class="linha-procedimento" data-id="">
-                        <td><%= selectInsert("", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", oti, "ConvenioID") %>
+                        <td><%= selectInsert("", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""validaProcedimento(this.id, this.value);parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", oti, "ConvenioID") %>
                         <% if not isnull(PacienteID) and false then %>
                             <br>
                             <button class="btn btn-warning btn-xs" type="button" onclick="openComponentsModal('procedimentosListagem.asp?ProcedimentoId=<%=ProcedimentoID%>&PacientedId=<%=PacienteID%>', true, 'Restrições', true, '')"><i class="fa fa-caret-square-o-left"></i></button>
@@ -790,7 +796,34 @@ function verificaRestricao($ipt, restringir, min, max, textoSim, textoNao) {
 
     $btnSalvar.attr("disabled", !habilitaSalvar)
 }
- function GeraGuia(TipoGuia) {
+
+function validaProcedimento(id,value){
+
+    $("#rdValorPlanoV").removeAttr("disabled");
+    $("#rdValorPlanoV").parent().removeClass("radio-disabled");
+
+    $.ajax('agendamentoProcedimentos.asp?validaParticular='+value, {
+        success: function(res) {
+            let json = JSON.parse(res);
+            if(!json){
+                return;
+            }
+            if(!(json.length > 0)){
+                return;
+            }
+
+            json = json[0];
+
+            if(json.NaoParticular == "1"){
+                $("#rdValorPlanoV").parent().addClass("radio-disabled");
+                $("#rdValorPlanoV").attr("disabled","disabled");
+            }
+        }
+    });
+    console.log(id,value);
+}
+
+function GeraGuia(TipoGuia) {
     $.ajax('tissguiaconsulta.asp?P=tissguia'+TipoGuia+'&I=N&Pers=1&Lancto=<%=ConsultaID%>|agendamento', {
         success: function(res) {
             if (res) {

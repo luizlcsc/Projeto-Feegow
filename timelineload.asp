@@ -43,7 +43,7 @@
     end if
                  c=0
 
-    sql = "select * from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo limit 0) "&_
+    sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlPedido & sqlImagens & sqlArquivos &_
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC limit "&loadMore&","&MaximoLimit
              'response.write(sql)

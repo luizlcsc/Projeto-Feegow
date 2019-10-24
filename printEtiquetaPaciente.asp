@@ -25,14 +25,26 @@ if ProfissionalID&""<>"" then
     end if
 end if
 
-set AgendamentoProcedimentoSQL = db.execute("SELECT IF(proc2.NomeProcedimento is NULL, GROUP_CONCAT(proc.NomeProcedimento SEPARATOR '<br>'), CONCAT(GROUP_CONCAT(proc.NomeProcedimento SEPARATOR '<br>'), '<br>', GROUP_CONCAT(proc2.NomeProcedimento SEPARATOR '<br>'))) Procedimentos "&_
-                                            "FROM agendamentos age  "&_
-                                            "LEFT JOIN agendamentosprocedimentos agproc ON agproc.AgendamentoID=age.id  "&_
-                                            "LEFT JOIN procedimentos proc ON proc.id=age.TipoCompromissoID "&_
-                                            "LEFT JOIN procedimentos proc2 ON proc2.id=agproc.TipoCompromissoID  "&_
-                                            "WHERE age.PacienteID="&PacienteID&" and age.Data="&mydatenull(DataAgendamento)&" ")
+
+sql = " SELECT age.Hora,                                                                               "&chr(13)&_
+      "        IF(proc2.NomeProcedimento is NULL, GROUP_CONCAT(proc.NomeProcedimento SEPARATOR '<br>'),"&chr(13)&_
+      "           CONCAT(GROUP_CONCAT(proc.NomeProcedimento SEPARATOR '<br>'), '<br>',                 "&chr(13)&_
+      "                  GROUP_CONCAT(proc2.NomeProcedimento SEPARATOR '<br>'))) Procedimentos,        "&chr(13)&_
+      "  coalesce(sys_financialcompanyunits.Sigla,'') as Sigla                                         "&chr(13)&_
+      " FROM agendamentos age                                                                          "&chr(13)&_
+      "  LEFT JOIN agendamentosprocedimentos agproc ON agproc.AgendamentoID = age.id                   "&chr(13)&_
+      "  LEFT JOIN procedimentos proc ON proc.id = age.TipoCompromissoID                               "&chr(13)&_
+      "  LEFT JOIN procedimentos proc2 ON proc2.id = agproc.TipoCompromissoID                          "&chr(13)&_
+      "  LEFT JOIN locais ON locais.id = age.LocalID                                                   "&chr(13)&_
+      "  LEFT JOIN sys_financialcompanyunits ON sys_financialcompanyunits.id = locais.UnidadeID        "&chr(13)&_
+      " WHERE age.PacienteID = "&PacienteID&"                                                          "&chr(13)&_
+      "   and age.Data = "&mydatenull(DataAgendamento)&"                                               "
+
+set AgendamentoProcedimentoSQL = db.execute(sql)
+
 if not AgendamentoProcedimentoSQL.eof then
     AgendamentoProcedimentos = AgendamentoProcedimentoSQL("Procedimentos")
+    AgendamentoHora = AgendamentoProcedimentoSQL("Hora")
 end if
 
 if not PacienteSQL.eof then
@@ -45,9 +57,11 @@ if not PacienteSQL.eof then
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Agendamento.Protocolo]", AgendamentoProtocolo)
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Agendamento.Procedimentos]", AgendamentoProcedimentos)
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Agendamento.Data]", DataAgendamento)
+    EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Agendamento.Hora]", formatdatetime(AgendamentoHora, 4))
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Data.DDMMAAAA]", formatdatetime(now(), 2))
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Procedimento.Nome]", ProcedimentoSQL("NomeProcedimento"))
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Profissional.Nome]", NomeProfissional)
+    EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Local.Sigla]", AgendamentoProcedimentoSQL("Sigla"))
 
 	Cabecalho = replaceTags(EtiquetaAgendamento, PacienteSQL("id"), session("User"), session("Unidade"))
     %>
@@ -75,7 +89,7 @@ body
 
 
 <script>
-    print();
+    //print();
 </script>
     <%
 end if

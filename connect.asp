@@ -2859,7 +2859,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 				end if
 				rbtns = rbtns & "<a title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
 				if not isnull(lista("proximo")) then
-					rbtns = rbtns & "<a title='Próximo' href='?P="&recurso&"&Pers="&hPers&"&I="&lista("proximo")&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
+					rbtns = rbtns & "<a title='Próximo' href='?P="&recurso&"&Pers="&hPers&"&I="&lista("proximo")&"&Proximo=1' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
 				end if
 			end if
 		end if
@@ -5106,11 +5106,7 @@ function reconsolidar(Tipo, ItemID)
         if vca.eof then
             db.execute("insert into reconsolidar (Tipo, ItemID, sysUser) values ('"& Tipo &"', "& ItemID &", "& session("User") &")")
         end if
-        %>/*
-        var $autoConsolidar = document.getElementById('AutoConsolidar');
-        if($autoConsolidar){
-            $autoConsolidar.contentWindow.location.reload()
-        }*/
+        %>
         $("#AutoConsolidar").attr("src", "AutoConsolidar.asp?I=<%=req("InvoiceID")%>&AC=1&T<%= time() %>");
         <%
     end if

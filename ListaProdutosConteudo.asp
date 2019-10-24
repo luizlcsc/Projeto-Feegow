@@ -62,19 +62,23 @@
                 sqlAbaixo = " AND ( (posicaoConjunto>=EstoqueMinimo) OR ( (posicaoUnidade+(posicaoConjunto*ApresentacaoQuantidade))>EstoqueMinimo) )"
             end if
 
-            set prod = db.execute("SELECT pro.*, procat.NomeCategoria, profab.NomeFabricante, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1) Validade, proloc.NomeLocalizacao FROM produtos pro "&_
+            set prod = db.execute("SELECT pro.*, procat.NomeCategoria, profab.NomeFabricante, (select Validade from estoqueposicao where ProdutoID=pro.id AND Validade<now() ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1) Validade, proloc.NomeLocalizacao FROM produtos pro "&_
             "LEFT JOIN produtoscategorias procat ON procat.id=pro.CategoriaID "&_
             "LEFT JOIN produtosfabricantes profab ON profab.id=pro.FabricanteID "&_
             "LEFT JOIN produtoslocalizacoes proloc ON proloc.id=pro.LocalizacaoID "&_
             "LEFT JOIN estoqueposicao estpos ON estpos.ProdutoID=pro.id "&_
             "WHERE pro.sysActive=1 "& sqlProd & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem)
             while not prod.EOF
-
                 if prod("Validade")=<dateAdd("d", 10, date()) then
-                    addClass = "text-warning"
+                    Validade = prod("Validade")
+                    addClass = "label label-warning"
                     if prod("Validade")=<date() then
-                        addClass = "text-danger"
+                        addClass = "label label-danger"
                     end if
+                end if
+                if prod("Validade")&""="" then
+                    Validade = prod("Vencido")
+                    addClass = "label label-danger"
                 end if
 
             %>
@@ -86,7 +90,7 @@
                     <td><%=prod("NomeCategoria")%></td>
                     <td><%=prod("NomeFabricante")%></td>
                     <td><%=prod("NomeLocalizacao")%></td>
-                    <td class="<%=addClass%>"><%=prod("Validade")%></td>
+                    <td><span class="<%=addClass%>"><%=Validade%></span></td>
                     <td class="hidden-print"><a class="btn btn-xs btn-success" target="_blank" href="./?P=Produtos&Pers=1&I=<%=prod("id")%>"><i class="fa fa-edit"></i></a></td>
                 </tr>
                 </tbody>

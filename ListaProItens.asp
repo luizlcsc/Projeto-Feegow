@@ -5,7 +5,10 @@ Filtro = req("Filtro")
 limite = 250
 c = 0
 set listaFormulas = db.execute("select id, NomeProcedimento, Valor from procedimentos where (NomeProcedimento like '%"&Filtro&"%' or Sigla like '%"&Filtro&"%') and sysActive=1 and Ativo='on' "&_
-" order by NomeProcedimento limit "&limite)
+                                              " order by (NomeProcedimento like '"&Filtro&"%' ) desc, NomeProcedimento limit "&limite)
+
+
+
 if not listaFormulas.eof then
     while not listaFormulas.EOF
         c = c+1

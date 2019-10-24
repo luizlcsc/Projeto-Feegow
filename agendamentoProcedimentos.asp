@@ -300,7 +300,7 @@ else
                 </thead>
                 <tbody id="bprocs">
                     <tr class="linha-procedimento" data-id="">
-                        <td><%= selectInsert("", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", oti, "ConvenioID") %>
+                        <td><%= selectInsert("", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""valida;parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", oti, "ConvenioID") %>
                         <% if not isnull(PacienteID) and false then %>
                             <br>
                             <button class="btn btn-warning btn-xs" type="button" onclick="openComponentsModal('procedimentosListagem.asp?ProcedimentoId=<%=ProcedimentoID%>&PacientedId=<%=PacienteID%>', true, 'Restrições', true, '')"><i class="fa fa-caret-square-o-left"></i></button>

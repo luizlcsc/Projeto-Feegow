@@ -183,18 +183,18 @@ function ProcessarValores(AssociacaoID)
         PrimeiroPlano = null
         while not Planos.eof
 
-            IF ISNULL(PrimeiroPlano) THEN
-                PrimeiroPlano = Planos("PlanoID")
-            END IF
+            On Error Resume Next
+                IF ISNULL(PrimeiroPlano) THEN
+                    PrimeiroPlano = Planos("PlanoID")
+                END IF
 
-            set ValoresCalculados = CalculaValorProcedimentoConvenio(ProcedimentosValores("id"),ProcedimentosValores("ConvenioID"),ProcedimentosValores("ProcedimentoID"),Planos("PlanoID"),null,1,null)
+                set ValoresCalculados = CalculaValorProcedimentoConvenio(ProcedimentosValores("id"),ProcedimentosValores("ConvenioID"),ProcedimentosValores("ProcedimentoID"),Planos("PlanoID"),null,1,null)
 
-            IF xxxCalculaValorProcedimentoConvenioNotIsNull THEN
                 ValorTotal = ValoresCalculados("TotalGeral") + CalculaValorProcedimentoConvenioAnexo(ProcedimentosValores("ConvenioID"),ProcedimentosValores("ProcedimentoID"),ProcedimentosValores("id"),Planos("PlanoID"))
-            END IF
 
-            sql = "UPDATE tissprocedimentosvaloresplanos SET ValorConsolidado="&treatvalnull(ValorTotal)&" WHERE id = "&Planos("id")
-            db.execute(sql)
+                sql = "UPDATE tissprocedimentosvaloresplanos SET ValorConsolidado="&treatvalnull(ValorTotal)&" WHERE id = "&Planos("id")
+                db.execute(sql)
+            On Error Goto 0
 
         Planos.movenext
         wend

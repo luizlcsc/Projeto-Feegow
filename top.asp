@@ -504,18 +504,6 @@ if device()="" or lcase(req("P"))="configuracoes" then
         </li>
         <%
         end if
-        if session("Admin")=1 or aut("sys_preparosI")=1  then 
-        %>
-        <li>
-            <a href="?P=sys_preparos"><i class="fa fa-list-alt"></i> Preparos</a>
-        </li>
-        <% end if
-        if session("Admin")=1 or aut("sys_restricoesI")=1  then %>
-        <li>
-            <a href="?P=sys_restricoes"><i class="fa fa-exclamation-circle"></i> Restrições</a>
-        </li>
-        <%
-        end if
         if aut("tabelaparticular")=1 then
         %>
         <li>

@@ -377,7 +377,13 @@ posModalPagar = "fixed"
               else %>
             <div class="col-md-3 qf" id="qfprofissionalsolicitante"><label for="ProfissionalSolicitante">Profissional Solicitante</label><br>
              <input type="hidden" name="ProfissionalSolicitante" value="<%=ProfissionalSolicitante%>">
+                <%
+                if ProfissionalSolicitante&""<>"" and ProfissionalSolicitante&""<>"0" then
+                %>
               <span> <% response.write(accountName("", ProfissionalSolicitante)) %> </span>
+                <%
+                end if
+                %>
             </div>
             <% end if %>
             <%= quickfield("simpleSelect", "invTabelaID", "Tabela", 3, TabelaID, "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' order by NomeTabela", "NomeTabela", " no-select2 mn  onchange=""tabelaChange()"" data-row='no-server' "& camposRequired) %>

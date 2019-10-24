@@ -1543,6 +1543,7 @@ select case lcase(req("P"))
             </ul>
         </li>
         <%end if%>
+        <%if aut("relatoriospacienteperfilV")=1 then %>
         <li>
             <a href="#" class="accordion-toggle menu-open">
                 <span class="fa fa-user"></span>
@@ -1576,7 +1577,7 @@ select case lcase(req("P"))
 
             </ul>
         </li>
-
+        <%end if%>
         <li class="open hidden">
             <a href="#" class="dropdown-toggle">
                 <i class="fa fa-stethoscope"></i>

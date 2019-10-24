@@ -1,5 +1,12 @@
 <!--#include file="connect.asp"-->
 <%
+
+IF req("AgendamentoPaciente") <> "" THEN
+    session("PacienteIDSelecionado")=req("AgendamentoPaciente")
+    response.redirect("./?P=AgendaMultipla&Pers=1")
+    response.end
+END IF
+
 PacienteID = req("PacienteID")
 
 set pac = db.execute("select NomePaciente from pacientes where id="&req("PacienteID"))
@@ -9,7 +16,21 @@ end if
 %>
 <div class="panel">
     <div class="panel-heading">
-	    <span class="panel-title"><i class="fa fa-calendar"></i> Histórico de Agendamentos</span>
+        <div class="col-md-6">
+	        <span class="panel-title"><i class="fa fa-calendar"></i> Histórico de Agendamentos</span>
+        </div>
+
+        <%
+        if aut("agendaI") then
+        %>
+        <div class="col-md-6 text-right">
+            <a href="HistoricoPaciente.asp?AgendamentoPaciente=<%=PacienteID%>" class="btn btn-success  btn-sm">
+            <i class="fa fa-plus"></i>
+            Agendamento</a>
+        </div>
+        <%
+        end if
+        %>
     </div>
     <div class="panel-body">
 
@@ -31,7 +52,7 @@ end if
 
         <%
 	    c = 0
-	
+
 	    agends = ""
         set pCons = db.execute("select a.id, a.rdValorPlano, a.ValorPlano, a.Data, a.Hora, a.StaID, a.Procedimentos, s.StaConsulta, p.NomeProcedimento, eq.NomeEquipamento, c.NomeConvenio, prof.NomeProfissional, esp.Especialidade NomeEspecialidade FROM agendamentos a LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN profissionais prof on prof.id=a.ProfissionalID LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID or (a.EspecialidadeID is null and prof.EspecialidadeID=esp.id) LEFT JOIN procedimentos p on a.TipoCompromissoID=p.id LEFT JOIN staconsulta s ON s.id=a.StaID LEFT JOIN convenios c on c.id=a.ValorPlano WHERE a.PacienteID="&PacienteID&" ORDER BY a.Data DESC, a.Hora DESC")
         while not pCons.EOF
@@ -46,7 +67,7 @@ end if
 			    Pagto = pCons("NomeConvenio")
 		    end if
 		    agends = agends & pCons("id") & ","
-		
+
 		    consHora = pCons("Hora")
 		    if not isnull(consHora) then
 			    consHora = formatdatetime(consHora, 4)
@@ -100,7 +121,7 @@ end if
         wend
         pCons.close
         set pCons=nothing
-	
+
 	    if c=0 then
 		    txt = "Nenhum agendamento."
 	    elseif c=1 then
@@ -127,7 +148,7 @@ end if
         </div>
     </div>
     <%
-	
+
 	if agends<>"" then
 		agends = left(agends, len(agends)-1)
 		set logs = db.execute("select l.*, p.NomeProcedimento, prof.NomeProfissional, s.StaConsulta FROM logsmarcacoes l LEFT JOIN procedimentos p on p.id=l.ProcedimentoID LEFT JOIN staconsulta s on s.id=l.Sta LEFT JOIN profissionais prof on prof.id=l.ProfissionalID WHERE l.PacienteID="&PacienteID&" AND l.ConsultaID NOT IN("&agends&") GROUP BY l.ConsultaID")
@@ -158,12 +179,12 @@ end if
                                     <%=Pagto%>
                                     <i class="fa fa-angle-down bigger-110 pull-right" data-icon-hide="fa fa-angle-down" data-icon-show="fa fa-angle-right"></i>
                                 </div>
-        
+
                               </div>
                             </a>
                         </h4>
                     </div>
-        
+
                     <div class="panel-collapse collapse" id="collapse<%=logs("ConsultaID")%>">
                         <div class="panel-body" id="hist<%=logs("ConsultaID")%>">
                             Carregando...
@@ -195,8 +216,10 @@ function log(id){
         if($("#div" + $(this).attr("id")).html()=="Carregando..."){
             $.get("logsAgendamentos.asp?PacienteID=<%=PacienteID%>&AgendamentoID="+ AI, function (data) {
                 $("#divhist" + AI).html( data );
+                return false;
             });
         }
+        return false;
     });
 
 </script>

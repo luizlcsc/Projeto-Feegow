@@ -5106,11 +5106,7 @@ function reconsolidar(Tipo, ItemID)
         if vca.eof then
             db.execute("insert into reconsolidar (Tipo, ItemID, sysUser) values ('"& Tipo &"', "& ItemID &", "& session("User") &")")
         end if
-        %>/*
-        var $autoConsolidar = document.getElementById('AutoConsolidar');
-        if($autoConsolidar){
-            $autoConsolidar.contentWindow.location.reload()
-        }*/
+        %>
         $("#AutoConsolidar").attr("src", "AutoConsolidar.asp?I=<%=req("InvoiceID")%>&AC=1&T<%= time() %>");
         <%
     end if

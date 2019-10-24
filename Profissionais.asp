@@ -13,6 +13,18 @@
 call insertRedir(request.QueryString("P"), request.QueryString("I"))
 set reg = db.execute("select * from Profissionais where id="&request.QueryString("I"))
 
+IF request.QueryString("Proximo") = "1"  THEN
+    sqlProximo = "select id from Profissionais where Ativo = 'on' and id>"&request.QueryString("I")
+    set regNext = db.execute(sqlProximo)
+
+    IF NOT regNext.EOF THEN
+        response.Redirect("./?P=profissionais&Pers=1&I="&regNext("id"))
+        response.end
+    END IF
+
+END IF
+
+
 Aba = request.QueryString("Aba")
 
 if Aba="" then

@@ -25,7 +25,7 @@ if ProfissionalID&""<>"" then
     end if
 end if
 
-set AgendamentoProcedimentoSQL = db.execute("SELECT IF(proc2.NomeProcedimento is NULL, GROUP_CONCAT(proc.NomeProcedimento SEPARATOR '<br>'), CONCAT(GROUP_CONCAT(proc.NomeProcedimento SEPARATOR '<br>'), '<br>', GROUP_CONCAT(proc2.NomeProcedimento SEPARATOR '<br>'))) Procedimentos "&_
+set AgendamentoProcedimentoSQL = db.execute("SELECT age.Hora, IF(proc2.NomeProcedimento is NULL, GROUP_CONCAT(proc.NomeProcedimento SEPARATOR '<br>'), CONCAT(GROUP_CONCAT(proc.NomeProcedimento SEPARATOR '<br>'), '<br>', GROUP_CONCAT(proc2.NomeProcedimento SEPARATOR '<br>'))) Procedimentos "&_
                                             "FROM agendamentos age  "&_
                                             "LEFT JOIN agendamentosprocedimentos agproc ON agproc.AgendamentoID=age.id  "&_
                                             "LEFT JOIN procedimentos proc ON proc.id=age.TipoCompromissoID "&_
@@ -33,6 +33,7 @@ set AgendamentoProcedimentoSQL = db.execute("SELECT IF(proc2.NomeProcedimento is
                                             "WHERE age.PacienteID="&PacienteID&" and age.Data="&mydatenull(DataAgendamento)&" ")
 if not AgendamentoProcedimentoSQL.eof then
     AgendamentoProcedimentos = AgendamentoProcedimentoSQL("Procedimentos")
+    AgendamentoHora = AgendamentoProcedimentoSQL("Hora")
 end if
 
 if not PacienteSQL.eof then
@@ -45,6 +46,7 @@ if not PacienteSQL.eof then
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Agendamento.Protocolo]", AgendamentoProtocolo)
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Agendamento.Procedimentos]", AgendamentoProcedimentos)
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Agendamento.Data]", DataAgendamento)
+    EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Agendamento.Hora]", formatdatetime(AgendamentoHora, 4))
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Data.DDMMAAAA]", formatdatetime(now(), 2))
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Procedimento.Nome]", ProcedimentoSQL("NomeProcedimento"))
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Profissional.Nome]", NomeProfissional)

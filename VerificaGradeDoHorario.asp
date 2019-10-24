@@ -12,6 +12,11 @@ end if
 
 sqlGrade = "SELECT id GradeID, Especialidades, Procedimentos, LocalID FROM (SELECT ass.id, Especialidades, Procedimentos, LocalID FROM assfixalocalxprofissional ass LEFT JOIN locais loc ON loc.id=ass.LocalID WHERE ProfissionalID="&ProfissionalID&sqlUnidade&" AND DiaSemana="&DiaSemana&" AND "&mytime(Hora)&" BETWEEN HoraDe AND HoraA AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&")) UNION ALL SELECT ex.id*-1 id, Especialidades, Procedimentos, LocalID FROM assperiodolocalxprofissional ex LEFT JOIN locais loc ON loc.id=ex.LocalID WHERE ProfissionalID="&ProfissionalID&sqlUnidade&" AND DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&")t"
 set GradeSQL = db.execute(sqlGrade)
+if GradeSQL.eof then
+    sqlGrade = "SELECT id GradeID, Especialidades, Procedimentos, LocalID FROM (SELECT ass.id, Especialidades, Procedimentos, LocalID FROM assfixalocalxprofissional ass LEFT JOIN locais loc ON loc.id=ass.LocalID WHERE ProfissionalID="&ProfissionalID&sqlUnidade&" AND DiaSemana="&DiaSemana&" AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&")) UNION ALL SELECT ex.id*-1 id, Especialidades, Procedimentos, LocalID FROM assperiodolocalxprofissional ex LEFT JOIN locais loc ON loc.id=ex.LocalID WHERE ProfissionalID="&ProfissionalID&sqlUnidade&" AND DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&")t ORDER BY 3 DESC"
+    set GradeSQL = db.execute(sqlGrade)
+end if
+
 
 if not GradeSQL.eof then
     Especialidades = replace(GradeSQL("Especialidades")&"","|","")

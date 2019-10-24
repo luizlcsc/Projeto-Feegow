@@ -1,6 +1,6 @@
 <!-- #include file = "connect.asp" -->
 <!-- #include file = "UploadFuncoes.asp" -->
-
+<!-- #include file = "Classes/UploadUtils.asp" -->
 <%
 ' Chamando Funções, que fazem o Upload funcionar
 ProfissionalID = req("ProfissionalID")
@@ -27,7 +27,7 @@ foto = UploadRequest.Item("foto").Item("Value")
 extensao = lcase(right(nome_arquivo, 4))
 
 ' pasta onde as imagens serao guardadas
-pasta = Server.MapPath("/uploads/"& replace(session("Banco"), "clinic", "") &"/Imagens")
+pasta = getUploadFolder(session("Banco"), "Imagens")
 
 ' pasta + nome dos arquivos
 'cfoto = "imagens/lojas" + nome_arquivo
@@ -38,7 +38,9 @@ nome_arquivo = "/"&nome_arquivo
 if foto <> "" then
     if Extensao=".jpg" or Extensao="jpeg" or Extensao=".gif" or Extensao=".png" then
         Set ScriptObject = Server.CreateObject("Scripting.FileSystemObject")
-        Set MyFile = ScriptObject.CreateTextFile(pasta &"//"& novoNome &".jpg")
+        arquivo = pasta &"//"& novoNome &".jpg"
+
+        Set MyFile = ScriptObject.CreateTextFile(arquivo)
         For i = 1 to LenB(foto)
             MyFile.Write chr(AscB(MidB(foto,i,1)))
         Next

@@ -66,7 +66,6 @@ $("#frmListaProdutos").submit(function () {
     $.post("ListaProdutosConteudo.asp", $(this).serialize(), function (data) {
         $("#divListaProdutosConteudo").html(data);
 
-        $("#datatableProdutos").dataTable();
     });
     return false;
 });

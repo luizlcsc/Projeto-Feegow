@@ -11,7 +11,7 @@ end if
 
 response.Charset="utf-8"
 
-if request.ServerVariables("REMOTE_ADDR")<>"::1" then
+if request.ServerVariables("REMOTE_ADDR")<>"::1" and req("Debug")="" then
 	on error resume next
 end if
 
@@ -47,7 +47,7 @@ else
     "(select count(fplf.id) from buiformspreenchidos as fplf left join buiforms as mlf on fplf.ModeloID=mlf.id where fplf.PacienteID="&PacienteID&" and (fplf.sysActive=1 or fplf.sysActive is null) and (mlf.Tipo=3 or mlf.Tipo=4)) as totallf "&_
     "from Pacientes as p where id="&PacienteID)
 end if
-    splBdgs = split("totalprescricoes, totalatestados, totalpedidos, totaldiagnosticos, totalarquivos, totalimagens, totalrecibos, totalae, totallf", ", ")
+    splBdgs = split("totalprescricoes, totalatestados, qtepedidos, totaldiagnosticos, totalarquivos, totalimagens, totalrecibos, totalae, totallf", ", ")
 
 
 if not isnull(reg("Nascimento")) and not isnull(reg("NomePaciente")) then
@@ -204,13 +204,25 @@ end if
             <%= quickField("text", "Peso", "Peso", 2, reg("Peso"), "input-mask-brl text-right", "", "") %>
             <%= quickField("text", "IMC", "IMC", 2, reg("IMC"), "text-right", "", " readonly") %>
             <div class="col-md-2">
-            	<label>Prontu&aacute;rio<br /></label>
+            	<label>Prontu&aacute;rio
+
+                <%
+                AlterarNumeroProntuario= getConfig("AlterarNumeroProntuario")
+                if reg("idImportado")&"" <> "" and AlterarNumeroProntuario&""="0" then
+                %>
+            	<i data-toggle="tooltip"
+                  title="Prontuário antigo: <%=reg("idImportado")%>"
+                  class="fa fa-info-circle"
+                  aria-hidden="true"></i>
+                <%
+                end if
+                %>
+                  <br /></label>
 			<%
-                if getConfig("AlterarNumeroProntuario") = 1 then
+                if AlterarNumeroProntuario = 1 then
                 'if session("banco")="clinic1612" or session("banco")="clinic5868" or session("banco")="clinic3610" or session("banco")="clinic105" or session("banco")="clinic3859" or session("banco")="clinic5491" then
 				Prontuario = reg("idImportado")
 				if isnull(Prontuario) then
-					set pultPront = db.execute("select idImportado Prontuario from pacientes where not isnull(idImportado) order by idImportado desc limit 1")
 					if pultPront.eof then
 						Prontuario = 1
 					else
@@ -301,6 +313,11 @@ end if
                 <%
             end if
         'end if
+        if req("Debug")="1" then
+            response.Write( Omitir )
+        end if
+
+
             %>
         </div>
 
@@ -371,8 +388,6 @@ end if
                 </div>
             </div>
           </div>
-<%= Omitir%>
-
           <div class="row">
                 <div class="col-xs-12">
             	    <!--#include file="PacientesConvenio.asp"-->
@@ -688,5 +703,7 @@ $(function(){
 });
 
 
-
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
 </script>

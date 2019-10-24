@@ -268,7 +268,7 @@ end if
     %></tbody></table><%'=Profissionais %>
 <script type="text/javascript">
 <%
-set comps=db.execute("select loc.UnidadeID, a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento from agendamentos a "&_
+set comps=db.execute("select loc.UnidadeID, a.id, a.Data, a.Hora,coalesce(a.LocalID,0) AS LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento from agendamentos a "&_
 "left join pacientes p on p.id=a.PacienteID " & joinLocaisUnidades &_ 
 "left join profissionais pro on pro.id=a.ProfissionalID "&_ 
 "left join locais loc on loc.id=a.LocalID "&_

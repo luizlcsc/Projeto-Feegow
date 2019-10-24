@@ -58,7 +58,7 @@ if req("X")<>"" then
         'gerar o log
         set iInvoice = db.execute("select * from sys_financialinvoices WHERE id="& req("X"))
         columns = "|AccountID|AssociationAccountID|Value|Tax|CompanyUnitID|TabelaID|"
-        oldValues = "|^"&iInvoice("AccountID")&"|^"&iInvoice("AssociationAccountID")&"|^"&iInvoice("Value")&"|^"&iInvoice("Tax")&"|^"&iInvoice("CompanyUnitID")&"|^"&iInvoice("TabelaID")&"|"
+        'oldValues = "|^"&iInvoice("AccountID")&"|^"&iInvoice("AssociationAccountID")&"|^"&iInvoice("Value")&"|^"&iInvoice("Tax")&"|^"&iInvoice("CompanyUnitID")&"|^"&iInvoice("TabelaID")&"|"
         call createLog("X", req("X"), "sys_financialinvoices", columns, oldValues, "")
         db_execute("delete from sys_financialinvoices where id="&req("X"))
         set vcaII = db.execute("select id from itensinvoice WHERE InvoiceID="& req("X"))
@@ -222,6 +222,8 @@ end if
              "(SELECT COUNT(*) FROM boletos_emitidos WHERE boletos_emitidos.InvoiceID = m.InvoiceID and now() > boletos_emitidos.DueDate and StatusID <> 3) as boletos_vencidos, "&_
              "(SELECT COUNT(*) FROM boletos_emitidos WHERE boletos_emitidos.InvoiceID = m.InvoiceID and StatusID  = 3) as boletos_pagos "&_
              " ,i.Rateado FROM sys_financialMovement m left join sys_financialinvoices i on i.id=m.InvoiceID "& lfCat & leftFiltroNFeStatus &" WHERE m.Type='Bill' AND m.Date BETWEEN "&mydatenull(ref("De"))&" AND "&mydatenull(ref("Ate"))&" AND m.CD='"&CD&"' AND i.sysActive=1 "& sqlUN & sqlNFe & sqlAccount & sqlPagto & sqlCat & sqlApenasRepasse & sqlFiltroNFeStatus & sqlTabela & sqlAccountAssociation & gpCat &" order by m.Date,m.id"
+
+
 	set mov = db.execute( sqlMov )
 	while not mov.eof
 
@@ -272,11 +274,16 @@ end if
 
 		cItens = 0
 		Descricao = ""
-		set itens = db.execute("select Tipo,ItemID,Descricao,Quantidade,CategoriaID from itensinvoice where InvoiceID="&mov("InvoiceID"))
+		set itens = db.execute("select id,Tipo,ItemID,Descricao,Quantidade,CategoriaID,Executado from itensinvoice where InvoiceID="&mov("InvoiceID"))
 		CategoriaItem=0
 		Mostra=True
-
+        ItemCancelado = false
 		while not itens.eof
+
+		    IF NOT ItemCancelado THEN
+		        ItemCancelado = itens("Executado") = "C"
+		    END IF
+
 		    CategoriaItem = itens("CategoriaID")
 			if itens("Tipo")="S" then
 				set proc = db.execute("select id, NomeProcedimento from procedimentos where id="&itens("ItemID"))
@@ -372,13 +379,17 @@ end if
 		    %>
 			<td width="8%" class="text-right"><%= mov("Date") %></td>
 			<td><%= Conta %> &nbsp; <%= IconeAnexos %></td>
-			<td><a href="<%= linkBill %>"><%=Descricao%>
+			<td>	   <a href="<%= linkBill %>"><%=Descricao%>
 					<%if len(mov("Name"))>0 and Descricao<>"" then%> - <%end if%><%=left(mov("Name"),20)%>
-				</a><br /><%=mov("Obs")%>
+				</a> <% IF ItemCancelado THEN %>
+                                    			        <small><span title="Item Cancelado" class="label label-danger">Cancelado</span></small>
+                                            <% END IF %><br /><%=mov("Obs")%>
 				</td>
             <td><%=mov("nroNFe")%></td>
 			<td class="text-right" nowrap title="Saldo devedor: R$ <%= fn(Devedor) %>"> <span><%= fn(Valor) %></span> <%= Paid %> <%=displayCD%>&nbsp; <%= Boleto %></td>
 			<td class="text-right" title="Saldo devedor: R$ <%= fn(Devedor) %>"><%= fn(ValorPago) %>
+
+
                 <% if mov("Rateado") = True then %>
                     <span title="Despesa Rateada" class="label label-warning"><i  class=" fa fa-share-alt"></i></span>
                 <% end if %>
@@ -405,9 +416,10 @@ if (aut("|contasapagarV|") and CD ="D") or (aut("|contasareceberV|") and CD ="C"
             splAcc = split(ref("AccountID"), "_")
             sqlAccount = " AND f.AssociationAccountID="&splAcc(0)&" AND f.AccountID="&splAcc(1)&" "
         end if
-
-        set fixa = db.execute("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 and f.CD='"&CD&"' "&sqlCat&" and PrimeiroVencto<="&mydatenull(ref("Ate"))&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
-
+        'response.write(mydatenull(ref("Ate")))
+        'set fixa = db.execute("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and PrimeiroVencto<="&mydatenull(ref("Ate"))&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
+        set fixa = db.execute("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and DiaVencimento<=SUBSTRING_index("&mydatenull(ref("Ate"))&", '-', -1)"&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
+        'response.write("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and DiaVencimento<=SUBSTRING_index("&mydatenull(ref("Ate"))&", '-', -1)"&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
         while not fixa.eof
 
             set itens = db.execute("select ifnull(proc.NomeProcedimento, i.Descricao) Item from itensinvoicefixa i left join procedimentos proc on proc.id=i.ItemID where i.InvoiceID="&fixa("id"))
@@ -420,8 +432,8 @@ if (aut("|contasapagarV|") and CD ="D") or (aut("|contasareceberV|") and CD ="C"
             set itens=nothing
 
             Geradas = fixa("Geradas")&""
-
-            Vencto = fixa("PrimeiroVencto")
+            DataVencimento = fixa("DiaVencimento")&"/"&split(fixa("PrimeiroVencto"), "/")(1)&"/"&split(fixa("PrimeiroVencto"), "/")(2)
+            Vencto = DataVencimento
             cFix = 0
             RepetirAte = fixa("RepetirAte")
             if isnull(RepetirAte) then
@@ -462,7 +474,7 @@ if (aut("|contasapagarV|") and CD ="D") or (aut("|contasareceberV|") and CD ="C"
                     <%
                     Total = Total+fixa("Value")
                 end if
-                Vencto = dateAdd(fixa("TipoIntervalo"), fixa("Intervalo")*cFix, fixa("PrimeiroVencto"))
+                Vencto = dateAdd(fixa("TipoIntervalo"), fixa("Intervalo")*cFix, DataVencimento)
             wend
         fixa.movenext
         wend

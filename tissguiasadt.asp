@@ -847,10 +847,12 @@ $(function() {
             if(!(id.indexOf("NumeroNoConselhoSolicitante") !== -1)){
                 return false;
             }
-
+            <% IF getConfig("OcultarSolicitanteInterno") <> "1" THEN %>
             if(!$("#tipoProfissionalSolicitanteE").is(":checked")){
                 return false;
             }
+            <% END IF %>
+
 
             idAnexo = null;
 

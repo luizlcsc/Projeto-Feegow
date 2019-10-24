@@ -1468,7 +1468,7 @@ $("#ProfissionalID", "#dadosAgendamento").change(function() {
     });
 });
 
-$("#Hora, #Encaixe").change(function() {
+function VerGradeDoHorario() {
     var Hora = $("#Hora").val();
     var EncaixeMarcado = $("#Encaixe").is(":checked");
 
@@ -1477,6 +1477,10 @@ $("#Hora, #Encaixe").change(function() {
             eval(data);
         });
     }
+}
+
+$("#Hora, #Encaixe").change(function (){
+    VerGradeDoHorario()
 });
 
 //retira do select os options que não serão usado caso agendamento seja futuro
@@ -1507,7 +1511,7 @@ $(function(){
     $(".valorprocedimento, .linha-procedimento").on('change', function(){
         somarValores();
     });
-
+    VerGradeDoHorario()
 });
 
 

@@ -89,7 +89,7 @@ body
 
 
 <script>
-    //print();
+    print();
 </script>
     <%
 end if

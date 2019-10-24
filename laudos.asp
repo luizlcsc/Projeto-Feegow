@@ -17,6 +17,11 @@ if req("PacienteID")<>"" then
 end if
 
 Unidades = "|"& session("UnidadeID") &"|"
+
+if lcase(session("Table"))="profissionais" then
+    ProfissionalID = session("idInTable")
+    Unidades = ""
+end if
 %>
 
 <form id="frmLaudos">
@@ -28,9 +33,6 @@ Unidades = "|"& session("UnidadeID") &"|"
                     <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
                 </div>
 <%
-                if lcase(session("Table"))="profissionais" then
-                    ProfissionalID = session("idInTable")
-                end if
 
                 if lcase(session("Table"))="funcionarios" or aut("|laudooutrosprofissionaisV|")=1 then
                 %>

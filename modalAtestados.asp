@@ -1,5 +1,5 @@
 <!--#include file="connect.asp"-->
-<%
+<% 'teste
 if request.QueryString("id")="0" then
 	sqlTextoAtestado = "select * from PacientesAtestadosTextos where sysActive=0 and sysUser="&session("User")
 	set regAte = db.execute(sqlTextoAtestado)

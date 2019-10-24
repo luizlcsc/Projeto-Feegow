@@ -1221,7 +1221,28 @@ function bootbox(){
 }
 
 function submitAgendamento(check) {
-    console.log('Submit.')
+
+    let valorPlano = null;
+
+    if($("#rdValorPlanoV").prop("checked") && !$("#rdValorPlanoV").prop("disabled") ){
+        valorPlano = "V";
+    }
+
+    if($("#rdValorPlanoP").prop("checked") && !$("#rdValorPlanoP").prop("disabled") ){
+        valorPlano = "P";
+    }
+
+    if(valorPlano === null){
+        new PNotify({
+            title: 'Particular ou Convênio?',
+            text: 'Selecione a forma do agendamento.',
+            type: 'danger',
+            delay: 2000
+        });
+
+        return false;
+    }
+
     var repetir = $("#rpt").prop("checked");
 
     var saveAgenda = function(){

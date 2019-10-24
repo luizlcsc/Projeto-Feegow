@@ -1221,7 +1221,28 @@ function bootbox(){
 }
 
 function submitAgendamento(check) {
-    console.log('Submit.')
+
+    let valorPlano = null;
+
+    if($("#rdValorPlanoV").prop("checked") && !$("#rdValorPlanoV").prop("disabled") ){
+        valorPlano = "V";
+    }
+
+    if($("#rdValorPlanoP").prop("checked") && !$("#rdValorPlanoP").prop("disabled") ){
+        valorPlano = "P";
+    }
+
+    if(valorPlano === null){
+        new PNotify({
+            title: 'Particular ou Convênio?',
+            text: 'Selecione a forma do agendamento.',
+            type: 'danger',
+            delay: 2000
+        });
+
+        return false;
+    }
+
     var repetir = $("#rpt").prop("checked");
 
     var saveAgenda = function(){
@@ -1468,7 +1489,7 @@ $("#ProfissionalID", "#dadosAgendamento").change(function() {
     });
 });
 
-$("#Hora, #Encaixe").change(function() {
+function VerGradeDoHorario() {
     var Hora = $("#Hora").val();
     var EncaixeMarcado = $("#Encaixe").is(":checked");
 
@@ -1477,6 +1498,10 @@ $("#Hora, #Encaixe").change(function() {
             eval(data);
         });
     }
+}
+
+$("#Hora, #Encaixe").change(function (){
+    VerGradeDoHorario()
 });
 
 //retira do select os options que não serão usado caso agendamento seja futuro
@@ -1507,7 +1532,7 @@ $(function(){
     $(".valorprocedimento, .linha-procedimento").on('change', function(){
         somarValores();
     });
-
+    VerGradeDoHorario()
 });
 
 

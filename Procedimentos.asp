@@ -114,7 +114,7 @@ TipoGuia = reg("TipoGuia")
                                 <label for="IntegracaoPleres"> Integração com o Pleres</label></div>
                             <% end if %>
                         </div>
-                        <%= quickfield("multiple", "SomenteConvenios", "Limitar convênios", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio)", "NomeConvenio", "") %>
+                        <%= quickfield("multiple", "SomenteConvenios", "Limitar convênios", 3, reg("SomenteConvenios"), "(select '|NOTPARTICULAR|' id, 'NÃO PERMITIR PARTICULAR' NomeConvenio) UNION ALL (select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio)", "NomeConvenio", "") %>
                         <%= quickfield("multiple", "SomenteLocais", "Limitar locais", 3, SomenteLocais, "select id, NomeLocal from locais where sysActive=1 order by NomeLocal", "NomeLocal", "") %>
                         <%= quickfield("multiple", "SomenteEquipamentos", "Limitar equipamentos", 3, SomenteEquipamentos, "select id, NomeEquipamento from equipamentos where sysActive=1 order by NomeEquipamento", "NomeEquipamento", "") %>
                     </div>

@@ -368,9 +368,13 @@ posModalPagar = "fixed"
             end if
             %>
             
-            <% if aut("profissionalsolicitanteA")=0 then%>
-            <%= quickfield("simpleSelect", "ProfissionalSolicitante", "Profissional Solicitante", 3, ProfissionalSolicitante, "select concat('0_',id) id, NomeEmpresa NomeProfissional, 0 ordem from empresa union all select concat('5_',id) id, NomeProfissional, 1 ordem from profissionais where sysActive=1 and ativo='on' union all select concat('8_',id) id, NomeProfissional, 2 ordem from profissionalexterno where sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", "" ) %>
-            <% else %>
+            <% if aut("profissionalsolicitanteA")=1 then
+                    if getconfig("profissionalsolicitanteobrigatorio")=1 then
+                        response.write (quickfield("simpleSelect", "ProfissionalSolicitante", "Profissional Solicitante*", 3, ProfissionalSolicitante, "select concat('0_',id) id, NomeEmpresa NomeProfissional, 0 ordem from empresa union all select concat('5_',id) id, NomeProfissional, 1 ordem from profissionais where sysActive=1 and ativo='on' union all select concat('8_',id) id, NomeProfissional, 2 ordem from profissionalexterno where sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", " required empty " ))
+                    else
+                        response.write (quickfield("simpleSelect", "ProfissionalSolicitante", "Profissional Solicitante", 3, ProfissionalSolicitante, "select concat('0_',id) id, NomeEmpresa NomeProfissional, 0 ordem from empresa union all select concat('5_',id) id, NomeProfissional, 1 ordem from profissionais where sysActive=1 and ativo='on' union all select concat('8_',id) id, NomeProfissional, 2 ordem from profissionalexterno where sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", "" ))
+                    end if 
+              else %>
             <div class="col-md-3 qf" id="qfprofissionalsolicitante"><label for="ProfissionalSolicitante">Profissional Solicitante</label><br>
              <input type="hidden" name="ProfissionalSolicitante" value="<%=ProfissionalSolicitante%>">
               <span> <% response.write(accountName("", ProfissionalSolicitante)) %> </span>

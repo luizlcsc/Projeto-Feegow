@@ -163,7 +163,7 @@ if req("Lancto")<>"" and req("Lancto")="Dir" then
     });
     </script>
 <%
-    ProfissionalSolicitante = "5_"&req("ProfissionalSolicitante")
+    ProfissionalSolicitante = req("ProfissionalSolicitante")
 else 
     ProfissionalSolicitante = data("ProfissionalSolicitante")
 end if

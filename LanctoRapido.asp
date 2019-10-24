@@ -121,7 +121,7 @@ if Tipo="AReceber" then
 	    db.execute("UPDATE sys_financialinvoices SET CompanyUnitID="&treatvalnull(UnidadeIDAgendada)&" WHERE id="&InvoiceID)
 	end if
 	'Redireciona para a invoice informando Pac
-	response.Redirect("invoice.asp?Pers=1&T=C&I="&InvoiceID&"&PacienteID="&PacienteID&"&Lancto=Dir&TabelaID="&TabelaID)
+   	response.Redirect("invoice.asp?Pers=1&T=C&I="&InvoiceID&"&PacienteID="&PacienteID&"&Lancto=Dir&TabelaID="&TabelaID&"&ProfissionalSolicitante="&ProfissionalID)
 elseif Tipo="GuiaConsulta" then
 	if ref("Lancto")="" then
 		Lancto = PacienteID&"|Paciente"

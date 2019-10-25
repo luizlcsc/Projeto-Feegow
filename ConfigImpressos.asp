@@ -57,6 +57,9 @@ if not reg.EOF then
 '	ItensProposta = reg("ItensProposta")
     LaudosProtocolo = reg("LaudosProtocolo")
     EtiquetaAgendamento = reg("EtiquetaAgendamento")
+    TermoCancelamento = reg("TermoCancelamento")
+    ReciboHonorarioMedico = reg("ReciboHonorarioMedico")
+    RPSModelo = reg("RPSModelo")
 end if
 %>
 <form method="post" action="" id="formImpressos">
@@ -130,7 +133,7 @@ end if
                         </div>
                         <div class="panel-body p7 ">
                         <div class="row">
-                            <ol class="sortable list-group">  
+                            <ol class="sortable list-group">
                             <%
                             CreateCamposRecibo("RecibosIntegrados")
                             sqlvar = "select rcm.Nome, rc.* from recibo_campos rc join cliniccentral.recibo_campos_modelo rcm on rc.campoId = rcm.id where rc.tipo='RecibosIntegrados' order by rc.ordem"
@@ -138,12 +141,12 @@ end if
                             if not CamposRecibo.eof then
                                 While not CamposRecibo.eof
                                     disabled=""
-                                    ordem = CamposRecibo("ordem") 
-                                    if CamposRecibo("exibir")="N" then 
+                                    ordem = CamposRecibo("ordem")
+                                    if CamposRecibo("exibir")="N" then
                                         disabled = "disabled"
                                         ordem = 0
-                                    end if 
-                                %> 
+                                    end if
+                                %>
                                     <li class="list-group-item" >
                                         <input type="hidden" value="<%=ordem%>" id="ordem<%=CamposRecibo("campoId")%>" class="sortable-number">
                                         <div class="row">
@@ -152,11 +155,11 @@ end if
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="checkbox-primary checkbox-custom">
-                                                    <input type="checkbox" name="campos_recibo" 
-                                                        id="campo<%=CamposRecibo("campoId")%>" value="<%=CamposRecibo("campoId")%>" 
+                                                    <input type="checkbox" name="campos_recibo"
+                                                        id="campo<%=CamposRecibo("campoId")%>" value="<%=CamposRecibo("campoId")%>"
                                                         <% if CamposRecibo("exibir")="S" then response.write("checked") end if %>
                                                        >
-                                                    <label for="campo<%=CamposRecibo("campoId")%>"> 
+                                                    <label for="campo<%=CamposRecibo("campoId")%>">
                                                         <small><%=CamposRecibo("nome")%></small>
                                                     </label>
                                                 </div>
@@ -170,8 +173,8 @@ end if
                             end if
                             %>
                             </ol>
-                        </div> 
-                        </div> 
+                        </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -192,7 +195,7 @@ end if
                         </div>
                         <div class="panel-body p7 ">
                         <div class="row">
-                            <ol class="sortable2 list-group"> 
+                            <ol class="sortable2 list-group">
                             <%
                             CreateCamposRecibo("RecibosIntegradosAPagar")
                             sqlvar = "select rcm.Nome, rc.* from recibo_campos rc join cliniccentral.recibo_campos_modelo rcm on rc.campoId = rcm.id where rc.tipo='RecibosIntegradosAPagar' order by rc.ordem"
@@ -200,12 +203,12 @@ end if
                             if not CamposReciboApagar.eof then
                                 While not CamposReciboApagar.eof
                                     disabled=""
-                                    ordem = CamposReciboApagar("ordem") 
-                                    if CamposReciboApagar("exibir")="N" then 
+                                    ordem = CamposReciboApagar("ordem")
+                                    if CamposReciboApagar("exibir")="N" then
                                         disabled = "disabled"
                                         ordem = 0
-                                    end if 
-                                %>    
+                                    end if
+                                %>
                                     <li class="list-group-item" >
                                         <input type="hidden" value="<%=ordem%>" id="ordemP<%=CamposReciboApagar("campoId")%>" class="sortable-number">
                                         <div class="row">
@@ -214,11 +217,11 @@ end if
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="checkbox-primary checkbox-custom">
-                                                    <input type="checkbox" name="campos_recibo_apagar" 
-                                                        id="campoP<%=CamposReciboApagar("campoId")%>" value="<%=CamposReciboApagar("campoId")%>" 
+                                                    <input type="checkbox" name="campos_recibo_apagar"
+                                                        id="campoP<%=CamposReciboApagar("campoId")%>" value="<%=CamposReciboApagar("campoId")%>"
                                                         <% if CamposReciboApagar("exibir")="S" then response.write("checked") end if %>
                                                         >
-                                                    <label for="campoP<%=CamposReciboApagar("campoId")%>"> 
+                                                    <label for="campoP<%=CamposReciboApagar("campoId")%>">
                                                         <small><%=CamposReciboApagar("nome")%></small>
                                                     </label>
                                                 </div>
@@ -232,8 +235,8 @@ end if
                             end if
                             %>
                             </ol>
-                        </div> 
-                        </div> 
+                        </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -423,6 +426,173 @@ end if
                 </div>
             </div>
 
+            <!-- Termo de Cancelamento-->
+
+            <div id="divTermoCancelamento" class="tab-pane">
+                <div class="clearfix form-actions">
+                    <div class="col-md-3">
+                        <button id="btn-TermoCancelamento" onClick="saveImpressos('TermoCancelamento');" type="button" class="btn btn-success">Salvar</button>
+                    </div>
+                </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <% call quickField("editor", "TermoCancelamento", "Layout do Termo de Cancelamento", 12, TermoCancelamento, "500", "", "") %>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr class="success">
+                            <th>Dados do Recibo</th>
+                        </tr>
+                        <tr>
+                            <td>[Paciente.Nome]</td>
+                        </tr>
+                        <tr>
+                            <td>[Paciente.Nascimento]</td>
+                        </tr>
+                        <tr>
+                            <td>[Procedimento.Nome]</td>
+                        </tr>
+                        <tr>
+                            <td>[Agendamento.Protocolo]</td>
+                        </tr>
+                        <tr>
+                            <td>[Agendamento.Data]</td>
+                        </tr>
+                        <tr>
+                            <td>[Responsavel.Nome]</td>
+                        </tr>
+                        <tr>
+                            <td>[Responsavel.CPF]</td>
+                        </tr>
+                        <tr>
+                            <td>[Data.DDMMAAAA]</td>
+                        </tr>
+                        <tr>
+                            <td>[Devolucoes.Valor]</td>
+                        </tr>
+                        <tr>
+                            <td>[Devolucoes.data]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+            <!--   ****************   -->
+
+            <!-- Recibo de honorário Médico-->
+
+            <div id="divRecibosHM" class="tab-pane">
+                <div class="clearfix form-actions">
+                    <div class="col-md-3">
+                        <button id="btn-ReciboHM" onClick="saveImpressos('ReciboHonorarioMedico');" type="button" class="btn btn-success">Salvar</button>
+                    </div>
+                </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <% call quickField("editor", "ReciboHonorarioMedico", "Layout do Recibo de Honorário Médico", 12, ReciboHonorarioMedico, "500", "", "") %>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr class="success">
+                            <th>Dados do Recibo</th>
+                        </tr>
+                        <tr>
+                            <td>[Paciente.Nome]</td>
+                        </tr>
+                        <tr>
+                            <td>[Paciente.Nascimento]</td>
+                        </tr>
+                        <tr>
+                            <td>[Procedimento.Nome]</td>
+                        </tr>
+                        <tr>
+                            <td>[Agendamento.Protocolo]</td>
+                        </tr>
+                        <tr>
+                            <td>[Agendamento.Data]</td>
+                        </tr>
+                        <tr>
+                            <td>[Responsavel.Nome]</td>
+                        </tr>
+                        <tr>
+                            <td>[Responsavel.CPF]</td>
+                        </tr>
+                        <tr>
+                            <td>[Data.DDMMAAAA]</td>
+                        </tr>
+                        <tr>
+                            <td>[Devolucoes.Valor]</td>
+                        </tr>
+                        <tr>
+                            <td>[Devolucoes.data]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+            <!--   ****************   -->
+         <!-- RPS-->
+
+            <div id="divRecibosRPS" class="tab-pane">
+                <div class="clearfix form-actions">
+                    <div class="col-md-3">
+                        <button id="btn-RPSModelo" onClick="saveImpressos('RPSModelo');" type="button" class="btn btn-success">Salvar</button>
+                    </div>
+                </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <% call quickField("editor", "RPSModelo", "Layout do RPS", 12, RPSModelo, "500", "", "") %>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr class="success">
+                            <th>Dados do Recibo</th>
+                        </tr>
+                        <tr>
+                            <td>[Paciente.Nome]</td>
+                        </tr>
+                        <tr>
+                            <td>[Paciente.Nascimento]</td>
+                        </tr>
+                        <tr>
+                            <td>[Procedimento.Nome]</td>
+                        </tr>
+                        <tr>
+                            <td>[Agendamento.Protocolo]</td>
+                        </tr>
+                        <tr>
+                            <td>[Agendamento.Data]</td>
+                        </tr>
+                        <tr>
+                            <td>[Responsavel.Nome]</td>
+                        </tr>
+                        <tr>
+                            <td>[Responsavel.CPF]</td>
+                        </tr>
+                        <tr>
+                            <td>[Data.DDMMAAAA]</td>
+                        </tr>
+                        <tr>
+                            <td>[Devolucoes.Valor]</td>
+                        </tr>
+                        <tr>
+                            <td>[Devolucoes.data]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+            <!--   ****************   -->
+
         </div>
     </div>
 </form>
@@ -431,7 +601,7 @@ end if
 function saveImpressos(tipo){
 	$("#btn-"+tipo).html('salvando');
     $("#btn-"+tipo).attr('disabled', 'disabled');
-    
+
     var listcampos =  null;
     var ordemName = "";
     var camposnames ="";
@@ -462,6 +632,10 @@ function saveImpressos(tipo){
         }
     }
 
+    if (tipo == "TermoCancelamento"){
+
+    }
+
     $.post("saveImpressos.asp?Tipo="+tipo,{
 		   Cabecalho: $("#Cabecalho").val(),
 		   Rodape: $("#Rodape").val(),
@@ -477,6 +651,9 @@ function saveImpressos(tipo){
 		   RodapeProposta: $("#RodapeProposta").val(),
 		   LaudosProtocolo: $("#LaudosProtocolo").val(),
            EtiquetaAgendamento: $("#EtiquetaAgendamento").val(),
+           TermoCancelamento:$("#TermoCancelamento").val(),
+           ReciboHonorarioMedico:$("#ReciboHonorarioMedico").val(),
+           RPSModelo:$("#RPSModelo").val(),
            CamposRecibos: camposnames,
            Ordem : ordens,
            Visiveis : visiveis,

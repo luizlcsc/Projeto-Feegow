@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 PropostaID = req("PropostaID")
+ProfissionalSolicitante = "5_"&req("ProfissionalSolicitante")
 
 db_execute("insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, sysDate, TabelaID) (select 'Gerado pela proposta', PacienteID, '3', Valor, '1', 'BRL', '"&session("UnidadeID")&"', '1', 'm', 'C', '1', '"&session("User")&"', date(now()), TabelaID from propostas where id="&PropostaID&")")
 
@@ -12,5 +13,5 @@ db_execute("insert into sys_financialmovement (AccountAssociationIDCredit, Accou
 
 db_execute("update propostas set InvoiceID="&pult("id")&", StaID=5 where id="&PropostaID)
 
-response.Redirect( "./?P=Invoice&Pers=1&T=C&I="&pult("id") )
+response.Redirect( "./?P=Invoice&Pers=1&T=C&I="&pult("id")&"&origem=geracontrato&ProfissionalSolicitante="& ProfissionalSolicitante )
 %>

@@ -233,9 +233,10 @@ end if
                          <div class="row">
                              <div class="col-md-12 text-right">
                                  <%=pula%>
-                                   <a id="btn-gerar-contrato" href="?P=GerarContrato&Pers=1&PropostaID=<%=req("PropostaID")%>" class="btn btn-default">Gerar contrato</a>
+                                  <!-- <a id="btn-gerar-contrato" href="?P=GerarContrato&Pers=1&PropostaID=<%=req("PropostaID")%>&ProfissionalSolicitante=<%=ProfissionalID %>" class="btn btn-default">Gerar contrato</a>-->
+                                  <button id="btn-gerar-contrato" class="btn btn-default" onclick="GerarContrato()" type="button"> Gerar contrato </button>
                              </div>
-                         </div>
+                         </div> 
                   </div>
               </div>
 
@@ -460,6 +461,10 @@ function ListaProFormas(Filtro, X, Aplicar){
 	  $("#ListaProFormas").html(data);
 	});
 }
+function GerarContrato(){
+    var profissional = document.getElementById("ProfissionalID");
+    document.location.href = "?P=GerarContrato&Pers=1&PropostaID=<%=req("PropostaID")%>&ProfissionalSolicitante=" + profissional.options[profissional.selectedIndex].value;
+};
 
 $('#FiltroProItens').keypress(function(e){
     if ( e.which == 13 ){

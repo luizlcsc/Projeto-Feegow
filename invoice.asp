@@ -165,7 +165,11 @@ if req("Lancto")<>"" and req("Lancto")="Dir" then
 <%
     ProfissionalSolicitante = req("ProfissionalSolicitante")
 else 
-    ProfissionalSolicitante = data("ProfissionalSolicitante")
+    if  req("origem") = "geracontrato" then 
+        ProfissionalSolicitante =  req("ProfissionalSolicitante")
+    else
+        ProfissionalSolicitante = data("ProfissionalSolicitante")
+    end if 
 end if
 
 

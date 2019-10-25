@@ -175,6 +175,7 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
             valor = ""
             procedimento = ""
             AgendamentoID = ""
+            ProfissionalID =  $("#valuesearchindicacaoId").val();
 
             $(".linha-procedimento").each(function(index){
                 var valor1 = $(this).find(".valorprocedimento").val();
@@ -206,14 +207,13 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
             $.post('checkinLanctoUpdate.asp', {
                     valor : valor,
                     procedimento : procedimento,
-                    AgendamentoID : AgendamentoID
+                    AgendamentoID : AgendamentoID,
+                    ProfissionalID: ProfissionalID
                 }, function(val1){
 
                     $.post("checkinLancto.asp", $(".Bloco" + Bloco).serialize(), function (v) { $('#divLanctoCheckin').html(v) });
 
                 });
-
-
             });
         }
 
@@ -224,6 +224,7 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
             valor = "";
             procedimento = "";
             AgendamentoID = "";
+            ProfissionalID =  $("#valuesearchindicacaoId").val();
 
             $(".linha-procedimento").each(function(index){
                 var valor1 = $(this).find(".valorprocedimento").val();
@@ -240,7 +241,8 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
             $.post('checkinLanctoUpdate.asp', {
                     valor : valor,
                     procedimento : procedimento,
-                    AgendamentoID : AgendamentoID
+                    AgendamentoID : AgendamentoID,
+                    ProfissionalID : ProfissionalID
                 }, function(val1) {
                     formaRectoCheckin(null, null);
                     $.post("saveAgenda.asp?PreSalvarCheckin=1", $("#formAgenda").serialize(), function(data) {

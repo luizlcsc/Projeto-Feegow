@@ -249,7 +249,7 @@ Class Devolucao
                             " INNER JOIN sys_financialmovement AS mov2 ON (mov2.id=disc.MovementID)" &_
                             " INNER JOIN sys_financialinvoices AS invoice ON (invoice.id = d.InvoiceID)" &_
                             " LEFT JOIN nfe_notasemitidas  AS nfe ON (nfe.InvoiceID = invoice.id) " &_
-                            " INNER JOIN (SELECT id  *-1 AS id, unitname AS nome from sys_financialcompanyunits" &_
+                            " LEFT JOIN (SELECT id  *-1 AS id, unitname AS nome from sys_financialcompanyunits" &_
                             "             UNION" &_
                             "             SELECT 0 AS id, nomeempresa AS nome FROM empresa" &_
                             "             UNION" &_
@@ -257,34 +257,35 @@ Class Devolucao
                             " WHERE d.invoiceID =  " & InvoiceID & "  " &_
                             " ORDER BY mov2.Date DESC LIMIT 1"
         set rsDevolucao = db.execute(sqlDadosdaInvoice)
-        
-        'replaceTags(valor, PacienteID, UserID, UnidadeID)
-        impresso = replaceTags(textoModeloDevolucao, rsDevolucao("AssociationAccountID")&"_"&rsDevolucao("AccountID") ,rsDevolucao("sysUser"), rsDevolucao("unidadeID"))
 
-        impresso = replace(impresso,"[Devolucoes.unidade]",rsDevolucao("unidade"))
+        if not rsDevolucao.eof then
+            'replaceTags(valor, PacienteID, UserID, UnidadeID)
+            impressoHtml = replaceTags(textoModeloDevolucao&"", rsDevolucao("AccountID")&"" ,rsDevolucao("sysUser")&"", rsDevolucao("unidadeID")&"")
 
-        if rsDevolucao("invoiceID") <> "" then
-            impresso = replace(impresso,"[Devolucoes.guianro]",rsDevolucao("invoiceID"))
-        else 
-            impresso = replace(impresso,"[Devolucoes.guianro]","Não Informado")
-        end if 
+            impressoHtml = replace(impressoHtml&"","[Devolucoes.unidade]",rsDevolucao("unidade")&"")
 
-        if rsDevolucao("numero") <> "" then
-            impresso = replace(impresso,"[Devolucoes.rpa]",rsDevolucao("numero"))
-        else
-            impresso = replace(impresso,"[Devolucoes.rpa]","Não Informado")
-        end if 
+            if rsDevolucao("invoiceID") <> "" then
+                impressoHtml = replace(impressoHtml,"[Devolucoes.guianro]",rsDevolucao("invoiceID"))
+            else
+                impressoHtml = replace(impressoHtml,"[Devolucoes.guianro]","Não Informado")
+            end if
 
-        if rsDevolucao("numeronfse") <> "" then
-            impresso = replace(impresso,"[Devolucoes.nfe]",rsDevolucao("numeronfse"))
-        else 
-            impresso = replace(impresso,"[Devolucoes.nfe]","Não Informado")
+            if rsDevolucao("numero") <> "" then
+                impressoHtml = replace(impressoHtml,"[Devolucoes.rpa]",rsDevolucao("numero"))
+            else
+                impressoHtml = replace(impressoHtml,"[Devolucoes.rpa]","Não Informado")
+            end if
+
+            if rsDevolucao("numeronfse") <> "" then
+                impressoHtml = replace(impressoHtml,"[Devolucoes.nfe]",rsDevolucao("numeronfse"))
+            else
+                impressoHtml = replace(impressoHtml,"[Devolucoes.nfe]","Não Informado")
+            end if
+
+            impressoHtml = replace(impressoHtml,"[Devolucoes.Valor]",rsDevolucao("valor"))
+            impressoHtml = replace(impressoHtml,"[Devolucoes.data]",rsDevolucao("date"))
+            replaceTagsDevolucao = impressoHtml
         end if
-
-        impresso = replace(impresso,"[Devolucoes.Valor]",rsDevolucao("valor"))
-        impresso = replace(impresso,"[Devolucoes.data]",rsDevolucao("date"))     
-        replaceTagsDevolucao = impresso
-
     end function
 
 End Class

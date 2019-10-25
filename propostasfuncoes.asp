@@ -17,15 +17,41 @@ function imprimir(){
 }
 
 
-function itens(T, A, II){
+function itens(T, A, II, Q = "", incP = 0, valor, profissionalID){
 	var inc = $('[data-val]:last').attr('data-val');
 	var PacienteID = $('#PacienteID').val();
     var TabelaID = $('#TabelaID').val();
-
+	if(valor == undefined){ valor = -1 }
+	if(profissionalID == undefined){ profissionalID = 0 }
 	if(inc==undefined){inc=0}
-	$.post("propostaItens.asp?I=<%=PropostaID%>&Row="+inc, {T:T,A:A,II:II,PacienteID:PacienteID,TabelaID:TabelaID}, function(data, status){
+	if(incP > 0) { inc = incP}
+	$.post("propostaItens.asp?I=<%=PropostaID%>&Row="+inc, {valor:valor, T:T,A:A,II:II,PacienteID:PacienteID,TabelaID:TabelaID, Q:Q, profissionalID:profissionalID}, function(data, status){
 	if(A=="I"){
-		$("#footItens").before(data);
+        $("#footItens").before(data);
+
+	    let removido = false
+        $("[unico]").each((arg,arg1)=>{
+           let id = $(arg1).attr("unico");
+           if($(`[unico="${id}"]`).length > 1 && !removido){
+               removido = true;
+               $(`[unico="${id}"]`).last().remove();
+               $("#ListaProItens").parent().parent().before(`<div class="text-danger confirm-add" style="padding:5px">Este procedimento não permite duplicidade em propostas.</div>`)
+                setTimeout(() => {
+                    $(".confirm-add").fadeOut();
+                },2000);
+           }
+        });
+
+	    if(!removido){
+            $("#ListaProItens").parent().parent().before(`<div class="text-success confirm-add" style="padding:5px">Item incluído com sucesso.</div>`)
+            $("#FiltroProItens").val("").focus();
+            ListaProItens("", '', '')
+            setTimeout(() => {
+                    $(".confirm-add").fadeOut();
+            },1000);
+
+	    }
+
 	}else if(A=="X"){
 		eval(data);
 	}else{
@@ -46,6 +72,7 @@ function propostaSave(){
 //	---> Form do paciente.serialize
 	if($("#PacienteID").val() == ""){
 		alert("Selecione um paciente");
+		return false;
 	}else{
 		$.post("propostaSave.asp?PropostaID=<%=PropostaID%>", $("#frmProposta").serialize(), function(data){ eval(data) });
 	}

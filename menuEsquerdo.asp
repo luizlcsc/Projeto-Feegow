@@ -268,7 +268,7 @@ select case lcase(req("P"))
 <script type="text/javascript">
     $("#toggle_sidemenu_l").click(function () {
         setTimeout(function () { $(".select2-single").select2() }, 400);
-        
+
     });
 </script>
         <%
@@ -474,7 +474,7 @@ select case lcase(req("P"))
 <script type="text/javascript">
     $("#toggle_sidemenu_l").click(function () {
         setTimeout(function () { $(".select2-single").select2() }, 400);
-        
+
     });
 </script>
 
@@ -647,6 +647,19 @@ select case lcase(req("P"))
                 </a>
             </li>
 		    <%
+            if aut("aso")=1 and false then
+		    %>
+            <li>
+                <a data-toggle="tab" class="tab" id="abaForms" href="#forms" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AsoPaciente|');">
+                    <span class="fa fa-bar-chart bigger-110"></span>
+                    <span class="sidebar-title">Medicina ocupacional</span>
+                    <span class="sidebar-title-tray">
+                      <span class="label label-xs bg-primary" id="totalaso"></span>
+                    </span>
+                </a>
+            </li>
+		    <%
+		    end if
 		    if aut("formsae")=1 then
 		    %>
             <li>
@@ -771,7 +784,7 @@ select case lcase(req("P"))
                 </a>
             </li>
             <%
-            
+
             if recursoAdicional(20) = 4  then
 
                 set certiDidital = db.execute("SELECT * FROM cliniccentral.digitalcertificates where UsuarioID = "&session("User")&" and LicencaID = "&replace(session("Banco"), "clinic", "")&" and sysActive = 1")
@@ -980,7 +993,7 @@ select case lcase(req("P"))
             <a data-toggle="tab" href="#divOpcoesAgenda"><span class="fa fa-calendar"></span> <span class="sidebar-title">Opções de Agenda</span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divMateriais" onclick="ajxContent('procedimentoskits', '<%=req("I") %>', 1, 'procedimentoskits')"><span class="fa fa-medkit"></span> <span class="sidebar-title">Kits</span></a>
+            <a data-toggle="tab" href="#divMateriais" onclick="ajxContent('procedimentoskits', <%=req("I") %>, 1, 'procedimentoskits')"><span class="fa fa-medkit"></span> <span class="sidebar-title">Kits</span></a>
         </li>
         <li>
             <a data-toggle="tab" href="#divEquipe" onclick="ajxContent('procedimentosdespesas', '<%=req("I") %>', 1, 'divEquipe')"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Despesas Anexas <span class="label label-system label-xs fleft">Novo</span></span></a>
@@ -1342,6 +1355,16 @@ select case lcase(req("P"))
         <%
         end if
         %>
+
+        <% if recursoAdicional(15) then %>
+        <li>
+            <a data-toggle="tab" href="#divRecibosHM"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Recibos de Honorário Médico (Split)</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#divRecibosRPS"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> RPS (Split)</a>
+        </li>
+
+        <% end if %>
         <li>
             <a data-toggle="tab" href="#divRecibosIntegrados"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Recibos Integrados (A Receber)</a>
         </li>
@@ -1358,6 +1381,9 @@ select case lcase(req("P"))
         </li>
         <li>
             <a data-toggle="tab" href="#divEtiquetaAgendamento"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Etiqueta dos Agendamentos</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#divTermoCancelamento"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Termo de Cancelamento</a>
         </li>
         <hr style="margin:10px !important;">
 
@@ -2144,7 +2170,7 @@ select case lcase(req("P"))
                 <%= quickfield("simpleSelect", "StatusID", "Status", 12, StatusID, "select id, Status from laudostatus order by Ordem", "Status", " no-select2 semVazio "& disabled) %>
             </div>
         </li>
-      
+
         <li class="p10">
                 <div class="checkbox-custom checkbox-danger"><input type="checkbox" id="Restritivo" name="Restritivo" onchange="saveLaudo('Restritivo')" value="1" <% if Restritivo then response.write(" checked ") end if %> /><label for="Restritivo">Marcar como restritivo</label></div>
         </li>
@@ -2176,8 +2202,23 @@ select case lcase(req("P"))
                 end if
             %>
         </li>
-        
+
         <%
+            case "aso_empresa", "aso_categoria_risco_operacional", "aso_texto", "aso_funcao"
+%>
+		<li>
+            <a href="?P=aso_funcao&Pers=Follow"><span class="fa fa-users"></span> <span class="sidebar-title">Funções</span></a>
+        </li>
+        <li>
+            <a href="?P=aso_categoria_risco_operacional&Pers=Follow"><span class="fa fa-exclamation-triangle"></span> <span class="sidebar-title">Riscos operacionais</span></a>
+        </li>
+        <li>
+            <a href="?P=aso_empresa&Pers=Follow"><span class="fa fa-building"></span> <span class="sidebar-title">Empresas</span></a>
+        </li>
+        <li>
+            <a href="?P=aso_texto&Pers=Follow"><span class="fa fa-align-justify"></span> <span class="sidebar-title">Texto padrão</span></a>
+        </li>
+<%
     case "treinamentos"
         %>
         <li class="sidebar-label"></li>

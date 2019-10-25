@@ -251,19 +251,22 @@ else
 			    if spl(i)<>"" and isnumeric(spl(i)) then
                 set buscaChatName = db.execute("select lu.Nome from sys_users u left join cliniccentral.licencasusuarios lu ON lu.id=u.id where u.id="&spl(i))
 				    if not buscaChatName.eof then
-				    msg = db.execute("SELECT Mensagem FROM chatmensagens WHERE De = "&spl(i)&" AND Para = "&session("User")&" ORDER BY id DESC LIMIT 1")
-				    %>
-                    if($("#chat_<%=spl(i)%>").parents(".dockmodal-body").length != 0){
-                        chatUpdate(<%=spl(i)%>);
-                    }else{
-                	    callWindow(<%=spl(i)%>, '<%=buscaChatName("Nome")%>');
-	                    //callTalk(<%=spl(i)%>, <%=session("User")%>, '', 'body_<%=spl(i)%>');
-                    }
-                    <% IF (getConfig("SonsNotificacao")) THEN %>
-                    document.getElementById("audioNotificacao").play();
-                    <% END IF %>
-                    chatNotificacao("Nova mensagem de <%=buscaChatName("Nome")%>", "<%=msg("Mensagem")%>");
-                    <%
+				    set msg = db.execute("SELECT Mensagem FROM chatmensagens WHERE De = "&spl(i)&" AND Para = "&session("User")&" ORDER BY id DESC LIMIT 1")
+
+				    if not msg.eof then
+                        %>
+                        if($("#chat_<%=spl(i)%>").parents(".dockmodal-body").length != 0){
+                            chatUpdate(<%=spl(i)%>);
+                        }else{
+                            callWindow(<%=spl(i)%>, '<%=buscaChatName("Nome")%>');
+                            //callTalk(<%=spl(i)%>, <%=session("User")%>, '', 'body_<%=spl(i)%>');
+                        }
+                        <% IF (getConfig("SonsNotificacao")) THEN %>
+                        document.getElementById("audioNotificacao").play();
+                        <% END IF %>
+                        chatNotificacao("Nova mensagem de <%=buscaChatName("Nome")%>", "<%=msg("Mensagem")%>");
+                        <%
+                        end if
                     end if
                     'modificação sanderson, update na mensagem ja lida, para não aparecer toda hora para o usuario
 				    'db_execute("update sys_users set novasmsgs='"&replace(buscaAtu("novasmsgs"), "|"&session("User")&"|", "")&"' where id="&spl(i))

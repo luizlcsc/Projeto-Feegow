@@ -7,7 +7,7 @@
 <%
 if session("admin")=1 then
     if ref("E")="E" then
-        db.execute("update configeventos set EnvioAutomaticoEmail='"&ref("EnvioAutomaticoEmail")&"' , EnvioAutomaticoSMS='"&ref("EnvioAutomaticoSMS")&"' ,EnvioAutomaticoWhatsapp='"&ref("EnvioAutomaticoWhatsapp")&"' , AtivarServicoEmail='"&ref("AtivarServicoEmail")&"', AtivarServicoSMS='"&ref("AtivarServicoSMS")&"', AtivarServicoWhatsapp='"&ref("AtivarServicoWhatsapp")&"' WHERE id=1")
+        db.execute("update configeventos set EnvioAutomaticoEmail='"&ref("EnvioAutomaticoEmail")&"' , EnvioAutomaticoSMS='"&ref("EnvioAutomaticoSMS")&"' ,EnvioAutomaticoWhatsapp='"&ref("EnvioAutomaticoWhatsapp")&"' , AtivarServicoEmail='"&ref("AtivarServicoEmail")&"', AtivarServicoSMS='"&ref("AtivarServicoSMS")&"', AtivarServicoWhatsapp='"&ref("AtivarServicoWhatsapp")&"', ModeloMsgWhatsapp='"&ref("ModeloMsgWhatsapp")&"' WHERE id=1")
         %>
         <script type="text/javascript">
         $(document).ready(function(e) {
@@ -69,6 +69,7 @@ if session("admin")=1 then
         AtivarServicoEmail=reg("AtivarServicoEmail")
         AtivarServicoSMS=reg("AtivarServicoSMS")
         AtivarServicoWhatsapp=reg("AtivarServicoWhatsapp")
+        ModeloMsgWhatsapp=reg("ModeloMsgWhatsapp")
         %>
         <br />
         <div class="tabbable">
@@ -112,7 +113,7 @@ if session("admin")=1 then
 
                                     </label>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label>
                                         WhatsApp <small><span class="badge badge-pink">R$ 0,30</span></small><small><span class="badge badge-warning">Em breve</span></small>
                                         <br />
@@ -123,6 +124,11 @@ if session("admin")=1 then
 
                                     </label>
                                 </div>
+                                <div class="col-md-3">
+                                   <%= quickfield("simpleSelect", "ModeloMsgWhatsapp", "Modelo para mensagem do whatsapp", 12, ModeloMsgWhatsapp, "select * from sys_smsemail", "Descricao", " semVazio no-select2 ") %>
+
+                                </div>
+
                             </div>
                             <hr class="short alt" />
 

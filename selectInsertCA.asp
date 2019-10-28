@@ -38,7 +38,7 @@ if session("Banco")="clinic100000" OR session("Banco")="clinic5459" then
     'response.write("Banco: "&session("Banco"))
     'response.write("<br><br>")
     'response.write("selectUnion: "&selectUnion)
-	selectUnion = selectUnion&"(SELECT id, '0' associacao, 'Licença' recurso, COALESCE(Nome, Email) coluna FROM `cliniccentral`.`licencasusuarios` where (Nome like '"&replace(ref("typed"), " ", "%")&"%' OR Email like '"&replace(ref("typed"), " ", "%")&"%') AND Nome <> '' AND Email <> '' order by COALESCE(Nome, Email) limit 50) UNION ALL "
+	selectUnion = selectUnion&"(SELECT p.id id, '3' associacao, 'Licença' recurso, COALESCE(lu.Nome, lu.Email) coluna FROM `cliniccentral`.`licencasusuarios` lu LEFT JOIN `cliniccentral`.`licencas` l ON l.id=lu.LicencaID LEFT JOIN pacientes p ON p.id=l.Cliente where l.Cliente<>0 AND l.Cliente IS NOT NULL AND (lu.Nome like '"&replace(ref("typed"), " ", "%")&"%' OR lu.Email like '"&replace(ref("typed"), " ", "%")&"%') AND lu.Nome <> '' AND lu.Email <> '' order by COALESCE(lu.Nome, lu.Email) limit 50) UNION ALL "
 	'response.write("<br><br>")
     'response.write("selectUnion: "&selectUnion)
 end if

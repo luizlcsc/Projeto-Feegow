@@ -282,7 +282,7 @@ end if
 
     set diasVencimento = db.execute("SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1")
 
-    set numeroProdutosValidade = db.execute("SELECT COUNT(*) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade <> 0 AND ep.Validade IS NOT NULL AND ep.Validade < (SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1)")
+    set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade <> 0 AND ep.Validade IS NOT NULL AND ep.Validade < (SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1)")
     set ac = dbc.execute("select count(id) Total from cliniccentral.licencaslogins where UserID="&session("User"))
     set ultimoAcessoBemSucedido = dbc.execute("select DataHora from cliniccentral.licencaslogins where Sucesso = 1 AND UserID="&session("User")&" ORDER BY id DESC LIMIT 1,1")
     set ultimoAcessoMalSucedido = dbc.execute("select DataHora, count(id)n from cliniccentral.licencaslogins where Sucesso = 0 AND UserID="&session("User")&" ORDER BY id DESC  LIMIT 1")
@@ -356,7 +356,7 @@ end if
     end if
     if aut("|contasapagarV|")=1 then
     
-        set pconta = db.execute("select count(m.id) Total from sys_financialmovement m left join sys_financialinvoices i on i.id=m.InvoiceID  where Type='Bill' and m.CD='D' and Date<=curdate() and  ((FLOOR(m.Value)>FLOOR(m.ValorPago) OR isnull(m.ValorPago)) AND m.Value>0)  AND i.sysActive=1 ")
+        set pconta = db.execute("select count(distinct i.id) Total from sys_financialmovement m left join sys_financialinvoices i on i.id=m.InvoiceID  where Type='Bill' and m.CD='D' and Date<=curdate() and  ((FLOOR(m.Value)>FLOOR(m.ValorPago) OR isnull(m.ValorPago)) AND m.Value>0)  AND i.sysActive=1 ")
         %>
     <div class="col-sm-3 col-xl-3">
         <div class="panel panel-tile text-center br-a br-grey">

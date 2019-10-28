@@ -118,14 +118,14 @@ if session("admin")=1 then
                                         WhatsApp <small><span class="badge badge-pink">R$ 0,30</span></small><small><span class="badge badge-warning">Em breve</span></small>
                                         <br />
                                         <div class="switch round">
-                                            <input type="checkbox" <% If AtivarServicoWhatsapp="S" Then %> checked="checked"<%end if%> value="S" class="checkbox-ativo" data-type="WhatsApp" data-group="AtivarWhatsApp" name="AtivarServicoWhatsapp" id="AtivarServicoWhatsapp">
+                                            <input disabled type="checkbox" <% If AtivarServicoWhatsapp="S" Then %> checked="checked"<%end if%> value="S" class="checkbox-ativo" data-type="WhatsApp" data-group="AtivarWhatsApp" name="AtivarServicoWhatsapp" id="AtivarServicoWhatsapp">
                                             <label for="AtivarServicoWhatsapp"></label>
                                         </div>
 
                                     </label>
                                 </div>
                                 <div class="col-md-3">
-                                   <%= quickfield("simpleSelect", "ModeloMsgWhatsapp", "Modelo para mensagem do whatsapp", 12, ModeloMsgWhatsapp, "select * from sys_smsemail", "Descricao", " semVazio no-select2 ") %>
+                                   <%= quickfield("simpleSelect", "ModeloMsgWhatsapp", "Modelo para mensagem do whatsapp", 12, ModeloMsgWhatsapp, "select * from sys_smsemail where sysActive=1", "Descricao", " semVazio no-select2 ") %>
 
                                 </div>
 
@@ -164,7 +164,7 @@ if session("admin")=1 then
                                         WhatsApp
                                         <br />
                                         <div class="switch round">
-                                            <input type="checkbox" <% If EnvioAutomaticoWhatsapp="S" Then %> checked="checked"<%end if%> value="S" data-group="AtivarWhatsApp" data-type="WhatsApp" class="marcar-envio" name="EnvioAutomaticoWhatsapp" id="EnvioAutomaticoWhatsapp">
+                                            <input disabled type="checkbox" <% If EnvioAutomaticoWhatsapp="S" Then %> checked="checked"<%end if%> value="S" data-group="AtivarWhatsApp" data-type="WhatsApp" class="marcar-envio" name="EnvioAutomaticoWhatsapp" id="EnvioAutomaticoWhatsapp">
                                             <label for="EnvioAutomaticoWhatsapp"></label>
                                         </div>
 
@@ -182,7 +182,7 @@ if session("admin")=1 then
                                     <button type="button" onclick="ExcluirFila('sms')" data-group="AtivarSMS" data-type="SMS" class="btn btn-sm btn-danger excluir-fila" disabled><i class="fa fa-exclamation-triangle"></i>  Excluir SMS da Fila  </button>
                                  </div>
                                  <div class="col-md-2">
-                                    <button type="button" onclick="ExcluirFila('whatsapp')" data-group="AtivarWhatsApp" data-type="WhatsApp" class="btn btn-sm btn-danger excluir-fila" disabled><i class="fa fa-exclamation-triangle"></i>  Excluir WhatsApp da Fila  </button>
+                                    <button disabled type="button" onclick="ExcluirFila('whatsapp')" data-group="AtivarWhatsApp" data-type="WhatsApp" class="btn btn-sm btn-danger excluir-fila" disabled><i class="fa fa-exclamation-triangle"></i>  Excluir WhatsApp da Fila  </button>
                                  </div>
                             </div>
 

@@ -107,8 +107,8 @@ end if
                             <label>Exibir</label><br />
                             <select class="form-control" id="Pagto" name="Pagto">
                                 <option value="">Todas</option>
-                                <option value="Q" <% If ref("Pagto")="Q" or (session("ccPagto")="Q" and req("Pagto")="") Then %> selected="selected" <% End If %>>Quitadas</option>
-                                <option value="N" <% If ref("Pagto")="N" or (session("ccPagto")="N" and req("Pagto")="") Then %> selected="selected" <% End If %>>N&atilde;o quitadas</option>
+                                <option value="Q" <% If ref("Pagto")="Q" or req("Pagto")="Q" or (session("ccPagto")="Q" and req("Pagto")="") Then %> selected="selected" <% End If %>>Quitadas</option>
+                                <option value="N" <% If ref("Pagto")="N" or req("Pagto")="N" or (session("ccPagto")="N" and req("Pagto")="") Then %> selected="selected" <% End If %>>N&atilde;o quitadas</option>
                             </select>
                         </div>
                         <%=quickField("empresaMulti", "CompanyUnitID", "Unidades", 4, Unidades, "", "", "")%>

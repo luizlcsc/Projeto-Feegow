@@ -95,13 +95,18 @@ Profissionais = reg("Profissionais")
                             <%=quickField("text", "NomeFuncionario", "Nome", 5, reg("NomeFuncionario"), "", "", " required")%>
                             <%=quickField("simpleSelect", "Sexo", "Sexo", 2, reg("Sexo"), "select * from Sexo where sysActive=1", "NomeSexo", "")%>
                             <%=quickField("datepicker", "Nascimento", "Nascimento", 3, reg("Nascimento"), "input-mask-date", "", "")%>
-                            <div class="col-md-2">
+                           	<%
+							'não permitir o usuario inativar ele mesmo
+                            if session("idInTable")&"" = request.QueryString("I")&"" and (session("Table")&"" = request.QueryString("P")&"") then
+								hideInactive = "hidden"
+							end if
+							%>
+						    <div class="col-md-2 <%=hideInactive %>">
                                 <label for="Ativo">Ativo</label><br />
                                     <div class="switch round">
                                         <input <% If reg("Ativo")="on" or isnull(reg("Ativo")) Then %> checked="checked"<%end if%> name="Ativo" id="Ativo" type="checkbox" />
-                                    <label for="Ativo"></label>
+                                    	<label for="Ativo"></label>
                                     </div>
-                                
                             </div>
                         </div>
                         <div class="row">
@@ -152,6 +157,18 @@ Profissionais = reg("Profissionais")
         <div id="divAcesso" class="tab-pane">
 			<!--#include file="unavailable.asp"-->
         </div>
+		<div class="tab-pane" id="divCadastroCargo">
+            Carregando...
+        </div>
+        <div class="tab-pane" id="divCadastroDepartamento">
+            Carregando...
+        </div>
+        <div class="tab-pane" id="divCadastroFuncoes">
+            Carregando...
+        </div>
+        <div class="tab-pane" id="divCadastroAgenciaintegradora">
+            Carregando...
+        </div>
     </div>
 </div>
 <script type="text/javascript">
@@ -179,8 +196,8 @@ function getEndereco() {
 			}else{
 				$("#Endereco").focus();
 			}
-		});				
-	}			
+		});
+	}
 }
 
 </script>
@@ -188,7 +205,7 @@ function getEndereco() {
 <script type="text/javascript">
 //js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
+Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
 %>
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?')){

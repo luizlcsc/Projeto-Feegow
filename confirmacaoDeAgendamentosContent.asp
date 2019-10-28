@@ -1,6 +1,74 @@
 ﻿    <!--#include file="connect.asp"-->
 <%
 
+function centralWhatsApp(AgendamentoID)
+        sql = "select se.TextoSMS from configeventos ce "&_
+              " left join sys_smsemail se on se.id = ce.ModeloMsgWhatsapp"&_
+              " where ce.id = 1 and ce.AtivarServicoWhatsapp = 'S'"
+
+		set reg = db.execute(sql)
+
+        'dados para replace
+        set age = db.execute("select a.*, p.TextoEmail, p.TextoSMS, p.MensagemDiferenciada, p.NomeProcedimento from agendamentos a left join procedimentos p on p.id=a.TipoCompromissoID where a.id="&AgendamentoID)
+        set pac = db.execute("select NomePaciente, Cel1, Cel2 from pacientes where id="&age("PacienteID"))
+
+        if not pac.eof then
+            NomePaciente = trim(pac("NomePaciente"))
+            if instr(NomePaciente, " ") then
+                splPac = split(NomePaciente, " ")
+                NomePaciente = splPac(0)
+            end if
+        end if
+
+        set pro = db.execute("select * from profissionais where id="&age("ProfissionalID"))
+        if not pro.EOF then
+            set Trat = db.execute("select * from tratamento where id = '"&pro("TratamentoID")&"'")
+            if not Trat.eof then
+                Tratamento = trat("Tratamento")
+            end if
+            NomeProfissional = Tratamento&" "&pro("NomeProfissional")
+        end if
+
+        TratamentoProfissional = ""
+
+        Mensagem = reg("TextoSMS")
+
+        if Mensagem ="" then
+            Mensagem = "Olá, [NomePaciente] ! Posso confirmar [NomeProcedimento] [TipoProcedimento] com [NomeProfissional] as [HoraAgendamento]"
+        end if
+
+        if instr(Mensagem, "[TipoProcedimento]") then
+            set proc = db.execute("select p.NomeProcedimento,t.TipoProcedimento from procedimentos p LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID where p.id="&age("TipoCompromissoID"))
+            if not proc.eof then
+                TipoProcedimento = trim(proc("TipoProcedimento"))
+                NomeProcedimento = trim(proc("NomeProcedimento"))
+            end if
+        end if
+
+        Mensagem = replace(Mensagem, "[TipoProcedimento]", TipoProcedimento)
+        Mensagem = replace(Mensagem, "[NomeProcedimento]", NomeProcedimento)
+        Mensagem = replace(Mensagem, "[NomePaciente]", NomePaciente)
+        Mensagem = replace(Mensagem, "[TratamentoProfissional]", "")
+        Mensagem = replace(Mensagem, "[NomeProfissional]", NomeProfissional)
+        Mensagem = replace(Mensagem, "[HoraAgendamento]", formatdatetime( hour(age("Hora"))&":"&minute(age("Hora")) , 4) )
+        Mensagem = replace(Mensagem, "[DataAgendamento]", age("Data"))
+        Mensagem = trim(Mensagem)
+        Mensagem = Replace(Mensagem,"""","")
+
+        UnidadeID = 0
+        set pUnidade = db.execute("select u.id from locais l left join sys_financialcompanyunits u on u.id=l.UnidadeID where l.id like '"&age("LocalID")&"'")
+        if not pUnidade.eof then
+            if not isnull(pUnidade("id")) then
+                UnidadeID = pUnidade("id")
+            end if
+        end if
+
+        Mensagem = replaceTags(Mensagem, age("PacienteID"), session("UserID"), UnidadeID)
+
+        centralWhatsApp = Mensagem
+end function
+
+
 Unidades = ref("Unidades")
 
 function formataNome(nome, primeiroNome)
@@ -113,7 +181,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                                    "LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID LEFT JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN locais l ON l.id=a.LocalID "&_
                                    "LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN convenios conv ON conv.id=a.ValorPlano LEFT JOIN tabelaparticular tab ON tab.id=a.TabelaParticularID "&_
                                    "WHERE "&sqlData& sqlSta & sqlProf & sqlPac & sqlTipoProc & sqlGrupoProc & sqlUnidade &" AND a.sysActive=1 ORDER BY Data, ProfissionalID, Hora"
-
+            'response.write sqlConf
             set ag = db.execute(sqlConf)
             while not ag.eof
                 i = i + 1
@@ -176,6 +244,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                 end if
 
                 TextoWhatsApp = "Olá, "&PacientePrimeiroNome&"! Posso confirmar "&TipoProcedimentoPronome&" "&TipoProcedimento&" com "&ProfissionalPrimeiroNome&" "&DiaMensagem&" às "&Hora&"?"
+                TextoWhatsApp = centralWhatsApp(ag("id"))
 
                 %>
                 <tr data-id="<%=ag("id")%>">
@@ -201,7 +270,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     </td>
                     <td><a href="?P=Agenda-1&Pers=1&AgendamentoID=<%=ag("id")%>" target="_blank"><%= ag("Data") %> - <%=ft(ag("Hora"))%></a></td>
                     <td><a target="_blank" href="?P=Pacientes&Pers=1&I=<%= ag("PacienteID") %>"><%= ag("NomePaciente") %></a></td>
-                    <td><a target="_blank" href="https://api.whatsapp.com/send?phone=<%=CelularFormatadado%>&text=<%=TextoWhatsApp%>"><%= Celular %></a>
+                    <td><a target="_blank" href="https://api.whatsapp.com/send?phone=<%=CelularFormatadado%>&text=<%= TextoWhatsApp %>"><%= Celular %></a>
                     <%
                     if not isnull(ag("Resposta")) then
                         'validar se a resposta é do tipo correto 

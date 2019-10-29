@@ -10,12 +10,14 @@ DiasAntes = treatvalnull(ref("DiasAntes"))
 PaymentMethodID = treatvalnull(ref("PaymentMethodID"))
 Licenca = ref("Licenca")
 TipoContaFixaID = ref("TipoContaFixaID")
+ValorMinimoPorUsuario =  treatvalzero(ref("ValorMinimoPorUsuario"))
+
 
 if session("Banco")="clinic100003" or session("Banco")="clinic5459" then
     sqlFecharAutomatico = ", FecharAutomatico='"&FecharAutomatico&"'"
 end if
 
-    sql = "update invoicesfixas set TipoContaFixaID="&TipoContaFixaID&", Licenca=NULLIF('"&Licenca&"',''),EmitirNotaAntecipada="&EmitirNotaAntecipada&",DiasAntes="&DiasAntes&",PaymentMethodID="&PaymentMethodID&", AccountID="&ContaID&sqlFecharAutomatico&", AssociationAccountID="&AssociacaoID&", PrimeiroVencto="&mydatenull(ref("PrimeiroVencto"))&", Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", Intervalo="&ref("Intervalo")&", TipoIntervalo='"&ref("TipoIntervalo")&"', sysActive=1, RepetirAte="& mydatenull(ref("RepetirAte")) &" where id="&InvoiceID
+    sql = "update invoicesfixas set ValorMinimoPorUsuario=NULLIF("&ValorMinimoPorUsuario&",''), TipoContaFixaID="&TipoContaFixaID&", Licenca=NULLIF('"&Licenca&"',''),EmitirNotaAntecipada="&EmitirNotaAntecipada&",DiasAntes="&DiasAntes&",PaymentMethodID="&PaymentMethodID&", AccountID="&ContaID&sqlFecharAutomatico&", AssociationAccountID="&AssociacaoID&", PrimeiroVencto="&mydatenull(ref("PrimeiroVencto"))&", Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", Intervalo="&ref("Intervalo")&", TipoIntervalo='"&ref("TipoIntervalo")&"', sysActive=1, RepetirAte="& mydatenull(ref("RepetirAte")) &" where id="&InvoiceID
 
 db_execute( sql )
 

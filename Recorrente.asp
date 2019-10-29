@@ -76,6 +76,7 @@ DiasAntes = data("DiasAntes")
 EmitirNotaAntecipada = data("EmitirNotaAntecipada")
 TipoContaFixaID = data("TipoContaFixaID")
 PaymentMethodID = data("PaymentMethodID")
+ValorMinimoPorUsuario = data("ValorMinimoPorUsuario")
 Licencas = data("Licenca")
 if data("sysActive")=1 then
     PrimeiroVencto = data("PrimeiroVencto")
@@ -175,7 +176,7 @@ posModalPagar = "fixed"
 
                     END IF
                  %>
-                     <%=quickField("float", "ValorMinimoPorUsuario", "Mínimo por Usuários", 2, ValorMinimoPorUsuario, " ", "", " ")%>
+                     <%=quickField("currency", "ValorMinimoPorUsuario", "Mínimo por Usuários", 2, ValorMinimoPorUsuario, " ", "", " ")%>
                      <%=quickField("multiple", "Licenca", "Licença", 10, Licencas, "SELECT licencas.id,coalesce(concat(licencas.id,' - ',NomeContato,' - ',NomeEmpresa),CONCAT(licencas.id,' - ',pacientes.NomePaciente),licencas.id) as NomeContato FROM cliniccentral.licencas LEFT JOIN pacientes ON pacientes.id = cliniccentral.licencas.Cliente", "NomeContato", " ")%>
                 <% end if %>
                 </div>

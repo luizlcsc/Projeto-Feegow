@@ -240,7 +240,6 @@ if ExibeResultado then
                 " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente, proc.NomeProcedimento"
                 
                 set rr = db.execute( sqlRR )
-                response.write sqlRR
                 if not rr.eof then
                 %>
                 <h3><%=accountName(AssociationAccountID, AccountID)%></h3>

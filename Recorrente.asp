@@ -83,12 +83,7 @@ else
     PrimeiroVencto = date()
 end if
 
-
-
-
 %>
-
-
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -121,7 +116,7 @@ posModalPagar = "fixed"
     <form id="formItens" action="" method="post">
     <input id="Lancto" type="hidden" name="Lancto" value="<%=req("Lancto")%>">
     <%'=header("recorrente", titulo, data("sysActive"), InvoiceID, 1, "Follow")%>
-        <button id="save" class="hidden">Salvar</button>
+    <button id="save" class="hidden">Salvar</button>
    
     <input type="hidden" id="sysActive" name="sysActive" value="<%=data("sysActive")%>" />
 
@@ -180,7 +175,8 @@ posModalPagar = "fixed"
 
                     END IF
                  %>
-                    <%=quickField("multiple", "Licenca", "Licença", 12, Licencas, "SELECT licencas.id,coalesce(concat(licencas.id,' - ',NomeContato,' - ',NomeEmpresa),CONCAT(licencas.id,' - ',pacientes.NomePaciente),licencas.id) as NomeContato FROM cliniccentral.licencas LEFT JOIN pacientes ON pacientes.id = cliniccentral.licencas.Cliente", "NomeContato", " ")%>
+                     <%=quickField("float", "ValorMinimoPorUsuario", "Mínimo por Usuários", 2, ValorMinimoPorUsuario, " ", "", " ")%>
+                     <%=quickField("multiple", "Licenca", "Licença", 10, Licencas, "SELECT licencas.id,coalesce(concat(licencas.id,' - ',NomeContato,' - ',NomeEmpresa),CONCAT(licencas.id,' - ',pacientes.NomePaciente),licencas.id) as NomeContato FROM cliniccentral.licencas LEFT JOIN pacientes ON pacientes.id = cliniccentral.licencas.Cliente", "NomeContato", " ")%>
                 <% end if %>
                 </div>
             </div>

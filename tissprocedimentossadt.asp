@@ -2,6 +2,28 @@
 <!--#include file="Classes\ValorProcedimento.asp"-->
 <!--#include file="Classes\JSON.asp"-->
 <%
+
+IF req("ConvenioAtualizado") <> "" THEN
+	db_execute("UPDATE tissprocedimentossadt SET CalculoConvenioID = "&req("ConvenioAtualizado")&",CalculoPlanoID=NULL WHERE GuiaID = "&req("I"))
+	recalcularItensGuia(req("I"))
+	%>
+    <script type="text/javascript">
+        atualizaTabela('tissoutrasdespesas', 'tissoutrasdespesas.asp?I=<%=req("I")%>');
+    </script>
+    <%
+END IF
+
+
+IF req("PlanoAtualizado") <> "" THEN
+	db_execute("UPDATE tissprocedimentossadt SET CalculoPlanoID = "&req("PlanoAtualizado")&" WHERE GuiaID = "&req("I"))
+	recalcularItensGuia(req("I"))
+	%>
+    <script type="text/javascript">
+        atualizaTabela('tissoutrasdespesas', 'tissoutrasdespesas.asp?I=<%=req("I")%>');
+    </script>
+    <%
+END IF
+
 if req("X")<>"" then
 	db_execute("delete from tissprocedimentossadt where id="&req("X"))
 	db_execute("delete from rateiorateios where ItemGuiaID="&req("X"))

@@ -4,9 +4,18 @@
 function centralWhatsApp(AgendamentoID)
         sql = "select se.TextoSMS from configeventos ce "&_
               " left join sys_smsemail se on se.id = ce.ModeloMsgWhatsapp"&_
-              " where ce.id = 1 and ce.AtivarServicoWhatsapp = 'S'"
+              " where ce.id = 1 "
 
 		set reg = db.execute(sql)
+
+		Mensagem=""
+
+        if not reg.eof then
+            TextoSMS = reg("TextoSMS")
+            if not isnull(TextoSMS) then
+                Mensagem=TextoSMS
+            end if
+        end if
 
         'dados para replace
         set age = db.execute("select a.*, p.TextoEmail, p.TextoSMS, p.MensagemDiferenciada, p.NomeProcedimento from agendamentos a left join procedimentos p on p.id=a.TipoCompromissoID where a.id="&AgendamentoID)
@@ -31,17 +40,16 @@ function centralWhatsApp(AgendamentoID)
 
         TratamentoProfissional = ""
 
-        Mensagem = reg("TextoSMS")
 
-        if Mensagem ="" then
-            Mensagem = "Olá, [NomePaciente] ! Posso confirmar [NomeProcedimento] [TipoProcedimento] com [NomeProfissional] as [HoraAgendamento]"
+        if Mensagem&"" ="" then
+            Mensagem = "Olá, [NomePaciente] ! Posso confirmar [NomeProcedimento] com [NomeProfissional] as [HoraAgendamento]"
         end if
 
-        if instr(Mensagem, "[TipoProcedimento]") then
+        if instr(Mensagem, "[TipoProcedimento]") or instr(Mensagem, "[NomeProcedimento]") then
             set proc = db.execute("select p.NomeProcedimento,t.TipoProcedimento from procedimentos p LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID where p.id="&age("TipoCompromissoID"))
             if not proc.eof then
-                TipoProcedimento = trim(proc("TipoProcedimento"))
-                NomeProcedimento = trim(proc("NomeProcedimento"))
+                TipoProcedimento = trim(proc("TipoProcedimento"))&""
+                NomeProcedimento = trim(proc("NomeProcedimento"))&""
             end if
         end if
 
@@ -270,7 +278,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     </td>
                     <td><a href="?P=Agenda-1&Pers=1&AgendamentoID=<%=ag("id")%>" target="_blank"><%= ag("Data") %> - <%=ft(ag("Hora"))%></a></td>
                     <td><a target="_blank" href="?P=Pacientes&Pers=1&I=<%= ag("PacienteID") %>"><%= ag("NomePaciente") %></a></td>
-                    <td><a target="_blank" href="https://api.whatsapp.com/send?phone=<%=CelularFormatadado%>&text=<%= TextoWhatsApp %>"><%= Celular %></a>
+                    <td><a target="_blank" href="whatsapp://send?phone=<%=CelularFormatadado%>&text=<%= TextoWhatsApp %>"><%= Celular %></a>
                     <%
                     if not isnull(ag("Resposta")) then
                         'validar se a resposta é do tipo correto 

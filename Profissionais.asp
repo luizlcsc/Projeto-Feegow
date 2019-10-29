@@ -148,16 +148,19 @@ end if
                         <%=quickField("datepicker", "Nascimento", "Nascimento", 2, reg("Nascimento"), "input-mask-date", "", "")%>
                         <%=quickField("simpleSelect", "Sexo", "Sexo", 2, reg("Sexo"), "select * from Sexo where sysActive=1", "NomeSexo", "")%>
                         <%= quickField("text", "CPF", "CPF", 2, reg("CPF"), " input-mask-cpf", "", " required") %>
-                        <div class="col-md-1">
-                            <label>
-                                Ativo
-                                <br />
-                                <div class="switch round">
-                                    <input type="checkbox" <% If reg("Ativo")="on" or isnull(reg("Ativo")) Then %> checked="checked"<%end if%> name="Ativo" id="Ativo">
-                                    <label for="Ativo">Label</label>
-                                </div>
+                        <%
 
-                            </label>
+                        'não permitir o usuario inativar ele mesmo
+                        if session("idInTable")&"" = request.QueryString("I")&"" and (session("Table")&"" = request.QueryString("P")&"") then
+                            hideInactive = "hidden"
+                        end if
+                        %>
+                        <div class="col-md-1 <%=hideInactive %>">
+                            <label for="Ativo">Ativo</label><br />
+                                <div class="switch round">
+                                    <input <% If reg("Ativo")="on" or isnull(reg("Ativo")) Then %> checked="checked"<%end if%> name="Ativo" id="Ativo" type="checkbox" />
+                                    <label for="Ativo"></label>
+                                </div>
                         </div>
                     </div>
                     <div class="row">

@@ -279,7 +279,7 @@ if ExibeResultado then
                     end if
 
                     ValorProcedimento = rr("ValorProcedimento")
-                    Valor = rr("ParcelaValor")
+                    ValorParcela = rr("ParcelaValor")
                     
                     Forma = rr("PaymentMethod")
                     Parcelas = rr("Parcelas")
@@ -309,7 +309,7 @@ if ExibeResultado then
                     if Exibe=1 then
                         ValorRepasse = fn(calculaRepasse(rr("id"), rr("Sobre"), rr("ValorProcedimento"), rr("Valor"), rr("TipoValor")))
                         TotalRepasse = TotalRepasse+ValorRepasse
-                        TotalProcedimento = TotalProcedimento+Valor
+                        TotalProcedimento = TotalProcedimento+ValorParcela
                         ContaRepasses = ContaRepasses+1
                         if not isnull(rr("ItemInvoiceID")) then
                             aLink = "<a target='_blank' href='./?P=invoice&Pers=1&I="& rr("InvoiceID") &"'>"
@@ -351,7 +351,7 @@ if ExibeResultado then
                             <td><%= Forma %></td>
                             <td><%= Parcelas %></td>
                             <td class="text-right"><%= fn(ValorProcedimento) %></td>
-                            <td class="text-right"><%= fn(Valor) %></td>
+                            <td class="text-right"><%= fn(ValorParcela) %></td>
                             <td class="text-right"><%= ValorRepasse %></td>
                             <td>
                                 <% if isnull(rr("ItemContaAPagar")) and aut("|repassesX|")=1 then %>

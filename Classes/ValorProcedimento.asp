@@ -294,6 +294,31 @@ function GetEscalonamento(ConvenioID,PlanoID,ProcedimentoID,CodigoNaOperadora,Es
           GetEscalonamento = GetEscalonamentoObj
 end function
 
+function recalcularItensGuia(GuiaID)
+
+    set ProcedimentosValores = db.execute("SELECT * FROM tissprocedimentossadt  WHERE COALESCE(Anexo <> 1,TRUE) and  CalcularEscalonamento=1 AND TotalGeral is not null AND GuiaID = "&GuiaID&" ORDER BY TotalGeral DESC;")
+    while not ProcedimentosValores.eof
+        set ValoresCalculados = CalculaValorProcedimentoConvenio(null,ProcedimentosValores("CalculoConvenioID"),ProcedimentosValores("ProcedimentoID"),ProcedimentosValores("CalculoPlanoID"),ProcedimentosValores("CalculoContratos"),ProcedimentosValores("Quantidade"),null)
+
+        TotalCHv = treatvalnull(ValoresCalculados("TotalCH"))
+        TotalValorFixov = treatvalnull(ValoresCalculados("TotalValorFixo"))
+        TotalUCOv = treatvalnull(ValoresCalculados("TotalUCO"))
+        TotalPORTEv = treatvalnull(ValoresCalculados("TotalPORTE"))
+        TotalFILMEv = treatvalnull(ValoresCalculados("TotalFILME"))
+        TotalGeralv = treatvalnull(ValoresCalculados("TotalGeral"))
+
+        sqlUpdate = "UPDATE tissprocedimentossadt SET  TotalCH="&TotalCHv&" ,TotalValorFixo="&TotalValorFixov&" ,TotalUCO="&TotalUCOv&", TotalPORTE="&TotalPORTEv&", TotalFILME="&TotalFILMEv&", TotalGeral="&TotalGeralv&",ValorUnitario="&TotalGeralv&",ValorTotal=Quantidade*ValorUnitario,Fator=ValorTotal/Quantidade/ValorUnitario  WHERE id = "&ProcedimentosValores("id")
+
+        db.execute(sqlUpdate)
+
+    ProcedimentosValores.movenext
+    wend
+    ProcedimentosValores.close
+    set ProcedimentosValores=nothing
+
+end function
+
+
 function recalcularEscalonamento(GuiaID)
 
     set totalNone = db.execute("SELECT count(*) as quantidade FROM tissprocedimentossadt WHERE CalcularEscalonamento=0 AND GuiaID = "&GuiaID&" ORDER BY TotalGeral DESC;")

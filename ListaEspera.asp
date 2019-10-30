@@ -15,8 +15,26 @@
             <select name="ProfissionalID" id="ProfissionalID" class="form-control select2-single">
                 <option value="">Selecione</option>
                 <%
+            sqlunidades  = "select Unidades from " & session("table") &" where id = " & session("idInTable")
+            set UnidadesUser  = db.execute(sqlunidades)
+            UnidadesUser = replace(UnidadesUser("Unidades"), "|", "")
+            lista = split(UnidadesUser, ",")
+            sqlOR = ""
+            for z=0 to ubound(lista)
+                sqlOR = sqlOR & " or prof.unidades like '%|"& replace(lista(z), " ","") &"|%' "
+                'response.write ("<script> console.log('"&lista(z)&"');</script>")
+            next
+            sqlOR = " AND (false " & sqlOR & ") "
+            sql = " SELECT prof.id, prof.unidades, LEFT(prof.NomeProfissional, 20)NomeProfissional, prof.NomeSocial, prof.Cor, prof.Ativo " &_
+                  " FROM Profissionais prof " &_
+                  " INNER JOIN agendamentos age ON age.ProfissionalID=prof.id " &_
+                  " WHERE (prof.NaoExibirAgenda != 'S' OR prof.NaoExibirAgenda is null OR prof.NaoExibirAgenda='') " &_ 
+                  " AND prof.sysActive=1 and age.Data=curdate() " &_
+                  " " &  sqlOR &_
+                  " GROUP BY prof.id order by prof.Ativo DESC, prof.NomeProfissional "
+            'response.write ("<script> console.log('"& replace(sql,"'","´") &"');</script>")
+            set Prof = db.execute(sql)
 
-            set Prof = db.execute("select prof.id, LEFT(prof.NomeProfissional, 20)NomeProfissional, prof.NomeSocial, prof.Cor, prof.Ativo from Profissionais prof INNER JOIN agendamentos age ON age.ProfissionalID=prof.id where (prof.NaoExibirAgenda != 'S' OR prof.NaoExibirAgenda is null OR prof.NaoExibirAgenda='') AND prof.sysActive=1 and age.Data=curdate() GROUP BY prof.id order by prof.Ativo DESC, prof.NomeProfissional ")
             while not Prof.EOF
             if lcase(session("table"))="profissionais" and session("idInTable")=Prof("id") then
                 selected = " selected=""selected"""
@@ -28,7 +46,8 @@
                 end if
             end if
 
-            NomeProfissional = Prof("NomeProfissional")
+            NomeProfissional = Prof("NomeProfissional") 
+            unidadesprof = Prof("unidades")
             if Prof("NomeSocial")&"" <> "" then
                  NomeProfissional=Prof("NomeSocial")
             end if
@@ -118,7 +137,6 @@ function atualizaLista(){
           $("#listaespera").html(data);
       });
 }
-
 //recurso para clinica do SHopping
     $("#listaespera").on("click",".btn-enviar-sms-espera", function() {
         var $btn = $(this),
@@ -129,7 +147,7 @@ function atualizaLista(){
 
         $btn.attr("disabled",true);
         $text.text("ENVIADO");
-//        var path = "localhost:8080/";
+
         var path = "../";
         $.get(path+"feegow_components/api/SalaEspera/enviaSMS", {id:id,b:'<%=session("Banco")%>',recipientNumber:phone,name:name},  function(data){
             console.log('Enviado...');

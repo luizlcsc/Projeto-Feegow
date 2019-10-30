@@ -10,12 +10,37 @@ if ID <> "" and OP <> "" then
         
         SysUser = Session("user")
         'Salvar na tabela sys_dinancialinvoice
-        sqlUpdateDescontoPendente = "update descontos_pendentes set Status = " & OP & ", SysUserAutorizado = " & SysUser &_
+        sqlUpdateDescontoPendente = "update descontos_pendentes set Status = 99 , SysUserAutorizado = " & SysUser &_
             ", DataHoraAutorizado = now() WHERE id = " & ID
 
         db.execute(sqlUpdateDescontoPendente)
         Desconto = treatVal(rsDescontoPendenteUpdate("Desconto"))
         if OP = 1 then
+
+            'Validar se a conta ja foi paga
+            sqlInvoiceJaPaga = "SELECT IFNULL(SUM(mov.ValorPago),0) totalPago FROM sys_financialmovement mov " &_ 
+                                " INNER JOIN sys_financialinvoices inv ON inv.id = mov.InvoiceID " &_ 
+                                " INNER JOIN itensinvoice ii ON ii.InvoiceID = inv.id  " &_ 
+                                " WHERE ii.id = " & rsDescontoPendenteUpdate("ItensInvoiceID")
+            set rsMovementpaga = db.execute(sqlInvoiceJaPaga)
+            if not rsMovementpaga.eof then 
+                if ccur(rsMovementpaga("totalPago")) > 0 then 
+                    db.execute("delete from exibicao_conteudo WHERE SysUser = "&session("User")&" AND conteudo = 'desconto_pendente' AND  Data = curdate()")
+                    sqlUpdateDescontoPendente = "update descontos_pendentes set Status = -1,  SysUserAutorizado = " & SysUser &_
+                        ", DataHoraAutorizado = now() WHERE id = " & ID
+
+                    db.execute(sqlUpdateDescontoPendente)
+
+                    %>
+                    <script>
+                        $(function(){
+                            showMessageDialog("Desconto reprovado, pois a conta ja foi paga", "success")
+                        });
+                    </script>
+                    <%
+                end if
+            end if
+
             if rsDescontoPendenteUpdate("ItensInvoiceID") > 0 then 
                 'Atualizar a tabela invoices retirando o valor do desconto
 
@@ -103,14 +128,18 @@ if ID <> "" and OP <> "" then
 
             end if
         end if
+        
+        sqlUpdateDescontoPendente = "update descontos_pendentes set Status = "&OP&" , SysUserAutorizado = " & SysUser &_
+            ", DataHoraAutorizado = now() WHERE id = " & ID
 
+        db.execute(sqlUpdateDescontoPendente)
     db.execute("delete from exibicao_conteudo WHERE SysUser = "&session("User")&" AND conteudo = 'desconto_pendente' AND  Data = curdate()")
 %>
 <script>
-        $(function(){
-        showMessageDialog("Desconto autorizado com sucesso", "success")
-        });
-        </script>
+    $(function(){
+    showMessageDialog("Desconto autorizado com sucesso", "success")
+    });
+</script>
 <%
     rsDescontoPendenteUpdate.movenext
     else

@@ -36,11 +36,9 @@ if not TemRegrasDescontoSQL.eof then
                              "(Procedimentos IS NULL OR Procedimentos ='' OR Procedimentos LIKE '%|"&ProcedimentoID&"%|') AND "&_
                              " (Unidades IS NULL OR Unidades ='' OR Unidades LIKE '%|"&UnidadeID&"|%' OR Unidades = '"&UnidadeID&"') AND "&_
                              " (Recursos LIKE '%|"&TipoFuncaoDesconto&"|%' OR Recursos='' OR Recursos IS NULL)"
-        
         set MaximoDescontoRegraSQL = db.execute(sqlMaximo)
 
         while not MaximoDescontoRegraSQL.eof
-
             'existe maximo de desconto para o grupo
             TemDescontoParaOGrupoDoUsuario=True
             MaximoDesconto= MaximoDescontoRegraSQL("DescontoMaximo")
@@ -55,7 +53,6 @@ if not TemRegrasDescontoSQL.eof then
         RegraIDComPermissao = "0"
         while not TemRegrasDescontoSQL.eof      
             MaximoDesconto=0
-
             MaximoDescontoDaRegra=TemRegrasDescontoSQL("DescontoMaximo")
             RegraIDComPermissao = RegraIDComPermissao &  ", " &  TemRegrasDescontoSQL("RegraID")
 
@@ -87,7 +84,7 @@ VDesconto = Replace(VDesconto, ",","") %>
 <%
 
 if  ccur(VDesconto) > ccur(MaximoDesconto * 100) or MaximoDescontoDaRegra > 0  then
-    'Response.write("ENTROU")
+   
     if RegraIDComPermissao="0" then
         sqlRegraSuperior = "SELECT IFNULL(group_concat(RegraID), '') regras FROM regrasdescontos WHERE DescontoMaximo>="&Desconto&" AND "&_
                                     "(Procedimentos IS NULL OR Procedimentos ='' OR Procedimentos LIKE '%|"&ProcedimentoID&"|%') AND "&_

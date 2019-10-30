@@ -418,7 +418,7 @@ if (aut("|contasapagarV|") and CD ="D") or (aut("|contasareceberV|") and CD ="C"
         end if
         'response.write(mydatenull(ref("Ate")))
         'set fixa = db.execute("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and PrimeiroVencto<="&mydatenull(ref("Ate"))&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
-        set fixa = db.execute("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and DiaVencimento<=SUBSTRING_index("&mydatenull(ref("Ate"))&", '-', -1)"&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
+        set fixa = db.execute("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and PrimeiroVencto<="&mydatenull(ref("Ate"))&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
         'response.write("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and DiaVencimento<=SUBSTRING_index("&mydatenull(ref("Ate"))&", '-', -1)"&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
         while not fixa.eof
 
@@ -432,8 +432,14 @@ if (aut("|contasapagarV|") and CD ="D") or (aut("|contasareceberV|") and CD ="C"
             set itens=nothing
 
             Geradas = fixa("Geradas")&""
-            DataVencimento = fixa("DiaVencimento")&"/"&split(fixa("PrimeiroVencto"), "/")(1)&"/"&split(fixa("PrimeiroVencto"), "/")(2)
-            Vencto = DataVencimento
+
+            Vencto = fixa("PrimeiroVencto")
+
+            'if fixa("DiaVencimento")&""<>"" then
+            '    DataVencimento = fixa("DiaVencimento")&"/"&split(fixa("PrimeiroVencto"), "/")(1)&"/"&split(fixa("PrimeiroVencto"), "/")(2)
+            '    Vencto = DataVencimento
+            'end if
+
             cFix = 0
             RepetirAte = fixa("RepetirAte")
             if isnull(RepetirAte) then
@@ -474,7 +480,7 @@ if (aut("|contasapagarV|") and CD ="D") or (aut("|contasareceberV|") and CD ="C"
                     <%
                     Total = Total+fixa("Value")
                 end if
-                Vencto = dateAdd(fixa("TipoIntervalo"), fixa("Intervalo")*cFix, DataVencimento)
+                Vencto = dateAdd(fixa("TipoIntervalo"), fixa("Intervalo")*cFix, fixa("PrimeiroVencto"))
             wend
         fixa.movenext
         wend

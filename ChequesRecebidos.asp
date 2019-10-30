@@ -95,16 +95,16 @@
         end if
 
         if req("CompensadoDe")<>"" and isdate(req("CompensadoDe")) then
-            sqlCompensadoDe = " and chmov.Data>="&mydatenull(req("CompensadoDe"))
+            sqlCompensadoDe = " and c.DataCompensacao>="&mydatenull(req("CompensadoDe"))
         end if
         if req("CompensadoAte")<>"" and isdate(req("CompensadoAte")) then
-            sqlCompensadoAte = " and chmov.Data<="&mydatenull(req("CompensadoAte"))
+            sqlCompensadoAte = " and c.DataCompensacao<="&mydatenull(req("CompensadoAte"))
         end if
         if req("BorderoID")<>"" and req("BorderoID")<>"0" then
             sqlBordero = " and BorderoID="&req("BorderoID")
         end if
         'response.Write("select c.*, b.BankName, s.Descricao CheckStatus, mov.AccountID AccountIDMov,  mov.AccountAssociationID AccountAssociationIDMov from sys_financialreceivedchecks c LEFT JOIN sys_financialmovement mov ON mov.id=c.MovementID left join sys_financialbanks b on b.id=c.BankID left join cliniccentral.chequestatus s on s.id=c.StatusID where c.id>0 " & sqlBanco & sqlTitular & sqlConta & sqlStatus & sqlDataDe & sqlDataAte & sqlBordero)
-        set cheque = db.execute("select c.*, b.BankName, s.Descricao CheckStatus, mov.AccountIDCredit AccountIDMov, chmov.Data DataCompensacao, mov.AccountAssociationIDCredit AccountAssociationIDMov, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade "&_
+        set cheque = db.execute("select c.*, b.BankName, s.Descricao CheckStatus, mov.AccountIDCredit AccountIDMov, c.DataCompensacao DataCompensacao, mov.AccountAssociationIDCredit AccountAssociationIDMov, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade "&_
                                 "from sys_financialreceivedchecks c "&_
                                 "LEFT JOIN sys_financialmovement mov ON mov.id=c.MovementID "&_
                                 "left join sys_financialbanks b on b.id=c.BankID "&_
@@ -228,4 +228,5 @@ function removeCheck(I){
 //		location.href='?P=ChequesRecebidos&Pers=1&X='+I;
 	}
 }
+
 </script>

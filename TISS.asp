@@ -170,6 +170,7 @@ function completaConvenio(ConvenioID, PacienteID)
 end function
 
 function completaPlano(PlanoID, ProcedimentoID)
+
 	set pvp = db.execute("select pvp.Valor, pvp.NaoCobre from tissprocedimentosvaloresplanos as pvp LEFT JOIN tissprocedimentosvalores as pv on pv.id=pvp.AssociacaoID where pv.ProcedimentoID like '"&ProcedimentoID&"' and PlanoID="&treatvalzero(PlanoID))
 	if not pvp.eof then
 		if pvp("NaoCobre")="S" then
@@ -182,6 +183,14 @@ function completaPlano(PlanoID, ProcedimentoID)
 			<%
 		end if
 	end if
+    IF getConfig("calculostabelas") THEN
+        IF req("I") <> "" AND PlanoID <> "" THEN
+            %>
+            atualizaTabela('tissprocedimentossadt', 'tissprocedimentossadt.asp?I=<%=ref("GuiaID")%>&PlanoAtualizado=<%=PlanoID%>')
+            <%
+        END IF
+	END IF
+
 end function
 
 function completaContratado(id, ConvenioID)

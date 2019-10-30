@@ -17,7 +17,10 @@ alertvisible = "hidden"
 SplitNF=0
 set ConfigSQL = db.execute("SELECT SplitNF FROM sys_config WHERE id=1")
 if not ConfigSQL.eof then
-    SplitNF=1
+    SplitNF=ConfigSQL("SplitNF")
+    if SplitNF&"" = "" then
+        SplitNF=0
+    end if
 end if
 
 if SplitNF=1 then

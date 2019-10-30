@@ -262,11 +262,14 @@ end if
                         <th width="2%"></th>
                         <th>Execução</th>
                         <th>Paciente</th>
+                        <th>Unidade</th>
+                        <th>Data da Conta</th>
+                        <th>Solicitante</th>
+                        <th>Especialidade</th>
                         <th>Procedimento</th>
                         <th>Valor</th>
                     </thead>
                     <tbody>
-
 
             <%
             'db_execute("delete from temprepasse where sysUser="&session("User"))
@@ -298,16 +301,28 @@ end if
             end if
 
             if req("TipoData")="Exec" then
-                sqlII = "select link, Tipo, ConvenioID, t.id, t.PacienteID, ProfissionalID, GuiaID, t.ProcedimentoID, `Data`, ValorTotal, t.UnidadeID, ValorPago, proc.NomeProcedimento, pac.NomePaciente, c.NomeConvenio, pac.Tabela, ValorPagoOriginal, Quantidade FROM "&_
-                                "(select gs.PacienteID, gs.ConvenioID, 'tissguiasadt' link, 'SP/SADT' Tipo, ps.id, ps.ProfissionalID, ps.GuiaID, ps.ProcedimentoID, ps.`Data`, ps.ValorTotal, gs.UnidadeID, ifnull(gs.ValorPago, 0) ValorPago, ps.ValorPago as ValorPagoOriginal, ps.Quantidade from tissguiasadt gs "&_
+                sqlII = "select  u.CompanyUnit,sysDate,s.Nome ProfissionalSolicitante, esp.Especialidade, link, Tipo, ConvenioID, t.id, t.PacienteID, ProfissionalID, GuiaID, t.ProcedimentoID, `Data`, ValorTotal, t.UnidadeID, ValorPago, proc.NomeProcedimento, pac.NomePaciente, c.NomeConvenio, pac.Tabela, ValorPagoOriginal, Quantidade FROM "&_
+                                "(select concat(gs.tipoProfissionalSolicitante,'_', gs.ProfissionalSolicitanteID) ProfissionalSolicitante, concat(ps.Associacao,'_',ps.ProfissionalID) Especialidade,gs.PacienteID, gs.ConvenioID, 'tissguiasadt' link, 'SP/SADT' Tipo, ps.id, ps.ProfissionalID, ps.GuiaID, ps.ProcedimentoID, ps.`Data`, ps.ValorTotal, gs.UnidadeID, ifnull(gs.ValorPago, 0) ValorPago, ps.ValorPago as ValorPagoOriginal, ps.Quantidade from tissguiasadt gs "&_
                                  "INNER JOIN tissprocedimentossadt ps on ps.GuiaID=gs.id WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND ps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &" "&_
-                                 "UNION ALL select gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, ps.id, ps.ProfissionalID, ps.GuiaID, ps.ProcedimentoID, ps.`Data`, ps.ValorTotal, gh.UnidadeID, ifnull(gh.ValorPago, 0) ValorPago,ps.ValorPago  as ValorPagoOriginal, ps.Quantidade from tissguiahonorarios gh "&_
+                                 "UNION ALL select concat( gh.tipoContratadoExecutante,'_',gh.Contratado),  concat('5_',ps.ProfissionalID) Especialidade, gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, ps.id, ps.ProfissionalID, ps.GuiaID, ps.ProcedimentoID, ps.`Data`, ps.ValorTotal, gh.UnidadeID, ifnull(gh.ValorPago, 0) ValorPago,ps.ValorPago  as ValorPagoOriginal, ps.Quantidade from tissguiahonorarios gh "&_
                                  "INNER JOIN tissprocedimentoshonorarios ps on ps.GuiaID=gh.id WHERE gh.sysActive=1 AND gh.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND ps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGH &" "&_
-                                 "UNION ALL select gc.PacienteID, gc.ConvenioID, 'tissguiaconsulta' link, 'Consulta' Tipo, gc.id, ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID), gc.id GuiaID, gc.ProcedimentoID, gc.DataAtendimento `Data`, gc.ValorProcedimento ValorTotal, gc.UnidadeID, ifnull(gc.ValorPago, 0) ValorPago, ifnull(gc.ValorPago, 0) as ValorPagoOriginal, 1 Quantidade from tissguiaconsulta gc "&_
-                                 "WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND gc.DataAtendimento BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gcContaProfissional & sqlUnidadesGC &" ) t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID "& sqlProcedimento &" ORDER BY t.Data"
+                                 "UNION ALL select concat('I_',gc.Contratado) ,concat('5_',gc.ProfissionalID) Especialidade, gc.PacienteID, gc.ConvenioID, 'tissguiaconsulta' link, 'Consulta' Tipo, gc.id, ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID), gc.id GuiaID, gc.ProcedimentoID, gc.DataAtendimento `Data`, gc.ValorProcedimento ValorTotal, gc.UnidadeID, ifnull(gc.ValorPago, 0) ValorPago, ifnull(gc.ValorPago, 0) as ValorPagoOriginal, 1 Quantidade from tissguiaconsulta gc "&_
+                                 "WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND gc.DataAtendimento BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gcContaProfissional & sqlUnidadesGC &" ) t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID "& sqlProcedimento &""&_ 
+                                 "left join ((select 0 as 'id',  NomeFantasia CompanyUnit FROM empresa WHERE id=1) UNION ALL (select id,  NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia)) u on u.id = t.UnidadeID"&_
+                                " left join (select * from (select concat('I_',z.id) id, z.Nome, z.EspecialidadeID from ( "&_
+                                " SELECT '0' id, e.NomeFantasia Nome, '' EspecialidadeID FROM empresa e WHERE NOT ISNULL(e.NomeFantasia) "&_
+                                " UNION ALL SELECT u.id*(-1), u.NomeFantasia, '' EspecialidadeID FROM sys_financialcompanyunits u WHERE NOT ISNULL(u.UnitName)"&_
+                                " UNION ALL SELECT p.id, p.NomeProfissional, p.EspecialidadeID FROM profissionais p)z "&_
+                                " UNION ALL SELECT CONCAT('E_', id) id, NomeProfissional, EspecialidadeID FROM profissionalexterno)s)s on s.id = t.ProfissionalSolicitante"&_
+                                " left join (SELECT w.id, e.especialidade FROM ("&_
+                                " SELECT CONCAT('5_', id) id, EspecialidadeID FROM profissionais"&_
+                                " UNION ALL"&_
+                                " SELECT CONCAT('8_', id) id, EspecialidadeID FROM profissionalexterno ) w"&_
+                                " left join especialidades e on e.id = EspecialidadeID) esp on esp.id = t.Especialidade"&_
+                                 " ORDER BY t.Data"
             else
-                sqlII = "select link, Tipo, ConvenioID, t.id, t.PacienteID, t.ProfissionalID, GuiaID, ProcedimentoID, `Data`, ValorTotal, t.UnidadeID, ValorPago , ValorPago ValorPagoOriginal, proc.NomeProcedimento, pac.NomePaciente, c.NomeConvenio, pac.Tabela, Quantidade FROM ("&_
-"select gc.PacienteID, gc.ConvenioID, 'tissguiaconsulta' link, 'Consulta' Tipo, gc.id, ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID) ProfissionalID, gc.id GuiaID, gc.ProcedimentoID, gc.DataAtendimento `Data`, gc.ValorProcedimento ValorTotal, gc.UnidadeID, ifnull(gc.ValorPago, 0) ValorPago, 1 Quantidade from sys_financialmovement m "&_
+                sqlII = "select u.CompanyUnit,sysDate,s.Nome ProfissionalSolicitante, esp.Especialidade, link, Tipo, ConvenioID, t.id, t.PacienteID, t.ProfissionalID, GuiaID, ProcedimentoID, `Data`, ValorTotal, t.UnidadeID, ValorPago , ValorPago ValorPagoOriginal, proc.NomeProcedimento, pac.NomePaciente, c.NomeConvenio, pac.Tabela, Quantidade FROM ("&_
+"select concat('I_',gc.Contratado) ProfissionalSolicitante,concat('5_',gc.ProfissionalID) Especialidade, gc.PacienteID, gc.ConvenioID, 'tissguiaconsulta' link, 'Consulta' Tipo, gc.id, ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID) ProfissionalID, gc.id GuiaID, gc.ProcedimentoID, gc.DataAtendimento `Data`, gc.ValorProcedimento ValorTotal, gc.UnidadeID, ifnull(gc.ValorPago, 0) ValorPago, 1 Quantidade from sys_financialmovement m "&_
 "LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
 "LEFT JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID=ii.id "&_
@@ -315,7 +330,7 @@ end if
 "WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiaconsulta' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gcContaProfissional & sqlUnidadesGC &_
                 "UNION ALL "&_
-"select gs.PacienteID, gs.ConvenioID, 'tissguiasadt' link, 'SADT' Tipo, gs.id, ps.ProfissionalID, gs.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gs.UnidadeID, ifnull(ps.ValorPago, gs.ValorPago) ValorPago, ps.Quantidade FROM sys_financialmovement m "&_
+"select concat(gs.tipoProfissionalSolicitante,'_', gs.ProfissionalSolicitanteID) , concat(ps.Associacao,'_',ps.ProfissionalID) Especialidade,gs.PacienteID, gs.ConvenioID, 'tissguiasadt' link, 'SADT' Tipo, gs.id, ps.ProfissionalID, gs.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gs.UnidadeID, ifnull(ps.ValorPago, gs.ValorPago) ValorPago, ps.Quantidade FROM sys_financialmovement m "&_
 "LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
 "LEFT JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID=ii.id "&_
@@ -324,7 +339,7 @@ end if
 "WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiasadt' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &_
                 "UNION ALL "&_
-"select gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, gh.id, ps.ProfissionalID, gh.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gh.UnidadeID, ifnull(ps.ValorPago, gh.ValorPago) ValorPago, ps.Quantidade FROM sys_financialmovement m "&_
+"select concat( gh.tipoContratadoExecutante,'_',gh.Contratado),  concat('5_',ps.ProfissionalID) Especialidade, gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, gh.id, ps.ProfissionalID, gh.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gh.UnidadeID, ifnull(ps.ValorPago, gh.ValorPago) ValorPago, ps.Quantidade FROM sys_financialmovement m "&_
 "LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
 "LEFT JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID=ii.id "&_
@@ -334,10 +349,20 @@ end if
 "WHERE gh.sysActive=1 AND gh.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiahonorarios' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGH &_
                 ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID"&_
-                " "
+                " left join ((select 0 as 'id',  NomeFantasia CompanyUnit FROM empresa WHERE id=1) UNION ALL (select id,  NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia)) u on u.id = t.UnidadeID"&_
+                " left join (select * from (select concat('I_',z.id) id, z.Nome, z.EspecialidadeID from ( "&_
+                " SELECT '0' id, e.NomeFantasia Nome, '' EspecialidadeID FROM empresa e WHERE NOT ISNULL(e.NomeFantasia) "&_
+                " UNION ALL SELECT u.id*(-1), u.NomeFantasia, '' EspecialidadeID FROM sys_financialcompanyunits u WHERE NOT ISNULL(u.UnitName)"&_
+                " UNION ALL SELECT p.id, p.NomeProfissional, p.EspecialidadeID FROM profissionais p)z "&_
+                " UNION ALL SELECT CONCAT('E_', id) id, NomeProfissional, EspecialidadeID FROM profissionalexterno)s)s on s.id = t.ProfissionalSolicitante"&_
+                " left join (SELECT w.id, e.especialidade FROM ("&_
+                " SELECT CONCAT('5_', id) id, EspecialidadeID FROM profissionais"&_
+                " UNION ALL"&_
+                " SELECT CONCAT('8_', id) id, EspecialidadeID FROM profissionalexterno ) w"&_
+                " left join especialidades e on e.id = EspecialidadeID) esp on esp.id = t.Especialidade "
                 'response.write( sqlii )
             end if
-          ''  response.write(sqlII)
+            'response.write(sqlII)
             set ii = db.execute( sqlII )
                 'se ii("Repassado")=0 joga pra temprepasse, else exibe o q ja foi pra rateiorateios
                 if session("Banco")="clinic5351" then
@@ -375,6 +400,11 @@ end if
 
                 contaLR = 0
 
+                'modificação 29102019
+                UnidadeName = ii("CompanyUnit")
+                Solicitante = ii("ProfissionalSolicitante")
+                DataDaConta = FormatDateTime(ii("sysDate"),2)
+                Especialidade = ii("especialidade")
 
 
                 sqlrr = ""
@@ -407,11 +437,15 @@ end if
                 </td>
                 <td> <%= DataExecucao %></td>
                 <td><%= NomePaciente %></td>
+                <td><%= UnidadeName %></td>
+                <td><%= DataDaConta %></td>
+                <td><%= Solicitante %></td> 
+                <td><%= Especialidade %></td>
                 <td><%= NomeProcedimento %></td>
                 <td><%= fn(ValorProcedimento) %></td>
             </tr>
             <tr class="panel<%= idPanel %>">
-                <td colspan="4">
+                <td colspan="8">
                     <table class="table table-hover table-condensed">
                 <%
 

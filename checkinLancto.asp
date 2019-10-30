@@ -193,8 +193,9 @@ for i= 0 to ubound(splLC)
                             wend
                             InvoicesNaoQuitadasSQL.close
                             set InvoicesNaoQuitadasSQL=nothing
-
-                            db.execute("insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, FormaID, ContaRectoID, sysDate, CaixaID, TabelaID) VALUES ('Gerado pelo check-in', "& PacienteID &", 3, "& treatvalzero(ValorTotal) &", 1, 'BRL', "& UnidadeID &", 1, 'm', 'C', 1, "& session("User") &", "&FormaID&", "&ContaRectoID&", curdate(), "& treatvalnull(session("CaixaID")) &","&treatvalnull(TabelaID)&")")
+                            sqlagendamento = "(select indicadopor FROM agendamentos WHERE id ='"& AgendamentoID &"')"
+                            sql = "insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, FormaID, ContaRectoID, sysDate, CaixaID, TabelaID, ProfissionalSolicitante) VALUES ('Gerado pelo check-in', "& PacienteID &", 3, "& treatvalzero(ValorTotal) &", 1, 'BRL', "& UnidadeID &", 1, 'm', 'C', 1, "& session("User") &", "&FormaID&", "&ContaRectoID&", curdate(), "& treatvalnull(session("CaixaID")) &","&treatvalnull(TabelaID)&","&sqlagendamento&")"
+                            db.execute(sql)
                             set pult = db.execute("select id from sys_financialinvoices where sysUser="& session("User") &" order by id desc limit 1")
                             InvoiceID = pult("id")
 

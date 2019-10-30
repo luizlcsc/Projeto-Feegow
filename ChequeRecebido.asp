@@ -99,6 +99,16 @@ else
                 <%=quickfield("datepicker", "DataMovimentacao", "", 3, date(), "", "", "")%>
             </div>
             <%=quickfield("simpleSelect", "StatusID", "Status", 3, cheque("StatusID"), "select * from cliniccentral.chequestatus", "Descricao", "")%>
+            <div class="col-md-3" id="divDataCompensacao">
+                <label for="DataCompensacao">Data da Compensa&ccedil;&atilde;o</label><br />
+                <% 
+                    if cheque("datacompensacao") <> "" then
+                        response.write(quickfield("datepicker", "DataCompensacao", "", 3, cheque("datacompensacao"), "", "", ""))
+                    else
+                        response.write(quickfield("datepicker", "DataCompensacao", "", 3, date(), "", "", ""))
+                    end if 
+                %>
+            </div>
         </div>
 
 
@@ -136,7 +146,18 @@ $("#ContaCorrente").change(function(){
 	}
 });
 
+$("#StatusID").change(function(){
+	if($("#StatusID").val()=="4"){
+		$("#divDataCompensacao").fadeIn();
+	}else{
+		$("#divDataCompensacao").fadeOut();
+	}
+});
+
 $("#divDataMovimentacao").css("display", "none");
+if ("<%=cheque("datacompensacao") %>"==""){
+    $("#divDataCompensacao").css("display", "none");
+}
 
 
 <% IF cheque("StatusID") = 3 THEN %>

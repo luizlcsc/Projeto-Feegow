@@ -36,10 +36,10 @@ if Tipo="AReceber" then
 			    set aEa = db.execute("select '' UnidadeID, ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, 0 EspecialidadeID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado', 'executado', at.AgendamentoID, at.TabelaID from atendimentosprocedimentos as ap left join atendimentos as at on at.id=ap.AtendimentoID where ap.id="&idAgeAte)
 		    else
 			    sqlAtendimentoID = "NULL"
-			    set aEa = db.execute("select loc.UnidadeID, ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.EspecialidadeID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, ag.TabelaParticularID TabelaID from agendamentos as ag LEFT JOIN locais loc ON loc.id=ag.LocalID where ag.id="&idAgeAte&" UNION  "&_
+			    set aEa = db.execute("select loc.UnidadeID, ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.EspecialidadeID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, ag.TabelaParticularID TabelaID, ag.indicadopor from agendamentos as ag LEFT JOIN locais loc ON loc.id=ag.LocalID where ag.id="&idAgeAte&" UNION  "&_
                                                                                                                                                                                                                                                                                                                                                         "SELECT loc.UnidadeID, ag.id, ag.Data, ag.Hora as HoraInicio, DATE_ADD(ag.Hora,INTERVAL agproc.Tempo MINUTE) as HoraFim, "&_
                                                                                                                                                                                                                                                                                                                                                         " agproc.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.EspecialidadeID, ag.Notas as Obs, "&_
-                                                                                                                                                                                                                                                                                                                                                        "agproc.ValorPlano, agproc.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, ag.TabelaParticularID TabelaID  "&_
+                                                                                                                                                                                                                                                                                                                                                        "agproc.ValorPlano, agproc.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, ag.TabelaParticularID TabelaID, '' indicadopor   "&_
                                                                                                                                                                                                                                                                                                                                                         "FROM agendamentosprocedimentos agproc "&_
                                                                                                                                                                                                                                                                                                                                                         "LEFT JOIN agendamentos ag ON ag.id=agproc.AgendamentoID "&_
                                                                                                                                                                                                                                                                                                                                                         "LEFT JOIN locais loc ON loc.id=ag.LocalID "&_
@@ -67,6 +67,7 @@ if Tipo="AReceber" then
                     end if
                     AgendamentoID = aEa("AgendamentoID")
                     ProfissionalID = aEa("ProfissionalID")
+                    indicadopor = aEa("indicadopor")
                     if isdate(aEa("HoraFim")) then
                         HoraFim = formatdatetime(aEa("HoraFim"),3)
                     end if
@@ -121,7 +122,7 @@ if Tipo="AReceber" then
 	    db.execute("UPDATE sys_financialinvoices SET CompanyUnitID="&treatvalnull(UnidadeIDAgendada)&" WHERE id="&InvoiceID)
 	end if
 	'Redireciona para a invoice informando Pac
-	response.Redirect("invoice.asp?Pers=1&T=C&I="&InvoiceID&"&PacienteID="&PacienteID&"&Lancto=Dir&TabelaID="&TabelaID)
+	response.Redirect("invoice.asp?Pers=1&T=C&I="&InvoiceID&"&PacienteID="&PacienteID&"&Lancto=Dir&TabelaID="&TabelaID&"&ProfissionalSolicitante="&indicadopor )
 elseif Tipo="GuiaConsulta" then
 	if ref("Lancto")="" then
 		Lancto = PacienteID&"|Paciente"

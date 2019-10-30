@@ -278,7 +278,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     </td>
                     <td><a href="?P=Agenda-1&Pers=1&AgendamentoID=<%=ag("id")%>" target="_blank"><%= ag("Data") %> - <%=ft(ag("Hora"))%></a></td>
                     <td><a target="_blank" href="?P=Pacientes&Pers=1&I=<%= ag("PacienteID") %>"><%= ag("NomePaciente") %></a></td>
-                    <td><a target="_blank" href="whatsapp://send?phone=<%=CelularFormatadado%>&text=<%= TextoWhatsApp %>"><%= Celular %></a>
+                    <td><a onclick="AlertarWhatsapp('<%=CelularFormatadado%>','<%=TextoWhatsApp%>', '<%=ag("id")%>')" target="_blank" href="#"><span id="wpp-<%=ag("id")%>"></span> <%= Celular %></a>
                     <%
                     if not isnull(ag("Resposta")) then
                         'validar se a resposta é do tipo correto 

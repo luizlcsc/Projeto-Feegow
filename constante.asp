@@ -33,7 +33,7 @@ else
 
     if jaExibiuModal = 1 OR data <> "" then
         'Verificar se existem descontos pendentes de aprovação e se este usuário pode acessar
-        descontoPendenteSql = "select *, dp.id as iddesconto, dp.ItensInvoiceID, CASE " &_
+        descontoPendenteSql = "select dp.id as iddesconto, dp.ItensInvoiceID, CASE " &_
                                     "WHEN ii.Tipo='O' THEN Descricao " &_
                                     "WHEN ii.Tipo='S' THEN (select NomeProcedimento from procedimentos p where p.id = ii.ItemID ) " &_
                                     "WHEN ii.Tipo='M' THEN (SELECT NomeProduto from produtos p where p.id = ii.ItemID ) " &_
@@ -44,7 +44,23 @@ else
                                 " where dp.SysUserAutorizado is null AND dp.STATUS = 0  "
 
         if data <> "" then
-            descontoPendenteSql = descontoPendenteSql + " AND dp.DataHora >= " & myDateTime(data) & " " 
+            descontoPendenteSql = descontoPendenteSql & " AND dp.DataHora >= " & myDateTime(data) & " " 
+        end if
+
+        descontoPendenteSql = descontoPendenteSql & " UNION ALL "
+
+        descontoPendenteSql = descontoPendenteSql & "select dp.id as iddesconto, dp.ItensInvoiceID, CASE " &_
+                                    "WHEN ii.Tipo='O' THEN Descricao " &_
+                                    "WHEN ii.Tipo='S' THEN (select NomeProcedimento from procedimentos p where p.id = ii.ItemID ) " &_
+                                    "WHEN ii.Tipo='M' THEN (SELECT NomeProduto from produtos p where p.id = ii.ItemID ) " &_
+                                " END AS titulo, dp.Desconto DescontoPendente, Quantidade, ValorUnitario, " &_ 
+                                " Nome " &_ 
+                                " from descontos_pendentes dp inner join itensproposta ii ON CONCAT('-', ii.id) = dp.ItensInvoiceID " &_
+                                " inner join cliniccentral.licencasusuarios lu ON lu.id = dp.SysUser  " &_ 
+                                " where dp.SysUserAutorizado is null AND dp.STATUS = 0  "
+
+        if data <> "" then
+            descontoPendenteSql = descontoPendenteSql & " AND dp.DataHora >= " & myDateTime(data) & " " 
         end if
 
         'Response.write(descontoPendenteSql)

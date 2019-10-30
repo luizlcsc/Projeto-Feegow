@@ -562,7 +562,15 @@ posModalPagar = "fixed"
     <div >
         <%
         if data("sysActive")=1 then
-            response.write(data("Name") & " - "& nameInTable(data("sysUser")) & " - " & data("DataHora"))
+            DescricaoGeracao = data("Name")
+
+            if DescricaoGeracao&"" = "" then
+                DescricaoGeracao="Cadastrado"
+            end if
+
+            %>
+            <code>ID: #<%=data("id")%></code> <%=DescricaoGeracao%> por <%=nameInTable(data("sysUser"))%> em <%=data("DataHora")%>
+            <%
         end if
         %>
     </div>

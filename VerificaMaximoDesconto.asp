@@ -85,6 +85,7 @@ VDesconto = Replace(VDesconto, ",","") %>
 <%
 
 if  ccur(VDesconto) > ccur(MaximoDesconto * 1000000) or MaximoDescontoDaRegra > 0  then
+
     if RegraIDComPermissao="0" then
         sqlRegraSuperior = "SELECT IFNULL(group_concat(RegraID), '') regras FROM regrasdescontos WHERE DescontoMaximo>="&Desconto&" AND "&_
                                     "(Procedimentos IS NULL OR Procedimentos ='' OR Procedimentos LIKE '%|"&ProcedimentoID&"|%') AND "&_

@@ -27,7 +27,7 @@ end if
                           "agendamentos a INNER JOIN profissionais prof ON prof.id=a.ProfissionalID INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID "&_
                           " LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID "&_
                           " LEFT JOIN agendamentos a2 ON a2.PacienteID = a.PacienteID and a2.ProfissionalID = a.ProfissionalID and a2.TipoCompromissoID = a.TipoCompromissoID and a2.Data > a.Data and a2.Data <= ADDDATE(a.Data, INTERVAL proc.DiasRetorno DAY) and a2.Retorno = 1 "&_
-                          "WHERE (a.ProfissionalID="&ProfissionalID&" or a.EspecialidadeID="&treatvalzero(EspecialidadeID)&") AND a.PacienteID="&PacienteID&" AND a.StaID IN (3) AND DATEDIFF("&mydatenull(Data)&", a.Data) BETWEEN 1 AND proc.DiasRetorno AND a.Data<"&mydatenull(Data)&"  and proc.DiasRetorno>0 AND a.Retorno!=1 "&_
+                          "WHERE (a.ProfissionalID="&ProfissionalID&" or a.EspecialidadeID="&treatvalzero(EspecialidadeID)&") AND a.PacienteID="&PacienteID&" AND a.StaID IN (3) AND DATEDIFF("&mydatenull(Data)&", a.Data) BETWEEN 1 AND proc.DiasRetorno AND a.Data<"&mydatenull(Data)&"  and proc.DiasRetorno>0 AND (a.Retorno!=1 OR a.Retorno IS NULL) "&_
                           "ORDER BY a.Data"
     set AtendimentosAnterioresSQL = db.execute(sql)
 

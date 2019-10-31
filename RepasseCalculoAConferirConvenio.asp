@@ -304,7 +304,7 @@ end if
                 sqlII = "select  u.CompanyUnit,sysDate,s.Nome ProfissionalSolicitante, esp.Especialidade, link, Tipo, ConvenioID, t.id, t.PacienteID, ProfissionalID, GuiaID, t.ProcedimentoID, `Data`, ValorTotal, t.UnidadeID, ValorPago, proc.NomeProcedimento, pac.NomePaciente, c.NomeConvenio, pac.Tabela, ValorPagoOriginal, Quantidade FROM "&_
                                 "(select concat(gs.tipoProfissionalSolicitante,'_', gs.ProfissionalSolicitanteID) ProfissionalSolicitante, concat(ps.Associacao,'_',ps.ProfissionalID) Especialidade,gs.PacienteID, gs.ConvenioID, 'tissguiasadt' link, 'SP/SADT' Tipo, ps.id, ps.ProfissionalID, ps.GuiaID, ps.ProcedimentoID, ps.`Data`, ps.ValorTotal, gs.UnidadeID, ifnull(gs.ValorPago, 0) ValorPago, ps.ValorPago as ValorPagoOriginal, ps.Quantidade from tissguiasadt gs "&_
                                  "INNER JOIN tissprocedimentossadt ps on ps.GuiaID=gs.id WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND ps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &" "&_
-                                 "UNION ALL select concat( gh.tipoContratadoExecutante,'_',gh.Contratado),  concat('5_',ps.ProfissionalID) Especialidade, gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, ps.id, ps.ProfissionalID, ps.GuiaID, ps.ProcedimentoID, ps.`Data`, ps.ValorTotal, gh.UnidadeID, ifnull(gh.ValorPago, 0) ValorPago,ps.ValorPago  as ValorPagoOriginal, ps.Quantidade from tissguiahonorarios gh "&_
+                                 "UNION ALL select concat( '5_',gh.Contratado),  concat('5_',ps.ProfissionalID) Especialidade, gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, ps.id, ps.ProfissionalID, ps.GuiaID, ps.ProcedimentoID, ps.`Data`, ps.ValorTotal, gh.UnidadeID, ifnull(gh.ValorPago, 0) ValorPago,ps.ValorPago  as ValorPagoOriginal, ps.Quantidade from tissguiahonorarios gh "&_
                                  "INNER JOIN tissprocedimentoshonorarios ps on ps.GuiaID=gh.id WHERE gh.sysActive=1 AND gh.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND ps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGH &" "&_
                                  "UNION ALL select concat('I_',gc.Contratado) ,concat('5_',gc.ProfissionalID) Especialidade, gc.PacienteID, gc.ConvenioID, 'tissguiaconsulta' link, 'Consulta' Tipo, gc.id, ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID), gc.id GuiaID, gc.ProcedimentoID, gc.DataAtendimento `Data`, gc.ValorProcedimento ValorTotal, gc.UnidadeID, ifnull(gc.ValorPago, 0) ValorPago, ifnull(gc.ValorPago, 0) as ValorPagoOriginal, 1 Quantidade from tissguiaconsulta gc "&_
                                  "WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND gc.DataAtendimento BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gcContaProfissional & sqlUnidadesGC &" ) t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID "& sqlProcedimento &""&_ 
@@ -339,7 +339,7 @@ end if
 "WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiasadt' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &_
                 "UNION ALL "&_
-"select concat( gh.tipoContratadoExecutante,'_',gh.Contratado),  concat('5_',ps.ProfissionalID) Especialidade, gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, gh.id, ps.ProfissionalID, gh.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gh.UnidadeID, ifnull(ps.ValorPago, gh.ValorPago) ValorPago, ps.Quantidade FROM sys_financialmovement m "&_
+"select concat( '5_',gh.Contratado),  concat('5_',ps.ProfissionalID) Especialidade, gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, gh.id, ps.ProfissionalID, gh.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gh.UnidadeID, ifnull(ps.ValorPago, gh.ValorPago) ValorPago, ps.Quantidade FROM sys_financialmovement m "&_
 "LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
 "LEFT JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID=ii.id "&_
@@ -403,7 +403,12 @@ end if
                 'modificação 29102019
                 UnidadeName = ii("CompanyUnit")
                 Solicitante = ii("ProfissionalSolicitante")
-                DataDaConta = FormatDateTime(ii("sysDate"),2)
+
+                if ii("sysDate")&"" <> "" then
+                    DataDaConta = FormatDateTime(ii("sysDate"),2)
+                else
+                    DataDaConta = ""
+                end if
                 Especialidade = ii("especialidade")
 
 

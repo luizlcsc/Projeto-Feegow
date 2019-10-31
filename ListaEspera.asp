@@ -25,36 +25,54 @@
                 'response.write ("<script> console.log('"&lista(z)&"');</script>")
             next
             sqlOR = " AND (false " & sqlOR & ") "
-            sql = " SELECT prof.id, prof.unidades, LEFT(prof.NomeProfissional, 20)NomeProfissional, prof.NomeSocial, prof.Cor, prof.Ativo " &_
+            sql = " SELECT und.NomeFantasia, prof.id, prof.unidades, LEFT(prof.NomeProfissional, 20)NomeProfissional, prof.NomeSocial, prof.Cor, prof.Ativo " &_
                   " FROM Profissionais prof " &_
                   " INNER JOIN agendamentos age ON age.ProfissionalID=prof.id " &_
-                  " WHERE (prof.NaoExibirAgenda != 'S' OR prof.NaoExibirAgenda is null OR prof.NaoExibirAgenda='') " &_ 
+                  " LEFT JOIN locais l ON l.id=age.LocalID " &_
+                  " LEFT JOIN (select un.id, un.NomeFantasia from sys_financialcompanyunits un where un.sysActive=1 UNION ALL select '0', e.NomeFantasia from empresa e) und ON und.id=l.UnidadeID" &_
+                  " WHERE (prof.NaoExibirAgenda != 'S' OR prof.NaoExibirAgenda is null OR prof.NaoExibirAgenda='') " &_
                   " AND prof.sysActive=1 and age.Data=curdate() " &_
                   " " &  sqlOR &_
-                  " GROUP BY prof.id order by prof.Ativo DESC, prof.NomeProfissional "
-            'response.write ("<script> console.log('"& replace(sql,"'","´") &"');</script>")
+                  " GROUP BY prof.id order by und.NomeFantasia ASC, prof.NomeProfissional "
+
             set Prof = db.execute(sql)
 
+
+            UnidadeAtual = ""
+            UltimaUnidade = "0"
+            TemOptgroup = False
             while not Prof.EOF
-            if lcase(session("table"))="profissionais" and session("idInTable")=Prof("id") then
-                selected = " selected=""selected"""
-            else
-                if session("UltimaAgenda")=cstr(Prof("id")) then
+                UnidadeAtual = Prof("NomeFantasia")
+                if lcase(session("table"))="profissionais" and session("idInTable")=Prof("id") then
                     selected = " selected=""selected"""
                 else
-                    selected = ""
+                    if session("UltimaAgenda")=cstr(Prof("id")) then
+                        selected = " selected=""selected"""
+                    else
+                        selected = ""
+                    end if
                 end if
-            end if
 
-            NomeProfissional = Prof("NomeProfissional") 
-            unidadesprof = Prof("unidades")
-            if Prof("NomeSocial")&"" <> "" then
-                 NomeProfissional=Prof("NomeSocial")
-            end if
-
+                NomeProfissional = Prof("NomeProfissional")
+                unidadesprof = Prof("unidades")
+                if Prof("NomeSocial")&"" <> "" then
+                     NomeProfissional=Prof("NomeSocial")
+                end if
+                if UnidadeAtual&""<>UltimaUnidade&"" then
+                    if TemOptgroup then
+                        %>
+                        </optgroup>
+                        <%
+                    end if
+                    TemOptgroup=True
+                    %>
+                    <optgroup label="<%=UnidadeAtual%>">
+                    <%
+                end if
                 %>
                 <option <%=selected%> style="border-left: <%=Prof("Cor")%> 10px solid; background-color: #fff;" value="<%=Prof("id")%>"><%=ucase(NomeProfissional)%></option>
                 <%
+                UltimaUnidade=UnidadeAtual
             Prof.movenext
             wend
             Prof.close

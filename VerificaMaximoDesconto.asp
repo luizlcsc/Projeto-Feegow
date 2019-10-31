@@ -77,21 +77,20 @@ end if
 <% 
 
 VDesconto = Replace(Desconto, ".",",") 
-VDesconto = (FormatNumber (VDesconto,2))
+VDesconto = (FormatNumber (VDesconto,6))
 VDesconto = Replace(VDesconto, ",","") %>
 
 //<%=VDesconto%> / <%=ccur(MaximoDesconto * 100)%>
+//<%=ccur(VDesconto)%> / <%=ccur(MaximoDesconto * 1000000)%>
 <%
 
-if  ccur(VDesconto) > ccur(MaximoDesconto * 100) or MaximoDescontoDaRegra > 0  then
-   
+if  ccur(VDesconto) > ccur(MaximoDesconto * 1000000) or MaximoDescontoDaRegra > 0  then
     if RegraIDComPermissao="0" then
         sqlRegraSuperior = "SELECT IFNULL(group_concat(RegraID), '') regras FROM regrasdescontos WHERE DescontoMaximo>="&Desconto&" AND "&_
                                     "(Procedimentos IS NULL OR Procedimentos ='' OR Procedimentos LIKE '%|"&ProcedimentoID&"|%') AND "&_
                                     " (Unidades IS NULL OR Unidades ='' OR Unidades LIKE '%|"&UnidadeID&"|%' OR Unidades = '"&UnidadeID&"') AND "&_
                                     " (Recursos LIKE '%|"&TipoFuncaoDesconto&"|%' OR Recursos='' OR Recursos IS NULL) AND RegraID IS NOT NULL"
         set MaximoDescontoRegraSQL = db.execute(sqlRegraSuperior)
-        Response.write(sqlRegraSuperior)
         RegraIdListString = ""
 
 
@@ -104,7 +103,7 @@ if  ccur(VDesconto) > ccur(MaximoDesconto * 100) or MaximoDescontoDaRegra > 0  t
     end if
 
     
-    if (temRegraCadastrada = 1 and  (RegraIdListString="" or RegraIdListString=NULL or ccur(VDesconto)>10000)) then
+    if (temRegraCadastrada = 1 and  (RegraIdListString="" or RegraIdListString=NULL or ccur(VDesconto)>10000000)) then
         %>
         showMessageDialog("Desconto inválido.")
         desfazDesconto();

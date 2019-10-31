@@ -1003,11 +1003,12 @@ function espProf(I,profissionaisID,executeLote){
 $("#invoiceItens").on("change",".CampoDesconto", function() {
     var $descontoLinha = $(this).parents("tr");
 
-    var Desconto = parseInt($descontoLinha.find(".CampoDesconto").val().replace(",00","").replace(".",""));
+    var Desconto = parseInt($descontoLinha.find(".CampoDesconto").val().replace(",","").replace(".",""));
     var ProcedimentoID = parseInt($descontoLinha.find("[data-resource=procedimentos]").val());
     var TipoDesconto = "V";
-    var ValorUnitario = parseFloat($descontoLinha.find(".CampoValorUnitario").val().replace(",00","").replace(".",""));
+    var ValorUnitario = parseFloat($descontoLinha.find(".CampoValorUnitario").val().replace(",","").replace(".",""));
 
+//					DescontoMaximo 44,284 Desconto Maximo: 44,284 Valor do desconto: 44,29
     if(TipoDesconto!=="P"){
         Desconto = (Desconto/ValorUnitario) * 100;
     }

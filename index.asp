@@ -1800,7 +1800,7 @@ function callSta(callID, StaID){
 }
 
 <%
-if request.ServerVariables("REMOTE_ADDR")<>"::1" then
+
     if session("OtherCurrencies")="phone" then
 	    %>
 	    setTimeout(function(){constante()}, 1500);
@@ -1812,7 +1812,7 @@ if request.ServerVariables("REMOTE_ADDR")<>"::1" then
 	    setInterval(function(){constante()}, 18000);
 	    <%
     End If
-end if
+
 %>
 
 

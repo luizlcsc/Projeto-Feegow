@@ -600,6 +600,12 @@ end if
            cappta.openPdvConfig();
         }
 
+        function reciboPadrao() {
+           if(typeof imprimir === "function") {
+               imprimir();
+           }
+        }
+
         async function captureTransaction() {
             try {
                 loadingButton(true);
@@ -612,6 +618,7 @@ end if
                     autoConsolidate();
                 }
 
+                reciboPadrao();
                 refreshPage();
             } catch (e) {
                 loadingButton(false);

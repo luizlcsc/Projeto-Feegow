@@ -223,7 +223,12 @@ end if
             readonly = " readonly "
             set getTransactionType = db.execute("select * from sys_financialTransactionType where TransactionName = 'Transferência' order by id")
           else
-            set getTransactionType = db.execute("select * from sys_financialTransactionType order by id")
+            if getconfig("liberaacertodesaldo") = 1 then 
+              filtroacertodesaldo = ""
+            else 
+               filtroacertodesaldo = " where TransactionName <> 'Acerto de Saldo' "
+            end if 
+            set getTransactionType = db.execute("select * from sys_financialTransactionType "&filtroacertodesaldo&" order by id")
           end if
 		  
 		  while not getTransactionType.eof

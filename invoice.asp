@@ -163,6 +163,13 @@ if req("Lancto")<>"" and req("Lancto")="Dir" then
     });
     </script>
 <%
+    ProfissionalSolicitante = req("ProfissionalSolicitante")
+else 
+    if  req("origem") = "geracontrato" then 
+        ProfissionalSolicitante =  req("ProfissionalSolicitante")
+    else
+        ProfissionalSolicitante = data("ProfissionalSolicitante")
+    end if 
 end if
 
 
@@ -187,7 +194,7 @@ if not isnull(data("TabelaID")) then
 end if
 
 Rateado = data("Rateado")
-ProfissionalSolicitante = data("ProfissionalSolicitante")
+
 %>
 
 <%

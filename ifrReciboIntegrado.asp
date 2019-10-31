@@ -551,6 +551,10 @@ if not inv.eof then
                                 Recibo = replace(Recibo, "[ProfissionalExecutante.CPF]", ProfissionalExecutanteCPF )
                             end if
                         end if
+                        'caso o profissional executante não for encontrado utilizar profissional solicitante 
+                        if instr(Recibo, "[ProfissionalExecutante.Nome]")>0 then 
+                            Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", Accountname("",inv("ProfissionalSolicitante")))
+                        end if 
                     end if
 
 					'if session("Banco")="clinic105" or session("Banco")="clinic1752" then

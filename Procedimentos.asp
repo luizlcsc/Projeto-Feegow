@@ -46,8 +46,11 @@ ProfissionaisLaudo = reg("ProfissionaisLaudo")
 EspecialidadesLaudo = reg("EspecialidadesLaudo")
 FormulariosLaudo = reg("FormulariosLaudo")
 Laudo = reg("Laudo")
+SepararLaudoQtd = reg("SepararLaudoQtd")
 DiasLaudo = reg("DiasLaudo")
 TipoGuia = reg("TipoGuia")
+'ProcedimentoComplexo = reg("ProcedimentoComplexo")
+
 %>
 
 <form method="post" id="frm" name="frm" action="save.asp">
@@ -67,11 +70,11 @@ TipoGuia = reg("TipoGuia")
                         <%=quickField("simpleSelect", "TipoProcedimentoID", "Tipo", 2, reg("TipoProcedimentoID"), "select * from TiposProcedimentos", "TipoProcedimento", "")%>
                         <%= quickField("currency", "Valor", "Valor <button type='button' onclick='VerDetalhesValor()' class='btn btn-link btn-xs'>Ver mais</button>", 2, formatnumber(Valor,2), "", "", "") %>
                         <%= quickField("text", "TempoProcedimento", "Tempo", 1, reg("TempoProcedimento"), " text-right", "", " placeholder='minutos'")%>
-                        
+
                         <div class="col-md-1 qf" style="width:auto; margin-top: 10px; display:block"><br>
                             <button type="button" onclick="" class="btn btn-xs btn-success" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus"></i></button>
 			            </div>
-                       
+
                         <%=quickField("cor", "Cor", "Cor", 2, reg("Cor"), "select * from cliniccentral.Cores order by id desc", "Cor", "")%>
                         <div class="col-md-1">
                             <label>
@@ -125,6 +128,10 @@ TipoGuia = reg("TipoGuia")
                                 <input type="checkbox" name="LiberarProcedimentoComplexo" id="LiberarProcedimentoComplexo" value="S" class="ace" <% If reg("LiberarProcedimentoComplexo")="S" Then %> checked="checked" <% End If %> />
                                 <label for="LiberarProcedimentoComplexo">Obrigar autenticação por usuário com permissão para liberação de procedimentos complexos</label>
                             </div>
+                             <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" name="NaoRepetirNaProposta" id="NaoRepetirNaProposta" value="S" class="ace" <% If reg("NaoRepetirNaProposta")="S" Then %> checked="checked" <% End If %> />
+                                <label for="NaoRepetirNaProposta">Não permitir duplicidade na proposta </label>
+                            </div>
                         </div>
                     </div>
                     <hr class="short alt" />
@@ -138,7 +145,7 @@ TipoGuia = reg("TipoGuia")
                         <%'=quickField("number", "PrazoEntrega", "Prazo de Entrega", 2, reg("PrazoEntrega"), " text-right", "", "")%>
                         <%
 
-                        set RecursosAdicionaisSQL = db.execute("SELECT RecursosAdicionais FROM sys_config WHERE id=1")                        
+                        set RecursosAdicionaisSQL = db.execute("SELECT RecursosAdicionais FROM sys_config WHERE id=1")
 
                         if not RecursosAdicionaisSQL.eof then
                             RecursosAdicionais=RecursosAdicionaisSQL("RecursosAdicionais")
@@ -217,9 +224,12 @@ TipoGuia = reg("TipoGuia")
         </div>
         <div class="tab-pane" id="divLaudos">
             <div class="row mt20">
-                <div class="col-md-12 checkbox-custom checkbox-system">
+                <div class="col-md-6 checkbox-custom checkbox-system">
                     <input type="checkbox" id="Laudo" name="Laudo" value="1" <% if Laudo then response.write(" checked ") end if %> /><label for="Laudo"> Habilitar laudo para este procedimento</label>
-                </div>
+              </div>
+              <div class="col-md-6 checkbox-custom checkbox-system">
+                    <input type="checkbox" id="SepararLaudoQtd" name="SepararLaudoQtd" value="1" <% if SepararLaudoQtd then response.write(" checked ") end if %> /><label for="SepararLaudoQtd"> Separar laudos por quantidade do item</label>
+              </div>
             </div>
             <hr class="short alt" />
             <div class="row mt20">

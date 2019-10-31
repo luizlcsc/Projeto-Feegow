@@ -176,7 +176,9 @@ posModalPagar = "fixed"
 
                     END IF
                  %>
+                    <!--
                      <%=quickField("currency", "ValorMinimoPorUsuario", "Mínimo por Usuários", 2, ValorMinimoPorUsuario, " ", "", " ")%>
+                     -->
                      <%=quickField("multiple", "Licenca", "Licença", 10, Licencas, "SELECT licencas.id,coalesce(concat(licencas.id,' - ',NomeContato,' - ',NomeEmpresa),CONCAT(licencas.id,' - ',pacientes.NomePaciente),licencas.id) as NomeContato FROM cliniccentral.licencas LEFT JOIN pacientes ON pacientes.id = cliniccentral.licencas.Cliente", "NomeContato", " ")%>
                 <% end if %>
                 </div>

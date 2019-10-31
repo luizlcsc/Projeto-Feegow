@@ -562,7 +562,15 @@ posModalPagar = "fixed"
     <div >
         <%
         if data("sysActive")=1 then
-            response.write(data("Name") & " - "& nameInTable(data("sysUser")) & " - " & data("DataHora"))
+            DescricaoGeracao = data("Name")
+
+            if DescricaoGeracao&"" = "" then
+                DescricaoGeracao="Cadastrado"
+            end if
+
+            %>
+            <code>ID: #<%=data("id")%></code> <%=DescricaoGeracao%> por <%=nameInTable(data("sysUser"))%> em <%=data("DataHora")%>
+            <%
         end if
         %>
     </div>
@@ -1008,7 +1016,6 @@ $("#invoiceItens").on("change",".CampoDesconto", function() {
     var TipoDesconto = "V";
     var ValorUnitario = parseFloat($descontoLinha.find(".CampoValorUnitario").val().replace(",","").replace(".",""));
 
-//					DescontoMaximo 44,284 Desconto Maximo: 44,284 Valor do desconto: 44,29
     if(TipoDesconto!=="P"){
         Desconto = (Desconto/ValorUnitario) * 100;
     }

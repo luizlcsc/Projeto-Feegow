@@ -196,6 +196,8 @@ TipoGuia = reg("TipoGuia")
                     </div>
                 </div>
             </div>
+
+            <code>ID: #<%=reg("id")%></code> Cadastrado por <%=nameInTable(reg("sysUser"))%>
         </div>
         <div id="divConfirmacoes" class="tab-pane">
             <div class="row panel">

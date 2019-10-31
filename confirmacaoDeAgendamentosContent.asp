@@ -276,19 +276,19 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
 
                     response.write(StatusSelect)
 
-                    TagWhatsApp= "a"
+                    TagWhatsApp = True
 
                     PrimeiroDigito = right(left(CelularFormatadado, 5),1)
 
                     if PrimeiroDigito&"" <> "9" then
-                        TagWhatsApp= "span"
+                        TagWhatsApp= False
                     end if
 
                     %>
                     </td>
                     <td><a href="?P=Agenda-1&Pers=1&AgendamentoID=<%=ag("id")%>" target="_blank"><%= ag("Data") %> - <%=ft(ag("Hora"))%></a></td>
                     <td><a target="_blank" href="?P=Pacientes&Pers=1&I=<%= ag("PacienteID") %>"><%= ag("NomePaciente") %></a></td>
-                    <td><<%=TagWhatsApp%> <% if TagWhatsApp="a" then %> onclick="AlertarWhatsapp('<%=CelularFormatadado%>','<%=TextoWhatsApp%>', '<%=ag("id")%>')" target="_blank" <% end if%> href="#"><span id="wpp-<%=ag("id")%>"></span> <%= Celular %></<%=TagWhatsApp%>>
+                    <td><span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline"  onclick="AlertarWhatsapp('<%=CelularFormatadado%>', `<%=TextoWhatsApp%>`, '<%=ag("id")%>')" <% end if%> ><span id="wpp-<%=ag("id")%>"></span> <%= Celular %></<%=TagWhatsApp%>>
                     <%
                     if not isnull(ag("Resposta")) then
                         'validar se a resposta é do tipo correto 

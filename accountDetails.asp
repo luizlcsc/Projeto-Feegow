@@ -684,13 +684,13 @@ end if
 		}
 
 		if(checkConflict()) {
-			new PNotify({ title: 'Conflito detectado nas configurações de parcelas', type: 'danger', delay: 3000 });
-			return;		
+			// new PNotify({ title: 'Conflito detectado nas configurações de parcelas', type: 'danger', delay: 3000 });
+			// return;
 		}
 
 		if(checkConflictValorMinimoMaximoIgual()) {
-			new PNotify({ title: 'Conflito detectado nas configurações de parcelas.', type: 'danger', delay: 3000 });
-			return;		
+			// new PNotify({ title: 'Conflito detectado nas configurações de parcelas.', type: 'danger', delay: 3000 });
+			// return;
 		}
 
 		if(checkMinIsGreaterMax()) {

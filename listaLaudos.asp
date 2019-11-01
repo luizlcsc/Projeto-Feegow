@@ -33,7 +33,7 @@ end if
     set pProcsLaudar = db.execute("select group_concat(id) ProcsLaudar from procedimentos WHERE Laudo=1 AND Ativo='on'")
     procsLaudar = pProcsLaudar("ProcsLaudar")
         'response.write(procsLaudar)
-
+    Procedimentos = ""
     if isnull(procsLaudar) then
         %>
         <tr>
@@ -103,7 +103,7 @@ end if
             sqlPrevisao = ""
         end if
 
-        IF Procedimentos THEN
+        IF Procedimentos <> "" THEN
             filtroGrupo = " ii.ItemID in ("&Procedimentos&") AND "
         END IF
 

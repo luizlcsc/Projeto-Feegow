@@ -193,6 +193,8 @@ if not inv.eof then
         end if
     end if
 
+    DataHora = inv("DataHora")
+
     TipoReciboModelo = ReciboModelo
 
     if TipoReciboModelo="RPSModelo" then
@@ -552,8 +554,12 @@ if not inv.eof then
                             end if
                         end if
                         'caso o profissional executante não for encontrado utilizar profissional solicitante 
-                        if instr(Recibo, "[ProfissionalExecutante.Nome]")>0 then 
-                            Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", Accountname("",inv("ProfissionalSolicitante")))
+                        if instr(Recibo, "[ProfissionalExecutante.Nome]")>0 then
+                            Solicitante = inv("ProfissionalSolicitante")
+
+                            if Solicitante&"" <> "" then
+                                Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", Accountname("",Solicitante))
+                            end if
                         end if 
                     end if
 
@@ -811,10 +817,13 @@ if not inv.eof then
             if reciboID<>"" then
                 sqlRecibo = "UPDATE recibos SET Texto = '"&Recibo&"', ImpressoEm = now() WHERE id="&reciboID
             else
+
+                sqlDataHora = mydatetime(DataHora)
+
                 if Imprimiu="1" then
-                    sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, Auto,ImpressoEm) VALUES ("&treatvalzero(NumeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&Cnpj&"','"&NomeRecibo&"', "&mydatenull(date())&", "&treatvalzero(ValorRecibo)&", '"&Recibo&"', '"&PacienteID&"', "&session("User")&", '"&NomeItens&"', 0, "&InvoiceID&", "&session("UnidadeID")&", "&NumeroSequencial&", '"&CPFPACIENTE&"', 0, now())"
+                    sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, Auto,ImpressoEm, sysDate) VALUES ("&treatvalzero(NumeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&Cnpj&"','"&NomeRecibo&"', "&mydatenull(date())&", "&treatvalzero(ValorRecibo)&", '"&Recibo&"', '"&PacienteID&"', "&session("User")&", '"&NomeItens&"', 0, "&InvoiceID&", "&session("UnidadeID")&", "&NumeroSequencial&", '"&CPFPACIENTE&"', 0, now(), "&sqlDataHora&")"
                 else
-                    sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, Auto) VALUES ("&treatvalzero(NumeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&Cnpj&"','"&NomeRecibo&"', "&mydatenull(date())&", "&treatvalzero(ValorRecibo)&", '"&Recibo&"', '"&PacienteID&"', "&session("User")&", '"&NomeItens&"', 0, "&InvoiceID&", "&session("UnidadeID")&", "&NumeroSequencial&", '"&CPFPACIENTE&"', 0)"
+                    sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, Auto, sysDate) VALUES ("&treatvalzero(NumeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&Cnpj&"','"&NomeRecibo&"', "&mydatenull(date())&", "&treatvalzero(ValorRecibo)&", '"&Recibo&"', '"&PacienteID&"', "&session("User")&", '"&NomeItens&"', 0, "&InvoiceID&", "&session("UnidadeID")&", "&NumeroSequencial&", '"&CPFPACIENTE&"', 0, "&sqlDataHora&")"
                 end if
             end if
             

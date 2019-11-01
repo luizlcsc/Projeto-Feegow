@@ -104,7 +104,7 @@ if  ccur(VDesconto) > ccur(MaximoDesconto * 1000000) or MaximoDescontoDaRegra > 
     end if
 
     
-    if (temRegraCadastrada = 1 and  (RegraIdListString="" or RegraIdListString=NULL or ccur(VDesconto)>10000000)) then
+    if (temRegraCadastrada = 1 and  (RegraIdListString="" or RegraIdListString=NULL or ccur(VDesconto)>100000000)) then
         %>
         showMessageDialog("Desconto inválido.")
         desfazDesconto();

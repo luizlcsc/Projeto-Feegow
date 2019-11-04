@@ -285,12 +285,12 @@ end if
                 if instr(req("ProcedimentoID"), "G")>0 then
                     set procsGP = db.execute("select group_concat(id) procs from procedimentos where GrupoID="& replace(req("ProcedimentoID"), "G", ""))
                     if isnull(procsGP("procs")) then
-                        sqlProcedimento = " WHERE t.ProcedimentoID IN (-1) "
+                        sqlProcedimento = " AND t.ProcedimentoID IN (-1) "
                     else
-                        sqlProcedimento = " WHERE t.ProcedimentoID IN ("& procsGP("procs") &") "
+                        sqlProcedimento = " AND t.ProcedimentoID IN ("& procsGP("procs") &") "
                     end if
                 else
-                    sqlProcedimento = " WHERE t.ProcedimentoID="& req("ProcedimentoID") &" "
+                    sqlProcedimento = " AND t.ProcedimentoID="& req("ProcedimentoID") &" "
                 end if
             end if
 

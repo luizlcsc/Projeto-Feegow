@@ -56,6 +56,7 @@ end if
 if rfrdValorPlano="P" and (rfValorPlano="" or rfValorPlano="0") then
 	erro="Erro: Selecione um conv&ecirc;nio."
 end if
+
 'if session("Banco")="clinic811" and ref("ageOrigem")="0" then
 '    erro = "Erro: Selecione a origem."
 'end if
@@ -87,6 +88,7 @@ if rfrdValorPlano="P" then
                 erro="Este plano não cobre o procedimento selecionado."
             end if
         end if
+       
     end if
 
     set ProcedimentoConveniosSQL = db.execute("SELECT SomenteConvenios FROM procedimentos WHERE id="&treatvalzero(rfProcedimento))
@@ -116,6 +118,7 @@ if rfrdValorPlano="P" then
             end if
         end if
     end if
+
 end if
 
 
@@ -363,6 +366,33 @@ if erro="" then
     end if
 end if
 
+if erro = "" then
+
+    if ref("rdValorPlano")="P" then
+        if validaConvenio( ref("ConvenioID"), ref("LocalID") )=0 then
+            erro="Esta unidade não aceita convenio selecionado na linha 1."
+        end if
+    end if 
+
+    procedimentosID = trim(ref("ProcedimentosAgendamento"))
+    if procedimentosID <> "" then 
+        procedimentos = split(procedimentosID, ",")
+        For i=0 To UBound(procedimentos)
+            apID = Trim(procedimentos(i))
+            EquipID = ref("EquipamentoID" & apID)
+            aprdValorPlano = ref("rdValorPlano"& apID)
+            apValorPlano = ref("ConvenioID"& apID)
+            apLocalID = ref("LocalID"& apID)
+            
+            if aprdValorPlano="P" then
+                if validaConvenio(apValorPlano,apLocalID )=0 then
+                    erro="Esta unidade não aceita convenio selecionado na linha "&i+2&"."
+                end if
+            end if 
+        Next
+    end if
+end if
+
 if erro="" and rdEquipamentoID <> "" then
 
     'Validar se o equipamento tem possibilidade
@@ -380,10 +410,10 @@ if erro="" and rdEquipamentoID <> "" then
         procedimentosID = trim(ref("ProcedimentosAgendamento"))
         if procedimentosID <> "" then 
             procedimentos = split(procedimentosID, ",")
-            For Each p In procedimentos
-                EquipID = ref("EquipamentoID" & Trim(p))
-                temBloqueio = validarEquipamento(EquipID, rfData, rfHora)
-
+            For i=0 To UBound(procedimentos)
+                apID = Trim(procedimentos(i))
+                EquipID = ref("EquipamentoID" & apID)
+         
                 if temBloqueio = 0 then
                     erro = "Existem equipamento sem disponibilidade"
                 end if
@@ -600,5 +630,26 @@ function checkQuantidadeAgendamentoHorario()
       '  Response.write("{""existeAgendamentosFuturos"":  false}")     
       '  Response.end            
     end if
+end function
+
+function validaConvenio(convenioID, localID)
+    validaConvenio=1
+    if convenioID&""<>"0" then 
+        mUnidadeID = session("UnidadeID")
+        if localID&""<>"" then
+            if localID <> 0 then    
+                set sqlUnidadeID = db.execute("select UnidadeID from locais where id="&localID)
+                if not sqlUnidadeID.eof then
+                    mUnidadeID = sqlUnidadeID("UnidadeID")
+                end if
+            end if
+        end if
+        'response.write "select id from convenios where sysActive=1 and (unidades like'%|"&mUnidadeID&"|%' or unidades ='') and id = "&convenioID&"<br>"
+        set PlanoNaUnidadeSQL = db.execute("select id from convenios where sysActive=1 and (unidades like'%|"&mUnidadeID&"|%' or unidades ='') and id = "&convenioID)
+        if PlanoNaUnidadeSQL.eof then
+                validaConvenio=0
+        end if
+    end if
+
 end function
 %>

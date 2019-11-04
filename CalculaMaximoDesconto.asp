@@ -27,7 +27,7 @@
 <script type="text/javascript">
 var $DescontoMaximoUltrapassado = $("#DescontoMaximoUltrapassado");
 var SenhaValida = false;
-$(".btnfechar").on('click', function(){ $("#temregradesconto").val(0); desfazer() });
+$(".btnfechar").on('click', function(){ $("#temregradesconto").val(1); recalc() });
 $(".btnaguardar").on('click', function(){ 
     $("#temregradesconto").val(1);  
     recalc()

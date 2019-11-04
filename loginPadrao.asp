@@ -1,4 +1,4 @@
-<%
+<!--#include file="Classes/Connection.asp"--><%
 if request.ServerVariables("REMOTE_ADDR")<>"::1" then
    'on error resume next
 end if
@@ -6,7 +6,7 @@ sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.
 
 set shellExec = createobject("WScript.Shell")
 Set objSystemVariables = shellExec.Environment("SYSTEM")
-AppEnv = objSystemVariables("APP_ENV")
+AppEnv = objSystemVariables("FC_APP_ENV")
 
 set tryLogin = dbc.execute(sqlLogin)
 if not tryLogin.EOF then
@@ -57,6 +57,7 @@ if not tryLogin.EOF then
 
 
 	if erro="" then
+	    TimeoutToCheckConnection = 60
 	
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
@@ -68,7 +69,7 @@ if not tryLogin.EOF then
                 if UsuariosContratadosNS>0 and ref("password")<>"feeegow!0090"  then
                 'excecao para a Minha Clinica :'/
                     if tryLogin("LicencaID")=4285 then
-                        set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &" and NameColumn='NomeFuncionario' and UltRef>DATE_ADD(NOW(), INTERVAL -25 SECOND)")
+                        set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &" and NameColumn='NomeFuncionario' and UltRef>DATE_ADD(NOW(), INTERVAL -"&TimeoutToCheckConnection&" SECOND)")
                         Conectados = ccur(contaUsers("Conectados"))
                         if Conectados>=UsuariosContratadosS and sysUser("NameColumn")="NomeFuncionario" then
                             erro = "O máximo de usuários conectados simultaneamente foi atingido para sua licença.\n Solicite o aumento da quantidade de usuários simultâneos."
@@ -81,7 +82,7 @@ if not tryLogin.EOF then
 							sqlUsuariosProfissionais = " and `table`='profissionais' "
 						end if
 
-                        set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &sqlUsuariosProfissionais&" and UltRef>DATE_ADD(NOW(), INTERVAL -25 SECOND)")
+                        set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &sqlUsuariosProfissionais&" and UltRef>DATE_ADD(NOW(), INTERVAL -"&TimeoutToCheckConnection&" SECOND)")
                         Conectados = ccur(contaUsers("Conectados"))
 
                         if Conectados>=UsuariosContratadosS then

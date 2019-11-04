@@ -238,6 +238,11 @@ end if
                         </div>
                         <br>
                         <div class="row">
+                                <%=quickField("text", "TempoAntecedencia", "Tempo de antecedência", 2, reg("TempoAntecedencia"), " text-right", "", " placeholder='0' ")%>
+                        </div>
+                        <br>
+                        <div class="row">
+
                             <%= quickField("memo", "ObsAgenda", "Mensagem informativa na agenda", 6, reg("ObsAgenda"), "", "", "") %>
                             <br>
                             <div class="col-md-6">

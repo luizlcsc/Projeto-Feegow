@@ -88,9 +88,9 @@ if not reg.eof then
                     end if
 		else
 			if spl(1)="agendamento" then
-				set aEa = db.execute("select ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, l.UnidadeID from agendamentos as ag left join locais l on l.id=ag.LocalID where ag.id like '"&spl(0)&"' order by ag.Data desc, ag.Hora desc, ag.HoraFinal desc")
+				set aEa = db.execute("select ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, l.UnidadeID, ag.EspecialidadeID from agendamentos as ag left join locais l on l.id=ag.LocalID where ag.id like '"&spl(0)&"' order by ag.Data desc, ag.Hora desc, ag.HoraFinal desc")
 			else
-				set aEa = db.execute("select ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado' Tipo, 'executado' Icone, at.AgendamentoID, at.UnidadeID FROM  atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID where ap.id like '"&spl(0)&"' order by at.Data desc, at.HoraInicio desc, at.HoraFim desc")
+				set aEa = db.execute("select ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado' Tipo, 'executado' Icone, at.AgendamentoID, at.UnidadeID, ag.EspecialidadeID FROM  atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ag ON ag.id=at.AgendamentoID where ap.id like '"&spl(0)&"' order by at.Data desc, at.HoraInicio desc, at.HoraFim desc")
 			end if
 			if not aEa.eof then
 			    ProfissionalID = aEa("ProfissionalID")
@@ -98,6 +98,7 @@ if not reg.eof then
 				PacienteID = aEa("PacienteID")
 				ProcedimentoID = aEa("ProcedimentoID")
 				UnidadeID = aEa("UnidadeID")
+                EspecialidadeID = aEa("EspecialidadeID")
 				if aEa("Tipo")="executado" then
 					AtendimentoID = aEa("id")
 				else
@@ -274,6 +275,20 @@ if not reg.eof then
 				UFConselho = prof("UFConselho")
 				CodigoCBO = prof("codigoTISS")
 			end if
+			if EspecialidadeID&""<>"" AND EspecialidadeID<>0  then
+                set profEsp = db.execute("SELECT profEsp.ProfissionalID, profEsp.EspecialidadeID, profEsp.RQE, profEsp.Conselho, profEsp.UFConselho, profEsp.DocumentoConselho, esp.codigoTISS FROM profissionais p "&_
+                                         "LEFT JOIN (SELECT ProfissionalID, EspecialidadeID, RQE, Conselho, UFConselho, DocumentoConselho FROM profissionaisespecialidades "&_
+                                         "UNION ALL  "&_
+                                         "SELECT  id ProfissionalID, EspecialidadeID, RQE, Conselho, UFConselho, DocumentoConselho FROM profissionais) profEsp ON profEsp.ProfissionalID=p.id "&_
+                                         "LEFT JOIN especialidades esp ON esp.id=profEsp.EspecialidadeID "&_
+                                         "WHERE p.id="&ProfissionalID&" AND profEsp.EspecialidadeID="&EspecialidadeID)
+                if not profEsp.eof then
+                    Conselho = profEsp("Conselho")
+                    DocumentoConselho = profEsp("DocumentoConselho")
+                    UFConselho = profEsp("UFConselho")
+                    CodigoCBO = profEsp("codigoTISS")
+                end if
+            end if
 			've se é primeira consulta ou seguimento
 			set vesecons = db.execute("select id from tissguiaconsulta where PacienteID="&PacienteID&" and sysActive=1 UNION ALL select id from tissguiasadt where PacienteID="&PacienteID&" and sysActive=1")
 			if vesecons.eof then

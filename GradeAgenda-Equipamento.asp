@@ -250,6 +250,7 @@ end if
 				"left join locais l on l.id=a.LocalID "&_ 
 				"left join profissionais prof on prof.id=a.ProfissionalID "&_
                 "where a.Data="&mydatenull(Data)&" and a.sysActive=1 and (a.EquipamentoID="&EquipamentoID&" ) GROUP BY a.id order by Hora"
+				'response.write sqlcomps
 
 				set comps=db.execute(sqlcomps)
                 while not comps.EOF
@@ -371,8 +372,10 @@ end if
 					"</tr>"
 					HAgendados = HAgendados+1
                 %>
+                var Status = '<%=comps("StaID")%>';
+
                 $( ".l" ).each(function(){
-                    if( $(this).attr("id")=='<%=HoraComp%>' )
+                    if( $(this).attr("id")=='<%=HoraComp%>' && (Status !== "11" && Status !== "22" && Status !== "33" ))
                     {
                         var gradeId = $(this).data("grade");
 
@@ -386,11 +389,12 @@ end if
                         return false;
                     }
                 });
+				
                 	<%
 					if HoraFinal<>"" then
 						%>
 						$( ".vazio" ).each(function(){
-							if( $(this).attr("id")>'<%=HoraComp%>' && $(this).attr("id")<'<%=HoraFinal%>' )
+							if( $(this).attr("id")>'<%=HoraComp%>' && $(this).attr("id")<'<%=HoraFinal%>' && (Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>) )
 							{
 								//alert('oi');
 								$(this).replaceWith('');

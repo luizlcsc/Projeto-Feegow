@@ -223,6 +223,7 @@ end if
                 'if session("banco")="clinic1612" or session("banco")="clinic5868" or session("banco")="clinic3610" or session("banco")="clinic105" or session("banco")="clinic3859" or session("banco")="clinic5491" then
 				Prontuario = reg("idImportado")
 				if isnull(Prontuario) then
+					set pultPront = db.execute("select idImportado Prontuario from pacientes where not isnull(idImportado) order by idImportado desc limit 1")
 					if pultPront.eof then
 						Prontuario = 1
 					else

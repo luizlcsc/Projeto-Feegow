@@ -328,6 +328,48 @@ else
     GradeID=""
 end if
 
+'verificar convenios pelo local e pela unidade
+mUnidadeID = session("UnidadeID")
+if LocalID <> 0 then    
+    set sqlUnidadeID = db.execute("select UnidadeID from locais where id="&LocalID)
+    if not sqlUnidadeID.eof then
+        mUnidadeID = sqlUnidadeID("UnidadeID")
+    end if
+end if
+
+if Convenios = "Todos" then
+    sqlconveniosexibir2 = "select group_concat(id) exibir from convenios where sysActive=1 and (unidades like'%|"&mUnidadeID&"|%' or unidades ='')"
+    set conveniosexibir2 = db.execute(sqlconveniosexibir2)
+    if not conveniosexibir2.eof then
+        Convenios = conveniosexibir2("exibir")
+    end if
+else
+ if Convenios <> "Nenhum" then
+    sqlconveniosexibir2 = "SELECT GROUP_CONCAT('|',id,'|') naoexibir"&_
+                        " FROM convenios"&_
+                        " WHERE sysActive=1 AND unidades not LIKE'%|0|%' and unidades <> ''"
+    set conveniosexibir2 = db.execute(sqlconveniosexibir2)
+
+    if not conveniosexibir2.eof then
+        ConveniosSpt = split(Convenios,",")
+        novoConvenio = ""
+        For i=0 To ubound(ConveniosSpt)
+            if novoConvenio<>"" then novoConvenio =novoConvenio&"," end if
+            novoConvenio = novoConvenio&"|"&ConveniosSpt(i)&"|"
+        Next
+
+        naoExibir = conveniosexibir2("naoexibir")
+        naoExibirSpt = split(naoExibir,",")
+        For i=0 To ubound(naoExibirSpt)
+            novoConvenio = replace(novoConvenio,","&naoExibirSpt(i),"")
+        Next
+
+        Convenios=replace(novoConvenio,"|","")
+    end if
+    
+ end if
+end if
+
 if req("id")="0" and aut("|agehorantI|")=0 and isdate(Data) and isdate(Hora) and req("horario")<>"00:00" then
     if cdate(Data&" "&Hora)<now() then
     %>

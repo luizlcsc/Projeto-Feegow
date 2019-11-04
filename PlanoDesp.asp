@@ -32,7 +32,7 @@ if req("R")="" then
             <%=quickField("datepicker", "De", "De", 2, De, "", "", "")%>
             <%=quickField("datepicker", "Ate", "Até", 2, Ate, "", "", "")%>
             <%=quickField("empresaMultiIgnore", "U", "Unidade", 3, "|"&session("UnidadeID")&"|", "", "", "")%>
-            <%=quickField("simpleSelect", "TipoData", "Tipo de Data", 2, "V", "select 'I' id, 'Inserção' TipoData UNION ALL select 'V', 'Vencimento' UNION ALL select 'P', 'Pagamento'", "TipoData", " semVazio no-select2 ")%>
+            <%=quickField("simpleSelect", "TipoData", "Tipo de Data", 2, "V", "select 'I' id, 'Competência' TipoData UNION ALL select 'V', 'Vencimento' UNION ALL select 'P', 'Pagamento'", "TipoData", " semVazio no-select2 ")%>
             <div class="col-md-2 pt25"><label><input type="checkbox" name="Ocultar" value="S"<%if req("Ocultar")="S" then%> checked<%end if%> class="ace"><span class="lbl"> Ocultar valores zerados</span></label>
             </div>
             <div class="col-md-1 pt25">
@@ -117,7 +117,7 @@ else
 			        
 					Rateado = 0
 					if movs("Rateado") = True then
-						set itemRateado = db.execute("SELECT * FROM invoice_rateio WHERE InvoiceID="&movs("InvoiceID")& " AND CompanyUnitID in ("&replace(req("U"), "|", "")&")")
+						set itemRateado = db.execute("SELECT SUM(porcentagem)porcentagem, TipoValor FROM invoice_rateio WHERE InvoiceID="&movs("InvoiceID")& " AND CompanyUnitID in ("&replace(req("U"), "|", "")&")")
 						if not itemRateado.eof then 
 							if itemRateado("TipoValor") = "V" then
 								ValorProp = movs("Value") - itemRateado("porcentagem")
@@ -142,7 +142,7 @@ else
 	        set movs=nothing
 			idsInvoice = idsInvoice & "0"
 			'Nao pode trazer as invoices que encontrou acima
-			set movs2 = db.execute("select m.InvoiceID, m.`Value`, i.Rateado, ir.TipoValor, ir.porcentagem as porcent, (select count(id) from sys_financialmovement WHERE InvoiceID=m.InvoiceID) Parcelas, (select SUM(Value) from sys_financialmovement WHERE InvoiceID=m.InvoiceID) TotalInvoice FROM sys_financialmovement m LEFT JOIN sys_financialinvoices i on m.InvoiceID=i.id inner join invoice_rateio ir ON ir.InvoiceID = i.id WHERE m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" AND m.CD='"&CD&"' AND m.Type='Bill' AND i.id NOT IN("&idsInvoice&") AND ir.CompanyUnitID in ("&replace(req("U"), "|", "")&")")
+			set movs2 = db.execute("select m.InvoiceID, m.`Value`, i.Rateado, ir.TipoValor, SUM(ir.porcentagem) as porcent, (select count(id) from sys_financialmovement WHERE InvoiceID=m.InvoiceID) Parcelas, (select SUM(Value) from sys_financialmovement WHERE InvoiceID=m.InvoiceID) TotalInvoice FROM sys_financialmovement m LEFT JOIN sys_financialinvoices i on m.InvoiceID=i.id inner join invoice_rateio ir ON ir.InvoiceID = i.id WHERE m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" AND m.CD='"&CD&"' AND m.Type='Bill' AND i.id NOT IN("&idsInvoice&") AND ir.CompanyUnitID in ("&replace(req("U"), "|", "")&") GROUP BY m.id")
 	        while not movs2.eof
         		set itens = db.execute("SELECT * FROM itensinvoice WHERE InvoiceID="&movs2("InvoiceID"))
 		        while not itens.EOF

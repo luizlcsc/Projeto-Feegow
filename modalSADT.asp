@@ -126,13 +126,12 @@ elseif Tipo="Procedimentos" then
 	    ValorRequired = ""
 	end if
 
-    ProfissionalRequired  = ""
-	'ProfissionalRequired  = " required"
-	
-	'recursoPermissaoUnimed = recursoAdicional(12)
-    'if recursoPermissaoUnimed=4 then
-	'    ProfissionalRequired = ""
-	'end if
+	ProfissionalRequired  = " required"
+
+	recursoPermissaoUnimed = recursoAdicional(12)
+    if recursoPermissaoUnimed=4 then
+	    ProfissionalRequired = ""
+	end if
 	%>
         <div class="row">
             <div class="col-md-3">

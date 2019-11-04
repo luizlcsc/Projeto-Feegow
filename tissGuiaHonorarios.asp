@@ -130,9 +130,9 @@ if not reg.eof then
                 if spl(i)<>"" then
 				    splAEA = split(spl(i), "|")
 				    if splAEA(1)="agendamento" then
-					    set aEa = db.execute("select ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID from agendamentos as ag where ag.id like '"&splAEA(0)&"' order by ag.Data desc, ag.Hora desc, ag.HoraFinal desc")
+					    set aEa = db.execute("select ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, ag.EspecialidadeID from agendamentos as ag where ag.id like '"&splAEA(0)&"' order by ag.Data desc, ag.Hora desc, ag.HoraFinal desc")
 				    else
-					    set aEa = db.execute("select ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado' Tipo, 'executado' Icone, at.AgendamentoID FROM  atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID where ap.id like '"&splAEA(0)&"' order by at.Data desc, at.HoraInicio desc, at.HoraFim desc")
+					    set aEa = db.execute("select ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado' Tipo, 'executado' Icone, at.AgendamentoID, ag.EspecialidadeID FROM  atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ag ON ag.id=at.AgendamentoID where ap.id like '"&splAEA(0)&"' order by at.Data desc, at.HoraInicio desc, at.HoraFim desc")
 				    end if
 				    if not aEa.eof then
 					    DataAtendimento = aEa("Data")
@@ -141,6 +141,7 @@ if not reg.eof then
 					    ProfissionalID = aEa("ProfissionalID")
 					    HoraInicio = aEa("HoraInicio")
 					    HoraFim = aEa("HoraFim")
+					    EspecialidadeID = aEa("EspecialidadeID")
 					    if aEa("Tipo")="executado" then
 						    AtendimentoID = aEa("id")
                             ObsIndicacaoClinica = aEa("Obs")
@@ -326,6 +327,20 @@ if not reg.eof then
 					    CodigoCBOSolicitante = prof("codigoTISS")
 					    CPF = trim( replace(replace(prof("CPF")&" ", ".", ""), "-","") )
 				    end if
+				    if EspecialidadeID&""<>"" AND EspecialidadeID<>0  then
+                        set profEsp = db.execute("SELECT profEsp.ProfissionalID, profEsp.EspecialidadeID, profEsp.RQE, profEsp.Conselho, profEsp.UFConselho, profEsp.DocumentoConselho, esp.codigoTISS FROM profissionais p "&_
+                                                 "LEFT JOIN (SELECT ProfissionalID, EspecialidadeID, RQE, Conselho, UFConselho, DocumentoConselho FROM profissionaisespecialidades "&_
+                                                 "UNION ALL  "&_
+                                                 "SELECT  id ProfissionalID, EspecialidadeID, RQE, Conselho, UFConselho, DocumentoConselho FROM profissionais) profEsp ON profEsp.ProfissionalID=p.id "&_
+                                                 "LEFT JOIN especialidades esp ON esp.id=profEsp.EspecialidadeID "&_
+                                                 "WHERE p.id="&ProfissionalSolicitanteID&" AND profEsp.EspecialidadeID="&EspecialidadeID)
+                        if not profEsp.eof then
+                            ConselhoProfissionalSolicitanteID = profEsp("Conselho")
+                            NumeroNoConselhoSolicitante = profEsp("DocumentoConselho")
+                            UFConselhoSolicitante = profEsp("UFConselho")
+                            CodigoCBOSolicitante = profEsp("codigoTISS")
+                        end if
+                    end if
 				    'verifica se nesta guia já consta este profissional
 				    set vcaProf = db.execute("select * from tissprofissionaishonorarios where GuiaID="&reg("id")&" and ProfissionalID="&ProfissionalID)
 				    if vcaProf.eof then

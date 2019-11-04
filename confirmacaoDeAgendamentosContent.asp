@@ -53,12 +53,20 @@ function centralWhatsApp(AgendamentoID)
             end if
         end if
 
+        Hora = age("Hora")
+
+        if not isnull(Hora) then
+            Hora= formatdatetime( hour(Hora)&":"&minute(Hora) , 4)
+        else
+            Hora=""
+        end if
+
         Mensagem = replace(Mensagem, "[TipoProcedimento]", TipoProcedimento)
         Mensagem = replace(Mensagem, "[NomeProcedimento]", NomeProcedimento)
         Mensagem = replace(Mensagem, "[NomePaciente]", NomePaciente)
         Mensagem = replace(Mensagem, "[TratamentoProfissional]", "")
         Mensagem = replace(Mensagem, "[NomeProfissional]", NomeProfissional)
-        Mensagem = replace(Mensagem, "[HoraAgendamento]", formatdatetime( hour(age("Hora"))&":"&minute(age("Hora")) , 4) )
+        Mensagem = replace(Mensagem, "[HoraAgendamento]", Hora)
         Mensagem = replace(Mensagem, "[DataAgendamento]", age("Data"))
         Mensagem = trim(Mensagem)
         Mensagem = Replace(Mensagem,"""","")

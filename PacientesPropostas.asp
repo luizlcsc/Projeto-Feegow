@@ -234,7 +234,17 @@ end if
                              <div class="col-md-12 text-right">
                                  <%=pula%>
                                   <!-- <a id="btn-gerar-contrato" href="?P=GerarContrato&Pers=1&PropostaID=<%=req("PropostaID")%>&ProfissionalSolicitante=<%=ProfissionalID %>" class="btn btn-default">Gerar contrato</a>-->
-                                  <button id="btn-gerar-contrato" class="btn btn-default" onclick="GerarContrato()" type="button"> Gerar contrato </button>
+                                  <%
+                                  if isnull(data("InvoiceID")) then
+                                    %>
+                                    <button id="btn-gerar-contrato" class="btn btn-default" onclick="GerarContrato()" type="button"> Gerar contrato </button>
+                                    <%
+                                  else
+                                    %>
+                                    <a target="_blank" href="?P=invoice&I=<%=data("InvoiceID")%>&A=&Pers=1&T=C&Ent=" id="btn-gerar-contrato" class="btn btn-default" type="button"> <i class="fa fa-external-link"></i> Abrir conta</a>
+                                    <%
+                                  end if
+                                  %>
                              </div>
                          </div> 
                   </div>
@@ -521,9 +531,15 @@ function aplicarProFormas(II, A){
 }
 
 function imprimirProposta(){
-	$("#modal-table").modal("show");
-	$("#modal").html("Carregando...");
-	$.get("ImprimirProposta.asp?PropostaID=<%=PropostaID%>", function(data){ $("#modal").html(data) });
+    if($("#PacienteID").val() == ""){
+		alert("Selecione um paciente");
+		return false;
+	}else{
+        propostaSave();
+        $("#modal-table").modal("show");
+        $("#modal").html("Carregando...");
+        $.get("ImprimirProposta.asp?PropostaID=<%=PropostaID%>", function(data){ $("#modal").html(data) });
+    }
 }
 
 function imprimirPropostaSV(){

@@ -11,6 +11,13 @@ else
     Ate = date()
 end if
 %>
+<style>
+    .whatsApp-Ativo{
+        text-decoration: underline;
+        color: cornflowerblue;
+        cursor: pointer;
+    }
+</style>
 <table class="table table-condensed table-hover">
     <thead>
         <tr>
@@ -19,6 +26,7 @@ end if
             <th>Data</th>
             <th>Prev. Entrega</th>
             <th>Paciente</th>
+            <th>Celular</th>
             <th>Profissional</th>
             <th>Procedimento</th>
             <th>Convênio</th>
@@ -107,7 +115,7 @@ end if
             filtroGrupo = " ii.ItemID in ("&Procedimentos&") AND "
         END IF
 
-        sql = "SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID LIMIT 1)TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, proc.DiasLaudo, IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional, pac.NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID  FROM ("&_
+        sql = "SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID LIMIT 1)TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, proc.DiasLaudo, IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, pac.NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID  FROM ("&_
             " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
             " UNION ALL "&_
             " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE "&filtroGrupo&" ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
@@ -202,6 +210,7 @@ end if
                         <td><%= DataExecucao %></td>
                         <td><%= Previsao %></td>
                         <td><%= ii("NomePaciente") %></td>
+                        <td class="whatsapp" msg="Olá <%=ii("NomePaciente")%>, o resultado do seu laudo se encontra <%= LCase(Status) %>."><%= ii("Cel1") %></td>
                         <td><%= NomeProfissional %></td>
                         <td><%= NomeProcedimento %></td>
                         <td><%= ii("NomeConvenio") %></td>
@@ -252,12 +261,56 @@ end if
     <button class="btn btn-success btn-block mt20 atualizarstatus" type="button"><i class="fa fa-repeat bigger-110"></i> Atualizar Status</button>
 </div>
 <script>
+var whatsAppAlertado = false;
 $(document).ready(function(){
    $('[data-toggle="tooltip"]').tooltip();
+
+   $(".whatsapp").each((arg,arg1) => {
+       let tel = arg1.innerHTML;
+
+       let telefone ="55"+tel.replace(/[^0-9.]/g, "");
+       if(telefone.substring(4,5) === "9" && telefone.length > 11){
+         $(arg1).addClass("whatsApp-Ativo");
+         $(arg1).on('click',() => {
+            if(!whatsAppAlertado){
+                    whatsAppAlertado=true;
+                    showMessageDialog("<strong>Atenção!</strong> Para enviar uma mensagem via WhatsApp é preciso ter a ferramenta instalada em seu computador.  <a target='_blank' href='https://www.whatsapp.com/download/'>Clique aqui para instalar.</a>",
+                    "warning", "Instalar o WhatsApp", 60 * 1000);
+            }
+
+             let msg = window.prompt('Digite a mensagem de WhatsApp:',$(arg1).attr("msg"));
+
+             if(msg){
+                   var url = "whatsapp://send?phone="+telefone+"&text="+msg;
+                   $(arg1).append("<i class='success fa fa-check-circle'></i>");
+                   const link = document.createElement('a');
+                   link.href = url;
+                   link.target = '_blank';
+                   document.body.appendChild(link);
+                   link.click();
+                   link.remove();
+             }
+
+          });
+       }
+   });
 });
 </script>
 <script>
 <!--#include file="jQueryFunctions.asp"-->
+
+
+
+function AlertarWhatsapp(Celular, Texto, id) {
+    if(!whatsAppAlertado){
+        whatsAppAlertado=true;
+        showMessageDialog("<strong>Atenção!</strong> Para enviar uma mensagem via WhatsApp é preciso ter a ferramenta instalada em seu computador.  <a target='_blank' href='https://www.whatsapp.com/download/'>Clique aqui para instalar.</a>",
+        "warning", "Instalar o WhatsApp", 60 * 1000);
+    }
+    var url = "whatsapp://send?phone="+Celular+"&text="+Texto;
+    $("#wpp-"+id).html("<i class='success fa fa-check-circle'></i>");
+    openTab(url);
+}
 
 $(".cklaudostodos").on('change', function(){
     var value = $(this).prop("checked");

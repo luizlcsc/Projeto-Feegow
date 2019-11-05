@@ -2,7 +2,7 @@
 <%
 cbi = req("cbi")
 
-set PosicaoSQL = db.execute("SELECT id, ProdutoID FROM estoqueposicao WHERE CBID='"&cbi&"'")
+set PosicaoSQL = db.execute("SELECT ep.id, ep.ProdutoID FROM estoqueposicao ep LEFT JOIN produtos p ON p.id=ep.ProdutoID WHERE (ep.CBID='"&cbi&"' OR p.Codigo='"&cbi&"') AND ep.Quantidade>0 AND p.sysActive=1 LIMIT 1")
 
 if not PosicaoSQL.eof then
 %>

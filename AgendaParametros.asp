@@ -174,7 +174,7 @@ $(document).ready(function() {
 				RetornoConsulta=ccur(conv("RetornoConsulta"))
 				if RetornoConsulta>0 then
 					'pega o ultimo atendido deste paciente antes de hoje, se houve, ve quantos dias de retorno deste convenio e avisa
-					set agendAnt = db.execute("select Data from agendamentos where PacienteID="&PacienteID&" and Data<"&mydatenull(ref("Data"))&" and StaID=3 order by Data desc limit 1")
+					set agendAnt = db.execute("select Data from agendamentos where PacienteID="&PacienteID&" and Data<"&mydatenull(ref("Data"))&" and ProfissionalID="&treatvalzero(ProfissionalID)&" and StaID=3 order by Data desc limit 1")
 					if not agendAnt.EOF then
 						TempoUltima = datediff("d", agendAnt("Data"), ref("Data"))
 						if TempoUltima<=RetornoConsulta then

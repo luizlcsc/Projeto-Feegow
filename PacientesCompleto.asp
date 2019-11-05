@@ -251,8 +251,30 @@ end if
     <button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
     <span></span>
 </div>
+    <script>
+        var loadResumoClinico = () => {
 
-
+            $("#pront").html(`<div style="text-align: center"><img src="assets/img/gif_cubo_alpha.gif"></div>`);
+            fetch(domain+"/api/api-livia?tk="+localStorage.getItem("tk"),{
+              "Content-Type": "application/json",
+              "method": "POST",
+              "body":JSON.stringify({
+                                    	"federalTaxId": "<%=reg("CPF")%>",
+                                    	"userFederalTaxId": "11111111111",
+                                    	"userIdentifierType": "CRM",
+                                    	"userIdentifierValue": "73.737",
+                                    	"userPhone": "+5511999999999",
+                                    	"userEmail": "mucapacheco@hotmail.com",
+                                    	"userName": "<%=session("nameUser") %>",
+                                    	"userId": '<%=session("User") %>'
+                                    })
+          }).then((response) => {
+              return response.json()
+          }).then(json => {
+              $("#pront").html(`<iframe width="100%" src="${json.body}" frameborder="0" height="1200"></iframe>`);
+          })
+        }
+        </script>
         <div id="Servicos">
             <%
         'if session("banco")="clinic811" or session("banco")="clinic100002" then

@@ -646,6 +646,17 @@ select case lcase(req("P"))
                     <span class="sidebar-title">Dados Principais</span>
                 </a>
             </li>
+            <% IF session("Banco")="clinic5459" or session("Banco")="clinic100000" or session("Banco")="clinic105" THEN %>
+             <li>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#resumoclinico" onclick="loadResumoClinico()">
+                    <span class="fa fa-heart-o bigger-110"></span>
+                    <span class="sidebar-title">Resumo Clínico</span>
+                    <span class="sidebar-title-tray">
+                      <span class="label label-xs bg-primary" id="totallf"></span>
+                    </span>
+                </a>
+            </li>
+            <% END IF %>
 		    <%
             if aut("aso")=1 and false then
 		    %>

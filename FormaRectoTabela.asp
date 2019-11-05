@@ -4,6 +4,16 @@ PM = request.QueryString("PM")
 if PM<>"" then
 	if left(PM, 1)="X" then
 		db_execute("delete from sys_formasrecto where id="&replace(PM, "X", ""))
+		%>
+        <script>
+        new PNotify({
+            title: 'Forma de recebimento excluida!',
+            text: '',
+            type: 'danger',
+            delay:1000
+        });
+        </script>
+        <%
 	end if
 	set formas = db.execute("select * from sys_formasrecto")
 	while not formas.eof

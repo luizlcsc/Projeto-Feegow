@@ -1,6 +1,6 @@
 /**
  * Created by Vinicius Maia on 15/03/2017.
- * Last Update André Souza on 26/09/2019.
+ * Last Update André Souza on 17/10/2019.
  */
 var AutorizadorTiss = function () {
         var token="";
@@ -135,12 +135,12 @@ var AutorizadorTiss = function () {
         this.preenchedadosretornados = function (data){
             if (data.NumeroGuiaOperadora !== null && data.NumeroGuiaOperadora !=='')
             {
-                document.getElementById('NGuiaOperadora').value = data.NumeroGuiaOperadora;
+                $("#NGuiaOperadora").val(data.NumeroGuiaOperadora);
                 console.log("Numero da guia atualizado: "+ data.NumeroGuiaOperadora);
             }
             if (data.senha !== null && data.senha !=='')
             {
-                document.getElementById('Senha').value = data.senha;
+                $("#Senha").val(data.senha);
                 console.log("Senha atualizada: "+ data.senha);
             }
             if (data.StatusSolicitacao !== null && data.StatusSolicitacao !== '')
@@ -246,7 +246,10 @@ var AutorizadorTiss = function () {
                                 message += 'Código: ' + data.CodigoGlosa + ' Motivo: ' + data.Glosa;
                                 state  = 1;                                
                             }
-                            //$("#NGuiaOperadora") data.NumeroGuiaPrestador;
+                            if (data.NumeroGuiaOperadora !='')
+                            {
+                                $("#NGuiaPrincipal").val(data.NumeroGuiaOperadora);
+                            }
                             
                             message  = data.Mensagem;
                             state = 2;
@@ -531,20 +534,14 @@ var AutorizadorTiss = function () {
             if (acao==1)
             {
                 $btnSolicitar.attr("disabled", false); 
-                //$btnSolicitar.classList.add("glyphicon-eye-open"); 
                 $btnCancelaGuia.attr("disabled", false);
-                //$btnCancelaGuia.classList.add("glyphicon-eye-open"); 
                 $btnVerificarStatus.attr("disabled", false); 
-                //$btnCancelaGuia.classList.add("glyphicon-eye-open");  
             } 
             else     
             {
                 $btnSolicitar.attr("disabled", true); 
-                //$btnSolicitar.classList.remove("glyphicon-eye-open"); 
                 $btnCancelaGuia.attr("disabled", true);
-                //$btnCancelaGuia.classList.remove("glyphicon-eye-open"); 
                 $btnVerificarStatus.attr("disabled", true); 
-                //$btnCancelaGuia.classList.remove("glyphicon-eye-open"); 
             }
         };  
 

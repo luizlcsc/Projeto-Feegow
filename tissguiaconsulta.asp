@@ -572,7 +572,7 @@ $(document).ready(function(){
 
     set GuiaStatusSQL = db.execute("SELECT * FROM cliniccentral.tissguiastatus order by id")
 
-    Status = "<select name='GuiaStatus' class='form-control input-sm'>"
+    Status = "<select id='GuiaStatus' name='GuiaStatus' class='form-control input-sm'>"
     while not GuiaStatusSQL.eof
         CheckedStatus = ""
         if GuiaStatusSQL("id")=StatusGuia then

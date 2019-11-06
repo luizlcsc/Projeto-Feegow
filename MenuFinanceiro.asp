@@ -140,7 +140,7 @@
 	if aut("repasses")  then
 	%>
     <li <% If (req("P")="RepassesAConferir" OR req("P")="RepassesConferidos") Then %> class="open"<% End If %>>
-        <a href="#" class="accordion-toggle">
+        <a href="#" class="accordion-toggle" id="RepassesCollapse">
             <span class="fa fa-puzzle-piece"></span>
             <span class="sidebar-title"> Repasses </span>
 
@@ -161,7 +161,7 @@
         else
         %>
           <li <% If req("P")="RepassesAConferir" Then %> class="active"<% End If %>>
-            <a href="./?P=RepassesAConferir&Pers=1">
+            <a href="./?P=RepassesAConferir&Pers=1" id="RepassesConsolidacao">
               <i class="fa fa-list"></i>
               Consolidação <span class="label label-system label-xs fleft">Novo</span>
             </a>

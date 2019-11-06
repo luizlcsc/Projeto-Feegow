@@ -67,6 +67,7 @@ end if
 	<style>
 
     .tablePrint{ width:100%; vertical-align: top; font-size:11px; font-family: sans-serif; margin-bottom: 30px;}
+    p {margin-top:0px; margin-bottom: 2px;}
 
     </style>
 	<table class="tablePrint">
@@ -89,7 +90,7 @@ end if
 
         <tr>
             <td style="width: 50%">
-               <p><b>Guia Prestador:</b> <%=NGuiaPrestador%></p>
+               <p> <b>Guia Prestador:</b> <%=NGuiaPrestador%></p>
                <p> <b>Nº. Protocolo: </b> </p>
                <%if session("Banco")<>"clinic6224" then%>
                <p> <b>Emissão:</b> <%=DataSolicitacao%></p>

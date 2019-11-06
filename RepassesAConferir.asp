@@ -103,7 +103,7 @@ end if
                     %>
                     <%= quickfield("simpleSelect", "ProcedimentoID", "Limitar procedimento", 2, req("ProcedimentoID"), "select distinct(concat('G', pg.id)) id, concat('&raquo; ', trim(NomeGrupo)) NomeProcedimento from procedimentosgrupos pg      UNION ALL       select id, NomeProcedimento from procedimentos where ativo='on' and sysActive=1 order by NomeProcedimento limit 1000", "NomeProcedimento", "") %>
                     <div class="col-md-2">
-                        <button class="btn btn-primary btn-buscar btn-block mt25"><i class="fa fa-search"></i>Buscar</button>
+                        <button id="BtnBuscar" class="btn btn-primary btn-buscar btn-block mt25"><i class="fa fa-search"></i>Buscar</button>
                     </div>
                 </div>
                <% if req("Forma")<>"" or req("AC")="1" then %>

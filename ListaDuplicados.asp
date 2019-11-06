@@ -12,11 +12,11 @@
 <tbody>
 <%
 response.Buffer=true
-set pacs = db.execute("select id, trim(NomePaciente) NomePaciente from pacientes where not isnull(NomePaciente) and NomePaciente<>'' order by trim(NomePaciente),id limit 20000")
+set pacs = db.execute("select id, trim(NomePaciente) NomePaciente, Nascimento from pacientes where not isnull(NomePaciente) and NomePaciente<>'' order by trim(NomePaciente),id limit 20000")
 c = 0
 while not pacs.eof
 	response.Flush
-	if pacs("NomePaciente")=NomePaciente then
+	if pacs("NomePaciente")=NomePaciente and pacs("Nascimento") = Nascimento then
 		conta = conta+1
 	else
 		conta = 0
@@ -39,6 +39,7 @@ while not pacs.eof
         end if
 	end if
 	NomePaciente = pacs("NomePaciente")
+	Nascimento = pacs("Nascimento")
 pacs.movenext
 wend
 pacs.close

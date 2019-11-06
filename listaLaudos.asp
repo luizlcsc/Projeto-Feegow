@@ -259,7 +259,7 @@ end if
 <%= quickfield("simpleSelect", "StatusID", "Status", 2, "", "select id, Status FROM laudostatus ", "Status", " no-select2") %>
 <div class="col-md-2">
     <button class="btn btn-success btn-block mt20 atualizarstatus" type="button"><i class="fa fa-repeat bigger-110"></i> Atualizar Status</button>
-</div>pr
+</div>
 <script>
 var whatsAppAlertado = false;
 $(document).ready(function(){

@@ -941,6 +941,7 @@ end if
                     <button class="btn btn-block btn-sm btn-primary <%=otherClass%> <%=disabled%>" id="btnSalvarAgenda">
                         <%= txtBtn %>
                     </button>
+                   
                 </div>
                 <%
                 end if
@@ -1261,6 +1262,54 @@ function bootbox(){
     $("#modal-table").modal('show');
 
 }
+var checkmultiplos = '<%= getConfig("RealizarCheckinMultiplosProcedimentos") %>';
+
+function checkinMultiplo()
+{
+    let pacienteid = $("#PacienteID").val();
+    let unidadeid = <%=session("UnidadeID")%>;
+    let agendamentoID = <%=req("id")%>;
+    $.get("checkinmultiplo.asp",{
+        PacienteID:pacienteid,
+        UnidadeID: unidadeid,
+        AgendamentoID: agendamentoID
+        }
+        , function (data) {
+            if(data.length > 0) {
+                openModal(data, "Selecione abaixo os agendamento que deseja realizar check in", true, false);
+            }else{
+                saveAgenda();
+            }
+        })
+
+}
+
+var saveAgenda = function(){
+        $("#btnSalvarAgenda").html('salvando');
+        //$("#btnSalvarAgenda").attr('disabled', 'disabled');
+        $("#btnSalvarAgenda").prop("disabled", true);
+        $.post("saveAgenda.asp", $("#formAgenda").serialize())
+            .done(function(data){
+                //$("#btnSalvarAgenda").removeAttr('disabled');
+                 eval(data);
+                $("#btnSalvarAgenda").html('<i class="fa fa-save"></i> Salvar');
+                    $("#btnSalvarAgenda").prop("disabled", false);
+                    crumbAgenda();
+
+            })
+            .fail(function(err){
+                $("#btnSalvarAgenda").prop("disabled", true);
+
+            });
+
+        if(typeof callbackAgendaFiltros === "function"){
+            callbackAgendaFiltros();
+            crumbAgenda();
+        }
+
+    }
+
+
 
 function submitAgendamento(check) {
 
@@ -1286,43 +1335,23 @@ function submitAgendamento(check) {
     }
 
     var repetir = $("#rpt").prop("checked");
-
-    var saveAgenda = function(){
-        $("#btnSalvarAgenda").html('salvando');
-        //$("#btnSalvarAgenda").attr('disabled', 'disabled');
-        $("#btnSalvarAgenda").prop("disabled", true);
-        $.post("saveAgenda.asp", $("#formAgenda").serialize())
-            .done(function(data){
-                //$("#btnSalvarAgenda").removeAttr('disabled');
-                 eval(data);
-                $("#btnSalvarAgenda").html('<i class="fa fa-save"></i> Salvar');
-                    $("#btnSalvarAgenda").prop("disabled", false);
-                    crumbAgenda();
-
-            })
-            .fail(function(err){
-                $("#btnSalvarAgenda").prop("disabled", true);
-
-            });
-
-        if(typeof callbackAgendaFiltros === "function"){
-            callbackAgendaFiltros();
-            crumbAgenda();
-        }
-
-    }
-
-    if(repetir){
-        checkAgendasMarcadas().then((response) => {
-            if(response.existeAgendamentosFuturos && check) {
-                bootbox();
-                return false;
-            }
-            saveAgenda();
-            return false;
-        });
+    let checkin = $("#Checkin").length
+    if(checkin === 1 && checkmultiplos === "1"){
+        checkinMultiplo();
     }else{
-        saveAgenda();
+        if(repetir){
+            checkAgendasMarcadas().then((response) => {
+                if(response.existeAgendamentosFuturos && check) {
+                    bootbox();
+                    return false;
+                }
+                saveAgenda();
+                return false;
+            });
+        }else{
+            
+            saveAgenda();
+        }
     }
 }
 

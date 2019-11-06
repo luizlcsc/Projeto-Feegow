@@ -19,7 +19,7 @@ end if
 'STATUS => -1 rejeitada/nao atendida, 0 chamando, 1 atendida, 2 finalizada
 
 'response.Write("select * from chamadas where (StaID=0 OR StaID=1 and sysUserAtend="&session("User")&") AND RejeitadaPor NOT LIKE '|"&session("User")&"|'")
-set vcaCalls = db.execute("select * from chamadas where (StaID=0 OR StaID=1 and sysUserAtend="&session("User")&") AND RejeitadaPor NOT LIKE '|"&session("User")&"|'")
+set vcaCalls = db.execute("select * from chamadas where (StaID=0 OR StaID=1) and sysUserAtend="&session("User")&" AND (RejeitadaPor NOT LIKE '|"&session("User")&"|' OR RejeitadaPor IS NULL)")
 if not vcaCalls.EOF then
 	%>
 	$("#calls").css("display", "block");

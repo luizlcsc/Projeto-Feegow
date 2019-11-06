@@ -1503,6 +1503,12 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
     }
 }
 function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpresso) {
+
+    if(TipoImpresso === "Preparos"){
+        $("body").append("<iframe id='ImpressaoEtiqueta' src='listaDePreparoPorProcedimento.asp?PacienteId="+PacienteID+"&procedimento="+ProcedimentoID+"' style='display:none;'></iframe>")
+        return;
+    }
+
     $.get("printProcedimentoAgenda.asp", {
         ProcedimentoID:ProcedimentoID,
         PacienteID:PacienteID,

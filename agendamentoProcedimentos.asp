@@ -445,6 +445,7 @@ $(document).ready(function() {
                                     <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Protocolo')"><i class="fa fa-plus"></i> Protocolo de laudo </a></li>
                                     <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Impresso')"><i class="fa fa-plus"></i> Impresso </a></li>
                                     <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Etiqueta')"><i class="fa fa-plus"></i> Etiqueta </a></li>
+                                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Preparos')"><i class="fa fa-plus"></i> Preparos </a></li>
                                 </ul>
                             </div>
                         </td>
@@ -490,17 +491,6 @@ $(document).ready(function() {
 <%
 end if
 %>
-
-
-
-
-
-
-
-
-
-
-
 
 <!-- Modal -->
 <div class="modal fade" id="modalFormaPagamento" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false" aria-hidden="true">

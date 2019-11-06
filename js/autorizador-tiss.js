@@ -198,8 +198,9 @@ var AutorizadorTiss = function () {
                     if (data.CodigoGlosa!=''){
                         message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;  
                     }
-                    parent.showMessage(message, state);
+                    parent.preenchedadosretornados(data);                    
                     parent.bloqueiaBotoes(3);
+                    parent.showMessage(message, state);
                 },
                 error: function () {
                     // mensagem de indisponibilidade do sistema
@@ -262,6 +263,7 @@ var AutorizadorTiss = function () {
                     if (data.CodigoGlosa!=''){
                         message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;  
                     }
+                    parent.preenchedadosretornados(data);
                     parent.showMessage(message, state);
                     //parent.bloqueiaBotoes();
                 },
@@ -315,7 +317,7 @@ var AutorizadorTiss = function () {
                         message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;  
                     }
                     parent.showMessage(message, state);
-                    
+                    parent.preenchedadosretornados(data);
                     parent.bloqueiaBotoes(3);
                 },
                 error: function () {
@@ -367,9 +369,8 @@ var AutorizadorTiss = function () {
                     if (data.CodigoGlosa!=''){
                         message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;  
                     }
-                    parent.showMessage(message, state);
-                    parent.bloqueiaBotoes(tipo_guia);
-                    parent.preenchedadosretornados(data);                    
+                    parent.preenchedadosretornados(data);
+                    parent.showMessage(message, state);                                        
                 },
                 error: function () {
                     // mensagem de indisponibilidade do sistema
@@ -421,9 +422,9 @@ var AutorizadorTiss = function () {
                         if (data.CodigoGlosa!=''){
                             message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;  
                         }
-                        parent.showMessage(message, state);
                         parent.bloqueiaBotoes(3);
-                        parent.preenchedadosretornados(data); 
+                        parent.preenchedadosretornados(data);
+                        parent.showMessage(message, state);                         
                     },
                     error: function () {
                         // mensagem de indisponibilidade do sistema
@@ -477,9 +478,9 @@ var AutorizadorTiss = function () {
                         if (data.CodigoGlosa!=''){
                             message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;  
                         }
-                        parent.showMessage(message, state);
                         parent.bloqueiaBotoes(tipo_guia);
                         parent.preenchedadosretornados(data); 
+                        parent.showMessage(message, state);                        
                     },
                     error: function () {
                         // mensagem de indisponibilidade do sistema

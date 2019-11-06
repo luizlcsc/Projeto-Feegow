@@ -509,6 +509,7 @@ function selectCurrentAccounts(id, associations, selectedValue, others)
 					<option value="0"<% If selectedValue="0" Then %> selected="selected"<% End If %>>POSIÇÃO (EMPRESA)</option>
                     <option value="PRO"<% If selectedValue="PRO" Then %> selected="selected"<% End If %>>PROFISSIONAL EXECUTOR</option>
                     <option value="LAU"<% If selectedValue="LAU" Then %> selected="selected"<% End If %>>PROFISSIONAL LAUDADOR</option>
+                    <option value="SOL"<% If selectedValue="SOL" Then %> selected="selected"<% End If %>>PROFISSIONAL SOLICITANTE</option>
 					<%
 				elseif splAssociations(iiiiii)="00" then
 					%>
@@ -1895,12 +1896,12 @@ end function
 
 function AutPlano(Recurso)
     PermissaoOK = false
-    'não tem plano, plano ID = 1(free) ou 3(pro) 
+    'não tem plano, plano ID = 1(free) ou 3(pro)
     if isnull(session("Plano")) or session("PlanoID")=4 or session("PlanoID")=1 then
         if session("Admin")=1 then
             PermissaoOK = true
         elseif inStr(session("Permissoes"),Recurso)>0 then
-            PermissaoOK = True 
+            PermissaoOK = True
         end if
     else
         RecursoPlano = replace(Recurso,"|","")
@@ -1909,16 +1910,16 @@ function AutPlano(Recurso)
         if x > 0 then
             RecursoPlano = left(RecursoPlano, x-1)
         end if
-        
-        'verifica se recurso existe no plano, se sim, se o usuario tem permissao ao recurso        
+
+        'verifica se recurso existe no plano, se sim, se o usuario tem permissao ao recurso
         if inStr(session("Plano"), RecursoPlano)> 0  then
             if session("Admin")=1 then
                 PermissaoOK = true
             elseif inStr(session("Permissoes"),Recurso)>0 then
-                PermissaoOK = True 
-            end if    
-        end if    
-    end if 
+                PermissaoOK = True
+            end if
+        end if
+    end if
 
     if PermissaoOK then
         AutPlano=1

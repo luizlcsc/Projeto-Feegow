@@ -8,3 +8,9 @@ wend
 permform.close
 set permform=nothing
 %>
+new PNotify({
+	type:'success',
+	title:'Salvo!',
+	text:'Atualizado com sucesso...',
+	delay:1000
+});

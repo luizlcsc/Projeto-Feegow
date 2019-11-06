@@ -124,6 +124,9 @@ recursoPermissaoUnimed = recursoAdicional(12)
             <label><input type="checkbox" id="Carimbo" name="Carimbo" class="ace" checked="checked" onclick="window.frames['ImpressaoPedido'].Carimbo(this.checked);" />
                 <span class="lbl"> Carimbar</span>
             </label>
+            <label><input type="checkbox" id="Timbrado" name="Timbrado" class="ace" checked  onclick="window.frames['ImpressaoPedido'].Timbrado(this.checked);" />
+                <span class="lbl"> Papel Timbrado</span>
+            </label>
             <hr />
             <button class="btn btn-sm btn-success btn-block" data-dismiss="modal">
                 <i class="fa fa-remove"></i>
@@ -152,13 +155,25 @@ recursoPermissaoUnimed = recursoAdicional(12)
     pront('timeline.asp?PacienteID=<%=ref("PacienteID")%>&Tipo=|Pedido|');
 
     function visualizarImpressao(){
-        var timbrado = 1;
-
-        var url = domain+"print/exam-request/<%=reg("id")%>?tk="+localStorage.getItem("tk")+"&showPapelTimbrado="+timbrado;
+        var timbrado = $("#Timbrado").prop("checked") ==true?1:0;
+        var carimbo = $("#Carimbo").prop("checked") ==true?1:0;
+        var url = domain+"print/exam-request/<%=reg("id")%>?tk="+localStorage.getItem("tk")+"&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo;
         console.log(url)
         $("#ImpressaoPedido").prop("data", url);
     }
 
+   $("#Timbrado").on("change",()=>{
+        timbrado = $("#Timbrado").prop("checked") ==true?1:0;
+        carimbo = $("#Carimbo").prop("checked") ==true?1:0;
+        url = domain+"print/exam-request/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        $("#ImpressaoPedido").prop("data", url);
+    });
+    $("#Carimbo").on("change",()=>{
+        timbrado = $("#Timbrado").prop("checked") ==true?1:0;
+        carimbo = $("#Carimbo").prop("checked") ==true?1:0;
+        url = domain+"print/exam-request/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        $("#ImpressaoPedido").prop("data", url);
+    });
     $("#btnVisualizar").click(function(){
         visualizarImpressao();
 });

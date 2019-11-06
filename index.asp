@@ -1272,7 +1272,9 @@ $.post("LoginEscolheUnidade.asp", '', function(data){
                             <%
                             end if
                             %>
-                      <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
+                            <% IF session("Banco")<>"clinic7126" THEN %>
+                                <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
+                            <% END IF %>
                   </div>
               </div>
 

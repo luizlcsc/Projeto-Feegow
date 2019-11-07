@@ -37,10 +37,10 @@ end if
                 <table class="table table-fixed">
                     <tbody>
                         <%
-          sqlInv = "(select 'Particular' TipoFatura, 0 ProfissionalID, 0 ProcedimentoID, '' NomeProcedimento, '' NomeProfissional, '' NomeConvenio, i.id, '' NGuiaPrestador, '' NaoImprimirGuia, i.sysDate DataFatura, (select SUM( ifnull(Value, 0) ) from sys_financialmovement where InvoiceID=i.id AND Type='Bill') ValorTotal, (select count(id) from itensinvoice where InvoiceID=i.id) itens, '5' AssocSADT, i.CompanyUnitID UnidadeID from sys_financialinvoices i WHERE i.AssociationAccountID=3 AND i.CD='C' AND i.AccountID="&PacienteID&")"&_
-            " UNION ALL (select 'GuiaConsulta', gc.ProfissionalID, gc.ProcedimentoID, igc.NomeProcedimento, pgc.NomeProfissional, cgc.NomeConvenio, gc.id, gc.NGuiaPrestador, cgc.NaoImprimirGuia, date(gc.DataAtendimento), gc.ValorProcedimento, 1, '5', gc.UnidadeID from tissguiaconsulta gc left join profissionais pgc on pgc.id=gc.ProfissionalID left join convenios cgc on cgc.id=gc.ConvenioID left join procedimentos igc on igc.id=gc.ProcedimentoID where gc.PacienteID="&PacienteID&")"&_
-            " UNION ALL (select 'GuiaSADT', igs.ProfissionalID, igs.ProcedimentoID, pcd.NomeProcedimento, pgs.NomeProfissional, cgs.NomeConvenio, igs.GuiaID, gs.NGuiaPrestador, cgs.NaoImprimirGuia, igs.Data, igs.ValorTotal, 1, igs.Associacao, gs.UnidadeID from tissprocedimentossadt igs left join tissguiasadt gs on gs.id=igs.GuiaID left join profissionais pgs on pgs.id=igs.ProfissionalID left join convenios cgs on cgs.id=gs.ConvenioID left join procedimentos pcd on pcd.id=igs.ProcedimentoID where gs.PacienteID="&PacienteID&")"&_
-            " UNION ALL (select 'GuiaHonorario', hgs.ProfissionalID, hgs.ProcedimentoID, pcd.NomeProcedimento, pgs.NomeProfissional, cgs.NomeConvenio, hgs.GuiaID, gs.NGuiaPrestador, cgs.NaoImprimirGuia, hgs.Data, hgs.ValorTotal, 1 ,'5', gs.UnidadeID from tissprocedimentoshonorarios hgs left join tissguiahonorarios gs on gs.id=hgs.GuiaID left join profissionais pgs on pgs.id=hgs.ProfissionalID left join convenios cgs on cgs.id=gs.ConvenioID left join procedimentos pcd on pcd.id=hgs.ProcedimentoID where gs.PacienteID="&PacienteID&")"&_
+          sqlInv = "(select 'Particular' TipoFatura, 0 ProfissionalID, 0 ProcedimentoID, '' NomeProcedimento, '' NomeProfissional, '' NomeConvenio, i.id, '' NGuiaPrestador, '' NGuiaOperadora, '' NaoImprimirGuia, i.sysDate DataFatura, (select SUM( ifnull(Value, 0) ) from sys_financialmovement where InvoiceID=i.id AND Type='Bill') ValorTotal, (select count(id) from itensinvoice where InvoiceID=i.id) itens, '5' AssocSADT, i.CompanyUnitID UnidadeID from sys_financialinvoices i WHERE i.AssociationAccountID=3 AND i.CD='C' AND i.AccountID="&PacienteID&")"&_
+            " UNION ALL (select 'GuiaConsulta', gc.ProfissionalID, gc.ProcedimentoID, igc.NomeProcedimento, pgc.NomeProfissional, cgc.NomeConvenio, gc.id, gc.NGuiaPrestador, gc.NGuiaOperadora, cgc.NaoImprimirGuia, date(gc.DataAtendimento), gc.ValorProcedimento, 1, '5', gc.UnidadeID from tissguiaconsulta gc left join profissionais pgc on pgc.id=gc.ProfissionalID left join convenios cgc on cgc.id=gc.ConvenioID left join procedimentos igc on igc.id=gc.ProcedimentoID where gc.PacienteID="&PacienteID&")"&_
+            " UNION ALL (select 'GuiaSADT', igs.ProfissionalID, igs.ProcedimentoID, pcd.NomeProcedimento, pgs.NomeProfissional, cgs.NomeConvenio, igs.GuiaID, gs.NGuiaPrestador, gs.NGuiaOperadora, cgs.NaoImprimirGuia, igs.Data, igs.ValorTotal, 1, igs.Associacao, gs.UnidadeID from tissprocedimentossadt igs left join tissguiasadt gs on gs.id=igs.GuiaID left join profissionais pgs on pgs.id=igs.ProfissionalID left join convenios cgs on cgs.id=gs.ConvenioID left join procedimentos pcd on pcd.id=igs.ProcedimentoID where gs.PacienteID="&PacienteID&")"&_
+            " UNION ALL (select 'GuiaHonorario', hgs.ProfissionalID, hgs.ProcedimentoID, pcd.NomeProcedimento, pgs.NomeProfissional, cgs.NomeConvenio, hgs.GuiaID, gs.NGuiaPrestador, gs.NGuiaOperadora, cgs.NaoImprimirGuia, hgs.Data, hgs.ValorTotal, 1 ,'5', gs.UnidadeID from tissprocedimentoshonorarios hgs left join tissguiahonorarios gs on gs.id=hgs.GuiaID left join profissionais pgs on pgs.id=hgs.ProfissionalID left join convenios cgs on cgs.id=gs.ConvenioID left join procedimentos pcd on pcd.id=hgs.ProcedimentoID where gs.PacienteID="&PacienteID&")"&_
             " ORDER BY DataFatura desc"
            '                 response.Write(sqlInv)
 		  set inv = db.execute(sqlInv)
@@ -168,7 +168,7 @@ end if
                             <td></td>
                             <td width="10%"><%=inv("NomeConvenio") %></td>
                             <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
-                            <td width="20%" class="text-right"><strong>Guia: </strong><%=inv("NGuiaPrestador")&""%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a></td>
+                            <td width="20%" class="text-right"><% if getConfig("ExibirNumeroGuiaOperadora")  then %> <strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> <% else %> <strong title="Numero da guia no PRESTADOR">Guia: </strong> <%=inv("NGuiaPrestador")&""%> <%end if%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a></td>
                         </tr>
                     <%
                 elseif TipoFatura="GuiaHonorario" then
@@ -190,7 +190,7 @@ end if
                             <td></td>
                             <td width="10%"><%=inv("NomeConvenio") %></td>
                             <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
-                            <td width="20%" class="text-right"><strong>Guia: </strong><%=inv("NGuiaPrestador")&""%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a></td>
+                            <td width="20%" class="text-right"><strong><% if getConfig("ExibirNumeroGuiaOperadora")  then %> <strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> <% else %>  <strong title="Numero da guia no PRESTADOR">Guia: </strong> <%=inv("NGuiaPrestador")&""%>  <%end if%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a></td>
                         </tr>
                     <%
                 elseif TipoFatura="GuiaSADT" then
@@ -226,7 +226,7 @@ end if
                             <td></td>
                             <td width="10%"><%=inv("NomeConvenio") %></td>
                             <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
-                            <td width="20%" class="text-right"><strong>Guia: </strong><%=inv("NGuiaPrestador")&""%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a></td>
+                            <td width="20%" class="text-right"><strong><% if getConfig("ExibirNumeroGuiaOperadora")  then %><strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> <% else %> <strong title="Numero da guia no PRESTADOR">Guia: </strong> <%=inv("NGuiaPrestador")&""%> <%end if%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a></td>
                         </tr>
                     <%
                 end if

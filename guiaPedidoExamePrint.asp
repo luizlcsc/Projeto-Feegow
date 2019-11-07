@@ -58,10 +58,15 @@ if not procs.EOF then
     '    Endereco = unid("Endereco")&" "&unid("Numero")&" "&unid("Complemento")&"  "&unid("Bairro")&"  "&unid("Cidade")
     'end if
 end if
-
+num_max_registros = 10
+registros_mostrados = 0 
+paginas_impressas = 0 
 %>
 
-
+<% While (Not procs.eof and paginas_impressas <= 2)
+        registros_mostrados = 0 
+        paginas_impressas  = paginas_impressas  + 1
+     %>
 <body>
 	<div style="max-width: 90%; margin: 0 auto">
 	<style>
@@ -70,6 +75,7 @@ end if
     p {margin-top:0px; margin-bottom: 2px;}
 
     </style>
+    
 	<table class="tablePrint">
 
 	    <tr>
@@ -117,7 +123,8 @@ end if
              <th style="width: 5%; text-align: center"> Autorizado</th>
          </thead>
              <%
-             while not procs.eof
+              While (Not procs.eof And registros_mostrados < num_max_registros)
+                registros_mostrados = registros_mostrados + 1
              %>
              <tr>
                  <Td><%=procs("CodigoProcedimento")%></Td>
@@ -129,8 +136,8 @@ end if
              <%
              procs.movenext
              wend
-             procs.close
-             set procs=nothing
+             
+             
              %>
 
         </table>
@@ -161,9 +168,11 @@ end if
         </td>
       </Tr>
     </table>
-
+ 
 </div>
-
+<% wend 
+    procs.close 
+    set procs=nothing %> 
 
 </body>
 

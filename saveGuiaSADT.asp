@@ -87,13 +87,14 @@ else
 	'Convenio
     if BloquearAlteracoes=0 then
 	    db_execute("update convenios set RegistroANS='"&ref("RegistroANS")&"' where id="&ref("gConvenioID"))
-
 	    set vcaConvenioContratado = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado=NULLIF('"&ref("Contratado")&"','FALSE')")
 
 	    if not vcaConvenioContratado.eof then
 		    db_execute("update contratosconvenio set CodigoNaOperadora='"&ref("CodigoNaOperadora")&"' where id="&vcaConvenioContratado("id"))
 	    else
-		    db_execute("insert into contratosconvenio (ConvenioID, Contratado, ContaRecebimento, CodigoNaOperadora, sysUser, sysActive) values ("&ref("gConvenioID")&", NULLIF('"&ref("Contratado")&"','FALSE'), 0, '"&ref("CodigoNaOperadora")&"', "&session("User")&", 1)")
+            if trim(ref("CodigoNaOperadora"))<>"" then
+		        db_execute("insert into contratosconvenio (ConvenioID, Contratado, ContaRecebimento, CodigoNaOperadora, sysUser, sysActive) values ("&ref("gConvenioID")&", NULLIF('"&ref("Contratado")&"','FALSE'), 0, '"&ref("CodigoNaOperadora")&"', "&session("User")&", 1)")
+            end if 
 	    end if
     end if
 
@@ -132,6 +133,7 @@ else
             end if
 	    end if
     end if
+
 	'Contratado solicitante
 	if ref("tipoContratadoSolicitante")="E" and BloquearAlteracoes=0 then
 		set vca = db.execute("select * from contratadoexternoconvenios where ConvenioID like '"&ref("gConvenioID")&"' and ContratadoExternoID like '"&ref("ContratadoExternoID")&"'")

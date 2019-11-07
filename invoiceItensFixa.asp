@@ -18,6 +18,8 @@ if Acao="" then
 				<th>Item</th>
 				<th>Centro de Custo</th>
 				<th width="20%">Valor Unit.</th>
+				<th width="20%">Desc.</th>
+				<th width="20%">Acréscimo.</th>
 				<th width="7%">Total</th>
 				<th width="1%"></th>
 			</tr>

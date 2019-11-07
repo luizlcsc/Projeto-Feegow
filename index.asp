@@ -1264,7 +1264,7 @@ $.post("LoginEscolheUnidade.asp", '', function(data){
                         end if
                         %>
                      <%
-                           if session("Banco")="clinic100000" or session("Banco")="clinic105" then
+                           if recursoAdicional(17)=4 then
                           %>
                             <button type="button" class="btn btn-xs btn-default" onclick="facialRecognition()">
                                 <i class="fa fa-smile"></i> Reconhecimento facial

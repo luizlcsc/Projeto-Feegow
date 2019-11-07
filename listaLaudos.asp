@@ -203,6 +203,19 @@ end if
                     end if
 
                     if adicionaLinha =1 then
+
+                    msgPadrao = "Olá "&"NomePaciente"&", o resultado do seu laudo se encontra "&LCase(Status)&"."
+
+                    LicencaID=replace(session("Banco"), "clinic","")
+
+                    set TextoEmail = db.execute(" SELECT sys_smsemail.TextoEmail FROM cliniccentral.areapaciente"&chr(13)&_
+                                                " JOIN sys_smsemail ON sys_smsemail.id = areapaciente.ModeloID  "&chr(13)&_
+                                                " WHERE LicencaID = "&LicencaID)
+
+                    IF not TextoEmail.EOF THEN
+                         msgPadrao = replaceTags(TextoEmail("TextoEmail"), PacienteID, session("UserID"), session("UnidadeID"))
+                    END IF
+
                     %>
                     <tr>
                         <td><input type="checkbox" name="cklaudos" class="cklaudos" value="<%= link %>" /></td>
@@ -210,7 +223,7 @@ end if
                         <td><%= DataExecucao %></td>
                         <td><%= Previsao %></td>
                         <td><%= ii("NomePaciente") %></td>
-                        <td class="whatsapp" msg="Olá <%=ii("NomePaciente")%>, o resultado do seu laudo se encontra <%= LCase(Status) %>."><%= ii("Cel1") %></td>
+                        <td class="whatsapp" msg="<%=msgPadrao%>"><%= ii("Cel1") %></td>
                         <td><%= NomeProfissional %></td>
                         <td><%= NomeProcedimento %></td>
                         <td><%= ii("NomeConvenio") %></td>
@@ -278,7 +291,7 @@ $(document).ready(function(){
                     "warning", "Instalar o WhatsApp", 60 * 1000);
             }
 
-             let msg = window.prompt('Digite a mensagem de WhatsApp:',$(arg1).attr("msg"));
+             let msg = $(arg1).attr("msg");
 
              if(msg){
                    var url = "whatsapp://send?phone="+telefone+"&text="+msg;

@@ -344,6 +344,17 @@ elseif ModeloID<>"" and ModeloID<>"0" then
 
         if formaPagto="" then
             FormaPagto = "Não pago"
+
+            FormaID=pinv("FormaID")
+            if not isnull(FormaID) then
+                if FormaID&"" <> "0" then
+                    set MetodoPagamentoSQL = db.execute("SELECT pm.PaymentMethod FROM sys_formasrecto r INNER JOIN sys_financialpaymentmethod pm ON pm.id=r.MetodoID WHERE r.id="&FormaID)
+                    if not MetodoPagamentoSQL.eof then
+                        FormaPagto=MetodoPagamentoSQL("PaymentMethod")
+                    end if
+                end if
+            end if
+
             UsuarioRecebimento=nameInTable(session("User"))
         end if
 

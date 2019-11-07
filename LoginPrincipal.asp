@@ -41,7 +41,7 @@ User = request.QueryString("User")
 <br>
 <br>
 <br>
-<button type="submit" class="botao" data-style="zoom-in">ENTRAR</button>
+<button type="submit" class="botao" data-style="zoom-in" id="Entrar">ENTRAR</button>
 <script>
 
     $(document).ready(function() {

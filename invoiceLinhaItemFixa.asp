@@ -35,6 +35,8 @@
         %>
     <td><%= selectInsert("", "CentroCustoID"&id, CentroCustoID, "centrocusto", "NomeCentroCusto", "", "", "") %></td>
     <td><%=quickField("currency", "ValorUnitario"&id, "", 4, fn(ValorUnitario), " text-right disable", "", " required onkeyup=""recalc($(this).attr('id'))"" onchange='recorrenteLista();' ")%></td>
+    <td><%=quickField("currency", "Desconto"&id, "", 4, fn(Desconto), " text-right disable", "", " required onkeyup=""recalc($(this).attr('id'))"" onchange='recorrenteLista();' ")%></td>
+    <td><%=quickField("currency", "Acrescimo"&id, "", 4, fn(Acrescimo), " text-right disable", "", " required onkeyup=""recalc($(this).attr('id'))"" onchange='recorrenteLista();' ")%></td>
     <td class="text-right" id="sub<%=id%>" nowrap>R$ <%= fn( Subtotal) %></td>
     <td><button type="button" class="btn btn-xs btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button></td>
 </tr>

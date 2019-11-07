@@ -69,6 +69,8 @@ end if
 </div>
 
 <script type="text/javascript">
+    var whatsAppAlertado = false;
+
     $("#frmLaudos").submit(function () {
         $.post("listaLaudos.asp", $(this).serialize(), function (data) {
             $("#divListaLaudos").html(data);

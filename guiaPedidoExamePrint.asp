@@ -71,7 +71,7 @@ paginas_impressas = 0
 	<div style="max-width: 90%; margin: 0 auto">
 	<style>
 
-    .tablePrint{ width:100%; vertical-align: top; font-size:11px; font-family: sans-serif; margin-bottom: 30px;}
+    .tablePrint{ width:90%; vertical-align: top; font-size:11px; font-family: sans-serif; margin-bottom: 30px;}
     p {margin-top:0px; margin-bottom: 2px;}
 
     </style>
@@ -79,10 +79,8 @@ paginas_impressas = 0
 	<table class="tablePrint">
 
 	    <tr>
-
 	        <td style="width: 50%">
 	            <strong><%if len(Foto)>2 then%><img src="/uploads/<%= replace(session("Banco"), "clinic", "") %>/Perfil/<%=Foto%>" id="logo" /><%else%><%= NomeConvenio %><%end if%></strong>
-
 	        </td>
 	        <td style="text-align: center">  <p><%=NomeConvenio%></p>
           <%=EnderecoConvenios%></td>
@@ -170,6 +168,7 @@ paginas_impressas = 0
     </table>
  
 </div>
+<div style='page-break-after:always'></div>
 <% wend 
     procs.close 
     set procs=nothing %> 

@@ -278,7 +278,7 @@ $(document).ready(function(){
                     "warning", "Instalar o WhatsApp", 60 * 1000);
             }
 
-             let msg = window.prompt('Digite a mensagem de WhatsApp:',$(arg1).attr("msg"));
+             let msg = $(arg1).attr("msg");
 
              if(msg){
                    var url = "whatsapp://send?phone="+telefone+"&text="+msg;

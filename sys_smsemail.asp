@@ -83,7 +83,7 @@ else
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <%=quickField("memo", "TextoSMS", "Texto do SMS (m&aacute;x. 155 caracteres)", 12, reg("TextoSMS"), " limited", "", " rows='8' maxlength='140'")%>
+                    <%=quickField("memo", "TextoSMS", "Texto do SMS (m&aacute;x. 155 caracteres)", 12, reg("TextoSMS"), " limited", "", " rows='8' maxlength='1000'")%>
                 </div>
                 <hr class="short alt">
                 <div class="row">

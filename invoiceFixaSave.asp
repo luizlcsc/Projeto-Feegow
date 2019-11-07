@@ -61,7 +61,8 @@ if erro="" then
 					Associacao = 0
 					ProfissionalID = 0
 				end if
-			
+                Desconto  = desInv
+                Acrescimo = acrInv
 				sqlInsert = "insert into itensinvoicefixa ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, CentroCustoID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ref("Desconto"&ii))&", '"&ref("Descricao"&ii)&"', '"&ref("Executado"&ii)&"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&")"
 			'response.Write("//"&ii&" - "&sqlInsert)
 			db_execute(sqlInsert)

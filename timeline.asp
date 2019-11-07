@@ -95,6 +95,33 @@ end if
   text-align: left;
 }
 
+/* ======= loading ========= */
+.load-wrapp {
+    width: 200px;
+    height: 100px;
+    display:none;
+}
+
+.load-wrapp p {padding: 0 0 20px;}
+.load-wrapp:last-child {margin-right: 0;}
+
+.line {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    background-color: #4b9cdb;
+}
+
+.load-3 .line:nth-last-child(1) {animation: loadingC .6s .1s linear infinite;}
+.load-3 .line:nth-last-child(2) {animation: loadingC .6s .2s linear infinite;}
+.load-3 .line:nth-last-child(3) {animation: loadingC .6s .3s linear infinite;}
+
+@keyframes loadingC {
+    0 {transform: translate(0,0);}
+    50% {transform: translate(0,15px);}
+    100% {transform: translate(0,0);}
+}
 </style>
 
 
@@ -620,6 +647,8 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 	display:none!important;
 	visibility:hidden!important;
 }
+
+
 </style>
 
 <!-- Instantiate Feather -->
@@ -707,11 +736,17 @@ end select
         <div id="timeline" class="timeline-single mt30 ">
             <!--#include file="timelineload.asp"-->
         </div>
+    </div>  
+</div>
+ 
+</div>
+</div>
+<div class="load-wrapp col-xs-6 col-xs-offset-6 ">
+    <div class="load-3">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
     </div>
-
-</div>
-</div>
-</div>
 </div>
 </div>
 
@@ -857,12 +892,20 @@ function excluirSerie(id) {
         var steps = parseInt('<%=MaximoLimit%>');
         var tipoarquivo = '<%=Tipo%>';
         var ProfissionalID = '<%=req("ProfessionalID")%>';
+        var Carregando = false
+        scroll(0,0);
 
-        $(window).unbind("scroll").scroll(function() {
-            if($(document).height() - $(window).height() == $(window).scrollTop()) {
-                $(".timeline-item").slice(loadMore,steps).fadeIn(1000);
+        $(window).scroll(function() {
+            let tamanhoMaximo = $(document).height() - $(window).height();
+            let scrollPosition = $(window).scrollTop();
+            let isEnd = ( (scrollPosition + 50 ) >= tamanhoMaximo);
+
+            if(isEnd && !Carregando){
+                $(".timeline-item").slice(loadMore,steps).fadeIn(3000);
                 newloadMore = loadMore+steps;
                 if(!final){
+                    Carregando = true;
+                    $(".load-wrapp").show();
                     $.get("timelineloadmore.asp",{
                         Tipo: tipoarquivo,
                         PacienteID:'<%=PacienteID%>',
@@ -878,7 +921,11 @@ function excluirSerie(id) {
                             $("#timeline").append("</div></div><div class='timeline-divider'><div class='divider-label'>Não há mais registros</div></div>");
                         }
                     }).fail(function(data) {
-                        console.log("vazio");  
+
+                    }).always(function(){
+                        Carregando = false;
+                        $(".load-wrapp").hide();
+
                     });
                 }
             }

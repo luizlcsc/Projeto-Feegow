@@ -82,7 +82,7 @@ elseif Tipo="Procedimentos" then
 		if ref("gConvenioID")<>"" and ref("gConvenioID")<>"0" then
 		
 		
-		
+
 'original
 '			set proc = db.execute("select * from tissprocedimentosvalores where ProcedimentoID="&ref("ProcedimentoID")&" and ConvenioID="&ref("ConvenioID"))
 '			if proc.eof then
@@ -243,8 +243,8 @@ elseif Tipo="Procedimentos" then
                         TotalGeral      = treatvalzero(ValorCalculoAnexo("TotalGeral"))
                     END IF
 
-                    sqlIns = "insert into tissprocedimentossadt (GuiaID, ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser, Associacao,TotalCH,TotalValorFixo,TotalUCO,TotalPORTE,TotalFILME,TotalGeral,CalculoConvenioID,CalculoPlanoID,CalculoContratos)"&_
-                            " values ("&ref("GuiaID")&", "& treatvalzero(ProfissionalID) &", "&mydatenull(DataAtendimento)&", "&treatvalzero(ProcedimentosAnexosSQL("ProcedimentoAnexoID"))&", 22, '"&rep(ProcedimentosAnexosSQL("Codigo"))&"', '"&rep(ProcedimentosAnexosSQL("Descricao"))&"', 1, 1, "&treatvalzero(1)&", "&treatvalzero(FatorReal)&","&(ValorTotalAnexo)&", "&(ValorTotalAnexo)&", "&session("User")&", "& treatvalnull(rfAssociacao)&","& TotalCH &", "& TotalValorFixo &", "& TotalUCO &", "& TotalPORTE &", "& TotalFILME &", "& TotalGeral &",NULLIF('"&ref("gConvenioID")&"',''),NULLIF('"&ref("PlanoID")&"',''),NULLIF('"&ref("ContratadoSolicitanteCodigoNaOperadora")&"',''));"
+                    sqlIns = "insert into tissprocedimentossadt (GuiaID, ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, Anexo, sysUser, Associacao,TotalCH,TotalValorFixo,TotalUCO,TotalPORTE,TotalFILME,TotalGeral,CalculoConvenioID,CalculoPlanoID,CalculoContratos)"&_
+                            " values ("&ref("GuiaID")&", "& treatvalzero(ProfissionalID) &", "&mydatenull(DataAtendimento)&", "&treatvalzero(ProcedimentosAnexosSQL("ProcedimentoAnexoID"))&", 22, '"&rep(ProcedimentosAnexosSQL("Codigo"))&"', '"&rep(ProcedimentosAnexosSQL("Descricao"))&"', 1, 1, "&treatvalzero(1)&", "&treatvalzero(FatorReal)&","&(ValorTotalAnexo)&", "&(ValorTotalAnexo)&", 1, "&session("User")&", "& treatvalnull(rfAssociacao)&","& TotalCH &", "& TotalValorFixo &", "& TotalUCO &", "& TotalPORTE &", "& TotalFILME &", "& TotalGeral &",NULLIF('"&ref("gConvenioID")&"',''),NULLIF('"&ref("PlanoID")&"',''),NULLIF('"&ref("ContratadoSolicitanteCodigoNaOperadora")&"',''));"
 
                     db_execute( sqlIns )
 

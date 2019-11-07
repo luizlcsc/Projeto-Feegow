@@ -99,7 +99,6 @@ end if
 .load-wrapp {
     width: 200px;
     height: 100px;
-    display:none;
 }
 
 .load-wrapp p {padding: 0 0 20px;}
@@ -893,6 +892,8 @@ function excluirSerie(id) {
         var tipoarquivo = '<%=Tipo%>';
         var ProfissionalID = '<%=req("ProfessionalID")%>';
         var Carregando = false
+        $(".load-wrapp").hide();
+
         scroll(0,0);
 
         $(window).scroll(function() {

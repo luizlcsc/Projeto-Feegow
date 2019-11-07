@@ -338,7 +338,7 @@ if LocalID <> 0 then
 end if
 
 if Convenios = "Todos" then
-    sqlconveniosexibir2 = "select group_concat(id) exibir from convenios where sysActive=1 and (unidades like'%|"&mUnidadeID&"|%' or unidades ='' or unidades is null)"
+    sqlconveniosexibir2 = "select group_concat(id) exibir from convenios where sysActive=1 and (unidades like'%|"&mUnidadeID&"|%' or unidades ='' or unidades is null or unidades=0)"
     set conveniosexibir2 = db.execute(sqlconveniosexibir2)
     if not conveniosexibir2.eof then
         ExibirConvenios = conveniosexibir2("exibir")

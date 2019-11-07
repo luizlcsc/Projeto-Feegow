@@ -133,7 +133,7 @@ end if
         set ii = db.execute( sql )
 
 
-        msgPadraoTemplate = "Olá [Paciente.Nome], o resultado do seu laudo de [Procedimento.Nome] se encontra [Laudo.Status]."
+        msgPadraoTemplate = "Olá *[Paciente.Nome]*!%0a%0a O resultado do seu laudo de *[Procedimento.Nome]* se encontra *[Laudo.Status]*."
 
         LicencaID=replace(session("Banco"), "clinic","")
 

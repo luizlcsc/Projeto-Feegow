@@ -331,23 +331,27 @@ end if
 'verificar convenios pelo local e pela unidade
 mUnidadeID = session("UnidadeID")
 if LocalID <> 0 then    
-    set sqlUnidadeID = db.execute("select UnidadeID from locais where id="&LocalID)
+    set sqlUnidadeID = db.execute("select UnidadeID from locais where id="&treatvalzero(LocalID))
     if not sqlUnidadeID.eof then
         mUnidadeID = sqlUnidadeID("UnidadeID")
     end if
 end if
 
 if Convenios = "Todos" then
-    sqlconveniosexibir2 = "select group_concat(id) exibir from convenios where sysActive=1 and (unidades like'%|"&mUnidadeID&"|%' or unidades ='')"
+    sqlconveniosexibir2 = "select group_concat(id) exibir from convenios where sysActive=1 and (unidades like'%|"&mUnidadeID&"|%' or unidades ='' or unidades is null)"
     set conveniosexibir2 = db.execute(sqlconveniosexibir2)
     if not conveniosexibir2.eof then
-        Convenios = conveniosexibir2("exibir")
+        ExibirConvenios = conveniosexibir2("exibir")
+
+        if not isnull(conveniosexibir2("exibir")) then
+            Convenios = conveniosexibir2("exibir")
+        end if
     end if
 else
  if Convenios <> "Nenhum" then
     sqlconveniosexibir2 = "SELECT GROUP_CONCAT('|',id,'|') naoexibir"&_
                         " FROM convenios"&_
-                        " WHERE sysActive=1 AND unidades not LIKE'%|0|%' and unidades <> ''"
+                        " WHERE sysActive=1 AND unidades not LIKE'%|"&mUnidadeID&"|%' and unidades <> ''"
     set conveniosexibir2 = db.execute(sqlconveniosexibir2)
 
     if not conveniosexibir2.eof then
@@ -358,7 +362,7 @@ else
             novoConvenio = novoConvenio&"|"&ConveniosSpt(i)&"|"
         Next
 
-        naoExibir = conveniosexibir2("naoexibir")
+        naoExibir = conveniosexibir2("naoexibir")&""
         naoExibirSpt = split(naoExibir,",")
         For i=0 To ubound(naoExibirSpt)
             novoConvenio = replace(novoConvenio,","&naoExibirSpt(i),"")
@@ -366,7 +370,7 @@ else
 
         Convenios=replace(novoConvenio,"|","")
     end if
-    
+
  end if
 end if
 

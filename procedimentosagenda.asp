@@ -6,6 +6,12 @@ Convenios = ref("Convenios")
 GradeApenasConvenios = ref("GradeApenasConvenios")
 GradeApenasProcedimentos = ref("GradeApenasProcedimentos")
 EquipamentoID = ref("EquipamentoID")
+
+if ref("Forma")<>"" then    
+    rdValorPlano= ref("Forma")
+    ConvenioID= ref("ConvenioSelecionado")
+end if
+
 if Acao="I" then
     n = ref("I")
     call linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios)
@@ -15,7 +21,6 @@ end if
 <!--#include file="JQueryFunctions.asp"-->
 
 $(function(){
-    $
     $(".valorprocedimento, .linha-procedimento").on('change', function(){
 
                 somarValores();

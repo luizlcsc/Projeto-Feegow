@@ -1527,7 +1527,9 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
             Convenios:Convenios,
             GradeApenasProcedimentos:GradeApenasProcedimentos,
             GradeApenasConvenios: GradeApenasConvenios,
-            EquipamentoID: Equipamento
+            EquipamentoID: Equipamento,
+            Forma: $("#rdValorPlanoP").val(),
+            ConvenioSelecionado: $("#ConvenioID").val()
             }, function (data) {
             $('#bprocs').append(data);
         });

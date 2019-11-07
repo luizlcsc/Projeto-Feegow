@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
 <%
 if ref("De")<>"" then
     De = ref("De")
@@ -115,7 +116,7 @@ end if
             filtroGrupo = " ii.ItemID in ("&Procedimentos&") AND "
         END IF
 
-        sql = "SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID LIMIT 1)TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, proc.DiasLaudo, IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, pac.NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID  FROM ("&_
+        sql = "SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID LIMIT 1)TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, proc.DiasLaudo, IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID  FROM ("&_
             " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
             " UNION ALL "&_
             " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE "&filtroGrupo&" ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
@@ -130,6 +131,20 @@ end if
         'response.write( sql )
 
         set ii = db.execute( sql )
+
+
+        msgPadraoTemplate = "Olá [Paciente.Nome], o resultado do seu laudo de [Procedimento.Nome] se encontra [Laudo.Status]."
+
+        LicencaID=replace(session("Banco"), "clinic","")
+
+        set TextoEmail = db.execute(" SELECT sys_smsemail.TextoSMS FROM cliniccentral.areapaciente"&chr(13)&_
+                                    " JOIN sys_smsemail ON sys_smsemail.id = areapaciente.ModeloID  "&chr(13)&_
+                                    " WHERE LicencaID = "&LicencaID)
+
+        IF not TextoEmail.EOF THEN
+            msgPadraoTemplate = TextoEmail("TextoSMS")
+        END IF
+
         while not ii.eof
             quantidade = ii("quantidade")
             ExibirSufixoQuantidade=False
@@ -204,17 +219,11 @@ end if
 
                     if adicionaLinha =1 then
 
-                    msgPadrao = "Olá "&"NomePaciente"&", o resultado do seu laudo se encontra "&LCase(Status)&"."
-
-                    LicencaID=replace(session("Banco"), "clinic","")
-
-                    set TextoEmail = db.execute(" SELECT sys_smsemail.TextoEmail FROM cliniccentral.areapaciente"&chr(13)&_
-                                                " JOIN sys_smsemail ON sys_smsemail.id = areapaciente.ModeloID  "&chr(13)&_
-                                                " WHERE LicencaID = "&LicencaID)
-
-                    IF not TextoEmail.EOF THEN
-                         msgPadrao = replaceTags(TextoEmail("TextoEmail"), PacienteID, session("UserID"), session("UnidadeID"))
-                    END IF
+                    'msgPadrao = replaceTags(msgPadraoTemplate, PacienteID, session("UserID"), session("UnidadeID"))
+                    msgPadrao = msgPadraoTemplate
+                    msgPadrao = replace(msgPadrao, "[Paciente.Nome]", TratarNome("Título", ii("NomePaciente")))
+                    msgPadrao = replace(msgPadrao, "[Laudo.Status]", LCase(Status))
+                    msgPadrao = replace(msgPadrao, "[Procedimento.Nome]", LCase(NomeProcedimento))
 
                     %>
                     <tr>
@@ -274,7 +283,6 @@ end if
     <button class="btn btn-success btn-block mt20 atualizarstatus" type="button"><i class="fa fa-repeat bigger-110"></i> Atualizar Status</button>
 </div>
 <script>
-var whatsAppAlertado = false;
 $(document).ready(function(){
    $('[data-toggle="tooltip"]').tooltip();
 

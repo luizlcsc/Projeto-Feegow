@@ -11,6 +11,7 @@
 <%
 DataDe = ref("DataDe")
 DataAte = ref("DataAte")
+Unidades = replace(ref("UnidadeID"), "|","")
 response.Buffer
 
 set ptip = db.execute("select id, TipoProcedimento from tiposprocedimentos UNION ALL select '0', '     SEM CATEGORIA' order by TipoProcedimento")
@@ -33,6 +34,7 @@ while not ptip.eof
                 <th width="5%">VALOR REPASSE</th>
                 <th width="5%">DATA REPASSE</th>
                 <th width="9%">CONVÊNIO</th>
+                <th width="4%">UNIDADE</th>
             </tr>
         </thead>
         <tbody>
@@ -63,7 +65,7 @@ while not ptip.eof
                     NomeConvenio = ""
                     if gi("TipoGuia")="guiaconsulta" then
                         GuiasConsulta = GuiasConsulta &", "& gi("GuiaID")
-                        set proc = db.execute("select gc.ProfissionalID, gc.NGuiaPrestador, gc.id, pac.NomePaciente, conv.NomeConvenio, proc.NomeProcedimento, tiproc.TipoProcedimento, gc.DataAtendimento, prof.NomeProfissional, gc.ValorProcedimento from tissguiaconsulta gc LEFT JOIN procedimentos proc ON proc.id=gc.ProcedimentoID LEFT JOIN tiposprocedimentos tiproc ON tiproc.id=proc.TipoProcedimentoID LEFT JOIN profissionais prof ON prof.id=gc.ProfissionalID LEFT JOIN pacientes pac ON pac.id=gc.PacienteID LEFT JOIN convenios conv ON conv.id=gc.ConvenioID WHERE ifnull(proc.TipoProcedimentoID, 0)="& ptip("id") &" and gc.id="& gi("GuiaID")&" ORDER BY prof.NomeProfissional")
+                        set proc = db.execute("select gc.ProfissionalID, gc.NGuiaPrestador, gc.id, pac.NomePaciente, conv.NomeConvenio, proc.NomeProcedimento, tiproc.TipoProcedimento, gc.DataAtendimento, prof.NomeProfissional, gc.ValorProcedimento, gc.UnidadeID from tissguiaconsulta gc LEFT JOIN procedimentos proc ON proc.id=gc.ProcedimentoID LEFT JOIN tiposprocedimentos tiproc ON tiproc.id=proc.TipoProcedimentoID LEFT JOIN profissionais prof ON prof.id=gc.ProfissionalID LEFT JOIN pacientes pac ON pac.id=gc.PacienteID LEFT JOIN convenios conv ON conv.id=gc.ConvenioID WHERE ifnull(proc.TipoProcedimentoID, 0)="& ptip("id") &" and gc.id="& gi("GuiaID")&" AND gc.UnidadeID IN ("&Unidades&") ORDER BY prof.NomeProfissional")
                         while not proc.eof
                             ValorRepasse = 0
                             TipoProcedimento = ""
@@ -91,6 +93,15 @@ while not ptip.eof
                             ValorTotal=ValorTotal + ValorBruto
                             TotalDespesas = TotalDespesas+ValorDespesas
 
+
+                            UnidadeID=gi("UnidadeID")
+                            if not isnull(UnidadeID) then
+                                set UnidadeSQL = db.execute("SELECT NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa WHERE id=1 UNION ALL SELECT id,NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE t.id="&treatvalzero(UnidadeID))
+                                if not UnidadeSQL.eof then
+                                    NomeUnidade = UnidadeSQL("NomeFantasia")&" - "
+                                end if
+                            end if
+
                             'if NomeProfissional<>"" then
                             if ValorBruto>0 then
                             %>
@@ -107,6 +118,7 @@ while not ptip.eof
                                 <td class="text-right"><%= fn(ValorRepasse) %></td>
                                 <td class="text-right"><%= DataRepasse %></td>
                                 <td><%= NomeConvenio %></td>
+                                <td><%= NomeUnidade %></td>
                             </tr>
                             <%
                             end if
@@ -124,7 +136,7 @@ while not ptip.eof
                         NomePaciente = ""
                         NomeConvenio = ""
                         GuiasSADT = GuiasSADT &", "& gi("GuiaID")
-                        set proc = db.execute("select gs.NGuiaPrestador, gps.ProfissionalID, gps.id, pac.NomePaciente, conv.NomeConvenio, proc.NomeProcedimento, tiproc.TipoProcedimento, gps.Data, prof.NomeProfissional, gps.ValorTotal, ((gs.TotalGeral-gs.Procedimentos)/(select count(id) from tissprocedimentossadt where GuiaID=gs.id)) ValorDespesas from tissguiasadt gs LEFT JOIN tissprocedimentossadt gps ON gs.id=gps.GuiaID LEFT JOIN procedimentos proc ON proc.id=gps.ProcedimentoID LEFT JOIN tiposprocedimentos tiproc ON tiproc.id=proc.TipoProcedimentoID LEFT JOIN profissionais prof ON prof.id=gps.ProfissionalID LEFT JOIN pacientes pac ON pac.id=gs.PacienteID LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE ifnull(proc.TipoProcedimentoID, 0)="& ptip("id") &" and gs.id="& gi("GuiaID")&" ORDER BY prof.NomeProfissional")
+                        set proc = db.execute("select gs.NGuiaPrestador, gps.ProfissionalID, gps.id, pac.NomePaciente, conv.NomeConvenio, proc.NomeProcedimento, tiproc.TipoProcedimento, gps.Data, prof.NomeProfissional, gps.ValorTotal, ((gs.TotalGeral-gs.Procedimentos)/(select count(id) from tissprocedimentossadt where GuiaID=gs.id)) ValorDespesas, gs.UnidadeID from tissguiasadt gs LEFT JOIN tissprocedimentossadt gps ON gs.id=gps.GuiaID LEFT JOIN procedimentos proc ON proc.id=gps.ProcedimentoID LEFT JOIN tiposprocedimentos tiproc ON tiproc.id=proc.TipoProcedimentoID LEFT JOIN profissionais prof ON prof.id=gps.ProfissionalID LEFT JOIN pacientes pac ON pac.id=gs.PacienteID LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE ifnull(proc.TipoProcedimentoID, 0)="& ptip("id") &" and gs.id="& gi("GuiaID")&" AND gs.UnidadeID IN ("&Unidades&") ORDER BY prof.NomeProfissional")
                         while not proc.eof
                             CodigoAtendimento = "GS"& zeroEsq(proc("id"), 7)
                             NomeProcedimento = proc("NomeProcedimento")
@@ -143,6 +155,16 @@ while not ptip.eof
                             ValorTotal=ValorTotal + ValorBruto
                             TotalDespesas = TotalDespesas+ValorDespesas
 
+
+
+                            UnidadeID=proc("UnidadeID")
+                            if not isnull(UnidadeID) then
+                                set UnidadeSQL = db.execute("SELECT NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa WHERE id=1 UNION ALL SELECT id,NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE t.id="&treatvalzero(UnidadeID))
+                                if not UnidadeSQL.eof then
+                                    NomeUnidade = UnidadeSQL("NomeFantasia")&" - "
+                                end if
+                            end if
+
                             'if NomeProfissional<>"" then
                             if ValorBruto>0 then
                             %>
@@ -159,6 +181,7 @@ while not ptip.eof
                                 <td class="text-right"><%= fn(ValorRepasse) %></td>
                                 <td class="text-right"><%= DataRepasse %></td>
                                 <td><%= NomeConvenio %></td>
+                                <td><%= NomeUnidade %></td>
                             </tr>
                             <%
                             end if
@@ -172,7 +195,7 @@ while not ptip.eof
                 gi.close
                 set gi = nothing
 
-                sqlII = "select ii.ProfissionalID, ii.id, ii.DataExecucao, prof.NomeProfissional, pac.NomePaciente, proc.NomeProcedimento, i.nroNFe, i.dataNFe, i.valorNFe, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorServico from itensinvoice ii LEFT JOIN sys_financialinvoices i ON ii.InvoiceID=i.id LEFT JOIN profissionais prof ON (prof.id=ii.ProfissionalID and ii.Associacao=5) LEFT JOIN pacientes pac ON (pac.id=i.AccountID and AssociationAccountID=3) LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ii.id="& dataNF("ItemInvoiceID") &" AND ii.Tipo='S' ORDER BY prof.id"
+                sqlII = "select ii.ProfissionalID, ii.id, ii.DataExecucao, prof.NomeProfissional, pac.NomePaciente, proc.NomeProcedimento, i.nroNFe, i.dataNFe, i.valorNFe, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorServico, i.CompanyUnitID UnidadeID from itensinvoice ii LEFT JOIN sys_financialinvoices i ON ii.InvoiceID=i.id LEFT JOIN profissionais prof ON (prof.id=ii.ProfissionalID and ii.Associacao=5) LEFT JOIN pacientes pac ON (pac.id=i.AccountID and AssociationAccountID=3) LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ii.id="& dataNF("ItemInvoiceID") &" AND ii.Tipo='S' AND i.CompanyUnitID IN ("&Unidades&") ORDER BY prof.id"
                 'response.write( sqlII )
                 set ii = db.execute( sqlII )
                 while not ii.eof
@@ -190,6 +213,14 @@ while not ptip.eof
                         ValorRepasse = pRep("Valor")
                         DataRepasse = pRep("sysDate")
                     end if
+
+                    UnidadeID=ii("UnidadeID")
+                    if not isnull(UnidadeID) then
+                        set UnidadeSQL = db.execute("SELECT NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa WHERE id=1 UNION ALL SELECT id,NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE t.id="&treatvalzero(UnidadeID))
+                        if not UnidadeSQL.eof then
+                            NomeUnidade = UnidadeSQL("NomeFantasia")&" - "
+                        end if
+                    end if
                     %>
                     <tr>
                         <td></td>
@@ -204,6 +235,7 @@ while not ptip.eof
                         <td class="text-right"><%= fn(ValorRepasse) %></td>
                         <td class="text-right"><%= DataRepasse %></td>
                         <td><%= NomeConvenio %></td>
+                        <td><%= NomeUnidade %></td>
                     </tr>
                     <%
                 ii.movenext
@@ -218,7 +250,7 @@ while not ptip.eof
 
             %>
             <tr>
-                <th colspan="7" class="text-right">Valor total</th>
+                <th colspan="8" class="text-right">Valor total</th>
                 <th class="text-right"><%= fn(ValorTotal) %></th>
                 <th class="text-right"></th>
             </tr>

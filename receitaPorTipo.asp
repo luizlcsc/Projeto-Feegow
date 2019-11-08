@@ -15,9 +15,11 @@ end if
 	<input type="hidden" name="R" value="rReceitaPorTipo">
     <div class="clearfix form-actions">
     	<div class="row">
-			<%=quickField("datepicker", "DataDe", "Nota Fiscal Emitida Entre", 3, DataDe, "", "", "")%>
-            <%=quickField("datepicker", "DataAte", "&nbsp;", 3, DataAte, "", "", "")%>
-            <%=quickField("text", "NF", "Número da Nota", 3, NF, "", "", " placeholder='Opcional' ")%>
+			<%=quickField("datepicker", "DataDe", "Nota Fiscal Emitida Entre", 2, DataDe, "", "", "")%>
+            <%=quickField("datepicker", "DataAte", "&nbsp;", 2, DataAte, "", "", "")%>
+            <%=quickField("text", "NF", "Número da Nota", 2, NF, "", "", " placeholder='Opcional' ")%>
+            <%=quickField("empresaMulti", "UnidadeID", "Unidade", 3, session("Unidades"), " input-sm", "", "")%>
+
             <div class="col-md-2">
                 <label>&nbsp;</label><br>
                 <button type="submit" class="btn btn-success btn-block"><i class="fa fa-search"></i> Gerar</button>

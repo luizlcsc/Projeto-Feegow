@@ -75,6 +75,14 @@ elseif ModeloID<>"" and ModeloID<>"0" then
         AgruparParcela = pmod("AgruparParcela")
     end if
 
+    if instr(ModeloContrato, "[AReceber.PrimeiroVencimento]")>0 and InvoiceID>0 then
+        set PrimeiroVencimentoSQL = db.execute("SELECT date FROM sys_financialmovement WHERE InvoiceID="&InvoiceID&" AND Type='Bill' order by Date ASC")
+        if not PrimeiroVencimentoSQL.eof then
+            ModeloContrato = replace(ModeloContrato, "[AReceber.PrimeiroVencimento]", PrimeiroVencimentoSQL("date"))
+        end if
+
+    end if
+
     if instr(ModeloContrato, "[AReceber.ProcedimentosAgrupados]")>0 and InvoiceID>0 then
         set distProcs = db.execute("select proc.NomeProcedimento, ii.Quantidade, ii.ValorUnitario, ii.Desconto, ii.Acrescimo from itensinvoice ii left join procedimentos proc on proc.id=ii.ItemID where ii.InvoiceID="& InvoiceID &" group by ItemID")
         while not distProcs.eof
@@ -357,6 +365,8 @@ elseif ModeloID<>"" and ModeloID<>"0" then
 
             UsuarioRecebimento=nameInTable(session("User"))
         end if
+
+
 
         Contrato = replace(Contrato, "[Contrato.DataPagamento]", DataPagamento)
         Contrato = replace(Contrato, "[-Usuario.Nome-]", UsuarioRecebimento)

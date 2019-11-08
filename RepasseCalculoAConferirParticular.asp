@@ -14,6 +14,7 @@ totalTaxas = 0
 response.Buffer
 
 private function tituloTabelaRepasse(Classe, Titulo, ItemInvoiceID, PagtoID, FormaPagto, NumeroParcela, Parcelas, ValorRecebido, ParcelaID, Extras)
+
     %>
         <td width="50%" style="vertical-align:top">
             <%if Classe<>"dark" then %>
@@ -76,7 +77,7 @@ private function listaRR( rDataExecucao, rInvoiceID, rItemInvoiceID, rNomeProced
 end function
 
 
-private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rValorProcedimento, rValorRecebido, rPercentual, ParcelaID, rContaPagtoID, rEspecialidadeID, rQuantidade)
+private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rValorProcedimento, rValorRecebido, rPercentual, ParcelaID, rContaPagtoID, rEspecialidadeID, rQuantidade, Parcelas)
     sqlUnion = ""
     coefPerc = rPercentual / 100
     'conferir -> FormaID pode ser |P| para todos particulares, |C| para todos convênios, |00_0| para forma predefinida de recto e > |0| para qualquer id de convênio
@@ -84,7 +85,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 '    ValorBase = ValorBase - DescontoCartao
 '        response.write(";;;;;;;;;;;;"& rContaPagtoID &";;;;;;;;;;;;;;")
     if rContaPagtoID<>"" and isnumeric(rContaPagtoID) and (rFormaPagto="Cartão de Crédito" or rFormaPagto="Cartão de Débito") then
-        set vcaTaxa = db.execute("select * from repassesdescontos where Contas LIKE '%"& rContaPagtoID &"%'")
+        set vcaTaxa = db.execute("select * from repassesdescontos where Contas LIKE '%"& rContaPagtoID &"%' AND "&treatvalzero(Parcelas)&" BETWEEN De AND Ate")
         if not vcaTaxa.eof then
             'TEM QUE COLOCAR O COEFPERC INDIVIDUAL BASEADO NO VALOR DO PROCEDIMENTO x VALOR DO PAGTO
             'call lrResult( "Calculo", rDataExecucao, Funcao, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, 0, rValorProcedimento, rValorRecebido, rTaxa, nLinha, "F", 0 )
@@ -845,7 +846,7 @@ desfazBtnCons = ""
 
 '3a. situação: verifica repasses que foram recebidos do pacte mas ainda nao foram consolidados
                 if PercentualRepassado<100 then
-                    sqlPagtos = "select idesc.*, m.PaymentMethodID, pm.PaymentMethod, idesc.Valor, m.Date, m.AccountIDDebit FROM itensdescontados idesc LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID WHERE idesc.ItemID="& ii("id")&" GROUP BY idesc.ItemID, idesc.PagamentoID, idesc.Valor"
+                    sqlPagtos = "select idesc.*, m.PaymentMethodID, pm.PaymentMethod, m.id MovementPayID, idesc.Valor, m.Date, m.AccountIDDebit FROM itensdescontados idesc LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID WHERE idesc.ItemID="& ii("id")&" GROUP BY idesc.ItemID, idesc.PagamentoID, idesc.Valor"
 
                     set pagtos = db.execute(sqlPagtos)
                     while not pagtos.eof
@@ -979,7 +980,7 @@ desfazBtnCons = ""
                                                 <%= tituloTabelaRepasse(Classe, "Não consolidado", pagtos("ItemID"), pagtos("id"), NomeMetodo, parcs("Parcela"), parcs("Parcelas"), ValorParcela, parcs("id"), "") %>
                                                 <td width="50%" class="<%= Classe %>">
                                                     <table class="table table-condensed">
-                                                        <%= repasse( DataExecucao, InvoiceID, NomeProcedimento, NomePaciente, pagtos("PaymentMethod"), ValorProcedimento, pagtos("Valor"), Percentual, parcs("id"), pagtos("AccountIDDebit"), ii("EspecialidadeID"), ii("Quantidade") ) %>
+                                                        <%= repasse( DataExecucao, InvoiceID, NomeProcedimento, NomePaciente, pagtos("PaymentMethod"), ValorProcedimento, pagtos("Valor"), Percentual, parcs("id"), pagtos("AccountIDDebit"), ii("EspecialidadeID"), ii("Quantidade") , parcs("Parcelas")) %>
                                                     </table>
                                                 </td>
                                             </tr>
@@ -1029,12 +1030,24 @@ desfazBtnCons = ""
                            ' function tituloTabelaRepasse(Classe, Titulo, ItemInvoiceID, PagtoID, FormaPagto, NumeroParcela, Parcelas, ValorRecebido, ParcelaID)
                                     if StatusBusca="" or StatusBusca="S" then
                                         Classe = "success"
+
+                                        ParcelaAtual=1
+                                        Parcelas=1
+
+                                        if pagtos("PaymentMethodID")=8 then
+                                            set CreditCardSQL = db.execute("SELECT Parcelas FROM sys_financialcreditcardtransaction WHERE MovementID="&pagtos("MovementPayID"))
+                                            if not CreditCardSQL.eof then
+                                                Parcelas=CreditCardSQL("Parcelas")
+                                                ParcelaAtual=""
+                                            end if
+                                        end if
+
                                         %>
                                         <tr class="<%= Classe %>">
-                                            <%= tituloTabelaRepasse(Classe, "Não consolidado", pagtos("ItemID"), pagtos("id"), NomeMetodo, 1, 1, pagtos("Valor"), 0, "") %>
+                                            <%= tituloTabelaRepasse(Classe, "Não consolidado", pagtos("ItemID"), pagtos("id"), NomeMetodo, ParcelaAtual, Parcelas, pagtos("Valor"), 0, "") %>
                                             <td width="50%" class="success">
                                                 <table class="table table-condensed">
-                                                    <%= repasse( DataExecucao, InvoiceID, NomeProcedimento, NomePaciente, pagtos("PaymentMethod"), ValorProcedimento, pagtos("Valor"), Percentual, 0, pagtos("AccountIDDebit"), ii("EspecialidadeID"), ii("Quantidade") ) %>
+                                                    <%= repasse( DataExecucao, InvoiceID, NomeProcedimento, NomePaciente, pagtos("PaymentMethod"), ValorProcedimento, pagtos("Valor"), Percentual, 0, pagtos("AccountIDDebit"), ii("EspecialidadeID"), ii("Quantidade"), Parcelas ) %>
                                                 </table>
                                             </td>
                                         </tr>
@@ -1079,7 +1092,7 @@ desfazBtnCons = ""
                                 <td width="50%" class="<%= Classe %>">
                                     <table class="table table-condensed">
                                         <%'= "{ |P|, " & ii("ProfissionalID") &", "& ProcedimentoID &", "& ii("CompanyUnitID") &", "& ii("TabelaID") &", "& ii("EspecialidadeID") &" }" %>
-                                        <%= repasse( DataExecucao, InvoiceID, NomeProcedimento, NomePaciente, "Pendente", ValorProcedimento, 0, Percentual, 0, "", ii("EspecialidadeID"), ii("Quantidade") ) %>
+                                        <%= repasse( DataExecucao, InvoiceID, NomeProcedimento, NomePaciente, "Pendente", ValorProcedimento, 0, Percentual, 0, "", ii("EspecialidadeID"), ii("Quantidade") , 1) %>
                                     </table>
                                 </td>
                             </tr>

@@ -14,6 +14,44 @@ if ProcedimentoAgendado<>"" then
     </div>
 <%
 end if
+function retornastatusguia(id)
+    select case id
+        case "0" 
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;"" class=""mr5 mt5 btn-default"" title='[status]'></div>"
+        case "1"
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;float:left;"" class=""mr5 mt5 btn-primary"" title='[status]'></div>"
+        case "2"
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;float:left;"" class=""mr5 mt5 btn-warning"" title='[status]'></div>"
+        case "3"
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;float:left;"" class=""mr5 mt5 btn-success"" title='[status]'></div>"
+        case "4"
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;float:left;"" class=""mr5 mt5 btn-dark"" title='[status]'></div>"
+        case "5"
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;float:left;"" class=""mr5 mt5 btn-warning"" title='[status]'></div>"
+        case "6"
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;float:left;"" class=""mr5 mt5 btn-warning"" title='[status]'></div>"
+        case "7"
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;float:left;"" class=""mr5 mt5 btn-dark"" title='[status]'></div>"
+        case "8"
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;float:left;"" class=""mr5 mt5 btn-danger"" title='[status]'></div>"
+        case "9"
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;float:left;"" class=""mr5 mt5 btn-success"" title='[status]'></div>"
+        case "10" 
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;float:left;"" class=""mr5 mt5 btn-warning"" title='[status]'></div>"
+        case "11"
+            icone = "<div style=""border-radius:50%;width:8px;height:8px;float:left;"" class=""mr5 mt5 btn-danger"" title='[status]'></div>"
+    end select
+   
+    if id ="" then id = "null" end if
+    sql = "SELECT status FROM cliniccentral.tissguiastatus as tsg WHERE tsg.id=" & id &"" 
+    'response.write (sql)
+    set statusguia = db.execute(sql)
+    if not statusguia.eof then
+        retornastatusguia = replace(icone,"[status]",statusguia("status"))
+    else 
+        retornastatusguia = ""
+    end if 
+end function 
 %>
  
 
@@ -30,6 +68,7 @@ end if
                         <th width="10%">FORMA</th>
                         <th width="10%">VALOR</th>
                         <th width="20%">PENDÊNCIAS</th>
+                        <th></th>
                     </tr>
                 </thead>
             </table>
@@ -37,12 +76,12 @@ end if
                 <table class="table table-fixed">
                     <tbody>
                         <%
-          sqlInv = "(select 'Particular' TipoFatura, 0 ProfissionalID, 0 ProcedimentoID, '' NomeProcedimento, '' NomeProfissional, '' NomeConvenio, i.id, '' NGuiaPrestador, '' NGuiaOperadora, '' NaoImprimirGuia, i.sysDate DataFatura, (select SUM( ifnull(Value, 0) ) from sys_financialmovement where InvoiceID=i.id AND Type='Bill') ValorTotal, (select count(id) from itensinvoice where InvoiceID=i.id) itens, '5' AssocSADT, i.CompanyUnitID UnidadeID from sys_financialinvoices i WHERE i.AssociationAccountID=3 AND i.CD='C' AND i.AccountID="&PacienteID&")"&_
-            " UNION ALL (select 'GuiaConsulta', gc.ProfissionalID, gc.ProcedimentoID, igc.NomeProcedimento, pgc.NomeProfissional, cgc.NomeConvenio, gc.id, gc.NGuiaPrestador, gc.NGuiaOperadora, cgc.NaoImprimirGuia, date(gc.DataAtendimento), gc.ValorProcedimento, 1, '5', gc.UnidadeID from tissguiaconsulta gc left join profissionais pgc on pgc.id=gc.ProfissionalID left join convenios cgc on cgc.id=gc.ConvenioID left join procedimentos igc on igc.id=gc.ProcedimentoID where gc.PacienteID="&PacienteID&")"&_
-            " UNION ALL (select 'GuiaSADT', igs.ProfissionalID, igs.ProcedimentoID, pcd.NomeProcedimento, pgs.NomeProfissional, cgs.NomeConvenio, igs.GuiaID, gs.NGuiaPrestador, gs.NGuiaOperadora, cgs.NaoImprimirGuia, igs.Data, igs.ValorTotal, 1, igs.Associacao, gs.UnidadeID from tissprocedimentossadt igs left join tissguiasadt gs on gs.id=igs.GuiaID left join profissionais pgs on pgs.id=igs.ProfissionalID left join convenios cgs on cgs.id=gs.ConvenioID left join procedimentos pcd on pcd.id=igs.ProcedimentoID where gs.PacienteID="&PacienteID&")"&_
-            " UNION ALL (select 'GuiaHonorario', hgs.ProfissionalID, hgs.ProcedimentoID, pcd.NomeProcedimento, pgs.NomeProfissional, cgs.NomeConvenio, hgs.GuiaID, gs.NGuiaPrestador, gs.NGuiaOperadora, cgs.NaoImprimirGuia, hgs.Data, hgs.ValorTotal, 1 ,'5', gs.UnidadeID from tissprocedimentoshonorarios hgs left join tissguiahonorarios gs on gs.id=hgs.GuiaID left join profissionais pgs on pgs.id=hgs.ProfissionalID left join convenios cgs on cgs.id=gs.ConvenioID left join procedimentos pcd on pcd.id=hgs.ProcedimentoID where gs.PacienteID="&PacienteID&")"&_
+          sqlInv = "(select 0 GuiaStatus, 'Particular' TipoFatura, 0 ProfissionalID, 0 ProcedimentoID, '' NomeProcedimento, '' NomeProfissional, '' NomeConvenio, i.id, '' NGuiaPrestador, '' NGuiaOperadora, '' NaoImprimirGuia, i.sysDate DataFatura, (select SUM( ifnull(Value, 0) ) from sys_financialmovement where InvoiceID=i.id AND Type='Bill') ValorTotal, (select count(id) from itensinvoice where InvoiceID=i.id) itens, '5' AssocSADT, i.CompanyUnitID UnidadeID from sys_financialinvoices i WHERE i.AssociationAccountID=3 AND i.CD='C' AND i.AccountID="&PacienteID&")"&_
+            " UNION ALL (select ifnull(gc.GuiaStatus,0) as GuiaStatus, 'GuiaConsulta', gc.ProfissionalID, gc.ProcedimentoID, igc.NomeProcedimento, pgc.NomeProfissional, cgc.NomeConvenio, gc.id, gc.NGuiaPrestador, gc.NGuiaOperadora, cgc.NaoImprimirGuia, date(gc.DataAtendimento), gc.ValorProcedimento, 1, '5', gc.UnidadeID from tissguiaconsulta gc left join profissionais pgc on pgc.id=gc.ProfissionalID left join convenios cgc on cgc.id=gc.ConvenioID left join procedimentos igc on igc.id=gc.ProcedimentoID where gc.PacienteID="&PacienteID&")"&_
+            " UNION ALL (select ifnull(gs.GuiaStatus,0) AS GuiaStatus,'GuiaSADT', igs.ProfissionalID, igs.ProcedimentoID, pcd.NomeProcedimento, pgs.NomeProfissional, cgs.NomeConvenio, igs.GuiaID, gs.NGuiaPrestador, gs.NGuiaOperadora, cgs.NaoImprimirGuia, igs.Data, igs.ValorTotal, 1, igs.Associacao, gs.UnidadeID from tissprocedimentossadt igs left join tissguiasadt gs on gs.id=igs.GuiaID left join profissionais pgs on pgs.id=igs.ProfissionalID left join convenios cgs on cgs.id=gs.ConvenioID left join procedimentos pcd on pcd.id=igs.ProcedimentoID where gs.PacienteID="&PacienteID&")"&_
+            " UNION ALL (select ifnull(hgs.statusAutorizacao,0) AS GuiaStatus,'GuiaHonorario', hgs.ProfissionalID, hgs.ProcedimentoID, pcd.NomeProcedimento, pgs.NomeProfissional, cgs.NomeConvenio, hgs.GuiaID, gs.NGuiaPrestador, gs.NGuiaOperadora, cgs.NaoImprimirGuia, hgs.Data, hgs.ValorTotal, 1 ,'5', gs.UnidadeID from tissprocedimentoshonorarios hgs left join tissguiahonorarios gs on gs.id=hgs.GuiaID left join profissionais pgs on pgs.id=hgs.ProfissionalID left join convenios cgs on cgs.id=gs.ConvenioID left join procedimentos pcd on pcd.id=hgs.ProcedimentoID where gs.PacienteID="&PacienteID&")"&_
             " ORDER BY DataFatura desc"
-           '                 response.Write(sqlInv)
+            '                response.Write(sqlInv)
 		  set inv = db.execute(sqlInv)
           if inv.eof then
             %>
@@ -169,6 +208,7 @@ end if
                             <td width="10%"><%=inv("NomeConvenio") %></td>
                             <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
                             <td width="20%" class="text-right"><% if getConfig("ExibirNumeroGuiaOperadora")  then %> <strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> <% else %> <strong title="Numero da guia no PRESTADOR">Guia: </strong> <%=inv("NGuiaPrestador")&""%> <%end if%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a></td>
+                            <td><%= retornastatusguia(inv("GuiaStatus")) %></td>
                         </tr>
                     <%
                 elseif TipoFatura="GuiaHonorario" then
@@ -190,7 +230,8 @@ end if
                             <td></td>
                             <td width="10%"><%=inv("NomeConvenio") %></td>
                             <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
-                            <td width="20%" class="text-right"><strong><% if getConfig("ExibirNumeroGuiaOperadora")  then %> <strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> <% else %>  <strong title="Numero da guia no PRESTADOR">Guia: </strong> <%=inv("NGuiaPrestador")&""%>  <%end if%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a></td>
+                            <td width="20%" class="text-right"><strong> <% if getConfig("ExibirNumeroGuiaOperadora")  then %> <strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> <% else %>  <strong title="Numero da guia no PRESTADOR">Guia: </strong> <%=inv("NGuiaPrestador")&""%>  <%end if%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a></td>
+                            <td><%= retornastatusguia(inv("GuiaStatus")) %></td>
                         </tr>
                     <%
                 elseif TipoFatura="GuiaSADT" then
@@ -227,6 +268,7 @@ end if
                             <td width="10%"><%=inv("NomeConvenio") %></td>
                             <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
                             <td width="20%" class="text-right"><strong><% if getConfig("ExibirNumeroGuiaOperadora")  then %><strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> <% else %> <strong title="Numero da guia no PRESTADOR">Guia: </strong> <%=inv("NGuiaPrestador")&""%> <%end if%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a></td>
+                            <td><%= retornastatusguia(inv("GuiaStatus")) %></td>
                         </tr>
                     <%
                 end if

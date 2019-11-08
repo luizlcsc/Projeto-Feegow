@@ -58,25 +58,29 @@ if not procs.EOF then
     '    Endereco = unid("Endereco")&" "&unid("Numero")&" "&unid("Complemento")&"  "&unid("Bairro")&"  "&unid("Cidade")
     'end if
 end if
-
+num_max_registros = 10
+registros_mostrados = 0 
+paginas_impressas = 0 
 %>
 
-
+<% While (Not procs.eof and paginas_impressas <= 2)
+        registros_mostrados = 0 
+        paginas_impressas  = paginas_impressas  + 1
+     %>
 <body>
 	<div style="max-width: 90%; margin: 0 auto">
 	<style>
 
-    .tablePrint{ width:100%; vertical-align: top; font-size:11px; font-family: sans-serif; margin-bottom: 30px;}
+    .tablePrint{ width:90%; vertical-align: top; font-size:11px; font-family: sans-serif; margin-bottom: 30px;}
     p {margin-top:0px; margin-bottom: 2px;}
 
     </style>
+    
 	<table class="tablePrint">
 
 	    <tr>
-
 	        <td style="width: 50%">
 	            <strong><%if len(Foto)>2 then%><img src="/uploads/<%= replace(session("Banco"), "clinic", "") %>/Perfil/<%=Foto%>" id="logo" /><%else%><%= NomeConvenio %><%end if%></strong>
-
 	        </td>
 	        <td style="text-align: center">  <p><%=NomeConvenio%></p>
           <%=EnderecoConvenios%></td>
@@ -117,7 +121,8 @@ end if
              <th style="width: 5%; text-align: center"> Autorizado</th>
          </thead>
              <%
-             while not procs.eof
+              While (Not procs.eof And registros_mostrados < num_max_registros)
+                registros_mostrados = registros_mostrados + 1
              %>
              <tr>
                  <Td><%=procs("CodigoProcedimento")%></Td>
@@ -129,8 +134,8 @@ end if
              <%
              procs.movenext
              wend
-             procs.close
-             set procs=nothing
+             
+             
              %>
 
         </table>
@@ -161,9 +166,12 @@ end if
         </td>
       </Tr>
     </table>
-
+ 
 </div>
-
+<div style='page-break-after:always'></div>
+<% wend 
+    procs.close 
+    set procs=nothing %> 
 
 </body>
 

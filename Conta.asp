@@ -56,7 +56,7 @@ EliminaNotificacao=0
                         <li>
                             <a data-toggle="tab" href="#Informacoes" class="hidden" id="tabInformacoes">
                                 <i class="fa fa-exclamation-triangle bigger-110"></i>
-                                Informações
+                                Info.
                             </a>
                         </li>
                         <li class="pull-right">

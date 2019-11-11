@@ -62,15 +62,19 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
 
 %>
 <form id="frmPT">
-    <div class="panel mt20 mtn">
+    <div class="panel mt20 mtn hidden-print">
         <div class="panel-body">
             <div class="row">
-                <%= quickfield("text", "NomeTabela", "Nome da tabela", 4, reg("NomeTabela"), "", "", " required ") %>
+                <%= quickfield("text", "NomeTabela", "Nome da tabela", 3, reg("NomeTabela"), "", "", " required ") %>
                 <%= quickfield("simpleSelect", "Tipo", "Tipo", 2, reg("Tipo"), "select 'C' id, 'Custo' Tipo UNION ALL select 'V', 'Venda'", "Tipo", " no-select2 semVazio required ") %>
                 <%= quickfield("datepicker", "Inicio", "Vigência de", 2, reg("Inicio"), "", "", " required ") %>
                 <%= quickfield("datepicker", "Fim", "até", 2, reg("Fim"), "", "", " required ") %>
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-info btn-block mt25" onclick="$('#filtros').slideDown()">Parâmetros adicionais <i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-warning mt25" onclick="$('#filtros').slideDown()">Parâmetros adicionais <i class="fa fa-chevron-down"> </i></button>
+                </div>
+                <div class="col-md-1">
+                    <label>&nbsp;</label><br />
+                    <button class="btn btn-info" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
                 </div>
             </div>
             <div class="row mt15" id="filtros" style="display:none">
@@ -103,7 +107,7 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
             %>
                 <thead>
                     <tr>
-                        <th width="1%"><input type="checkbox" onclick="$('.chk').prop('checked', $(this).prop('checked'))" /></th>
+                        <th width="1%" class="hidden-print"><input type="checkbox" onclick="$('.chk').prop('checked', $(this).prop('checked'))" /></th>
                         <th>Procedimento</th>
                         <th class="text-right">Valor Base</th>
                         <%
@@ -138,7 +142,7 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
                         
                         %>
                         <tr>
-                            <td><input type="checkbox" class="chk" name="chk<%= t("id") %>" /></td>
+                            <td class="hidden-print"><input type="checkbox" class="chk" name="chk<%= t("id") %>" /></td>
                             <td><%= t("NomeProcedimento") %></td>
                             <td class="text-right"><%= fn(t("Valor")) %></td>
                             <%

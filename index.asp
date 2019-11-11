@@ -343,6 +343,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                 exibir: $ajax.attr("data-exibir"),
                                 oti: oti,
                                 ProfissionalID: $("#ProfissionalID").val(),
+                                EquipamentoID: $("#EquipamentoID").val(),
                                 nascimento: $("#ageNascimento").val()
                             };
                         },

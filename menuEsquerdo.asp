@@ -1472,6 +1472,10 @@ select case lcase(req("P"))
                 <span class="fa fa-bullhorn"></span> <span class="sidebar-title">Chamada de TV <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>
+            <a data-toggle="tab" href="#divChamadaTVConfiguracoes" onclick="ajxContent('chamadaPacsConfiguracoes', '', 1, 'divChamadaTVConfiguracoes');">
+                <span class="fa fa-laptop"></span> <span class="sidebar-title">Configurações Pacs <span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li>
+        <li>
             <a data-toggle="tab" href="#divLaudosOnline" onclick="ajxContent('LaudosOnline', '', 1, 'divLaudosOnline');">
                 <span class="fa fa-flask"></span> <span class="sidebar-title">Laudos Online <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>

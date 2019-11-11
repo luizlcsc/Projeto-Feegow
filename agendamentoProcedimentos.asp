@@ -302,8 +302,13 @@ else
                         <th width="15%">Local</th>
                         <th width="15%">Equipamento</th>
                         <th width="1%">
-                            <button type="button" onclick="procs('I', 0, <%=LocalID%>, '<%=Convenios%>', '<%=GradeApenasProcedimentos%>', '<%=GradeApenasConvenios%>')" class="btn btn-xs btn-success"><i class="fa fa-plus"></i></button>
+                            <button type="button" id="addProcedimentos" onclick="adicionarProcedimentos()" class="btn btn-xs btn-success"><i class="fa fa-plus"></i></button>
                         </th>
+                        <script>
+                        function adicionarProcedimentos() {
+                           procs('I', 0, <%=LocalID%>, '<%=Convenios%>', '<%=GradeApenasProcedimentos%>', '<%=GradeApenasConvenios%>');
+                        }
+</script>
                     </tr>
                 </thead>
                 <tbody id="bprocs">
@@ -483,7 +488,7 @@ $(document).ready(function() {
             <input type="hidden" id="nProcedimentos" value="<%= nProcedimentos %>" />
             <div id="totalProcedimentos">
                 <p class="text-right">
-                    Valor total: <b>R$ <span id="valortotal"></span></b>
+                    Valor total: <b>R$  <span id="valortotal"></span></b>
                 </p>
             </div>
         </div>

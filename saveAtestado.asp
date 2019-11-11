@@ -40,7 +40,7 @@ recursoPermissaoUnimed = recursoAdicional(12)
             <label><input type="checkbox" id="Carimbo" name="Carimbo" class="ace" checked="checked" onclick="window.frames['ImpressaoAtestado'].Carimbo(this.checked);" />
                 <span class="lbl"> Carimbar</span>
             </label>
-            <label <% if session("Banco")<>"clinic3882" then %>style="display: none;" <% end if %>><input type="checkbox" id="Timbrado" name="Timbrado" class="ace" checked  onclick="window.frames['ImpressaoAtestado'].Timbrado(this.checked);" />
+            <label><input type="checkbox" id="Timbrado" name="Timbrado" class="ace" checked  onclick="window.frames['ImpressaoAtestado'].Timbrado(this.checked);" />
                 <span class="lbl"> Papel Timbrado</span>
             </label>
             <hr />

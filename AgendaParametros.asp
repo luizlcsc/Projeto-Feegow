@@ -135,7 +135,6 @@ if tipo="PacienteID" then
                  if planosOptions<>"" then
                     %>
 $(document).ready(function() {
-
     $("#divConvenioPlano").remove();
     $("#divConvenio").after("<%=planosOptions%>");
 
@@ -160,10 +159,18 @@ $(document).ready(function() {
 /*			$("#ConvenioID").val('<%=conv("id")%>');
 			$("#searchConvenioID").val("<%=conv("NomeConvenio")%>");
 */
+
+            var optionExists = ($('#ConvenioID option[value=' + <%=conv("id") %> + ']').length > 0);
+
+            if(!optionExists)
+            {
+                $('#ConvenioID').append("<option value='<%=conv("id") %>'><%=conv("NomeConvenio") %></option>");
+            }
+            
             //to ajax select2
-            $("#ConvenioID option").val("<%=conv("id") %>");
-            $("#ConvenioID option").text("<%=conv("NomeConvenio") %>");
-            $("#ConvenioID").val("<%=conv("id") %>");
+            //$("#ConvenioID option").val("<%=conv("id") %>");
+            //$("#ConvenioID option").text("<%=conv("NomeConvenio") %>");
+            $("#ConvenioID").val("<%=conv("id") %>").select2();
 
             if($("#ConvenioID").length > 0){
                 $("#ConvenioID").select2("destroy");

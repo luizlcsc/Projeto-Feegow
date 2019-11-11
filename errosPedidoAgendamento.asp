@@ -370,7 +370,7 @@ if erro = "" and ref("LocalID")<>"" and ref("LocalID")<>"0"  then
 
     if ref("rdValorPlano")="P" then
         if validaConvenio( ref("ConvenioID"), ref("LocalID") )=0 then
-            erro="Esta unidade não aceita o convênio selecionado na linha 1."
+           ' erro="Esta unidade não aceita o convênio selecionado na linha 1."
         end if
     end if
 
@@ -386,7 +386,7 @@ if erro = "" and ref("LocalID")<>"" and ref("LocalID")<>"0"  then
 
             if aprdValorPlano="P" then
                 if validaConvenio(apValorPlano,apLocalID )=0 then
-                    erro="Esta unidade não aceita o convênio selecionado na linha "&i+2&"."
+             '       erro="Esta unidade não aceita o convênio selecionado na linha "&i+2&"."
                 end if
             end if
         Next

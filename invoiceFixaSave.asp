@@ -95,6 +95,9 @@ if erro="" then
 		type: 'success',
         delay: 3000
 	});
+
+	fetch("http://api.feegow.com.br/billing/receitafixa/processar");
+
 	geraParcelas('N');
 	$("#sysActive").val("1");
 

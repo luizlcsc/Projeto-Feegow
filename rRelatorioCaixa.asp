@@ -12,6 +12,7 @@
 UnidadeID = req("UnidadeID")
 Data = req("Data")
 mData = mydatenull(Data)
+DetalharEntradas = req("DetalharEntradas")
 MC = req("MC")
 
 
@@ -102,12 +103,12 @@ Cheque = 0
 Credito = 0
 Debito = 0
 Titulo = "ENTRADAS"
-if req("DetalharEntradas")="" then
+if DetalharEntradas="" then
     Titulo = Titulo & " <a class='btn btn-default btn-xs' href='./PrintStatement.asp?R=rRelatorioCaixa&Tipo="& req("Tipo") &"&Data="& req("Data") &"&UnidadeID="& req("UnidadeID") &"&DetalharEntradas=S'>DETALHAR ENTRADAS</a> "
 end if
 Classe = "success"
 if MC="" then
-    if req("DetalharEntradas")="" then
+    if DetalharEntradas="" then
         sql = "select concat( ifnull(count(m.id), 0), ' lançamento(s)' ) Descricao, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9))) GROUP BY pm.PaymentMethod, m.CaixaID ORDER BY lu.Nome, pm.PaymentMethod"
         set dist = db.execute(sql)
     else
@@ -116,7 +117,7 @@ if MC="" then
     end if
     'response.write(sql)
 else
-    if req("DetalharEntradas")="" then
+    if DetalharEntradas="" then
         set dist = db.execute("select concat( ifnull(count(m.id), 0), ' lançamento(s)' ) Descricao, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.CaixaID="& session("CaixaID") &" AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9))) GROUP BY pm.PaymentMethod, m.CaixaID ORDER BY lu.Nome, pm.PaymentMethod")
     else
         set dist = db.execute("select m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.CaixaID="& session("CaixaID") &" AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9))) ORDER BY lu.Nome, pm.PaymentMethod")
@@ -129,14 +130,24 @@ if not dist.eof then
 <table class="table table-striped table-hover table-bordered table-condensed">
     <thead>
         <tr class="<%= Classe %>">
-            <th colspan="5"><%= Titulo %></th>
+            <th colspan="<% if DetalharEntradas="S" then %>8<%else%>5<% end if %>"><%= Titulo %></th>
         </tr>
         <tr class="<%= Classe %>">
-            <th width="20%">Forma</th>
-            <th width="35%">Descrição</th>
-            <th width="10%">Executantes</th>
-            <th width="25%">Usuário</th>
-            <th width="10">Valor</th>
+            <th >Forma</th>
+            <th >Descrição</th>
+
+            <%
+            if DetalharEntradas="S" then
+            %>
+            <th>Procedimentos</th>
+            <th>NFS-e</th>
+            <th>Executantes</th>
+            <%
+            end if
+            %>
+
+            <th >Usuário</th>
+            <th >Valor</th>
         </tr>
     <tbody>
     <%
@@ -145,7 +156,7 @@ if not dist.eof then
         Executantes=""
 
         if MC="" then
-            if req("DetalharEntradas")="S" then
+            if DetalharEntradas="S" then
                 Valor = dist("Value")
                 set desc = db.execute("select prof.NomeProfissional, group_concat(ifnull(proc.NomeProcedimento, '')) NomeProcedimento, ii.InvoiceID, fi.nroNFe from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN sys_financialinvoices fi ON fi.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN profissionais prof ON prof.id=ii.ProfissionalID and ii.Associacao=5 where PagamentoID="& dist("id"))
                 if not desc.eof then
@@ -153,10 +164,11 @@ if not dist.eof then
                     Executantes = desc("NomeProfissional")
                     nroNFe=""
                     if desc("nroNFe")&""<>"" then
-                        nroNFe = " (Nota Fiscal: "&desc("nroNFe")&")"
+                        nroNFe = desc("nroNFe")
                     end if
                 end if
-                Descricao = "<code style='cursor:pointer' onclick=""window.open('./?P=Invoice&Pers=1&CD=C&I="& desc("InvoiceID") &"')"" >"& Procedimentos &"</code> " & accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit")) & nroNFe
+                Descricao = accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit"))
+                Procedimentos = "<a style='cursor:pointer' onclick=""window.open('./?P=Invoice&Pers=1&CD=C&I="& desc("InvoiceID") &"')"" >"& Procedimentos &"</code> "
 
             else
                 set soma = db.execute("select sum(Value) Total from sys_financialmovement where CaixaID="& dist("CaixaID") &" AND PaymentMethodID='"& dist("PaymentMethodID") &"' AND Date="& mData &" AND ((AccountAssociationIDDebit=7 AND AccountIDDebit="& dist("CaixaID") &" AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9)))")
@@ -168,17 +180,17 @@ if not dist.eof then
                 Descricao = dist("Descricao")
             end if
         else
-            if req("DetalharEntradas")="S" then
+            if DetalharEntradas="S" then
                 Valor = dist("Value")
                 set desc = db.execute("select group_concat(ifnull(proc.NomeProcedimento, '')) NomeProcedimento, fi.nroNFe from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN sys_financialinvoices fi ON fi.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID where PagamentoID="& dist("id"))
                 if not desc.eof then
                     Procedimentos = desc("NomeProcedimento")
                     nroNFe=""
                     if desc("nroNFe")&""<>"" then
-                        nroNFe = " (Nota Fiscal: "&desc("nroNFe")&")"
+                        nroNFe = desc("nroNFe")
                     end if
                 end if
-                Descricao = "<code>"& Procedimentos &"</code> " & accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit")) & nroNFe
+                Descricao = accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit")) & nroNFe
             else
                 set soma = db.execute("select sum(Value) Total from sys_financialmovement where CaixaID="& session("CaixaID") &" AND PaymentMethodID='"& dist("PaymentMethodID") &"' AND ((AccountAssociationIDDebit=7 AND AccountIDDebit="& session("CaixaID") &" AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9)))")
                 if not soma.eof then
@@ -203,7 +215,15 @@ if not dist.eof then
         <tr>
             <td><%= dist("PaymentMethod") %></td>
             <td><%= Descricao %></td>
+            <%
+            if DetalharEntradas="S" then
+            %>
+            <td><%= Procedimentos %></td>
+            <td><%= nroNFe %></td>
             <td><%= Executantes %></td>
+            <%
+            end if
+            %>
             <td><%= dist("Nome") %></td>
             <td class="text-right">R$ <%= fn(Valor) %></td>
         </tr>
@@ -629,7 +649,7 @@ if MC="1" then %>
             <tr>
                 <td><%= dist("PaymentMethod") %></td>
                 <td><%= Descricao %></td>
-                <td><a href="./?P=PreFechaCaixa&Pers=1&CX=<%= dist("CaixaID") %>&DetalharEntradas=<%= req("DetalharEntradas") %>" target="_blank"><%= dist("Nome") %></a></td>
+                <td><a href="./?P=PreFechaCaixa&Pers=1&CX=<%= dist("CaixaID") %>&DetalharEntradas=<%= DetalharEntradas %>" target="_blank"><%= dist("Nome") %></a></td>
                 <td class="text-right">R$ <%= fn(Valor) %></td>
                 <td class="text-right">
                     <% if ValorInformado<>"" then %>

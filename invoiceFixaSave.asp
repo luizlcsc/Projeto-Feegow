@@ -96,7 +96,9 @@ if erro="" then
         delay: 3000
 	});
 
-	fetch("http://api.feegow.com.br/billing/receitafixa/processar");
+    <%if session("Banco")="clinic100003" or session("Banco")="clinic5459" then %>
+    	fetch(domain+"/billing/receitafixa/processar");
+    <% end if %>
 
 	geraParcelas('N');
 	$("#sysActive").val("1");

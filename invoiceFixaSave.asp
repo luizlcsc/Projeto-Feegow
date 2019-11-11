@@ -95,6 +95,11 @@ if erro="" then
 		type: 'success',
         delay: 3000
 	});
+
+    <%if session("Banco")="clinic100003" or session("Banco")="clinic5459" then %>
+    	fetch(domain+"/billing/receitafixa/processar");
+    <% end if %>
+
 	geraParcelas('N');
 	$("#sysActive").val("1");
 

@@ -2,6 +2,7 @@
 <%
 PacienteID = req("PacienteID")
 ProfissionalID = req("ProfissionalID")
+contadorProcedimentos = req("contadorProcedimentos")
 
 ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
          "INNER JOIN sys_financialinvoices i ON p.id = i.AccountID and i.AssociationAccountID = 3 "&_
@@ -61,12 +62,16 @@ if not PacProc.eof then
         </table>
     </div>
     <div style="margin-top: 30px" class="col-md-3">
-        <button type="button" class="btn btn-primary btn-block" id="pacProcButton">Selecionar procedimento</button>
+        <button type="button" class="btn btn-primary btn-block" onClick="selectProcedure()" id="pacProcButton">Selecionar procedimento</button>
     </div>
 </div>
-
+<p hidden id="contadorProcedimentos"><%=contadorProcedimentos%></p>
 <script>
-$(document).ready(function () {
+var count = "";
+var count = $("#contadorProcedimentos").text();
+if(count=="0"){
+    count="";
+}
 
     $("#pacProcButton").on("click", function () {
         selectProcedure();
@@ -83,16 +88,18 @@ $(document).ready(function () {
    }
 
    function procedimentoSelect2(procedimentoId, nomeProcedimento) {
-       $("#ProcedimentoID option").text(nomeProcedimento);
-       $("#ProcedimentoID option").val(procedimentoId);
-       $("#ProcedimentoID").val(procedimentoId);
-       s2aj("ProcedimentoID", 'procedimentos', 'NomeProcedimento', '');
+       $("#ProcedimentoID"+count+" option").text(nomeProcedimento);
+       $("#ProcedimentoID"+count+" option").val(procedimentoId);
+       $("#ProcedimentoID"+count).val(procedimentoId);
+       $("#rdValorPlanoV"+count).click();
+       s2aj("ProcedimentoID"+count, 'procedimentos', 'NomeProcedimento', '');
    }
 
    function valorInput(ProcPreco) {
-        $("#Valor").val(ProcPreco);
+        $("#Valor"+count).val(ProcPreco);
+        somarValores();
    }
-});
+
 </script>
 
 <%end if%>

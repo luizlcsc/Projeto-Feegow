@@ -7,6 +7,20 @@
 </head>
 
 <%
+profissionalId = 0
+if session("Table")="profissionais" then
+    profissionalId = session("IdInTable")
+end if
+unidadeId = session("UnidadeID")
+
+set timbrado = db.execute("select pt.* "&_
+                          "from papeltimbrado pt "&_
+                          "where pt.sysActive=1 AND (pt.profissionais like '%|ALL|%' OR pt.Profissionais LIKE '%|"&profissionalId&"|%')  AND "&_
+                          "(UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&unidadeId&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0) LIMIT 1")
+if not timbrado.eof then
+    cabecalho = timbrado("Cabecalho")
+    rodape = timbrado("Rodape")
+end if
 db_execute("update pedidossadt set ConvenioID="& treatvalzero(req("ConvenioIDPedidoSADT")) &", ProfissionalID="&treatvalzero(req("ProfissionalID"))&", Data="&mydatenull(req("DataSolicitacao"))&", IndicacaoClinica='"& req("IndicacaoClinicaPedidoSADT") &"', Observacoes='"& req("ObservacoesPedidoSADT") &"', ProfissionalExecutante='"& req("ProfissionalExecutanteIDPedidoSADT") &"' where id="& req("PedidoSADTID"))
 set procs = db.execute("select pps.*, ps.ConvenioID, ps.Data, ps.PacienteID, ps.ProfissionalID, ps.GuiaID, ps.IndicacaoClinica, ps.Observacoes, pac.NomePaciente, pac.Matricula1, pac.Validade1 from pedidossadtprocedimentos pps LEFT JOIN pedidossadt ps ON pps.PedidoID=ps.id LEFT JOIN pacientes pac ON pac.id=ps.PacienteID where pps.PedidoID="& req("PedidoSADTID"))
 if not procs.EOF then
@@ -68,14 +82,15 @@ paginas_impressas = 0
         paginas_impressas  = paginas_impressas  + 1
      %>
 <body>
-	<div style="max-width: 90%; margin: 0 auto">
+	<div style="max-width: 100%; margin: 0 auto">
 	<style>
 
-    .tablePrint{ width:90%; vertical-align: top; font-size:11px; font-family: sans-serif; margin-bottom: 30px;}
+    .tablePrint{ vertical-align: top; font-size:11px; font-family: sans-serif; margin-bottom: 15px;}
     p {margin-top:0px; margin-bottom: 2px;}
 
     </style>
-    
+    <%=cabecalho%>
+    <br>
 	<table class="tablePrint">
 
 	    <tr>
@@ -153,7 +168,7 @@ paginas_impressas = 0
         </tr>
 
       <tr>
-          <td colspan="2" style="height: 120px; vertical-align: top">
+          <td colspan="2" style="height: 50px; vertical-align: top">
 
               <p><b>Observação:</b><%=Observacoes%></p>
           </td>
@@ -161,13 +176,14 @@ paginas_impressas = 0
       </tr>
       <Tr>
         <td colspan="2">
-            <hr style="border:1px solid #000">
-                <%=Endereco%>
+            <!--<hr style="border:1px solid #000">-->
+                <%'=Endereco%>
         </td>
       </Tr>
     </table>
  
 </div>
+<%=rodape%>
 <div style='page-break-after:always'></div>
 <% wend 
     procs.close 

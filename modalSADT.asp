@@ -204,8 +204,8 @@ elseif Tipo="Despesas" then
 			GuiaID = reg("GuiaID")
 			CD = reg("CD")
 			Data = reg("Data")
-			HoraInicio = reg("HoraInicio")
-			HoraFim = reg("HoraFim")
+            if isnull(reg("HoraInicio")) then HoraInicio="" else HoraInicio = right(reg("HoraInicio"), 8)end if 
+            if isnull(reg("HoraFim")) then HoraFim="" else HoraFim = right(reg("HoraFim"), 8) end if
 			TabelaProdutoID = reg("TabelaProdutoID")
 			ProdutoID = reg("ProdutoID")
 			CodigoProduto = reg("CodigoProduto")

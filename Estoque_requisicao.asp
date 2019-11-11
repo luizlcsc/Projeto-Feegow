@@ -162,8 +162,8 @@ Tipo="Requisicao"
             $valorUnitario = $("#"+unitarioId),
             $quantidade = $("#"+quantidadeId);
 
-        var valorUnitario = parseFloat($valorUnitario.val().replace(".", "")),
-            quantidade = parseFloat($quantidade.val()),
+        var valorUnitario = parseFloat($valorUnitario.val().replace(".", "").replace(",", ".")),
+            quantidade = parseFloat($quantidade.val().replace(".", "").replace(",", ".")),
             valorTotal = (valorUnitario * quantidade).toFixed(2);
 
         if(!$.isNumeric(valorTotal)){

@@ -136,8 +136,8 @@ HoraSolFin=dateAdd("n",TempoSol,HoraSolIni)
 HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
 
-if ref("LocalID")&""<>"" then
-    set maxAgendamentoLocal = db.execute("select count(id) id from agendamentos ag where Data = DATE_FORMAT(STR_TO_DATE('"&ref("Data")&" ', '%d/%m/%Y'), '%Y-%m-%d') and Hora = '"&ref("Hora")&":00' and LocalID="&ref("LocalID")&" group by ag.localid having count(ag.id) >= (select lc.MaximoAgendamentos from locais lc where lc.id=ag.localID and MaximoAgendamentos!='')")
+if ref("LocalID")&""<>"" and ConsultaID="0" then
+    set maxAgendamentoLocal = db.execute("select count(id) id from agendamentos ag where Data = "&mydatenull(ref("Data"))&" and Hora = '"&ref("Hora")&":00' and LocalID="&ref("LocalID")&" group by ag.localid having count(ag.id) >= (select lc.MaximoAgendamentos from locais lc where lc.id=ag.localID and MaximoAgendamentos!='')")
 
     if not maxAgendamentoLocal.eof then
         erro="Local indisponível. Máximo de pacientes neste local e horário é inválido."
@@ -366,16 +366,16 @@ if erro="" then
     end if
 end if
 
-if erro = "" then
+if erro = "" and ref("LocalID")<>"" and ref("LocalID")<>"0"  then
 
     if ref("rdValorPlano")="P" then
         if validaConvenio( ref("ConvenioID"), ref("LocalID") )=0 then
-            erro="Esta unidade não aceita convenio selecionado na linha 1."
+           ' erro="Esta unidade não aceita o convênio selecionado na linha 1."
         end if
-    end if 
+    end if
 
     procedimentosID = trim(ref("ProcedimentosAgendamento"))
-    if procedimentosID <> "" then 
+    if procedimentosID <> "" then
         procedimentos = split(procedimentosID, ",")
         For i=0 To UBound(procedimentos)
             apID = Trim(procedimentos(i))
@@ -383,12 +383,12 @@ if erro = "" then
             aprdValorPlano = ref("rdValorPlano"& apID)
             apValorPlano = ref("ConvenioID"& apID)
             apLocalID = ref("LocalID"& apID)
-            
+
             if aprdValorPlano="P" then
                 if validaConvenio(apValorPlano,apLocalID )=0 then
-                    erro="Esta unidade não aceita convenio selecionado na linha "&i+2&"."
+             '       erro="Esta unidade não aceita o convênio selecionado na linha "&i+2&"."
                 end if
-            end if 
+            end if
         Next
     end if
 end if
@@ -410,10 +410,10 @@ if erro="" and rdEquipamentoID <> "" then
         procedimentosID = trim(ref("ProcedimentosAgendamento"))
         if procedimentosID <> "" then 
             procedimentos = split(procedimentosID, ",")
-            For i=0 To UBound(procedimentos)
-                apID = Trim(procedimentos(i))
-                EquipID = ref("EquipamentoID" & apID)
-         
+            For Each p In procedimentos
+                EquipID = ref("EquipamentoID" & Trim(p))
+                temBloqueio = validarEquipamento(EquipID, rfData, rfHora)
+
                 if temBloqueio = 0 then
                     erro = "Existem equipamento sem disponibilidade"
                 end if
@@ -644,10 +644,12 @@ function validaConvenio(convenioID, localID)
                 end if
             end if
         end if
-        'response.write "select id from convenios where sysActive=1 and (unidades like'%|"&mUnidadeID&"|%' or unidades ='') and id = "&convenioID&"<br>"
-        set PlanoNaUnidadeSQL = db.execute("select id from convenios where sysActive=1 and (unidades like'%|"&mUnidadeID&"|%' or unidades ='') and id = "&convenioID)
-        if PlanoNaUnidadeSQL.eof then
-                validaConvenio=0
+
+        if mUnidadeID&"" <> "" then
+            set PlanoNaUnidadeSQL = db.execute("select id from convenios where sysActive=1 and (unidades like '%|"&mUnidadeID&"|%' or unidades ='' or unidades is null) and id = "&convenioID)
+            if PlanoNaUnidadeSQL.eof then
+                    validaConvenio=0
+            end if
         end if
     end if
 

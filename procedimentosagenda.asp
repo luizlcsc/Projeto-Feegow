@@ -6,11 +6,9 @@ Convenios = ref("Convenios")
 GradeApenasConvenios = ref("GradeApenasConvenios")
 GradeApenasProcedimentos = ref("GradeApenasProcedimentos")
 EquipamentoID = ref("EquipamentoID")
+rdValorPlano= ref("Forma")
+ConvenioID= ref("ConvenioSelecionado")
 
-if ref("Forma")<>"" then    
-    rdValorPlano= ref("Forma")
-    ConvenioID= ref("ConvenioSelecionado")
-end if
 
 if Acao="I" then
     n = ref("I")

@@ -129,31 +129,35 @@ if not dist.eof then
 <table class="table table-striped table-hover table-bordered table-condensed">
     <thead>
         <tr class="<%= Classe %>">
-            <th colspan="4"><%= Titulo %></th>
+            <th colspan="5"><%= Titulo %></th>
         </tr>
         <tr class="<%= Classe %>">
             <th width="20%">Forma</th>
             <th width="35%">Descrição</th>
-            <th width="35%">Usuário</th>
+            <th width="10%">Executantes</th>
+            <th width="25%">Usuário</th>
             <th width="10">Valor</th>
         </tr>
     <tbody>
     <%
     Valor = 0
     while not dist.eof
+        Executantes=""
 
         if MC="" then
             if req("DetalharEntradas")="S" then
                 Valor = dist("Value")
-                set desc = db.execute("select group_concat(ifnull(proc.NomeProcedimento, '')) NomeProcedimento, ii.InvoiceID, fi.nroNFe from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN sys_financialinvoices fi ON fi.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID where PagamentoID="& dist("id"))
+                set desc = db.execute("select prof.NomeProfissional, group_concat(ifnull(proc.NomeProcedimento, '')) NomeProcedimento, ii.InvoiceID, fi.nroNFe from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN sys_financialinvoices fi ON fi.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN profissionais prof ON prof.id=ii.ProfissionalID and ii.Associacao=5 where PagamentoID="& dist("id"))
                 if not desc.eof then
                     Procedimentos = desc("NomeProcedimento")
+                    Executantes = desc("NomeProfissional")
                     nroNFe=""
                     if desc("nroNFe")&""<>"" then
                         nroNFe = " (Nota Fiscal: "&desc("nroNFe")&")"
                     end if
                 end if
                 Descricao = "<code style='cursor:pointer' onclick=""window.open('./?P=Invoice&Pers=1&CD=C&I="& desc("InvoiceID") &"')"" >"& Procedimentos &"</code> " & accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit")) & nroNFe
+
             else
                 set soma = db.execute("select sum(Value) Total from sys_financialmovement where CaixaID="& dist("CaixaID") &" AND PaymentMethodID='"& dist("PaymentMethodID") &"' AND Date="& mData &" AND ((AccountAssociationIDDebit=7 AND AccountIDDebit="& dist("CaixaID") &" AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9)))")
                 if not soma.eof then
@@ -199,6 +203,7 @@ if not dist.eof then
         <tr>
             <td><%= dist("PaymentMethod") %></td>
             <td><%= Descricao %></td>
+            <td><%= Executantes %></td>
             <td><%= dist("Nome") %></td>
             <td class="text-right">R$ <%= fn(Valor) %></td>
         </tr>

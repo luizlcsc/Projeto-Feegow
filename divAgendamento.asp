@@ -1521,6 +1521,8 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
     if(A=='I'){
         I = parseInt($("#nProcedimentos").val())-1;
         $("#nProcedimentos").val( I );
+        let formapgt = $("[name=rdValorPlano]:checked").val();
+        let convenioID = $("#ConvenioID").val();
         $.post("procedimentosagenda.asp", {
             A: A, I: I ,
             LocalID:LocalID,
@@ -1528,8 +1530,8 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
             GradeApenasProcedimentos:GradeApenasProcedimentos,
             GradeApenasConvenios: GradeApenasConvenios,
             EquipamentoID: Equipamento,
-            Forma: $("[name=rdValorPlano]:checked").val(),
-            ConvenioSelecionado: $("#ConvenioID").val()
+            Forma: formapgt,
+            ConvenioSelecionado: convenioID
             }, function (data) {
             $('#bprocs').append(data);
         });

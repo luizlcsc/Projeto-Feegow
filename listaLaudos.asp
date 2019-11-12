@@ -222,7 +222,7 @@ end if
                     'msgPadrao = replaceTags(msgPadraoTemplate, PacienteID, session("UserID"), session("UnidadeID"))
                     msgPadrao = msgPadraoTemplate
                     msgPadrao = replace(msgPadrao, "[Paciente.Nome]", TratarNome("Título", ii("NomePaciente")))
-                    msgPadrao = replace(msgPadrao, "[Laudo.Status]", LCase(Status))
+                    msgPadrao = replace(msgPadrao, "[Laudo.Status]", LCase(Status&""))
                     msgPadrao = replace(msgPadrao, "[Procedimento.Nome]", LCase(NomeProcedimento))
 
                     %>

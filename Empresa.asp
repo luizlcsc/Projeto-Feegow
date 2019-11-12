@@ -76,6 +76,12 @@ end if
             <div class="row">
                 <%= quickField("text", "Coordenadas", "Link das Coordenadas", 4, reg("Coordenadas"), "", "", "") %>
                 <%= quickField("text", "DDDAuto", "DDD automático", 2, reg("DDDAuto"), "", "", " maxlength='2'") %>
+                <div class="col-md-6">
+                    <div class="checkbox-custom checkbox-primary">
+                        <input type="checkbox" class="ace 1" name="ExibirAgendamentoOnline" id="ExibirAgendamentoOnline" value="1" <% if reg("ExibirAgendamentoOnline")=1 then %>checked<%end if%>>
+                        <label class="checkbox" for="ExibirAgendamentoOnline"> Exibir no agendamento online</label>
+                    </div>
+                </div>
             </div>
         </form>
     </div>

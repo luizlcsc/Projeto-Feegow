@@ -5,7 +5,7 @@
 
 StatusConsultaID = replace(ref("StatusConsultaID")," ","")
 
-IF StatusConsultaID = "" THEN
+IF StatusConsultaID = "" and req("ItemID") = "" THEN
     StatusConsultaID = "|2|,|3|"
 END IF
 
@@ -31,6 +31,7 @@ sqlConsulta = " SELECT                                                          
               "      ,solicitacao_compra.InvoiceID                                                                                               as InvoiceID               "&chr(13)&_
               "      FROM itenscompra                                                                                                                                       "&chr(13)&_
               "      JOIN solicitacao_compra                    ON solicitacao_compra.id = itenscompra.CompraID                                                             "&chr(13)&_
+              "                                                AND solicitacao_compra.sysActive <> -1                                                                       "&chr(13)&_
               "      JOIN cliniccentral.statusitemcompra        ON cliniccentral.statusitemcompra.id        = itenscompra.StatusID                                          "&chr(13)&_
               "      JOIN cliniccentral.statussolicitacaocompra ON cliniccentral.statussolicitacaocompra.id = solicitacao_compra.StatusID                                   "&chr(13)&_
               " LEFT JOIN produtos                              ON Tipo = 'M' AND produtos.id               = itenscompra.ItemID                                            "&chr(13)&_
@@ -47,9 +48,24 @@ sqlConsulta = " SELECT                                                          
               "                                             AND coalesce(configuracaodecompra.Usuarios like  CONCAT('%|',"&Session("User")&",'|%'),true)                    "&chr(13)&_
               "                                             ORDER BY MinAprovacao                                                                                           "&chr(13)&_
               "                                             LIMIT 1)                                                                                                        "&chr(13)&_
-              " WHERE COALESCE(NULLIF('"&StatusConsultaID&"','') like  CONCAT('%|',solicitacao_compra.StatusID,'|%'),solicitacao_compra.StatusID = 2) ORDER BY CompraID             "
-
+              " WHERE COALESCE(NULLIF('"&StatusConsultaID&"','') like  CONCAT('%|',solicitacao_compra.StatusID,'|%'),true) ORDER BY CompraID             "
     IF GerarInvoice <> "" THEN
+
+        set Quantidade = db.execute("SELECT not COUNT(*) > 0 as Quantidade FROM itenscompra WHERE itenscompra.CompraID="&GerarInvoice&" AND StatusID = 3")
+
+        IF NOT Quantidade.EOF THEN
+            IF Quantidade("Quantidade") THEN
+             %>
+                  new PNotify({
+                                     title: 'Erro.',
+                                     text: 'Não existem item aprovados.',
+                                     type: 'danger',
+                                     delay: 2500
+                      });
+            <%
+            response.end
+            END IF
+        END IF
 
         sqlGerarInvoice = " SET @compraID = "&GerarInvoice&";                                                                                                                                                                       "&chr(13)&_
                           " SET @userID   = "&Session("User")&";                                                                                                                                                                    "&chr(13)&_
@@ -122,7 +138,7 @@ sqlConsulta = " SELECT                                                          
               " SELECT count(*) <= SUM(StatusID = 3),CompraID INTO @aprovados,@compraID FROM itenscompra                                "&chr(13)&_
               " WHERE itenscompra.CompraID = (SELECT CompraID FROM itenscompra where id = @itemID);                                     "&chr(13)&_
               "                                                                                                                         "&chr(13)&_
-              " UPDATE solicitacao_compra SET StatusID = CASE WHEN @aprovados THEN 3 ELSE 2 END WHERE id = @compraID                    "
+              " UPDATE solicitacao_compra SET StatusID = CASE WHEN @aprovados THEN 3 ELSE 1 END WHERE id = @compraID                    "
 
               splittt=Split(sql,";")
               for each x in splittt

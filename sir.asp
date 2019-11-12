@@ -60,6 +60,12 @@ if aut(lcase(ref("resource"))&"A")=1 then
     else
         if instr(ref("oti"), "agenda") then
             ProfissionalID = ref("ProfissionalID")
+            EquipamentoID = ref("EquipamentoID")&""
+
+            if EquipamentoID<>"" and EquipamentoID<>"0" and (ProfissionalID="" or ProfissionalID="0") then
+                ProfissionalID = "-"&EquipamentoID
+            end if
+
             if ProfissionalID<>"" and isnumeric(ProfissionalID) and ProfissionalID<>"0" then
                 set prof = db.execute("select EspecialidadeID from profissionais where not isnull(EspecialidadeID) and EspecialidadeID<>0 and id="& ProfissionalID)
                 if not prof.eof then
@@ -80,7 +86,9 @@ if aut(lcase(ref("resource"))&"A")=1 then
                     sqlEsp = " (opcoesagenda in (4,5) AND ("&sqlEspecialidades&")) "
                     'SomenteProcedimentos = prof("SomenteProcedimentos")&""
                 else
-                    sqlEsp = " opcoesagenda in (4,5) "
+
+                'entra aqui quando pela agenda de equipamentos
+                    sqlEsp = " false "
                 end if
                 sqlProf = " (opcoesagenda IN (4,5) and SomenteProfissionais like '%|"& ProfissionalID &"|%') "
 

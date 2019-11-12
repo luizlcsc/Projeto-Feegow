@@ -94,8 +94,8 @@ while not ptip.eof
                             TotalDespesas = TotalDespesas+ValorDespesas
 
 
-                            UnidadeID=gi("UnidadeID")
-                            if not isnull(UnidadeID) then
+                            UnidadeID=proc("UnidadeID")
+                            if  UnidadeID&""<>"" then
                                 set UnidadeSQL = db.execute("SELECT NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa WHERE id=1 UNION ALL SELECT id,NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE t.id="&treatvalzero(UnidadeID))
                                 if not UnidadeSQL.eof then
                                     NomeUnidade = UnidadeSQL("NomeFantasia")&" - "

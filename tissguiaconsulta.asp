@@ -620,7 +620,7 @@ $("#GuiaConsulta").submit(function(){
 
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?Tipo=Consulta&I=<%=request.QueryString("I")%>",
+		url:"SaveGuia.asp?Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data,obj){
 			eval(data);
@@ -665,7 +665,7 @@ function AutorizarGuiaTisss()
 {
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>",
+		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data){
 			 Autorizador.autorizaProcedimentos();
@@ -680,7 +680,7 @@ function tissVerificarStatusGuia()
 {
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>",
+		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data){
 			Autorizador.verificarStatusGuia(2);
@@ -696,7 +696,7 @@ function imprimirGuiaConsulta(){
 
     $.ajax({
     		type:"POST",
-    		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>",
+    		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
     		data:$("#GuiaConsulta").serialize(),
     		success:function(data){
     			guiaTISS('GuiaConsulta', <%=request.QueryString("I")%> ,$("#gConvenioID").val())

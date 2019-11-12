@@ -74,7 +74,8 @@ function gravaAgendamento(idc)
 	}else{
 		var SubtipoProcedimento=0;
 	}
-	if(document.getElementById('Paciente').value=="")
+	if(document.getElementById('Paciente').value=
+	+)
 	{
 		alert('Selecione um paciente.');
 		document.getElementById('BuscaSelect').focus();

@@ -568,11 +568,14 @@ $(document).ready(function(){
 	Autorizador.bloqueiaBotoes(2);
     <%
     end if
-    if aut("|guiasA|")=1 then
+    if aut("|guiasA|")<>1 then
+        readOnly = " disabled "
+
+    end if
 
     set GuiaStatusSQL = db.execute("SELECT * FROM cliniccentral.tissguiastatus order by id")
 
-    Status = "<select id='GuiaStatus' name='GuiaStatus' class='form-control input-sm'>"
+    Status = "<select id='GuiaStatus' name='GuiaStatus' class='form-control input-sm' "&readOnly&" >"
     while not GuiaStatusSQL.eof
         CheckedStatus = ""
         if GuiaStatusSQL("id")=StatusGuia then
@@ -593,9 +596,7 @@ $(document).ready(function(){
             })
         });
 
-    <%
-    end if
-    %>
+
 
 
 	$("#gConvenioID, #UnidadeID").change(function(){

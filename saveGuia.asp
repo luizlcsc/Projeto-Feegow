@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 I = rep(request.QueryString("I"))
+GuiaStatus = rep(request.QueryString("GuiaStatus"))
 redirecionar = false
 
 if req("isRedirect")="S" then
@@ -133,7 +134,12 @@ else
         end if
         set datant = db.execute("select PacienteID, DataAtendimento from tissguiaconsulta where id="&I)'tem q ser antes pra pegar os dados antes do update
         '//-> fim do atualiza os dados do paciente, profissional, convenio, contratado e procedimento
-            db_execute("update tissguiaconsulta set UnidadeID='"&ref("UnidadeID")&"', PacienteID='"&ref("gPacienteID")&"', CNS='"&ref("CNS")&"', NumeroCarteira='"&ref("NumeroCarteira")&"', ValidadeCarteira="&ValidadeCarteira&", AtendimentoRN='"&ref("AtendimentoRN")&"', ConvenioID='"&ref("gConvenioID")&"', PlanoID='"&ref("PlanoID")&"', RegistroANS='"&ref("RegistroANS")&"', NGuiaPrestador='"&NGuiaPrestador&"', NGuiaOperadora='"&ref("NGuiaOperadora")&"', Contratado='"&ref("Contratado")&"', CodigoNaOperadora='"&ref("CodigoNaOperadora")&"', CodigoCNES='"&ref("CodigoCNES")&"', ProfissionalID='"&ref("gProfissionalID")&"', Conselho='"&ref("Conselho")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', CodigoCBO='"&ref("CodigoCBO")&"', IndicacaoAcidenteID='"&ref("IndicacaoAcidenteID")&"', DataAtendimento='"&mydate(ref("DataAtendimento"))&"', TipoConsultaID='"&ref("TipoConsultaID")&"', ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', ValorProcedimento='"&treatval(ref("ValorProcedimento"))&"', Observacoes='"&ref("Observacoes")&"', sysActive=1, AtendimentoID="&treatvalzero(ref("AtendimentoID"))&", AgendamentoID="&treatvalzero(ref("AgendamentoID"))&", ProfissionalEfetivoID="&treatvalnull(ref("ProfissionalEfetivoID"))&", identificadorBeneficiario='"&ref("IdentificadorBeneficiario")&"' where id="&I)
+            if GuiaStatus <> "" then 
+                GuiaStatus = "guiastatus="&GuiaStatus&" , "
+            end if 
+            sql = "update tissguiaconsulta set "&GuiaStatus&"  UnidadeID='"&ref("UnidadeID")&"', PacienteID='"&ref("gPacienteID")&"', CNS='"&ref("CNS")&"', NumeroCarteira='"&ref("NumeroCarteira")&"', ValidadeCarteira="&ValidadeCarteira&", AtendimentoRN='"&ref("AtendimentoRN")&"', ConvenioID='"&ref("gConvenioID")&"', PlanoID='"&ref("PlanoID")&"', RegistroANS='"&ref("RegistroANS")&"', NGuiaPrestador='"&NGuiaPrestador&"', NGuiaOperadora='"&ref("NGuiaOperadora")&"', Contratado='"&ref("Contratado")&"', CodigoNaOperadora='"&ref("CodigoNaOperadora")&"', CodigoCNES='"&ref("CodigoCNES")&"', ProfissionalID='"&ref("gProfissionalID")&"', Conselho='"&ref("Conselho")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', CodigoCBO='"&ref("CodigoCBO")&"', IndicacaoAcidenteID='"&ref("IndicacaoAcidenteID")&"', DataAtendimento='"&mydate(ref("DataAtendimento"))&"', TipoConsultaID='"&ref("TipoConsultaID")&"', ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', ValorProcedimento='"&treatval(ref("ValorProcedimento"))&"', Observacoes='"&ref("Observacoes")&"', sysActive=1, AtendimentoID="&treatvalzero(ref("AtendimentoID"))&", AgendamentoID="&treatvalzero(ref("AgendamentoID"))&", ProfissionalEfetivoID="&treatvalnull(ref("ProfissionalEfetivoID"))&", identificadorBeneficiario='"&ref("IdentificadorBeneficiario")&"' where id="&I
+            db_execute(sql)
+
             set guia = db.execute("select * from tissguiaconsulta where id="&I)
 
             if not redirecionar then

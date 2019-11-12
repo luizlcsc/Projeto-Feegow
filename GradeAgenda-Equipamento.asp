@@ -510,6 +510,26 @@ $(document).ready(function(){
 			<%
 		end if
 	wend
+
+	'verifica os dias onde há exceção e retira 
+	ExcecaoMesAnoSplt = split(Data,"/")
+    ExcecaoMesAno = ExcecaoMesAnoSplt(2)&"-"&ExcecaoMesAnoSplt(1)
+    sExc = "select DataDe from assperiodolocalxprofissional a where a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.ProfissionalID = -"&EquipamentoID
+	set DiasComExcecaoSQL=db.execute(sExc)
+    while not DiasComExcecaoSQL.eof
+        diasAtende = DiasComExcecaoSQL("DataDe")
+
+        DataExcecaoClasseSplt = split(diasAtende,"/")
+        DataExcecaoClasse = DataExcecaoClasseSplt(0)&"-"&DataExcecaoClasseSplt(1)&"-"&DataExcecaoClasseSplt(2)
+			%>
+			//cidiiddid
+    		$(".dia-calendario.<%=DataExcecaoClasse%>").removeClass("danger");
+			<%
+			
+    	DiasComExcecaoSQL.movenext
+    wend
+    DiasComExcecaoSQL.close
+    set DiasComExcecaoSQL=nothing
 	
 	 sqlocup = "select * from agendaocupacoes where ProfissionalID=-"&EquipamentoID&" and month(Data)="&month(Data)&" and year(Data)="&year(Data)&" order by Data"
 	set ocup = db.execute(sqlocup)

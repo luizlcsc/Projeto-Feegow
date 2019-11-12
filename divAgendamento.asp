@@ -1273,7 +1273,7 @@ function checkinMultiplo()
 {
     let pacienteid = $("#PacienteID").val();
     let unidadeid = <%=session("UnidadeID")%>;
-    let agendamentoID = <%=req("id")%>;
+    let agendamentoID = <%=req("id")&""%>;
     $.get("checkinmultiplo.asp",{
         PacienteID:pacienteid,
         UnidadeID: unidadeid,

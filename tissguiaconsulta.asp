@@ -211,13 +211,22 @@ if not reg.eof then
                             end if
 						end if
 
-                            set ContratadoID = db.execute("select id from contratosconvenio where Contratado ="&ProfissionalID&" and ConvenioID = "&ConvenioID)
+                            set ContratadoID = db.execute("select id, CodigoNaOperadora from contratosconvenio where Contratado ="&ProfissionalID&" and ConvenioID = "&ConvenioID)
                             if not ContratadoID.eof then
                                Contratado = ProfissionalID
+                               CodigoNaOperadora = ContratadoID("CodigoNaOperadora")&""
+                               CodigoCNES = "9999999"
                             end if
                             'response.write(Contratado)
 						%>
-						<script >$(document).ready(function(){$("#Contratado").val("<%=Contratado%>")});</script>
+						<script >
+						$(document).ready(function(){
+						    $("#Contratado").val("<%=Contratado%>")
+						    $("#CodigoNaOperadora").val("<%=CodigoNaOperadora%>")
+						    $("#CodigoCNES").val("<%=CodigoCNES%>")
+						});
+
+						</script>
 						<%
 
 					end if
@@ -568,11 +577,14 @@ $(document).ready(function(){
 	Autorizador.bloqueiaBotoes(2);
     <%
     end if
-    if aut("|guiasA|")=1 then
+    if aut("|guiasA|")<>1 then
+        readOnly = " disabled "
+
+    end if
 
     set GuiaStatusSQL = db.execute("SELECT * FROM cliniccentral.tissguiastatus order by id")
 
-    Status = "<select id='GuiaStatus' name='GuiaStatus' class='form-control input-sm'>"
+    Status = "<select id='GuiaStatus' name='GuiaStatus' class='form-control input-sm' "&readOnly&" >"
     while not GuiaStatusSQL.eof
         CheckedStatus = ""
         if GuiaStatusSQL("id")=StatusGuia then
@@ -593,9 +605,7 @@ $(document).ready(function(){
             })
         });
 
-    <%
-    end if
-    %>
+
 
 
 	$("#gConvenioID, #UnidadeID").change(function(){
@@ -620,7 +630,7 @@ $("#GuiaConsulta").submit(function(){
 
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?Tipo=Consulta&I=<%=request.QueryString("I")%>",
+		url:"SaveGuia.asp?Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data,obj){
 			eval(data);
@@ -665,7 +675,7 @@ function AutorizarGuiaTisss()
 {
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>",
+		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data){
 			 Autorizador.autorizaProcedimentos();
@@ -680,7 +690,7 @@ function tissVerificarStatusGuia()
 {
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>",
+		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data){
 			Autorizador.verificarStatusGuia(2);
@@ -696,7 +706,7 @@ function imprimirGuiaConsulta(){
 
     $.ajax({
     		type:"POST",
-    		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>",
+    		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
     		data:$("#GuiaConsulta").serialize(),
     		success:function(data){
     			guiaTISS('GuiaConsulta', <%=request.QueryString("I")%> ,$("#gConvenioID").val())

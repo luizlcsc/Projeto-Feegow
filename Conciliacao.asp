@@ -49,7 +49,7 @@ for i=0 to ubound(splTrans)
         CHECKNUM = conteudoTag(Linha, "CHECKNUM")
         MEMO = conteudoTag(Linha, "MEMO")
 
-        Valor = TRNAMT
+        Valor = replace(TRNAMT, ",", ".")
         DataO = left(DTPOSTED, 4) &"-"& mid(DTPOSTED, 5, 2) &"-"& mid(DTPOSTED, 7, 2)
         ContaID = req("C")
         'response.write(DTPOSTED &" - "& DataO &"<br>")

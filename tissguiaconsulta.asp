@@ -211,13 +211,22 @@ if not reg.eof then
                             end if
 						end if
 
-                            set ContratadoID = db.execute("select id from contratosconvenio where Contratado ="&ProfissionalID&" and ConvenioID = "&ConvenioID)
+                            set ContratadoID = db.execute("select id, CodigoNaOperadora from contratosconvenio where Contratado ="&ProfissionalID&" and ConvenioID = "&ConvenioID)
                             if not ContratadoID.eof then
                                Contratado = ProfissionalID
+                               CodigoNaOperadora = ContratadoID("CodigoNaOperadora")&""
+                               CodigoCNES = "9999999"
                             end if
                             'response.write(Contratado)
 						%>
-						<script >$(document).ready(function(){$("#Contratado").val("<%=Contratado%>")});</script>
+						<script >
+						$(document).ready(function(){
+						    $("#Contratado").val("<%=Contratado%>")
+						    $("#CodigoNaOperadora").val("<%=CodigoNaOperadora%>")
+						    $("#CodigoCNES").val("<%=CodigoCNES%>")
+						});
+
+						</script>
 						<%
 
 					end if

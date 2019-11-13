@@ -30,7 +30,7 @@ if ref("v")<>"" then
     InsertId = getLast("id")
 
 	if ref("resource")="pacientes" then
-        call addToQueue(116, InsertId)
+        'call addToQueue(116, InsertId)
 	end if
 %>
     $("#<%=ref("t") %> option").val("<%=InsertId %>");

@@ -18,6 +18,8 @@ if temregradesconto="" then
     temregradesconto="0"
 end if
 
+idUsuariosDesconto = "0"
+
 if temregradesconto=1 then
 	'Validar se existe algum desconto cadastrado para o sistema
 	
@@ -29,9 +31,9 @@ if temregradesconto=1 then
 	end if
 
 	'Pegar todos os descontos do usuário pelo perfil dele
-	set rsDescontosUsuario = db.execute("select suser.id, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto "&_
+	set rsDescontosUsuario = db.execute("select suser.id as idUser, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto "&_
 										" from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') "&_
-										" WHERE suser.id = "&session("User")&" AND rd.Recursos LIKE '%"&querydesconto&"%' AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' OR rd.Unidades IS NULL OR rd.Unidades  = '0' ) AND rd.RegraID IS NOT NULL")
+										" WHERE rd.Recursos LIKE '%"&querydesconto&"%' AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' OR rd.Unidades IS NULL OR rd.Unidades  = '0' ) AND rd.RegraID IS NOT NULL")
 
 end if
 
@@ -125,11 +127,24 @@ if erro="" then
                         while not rsDescontosUsuario.eof
                             procedimentoText = rsDescontosUsuario("Procedimentos")
                             if  (instr(procedimentoText, "|"&ref("ItemID"&splInv(i))&"|" ) AND "S"=Tipo) OR trim(procedimentoText)="" then
-                                VDesconto = rsDescontosUsuario("DescontoMaximo")
-                                if rsDescontosUsuario("TipoDesconto")="P" then
-                                    VDesconto = ref("ValorUnitario"&splInv(i)) * rsDescontosUsuario("DescontoMaximo") / 100
-                                end if
-                                if VDesconto > DescontoMaximo then DescontoMaximo = VDesconto end if
+								if rsDescontosUsuario("idUser")&"" = Session("User")&"" then 	
+									VDesconto = rsDescontosUsuario("DescontoMaximo")
+									if rsDescontosUsuario("TipoDesconto")="P" then
+										VDesconto = ref("ValorUnitario"&splInv(i)) * rsDescontosUsuario("DescontoMaximo") / 100
+									end if
+									if VDesconto > DescontoMaximo then 
+										DescontoMaximo = VDesconto 
+									end if
+								else 
+									VDescontomaximo = rsDescontosUsuario("DescontoMaximo")
+									if rsDescontosUsuario("TipoDesconto")="P" then
+										VDescontomaximo = ref("ValorUnitario"&splInv(i)) * rsDescontosUsuario("DescontoMaximo") / 100
+									end if
+
+									if ValorDescontoFinal <= VDescontomaximo then 
+										idUsuariosDesconto = idUsuariosDesconto & "," & rsDescontosUsuario("idUser")
+									end if
+								end if
                             end if
 
                             rsDescontosUsuario.movenext
@@ -194,7 +209,23 @@ if erro="" then
 					else
 						sqlInsertpendente = "insert into descontos_pendentes values (null, "&NewItemID&", "&treatvalzero(DescontoInput)&", 0, "&session("User")&", now(), null, null, now())"
 						db.execute(sqlInsertpendente)
+
+						set DescontosSQL = db.execute("select * from descontos_pendentes where ItensInvoiceID = "&NewItemID&" order by id desc limit 1")
 					end if
+
+					'Gravar na tabela notificacao
+					idsU = Split(idUsuariosDesconto,",")
+					for j = 0 to ubound(idsU) 
+						idUsuario = idsU(j)
+
+						if idUsuario&"" <> "0" then 
+							sqlNotificacao = "insert into notificacoes(TipoNotificacaoID, UsuarioID, NotificacaoIDRelativo, CriadoPorID, Prioridade, StatusID) " &_ 
+								" values(4, "&idUsuario&", "&DescontosSQL("id")&", "&session("User")&", 1,1)" 
+							db.execute(sqlNotificacao)
+
+						end if
+
+					next
 				end if
 			end if
 		next

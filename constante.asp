@@ -53,10 +53,10 @@ else
                                     "WHEN ii.Tipo='O' THEN Descricao " &_
                                     "WHEN ii.Tipo='S' THEN (select NomeProcedimento from procedimentos p where p.id = ii.ItemID ) " &_
                                     "WHEN ii.Tipo='M' THEN (SELECT NomeProduto from produtos p where p.id = ii.ItemID ) " &_
-                                " END AS titulo, dp.Desconto DescontoPendente, Quantidade, ValorUnitario, " &_ 
-                                " Nome " &_ 
+                                " END AS titulo, dp.Desconto DescontoPendente, Quantidade, ValorUnitario, " &_
+                                " Nome " &_
                                 " from descontos_pendentes dp inner join itensproposta ii ON CONCAT('-', ii.id) = dp.ItensInvoiceID " &_
-                                " inner join cliniccentral.licencasusuarios lu ON lu.id = dp.SysUser  " &_ 
+                                " inner join cliniccentral.licencasusuarios lu ON lu.id = dp.SysUser  " &_
                                 " where dp.SysUserAutorizado is null AND dp.STATUS = 0  "
 
         if data <> "" then

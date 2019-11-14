@@ -16,11 +16,11 @@ else
     CaixaID = session("CaixaID")
 end if
 
-if CaixaID <> "" then 
+if CaixaID <> "" then
 
 'Validar se é para oculpar os totais
 OcultarTotaisFecharCaixa = "N"
-if getConfig("OcultarTotaisFecharCaixa") = "1" then 
+if getConfig("OcultarTotaisFecharCaixa") = "1" then
     OcultarTotaisFecharCaixa = 1
 end if
 
@@ -132,8 +132,8 @@ if not dist.eof then
     %>
     </tbody>
 </table>
-    <%     if OcultarTotaisFecharCaixa<>"S" then 
-        call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe) 
+    <%     if OcultarTotaisFecharCaixa<>"S" then
+        call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
         end if
 end if
 
@@ -150,8 +150,8 @@ Debito = 0
 Titulo = "TRANSFERÊNCIAS RECEBIDAS"
 Classe = "success"
 Valor = 0
-set dist = db.execute("select pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit FROM sys_financialmovement m "&_
-    " LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser LEFT JOIN sys_financialcurrentaccounts cc ON cc.id=cx.ContaCorrenteID "&_
+set dist = db.execute("select m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit FROM sys_financialmovement m "&_
+    " LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=m.sysUser LEFT JOIN sys_financialcurrentaccounts cc ON cc.id=cx.ContaCorrenteID "&_
     " WHERE m.AccountAssociationIDDebit=7 AND m.AccountIDDebit="& treatvalzero(CaixaID) &" AND m.AccountAssociationIDCredit IN(1, 7) ORDER BY lu.Nome, pm.PaymentMethod")
 if not dist.eof then
 %>
@@ -162,6 +162,7 @@ if not dist.eof then
             <th colspan="4"><%= Titulo %></th>
         </tr>
         <tr class="<%= Classe %>">
+            <th width="5%">#</th>
             <th width="20%">Forma</th>
             <th width="35%">Descrição</th>
             <th width="35%">Usuário</th>
@@ -184,6 +185,7 @@ if not dist.eof then
         end select
         %>
         <tr>
+            <td><code>#<%= dist("id") %></code></td>
             <td><%= dist("PaymentMethod") %></td>
             <td><%= Descricao %></td>
             <td><%= dist("Nome") %></td>
@@ -201,7 +203,7 @@ if not dist.eof then
     </tbody>
 </table>
     <%     if OcultarTotaisFecharCaixa<>"S" then
-        call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe) 
+        call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
         end if %>
 <%
 end if
@@ -271,7 +273,7 @@ if not dist.eof then
     </tbody>
 </table>
     <%     if OcultarTotaisFecharCaixa<>"S" then
-      call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe) 
+      call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
             end if %>
 <%
 end if
@@ -300,7 +302,7 @@ if not dist.eof then
 <table class="table table-striped table-hover table-bordered table-condensed">
     <thead>
         <tr class="<%= Classe %>">
-            <th colspan="4"><%= Titulo %></th>
+            <th colspan="5"><%= Titulo %></th>
         </tr>
         <tr class="<%= Classe %>">
             <th width="20%">Forma</th>
@@ -341,10 +343,10 @@ if not dist.eof then
     %>
     </tbody>
 </table>
-    <%      if OcultarTotaisFecharCaixa<>"S" then 
+    <%      if OcultarTotaisFecharCaixa<>"S" then
         call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
         end if
-end if 
+end if
 
 
 Titulo = "TRANSFERÊNCIAS SOLICITADAS"
@@ -402,7 +404,7 @@ end if
 
 <h5>FECHAMENTO DE CAIXA</h5>
 <%     if OcultarTotaisFecharCaixa<>"S" then
-        call    linhaTotais(Balanco, Cheque, Credito, Debito, "FECHAMENTO DE CAIXA", "alert") 
+        call    linhaTotais(Balanco, Cheque, Credito, Debito, "FECHAMENTO DE CAIXA", "alert")
         end if %>
 
 

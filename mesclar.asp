@@ -90,7 +90,9 @@ strUpdate = "update pacientes set "&strUpdate &"sysActive=1 where id="&novoid
 'response.Write(strUpdate)
 db_execute(strUpdate)
 'response.Write("delete from pacientes where id="&velhoid)
-db_execute("delete from pacientes where id="&velhoid)
+db_execute("UPDATE pacientes SET sysActive=-1 where id="&velhoid)
+
+call logMessage("pacientes",novoid,"Mesclagem de paciente. "&p1("NomePaciente")&"{"&velhoid&"} -> "&p2("NomePaciente")&"{"&novoid&"}")
 
 set fp = db.execute("select distinct ModeloID from buiformspreenchidos where PacienteID="&velhoid)
 while not fp.eof

@@ -174,6 +174,16 @@ end if
             <div class="col-md-4">
                 <%=selectList("Nome &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small class=""label label-xs label-light hidden"" id=""resumoConvenios""></small>", "NomePaciente", reg("NomePaciente"), "pacientes", "NomePaciente", "sipac($(this).val());", " required", "")%>
             </div>
+            <%
+            if reg("sysActive")=1 then
+            %>
+            <script >
+                $("#NomePaciente").attr("readonly", true);
+                $("#NomePaciente").parents("div").parents("div").find("label").after("<button title='Editar nome do paciente' onclick='$(\"#NomePaciente\").attr(\"readonly\", false); $(this).fadeOut(); $(\"#NomePaciente\").focus();' type='button' class='btn btn-default btn-xs'><i class='fa fa-edit'></i></button>");
+            </script>
+            <%
+            end if
+            %>
             <%=quickField("datepicker", "Nascimento", "Nascimento", 2, reg("Nascimento"), "input-mask-date", "", "")%>
             <div class="col-md-2">
                 <label for="Estrangeiro">Estrangeiro</label>
@@ -546,7 +556,9 @@ if reg("sysActive")<0 then
 %>
 
 
-
+<%
+if reg("sysActive")=1 then
+    %>
 
         function comparaPaciente(T) {
             $.post("ComparaPacientes.asp?T=" + T, { I: <%= PacienteID %>, No: $("#NomePaciente").val(), Na: $("#Nascimento").val(), C: $("#CPF").val(), S: $("#Sexo").val() }, function (data) {
@@ -560,6 +572,9 @@ if reg("sysActive")<0 then
 
             });
         }
+<%
+end if
+%>
 
 $("#NomePaciente, #Nascimento, #CPF").change(function () {
     comparaPaciente('Conta');

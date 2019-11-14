@@ -10,98 +10,6 @@ else
     <!--#include file="connect.asp"-->
     <!--#include file="connectCentral.asp"-->
     <%
-    
-    'Validar os descontos pendentes
-    'Procurar se ja foi exibido o modal para este usuario
-    modalConteudoSql = "select  DHUp from exibicao_conteudo where SysUser = "&session("User")&" AND conteudo = 'desconto_pendente' AND Data = CURDATE() order by DHUp DESC LIMIT 1 "
-    'Response.Write(modalConteudoSql)
-    set rsModalConteudo = db.execute(modalConteudoSql)
-
-    jaExibiuModal = 0
-    data = ""
-    if not rsModalConteudo.eof then
-        if rsModalConteudo("DHUp") <> "" then
-            data = rsModalConteudo("DHUp")
-        else
-            jaExibiuModal = 1
-            db.execute("insert into exibicao_conteudo(SysUser, conteudo, Data) values("&session("User")&", 'desconto_pendente', now()) ")
-        end if
-        rsModalConteudo.movenext
-    else
-        jaExibiuModal = 1
-    end if
-
-    if jaExibiuModal = 1 OR data <> "" then
-        'Verificar se existem descontos pendentes de aprovação e se este usuário pode acessar
-        descontoPendenteSql = "select dp.id as iddesconto, dp.ItensInvoiceID, CASE " &_
-                                    "WHEN ii.Tipo='O' THEN Descricao " &_
-                                    "WHEN ii.Tipo='S' THEN (select NomeProcedimento from procedimentos p where p.id = ii.ItemID ) " &_
-                                    "WHEN ii.Tipo='M' THEN (SELECT NomeProduto from produtos p where p.id = ii.ItemID ) " &_
-                                " END AS titulo, dp.Desconto DescontoPendente, Quantidade, ValorUnitario, " &_ 
-                                " Nome " &_ 
-                                " from descontos_pendentes dp inner join itensinvoice ii ON ii.id = dp.ItensInvoiceID " &_
-                                " inner join cliniccentral.licencasusuarios lu ON lu.id = dp.SysUser  " &_ 
-                                " where dp.SysUserAutorizado is null AND dp.STATUS = 0  "
-
-        if data <> "" then
-            descontoPendenteSql = descontoPendenteSql & " AND dp.DataHora >= " & myDateTime(data) & " " 
-        end if
-
-        descontoPendenteSql = descontoPendenteSql & " UNION ALL "
-
-        descontoPendenteSql = descontoPendenteSql & "select dp.id as iddesconto, dp.ItensInvoiceID, CASE " &_
-                                    "WHEN ii.Tipo='O' THEN Descricao " &_
-                                    "WHEN ii.Tipo='S' THEN (select NomeProcedimento from procedimentos p where p.id = ii.ItemID ) " &_
-                                    "WHEN ii.Tipo='M' THEN (SELECT NomeProduto from produtos p where p.id = ii.ItemID ) " &_
-                                " END AS titulo, dp.Desconto DescontoPendente, Quantidade, ValorUnitario, " &_
-                                " Nome " &_
-                                " from descontos_pendentes dp inner join itensproposta ii ON CONCAT('-', ii.id) = dp.ItensInvoiceID " &_
-                                " inner join cliniccentral.licencasusuarios lu ON lu.id = dp.SysUser  " &_
-                                " where dp.SysUserAutorizado is null AND dp.STATUS = 0  "
-
-        if data <> "" then
-            descontoPendenteSql = descontoPendenteSql & " AND dp.DataHora >= " & myDateTime(data) & " " 
-        end if
-
-        'Response.write(descontoPendenteSql)
-
-        set rsDescontoPendente = db.execute(descontoPendenteSql)
-
-        set rsDescontosUsuario = db.execute("select suser.id, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto "&_
-                            " from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') "&_
-                            " WHERE suser.id = "&session("User")&" AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' )")
-
-        podePermitirDesconto = 0
-        if not rsDescontosUsuario.eof then
-            while not rsDescontoPendente.eof and podePermitirDesconto = 0
-                while not rsDescontosUsuario.eof and podePermitirDesconto = 0
-                    valorLimiteRegra = rsDescontosUsuario("DescontoMaximo")
-                    if rsDescontosUsuario("TipoDesconto") = "P" then
-                        valorLimiteRegra = rsDescontoPendente("ValorUnitario") * rsDescontosUsuario("DescontoMaximo") / 100
-                    end if
-                    if valorLimiteRegra >= rsDescontoPendente("DescontoPendente") then
-                        podePermitirDesconto = 1
-
-                    end if
-                    rsDescontosUsuario.movenext
-                wend
-
-                rsDescontosUsuario.movefirst
-                rsDescontoPendente.movenext
-            wend
-        end if
-        'Response.write("PODE PERMITIR" & podePermitirDesconto)
-        if podePermitirDesconto = 1 then
-        db.execute("insert into exibicao_conteudo(SysUser, conteudo, Data) values("&session("User")&", 'desconto_pendente', now()) ")
-    %>
-        //$("#modal-descontos-pendentes").modal("show");
-        //$("#div-descontos-pendentes").html("Existem descontos pendentes de aprovação. <br><a href='?P=DescontoPendente&Pers=1'>Ir para a tela</a>");
-        openModal("Existem descontos pendentes de aprovação. <br><a href='?P=DescontoPendente&Pers=1'>Ir para a tela</a>", "Descontos Pendentes", true, false, "lg")
-    <% 
-        end if 
-    end if 
-
-    '-----------------------------------------------
 
 
     if session("OtherCurrencies")="phone" then
@@ -317,7 +225,7 @@ else
         cNot = 0
     
 	    if buscaAtu("TemNotificacao") then
-	        set NotificacoesSQL = db.execute("SELECT n.*, nt.TextoNotificacao FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1,2) AND n.UsuarioID="&buscaAtu("id"))
+	        set NotificacoesSQL = db.execute("SELECT n.*, nt.TextoNotificacao FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1,2) AND TipoNotificacaoID != 4 AND n.UsuarioID="&buscaAtu("id"))
 
 	        while not NotificacoesSQL.eof
 	            cNot=cNot+1
@@ -337,6 +245,20 @@ else
 	        NotificacoesSQL.close
 	        set NotificacoesSQL=nothing
 	    end if
+
+        'Buscar os descontos pendentes
+        set NotificacoesSQL = db.execute("SELECT count(n.id) total FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1) AND TipoNotificacaoID = 4 AND n.UsuarioID="&Session("User"))
+        if not NotificacoesSQL.eof then 
+            if ccur(NotificacoesSQL("total")) > 0 then 
+                %>
+                    openModal("Existem descontos pendentes de aprovação. <br><a href='?P=DescontoPendente&Pers=1'>Ir para a tela</a>", "Descontos Pendentes", true, false, "lg")
+                <%
+                sqlAtualizar = "update notificacoes set StatusID = 2 where StatusID IN (1) AND TipoNotificacaoID = 4 AND UsuarioID="&Session("User")
+                db.execute(sqlAtualizar)
+            end if
+        end if
+        NotificacoesSQL.close
+        set NotificacoesSQL=nothing
 	
         'Adicionar notificação se ouver ainda algum desconto para ser aprovado
 

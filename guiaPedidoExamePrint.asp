@@ -87,6 +87,7 @@ paginas_impressas = 0
 
     .tablePrint{ vertical-align: top; font-size:11px; font-family: sans-serif; margin-bottom: 15px;}
     p {margin-top:0px; margin-bottom: 2px;}
+    .carimbo{margin-top: 35px;}
 
     </style>
     <%=cabecalho%>
@@ -157,7 +158,7 @@ paginas_impressas = 0
 
 
     </Div>
-    <table class="tablePrint">
+    <table class="tablePrint carimbo">
         <tr>
             <td style="width: 50%; text-align: center"></td>
             <td style="width: 50%; text-align: center">

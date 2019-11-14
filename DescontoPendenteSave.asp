@@ -30,7 +30,7 @@ if ID <> "" and OP <> "" then
                         ", DataHoraAutorizado = now() WHERE id = " & ID
 
                     db.execute(sqlUpdateDescontoPendente)
-
+                    db.execute("delete from notificacoes where TipoNotificacaoID = 4 and NotificacaoIDRelativo = " & rsDescontoPendenteUpdate("id"))
                     %>
                     <script>
                         $(function(){
@@ -134,6 +134,7 @@ if ID <> "" and OP <> "" then
 
         db.execute(sqlUpdateDescontoPendente)
     db.execute("delete from exibicao_conteudo WHERE SysUser = "&session("User")&" AND conteudo = 'desconto_pendente' AND  Data = curdate()")
+    db.execute("delete from notificacoes where TipoNotificacaoID = 4 and NotificacaoIDRelativo = " & rsDescontoPendenteUpdate("id"))
 %>
 <script>
     $(function(){

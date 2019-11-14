@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 PM = request.QueryString("PM")
+response.Buffer
 if PM<>"" then
 	if left(PM, 1)="X" then
 		db_execute("delete from sys_formasrecto where id="&replace(PM, "X", ""))
@@ -55,6 +56,7 @@ end if
     <%
 	set formas = db.execute("select f.*, m.PaymentMethod, m.AccountTypesC Tipos from sys_formasrecto f left join sys_financialpaymentmethod m on f.MetodoID=m.id ORDER BY m.id")
 	while not formas.eof
+	    response.Flush()
 		Procedimentos = formas("Procedimentos")
 		Unidades = formas("Unidades")
 		UnidadesExcecao = formas("UnidadesExcecao")
@@ -137,7 +139,7 @@ end if
                 </select>
             
             	<label>&nbsp;</label><br>
-            	<%=quickField("multiple", "Procedimentos_"&formas("id"), "", 8, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 order by NomeProcedimento", "NomeProcedimento", "")%>
+            	<%=quickField("multiple", "Procedimentos_"&formas("id"), "", 8, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and ativo='on' order by NomeProcedimento", "NomeProcedimento", "")%>
             </td>
             <td width="10">
             	<label>&nbsp;</label><br>

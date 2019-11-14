@@ -6,7 +6,7 @@ TransferenciaFilaID= req("I")
 NotificacaoID= req("NotificacaoID")
 
 
-set NotificacaoSQL = db.execute("SELECT StatusID, NotificacaoIDRelativo, TipoNotificacaoID FROM notificacoes WHERE id=&treatvalzero(NotificacaoID))
+set NotificacaoSQL = db.execute("SELECT StatusID, NotificacaoIDRelativo, TipoNotificacaoID FROM notificacoes WHERE id="&treatvalzero(NotificacaoID))
 
 
 if not NotificacaoSQL.eof then
@@ -15,12 +15,14 @@ if not NotificacaoSQL.eof then
     TipoNotificacaoID = NotificacaoSQL("TipoNotificacaoID")
 
     if StatusAtualID=3 or StatusAtualID=4 then
+        response.write("Transação já aprovada")
         Response.End
     end if
 
     set NotificacaoResolvidaSQL = db.execute("SELECT id FROM notificacoes WHERE StatusID IN (3,4) AND TipoNotificacaoID="&TipoNotificacaoID&" AND NotificacaoIDRelativo="&NotificacaoIDRelativo)
     if not NotificacaoResolvidaSQL.eof then
-        db.execute("UPDATE notificacoes SET StatusID=4 WHERE TipoNotificacaoID="&TipoNotificacaoID&" AND NotificacaoIDRelativo="&NotificacaoIDRelativo")
+        db.execute("UPDATE notificacoes SET StatusID=4 WHERE StatusID not in (3) AND TipoNotificacaoID="&TipoNotificacaoID&" AND NotificacaoIDRelativo="&NotificacaoIDRelativo)
+        response.write("Outra notificação já foi aprovada.")
         Response.End
     end if
 

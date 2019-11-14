@@ -67,16 +67,17 @@ if request.QueryString("ConvenioID")<>"" then
 	<thead>
     	<tr>
             <th nowrap>N&deg; do Lote</th>
-            <th nowrap>Código na Operadora</th>
+            <th nowrap>Cód. na Operadora</th>
             <th nowrap>N&deg; de Guias</th>
             <th nowrap>Valor do Lote</th>
             <th nowrap>Refer&ecirc;ncia</th>
-            <th nowrap>N&deg; do Protocolo</th>
+            <th nowrap>Protocolo</th>
+            <th nowrap>NFSe</th>
         	<th nowrap="nowrap">Enviado</th>
         	<th nowrap="nowrap">Data Enviada</th>
         	<th nowrap="nowrap">Previsão</th>
         	<th nowrap="nowrap">Previsão Original</th>
-            <th nowrap="nowrap">Capa de Lote</th>
+            <th nowrap="nowrap">Capa</th>
             <th nowrap="nowrap" class="hidden">XML Conferência</th>
             <th nowrap="nowrap">Baixar XML</th>
             <th>Editar</th>
@@ -152,6 +153,19 @@ if request.QueryString("ConvenioID")<>"" then
             else
                 desativar = "disabled"
                 response.write(lotes("Protocolo"))
+            end if
+            %>
+            </td>
+            <td>
+            <%
+            if aut("loteA")=1 then
+                desativar =""
+            %>
+                <%=quickfield("text", "NumeroNFSe"&lotes("id"), "", 12, lotes("NumeroNFSe"), " dlote ", "", " data-loteid="&lotes("id")&" ")%>
+            <%
+            else
+                desativar = "disabled"
+                response.write(lotes("NumeroNFSe"))
             end if
             %>
             </td>
@@ -248,7 +262,7 @@ if request.QueryString("ConvenioID")<>"" then
     <tfoot>
         <tr>
             <td colspan="3"><strong>Quantidade: <%=NumeroGuias%> guias</strong></td>
-            <td colspan="9"><strong>Valor Total: R$ <%=formatnumber(ValotTotalGuias,2)%></strong></td>
+            <td colspan="10"><strong>Valor Total: R$ <%=formatnumber(ValotTotalGuias,2)%></strong></td>
         </tr>
     </tfoot>
     <%
@@ -303,6 +317,7 @@ $(".dlote").change(function(){
     $.post("saveLote.asp?Acao=Update", {
         LoteID: lid,
         Protocolo: $("#Protocolo" + lid ).val(),
+        NumeroNFSe: $("#NumeroNFSe" + lid ).val(),
         DataEnvio: $("#DataEnvio"+ lid).val(),
         DataPrevisao: $("#DataPrevisao"+ lid).val(),
         DataPrevisaoOriginal: $("#DataPrevisaoOriginal"+ lid).val(),

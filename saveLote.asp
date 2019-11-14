@@ -44,10 +44,11 @@ elseif Acao="Update" then
     LoteID = ref("LoteID")
     Enviado = ref("Enviado")
     Protocolo = ref("Protocolo")
+    NumeroNFSe = ref("NumeroNFSe")
     DataEnvio = mydatenull(ref("DataEnvio"))
     DataPrevisao = mydatenull(ref("DataPrevisao"))
     DataPrevisaoOriginal = mydatenull(ref("DataPrevisaoOriginal"))
-    db_execute("update tisslotes set Protocolo='"&Protocolo&"', Enviado="&Enviado&" , DataEnvio="&DataEnvio&", DataPrevisao="&DataPrevisao&", DataPrevisaoOriginal="&DataPrevisaoOriginal&" where id="&LoteID)
+    db_execute("update tisslotes set Protocolo='"&Protocolo&"', NumeroNFSe='"&NumeroNFSe&"', Enviado="&Enviado&" , DataEnvio="&DataEnvio&", DataPrevisao="&DataPrevisao&", DataPrevisaoOriginal="&DataPrevisaoOriginal&" where id="&LoteID)
     %>
            $.gritter.add({
             title: '<i class="fa fa-save"></i> Informações salvas com sucesso!',

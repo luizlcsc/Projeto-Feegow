@@ -15,6 +15,19 @@ end if
     min-height: 200px;
     padding: 15px;
 }
+
+
+.lista-exames > li {
+    background: #ededed;
+    padding: 5px;
+}
+
+.lista-exames > li:nth-child(odd) { background: #f9f9f9; }
+
+.lista-exames {
+    padding-left: 0;
+}
+
 </style>
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left">
@@ -186,7 +199,7 @@ function aplicarTextoPedido(id, tipo){
 	$.post("PacientesAplicarFormula.asp?Tipo=E&PacienteID=<%=PacienteID%>", {id:id, idsAdicionados: IdsExamesProcedimentos,Tipo:tipo}, function(data, status){
 
 	    if(tipo === "Exame"){
-            $listaPedidoExames.append("<li><input type='hidden' class='ProcedimentoExameID' value='"+id+"'> <label class='titulodesc '>"+data+" <i class='btn btn-xs btn-info fa fa-comment'> </i></label><textarea style='float:left;display:none' class='obs-exame form-control' placeholder='Observações'></textarea> <a href='#' class='excluiritem btn btn-xs btn-danger'><i class='fa fa-remove icon-remove'></i></a> </li>");
+            $listaPedidoExames.append("<li><input type='hidden' class='ProcedimentoExameID' value='"+id+"'> <label >"+data+" </label> <a href='#' style='float: right' class='excluiritem btn btn-xs btn-danger ml5'><i class='fa fa-remove icon-remove '></i></a> <i  style='float: right' class='titulodesc btn btn-xs btn-info fa fa-comment'> </i><textarea style='float:rigth;display:none' class='obs-exame form-control' placeholder='Observações'></textarea>  </li>");
 	        $(".exame-procedimento-content").css("display", "");
             $( ".titulodesc" ).unbind("click").on("click", function() {
                 $(this).next(".obs-exame").toggle();
@@ -199,6 +212,8 @@ function aplicarTextoPedido(id, tipo){
         }else{
             pedidoCk.setData(pedidoCk.getData()+data);
         }
+
+        $("#FiltroP").val("").focus();
     } );
 }
 

@@ -1,7 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <%
     I = req("I")
-    sql = "select * from invoicesfixas where id="&I
+    sql = "select * from invoicesfixas where coalesce(TipoContaFixaID <> 2,true) and id="&I
     set fx = db.execute(sql)
     if not fx.eof then
         Conta = req("N")

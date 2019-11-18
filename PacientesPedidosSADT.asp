@@ -103,7 +103,8 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                                     <%
                                     end if
                                     %>
-                                    <li><a  onclick="abreModal();"> Pedido Simplificado </a></li>
+                                    <li><a  id="savePedidoExameProtocoloS"> Pedido Simplificado </a></li>
+                                    <li><a  onclick="abreModal();"> Pedido Personalizado</a></li>
 
                                 </ul>
                             </div>
@@ -312,6 +313,9 @@ function printSADT() {
 $("#savePedidoExameProtocolo").click(function () {
     if ( $("#cabecalho").is(":checked")) {var cabecalho=1; }else{ var cabecalho=0; }
     window.open('guiaPedidoExamePrint.asp?I=0&cabecalho='+cabecalho +'&maxRegistros='+ $("#quantidade").val() +'&TipoExibicao=Pedido&PedidoSADTID='+ $("#PedidoSADTID").val() +'&ConvenioIDPedidoSADT='+ $("#ConvenioIDPedidoSADT").val() +'&IndicacaoClinicaPedidoSADT='+ $("#IndicacaoClinicaPedidoSADT").val() +'&ObservacoesPedidoSADT='+ $("#ObservacoesPedidoSADT").val()+'&ProfissionalExecutanteIDPedidoSADT='+ $("#ProfissionalExecutanteIDPedidoSADT").val()+'&ProfissionalID='+ $("#ProfissionalID").val()+'&DataSolicitacao='+ $("#DataSolicitacao").val(), "myWindow", "width=1000, height=800, top=50, left=50");
+});
+$("#savePedidoExameProtocoloS").click(function () {
+    window.open('guiaPedidoExamePrint.asp?I=0&cabecalho=0&maxRegistros=20&TipoExibicao=Pedido&PedidoSADTID='+ $("#PedidoSADTID").val() +'&ConvenioIDPedidoSADT='+ $("#ConvenioIDPedidoSADT").val() +'&IndicacaoClinicaPedidoSADT='+ $("#IndicacaoClinicaPedidoSADT").val() +'&ObservacoesPedidoSADT='+ $("#ObservacoesPedidoSADT").val()+'&ProfissionalExecutanteIDPedidoSADT='+ $("#ProfissionalExecutanteIDPedidoSADT").val()+'&ProfissionalID='+ $("#ProfissionalID").val()+'&DataSolicitacao='+ $("#DataSolicitacao").val(), "myWindow", "width=1000, height=800, top=50, left=50");
 });
 
 function GerarGuiaSADT(){

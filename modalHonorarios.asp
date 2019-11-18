@@ -68,6 +68,10 @@ elseif Tipo="Procedimentos" then
 			Fator = reg("Fator")
 			ValorUnitario = reg("ValorUnitario")
 			ValorTotal = reg("ValorTotal")
+
+			'adicionando profissional executante
+            Associacao = reg("Associacao")
+            Executante = Associacao &"_"& ProfissionalID
 		end if
     else
         Data = date()
@@ -92,15 +96,21 @@ elseif Tipo="Procedimentos" then
             <%= quickField("text", "Fator", "Fator", 2, formatnumber(Fator,2), " input-mask-brl text-right input-sm", "", " required='required' onkeyup=""tissRecalc('Fator');""") %>
             <%= quickField("currency", "ValorUnitario", "Valor Unit&aacute;rio", 2, ValorUnitario, " input-sm", "", " required='required' onkeyup=""tissRecalc('ValorUnitario');""") %>
             <%= quickField("currency", "ValorTotal", "Valor Total", 2, ValorTotal, " input-sm", "", " required='required'") %>
-         </div>
+         </div>	
 	<%id = ItemID%>
     <div class="clearfix form-actions">
         <div class="row">
-            <%=quickField("simpleSelect", "ProfissionalID"&id, "Profissional", 3, ProfissionalID, "select id, NomeProfissional from profissionais where sysActive=1", "NomeProfissional", " onchange='repasses("&id&")' onchange='abreRateio("&n&")'")%>
-            <%= quickField("datepicker", "Data", "Data", 3, Data, "", "", " required") %>
+            <div class="col-md-3 qf">
+				<label>Profissional</label>
+				<%= simpleSelectCurrentAccounts("ProfissionalID"&id, "5, 8", Executante, " ") %>
+			</div>
+            <!--
+			<%=quickField("simpleSelect", "ProfissionalID"&id, "Profissional", 3, ProfissionalID, "select id, NomeProfissional from profissionais where sysActive=1", "NomeProfissional", " onchange='repasses("&id&")' onchange='abreRateio("&n&")'")%>
+            -->
+			<%= quickField("datepicker", "Data", "Data", 3, Data, "", "", " required") %>
             <%= quickField("text", "HoraInicio", "Hora In&iacute;cio", 2, HoraInicio, " input-mask-l-time", "", "") %>
             <%= quickField("text", "HoraFim", "Hora Fim", 2, HoraFim, " input-mask-l-time", "", "") %>
-            <div class="col-md-2"><label>&nbsp;</label><br />
+            <div class="col-md-2 hidden"><label>&nbsp;</label><br />
                 <div class="btn-group pull-right">
                     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i> Adicionar <i class="fa fa-chevron-down"></i></button>
                     <ul class="dropdown-menu dropdown-primary">
@@ -110,7 +120,7 @@ elseif Tipo="Procedimentos" then
                 </div>
             </div>
             <div class="divider">&nbsp;</div>
-            <div class="row">
+            <div class="row hidden">
                 <div class="col-md-12" id="divRepasses<%=id%>"><!--#include file="divRepassesConvenio.asp"--></div>
             </div>
         </div>

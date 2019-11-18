@@ -1,9 +1,19 @@
 <!--#include file="connect.asp"-->
 <!--#include file="testaCPF.asp"-->
 <%
+
 ItemID = request.QueryString("II")
 GuiaID = request.QueryString("I")
 Tipo = request.QueryString("T")
+
+rfAssociacao = 5
+rfProfissionalID = refnull("ProfissionalID"&ItemID)
+if instr(rfProfissionalID, "_")>0 then
+	splProf = split(rfProfissionalID, "_")
+	rfAssociacao = splProf(0)
+	rfProfissionalID = splProf(1)
+end if
+
 
 if Tipo="Profissionais" then
 	if erro="" then
@@ -79,27 +89,14 @@ elseif Tipo="Procedimentos" then
 					db_execute("update tissprocedimentosvaloresplanos set Valor="&treatvalzero(ref("ValorUnitario"))&" where id="&pvp("id"))
 				end if
 			end if
-
-
-
-
 		end if
 
-
-
-
-
-
-
-
-
-
 		if ItemID="0" then
-			db_execute("insert into tissprocedimentoshonorarios (GuiaID, ProfissionalID, Data, HoraInicio, HoraFim, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser) values ("&GuiaID&", "&refnull("ProfissionalID"&ItemID)&", '"&myDate(ref("Data"))&"', "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', '"&ref("ViaID")&"', '"&ref("TecnicaID")&"', '"&treatval(ref("Fator"))&"', '"&treatval(ref("ValorUnitario"))&"', '"&treatval(ref("ValorTotal"))&"', '"&session("User")&"')")
+			db_execute("insert into tissprocedimentoshonorarios (GuiaID, ProfissionalID,Associacao, Data, HoraInicio, HoraFim, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser) values ("&GuiaID&", "&rfProfissionalID&", "&rfAssociacao&",'"&myDate(ref("Data"))&"', "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', '"&ref("ViaID")&"', '"&ref("TecnicaID")&"', '"&treatval(ref("Fator"))&"', '"&treatval(ref("ValorUnitario"))&"', '"&treatval(ref("ValorTotal"))&"', '"&session("User")&"')")
 			set pult = db.execute("select id from tissprocedimentoshonorarios where GuiaID="&GuiaID&" and sysUser="&session("User")&" order by id desc")
 			EsteItem = pult("id")
 		else
-			db_execute("update tissprocedimentoshonorarios set ProfissionalID="&refnull("ProfissionalID"&ItemID)&", Data="&myDatenull(ref("Data"))&", HoraInicio="&myTime(ref("HoraInicio"))&", HoraFim="&myTime(ref("HoraFim"))&", ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', Descricao='"&ref("Descricao")&"', Quantidade='"&ref("Quantidade")&"', ViaID='"&ref("ViaID")&"', TecnicaID='"&ref("TecnicaID")&"', Fator='"&treatval(ref("Fator"))&"', ValorUnitario='"&treatval(ref("ValorUnitario"))&"', ValorTotal='"&treatval(ref("ValorTotal"))&"', sysUser='"&session("User")&"' where id="&ItemID)
+			db_execute("update tissprocedimentoshonorarios set ProfissionalID="&rfProfissionalID&", Associacao="&rfAssociacao&", Data="&myDatenull(ref("Data"))&", HoraInicio="&myTime(ref("HoraInicio"))&", HoraFim="&myTime(ref("HoraFim"))&", ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', Descricao='"&ref("Descricao")&"', Quantidade='"&ref("Quantidade")&"', ViaID='"&ref("ViaID")&"', TecnicaID='"&ref("TecnicaID")&"', Fator='"&treatval(ref("Fator"))&"', ValorUnitario='"&treatval(ref("ValorUnitario"))&"', ValorTotal='"&treatval(ref("ValorTotal"))&"', sysUser='"&session("User")&"' where id="&ItemID)
 			EsteItem = ItemID
 		end if
 		'verifica se na regra deste procedimento para este convenio existem despesas adicionais e insere (EsteItem é o id IDProcedimentohonorarios)
@@ -123,17 +120,17 @@ elseif Tipo="Procedimentos" then
         'end if
 		
         '-> inserindo o profissional executor nesta guia se ele nao existe
-        if ref("ProfissionalID"&ItemID)<>"0" then
-            set vca = db.execute("select id from tissprofissionaishonorarios where ProfissionalID="&ref("ProfissionalID"&ItemID)&" and GuiaID="&GuiaID)
+        if rfProfissionalID&""<>"0" and rfAssociacao&""="5" and ref("gConvenioID")&""<>"" then
+            set vca = db.execute("select id from tissprofissionaishonorarios where ProfissionalID="&rfProfissionalID&" and GuiaID="&GuiaID)
             if vca.eof then
-               sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="&ref("ProfissionalID"&ItemID)&" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+               sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="&rfProfissionalID&" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
   '             response.write(sqlProf)
                set prof = db.execute(sqlProf)
                if not prof.eof then
                     if len(prof("CPF"))>3 then
                         CodigoNaOperadora = prof("CPF")
                     end if
-                    set vcaContrato = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado="&ref("ProfissionalID"&ItemID)&" and CodigoNaOperadora not like ''")
+                    set vcaContrato = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado="&prof("id")&" and CodigoNaOperadora not like ''")
                     if not vcaContrato.eof then
                         CodigoNaOperadora = vcaContrato("CodigoNaOperadora")
                     end if

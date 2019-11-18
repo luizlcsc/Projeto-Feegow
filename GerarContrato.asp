@@ -1,11 +1,8 @@
 <!--#include file="connect.asp"-->
 <%
 PropostaID = req("PropostaID")
-if req("ProfissionalSolicitante") <> "" then
-    ProfissionalSolicitante = "5_"&req("ProfissionalSolicitante")
-end if
 
-db_execute("insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, sysDate, TabelaID, ProfissionalSolicitante) (select 'Gerado pela proposta', PacienteID, '3', Valor, '1', 'BRL', '"&session("UnidadeID")&"', '1', 'm', 'C', '1', '"&session("User")&"', date(now()), TabelaID, '"&ProfissionalSolicitante&"' from propostas where id="&PropostaID&")")
+db_execute("insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, sysDate, TabelaID, ProfissionalSolicitante) (select 'Gerado pela proposta', PacienteID, '3', Valor, '1', 'BRL', '"&session("UnidadeID")&"', '1', 'm', 'C', '1', '"&session("User")&"', date(now()), TabelaID, concat('5_', ProfissionalID) from propostas where id="&PropostaID&")")
 
 set pult = db.execute("select id from sys_financialinvoices order by id desc limit 1")
 

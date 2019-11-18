@@ -503,7 +503,7 @@ end if
 %>				
             </div>
 
-			<%if req("Tipo")="Quadro" or req("ProfissionalID")="" or req("ProfissionalID")="0" then%>
+			<%if req("Tipo")="Quadro" or req("ProfissionalID")="" or req("ProfissionalID")="0" or req("ProfissionalID")="null" then%>
                 <%= quickField("simpleSelect", "ProfissionalID", "Profissional", 2, ProfissionalID, "select * from profissionais where sysActive=1 and Ativo='on' AND (id IN ("&ProfissionaisEquipamentos&") or '"&ProfissionaisEquipamentos&"'='0') order by NomeProfissional", "NomeProfissional", " required") %>
             <%else %>
                 <div class="col-md-2">

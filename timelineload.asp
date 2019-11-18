@@ -290,7 +290,7 @@
                                                         set vals = db.execute("select group_concat(Nome SEPARATOR '; ') Valor from buiopcoescampos where id IN("& replace(Valor, "|", "") &")")
                                                         if not vals.eof then
                                                             Valor = vals("Valor")
-                                                            response.Write( Rotulo & Valor  &"<br>" )
+                                                            response.Write( "<p>"&Rotulo &"<br>"& Valor  &"</p>" )
                                                         end if
                                                     end if
                                                 case 9
@@ -348,7 +348,7 @@
                                                             call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
 
                                                     end if
-                                                    response.Write( Rotulo & Valor  &"<br>" )
+                                                    response.Write( Rotulo &"<br>"& Valor  &"<br>" )
                                                     end if
                                             end select
                                             'response.Write( Rotulo & Valor  &"<br>[["& pcampos("TipoCampoID") &"]]" )

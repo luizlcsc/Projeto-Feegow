@@ -197,7 +197,8 @@ if veseha.eof then
 	%>Nenhum paciente aguardando para ser atendido.<%
 else
 %>
-<table width="100%" class="table table-striped table-hover table-bordered">
+<div class="table-responsive">
+<table width="100%" class=" table table-striped table-hover table-bordered">
   <thead>
 	<tr class="info">
     	<th>HORA</th>
@@ -455,6 +456,7 @@ else
     veseha.close
     set veseha=nothing%>
 </table>
+</div>
 <script >
     var $waitingTime = $(".waiting-time");
 

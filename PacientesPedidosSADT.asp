@@ -55,7 +55,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                 <input type="checkbox" id="cabecalho" value="1" checked> <label for="cabecalho">Imprimir cabecalho e Rodapé </label><BR>
             </div>
             <div class="form-group">
-                Quantidade de Registros: <input type="text" id="quantidade" size="5" value="20" class="form-control">
+                Quantidade de Registros: <input type="text" id="quantidade" size="5" value="10" class="form-control">
             </div>
         </form>
       </div>

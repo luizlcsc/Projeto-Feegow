@@ -33,6 +33,41 @@ if GuiaID&""="" then
 end if
 
 %>
+<script>
+
+function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
+
+</script> 
+
+<!-- Modal -->
+<div class="modal fade" id="modalOpcoesImpressao" tabindex="-1" role="dialog" aria-labelledby="modalOpcoesImpressaoLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalOpcoesImpressaoLabel">Impressão de Pedido Simplificado</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+            <div class="form-group">
+                <input type="checkbox" id="cabecalho" value="1" checked> <label for="cabecalho">Imprimir cabecalho e Rodapé </label><BR>
+            </div>
+            <div class="form-group">
+                Quantidade de Registros: <input type="text" id="quantidade" size="5" value="20" class="form-control">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" id="savePedidoExameProtocolo">Imprimir</button>        
+      </div>
+    </div>
+  </div>
+</div>
+<!----------------------------------------------------------------->
+
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left">
         <li class="active"><a data-toggle="tab" href="#divpedido" id="btnpedido"><i class="fa fa-file-text"></i> Guia de Solicitação</a></li>
@@ -68,12 +103,11 @@ end if
                                     <%
                                     end if
                                     %>
-                                    <li><a id="savePedidoExameProtocolo"> Pedido Simplificado</a></li>
+                                    <li><a  onclick="abreModal();"> Pedido Simplificado </a></li>
 
                                 </ul>
                             </div>
 
-                            <!--<button type="button" class="btn btn-info btn-block" id="savePedidoSADT"><i class="fa fa-print icon-print"></i> Imprimir</button>-->
                         </form>
                     </div>
                     <div class="col-md-3 text-right">
@@ -276,7 +310,8 @@ function printSADT() {
     window.open('modalGuiaTISS.asp?T=GuiaSADT&Tipo=PedidoExame&I='+ $("#GuiaID").val()+'&ConvenioID='+ $("#ConvenioIDPedidoSADT").val(), "myWindow", "width=1000, height=800, top=50, left=50");
 }
 $("#savePedidoExameProtocolo").click(function () {
-    window.open('guiaPedidoExamePrint.asp?I=0&TipoExibicao=Pedido&PedidoSADTID='+ $("#PedidoSADTID").val() +'&ConvenioIDPedidoSADT='+ $("#ConvenioIDPedidoSADT").val() +'&IndicacaoClinicaPedidoSADT='+ $("#IndicacaoClinicaPedidoSADT").val() +'&ObservacoesPedidoSADT='+ $("#ObservacoesPedidoSADT").val()+'&ProfissionalExecutanteIDPedidoSADT='+ $("#ProfissionalExecutanteIDPedidoSADT").val()+'&ProfissionalID='+ $("#ProfissionalID").val()+'&DataSolicitacao='+ $("#DataSolicitacao").val(), "myWindow", "width=1000, height=800, top=50, left=50");
+    if ( $("#cabecalho").is(":checked")) {var cabecalho=1; }else{ var cabecalho=0; }
+    window.open('guiaPedidoExamePrint.asp?I=0&cabecalho='+cabecalho +'&maxRegistros='+ $("#quantidade").val() +'&TipoExibicao=Pedido&PedidoSADTID='+ $("#PedidoSADTID").val() +'&ConvenioIDPedidoSADT='+ $("#ConvenioIDPedidoSADT").val() +'&IndicacaoClinicaPedidoSADT='+ $("#IndicacaoClinicaPedidoSADT").val() +'&ObservacoesPedidoSADT='+ $("#ObservacoesPedidoSADT").val()+'&ProfissionalExecutanteIDPedidoSADT='+ $("#ProfissionalExecutanteIDPedidoSADT").val()+'&ProfissionalID='+ $("#ProfissionalID").val()+'&DataSolicitacao='+ $("#DataSolicitacao").val(), "myWindow", "width=1000, height=800, top=50, left=50");
 });
 
 function GerarGuiaSADT(){

@@ -8,6 +8,15 @@
 
 <%
 profissionalId = 0
+imprimecabecalho = req("cabecalho") 
+maxregistros     = req("maxRegistros")
+if maxregistros = "" or maxregistros = 0 then 
+    maxregistros = 10    
+end if 
+
+if imprimecabecalho&"" = "" then
+    imprimecabecalho = 0
+end if 
 if session("Table")="profissionais" then
     profissionalId = session("IdInTable")
 end if
@@ -72,7 +81,8 @@ if not procs.EOF then
     '    Endereco = unid("Endereco")&" "&unid("Numero")&" "&unid("Complemento")&"  "&unid("Bairro")&"  "&unid("Cidade")
     'end if
 end if
-num_max_registros = 10
+num_max_registros = maxregistros*1
+
 registros_mostrados = 0 
 paginas_impressas = 0 
 %>
@@ -90,7 +100,9 @@ paginas_impressas = 0
     .carimbo{margin-top: 35px;}
 
     </style>
+    <% if imprimecabecalho = 1 then %>
     <%=cabecalho%>
+    <% end if %>
     <br>
 	<table class="tablePrint">
 
@@ -184,7 +196,9 @@ paginas_impressas = 0
     </table>
  
 </div>
+<% if imprimecabecalho=1 then %>
 <%=rodape%>
+<% end if %>
 <div style='page-break-after:always'></div>
 <% wend 
     procs.close 

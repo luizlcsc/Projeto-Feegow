@@ -166,12 +166,12 @@ end if
         <%
         if aut("loteX")=1 then
         %>
-            <button type="button" class="btn btn-sm btn-warning" onclick="retiraGuia( $('.guia:checked').serialize() )"><i class="fa fa-arrow-circle-o-left"></i> Retirar do Lote</button>
+            <button type="button" disabled class="btn-acao-guias btn btn-sm btn-warning" onclick="retiraGuia( $('.guia:checked').serialize() )"><i class="fa fa-arrow-circle-o-left"></i> Retirar do Lote</button>
         <%
         end if
         %>
-            <button onclick="glosa('Pago', 'M');" class="btn btn-sm btn-success"><i class="fa fa-thumbs-up"></i> Pago</button>
-            <button onclick="glosa('Glosado', 'M');" class="btn btn-sm btn-danger"><i class="fa fa-thumbs-down"></i> Glosado</button>
+            <button onclick="glosa('Pago', 'M');" disabled class=" btn-acao-guias btn btn-sm btn-success"><i class="fa fa-thumbs-up"></i> Pago</button>
+            <button onclick="glosa('Glosado', 'M');" disabled class=" btn-acao-guias btn btn-sm btn-danger"><i class="fa fa-thumbs-down"></i> Glosado</button>
         </span>
     </div>
     <div class="panel-body">
@@ -841,12 +841,16 @@ $("input[name^=ValorPago]").change(function () {
 });
 
 $(".guia, input[id^='all']").click(function(){
+
+    var $btnAcaoGuias = $(".btn-acao-guias");
    
     if($(".guia:checked").length>0){
     $.post("lanctoGuias.asp?T=<%=req("T")%>", $(".guia").serialize(), function(data){
         $("#lanctoGuias").html(data);
     });
-    }else{     
+        $btnAcaoGuias.attr("disabled", false);
+    }else{
+        $btnAcaoGuias.attr("disabled", true);
         $("#lanctoGuias").html("");
     }
 });

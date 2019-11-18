@@ -82,7 +82,7 @@ end if
 if rfrdValorPlano="P" then
     PlanoID = ref("PlanoID")
     if PlanoID<>"" and PlanoID<>"0" then
-        set PlanoSQL = db.execute("SELECT vp.NaoCobre FROM tissprocedimentosvaloresplanos vp INNER JOIN tissprocedimentosvalores v ON v.id=vp.AssociacaoID WHERE v.ConvenioID="&treatvalzero(rfValorPlano)&" AND v.ProcedimentoID="&treatvalzero(rfProcedimento)&" AND  vp.PlanoID="&PlanoID)
+        set PlanoSQL = db.execute("SELECT vp.NaoCobre FROM tissprocedimentosvaloresplanos vp INNER JOIN tissprocedimentosvalores v ON v.id=vp.AssociacaoID WHERE v.ConvenioID="&treatvalzero(rfValorPlano)&" AND v.ProcedimentoID="&treatvalzero(rfProcedimento)&" AND  vp.PlanoID="&treatvalzero(PlanoID))
         if not PlanoSQL.eof then
             if PlanoSQL("NaoCobre")="S" then
                 erro="Este plano não cobre o procedimento selecionado."
@@ -144,7 +144,7 @@ if ref("LocalID")&""<>"" and ConsultaID="0" then
     end if
 end if
 
-if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" then
+if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("StaID")<>"4" then
     set ve1=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and StaID !=11 and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora<time('"&HoraSolFin&"') and Encaixe IS NULL and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')")
     if not ve1.eof then
         erro="Erro: O horário solicitado não dispõe dos "&TempoSol&" minutos requeridos para o agendamento deste procedimento."

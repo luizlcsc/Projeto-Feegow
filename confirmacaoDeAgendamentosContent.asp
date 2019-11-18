@@ -29,7 +29,7 @@ function centralWhatsApp(AgendamentoID)
             end if
         end if
 
-        set pro = db.execute("select * from profissionais where id="&age("ProfissionalID"))
+        set pro = db.execute("select * from profissionais where id="&treatvalzero(age("ProfissionalID")))
         if not pro.EOF then
             set Trat = db.execute("select * from tratamento where id = '"&pro("TratamentoID")&"'")
             if not Trat.eof then

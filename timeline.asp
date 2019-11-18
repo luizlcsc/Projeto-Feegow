@@ -172,10 +172,10 @@ select case Tipo
         %>
         <div class="panel timeline-add">
             <div class="panel-heading">
-                <span class="panel-title"> <%=subTitulo %>
+                <span class="panel-title "> <%=subTitulo %>
                 </span>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" style="overflow: inherit!important;">
                 <div class="col-md-3">
                     <%
                         sqlBuiforms = "select Nome,id from buiforms where sysActive=1 and "& sqlForm &" order by Nome"
@@ -196,7 +196,7 @@ select case Tipo
 
                         if nForms<>1 then %>
                         <div class="btn-group btn-block">
-                            <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <button type="button" class="mt10 btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-plus"></i> <%=rotuloBotao %>
                                 <span class="caret ml5"></span>
                             </button>
@@ -241,7 +241,9 @@ select case Tipo
                 end if
 
                 %>
-                    <a type="button" class="btn btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="fa fa-external-link"></i> Restaurar Formulário</a>
+                    <div class="col-md-3 col-xs-12">
+                        <a type="button" class="btn btn-block mb10 mt10 btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="fa fa-external-link"></i> Restaurar Formulário</a>
+                    </div>
                 <%
 
                 if Tipo = "|L|" then
@@ -283,7 +285,7 @@ select case Tipo
             <%
             if aut("prescricoesI") then
             %>
-            <div class="panel-body">
+            <div class="panel-body" style="overflow: inherit!important;">
                 <div class="col-md-5">
                 <%
                 set memed = db.execute("select * from memed_tokens where sysUser ="&session("User"))
@@ -388,7 +390,7 @@ else
             <%
             if aut("atestadosI")=1 then
             %>
-            <div class="panel-body">
+            <div class="panel-body" style="overflow: inherit!important;">
                 <div class="col-md-4">
                     <!--button type="button" class="btn btn-primary dropdown-toggle<% if EmAtendimento=0 then %> disabled" data-toggle="dropdown" title="Inicie um atendimento." aria-expanded="false" data-placement="right" <% else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
                         <i class="fa fa-plus"></i> Inserir Texto / Atestado
@@ -442,7 +444,7 @@ else
             <div class="panel-heading">
                 <span class="panel-title"><%=subTitulo %></span>
             </div>
-             <div class="panel-body">
+             <div class="panel-body" style="overflow: inherit!important;">
              <div class="row">
         <div class="bs-component">
             <div class="panel">
@@ -498,7 +500,7 @@ else
                 <div>
             </div>
         </div>
-        <div class="panel-body">
+        <div class="panel-body" style="overflow: inherit!important;">
             <div class="tab-content pn br-n">
                 <div id="Pendentes" class="tab-pane active widget-box transparent">
                 </div>
@@ -719,15 +721,14 @@ end select
     if instr("|ProdutosUtilizados|AssinaturaDigital|ResultadosExames|AsoPaciente|VacinaPaciente|Arquivos|Imagens|", Tipo) = 0 then
     %>
     <div class="col-xs-12">
-        <div class="panel">
-            <div class="panel-body">
-            <div class="row">
-                <div class="col-md-4 col-md-offset-3"></div>
-                    <%=quickfield("simpleSelect", "Profissionais", "Filtro por profissionais", 5, req("ProfessionalID"), "select '0' as id,'Todos' as NomeProfissional, 0 as ordem union select id, NomeProfissional, 1 as ordem from profissionais where ativo='on' and sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", " semVazio onchange='professionalFilter(this.value,"""&Tipo&""","&PacienteID&");'" ) %>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4"></div>
+            <div class="col-md-4">
+                <%=quickfield("simpleSelect", "Profissionais", "", 4, req("ProfessionalID"), "select '0' as id,'Todos os profissionais' as NomeProfissional, 0 as ordem union select id, NomeProfissional, 1 as ordem from profissionais where ativo='on' and sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", " semVazio onchange='professionalFilter(this.value,"""&Tipo&""","&PacienteID&");'" ) %>
             </div>
         </div>
     </div>
-    <% 
+    <%
     end if
     ProfessionalID = req("ProfessionalID")
     %>

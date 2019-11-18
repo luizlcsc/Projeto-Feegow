@@ -306,7 +306,7 @@ else
                         </th>
                         <script>
                         function adicionarProcedimentos() {
-                           procs('I', 0, <%=LocalID%>, '<%=Convenios%>', '<%=GradeApenasProcedimentos%>', '<%=GradeApenasConvenios%>');
+                           procs('I', 0, <%=LocalID%>, '<%=Convenios%>', '<%=GradeApenasProcedimentos%>', '<%=GradeApenasConvenios%>', '<%=EquipamentoID%>');
                         }
 </script>
                     </tr>

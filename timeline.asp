@@ -207,7 +207,7 @@ select case Tipo
 				                if autForm(forms("id"), "IN", "") then
                                 %>
                                 <li  <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%>><a  <% if EmAtendimento=1 then%>
-                                href="javascript:void(0)" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, <%=forms("id")%>, 'N', '');" <% end if %>><i class="fa fa-plus"></i> <%=forms("Nome")%></a></li>
+                                href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', '<%=PacienteID%>', '<%=forms("id")%>', 'N', '');" <% end if %>><i class="fa fa-plus"></i> <%=forms("Nome")%></a></li>
                                 <%
 				                end if
 			                forms.movenext
@@ -764,7 +764,25 @@ LocalStorageRestoreHabilitar();
     function iPront(t, p, m, i, a) {
         $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
         if(t=='AE'||t=='L'){
-            mfpform('#modal-form');
+            try{
+                $.magnificPopup.open({
+                        removalDelay: 500,
+                        closeOnBgClick:false,
+                        modal: true,
+                        items: {
+                            src: '#modal-form'
+                        },
+                        // overflowY: 'hidden', //
+                        callbacks: {
+                            beforeOpen: function(e) {
+                                this.st.mainClass = "mfp-zoomIn";
+                            }
+                        }
+                    });
+            }catch (e) {
+              alert(e)
+
+            }
         }else{
             mfp('#modal-form');
         }
@@ -839,23 +857,23 @@ function compartilhamentoRestrito(tipoDocumento, idDocumento, idProfissional)
 
 function LocalStorageRestoreHabilitar()
 {
-    let local = localStorage.getItem("logForms");
-    let ret = JSON.parse(local);
+        var local = localStorage.getItem("logForms");
+        var ret = JSON.parse(local);
 
-    let tipo = '<%=replace(Tipo, "|","")%>';
-    let pacienteID ='<%=PacienteID%>';
+        var tipo = '<%=replace(Tipo, "|","")%>';
+        var pacienteID ='<%=PacienteID%>';
 
-    if(local!=null)
-    {
-        let element = ret.findIndex((elem,index)=>{
-            return (elem.pacienteID == pacienteID && elem.tipo == tipo);
-        });
-
-        if(element>=0)
+        if(local!=null)
         {
-            $("#restoreForm").show();
+            var element = ret.findIndex(function(elem,index){
+                return (elem.pacienteID == pacienteID && elem.tipo == tipo);
+            });
+
+            if(element>=0)
+            {
+                $("#restoreForm").show();
+            }
         }
-    }
 }
 
 function reload()
@@ -876,8 +894,8 @@ function excluirSerie(id) {
 
    function professionalFilter(professionalID,tipo,PacienteId)
     {
-        let L= '<%=session("Banco")%>';
-        let prof = "";
+        var L= '<%=session("Banco")%>';
+        var prof = "";
         if(professionalID!=="0")
         {
             prof = "&ProfessionalID="+professionalID
@@ -887,6 +905,8 @@ function excluirSerie(id) {
     }
 
     $(document).ready(function() {
+        try{
+
         var final = false;
         var loadMore = 0;
         var steps = parseInt('<%=MaximoLimit%>');
@@ -898,9 +918,9 @@ function excluirSerie(id) {
         scroll(0,0);
 
         $(window).scroll(function() {
-            let tamanhoMaximo = $(document).height() - $(window).height();
-            let scrollPosition = $(window).scrollTop();
-            let isEnd = ( (scrollPosition + 50 ) >= tamanhoMaximo);
+            var tamanhoMaximo = $(document).height() - $(window).height();
+            var scrollPosition = $(window).scrollTop();
+            var isEnd = ( (scrollPosition + 50 ) >= tamanhoMaximo);
 
             if(isEnd && !Carregando){
                 $(".timeline-item").slice(loadMore,steps).fadeIn(3000);
@@ -932,9 +952,12 @@ function excluirSerie(id) {
                 }
             }
         });
+        }catch (e) {
+          console.log("ocorreu um erro:" + e)
+        }
     });
 
- 
+
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>

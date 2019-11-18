@@ -132,7 +132,7 @@ end if
 	I = ModeloID
 %>
 <!--include file="newFormEstilo.asp"-->
-  <div id="demo-0" class="gridster">
+  <div id="demo-0 " class="gridster" style="margin-bottom: 20px; margin-top: 20px">
     <ul>
     <%
 	set campos = db.execute("select c.*, f.LadoALado from buicamposforms c LEFT JOIN buiforms f on f.id=c.FormID where c.FormID="&I&" and c.GrupoID=0 and c.TipoCampoID not in(7) order by c.Ordem")
@@ -239,8 +239,9 @@ function replaceAll(str, de, para){
     }
     return (str);
 }
-    
-    
+
+<%if device()="" then %>
+try{
 var gridster0 = null;
 var gridster1 = null;
 
@@ -276,6 +277,12 @@ $("#demo-0 ul").css("left", "50%");
 $("#demo-0 ul").css("margin-left", "-406px");
 
 <%=ckrender%>
+}catch (e) {
+  console.log("Ocorreu um erro ao carregar o CK EDITOR")
+}
+  <%
+  end if
+  %>
 if(typeof idsCk !== "undefined"){
     String.prototype.replaceAll = function(search, replacement) {
         var target = this;
@@ -303,7 +310,6 @@ function editCurva(CampoID){
 		$("#modal").html(data);
 	});
 }
-
 
     /*
     usados abaixo para quando formscompiladorcampopreenchidotextareaativadesativa

@@ -13,12 +13,12 @@ if not getForm.eof then
 
 </head>
 <body>
-    <div class="panel-heading">
+    <div class="panel-heading" <%if device()<>"" then %> style="position:relative!important;height: auto!important;"<% end if %>>
         <span class="panel-title">
         <i class="fa fa-bar-chart"></i> <%=getForm("Nome") %>
             <code id="nomeProfissionalPreen"></code>
         </span>
-        <span class="panel-controls">
+        <span class="panel-controls"             <%if device()<>"" then %> style="float:inherit!important;" <% end if %>>
             <button type="button" class="btn btn-alert btn-sm" onclick="showLog()"><i class="fa fa-history"></i> Logs</button>
             <% if req("LaudoSC")="" then %>
                 <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="fa fa-print"></i> Imprimir</button>
@@ -29,9 +29,13 @@ if not getForm.eof then
             <% end if %>
         </span>
     </div>
+              <%if device()="" then %>
         <div class="panel-menu text-center">
             <a href="./?P=Pacientes&I=<%=PacienteID %>&Pers=1" target="_blank" class=" nomePacientePreen btn btn-default btn-block btn-primary"></a>
         </div>
+        <%
+        end if
+        %>
              <div class="alert alert-warning internetFail text-center" style="display:none">Sua internet está apresentando lentidão</div>
     <% end if %>
 <div class="panel-body p25" id="iProntCont">
@@ -153,7 +157,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
                 FormID = newFormId;
             }
         }
-        
+
         let formdata = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID").serialize();
 
         if (FormID != "N")
@@ -165,12 +169,12 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         $btnSave.attr("disabled", true);
         $btnPrint.attr("disabled", true);
         $.post('<%=urlPost%>&i='+FormID+"&auto="+AutoSave+"&Inserir="+Inserir,
-         formdata, 
+         formdata,
          function(data){
             $btnSave.attr("disabled", false);
             $btnPrint.attr("disabled", false);
             $btnSaveText.html("Salvar");
-            
+
             if(AutoSave==0){
                 DescartarLog('<%=FormID%>');
             }
@@ -178,7 +182,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
             if(typeof data !== "undefined"){
                 eval(data);
             }
-           
+
         }).fail(function() {
               $btnSave.attr("disabled", false);
               $btnPrint.attr("disabled", false);
@@ -191,26 +195,26 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         let jsonForm = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID").serializeFormJSON();
         let local = localStorage.getItem("logForms");
         let data_hora = new Date();;
-        let data = { 
+        let data = {
             formID:String(formID),
             pacienteID: <%=req("p")%>,
-            modeloID: <%=req("m")%>, 
-            tipo:TipoForm,    
+            modeloID: <%=req("m")%>,
+            tipo:TipoForm,
             dataHora: data_hora.toLocaleDateString() +" "+ data_hora.toLocaleTimeString(),
-            jsonForm:jsonForm , 
+            jsonForm:jsonForm ,
             formData: dataForm
              };
         let ret = [];
-        
+
         if(local != null)
         {
             ret = JSON.parse(local);
 
             let element = ret.findIndex((elem,index)=>{
-                   return (elem.formID === data.formID 
+                   return (elem.formID === data.formID
                             && elem.pacienteID === data.pacienteID
                             && elem.tipo === data.tipo);
-            }) ; 
+            }) ;
 
             if(element>=0){
                 ret[element].formData = data.formData;
@@ -228,10 +232,10 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         }else
         {
             ret.push(data);
-        }  
+        }
         localStorage.setItem("logForms", JSON.stringify(ret));
     }
-    
+
     function DescartarLog(id){
         let local = localStorage.getItem("logForms");
         let pacienteID = "<%=PacienteID%>";
@@ -270,11 +274,11 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
     });
 
     var ultimo="";
-    var timeout  = null; 
+    var timeout  = null;
     function saveteste(){
-        
+
         let atual = JSON.stringify( $(".campoInput, .campoCheck, .tbl").serializeFormJSON());
-       
+
         if(atual!=ultimo){
             $.ajax({
                 url: domain+"log/saveFormLog",
@@ -312,7 +316,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
                 url: domain+"log/getFormLog",
                 method: 'POST',
                 dataType: 'json',
-                data: 
+                data:
                 {
                     'pacienteID': <%=req("p")%>,
                     'modeloID': <%=req("m")%>,
@@ -338,7 +342,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
                         openModal(list, "Log de modificações", true, false);
                 }
-            });    
+            });
 
     }
 
@@ -361,9 +365,9 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
     };
     })(jQuery);
 
-    
 
-    
+
+
 
     //fim do novo log do formulario
 /*
@@ -403,7 +407,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
             $("#conteudo-timeline").toggle(1000);
         });
 
-        
+
     });
 
 </script>
@@ -419,7 +423,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
 .logTimeLine-item {
   background-color: #fff;
-  padding: 10px;  
+  padding: 10px;
   margin: 10px;
   font-size: 12px;
   border: 1px solid #3498db;
@@ -427,7 +431,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
   position: relative;
   color: #666;
   border-radius: 4px
-  
+
 }
 
 .logTimeLine-item:before {

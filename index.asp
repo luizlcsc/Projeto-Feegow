@@ -567,7 +567,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
      <ul class="nav navbar-nav navbar-right">
 
-        <%if session("OtherCurrencies")="phone" then %>
+        <%if session("OtherCurrencies")="phone" or recursoAdicional(9)=4 then %>
+
         <li class="dropdown menu-merge hidden-md hidden-xs">
           <div class="navbar-btn btn-group">
             <button data-toggle="dropdown" class="btn btn-sm dropdown-toggle" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Interações">

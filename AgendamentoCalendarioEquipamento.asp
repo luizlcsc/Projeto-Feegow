@@ -145,9 +145,14 @@ end if
 		if cdate(DataClick)=date() then
             response.write(" info ")
         end if
-        response.Write """ id="""&DataClick&""">" & strong & aBadge& iCurrent & fBadge %>
+        response.Write """ id="""&DataClick&""">" & strong & aBadge& iCurrent & fBadge 
+		
+		IF getConfig("ExibirProgressoAgendamentosAgendas") THEN		
+		%>
 		<div class="progress progress-small progress-striped active" style="margin:10px 0 0 0!important; height:3px!important" id="prog<%=replace(DataClick, "/", "")%>"></div>
 		<%
+		end if
+		
 		response.Write Fstrong & "</TD>" & vbCrLf
 		If iPosition = 7 Then
 			Response.Write vbTab & "</TR>" & vbCrLf

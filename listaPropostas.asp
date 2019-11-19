@@ -71,31 +71,33 @@
 
 		        while not p.eof
 
-		            Tel = p("Tel1")
-		            Cel = p("Cel1")
-
-		            if Tel1&"" = "" then
-		                Tel = p("Tel2")
-		            end if
-		            if Cel&"" = "" then
-		                Cel = p("Cel2")
-		            end if
-
-
-                    TagWhatsApp = True
-
-                    if not celularValido(Cel) then
-                        TagWhatsApp= False
-                    end if
-
-                    CelularFormatado = formataCelularWhatsApp(Cel)
-
-                    TextoWhatsApp = "*"&NomeEmpresa&"*%0a%0aOla, "&TratarNome("Título", p("NomePaciente"))&" !"
-
 			        %>
 			        <tr>
             	        <td><%=p("DataProposta")%></td>
-				        <%if req("PacienteID")="" then%>
+				        <%if req("PacienteID")="" then
+
+                            Tel = p("Tel1")
+                            Cel = p("Cel1")
+
+                            if Tel1&"" = "" then
+                                Tel = p("Tel2")
+                            end if
+                            if Cel&"" = "" then
+                                Cel = p("Cel2")
+                            end if
+
+
+                            TagWhatsApp = True
+
+                            if not celularValido(Cel) then
+                                TagWhatsApp= False
+                            end if
+
+                            CelularFormatado = formataCelularWhatsApp(Cel)
+
+                            TextoWhatsApp = "*"&NomeEmpresa&"*%0a%0aOla, "&TratarNome("Título", p("NomePaciente"))&" !"
+
+				        %>
                             <td nowrap><%=p("NomePaciente")%></td>
                             <td><span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline"  onclick="AlertarWhatsapp('<%=CelularFormatado%>', `<%=TextoWhatsApp%>`, '<%=p("id")%>')" <% else %> <%=Tel%>&nbsp;&nbsp;<%=Cel%> <%end if%> ><span id="wpp-<%=p("id")%>"></span> <%= Cel %></span>
 

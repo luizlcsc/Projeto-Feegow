@@ -659,8 +659,9 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                     </div>
                   </div>
                   <div class="panel-footer text-center p7">
-                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1'"><i class="fa fa-hand-o-left"></i> Recebidas </button>
-                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=E&Pers=1'"><i class="fa fa-hand-o-right"></i> Enviadas </button>
+                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1'">
+                    <i class="fa fa-list"></i> Listar tarefas 
+                    </button>                    
                   </div>
               </div>
             </div>

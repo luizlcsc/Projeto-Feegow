@@ -18,7 +18,8 @@ if strIds<>"" then
 
 
     'set tar = db.execute("select t.id, t.Titulo, t.De, t.DtAbertura, lu.Nome from tarefas t LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=t.De where (t.De="&session("User")&" and t.staDe='Pendente') or (t.Para like '|"&session("User")&"|' and t.staPara='Pendente')")
-    set tar = db.execute("select t.id, t.Titulo, t.De, t.DtAbertura, lu.Nome from tarefas t LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=t.De where t.id IN("& strIds &" 0) AND (staDe != 'Finalizada' OR staPara != 'Finalizada' ) ORDER BY 1 DESC ")
+    'set tar = db.execute("select t.id, t.Titulo, t.De, t.DtAbertura,t.staPara,t.staDe, lu.Nome from tarefas t LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=t.De where t.id IN("& strIds &" 0) AND (staDe != 'Finalizada' OR staPara != 'Finalizada' ) ORDER BY 1 DESC ")
+    set tar = db.execute("select t.id, t.Titulo, t.De, t.DtAbertura,t.staPara,t.staDe, lu.Nome from tarefas t LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=t.De where t.id IN("& strIds &" 0) AND  staPara != 'Finalizada'  ORDER BY 1 DESC ")
     while not tar.eof
         link = "?P=tarefas&Pers=1&I="&tar("id")
         Foto = FotoInTable(tar("De"))&""
@@ -32,17 +33,24 @@ if strIds<>"" then
                 <%end if %>
             </a>
             <div class="media-body">
-            <h5 class="media-heading"><a href="<%=link %>"><%=tar("Titulo")%></a>
+            <h5 class="media-heading" style="width:80%"><a href="<%=link %>"><%=tar("Titulo")%></a>
                 <small class="text-muted"></small>
-            </h5>por <%=tar("Nome") %> - <%=tar("DtAbertura") %>
+            </h5>por <%=tar("Nome") %> <br> <%=tar("DtAbertura") %>
                             
             </div>
             <div class="media-right">
             <div class="media-response"> Ação</div>
             <div class="btn-group">
-                <button type="button" onclick="staTar(<%=tar("id") %>)" class="btn btn-default btn-xs light" data-rel="tooltip" data-placement="right" title="" data-original-title="Marcar como finalizada.">
-                <i class="fa fa-check text-success"></i>
-                </button>
+                <%if tar("staPara") <> "Finalizada" then %>
+                    <button type="button" onclick="staTar(<%=tar("id") %>)" class="btn btn-default btn-xs light" data-rel="tooltip" data-placement="right" title="" data-original-title="Marcar como finalizada.">
+                    <i class="fa fa-check text-success"></i>
+                    </button>
+                <%else%>
+                    <button type="button" class="btn btn-default btn-xs light" data-rel="tooltip" data-placement="right" title="" data-original-title="Aguardando confirmação.">
+                    <i class="fa fa-check text-warning"></i>
+                    </button>
+                <%end if%>
+
                 <button type="button" onclick="location.href='<%=link %>';" class="btn btn-default btn-xs light" data-rel="tooltip" data-placement="right" title="" data-original-title="Abrir tarefa.">
                 <i class="fa fa-edit"></i>
                 </button>

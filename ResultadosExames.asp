@@ -14,12 +14,12 @@ subTitulo = "Resultados Exames"
             <div class="app" style="padding-top: 11px;">
                 <i style="text-align: center; margin: 30px;" class="fa fa-spin fa-spinner"></i>
             </div>
-
+            
+            <%response.write("<script> console.log('"&session("User")&"')</script>")%>
             <script type="text/javascript">
                 getUrl("unimed/resultado-exames", {
-                        dateStart: "2018-01-01",
-                        dateEnd: "2019-01-01",
-                        patientId: "<%=req("PacienteID")%>"
+                    patientId: "<%=req("PacienteID")%>",
+                    sysUser: "<%session("User")%>"
                 }, function(data) {
                     $(".app").hide();
                     $(".app").html(data);

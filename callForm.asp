@@ -13,12 +13,12 @@ if not getForm.eof then
 
 </head>
 <body>
-    <div class="panel-heading" <%if device()<>"" then %> style="position:relative!important;height: auto!important;"<% end if %>>
+    <div class="panel-heading">
         <span class="panel-title">
         <i class="fa fa-bar-chart"></i> <%=getForm("Nome") %>
             <code id="nomeProfissionalPreen"></code>
         </span>
-        <span class="panel-controls"             <%if device()<>"" then %> style="float:inherit!important;" <% end if %>>
+        <span class="panel-controls">
             <button type="button" class="btn btn-alert btn-sm" onclick="showLog()"><i class="fa fa-history"></i> Logs</button>
             <% if req("LaudoSC")="" then %>
                 <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="fa fa-print"></i> Imprimir</button>
@@ -29,13 +29,9 @@ if not getForm.eof then
             <% end if %>
         </span>
     </div>
-              <%if device()="" then %>
         <div class="panel-menu text-center">
             <a href="./?P=Pacientes&I=<%=PacienteID %>&Pers=1" target="_blank" class=" nomePacientePreen btn btn-default btn-block btn-primary"></a>
         </div>
-        <%
-        end if
-        %>
              <div class="alert alert-warning internetFail text-center" style="display:none">Sua internet está apresentando lentidão</div>
     <% end if %>
 <div class="panel-body p25" id="iProntCont">

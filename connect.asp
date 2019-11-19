@@ -2530,7 +2530,7 @@ function replaceTags(valor, PacienteID, UserID, UnidadeID)
                 if correSubs(corre) = "Hora" then
                     AgendamentoTag = formatdatetime(AgendamentoTag, 4)
                 end if
-                valor = replace(valor, "[Agendamento."&correSubs(corre)&"]", AgendamentoTag )
+                valor = replace(valor, "[Agendamento."&correSubs(corre)&"]", AgendamentoTag&"" )
             next
 
             PreValor = valor

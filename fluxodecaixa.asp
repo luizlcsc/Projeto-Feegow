@@ -178,9 +178,13 @@
         let inicio = $("#data-inicio").val();
         let fim = $("#data-fim").val();
         $("#fluxo-de-caixa").html(`<div class="loading-cubo"></div>`);
-        fetch(domain+`api/fluxo-de-caixa/dados?dataInicio=${inicio}&dataFim=${fim}&tk=`+localStorage.getItem("tk"),{
+
+        //let tk = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWNjZXNzIjp0cnVlLCJ1c2VySWQiOjgzMjA3LCJsaWNlbnNlSWQiOjU5NjgsImRhdGV0aW1lIjoiMjAxOS0xMS0xNCAxNzoyNjowMCIsInZhbGlkX3VudGlsIjoiMjAxOS0xMS0xNSAwNToyNjowMCJ9.T4FtrJCQLWhiJltGeLP5vlDL9YA61a9RzYU78C9jyaU";
+        let tk = localStorage.getItem("tk");
+
+        fetch(domain+`api/fluxo-de-caixa/dados?dataInicio=${inicio}&dataFim=${fim}&tk=`+tk,{
              headers: {
-                    "x-access-token":localStorage.getItem("tk"),
+                    "x-access-token":tk,
                      'Accept': 'application/json',
                      'Content-Type': 'application/json'
              }
@@ -191,11 +195,19 @@
                 anosMeses = {};
                 FormaPagamento = [];
                 DataPagamento  = [];
+                Categorias      = [];
                 PrimeiraData  = null;
                 ano         = null;
                 mes         = null;
 
                 dadosTabela = dados.result;
+                PorPlanoDeContas = dados.PorPlanoDeContas;
+
+                dados.PorPlanoDeContas.forEach((data) => {
+                      if(Categorias.indexOf(data.Categoria) === -1){
+                          Categorias.push(data.Categoria);
+                      }
+                });
 
                 dados.result.forEach((data) => {
                     if(FormaPagamento.indexOf(data.FormaPagamento) === -1){
@@ -275,6 +287,7 @@
 
     atualizarTabelaHorizontal = () => {
         let dados = dadosTabela;
+        let dadosPorPlanoDeContas = PorPlanoDeContas;
         let DataPagamento = [];
         let FormaPagamento = [];
         let _acumuladoAnterior = 0;
@@ -336,13 +349,12 @@
             totalAcumulado += `</td></tr>`;
         }
 
-        dadosBody += `<tr class="header-tr-tipo entradas"><th   COLSPAN="100%" style="text-align: left">Entradas</th ></tr>`;
+
+        dadosBody += `<tr class="header-tr-tipo entradas"><th   COLSPAN="100%" style="text-align: left">Entradas - Forma de Pagamento</th ></tr>`;
 
         FormaPagamento.forEach((data) => {
             dadosBody += `<tr class="entradas"><td class="header-tr">${data}</td>`;
-
             DataPagamento.forEach((DataPagamento) => {
-
                 ['Previsto','Realizado'].forEach((tipo)=>{
                     let result = dados.find((d) => {
                         return d.DataPagamento === DataPagamento && d.FormaPagamento === data && d.CD === 'D' && tipo === d.Tipo
@@ -350,6 +362,33 @@
 
                     if(result){
                         dadosBody += `<td class="${tipo}" title="${result.Invoices.join(" | ")}">${result.ValorMovements.toLocaleString('pt-BR', {
+                                         style: 'currency',
+                                         currency: 'BRL',
+                                       })}</td>`;
+                    }
+                    if(!result){
+                        dadosBody += `<td  class="${tipo}"></td>`;
+                    }
+                })
+            });
+
+            dadosBody += `</td></tr>`;
+        });
+
+        dadosBody += `<tr class="header-tr-tipo entradas"><th   COLSPAN="100%" style="text-align: left">Entradas - Plano de Contas</th ></tr>`;
+
+        Categorias.forEach((data) => {
+            dadosBody += `<tr class="entradas"><td class="header-tr">${data}</td>`;
+
+            DataPagamento.forEach((DataPagamento) => {
+
+                ['Previsto','Realizado'].forEach((tipo)=>{
+                    let result = dadosPorPlanoDeContas.find((d) => {
+                        return d.DataPagamento === DataPagamento && d.Categoria === data && d.CD === 'D' && tipo === d.Tipo
+                    });
+
+                    if(result){
+                        dadosBody += `<td class="${tipo}" >${result.Valor.toLocaleString('pt-BR', {
                                          style: 'currency',
                                          currency: 'BRL',
                                        })}</td>`;
@@ -385,10 +424,10 @@
             dadosBody += `</td></tr>`;
         }
 
-        dadosBody += `<tr class="header-tr-tipo saidas"><TH  COLSPAN="100%" style="text-align: left">Saídas</TH></tr>`;
+        dadosBody += `<tr class="header-tr-tipo saidas"><TH  COLSPAN="100%" style="text-align: left">Saídas - Forma de Pagamento</TH></tr>`;
 
         FormaPagamento.forEach((data) => {
-            dadosBody += `<tr class="entradas"><td class="header-tr">${data}</td>`;
+            dadosBody += `<tr class="saidas"><td class="header-tr">${data}</td>`;
 
             DataPagamento.forEach((DataPagamento) => {
 
@@ -412,8 +451,35 @@
             dadosBody += `</td></tr>`;
         });
 
+        dadosBody += `<tr class="header-tr-tipo saidas"><th   COLSPAN="100%" style="text-align: left">Saídas - Plano de Contas</th ></tr>`;
+
+        Categorias.forEach((data) => {
+            dadosBody += `<tr class="saidas"><td class="header-tr">${data}</td>`;
+
+            DataPagamento.forEach((DataPagamento) => {
+
+                ['Previsto','Realizado'].forEach((tipo)=>{
+                    let result = dadosPorPlanoDeContas.find((d) => {
+                        return d.DataPagamento === DataPagamento && d.Categoria === data && d.CD === 'C' && tipo === d.Tipo
+                    });
+
+                    if(result){
+                        dadosBody += `<td class="${tipo}" >${result.Valor.toLocaleString('pt-BR', {
+                                         style: 'currency',
+                                         currency: 'BRL',
+                                       })}</td>`;
+                    }
+                    if(!result){
+                        dadosBody += `<td  class="${tipo}"></td>`;
+                    }
+                })
+            });
+
+            dadosBody += `</td></tr>`;
+        });
+
         {
-            dadosBody += `<tr class="entradas"><td class="header-tr">Total</td>`;
+            dadosBody += `<tr class="saidas"><td class="header-tr">Total</td>`;
 
             DataPagamento.forEach((DataPagamento) => {
                 ['Previsto','Realizado'].forEach((tipo)=>{
@@ -504,158 +570,6 @@
 
         document.getElementById("fluxo-de-caixa").innerHTML = html;
     }
-/*
-    atualizarTabelaVertical = () => {
-            let dados = dadosTabela;
-            let DataPagamento = [];
-
-            let FormaPagamento = [];
-            dados.forEach((data) => {
-                if(DataPagamento.indexOf(data.DataPagamento) === -1){
-                    DataPagamento.push(data.DataPagamento);
-                }
-                if(FormaPagamento.indexOf(data.FormaPagamento) === -1){
-                    FormaPagamento.push(data.FormaPagamento);
-                }
-            });
-            html = "";
-            thsDatas = "";
-            thsTipos = "";
-
-            FormaPagamento.forEach((data) => {
-                thsDatas += `<th colspan="2">${data}</th>`;
-                thsTipos += `<th class="header-tr">Previsto</th>`;
-                thsTipos += `<th class="header-tr">Realizado</th>`;
-            });
-
-            let dadosBody = "";
-
-            dadosBody = "";
-            DataPagamento.forEach((DataPagamento) => {
-                dadosBody += `<tr><td class="header-tr">${moment(DataPagamento, "YYYY-MM-DD").format("DD/MM/YYYY")}</td>`;
-                FormaPagamento.forEach((data) => {
-                     let result = dados.find((d) => {
-                        return d.DataPagamento === DataPagamento && d.FormaPagamento === data
-                     });
-                     if(result){
-                        dadosBody += `<td class="previsto">${result.Previsto.toLocaleString('pt-US', {
-                                                             style: 'currency',
-                                                             currency: 'BRL',
-                                                           })}</td>`;
-                        dadosBody += `<td class="realizado">${result.Realizado.toLocaleString('pt-BR', {
-                                                              style: 'currency',
-                                                              currency: 'BRL',
-                                                            })}</td>`;
-                     }
-                     if(!result){
-                        dadosBody += `<td class="previsto"></td>`;
-                        dadosBody += `<td class="realizado"></td>`;
-                     }
-                });
-                dadosBody += `</tr>`;
-            });
-
-
-            html = `<table class="table table-bordered table-condensed">
-                        <thead>
-                            <tr class="header-tr"><td rowspan="2"></td>${thsDatas}</tr>
-                            <tr>${thsTipos}</tr>
-                        </thead>
-                        <tbody>${dadosBody}
-                        </tbody>
-                    </table>`;
-
-            document.getElementById("fluxo-de-caixa").innerHTML = html;
-        };
-
-    atualizarTabelaSemanas = () => {
-        let dados = dadosTabela;
-        let semanas     = [];
-        let semanaMes   = 0;
-
-        $(".formatoSemanalFiltros").show();
-
-
-        let diasNegativos = new Date(ano, mes, 1).getDay();
-
-        let htmlDiasSemanas = `<tr class="header-tr">
-                                     <th></th>
-                                     <th colspan="2">Domingo</th>
-                                     <th colspan="2">Segunda</th>
-                                     <th colspan="2">Terça</th>
-                                     <th colspan="2">Quarta</th>
-                                     <th colspan="2">Quinta</th>
-                                     <th colspan="2">Sexta</th>
-                                     <th colspan="2">Sábado</th>
-                                 </tr>`;
-
-        [...Array(31).keys()].forEach((dia)=>{
-            let day = dia-diasNegativos+1;
-
-            let data = new Date(ano, mes, day);
-            if(data.getDay() === 0 && day !== 1){
-                semanaMes++;
-            }
-            if(!semanas[semanaMes]){
-                semanas[semanaMes] = [];
-            }
-            semanas[semanaMes][data.getDay()] = moment(data).format("YYYY-MM-DD");
-        });
-
-
-        let dadosBody = "";
-        let dadosHeader = "";
-        let dadosHeader2 = "";
-        let html = "";
-
-        semanas.map((semana) => {
-            dadosHeader  = "<tr class='header-tr'><td></td>";
-            dadosHeader2 = "<tr class='header-tr'><td></td>";
-
-            FormaPagamento.forEach((formaPagamento,keyFormaPagamento) => {
-                if(keyFormaPagamento === 0){
-                    dadosBody = "";
-                }
-                dadosBody    += `<tr><th class="header-tr">${formaPagamento}</th>`;
-
-                semana.map((dia) =>{
-                    if(keyFormaPagamento === 0){
-                        dadosHeader  += `<th colspan="2">${moment(dia).format("DD/MM/YYYY")}</th>`;
-                        dadosHeader2 += `<th class="previsto">Previsto</th><th class="realizado">Realizado</th>`;
-                    }
-
-                    let result = dados.find((d) => {
-                        return d.DataPagamento === dia && d.FormaPagamento === formaPagamento
-                    });
-                    if(result){
-                        dadosBody += `<td class="previsto">${result.Previsto.toLocaleString('pt-US', {
-                                                             style: 'currency',
-                                                             currency: 'BRL',
-                                                           })}</td>`;
-                        dadosBody += `<td class="realizado">${result.Realizado.toLocaleString('pt-BR', {
-                                                              style: 'currency',
-                                                              currency: 'BRL',
-                                                            })}</td>`;
-                    }
-
-                    if(!result){
-                      dadosBody += `<td  class="previsto"></td>`;
-                      dadosBody += `<td  class="realizado"></td>`;
-                    }
-                });
-                dadosBody    += `</tr>`;
-            });
-            dadosHeader  += "</tr>";
-            dadosHeader2 += "</tr>";
-            html += htmlDiasSemanas+dadosHeader+dadosHeader2+dadosBody;
-        });
-
-        html = `<table class="table table-bordered table-condensed">
-                    ${html}
-                </table>`;
-
-        document.getElementById("fluxo-de-caixa").innerHTML = html;
-    }*/
 
     loadDados();
 

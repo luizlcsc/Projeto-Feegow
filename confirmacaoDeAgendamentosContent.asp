@@ -1,4 +1,5 @@
-﻿    <!--#include file="connect.asp"-->
+﻿<!--#include file="connect.asp"-->
+<!--#include file="Classes/WhatsApp.asp"-->
 <%
 
 function centralWhatsApp(AgendamentoID)
@@ -42,7 +43,7 @@ function centralWhatsApp(AgendamentoID)
 
 
         if Mensagem&"" ="" then
-            Mensagem = "Olá, [NomePaciente] ! Posso confirmar [NomeProcedimento] com [NomeProfissional] as [HoraAgendamento]"
+            Mensagem = "Olá, [NomePaciente] !%0a%0aPosso confirmar [NomeProcedimento] com [NomeProfissional] às [HoraAgendamento]?"
         end if
 
         if instr(Mensagem, "[TipoProcedimento]") or instr(Mensagem, "[NomeProcedimento]") then
@@ -286,9 +287,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
 
                     TagWhatsApp = True
 
-                    PrimeiroDigito = right(left(CelularFormatadado, 5),1)
-
-                    if PrimeiroDigito&"" <> "9" then
+                    if celularValido(Celular) then
                         TagWhatsApp= False
                     end if
 
@@ -296,7 +295,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     </td>
                     <td><a href="?P=Agenda-1&Pers=1&AgendamentoID=<%=ag("id")%>" target="_blank"><%= ag("Data") %> - <%=ft(ag("Hora"))%></a></td>
                     <td><a target="_blank" href="?P=Pacientes&Pers=1&I=<%= ag("PacienteID") %>"><%= ag("NomePaciente") %></a></td>
-                    <td><span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline"  onclick="AlertarWhatsapp('<%=CelularFormatadado%>', `<%=TextoWhatsApp%>`, '<%=ag("id")%>')" <% end if%> ><span id="wpp-<%=ag("id")%>"></span> <%= Celular %></<%=TagWhatsApp%>>
+                    <td><span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline"  onclick="AlertarWhatsapp('<%=CelularFormatadado%>', `<%=TextoWhatsApp%>`, '<%=ag("id")%>')" <% end if%> ><span id="wpp-<%=ag("id")%>"></span> <%= Celular %></span>
                     <%
                     if not isnull(ag("Resposta")) then
                         'validar se a resposta é do tipo correto 

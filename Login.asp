@@ -512,7 +512,11 @@ end if
 
     <!-- Page Javascript -->
     <script type="text/javascript">
-        var pki = new LacunaWebPKI();
+    var pki = {};
+    try{
+        pki = new LacunaWebPKI();
+    }catch (e) {}
+
         var selectedCert = null;
 
         jQuery(document).ready(function () {

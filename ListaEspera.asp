@@ -15,6 +15,8 @@
             <select name="ProfissionalID" id="ProfissionalID" class="form-control select2-single">
                 <option value="">Selecione</option>
                 <%
+            response.Flush()
+
             sqlunidades  = "select Unidades from " & session("table") &" where id = " & session("idInTable")
             set UnidadesUser  = db.execute(sqlunidades)
             UnidadesUser = replace(UnidadesUser("Unidades"), "|", "")
@@ -25,8 +27,7 @@
                 'response.write ("<script> console.log('"&lista(z)&"');</script>")
             next
             sqlOR = " AND (false " & sqlOR & ") "
-            sql = " SELECT und.NomeFantasia, prof.id, prof.unidades, LEFT(prof.NomeProfissional, 20)NomeProfissional, prof.NomeSocial, prof.Cor, prof.Ativo, " &_
-                  " (SELECT count(a2.id) from agendamentos a2 where a2.ProfissionalID=age.ProfissionalID and a2.staid in (4, 5, 2) and a2.data=age.data) NumeroAguardando " &_
+            sql = " SELECT und.NomeFantasia, prof.id, prof.unidades, LEFT(prof.NomeProfissional, 20)NomeProfissional, prof.NomeSocial, prof.Cor, prof.Ativo " &_
                   " FROM Profissionais prof " &_
                   " INNER JOIN agendamentos age ON age.ProfissionalID=prof.id " &_
                   " LEFT JOIN locais l ON l.id=age.LocalID " &_
@@ -71,15 +72,18 @@
                     <%
                 end if
 
-                NumeroAguardando=Prof("NumeroAguardando")
+
                 %>
-                <option <%=selected%> style="border-left: <%=Prof("Cor")%> 10px solid; background-color: #fff;" value="<%=Prof("id")%>"><%=ucase(NomeProfissional)%>: <%=NumeroAguardando%> </option>
+                <option <%=selected%> style="border-left: <%=Prof("Cor")%> 10px solid; background-color: #fff;" value="<%=Prof("id")%>"><%=ucase(NomeProfissional)%></option>
                 <%
                 UltimaUnidade=UnidadeAtual
             Prof.movenext
             wend
             Prof.close
             set Prof = nothing
+
+            response.Flush()
+
                 %>
             </select>
 

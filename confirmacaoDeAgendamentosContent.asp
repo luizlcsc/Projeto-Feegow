@@ -285,10 +285,10 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
 
                     response.write(StatusSelect)
 
-                    TagWhatsApp = True
+                    TagWhatsApp = False
 
                     if celularValido(Celular) then
-                        TagWhatsApp= False
+                        TagWhatsApp= True
                     end if
 
                     %>

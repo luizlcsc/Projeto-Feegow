@@ -1,7 +1,7 @@
 <%
 
 function celularValido(celular)
-    CelularFormatadado = "55"& replace(replace(replace(replace(Celular, "(", ""),")","")," ",""),"-","")
+    CelularFormatadado = "55"& replace(replace(replace(replace(Celular&"", "(", ""),")","")," ",""),"-","")
 
     PrimeiroDigito = right(left(CelularFormatadado, 5),1)
     

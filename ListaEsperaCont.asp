@@ -113,14 +113,14 @@ next
 sqlOR = " AND (false " & sqlOR & ") "
 
 
-if lcase(session("Table"))<>"profissionais" or req("ProfissionalID")<>"" then	
+if lcase(session("Table"))<>"profissionais" or req("ProfissionalID")<>"" then
     sqlTotal = "SELECT count(*) total, l.UnidadeID " &_
-               "FROM agendamentos a " &_ 
+               "FROM agendamentos a " &_
                "INNER JOIN pacientes pac ON pac.id=a.PacienteID " &_
                "LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID " &_
                "LEFT JOIN locais l on l.id=a.LocalID " &_
                "WHERE a.Data = '"&mydate(DataHoje)&"' and a.StaID in(2, 5, "&StatusExibir&") " &_
-               "AND (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID)) "&sqlProfissional&" " &_ 
+               "AND (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID)) "&sqlProfissional&" " &_
                "group by(l.UnidadeID) order by total desc limit 1 "
     sql = "SELECT a.*, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) " &_
           "FROM agendamentosprocedimentos " &_
@@ -138,7 +138,7 @@ else
     if configExibirNaSalaDeEspera = 0 then
         sqlSalaDeEspera  = " a.ProfissionalID !=0 and "
     end if
-    sqlTotal = "SELECT count(*) total, l.UnidadeID " &_ 
+    sqlTotal = "SELECT count(*) total, l.UnidadeID " &_
                "FROM agendamentos a " &_
                "INNER JOIN pacientes pac ON pac.id=a.PacienteID " &_
                "LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID " &_
@@ -150,7 +150,7 @@ else
           "from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano " &_
           "from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID " &_
           "LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID " &_
-          "LEFT JOIN locais l on l.id=a.LocalID  " &_ 
+          "LEFT JOIN locais l on l.id=a.LocalID  " &_
           "LEFT JOIN profissionais p on p.id=a.ProfissionalID " &_
           "WHERE "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' " &_
           "AND a.ProfissionalID in("&ProfissionalID&", 0) " &_
@@ -174,7 +174,7 @@ if lcase(session("table"))="profissionais" then
             set ProfissionalTriagemSQL = db.execute(sqlTriagem)
             if not ProfissionalTriagemSQL.eof then
                 if ProfissionalTriagemSQL("EspecialidadeTriagem")="1" then
-                    ProfissionalTriagem="S"                    
+                    ProfissionalTriagem="S"
                     sql = "select age.*, profage.NomeProfissional, tp.NomeTabela from agendamentos age LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID LEFT JOIN profissionais profage ON profage.id=age.ProfissionalID INNER JOIN pacientes pac ON pac.id=age.PacienteID LEFT JOIN locais l ON l.id=age.LocalID where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' order by "&Ordem
                 end if
             end if

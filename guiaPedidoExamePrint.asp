@@ -29,6 +29,12 @@ set timbrado = db.execute("select pt.* "&_
 if not timbrado.eof then
     cabecalho = timbrado("Cabecalho")
     rodape = timbrado("Rodape")
+    mLeft = timbrado("mLeft")
+    mRight = timbrado("mRight")
+    mTop = timbrado("mTop")
+    mBottom = timbrado("mBottom")
+    fontSize = timbrado("font-size")
+    color = timbrado("color")
 end if
 db_execute("update pedidossadt set ConvenioID="& treatvalzero(req("ConvenioIDPedidoSADT")) &", ProfissionalID="&treatvalzero(req("ProfissionalID"))&", Data="&mydatenull(req("DataSolicitacao"))&", IndicacaoClinica='"& req("IndicacaoClinicaPedidoSADT") &"', Observacoes='"& req("ObservacoesPedidoSADT") &"', ProfissionalExecutante='"& req("ProfissionalExecutanteIDPedidoSADT") &"' where id="& req("PedidoSADTID"))
 set procs = db.execute("select pps.*, ps.ConvenioID, ps.Data, ps.PacienteID, ps.ProfissionalID, ps.GuiaID, ps.IndicacaoClinica, ps.Observacoes, pac.NomePaciente, pac.Matricula1, pac.Validade1 from pedidossadtprocedimentos pps LEFT JOIN pedidossadt ps ON pps.PedidoID=ps.id LEFT JOIN pacientes pac ON pac.id=ps.PacienteID where pps.PedidoID="& req("PedidoSADTID"))
@@ -91,18 +97,49 @@ paginas_impressas = 0
         registros_mostrados = 0 
         paginas_impressas  = paginas_impressas  + 1
      %>
+<style>
+
+ .tablePrint{ vertical-align: top; font-size:11px; font-family: sans-serif; margin-bottom: 15px;}
+ p {margin-top:0px; margin-bottom: 2px;}
+ .carimbo{margin-top: 35px;}
+
+body{
+<%if mLeft&""<>"" then%>
+    padding-left: <%=mLeft%>px;
+<%end if%>
+
+<%if mRight&""<>"" then%>
+padding-right: <%=mRight%>px;
+<%end if%>
+
+<%if fontSize&""<>"" then%>
+font-size: <%=fontSize%>px!important;
+<%end if%>
+
+<%if color&""<>"" then%>
+color: <%=color%>;
+<%end if%>
+
+}
+.cabecalho{
+<%if mTop&""<>"" then%>
+    margin-top: <%=mTop%>px;
+<%end if%>
+
+}
+.rodape{
+<%if mBottom&""<>"" then%>
+    margin-bottom: <%=mBottom%>px;
+<%end if%>
+}
+ </style>
 <body>
 	<div style="max-width: 100%; margin: 0 auto">
-	<style>
-
-    .tablePrint{ vertical-align: top; font-size:11px; font-family: sans-serif; margin-bottom: 15px;}
-    p {margin-top:0px; margin-bottom: 2px;}
-    .carimbo{margin-top: 35px;}
-
-    </style>
-    <% if imprimecabecalho = 1 then %>
-    <%=cabecalho%>
-    <% end if %>
+    <div class="cabecalho">
+        <% if imprimecabecalho = 1 then %>
+        <%=cabecalho%>
+        <% end if %>
+    </div>
     <br>
 	<table class="tablePrint">
 
@@ -196,9 +233,11 @@ paginas_impressas = 0
     </table>
  
 </div>
-<% if imprimecabecalho=1 then %>
-<%=rodape%>
-<% end if %>
+<div class="rodape">
+    <% if imprimecabecalho=1 then %>
+    <%=rodape%>
+    <% end if %>
+</div>
 <div style='page-break-after:always'></div>
 <% wend 
     procs.close 

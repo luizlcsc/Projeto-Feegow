@@ -281,7 +281,9 @@ end if
 		while not itens.eof
 
 		    IF NOT ItemCancelado THEN
-		        ItemCancelado = itens("Executado") = "C"
+		        if  itens("Tipo")="S"  then
+		            ItemCancelado = itens("Executado") = "C"
+		        end if
 		    END IF
 
 		    CategoriaItem = itens("CategoriaID")

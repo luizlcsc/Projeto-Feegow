@@ -2530,7 +2530,7 @@ function replaceTags(valor, PacienteID, UserID, UnidadeID)
                 if correSubs(corre) = "Hora" then
                     AgendamentoTag = formatdatetime(AgendamentoTag, 4)
                 end if
-                valor = replace(valor, "[Agendamento."&correSubs(corre)&"]", AgendamentoTag )
+                valor = replace(valor, "[Agendamento."&correSubs(corre)&"]", AgendamentoTag&"" )
             next
 
             PreValor = valor
@@ -4773,6 +4773,18 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Conv
                     ObsConvenios = ""
                     set ConvenioSQL = db.execute("SELECT Obs FROM convenios WHERE id="&ConvenioID&" AND Obs!='' AND Obs IS NOT NULL")
 
+                    planosOptions = getPlanosOptions(ConvenioID, PlanoID)
+                    if planosOptions<>"" then
+                    %>
+<script >
+$(document).ready(function() {
+$("#divConvenio").after("<%=planosOptions%>");
+
+$("#PlanoID").select2();
+})
+</script>
+                    <%
+                    end if
                     if not ConvenioSQL.eof then
                         ObsConvenio = ConvenioSQL("Obs")
                         %>

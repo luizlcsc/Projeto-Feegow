@@ -21,8 +21,13 @@
         </thead>
         <tbody>
             <%
+            StatusSelecionados = ref("fStaID")
+            if StatusSelecionados <> "|1|, |4|, |5|, |7|, |15|, |101|" then
+                session("StatusCheckin") = StatusSelecionados
+            end if
+
             if ref("fStaID")<>"" then
-                sqlSta = " AND a.StaID IN("& replace(ref("fStaID"), "|", "") &") "
+                sqlSta = " AND a.StaID IN("& replace(StatusSelecionados, "|", "") &") "
             end if
             if ref("fProfissionalID")<>"0" then
                 sqlProf = " AND a.ProfissionalID IN ("& ref("fProfissionalID") &") "
@@ -30,12 +35,15 @@
             if ref("fNomePaciente")<>"" then
                 sqlPac = " AND pac.NomePaciente LIKE '%"& replace(ref("fNomePaciente"), " ", "%") &"%' "
             end if
-
+            if req("PacienteID") <> "" then
+                sqlPac = " AND pac.id = "&req("PacienteID")
+            end if
             if session("UnidadeID")<>"" then
                 sqlUnidade=" AND (l.UnidadeID="&session("UnidadeID")&" OR a.LocalID=0)"
             end if
 
-            set ag = db.execute("select a.id, a.ProfissionalID, a.LocalID, a.StaID, s.StaConsulta, a.Hora,a.HoraSta, pac.NomePaciente, pac.NomeSocial NomeSocialPaciente, if(isnull(pro.NomeSocial) or pro.NomeSocial='', pro.NomeProfissional, pro.NomeSocial) NomeProfissional, esp.Especialidade, proc.NomeProcedimento, l.Nomelocal, eq.NomeEquipamento, a.rdValorPlano, a.ValorPlano, conv.NomeConvenio, tab.NomeTabela FROM agendamentos a LEFT JOIN staconsulta s ON a.StaID=s.id LEFT JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN profissionais pro ON pro.id=a.ProfissionalID LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID LEFT JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN locais l ON l.id=a.LocalID LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN convenios conv ON conv.id=a.ValorPlano LEFT JOIN tabelaparticular tab ON tab.id=a.TabelaParticularID WHERE a.Data=curdate() "& sqlSta & sqlProf & sqlPac & sqlUnidade &" ORDER BY Hora")
+            set ag = db.execute("select a.id, a.ProfissionalID, a.LocalID, a.StaID, s.StaConsulta, a.Hora,a.HoraSta, pac.NomePaciente, pac.NomeSocial NomeSocialPaciente, if(isnull(pro.NomeSocial) or pro.NomeSocial='', pro.NomeProfissional, pro.NomeSocial) NomeProfissional, esp.Especialidade, proc.NomeProcedimento, l.Nomelocal, eq.NomeEquipamento, a.rdValorPlano, a.ValorPlano, conv.NomeConvenio, tab.NomeTabela, a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano FROM agendamentos a LEFT JOIN staconsulta s ON a.StaID=s.id LEFT JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN profissionais pro ON pro.id=a.ProfissionalID LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID LEFT JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN locais l ON l.id=a.LocalID LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN convenios conv ON conv.id=a.ValorPlano LEFT JOIN tabelaparticular tab ON tab.id=a.TabelaParticularID WHERE a.Data=curdate() "& sqlSta & sqlProf & sqlPac & sqlUnidade &" ORDER BY Hora")
+            'response.write("select a.id, a.ProfissionalID, a.LocalID, a.StaID, s.StaConsulta, a.Hora,a.HoraSta, pac.NomePaciente, pac.NomeSocial NomeSocialPaciente, if(isnull(pro.NomeSocial) or pro.NomeSocial='', pro.NomeProfissional, pro.NomeSocial) NomeProfissional, esp.Especialidade, proc.NomeProcedimento, l.Nomelocal, eq.NomeEquipamento, a.rdValorPlano, a.ValorPlano, conv.NomeConvenio, tab.NomeTabela FROM agendamentos a LEFT JOIN staconsulta s ON a.StaID=s.id LEFT JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN profissionais pro ON pro.id=a.ProfissionalID LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID LEFT JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN locais l ON l.id=a.LocalID LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN convenios conv ON conv.id=a.ValorPlano LEFT JOIN tabelaparticular tab ON tab.id=a.TabelaParticularID WHERE a.Data=curdate() "& sqlSta & sqlProf & sqlPac & sqlUnidade &" ORDER BY Hora")
             while not ag.eof
                 if ag("rdValorPlano")="V" then
                     if  aut("valordoprocedimentoV")=0 then
@@ -119,4 +127,5 @@
         <%
     end if
     %>
+
 </script>

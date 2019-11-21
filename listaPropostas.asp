@@ -1,4 +1,6 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/WhatsApp.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
         <div class="panel">
         <%
         CallID = req("CallID")
@@ -31,6 +33,7 @@
                     <th width="8%">Data</th>
 			        <%if req("PacienteID")="" then%>
                         <th>Paciente</th>
+                        <th>Telefone</th>
                     <%end if%>
                     <th>Itens</th>
                     <th width="15%">Status</th>
@@ -60,16 +63,44 @@
                     'response.write(sqlp)
 			        set p = db.execute(sqlp)
 		        end if
+
+		        set ConfigSQL = db.execute("SELECT NomeEmpresa FROM sys_config ")
+		        if not ConfigSQL.eof then
+    		        NomeEmpresa = ConfigSQL("NomeEmpresa")
+		        end if
+
 		        while not p.eof
+
 			        %>
 			        <tr>
             	        <td><%=p("DataProposta")%></td>
-				        <%if req("PacienteID")="" then%>
-                            <td nowrap><%=p("NomePaciente")%>
-                                <small><br />
-                                <%=p("Tel1")%>&nbsp;&nbsp;<%=p("Tel2")%>&nbsp;&nbsp;<%=p("Cel1")%>&nbsp;&nbsp;<%=p("Cel2")%>
-                                    </small>
-                            </td>
+				        <%if req("PacienteID")="" then
+
+                            Tel = p("Tel1")
+                            Cel = p("Cel1")
+
+                            if Tel1&"" = "" then
+                                Tel = p("Tel2")
+                            end if
+                            if Cel&"" = "" then
+                                Cel = p("Cel2")
+                            end if
+
+
+                            TagWhatsApp = True
+
+                            if not celularValido(Cel) then
+                                TagWhatsApp= False
+                            end if
+
+                            CelularFormatado = formataCelularWhatsApp(Cel)
+
+                            TextoWhatsApp = "*"&NomeEmpresa&"*%0a%0aOla, "&TratarNome("Título", p("NomePaciente"))&" !"
+
+				        %>
+                            <td nowrap><%=p("NomePaciente")%></td>
+                            <td><span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline"  onclick="AlertarWhatsapp('<%=CelularFormatado%>', `<%=TextoWhatsApp%>`, '<%=p("id")%>')" <% else %> <%=Tel%>&nbsp;&nbsp;<%=Cel%> <%end if%> ><span id="wpp-<%=p("id")%>"></span> <%= Cel %></span>
+
 				        <%end if%>
                         <td><%=p("Procedimentos")%></td>
                         <td><%=p("NomeStatus")%></td>

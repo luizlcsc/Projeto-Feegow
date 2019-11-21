@@ -3,6 +3,11 @@ select case lcase(req("P"))
 
     case "checkin"
         StaChk = "|1|, |4|, |5|, |7|, |15|, |101|"
+
+        if session("StatusCheckin")<>"" then
+            StaChk=session("StatusCheckin")
+        end if
+
         %>
         <li class="sidebar-label"></li>
         <li class="sidebar-label p20">

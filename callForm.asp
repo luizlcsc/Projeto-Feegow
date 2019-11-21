@@ -153,7 +153,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
                 FormID = newFormId;
             }
         }
-        
+
         let formdata = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID").serialize();
 
         if (FormID != "N")
@@ -165,12 +165,12 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         $btnSave.attr("disabled", true);
         $btnPrint.attr("disabled", true);
         $.post('<%=urlPost%>&i='+FormID+"&auto="+AutoSave+"&Inserir="+Inserir,
-         formdata, 
+         formdata,
          function(data){
             $btnSave.attr("disabled", false);
             $btnPrint.attr("disabled", false);
             $btnSaveText.html("Salvar");
-            
+
             if(AutoSave==0){
                 DescartarLog('<%=FormID%>');
             }
@@ -178,7 +178,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
             if(typeof data !== "undefined"){
                 eval(data);
             }
-           
+
         }).fail(function() {
               $btnSave.attr("disabled", false);
               $btnPrint.attr("disabled", false);
@@ -191,26 +191,26 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         let jsonForm = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID").serializeFormJSON();
         let local = localStorage.getItem("logForms");
         let data_hora = new Date();;
-        let data = { 
+        let data = {
             formID:String(formID),
             pacienteID: <%=req("p")%>,
-            modeloID: <%=req("m")%>, 
-            tipo:TipoForm,    
+            modeloID: <%=req("m")%>,
+            tipo:TipoForm,
             dataHora: data_hora.toLocaleDateString() +" "+ data_hora.toLocaleTimeString(),
-            jsonForm:jsonForm , 
+            jsonForm:jsonForm ,
             formData: dataForm
              };
         let ret = [];
-        
+
         if(local != null)
         {
             ret = JSON.parse(local);
 
             let element = ret.findIndex((elem,index)=>{
-                   return (elem.formID === data.formID 
+                   return (elem.formID === data.formID
                             && elem.pacienteID === data.pacienteID
                             && elem.tipo === data.tipo);
-            }) ; 
+            }) ;
 
             if(element>=0){
                 ret[element].formData = data.formData;
@@ -228,10 +228,10 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         }else
         {
             ret.push(data);
-        }  
+        }
         localStorage.setItem("logForms", JSON.stringify(ret));
     }
-    
+
     function DescartarLog(id){
         let local = localStorage.getItem("logForms");
         let pacienteID = "<%=PacienteID%>";
@@ -270,11 +270,11 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
     });
 
     var ultimo="";
-    var timeout  = null; 
+    var timeout  = null;
     function saveteste(){
-        
+
         let atual = JSON.stringify( $(".campoInput, .campoCheck, .tbl").serializeFormJSON());
-       
+
         if(atual!=ultimo){
             $.ajax({
                 url: domain+"log/saveFormLog",
@@ -312,7 +312,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
                 url: domain+"log/getFormLog",
                 method: 'POST',
                 dataType: 'json',
-                data: 
+                data:
                 {
                     'pacienteID': <%=req("p")%>,
                     'modeloID': <%=req("m")%>,
@@ -338,7 +338,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
                         openModal(list, "Log de modificações", true, false);
                 }
-            });    
+            });
 
     }
 
@@ -361,9 +361,9 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
     };
     })(jQuery);
 
-    
 
-    
+
+
 
     //fim do novo log do formulario
 /*
@@ -403,7 +403,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
             $("#conteudo-timeline").toggle(1000);
         });
 
-        
+
     });
 
 </script>
@@ -419,7 +419,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
 .logTimeLine-item {
   background-color: #fff;
-  padding: 10px;  
+  padding: 10px;
   margin: 10px;
   font-size: 12px;
   border: 1px solid #3498db;
@@ -427,7 +427,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
   position: relative;
   color: #666;
   border-radius: 4px
-  
+
 }
 
 .logTimeLine-item:before {

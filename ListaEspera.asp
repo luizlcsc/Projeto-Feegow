@@ -15,6 +15,8 @@
             <select name="ProfissionalID" id="ProfissionalID" class="form-control select2-single">
                 <option value="">Selecione</option>
                 <%
+            response.Flush()
+
             sqlunidades  = "select Unidades from " & session("table") &" where id = " & session("idInTable")
             set UnidadesUser  = db.execute(sqlunidades)
             UnidadesUser = replace(UnidadesUser("Unidades"), "|", "")
@@ -69,6 +71,8 @@
                     <optgroup label="<%=UnidadeAtual%>">
                     <%
                 end if
+
+
                 %>
                 <option <%=selected%> style="border-left: <%=Prof("Cor")%> 10px solid; background-color: #fff;" value="<%=Prof("id")%>"><%=ucase(NomeProfissional)%></option>
                 <%
@@ -77,6 +81,9 @@
             wend
             Prof.close
             set Prof = nothing
+
+            response.Flush()
+
                 %>
             </select>
 

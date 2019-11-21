@@ -23,7 +23,7 @@ if T="Glosado" then
     db.execute("update tiss"&TG&" set Glosado=1, ValorPago=0,GuiaStatus=8 WHERE id IN("&Guia&")")
 
     if TG = "guiasadt" OR TG="guiahonorarios" then
-        db.execute("update "&tabelaprocedimento&" set ValorPago=0 WHERE GuiaID = "&Guia)
+        db.execute("update "&tabelaprocedimento&" set ValorPago=0 WHERE GuiaID IN ("&Guia&")")
     end if
     response.write("location.reload();")
 end if
@@ -31,7 +31,8 @@ if T="Pago" then
     db.execute("update tiss"&TG&" set Glosado=0, ValorPago="&coluna&", GuiaStatus=10 WHERE id IN("&Guia&")")
 
     if TG = "guiasadt" OR TG="guiahonorarios" then
-        db.execute("update "&tabelaprocedimento&" set ValorPago=ValorTotal WHERE GuiaID = "&Guia)
+        sqlUpdate = "update "&tabelaprocedimento&" set ValorPago=ValorTotal WHERE GuiaID IN ("&Guia&")"
+        db.execute(sqlUpdate)
     end if
     response.write("location.reload();")
 end if

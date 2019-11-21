@@ -50,7 +50,7 @@ if BuscaProduto="" then
         sqlProdutos = " AND id IN("& Produtos &") "
     end if
 else
-    set vcaCBID = db.execute("select * from estoqueposicao where CBID='"& BuscaProduto &"' AND Quantidade>0")
+    set vcaCBID = db.execute("select * from estoqueposicao where CBID like '%"& BuscaProduto &"' AND Quantidade>0")
     if not vcaCBID.eof AND CD="C" then
         sqlProdutos = " AND 1=2 "
         %>

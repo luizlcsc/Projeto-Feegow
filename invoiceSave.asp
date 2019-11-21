@@ -556,9 +556,9 @@ if erro="" then
     end if
 
   if scp()=1 then
-    	db_execute("update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe="& treatvalnull(ref("nroNFe")) &", dataNFe="& mydatenull(ref("dataNFe")) &", valorNFe="& treatvalzero(ref("valorNFe")) &" where id="&InvoiceID)
+    	db_execute("update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe="& treatvalnull(ref("nroNFe")) &", dataNFe="& mydatenull(ref("dataNFe")) &", valorNFe="& treatvalzero(ref("valorNFe")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"' where id="&InvoiceID)
   else
-      db_execute("update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe="& treatvalnull(ref("nroNFe")) &" where id="&InvoiceID)
+      db_execute("update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe="& treatvalnull(ref("nroNFe")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"' where id="&InvoiceID)
   end if
 
   call reconsolidar("invoice", InvoiceID)

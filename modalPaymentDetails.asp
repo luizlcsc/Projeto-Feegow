@@ -82,30 +82,50 @@ if not getMovement.EOF then
 		<h4 class="modal-title"><%= Title %> <%=por%></h4>
         <%
 		if not isnull(getMovement("ChequeID")) then
-			set cheque = db.execute("select * from sys_financialreceivedchecks where id="& getMovement("ChequeID"))
-            if not cheque.eof then
+		    if CD="C" then
+                set cheque = db.execute("select c.*, lu.Nome NomeUsuario, mov.sysDate, ca.AccountName, b.BankName from sys_financialissuedchecks c "&_
+                 " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=c.AccountID "&_
+                 " LEFT JOIN sys_financialbanks b ON b.id=ca.Bank "&_
+                 " INNER JOIN sys_financialmovement mov ON mov.id=c.MovementID "&_
+                 " LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=mov.sysUser where c.id="&getMovement("ChequeID"))
+                if not cheque.eof then
                 %>
-                <h5>Detalhes do Cheque</h5>
-                <div class="row">
-		            <%=quickfield("simpleSelect", "BankID", "Banco", 4, cheque("BankID"), "select id, concat(BankNumber, ' - ', BankName) Banco from sys_financialbanks", "Banco", " disabled ")%>
-                    <%=quickfield("text", "Branch", "N&deg; da Agência", 2, cheque("Branch"), "", "", " disabled ")%>
-                    <%=quickfield("text", "Account", "N&deg; da Conta", 2, cheque("Account"), "", "", " disabled ")%>
-                    <%=quickfield("text", "CheckNumber", "N&deg; do Cheque", 2, cheque("CheckNumber"), "", "", " disabled ")%>
-                    <%=quickfield("datepicker", "CheckDate", "Data do Cheque", 2, cheque("CheckDate"), "", "", " disabled ")%>
-                </div>
-                <div class="row">
-                    <%=quickfield("text", "Holder", "Emitente", 6, cheque("Holder"), "", "", " disabled ")%>
-                    <%=quickfield("text", "Document", "CPF / CNPJ", 3, cheque("Document"), " input-mask-cpf", "", " disabled ")%>
-                    <%=quickfield("text", "BorderoID", "N&deg; do Border&ocirc;", 3, cheque("BorderoID"), "", "", " disabled ")%>
-                </div>
-	            <div class="row">
-    	            <div class="col-md-6">
-        	            <label for="ContaCorrente">Localiza&ccedil;&atilde;o</label><br>
-        	            <%=simpleSelectCurrentAccounts("ContaCorrente", "1, 7, 2, 4, 5, 6, 3", cheque("AccountAssociationID")&"_"&cheque("AccountID"), " disabled ")%>
-                    </div>
-    	            <%=quickfield("simpleSelect", "StatusID", "Status", 3, cheque("StatusID"), "select * from cliniccentral.chequestatus", "Descricao", " disabled ")%>
-                </div>
+                <strong>Conta: </strong> <%=cheque("AccountName")%><br>
+                <strong>Banco: </strong> <%=cheque("BankName")%><br>
+                <strong>Número:</strong> <%=cheque("CheckNumber")%> <br>
+                <strong>Data do cheque: </strong><%=cheque("CheckDate")%> <br>
+                <strong>Usuário: </strong> <%=cheque("NomeUsuario")%><br>
+                <strong>Data do pagamento: </strong><%=cheque("sysDate")%> <br>
+
                 <%
+                end if
+            else
+
+                set cheque = db.execute("select * from sys_financialreceivedchecks where id="& getMovement("ChequeID"))
+                if not cheque.eof then
+                    %>
+                    <h5>Detalhes do Cheque</h5>
+                    <div class="row">
+                        <%=quickfield("simpleSelect", "BankID", "Banco", 4, cheque("BankID"), "select id, concat(BankNumber, ' - ', BankName) Banco from sys_financialbanks", "Banco", " disabled ")%>
+                        <%=quickfield("text", "Branch", "N&deg; da Agência", 2, cheque("Branch"), "", "", " disabled ")%>
+                        <%=quickfield("text", "Account", "N&deg; da Conta", 2, cheque("Account"), "", "", " disabled ")%>
+                        <%=quickfield("text", "CheckNumber", "N&deg; do Cheque", 2, cheque("CheckNumber"), "", "", " disabled ")%>
+                        <%=quickfield("datepicker", "CheckDate", "Data do Cheque", 2, cheque("CheckDate"), "", "", " disabled ")%>
+                    </div>
+                    <div class="row">
+                        <%=quickfield("text", "Holder", "Emitente", 6, cheque("Holder"), "", "", " disabled ")%>
+                        <%=quickfield("text", "Document", "CPF / CNPJ", 3, cheque("Document"), " input-mask-cpf", "", " disabled ")%>
+                        <%=quickfield("text", "BorderoID", "N&deg; do Border&ocirc;", 3, cheque("BorderoID"), "", "", " disabled ")%>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="ContaCorrente">Localiza&ccedil;&atilde;o</label><br>
+                            <%=simpleSelectCurrentAccounts("ContaCorrente", "1, 7, 2, 4, 5, 6, 3", cheque("AccountAssociationID")&"_"&cheque("AccountID"), " disabled ")%>
+                        </div>
+                        <%=quickfield("simpleSelect", "StatusID", "Status", 3, cheque("StatusID"), "select * from cliniccentral.chequestatus", "Descricao", " disabled ")%>
+                    </div>
+                    <%
+                end if
             end if
 		end if
 		%>

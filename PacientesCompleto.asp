@@ -559,28 +559,26 @@ if reg("sysActive")<0 then
 <%
 if reg("sysActive")=1 then
     %>
-
-        function comparaPaciente(T) {
-            $.post("ComparaPacientes.asp?T=" + T, { I: <%= PacienteID %>, No: $("#NomePaciente").val(), Na: $("#Nascimento").val(), C: $("#CPF").val(), S: $("#Sexo").val() }, function (data) {
-                if (T == 'Conta') {
-                    eval(data);
-                } else {
-                    $("#modal").html("Carregando...");
-                    $("#modal-table").modal("show");
-                    $("#modal").html(data);
-                }
-
-            });
-        }
-<%
+	comparaPaciente('Conta');
+	<%
 end if
 %>
+function comparaPaciente(T) {
+		$.post("ComparaPacientes.asp?T=" + T, { I: <%= PacienteID %>, No: $("#NomePaciente").val(), Na: $("#Nascimento").val(), C: $("#CPF").val(), S: $("#Sexo").val() }, function (data) {
+			if (T == 'Conta') {
+				eval(data);
+			} else {
+				$("#modal").html("Carregando...");
+				$("#modal-table").modal("show");
+				$("#modal").html(data);
+			}
+
+		});
+	}
 
 $("#NomePaciente, #Nascimento, #CPF").change(function () {
     comparaPaciente('Conta');
 });
-
-comparaPaciente('Conta');
 
 
 

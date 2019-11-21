@@ -159,7 +159,7 @@ elseif req("AgendamentoID")<>"" then
     set age = db.execute("select * from agendamentos where id="&req("AgendamentoID"))
     if not age.EOF then
         %>
-        $("#ProfissionalID").val(<%=age("ProfissionalID")%>);
+        $("#ProfissionalID").val('<%=age("ProfissionalID")%>');
     loadAgenda('<%=formatdatetime(age("Data"), 2)%>', '<%=age("ProfissionalID")%>');
     $(document).ready(function(e) {
         abreAgenda('<%= replace(formatdatetime(age("Hora"),4), ":", "") %>', '<%= age("id") %>', "", "")

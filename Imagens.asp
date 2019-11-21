@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="ProntCompartilhamento.asp"-->
+<!--#include file="Classes/Arquivo.asp"-->
 
 
 <div class="row">
@@ -38,12 +39,12 @@
             set fs=nothing
 
 		else
-		    Caminho = arqEx(imagens("NomeArquivo"), "Imagens")
-		    CaminhoInicial = "https://clinic7.feegow.com.br"
-		    IF InStr(Caminho, ".com.br")=0 THEN
-		        Caminho = CaminhoInicial&Caminho
-		    END IF
-			fullFile = Caminho
+		   ' Caminho = arqEx(imagens("NomeArquivo"), "Imagens")
+		   ' CaminhoInicial = "https://clinic7.feegow.com.br"
+		   ' IF InStr(Caminho, ".com.br")=0 THEN
+		   '     Caminho = CaminhoInicial&Caminho
+		   ' END IF
+			fullFile = getFileUrl(imagens("NomeArquivo"), "Imagens")
         end if
 
 

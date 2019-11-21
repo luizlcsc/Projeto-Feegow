@@ -640,13 +640,18 @@ var $conteudoParaOdontograma = $('#feegow-odontograma-conteudo'),
         $.post("PreparoExame.asp",  $("#formprocedimentos").serialize()  , function (data) { $("#tela").html(data) });
     }
 
+    var itensPropostasGlobal = "";
+
     function procurarAprovacaoDesconto(){
         var propostaItem = "";
 
-        $("input[name='propostaItem']").each(function(index, item){
-            propostaItem += "-"+item.value + ",";
-        })
-
+        if(itensPropostasGlobal != ""){
+            propostaItem = itensPropostasGlobal;
+        }else{
+            $("input[name='propostaItem']").each(function(index, item){
+                propostaItem += "-"+item.value + ",";
+            });
+        }
         if(propostaItem != ""){
             propostaItem += "0";
             $.post('procurarDescontosPendentesPropostas.asp', { itens: propostaItem }, function(result){
@@ -655,8 +660,15 @@ var $conteudoParaOdontograma = $('#feegow-odontograma-conteudo'),
         }
     }
 
-    setInterval(procurarAprovacaoDesconto, 10000);
-
+    <%
+    set PropostaAguardandoDescontoSQL = db.execute("select d.id from descontos_pendentes d INNER JOIN itensproposta i ON i.id= d.ItensInvoiceID*-1 where i.PropostaID="&treatvalzero(PropostaID)&" AND SysUserAutorizado IS NULL AND DataHoraAutorizado IS NULL")
+    if not PropostaAguardandoDescontoSQL.eof then
+    %>
+    procurarAprovacaoDesconto();
+    var descontoPendenteInterval = setInterval(procurarAprovacaoDesconto, 10000);
+    <%
+    end if
+    %>
 
 </script>
 

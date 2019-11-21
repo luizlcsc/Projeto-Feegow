@@ -16,7 +16,9 @@ if ref("Locais")<>"" then
         next
     end if
 
-    sqlRefLocais = " id IN ("&refLocais&") "
+    if refLocais<>"" then
+        sqlRefLocais = " id IN ("&refLocais&") "
+    end if
 end if
 
 if SomenteLocais<>"" then

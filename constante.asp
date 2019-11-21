@@ -339,6 +339,7 @@ else
 	    end if
 
         'Buscar os descontos pendentes
+        response.write("SELECT count(n.id) total FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1) AND TipoNotificacaoID = 4 AND n.UsuarioID="&Session("User"))
         set NotificacoesSQL = db.execute("SELECT count(n.id) total FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1) AND TipoNotificacaoID = 4 AND n.UsuarioID="&Session("User"))
         if not NotificacoesSQL.eof then 
             if ccur(NotificacoesSQL("total")) > 0 then 

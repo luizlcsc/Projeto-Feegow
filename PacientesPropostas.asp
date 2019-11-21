@@ -250,6 +250,14 @@ end if
                   </div>
               </div>
 
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="msgDescontoPendente">
+
+                    </div>
+                </div>
+            </div>
+
             <div class="panel">
                 <div class="panel-editbox" style="display:block">
                     <input class="form-control dadoProposta" name="TituloItens" id="TituloItens" value="<%=TituloItens%>" style="color: #4383b4;">
@@ -623,6 +631,23 @@ var $conteudoParaOdontograma = $('#feegow-odontograma-conteudo'),
 
         $.post("PreparoExame.asp",  $("#formprocedimentos").serialize()  , function (data) { $("#tela").html(data) });
     }
+
+    function procurarAprovacaoDesconto(){
+        var propostaItem = "";
+
+        $("input[name='propostaItem']").each(function(index, item){
+            propostaItem += "-"+item.value + ",";
+        })
+
+        if(propostaItem != ""){
+            propostaItem += "0";
+            $.post('procurarDescontosPendentesPropostas.asp', { itens: propostaItem }, function(result){
+                $(".msgDescontoPendente").html(result);
+            });
+        }
+    }
+
+    setInterval(procurarAprovacaoDesconto, 10000);
 
 
 </script>

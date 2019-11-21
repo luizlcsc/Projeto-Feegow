@@ -582,9 +582,9 @@ min-width: 150px;
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Leitura de Cartão de Beneficiários</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Fechar">-->
+          <!--<span aria-hidden="true">&times;</span>-->
+        <!--</button>-->
       </div>
       <div class="modal-body">
 	  		<textarea class="form-control" id="campodeleitura" placeholder="Aproxime ou passe o cartão na leitora" required></textarea>
@@ -674,7 +674,7 @@ min-width: 150px;
                             <%= quickField("text", "IdentificadorBeneficiario", "Identificador - código de barras da carteira", 12, identificadorBeneficiario, "", "", " readonly") %>
                         </td>
                         <td>
-                            <button type="button" class="fa fa-credit-card" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
+                            <button type="button" class="btn btn-xs btn-warning fa fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
                         </td>
                     </tr>
                 </table>

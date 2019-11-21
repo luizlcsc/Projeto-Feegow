@@ -191,6 +191,32 @@ $.gritter.add({
 	});
     return false;
 });
+
+$("#Cep").keyup(function(){
+	getEndereco();
+});
+var resultadoCEP
+function getEndereco() {
+	//alert()
+	//	alert(($("#Cep").val() *= '_'));
+		var temUnder = /_/i.test($("#Cep").val())
+		if(temUnder == false){
+			$.getScript("webservice-cep/cep.php?cep="+$("#Cep").val(), function(){
+				if(resultadoCEP["logradouro"]!=""){
+					$("#Endereco").val(unescape(resultadoCEP["logradouro"]));
+					$("#Bairro").val(unescape(resultadoCEP["bairro"]));
+					$("#Cidade").val(unescape(resultadoCEP["cidade"]));
+					$("#Estado").val(unescape(resultadoCEP["uf"]));
+					if(resultadoCEP["pais"]==1){
+					    $("#Pais").html("<option value='1'>Brasil</option>").val(1).change();
+					}
+					$("#Numero").focus();
+				}else{
+					$("#Endereco").focus();
+				}
+			});
+		}
+}
 </script>
     <%
     end if

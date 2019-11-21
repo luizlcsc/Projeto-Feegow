@@ -145,8 +145,17 @@ var AutorizadorTiss = function () {
             }
             if (data.StatusSolicitacao !== null && data.StatusSolicitacao !== '')
             {
-                $('#GuiaStatus').prop('selectedIndex', data.StatusSolicitacao); 
-                console.log("Status da guia atualizado: "+ data.StatusSolicitacao);
+                if ( data.StatusSolicitacao == '3') // tratamento de status para guias NÃO AUTORIZADAS
+                {
+                    $('#GuiaStatus').prop('selectedIndex', 7);
+                    console.log("Status da guia atualizado: 7");
+                }
+                else
+                {
+                    $('#GuiaStatus').prop('selectedIndex', data.StatusSolicitacao); 
+                    console.log("Status da guia atualizado: "+ data.StatusSolicitacao);
+                }
+                
             }            
         }
 

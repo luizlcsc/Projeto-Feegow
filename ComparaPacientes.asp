@@ -3,13 +3,15 @@
 
 NomePaciente = ref("No")
 Nascimento = ref("Na")
-CPF = ref("C")
+CPF = ref("C")&""
+CPF = replace(CPF, "-", "")
+CPF = replace(CPF, ".", "")
 id = ref("I")
 Tipo = req("T")
 Sexo = ref("S")
 
 if CPF<>"" then
-    sqlCPF = " AND (CPF='"& CPF &"' OR CPF like '') "
+    sqlCPF = " AND ( REPLACE(REPLACE(CPF, '.', ''),'-','') ='"& CPF &"' OR CPF like '') "
 end if
 if Nascimento<>"" and isdate(Nascimento) then
     sqlNascimento = " AND (Nascimento="& myDateNull(Nascimento) &" OR isnull(Nascimento)) "

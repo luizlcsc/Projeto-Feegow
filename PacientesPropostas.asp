@@ -219,7 +219,15 @@ end if
                                                   </script>
                                                   <div class="col-md-4">
                                                      <label>Profissional</label>
-                                                     <%= quickField("simpleSelect", "ProfissionalID", "", 4, ProfissionalID, "select * from profissionais WHERE sysActive = 1 order by id", "NomeProfissional", "") %>
+                                                     <%
+
+                                                      if getconfig("profissionalsolicitanteobrigatorio")=1 then
+                                                          SolicitanteRequired = " required empty "
+                                                      end if
+
+                                                      response.write(quickField("simpleSelect", "ProfissionalID", "", 4, ProfissionalID, "select * from profissionais WHERE sysActive = 1 order by id", "NomeProfissional", SolicitanteRequired))
+
+                                                      %>
                                                  </div>
                                                    <div class="col-md-4">
                                                        <label>Status</label>

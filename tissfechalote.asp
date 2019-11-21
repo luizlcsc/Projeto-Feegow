@@ -303,7 +303,7 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaH
         sqlContratados = " and g.CodigoNaOperadora IN ("&Contratados&") "
     end if
 
-    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') NomeProcedimentos  from tissguiahonorarios g LEFT JOIN tissprocedimentoshonorarios tph ON tph.GuiaID=g.id INNER JOIN procedimentos proc ON proc.id=tph.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlPlanos&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia & "GROUP BY g.id "&orderBy
+    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') NomeProcedimentos  from tissguiahonorarios g LEFT JOIN tissprocedimentoshonorarios tph ON tph.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tph.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlPlanos&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia & "GROUP BY g.id "&orderBy
 
 	set guias = db.execute(sqlGuias)
 	while not guias.EOF
@@ -440,7 +440,7 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaS
         sqlContratados = " and g.CodigoNaOperadora IN ("&Contratados&") "
     end if
 
-    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') Procedimentos from tissguiasadt g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN tissprocedimentossadt tps ON tps.GuiaID=g.id INNER JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlPlanos&sqlProcedimentos&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia & " GROUP BY g.id "& orderBy
+    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') Procedimentos from tissguiasadt g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN tissprocedimentossadt tps ON tps.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlPlanos&sqlProcedimentos&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia & " GROUP BY g.id "& orderBy
 	set guias = db.execute(sqlGuias)
 
 	while not guias.EOF

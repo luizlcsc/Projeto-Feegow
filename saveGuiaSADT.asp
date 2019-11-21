@@ -165,6 +165,9 @@ else
         if session("Banco")="clinic522" then
             db_execute("update tissguiasadt set IdentificadorBeneficiario='"&ref("IdentificadorBeneficiario")&"' where id="&I)
         end if
+        if ref("identificadorBeneficiario")<>"" then
+            db_execute("update tissguiasadt set IdentificadorBeneficiario='"&ref("IdentificadorBeneficiario")&"' where id="&I)
+        end if 
 
         while not datant.eof
             mudouStatus = "S"

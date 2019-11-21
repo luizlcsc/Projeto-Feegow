@@ -19,6 +19,10 @@ BandeiraCartaoObrigatorio = 0
 if getConfig("ObrigarBandeiraCartao")="1" then
     BandeiraCartaoObrigatorio = 1
 end if
+NumeroAutorizacaoObrigatorio = 0
+if getConfig("ObrigarNumeroAutorizacao")="1" then
+    NumeroAutorizacaoObrigatorio = 1
+end if
 
 if req("UnidadeID")="" then
     UnidadeID = session("UnidadeID")
@@ -437,7 +441,7 @@ end if
                                                 CampoCartaoObrigatorio = " "
                                             end if
                                             %>
-                                            <%=quickField("text", "AuthorizationNumber_"&idCC, "N&uacute;mero da Autoriza&ccedil;&atilde;o", "8", "", "", "", ""&CampoCartaoObrigatorio)%>
+                                            <%=quickField("text", "AuthorizationNumber_"&idCC, "N&uacute;mero da Autoriza&ccedil;&atilde;o", "8", "", "", "", "  maxlength='14' "&CampoCartaoObrigatorio)%>
                                             <% onchangeEvent = "  "%> 
                                             <%= quickField("simpleSelect", "BandeiraCartaoID_"&idCC, "Bandeira do Cartão", 12, "", "select * from cliniccentral.bandeiras_cartao", "Bandeira", ""&CampoCartaoObrigatorio&onchangeEvent) %>
                                             <%
@@ -452,7 +456,7 @@ end if
                                 <div class="detalheMetodo" id="divMetodo_9">
 									<%=quickField("text", "TransactionNumber_9", "N&uacute;m. Transa&ccedil;&atilde;o", "6", "", "", "", "")%>
                                     <input type="hidden" name="NumberOfInstallments_9" id="NumberOfInstallments_9" value="1">
-                                    <%=quickField("text", "AuthorizationNumber_9", "N&uacute;m. Autoriza&ccedil;&atilde;o", "6", "", "", "", "")%>
+                                    <%=quickField("text", "AuthorizationNumber_9", "N&uacute;m. Autoriza&ccedil;&atilde;o", "6", "", "", "", " maxlength='14'")%>
                                     <%= quickField("simpleSelect", "BandeiraCartaoID_9", "Bandeira do Cartão", 12, "", "select * from cliniccentral.bandeiras_cartao", "Bandeira", ""&CampoCartaoObrigatorio) %>
                                 </div>
                                 <%
@@ -960,6 +964,7 @@ $("#frmPagto").submit(function(){
 });
 
 var bandeiraObrigatoria = '<%=BandeiraCartaoObrigatorio%>';
+var numeroAutorizacaoObrigatorio = '<%=NumeroAutorizacaoObrigatorio%>';
 function verificaBandeira()
 {
     let retorno = true;
@@ -972,6 +977,21 @@ function verificaBandeira()
         if (bandeiraId == 0)
         {
             $("#AlertMessenger").html("Campo: Bandeira do cartão é obrigatório");
+            $("#AlertMessenger").fadeIn();
+            retorno = false;
+        }else{
+            $("#AlertMessenger").fadeOut();
+            retorno = true;
+        }
+    }
+    if(numeroAutorizacaoObrigatorio == '1')
+    {
+        var MetodoID = $("input[name=MetodoID]:checked").val();
+        var numeroAutorizacao = $("#AuthorizationNumber_" + MetodoID).val();
+
+        if (numeroAutorizacao == 0)
+        {
+            $("#AlertMessenger").html("Campo: Número de autorização é obrigatório");
             $("#AlertMessenger").fadeIn();
             retorno = false;
         }else{

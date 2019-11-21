@@ -39,7 +39,7 @@ end if
                 Data = Data+1
             wend
             %>
-            <th colspan="3" class="text-center">Total</th>
+            <th colspan="5" class="text-center">Total</th>
         </tr>
         <tr class="info">
             <%
@@ -49,6 +49,7 @@ end if
             while Data<=Ate
                 %>
                 <th class="text-center">Qtd.</th>
+                <th class="text-center">Qtd. Itens</th>
                 <th class="text-center">Bruto</th>
                 <th class="text-center">Líquido</th>
                 <%
@@ -56,6 +57,7 @@ end if
             wend
             %>
             <th class="text-center">Qtd.</th>
+            <th class="text-center">Qtd. Itens</th>
             <th class="text-center">Total Bruto</th>
             <th class="text-center">Total Líquido</th>
         </tr>
@@ -68,6 +70,7 @@ end if
     while not grupo.eof
         response.Flush()
         QtdGrupo = 0
+        QtdInvoiceGrupo = 0
         ValorGrupo = 0
         LiquidoGrupo = 0
         %>
@@ -77,18 +80,27 @@ end if
             Data = De
             while Data<=Ate
                 set vqtd = db.execute("select ifnull(count(ii.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
+                set vqtdinv = db.execute("select Sum(i.id) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") GROUP BY i.id")
                 set vval = db.execute("select ifnull(sum((ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo))), 0) Valor from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
                 sqlRep = "select ifnull(sum(rr.Valor), 0) Repasses from rateiorateios rr LEFT JOIN itensinvoice ii ON ii.id=rr.ItemInvoiceID LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") AND ContaCredito LIKE '%\_%'"
                 set vrep = db.execute( sqlRep )
                 Qtd = ccur(vqtd("Qtd"))
+                QtdInvoice = 0
+                if not vqtdinv.eof  then
+                    if vqtdinv("Qtd")&""<>"" then
+                        QtdInvoice = ccur(vqtdinv("Qtd"))
+                    end if
+                end if
                 Valor = ccur(vval("Valor"))
                 Repasses = ccur(vrep("Repasses"))
                 ValorLiquido = Valor - Repasses
 
+                QtdInvoiceGrupo = QtdInvoiceGrupo + QtdInvoice
                 QtdGrupo = QtdGrupo + Qtd
                 ValorGrupo = ValorGrupo + Valor
                 LiquidoGrupo = LiquidoGrupo + ValorLiquido
                 %>
+                <td class="text-right"><%= QtdInvoice %></td>
                 <td class="text-right"><%= Qtd %></td>
                 <td class="text-right"><%= fn(Valor) %></td>
                 <td class="text-right"><%= fn(ValorLiquido) %></td>
@@ -96,6 +108,7 @@ end if
                 Data = Data+1
             wend
             %>
+            <th class="text-right"><%=QtdInvoiceGrupo%></th>
             <th class="text-right"><a target="_blank" href="PrintStatement.asp?R=rProducaoPorGrupoDet&De=<%= De %>&Ate=<%= Ate %>&U=<%= Unidades %>&G=<%= grupo("GrupoID") %>"> <%= QtdGrupo %> </a></th>
             <th class="text-right"><%= fn(ValorGrupo) %></th>
             <th class="text-right">
@@ -119,10 +132,12 @@ end if
             Data = De
             while Data<=Ate
                 set vqtd = db.execute("select ifnull(count(ii.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
+                set vqtdinv = db.execute("select ifnull(count(i.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
                 set vval = db.execute("select ifnull(sum((ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo))), 0) Valor from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE  ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
                 sqlRep = "select ifnull(sum(rr.Valor), 0) Repasses from rateiorateios rr LEFT JOIN itensinvoice ii ON ii.id=rr.ItemInvoiceID LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") AND ContaCredito LIKE '%\_%'"
                 set vrep = db.execute( sqlRep )
                 Qtd = ccur(vqtd("Qtd"))
+                QtdInvoiceGrupoTotal = ccur(vqtdinv("Qtd"))
                 Valor = ccur(vval("Valor"))
                 Repasses = ccur(vrep("Repasses"))
                 ValorLiquido = Valor - Repasses
@@ -131,6 +146,7 @@ end if
                 ValorGrupo = ValorGrupo + Valor
                 LiquidoGrupo = LiquidoGrupo + ValorLiquido
                 %>
+                <th class="text-right"><%= QtdInvoiceGrupoTotal %></th>
                 <th class="text-right"><%= Qtd %></th>
                 <th class="text-right"><%= fn(Valor) %></th>
                 <th class="text-right">
@@ -141,6 +157,7 @@ end if
                 Data = Data+1
             wend
             %>
+            <th class="text-right"><%= QtdInvoiceTotal %></th>
             <th class="text-right"><%= QtdGrupo %></th>
             <th class="text-right"><%= fn(ValorGrupo) %></th>
             <th class="text-right"><%= fn(Liquidogrupo) %></th>

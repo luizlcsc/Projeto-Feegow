@@ -1,4 +1,5 @@
-﻿    <!--#include file="connect.asp"-->
+﻿<!--#include file="connect.asp"-->
+<!--#include file="Classes/WhatsApp.asp"-->
 <%
 
 function centralWhatsApp(AgendamentoID)
@@ -29,7 +30,7 @@ function centralWhatsApp(AgendamentoID)
             end if
         end if
 
-        set pro = db.execute("select * from profissionais where id="&age("ProfissionalID"))
+        set pro = db.execute("select * from profissionais where id="&treatvalzero(age("ProfissionalID")))
         if not pro.EOF then
             set Trat = db.execute("select * from tratamento where id = '"&pro("TratamentoID")&"'")
             if not Trat.eof then
@@ -42,7 +43,7 @@ function centralWhatsApp(AgendamentoID)
 
 
         if Mensagem&"" ="" then
-            Mensagem = "Olá, [NomePaciente] ! Posso confirmar [NomeProcedimento] com [NomeProfissional] as [HoraAgendamento]"
+            Mensagem = "Olá, [NomePaciente] !%0a%0aPosso confirmar [NomeProcedimento] com [NomeProfissional] às [HoraAgendamento]?"
         end if
 
         if instr(Mensagem, "[TipoProcedimento]") or instr(Mensagem, "[NomeProcedimento]") then
@@ -284,19 +285,17 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
 
                     response.write(StatusSelect)
 
-                    TagWhatsApp = True
+                    TagWhatsApp = False
 
-                    PrimeiroDigito = right(left(CelularFormatadado, 5),1)
-
-                    if PrimeiroDigito&"" <> "9" then
-                        TagWhatsApp= False
+                    if celularValido(Celular) then
+                        TagWhatsApp= True
                     end if
 
                     %>
                     </td>
                     <td><a href="?P=Agenda-1&Pers=1&AgendamentoID=<%=ag("id")%>" target="_blank"><%= ag("Data") %> - <%=ft(ag("Hora"))%></a></td>
                     <td><a target="_blank" href="?P=Pacientes&Pers=1&I=<%= ag("PacienteID") %>"><%= ag("NomePaciente") %></a></td>
-                    <td><span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline"  onclick="AlertarWhatsapp('<%=CelularFormatadado%>', `<%=TextoWhatsApp%>`, '<%=ag("id")%>')" <% end if%> ><span id="wpp-<%=ag("id")%>"></span> <%= Celular %></<%=TagWhatsApp%>>
+                    <td><span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline"  onclick="AlertarWhatsapp('<%=CelularFormatadado%>', `<%=TextoWhatsApp%>`, '<%=ag("id")%>')" <% end if%> ><span id="wpp-<%=ag("id")%>"></span> <%= Celular %></span>
                     <%
                     if not isnull(ag("Resposta")) then
                         'validar se a resposta é do tipo correto 

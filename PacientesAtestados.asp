@@ -32,7 +32,7 @@ end if
                 </div>
                 <div class="row">
                     <div class="col-md-12"><br />
-                        <textarea id="atestado" name="atestado"><%=Atestado %></textarea>
+                        <%=quickField("editor", "atestado", "Texto", 12, Atestado, "140", "", " id=""atestado"" rows=""6""" )%>
                     </div>
                     <hr class="short alt" />
                 </div>
@@ -125,7 +125,7 @@ $(function () {
 
 function aplicarTextoAtestado(id){
 	$.post("PacientesAplicarFormula.asp?Tipo=A&PacienteID=<%=PacienteID%>", {id:id}, function(data, status){ 
-        $("#atestado").val($("#atestado").val()+data)
+        $("#atestado").val($("#atestado").val()+data);
         $("#TituloAtestado").val( $("#NomeAtestado"+id).html() );
     } );
 /*

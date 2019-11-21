@@ -223,7 +223,8 @@ end if
             readonly = " readonly "
             set getTransactionType = db.execute("select * from sys_financialTransactionType where TransactionName = 'Transferência' order by id")
           else
-            if getconfig("liberaacertodesaldo") = 1 then 
+          'wander da skin laser precisa da opcao
+            if getconfig("liberaacertodesaldo") = 1 or session("User")=82302 then
               filtroacertodesaldo = ""
             else 
                filtroacertodesaldo = " where TransactionName <> 'Acerto de Saldo' "

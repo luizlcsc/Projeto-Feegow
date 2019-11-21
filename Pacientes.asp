@@ -296,7 +296,33 @@ function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
 }
 
 $(document).ready(function(e) {
-    <%call formSave("frm", "save", "$(""#DadosAlterados"").attr('value', ''); $(""#searchPacienteID"").val( $(""#NomePaciente"").val() ); $(""#ageTel1"").val( $(""#Tel1"").val() ); $(""#ageCel1"").val( $(""#Cel1"").val() ); $(""#ageEmail1"").val( $(""#Email1"").val() ); $(""#ageTabela"").val( $(""#Tabela"").val() ); $(""#myTab4 a[href=#dadosAgendamento]"").click()")%>
+    <%call formSave("frm", "save", "$(""#DadosAlterados"").attr('value', ''); callbackAgendamentoPaciente(); ")%>
+
+
+function callbackAgendamentoPaciente() {
+    <%
+    if req("Agenda")<>"" then
+    %>
+    var $dadosPacienteFicha = $("#frm");
+
+    var camposAAtualizar = ["Tel1", "Cel1", "Email1", "Tabela"];
+
+    camposAAtualizar.forEach(function(campoAAtualizar) {
+        var v =  $dadosPacienteFicha.find(" #"+campoAAtualizar ).val() ;
+        $(" #age"+campoAAtualizar ).val(v);
+    });
+
+    $.get("AgendamentoCheckin.asp", {id: '<%=req("AgendamentoID")%>'}, function(data) {
+        $(".checkin-conteudo-paciente").html(data);
+    });
+
+  $(" #searchPacienteID" ).val( $(" #NomePaciente" ).val() );
+
+  $("#myTab4 a[href=#dadosAgendamento]").click();
+    <%
+    end if
+    %>
+}
 });
 
 function cid10(X){
@@ -1008,7 +1034,6 @@ function stopVideo(){
         next
       end if
        %>
-
 
 
 </script>

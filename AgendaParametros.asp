@@ -68,7 +68,11 @@ if tipo="PacienteID" then
 			elseif splCamposPedir(i)="Cel1" then
 				if pac("Cel1")<>"" and not isnull(pac("Cel1")) then
 					%>
-					$('#qfagecel1').html('<label for="ageCel1">Celular</label><br><div class="input-group"><span class="input-group-addon"><i class="fa fa-mobile-phone bigger-110"></i></span><input id="ageCel1" class="form-control" type="text" maxlength="150" name="ageCel1" value="<%= pac("Cel1") %>" placeholder=""></div></div>');
+					if($('#qfagecel1').length > 0){
+					    $('#qfagecel1').html('<label for="ageCel1">Celular</label><br><div class="input-group"><span class="input-group-addon"><i class="fa fa-mobile-phone bigger-110"></i></span><input id="ageCel1" class="form-control" type="text" maxlength="150" name="ageCel1" value="<%= pac("Cel1") %>" placeholder=""></div></div>');
+					}else{
+					    $("#ageCel1").val("<%=pac("Cel1")%>");
+					}
 					<%
 				else
 					%>

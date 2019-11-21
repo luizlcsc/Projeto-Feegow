@@ -161,7 +161,7 @@ while not campos.eof
 	  end if
 	  GrupoID = campos("GrupoID")
 	  Largura = campos("Largura")
-	  
+
 	  if TipoCampoID=15 then
 	  	CampoAssociado = campos("ValorPadrao")
 		if isnumeric(CampoAssociado) and FormID<>"N" and isnumeric(FormID) then
@@ -177,7 +177,7 @@ while not campos.eof
 		  	ValorPadrao = valpad("id")
 		end if
 	  end if
-	  
+
 	  if not isnull(ValorPadrao) then
 	  	ValorPadrao = replaceTags(ValorPadrao, PacienteID, session("UserID"), session("UnidadeID"))
 	  end if
@@ -239,8 +239,8 @@ function replaceAll(str, de, para){
     }
     return (str);
 }
-    
-    
+
+
 var gridster0 = null;
 var gridster1 = null;
 

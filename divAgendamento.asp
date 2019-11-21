@@ -392,7 +392,7 @@ end if
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab4">
         <li id="liAgendamento" class="active abaAgendamento"><a data-toggle="tab" href="#dadosAgendamento"><i class="fa fa-calendar"></i> <span class="hidden-xs">Agendamento</span></a></li>
-        <li id="abaFicha" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden');" href="#divDadosPaciente"><i class="fa fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
+        <li id="abaFicha" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1&AgendamentoID=<%=agendamentoIDSelecionado%>', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden');" href="#divDadosPaciente"><i class="fa fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
         <li id="abaHistorico" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('HistoricoPaciente&PacienteID='+$('#PacienteID').val(), '', '1', 'divHistorico'); crumbAgenda();" href="#divHistorico"><i class="fa fa-list"></i> <span class="hidden-xs">Hist&oacute;rico</span></a></li>
         <%if Aut("contapac")=1 or aut("|areceberpaciente")=1 then%>
 	        <li id="abaConta" class="abasAux abaAgendamento hidden-xs"><a data-toggle="tab" onclick="$('#divHistorico').html('Carregando...'); ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico'); crumbAgenda();$('#alertaAguardando').removeClass('hidden'); $('#pagar').remove();" href="#divHistorico"><i class="fa fa-money"></i> <span class="hidden-xs">Conta</span></a></li>
@@ -503,7 +503,7 @@ end if
 %>				
             </div>
 
-			<%if req("Tipo")="Quadro" or req("ProfissionalID")="" or req("ProfissionalID")="0" then%>
+			<%if req("Tipo")="Quadro" or req("ProfissionalID")="" or req("ProfissionalID")="0" or req("ProfissionalID")="null" then%>
                 <%= quickField("simpleSelect", "ProfissionalID", "Profissional", 2, ProfissionalID, "select * from profissionais where sysActive=1 and Ativo='on' AND (id IN ("&ProfissionaisEquipamentos&") or '"&ProfissionaisEquipamentos&"'='0') order by NomeProfissional", "NomeProfissional", " required") %>
             <%else %>
                 <div class="col-md-2">
@@ -658,7 +658,7 @@ end if
 
         <% if req("Checkin")="1" then %>
             <hr class="short alt" />
-            <div class="row pt20">
+            <div class="row pt20 checkin-conteudo-paciente">
                 <% server.execute("AgendamentoCheckin.asp") %>
             </div>
 
@@ -1272,8 +1272,8 @@ var checkmultiplos = '<%= getConfig("RealizarCheckinMultiplosProcedimentos") %>'
 function checkinMultiplo()
 {
     let pacienteid = $("#PacienteID").val();
-    let unidadeid = <%=session("UnidadeID")%>;
-    let agendamentoID = <%=req("id")&""%>;
+    let unidadeid = '<%=session("UnidadeID")%>';
+    let agendamentoID = '<%=req("id")%>';
     $.get("checkinmultiplo.asp",{
         PacienteID:pacienteid,
         UnidadeID: unidadeid,

@@ -32,7 +32,7 @@ end function
 PacienteID = request.QueryString("I")
 call insertRedir(request.QueryString("P"), PacienteID)
 if req("Agenda")="1" then
-    set reg = db.execute("select p.*, '0' totalprescricoes, '0' totalatestados, '0' totalpedidos, '0' totaldiagnosticos, '0' totalarquivos, '0' totalimagens, '0' totalrecibos, '0' totalae, '0' totallf from Pacientes as p where id="&PacienteID)
+    set reg = db.execute("select p.*, '0' totalprescricoes, '0' totalatestados, '0' totalpedidos, '0' totaldiagnosticos, '0' totalarquivos, '0' totalimagens, '0' qtepedidos,'0' totalrecibos, '0' totalae, '0' totallf from Pacientes as p where id="&PacienteID)
 else
     set reg = db.execute("select p.*, "&_
     "(select count(id) from pacientesprescricoes where sysActive=1 AND PacienteID="&PacienteID&" ) as totalprescricoes, "&_
@@ -174,6 +174,16 @@ end if
             <div class="col-md-4">
                 <%=selectList("Nome &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small class=""label label-xs label-light hidden"" id=""resumoConvenios""></small>", "NomePaciente", reg("NomePaciente"), "pacientes", "NomePaciente", "sipac($(this).val());", " required", "")%>
             </div>
+            <%
+            if reg("sysActive")=1 then
+            %>
+            <script >
+                $("#NomePaciente").attr("readonly", true);
+                $("#NomePaciente").parent("div").parent("div").find("label").after("<button title='Editar nome do paciente' onclick='$(\"#NomePaciente\").attr(\"readonly\", false); $(this).fadeOut(); $(\"#NomePaciente\").focus();' type='button' class='btn btn-default btn-xs'><i class='fa fa-edit'></i></button>");
+            </script>
+            <%
+            end if
+            %>
             <%=quickField("datepicker", "Nascimento", "Nascimento", 2, reg("Nascimento"), "input-mask-date", "", "")%>
             <div class="col-md-2">
                 <label for="Estrangeiro">Estrangeiro</label>
@@ -546,26 +556,29 @@ if reg("sysActive")<0 then
 %>
 
 
+<%
+if reg("sysActive")=1 then
+    %>
+	comparaPaciente('Conta');
+	<%
+end if
+%>
+function comparaPaciente(T) {
+		$.post("ComparaPacientes.asp?T=" + T, { I: <%= PacienteID %>, No: $("#NomePaciente").val(), Na: $("#Nascimento").val(), C: $("#CPF").val(), S: $("#Sexo").val() }, function (data) {
+			if (T == 'Conta') {
+				eval(data);
+			} else {
+				$("#modal").html("Carregando...");
+				$("#modal-table").modal("show");
+				$("#modal").html(data);
+			}
 
-
-        function comparaPaciente(T) {
-            $.post("ComparaPacientes.asp?T=" + T, { I: <%= PacienteID %>, No: $("#NomePaciente").val(), Na: $("#Nascimento").val(), C: $("#CPF").val(), S: $("#Sexo").val() }, function (data) {
-                if (T == 'Conta') {
-                    eval(data);
-                } else {
-                    $("#modal").html("Carregando...");
-                    $("#modal-table").modal("show");
-                    $("#modal").html(data);
-                }
-
-            });
-        }
+		});
+	}
 
 $("#NomePaciente, #Nascimento, #CPF").change(function () {
     comparaPaciente('Conta');
 });
-
-comparaPaciente('Conta');
 
 
 

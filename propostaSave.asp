@@ -102,9 +102,15 @@ if erro="" then
 
 			 valorUnitarioDB = treatvalzero(valInv)
 			 valorDescontoDB = treatvalzero(ValorDesconto)
-			
-			ValorDesconto = ccur(ref("Desconto"&splInv(i)))
-			ValorDescontoFinal = ccur(ref("Desconto"&splInv(i)))
+
+			DescontoRef = ref("Desconto"&splInv(i))
+
+			if DescontoRef="" then
+			    DescontoRef=0
+			end if
+
+			ValorDesconto = ccur(DescontoRef)
+			ValorDescontoFinal = ccur(DescontoRef)
 			
 			desTipoInvP = desTipoInv
 

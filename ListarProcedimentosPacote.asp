@@ -4,6 +4,14 @@ PacienteID = req("PacienteID")
 ProfissionalID = req("ProfissionalID")
 contadorProcedimentos = req("contadorProcedimentos")
 
+if contadorProcedimentos<>"" then
+    if isnumeric(contadorProcedimentos) then
+        if ccur(contadorProcedimentos) < 0 then
+            Response.End
+        end if
+    end if
+end if
+
 ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
          "INNER JOIN sys_financialinvoices i ON p.id = i.AccountID and i.AssociationAccountID = 3 "&_
          "INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id "&_
@@ -14,7 +22,7 @@ ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario 
          "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.PacoteID is not null and ii.Tipo = 'S'"
 
 if getConfig("ProcedimentosContratadosParaSelecao") = 1 then
-    ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
+    ppSQL = "SELECT ii.id, proc.TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
              "INNER JOIN sys_financialinvoices i ON p.id = i.AccountID and i.AssociationAccountID = 3 "&_
              "INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id "&_
              "INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_
@@ -28,15 +36,18 @@ set PacProc = db.execute(ppSQL)
 
 if not PacProc.eof then
 %>
-
+<p>
+    Este paciente possui procedimentos contratados e não executados. Marque abaixo os procedimentos que deseja agendar.
+</p>
 <div class="row">
     <div class="col-md-12">
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th></th>
+                    <th width="20"></th>
                     <th>Procedimento</th>
                     <th>Pacote</th>
+                    <th>Tempo</th>
                     <th>Valor</th>
                 </tr>
             </thead>
@@ -46,9 +57,18 @@ if not PacProc.eof then
                                 while not PacProc.eof
                                     %>
                                     <tr style="padding: 20px">
-                                        <td><input type="radio" data-valor="<%=formatnumber(PacProc("ValorProcedimento"), 2)%>" data-id="<%=PacProc("ProcedimentoID")%>" data-nome="<%=PacProc("NomeProcedimento")%>" class="procedimento-pacote" name="procedimento-pacote" <%if i=0 then%>checked<%end if%>></td>
-                                        <td><%=PacProc("NomeProcedimento")%></td>
+                                        <td>
+                                            <input id="procedimento-sugestao<%=PacProc("id")%>" type="radio"
+                                            data-valor="<%=formatnumber(PacProc("ValorProcedimento"), 2)%>"
+                                            data-id="<%=PacProc("ProcedimentoID")%>"
+                                            data-nome="<%=PacProc("NomeProcedimento")%>"
+                                            data-tempo="<%=PacProc("TempoProcedimento")%>"
+                                            class="procedimento-pacote"
+                                            name="procedimento-pacote" <%if i=0 then%>checked<%end if%>>
+                                        </td>
+                                        <td><label for="procedimento-sugestao<%=PacProc("id")%>"><%=PacProc("NomeProcedimento")%></label></td>
                                         <td><%=PacProc("NomePacote")%></td>
+                                        <td><%=PacProc("TempoProcedimento")%></td>
                                         <td>R$ <%=fn(PacProc("ValorProcedimento"))%></td>
                                     </tr>
                                     <%
@@ -62,7 +82,10 @@ if not PacProc.eof then
         </table>
     </div>
     <div style="margin-top: 30px" class="col-md-3">
-        <button type="button" class="btn btn-primary btn-block" onClick="selectProcedure()" id="pacProcButton">Selecionar procedimento</button>
+        <button type="button" class="btn btn-warning btn-block" onClick="selecionarMultiplos()" id="btnEscolherMaisDeUm">Escolher mais de um</button>
+    </div>
+    <div style="margin-top: 30px" class="col-md-3">
+        <button type="button" class="btn btn-primary btn-block" onClick="selectProcedure()" id="pacProcButton">Selecionar procedimento(s)</button>
     </div>
 </div>
 <p hidden id="contadorProcedimentos"><%=contadorProcedimentos%></p>
@@ -72,32 +95,49 @@ var count = $("#contadorProcedimentos").text();
 if(count=="0"){
     count="";
 }
-
-    $("#pacProcButton").on("click", function () {
-        selectProcedure();
-    });
+    function selecionarMultiplos() {
+        $("#btnEscolherMaisDeUm").fadeOut();
+        $(".procedimento-pacote").attr("type", "checkbox")
+    }
 
    function selectProcedure() {
-       var ProcedimentoID = $(".procedimento-pacote:checked").data("id");
-       var NomeProcedimento = $(".procedimento-pacote:checked").data("nome");
-       var ProcPreco = $(".procedimento-pacote:checked").data("valor");
+       var $procedimentos = $(".procedimento-pacote:checked");
 
-       procedimentoSelect2(ProcedimentoID, NomeProcedimento);
-       valorInput(ProcPreco);
+       var i =0;
+
+       $procedimentos.each(function() {
+            var $procedimento = $(this);
+            var NomeProcedimento = $procedimento.data("nome");
+            var ProcPreco = $procedimento.data("valor");
+            var TempoProcedimento = $procedimento.data("tempo");
+            var ProcedimentoID = $procedimento.data("id");
+            var count = "";
+
+            if(i > 0){
+                count = i*-1;
+                adicionarProcedimentos();
+            }
+
+            setTimeout(function() {
+                procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count);
+            }, 200);
+
+            i++;
+       });
        closeComponentsModal();
    }
 
-   function procedimentoSelect2(procedimentoId, nomeProcedimento) {
+   function procedimentoSelect2(procedimentoId, nomeProcedimento, tempo, preco, count) {
        $("#ProcedimentoID"+count+" option").text(nomeProcedimento);
        $("#ProcedimentoID"+count+" option").val(procedimentoId);
        $("#ProcedimentoID"+count).val(procedimentoId);
+       $("#Tempo"+count).val(tempo);
+
+        $("#Valor"+count).val(preco);
+        somarValores();
+
        $("#rdValorPlanoV"+count).click();
        s2aj("ProcedimentoID"+count, 'procedimentos', 'NomeProcedimento', '');
-   }
-
-   function valorInput(ProcPreco) {
-        $("#Valor"+count).val(ProcPreco);
-        somarValores();
    }
 
 </script>

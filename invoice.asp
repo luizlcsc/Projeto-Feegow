@@ -164,12 +164,8 @@ if req("Lancto")<>"" and req("Lancto")="Dir" then
     </script>
 <%
     ProfissionalSolicitante = req("ProfissionalSolicitante")
-else 
-    if  req("origem") = "geracontrato" then 
-        ProfissionalSolicitante =  req("ProfissionalSolicitante")
-    else
-        ProfissionalSolicitante = data("ProfissionalSolicitante")
-    end if 
+else
+    ProfissionalSolicitante = data("ProfissionalSolicitante")
 end if
 
 

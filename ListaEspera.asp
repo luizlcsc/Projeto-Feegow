@@ -15,7 +15,6 @@
             <select name="ProfissionalID" id="ProfissionalID" class="form-control select2-single">
                 <option value="">Selecione</option>
                 <%
-            response.Flush()
 
             sqlunidades  = "select Unidades from " & session("table") &" where id = " & session("idInTable")
             set UnidadesUser  = db.execute(sqlunidades)
@@ -82,7 +81,6 @@
             Prof.close
             set Prof = nothing
 
-            response.Flush()
 
                 %>
             </select>

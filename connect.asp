@@ -3692,15 +3692,16 @@ function statusTarefas(De, Para)
     while not puser.eof
         notifTarefas = ""
  '       response.write("select id, staPara from tarefas where De="&puser("id")&" and staPara in('Respondida')")
-        set tarDe = db.execute("select id, staPara from tarefas where De="&puser("id")&" and staPara in('Respondida')")
-        while not tarDe.eof
-            notifTarefas = notifTarefas & "|"& tarDe("id") & "," & tarDe("staPara")
-        tarDe.movenext
-        wend
-        tarDe.close
-        set tarDe = nothing
+        'set tarDe = db.execute("select id, staPara from tarefas where De="&puser("id")&" and staPara in('Respondida')")
+       ' while not tarDe.eof
+        '    notifTarefas = notifTarefas & "|"& tarDe("id") & "," & tarDe("staPara")
+        'tarDe.movenext
+        'wend
+        'tarDe.close
+        'set tarDe = nothing
 
-        set tarPara = db.Execute("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' and staDe in('Pendente', 'Enviada')")
+        'set tarPara = db.Execute("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' and staDe in('Pendente', 'Enviada')")
+        set tarPara = db.Execute("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' AND staPara <> 'Finalizada' ")
         while not tarPara.eof
             notifTarefas = notifTarefas & "|" & tarPara("id") & "," & tarPara("DtPrazo") & " " & ft(tarPara("HrPrazo"))
         tarPara.movenext

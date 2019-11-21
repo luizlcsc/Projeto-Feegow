@@ -360,6 +360,27 @@ if not reg.eof then
 end if
 %>
 
+<div class="modal fade" id="modalLeitura" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Leitura de Cartão de Beneficiários</h5>
+        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Fechar">-->
+          <!--<span aria-hidden="true">&times;</span>-->
+        <!--</button>-->
+      </div>
+      <div class="modal-body">
+	  		<textarea class="form-control" id="campodeleitura" placeholder="Aproxime ou passe o cartão na leitora" required></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="leitura();">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script type="text/javascript">
     $(".crumb-active a").html("Guia de Consulta");
     $(".crumb-icon a span").attr("class", "fa fa-credit-card");
@@ -416,7 +437,19 @@ end if
 	<tr>
     <td><table width="100%"><tr>
 	<td width="35%"><%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 12, NumeroCarteira, " lt ", "", " required") %></td>
-	<td width="35%"><%= quickField("text", "IdentificadorBeneficiario", "Identificador - código de barras da carteira", 12, IdentificadorBeneficiario, "", "", "") %></td>
+	<td width="35%">
+	<table width = "100%">
+		<tr>
+			<td>
+				<%= quickField("text", "IdentificadorBeneficiario", "Identificador - Código de barras da carteira", 12, IdentificadorBeneficiario, "", "", " readonly") %>
+			</td>
+			<td>
+				<button type="button" class="btn btn-xs btn-warning fa fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
+				</button>
+			</td>
+		</tr>
+	</table>
+	</td>
 	<td width="15%"><%= quickField("datepicker", "ValidadeCarteira", "Validade da Carteira", 12, ValidadeCarteira, "", "", "") %></td>
 	<td width="15%">
       <div class="col-md-12">
@@ -670,6 +703,12 @@ $('#IdentificadorBeneficiario').keydown(function(e) {
         return false;
     }
 });
+
+function leitura(){ 
+	$('#IdentificadorBeneficiario').val(btoa($('#campodeleitura').val()));	
+	$('#modalLeitura').modal('toggle');
+	$('#campodeleitura').val("");
+}
 
 function AutorizarGuiaTisss()
 {

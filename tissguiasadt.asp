@@ -576,6 +576,27 @@ min-width: 150px;
       max-height: 200px;
   }
 </style>
+
+<div class="modal fade" id="modalLeitura" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Leitura de Cartão de Beneficiários</h5>
+        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Fechar">-->
+          <!--<span aria-hidden="true">&times;</span>-->
+        <!--</button>-->
+      </div>
+      <div class="modal-body">
+	  		<textarea class="form-control" id="campodeleitura" placeholder="Aproxime ou passe o cartão na leitora" required></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="leitura();">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <form id="GuiaSADT" action="" method="post" >
             <div class="row">
 	            <div class="col-md-10">
@@ -647,7 +668,16 @@ min-width: 150px;
 
             <% if AutorizadorTiss then %>
             <div class="row">
-                <%= quickField("text", "IdentificadorBeneficiario", "Identificador - código de barras da carteira", 12, identificadorBeneficiario, "", "", "") %>
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <%= quickField("text", "IdentificadorBeneficiario", "Identificador - código de barras da carteira", 12, identificadorBeneficiario, "", "", " readonly") %>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-xs btn-warning fa fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
+                        </td>
+                    </tr>
+                </table>
             </div>
             <% end if %>
 
@@ -1187,6 +1217,12 @@ $('#IdentificadorBeneficiario').keydown(function(e) {
         return false;
     }
 });
+
+function leitura(){ 
+	$('#IdentificadorBeneficiario').val(btoa($('#campodeleitura').val()));	
+	$('#modalLeitura').modal('toggle');
+	$('#campodeleitura').val("");
+}
 
 function addContrato(ModeloID, InvoiceID, ContaID){
     if($("#gPacienteID").val()==""){

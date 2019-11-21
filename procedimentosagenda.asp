@@ -24,7 +24,9 @@ $(function(){
                 somarValores();
             });
     <% if EquipamentoID<> "" then %>
-        $('[id^=EquipamentoID]').next(".select2-container").hide();
+        $('#EquipamentoID<%=n %>').select2("destroy");
+        $('#EquipamentoID<%=n %>').removeClass("select2-single");
+        $('#EquipamentoID<%=n %>').hide();
     <% end if %>
 });
 

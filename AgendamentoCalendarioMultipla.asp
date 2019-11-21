@@ -128,9 +128,12 @@ end if
 			fBadge = "</span>"
 		end if
 
-		Response.Write vbTab & vbTab & "<TD data-time="""&DataTime&""" class=""hand dia-calendario danger text-center "&DataClickClass&" d"&weekday(iPosition)&""" id="""&DataClick&""">" & strong & aBadge& iCurrent & fBadge%>
-		<div class="progress progress-small progress-striped active" style="margin:10px 0 0 0!important; height:3px!important" id="prog<%=replace(DataClick, "/", "")%>"></div>
+		Response.Write vbTab & vbTab & "<TD data-time="""&DataTime&""" class=""hand dia-calendario danger text-center "&DataClickClass&" d"&weekday(iPosition)&""" id="""&DataClick&""">" & strong & aBadge& iCurrent & fBadge
+		IF getConfig("ExibirProgressoAgendamentosAgendas") THEN		
+		%>
+			<div class="progress progress-small progress-striped active" style="margin:10px 0 0 0!important; height:3px!important" id="prog<%=replace(DataClick, "/", "")%>"></div>
 		<%
+		end if
 		response.Write Fstrong & "</TD>" & vbCrLf
 		If iPosition = 7 Then
 			Response.Write vbTab & "</TR>" & vbCrLf

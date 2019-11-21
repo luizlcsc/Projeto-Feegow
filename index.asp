@@ -567,7 +567,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
      <ul class="nav navbar-nav navbar-right">
 
-        <%if session("OtherCurrencies")="phone" then %>
+        <%if session("OtherCurrencies")="phone" or recursoAdicional(9)=4 then %>
+
         <li class="dropdown menu-merge hidden-md hidden-xs">
           <div class="navbar-btn btn-group">
             <button data-toggle="dropdown" class="btn btn-sm dropdown-toggle" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Interações">
@@ -658,8 +659,9 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                     </div>
                   </div>
                   <div class="panel-footer text-center p7">
-                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1'"><i class="fa fa-hand-o-left"></i> Recebidas </button>
-                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=E&Pers=1'"><i class="fa fa-hand-o-right"></i> Enviadas </button>
+                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1'">
+                    <i class="fa fa-list"></i> Listar tarefas 
+                    </button>                    
                   </div>
               </div>
             </div>

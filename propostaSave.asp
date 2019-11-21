@@ -173,6 +173,14 @@ if erro="" then
 				end if
 			end if
 
+			if ValorDesconto = 0 then
+				'Valida se tem desconto_pendentes para este item
+				sqlDescontoPendente = "select desconto from descontos_pendentes where ItensInvoiceID = CONCAT('-',"&ii&") AND SysUserAutorizado IS NOT NULL AND DataHoraAutorizado IS NOT NULL "
+				set rsDesconto = db.execute(sqlDescontoPendente)
+				if not rsDesconto.eof then 
+					ValorDesconto = rsDesconto("desconto")
+				end if
+			end if
 
 			totalProposta = totalProposta - ValorDescontoFinal
 

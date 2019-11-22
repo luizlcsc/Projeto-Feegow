@@ -99,7 +99,7 @@ else
 end if
 
 rfStaID=request.Form("StaID")
-if ref("LocalID")="" then
+if ref("LocalID")&""="" then
 	rfLocal=0
 else
 	rfLocal=request.Form("LocalID")

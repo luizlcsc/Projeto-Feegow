@@ -97,7 +97,7 @@ agendamentoIDSelecionado = req("id")
 
 EncaixesExibe=1
 
-if LocalID="" or LocalID="undefined" then LocalID=0 end if
+if LocalID&""="" or LocalID="undefined" then LocalID=0 end if
 
 if ProfissionalID<>"" and ProfissionalID<>"0" then
     set prof = db.execute("select SomenteConvenios, MaximoEncaixes  from profissionais where id="&ProfissionalID)
@@ -235,6 +235,10 @@ else
 	Chegada = buscaAgendamentos("HoraSta")
 	hh = Right("00" & Hour(Chegada), 2)
     nn = Right("00" & Minute(Chegada), 2)
+
+    if LocalID&""="" or LocalID="undefined" then
+        LocalID=0
+    end if
 
 	Chegada = hh & ":" & nn
 

@@ -93,7 +93,7 @@ registros_mostrados = 0
 paginas_impressas = 0 
 %>
 
-<% While (Not procs.eof and paginas_impressas <= 2)
+<% While (Not procs.eof and paginas_impressas <= 25)
         registros_mostrados = 0 
         paginas_impressas  = paginas_impressas  + 1
      %>

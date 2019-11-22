@@ -106,7 +106,7 @@ if device()="" then
         <%if aut("|agendaequipamentosV|")=1 or Aut("|agendaV|")=1 then %>
             <li class="sub-menu-click-agenda-equipamentos-alocados"><a href="./?P=EquipamentosAlocados&Pers=1">Equipamentos Alocados</a></li>
 		<% end if
-		if session("Banco")="clinic6118" or session("Banco")="clinic5760" then %>
+		if (session("Banco")="clinic6118" or session("Banco")="clinic5760") and Aut("|agendaV|")=1 then %>
             <li class="sub-menu-click-agenda-mapa-de-agenda"><a href="./?P=Ocupacao&Pers=1">Mapa de agenda <span class="label label-system label-xs fleft">Novo</span> </a></li>
 		<% end if
 
@@ -205,7 +205,7 @@ if aut("pacientesV")=1 or aut("pacientesI")=1 or aut("pacientesA")=1 then
                         </li>
                          <%
                                 end if
-                                if aut("produtosA")=1 or aut("produtosI")=1 then
+                                if aut("produtosA")=1 or aut("produtosI")=1 or aut("requisicaoestoqueV")=1 then
                          %>
                         <li>
                             <a href="?P=ListaRequisicaoEstoque&Pers=1"><i class="fa fa-tasks"></i> Requisição de estoque <span class="label label-system label-xs fleft">Novo</span></a>

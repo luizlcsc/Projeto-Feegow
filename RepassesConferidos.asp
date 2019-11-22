@@ -95,7 +95,7 @@ end if
 
                     <%= quickField("datepicker", "De", "Execução", 2, De, "", "", " placeholder='De' required='required'") %>
                     <%= quickField("datepicker", "Ate", "&nbsp;", 2, Ate, "", "", " placeholder='At&eacute;' required='required'") %>
-                    <div class="col-md-2">
+                    <div class="col-md-2 hidden">
                         <label>Tipo de Data:</label><br />
                         <span class="radio-custom"><input type="radio" name="TipoData" value="Exec" <% if req("TipoData")="Exec" or req("TipoData")="" then response.write(" checked ") end if %> id="TDE" /><label for="TDE"> Execução</label></span>
                         <br />
@@ -177,6 +177,7 @@ if datediff("d", De, Ate)>15 and req("AccountID")="" then
 end if
 
 if ExibeResultado then
+    TemRepasse=0
     AccountID = req("AccountID")
     if AccountID="" then
         set ProfissionalSQL = db.execute("SELECT DISTINCT ContaCredito AccountID FROM rateiorateios WHERE (CASE "&_
@@ -231,11 +232,22 @@ if ExibeResultado then
                 end if
 
 'Response.End
-                sqlRR = "select  mdesc.Value as ParcelaValor,mdesc.PaymentMethodID, mdesc.Date DataPagto, fct.Parcelas, ifnull(pmdesc.PaymentMethod, '-') PaymentMethod, t.*, iip.InvoiceID InvoiceAPagarID, c.NomeConvenio, proc.NomeProcedimento, pac.NomePaciente, t.Executado from	(	select i.CompanyUnitID UnidadeID, ifnull(tab.NomeTabela, '') NomeTabela, ii.InvoiceID, 'ItemInvoiceID' Tipo, ii.DataExecucao, '0' ConvenioID, ii.ItemID ProcedimentoID, i.AccountID PacienteID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorProcedimento, rrp.*, ii.Executado FROM itensinvoice ii 	INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID	INNER JOIN rateiorateios rrp ON rrp.ItemInvoiceID=ii.id	WHERE ii.Tipo='S' AND rrp.ContaCredito='"& ContaCredito &"' AND ii.DataExecucao BETWEEN "& mydateNull(De) &" AND "& mydateNull(Ate) &"		UNION ALL	SELECT gc.UnidadeID, '', NULL, 'GuiaConsultaID', gc.DataAtendimento, gc.ConvenioID, gc.ProcedimentoID, gc.PacienteID, gc.ValorProcedimento, rrgc.*, '' Executado FROM tissguiaconsulta gc 	INNER JOIN rateiorateios rrgc ON rrgc.GuiaConsultaID=gc.id	WHERE gc.DataAtendimento BETWEEN "& mydateNull(De) &" AND "& mydateNull(Ate) &"		UNION ALL	SELECT gs.UnidadeID, '', NULL, 'ItemGuiaID', gps.Data, gs.ConvenioID, gps.ProcedimentoID, gs.PacienteID, gps.ValorTotal, rrgps.*, '' Executado FROM tissprocedimentossadt gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemGuiaID=gps.id	INNER JOIN tissguiasadt gs ON gps.GuiaID=gs.id WHERE gps.`Data` BETWEEN  "& mydateNull(De) &" AND "& mydateNull(Ate) &" UNION ALL SELECT gh.UnidadeID, '', NULL, 'ItemHonorarioID', gps.Data, gh.ConvenioID, gps.ProcedimentoID, gh.PacienteID, gh.Procedimentos ValorTotal, rrgps.*, '' Executado FROM tissprocedimentoshonorarios gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemHonorarioID=gps.id	INNER JOIN tissguiahonorarios gh ON gps.GuiaID=gh.id WHERE gps.`Data` BETWEEN  "& mydateNull(De) &" AND "& mydateNull(Ate) &"	) t LEFT JOIN itensinvoice iip ON (iip.id=t.ItemContaAPagar) LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID "&_
+                sqlRR = "select cheque.DataCompensacao DataCompenscaoCheque, mdisc.Date DataPagtoConvenio, ri.DateToReceive, mdesc.Value as ParcelaValor,mdesc.PaymentMethodID, mdesc.Date DataPagto, fct.Parcelas, ifnull(pmdesc.PaymentMethod, '-') PaymentMethod, t.*, iip.InvoiceID InvoiceAPagarID, c.NomeConvenio, proc.NomeProcedimento, pac.NomePaciente, t.Executado from	(	"&_
+                " select null GuiaID, null TipoGuia, i.CompanyUnitID UnidadeID, ifnull(tab.NomeTabela, '') NomeTabela, ii.InvoiceID, 'ItemInvoiceID' Tipo, ii.DataExecucao, '0' ConvenioID, ii.ItemID ProcedimentoID, i.AccountID PacienteID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorProcedimento, rrp.*, ii.Executado FROM itensinvoice ii 	INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID	INNER JOIN rateiorateios rrp ON rrp.ItemInvoiceID=ii.id	WHERE ii.Tipo='S' AND rrp.ContaCredito='"& ContaCredito &"' AND ii.DataExecucao BETWEEN "& mydateNull(De) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
+                " SELECT gc.id GuiaID, 'GuiaConsulta' TipoGuia, gc.UnidadeID, '', NULL, 'GuiaConsultaID', gc.DataAtendimento, gc.ConvenioID, gc.ProcedimentoID, gc.PacienteID, gc.ValorProcedimento, rrgc.*, '' Executado FROM tissguiaconsulta gc 	INNER JOIN rateiorateios rrgc ON rrgc.GuiaConsultaID=gc.id	WHERE gc.DataAtendimento BETWEEN "& mydateNull(De) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
+                " SELECT gps.id GuiaID, 'GuiaSADT' TipoGuia, gs.UnidadeID, '', NULL, 'ItemGuiaID', gps.Data, gs.ConvenioID, gps.ProcedimentoID, gs.PacienteID, gps.ValorTotal, rrgps.*, '' Executado FROM tissprocedimentossadt gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemGuiaID=gps.id	INNER JOIN tissguiasadt gs ON gps.GuiaID=gs.id WHERE gps.`Data` BETWEEN  "& mydateNull(De) &" AND "& mydateNull(Ate) &" UNION ALL "&_
+                " SELECT gps.id GuiaID, 'GuiaHonorarios' TipoGuia, gh.UnidadeID, '', NULL, 'ItemHonorarioID', gps.Data, gh.ConvenioID, gps.ProcedimentoID, gh.PacienteID, gh.Procedimentos ValorTotal, rrgps.*, '' Executado FROM tissprocedimentoshonorarios gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemHonorarioID=gps.id	INNER JOIN tissguiahonorarios gh ON gps.GuiaID=gh.id WHERE gps.`Data` BETWEEN  "& mydateNull(De) &" AND "& mydateNull(Ate) &"	) t "&_
+                " LEFT JOIN itensinvoice iip ON (iip.id=t.ItemContaAPagar) LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID "&_
                 " LEFT JOIN itensdescontados idesc ON idesc.id=t.ItemDescontadoID "&_
                 " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID "&_
                 " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID "&_
                 " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id "&_
+                " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=t.ParcelaID "&_
+                " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia=t.TipoGuia AND tgi.GuiaID=t.GuiaID "&_
+                " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID "&_
+                " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id "&_
+                " LEFT JOIN sys_financialmovement mdisc ON mdisc.id=disc.MovementID "&_
+                " LEFT JOIN sys_financialreceivedchecks cheque ON cheque.MovementID=mdesc.id "&_
                 " WHERE (t.ContaCredito LIKE CONCAT('%_"& ContaCredito &"') or t.ContaCredito='"& ContaCredito &"') AND t.ConvenioID IN ("& Forma &") "&sqlFormRecto&" AND t.modoCalculo='"& modoCalculo &"' "& sqlUnidades &_
                 " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente, proc.NomeProcedimento"
 
@@ -272,6 +284,7 @@ if ExibeResultado then
                     DataExecucao = rr("DataExecucao")
                     Descricao = rr("NomeProcedimento")
                     Pagador = rr("NomePaciente")
+                    DateToReceive = rr("DateToReceive")
                     if rr("Tipo")="ItemInvoiceID" then
                         FormaRecto = "Particular"
                     else
@@ -317,6 +330,12 @@ if ExibeResultado then
                         end if
                         if rr("PaymentMethodID")=1 or rr("PaymentMethodID")=7 or rr("PaymentMethodID")=3 then
                             DataComp = rr("DataPagto")
+                        elseif rr("PaymentMethodID")=8 or rr("PaymentMethodID")=9 then
+                            DataComp = DateToReceive
+                        elseif rr("PaymentMethodID")=2 then
+                            DataComp = rr("DataCompenscaoCheque")
+                        else
+                            DataComp = rr("DataPagtoConvenio")
                         end if
                         if NomeTabela<>"" then
                             NomeTabela = "<i class='fa fa-table' title='"& NomeTabela &"'></i>"
@@ -377,6 +396,7 @@ if ExibeResultado then
                 </table>
 
                 <%
+                TemRepasse=1
                 end if
 
             end if
@@ -386,6 +406,15 @@ if ExibeResultado then
         wend
         ProfissionalSQL.close
         set ProfissionalSQL=nothing
+        end if
+
+        if TemRepasse = 0then
+
+                    %>
+<div class="alert alert-default">
+    <strong>Atenção!</strong> Nenhum repasse consolidado foi encontrado para os filtros selecionados.
+</div>
+                    <%
         end if
         %>
     </div>

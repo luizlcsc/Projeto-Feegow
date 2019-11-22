@@ -232,6 +232,17 @@ if not ServicosNaoExecutadosSQL.eof then
 end if
 
 
+sql = "SELECT SUM(d.TotalDevolucao) TotalDevolucao FROM devolucoes d INNER JOIN sys_financialinvoices i ON i.id=d.invoiceID WHERE "& filtroData("d.sysDate") &" AND i.CD='C' AND i.CompanyUnitID="& UnidadeID &""
+set DevolucoesSQL = db.execute(sql)
+
+if not DevolucoesSQL.eof then
+    if not isnull(DevolucoesSQL("TotalDevolucao")) then
+        devolucoes=ccur(DevolucoesSQL("TotalDevolucao"))
+    end if
+end if
+
+
+
 
 sqlDebitoECredito = "select idesc.id ItemDescontadoID, m.PaymentMethodID, ii.id ItemInvoiceID, ii.InvoiceID, ii.DataExecucao, i.AccountID, i.AssociationAccountID, proc.NomeProcedimento, ii.Quantidade, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal, idesc.Valor ValorDescontado FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN itensdescontados idesc ON idesc.ItemID=ii.id LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID WHERE "& filtroData("ii.DataExecucao") &" AND i.CompanyUnitID="& UnidadeID &" AND ii.Executado='S' AND m.PaymentMethodID IN (8,9) ORDER BY ii.DataExecucao"
 set RecebimentosDebitoECreditoSQL= db.execute(sqlDebitoECredito)
@@ -384,8 +395,12 @@ ResultadoFinal= ResultadoFinal - vl2
             <td>13. Serviços não executados</td>
             <td class="text-right"><%= fn(servicosNaoExecutados) %></td>
         </tr>
-        <tr class="linha-fechamento" data-id="14" style="display: none;">
-            <td>14. [Diferenca.Descricao]</td>
+        <tr class="linha-fechamento" data-id="14">
+            <td>14. Devoluções</td>
+            <td class="text-right"><%= fn(devolucoes) %></td>
+        </tr>
+        <tr class="linha-fechamento" data-id="15" style="display: none;">
+            <td>15. [Diferenca.Descricao]</td>
             <td class="text-right">NaN</td>
         </tr>
     </tbody>

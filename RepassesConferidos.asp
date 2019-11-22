@@ -408,7 +408,7 @@ if ExibeResultado then
         set ProfissionalSQL=nothing
         end if
 
-        if TemRepasse = 0then
+        if TemRepasse = 0 and req("Forma")<>"" then
 
                     %>
 <div class="alert alert-default">

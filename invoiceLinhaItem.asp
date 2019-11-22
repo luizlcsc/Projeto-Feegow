@@ -12,9 +12,24 @@ set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&trea
         if Tipo="S" then
             ItemInvoiceID = id
             ProdutoInvoiceID = ""
+
+            DisabledRepasse = ""
+            TemRepasseGerado=False
+            set RepasseSQL = db.execute("SELECT id FROM rateiorateios WHERE ItemContaAPagar is not null and ItemInvoiceID="&ItemInvoiceID)
+
+            if not RepasseSQL.eof then
+                TemRepasseGerado=True
+                DisabledRepasse=" disabled"
+            end if
+
+            if TemRepasseGerado then
+            %>
+            <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
+            <%
+            end if
             %>
             <input type="hidden" name="PacoteID<%= id %>" value="<%= PacoteID %>" />
-            <td colspan="2"><%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange="" parametrosInvoice("&id&", this.value);"" data-row='"& id &"' ", " required ", "") %>
+            <td colspan="2"><%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange="" parametrosInvoice("&id&", this.value);"" data-row='"& id &"' "&DisabledRepasse, " required ", "") %>
                                 <%if session("Odonto")=1 then
                     %>
                     <textarea class="hidden" name="OdontogramaObj<%=id %>" id="OdontogramaObj<%=id %>"><%=OdontogramaObj %></textarea>
@@ -255,7 +270,7 @@ end if
                     ExecutanteTipos = "5"
 			    end if
 			    %>
-                <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutanteTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional)%>
+                <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutanteTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional&DisabledRepasse)%>
 			    <%'=selectInsertCA("", "ProfissionalID"&id, Associacao&"_"&ProfissionalID, "5, 8, 2", " onchange=""setTimeout(function()calcRepasse("& id &"), 500)""", "", "")%>
             </div>
             <%if Tipo="S" then
@@ -279,9 +294,9 @@ end if
                     end if
                 end if
                 %>
-                <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade", " no-select2 "&camposRequired) %>
+                <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledRepasse&" no-select2 "&camposRequired) %>
                 </div>
-                <%= quickField("datepicker", "DataExecucao"&id, "Data da Execu&ccedil;&atilde;o", 2, DataExecucao, "", "", ""&ExecucaoRequired) %>
+                <%= quickField("datepicker", "DataExecucao"&id, "Data da Execu&ccedil;&atilde;o", 2, DataExecucao, "", "", ""&ExecucaoRequired&DisabledRepasse) %>
                 <%= quickField("text", "HoraExecucao"&id, "In&iacute;cio", 1, HoraExecucao, " input-mask-l-time", "", "") %>
                 <%= quickField("text", "HoraFim"&id, "Fim", 1, HoraFim, " input-mask-l-time", "", "") %>
                 <%= quickField("text", "Descricao"&id, "Observações", 3, Descricao, "", "", " maxlength='50'") %>

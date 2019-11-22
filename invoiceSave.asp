@@ -528,7 +528,11 @@ if erro="" then
                 'Executado = "C"
             end if
 
-			sqlUpdate = "update itensinvoice set Executado='"& Executado &"', DataExecucao="&mydatenull(ref("DataExecucao"&ii))&", HoraExecucao="&mytime(ref("HoraExecucao"&ii))&", AgendamentoID="&treatvalzero(ref("AgendamentoID"&ii))&", CategoriaID="&treatvalzero(ref("CategoriaID"&ii))&", CentroCustoID="&treatvalzero(ref("CentroCustoID"&ii))&", ProfissionalID="&treatvalzero(ProfissionalID)&", HoraFim="&mytime(ref("HoraFim"&ii))&", AtendimentoID="&AtendimentoID&", Associacao="&treatvalzero(Associacao)&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID"&ii)) &" WHERE id="&valID
+            if ref("RepasseGerado"&ii)="S" then
+			    sqlUpdate = "update itensinvoice set Descricao='"&ref("Descricao"&II)&"', HoraExecucao="&mytime(ref("HoraExecucao"&ii))&", HoraFim="&mytime(ref("HoraFim"&ii))&" WHERE id="&valID
+            else
+			    sqlUpdate = "update itensinvoice set Descricao='"&ref("Descricao"&II)&"', Executado='"& Executado &"', DataExecucao="&mydatenull(ref("DataExecucao"&ii))&", HoraExecucao="&mytime(ref("HoraExecucao"&ii))&", AgendamentoID="&treatvalzero(ref("AgendamentoID"&ii))&", CategoriaID="&treatvalzero(ref("CategoriaID"&ii))&", CentroCustoID="&treatvalzero(ref("CentroCustoID"&ii))&", ProfissionalID="&treatvalzero(ProfissionalID)&", HoraFim="&mytime(ref("HoraFim"&ii))&", AtendimentoID="&AtendimentoID&", Associacao="&treatvalzero(Associacao)&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID"&ii)) &" WHERE id="&valID
+            end if
 
 			db.execute(sqlUpdate)
 			'->itens do rateio irão aqui-----

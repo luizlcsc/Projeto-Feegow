@@ -42,19 +42,14 @@ if SplitNF=1 then
 <%
     'sqls = "SELECT  rr.ContaCredito, SUM(rr.Valor)Valor, group_concat(proc.NomeProcedimento) Procedimentos, group_concat(rr.id) RepasseIDS FROM rateiorateios rr INNER JOIN itensinvoice ii ON ii.id=rr.ItemInvoiceID INNER JOIN procedimentos proc ON proc.id=ii.ItemID WHERE rr.ContaCredito NOT IN ('0','0_0') AND ii.InvoiceID="&InvoiceID&" GROUP BY rr.ContaCredito UNION ALL SELECT 0 ContaCredito, 0 Valor, '' Procedimentos, '' RepasseIDS "
     sqls = " SELECT i.CompanyUnitID, ii.DataExecucao, i2.id InvoiceIDAPagar,rr.ContaCredito                                                                                             "&chr(13)&_
-           "      ,CASE WHEN rr.ItemContaAPagar IS NULL     THEN 'Consolidado'                                                  "&chr(13)&_
-           "            WHEN rr.ItemContaAPagar IS NOT NULL AND itensdescontados.id is null THEN 'Conta gerada'                 "&chr(13)&_
-           "            ELSE 'Pago'                                                                                             "&chr(13)&_
-           "          END as Status                                                                                             "&chr(13)&_
-           "     , SUM(rr.Valor)Valor, group_concat(proc.NomeProcedimento) Procedimentos, group_concat(rr.id) RepasseIDS        "&chr(13)&_
+           "      , SUM(rr.Valor)Valor, group_concat(proc.NomeProcedimento) Procedimentos, group_concat(rr.id) RepasseIDS        "&chr(13)&_
            " FROM rateiorateios rr                                                                                              "&chr(13)&_
            " INNER JOIN itensinvoice ii ON ii.id=rr.ItemInvoiceID                                                               "&chr(13)&_
            " INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID                                                            "&chr(13)&_
-           " LEFT  JOIN itensdescontados on itensdescontados.ItemID = rr.ItemContaAPagar                                        "&chr(13)&_
            " LEFT  JOIN itensinvoice ii2 ON ii2.id=rr.ItemContaAPagar                                                           "&chr(13)&_
            " LEFT  JOIN sys_financialinvoices i2 on i2.id = ii2.InvoiceID                                                        "&chr(13)&_
            " INNER JOIN procedimentos proc ON proc.id=ii.ItemID WHERE rr.ContaCredito NOT IN ('0','0_0') AND ii.InvoiceID="&InvoiceID&"  "&chr(13)&_
-           " GROUP BY rr.ContaCredito,2  UNION ALL SELECT 0 CompanyUnitID, null DataExecucao, 0 InvoiceIDAPagar, 0 ContaCredito,'' AS Status, 0 Valor, '' Procedimentos, '' RepasseIDS;"
+           " GROUP BY rr.ContaCredito,2  UNION ALL SELECT 0 CompanyUnitID, null DataExecucao, 0 InvoiceIDAPagar, 0 ContaCredito,0 Valor, '' Procedimentos, '' RepasseIDS;"
 
     set RepassesRecebedoresSQL = db.execute(sqls)
 
@@ -66,7 +61,16 @@ if SplitNF=1 then
         InvoiceIDAPagar = RepassesRecebedoresSQL("InvoiceIDAPagar")
         RepasseIDS = RepassesRecebedoresSQL("RepasseIDS")
         ValorRepassado = 0
-        StatusRepasse = RepassesRecebedoresSQL("Status")
+
+
+        set StatusRepasseSQL = db.execute("SELECT CASE WHEN rr.ItemContaAPagar IS NULL THEN 'Consolidado' WHEN rr.ItemContaAPagar IS NOT NULL AND idesc.id IS NULL THEN 'Conta gerada' ELSE 'Pago' END AS STATUS "&_
+                                            " FROM rateiorateios rr LEFT JOIN itensdescontados idesc ON idesc.ItemID=rr.ItemContaAPagar "&_
+                                            " INNER JOIN itensinvoice ii ON ii.id=rr.ItemInvoiceID WHERE rr.ContaCredito='"&ContaCredito&"' AND ii.InvoiceID="&InvoiceID)
+
+        StatusRepasse=""
+        if not StatusRepasseSQL.eof then
+            StatusRepasse = StatusRepasseSQL("Status")
+        end if
         ReciboID = 0
         Recebedor=""
         CorBtn = "warning"
@@ -133,8 +137,9 @@ if SplitNF=1 then
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="2"></td>
-            <th colspan="2"><%=fn(ValorTotal)%></th>
+            <td colspan="3"></td>
+            <th colspan="1"><%=fn(ValorTotal)%></th>
+            <th></th>
         </tr>
     </tfoot>
 </table>

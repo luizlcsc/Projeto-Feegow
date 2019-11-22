@@ -311,27 +311,51 @@ if req("FormaID")<>"" and isnumeric(req("FormaID")) then
         ProcedimentoID = ref("ItemID"& inps(i))
         if ProcedimentoID<>"" and ProcedimentoID<>"0" and isnumeric(ProcedimentoID) then
 
-            sql = "SELECT * FROM sys_formasrecto WHERE (Procedimentos LIKE '%|ALL|%' OR (Procedimentos LIKE '%|" & ProcedimentoID & "|%' AND Procedimentos LIKE '%|ONLY|%') OR (Procedimentos LIKE '%|EXCEPT|%' AND Procedimentos NOT LIKE '%|"& ProcedimentoID &"|%')) AND (Unidades = '|ALL|' OR (Unidades = '|ONLY|' AND UnidadesExcecao LIKE '%|" & ref("CompanyUnitID") & "|%') OR (Unidades = '|EXCEPT|' AND UnidadesExcecao NOT LIKE '%|" & ref("CompanyUnitID") & "|%')) AND id=" & FRID
+            set ProcedimentoSQL = db.execute("SELECT GrupoID FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
+            if not ProcedimentoSQL.eof then
+                GrupoID=ProcedimentoSQL("GrupoID")
+            end if
+
+            sql = "SELECT * FROM sys_formasrecto WHERE "&_
+            " ((Procedimentos LIKE '%|ALL|%' OR (Procedimentos LIKE '%|" & ProcedimentoID & "|%' AND Procedimentos LIKE '%|ONLY|%') OR "&_
+            " (Procedimentos LIKE '%|EXCEPT|%' AND Procedimentos NOT LIKE '%|"& ProcedimentoID &"|%')) OR "&_
+            " (Procedimentos LIKE '%|ALL|%' OR (Procedimentos LIKE '%|-" & GrupoID & "|%' AND Procedimentos LIKE '%|ONLY|%') OR "&_
+            " (Procedimentos LIKE '%|EXCEPT|%' AND Procedimentos NOT LIKE '%|-"& GrupoID &"|%'))) AND "&_
+            " (Unidades = '|ALL|' OR (Unidades = '|ONLY|' AND UnidadesExcecao LIKE '%|" & ref("CompanyUnitID") & "|%') OR (Unidades = '|EXCEPT|' AND UnidadesExcecao NOT LIKE '%|" & ref("CompanyUnitID") & "|%')) AND id=" & FRID
 
             set vcaFR = db.execute(sql)
             if not vcaFR.eof then
-                Quantidade = ccur(ref("Quantidade"& inps(i)))
-                ValorUnitario = ccur(ref("ValorUnitario"& inps(i)))
-                Desconto = ccur(vcaFR("Desconto"))
-                tipoDesconto = vcaFR("tipoDesconto")
-                if tipoDesconto="V" then
-                    Desconto = Desconto * Quantidade
-                else
-                    Fator = ccur(Desconto)/100
-                    Desconto = Fator * ValorUnitario
+                AplicaVariacao=True
+                Procedimentos=vcaFR("Procedimentos")
+
+                if instr(Procedimentos, "|EXCEPT|")>0 then
+                    if instr(Procedimentos, "|-"&GrupoID&"|")>0 then
+                        AplicaVariacao=False
+                    end if
+                    if instr(Procedimentos, "|"&ProcedimentoID&"|")>0 then
+                        AplicaVariacao=False
+                    end if
                 end if
-                Acrescimo = ccur(vcaFR("Acrescimo"))
-                tipoAcrescimo = vcaFR("tipoAcrescimo")
-                if tipoAcrescimo="V" then
-                    Acrescimo = Acrescimo * Quantidade
-                else
-                    Fator = ccur(Acrescimo)/100
-                    Acrescimo = Fator * ValorUnitario
+
+                if AplicaVariacao then
+                    Quantidade = ccur(ref("Quantidade"& inps(i)))
+                    ValorUnitario = ccur(ref("ValorUnitario"& inps(i)))
+                    Desconto = ccur(vcaFR("Desconto"))
+                    tipoDesconto = vcaFR("tipoDesconto")
+                    if tipoDesconto="V" then
+                        Desconto = Desconto * Quantidade
+                    else
+                        Fator = ccur(Desconto)/100
+                        Desconto = Fator * ValorUnitario
+                    end if
+                    Acrescimo = ccur(vcaFR("Acrescimo"))
+                    tipoAcrescimo = vcaFR("tipoAcrescimo")
+                    if tipoAcrescimo="V" then
+                        Acrescimo = Acrescimo * Quantidade
+                    else
+                        Fator = ccur(Acrescimo)/100
+                        Acrescimo = Fator * ValorUnitario
+                    end if
                 end if
             end if
         end if

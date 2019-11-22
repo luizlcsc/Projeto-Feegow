@@ -139,7 +139,7 @@ end if
                 </select>
             
             	<label>&nbsp;</label><br>
-            	<%=quickField("multiple", "Procedimentos_"&formas("id"), "", 8, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and ativo='on' order by NomeProcedimento", "NomeProcedimento", "")%>
+            	<%=quickField("multiple", "Procedimentos_"&formas("id"), "", 8, Procedimentos, "SELECT id, NomeProcedimento FROM (select id, NomeProcedimento, 1 Ordem from procedimentos where sysActive=1 and ativo='on'  UNION ALL select id*-1, concat('>>> ',NomeGrupo) NomeProcedimento, 0 Ordem from procedimentosgrupos where sysactive=1)t order by Ordem, NomeProcedimento", "NomeProcedimento", "")%>
             </td>
             <td width="10">
             	<label>&nbsp;</label><br>

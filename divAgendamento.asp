@@ -1100,7 +1100,8 @@ function RegistrarMultiplasPendencias(liberar) {
         var RetornoSelecionado = $(this).prop("checked");
 
         if(RetornoSelecionado){
-            $("#btnSalvarAgenda").prop("disabled", true);
+            btnSalvarToggleLoading(false, true, "Selecione um retorno");
+            $("#btnSalvarAgenda").attr("data-force-disabled", true);
             var $dadosAgendamentos = $("#dadosAgendamento" );
 
             $.get("EscolheAtendimentoParaRetorno.asp", {
@@ -1115,7 +1116,8 @@ function RegistrarMultiplasPendencias(liberar) {
 
             addRemoveRetorno();
         }else{
-            $("#btnSalvarAgenda").prop("disabled", false);
+            btnSalvarToggleLoading(true, true);
+
             //reset valor do procedimento
             var $valoresProcedimentos = $(".valorprocedimento");
 
@@ -1164,12 +1166,15 @@ function abasAux(){
 }
 abasAux();
 
-function btnSalvarToggleLoading(state) {
+function btnSalvarToggleLoading(state, force, waitMessage="Aguarde...") {
   var $el = $('#btnSalvarAgenda');
-  if(state){
-      $el.attr('disabled', false).html("<i class='fa fa-save'></i> Salvar", false);
-  }else{
-      $el.attr('disabled', true).html("<i class='fa fa-spinner fa-spin'></i> Aguarde...", true);
+
+  if($el.attr("data-force-disabled") !== 'true' || force){
+      if(state){
+          $el.attr('disabled', false).html("<i class='fa fa-save'></i> Salvar", false);
+      }else{
+          $el.attr('disabled', true).html("<i class='fa fa-spinner fa-spin'></i> "+waitMessage, true);
+      }
   }
 }
 

@@ -319,9 +319,11 @@ if left(tipo, 14)="ProcedimentoID" then
 
         if not isnull(TipoProcedimentoID) then
             if TipoProcedimentoID="9" then
-                %>
-                //$("#Retorno").prop("checked", true).change();
-                <%
+                if getConfig("ValidarRetornos")="1" then
+                    %>
+                    $("#Retorno").prop("checked", true).change();
+                    <%
+                end if
             end if
         end if
 
@@ -449,9 +451,7 @@ if tipo="Equipamento" then
         <%
     else
         %>
-        if($("#btnSalvarAgenda").data("force-disabled") !== true){
-            $("#btnSalvarAgenda").attr("disabled", false);
-        }
+        btnSalvarToggleLoading(true);
         <%
     end if
 end if

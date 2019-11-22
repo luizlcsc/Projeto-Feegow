@@ -12,6 +12,7 @@ Tipo = ref("T")
 Valor = ref("valor")
 pID = ref("profissionalID")
 II = ref("II")
+procedimentoIds = ref("procedimentoIds")
 Row = req("Row")
 if Row<>"" then
 	Row=ccur(Row)
@@ -28,6 +29,7 @@ set TemRegrasDeDescontoSQL = db.execute("SELECT id FROM regrasdescontos LIMIT 1"
 if not TemRegrasDeDescontoSQL.eof then
     TemRegrasDeDesconto=True
 end if
+
 if Acao="" then
 
     if (session("Banco")="clinic4456" and lcase(session("Table"))="profissionais" and not session("Admin")=1) or aut("valordoprocedimentoV")<>1 then
@@ -214,6 +216,19 @@ if Acao="" then
 	</table>
 <%
 elseif Acao="I" then
+
+    if procedimentoIds&"" <> "" then
+        set ProcedimentoSQL = db.execute("SELECT NaoRepetirNaProposta FROM procedimentos WHERE NaoRepetirNaProposta='S' and id="&treatvalzero(II)&" and id in ("&procedimentoIds&")")
+        if not ProcedimentoSQL.eof then
+%>
+<script >
+showMessageDialog("Procedimento já adicionado.");
+</script>
+<%
+            Response.End
+        end if
+    end if
+
     id = (Row+1)*(-1)
     Quantidade = 1
 	if ref("Q")<>"" and isnumeric (ref("Q")) then 

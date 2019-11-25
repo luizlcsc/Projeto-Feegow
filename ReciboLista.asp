@@ -17,7 +17,7 @@ end if
             </thead>
             <tbody>
             <%
-			set rec = db.execute("select * from recibos where PacienteID="&PacienteID&" AND sysActive=1 order by sysDate desc")
+			set rec = db.execute("select * from recibos where (Texto is not null and Texto<>'' ) and PacienteID="&PacienteID&" AND sysActive=1 order by sysDate desc")
 			while not rec.EOF
 				%>
 				<tr>

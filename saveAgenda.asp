@@ -324,15 +324,17 @@ if erro="" then
                 aprdValorPlano = ref("rdValorPlano"& apID)
                 if aprdValorPlano="V" then
                     apValorPlano = ref("Valor"& apID)
+                    applanoId=""
                 else
                     apValorPlano = ref("ConvenioID"& apID)
+                    applanoId = ref("PlanoID"& apID)
                 end if
                 apLocalID = ref("LocalID"& apID)
                 apEquipamentoID = ref("EquipamentoID"& apID)
                 if apID<0 then
-                    db.execute("insert into agendamentosprocedimentos (AgendamentoID, TipoCompromissoID, Tempo, rdValorPlano, ValorPlano, LocalID, EquipamentoID) values ("& ConsultaID &", "& treatvalzero(apTipoCompromissoID) &", "& treatvalnull(apTempo) &", '"& aprdValorPlano &"', "& treatvalzero(apValorPlano) &", "& treatvalzero(apLocalID) &", "& treatvalzero(apEquipamentoID) &")")
+                    db.execute("insert into agendamentosprocedimentos (AgendamentoID, TipoCompromissoID, Tempo, rdValorPlano, ValorPlano,PlanoID, LocalID, EquipamentoID) values ("& ConsultaID &", "& treatvalzero(apTipoCompromissoID) &", "& treatvalnull(apTempo) &", '"& aprdValorPlano &"', "& treatvalzero(apValorPlano) &",  "& treatvalzero(applanoId) &","& treatvalzero(apLocalID) &", "& treatvalzero(apEquipamentoID) &")")
                 else
-                    db.execute("update agendamentosprocedimentos set TipoCompromissoID="& treatvalzero(apTipoCompromissoID) &", Tempo="& treatvalnull(apTempo) &", rdValorPlano='"& aprdValorPlano &"', ValorPlano="& treatvalzero(apValorPlano) &", LocalID="& treatvalzero(apLocalID) &", EquipamentoID="& treatvalzero(apEquipamentoID) &" where id="& apID)
+                    db.execute("update agendamentosprocedimentos set TipoCompromissoID="& treatvalzero(apTipoCompromissoID) &", Tempo="& treatvalnull(apTempo) &", rdValorPlano='"& aprdValorPlano &"', ValorPlano="& treatvalzero(apValorPlano) &", PlanoID="& treatvalzero(applanoId) &",LocalID="& treatvalzero(apLocalID) &", EquipamentoID="& treatvalzero(apEquipamentoID) &" where id="& apID)
                 end if
             end if
         next

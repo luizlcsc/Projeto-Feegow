@@ -8,11 +8,11 @@ GradeApenasProcedimentos = ref("GradeApenasProcedimentos")
 EquipamentoID = ref("EquipamentoID")
 rdValorPlano= ref("Forma")
 ConvenioID= ref("ConvenioSelecionado")
-
+PlanoID = ""
 
 if Acao="I" then
     n = ref("I")
-    call linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios)
+    call linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, PlanoID, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios)
 end if
 %>
 <script type="text/javascript">
@@ -23,7 +23,7 @@ $(function(){
 
                 somarValores();
             });
-    <% if EquipamentoID<> "" then %>
+    <% if EquipamentoID&"" <> "" and EquipamentoID&""<> "0" then %>
         $('#EquipamentoID<%=n %>').select2("destroy");
         $('#EquipamentoID<%=n %>').removeClass("select2-single");
         $('#EquipamentoID<%=n %>').hide();

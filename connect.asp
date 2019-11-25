@@ -4705,7 +4705,7 @@ private function FazPosicao(ProdutoID)
 end function
 
 
-private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios)
+private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, PlanoID, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios)
     if rdValorPlano="V" then
         ConvenioID=0
     end if
@@ -4772,17 +4772,15 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Conv
                 if not isnull(ConvenioID) and ConvenioID<>"" then
                     ObsConvenios = ""
                     set ConvenioSQL = db.execute("SELECT Obs FROM convenios WHERE id="&ConvenioID&" AND Obs!='' AND Obs IS NOT NULL")
-
-                    planosOptions = getPlanosOptions(ConvenioID, PlanoID)
+                    planosOptions = getPlanosOptions(ConvenioID, PlanoID&"_"&n)
                     if planosOptions<>"" then
                     %>
-<script >
-$(document).ready(function() {
-$("#divConvenio").after("<%=planosOptions%>");
-
-$("#PlanoID").select2();
-})
-</script>
+                <script >
+                $(document).ready(function() {
+                    $("#divConvenio<%=n%>").after("<%=planosOptions%>");
+                    $("#PlanoID<%=n%>").select2();
+                })
+                </script>
                     <%
                     end if
                     if not ConvenioSQL.eof then
@@ -4803,7 +4801,7 @@ $("#PlanoID").select2();
                 else
                     if (len(Convenios)>2 or (isnumeric(Convenios) and not isnull(Convenios))) and instr(Convenios&" ", "Nenhum")=0 then
                     %>
-                    <%=quickfield("simpleSelect", "ConvenioID"&n, "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where id in("&Convenios&") order by NomeConvenio", "NomeConvenio", "") %>
+                    <%=quickfield("simpleSelect", "ConvenioID"&n, "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " onchange=""parametros(this.id, this.value+'_'+$('#ProcedimentoID').val());""") %>
                     <%
                     end if
                 end if
@@ -5167,6 +5165,13 @@ function recursoAdicional(RecursoAdicionalID)
 end function
 
 function getPlanosOptions(ConvenioID, PlanoID)
+    if instr(PlanoID, "_")>0 then
+        PlanoIDSplit = split(PlanoID,"_")
+        PlanoID = PlanoIDSplit(0)
+        Indice = PlanoIDSplit(1)
+
+    end if
+
     set PlanosConvenioSQL = db.execute("SELECT NomePlano, id FROM conveniosplanos WHERE sysActive=1 and NomePlano!='' and ConvenioID="&ConvenioID)
     if not PlanosConvenioSQL.eof then
 
@@ -5174,17 +5179,17 @@ function getPlanosOptions(ConvenioID, PlanoID)
 
         while not PlanosConvenioSQL.eof
             planoSelected = ""
-            if PlanoID=PlanosConvenioSQL("id") then
+            if PlanoID&"" = PlanosConvenioSQL("id")&"" then
                 planoSelected=" selected "
             end if
 
-            planosOption= planosOption&"<option "&planoSelected&" value='"&PlanosConvenioSQL("id")&"'>"&PlanosConvenioSQL("NomePlano")&"</option>"
+            planosOption = planosOption&"<option "&planoSelected&" value='"&PlanosConvenioSQL("id")&"'>"&PlanosConvenioSQL("NomePlano")&"</option>"
         PlanosConvenioSQL.movenext
         wend
         PlanosConvenioSQL.close
         set PlanosConvenioSQL=nothing
 
-        getPlanosOptions = "<div id='divConvenioPlano' class='col-md-12 mt5' ><label for='PlanoID'>Plano</label><select name='PlanoID' id='PlanoID' class='form-control'>"& planosOption &"</select></div>"
+        getPlanosOptions = "<div id='divConvenioPlano"&Indice&"' class='col-md-12 mt5' ><label for='PlanoID"&Indice&"'>Plano</label><select name='PlanoID"&Indice&"' id='PlanoID"&Indice&"' class='form-control'>"& planosOption &"</select></div>"
     else
         getPlanosOptions=""
     end if

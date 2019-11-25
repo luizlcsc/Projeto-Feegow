@@ -161,7 +161,7 @@ end if
               }
               if(!(estrangeiro || outroPais))
               {
-                  $("#CPF").attr("required", "required");
+                  $("#CPF").attr("required", "required").attr("readonly", false);
                   var a = $("#CPF");
 
               }

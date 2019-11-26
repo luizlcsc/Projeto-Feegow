@@ -281,9 +281,9 @@ set RecebimentosDebitoECreditoSQL=nothing
 
 '7 + 6 + 10 + 12 - 11 + 13
     'response.Write(TotalCredito)
-'3.1 + 6 + 7 + 9 + 10 - 11 + 12 - 13
+'3.1 + 6 + 7 + 9 + 10 - 11 + 12 - 13 + 14
 
-ResultadoFinal = ValorFechamentoInformado + TotalCredito + TotalDebito + RecebimentosNaoExecutados + ValorCreditosUtilizados - RepassesNaoPagos + RepasseDeOutrasDatas - servicosNaoExecutados
+ResultadoFinal = ValorFechamentoInformado + TotalCredito + TotalDebito + RecebimentosNaoExecutados + ValorCreditosUtilizados - RepassesNaoPagos + RepasseDeOutrasDatas - servicosNaoExecutados + devolucoes
 
 
 TotalDiferenca=  ValorCreditosUtilizados + RepasseDeOutrasDatas - RepassesNaoPagos - servicosNaoExecutados - RecebimentosNaoExecutados
@@ -415,7 +415,7 @@ ResultadoFinal= ResultadoFinal - vl2
         </tr>
         <tr>
             <th></th>
-            <th class="text-right">(3.1 + (6 + 7) + 9 + 10 - 11 + 12 - 13) - 2</th>
+            <th class="text-right">(3.1 + (6 + 7) + 9 + 10 - 11 + 12 - 13 + 14) - 2</th>
         </tr>
     </tfoot>
 </table>

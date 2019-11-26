@@ -78,6 +78,44 @@ if ref("Procedimentoid")&""="" then
     erro = "Erro: Selecione pelo menos um procedimento"
 end if
 
+function ValidaProcedimentoLocal(linha,pProcedimentoID,pLocalID) 
+    ValidaProcedimentoLocal=""
+    set ProcedimentoLocaisSQL = db.execute("SELECT SomenteLocais FROM procedimentos WHERE id="&treatvalzero(pProcedimentoID))
+    if not ProcedimentoLocaisSQL.eof then
+        LimitarLocais = ProcedimentoLocaisSQL("SomenteLocais")
+
+        if LimitarLocais&""<>"" then
+            if instr(LimitarLocais, "|"&pLocalID&"|")<=0 then
+                ValidaProcedimentoLocal= linha&"° procedimento não aceita o Local selecionado."
+            end if
+            if instr(LimitarLocais, "|NONE|")>0 then
+                ValidaProcedimentoLocal= linha&"° procedimento não permite Locais."
+            end if
+        end if
+    end if
+end function
+
+if erro ="" then
+    'verifica se procedimento pode ser realizado nos locais
+    erro = ValidaProcedimentoLocal(1,ref("ProcedimentoID")&"", ref("LocalID")&"")
+    '-> procedimentos adicionais na agenda
+    ProcedimentosAgendamento = trim(ref("ProcedimentosAgendamento"))
+    if ProcedimentosAgendamento<>"" then
+    splPA = split(ProcedimentosAgendamento, ", ")
+        for iPA=0 to ubound(splPA)
+            if splPA(iPA)&""<>"" then
+                apID = ccur( splPA(iPA) )
+                apTipoCompromissoID = ref("ProcedimentoID"& apID)
+                apLocalID = ref("LocalID"& apID) 
+                msg = ValidaProcedimentoLocal((iPA+2),apTipoCompromissoID&"", apLocalID&"")
+                if msg <> "" then
+                    erro = erro&"\n"&msg
+                end if
+            end if
+        next
+    end if
+end if
+
 
 if rfrdValorPlano="P" then
     PlanoID = ref("PlanoID")

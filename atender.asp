@@ -210,16 +210,25 @@ if not ConfigObrigarPagamentoSQL.eof then
 end if
 
 if Conteudo="Play" then
-        %>
-        <button <%=iniciarDisabled%> type="button" class="btn btn-success btn-gradient btn-alt btn-block" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'Iniciar', '')"><i class="fa fa-play"></i> Iniciar Atendimento </button>
-          <%
-          if avisoIniciarAtendimento<>"" then
+        if getConfig("ExibirIniciarAtendimento") then
+            %>
+                    <button <%=iniciarDisabled%> type="button" class="btn btn-success btn-gradient btn-alt btn-block" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'Iniciar', '')"><i class="fa fa-play"></i> Iniciar Atendimento </button>
+            <%
+            else
+            %>
+            <script>
+                $("#divContador").parent().removeClass("tray-bin")
+            </script>
+            <%
+        end if
+        if avisoIniciarAtendimento<>"" then
             %>
             <small><%=avisoIniciarAtendimento%></small>
             <%
-          end if
+        end if
       else
         %>
+        <div class="fs11 col-md-12" id="divContador">
         <h3 class="text-center light"><i class="fa fa-clock-o"></i> <span id="counter"><%=Tempo%></span></h3>
           <div class="row">
               <div class="col-sm-6">
@@ -229,7 +238,7 @@ if Conteudo="Play" then
                   <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="fa fa-pause"></i> Solicitar</button>
               </div>
           </div>
-
+        </div>
       <script type="text/javascript">
       var stopTime;
       /**********************************************************************************************

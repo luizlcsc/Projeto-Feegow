@@ -182,16 +182,16 @@ Numera = 0
 'function linhaMaterial(id, ValorUnitario, Executado, DataExecucao, HoraExecucao, HoraFim, ProfissionalID, Desconto, Numera)
 function linhaMaterial(id, ValorUnitario, ProdutoID, CD, TabelaProdutoID, CodigoProduto, RegistroANVISA, CodigoNoFabricante, AutorizacaoEmpresa, Quantidade, UnidadeMedidaID, Numera)
 	if Quantidade<>"" and isnumeric(Quantidade) then Quantidade=formatnumber(Quantidade,2) end if
-	if ValorUnitario<>"" and not isnull(ValorUnitario) and isnumeric(ValorUnitario) then
-        ValorUnitario=fn(ValorUnitario)
-    else
+	'if ValorUnitario<>"" and not isnull(ValorUnitario) and isnumeric(ValorUnitario) then
+    '    ValorUnitario=fn(ValorUnitario)
+    'else
         if ProdutoID<>"" and req("ConvenioID")<>"" then
-            set pval = db.execute("select pv.Valor from tissprodutostabela pt left join tissprodutosvalores pv on pt.id=pv.ProdutoTabelaID where pv.ConvenioID="&req("ConvenioID")&" and pt.ProdutoID="&ProdutoID)'!
+            set pval = db.execute("select pt.Valor from tissprodutostabela pt left join tissprodutosvalores pv on pt.id=pv.ProdutoTabelaID where pv.ConvenioID="&req("ConvenioID")&" and pt.ProdutoID="&ProdutoID)'!
             if not pval.eof then
                 ValorUnitario = pval("Valor")
             end if
         end if
-    end if
+    'end if
 	if not isnumeric(ProdutoID) or ProdutoID="" then ProdutoID=0 end if
 	%>
     <tr><td>

@@ -107,8 +107,8 @@ for i=0 to ubound(spl)
 			set pult = db.execute("select id from tissprodutostabela where ProdutoID like '"&ref("ProdutoID"&n)&"' order by id desc")
 			ProdutoTabelaID = pult("id")
 		else
-'!          sqlUp = "update tissprodutostabela set ProdutoID='"&ref("ProdutoID"&n)&"', Valor="&treatvalzero(ref("ValorUnitario"&n))&" where id="&vcaProdutoTabela("id")
-'!			db_execute(sqlUp)
+          sqlUp = "update tissprodutostabela set ProdutoID='"&ref("ProdutoID"&n)&"', Valor="&treatvalzero(ref("ValorUnitario"&n))&" where id="&vcaProdutoTabela("id")
+			db_execute(sqlUp)
 			ProdutoTabelaID = vcaProdutoTabela("id")
 		end if
 		'4.2. Anexa propriedades ao produto

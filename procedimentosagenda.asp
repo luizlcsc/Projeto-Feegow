@@ -23,11 +23,6 @@ $(function(){
 
                 somarValores();
             });
-    <% if EquipamentoID&"" <> "" and EquipamentoID&""<> "0" then %>
-        $('#EquipamentoID<%=n %>').select2("destroy");
-        $('#EquipamentoID<%=n %>').removeClass("select2-single");
-        $('#EquipamentoID<%=n %>').hide();
-    <% end if %>
 });
 
 $(document)

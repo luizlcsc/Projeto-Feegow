@@ -1542,7 +1542,8 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
         $("#nProcedimentos").val( I );
         let formapgt = $("[name=rdValorPlano]:checked").val();
         let convenioID = $("#ConvenioID").val();
-        $.post("procedimentosagenda.asp", {
+        
+        $.post("procedimentosagenda.asp?EquipamentoID="+Equipamento, {
             A: A, I: I ,
             LocalID:LocalID,
             Convenios:Convenios,

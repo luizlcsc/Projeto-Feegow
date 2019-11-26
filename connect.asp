@@ -4706,12 +4706,15 @@ end function
 
 
 private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, PlanoID, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios)
+    ischeckin = false
+    ischeckin = req("Checkin")="1"
+    
     if rdValorPlano="V" then
         ConvenioID=0
     end if
     %>
     <tr class="linha-procedimento" id="la<%=n %>" data-id="<%=n %>">
-        <% if req("Checkin")="1" then %>
+        <% if ischeckin then %>
             <td class="<%= staPagto %>" style="border:none">
                 <% if staPagto="success" then %>
                     <i class=" fa fa-check-circle text-success"></i>
@@ -4719,30 +4722,66 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
                     <input type="checkbox" checked="checked" name="LanctoCheckin" class="ckpagar Bloco<%= Bloco %>" value="<%= ConsultaID &"_"& n %>" /></td>
                 <% end if %>
         <% end if %>
-        <td><%= selectInsert("", "ProcedimentoID"& n, ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", "agenda", "") %></td>
+        <td>
+        <%
+        if ischeckin then
+            set sqldados = db.execute("select p.NomeProcedimento from Procedimentos as p where p.id="&ProcedimentoID)
+            if not sqldados.eof then
+                NomeProcedimento = "<label>"&sqldados("NomeProcedimento")&"</label>"
+            end if 
+            %>
+            <input type="hidden" name="ProcedimentoID<%=n%>" id="ProcedimentoID<%=n%>" value="<%=ProcedimentoID%>">
+            <%=NomeProcedimento%> 
+            <%
+        else
+           call selectInsert("", "ProcedimentoID"& n, ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", "agenda", "") 
+        end if
+        %>
+        </td>
         <td>
             <%
             TempoChange = ""
             if aut("|agendaalteracaoprecadastroA|")=0 then
                 TempoChange=" readonly"
             end if
+            if ischeckin then
             %>
-            <%=quickField("number", "Tempo"&n, "", 2, Tempo, "", "", " placeholder='Em minutos'"&TempoChange)%>
+                <input type="hidden" name="Tempo<%=n%>" id="Tempo<%=n%>" value="<%=Tempo%>">
+                <span><%=Tempo%></span> 
+            <% else %>
+                <%=quickField("number", "Tempo"&n, "", 2, Tempo, "", "", " placeholder='Em minutos'"&TempoChange)%>
+            <% end if %>
         </td>
         <td>
+            <%if ischeckin then
+                formapg = "Particular"
+                if rdValorPlano="P" then
+                    formapg = "Convênio"
+                end if
+                %>
+                <input type="radio" class="hidden" name="rdValorPlano<%=n %>" id="rdValorPlanoV<%=n%>" <% If formapg = "Particular" Then %> checked="checked"<% End If %> value="V">
+                <input type="radio"  class="hidden"  name="rdValorPlano<%=n %>" id="rdValorPlanoP<%=n%>" <% If formapg = "Convênio" Then %> checked="checked"<% End If %> value="P">
+                    <label><%=formapg%></label> 
+                <%
+            else
+            %>
+        
             <div class="radio-custom radio-primary"><input type="radio" name="rdValorPlano<%=n %>" id="rdValorPlanoV<%=n %>" required value="V"<% If rdValorPlano="V" Then %> checked="checked"<% End If %> class="ace valplan clforma" style="z-index:-1" onclick="valplan('<%=n%>', 'V')" /><label for="rdValorPlanoV<%=n %>" class="radio"> Particular</label></div>
             <%
-            if Convenios<>"Nenhum" and (GradeApenasConvenios<> "|P|" or isnull(GradeApenasConvenios)) then
+                if Convenios<>"Nenhum" and (GradeApenasConvenios<> "|P|" or isnull(GradeApenasConvenios)) then
+                %>
+                <div class="radio-custom radio-primary"><input type="radio" data-n="<%=n %>" name="rdValorPlano<%=n %>" id="rdValorPlanoP<%=n %>" required value="P"<% If rdValorPlano="P" Then %> checked="checked"<% End If %> class="ace valplan clforma" onclick="valplan('<%=n%>', 'P')" style="z-index:-1" /><label for="rdValorPlanoP<%=n %>" class="radio"> Conv&ecirc;nio</label></div>
+                <%
+                end if 
+            end if
             %>
-            <div class="radio-custom radio-primary"><input type="radio" data-n="<%=n %>" name="rdValorPlano<%=n %>" id="rdValorPlanoP<%=n %>" required value="P"<% If rdValorPlano="P" Then %> checked="checked"<% End If %> class="ace valplan clforma" onclick="valplan('<%=n%>', 'P')" style="z-index:-1" /><label for="rdValorPlanoP<%=n %>" class="radio"> Conv&ecirc;nio</label></div>
-            <%end if %>
         </td>
         <td>
             <div class="col-md-12" id="divValor<%=n %>" <% If rdValorPlano<>"V" Then %> style="display:none"<% End If %>>
                 <div class="row">
                     <div class="col-md-12">
                         <%
-                        if aut("|valordoprocedimentoA|")=0 and aut("|valordoprocedimentoV|")=1 then
+                        if (aut("|valordoprocedimentoA|")=0 and aut("|valordoprocedimentoV|")=1) or ischeckin then
                         %>
 
                             <input data-valor="<%=Valor%>" type="hidden" id="Valor<%=n %>" name="Valor<%=n %>" value="<%=Valor%>" class="valorprocedimento">
@@ -4769,40 +4808,59 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
             </div>
             <div class="col-md-12" id="divConvenio<%=n %>" <% If rdValorPlano<>"P" Then %> style="display:none"<% End If %>>
                 <%
-                if not isnull(ConvenioID) and ConvenioID<>"" then
-                    ObsConvenios = ""
-                    set ConvenioSQL = db.execute("SELECT Obs FROM convenios WHERE id="&ConvenioID&" AND Obs!='' AND Obs IS NOT NULL")
-                    planosOptions = getPlanosOptions(ConvenioID, PlanoID&"_"&n)
-                    if planosOptions<>"" then
-                    %>
-                <script >
-                $(document).ready(function() {
-                    $("#divConvenio<%=n%>").after("<%=planosOptions%>");
-                    $("#PlanoID<%=n%>").select2();
-                })
-                </script>
-                    <%
+                if ischeckin then
+                    if not isnull(ConvenioID) and ConvenioID<>"" then
+                        set ConvenioSQL = db.execute("SELECT NomeConvenio FROM convenios "&_
+                                                    " WHERE id="&ConvenioID&"")
+                        if not ConvenioSQL.eof then
+                            if PlanoID&""<>"" then
+                                set PlanoSQL = db.execute("SELECT NomePlano FROM conveniosplanos "&_
+                                                    " WHERE id="&PlanoID&" AND NomePlano!=''")
+                                if not PlanoSQL.eof then
+                                    NomePlano = "<label> - Plano:</label><span>"&PlanoSQL("NomePlano")&"</span>"
+                                end if
+                            end if 
+                            
+                            %>
+                            <input type="hidden" name="ConvenioID<%=n%>" id="ConvenioID<%=n%>" value="<%=ConvenioID%>">
+                            <input type="hidden" name="PlanoID<%=n%>" id="PlanoID<%=n%>" value="<%=PlanoID%>">
+                            <span><%=ConvenioSQL("NomeConvenio")%></span>
+                            <%=NomePlano%>
+                            <%
+                        end if
                     end if
-                    if not ConvenioSQL.eof then
-                        ObsConvenio = ConvenioSQL("Obs")
-                        %>
-                        <button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="openModal('<%=replace(replace(ObsConvenio,chr(10),"<br>"),chr(13),"<br>")%>', 'Observações do convênio', true, false, 'md')"><i class="fa fa-align-justify"></i></button>
-                        <%
-                    end if
-
-
-                end if
-
-
-                if Convenios="Todos" then
-                %>
-                <%=selectInsert("", "ConvenioID"&n, ConvenioID, "convenios", "NomeConvenio", " data-exibir="""&GradeApenasConvenios&""" onchange=""parametros(this.id, this.value+'_'+$('#ProcedimentoID').val());""", "", "")%>
-                <%
                 else
-                    if (len(Convenios)>2 or (isnumeric(Convenios) and not isnull(Convenios))) and instr(Convenios&" ", "Nenhum")=0 then
+                    if not isnull(ConvenioID) and ConvenioID<>"" then
+                        ObsConvenios = ""
+                        set ConvenioSQL = db.execute("SELECT Obs FROM convenios WHERE id="&ConvenioID&" AND Obs!='' AND Obs IS NOT NULL")
+                        planosOptions = getPlanosOptions(ConvenioID, PlanoID&"_"&n)
+                        if planosOptions<>"" then
+                        %>
+                    <script >
+                    $(document).ready(function() {
+                        $("#divConvenio<%=n%>").after("<%=planosOptions%>");
+                        $("#PlanoID<%=n%>").select2();
+                    })
+                    </script>
+                        <%
+                        end if
+                        if not ConvenioSQL.eof then
+                            ObsConvenio = ConvenioSQL("Obs")
+                            %>
+                            <button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="openModal('<%=replace(replace(ObsConvenio,chr(10),"<br>"),chr(13),"<br>")%>', 'Observações do convênio', true, false, 'md')"><i class="fa fa-align-justify"></i></button>
+                            <%
+                        end if
+                    end if
+                    if Convenios="Todos" then
                     %>
-                    <%=quickfield("simpleSelect", "ConvenioID"&n, "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " onchange=""parametros(this.id, this.value+'_'+$('#ProcedimentoID').val());""") %>
+                    <%=selectInsert("", "ConvenioID"&n, ConvenioID, "convenios", "NomeConvenio", " data-exibir="""&GradeApenasConvenios&""" onchange=""parametros(this.id, this.value+'_'+$('#ProcedimentoID').val());""", "", "")%>
                     <%
+                    else
+                        if (len(Convenios)>2 or (isnumeric(Convenios) and not isnull(Convenios))) and instr(Convenios&" ", "Nenhum")=0 then
+                        %>
+                        <%=quickfield("simpleSelect", "ConvenioID"&n, "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " onchange=""parametros(this.id, this.value+'_'+$('#ProcedimentoID').val());""") %>
+                        <%
+                        end if
                     end if
                 end if
                 %>
@@ -4816,24 +4874,44 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
             disabled = " disabled " 
         end if
         
-         if aut("localagendaA")=0 then
-             call quickfield("simpleSelect", "LocalIDx", "", 2, LocalID, "select * from locais where sysActive=1", "NomeLocal", " disabled ")
-             response.write("<input type='hidden' name='LocalID"&n&"' id='LocalID' value='"& LocalID &"'>")
-         else
-            call selectInsert("", "LocalID"&n, LocalID, "locais", "NomeLocal", " "&disabled, " ", "")
+        if ischeckin then
+            set localSQL = db.execute("select NomeLocal from locais where sysActive=1 and id="&EquipamentoID)
+            if not localSQL.eof then
+                NomeLocal = "<span>"&localSQL("NomeLocal")&"</span>"
+            end if
+            %>
+            <input type="hidden" name="LocalID<%=n %>" id="LocalID<%=n %>" value="<%=LocalID%>" />
+            <%=NomeLocal%>
+            <%
+        else
+            if aut("localagendaA")=0 then
+                call quickfield("simpleSelect", "LocalIDx", "", 2, LocalID, "select * from locais where sysActive=1", "NomeLocal", " disabled ")
+                response.write("<input type='hidden' name='LocalID"&n&"' id='LocalID' value='"& LocalID &"'>")
+            else
+                call selectInsert("", "LocalID"&n, LocalID, "locais", "NomeLocal", " "&disabled, " ", "")
+            end if
         end if
 
          %></td>
         <td>
-            <%if req("Tipo")="Quadro" or req("EquipamentoID")="" or req("EquipamentoID")="undefined" or req("EquipamentoID")="0" then%>
+            <%if (req("Tipo")="Quadro" or req("EquipamentoID")="" or req("EquipamentoID")="undefined" or req("EquipamentoID")="0") and not ischeckin then%>
                 <%=quickfield("select", "EquipamentoID"&n, "", 2, EquipamentoID, "select * from equipamentos where sysActive=1", "NomeEquipamento", ""&disabled) %>
-            <%else %>
-                <input type="hidden" name="EquipamentoID<%=n %>" id="EquipamentoID" value="<%=EquipamentoID%>" />
+            <%else 
+                set equipSQL = db.execute("select NomeEquipamento from equipamentos where sysActive=1 and id="&EquipamentoID)
+                if not equipSQL.eof then
+                    NomeEquipamento = "<span>"&equipSQL("NomeEquipamento")&"</span>"
+                end if
+            %>
+                <input type="hidden" name="EquipamentoID<%=n %>" id="EquipamentoID<%=n %>" value="<%=EquipamentoID%>" />
+                <%=NomeEquipamento%>
             <%end if %>
         </td>
         <td>
             <input type="hidden" name="ProcedimentosAgendamento" value="<%=n %>" />
-            <button onclick="procs('X', <%=n %>)" class="btn btn-xs btn-danger " type="button"><i class="fa fa-remove"></i></button>
+            <%if not ischeckin then%>
+                <button onclick="procs('X', <%=n %>)" class="btn btn-xs btn-danger " type="button"><i class="fa fa-remove"></i></button>
+            <%end if%>
+
             <div class="btn-group mt5">
                 <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print bigger-110"></i></button>
                 <ul class="dropdown-menu dropdown-info pull-right">

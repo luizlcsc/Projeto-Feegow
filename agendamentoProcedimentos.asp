@@ -140,33 +140,7 @@ if req("Checkin")="1" then
         <input type="hidden" class="linha-procedimento-id" value="<%=agp("ProcedimentoID")%>"> 
         <input type="hidden" class="linha-procedimento-id-daPro" name="daPro" data-idPro="<%=idagp%>" value="<%=agp("valorProcedimentoOriginal")%>">
         <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("PlanoID"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios) %>
-        <script>
-        setTimeout(() => {
-            $("#ProcedimentoID<%=idagp%>").select2("destroy");
-            $("#Valor<%=idagp%>").attr("readonly",true);
-            $("#Tempo<%=idagp%>").attr("readonly",true);
-            $("#rdValorPlanoP<%=idagp%>").parent().hide();
-            $("#rdValorPlanoV<%=idagp%>").parent().hide();
-            
-            if ($("#ConvenioID<%=idagp%>").length ==1){
-                let valConvenio = $("#ConvenioID<%=idagp%>").val();
-                $("#ConvenioID<%=idagp%>").select2("destroy");
-                $("#ConvenioID<%=idagp%> option[value!="+valConvenio+"]").remove();
-            }
-
-            if ($("#PlanoID<%=idagp%>").length ==1){
-                let valPlano = $("#PlanoID<%=idagp%>").val();
-                $("#PlanoID<%=idagp%>").select2("destroy");
-                $("#PlanoID<%=idagp%> option[value!="+valPlano+"]").remove();
-            }
-            <% if agp("rdValorPlano") = "P" then %>                
-                $("#rdValorPlanoP<%=idagp%>").parent().show();
-            <% else %>
-                $("#rdValorPlanoV<%=idagp%>").parent().show();
-            <% end if %>
-        },500);
-        
-        </script>
+      
         
         <%
         UrdValorPlano = agp("rdValorPlano")
@@ -467,8 +441,14 @@ $(document).ready(function() {
                         <td>
                             <%if req("Tipo")="Quadro" or req("EquipamentoID")="" or req("EquipamentoID")="undefined" or req("EquipamentoID")="0" then%>
                             <%=quickfield("select", "EquipamentoID", "", 2, EquipamentoID, "select * from equipamentos where ativo='on' and sysActive=1", "NomeEquipamento", "") %>
-                            <%else %>
+                            <%else
+                                set equipSQL = db.execute("select NomeEquipamento from equipamentos where sysActive=1 and id="&EquipamentoID)
+                                if not equipSQL.eof then
+                                    NomeEquipamento = "<span>"&equipSQL("NomeEquipamento")&"</span>"
+                                end if
+                             %>
                             <input type="hidden" name="EquipamentoID" id="EquipamentoID" value="<%=EquipamentoID%>" />
+                            <%=NomeEquipamento%>
                             <%end if %>
                         </td>
                         <td>

@@ -99,7 +99,7 @@ set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&trea
 				end if
 			end if
             %>
-            <td><%=quickField("text", "Descricao"&id, "", 4, Descricao, " disable", "", " placeholder='Descri&ccedil;&atilde;o...' required maxlength='50'")%></td>
+            <td><%=quickField("text", "Descricao"&id, "", 4, Descricao, " ", "", " placeholder='Descri&ccedil;&atilde;o...' required maxlength='50'")%></td>
             <td >
                 <%'= quickfield("simpleSelect", "CategoriaID"&id, "", 5, CategoriaID, "SELECT t1.id, concat( ifnull(t2.name, ''), ' -> ', t1.name) Categoria FROM sys_financialexpensetype AS t1 LEFT JOIN sys_financialexpensetype AS t2 ON t2.id = t1.category LEFT JOIN sys_financialexpensetype AS t3 ON t3.id = t2.category LEFT JOIN sys_financialexpensetype AS t4 ON t4.id = t3.category where t1.Nivel=(select max(Nivel) from sys_financialexpensetype) order by t2.name, t1.name", "Categoria", "") %>
                 <%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%></td>

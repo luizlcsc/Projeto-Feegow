@@ -171,7 +171,7 @@ color: <%=color%>;
             </td>
             <td style="width: 50%" valign="top">
                <p><b>Guia Operadora:</b> <%=NGuiaOperadora%></p>
-               <p> <b>&nbsp;</b> </p>
+               <p> <b>Matrícula:</b> <%=NumeroCarteira%></p>
                <p> <b>Validade:</b> <%=DataValidadeSenha%></p>
 
             </td>

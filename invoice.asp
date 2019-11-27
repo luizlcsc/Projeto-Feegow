@@ -358,9 +358,16 @@ posModalPagar = "fixed"
                 %>
             </div>
 
+
             <div class="col-md-2">
+<%
+if getConfig("CalculoReembolso") then
+%>
                 <br>
                 <button type="button" onclick="calculaReembolso()" class="btn btn-default disable">Calcular reembolso</button>
+<%
+end if
+%>&nbsp;
             </div>
 
             <%

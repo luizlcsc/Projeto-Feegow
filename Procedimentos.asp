@@ -163,8 +163,10 @@ TipoGuia = reg("TipoGuia")
                         </div>
                     </div>
                     <hr class="short alt" />
+                    <div class="row " >
+                        <%=quickField("text", "CH", "CH (Reembolso)", 3, fn(reg("CH")), " input-mask-brl text-right ", "", "")%>
+                    </div>
                     <div class="row hidden" >
-                        <%=quickField("text", "CH", "CH", 3, fn(reg("CH")), " input-mask-brl text-right ", "", "")%>
                         <%=quickField("text", "UCO", "Custo Operacional", 3, fn(reg("UCO")), " input-mask-brl text-right ", "", "")%>
                         <%=quickField("text", "Filme", "Filme", 3, fn(reg("Filme")), " input-mask-brl text-right ", "", "")%>
                         <%=quickField("text", "PorteAnestesico", "Porte Anestésico", 3, fn(reg("PorteAnestesico")), " input-mask-brl text-right ", "", "")%>

@@ -276,7 +276,8 @@ if 1=1 then
     <%
 end if
 %>
-
+<div class="alert-cobranca">
+</div>
 <div class="row">
     <%
 
@@ -839,8 +840,35 @@ end if
 
 <script type="text/javascript">
 
+    function cobrancaBoletoAberto(){
+        if(!localStorage.getItem("cobrancaBoleto")){
+            return ;
+        }
+        let boletos = JSON.parse(localStorage.getItem("cobrancaBoleto"));
+        if(!(boletos && boletos.length > 0)){
+            return;
+        }
+
+        let Url  = boletos[0].InvoiceURL;
+
+        var msg = `Prezado cliente. Nosso sistema detectou que sua fatura encontra-se em aberto.<br/>
+         Para imprimir seu boleto clique <a href="${Url}" target="_blank">aqui</a>, caso o pagamento tenha sido efetuado por favor desconsidere este aviso e nos envie o comprovante por e-mail
+         <i>financeiro@feegow.com.br</i>.`;
+
+        $(".alert-cobranca").html(`
+            <div style="color: #52818d;background: #d2def3cc;" class="alert alert-secondary text-black" role="alert">
+              <small>${msg}</small>
+              <button type="button" class="close" data-dismiss="alert" onclick="localStorage.removeItem('cobrancaBoleto')" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+        `);
+    }
 
     $(document).ready(function(){
+
+        setTimeout(function(){cobrancaBoletoAberto()}, 1000);
+
         <%
         if req("Acesso")="1" then
         %>
@@ -983,6 +1011,26 @@ end if
 
 
 <script>
+function verificaCobranca(){
+    fetch('VerificaCobranca.asp')
+    .then(data =>{
+        return data.text()
+    }).then(text => {
+        eval(text);
+    });
+}
+
+
+<%
+if session("EventoCarregar")="Carregado" then
+session("EventoCarregar") = "Carregado"
+%>
+    verificaCobranca();
+<%
+end if
+%>
+
+
 $(document).ready(function() {
     let hasVoted = localStorage.getItem("hasVoted");
 
@@ -1011,6 +1059,7 @@ function isJson(item) {
 
     return false;
 }
+
 
 function getNews(onlyUnread) {
 

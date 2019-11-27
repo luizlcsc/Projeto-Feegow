@@ -110,7 +110,11 @@ TipoGuia = reg("TipoGuia")
                             <div class="checkbox-custom checkbox-primary">
                                 <input type="checkbox" name="SolIC" id="SolIC" value="S" class="ace" <% If reg("SolIC")="S" Then %> checked="checked" <% End If %> />
                                 <label for="SolIC"> Solicitar indicação clínica</label></div>
+                            <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" name="ObrigarSolicitante" id="ObrigarSolicitante" value="S" class="ace" <% If reg("ObrigarSolicitante")="S" Then %> checked="checked" <% End If %> />
+                                <label for="ObrigarSolicitante"> Obrigar Profissional Solicitante</label></div>
                             <%
+                            
                             if recursoAdicional(19) = 4 then %>
                             <div class="checkbox-custom checkbox-primary">
                                 <input type="checkbox" name="IntegracaoPleres" id="IntegracaoPleres" value="S" class="ace" <% If reg("IntegracaoPleres")="S" Then %> checked="checked" <% End If %> />

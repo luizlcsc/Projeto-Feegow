@@ -118,11 +118,15 @@ function addError(error, valor)
 end function
 
 if erro ="" then
+    searchindicacaoId = ref("searchindicacaoId")
     'verifica se procedimento pode ser realizado nos locais
     erro = ValidaProcedimentoLocal(1,ref("ProcedimentoID")&"", ref("LocalID")&"")
+    if searchindicacaoId ="" then
+        erro = addError(erro, ValidaProcedimentoObrigaSolicitante(1,ref("ProcedimentoID")&""))
+    end if
     '-> procedimentos adicionais na agenda
     ProcedimentosAgendamento = trim(ref("ProcedimentosAgendamento"))
-    searchindicacaoId = ref("searchindicacaoId")
+
     if ProcedimentosAgendamento<>"" then
     splPA = split(ProcedimentosAgendamento, ", ")
         for iPA=0 to ubound(splPA)

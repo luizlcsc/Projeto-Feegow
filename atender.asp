@@ -228,7 +228,6 @@ if Conteudo="Play" then
         end if
       else
         %>
-        <div class="fs11 col-md-12" id="divContador">
         <h3 class="text-center light"><i class="fa fa-clock-o"></i> <span id="counter"><%=Tempo%></span></h3>
           <div class="row">
               <div class="col-sm-6">
@@ -238,7 +237,6 @@ if Conteudo="Play" then
                   <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="fa fa-pause"></i> Solicitar</button>
               </div>
           </div>
-        </div>
       <script type="text/javascript">
       var stopTime;
       /**********************************************************************************************

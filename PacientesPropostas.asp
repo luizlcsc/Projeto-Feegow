@@ -225,7 +225,7 @@ end if
                                                           SolicitanteRequired = " required empty "
                                                       end if
 
-                                                      response.write(quickField("simpleSelect", "ProfissionalID", "", 4, ProfissionalID, "select * from profissionais WHERE sysActive = 1 order by id", "NomeProfissional", SolicitanteRequired))
+                                                      response.write(quickField("simpleSelect", "ProfissionalID", "", 4, ProfissionalID, "select * from profissionais WHERE Ativo='on' AND sysActive = 1 order by id", "NomeProfissional", SolicitanteRequired))
 
                                                       %>
                                                  </div>

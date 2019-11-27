@@ -557,7 +557,7 @@ if not inv.eof then
                         if instr(Recibo, "[ProfissionalExecutante.Nome]")>0 then
                             Solicitante = inv("ProfissionalSolicitante")
 
-                            if Solicitante&"" <> "" then
+                            if Solicitante&"" <> "" and Solicitante&""<>"0" then
                                 Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", Accountname("",Solicitante))
                             end if
                         end if 

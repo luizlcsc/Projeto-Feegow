@@ -867,8 +867,9 @@ end if
 
     $(document).ready(function(){
 
+        <% IF session("Admin")=1 THEN %>
         setTimeout(function(){cobrancaBoletoAberto()}, 1000);
-
+        <% END IF %>
         <%
         if req("Acesso")="1" then
         %>
@@ -1022,7 +1023,8 @@ function verificaCobranca(){
 
 
 <%
-if session("EventoCarregar")="Carregado" then
+if session("EventoCarregar")="" then
+session("EventoCarregar") = "Carregado"
 %>
     verificaCobranca();
 <%

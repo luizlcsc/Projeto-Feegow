@@ -10,7 +10,7 @@
     END IF
 
     licenca = replace(session("Banco"), "clinic", "")
-    sql =  "     SELECT DATE(sys_financialmovement.Date),boletos_emitidos.InvoiceURL,"&chr(13)&_
+    sql =  "     SELECT DATE(sys_financialmovement.Date) as Date,boletos_emitidos.InvoiceURL,"&chr(13)&_
            "             now() > DATE_ADD(sys_financialmovement.Date,interval 3 day) abrirModal"&chr(13)&_
            "            FROM cliniccentral.licencas                     "&chr(13)&_
            "            JOIN clinic5459.sys_financialinvoices ON sys_financialinvoices.AccountID = licencas.Cliente        "&chr(13)&_
@@ -23,14 +23,14 @@
            "            AND licencas.id = "&licenca&"                                                                      "&chr(13)&_
            "            AND (boletos_emitidos.id,sys_financialmovement.id) in (                                            "&chr(13)&_
            "                SELECT max(id),MovementID                                                                      "&chr(13)&_
-           "                FROM boletos_emitidos                                                                          "&chr(13)&_
+           "                FROM clinic5459.boletos_emitidos                                                               "&chr(13)&_
            "                WHERE StatusID = 1                                                                             "&chr(13)&_
            "                group by 2)                                                                                    "&chr(13)&_
            "            AND now() > sys_financialmovement.Date                                                             "&chr(13)&_
            "            AND coalesce(sys_financialmovement.Value <> sys_financialmovement.ValorPago,true);                 "
     'sql = "SELECT DATE('2019-01-10') AS Date,'https://faturas.iugu.com/30cd3220-9d30-4bb6-a216-e86b83c0a548-3053' AS InvoiceURL,1 abrirModal "
 %>
-var boletosPendentes= <%=recordToJSON(db.execute(sql)) %>
+var boletosPendentes= <%=recordToJSON(dbc.execute(sql)) %>
 localStorage.setItem("cobrancaBoleto",JSON.stringify(boletosPendentes));
 
 function openModalCobranca(){

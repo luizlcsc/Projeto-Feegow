@@ -1916,6 +1916,12 @@ select case lcase(req("P"))
                         Fluxo de Caixa
                     </a>
                 </li>
+                <li>
+                    <a href="?P=fluxodecaixa&Pers=1" target="_blank">
+                        <i class="fa fa-double-angle-right"></i>
+                        Fluxo de Caixa <small><small>(Desenvolvimento)</small></small>
+                    </a>
+                </li>
 
                 <li class="hidden">
                     <a href="javascript:callReport('rpFluxoCaixaMensal');">

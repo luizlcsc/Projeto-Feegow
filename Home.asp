@@ -1023,7 +1023,6 @@ function verificaCobranca(){
 
 <%
 if session("EventoCarregar")="Carregado" then
-session("EventoCarregar") = "Carregado"
 %>
     verificaCobranca();
 <%

@@ -12,23 +12,34 @@ PacienteID = ref("PacienteID")
 ProcedimentoID = ref("ProcedimentoID")
 
 function consultaValorReembolso(Procedimento)
-    set ProcedimentoSQL = db.execute("SELECT CH FROM procedimentos WHERE id="&Procedimento)
+    sqlConvenio = "SELECT proc.NomeProcedimento, "&_
+   " COALESCE(tvp.QuantidadeCH, tv.QuantidadeCH, proc.CH) QtdCH FROM convenios c "&_
+   " INNER JOIN procedimentos proc ON proc.id="& treatvalzero(ProcedimentoID)&_
+   " LEFT JOIN tissprocedimentosvalores tv ON tv.ProcedimentoID=proc.id AND tv.ConvenioID =c.id "&_
+   " LEFT JOIN tissprocedimentosvaloresplanos tvp ON tvp.AssociacaoID=tv.id AND tvp.PlanoID="&treatvalzero(PlanoID)&_
+   " WHERE c.id="&treatvalzero(ConvenioID)&" "
+
+    set ProcedimentoSQL = db.execute(sqlConvenio)
     if not ProcedimentoSQL.eof then
-        QuantidadeCH = ProcedimentoSQL("CH")
+        QuantidadeCH = ProcedimentoSQL("QtdCH")
     end if
 
-    sqlReembolso= "SELECT * FROM convenio_reembolso WHERE ConvenioID="&treatvalnull(ConvenioID)&" AND (PlanoID="&treatvalnull(PlanoID)&" or PlanoID is null) AND PacienteID="&treatvalnull(PacienteID)&" ORDER BY id DESC"
+    if QuantidadeCH&""<> "" then
+        sqlReembolso= "SELECT * FROM convenio_reembolso WHERE ConvenioID="&treatvalnull(ConvenioID)&" AND (PlanoID="&treatvalnull(PlanoID)&" or PlanoID is null) AND PacienteID="&treatvalnull(PacienteID)&" ORDER BY id DESC"
 
 
-    ValorCH = ref("ValorCH")
-    set ConvenioReembolsoSQL = db.execute(sqlReembolso)
-    if not ConvenioReembolsoSQL.eof then
-        ValorCH = ConvenioReembolsoSQL("ValorCH")
-    end if
+        ValorCH = ref("ValorCH")
+        set ConvenioReembolsoSQL = db.execute(sqlReembolso)
+        if not ConvenioReembolsoSQL.eof then
+            ValorCH = ConvenioReembolsoSQL("ValorCH")
+        end if
 
-    if ValorCH<>"" then
-        ValorReembolso = QuantidadeCH * ValorCH
-        consultaValorReembolso=ValorReembolso
+        if ValorCH<>"" then
+            ValorReembolso = QuantidadeCH * ValorCH
+            consultaValorReembolso=ValorReembolso
+        else
+            consultaValorReembolso=0
+        end if
     else
         consultaValorReembolso=0
     end if
@@ -48,22 +59,30 @@ select case Operacao
             valorRecalculado = consultaValorReembolso(ProcedimentoID)
 
             Valor = ItensSQL("ValorUnitario")
-            valorNoDesconto = Valor - valorRecalculado
 
-            if not isnull(valorNoDesconto) then
-                ValorNoDesconto = ccur(valorNoDesconto)
+            if valorRecalculado > 0 then
+                valorNoDesconto = Valor - valorRecalculado
 
-                if ValorNoDesconto > 0 then
-                    set ProcedimentoSQL = db.execute("SELECT Valor FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
+                if not isnull(valorNoDesconto) then
+                    ValorNoDesconto = ccur(valorNoDesconto)
 
-                    if not ProcedimentoSQL.eof then
-                        db.execute("UPDATE itensinvoice SET Desconto="&treatvalzero(ValorNoDesconto)&", Acrescimo=0, ValorUnitario="&treatvalzero(ProcedimentoSQL("Valor"))&" WHERE id="&ItemID&" AND InvoiceID="&InvoiceID)
+                    if ValorNoDesconto > 0 then
+
+                        if ValorNoDesconto<0 or ValorNoDesconto > Valor then
+                            ValorNoDesconto=0
+                        end if
+
+                        set ProcedimentoSQL = db.execute("SELECT Valor FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
+
+                        if not ProcedimentoSQL.eof then
+                            db.execute("UPDATE itensinvoice SET Desconto="&treatvalzero(ValorNoDesconto)&", Acrescimo=0 WHERE id="&ItemID&" AND InvoiceID="&InvoiceID)
 
 
-                        ValorTotal = ValorTotal + valorRecalculado
+                            ValorTotal = ValorTotal + valorRecalculado
+                        end if
+                    else
+                        db.execute("UPDATE itensinvoice SET Desconto=0 WHERE id="&ItemID&" AND InvoiceID="&InvoiceID)
                     end if
-                else
-                    db.execute("UPDATE itensinvoice SET Desconto=0 WHERE id="&ItemID&" AND InvoiceID="&InvoiceID)
                 end if
             end if
 
@@ -87,10 +106,17 @@ select case Operacao
         end if
     case "SalvaValorReembolso"
         ValorCH = 0
+        sqlConvenio = "SELECT proc.NomeProcedimento, c.Telefone, c.Contato, COALESCE(tvp.ValorCH, tv.ValorCH,  c.ValorCH) ValorCH, "&_
+                       " COALESCE(tvp.QuantidadeCH, tv.QuantidadeCH, proc.CH) QtdCH FROM convenios c "&_
+                       " INNER JOIN procedimentos proc ON proc.id="&treatvalzero(ProcedimentoID)&_
+                       " LEFT JOIN tissprocedimentosvalores tv ON tv.ProcedimentoID=proc.id AND tv.ConvenioID =c.id "&_
+                       " LEFT JOIN tissprocedimentosvaloresplanos tvp ON tvp.AssociacaoID=tv.id AND tvp.PlanoID="&treatvalzero(PlanoID)&_
+                       " WHERE c.id="&treatvalzero(ConvenioID)&" "
 
-        set ProcedimentoSQL = db.execute("SELECT CH, NomeProcedimento FROM procedimentos WHERE id="&ProcedimentoID)
+
+        set ProcedimentoSQL = db.execute(sqlConvenio)
         if not ProcedimentoSQL.eof then
-            QuantidadeCH = ProcedimentoSQL("CH")
+            QuantidadeCH = ProcedimentoSQL("QtdCH")
         end if
 
         if not isnumeric(QuantidadeCH) then
@@ -99,7 +125,7 @@ select case Operacao
             <%
         end if
 
-        if isnumeric(QuantidadeCH) and isnumeric(ValorReembolso) and ConvenioID<>"" then
+        if isnumeric(QuantidadeCH) and QuantidadeCH&""<> "" and isnumeric(ValorReembolso) and ConvenioID<>"" then
             ValorCH = replace(replace((ValorReembolso) / (QuantidadeCH), ".", ""),",",".")
 
             sql = "SELECT * FROM convenio_reembolso WHERE ConvenioID="&treatvalnull(ConvenioID)&" AND PlanoID="&treatvalnull(PlanoID)&" AND PacienteID="&PacienteID&" AND ValorCH='"&ValorCH&"' ORDER BY id DESC"
@@ -115,9 +141,14 @@ select case Operacao
 
                 %>
                 $("#ValorCH").val("<%=fn(ValorCH)&"00"%>");
-                showMessageDialog("Valor do CH (<%=fn(ValorCH)%>) salvo.", "success");
+                showMessageDialog("Valor do CH (<%=ValorCH  %>) salvo.", "success");
                 <%
             end if
+        else
+            %>
+            showMessageDialog("Verifique a quantidade de CH do proceidmento selecionado.");
+            <%
+            Response.End
         end if
 
 end select
@@ -175,45 +206,21 @@ case "PacienteID"
             <%
         end if
     end if
-case "ConvenioID"
-    set ConvenioSQL = db.execute("SELECT ValorCH, Telefone, Contato FROM convenios WHERE id="&I)
+case "SugereValorCH"
+    sqlConvenio = "SELECT c.Telefone, c.Contato, COALESCE(tvp.ValorCH, tv.ValorCH,  c.ValorCH) ValorCH, "&_
+                       " COALESCE(tvp.QuantidadeCH, tv.QuantidadeCH, proc.CH) QtdCH FROM convenios c "&_
+                       " INNER JOIN procedimentos proc ON proc.id="&treatvalzero(ProcedimentoID)&_
+                       " LEFT JOIN tissprocedimentosvalores tv ON tv.ProcedimentoID=proc.id AND tv.ConvenioID =c.id "&_
+                       " LEFT JOIN tissprocedimentosvaloresplanos tvp ON tvp.AssociacaoID=tv.id AND tvp.PlanoID="&treatvalzero(PlanoID)&_
+                       " WHERE c.id="&treatvalzero(I)
+
+    set ConvenioSQL = db.execute(sqlConvenio)
+
     if not ConvenioSQL.eof then
         %>
-        $(".valor-sugerido-ch").html("Sugerido (Convênio): <%=ConvenioSQL("ValorCH")%>");
+        $(".valor-por-ch").html("R$ <%=fn(ConvenioSQL("ValorCH"))%>");
+        $(".telefone-contato-convenio").html("Telefone: <%=ConvenioSQL("Telefone")%>");
         <%
-    end if
-
-
-    set PlanosSQL = db.execute("SELECT * FROM conveniosplanos WHERE sysActive=1 AND ConvenioID="&I)
-
-    PlanosOptions = "<option value=''>Selecione</option>"
-    while not PlanosSQL.eof
-        PlanosOptions = PlanosOptions&"<option value='"&PlanosSQL("id")&"'>"&PlanosSQL("NomePlano")&"</option>"
-    PlanosSQL.movenext
-    wend
-    PlanosSQL.close
-    set PlanosSQL=nothing
-
-    if PlanosOptions<>"" then
-        %>
-        $("#PlanoID").html("<%=PlanosOptions%>");
-        if(PlanoPacienteID!='0' && PlanoPacienteID!=''){
-            $("#PlanoID").val(PlanoPacienteID).change();
-        }
-        <%
-        consultaValorReembolso(ProcedimentoID)
-    end if
-case "PlanoID"
-    set PlanoSQL = db.execute("SELECT plan.*, conv.ValorCH FROM conveniosplanos plan INNER JOIN convenios conv ON conv.id=plan.ConvenioID WHERE plan.id="&I)
-    if not PlanoSQL.eof then
-        ValorCH = PlanoSQL("ValorPlanoCH")
-        if ValorCH&""="" then
-            ValorCH=PlanoSQL("ValorCH")
-        end if
-        %>
-        $(".valor-sugerido-ch").html("Sugerido (Plano): <%=ValorCH%>");
-        <%
-        consultaValorReembolso(ProcedimentoID)
     end if
 end select
 end if

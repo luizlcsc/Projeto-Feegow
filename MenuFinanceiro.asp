@@ -380,18 +380,11 @@
                         <span class="sidebar-title"> Retorno bancário</span>
                     </a>
                 </li>
-              
-                <li <% If req("P")="Concilia" Then %> class="active"<% End If %>>
-                    <a href="?P=Concilia&Pers=1">
-                        <span class="fa fa-check"></span>
-                        <span class="sidebar-title"> Conciliação bancária</span>
-                    </a>
-                </li>
                
                 <li <% If req("P")="Concilia" Then %> class="active"<% End If %>>
                     <a href="?P=BancoConcilia&Pers=1">
                         <span class="fa fa-check"></span>
-                        <span class="sidebar-title"> Conciliação bancária <span class="label label-primary">BETA</span>
+                        <span class="sidebar-title"> Conciliação bancária </span>
                     </a>
                 </li>
                

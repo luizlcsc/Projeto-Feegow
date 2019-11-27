@@ -11,11 +11,13 @@ end if
 
 PlanoID = null
 AtendimentoID = req("AtendimentoID")
+PermitirInformarProcedimentos = getConfig("PermitirInformarProcedimentos")
 
 IF AtendimentoID > "0" AND AtendimentoID<>"N" THEN
-    set PlanoSQL = db.execute("select ap.*, p.NomeProcedimento, p.SolIC, p.TipoProcedimentoID, p.Valor, at.PacienteID,agendamentos.PlanoID from atendimentosprocedimentos as ap left join procedimentos as p on p.id=ap.ProcedimentoID left join atendimentos as at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ON AgendamentoID = agendamentos.id where AtendimentoID="&AtendimentoID)
-    if not PlanoSQL.eof then
-        PlanoID = PlanoSQL("PlanoID")
+    set AtendimentoSQL = db.execute("select at.AgendamentoID ,ap.*, p.NomeProcedimento, p.SolIC, p.TipoProcedimentoID, p.Valor, at.PacienteID,agendamentos.PlanoID from atendimentosprocedimentos as ap left join procedimentos as p on p.id=ap.ProcedimentoID INNER join atendimentos as at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ON AgendamentoID = agendamentos.id where AtendimentoID="&AtendimentoID)
+    if not AtendimentoSQL.eof then
+        PlanoID = AtendimentoSQL("PlanoID")
+        AgendamentoID = AtendimentoSQL("AgendamentoID")
     end if
 END IF
 
@@ -274,41 +276,99 @@ if not guia.eof then
 	<%
 end if
 
-if 1=2 then
-    set part = db.execute("select ii.id, proc.NomeProcedimento, ii.ValorUnitario, ii.Quantidade, ii.ValorUnitario, ii.Desconto, ii.Acrescimo from itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID LEFT JOIN procedimentos proc on proc.id=ii.ItemID WHERE (ISNULL(ii.Executado) OR ii.Executado='') AND i.CD='C' AND ii.Tipo='S' AND i.AccountID="&PacienteID&" AND i.AssociationAccountID=3")
+if 1=1 then
+'aqui ira listar os itens contratados do agendamento que foi feito e iniciado
+
+    sqlItens= "select proc.NomeProcedimento, proc.id ProcedimentoID "&_
+                  " from ( select id, TipoCompromissoID ProcedimentoID from agendamentos where id="&treatvalzero(AgendamentoID)&" "&_
+                              " UNION ALL SELECT AgendamentoID * -1 as id, TipoCompromissoID ProcedimentoID FROM agendamentosprocedimentos proc WHERE proc.AgendamentoID="&treatvalzero(AgendamentoID)&") age "&_
+                  " LEFT JOIN procedimentos proc on proc.id=age.ProcedimentoID "&_
+                  " GROUP BY age.id ORDER BY proc.NomeProcedimento "
+    set part = db.execute(sqlItens)
+
+    itensNaListagem="-1"
     if not part.eof then
 	    %>
-	    <h5><strong>ITENS CONTRADADOS</strong> <small>&raquo; marque os procedimentos que foram executados</small></h5>
+<div class="itens-contratados">
+	    <h5 style="padding: 10px; background-color: #888888; color: #fff"><strong>ITENS CONTRADADOS</strong> <small style="color: #fdfdfd;">&raquo; marque os procedimentos que foram executados</small></h5>
         <table class="table table-condensed table-striped">
         <thead>
     	    <tr>
+                <th width="1%" class="text-center">EXEC</th>
         	    <th>QTD</th>
         	    <th>PROCEDIMENTO</th>
         	    <%if aut("areceberpacienteV")>0 then%><th width="10%">VALOR</th><%end if%>
-        	    <th width="1%" class="text-center">EXEC</th>
             </tr>
         </thead>
 	    <%
+
+	    TemItemContratado = False
+
 	    while not part.eof
+	        ItemChecked=""
+            ExibeLinha = True
+
+            ItemChecked = " checked "
+
+            ProcedimentoID= part("ProcedimentoID")
+            sqlItens= "select ii.id, proc.NomeProcedimento, ii.ValorUnitario, ii.Quantidade, ii.ValorUnitario, ii.Desconto, ii.Acrescimo "&_
+              " from itensinvoice ii "&_
+              " LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID "&_
+              " LEFT JOIN sys_financialmovement mov on mov.InvoiceID=ii.InvoiceID "&_
+              " LEFT JOIN procedimentos proc on proc.id=ii.ItemID "&_
+              " WHERE ii.id not in ("&itensNaListagem&") and ii.ItemID="&treatvalzero(ProcedimentoID)&" AND (ISNULL(ii.Executado) OR ii.Executado='') AND mov.ValorPago > 0 AND i.CD='C' AND ii.Tipo='S' AND i.AccountID="&PacienteID&" AND i.AssociationAccountID=3 "
+
+            set ItemSQL = db.execute(sqlItens)
+            if ExibeLinha and not ItemSQL.eof then
+                TemItemContratado=True
+                itensNaListagem=itensNaListagem&","&ItemSQL("id")
 		    %>
 		    <tr>
-			    <td><%=part("Quantidade")%></td>
-			    <td><%=part("NomeProcedimento")%></td>
-			    <%if aut("areceberpacienteV")>0 then%><td><%=formatnumber(part("ValorUnitario")-part("Desconto")+part("Acrescimo"), 2)%></td><%end if%>
-                <td class="text-center"><label><input type="checkbox"  name="itemInvoice" value="<%=part("id")%>"><span class="lbl"></span></label>
+                <td class="text-center">
+                    <div class="checkbox-custom checkbox-default">
+                        <input type="checkbox" class="ace " name="itemInvoice" id="Executado<%=ItemSQL("id")%>" value="<%=ItemSQL("id")%>" <%=ItemChecked%>> <label class="checkbox" for="Executado<%=ItemSQL("id")%>"></label>
+                    </div>
+			    <td><%=ItemSQL("Quantidade")%></td>
+			    <td><%=ItemSQL("NomeProcedimento")%></td>
+			    <%if aut("areceberpacienteV")>0 then%><td><%=formatnumber(ItemSQL("ValorUnitario")-ItemSQL("Desconto")+ItemSQL("Acrescimo"), 2)%></td><%end if%>
             </tr>
 		    <%
+		    end if
 	    part.movenext
 	    wend
 	    part.close
 	    set part = nothing
+
+	    if not TemItemContratado then
+	        %>
+<script >
+//$(".itens-contratados").remove();
+</script>
+	        <%
+	    end if
 	    %>
 	    </table>
 	    <%
+    else
+        if not PermitirInformarProcedimentos then
+            %>
+<div class="alert alert-default">
+    Nenhum item contratado.
+</div>
+<script >
+saveInf('<%=AtendimentoID%>');
+</script>
+            <%
+        end if
     end if
+    %>
+</div>
+    <%
 end if
+
+if PermitirInformarProcedimentos then
 %>
-<h5><strong>INFORME ITENS A FATURAR <small>&raquo; insira novos itens da lista de procedimentos ao lado</small></strong></h5>
+    <h5 style="padding: 10px; background-color: #888888; color: #fff"><strong>INFORME ITENS A FATURAR</strong> <small style="color: #fdfdfd;">&raquo; insira novos itens da lista de procedimentos ao lado</small></h5>
 	<table class="duplo table table-striped table-hover table-condensed">
 	<thead>
 		<tr>
@@ -512,6 +572,7 @@ end if
 	</table>
     <em>Selecione ao lado os procedimentos que foram realizados neste atendimento para adicioná-los à conta do paciente.</em>
 	<%
+end if
 end if
 %>
 <script>

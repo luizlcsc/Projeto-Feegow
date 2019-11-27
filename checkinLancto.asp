@@ -219,7 +219,13 @@ for i= 0 to ubound(splLC)
                             end if
                         end if
 
-                        db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Acrescimo, Executado, DataExecucao, GrupoID, AgendamentoID, sysUser, ProfissionalID, EspecialidadeID, Associacao) values ("& InvoiceID &", 'S', "&Quantidade&", 0, "& ProcedimentoID &", "& treatvalzero(Valor) &", "&treatvalzero(Desconto)&", "&treatvalzero(Acrescimo)&", 'S', curdate(), 0, "& ag("id") &", "& session("User") &", "& ag("ProfissionalID") &", "& treatvalnull(EspecialidadeID) &", 5)")
+                        ValorExecutadoCheckin = "S"
+
+                        if getConfig("CheckinCriarInvoiceExecutada")="0" then
+                            ValorExecutadoCheckin=""
+                        end if
+
+                        db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Acrescimo, Executado, DataExecucao, GrupoID, AgendamentoID, sysUser, ProfissionalID, EspecialidadeID, Associacao) values ("& InvoiceID &", 'S', "&Quantidade&", 0, "& ProcedimentoID &", "& treatvalzero(Valor) &", "&treatvalzero(Desconto)&", "&treatvalzero(Acrescimo)&", '"&ValorExecutadoCheckin&"', curdate(), 0, "& ag("id") &", "& session("User") &", "& ag("ProfissionalID") &", "& treatvalnull(EspecialidadeID) &", 5)")
                         set pult = db.execute("select id from itensinvoice where sysUser="& session("User") &" order by id desc limit 1")
                         ItemInvoiceID = pult("id")
 
@@ -268,7 +274,7 @@ for i= 0 to ubound(splLC)
 
                     end if
                     %>
-                    <input id="AccountID" type="hidden" name="AccountID" value="<%= "3_"& PacienteID %>" />
+
                     <input class="parcela" type="hidden" name="Parcela" value="|<%= MovementID %>|" />
                     <script type="text/javascript">
                         var invoiceId= '<%=InvoiceID%>';

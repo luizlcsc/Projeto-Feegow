@@ -118,7 +118,9 @@ end if
         var AgendamentoID = $(".atendimentos-anteriores:checked").data("id");
 
         if(AgendamentoID) {
-            $("#btnSalvarAgenda").prop("disabled", false);
+            $("#btnSalvarAgenda").attr("data-force-disabled", false);
+            btnSalvarToggleLoading(true);
+
             var $valoresProcedimentos = $(".valorprocedimento");
 
             $valoresProcedimentos.each(function() {

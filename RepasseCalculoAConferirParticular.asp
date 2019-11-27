@@ -274,7 +274,19 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
                 <%
                 nLinha = nLinha+1
                 'lrResult( lrDataExecucao, lrNomeFuncao, lrInvoiceID, lrNomeProcedimento, lrNomePaciente, lrFormaPagto, lrCreditado, lrValorProcedimento, lrValorRecebido, lrValorRepasse )
-                call lrResult( "Calculo", rDataExecucao, DominioID & ": "& fd("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
+
+                ExibeLinha=True
+
+                if req("TipoRecebedor")<>"" then
+                    contaSplt = split(Creditado,"_")
+                    if instr(req("TipoRecebedor"), "|"&contaSplt(0)&"|")=0 and Creditado&"" <> "0" then
+                        ExibeLinha=False
+                    end if
+                end if
+
+                if ExibeLinha then
+                    call lrResult( "Calculo", rDataExecucao, DominioID & ": "& fd("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
+                end if
             end if
         end if
 
@@ -426,6 +438,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
                                 nLinha = nLinha+1
                                 'lrResult( lrDataExecucao, lrNomeFuncao, lrInvoiceID, lrNomeProcedimento, lrNomePaciente, lrFormaPagto, lrCreditado, lrValorProcedimento, lrValorRecebido, lrValorRepasse )
+
                                 call lrResult( "Calculo", rDataExecucao, NomeProduto, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, ((Quantidade*ValorItem) * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
                             end if
                         end if
@@ -443,6 +456,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
                             nLinha = nLinha+1
                             'lrResult( lrDataExecucao, lrNomeFuncao, lrInvoiceID, lrNomeProcedimento, lrNomePaciente, lrFormaPagto, lrCreditado, lrValorProcedimento, lrValorRecebido, lrValorRepasse )
+
                             call lrResult( "Calculo", rDataExecucao, NomeProduto, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, ((Quantidade*ValorItem) * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
                         end if
                     end if

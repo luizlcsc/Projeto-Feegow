@@ -25,7 +25,15 @@ function itens(T, A, II, Q = "", incP = 0, valor, profissionalID){
 	if(profissionalID == undefined){ profissionalID = 0 }
 	if(inc==undefined){inc=0}
 	if(incP > 0) { inc = incP}
-	$.post("propostaItens.asp?I=<%=PropostaID%>&Row="+inc, {valor:valor, T:T,A:A,II:II,PacienteID:PacienteID,TabelaID:TabelaID, Q:Q, profissionalID:profissionalID}, function(data, status){
+
+    var $itens = $(".proposta-item-procedimentos").find("[data-resource=procedimentos]");
+    var procedimentoIds = [];
+    $itens.each(function(){
+        procedimentoIds.push($(this).val())
+    });
+
+
+	$.post("propostaItens.asp?I=<%=PropostaID%>&Row="+inc, {procedimentoIds: procedimentoIds.join(","), valor:valor, T:T,A:A,II:II,PacienteID:PacienteID,TabelaID:TabelaID, Q:Q, profissionalID:profissionalID}, function(data, status){
 	if(A=="I"){
         $("#footItens").before(data);
 

@@ -150,6 +150,9 @@ end if
                             if Percentual > 80 then
                                 ClassePercentual = "label label-danger"
                             end if
+                            if Percentual > 50 then
+                                ClassePercentual = "label label-warning"
+                            end if
                         %>
                             <tr>
                                 <td><% if not reg.eof then 

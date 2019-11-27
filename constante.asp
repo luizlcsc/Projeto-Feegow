@@ -201,27 +201,24 @@ else
 	    end if
 	    'TAREFAS
 	    tarefasVencidas = 0
-        tarefasTotais = 0
 	    if instr(notiftarefas, ",")>0 then
 		    spl = split(notiftarefas, "|")
-            tarefasTotais= ubound(spl)
-		    ' for i=0 to ubound(spl)
-			'     if instr(spl(i), ",") then
-			' 	    spl2 = split(spl(i), ",")
-			' 	    if isdate(spl2(1)) and spl2(1)<>"" then
-			' 		    if cdate(spl2(1))<now() then
-			' 			    tarefasVencidas = tarefasVencidas+1
-			' 		    end if
-			' 	    elseif isnumeric(spl2(0)) and not isdate(spl2(1)) then
-			' 		    tarefasVencidas = tarefasVencidas+1
-			' 	    end if
-			'     end if
-		    ' next
+		    for i=0 to ubound(spl)
+			    if instr(spl(i), ",") then
+				    spl2 = split(spl(i), ",")
+				    if isdate(spl2(1)) and spl2(1)<>"" then
+					    if cdate(spl2(1))<now() then
+						    tarefasVencidas = tarefasVencidas+1
+					    end if
+				    elseif isnumeric(spl2(0)) and not isdate(spl2(1)) then
+					    tarefasVencidas = tarefasVencidas+1
+				    end if
+			    end if
+		    next
 	    end if
-        
-	    if tarefasTotais>0 then
+	    if tarefasVencidas>0 then
 		    %>
-		    $("#notifTarefas").html("<i class='fa fa-tasks'></i><span class='badge badge-danger'><%=tarefasTotais%></span>");
+		    $("#notifTarefas").html("<i class='fa fa-tasks'></i><span class='badge badge-danger'><%=tarefasVencidas%></span>");
 		    <%
         else
             %>

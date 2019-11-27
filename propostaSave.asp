@@ -1,6 +1,8 @@
 <!--#include file="connect.asp"-->
 <%
 PropostaID = req("PropostaID")
+AguardaDesconto=false
+PropostaIDS=""
 
 if left(ref("AccountID"), 2)="3_" then
 	splPac = split(ref("AccountID"), "_")
@@ -60,9 +62,10 @@ if erro="" then
 		'-> roda de novo o processo de cima
 		'itens da proposta
 
-		set ItemPropostaSQL = db.execute("SELECT ProfissionalID FROM itensproposta WHERE PropostaID="&PropostaID)
+		set ItemPropostaSQL = db.execute("SELECT ProfissionalID, group_concat(id) ids FROM itensproposta WHERE PropostaID="&PropostaID)
 		if not ItemPropostaSQL.eof then
             ProfissionalID=ItemPropostaSQL("ProfissionalID")
+            PropostaIDS=ItemPropostaSQL("ids")
 		end if
 
 		db_execute("delete from itensproposta where PropostaID="&PropostaID)
@@ -173,6 +176,14 @@ if erro="" then
 				end if
 			end if
 
+			if ValorDesconto = 0 then
+				'Valida se tem desconto_pendentes para este item
+				sqlDescontoPendente = "select desconto from descontos_pendentes where ItensInvoiceID = CONCAT('-',"&ii&") AND SysUserAutorizado IS NOT NULL AND DataHoraAutorizado IS NOT NULL "
+				set rsDesconto = db.execute(sqlDescontoPendente)
+				if not rsDesconto.eof then 
+					ValorDesconto = rsDesconto("desconto")
+				end if
+			end if
 
 			totalProposta = totalProposta - ValorDescontoFinal
 
@@ -181,7 +192,6 @@ if erro="" then
             else
         		sqlInsert = "insert into itensproposta ("&camID&" PropostaID,PacoteID , Ordem, Prioridade, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto,TipoDesconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID) values                 ("&valID&" "&PropostaID&", "&pacoteInv&", "&ordemInv&","&prioridadeInv&",'"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "& valorUnitarioDB &", "& treatvalzero(ValorDesconto) &", '"&desTipoInv&"', '"&ref("Descricao"&ii)&"', '"&ref("Executado"&ii)&"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&")"
             end if
-			response.Write("//"&ii&" - "&sqlInsert)
 			db_execute(sqlInsert)
 
 			if Row<0 then
@@ -208,6 +218,7 @@ if erro="" then
 
 				if temdescontocadastrado=1 and  CCUR(ValorDesconto) <> CCUR(DescontoInput)  then
 					msgExtra = "Alguns itens necessitam de aprovação para o desconto"
+					AguardaDesconto=True
 					set DescontosSQL = db.execute("select * from descontos_pendentes where ItensInvoiceID = "&NewItemID&"")
 					if not DescontosSQL.eof then
 						sqlInsertpendente = "update descontos_pendentes set Desconto = "&treatvalzero(DescontoInput)&",  Status = 0, SysUser = "&session("User")&" where id = " & DescontosSQL("id")
@@ -284,8 +295,6 @@ if erro="" then
 
 
 		
-
-
 
 	%>
 	new PNotify({

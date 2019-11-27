@@ -13,7 +13,7 @@ function celularValido(celular)
 end function
 
 function formataCelularWhatsApp(celular)
-    CelularFormatadado = "55"& replace(replace(replace(replace(Celular, "(", ""),")","")," ",""),"-","")
+    CelularFormatadado = "55"& replace(replace(replace(replace(Celular&"", "(", ""),")","")," ",""),"-","")
     formataCelularWhatsApp=CelularFormatadado
 end function
 

@@ -157,11 +157,11 @@ end if
                let outroPais = nomePais && nomePais != "" && nomePais != "Brasil";
 
               if(estrangeiro || outroPais){
-                  $("#CPF").removeAttr("required");
+                  $("#CPF").removeAttr("required").attr("readonly", true);
               }
               if(!(estrangeiro || outroPais))
               {
-                  $("#CPF").attr("required", "required");
+                  $("#CPF").attr("required", "required").attr("readonly", false);
                   var a = $("#CPF");
 
               }
@@ -198,7 +198,7 @@ end if
             </div>
             <%
                 mask = " input-mask-cpf "
-                IF  NOT (getConfig("ExibirMascaraCPFPaciente") = 1)  THEN
+                IF  getConfig("ExibirMascaraCPFPaciente") = 0  THEN
                   mask = ""
                 END IF
 

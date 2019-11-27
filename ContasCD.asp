@@ -285,9 +285,11 @@ function downloadExcel(){
     $("#formExcel").attr("action", domain+"reports/download-excel?title=Extrato&tk=" + localStorage.getItem("tk")).submit();
 }
 
+var RemoveContaID = '<%=req("X")%>';
 $('#frmCD').submit(function(){
 	$('#ContasCDContent').html('Carregando...');
-	$.post('ContasCDContent.asp?T=<%=req("T")%>&X=<%=req("X")%>', $('#frmCD').serialize(), function(data){ $('#ContasCDContent').html(data) });
+	$.post('ContasCDContent.asp?T=<%=req("T")%>&X='+RemoveContaID, $('#frmCD').serialize(), function(data){ $('#ContasCDContent').html(data) });
+	RemoveContaID="";
 	return false;
 });
 

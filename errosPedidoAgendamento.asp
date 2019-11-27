@@ -97,11 +97,32 @@ function ValidaProcedimentoLocal(linha,pProcedimentoID,pLocalID)
     end if
 end function
 
+function ValidaProcedimentoObrigaSolicitante(linha,pProcedimentoID) 
+    ValidaProcedimentoObrigaSolicitante= ""
+    set ProcedimentoLocaisSQL = db.execute("SELECT ObrigarSolicitante FROM procedimentos WHERE id="&treatvalzero(pProcedimentoID))
+    if not ProcedimentoLocaisSQL.eof then
+        ObrigarSolicitante = ProcedimentoLocaisSQL("ObrigarSolicitante")
+
+        if ObrigarSolicitante = "S" then
+            ValidaProcedimentoObrigaSolicitante = linha&"° procedimento obriga profissional solicitante."
+        end if
+    end if
+end function
+
+function addError(error, valor)
+    if valor <> "" then
+        addError = error&"\n"&valor
+    else
+        addError = error
+    end if
+end function
+
 if erro ="" then
     'verifica se procedimento pode ser realizado nos locais
     erro = ValidaProcedimentoLocal(1,ref("ProcedimentoID")&"", ref("LocalID")&"")
     '-> procedimentos adicionais na agenda
     ProcedimentosAgendamento = trim(ref("ProcedimentosAgendamento"))
+    searchindicacaoId = ref("searchindicacaoId")
     if ProcedimentosAgendamento<>"" then
     splPA = split(ProcedimentosAgendamento, ", ")
         for iPA=0 to ubound(splPA)
@@ -109,9 +130,11 @@ if erro ="" then
                 apID = ccur( splPA(iPA) )
                 apTipoCompromissoID = ref("ProcedimentoID"& apID)
                 apLocalID = ref("LocalID"& apID) 
-                msg = ValidaProcedimentoLocal((iPA+2),apTipoCompromissoID&"", apLocalID&"")
-                if msg <> "" then
-                    erro = erro&"\n"&msg
+                
+                erro = addError(erro, ValidaProcedimentoLocal((iPA+2),apTipoCompromissoID&"", apLocalID&""))
+                
+                if searchindicacaoId ="" then
+                    erro = addError(erro, ValidaProcedimentoObrigaSolicitante((iPA+2),apTipoCompromissoID&""))
                 end if
             end if
         next

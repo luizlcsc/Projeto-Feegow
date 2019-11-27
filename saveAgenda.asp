@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="validar.asp"-->
 <!--#include file="connectCentral.asp"-->
+<!--#include file="Classes/FuncoesRepeticaoMensalAgenda.asp"-->
 <%
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
 	'on error resume next
@@ -427,11 +428,12 @@ if erro="" then
         end if
 
         if tipoDiaMes="DiaSemana" and Repeticao="M" then
-            Repeticao = "S"
-            rptIntervaloRepeticao = ccur(rptIntervaloRepeticao)*4
+            'Repeticao = "S"
+            'rptIntervaloRepeticao = ccur(rptIntervaloRepeticao)*4
             repetirDias = cstr( weekDay(rptDataInicio) )
+            diaSemana = weekDay(rptDataInicio)
+            nthDiaSemaMes = nth_date(rptDataInicio)
         end if
-
         rptDataLoop = rptDataInicio
         rptOcorrencias = 0
         Maximo = 200
@@ -445,13 +447,29 @@ if erro="" then
                     if weekDay(rptDataLoop)=1 and ccur(rptIntervaloRepeticao)>1 then
                         rptDataLoop = dateAdd("d", (ccur(rptIntervaloRepeticao)-1)*7, rptDataLoop)
                     end if
-                    if instr(repetirDias, weekday(rptDataLoop))>0 then
-                        replica = 1
-                    else
-                        replica = 0
-                    end if
+
+                        if instr(repetirDias, weekday(rptDataLoop))>0 then
+                            replica = 1
+                        else
+                            replica = 0
+                        end if
+
                 case "M"
                     rptDataLoop = dateadd( "m", ccur(rptIntervaloRepeticao), rptDataLoop )
+
+                    if  tipoDiaMes="DiaSemana" then
+                        datas = datas_da_semana(rptDataLoop,diaSemana)
+                        slp = split(datas, ",")
+                        max = ubound(slp)+1
+
+                        parocuraraqui = nthDiaSemaMes
+                        if nthDiaSemaMes > max then
+                            parocuraraqui = max
+                        end if
+
+                        rptDataLoop = DateSerial(year(slp(parocuraraqui-1)),Month(slp(parocuraraqui-1))+intervaloMensal, Day(slp(parocuraraqui-1)))
+                    end if
+
                     if rptTerminaRepeticao<>"O" then
                         if rptDataLoop<=rptRepeticaoDataFim then
                             replica = 1
@@ -496,6 +514,7 @@ if erro="" then
                 end if
 
                 itensRepeticao = itensRepeticao &"|"& pult("id") &"|, "
+                'replica = 0
             end if
         wend
         if itensRepeticao<>"" then

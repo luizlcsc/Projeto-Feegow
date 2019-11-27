@@ -1,3 +1,5 @@
+<!--#include file="Classes/FuncoesRepeticaoMensalAgenda.asp"-->
+
 <%
 set ConfigSQL = db.execute("select BloquearEncaixeEmHorarioBloqueado from sys_config WHERE id=1 LIMIT 1")
 
@@ -595,9 +597,11 @@ function checkQuantidadeAgendamentoHorario()
         end if
 
         if tipoDiaMes="DiaSemana" and Repeticao="M" then
-            Repeticao = "S"
-            rptIntervaloRepeticao = ccur(rptIntervaloRepeticao)*4
+            'Repeticao = "S"
+            'rptIntervaloRepeticao = ccur(rptIntervaloRepeticao)*4
             repetirDias = cstr( weekDay(rptDataInicio) )
+            diaSemana = weekDay(rptDataInicio)
+            nthDiaSemaMes = nth_date(rptDataInicio)
         end if
 
         rptDataLoop = rptDataInicio
@@ -622,6 +626,20 @@ function checkQuantidadeAgendamentoHorario()
                     end if
                 case "M"
                     rptDataLoop = dateadd( "m", ccur(rptIntervaloRepeticao), rptDataLoop )
+
+                    if  tipoDiaMes="DiaSemana" then
+                        datas = datas_da_semana(rptDataLoop,diaSemana)
+                        slp = split(datas, ",")
+                        max = ubound(slp)+1
+
+                        procurarAqui = nthDiaSemaMes
+                        if nthDiaSemaMes > max then
+                            procurarAqui = max
+                        end if
+
+                        rptDataLoop = DateSerial(year(slp(procurarAqui-1)),Month(slp(procurarAqui-1))+intervaloMensal, Day(slp(procurarAqui-1)))
+                    end if
+
                     if rptTerminaRepeticao<>"O" then
                         if rptDataLoop<=rptRepeticaoDataFim then
                             replica = 1

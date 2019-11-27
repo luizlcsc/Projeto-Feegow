@@ -93,7 +93,7 @@ registros_mostrados = 0
 paginas_impressas = 0 
 %>
 
-<% While (Not procs.eof and paginas_impressas <= 2)
+<% While (Not procs.eof and paginas_impressas <= 25)
         registros_mostrados = 0 
         paginas_impressas  = paginas_impressas  + 1
      %>
@@ -171,7 +171,7 @@ color: <%=color%>;
             </td>
             <td style="width: 50%" valign="top">
                <p><b>Guia Operadora:</b> <%=NGuiaOperadora%></p>
-               <p> <b>&nbsp;</b> </p>
+               <p> <b>Matrícula:</b> <%=NumeroCarteira%></p>
                <p> <b>Validade:</b> <%=DataValidadeSenha%></p>
 
             </td>

@@ -58,9 +58,9 @@ if req("Checkin")="1" then
     <table class="table table-condensed table-hover">
     <%
     sql = "SELECT t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, tpv.Valor ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal FROM ("&_
-    "SELECT '' id, a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID, a.Tempo, a.LocalID, a.EquipamentoID from agendamentos a where id="& ConsultaID &_
+    "SELECT '' id, a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID, a.Tempo, a.LocalID, a.EquipamentoID,a.PlanoID from agendamentos a where id="& ConsultaID &_
     " UNION ALL "&_
-    " SELECT ap.id, ap.rdValorPlano, ap.ValorPlano, ap.TipoCompromissoID, ap.Tempo, ap.LocalID, ap.EquipamentoID FROM agendamentosprocedimentos ap "&_
+    " SELECT ap.id, ap.rdValorPlano, ap.ValorPlano, ap.TipoCompromissoID, ap.Tempo, ap.LocalID, ap.EquipamentoID,ap.PlanoID FROM agendamentosprocedimentos ap "&_
     " WHERE AgendamentoID="& ConsultaID &_
     ") t "&_
     " LEFT JOIN procedimentos proc ON proc.id=t.TipoCompromissoID "&_
@@ -139,7 +139,9 @@ if req("Checkin")="1" then
         <%idagp = agp("id")%>
         <input type="hidden" class="linha-procedimento-id" value="<%=agp("ProcedimentoID")%>"> 
         <input type="hidden" class="linha-procedimento-id-daPro" name="daPro" data-idPro="<%=idagp%>" value="<%=agp("valorProcedimentoOriginal")%>">
-        <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios) %>
+        <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("PlanoID"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios) %>
+      
+        
         <%
         UrdValorPlano = agp("rdValorPlano")
         UValorPlano = agp("ValorPlano")
@@ -439,8 +441,14 @@ $(document).ready(function() {
                         <td>
                             <%if req("Tipo")="Quadro" or req("EquipamentoID")="" or req("EquipamentoID")="undefined" or req("EquipamentoID")="0" then%>
                             <%=quickfield("select", "EquipamentoID", "", 2, EquipamentoID, "select * from equipamentos where ativo='on' and sysActive=1", "NomeEquipamento", "") %>
-                            <%else %>
+                            <%else
+                                set equipSQL = db.execute("select NomeEquipamento from equipamentos where sysActive=1 and id="&EquipamentoID)
+                                if not equipSQL.eof then
+                                    NomeEquipamento = "<span>"&equipSQL("NomeEquipamento")&"</span>"
+                                end if
+                             %>
                             <input type="hidden" name="EquipamentoID" id="EquipamentoID" value="<%=EquipamentoID%>" />
+                            <%=NomeEquipamento%>
                             <%end if %>
                         </td>
                         <td>
@@ -477,7 +485,7 @@ $(document).ready(function() {
             nProcedimentos = 0
             set ageprocs = db.execute("select * from agendamentosprocedimentos where AgendamentoID="& ConsultaID)
             while not ageprocs.eof
-                call linhaAgenda(ageprocs("id"), ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios)
+                call linhaAgenda(ageprocs("id"), ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios)
             ageprocs.movenext
             wend
             ageprocs.close

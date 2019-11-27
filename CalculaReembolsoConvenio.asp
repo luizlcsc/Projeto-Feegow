@@ -108,10 +108,10 @@ select case Operacao
         ValorCH = 0
         sqlConvenio = "SELECT proc.NomeProcedimento, c.Telefone, c.Contato, COALESCE(tvp.ValorCH, tv.ValorCH,  c.ValorCH) ValorCH, "&_
                        " COALESCE(tvp.QuantidadeCH, tv.QuantidadeCH, proc.CH) QtdCH FROM convenios c "&_
-                       " INNER JOIN tissprocedimentosvalores tv ON tv.ConvenioID =c.id "&_
-                       " INNER JOIN procedimentos proc ON proc.id=tv.ProcedimentoID "&_
+                       " INNER JOIN procedimentos proc ON proc.id="&treatvalzero(ProcedimentoID)&_
+                       " LEFT JOIN tissprocedimentosvalores tv ON tv.ProcedimentoID=proc.id AND tv.ConvenioID =c.id "&_
                        " LEFT JOIN tissprocedimentosvaloresplanos tvp ON tvp.AssociacaoID=tv.id AND tvp.PlanoID="&treatvalzero(PlanoID)&_
-                       " WHERE c.id="&treatvalzero(ConvenioID)&" AND tv.ProcedimentoID="&treatvalzero(ProcedimentoID)
+                       " WHERE c.id="&treatvalzero(ConvenioID)&" "
 
 
         set ProcedimentoSQL = db.execute(sqlConvenio)
@@ -125,7 +125,7 @@ select case Operacao
             <%
         end if
 
-        if isnumeric(QuantidadeCH) and isnumeric(ValorReembolso) and ConvenioID<>"" then
+        if isnumeric(QuantidadeCH) and QuantidadeCH&""<> "" and isnumeric(ValorReembolso) and ConvenioID<>"" then
             ValorCH = replace(replace((ValorReembolso) / (QuantidadeCH), ".", ""),",",".")
 
             sql = "SELECT * FROM convenio_reembolso WHERE ConvenioID="&treatvalnull(ConvenioID)&" AND PlanoID="&treatvalnull(PlanoID)&" AND PacienteID="&PacienteID&" AND ValorCH='"&ValorCH&"' ORDER BY id DESC"
@@ -144,6 +144,11 @@ select case Operacao
                 showMessageDialog("Valor do CH (<%=ValorCH  %>) salvo.", "success");
                 <%
             end if
+        else
+            %>
+            showMessageDialog("Verifique a quantidade de CH do proceidmento selecionado.");
+            <%
+            Response.End
         end if
 
 end select

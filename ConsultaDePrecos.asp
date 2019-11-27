@@ -24,6 +24,7 @@ if not InvoiceSQL.eof then
             ConvenioID=ValorReembolsoSQL("ConvenioID")
             ValorCH=fn(ValorReembolsoSQL("ValorCH"))&"00"
             ValorReembolso=ValorReembolsoSQL("ValorReembolso")
+            ProcedimentoID=ValorReembolsoSQL("ProcedimentoID")
         else
             set PacienteSQL = db.execute("SELECT ConvenioID1, PlanoID1 FROM pacientes WHERE id="&PacienteID)
             if not PacienteSQL.eof then
@@ -45,7 +46,7 @@ if not InvoiceSQL.eof then
                <input type="hidden" name="InvoiceID" value="<%=InvoiceID%>">
                <input id="Operacao" type="hidden" name="O" value="">
 
-               <%=quickField("select", "ProcedimentoID", "Procedimento", 3, ProcedimentoID, "select id, NomeProcedimento from procedimentos where sysActive=1  and OpcoesAgenda!=3 order by NomeProcedimento", "NomeProcedimento", " empty ") %>
+               <%=quickField("select", "ProcedimentoID", "Procedimento", 3, ProcedimentoID, "select id, NomeProcedimento from procedimentos where TipoProcedimentoID=2 AND sysActive=1  and OpcoesAgenda!=3 order by NomeProcedimento", "NomeProcedimento", " empty ") %>
 
 
                <div class="col-md-3">

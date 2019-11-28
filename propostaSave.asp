@@ -149,8 +149,10 @@ if erro="" then
 									if rsDescontosUsuario("TipoDesconto")="P" then
 										VDescontomaximo = ref("ValorUnitario"&splInv(i)) * rsDescontosUsuario("DescontoMaximo") / 100
 									end if
+									
+									valorDescontoPermitido = ref("ValorUnitario"&splInv(i)) * 0.05
 
-									if ValorDescontoFinal <= VDescontomaximo and VDescontomaximo>5 then
+									if ValorDescontoFinal <= VDescontomaximo and VDescontomaximo>valorDescontoPermitido then
 										idUsuariosDesconto = idUsuariosDesconto & "," & rsDescontosUsuario("idUser")
 									end if
 								end if

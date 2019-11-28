@@ -159,7 +159,16 @@ for i= 0 to ubound(splLC)
                 if rdValorPlano="V" then
 
                     'requisitos pra usar o movement que j� existe: executado vazio ou o proprio, data exec vazia ou a propria, descontado zero do ii, soma das parcelas da invoice=1, valor igual, proc igual, else cria nova e chapa como executado
-                    set vcaII = db.execute("select ii.InvoiceID, i.FormaID, ii.id, (select id from sys_financialmovement where Type='Bill' and CD='C' and InvoiceID=i.id limit 1) MovementID FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE i.AccountID="& PacienteID &" AND i.Value="& treatvalnull(ValorTotal) &" AND i.AssociationAccountID=3 AND ii.ItemID="& ProcedimentoID &" AND ii.Tipo='S' AND (ii.ProfissionalID="& treatvalnull(ProfissionalID) &" OR ISNULL(ii.ProfissionalID)) AND IFNULL((select sum(Valor) from itensdescontados where ItemID=ii.id), 0)=0 AND (select count(id) from sys_financialmovement where Type='Bill' and CD='C' and InvoiceID=i.id)=1")
+
+                    sqlBuscaInvoice = "select ii.InvoiceID, i.FormaID, ii.id, "&_
+                                                          "(select id from sys_financialmovement where Type='Bill' and CD='C' and InvoiceID=i.id limit 1) MovementID FROM itensinvoice ii "&_
+                                                          "LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
+                                                          "WHERE i.AccountID="& PacienteID &" AND i.Value="& treatvalnull(ValorTotal) &" AND i.AssociationAccountID=3 "& _
+                                                          "AND ii.ItemID="& ProcedimentoID &" AND ii.Tipo='S' AND (ii.ProfissionalID="& treatvalnull(ProfissionalID) &" OR ISNULL(ii.ProfissionalID)) "&_
+                                                          "AND IFNULL((select sum(Valor) from itensdescontados where ItemID=ii.id), 0)=0 AND (ii.ValorUnitario > 0 OR (ii.ValorUnitario = 0 AND ii.DataExecucao=CURDATE())) AND "&_
+                                                          "(select count(id) from sys_financialmovement where Type='Bill' and CD='C' and InvoiceID=i.id)=1"
+
+                    set vcaII = db.execute(sqlBuscaInvoice)
                     if not vcaII.eof then
 
                         'Incrementa o ParcelasAPagar

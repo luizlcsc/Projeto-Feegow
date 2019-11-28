@@ -107,7 +107,7 @@ else
 		    if UnidadeID="0" then
 			    set un = db.execute("select NomeFantasia from empresa")
 		    else
-			    set un = db.execute("select NomeFantasia from sys_financialcompanyunits where id="& UnidadeID )
+			    set un = db.execute("select NomeFantasia from sys_financialcompanyunits where id="& treatvalzero(UnidadeID) )
 		    end if
 		    if un.EOF then
 			    NomeUnidade = ""
@@ -229,8 +229,14 @@ else
                         ' else
                         '     O = 0
                         ' end if
+
+                        if not isnumeric(UnidadeID) then
+                            UnidadeID=""
+                        else
+                            UnidadeID=cint(UnidadeID)
+                        end if
                         %>
-                        <td><a href="./?P=AgendaMultipla&Pers=1&Locais=|UNIDADE_ID<%= cint(UnidadeID) %>|&Especialidades=|<%= prof("EspecialidadeID") %>|&Data=<%= DataN %>" target="_blank"><%= T %></a></td>
+                        <td><a href="./?P=AgendaMultipla&Pers=1&Locais=|UNIDADE_ID<%= UnidadeID %>|&Especialidades=|<%= prof("EspecialidadeID") %>|&Data=<%= DataN %>" target="_blank"><%= T %></a></td>
                         <td><%= V %></td>
                         <td><%= VB+AB %></td>
                         <td><%= A+AB %></td>

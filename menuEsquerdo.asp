@@ -490,7 +490,7 @@ select case lcase(req("P"))
     <li class="sidebar-label pt20"></li>
     <li class="row sidebar-stat">
     <%
-                    if aut("|agendaI|")=1 and (session("Banco")<>"clinic5760" and session("Banco")<>"clinic6118") then
+                    if aut("|agendaI|")=1 and (session("Banco")<>"clinic5760" and session("Banco")<>"clinic6118" and session("Banco")<>"clinic105") then
                     %>
                         <div class="col-xs-6">
                             <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" id="AbrirEncaixe" href="javascript:void(0);">
@@ -2021,6 +2021,9 @@ select case lcase(req("P"))
                 <span class="caret"></span>
             </a>
             <ul class="nav sub-nav">
+                <%
+                if 1=2 then
+                %>
                 <li>
                     <a href="https://clinic.feegow.com.br/components/public/reports/r/medical-report">
                         <i class="fa fa-double-angle-right"></i>
@@ -2028,6 +2031,7 @@ select case lcase(req("P"))
                     </a>
                 </li>
                 <%
+                end if
                 if aut("|relatoriosformulariosV|")=1 and lcase(session("Table"))="profissionais" then
                 %>
                 <li>

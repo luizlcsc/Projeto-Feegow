@@ -4875,7 +4875,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
         end if
         
         if ischeckin then
-            set localSQL = db.execute("select NomeLocal from locais where sysActive=1 and id="&EquipamentoID)
+            set localSQL = db.execute("select NomeLocal from locais where sysActive=1 and id="&treatvalzero(LocalID))
             if not localSQL.eof then
                 NomeLocal = "<span>"&localSQL("NomeLocal")&"</span>"
             end if
@@ -4897,7 +4897,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
             <%if (req("Tipo")="Quadro" or req("EquipamentoID")="" or req("EquipamentoID")="undefined" or req("EquipamentoID")="0") and not ischeckin then%>
                 <%=quickfield("select", "EquipamentoID"&n, "", 2, EquipamentoID, "select * from equipamentos where sysActive=1", "NomeEquipamento", ""&disabled) %>
             <%else 
-                set equipSQL = db.execute("select NomeEquipamento from equipamentos where sysActive=1 and id="&EquipamentoID)
+                set equipSQL = db.execute("select NomeEquipamento from equipamentos where sysActive=1 and id="&treatvalzero(EquipamentoID))
                 if not equipSQL.eof then
                     NomeEquipamento = "<span>"&equipSQL("NomeEquipamento")&"</span>"
                 end if

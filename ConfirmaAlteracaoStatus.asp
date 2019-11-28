@@ -52,9 +52,37 @@ float: none;
 </style>
 
 <%
+obs = req("obs")
 AgendamentoID = req("agendamentoId")
+CanalID = req("CanalID")
+
+set AgendamentoSQL = db.execute("SELECT pac.NomePaciente, proc.NomeProcedimento, prof.NomeProfissional, age.Data, age.Hora, age.Notas FROM agendamentos age "&_
+"INNER JOIN pacientes pac ON pac.id=age.PacienteID "&_
+"INNER JOIN profissionais prof ON prof.id=age.ProfissionalID "&_
+"INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID "&_
+"WHERE age.id="&treatvalzero(AgendamentoID))
 %>
 <input type="hidden" id="agendamento-id-confirmacao" value="<%=AgendamentoID%>">
+<%
+if not AgendamentoSQL.eof then
+    %>
+<div class="row">
+    <div class="col-md-6">
+        <strong>Paciente:</strong> <%=AgendamentoSQL("NomePaciente")%>
+    </div>
+    <div class="col-md-6">
+        <strong>Profissional:</strong> <%=AgendamentoSQL("NomeProfissional")%>
+    </div>
+    <div class="col-md-6">
+        <strong>Procedimento:</strong> <%=AgendamentoSQL("NomeProcedimento")%>
+    </div>
+    <div class="col-md-6">
+        <strong>Observações:</strong> <%=AgendamentoSQL("Notas")%>
+    </div>
+</div>
+    <%
+end if
+%>
 <div class="row">
     <%
 
@@ -79,15 +107,16 @@ AgendamentoID = req("agendamentoId")
 </div>
 
 <div class="row">
+
 <%
-if false then
+if true then
     set CanaisSQL = db.execute("SELECT * FROM cliniccentral.canal_contato_paciente WHERE Selecionavel=1")
 
     while not CanaisSQL.eof
     %>
 <div class="col-md-3">
     <div class="inputGroup">
-        <input class="status-radio" id="canal-<%=CanaisSQL("id")%>" name="canal" value="<%=CanaisSQL("id")%>" type="radio"/>
+        <input class="status-radio" id="canal-<%=CanaisSQL("id")%>" <% if CanaisSQL("id")&"" = CanalID&"" then %>checked<% end if%> name="canal" value="<%=CanaisSQL("id")%>" type="radio"/>
         <label for="canal-<%=CanaisSQL("id")%>" class="radio">
         <%=CanaisSQL("NomeCanal")%></label>
     </div>
@@ -104,7 +133,7 @@ end if
 
     <div class="col-md-12">
         <label for="ObsConfirmacao">Observações</label>
-        <textarea name="ObsConfirmacao" id="ObsConfirmacao" rows="3" class="form-control"></textarea>
+        <textarea name="ObsConfirmacao" id="ObsConfirmacao" rows="3" class="form-control"><%=obs%></textarea>
     </div>
 </div>
 <script >

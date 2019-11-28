@@ -30,12 +30,12 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
          });
     }
 
-    function AlterarStatus(statusId, agendamentoId, obs){
+    function AlterarStatus(statusId, agendamentoId, obs, AbrirModal, CanalID){
 
         var AdicionarObservacoesAoAlterarStatus = "<%=AdicionarObservacoesAoAlterarStatus%>";
 
-        if(AdicionarObservacoesAoAlterarStatus==="1"){
-            openComponentsModal("ConfirmaAlteracaoStatus.asp", {statusId: statusId, agendamentoId: agendamentoId}, "Alterar status", true,
+        if(AdicionarObservacoesAoAlterarStatus==="1" || AbrirModal){
+            openComponentsModal("ConfirmaAlteracaoStatus.asp", {canalId: CanalID, obs: obs, statusId: statusId, agendamentoId: agendamentoId}, "Alterar status", true,
                 function ConfirmaAlteracaoDeStatus() {
                     $.post("AlteraStatusAgendamento.asp", {
                         A: $("#agendamento-id-confirmacao").val(),
@@ -103,6 +103,9 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
         }
         var url = "whatsapp://send?phone="+Celular+"&text="+Texto;
         $("#wpp-"+id).html("<i class='success fa fa-check-circle'></i>");
+
+        AlterarStatus("", id, "Contato via WhatsApp", true, 1);
+
         openTab(url);
     }
 

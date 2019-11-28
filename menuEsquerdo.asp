@@ -490,7 +490,7 @@ select case lcase(req("P"))
     <li class="sidebar-label pt20"></li>
     <li class="row sidebar-stat">
     <%
-                    if aut("|agendaI|")=1 and (session("Banco")<>"clinic5760" and session("Banco")<>"clinic6118") then
+                    if aut("|agendaI|")=1 and (session("Banco")<>"clinic5760" and session("Banco")<>"clinic6118" and session("Banco")<>"clinic105") then
                     %>
                         <div class="col-xs-6">
                             <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" id="AbrirEncaixe" href="javascript:void(0);">

@@ -125,7 +125,13 @@
                 	        <a class="btn btn-xs btn-success" href="<%if req("PacienteID")="" then%>./?P=PacientesPropostas&Pers=1&I=<%=req("I")%>&PropostaID=<%=p("id")%><%
                                 else
                                 %>javascript:ajxContent('PacientesPropostas&CallID=<%=CallID %>&PacienteID=<%=req("PacienteID")%>&PropostaID=<%=p("id")%>', '', '1', 'pront<%=CallID %>')<%end if%>" title="Editar Proposta"><i class="fa fa-edit"></i></a>
+                	        <%
+                	        if aut("|propostasX|")=1 then
+                	        %>
                 	        <button type="button" class="btn btn-xs btn-danger" onClick="x(<%=p("id")%>)" title="Excluir Proposta"><i class="fa fa-remove"></i></button>
+                	        <%
+                	        end if
+                	        %>
                         </td>
                     </tr>
 			        <%

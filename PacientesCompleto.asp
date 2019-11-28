@@ -564,7 +564,7 @@ if reg("sysActive")=1 then
 end if
 %>
 function comparaPaciente(T) {
-		$.post("ComparaPacientes.asp?T=" + T, { I: <%= PacienteID %>, No: $("#NomePaciente").val(), Na: $("#Nascimento").val(), C: $("#CPF").val(), S: $("#Sexo").val() }, function (data) {
+		$.post("ComparaPacientes.asp?T=" + T, { I: <%= PacienteID %>, No: $("#NomePaciente").val(), Email: $("#Email1").val(), Documento: $("#Documento").val(), Na: $("#Nascimento").val(), C: $("#CPF").val(), S: $("#Sexo").val() }, function (data) {
 			if (T == 'Conta') {
 				eval(data);
 			} else {

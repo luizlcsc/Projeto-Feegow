@@ -135,11 +135,11 @@ color: <%=color%>;
  </style>
 <body>
 	<div style="max-width: 100%; margin: 0 auto">
+    <% if imprimecabecalho = 1 then %>
     <div class="cabecalho">
-        <% if imprimecabecalho = 1 then %>
         <%=cabecalho%>
-        <% end if %>
     </div>
+    <% end if %>
     <br>
 	<table class="tablePrint">
 
@@ -233,11 +233,13 @@ color: <%=color%>;
     </table>
  
 </div>
+
+<% if imprimecabecalho=1 then %>
 <div class="rodape">
-    <% if imprimecabecalho=1 then %>
     <%=rodape%>
-    <% end if %>
 </div>
+<% end if %>
+
 <div style='page-break-after:always'></div>
 <% wend 
     procs.close 

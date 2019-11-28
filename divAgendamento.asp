@@ -705,7 +705,7 @@ end if
                                         <td><%=ft(OutrosAgendamentosSQL("Hora"))%></td>
                                         <td><%=OutrosAgendamentosSQL("NomeProfissional")%></td>
                                         <td><%=OutrosAgendamentosSQL("NomeProcedimento")%></td>
-                                        <td><button onclick="abreAgenda('<%=replace(ft(OutrosAgendamentosSQL("Hora")),":","")%>', '<%=OutrosAgendamentosSQL("id")%>', '<%=OutrosAgendamentosSQL("Data")%>')" class="btn btn-primary btn-xs"><i class="fa fa-external-link"></i></button></td>
+                                        <td><button type="button" onclick="abreAgenda('<%=replace(ft(OutrosAgendamentosSQL("Hora")),":","")%>', '<%=OutrosAgendamentosSQL("id")%>', '<%=OutrosAgendamentosSQL("Data")%>')" class="btn btn-primary btn-xs"><i class="fa fa-external-link"></i></button></td>
                                     </tr>
                                     <%
                                 OutrosAgendamentosSQL.movenext

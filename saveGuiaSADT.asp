@@ -85,7 +85,7 @@ else
 
 
 	'Convenio
-    if BloquearAlteracoes=0 then
+    if BloquearAlteracoes=0 and false then
 	    db_execute("update convenios set RegistroANS='"&ref("RegistroANS")&"' where id="&ref("gConvenioID"))
 	    set vcaConvenioContratado = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado=NULLIF('"&ref("Contratado")&"','FALSE')")
 

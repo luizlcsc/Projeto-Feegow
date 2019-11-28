@@ -82,7 +82,7 @@ else
         else
             EspecialidadeID = 0
         end if
-        if BloquearAlteracoes=0 then
+        if BloquearAlteracoes=0 and false then
             db_execute("update profissionais set Conselho='"&ref("Conselho")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"' where id="&ref("gProfissionalID"))
 
             db_execute("update convenios set RegistroANS='"&ref("RegistroANS")&"' where id="&ref("gConvenioID"))

@@ -69,7 +69,7 @@
 <%
 AtendimentoID = req("AtendimentoID")
 PacienteID = ccur(req("PacienteID"))
-
+PermitirInformarProcedimentos = getConfig("PermitirInformarProcedimentos")
 
 if AtendimentoID = "N" then
 	sqlVCA = "select * from atendimentos where sysUser="&session("User")*(-1)
@@ -163,7 +163,7 @@ db.execute("DELETE FROM calculos_finalizar_atendimento_log WHERE AtendimentoID =
         <div class="row">
                 <%
                 tamanhocoluna = 12
-                if aut("finalizaratendimentoI")=1 then
+                if aut("finalizaratendimentoI")=1 and PermitirInformarProcedimentos="1" then
                 tamanhocoluna=8
                 %>
 
@@ -181,11 +181,11 @@ db.execute("DELETE FROM calculos_finalizar_atendimento_log WHERE AtendimentoID =
             </div>
         </div>
 		<%
-        if req("Origem")="Atendimento" then
+        if req("Origem")="Atendimento" and PermitirInformarProcedimentos="1" then
         %>
         <hr />
         <div class="row">
-            <div class="col-md-12"><label for="UsuariosNotificados">Selecione abaixo o(s) usu&aacute;rio(s) que receber&atilde;o a notifica&ccedil;&atilde;o para lan&ccedil;amento da receita ou da guia.</label><br />
+            <div class="col-md-4"><label for="UsuariosNotificados">Selecione abaixo o(s) usu&aacute;rio(s) que receber&atilde;o a notifica&ccedil;&atilde;o para lan&ccedil;amento da receita ou da guia.</label><br />
                 <select multiple="" class=" multisel tag-input-style" id="UsuariosNotificar" name="UsuariosNotificar">
                 <%
                 set pus = db.execute("select u.*, p.NomeProfissional, f.NomeFuncionario from sys_users as u left join profissionais as p on (p.id=u.idInTable and u.Table='Profissionais' AND p.Ativo='on') left join funcionarios as f on (f.id=u.idInTable and u.Table='Funcionarios' AND f.Ativo='on') order by u.NameColumn, f.NomeFuncionario, p.NomeProfissional")

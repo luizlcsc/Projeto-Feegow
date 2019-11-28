@@ -1,16 +1,18 @@
 <!--#include file="Classes/Restricao.asp"-->
 <!--#include file="Classes/Json.asp"-->
 <%
-function linhaPagtoCheckin(strTipoGuia, rdValorPlano)
+function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBill)
+
+
     %>
-    <tr class="danger">
+    <tr class="<%=ClasseLinha%>">
         <td class="default" colspan="10" style="border-top:none">
 
             <%
             if rdValorPlano="V" then
                 Rotulo = "RECEBER"
 
-                recebimentoFunc = "onclick='lanctoCheckin("&Bloco &")'"
+                recebimentoFunc = "onclick='lanctoCheckin("""&Bloco &""", """&IDMovementBill&""")'"
                 recebimentoFuncCaixinha=""
 
                 if aut("|contasareceberI|")=0 and session("CaixaID")="" and aut("|aberturacaixinhaI|") then
@@ -53,14 +55,14 @@ end if
 if req("Checkin")="1" then
     staPagto = "danger"
     %>
-
-<div id="divLanctoCheckin"></div>
+<input id="AccountID" type="hidden" name="AccountID" value="<%= "3_"& PacienteID %>" />
+<div id="divLanctoCheckin"><!--#include file="invoiceEstilo.asp"--></div>
     <table class="table table-condensed table-hover">
     <%
     sql = "SELECT t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, tpv.Valor ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal FROM ("&_
     "SELECT '' id, a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID, a.Tempo, a.LocalID, a.EquipamentoID,a.PlanoID from agendamentos a where id="& ConsultaID &_
     " UNION ALL "&_
-    " SELECT ap.id, ap.rdValorPlano, ap.ValorPlano, ap.TipoCompromissoID, ap.Tempo, ap.LocalID, ap.EquipamentoID,ap.PlanoID FROM agendamentosprocedimentos ap "&_
+    " SELECT ap.id, ap.rdValorPlano, ap.ValorPlano, ap.TipoCompromissoID, ap.Tempo, ap.LocalID, ap.EquipamentoID,0 PlanoID FROM agendamentosprocedimentos ap "&_
     " WHERE AgendamentoID="& ConsultaID &_
     ") t "&_
     " LEFT JOIN procedimentos proc ON proc.id=t.TipoCompromissoID "&_
@@ -72,6 +74,7 @@ if req("Checkin")="1" then
     set agp = db.execute( sql )
     'UrdValorPlano = agp("rdValorPlano")
     blocoPend = 0
+    blocoPendParcial = 0
     Bloco = 0
     ValorConvenio = ""
     while not agp.eof
@@ -87,11 +90,13 @@ if req("Checkin")="1" then
             ItemInvoiceID = "null"  
             FormaIDSelecionado = ""
             TipoCompromissoIDSe = agp("TipoCompromissoID")
-                sqlQuitacao = "select i.FormaID, ii.InvoiceID as InvoiceID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorItem, ifnull((select sum(Valor) from itensdescontados where ItemID=ii.id), 0) TotalQuitado from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
+                sqlQuitacao = "select mov.id MovementID, i.FormaID, ii.InvoiceID as InvoiceID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorItem, ifnull((select sum(Valor) from itensdescontados where ItemID=ii.id), 0) TotalQuitado from itensinvoice ii "&_
+                                              " INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
+                                              " INNER JOIN sys_financialmovement mov ON mov.InvoiceID=i.id "&_
                                               " WHERE i.AccountID="& PacienteID &" and AssociationAccountID=3 "&_
                                               " AND ii.ItemID="& TipoCompromissoIDSe &" "&_
                                               " AND (ISNULL(DataExecucao) OR DataExecucao=CURDATE()) "&_
-                                              " AND (ISNULL(ProfissionalID) OR ProfissionalID="& treatvalnull(ProfissionalID) &") and ii.Executado!='C' order by 2"
+                                              " AND (ISNULL(ProfissionalID) or ProfissionalID=0 OR ProfissionalID="& treatvalnull(ProfissionalID) &") and ii.Executado!='C' order by 2"
                 set vcaIIPaga = db.execute(sqlQuitacao)
                 if not vcaIIPaga.eof then
                     ItemInvoiceID = vcaIIPaga("InvoiceID")    
@@ -100,7 +105,13 @@ if req("Checkin")="1" then
                         staPagto = "success"
 
                     else
-                        staPagto = "danger"
+                        if round(vcaIIPaga("TotalQuitado"),2) > 1 then
+                            staPagto = "warning"
+                            MovementID=vcaIIPaga("MovementID")
+
+                        else
+                            staPagto = "danger"
+                        end if
                     end if
                 else
                     staPagto = "danger"
@@ -115,7 +126,7 @@ if req("Checkin")="1" then
       '  response.write(FormaIDSelecionado)
 
         if UTipoGuia<>"" and UTipoGuia<>agp("TipoGuia") and blocoPend=1 then
-            call linhaPagtoCheckin( UTipoGuia, UrdValorPlano )
+            call linhaPagtoCheckin( UTipoGuia, UrdValorPlano, "danger", "" )
         end if
         if UrdValorPlano<>agp("rdValorPlano") or (UrdValorPlano="P" and UValorPlano<>agp("ValorPlano")) then
             Bloco = Bloco + 1
@@ -139,9 +150,7 @@ if req("Checkin")="1" then
         <%idagp = agp("id")%>
         <input type="hidden" class="linha-procedimento-id" value="<%=agp("ProcedimentoID")%>"> 
         <input type="hidden" class="linha-procedimento-id-daPro" name="daPro" data-idPro="<%=idagp%>" value="<%=agp("valorProcedimentoOriginal")%>">
-        <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("PlanoID"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios) %>
-      
-        
+        <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios) %>
         <%
         UrdValorPlano = agp("rdValorPlano")
         UValorPlano = agp("ValorPlano")
@@ -150,6 +159,9 @@ if req("Checkin")="1" then
         if staPagto="danger" then
             blocoPend = 1
         end if
+        if staPagto="warning" then
+            blocoPendParcial = 1
+        end if
     agp.movenext
     wend
     agp.close
@@ -157,7 +169,11 @@ if req("Checkin")="1" then
 
     if blocoPend=1 then
         if UrdValorPlano = "V" or (UrdValorPlano = "P" and ValorConvenio&"" <> "") then
-            call linhaPagtoCheckin( UTipoGuia, UrdValorPlano )
+            call linhaPagtoCheckin( UTipoGuia, UrdValorPlano , "danger", "" )
+        end if
+    elseif blocoPendParcial=1 then
+        if UrdValorPlano = "V" or (UrdValorPlano = "P" and ValorConvenio&"" <> "") then
+            call linhaPagtoCheckin( UTipoGuia, UrdValorPlano , "warning", MovementID )
         end if
     else
         %>
@@ -169,10 +185,27 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
     %>
     </table>
 
-    <script type="text/javascript">       
+    <script type="text/javascript">
         $('[data-toggle="tooltip"]').tooltip();
 
-        function lanctoCheckin(Bloco) {
+        function abrirPagar(MovementID) {
+            $("#dadosAgendamento").append("<input class=\"parcela\" type=\"hidden\" name=\"Parcela\" value=\"|"+MovementID+"|\" />");
+
+            $("#pagar").fadeIn();
+
+            $( "#pagar" ).draggable();
+
+            $("#pagar").html("Carregando...");
+            $.post("Pagar.asp?T=C", {
+                Parcela: '|'+MovementID+'|'
+                }, function (data) {
+                    $("#pagar").html(data);
+                });
+
+        }
+
+        function lanctoCheckin(Bloco, IDMovementBill) {
+            if(IDMovementBill!==""){abrirPagar(IDMovementBill); return;}
             var valorTotal = 0;
             valor = ""
             procedimento = ""
@@ -485,7 +518,7 @@ $(document).ready(function() {
             nProcedimentos = 0
             set ageprocs = db.execute("select * from agendamentosprocedimentos where AgendamentoID="& ConsultaID)
             while not ageprocs.eof
-                call linhaAgenda(ageprocs("id"), ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios)
+                call linhaAgenda(ageprocs("id"), ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios)
             ageprocs.movenext
             wend
             ageprocs.close

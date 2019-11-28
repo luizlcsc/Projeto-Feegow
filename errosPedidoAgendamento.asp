@@ -86,7 +86,7 @@ function ValidaProcedimentoLocal(linha,pProcedimentoID,pLocalID)
     if not ProcedimentoLocaisSQL.eof then
         LimitarLocais = ProcedimentoLocaisSQL("SomenteLocais")
 
-        if LimitarLocais&""<>"" then
+        if LimitarLocais&""<>"" and pLocalID&"" <> "" then
             if instr(LimitarLocais, "|"&pLocalID&"|")<=0 then
                 ValidaProcedimentoLocal= linha&"° procedimento não aceita o Local selecionado."
             end if
@@ -222,7 +222,7 @@ if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("Sta
         sqlProfissionalOuEquipamento = "and ProfissionalID<>0 "
         LabelErroMaximoAgendamentos="profissional"
     end if
-    set ve2=db.execute("select * from agendamentos where (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&ref("EquipamentoID")&"') AND StaID NOT IN (6,11,3,4)  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
+    set ve2=db.execute("select * from agendamentos where (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&ref("EquipamentoID")&"') AND StaID NOT IN (6,11,3,4, 15)  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
     if not ve2.EOF then
         if isnumeric(ve2("Tempo")) then
             tmp=ccur(ve2("Tempo"))

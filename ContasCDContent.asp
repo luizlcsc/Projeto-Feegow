@@ -88,6 +88,11 @@ if req("X")<>"" then
             end if
         end if
     end if
+
+
+    if getConfig("ListarAutomaticamenteContas")="0" then
+        Response.End
+    end if
 end if
 
 c=0

@@ -33,7 +33,7 @@ if Tipo="AReceber" then
 		    Executado = "S"
 		    if AgeAte = "executado" then
 			    sqlAtendimentoID = idAgeAte
-			    set aEa = db.execute("select '' UnidadeID, ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, 0 EspecialidadeID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado', 'executado', at.AgendamentoID, at.TabelaID from atendimentosprocedimentos as ap left join atendimentos as at on at.id=ap.AtendimentoID where ap.id="&idAgeAte)
+			    set aEa = db.execute("select '' UnidadeID, ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, 0 EspecialidadeID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado', 'executado', at.AgendamentoID, at.TabelaID, '' indicadopor from atendimentosprocedimentos as ap left join atendimentos as at on at.id=ap.AtendimentoID where ap.id="&idAgeAte)
 		    else
 			    sqlAtendimentoID = "NULL"
 			    set aEa = db.execute("select loc.UnidadeID, ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.EspecialidadeID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, ag.TabelaParticularID TabelaID, ag.indicadopor from agendamentos as ag LEFT JOIN locais loc ON loc.id=ag.LocalID where ag.id="&idAgeAte&" UNION  "&_

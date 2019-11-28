@@ -54,6 +54,7 @@ if SplitNF=1 then
     set RepassesRecebedoresSQL = db.execute(sqls)
 
     TotalRepassado = 0
+    i=0
     while not RepassesRecebedoresSQL.eof
         DataExecucao = RepassesRecebedoresSQL("DataExecucao")
         ContaCredito = RepassesRecebedoresSQL("ContaCredito")
@@ -89,15 +90,24 @@ if SplitNF=1 then
             ValorRepassado = RepassesRecebedoresSQL("Valor")
         end if
 
-        if ContaCredito&"" = "0" then
-            sqlContaCredito = " OR ContaCredito IS NULL and Nome <> 'Recibo padrão'"
-        end if
 
         if not isnull(InvoiceIDAPagar) then
             StatusRepasse = "<a target='_blank' href='?P=invoice&I="&InvoiceIDAPagar&"&A=&Pers=1&T=D'>"&StatusRepasse&"</a>"
         elseif StatusRepasse="Consolidado" then
             StatusRepasse = "<a target='_blank' href='?P=RepassesAConferir&Pers=1&Forma=|0|&De="&DataExecucao&"&Ate="&DataExecucao&"&TipoData=Exec&Unidades=|"&CompanyUnitID&"|&AccountID="&ContaCredito&"&ProcedimentoID=0'>"&StatusRepasse&"</a>"
         end if
+
+        if ContaCredito&"" = "0" then
+            sqlContaCredito = " OR ContaCredito IS NULL and Nome <> 'Recibo padrão'"
+
+            if i=0 then
+                DisabledEmitir=" disabled "
+            end if
+
+            StatusRepasse=""
+        end if
+
+        i = i+1
 
         set ReciboGeradoSQL = db.execute("SELECT id FROM recibos WHERE (ContaCredito='"&ContaCredito&"' "&sqlContaCredito&") AND InvoiceID="&InvoiceID&" AND sysActive=1 ORDER BY sysDate DESC")
         if not ReciboGeradoSQL.eof then
@@ -117,7 +127,7 @@ if SplitNF=1 then
     <%
     if ReciboID=0 and ValorRepassado > 0 then
         %>
-        <button type="button" onclick="EmitirRecibo('<%=ContaCredito%>', '<%=ValorRepassado%>', '<%=InvoiceID%>', '<%=Procedimentos%>', '<%=RepasseIDS%>'); $(this).attr('disabled', true)" class=" btn btn-<%=CorBtn%> btn-xs"><i class="fa fa-print"></i> Emitir Recibo</button>
+        <button <%=DisabledEmitir%> type="button" onclick="EmitirRecibo('<%=ContaCredito%>', '<%=ValorRepassado%>', '<%=InvoiceID%>', '<%=Procedimentos%>', '<%=RepasseIDS%>'); $(this).attr('disabled', true)" class=" btn btn-<%=CorBtn%> btn-xs"><i class="fa fa-print"></i> Emitir Recibo</button>
         <%
     elseif ReciboID <> 0 then
         %>

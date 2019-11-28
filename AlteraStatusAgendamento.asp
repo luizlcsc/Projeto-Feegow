@@ -3,7 +3,12 @@
 AgendamentoID=ref("A")
 AgendamentosID=ref("AgendamentosID[]")
 StatusID=ref("S")
+Obs = ref("O")
 
+
+if Obs="" then
+    Obs="Alteração de status"
+end if
 Forcar=False
 
 if AgendamentoID<> "" then
@@ -31,7 +36,7 @@ else
 
     db.execute("UPDATE agendamentos SET StaID="&treatvalzero(StatusID)&" WHERE id in ("&AgendamentosID&")")
     db.execute("insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID)  "&_
-    "(SELECT PacienteID, ProfissionalID, TipoCompromissoID, '', Data, Hora, StaID, '"&session("User")&"', 0,'Alteração de status', 'R', id FROM agendamentos WHERE id in ("&AgendamentosID&"))")
+    "(SELECT PacienteID, ProfissionalID, TipoCompromissoID, '', Data, Hora, StaID, '"&session("User")&"', 0,'"&Obs&"', 'R', id FROM agendamentos WHERE id in ("&AgendamentosID&"))")
     %>
 
     showMessageDialog("Status alterado.", "success");

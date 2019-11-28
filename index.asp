@@ -202,7 +202,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?a=20"></script>
+  <script src="js/components.js?a=30"></script>
   <script src="feegow_components/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
 <%if aut("capptaI") then%>

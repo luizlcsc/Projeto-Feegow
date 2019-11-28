@@ -55,10 +55,10 @@ function openModalCobranca(){
                 </tr>`;
     });
 
-    var msg = `Prezado cliente,<br/>
-     Nosso sistema detectou que sua fatura encontra-se em aberto.<br/>
-     Para imprimir seu boleto clique <a href="${Url}" target="_blank">aqui</a>, caso o pagamento tenha sido efetuado por favor desconsidere este aviso e nos envie o comprovante por e-mail.
-     <i>financeiro@feegow.com.br</i>
+    var msg = `<div class="text-center" style="background-color: #F9F8F8; padding: 20px; margin-left: 5%; margin-right: 5%;"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 30px"></i><br/>
+     <span class="text-danger"><b>Nosso sistema detectou que sua fatura encontra-se em aberto.</b></span><br/>
+     Caso o pagamento tenha sido efetuado por favor desconsidere este aviso
+     e nos envie o comprovante por e-mail: <i><b>financeiro@feegow.com.br</b></i></div><br/><br/>
 
     <h4>Boletos em Aberto</h4>
     <table class="table table-bordered table-condensed table-striped">

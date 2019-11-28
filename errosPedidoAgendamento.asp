@@ -86,7 +86,7 @@ function ValidaProcedimentoLocal(linha,pProcedimentoID,pLocalID)
     if not ProcedimentoLocaisSQL.eof then
         LimitarLocais = ProcedimentoLocaisSQL("SomenteLocais")
 
-        if LimitarLocais&""<>"" and pLocalID&"" <> "" then
+        if LimitarLocais&""<>"" and pLocalID&"" <> "" and pLocalID&"" <> "0" then
             if instr(LimitarLocais, "|"&pLocalID&"|")<=0 then
                 ValidaProcedimentoLocal= linha&"° procedimento não aceita o Local selecionado."
             end if

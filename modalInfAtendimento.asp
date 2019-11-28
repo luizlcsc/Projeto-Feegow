@@ -133,6 +133,13 @@ end if
 db.execute("DELETE FROM calculos_finalizar_atendimento_log WHERE AtendimentoID = "&AtendimentoID)
 
 %>
+<script >
+function saveInf(AI){
+	$("#btnSaveInf").prop("disabled", true);
+	$("#btnSaveInf").html("salvando...");
+	$.post("saveInf.asp?AgendamentoID=<%=req("AgendamentoID")%>&AtendimentoID="+AI+"&Origem=<%=req("Origem")%>&Solicitacao=<%=req("Solicitacao")%>", $("#frmFimAtendimento").serialize(), function(data, status){ eval(data) });
+}
+</script>
 <div class="modal-header">
     <button class="bootbox-close-button close" type="button" data-dismiss="modal">×</button>
     <h4 class="modal-title lighter blue"><%=Titulo%> &raquo; <small><%=atendimento("NomePaciente")%></small></h4>
@@ -292,11 +299,7 @@ function expand(I){
 	}
 }
 
-function saveInf(AI){
-	$("#btnSaveInf").prop("disabled", true);
-	$("#btnSaveInf").html("salvando...");
-	$.post("saveInf.asp?AgendamentoID=<%=req("AgendamentoID")%>&AtendimentoID="+AI+"&Origem=<%=req("Origem")%>&Solicitacao=<%=req("Solicitacao")%>", $("#frmFimAtendimento").serialize(), function(data, status){ eval(data) });
-}
+
 <%
 if getConfig("NaoExibirModalFinalizacaoAtendimento")=1 or aut("finalizaratendimentoV")=0 then
     %>

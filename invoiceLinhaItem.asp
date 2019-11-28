@@ -395,6 +395,8 @@ while not vcaRep.eof
             ValorTotal =DadosRepasseSQL("ValorTotal")
             DataAtendimento = DadosRepasseSQL("DataExecucao")
             linkFonte = "<a href='./?P=Invoice&Pers=1&CD=C&I="& DadosRepasseSQL("InvoiceID") &"' target='_blank'>"
+        else
+            NomeProcedimento = "<i>Conta excluída<i>"
         end if
     end if
 

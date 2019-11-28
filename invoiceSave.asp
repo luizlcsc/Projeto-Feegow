@@ -150,7 +150,9 @@ if existePagto="" then
 											VDescontomaximo = valInv * rsDescontosUsuario("DescontoMaximo") / 100
 										end if
 
-										if ValorDescontoFinal <= VDescontomaximo and VDescontomaximo>5 then
+										valorDescontoPermitido = valInv * 0.05
+
+										if ValorDescontoFinal <= VDescontomaximo and VDescontomaximo>valorDescontoPermitido then
 											idUsuariosDesconto = idUsuariosDesconto & "," & rsDescontosUsuario("idUser")
 										end if
 									end if

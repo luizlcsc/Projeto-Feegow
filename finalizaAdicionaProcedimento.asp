@@ -350,7 +350,7 @@ if 1=1 and AtendimentoID<>"N" then
 	    </table>
 	    <%
     else
-        if not PermitirInformarProcedimentos then
+        if PermitirInformarProcedimentos="0" then
             %>
 <div class="alert alert-default">
     Nenhum item contratado.
@@ -441,8 +441,8 @@ if PermitirInformarProcedimentos then
                     TotalPORTE = treatvalnull(Valores("TotalPORTE"))
                     TotalFILME = treatvalnull(Valores("TotalFILME"))
                     TotalGeral = treatvalnull(Valores("TotalGeral"))
-                    sqlInsert = "INSERT INTO calculos_finalizar_atendimento_log(Obs,AtendimentoID,AtendimentoProcedimentoID,ProcedimentoID, CalculoConvenioID,CalculoContratos,CalculoPlanoID,TotalCH,TotalValorFixo,TotalUCO,TotalPORTE,TotalFILME,TotalGeral)"&_
-                                "VALUE('"&procs("Obs")&"',NULLIF('"&AtendimentoID&"',''),"&id&",NULLIF('"&ProcedimentoID&"',''),NULLIF('"&ConvenioID&"',''),NULLIF('"&CalculoContratos&"',''),NULLIF('"&PlanoID&"',''),"&TotalCH&","&TotalValorFixo&","&TotalUCO&","&TotalPORTE&","&TotalFILME&","&TotalGeral&")"
+                    sqlInsert = "INSERT INTO calculos_finalizar_atendimento_log(AtendimentoID,AtendimentoProcedimentoID,ProcedimentoID, CalculoConvenioID,CalculoContratos,CalculoPlanoID,TotalCH,TotalValorFixo,TotalUCO,TotalPORTE,TotalFILME,TotalGeral)"&_
+                                "VALUE(NULLIF('"&AtendimentoID&"',''),"&id&",NULLIF('"&ProcedimentoID&"',''),NULLIF('"&ConvenioID&"',''),NULLIF('"&CalculoContratos&"',''),NULLIF('"&PlanoID&"',''),"&TotalCH&","&TotalValorFixo&","&TotalUCO&","&TotalPORTE&","&TotalFILME&","&TotalGeral&")"
 
                     db.execute(sqlInsert)
 

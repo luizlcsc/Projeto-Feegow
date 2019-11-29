@@ -104,8 +104,15 @@ function setModalContent(body, title, closeBtn, saveBtn) {
             if (saveBtn === true) {
                 saveBtn = "Salvar";
             }
+            var onclickEvent = "";
 
-            content += "<button class=\"btn btn-primary components-modal-submit-btn\" >" + saveBtn + "</button>\n";
+            if(typeof saveBtn === "function"){
+                onclickEvent = "type='button' onclick='("+saveBtn+")()'";
+                saveBtn = "Salvar";
+            }
+
+
+            content += "<button "+onclickEvent+" class=\"btn btn-primary components-modal-submit-btn\" ><i class='fa fa-save'/> " + saveBtn + "</button>\n";
         }
 
         content += "      </div>";

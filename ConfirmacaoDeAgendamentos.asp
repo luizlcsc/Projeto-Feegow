@@ -2,7 +2,9 @@
 <!--#include file="modal.asp"-->
 
 <%
-    StaChk = "|1|, |4|, |5|, |7|, |15|"
+StaChk = "|1|, |4|, |5|, |7|, |15|"
+
+AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarStatus")
 %>
 
 
@@ -18,24 +20,46 @@
     $(".crumb-link").removeClass("hidden");
     $(".crumb-icon a span").attr("class", "fa fa-check");
 
+    function confirmaAlteracao (statusId, agendamentoId, obs) {
+         $.post("AlteraStatusAgendamento.asp", {
+            A: agendamentoId,
+            S: statusId,
+            O: obs ? obs : ""
+         }, function(data) {
+             eval(data);
+         });
+    }
+
+    function AlterarStatus(statusId, agendamentoId, obs, AbrirModal, CanalID){
+
+        var AdicionarObservacoesAoAlterarStatus = "<%=AdicionarObservacoesAoAlterarStatus%>";
+
+        if(AdicionarObservacoesAoAlterarStatus==="1" || AbrirModal){
+            openComponentsModal("ConfirmaAlteracaoStatus.asp", {canalId: CanalID, obs: obs, statusId: statusId, agendamentoId: agendamentoId}, "Alterar status", true,
+                function ConfirmaAlteracaoDeStatus() {
+                    $.post("AlteraStatusAgendamento.asp", {
+                        A: $("#agendamento-id-confirmacao").val(),
+                        O: $("#ObsConfirmacao").val(),
+                        S: $("input[name=status-confirmacao]:checked").val(),
+                     }, function(data) {
+                         eval(data);
+                         closeComponentsModal()
+                     });
+                }, "md"
+            );
+            return;
+        }else{
+            confirmaAlteracao(statusId, agendamentoId);
+        }
+
+
+    }
+
 
     $("#frm-filtros").submit(function(){
         $("#GradeAgenda").html("Carregando...");
         $.post("confirmacaoDeAgendamentosContent.asp", $(this).serialize(), function(data){
             $("#GradeAgenda").html(data);
-
-
-            $(".muda-status").on("click", function() {
-                var statusId = $(this).data("value");
-                var agendamentoId = $(this).parents("tr").data("id");
-
-                $.post("AlteraStatusAgendamento.asp", {
-                   A: agendamentoId,
-                   S: statusId
-                }, function(data) {
-                    eval(data);
-                });
-            });
 
         });
         return false;
@@ -79,6 +103,9 @@
         }
         var url = "whatsapp://send?phone="+Celular+"&text="+Texto;
         $("#wpp-"+id).html("<i class='success fa fa-check-circle'></i>");
+
+        AlterarStatus("", id, "Contato via WhatsApp", true, 1);
+
         openTab(url);
     }
 

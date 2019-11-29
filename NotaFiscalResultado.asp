@@ -3,10 +3,16 @@
 <%
 De=ref("De")
 Ate=ref("Ate")
+Executantes=ref("Executantes")
+GrupoProcedimentos=ref("GrupoProcedimentos")
 
 if De="" and Ate="" then
     De = date()
     Ate = De
+end if
+set ConfigSQL = db.execute("SELECT SplitNF FROM sys_config WHERE id=1")
+if not ConfigSQL.eof then
+    SplitNF = ConfigSQL("SplitNF")
 end if
 
 if ref("Numero")<>"" then
@@ -32,12 +38,26 @@ if UnidadeID<>"" then
     sqlUnidade=" AND i.CompanyUnitID IN ("&replace(UnidadeID,"|","")&") "
 end if
 
+if Executantes<>"" then
+    sqlExecutantes=" AND '"&Executantes&"' LIKE concat('%|', ii.associacao,'_',ii.ProfissionalID,'|%')"
+end if
+if GrupoProcedimentos<>"" then
+    sqlGrupo=" AND '"&GrupoProcedimentos&"' LIKE concat('%|', proc.GrupoID ,'|%')"
+end if
+
 sql = "SELECT carga.valorservico, i.Value,i.AccountID,i.AssociationAccountID, i.sysDate, nfe.*,orig.TipoNFe, orig.DFeTokenApp, i.id InvoiceID, nfe.id TemRecibo FROM sys_financialinvoices i LEFT JOIN nfe_notasemitidas nfe ON i.id=nfe.InvoiceID LEFT JOIN nfe_origens orig ON REPLACE(REPLACE(orig.CNPJ,'-',''),'.','')=nfe.cnpj  " &_
-" left join carganotacsv carga ON REPLACE(REPLACE(carga.cnpjcnpjprestador,'-',''),'.','') = REPLACE(REPLACE(orig.CNPJ,'-',''),'.','') AND  (carga.numeronota = numeronfse OR carga.rps = nfe.numero) WHERE i.id is not null and date(i.sysDate) >= "&mydatenull(De)&" AND date(i.sysDate) <= "&mydatenull(Ate)&sqlNumero &sqlUnidade&sqlStatus&" AND i.CD='C' ORDER BY nfe.numero"
+" left join carganotacsv carga ON REPLACE(REPLACE(carga.cnpjcnpjprestador,'-',''),'.','') = REPLACE(REPLACE(orig.CNPJ,'-',''),'.','') AND  (carga.numeronota = numeronfse OR carga.rps = nfe.numero) "&_
+" LEFT JOIN itensinvoice ii ON ii.InvoiceID=i.id "&_
+" LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
+" WHERE i.id is not null and date(i.sysDate) >= "&mydatenull(De)&" AND date(i.sysDate) <= "&mydatenull(Ate)&sqlNumero &sqlUnidade&sqlStatus&sqlExecutantes&sqlGrupo&" AND i.CD='C' GROUP BY i.id ORDER BY nfe.numero"
 'response.write(sql)
 set NotasFiscaisSQL = db.execute(sql)
-
+TotalTotal=0
 TotalEmitido=0
+TotalNFSe=0
+TotalRepasse=0
+TotalLiquido=0
+TotalPrefeitura=0
 if not NotasFiscaisSQL.eof then
     %>
 <table class="table table-striped table-bordered table-condensed table-hover">
@@ -53,18 +73,12 @@ if not NotasFiscaisSQL.eof then
                 Recebido de
             </th>
             <th>
-                CNPJ
+                CPF
             </th>
             <th>
                 Número
             </th>
-            <%
-            if NotasFiscaisSQL("TipoNFe")="nota_fiscal_servico_eletronica" then
-            %>
             <th>RPS</th>
-            <%
-            end if
-            %>
             <th>
                 Status
             </th>
@@ -95,16 +109,32 @@ if not NotasFiscaisSQL.eof then
     <tbody>
     <%
     n=0
+
+    TemReciboAGerar= False
+
     while not NotasFiscaisSQL.eof
 
         set ValorItensSQL = db.execute("SELECT sum(Quantidade * (ValorUnitario - Desconto + Acrescimo))Valor FROM itensinvoice WHERE InvoiceID="&NotasFiscaisSQL("InvoiceID")&" AND Executado!='C'")
         ValorTotalInvoice = ValorItensSQL("Valor")
         ValorNota = ValorItensSQL("Valor")
+        dataReferencia = NotasFiscaisSQL("datageracao")
+        InvoiceID = NotasFiscaisSQL("InvoiceID")
 
         ValorRepasse = 0
+        TemRepasse=False
+
         set ValorRepasseSQL = db.execute("SELECT SUM(rr.valor) ValorRepasses FROM rateiorateios rr INNER JOIN itensinvoice ii ON ii.id=rr.ItemInvoiceID WHERE ii.InvoiceID="&NotasFiscaisSQL("InvoiceID")&" AND rr.ContaCredito not in ('0','0_0')")
         if not ValorRepasseSQL.eof then
             ValorRepasse = ValorRepasseSQL("ValorRepasses")
+        end if
+
+        set ValorTodosRepasseSQL = db.execute("SELECT count(rr.id) id FROM rateiorateios rr INNER JOIN itensinvoice ii ON ii.id=rr.ItemInvoiceID WHERE ii.InvoiceID="&NotasFiscaisSQL("InvoiceID"))
+        if not ValorTodosRepasseSQL.eof then
+            RepasseID = ValorTodosRepasseSQL("id")
+
+            if not isnull(RepasseID) then
+                TemRepasse=True
+            end if
         end if
 
         PermiteRegerarRecibo=False
@@ -139,8 +169,7 @@ if not NotasFiscaisSQL.eof then
             ValorNota=0
         end if
         if round(ValorLiquido ) <> round(ValorNota) then
-            corValorNota = "red"
-            classeLinha = " danger"
+
 
         end if
 
@@ -149,17 +178,15 @@ if not NotasFiscaisSQL.eof then
         end if
 
 
-        if PermiteRegerarRecibo then
-            %>
-            <input type="checkbox" class="recibo-com-problema" data-id="<%=NotasFiscaisSQL("InvoiceID")%>">
-            <%
-        end if
+
 
         'if NotasFiscaisSQL("situacao")=1 then
             if isnull(ValorNota) then
                 ValorNota = 0
             end if
-            TotalEmitido = TotalEmitido + ValorNota
+            TotalEmitido = TotalEmitido
+
+
         'end if
         rps = ""
 
@@ -177,7 +204,7 @@ if not NotasFiscaisSQL.eof then
         end if
         MsgEmitir=""
         set PacienteSQL = db.execute("SELECT NomePaciente, CPF FROM pacientes WHERE id="&treatvalzero(NotasFiscaisSQL("AccountID")))
-        set ItemCanceladoSQL = db.execute("SELECT id FROM itensinvoice WHERE Executado='C' AND InvoiceID="&NotasFiscaisSQL("InvoiceID"))
+        set ItemCanceladoSQL = db.execute("SELECT id FROM itensinvoice WHERE Executado='C' AND InvoiceID="&InvoiceID)
 
         if not ItemCanceladoSQL.eof then
             MostraCheckbox = False
@@ -189,10 +216,10 @@ if not NotasFiscaisSQL.eof then
 
         if not PacienteSQL.eof then
             conta = PacienteSQL("NomePaciente")
-            CPF = PacienteSQL("CPF")
+            CPFTomador = PacienteSQL("CPF")
 
-            if CPF&"" <> "" then
-                if not CalculaCPF(CPF) then
+            if CPFTomador&"" <> "" then
+                if not CalculaCPF(CPFTomador) then
                     CPFValido=False
                 end if
             end if
@@ -202,10 +229,39 @@ if not NotasFiscaisSQL.eof then
             MostraCheckbox=False
         end if
 
+        set ReciboSQL = db.execute("SELECT sysDate FROM recibos WHERE InvoiceID="&InvoiceID&" AND RPS='S' AND sysActive=1")
+        if not ReciboSQL.eof then
+            dataReferencia=ReciboSQL("sysDate")
+        end if
+
+        if SplitNF and not TemRepasse and MostraCheckbox then
+            MostraCheckbox=False
+            MsgEmitir="Nenhum repasse consolidado."
+            PermiteRegerarRecibo=False
+        end if
+
+        if PermiteRegerarRecibo then
+            TemReciboAGerar= True
+            %>
+            <input type="checkbox" class="recibo-com-problema" data-id="<%=InvoiceID%>">
+            <%
+        end if
+
         n=n+1
-          if fn(ValorLiquido) <> fn(NotasFiscaisSQL("valorservico")) and fn(NotasFiscaisSQL("valorservico")) <> "0,00" then
+        if fn(ValorLiquido) <> fn(NotasFiscaisSQL("valorservico")) and fn(NotasFiscaisSQL("valorservico")) <> "0,00" then
             classeLinha = " warning "
         end if
+
+            if ValorTotalInvoice&""="" then
+                ValorTotalInvoice=0
+            end if
+
+
+            TotalTotal= TotalTotal + ValorTotalInvoice
+            TotalNFSe= TotalNFSe + ValorTotalInvoice
+            TotalRepasse= TotalRepasse + ValorRepasse
+            TotalLiquido= TotalLiquido + ValorLiquido
+            TotalPrefeitura= TotalPrefeitura + ValorNota
         %>
         <tr class="linha-nf-<%=NotasFiscaisSQL("id")%> <%=classeLinha%>">
             <td>
@@ -236,15 +292,9 @@ if not NotasFiscaisSQL.eof then
             <td>
                 <a href="?P=Pacientes&I=<%=NotasFiscaisSQL("AccountID")%>&Pers=1"><%=conta%></a>
             </td>
-            <td><%=NotasFiscaisSQL("cnpj")%></td>
+            <td><%=CPFTomador%></td>
             <td><strong><%=numero%></strong></td>
-            <%
-            if tipoNF="nota_fiscal_servico_eletronica" then
-            %>
             <td><%=rps%></td>
-            <%
-            end if
-            %>
             <td><%=NotasFiscaisSQL("Motivo")%></td>
             <td><%=fn(ValorTotalInvoice)%></td>
             <td><%=fn(ValorRepasse)%></td>
@@ -258,7 +308,7 @@ if not NotasFiscaisSQL.eof then
                     response.write("-") 
                 end if%>
             </td>
-            <td><%=NotasFiscaisSQL("datageracao")%></td>
+            <td><%=dataReferencia%></td>
             <td><%=NotasFiscaisSQL("dataemissao")%></td>
             <td><% if aut("|notafiscalX|")=1 then %> <button <% if not MostraCheckbox then %> disabled <% end if %> onclick="xNf('<%=NotasFiscaisSQL("id")%>')" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button> <% end if %></td>
         </tr>
@@ -270,15 +320,43 @@ if not NotasFiscaisSQL.eof then
     NotasFiscaisSQL.close
     set NotasFiscaisSQL=nothing
 %>
+    <tfoot>
+        <tr>
+            <th colspan="7"></th>
+            <th><%=fn(TotalTotal)%></th>
+            <th><%=fn(TotalRepasse)%></th>
+            <th><%=fn(TotalLiquido)%></th>
+            <th><%=fn(TotalNFSe)%></th>
+            <th><%=fn(TotalPrefeitura)%></th>
+        </tr>
+    </tfoot>
     </tbody>
 </table>
 <br>
-<h4 class="m15">R$ <%=fn(TotalEmitido)%></h4>
-<h4 class="m15"><%=n%> NF-e</h4>
 <%
 else
     %>
 <center><em>Filtre acima os dados da nota fiscal.</em></center>
     <%
 end if
+
+
+
+%>
+<script >
+<%
+if TemReciboAGerar then
+%>
+$("#btn-gerar-recibos").removeClass("hidden").attr("disabled", false)
+<%
+else
+%>
+$("#btn-gerar-recibos").addClass("hidden")
+<%
+end if
+%>
+</script>
+<%
+
+
 %>

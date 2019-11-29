@@ -430,24 +430,27 @@ if PermitirInformarProcedimentos then
 
                 IF getConfig("calculostabelas") THEN
                     SET Valores = CalculaValorProcedimentoConvenio(null,ConvenioID,procs("ProcedimentoID"),procs("PlanoID"),CodigoNaOperadora,1,null)
-                    AssociacaoID = Valores("AssociacaoID")
 
-		            ValorFinal       = (Valores("TotalGeral"))
+                    if xxxCalculaValorProcedimentoConvenioNotIsNull then
+                        AssociacaoID = Valores("AssociacaoID")
 
-                    CalculoContratos = (Valores("Contratos"))
-                    TotalCH = treatvalnull(Valores("TotalCH"))
-                    TotalValorFixo = treatvalnull(Valores("TotalValorFixo"))
-                    TotalUCO = treatvalnull(Valores("TotalUCO"))
-                    TotalPORTE = treatvalnull(Valores("TotalPORTE"))
-                    TotalFILME = treatvalnull(Valores("TotalFILME"))
-                    TotalGeral = treatvalnull(Valores("TotalGeral"))
-                    sqlInsert = "INSERT INTO calculos_finalizar_atendimento_log(AtendimentoID,AtendimentoProcedimentoID,ProcedimentoID, CalculoConvenioID,CalculoContratos,CalculoPlanoID,TotalCH,TotalValorFixo,TotalUCO,TotalPORTE,TotalFILME,TotalGeral)"&_
-                                "VALUE(NULLIF('"&AtendimentoID&"',''),"&id&",NULLIF('"&ProcedimentoID&"',''),NULLIF('"&ConvenioID&"',''),NULLIF('"&CalculoContratos&"',''),NULLIF('"&PlanoID&"',''),"&TotalCH&","&TotalValorFixo&","&TotalUCO&","&TotalPORTE&","&TotalFILME&","&TotalGeral&")"
+                        ValorFinal       = (Valores("TotalGeral"))
 
-                    db.execute(sqlInsert)
+                        CalculoContratos = (Valores("Contratos"))
+                        TotalCH = treatvalnull(Valores("TotalCH"))
+                        TotalValorFixo = treatvalnull(Valores("TotalValorFixo"))
+                        TotalUCO = treatvalnull(Valores("TotalUCO"))
+                        TotalPORTE = treatvalnull(Valores("TotalPORTE"))
+                        TotalFILME = treatvalnull(Valores("TotalFILME"))
+                        TotalGeral = treatvalnull(Valores("TotalGeral"))
+                        sqlInsert = "INSERT INTO calculos_finalizar_atendimento_log(AtendimentoID,AtendimentoProcedimentoID,ProcedimentoID, CalculoConvenioID,CalculoContratos,CalculoPlanoID,TotalCH,TotalValorFixo,TotalUCO,TotalPORTE,TotalFILME,TotalGeral)"&_
+                                    "VALUE(NULLIF('"&AtendimentoID&"',''),"&id&",NULLIF('"&ProcedimentoID&"',''),NULLIF('"&ConvenioID&"',''),NULLIF('"&CalculoContratos&"',''),NULLIF('"&PlanoID&"',''),"&TotalCH&","&TotalValorFixo&","&TotalUCO&","&TotalPORTE&","&TotalFILME&","&TotalGeral&")"
 
-                    ValorFinal = formatnumber(Valores("TotalGeral"), 2)
+                        db.execute(sqlInsert)
 
+                        ValorFinal = formatnumber(Valores("TotalGeral"), 2)
+
+                    END IF
                 END IF
             END IF
 

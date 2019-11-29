@@ -252,6 +252,11 @@ if lcase(ref("P"))="profissionais" or lcase(ref("P"))="funcionarios" then
 	if tipo="funcionarios" then Nome = "NomeFuncionario" end if
 	set vcIns = db.execute("select sysActive,Ativo from "&tableName&" where id="&id)
 	if not vcIns.EOF then
+	    UsuarioAtivo = "0"
+	    IF ref("Ativo") = "on" THEN
+	        UsuarioAtivo = "1"
+	    END IF
+
 		if vcIns("sysActive")=0 then
 			db_execute("insert into cliniccentral.licencaslogs (LicencaID, tipo, Nome, idTabela, acao, sysUser) values ("&replace(session("banco"), "clinic", "")&", '"&tipo&"', '"&ref(""&Nome&"")&"', '"&id&"', 'I', "&session("User")&")")
         'else
@@ -293,7 +298,7 @@ if lcase(ref("P"))="profissionais" or lcase(ref("P"))="funcionarios" then
 
 	set vcaUser = db.execute("select id from sys_users where `Table`='"&tableName&"' AND idInTable="&id)
 	if NOT vcaUser.EOF then
-		db_execute("UPDATE cliniccentral.licencasusuarios SET Nome='"&ref(""&Nome&"")&"' WHERE id="&vcaUser("id"))
+		db_execute("UPDATE cliniccentral.licencasusuarios SET Nome='"&ref(""&Nome&"")&"',Ativo="&UsuarioAtivo&" WHERE id="&vcaUser("id"))
 	end if
 end if
 

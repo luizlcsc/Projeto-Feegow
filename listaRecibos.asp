@@ -100,7 +100,7 @@ if SplitNF=1 then
         if ContaCredito&"" = "0" then
             sqlContaCredito = " OR ContaCredito IS NULL and Nome <> 'Recibo padrão'"
 
-            if i=0 then
+            if i=0 and StatusRepasse="" then
                 DisabledEmitir=" disabled "
             end if
 

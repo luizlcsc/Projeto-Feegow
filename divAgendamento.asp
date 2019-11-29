@@ -1328,6 +1328,8 @@ var saveAgenda = function(){
 function submitAgendamento(check) {
 
     let valorPlano = null;
+    let checkin = $("#Checkin").length;
+
 
     if($("#rdValorPlanoV").prop("checked") && !$("#rdValorPlanoV").prop("disabled") ){
         valorPlano = "V";
@@ -1337,19 +1339,20 @@ function submitAgendamento(check) {
         valorPlano = "P";
     }
 
-    if(valorPlano === null){
-        new PNotify({
-            title: 'Particular ou Convênio?',
-            text: 'Selecione a forma do agendamento.',
-            type: 'danger',
-            delay: 2000
-        });
+    if(checkin != 1){
+        if(valorPlano === null){
+            new PNotify({
+                title: 'Particular ou Convênio?',
+                text: 'Selecione a forma do agendamento.',
+                type: 'danger',
+                delay: 2000
+            });
 
-        return false;
+            return false;
+        }
     }
 
     var repetir = $("#rpt").prop("checked");
-    let checkin = $("#Checkin").length
     if(checkin === 1 && checkmultiplos === "1"){
         checkinMultiplo();
     }else{

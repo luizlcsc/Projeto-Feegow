@@ -144,7 +144,7 @@ TipoGuia = reg("TipoGuia")
                         <%= quickField("memo", "AvisoAgenda", "Avisos e lembretes ao agendar este procedimento", 4, reg("AvisoAgenda"), "", "", "") %>
                         <%=quickField("memo", "TextoPedido", "Texto para pedido deste procedimento", 4, reg("TextoPedido"), "", "", "" )%>
                         <%'=quickField("memo", "Descricao", "Descrição", 4, reg("Descricao"), "", "", "" )%>
-                        <%=quickField("memo", "TextoPreparo", "Preparo", 4, reg("TextoPreparo"), "", "", "" )%>
+                        <%=quickField("memo", "TextoPreparo", "Preparo", 8, reg("TextoPreparo"), "", "", "" )%>
                         <%'=quickField("memo", "TextoColeta", "Coleta", 4, reg("TextoColeta"), "", "", "" )%>
                         <%'=quickField("number", "PrazoEntrega", "Prazo de Entrega", 2, reg("PrazoEntrega"), " text-right", "", "")%>
                         <%
@@ -666,7 +666,9 @@ $(function() {
 $(document).ready(function(e) {
 	<%call formSave("frm", "save", "")%>
 });
-
-
+$(function () {
+    CKEDITOR.config.height = 150;
+    $("#TextoPreparo").ckeditor();
+});
 </script>
 <!--#include file="disconnect.asp"-->

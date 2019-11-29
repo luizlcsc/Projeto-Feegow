@@ -4,10 +4,18 @@ selectUnion = ""
 splUnions = split(ref("associations"), ", ")
 for un=0 to ubound(splUnions)
 	resultado = aaTable(splUnions(un))
+	sqlWhereOr = ""
+	colunaValor=resultado(2)
+
 	if resultado(0)="profissionais" or resultado(0)="fornecedores" then
         Ativo = " AND Ativo='on' "
     else
         Ativo = ""
+    end if
+
+	if resultado(0)="profissionais" or resultado(0)="profissionalexterno" then
+        sqlWhereOr = " OR replace(replace(DocumentoConselho,'-',''),'.','') LIKE '%"&replace(ref("typed"), " ", "%")&"%' "
+        colunaValor=" CONCAT(IFNULL(NomeProfissional,''), ' (',IFNULL(DocumentoConselho,''),')') "
     end if
 
 	if resultado(0)="profissionais" or resultado(0)="Pacientes" then
@@ -23,9 +31,9 @@ for un=0 to ubound(splUnions)
     'response.write(resultado(1))
 
     IF (resultado(1) = "Paciente") THEN
-	    selectUnion = selectUnion&"(select id, '"&splUnions(un)&"' associacao, '"&resultado(1)&"' recurso, "&resultado(2)&" coluna from `"&resultado(0)&"` where ("&resultado(2)&" like '%"&replace(ref("typed"), " ", "%")&"%' "&nomeSocial&") "&Ativo&active&" order by "&resultado(2)&" limit 50) UNION ALL "
+	    selectUnion = selectUnion&"(select id, '"&splUnions(un)&"' associacao, '"&resultado(1)&"' recurso, "&colunaValor&" coluna from `"&resultado(0)&"` where ("&resultado(2)&" like '%"&replace(ref("typed"), " ", "%")&"%' "&nomeSocial&sqlWhereOr&") "&Ativo&active&" order by "&resultado(2)&" limit 50) UNION ALL "
 	ELSE
-	    selectUnion = selectUnion&"(select id, '"&splUnions(un)&"' associacao, '"&resultado(1)&"' recurso, "&resultado(2)&" coluna from `"&resultado(0)&"` where ("&resultado(2)&" like '"&replace(ref("typed"), " ", "%")&"%' "&nomeSocial&") "&Ativo&active&" order by "&resultado(2)&" limit 50) UNION ALL "
+	    selectUnion = selectUnion&"(select id, '"&splUnions(un)&"' associacao, '"&resultado(1)&"' recurso, "&colunaValor&" coluna from `"&resultado(0)&"` where ("&resultado(2)&" like '"&replace(ref("typed"), " ", "%")&"%' "&nomeSocial&") "&Ativo&sqlWhereOr&active&" order by "&resultado(2)&" limit 50) UNION ALL "
 	END IF
 	'strInserts = strInserts&"<label><input type=""radio"" name=""radio"&ref("selectID")&""" class=""ace""><span class=""lbl""> "&resultado(1)&"</span></label>"
 

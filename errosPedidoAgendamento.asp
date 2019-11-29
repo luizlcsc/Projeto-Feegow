@@ -104,7 +104,7 @@ function ValidaProcedimentoObrigaSolicitante(linha,pProcedimentoID)
         ObrigarSolicitante = ProcedimentoLocaisSQL("ObrigarSolicitante")
 
         if ObrigarSolicitante = "S" then
-            ValidaProcedimentoObrigaSolicitante = linha&"° procedimento obriga profissional solicitante."
+            ValidaProcedimentoObrigaSolicitante = linha&"° procedimento obriga profissional indicador."
         end if
     end if
 end function

@@ -68,7 +68,7 @@ if req("Checkin")="1" then
     " LEFT JOIN procedimentos proc ON proc.id=t.TipoCompromissoID "&_
     " LEFT JOIN tissprocedimentosvalores tpv ON tpv.ProcedimentoId = t.TipoCompromissoID AND (tpv.ConvenioID=t.ValorPlano AND t.rdValorPlano='P')  "&_
     " LEFT JOIN convenios conv ON (conv.id=t.ValorPlano AND t.rdValorPlano='P') "&_
-    " ORDER BY t.rdValorPlano DESC, t.ValorPlano, proc.TipoGuia"
+    " GROUP BY t.id ORDER BY t.rdValorPlano DESC, t.ValorPlano, proc.TipoGuia"
 
     'response.write(sql)
     set agp = db.execute( sql )

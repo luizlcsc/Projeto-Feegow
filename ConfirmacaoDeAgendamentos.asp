@@ -104,7 +104,7 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
         var url = "whatsapp://send?phone="+Celular+"&text="+Texto;
         $("#wpp-"+id).html("<i class='success fa fa-check-circle'></i>");
 
-        AlterarStatus("", id, "Contato via WhatsApp", true, 1);
+        AlterarStatus(1, id, "Contato via WhatsApp", true, 1);
 
         openTab(url);
     }

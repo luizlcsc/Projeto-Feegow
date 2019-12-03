@@ -5,6 +5,7 @@ tipo = req("tipo")
 ProcedimentoID = ref("ProcedimentoID")
 ProfissionalID = ref("ProfissionalID")
 PacienteID = ref("PacienteID")
+Checkin = ref("Checkin")
 
 
 FormaPagto = request.QueryString("FormaPagto")'Particular ou Convenio
@@ -363,13 +364,15 @@ if left(tipo, 14)="ProcedimentoID" then
         end if
 
         ValorAgendamento = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ref("ProfissionalID"), ref("EspecialidadeID"), GrupoID)
-		%>
+		if Checkin&"" <> "1" then 
+        %>
 		 $("#Tempo<%= apID %>").val('<%=TempoProcedimento%>');
 		 if($("#EquipamentoID<%= apID %>").val() == "" || $("#EquipamentoID<%= apID %>").val() == "0"){
 		        $("#EquipamentoID<%= apID %>").val('<%=EquipamentoPadrao%>').change();
              $("#EquipamentoID<%= apID %>").select2();
 		 }
 		<%
+        end if
 		if PacienteID<>"" and not isnull(DiasRetorno) and isnumeric(DiasRetorno) then
 			set agendAnt = db.execute("select Data from agendamentos where PacienteID="&PacienteID&" and Data>"&mydatenull( dateadd("d", DiasRetorno*(-1), ref("Data")) )&" AND EspecialidadeID="&treatvalnull(ref("EspecialidadeID"))&" AND TipoCompromissoID="&ProcedimentoID&" and StaID=3 order by Data desc limit 1")
 			if not agendAnt.EOF then

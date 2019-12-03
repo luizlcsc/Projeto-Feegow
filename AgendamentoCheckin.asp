@@ -104,7 +104,7 @@ end if
 					if tab.EOF then
 						%><input type="hidden" name="Tabela" value="0" id="Tabela" /><%
 					else
-						response.Write(quickField("simpleSelect", "ageTabela", "Tabela", 6, TabelaParticularID, "select * from TabelaParticular where sysActive=1 and Ativo='on' and (Unidades like '' or Unidades = "&session("UnidadeID")&" or Unidades like '%|"& session("UnidadeID") &"|%') order by NomeTabela", "NomeTabela", " onchange=""$.each($('.linha-procedimento'), function(){ parametros('ProcedimentoID'+$(this).data('id'),$(this).find('select[data-showcolumn=\'NomeProcedimento\']').val()); })""  "))
+						response.Write(quickField("simpleSelect", "ageTabela", "Tabela", 6, TabelaParticularID, "select * from TabelaParticular where sysActive=1 and Ativo='on' and (Unidades like '' or Unidades = "&session("UnidadeID")&" or Unidades like '%|"& session("UnidadeID") &"|%') order by NomeTabela", "NomeTabela", " onchange=""$.each($('.linha-procedimento'), function(){ parametros('ProcedimentoID'+$(this).data('id'),$(this).find('[id^=ProcedimentoID]').val()); })""  "))
 					end if
 					%>
                 </div>

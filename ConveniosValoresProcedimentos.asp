@@ -49,6 +49,13 @@ wend
 planos.close
 set planos=nothing
 %>
+
+<div class="panel">
+    <div class="panel-body">
+        <%= quickfield("text", "ProcedimentoRapido", "Busca rápida de procedimento", 12, "", "", "", " placeholder='Digite o Nome do procedimento...' ") %>
+    </div>
+</div>
+
 <div class="text-right">
     <% IF getConfig("calculostabelas") THEN %>
         <button class="btn btn-sm btn-primary" style="margin-bottom: 10px" onclick="ajxContent('ConveniosValoresProcedimentos&Recalcular=1&ConvenioID=<%=ConvenioID%>', '', '1', 'divValores')">
@@ -57,7 +64,9 @@ set planos=nothing
     <% END IF %>
 </div>
 <div id="tableValoresConvenio">
-    <table class="table table-striped table-hover table-bordered table-condensed">
+    <!--#include file="ConveniosValoresProcedimentosLoad.asp"-->
+
+    <table class="table table-striped hidden table-hover table-bordered table-condensed">
         <thead><tr>
             <th></th>
             <th>Procedimento</th>
@@ -169,9 +178,9 @@ set planos=nothing
 </div>
 
 <nav >
-  <ul class="pager">
-    <li><a href="#">Anterior</a></li>
-    <li><a href="#">Próximo</a></li>
+  <ul id="pager" class="pager">
+    <li><a href="#" onclick="pageChange(0)">Anterior</a></li>
+    <li><a href="#" onclick="pageChange(1)">Próximo</a></li>
   </ul>
 </nav>
 
@@ -199,8 +208,38 @@ function removeAssociacao(I){
 	}
 }
 
-function pageChange(){
-    
+var loadMore = 0;
+var steps = 50;
+function pageChange(direcao){
+
+    let newloadMore = direcao==1 ? loadMore+steps:loadMore-steps;
+    newloadMore = newloadMore < 0 ? 0 : newloadMore;
+    $.get("ConveniosValoresProcedimentosLoad.asp?ConvenioID=<%=ConvenioID%>",{
+        loadMore : newloadMore
+    }).done(function(data) {
+        if(data!==""){
+            $("#tableValoresConvenio").html(data);
+            loadMore = newloadMore < 0 ? 0 : newloadMore;
+        } else{
+        }
+    }).fail(function(data) {
+
+    }).always(function(){
+    });
 }
+
+$("#ProcedimentoRapido").keyup(function(){
+        if($(this).val()==''){
+            $("#pager").show();
+            loadMore = 0;
+            pageChange(0);
+        }else{
+            $("#pager").hide();
+            $.get("ConveniosValoresProcedimentosLoad.asp?ConvenioID=<%=ConvenioID%>&txt="+$(this).val(),
+             function(data){
+                $("#tableValoresConvenio").html(data);
+            });
+        }
+    });
 
 </script>

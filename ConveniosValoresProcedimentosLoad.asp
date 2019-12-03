@@ -1,16 +1,55 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes\ValorProcedimento.asp"-->
-
 <%
 loadMore = 0
-MaximoLimit = 20
+MaximoLimit = 50
+if req("ConvenioID") <>"" then
+    ConvenioID = req("ConvenioID")
+end if
+if req("loadMore") <> "" then
+    loadMore = req("loadMore")
+    limit = "limit "&loadMore&","&MaximoLimit
+end if 
+
+txt = replace(req("txt"), " ", "%")
 
 sqlProcedimentos = "select p.id as ProcID, p.NomeProcedimento, v.*, v.id as PvId, pt.*, (SELECT group_concat(DISTINCT CodigoNaOperadora) FROM contratosconvenio cc WHERE v.Contratados like CONCAT('%|',cc.id,'|%') AND CodigoNaOperadora <> '' ) as CodigoNaOperadora  from procedimentos as p "&_
                     "left join tissprocedimentosvalores as v on (v.ProcedimentoID=p.id and v.ConvenioID="&ConvenioID&") "&_
                     "left join tissprocedimentostabela as pt on (v.ProcedimentoTabelaID=pt.id)"&_
-                    "where p.sysActive=1 and Ativo='on' and (v.ConvenioID="&ConvenioID&" or v.ConvenioID is null) and (isnull(SomenteConvenios) or SomenteConvenios like '%|"&ConvenioID&"|%' or SomenteConvenios like '') and (SomenteConvenios not like '%|NONE|%' or isnull(SomenteConvenios)) order by (IF(v.id IS NOT NULL, 0,1)) , NomeProcedimento limit "&loadMore&","&MaximoLimit
+                    "where p.NomeProcedimento like '%"&txt&"%' and p.sysActive=1 and Ativo='on' and (v.ConvenioID="&ConvenioID&" or v.ConvenioID is null) and (isnull(SomenteConvenios) or SomenteConvenios like '%|"&ConvenioID&"|%' or SomenteConvenios like '') and (SomenteConvenios not like '%|NONE|%' or isnull(SomenteConvenios)) order by (IF(v.id IS NOT NULL, 0,1)) , NomeProcedimento "&limit
+                    
 
     set proc = db.execute(sqlProcedimentos)
+if not proc.eof then
+%>
+
+ <table class="table table-striped table-hover table-bordered table-condensed">
+        <thead><tr>
+            <th></th>
+            <th>Procedimento</th>
+            <th>Tabela</th>
+            <th>C&oacute;digo</th>
+            <th>Código na Operadora</th>
+            <th>Descri&ccedil;&atilde;o</th>
+            <th>T&eacute;cnica</th>
+            <th>Valor</th>
+            <%
+            if false then
+                splNomePlano = split(strNomePlano, "|")
+                for i=0 to ubound(splNomePlano)
+                    if splNomePlano(i)<>"" then
+                        %>
+                        <th><%=splNomePlano(i)%></th>
+                        <%
+                    end if
+                next
+            end if
+            %>
+            <th width="1%"></th>
+        </tr></thead>
+        <tbody>
+<%
+
 
 IF getConfig("calculostabelas") THEN
     ProcessarTodasAssociacoes(ConvenioID)
@@ -83,4 +122,9 @@ wend
 proc.close
 set proc = nothing
 %>
-
+        </tbody>
+    </table>
+</div>
+<%
+end if
+%>

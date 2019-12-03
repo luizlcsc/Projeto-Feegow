@@ -49,6 +49,13 @@ wend
 planos.close
 set planos=nothing
 %>
+
+<div class="panel">
+    <div class="panel-body">
+        <%= quickfield("text", "ProcedimentoRapido", "Busca rápida de procedimento", 12, "", "", "", " placeholder='Digite o Nome do procedimento...' ") %>
+    </div>
+</div>
+
 <div class="text-right">
     <% IF getConfig("calculostabelas") THEN %>
         <button class="btn btn-sm btn-primary" style="margin-bottom: 10px" onclick="ajxContent('ConveniosValoresProcedimentos&Recalcular=1&ConvenioID=<%=ConvenioID%>', '', '1', 'divValores')">
@@ -56,112 +63,149 @@ set planos=nothing
         </button>
     <% END IF %>
 </div>
-<table class="table table-striped table-hover table-bordered table-condensed">
-<thead><tr>
-	<th></th>
-	<th>Procedimento</th>
-    <th>Tabela</th>
-    <th>C&oacute;digo</th>
-    <th>Código na Operadora</th>
-    <th>Descri&ccedil;&atilde;o</th>
-    <th>T&eacute;cnica</th>
-    <th>Valor</th>
-    <%
-    if false then
-        splNomePlano = split(strNomePlano, "|")
-        for i=0 to ubound(splNomePlano)
-            if splNomePlano(i)<>"" then
-                %>
-                <th><%=splNomePlano(i)%></th>
-                <%
-            end if
-        next
-	end if
-	%>
-    <th></th>
-</tr></thead>
-<tbody>
-	<%
-	sqlProcedimentos = "select p.id as ProcID, p.NomeProcedimento, v.*, v.id as PvId, pt.*, (SELECT group_concat(DISTINCT CodigoNaOperadora) FROM contratosconvenio cc WHERE v.Contratados like CONCAT('%|',cc.id,'|%') AND CodigoNaOperadora <> '' ) as CodigoNaOperadora  from procedimentos as p "&_
-                       	"left join tissprocedimentosvalores as v on (v.ProcedimentoID=p.id and v.ConvenioID="&ConvenioID&") "&_
-                       	"left join tissprocedimentostabela as pt on (v.ProcedimentoTabelaID=pt.id)"&_
-                       	"where p.sysActive=1 and Ativo='on' and (v.ConvenioID="&ConvenioID&" or v.ConvenioID is null) and (isnull(SomenteConvenios) or SomenteConvenios like '%|"&ConvenioID&"|%' or SomenteConvenios like '') and (SomenteConvenios not like '%|NONE|%' or isnull(SomenteConvenios)) order by (IF(v.id IS NOT NULL, 0,1)) , NomeProcedimento"
+<div id="tableValoresConvenio">
+    <!--#include file="ConveniosValoresProcedimentosLoad.asp"-->
 
-    	set proc = db.execute(sqlProcedimentos)
-
-    IF getConfig("calculostabelas") THEN
-        ProcessarTodasAssociacoes(ConvenioID)
-    END IF
-
-	while not proc.eof
-		if isnull(proc("Valor")) then
-			Valor=""
-		else
-			Valor=formatnumber(proc("Valor"),2)
-		end if
-
-        IF proc("PvId") > 0 AND getConfig("calculostabelas") THEN
-            IF NOT isnull(proc("ValorConsolidado")) THEN
-        	    Valor=formatnumber(proc("ValorConsolidado"),2)
-        	ELSE
-        	    set reg = CalculaValorProcedimentoConvenio(proc("PvId"),ConvenioID,proc("ProcID"),null,null,null,null)
-        	    IF xxxCalculaValorProcedimentoConvenioNotIsNull THEN
-            	    ProcID = reg("AssociacaoID")
-            	    Valor = "R$"&fn(reg("TotalGeral")+CalculaValorProcedimentoConvenioAnexo(ConvenioID,proc("ProcID"),reg("AssociacaoID"),PrimeiroPlano))
-            	END IF
-        	END IF
-	    END IF
-
-		response.flush()
-
-		%><tr id="<%=proc("ProcID")%>">
-        	<td><% if aut("|conveniosA|")= 1 then %><button type="button" onclick="editaValores(<%=proc("ProcID")%>, <%=ConvenioID%>,<%=proc("PvId")%>);" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></button><% end if %></td>
-			<td><%=proc("NomeProcedimento")%></td>
-			<td class="text-right"><%=proc("TabelaID")%></td>
-			<td class="text-right"><%=proc("Codigo")%></td>
-			<td class="text-right"><%=proc("CodigoNaOperadora")%></td>
-			<td><%=proc("Descricao")%></td>
-			<td class="text-right"><%=proc("TecnicaID")%></td>
-			<td class="text-right"><%=Valor%></td>
-			<%
-			if false then
-                splPlanoID = split(strPlanoID, "|")
-                for j=0 to ubound(splNomePlano)
-                    if splPlanoID(j)<>"" then
-                        ValorPlano = ""
-                        set valPlan = db.execute("select * from tissprocedimentosvaloresplanos where PlanoID="&splPlanoID(j)&" and AssociacaoID like '"&proc("PvId")&"'")
-                        if not valPlan.EOF then
-                            if valPlan("NaoCobre")="S" then
-                                ValorPlano = "<i class=""fa fa-ban-circle""></i>"
-                            else
-                                ValorPlano = formatnumber(valPlan("Valor"),2)
-                            end if
-                        end if
+    <table class="table table-striped hidden table-hover table-bordered table-condensed">
+        <thead><tr>
+            <th></th>
+            <th>Procedimento</th>
+            <th>Tabela</th>
+            <th>C&oacute;digo</th>
+            <th>Código na Operadora</th>
+            <th>Descri&ccedil;&atilde;o</th>
+            <th>T&eacute;cnica</th>
+            <th>Valor</th>
+            <%
+            if false then
+                splNomePlano = split(strNomePlano, "|")
+                for i=0 to ubound(splNomePlano)
+                    if splNomePlano(i)<>"" then
                         %>
-                        <td class="text-right"><%=ValorPlano%></td>
+                        <th><%=splNomePlano(i)%></th>
                         <%
                     end if
                 next
             end if
             %>
-            <td>
-                <%
-                if proc("id") > 0 then
-                    %>
-                    <button type="button" class="btn btn-primary btn-xs" onclick="clonarAssociacao(<%=proc("PvId")%>);"><i class="fa fa-copy"></i></button>
-                    <button type="button" class="btn btn-danger btn-xs" onclick="removeAssociacao(<%=proc("PvId")%>);" ><i class="fa fa-remove"></i></button>
-                    <%
+            <th width="1%"></th>
+        </tr></thead>
+        <tbody>
+            <%
+            loadMore = 0
+            MaximoLimit = 20
+
+            sqlProcedimentos = "select p.id as ProcID, p.NomeProcedimento, v.*, v.id as PvId, pt.*, (SELECT group_concat(DISTINCT CodigoNaOperadora) FROM contratosconvenio cc WHERE v.Contratados like CONCAT('%|',cc.id,'|%') AND CodigoNaOperadora <> '' ) as CodigoNaOperadora  from procedimentos as p "&_
+                                "left join tissprocedimentosvalores as v on (v.ProcedimentoID=p.id and v.ConvenioID="&ConvenioID&") "&_
+                                "left join tissprocedimentostabela as pt on (v.ProcedimentoTabelaID=pt.id)"&_
+                                "where p.sysActive=1 and Ativo='on' and (v.ConvenioID="&ConvenioID&" or v.ConvenioID is null) and (isnull(SomenteConvenios) or SomenteConvenios like '%|"&ConvenioID&"|%' or SomenteConvenios like '') and (SomenteConvenios not like '%|NONE|%' or isnull(SomenteConvenios)) order by (IF(v.id IS NOT NULL, 0,1)) , NomeProcedimento limit "&loadMore&","&MaximoLimit
+
+                set proc = db.execute(sqlProcedimentos)
+
+            IF getConfig("calculostabelas") THEN
+                ProcessarTodasAssociacoes(ConvenioID)
+            END IF
+
+            while not proc.eof
+                if isnull(proc("Valor")) then
+                    Valor=""
+                else
+                    Valor=formatnumber(proc("Valor"),2)
                 end if
-                %>
-            </td>
-		</tr><%
-	proc.movenext
-	wend
-	proc.close
-	set proc = nothing
-	%>
-</tbody>
-</table>
+
+                IF proc("PvId") > 0 AND getConfig("calculostabelas") THEN
+                    IF NOT isnull(proc("ValorConsolidado")) THEN
+                        Valor=formatnumber(proc("ValorConsolidado"),2)
+                    ELSE
+                        set reg = CalculaValorProcedimentoConvenio(proc("PvId"),ConvenioID,proc("ProcID"),null,null,null,null)
+                        IF xxxCalculaValorProcedimentoConvenioNotIsNull THEN
+                            ProcID = reg("AssociacaoID")
+                            Valor = "R$"&fn(reg("TotalGeral")+CalculaValorProcedimentoConvenioAnexo(ConvenioID,proc("ProcID"),reg("AssociacaoID"),PrimeiroPlano))
+                        END IF
+                    END IF
+                END IF
+
+                response.flush()
+
+                %><tr id="<%=proc("ProcID")%>">
+                    <td><% if aut("|conveniosA|")= 1 then %><button type="button" onclick="editaValores(<%=proc("ProcID")%>, <%=ConvenioID%>,<%=proc("PvId")%>);" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></button><% end if %></td>
+                    <td><%=proc("NomeProcedimento")%></td>
+                    <td class="text-right"><%=proc("TabelaID")%></td>
+                    <td class="text-right"><%=proc("Codigo")%></td>
+                    <td class="text-right"><%=proc("CodigoNaOperadora")%></td>
+                    <td><%=proc("Descricao")%></td>
+                    <td class="text-right"><%=proc("TecnicaID")%></td>
+                    <td class="text-right"><%=Valor%></td>
+                    <%
+                    if false then
+                        splPlanoID = split(strPlanoID, "|")
+                        for j=0 to ubound(splNomePlano)
+                            if splPlanoID(j)<>"" then
+                                ValorPlano = ""
+                                set valPlan = db.execute("select * from tissprocedimentosvaloresplanos where PlanoID="&splPlanoID(j)&" and AssociacaoID like '"&proc("PvId")&"'")
+                                if not valPlan.EOF then
+                                    if valPlan("NaoCobre")="S" then
+                                        ValorPlano = "<i class=""fa fa-ban-circle""></i>"
+                                    else
+                                        ValorPlano = formatnumber(valPlan("Valor"),2)
+                                    end if
+                                end if
+                                %>
+                                <td class="text-right"><%=ValorPlano%></td>
+                                <%
+                            end if
+                        next
+                    end if
+                    %>
+                    <td nowrap>
+                        <%
+                        if proc("id") > 0 then
+                            %>
+                            <a  class="btn btn-primary btn-xs" onclick="clonarAssociacao(<%=proc("PvId")%>);"><i class="fa fa-copy bigger-130"></i></a>
+                            <a  class="btn btn-danger btn-xs" onclick="removeAssociacao(<%=proc("PvId")%>);" ><i class="fa fa-remove bigger-130"></i></a>
+                            <%
+                        end if
+                        %>
+                    </td>
+                </tr><%
+            proc.movenext
+            wend
+            proc.close
+            set proc = nothing
+            %>
+        </tbody>
+    </table>
+</div>
+
+<div class="row text-center hidden-xs">
+     <ul id="pager" class="pagination pagination-sm">
+    <%
+    sqlProcedimentos = "select count(*) as total from procedimentos as p "&_
+                    "left join tissprocedimentosvalores as v on (v.ProcedimentoID=p.id and v.ConvenioID="&ConvenioID&") "&_
+                    "left join tissprocedimentostabela as pt on (v.ProcedimentoTabelaID=pt.id)"&_
+                    "where p.sysActive=1 and Ativo='on' and (v.ConvenioID="&ConvenioID&" or v.ConvenioID is null) and (isnull(SomenteConvenios) or SomenteConvenios like '%|"&ConvenioID&"|%' or SomenteConvenios like '') and (SomenteConvenios not like '%|NONE|%' or isnull(SomenteConvenios)) "
+    set totalProc = db.execute(sqlProcedimentos)
+
+    total = cint(totalProc("total"))
+    steps = 0
+    For t = 0 To total
+        t = steps*50
+        steps=steps+1
+        if t <= total then
+            ativo=""
+            if t=0 then
+                ativo = "class='active'"
+            end if
+            %>
+            <li <%=ativo%> id="<%=t%>"><a href="#" onclick="pageChange(<%=t%>);"><%=steps%></a></li>
+            <%
+        end if
+    Next
+
+    %>
+  </ul>
+</div>
+
 <script language="javascript">
 function editaValores(ProcedimentoID, ConvenioID,AssociacaoID){
 	$.ajax({
@@ -185,4 +229,37 @@ function removeAssociacao(I){
 		ajxContent('ConveniosValoresProcedimentos&ConvenioID=<%=ConvenioID%>&X='+I, '', '1', 'divValores');
 	}
 }
+
+var loadMore = 0;
+var steps = 50;
+function pageChange(newloadMore){
+$('#pager li').removeClass('active');
+$('#'+newloadMore).addClass('active');
+    $.get("ConveniosValoresProcedimentosLoad.asp?ConvenioID=<%=ConvenioID%>",{
+        loadMore : newloadMore
+    }).done(function(data) {
+        if(data!==""){
+            $("#tableValoresConvenio").html(data);
+        } else{
+        }
+    }).fail(function(data) {
+
+    }).always(function(){
+    });
+}
+
+$("#ProcedimentoRapido").keyup(function(){
+        if($(this).val()==''){
+            $("#pager").show();
+            loadMore = 0;
+            pageChange(0);
+        }else{
+            $("#pager").hide();
+            $.get("ConveniosValoresProcedimentosLoad.asp?ConvenioID=<%=ConvenioID%>&txt="+$(this).val(),
+             function(data){
+                $("#tableValoresConvenio").html(data);
+            });
+        }
+    });
+
 </script>

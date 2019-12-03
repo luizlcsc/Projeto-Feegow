@@ -1,20 +1,20 @@
-﻿<!--#include file="connect.asp"-->
+<!--#include file="connect.asp"-->
 <div class="panel">
     <div class="panel-body">
-        <%= quickfield("text", "ProcedimentoRapido", "Busca rápida de procedimento", 12, "", "", "", " placeholder='Digite a descrição ou o código do procedimento...' ") %>
+        <%= quickfield("text", "ConvenioRapido", "Busca rápida de Convênio", 12, "", "", "", " placeholder='Digite a descrição ou o código do connvênio...' ") %>
     </div>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function(){
-    $("#ProcedimentoRapido").keyup(function(){
+    $("#ConvenioRapido").keyup(function(){
         if($(this).val()==''){
             $("#table-, .pagination-sm").show();
             $("#divProcedimentoRapido").html("");
         }else{
             $("#table-, .pagination-sm").hide();
-            $("#divProcedimentoRapido").html("Buscando...");
-            $.get("divProcedimentoRapidoResult.asp?txt="+$(this).val(), function(data){
+            $("#ConvenioRapido").html("Buscando...");
+            $.get("divConvenioRapidoResult.asp?txt="+$(this).val(), function(data){
                 $("#divProcedimentoRapido").html(data);
             });
         }

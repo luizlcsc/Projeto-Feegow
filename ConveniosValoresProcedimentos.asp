@@ -177,12 +177,34 @@ set planos=nothing
     </table>
 </div>
 
-<nav >
-  <ul id="pager" class="pager">
-    <li><a href="#" onclick="pageChange(0)">Anterior</a></li>
-    <li><a href="#" onclick="pageChange(1)">Próximo</a></li>
+<div class="row text-center hidden-xs">
+     <ul id="pager" class="pagination pagination-sm">
+    <%
+    sqlProcedimentos = "select count(*) as total from procedimentos as p "&_
+                    "left join tissprocedimentosvalores as v on (v.ProcedimentoID=p.id and v.ConvenioID="&ConvenioID&") "&_
+                    "left join tissprocedimentostabela as pt on (v.ProcedimentoTabelaID=pt.id)"&_
+                    "where p.sysActive=1 and Ativo='on' and (v.ConvenioID="&ConvenioID&" or v.ConvenioID is null) and (isnull(SomenteConvenios) or SomenteConvenios like '%|"&ConvenioID&"|%' or SomenteConvenios like '') and (SomenteConvenios not like '%|NONE|%' or isnull(SomenteConvenios)) "
+    set totalProc = db.execute(sqlProcedimentos)
+
+    total = cint(totalProc("total"))
+    steps = 0
+    For t = 0 To total
+        t = steps*50
+        steps=steps+1
+        if t <= total then
+            ativo=""
+            if t=0 then
+                ativo = "class='active'"
+            end if
+            %>
+            <li <%=ativo%> id="<%=t%>"><a href="#" onclick="pageChange(<%=t%>);"><%=steps%></a></li>
+            <%
+        end if
+    Next
+
+    %>
   </ul>
-</nav>
+</div>
 
 <script language="javascript">
 function editaValores(ProcedimentoID, ConvenioID,AssociacaoID){
@@ -210,16 +232,14 @@ function removeAssociacao(I){
 
 var loadMore = 0;
 var steps = 50;
-function pageChange(direcao){
-
-    let newloadMore = direcao==1 ? loadMore+steps:loadMore-steps;
-    newloadMore = newloadMore < 0 ? 0 : newloadMore;
+function pageChange(newloadMore){
+$('#pager li').removeClass('active');
+$('#'+newloadMore).addClass('active');
     $.get("ConveniosValoresProcedimentosLoad.asp?ConvenioID=<%=ConvenioID%>",{
         loadMore : newloadMore
     }).done(function(data) {
         if(data!==""){
             $("#tableValoresConvenio").html(data);
-            loadMore = newloadMore < 0 ? 0 : newloadMore;
         } else{
         }
     }).fail(function(data) {

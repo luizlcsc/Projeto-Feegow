@@ -6,10 +6,15 @@ MaximoLimit = 50
 if req("ConvenioID") <>"" then
     ConvenioID = req("ConvenioID")
 end if
+
 if req("loadMore") <> "" then
     loadMore = req("loadMore")
-    limit = "limit "&loadMore&","&MaximoLimit
 end if 
+limit = "limit "&loadMore&","&MaximoLimit
+
+if req("txt")<>"" then
+    limit = ""
+end if
 
 txt = replace(req("txt"), " ", "%")
 

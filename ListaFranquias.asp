@@ -18,7 +18,7 @@ if session("Banco")="clinic100000" or recursoPermissaoUnimed=4 then
 end if
 
 
-set ListaFranquiasSQL = db.execute("SELECT lic.id,lic.NomeContato, lic.DataHora, lic.Status, s.Software FROM cliniccentral.licencas lic LEFT JOIN cliniccentral.softwares s ON s.id=lic.SoftwareAnteriorID WHERE lic.Cupom='"&FranquiaCodigo&"' AND lic.Franquia='S'")
+set ListaFranquiasSQL = db.execute("SELECT lic.id,lic.NomeContato, lic.DataHora, lic.Status, s.Software FROM cliniccentral.licencas lic LEFT JOIN cliniccentral.softwares s ON s.id=lic.SoftwareAnteriorID WHERE lic.Cupom='"&FranquiaCodigo&"' AND Status<>'B' AND lic.Franquia='S'")
 
 if not ListaFranquiasSQL.eof then
 %>

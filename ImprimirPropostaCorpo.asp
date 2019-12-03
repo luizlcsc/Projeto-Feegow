@@ -284,6 +284,30 @@ body{
     				<%
     			end if
     			RodapeProposta = replace(RodapeProposta, "[Previsao.Entrega]", PrazoEntrega)
+
+    			if instr(RodapeProposta, "[Procedimentos.Preparo]")>0 then
+                    set getProcedimentos = db.execute("SELECT GROUP_CONCAT(ItemID SEPARATOR ', ') Itens FROM itensproposta WHERE Tipo='S' AND PropostaID="&PropostaID)
+                    if not getProcedimentos.EOF then
+                        Preparo = "<h3>Preparos</h3>"
+                        set getPreparos = db.execute("SELECT NomeProcedimento, TextoPreparo FROM procedimentos WHERE id IN ("&getProcedimentos("Itens")&") ")
+                        if getPreparos.EOF then
+                            Preparo = Preparo & "<br><i>Nenhum preparo.</i><br>"
+                        end if
+                        while not getPreparos.EOF
+                            NomeProcedimento = "<b>"&getPreparos("NomeProcedimento")&"</b>"
+                            TextoPreparo = getPreparos("TextoPreparo")
+                            if TextoPreparo&""<>"" then
+                                Preparo = Preparo & "<br>" & NomeProcedimento & "<br>" & TextoPreparo &"<br>"
+                            end if
+                        getPreparos.movenext
+                        wend
+                        getPreparos.close
+                        set getPreparos=nothing
+                    end if
+
+
+                    RodapeProposta = replace(RodapeProposta, "[Procedimentos.Preparo]", Preparo)
+    			end if
     			%>
 
 

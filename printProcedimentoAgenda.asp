@@ -8,6 +8,12 @@ UnidadeID= req("UnidadeID")
 TipoImpresso= req("Tipo")
 DataAgendamento = req("DataAgendamento")
 Imprime=False
+ProAssociationID = "5"
+if instr(ProfissionalID,"_")>0 then
+    splAccountInQuestion = split(ProfissionalID, "_")
+	ProAssociationID = splAccountInQuestion(0)
+	ProfissionalID = splAccountInQuestion(1)
+end if
 
 if TipoImpresso="Protocolo" then
     set ProcedimentoLaudoSQL = db.execute("SELECT Laudo, DiasLaudo FROM procedimentos WHERE id="&ProcedimentoID&" AND Laudo=1")

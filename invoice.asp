@@ -610,6 +610,27 @@ end if
 </div>
 
 <script type="text/javascript">
+
+
+function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, DataExecucao, TipoImpresso) {
+
+    if(TipoImpresso === "Preparos"){
+        $("body").append("<iframe id='ImpressaoEtiqueta' src='listaDePreparoPorProcedimento.asp?PacienteId="+PacienteID+"&procedimento="+ProcedimentoID+"' style='display:none;'></iframe>")
+        return;
+    }
+
+    $.get("printProcedimentoAgenda.asp", {
+        ProcedimentoID:ProcedimentoID,
+        PacienteID:PacienteID,
+        ProfissionalID:ProfissionalID,
+        UnidadeID:'<%=UnidadeID%>',
+        Tipo: TipoImpresso,
+        DataAgendamento: DataExecucao
+    }, function(data) {
+        eval(data);
+    });
+}
+
 var $componentsModal = $("#feegow-components-modal"),
         $componentsModalTitle = $componentsModal.find('.modal-title'),
         $componentsModalBodyContent = $componentsModal.find('.modal-body-content'),
@@ -897,6 +918,7 @@ function addContrato(ModeloID, InvoiceID, ContaID){
     }
 }
 var invoiceId = '<%=InvoiceID%>';
+
 
 <!--#include file="jQueryFunctions.asp"-->
 <!--#include file="financialCommomScripts.asp"-->

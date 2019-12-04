@@ -27,9 +27,10 @@
                                 <table class="table">
                                     <thead>
                                         <tr class="">
-                                            <th width="17%">Convênio</th>
-                                            <th width="17%">Plano</th>
-                                            <th width="26%">Matrícula / Carteirinha</th>
+                                            <th width="12%">Convênio asasas</th>
+                                            <th width="12%">Plano</th>
+                                            <th width="22%">Matrícula / Carteirinha</th>
+                                            <th width="18%">Token Carteirinha</th>
                                             <th width="18%">Validade</th>
                                             <th width="21%">Titular</th>
                                             <th width="1%"></th>
@@ -47,6 +48,7 @@
                                             </td>
                                         	<td><%=selectInsert("", "PlanoID"&Numero, reg("PlanoID"&Numero), "conveniosplanos", "NomePlano", "", "", "ConvenioID"&Numero)%></td>
                                         	<td nowrap><%=quickField("text", "Matricula"&Numero, "", 12, reg("Matricula"&Numero), " lt ", "", "")%></td>
+                                            <td><%=quickField("text", "Token"&Numero, "", 12, reg("Token"&Numero), " lt ", "", "")%></td>
                                         	<td><%=quickField("datepicker", "Validade"&Numero, "", 12, reg("Validade"&Numero), " input-mask-date ", "", "")%></td>
                                         	<td><%=quickField("text", "Titular"&Numero, "", 12, reg("Titular"&Numero), "", "", "")%></td>
                                         	<td>

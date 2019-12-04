@@ -36,6 +36,7 @@ if Acao="" then
 				<th width="9%">Total</th>
 				<th width="1%"></th>
 				<th width="1%"></th>
+				<th width="1%"></th>
 			</tr>
 		</thead>
 		<tbody>

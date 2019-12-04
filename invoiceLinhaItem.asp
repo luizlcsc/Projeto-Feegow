@@ -138,7 +138,24 @@ set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&trea
     title="Lançamentos de estoque"
     <% end if %>
     onclick="modalEstoque('<%=ItemInvoiceID %>', '<%=ItemID %>', '<%= ProdutoInvoiceID %>')" id="btn<%= ProdutoInvoiceID %>" type="button" class="btn btn-alert btn-block btn-sm"><i class="fa fa-medkit"></i></button></td>
-    <td><button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button></td>
+    <td>
+        <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+    </td>
+    <td>
+    <% if Tipo="S" then 
+
+    %>
+        <div class="btn-group">
+            <button type="button" class="btn btn-info btn-sm  dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print"></i></button>
+            <ul class="dropdown-menu dropdown-info pull-right">
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Protocolo')"><i class="fa fa-plus"></i> Protocolo de laudo </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Impresso')"><i class="fa fa-plus"></i> Impresso </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Etiqueta')"><i class="fa fa-plus"></i> Etiqueta </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Preparos')"><i class="fa fa-plus"></i> Preparos </a></li>
+            </ul>
+        </div>
+    <%end if%>
+    </td>
 </tr>
 <% IF getConfig("ObrigarPlanoDeContas") THEN %>
 <script>

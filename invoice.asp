@@ -776,16 +776,16 @@ function planPag(I){
 function recalc(input, mod){
     if(mod == undefined){
         mod = 0;
-    }    	
-	  var input = $("#formItens input");
-   var elemSerialized = "";
-   var dadosForm =  $("#formItens").serialize();
-   $.each(input, function (key, val) {
-       if(dadosForm.indexOf(val.name) == -1){
-           elemSerialized +=  val.name + '=' + val.value + "&";
+    }
+	var input = $("#formItens input");
+    var elemSerialized = "";
+    var dadosForm =  $("#formItens").serialize();
+    $.each(input, function (key, val) {
+        if(dadosForm.indexOf(val.name) == -1){
+            elemSerialized +=  val.name + '=' + val.value + "&";
         } 
-   });
-   
+    });
+
 	$.post("recalc.asp?InvoiceID=<%=InvoiceID%>&input="+input+"&mod="+mod, $("#formItens").serialize()+"&"+elemSerialized, function(data, status){ eval(data);  });
 }
 

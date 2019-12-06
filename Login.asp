@@ -1,5 +1,4 @@
 <%
-
 if request("Log")="Off" then
 	if session("Partner")="" then
 		urlRedir = "./?P=Login"
@@ -414,6 +413,7 @@ end if
 
 <%
     if req("FP")<>"" and request.ServerVariables("REMOTE_ADDR")="::1" then
+	
         set tryLogin = dbc.execute("select u.*, l.Cliente, l.NomeEmpresa, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status` from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where u.id="&ccur(req("FP")))
 %>
         <!--#include file="loginPadrao.asp"-->

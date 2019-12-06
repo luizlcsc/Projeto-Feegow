@@ -102,9 +102,9 @@ end if
 
 <div class="panel">
     <div class="panel-body pn" id="resultado">
-        if getconfig("ListarAutomaticamenteNF") = 1 then
+        <%if getconfig("ListarAutomaticamenteNF") = 1 then
             server.Execute("NotaFiscalResultado.asp")
-        end if
+        end if%>
     </div>
 </div>
 <form id="formExcel" method="POST">

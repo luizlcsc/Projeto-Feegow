@@ -16,11 +16,12 @@ if ref("GerarProposta") = "S" and ref("idsExames[]")<>"" then
                 " WHERE procedimentos.id IN ("&ref("idsExames[]")&") "&_
                 " GROUP BY 2;"
 
+
     set Pacotes =  db.execute(sqlPacote)
 
     if ubound(idsExamesSplt) >= 0 then
         while NOT Pacotes.EOF
-
+            pacotesProcedimentos = Pacotes("procedimentos")
             'sqlSomaProcedimentos = "SELECT SUM(Valor)ValorTotal FROM procedimentos WHERE id IN ("&ref("idsExames[]")&")"
             'set SomaProcedimentosSQL = db.execute(sqlSomaProcedimentos)
 
@@ -29,19 +30,25 @@ if ref("GerarProposta") = "S" and ref("idsExames[]")<>"" then
                           " VALUES ("&ref("PacienteID")&", "&treatvalzero(ValorTotal)&", '"&session("UnidadeID")&"' ,1,'Exames','Outras Despesas','Forma de Pagamento',1,'"&session("User")&"', CURDATE(), "&session("idInTable")&")"
             db_execute(sqlProposta)
 
-            set PropostaSQL = db.execute("SELECT id FROM propostas ORDER BY id DESC LIMIT 1")
+            set PropostaSQL = db.execute("SELECT LAST_INSERT_ID() as id")
             PropostaID = PropostaSQL("id")
 
-            for i=0 to ubound(idsExamesSplt)
-                IF instr(Pacotes("procedimentos"), "|"&TRIM(idsExamesSplt(i))&"|")>0 THEN
-                    set ProcedimentoSQL = db.execute("SELECT id,Valor FROM procedimentos WHERE id="&idsExamesSplt(i))
+            for jk=0 to ubound(idsExamesSplt)
+
+
+
+                IF instr(pacotesProcedimentos, "|"&TRIM(idsExamesSplt(jk))&"|")>0 THEN
+                    set ProcedimentoSQL = db.execute("SELECT id,Valor FROM procedimentos WHERE id="&idsExamesSplt(jk))
                     ValorTotal = ValorTotal + ProcedimentoSQL("Valor")
 
                     sqlItensProposta = "INSERT INTO itensproposta (PropostaID, Tipo, Quantidade, CategoriaID, ItemID,ValorUnitario,Desconto,TipoDesconto,sysUser,ProfissionalID) "&_
                                        " VALUES ('"&PropostaID&"', 'S', 1, 0, "&ProcedimentoSQL("id")&", "&treatvalzero(ProcedimentoSQL("Valor"))&",0,'V',"&session("User")&", "&session("idInTable")&")"
+
+
                     db_execute(sqlItensProposta)
                 END IF
             next
+
             db.execute("UPDATE propostas SET Valor="&treatvalzero(ValorTotal)&" WHERE id = "& PropostaID)
         Pacotes.movenext
         wend

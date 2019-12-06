@@ -3,6 +3,17 @@
 InvoiceID = ref("InvoiceID")
 
 
+IF session("Banco")="clinic5760" THEN
+    set quantidade = db.execute("SELECT COUNT(*) > 0 as quantidade FROM itensinvoice WHERE Executado <> 'S' and  InvoiceID = "&InvoiceID&";")
+
+    IF not quantidade.eof THEN
+        IF quantidade("quantidade") > "0" THEN
+            response.write("//Invoices com itens não executados")
+            response.end
+        END IF
+    END IF
+END IF
+
 set TemReciboRpsSQL = db.execute("SELECT r.id, r.NumeroRps FROM recibos r WHERE r.InvoiceID="&InvoiceID&" AND r.Rps='S'")
 
 'tem recibo gerado mas nao tem ntoa

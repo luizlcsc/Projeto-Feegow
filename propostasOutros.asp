@@ -12,6 +12,14 @@ if Row<>"" then
 	Row=ccur(Row)
 end if
 
+set propostaSql = db.execute("select StaID from propostas where id="&PropostaID)
+if not propostaSql.eof then
+	if propostaSql("StaID")&"" = "5" then
+		desabilitarProposta =" disabled "
+		escondeProposta = " hidden "
+	end if
+end if
+
 if Acao="" then
 	%>
 	<table width="100%" class="table table-striped table-condensed">

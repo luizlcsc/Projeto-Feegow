@@ -131,16 +131,14 @@ set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&trea
     <td>
         <div class="input-group">
             <div class="input-group-btn">
-                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"
+                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                     style="width: 41px !important;">R$</button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="#" onclick="mudarFormatoDesconto(this)">%</a>
-                    </li>
+                <ul class="dropdown-menu dropdown-info pull-right">
+                    <li><a href="javascript:void(0)" onclick="mudarFormatoDesconto(this)" class="dropdown-item">%</a></li>
                 <ul>
             </div>
             <%=quickField("text", "Desconto"&id, "", 4, fn(Desconto), " CampoDesconto input-mask-brl text-right disable", "", " data-desconto='"&fn(Desconto)&"' onkeyup=""setInputEmPorcentagem(this)""")%>
-            <%=quickField("text", "PercentDesconto"&id, "", 4, "0,00", " CampoDesconto input-mask-brl text-right disable", "", "style='display:none' data-desconto='0,00' onkeyup=""setInputDescontoEmReais(this)""")%>
+            <%=quickField("text", "PercentDesconto"&id, "", 4, "0.00", " CampoDesconto input-mask-brl text-right disable", "", "style='display:none' data-desconto='0.00' onkeyup=""setInputDescontoEmReais(this)""")%>
         </div>
     </td>
     <td><%=quickField("text", "Acrescimo"&id, "", 4, fn(Acrescimo), " input-mask-brl text-right disable", "", " data-acrescimo='"&fn(Acrescimo)&"' onkeyup=""recalc($(this).attr('id'))""")%></td>
@@ -520,7 +518,6 @@ document.onkeyup  = function(evt) {
 $(document).ready(function(){
     inputs = $("input[name^='PercentDesconto']");
     inputs.each(function (key, input) {
-        console.log(input);
         let valorUnitario           = $(this).closest('tr').find("input[name^='ValorUnitario']").val().replace(",",".");
         let descontoEmReais         = $(this).closest('tr').find("input[name^='Desconto']").val().replace(",",".");
         let descontoEmPercentual    = convertRealParaPorcentagem(descontoEmReais, valorUnitario);
@@ -563,12 +560,14 @@ function setInputEmPorcentagem(descontoInput){
 function convertRealParaPorcentagem(valorReal, valorUnitario){
     valorReal      = valorReal.replace(",",".");
     valorUnitario  = valorUnitario.replace(",",".");
+    if(valorReal == "0.00" || valorUnitario == "0.00") return "0,00";
     return inputBRL((valorReal/valorUnitario)*100);
 }
 
 function convertPorcentagemParaReal(valorPorcentagem, valorUnitario){
     valorPorcentagem    = valorPorcentagem.replace(",",".");
     valorUnitario       = valorUnitario.replace(",",".");
+    if(valorPorcentagem == "0.00" || valorUnitario == "0.00") return "0,00";
     return inputBRL(valorPorcentagem * (valorUnitario/100));
 }
 

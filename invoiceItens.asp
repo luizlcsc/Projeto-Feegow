@@ -232,7 +232,7 @@ if Acao="" then
     </div>
 <script type="text/javascript">
 	function aplicarDescontos() {
-		let valueChange = $('#modal-desconto-valor').val().replace(",",".");
+		let valueChange = $('#modal-desconto-valor').val();
 		let formatoDesconto = $('#modal-percent').val();
 		let links = $("input[name^='Desconto']").closest('.input-group').find('a');
 		if(valueChange != '' && valueChange != 0){
@@ -254,6 +254,7 @@ if Acao="" then
 					$(value).closest('.input-group').find("input[name^='PercentDesconto']").val(convertRealParaPorcentagem(valueChange, valorUnitario));
 				}
 			});
+			$('.CampoDesconto').change();
 			recalc();			
 		}
 		$('#modal-desconto').modal('hide');

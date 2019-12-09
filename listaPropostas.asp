@@ -70,6 +70,7 @@
 		        end if
 
 		        while not p.eof
+                    PropostaNaoExecutada = false
 
 			        %>
 			        <tr>
@@ -96,7 +97,6 @@
                             CelularFormatado = formataCelularWhatsApp(Cel)
 
                             TextoWhatsApp = "*"&NomeEmpresa&"*%0a%0aOla, "&TratarNome("Título", p("NomePaciente"))&" !"
-
 				        %>
                             <td nowrap><%=p("NomePaciente")%></td>
                             <td><span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline"  onclick="AlertarWhatsapp('<%=CelularFormatado%>', `<%=TextoWhatsApp%>`, '<%=p("id")%>')" <% else %> <%=Tel%>&nbsp;&nbsp;<%=Cel%> <%end if%> ><span id="wpp-<%=p("id")%>"></span> <%= Cel %></span>
@@ -105,7 +105,9 @@
                         <td><%=p("Procedimentos")%></td>
                         <td><%=p("NomeStatus")%></td>
                         <td>
-					        <%if isnull(p("InvoiceID")) AND (p("PacienteID")&""<>"" AND p("PacienteID")&""<>"0") then%>
+					        <%if isnull(p("InvoiceID")) AND (p("PacienteID")&""<>"" AND p("PacienteID")&""<>"0") then
+                                PropostaNaoExecutada = True
+                            %>
                 		        <a href="./?P=GerarContrato&Pers=1&PropostaID=<%=p("id")%>" class="btn btn-xs btn-default">Gerar Contrato</a>
                             <%elseif p("PacienteID")&""="" or p("PacienteID")&""="0"  then%>
                                 <span class="btn btn-xs btn-danger" style="cursor: default" title="Sem paciente selecionado">Indisponível</span>
@@ -126,7 +128,7 @@
                                 else
                                 %>javascript:ajxContent('PacientesPropostas&CallID=<%=CallID %>&PacienteID=<%=req("PacienteID")%>&PropostaID=<%=p("id")%>', '', '1', 'pront<%=CallID %>')<%end if%>" title="Editar Proposta"><i class="fa fa-edit"></i></a>
                 	        <%
-                	        if aut("|propostasX|")=1 then
+                	        if aut("|propostasX|")=1 and PropostaNaoExecutada then
                 	        %>
                 	        <button type="button" class="btn btn-xs btn-danger" onClick="x(<%=p("id")%>)" title="Excluir Proposta"><i class="fa fa-remove"></i></button>
                 	        <%

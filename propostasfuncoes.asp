@@ -82,8 +82,27 @@ function propostaSave(){
 		alert("Selecione um paciente");
 		return false;
 	}else{
-		$.post("propostaSave.asp?PropostaID=<%=PropostaID%>", $("#frmProposta").serialize(), function(data){ eval(data) });
+		$.post("propostaSave.asp?PropostaID=<%=PropostaID%>", 
+		$("#frmProposta").serialize(), 
+		function(data){ 
+			eval(data); 
+			$("#ListaProposta").click();
+		});
 	}
 }
+/*
+$("#StaID").on("change",function(){
+let disabledimputs = false;
+if($("#StaID").val() == 5){
+disabledimputs=true;
+}
 
+$("#order-tbody").find(':input').each(function(){
+  $(this).attr("disabled", disabledimputs);
+})
+
+$("#DescontoTotal").attr("disabled", disabledimputs);
+
+});
+*/
 <%if 1=2 then%><script><%end if%>

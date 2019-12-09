@@ -5,12 +5,21 @@ if req("PropostaID")<>"" then
 else
 	PropostaID=req("I")
 end if
+
 Acao = ref("A")
 II = ref("II")
 Row = req("Row")
 if Row<>"" then
 	Row=ccur(Row)
 end if
+
+set propostaSql = db.execute("select StaID from propostas where id="&PropostaID)
+if not propostaSql.eof then
+	if propostaSql("StaID")&"" = "5" then
+		desabilitarProposta =" disabled "
+		escondeProposta = " hidden "
+	end if
+end if 
 
 if Acao="" then
 	%>

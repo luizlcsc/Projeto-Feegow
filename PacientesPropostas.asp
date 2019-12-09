@@ -140,8 +140,11 @@ end if
                         if req("PacienteID")="" then 
                             response.write("hidden")
                             linkLista = "location.href='?P=buscaPropostas&Pers=1'"
+                            reload = "true"
                         else
                             linkLista = "ajxContent('ListaPropostas&PacienteID="&req("PacienteID")&"', '', '1', 'pront')"
+                            reload = "false"
+
                         end if %> ">
                         <span class="panel-title">
                             <i class="fa fa-files-o"></i> Edição de Proposta
@@ -156,7 +159,7 @@ end if
                             <button type="button" class="btn btn-sm" title="Duplicar Proposta" onclick="window.location.href = '?P=DuplicarPacientesPropostas&Pers=1&PropostaID=<%=req("PropostaID")%>'"><i class="fa fa-copy"></i> Duplicar Proposta</button>
                             <button type="button" class="btn btn-sm" onclick="log()" title="Histórico de Alterações"><i class="fa fa-history"></i></button>
                             <button type="button" onclick="imprimirProposta()" class="btn btn-info btn-sm" title="Imprimir"><i class="fa fa-print"></i></button>
-                            <button onclick="propostaSave()" type="button" class="btn btn-primary btn-sm "><i class="fa fa-save"></i> SALVAR</button>
+                            <button onclick="propostaSave(<%=reload%>)" type="button" class="btn btn-primary btn-sm "><i class="fa fa-save"></i> SALVAR</button>
                         </span>
                         <%if req("PacienteID")="" then %>
                         <script type="text/javascript">

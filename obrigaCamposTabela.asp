@@ -39,7 +39,7 @@ end if
                 if perm("Tipo")="Paciente" then
                     call quickfield("multiple", "Obrigar"&perm("id"), "Campos obrigatórios", 12, perm("Obrigar"), "select ColumnName id from cliniccentral.sys_resourcesfields where ResourceID=1 UNION ALL select 'Convenio' UNION ALL select 'Retornos' UNION ALL select 'Relativos' order by id", "id", "")
                 elseif perm("Tipo")="Agendamento" then
-                    camposPacienteAgenda="'Nascimento', 'CPF', 'Documento', 'IndicadoPor', 'Profissao', 'Origem', 'Sexo', 'NomeSocial'"
+                    camposPacienteAgenda="'Nascimento', 'CPF', 'Documento', 'IndicadoPor', 'Profissao', 'Origem', 'Sexo', 'NomeSocial', 'Pendencias'"
 
                     call quickfield("multiple", "Obrigar"&perm("id"), "Campos obrigatórios", 12, perm("Obrigar"), "select ColumnName id from cliniccentral.sys_resourcesfields where resourceId=1 AND columnName IN ("&camposPacienteAgenda&") union all select 'IndicadoPorSelecao' id ", "id", "")
                     call quickfield("multiple", "Exibir"&perm("id"), "Exibir campos adicionais", 12, perm("Exibir"), "select ColumnName id from cliniccentral.sys_resourcesfields where resourceId=1 AND columnName IN ("&camposPacienteAgenda&") union all select 'IndicadoPorSelecao' id", "id", "")

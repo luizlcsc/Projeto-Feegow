@@ -18,7 +18,7 @@ set ImpressosModeloSQL = db.execute(sqlImpresso)
 if not ImpressosModeloSQL.eof then
     TextoImpresso  = replaceTags(ImpressosModeloSQL("Cabecalho"), PacienteID, session("User"), UnidadeID)
 
-    set prof = db.execute("SELECT NomeProfissional FROM profissionais WHERE id="&req("ProfissionalID"))
+    set prof = db.execute("SELECT NomeProfissional FROM profissionais WHERE id="&treatvalzero(req("ProfissionalID")))
     if not prof.eof then
         NomeProfissional = prof("NomeProfissional")
         TextoImpresso = replace(TextoImpresso, "[Profissional.Nome]", NomeProfissional)
@@ -28,15 +28,10 @@ if not ImpressosModeloSQL.eof then
     set proc = db.execute("SELECT NomeProcedimento, TextoPreparo FROM procedimentos WHERE id="&ProcedimentoID)
     if not proc.eof then
         NomeProcedimento = proc("NomeProcedimento")
-        TextoPreparo = ""
+        TextoPreparo = proc("TextoPreparo")&""
 
-        if proc("TextoPreparo")&"" <> "" then
-            TextoPreparo = proc("TextoPreparo")
-        end if 
-
-        TextoPreparo = replace(TextoPreparo, chr(10), "<br>")
-        TextoImpresso = replace(TextoImpresso, "[Procedimento.Nome]", NomeProcedimento)
-        TextoImpresso = replace(TextoImpresso, "[Procedimento.Preparo]", TextoPreparo)
+        TextoImpresso = replace(TextoImpresso, "[Procedimento.Nome]", NomeProcedimento&"")
+        TextoImpresso = replace(TextoImpresso, "[Procedimento.Preparo]", TextoPreparo&"")
     end if
     
 

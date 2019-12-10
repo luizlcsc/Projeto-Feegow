@@ -61,10 +61,14 @@ if not PacienteSQL.eof then
     if AgendamentoHora&"" <> "" then
         EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Agendamento.Hora]", formatdatetime(AgendamentoHora, 4))
     end if
+
+    if not ProcedimentoSQL.eof then
+        NomeProcedimento =  ProcedimentoSQL("NomeProcedimento")&""
+    end if
     
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Agendamento.Data]", DataAgendamento)
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Data.DDMMAAAA]", formatdatetime(now(), 2))
-    EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Procedimento.Nome]", ProcedimentoSQL("NomeProcedimento"))
+    EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Procedimento.Nome]", NomeProcedimento)
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Profissional.Nome]", NomeProfissional)
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Local.Sigla]", AgendamentoProcedimentoSQL("Sigla"))
 

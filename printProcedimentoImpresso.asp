@@ -28,13 +28,17 @@ if not ImpressosModeloSQL.eof then
     set proc = db.execute("SELECT NomeProcedimento, TextoPreparo FROM procedimentos WHERE id="&ProcedimentoID)
     if not proc.eof then
         NomeProcedimento = proc("NomeProcedimento")
-        TextoPreparo = proc("TextoPreparo")
-        TextoPreparo = replace(TextoPreparo, chr(10), "<br>")
+        TextoPreparo = ""
 
+        if proc("TextoPreparo")&"" <> "" then
+            TextoPreparo = proc("TextoPreparo")
+        end if 
+
+        TextoPreparo = replace(TextoPreparo, chr(10), "<br>")
         TextoImpresso = replace(TextoImpresso, "[Procedimento.Nome]", NomeProcedimento)
         TextoImpresso = replace(TextoImpresso, "[Procedimento.Preparo]", TextoPreparo)
     end if
-
+    
 
 %>
 <body>

@@ -244,7 +244,7 @@ while diaS<n
                         else
                             HLivres = HLivres+1
                         %>
-                        <tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=ProfissionalID%>,<%=GradeID%>)" class="l l<%= LocalID %> vazio<%= DiaSemana %>" data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=DiaSemana&HoraID%>">
+                        <tr data-grade="<%=GradeID%>" onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=ProfissionalID%>,<%=GradeID%>)" class="l l<%= LocalID %> vazio<%= DiaSemana %>" data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=DiaSemana&HoraID%>">
                             <td width="1%"></td>
                             <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                             <td colspan="4"><%= Tipo %></td>
@@ -301,7 +301,7 @@ while diaS<n
                                 else
 
                                 %>
-                                <tr onclick="abreAgenda('<%= HoraID %>', 0, '<%=Data%>', <%=LocalID%>, <%=ProfissionalID%>)" class="l l<%= LocalID %> vazio<%= DiaSemana %> vazio" data-HoraID="<%= HoraID %>" data-hora="<%=formatdatetime(HoraPers, 4)%>" id="<%=DiaSemana&HoraID%>">
+                                <tr onclick="abreAgenda('<%= HoraID %>', 0, '<%=Data%>', <%=LocalID%>, <%=ProfissionalID%>)" class="l l<%= LocalID %> vazio<%= DiaSemana %> vazio" data-HoraID="<%= HoraID %>" data-hora="<%=formatdatetime(HoraPers, 4)%>" id="<%=DiaSemana&HoraID%>" >
                                     <td width="1%"></td>
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                     <td colspan="4"><%= Tipo %></td>
@@ -427,7 +427,7 @@ while diaS<n
 
 		titleSemanal= replace(comps("NomePaciente")&"<br>"&NomeProcedimento&"<br>Prontuário: "&Prontuario&"<br>Tel.: "&comps("Tel1")&"<br>Cel.: "&comps("Cel1")&" "&"<br> ", "'", "\'") & "Notas: "&replace(replace(replace(replace(comps("Notas")&"", chr(13), ""), chr(10), ""), "'", ""), """", "")&"<br>"
                
-        Conteudo = "<tr id="""&DiaSemana&HoraComp&""" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&titleSemanal&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')"">"&_
+        Conteudo = "<tr id="""&DiaSemana&HoraComp&""" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&titleSemanal&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"">"&_
         "<td width=""1%"">"
                 if not isnull(comps("Resposta")) then
             Conteudo = Conteudo & "<i class=""fa fa-envelope pink""></i> "
@@ -484,8 +484,10 @@ while diaS<n
         $( classe ).each(function(){
             if( $(this).attr("id")=='<%=DiaSemana&HoraComp%>' && (Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
             {
+                var gradeId = $(this).data("grade");
+
                 HorarioAdicionado=true;
-                $(this).replaceWith('<%= conteudo %>');
+                $(this).replaceWith('<%= conteudo %>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
                 return false;
             }
         });
@@ -493,7 +495,9 @@ while diaS<n
             $( classe + ", .l").each(function(){
                    if ( $(this).attr("id")>'<%=DiaSemana&HoraComp%>' )
                    {
-                       $(this).before('<%=conteudo%>');
+                       var gradeId = $(this).data("grade");
+                       
+                       $(this).before('<%=conteudo%>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
                        return false;
                    }
             });

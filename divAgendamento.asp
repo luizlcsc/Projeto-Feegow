@@ -725,15 +725,23 @@ end if
 							EmailEnviado = "S"
 						end if
 
-                        response.write("    <div class=""col-md-4"">")
+                        
                         if ConsultaID=0 then
+                        response.write("    <div class=""col-md-4"">")
                             IntervaloRepeticao = 1
 						    %>
                                 <div class="checkbox-custom checkbox-success"><input name="rpt" id="rpt" onclick="rpti();" value="S" type="checkbox"<%if rpt="S" and rpt="" then%> checked="checked"<%end if%> /><label for="rpt"> Repetir</label></div>
                             <%
-                        end if
                         response.write("    </div>")
+                        end if
+                        
 						%>
+                            <div class="col-md-4">
+                                <div class="checkbox-custom checkbox-primary">
+                                    <input type="checkbox" name="Pacs" id="Pacs">
+                                    <label for="Pacs"> Pacs</label>
+                                </div>
+                            </div>
                             <div class="col-md-4">
                             <%if ServicoSMS="S" then%>
                                 <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar SMS</label></div>
@@ -1291,15 +1299,26 @@ function submitAgendamento(check) {
         $("#btnSalvarAgenda").html('salvando');
         //$("#btnSalvarAgenda").attr('disabled', 'disabled');
         $("#btnSalvarAgenda").prop("disabled", true);
+        
         $.post("saveAgenda.asp", $("#formAgenda").serialize())
             .done(function(data){
                 //$("#btnSalvarAgenda").removeAttr('disabled');
-                 eval(data);
+                eval(data);
                 $("#btnSalvarAgenda").html('<i class="fa fa-save"></i> Salvar');
                     $("#btnSalvarAgenda").prop("disabled", false);
                     crumbAgenda();
 
+                if($("#Pacs").prop('checked')) {
+                    postUrl("pacs", {
+                            agendamento_id: <%=AgendamentoID%>,
+                            profissional_id: <%=ProfissionalID%>
+                        }, function (data22) {
+                            console.log(data22);
+                        }
+                    );
+                } 
             })
+
             .fail(function(err){
                 $("#btnSalvarAgenda").prop("disabled", true);
 

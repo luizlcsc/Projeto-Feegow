@@ -149,6 +149,7 @@ end if
                         strProcedimentos = ""
                         strProcedimentosGrupos = ""
                         if Procedimentos<>"" then
+                            replace(replace(Procedimentos&"@", ",@", ""), "@", "")
                             set sqlProcs = db.execute("select group_concat(NomeProcedimento separator ', ') procedimentos from procedimentos where sysActive=1 and ativo='on' and id in("& Procedimentos &") order by NomeProcedimento")
                             strProcedimentos = sqlProcs("Procedimentos")
                             set sqlGrupos = db.execute("select group_concat(NomeGrupo separator ', ') procedimentosgrupos from procedimentosgrupos where sysActive=1 and id*(-1) in("& Procedimentos &") order by NomeGrupo")

@@ -6,13 +6,16 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
 
-<script type="text/javascript">
+<% if recursoAdicional(27)=4 then %>
+    <script type="text/javascript">
+        getUrl("pacs/config", {}, function(data) {
+            $(".app").hide();
+            $(".app").html(data);
+            $(".app").fadeIn('slow');
+        });
+    </script>
+<% else %>   
+    <p>Item não ativado</p>
+<% end if%>
 
-    getUrl("pacs/config", {}, function(data) {
-        $(".app").hide();
-        $(".app").html(data);
-        $(".app").fadeIn('slow');
-    });
-
-</script>
 

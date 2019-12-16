@@ -736,12 +736,20 @@ end if
                         end if
                         
 						%>
-                            <div class="col-md-4">
-                                <div class="checkbox-custom checkbox-primary">
-                                    <input type="checkbox" name="Pacs" id="Pacs">
-                                    <label for="Pacs"> Pacs</label>
-                                </div>
-                            </div>
+                        <%
+                            set pacs_config = db.execute("select * from pacs_config where expired = 0")
+                            if not pacs_config.eof then
+                                %>
+                                    <div class="col-md-4">
+                                        <div class="checkbox-custom checkbox-primary">
+                                            <input type="checkbox" name="Pacs" id="Pacs">
+                                            <label for="Pacs"> Pacs</label>
+                                        </div>
+                                    </div>
+                                <%
+                            end if
+                        %>
+                            
                             <div class="col-md-4">
                             <%if ServicoSMS="S" then%>
                                 <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar SMS</label></div>

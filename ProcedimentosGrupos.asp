@@ -29,6 +29,7 @@ set reg = db.execute("select g.*, (select group_concat('|', id, '|') from proced
                 end if
             end if
             %>
+            <%= quickField("simpleSelect", "ModalidadeID", "Modalidade (PACS)", 2, reg("ModalidadeId"), "select * from cliniccentral.pacs_modalidades", "Modalidade", "") %>
         </div>
     </div>
 </form>

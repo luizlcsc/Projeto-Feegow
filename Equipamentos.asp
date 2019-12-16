@@ -76,8 +76,9 @@ end if
                         </div>
                         <div class="col-md-10">
                             <div class="row">
-                                <%=quickField("text", "NomeEquipamento", "Nome do Equipamento", 6, reg("NomeEquipamento"), "", "", " required")%>
+                                <%=quickField("text", "NomeEquipamento", "Nome do Equipamento", 4, reg("NomeEquipamento"), "", "", " required")%>
                                 <%=quickField("empresa", "UnidadeID", "Unidade", 3, reg("UnidadeID"), "", "", "")%>
+                                <%=quickField("text", "Pacs_id", "Identificação no PACS", 2, reg("Pacs_id"), "", "", " ")%>
                                 <div class="col-md-1 col-md-offset-2">
                                     <label>
                                         Ativo

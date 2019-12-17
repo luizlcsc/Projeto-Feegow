@@ -201,24 +201,27 @@ else
 	    end if
 	    'TAREFAS
 	    tarefasVencidas = 0
+        tarefasTotais = 0
 	    if instr(notiftarefas, ",")>0 then
 		    spl = split(notiftarefas, "|")
-		    for i=0 to ubound(spl)
-			    if instr(spl(i), ",") then
-				    spl2 = split(spl(i), ",")
-				    if isdate(spl2(1)) and spl2(1)<>"" then
-					    if cdate(spl2(1))<now() then
-						    tarefasVencidas = tarefasVencidas+1
-					    end if
-				    elseif isnumeric(spl2(0)) and not isdate(spl2(1)) then
-					    tarefasVencidas = tarefasVencidas+1
-				    end if
-			    end if
-		    next
+            tarefasTotais= ubound(spl)
+		    ' for i=0 to ubound(spl)
+			'     if instr(spl(i), ",") then
+			' 	    spl2 = split(spl(i), ",")
+			' 	    if isdate(spl2(1)) and spl2(1)<>"" then
+			' 		    if cdate(spl2(1))<now() then
+			' 			    tarefasVencidas = tarefasVencidas+1
+			' 		    end if
+			' 	    elseif isnumeric(spl2(0)) and not isdate(spl2(1)) then
+			' 		    tarefasVencidas = tarefasVencidas+1
+			' 	    end if
+			'     end if
+		    ' next
 	    end if
-	    if tarefasVencidas>0 then
+
+	    if tarefasTotais>0 then
 		    %>
-		    $("#notifTarefas").html("<i class='fa fa-tasks'></i><span class='badge badge-danger'><%=tarefasVencidas%></span>");
+		    $("#notifTarefas").html("<i class='fa fa-tasks'></i><span class='badge badge-danger'><%=tarefasTotais%></span>");
 		    <%
         else
             %>
@@ -331,7 +334,7 @@ else
 
             'ja existe uma implementacao disso usando a cliniccentral.notificacoes_tipos
             'Adicionar notificação para as requisições de estoque
-            sqlRequisicaoEstoque = "SELECT count(*) total FROM estoque_requisicao er WHERE er.StatusID = 1 AND er.sysActive = 1 "
+            sqlRequisicaoEstoque = "SELECT count(*) total FROM estoque_requisicao er WHERE er.StatusID = 1 AND er.sysActive = 1 AND AutorizadorID IS NOT NULL AND er.AutorizadorID="&session("User")
             set rsRequisicaoEstoque = db.execute(sqlRequisicaoEstoque)
 
             if not rsRequisicaoEstoque.eof then

@@ -288,7 +288,22 @@ if not getMovement.EOF then
                              end if
                          end if
                      end if
-					 %>
+
+
+
+                     if getPaymentMovement("CD")="D" then
+                         set getRecibo = db.execute("SELECT r.NumeroSequencial, unit.Sigla FROM recibos r LEFT JOIN (SELECT 0 id, Sigla FROM empresa UNION ALL SELECT id, Sigla FROM sys_financialcompanyunits) unit ON unit.id=r.UnidadeID WHERE r.sysActive = 1 AND r.InvoiceId="&mInvoiceId&" ORDER BY r.id DESC LIMIT 1")
+                         if not getRecibo.eof then
+                         %>
+                         <td>
+                            Recibo: <%=getRecibo("Sigla")&""%> <%=getRecibo("NumeroSequencial")&""%>
+                         </td>
+                         <%
+                         end if
+                     end if
+                     %>
+
+
                      <td width="1%">
                          <%
 '                         if not EhStone and (getPaymentMovement("CaixaID")=session("CaixaID") and aut("|aberturacaixinhaX|")) or (aut("|contasareceberX|") and getPaymentMovement("CD")="D") or (aut("|areceberpacienteX|") and getPaymentMovement("CD")="D") or (aut("|contasapagarA|") and getPaymentMovement("CD")="C") or (aut("|lancamentosX|") and getPaymentMovement("Type")="Transfer") then

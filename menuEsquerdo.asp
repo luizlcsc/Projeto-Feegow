@@ -1500,6 +1500,10 @@ select case lcase(req("P"))
                     <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Configuração de Compra</span></a>
             </li>
         <% END IF %>
+        <li>
+        <a data-toggle="tab" href="#divProcedimentoLaboratorio" onclick="ajxContent('ProcedimentoLaboratorio', '', 1, 'divProcedimentoLaboratorio');">
+            <span class="fa fa-flask"></span> <span class="sidebar-title">Procedimentos Laboratorios <span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li>
         <%
     case "chamadasmotivoscontato","chamadascategorias"
     %>

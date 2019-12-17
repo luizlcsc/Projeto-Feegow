@@ -114,6 +114,9 @@ if session("Admin")=1 then
         <div class="tab-pane" id="divLaudosOnline">
             Carregando...
         </div>
+         <div class="tab-pane" id="divProcedimentoLaboratorio">
+            Carregando...
+        </div>
     </div>
 </div>
 <%

@@ -863,7 +863,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("agenda")=1 then
             'ODONTOGRAMA
-            if (session("Banco")="clinic2901" or session("Banco")="clinic6776" or session("Banco")="clinic3656" or session("Banco")="clinic100000" or session("Banco")="clinic105" or session("Banco")="clinic5676" or session("Banco")="clinic5299") and 1=1 then
+            if (session("Banco")="clinic2901" or session("Banco")="clinic6776" or session("Banco")="clinic8039" or session("Banco")="clinic3656" or session("Banco")="clinic100000" or session("Banco")="clinic105" or session("Banco")="clinic5676" or session("Banco")="clinic5299") and 1=1 then
                 %>
                 <li>
                     <a data-toggle="tab" class="tab menu-aba-pacientes-odontograma" href="#pront" onclick="pront('Odontograma.asp?I=<%=req("I")%>')">
@@ -960,7 +960,7 @@ select case lcase(req("P"))
                 end if
             end if
 
-            if lcase(session("Table"))="profissionais" and aut("buscaprontuarioV")=1 then
+            if (lcase(session("Table"))="profissionais" and aut("buscaprontuarioV")=1) or session("Admin")=1 then
                 %>
                 <div class="col-xs-12">
                     <a class="btn btn-alert btn-success btn-alt btn-block item-active" href="?P=BuscaProntuario&Pers=1">Busca no prontuário</a>

@@ -156,7 +156,7 @@ end function
 
 
 function quantidadeEstoque(PosicaoID)
-    if not isnull(PosicaoID) then
+    if PosicaoID&""<>"" then
         set quant = db.execute("select ifnull(p.ApresentacaoQuantidade, 1) ApresentacaoQuantidade, ep.Quantidade, ep.TipoUnidade FROM estoqueposicao ep LEFT JOIN produtos p ON p.id=ep.ProdutoID WHERE ep.id="&PosicaoID)
         if not quant.eof then
             if quant("TipoUnidade")="C" then
@@ -2787,7 +2787,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		    rbtns = rbtns & "<button class='btn btn-info btn-sm' onclick='imprimir()' type='button'><i class='fa fa-print bigger-110'></i></button>"
 		else
 			nomePerm = "contasareceber"
-		    rbtns = rbtns & "<div class='btn-group'><button type='button' class='btn btn-info btn-sm dropdown-toggle' data-toggle='dropdown' title='Gerar recibo' aria-expanded='true'><i class='fa fa-print bigger-110'></i></button><ul class='dropdown-menu dropdown-info pull-right'><li><a href='javascript:imprimir()'><i class='fa fa-plus'></i> Gerar novo recibo</a></li><li class='divider'></li><li><a href='javascript:listaRecibos()'>Recibos Gerados</a></li></ul></div>"
+		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
 
             set vcaCont = db.execute("select id, NomeModelo from contratosmodelos where sysActive=1")
             if not vcaCont.eof then

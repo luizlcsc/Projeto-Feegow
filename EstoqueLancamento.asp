@@ -34,7 +34,7 @@ else
 		valor = formatnumber(prod("PrecoVenda"),2)
 	end if
     PosicaoID = req("PosicaoID")
-    set pos = db.execute("select * from estoqueposicao where id="& PosicaoID)
+    set pos = db.execute("select ep.*, pl.NomeLocalizacao from estoqueposicao ep left join produtoslocalizacoes pl ON ep.LocalizacaoID=pl.id where ep.id="& PosicaoID)
     if not pos.eof then
         TipoUnidade = pos("TipoUnidade")
         TipoUnidadeOriginal = pos("TipoUnidade")
@@ -43,6 +43,9 @@ else
         Validade = pos("Validade")
         Lote = pos("Lote")
         LocalizacaoID = pos("LocalizacaoID")
+        if pos("NomeLocalizacao")&""<>"" then
+            NomeLocalizacao = " ("&pos("NomeLocalizacao")&")"
+        end if
         LocalizacaoIDOriginal = pos("LocalizacaoID")
         CBID = pos("CBID")
     end if
@@ -59,7 +62,7 @@ end if
 %>
 <div class="modal-header">
     <button class="bootbox-close-button close" type="button" data-dismiss="modal">×</button>
-    <h4 class="modal-title"><i class="<%=icone%>"></i> Lan&ccedil;amento de <%=tipo%> &raquo; <small><%=prod("NomeProduto")%></small></h4>
+    <h4 class="modal-title"><i class="<%=icone%>"></i> Lan&ccedil;amento de <%=tipo%> &raquo; <small><%=prod("NomeProduto")&NomeLocalizacao%></small></h4>
 </div>
 <div class="modal-body">
 <form id="EstoqueLancamento" name="EstoqueLancamento" method="post">

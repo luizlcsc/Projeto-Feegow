@@ -12,6 +12,12 @@ if ProdutoInvoiceID="undefined" then
     ProdutoInvoiceID = ""
 end if
 
+sqlUnidadesUsuario = ""
+if aut("lctestoqueV")=0 then
+    UnidadesUsuario = replace(session("Unidades")&"", "|", "")
+    sqlUnidadesUsuario = " AND pl.UnidadeID  IN ("&UnidadesUsuario&") "
+end if
+
 'verifica os produtos pré-envolvidos pra buscar caso esteja vazia a busca
 if BuscaProduto="" then
     if ItemInvoiceID<>"" then
@@ -50,7 +56,7 @@ if BuscaProduto="" then
         sqlProdutos = " AND id IN("& Produtos &") "
     end if
 else
-    set vcaCBID = db.execute("select * from estoqueposicao where CBID like '%"& BuscaProduto &"' AND Quantidade>0")
+    set vcaCBID = db.execute("select ep.* from estoqueposicao ep LEFT JOIN produtoslocalizacoes pl ON pl.id=ep.LocalizacaoID where ep.CBID like '%"& BuscaProduto &"' AND ep.Quantidade>0"&sqlUnidadesUsuario&" LIMIT 1")
     if not vcaCBID.eof AND CD="C" then
         sqlProdutos = " AND 1=2 "
         %>

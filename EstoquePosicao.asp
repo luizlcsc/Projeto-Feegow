@@ -105,7 +105,7 @@ call refazPosicao(ProdutoID)
     </tbody>
 	<tfoot>
 		<tr>
-			<th colspan="7" class="text-right">
+			<th colspan="9" class="text-right">
 				Conjunto: <%=QuantidadeTotalConjunto&" "&lcase(conjunto)%> <br>
 				Unidade: <%=QuantidadeTotalUnidade&" "&lcase(unidade)%>
 			</th>

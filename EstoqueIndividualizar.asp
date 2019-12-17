@@ -27,7 +27,11 @@
         %>
         <tr>
             <td><%=c %></td>
+            <%if aut("AlterarCodigoIndividual")=1 then%>
             <td><input class="form-control estind" name="CBIDs" type="text" value="<%=Codigo %>" /></td>
+            <%else%>
+            <td><input class="hidden" name="CBIDs" value="<%=Codigo %>" /><%=Codigo %></td>
+            <%end if%>
         </tr>
         <%
     wend

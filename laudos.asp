@@ -45,7 +45,8 @@ end if
                 end if
                 %>
                 <%= quickfield("simpleSelect", "ConvenioID", "Convênio", 2, "", "select id, NomeConvenio from convenios where sysActive order by NomeConvenio", "NomeConvenio", "") %>
-                <%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, Unidades, "", "", "")%>
+                <%'quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, Unidades, "", "", "")%>
+                <%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, "", "", "", "")%>
             </div>
             <div class="row mt20">
                 <%= quickfield("number", "id", "Identificação do Laudo", 2, id, "", "", "") %>

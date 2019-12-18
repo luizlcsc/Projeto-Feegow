@@ -141,7 +141,7 @@ if erro ="" then
     if searchindicacaoId ="" then
         erro = addError(erro, ValidaProcedimentoObrigaSolicitante(1,ref("ProcedimentoID")&""))
     end if
-    if ref("LocalID")&"" <>"" then
+    if ref("LocalID")&"" <>"" and ref("rdValorPlano") = "P" then
         erro = addError(erro, ValidaLocalConvenio(1,ref("ConvenioID")&"",ref("LocalID")&""))
     end if
     '-> procedimentos adicionais na agenda
@@ -155,6 +155,7 @@ if erro ="" then
                 apTipoCompromissoID = ref("ProcedimentoID"& apID)
                 apLocalID = ref("LocalID"& apID) 
                 apConvenioID = ref("ConvenioID"& apID) 
+                aprdValorPlano = ref("rdValorPlano"& apID) 
                 
                 erro = addError(erro, ValidaProcedimentoLocal((iPA+2),apTipoCompromissoID&"", apLocalID&""))
                 
@@ -162,7 +163,7 @@ if erro ="" then
                     erro = addError(erro, ValidaProcedimentoObrigaSolicitante((iPA+2),apTipoCompromissoID&""))
                 end if
 
-                if apLocalID <>"" then
+                if apLocalID <>"" and aprdValorPlano  = "P" then
                     erro = addError(erro, ValidaLocalConvenio((iPA+2),apConvenioID&"",apLocalID&""))
                 end if
             end if

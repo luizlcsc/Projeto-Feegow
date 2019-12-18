@@ -139,7 +139,7 @@ if Acao="" then
 			escondeProposta = " hidden "
 		end if
 
-		set itens=db.execute("select * from itensproposta where PropostaID="&PropostaID&" ORDER BY Ordem")
+		set itens=db.execute("select * from itensproposta where PropostaID="&PropostaID&" ORDER BY Ordem,id")
 		while not itens.eof
 			conta = conta+itens("Quantidade") 
 			Desconto = itens("Desconto")

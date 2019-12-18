@@ -62,6 +62,7 @@ if not lanc.eof or (ItemInvoiceID="" and AtendimentoID="" and ProdutoInvoiceID="
                         <th>Responsável</th>
                         <th>Usu&aacute;rio</th>
                         <th>Lote</th>
+                        <th>Código</th>
                         <th>Validade</th>
                         <th class="<%= hiddenII %>">NF</th>
                         <th nowrap>Valor Unit.</th>
@@ -170,6 +171,7 @@ if not lanc.eof or (ItemInvoiceID="" and AtendimentoID="" and ProdutoInvoiceID="
                         <td><%=Responsavel%></td>
                 	    <td><%=nameInTable(lanc("sysUser"))%></td>
                         <td class="text-right"><%=lanc("Lote")%></td>
+                        <td class="text-right"><%=lanc("CBID")%></td>
                         <td class="text-right"><%=lanc("Validade")%></td>
                         <td class="text-right <%= hiddenII %>"><%= NF %></td>
                         <td class="text-right"><%=fn(lanc("Valor"))%> / <%=DescrPagto%></td>

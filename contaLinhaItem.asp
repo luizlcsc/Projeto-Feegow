@@ -122,20 +122,33 @@
 
                     set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&inv("id")&" AND Executado!='S'")
                     set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&inv("id")&" and p.IntegracaoPleres = 'S'")
+                    'set laboratorios = db.execute("SELECT labID FROM labs_procedimentos_laboratorios WHERE procedimentoID = '" & ProcedimentoID &"'")
+                    set laboratorios = db.execute("SELECT * FROM cliniccentral.labs AS lab INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) WHERE lpl.procedimentoID ="& ProcedimentoID )
+                    if laboratorios.eof then
+                        laboratorioid = 1
+                    else                        
+                        laboratorioid = laboratorios("labID")
+                    end if 
 
                     if CInt(temintegracao("temintegracao")) > 0 then
-            %>
+                    %>
                         <script>
                         setTimeout(function() {
                             $("#btn-pleres").css("display", "none");
                         }, 1000)
                         </script>
                         <div class="btn-group">
-                            <button type="button" onclick="abrirMatrix('<%=inv("id")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração de laboratórios">
-                                <i class="fa fa-flask"></i>
-                            </button>
+                            <% if laboratorioid = "1" then %>
+                                <button type="button" onclick="abrirMatrix('<%=inv("id")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=laboratorios("NomeLaboratorio")%>">
+                                    <i class="fa fa-flask"></i>
+                                </button>
+                            <% else %>
+                                <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorios("labID")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=laboratorios("NomeLaboratorio")%>">
+                                    <i class="fa fa-flask"></i>
+                                </button>    
+                            <% end if %> 
                         </div>
-                <%
+                    <%
 			        end if
 			    end if
               end if
@@ -145,9 +158,6 @@
 				
 				while not mov.eof
                   response.Write( btnParcela(mov("id"), mov("ValorPago"), mov("Value"), mov("Date"), mov("CD"), mov("CaixaID")) )
-
-
-
 				mov.movenext
 				wend
 				mov.close

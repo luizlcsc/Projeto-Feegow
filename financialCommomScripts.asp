@@ -207,6 +207,10 @@ function abrirPleres(invoiceId) {
     openComponentsModal("labs-integration/pleres/exam-status", { I: invoiceId }, "Integração Pleres", false)
 }
 
-function abrirMatrix(invoiceId) {
-    openComponentsModal("labs-integration/matrix/invoice-exams", {invoiceId: invoiceId}, false, false)
+function abrirMatrix(invoiceId, labid = 1) {
+    openComponentsModal("labs-integration/matrix/invoice-exams", {invoiceId: invoiceId, labid:labid }, false, false)
+}
+
+function abrirDiagBrasil(invoiceId,labid) {
+    openComponentsModal("labs-integration/diagbrasil/invoice-exams", {invoiceId: invoiceId, labid:labid }, false, false)
 }

@@ -741,8 +741,19 @@ function check(mi){
 }
 
 function imprimir(){
-	if($("#sysActive").val()==0){ bootbox.alert("Para imprimir este recibo voc&ecirc; precisa salvar esta conta.", function(result) {});
-	}else{ $.post("reciboIntegrado.asp?I=<%=InvoiceID%>", $("#formItens").serialize(), function(data, status){ $("#modal").html(data) }); } }
+	if($("#sysActive").val()==0){
+	    bootbox.alert("Para imprimir este recibo voc&ecirc; precisa salvar esta conta.", function(result) {});
+	}else{
+	    $.post("reciboIntegrado.asp?I=<%=InvoiceID%>", $("#formItens").serialize(), function(data, status){
+	        $("#modal").html(data);
+	        setTimeout(function() {
+                $.get("listaRecibos.asp", {InvoiceID: <%=InvoiceID%>}, function(data) {
+                    $("#modal-components").find(".modal-body").html(data);
+                })
+            }, 1000);
+	        })
+	}
+}
 
 
 function itens(T, A, II, autoPCi, cb){
@@ -776,16 +787,16 @@ function planPag(I){
 function recalc(input, mod){
     if(mod == undefined){
         mod = 0;
-    }    	
-	  var input = $("#formItens input");
-   var elemSerialized = "";
-   var dadosForm =  $("#formItens").serialize();
-   $.each(input, function (key, val) {
-       if(dadosForm.indexOf(val.name) == -1){
-           elemSerialized +=  val.name + '=' + val.value + "&";
+    }
+	var input = $("#formItens input");
+    var elemSerialized = "";
+    var dadosForm =  $("#formItens").serialize();
+    $.each(input, function (key, val) {
+        if(dadosForm.indexOf(val.name) == -1){
+            elemSerialized +=  val.name + '=' + val.value + "&";
         } 
-   });
-   
+    });
+
 	$.post("recalc.asp?InvoiceID=<%=InvoiceID%>&input="+input+"&mod="+mod, $("#formItens").serialize()+"&"+elemSerialized, function(data, status){ eval(data);  });
 }
 

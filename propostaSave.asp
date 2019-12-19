@@ -41,19 +41,24 @@ end if
 
 
 if erro="" then
-        UnidadeID = session("UnidadeID")
-        if ref("UnidadeID") <> "" then
-            UnidadeID = ref("UnidadeID")
-        end if
-        'response.write(UnidadeID)
-        set PropostaSQl = db.execute("SELECT sysUser, sysActive FROM propostas WHERE id="&PropostaID)
+	UnidadeID = session("UnidadeID")
+	if ref("UnidadeID") <> "" then
+		UnidadeID = ref("UnidadeID")
+	end if
+	'response.write(UnidadeID)
+	set PropostaSQl = db.execute("SELECT sysUser, sysActive, StaID FROM propostas WHERE id="&PropostaID)
 
-        if not PropostaSQL.eof then
-            if PropostaSQL("sysUser")&""="" and PropostaSQL("sysActive")&""="1" then
-                sysUserSql = " sysUser="&session("User")&","
-            end if
-        end if
+	if not PropostaSQL.eof then
+		if PropostaSQL("sysUser")&""="" and PropostaSQL("sysActive")&""="1" then
+			sysUserSql = " sysUser="&session("User")&","
+		end if
+	end if
 
+	if PropostaSQl("StaID")&"" = "5" then
+		sqlSave = "update propostas set ProfissionalID="&treatvalzero(ref("ProfissionalID"))&",  StaID="&ref("StaID")&", Internas='"&ref("Internas")&"',  ObservacoesProposta='"&ref("ObservacoesProposta")&"' where id="&PropostaID
+		db_execute(sqlSave)
+
+	else
 		sqlSave = "update propostas set ProfissionalID="&treatvalzero(ref("ProfissionalID"))&", PacienteID="&treatvalzero(ref("PacienteID"))&",TabelaID="&treatvalzero(ref("TabelaID"))&", Valor="&treatvalzero(ref("Valor"))&", UnidadeID="&treatvalzero(UnidadeID)&", StaID="&ref("StaID")&", TituloItens='"&ref("TituloItens")&"', TituloOutros='"&ref("TituloOutros")&"', TituloPagamento='"&ref("TituloPagamento")&"', DataProposta="&mydatenull(ref("DataProposta"))&", sysActive=1, "&sysUserSql&" Cabecalho='"&ref("Cabecalho")&"', Internas='"&ref("Internas")&"', ObservacoesProposta='"&ref("ObservacoesProposta")&"', Desconto="&treatvalzero(ref("DescontoTotal"))&" where id="&PropostaID
 '		response.Write(sqlSave)
 		db_execute(sqlSave)
@@ -64,8 +69,8 @@ if erro="" then
 
 		set ItemPropostaSQL = db.execute("SELECT ProfissionalID, group_concat(id) ids FROM itensproposta WHERE PropostaID="&PropostaID)
 		if not ItemPropostaSQL.eof then
-            ProfissionalID=ItemPropostaSQL("ProfissionalID")
-            PropostaIDS=ItemPropostaSQL("ids")
+			ProfissionalID=ItemPropostaSQL("ProfissionalID")
+			PropostaIDS=ItemPropostaSQL("ids")
 		end if
 
 		db_execute("delete from itensproposta where PropostaID="&PropostaID)
@@ -91,7 +96,7 @@ if erro="" then
 			if isnumeric(acrInv) and acrInv<>"" then acrInv=ccur(acrInv) else acrInv=0 end if
 
 			if ProfissionalID&""="" then
-			    ProfissionalID=ref("ProfissionalID"&ii)
+				ProfissionalID=ref("ProfissionalID"&ii)
 			end if
 
 			if Row>0 then
@@ -103,13 +108,13 @@ if erro="" then
 			end if
 			Tipo = "S"'Fixado em servico
 
-			 valorUnitarioDB = treatvalzero(valInv)
-			 valorDescontoDB = treatvalzero(ValorDesconto)
+				valorUnitarioDB = treatvalzero(valInv)
+				valorDescontoDB = treatvalzero(ValorDesconto)
 
 			DescontoRef = ref("Desconto"&splInv(i))
 
 			if DescontoRef="" then
-			    DescontoRef=0
+				DescontoRef=0
 			end if
 
 			ValorDesconto = ccur(DescontoRef)
@@ -133,9 +138,9 @@ if erro="" then
 				if temdescontocadastrado=1 then
 					'Existem descontos cadastrados rsDescontosUsuario
 					if not rsDescontosUsuario.eof then
-                        while not rsDescontosUsuario.eof
-                            procedimentoText = rsDescontosUsuario("Procedimentos")
-                            if  (instr(procedimentoText, "|"&ref("ItemID"&splInv(i))&"|" ) AND "S"=Tipo) OR trim(procedimentoText)="" then
+						while not rsDescontosUsuario.eof
+							procedimentoText = rsDescontosUsuario("Procedimentos")
+							if  (instr(procedimentoText, "|"&ref("ItemID"&splInv(i))&"|" ) AND "S"=Tipo) OR trim(procedimentoText)="" then
 								if rsDescontosUsuario("idUser")&"" = Session("User")&"" then 	
 									VDesconto = rsDescontosUsuario("DescontoMaximo")
 									if rsDescontosUsuario("TipoDesconto")="P" then
@@ -156,20 +161,20 @@ if erro="" then
 										idUsuariosDesconto = idUsuariosDesconto & "," & rsDescontosUsuario("idUser")
 									end if
 								end if
-                            end if
+							end if
 
-                            rsDescontosUsuario.movenext
-                        wend
-                        rsDescontosUsuario.movefirst
+							rsDescontosUsuario.movenext
+						wend
+						rsDescontosUsuario.movefirst
 					else
 						ValorDesconto=0
 						ValorDescontoFinal=0
-                    end if
+					end if
 
-                    if ValorDesconto="" then
+					if ValorDesconto="" then
 						ValorDesconto=0
-                        ValorDescontoFinal=0
-                    end if
+						ValorDescontoFinal=0
+					end if
 
 					if DescontoMaximo < CCUR(ValorDescontoFinal) and DescontoMaximo <> 0 then
 						ValorDesconto=0
@@ -189,11 +194,11 @@ if erro="" then
 
 			totalProposta = totalProposta - ValorDescontoFinal
 
-            if session("Odonto")=1 then
-        		sqlInsert = "insert into itensproposta ("&camID&" PropostaID,PacoteID ,Ordem, Prioridade, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto,TipoDesconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, OdontogramaObj) values ("&valID&" "&PropostaID&", "&pacoteInv&", "&ordemInv&","&prioridadeInv&",'"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "& valorUnitarioDB &", "& treatvalzero(ValorDesconto)  &", '"&desTipoInv&"', '"&ref("Descricao"&ii)&"', '"&ref("Executado"&ii)&"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", '"&replace(request.form("OdontogramaObj"&ii), "\", "\\")&"')"
-            else
-        		sqlInsert = "insert into itensproposta ("&camID&" PropostaID,PacoteID , Ordem, Prioridade, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto,TipoDesconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID) values                 ("&valID&" "&PropostaID&", "&pacoteInv&", "&ordemInv&","&prioridadeInv&",'"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "& valorUnitarioDB &", "& treatvalzero(ValorDesconto) &", '"&desTipoInv&"', '"&ref("Descricao"&ii)&"', '"&ref("Executado"&ii)&"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&")"
-            end if
+			if session("Odonto")=1 then
+				sqlInsert = "insert into itensproposta ("&camID&" PropostaID,PacoteID ,Ordem, Prioridade, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto,TipoDesconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, OdontogramaObj) values ("&valID&" "&PropostaID&", "&pacoteInv&", "&ordemInv&","&prioridadeInv&",'"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "& valorUnitarioDB &", "& treatvalzero(ValorDesconto)  &", '"&desTipoInv&"', '"&ref("Descricao"&ii)&"', '"&ref("Executado"&ii)&"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", '"&replace(request.form("OdontogramaObj"&ii), "\", "\\")&"')"
+			else
+				sqlInsert = "insert into itensproposta ("&camID&" PropostaID,PacoteID , Ordem, Prioridade, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto,TipoDesconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID) values                 ("&valID&" "&PropostaID&", "&pacoteInv&", "&ordemInv&","&prioridadeInv&",'"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "& valorUnitarioDB &", "& treatvalzero(ValorDesconto) &", '"&desTipoInv&"', '"&ref("Descricao"&ii)&"', '"&ref("Executado"&ii)&"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&")"
+			end if
 			db_execute(sqlInsert)
 
 			if Row<0 then
@@ -212,10 +217,10 @@ if erro="" then
 				end if
 
 				if ValorDesconto="" then
-				    ValorDesconto=0
+					ValorDesconto=0
 				end if
 				if DescontoInput="" then
-				    DescontoInput=0
+					DescontoInput=0
 				end if
 
 				if temdescontocadastrado=1 and  CCUR(ValorDesconto) <> CCUR(DescontoInput)  then
@@ -272,8 +277,6 @@ if erro="" then
 		next
 		'<-
 
-
-
 		'outras despesas
 		db_execute("delete from pacientespropostasoutros where PropostaID="&PropostaID)
 		splInv = split(ref("propostaOutros"), ", ")
@@ -293,10 +296,7 @@ if erro="" then
 			db_execute(sqlInsert)
 		next
 		'<-
-
-
-
-		
+	end if
 
 	%>
 	new PNotify({
@@ -306,8 +306,10 @@ if erro="" then
         delay: 2000
 	});
 	$("#sysActive").val("1");
+	
 	<%
-else
+	
+	else
 	%>
 	new PNotify({
 		title: 'ERRO!',

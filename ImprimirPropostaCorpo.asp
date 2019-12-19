@@ -284,30 +284,31 @@ body{
     				<%
     			end if
     			RodapeProposta = replace(RodapeProposta, "[Previsao.Entrega]", PrazoEntrega)
+    			Preparo=""
 
     			if instr(RodapeProposta, "[Procedimentos.Preparo]")>0 then
-                    set getProcedimentos = db.execute("SELECT GROUP_CONCAT(ItemID SEPARATOR ', ') Itens FROM itensproposta WHERE Tipo='S' AND PropostaID="&PropostaID)
-                    if not getProcedimentos.EOF then
-                        Preparo = "<h3>Preparos</h3>"
-                        set getPreparos = db.execute("SELECT NomeProcedimento, TextoPreparo FROM procedimentos WHERE id IN ("&getProcedimentos("Itens")&") ")
-                        if getPreparos.EOF then
-                            Preparo = Preparo & "<br><i>Nenhum preparo.</i><br>"
-                        end if
-                        while not getPreparos.EOF
-                            NomeProcedimento = "<b>"&getPreparos("NomeProcedimento")&"</b>"
-                            TextoPreparo = getPreparos("TextoPreparo")
-                            if TextoPreparo&""<>"" then
-                                Preparo = Preparo & "<br>" & NomeProcedimento & "<br>" & TextoPreparo &"<br>"
-                            end if
-                        getPreparos.movenext
-                        wend
-                        getPreparos.close
-                        set getPreparos=nothing
-                    end if
+                      set getProcedimentos = db.execute("SELECT GROUP_CONCAT(ItemID SEPARATOR ', ') Itens FROM itensproposta WHERE Tipo='S' AND PropostaID="&PropostaID)
+                      if not getProcedimentos.EOF then
+                          set getPreparos = db.execute("SELECT NomeProcedimento, TextoPreparo FROM procedimentos WHERE id IN ("&getProcedimentos("Itens")&") ")
+                          while not getPreparos.EOF
+                              NomeProcedimento = "<b>"&getPreparos("NomeProcedimento")&"</b>"
+                              TextoPreparo = getPreparos("TextoPreparo")
+                              if TextoPreparo&""<>"" then
+                                  TemPreparo = TRUE
+                                  Preparo = Preparo & "<br>" & NomeProcedimento & "<br>" & TextoPreparo& "<br>"
+                              end if
+                          getPreparos.movenext
+                          wend
+                          getPreparos.close
+                          set getPreparos=nothing
+                          if TemPreparo then
+                             Preparo = "<h3>Preparos</h3>" & Preparo
+                          end if
+                      end if
 
 
-                    RodapeProposta = replace(RodapeProposta, "[Procedimentos.Preparo]", Preparo)
-    			end if
+                      RodapeProposta = replace(RodapeProposta, "[Procedimentos.Preparo]", "")
+                end if
     			%>
 
 
@@ -323,6 +324,12 @@ body{
             </div>
 </div>
 </div>
+<%if TemPreparo then%>
+<div style='page-break-after:always'></div>
+<div style='text-align: left;'>
+<%=Preparo%>
+</div>
+<%end if%>
 <script src="assets/js/jquery-1.6.2.min.js"></script>
 <script src="assets/js/jquery.PrintArea.js_4.js"></script>
 <script src="assets/js/core.js"></script>

@@ -105,6 +105,12 @@ else
 	end if
     ObservacoesProposta = ""
 end if
+
+'desabilitar conta edicao de conta
+if StaID&"" = "5" then
+    desabilitarProposta =" disabled "
+    escondeProposta = " hidden "
+end if
 %>
 <div class="row col-md-12">
     <br />
@@ -134,8 +140,11 @@ end if
                         if req("PacienteID")="" then 
                             response.write("hidden")
                             linkLista = "location.href='?P=buscaPropostas&Pers=1'"
+                            reload = "true"
                         else
                             linkLista = "ajxContent('ListaPropostas&PacienteID="&req("PacienteID")&"', '', '1', 'pront')"
+                            reload = "false"
+
                         end if %> ">
                         <span class="panel-title">
                             <i class="fa fa-files-o"></i> Edição de Proposta
@@ -144,13 +153,13 @@ end if
                             <%call odonto()%>
 <!--<a title="Histórico de Alterações" href="javascript:log()" class="btn btn-sm btn-default hidden-xs"><i class="fa fa-history"></i></a>-->
                             <% if session("Odonto")=1 then %>
-                                <button type="button" class="btn btn-system btn-sm" id="btn-abrir-modal-odontograma"> <span class="imoon imoon-grin2"></span> Odontograma </button>
+                                <button type="button" class="btn btn-system btn-sm" id="btn-abrir-modal-odontograma" <%=desabilitarProposta%>> <span class="imoon imoon-grin2"></span> Odontograma </button>
                             <% end if %>
-                            <button type="button" class="btn btn-sm" onclick="<%=linkLista %>" title="Listas Propostas"><i class="fa fa-list"></i></button>
+                            <button type="button" class="btn btn-sm " id="ListaProposta" onclick="<%=linkLista %>" title="Listas Propostas"><i class="fa fa-list"></i></button>
                             <button type="button" class="btn btn-sm" title="Duplicar Proposta" onclick="window.location.href = '?P=DuplicarPacientesPropostas&Pers=1&PropostaID=<%=req("PropostaID")%>'"><i class="fa fa-copy"></i> Duplicar Proposta</button>
                             <button type="button" class="btn btn-sm" onclick="log()" title="Histórico de Alterações"><i class="fa fa-history"></i></button>
                             <button type="button" onclick="imprimirProposta()" class="btn btn-info btn-sm" title="Imprimir"><i class="fa fa-print"></i></button>
-                            <button onclick="propostaSave()" type="button" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> SALVAR</button>
+                            <button onclick="propostaSave(<%=reload%>)" type="button" class="btn btn-primary btn-sm "><i class="fa fa-save"></i> SALVAR</button>
                         </span>
                         <%if req("PacienteID")="" then %>
                         <script type="text/javascript">
@@ -193,8 +202,8 @@ end if
                         end if
                               %>
                           </div>
-                       <%= quickField("simpleSelect", "TabelaID", "Tabela", 4, TabelaID, "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' order by NomeTabela", "NomeTabela", "") %>
-                       <%= quickField("datepicker", "DataProposta", "Data da Proposta", 4, DataProposta, "", "", "") %>
+                       <%= quickField("simpleSelect", "TabelaID", "Tabela", 4, TabelaID, "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' order by NomeTabela", "NomeTabela", desabilitarProposta ) %>
+                       <%= quickField("datepicker", "DataProposta", "Data da Proposta", 4, DataProposta, "", "", desabilitarProposta) %>
                                                    </div>
                 <div class="row" style="margin-top: 10px">
 
@@ -234,9 +243,9 @@ end if
                                                        <%= quickField("simpleSelect", "StaID", "", 4, StaID, "select * from propostasstatus order by id", "NomeStatus", "semVazio") %>
                                                    </div>
                                                    <div class="col-md-4 hidden motivo">
-                                                                                                       <label>Motivo</label>
-                                                                                                       <%= quickField("simpleSelect", "MotivoID", "", 4, MotivoID, "select * from propostasmotivostatus WHERE status = 3 order by id", "descricao", "semVazio") %>
-                                                                                                     </div>
+                                                        <label>Motivo</label>
+                                                        <%= quickField("simpleSelect", "MotivoID", "", 4, MotivoID, "select * from propostasmotivostatus WHERE status = 3 order by id", "descricao", "semVazio") %>
+                                                        </div>
 </div>
                          <div class="row">
                              <div class="col-md-12 text-right">
@@ -268,13 +277,13 @@ end if
 
             <div class="panel">
                 <div class="panel-editbox" style="display:block">
-                    <input class="form-control dadoProposta" name="TituloItens" id="TituloItens" value="<%=TituloItens%>" style="color: #4383b4;">
+                    <input class="form-control dadoProposta" name="TituloItens" id="TituloItens" value="<%=TituloItens%>" style="color: #4383b4;" <%=desabilitarProposta%>>
                 </div>
                 <div class="panel-body">
                     <div class="col-xs-9">
                         <%server.Execute("PropostaItens.asp")%>
                     </div>
-                    <div class="col-xs-3 pn">
+                    <div class="col-xs-3 pn <%=escondeProposta%>">
 
                         <div class="panel mn">
                           <div class="panel-menu">
@@ -306,13 +315,13 @@ end if
 
             <div class="panel">
                 <div class="panel-editbox" style="display:block">
-                    <input class="form-control dadoProposta" name="TituloPagamento" id="TituloPagamento" value="<%=TituloPagamento%>" style="color: #4383b4;">
+                    <input class="form-control dadoProposta" name="TituloPagamento" id="TituloPagamento" value="<%=TituloPagamento%>" style="color: #4383b4;" <%=desabilitarProposta%>>
                 </div>
                 <div class="panel-body">
                     <div class="col-xs-9 PropostaItensConteudo">
                         <%server.Execute("propostasFormas.asp")%>
                     </div>
-                    <div class="col-xs-3 pn">
+                    <div class="col-xs-3 pn <%=escondeProposta%>">
                         <div class="panel mn">
                           <div class="panel-menu">
                                 <div class="input-group">
@@ -346,13 +355,13 @@ end if
 
             <div class="panel">
                 <div class="panel-editbox" style="display:block">
-                    <input class="form-control dadoProposta" name="TituloOutros" id="TituloOutros" value="<%=TituloOutros%>" style="color:#4383b4;">
+                    <input class="form-control dadoProposta" name="TituloOutros" id="TituloOutros" value="<%=TituloOutros%>" style="color:#4383b4;" <%=desabilitarProposta%>>
                 </div>
                 <div class="panel-body">
                     <div class="col-xs-9">
 				        <%server.Execute("propostasOutros.asp")%>
                     </div>
-                    <div class="col-xs-3 pn">
+                    <div class="col-xs-3 pn <%=escondeProposta%>">
                         <div class="panel mn">
                           <div class="panel-menu">
                                     <div class="input-group">
@@ -387,7 +396,7 @@ end if
 
 		    <div class="panel">
                 <div class="panel-body">
-                    <%= quickField("editor", "ObservacoesProposta", "Texto complementar", 9, ObservacoesProposta, "80", "", "") %>
+                    <%= quickField("editor", "ObservacoesProposta", "Texto complementar", 9, ObservacoesProposta, "80", "", desabilitarProposta) %>
             	    <%= quickField("memo", "Internas", "Observações Internas", 3, Internas, "dadoProposta", "", " rows=8") %>
                 </div>
             </div>

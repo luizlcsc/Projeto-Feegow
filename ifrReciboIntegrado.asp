@@ -241,8 +241,12 @@ if not inv.eof then
                                               "LEFT JOIN (SELECT 0 id, NomeFantasia, Cep, Endereco, Numero, Complemento, Bairro, Cidade, Estado FROM empresa UNION ALL SELECT id, NomeFantasia, Cep, Endereco, Numero, Complemento, Bairro, Cidade, Estado FROM sys_financialcompanyunits WHERE sysActive=1) unit ON unit.id=l.UnidadeID "&_
                                               "WHERE a.id="&AgendamentoID)
             if not dadosAgendamento.eof then
+                HoraAgendamento =""
+                if dadosAgendamento("Hora")&""<>"" then
+                    HoraAgendamento = formatdatetime(dadosAgendamento("Hora"),4)
+                end if
                 Recibo = replace(Recibo, "[Agendamento.Data]", dadosAgendamento("Data"))
-                Recibo = replace(Recibo, "[Agendamento.Hora]", formatdatetime(dadosAgendamento("Hora"),4))
+                Recibo = replace(Recibo, "[Agendamento.Hora]", HoraAgendamento)
                 Recibo = replace(Recibo, "[AgendamentoUnidade.Nome]", dadosAgendamento("NomeFantasia")&"")
                 Recibo = replace(Recibo, "[AgendamentoUnidade.Cep]", dadosAgendamento("Cep")&"")
                 Recibo = replace(Recibo, "[AgendamentoUnidade.Endereco]", dadosAgendamento("Endereco")&"")
@@ -767,7 +771,13 @@ if not inv.eof then
             Recibo = replace(Recibo, "[Receita.ValorPagoExtenso]", extenso(ValorPagoExtenso))
 		end if
 
-        set invoiceSequencial = db.execute("SELECT * FROM recibos WHERE InvoiceID="&inv("id"))
+		UnidadeInvoice = session("UnidadeID")
+        set getUnidadeInvoice = db.execute("SELECT CompanyUnitID FROM sys_financialinvoices WHERE id="&inv("id"))
+        if not getUnidadeInvoice.eof then
+            UnidadeInvoice = getUnidadeInvoice("CompanyUnitID")
+        end if
+
+        set invoiceSequencial = db.execute("SELECT * FROM recibos WHERE InvoiceID="&inv("id")&" AND UnidadeID="&UnidadeInvoice)
         if not invoiceSequencial.eof then
             NumeroSequencial = invoiceSequencial("NumeroSequencial")
 
@@ -776,7 +786,7 @@ if not inv.eof then
             end if
 
         else
-            set reciboSequencial = db.execute("SELECT NumeroSequencial FROM recibos WHERE UnidadeID="&session("UnidadeID")&" ORDER BY NumeroSequencial DESC LIMIT 1")
+            set reciboSequencial = db.execute("SELECT NumeroSequencial FROM recibos WHERE UnidadeID="&UnidadeInvoice&" ORDER BY NumeroSequencial DESC LIMIT 1")
             if not reciboSequencial.eof then
                 NumeroSequencial = reciboSequencial("NumeroSequencial") + 1
             else
@@ -821,9 +831,9 @@ if not inv.eof then
                 sqlDataHora = mydatetime(DataHora)
 
                 if Imprimiu="1" then
-                    sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, Auto,ImpressoEm, sysDate) VALUES ("&treatvalzero(NumeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&Cnpj&"','"&NomeRecibo&"', "&mydatenull(date())&", "&treatvalzero(ValorRecibo)&", '"&Recibo&"', '"&PacienteID&"', "&session("User")&", '"&NomeItens&"', 0, "&InvoiceID&", "&session("UnidadeID")&", "&NumeroSequencial&", '"&CPFPACIENTE&"', 0, now(), "&sqlDataHora&")"
+                    sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, Auto,ImpressoEm, sysDate) VALUES ("&treatvalzero(NumeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&Cnpj&"','"&NomeRecibo&"', "&mydatenull(date())&", "&treatvalzero(ValorRecibo)&", '"&Recibo&"', '"&PacienteID&"', "&session("User")&", '"&NomeItens&"', 0, "&InvoiceID&", "&UnidadeInvoice&", "&NumeroSequencial&", '"&CPFPACIENTE&"', 0, now(), "&sqlDataHora&")"
                 else
-                    sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, Auto, sysDate) VALUES ("&treatvalzero(NumeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&Cnpj&"','"&NomeRecibo&"', "&mydatenull(date())&", "&treatvalzero(ValorRecibo)&", '"&Recibo&"', '"&PacienteID&"', "&session("User")&", '"&NomeItens&"', 0, "&InvoiceID&", "&session("UnidadeID")&", "&NumeroSequencial&", '"&CPFPACIENTE&"', 0, "&sqlDataHora&")"
+                    sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, Auto, sysDate) VALUES ("&treatvalzero(NumeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&Cnpj&"','"&NomeRecibo&"', "&mydatenull(date())&", "&treatvalzero(ValorRecibo)&", '"&Recibo&"', '"&PacienteID&"', "&session("User")&", '"&NomeItens&"', 0, "&InvoiceID&", "&UnidadeInvoice&", "&NumeroSequencial&", '"&CPFPACIENTE&"', 0, "&sqlDataHora&")"
                 end if
             end if
             
@@ -866,6 +876,6 @@ if not inv.eof then
 end if %>
 </div>
 <% next %>
-<script>
+<script type="text/javascript">
 print();
 </script>

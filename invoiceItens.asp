@@ -186,12 +186,81 @@ if Acao="" then
 		</tbody>
 		<tfoot>
 			<tr>
-				<th colspan="7"><%=conta%> itens</th>
+				<th colspan="5"><%=conta%> itens</th>
+				<th><button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;">Aplicar Descontos</th>
+				<th></th>
 				<th id="total" class="text-right" nowrap>R$ <%=formatnumber(Total,2)%></th>
 				<th colspan="2"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
 			</tr>
 		</tfoot>
 	</table>
+	<div id="modal-desconto" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Aplicar Desconto</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<input type="text" class="form-control input-mask-brl text-right disable" id="modal-desconto-valor" placeholder="Desconto">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<select id="modal-percent" class="form-control">
+									<option value="%">%</option>
+									<option value="R$">R$</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<button type="button" class="btn btn-success form-control" onclick="aplicarDescontos()">Aplicar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+<script type="text/javascript">
+	function aplicarDescontos() {
+		let valueChange = $('#modal-desconto-valor').val();
+		let formatoDesconto = $('#modal-percent').val();
+		let links = $("input[name^='Desconto']").closest('.input-group').find('a');
+		if(valueChange != '' && valueChange != 0){
+			links.each(function (key, value) {
+				valorUnitario   = $(value).closest('tr').find("input[name^='ValorUnitario']").val();
+				if(formatoDesconto == '%'){
+					$(value).closest('.input-group-btn').find('button').text('%');
+					$(value).text('R$');
+					$(value).closest('.input-group').find("input[name^='Desconto']").hide();
+					$(value).closest('.input-group').find("input[name^='PercentDesconto']").show();
+					$(value).closest('.input-group').find("input[name^='PercentDesconto']").val(inputBRL(valueChange));
+					$(value).closest('.input-group').find("input[name^='Desconto']").val(convertPorcentagemParaReal(valueChange, valorUnitario));
+				}else{
+					$(value).closest('.input-group-btn').find('button').text('R$');
+					$(value).text('%');
+					$(value).closest('.input-group').find("input[name^='Desconto']").show();
+					$(value).closest('.input-group').find("input[name^='PercentDesconto']").hide();
+					$(value).closest('.input-group').find("input[name^='Desconto']").val(inputBRL(inputBRL(valueChange)));
+					$(value).closest('.input-group').find("input[name^='PercentDesconto']").val(convertRealParaPorcentagem(valueChange, valorUnitario));
+				}
+			});
+			$('.CampoDesconto').change();
+			recalc();			
+		}
+		$('#modal-desconto').modal('hide');
+	}
+</script>
+
 <script type="text/javascript">
     <!--#include file="JQueryFunctions.asp"-->
 </script>

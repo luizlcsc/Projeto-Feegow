@@ -21,6 +21,11 @@
                 medkit = 0
 				if check=1 then
 					if Executado="S" then
+                        desabilitar = " disabled "
+                        if aut("profissionalcontaA")=1 then
+                            desabilitar = " "
+                        end if
+
 						checado = "<i class=""fa fa-check green""></i>  "
 						'set exec = db.execute("select * from profissionais where id="&treatvalzero(ProfissionalID))
 						'if not exec.eof then
@@ -43,7 +48,7 @@
                         else 
                       medkit = 1
 					    %>
-                        <button type="button" class="btn btn-block btn-xs btn-default" name="Executado" data-value="<%=ItemID %>"><%=checado%> <%=Executor%></button>
+                        <button type="button" class="btn btn-block btn-xs btn-default" name="Executado" data-value="<%=ItemID %>" <%=desabilitar%>><%=checado%> <%=Executor%></button>
                         <%
                         end if
                     end if

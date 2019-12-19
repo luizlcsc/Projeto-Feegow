@@ -89,11 +89,11 @@ end if
         var s = "relatorio.asp?TipoRel=ImprimeRecibo&Imprimiu=1&I=<%= request.QueryString("ReciboID") %>";
         var iframe1 = document.getElementById('iframe1');
         iframe1.src = s;
-        if (window.stop) {
-            window.stop();
-        } else {
-            document.execCommand('Stop'); // MSIE
-        }
+        // if (window.stop) {
+        //     window.stop();
+        // } else {
+        //     document.execCommand('Stop'); // MSIE
+        // }
         }
         setTimeout(setIframeSrc, 600);
 </script>
@@ -104,8 +104,11 @@ end if
 	<% response.end %>
 <% end if %>
 
+<script>
+$(".close").click();
+</script>
 <div class="modal-header">
-	<h1 class="lighter blue">Impressão de Recibo</h1>	
+	<h1 class="lighter blue">Impressão de Recibo</h1>
 </div>
 <div class="modal-body">
     <p>Selecione abaixo qual executante deseja visualizar no recibo.</p>

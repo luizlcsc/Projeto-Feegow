@@ -22,6 +22,7 @@ end if
     <table class="table table-striped table-hover table-bordered table-condensed">
         <thead>
           <tr class="success">
+            <th>#</th>
             <th>Abertura</th>
             <th>Prazo</th>
             <th>Status</th>
@@ -58,6 +59,7 @@ end if
             Solicitante = lista("Nome")
             %>
             <tr>
+                <td><%=lista("id") %></td>
                 <td><%=lista("sysDate") %></td>
                 <td><%=lista("DataPrazo") %> </td>
                 <td><%=lista("NomeStatus") %> </td>

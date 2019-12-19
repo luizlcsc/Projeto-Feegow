@@ -82,18 +82,24 @@ end if
 
 if TipoImpresso="Impresso" then
     set ImpressosModeloSQL = db.execute("SELECT id FROM procedimentosmodelosimpressos WHERE Procedimentos LIKE '|%"&ProcedimentoID&"%|'")
-
-    if not ImpressosModeloSQL.eof then
-        UrlPrint = "printProcedimentoImpresso.asp?I="&ImpressosModeloSQL("id")&"&PacienteID="&PacienteID&"&UnidadeID="&UnidadeID&"&ProfissionalID="&ProfissionalID&"&ProcedimentoID="&ProcedimentoID
-        Imprime=True
-    %>
-    $("#ImpressaoProcedimento").remove();
-    $("body").append("<iframe id='ImpressaoProcedimento' src='<%=UrlPrint%>' style='display:none;'></iframe>")
-    <%
-    else
+    
+    if ProfissionalID <> "" then
+        if not ImpressosModeloSQL.eof then
+            UrlPrint = "printProcedimentoImpresso.asp?I="&ImpressosModeloSQL("id")&"&PacienteID="&PacienteID&"&UnidadeID="&UnidadeID&"&ProfissionalID="&ProfissionalID&"&ProcedimentoID="&ProcedimentoID
+            Imprime=True
         %>
-    showMessageDialog("Este procedimento não possui nenhum modelo a ser impresso.", "warning");
+        $("#ImpressaoProcedimento").remove();
+        $("body").append("<iframe id='ImpressaoProcedimento' src='<%=UrlPrint%>' style='display:none;'></iframe>")
         <%
+        else
+            %>
+        showMessageDialog("Este procedimento não possui nenhum modelo a ser impresso.", "warning");
+            <%
+        end if
+    else
+    %>
+        showMessageDialog("Favor preencher profissional.", "warning");
+    <%
     end if
 end if
 

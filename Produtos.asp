@@ -155,6 +155,14 @@ end if
 
 
                         </div>
+                        <br>
+                        <%if aut("|produtosI|")=1 OR aut("|produtosA|")=1 then%>
+                            <div class="row">
+                                <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" name="PermitirSaida" id="PermitirSaida" value="S" class="ace" <% If reg("PermitirSaida")="S" Then %> checked="checked" <% End If %> />
+                                <label for="PermitirSaida">Permitir saída do produto pelo cadastro</label></div>
+                            </div>
+                        <%end if%>
                     </div>
                 </div>
                 <hr class="short alt" />

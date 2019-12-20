@@ -2,5 +2,8 @@
 <%
 LancamentoID = req("LancamentoID")
 
-call estoqueLancaConta(LancamentoID, "eval")
+if InvoiceID&""="" then
+    InvoiceID = 0
+end if
+call estoqueLancaConta(LancamentoID, "eval", InvoiceID)
 %>

@@ -22,6 +22,14 @@ if len(reg("descricao"))>6 then
 end if
 conjunto = reg("ApresentacaoNome")
 
+exibirBotaoSaida = TRUE
+if req("P")="Produtos" then
+    if reg("PermitirSaida")<>"S" then
+        exibirBotaoSaida = FALSE
+    end if
+end if
+
+
 sqlUnidadesUsuario = ""
 if aut("lctestoqueV")=0 then
     UnidadesUsuario = replace(session("Unidades")&"", "|", "")
@@ -91,7 +99,9 @@ call refazPosicao(ProdutoID)
                     <td><%=descQuant(Quantidade, TipoUnidade, conjunto, unidade) %></td>
                     <td class="text-right"><%= fn(lanc("ValorPosicao")) %></td>
                     <td class="p5">
+                        <%if exibirBotaoSaida then%>
                         <button class="btn btn-alert mn btn-block btn-xs btnLancto <%= hiddenS %>" type="button"<%=disabled%> onclick="lancar(<%=req("I") %>, 'S', '<%=req("LocalizacaoID")%>', '', <%=lanc("PosicaoID") %>, '<%=ItemInvoiceID %>', '<%= AtendimentoID %>', <%= ProdutoInvoiceID %>);"><i class="fa fa-level-up"></i> Sa&iacute;da</button>
+                        <%end if%>
                         <button class="mt10 btn btn-info mn btn-block btn-xs <%=hiddenII %>" type="button"<%=disabled%> onclick="dividir(<%=req("I") %>, 'S', '<%=req("LocalizacaoID")%>', '', <%=lanc("PosicaoID") %>, '<%=req("Quantidade")%>');"><i class="fa fa-retweet"></i> Mover</button>
                     </td>
                 </tr>

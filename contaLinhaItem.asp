@@ -151,7 +151,7 @@
                                 <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorios("labID")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=laboratorios("NomeLaboratorio")%>">
                                     <i class="fa fa-flask"></i>
                                 </button>    
-                            <% end if %> 
+                            <% end if %>
                         </div>
                     <%
 			        end if

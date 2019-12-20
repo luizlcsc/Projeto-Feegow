@@ -56,6 +56,9 @@ if BuscaProduto="" then
         sqlProdutos = " AND id IN("& Produtos &") "
     end if
 else
+    if CD&""="" then
+        CD = "C"
+    end if
     set vcaCBID = db.execute("select ep.* from estoqueposicao ep LEFT JOIN produtoslocalizacoes pl ON pl.id=ep.LocalizacaoID where ep.CBID like '%"& BuscaProduto &"' AND ep.Quantidade>0"&sqlUnidadesUsuario&" LIMIT 1")
     if not vcaCBID.eof AND CD="C" then
         sqlProdutos = " AND 1=2 "

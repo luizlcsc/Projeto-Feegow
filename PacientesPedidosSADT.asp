@@ -190,7 +190,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                             Busca de procedimentos - TUSS
                         </span>
                         <div class="panel-controls">
-                                 <a href="#" onclick="modalPastas('', 'Lista')" class="btn btn-xs btn-dark" data-original-title="Cadastrar modelo de pedido para futuras solicitações" data-rel="tooltip" data-placement="top" title="">
+                                 <a href="#" onclick="modalPastas('', 'Lista')" class="btn btn-xs btn-dark" data-placement="top" title="">
                                     <i class="fa fa-folder text-white"></i>
                                 </a>
                         </div>

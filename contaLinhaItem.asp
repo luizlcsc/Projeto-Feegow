@@ -128,12 +128,11 @@
                     set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&inv("id")&" AND Executado!='S'")
                     set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&inv("id")&" and p.IntegracaoPleres = 'S'")
                     'set laboratorios = db.execute("SELECT labID FROM labs_procedimentos_laboratorios WHERE procedimentoID = '" & ProcedimentoID &"'")
-                    set laboratorios = db.execute("SELECT * FROM cliniccentral.labs AS lab INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) WHERE lpl.procedimentoID ="& ProcedimentoID )
-                    if laboratorios.eof then
-                        laboratorioid = 1
-                    else                        
+                    set laboratorios = db.execute("SELECT * FROM cliniccentral.labs AS lab INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) WHERE lpl.procedimentoID ="& treatvalzero(ProcedimentoID) )
+                    laboratorioid = 1
+                    if  not laboratorios.eof then
                         laboratorioid = laboratorios("labID")
-                    end if 
+                    end if
 
                     if CInt(temintegracao("temintegracao")) > 0 then
                     %>
@@ -151,7 +150,7 @@
                                 <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorios("labID")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=laboratorios("NomeLaboratorio")%>">
                                     <i class="fa fa-flask"></i>
                                 </button>    
-                            <% end if %> 
+                            <% end if %>
                         </div>
                     <%
 			        end if

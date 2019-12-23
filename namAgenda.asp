@@ -126,14 +126,12 @@ if not Horarios.eof then
         if Unidades<>"" then
             if instr(Unidades, "|"&UnidadeID&"|")=0 then
                 MostraGrade=False
-                
             end if
         end if
         
         Cor = CorPadrao
         if Horarios("Cor")&"" <>"" then
             Cor = Horarios("Cor")
-            response.write Cor
         end if        
         
         if MostraGrade then

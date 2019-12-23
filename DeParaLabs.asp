@@ -5,7 +5,7 @@
     $(".crumb-active a").html("Relacionamento de Procedimentos");
     $(".crumb-link").removeClass("hidden");
     <%
-        set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs WHERE id = "&req("labid"))
+        set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs WHERE id = 1)
         if not dadoslab.eof then
     %>
          $(".crumb-link").html("<%=dadoslab("NomeLaboratorio")%>");

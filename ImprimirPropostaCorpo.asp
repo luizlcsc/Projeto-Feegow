@@ -143,7 +143,7 @@ body{
                                         " LEFT JOIN procedimentos proc on proc.id=ii.ItemID "&_
                                         " WHERE ii.PropostaID="&PropostaID&" "&_
                                         " GROUP BY proc.NomeProcedimento, ValorUnitario, proc.NomeProcedimento,Acrescimo,Desconto "&_
-                                        " ORDER BY Prioridade Desc "&_
+                                        " ORDER BY Prioridade DESC, ii.id ASC "&_
                                         ") AS T")
     			if not itens.eof then
     				%>

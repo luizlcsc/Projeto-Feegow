@@ -4,7 +4,8 @@ ProfissionalID = ref("ProfissionalID")
 Data = ref("Data")
 DiaSemana = weekday(Data)
 NomeProfissional = ref("NomeProfissional")
-Cor = ref("Cor")
+CorPadrao = ref("Cor")
+Cor = CorPadrao
 ProcedimentoID = request.form("ProcedimentoID")
 HVazios = ref("HVazios")
 strAB = ref("strAB")
@@ -125,9 +126,16 @@ if not Horarios.eof then
         if Unidades<>"" then
             if instr(Unidades, "|"&UnidadeID&"|")=0 then
                 MostraGrade=False
+                
             end if
         end if
-
+        
+        Cor = CorPadrao
+        if Horarios("Cor")&"" <>"" then
+            Cor = Horarios("Cor")
+            response.write Cor
+        end if        
+        
         if MostraGrade then
         cProf = cProf+1
         %><tr><td colspan="3" nowrap class="nomeProf" style="background-color:<%= Cor %>"><%=left(ucase(Horarios("NomeLocal")&" "), 20)%><%=getNomeLocalUnidade(Horarios("UnidadeID"))%> <br><%= Horarios("Mensagem") %> <input type="hidden" name="Ocupacoes" value="<%= ProfissionalID &"_"& LocalID %>" /><input type="hidden" id="OcupProfLivres<%= ProfissionalID &"_"& LocalID %>" name="OcupProfLivres<%= ProfissionalID &"_"& LocalID %>" /><input type="hidden" id="OcupProfBloq<%= ProfissionalID &"_"& LocalID %>" name="OcupProfBloq<%= ProfissionalID &"_"& LocalID %>" /><input type="hidden" id="OcupProfOcu<%= ProfissionalID &"_"& LocalID %>" name="OcupProfOcu<%= ProfissionalID &"_"& LocalID %>" /></td></tr><%

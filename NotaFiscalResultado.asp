@@ -45,7 +45,7 @@ if GrupoProcedimentos<>"" then
     sqlGrupo=" AND '"&GrupoProcedimentos&"' LIKE concat('%|', proc.GrupoID ,'|%')"
 end if
 
-sql = "SELECT carga.valorservico, i.Value,i.AccountID,i.AssociationAccountID, i.sysDate, nfe.*,orig.TipoNFe, orig.DFeTokenApp, i.id InvoiceID, nfe.id TemRecibo, ii.Executado, ii.id FROM sys_financialinvoices i LEFT JOIN nfe_notasemitidas nfe ON i.id=nfe.InvoiceID LEFT JOIN nfe_origens orig ON REPLACE(REPLACE(orig.CNPJ,'-',''),'.','')=nfe.cnpj  " &_
+sql = "SELECT carga.valorservico, i.Value,i.AccountID,i.AssociationAccountID, i.sysDate, nfe.*,orig.TipoNFe, orig.DFeTokenApp, i.id InvoiceID, nfe.id TemRecibo, ii.Executado FROM sys_financialinvoices i LEFT JOIN nfe_notasemitidas nfe ON i.id=nfe.InvoiceID LEFT JOIN nfe_origens orig ON REPLACE(REPLACE(orig.CNPJ,'-',''),'.','')=nfe.cnpj  " &_
 " left join carganotacsv carga ON REPLACE(REPLACE(carga.cnpjcnpjprestador,'-',''),'.','') = REPLACE(REPLACE(orig.CNPJ,'-',''),'.','') AND  (carga.numeronota = numeronfse OR carga.rps = nfe.numero) "&_
 " LEFT JOIN itensinvoice ii ON ii.InvoiceID=i.id "&_
 " LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
@@ -115,7 +115,7 @@ if not NotasFiscaisSQL.eof then
     while not NotasFiscaisSQL.eof
 
         classExecutado = ""
-        if NotasFiscaisSQL("Executado")&""<>"S" and NotasFiscaisSQL("id")&""<>"" then
+        if NotasFiscaisSQL("Executado")&""<>"S" then
              classExecutado = " warning"
         end if
 

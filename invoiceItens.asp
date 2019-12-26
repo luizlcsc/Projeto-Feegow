@@ -187,7 +187,7 @@ if Acao="" then
 		<tfoot>
 			<tr>
 				<th colspan="5"><%=conta%> itens</th>
-				<th><button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;">Aplicar Descontos</th>
+				<th><button type="button" class="btn btn-default btn-sm disable" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;"> Aplicar Descontos</button></th>
 				<th></th>
 				<th id="total" class="text-right" nowrap>R$ <%=formatnumber(Total,2)%></th>
 				<th colspan="2"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
@@ -205,7 +205,7 @@ if Acao="" then
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<input type="text" class="form-control input-mask-brl text-right disable" id="modal-desconto-valor" placeholder="Desconto">
+								<input type="text" class="form-control input-mask-brl text-right disable" id="modal-desconto-valor" placeholder="Digite o desconto">
 							</div>
 						</div>
 						<div class="col-md-6">

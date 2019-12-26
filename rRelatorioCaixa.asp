@@ -160,7 +160,8 @@ if not dist.eof then
         if MC="" then
             if DetalharEntradas="S" then
                 Valor = dist("Value")
-                set desc = db.execute("select tp.NomeTabela, prof.NomeProfissional, group_concat(ifnull(proc.NomeProcedimento, '')) NomeProcedimento, ii.InvoiceID, fi.nroNFe from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN sys_financialinvoices fi ON fi.id=ii.InvoiceID LEFT JOIN tabelaparticular tp ON tp.id=fi.TabelaID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN profissionais prof ON prof.id=ii.ProfissionalID and ii.Associacao=5 where PagamentoID="& dist("id"))
+                sqlDetalhado = "select tp.NomeTabela, prof.NomeProfissional, group_concat(ifnull(proc.NomeProcedimento, '')) NomeProcedimento, ii.InvoiceID, fi.nroNFe from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN sys_financialinvoices fi ON fi.id=ii.InvoiceID LEFT JOIN tabelaparticular tp ON tp.id=fi.TabelaID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN profissionais prof ON prof.id=ii.ProfissionalID and ii.Associacao=5 where PagamentoID="& dist("id")
+                set desc = db.execute(sqlDetalhado)
                 if not desc.eof then
                     Procedimentos = desc("NomeProcedimento")
                     NomeTabela = desc("NomeTabela")

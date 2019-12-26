@@ -22,7 +22,7 @@ ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario 
          "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.PacoteID is not null and ii.Tipo = 'S'"
 
 if getConfig("ProcedimentosContratadosParaSelecao") = 1 then
-    ppSQL = "SELECT ii.id, COALESCE(tempproc.tempo, proc.TempoProcedimento) TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
+    ppSQL = "SELECT i.ProfissionalSolicitante, ii.id, COALESCE(tempproc.tempo, proc.TempoProcedimento) TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
              "INNER JOIN sys_financialinvoices i ON p.id = i.AccountID and i.AssociationAccountID = 3 "&_
              "INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id "&_
              "INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_
@@ -56,6 +56,11 @@ if not PacProc.eof then
                             <%
                                 i=0
                                 while not PacProc.eof
+                                    NomeSolicitante = ""
+
+                                    if not isnull(PacProc("ProfissionalSolicitante")) then
+                                        NomeSolicitante = accountName("", PacProc("ProfissionalSolicitante"))
+                                    end if
                                     %>
                                     <tr style="padding: 20px">
                                         <td>
@@ -63,6 +68,8 @@ if not PacProc.eof then
                                             data-valor="<%=formatnumber(PacProc("ValorProcedimento"), 2)%>"
                                             data-id="<%=PacProc("ProcedimentoID")%>"
                                             data-nome="<%=PacProc("NomeProcedimento")%>"
+                                            data-solicitante-id="<%=PacProc("ProfissionalSolicitante")%>"
+                                            data-solicitante="<%=NomeSolicitante%>"
                                             data-tempo="<%=PacProc("TempoProcedimento")%>"
                                             class="procedimento-pacote"
                                             name="procedimento-pacote" <%if i=0 then%>checked<%end if%>>
@@ -111,6 +118,8 @@ if(count=="0"){
             var NomeProcedimento = $procedimento.data("nome");
             var ProcPreco = $procedimento.data("valor");
             var TempoProcedimento = $procedimento.data("tempo");
+            var SolicitanteID = $procedimento.data("solicitante-id");
+            var Solicitante = $procedimento.data("solicitante");
             var ProcedimentoID = $procedimento.data("id");
             var count = "";
 
@@ -120,6 +129,10 @@ if(count=="0"){
             }
 
             setTimeout(function() {
+                if(SolicitanteID){
+                    $("#indicacaoId").val(SolicitanteID);
+                    $("#searchindicacaoId").val(Solicitante);
+                }
                 procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count);
             }, 200);
 

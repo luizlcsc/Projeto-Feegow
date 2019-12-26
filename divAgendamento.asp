@@ -745,16 +745,18 @@ end if
                         
 						%>
                         <%
-                            set pacs_config = db.execute("select * from pacs_config where expired = 0")
-                            if not pacs_config.eof and recursoAdicional(27) = 4  and ConsultaID<>0 then
-                                %>
-                                    <div class="col-md-4">
-                                        <div class="checkbox-custom checkbox-primary">
-                                            <input type="checkbox" name="Pacs" id="Pacs">
-                                            <label for="Pacs"> Pacs</label>
+                            if recursoAdicional(27)=4 then
+                                set pacs_config = db.execute("select * from pacs_config where expired = 0")
+                                if not pacs_config.eof and ConsultaID<>0 then
+                                    %>
+                                        <div class="col-md-4">
+                                            <div class="checkbox-custom checkbox-primary">
+                                                <input type="checkbox" name="Pacs" id="Pacs">
+                                                <label for="Pacs"> Pacs</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                <%
+                                    <%
+                                end if
                             end if
                         %>
                             
@@ -1325,9 +1327,12 @@ var saveAgenda = function(){
                 $("#btnSalvarAgenda").html('<i class="fa fa-save"></i> Salvar');
                 $("#btnSalvarAgenda").prop("disabled", false);
                 crumbAgenda();
+
+                <%if recursoAdicional(27)=4 then%>
                 if($("#Pacs").prop('checked')) {
                     postUrl("pacs", {agendamento_id:'<%=AgendamentoID%>',profissional_id:'<%=ProfissionalID%>'});
-                } 
+                }
+                <%end if%>
             })
 
             .fail(function(err){

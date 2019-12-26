@@ -129,10 +129,13 @@
                     set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&inv("id")&" and p.IntegracaoPleres = 'S'")
                     'set laboratorios = db.execute("SELECT labID FROM labs_procedimentos_laboratorios WHERE procedimentoID = '" & ProcedimentoID &"'")
                     set laboratorios = db.execute("SELECT * FROM cliniccentral.labs AS lab INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) WHERE lpl.procedimentoID ="& treatvalzero(ProcedimentoID) )
+                    
                     laboratorioid = 1
+                    NomeLaboratorio = ""
                     if  not laboratorios.eof then
                         laboratorioid = laboratorios("labID")
-                    end if
+                        NomeLaboratorio = laboratorios("NomeLaboratorio")
+                    end if 
 
                     if CInt(temintegracao("temintegracao")) > 0 then
                     %>
@@ -143,11 +146,11 @@
                         </script>
                         <div class="btn-group">
                             <% if laboratorioid = "1" then %>
-                                <button type="button" onclick="abrirMatrix('<%=inv("id")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=laboratorios("NomeLaboratorio")%>">
+                                <button type="button" onclick="abrirMatrix('<%=inv("id")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=NomeLaboratorio %>">
                                     <i class="fa fa-flask"></i>
                                 </button>
                             <% else %>
-                                <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorios("labID")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=laboratorios("NomeLaboratorio")%>">
+                                <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorios("labID")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=NomeLaboratorio %>">
                                     <i class="fa fa-flask"></i>
                                 </button>    
                             <% end if %>

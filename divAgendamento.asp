@@ -746,7 +746,7 @@ end if
 						%>
                         <%
                             set pacs_config = db.execute("select * from pacs_config where expired = 0")
-                            if not pacs_config.eof and recursoAdicional(27) = 4 then
+                            if not pacs_config.eof and recursoAdicional(27) = 4  and ConsultaID<>0 then
                                 %>
                                     <div class="col-md-4">
                                         <div class="checkbox-custom checkbox-primary">

@@ -46,7 +46,7 @@ if GrupoProcedimentos<>"" then
 end if
 
 sql = "SELECT carga.valorservico, i.Value,i.AccountID,i.AssociationAccountID, i.sysDate, nfe.*,orig.TipoNFe, orig.DFeTokenApp, i.id InvoiceID, nfe.id TemRecibo, ii.Executado, ii.id IntensInvoiceID FROM sys_financialinvoices i LEFT JOIN nfe_notasemitidas nfe ON i.id=nfe.InvoiceID LEFT JOIN nfe_origens orig ON REPLACE(REPLACE(orig.CNPJ,'-',''),'.','')=nfe.cnpj  " &_
-" left join carganotacsv carga ON REPLACE(REPLACE(carga.cnpjcnpjprestador,'-',''),'.','') = REPLACE(REPLACE(orig.CNPJ,'-',''),'.','') AND  (carga.numeronota = numeronfse OR carga.rps = nfe.numero) "&_
+" left join carganotacsv carga ON carga.cnpjcnpjprestador = REPLACE(REPLACE(orig.CNPJ,'-',''),'.','') AND  (carga.numeronota = numeronfse OR carga.rps = nfe.numero) "&_
 " LEFT JOIN itensinvoice ii ON ii.InvoiceID=i.id "&_
 " LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
 " WHERE i.id is not null and date(i.sysDate) >= "&mydatenull(De)&" AND date(i.sysDate) <= "&mydatenull(Ate)&sqlNumero &sqlUnidade&sqlStatus&sqlExecutantes&sqlGrupo&" AND i.CD='C' GROUP BY i.id ORDER BY nfe.numero"

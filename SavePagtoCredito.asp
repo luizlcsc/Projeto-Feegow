@@ -17,7 +17,13 @@ for i=0 to ubound(splItens)
     if Valor<>"" and isnumeric(Valor) then
         Valor = ccur(Valor)
         if Valor>0 then
-            db_execute("insert into itensdescontados (ItemID, PagamentoID, Valor) values ("&ItemID&", "&LastMovementID&", "&treatvalzero(Valor)&")")
+
+            sqlItensDescontadosFind = "select id from itensdescontados where  ItemID = "&ItemID&" AND PagamentoID = "&LastMovementID&" AND Valor = "&treatvalzero(Valor)&"  LIMIT 1"
+            set DiscountPay = db.execute(sqlItensDescontadosFind)
+
+            if DiscountPay.eof then
+                db_execute("insert into itensdescontados (ItemID, PagamentoID, Valor) values ("&ItemID&", "&LastMovementID&", "&treatvalzero(Valor)&")")
+            end if
         end if
     end if
 next

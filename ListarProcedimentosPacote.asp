@@ -58,7 +58,7 @@ if not PacProc.eof then
                                 while not PacProc.eof
                                     NomeSolicitante = ""
 
-                                    if not isnull(PacProc("ProfissionalSolicitante")) then
+                                    if PacProc("ProfissionalSolicitante")&""<>"" and PacProc("ProfissionalSolicitante")&""<>"0" then
                                         NomeSolicitante = accountName("", PacProc("ProfissionalSolicitante"))
                                     end if
                                     %>

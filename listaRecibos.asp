@@ -2,7 +2,6 @@
 <%
 InvoiceID = req("InvoiceID")
 
-
 if req("X")<>"" then
     db_execute("update recibos set sysActive=-1 where id="&req("X"))
 end if
@@ -25,6 +24,11 @@ end if
 
 if SplitNF=1 then
 %>
+<style>
+.modal-content{
+    width: 1000px; !important;
+}
+</style>
 <h4>Distribuição dos valores</h4>
 
 <table class="table">
@@ -156,11 +160,35 @@ if SplitNF=1 then
 <%
 end if
 'Response.End
-%>
 
+textButtom  = "Gerar recibo"
+classButtom = "success"
+if aut("recibosI")<>1 or session("Admin")<>1 then
+    'desabilita = " disabled "
+end if
+
+set recibosGerados = db.execute("SELECT * FROM recibos WHERE sysActive=1 AND InvoiceID="&InvoiceID)
+if not recibosGerados.eof then
+    textButtom = "Gerar novamente o recibo"
+    classButtom = "warning"
+    desabilita = ""
+    if aut("recibosA")<>1 or session("Admin")<>1 then
+        'desabilita = " disabled "
+    end if
+end if
+%>
+<div class="col-md-2 mt25">
 <h4>Recibos emitidos</h4>
+</div>
+<div class="col-md-2 col-md-offset-7 mt25">
+<button type='button' class='btn btn-<%=classButtom%> btn-sm' <%=desabilita%> onClick='imprimir()'><i class='fa fa-plus'></i> <%=textButtom%></button>
+</div>
+
+
+
+
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 mt15">
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
@@ -170,6 +198,7 @@ end if
                     <th>Usuário</th>
                     <th>Valor</th>
                     <th>Status</th>
+                    <th>Unidade</th>
                     <th>Protocolo</th>
                     <th>CPF</th>
                     <th>Imprimir</th>
@@ -179,9 +208,10 @@ end if
             </thead>
             <tbody>
             <%
-            sql = "select r.Auto, r.Nome, r.sysDate Data, r.Valor, r.sysUser, r.Servicos, r.id, r.RPS, r.Cnpj, nfe.situacao, r.NumeroSequencial Sequencial, r.sysActive, nfe.InvoiceID InvoiceIDNFe, r.cpf from recibos r "&_
+            sql = "select r.Auto, r.Nome, r.sysDate Data, r.Valor, r.sysUser, r.Servicos, r.id, r.RPS, r.Cnpj, nfe.situacao, r.NumeroSequencial Sequencial, r.UnidadeID, unit.Sigla, unit.NomeFantasia, r.sysActive, nfe.InvoiceID InvoiceIDNFe, r.cpf from recibos r "&_
                               "LEFT JOIN nfe_notasemitidas nfe ON nfe.cnpj=r.cnpj  AND nfe.numero=r.NumeroRps "&_
-                              "WHERE r.InvoiceID="&InvoiceID&" AND (nfe.situacao!=-1 or nfe.situacao is null)  GROUP BY r.id order by r.sysDate DESC"
+                              "LEFT JOIN (SELECT 0 id, Sigla, NomeFantasia FROM empresa UNION ALL SELECT id, Sigla, NomeFantasia FROM sys_financialcompanyunits) unit ON unit.id=r.UnidadeID "&_
+                              "WHERE r.InvoiceID="&InvoiceID&" AND (nfe.situacao!=-1 or nfe.situacao is null)  GROUP BY r.id order by r.sysDate, r.id DESC"
 
 
             set conts = db.execute(sql)
@@ -199,6 +229,12 @@ end if
                     TemRps = conts("RPS")
                 end if
                 NumeroRecibos=NumeroRecibos+1
+
+                if conts("Sigla")&""<>"" then
+                    Unidade = conts("Sigla")
+                else
+                    Unidade = conts("NomeFantasia")
+                end if
 
                 Status = ""
                 if conts("sysActive")<>1 then
@@ -230,6 +266,7 @@ end if
                     <td><%=nameInTable(conts("sysUser")) %></td>
                     <td><%=fn(conts("Valor")) %></td>
                     <td><%=Status%></td>
+                    <td><%=Unidade%></td>
                     <td><%=conts("Sequencial")&""%></td>
                     <td><%=conts("cpf") %></td>
                     <td>
@@ -275,7 +312,7 @@ end if
                         <%
                         if permiteExcluir then
                         %>
-                        <button class="btn btn-xs btn-danger " onclick="deletaRecibo('<%=conts("id")%>')" type="button"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-xs btn-danger " <%=desabilitaExclusao%> onclick="deletaRecibo('<%=conts("id")%>')" type="button"><i class="fa fa-trash"></i></button>
                         <%
                         end if
                         %>

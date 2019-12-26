@@ -133,7 +133,13 @@ if Acao="" then
 		Total = 0
 		Subtotal = 0
 		set PropostaSQL = db.execute("SELECT * FROM propostas WHERE id="&PropostaID)
-		set itens=db.execute("select * from itensproposta where PropostaID="&PropostaID&" ORDER BY Ordem")
+
+		if PropostaSQL("StaID")&"" = "5" then
+			desabilitarProposta =" disabled "
+			escondeProposta = " hidden "
+		end if
+
+		set itens=db.execute("select * from itensproposta where PropostaID="&PropostaID&" ORDER BY Ordem,id")
 		while not itens.eof
 			conta = conta+itens("Quantidade") 
 			Desconto = itens("Desconto")
@@ -205,11 +211,11 @@ if Acao="" then
 				    <td class="<%=hiddenValor%>">
 
 				    <label for="DescontoTotal">Desconto total (%)</label>
-				    <input type="number" class="form-control" id="DescontoTotal" name="DescontoTotal" max="100" min="0" value="<%=PropostaSQL("Desconto")%>">
+				    <input type="number" class="form-control" id="DescontoTotal" name="DescontoTotal" max="100" min="0" value="<%=PropostaSQL("Desconto")%>" <%=desabilitarProposta%>>
 
 				    </td>
 				</th>
-				<th id="total" class="text-right <%=hiddenValor%>" nowrap>R$ <%=formatnumber(Total,2)%></th>
+				<th id="total" class="text-right <%=hiddenValor%>" <%=desabilitarProposta%> nowrap>R$ <%=formatnumber(Total,2)%></th>
 				<th><input type="hidden" class="dadoProposta <%=hiddenValor%>" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
 			</tr>
 		</tfoot>

@@ -4,7 +4,8 @@ ProfissionalID = ref("ProfissionalID")
 Data = ref("Data")
 DiaSemana = weekday(Data)
 NomeProfissional = ref("NomeProfissional")
-Cor = ref("Cor")
+CorPadrao = ref("Cor")
+Cor = CorPadrao
 ProcedimentoID = request.form("ProcedimentoID")
 HVazios = ref("HVazios")
 strAB = ref("strAB")
@@ -50,7 +51,7 @@ end if
 
 
 Hora = cdate("00:00")
-sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentosGrade& sqlGradeEspecialidade &" order by HoraDe"
+sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentosGrade& sqlGradeEspecialidade &" order by HoraDe"
 set Horarios = db.execute(sqlHorarios)
 if Horarios.EOF then
     sqlHorarios2 = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, Mensagem from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) "&sqlUnidadesHorarios & sqlProcedimentosGrade& sqlGradeEspecialidade &" order by ass.HoraDe"
@@ -127,7 +128,12 @@ if not Horarios.eof then
                 MostraGrade=False
             end if
         end if
-
+        
+        Cor = CorPadrao
+        if Horarios("Cor")&"" <>"" then
+            Cor = Horarios("Cor")
+        end if        
+        
         if MostraGrade then
         cProf = cProf+1
         %><tr><td colspan="3" nowrap class="nomeProf" style="background-color:<%= Cor %>"><%=left(ucase(Horarios("NomeLocal")&" "), 20)%><%=getNomeLocalUnidade(Horarios("UnidadeID"))%> <br><%= Horarios("Mensagem") %> <input type="hidden" name="Ocupacoes" value="<%= ProfissionalID &"_"& LocalID %>" /><input type="hidden" id="OcupProfLivres<%= ProfissionalID &"_"& LocalID %>" name="OcupProfLivres<%= ProfissionalID &"_"& LocalID %>" /><input type="hidden" id="OcupProfBloq<%= ProfissionalID &"_"& LocalID %>" name="OcupProfBloq<%= ProfissionalID &"_"& LocalID %>" /><input type="hidden" id="OcupProfOcu<%= ProfissionalID &"_"& LocalID %>" name="OcupProfOcu<%= ProfissionalID &"_"& LocalID %>" /></td></tr><%
@@ -251,7 +257,7 @@ else
             if isdate(HoraPers) then
 				HLivres = HLivres+1
                 HoraID = horaToID(HoraPers)
-                %><tr data-unidade="<%=UnidadeID%>" onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=ProfissionalID %>,'','<%=Horarios("id")%>' )" class="p<%=ProfissionalID%> l<%= LocalID %>" data-pro="<%=ProfissionalID%>" data-id="<%=HoraID%>" data-hora="<%= ft(HoraPers) %>" id="<%=ProfissionalID&"_"&HoraID%>"><td width="1%" style="background-color:<%= Cor %>"></td><td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td><td colspan="4"><%= Tipo %></td></tr><%
+                %><tr  data-unidade="<%=UnidadeID%>" onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=ProfissionalID %>,'','<%=Horarios("id")%>' )" class="p<%=ProfissionalID%> l<%= LocalID %>" data-pro="<%=ProfissionalID%>" data-id="<%=HoraID%>" data-hora="<%= ft(HoraPers) %>" id="<%=ProfissionalID&"_"&HoraID%>"><td width="1%" style="background-color:<%= Cor %>"></td><td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td><td colspan="4"><%= Tipo %></td></tr><%
             end if
         next
     end if
@@ -338,7 +344,7 @@ while not comps.EOF
 	'<-hora final
 
     if session("HVazios")="" then
-		Conteudo = "<tr data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" style=""background-color:"&CorProcedimento&"!important""><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
+		Conteudo = "<tr data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'\',\'"&GradeID&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" style=""background-color:"&CorProcedimento&"!important""><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
 	    if comps("Encaixe")=1 then
 		    Conteudo = Conteudo & "<span class=""label label-alert label-sm arrowed-in arrowed-in-right"">Enc</span>"
 	    end if

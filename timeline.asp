@@ -396,7 +396,7 @@ else
                         <i class="fa fa-plus"></i> Inserir Texto / Atestado
                     </button-->
 
-                    <button type="button" class="btn btn-primary dropdown-toggle<% if EmAtendimento=0 then %> disabled" data-toggle="dropdown" title="Inicie um atendimento." aria-expanded="false" data-placement="right" <% end if%>" data-toggle="dropdown" aria-expanded="false">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-plus"></i> Inserir
                         <span class="caret ml5"></span>
                     </button>
@@ -567,13 +567,13 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                         </button>
                         <ul class="dropdown-menu" role="menu">
                             <%if IntegracaoUnimedLondrina<>4 then%>
-                            <li <% if EmAtendimento=0 then %>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%end if%>><a <% if EmAtendimento=1 then %>href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>><i class="fa fa-plus"></i> Pedido Padrão</a></li>
+                            <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="fa fa-plus"></i> Pedido Padrão</a></li>
                             <%
                             end if
                             set AtendeConvenioSQL = db.execute("SELECT COUNT(id)n FROM convenios WHERE sysActive=1 HAVING n>=1")
                             if not AtendeConvenioSQL.eof then
                                 %>
-                                <li <% if EmAtendimento=0 then %>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%end if%>><a <% if EmAtendimento=1 then %>href="javascript:iPront('<%=replace("PedidosSADT", "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>><i class="fa fa-plus"></i> Pedido em Guia de SP/SADT</a></li>
+                                <li ><a href="javascript:iPront('<%=replace("PedidosSADT", "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="fa fa-plus"></i> Pedido em Guia de SP/SADT</a></li>
                                 <%
                             end if
                             %>

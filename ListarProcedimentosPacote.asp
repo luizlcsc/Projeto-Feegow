@@ -22,10 +22,11 @@ ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario 
          "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.PacoteID is not null and ii.Tipo = 'S'"
 
 if getConfig("ProcedimentosContratadosParaSelecao") = 1 then
-    ppSQL = "SELECT ii.id, proc.TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
+    ppSQL = "SELECT ii.id, COALESCE(tempproc.tempo, proc.TempoProcedimento) TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
              "INNER JOIN sys_financialinvoices i ON p.id = i.AccountID and i.AssociationAccountID = 3 "&_
              "INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id "&_
              "INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_
+             "LEFT JOIN procedimento_tempo_profissional tempproc ON proc.id = tempproc.procedimentoId AND tempproc.profissionalId="&treatvalzero(ProfissionalID)&" "&_
              "LEFT JOIN pacotes pa ON pa.id = ii.PacoteID "&_
              "LEFT JOIN itensdescontados id ON id.ItemID = ii.id "&_
              "WHERE "&_

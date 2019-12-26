@@ -22,8 +22,8 @@
                          <%= quickfield("float"    , "De[0]" , "Valor De" , 1, De    ," ", " ", "") %>
                          <%= quickfield("float"    , "Ate[0]", "Valor Até", 1, Ate   ," ", " ", "") %>
                          <%= quickfield("multiple", "Categorias[0]", "Limitar Categorias", 3, Categorias,"SELECT id,Name FROM sys_financialexpensetype", "Name", "") %>
-                         <%= quickfield("multiple", "Usuarios[0]", "Usuários", 4, Usuarios,sql, "users", "") %>
-                         <%= quickfield("number"  , "MinProvacao[0]", "Mín. Usuários para Aprovação", 2, 1," ", "users", "") %>
+                         <%= quickfield("multiple", "Usuarios[0]", "Usuários", 3, Usuarios,sql, "users", "") %>
+                         <%= quickfield("number"  , "MinProvacao[0]", "Mín. Usuários para Aprovação", 3, 1," ", "users", "") %>
                          <div  class="mt25 col-md-1">
                             <button type="button" style="width: 100%" class="btn btn-success" onclick="addNotificados()"> <i class="fa fa-plus"></i></button>
                          </div>

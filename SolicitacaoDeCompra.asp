@@ -35,7 +35,7 @@ IF Request.Form("AccountID")<>"" THEN
             Quantidade    = treatvalnull(Request.Form("Quantidade"&IdItem))
             Descricao     = treatvalnull(Request.Form("Descricao"&IdItem))
             CentroCustoID = treatvalnull(Request.Form("CentroCustoID"&IdItem))
-            ValorUnitario = treatvalnull(Request.Form("ValorUnitario"&IdItem))
+            ValorUnitario = treatvalzero(Request.Form("ValorUnitario"&IdItem))
             Desconto      = treatvalnull(Request.Form("Desconto"&IdItem))
             CategoriaID   = treatvalnull(Request.Form("CategoriaID"&IdItem))
             Executado     = Request.Form("Executado"&IdItem)

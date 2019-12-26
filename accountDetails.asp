@@ -55,7 +55,7 @@ select Case AccountType
 		call quickField("text", "AccountName", "Nome de Identificação", "6", rAccountName, "", "", "")
 		call quickField("text", "DaysForCredit", "Dias para Crédito", "3", DaysForCredit, " text-right", "", "")
 		call quickField("text", "PercentageDeducted", "Percentual Descontado", "3", PercentageDeducted, " input-mask-brl text-right", "", "")
-		call quickField("simpleSelect", "CreditAccount", "Conta para Recebimento", 4, CreditAccount, "select * from sys_financialcurrentaccounts where AccountType=2 order by AccountName", "AccountName", "")
+		call quickField("simpleSelect", "CreditAccount", "Conta para Recebimento", 4, CreditAccount, "select * from sys_financialcurrentaccounts where AccountType=2 and sysActive=1 order by AccountName", "AccountName", "")
 		call quickField("simpleSelect", "CategoriadTaxaID", "Categoria da Tarifa", 4, CategoriadTaxaID, "SELECT * FROM sys_financialexpensetype", "Name", "")
 	case 5
 		call quickField("text", "AccountName", "Cartão de Crédito - Especifique o Cartão", "12", rAccountName, "", "", "")

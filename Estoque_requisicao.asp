@@ -48,7 +48,7 @@ Tipo="Requisicao"
                     Autorizador = reg("AutorizadorID")
                 end if
                 %>
-                    <span class="panel-title"> Requisição </span>
+                    <span class="panel-title"> Requisição  #<%=req("I")%></span>
                     <span class="panel-controls">
                         <button class="btn btn-sm btn-primary" id="save">&nbsp;&nbsp;<i class="fa fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>
                     </span>
@@ -57,12 +57,12 @@ Tipo="Requisicao"
 
 
                     <div class="row">
-                    <%=quickField("simpleSelect", "SolicitanteID", "Solicitante", 4, SolicitanteID, "select lu.id, Nome from cliniccentral.licencasusuarios lu LEFT JOIN sys_users su on su.id=lu.id where lu.LicencaID="&replace(session("Banco"), "clinic", "")&" and lu.Nome not like '' and su.Permissoes like '%agendaI%' order by lu.Nome", "Nome", " empty")%>
+                    <%=quickField("simpleSelect", "SolicitanteID", "Solicitante", 4, SolicitanteID, "select lu.id, usu.Nome from cliniccentral.licencasusuarios lu LEFT JOIN sys_users su on su.id=lu.id LEFT JOIN (SELECT id, Ativo, sysActive, 'profissionais' Tipo, NomeProfissional Nome FROM profissionais UNION ALL SELECT id, Ativo, sysActive, 'funcionarios' Tipo, NomeFuncionario Nome FROM funcionarios) usu ON su.IdInTable=usu.id AND su.Table=usu.Tipo where lu.LicencaID="&replace(session("Banco"), "clinic", "")&" and usu.Ativo='on' and usu.sysActive=1 order by lu.Nome", "Nome", " empty")%>
                     <%=quickfield("simpleSelect", "PrioridadeID", "Prioridade", 4, cstr(reg("PrioridadeID")&""), "select id, Prioridade from cliniccentral.tarefasprioridade order by id", "Prioridade", " semVazio no-select2 ") %>
                     <%=quickfield("simpleSelect", "StatusID", "Status", 4, reg("StatusID"), "select id, NomeStatus from estoque_requisicao_status order by NomeStatus", "NomeStatus", " semVazio no-select2 ") %>
                     <%=quickfield("simpleSelect", "LocalizacaoID", "Localização destino", 4, reg("LocalizacaoID"), "select id, NomeLocalizacao from produtoslocalizacoes order by NomeLocalizacao", "NomeLocalizacao", " semVazio no-select2 ") %>
                     <%=quickField("datepicker", "DataPRazo", "Data Prazo", 4, DtPrazo, "", "", " "& disabled &" ")%>
-                    <%=quickField("simpleSelect", "AutorizadorID", "Autorizador", 4, Autorizador, "select lu.id, Nome from cliniccentral.licencasusuarios lu LEFT JOIN sys_users su on su.id=lu.id where lu.LicencaID="&replace(session("Banco"), "clinic", "")&" and lu.Nome not like '' and su.Permissoes like '%agendaI%' order by lu.Nome", "Nome", " empty")%>
+                    <%=quickField("simpleSelect", "AutorizadorID", "Destinatário", 4, Autorizador, "select lu.id, usu.Nome from cliniccentral.licencasusuarios lu LEFT JOIN sys_users su on su.id=lu.id LEFT JOIN (SELECT id, Ativo, sysActive, 'profissionais' Tipo,  NomeProfissional Nome FROM profissionais UNION ALL SELECT id, Ativo, sysActive, 'funcionarios' Tipo, NomeFuncionario Nome FROM funcionarios) usu ON su.IdInTable=usu.id AND su.Table=usu.Tipo where lu.LicencaID="&replace(session("Banco"), "clinic", "")&" and usu.Ativo='on' and usu.sysActive=1 order by lu.Nome", "Nome", " empty")%>
                     </div>
                 </div>
             </div>

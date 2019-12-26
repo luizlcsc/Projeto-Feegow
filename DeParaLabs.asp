@@ -4,7 +4,18 @@
 <script type="text/javascript">
     $(".crumb-active a").html("Relacionamento de Procedimentos");
     $(".crumb-link").removeClass("hidden");
-    $(".crumb-link").html("São marcos");
+    <%
+        idLab = 1
+        if req("labid")&""<>"" then
+            idLab = req("labid")
+        end if
+        set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs WHERE id ="&idLab)
+        if not dadoslab.eof then
+    %>
+         $(".crumb-link").html("<%=dadoslab("NomeLaboratorio")%>");
+    <% else %>
+        $(".crumb-link").html("Laboratório não especificado");
+    <%  end if  %>
     $(".crumb-icon a span").attr("class", "fa fa-th");
 </script>
 <div class="app" style="padding-top: 11px;">
@@ -17,9 +28,10 @@
     Vue.component('vue-multiselect', window.VueMultiselect.default)
 <%
 Input = req("Input")
+labid = req("labid")
 %>
-    getUrl("labs-integration/matrix/proc-relation", {
-        input: "<%=Input%>"
+    getUrl("labs-integration/<% if idLab = 1 then %>matrix<% else %>diagbrasil<%end if%>/proc-relation", {
+        input: "<%=Input%>", labid:"<%=labid%>"
     }, function(data) {
         $(".app").hide();
         $(".app").html(data);

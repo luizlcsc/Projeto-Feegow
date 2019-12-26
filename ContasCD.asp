@@ -78,9 +78,13 @@ if De="" or Ate="" then
 	Ate = dateadd("m", 1, De)
 	Ate = dateadd("d", -1, Ate)
 
-	if session("Banco")="clinic5459" or session("Banco")="clinic5760" or session("Banco")="clinic6118" then
-	    De = date()
-	    Ate = De
+	set NumeroContasSQL = db.execute("SELECT COUNT(id)>500 MuitasContas FROM sys_financialinvoices WHERE MONTH(sysDate) = MONTH(CURDATE()) AND CD='"&CD&"'")
+
+	if not NumeroContasSQL.eof then
+	    if NumeroContasSQL("MuitasContas") then
+            De = date()
+            Ate = De
+        end if
 	end if
 end if
 %>

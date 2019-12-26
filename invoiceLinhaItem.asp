@@ -132,7 +132,7 @@ set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&trea
     <td>
         <div class="input-group">
             <div class="input-group-btn">
-                <button type="button" class="btn btn-danger dropdown-toggle btn-desconto" data-toggle="dropdown" aria-expanded="false"
+                <button type="button" class="btn btn-default dropdown-toggle btn-desconto" data-toggle="dropdown" aria-expanded="false"
                     style="width: 41px !important;">R$</button>
                 <ul class="dropdown-menu dropdown-info pull-right">
                     <li><a href="javascript:void(0)" onclick="mudarFormatoDesconto(this)" class="dropdown-item">%</a></li>

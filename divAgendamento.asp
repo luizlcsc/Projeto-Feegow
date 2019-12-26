@@ -746,7 +746,7 @@ end if
 						%>
                         <%
                             set pacs_config = db.execute("select * from pacs_config where expired = 0")
-                            if not pacs_config.eof and recursoAdicional(27) = 4 then
+                            if not pacs_config.eof and recursoAdicional(27) = 4  and ConsultaID<>0 then
                                 %>
                                     <div class="col-md-4">
                                         <div class="checkbox-custom checkbox-primary">
@@ -1311,7 +1311,6 @@ function checkinMultiplo()
                 saveAgenda();
             }
         })
-
 }
 
 var saveAgenda = function(){
@@ -1324,17 +1323,10 @@ var saveAgenda = function(){
                 //$("#btnSalvarAgenda").removeAttr('disabled');
                 eval(data);
                 $("#btnSalvarAgenda").html('<i class="fa fa-save"></i> Salvar');
-                    $("#btnSalvarAgenda").prop("disabled", false);
-                    crumbAgenda();
-
+                $("#btnSalvarAgenda").prop("disabled", false);
+                crumbAgenda();
                 if($("#Pacs").prop('checked')) {
-                    postUrl("pacs", {
-                            agendamento_id: <%=AgendamentoID%>,
-                            profissional_id: <%=ProfissionalID%>
-                        }, function (data22) {
-                            console.log(data22);
-                        }
-                    );
+                    postUrl("pacs", {agendamento_id:'<%=AgendamentoID%>',profissional_id:'<%=ProfissionalID%>'});
                 } 
             })
 
@@ -1347,16 +1339,12 @@ var saveAgenda = function(){
             callbackAgendaFiltros();
             crumbAgenda();
         }
-
     }
-
-
 
 function submitAgendamento(check) {
 
     let valorPlano = null;
     let checkin = $("#Checkin").length;
-
 
     if($("#rdValorPlanoV").prop("checked") && !$("#rdValorPlanoV").prop("disabled") ){
         valorPlano = "V";

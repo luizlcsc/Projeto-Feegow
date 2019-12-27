@@ -738,7 +738,7 @@ min-width: 150px;
                 <%= quickField("text", "UFConselhoSolicitante", "* UF", 1, UFConselhoSolicitante, "", "", " empty='' required='required' pattern='[A-Za-z]{2}'") %>
                 <%
                    ' quickField("text", "CodigoCBOSolicitante", "* C&oacute;digo CBO", 2, CodigoCBOSolicitante, "", "", " empty='' required='required' pattern='[0-9-]{6,7}' autocomplete='cbos' ")
-        		    call quickField("simpleSelect", "CodigoCBOSolicitante", "* C&oacute;digo CBO", 4, CodigoCBOSolicitante, "select * from (select e.codigoTiss as id, concat( e.codigoTiss,' - ',e.especialidade) as Nome from especialidades as e where e.codigoTiss<>'' and e.codigoTiss is not null order by id)t", "Nome", "empty='' required='required' ")
+        		    call quickField("simpleSelect", "CodigoCBOSolicitante", "* C&oacute;digo CBO", 4, CodigoCBOSolicitante, "select * from (select e.codigoTiss as id, concat( e.codigoTiss,' - ',e.especialidade) as Nome from especialidades as e where e.codigoTiss<>'' and e.codigoTiss is not null order by id)t", "Nome", "empty='' required='required' no-select2")
                 %>
             </div>
             <br />

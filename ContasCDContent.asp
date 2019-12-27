@@ -239,6 +239,14 @@ end if
 		Descricao = ""
 		SaldoAnterior = Balance
 		Conta = accountName(mov("Assoc"), mov("ContaID"))
+
+        if mov("Assoc")=3 and aut("pacientesV")=1 then
+            Conta = "<a href='./?P=Pacientes&Pers=1&I="& mov("ContaID") &"' target='_blank'>"& Conta &"</a>"
+        end if
+        if session("Banco")="clinic5459" and CD="C" then
+            Conta = Conta & "<code><a href='./?P=Score&Pers=1&I="& mov("ContaID") &"' target='_blank'>SCORE</a></code>"
+        end if
+
 		linkBill = "./?P=invoice&I="&mov("InvoiceID")&"&A=&Pers=1&T="&CD
 		PagoSta=""
 
@@ -358,9 +366,11 @@ end if
             end if
             cc = ""
             'pra ver se pagamento é em cartao '-'
-            set PacienteSQL = db.execute("SELECT Religiao FROM pacientes WHERE Religiao='cc' AND id="&mov("ContaID"))
-            if not PacienteSQL.eof then
-                cc = "<i class='fa fa-credit-card'></i>"
+            if not isnull(mov("ContaID")) then
+                set PacienteSQL = db.execute("SELECT Religiao FROM pacientes WHERE Religiao='cc' AND id="&mov("ContaID"))
+                if not PacienteSQL.eof then
+                    cc = "<i class='fa fa-credit-card'></i>"
+                end if
             end if
 
             EnvioEmail = ""
@@ -385,7 +395,7 @@ end if
             end if
 		    %>
 			<td width="8%" class="text-right"><%= mov("Date") %></td>
-			<td><%= Conta %> &nbsp; <%= IconeAnexos %></td>
+			<td><%= Conta &" &nbsp; "& IconeAnexos %></td>
 			<td>	   <a href="<%= linkBill %>"><%=Descricao%>
 					<%if len(mov("Name"))>0 and Descricao<>"" then%> - <%end if%><%=left(mov("Name"),20)%>
 				</a> <% IF ItemCancelado THEN %>

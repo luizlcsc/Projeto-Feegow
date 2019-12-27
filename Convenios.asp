@@ -485,6 +485,8 @@ end function
                                     " (SELECT 'Indicação Clínica' id, 'Indicação Clínica' Campo) UNION ALL " &_
                                     " (SELECT 'Profissional Solicitante' id, 'Profissional Solicitante' Campo) UNION ALL " &_
                                     " (SELECT 'Código de Barras' id, 'Código de Barras' Campo) UNION ALL " &_
+                                    " (SELECT 'Via' id, 'Via' Campo) UNION ALL " &_
+                                    " (SELECT 'Grau de participação' id, 'Grau de participação' Campo) UNION ALL " &_
                                     " (SELECT 'Nome do Contratado' id, 'Nome do Contratado' Campo) "
 
                     %>

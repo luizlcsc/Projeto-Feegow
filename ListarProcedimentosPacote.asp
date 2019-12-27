@@ -19,10 +19,10 @@ ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario 
          "INNER JOIN pacotes pa ON pa.id = ii.PacoteID "&_
          "LEFT JOIN itensdescontados id ON id.ItemID = ii.id "&_
          "WHERE "&_
-         "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.PacoteID is not null and ii.Tipo = 'S'"
+         "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Executado!='C' and ii.PacoteID is not null and ii.Tipo = 'S'"
 
 if getConfig("ProcedimentosContratadosParaSelecao") = 1 then
-    ppSQL = "SELECT ii.id, COALESCE(tempproc.tempo, proc.TempoProcedimento) TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
+    ppSQL = "SELECT i.ProfissionalSolicitante, ii.id, COALESCE(tempproc.tempo, proc.TempoProcedimento) TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
              "INNER JOIN sys_financialinvoices i ON p.id = i.AccountID and i.AssociationAccountID = 3 "&_
              "INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id "&_
              "INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_
@@ -30,7 +30,7 @@ if getConfig("ProcedimentosContratadosParaSelecao") = 1 then
              "LEFT JOIN pacotes pa ON pa.id = ii.PacoteID "&_
              "LEFT JOIN itensdescontados id ON id.ItemID = ii.id "&_
              "WHERE "&_
-             "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Tipo = 'S'"
+             "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Executado!='C' and ii.Tipo = 'S'"
 end if
 'response.write(ppSQL)
 set PacProc = db.execute(ppSQL)
@@ -56,6 +56,11 @@ if not PacProc.eof then
                             <%
                                 i=0
                                 while not PacProc.eof
+                                    NomeSolicitante = ""
+
+                                    if PacProc("ProfissionalSolicitante")&""<>"" and PacProc("ProfissionalSolicitante")&""<>"0" then
+                                        NomeSolicitante = accountName("", PacProc("ProfissionalSolicitante"))
+                                    end if
                                     %>
                                     <tr style="padding: 20px">
                                         <td>
@@ -63,6 +68,8 @@ if not PacProc.eof then
                                             data-valor="<%=formatnumber(PacProc("ValorProcedimento"), 2)%>"
                                             data-id="<%=PacProc("ProcedimentoID")%>"
                                             data-nome="<%=PacProc("NomeProcedimento")%>"
+                                            data-solicitante-id="<%=PacProc("ProfissionalSolicitante")%>"
+                                            data-solicitante="<%=NomeSolicitante%>"
                                             data-tempo="<%=PacProc("TempoProcedimento")%>"
                                             class="procedimento-pacote"
                                             name="procedimento-pacote" <%if i=0 then%>checked<%end if%>>
@@ -82,9 +89,15 @@ if not PacProc.eof then
             </tbody>
         </table>
     </div>
+    <%
+    if i>1 then
+    %>
     <div style="margin-top: 30px" class="col-md-3">
         <button type="button" class="btn btn-warning btn-block" onClick="selecionarMultiplos()" id="btnEscolherMaisDeUm">Escolher mais de um</button>
     </div>
+    <%
+    end if
+    %>
     <div style="margin-top: 30px" class="col-md-3">
         <button type="button" class="btn btn-primary btn-block" onClick="selectProcedure()" id="pacProcButton">Selecionar procedimento(s)</button>
     </div>
@@ -111,6 +124,8 @@ if(count=="0"){
             var NomeProcedimento = $procedimento.data("nome");
             var ProcPreco = $procedimento.data("valor");
             var TempoProcedimento = $procedimento.data("tempo");
+            var SolicitanteID = $procedimento.data("solicitante-id");
+            var Solicitante = $procedimento.data("solicitante");
             var ProcedimentoID = $procedimento.data("id");
             var count = "";
 
@@ -120,6 +135,10 @@ if(count=="0"){
             }
 
             setTimeout(function() {
+                if(SolicitanteID){
+                    $("#indicacaoId").val(SolicitanteID);
+                    $("#searchindicacaoId").val(Solicitante);
+                }
                 procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count);
             }, 200);
 

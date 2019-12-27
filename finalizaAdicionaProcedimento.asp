@@ -283,7 +283,7 @@ if 1=1 and AtendimentoID<>"N" then
                   " from ( select id, TipoCompromissoID ProcedimentoID from agendamentos where id="&treatvalzero(AgendamentoID)&" "&_
                               " UNION ALL SELECT AgendamentoID * -1 as id, TipoCompromissoID ProcedimentoID FROM agendamentosprocedimentos proc WHERE proc.AgendamentoID="&treatvalzero(AgendamentoID)&") age "&_
                   " LEFT JOIN procedimentos proc on proc.id=age.ProcedimentoID "&_
-                  " GROUP BY age.id ORDER BY proc.NomeProcedimento "
+                  " GROUP BY proc.id ORDER BY proc.NomeProcedimento "
     set part = db.execute(sqlItens)
 
     itensNaListagem="-1"
@@ -316,7 +316,7 @@ if 1=1 and AtendimentoID<>"N" then
               " LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID "&_
               " LEFT JOIN sys_financialmovement mov on mov.InvoiceID=ii.InvoiceID "&_
               " LEFT JOIN procedimentos proc on proc.id=ii.ItemID "&_
-              " WHERE ii.id not in ("&itensNaListagem&") and ii.ItemID="&treatvalzero(ProcedimentoID)&" AND (ISNULL(ii.Executado) OR ii.Executado='') AND mov.ValorPago > 0 AND i.CD='C' AND ii.Tipo='S' AND i.AccountID="&PacienteID&" AND i.AssociationAccountID=3 "
+              " WHERE ii.id not in ("&itensNaListagem&") and ii.ItemID="&treatvalzero(ProcedimentoID)&" AND (ISNULL(ii.Executado) OR ii.Executado='') AND (mov.ValorPago > 0 OR ii.ValorUnitario=0) AND i.CD='C' AND ii.Tipo='S' AND i.AccountID="&PacienteID&" AND i.AssociationAccountID=3 "
 
             set ItemSQL = db.execute(sqlItens)
             if ExibeLinha and not ItemSQL.eof then

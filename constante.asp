@@ -241,7 +241,7 @@ else
 	            TextoNotificacao = replace(replace(NotificacoesSQL("TextoNotificacao"),chr(13),""),chr(10),"")
 
 	            TextoNotificacao = replace(TextoNotificacao, "[USUARIO_CRIADOR.NOME]", userName)
-	            TextoNotificacao = replace(TextoNotificacao, "[METADATA.TEXTO]", NotificacoesSQL("metadata"))
+	            TextoNotificacao = replace(TextoNotificacao, "[METADATA.TEXTO]", replace(replace(NotificacoesSQL("metadata"), chr(10), " "), chr(13), " "))
 	            TextoNotificacao = replace(TextoNotificacao, "[NOTIFICACAO.ID]", NotificacoesSQL("id"))
 	            TextoNotificacao = replace(TextoNotificacao, "[ID_RELATIVO]", NotificacoesSQL("NotificacaoIDRelativo"))
 

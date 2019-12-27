@@ -51,7 +51,7 @@ $(document).ready(function() {
                 </h4>
             <div class="row">
             <%
-            set proc = db.execute("select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' and ifnull(GrupoID, 0)="& dist("GrupoID"))
+            set proc = db.execute("select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' and ifnull(GrupoID, 0)="& dist("GrupoID")&" order by NomeProcedimento")
             while not proc.eof
                 %>
                 <div class="col-md-3 checkbox-custom checkbox-primary">

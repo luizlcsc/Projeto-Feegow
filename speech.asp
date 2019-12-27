@@ -174,7 +174,7 @@ if (!('webkitSpeechRecognition' in window)) {
       if (event.results[i].isFinal) {
           final_transcript += event.results[i][0].transcript;
           if ($("#speeFLD").val() == "") {
-              $.post("recSpeech.asp", { t: final_transcript, p: '<%=req("P")%>', id: '<%=req("I")%>' }, function (data) { eval(data) });
+              $.post("recSpeech.asp", { t: final_transcript, p: '<%=req("P")%>', id: '<%=req("I")%>', pront: 'S' }, function (data) { eval(data) });
           } else {
               $("#speeFLD").val("");
               recognition.stop();

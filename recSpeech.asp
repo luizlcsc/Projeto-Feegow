@@ -80,7 +80,7 @@ Conteudo = Limpar(Conteudo)
 
 
 
-
+if ref("pront")&"" = "S" then
 select case comando
     case "BUSCAR"
         response.write( "location.href='./?P=Busca&q="& Conteudo &"&Pers=1';" )
@@ -129,6 +129,7 @@ select case comando
             response.write(" location.href='./?P=Busca&q="& Conteudo &"&Pers=1'; ")
         end if
 end select
+end if
 %>
 
 //alert("<%=session("sqlMedicamentos") %>");

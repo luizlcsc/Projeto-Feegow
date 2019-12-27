@@ -3,6 +3,10 @@
 
 <br />
         <%
+        if session("Atendimentos")&""="" then
+            session("Atendimentos")=""
+        end if
+
                 if aut("|esperaoutrosprofissionaisV|")=1 then
                     %>
 <div class="panel">

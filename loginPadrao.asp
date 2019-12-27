@@ -267,7 +267,7 @@ if not tryLogin.EOF then
 			dbc.execute("insert into licencaslogins (LicencaID, UserID, IP, Agente) values ("&tryLogin("LicencaID")&", "&tryLogin("id")&", '"&request.ServerVariables("REMOTE_ADDR")&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
 		end if
 
-		db_execute("update atendimentos set HoraFim=( select time(UltRef) from sys_users where id="&session("User")&" ) where isnull(HoraFim) and sysUser="&session("User")&" order by id desc limit 1")
+		db_execute("update atendimentos set HoraFim=( select time(UltRef) from sys_users where id="&session("User")&" ) where isnull(HoraFim) and Data<>'"&myDate(date())&"' and sysUser="&session("User")&" order by id desc limit 1")
 		'db_execute("delete from atendimentos where isnull(HoraFim) and sysUser="&session("User"))
 		'db_execute("create TABLE if not exists `agendaobservacoes` (`id` INT NOT NULL AUTO_INCREMENT,	`ProfissionalID` INT NULL DEFAULT NULL,	`Data` DATE NULL DEFAULT NULL,	`Observacoes` TEXT NULL DEFAULT NULL,	PRIMARY KEY (`id`)) COLLATE='utf8_general_ci' ENGINE=InnoDB")
 
@@ -275,6 +275,11 @@ if not tryLogin.EOF then
 		if not caixa.eof then
 			session("CaixaID") = caixa("id")
 		end if
+
+        set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',id,'|') SEPARATOR '') AtendimentosIDS from atendimentos where sysUser="&session("User")&" and isnull(HoraFim) and Data='"&myDate(date())&"'")
+        if not AtendimentosProf.eof then
+            session("Atendimentos")=AtendimentosProf("AtendimentosIDS")&""
+        end if
 
         urlRedir = "./../?P=Home&Pers=1"
 		clic = 0

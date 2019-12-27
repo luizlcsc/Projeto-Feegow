@@ -435,6 +435,7 @@ else
 
     <%if lcase(session("table"))="profissionais" then %>
     <td>
+        <%if veseha("StaID")<>2 then%>
     	<button
     	 <%
 
@@ -445,6 +446,9 @@ else
         end if
         %>
     	 class="btn btn-xs btn-success" type="button" <%=disabPagto%> >ATENDER</button>
+    	<%else%>
+    	<button onClick="window.location='?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>'" class="btn btn-xs btn-primary" type="button">IR PARA ATENDIMENTO</button>
+    	<%end if%>
     </td>
     <%end if %>
     </tr>

@@ -61,7 +61,7 @@ if vepv.eof then
 else
 
 	db_execute("update tissprocedimentosvalores set Contratados=NULLIF('"&ref("Contratados")&"',''), CoeficientePorte = "&CoeficientePorte&", ProcedimentoTabelaID="&ProcedimentoTabelaID&", Porte = '"&Porte&"',QuantidadeCH = "&QuantidadeCH&",CustoOperacional = "&CustoOperacional&",ValorFilme = "&ValorFilme&",QuantidadeFilme = "&QuantidadeFilme&",ValorUCO = "&ValorUCO&_
-	",Valor="&treatvalnullformat(ref("ValorUnitario"),4)&",ValorCH="&treatvalnullformat(ref("ValorCH"),4)&", NaoCobre='"&ref("NaoCobre")&"', ModoDeCalculo='"&ref("ModoDeCalculo")&"' where id="&vepv("id"))
+	",Valor="&treatvalnullformat(ref("ValorUnitario"),4)&",ValorCH="&treatvalnullformat(ref("ValorCH"),4)&", NaoCobre='"&ref("NaoCobre")&"', TecnicaID="&treatvalnull(ref("TecnicaID"))&", ModoDeCalculo='"&ref("ModoDeCalculo")&"' where id="&vepv("id"))
 	AssociacaoID = vepv("id")
 
 end if

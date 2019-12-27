@@ -19,7 +19,7 @@ ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario 
          "INNER JOIN pacotes pa ON pa.id = ii.PacoteID "&_
          "LEFT JOIN itensdescontados id ON id.ItemID = ii.id "&_
          "WHERE "&_
-         "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.PacoteID is not null and ii.Tipo = 'S'"
+         "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Executado!='C' and ii.PacoteID is not null and ii.Tipo = 'S'"
 
 if getConfig("ProcedimentosContratadosParaSelecao") = 1 then
     ppSQL = "SELECT i.ProfissionalSolicitante, ii.id, COALESCE(tempproc.tempo, proc.TempoProcedimento) TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
@@ -30,7 +30,7 @@ if getConfig("ProcedimentosContratadosParaSelecao") = 1 then
              "LEFT JOIN pacotes pa ON pa.id = ii.PacoteID "&_
              "LEFT JOIN itensdescontados id ON id.ItemID = ii.id "&_
              "WHERE "&_
-             "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Tipo = 'S'"
+             "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Executado!='C' and ii.Tipo = 'S'"
 end if
 'response.write(ppSQL)
 set PacProc = db.execute(ppSQL)
@@ -89,9 +89,15 @@ if not PacProc.eof then
             </tbody>
         </table>
     </div>
+    <%
+    if i>1 then
+    %>
     <div style="margin-top: 30px" class="col-md-3">
         <button type="button" class="btn btn-warning btn-block" onClick="selecionarMultiplos()" id="btnEscolherMaisDeUm">Escolher mais de um</button>
     </div>
+    <%
+    end if
+    %>
     <div style="margin-top: 30px" class="col-md-3">
         <button type="button" class="btn btn-primary btn-block" onClick="selectProcedure()" id="pacProcButton">Selecionar procedimento(s)</button>
     </div>

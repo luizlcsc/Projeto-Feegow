@@ -127,7 +127,6 @@
 
                     set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&inv("id")&" AND Executado!='S'")
                     set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&inv("id")&" and p.IntegracaoPleres = 'S'")
-                    'set laboratorios = db.execute("SELECT labID FROM labs_procedimentos_laboratorios WHERE procedimentoID = '" & ProcedimentoID &"'")
                     set laboratorios = db.execute("SELECT * FROM cliniccentral.labs AS lab INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) WHERE lpl.procedimentoID ="& treatvalzero(ProcedimentoID) )
                     
                     laboratorioid = 1

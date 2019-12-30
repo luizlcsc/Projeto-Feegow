@@ -30,7 +30,7 @@
 Input = req("Input")
 %>
     getUrl("labs-integration/<% if idLab = "1" then %>matrix<% else %>diagbrasil<%end if%>/proc-relation", {
-        input: "<%=Input%>", labid:"<%=labid%>"
+        input: "<%=Input%>", labid:"<%=idLab%>"
     }, function(data) {
         $(".app").hide();
         $(".app").html(data);

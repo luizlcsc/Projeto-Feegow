@@ -1,4 +1,4 @@
-﻿<!--#include file="connect.asp"-->
+<!--#include file="connect.asp"-->
 <%
 Pagina = lcase(ref("P"))
 id = ref("id")
@@ -80,7 +80,7 @@ Conteudo = Limpar(Conteudo)
 
 
 
-if ref("pront")&"" = "S" then
+if ref("recognitionPront")&"" <> "S" then
 select case comando
     case "BUSCAR"
         response.write( "location.href='./?P=Busca&q="& Conteudo &"&Pers=1';" )
@@ -101,7 +101,7 @@ select case comando
             end if
         next
 
-        
+
     case "ATESTADO"
         if Pagina<>"pacientes" or (Pagina="pacientes" and id="") then
             response.write("alert('VOCÊ PRECISA ESTAR NA FICHA DE UM PACIENTE PARA ATESTAR.')")

@@ -273,16 +273,12 @@ if erro="" then
 
             if procedimentoID<>"" and Executado="S" then
                 if Associacao="5" or Associacao="2" or Associacao="8"  then
-
                     if validaProcedimentoProfissional(Associacao, ProfissionalID, EspecialidadeID, ProcedimentoID,0)=False then
+
                     %>
-                    new PNotify({
-                            title: 'ERRO AO TENTAR SALVAR!',
-                            text: 'Procedimento não permitido para este Profissional e/ou Especialidade',
-                            type: 'danger',
-                            delay: 3000
-                        });
-                        $("#btnSave").prop("disabled", false);
+                    showMessageDialog("Procedimento não permitido para este Profissional e/ou Especialidade", "danger");
+
+                    $("#btnSave").prop("disabled", false);
                     <%
                     Response.End
                     end if

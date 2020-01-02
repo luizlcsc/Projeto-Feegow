@@ -1604,19 +1604,21 @@ function selectInsert(label, name, value, resource, showColumn, othersToSelect, 
 	            //console.log( $("#<%=name%>").html() );
 	            if( $(this).val()=="-1" ){
 
-	                $.post("sii.asp", {
-	                    v:$("#<%=name%> option[data-select2-tag='true']:last").text(),
-	                    t:'<%=name%>',
-	                    campoSuperior:$('#<%=campoSuperior%>').val(),
-	                    showColumn:$(this).attr("data-showColumn"),
-	                    resource:$(this).attr("data-resource")
-	                }, function (data) {
-	                    eval( data );
-	                });
+	                var valorDigitado = $("#<%=name%> option[data-select2-tag='true']:last").text();
 
-
-
-	                console.log( $("#<%=name%> option[data-select2-tag='true']:last").text() );
+	                if(confirm("Tem certeza que deseja inserir \""+valorDigitado+"\"?")){
+	                    $.post("sii.asp", {
+                            v:$("#<%=name%> option[data-select2-tag='true']:last").text(),
+                            t:'<%=name%>',
+                            campoSuperior:$('#<%=campoSuperior%>').val(),
+                            showColumn:$(this).attr("data-showColumn"),
+                            resource:$(this).attr("data-resource")
+                        }, function (data) {
+                            eval( data );
+                        });
+	                }else {
+	                    $("#<%=name%>").select2("val","");
+	                }
 	            }
 	          //  $(this).select2("destroy");
 	        });

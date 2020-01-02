@@ -450,6 +450,30 @@ end if
 
                         set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&InvoiceID&" AND Executado!='S'")
                         set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&InvoiceID&" and p.IntegracaoPleres = 'S'")
+                         
+                         ' para abrir integração com DB quando hoverem apenas procedimetos direcionados para DB
+                        sql = "SELECT pl.labID, l.NomeLaboratorio FROM itensinvoice AS ii " &_
+                              "INNER JOIN procedimentos AS pro ON (pro.id = ii.itemid) " &_
+                              "INNER JOIN labs_procedimentos_laboratorios AS pl ON (pl.procedimentoID = pro.id) " &_
+                              "INNER JOIN cliniccentral.labs AS l ON (l.id  = pl.labID) " &_
+                              "WHERE invoiceid = "& treatvalzero(InvoiceID) &" ORDER BY 1 LIMIT 1 "
+                        set procedimentos  = db.execute(sql)
+                        laboratorioproc  = 1
+                        nomelaboratorioproc = ""
+                        if  not procedimentos.eof then
+                             laboratorioproc  = procedimentos("labID")
+                             nomelaboratorioproc = procedimentos("NomeLaboratorio")
+                        end if 
+                        '  -----------------------------------------------------------------------------------------
+                        
+                        set laboratorios = db.execute("SELECT * FROM cliniccentral.labs AS lab INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) WHERE lpl.procedimentoID ="& treatvalzero(ProcedimentoID) )
+                    
+                        laboratorioid = 1
+                        NomeLaboratorio = ""
+                        if  not laboratorios.eof then
+                            laboratorioid = laboratorios("labID")
+                            NomeLaboratorio = laboratorios("NomeLaboratorio")
+                        end if 
 
                         if CInt(temintegracao("temintegracao")) > 0 then
 
@@ -459,10 +483,22 @@ end if
                                     $("#btn-abrir-modal-pleres").css("display", "none");
                                 }, 1000)
                                 </script>
-                                <div class="btn-group">
+                               <!-- <div class="btn-group">
                                     <button type="button" onclick="abrirMatrix('<%=InvoiceID%>')" class="btn btn-<%=matrixColor%> btn-sm" id="btn-abrir-modal-matrix" title="Abrir integração de laboratórios">
                                         <i class="fa fa-flask"></i>
                                     </button>
+                                </div> -->
+
+                                <div class="btn-group">
+                                    <% if laboratorioproc = "1" then %>
+                                        <button type="button" onclick="abrirMatrix('<%=InvoiceID%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=nomelaboratorioproc %>">
+                                            <i class="fa fa-flask"></i>
+                                        </button>
+                                    <% else %>
+                                        <button type="button" onclick="abrirDiagBrasil('<%=InvoiceID%>','<%=laboratorioproc %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=nomelaboratorioproc %>">
+                                            <i class="fa fa-flask"></i>
+                                        </button>    
+                                    <% end if %>
                                 </div>
 
                         <%

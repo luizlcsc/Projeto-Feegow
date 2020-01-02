@@ -232,7 +232,7 @@ if ExibeResultado then
                 end if
 
 'Response.End
-                sqlRR = "select cheque.DataCompensacao DataCompenscaoCheque, mdisc.Date DataPagtoConvenio, ri.DateToReceive, mdesc.Value as ParcelaValor,mdesc.PaymentMethodID, mdesc.Date DataPagto, fct.Parcelas, ifnull(pmdesc.PaymentMethod, '-') PaymentMethod, t.*, iip.InvoiceID InvoiceAPagarID, c.NomeConvenio, proc.NomeProcedimento, pac.NomePaciente, t.Executado from	(	"&_
+                sqlRR = "select  ca.IntegracaoSPLIT, cheque.DataCompensacao DataCompenscaoCheque, mdisc.Date DataPagtoConvenio, ri.DateToReceive, mdesc.Value as ParcelaValor,mdesc.PaymentMethodID, mdesc.Date DataPagto, fct.Parcelas, ifnull(pmdesc.PaymentMethod, '-') PaymentMethod, t.*, iip.InvoiceID InvoiceAPagarID, c.NomeConvenio, proc.NomeProcedimento, pac.NomePaciente, t.Executado from	(	"&_
                 " select null GuiaID, null TipoGuia, i.CompanyUnitID UnidadeID, ifnull(tab.NomeTabela, '') NomeTabela, ii.InvoiceID, 'ItemInvoiceID' Tipo, ii.DataExecucao, '0' ConvenioID, ii.ItemID ProcedimentoID, i.AccountID PacienteID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorProcedimento, rrp.*, ii.Executado FROM itensinvoice ii 	INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID	INNER JOIN rateiorateios rrp ON rrp.ItemInvoiceID=ii.id	WHERE ii.Tipo='S' AND rrp.ContaCredito='"& ContaCredito &"' AND ii.DataExecucao BETWEEN "& mydateNull(De) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
                 " SELECT gc.id GuiaID, 'GuiaConsulta' TipoGuia, gc.UnidadeID, '', NULL, 'GuiaConsultaID', gc.DataAtendimento, gc.ConvenioID, gc.ProcedimentoID, gc.PacienteID, gc.ValorProcedimento, rrgc.*, '' Executado FROM tissguiaconsulta gc 	INNER JOIN rateiorateios rrgc ON rrgc.GuiaConsultaID=gc.id	WHERE gc.DataAtendimento BETWEEN "& mydateNull(De) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
                 " SELECT gps.id GuiaID, 'GuiaSADT' TipoGuia, gs.UnidadeID, '', NULL, 'ItemGuiaID', gps.Data, gs.ConvenioID, gps.ProcedimentoID, gs.PacienteID, gps.ValorTotal, rrgps.*, '' Executado FROM tissprocedimentossadt gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemGuiaID=gps.id	INNER JOIN tissguiasadt gs ON gps.GuiaID=gs.id WHERE gps.`Data` BETWEEN  "& mydateNull(De) &" AND "& mydateNull(Ate) &" UNION ALL "&_
@@ -240,6 +240,7 @@ if ExibeResultado then
                 " LEFT JOIN itensinvoice iip ON (iip.id=t.ItemContaAPagar) LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID "&_
                 " LEFT JOIN itensdescontados idesc ON idesc.id=t.ItemDescontadoID "&_
                 " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID "&_
+                " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit "&_
                 " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID "&_
                 " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id "&_
                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=t.ParcelaID "&_
@@ -340,9 +341,25 @@ if ExibeResultado then
                         if NomeTabela<>"" then
                             NomeTabela = "<i class='fa fa-table' title='"& NomeTabela &"'></i>"
                         end if
+
+                        ExibeCheckbox = False
+
+                        if rr("Executado") <> "C" then
+                            ExibeCheckbox= True
+                        else
+                            TextoOcultarCheckbox= "Cancelado"
+                        end if
+
+                        if rr("IntegracaoSPLIT") = "S" then
+                            ExibeCheckbox= False
+                            TextoOcultarCheckbox= "Split"
+                        end if
+
+
                         %>
                         <tr invoiceapagarid="<%=rr("InvoiceAPagarID")%>">
                             <td>
+                                <code>#<%= rr("id") %></code>
                                 <% if rr("ItemContaAPagar")>0 then %>
                                     <a href="./?P=invoice&Pers=1&I=<%= rr("InvoiceAPagarID") %>" target="_blank" class="btn btn-xs btn-default" type="button"><i class="fa fa-sign-out text-alert"></i></a>
                                 <% elseif rr("ItemContaAReceber")>0 then
@@ -355,8 +372,10 @@ if ExibeResultado then
                                 <% elseif rr("CreditoID")>0 then %>
                                 <a href="javascript:repassesCredito(<%= rr("CreditoID") %>)" class="btn btn-xs btn-default"><i class="fa fa-search text-system"></i></a>
                                 <% else %>
-                                    <% if rr("Executado") <> "C" then %>
+                                    <% if ExibeCheckbox then %>
                                         <input type="checkbox" data-account="<%=ContaCredito%>" name="Repasses" value="<%= rr("id") &"|"& ValorRepasse %>" />
+                                    <% else %>
+                                    <span class="label label-warning"><%=TextoOcultarCheckbox%></span>
                                     <% end if %>
                                 <% end if %>
                                 

@@ -219,7 +219,7 @@ end if
                                         <ul class="dropdown-menu" role="menu">
                                           <li><a href="#" onclick="printInvoices()">Imprimir</a></li>
                                           <%
-                                            if instr(RecursosAdicionais,"CNAB") then
+                                            if instr(RecursosAdicionais,"CNAB") or recursoAdicional(28)=4 then
                                           %>
                                           <li><a href="#" id="GerarArquivoRemessa" style="display:none;">Gerar arquivo de remessa</a></li>
                                           <li><a href="#" id="GerarArquivoRemessaBeta" style="display:none;">Gerar arquivo de remessa <label class="label label-primary">BETA</label> </a></li>

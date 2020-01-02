@@ -72,12 +72,16 @@ if not l.eof then
     if not Prot.eof then
         ProtocoloConteudo = prot("LaudosProtocolo")&""
         if ProtocoloConteudo<>"" then
+            ProtocoloConteudo = replaceTags(ProtocoloConteudo, PacienteProntuario, session("UserID"), session("UnidadeID"))
+
+
             ProtocoloConteudo = replace(ProtocoloConteudo, "[Usuario.Nome]", NomeUsuario)
             ProtocoloConteudo = replace(ProtocoloConteudo, "[Sistema.Hora]", now())
             ProtocoloConteudo = replace(ProtocoloConteudo, "[Protocolo.ID]", right("0000000"&Id,7))
-            ProtocoloConteudo = replace(ProtocoloConteudo, "[Paciente.Nome]", NomePaciente)
-            ProtocoloConteudo = replace(ProtocoloConteudo, "[Paciente.Nascimento]", PacienteNascimento)
-            ProtocoloConteudo = replace(ProtocoloConteudo, "[Paciente.Prontuario]", PacienteProntuario)
+
+
+
+
             ProtocoloConteudo = replace(ProtocoloConteudo, "[Exame.Data]", DataExecucao)
             ProtocoloConteudo = replace(ProtocoloConteudo, "[Procedimento.Nome]", Procedimento)
             ProtocoloConteudo = replace(ProtocoloConteudo, "[Procedimento.DiasLaudo]", DiasLaudo&"")

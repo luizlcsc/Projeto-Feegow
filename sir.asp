@@ -71,7 +71,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
                 if not prof.eof then
                     EspecialidadeID = prof("EspecialidadeID")
 
-                    sqlEspecialidades = " SomenteEspecialidades like '%|"& EspecialidadeID &"|%'"
+                    sqlEspecialidades = " (SomenteEspecialidades like '%|"& EspecialidadeID &"|%' or SomenteEspecialidades IS NULL)"
 
                     set EspecialidadesSQL = db.execute("SELECT EspecialidadeID FROM profissionaisespecialidades WHERE ProfissionalID="&ProfissionalID)
                     while not EspecialidadesSQL.eof

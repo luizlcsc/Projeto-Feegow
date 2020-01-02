@@ -1,4 +1,4 @@
-﻿
+
 <style>
 .btn-recording{
     display: block!important;
@@ -38,7 +38,7 @@
             Permission to use microphone was denied.
           </p>
           <p id="info_blocked" style="display:none">
-            Sua permissão de uso do microfone está bloqueada. Ajuste em 
+            Sua permissão de uso do microfone está bloqueada. Ajuste em
             chrome://settings/contentExceptions#media-stream
           </p>
           <p id="info_upgrade" style="display:none">
@@ -174,7 +174,7 @@ if (!('webkitSpeechRecognition' in window)) {
       if (event.results[i].isFinal) {
           final_transcript += event.results[i][0].transcript;
           if ($("#speeFLD").val() == "") {
-              $.post("recSpeech.asp", { t: final_transcript, p: '<%=req("P")%>', id: '<%=req("I")%>' }, function (data) { eval(data) });
+              $.post("recSpeech.asp", { t: final_transcript, p: '<%=req("P")%>', id: '<%=req("I")%>', recognitionPront: 'S' }, function (data) { eval(data) });
           } else {
               $("#speeFLD").val("");
               recognition.stop();

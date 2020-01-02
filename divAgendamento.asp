@@ -609,8 +609,10 @@ end if
 				if splCamposPedir(i)<>"IndicadoPorSelecao" then
                     set dField = db.execute("select c.label, c.selectSQL, c.selectColumnToShow, tc.typeName from cliniccentral.sys_resourcesfields c LEFT JOIN cliniccentral.sys_resourcesfieldtypes tc on tc.id=c.fieldTypeID WHERE c.ResourceID=1 AND c.columnName='"&splCamposPedir(i)&"'")
                     if not dField.EOF then
+                        colMd=2
 
-                        if instr(Omitir, "|"&lcase(splCamposPedir(i))&"|") then%>
+                        if instr(Omitir, "|"&lcase(splCamposPedir(i))&"|") then
+                        %>
                             <input type="hidden" name="age<%=splCamposPedir(i)%>" id="age<%=splCamposPedir(i)%>" value="<%=valorCampo%>">
                             <%
                         else
@@ -622,8 +624,12 @@ end if
                             if dField("typeName") = "simpleSelect" then
                                 camposRequired = camposRequired & " empty"
                             end if
-                            %><input type="text" name="ageEmail10" class="form-control hidden" autocomplete="off" />
-                            <%= quickField(dField("typeName"), "age"&splCamposPedir(i), dField("label"), 2, valorCampo, dField("selectSQL"), dField("selectColumnToShow"), " autocomplete='campo-agenda' no-select2 datepicker-vazio "&camposRequired&" "&fieldReadonly) %>
+
+                             if instr(lcase(splCamposPedir(i)), "cpf")>0 then
+                                colMd=3
+                            end if
+                            %>
+                            <%= quickField(dField("typeName"), "age"&splCamposPedir(i), dField("label"), colMd, valorCampo, dField("selectSQL"), dField("selectColumnToShow"), " autocomplete='campo-agenda' no-select2 datepicker-vazio "&camposRequired&" "&fieldReadonly) %>
                         <%end if
 
                     end if
@@ -733,15 +739,33 @@ end if
 							EmailEnviado = "S"
 						end if
 
-                        response.write("    <div class=""col-md-4"">")
+
                         if ConsultaID=0 then
+                        response.write("    <div class=""col-md-4"">")
                             IntervaloRepeticao = 1
 						    %>
                                 <div class="checkbox-custom checkbox-success"><input name="rpt" id="rpt" onclick="rpti();" value="S" type="checkbox"<%if rpt="S" and rpt="" then%> checked="checked"<%end if%> /><label for="rpt"> Repetir</label></div>
                             <%
-                        end if
                         response.write("    </div>")
+                        end if
+
 						%>
+                        <%
+                            if recursoAdicional(27)=4 then
+                                set pacs_config = db.execute("select * from pacs_config where expired = 0")
+                                if not pacs_config.eof and ConsultaID<>0 then
+                                    %>
+                                        <div class="col-md-4">
+                                            <div class="checkbox-custom checkbox-primary">
+                                                <input type="checkbox" name="Pacs" id="Pacs">
+                                                <label for="Pacs"> Pacs</label>
+                                            </div>
+                                        </div>
+                                    <%
+                                end if
+                            end if
+                        %>
+
                             <div class="col-md-4">
                             <%if ServicoSMS="S" then%>
                                 <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar SMS</label></div>
@@ -1295,22 +1319,28 @@ function checkinMultiplo()
                 saveAgenda();
             }
         })
-
 }
 
 var saveAgenda = function(){
         $("#btnSalvarAgenda").html('salvando');
         //$("#btnSalvarAgenda").attr('disabled', 'disabled');
         $("#btnSalvarAgenda").prop("disabled", true);
+
         $.post("saveAgenda.asp", $("#formAgenda").serialize())
             .done(function(data){
                 //$("#btnSalvarAgenda").removeAttr('disabled');
-                 eval(data);
+                eval(data);
                 $("#btnSalvarAgenda").html('<i class="fa fa-save"></i> Salvar');
-                    $("#btnSalvarAgenda").prop("disabled", false);
-                    crumbAgenda();
+                $("#btnSalvarAgenda").prop("disabled", false);
+                crumbAgenda();
 
+                <%if recursoAdicional(27)=4 then%>
+                if($("#Pacs").prop('checked')) {
+                    postUrl("pacs", {agendamento_id:'<%=AgendamentoID%>',profissional_id:'<%=ProfissionalID%>'});
+                }
+                <%end if%>
             })
+
             .fail(function(err){
                 $("#btnSalvarAgenda").prop("disabled", true);
 
@@ -1320,16 +1350,12 @@ var saveAgenda = function(){
             callbackAgendaFiltros();
             crumbAgenda();
         }
-
     }
-
-
 
 function submitAgendamento(check) {
 
     let valorPlano = null;
     let checkin = $("#Checkin").length;
-
 
     if($("#rdValorPlanoV").prop("checked") && !$("#rdValorPlanoV").prop("disabled") ){
         valorPlano = "V";

@@ -757,7 +757,18 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 		case "CPF"
 			response.Write(LabelFor)
 			%>
-			<input type="text" class="form-control input-mask-cpf <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%> />
+			<div class="input-group">
+                <input type="text" class="form-control input-mask-cpf <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%> />
+
+                <span class="input-group-addon">
+                   <div class="checkbox-custom checkbox-warning">
+                        <input id="SemCPF" type="checkbox" class="ace" onchange="$('#<%=fieldName%>').attr('required', !$(this).is(':checked')).attr('readonly', $(this).is(':checked'))"  style="font-size: 10px"/>
+
+                        <label class="checkbox" for="SemCPF" style="color: #000!important; padding-top: 6px; margin-right: 0px!important; ;font-weight: 500; font-size: 9px;margin-bottom: 0!important;margin-top: 0!important;">Sem CPF</label>
+                    </div>
+                </span>
+            </div>
+
 			<%
 		case "textSearch"
 			response.Write(LabelFor)

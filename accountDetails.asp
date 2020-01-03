@@ -95,7 +95,7 @@ end select
         %>
 
 		<%		
-		 if AccountType = 3 or AccountType = 6 then %>
+		 if AccountType = 3 or AccountType = 6 or AccountType = 4 then %>
 			<div class="col-md-8" style="margin-top: 25px;">
 				<form id="percentual_form">
 					<table id="percentual-conta" class="table table-bordered table-striped">
@@ -265,6 +265,10 @@ end if
 			mudarValorTipoPagamentoSomenteCredito(newCellTipoPagamento);
 			removerMinimoMaximoReadOnly();
 		}
+		if($("#AccountType").select2('val') == '4'){
+			mudarValorTipoPagamentoSomenteDebito(newCellTipoPagamento);
+			removerMinimoMaximoReadOnly();
+		}
 		
 		newCellExcluir.appendChild(gerarInputButtonsToTableh.buttonExcluir);
 
@@ -276,6 +280,11 @@ end if
 	function mudarValorTipoPagamentoSomenteCredito(cellTipoPagamento) {
 		let selectTipoPagamento = (cellTipoPagamento.querySelectorAll("input, select, checkbox, textarea"))[0];
 		selectTipoPagamento.selectedIndex = 2; //tipo crédito
+		selectTipoPagamento.disabled = true;
+	}
+	function mudarValorTipoPagamentoSomenteDebito(cellTipoPagamento) {
+		let selectTipoPagamento = (cellTipoPagamento.querySelectorAll("input, select, checkbox, textarea"))[0];
+		selectTipoPagamento.selectedIndex = 1; //tipo crédito
 		selectTipoPagamento.disabled = true;
 	}
 
@@ -502,7 +511,18 @@ end if
 		inputNumberMinimo.setAttribute("class", "form-control  text-right")
 		inputNumberMinimo.setAttribute("name", "minimo");
 		inputNumberMinimo.setAttribute("min", "1");
+		<%
+		if AccountType=4 then
+        %>
+        inputNumberMinimo.setAttribute("max", "1");
+        inputNumberMinimo.setAttribute("value", "1");
+        <%
+        else
+        %>
 		inputNumberMinimo.setAttribute("max", "12");
+        <%
+		end if
+		%>
 		inputNumberMinimo.setAttribute("required", "");
 
 		return inputNumberMinimo;
@@ -514,7 +534,18 @@ end if
 		inputNumberMaximo.setAttribute("class", "form-control  text-right")
 		inputNumberMaximo.setAttribute("name", "maximo");
 		inputNumberMaximo.setAttribute("min", "1");
+		<%
+		if AccountType=4 then
+        %>
+        inputNumberMaximo.setAttribute("max", "1");
+        inputNumberMaximo.setAttribute("value", "1");
+        <%
+        else
+        %>
 		inputNumberMaximo.setAttribute("max", "12");
+        <%
+		end if
+		%>
 		inputNumberMaximo.setAttribute("required", "");
 
 		return inputNumberMaximo;
@@ -669,7 +700,7 @@ end if
 
 	persistPercentualConfiguracao = callback => {
 		console.log('aaaaaa');
-		if ($("#AccountType").select2('val') != '3' && $("#AccountType").select2('val') != '6') {
+		if ($("#AccountType").select2('val') != '3' && $("#AccountType").select2('val') != '6' && $("#AccountType").select2('val') != '4') {
 			return;
 		}
 

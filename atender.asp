@@ -230,12 +230,41 @@ if Conteudo="Play" then
         %>
         <h3 class="text-center light"><i class="fa fa-clock-o"></i> <span id="counter"><%=Tempo%></span></h3>
           <div class="row">
-              <div class="col-sm-6">
-                  <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i> Finalizar</button>
-              </div>
-              <div class="col-sm-6">
-                  <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="fa fa-pause"></i> Solicitar</button>
-              </div>
+            <% if getConfig("SolicitacaoDeProcedimentosEspera")="1" then %>
+
+                <div class="col-sm-6">
+                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="if(confirm('Tem certeza de que deseja finalizar este atendimento?')) encerrar()"><i class="fa fa-stop"></i> Finalizar</button>
+                </div>
+                <div class="col-sm-6">
+                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atEspera()"><i class="fa fa-pause"></i> Espera</button>
+                </div>
+
+                <script type="text/javascript">
+                    function encerrar() {
+                        $.post("saveInf.asp?AgendamentoID=<%= AgendamentoID %>&Atendimentos=<%= session("Atendimentos") %>&rPacienteID=<%= PacienteID %>&Origem=Atendimento&Solicitacao=N",
+                            {
+                                'inf-ProfissionalID': '<%= session("idInTable") %>',
+                                UnidadeID: '<%= session("UnidadeID") %>'
+                        }, function (data) { eval(data) });
+                    }
+
+                    function atEspera() {
+                        $.get("atEspera.asp?PacienteID=<%= PacienteID %>&Atendimentos=<%= session("Atendimentos")%>", function (data) {
+                            $("#modal").html("Carregando...");
+                            $("#modal-table").modal("show");
+                            $("#modal").html(data);
+                        });
+                    }
+                </script>
+
+            <% else %>
+                <div class="col-sm-6">
+                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i> Finalizar</button>
+                </div>
+                <div class="col-sm-6">
+                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="fa fa-pause"></i> Solicitar</button>
+                </div>
+            <% end if %>
           </div>
       <script type="text/javascript">
       var stopTime;

@@ -99,7 +99,7 @@ if request.QueryString("Atender")<>"" then
 	'db_execute("update agendamentos set StaID='3' where StaID = '2' and ProfissionalID = '"&ProfissionalID&"'") -  não muda mais automaticamente para atendido, apenas quando encerra o contador
 	db_execute("update agendamentos set StaID='2', ProfissionalID="&ProfissionalID&" where id = '"&request.QueryString("Atender")&"' AND ProfissionalID = 0")
     getEspera(ProfissionalID)
-	response.Redirect("?P=Pacientes&Pers=1&I="&request.QueryString("PacienteID")&"&Atender="&request.QueryString("Atender")&"&Acao=Iniciar")
+	response.Redirect("?P=Pacientes&Pers=1&I="&req("PacienteID")&"&Atender="&req("Atender")&"&Acao=Iniciar")
 end if
 
 sqlunidades  = "select Unidades from " & session("table") &" where id = " & session("idInTable")
@@ -130,7 +130,7 @@ if lcase(session("Table"))<>"profissionais" or req("ProfissionalID")<>"" then
           "LEFT JOIN profissionais p on p.id=a.ProfissionalID " &_
           "INNER JOIN pacientes pac ON pac.id=a.PacienteID " &_
           "LEFT JOIN locais l on l.id=a.LocalID " &_
-          "WHERE Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 102,105,106, 101, 5) " &_
+          "WHERE Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 102, 33,105,106, 101, 5) " &_
           "AND (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "& sqlProfissional & sqlOR &" order by "&Ordem
 else
     'triagem
@@ -158,7 +158,7 @@ else
           "AND (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "& sqlOR &" order by "&Ordem&" "
 
 end if
-'response.write ("<script> console.log('"& replace(sql,"'","´") &"');</script>")
+
 if lcase(session("table"))="profissionais" then
     if not ConfigGeraisSQL.eof then
         if ConfigGeraisSQL("Triagem")="S" then
@@ -197,6 +197,7 @@ if veseha.eof then
 	%>Nenhum paciente aguardando para ser atendido.<%
 else
 %>
+<div class="table-responsive">
 <table width="100%" class="table table-striped table-hover table-bordered">
   <thead>
 	<tr class="info">
@@ -370,10 +371,17 @@ else
     end if
 
     if exibeLinha="S" then
+        if Sta=33 then
+            fLinha = " class='warning' "
+            rowspan = " rowspan=2 "
+        else
+            fLinha = ""
+            rowspan = ""
+        end if
         %>
-    <tr>
-    <td nowrap><img src="assets/img/<%=Sta%>.png" /> <%=Hora%></td>
-    <td><%= HoraSta %></td>
+    <tr <%= fLinha %>>
+    <td nowrap <%= rowspan %> ><img src="assets/img/<%=Sta%>.png" /> <%=Hora%></td>
+    <td <%= rowspan %> ><%= HoraSta %></td>
     <%
 
     %>
@@ -439,7 +447,7 @@ else
     	<button
     	 <%
 
-        if veseha("StaID")<>4 and veseha("StaID")<>5 then
+        if veseha("StaID")<>4 and veseha("StaID")<>5 and veseha("StaID")<>33 then
             %> disabled<%
         else
             %> onClick="window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>';"<%
@@ -452,13 +460,68 @@ else
     </td>
     <%end if %>
     </tr>
-	<%
+        <%
+        if Sta=33 then
+
+            %>
+            <tr class="warning">
+                <td colspan="7">
+                <table class="table table-condensed table-bordered">
+                    <%
+                    set esp = db.execute("select e.*, ep.ProcedimentoID, ep.Obs, proc.NomeProcedimento from espera e LEFT JOIN esperaprocedimentos ep ON ep.EsperaID=e.id LEFT JOIN procedimentos proc ON proc.id=ep.ProcedimentoID where e.PacienteID="& veseha("PacienteID") &" and e.ProfissionalID="& veseha("ProfissionalID") &" and isnull(e.Fim)")
+                        if not esp.eof then
+                            %>
+                            <tr class="warning">
+                                <th>Procedimento solicitado</th>
+                                <th>Observações</th>
+                                <th>Agendamento</th>
+                            </tr>
+                            <%
+                        end if
+                        while not esp.eof
+                        %>
+                        <tr>
+                            <td><%= esp("NomeProcedimento") %></td>
+                            <td><%= esp("Obs") %></td>
+                            <td width="200">
+                                <%
+                                set vcaag = db.execute("select a.id, a.Data, a.Hora, a.StaID, p.NomeProfissional from agendamentos a left join profissionais p on p.id=a.ProfissionalID where a.Data>=curdate() and a.PacienteID="& veseha("PacienteID") &" and a.TipoCompromissoID="& esp("ProcedimentoID") &" order by data, hora limit 1")
+                                classeBtnEsp = ""
+                                if vcaag.eof then
+                                    %>
+                                    <a class="btn btn-xs btn-block btn-<%= classeBtnEsp %>" href="./?P=AgendaMultipla&Pers=1&ProcedimentoID=<%= esp("ProcedimentoID") %>&PacienteID=<%= veseha("PacienteID") %>"><i class="fa fa-calendar"></i> Não agendado</a>
+                                    <%
+                                else
+                                    if vcaag("StaID")=3 then
+                                        classeBtnEsp = "success"
+                                    end if
+                                    %>
+                                    <a href="./?P=Agenda-1&Pers=1&AgendamentoID=<%= vcaag("id") %>" class="btn btn-block btn-<%= classeBtnEsp %> btn-xs">
+                                        <img src="./assets/img/<%= vcaag("StaID") %>.png" /> <%= vcaag("Data") &" - "& ft(vcaag("Hora")) &" - "& vcaag("NomeProfissional") %>
+                                    </a>
+                                    <%
+                                end if
+                                %>
+                            </td>
+                        </tr>
+                        <%
+                        esp.movenext
+                        wend
+                        esp.close
+                        set esp = nothing
+                    %>
+                </table>
+                </td>
+            </tr>
+	        <%
+        end if
 	end if
     veseha.movenext
     wend
     veseha.close
     set veseha=nothing%>
 </table>
+</div>
 <script >
     var $waitingTime = $(".waiting-time");
 

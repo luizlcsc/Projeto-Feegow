@@ -42,11 +42,14 @@ end if
         <div class="row">
             <div class="col-xs-8">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <button type="button" onclick="NovoPedido();" class="btn btn-info btn-block"><i class="fa fa-plus icon-plus"></i> Novo</button>
                     </div>
                     <div class="col-md-3">
-                        <button type="button" class="btn btn-info btn-block" id="savePedido"><i class="fa fa-print icon-print"></i> Salvar e Imprimir</button>
+                        <button type="button" class="btn btn-primary btn-block" id="savePedido"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-info btn-block" id="printPedido"><i class="fa fa-print icon-print"></i> Imprimir</button>
                     </div>
                     <div class="col-md-3 exame-procedimento-content" style="display: none;">
                         <div class="checkbox-custom checkbox-primary">

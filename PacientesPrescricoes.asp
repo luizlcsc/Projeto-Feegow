@@ -21,9 +21,10 @@ end if
     <div class="tab-content">
       <div id="prescricao" class="tab-pane in active">
           <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-5">
                 <button type="button" onclick="$('#receituario').val('');" class="btn btn-info"><i class="fa fa-plus icon-plus"></i> Nova</button>
-                <button type="button" class="btn btn-info" id="savePrescription"><i class="fa fa-print icon-print"></i> Salvar e Imprimir</button>
+                <button type="button" class="btn btn-primary" id="savePrescription"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
+                <button type="button" class="btn btn-info" id="printPrescription"><i class="fa fa-print icon-print"></i> Imprimir</button>
             </div>
             <div class="col-md-2">
 	            <div class="checkbox-custom checkbox-primary"><input type="checkbox" name="ControleEspecial" id="ControleEspecial" <%if ControleEspecial="checked" then response.write(" checked ") end if %> /><label for="ControleEspecial">Controle especial</label></div>
@@ -214,7 +215,20 @@ $("#savePrescription").click(function(){
 	$.post("savePrescription.asp",{
 		   PacienteID:'<%=PacienteID%>',
 		   receituario:$("#receituario").val(),
-		   ControleEspecial:$("#ControleEspecial").prop('checked')
+		   ControleEspecial:$("#ControleEspecial").prop('checked'),
+		   save: true,
+		   },function(data,status){
+	  $("#modal").html(data);
+	  $("#modal-table").modal('show');
+	});
+});
+
+$("#printPrescription").click(function(){
+	$.post("savePrescription.asp",{
+		   PacienteID:'<%=PacienteID%>',
+		   receituario:$("#receituario").val(),
+		   ControleEspecial:$("#ControleEspecial").prop('checked'),
+		   save: false,
 		   },function(data,status){
 	  $("#modal").html(data);
 	  $("#modal-table").modal('show');

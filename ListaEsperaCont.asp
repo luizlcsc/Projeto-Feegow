@@ -102,60 +102,19 @@ if request.QueryString("Atender")<>"" then
 	response.Redirect("?P=Pacientes&Pers=1&I="&req("PacienteID")&"&Atender="&req("Atender")&"&Acao=Iniciar")
 end if
 
-sqlunidades  = "select Unidades from " & session("table") &" where id = " & session("idInTable")
-set UnidadesUser  = db.execute(sqlunidades)
-UnidadesUser = replace(UnidadesUser("Unidades"), "|", "")
-lista = split(UnidadesUser, ",")
-sqlOR = ""
-for z=0 to ubound(lista)
-    sqlOR = sqlOR & " or CONCAT('|',a.localid,'|') like '%|"& replace(lista(z), " ","") &"|%' "
-next
-sqlOR = " AND (false " & sqlOR & ") "
-
-
 if lcase(session("Table"))<>"profissionais" or req("ProfissionalID")<>"" then
-    sqlTotal = "SELECT count(*) total, l.UnidadeID " &_
-               "FROM agendamentos a " &_
-               "INNER JOIN pacientes pac ON pac.id=a.PacienteID " &_
-               "LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID " &_
-               "LEFT JOIN locais l on l.id=a.LocalID " &_
-               "WHERE a.Data = '"&mydate(DataHoje)&"' and a.StaID in(2, 5, "&StatusExibir&") " &_
-               "AND (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID)) "&sqlProfissional&" " &_
-               "group by(l.UnidadeID) order by total desc limit 1 "
-    sql = "SELECT a.*, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) " &_
-          "FROM agendamentosprocedimentos " &_
-          "WHERE agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano " &_
-          "FROM agendamentos a " &_
-          "LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID " &_
-          "LEFT JOIN profissionais p on p.id=a.ProfissionalID " &_
-          "INNER JOIN pacientes pac ON pac.id=a.PacienteID " &_
-          "LEFT JOIN locais l on l.id=a.LocalID " &_
-          "WHERE Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 102, 33,105,106, 101, 5) " &_
-          "AND (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "& sqlProfissional & sqlOR &" order by "&Ordem
+	sql = "select a.*, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join profissionais p on p.id=a.ProfissionalID inner join pacientes pac ON pac.id=a.PacienteID left join locais l on l.id=a.LocalID where Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 33, 102,105,106, 101, 5) and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "&sqlProfissional&" order by "&Ordem
+    sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID                                                                                         where a.Data = '"&mydate(DataHoje)&"' and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID)) "&sqlProfissional&"  group by(l.UnidadeID) order by total desc limit 1 "
 else
     'triagem
     sqlSalaDeEspera = ""
     if configExibirNaSalaDeEspera = 0 then
         sqlSalaDeEspera  = " a.ProfissionalID !=0 and "
     end if
-    sqlTotal = "SELECT count(*) total, l.UnidadeID " &_
-               "FROM agendamentos a " &_
-               "INNER JOIN pacientes pac ON pac.id=a.PacienteID " &_
-               "LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID " &_
-               "LEFT JOIN locais l on l.id=a.LocalID  " &_
-               "WHERE a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) " &_
-               "and a.StaID in(2, 5, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID))  " &_
-               "group by(l.UnidadeID) order by total desc limit 1 "
-	sql = "SELECT a.*, tp.NomeTabela,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) " &_
-          "from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano " &_
-          "from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID " &_
-          "LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID " &_
-          "LEFT JOIN locais l on l.id=a.LocalID  " &_
-          "LEFT JOIN profissionais p on p.id=a.ProfissionalID " &_
-          "WHERE "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' " &_
-          "AND a.ProfissionalID in("&ProfissionalID&", 0) " &_
-          "AND a.StaID in(2, 5, "&StatusExibir&") " &_
-          "AND (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "& sqlOR &" order by "&Ordem&" "
+
+	'sql = "select * from Consultas where Data = "&DataHoje&" and DrId = '"&session("DoutorID")&"' and not StaID = '3' and not StaID = '1' and not StaID = '6' and not StaID = '7' order by "&Ordem
+    sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID))  group by(l.UnidadeID) order by total desc limit 1 "
+	sql = "select a.*, tp.NomeTabela,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, "&StatusExibir&") and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) order by "&Ordem
 
 end if
 
@@ -167,15 +126,15 @@ if lcase(session("table"))="profissionais" then
             ProfissionalTriagem="N"
 
             sqlTriagem = "SELECT IF(conf.TriagemEspecialidades LIKE CONCAT('%',prof.EspecialidadeID,'%'),1,0)EspecialidadeTriagem FROM profissionais prof "&_
-                         "INNER JOIN sys_config conf  "&_
-                         "WHERE prof.id = "&ProfissionalID
+                                                                             "INNER JOIN sys_config conf  "&_
+                                                                             "WHERE prof.id = "&ProfissionalID
 
 'enfermeira ou tec enfermagem
             set ProfissionalTriagemSQL = db.execute(sqlTriagem)
             if not ProfissionalTriagemSQL.eof then
                 if ProfissionalTriagemSQL("EspecialidadeTriagem")="1" then
                     ProfissionalTriagem="S"
-                    sql = "select age.*, profage.NomeProfissional, tp.NomeTabela from agendamentos age LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID LEFT JOIN profissionais profage ON profage.id=age.ProfissionalID INNER JOIN pacientes pac ON pac.id=age.PacienteID LEFT JOIN locais l ON l.id=age.LocalID where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' order by "&Ordem
+                    sql = "select age.*, profage.NomeProfissional, tp.NomeTabela from agendamentos age LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID LEFT JOIN profissionais profage ON profage.id=age.ProfissionalID INNER JOIN pacientes pac ON pac.id=age.PacienteID LEFT JOIN locais l ON l.id=age.LocalID where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 33, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' order by "&Ordem
                 end if
             end if
         end if
@@ -422,7 +381,7 @@ else
     <td>
         <% if session("Banco")<>"clinic5760" then %>
         <button class="btn btn-xs btn-warning" type="button" <%=disabPagto%> <%
-        if veseha("StaID")<>4 and veseha("StaID")<>101 and veseha("StaID")<>102 then
+        if veseha("StaID")<>4 and veseha("StaID")<>101 and veseha("StaID")<>102 and veseha("StaID")<>33 then
             %> disabled<%
         else
             %> onClick="window.location='?P=ListaEspera&Pers=1&Chamar=<%=veseha("id")%>';"<%

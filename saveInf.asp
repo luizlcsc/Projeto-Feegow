@@ -1,7 +1,12 @@
 <!--#include file="connect.asp"-->
 <%
-AtendimentoID = req("AtendimentoID")
 CalculosTabela = getConfig("calculostabelas")
+AtendimentoID = req("AtendimentoID")
+
+if AtendimentoID="" then
+    AtendimentoID = replace(req("Atendimentos"), "|", "")
+end if
+
 set AtendimentoSQL = db.execute("SELECT PacienteID FROM atendimentos WHERE id="&AtendimentoID)
 
 set ConfigSQL = db.execute("SELECT RecursosAdicionais, ObrigarPreenchimentoDeFormulario FROM sys_config WHERE id=1")
@@ -112,7 +117,7 @@ end if
 
 if req("Origem")="Atendimento" then
 	db_execute("update sys_users set notiflanctos='' where LENGTH(notiflanctos)>50")
-	str = "select * from atendimentos where id="&req("AtendimentoID")
+	str = "select * from atendimentos where id="& AtendimentoID
 	'response.Write(str)
 	set buscaAtendimento = db.execute(str)
 	if not buscaAtendimento.eof then

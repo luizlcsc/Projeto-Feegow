@@ -269,7 +269,7 @@ function removeFoto(){
 		
 		
 		$("#Foto").change(function() {
-			var submit_url = "FotoUpload.php?<%=Parametros%>";
+			var submit_url = "FotoUpload.php?<%=Parametros%>&L=<%=replace(session("Banco"), "clinic", "")%>";
 			if(!file_input.data('ace_input_files')) return false;//no files selected
 			
 			var deferred ;

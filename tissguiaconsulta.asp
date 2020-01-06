@@ -143,7 +143,10 @@ if not reg.eof then
                         end if
                         'response.write(SQLUnidadeIDContratado)
                         'response.write(UnidadeID)
-						set contrato = db.execute("select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 and length(CodigoNaOperadora)>1 and not isnull(Contratado) "&SQLUnidadeIDContratado&" ORDER BY IF(Contratado*-1 = "&treatvalnull(UnidadeID)&",0,1)")
+
+                        'select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 and length(CodigoNaOperadora)>1 and not isnull(Contratado) "&SQLUnidadeIDContratado&" ORDER BY IF(Contratado*-1 = "&treatvalnull(UnidadeID)&",0,1)
+
+						set contrato = db.execute("SELECT * FROM contratosconvenio WHERE sysActive=1 and ConvenioID = "&conv("id")&" ORDER BY (Contratado = "&session("idInTable")&") DESC, coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) DESC ")
 
 '						while not contrato.eof
  '                           if session("UnidadeID")=contrato("Contratado")*(-1) then

@@ -88,12 +88,24 @@ if Acao="Iniciar" then
 	end if
 end if
 
-if Acao="PreEncerrar" then
-	set buscaAtendimento = db.execute("select * from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' and isnull(HoraFim)")
+if Acao="" then
+	set buscaAtendimento = db.execute("select id from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' and isnull(HoraFim)")
 	if buscaAtendimento.eof then
-		set buscaAtendimento = db.execute("select * from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' order by id desc limit 1")
+		set buscaAtendimento = db.execute("select id from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' order by id desc limit 1")
 	end if
 	if not buscaAtendimento.eof then
+	    AtendimentoID=buscaAtendimento("id")
+    end if
+end if
+
+
+if Acao="PreEncerrar" then
+	set buscaAtendimento = db.execute("select id from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' and isnull(HoraFim)")
+	if buscaAtendimento.eof then
+		set buscaAtendimento = db.execute("select id from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' order by id desc limit 1")
+	end if
+	if not buscaAtendimento.eof then
+	    AtendimentoID=buscaAtendimento("id")
 ''		db_execute("update atendimentos set HoraFim='"&time()&"' where id="&buscaAtendimento("id"))
 		'fecha possível lista de espera com este paciente
 ''		set lista = db.execute("select * from agendamentos where PacienteID="&PacienteID&" and Data='"&mydate(date())&"' and StaID<>3 and ProfissionalID="&session("idInTable")&" order by Hora")
@@ -127,8 +139,9 @@ end if
 
 if Acao="Solicitar" then
 '	response.Write("select * from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"'")
-	set buscaAtendimento = db.execute("select * from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' and isnull(HoraFim)")
+	set buscaAtendimento = db.execute("select id from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' and isnull(HoraFim)")
 	if not buscaAtendimento.eof then
+	    AtendimentoID=buscaAtendimento("id")
 		'db_execute("update atendimentos set HoraFim='"&time()&"' where id="&buscaAtendimento("id"))
 		'fecha possível lista de espera com este paciente
 		'set lista = db.execute("select * from agendamentos where PacienteID="&PacienteID&" and Data='"&mydate(date())&"' and StaID<>3 and ProfissionalID="&session("idInTable")&" order by Hora")
@@ -241,7 +254,7 @@ if Conteudo="Play" then
 
                 <script type="text/javascript">
                     function encerrar() {
-                        $.post("saveInf.asp?AgendamentoID=<%= AgendamentoID %>&Atendimentos=<%= session("Atendimentos") %>&rPacienteID=<%= PacienteID %>&Origem=Atendimento&Solicitacao=N",
+                        $.post("saveInf.asp?AgendamentoID=<%= AgendamentoID %>&Atendimentos=<%= session("Atendimentos") %>&AtendimentoID=<%=AtendimentoID%>&rPacienteID=<%= PacienteID %>&Origem=Atendimento&Solicitacao=N",
                             {
                                 'inf-ProfissionalID': '<%= session("idInTable") %>',
                                 UnidadeID: '<%= session("UnidadeID") %>'

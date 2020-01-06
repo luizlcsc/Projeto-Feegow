@@ -1595,6 +1595,7 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
 
     }else if(A=='X'){
         $("#la"+I).remove();
+        somarValores();
     }
 }
 function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpresso) {

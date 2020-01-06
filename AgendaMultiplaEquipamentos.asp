@@ -35,7 +35,7 @@ while not equ.eof
                     Hora = cdate("00:00")
 					set Horarios = db.execute("select ass.* from assperiodolocalxprofissional ass where ass.ProfissionalID="&EquipamentoID*(-1)&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
 					if Horarios.EOF then
-	                    set Horarios = db.execute("select ass.* from assfixalocalxprofissional ass where ass.ProfissionalID="&EquipamentoID*(-1)&" and ass.DiaSemana="&DiaSemana&" order by ass.HoraDe")
+	                    set Horarios = db.execute("select ass.* from assfixalocalxprofissional ass where ass.ProfissionalID="&EquipamentoID*(-1)&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe")
 					end if
                     while not Horarios.EOF
 

@@ -3,7 +3,7 @@
 save = ref("save")
 set reg = db.execute("select * from PacientesAtestados where Atestado like '"&ref("atestado")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
 if reg.EOF then
-    if save then
+    if cbool(save) then
         'inclusão do atendimentoID se houver atendimento em curso
         'verifica se tem atendimento aberto
         set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&ref("PacienteID")&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
@@ -13,9 +13,13 @@ if reg.EOF then
             'salva com id do atendimento
             db_execute("insert into PacientesAtestados (PacienteID, Titulo, Atestado, sysUser, AtendimentoID) values ("&ref("PacienteID")&", '"&ref("TituloAtestado")&"', '"&ref("atestado")&"', "&session("User")&", "&atendimentoReg("id")&")")
         end if
+	    set reg = db.execute("select * from pacientesatestados where PacienteID="&ref("PacienteID")&" order by id desc")
+
+    else
+        AtestadoId = ref("AtestadoId")
+        set reg = db.execute("select * from pacientesatestados where id="&AtestadoId)
     end if
 
-	set reg = db.execute("select * from pacientesatestados where PacienteID="&ref("PacienteID")&" order by id desc")
 end if
 recursoPermissaoUnimed = recursoAdicional(12)
 %>
@@ -73,6 +77,8 @@ recursoPermissaoUnimed = recursoAdicional(12)
     end if
     %>
     pront('timeline.asp?PacienteID=<%=ref("PacienteID")%>&Tipo=|Atestado|');
+    
+    $("#AtestadoID").val("<%=reg("id")%>");
 
     $("#Timbrado").on("change",()=>{
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;

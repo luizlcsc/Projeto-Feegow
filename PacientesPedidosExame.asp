@@ -1,10 +1,13 @@
 ﻿<!--#include file="connect.asp"-->
 <%
+ExistePedidoExame="dysplay:none;"
 if req("i")<>"" then
     set pp = db.execute("select * from pacientespedidos where id="& req("i"))
     if not pp.eof then
+        PedidoExameId = pp("id")
         PedidoExame = pp("PedidoExame")
         set ProcedimentosPedidoSQL = db.execute("SELECT pe.*,proc.NomeProcedimento FROM pedidoexameprocedimentos pe INNER JOIN procedimentos proc ON proc.id=pe.ProcedimentoID WHERE pe.PedidoExameID="&req("i"))
+        ExistePedidoExame=""
     end if
 end if
 %>
@@ -49,7 +52,8 @@ end if
                         <button type="button" class="btn btn-primary btn-block" id="savePedido"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" class="btn btn-info btn-block" id="printPedido"><i class="fa fa-print icon-print"></i> Imprimir</button>
+                        <input type="hidden" id="PedidoExameId" value="<%=PedidoExameId%>">
+                        <button type="button" style="<%=ExistePedidoExame%>" class="btn btn-info btn-block" id="printPedido"><i class="fa fa-print icon-print"></i> Imprimir</button>
                     </div>
                     <div class="col-md-3 exame-procedimento-content" style="display: none;">
                         <div class="checkbox-custom checkbox-primary">
@@ -189,6 +193,7 @@ end if
     });
 function NovoPedido(){
     pedidoCk.setData('');
+    $("#printPedido").hide();
 }
 
 var pedidoCk = CKEDITOR.inline('pedido', {
@@ -252,10 +257,19 @@ function xPedidoExame(X) {
 }
 
 $("#savePedido").click(function(){
+    SaveAndPrint(true);
+});
+
+$("#printPedido").click(function(){
+    SaveAndPrint(false);
+});
+
+function SaveAndPrint(salvarPedido){
     var $idsExames = $listaPedidoExames.find(".ProcedimentoExameID");
     var idsExames = [];
     var $examesObs = $(".obs-exame");
     var examesObs = [];
+    let PedidoExameId = $("#PedidoExameId").val();
 
     $.each($idsExames, function() {
         idsExames.push($(this).val());
@@ -269,12 +283,16 @@ $("#savePedido").click(function(){
 		   pedido:pedidoCk.getData(),
 		   idsExames: idsExames,
 		   examesObs: examesObs,
-		   GerarProposta: $("#GerarProposta").is(":checked") ? "S" : "N"
+           GerarProposta: $("#GerarProposta").is(":checked") ? "S" : "N",
+           save : salvarPedido,
+           PedidoExameId: PedidoExameId
 		   },function(data,status){
-	  $("#modal").html(data);
-	  $("#modal-table").modal('show');
+	    $("#modal").html(data);
+	    $("#modal-table").modal('show');
+        $("#printPedido").show();
 	});
-});
+}
+
 
 
 $("#FiltroP").keyup(function(){

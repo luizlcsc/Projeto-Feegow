@@ -4,20 +4,26 @@ if ref("ControleEspecial")="true" then
     ControleEspecial = "checked"
 end if
 
+save = ref("save")
 set reg = db.execute("select * from PacientesPrescricoes where Prescricao like '"&ref("receituario")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
+
 if reg.EOF then
+    if cbool(save) then
+        'inclusão do atendimentoID na prescricao se houver atendimento em curso
+        'verifica se tem atendimento aberto
+        set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&ref("PacienteID")&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
+        if(atendimentoReg.EOF) then
+            db_execute("insert into PacientesPrescricoes (PacienteID, Prescricao, ControleEspecial, sysUser) values ("&ref("PacienteID")&", '"&ref("receituario")&"', '"&ControleEspecial&"', "&session("User")&")")
+        else
+            'salva preccricao com id do atendimento
+            db_execute("insert into PacientesPrescricoes (PacienteID, Prescricao, ControleEspecial, sysUser, AtendimentoID) values ("&ref("PacienteID")&", '"&ref("receituario")&"', '"&ControleEspecial&"', "&session("User")&", "&atendimentoReg("id")&")")
+        end if
 
-    'inclusão do atendimentoID na prescricao se houver atendimento em curso
-    'verifica se tem atendimento aberto
-    set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&ref("PacienteID")&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
-    if(atendimentoReg.EOF) then
-        db_execute("insert into PacientesPrescricoes (PacienteID, Prescricao, ControleEspecial, sysUser) values ("&ref("PacienteID")&", '"&ref("receituario")&"', '"&ControleEspecial&"', "&session("User")&")")
+        set reg = db.execute("select * from PacientesPrescricoes where PacienteID="&ref("PacienteID")&" order by id desc")
     else
-        'salva preccricao com id do atendimento
-        db_execute("insert into PacientesPrescricoes (PacienteID, Prescricao, ControleEspecial, sysUser, AtendimentoID) values ("&ref("PacienteID")&", '"&ref("receituario")&"', '"&ControleEspecial&"', "&session("User")&", "&atendimentoReg("id")&")")
+        PrescricaoId = ref("PrescricaoId")
+        set reg = db.execute("select * from PacientesPrescricoes where id="&PrescricaoId)
     end if
-
-    set reg = db.execute("select * from PacientesPrescricoes where PacienteID="&ref("PacienteID")&" order by id desc")
 else
 	db_execute("update PacientesPrescricoes set ControleEspecial='"&ControleEspecial&"' where id="&reg("id"))
 end if
@@ -99,6 +105,7 @@ recursoPermissaoUnimed = recursoAdicional(12)
     end if
     %>
     pront('timeline.asp?PacienteID=<%=ref("PacienteID")%>&Tipo=|Prescricao|');
+    $("#PrescricaoId").val("<%=reg("id")%>");
 
     $("#Timbrado").on("change",()=>{
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;

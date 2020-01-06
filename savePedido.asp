@@ -2,108 +2,113 @@
 <%
 
 'aqui transforma um pedido em proposta
+save = ref("save")
+if cbool(save) then
+    if ref("GerarProposta") = "S" and ref("idsExames[]")<>"" then
+        idsExamesSplt = split(ref("idsExames[]"),",")
 
-if ref("GerarProposta") = "S" and ref("idsExames[]")<>"" then
-    idsExamesSplt = split(ref("idsExames[]"),",")
+        GRUPOID = " NULL "
 
-    GRUPOID = " NULL "
+        IF getconfig("DesmembrarPropostas") = "1" THEN
+            GRUPOID = " GrupoID "
+        END IF
 
-    IF getconfig("DesmembrarPropostas") = "1" THEN
-        GRUPOID = " GrupoID "
+        sqlPacote = "SELECT group_concat(CONCAT('|',procedimentos.id,'|'))  as procedimentos,"&GRUPOID&" as pacote FROM procedimentos"&_
+                    " WHERE procedimentos.id IN ("&ref("idsExames[]")&") "&_
+                    " GROUP BY 2;"
+
+
+        set Pacotes =  db.execute(sqlPacote)
+
+        if ubound(idsExamesSplt) >= 0 then
+            while NOT Pacotes.EOF
+                pacotesProcedimentos = Pacotes("procedimentos")
+                'sqlSomaProcedimentos = "SELECT SUM(Valor)ValorTotal FROM procedimentos WHERE id IN ("&ref("idsExames[]")&")"
+                'set SomaProcedimentosSQL = db.execute(sqlSomaProcedimentos)
+
+                ValorTotal = 0
+                sqlProposta = "INSERT INTO propostas (PacienteID,Valor,UnidadeID,StaID,TituloItens,TituloOutros,TituloPagamento,sysActive,sysUser,DataProposta, ProfissionalID)"&_
+                            " VALUES ("&ref("PacienteID")&", "&treatvalzero(ValorTotal)&", '"&session("UnidadeID")&"' ,1,'Exames','Outras Despesas','Forma de Pagamento',1,'"&session("User")&"', CURDATE(), "&session("idInTable")&")"
+                db_execute(sqlProposta)
+
+                set PropostaSQL = db.execute("SELECT LAST_INSERT_ID() as id")
+                PropostaID = PropostaSQL("id")
+
+                for jk=0 to ubound(idsExamesSplt)
+
+
+
+                    IF instr(pacotesProcedimentos, "|"&TRIM(idsExamesSplt(jk))&"|")>0 THEN
+                        set ProcedimentoSQL = db.execute("SELECT id,Valor FROM procedimentos WHERE id="&idsExamesSplt(jk))
+                        ValorTotal = ValorTotal + ProcedimentoSQL("Valor")
+
+                        sqlItensProposta = "INSERT INTO itensproposta (PropostaID, Tipo, Quantidade, CategoriaID, ItemID,ValorUnitario,Desconto,TipoDesconto,sysUser,ProfissionalID) "&_
+                                        " VALUES ('"&PropostaID&"', 'S', 1, 0, "&ProcedimentoSQL("id")&", "&treatvalzero(ProcedimentoSQL("Valor"))&",0,'V',"&session("User")&", "&session("idInTable")&")"
+
+
+                        db_execute(sqlItensProposta)
+                    END IF
+                next
+
+                db.execute("UPDATE propostas SET Valor="&treatvalzero(ValorTotal)&" WHERE id = "& PropostaID)
+            Pacotes.movenext
+            wend
+            Pacotes.close
+        end if
+    end if
+
+    set reg = db.execute("select * from PacientesPedidos where PedidoExame like '"&ref("pedido")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
+
+    exameNovo = FALSE
+
+    IF NOT reg.EOF AND ref("idsExames[]") <> "" THEN
+        sql = "select count(*) as exameNovo from procedimentos where id in ("&ref("idsExames[]")&")"&_
+            " AND id not in ((SELECT ProcedimentoID FROM pedidoexameprocedimentos WHERE PedidoExameID = "&reg("id")&"))"
+
+
+        set regExameNovo = db.execute(sql)
+
+        exameNovo = (regExameNovo("exameNovo")) > "0"
     END IF
 
-    sqlPacote = "SELECT group_concat(CONCAT('|',procedimentos.id,'|'))  as procedimentos,"&GRUPOID&" as pacote FROM procedimentos"&_
-                " WHERE procedimentos.id IN ("&ref("idsExames[]")&") "&_
-                " GROUP BY 2;"
 
+    if reg.EOF OR exameNovo then
 
-    set Pacotes =  db.execute(sqlPacote)
-
-    if ubound(idsExamesSplt) >= 0 then
-        while NOT Pacotes.EOF
-            pacotesProcedimentos = Pacotes("procedimentos")
-            'sqlSomaProcedimentos = "SELECT SUM(Valor)ValorTotal FROM procedimentos WHERE id IN ("&ref("idsExames[]")&")"
-            'set SomaProcedimentosSQL = db.execute(sqlSomaProcedimentos)
-
-            ValorTotal = 0
-            sqlProposta = "INSERT INTO propostas (PacienteID,Valor,UnidadeID,StaID,TituloItens,TituloOutros,TituloPagamento,sysActive,sysUser,DataProposta, ProfissionalID)"&_
-                          " VALUES ("&ref("PacienteID")&", "&treatvalzero(ValorTotal)&", '"&session("UnidadeID")&"' ,1,'Exames','Outras Despesas','Forma de Pagamento',1,'"&session("User")&"', CURDATE(), "&session("idInTable")&")"
-            db_execute(sqlProposta)
-
-            set PropostaSQL = db.execute("SELECT LAST_INSERT_ID() as id")
-            PropostaID = PropostaSQL("id")
-
-            for jk=0 to ubound(idsExamesSplt)
-
-
-
-                IF instr(pacotesProcedimentos, "|"&TRIM(idsExamesSplt(jk))&"|")>0 THEN
-                    set ProcedimentoSQL = db.execute("SELECT id,Valor FROM procedimentos WHERE id="&idsExamesSplt(jk))
-                    ValorTotal = ValorTotal + ProcedimentoSQL("Valor")
-
-                    sqlItensProposta = "INSERT INTO itensproposta (PropostaID, Tipo, Quantidade, CategoriaID, ItemID,ValorUnitario,Desconto,TipoDesconto,sysUser,ProfissionalID) "&_
-                                       " VALUES ('"&PropostaID&"', 'S', 1, 0, "&ProcedimentoSQL("id")&", "&treatvalzero(ProcedimentoSQL("Valor"))&",0,'V',"&session("User")&", "&session("idInTable")&")"
-
-
-                    db_execute(sqlItensProposta)
-                END IF
-            next
-
-            db.execute("UPDATE propostas SET Valor="&treatvalzero(ValorTotal)&" WHERE id = "& PropostaID)
-        Pacotes.movenext
-        wend
-        Pacotes.close
-    end if
-end if
-
-set reg = db.execute("select * from PacientesPedidos where PedidoExame like '"&ref("pedido")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
-
-exameNovo = FALSE
-
-IF NOT reg.EOF AND ref("idsExames[]") <> "" THEN
-    sql = "select count(*) as exameNovo from procedimentos where id in ("&ref("idsExames[]")&")"&_
-          " AND id not in ((SELECT ProcedimentoID FROM pedidoexameprocedimentos WHERE PedidoExameID = "&reg("id")&"))"
-
-
-    set regExameNovo = db.execute(sql)
-
-    exameNovo = (regExameNovo("exameNovo")) > "0"
-END IF
-
-
-if reg.EOF OR exameNovo then
-
-    'inclusão do atendimentoID se houver atendimento em curso
-    'verifica se tem atendimento aberto
-    set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&ref("PacienteID")&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
-    if atendimentoReg.EOF then
-	    db_execute("insert into PacientesPedidos (PacienteID, PedidoExame, sysUser) values ("&ref("PacienteID")&", '"&ref("pedido")&"', "&session("User")&")")
-    else
-        'salva com id do atendimento
-        db_execute("insert into PacientesPedidos (PacienteID, PedidoExame, sysUser, AtendimentoID) values ("&ref("PacienteID")&", '"&ref("pedido")&"',  "&session("User")&", "&atendimentoReg("id")&")")
-    end if
-	set reg = db.execute("select * from pacientesPedidos where PacienteID="&ref("PacienteID")&" order by id desc")
-end if
-
-if ref("idsExames[]")<>"" then
-    idsExamesSplt = split(ref("idsExames[]"),",")
-    examesObsSplt = split(ref("examesObs[]"),",")
-
-    db_execute("DELETE FROM pedidoexameprocedimentos WHERE PedidoExameID="&reg("id"))
-    on error resume next
-
-    for i=0 to ubound(idsExamesSplt)
-        ProcedimentoID = idsExamesSplt(i)
-        PedidoID=reg("id")
-
-        if TypeName(examesObsSplt(i)) <> "Nothing" then
-            Obs=examesObsSplt(i)
+        'inclusão do atendimentoID se houver atendimento em curso
+        'verifica se tem atendimento aberto
+        set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&ref("PacienteID")&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
+        if atendimentoReg.EOF then
+            db_execute("insert into PacientesPedidos (PacienteID, PedidoExame, sysUser) values ("&ref("PacienteID")&", '"&ref("pedido")&"', "&session("User")&")")
         else
-            Obs=""
+            'salva com id do atendimento
+            db_execute("insert into PacientesPedidos (PacienteID, PedidoExame, sysUser, AtendimentoID) values ("&ref("PacienteID")&", '"&ref("pedido")&"',  "&session("User")&", "&atendimentoReg("id")&")")
         end if
+        set reg = db.execute("select * from pacientesPedidos where PacienteID="&ref("PacienteID")&" order by id desc")
+    end if
 
-        db_execute("INSERT INTO pedidoexameprocedimentos (ProcedimentoID,PedidoExameID,Observacoes) VALUES ("&ProcedimentoID&", "&PedidoID&", '"&Obs&"')")
-    next
+    if ref("idsExames[]")<>"" then
+        idsExamesSplt = split(ref("idsExames[]"),",")
+        examesObsSplt = split(ref("examesObs[]"),",")
+
+        db_execute("DELETE FROM pedidoexameprocedimentos WHERE PedidoExameID="&reg("id"))
+        on error resume next
+
+        for i=0 to ubound(idsExamesSplt)
+            ProcedimentoID = idsExamesSplt(i)
+            PedidoID=reg("id")
+
+            if TypeName(examesObsSplt(i)) <> "Nothing" then
+                Obs=examesObsSplt(i)
+            else
+                Obs=""
+            end if
+
+            db_execute("INSERT INTO pedidoexameprocedimentos (ProcedimentoID,PedidoExameID,Observacoes) VALUES ("&ProcedimentoID&", "&PedidoID&", '"&Obs&"')")
+        next
+    end if
+else
+    PedidoExameId = ref("PedidoExameId")
+    set reg = db.execute("select * from pacientesPedidos where id="&PedidoExameId)
 end if
 
 recursoPermissaoUnimed = recursoAdicional(12)
@@ -160,7 +165,8 @@ recursoPermissaoUnimed = recursoAdicional(12)
     %>
     $(".exame-procedimento-content:eq(0)").css("display", "none");
     pront('timeline.asp?PacienteID=<%=ref("PacienteID")%>&Tipo=|Pedido|');
-
+    $("#PedidoExameId").val("<%=reg("id")%>");
+    
     function visualizarImpressao(){
         var timbrado = $("#Timbrado").prop("checked") ==true?1:0;
         var carimbo = $("#Carimbo").prop("checked") ==true?1:0;

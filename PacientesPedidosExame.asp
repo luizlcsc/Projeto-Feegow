@@ -1,6 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <%
-ExistePedidoExame="dysplay:none;"
+ExistePedidoExame="display:none;"
+
 if req("i")<>"" then
     set pp = db.execute("select * from pacientespedidos where id="& req("i"))
     if not pp.eof then

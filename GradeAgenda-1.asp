@@ -587,9 +587,20 @@ end if
                         Prontuario = comps("PacienteID")
                     end if
 					'<--
-
+					CorLinha = ""
+                    AlturaLinha = " style=\'height: 30px\' "
+                    if getConfig("ColorirLinhaAgendamento")=1 then
+                        if comps("Cor") <> "#fff" and not isnull(comps("Cor")) then
+                            CorLinha = " bgcolor =\'"&comps("Cor")&"\'"
+                        end if
+                    end if
+                    if getConfig("AumentarAlturaLinhaAgendamento")=1 then
+                        if Tempo&""<>"" and Tempo>30 then
+                            AlturaLinha = " style=\'height: "&Tempo&"px\' "
+                        end if
+                    end if
                     linkAg = " onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"" "
-                    Conteudo = "<tr id="""&HoraComp&""" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&replace(replace(replace(comps("NomePaciente")&" ", "'", "\'"), chr(10), ""), chr(13), "")&"<br>Prontuário: "&Prontuario&"<br>"
+                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&replace(replace(replace(comps("NomePaciente")&" ", "'", "\'"), chr(10), ""), chr(13), "")&"<br>Prontuário: "&Prontuario&"<br>"
 
                     if session("RemSol")<>"" and session("RemSol")&"" <> comps("id")&"" then
                         remarcarlink = " onclick=""remarcar("&session("RemSol")&", \'Remarcar\', \'"&compsHora&"\', \'"&comps("LocalID")&"\')"" "

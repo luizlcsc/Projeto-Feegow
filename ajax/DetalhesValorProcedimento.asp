@@ -83,6 +83,8 @@ end if
 
                 while not TabelasSQL.eof
                     TabelaID=TabelasSQL("id")
+
+
                     NomeTabela=TabelasSQL("NomeTabela")
 
                     set ProcedimentosSQL= db.execute("SELECT id,NomeProcedimento, Valor, GrupoID FROM procedimentos WHERE sysActive=1 AND Ativo='on' AND id="&ProcedimentoID)

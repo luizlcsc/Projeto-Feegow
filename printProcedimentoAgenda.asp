@@ -81,8 +81,9 @@ if TipoImpresso="Etiqueta" then
 end if
 
 if TipoImpresso="Impresso" then
-    set ImpressosModeloSQL = db.execute("SELECT id FROM procedimentosmodelosimpressos WHERE Procedimentos LIKE '|"&ProcedimentoID&"|'")
-    
+    set ImpressosModeloSQL = db.execute("SELECT id FROM procedimentosmodelosimpressos WHERE Procedimentos LIKE '%|"&ProcedimentoID&"|%'")
+    response.write("SELECT id FROM procedimentosmodelosimpressos WHERE Procedimentos LIKE '%|"&ProcedimentoID&"|%'")
+
     if ProfissionalID <> "" then
         if not ImpressosModeloSQL.eof then
             UrlPrint = "printProcedimentoImpresso.asp?I="&ImpressosModeloSQL("id")&"&PacienteID="&PacienteID&"&UnidadeID="&UnidadeID&"&ProfissionalID="&ProfissionalID&"&ProcedimentoID="&ProcedimentoID

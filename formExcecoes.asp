@@ -55,7 +55,7 @@
                             </select>
                         </th>
                         <th  valign="bottom">
-                        <%=quickField("multiple", "Procedimentos", "Procedimentos", 12, "", "select id, NomeProcedimento from procedimentos where ativo='on' order by NomeProcedimento", "NomeProcedimento", "")%>
+                        <%=quickField("multiple", "Procedimentos", "Procedimentos", 12, "", "select id, NomeProcedimento from procedimentos where ativo='on' and sysActive=1 order by NomeProcedimento", "NomeProcedimento", "")%>
                         </th>
 
 

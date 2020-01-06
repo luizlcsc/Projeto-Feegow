@@ -1,16 +1,18 @@
 <!--#include file="connect.asp"-->
 <%
+save = ref("save")
 set reg = db.execute("select * from PacientesAtestados where Atestado like '"&ref("atestado")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
 if reg.EOF then
-
-    'inclusão do atendimentoID se houver atendimento em curso
-    'verifica se tem atendimento aberto
-    set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&ref("PacienteID")&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
-    if(atendimentoReg.EOF) then
-	    db_execute("insert into PacientesAtestados (PacienteID, Titulo, Atestado, sysUser) values ("&ref("PacienteID")&", '"&ref("TituloAtestado")&"', '"&ref("atestado")&"', "&session("User")&")")
-    else
-        'salva com id do atendimento
-        db_execute("insert into PacientesAtestados (PacienteID, Titulo, Atestado, sysUser, AtendimentoID) values ("&ref("PacienteID")&", '"&ref("TituloAtestado")&"', '"&ref("atestado")&"', "&session("User")&", "&atendimentoReg("id")&")")
+    if save then
+        'inclusão do atendimentoID se houver atendimento em curso
+        'verifica se tem atendimento aberto
+        set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&ref("PacienteID")&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
+        if(atendimentoReg.EOF) then
+            db_execute("insert into PacientesAtestados (PacienteID, Titulo, Atestado, sysUser) values ("&ref("PacienteID")&", '"&ref("TituloAtestado")&"', '"&ref("atestado")&"', "&session("User")&")")
+        else
+            'salva com id do atendimento
+            db_execute("insert into PacientesAtestados (PacienteID, Titulo, Atestado, sysUser, AtendimentoID) values ("&ref("PacienteID")&", '"&ref("TituloAtestado")&"', '"&ref("atestado")&"', "&session("User")&", "&atendimentoReg("id")&")")
+        end if
     end if
 
 	set reg = db.execute("select * from pacientesatestados where PacienteID="&ref("PacienteID")&" order by id desc")

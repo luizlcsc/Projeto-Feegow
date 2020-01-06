@@ -1,3 +1,6 @@
+<!--#include file="connect.asp"-->
+<!--#include file="modal.asp"-->
+<!--#include file="modalSecundario.asp"-->
 <!--div class="tray tray-center"-->
 
     <style type="text/css">
@@ -22,6 +25,18 @@
         .item-agenda-1 {
             width: 35%;
         }
+
+
+        <%if getConfig("ColorirLinhaAgendamento")=1 then%>
+        .table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th{
+            background-color: inherit !important;
+        }
+        .table-hover > tbody > tr:hover > td:not(.nomeProf), .table-hover > tbody > tr:hover > th:not(.nomeProf){
+            background-color: inherit !important;
+            opacity: 0.8;
+
+        }
+        <%end if%>
 
         .item-agenda-2 {
             width: 25%;
@@ -104,9 +119,7 @@
             padding: 5px !important;
         }
     </style>
-    <!--#include file="connect.asp"-->
-    <!--#include file="modal.asp"-->
-    <!--#include file="modalSecundario.asp"-->
+
 
 <br />
 

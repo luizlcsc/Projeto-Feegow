@@ -298,16 +298,16 @@ setTimeout(function() {
 
 function lbl(){
     if($("#ApresentacaoNome").val()==""){
-        var ApresentacaoNome = "conjunto";
+        var ApresentacaoNome = "Conjunto";
     }else{
-        var ApresentacaoNome = $("#ApresentacaoNome").val().toLowerCase();
+        var ApresentacaoNome = $("#ApresentacaoNome").val()+" (A)";
     }
     $("#lblApresentacaoNomeC, #lblApresentacaoNomeV").html("por "+ ApresentacaoNome);
     $("#EstoqueMinimoTipo option[value=C]").html(ApresentacaoNome);
     if($("#ApresentacaoUnidade").val()=="" || $("#ApresentacaoUnidade").val()=="0"){
-        var ApresentacaoUnidade = "unidade";
+        var ApresentacaoUnidade = "Unidade";
     }else{
-        var ApresentacaoUnidade = $("#ApresentacaoUnidade option:selected").text().substring(5, 16).toLowerCase();
+        var ApresentacaoUnidade = $("#ApresentacaoUnidade option:selected").text().substring(5, 16)+" (U)";
     }
     $("#lblApresentacaoUnidadeC, #lblApresentacaoUnidadeV").html("por "+ ApresentacaoUnidade);
     $("#EstoqueMinimoTipo option[value=U]").html(ApresentacaoUnidade);

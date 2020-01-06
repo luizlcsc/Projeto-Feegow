@@ -5,6 +5,7 @@ if req("i")<>"" then
     if not pp.eof then
         Atestado = pp("Atestado")
         Titulo = pp("Titulo")
+        ExisteAtestado = True
     end if
 end if
 %>
@@ -20,15 +21,20 @@ end if
         <div class="row">
             <div class="col-xs-8">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <input type="text" class="form-control" id="TituloAtestado" name="TituloAtestado" value="<%=Titulo %>" />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <button type="button" onclick="$('#atestado, #TituloAtestado').val('');" class="btn btn-info btn-block"><i class="fa fa-plus icon-plus"></i> Novo</button>
                     </div>
                     <div class="col-md-3">
-                        <button type="button" class="btn btn-info btn-block" id="saveAtestado"><i class="fa fa-print icon-print"></i> Salvar e Imprimir</button>
+                        <button type="button" class="btn btn-primary btn-block" id="saveAtestado"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
                     </div>
+                    <%if ExisteAtestado then%>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-info btn-block" id="printAtestado"><i class="fa fa-print icon-print"></i> Imprimir</button>
+                    </div>
+                    <%end if%>
                 </div>
                 <div class="row">
                     <div class="col-md-12"><br />
@@ -148,7 +154,20 @@ $("#saveAtestado").click(function(){
 	$.post("saveAtestado.asp",{
 		   PacienteID:'<%=PacienteID%>',
            TituloAtestado: $("#TituloAtestado").val(),
-		   atestado:$("#atestado").val()
+		   atestado:$("#atestado").val(),
+		   save: true,
+		   },function(data,status){
+	  $("#modal").html(data);
+	  $("#modal-table").modal('show');
+	});
+});
+
+$("#printAtestado").click(function(){
+	$.post("saveAtestado.asp",{
+		   PacienteID:'<%=PacienteID%>',
+           TituloAtestado: $("#TituloAtestado").val(),
+		   atestado:$("#atestado").val(),
+		   save: false,
 		   },function(data,status){
 	  $("#modal").html(data);
 	  $("#modal-table").modal('show');

@@ -316,7 +316,7 @@ body{
         	<div>
                 <%=replaceTags(ObservacoesProposta&" ", PacienteID, session("User"), session("Unidade"))%>
             </div>
-        	<div height="1">
+        	<div style="text-align: left; " height="1">
                 <%= RodapeProposta %>
             </div>
         	<div height="1">

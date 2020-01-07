@@ -692,7 +692,7 @@ if not inv.eof then
 			Recibo = replace(Recibo, "[Receita.Itens]", tabelinha)
             Recibo = replace(Recibo&"", "[Receita.ItensExtenso]", NomeItens&"")
 
-			set forma = db.execute("SELECT IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', forma_pagamento.PaymentMethod) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value ,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
+			set forma = db.execute("SELECT IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','Crédito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value ,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
                                            "FROM sys_financialmovement debito "&_
                                            "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
                                            "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_

@@ -111,7 +111,7 @@ if not at.eof then
 	%>
 	
     <%
-	db_execute("update atendimentos set ProfissionalID="&ref("inf-ProfissionalID")&", sysUser="&sysUser&", HoraInicio="&mytime(ref("inf-HoraInicio"))&", HoraFim="&mytime(ref("inf-HoraFim"))&", Data="&mydatenull(ref("inf-Data"))&", Obs='"&ref("Obs")&"', UnidadeID="&ref("UnidadeID")&" where id="&AtendimentoID)
+	db_execute("update atendimentos set ProfissionalID="&ref("inf-ProfissionalID")&", sysUser="&sysUser&", HoraInicio=IFNULL(HoraInicio,"&mytime(ref("inf-HoraInicio"))&"), HoraFim=IFNULL(HoraFim,IFNULL("&mytime(ref("inf-HoraFim"))&",NOW())), Data=IFNULL(Data, "&mydatenull(ref("inf-Data"))&"), Obs='"&ref("Obs")&"', UnidadeID="&ref("UnidadeID")&" where id="&AtendimentoID)
 	PacienteID = at("PacienteID")
 end if
 

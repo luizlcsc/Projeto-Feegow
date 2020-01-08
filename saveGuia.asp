@@ -125,9 +125,9 @@ else
                 else
                     set pvp = db.execute("select * from tissprocedimentosvaloresplanos where AssociacaoID="&pv("id")&" and PlanoID="&PlanoID)
                     if pvp.eof then
-                        db_execute("insert into tissprocedimentosvaloresplanos (AssociacaoID, PlanoID, Valor, NaoCobre) values ("&pv("id")&", "&PlanoID&", "&treatvalzero(ref("ValorProcedimento"))&", '')")
+                        db_execute("insert into tissprocedimentosvaloresplanos (AssociacaoID, PlanoID, Valor, NaoCobre) values ("&pv("id")&", "&PlanoID&", "&treatvalnull(ref("ValorProcedimento"))&", '')")
                     else
-                        db_execute("update tissprocedimentosvaloresplanos set Valor="&treatvalzero(ref("ValorProcedimento"))&" where id="&pvp("id"))
+                        db_execute("update tissprocedimentosvaloresplanos set Valor="&treatvalnull(ref("ValorProcedimento"))&" where id="&pvp("id"))
                     end if
                 end if
             end if

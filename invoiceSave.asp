@@ -228,6 +228,45 @@ if erro="" then
 
 	if existePagto="" then
 		'itens
+
+		'--- Verifica se o profissional executa o procedimento antes do delete.
+		for i=0 to ubound(splInv)
+            ii = splInv(i)
+
+            if instr(ref("ProfissionalID"&ii), "_")>0 then
+                splAssoc = split(ref("ProfissionalID"&ii), "_")
+                Associacao = splAssoc(0)
+                ProfissionalID = splAssoc(1)
+            else
+                Associacao = 0
+                ProfissionalID = 0
+            end if
+
+
+            procedimentoID = ref("ItemID"&ii)
+            EspecialidadeID = ref("EspecialidadeID"&ii)
+            Executado = ref("Executado"& ii)
+
+            if procedimentoID<>"" and Executado="S" then
+                if Associacao="5" or Associacao="2" or Associacao="8"  then
+
+                    if validaProcedimentoProfissional(Associacao, ProfissionalID, EspecialidadeID, ProcedimentoID,0)=False then
+                    %>
+                    new PNotify({
+                            title: 'ERRO AO TENTAR SALVAR!',
+                            text: 'Procedimento não permitido para este Profissional e/ou Especialidade',
+                            type: 'danger',
+                            delay: 3000
+                        });
+                        $("#btnSave").prop("disabled", false);
+                    <%
+                    Response.End
+                    end if
+                END IF
+            END IF
+        next
+        '---- Termina a verificação de o profissional pod executar o procedimento
+
 		sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
 		db_execute(sqlExecute)
 
@@ -270,21 +309,6 @@ if erro="" then
             procedimentoID = ref("ItemID"&ii)
             EspecialidadeID = ref("EspecialidadeID"&ii)
             Executado = ref("Executado"& ii)
-
-            if procedimentoID<>"" and Executado="S" then
-                if Associacao="5" or Associacao="2" or Associacao="8"  then
-                    if validaProcedimentoProfissional(Associacao, ProfissionalID, EspecialidadeID, ProcedimentoID,0)=False then
-
-                    %>
-                    showMessageDialog("Procedimento não permitido para este Profissional e/ou Especialidade", "danger");
-
-                    $("#btnSave").prop("disabled", false);
-                    <%
-                    Response.End
-                    end if
-                END IF
-            END IF
-
 
             if ref("Cancelado"& ii)="C" then
                 Executado = "C"
@@ -469,9 +493,9 @@ if erro="" then
 				end if
 
 				
-
-				sqlFM = "insert into sys_financialmovement ("&camID&" AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID, UnidadeID, CodigoDeBarras) values ("&valID&"  "&AccountAssociationIDCredit&", "&AccountIDCredit&", "&AccountAssociationIDDebit&", "&AccountIDDebit&", "&treatvalzero(valorInserido)&", "&mydatenull(ref("Date"&ii))&", '"&inv("CD")&"', 'Bill', 'BRL', "&treatvalnull(ii)&", "&InvoiceID&", "&c&", "&session("User")&", "&treatvalnull(CaixaID)&", "&treatvalzero(ref("CompanyUnitID"))&", '"&CodigoDeBarras&"')"
-				'response.Write("//|||||||||||||||||||||| sqlFM: "&sqlFM)
+                Description = ref("Name"&ii)
+				sqlFM = "insert into sys_financialmovement ("&camID&" AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID, UnidadeID, CodigoDeBarras, Name) values ("&valID&"  "&AccountAssociationIDCredit&", "&AccountIDCredit&", "&AccountAssociationIDDebit&", "&AccountIDDebit&", "&treatvalzero(valorInserido)&", "&mydatenull(ref("Date"&ii))&", '"&inv("CD")&"', 'Bill', 'BRL', "&treatvalnull(ii)&", "&InvoiceID&", "&c&", "&session("User")&", "&treatvalnull(CaixaID)&", "&treatvalzero(ref("CompanyUnitID"))&", '"&CodigoDeBarras&"', '"&Description&"')"
+				'response.Write("//|||||||||||||||||||||| sqlFM: "&sqlFM & "--"& Description)
 				db.execute(sqlFM)
 				'call gravaLog(sqlFM, "AUTO")
 			end if

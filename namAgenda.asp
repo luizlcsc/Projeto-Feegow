@@ -509,4 +509,12 @@ $(document).ready(function(){
 if( $(".fa-circle-o-notch").size()==1 ){
     $.post("Ocupacoes.asp?Tipo=Multipla&Data=<%= Data %>", $("[name^=Ocup]").serialize(), function(data){ eval(data) } );
 }
+
+<%
+if Data<>"" then
+%>
+$("#Data").val('<%=Data%>');
+<%
+end if
+%>
 </script>

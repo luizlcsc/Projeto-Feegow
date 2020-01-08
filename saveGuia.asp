@@ -125,9 +125,9 @@ else
                 else
                     set pvp = db.execute("select * from tissprocedimentosvaloresplanos where AssociacaoID="&pv("id")&" and PlanoID="&PlanoID)
                     if pvp.eof then
-                        db_execute("insert into tissprocedimentosvaloresplanos (AssociacaoID, PlanoID, Valor, NaoCobre) values ("&pv("id")&", "&PlanoID&", "&treatvalzero(ref("ValorProcedimento"))&", '')")
+                        db_execute("insert into tissprocedimentosvaloresplanos (AssociacaoID, PlanoID, Valor, NaoCobre) values ("&pv("id")&", "&PlanoID&", "&treatvalnull(ref("ValorProcedimento"))&", '')")
                     else
-                        db_execute("update tissprocedimentosvaloresplanos set Valor="&treatvalzero(ref("ValorProcedimento"))&" where id="&pvp("id"))
+                        db_execute("update tissprocedimentosvaloresplanos set Valor="&treatvalnull(ref("ValorProcedimento"))&" where id="&pvp("id"))
                     end if
                 end if
             end if
@@ -180,9 +180,9 @@ else
                 end if
             end if
     else
-        sqlGuiaDisponivel = "SELECT numero, id, Tipo FROM  ((SELECT cast(gc.NGuiaPrestador as signed integer) numero, id, 'Consulta' as Tipo FROM tissguiaconsulta gc WHERE gc.ConvenioID = '"&ConvenioID&"' and gs.sysActive=1) UNION ALL "&_
+        sqlGuiaDisponivel = "SELECT numero, id, Tipo FROM  ((SELECT cast(gc.NGuiaPrestador as signed integer) numero, id, 'Consulta' as Tipo FROM tissguiaconsulta gc WHERE gc.ConvenioID = '"&ConvenioID&"' and gc.sysActive=1) UNION ALL "&_
          "(SELECT cast(gs.NGuiaPrestador as signed integer) numero, id, 'SADT' as Tipo FROM tissguiasadt gs WHERE gs.ConvenioID = '"&ConvenioID&"' and gs.sysActive=1) UNION ALL "&_
-         "(SELECT cast(gh.NGuiaPrestador as signed integer) numero, id, 'Honorário' as Tipo FROM tissguiahonorarios gh WHERE gh.ConvenioID = '"&ConvenioID&"')) as numero WHERE id != "&I&" and gs.sysActive=1 AND cast(numero as signed integer) >= "&NGuiaPrestador &" AND cast(numero as signed integer) < ( 100 + "&NGuiaPrestador &") ORDER BY cast(numero as signed integer) DESC LIMIT 1"
+         "(SELECT cast(gh.NGuiaPrestador as signed integer) numero, id, 'Honorário' as Tipo FROM tissguiahonorarios gh WHERE gh.ConvenioID = '"&ConvenioID&"' AND gh.sysActive=1)) as numero WHERE id != "&I&" AND cast(numero as signed integer) >= "&NGuiaPrestador &" AND cast(numero as signed integer) < ( 100 + "&NGuiaPrestador &") ORDER BY cast(numero as signed integer) DESC LIMIT 1"
 
         set GuiaDisponivelSQL = db.execute(sqlGuiaDisponivel)
 

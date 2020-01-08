@@ -290,16 +290,21 @@ if not inv.eof then
                 AgruparPacote = false
                 AgruparItem = false
 
+                SqlAgruparPacote = 0
+                SqlAgruparItem = 0
+
                 sqlConfig = "select co.Coluna, cg.valor from cliniccentral.config_opcoes co join config_gerais cg on cg.ConfigID = co.id where co.sysActive = 1 and co.Coluna ='AgruparItem' or co.Coluna ='AgruparPacote'"
                 set checkConfig = db.execute(sqlConfig)
                 if not checkConfig.eof then
                     while not checkConfig.eof 
                         if (checkConfig("Coluna") = "AgruparPacote") and (checkConfig("valor") = "1") then
                             AgruparPacote = true
+                            SqlAgruparPacote = 1
                         end if 
 
                         if (checkConfig("Coluna") = "AgruparItem") and (checkConfig("valor") = "1") then
                             AgruparItem = true
+                            SqlAgruparItem = 1
                         end if
                     checkConfig.movenext
                     wend
@@ -365,11 +370,10 @@ if not inv.eof then
                             " left join produtos pro on pro.id = ii.ItemID "&_
                             " where ii.InvoiceID="&InvoiceID&sqlProfissional&sqlwhereprof&" "&_
                             " group by "&_
-                            " 	if("&AgruparPacote&", PACUNICO,ii.id)"&_
+                            " 	if("&SqlAgruparPacote&", PACUNICO,ii.id)"&_
                             " ) as t"&_
                             " group by "&_
-                            " 	if("&AgruparItem&",ITEMUNICO,id)"
-
+                            " 	if("&SqlAgruparItem&",ITEMUNICO,id)"
 				set itens = db.execute(sqlItens)
 
 				TotalTotal = 0
@@ -688,7 +692,7 @@ if not inv.eof then
 			Recibo = replace(Recibo, "[Receita.Itens]", tabelinha)
             Recibo = replace(Recibo&"", "[Receita.ItensExtenso]", NomeItens&"")
 
-			set forma = db.execute("SELECT IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', forma_pagamento.PaymentMethod) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value ,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
+			set forma = db.execute("SELECT IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','Crédito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value ,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
                                            "FROM sys_financialmovement debito "&_
                                            "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
                                            "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_

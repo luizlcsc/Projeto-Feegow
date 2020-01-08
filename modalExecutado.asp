@@ -36,6 +36,15 @@ else
         
     end if
 end if
+
+
+TemRepasse=False
+set RepasseSQL = db.execute("SELECT rr.ItemContaAPagar FROM rateiorateios rr WHERE rr.ItemInvoiceID="&II)
+if not RepasseSQL.eof then
+    if not RepasseSQL.eof then
+        TemRepasse=True
+    end if
+end if
 %>
 
 <form method="post" action="" id="frmExecutado">
@@ -53,6 +62,21 @@ end if
     </div>
     <div class="modal-body">
         <div class="row">
+            <%
+            if TemRepasse then
+            %>
+<div class="col-md-12">
+    <div class="alert alert-warning">
+        <strong>Atenção!</strong> Existem repasses consolidados para esta conta. Para alterar por favor desconsolide os repasses.
+    </div>
+</div>
+<script >
+    $("#btn-save-executado").attr("disabled", true)
+</script>
+            <%
+            end if
+            %>
+
             <%=quickField("simpleCheckbox", "Executado"&II, "Executado", "6", Executado, "", "", "")%>
         </div>
         <br>
@@ -130,7 +154,7 @@ end if
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-success btn-sm"><i class="fa fa-save"></i> Salvar</button>
+        <button id="btn-save-executado" class="btn btn-success btn-sm"><i class="fa fa-save"></i> Salvar</button>
     </div>
 </form>
 

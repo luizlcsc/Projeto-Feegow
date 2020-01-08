@@ -29,10 +29,10 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
              eval(data);
          });
     }
+    var AdicionarObservacoesAoAlterarStatus = "<%=AdicionarObservacoesAoAlterarStatus%>";
 
     function AlterarStatus(statusId, agendamentoId, obs, AbrirModal, CanalID){
 
-        var AdicionarObservacoesAoAlterarStatus = "<%=AdicionarObservacoesAoAlterarStatus%>";
 
         if(AdicionarObservacoesAoAlterarStatus==="1" || AbrirModal){
             openComponentsModal("ConfirmaAlteracaoStatus.asp", {canalId: CanalID, obs: obs, statusId: statusId, agendamentoId: agendamentoId}, "Alterar status", true,
@@ -104,7 +104,9 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
         var url = "whatsapp://send?phone="+Celular+"&text="+Texto;
         $("#wpp-"+id).html("<i class='success fa fa-check-circle'></i>");
 
-        AlterarStatus(1, id, "Contato via WhatsApp", true, 1);
+        if(AdicionarObservacoesAoAlterarStatus == "1"){
+            AlterarStatus(1, id, "Contato via WhatsApp", true, 1);
+        }
 
         openTab(url);
     }

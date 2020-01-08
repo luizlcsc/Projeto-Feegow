@@ -1,10 +1,14 @@
 <!--#include file="connect.asp"-->
 <%
+ExisteAtestado = "display:none;"
+
 if req("i")<>"" then
     set pp = db.execute("select * from pacientesatestados where id="& req("i"))
     if not pp.eof then
+        AtestadoID = pp("id")
         Atestado = pp("Atestado")
         Titulo = pp("Titulo")
+        ExisteAtestado = ""
     end if
 end if
 %>
@@ -20,14 +24,19 @@ end if
         <div class="row">
             <div class="col-xs-8">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
+                        <input id="AtestadoID" type="hidden" value="<%=AtestadoID%>">
                         <input type="text" class="form-control" id="TituloAtestado" name="TituloAtestado" value="<%=Titulo %>" />
                     </div>
-                    <div class="col-md-3">
-                        <button type="button" onclick="$('#atestado, #TituloAtestado').val('');" class="btn btn-info btn-block"><i class="fa fa-plus icon-plus"></i> Novo</button>
+                    <div class="col-md-2">
+                        <button type="button" onclick="novo();" class="btn btn-info btn-block"><i class="fa fa-plus icon-plus"></i> Novo</button>
                     </div>
                     <div class="col-md-3">
-                        <button type="button" class="btn btn-info btn-block" id="saveAtestado"><i class="fa fa-print icon-print"></i> Salvar e Imprimir</button>
+                        <button type="button" class="btn btn-primary btn-block" id="saveAtestado"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <button type="button" style="<%= ExisteAtestado%>" class="btn btn-info btn-block" id="printAtestado"><i class="fa fa-print icon-print"></i> Imprimir</button>
                     </div>
                 </div>
                 <div class="row">
@@ -118,10 +127,13 @@ end if
 
 $(function () {
 	CKEDITOR.config.height = 400;
-	$('#atestado').ckeditor();
+    $('#atestado').ckeditor();
 });
 
-
+function novo(){
+    $('#atestado, #TituloAtestado').val('');
+    $("#printAtestado").hide();
+}
 
 function aplicarTextoAtestado(id){
 	$.post("PacientesAplicarFormula.asp?Tipo=A&PacienteID=<%=PacienteID%>", {id:id}, function(data, status){ 
@@ -145,16 +157,28 @@ function modalTextoAtestado(tipo, id){
 }
 
 $("#saveAtestado").click(function(){
-	$.post("saveAtestado.asp",{
-		   PacienteID:'<%=PacienteID%>',
-           TituloAtestado: $("#TituloAtestado").val(),
-		   atestado:$("#atestado").val()
-		   },function(data,status){
-	  $("#modal").html(data);
-	  $("#modal-table").modal('show');
-	});
+	SaveAndPrint(true);
 });
 
+$("#printAtestado").click(function(){
+	SaveAndPrint(false);
+});
+
+function SaveAndPrint(salvarAtestado){
+    let AtestadoId = $("#AtestadoID").val();
+
+    $.post("saveAtestado.asp",{
+		   PacienteID:'<%=PacienteID%>',
+           TituloAtestado: $("#TituloAtestado").val(),
+		   atestado:$("#atestado").val(),
+           save: salvarAtestado,
+           AtestadoId: AtestadoId
+		   },function(data,status){
+	    $("#modal").html(data);
+        $("#modal-table").modal('show');
+        $("#printAtestado").show();
+	});
+}
 
 function ListaTextosAtestados(Filtro, X, Aplicar){
 	$.post("ListaTextosAtestados.asp",{

@@ -609,8 +609,10 @@ end if
 				if splCamposPedir(i)<>"IndicadoPorSelecao" then
                     set dField = db.execute("select c.label, c.selectSQL, c.selectColumnToShow, tc.typeName from cliniccentral.sys_resourcesfields c LEFT JOIN cliniccentral.sys_resourcesfieldtypes tc on tc.id=c.fieldTypeID WHERE c.ResourceID=1 AND c.columnName='"&splCamposPedir(i)&"'")
                     if not dField.EOF then
+                        colMd=2
 
-                        if instr(Omitir, "|"&lcase(splCamposPedir(i))&"|") then%>
+                        if instr(Omitir, "|"&lcase(splCamposPedir(i))&"|") then
+                        %>
                             <input type="hidden" name="age<%=splCamposPedir(i)%>" id="age<%=splCamposPedir(i)%>" value="<%=valorCampo%>">
                             <%
                         else
@@ -622,8 +624,12 @@ end if
                             if dField("typeName") = "simpleSelect" then
                                 camposRequired = camposRequired & " empty"
                             end if
+
+                             if instr(lcase(splCamposPedir(i)), "cpf")>0 then
+                                colMd=3
+                            end if
                             %><input type="text" name="ageEmail10" class="form-control hidden" autocomplete="off" />
-                            <%= quickField(dField("typeName"), "age"&splCamposPedir(i), dField("label"), 2, valorCampo, dField("selectSQL"), dField("selectColumnToShow"), " autocomplete='campo-agenda' no-select2 datepicker-vazio "&camposRequired&" "&fieldReadonly) %>
+                            <%= quickField(dField("typeName"), "age"&splCamposPedir(i), dField("label"), colMd, valorCampo, dField("selectSQL"), dField("selectColumnToShow"), " autocomplete='campo-agenda' no-select2 datepicker-vazio "&camposRequired&" "&fieldReadonly) %>
                         <%end if
 
                     end if
@@ -733,7 +739,11 @@ end if
 							EmailEnviado = "S"
 						end if
 
+<<<<<<< HEAD
                         
+=======
+
+>>>>>>> 195a71e1a8739756b775c9042d59a4caedf1610c
                         if ConsultaID=0 then
                         response.write("    <div class=""col-md-4"">")
                             IntervaloRepeticao = 1
@@ -742,7 +752,11 @@ end if
                             <%
                         response.write("    </div>")
                         end if
+<<<<<<< HEAD
                         
+=======
+
+>>>>>>> 195a71e1a8739756b775c9042d59a4caedf1610c
 						%>
                         <%
                             if recursoAdicional(27)=4 then
@@ -759,7 +773,11 @@ end if
                                 end if
                             end if
                         %>
+<<<<<<< HEAD
                             
+=======
+
+>>>>>>> 195a71e1a8739756b775c9042d59a4caedf1610c
                             <div class="col-md-4">
                             <%if ServicoSMS="S" then%>
                                 <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar SMS</label></div>
@@ -1319,7 +1337,11 @@ var saveAgenda = function(){
         $("#btnSalvarAgenda").html('salvando');
         //$("#btnSalvarAgenda").attr('disabled', 'disabled');
         $("#btnSalvarAgenda").prop("disabled", true);
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 195a71e1a8739756b775c9042d59a4caedf1610c
         $.post("saveAgenda.asp", $("#formAgenda").serialize())
             .done(function(data){
                 //$("#btnSalvarAgenda").removeAttr('disabled');
@@ -1589,6 +1611,7 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
 
     }else if(A=='X'){
         $("#la"+I).remove();
+        somarValores();
     }
 }
 function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpresso) {

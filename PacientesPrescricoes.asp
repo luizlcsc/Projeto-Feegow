@@ -1,10 +1,14 @@
 ﻿<!--#include file="connect.asp"-->
 <%
+ExistePrescricao = "display:none;"
+
 if req("i")<>"" then
     set pp = db.execute("select * from pacientesprescricoes where id="& req("i"))
     if not pp.eof then
+        PrescricaoId = pp("id")
         receituario = pp("Prescricao")
         ControleEspecial = pp("ControleEspecial")
+        ExistePrescricao = ""
     end if
 end if
 %>
@@ -21,9 +25,11 @@ end if
     <div class="tab-content">
       <div id="prescricao" class="tab-pane in active">
           <div class="row">
-            <div class="col-md-3">
-                <button type="button" onclick="$('#receituario').val('');" class="btn btn-info"><i class="fa fa-plus icon-plus"></i> Nova</button>
-                <button type="button" class="btn btn-info" id="savePrescription"><i class="fa fa-print icon-print"></i> Salvar e Imprimir</button>
+            <div class="col-md-5">
+                <input type="hidden" id="PrescricaoId" value="<%=PrescricaoId%>">
+                <button type="button" onclick="novo();" class="btn btn-info"><i class="fa fa-plus icon-plus"></i> Nova</button>
+                <button type="button" class="btn btn-primary" id="savePrescription"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
+                <button type="button" class="btn btn-info" style="<%=ExistePrescricao%>" id="printPrescription"><i class="fa fa-print icon-print"></i> Imprimir</button>
             </div>
             <div class="col-md-2">
 	            <div class="checkbox-custom checkbox-primary"><input type="checkbox" name="ControleEspecial" id="ControleEspecial" <%if ControleEspecial="checked" then response.write(" checked ") end if %> /><label for="ControleEspecial">Controle especial</label></div>
@@ -211,16 +217,33 @@ function modalMedicamento(tipo, id){
 }
 
 $("#savePrescription").click(function(){
-	$.post("savePrescription.asp",{
-		   PacienteID:'<%=PacienteID%>',
-		   receituario:$("#receituario").val(),
-		   ControleEspecial:$("#ControleEspecial").prop('checked')
-		   },function(data,status){
-	  $("#modal").html(data);
-	  $("#modal-table").modal('show');
-	});
+	SaveAndPrint(true);
 });
 
+$("#printPrescription").click(function(){
+	SaveAndPrint(false);
+});
+
+function novo(){
+    $('#receituario').val('');
+    $("#printPrescription").hide();
+}
+
+function SaveAndPrint(salvarPrescricao){
+    let PrescricaoId = $("#PrescricaoId").val();
+
+    $.post("savePrescription.asp",{
+		   PacienteID:'<%=PacienteID%>',
+		   receituario:$("#receituario").val(),
+		   ControleEspecial:$("#ControleEspecial").prop('checked'),
+           save: salvarPrescricao,
+           PrescricaoId: PrescricaoId
+		   },function(data,status){
+	    $("#modal").html(data);
+        $("#modal-table").modal('show');
+        $("#printPrescription").show();
+	});
+}
 
 
 $('#FiltroMF').keypress(function(e){

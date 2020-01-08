@@ -21,7 +21,7 @@ set reg = db.execute("select * from "& req("P") &" where id="& req("I"))
                 <%= quickfield("number", "mLeft", "Margem Esq. (px)", 2, reg("mLeft"), "", "", "") %>
                 <%= quickfield("number", "mTop", "Margem Sup. (px)", 2, reg("mTop"), "", "", "") %>
                 <%= quickfield("number", "mBottom", "Margem Inf. (px)", 2, reg("mBottom"), "", "", "") %>
-                <%= quickfield("number", "font-size", "Tamanho da Fonte", 2, reg("font-size"), "", "", " min='1'") %>
+                <%= quickfield("number", "font-size", "Tamanho da Fonte (px)", 2, reg("font-size"), "", "", " min='1'") %>
                 <%= quickfield("cor", "color", "Cor da Fonte", 2, reg("color"), "", "", "") %>
             </div>
             <div class="row">

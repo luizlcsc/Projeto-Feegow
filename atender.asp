@@ -88,12 +88,24 @@ if Acao="Iniciar" then
 	end if
 end if
 
-if Acao="PreEncerrar" then
-	set buscaAtendimento = db.execute("select * from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' and isnull(HoraFim)")
+if Acao="" then
+	set buscaAtendimento = db.execute("select id from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' and isnull(HoraFim)")
 	if buscaAtendimento.eof then
-		set buscaAtendimento = db.execute("select * from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' order by id desc limit 1")
+		set buscaAtendimento = db.execute("select id from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' order by id desc limit 1")
 	end if
 	if not buscaAtendimento.eof then
+	    AtendimentoID=buscaAtendimento("id")
+    end if
+end if
+
+
+if Acao="PreEncerrar" then
+	set buscaAtendimento = db.execute("select id from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' and isnull(HoraFim)")
+	if buscaAtendimento.eof then
+		set buscaAtendimento = db.execute("select id from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' order by id desc limit 1")
+	end if
+	if not buscaAtendimento.eof then
+	    AtendimentoID=buscaAtendimento("id")
 ''		db_execute("update atendimentos set HoraFim='"&time()&"' where id="&buscaAtendimento("id"))
 		'fecha possível lista de espera com este paciente
 ''		set lista = db.execute("select * from agendamentos where PacienteID="&PacienteID&" and Data='"&mydate(date())&"' and StaID<>3 and ProfissionalID="&session("idInTable")&" order by Hora")
@@ -127,8 +139,9 @@ end if
 
 if Acao="Solicitar" then
 '	response.Write("select * from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"'")
-	set buscaAtendimento = db.execute("select * from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' and isnull(HoraFim)")
+	set buscaAtendimento = db.execute("select id from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' and isnull(HoraFim)")
 	if not buscaAtendimento.eof then
+	    AtendimentoID=buscaAtendimento("id")
 		'db_execute("update atendimentos set HoraFim='"&time()&"' where id="&buscaAtendimento("id"))
 		'fecha possível lista de espera com este paciente
 		'set lista = db.execute("select * from agendamentos where PacienteID="&PacienteID&" and Data='"&mydate(date())&"' and StaID<>3 and ProfissionalID="&session("idInTable")&" order by Hora")
@@ -230,12 +243,41 @@ if Conteudo="Play" then
         %>
         <h3 class="text-center light"><i class="fa fa-clock-o"></i> <span id="counter"><%=Tempo%></span></h3>
           <div class="row">
-              <div class="col-sm-6">
-                  <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i> Finalizar</button>
-              </div>
-              <div class="col-sm-6">
-                  <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="fa fa-pause"></i> Solicitar</button>
-              </div>
+            <% if getConfig("SolicitacaoDeProcedimentosEspera")="1" then %>
+
+                <div class="col-sm-6">
+                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="if(confirm('Tem certeza de que deseja finalizar este atendimento?')) encerrar()"><i class="fa fa-stop"></i> Finalizar</button>
+                </div>
+                <div class="col-sm-6">
+                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atEspera()"><i class="fa fa-pause"></i> Espera</button>
+                </div>
+
+                <script type="text/javascript">
+                    function encerrar() {
+                        $.post("saveInf.asp?AgendamentoID=<%= AgendamentoID %>&Atendimentos=<%= session("Atendimentos") %>&AtendimentoID=<%=AtendimentoID%>&rPacienteID=<%= PacienteID %>&Origem=Atendimento&Solicitacao=N",
+                            {
+                                'inf-ProfissionalID': '<%= session("idInTable") %>',
+                                UnidadeID: '<%= session("UnidadeID") %>'
+                        }, function (data) { eval(data) });
+                    }
+
+                    function atEspera() {
+                        $.get("atEspera.asp?PacienteID=<%= PacienteID %>&Atendimentos=<%= session("Atendimentos")%>", function (data) {
+                            $("#modal").html("Carregando...");
+                            $("#modal-table").modal("show");
+                            $("#modal").html(data);
+                        });
+                    }
+                </script>
+
+            <% else %>
+                <div class="col-sm-6">
+                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i> Finalizar</button>
+                </div>
+                <div class="col-sm-6">
+                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="fa fa-pause"></i> Solicitar</button>
+                </div>
+            <% end if %>
           </div>
       <script type="text/javascript">
       var stopTime;

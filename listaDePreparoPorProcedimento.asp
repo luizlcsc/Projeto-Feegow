@@ -14,10 +14,10 @@
     response.end
     end if
 
-    set procedimentosPreparo = db.execute(" SELECT sys_preparos.Descricao,TextoPreparo,procedimentos.NomeProcedimento,Tipo,coalesce(CombinacaoID,0) as CombinacaoID  ,Horas,Dias,Inicio,Fim FROM procedimentospreparofrase                  "&chr(13)&_
-                                          " JOIN procedimentos ON procedimentos.id = procedimentospreparofrase.ProcedimentoID"&chr(13)&_
-                                          " JOIN sys_preparos ON sys_preparos.id = procedimentospreparofrase.PreparoID"&chr(13)&_
-                                          " WHERE ProcedimentoID = "&req("procedimento")&" AND ExcecaoID = 0;")
+    set procedimentosPreparo = db.execute(" SELECT sys_preparos.Descricao,TextoPreparo,procedimentos.NomeProcedimento,Tipo,coalesce(CombinacaoID,0) as CombinacaoID  ,Horas,Dias,Inicio,Fim FROM procedimentos                  "&chr(13)&_
+                                          " LEFT JOIN procedimentospreparofrase ON procedimentos.id = procedimentospreparofrase.ProcedimentoID"&chr(13)&_
+                                          " LEFT JOIN sys_preparos ON sys_preparos.id = procedimentospreparofrase.PreparoID"&chr(13)&_
+                                          " WHERE procedimentos.id = "&req("procedimento")&" AND (ExcecaoID = 0 or ExcecaoID IS NULL);")
 
     IF  procedimentosPreparo.EOF THEN %>
         <h3>Este procedimento não possui preparo.</h3>

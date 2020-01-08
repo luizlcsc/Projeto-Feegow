@@ -149,17 +149,17 @@ end if
             }
           }
 
-          function changeEstrangeiro() {
-               let estrangeiro = $('#Estrangeiro').is(':checked');
+          function changeRequiredCPF(that) {
+               let val = $(that).is(':checked');
 
                var data = $('#Pais').select2('data');
                var nomePais = data[0].full_name;
                let outroPais = nomePais && nomePais != "" && nomePais != "Brasil";
 
-              if(estrangeiro || outroPais){
-                  $("#CPF").removeAttr("required").attr("readonly", true);
+              if(val || outroPais){
+                  $("#CPF").removeAttr("required").attr("readonly", true).val("");
               }
-              if(!(estrangeiro || outroPais))
+              if(!(val || outroPais))
               {
                   $("#CPF").attr("required", "required").attr("readonly", false);
                   var a = $("#CPF");
@@ -185,10 +185,10 @@ end if
             end if
             %>
             <%=quickField("datepicker", "Nascimento", "Nascimento", 2, reg("Nascimento"), "input-mask-date", "", "")%>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <label for="Estrangeiro">Estrangeiro</label>
                    <div class="checkbox-custom checkbox-primary">
-                                            <input type="checkbox" class="ace" onchange="changeEstrangeiro()"
+                                            <input type="checkbox" class="ace" onchange="changeRequiredCPF(this)"
                                              <% IF reg("Estrangeiro") = "1" THEN %>
                                                checked
                                              <% END IF %>
@@ -203,7 +203,7 @@ end if
                 END IF
 
             %>
-            <%=quickField("text", "CPF", "CPF", 2, reg("CPF"), " "&mask&" ", "", " ") %>
+            <%=quickField("CPF", "CPF", "CPF", 3, reg("CPF"), " "&mask&" ", "", " ") %>
             <%=quickField("simpleColor", "CorIdentificacao", "Cor de Identificação", 2, reg("CorIdentificacao"), "select * from Cores", "Cor", "")%>
 
         </div><br />
@@ -714,7 +714,7 @@ $(function(){
         var data = $('#Pais').select2('data');
         var nomePais = data[0].full_name;
 
-        changeEstrangeiro()
+        //changeEstrangeiro()
         if(nomePais != "" && nomePais != "Brasil"){
             //$("#CPF").prop("required", false);
         }else{

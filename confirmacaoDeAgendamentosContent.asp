@@ -24,6 +24,7 @@ function centralWhatsApp(AgendamentoID)
 
         if not pac.eof then
             NomePaciente = trim(pac("NomePaciente"))
+            NomeCompletoPaciente = trim(pac("NomePaciente"))
             if instr(NomePaciente, " ") then
                 splPac = split(NomePaciente, " ")
                 NomePaciente = splPac(0)
@@ -65,6 +66,7 @@ function centralWhatsApp(AgendamentoID)
         Mensagem = replace(Mensagem, "[TipoProcedimento]", TipoProcedimento)
         Mensagem = replace(Mensagem, "[NomeProcedimento]", NomeProcedimento)
         Mensagem = replace(Mensagem, "[NomePaciente]", NomePaciente)
+        Mensagem = replace(Mensagem, "[NomeCompletoPaciente]", NomeCompletoPaciente)
         Mensagem = replace(Mensagem, "[TratamentoProfissional]", "")
         Mensagem = replace(Mensagem, "[NomeProfissional]", NomeProfissional)
         Mensagem = replace(Mensagem, "[HoraAgendamento]", Hora)

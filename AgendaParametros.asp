@@ -432,6 +432,7 @@ if left(tipo, 14)="ProcedimentoID" then
 
              $("#Valor<%= apID %>").val('<%=fn(ValorAgendamento)%>');
              $("#ValorText<%= apID %>").html('<%=fn(ValorAgendamento)%>');
+             somarValores();
             <%
         end if
     end if

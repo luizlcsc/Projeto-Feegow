@@ -103,7 +103,7 @@ if request.QueryString("Atender")<>"" then
 end if
 
 if lcase(session("Table"))<>"profissionais" or req("ProfissionalID")<>"" then
-	sql = "select a.*, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join profissionais p on p.id=a.ProfissionalID inner join pacientes pac ON pac.id=a.PacienteID left join locais l on l.id=a.LocalID where Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 33, 102,105,106, 101, 5) and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "&sqlProfissional&" order by "&Ordem
+	sql = "select a.*, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela, ac.NomeCanal, a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join profissionais p on p.id=a.ProfissionalID inner join pacientes pac ON pac.id=a.PacienteID left join locais l on l.id=a.LocalID where Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 33, 102,105,106, 101, 5) and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "&sqlProfissional&" order by "&Ordem
     sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID                                                                                         where a.Data = '"&mydate(DataHoje)&"' and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID)) "&sqlProfissional&"  group by(l.UnidadeID) order by total desc limit 1 "
 else
     'triagem
@@ -114,7 +114,7 @@ else
 
 	'sql = "select * from Consultas where Data = "&DataHoje&" and DrId = '"&session("DoutorID")&"' and not StaID = '3' and not StaID = '1' and not StaID = '6' and not StaID = '7' order by "&Ordem
     sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID))  group by(l.UnidadeID) order by total desc limit 1 "
-	sql = "select a.*, tp.NomeTabela,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, "&StatusExibir&") and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) order by "&Ordem
+	sql = "select a.*, tp.NomeTabela, ac.NomeCanal,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, "&StatusExibir&") and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) order by "&Ordem
 
 end if
 
@@ -134,7 +134,7 @@ if lcase(session("table"))="profissionais" then
             if not ProfissionalTriagemSQL.eof then
                 if ProfissionalTriagemSQL("EspecialidadeTriagem")="1" then
                     ProfissionalTriagem="S"
-                    sql = "select age.*, profage.NomeProfissional, tp.NomeTabela from agendamentos age LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID LEFT JOIN profissionais profage ON profage.id=age.ProfissionalID INNER JOIN pacientes pac ON pac.id=age.PacienteID LEFT JOIN locais l ON l.id=age.LocalID where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 33, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' order by "&Ordem
+                    sql = "select age.*, profage.NomeProfissional, tp.NomeTabela, ac.NomeCanal from agendamentos age LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID LEFT JOIN profissionais profage ON profage.id=age.ProfissionalID LEFT JOIN agendamentocanais ac ON ac.id=age.CanalID INNER JOIN pacientes pac ON pac.id=age.PacienteID LEFT JOIN locais l ON l.id=age.LocalID where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 33, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' order by "&Ordem
                 end if
             end if
         end if
@@ -152,6 +152,8 @@ if session("Table")="profissionais" then
     end if
 end if
 
+ExibirCanal = getConfig("ExibirCanalSalaDeEspera")
+
 if veseha.eof then
 	%>Nenhum paciente aguardando para ser atendido.<%
 else
@@ -165,6 +167,7 @@ else
         <th>PACIENTE</th>
         <th>IDADE</th>
         <% If session("Table")<>"profissionais" Then %><th>PROFISSIONAL</th><% End If %>
+        <% If ExibirCanal=1 Then %><th>CANAL</th><% End If %>
         <th>COMPROMISSO</th>
         <th>TEMPO DE ESPERA</th>
         <th>PAGTO</th>
@@ -356,6 +359,7 @@ else
 		<small><%=Notas%></small></td>
         <td><%=IdadeAbreviada(DataNascimento)%></td>
     <% If session("Table")<>"profissionais" Then %><td><%=veseha("NomeProfissional")%></td><% End If %>
+    <% If ExibirCanal=1 Then %><td><%=veseha("NomeCanal")%></td><% End If %>
     <td ><%=TipoCompromisso%><%=compromisso%><%=OutrosProcedimentosStr%><%
     if SubtipoAgendamento<>"" then
 		response.Write(" &raquo; <small>"&SubtipoAgendamento&"</small>")
@@ -444,18 +448,20 @@ else
                             <td><%= esp("Obs") %></td>
                             <td width="200">
                                 <%
-                                set vcaag = db.execute("select a.id, a.Data, a.Hora, a.StaID, p.NomeProfissional from agendamentos a left join profissionais p on p.id=a.ProfissionalID where a.Data>=curdate() and a.PacienteID="& veseha("PacienteID") &" and a.TipoCompromissoID="& esp("ProcedimentoID") &" order by data, hora limit 1")
+                                set vcaag = db.execute("select a.id, a.Data, a.Hora, a.StaID, p.NomeProfissional, sta.StaConsulta from agendamentos a inner join staconsulta sta ON sta.id=a.StaID left join profissionais p on p.id=a.ProfissionalID where a.Data>=curdate() and a.PacienteID="& veseha("PacienteID") &" and a.TipoCompromissoID="& esp("ProcedimentoID") &" order by data, hora limit 1")
                                 classeBtnEsp = ""
                                 if vcaag.eof then
                                     %>
-                                    <a class="btn btn-xs btn-block btn-<%= classeBtnEsp %>" href="./?P=AgendaMultipla&Pers=1&ProcedimentoID=<%= esp("ProcedimentoID") %>&PacienteID=<%= veseha("PacienteID") %>"><i class="fa fa-calendar"></i> Não agendado</a>
+                                    <a data-toggle="tooltip" title="Não agendado" class="btn btn-xs btn-block btn-<%= classeBtnEsp %>" href="./?P=AgendaMultipla&Pers=1&ProcedimentoID=<%= esp("ProcedimentoID") %>&PacienteID=<%= veseha("PacienteID") %>&SolicitanteID=5_<%= veseha("ProfissionalID") %>">
+                                        <i class="fa fa-calendar"></i> Não agendado
+                                    </a>
                                     <%
                                 else
                                     if vcaag("StaID")=3 then
                                         classeBtnEsp = "success"
                                     end if
                                     %>
-                                    <a href="./?P=Agenda-1&Pers=1&AgendamentoID=<%= vcaag("id") %>" class="btn btn-block btn-<%= classeBtnEsp %> btn-xs">
+                                    <a data-toggle="tooltip" title="<%=vcaag("StaConsulta")%>" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%= vcaag("id") %>" class="btn btn-block btn-<%= classeBtnEsp %> btn-xs">
                                         <img src="./assets/img/<%= vcaag("StaID") %>.png" /> <%= vcaag("Data") &" - "& ft(vcaag("Hora")) &" - "& vcaag("NomeProfissional") %>
                                     </a>
                                     <%

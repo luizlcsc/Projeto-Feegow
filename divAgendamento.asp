@@ -39,12 +39,13 @@ else
     Encaixe = "0"
 end if
 
-IF session("PacienteIDSelecionado") <> "" THEN
-    PacienteID = session("PacienteIDSelecionado")
-    session("PacienteIDSelecionado") = ""
-END IF
+
 IF req("PacienteID") <> "" THEN
     PacienteID = req("PacienteID")
+END IF
+
+IF req("SolicitanteID") <> "" THEN
+    indicadoId = req("SolicitanteID")
 END IF
 
 ProcedimentoID = req("ProcedimentoID")
@@ -643,7 +644,7 @@ end if
                 call quickField("simpleSelect", "ageTabela", "Tabela", 2, ageTabela, "select id, NomeTabela from tabelaparticular where Ativo='on' AND sysActive=1 and (Unidades like '' or Unidades = "&session("UnidadeID")&" or Unidades like '%|"& session("UnidadeID") &"|%') order by NomeTabela", "NomeTabela", " empty no-select2  onchange=""$.each($('.linha-procedimento'), function(){ parametros('ProcedimentoID'+$(this).data('id'),$(this).find('select[data-showcolumn=\'NomeProcedimento\']').val()); });"" "&tabelaRequired&" "&fieldReadonly)
             end if
 
-            if session("Banco")="clinic5445" or session("Banco")="clinic5760" then
+            if getConfig("ExibirCampoCanal")=1 then
                 if ageCanal<>1 then
                     if session("Banco")="clinic5445" then
                         canalRequired = "required"

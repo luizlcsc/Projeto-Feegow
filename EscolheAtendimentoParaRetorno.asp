@@ -7,6 +7,7 @@ EspecialidadeID = req("EspecialidadeID")
 Data = req("Data")
 ConvenioId = req("ConvenioId")
 
+set ProcedimentoSQL = db.execute("SELECT DiasRetorno FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
 
 %>
 <div class="row">

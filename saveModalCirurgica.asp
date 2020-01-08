@@ -74,9 +74,9 @@ elseif Tipo="Procedimentos" then
 			if ref("PlanoID")<>"0" then
 				set pvp = db.execute("select * from tissprocedimentosvaloresplanos where AssociacaoID="&pv("id")&" and PlanoID="&ref("PlanoID"))
 				if pvp.eof then
-					db_execute("insert into tissprocedimentosvaloresplanos (AssociacaoID, PlanoID, Valor, NaoCobre) values ("&pv("id")&", "&ref("PlanoID")&", "&treatvalzero(ref("ValorUnitario"))&", '')")
+					db_execute("insert into tissprocedimentosvaloresplanos (AssociacaoID, PlanoID, Valor, NaoCobre) values ("&pv("id")&", "&ref("PlanoID")&", "&treatvalnull(ref("ValorUnitario"))&", '')")
 				else
-					db_execute("update tissprocedimentosvaloresplanos set Valor="&treatvalzero(ref("ValorUnitario"))&" where id="&pvp("id"))
+					db_execute("update tissprocedimentosvaloresplanos set Valor="&treatvalnull(ref("ValorUnitario"))&" where id="&pvp("id"))
 				end if
 			end if
 

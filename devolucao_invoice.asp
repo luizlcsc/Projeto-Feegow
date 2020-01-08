@@ -111,7 +111,7 @@ end if
 </div>
 <%
 'ii.Executado != 'S' AND
-sql = "select p.NomeProcedimento, ii.Desconto, ii.Acrescimo, ii.ValorUnitario, ii.id as iditensinvoice from sys_financialinvoices invoice inner join itensinvoice ii on ii.InvoiceID = invoice.id inner join procedimentos p ON p.id = ii.ItemID where  invoice.id = " & InvoiceID & " ORDER BY ii.id ASC"
+sql = "select SUM(idesc.Valor) ValorDescontado, p.NomeProcedimento, ii.Desconto, ii.Acrescimo, ii.ValorUnitario, ii.id as iditensinvoice from sys_financialinvoices invoice inner join itensinvoice ii on ii.InvoiceID = invoice.id inner join itensdescontados idesc ON idesc.ItemID=ii.id inner join procedimentos p ON p.id = ii.ItemID where  invoice.id = " & InvoiceID & " GROUP BY ii.id ORDER BY ii.id ASC"
 'response.write(sql)
 set queryInvoice = db.execute(sql)
 
@@ -121,7 +121,8 @@ if not queryInvoice.eof then
     <tr>
         <th></th>
         <th>Item</th>
-        <th>Valor</th>
+        <th>Valor do item</th>
+        <th>Valor pago</th>
         <th>Desconto</th>
         <th>Acréscimo</th>
     </tr>
@@ -132,6 +133,7 @@ if not queryInvoice.eof then
         <td><input type="checkbox" name="iteninvoice" class="iteninvoice" value="<%=queryInvoice("iditensinvoice")%>"></td>
         <td><%=queryInvoice("NomeProcedimento") %></td>
         <td><%=fn(queryInvoice("ValorUnitario")) %></td>
+        <td><%=fn(queryInvoice("ValorDescontado")) %></td>
         <td><%=fn(queryInvoice("Desconto")) %></td>
         <td><%=fn(queryInvoice("Acrescimo")) %></td>
     </tr>

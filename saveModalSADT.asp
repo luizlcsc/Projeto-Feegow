@@ -42,10 +42,10 @@ if Tipo="Profissionais" then
 		    end if
 		end if
 
-        if AlterarEspecialidadeProfissional then
-		    sqlExecute = "update profissionais set Conselho='"&ref("ConselhoID")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', EspecialidadeID="&EspecialidadeID&sqlCPF&" where id="&ref("gProfissionalID")
-            db_execute(sqlExecute)
-        end if
+        'if AlterarEspecialidadeProfissional then
+		'    sqlExecute = "update profissionais set Conselho='"&ref("ConselhoID")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', EspecialidadeID="&EspecialidadeID&sqlCPF&" where id="&ref("gProfissionalID")
+        '    db_execute(sqlExecute)
+        'end if
 
 		if ItemID="0" then
 			sqlExecute = "insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&GuiaID&", '"&ref("Sequencial")&"', '"&ref("GrauParticipacaoID")&"', '"&ref("gProfissionalID")&"', '"&ref("CodigoNaOperadoraOuCPF")&"', '"&ref("ConselhoID")&"', '"&ref("DocumentoConselho")&"', '"&ref("UFConselho")&"', '"&ref("CodigoCBO")&"', '"&session("User")&"')"
@@ -115,10 +115,10 @@ elseif Tipo="Procedimentos" then
                 if ref("PlanoID")<>"0" then
                     set pvp = db.execute("select * from tissprocedimentosvaloresplanos where AssociacaoID="&pv("id")&" and PlanoID="&ref("PlanoID"))
                     if pvp.eof then
-                        sqlExecute = "insert into tissprocedimentosvaloresplanos (AssociacaoID, PlanoID, Valor, NaoCobre) values ("&pv("id")&", "&ref("PlanoID")&", "&treatvalnull(ref("ValorUnitario"))&", '')"
+                        sqlExecute = "insert into tissprocedimentosvaloresplanos (AssociacaoID, PlanoID, Valor, NaoCobre) values ("&pv("id")&", "&ref("PlanoID")&", "&treatvalzero(ref("ValorUnitario"))&", '')"
                         db_execute(sqlExecute)
                     else
-                        sqlExecute = "update tissprocedimentosvaloresplanos set Valor="&treatvalnull(ref("ValorUnitario"))&" where id="&pvp("id")
+                        sqlExecute = "update tissprocedimentosvaloresplanos set Valor="&treatvalzero(ref("ValorUnitario"))&" where id="&pvp("id")
                         db_execute(sqlExecute)
                     end if
                 end if

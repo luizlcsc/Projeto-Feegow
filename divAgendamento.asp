@@ -739,11 +739,7 @@ end if
 							EmailEnviado = "S"
 						end if
 
-<<<<<<< HEAD
-                        
-=======
 
->>>>>>> 195a71e1a8739756b775c9042d59a4caedf1610c
                         if ConsultaID=0 then
                         response.write("    <div class=""col-md-4"">")
                             IntervaloRepeticao = 1
@@ -752,11 +748,7 @@ end if
                             <%
                         response.write("    </div>")
                         end if
-<<<<<<< HEAD
-                        
-=======
 
->>>>>>> 195a71e1a8739756b775c9042d59a4caedf1610c
 						%>
                         <%
                             if recursoAdicional(27)=4 then
@@ -773,11 +765,7 @@ end if
                                 end if
                             end if
                         %>
-<<<<<<< HEAD
-                            
-=======
 
->>>>>>> 195a71e1a8739756b775c9042d59a4caedf1610c
                             <div class="col-md-4">
                             <%if ServicoSMS="S" then%>
                                 <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar SMS</label></div>
@@ -985,7 +973,7 @@ end if
                     <button class="btn btn-block btn-sm btn-primary <%=otherClass%> <%=disabled%>" id="btnSalvarAgenda">
                         <%= txtBtn %>
                     </button>
-                   
+
                 </div>
                 <%
                 end if
@@ -1337,11 +1325,7 @@ var saveAgenda = function(){
         $("#btnSalvarAgenda").html('salvando');
         //$("#btnSalvarAgenda").attr('disabled', 'disabled');
         $("#btnSalvarAgenda").prop("disabled", true);
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> 195a71e1a8739756b775c9042d59a4caedf1610c
         $.post("saveAgenda.asp", $("#formAgenda").serialize())
             .done(function(data){
                 //$("#btnSalvarAgenda").removeAttr('disabled');

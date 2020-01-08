@@ -157,7 +157,7 @@ body{
                                 <% END IF%>
                                 <th style="text-align: center">Qtd</th>
                                 <th style="text-align: center">Descrição</th>
-                                <th style="text-align: right" align="right" class="<%=hiddenValor%>"><% IF getConfig("ExibirDesconto") = "1" THEN %>Valor Unitário<% END IF %></th>
+                                <th style="text-align: right" align="right" class="<%=hiddenValor%>"><% IF getConfig("ExibirValorUnitario") = "1" THEN %>Valor Unitário<% END IF %></th>
 
                                 <th style="text-align: right" align="right" class="<%=hiddenValor%>">
 
@@ -199,7 +199,7 @@ body{
                                 <% END IF%>
                             	<td><%=itens("Quantidade")%></td>
                             	<td><%=itens("NomeProcedimento")%></td>
-    							<td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %>R$ <%=formatnumber(ValorUnitarioSemDesconto,2)%><% END IF %></td>
+    							<td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirValorUnitario") = "1" THEN %>R$ <%=formatnumber(ValorUnitarioSemDesconto,2)%><% END IF %></td>
                             	<td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %>R$ <%=formatnumber(Desconto,2)%><% END IF %></td>
                             	<td class="<%=hiddenValor%>" align="right">R$ <%=formatnumber(Total,2)%></td>
                             </tr>

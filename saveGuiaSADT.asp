@@ -107,7 +107,7 @@ else
 	end if
     if BloquearAlteracoes=0 then
 	    if ref("tipoProfissionalSolicitante")="I" then
-		    db_execute("update profissionais set Conselho='"&ref("ConselhoProfissionalSolicitanteID")&"', DocumentoConselho='"&ref("NumeroNoConselhoSolicitante")&"', UFConselho='"&ref("UFConselhoSolicitante")&"', EspecialidadeID="&EspecialidadeID&" where id="&ref("ProfissionalSolicitanteID"))
+		    'db_execute("update profissionais set Conselho='"&ref("ConselhoProfissionalSolicitanteID")&"', DocumentoConselho='"&ref("NumeroNoConselhoSolicitante")&"', UFConselho='"&ref("UFConselhoSolicitante")&"', EspecialidadeID="&EspecialidadeID&" where id="&ref("ProfissionalSolicitanteID"))
 	    else
 		    if isnumeric(ref("ContratadoExternoID")) and ref("ContratadoExternoID")<>"" then
 			    sqlAtuContNoProf = "ContratadoExternoID='"&ref("ContratadoExternoID")&"',"

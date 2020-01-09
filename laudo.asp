@@ -81,7 +81,9 @@ Execucao = req("E")
 NomePaciente = ""
 NomeProcedimento = ""
 if LaudoID="" then
-    set pproc = db.execute("select ifnull(DiasLaudo, 0) DiasLaudo, FormulariosLaudo, NomeProcedimento FROM procedimentos where id="&ProcedimentoID)
+    sql = "select ifnull(DiasLaudo, 0) DiasLaudo, FormulariosLaudo, NomeProcedimento FROM procedimentos where id='"&ProcedimentoID&"'"
+
+    set pproc = db.execute(sql)
     if not pproc.eof then
         DiasLaudo = ccur(pproc("DiasLaudo"))
         PrevisaoEntrega = dateadd("d", DiasLaudo, Execucao)
@@ -94,7 +96,9 @@ if LaudoID="" then
         else
             FormID = 0
         end if
-        set vca = db.execute("select id from laudos where Tabela='"& Tabela &"' and IDTabela="& IDTabela)
+        sql = "select id from laudos where Tabela='"& Tabela &"' and IDTabela="& IDTabela
+        
+        set vca = db.execute(sql)
         if vca.eof then
             db.execute("insert into laudos (PacienteID, ProcedimentoID, Tabela, IDTabela, FormID, PrevisaoEntrega, StatusID) values ("& PacienteID &", "& ProcedimentoID &", '"& Tabela &"', "& IDTabela &", "& FormID &", "& mydatenull(PrevisaoEntrega) &", 1)")
             set pult = db.execute("select id from laudos where Tabela='"& Tabela &"' and IDTabela="& IDTabela &" order by id desc limit 1")

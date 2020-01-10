@@ -153,7 +153,14 @@ if erro="" then
 'response.Write(request.Form())
 '"Hora=&Paciente=&Procedimento=&StaID=&Local=&rdValorPlano=&ValorPlano=&ProfissionalID=&Data=&Tempo=
 	if rfStaID=5 or rfStaID="5" then
-		call gravaChamada(rfProfissionalID, rfPaciente)
+	    set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(rfLocal))
+
+	    UnidadeID=session("UnidadeID")
+	    if not LocalSQL.eof then
+	        UnidadeID=LocalSQL("UnidadeID")
+	    end if
+
+		call gravaChamada(rfProfissionalID, rfPaciente, UnidadeID)
 	end if
 	Notas=replace(replace(rfNotas,"_"," "),"'","''")
 	'-->Verifica se paciente já tem esse convênio. Se não, cria esse convênio para esse paciente

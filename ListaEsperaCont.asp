@@ -85,7 +85,7 @@ if request.QueryString("Chamar")<>"" then
 	db_execute("update agendamentos set StaID='"&StaChamando&"' "& sqlProfissional &" where id = '"&req("Chamar")&"'")
 	set dadosAgendamento = db.execute("select PacienteID, ProfissionalID from agendamentos where id = '"&request.QueryString("Chamar")&"'")
 	if not dadosAgendamento.eof then
-		call gravaChamada(dadosAgendamento("ProfissionalID"), dadosAgendamento("PacienteID"))
+		call gravaChamada(dadosAgendamento("ProfissionalID"), dadosAgendamento("PacienteID"), session("UnidadeID"))
 	end if
 
     set age = db.execute("select ProfissionalID from agendamentos where id="&req("Chamar"))

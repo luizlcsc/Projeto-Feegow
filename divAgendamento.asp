@@ -974,7 +974,7 @@ end if
                     <button class="btn btn-block btn-sm btn-primary <%=otherClass%> <%=disabled%>" id="btnSalvarAgenda">
                         <%= txtBtn %>
                     </button>
-                   
+
                 </div>
                 <%
                 end if
@@ -1132,13 +1132,19 @@ function RegistrarMultiplasPendencias(liberar) {
             btnSalvarToggleLoading(false, true, "Selecione um retorno");
             $("#btnSalvarAgenda").attr("data-force-disabled", true);
             var $dadosAgendamentos = $("#dadosAgendamento" );
-
+            let ConvenioId = "";
+            
+            if($dadosAgendamentos.find("#rdValorPlanoP").prop("checked") && !$dadosAgendamentos.find("#rdValorPlanoP").prop("disabled") ){
+                ConvenioId = $dadosAgendamentos.find("#ConvenioID").val();
+            }
+            
             $.get("EscolheAtendimentoParaRetorno.asp", {
                 PacienteID: $dadosAgendamentos.find("#PacienteID").val(),
                 ProcedimentoID: $dadosAgendamentos.find("#ProcedimentoID").val(),
                 ProfissionalID: $dadosAgendamentos.find("#ProfissionalID").val(),
                 EspecialidadeID: $dadosAgendamentos.find("#EspecialidadeID").val(),
                 Data: $dadosAgendamentos.find("#Data").val(),
+                ConvenioId: ConvenioId
             }, function(data) {
                 openModal(data, "Selecionar atendimento para o retorno", true, false);
             });

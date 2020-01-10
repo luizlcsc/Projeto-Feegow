@@ -5,18 +5,29 @@ ProcedimentoID = req("ProcedimentoID")
 ProfissionalID = req("ProfissionalID")
 EspecialidadeID = req("EspecialidadeID")
 Data = req("Data")
+ConvenioId = req("ConvenioId")
 
 set ProcedimentoSQL = db.execute("SELECT DiasRetorno FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
 
 %>
 <div class="row">
 <%
-if not ProcedimentoSQL.eof then
-    DiasRetorno = ProcedimentoSQL("DiasRetorno")
-else
-    set UltimoProcedimentoSQL = db.execute("SELECT proc.DiasRetorno FROM agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID WHERE a.PacienteID="&treatvalzero(PacienteID)&" AND StaID=3 and Data<"&mydatenull(Data)&" ORDER BY Data DESC LIMIT 1")
-    if not UltimoProcedimentoSQL.eof then
-        DiasRetorno = UltimoProcedimentoSQL("DiasRetorno")
+if ConvenioId&""<>"" then
+    set ConvenioSQL = db.execute("SELECT RetornoConsulta FROM convenios WHERE id="&treatvalzero(ConvenioId))
+    if not ConvenioSQL.eof then
+        DiasRetorno = ConvenioSQL("RetornoConsulta")
+    end if
+end if
+
+if DiasRetorno&"" = "" then
+    set ProcedimentoSQL = db.execute("SELECT DiasRetorno FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
+    if not ProcedimentoSQL.eof then
+        DiasRetorno = ProcedimentoSQL("DiasRetorno")
+    else
+        set UltimoProcedimentoSQL = db.execute("SELECT proc.DiasRetorno FROM agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID WHERE a.PacienteID="&treatvalzero(PacienteID)&" AND StaID=3 and Data<"&mydatenull(Data)&" ORDER BY Data DESC LIMIT 1")
+        if not UltimoProcedimentoSQL.eof then
+            DiasRetorno = UltimoProcedimentoSQL("DiasRetorno")
+        end if
     end if
 end if
 
@@ -33,9 +44,9 @@ end if
          " AND a2.Data > a.Data AND a2.Data <= ADDDATE(a.Data, INTERVAL proc.DiasRetorno DAY) AND a2.Retorno = 1) RetornoID FROM "&_
                           "agendamentos a INNER JOIN profissionais prof ON prof.id=a.ProfissionalID INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID "&_
                           " LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID "&_
-                          "WHERE proc.TipoProcedimentoID!=9 AND  (a.ProfissionalID="&ProfissionalID&" or a.EspecialidadeID="&treatvalzero(EspecialidadeID)&") AND a.PacienteID="&PacienteID&" AND a.StaID IN (3) AND DATEDIFF("&mydatenull(Data)&", a.Data) BETWEEN 1 AND proc.DiasRetorno AND a.Data<"&mydatenull(Data)&"  and proc.DiasRetorno>0 AND (a.Retorno!=1 OR a.Retorno IS NULL) "&_
+                          "WHERE proc.TipoProcedimentoID!=9 AND  (a.ProfissionalID="&ProfissionalID&" or a.EspecialidadeID="&treatvalzero(EspecialidadeID)&") AND a.PacienteID="&PacienteID&" AND a.StaID IN (3) AND DATEDIFF("&mydatenull(Data)&", a.Data) BETWEEN 1 AND "&DiasRetorno&" AND a.Data<"&mydatenull(Data)&"  and "&DiasRetorno&">0 AND (a.Retorno!=1 OR a.Retorno IS NULL) "&_
                           "ORDER BY a.Data"
-                          ' response.write(sql)
+                        'response.write(sql)
     set AtendimentosAnterioresSQL = db.execute(sql)
 
 

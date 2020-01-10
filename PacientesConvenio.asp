@@ -27,7 +27,7 @@
                                 <table class="table">
                                     <thead>
                                         <tr class="">
-                                            <th width="12%">Convênio asasas</th>
+                                            <th width="12%">Convênio</th>
                                             <th width="12%">Plano</th>
                                             <th width="22%">Matrícula / Carteirinha</th>
                                             <th width="18%">Token Carteirinha</th>

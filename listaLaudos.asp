@@ -128,8 +128,6 @@ end if
             " LEFT JOIN profissionais prof ON prof.id=IFNULL(l.ProfissionalID, t.ProfissionalID) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente"
 
 
-        'response.write( sql )
-
         set ii = db.execute( sql )
 
 
@@ -209,6 +207,7 @@ end if
                     end if
 
                     NomeProcedimento = ii("NomeProcedimento")
+                    
                     if NomeProcedimento = "Laboratório" then
                         sqlSiglas = "SELECT GROUP_CONCAT(DISTINCT ifnull(p.Sigla,'') SEPARATOR ', ') Siglas FROM itensinvoice ii INNER JOIN procedimentos p ON ii.ItemID = p.id WHERE ii.Executado = 'S' and p.TipoProcedimentoID = 3 and ii.InvoiceID="&IDTabela
                         set siglasSQL = db.execute(sqlSiglas)
@@ -216,6 +215,9 @@ end if
                             NomeProcedimento = siglasSQL("Siglas")
                         end if
                     end if
+                    if NomeProcedimento&" " = " " then 
+                        NomeProcedimento = ""
+                    end if 
 
                     if adicionaLinha =1 then
 

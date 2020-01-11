@@ -168,7 +168,7 @@
                                     <button type="button" class="btn btn-xs btn-primary" onclick="editCheck(<%= cheque("id") %>)"><i class="fa fa-edit"></i></button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeCheck(<%= cheque("id") %>)"><i class="fa fa-remove"></i></button>
+                                    <button type="button" class="hidden btn btn-xs btn-danger" onclick="removeCheck(<%= cheque("id") %>)"><i class="fa fa-remove"></i></button>
                                 </td>
                             </tr>
                             <%

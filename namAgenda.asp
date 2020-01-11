@@ -19,6 +19,7 @@ if instr(ref("Locais"), "UNIDADE_ID")>0 then
     whereLocaisUnidades = " AND l.UnidadeID IN("& UnidadesIN &") "
 end if
 '    response.write("{{"& sqlUnidadesHorarios &"}}")
+LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 
 if ProcedimentoID<>"" then
     set EspecialidadesPermitidasNoProcedimentoSQL = db.execute("SELECT SomenteEspecialidades FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
@@ -353,6 +354,9 @@ while not comps.EOF
         Conteudo = ""
     end if
 
+if LiberarHorarioRemarcado=1 then
+    StatusRemarcado = " && Status !== '15'"
+end if
 %>
 var Status = '<%=comps("StaID")%>';
 var $agendamentoSlot = $( ".p<%=ProfissionalID%>.l<%=LocalID%>" );
@@ -363,14 +367,14 @@ if($agendamentoSlot.length===0){
 
 $agendamentoSlot.each(function(){
     var horaSlot = $(this).attr("data-id");
-    if( horaSlot=='<%=HoraComp%>' && (Status !== '11' && Status !== '22' && Status !== '33'))
+    if( horaSlot=='<%=HoraComp%>' && (Status !== '11' && Status !== '22' && Status !== '33' <%=StatusRemarcado%>))
     {
         $(this).replaceWith('<%= conteudo %>');
         return false;
     }
     else if ( horaSlot>'<%=HoraComp%>' )
     {
-        if($agendamentoSlot.filter("[data-id='<%=HoraComp%>']").length > 0 && (Status !== '11' && Status !== '22' && Status !== '33')){
+        if($agendamentoSlot.filter("[data-id='<%=HoraComp%>']").length > 0 && (Status !== '11' && Status !== '22' && Status !== '33' <%=StatusRemarcado%>)){
             $agendamentoSlot.filter("[data-id='<%=HoraComp%>']").replaceWith('<%= conteudo %>');
         }else if($agendamentoSlot.filter("[data-id='<%=HoraComp%>']").length <= 0){
             $(this).before('<%=conteudo%>');
@@ -383,7 +387,7 @@ $agendamentoSlot.each(function(){
 <%
 if HoraFinal<>"" then
 %>
-if(Status!== '11' && Status !== '22'){
+if(Status!== '11' && Status !== '22' <%=StatusRemarcado%>){
 $( ".p<%=ProfissionalID%>" ).each(function(){
 if( $(this).attr("data-id")>'<%=HoraComp%>' && $(this).attr("data-id")<'<%=HoraFinal%>' )
 {

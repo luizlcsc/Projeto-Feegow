@@ -109,6 +109,23 @@ function ValidaProcedimentoObrigaSolicitante(linha,pProcedimentoID)
     end if
 end function
 
+function ValidaLocalConvenio(linha,vConvenio,vLocal)
+    ValidaLocalConvenio=""
+    set convenioSQL = db.execute("select unidades from convenios where id="&treatvalzero(vConvenio))
+    if not convenioSQL.eof then
+        set localSQL = db.execute("select unidadeid from locais where id="&vLocal)
+        if not localSQL.eof then
+            LimitarUnidades = convenioSQL("unidades")&""
+            parUnidadeID = localSQL("unidadeid")&""
+            if LimitarUnidades <> "" then
+                if instr(LimitarUnidades, "|"&parUnidadeID&"|")<=0 then
+                    ValidaLocalConvenio= linha&"° procedimento, local não aceita este convênio"
+                end if
+            end if
+        end if
+    end if
+end function
+
 function addError(error, valor)
     if valor <> "" then
         addError = error&"\n"&valor
@@ -124,6 +141,9 @@ if erro ="" then
     if searchindicacaoId ="" then
         erro = addError(erro, ValidaProcedimentoObrigaSolicitante(1,ref("ProcedimentoID")&""))
     end if
+    if ref("LocalID")&"" <>"" and ref("rdValorPlano") = "P" then
+        erro = addError(erro, ValidaLocalConvenio(1,ref("ConvenioID")&"",ref("LocalID")&""))
+    end if
     '-> procedimentos adicionais na agenda
     ProcedimentosAgendamento = trim(ref("ProcedimentosAgendamento"))
 
@@ -134,11 +154,17 @@ if erro ="" then
                 apID = ccur( splPA(iPA) )
                 apTipoCompromissoID = ref("ProcedimentoID"& apID)
                 apLocalID = ref("LocalID"& apID)
+                apConvenioID = ref("ConvenioID"& apID)
+                aprdValorPlano = ref("rdValorPlano"& apID)
                 
                 erro = addError(erro, ValidaProcedimentoLocal((iPA+2),apTipoCompromissoID&"", apLocalID&""))
                 
                 if searchindicacaoId ="" then
                     erro = addError(erro, ValidaProcedimentoObrigaSolicitante((iPA+2),apTipoCompromissoID&""))
+                end if
+
+                if apLocalID <>"" and aprdValorPlano  = "P" then
+                    erro = addError(erro, ValidaLocalConvenio((iPA+2),apConvenioID&"",apLocalID&""))
                 end if
             end if
         next
@@ -519,7 +545,7 @@ if erro="" then
                                      "JOIN profissionais prof ON prof.id = age.ProfissionalID "&_
                                     "WHERE age.ProfissionalID = '"&rfProfissionalID&"'"&_
                                      " AND age.DATA = "&mydatenull(rfData)&" "&_
-                                     " AND age.StaID NOT IN (11) and age.Hora = '"&rfHora&"' and age.id != "&ConsultaID
+                                     " AND age.StaID NOT IN (11,6) and age.Hora = '"&rfHora&"' and age.id != "&ConsultaID
                 set podeAgendarSQL = db.execute(queryPodeAgendar)
 
                 if not podeAgendarSQL.eof then

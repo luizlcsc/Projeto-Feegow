@@ -117,7 +117,8 @@ function ValidaLocalConvenio(linha,vConvenio,vLocal)
         if not localSQL.eof then
             LimitarUnidades = convenioSQL("unidades")&""
             parUnidadeID = localSQL("unidadeid")&""
-            if LimitarUnidades <> "" then
+
+            if LimitarUnidades&"" <> "" and LimitarUnidades<>"0" then
                 if instr(LimitarUnidades, "|"&parUnidadeID&"|")<=0 then
                     ValidaLocalConvenio= linha&"° procedimento, local não aceita este convênio"
                 end if

@@ -114,6 +114,8 @@ function completaConvenio(ConvenioID, PacienteID)
             end if
             %>
                 $("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento, #ContratadoSolicitanteCodigoNaOperadora, #_NumeroNoConselhoSolicitante, #ConselhoProfissionalSolicitanteID, #_UFConselhoSolicitante, #CodigoCBOSolicitante").prop("readonly", true);
+				$("#Contratado").attr("disabled",true);
+				$("#ContratadoID").attr("disabled",false);
             <%
         else
             if aut("|guiasA|")=0 then
@@ -122,8 +124,10 @@ function completaConvenio(ConvenioID, PacienteID)
                 <%
             end if
             %>
-                        $("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento, #ContratadoSolicitanteCodigoNaOperadora, #NumeroNoConselhoSolicitante, #ConselhoProfissionalSolicitanteID, #UFConselhoSolicitante, #CodigoCBOSolicitante").prop("readonly", false);
-            <%
+                $("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento, #ContratadoSolicitanteCodigoNaOperadora, #NumeroNoConselhoSolicitante, #ConselhoProfissionalSolicitanteID, #UFConselhoSolicitante, #CodigoCBOSolicitante").prop("readonly", false);
+				$("#Contratado").attr("disabled",false);
+				$("#ContratadoID").attr("disabled",true);
+			<%
         end if
 		'set contconv = db.execute("select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 AND (SomenteUnidades LIKE '%|"&ref("UnidadeID")&"|%' or SomenteUnidades is null OR SomenteUnidades = '') order by Contratado")'Vai chamar sempre as filiais primeiro por serem negativas, depois ver esse comportamento
 		'response.write()
@@ -219,7 +223,7 @@ function completaContratado(id, ConvenioID)
 				CodigoNaOperadora = contrato("CodigoNaOperadora") 'conv("NumeroContrato")
 				Contratado = contrato("Contratado")
 				%>
-                $("#Contratado").val("<%=Contratado%>");
+                $("#Contratado, #ContratadoID").val("<%=Contratado%>");
 				<%
 			end if
 			TabelaID = conv("TabelaPadrao")

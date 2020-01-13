@@ -166,7 +166,7 @@ if aut("pacientesV")=1 or aut("pacientesI")=1 or aut("pacientesA")=1 then
 		if aut("contatosV")=1 or aut("contatosI")=1 or aut("contatosA")=1 then
 %>
 <%		end if
-		if aut("lctestoque")=1 or aut("produtos")=1 then
+		if aut("lctestoque")=1 or aut("produtos")=1 or aut("requisicaoestoqueV")=1 then
             if 1=2 and (session("Banco")="clinic2803" or session("Banco")="clinic100000") then
                 %>
                 <li class="<%=classMenu %>"><a href="./?P=Estoque&Pers=1" class="menu-click-estoque"> <%=abreSpanTitulo %>  <i class="fa fa-medkit hidden"></i> <span class=""> Estoque </span> <%= fechaSpanTitulo %> </a>
@@ -205,7 +205,7 @@ if aut("pacientesV")=1 or aut("pacientesI")=1 or aut("pacientesA")=1 then
                         </li>
                          <%
                                 end if
-                                if aut("produtosA")=1 or aut("produtosI")=1 or aut("requisicaoestoqueV")=1 then
+                                if aut("requisicaoestoqueV")=1 then
                          %>
                         <li>
                             <a href="?P=ListaRequisicaoEstoque&Pers=1"><i class="fa fa-tasks"></i> Requisição de estoque <span class="label label-system label-xs fleft">Novo</span></a>

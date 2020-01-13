@@ -15,12 +15,12 @@ Class Devolucao
         name = accountName(accounts(0), accounts(1))&""
 
         if DebitarCaixa = "" then DebitarCaixa = "null" end if
-        set totalItens = db.execute("select SUM((ValorUnitario - Desconto + Acrescimo) * Quantidade) as total from itensinvoice ii where ii.id in ( " & iteninvoice & " ) ")
+        set totalItens = db.execute("select SUM((ValorUnitario - Desconto + Acrescimo) * Quantidade) as total, sum(idesc.Valor) totalDescontado from itensinvoice ii inner join itensdescontados idesc ON idesc.ItemID=ii.id where ii.id in ( " & iteninvoice & " ) ")
         set allProcedimentos = db.execute("select GROUP_CONCAT(NomeProcedimento) as Procs from itensinvoice ii INNER join Procedimentos p ON ii.ItemID = p.id WHERE ii.id in ( " & iteninvoice & " ) ")
         
         Total = 0
         if not totalItens.eof then 
-            Total = totalItens("total")
+            Total = totalItens("totalDescontado")
         end if
 
         NomeProcedimentosDevolvidos = ""
@@ -126,7 +126,7 @@ Class Devolucao
 
                 ' Temos que gerar um credito para o paciente
                 'Executado = credCan(iteninvoice, "C")
-                set dadosInv = db.execute("select i.AccountID, i.AssociationAccountID, sum(ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorItem from sys_financialinvoices i LEFT JOIN itensinvoice ii ON i.id=ii.InvoiceID WHERE ii.id in ("& iteninvoice&")")
+                set dadosInv = db.execute("select i.AccountID, i.AssociationAccountID, SUM(idesc.Valor) ValorDescontado , sum(ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorItem from sys_financialinvoices i LEFT JOIN itensinvoice ii ON i.id=ii.InvoiceID INNER JOIN itensdescontados idesc ON idesc.ItemID=ii.id WHERE ii.id in ("& iteninvoice&")")
                 if not dadosInv.eof then
                     if ccur(dadosInv("ValorItem"))>0 then
                         idPagador = 0
@@ -137,10 +137,10 @@ Class Devolucao
                             idAccountCredit = contaID
                             idPagador = 1
                         end if
-                        db.execute("insert into sys_financialmovement set Name='Devolução ("& iteninvoice &")', AccountAssociationIDCredit="&idPagador&", AccountIDCredit="& treatvalnull(idAccountCredit) &", AccountAssociationIDDebit="& dadosInv("AssociationAccountID") &", AccountIDDebit="& dadosInv("AccountID") &", PaymentMethodID=1, Value="& treatvalzero(dadosInv("ValorItem")) &", Date=curdate(), CD='T', Type='Transfer', Obs='{C"& ItemID &"}', Currency='', Rate=1, sysUser="&session("User")&", CaixaID="& treatvalnull(session("CaixaID")) &", UnidadeID="& treatvalzero(session("UnidadeID")) &"")
+                        db.execute("insert into sys_financialmovement set Name='Devolução ("& iteninvoice &")', AccountAssociationIDCredit="&idPagador&", AccountIDCredit="& treatvalnull(idAccountCredit) &", AccountAssociationIDDebit="& dadosInv("AssociationAccountID") &", AccountIDDebit="& dadosInv("AccountID") &", PaymentMethodID=1, Value="& treatvalzero(dadosInv("ValorDescontado")) &", Date=curdate(), CD='T', Type='Transfer', Obs='{C"& ItemID &"}', Currency='', Rate=1, sysUser="&session("User")&", CaixaID="& treatvalnull(session("CaixaID")) &", UnidadeID="& treatvalzero(session("UnidadeID")) &"")
                     end if
                 end if
-                db.execute("insert into sys_financialmovement set Name='Cancelamento de serviço ("& iteninvoice &")', AccountAssociationIDCredit="& dadosInv("AssociationAccountID") &", AccountIDCredit="& dadosInv("AccountID") &", AccountAssociationIDDebit=0, AccountIDDebit=0, PaymentMethodID=1, Value="& treatvalzero(dadosInv("ValorItem")) &", Date=curdate(), CD='T', Type='Transfer', Obs='{C"& ItemID &"}', Currency='', Rate=1, sysUser="&session("User")&", CaixaID=null, UnidadeID="& treatvalzero(session("UnidadeID")) &"")
+                db.execute("insert into sys_financialmovement set Name='Cancelamento de serviço ("& iteninvoice &")', AccountAssociationIDCredit="& dadosInv("AssociationAccountID") &", AccountIDCredit="& dadosInv("AccountID") &", AccountAssociationIDDebit=0, AccountIDDebit=0, PaymentMethodID=1, Value="& treatvalzero(dadosInv("ValorDescontado")) &", Date=curdate(), CD='T', Type='Transfer', Obs='{C"& ItemID &"}', Currency='', Rate=1, sysUser="&session("User")&", CaixaID=null, UnidadeID="& treatvalzero(session("UnidadeID")) &"")
             end if
         elseif TipoOperacao = 0 then
             'if IsNumeric(iteninvoice) then
@@ -172,10 +172,10 @@ Class Devolucao
         else
             'set vcaMovCanc = db.execute("select * from sys_financialmovement m where Obs='{C"& ItemID &"}'")
             'if vcaMovCanc.eof then
-                set dadosInv = db.execute("select i.AccountID, i.AssociationAccountID, sum(ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorItem from sys_financialinvoices i LEFT JOIN itensinvoice ii ON i.id=ii.InvoiceID WHERE ii.id in ("& ItemID&")")
+                set dadosInv = db.execute("select i.AccountID, i.AssociationAccountID,  SUM(idesc.Valor) ValorDescontado, sum(ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorItem from sys_financialinvoices i LEFT JOIN itensinvoice ii ON i.id=ii.InvoiceID INNER JOIN itensdescontados idesc on idesc.ItemID=ii.id WHERE ii.id in ("& ItemID&")")
                 if not dadosInv.eof then
                     if ccur(dadosInv("ValorItem"))>0 then
-                        db.execute("insert into sys_financialmovement set Name='Crédito de cancelamento ("& ItemID &")', AccountAssociationIDCredit="& dadosInv("AssociationAccountID") &", AccountIDCredit="& dadosInv("AccountID") &", AccountAssociationIDDebit=0, AccountIDDebit=0, PaymentMethodID=1, Value="& treatvalzero(dadosInv("ValorItem")) &", Date=curdate(), CD='', Type='Transfer', Obs='{C"& ItemID &"}', Currency='', Rate=1, sysUser="&session("User")&", CaixaID="& treatvalnull(session("CaixaID")) &", UnidadeID="& treatvalzero(session("UnidadeID")) &"")
+                        db.execute("insert into sys_financialmovement set Name='Crédito de cancelamento ("& ItemID &")', AccountAssociationIDCredit="& dadosInv("AssociationAccountID") &", AccountIDCredit="& dadosInv("AccountID") &", AccountAssociationIDDebit=0, AccountIDDebit=0, PaymentMethodID=1, Value="& treatvalzero(dadosInv("ValorDescontado")) &", Date=curdate(), CD='', Type='Transfer', Obs='{C"& ItemID &"}', Currency='', Rate=1, sysUser="&session("User")&", CaixaID="& treatvalnull(session("CaixaID")) &", UnidadeID="& treatvalzero(session("UnidadeID")) &"")
                     end if
                 end if
             'end if

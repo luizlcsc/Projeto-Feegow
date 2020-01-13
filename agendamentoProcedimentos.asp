@@ -95,7 +95,7 @@ if req("Checkin")="1" then
                                               " INNER JOIN sys_financialmovement mov ON mov.InvoiceID=i.id "&_
                                               " WHERE i.AccountID="& PacienteID &" and AssociationAccountID=3 "&_
                                               " AND ii.ItemID="& TipoCompromissoIDSe &" "&_
-                                              " AND (ISNULL(DataExecucao) OR DataExecucao=CURDATE()) "&_
+                                              " AND (ISNULL(DataExecucao) OR DataExecucao=CURDATE() OR Executado='') "&_
                                               " AND (ISNULL(ProfissionalID) or ProfissionalID=0 OR ProfissionalID="& treatvalnull(ProfissionalID) &") and ii.Executado!='C' order by 2"
                 set vcaIIPaga = db.execute(sqlQuitacao)
                 if not vcaIIPaga.eof then
@@ -867,6 +867,7 @@ function GeraGuia(TipoGuia) {
     $.ajax('tissguiaconsulta.asp?P=tissguia'+TipoGuia+'&I=N&Pers=1&Lancto=<%=ConsultaID%>|agendamento', {
         success: function(res) {
             if (res) {
+                $("#divHistorico").html("");
                 $("#tabContentCheckin").append("<div id='dadosGuiaConsulta'></div>");
                 var divAgendamento = $("#dadosGuiaConsulta");
                 divAgendamento.html(res);

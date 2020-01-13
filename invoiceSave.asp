@@ -493,9 +493,9 @@ if erro="" then
 				end if
 
 				
-
-				sqlFM = "insert into sys_financialmovement ("&camID&" AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID, UnidadeID, CodigoDeBarras) values ("&valID&"  "&AccountAssociationIDCredit&", "&AccountIDCredit&", "&AccountAssociationIDDebit&", "&AccountIDDebit&", "&treatvalzero(valorInserido)&", "&mydatenull(ref("Date"&ii))&", '"&inv("CD")&"', 'Bill', 'BRL', "&treatvalnull(ii)&", "&InvoiceID&", "&c&", "&session("User")&", "&treatvalnull(CaixaID)&", "&treatvalzero(ref("CompanyUnitID"))&", '"&CodigoDeBarras&"')"
-				'response.Write("//|||||||||||||||||||||| sqlFM: "&sqlFM)
+                Description = ref("Name"&ii)
+				sqlFM = "insert into sys_financialmovement ("&camID&" AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID, UnidadeID, CodigoDeBarras, Name) values ("&valID&"  "&AccountAssociationIDCredit&", "&AccountIDCredit&", "&AccountAssociationIDDebit&", "&AccountIDDebit&", "&treatvalzero(valorInserido)&", "&mydatenull(ref("Date"&ii))&", '"&inv("CD")&"', 'Bill', 'BRL', "&treatvalnull(ii)&", "&InvoiceID&", "&c&", "&session("User")&", "&treatvalnull(CaixaID)&", "&treatvalzero(ref("CompanyUnitID"))&", '"&CodigoDeBarras&"', '"&Description&"')"
+				'response.Write("//|||||||||||||||||||||| sqlFM: "&sqlFM & "--"& Description)
 				db.execute(sqlFM)
 				'call gravaLog(sqlFM, "AUTO")
 			end if

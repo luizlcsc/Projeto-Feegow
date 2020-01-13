@@ -64,10 +64,8 @@ end if
 
 ProcedimentoID = req("ProcedimentoID")
 PacienteID = req("PacienteID")
+SolicitanteID = req("SolicitanteID")
 
-if PacienteID<>"" then
-    session("PacienteIDSelecionado")=PacienteID
-end if
 %>
 
 <div class="panel">
@@ -227,9 +225,22 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            type: "POST",
-            url: "divAgendamento.asp?horario=" + horario + "&id=" + id + "&data=" + data + "&profissionalID=" + ProfissionalID + "&LocalID=" + LocalID + "&EquipamentoID=" + EquipamentoID + "&ProcedimentoID=" + ProcedimentoID+"&GradeID="+GradeID+"&EspecialidadeID="+EspecialidadeID+
-            "&UnidadeID="+UnidadeID,
+            type: "GET",
+            url: "divAgendamento.asp",
+            data:{
+                horario: horario,
+                id: id,
+                data: data,
+                profissionalID: ProfissionalID,
+                LocalID: LocalID,
+                EquipamentoID: EquipamentoID,
+                ProcedimentoID: ProcedimentoID,
+                GradeID: GradeID,
+                EspecialidadeID: EspecialidadeID,
+                UnidadeID: UnidadeID,
+                SolicitanteID: '<%=req("SolicitanteID")%>',
+                PacienteID: '<%=req("PacienteID")%>',
+            },
             success: function (data) {
                 $("#div-agendamento").html(data);
             }

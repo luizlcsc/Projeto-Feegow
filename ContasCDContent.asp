@@ -184,6 +184,7 @@ end if
 		if ref("CategoriaID")<>"" and isnumeric(ref("CategoriaID")) and ref("CategoriaID")<>"0" then
 		    sqlCat = " AND ii.CategoriaID="&ref("CategoriaID")&" "
         end if
+		gpCat = " GROUP BY m.id "
 		gpCatFixa = " GROUP BY f.id "
 
 		sqlCat = sqlCat&sqlOcultarCategorias

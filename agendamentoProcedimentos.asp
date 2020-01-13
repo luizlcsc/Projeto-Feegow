@@ -867,6 +867,7 @@ function GeraGuia(TipoGuia) {
     $.ajax('tissguiaconsulta.asp?P=tissguia'+TipoGuia+'&I=N&Pers=1&Lancto=<%=ConsultaID%>|agendamento', {
         success: function(res) {
             if (res) {
+                $("#divHistorico").html("");
                 $("#tabContentCheckin").append("<div id='dadosGuiaConsulta'></div>");
                 var divAgendamento = $("#dadosGuiaConsulta");
                 divAgendamento.html(res);

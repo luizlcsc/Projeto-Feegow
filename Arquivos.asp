@@ -29,7 +29,7 @@
 	        if req("ExameID")<>"" then
                 sqlExame = " AND ExameID="&req("ExameID")
 	        end if
-	        set arquivos = db.execute("select * from arquivos where Tipo='A' and PacienteID="&req("PacienteID")& sqlMov & sqlGuia & sqlExame)
+	        set arquivos = db.execute("select * from arquivos where provider <> 'S3' and Tipo='A' and PacienteID="&req("PacienteID")& sqlMov & sqlGuia & sqlExame )
 	        c=0
 	        Caminho = "https://clinic7.feegow.com.br/uploads/"& replace(session("Banco"), "clinic", "") &"/Arquivos/"
 	        while not arquivos.EOF

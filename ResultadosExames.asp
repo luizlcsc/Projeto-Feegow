@@ -15,7 +15,6 @@ subTitulo = "Resultados Exames"
                 <i style="text-align: center; margin: 30px;" class="fa fa-spin fa-spinner"></i>
             </div>
             
-            <%response.write("<script> console.log('"&session("User")&"')</script>")%>
             <script type="text/javascript">
                 getUrl("unimed/resultado-exames", {
                     patientId: "<%=req("PacienteID")%>",

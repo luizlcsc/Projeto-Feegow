@@ -5,7 +5,6 @@ call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from ProfissionalExterno where id="&req("I"))
 %>
 <form method="post" id="frm" name="frm" action="save.asp">
-
 <%=header(req("P"), "Cadastro de Profissional Externo", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
 
 <br>
@@ -40,28 +39,25 @@ set reg = db.execute("select * from ProfissionalExterno where id="&req("I"))
                             <%=quickField("cor", "Cor", "Cor de identifica&ccedil;&atilde;o", 12, reg("Cor"), "select * from Cores", "Cor", "")%>
                         </span>
                     </div>
-
-
-
-
-
-
-
-
                 </div>
                 <div class="col-md-10">
                     <div class="row">
                         <%=quickField("simpleSelect", "TratamentoID", "T&iacute;tulo", 2, reg("TratamentoID"), "select * from tratamento order by Tratamento", "Tratamento", "")%>
-                        <%=quickField("text", "NomeProfissional", "Nome", 5, reg("NomeProfissional"), "", "", " required")%>
-                        <%=quickField("simpleSelect", "EspecialidadeID", "Especialidade", 3, reg("EspecialidadeID"), "select * from especialidades WHERE sysActive=1 order by Especialidade", "Especialidade", "")%>
+                        <%=quickField("text", "NomeProfissional", "Nome", 6, reg("NomeProfissional"), "", "", " required")%>
+                        <%=quickField("simpleSelect", "EspecialidadeID", "Especialidade", 4, reg("EspecialidadeID"), "select * from especialidades WHERE sysActive=1 order by Especialidade", "Especialidade", "")%>
                     </div>
                     <div class="row">
-                        <%=quickField("simpleSelect", "Sexo", "Sexo", 1, reg("Sexo"), "select * from Sexo where sysActive=1", "NomeSexo", "")%>
+                        <%=quickField("simpleSelect", "Sexo", "Sexo", 2, reg("Sexo"), "select * from Sexo where sysActive=1", "NomeSexo", "")%>
                         <%=quickField("datepicker", "Nascimento", "Nascimento", 3, reg("Nascimento"), "input-mask-date", "", "")%>
                         <%= quickField("text", "CPF", "CPF", 3, reg("CPF"), " input-mask-cpf", "", "") %>
                         <%= quickField("simpleSelect", "Conselho", "Conselho", 2, reg("Conselho"), "select * from conselhosprofissionais order by codigo", "codigo", "") %>
                         <%= quickField("text", "DocumentoConselho", "Registro", 2, reg("DocumentoConselho"), "", "", "") %>
-                        <%= quickField("text", "UFConselho", "UF", 1, reg("UFConselho"), "", "", "") %>
+                        <%= quickField("text", "UFConselho", "UF", 2, reg("UFConselho"), "", "", "") %>
+                        <div class="col-md-3">
+                            <%=selectInsert("Grupo", "GrupoID", reg("GrupoID"), "profissionaisgrupos", "NomeGrupo", "", "", "") %>
+                        </div>
+                        <%= quickField("simpleSelect", "TipoPrestadorID", "Tipo de Prestador de Serviço", 3, reg("TipoPrestadorID"), "select * from cliniccentral.tipoprestadorservico order by 1", "descricao", "") %>
+
                         </div>
                         <hr />
                         <div class="row">

@@ -113,7 +113,7 @@ CoeficientePorte = coalesce(CoeficientePorte,1,null)
 <form method="post" action="" id="frmConvenioValores" name="frmConvenioValores">
 <div class="modal-body">
     <div class="row">
-       <%=quickField("simpleSelect", "TabelaID", "Tabela", 2, TabelaID, "select id,CONCAT(id,' - ',descricao) as descricao from tisstabelas WHERE ID NOT IN (18,19,20) UNION ALL select CONCAT(id*-1,''),descricao as descricao  from tabelasconvenios WHERE sysActive = 1", "descricao", " required empty")%>
+       <%=quickField("simpleSelect", "TabelaID", "Tabela", 2, TabelaID, "select id,CONCAT(id,' - ',descricao) as descricao from tisstabelas WHERE ID NOT IN (18,19) UNION ALL select CONCAT(id*-1,''),descricao as descricao  from tabelasconvenios WHERE sysActive = 1", "descricao", " required empty")%>
 	   <%=quickField("text", "Codigo", "C&oacute;digo na Tabela", 2, Codigo, " consultarCentral ", "", " required")%>
        <%=quickField("text", "Descricao", "Descri&ccedil;&atilde;o", 4, Descricao, " consultarCentral ", "", " required")%>
        <%=quickField("simpleSelect", "TecnicaID", "T&eacute;cnica", 2, TecnicaID, "select * from tisstecnica order by id", "Descricao", "")%>

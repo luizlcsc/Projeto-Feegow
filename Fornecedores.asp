@@ -56,6 +56,7 @@ end if
                                 <%=quickField("text", "NomeFornecedor", "Nome", 5, reg("NomeFornecedor"), "", "", " required")%>
                                 <%= quickField("text", "CPF", "CPF/CNPJ", 3, reg("CPF"), "", "", obrigar) %>
                                 <%= quickField("text", "RG", "Inscri&ccedil;&atilde;o Mun./Est.", 3, reg("RG"), "", "", "") %>
+
                                 <script src="//unpkg.com/vanilla-masker@1.1.1/lib/vanilla-masker.js"></script>
                                 <script>
                                     function inputHandler(masks, max, event) {
@@ -91,6 +92,11 @@ end if
                                   </div>
                             </div>
                             <div class="row">
+                                <div class="col-md-3">
+                                    <%=selectInsert("Grupo", "GrupoID", reg("GrupoID"), "profissionaisgrupos", "NomeGrupo", "", "", "") %>
+                                </div>
+                                <%= quickField("simpleSelect", "TipoPrestadorID", "Tipo de Prestador de Serviço", 2, reg("TipoPrestadorID"), "select * from cliniccentral.tipoprestadorservico order by 1", "descricao", "") %>
+
                             </div>
                             <hr />
                             <div class="row">

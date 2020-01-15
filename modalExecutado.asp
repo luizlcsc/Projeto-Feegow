@@ -47,7 +47,7 @@ if not RepasseSQL.eof then
 end if
 PermissaoParaAlterar=True
 
-if false and aut("areceberpacienteV")=0 and aut("contasareceberV")=0 and session("table")="profissionais" then
+if getConfig("NaoPermitirAlterarExecutanteEExecucao")=1 and aut("areceberpacienteV")=0 and aut("contasareceberV")=0 and session("table")="profissionais" then
     PermissaoParaAlterar=False
     ProfissionalID=session("idInTable")
     DataExecucao=date()
@@ -120,8 +120,11 @@ end if
         <%
         else
         %>
+<div class="col-md-6">
+<span><strong>Executante: </strong> <%=session("nameUser")%></span>
         <input type="hidden" name="EspecialidadeID<%=II%>" value="<%=EspecialidadeID%>">
         <input type="hidden" name="ProfissionalID<%=II%>" value="<%=Associacao&"_"&ProfissionalID%>">
+</div>
         <%
         end if
         %>
@@ -133,7 +136,11 @@ end if
         <%
         else
         %>
+<div class="col-md-6">
+
+        <span><strong>Data:</strong><%=DataExecucao%></span>
         <input type="hidden" name="DataExecucao<%=II%>" value="<%=DataExecucao%>">
+</div>
         <%
         end if
         %>

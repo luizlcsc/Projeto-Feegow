@@ -105,7 +105,12 @@
 														
 					while not rec.eof						
 						if not isnull(rec("Value")) and not isnull(rec("Total")) and not isnull(rec("NomePaciente")) then
-							Taxa = ccur(rec("Fee")) / 100
+						    Fee = rec("Fee")
+						    if isnull(Fee) then
+						        Fee=0
+						    end if
+
+							Taxa = ccur(Fee) / 100
 							Taxa = Taxa * rec("Value")
                             ValorCheio = rec("Value")
 							ValorCredito = ccur(rec("Value")) - Taxa
@@ -188,7 +193,7 @@
                                   <td><%=rec("NumeroNFe")%></td>
 							      <td nowrap><%= Parcela %> / <%= Parcelas %></td>
 							      <td nowrap><%= Bandeira %></td>
-								  <td nowrap align="right"><%= rec("taxa_atualmente") %>%</td>
+								  <td nowrap align="right"><%= fn(rec("taxa_atualmente")) %>%</td>
 							      <td nowrap align="right">
                                       R$ <%= fn(rec("Total")) %>
                                       <input type="hidden" id="parc<%=rec("id") %>" value="<%=fn(rec("Value")) %>" />

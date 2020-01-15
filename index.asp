@@ -168,6 +168,15 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
     <% end if %>
 
+
+  .blinking{
+      animation:blinkingText 1.2s infinite;
+  }
+  @keyframes blinkingText{
+      0%{     color: #FFF;    }
+      60%{    color: transparent; }
+      100%{   color: #FFF;    }
+  }
   </style>
 
   <link type="text/css" rel="stylesheet" href="assets/js/qtip/jquery.qtip.css" />
@@ -705,6 +714,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 					<div class="navbar-btn btn-group">
 	          <button id="toggle_sidemenu_r" class="btn btn-sm" onclick="chatUsers()" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Conversa">
 		          <span class="fa fa-comments"></span>
+              <span class="badge badge-danger" id="badge-chat"></span>
 		          <!-- <span class="caret"></span> -->
 	          </button>
 	        </div>
@@ -1740,6 +1750,7 @@ function facialRecognition () {
 $(document).ready(function() {
     $(".callTicketBtn").attr("disabled", false);
     $(".facialRecogButton").attr("disabled", false);
+    
 });
 
 var mensagemPaciente = true;
@@ -1836,11 +1847,33 @@ function callTalk(D, P, Da, Div){
 	});
 }
 
+function statusChat(I){
+  let De = I;
+  let Para = '<%=session("user")%>';
+
+  $.ajax({
+		type:"POST",
+		url:"chatStatus.asp?De="+De+"&Para="+Para+"&Visualizado=1",
+		success:function(data){
+			eval(data);
+		}
+	});
+}
+
 function chatUpdate(I){
   $.get("UpdateChat.asp?ChatID="+I, function(data){
     $("#body_"+I).html(data);
     $("#body_"+I).slimScroll({ scrollTo:'900000'});
+    chatBlink(I,true);
   });
+}
+
+function chatBlink(I,isBlink){
+      if (isBlink){
+        $("#chat_"+I).parent().prev().find(".title-text").addClass("blinking");
+      }else{
+        $("#chat_"+I).parent().prev().find(".title-text").removeClass("blinking");
+      }
 }
 
 function callWindow(I, T){
@@ -1870,6 +1903,9 @@ function callWindow(I, T){
             width: 300,
             height: 400,
             showPopout:false,
+            restore: function(e,dialog){
+              chatBlink(I,false);
+            },
             close: function (e, dialog) {
                         // do something when the button is clicked
                 // alert("fechou");

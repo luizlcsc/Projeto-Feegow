@@ -39,6 +39,13 @@ set u = db.execute("select Nome, Foto, t.id, t.Table, UltRef, chat.DataHora FROM
 'set u = db.execute("select su.id, su.`Table`, f.NomeFuncionario NomeFuncionarios, f.Foto FotoFuncionarios, p.NomeProfissional NomeProfissionais, p.Foto FotoProfissionais from sys_users su LEFT JOIN profissionais p on (p.id=su.idInTable and su.`Table` like 'Profissionais') LEFT JOIN funcionarios f on (f.id=su.idInTable and su.`Table` like 'Funcionarios') where su.id<>"&session("User")&" and su.Permissoes like '%chatI%' and (not isnull(f.NomeFuncionario) or not isnull(p.NomeProfissional)) order by p.NomeProfissional")
 while not u.eof
 	if u("id")<>session("User") then
+    set qtdMsg = db.execute("SELECT count(*) as qtd FROM chatmensagens WHERE  Para="&session("User")&" and De="&u("id")&"  and Visualizado = 0")
+    if not qtdMsg.eof then
+    msgNaoLidas= ""
+        if cint(qtdMsg("qtd")) > 0 then
+            msgNaoLidas = qtdMsg("qtd")
+        end if
+    end if
 	%>
                 <li class="media" onclick="callWindow(<%=u("id")%>, '<%=u("Nome")%>')" style="cursor:pointer">
                     <a class="media-left" href="javascript:void(0)">
@@ -67,6 +74,7 @@ while not u.eof
 					end if
 					%>
                         <%=u("Nome")%>
+                        <span class="badge badge-primary"><%=msgNaoLidas%></span>
                         </h5>
                         <p class="online hidden"><%=isonline %></p>
                     </div>

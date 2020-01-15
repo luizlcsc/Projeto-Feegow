@@ -259,6 +259,7 @@ else
             if ccur(NotificacoesSQL("total")) > 0 then 
                 %>
                     openModal("Existem descontos pendentes de aprovação. <br><a href='?P=DescontoPendente&Pers=1'>Ir para a tela</a>", "Descontos Pendentes", true, false, "lg")
+                     $("#audioNotificacao").trigger("play");
                 <%
                 sqlAtualizar = "update notificacoes set StatusID = 2 where StatusID IN (1) AND TipoNotificacaoID = 4 AND UsuarioID="&Session("User")
                 db.execute(sqlAtualizar)

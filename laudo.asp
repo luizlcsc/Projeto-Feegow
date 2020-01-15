@@ -117,7 +117,7 @@ else
         PacienteID = l("PacienteID")
         NomePaciente = l("NomePaciente")
         Texto = l("Texto")
-        FormPID = l("FormPID")
+        FormPID = l("FormPID") 
         if isnull(FormPID) then
             FormPID = "'N'"
         end if

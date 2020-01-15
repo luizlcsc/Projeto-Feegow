@@ -142,6 +142,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
 
             initialOrder = "NomeProcedimento"
         elseif ref("t")="sys_financialexpensetype" then
+            PermissaoParaAdd = 0
 
             set dadosResource = db.execute("select * from cliniccentral.sys_resources where tableName like '"&ref("t")&"'")
             Typed= ref("q")
@@ -160,6 +161,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
             Pers = dadosResource("Pers")
             mainFormColumn = dadosResource("mainFormColumn")
         elseif ref("t")="sys_financialincometype" then
+            PermissaoParaAdd = 0
             set dadosResource = db.execute("select * from cliniccentral.sys_resources where tableName like '"&ref("t")&"'")
             Typed= ref("q")
             sql = " select et.id, et.Name from sys_financialIncomeType et "&_

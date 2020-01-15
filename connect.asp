@@ -325,7 +325,7 @@ function altNotif(UserID, TarefaID, Status, IX)
 	end if
 end function
 
-function gravaChamada(rfProfissionalID, rfPaciente)
+function gravaChamada(rfProfissionalID, rfPaciente, UnidadeID)
 	sql = "select * from sys_chamadaporvoz"
 	set configChamada = db.execute(sql)
 	if configChamada.eof then
@@ -333,12 +333,12 @@ function gravaChamada(rfProfissionalID, rfPaciente)
 		set configChamada = db.execute(sql)
 	end if
 	if instr(configChamada("Usuarios"), "ALL") then
-		db_execute("update sys_users set chamar='"&rfProfissionalID&"_"&rfPaciente&"'")
+		db_execute("update sys_users set chamar='"&rfProfissionalID&"_"&rfPaciente&"' where (UnidadeID="&treatvalnull(UnidadeID)&" or UnidadeID IS NULL)")
 	else
 		spl = split(configChamada("Usuarios"), "|")
 		for i=0 to ubound(spl)
 			if isnumeric(spl(i)) then
-				db_execute("update sys_users set chamar='"&rfProfissionalID&"_"&rfPaciente&"' where id="&spl(i))
+				db_execute("update sys_users set chamar='"&rfProfissionalID&"_"&rfPaciente&"' where id="&spl(i)&" AND (UnidadeID="&treatvalnull(UnidadeID)&" or UnidadeID IS NULL)")
 			end if
 		next
 	end if
@@ -758,7 +758,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			response.Write(LabelFor)
 			%>
 			<div class="input-group">
-                <input type="text" class="form-control input-mask-cpf <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%> />
+                <input type="text" class="form-control <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%> />
 
                 <span class="input-group-addon">
                    <div class="checkbox-custom checkbox-warning">
@@ -1533,35 +1533,62 @@ function accountBalance(AccountID, Flag)
 
 	accountBalance = 0
 	set getMovement = db.execute("select * from sys_financialMovement where ((AccountAssociationIDCredit="&AccountAssociationID&" and AccountIDCredit="&AccountID&") or (AccountAssociationIDDebit="&AccountAssociationID&" and AccountIDDebit="&AccountID&")) and ((Date<='"&myDate(date())&"') or (Date>'"&myDate(date())&"' and ValorPago is not null)) order by Date")
-	while not getMovement.eof
-		Value = getMovement("Value")
-		AccountAssociationIDCredit = getMovement("AccountAssociationIDCredit")
-		AccountIDCredit = getMovement("AccountIDCredit")
-		AccountAssociationIDDebit = getMovement("AccountAssociationIDDebit")
-		AccountIDDebit = getMovement("AccountIDDebit")
-		PaymentMethodID = getMovement("PaymentMethodID")
-		Rate = getMovement("Rate")
-		'defining who is the C and who is the D
-		'if ccur(AccountAssociationIDCredit)=ccur(AccountAssociationID) and ccur(AccountIDCredit)=ccur(AccountID) then
-		if AccountAssociationIDCredit&""=AccountAssociationID&"" and AccountIDCredit&""=AccountID&"" then
-			CD = "C"
-			'if getMovement("Currency")<>session("DefaultCurrency") then
-			'	Value = Value / Rate
-			'end if
-			accountBalance = accountBalance+Value
-		else
-			'if getMovement("Currency")<>session("DefaultCurrency") then
-			'	Value = Value / Rate
-			'end if
-			CD = "D"
-			accountBalance = accountBalance-Value
-		end if
-		'-
-		cType = getMovement("Type")
-	getMovement.movenext
-	wend
-	getMovement.close
-	set getMovement = nothing
+
+	if not getMovement.eof then
+        while not getMovement.eof
+            Value = getMovement("Value")
+            AccountAssociationIDCredit = getMovement("AccountAssociationIDCredit")
+            AccountIDCredit = getMovement("AccountIDCredit")
+            AccountAssociationIDDebit = getMovement("AccountAssociationIDDebit")
+            AccountIDDebit = getMovement("AccountIDDebit")
+            PaymentMethodID = getMovement("PaymentMethodID")
+            Rate = getMovement("Rate")
+            'defining who is the C and who is the D
+            'if ccur(AccountAssociationIDCredit)=ccur(AccountAssociationID) and ccur(AccountIDCredit)=ccur(AccountID) then
+            if AccountAssociationIDCredit&""=AccountAssociationID&"" and AccountIDCredit&""=AccountID&"" then
+                CD = "C"
+                'if getMovement("Currency")<>session("DefaultCurrency") then
+                '	Value = Value / Rate
+                'end if
+                accountBalance = accountBalance+Value
+            else
+                'if getMovement("Currency")<>session("DefaultCurrency") then
+                '	Value = Value / Rate
+                'end if
+                CD = "D"
+                accountBalance = accountBalance-Value
+            end if
+            '-
+            cType = getMovement("Type")
+        getMovement.movenext
+        wend
+        getMovement.close
+        set getMovement = nothing
+
+    	if AccountAssociationID=3 then
+
+        'aqui calcula valores que vieram de outros pacientes
+
+        set CreditosUtilizadosEmOutrosPacientesSQL = db.execute(" "&_
+" SELECT SUM(IF(movp2.AccountIDCredit="&AccountID&", disc.DiscountedValue*-1, disc.DiscountedValue)) DiscountedValue FROM  "&_
+"  "&_
+" sys_financialmovement movp1 "&_
+" INNER JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=movp1.id "&_
+" INNER JOIN sys_financialmovement movp2 ON movp2.id=disc.MovementID AND movp2.AccountIDCredit!=movp1.AccountIDDebit "&_
+"  "&_
+" WHERE  "&_
+" (movp1.AccountIDDebit="&AccountID&" AND movp1.AccountAssociationIDDebit="&AccountAssociationID&") OR  "&_
+" (movp2.AccountIDCredit="&AccountID&" AND movp2.AccountAssociationIDCredit="&AccountAssociationID&") "&_
+        "")
+        if not CreditosUtilizadosEmOutrosPacientesSQL.eof then
+            DiscountedValueCredito = CreditosUtilizadosEmOutrosPacientesSQL("DiscountedValue")
+
+            if not isnull(DiscountedValueCredito) then
+                accountBalance = accountBalance + DiscountedValueCredito
+            end if
+        end if
+        end if
+    end if
 
 	if AccountAssociationID=1 or AccountAssociationID=7 then
 		accountBalance = accountBalance*(-1)

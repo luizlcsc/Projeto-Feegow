@@ -31,6 +31,7 @@ if session("Admin")=0 then
 	set omit = nothing
 	Tipo=""
 end if
+LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 
 'verifica se há agendamento aberto e bloqueia o id concatenado
 set vcaAB = db.execute("select id, AgAberto, UltRef from sys_users where AgAberto like '%_%' and id<>"& session("User"))
@@ -681,7 +682,7 @@ end if
                         LocalDiferenteDaGrade=0
                         classeL = ".l"&comps("LocalID")
 					end if
-					LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
+
 					if LiberarHorarioRemarcado=1 then
 					    StatusRemarcado = " && Status !== '15'"
 					end if
@@ -726,7 +727,7 @@ end if
                 	<%
 					if HoraFinal<>"" then
 						%>
-						if(Status !== "11" && Status !== "22"){
+						if(Status !== "11" && Status !== "22" <%=StatusRemarcado%>){
                             $( ".vazio" ).each(function(){
                                 if( $(this).attr("data-horaid")>'<%=HoraComp%>' && $(this).attr("data-horaid")<'<%=HoraFinal%>' )
                                 {

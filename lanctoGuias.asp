@@ -13,7 +13,7 @@ if not g.eof then
     set ContasSQL = db.execute("SELECT conta.id, itensinvoice.Descricao "&_
                                " FROM sys_financialinvoices conta "&_
                                " LEFT JOIN itensinvoice ON itensinvoice.InvoiceID = conta.id "&_
-                               " WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 30 DAY)")
+                               " WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 180 DAY)")
 end if
 if g("Total") > 0 then
 %>

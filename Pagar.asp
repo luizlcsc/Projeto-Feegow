@@ -64,14 +64,15 @@ set movs=nothing
 
 
 
-
-
-
 '------> pegando os creditos
 if 1=1 then
 sqlMovCred = "select m.*, (select sum(DiscountedValue) from sys_financialdiscountpayments where MovementID=m.id) as soma from sys_financialmovement m where ((m.AccountAssociationIDCredit="&AssContaID&" and m.AccountIDCredit="&ContaID&") or (m.AccountAssociationIDDebit="&AssContaID&" and m.AccountIDDebit="&ContaID&")) and m.Type in('Pay', 'Transfer') and m.CD != 'T' "
 'response.Write( sqlMovCred )
 set mov = db.execute(sqlMovCred)
+
+%>
+<div class="conteudo-creditos">
+<%
 		while not mov.eof
 			valor = mov("Value")
 			soma = mov("soma")
@@ -142,6 +143,9 @@ set mov = db.execute(sqlMovCred)
 	            </form>
 		<%
 		end if
+%>
+</div>
+<%
 end if
 '<------ pegando os creditos
 %>
@@ -190,6 +194,53 @@ end if
 <form method="post" action="" id="frmPagto">
 <div class="modal-body">
     <div class="row">
+        <%
+
+        if getConfig("PermitirCreditoDeOutrosPacientes")=1 and CD="C" and AssContaID=3 then
+            %>
+<div class="col-md-12">
+    <div class="row">
+        <div id="content-utilizar-credito-outro-paciente" class="col-md-3  col-md-offset-9">
+            <button class="btn btn-default btn-sm" type="button" onclick="CreditoOutroPacienteToggleSelect()">
+                <i class="fa fa-unlink"></i> Utilizar crédito de outro paciente
+            </button>
+        </div>
+
+        <div style="display:none;" id="content-escolher-paciente-credito" class="col-md-6  col-md-offset-6">
+            <div class="col-md-9">
+                <label>Selecione a conta ou paciente</label><br>
+                <%=selectInsertCA("", "PacienteCreditoID", "", "3", "", "", "")%>
+            </div>
+            <div class="col-md-3">
+                <button class="btn m20 btn-success btn-block" onclick="BuscarCreditosPaciente($('#PacienteCreditoID').val())" type="button"><i class="fa fa-search"></i> Buscar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script >
+function CreditoOutroPacienteToggleSelect(showSelect=true) {
+    var $contentUtilizar = $("#content-utilizar-credito-outro-paciente"),
+        $contentEscolhePaciente = $("#content-escolher-paciente-credito");
+
+    if(showSelect){
+        $contentUtilizar.fadeOut(function() {
+          $contentEscolhePaciente.fadeIn();
+        });
+    }
+}
+
+function BuscarCreditosPaciente(ContaID) {
+    $.get("BuscarCreditosPaciente.asp", {ContaID: ContaID}, function(data) {
+        $(".conteudo-creditos").html(data);
+    });
+}
+</script>
+            <%
+        end if
+
+        %>
+
+
         <div id="pagtoConv" class="col-md-12 widget-container-span ui-sortable">
             <div class="widget-box">
                 <div class="widget-header">
@@ -1004,7 +1055,7 @@ function verificaBandeira()
 }
 
 
-$(".credito").click(function(){
+$("#pagar").on("click",".credito",function(){
     $("#pagtoConv, #btnPagar").slideUp();
 	$.post("calcCredito.asp?TotalItens=<%=TotalItens%>", $("#frmCredito").serialize(), function(data, success){ $("#pagtoCredito").html(data) } );
 });

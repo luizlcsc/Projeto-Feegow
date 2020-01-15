@@ -1,5 +1,7 @@
 <%InicioProcessamento = Timer%>
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/ValidaProcedimentoProfissional.asp"-->
+
 <%
 'on error resume next
 
@@ -27,6 +29,7 @@ mesCorrente=month(Data)
 if lcase(session("Table"))="funcionarios" then
 	session("UltimaAgenda") = ProfissionalID
 end if
+LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 
 
 set prof = db.execute("select Cor, NomeProfissional, Foto, ObsAgenda from profissionais where id="&ProfissionalID)
@@ -92,6 +95,34 @@ if session("FilaEspera")<>"" then
 	end if
 end if
 if session("RemSol")<>"" then
+Ativo = "off"
+testesql = "select a.TipoCompromissoID, a.ProfissionalID, a.EspecialidadeID, if(a.rdValorPlano='P',a.rdValorPlano,'') as ConvenioID from agendamentos a where id="&session("RemSol")
+'response.write testesql
+set teste = db.execute(testesql)
+
+RemarcarAssociacao = 5
+RemarcarProfissionalID = req("ProfissionalID")
+RemarcarEspecialidadeID = teste("EspecialidadeID")
+RemarcarProcedimentoID = teste("TipoCompromissoID")
+RemarcarConvenio = teste("ConvenioID")
+
+profissionalValido = validaProcedimentoProfissional(5 ,RemarcarProfissionalID, RemarcarEspecialidadeID,  RemarcarProcedimentoID,"")
+
+if profissionalValido = true then
+    Ativo = "on"
+    sqlProcedimentoPermitido =  " AND ((ass.Procedimentos = '' OR ass.Procedimentos IS NULL)"&_
+                                " OR ass.Procedimentos LIKE '%|"&RemarcarProcedimentoID&"|%') "
+
+    sqlEspecialidadePermitido =  " AND ((ass.Especialidades = '' OR ass.Especialidades IS NULL)"&_
+                                " OR ass.Especialidades LIKE '%|"& RemarcarEspecialidadeID &"|%') "
+
+    if RemarcarConvenio<>"" then
+    sqlConvenioPermitido =  " AND ((ass.Convenios = '' OR ass.Convenios IS NULL)"&_
+                                " OR ass.Convenios LIKE '%|"& RemarcarConvenio &"|%') "
+    end if
+
+end if
+
 	%>
 	<div class="alert alert-warning col-md-12 text-center" style="padding: 5px">
             Selecione um hor&aacute;rio disponível
@@ -324,13 +355,18 @@ while diaS<n
 	<script>
     <%
 
+    somenteStatus = getConfig("NaoExibirNaAgendaOsStatus")
+    if somenteStatus&"" <> "" then
+        sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
+    end if
+
     set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.PacienteID,a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, a.Primeira, p.NomePaciente, p.IdImportado, p.Tel1, p.Cel1, proc.NomeProcedimento, s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Notas, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta from agendamentos a "&_
     "left join pacientes p on p.id=a.PacienteID "&_
     "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
     "left join staconsulta s on s.id=a.StaID "&_
     "left join convenios c on c.id=a.ValorPlano "&_
     "left join locais l on l.id=a.LocalID "&_
-    "where a.Data="&mydatenull(Data)&" and a.ProfissionalID="&ProfissionalID&" order by Hora")
+    "where a.Data="&mydatenull(Data)&" and a.sysActive=1 and a.ProfissionalID="&ProfissionalID&sqlSomentestatus&" order by Hora")
 
     while not comps.EOF
         Tempo=0
@@ -461,7 +497,6 @@ while diaS<n
             classeL = ".l"&comps("LocalID")
         end if
 
-        LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
         if LiberarHorarioRemarcado=1 then
             StatusRemarcado = " && Status !== '15'"
         end if
@@ -505,7 +540,7 @@ while diaS<n
 	<%
 	if HoraFinal<>"" then
 		%>
-        if(Status !== "11" && Status !== "22" && Status !== "33"){
+        if(Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>){
             $( ".vazio<%=DiaSemana%>" ).each(function(){
                 if( $(this).attr("id")>'<%=DiaSemana&HoraComp%>' && $(this).attr("id")<'<%=DiaSemana&HoraFinal%>' )
                 {

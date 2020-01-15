@@ -45,6 +45,14 @@ if not RepasseSQL.eof then
         TemRepasse=True
     end if
 end if
+PermissaoParaAlterar=True
+
+if false and aut("areceberpacienteV")=0 and aut("contasareceberV")=0 and session("table")="profissionais" then
+    PermissaoParaAlterar=False
+    ProfissionalID=session("idInTable")
+    DataExecucao=date()
+end if
+
 %>
 
 <form method="post" action="" id="frmExecutado">
@@ -80,6 +88,10 @@ end if
             <%=quickField("simpleCheckbox", "Executado"&II, "Executado", "6", Executado, "", "", "")%>
         </div>
         <br>
+
+        <%
+        if PermissaoParaAlterar then
+        %>
         <div class="row">
             <div class="col-md-6">
                 <label>Executante</label><br />
@@ -105,8 +117,26 @@ end if
                 <%= quickField("simpleSelect", "EspecialidadeID"&II, "Especialidade", 6, EspecialidadeID, sqlEspecialidades, "especialidade", " no-select2 "&camposRequired) %>
             </div>
         </div>
+        <%
+        else
+        %>
+        <input type="hidden" name="EspecialidadeID<%=II%>" value="<%=EspecialidadeID%>">
+        <input type="hidden" name="ProfissionalID<%=II%>" value="<%=Associacao&"_"&ProfissionalID%>">
+        <%
+        end if
+        %>
         <div class="row">
+        <%
+        if PermissaoParaAlterar then
+        %>
             <%= quickField("datepicker", "DataExecucao"&II, "Data da Execu&ccedil;&atilde;o", 6, DataExecucao,"" , "", "") %>
+        <%
+        else
+        %>
+        <input type="hidden" name="DataExecucao<%=II%>" value="<%=DataExecucao%>">
+        <%
+        end if
+        %>
             <%= quickField("text", "HoraExecucao"&II, "<i class='fa fa-clock-o'></i> In&iacute;cio", 3, HoraExecucao, " input-mask-l-time", "", "") %>
             <%= quickField("text", "HoraFim"&II, "<i class='fa fa-clock-o'></i> Fim", 3, HoraFim, " input-mask-l-time", "", "") %>
 

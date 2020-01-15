@@ -2,7 +2,7 @@
     <!--#include file="calltalk.asp"-->
 </div>
 
-        <form class="chat" id="frm<%=ChatID %>" action="" method="post">
+        <form class="chat" id="frm<%=ChatID %>" action="" method="post" onfocusin="statusChat('<%=ChatID %>');">
             <input type="hidden" name="chatID" value="<%=chatID%>" />
             <div class="panel">
                 <div class="panel-body">

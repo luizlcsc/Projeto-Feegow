@@ -82,8 +82,10 @@ NomePaciente = ""
 NomeProcedimento = ""
 if LaudoID="" then
     sql = "select ifnull(DiasLaudo, 0) DiasLaudo, FormulariosLaudo, NomeProcedimento FROM procedimentos where id='"&ProcedimentoID&"'"
-
     set pproc = db.execute(sql)
+    
+    FormID = 0
+
     if not pproc.eof then
         DiasLaudo = ccur(pproc("DiasLaudo"))
         PrevisaoEntrega = dateadd("d", DiasLaudo, Execucao)
@@ -93,28 +95,29 @@ if LaudoID="" then
         if FormulariosLaudo<>"" then
             splFormulariosLaudo = split(FormulariosLaudo, ", ")
             FormID = splFormulariosLaudo(0)
-        else
-            FormID = 0
         end if
+    end if
         sql = "select id from laudos where Tabela='"& Tabela &"' and IDTabela="& IDTabela
         
         set vca = db.execute(sql)
         if vca.eof then
-            db.execute("insert into laudos (PacienteID, ProcedimentoID, Tabela, IDTabela, FormID, PrevisaoEntrega, StatusID) values ("& PacienteID &", "& ProcedimentoID &", '"& Tabela &"', "& IDTabela &", "& FormID &", "& mydatenull(PrevisaoEntrega) &", 1)")
+            db.execute("insert into laudos (PacienteID, ProcedimentoID, Tabela, IDTabela, FormID, PrevisaoEntrega, StatusID) values ("& PacienteID &", "& treatvalzero(ProcedimentoID) &", '"& Tabela &"', "& IDTabela &", "& FormID &", "& mydatenull(PrevisaoEntrega) &", 1)")
             set pult = db.execute("select id from laudos where Tabela='"& Tabela &"' and IDTabela="& IDTabela &" order by id desc limit 1")
             LaudoID = pult("id")
         else
             LaudoID = vca("id")
         end if
-    end if
-    response.Redirect("./?P=Laudo&Pers=1&I="& LaudoID)
+        
+    redir = "./?P=Laudo&Pers=1&I="& LaudoID
+    
+    response.Redirect(redir)
 else
     set l = db.execute("select l.*, p.NomePaciente from laudos l LEFT JOIN pacientes p ON p.id=l.PacienteID where l.id="& LaudoID)
     if not l.eof then
         PacienteID = l("PacienteID")
         NomePaciente = l("NomePaciente")
         Texto = l("Texto")
-        FormPID = l("FormPID") 
+        FormPID = l("FormPID")
         if isnull(FormPID) then
             FormPID = "'N'"
         end if
@@ -247,9 +250,21 @@ end if
         $.post("laudoLog.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
     }
 
-    function syncLabResult(invoices) {
-        $("#syncInvoiceResultsButton").prop("disabled", true);
-        postUrl("labs-integration/matrix/sync-invoice", {
+    function syncLabResult(invoices, labid =1) {
+        var caminhointegracao = "";
+        $("#syncInvoiceResultsButton").prop("disabled", true);  
+        switch (expr) {
+            case '1':      
+                caminhointegracao = "matrix"; 
+                break;
+            case '2': 
+                caminhointegracao = "diagbrasil";
+                break;
+            default:
+                alert ('Erro ao integrar com Laboratório');
+                return false;
+        }  
+        postUrl("labs-integration/"+caminhointegracao+"/sync-invoice", {
             "invoices": invoices
         }, function (data) {
             $("#syncInvoiceResultsButton").prop("disabled", false);

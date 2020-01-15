@@ -1,7 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
 <%
-if ref("De")<>"" then 
+if ref("De")<>"" then
     De = ref("De")
 else
     De = date()-30

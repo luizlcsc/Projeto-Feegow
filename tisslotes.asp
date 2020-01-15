@@ -11,7 +11,7 @@
     <br />
     <div class="panel">
     <div class="panel-body">
-    	<div class="col-md-3">
+    	<div class="col-md-3">A
         	<label>Tipo de Guia</label><br />
         	<select name="T" id="T" class="form-control" required>
             	<option value="">Selecione</option>
@@ -114,7 +114,7 @@ if request.QueryString("ConvenioID")<>"" then
 			ColunaTotal = "Procedimentos"
 			link = "LOTE_HONORARIOS"
 		end if
-		set nguias = db.execute("select count(*) as total from "&Tabela&" where LoteID="&lotes("id"))
+		set nguias = db.execute("select count(*) as total,group_concat(id) as guias from "&Tabela&" where LoteID="&lotes("id"))
 		set total = db.execute("select sum("&ColunaTotal&") as ValorTotal from "&Tabela&" where LoteID="&lotes("id"))
 		c=c+1
 		if isnull(total("ValorTotal")) then
@@ -126,8 +126,9 @@ if request.QueryString("ConvenioID")<>"" then
 		ValotTotalGuias = ValotTotalGuias + ValorTotal
 		NumeroGuias = NumeroGuias + cint(nguias("total"))
 		if cint(nguias("total")) > 0 then
+
 		%>
-		<tr>
+		<tr dias-para-recebimento="<%=objConvenio("DiasRecebimento") %>" >
         	<td><%=lotes("Lote")%></td>
             <td>
                 <%
@@ -179,7 +180,7 @@ if request.QueryString("ConvenioID")<>"" then
             <%
             if aut("loteA")=1 then
             %>
-                <%=quickField("datepicker", "DataEnvio"&lotes("id"), "", 12, lotes("DataEnvio"), "input-mask-date dlote", "", " data-loteid="&lotes("id")&" ")%>
+                <%=quickField("datepicker", "DataEnvio"&lotes("id"), "", 12, lotes("DataEnvio"), "input-mask-date dlote data-enviada", "", " data-loteid="&lotes("id")&" ")%>
             <%
             else
                 response.write(lotes("DataEnvio"))
@@ -191,7 +192,7 @@ if request.QueryString("ConvenioID")<>"" then
             <%
             if aut("loteA")=1 then
             %>
-                <%=quickField("datepicker", "DataPrevisao"&lotes("id"), "", 12, lotes("DataPrevisao"), "input-mask-date dlote", "", " data-loteid="&lotes("id")&" ")%>
+                <%=quickField("datepicker", "DataPrevisao"&lotes("id"), "", 12, lotes("DataPrevisao"), "input-mask-date dlote data-previsao", "", " data-loteid="&lotes("id")&" ")%>
             <%
             else
                 response.write(lotes("DataPrevisao"))
@@ -203,7 +204,7 @@ if request.QueryString("ConvenioID")<>"" then
                 <%
                 if aut("loteA")=1 then
                 %>
-                    <%=quickField("datepicker", "DataPrevisaoOriginal"&lotes("id"), "", 12, lotes("DataPrevisaoOriginal"), "input-mask-date dlote", "", " data-loteid="&lotes("id")&" ")%>
+                    <%=quickField("datepicker", "DataPrevisaoOriginal"&lotes("id"), "", 12, lotes("DataPrevisaoOriginal"), "input-mask-date data-original dlote", "", " data-loteid="&lotes("id")&" ")%>
                 <%
                 else
                     response.write(lotes("DataPrevisaoOriginal"))
@@ -236,11 +237,17 @@ if request.QueryString("ConvenioID")<>"" then
                 </div>
             </td>
             <td>
-            <div class="btn-group">
+            <div class="" style="white-space: nowrap;">
             <%
             if aut("loteA")=1 then
             %>
-              <button onclick="location.href='./?P=tissbuscaguias&Pers=1&T=<%=request.QueryString("T")%>&ConvenioID=<%=request.QueryString("ConvenioID")%>&LoteID=<%=lotes("id")%>&NumeroGuia=&PacienteID=&searchPacienteID=&DataDe=&DataAte=';" type="button" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></button>
+              <button onclick="location.href='./?P=tissbuscaguias&Pers=1&T=<%=request.QueryString("T")%>&ConvenioID=<%=request.QueryString("ConvenioID")%>&LoteID=<%=lotes("id")%>&NumeroGuia=&PacienteID=&searchPacienteID=&DataDe=&DataAte=';"
+                      type="button" class="btn btn-success btn-sm">
+                <i class="fa fa-edit"></i>
+              </button>
+              <button type="button" class="btn btn-success btn-sm" onclick="gerarConta('<%=nguias("guias")&""%>')">
+                  Gerar Conta
+                </button>
             <%
             end if
             %>
@@ -261,7 +268,7 @@ if request.QueryString("ConvenioID")<>"" then
     %>
     <tfoot>
         <tr>
-            <td colspan="3"><strong>Quantidade: <%=NumeroGuias%> guias</strong></td>
+            <td colspan="4"><strong>Quantidade: <%=NumeroGuias%> guias</strong></td>
             <td colspan="10"><strong>Valor Total: R$ <%=formatnumber(ValotTotalGuias,2)%></strong></td>
         </tr>
     </tfoot>
@@ -275,6 +282,10 @@ end if
         </div>
 </form>
 <script type="text/javascript">
+
+
+
+
 $("#encontradas").html('<%=c%>');
 
 $("#T, #ConvenioID").change(function(){
@@ -291,6 +302,25 @@ $("#marca").click(function(){
 	var marcado = $(this).prop("checked");
 	$(".guia").attr("checked", marcado);
 });
+
+function gerarConta(arg){
+    $.post("lanctoGuias.asp?T=<%=request.QueryString("T")%>", {Guia: arg,JSON:true},
+    function(data){
+
+      openModal(
+           `<div>
+               <input type="radio" value="-1" id="lote${-1}" name="lotes_contas" checked /> <label for="lote${-1}">Criar nova Conta</label>
+           </div>`
+                   +
+          data.map((item) =>
+        `<div>
+              <input type="radio" value="${item.id}" id="lote${item.id}" name="lotes_contas" /> <label for="lote${item.id}"> ${item.Descricao}</label>
+         </div>`
+      ), "<i class=\"fa fa-plus\"></i> Selecione a conta", true, 'Gerar Conta', "lg")
+
+        console.log(data);
+    });
+}
 
 function fechalote(){
 	var checados = $("input.guia:checked").length;
@@ -324,6 +354,34 @@ $(".dlote").change(function(){
         Enviado: $("#Enviado" + lid ).prop("checked")
     }, function(data){
         eval(data);
+    });
+});
+
+$(".data-enviada").on('change', (arg) => {
+
+    let data = $(arg.target).val();
+    let tr = $(arg.target).parents("tr");
+
+    let dias = parseInt(tr.attr("dias-para-recebimento"));
+
+    if(!Number.isInteger(dias)){
+        return ;
+    }
+
+    dataCalculada = moment(data, "DD/MM/YYYY").add(10, 'days').format('DD/MM/YYYY');
+    tr.find(".data-previsao").val(dataCalculada);
+    tr.find(".data-previsao").focus();
+
+    tr.find(".data-previsao").val(dataCalculada);
+    tr.find(".data-previsao").focus();
+
+    tr.find(".data-original").val(dataCalculada);
+    tr.find(".data-original").focus();
+    new PNotify({
+        title: 'Atenção.',
+        text: 'Previsão e Previsão Original alterada para '+dataCalculada,
+        type: 'warning',
+        delay: 5000
     });
 });
 

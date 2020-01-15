@@ -1,7 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
 <%
-if ref("De")<>"" then 
+if ref("De")<>"" then
     De = ref("De")
 else
     De = date()-30
@@ -32,6 +32,7 @@ end if
             <th>Procedimento</th>
             <th>Convênio</th>
             <th>Status</th>
+            <th width="1%"></th>
             <th width="1%"></th>
             <th width="1%"></th>
         </tr>
@@ -116,17 +117,16 @@ end if
             filtroGrupo = " ii.ItemID in ("&Procedimentos&") AND "
         END IF
 
-        sql = "SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID LIMIT 1)TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, proc.DiasLaudo, IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID  FROM ("&_
-            " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
+        sql = "SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID LIMIT 1)TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, proc.DiasLaudo, IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID, labid, invoiceid  FROM ("&_
+            " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, 0 labid, 0 invoiceid FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
             " UNION ALL "&_
-            " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE "&filtroGrupo&" ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
+            " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, ls.labid, i.id invoiceid FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE "&filtroGrupo&" ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
             " UNION ALL "&_
-            " SELECT gps.id, gps.Quantidade quantidade,  'tissprocedimentossadt', gps.Data, gps.ProcedimentoID, gs.PacienteID, gps.ProfissionalID, gps.Associacao, conv.NomeConvenio FROM tissguiasadt gs LEFT JOIN tissprocedimentossadt gps ON gps.GuiaID=gs.id LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE gps.ProcedimentoID IN("& procsLaudar &") "& sqlDataGPS & sqlProcGS & sqlPacGS & sqlUnidadesG &_
+            " SELECT gps.id, gps.Quantidade quantidade,  'tissprocedimentossadt', gps.Data, gps.ProcedimentoID, gs.PacienteID, gps.ProfissionalID, gps.Associacao, conv.NomeConvenio, 0 labid, 0 invoiceid FROM tissguiasadt gs LEFT JOIN tissprocedimentossadt gps ON gps.GuiaID=gs.id LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE gps.ProcedimentoID IN("& procsLaudar &") "& sqlDataGPS & sqlProcGS & sqlPacGS & sqlUnidadesG &_
             ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID INNER JOIN pacientes pac ON pac.id=t.PacienteID "&_
             " LEFT JOIN Laudos l ON (l.Tabela=t.Tabela AND l.IDTabela=t.id) "&_
             " LEFT JOIN labs_exames_procedimentos lep ON (lep.ProcedimentoID=t.ProcedimentoID) "&_
             " LEFT JOIN profissionais prof ON prof.id=IFNULL(l.ProfissionalID, t.ProfissionalID) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente"
-
 
         set ii = db.execute( sql )
 
@@ -239,7 +239,17 @@ end if
                         <td><%= NomeProcedimento %></td>
                         <td><%= ii("NomeConvenio") %></td>
                         <td><%= Status %> <% if cint(ii("TemArquivos")) > 0 then %> <span><i style="color: #36bf92" class="fa fa-paperclip"></i></span> <% end if %></td>
-                        <td><a class="btn btn-xs btn-success" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%= link %>"><i class="fa fa-edit"></i></a></td>
+                        <td>
+                            <% if ii("labid")="1" then %>  
+                                <a class="btn btn-xs btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>')" title="Solicitar Resultado São Marcos"><i class="fa fa-flask"></i></a>
+                            <% end if %>
+                            <% if ii("labid")="2"    then %>  
+                                <a class="btn btn-xs btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>')" title="Solicitar Resultado Diagnósticos do Brasil"><i class="fa fa-flask"></i></a>
+                            <% end if %>
+                        </td>
+                        <td>                            
+                            <a class="btn btn-xs btn-success" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%= link %>"><i class="fa fa-edit"></i></a>
+                        </td>
                         <td><button class="btn btn-xs btn-info hidden"><i class="fa fa-print"></i></button></td>
                     </tr>
                     <%
@@ -322,7 +332,34 @@ $(document).ready(function(){
 <script>
 <!--#include file="jQueryFunctions.asp"-->
 
-
+function syncLabResult(invoices, labid =1) {
+    var caminhointegracao = "";
+    var url = "";
+    //$("#syncInvoiceResultsButton").prop("disabled", true);  
+    switch (labid) {
+        case '1':      
+            caminhointegracao = "matrix"; 
+            break;
+        case '2': 
+            caminhointegracao = "diagbrasil";
+            break;
+        default:
+            alert ('Erro ao integrar com Laboratório');
+            return false;
+    }  
+    url = "labs-integration/"+caminhointegracao+"/sync-invoice";
+    postUrl(url, {
+        "invoices": invoices
+    }, function (data) {
+        //$("#syncInvoiceResultsButton").prop("disabled", false);
+        if(data.success) {
+            alert(data.content);
+            location.reload();
+        } else {
+            alert(data.content)
+        }
+    })
+}
 
 function AlertarWhatsapp(Celular, Texto, id) {
     if(!whatsAppAlertado){
@@ -348,7 +385,7 @@ $(".cklaudostodos").on('change', function(){
     }
 });
 
-$(".lab-sync").on("click", function (){
+$(".lab-sync").on("click", function (labid){
     const allowedLabs = ["laboratório são marcos"];
     let invoices = [];
 
@@ -357,7 +394,7 @@ $(".lab-sync").on("click", function (){
             invoices.push($(el).find("td:nth-child(2)").data("id"));
         }
     });
-
+    
     postUrl("labs-integration/matrix/sync-invoice", {
         "invoices": invoices
     }, function (data) {

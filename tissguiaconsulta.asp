@@ -133,6 +133,7 @@ if not reg.eof then
 				if not isnull(ConvenioID) and isnumeric(ConvenioID) and ConvenioID<>"" then
 					set conv = db.execute("select * from convenios where id="&ConvenioID)
 					if not conv.eof then
+						BloquearAlteracoes = conv("BloquearAlteracoes")
 						RegistroANS = conv("RegistroANS")
                         RepetirNumeroOperadora = conv("RepetirNumeroOperadora")
                         SemprePrimeiraConsulta = conv("SemprePrimeiraConsulta")
@@ -182,9 +183,9 @@ if not reg.eof then
                         if UnidadeID&""<>"" then
                             UnidadeID = cint(UnidadeID)
                         end if
-
+					
 						if isnull(Contratado) or UnidadeID&""="" then
-							if session("UnidadeID") = 0 then
+							if session("UnidadeID") = 0 and isnull(Contratado) then
 
 								set contr = db.execute("select * from empresa")
 								if not contr.eof then
@@ -213,7 +214,7 @@ if not reg.eof then
                             	CodigoCNES = contr("CNES")
                             end if
 						end if
-
+			
                             set ContratadoID = db.execute("select id, CodigoNaOperadora from contratosconvenio where Contratado ="&ProfissionalID&" and ConvenioID = "&ConvenioID)
                             if not ContratadoID.eof then
                                Contratado = ProfissionalID
@@ -224,9 +225,19 @@ if not reg.eof then
 						%>
 						<script >
 						$(document).ready(function(){
-						    $("#Contratado").val("<%=Contratado%>")
-						    $("#CodigoNaOperadora").val("<%=CodigoNaOperadora%>")
-						    $("#CodigoCNES").val("<%=CodigoCNES%>")
+						    $("#Contratado, #ContratadoID").val("<%=Contratado%>");
+						    $("#CodigoNaOperadora").val("<%=CodigoNaOperadora%>");
+							$("#CodigoCNES").val("<%=CodigoCNES%>");
+							
+							$("#Contratado").attr("disabled",false);
+							$("#ContratadoID").attr("disabled",true);
+
+							<% if BloquearAlteracoes then %>					
+		                    $("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento").prop("readonly", true);
+							$("#Contratado").attr("disabled",true);
+							$("#ContratadoID").attr("disabled",false);
+							<% end if %>
+
 						});
 
 						</script>
@@ -473,7 +484,10 @@ end if
                                         </td></tr>
 
 	<tr><td><table cellpadding="0" cellspacing="0" width="100%"><tr>
-	<td width="60%" id="divContratado"><% server.Execute("listaContratado.asp") %></td>
+	<td width="60%" id="divContratado">
+		<input type="hidden" id="ContratadoID" name="Contratado">
+		<% server.Execute("listaContratado.asp") %>
+	</td>
 	<td width="20%"><%= quickField("text", "CodigoNaOperadora", "* C&oacute;digo na Operadora", 12, CodigoNaOperadora, "", "", " required='required'") %></td>
 	<td width="20%"><%= quickField("text", "CodigoCNES", "* C&oacute;digo CNES", 12, CodigoCNES, "", "", " required='required'") %></td>
 	</tr></table></td></tr>

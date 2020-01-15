@@ -66,6 +66,7 @@ elseif ModeloID<>"" and ModeloID<>"0" then
     set pinv = db.execute("select i.* from sys_financialinvoices i where i.id="&InvoiceID)
     if not pinv.eof then
         PacienteContrato = pinv("AccountID")
+        UnidadeInvoiceID = pinv("CompanyUnitID")
     end if
 
     set pmod = db.execute("select * from contratosmodelos where id="&ModeloID)
@@ -410,7 +411,7 @@ elseif ModeloID<>"" and ModeloID<>"0" then
             end if
 
         'aqui onde o replace é dado deve trazer o id de quem terá o nome impresso
-        Contrato = replacetags(Contrato, replace(ContaID, "3_", ""), session("User"), pinv("CompanyUnitID"))
+        Contrato = replacetags(Contrato, replace(ContaID, "3_", ""), session("User"), UnidadeInvoiceID)
         Contrato = replacePagto(Contrato, pinv("Value"))
         if instr(Contrato, "[ItensNaoExecutados.Inicio]")>0 and instr(Contrato, "[ItensNaoExecutados.Fim]")>0 then
 

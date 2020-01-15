@@ -30,7 +30,7 @@
     end if
 
     if instr(Tipo, "|Pedido|")>0 then
-        sqlPedido = " union all (select 0, id, '', sysUser, 'Pedido', 'Pedido de Exame', 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')) from pacientespedidos WHERE sysActive=1 AND PacienteID="&PacienteID&") "
+        sqlPedido = " union all (select 0, id, '', sysUser, 'Pedido', 'Pedido de Exame', 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')) from pacientespedidos WHERE sysActive=1 AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
         sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica from pedidossadt WHERE sysActive=1 and PacienteID="&PacienteID&") "
     end if
 
@@ -39,7 +39,7 @@
     end if
 
     if instr(Tipo, "|Arquivos|")>0 then
-        sqlArquivos = " union all (select 0, '0', Tipo, '0', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora, '' from arquivos WHERE Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
+        sqlArquivos = " union all (select 0, '0', Tipo, '0', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora, '' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
                  c=0
 
@@ -60,9 +60,9 @@
                  end if
                  UltimoAno = Ano
 
-                 response.write( abreAno )
+                'response.write( abreAno )
 
-                 c = c + 1
+                c = c + 1
                 exibe = 1
                 if ti("Tipo")="AE" or ti("Tipo")="L" then
                 	if ti("Tipo")="L" then

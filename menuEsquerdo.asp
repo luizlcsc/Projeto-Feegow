@@ -154,7 +154,7 @@ select case lcase(req("P"))
                 <% if true then %>
                 <div class="panel-footer br-t p12">
                   <span class="fs11">
-                        <button onclick="location.href='./?P=listatarefas&Pers=1&Helpdesk=1';" class="btn btn-sm btn-block btn-primary"><i class="fa fa-comments-o"></i> MEUS CHAMADOS (0)</button>
+                        <button onclick="location.href='./?P=listatarefas&Pers=1&Helpdesk=1';" class="btn btn-sm btn-block btn-primary"><i class="fa fa-comments-o"></i> MEUS CHAMADOS</button>
                   </span>
                 </div>
                 <% end if %>

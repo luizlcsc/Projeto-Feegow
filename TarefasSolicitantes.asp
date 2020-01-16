@@ -1,10 +1,24 @@
 ﻿<!--#include file="connect.asp"-->
 <%
-if ref("Solicitantes")="" then
-    set sols = db.execute("select Solicitantes from tarefas WHERE id="& req("I"))
-    Solicitantes = sols("Solicitantes")&""
+
+
+if req("Helpdesk") <> "" then
+    set dblicense = newConnection("clinic5459", "")
+
+    if ref("Solicitantes")="" then
+        set sols = dblicense.execute("select Solicitantes from tarefas WHERE id="& req("I"))
+        Solicitantes = sols("Solicitantes")&""
+    else
+        Solicitantes = ref("Solicitantes")
+    end if
 else
-    Solicitantes = ref("Solicitantes")
+
+    if ref("Solicitantes")="" then
+        set sols = db.execute("select Solicitantes from tarefas WHERE id="& req("I"))
+        Solicitantes = sols("Solicitantes")&""
+    else
+        Solicitantes = ref("Solicitantes")
+    end if
 end if
 if req("A")="I" then
     Solicitantes = Solicitantes & ",_"

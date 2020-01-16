@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 II = ref("II")
 CHK = ref("CHK")
@@ -45,6 +46,14 @@ if not RepasseSQL.eof then
         TemRepasse=True
     end if
 end if
+PermissaoParaAlterar=True
+
+if getConfig("NaoPermitirAlterarExecutanteEExecucao")=1 and aut("areceberpacienteV")=0 and aut("contasareceberV")=0 and session("table")="profissionais" then
+    PermissaoParaAlterar=False
+    ProfissionalID=session("idInTable")
+    DataExecucao=date()
+end if
+
 %>
 
 <form method="post" action="" id="frmExecutado">
@@ -80,6 +89,10 @@ end if
             <%=quickField("simpleCheckbox", "Executado"&II, "Executado", "6", Executado, "", "", "")%>
         </div>
         <br>
+
+        <%
+        if PermissaoParaAlterar then
+        %>
         <div class="row">
             <div class="col-md-6">
                 <label>Executante</label><br />
@@ -105,8 +118,33 @@ end if
                 <%= quickField("simpleSelect", "EspecialidadeID"&II, "Especialidade", 6, EspecialidadeID, sqlEspecialidades, "especialidade", " no-select2 "&camposRequired) %>
             </div>
         </div>
+        <%
+        else
+        %>
+<div class="col-md-6">
+<span><strong>Executante: </strong> <%=session("nameUser")%></span>
+        <input type="hidden" name="EspecialidadeID<%=II%>" value="<%=EspecialidadeID%>">
+        <input type="hidden" name="ProfissionalID<%=II%>" value="<%=Associacao&"_"&ProfissionalID%>">
+</div>
+        <%
+        end if
+        %>
         <div class="row">
+        <%
+        if PermissaoParaAlterar then
+        %>
             <%= quickField("datepicker", "DataExecucao"&II, "Data da Execu&ccedil;&atilde;o", 6, DataExecucao,"" , "", "") %>
+        <%
+        else
+        %>
+<div class="col-md-6">
+
+        <span><strong>Data:</strong><%=DataExecucao%></span>
+        <input type="hidden" name="DataExecucao<%=II%>" value="<%=DataExecucao%>">
+</div>
+        <%
+        end if
+        %>
             <%= quickField("text", "HoraExecucao"&II, "<i class='fa fa-clock-o'></i> In&iacute;cio", 3, HoraExecucao, " input-mask-l-time", "", "") %>
             <%= quickField("text", "HoraFim"&II, "<i class='fa fa-clock-o'></i> Fim", 3, HoraFim, " input-mask-l-time", "", "") %>
 
@@ -115,6 +153,15 @@ end if
                 <%= quickField("memo", "Descricao"&II, "Observações", 12, Descricao, "", "", "") %>
         </div>
         <hr />
+
+<div class="row">
+    <div class="col-md-12" style="max-height: 250px; overflow-y: scroll">
+        <%
+        LogsItensInvoiceSQL = renderLogsTable("itensinvoice", II)
+        %>
+    </div>
+</div>
+
         <div class="row" id="rat<%=II %>">
         <%
 		Row = II

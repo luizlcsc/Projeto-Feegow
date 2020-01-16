@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 CalculosTabela = getConfig("calculostabelas")
 AtendimentoID = req("AtendimentoID")
@@ -168,6 +169,7 @@ if req("Origem")="Atendimento" then
                     end if
 			    end if
 				db_execute("update agendamentos set StaID="&StaID&" where id="&lista("id"))
+				call logAgendamento(lista("id"), "Atendimento finalizado", "A")
 			end if
 			session("Atendimentos") = replace(session("Atendimentos"), "|"&buscaAtendimento("id")&"|", "")
 		end if
@@ -269,7 +271,10 @@ if req("Origem")="Atendimento" then
 					end if
 					'....... tem que gerar o repasse a partir desta execução.....
 					db_execute("UPDATE atendimentos set HoraInicio="&mytime(buscaAtendimento("HoraInicio"))&", HoraFim="&mytime(time())&" WHERE id="&req("AtendimentoID"))
-					db_execute("UPDATE itensinvoice SET Executado='S', ProfissionalID="&session("idInTable")&", Associacao=5, DataExecucao=date(now()), HoraExecucao="&mytime(buscaAtendimento("HoraInicio"))&", HoraFim="&mytime(time())&", AtendimentoID="&pult("id")&" WHERE id="&splitemInvoice(i))
+
+					sqlUpdateItensInvoice = "UPDATE itensinvoice SET Executado='S', ProfissionalID="&session("idInTable")&", Associacao=5, DataExecucao=date(now()), HoraExecucao="&mytime(buscaAtendimento("HoraInicio"))&", HoraFim="&mytime(time())&", AtendimentoID="&pult("id")&" WHERE id="&splitemInvoice(i)
+					call gravaLogs(sqlUpdateItensInvoice, "AUTO", "Executado por atendimento")
+					db_execute(sqlUpdateItensInvoice)
 				next
 			end if
 			

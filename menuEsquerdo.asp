@@ -33,7 +33,7 @@ select case lcase(req("P"))
 
 <%
     case "confirmacaodeagendamentos"
-        StaChk = "|1|"
+        StaChk = "|1|,|116|"
         %>
         <li class="sidebar-label"></li>
         <li class="sidebar-label p20">
@@ -151,7 +151,7 @@ select case lcase(req("P"))
                   
                 </div>
 
-                <% if false then %>
+                <% if true then %>
                 <div class="panel-footer br-t p12">
                   <span class="fs11">
                         <button onclick="location.href='./?P=listatarefas&Pers=1&Helpdesk=1';" class="btn btn-sm btn-block btn-primary"><i class="fa fa-comments-o"></i> MEUS CHAMADOS (0)</button>

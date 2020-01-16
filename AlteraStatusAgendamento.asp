@@ -40,7 +40,8 @@ else
     %>
 
     showMessageDialog("Status alterado.", "success");
-    $("#frm-filtros").submit();
+    //$("#frm-filtros").submit();
+    $("tr[data-id=<%=AgendamentosID%>]").find(".label-status").find("img").attr("src", "assets/img/<%=StatusID%>.png");
     getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=AgendamentosID%>", sms: true, email: true })
 
     <%

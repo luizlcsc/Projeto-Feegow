@@ -5,7 +5,8 @@
 function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissionais, rfConvenio, rfLocais)
     De = cdate(De)
     Ate = cdate(Ate)
-    db.execute("delete from rel_ocupacao where sysUser="& session("User"))
+
+    db.execute("delete from rel_ocupacao where sysUser="& treatvalzero(session("User")))
     response.Buffer
 
 
@@ -29,6 +30,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
             end if
          end if
     end if
+
 
     'CONTEÚDO DA AGENDAMULTIPLACONTEUDO
     Profissionais = "0"
@@ -243,6 +245,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         <%
                     end if
                     cProf = 0
+
                     while not comGrade.eof
                         response.Flush()
                         '-> namAGENDA
@@ -372,8 +375,8 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                             HoraID = replace(HoraID, ":", "")
                                             'HORARIO VAZIO
                                             'response.Write("<button class='btn btn-xs btn-primary'>V: "& ft(Hora) &" P: "& ProfissionalID &" L: "& LocalID &" G: "& GradeID &"</button>")
-                                            'db.execute("insert into rel_ocupacao set sysUser="& session("User") &", Data="& mydatenull(Data) &", Hora="& mytime(Hora) &", Situacao='V', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& replace(Especialidades, "|", "") &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID))
-                                            sqlInsertV = sqlInsertV & ", ("& session("User") &", "& mydatenull(Data) &", "& mytime(Hora) &", 'V', "& treatvalzero(ProfissionalID) &", "& replace(Especialidades, "|", "") &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& Horarios("id") &", 1)"
+                                            'db.execute("insert into rel_ocupacao set sysUser="& treatvalzero(session("User")) &", Data="& mydatenull(Data) &", Hora="& mytime(Hora) &", Situacao='V', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& replace(Especialidades, "|", "") &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID))
+                                            sqlInsertV = sqlInsertV & ", ("& treatvalzero(session("User")) &", "& mydatenull(Data) &", "& mytime(Hora) &", 'V', "& treatvalzero(ProfissionalID) &", "& replace(Especialidades, "|", "") &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& Horarios("id") &", 1)"
                                             Hora = dateadd("n", Intervalo, Hora)
                                         wend
                                     else
@@ -386,8 +389,8 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 													txtGradeOriginal = txtGradeOriginal &"|"& ft(HoraPers) &"|"
 				                                    HLivres = HLivres+1
                                                     HoraID = horaToID(HoraPers)
-                                                    'db.execute("insert into rel_ocupacao set sysUser="& session("User") &", Data="& mydatenull(Data) &", Hora="& mytime(HoraPers) &", Situacao='V', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& replace(Especialidades, "|", "") &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID))
-                                                sqlInsertV = sqlInsertV & ", ("& session("User") &", "& mydatenull(Data) &", "& mytime(HoraPers) &", 'V', "& treatvalzero(ProfissionalID) &", "& replace(Especialidades, "|", "") &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& Horarios("id") &", 1)"
+                                                    'db.execute("insert into rel_ocupacao set sysUser="& treatvalzero(session("User")) &", Data="& mydatenull(Data) &", Hora="& mytime(HoraPers) &", Situacao='V', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& replace(Especialidades, "|", "") &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID))
+                                                sqlInsertV = sqlInsertV & ", ("& treatvalzero(session("User")) &", "& mydatenull(Data) &", "& mytime(HoraPers) &", 'V', "& treatvalzero(ProfissionalID) &", "& replace(Especialidades, "|", "") &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& Horarios("id") &", 1)"
                                                 end if
                                             next
                                         end if
@@ -402,7 +405,9 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
                             if sqlInsertV<>"" then
                                 sqlInsertV = right(sqlInsertV, len(sqlInsertV)-1)
-                                db.execute("insert into rel_ocupacao (sysUser, Data, Hora, Situacao, ProfissionalID, EspecialidadeID, LocalID, UnidadeID, TipoGrade, GradeID, GradeOriginal) VALUES "& sqlInsertV)
+
+                                sqlI ="insert into rel_ocupacao (sysUser, Data, Hora, Situacao, ProfissionalID, EspecialidadeID, LocalID, UnidadeID, TipoGrade, GradeID, GradeOriginal) VALUES "& sqlInsertV
+                                db.execute(sqlI)
                             end if
 
                             IF 1 THEN
@@ -472,7 +477,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
                                 StaID = comps("StaID")
                                 if StaID<>11 and StaID<>22 and LiberaInsert then
-                                    sqlDel = "DELETE FROM rel_ocupacao WHERE sysUser="& session("User") &" AND Situacao='V' AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND Hora BETWEEN "& mytime(Horario) &" AND "& mytime(HoraFinal)
+                                    sqlDel = "DELETE FROM rel_ocupacao WHERE sysUser="& treatvalzero(session("User")) &" AND Situacao='V' AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND Hora BETWEEN "& mytime(Horario) &" AND "& mytime(HoraFinal)
                                     'response.write( sqlDel &"<br>")
                                     db.execute( sqlDel )
                                 end if
@@ -485,10 +490,10 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 								end if
 
                             if LiberaInsert then
-                                db.execute("INSERT INTO rel_ocupacao SET sysUser="& session("User") &", Data="& mydatenull(Data) &", Hora="& mytime(Horario) &", StaID="& StaID &", Situacao='A', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& EspecialidadeID &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID) &", Encaixe="& treatvalnull(comps("Encaixe")) &", GradeOriginal="& GradeOriginal)
-                            '                            set vcaPL = db.execute("select id from rel_ocupacao where sysUser="& session("User") &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND LocalID="& treatvalnull(LocalID))
+                                db.execute("INSERT INTO rel_ocupacao SET sysUser="& treatvalzero(session("User")) &", Data="& mydatenull(Data) &", Hora="& mytime(Horario) &", StaID="& StaID &", Situacao='A', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& EspecialidadeID &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID) &", Encaixe="& treatvalnull(comps("Encaixe")) &", GradeOriginal="& GradeOriginal)
+                            '                            set vcaPL = db.execute("select id from rel_ocupacao where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND LocalID="& treatvalnull(LocalID))
                             '                            if vcaPL.eof then
-                            '                                set vcaPL = db.execute("select id from rel_ocupacao where sysUser="& session("User") &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID))
+                            '                                set vcaPL = db.execute("select id from rel_ocupacao where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID))
                             '                            end if
                             '                            while not vcaPL.eof
                             '                                if ft(vcaPL("Hora"))=ft(comps("Hora")) and ( StaID<>11 and StaID<>22) ) then
@@ -519,7 +524,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         HoraDe = bloq("HoraDe")
         HoraA = bloq("HoraA")
 
-        sqlUP = "UPDATE rel_ocupacao SET Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& session("User") &" AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
+        sqlUP = "UPDATE rel_ocupacao SET Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
 
         'response.write( sqlUP &" -> "& bloq("Profissionais") &"<br>")
         sqlProfissionalBloq = "ProfissionalID="& treatvalnull(ProfissionalID)
@@ -529,7 +534,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
             sqlProfissionalBloq = sqlProfissionalBloq & " OR ProfissionalID IN("& ProfissionaisBloq &") "
         end if
 
-        sqlUP = "UPDATE rel_ocupacao SET Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& session("User") &" AND Data="& mydatenull(Data) &" AND ("& sqlProfissionalBloq &") AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
+        sqlUP = "UPDATE rel_ocupacao SET Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND ("& sqlProfissionalBloq &") AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
         db.execute( sqlUP )
 
         HBloqueados = HBloqueados + 1

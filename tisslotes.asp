@@ -114,7 +114,9 @@ if request.QueryString("ConvenioID")<>"" then
 			ColunaTotal = "Procedimentos"
 			link = "LOTE_HONORARIOS"
 		end if
-		set nguias = db.execute("select count(*) as total,group_concat(id) as guias from "&Tabela&" where LoteID="&lotes("id"))
+
+		set nguias = db.execute("select count(*) as total,group_concat(id,' ') AS guias from "&Tabela&" where LoteID="&lotes("id"))
+		set tissguiasinvoices = db.execute("SELECT count(*) > 0 hasinvoice FROM tissguiasinvoice WHERE GuiaID in (SELECT id FROM "&Tabela&" WHERE LoteID = 26) AND TipoGuia = replace('"&Tabela&"','tiss','')")
 		set total = db.execute("select sum("&ColunaTotal&") as ValorTotal from "&Tabela&" where LoteID="&lotes("id"))
 		c=c+1
 		if isnull(total("ValorTotal")) then
@@ -128,7 +130,7 @@ if request.QueryString("ConvenioID")<>"" then
 		if cint(nguias("total")) > 0 then
 
 		%>
-		<tr dias-para-recebimento="<%=objConvenio("DiasRecebimento") %>" >
+		<tr dias-para-recebimento="<%=objConvenio("DiasRecebimento") %>" lote-id="<%=lotes("id")%>">
         	<td><%=lotes("Lote")%></td>
             <td>
                 <%
@@ -245,9 +247,11 @@ if request.QueryString("ConvenioID")<>"" then
                       type="button" class="btn btn-success btn-sm">
                 <i class="fa fa-edit"></i>
               </button>
-              <button type="button" class="btn btn-success btn-sm" onclick="gerarConta('<%=nguias("guias")&""%>')">
+              <% IF tissguiasinvoices("hasinvoice") = "0" THEN %>
+              <button type="button" class="btn btn-success btn-sm" onclick="gerarConta('<%=nguias("guias")&""%>','<%=lotes("id")%>','<%=nguias("total")%>')">
                   Gerar Conta
-                </button>
+               </button>
+              <% END IF %>
             <%
             end if
             %>
@@ -303,22 +307,69 @@ $("#marca").click(function(){
 	$(".guia").attr("checked", marcado);
 });
 
-function gerarConta(arg){
+function gerarConta(arg,lote,Nguias){
     $.post("lanctoGuias.asp?T=<%=request.QueryString("T")%>", {Guia: arg,JSON:true},
     function(data){
-
+      let Total = 0;
+      if(data){
+            Total = data.total;
+            data = data.datas;
+      }
       openModal(
-           `<div>
+           `
+            <h4>Adicionar ${Nguias} guias no valor total <de></de> R$ ${formatNumber(Total,2)}</h4>
+            <div guias-gerar="${arg}" lote="${lote}" guias-total="${Total}">
                <input type="radio" value="-1" id="lote${-1}" name="lotes_contas" checked /> <label for="lote${-1}">Criar nova Conta</label>
-           </div>`
-                   +
+            </div>`+
           data.map((item) =>
         `<div>
               <input type="radio" value="${item.id}" id="lote${item.id}" name="lotes_contas" /> <label for="lote${item.id}"> ${item.Descricao}</label>
          </div>`
-      ), "<i class=\"fa fa-plus\"></i> Selecione a conta", true, 'Gerar Conta', "lg")
+      ), "<i class=\"fa fa-plus\"></i> Selecione a conta", true, () =>{gerarContaInvoice()}, "lg")
+    });
+}
+function formatNumber(num,fix){
+        if(!num){
+            return "0,00";
+        }
+        return Number(num).toLocaleString('de-DE', {
+         minimumFractionDigits: fix,
+         maximumFractionDigits: fix
+       });
+}
 
-        console.log(data);
+function getGuiasSelecionados() {
+    return $("[guias-gerar]").attr('guias-gerar');
+}
+
+function getTotal(){
+    return $("[guias-total]").attr('guias-total');
+}
+
+function getLotesSelecionados(){
+    return $("[lote]").attr('lote');
+}
+
+function gerarContaInvoice(){
+    $("#lanctoGuias").find("button").attr("disabled", true);
+    var strIncrementar = "";
+
+    let selecionado = $("[name=lotes_contas]:checked").val()
+
+    if(selecionado > -1){
+        strIncrementar="&Incrementar="+selecionado;
+    }
+
+    V = getTotal() || 0;
+
+    $.post("LoteAReceber.asp?T=<%=req("T")%>&V="+V+"&ConvenioID=<%=req("ConvenioID")%>&Lotes="+getLotesSelecionados()+strIncrementar,{
+        Guia: getGuiasSelecionados()
+    }, function(data){
+        eval(data);
+
+        setTimeout(function(){
+            $("#lanctoGuias").find("button").attr("disabled", false);
+        }, 1000);
     });
 }
 

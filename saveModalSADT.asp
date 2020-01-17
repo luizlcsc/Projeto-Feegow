@@ -80,8 +80,8 @@ elseif Tipo="Procedimentos" then
 
 
 		if ref("gConvenioID")<>"" and ref("gConvenioID")<>"0" then
-		
-		
+
+
 
 'original
 '			set proc = db.execute("select * from tissprocedimentosvalores where ProcedimentoID="&ref("ProcedimentoID")&" and ConvenioID="&ref("ConvenioID"))
@@ -90,8 +90,8 @@ elseif Tipo="Procedimentos" then
 '			else
 '				db_execute("update tissprocedimentosvalores set TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', Valor='"&treatval(ref("ValorUnitario"))&"', TecnicaID='"&ref("TecnicaID")&"' where id="&proc("id"))
 '			end if
-			
-			
+
+
 '/original
 			sqlPV = "select * from tissprocedimentosvalores where ProcedimentoID="&ref("gProcedimentoID")&" and ConvenioID="&ref("gConvenioID")
 			set pv = db.execute(sqlPV)

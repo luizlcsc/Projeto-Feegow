@@ -41,26 +41,47 @@ if not reg.eof then
     sysUser = reg("sysUser")
     sysActive = reg("sysActive")
     sysDate = reg("sysDate")
+	%>
+	<script>
+	$(document).ready(function(){
+		$("#ContratadoID").val('<%=Contratado%>');
+		$("#Contratado").attr("disabled",false);
+		$("#ContratadoID").attr("disabled",true);
+	});
+
+	</script>
+	<%
     if reg("sysActive")=1 and not isnull(ConvenioID) and ConvenioID<>0 then
-        set convBloq=db.execute("select BloquearAlteracoes from convenios where id="&ConvenioID)
+        set convBloq=db.execute("select BloquearAlteracoes,BloquearAlteracoesContratado from convenios where id="&ConvenioID)
         if not convBloq.eof then
             if convBloq("BloquearAlteracoes")=1 then
-
-            if aut("|guiasA|")=0 then
-                %>
-                <script>
-                    $("#NGuiaPrestador").prop("readonly", true);
-                </script>
-                <%
+				if aut("|guiasA|")=0 then
+					%>
+					<script>
+						$("#NGuiaPrestador").prop("readonly", true);
+					</script>
+					<%
+				end if
+				%>
+				<script type="text/javascript">
+					$(document).ready(function(){
+						$("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento").prop("readonly", true);
+					
+					});
+				</script>
+				<%
             end if
-            %>
-            <script type="text/javascript">
-                $(document).ready(function(){
-                    $("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento").prop("readonly", true);
-                });
-            </script>
-            <%
-            end if
+			if convBloq("BloquearAlteracoesContratado")=1 then
+			%>
+				<script type="text/javascript">
+					$(document).ready(function(){
+						$("#CodigoNaOperadora, #CodigoCNES").prop("readonly", true);							
+						$("#Contratado").attr("disabled",true);
+						$("#ContratadoID").attr("disabled",false);
+					});
+				</script>
+			<%
+			end if
         end if
     end if
 	'Auto-preenche a guia baseado no lancto
@@ -134,6 +155,7 @@ if not reg.eof then
 					set conv = db.execute("select * from convenios where id="&ConvenioID)
 					if not conv.eof then
 						BloquearAlteracoes = conv("BloquearAlteracoes")
+						BloquearAlteracoesContratado = conv("BloquearAlteracoesContratado")
 						RegistroANS = conv("RegistroANS")
                         RepetirNumeroOperadora = conv("RepetirNumeroOperadora")
                         SemprePrimeiraConsulta = conv("SemprePrimeiraConsulta")
@@ -236,7 +258,7 @@ if not reg.eof then
 		                    	$("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento").prop("readonly", true);								
 							<% end if %>
 
-							<% if conv("BloquearAlteracoesContratado")=1 then %>
+							<% if BloquearAlteracoesContratado = 1 then %>
 		                    	$("#CodigoNaOperadora, #CodigoCNES").prop("readonly", true);							
 								$("#Contratado").attr("disabled",true);
 								$("#ContratadoID").attr("disabled",false);

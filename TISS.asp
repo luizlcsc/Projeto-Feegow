@@ -114,8 +114,8 @@ function completaConvenio(ConvenioID, PacienteID)
             end if
             %>
                 $("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento, #ContratadoSolicitanteCodigoNaOperadora, #_NumeroNoConselhoSolicitante, #ConselhoProfissionalSolicitanteID, #_UFConselhoSolicitante, #CodigoCBOSolicitante").prop("readonly", true);
-				$("#Contratado").attr("disabled",true);
-				$("#ContratadoID").attr("disabled",false);
+				
+				
             <%
         else
             if aut("|guiasA|")=0 then
@@ -129,6 +129,14 @@ function completaConvenio(ConvenioID, PacienteID)
 				$("#ContratadoID").attr("disabled",true);
 			<%
         end if
+		if conv("BloquearAlteracoesContratado")=1 then 
+			 %>
+		        $("#CodigoNaOperadora, #CodigoCNES").prop("readonly", true);							
+				$("#Contratado").attr("disabled",true);
+				$("#ContratadoID").attr("disabled",false);
+			<% 
+		end if
+
 		'set contconv = db.execute("select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 AND (SomenteUnidades LIKE '%|"&ref("UnidadeID")&"|%' or SomenteUnidades is null OR SomenteUnidades = '') order by Contratado")'Vai chamar sempre as filiais primeiro por serem negativas, depois ver esse comportamento
 		'response.write()
 		'set contconv = db.execute("SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" AND coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) ORDER BY (Contratado = "&session("idInTable")&") DESC ")

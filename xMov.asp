@@ -185,7 +185,7 @@ end if
     }else{
         $('.parcela').prop('checked', false);
         $('#pagar').fadeOut();
-        geraParcelas('');
+        geraParcelas('N');
     }
 <%
 if strStatusPagto<>"" then

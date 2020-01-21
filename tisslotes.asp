@@ -11,7 +11,7 @@
     <br />
     <div class="panel">
     <div class="panel-body">
-    	<div class="col-md-3">A
+    	<div class="col-md-3">
         	<label>Tipo de Guia</label><br />
         	<select name="T" id="T" class="form-control" required>
             	<option value="">Selecione</option>
@@ -116,7 +116,7 @@ if request.QueryString("ConvenioID")<>"" then
 		end if
 
 		set nguias = db.execute("select count(*) as total,group_concat(id,' ') AS guias from "&Tabela&" where LoteID="&lotes("id"))
-		set tissguiasinvoices = db.execute("SELECT count(*) > 0 hasinvoice FROM tissguiasinvoice WHERE GuiaID in (SELECT id FROM "&Tabela&" WHERE LoteID = 26) AND TipoGuia = replace('"&Tabela&"','tiss','')")
+		set tissguiasinvoices = db.execute("SELECT count(*) > 0 hasinvoice FROM tissguiasinvoice WHERE GuiaID in (SELECT id FROM "&Tabela&" WHERE LoteID = "&lotes("id")&") AND TipoGuia = replace('"&Tabela&"','tiss','')")
 		set total = db.execute("select sum("&ColunaTotal&") as ValorTotal from "&Tabela&" where LoteID="&lotes("id"))
 		c=c+1
 		if isnull(total("ValorTotal")) then
@@ -248,7 +248,7 @@ if request.QueryString("ConvenioID")<>"" then
                 <i class="fa fa-edit"></i>
               </button>
               <% IF tissguiasinvoices("hasinvoice") = "0" THEN %>
-              <button type="button" class="btn btn-success btn-sm" onclick="gerarConta('<%=nguias("guias")&""%>','<%=lotes("id")%>','<%=nguias("total")%>')">
+              <button type="button" class="btn btn-success btn-sm" style="display: none" onclick="gerarConta('<%=nguias("guias")&""%>','<%=lotes("id")%>','<%=nguias("total")%>')">
                   Gerar Conta
                </button>
               <% END IF %>

@@ -98,7 +98,7 @@ end if
             </div>
             <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, request.QueryString("ConvenioID"), "select * from Convenios where Ativo='on' and sysActive=1 order by NomeConvenio", "NomeConvenio", "onchange=""tissplanosguia(this.value)"" empty="""" required=""required""") %>
             <div class="col-md-3" id="selectLote">
-            <%server.Execute("tissselectlote.asp")%>
+               <%server.Execute("tissselectlote.asp")%>
             </div>
             <%= quickField("memo", "NumeroGuia", "N&deg; da Guia (separadas por Enter)", 3, request.QueryString("NumeroGuia"), "", "", " placeholder='opcional'") %>
             <div class="col-md-3">

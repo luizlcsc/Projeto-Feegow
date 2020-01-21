@@ -108,10 +108,14 @@ if myValor > 0  then
         cnpj = replace(cnpj, "/", "")
         cnpj = replace(cnpj, "-", "")
 
+        if session("Banco")="clinic6118" then
+            AddSQLNfe =  " AND (protocolosefaz NOT LIKE '-1' OR protocolosefaz IS NULL ) "
+        end if
+
         set OrigemNFeSQL = db.execute("SELECT o.id, o.NotaInicio FROM nfe_origens o WHERE REPLACE(REPLACE(REPLACE(o.cnpj, '.', ''),'-',''),'/','')='"&cnpj&"'")
 
         if not OrigemNFeSQL.eof then
-            set UltimoRPSSQL = db.execute("SELECT nfe.numero, nfe.serie FROM nfe_notasemitidas nfe WHERE nfe.cnpj='"&cnpj&"' ORDER BY nfe.numero DESC LIMIT 1")
+            set UltimoRPSSQL = db.execute("SELECT nfe.numero, nfe.serie FROM nfe_notasemitidas nfe WHERE nfe.cnpj='"&cnpj&"' "&AddSQLNfe&" ORDER BY nfe.numero DESC LIMIT 1")
             numeroRps = OrigemNFeSQL("NotaInicio")
 
             rpsSerie=2

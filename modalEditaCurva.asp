@@ -103,7 +103,7 @@ end if
             <%
 			if ValorPadrao="Crescimento" or ValorPadrao="Cefalico" then
 				%>
-            	<input class="form-control text-center" type="number" name="valor<%=vals("id")%>" id="valor<%=vals("id")%>" value="<%= Valor %>">
+            	<input class="form-control text-center" type="text" name="valor<%=vals("id")%>" id="valor<%=vals("id")%>" value="<%= Valor %>">
             	<%
 			elseif ValorPadrao="Peso" then
 				if not isnull(Valor) then

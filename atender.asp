@@ -45,7 +45,7 @@ if Acao="Iniciar" then
 
             db_execute("update agendamentos SET StaID = "&StaX&" WHERE id="&AgendamentoID)
 
-            call logAgendamento(AgendamentoID, "Atendimento iniciado pela sala de espera", "A")
+            call logAgendamento(AgendamentoID, "Atendimento iniciado pela sala de espera", "R")
 
             if UnidadeIDAgendamento&""<>session("UnidadeID") then
                 db.execute("update atendimentos SET UnidadeID = "&treatvalzero(UnidadeIDAgendamento)&" WHERE id="&pult("id"))

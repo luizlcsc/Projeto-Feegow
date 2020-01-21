@@ -88,7 +88,7 @@ if request.QueryString("Chamar")<>"" then
 	if not dadosAgendamento.eof then
 		call gravaChamada(dadosAgendamento("ProfissionalID"), dadosAgendamento("PacienteID"), session("UnidadeID"))
 	end if
-	call logAgendamento(req("Chamar") , "Chamando paciente pela sala de espera", "A")
+	call logAgendamento(req("Chamar") , "Chamando paciente pela sala de espera", "R")
 
     set age = db.execute("select ProfissionalID from agendamentos where id="&req("Chamar"))
     if not age.eof then

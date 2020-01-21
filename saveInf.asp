@@ -169,7 +169,7 @@ if req("Origem")="Atendimento" then
                     end if
 			    end if
 				db_execute("update agendamentos set StaID="&StaID&" where id="&lista("id"))
-				call logAgendamento(lista("id"), "Atendimento finalizado", "A")
+				call logAgendamento(lista("id"), "Atendimento finalizado", "R")
 			end if
 			session("Atendimentos") = replace(session("Atendimentos"), "|"&buscaAtendimento("id")&"|", "")
 		end if

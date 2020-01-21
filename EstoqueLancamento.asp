@@ -87,7 +87,7 @@ if ProdutoInvoiceID<>"" and ProdutoInvoiceID<>"undefined" then
 end if
 %>
     <div class="row">
-        <%=quickField("text", "Quantidade", "Quantidade", 2, Quantidade, " text-right", "", "")%>
+        <%=quickField("number", "Quantidade", "Quantidade", 2, Quantidade, " text-right", "", " min='0' ")%>
         <div class="col-md-4"><br>
         	<%if TipoUnidade="C" or TipoLancto="E" then %>
             <label><input class="ace" type="radio" checked name="TipoUnidade" required="required" value="C"<%if prod("Tipo"&tipoValor)="C" then%> checked<%end if%>><span class="lbl"> <%=ApresentacaoNome%> com <%=formatnumber(ApresentacaoQuantidade,2)%>&nbsp;<%=lcase(NomeUnidade)%></span></label>

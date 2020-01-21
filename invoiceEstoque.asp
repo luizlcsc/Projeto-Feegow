@@ -7,6 +7,7 @@
 </div>
 <div class="panel-body">
     <div class="row">
+        <div class="col-md-12">
         <%
         'Se estiver no lancto do ItemInvoiceID, exibe os lanctos deste item invoice., Tanto pra C quanto pra D.
         ItemInvoiceID = req("ItemInvoiceID")
@@ -18,6 +19,7 @@
         end if
         %>
         <!--#include file="chamaBuscaProdutoLancto.asp"-->
+        </div>
     </div>
 </div>
 

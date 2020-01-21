@@ -196,7 +196,7 @@ end if
     <div class="row">
         <%
 
-        if getConfig("PermitirCreditoDeOutrosPacientes")=1 and CD="C" and AssContaID=3 then
+        if getConfig("PermitirCreditoDeOutrosPacientes")=1 and false and CD="C" and AssContaID=3 then
             %>
 <div class="col-md-12">
     <div class="row">

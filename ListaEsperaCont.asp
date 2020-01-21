@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 configExibirNaSalaDeEspera = getConfig("ExibirEquipamentoNaSalaDeEspera")
 OrdensNome="Hor&aacute;rio Agendado, Hor&aacute;rio de Chegada, Idade do Paciente"
@@ -87,6 +88,7 @@ if request.QueryString("Chamar")<>"" then
 	if not dadosAgendamento.eof then
 		call gravaChamada(dadosAgendamento("ProfissionalID"), dadosAgendamento("PacienteID"), session("UnidadeID"))
 	end if
+	call logAgendamento(req("Chamar") , "Chamando paciente pela sala de espera", "A")
 
     set age = db.execute("select ProfissionalID from agendamentos where id="&req("Chamar"))
     if not age.eof then

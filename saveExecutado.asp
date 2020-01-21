@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/ValidaProcedimentoProfissional.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 ItemInvoiceID = req("II")
 sqlat = "select i.AccountID PacienteID, ii.ItemID ProcedimentoID, (ii.Quantidade * (ii.ValorUnitario + ii.Acrescimo - ii.Desconto)) ValorTotal, ii.DataExecucao from itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID where ii.id="&ItemInvoiceID
@@ -40,8 +41,11 @@ if ref("Executado"&ItemInvoiceID)="S" then
     end if
 end if
 
-db_execute("update itensinvoice set Executado='"&ref("Executado"&ItemInvoiceID)&"', Associacao="&Associacao&", ProfissionalID="&ProfissionalID&", EspecialidadeID="&treatvalnull(EspecialidadeID)&",DataExecucao="&mydatenull(dataExecucao)&", HoraExecucao="&mytime(horaExecucao)&", HoraFim="&mytime(horaFim)&", Descricao='"&ref("Descricao"&ItemInvoiceID)&"' where id="&ItemInvoiceID)
+sqlUpdate = "update itensinvoice set Executado='"&ref("Executado"&ItemInvoiceID)&"', Associacao="&Associacao&", ProfissionalID="&ProfissionalID&", EspecialidadeID="&treatvalnull(EspecialidadeID)&",DataExecucao="&mydatenull(dataExecucao)&", HoraExecucao="&mytime(horaExecucao)&", HoraFim="&mytime(horaFim)&", Descricao='"&ref("Descricao"&ItemInvoiceID)&"' where id="&ItemInvoiceID
 
+
+call gravaLogs(sqlUpdate, "AUTO", "Executado manualmente")
+db_execute(sqlUpdate)
 db_execute("delete rr from rateiorateios rr  where rr.ItemInvoiceID="&ItemInvoiceID&" and (isnull(rr.ItemContaAPagar) OR rr.ItemContaAPagar=0)")
 
 'call salvaRepasse(ItemInvoiceID, ItemInvoiceID)

@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->	
 <!--#include file="connectCentral.asp"-->
+<!--#include file="Classes/AgendamentoValidacoes.asp"-->
 
 <%
 
@@ -83,10 +84,11 @@ end if
 if Acao="Remarcar" then
     Encaixe=0
 
-    set AgendamentoSQL = db.execute("SELECT Hora, HoraFinal, Tempo, EquipamentoID FROM agendamentos WHERE id="&session("RemSol"))
+    set AgendamentoSQL = db.execute("SELECT Hora, HoraFinal, Tempo, EquipamentoID, IF(rdValorPlano='P',ValorPlano,0) ConvenioID FROM agendamentos WHERE id="&session("RemSol"))
 
     rfTempo = AgendamentoSQL("Tempo")
     AgendamentoID=session("RemSol")
+    ConvenioID=AgendamentoSQL("ConvenioID")
 
     if EquipamentoID="" then
         EquipamentoID=AgendamentoSQL("EquipamentoID")
@@ -128,6 +130,10 @@ if Acao="Remarcar" then
             end if
 
         end if
+    end if
+
+    if erro = "" then
+        erro = erro & ValidaLocalConvenio("1",ConvenioID,LocalID)
     end if
 
     if erro="" then

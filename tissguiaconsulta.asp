@@ -233,9 +233,13 @@ if not reg.eof then
 							$("#ContratadoID").attr("disabled",true);
 
 							<% if BloquearAlteracoes then %>					
-		                    $("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento").prop("readonly", true);
-							$("#Contratado").attr("disabled",true);
-							$("#ContratadoID").attr("disabled",false);
+		                    	$("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento").prop("readonly", true);								
+							<% end if %>
+
+							<% if conv("BloquearAlteracoesContratado")=1 then %>
+		                    	$("#CodigoNaOperadora, #CodigoCNES").prop("readonly", true);							
+								$("#Contratado").attr("disabled",true);
+								$("#ContratadoID").attr("disabled",false);
 							<% end if %>
 
 						});

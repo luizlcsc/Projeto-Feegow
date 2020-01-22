@@ -127,7 +127,11 @@ else
     if BloquearAlteracoes=0 then
         if Contratado&""<>"" then
             if Contratado=0 then
-                db_execute("update empresa set CNES='"&ref("CodigoCNES")&"'")
+                set EmpresaCNES = db.execute("select CNES from empresa where (CNES is null or CNES ='')" )
+                if not EmpresaCNES.EOF then
+                    db_execute("update empresa set CNES='"&ref("CodigoCNES")&"'")
+                end if
+            
             elseif Contratado<0 then
                 set unitCNES = db.execute("select CNES from sys_financialcompanyunits where id="&(Contratado*(-1))&" and (CNES is null or CNES ='')" )
                 if not unitCNES.EOF then

@@ -253,13 +253,15 @@ end if
 '	erro="Erro: O procedimento agendado para este profissional às "&cdate( hour(ve3("Hora"))&":"&minute(ve3("Hora")) )&" não permite outros agendamentos até as "&cdate( hour(ve3("HoraFinal"))&":"&minute(ve3("HoraFinal")) )&"."
 'end if
 
-set ve4=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and staId not in (6,11) and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and HoraFinal<time('"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"')")
-if not ve4.eof then
-	Hora=cdate( hour(ve4("Hora"))&":"&minute(ve4("HoraFinal")) )
-	HoraFinal=cdate( hour(ve4("HoraFinal"))&":"&minute(ve4("HoraFinal")) )
-	if HoraFinal>Hora then
-			erro="Erro: O procedimento que você deseja realizar requer que a agenda deste profissional esteja livre das "&HoraSolIni&" às "&HoraSolFin&", mas há um procedimento agendado das "&cdate( hour(ve4("Hora"))&":"&minute(ve4("Hora")) )&" às "&cdate( hour(ve4("HoraFinal"))&":"&minute(ve4("HoraFinal")) )&" que impede este agendamento."'&ve4("id")
-	end if
+if ref("Encaixe")<>"1" then
+    set ve4=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and staId not in (6,11) and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and HoraFinal<time('"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"')")
+    if not ve4.eof then
+        Hora=cdate( hour(ve4("Hora"))&":"&minute(ve4("HoraFinal")) )
+        HoraFinal=cdate( hour(ve4("HoraFinal"))&":"&minute(ve4("HoraFinal")) )
+        if HoraFinal>Hora then
+                erro="Erro: O procedimento que você deseja realizar requer que a agenda deste profissional esteja livre das "&HoraSolIni&" às "&HoraSolFin&", mas há um procedimento agendado das "&cdate( hour(ve4("Hora"))&":"&minute(ve4("Hora")) )&" às "&cdate( hour(ve4("HoraFinal"))&":"&minute(ve4("HoraFinal")) )&" que impede este agendamento."'&ve4("id")
+        end if
+    end if
 end if
 
 'set ve5=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Hora<time('"&HoraSolIni&"') and HoraFinal>time('"&HoraSolFin&"')")
@@ -484,7 +486,7 @@ if erro="" then
             erro = "Não existe grade configurada para esse equipamento."
         end if
 
-        if erro="" then
+        if erro="" and ConsultaID="" then
             'validar se o agendamento ja existe pela ag. diaria
 
             if rfProfissionalID<>"0" then

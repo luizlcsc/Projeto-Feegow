@@ -124,7 +124,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
 
             end if
 
-            sql = "select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') "&sqlConv&" and Ativo='on' and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"
+            sql = "select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"
             initialOrder = "NomeProcedimento"
         elseif ref("t")="cliniccentral.cid10" then
             PermissaoParaAdd = 0
@@ -264,7 +264,7 @@ end if
     %>
     {
       "id": <%=q("id") %>,<%=Nascimento%>
-      "full_name": "<%=replace(replace(q(ref("c")),"""","\"""),"	","") %><%=NomeUnidadeLocal%>"
+      "full_name": "<%=replace(replace(q(ref("c"))&"","""","\"""),"	","") %><%=NomeUnidadeLocal%>"
     }
     <%
     q.movenext

@@ -123,8 +123,28 @@ if aut(lcase(ref("resource"))&"A")=1 then
                 end if
 
             end if
+            sqlSomenteProcedimento=""
+            if ref("encaixe")&"" <> "" and ref("ProfissionalID")&"" <> "0" then
+                'response.write ProfissionalID
+                Data=ref("data")
+                UnidadeID=session("UnidadeID")
+                DiaSemana=weekday(Data)
+                Hora=ref("hora")
 
-            sql = "select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"
+                if UnidadeID<>"" then
+                    sqlUnidade = " AND loc.UnidadeID='"&UnidadeID&"'"
+                end if
+
+                sqlGrade = "SELECT id GradeID, Especialidades, Procedimentos, LocalID FROM (SELECT ass.id, Especialidades, Procedimentos, LocalID FROM assfixalocalxprofissional ass LEFT JOIN locais loc ON loc.id=ass.LocalID WHERE ProfissionalID="&treatvalzero(ProfissionalID)&sqlUnidade&" AND DiaSemana="&DiaSemana&" AND "&mytime(Hora)&" BETWEEN HoraDe AND HoraA AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&")) UNION ALL SELECT ex.id*-1 id, Especialidades, Procedimentos, LocalID FROM assperiodolocalxprofissional ex LEFT JOIN locais loc ON loc.id=ex.LocalID WHERE ProfissionalID="&ProfissionalID&sqlUnidade&" AND DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&")t"
+                set existeGrade = db.execute(sqlGrade)
+               
+                if existeGrade.eof then
+                    sqlExibir = ""
+                    sqlSomenteProcedimento=" AND (opcoesagenda IN (4,5) and SomenteProfissionais like '%|"& ProfissionalID &"|%') "
+                end if 
+            end if
+
+            sql = "select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"
             initialOrder = "NomeProcedimento"
         elseif ref("t")="cliniccentral.cid10" then
             PermissaoParaAdd = 0
@@ -133,7 +153,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
             initialOrder = "codigo"
         elseif ref("t")="procedimentos" then
             Typed=ref("q")
-
+            
             if instr(ref("oti"), "guia-tiss")>0 and (session("Banco")="clinic6178" or session("Banco")="clinic100000") and ref("cs")<>"" then
                 sql = "select proc.id, proc.NomeProcedimento from procedimentos proc LEFT JOIN tissprocedimentosvalores tpv ON tpv.ProcedimentoID=proc.id where (tpv.ConvenioID="&ref("cs")&") AND proc.sysActive=1 and (proc.NomeProcedimento like '%"&ref("q")&"%' or proc.Codigo like '%"&ref("q")&"%') and proc.Ativo='on' GROUP BY proc.id order by proc.OpcoesAgenda desc, proc.NomeProcedimento"
             else
@@ -214,6 +234,7 @@ end if
 %>
   "items": [
     <%
+    'response.write sql
     set q = db.execute(sql)
 
     if q.eof and sqlAlternativo<>"" then

@@ -37,11 +37,17 @@ if ref("Acao")="Abrir" then
 end if
 
 if ref("Acao")="Fechar" then
-	set caixa = db.execute("select * from caixa where id="&ref("idCaixa"))
+	set caixa = db.execute("select *, date(dtAbertura) Abertura from caixa where id="&ref("idCaixa"))
 	SaldoFinalFinal = ref("SaldoFinalFinal")
 	Dinheiro = ref("Dinheiro")
+	DataFechamento = mydatenull(date())
+
+	if getConfig("NaoPermitirRecebimentoCaixaComDataAnterior") and caixa("Abertura")<>date() then
+	    DataFechamento=mydatenull(caixa("Abertura"))
+	end if
+
 	if Dinheiro<>"" then
-		db_execute("insert into sys_financialmovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Rate, CaixaID, sysUser, UnidadeID) values ('Fechamento Cx - Dinheiro', 7, "&caixa("id")&", 1, "&caixa("ContaCorrenteID")&", 1, "&treatvalzero(Dinheiro)&", "&mydatenull(date())&", '', 'Transfer', 1, "&caixa("id")&", "&session("User")&", "&session("UnidadeID")&")")
+		db_execute("insert into sys_financialmovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Rate, CaixaID, sysUser, UnidadeID) values ('Fechamento Cx - Dinheiro', 7, "&caixa("id")&", 1, "&caixa("ContaCorrenteID")&", 1, "&treatvalzero(Dinheiro)&", "&DataFechamento&", '', 'Transfer', 1, "&caixa("id")&", "&session("User")&", "&session("UnidadeID")&")")
 	end if
 
 	'->verifca se existe algum cheque neste caixa, e passa para a tesouraria deste caixa

@@ -411,7 +411,7 @@ if erro="" then
 					msgExtra = "Alguns itens necessitam de aprovação para o desconto"
 					set DescontosSQL = db.execute("select * from descontos_pendentes where ItensInvoiceID = "&NewItemID&"")
 					if not DescontosSQL.eof then
-						sqlInsertpendente = "update descontos_pendentes set Desconto = "&treatvalzero(ref("Desconto"&ii))&",  Status = 0, SysUser = "&session("User")&" where id = " & DescontosSQL("id")
+						sqlInsertpendente = "update descontos_pendentes set DataHora=NOW(),Desconto = "&treatvalzero(ref("Desconto"&ii))&", sysUserAutorizado=null,DataHoraAutorizado=null,  Status = 0, SysUser = "&session("User")&" where id = " & DescontosSQL("id")
 						db.execute(sqlInsertpendente)
 					else
 						sqlInsertpendente = "insert into descontos_pendentes values (null, "&NewItemID&", "&treatvalzero(ref("Desconto"&ii))&", 0, "&session("User")&", now(), null, null, now())"

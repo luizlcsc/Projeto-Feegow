@@ -228,7 +228,7 @@ if erro="" then
 					AguardaDesconto=True
 					set DescontosSQL = db.execute("select * from descontos_pendentes where ItensInvoiceID = "&NewItemID&"")
 					if not DescontosSQL.eof then
-						sqlInsertpendente = "update descontos_pendentes set Desconto = "&treatvalzero(DescontoInput)&",  Status = 0, SysUser = "&session("User")&" where id = " & DescontosSQL("id")
+						sqlInsertpendente = "update descontos_pendentes set DataHora=NOW(), sysUserAutorizado=null,DataHoraAutorizado=null, Desconto = "&treatvalzero(DescontoInput)&",  Status = 0, SysUser = "&session("User")&" where id = " & DescontosSQL("id")
 						db.execute(sqlInsertpendente)
 					else
 						sqlInsertpendente = "insert into descontos_pendentes values (null, "&NewItemID&", "&treatvalzero(DescontoInput)&", 0, "&session("User")&", now(), null, null, now())"

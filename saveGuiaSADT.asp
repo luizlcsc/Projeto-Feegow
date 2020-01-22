@@ -129,7 +129,10 @@ else
             if Contratado=0 then
                 db_execute("update empresa set CNES='"&ref("CodigoCNES")&"'")
             elseif Contratado<0 then
-                db_execute("update sys_financialcompanyunits set CNES='"&ref("CodigoCNES")&"' where id="&(Contratado*(-1)))
+                set unitCNES = db.execute("select CNES from sys_financialcompanyunits where id="&(Contratado*(-1))&" and (CNES is null or CNES ='')" )
+                if not unitCNES.EOF then
+                    db_execute("update sys_financialcompanyunits set CNES='"&ref("CodigoCNES")&"' where id="&(Contratado*(-1)))
+                end if
             end if
 	    end if
     end if

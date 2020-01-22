@@ -61,8 +61,9 @@
             elseif ref("AbaixoMinimo")="N" then 
                 sqlAbaixo = " AND ( (posicaoConjunto>=EstoqueMinimo) OR ( (posicaoUnidade+(posicaoConjunto*ApresentacaoQuantidade))>EstoqueMinimo) )"
             end if
+'(select Validade from estoqueposicao where ProdutoID=pro.id AND Validade<now() ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1)
 
-            set prod = db.execute("SELECT pro.*, procat.NomeCategoria, profab.NomeFabricante, (select Validade from estoqueposicao where ProdutoID=pro.id AND Validade<now() ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1) Validade, proloc.NomeLocalizacao FROM produtos pro "&_
+            set prod = db.execute("SELECT pro.*, estpos.id PosicaoID, procat.NomeCategoria, profab.NomeFabricante, estpos.Validade , proloc.NomeLocalizacao FROM produtos pro "&_
             "LEFT JOIN produtoscategorias procat ON procat.id=pro.CategoriaID "&_
             "LEFT JOIN produtosfabricantes profab ON profab.id=pro.FabricanteID "&_
             "LEFT JOIN produtoslocalizacoes proloc ON proloc.id=pro.LocalizacaoID "&_
@@ -77,7 +78,7 @@
                     end if
                 end if
                 if prod("Validade")&""="" then
-                    Validade = prod("Vencido")
+                    'Validade = prod("Vencido")
                     addClass = "label label-danger"
                 end if
 

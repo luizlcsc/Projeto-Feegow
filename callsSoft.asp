@@ -20,7 +20,7 @@ end if
 
 'response.Write("select * from chamadas where (StaID=0 OR StaID=1 and sysUserAtend="&session("User")&") AND RejeitadaPor NOT LIKE '|"&session("User")&"|'")
 set vcaCalls = db.execute("select * from chamadas where (StaID=0 OR StaID=1) and sysUserAtend="&session("User")&" AND (RejeitadaPor NOT LIKE '|"&session("User")&"|' OR RejeitadaPor IS NULL)")
-if not vcaCalls.EOF then
+if not vcaCalls.EOF and (recursoAdicional(21) = 4 or recursoAdicional(4) = 4) then
 	%>
 	$("#calls").css("display", "block");
 	$("#calls").css("padding", "10px");

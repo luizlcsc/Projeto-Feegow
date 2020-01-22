@@ -2,6 +2,21 @@
 {
 <%
 
+function existeGrade(ProfissionalID, UnidadeID, DiaSemana, Hora, Data)
+    existeGrade = false
+    if UnidadeID<>"" then
+        sqlUnidade = " AND loc.UnidadeID='"&UnidadeID&"'"
+    end if
+
+    sqlGrade = "SELECT id GradeID, Especialidades, Procedimentos, LocalID FROM (SELECT ass.id, Especialidades, Procedimentos, LocalID FROM assfixalocalxprofissional ass LEFT JOIN locais loc ON loc.id=ass.LocalID WHERE ProfissionalID="&treatvalzero(ProfissionalID)&sqlUnidade&" AND DiaSemana="&DiaSemana&" AND "&mytime(Hora)&" BETWEEN HoraDe AND HoraA AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&")) UNION ALL SELECT ex.id*-1 id, Especialidades, Procedimentos, LocalID FROM assperiodolocalxprofissional ex LEFT JOIN locais loc ON loc.id=ex.LocalID WHERE ProfissionalID="&ProfissionalID&sqlUnidade&" AND DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&")t"
+    'response.write sqlGrade
+    set Grade = db.execute(sqlGrade)
+    if Grade.eof then
+        existeGrade = true
+    end if 
+end function
+
+
     exibir=ref("exibir")
     if exibir<>"" then
         exibir = replace(exibir,"|","'")
@@ -125,20 +140,13 @@ if aut(lcase(ref("resource"))&"A")=1 then
             end if
             sqlSomenteProcedimento=""
             if ref("encaixe")&"" <> "" and ref("ProfissionalID")&"" <> "0" then
-                'response.write ProfissionalID
                 Data=ref("data")
                 UnidadeID=session("UnidadeID")
                 DiaSemana=weekday(Data)
                 Hora=ref("hora")
 
-                if UnidadeID<>"" then
-                    sqlUnidade = " AND loc.UnidadeID='"&UnidadeID&"'"
-                end if
-
-                sqlGrade = "SELECT id GradeID, Especialidades, Procedimentos, LocalID FROM (SELECT ass.id, Especialidades, Procedimentos, LocalID FROM assfixalocalxprofissional ass LEFT JOIN locais loc ON loc.id=ass.LocalID WHERE ProfissionalID="&treatvalzero(ProfissionalID)&sqlUnidade&" AND DiaSemana="&DiaSemana&" AND "&mytime(Hora)&" BETWEEN HoraDe AND HoraA AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&")) UNION ALL SELECT ex.id*-1 id, Especialidades, Procedimentos, LocalID FROM assperiodolocalxprofissional ex LEFT JOIN locais loc ON loc.id=ex.LocalID WHERE ProfissionalID="&ProfissionalID&sqlUnidade&" AND DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&")t"
-                set existeGrade = db.execute(sqlGrade)
-               
-                if existeGrade.eof then
+                gradeExiste = existeGrade(ProfissionalID, UnidadeID,DiaSemana, Hora, Data)
+                if gradeExiste then
                     sqlExibir = ""
                     sqlSomenteProcedimento=" AND (opcoesagenda IN (4,5) and SomenteProfissionais like '%|"& ProfissionalID &"|%') "
                 end if 
@@ -157,7 +165,22 @@ if aut(lcase(ref("resource"))&"A")=1 then
             if instr(ref("oti"), "guia-tiss")>0 and (session("Banco")="clinic6178" or session("Banco")="clinic100000") and ref("cs")<>"" then
                 sql = "select proc.id, proc.NomeProcedimento from procedimentos proc LEFT JOIN tissprocedimentosvalores tpv ON tpv.ProcedimentoID=proc.id where (tpv.ConvenioID="&ref("cs")&") AND proc.sysActive=1 and (proc.NomeProcedimento like '%"&ref("q")&"%' or proc.Codigo like '%"&ref("q")&"%') and proc.Ativo='on' GROUP BY proc.id order by proc.OpcoesAgenda desc, proc.NomeProcedimento"
             else
-                sql = "select id, NomeProcedimento from ((select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') and Ativo='on' order by OpcoesAgenda desc, NomeProcedimento) UNION ALL (SELECT (-1*CAST(id as SIGNED))id, CONCAT(NomePacote, ' (Pacote)') NomeProcedimento FROM pacotes WHERE sysActive=1 AND NomePacote like '%"&ref("q")&"%'))t LIMIT 20"
+                if ref("encaixe")&"" <> "" and ref("ProfissionalID")&"" <> "0" then
+                    qlSomenteProcedimento=" "
+                    ProfissionalID = ref("ProfissionalID")
+                    Data=ref("data")
+                    UnidadeID=session("UnidadeID")
+                    DiaSemana=weekday(Data)
+                    Hora=ref("hora")
+
+                    gradeExiste = existeGrade(ProfissionalID, UnidadeID,DiaSemana, Hora, Data)
+                    if gradeExiste then
+                        sqlExibir = ""
+                        sqlSomenteProcedimento=" AND (SomenteProfissionais like '%|"& ProfissionalID &"|%') "
+                    end if 
+                end if
+
+                sql = "select id, NomeProcedimento from ((select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') and Ativo='on' "&sqlSomenteProcedimento&" order by OpcoesAgenda desc, NomeProcedimento) UNION ALL (SELECT (-1*CAST(id as SIGNED))id, CONCAT(NomePacote, ' (Pacote)') NomeProcedimento FROM pacotes WHERE sysActive=1 AND NomePacote like '%"&ref("q")&"%'))t LIMIT 20"
             end if
 
             initialOrder = "NomeProcedimento"

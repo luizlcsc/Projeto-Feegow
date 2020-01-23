@@ -112,10 +112,20 @@ if LaudoID="" then
     
     response.Redirect(redir)
 else
-    set l = db.execute("select l.*, p.NomePaciente from laudos l LEFT JOIN pacientes p ON p.id=l.PacienteID where l.id="& LaudoID)
+    set l = db.execute("SELECT proc.NomeProcedimento, pac.NomePaciente, l.*, "&_
+                       " "&_
+                       "COALESCE(ii.ItemID, tpsadt.ProcedimentoID) ProcedimentoID "&_
+                       "FROM laudos l  "&_
+                       " "&_
+                       "INNER JOIN pacientes pac ON pac.id=l.PacienteID "&_
+                       "LEFT JOIN itensinvoice ii ON ii.id=l.IDTabela AND l.Tabela='itensinvoice' "&_
+                       "LEFT JOIN tissprocedimentossadt tpsadt ON tpsadt.id=l.IDTabela AND l.Tabela='tissprocedimentossadt' "&_
+                       "LEFT JOIN procedimentos proc ON proc.id=COALESCE(ii.ItemID, tpsadt.ProcedimentoID) "&_
+                       "WHERE l.id="& LaudoID)
     if not l.eof then
         PacienteID = l("PacienteID")
         NomePaciente = l("NomePaciente")
+        NomeProcedimento = l("NomeProcedimento")
         Texto = l("Texto")
         FormPID = l("FormPID")
         if isnull(FormPID) then

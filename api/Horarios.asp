@@ -29,13 +29,9 @@ if not LicenseSQL.eof then
 
     call ocupacao(data_inicio, data_fim, especialidades, "", "", "", unidades)
 
-    set HorariosSQL = dbclient.execute("SELECT * FROM rel_ocupacao WHERE sysUser=0")
-
-    dbclient.execute("DELETE FROM agenda_horarios WHERE sysUser=0")
-    dbclient.execute("INSERT INTO agenda_horarios (sysUser, Data, Hora, StaID, Situacao, ProfissionalID, EspecialidadeID, LocalID, UnidadeID, BloqueioID, AgendamentoID, TipoGrade, GradeID, Bloqueado, Encaixe, GradeOriginal) "&_
-    "  (SELECT sysUser, Data, Hora, StaID, Situacao, ProfissionalID, EspecialidadeID, LocalID, UnidadeID, null, null, TipoGrade, GradeID, Bloqueado, Encaixe, GradeOriginal FROM rel_ocupacao WHERE sysUser=0)")
-
     if get_payload="true" then
+        set HorariosSQL = dbclient.execute("SELECT * FROM rel_ocupacao WHERE sysUser=0")
+
         response.write(recordToJSON(HorariosSQL))
         response.end
     end if

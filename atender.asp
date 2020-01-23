@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 
 AgendamentoID = request.QueryString("Atender")
@@ -43,6 +44,9 @@ if Acao="Iniciar" then
             end if
 
             db_execute("update agendamentos SET StaID = "&StaX&" WHERE id="&AgendamentoID)
+
+            call logAgendamento(AgendamentoID, "Atendimento iniciado pela sala de espera", "R")
+
             if UnidadeIDAgendamento&""<>session("UnidadeID") then
                 db.execute("update atendimentos SET UnidadeID = "&treatvalzero(UnidadeIDAgendamento)&" WHERE id="&pult("id"))
             end if
@@ -83,6 +87,7 @@ if Acao="Iniciar" then
 	else
 		pultID = vesehapac("id")
 	end if
+    AtendimentoID=pultID
 	if instr(session("Atendimentos"), "|"&pultID&"|")=0 then
 		session("Atendimentos")=session("Atendimentos")&"|"&pultID&"|"
 	end if
@@ -97,7 +102,6 @@ if Acao="" then
 	    AtendimentoID=buscaAtendimento("id")
     end if
 end if
-
 
 if Acao="PreEncerrar" then
 	set buscaAtendimento = db.execute("select id from atendimentos where sysUser="&session("User")&" and PacienteID="&PacienteID&" and Data='"&myDate(date())&"' and isnull(HoraFim)")

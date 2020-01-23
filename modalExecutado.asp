@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 II = ref("II")
 CHK = ref("CHK")
@@ -50,6 +51,7 @@ PermissaoParaAlterar=True
 if getConfig("NaoPermitirAlterarExecutanteEExecucao")=1 and aut("areceberpacienteV")=0 and aut("contasareceberV")=0 and session("table")="profissionais" then
     PermissaoParaAlterar=False
     ProfissionalID=session("idInTable")
+    Associacao = 5
     DataExecucao=date()
 end if
 
@@ -152,6 +154,15 @@ end if
                 <%= quickField("memo", "Descricao"&II, "Observações", 12, Descricao, "", "", "") %>
         </div>
         <hr />
+
+<div class="row">
+    <div class="col-md-12" style="max-height: 250px; overflow-y: scroll">
+        <%
+        LogsItensInvoiceSQL = renderLogsTable("itensinvoice", II)
+        %>
+    </div>
+</div>
+
         <div class="row" id="rat<%=II %>">
         <%
 		Row = II

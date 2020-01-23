@@ -144,7 +144,7 @@ end if
                         </div>
                         <div class="col-md-3">
                             <label><%=tituloConta%></label><br />
-                             <%=selectInsertCA("", "AccountID", session("ccAccountID"), "5, 4, 3, 2, 6, 1, 8", "", "", "")%>
+                            <%=selectInsertCA("", "AccountID", session("ccAccountID"), "5, 4, 3, 2, 6, 1, 8", "", "", "")%>
                         </div>
                         <%=quickField("text", "NotaFiscal", "Nota Fiscal", 2, session("ccNotaFiscal"), "", "", " ")%>
                         <%=quickField("multiple", "AccountAssociation", "Limitar Tipo de Pagador", 2, session("ccAccountAssociation"), "select * from cliniccentral.sys_financialaccountsassociation WHERE id NOT IN(1, 7)", "AssociationName", "")%>
@@ -301,7 +301,7 @@ $('#frmCD').submit(function(){
     $("#frmCD").submit();
 <% end if %>
 
-<% if getConfig("ListarAutomaticamenteContas") = "1" or req("Buscar")="1" then%>
+<% if getConfig("ListarAutomaticamenteContas") = "1" then%>
     $('#Filtrate').click();
 <%
 else

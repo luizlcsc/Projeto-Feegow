@@ -163,10 +163,11 @@ else
         'teste para atualizar lista de usuarios online no chat
         %>
         if($("#txtPesquisar").is(":focus")==false){
-        if($(".sb-r-o").length > 0){
-            chatUsers();
+            if($(".sb-r-o").length > 0){
+                chatUsers();
+            }
         }
-        }
+	    <!--#include file="chatStatus.asp"-->
         <%
 	    'ATUALIZA CHAT
 	    if not isnull(buscaAtu("novasmsgs")) and instr(buscaAtu("novasmsgs"), "|")>0 then

@@ -134,7 +134,18 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
             if ContaPadrao="PRO" then
                 ContaCredito = ii("Associacao")&"_"&ii("ProfissionalID")
             elseif ContaPadrao="LAU" then
-                ContaCredito = ii("Associacao")&"_"&ii("ProfissionalID")
+
+                set LauProf = db.execute("SELECT ProfissionalID FROM laudos WHERE Tabela='itensinvoice' AND ProfissionalID is not null AND ProfissionalID<>0 AND IDTabela="&ItemInvoiceID&" LIMIT 1")
+                if not LauProf.eof then
+                    ContaCredito = "5_"&LauProf("ProfissionalID")
+                else
+                'Caso não tenha profissional no laudo não está pegando o executante.
+                    ContaCredito = "0"
+                end if
+
+                'ContaCredito = ii("Associacao")&"_"&ii("ProfissionalID")
+
+
             elseif ContaPadrao="SOL" then
                 ContaCredito = ii("ProfissionalSolicitanteID")
                 if ii("ProfissionalSolicitanteID")="0_1" then

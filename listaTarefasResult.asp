@@ -60,6 +60,12 @@ if ref("Para")<>"" then
         sqlCC = " OR t.Para LIKE '%|-"& cc("CentroCustoID") &"|%' "
     end if
 end if
+
+tdHidden = ""
+
+if ref("Helpdesk") <> "" then
+    tdHidden = " hidden "
+end if
 %>
 <div class="col-md-12">
     <table class="table table-striped table-hover table-bordered table-condensed">
@@ -67,18 +73,18 @@ end if
           <tr class="success ">
             <th>#</th>
             <th>Tipo</th>
-            <th>Prioridade</th>
+            <th class="<%=tdHidden%>">Prioridade</th>
             <th>Abertura</th>
             <th>Prazo</th>
             <%'if ref("Tipo")="R" then %>
               <th>De</th>
             <%'else %>
-              <th>Para</th>
+              <th class="<%=tdHidden%>">Para</th>
             <%'end if %>
             <th>Título</th>
             <th>Projeto</th>
-            <th>Solicitantes</th>
-            <th class="hidden-print">Pontos</th>
+            <th class="<%=tdHidden%>">Solicitantes</th>
+            <th class="hidden-print <%=tdHidden%>">Pontos</th>
             <th width="1%" ></th>
           </tr>
         </thead>
@@ -106,7 +112,6 @@ end if
                    "LEFT JOIN pacientes p ON t.Solicitantes LIKE CONCAT('%3_',p.id,'%') "&_
                    "WHERE t.sysActive=1 AND ( 1=1 "& sqlCC &" ) " & sqlDe & sqlPara & sqlStatusDe & sqlStatusPara & sqlAberturaDe & sqlAberturaAte & sqlPrazoDe & sqlPrazoAte & sqlPrioridade & sqlTipoTarefa & sqlSolicitante & sqlResponsavel & sqlFiltrar & sqlProjeto & sqlLicencaPaciente &" "&_
                    "GROUP BY t.id ORDER BY Pontos desc, t.DtPrazo, t.HrPrazo LIMIT 1000"
-
 
         if ref("Helpdesk") <> "" then
             set lista = dblicense.execute(sqlLista)
@@ -177,16 +182,16 @@ end if
             <tr class="<%=prioridadeClasse&" "%> <%=classPara%>">
                 <td><%=lista("id") %></td>
                 <td><%=lista("DescricaoTipo") %></td>
-                <td><%=lista("Prioridade") %></td>
+                <td class="<%=tdHidden%>"><%=lista("Prioridade") %></td>
                 <td><%=lista("DtAbertura") %></td>
                 <td class="<%=ClassePrazo%>"><strong><%=DataPrazo %></strong></td>
                 <td><span class="label label-sm arrowed-right label-<%=ClasseDe %>"><%=StaDe %></span> <%=lista("Nome") %></td>
-                <td><span class="label label-sm arrowed-right label-<%=ClassePara %>"><%=StaPara %></span> <%=Para %></td>
+                <td class="<%=tdHidden%>"><span class="label label-sm arrowed-right label-<%=ClassePara %>"><%=StaPara %></span> <%=Para %></td>
 
                 <td><%=lista("Titulo") %></td>
                 <td><%=lista("Projeto") %></td>
-                <td class="text-right"><%= lista("nSol") %></td>
-                <td class="text-right hidden-print"><%= lista("Pontos") %></td>
+                <td class="text-right <%=tdHidden%>"><%= lista("nSol") %></td>
+                <td class="text-right <%=tdHidden%> hidden-print"><%= lista("Pontos") %></td>
 
                 <%
                     if ref("Helpdesk") <> "" then

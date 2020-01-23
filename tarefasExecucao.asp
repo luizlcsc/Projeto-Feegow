@@ -5,6 +5,9 @@ TarefaID = req("I")
 emExec = 0
 Acao = ref("A")
 
+if req("Helpdesk") = "" then
+
+
 sqlExecutando = db.execute("SELECT COUNT(id) AS qtdExecutando FROM tarefasexecucao WHERE sysUser = "&session("User")&" AND Fim IS NULL")
 qtdExecutando = sqlExecutando("qtdExecutando")
 bloqueado = 0
@@ -80,3 +83,7 @@ $("#TextoExecucao").change(function(){
     executarTarefa('TXT');
 });
 </script>
+<%
+end if
+
+%>

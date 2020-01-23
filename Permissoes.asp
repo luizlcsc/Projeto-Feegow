@@ -1,5 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 
 PessoaID = req("I")
@@ -23,7 +24,10 @@ end if
 if request.QueryString("AplicaRegra")<>"" then
 	set pr=db.execute("select * from regraspermissoes where id = '"&request.QueryString("AplicaRegra")&"'")
 	if not pr.eof then
-		db_execute("update sys_users set Permissoes='"&pr("Permissoes")&" ["&pr("id")&"]', limitarecpag='"& pr("limitarecpag") &"' where id = '"& req("UsId") &"'")
+
+	    sqlAplicaRegra="update sys_users set Permissoes='"&pr("Permissoes")&" ["&pr("id")&"]', limitarecpag='"& pr("limitarecpag") &"' where id = '"& req("UsId") &"'"
+        call gravaLogs(sqlAplicaRegra, "AUTO", "Regra "&pr("Regra")&" aplicada")
+		db_execute(sqlAplicaRegra)
 		%>
         <script type="text/javascript">
         new PNotify({
@@ -41,15 +45,25 @@ if request.Form("e")<>"" then
 	if request.Form("Regra")<>"" then
 		set veseha=db.execute("select * from RegrasPermissoes where Regra like '"&trim(replace(request.Form("Regra")&" ","'","''"))&"'")
 		if veseha.eof then
-			db_execute("insert into RegrasPermissoes (Regra,Permissoes) values ('"&trim(replace(request.Form("Regra")&" ","'","''"))&"','"&request.Form("Permissoes")&"')")
+		    sqlRegra = "insert into RegrasPermissoes (Regra,Permissoes) values ('"&trim(replace(request.Form("Regra")&" ","'","''"))&"','"&request.Form("Permissoes")&"')"
+		    call gravaLogs(sqlRegra, "AUTO", "Regra criada")
+			db_execute(sqlRegra)
 			set veseha = db.execute("select * from RegrasPermissoes order by id desc limit 1")
 			db_execute("update sys_users set OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"',limitarcontaspagar='"& ref("limitarcontaspagar") &"',Permissoes='"& ref("Permissoes")&" ["&veseha("id")&"]', limitarecpag='"& ref("limitarecpag") &"' where id="&ref("e"))
 		else
-			db_execute("update RegrasPermissoes set Permissoes='"& ref("Permissoes")&"', limitarecpag='"& ref("limitarecpag") &"' where id = '"&veseha("id")&"'")
-			db_execute("update sys_users set Permissoes='"&ref("Permissoes")&" ["&veseha("id")&"]',limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' limitarecpag='"& ref("limitarecpag") &"' where Permissoes like '%["&veseha("id")&"]%'")
+		    updateRegra = "update RegrasPermissoes set Permissoes='"& ref("Permissoes")&"', limitarecpag='"& ref("limitarecpag") &"' where id = '"&veseha("id")&"'"
+            call gravaLogs(updateRegra, "AUTO", "Regra alterada")
+			db_execute(updateRegra)
+
+			updateUsers = "update sys_users set Permissoes='"&ref("Permissoes")&" ["&veseha("id")&"]',limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' limitarecpag='"& ref("limitarecpag") &"' where Permissoes like '%["&veseha("id")&"]%'"
+            call gravaLogs(updateUsers, "AUTO", "Permissões alterada pela regra")
+			db_execute(updateUsers)
 		end if
 	else
-		db_execute("update sys_users set Permissoes='"&request.Form("Permissoes")&"', limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' where id="&ref("e"))
+	    sqlUpdatePermissoes = "update sys_users set Permissoes='"&request.Form("Permissoes")&"', limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' where id="&ref("e")
+	    call gravaLogs(sqlUpdatePermissoes, "AUTO", "Permissões alteradas")
+
+		db_execute(sqlUpdatePermissoes)
 	end if
 	%>
 
@@ -126,6 +140,10 @@ else
     <div class="panel">
         <div class="panel-heading">
             <span class="title">Permissões de <%=Nome%></span>
+
+            <button type="button" onclick="MostraLogsPermissoes()" class="btn btn-sm btn-default fright mt10" style="float: right">
+                <i class="fa fa-history"></i>
+            </button>
         </div>
         <div class="panel-body">
             <div class="col-md-offset-10 col-md-2">
@@ -304,5 +322,9 @@ function editaRegra(I){
 }
 
 	          <!--#include file="JQueryFunctions.asp"-->
+
+function MostraLogsPermissoes() {
+    openComponentsModal("LogPermissoes.asp", {I: '<%=PessoaID%>', R: 'sys_users'},"Log das permissões")
+}
 
 </script>

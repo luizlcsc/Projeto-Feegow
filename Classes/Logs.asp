@@ -93,7 +93,7 @@ end function
 
 function gravaLogs(query, operacaoForce, obs)
     'tabelas = "|tissguiaconsulta|tissguiasadt|tissguiahonorarios|tissguiainternacao|tisslotes|tissprocedimentossadt|tissprofissionaissadt|tissprocedimentoshonorarios|tissprofissionaishonorarios|tissprocedimentosinternacao|pacientes|profissionais|convenios|contratosconvenio|empresa|sys_financialcompanyunits|tissprocedimentostabela|tissprocedimentosvalores|tissprocedimentosvaloresplanos|contratadoexternoconvenios|tissguiaanexa|rateiorateios|itensinvoice|sys_financialmovement|arquivos|sys_financialinvoices|invoice_rateio|propostas|tissguiasinvoice|agendamentos|chamadasagendamentos|agendamentosrepeticoes|assfixalocalxprofissional|propostas|itensproposta|pacientespropostasformas|pacientespropostasoutros|Contatos|"
-    tabelas = "|tarefas|sys_financialcompanyunits|sys_financialinvoices|itensinvoice|sys_financialmovement|sys_financialIssuedChecks|"
+    tabelas = "|tarefas|sys_financialcompanyunits|sys_financialinvoices|itensinvoice|sys_financialmovement|sys_financialIssuedChecks|sys_users|regraspermissoes|"
     tabelas = LCase(tabelas)
     tipoLog = split(query, " ")(0)
     tipoLog = LCase(tipoLog)
@@ -109,7 +109,7 @@ function gravaLogs(query, operacaoForce, obs)
             operacao = "I"
         end if
         recurso = split(query, " ")(2)
-        recurso = LCase(recurso)
+        recurso = trim(LCase(recurso))
 
         if InStr(tabelas,"|"&recurso&"|") then
             idLog = getLastAdded(recurso)
@@ -140,9 +140,7 @@ function gravaLogs(query, operacaoForce, obs)
             operacao = "E"
         end if
         recurso = split(query, " ")(1)
-        recurso = LCase(recurso)
-
-        'response.write("// "&recurso)
+        recurso = trim(LCase(recurso))
 
         if InStr(tabelas,"|"&recurso&"|") then
             valores = split(query, " set ")(1)
@@ -220,19 +218,19 @@ function gravaLogs(query, operacaoForce, obs)
                               end if
 
                               if(txtValorAntigo <> txtValorAtual and not (txtValorAntigo="" and txtValorAtual="0") and not (txtValorAtual="" and txtValorAntigo="0")) then
-                                valoresAnteriores = valoresAnteriores&record(iLog)&"|^"
+                                valoresAnteriores = valoresAnteriores&txtValorAntigo&"|^"
                                 colunas = colunas&trim(split(valores(iLog), "=")(0))&"|"
                                 valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(valores(iLog), "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
                               end if
                           elseif (isDate(txtValorAntigo) and isDate(txtValorAtual)) then
                               if(FormatDateTime(txtValorAntigo,3) <> FormatDateTime(txtValorAtual,3)) then
-                                  valoresAnteriores = valoresAnteriores&record(iLog)&"|^"
+                                  valoresAnteriores = valoresAnteriores&txtValorAntigo&"|^"
                                   colunas = colunas&trim(split(valores(iLog), "=")(0))&"|"
                                   valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(valores(iLog), "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
                               end if
                           else
                               if(txtValorAntigo <> txtValorAtual and not (txtValorAntigo="" and txtValorAtual="0") and not (txtValorAtual="" and txtValorAntigo="0")) then
-                                valoresAnteriores = valoresAnteriores&record(iLog)&"|^"
+                                valoresAnteriores = valoresAnteriores&txtValorAntigo&"|^"
                                 colunas = colunas&trim(split(valores(iLog), "=")(0))&"|"
                                 valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(valores(iLog), "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
                               end if

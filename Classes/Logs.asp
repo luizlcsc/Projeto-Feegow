@@ -310,7 +310,7 @@ function gravaLogs(query, operacaoForce, obs)
                 if(operacaoForce <> "AUTO") then
                    db.execute(query)
                 end if
-                db.execute("insert into log (Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser) values ('"&operacao&"', "&res("id")&", '"&recursoTabela&"', '"&colunas&"', '"&valoresAnteriores&"', NULL, "&session("User")&")")
+                db.execute("insert into log (Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser, Obs) values ('"&operacao&"', "&res("id")&", '"&recursoTabela&"', '"&colunas&"', '"&valoresAnteriores&"', NULL, "&session("User")&",'"&Obs&"')")
                 res.movenext
             wend
         end if

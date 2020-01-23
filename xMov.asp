@@ -128,13 +128,13 @@ END IF
 
 'gerar o log
 set iInvoice = db.execute("select * from sys_financialmovement WHERE id="& I)
-columns = "|AccountIDCredit|AccountAssociationIDCredit|Value|PaymentMethodID|Date|InvoiceID|AccountIDDebit|AccountAssociationIDDebit|"
-oldValues = "|^"&iInvoice("AccountIDCredit")&"|^"&iInvoice("AccountAssociationIDCredit")&"|^"&iInvoice("Value")&"|^"&iInvoice("PaymentMethodID")&"|^"&formatdatetime(iInvoice("Date"),2)&"|^"&iInvoice("InvoiceID")&"|"
-call createLog("X", I, "sys_financialmovement", columns, oldValues, "")
 
 db_execute("update rateiorateios set CreditoID=NULL where CreditoID="& I)
 if RemoveMov=1  then
-    db_execute("delete from sys_financialmovement where id="&I)
+    sqlDel = "delete from sys_financialmovement where id="&I
+
+    call gravaLogs(sqlDel, "AUTO", "Pagamento excluído")
+    db_execute(sqlDel)
 
     db_execute("UPDATE recibos SET sysActive=-1, Nome=CONCAT(Nome, ' (Excluído)') WHERE sysActive=1 AND InvoiceID="&treatvalzero(InvoiceID))
 

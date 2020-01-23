@@ -46,7 +46,7 @@ function openReport() {
     teste = split(replace(session("Permissoes"),"|",""),",")
     For i = 0 To Ubound(teste)
         if instr(teste(i),"relatorios")>0  then
-            set rel =  dbc.execute("select r.arquivo from cliniccentral.relatorios as r where r.Permissoes='"&trim(teste(i))&"' LIMIT 1")
+            set rel =  dbc.execute("select r.arquivo from cliniccentral.relatorios as r where r.Permissoes='"&trim(teste(i))&"' and sysActive=1 LIMIT 1")
                 if not rel.eof then
                     defaultReport=rel("arquivo")
                 end if

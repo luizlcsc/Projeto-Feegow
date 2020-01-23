@@ -33,7 +33,7 @@ select case lcase(req("P"))
 
 <%
     case "confirmacaodeagendamentos"
-        StaChk = "|1|"
+        StaChk = "|1|,|116|"
         %>
         <li class="sidebar-label"></li>
         <li class="sidebar-label p20">
@@ -151,10 +151,10 @@ select case lcase(req("P"))
                   
                 </div>
 
-                <% if false then %>
+                <% if true and recursoAdicional(12)<>4 then %>
                 <div class="panel-footer br-t p12">
                   <span class="fs11">
-                        <button onclick="location.href='./?P=listatarefas&Pers=1&Helpdesk=1';" class="btn btn-sm btn-block btn-primary"><i class="fa fa-comments-o"></i> MEUS CHAMADOS (0)</button>
+                        <button onclick="location.href='./?P=listatarefas&Pers=1&Helpdesk=1';" class="btn btn-sm btn-block btn-primary"><i class="fa fa-comments-o"></i> MEUS CHAMADOS</button>
                   </span>
                 </div>
                 <% end if %>
@@ -2210,7 +2210,7 @@ select case lcase(req("P"))
         </li>
         <li>
             <div class="row p10">
-                <%= quickfield("simpleSelect", "ProfissionalID", "Laudador", 12, ProfissionalID, "select id,IF(NomeSocial is null or NomeSocial='',NomeProfissional,NomeSocial)NomeProfissional from profissionais where sysActive=1 AND Ativo='on'", "NomeProfissional", " no-select2 "& disabledProf) %>
+                <%= quickfield("simpleSelect", "ProfissionalID", "Laudador", 12, ProfissionalID, "select CONCAT('5_',id)id,IF(NomeSocial is null or NomeSocial='',NomeProfissional,NomeSocial)NomeProfissional from profissionais where sysActive=1 AND Ativo='on' UNION ALL SELECT CONCAT('8_',id)id,NomeFornecedor FROM fornecedores WHERE TipoPrestadorID IN (1)", "NomeProfissional", " no-select2 "& disabledProf) %>
             </div>
         </li>
         <li  class="p10">

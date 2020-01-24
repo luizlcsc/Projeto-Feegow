@@ -9,7 +9,6 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
     db.execute("delete from agenda_horarios where sysUser="& treatvalzero(session("User")))
     response.Buffer
 
-
     sqlLimitarProfissionais =""
     if lcase(session("table"))="funcionarios" then
          set FuncProf = db.execute("SELECT Profissionais FROM funcionarios WHERE id="&session("idInTable"))
@@ -32,9 +31,17 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
     end if
 
 
-    'CONTEÚDO DA AGENDAMULTIPLACONTEUDO
-    Profissionais = "0"
-    'Especialidades = ref("Especialidade") quando voltar ao normal por busca como na agenda
+    if refEspecialidade="" and rfProfissionais<>"" then
+        set ProfissionalSQL = db.execute("SELECT EspecialidadeID FROM profissionais WHERE id IN ("&rfProfissionais&")")
+        if not ProfissionalSQL.eof then
+            refEspecialidade=ProfissionalSQL("EspecialidadeID")&""
+        end if
+    else
+        Profissionais = "0"
+    end if
+
+
+
     splrfesp = split(refEspecialidade, ", ")
     ProcedimentoID = reffiltroProcedimentoID
     'rfEspecialidade = ref("Especialidade")
@@ -50,6 +57,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                     '-> procedimento filtrado selecionado
                     if ProcedimentoID<>"" then
                         sqlProcFiltro = "select ifnull(OpcoesAgenda, 0) OpcoesAgenda, SomenteProfissionais, SomenteEquipamentos, SomenteEspecialidades, SomenteLocais, EquipamentoPadrao from procedimentos where id="&ProcedimentoID
+
 
                         set proc = db.execute(sqlProcFiltro)
                         if not proc.eof then
@@ -109,7 +117,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                     end if
                                 end if
                             end if
-        
+
                             if sqlProfissionais<>"" and sqlEspecialidades<>"" then
                                 if OpcoesAgenda="4" then
                                     sqlProfesp = " AND ("&sqlProfissionais&" OR "&sqlEspecialidades&") "
@@ -186,7 +194,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         fieldEsp = " , e.EspecialidadeID EspecialidadeAd "
                     end if
 
-                    if rfProfissionais<>"" then
+                    if rfProfissionais<>"" and rfProfissionais&""<>"0" then
                         sqlProfissionais = " AND p.id IN ("& replace(rfProfissionais, "|", "") &") "
                     else
                     've se deve seprar por paciente
@@ -197,7 +205,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                 profissionais=FuncProf("Profissionais")
                                 if not isnull(profissionais) and profissionais<>"" then
                                     profissionaisExibicao = replace(profissionais, "|", "")
-                                    if profissionaisExibicao<>"" then
+                                    if profissionaisExibicao<>"" and profissionaisExibicao&""<>"0" then
                                         sqlProfissionais = " AND p.id IN ("&profissionaisExibicao&")"
                                     end if
                                 end if
@@ -208,7 +216,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                 profissionais=FuncProf("AgendaProfissionais")
                                 if not isnull(profissionais) and profissionais<>"" then
                                     profissionaisExibicao = replace(profissionais, "|", "")
-                                    if profissionaisExibicao<>"" then
+                                    if profissionaisExibicao<>"" and profissionaisExibicao&""<>"0" then
                                         sqlProfissionais = " AND p.id IN ("&profissionaisExibicao&")"
                                     end if
                                 end if
@@ -238,6 +246,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
                     sql = replace(sql, "[DiaSemana]", DiaSemana)
 
+
                     '-> BUSCANDO SE TEM GRADE
                     set comGrade = db.execute( sql )
                     if comGrade.eof then
@@ -249,6 +258,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                     while not comGrade.eof
                         response.Flush()
                         '-> namAGENDA
+
                         ProfissionalID = comGrade("ProfissionalID")
                         'if (session("Banco")="clinic5760" or session("Banco")="clinic6118" or session("Banco")="clinic5968" or session("Banco")="clinic105" or session("Banco")="clinic6259" or session("Banco")="clinic6629") and instr(rfLocais, "UNIDADE_ID")>0 then
                         if instr(rfLocais, "UNIDADE_ID")>0 then
@@ -489,8 +499,30 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 									GradeOriginal = "NULL"
 								end if
 
+
+                                sqlGradeExcecao = "select id from assperiodolocalxprofissional where  '"&horario&"' BETWEEN HoraDe  AND HoraA  AND  " & mydatenull(Data) & " BETWEEN DataDe AND DataA  AND ProfissionalID=" &treatvalnull(ProfissionalID) & " ORDER BY 1  "
+                                set GradeExcecaoSQL = db.execute(sqlGradeExcecao)
+
+                                sqlGradeId=""
+
+                                if not GradeExcecaoSQL.eof then
+                                    sqlGradeId = ", GradeID="&GradeExcecaoSQL("id")*-1
+                                else
+                                    sqlGradePadrao0 = "select id from assfixalocalxprofissional where DiaSemana = " & DiaSemana & " AND HoraDe <= " & mytime(horario) & " AND HoraA >= "  &  mytime(horario) &  " AND ( (InicioVigencia <= " &mydatenull(Data)& " OR InicioVigencia IS NULL) AND (FimVigencia >= " &mydatenull(Data)& " OR FimVigencia  IS NULL) )  AND ProfissionalID=" &treatvalzero(ProfissionalID)& " ORDER BY 1 "
+                                    set GradePadraoSQL = db.execute(sqlGradePadrao0)
+
+                                if req("debug")="1" then
+                                  '  response.write(sqlGradePadrao0)
+                                end if
+                                    if not GradePadraoSQL.eof then
+                                        sqlGradeId = ", GradeID="&GradePadraoSQL("id")
+                                    end if
+                                end if
+
+
+
                             if LiberaInsert then
-                                db.execute("INSERT INTO agenda_horarios SET AgendamentoID="&treatvalzero(comps("id"))&", sysUser="& treatvalzero(session("User")) &", Data="& mydatenull(Data) &", Hora="& mytime(Horario) &", StaID="& StaID &", Situacao='A', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& EspecialidadeID &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID) &", Encaixe="& treatvalnull(comps("Encaixe")) &", GradeOriginal="& GradeOriginal)
+                                db.execute("INSERT INTO agenda_horarios SET AgendamentoID="&treatvalzero(comps("id"))&", sysUser="& treatvalzero(session("User")) &", Data="& mydatenull(Data) &", Hora="& mytime(Horario) &", StaID="& StaID &", Situacao='A', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& EspecialidadeID &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID) &", Encaixe="& treatvalnull(comps("Encaixe")) &", GradeOriginal="& GradeOriginal & sqlGradeId)
                             '                            set vcaPL = db.execute("select id from agenda_horarios where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND LocalID="& treatvalnull(LocalID))
                             '                            if vcaPL.eof then
                             '                                set vcaPL = db.execute("select id from agenda_horarios where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID))
@@ -545,7 +577,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
     bloq.close
     set bloq=nothing
 
-     end if 
+     end if
 
 
                     '<- namAGENDA
@@ -555,7 +587,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                     set comGrade=nothing
 
 
-                
+
 
 
                     Data = Data+1

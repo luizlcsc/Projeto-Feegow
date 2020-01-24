@@ -324,7 +324,7 @@ function editaRegra(I){
 	          <!--#include file="JQueryFunctions.asp"-->
 
 function MostraLogsPermissoes() {
-    openComponentsModal("LogPermissoes.asp", {I: '<%=PessoaID%>', R: 'sys_users'},"Log das permissões")
+    openComponentsModal("LogPermissoes.asp", {I: '<%=UserID%>', R: 'sys_users'},"Log das permissões")
 }
 
 </script>

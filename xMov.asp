@@ -133,7 +133,7 @@ db_execute("update rateiorateios set CreditoID=NULL where CreditoID="& I)
 if RemoveMov=1  then
     sqlDel = "delete from sys_financialmovement where id="&I
 
-    call gravaLogs(sqlDel, "AUTO", "Pagamento excluído")
+    call gravaLogs(sqlDel, "AUTO", "Pagamento excluído", "")
     db_execute(sqlDel)
 
     db_execute("UPDATE recibos SET sysActive=-1, Nome=CONCAT(Nome, ' (Excluído)') WHERE sysActive=1 AND InvoiceID="&treatvalzero(InvoiceID))

@@ -26,7 +26,7 @@ if request.QueryString("AplicaRegra")<>"" then
 	if not pr.eof then
 
 	    sqlAplicaRegra="update sys_users set Permissoes='"&pr("Permissoes")&" ["&pr("id")&"]', limitarecpag='"& pr("limitarecpag") &"' where id = '"& req("UsId") &"'"
-        call gravaLogs(sqlAplicaRegra, "AUTO", "Regra "&pr("Regra")&" aplicada")
+        call gravaLogs(sqlAplicaRegra, "AUTO", "Regra "&pr("Regra")&" aplicada", "")
 		db_execute(sqlAplicaRegra)
 		%>
         <script type="text/javascript">
@@ -46,22 +46,22 @@ if request.Form("e")<>"" then
 		set veseha=db.execute("select * from RegrasPermissoes where Regra like '"&trim(replace(request.Form("Regra")&" ","'","''"))&"'")
 		if veseha.eof then
 		    sqlRegra = "insert into RegrasPermissoes (Regra,Permissoes) values ('"&trim(replace(request.Form("Regra")&" ","'","''"))&"','"&request.Form("Permissoes")&"')"
-		    call gravaLogs(sqlRegra, "AUTO", "Regra criada")
+		    call gravaLogs(sqlRegra, "AUTO", "Regra criada", "")
 			db_execute(sqlRegra)
 			set veseha = db.execute("select * from RegrasPermissoes order by id desc limit 1")
 			db_execute("update sys_users set OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"',limitarcontaspagar='"& ref("limitarcontaspagar") &"',Permissoes='"& ref("Permissoes")&" ["&veseha("id")&"]', limitarecpag='"& ref("limitarecpag") &"' where id="&ref("e"))
 		else
 		    updateRegra = "update RegrasPermissoes set Permissoes='"& ref("Permissoes")&"', limitarecpag='"& ref("limitarecpag") &"' where id = '"&veseha("id")&"'"
-            call gravaLogs(updateRegra, "AUTO", "Regra alterada")
+            call gravaLogs(updateRegra, "AUTO", "Regra alterada", "")
 			db_execute(updateRegra)
 
 			updateUsers = "update sys_users set Permissoes='"&ref("Permissoes")&" ["&veseha("id")&"]',limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' limitarecpag='"& ref("limitarecpag") &"' where Permissoes like '%["&veseha("id")&"]%'"
-            call gravaLogs(updateUsers, "AUTO", "Permissões alterada pela regra")
+            call gravaLogs(updateUsers, "AUTO", "Permissões alterada pela regra", "")
 			db_execute(updateUsers)
 		end if
 	else
 	    sqlUpdatePermissoes = "update sys_users set Permissoes='"&request.Form("Permissoes")&"', limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' where id="&ref("e")
-	    call gravaLogs(sqlUpdatePermissoes, "AUTO", "Permissões alteradas")
+	    call gravaLogs(sqlUpdatePermissoes, "AUTO", "Permissões alteradas", "")
 
 		db_execute(sqlUpdatePermissoes)
 	end if

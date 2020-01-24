@@ -35,7 +35,7 @@ else
 end if
 
 updateUser = "update sys_users set Permissoes='"&ref("Permissoes")&" ["&RegraID&"]', limitarecpag='"& ref("limitarecpag") &"' , OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' where Permissoes like '%["&RegraID&"]%'"
-call gravaLogs(updateUser, "AUTO", "Permissões alterada pela regra")
+call gravaLogs(updateUser, "AUTO", "Permissões alterada pela regra", "")
 
 db_execute(updateUser)
 

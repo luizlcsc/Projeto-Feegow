@@ -79,7 +79,9 @@ else
 	$(document).ready(function(e) {
         <%call formSave("frm, #WS, #frmRegras", "save", "")%>
         document.querySelector('#Salvar').addEventListener('click', saveAll, false);
-        if ($("#AccountType").val() === '3') {
+
+		var accountType = $("#AccountType").val();
+		if (accountType === '3' || accountType === '4') {
             document.querySelector('#Salvar').removeEventListener('click', saveAll, false);
         }
     });
@@ -99,7 +101,9 @@ else
 	$("#AccountType").change(function(){
 		accountDetails();
 		document.querySelector('#Salvar').addEventListener('click', saveAll, false);
-		if ($("#AccountType").val() === '3') {
+
+		var accountType = $("#AccountType").val();
+		if (accountType === '3' || accountType === '4') {
 		   document.querySelector('#Salvar').removeEventListener('click', saveAll, false);
 		}
 	});

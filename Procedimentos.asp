@@ -136,6 +136,10 @@ TipoGuia = reg("TipoGuia")
                                 <input type="checkbox" name="NaoRepetirNaProposta" id="NaoRepetirNaProposta" value="S" class="ace" <% If reg("NaoRepetirNaProposta")="S" Then %> checked="checked" <% End If %> />
                                 <label for="NaoRepetirNaProposta">Não permitir duplicidade na proposta </label>
                             </div>
+                            <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" name="NaoNecessitaAgendamento" id="NaoNecessitaAgendamento" value="S" class="ace" <% If reg("NaoNecessitaAgendamento")="S" Then %> checked="checked" <% End If %> />
+                                <label for="NaoNecessitaAgendamento">Não Necessita de Agendamento </label>
+                            </div>
                         </div>
                     </div>
                     <hr class="short alt" />

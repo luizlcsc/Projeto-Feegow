@@ -1,10 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
 <!--#include file="modal.asp"-->
-
-
 <script>
-
 <% if request.QueryString("I") <> "N" then %>
     function addRow() {
         $("#newQtd").val(parseInt($("#newQtd").val())+1);
@@ -275,15 +272,15 @@ end function
                             <%=quickField("text", "RegistroANS", "Registro na ANS", 2, reg("RegistroANS"), "", "", "")%>
                             <%'=quickField("text", "NumeroContrato", "C&oacute;digo na Operadora", 3, reg("NumeroContrato"), "", "", "")%>
                             <%= quickField("number", "RetornoConsulta", "Retorno Consulta", 2, reg("RetornoConsulta"), "", "", " placeholder='Dias'") %>
+                            <%= quickField("number", "DiasRecebimento", "Dias para Recebimento", 2, reg("DiasRecebimento"), "", "", " placeholder='Dias'") %>
                             <%'= quickField("text", "FaturaAtual", "Fatura Atual", 2, reg("FaturaAtual"), "", "", " placeholder='N&uacute;mero'") %>
 
                             <%= quickField("simpleSelect", "VersaoTISS", "Versão da TISS", 2, reg("VersaoTISS"), "select * from cliniccentral.tissversao", "Versao", "") %>
 
-
-                            <%'= quickField("contratado", "Contratado", "Contratado", 4, reg("Contratado"), "", "", "") %>
-                            <%'= quickField("simpleSelect", "ContaRecebimento", "Conta para Recebimento", 4, reg("ContaRecebimento"), "select * from sys_financialcurrentaccounts where AccountType=2 order by AccountName", "AccountName", "") %>
-                            <%= quickField("text", "NumeroGuiaAtual", "Número da Guia Atual", 3, reg("NumeroGuiaAtual"), "", "", "") %>
-                            <%=quickField("empresaMultiIgnore", "Unidades", "Limitar Unidades", 3, reg("Unidades"), "", "", "")%>
+                            <%'= quickField("contratado", "Contratado", "Contratado", 3 , reg("Contratado"), "", "", "") %>
+                            <%'= quickField("simpleSelect", "ContaRecebimento", "Conta para Recebimento", 3, reg("ContaRecebimento"), "select * from sys_financialcurrentaccounts where AccountType=2 order by AccountName", "AccountName", "") %>
+                            <%= quickField("text", "NumeroGuiaAtual", "Nº da Guia Atual",2 , reg("NumeroGuiaAtual"), "", "", "") %>
+                            <%=quickField("empresaMultiIgnore", "Unidades", "Limitar Unidades", 2, reg("Unidades"), "", "", "")%>
                         </div>
                     </div>
                 </div>

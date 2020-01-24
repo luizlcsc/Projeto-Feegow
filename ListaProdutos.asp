@@ -15,8 +15,8 @@
     AbaixoMinimo = req("AbaixoMinimo")
 %>
 <form id="frmListaProdutos">
-    <div class="panel hidden-print">
-        <div class="panel-body mt20">
+    <div class="panel">
+        <div class="panel-body mt20 hidden-print">
             <div class="row">
                 <%=quickfield("simpleSelect", "ProdutoID", "Produto", 2, ProdutoID, "select id, NomeProduto from produtos where sysActive=1 order by NomeProduto", "NomeProduto", "") %>
                 <%=quickField("text", "Codigo", "Código", 2, Codigo, "", "", "")%>
@@ -33,7 +33,7 @@
             <%=quickfield("simpleSelect", "Ordem", "Ordernar Por", 2, Ordem, "select 'Nome' id, 'Nome' Ordem union all select 'Validade' id, 'Validade' Ordem ", "Ordem", " semVazio no-select2") %>
 
 
-            <div class="col-md-offset-2 col-md-2">
+            <div class="col-md-offset-1 col-md-3">
                 <button class="btn btn-sm btn-primary  mt20"><i class="fa fa-search bigger-110"></i> Buscar</button>
                 <button class="btn btn-sm btn-info mt20" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
                 <button class="btn btn-sm btn-success mt20" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i></button>

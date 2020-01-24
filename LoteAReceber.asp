@@ -51,7 +51,7 @@ if not plote.eof then
     db_execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, Executado, sysUser, ProfissionalID, Associacao, CentroCustoID) values ("& InvoiceID &", 'O', 1, 0, 0, "&treatvalzero(req("V"))&", 0, 'Lote(s): "&plote("LotesDescricoes")&"', '', "&session("User")&", 0, 0, 0)")
     
     'db_execute("update tisslotes set InvoiceID="&InvoiceID&" where id="&LoteID)
-    spl = split(ref("Guia"), ", ")
+    spl = split(ref("Guia"), ",")
     set pultInvItem = db.execute("select id from itensinvoice where InvoiceID="&InvoiceID&" order by id desc limit 1")
     ItemInvoiceID = pultInvItem("id")
     for i=0 to ubound(spl)

@@ -4,7 +4,7 @@
 
 function centralWhatsApp(AgendamentoID)
         sql = "select se.TextoSMS from configeventos ce "&_
-              " left join sys_smsemail se on se.id = ce.ModeloMsgWhatsapp"&_
+              " left join sys_smsemail se on se.id = ce.ModeloMsgWhatsapp "&_
               " where ce.id = 1 "
 
 		set reg = db.execute(sql)

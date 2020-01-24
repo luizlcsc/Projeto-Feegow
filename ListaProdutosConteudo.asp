@@ -78,7 +78,7 @@
                     end if
                 end if
                 if prod("Validade")&""="" then
-                    Validade = prod("Vencido")
+                    'Validade = prod("Vencido")
                     addClass = "label label-danger"
                 end if
 

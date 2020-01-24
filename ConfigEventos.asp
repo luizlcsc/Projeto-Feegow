@@ -125,7 +125,7 @@ if session("admin")=1 then
                                     </label>
                                 </div>
                                 <div class="col-md-3">
-                                   <%= quickfield("simpleSelect", "ModeloMsgWhatsapp", "Modelo para mensagem do whatsapp", 12, ModeloMsgWhatsapp, "select * from sys_smsemail where sysActive=1", "Descricao", " semVazio no-select2 ") %>
+                                   <%= quickfield("simpleSelect", "ModeloMsgWhatsapp", "Modelo para mensagem do whatsapp", 12, ModeloMsgWhatsapp, "select * from sys_smsemail where sysActive=1", "Descricao", " no-select2 ") %>
 
                                 </div>
 

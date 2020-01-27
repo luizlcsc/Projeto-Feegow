@@ -999,7 +999,7 @@ end if
                     end if
                     if aut("agendaX")=1 and (cdate(Data) >= date() or (cdate(Data) < date() and aut("agendamentosantigosX")=1)) then
                     %>
-                    <div class="col-xs-5 col-md-2 pt10 <%= hiddenCHK %>">
+                     <div class="col-xs-5 col-md-3 pt10 <%= hiddenCHK %>">
                         <button class="btn btn-sm btn-danger btn-block" type="button" data-bb-handler="danger" onclick="excluiAgendamento(<%=ConsultaID%>, 0);">
                             <i class="fa fa-trash"></i> Excluir
                         </button>
@@ -1007,7 +1007,7 @@ end if
                     <%
                     end if
                     %>
-                    <div class="col-xs-1 col-md-1 pt10 <%= hiddenCHK %>">
+                    <div class="hidden col-xs-1 col-md-1 pt10 <%= hiddenCHK %>">
                         <button title="Histórico de alterações" class="btn btn-sm btn-default btn-block" type="button" data-bb-handler="default" onclick="logAgendamento('<%=ConsultaID%>', 0);">
                             <i class="fa fa-history"></i>
                         </button>

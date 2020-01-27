@@ -26,6 +26,7 @@
                             <%end if %>
                             <th>Data</th>
                             <th>Usuário</th>
+                            <th>Obs.</th>
                             <th>Campo</th>
                             <th>Valor Anterior</th>
                             <th>Valor Alterado</th>
@@ -35,7 +36,7 @@
                         <%
                         c=0
                         if req("I")<>"" then
-                            colspan = 2
+                            colspan = 3
                             'aqui eh direto da pagina do registro
                             set plog = db.execute("select * from log where lower(recurso)=lower('"&req("R")&"') and I="&req("I")&" order by DataHora desc limit 3000")
                         else
@@ -116,6 +117,7 @@ end if
 %>
     <th><%=plog("DataHora") %></th>
     <th><%=nameInTable(plog("sysUser")) %></th>
+    <th><%=plog("Obs") %></th>
     <td>-</td>
     <td><%=valorAntigo%></td>
     <td><%=plog("valorAtual")%></td>
@@ -149,6 +151,7 @@ end if
 
                                                 <%=plog("DataHora") %></th>
                                             <th><%=nameInTable(plog("sysUser")) %></th>
+                                            <th><%=plog("Obs") %></th>
                                         <%end if %>
                                         <td><%=splCol(i) %></td>
                                         <td><%=splValAnt(i) %></td>

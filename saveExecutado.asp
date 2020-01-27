@@ -44,7 +44,7 @@ end if
 sqlUpdate = "update itensinvoice set Executado='"&ref("Executado"&ItemInvoiceID)&"', Associacao="&Associacao&", ProfissionalID="&ProfissionalID&", EspecialidadeID="&treatvalnull(EspecialidadeID)&",DataExecucao="&mydatenull(dataExecucao)&", HoraExecucao="&mytime(horaExecucao)&", HoraFim="&mytime(horaFim)&", Descricao='"&ref("Descricao"&ItemInvoiceID)&"' where id="&ItemInvoiceID
 
 
-call gravaLogs(sqlUpdate, "AUTO", "Executado manualmente")
+call gravaLogs(sqlUpdate, "AUTO", "Executado manualmente","")
 db_execute(sqlUpdate)
 db_execute("delete rr from rateiorateios rr  where rr.ItemInvoiceID="&ItemInvoiceID&" and (isnull(rr.ItemContaAPagar) OR rr.ItemContaAPagar=0)")
 

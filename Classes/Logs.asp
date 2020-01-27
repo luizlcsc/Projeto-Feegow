@@ -91,9 +91,9 @@ function renderLogsTable(logTable, logId)
     end if
 end function
 
-function gravaLogs(query, operacaoForce, obs)
+function gravaLogs(query, operacaoForce, obs, ColunaPai)
     'tabelas = "|tissguiaconsulta|tissguiasadt|tissguiahonorarios|tissguiainternacao|tisslotes|tissprocedimentossadt|tissprofissionaissadt|tissprocedimentoshonorarios|tissprofissionaishonorarios|tissprocedimentosinternacao|pacientes|profissionais|convenios|contratosconvenio|empresa|sys_financialcompanyunits|tissprocedimentostabela|tissprocedimentosvalores|tissprocedimentosvaloresplanos|contratadoexternoconvenios|tissguiaanexa|rateiorateios|itensinvoice|sys_financialmovement|arquivos|sys_financialinvoices|invoice_rateio|propostas|tissguiasinvoice|agendamentos|chamadasagendamentos|agendamentosrepeticoes|assfixalocalxprofissional|propostas|itensproposta|pacientespropostasformas|pacientespropostasoutros|Contatos|"
-    tabelas = "|tarefas|sys_financialcompanyunits|sys_financialinvoices|itensinvoice|sys_financialmovement|sys_financialIssuedChecks|sys_users|regraspermissoes|"
+    tabelas = "|tarefas|sys_financialcompanyunits|sys_financialinvoices|itensinvoice|sys_financialmovement|sys_financialIssuedChecks|sys_users|regraspermissoes|agendamentos|"
     tabelas = LCase(tabelas)
     tipoLog = split(query, " ")(0)
     tipoLog = LCase(tipoLog)
@@ -111,7 +111,7 @@ function gravaLogs(query, operacaoForce, obs)
         recurso = split(query, " ")(2)
         recurso = trim(LCase(recurso))
 
-        if InStr(tabelas,"|"&recurso&"|") then
+        if InStr(tabelas,"|"&recurso&"|") or true then
             idLog = getLastAdded(recurso)
             aux = split(query, "(")(1)
             colunas = split(aux, ") ")(0)
@@ -142,7 +142,7 @@ function gravaLogs(query, operacaoForce, obs)
         recurso = split(query, " ")(1)
         recurso = trim(LCase(recurso))
 
-        if InStr(tabelas,"|"&recurso&"|") then
+        if InStr(tabelas,"|"&recurso&"|") or true then
             valores = split(query, " set ")(1)
             valores = split(valores, " where ")(0)
             valores = replace(valores, "|,", "|¬")
@@ -159,6 +159,10 @@ function gravaLogs(query, operacaoForce, obs)
             next
             colunas = replace(colunas, " ", "")
             colunasQuery = replace(colunasQuery, " ,", "")
+
+            if ColunaPai&""<>"" then
+                colunasQuery = colunasQuery &",`"&ColunaPai&"`"
+            end if
 
             recursoAux = recurso
             if InStr(LCase(query),"left join") then
@@ -188,13 +192,19 @@ function gravaLogs(query, operacaoForce, obs)
             'Response.Write("// "&contadorDeValores & "<br>")
 
             while not record.eof
-                valoresAnteriores = "'|^"
+                if ColunaPai&""<>"" then
+                    PaiID = record(ColunaPai)
+                end if
+
+                valoresAnteriores = ""
                 valoresAtuais = "'|^"
                 colunas = "|"
                 For iLog = 0 To qtdColunas.count-1
-                    if InStr(valores(iLog),"=") then
+
+                    col = replace(valores(iLog),"`","")
+                    if InStr(col,"=") then
                           txtValorAntigo = record(iLog)&""
-                          txtValorAtual = replace(replace(split(valores(iLog), "=")(1), "'", ""), "|¬", "|,")&""
+                          txtValorAtual = replace(replace(split(col, "=")(1), "'", ""), "|¬", "|,")&""
 
                           if IsDate(txtValorAtual) and (InStr(txtValorAtual, "-") <> 0) then
                             txtValorAtual = CDate(txtValorAtual)&""
@@ -217,22 +227,24 @@ function gravaLogs(query, operacaoForce, obs)
                                 end if
                               end if
 
-                              if(txtValorAntigo <> txtValorAtual and not (txtValorAntigo="" and txtValorAtual="0") and not (txtValorAtual="" and txtValorAntigo="0")) then
+                              if(txtValorAntigo <> txtValorAtual and not (txtValorAntigo="" and txtValorAtual="0") and not (txtValorAtual="" and txtValorAntigo="0")) and (treatvalzero(txtValorAntigo) <> treatvalzero(txtValorAtual)) then
+
                                 valoresAnteriores = valoresAnteriores&txtValorAntigo&"|^"
-                                colunas = colunas&trim(split(valores(iLog), "=")(0))&"|"
-                                valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(valores(iLog), "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
+                                colunas = colunas&trim(split(col, "=")(0))&"|"
+                                valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(col, "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
                               end if
                           elseif (isDate(txtValorAntigo) and isDate(txtValorAtual)) then
                               if(FormatDateTime(txtValorAntigo,3) <> FormatDateTime(txtValorAtual,3)) then
                                   valoresAnteriores = valoresAnteriores&txtValorAntigo&"|^"
-                                  colunas = colunas&trim(split(valores(iLog), "=")(0))&"|"
-                                  valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(valores(iLog), "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
+                                  colunas = colunas&trim(split(col, "=")(0))&"|"
+                                  valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(col, "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
                               end if
                           else
-                              if(txtValorAntigo <> txtValorAtual and not (txtValorAntigo="" and txtValorAtual="0") and not (txtValorAtual="" and txtValorAntigo="0")) then
+                              if(trim(txtValorAntigo)&"" <> trim(txtValorAtual)&"" and not (txtValorAntigo="" and txtValorAtual="0") and not (txtValorAtual="" and txtValorAntigo="0"))  then
                                 valoresAnteriores = valoresAnteriores&txtValorAntigo&"|^"
-                                colunas = colunas&trim(split(valores(iLog), "=")(0))&"|"
-                                valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(valores(iLog), "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
+                                colunas = colunas&trim(split(col, "=")(0))&"|"
+
+                                valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(col, "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
                               end if
                           end if
                     end if
@@ -240,10 +252,12 @@ function gravaLogs(query, operacaoForce, obs)
                 Next
 
                 if(colunas <> "|") then
-                    if valoresAnteriores = "'|^" then
+                    if valoresAnteriores = "" then
                         valoresAnteriores = "NULL"
                     else
-                        valoresAnteriores = valoresAnteriores&"'"
+                        valoresAnteriores = replace(valoresAnteriores, "'" , "\'")
+
+                        valoresAnteriores = "'|^"&valoresAnteriores&"'"
                         'valoresAnteriores = replace(valoresAnteriores, "||", "|")
                     end if
                     if valoresAtuais = "'|^" then
@@ -281,7 +295,7 @@ function gravaLogs(query, operacaoForce, obs)
         recurso = split(recurso, " where ")(0)
         recurso = LCase(recurso)
 
-        if InStr(tabelas,"|"&recurso&"|") then
+        if InStr(tabelas,"|"&recurso&"|") or true then
             recursoTabela = split(recurso, " ")(0)
 
             set colunasRs = db.execute("select column_name from information_schema.columns c where table_name = '"&recursoTabela&"' and c.table_schema = '"&session("Banco")&"' and c.column_name <> 'id'")

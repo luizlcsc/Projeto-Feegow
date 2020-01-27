@@ -301,7 +301,7 @@ $('#frmCD').submit(function(){
     $("#frmCD").submit();
 <% end if %>
 
-<% if getConfig("ListarAutomaticamenteContas") = "1" then%>
+  <% if getConfig("ListarAutomaticamenteContas") = "1" or req("Buscar")="1" then%>
     $('#Filtrate').click();
 <%
 else

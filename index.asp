@@ -17,7 +17,9 @@ if request.ServerVariables("HTTPS")="off" then
 end if
 
 if session("User")="" and request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
-	response.Redirect("./?P=Login")
+    QueryStringParameters = Request.QueryString
+
+	response.Redirect("./?P=Login&qs="&Server.URLEncode(QueryStringParameters))
 end if
 
 if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
@@ -1806,6 +1808,9 @@ function constante(){
         $.ajax({
             type:"POST",
             url:"constante.asp?AgAberto="+ $("#AgAberto").val() +"&P=<%= req("P") %>",
+            data: {
+                qs: '<%=Server.URLEncode(Request.QueryString)%>'
+            },
             success:function(data){
                 constanteRetornou = true;
                 eval(data);

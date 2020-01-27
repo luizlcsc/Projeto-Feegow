@@ -13,6 +13,7 @@ end if
 
 %>
 <!--#include file="connectCentral.asp"-->
+<!--#include file="Classes/URLDecode.asp"-->
 <!DOCTYPE html>
 <html>
 
@@ -488,6 +489,7 @@ end if
             </div>
         </div>
         <input id="authtoken" type="hidden">
+        <input id="qs" type="hidden" name="qs" value="<%= URLDecode(Request.QueryString("qs"))%>">
     </form>
 
     <!-- BEGIN: PAGE SCRIPTS -->

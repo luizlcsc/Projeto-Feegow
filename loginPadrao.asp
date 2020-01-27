@@ -349,7 +349,13 @@ if not tryLogin.EOF then
             urlRedir = replace(urlRedir, "./", "/v7.1/")
         end if
 
-        response.Redirect(urlRedir)
+        QueryStringParameters = Request.Form("qs")
+
+        if QueryStringParameters<>"" then
+            response.Redirect("./?"&QueryStringParameters)
+        else
+            response.Redirect(urlRedir)
+        end if
 
 	end if
 else

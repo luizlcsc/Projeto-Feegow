@@ -223,7 +223,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
   <script src="vendor/plugins/select2/select2.full.min.js"></script>
   <%
-  if req("P")="Laudo" and session("Banco")<>"clinic5703" then
+  if req("P")="Laudo" and session("Banco")<>"clinic5703" and session("Banco")<>"clinic8039" then
   %>
     <script type="text/javascript" src="ckeditornew2/ckeditor.js"></script>
   <%

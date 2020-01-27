@@ -2816,7 +2816,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 			rbtns = rbtns & "<a title='Nova' href='?P=invoice&Pers="&hPers&"&I=N&T="&req("T")&"' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
 		end if
         'response.Write(recursoPerm)
-		if (hsysActive=1 and aut(recursoPerm&"A")=1) or (hsysActive=0 and aut(recursoPerm&"I")=1) or (aut("aberturacaixinhaI") and session("CaixaID")<>"" and hsysActive=0) or (hsysActive=1 and data("CaixaID")=session("CaixaID") and aut("aberturacaixinhaA")) or (aut("contasareceberI")=0 and aut("areceberpacienteI")) then
+		if (hsysActive=1 and aut(recursoPerm&"A")=1) or (hsysActive<>1 and aut(recursoPerm&"I")=1) or (aut("aberturacaixinhaI") and session("CaixaID")<>"" and hsysActive<>1) or (hsysActive=1 and data("CaixaID")=session("CaixaID") and aut("aberturacaixinhaA")) or (aut("contasareceberI")=0 and aut("areceberpacienteI")) then
 				rbtns = rbtns & "<button class='btn btn-sm btn-primary' type='button' onclick='$(\""#btnSave\"").click()'>&nbsp;&nbsp;<i class='fa fa-save'></i> <strong> SALVAR</strong>&nbsp;&nbsp;</button> "
 
 		end if
@@ -2927,12 +2927,16 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
                         .removeAttr("id")
                         .removeAttr("method")
                         .removeAttr("name")
-                        .attr("onsubmit","return false")
+                        .attr("onsubmit","return false");
+                        
                         $(window).keydown(function(event){
                             if( (event.keyCode == 13)) {
-                              event.preventDefault();
-                              return false;
-                            }
+                                if( $("#sidebar-search").is(':focus')){
+                                    return true;
+                                }
+                                event.preventDefault();
+                                return false;
+                                }
                          });
                     });
                     </script>

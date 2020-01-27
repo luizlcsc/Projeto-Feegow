@@ -3,6 +3,10 @@
 <%
 subTitulo = "Resultados Exames"
 %>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
+<script src="//cdn.datatables.net/plug-ins/1.10.12/sorting/datetime-moment.js"></script>
+
 <div class="panel timeline-add">
     <div class="panel-heading">
         <span class="panel-title"> <%=subTitulo %>
@@ -16,6 +20,7 @@ subTitulo = "Resultados Exames"
             </div>
             
             <script type="text/javascript">
+            $(function(){
                 getUrl("unimed/resultado-exames", {
                     patientId: "<%=req("PacienteID")%>",
                     sysUser: "<%session("User")%>"
@@ -24,6 +29,7 @@ subTitulo = "Resultados Exames"
                     $(".app").html(data);
                     $(".app").fadeIn('slow');
                 });
+            })
             </script>           
         </div>
     </div>

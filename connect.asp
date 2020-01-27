@@ -2927,12 +2927,16 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
                         .removeAttr("id")
                         .removeAttr("method")
                         .removeAttr("name")
-                        .attr("onsubmit","return false")
+                        .attr("onsubmit","return false");
+                        
                         $(window).keydown(function(event){
                             if( (event.keyCode == 13)) {
-                              event.preventDefault();
-                              return false;
-                            }
+                                if( $("#sidebar-search").is(':focus')){
+                                    return true;
+                                }
+                                event.preventDefault();
+                                return false;
+                                }
                          });
                     });
                     </script>
@@ -5424,8 +5428,11 @@ function gravaLog(query, operacaoForce)
 End function
 
 function getLastAdded(table)
+    getLastAdded = 0
     set rs = db.execute("SELECT id FROM "&table&" ORDER BY 1 DESC LIMIT 1")
-    getLastAdded = rs("id")
+    if not rs.eof then
+        getLastAdded = rs("id")
+    end if
 End function
 
 

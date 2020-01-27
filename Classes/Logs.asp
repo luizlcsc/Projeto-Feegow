@@ -119,19 +119,25 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
             colunasQuery = colunas
             colunas = replace(colunas, ",", "|")
             colunas = "|"&colunas&"|"
-            record = db.execute("SELECT "&colunasQuery&" FROM "&recurso&" WHERE id = "&idLog)
+            set record = db.execute("SELECT "&colunasQuery&" FROM "&recurso&" WHERE id = "&idLog)
 
             valorAtual = "|^"
             valorAnterior = "|^"
-            for each x in record
-                valorAtual = valorAtual&x&"|^"
-                valorAnterior = valorAnterior&"|^"
-            next
+            if not record.eof then
+                record = db.execute("SELECT "&colunasQuery&" FROM "&recurso&" WHERE id = "&idLog)
 
-             db.execute("insert into log (Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser, Obs) values ('"&operacao&"', "&idLog&", '"&recurso&"', '"&colunas&"', '"&valorAnterior&"', '"&valorAtual&"', "&session("User")&", '"&obs&"')")
-             if(operacaoForce <> "AUTO") then
-                db.execute(query)
+                for each x in record
+                    valorAtual = valorAtual&""&x&""&"|^"
+                    valorAnterior = valorAnterior&"|^"
+                next
+
+
              end if
+             db.execute("insert into log (Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser, Obs) values ('"&operacao&"', "&idLog&", '"&recurso&"', '"&colunas&"', '"&valorAnterior&"', '"&valorAtual&"', "&session("User")&", '"&obs&"')")
+              if(operacaoForce <> "AUTO") then
+                 db.execute(query)
+              end if
+
         end if
     elseif (tipoLog="update") then
         if(operacaoForce <> "AUTO") then

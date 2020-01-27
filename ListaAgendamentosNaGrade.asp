@@ -67,11 +67,14 @@ if not GradeSQL.eof then
                 CelWhatsApp = replace(CelWhatsApp, ")", "")
                 CelWhatsApp = replace(CelWhatsApp, "-", "")
                 CelWhatsApp = replace(CelWhatsApp, " ", "")
-
+                HoraAgendamento = AgendamentosNoPeriodoSQL("Hora")
+                if HoraAgendamento&""<>"" then
+                    HoraAgendamento = formatdatetime(HoraAgendamento, 4)
+                end if
                 %>
                      <tr>
                          <td><%=AgendamentosNoPeriodoSQL("Data")%></td>
-                         <td><%= formatdatetime(AgendamentosNoPeriodoSQL("Hora"), 4)%></td>
+                         <td><%=HoraAgendamento%></td>
                          <td><%=AgendamentosNoPeriodoSQL("StaConsulta")%></td>
                          <td><%=AgendamentosNoPeriodoSQL("NomeProfissional")%></td>
                          <td><%=AgendamentosNoPeriodoSQL("NomeProcedimento")%></td>

@@ -2153,7 +2153,7 @@ select case lcase(req("P"))
 
         if LaudoID<>"" then
 
-            sqlLaudo = "select proc.FormulariosLaudo, l.FormID, l.StatusID, l.Restritivo, l.PacienteID, l.ProfissionalID , "&_
+            sqlLaudo = "select proc.FormulariosLaudo, l.FormID, l.StatusID, l.Restritivo, l.PacienteID, l.ProfissionalID, l.Associacao , "&_
                        " COALESCE(ii.ItemID, tpsadt.ProcedimentoID) ProcedimentoID "&_
                        " FROM laudos l  "&_
                        " LEFT JOIN itensinvoice ii ON ii.id=l.IDTabela AND l.Tabela='itensinvoice' "&_
@@ -2173,7 +2173,9 @@ select case lcase(req("P"))
                 Restritivo = pLaudo("Restritivo")
                 PacienteID = pLaudo("PacienteID")
                 ProfissionalID = pLaudo("ProfissionalID")
+                Associacao = pLaudo("Associacao")
 
+                ProfissionalID = Associacao&"_"&ProfissionalID
                 if not isnull(ProfissionalID) then
                     'disabledProf = " disabled "
                 end if
@@ -2220,7 +2222,7 @@ select case lcase(req("P"))
         </li>
         <li>
             <div class="row p10">
-                <%= quickfield("simpleSelect", "ProfissionalID", "Laudador", 12, ProfissionalID, "select CONCAT('5_',id)id,IF(NomeSocial is null or NomeSocial='',NomeProfissional,NomeSocial)NomeProfissional from profissionais where sysActive=1 AND Ativo='on' UNION ALL SELECT CONCAT('8_',id)id,NomeFornecedor FROM fornecedores WHERE TipoPrestadorID IN (1)", "NomeProfissional", " no-select2 "& disabledProf) %>
+                <%= quickfield("simpleSelect", "ProfissionalID", "Laudador", 12, ProfissionalID, "select id, NomeProfissional from (select CONCAT('5_',id)id,IF(NomeSocial is null or NomeSocial='',NomeProfissional,NomeSocial)NomeProfissional from profissionais where sysActive=1 AND Ativo='on' UNION ALL SELECT CONCAT('8_',id)id,NomeFornecedor FROM fornecedores WHERE TipoPrestadorID IN (1))t ORDER BY NomeProfissional", "NomeProfissional", " no-select2 "& disabledProf) %>
             </div>
         </li>
         <li  class="p10">

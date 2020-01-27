@@ -715,7 +715,6 @@ end if
                     if( $(this).attr("data-horaid")=='<%=HoraComp%>' && (Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
                     {
                         var gradeId = $(this).data("grade");
-
                         HorarioAdicionado=true;
                         $(this).replaceWith('<%= conteudo %>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
                         return false;
@@ -727,8 +726,12 @@ end if
 
                            if ( $(this).attr("data-horaid")>'<%=HoraComp%>' )
                            {
-                               $(this).before('<%= conteudo %>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
-                               return false;
+                                <%if session("FilaEspera")<>"" then %>
+                                    $('[data-horaid=<%=HoraComp%>]').remove();
+                                <% end if %>
+
+                                $(this).before('<%= conteudo %>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                                return false;
                            }
                     });
                 }

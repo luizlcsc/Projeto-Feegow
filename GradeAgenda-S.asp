@@ -531,7 +531,9 @@ while diaS<n
                    if ( $(this).attr("id")>'<%=DiaSemana&HoraComp%>' )
                    {
                        var gradeId = $(this).data("grade");
-                       
+                        <%if session("FilaEspera")<>"" then %>
+                            $('[id=<%=DiaSemana&HoraComp%>]').remove();
+                        <% end if %>
                        $(this).before('<%=conteudo%>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
                        return false;
                    }

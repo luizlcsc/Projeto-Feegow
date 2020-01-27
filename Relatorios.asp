@@ -11,12 +11,36 @@
     $(".crumb-icon a span").attr("class", "fa fa-list");
 </script>
 
+<%
+permissoesUsuario = split(replace(session("Permissoes"),"|",""), ",")
+TemAcesso = "0"
+For i = 0 To Ubound(permissoesUsuario)
+    if instr(permissoesUsuario(i),"relatorios")>0 then
+        set getRel = dbc.execute("select * from cliniccentral.relatorios as r where r.Permissoes ='"&trim(permissoesUsuario(i))&"' and r.sysActive=1 LIMIT 1")
+        if not getRel.eof then
+            TemAcesso = "1"
+        end if
+    end if
+Next
+if TemAcesso<>"1" and session("Admin")<>1 then
+%>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#CentralRelatorios").attr("disabled", true);
+    });
+</script>
+<%
+end if
+%>
+
+
+
 <br />
 <div class="panel">
     <div class="panel-body" id="relConteudo">
         <div class="alert alert-system">
             <h3>
-                Nova central de relatórios disponível (beta). <a href="#" onclick="openReport()" class="btn btn-danger btn-sm"><i class="fa fa-external-link"></i> Clique aqui para acessar</a>
+                Nova central de relatórios disponível (beta). <a href="#" onclick="openReport()" id="CentralRelatorios" class="btn btn-danger btn-sm"><i class="fa fa-external-link"></i> Clique aqui para acessar</a>
             </h3>
         </div>
     </div>

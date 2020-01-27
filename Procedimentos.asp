@@ -172,6 +172,13 @@ TipoGuia = reg("TipoGuia")
                     </div>
                     <hr class="short alt" />
                     <div class="row " >
+                        <div class="col-md-3 m15">
+                            <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" name="ProcedimentoSeriado" id="ProcedimentoSeriado" value="S" class="ace" <% If reg("ProcedimentoSeriado")="S" Then %> checked="checked" <% End If %> />
+                                <label for="ProcedimentoSeriado">Procedimento seriado</label>
+                            </div>
+                        </div>
+                        <%=quickField("number", "IntervaloSerie", "Intervalo da série", 2, reg("IntervaloSerie"), " text-right", "", "")%>
                         <%=quickField("text", "CH", "CH (Reembolso)", 3, fn(reg("CH")), " input-mask-brl text-right ", "", "")%>
                     </div>
                     <div class="row hidden" >
@@ -280,7 +287,7 @@ TipoGuia = reg("TipoGuia")
 
             <div class="row mt10">
                 <%= quickfield("multiple", "SomenteProfissionaisExterno", "Profissionais Externo", 6, SomenteProfissionaisExterno, "select id, NomeProfissional from profissionalexterno where sysActive=1 order by NomeProfissional LIMIT 100", "NomeProfissional", "") %>
-                <%= quickfield("multiple", "SomenteFornecedor", "Fornecedores", 6, SomenteFornecedor, "select id, NomeFornecedor from fornecedores where sysActive=1 and ativo='on' order by NomeFornecedor LIMIT 100", "NomeFornecedor", "") %>
+                <%= quickfield("multiple", "SomenteFornecedor", "Fornecedores", 6, SomenteFornecedor, "select id, NomeFornecedor from fornecedores where sysActive=1 and (TipoPrestadorID is null or TipoPrestadorID=1) and ativo='on' order by NomeFornecedor LIMIT 100", "NomeFornecedor", "") %>
                 
             </div>
 

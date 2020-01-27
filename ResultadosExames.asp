@@ -3,6 +3,12 @@
 <%
 subTitulo = "Resultados Exames"
 %>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/plug-ins/1.10.12/sorting/datetime-moment.js"></script>
+
+
 <div class="panel timeline-add">
     <div class="panel-heading">
         <span class="panel-title"> <%=subTitulo %>

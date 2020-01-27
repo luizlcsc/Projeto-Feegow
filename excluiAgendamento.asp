@@ -1,5 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 ConsultaID = request.QueryString("ConsultaID")
 if request.QueryString("Confirma")="0" then
@@ -102,8 +103,11 @@ else
 '	response.Write(sql)
 	
 	db_execute(sql)
-	
-	db_execute("delete from agendamentos where id="&ConsultaID)
+
+	sqlDel = "delete from agendamentos where id="&ConsultaID
+	call gravaLogs(sqlDel, "AUTO", "Agendamento excluído", "")
+
+	db_execute(sqlDel)
 	'call centralSMS("", "", "", ConsultaID)
 	'call centralEmail("", "", "", ConsultaID)
 	call googleCalendar("X", "", ConsultaID, "", "", "", "", "", "", "")

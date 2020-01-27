@@ -1,5 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/Connection.asp"-->
+<!--#include file="Classes/Arquivo.asp"-->
 <link rel="stylesheet" href="assets/css/timeline.css" />
 
 <div class="timeline timeline-line-solid">
@@ -15,7 +16,14 @@ if ref("msgInteracao")<>"" then
     if ref("Publico") <> "on" then
         Publico = 0
     end if
-    db_execute("insert into tarefasmsgs (TarefaID, data, hora, desession, para, msg, Publico) values ("&req("I")&", curdate(), curtime(), "&session("User")&", NULL, '"&ref("msgInteracao")&"', "&Publico&")")
+
+    sqlInsert = "insert into tarefasmsgs (TarefaID, data, hora, desession, para, msg, Publico) values ("&req("I")&", curdate(), curtime(), "&session("User")&", NULL, '"&ref("msgInteracao")&"', "&Publico&")"
+
+    if req("Helpdesk")<>"" then
+        dblicense.execute(sqlInsert)
+    else
+        db_execute(sqlInsert)
+    end if
 end if
 
 TabelaNome = session("Table")
@@ -88,7 +96,13 @@ else
         if isnull(Foto) or Foto="" then
             Foto = "/assets/img/user.png"
         else
-            Foto = "/uploads/"&replace(session("Banco"), "clinic", "")&"/Perfil/"&Foto
+            if req("Helpdesk")<>"" then
+                L = 5459
+            else
+                L = replace(session("Banco"), "clinic", "")
+            end if
+
+            Foto = getFileUrlWithCustomDB(Foto, Perfil, L)
         end if
         %>
         <% if ints("Interacao") = "1" then %>

@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 RegraID = req("I")
 T = req("T")
@@ -32,7 +33,11 @@ else
     rd.close
     set rd = nothing
 end if
-db_execute("update sys_users set Permissoes='"&ref("Permissoes")&" ["&RegraID&"]', limitarecpag='"& ref("limitarecpag") &"' , OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' where Permissoes like '%["&RegraID&"]%'")
+
+updateUser = "update sys_users set Permissoes='"&ref("Permissoes")&" ["&RegraID&"]', limitarecpag='"& ref("limitarecpag") &"' , OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' where Permissoes like '%["&RegraID&"]%'"
+call gravaLogs(updateUser, "AUTO", "Permissões alterada pela regra", "")
+
+db_execute(updateUser)
 
     response.write("//select * from sys_users set Permissoes='"&ref("Permissoes")&" ["&RegraID&"]', limitarecpag='"& ref("limitarecpag") &"', limitarcontaspagar='"& ref("limitarcontaspagar") &"' where Permissoes like '%["&RegraID&"]%'")
 

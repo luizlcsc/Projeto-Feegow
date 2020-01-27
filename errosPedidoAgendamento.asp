@@ -1,5 +1,5 @@
 <!--#include file="Classes/FuncoesRepeticaoMensalAgenda.asp"-->
-
+<!--#include file="Classes/AgendamentoValidacoes.asp"-->
 <%
 set ConfigSQL = db.execute("select BloquearEncaixeEmHorarioBloqueado from sys_config WHERE id=1 LIMIT 1")
 
@@ -23,8 +23,8 @@ if getConfig("ObrigarLocalAtendimento")=1 then
     end if
 end if
 
-if (ref("EquipamentoID")&""<>"") AND (ref("ProfissionalID")&""="" OR ref("ProfissionalID")=0) then
-    set configEquipamento = db.execute("select PermitirAgendamentoSemProfissional from equipamentos where id ="&ref("EquipamentoID"))
+if (rdEquipamentoID&""<>"") AND (rfProfissionalID&""="" OR rfProfissionalID=0) then
+    set configEquipamento = db.execute("select PermitirAgendamentoSemProfissional from equipamentos where id ="&rdEquipamentoID)
     if not configEquipamento.EOF then
         if configEquipamento("PermitirAgendamentoSemProfissional") <> "on" then
             erro = "Erro: Preencha o Profissional"
@@ -76,64 +76,10 @@ if ref("rdValorPlano")="P" then
     end if
 end if
 
-if ref("Procedimentoid")&""="" then
+if rfProcedimento&""="" then
     erro = "Erro: Selecione pelo menos um procedimento"
 end if
 
-function ValidaProcedimentoLocal(linha,pProcedimentoID,pLocalID) 
-    ValidaProcedimentoLocal=""
-    set ProcedimentoLocaisSQL = db.execute("SELECT SomenteLocais FROM procedimentos WHERE id="&treatvalzero(pProcedimentoID))
-    if not ProcedimentoLocaisSQL.eof then
-        LimitarLocais = ProcedimentoLocaisSQL("SomenteLocais")
-
-        if LimitarLocais&""<>"" and pLocalID&"" <> "" and pLocalID&"" <> "0" then
-            if instr(LimitarLocais, "|"&pLocalID&"|")<=0 then
-                ValidaProcedimentoLocal= linha&"° procedimento não aceita o Local selecionado."
-            end if
-            if instr(LimitarLocais, "|NONE|")>0 then
-                ValidaProcedimentoLocal= linha&"° procedimento não permite Locais."
-            end if
-        end if
-    end if
-end function
-
-function ValidaProcedimentoObrigaSolicitante(linha,pProcedimentoID) 
-    ValidaProcedimentoObrigaSolicitante= ""
-    set ProcedimentoLocaisSQL = db.execute("SELECT ObrigarSolicitante FROM procedimentos WHERE id="&treatvalzero(pProcedimentoID))
-    if not ProcedimentoLocaisSQL.eof then
-        ObrigarSolicitante = ProcedimentoLocaisSQL("ObrigarSolicitante")
-
-        if ObrigarSolicitante = "S" then
-            ValidaProcedimentoObrigaSolicitante = linha&"° procedimento obriga profissional indicador."
-        end if
-    end if
-end function
-
-function ValidaLocalConvenio(linha,vConvenio,vLocal)
-    ValidaLocalConvenio=""
-    set convenioSQL = db.execute("select unidades from convenios where id="&treatvalzero(vConvenio))
-    if not convenioSQL.eof then
-        set localSQL = db.execute("select unidadeid from locais where id="&vLocal)
-        if not localSQL.eof then
-            LimitarUnidades = convenioSQL("unidades")&""
-            parUnidadeID = localSQL("unidadeid")&""
-
-            if LimitarUnidades&"" <> "" and LimitarUnidades<>"0" then
-                if instr(LimitarUnidades, "|"&parUnidadeID&"|")<=0 then
-                    ValidaLocalConvenio= linha&"° procedimento, local não aceita este convênio"
-                end if
-            end if
-        end if
-    end if
-end function
-
-function addError(error, valor)
-    if valor <> "" then
-        addError = error&"\n"&valor
-    else
-        addError = error
-    end if
-end function
 
 if erro ="" then
     searchindicacaoId = ref("searchindicacaoId")
@@ -166,6 +112,7 @@ if erro ="" then
 
                 if apLocalID <>"" and aprdValorPlano  = "P" then
                     erro = addError(erro, ValidaLocalConvenio((iPA+2),apConvenioID&"",apLocalID&""))
+
                 end if
             end if
         next
@@ -249,7 +196,7 @@ if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("Sta
         sqlProfissionalOuEquipamento = "and ProfissionalID<>0 "
         LabelErroMaximoAgendamentos="profissional"
     end if
-    set ve2=db.execute("select * from agendamentos where (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&ref("EquipamentoID")&"') AND StaID NOT IN (6,11,3,4, 15)  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
+    set ve2=db.execute("select * from agendamentos where (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&rdEquipamentoID&"') AND StaID NOT IN (6,11,3,4, 15)  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
     if not ve2.EOF then
         if isnumeric(ve2("Tempo")) then
             tmp=ccur(ve2("Tempo"))
@@ -306,13 +253,15 @@ end if
 '	erro="Erro: O procedimento agendado para este profissional às "&cdate( hour(ve3("Hora"))&":"&minute(ve3("Hora")) )&" não permite outros agendamentos até as "&cdate( hour(ve3("HoraFinal"))&":"&minute(ve3("HoraFinal")) )&"."
 'end if
 
-set ve4=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and staId not in (6,11) and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and HoraFinal<time('"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"')")
-if not ve4.eof then
-	Hora=cdate( hour(ve4("Hora"))&":"&minute(ve4("HoraFinal")) )
-	HoraFinal=cdate( hour(ve4("HoraFinal"))&":"&minute(ve4("HoraFinal")) )
-	if HoraFinal>Hora then
-			erro="Erro: O procedimento que você deseja realizar requer que a agenda deste profissional esteja livre das "&HoraSolIni&" às "&HoraSolFin&", mas há um procedimento agendado das "&cdate( hour(ve4("Hora"))&":"&minute(ve4("Hora")) )&" às "&cdate( hour(ve4("HoraFinal"))&":"&minute(ve4("HoraFinal")) )&" que impede este agendamento."'&ve4("id")
-	end if
+if ref("Encaixe")<>"1" then
+    set ve4=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and staId not in (6,11) and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and HoraFinal<time('"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"')")
+    if not ve4.eof then
+        Hora=cdate( hour(ve4("Hora"))&":"&minute(ve4("HoraFinal")) )
+        HoraFinal=cdate( hour(ve4("HoraFinal"))&":"&minute(ve4("HoraFinal")) )
+        if HoraFinal>Hora then
+                erro="Erro: O procedimento que você deseja realizar requer que a agenda deste profissional esteja livre das "&HoraSolIni&" às "&HoraSolFin&", mas há um procedimento agendado das "&cdate( hour(ve4("Hora"))&":"&minute(ve4("Hora")) )&" às "&cdate( hour(ve4("HoraFinal"))&":"&minute(ve4("HoraFinal")) )&" que impede este agendamento."'&ve4("id")
+        end if
+    end if
 end if
 
 'set ve5=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Hora<time('"&HoraSolIni&"') and HoraFinal>time('"&HoraSolFin&"')")
@@ -431,7 +380,7 @@ if ref("Encaixe")="1" and erro="" and ConsultaID="0" then
         diaDaSemana=weekday(rfData)
         ProfissionalEquipamento = rfProfissionalID
         if ProfissionalEquipamento="0" then
-            ProfissionalEquipamento="-"&ref("EquipamentoID")
+            ProfissionalEquipamento="-"&rdEquipamentoID
         end if
 
         sqlCompromissos = "select id from Compromissos where ProfissionalID = '"&ProfissionalEquipamento&"' and DataDe<="&mydatenull(rfData)&" and DataA>="&mydatenull(rfData)&" and DiasSemana like '%"&diaDaSemana&"%' and HoraDe<=time('"&rfHora&"') and HoraA>time('"&rfHora&"')"
@@ -495,7 +444,7 @@ if erro="" and rdEquipamentoID <> "" then
     'pData=ref("Data")
 
     'Validar se o equipamento bloqueia grade ou nao
-    temBloqueio = validarEquipamento(ref("EquipamentoID"), rfData, rfHora)
+    temBloqueio = validarEquipamento(rdEquipamentoID, rfData, rfHora)
 
     if temBloqueio = 0 then
         erro = "Existem equipamento sem disponibilidade"
@@ -519,8 +468,8 @@ if erro="" and rdEquipamentoID <> "" then
 end if
 
 if erro="" then
-    if ref("EquipamentoID")<>"" and ref("EquipamentoID")<>"0" then
-        sqlBloqueioEquipamentoAgendado = "SELECT COUNT(*) <> 0 AS bloquear FROM compromissos WHERE TRUE AND DataDe <= "&mydatenull(rfData)&" AND DataA >= "&mydatenull(rfData)&" AND DiasSemana LIKE CONCAT('%',(SELECT DAYOFWEEK("&mydatenull(rfData)&")),'%') AND HoraDe <= '"&rfHora&"'  AND HoraA > '"&rfHora&"'  AND profissionalID = -"&ref("EquipamentoID")
+    if rdEquipamentoID<>"" and rdEquipamentoID<>"0" then
+        sqlBloqueioEquipamentoAgendado = "SELECT COUNT(*) <> 0 AS bloquear FROM compromissos WHERE TRUE AND DataDe <= "&mydatenull(rfData)&" AND DataA >= "&mydatenull(rfData)&" AND DiasSemana LIKE CONCAT('%',(SELECT DAYOFWEEK("&mydatenull(rfData)&")),'%') AND HoraDe <= '"&rfHora&"'  AND HoraA > '"&rfHora&"'  AND profissionalID = -"&rdEquipamentoID
 
         TemBloqueioEquipamentoAgendadoSQL = db.execute(sqlBloqueioEquipamentoAgendado)
         if TemBloqueioEquipamentoAgendadoSQL("bloquear") <> "0"  then
@@ -528,16 +477,16 @@ if erro="" then
         end if
 
         DiaSemana = weekday(rfData)
-        set Horarios = db.execute("select ass.*, l.NomeLocal, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID=-"&ref("EquipamentoID")&" and DataDe<="&mydatenull(rfData)&" and DataA>="&mydatenull(rfData)&" order by HoraDe")
+        set Horarios = db.execute("select ass.*, l.NomeLocal, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID=-"&rdEquipamentoID&" and DataDe<="&mydatenull(rfData)&" and DataA>="&mydatenull(rfData)&" order by HoraDe")
 		if Horarios.EOF then			
-	        set Horarios = db.execute("select ass.*, l.NomeLocal, '' Cor from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID=-"&ref("EquipamentoID")&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(rfData)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(rfData)&")) order by ass.HoraDe")
+	        set Horarios = db.execute("select ass.*, l.NomeLocal, '' Cor from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID=-"&rdEquipamentoID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(rfData)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(rfData)&")) order by ass.HoraDe")
 		end if
 
         if Horarios.eof then
             erro = "Não existe grade configurada para esse equipamento."
         end if
 
-        if erro="" then
+        if erro="" and ConsultaID="" then
             'validar se o agendamento ja existe pela ag. diaria
 
             if rfProfissionalID<>"0" then
@@ -602,7 +551,7 @@ end function
 checkQuantidadeAgendamentoHorario() 
 
 function checkQuantidadeAgendamentoHorario()  
-    rptDataInicio = cdate(ref("Data"))
+    rptDataInicio = cdate(rfData)
     rptTerminaRepeticao = ref("TerminaRepeticao")
     rptIntervaloRepeticao = ref("IntervaloRepeticao")
     rptRepeticaoOcorrencias = 1
@@ -613,7 +562,7 @@ function checkQuantidadeAgendamentoHorario()
     rfHora=ref("Hora")
     rfProfissionalID=ref("ProfissionalID")
     rfEspecialidadeID=ref("EspecialidadeID")
-    rdEquipamentoID=ref("EquipamentoID")
+    rdEquipamentoID=rdEquipamentoID
     indicacaoID=ref("indicacaoId")
     rfData=ref("Data")
     rfProcedimentoId=ref("ProcedimentoID")

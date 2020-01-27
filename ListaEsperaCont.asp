@@ -30,7 +30,7 @@ elseif session("UnidadeID")>0 then
     end if
 end if
 
-if req("ProfissionalID")<>"" then
+if req("ProfissionalID")<>"" and req("ProfissionalID")<>"ALL"  then
     ProfissionalID = req("ProfissionalID")
     sqlProfissional = " AND a.ProfissionalID="&ProfissionalID
 else
@@ -88,7 +88,7 @@ if request.QueryString("Chamar")<>"" then
 	if not dadosAgendamento.eof then
 		call gravaChamada(dadosAgendamento("ProfissionalID"), dadosAgendamento("PacienteID"), session("UnidadeID"))
 	end if
-	call logAgendamento(req("Chamar") , "Chamando paciente pela sala de espera", "A")
+	call logAgendamento(req("Chamar") , "Chamando paciente pela sala de espera", "R")
 
     set age = db.execute("select ProfissionalID from agendamentos where id="&req("Chamar"))
     if not age.eof then
@@ -168,7 +168,7 @@ else
     	<th>CHEGADA</th>
         <th>PACIENTE</th>
         <th>IDADE</th>
-        <% If session("Table")<>"profissionais" Then %><th>PROFISSIONAL</th><% End If %>
+        <% If session("Table")<>"profissionais" or req("ProfissionalID")="ALL" Then %><th>PROFISSIONAL</th><% End If %>
         <% If ExibirCanal=1 Then %><th>CANAL</th><% End If %>
         <th>COMPROMISSO</th>
         <th>TEMPO DE ESPERA</th>
@@ -360,7 +360,7 @@ else
 		<<%=tagPaciente%> href="./?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>" <%=cssAdicionl%>><%=Nome%></<%=tagPaciente%>><br />
 		<small><%=Notas%></small></td>
         <td><%=IdadeAbreviada(DataNascimento)%></td>
-    <% If session("Table")<>"profissionais" Then %><td><%=veseha("NomeProfissional")%></td><% End If %>
+    <% If session("Table")<>"profissionais" or req("ProfissionalID")="ALL" Then %><td><%=veseha("NomeProfissional")%></td><% End If %>
     <% If ExibirCanal=1 Then %><td><%=veseha("NomeCanal")%></td><% End If %>
     <td ><%=TipoCompromisso%><%=compromisso%><%=OutrosProcedimentosStr%><%
     if SubtipoAgendamento<>"" then

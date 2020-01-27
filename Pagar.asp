@@ -196,7 +196,7 @@ end if
     <div class="row">
         <%
 
-        if getConfig("PermitirCreditoDeOutrosPacientes")=1 and false and CD="C" and AssContaID=3 then
+        if getConfig("PermitirCreditoDeOutrosPacientes")=1 and CD="C" and AssContaID=3 and false then
             %>
 <div class="col-md-12">
     <div class="row">
@@ -860,9 +860,47 @@ end if
     %>
 
     <% if session("CaixaID")<>"" then
-        set CaixaSQL = db.execute("SELECT cc.Empresa FROM caixa c INNER JOIN sys_financialcurrentaccounts cc ON c.ContaCorrenteID = cc.id WHERE c.id="&session("CaixaID"))
+        set CaixaSQL = db.execute("SELECT cc.Empresa, date(c.dtAbertura) Abertura FROM caixa c INNER JOIN sys_financialcurrentaccounts cc ON c.ContaCorrenteID = cc.id WHERE c.id="&session("CaixaID"))
 
         if not CaixaSQL.eof then
+
+
+            NaoPermitirRecebimentoCaixaComDataAnterior = getConfig("NaoPermitirRecebimentoCaixaComDataAnterior")
+
+
+            if NaoPermitirRecebimentoCaixaComDataAnterior and CaixaSQL("Abertura")<>date() then
+                %>
+                <div id="alertWarningUnidadeCaixa" style="margin-top: 30px" class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <div class="row">
+                                <div class="col-md-9">
+                                        <i class="fa fa-info-circle"></i>
+                                        A data de abertura do seu caixa é diferente da data atual. Para receber, favor realize o fechamento do caixa.
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="?P=PreFechaCaixa&Pers=1" style="margin-top: 15px; color: rgba(0,0,0,0.5)" class="btn btn-default btn-sm" type="button" onClick="unlockButton()">
+                                        <i class="fa fa-inbox"></i> Fechar caixa
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    function unlockButton() {
+                        $("#btnPagar").css("visibility", "visible");
+                        $("#receberTefButton").css("visibility", "visible");
+                        $("#alertWarningUnidadeCaixa").fadeOut();
+                    }
+
+                    $("#pagtoConv").remove();
+                    $("#btnPagar").css("visibility", "hidden");
+                    $("#receberTefButton").css("visibility", "hidden")
+                </script>
+                <%
+            end if
+
             unidadeAtendido = "SELECT l.UnidadeID FROM sys_financialinvoices i LEFT JOIN itensinvoice ii ON i.id = ii.InvoiceID LEFT JOIN agendamentos a on i.AccountID = a.PacienteID LEFT JOIN locais l ON l.id = a.LocalID WHERE ii.Tipo = 'S' and ii.ItemID = a.TipoCompromissoID and a.Data = i.sysDate and a.StaID != 11 and i.AssociationAccountID = 3 and i.id ="&InvoiceID
             'response.write(unidadeAtendido)
             set InvoiceInfo = db.execute(unidadeAtendido)

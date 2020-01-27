@@ -2805,7 +2805,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 					rbtns = rbtns & "<a title='Anterior' href='?P=invoice&T="&req("T")&"&Pers="&hPers&"&I="&lista("anterior")&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
 				end if
 				if aut(recursoPerm&"V") then
-				    rbtns = rbtns & "<a title='Lista' href='?P=ContasCD&T="&req("T")&"&Pers=1' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
+				    rbtns = rbtns & "<a title='Lista' href='?P=ContasCD&Buscar=1&T="&req("T")&"&Pers=1' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
 				end if
 				if not isnull(lista("proximo")) and aut(recursoPerm&"V") then
 					rbtns = rbtns & "<a title='Próximo' href='?P=invoice&T="&req("T")&"&Pers="&hPers&"&I="&lista("proximo")&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "

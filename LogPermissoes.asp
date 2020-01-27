@@ -1,12 +1,37 @@
 <!--#include file="connect.asp"-->
     <%
+function getPermissionDescription(perm)
+
+    perm=trim(replace(perm,"|",""))
+
+    tipoPerm = right(perm, 1)
+    perm=left(perm, len(perm)-1)
+
+    set PermissoesAdicionadasSQL = db.execute("SELECT Acao, Categoria FROM cliniccentral.sys_permissoes WHERE nome in ('"&perm&"')")
+
+    if not PermissoesAdicionadasSQL.eof then
+        if tipoPerm="A" then
+            tipoPerm="Alterar"
+        elseif tipoPerm="I" then
+            tipoPerm="Inserir"
+        elseif tipoPerm="X" then
+            tipoPerm="Excluir"
+        elseif tipoPerm="V" then
+            tipoPerm="Visualizar"
+        end if
+
+        perm = PermissoesAdicionadasSQL("Acao")&" ( "&tipoPerm&" )"
+
+        getPermissionDescription=perm
+    end if
+end function
     if req("Impressao")="" then
     %>
     <div class="panel-heading">
         <button class="bootbox-close-button close" type="button" data-dismiss="modal">×</button>
         <h4 class="modal-title"><i class="fa fa-history"></i> Histórico de Ações</h4>
     </div>
-    <div class="panel-body">
+    <div class="panel-body" style="overflow-x: scroll">
         <%
         else
         %>
@@ -19,24 +44,18 @@
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
-                            <%if req("I")="" then %>
-                            <th width="1"></th>
-                            <th>Registro</th>
-                            <th>Operação</th>
-                            <%end if %>
                             <th>Data</th>
                             <th>Usuário</th>
                             <th>Obs.</th>
-                            <th>Campo</th>
-                            <th>Valor Anterior</th>
-                            <th>Valor Alterado</th>
+                            <th>Permissões removidas</th>
+                            <th>Permissões adicionadas</th>
                         </tr>
                     </thead>
                     <tbody>
                         <%
                         c=0
                         if req("I")<>"" then
-                            colspan = 3
+                            colspan = 2
                             'aqui eh direto da pagina do registro
                             set plog = db.execute("select * from log where lower(recurso)=lower('"&req("R")&"') and I="&req("I")&" order by DataHora desc limit 3000")
                         else
@@ -82,87 +101,58 @@
                                 end if
                             end if
 
-                            if Operacao="X" then
-                                    %>
-<tr>
-<%if req("I")="" then %>
-    <td class="p5 mn">
-        <a href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
-    </td>
-    <td>
-        <%= NomeRegistro %>
-    </td>
-    <td>
-        <%= Op %>
-    </td>
-<%
-end if
 
-    valorAntigo = " - "
-    if ref("recurso") = "sys_financialinvoices" then
-        valorAntigo = accountName(splValAnt(2), splValAnt(1))
-        valorAntigo = valorAntigo & " - R$ " & formatnumber(splValAnt(3),2)
-    elseif ref("recurso") = "sys_financialmovement" then
-        valorAntigo = accountName(splValAnt(2), splValAnt(1))
-        valorAntigo = valorAntigo & " - R$ " & formatnumber(splValAnt(3),2)
-        
-        set payment = db.execute("select PaymentMethod from cliniccentral.sys_financialpaymentmethod where id="& splValAnt(4) &" ")
-        if not payment.eof then
-            valorAntigo = valorAntigo & "<br>Forma de pagamento: " & payment("PaymentMethod")
-        end if
-
-        valorAntigo = valorAntigo & "<br>Data do pagamento: " & splValAnt(5)
-    end if
-
-%>
-    <th><%=plog("DataHora") %></th>
-    <th><%=nameInTable(plog("sysUser")) %></th>
-    <th><%=plog("Obs") %></th>
-    <td>-</td>
-    <td><%=valorAntigo%></td>
-    <td><%=plog("valorAtual")%></td>
-</tr>
-                                    <%
-                                c=c+1
-                            else
                                 for i=0 to ubound(splCol)
 
                                 c=c+1
                                     if splValAnt(i)<>splValAtu(i) or plog("ValorAnterior")=""  then
+
+
+                                    anterior = splValAnt(i)
+                                    atual = splValAtu(i)
+
+                                    permissoesAdicionadas = ""
+                                    permissoesRemovidas = ""
+
+                                    spltAtual = split(atual, ",")
+                                    spltAnterior = split(anterior, ",")
+
+                                    for f=0 to ubound(spltAtual)
+                                        permissao = spltAtual(f)
+
+                                        if instr(anterior, permissao)=0 then
+                                            permissoesAdicionadas = permissoesAdicionadas&"<span class='label label-success'>"&getPermissionDescription(permissao)&"</span> <br>"
+
+                                        end if
+                                    next
+
+
+                                    for j=0 to ubound(spltAnterior)
+                                        permissao = spltAnterior(j)
+
+                                        if instr(atual, permissao)=0 then
+                                            permissoesRemovidas = permissoesRemovidas &"<span class='label label-danger'>"&getPermissionDescription(permissao)&"</span> <br>"
+
+                                        end if
+                                    next
+
                                     %>
                                     <tr>
                                         <%if UltimaData = plog("DataHora") then %>
                                             <td colspan="<%=colspan %>"></td>
                                         <%else %>
-                                            <%if req("I")="" then
-
-                                                %>
-                                            <td class="p5 mn">
-                                                <a href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
-                                            </td>
-                                            <td>
-                                                <%= NomeRegistro %>
-                                            </td>
-                                            <td>
-                                                <%= Op %>
-                                            </td>
-                                            <%end if %>
-                                            <th>
-
-                                                <%=plog("DataHora") %></th>
+                                            <th><%=plog("DataHora") %></th>
                                             <th><%=nameInTable(plog("sysUser")) %></th>
-                                            <th><%=plog("Obs") %></th>
                                         <%end if %>
-                                        <td><%=splCol(i) %></td>
-                                        <td><%=splValAnt(i) %></td>
-                                        <td><%=splValAtu(i) %></td>
+                                        <td><%=plog("Obs") %></td>
+                                        <td><%=permissoesRemovidas %></td>
+                                        <td><%=permissoesAdicionadas %></td>
                                     </tr>
                                     <%
                                     UltimaData = plog("DataHora")
 
                                     end if
                                 next
-                                end if
 
                              plog.movenext
 
@@ -173,9 +163,7 @@ end if
                         if c=0 then
                         %>
                         <tr>
-                            <td colspan="6">Nenhuma ação registrada.</td>
-                            <td></td>
-                            <td></td>
+                            <td colspan="5">Nenhuma ação registrada.</td>
                         </tr>
                         <%
                         end if

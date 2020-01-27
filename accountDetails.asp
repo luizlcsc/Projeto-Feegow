@@ -699,7 +699,9 @@ end if
 	}
 
 	persistPercentualConfiguracao = callback => {
-		if ($("#AccountType").select2('val') != '3' && $("#AccountType").select2('val') != '6' && $("#AccountType").select2('val') != '4') {
+		var accountType = $("#AccountType").select2('val');
+
+		if (accountType != '3' && accountType != '6' && accountType != '4') {
 			return;
 		}
 

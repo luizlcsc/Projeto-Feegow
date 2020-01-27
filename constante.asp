@@ -260,6 +260,7 @@ else
             if ccur(NotificacoesSQL("total")) > 0 then 
                 %>
                     openModal("Existem descontos pendentes de aprovação. <br><a href='?P=DescontoPendente&Pers=1'>Ir para a tela</a>", "Descontos Pendentes", true, false, "lg")
+                     $("#audioNotificacao").trigger("play");
                 <%
                 sqlAtualizar = "update notificacoes set StatusID = 2 where StatusID IN (1) AND TipoNotificacaoID = 4 AND UsuarioID="&Session("User")
                 db.execute(sqlAtualizar)
@@ -280,7 +281,7 @@ else
 					    set atend = db.execute("select at.*, p.NomePaciente, p.Foto from atendimentos as at left join pacientes as p on at.PacienteID=p.id where at.id="&splnotiflanctos(nl)&" and not isnull(p.NomePaciente)")
 					    if not atend.eof then
 						    if atend("Foto")<>"" and not isnull(atend("Foto")) then
-							    FotoNotif = "/uploads/"&atend("Foto")
+							    FotoNotif = "/uploads/"&replace(session("Banco"),"clinic","")&"/Perfil"&"/"&atend("Foto")
 						    else
 							    FotoNotif = "assets/img/atFim.png"
 						    end if
@@ -322,7 +323,7 @@ else
 
                     if valorLimiteRegra >= rsDescontoPendenteNotificacao("DescontoPendente") then
                         podePermitirDesconto = 1
-                        Notificacoes = Notificacoes & "<div class='media'> <div class='media-body'> <h5 class='media-heading'>Existem descontos pendentes de aprovação </h5> </div><button onclick=\""location.href='?P=DescontoPendente&Pers=1'\"" type='button' class='btn btn-default btn-xs light'> <i class='fa fa-check text-success'></i> VER DESCONTOS</button>  </div>"
+                        Notificacoes = Notificacoes & "<div class='media'> <div class='media-body'> <h5 class='media-heading'>Existem descontos pendentes de aprovação </h5> </div><button onclick=\""location.href='?P=DescontoPendente&Pers=1&De="&date()&"&Ate="&date()&"'\"" type='button' class='btn btn-default btn-xs light'> <i class='fa fa-check text-success'></i> VER DESCONTOS</button>  </div>"
                         cNot = cNot+1
                     end if
 

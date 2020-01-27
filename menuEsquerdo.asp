@@ -2152,9 +2152,19 @@ select case lcase(req("P"))
         LaudoID = req("I")
 
         if LaudoID<>"" then
-            set pLaudo = db.execute("select proc.FormulariosLaudo, l.FormID, l.StatusID, l.Restritivo, l.PacienteID, l.ProfissionalID FROM laudos l LEFT JOIN procedimentos proc ON proc.id=l.ProcedimentoID WHERE l.id="& LaudoID )
+
+            sqlLaudo = "select proc.FormulariosLaudo, l.FormID, l.StatusID, l.Restritivo, l.PacienteID, l.ProfissionalID , "&_
+                       " COALESCE(ii.ItemID, tpsadt.ProcedimentoID) ProcedimentoID "&_
+                       " FROM laudos l  "&_
+                       " LEFT JOIN itensinvoice ii ON ii.id=l.IDTabela AND l.Tabela='itensinvoice' "&_
+                       " LEFT JOIN tissprocedimentossadt tpsadt ON tpsadt.id=l.IDTabela AND l.Tabela='tissprocedimentossadt' "&_
+                       " LEFT JOIN procedimentos proc ON proc.id=COALESCE(ii.ItemID, tpsadt.ProcedimentoID) "&_
+                       " WHERE l.id="& LaudoID
+
+            set pLaudo = db.execute( sqlLaudo )
             if not pLaudo.eof then
                 FormulariosLaudo = replace(pLaudo("FormulariosLaudo")&"", "|", "")
+
                 if FormulariosLaudo<>"" then
                     sqlFormulariosLaudo = " AND id IN("& FormulariosLaudo &") "
                 end if
@@ -2210,7 +2220,7 @@ select case lcase(req("P"))
         </li>
         <li>
             <div class="row p10">
-                <%= quickfield("simpleSelect", "ProfissionalID", "Laudador", 12, ProfissionalID, "select id,IF(NomeSocial is null or NomeSocial='',NomeProfissional,NomeSocial)NomeProfissional from profissionais where sysActive=1 AND Ativo='on'", "NomeProfissional", " no-select2 "& disabledProf) %>
+                <%= quickfield("simpleSelect", "ProfissionalID", "Laudador", 12, ProfissionalID, "select CONCAT('5_',id)id,IF(NomeSocial is null or NomeSocial='',NomeProfissional,NomeSocial)NomeProfissional from profissionais where sysActive=1 AND Ativo='on' UNION ALL SELECT CONCAT('8_',id)id,NomeFornecedor FROM fornecedores WHERE TipoPrestadorID IN (1)", "NomeProfissional", " no-select2 "& disabledProf) %>
             </div>
         </li>
         <li  class="p10">

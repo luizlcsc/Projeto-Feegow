@@ -39,16 +39,22 @@ QuantidadeTotalUnidade = 0
 QuantidadeTotalConjunto = 0
 call refazPosicao(ProdutoID)
 %>
-
 <br />
 <table width="100%" class="table table-striped table-bordered table-hover">
     <thead>
         <tr class="system">
             <th colspan="8">Posi&ccedil;&atilde;o de Estoque</th>
-            <th class="<%=hiddenII %>"><button class="btn btn-sm btn-primary" type="button" onclick="printEtiqueta(<%=req("I") %>)"><i class="fa fa-barcode"></i> Imprimir Etiquetas</button></th>
+            <th class="<%=hiddenII %>">
+
+                <button disabled class="btn-xs btn btn-primary fright btn-acao-em-lote" type="button" data-toggle="tooltip" title="Imprimir etiquetas" onclick="printEtiqueta(<%=req("I") %>)"><i class="fa fa-barcode"></i> </button>
+
+                <button  disabled style="float: right;" class="btn-xs btn btn-warning btn-acao-em-lote" data-toggle="tooltip" title="Mover em lote" type="button"
+                onclick="dividir('<%=req("I") %>', 'S', '<%=req("LocalizacaoID")%>', '', 'LOTE', '<%=req("Quantidade")%>');"
+                ><i class="fa fa-retweet"></i></button>
+            </th>
         </tr>
         <tr class="info">
-            <th class="<%= hiddenII %>" width="1%"><input onclick="$('.eti').prop('checked', $(this).prop('checked'))" type="checkbox" /></th>
+            <th class="<%= hiddenII %> eti" width="1%"><input onclick="$('.eti').prop('checked', $(this).prop('checked'))" type="checkbox" /></th>
             <th>Lote</th>
             <th>Validade</th>
             <th>Cód. Individual</th>
@@ -88,11 +94,32 @@ call refazPosicao(ProdutoID)
                     db_execute("update estoquelancamentos set Responsavel='' WHERE Responsavel='"& lanc("Responsavel") &"'")
                     atualizaLanctos = "S"
                 end if
+
+                Validade = lanc("Validade")
+
+                addClass=""
+                addIco=""
+                addTooltip=""
+
+
+                if Validade&""<>"" then
+                    if Validade=<dateAdd("d", 10, date()) then
+                        Validade = Validade
+                        addClass = "label label-warning"
+                        addTooltip = "Vencendo em "&DateDiff("d",date(), Validade)&" dias"
+
+                        if Validade=<date() then
+                            addClass = "label label-danger"
+                            addIco = "fa fa-exclamation-triangle"
+                            addTooltip = "Vencido há "&DateDiff("d",Validade,date())&" dias"
+                        end if
+                    end if
+                end if
                 %>
                 <tr>
                     <td class="<%=hiddenII %>" width="1%"><input class="eti" type="checkbox" name="etiqueta" value="<%=lanc("PosicaoID") %>" /></td>
                     <td><%=lanc("Lote")%></td>
-                    <td><%=lanc("Validade")%></td>
+                    <td><span data-toggle="tooltip" data-title="<%=addTooltip%>" class="<%=addClass%>"><i class="<%=addIco%>"></i> <%=Validade%></span></td>
                     <td><%=lanc("CBID") %></td>
                     <td><%=lanc("NomeLocalizacao") %></td>
                     <td><%=Responsavel %></td>

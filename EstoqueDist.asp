@@ -3,7 +3,16 @@
 P = req("P")
 TipoLancto = req("T")
 
-set prod = db.execute("select p.*, u.* from produtos as p left join cliniccentral.tissunidademedida as u on p.ApresentacaoUnidade=u.id where p.id="&P)
+PosicaoID = req("PosicaoID")
+
+MovimentacaoEmLote = False
+
+if instr(PosicaoID,",")>0 then
+    MovimentacaoEmLote=True
+end if
+
+sqlProd = "select p.*, u.* from produtos as p left join cliniccentral.tissunidademedida as u on p.ApresentacaoUnidade=u.id where p.id="&P
+set prod = db.execute(sqlProd)
 if len(prod("Descricao"))>6 then
 	NomeUnidade = right(prod("Descricao"), len(prod("Descricao"))-6 )&"(s)"
 end if
@@ -23,7 +32,7 @@ else
 		valor = formatnumber(prod("PrecoVenda"),2)
 	end if
     PosicaoID = req("PosicaoID")
-    set pos = db.execute("select * from estoqueposicao where id="& PosicaoID)
+    set pos = db.execute("select * from estoqueposicao where id in ("& PosicaoID&")")
     if not pos.eof then
         TipoUnidade = pos("TipoUnidade")
         TipoUnidadeOriginal = pos("TipoUnidade")
@@ -61,8 +70,68 @@ end if
 </div>
 <form id="EstoqueMovimentacao" name="EstoqueMovimentacao" method="post">
 <div class="modal-body">
+    <%
+    if MovimentacaoEmLote then
+        %>
+<div class="row">
+
+<div class="col-md-12 mb20">
+    <h4>Movimentação em lote</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr class="primary">
+                <th>Código</th>
+                <th>Lote</th>
+                <th>Localização atual</th>
+                <th>Validade</th>
+                <th>Responsável</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%
+            set PosicaoSQL = db.execute("select ep.*, ep.id PosicaoID,  pl.NomeLocalizacao, p.ApresentacaoNome, um.Descricao ApresentacaoUnidadeNome from estoqueposicao ep inner join produtos p ON p.id=ep.ProdutoID left join cliniccentral.tissunidademedida um ON um.id=p.ApresentacaoUnidade left join produtoslocalizacoes pl on pl.id=ep.LocalizacaoID where ep.id in ("& PosicaoID&")")
+            while not PosicaoSQL.eof
+                PosicaoIDProd = PosicaoSQL("PosicaoID")
+                TipoUnidade = PosicaoSQL("TipoUnidade")
+                NomeLocalizacao = PosicaoSQL("NomeLocalizacao")
+                TipoUnidadeOriginal = PosicaoSQL("TipoUnidade")
+                ResponsavelOriginal = PosicaoSQL("Responsavel")
+                Responsavel = PosicaoSQL("Responsavel")
+                Validade = PosicaoSQL("Validade")
+                Lote = PosicaoSQL("Lote")
+                LocalizacaoID = PosicaoSQL("LocalizacaoID")
+                LocalizacaoIDOriginal = PosicaoSQL("LocalizacaoID")
+                CBID = PosicaoSQL("CBID")
+
+                Quantidade = PosicaoSQL("Quantidade")
+                Conjunto = PosicaoSQL("ApresentacaoNome")
+                unidade = PosicaoSQL("ApresentacaoUnidadeNome")
+                %>
+                <tr>
+                    <input type="hidden" value="<%=TipoUnidadeOriginal%>" name="TipoUnidadeOriginal-<%=PosicaoIDProd%>">
+                    <td><%=CBID%> <input type="hidden" value="<%=CBID%>" name="CBID-<%=PosicaoIDProd%>"> </td>
+                    <td><%=Lote%> <input type="hidden" value="<%=Lote%>" name="Lote-<%=PosicaoIDProd%>"></td>
+                    <td><%=NomeLocalizacao%> <input type="hidden" value="<%=LocalizacaoIDOriginal%>" name="LocalizacaoIDOriginal-<%=PosicaoIDProd%>"></td>
+                    <td><%=Validade%></td>
+                    <td><%=accountName("", Responsavel)%> <input type="hidden" value="<%=Responsavel%>" name="Responsavel-<%=PosicaoIDProd%>"></td>
+                    <td><%=descQuant(Quantidade, TipoUnidade, conjunto, unidade)%></td>
+                </tr>
+                <%
+            PosicaoSQL.movenext
+            wend
+            PosicaoSQL.close
+            set PosicaoSQL=nothing
+            %>
+        </tbody>
+    </table>
+</div>
+</div>
+        <%
+    end if
+    %>
     <div class="row">
-        <%=quickField("text", "Quantidade", "Quantidade", 2, Quantidade, " text-right", "", " input-mask-brl onkeyup='ind()'")%>
+        <%=quickField("number", "Quantidade", "Quantidade", 2, Quantidade, " text-right", "", " input-mask-brl min='0' onkeyup='ind()'")%>
         <div class="col-md-4"><br>
         	<%if TipoUnidade="C" or TipoLancto="E" then %>
             <label><input class="ace" type="radio" name="TipoUnidade" required="required" value="C"<%if prod("Tipo"&tipoValor)="C" then%> checked<%end if%>><span class="lbl"> <%=ApresentacaoNome%> com <%=formatnumber(ApresentacaoQuantidade,2)%>&nbsp;<%=lcase(NomeUnidade)%></span></label>
@@ -122,7 +191,7 @@ end if
 $("#EstoqueMovimentacao").submit(function(){
 	$.ajax({
 		type:"POST",
-		url:"saveEstoqueLancamento.asp?P=<%=P%>&T=M&PosicaoID=<%=PosicaoID%>",
+		url:"saveEstoqueLancamento.asp?P=<%=P%>&T=M&PosicaoID=<%=PosicaoID%>&MovimentacaoEmLote=<%=MovimentacaoEmLote%>",
 		data:$(this).serialize(),
 		success: function(data){
 			eval(data);

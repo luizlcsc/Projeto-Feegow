@@ -2,11 +2,13 @@
 if request.ServerVariables("REMOTE_ADDR")<>"::1" then
    'on error resume next
 end if
-sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao, u.Home, l.ultimoBackup from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha=('"&ref("Password")&"') or ('"&ref("Password")&"'='feeegow!0090' and u.LicencaID<>5459))"
 
 set shellExec = createobject("WScript.Shell")
 Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
+MasterPwd = objSystemVariables("FC_MASTER")
+
+sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao, u.Home, l.ultimoBackup from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha=('"&ref("Password")&"') or ('"&ref("Password")&"'='"&MasterPwd&"' and u.LicencaID<>5459))"
 
 set tryLogin = dbc.execute(sqlLogin)
 if not tryLogin.EOF then
@@ -62,11 +64,11 @@ if not tryLogin.EOF then
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
 			TempoDist = datediff("s", sysUser("UltRef"), now())
-			if TempoDist<20 and TempoDist>0 and ref("password")<>"feeegow!0090" and mobileDevice()="" then
+			if TempoDist<20 and TempoDist>0 and ref("password")<>MasterPwd and mobileDevice()="" then
 				erro = "Este usuário já está conectado em outra máquina."
             else
 
-                if UsuariosContratadosNS>0 and ref("password")<>"feeegow!0090"  then
+                if UsuariosContratadosNS>0 and ref("password")<>MasterPwd  then
                 'excecao para a Minha Clinica :'/
                     if tryLogin("LicencaID")=4285 then
                         set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &" and NameColumn='NomeFuncionario' and UltRef>DATE_ADD(NOW(), INTERVAL -"&TimeoutToCheckConnection&" SECOND)")
@@ -108,7 +110,7 @@ if not tryLogin.EOF then
 				set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
 			else
 				TempoDistDevice = datediff("s", sysUser("UltRefDevice"), now())
-				if TempoDistDevice<20 and TempoDistDevice>0 and ref("password")<>"feeegow!0090" then
+				if TempoDistDevice<20 and TempoDistDevice>0 and ref("password")<>MasterPwd then
 					erro = "Este usuário já está conectado em outro aparelho."
 				end if
 			end if
@@ -131,7 +133,7 @@ if not tryLogin.EOF then
 		session("AlterarSenha")=tryLogin("AlterarSenhaAoLogin")
         session("Servidor") = Servidor&""
 
-		if ref("password")="feeegow!0090" then
+		if ref("password")=MasterPwd then
 			session("MasterPwd") = "S"
 		end if
 		%>
@@ -263,7 +265,7 @@ if not tryLogin.EOF then
 		wend
 		outrosUsers.close
 		set outrosUsers=nothing
-		if ref("password")<>"feeegow!0090" then
+		if ref("password")<>MasterPwd then
 			dbc.execute("insert into licencaslogins (LicencaID, UserID, IP, Agente) values ("&tryLogin("LicencaID")&", "&tryLogin("id")&", '"&request.ServerVariables("REMOTE_ADDR")&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
 		end if
 
@@ -342,6 +344,9 @@ if not tryLogin.EOF then
             if not vcaTrei.eof then
                 urlRedir = "./?P=AvaliaTreinamento&Pers=1"
             end if
+        end if
+        if Cupom="GSC" then
+            urlRedir = replace(urlRedir, "./", "/v7.1/")
         end if
 
         response.Redirect(urlRedir)

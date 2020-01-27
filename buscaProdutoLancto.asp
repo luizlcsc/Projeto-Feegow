@@ -59,15 +59,29 @@ else
     if CD&""="" then
         CD = "C"
     end if
-    set vcaCBID = db.execute("select ep.* from estoqueposicao ep LEFT JOIN produtoslocalizacoes pl ON pl.id=ep.LocalizacaoID where ep.CBID like '%"& BuscaProduto &"' AND ep.Quantidade>0"&sqlUnidadesUsuario&" LIMIT 1")
+    AchouDireto = False
+
+    set vcaCBID = db.execute("select ep.*, count(ep.id)QtdEncontradas from estoqueposicao ep LEFT JOIN produtoslocalizacoes pl ON pl.id=ep.LocalizacaoID where ep.CBID like '%"& BuscaProduto &"' AND ep.Quantidade>0"&sqlUnidadesUsuario&" ")
     if not vcaCBID.eof AND CD="C" then
-        sqlProdutos = " AND 1=2 "
+
+        QtdEncontradas=0
+
+        if not isnull(vcaCBID("QtdEncontradas")) then
+            QtdEncontradas = vcaCBID("QtdEncontradas")
+        end if
+
+        if QtdEncontradas&""="1" then
         %>
         <script type="text/javascript">
             lancar(<%=vcaCBID("ProdutoID")%>, 'S', '<%=vcaCBID("Lote")%>', '<%=vcaCBID("Validade")%>', <%=vcaCBID("id")%>, '<%=ItemInvoiceID%>', '<%=AtendimentoID%>', '<%=ProdutoInvoiceID%>');
         </script>
         <%
-    else
+            sqlProdutos = " AND 1=2 "
+            AchouDireto=True
+        end if
+    end if
+
+    if not AchouDireto then
         sqlBusca = " AND (NomeProduto like '%"& BuscaProduto &"%' OR Codigo LIKE '%"& BuscaProduto &"%')"
     end if
 end if
@@ -78,18 +92,18 @@ end if
     	<table class="table table-striped table-bordered table-hover">
         	<thead>
             	<tr>
-                    <th colspan="2">Lançar movimentação de produto</th>
+                    <th colspan="3">Lançar movimentação de produto</th>
                 </tr>
             </thead>
             <tbody>
             <%
-            sql = "select id, NomeProduto from produtos where sysActive=1 "& sqlbusca & sqlProdutos &" order by NomeProduto"
-            'response.write(sql)
+            sql = "select id, NomeProduto, Codigo from produtos where sysActive=1 "& sqlbusca & sqlProdutos &" order by NomeProduto"
             set prod = db.execute( sql )
 			while not prod.eof
 				%>
             	<tr>
                 	<td><%=prod("NomeProduto")%></td>
+                	<td><%=prod("Codigo")%></td>
                     <td width="1%"><button onclick="Posicao('<%=CD %>', <%= prod("id") %>)" class="btn btn-alert btn-sm"><i class="fa fa-exchange"></i></button></td>
                 </tr>
                 <%

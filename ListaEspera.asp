@@ -18,6 +18,7 @@
             <label for="ProfissionalID">Filtrar por profissional</label>
             <select name="ProfissionalID" id="ProfissionalID" class="form-control select2-single">
                 <option value="">Selecione</option>
+                <option value="ALL">Todos</option>
                 <%
 
             sqlunidades  = "select Unidades from " & session("table") &" where id = " & session("idInTable")

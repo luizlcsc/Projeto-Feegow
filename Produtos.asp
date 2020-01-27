@@ -170,20 +170,25 @@ end if
 				<%
 				set uii = db.execute("select el.Valor, el.TipoUnidade UC from estoquelancamentos el WHERE el.ProdutoID="& req("I") &" ORDER BY el.sysDate desc LIMIT 1")
 				if not uii.eof then
-					if uii("UC")="C" then
-						descUC = "conjunto"
-					else
-						descUC = "unidade"
-					end if
-					%>
-					<div class="alert alert-info">
-						Última compra: R$ <%= fn(uii("Valor")) %>/<%= descUC %>
 
-						<% if aut("contasapagar")=1 and false then %>
-							<a target="_blank" href="./?P=Invoice&Pers=1&T=D&I=<%= uii("InvoiceID") %>" class="btn btn-xs btn-default"><i class="fa fa-eye"></i></a>
-						<% end if %>
-					</div>
-					<%
+				    if not isnull(uii("Valor")) then
+                        if uii("Valor")>0 then
+                            if uii("UC")="C" then
+                                descUC = "conjunto"
+                            else
+                                descUC = "unidade"
+                            end if
+                            %>
+                            <div class="alert alert-info">
+                                Última compra: R$ <%= fn(uii("Valor")) %>/<%= descUC %>
+
+                                <% if aut("contasapagar")=1 and false then %>
+                                    <a target="_blank" href="./?P=Invoice&Pers=1&T=D&I=<%= uii("InvoiceID") %>" class="btn btn-xs btn-default"><i class="fa fa-eye"></i></a>
+                                <% end if %>
+                            </div>
+                            <%
+                        end if
+                    end if
 				end if
 
 				%>
@@ -207,6 +212,13 @@ end if
     </div>
 </div>
 <script type="text/javascript">
+
+    $("#ProdutosPosicao").on("click", ".eti",function() {
+        var temPosicaoSelecionada = $(".eti:checked").length > 0,
+            $btnAcaoEmLote = $(".btn-acao-em-lote");
+
+        $btnAcaoEmLote.attr("disabled", !temPosicaoSelecionada);
+    });
 
     function printEtiqueta(ProdutoID) {
         $.post("printEtiqueta.asp?ProdutoID="+ ProdutoID, $(".eti").serialize(), function (data) {
@@ -248,6 +260,17 @@ setTimeout(function() {
     function dividir(P, T, L, V, PosicaoID){
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");
+
+        if(PosicaoID === "LOTE"){
+            PosicaoID=[];
+
+            $(".eti[name=etiqueta]:checked").each(function() {
+                PosicaoID.push($(this).val());
+            })
+
+            PosicaoID= PosicaoID.join(",");
+        }
+
         $.ajax({
             type:"POST",
             url:"EstoqueDist.asp?P="+P+"&T="+T+"&L="+L+"&V="+V+"&PosicaoID="+PosicaoID,

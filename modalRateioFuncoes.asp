@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 DominioID = request.QueryString("I")
 Tipo = request.QueryString("T")
@@ -120,6 +121,7 @@ end if
 		<%
 	else
 		%>
+		<div class="row">
 		<div class="col-md-2">
 
             <div class="btn-group">
@@ -134,11 +136,22 @@ end if
             </div>
 
         </div>
+        </div>
 		<%
 	end if
 	%>
     <div class="row" id="FuncoesRateio">
     	<%server.Execute("FuncoesRateio.asp")%>
+    </div>
+
+<div class="row">
+    <div class="col-md-12 mt15" style="max-height: 250px; overflow-y: scroll">
+
+    <%
+    LogFuncoesSQL = renderLogsTable("rateiofuncoes", 0, DominioID)
+    %>
+        </div>
+
     </div>
 </div>
 <div class="modal-footer">

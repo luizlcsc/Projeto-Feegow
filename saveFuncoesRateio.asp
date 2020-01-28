@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 DominioID = req("DominioID")
 Tipo = req("Tipo")
@@ -81,7 +82,10 @@ else
         else
             modoCalculo = "I"
         end if
-		db_execute("update rateiofuncoes set modoCalculo='"& modoCalculo &"', Funcao='"&ref("Funcao"&grupo("id"))&"', tipoValor='"&ref("tipoValor"&grupo("id"))&"', Valor="&treatValZero(ref("Valor"&grupo("id")))&", ContaPadrao='"&ref("ContaPadrao"&grupo("id"))&"', Sobre="&treatvalzero(ref("Sobre"&grupo("id")))&", ProdutoID="&ProdutoID&", ValorUnitario="&treatvalzero(ref("ValorUnitario"&grupo("id")))&", Quantidade="&treatvalzero(ref("Quantidade"&grupo("id")))&", Variavel='"&ref("Variavel"&grupo("id"))&"', ValorVariavel='"&ref("ValorVariavel"&grupo("id"))&"' where id="&grupo("id"))
+
+        sqlUpdate = "update rateiofuncoes set modoCalculo='"& modoCalculo &"', Funcao='"&ref("Funcao"&grupo("id"))&"', tipoValor='"&ref("tipoValor"&grupo("id"))&"', Valor="&treatValZero(ref("Valor"&grupo("id")))&", ContaPadrao='"&ref("ContaPadrao"&grupo("id"))&"', Sobre="&treatvalzero(ref("Sobre"&grupo("id")))&", ProdutoID="&ProdutoID&", ValorUnitario="&treatvalzero(ref("ValorUnitario"&grupo("id")))&", Quantidade="&treatvalzero(ref("Quantidade"&grupo("id")))&", Variavel='"&ref("Variavel"&grupo("id"))&"', ValorVariavel='"&ref("ValorVariavel"&grupo("id"))&"' where id="&grupo("id")
+        call gravaLogs(sqlUpdate, "AUTO", "Função de repasse alterada", "DominioID")
+		db_execute(sqlUpdate)
 	grupo.movenext
 	wend
 	grupo.close

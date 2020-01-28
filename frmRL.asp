@@ -70,6 +70,7 @@ end if
                                 %>
                             </button>
                         </td>
+                        <td colspan="3"></td>
                     </tr>
                     <%
                     if ref("Convenios")<>"" then

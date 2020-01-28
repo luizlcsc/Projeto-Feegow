@@ -24,12 +24,12 @@ end if
 
 end function
 
-function getLogs(logTable, logId)
-    set getLogs = db.execute("SELECT * FROM log WHERE recurso='"&logTable&"' AND I="&treatvalzero(logId))
+function getLogs(logTable, logId, paiId)
+    set getLogs = db.execute("SELECT * FROM log WHERE recurso='"&logTable&"' AND (I="&treatvalzero(logId)&" OR PaiID="&Treatvalzero(paiId)&") ORDER BY DataHora DESC")
 end function
 
-function renderLogsTable(logTable, logId)
-    set LogsSQL = getLogs(logTable, logId)
+function renderLogsTable(logTable, logId, paiId)
+    set LogsSQL = getLogs(logTable, logId, paiId)
 
     if not LogsSQL.eof then
     %>
@@ -52,8 +52,9 @@ function renderLogsTable(logTable, logId)
 
                 colunas = LogsSQL("colunas")
                 spltCampos = split(colunas, "|")
-                spltValorAnterior = split(LogsSQL("valorAnterior"), "|^")
-                spltValorAtual = split(LogsSQL("valorAtual"), "|^")
+                spltValorAnterior = split(LogsSQL("valorAnterior")&"", "|^")
+                valorAtual = LogsSQL("valorAtual")
+                spltValorAtual = split(valorAtual&"", "|^")
 
                 for i=1 to ubound(spltCampos) - 1
 
@@ -76,7 +77,7 @@ function renderLogsTable(logTable, logId)
             %>
             <td><%=campo%></td>
             <td><%=spltValorAnterior(i)%></td>
-            <td><%=spltValorAtual(i)%></td>
+            <td><% if not isnull(valorAtual) then response.write(spltValorAtual(i)) end if %></td>
         </tr>
 <%
                 next
@@ -119,11 +120,20 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
             colunasQuery = colunas
             colunas = replace(colunas, ",", "|")
             colunas = "|"&colunas&"|"
+
+            if ColunaPai&""<>"" then
+                colunasQuery = colunasQuery &",`"&ColunaPai&"`"
+            end if
+
             set record = db.execute("SELECT "&colunasQuery&" FROM "&recurso&" WHERE id = "&idLog)
 
             valorAtual = "|^"
             valorAnterior = "|^"
             if not record.eof then
+
+                if ColunaPai&""<>"" then
+                    ValorPai = record(ColunaPai)
+                end if
                 record = db.execute("SELECT "&colunasQuery&" FROM "&recurso&" WHERE id = "&idLog)
 
                 for each x in record
@@ -133,7 +143,7 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
 
 
              end if
-             db.execute("insert into log (Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser, Obs) values ('"&operacao&"', "&idLog&", '"&recurso&"', '"&colunas&"', '"&valorAnterior&"', '"&valorAtual&"', "&session("User")&", '"&obs&"')")
+             db.execute("insert into log (Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser, Obs, PaiID, ColunaPai) values ('"&operacao&"', "&idLog&", '"&recurso&"', '"&colunas&"', '"&valorAnterior&"', '"&valorAtual&"', "&session("User")&", '"&obs&"', "&treatvalnull(ValorPai)&",'"&ColunaPai&"')")
               if(operacaoForce <> "AUTO") then
                  db.execute(query)
               end if
@@ -151,8 +161,12 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
         if InStr(tabelas,"|"&recurso&"|") or true then
             valores = split(query, " set ")(1)
             valores = split(valores, " where ")(0)
-            valores = replace(valores, "|,", "|¬")
-            valores = split(valores, ",")
+            valoresStr = replace(valores, "|,", "|¬")
+            if ColunaPai&""<>"" then
+                valores = valores &", "&ColunaPai&"='VALOR_PAI'"
+            end if
+
+            valores = split(valoresStr, ",")
             colunas = "|"
             colunasQuery = ""
             'valorAtual = "|^"
@@ -164,11 +178,12 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
                 end if
             next
             colunas = replace(colunas, " ", "")
-            colunasQuery = replace(colunasQuery, " ,", "")
 
             if ColunaPai&""<>"" then
-                colunasQuery = colunasQuery &",`"&ColunaPai&"`"
+                colunasQuery = colunasQuery &"`"&ColunaPai&"`"
             end if
+            colunasQuery = replace(colunasQuery, " ,", "")
+
 
             recursoAux = recurso
             if InStr(LCase(query),"left join") then
@@ -200,6 +215,10 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
             while not record.eof
                 if ColunaPai&""<>"" then
                     PaiID = record(ColunaPai)
+
+                    if instr(valoresStr,"VALOR_PAI")>0 then
+                        valores = split(replace(valoresStr, "VALOR_PAI", PaiID),",")
+                    end if
                 end if
 
                 valoresAnteriores = ""
@@ -207,7 +226,12 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
                 colunas = "|"
                 For iLog = 0 To qtdColunas.count-1
 
-                    col = replace(valores(iLog),"`","")
+                    if iLog > ubound(valores) then
+                        col = ""
+                    else
+
+                        col = replace(valores(iLog),"`","")
+                    end if
                     if InStr(col,"=") then
                           txtValorAntigo = record(iLog)&""
                           txtValorAtual = replace(replace(split(col, "=")(1), "'", ""), "|¬", "|,")&""
@@ -254,8 +278,8 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
                               end if
                           end if
                     end if
-
                 Next
+
 
                 if(colunas <> "|") then
                     if valoresAnteriores = "" then
@@ -275,7 +299,7 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
                     if(operacaoForce <> "AUTO") then
                         db.execute(query)
                     end if
-                    db.execute("insert into log (Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser, Obs) values ('"&operacao&"', "&record("id")&", '"&recurso&"', '"&colunas&"', "&valoresAnteriores&", "&valoresAtuais&", "&session("User")&", '"&obs&"')")
+                    db.execute("insert into log (Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser, Obs, PaiID, ColunaPai) values ('"&operacao&"', "&record("id")&", '"&recurso&"', '"&colunas&"', "&valoresAnteriores&", "&valoresAtuais&", "&session("User")&", '"&obs&"', "&treatvalnull(PaiID)&", '"&ColunaPai&"')")
                  end if
                 record.movenext
             wend
@@ -291,10 +315,8 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
             onde = split(query, " where ")
             ondeAux = onde(UBound(onde))
             onde = ondeAux
-            auxQuery = "select "&colunasQuery&" from "&recurso&" where "&onde
         else
             onde = "true"
-            auxQuery = "select "&colunasQuery&" from "&recurso&" where "&onde
         end if
 
         recurso = split(query, " from ")(1)
@@ -316,6 +338,10 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
             set res = db.execute("select * from "&recurso&" where "&onde)
             'set res = db.execute("select * from "&recurso&" where true")
             while not res.eof
+
+                if ColunaPai&""<>"" then
+                    ValorPai = res(ColunaPai)
+                end if
                 valoresAnteriores = "|^"
                 set colunasRs = db.execute("select column_name from information_schema.columns c where table_name = '"&recurso&"' and c.table_schema = '"&session("Banco")&"' and c.column_name <> 'id'")
                 while not colunasRs.eof
@@ -328,7 +354,7 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
                 if(operacaoForce <> "AUTO") then
                    db.execute(query)
                 end if
-                db.execute("insert into log (Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser, Obs) values ('"&operacao&"', "&res("id")&", '"&recursoTabela&"', '"&colunas&"', '"&valoresAnteriores&"', NULL, "&session("User")&",'"&Obs&"')")
+                db.execute("insert into log (Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser, Obs, PaiID, ColunaPai) values ('"&operacao&"', "&res("id")&", '"&recursoTabela&"', '"&colunas&"', '"&valoresAnteriores&"', NULL, "&session("User")&",'"&Obs&"', "&treatvalnull(ValorPai)&",'"&ColunaPai&"')")
                 res.movenext
             wend
         end if

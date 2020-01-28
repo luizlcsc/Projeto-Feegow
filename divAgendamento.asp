@@ -625,12 +625,14 @@ end if
                             if dField("typeName") = "simpleSelect" then
                                 camposRequired = camposRequired & " empty"
                             end if
-
+                            sqlOrClass = dField("selectSQL")
                              if instr(lcase(splCamposPedir(i)), "cpf")>0 then
                                 colMd=3
+                                sqlOrClass = "input-mask-cpf"
+
                             end if
                             %><input type="text" name="ageEmail10" class="form-control hidden" autocomplete="off" />
-                            <%= quickField(dField("typeName"), "age"&splCamposPedir(i), dField("label"), colMd, valorCampo, dField("selectSQL"), dField("selectColumnToShow"), " autocomplete='campo-agenda' no-select2 datepicker-vazio "&camposRequired&" "&fieldReadonly) %>
+                            <%= quickField(dField("typeName"), "age"&splCamposPedir(i), dField("label"), colMd, valorCampo, sqlOrClass, dField("selectColumnToShow"), " autocomplete='campo-agenda' no-select2 datepicker-vazio "&camposRequired&" "&fieldReadonly) %>
                         <%end if
 
                     end if
@@ -999,7 +1001,7 @@ end if
                     end if
                     if aut("agendaX")=1 and (cdate(Data) >= date() or (cdate(Data) < date() and aut("agendamentosantigosX")=1)) then
                     %>
-                     <div class="col-xs-5 col-md-3 pt10 <%= hiddenCHK %>">
+                    <div class="col-xs-5 col-md-3 pt10 <%= hiddenCHK %>">
                         <button class="btn btn-sm btn-danger btn-block" type="button" data-bb-handler="danger" onclick="excluiAgendamento(<%=ConsultaID%>, 0);">
                             <i class="fa fa-trash"></i> Excluir
                         </button>

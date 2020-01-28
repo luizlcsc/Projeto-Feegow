@@ -1055,6 +1055,15 @@ end if
 
 <script type="text/javascript">
 
+$("#myTab4 li").on("click",function(){
+    crumbAgendaUpdate();
+});
+
+function crumbAgendaUpdate(){
+    let NomePaciente = $("#PacienteID").select2('data')[0].full_name;
+    $(".crumb-active a").html(NomePaciente);
+}
+
 ///Sanderson
 ///compara o ultimo alerta para não repetir o alerta para os mesmos parametros pelo tipo de alerta
 ///obj parametros do alerta par0:tipo, par1, par2 ... parametros variados
@@ -1129,7 +1138,8 @@ function RegistrarMultiplasPendencias(liberar) {
             if(data.length > 0) {
                 openModal(data, "Selecionar procedimento do pacote contratado", true, false);
             }
-        })
+        });
+        crumbAgendaUpdate();
     });
 
     $("#Retorno").change(function() {

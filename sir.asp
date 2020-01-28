@@ -176,10 +176,9 @@ if aut(lcase(ref("resource"))&"A")=1 then
                     gradeExiste = existeGrade(ProfissionalID, UnidadeID,DiaSemana, Hora, Data)
                     if gradeExiste then
                         sqlExibir = ""
-                        sqlSomenteProcedimento=" AND (SomenteProfissionais like '%|"& ProfissionalID &"|%') "
+                        sqlSomenteProcedimento=" AND (opcoesagenda IN (4,5) and SomenteProfissionais like '%|"& ProfissionalID &"|%') "
                     end if 
                 end if
-
                 sql = "select id, NomeProcedimento from ((select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') and Ativo='on' "&sqlSomenteProcedimento&" order by OpcoesAgenda desc, NomeProcedimento) UNION ALL (SELECT (-1*CAST(id as SIGNED))id, CONCAT(NomePacote, ' (Pacote)') NomeProcedimento FROM pacotes WHERE sysActive=1 AND NomePacote like '%"&ref("q")&"%'))t LIMIT 20"
             end if
 

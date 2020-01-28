@@ -51,7 +51,7 @@ select case lcase(req("P"))
                             <%= quickfield("text", "fNomePaciente", "Paciente", 12, "", "", "", "") %>
                             <%= quickfield("simpleSelect", "fProfissionalID", "Profissional", 12, "", "select id, if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial) NomeProfissional from profissionais where sysActive=1 and ativo='on' order by if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial)", "NomeProfissional", "") %>
                             <%= quickfield("simpleSelect", "rTipoProcedimentoID", "Tipo do procedimento", 12, "", "select id, TipoProcedimento from tiposprocedimentos ", "TipoProcedimento", "") %>
-                            <%= quickfield("simpleSelect", "rGrupoID", "Grupo de procedimento", 12, "", "select id, NomeGrupo from procedimentosgrupos where sysActive=1", "NomeGrupo", "") %>
+                            <%= quickfield("multiple", "rGrupoID", "Grupo de procedimento", 12, "", "select id, NomeGrupo from procedimentosgrupos where sysActive=1", "NomeGrupo", "") %>
 			                <%=quickField("datepicker", "DataDe", "De", 12, date(), "", "", "")%>
 			                <%=quickField("datepicker", "DataAte", "Até", 12, dateAdd("d",1,date()), "", "", "")%>
                         </div>

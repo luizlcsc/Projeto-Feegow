@@ -172,6 +172,13 @@ TipoGuia = reg("TipoGuia")
                     </div>
                     <hr class="short alt" />
                     <div class="row " >
+                        <div class="col-md-3 m15">
+                            <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" name="ProcedimentoSeriado" id="ProcedimentoSeriado" value="S" class="ace" <% If reg("ProcedimentoSeriado")="S" Then %> checked="checked" <% End If %> />
+                                <label for="ProcedimentoSeriado">Procedimento seriado</label>
+                            </div>
+                        </div>
+                        <%=quickField("number", "IntervaloSerie", "Intervalo da série", 2, reg("IntervaloSerie"), " text-right", "", "")%>
                         <%=quickField("text", "CH", "CH (Reembolso)", 3, fn(reg("CH")), " input-mask-brl text-right ", "", "")%>
                     </div>
                     <div class="row hidden" >

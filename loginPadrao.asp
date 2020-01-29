@@ -163,6 +163,7 @@ if not tryLogin.EOF then
         end if
 
 		session("Permissoes") = sysUser("Permissoes")
+		session("ModoFranquia") = getConfig("ModoFranquia")
 		if left(session("Permissoes"), 1)<>"|" then
 			db_execute("update sys_users set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")
 			db_execute("update regraspermissoes set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")

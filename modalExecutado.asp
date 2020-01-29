@@ -158,7 +158,7 @@ end if
 <div class="row">
     <div class="col-md-12" style="max-height: 250px; overflow-y: scroll">
         <%
-        LogsItensInvoiceSQL = renderLogsTable("itensinvoice", II)
+        LogsItensInvoiceSQL = renderLogsTable("itensinvoice", II, 0)
         %>
     </div>
 </div>

@@ -392,7 +392,7 @@ else
         else
             %> onClick="window.location='?P=ListaEspera&Pers=1&Chamar=<%=veseha("id")%>';"<%
         end if
-		%>>CHAMAR
+		%>><i class="fa fa-bell"></i> CHAMAR
 		<%
         if disabPagto <> "" then
             %>
@@ -418,7 +418,7 @@ else
             %> onClick="window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>';"<%
         end if
         %>
-    	 class="btn btn-xs btn-success" type="button" <%=disabPagto%> >ATENDER</button>
+    	 class="btn btn-xs btn-success" type="button" <%=disabPagto%> ><i class="fa fa-play"></i> ATENDER</button>
     	<%else%>
     	<button onClick="window.location='?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>'" class="btn btn-xs btn-primary" type="button">IR PARA ATENDIMENTO</button>
     	<%end if%>

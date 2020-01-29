@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 DominioID = req("D")
 set dom = db.execute("select * from rateiodominios where id="& DominioID)
@@ -18,7 +19,15 @@ Dias = dom("Dias")
     <div class="panel-body">
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#divConPart').slideToggle()"><i class="fa fa-chevron-down"></i> Convênios</button>
+                <%
+
+                corBtn = "btn-default"
+                if Formas<>"" then
+                    corBtn = "btn-info"
+                end if
+
+                %>
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divConPart').slideToggle()"><i class="fa fa-chevron-down"></i> Convênios</button>
             </div>
         </div>
         <div class="row pt10" id="divConPart" style="display:none">
@@ -42,7 +51,17 @@ Dias = dom("Dias")
 
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#divFormaPart').slideToggle()"><i class="fa fa-chevron-down"></i> Formas de pagamento</button>
+                <%
+                corBtn = "btn-default"
+                if Formas<>"" then
+                    if instr(Formas, "_") > 0 or instr(Formas,"|P|")>0 then
+                        corBtn = "btn-info"
+                    end if
+                end if
+
+                %>
+
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divFormaPart').slideToggle()"><i class="fa fa-chevron-down"></i> Formas de pagamento</button>
             </div>
         </div>
         <div class="row pt10" id="divFormaPart" style="display:none">
@@ -94,14 +113,29 @@ Dias = dom("Dias")
 
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#divTabs').slideToggle()"><i class="fa fa-chevron-down"></i> Tabelas Particulares</button>
+                <%
+
+                corBtn = "btn-default"
+                if Tabelas<>"" then
+                    corBtn = "btn-info"
+                end if
+
+                sqlConv = "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' order by NomeTabela"
+
+                set g = db.execute( sqlConv )
+
+
+                disabledTabela = ""
+                if g.eof then
+                    disabledTabela = "disabled "
+                end if
+                %>
+
+                <button <%=disabledTabela%> class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divTabs').slideToggle()"><i class="fa fa-chevron-down"></i> Tabelas Particulares</button>
             </div>
         </div>
         <div class="row pt10" id="divTabs" style="display:none">
             <%
-            sqlConv = "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' order by NomeTabela"
-        
-            set g = db.execute( sqlConv )
                 while not g.eof
                     %>
                     <div class="col-md-4 checkbox-custom checkbox-primary">
@@ -122,7 +156,18 @@ Dias = dom("Dias")
 
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#divEsp').slideToggle()"><i class="fa fa-chevron-down"></i> Especialidades</button>
+                <%
+
+                corBtn = "btn-default"
+                if Profissionais<>"" then
+                    if instr(Profissionais, "-") > 0 then
+                        corBtn = "btn-info"
+                    end if
+                end if
+
+                %>
+
+                <button class="btn btn-block btn-default text-left" type="button" onclick="$('#divEsp').slideToggle()"><i class="fa fa-chevron-down"></i> Especialidades</button>
             </div>
         </div>
             <div class="row pt10" id="divEsp" style="display:none">
@@ -158,7 +203,16 @@ Dias = dom("Dias")
             <hr class="short alt" />
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#divProf').slideToggle()"><i class="fa fa-chevron-down"></i> Profissionais</button>
+                <%
+
+                corBtn = "btn-default"
+                if Profissionais<>"" then
+                    corBtn = "btn-info"
+                end if
+
+                %>
+
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divProf').slideToggle()"><i class="fa fa-chevron-down"></i> Profissionais</button>
             </div>
         </div>
             <div class="row pt10" id="divProf" style="display:none">
@@ -181,14 +235,28 @@ Dias = dom("Dias")
           <hr class="short alt" />
             <div class="row">
                 <div class="col-md-12">
-                    <button class="btn btn-block btn-info text-left" type="button" onclick="$('#divGProf').slideToggle()"><i class="fa fa-chevron-down"></i> Grupos de Profissionais</button>
+                    <%
+
+                    corBtn = "btn-default"
+                    if GruposProfissionais<>"" then
+                        corBtn = "btn-info"
+                    end if
+
+                    sqlGru = "select id, NomeGrupo from profissionaisgrupos where sysActive=1 order by NomeGrupo"
+
+                    set g = db.execute( sqlGru )
+
+                    disabledGrupo = ""
+                    if g.eof then
+                        disabledGrupo = "disabled "
+                    end if
+                    %>
+
+                    <button <%=disabledGrupo%> class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divGProf').slideToggle()"><i class="fa fa-chevron-down"></i> Grupos de Profissionais</button>
                 </div>
             </div>
                 <div class="row pt10" id="divGProf" style="display:none">
                     <%
-                    sqlGru = "select id, NomeGrupo from profissionaisgrupos where sysActive=1 order by NomeGrupo"
-
-                    set g = db.execute( sqlGru )
                         while not g.eof
                             %>
                             <div class="col-md-4 checkbox-custom checkbox-primary">
@@ -205,14 +273,31 @@ Dias = dom("Dias")
             <hr class="short alt" />
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#divGProc').slideToggle()"><i class="fa fa-chevron-down"></i> Grupos de Procedimentos</button>
+
+                <%
+
+                corBtn = "btn-default"
+                if Procedimentos<>"" then
+                    if instr(Procedimentos, "-")>0 then
+                        corBtn = "btn-info"
+                    end if
+                end if
+
+                sqlGru = "select id*(-1) id, NomeGrupo from procedimentosgrupos where sysActive=1 order by NomeGrupo"
+
+                set g = db.execute( sqlGru )
+
+
+                disabledGrupo = ""
+                if g.eof then
+                    disabledGrupo = "disabled "
+                end if
+                %>
+                <button class="btn btn-block btn-default text-left" type="button" onclick="$('#divGProc').slideToggle()"><i class="fa fa-chevron-down"></i> Grupos de Procedimentos</button>
             </div>
         </div>
             <div class="row pt10" id="divGProc" style="display:none">
                 <%
-                sqlGru = "select id*(-1) id, NomeGrupo from procedimentosgrupos where sysActive=1 order by NomeGrupo"
-        
-                set g = db.execute( sqlGru )
                     while not g.eof
                         %>
                         <div class="col-md-4 checkbox-custom checkbox-primary">
@@ -226,9 +311,17 @@ Dias = dom("Dias")
                 %>
             </div>
             <hr class="short alt" />
+            <%
+
+            corBtn = "btn-default"
+            if Procedimentos<>"" then
+                corBtn = "btn-info"
+            end if
+
+            %>
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#divProcs').slideToggle()"><i class="fa fa-chevron-down"></i> Procedimentos</button>
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divProcs').slideToggle()"><i class="fa fa-chevron-down"></i> Procedimentos</button>
             </div>
         </div>
 
@@ -253,13 +346,22 @@ Dias = dom("Dias")
             <hr class="short alt" />
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#divUnis').slideToggle()"><i class="fa fa-chevron-down"></i> Unidades</button>
+                <%
+
+                corBtn = "btn-default"
+                if Unidades<>"" then
+                    corBtn = "btn-info"
+                end if
+
+                %>
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divUnis').slideToggle()"><i class="fa fa-chevron-down"></i> Unidades</button>
             </div>
         </div>
             <div class="row pt10" id="divUnis" style="display:none">
                 <%
                 sqlConv = "select '0' id, concat('        ', NomeFantasia) NomeFantasia from empresa UNION ALL select id, NomeFantasia from sys_financialcompanyunits where sysActive=1 order by NomeFantasia"
-        
+
+
                 set g = db.execute( sqlConv )
                     while not g.eof
                         %>
@@ -283,7 +385,13 @@ Dias = dom("Dias")
 
                 <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#divDias').slideToggle()"><i class="fa fa-chevron-down"></i> Dias da semana</button>
+            <%
+            corBtn = "btn-default"
+            if Dias<>"" then
+                corBtn = "btn-info"
+            end if
+            %>
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divDias').slideToggle()"><i class="fa fa-chevron-down"></i> Dias da semana</button>
             </div>
         </div>
             <div class="row pt10" id="divDias" style="display:none">
@@ -303,6 +411,16 @@ Dias = dom("Dias")
 
 
 
+    <div class="row">
+        <div class="col-md-12 mt15" style="max-height: 250px; overflow-y: scroll">
+
+        <%
+        LogFuncoesSQL = renderLogsTable("rateiodominios", DominioID, 0)
+        %>
+            </div>
+
+        </div>
+    </div>
 
 
     </div>

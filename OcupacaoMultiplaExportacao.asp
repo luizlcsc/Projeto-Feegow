@@ -12,7 +12,7 @@
 
 <h2 class="text-center">Taxa de Ocupação</h2>
 
-<div style="" class="alert alert-warning">
+<div style="" class="hidden alert alert-warning">
     <strong>Atenção!</strong> Este relatório está sendo atualizado no momento.
 </div>
 <%
@@ -98,7 +98,7 @@ $("#FormatoExportacao").change(function() {
 <%
 else
 
-        'set u = db.execute("select distinct UnidadeID FROM rel_ocupacao WHERE sysUser="& session("User"))
+        'set u = db.execute("select distinct UnidadeID FROM agenda_horarios WHERE sysUser="& session("User"))
         'while not u.eof
         %>
 <table class="table table-hover table-bordered table-condensed" _excel-name="Relatório de ocupação">
@@ -133,23 +133,23 @@ else
 
         sqlAll = "SELECT *, "&_
                 " "&_
-                " (select count(ro.ProfissionalID) from rel_ocupacao ro WHERE ro.Data=dts.Data AND ro.Situacao IN('A') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) A,  "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao IN('A') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) A,  "&_
                 "  "&_
-                " (select count(ro.ProfissionalID) from rel_ocupacao ro WHERE ro.Data=dts.Data AND ro.GradeOriginal=1 AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID ) GO,  "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.GradeOriginal=1 AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID ) GO,  "&_
                 "  "&_
-                " (select count(ro.ProfissionalID) from rel_ocupacao ro WHERE ro.Data=dts.Data AND ro.GradeOriginal=2 AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID ) GOri,  "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.GradeOriginal=2 AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID ) GOri,  "&_
                 "  "&_
-                " (select count(ro.ProfissionalID) from rel_ocupacao ro WHERE ro.Data=dts.Data AND ro.Situacao IN('A') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID) AND Encaixe=1) E,  "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao IN('A') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID) AND Encaixe=1) E,  "&_
                 "  "&_
-                " (select count(ro.ProfissionalID) from rel_ocupacao ro WHERE ro.Data=dts.Data AND ro.Situacao IN('B') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) AB,  "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao IN('B') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) AB,  "&_
                 "  "&_
-                " (select count(ro.Data) from rel_ocupacao ro WHERE ro.Data=dts.Data AND ro.Situacao='B' AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ISNULL(StaID)) VB,  "&_
+                " (select count(ro.Data) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao='B' AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ISNULL(StaID)) VB,  "&_
                 "  "&_
-                " (select count(ro.ProfissionalID) from rel_ocupacao ro WHERE ro.Data=dts.Data AND ro.Situacao='V' AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID) V "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao='V' AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID) V "&_
                 "  "&_
                 "  "&_
                 "FROM "&_
-                "(SELECT DISTINCT  DATA FROM rel_ocupacao WHERE sysUser="&session("User")&" ORDER BY Data asc)dts "&_
+                "(SELECT DISTINCT  DATA FROM agenda_horarios WHERE sysUser="&session("User")&" ORDER BY Data asc)dts "&_
                 " "&_
                 ", ( "&_
                 " SELECT UnidadeID, NomeFantasia FROM ( "&_

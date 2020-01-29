@@ -1,6 +1,8 @@
 <!--#include file="connect.asp"-->
 <%
 save = ref("save")
+redirect = ref("redirect")
+
 set reg = db.execute("select * from PacientesAtestados where Atestado like '"&ref("atestado")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
 if reg.EOF then
     if cbool(save) then
@@ -75,9 +77,12 @@ recursoPermissaoUnimed = recursoAdicional(12)
         $("#ImpressaoAtestado").prop("data", url);
     <%
     end if
+    if cbool(redirect) then
     %>
+
     pront('timeline.asp?PacienteID=<%=ref("PacienteID")%>&Tipo=|Atestado|');
-    
+    <%end if%>
+
     $("#AtestadoID").val("<%=reg("id")%>");
 
     $("#Timbrado").on("change",()=>{

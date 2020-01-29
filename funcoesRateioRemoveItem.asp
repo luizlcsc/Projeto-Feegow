@@ -1,15 +1,26 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 DominioID = request.QueryString("DominioID")
 Tipo = request.QueryString("Tipo")
 ItemID = request.QueryString("ItemID")
 FM = request.QueryString("FM")
 if Tipo="Item" then
-	db_execute("delete from rateiofuncoes where id="&ItemID)
+    sqlDel = "delete from rateiofuncoes where id="&ItemID
+
+    call gravaLogs(sqlDel, "AUTO", "Função de repasse removida", "DominioID")
+	db_execute(sqlDel)
 elseif Tipo="Adicionar" then
-	db_execute("insert into rateiofuncoes (DominioID, sysUser, FM) values ("&DominioID&", "&session("User")&", '"&FM&"')")
+    sqlIns = "insert into rateiofuncoes (DominioID, sysUser, FM) values ("&DominioID&", "&session("User")&", '"&FM&"')"
+
+	db_execute(sqlIns)
+
+    call gravaLogs(sqlIns, "AUTO", "Função de repasse inserida", "DominioID")
 else
-	db_execute("delete from rateiofuncoes where DominioID="&DominioID)
+    sqlDel = "delete from rateiofuncoes where DominioID="&DominioID
+    call gravaLogs(sqlDel, "AUTO", "Domínio de repasse removido", "DominioID")
+
+	db_execute(sqlDel)
 end if
 %>
 quantidade(0);

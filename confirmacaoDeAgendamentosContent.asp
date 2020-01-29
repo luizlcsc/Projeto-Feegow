@@ -116,7 +116,7 @@ if ref("rTipoProcedimentoID")<>"" and ref("rTipoProcedimentoID")<>"0" then
     sqlTipoProc = " AND proc.TipoProcedimentoID="&ref("rTipoProcedimentoID")
 end if
 if ref("rGrupoID")<>"" and ref("rGrupoID")<>"0" then
-    sqlGrupoProc = " AND proc.GrupoID="&ref("rGrupoID")
+     sqlGrupoProc = " AND proc.GrupoID IN ("&replace(ref("rGrupoID"), "|","")&")"
 end if
 
 if Unidades="" then

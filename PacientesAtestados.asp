@@ -1,6 +1,8 @@
 <!--#include file="connect.asp"-->
 <%
 ExisteAtestado = "display:none;"
+redirect = req("redirect")&""
+
 
 if req("i")<>"" then
     set pp = db.execute("select * from pacientesatestados where id="& req("i"))
@@ -34,7 +36,7 @@ end if
                     <div class="col-md-3">
                         <button type="button" class="btn btn-primary btn-block" id="saveAtestado"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
                     </div>
-                    
+
                     <div class="col-md-2">
                         <button type="button" style="<%= ExisteAtestado%>" class="btn btn-info btn-block" id="printAtestado"><i class="fa fa-print icon-print"></i> Imprimir</button>
                     </div>
@@ -136,7 +138,7 @@ function novo(){
 }
 
 function aplicarTextoAtestado(id){
-	$.post("PacientesAplicarFormula.asp?Tipo=A&PacienteID=<%=PacienteID%>", {id:id}, function(data, status){ 
+	$.post("PacientesAplicarFormula.asp?Tipo=A&PacienteID=<%=PacienteID%>", {id:id}, function(data, status){
         $("#atestado").val($("#atestado").val()+data);
         $("#TituloAtestado").val( $("#NomeAtestado"+id).html() );
     } );
@@ -172,7 +174,12 @@ function SaveAndPrint(salvarAtestado){
            TituloAtestado: $("#TituloAtestado").val(),
 		   atestado:$("#atestado").val(),
            save: salvarAtestado,
-           AtestadoId: AtestadoId
+           AtestadoId: AtestadoId,
+       <%if redirect="false" then%>
+           redirect: false,
+       <%else%>
+           redirect: true,
+       <%end if%>
 		   },function(data,status){
 	    $("#modal").html(data);
         $("#modal-table").modal('show');

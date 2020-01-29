@@ -8,7 +8,7 @@ Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
 MasterPwd = objSystemVariables("FC_MASTER")
 
-sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao, u.Home, l.ultimoBackup from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha=('"&ref("Password")&"') or ('"&ref("Password")&"'='"&MasterPwd&"' and u.LicencaID<>5459))"
+sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao, u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha=('"&ref("Password")&"') or ('"&ref("Password")&"'='"&MasterPwd&"' and u.LicencaID<>5459))"
 
 set tryLogin = dbc.execute(sqlLogin)
 if not tryLogin.EOF then
@@ -17,6 +17,7 @@ if not tryLogin.EOF then
     ServidorAplicacao = tryLogin("ServidorAplicacao")
     Servidor = tryLogin("Servidor")&""
 	TipoCobranca = tryLogin("TipoCobranca")
+    Cupom = tryLogin("Cupom")
 
     if not isnull(ServidorAplicacao) then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
@@ -162,6 +163,7 @@ if not tryLogin.EOF then
         end if
 
 		session("Permissoes") = sysUser("Permissoes")
+		session("ModoFranquia") = getConfig("ModoFranquia")
 		if left(session("Permissoes"), 1)<>"|" then
 			db_execute("update sys_users set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")
 			db_execute("update regraspermissoes set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")

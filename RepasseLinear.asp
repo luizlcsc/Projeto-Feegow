@@ -1,5 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 
 <style>
 
@@ -16,7 +17,10 @@
 <%
 
 if req("Add")="1" then
-    db.execute("insert into rateiodominios (DominioSuperior, sysUser, sysActive) values (0, "& session("User") &", 1)")
+    sqlRepasseConfig = "insert into rateiodominios (DominioSuperior, sysUser, sysActive) values (0, "& session("User") &", 1)"
+    call gravaLogs(sqlRepasseConfig, "AUTO", "Regra de repasse adicionada", "")
+
+    db.execute(sqlRepasseConfig)
     response.Redirect("./?P=RepasseLinear&Pers=1")
 end if
 

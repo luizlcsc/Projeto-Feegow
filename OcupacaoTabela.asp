@@ -36,7 +36,7 @@ end if
 			call ocupacao(lDe, lAte, ref("Especialidades"), "", "", "", splLocais(il))    
 
 
-			set prof = db.execute("select distinct ro.ProfissionalID, ro.EspecialidadeID, ro.UnidadeID, prof.NomeProfissional, esp.especialidade, u.NomeFantasia FROM rel_ocupacao ro LEFT JOIN profissionais prof ON prof.id=ro.ProfissionalID LEFT JOIN especialidades esp ON ro.EspecialidadeID=esp.id LEFT JOIN sys_financialcompanyunits u ON u.id=ro.UnidadeID WHERE ro.sysUser="& session("User") &" ORDER BY prof.NomeProfissional")
+ 			set prof = db.execute("select distinct ro.ProfissionalID, ro.EspecialidadeID, ro.UnidadeID, prof.NomeProfissional, esp.especialidade, u.NomeFantasia FROM agenda_horarios ro LEFT JOIN profissionais prof ON prof.id=ro.ProfissionalID LEFT JOIN especialidades esp ON ro.EspecialidadeID=esp.id LEFT JOIN sys_financialcompanyunits u ON u.id=ro.UnidadeID WHERE ro.sysUser="& session("User") &" ORDER BY prof.NomeProfissional")
 			while not prof.eof
 				nomUn = getNomeLocalUnidade(prof("UnidadeID"))&""
 				%>
@@ -48,11 +48,11 @@ end if
 					dataN = lDe
 					while dataN<lAte
 						set conta = db.execute("select "&_
-						"(select count(ro.ProfissionalID) from rel_ocupacao ro WHERE ro.Data="& mydatenull(DataN) &" AND ro.Situacao IN('A') AND ro.sysUser="& session("User") &" AND ro.ProfissionalID="& prof("ProfissionalID") &" AND ro.UnidadeID="& treatvalnull(prof("UnidadeID")) &" AND ro.EspecialidadeID="& treatvalnull(prof("EspecialidadeID")) &" AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) A, "&_
-						"(select count(ro.ProfissionalID) from rel_ocupacao ro WHERE ro.Data="& mydatenull(DataN) &" AND ro.GradeOriginal=1 AND ro.sysUser="& session("User") &" AND ro.ProfissionalID="& prof("ProfissionalID") &" AND ro.UnidadeID="& treatvalnull(prof("UnidadeID")) &" AND ro.EspecialidadeID="& treatvalnull(prof("EspecialidadeID")) &"  ) GO, "&_
-						"(select count(ro.ProfissionalID) from rel_ocupacao ro WHERE ro.Data="& mydatenull(DataN) &" AND ro.Situacao IN('A') AND ro.sysUser="& session("User") &" AND ro.ProfissionalID="& prof("ProfissionalID") &" AND ro.UnidadeID="& treatvalnull(prof("UnidadeID")) &" AND ro.EspecialidadeID="& treatvalnull(prof("EspecialidadeID")) &" AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID) AND Encaixe=1) E, "&_
-						"(select count(ro.ProfissionalID) from rel_ocupacao ro WHERE ro.Data="& mydatenull(DataN) &" AND ro.Situacao IN('B') AND ro.sysUser="& session("User") &" AND ro.ProfissionalID="& prof("ProfissionalID") &" AND ro.UnidadeID="& treatvalnull(prof("UnidadeID")) &" AND ro.EspecialidadeID="& treatvalnull(prof("EspecialidadeID")) &" AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) AB, "&_
-						"(select count(ro.ProfissionalID) from rel_ocupacao ro WHERE ro.Data="& mydatenull(DataN) &" AND ro.Situacao='V' AND ro.sysUser="& session("User") &" AND ro.ProfissionalID="& prof("ProfissionalID") &" AND ro.UnidadeID="& treatvalnull(prof("UnidadeID")) &" AND ro.EspecialidadeID="& treatvalnull(prof("EspecialidadeID")) &") V")
+						"(select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data="& mydatenull(DataN) &" AND ro.Situacao IN('A') AND ro.sysUser="& session("User") &" AND ro.ProfissionalID="& prof("ProfissionalID") &" AND ro.UnidadeID="& treatvalnull(prof("UnidadeID")) &" AND ro.EspecialidadeID="& treatvalnull(prof("EspecialidadeID")) &" AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) A, "&_
+						"(select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data="& mydatenull(DataN) &" AND ro.GradeOriginal=1 AND ro.sysUser="& session("User") &" AND ro.ProfissionalID="& prof("ProfissionalID") &" AND ro.UnidadeID="& treatvalnull(prof("UnidadeID")) &" AND ro.EspecialidadeID="& treatvalnull(prof("EspecialidadeID")) &"  ) GO, "&_
+						"(select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data="& mydatenull(DataN) &" AND ro.Situacao IN('A') AND ro.sysUser="& session("User") &" AND ro.ProfissionalID="& prof("ProfissionalID") &" AND ro.UnidadeID="& treatvalnull(prof("UnidadeID")) &" AND ro.EspecialidadeID="& treatvalnull(prof("EspecialidadeID")) &" AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID) AND Encaixe=1) E, "&_
+						"(select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data="& mydatenull(DataN) &" AND ro.Situacao IN('B') AND ro.sysUser="& session("User") &" AND ro.ProfissionalID="& prof("ProfissionalID") &" AND ro.UnidadeID="& treatvalnull(prof("UnidadeID")) &" AND ro.EspecialidadeID="& treatvalnull(prof("EspecialidadeID")) &" AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) AB, "&_
+						"(select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data="& mydatenull(DataN) &" AND ro.Situacao='V' AND ro.sysUser="& session("User") &" AND ro.ProfissionalID="& prof("ProfissionalID") &" AND ro.UnidadeID="& treatvalnull(prof("UnidadeID")) &" AND ro.EspecialidadeID="& treatvalnull(prof("EspecialidadeID")) &") V")
 						Agendados = ccur(conta("A"))
 						AgeBloq = ccur(conta("AB"))
 						Vazios = ccur(conta("V"))

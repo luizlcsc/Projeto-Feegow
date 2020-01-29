@@ -1910,6 +1910,7 @@ function callWindow(I, T){
             showPopout:false,
             restore: function(e,dialog){
               chatBlink(I,false);
+              statusChat(I);
             },
             close: function (e, dialog) {
                         // do something when the button is clicked

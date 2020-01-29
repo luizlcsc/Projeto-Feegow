@@ -547,7 +547,7 @@ if erro="" then
 
             Executado = ref("Executado"&ii)
             if ref("Cancelado"& ii)="C" then
-                'Executado = "C"
+                Executado = "C"
             end if
 
             if ref("RepasseGerado"&ii)="S" then

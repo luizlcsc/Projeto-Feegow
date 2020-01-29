@@ -49,6 +49,7 @@ set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&trea
 
                     if TotalPagoItem>=ccur(Quantidade*(ValorUnitario+Acrescimo-Desconto)) and Executado="C" then
                         %>
+                         <input type="hidden" value="C" name="Cancelado<%=id%>">
                         <span class="label label-danger">Cancelado</span>
                         <% '<span class="checkbox-custom checkbox-danger"><input type="checkbox" name="Cancelado id" id="Cancelado id" value="C" checked="checked" /><label for="Cancelado id"> Cancelado</label></span> %>
                         <%

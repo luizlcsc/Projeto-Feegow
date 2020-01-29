@@ -2,6 +2,7 @@
 <!--#include file="validar.asp"-->
 <!--#include file="webhookFuncoes.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 tableName = ref("P")
 id = ref("I")
@@ -397,6 +398,13 @@ if not getResource.EOF then
         <%
         Response.End
     else
+        if valorAntigo("sysActive")=0 then
+            op="I"
+        else
+            op = "E"
+        end if
+
+        call gravaLogs(sql, op, "", "")
         db_execute(sql)
         %>
         new PNotify({
@@ -420,10 +428,10 @@ if not getResource.EOF then
     logValorNovo = logValorNovo & "|^"
     if logColunas<>"|"then
         if valorAntigo("sysActive")=1 then
-            db_execute("insert into log (I, Operacao, recurso, colunas, valorAnterior, valorAtual, sysUser) values ("&id&", 'E', '"& tableName &"', '"& logColunas &"', '"& rep(logValorAnterior) &"', '"& logValorNovo &"', "&session("User")&")")
+            'db_execute("insert into log (I, Operacao, recurso, colunas, valorAnterior, valorAtual, sysUser) values ("&id&", 'E', '"& tableName &"', '"& logColunas &"', '"& rep(logValorAnterior) &"', '"& logValorNovo &"', "&session("User")&")")
         else
             'aqui coloca a data correta de cadastro, mas depois de verificar se por padrão vem tudo com sysDate
-            db_execute("insert into log (I, Operacao, recurso, colunas, valorAnterior, valorAtual, sysUser) values ("&id&", 'I', '"& tableName &"', '"& logColunas &"', '"& rep(logValorAnterior) &"', '"& logValorNovo &"', "&session("User")&")")
+          '  db_execute("insert into log (I, Operacao, recurso, colunas, valorAnterior, valorAtual, sysUser) values ("&id&", 'I', '"& tableName &"', '"& logColunas &"', '"& rep(logValorAnterior) &"', '"& logValorNovo &"', "&session("User")&")")
         end if
     end if
 

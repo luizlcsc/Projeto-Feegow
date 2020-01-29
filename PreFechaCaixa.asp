@@ -23,7 +23,7 @@ OcultarTotaisFecharCaixa = "N"
 if getConfig("OcultarTotaisFecharCaixa") = "1" then
     OcultarTotaisFecharCaixa = 1
 end if
-
+DetalharEntradas=req("DetalharEntradas")
 
 function linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
     %>
@@ -51,10 +51,67 @@ function linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
     <%
 end function
 %>
-
+<br>
 <div class="panel"><div class="panel-body">
 
+<div class="row">
+    <div class="col-md-3">
 <%
+if req("DetalharEntradas")<>"S" then
+%>
+        <a class="hidden-print btn btn-default btn-sm" href="?P=PreFechaCaixa&Pers=1&DetalharEntradas=S">
+            <i class="fa fa-info-circle"></i> Detalhar entradas
+        </a>
+<%
+end if
+%>
+        <a class="hidden-print btn btn-info btn-sm" href="javascript:print()">
+            <i class="fa fa-print"></i> Imprimir
+        </a>
+    </div>
+</div>
+
+<br><br>
+<%
+if DetalharEntradas="S" then
+
+set BoletosEmitidosSQL = db.execute(" SELECT be.DataHora, be.DueDate, be.AmountCents, pac.NomePaciente, (be.AmountCents /100)Valor FROM boletos_emitidos be"&chr(13)&_
+                                    "                                                                                                         "&chr(13)&_
+                                    " INNER JOIN sys_financialinvoices i ON i.id=be.InvoiceID                                                 "&chr(13)&_
+                                    " LEFT JOIN pacientes pac ON pac.id=i.AccountID AND i.AssociationAccountID=3                              "&chr(13)&_
+                                    "                                                                                                         "&chr(13)&_
+                                    " WHERE i.CaixaID="&CaixaID)
+
+if not BoletosEmitidosSQL.eof then
+    %>
+<h5>BOLETOS GERADOS</h5>
+<table class="table">
+    <tr class="success">
+        <th>Paciente</th>
+        <th>Data e hora</th>
+        <th>Vencimento</th>
+        <th>Valor</th>
+    </tr>
+<%
+while not BoletosEmitidosSQL.eof
+%>
+    <tr>
+        <td><%=BoletosEmitidosSQL("NomePaciente")%></td>
+        <td><%=BoletosEmitidosSQL("DataHora")%></td>
+        <td><%=BoletosEmitidosSQL("DueDate")%></td>
+        <th><%=fn(BoletosEmitidosSQL("Valor"))%></th>
+    </tr>
+<%
+BoletosEmitidosSQL.movenext
+wend
+BoletosEmitidosSQL.close
+set BoletosEmitidosSQL=nothing
+%>
+</table>
+<br><br>
+    <%
+    end if
+end if
 
 Dinheiro = 0
 Cheque = 0
@@ -63,9 +120,20 @@ Debito = 0
 Titulo = "ENTRADAS"
 Classe = "success"
 if req("DetalharEntradas")="" then
-    set dist = db.execute("select concat( ifnull(count(m.id), 0), ' lançamento(s)' ) Descricao, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.CaixaID='"& CaixaID &"' AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9))) GROUP BY pm.PaymentMethod, lu.Nome ORDER BY lu.Nome, pm.PaymentMethod")
+    set dist = db.execute("select ''Descricao, concat( ifnull(count(m.id), 0), ' lançamento(s)' ) Descricao, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.CaixaID='"& CaixaID &"' AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9))) GROUP BY pm.PaymentMethod, lu.Nome ORDER BY lu.Nome, pm.PaymentMethod")
 else
-    set dist = db.execute("select m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.CaixaID='"& CaixaID &"' AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9))) ORDER BY lu.Nome, pm.PaymentMethod")
+    set dist = db.execute(" SELECT m.Date, band.Bandeira, card.Parcelas, ''Descricao, c.CheckDate, m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit         "&chr(13)&_
+                          " FROM sys_financialmovement m                                                                                                                                         "&chr(13)&_
+                          " LEFT JOIN sys_financialdiscountpayments disc ON disc.MovementID=m.id                                                                                                 "&chr(13)&_
+                          " LEFT JOIN sys_financialmovement mov ON mov.id=disc.InstallmentID                                                                                                     "&chr(13)&_
+                          " LEFT JOIN caixa cx ON cx.id=m.CaixaID                                                                                                                                "&chr(13)&_
+                          " LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID                                                                                                   "&chr(13)&_
+                          " LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser                                                                                                      "&chr(13)&_
+                          " LEFT JOIN sys_financialreceivedchecks c ON c.MovementID=m.id                                                                                                 "&chr(13)&_
+                          " LEFT JOIN sys_financialcreditcardtransaction card ON card.MovementID=m.id                                                                                                 "&chr(13)&_
+                          " LEFT JOIN cliniccentral.bandeiras_cartao band ON band.id=card.BandeiraCartaoID                                                                                                 "&chr(13)&_
+                          " WHERE m.CaixaID='"& CaixaID &"' AND ((m.AccountAssociationIDDebit=7 AND m.AccountIDDebit=cx.id AND m.AccountAssociationIDCredit NOT IN(1, 7)) OR (m.PaymentMethodID IN(8,9)))"&chr(13)&_
+                          " ORDER BY lu.Nome, pm.PaymentMethod                                                                                                                                   ")
 end if
 
 if not dist.eof then
@@ -74,11 +142,21 @@ if not dist.eof then
 <table class="table table-striped table-hover table-bordered table-condensed">
     <thead>
         <tr class="<%= Classe %>">
-            <th colspan="4"><%= Titulo %></th>
+            <th colspan="<% if DetalharEntradas="S" then response.write(9) else response.write(6) end if%>"><%= Titulo %></th>
         </tr>
         <tr class="<%= Classe %>">
             <th width="20%">Forma</th>
             <th width="35%">Descrição</th>
+            <%
+            if DetalharEntradas="S" then
+                %>
+                <th>Procedimento</th>
+                <th>Data</th>
+                <th>Bandeira</th>
+                <th>Parcelas</th>
+                <%
+            end if
+            %>
             <th width="35%">Usuário</th>
             <th width="10">Valor</th>
         </tr>
@@ -86,14 +164,23 @@ if not dist.eof then
     <%
     Valor = 0
     while not dist.eof
-
+        Parcela=""
         if req("DetalharEntradas")="S" then
             Valor = dist("Value")
             set desc = db.execute("select group_concat(ifnull(proc.NomeProcedimento, '')) NomeProcedimento from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID where PagamentoID="& dist("id"))
             if not desc.eof then
                 Procedimentos = desc("NomeProcedimento")
             end if
-            Descricao = "<code>"& Procedimentos &"</code> " & accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit"))
+            DataCompens = dist("CheckDate")
+            if isnull(DataCompens) then
+                DataCompens = dist("Date")
+            end if
+            if not isnull(dist("Parcelas")) then
+                Parcela = dist("Parcelas")&"x"
+            end if
+
+            Bandeira = dist("Bandeira")
+            Descricao = accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit"))
         else
             'response.write("select sum(Value) Total from sys_financialmovement where CaixaID="& CaixaID &" AND PaymentMethodID='"& dist("PaymentMethodID") &"' AND ((AccountAssociationIDDebit=7 AND AccountIDDebit="& CaixaID &" AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9)))")
             set soma = db.execute("select sum(Value) Total from sys_financialmovement where CaixaID="& CaixaID &" AND PaymentMethodID='"& dist("PaymentMethodID") &"' AND ((AccountAssociationIDDebit=7 AND AccountIDDebit="& CaixaID &" AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9)))")
@@ -118,6 +205,16 @@ if not dist.eof then
         <tr>
             <td><%= dist("PaymentMethod") %></td>
             <td><%= Descricao %></td>
+            <%
+            if DetalharEntradas="S" then
+                %>
+                <td><%=Procedimentos%></td>
+                <td><code><%=DataCompens%></code></td>
+                <td><%=Bandeira%></td>
+                <td><%=Parcela%></td>
+                <%
+            end if
+            %>
             <td><%= dist("Nome") %></td>
             <td class="text-right"><% if OcultarTotaisFecharCaixa<>"S" then  %>R$ <%= fn(Valor) %> <% end if %></td>
         </tr>
@@ -415,10 +512,17 @@ end if
     <input type="hidden" name="Cheque" value="<%= Cheque %>" />
     <input type="hidden" name="Credito" value="<%= Credito %>" />
     <input type="hidden" name="Debito" value="<%= Debito %>" />
-    <div class="alert alert-alert row" id="divDinheiroInformado">
-        <%= quickfield("currency", "DinheiroInformado", "Quantia em dinheiro", 2, "0,00", "", "", "  ") %>
-        <div class="col-md-2">
-            <button class="btn btn-success mt25">FECHAR CAIXA</button>
+    <div class="row" id="divDinheiroInformado">
+       <div class="col-md-12">
+            <div class="panel">
+               <div class="panel-body">
+                   <%= quickfield("currency", "DinheiroInformado", "Quantia em dinheiro", 2, "0,00", "", "", "  ") %>
+                   <div class="col-md-2">
+                       <button class="btn btn-success mt25"><i class="fa fa-check"></i> FECHAR CAIXA</button>
+                   </div>
+               </div>
+            </div>
+
         </div>
     </div>
 </form>

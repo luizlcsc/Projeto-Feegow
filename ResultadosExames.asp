@@ -20,7 +20,6 @@ subTitulo = "Resultados Exames"
             </div>
             
             <script type="text/javascript">
-            $(function(){
                 getUrl("unimed/resultado-exames", {
                     patientId: "<%=req("PacienteID")%>",
                     sysUser: "<%session("User")%>"
@@ -29,7 +28,6 @@ subTitulo = "Resultados Exames"
                     $(".app").html(data);
                     $(".app").fadeIn('slow');
                 });
-            })
             </script>           
         </div>
     </div>

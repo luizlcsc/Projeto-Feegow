@@ -1406,6 +1406,7 @@ select case lcase(req("P"))
         <li><a data-toggle="tab" href="#divProcedimentos" onclick="ajxContent('procedimentosmodelosimpressos', '', 'Follow', 'divProcedimentos')"><span class="fa fa-files-o"></span><span class="sidebar-title"></span> Procedimentos</a></li>
         <li><a data-toggle="tab" href="#divContratos" onclick="ajxContent('contratosmodelos', '', 'Follow', 'divContratos')"><span class="fa fa-files-o"></span><span class="sidebar-title"></span> Contratos</a></li>
         <li><a data-toggle="tab" href="#divLaudos" onclick="ajxContent('laudosmodelos', '', 'Follow', 'divLaudos')"><span class="fa fa-files-o"></span><span class="sidebar-title"></span> Laudos</a></li>
+        <li><a data-toggle="tab" href="#divEncaminhamentos" onclick="ajxContent('encaminhamentosmodelos', '', 'Follow', 'divEncaminhamentos')"><span class="fa fa-files-o"></span><span class="sidebar-title"></span> Encaminhamentos</a></li>
 
         <%
     case "sys_financialcompanyunits", "empresa", "nfe_origens"

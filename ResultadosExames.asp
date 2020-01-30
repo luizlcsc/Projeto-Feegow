@@ -4,6 +4,8 @@
 subTitulo = "Resultados Exames"
 %>
 
+<script src="//cdn.datatables.net/plug-ins/1.10.12/sorting/datetime-moment.js"></script>
+
 <div class="panel timeline-add">
     <div class="panel-heading">
         <span class="panel-title"> <%=subTitulo %>

@@ -347,7 +347,39 @@ elseif Tipo="Procedimentos" then
            end if
        end if
 
-
+        '-- Adicionando data seriada
+        set getProcedimentoSeriado = db.execute("SELECT IntervaloSerie FROM procedimentos WHERE ProcedimentoSeriado='S' AND id="&ProcedimentoID)
+        if not getProcedimentoSeriado.eof then
+            IntervaloSerie = getProcedimentoSeriado("IntervaloSerie")
+            Quantidade = ref("Quantidade")
+            DataAtual = ref("Data")
+            DataSerie = ""
+            if IntervaloSerie&""<>"" AND IntervaloSerie<>0 AND isnumeric(IntervaloSerie) then
+                '-- Passa apagando todos os registros.
+                for i=1 to 10
+                    Serie = i
+                    if len(i)=1 then
+                        Serie = "0"&i
+                    end if
+                    %>
+                        $("#DataSerie<%=Serie%>").val("");
+                    <%
+                    if i <= ccur(Quantidade) then
+                        DataSerie = DataAtual
+                        if i <> 1 then
+                            DataSerie = DateAdd("d", IntervaloSerie , UltimaData)
+                            if weekday(DataSerie)=1 then
+                                DataSerie = DateAdd("d", (IntervaloSerie + 1) , UltimaData)
+                            end if
+                        end if
+                        UltimaData = DataSerie
+                        %>
+                            $("#DataSerie<%=Serie%>").val('<%=formatdatetime(DataSerie, 2)%>');
+                        <%
+                    end if
+                next
+            end if
+        end if
 
         '-> inserindo o profissional executor nesta guia se ele nao existe
         if rfProfissionalID&""<>"0" and rfAssociacao&""="5" then

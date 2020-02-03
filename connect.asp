@@ -1532,7 +1532,7 @@ function accountBalance(AccountID, Flag)
 	AccountID = splAccountInQuestion(1)
 
 	accountBalance = 0
-	set getMovement = db.execute("select * from sys_financialMovement where ((AccountAssociationIDCredit="&AccountAssociationID&" and AccountIDCredit="&AccountID&") or (AccountAssociationIDDebit="&AccountAssociationID&" and AccountIDDebit="&AccountID&")) and ((Date<='"&myDate(date())&"') or (Date>'"&myDate(date())&"' and ValorPago is not null)) order by Date")
+	set getMovement = db.execute("select * from sys_financialMovement where ((AccountAssociationIDCredit="&AccountAssociationID&" and AccountIDCredit="&AccountID&") or (AccountAssociationIDDebit="&AccountAssociationID&" and AccountIDDebit="&AccountID&")) and Date<='"&myDate(date())&"' order by Date")
 
 	if not getMovement.eof then
         while not getMovement.eof
@@ -1565,29 +1565,6 @@ function accountBalance(AccountID, Flag)
         getMovement.close
         set getMovement = nothing
 
-    	if AccountAssociationID=3 then
-
-        'aqui calcula valores que vieram de outros pacientes
-
-        set CreditosUtilizadosEmOutrosPacientesSQL = db.execute(" "&_
-" SELECT SUM(IF(movp2.AccountIDCredit="&AccountID&", disc.DiscountedValue*-1, disc.DiscountedValue)) DiscountedValue FROM  "&_
-"  "&_
-" sys_financialmovement movp1 "&_
-" INNER JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=movp1.id "&_
-" INNER JOIN sys_financialmovement movp2 ON movp2.id=disc.MovementID AND movp2.AccountIDCredit!=movp1.AccountIDDebit "&_
-"  "&_
-" WHERE  "&_
-" (movp1.AccountIDDebit="&AccountID&" AND movp1.AccountAssociationIDDebit="&AccountAssociationID&") OR  "&_
-" (movp2.AccountIDCredit="&AccountID&" AND movp2.AccountAssociationIDCredit="&AccountAssociationID&") "&_
-        "")
-        if not CreditosUtilizadosEmOutrosPacientesSQL.eof then
-            DiscountedValueCredito = CreditosUtilizadosEmOutrosPacientesSQL("DiscountedValue")
-
-            if not isnull(DiscountedValueCredito) then
-                accountBalance = accountBalance + DiscountedValueCredito
-            end if
-        end if
-        end if
     end if
 
 	if AccountAssociationID=1 or AccountAssociationID=7 then
@@ -5140,7 +5117,7 @@ private function lrResult( lrStatus, lrDataExecucao, lrNomeFuncao, lrInvoiceID, 
 
             &nbsp; <span data-rel="tooltip" data-placement="right" title="" data-original-title="<%= titDescricao %>"><%= lrNomeFuncao %></span></td>
         <td><%= accountName(NULL, lrCreditado) %></td>
-        <td class="text-right"> <% if modoCalculo="I" then response.Write(" <i class='fa fa-info-circle text-warning' title='Cálculo invertido - Profissional paga à clínica'></i> ") end if %> <%= fn(lrValorRepasse) %></td>
+        <td data-rel="tooltip" data-placement="right" title="<%= descricaoRegraRepasse %>" class="text-right"> <% if modoCalculo="I" then response.Write(" <i class='fa fa-info-circle text-warning' title='Cálculo invertido - Profissional paga à clínica'></i> ") end if %> <%= fn(lrValorRepasse) %></td>
     </tr>
     <%
 
@@ -5456,6 +5433,17 @@ function getConfig(configName)
 		end if
 		getConfig = c
     end if
+end function
+
+
+function franquia(sqlfranquia)
+    IF session("ModoFranquia")&"" <> "1" THEN
+        EXIT function
+    END IF
+
+    sqlfranquia = replace(sqlfranquia,"[UnidadeID]",session("UnidadeID"))
+
+    franquia = ""
 end function
 
 %>

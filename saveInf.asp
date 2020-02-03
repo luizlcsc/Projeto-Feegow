@@ -132,7 +132,11 @@ if req("Origem")="Atendimento" then
 			    AgendamentoID=buscaAtendimento("AgendamentoID")
 			end if
 
-			set lista = db.execute("select * from agendamentos where PacienteID="&PacienteID&" and Data='"&mydate(date())&"' and StaID<>3 and (ProfissionalID="&session("idInTable")&" OR id = "&AgendamentoID&") order by Hora")
+			set lista = db.execute("select * from agendamentos where id = "&treatvalzero(AgendamentoID)&" order by Hora")
+
+			if lista.eof then
+			    set lista = db.execute("select * from agendamentos where PacienteID="&PacienteID&" and Data='"&mydate(date())&"' and StaID<>3 and (ProfissionalID="&session("idInTable")&" OR id = "&AgendamentoID&") order by Hora")
+            end if
 
 			if not lista.EOF then
 			    'triagem

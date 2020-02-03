@@ -19,7 +19,7 @@ if not tryLogin.EOF then
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
 
-    if not isnull(ServidorAplicacao) then
+    if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
             Response.Redirect("https://"&ServidorAplicacao&"/v7/?P=Login&U="&ref("User"))
         end if

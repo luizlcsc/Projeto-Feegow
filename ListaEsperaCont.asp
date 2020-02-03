@@ -116,7 +116,7 @@ else
 
 	'sql = "select * from Consultas where Data = "&DataHoje&" and DrId = '"&session("DoutorID")&"' and not StaID = '3' and not StaID = '1' and not StaID = '6' and not StaID = '7' order by "&Ordem
     sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID))  group by(l.UnidadeID) order by total desc limit 1 "
-	sql = "select a.*, tp.NomeTabela, ac.NomeCanal,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, "&StatusExibir&") and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) order by "&Ordem
+	sql = "select a.*, tp.NomeTabela, ac.NomeCanal,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) order by "&Ordem
 
 end if
 
@@ -436,13 +436,15 @@ else
                     set esp = db.execute("select e.*, ep.ProcedimentoID, ep.Obs, proc.NomeProcedimento from espera e LEFT JOIN esperaprocedimentos ep ON ep.EsperaID=e.id LEFT JOIN procedimentos proc ON proc.id=ep.ProcedimentoID where e.PacienteID="& veseha("PacienteID") &" and e.ProfissionalID="& veseha("ProfissionalID") &" and isnull(e.Fim)")
                         if not esp.eof then
                             %>
-                            <tr class="warning">
+                            <tr class="dark">
                                 <th>Procedimento solicitado</th>
                                 <th>Observações</th>
                                 <th>Agendamento</th>
                             </tr>
                             <%
                         end if
+
+                        idsExibidos = "0"
                         while not esp.eof
                         %>
                         <tr>
@@ -450,7 +452,7 @@ else
                             <td><%= esp("Obs") %></td>
                             <td width="200">
                                 <%
-                                set vcaag = db.execute("select a.id, a.Data, a.Hora, a.StaID, p.NomeProfissional, sta.StaConsulta from agendamentos a inner join staconsulta sta ON sta.id=a.StaID left join profissionais p on p.id=a.ProfissionalID where a.Data>=curdate() and a.PacienteID="& veseha("PacienteID") &" and a.TipoCompromissoID="& esp("ProcedimentoID") &" order by data, hora limit 1")
+                                set vcaag = db.execute("select a.id, a.Data, a.Hora, a.StaID, p.NomeProfissional, sta.StaConsulta from agendamentos a inner join staconsulta sta ON sta.id=a.StaID left join profissionais p on p.id=a.ProfissionalID where a.Data>=curdate() and a.PacienteID="& veseha("PacienteID") &" and a.TipoCompromissoID="& esp("ProcedimentoID") &" and a.id not in ("&idsExibidos&") order by data, hora limit 1")
                                 classeBtnEsp = ""
                                 if vcaag.eof then
                                     %>
@@ -462,6 +464,8 @@ else
                                     if vcaag("StaID")=3 then
                                         classeBtnEsp = "success"
                                     end if
+
+                                    idsExibidos = idsExibidos&","&vcaag("id")
                                     %>
                                     <a data-toggle="tooltip" title="<%=vcaag("StaConsulta")%>" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%= vcaag("id") %>" class="btn btn-block btn-<%= classeBtnEsp %> btn-xs">
                                         <img src="./assets/img/<%= vcaag("StaID") %>.png" /> <%= vcaag("Data") &" - "& ft(vcaag("Hora")) &" - "& vcaag("NomeProfissional") %>

@@ -250,7 +250,7 @@ if Conteudo="Play" then
             <% if getConfig("SolicitacaoDeProcedimentosEspera")="1" then %>
 
                 <div class="col-sm-6">
-                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="if(confirm('Tem certeza de que deseja finalizar este atendimento?')) encerrar()"><i class="fa fa-stop"></i> Finalizar</button>
+                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i> Finalizar</button>
                 </div>
                 <div class="col-sm-6">
                     <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atEspera()"><i class="fa fa-pause"></i> Espera</button>

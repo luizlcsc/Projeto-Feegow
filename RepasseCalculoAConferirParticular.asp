@@ -9,6 +9,7 @@ dividirCompensacao = req("dividirCompensacao")
 
 totalRepasses = 0
 totalMateriais = 0
+ultimoSobre = 0
 totalProcedimentos = 0
 totalTaxas = 0
 response.Buffer
@@ -69,6 +70,7 @@ private function listaRR( rDataExecucao, rInvoiceID, rItemInvoiceID, rNomeProced
     nLinha = 0
     while not rr.eof
         nLinha = nLinha+1
+
         call lrResult( "RateioRateios", rDataExecucao, rr("DominioID") &": "& rr("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rr("ContaCredito"), rValorProcedimento, rValorRecebido, rr("Valor"), nLinha, rr("FM"), rr("Sobre"), rr("modoCalculo") )
     rr.movenext
     wend
@@ -93,7 +95,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
         end if
     end if
 
-    sqlFD = "select * from (select id, Funcao, DominioID, tipoValor, Valor, ContaPadrao, sysUser, Sobre, FM, ProdutoID, ValorUnitario, Quantidade, sysActive, Variavel, ValorVariavel, modoCalculo from rateiofuncoes where DominioID="& DominioID & sqlunion &") t order by t.Sobre"
+    sqlFD = "select * from (select id, Funcao, DominioID, tipoValor, Valor, ContaPadrao, sysUser, Sobre, FM, ProdutoID, ValorUnitario, Quantidade, sysActive, Variavel, ValorVariavel, modoCalculo from rateiofuncoes where DominioID="& DominioID & sqlunion &") t order by t.Sobre, t.Valor"
     'response.write( sqlFD )
     set fd = db.execute( sqlFD )
     nLinha = 0
@@ -114,8 +116,12 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
         sysUser = session("User")
         FuncaoID = fd("id")
         modoCalculo = fd("modoCalculo")
+        if ultimoSobre&""="" then
+            ultimoSobre="0"
+        end if
+
         gravaTemp = 0
-        if ultimoSobre<>Sobre then
+        if ultimoSobre&""<>Sobre&"" then
             ValorBase = ValorBase - somaDesteSobre
             somaDesteSobre = 0
         end if
@@ -280,7 +286,6 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
                 linhaRepasse = ItemInvoiceID &"|"& ItemDescontadoID &"|"& ItemGuiaID &"|"& GuiaConsultaID &"|"& ItemHonorarioID &"|"& Funcao &"|"& ValorItem*coefPerc &"|"& Creditado &"|"& Parcela &"|"& FormaID &"|"& Sobre &"|"& FM &"|"& ProdutoID &"|"& ValorUnitario &"|"& Quantidade &"|"& FuncaoID &"|"& Percentual &"|"& ParcelaID &"|"& modoCalculo
 
-                %>
                 <input type="hidden" name="linhaRepasse<%= ItemInvoiceID &"_"& ItemDescontadoID  &"_"& ParcelaID %>" value="<%= linhaRepasse %>" />
                 <%
                 nLinha = nLinha+1
@@ -296,6 +301,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
                 end if
 
                 if ExibeLinha then
+                    descricaoRegraRepasse="AAAAAAA"
                     call lrResult( "Calculo", rDataExecucao, DominioID & ": "& fd("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
                 end if
             end if
@@ -812,6 +818,7 @@ desfazBtnCons = ""
                     GrupoConsolidacao = rr("GrupoConsolidacao")
 
                     if StatusBusca="" or StatusBusca="C" then
+
                         call lrResult( "RateioRateios", rDataExecucao, rr("DominioID") &": "& rr("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rr("ContaCredito"), rValorProcedimento, rValorRecebido, rr("Valor"), nLinha, rr("FM"), rr("Sobre"), rr("modoCalculo") )
                         if not isnull(rr("ItemContaAPagar")) or not isnull(rr("ItemContaAReceber")) or not isnull(rr("CreditoID")) then
                             desfazBtnCons = desfazBtnCons & "$('#desconsolidar"& rr("ItemInvoiceID") &"_"& rr("ItemDescontadoID") &"_"& rr("GrupoConsolidacao") &", #"& idBtnDesc &"').prop('disabled', true);"

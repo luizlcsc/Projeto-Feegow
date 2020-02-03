@@ -65,7 +65,7 @@ end if
 set pcampos = db.execute("select id, TipoCampoID from buicamposforms where FormID="&ModeloID)
 while not pcampos.eof
     select case pcampos("TipoCampoID")
-        case 1, 2, 4, 5, 6, 8,3
+        case 1, 2, 4, 5, 6, 8,3,16
             valorCampo = ref("input_"&pcampos("id"))
             valorCampo = stripHTML(valorCampo)
 

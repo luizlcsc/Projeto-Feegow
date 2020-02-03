@@ -57,65 +57,14 @@ end if
 			else
 				%>
                 <label class="campoLabel"><%=RotuloCampo%></label>
-                <select id="input_<%=CampoID %>" name="input_<%=CampoID %>" class="form-control">
+                <select id="input_<%=CampoID %>" name="input_<%=CampoID %>" class="form-control campoInput">
                     <option value="<%=ValorPadrao %>"><%=NomeCid %></option>
                 </select>
-    <script type="text/javascript">
-            $.fn.select2.amd.require([
-              "select2/core",
-              "select2/utils",
-              "select2/compat/matcher"
-            ], function (Select2, Utils, oldMatcher) {
-                var $ajax = $("#input_<%=CampoID%>");
-                function formatRepo(repo) {
-                    if (repo.loading) return repo.text;
-                        var markup = "<div class='select2-result-repository clearfix'>" +
-                            "<div class='select2-result-repository__meta'>" +
-                            "<div class='select2-result-repository__title'>" + repo.full_name + "</div>";
-                        "</div></div>";
-                    return markup;
-                }
-                function formatRepoSelection(repo) {
-                    return repo.full_name || repo.text;
-                }
-                $ajax.select2({
-                    //closeOnSelect: false,
-                    tags: true,
+    		<script type="text/javascript">
+				s2aj('input_<%=CampoID%>', 'cliniccentral.cid10', 'Descricao', '','')
+			</script>
 
-                    ajax: {
-                        url: "sir.asp",
-                        dataType: 'json',
-                        delay: 250,
-                        data: function (params) {
-                            return {
-                                q: params.term, // search term
-                                page: params.page,
-                                t: recurso,
-                                c: coluna
-                            };
-                        },
-                        processResults: function (data, params) {
-                            params.page = params.page || 1;
-                            return {
-                                results: data.items,
-                                pagination: {
-                                    more: (params.page * 30) < data.total_count
-                                },
-                            
-                            };
-                        },
-                        cache: true
-                    },
-                    escapeMarkup: function (markup) { return markup; },
-                    minimumInputLength: 0,
-                    templateResult: formatRepo,
-                    templateSelection: formatRepoSelection
-                });
-            });
-    </script>
-                
-                
-                <input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" class="campoInput form-control" type="text"><%
+			<%
 			end if
 	  	case 2'Data
 			if LadoALado="S" then

@@ -319,6 +319,9 @@ end if
                 Carregando...
             </div>
 
+            <div class="tab-pane" id="divEncaminhamentos">
+                Carregando...
+            </div>
 
             <div id="divLaudosProtocolo" class="tab-pane">
                     <div class="clearfix form-actions">

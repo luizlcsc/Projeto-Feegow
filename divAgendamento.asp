@@ -396,11 +396,11 @@ end if
 <div class="panel">
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab4">
-        <li id="liAgendamento" class="active abaAgendamento"><a data-toggle="tab" href="#dadosAgendamento"><i class="fa fa-calendar"></i> <span class="hidden-xs">Agendamento</span></a></li>
+        <li id="liAgendamento" class="active abaAgendamento"><a data-toggle="tab" onclick="crumbAgenda();" href="#dadosAgendamento"><i class="fa fa-calendar"></i> <span class="hidden-xs">Agendamento</span></a></li>
         <li id="abaFicha" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1&AgendamentoID=<%=agendamentoIDSelecionado%>', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden');" href="#divDadosPaciente"><i class="fa fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
-        <li id="abaHistorico" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('HistoricoPaciente&PacienteID='+$('#PacienteID').val(), '', '1', 'divHistorico'); crumbAgenda();" href="#divHistorico"><i class="fa fa-list"></i> <span class="hidden-xs">Hist&oacute;rico</span></a></li>
+        <li id="abaHistorico" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('HistoricoPaciente&PacienteID='+$('#PacienteID').val(), '', '1', 'divHistorico'); " href="#divHistorico"><i class="fa fa-list"></i> <span class="hidden-xs">Hist&oacute;rico</span></a></li>
         <%if Aut("contapac")=1 or aut("|areceberpaciente")=1 then%>
-	        <li id="abaConta" class="abasAux abaAgendamento hidden-xs"><a data-toggle="tab" onclick="$('#divHistorico').html('Carregando...'); ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico'); crumbAgenda();$('#alertaAguardando').removeClass('hidden'); $('#pagar').remove();" href="#divHistorico"><i class="fa fa-money"></i> <span class="hidden-xs">Conta</span></a></li>
+	        <li id="abaConta" class="abasAux abaAgendamento hidden-xs"><a data-toggle="tab" onclick="$('#divHistorico').html('Carregando...'); ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico'); $('#alertaAguardando').removeClass('hidden'); $('#pagar').remove();" href="#divHistorico"><i class="fa fa-money"></i> <span class="hidden-xs">Conta</span></a></li>
         <% End If %>
 	</ul>
 
@@ -1057,6 +1057,15 @@ end if
 
 <script type="text/javascript">
 
+$(".abasAux").on("click",function(){
+    crumbAgendaUpdate();
+});
+
+function crumbAgendaUpdate(){
+    let NomePaciente = $("#PacienteID").select2('data')[0].full_name;
+    $(".crumb-active a").html(NomePaciente);
+}
+
 ///Sanderson
 ///compara o ultimo alerta para não repetir o alerta para os mesmos parametros pelo tipo de alerta
 ///obj parametros do alerta par0:tipo, par1, par2 ... parametros variados
@@ -1131,7 +1140,8 @@ function RegistrarMultiplasPendencias(liberar) {
             if(data.length > 0) {
                 openModal(data, "Selecionar procedimento do pacote contratado", true, false);
             }
-        })
+        });
+        //crumbAgendaUpdate();
     });
 
     $("#Retorno").change(function() {

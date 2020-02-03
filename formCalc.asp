@@ -1,6 +1,13 @@
 <!--#include file="connect.asp"-->
 <%
-CampoAlterado = replace(req("input"), "input_", "")
+Tipo = "input_"
+NomeInput = "input"
+if req("Campo")&""<>"" then
+    Tipo = "Campo"
+    NomeInput = "Campo"
+end if
+CampoAlterado = replace(req(NomeInput), Tipo, "")
+
 set pCampo = db.execute("select id, NomeCampo, FormID from buicamposforms where id="& CampoAlterado)
 if not pCampo.eof then
     NomeCampo = pCampo("NomeCampo")
@@ -18,8 +25,7 @@ if not pCampo.eof then
                 NomeCampoFormula = splFormula2(0)
                 set pCampoFormula = db.execute("select id from buicamposforms where NomeCampo='"& NomeCampoFormula &"' and FormID="& FormID)
                 if not pCampoFormula.eof then
-                    'response.write( "["& NomeCampoFormula &"]"& ref("input_"& pCampoFormula("id")) )
-                    input = ref("input_"& pCampoFormula("id"))
+                    input = ref(Tipo & pCampoFormula("id"))
                     if input&""="" then
                         input="0"
                     end if
@@ -55,8 +61,8 @@ if not pCampo.eof then
         %>
         console.log('<%= (Calculo) %>');
 
-                $('#input_<%=pCampos("id")%>').val('<%=Calculo%>');
-                $('#input_<%=pCampos("id")%>').attr("readonly", true);
+                $('#<%=Tipo & pCampos("id")%>').val('<%=Calculo%>');
+                $('#<%=Tipo & pCampos("id")%>').attr("readonly", true);
 <%
 
     pCampos.movenext

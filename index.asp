@@ -358,7 +358,10 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                 oti: oti,
                                 ProfissionalID: $("#ProfissionalID").val(),
                                 EquipamentoID: $("#EquipamentoID").val(),
-                                nascimento: $("#ageNascimento").val()
+                                nascimento: $("#ageNascimento").val(),
+                                encaixe: $("#Encaixe").attr("checked"),
+                                hora: $("#Hora").val(),
+                                data: $("#Data").val()
                             };
                         },
                         processResults: function (data, params) {
@@ -1910,6 +1913,7 @@ function callWindow(I, T){
             showPopout:false,
             restore: function(e,dialog){
               chatBlink(I,false);
+              statusChat(I);
             },
             close: function (e, dialog) {
                         // do something when the button is clicked

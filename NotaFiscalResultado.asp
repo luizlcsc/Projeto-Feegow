@@ -113,9 +113,9 @@ if not NotasFiscaisSQL.eof then
     TemReciboAGerar= False
 
     while not NotasFiscaisSQL.eof
-
+        set sqlExecutado = db.execute("SELECT id FROM itensinvoice where Executado != 'S' and InvoiceID ="&NotasFiscaisSQL("InvoiceID"))
         classExecutado = ""
-        if NotasFiscaisSQL("Executado")&""<>"S" and NotasFiscaisSQL("IntensInvoiceID")&"" <> ""  then
+        if not sqlExecutado.eof then
              classExecutado = " warning"
         end if
 

@@ -211,6 +211,11 @@ if request.QueryString("ConvenioID")<>"" then
                 else
                     response.write(lotes("DataPrevisaoOriginal"))
                 end if
+
+                convenioVersao =""
+                if objConvenio("Versao")&""<>"30200" then
+                    convenioVersao = "_"
+                end if
                 %>
             </td>
 
@@ -220,7 +225,7 @@ if request.QueryString("ConvenioID")<>"" then
 
                 <div class="btn-group" style="display: flex;">
                     <% IF NOT ISNULL(objConvenio("Versao")) OR objConvenio("Versao")<>"" THEN %>
-                        <a target="_blank" href="<%=link%><%=objConvenio("FileName")%>.asp?I=<%=lotes("id")%>" class="btn btn-sm btn-warning"><i class="fa fa-download"></i> <%=objConvenio("Versao")%></a>
+                        <a target="_blank" href="<%=link%><%=convenioVersao%><%=objConvenio("FileName")%>.asp?I=<%=lotes("id")%>" class="btn btn-sm btn-warning"><i class="fa fa-download"></i> <%=objConvenio("Versao")%></a>
                     <% END IF %>
                     <button class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown"><i class="fa fa-angle-down icon-only"></i></button>
                     <ul class="dropdown-menu dropdown-warning">

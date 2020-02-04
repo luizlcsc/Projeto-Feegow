@@ -232,12 +232,12 @@ if not reg.eof then
                                 end if
 							    if not isnull(Contratado) and Contratado<>"" then
 								    if Contratado=0 then
-									    set contr = db.execute("select * from empresa")
+									    set contr = db.execute("select id,CNES from empresa")
 									    if not contr.eof then
 										    CodigoCNES = contr("CNES")
 									    end if
 								    elseif Contratado<0 then
-									    set contr = db.execute("select * from sys_financialcompanyunits where id="&(Contratado*(-1)))
+									    set contr = db.execute("select id,CNES from sys_financialcompanyunits where id="&(Contratado*(-1)))
 									    if not contr.eof then
 										    CodigoCNES = contr("CNES")
 									    end if

@@ -172,9 +172,13 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
             'valorAtual = "|^"
             for each x in valores
                 if InStr(x,"=") then
-                    colunas = colunas&split(x, "=")(0)&"|"
-                    colunasQuery = colunasQuery&split(x, "=")(0)&","
-                    'valorAtual = valorAtual&trim(replace(replace(split(x, "=")(1), "'", ""), "NULL", ""))&"|^"
+                    vv = split(x, "=")(0)
+
+                    if len(vv)<=15 then
+                        colunas = colunas&vv&"|"
+                        colunasQuery = colunasQuery&vv&","
+                        'valorAtual = valorAtual&trim(replace(replace(split(x, "=")(1), "'", ""), "NULL", ""))&"|^"
+                    end if
                 end if
             next
             colunas = replace(colunas, " ", "")
@@ -202,7 +206,10 @@ function gravaLogs(query, operacaoForce, obs, ColunaPai)
 
             auxQuery = "select "&colunasQuery&" from "&recursoAux&" where "&onde
             auxQuery = replace(auxQuery, ", from", " from")
+
+'quando edita um html esta dando erro: modelos de atestados; impressos etc
             qtdColunas = db.execute(auxQuery)
+
             auxQuery = replace(auxQuery, " from", ", id from")
             set record = db.execute(auxQuery)
 

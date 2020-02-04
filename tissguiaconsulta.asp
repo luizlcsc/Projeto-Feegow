@@ -163,6 +163,8 @@ if not reg.eof then
                         if UnidadeId&"" <> "" then
                             UnidadeIDContratado = "-"&UnidadeID
                             SQLUnidadeIDContratado = "and Contratado = "&UnidadeIDContratado
+                        else
+                            UnidadeID=session("UnidadeID")
                         end if
                         'response.write(SQLUnidadeIDContratado)
                         'response.write(UnidadeID)
@@ -205,17 +207,17 @@ if not reg.eof then
                         if UnidadeID&""<>"" then
                             UnidadeID = cint(UnidadeID)
                         end if
-					
+
 						if isnull(Contratado) or UnidadeID&""="" then
 							if session("UnidadeID") = 0 and isnull(Contratado) then
 
-								set contr = db.execute("select * from empresa")
+								set contr = db.execute("select CNES,id from empresa")
 								if not contr.eof then
 									CodigoCNES = contr("CNES")
 									Contratado = session("UnidadeID")
 								end if
 							elseif session("UnidadeID")>0 then
-								set contr = db.execute("select * from sys_financialcompanyunits where id="&session("UnidadeID"))
+								set contr = db.execute("select CNES,id from sys_financialcompanyunits where id="&session("UnidadeID"))
 								if not contr.eof then
 									CodigoCNES = contr("CNES")
 									Contratado = "-"&contr("id")
@@ -226,12 +228,12 @@ if not reg.eof then
 							end if
 
                         elseif UnidadeID = 0 then
-                                set contr = db.execute("select * from empresa")
+                                set contr = db.execute("select CNES,id from empresa")
                                 if not contr.eof then
                                 	CodigoCNES = contr("CNES")
                                 end if
                         else
-                            set contr = db.execute("select * from sys_financialcompanyunits where id="&UnidadeID)
+                            set contr = db.execute("select CNES,id from sys_financialcompanyunits where id="&UnidadeID)
                             if not contr.eof then
                             	CodigoCNES = contr("CNES")
                             end if

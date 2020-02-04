@@ -363,7 +363,7 @@ if not getMovement.EOF then
                 if not FormaPagamentoSQL.eof then
                     FormaPagamento = FormaPagamentoSQL("PaymentMethod")
                     select case FormaPagamentoSQL("id")
-                        case 10,8
+                        case 10,8,9
                             set DadosPagamentoCartaoSQL=db.execute("SELECT cartao.Parcelas,bandeira.Bandeira FROM sys_financialcreditcardtransaction cartao LEFT JOIN cliniccentral.bandeiras_cartao bandeira ON bandeira.id = cartao.BandeiraCartaoID WHERE cartao.MovementID="&movementID)
                             if not DadosPagamentoCartaoSQL.eof then
                                 FormaPagamento=FormaPagamento&" ("&DadosPagamentoCartaoSQL("Parcelas")&"x) "&DadosPagamentoCartaoSQL("Bandeira")

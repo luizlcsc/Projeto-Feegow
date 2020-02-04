@@ -29,7 +29,6 @@ if not LicenseSQL.eof then
     %>
 <!--#include file="../connect.asp"-->
     <%
-
     call ocupacao(data_inicio, data_fim, especialidades, "", profissionais, "", unidades)
 
     if get_payload="true" then

@@ -2,7 +2,23 @@
 <!--#include file="modal.asp"-->
 <!--#include file="Classes/Connection.asp"-->
 <%
+
+if req("Helpdesk") <> "" then
+    set dblicense = newConnection("clinic5459", "")
+end if
+
 on error resume next
+
+if req("I")="N" and req("Helpdesk")="1" then
+    sqlVie = "select id, sysUser, sysActive from tarefas where sysUser="&session("User")&" and sysActive=0"
+    set vie = dblicense.execute(sqlVie)
+    if vie.eof then
+        dblicense.execute("insert into tarefas (sysUser, sysActive) values ("&session("User")&", 0)")
+        set vie = dblicense.execute(sqlVie)
+    end if
+
+    response.Redirect("?P=tarefas&I="&vie("id")&"&Pers=1&Helpdesk=1")
+end if
 %>
 <script src="assets/js/estrela.js" type="text/javascript"></script>
 
@@ -79,7 +95,6 @@ end if
 tabela = "tarefas"
 
 if req("Helpdesk") <> "" then
-    set dblicense = newConnection("clinic5459", "")
 
     esconderHelpdesk = " style='display:none;' "
     set reg = dblicense.execute("select t.*, tsDe.Classe ClasseDe, tsPara.Classe ClassePara, tt.Descricao AS TipoDescricao, tp.Prioridade AS PrioridadeDescricao from "&tabela&" t  LEFT JOIN cliniccentral.tarefasstatus tsDe on tsDe.id=t.StaDe LEFT JOIN cliniccentral.tarefasstatus tsPara on tsPara.id=t.StaPara LEFT JOIN tarefastipos tt ON tt.id = t.Tipo LEFT JOIN cliniccentral.tarefasprioridade tp ON tp.id = t.Urgencia where t.id="&req("I"))
@@ -189,10 +204,10 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
                         TempoEstimado = 0
                     end if
                     TipoEstimado = reg("TipoEstimado")
-                    %>
-                        <span class="panel-title"> Tarefa  <strong>#<%= req("I") %> </strong></span>
-                    <%
                 end if
+                %>
+                    <span class="panel-title"> Tarefa  <strong>#<%= req("I") %> </strong></span>
+                <%
                 %>
                     <span class="panel-controls">
                         <%if De=session("User") or reg("sysUser")=session("User") or PermitirA=1 then %>
@@ -314,7 +329,13 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
                     <div class="panel-body">
                         <div class="row">
                           <div class="col-md-12" id="TarefasSolicitantes">
+                          <%
+                          if req("I")<>"N" then
+                          %>
                               <% server.execute("TarefasSolicitantes.asp") %>
+                          <%
+                          end if
+                          %>
                           </div>
                         </div>
                     </div>

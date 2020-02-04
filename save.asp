@@ -398,14 +398,25 @@ if not getResource.EOF then
         <%
         Response.End
     else
-        if valorAntigo("sysActive")=0 then
-            op="I"
-        else
-            op = "E"
+        if TypeName(valorAntigo)<>"Empty" then
+            if not valorAntigo.eof then
+                if valorAntigo("sysActive")=0 then
+                    op="I"
+                else
+                    op = "E"
+                end if
+            end if
+
+            call gravaLogs(sql, op, "", "")
         end if
 
-        call gravaLogs(sql, op, "", "")
-        db_execute(sql)
+        if req("Helpdesk") <> "" then
+            set dblicense = newConnection("clinic5459", "")
+            dblicense.execute(sql)
+        else
+            db.execute(sql)
+        end if
+
         %>
         new PNotify({
             title: 'Dados gravados com sucesso.',
@@ -695,7 +706,7 @@ if lcase(tableName)="procedimentosgrupos" then
     end if
 end if
 
-if lcase(ref("P"))="tarefas" then
+if lcase(ref("P"))="tarefas" and req("Helpdesk")=""  then
     call statusTarefas(session("User"), ref("Para"))
 end if
 

@@ -51,7 +51,11 @@ if ref("Filtrar")<>"" then
 end if
 
 if ref("Projeto")<>"" then
-    sqlProjeto = " AND t.ProjetoID="& treatvalnull(ref("Projeto")) &" "
+    if ref("Projeto")="0" then
+        sqlProjeto = " AND t.ProjetoID IS NULL "
+    else
+        sqlProjeto = " AND t.ProjetoID="& treatvalnull(ref("Projeto")) &" "
+    end if
 end if
 
 if ref("Para")<>"" then

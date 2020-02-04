@@ -127,7 +127,7 @@ private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePacien
                 ContaCredito = fd("ContaPadrao")
             end if
 
-            if fd("FM")="M" then
+            if fd("FM")="M" and TypeName(iio)<>"Empty" then
                 'Produto variável
                 if fd("ProdutoID")=0 then
                     if not iio.eof then

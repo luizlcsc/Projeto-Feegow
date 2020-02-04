@@ -140,6 +140,10 @@ TipoGuia = reg("TipoGuia")
                                 <input type="checkbox" name="NaoNecessitaAgendamento" id="NaoNecessitaAgendamento" value="S" class="ace" <% If reg("NaoNecessitaAgendamento")="S" Then %> checked="checked" <% End If %> />
                                 <label for="NaoNecessitaAgendamento">Não Necessita de Agendamento </label>
                             </div>
+                            <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" name="ProcedimentoPacs" id="ProcedimentoPacs" value="S" class="ace" <% If reg("ProcedimentoPacs")="S" Then %> checked="checked" <% End If %> />
+                                <label for="ProcedimentoPacs">Procedimento Pacs </label>
+                            </div>
                         </div>
                     </div>
                     <hr class="short alt" />

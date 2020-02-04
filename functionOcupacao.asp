@@ -50,6 +50,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         Especialidades = splrfesp(k)
         rfEspecialidade = Especialidades
                 Data = De
+
                 while Data<=Ate
                     refLocais = rfLocais
                     DiaSemana = weekday(Data)
@@ -173,6 +174,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         UnidadesIDs=""
                         spltLocais = split(refLocais, ",")
                         refLocais=""
+
                         for i=0 to ubound(spltLocais)
                             if instr(spltLocais(i),"UNIDADE_ID") > 0 then
                                 if i>0 then
@@ -197,6 +199,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                     if rfProfissionais<>"" and rfProfissionais&""<>"0" then
                         sqlProfissionais = " AND p.id IN ("& replace(rfProfissionais, "|", "") &") "
                     else
+
                     've se deve seprar por paciente
                          sqlProfissionais =""
                         if lcase(session("table"))="funcionarios" then
@@ -222,6 +225,11 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                 end if
                              end if
                         end if
+
+                    end if
+
+                    if rfProfissionais<>"" then
+                        rfProfissionais=replace(rfProfissionais,"||","|,|")
                     end if
 
                     if rfConvenio<>"" then

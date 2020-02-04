@@ -342,6 +342,12 @@
                                                     %>
                                                     <iframe width="100%" scrolling="no" height="460" id="ifrCurva<%= ti("id") %>" frameborder="0" src="Curva.asp?CampoID=<%= pcampos("id") %>&FormPID=<%= reg("id") %>"></iframe>
                                                     <%
+                                                case 16
+                                                    set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&Valor&"'")
+                                                    if not pcid.eof then
+                                                        NomeCid = pcid("Codigo") &" - "& pcid("Descricao")
+                                                    end if
+                                                    response.Write( Rotulo &"<br>"& NomeCid &"<br>" )
                                                 case else
                                                     if Valor<>"" and Valor<>"<p><br></p>" then
                                                     if left(Valor, 5)="{\rtf" then

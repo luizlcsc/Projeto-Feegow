@@ -594,7 +594,9 @@ function convertPorcentagemParaReal(valorPorcentagem, valorUnitario){
 }
 
 function inputBRL(value) {
-    return parseFloat(value).toFixed(2).toString().replace(".",",");
+    let replacedValue    = value.toString().replace(",",".");
+    let inputBRLCurrency = parseFloat(replacedValue).toFixed(2).replace(".",",");
+    return inputBRLCurrency;
 }
 
 </script>

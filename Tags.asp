@@ -28,6 +28,12 @@
             <tr>
                 <td>[Paciente.Telefone]</td>
             </tr>
+            <tr>
+                <td>[Paciente.Cep]</td>
+            </tr>
+            <tr>
+                <td>[Paciente.CPF]</td>
+            </tr>
             <tr class="success">
             	<th>DATA E HORA</th>
             </tr>

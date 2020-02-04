@@ -73,7 +73,7 @@
             <div class="row hidden" id="maisOpcoes">
                 <%= quickfield("text", "Filtrar", "Filtrar", 4, "", "", "", "") %>
                 <%=quickfield("simpleSelect", "Prioridade", "Prioridade", 3, "", "select id, Prioridade from cliniccentral.tarefasprioridade order by id", "Prioridade", " no-select2  empty ") %>
-                <%=quickfield("simpleSelect", "Projeto", "Projeto", 3, "", "select id, Titulo from projetos where sysActive=1 order by 2", "Titulo", " no-select2  empty ") %>
+                <%=quickfield("simpleSelect", "Projeto", "Projeto", 3, "", "SELECT '0' id , 'Nenhum projeto' Titulo UNION ALL select id, Titulo from projetos where sysActive=1 order by 2", "Titulo", " no-select2  empty ") %>
                 <div class="col-md-3">
                     <%= selectInsertCA("Solicitante "& c, "Solicitante"& c, "", "5, 4, 3, 2, 6", "", "", "") %>
                 </div>

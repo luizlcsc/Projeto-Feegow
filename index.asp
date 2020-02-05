@@ -1162,6 +1162,13 @@ $.post("LoginEscolheUnidade.asp", '', function(data){
               response.Write(abreDiv)
 
           %>
+<div id="modalAlterarSenha" class="modal fade" tabindex="-1">
+  <div class="modal-dialog">
+      <div class="modal-content" id="modalAlterarSenhaContent">
+        Carregando...
+      </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
 <div id="modal-youtube-tour" class="modal fade" role="dialog" aria-hidden="true">
     <div class="modal-lg modal-dialog">
         <div class="modal-content"  >
@@ -1752,11 +1759,24 @@ function facialRecognition () {
 	    openComponentsModal('facerecognition/get-face', false, false, true, false, "lg")
 }
 
+<% if session("AlterarSenha") = 1 then %>
 $(document).ready(function() {
     $(".callTicketBtn").attr("disabled", false);
     $(".facialRecogButton").attr("disabled", false);
     
+    setTimeout(() => {
+      openComponentsModal("RedefinirSenha.asp",{
+            T:'<%=session("Table")%>',
+            I:'<%=session("idInTable")%>',
+          },"Alteração de senha",true, 
+            function(){
+              $("#frmAcesso").submit();
+            },"md",false);
+
+    }, 3000);
+    
 });
+<% end if%>
 
 var mensagemPaciente = true;
 <%

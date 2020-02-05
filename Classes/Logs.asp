@@ -92,6 +92,7 @@ function renderLogsTable(logTable, logId, paiId)
     end if
 end function
 
+
 function gravaLogs(query, operacaoForce, obs, ColunaPai)
         Err.Clear
         On Error Resume Next
@@ -182,7 +183,7 @@ function gravaLogsResumeNext(query, operacaoForce, obs, ColunaPai)
                 if InStr(x,"=") then
                     vv = split(x, "=")(0)
 
-                    if len(vv)<=15 then
+                    if len(vv)<=30 then
                         colunas = colunas&vv&"|"
                         colunasQuery = colunasQuery&vv&","
                         'valorAtual = valorAtual&trim(replace(replace(split(x, "=")(1), "'", ""), "NULL", ""))&"|^"

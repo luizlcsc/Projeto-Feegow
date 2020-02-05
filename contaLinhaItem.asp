@@ -120,20 +120,41 @@
                     if not labAutenticacao.eof then
 
                     matrixColor = "warning"
-                    set soliSQL = db.execute("SELECT * FROM labs_solicitacoes WHERE InvoiceID="&treatvalzero(inv("id")))
+                    set soliSQL = db.execute("SELECT * FROM labs_solicitacoes  WHERE success='S' AND InvoiceID="&treatvalzero(inv("id")))
                     if not soliSQL.eof then
                         matrixColor = "success"
                     end if
 
                     set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&inv("id")&" AND Executado!='S'")
                     set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&inv("id")&" and p.IntegracaoPleres = 'S'")
-                    set laboratorios = db.execute("SELECT * FROM cliniccentral.labs AS lab INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) WHERE lpl.procedimentoID ="& treatvalzero(ProcedimentoID) )
-                    
+                    'sqllaboratorios = "SELECT * FROM cliniccentral.labs AS lab INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) WHERE lpl.procedimentoID ="& treatvalzero(ProcedimentoID) 
+                    sqllaboratorios = "SELECT lab.id labID, lab.NomeLaboratorio, count(*) total "&_
+                                      " FROM cliniccentral.labs AS lab "&_
+                                      " INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) "&_
+                                      " INNER JOIN procedimentos AS proc ON (proc.id  = lpl.procedimentoID) "&_
+                                      " INNER JOIN itensinvoice ii ON (ii.ItemID = proc.id) "&_
+                                      " WHERE proc.TipoProcedimentoID = 3 AND ii.InvoiceID ='"&inv("id")&"'"&_
+                                      "  GROUP BY 1,2 "
+
+                    set laboratorios = db.execute(sqllaboratorios)
+                    totallabs=0
+                    multiploslabs = 0
                     laboratorioid = 1
                     NomeLaboratorio = ""
+                    informacao = ""
                     if  not laboratorios.eof then
-                        laboratorioid = laboratorios("labID")
-                        NomeLaboratorio = laboratorios("NomeLaboratorio")
+                        while not laboratorios.eof ' recordcount estava retornando -1 então...
+                            totallabs = totallabs +1
+                            laboratorios.movenext
+                        wend 
+                        laboratorios.movefirst
+                        if totallabs > 1 then
+                            multiploslabs = 1
+                            informacao = "<p> Os <strong>PROCEDIMENTOS</strong> desta conta estão vinculados a laboratórios diferentes. Por favor verifique a<strong> CONFIGURAÇÃO DOS PROCEDIMENTOS ou separe os procedimentos</strong>. <p>"
+                        else 
+                            laboratorioid = laboratorios("labID")
+                            NomeLaboratorio = laboratorios("NomeLaboratorio")
+                        end if
                     end if 
 
                     if CInt(temintegracao("temintegracao")) > 0 then
@@ -144,14 +165,21 @@
                         }, 1000)
                         </script>
                         <div class="btn-group">
-                            <% if laboratorioid = "1" then %>
-                                <button type="button" onclick="abrirMatrix('<%=inv("id")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=NomeLaboratorio %>">
+                            <% if multiploslabs = 1 then %> 
+                                <button type="button" onclick="avisoLaboratoriosMultiplos('<%=informacao%>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
                                     <i class="fa fa-flask"></i>
                                 </button>
-                            <% else %>
-                                <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorios("labID")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com <%=NomeLaboratorio %>">
-                                    <i class="fa fa-flask"></i>
-                                </button>    
+
+                            <% else %> 
+                                <% if laboratorioid = "1" then %>
+                                    <button type="button" onclick="abrirMatrix('<%=inv("id")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=inv("id")%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
+                                        <i class="fa fa-flask"></i>
+                                    </button>
+                                <% else %>
+                                    <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorios("labID")%>', '<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=inv("id")%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
+                                        <i class="fa fa-flask"></i>
+                                    </button>    
+                                <% end if %>
                             <% end if %>
                         </div>
                     <%

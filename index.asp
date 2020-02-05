@@ -1773,7 +1773,7 @@ $(document).ready(function() {
               $("#frmAcesso").submit();
             },"md",false);
 
-    }, 3000);
+    }, 1000);
     
 });
 <% end if%>

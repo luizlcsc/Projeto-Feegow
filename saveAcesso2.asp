@@ -1,20 +1,34 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/ExecuteAllServers.asp"-->
+<!--#include file="Classes/Connection.asp"-->
+
 <%
-ConnString43 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
-Set db43 = Server.CreateObject("ADODB.Connection")
-db43.Open ConnString43
+'ConnString43 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
+'Set db43 = newConnection("ADODB.Connection")
+'db43.Open ConnString43
 
-ConnString45 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow02.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
-Set db45 = Server.CreateObject("ADODB.Connection")
-db45.Open ConnString45
+'ConnString45 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow02.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
+'Set db45 = Server.CreateObject("ADODB.Connection")
+'db45.Open ConnString45
 
-ConnString34 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
-Set db34 = Server.CreateObject("ADODB.Connection")
-db34.Open ConnString34
+'ConnString34 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
+'Set db34 = Server.CreateObject("ADODB.Connection")
+'db34.Open ConnString34
+
+
+Set db43 = newConnection("","dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
+Set db45 = newConnection("","dbfeegow02.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
+Set db34 = newConnection("","dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
 
 idInTable = ref("I")
 Table = ref("T")
 LicencaID = replace(session("Banco"), "clinic", "")
+Acao = ref("Acao")
+AlterarSenhaAoLogin = 0
+
+if ref("AlterarSenhaAoLogin") <>"" then
+	AlterarSenhaAoLogin = 1
+end if 
 
 set getUserID = db.execute("select * from sys_users where `Table` like '"&Table&"' and idInTable="&idInTable)
 if not getUserID.EOF then
@@ -79,13 +93,31 @@ if ref("User")<>"" then
 			db43.execute("insert into licencasusuarios (Nome, Tipo, Email, Senha, LicencaID, Admin, Home) values ('"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', '"&ref("password")&"', '"&LicencaID&"', 0, '"&ref("Home")&"')")
 			set pult = db43.execute("select * from licencasusuarios where Email like '"&ref("User")&"' order by id desc")
 			set getNomeColuna = db.execute("select * from cliniccentral.sys_financialaccountsassociation where `table` like '"&Table&"'")
-			db45.execute("insert into licencasusuarios (id, Nome, Tipo, Email, Senha, LicencaID, Admin, Home) values ("&pult("id")&", '"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', '"&ref("password")&"', '"&LicencaID&"', 0, '"&ref("Home")&"')")
-			db34.execute("insert into licencasusuarios (id, Nome, Tipo, Email, Senha, LicencaID, Admin, Home) values ("&pult("id")&", '"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', '"&ref("password")&"', '"&LicencaID&"', 0, '"&ref("Home")&"')")
+			
+			sqlinsert = "insert into licencasusuarios (id, Nome, Tipo, Email, Senha, LicencaID, Admin, Home) values ("&pult("id")&", '"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', '"&ref("password")&"', '"&LicencaID&"', 0, '"&ref("Home")&"')"
+			db45.execute(sqlinsert)
+			db34.execute(sqlinsert)
+			'local
 			db_execute("insert into sys_users (id, `Table`, NameColumn, idInTable, Permissoes) values ("&pult("id")&", '"&Table&"', '"&getNomeColuna("column")&"', '"&idInTable&"', '"&permissoesPadrao()&"')")
+			ExecuteAllServers()
 		else
-			db43.execute("update licencasusuarios set Nome='"&NomePessoa&"', Tipo='"&Table&"', Email='"&ref("User")&"', Senha='"&ref("password")&"', Home='"&ref("Home")&"' where id="&UserID&" and LicencaID="&LicencaID)
-			db45.execute("update licencasusuarios set Nome='"&NomePessoa&"', Tipo='"&Table&"', Email='"&ref("User")&"', Senha='"&ref("password")&"', Home='"&ref("Home")&"' where id="&UserID&" and LicencaID="&LicencaID)
-			db34.execute("update licencasusuarios set Nome='"&NomePessoa&"', Tipo='"&Table&"', Email='"&ref("User")&"', Senha='"&ref("password")&"', Home='"&ref("Home")&"' where id="&UserID&" and LicencaID="&LicencaID)
+			if Acao= "Redefinir" then
+				sqlupdate = "update cliniccentral.licencasusuarios set Senha='"&ref("password")&"', AlterarSenhaAoLogin=0 where id="&UserID&" and LicencaID="&LicencaID
+
+				db43.execute(sqlupdate)
+				db45.execute(sqlupdate)
+				db34.execute(sqlupdate)
+				'local
+				db.execute(sqlupdate)
+				session("AlterarSenha") = 0
+			else
+				sqlupdate = "update cliniccentral.licencasusuarios set Nome='"&NomePessoa&"', Tipo='"&Table&"', Email='"&ref("User")&"', Senha='"&ref("password")&"', Home='"&ref("Home")&"', AlterarSenhaAoLogin="&AlterarSenhaAoLogin&" where id="&UserID&" and LicencaID="&LicencaID
+				db43.execute(sqlupdate)
+				db45.execute(sqlupdate)
+				db34.execute(sqlupdate)
+				'local
+				db.execute(sqlupdate)
+			end if
 		end if
 	%>
         new PNotify({
@@ -95,6 +127,7 @@ if ref("User")<>"" then
             delay: 1000
         });
         $('#msg').html('<div class="badge badge-success">Usu&aacute;rio com acesso ao sistema</div>');
+		closeComponentsModal();
 		<%
 	end if
 else
@@ -111,9 +144,13 @@ else
 				});
 			<%
 		else
-			db43.execute("update licencasusuarios set Email='', Senha='', Home='"&ref("Home")&"' where id = '"&UserID&"' and LicencaID="&LicencaID)
-			db45.execute("update licencasusuarios set Email='', Senha='', Home='"&ref("Home")&"' where id = '"&UserID&"' and LicencaID="&LicencaID)
-			db34.execute("update licencasusuarios set Email='', Senha='', Home='"&ref("Home")&"' where id = '"&UserID&"' and LicencaID="&LicencaID)
+			sqlupdate = "update licencasusuarios set Email='', Senha='', Home='"&ref("Home")&"' where id = '"&UserID&"' and LicencaID="&LicencaID
+			db43.execute(sqlupdate)
+			db45.execute(sqlupdate)
+			db34.execute(sqlupdate)
+			'local
+			db.execute(sqlupdate)
+
 			%>
 				new PNotify({
 					title: 'Sucesso!',

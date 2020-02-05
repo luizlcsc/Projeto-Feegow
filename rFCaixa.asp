@@ -263,7 +263,7 @@ while not RecebimentosDebitoECreditoSQL.eof
     rr.close
     set rr = nothing
 
-    ValorLiquido = RecebimentosDebitoECreditoSQL("ValorTotal")-TotalRepasse
+    ValorLiquido = RecebimentosDebitoECreditoSQL("ValorDescontado")-TotalRepasse
 
     RepasseCartao = RepasseCartao + TotalRepasse
 

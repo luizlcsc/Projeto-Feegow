@@ -388,7 +388,7 @@ if erro="" then
                 sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
             end if
 
-            call gravaLogs(sqlInsert ,"E", "Item alterado manualmente","InvoiceID")
+            'call gravaLogs(sqlInsert ,"E", "Item alterado manualmente","InvoiceID")
 
 			valido = true
 			if (Tipo="S" and ref("ItemID"&ii) = "0") or (Tipo="O" and ref("ItemID"&ii) = "0") then

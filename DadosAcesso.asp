@@ -32,6 +32,9 @@ else
 	msg = "<div class=""badge badge-success"">Usu&aacute;rio com acesso ao sistema</div>"
 end if
 
+if dadosUser("AlterarSenhaAoLogin")&""="1"then
+    AlterarSenhaAoLogin = "S"
+end if
 
 PessoaID = req("I")
 T = lcase(req("T"))
@@ -106,6 +109,11 @@ end if
             <div class="row">
                 <%= quickfield("simpleSelect", "Home", "Página inicial do usuário", 4, Home, "select '' id, 'Tela inicial' Descricao UNION ALL select 'Agenda-1', 'Agenda Diária' UNION ALL select 'AgendaMultipla', 'Agenda Múltipla' UNION ALL select 'ListaEspera', 'Sala de Espera' UNION ALL select 'Financeiro', 'Financeiro'", "Descricao", "semVazio") %>
             </div>
+            <% if session("Admin") = 1 then %>
+                <div class="row">
+                    <%= quickfield("simpleCheckbox", "AlterarSenhaAoLogin", "Alterar senha ao logar", 4, AlterarSenhaAoLogin, " ", "", "semVazio") %>
+                </div>
+            <%end if%>
             <hr class="short alt" />
 
             <div class="clearfix form-actions">

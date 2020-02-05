@@ -24,6 +24,7 @@
                             <th>Registro</th>
                             <th>Operação</th>
                             <%end if %>
+                            <th>ID</th>
                             <th>Data</th>
                             <th>Usuário</th>
                             <th>Obs.</th>
@@ -36,11 +37,11 @@
                         <%
                         c=0
                         if req("I")<>"" then
-                            colspan = 3
+                            colspan = 4
                             'aqui eh direto da pagina do registro
                             set plog = db.execute("select * from log where lower(recurso)=lower('"&req("R")&"') and I="&req("I")&" order by DataHora desc limit 3000")
                         else
-                            colspan = 5
+                            colspan = 6
                             'aqui eh direto da central de logs
                             if ref("Usuario")<>"" then
                                 sqlUser = " and sysUser="&ref("Usuario")
@@ -115,6 +116,7 @@ end if
     end if
 
 %>
+    <th><code>#<%=plog("I") %></code></th>
     <th><%=plog("DataHora") %></th>
     <th><%=nameInTable(plog("sysUser")) %></th>
     <th><%=plog("Obs") %></th>
@@ -147,6 +149,7 @@ end if
                                                 <%= Op %>
                                             </td>
                                             <%end if %>
+                                            <th><code>#<%=plog("I") %></code></th>
                                             <th>
 
                                                 <%=plog("DataHora") %></th>
@@ -173,7 +176,7 @@ end if
                         if c=0 then
                         %>
                         <tr>
-                            <td colspan="6">Nenhuma ação registrada.</td>
+                            <td colspan="7">Nenhuma ação registrada.</td>
                             <td></td>
                             <td></td>
                         </tr>

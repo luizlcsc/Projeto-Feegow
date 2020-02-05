@@ -2923,7 +2923,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
         header = header & "$(""#rbtns"").html("""& rbtns &""")"
 '        header = header & "});</script>"
         header = header & "</script>"
-		header = header & "<script>function log(){$('#modal-table').modal('show');$.get('DefaultLog.asp?R="&recurso&"&I="&hid&"', function(data){$('#modal').html(data);})}</script>"
+		header = header & "<script>function log(){openComponentsModal('DefaultLog.asp?Impressao=1&R="&recurso&"&I="&hid&"', {},'Log de alterações', true)}</script>"
 	    realSave = "<button class=""btn btn-sm btn-primary hidden"" id=""save"">&nbsp;&nbsp;<i class=""fa fa-save""></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>"
 
 
@@ -5117,7 +5117,7 @@ private function lrResult( lrStatus, lrDataExecucao, lrNomeFuncao, lrInvoiceID, 
 
             &nbsp; <span data-rel="tooltip" data-placement="right" title="" data-original-title="<%= titDescricao %>"><%= lrNomeFuncao %></span></td>
         <td><%= accountName(NULL, lrCreditado) %></td>
-        <td data-rel="tooltip" data-placement="right" title="<%= descricaoRegraRepasse %>" class="text-right"> <% if modoCalculo="I" then response.Write(" <i class='fa fa-info-circle text-warning' title='Cálculo invertido - Profissional paga à clínica'></i> ") end if %> <%= fn(lrValorRepasse) %></td>
+        <td class="text-right"> <% if modoCalculo="I" then response.Write(" <i class='fa fa-info-circle text-warning' title='Cálculo invertido - Profissional paga à clínica'></i> ") end if %> <%= fn(lrValorRepasse) %></td>
     </tr>
     <%
 

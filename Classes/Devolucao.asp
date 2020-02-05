@@ -39,7 +39,7 @@ Class Devolucao
                     showMessageDialog('Existem contas a pagar gerado para o repasse. Exclua a conta antes de marcar o item como cancelado.');
                     </script>
                 <%
-                    'Response.End
+                    Response.End
                 else
                     db.execute("DELETE FROM rateiorateios WHERE  ItemInvoiceID = ("&iitem&")")
                     %>

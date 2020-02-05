@@ -99,7 +99,6 @@ if ref("User")<>"" then
 			db34.execute(sqlinsert)
 			'local
 			db_execute("insert into sys_users (id, `Table`, NameColumn, idInTable, Permissoes) values ("&pult("id")&", '"&Table&"', '"&getNomeColuna("column")&"', '"&idInTable&"', '"&permissoesPadrao()&"')")
-			ExecuteAllServers()
 		else
 			if Acao= "Redefinir" then
 				sqlupdate = "update cliniccentral.licencasusuarios set Senha='"&ref("password")&"', AlterarSenhaAoLogin=0 where id="&UserID&" and LicencaID="&LicencaID

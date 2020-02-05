@@ -3,7 +3,7 @@
 <!--#include file="Classes/Logs.asp"-->
 <%
 ItemInvoiceID = req("II")
-sqlat = "select i.AccountID PacienteID, ii.ItemID ProcedimentoID, (ii.Quantidade * (ii.ValorUnitario + ii.Acrescimo - ii.Desconto)) ValorTotal, ii.DataExecucao from itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID where ii.id="&ItemInvoiceID
+sqlat = "select i.AccountID PacienteID, ii.ItemID ProcedimentoID, (ii.Quantidade * (ii.ValorUnitario + ii.Acrescimo - ii.Desconto)) ValorTotal, ii.DataExecucao, ii.InvoiceID from itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID where ii.id="&ItemInvoiceID
 set iinv = db.execute(sqlat)
 
 
@@ -44,7 +44,7 @@ end if
 sqlUpdate = "update itensinvoice set Executado='"&ref("Executado"&ItemInvoiceID)&"', Associacao="&Associacao&", ProfissionalID="&ProfissionalID&", EspecialidadeID="&treatvalnull(EspecialidadeID)&",DataExecucao="&mydatenull(dataExecucao)&", HoraExecucao="&mytime(horaExecucao)&", HoraFim="&mytime(horaFim)&", Descricao='"&ref("Descricao"&ItemInvoiceID)&"' where id="&ItemInvoiceID
 
 
-call gravaLogs(sqlUpdate, "AUTO", "Executado manualmente","")
+call gravaLogs(sqlUpdate, "AUTO", "Executado manualmente","InvoiceID")
 db_execute(sqlUpdate)
 db_execute("delete rr from rateiorateios rr  where rr.ItemInvoiceID="&ItemInvoiceID&" and (isnull(rr.ItemContaAPagar) OR rr.ItemContaAPagar=0)")
 

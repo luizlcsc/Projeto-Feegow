@@ -45,6 +45,7 @@
     function disable(val){
 
         $(".disable, #searchAccountID, input[id^='searchItemID']").prop("disabled", val);
+        $(".nao-mostrar-caso-pago").css("display", val ? "none" : "block");
         <%
         if aut("tabelacontapagaA")=0 then
             %>
@@ -321,7 +322,7 @@ posModalPagar = "fixed"
     %>
         <div class="panel-body mb15">
             <div class="col-md-2 pt10">
-                <span class="checkbox-custom checkbox-warning">
+                <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago">
                     <input type="checkbox" name="AExecutadoTodos" id="ExecutadoTodos" value="S">
                     <label for="ExecutadoTodos">
                         Marcar todos como executados
@@ -431,7 +432,7 @@ end if
                 end if
                 %>
 
-                <span class="checkbox-custom checkbox-warning">
+                <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago">
                     <input type="checkbox" name="VariosProcedimentos" id="VariosProcedimentos" value="1">
                     <label for="VariosProcedimentos" id="lblprocedimentos">
                         Adição Rápida
@@ -531,7 +532,7 @@ end if
 
                         if session("Odonto")=1 and CD="C" then
                             %>
-                        <div class="btn-group">
+                        <div class="btn-group nao-mostrar-caso-pago">
                             <button type="button" class="btn btn-primary btn-sm" id="btn-abrir-modal-odontograma">
                                 Odontograma
                             </button>
@@ -642,6 +643,7 @@ end if
             <%
         end if
         %>
+        <button type='button' class='btn btn-default btn-sm ml5' title='Histórico de alterações' onClick='historicoInvoice()'><i class='fa fa-history bigger-110'></i></button>
     </div>
 
     </form>
@@ -1217,6 +1219,15 @@ function prosseguirComProcesso(arg){
         });
         return ;
     });
+}
+
+function historicoInvoice() {
+    openComponentsModal("LogUltimasAlteracoes.asp", {
+        Tabelas: "sys_financialinvoices,itensinvoice",
+        ID: "<%=InvoiceID%>",
+        PaiID: "<%=InvoiceID%>",
+        TipoPai: "InvoiceID",
+    }, "Log de alterações", true);
 }
 
 </script>

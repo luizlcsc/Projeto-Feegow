@@ -25,7 +25,70 @@ end if
 end function
 
 function getLogs(logTable, logId, paiId)
-    set getLogs = db.execute("SELECT * FROM log WHERE recurso='"&logTable&"' AND (I="&treatvalzero(logId)&" OR PaiID="&Treatvalzero(paiId)&") ORDER BY DataHora DESC")
+    sqlLogId=""
+    if logId<>"" then
+        sqlLogId = " AND (I="&treatvalzero(logId)&" OR PaiID="&Treatvalzero(paiId)&")"
+    end if
+    
+    set getLogs = db.execute("SELECT * FROM log WHERE recurso='"&logTable&"' "&sqlLogId&" ORDER BY DataHora DESC LIMIT 25")
+end function
+
+function getLogTableHtml(LogsSQL)
+    %>
+    <table class="table table-striped mt5">
+            <tr class="primary">
+                <th>#</th>
+                <th>Data e hora</th>
+                <th>Usuário</th>
+                <th>Obs.</th>
+                <th>Campo</th>
+                <th>Valor Anterior</th>
+                <th>Valor Alterado</th>
+            </tr>
+                <%
+
+                while not LogsSQL.eof
+
+                    colunas = LogsSQL("colunas")
+                    spltCampos = split(colunas, "|")
+                    spltValorAnterior = split(LogsSQL("valorAnterior")&"", "|^")
+                    valorAtual = LogsSQL("valorAtual")
+                    spltValorAtual = split(valorAtual&"", "|^")
+
+                    for i=1 to ubound(spltCampos) - 1
+
+                        campo = spltCampos(i)
+    %>
+
+            <tr>
+                <%
+                if i = 1 then
+                %>
+                <th><code>#<%=LogsSQL("id")%></code></th>
+                <th><%=LogsSQL("DataHora")%></th>
+                <th><%=nameInTable(LogsSQL("sysUser"))%></th>
+                <th><%=LogsSQL("Obs")%></th>
+                <%
+                else
+                %>
+                <td colspan="4"></td>
+                <%
+                end if
+                %>
+                <td><%=campo%></td>
+                <td><%=spltValorAnterior(i)%></td>
+                <td><% if not isnull(valorAtual) then response.write(spltValorAtual(i)) end if %></td>
+            </tr>
+    <%
+                    next
+                LogsSQL.movenext
+                wend
+                LogsSQL.close
+                set LogsSQL=nothing
+    %>
+        </table>
+
+    <%
 end function
 
 function renderLogsTable(logTable, logId, paiId)
@@ -36,57 +99,9 @@ function renderLogsTable(logTable, logId, paiId)
 <button type="button" data-toggle="collapse" data-target="#<%=logTable&logId%>" class="btn btn-default btn-sm"><i class="fa fa-history"></i> Ver logs</button>
 
 <div id="<%=logTable&logId%>" class="collapse">
-
-<table class="table table-striped mt5">
-        <tr class="primary">
-            <th>Data e hora</th>
-            <th>Usuário</th>
-            <th>Obs.</th>
-            <th>Campo</th>
-            <th>Valor Anterior</th>
-            <th>Valor Alterado</th>
-        </tr>
-            <%
-
-            while not LogsSQL.eof
-
-                colunas = LogsSQL("colunas")
-                spltCampos = split(colunas, "|")
-                spltValorAnterior = split(LogsSQL("valorAnterior")&"", "|^")
-                valorAtual = LogsSQL("valorAtual")
-                spltValorAtual = split(valorAtual&"", "|^")
-
-                for i=1 to ubound(spltCampos) - 1
-
-                    campo = spltCampos(i)
-%>
-
-        <tr>
-            <%
-            if i = 1 then
-            %>
-            <th><%=LogsSQL("DataHora")%></th>
-            <th><%=nameInTable(LogsSQL("sysUser"))%></th>
-            <th><%=LogsSQL("Obs")%></th>
-            <%
-            else
-            %>
-            <td colspan="3"></td>
-            <%
-            end if
-            %>
-            <td><%=campo%></td>
-            <td><%=spltValorAnterior(i)%></td>
-            <td><% if not isnull(valorAtual) then response.write(spltValorAtual(i)) end if %></td>
-        </tr>
 <%
-                next
-            LogsSQL.movenext
-            wend
-            LogsSQL.close
-            set LogsSQL=nothing
+call getLogTableHtml(LogsSQL)
 %>
-    </table>
 </div>
     <%
     end if

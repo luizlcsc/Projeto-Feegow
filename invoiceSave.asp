@@ -519,9 +519,15 @@ if erro="" then
             db_execute("update arquivos SET MovementID="&treatvalzero(MovementInsertID)&" WHERE id IN ("&ArquivosAnexos&")")
         end if
 
+        DescricaoLog = "Conta alterada diretamente"
+        TipoLogOp="E"
+
         if ref("sysActive")="0" then
             sqlCaixaID = ",CaixaID="&treatvalnull(session("CaixaID"))
             sqlUsuario = ",sysUser="&session("User")
+
+            TipoLogOp = "I"
+            DescricaoLog=""
         end if
         if scp()=1 then
 			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe="& treatvalnull(ref("nroNFe")) &", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
@@ -599,7 +605,7 @@ if erro="" then
     sqlUp = "update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe="& treatvalnull(ref("nroNFe")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"' where id="&InvoiceID
   end if
 
-  call gravaLogs(sqlUp, "AUTO", "Conta alterada diretamente", "")
+  call gravaLogs(sqlUp, TipoLogOp, DescricaoLog, "")
   db_execute(sqlUp)
 
   call reconsolidar("invoice", InvoiceID)

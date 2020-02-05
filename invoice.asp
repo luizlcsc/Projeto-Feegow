@@ -45,7 +45,7 @@
     function disable(val){
 
         $(".disable, #searchAccountID, input[id^='searchItemID']").prop("disabled", val);
-        $(".nao-mostrar-caso-pago").css("display", val ? "none" : "block");
+        $(".nao-mostrar-caso-pago").css("display", val ? "none" : "inline");
         <%
         if aut("tabelacontapagaA")=0 then
             %>

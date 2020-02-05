@@ -53,8 +53,10 @@ function retornastatusguia(id)
     end if 
 end function 
 %>
- 
 
+<!--#include file="modalAlertaMultiplo.asp" -->
+
+ 
 <input type="hidden" id="AccountID" name="AccountID" value="3_<%=PacienteID%>" />
 <div class="containerConta">
     <div class="row">

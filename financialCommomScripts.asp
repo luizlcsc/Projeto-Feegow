@@ -211,6 +211,11 @@ function abrirMatrix(invoiceId, labid = 1) {
     openComponentsModal("labs-integration/matrix/invoice-exams", {invoiceId: invoiceId, labid:labid }, false, false)
 }
 
-function abrirDiagBrasil(invoiceId,labid) {
-    openComponentsModal("labs-integration/diagbrasil/invoice-exams", {invoiceId: invoiceId, labid:labid }, false, false)
+function abrirDiagBrasil(invoiceId,labid,itenscount) {
+    openComponentsModal("labs-integration/diagbrasil/invoice-exams", {invoiceId: invoiceId, labid:labid, itens:itenscount }, false, false)
+}
+
+function avisoLaboratoriosMultiplos(informacao) {
+    $('#modalAlertaMultiploText').html(informacao); 
+    $('#modalAlertaMultiplo').modal('toggle');
 }

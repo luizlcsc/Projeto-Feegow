@@ -183,11 +183,11 @@ function gravaLogsResumeNext(query, operacaoForce, obs, ColunaPai)
                 if InStr(x,"=") then
                     vv = split(x, "=")(0)
 
-                    if len(vv)<=30 then
+                    'if len(vv)<=30 then
                         colunas = colunas&vv&"|"
                         colunasQuery = colunasQuery&vv&","
                         'valorAtual = valorAtual&trim(replace(replace(split(x, "=")(1), "'", ""), "NULL", ""))&"|^"
-                    end if
+                    'end if
                 end if
             next
             colunas = replace(colunas, " ", "")
@@ -250,6 +250,7 @@ function gravaLogsResumeNext(query, operacaoForce, obs, ColunaPai)
                     end if
                     if InStr(col,"=") then
                           txtValorAntigo = record(iLog)&""
+                          vv = split(col, "=")(0)
                           txtValorAtual = replace(replace(split(col, "=")(1), "'", ""), "|¬", "|,")&""
 
                           if IsDate(txtValorAtual) and (InStr(txtValorAtual, "-") <> 0) then
@@ -258,6 +259,7 @@ function gravaLogsResumeNext(query, operacaoForce, obs, ColunaPai)
                           if txtValorAtual = "NULL" then
                             txtValorAtual = ""
                           end if
+
 
                           if (isnumeric(txtValorAntigo) and isnumeric(txtValorAtual)) then
                               txtValorAtual = trim(replace(txtValorAtual, ".", ","))
@@ -273,26 +275,27 @@ function gravaLogsResumeNext(query, operacaoForce, obs, ColunaPai)
                                 end if
                               end if
 
-                              if(txtValorAntigo <> txtValorAtual and not (txtValorAntigo="" and txtValorAtual="0") and not (txtValorAtual="" and txtValorAntigo="0")) and (treatvalzero(txtValorAntigo) <> treatvalzero(txtValorAtual)) then
+                              if(trim(txtValorAntigo) <> trim(txtValorAtual) and not (txtValorAntigo="" and txtValorAtual="0") and not (txtValorAtual="" and txtValorAntigo="0")) and (treatvalzero(txtValorAntigo) <> treatvalzero(txtValorAtual)) then
 
                                 valoresAnteriores = valoresAnteriores&txtValorAntigo&"|^"
-                                colunas = colunas&trim(split(col, "=")(0))&"|"
+                                colunas = colunas&trim(vv)&"|"
                                 valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(col, "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
                               end if
                           elseif (isDate(txtValorAntigo) and isDate(txtValorAtual)) then
                               if(FormatDateTime(txtValorAntigo,3) <> FormatDateTime(txtValorAtual,3)) then
                                   valoresAnteriores = valoresAnteriores&txtValorAntigo&"|^"
-                                  colunas = colunas&trim(split(col, "=")(0))&"|"
+                                  colunas = colunas&trim(vv)&"|"
                                   valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(col, "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
                               end if
                           else
                               if(trim(txtValorAntigo)&"" <> trim(txtValorAtual)&"" and not (txtValorAntigo="" and txtValorAtual="0") and not (txtValorAtual="" and txtValorAntigo="0"))  then
                                 valoresAnteriores = valoresAnteriores&txtValorAntigo&"|^"
-                                colunas = colunas&trim(split(col, "=")(0))&"|"
+                                colunas = colunas&trim(vv)&"|"
 
                                 valoresAtuais = valoresAtuais&trim(replace(replace(replace(split(col, "=")(1), "'", ""), "NULL", ""), "|¬", "|,"))&"|^"
                               end if
                           end if
+
                     end if
                 Next
 

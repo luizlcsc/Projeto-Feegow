@@ -835,6 +835,8 @@ min-width: 150px;
 
 <div class="clearfix form-actions no-margin">
     <button class="btn btn-primary btn-md" id="btnSalvar" onclick="isSolicitar = false;" ><i class="fa fa-save"></i> Salvar</button>
+
+    <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="fa fa-history"></i></button>
     <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISSPrint()"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
     <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaSADT()"><i class="fa fa-file"></i> Imprimir Guia</button>
     <%if AutorizadorTiss then %>

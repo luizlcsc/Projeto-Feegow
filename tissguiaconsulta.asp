@@ -607,6 +607,7 @@ end if
         <button type="button" onclick="Autorizador.cancelarGuia(2)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="fa fa-times"></i> Cancelar guia</button>
         <button type="button" onclick="tissVerificarStatusGuia()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="fa fa-search"></i> Verificar status</button>
         <%end if %>
+        <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="fa fa-history"></i></button>
         <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaConsulta', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
         <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaConsulta()"><i class="fa fa-file"></i> Imprimir Guia</button>
     </div>

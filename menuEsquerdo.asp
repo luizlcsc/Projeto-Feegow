@@ -166,6 +166,9 @@ select case lcase(req("P"))
             <div class="col-sm-12">
                 <button onclick="getNews(0)" class="btn btn-sm btn-block btn-system"><i class="fa fa-plus"></i> VER NOVIDADES</button>
             </div>
+            <div class="col-sm-12 mt10">
+                <button onclick="__loadMsgs(0)" class="btn btn-sm btn-block btn-warning"><i class="fa fa-plus"></i> VER MENSAGENS</button>
+            </div>
             <div id="feedbackButton" style="margin-top: 10px; visibility: hidden" class="col-sm-12">
                 <button onclick="openPendingTables()" class="btn btn-sm btn-block btn-warning"><i class="fa fa-warning"></i> VER ALTERAÇÕES</button>
             </div>
@@ -2364,3 +2367,37 @@ if Proximo="" then
     <%
 end if
 %>
+<script>
+
+
+function __loadMsgs(){
+            $("#myModalMsgs").remove()
+            $("body").append(`
+             <div id="myModalMsgs" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+               <div class="modal-dialog modal-lg">
+                 <div class="modal-content p10">
+                   <div style="text-align: center; margin-bottom: 100px" class="row">
+                           <div class="col-md-12">
+                               <i class="fa fa-2x fa-circle-o-notch fa-spin" style="color: rgba(0,0,0,0.2); margin-top: 50px"></i>
+                           </div>
+                       </div>
+                 </div>
+               </div>
+             </div>`);
+             $("#myModalMsgs").modal('show')
+             $("#myModalMsgs").modal('show')
+         fetch(domain+"/sistemas-de-mensagens?tk="+localStorage.getItem("tk"),
+                {headers: {
+                      "x-access-token":localStorage.getItem("tk"),
+                       'Accept': 'application/json',
+                       'Content-Type': 'application/json'
+               }
+         })
+         .then((r) => r.text())
+         .then((r) => {
+            $("#myModalMsgs .modal-content").html(r)
+        });
+
+
+}
+</script>

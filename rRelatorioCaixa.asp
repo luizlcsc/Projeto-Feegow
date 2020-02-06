@@ -387,13 +387,6 @@ if not dist.eof then
 <%
 end if
 
-
-
-
-
-
-
-
 Dinheiro = 0
 Cheque = 0
 Credito = 0
@@ -401,10 +394,12 @@ Debito = 0
 Titulo = "SAÍDAS"
 Classe = "warning"
 if MC="" then
-    set dist = db.execute("select m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, (m.Value*-1) Value, m.AccountAssociationIDDebit, m.AccountIDDebit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.AccountAssociationIDCredit=7 AND m.AccountIDCredit=cx.id AND m.AccountAssociationIDDebit NOT IN(1,7) AND m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND NOT ISNULL(m.PaymentMethodID) ORDER BY lu.Nome, pm.PaymentMethod")
+    sql = "select m.name,m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, (m.Value*-1) Value, m.AccountAssociationIDDebit, m.AccountIDDebit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.AccountAssociationIDCredit=7 AND m.AccountIDCredit=cx.id AND m.AccountAssociationIDDebit NOT IN(1,7) AND m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND NOT ISNULL(m.PaymentMethodID) ORDER BY lu.Nome, pm.PaymentMethod"
 else
-    set dist = db.execute("select pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, (m.Value*-1) Value, m.AccountAssociationIDDebit, m.AccountIDDebit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.AccountAssociationIDCredit=7 AND m.AccountIDCredit=cx.id AND m.AccountAssociationIDDebit NOT IN(1,7) AND m.CaixaID="& session("CaixaID") &" AND NOT ISNULL(m.CaixaID) AND NOT ISNULL(m.PaymentMethodID) ORDER BY lu.Nome, pm.PaymentMethod")
+    sql  = "select m.name, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, (m.Value*-1) Value, m.AccountAssociationIDDebit, m.AccountIDDebit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.AccountAssociationIDCredit=7 AND m.AccountIDCredit=cx.id AND m.AccountAssociationIDDebit NOT IN(1,7) AND m.CaixaID="& session("CaixaID") &" AND NOT ISNULL(m.CaixaID) AND NOT ISNULL(m.PaymentMethodID) ORDER BY lu.Nome, pm.PaymentMethod"
 end if
+'response.write(sql)
+set dist = db.execute(sql)
 if not dist.eof then
 %>
 
@@ -435,7 +430,7 @@ if not dist.eof then
                 Debito = Debito+Valor
         end select
         set cat = db.execute("select group_concat(ifnull(Descricao, '') SEPARATOR ', ') Descricao from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID WHERE idesc.PagamentoID="& dist("id"))
-        Descricao = "<code>"& cat("Descricao") &"</code>"& Descricao
+        Descricao = "<code>"& dist("name") &" - " & cat("Descricao") &"</code>"& Descricao 
         %>
         <tr>
             <td><%= dist("PaymentMethod") %></td>

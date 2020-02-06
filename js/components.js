@@ -37,7 +37,7 @@ var modal = "<div id=\"modal-components\" class=\"modal fade\" tabindex=\"-1\">"
 
     
 
-function getModal(loading, modalSize, modalWidth) {
+function getModal(loading, modalSize, modalWidth,force) {
     var modalComponents = "#modal-components";
     var $modalComponents = $(modalComponents);
 

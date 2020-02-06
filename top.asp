@@ -428,6 +428,12 @@ if device="" or lcase(req("P"))="cadastros" then
         <li><a href="./?P=RiscosFuncao&Pers=1"  class="sub-menu-click-guia-manual" ><i class="fa fa-exclamation-triangle bigger-110"></i> Riscos e Funções</a></li>
         <%
         end if
+
+        if aut("sistemademensagem")=1 then
+            %>
+            <li><a class="sub-menu-click-cadastro-sistemademensagens" href="./?P=sistemademensagens&Pers=Follow"><i class="fa fa-credit-card"></i> Sistema de Mensagens</a></li>
+            <%
+        end if
 end if
 if device()="" then
 %>

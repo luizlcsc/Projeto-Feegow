@@ -263,7 +263,7 @@ end if
     function syncLabResult(invoices, labid =1) {
         var caminhointegracao = "";
         $("#syncInvoiceResultsButton").prop("disabled", true);  
-        switch (expr) {
+        switch (labid.toString()) {
             case '1':      
                 caminhointegracao = "matrix"; 
                 break;

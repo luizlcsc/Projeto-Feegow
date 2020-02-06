@@ -229,7 +229,18 @@ if erro="" then
 
 	itensStr = ""
 
-	if existePagto="" then
+    Valor = ref("Valor")
+    ZeradoComRepasse = False
+
+    if Valor&"" = "" then
+        Valor=0
+    end if
+
+    if ccur(Valor)=0 and ref("InvoiceTemRepasse")<>"" then
+        ZeradoComRepasse=True
+    end if
+
+	if existePagto="" and not ZeradoComRepasse then
 		'itens
 
 		'--- Verifica se o profissional executa o procedimento antes do delete.

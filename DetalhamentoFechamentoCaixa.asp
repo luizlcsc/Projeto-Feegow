@@ -34,6 +34,7 @@ elseif LinhaID=7 then
 end if
 
 sqlDebitoECredito = "select idesc.id ItemDescontadoID, m.sysDate, m.PaymentMethodID, ii.id ItemInvoiceID, ii.InvoiceID, ii.DataExecucao, i.AccountID, i.AssociationAccountID, proc.NomeProcedimento, pac.NomePaciente, pac.id PacienteID, ii.Quantidade, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal, idesc.Valor ValorDescontado FROM itensinvoice ii INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID   LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) INNER JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN itensdescontados idesc ON idesc.ItemID=ii.id LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID WHERE ii.DataExecucao = "& mydatenull(Data) &" AND i.CompanyUnitID="& UnidadeID &" AND ii.Executado='S' AND m.PaymentMethodID IN ("&FormaPagamentoID&") ORDER BY ii.DataExecucao"
+' response.write(sqlDebitoECredito)
 set RecebimentosDebitoECreditoSQL= db.execute(sqlDebitoECredito)
 TotalCredito = 0
 TotalDebito = 0
@@ -53,8 +54,8 @@ while not RecebimentosDebitoECreditoSQL.eof
     rr.close
     set rr = nothing
 
-    ValorTotal= ValorTotal+RecebimentosDebitoECreditoSQL("ValorTotal")
-    ValorLiquido = RecebimentosDebitoECreditoSQL("ValorTotal")-TotalRepasse
+    ValorTotal= ValorTotal+RecebimentosDebitoECreditoSQL("ValorDescontado")
+    ValorLiquido = RecebimentosDebitoECreditoSQL("ValorDescontado")-TotalRepasse
 
     ValorTotalLiquido = ValorTotalLiquido+ ValorLiquido
 
@@ -68,7 +69,7 @@ while not RecebimentosDebitoECreditoSQL.eof
     <td><a target="_blank" href="./?P=Pacientes&Pers=1&I=<%=RecebimentosDebitoECreditoSQL("PacienteID")%>"><%=RecebimentosDebitoECreditoSQL("NomePaciente")%></a></td>
     <td><%=RecebimentosDebitoECreditoSQL("sysDate")%></td>
     <td><%=RecebimentosDebitoECreditoSQL("NomeProcedimento")%></td>
-    <td><%=fn(RecebimentosDebitoECreditoSQL("ValorTotal"))%></td>
+    <td><%=fn(RecebimentosDebitoECreditoSQL("ValorDescontado"))%></td>
     <td><%=fn(ValorLiquido)%></td>
     <td><a href="./?P=invoice&I=<%=RecebimentosDebitoECreditoSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-external-link"></i></a></td>
 </tr>

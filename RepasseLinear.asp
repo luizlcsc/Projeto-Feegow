@@ -47,6 +47,7 @@ end if
     <div class="panel-heading">
         <span class="panel-title"><i class="fa fa-filter"></i> Filtrar Funil de Regra</span>
         <span class="panel-controls">
+            <button type="button" onclick="HistoricoAlteracoes()" class="btn btn-default btn-sm" title="Histórico de alterações"><i class="fa fa-history"></i> </button>
             <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filtrar</button>
         </span>
     </div>
@@ -195,4 +196,9 @@ function removeDominio(I){
         });
     });
 
+    function HistoricoAlteracoes() {
+        openComponentsModal("LogUltimasAlteracoes.asp", {
+            Tabelas: "rateiofuncoes,rateiodominios"
+        }, "Log de alterações", true);
+    }
 </script>

@@ -1,8 +1,12 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 
 <%
 if req("X")<>"" and session("Admin")=1 then
-    db_execute("delete from varprecos where id="&req("X"))
+    sqlDel = "delete from varprecos where id="&req("X")
+    call gravaLogs(sqlDel, "AUTO", "", "")
+
+    db_execute(sqlDel)
 end if
 
 if req("I")="" then
@@ -329,6 +333,15 @@ end if
                         </tr>
                     </tbody>
                 </table>
+
+                <div class="row">
+                    <div class="col-md-12 mt5" style="max-height: 250px; overflow-y: scroll">
+                        <%
+                        LogsItensInvoiceSQL = renderLogsTable("varprecos", req("I"), 0)
+                        %>
+                    </div>
+                </div>
+
             </div>
             <div class="panel-footer">
                 <div class="row">

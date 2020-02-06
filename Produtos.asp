@@ -213,12 +213,6 @@ end if
 </div>
 <script type="text/javascript">
 
-    $("#ProdutosPosicao").on("click", ".eti",function() {
-        var temPosicaoSelecionada = $(".eti:checked").length > 0,
-            $btnAcaoEmLote = $(".btn-acao-em-lote");
-
-        $btnAcaoEmLote.attr("disabled", !temPosicaoSelecionada);
-    });
 
     function printEtiqueta(ProdutoID) {
         $.post("printEtiqueta.asp?ProdutoID="+ ProdutoID, $(".eti").serialize(), function (data) {
@@ -230,6 +224,13 @@ end if
 
 
     $(document).ready(function(e) {
+
+    $("#ProdutosPosicao").on("click", ".eti",function() {
+        var temPosicaoSelecionada = $(".eti:checked").length > 0,
+            $btnAcaoEmLote = $(".btn-acao-em-lote");
+
+        $btnAcaoEmLote.attr("disabled", !temPosicaoSelecionada);
+    });
         <%call formSave("frm", "save", "$('.btnLancto').removeAttr('disabled');")%>
 
         <%

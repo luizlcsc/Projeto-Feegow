@@ -21,8 +21,13 @@ set reg = db.execute("select * from "& req("P") &" where id="&req("I"))
                         <input type="checkbox" <% If reg("Ativo")="on" or isnull(reg("Ativo")) Then %> checked="checked"<%end if%> name="Ativo" id="Ativo">
                         <label for="Ativo">Label</label>
                     </div>
-
-                </label>
+                </label>  
+            </div>
+            <div class="col-md-3">
+                 <div class="checkbox-custom checkbox-primary">
+                    <input type="checkbox" class="ace 1" name="ExibirAgendamentoOnline" id="ExibirAgendamentoOnline" value="1" <% if reg("ExibirAgendamentoOnline")="S" then %>checked<%end if%>>
+                    <label class="checkbox" for="ExibirAgendamentoOnline"> Exibir no agendamento online</label>
+                </div>  
             </div>
         </div>
     </div>

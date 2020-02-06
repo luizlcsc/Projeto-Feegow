@@ -32,23 +32,51 @@
 
 <%
 
+function getWppLink(Celular, Mensagem)
+    getWppLink=""
+    if len(Celular) > 7 then
+        getWppLink="<a target='_blank' href='whatsapp://send?phone="&clearPhone(Celular) &"&text="&Mensagem&"' class='badge'>"&Celular&"</a>"
+    end if
+end function
 
 Data = req("Data")
+Status = req("Status")
+
+if Status="" then
+   ' Status= "|1|,|7|,|11|"
+    Status= "|1|"
+end if
 if Data="" then
     Data = date()
 end if
 
 %>
+<script >
+
+    $(".crumb-active a").html("Confirmação de agendamentos");
+    $(".crumb-link").removeClass("hidden");
+    $(".crumb-icon a span").attr("class", "fa fa-check");
+
+</script>
 <div class="row">
-    <form method="get">
-        <input type="hidden" name="P" value="ConfirmAll" />
-        <input type="hidden" name="Pers" value="1" />
-        <%= quickfield("datepicker", "Data", "Data", 3, Data, "", "", "") %>
-        <div class="col-md-2">
-            <label>&nbsp;</label><br />
-            <button class="btn btn-sm">BUSCAR</button>
+    <br>
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-body">
+                <form method="get">
+                    <input type="hidden" name="P" value="ConfirmAll" />
+                    <input type="hidden" name="Pers" value="1" />
+                    <%= quickfield("datepicker", "Data", "Data", 3, Data, "", "", "") %>
+                    <%=quickfield("multiple", "Licencas", "Licenças", 3, req("Licencas"), "select id, NomeEmpresa FROM cliniccentral.licencas WHERE status='C' AND Cupom='"& session("Partner") &"' order by NomeEmpresa" , "NomeEmpresa", "") %>
+                    <%=quickfield("multiple", "Status", "Status", 3, Status, "select id, StaConsulta FROM staconsulta order by StaConsulta" , "StaConsulta", "") %>
+                    <div class="col-md-2">
+                        <label>&nbsp;</label><br />
+                        <button class="btn btn-sm btn-primary"><i class="fa fa-search"></i> BUSCAR</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </form>
+    </div>
 </div>
 
 
@@ -66,7 +94,13 @@ end function
 
 if session("Partner")<>"" then
     response.Buffer
-    set l = db.execute("select id, NomeEmpresa, Servidor from cliniccentral.licencas where Status='C' and Cupom='"& session("Partner") &"' order by NomeEmpresa")
+    Licencas = req("Licencas")
+
+    if Licencas<>"" then
+        sqlLicencas = " AND id IN ("&replace(Licencas, "|", "")&") "
+    end if
+
+    set l = db.execute("select id, NomeEmpresa, Servidor from cliniccentral.licencas where Status='C' and Cupom='"& session("Partner") &"' "&sqlLicencas&" order by NomeEmpresa")
     while not l.eof
         Servidor=l("Servidor")
         LicencaID = l("id")
@@ -76,31 +110,88 @@ if session("Partner")<>"" then
         Set dbS = Server.CreateObject("ADODB.Connection")
         dbS.Open ConnStringS
 
-        set p = dbs.execute("select id, NomeProfissional from clinic"& LicencaID &".profissionais where sysActive=1 and ativo='on' order by NomeProfissional")
+        sqlProf = "select prof.id, CONCAT(IFNULL(trat.Tratamento,''),prof.NomeProfissional)NomeProfissional from clinic"& LicencaID &".profissionais prof LEFT JOIN clinic"& LicencaID &".agendamentos ag ON ag.Data="& mydatenull(Data) &" AND ag.ProfissionalID=prof.id AND ag.StaID IN ("&replace(Status,"|","")&") LEFT JOIN clinic"& LicencaID &".tratamento trat on trat.id=prof.TratamentoID where prof.sysActive=1 and prof.ativo='on'  GROUP BY prof.id HAVING count(ag.id) > 0 order by prof.NomeProfissional"
+        set p = dbs.execute(sqlProf)
+
+        if not p.eof then
+
+%>
+<div class="panel">
+    <div class="panel-heading mt10"><span class="panel-title"><code>#<%= LicencaID %></code>  <strong><%= ucase(l("NomeEmpresa")) %></strong></span></div>
+<div class="panel-body">
+
+<%
+
+
+        sqlData="  a.Data="&mydatenull(data)
+
+
+     set NumeroConfirmadosSQL = dbs.execute("SELECT count(a.id)numero FROM agendamentos a LEFT JOIN locais l ON l.id=a.LocalID WHERE "&sqlData&" AND a.sysActive=1 AND StaID=7" )
+        sqlAgendados = "SELECT count(a.id)numero FROM agendamentos a LEFT JOIN locais l ON l.id=a.LocalID WHERE "&sqlData&" AND a.sysActive=1 AND StaID IN (1,7)"
+
+        set NumeroAgendadosSQL = dbs.execute(sqlAgendados)
+
+        NumeroConfirmados=cint(NumeroConfirmadosSQL("numero"))
+        NumeroAgendados=cint(NumeroAgendadosSQL("numero"))
+
+
+        if NumeroAgendados=0 then
+            Percentual = 0
+        else
+            Percentual = (NumeroConfirmados / NumeroAgendados) * 100
+        end if
+
+        if Percentual < 30 then
+            PercentualClasse="danger"
+        elseif Percentual < 70 then
+            PercentualClasse="warning"
+        else
+            PercentualClasse="success"
+        end if
+
+        Percentual= round(Percentual, 0)
+        %>
+        <div class="row">
+            <div class="col-md-4">
+
+                <div class="progress">
+                  <div class="progress-bar progress-bar-<%=PercentualClasse%>" role="progressbar" aria-valuenow="<%=Percentual%>"
+                  aria-valuemin="0" aria-valuemax="100" style="width:<%=Percentual%>%">
+                    <%=Percentual%>% Confirmada
+                  </div>
+                </div>
+            </div>
+
+        </div>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr class="primary">
+            <th width="10%">Status</th>
+            <th width="50">Data</th>
+            <th width="50">Hora</th>
+            <th width="20%">Paciente</th>
+            <th width="20%">Contato</th>
+            <th width="15%">Procedimento</th>
+            <th width="23%">Observações</th>
+            <th width="23%">Texto whatsapp <i class="fa fa-copy"></i> (Clique)</th>
+        </tr>
+    </thead>
+    <tbody>
+<%
         while not p.eof
             response.flush()
-            set a = dbs.execute("select a.id, a.StaID, a.Data, a.Hora, a.Notas, pac.NomePaciente, pac.Tel1, pac.Tel2, pac.Cel1, pac.Cel2, proc.NomeProcedimento, s.StaConsulta from clinic"& LicencaID &".agendamentos a LEFT JOIN clinic"& LicencaID &".pacientes pac ON pac.id=a.PacienteID LEFT JOIN clinic"& LicencaID &".procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN StaConsulta s ON s.id=a.StaID where a.ProfissionalID="& p("id") &" and a.Data="& mydatenull(Data) &" order by a.Hora")
+            set a = dbs.execute("select a.id, a.StaID, a.Data, a.Hora, a.Notas, pac.NomePaciente, pac.Tel1, pac.Tel2, pac.Cel1, pac.Cel2, proc.NomeProcedimento, s.StaConsulta from clinic"& LicencaID &".agendamentos a LEFT JOIN clinic"& LicencaID &".pacientes pac ON pac.id=a.PacienteID LEFT JOIN clinic"& LicencaID &".procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN StaConsulta s ON s.id=a.StaID where a.ProfissionalID="& p("id") &" and a.Data="& mydatenull(Data) &" and a.StaID IN ("&replace(Status,"|","")&") order by a.Hora")
             if not a.eof then
                 %>
-                <h3>DATA: <%= Data %>  -  CLÍNICA: <%= ucase(l("NomeEmpresa")) %></h3>
-                <h4>PROFISSIONAL: <%= p("NomeProfissional") %></h4>
+                <tr class="dark">
+                    <th colspan="8" class="text-center"><%= p("NomeProfissional") %></th>
+                </tr>
 
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Status</th>
-                            <th width="50">Hora</th>
-                            <th width="20%">Paciente</th>
-                            <th width="15%">Procedimento</th>
-                            <th width="23%">Observações</th>
-                            <th width="23%">Texto whatsapp <i class="fa fa-copy"></i> clique</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+
                         <%
                         while not a.eof
 
-                            Texto = "Olá, "& a("NomePaciente") &"! Posso confirmar sua consulta com Dr. "& p("NomeProfissional") &" no dia "& Data &" às "& ft(a("Hora")) &"?"
+                            Texto = "Olá,  *"& a("NomePaciente") &"*! Posso confirmar sua consulta com *"& p("NomeProfissional") &"*  no dia "& Data &" às "& ft(a("Hora")) &"?%0a%0aEste horário foi especialmente reservado para você, portanto, se não puder comparecer não deixe de nos avisar com antecedência!"
 
                             Classe = ""
                             if a("StaID")=7 then
@@ -109,15 +200,37 @@ if session("Partner")<>"" then
                                 Classe = "danger"
                             end if
                             %>
-                            <tr class="<%= Classe %>">
-                                <td style="min-width:170px!important"><%= quickfield("simpleSelect", "StaID"&a("id"), "", 4, a("StaID"), "select * from clinic"& LicencaModelo &".StaConsulta", "StaConsulta", " semVazio onchange=""ca("& LicencaID &", "& a("id") &")"" ") %></td>
-                                <td><a href="./?P=ChangeLic&I=<%= LicencaID %>&Pers=1&A=<%= a("id") %>" target="_blank" class="btn btn-primary btn-sm"><%= ft(a("Hora")) %></a></td>
-                                <td><%= a("NomePaciente") %>
-                                    <a target="_blank" href="https://api.whatsapp.com/send?phone=<%= clearPhone(a("Tel1")) %>&text=<%=Texto%>" class="badge"><%= a("Tel1") %></a>
-                                    <a target="_blank" href="https://api.whatsapp.com/send?phone=<%= clearPhone(a("Tel2")) %>&text=<%=Texto%>" class="badge"><%= a("Tel2") %></a>
-                                    <a target="_blank" href="https://api.whatsapp.com/send?phone=<%= clearPhone(a("Cel1")) %>&text=<%=Texto%>" class="badge"><%= a("Cel1") %></a>
-                                    <a target="_blank" href="https://api.whatsapp.com/send?phone=<%= clearPhone(a("Cel2")) %>&text=<%=Texto%>" class="badge"><%= a("Cel2") %></a>
+                            <tr data-id="<%=a("id")%>" class="<%= Classe %>">
+                                <td>
+                                <%
+                                StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'><img data-toggle='tooltip' title='"&a("StaConsulta")&"' src='assets/img/"&a("StaID")&".png' /></span>  <i class='fa fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
+                                set StatusSQL=dbS.execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (1,11,7, 116)")
+                                while not StatusSQL.eof
+                                    Active=""
+                                    if StatusSQL("id")=a("StaID") then
+                                        Active=" active "
+                                    end if
+            
+                                    StatusSelect = StatusSelect&"<li class='"&Active&"'><a data-value='"&StatusSQL("id")&"' onclick=""ChangeStatus("& LicencaID &", '"&StatusSQL("id")&"','"&a("id")&"')"" style='cursor:pointer' class='muda-status'><img src='assets/img/"&StatusSQL("id")&".png'> "&StatusSQL("StaConsulta")&"</a></option>"
+                                StatusSQL.movenext
+                                wend
+                                StatusSQL.close
+                                set StatusSQL = nothing
+                                StatusSelect= StatusSelect&"</div></ul>"
+            
+                                response.write(StatusSelect)
 
+            
+                                %>
+                                </td>
+                                <td><%= a("Data") %></td>
+                                <td><a href="./?P=ChangeLic&I=<%= LicencaID %>&Pers=1&A=<%= a("id") %>" target="_blank" class="btn btn-primary btn-xs" title="Ver agendamento"><i class="fa fa-external-link"></i> <%= ft(a("Hora")) %></a></td>
+                                <td><%= a("NomePaciente") %></td>
+                                <td>
+                                    <%=getWppLink(a("Tel1"), Texto)%>
+                                    <%=getWppLink(a("Tel2"), Texto)%>
+                                    <%=getWppLink(a("Cel1"), Texto)%>
+                                    <%=getWppLink(a("Cel2"), Texto)%>
                                 </td>
                                 <td><%= a("NomeProcedimento") %></td>
                                 <td><%= quickfield("memo", "Notas"&a("id"), "", 4, a("Notas"), "", "", " onchange=""ca("& LicencaID &", "& a("id") &")"" ")  %></td>
@@ -133,14 +246,20 @@ if session("Partner")<>"" then
                         a.close
                         set a = nothing
                         %>
-                    </tbody>
-                </table>
+
                 <%
             end if
         p.movenext
         wend
         p.close
         set p = nothing
+        %>
+        </tbody>
+    </table>
+    </div>
+</div>
+        <%
+        end if
     l.movenext
     wend
     l.close
@@ -149,11 +268,11 @@ end if
 %>
 
 <script type="text/javascript">
-    function ca(L, A, StaID) {
+    function ChangeStatus(L, StaID, A) {
         $.post("ConfirmAllSave.asp", {
             L: L,
             A: A,
-            StaID: $("#StaID" + A).val(),
+            StaID: StaID,
             Notas: $("#Notas" + A).val()
         }, function (data) { eval(data) });
     }

@@ -24,6 +24,9 @@ else
             idUsuario = dadosAcesso("id")
             Home = dadosAcesso("Home")
 		end if
+        if session("Banco")="clinic5459" then
+            Ramal = dadosUser("Ramal")
+        end if
 	end if
 end if
 if comAcesso="N" then
@@ -108,6 +111,7 @@ end if
 
             <div class="row">
                 <%= quickfield("simpleSelect", "Home", "Página inicial do usuário", 4, Home, "select '' id, 'Tela inicial' Descricao UNION ALL select 'Agenda-1', 'Agenda Diária' UNION ALL select 'AgendaMultipla', 'Agenda Múltipla' UNION ALL select 'ListaEspera', 'Sala de Espera' UNION ALL select 'Financeiro', 'Financeiro'", "Descricao", "semVazio") %>
+                <% if session("Banco")="clinic5459" then call quickfield("text", "Ramal", "Ramal", 2, Ramal, "", "", "") end if %>
             </div>
             <% if session("Admin") = 1 then %>
                 <div class="row">
@@ -124,7 +128,7 @@ end if
         </div><!-- /widget-body -->
     </div><!-- /login-box -->
 </form>
-<script language="javascript">
+<script type="text/javascript">
 var $senha = $("#senha-acesso");
 var $erroSenha = $("#erro-senha");
 
@@ -159,5 +163,9 @@ $("#frmAcesso").submit(function(){
         }
 
 	return false;
-});
+    });
+
+    $("#Ramal").change(function () {
+        $.get("saveRamal.asp?U=<%= id %>&Ramal=" + $(this).val(), function (data) { eval(data) });
+    });
 </script>

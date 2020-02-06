@@ -28,15 +28,16 @@ else
             Ramal = dadosUser("Ramal")
         end if
 	end if
+
+    if dadosUser("AlterarSenhaAoLogin")&""="1"then
+        AlterarSenhaAoLogin = "S"
+    end if
+
 end if
 if comAcesso="N" then
 	msg = "<div class=""badge badge-danger"">Usu&aacute;rio sem acesso ao sistema</div>"
 else
 	msg = "<div class=""badge badge-success"">Usu&aacute;rio com acesso ao sistema</div>"
-end if
-
-if dadosUser("AlterarSenhaAoLogin")&""="1"then
-    AlterarSenhaAoLogin = "S"
 end if
 
 PessoaID = req("I")

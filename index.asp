@@ -1759,11 +1759,12 @@ function facialRecognition () {
 	    openComponentsModal('facerecognition/get-face', false, false, true, false, "lg")
 }
 
-<% if session("AlterarSenha") = 1 then %>
 $(document).ready(function() {
     $(".callTicketBtn").attr("disabled", false);
     $(".facialRecogButton").attr("disabled", false);
-    
+
+    <% if session("AlterarSenha") = 1 then %>
+
     setTimeout(() => {
       openComponentsModal("RedefinirSenha.asp",{
             T:'<%=session("Table")%>',
@@ -1774,9 +1775,9 @@ $(document).ready(function() {
             },"md",false);
 
     }, 1000);
-    
+    <% end if%>
+
 });
-<% end if%>
 
 var mensagemPaciente = true;
 <%

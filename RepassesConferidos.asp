@@ -73,6 +73,14 @@ ContaCredito = req("AccountID")
 FormaID = req("FormaID")
 Lancado = req("Lancado")
 De = req("De")
+
+if De&""<>"" then
+    DeExec = dateadd("m", -3, De)
+else
+    DeExec=De
+end if
+
+TipoData = req("TipoData")
 Ate = req("Ate")
 if De="" or not isdate(De) then
 	De = date()'dateadd("m", -1, date())
@@ -95,7 +103,7 @@ end if
 
                     <%= quickField("datepicker", "De", "Execução", 2, De, "", "", " placeholder='De' required='required'") %>
                     <%= quickField("datepicker", "Ate", "&nbsp;", 2, Ate, "", "", " placeholder='At&eacute;' required='required'") %>
-                    <div class="col-md-2">
+                    <div class="col-md-2 ">
                         <label>Tipo de Data:</label><br />
                         <span class="radio-custom"><input type="radio" name="TipoData" value="Exec" <% if req("TipoData")="Exec" or req("TipoData")="" then response.write(" checked ") end if %> id="TDE" /><label for="TDE"> Execução</label></span>
                         <br />
@@ -233,10 +241,10 @@ if ExibeResultado then
 
 'Response.End
                 sqlRR = "select  idesc.PagamentoID IDMovPay, ca.IntegracaoSPLIT, cheque.DataCompensacao DataCompenscaoCheque, mdisc.Date DataPagtoConvenio, ri.DateToReceive, mdesc.Value as ParcelaValor,mdesc.PaymentMethodID, mdesc.Date DataPagto, fct.Parcelas, ifnull(pmdesc.PaymentMethod, '-') PaymentMethod, t.*, iip.InvoiceID InvoiceAPagarID, c.NomeConvenio, proc.NomeProcedimento, pac.NomePaciente, t.Executado from	(	"&_
-                " select null GuiaID, null TipoGuia, i.CompanyUnitID UnidadeID, ifnull(tab.NomeTabela, '') NomeTabela, ii.InvoiceID, 'ItemInvoiceID' Tipo, ii.DataExecucao, '0' ConvenioID, ii.ItemID ProcedimentoID, i.AccountID PacienteID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorProcedimento, rrp.*, ii.Executado FROM itensinvoice ii 	INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID	INNER JOIN rateiorateios rrp ON rrp.ItemInvoiceID=ii.id	WHERE ii.Tipo='S' AND ii.Executado='S' AND rrp.ContaCredito='"& ContaCredito &"' AND ii.DataExecucao BETWEEN "& mydateNull(De) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
-                " SELECT gc.id GuiaID, 'GuiaConsulta' TipoGuia, gc.UnidadeID, '', NULL, 'GuiaConsultaID', gc.DataAtendimento, gc.ConvenioID, gc.ProcedimentoID, gc.PacienteID, gc.ValorProcedimento, rrgc.*, '' Executado FROM tissguiaconsulta gc 	INNER JOIN rateiorateios rrgc ON rrgc.GuiaConsultaID=gc.id	WHERE gc.DataAtendimento BETWEEN "& mydateNull(De) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
-                " SELECT gps.id GuiaID, 'GuiaSADT' TipoGuia, gs.UnidadeID, '', NULL, 'ItemGuiaID', gps.Data, gs.ConvenioID, gps.ProcedimentoID, gs.PacienteID, gps.ValorTotal, rrgps.*, '' Executado FROM tissprocedimentossadt gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemGuiaID=gps.id	INNER JOIN tissguiasadt gs ON gps.GuiaID=gs.id WHERE gps.`Data` BETWEEN  "& mydateNull(De) &" AND "& mydateNull(Ate) &" UNION ALL "&_
-                " SELECT gps.id GuiaID, 'GuiaHonorarios' TipoGuia, gh.UnidadeID, '', NULL, 'ItemHonorarioID', gps.Data, gh.ConvenioID, gps.ProcedimentoID, gh.PacienteID, gh.Procedimentos ValorTotal, rrgps.*, '' Executado FROM tissprocedimentoshonorarios gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemHonorarioID=gps.id	INNER JOIN tissguiahonorarios gh ON gps.GuiaID=gh.id WHERE gps.`Data` BETWEEN  "& mydateNull(De) &" AND "& mydateNull(Ate) &"	) t "&_
+                " select null GuiaID, null TipoGuia, i.CompanyUnitID UnidadeID, ifnull(tab.NomeTabela, '') NomeTabela, ii.InvoiceID, 'ItemInvoiceID' Tipo, ii.DataExecucao, '0' ConvenioID, ii.ItemID ProcedimentoID, i.AccountID PacienteID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorProcedimento, rrp.*, ii.Executado FROM itensinvoice ii 	INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID	INNER JOIN rateiorateios rrp ON rrp.ItemInvoiceID=ii.id	WHERE ii.Tipo='S' AND ii.Executado='S' AND rrp.ContaCredito='"& ContaCredito &"' AND ii.DataExecucao BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
+                " SELECT gc.id GuiaID, 'GuiaConsulta' TipoGuia, gc.UnidadeID, '', NULL, 'GuiaConsultaID', gc.DataAtendimento, gc.ConvenioID, gc.ProcedimentoID, gc.PacienteID, gc.ValorProcedimento, rrgc.*, '' Executado FROM tissguiaconsulta gc 	INNER JOIN rateiorateios rrgc ON rrgc.GuiaConsultaID=gc.id	WHERE gc.DataAtendimento BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
+                " SELECT gps.id GuiaID, 'GuiaSADT' TipoGuia, gs.UnidadeID, '', NULL, 'ItemGuiaID', gps.Data, gs.ConvenioID, gps.ProcedimentoID, gs.PacienteID, gps.ValorTotal, rrgps.*, '' Executado FROM tissprocedimentossadt gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemGuiaID=gps.id	INNER JOIN tissguiasadt gs ON gps.GuiaID=gs.id WHERE gps.`Data` BETWEEN  "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &" UNION ALL "&_
+                " SELECT gps.id GuiaID, 'GuiaHonorarios' TipoGuia, gh.UnidadeID, '', NULL, 'ItemHonorarioID', gps.Data, gh.ConvenioID, gps.ProcedimentoID, gh.PacienteID, gh.Procedimentos ValorTotal, rrgps.*, '' Executado FROM tissprocedimentoshonorarios gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemHonorarioID=gps.id	INNER JOIN tissguiahonorarios gh ON gps.GuiaID=gh.id WHERE gps.`Data` BETWEEN  "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"	) t "&_
                 " LEFT JOIN itensinvoice iip ON (iip.id=t.ItemContaAPagar) LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID "&_
                 " LEFT JOIN itensdescontados idesc ON idesc.id=t.ItemDescontadoID "&_
                 " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID "&_
@@ -338,6 +346,21 @@ if ExibeResultado then
                         else
                             DataComp = rr("DataPagtoConvenio")
                         end if
+
+                        DataOk = True
+                        if TipoData="Comp" then
+                            if DataComp&""="" then
+                                DataOk=False
+                            end if
+
+                            if DataOk then
+                                if cdate(DataComp) < cdate(De) or cdate(DataComp) > cdate(Ate) then
+                                    DataOk=False
+                                end if
+                            end if
+                        end if
+
+
                         if NomeTabela<>"" then
                             NomeTabela = "<i class='fa fa-table' title='"& NomeTabela &"'></i>"
                         end if
@@ -362,10 +385,11 @@ if ExibeResultado then
                         end if
 
 
+                        if DataOk then
                         %>
                         <tr invoiceapagarid="<%=rr("InvoiceAPagarID")%>">
                             <td>
-                                <code>#<%= rr("IDMovPay") %></code>
+                                <code style="display:none;">#<%= rr("IDMovPay") %></code>
                                 <% if rr("ItemContaAPagar")>0 then %>
                                     <a href="./?P=invoice&Pers=1&I=<%= rr("InvoiceAPagarID") %>" target="_blank" class="btn btn-xs btn-default" type="button"><i class="fa fa-sign-out text-alert"></i></a>
                                 <% elseif rr("ItemContaAReceber")>0 then
@@ -404,6 +428,7 @@ if ExibeResultado then
                             </td>
                         </tr>
                         <%
+                        end if
                     end if
                 rr.movenext
                 wend

@@ -5446,4 +5446,38 @@ function franquia(sqlfranquia)
     franquia = ""
 end function
 
+function dd(variable)
+    description=""
+    variableType = TypeName(variable)
+
+    if variableType="Recordset" then
+        description = "["&chr(13)
+        j = 0
+        while not variable.eof
+            IF j <> 0 THEN
+                 description = description&str&","
+            END IF
+            j = j+1
+            i = 0
+            str = chr(32)&"{"
+            for each x in variable.Fields
+                i = i+1
+                str = str&chr(13)&chr(32)&chr(32)&""""&x.name&""":"""&replace(x.value&"","""","'")&""""
+                IF i < variable.Fields.Count THEN
+                    str = str&","
+                END IF
+            next
+            str = str&chr(13)&chr(32)&"}"
+        variable.movenext
+        wend
+
+        description = description&str&chr(13)&"]"
+
+    else
+        description = variable
+    end if
+
+    response.write("<pre>"&description&"</pre>")
+    Response.End
+end function
 %>

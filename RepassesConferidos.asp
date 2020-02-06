@@ -73,14 +73,14 @@ ContaCredito = req("AccountID")
 FormaID = req("FormaID")
 Lancado = req("Lancado")
 De = req("De")
+TipoData = req("TipoData")
 
-if De&""<>"" then
+if De&""<>"" and TipoData="Comp" then
     DeExec = dateadd("m", -3, De)
 else
     DeExec=De
 end if
 
-TipoData = req("TipoData")
 Ate = req("Ate")
 if De="" or not isdate(De) then
 	De = date()'dateadd("m", -1, date())

@@ -59,8 +59,8 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
     'rfEspecialidade = ref("Especialidade")
 
     for k=0 to ubound(splrfesp)
-        Especialidades = splrfesp(k)
-        rfEspecialidade = Especialidades
+        EspecialidadeID = splrfesp(k)
+        rfEspecialidade = EspecialidadeID
                 Data = De
 
                 while Data<=Ate
@@ -162,22 +162,22 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                     end if
 
                     if ProcedimentoSomenteEspecialidades<>"" then
-                        if Especialidades="" then
-                            Especialidades = ProcedimentoSomenteEspecialidades
+                        if SomenteEspecialidades="" then
+                            SomenteEspecialidades = ProcedimentoSomenteEspecialidades
                         else
-                            Especialidades = Especialidades&", "&ProcedimentoSomenteEspecialidades
+                            SomenteEspecialidades = SomenteEspecialidades&", "&ProcedimentoSomenteEspecialidades
                         end if
                     end if
 
-                    if Especialidades<>""  then
-                        spltEspecialidades = split(Especialidades, ", ")
+                    if SomenteEspecialidades<>""  then
+                        spltEspecialidades = split(SomenteEspecialidades, ", ")
 
                         sqlGradeEspecialidade = " AND (Especialidades is null or Especialidades='' "
 
                         for i=0 to ubound(spltEspecialidades)
-                            EspecialidadeID=spltEspecialidades(i)
+                            EspecialidadeIDLoop=spltEspecialidades(i)
 
-                            sqlGradeEspecialidade =  sqlGradeEspecialidade&" OR Especialidades LIKE '%"&EspecialidadeID&"%'"
+                            sqlGradeEspecialidade =  sqlGradeEspecialidade&" OR Especialidades LIKE '%"&EspecialidadeIDLoop&"%'"
                         next
                         sqlGradeEspecialidade=sqlGradeEspecialidade&")"
                     end if
@@ -298,15 +298,15 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         end if
 
                         if ProcedimentoSomenteEspecialidades<>"" then
-                            if Especialidades="" then
-                                Especialidades = ProcedimentoSomenteEspecialidades
+                            if SomenteEspecialidades="" then
+                                SomenteEspecialidades = ProcedimentoSomenteEspecialidades
                             else
-                                Especialidades = Especialidades&", "&ProcedimentoSomenteEspecialidades
+                                SomenteEspecialidades = SomenteEspecialidades&", "&ProcedimentoSomenteEspecialidades
                             end if
                         end if
 
-                        if Especialidades<>""  then
-                            spltEspecialidades = split(Especialidades, ", ")
+                        if SomenteEspecialidades<>""  then
+                            spltEspecialidades = split(SomenteEspecialidades, ", ")
 
                             sqlGradeEspecialidade = " AND (ass.Especialidades is null or ass.Especialidades='' "
 
@@ -442,7 +442,6 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                             end if
 
                             IF 1 THEN
-                            EspecialidadeID = replace(Especialidades, "|", "")
 
 
                             set comps=db.execute("select a.EspecialidadeID, a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo from agendamentos a " & joinLocaisUnidades &_

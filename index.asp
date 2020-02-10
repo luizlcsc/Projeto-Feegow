@@ -884,50 +884,14 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                 <li><%=session("Licencas")%></li>
                                 <%
 								if not isnull(session("Unidades")) and session("Unidades")<>"" then
-                                    if session("sTopo")="" then
-                                        fazSTopo = 1
-                                    else
-                                        fazSTopo = 0
-                                    end if
-									if instr(session("Unidades"), "|0|")>0 then
-										sqlEmp = " UNION ALL select cast('0' as decimal), NomeFantasia, 0 Ordem from empresa where sysActive=1 "
-									end if
-                                    if fazSTopo then
-									    sql = "select id, NomeFantasia, 1 Ordem from sys_financialcompanyunits where sysActive=1 and id in("&replace(session("Unidades"), "|", "")&") "&sqlEmp&" ORDER BY Ordem, NomeFantasia"
-									    'response.Write("<!--"&sql&"-->")
-									    set unid = db.execute(sql)
-									    while not unid.eof
-                                            session("sTopo")=session("sTopo")& unid("id") &"^;"& unid("NomeFantasia") &"|;"
-									    unid.movenext
-									    wend
-									    unid.close
-									    set unid=nothing
-                                    end if
-                                    splSTopo = split( session("sTopo"), "|;" )
-                                    for itopo=0 to ubound(splSTopo)
-                                        if instr(splSTopo(itopo), "^;") then
-                                            splItemSTopo = split(splSTopo(itopo), "^;")
-                                            idUnidade = splItemSTopo(0)
-                                            nomeUnidade = splItemSTopo(1)
-                                        end if
-                                        if splSTopo(iTopo)<>"" then
-
-                                        unidadeDisabled=False
-
-                                        if session("CaixaID")<>"" then
-                                            unidadeDisabled=True
-                                        end if
-
-										%>
-										<li <% if unidadeDisabled then %> style="opacity: .4" <% end if %> class="list-group-item menu-click-meu-perfil-muda-local">
-											<a class="animated animated-short fadeInUp" <% if not unidadeDisabled then %> href="?P=Home&Pers=1&MudaLocal=<%= idUnidade %>" <% else %> onclick="alert('Você precisa fechar o caixa para alterar a unidade.')" <% end if%> href2="?P=Home&Pers=1&MudaLocal=<%= idUnidade %>" onclick2="alert('Você precisa fechar o caixa para alterar a unidade.')">
-												<i class="fa <%if ccur(idUnidade)=session("UnidadeID") then%>fa-check-square-o<%else%>fa-square-o<%end if%>"></i>
-												<%= nomeUnidade %>
-											</a>
-										</li>
-										<%
-                                        end if
-                                    next
+								    %>
+								    <li class="list-group-item">
+                                        <a class="animated animated-short fadeInUp" href="javascript:abreModalUnidade(false);">
+                                            <i class="fa fa-building"></i>
+                                            Alterar Unidade
+                                        </a>
+                                    </li>
+								    <%
 								end if
 
                                 'response.write( session("sTopo") )
@@ -935,7 +899,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                 if session("Franquia")<>"" then
 								%>
                                 <li class="list-group-item">
-                                    <a class="animated animated-short fadeInUp" href="?P=ListaFranquias&Pers=1">
+                                    <a  class="animated animated-short fadeInUp" href="?P=ListaFranquias&Pers=1">
                                         <i class="fa fa-list"></i>
                                         Listar Licenciados
                                     </a>
@@ -1140,10 +1104,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
 
 
-
-          <%
-
-
+<%
             larguraConteudo = 12
           abreDiv = "<aside class='tray tray-center'><div class='col-xs-"&larguraConteudo&"'>"
           fechaDiv = "</aside>"
@@ -1774,9 +1735,7 @@ $(document).ready(function() {
     <% if session("UnidadeID")=-1 then %>
     if (!ModalOpened){
       ModalOpened = true;
-      $.post("LoginEscolheUnidade.asp", '', function(data){
-              $("#modalCaixa").modal({backdrop: 'static', keyboard: false});
-              $("#modalCaixaContent").html(data);
+        abreModalUnidade();
       });
     }
     <% end if %>
@@ -2086,6 +2045,21 @@ function mfpform(im){
 
 
 $('[data-rel=tooltip]').tooltip();
+
+
+function abreModalUnidade(backdrop=true){
+    if(backdrop){
+        backdrop={backdrop: 'static', keyboard: false};
+    }else{
+        backdrop={};
+    }
+    $.post("LoginEscolheUnidade.asp", '', function(data){
+        $(document).ready(function() {
+            $("#modalCaixa").modal(backdrop);
+            $("#modalCaixaContent").html(data);
+        });
+    });
+}
 </script>
     <!-- old sms << -->
 

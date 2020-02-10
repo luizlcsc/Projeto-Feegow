@@ -68,12 +68,13 @@ if session("banco")<>"" then
 		end if
 	
 	
-		set outrosUsers = db.execute("select * from sys_users")
+ 		set outrosUsers = db.execute("select su.*,lu.Admin from sys_users su INNER JOIN cliniccentral.licencasusuarios lu ON lu.id=su.id AND su.ID="&session("User"))
 		while not outrosUsers.eof
-			session("UsersChat") = session("UsersChat")&"|"&outrosUsers("id")&"|"'colocando A só pra simular aberto depois tira o A
-            if outrosUsers("id")=session("User") then
-                session("idInTable") = outrosUsers("idInTable")
-            end if
+			session("UsersChat") = "" 'colocando A só pra simular aberto depois tira o A
+            session("idInTable") = outrosUsers("idInTable")
+            session("Permissoes") = outrosUsers("Permissoes")
+            session("UnidadeID") = outrosUsers("UnidadeID")
+            session("Admin") = outrosUsers("Admin")
 		outrosUsers.movenext
 		wend
 		outrosUsers.close

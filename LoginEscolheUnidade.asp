@@ -17,16 +17,40 @@ end if
 <div class="modal-body">
 
     <div class="row">
+    <%
+        unidadeDisabled=False
+
+        if session("CaixaID")<>"" then
+            unidadeDisabled=True
+            msgUnidadeDisabled="Existe um caixa aberto na unidade que está logado. Para alterar, feche seu caixa."
+        end if
+        if unidadeDisabled then
+            %>
+<div class="col-md-12">
+<div class="alert alert-danger">
+    <strong>Atenção!</strong> <%=msgUnidadeDisabled%>
+</div>
+</div>
+            <%
+        else
+%>
+
+<%
+        end if
+    %>
         <div class="col-md-12">
             <p>Selecione a <strong>unidade</strong> que está atualmente:</p>
         </div>
         <%
-        set UnidadesSQL = db.execute("SELECT id, NomeFantasia FROM (select id, NomeFantasia from sys_financialcompanyunits where sysActive=1 UNION ALL select '0', NomeFantasia from empresa order by id) t WHERE '"&session("Unidades")&"' LIKE CONCAT('%|',id,'|%')")
+
+
+        set UnidadesSQL = db.execute("SELECT id, NomeFantasia FROM (select id, NomeFantasia, 0 Matriz from sys_financialcompanyunits where sysActive=1 UNION ALL select '0', NomeFantasia, 1 Matriz from empresa order by id) t WHERE '"&session("Unidades")&"' LIKE CONCAT('%|',id,'|%') ORDER BY Matriz desc, NomeFantasia")
+
 
         while not UnidadesSQL.eof
             %>
-            <div class="col-md-6 pt10">
-                <a style="font-size: 11px" href="?P=Home&Pers=1&MudaLocal=<%=UnidadesSQL("id")%>" class="btn
+            <div <% if unidadeDisabled then %> style="opacity: .4" <% end if %> class="col-md-6 pt10">
+                <a style="font-size: 11px" <% if not unidadeDisabled then %> href="?P=Home&Pers=1&MudaLocal=<%=UnidadesSQL("id")%>" <% else %> disabled onclick="alert('Você precisa fechar o caixa para alterar a unidade.')" <% end if%> class="btn
                  <%
                  if UnidadesSQL("id")&""=UnidadeID&"" then
                  %>btn-dark<%

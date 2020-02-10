@@ -191,7 +191,7 @@ if session("Partner")<>"" then
                         <%
                         while not a.eof
 
-                            Texto = "Olá,  *"& a("NomePaciente") &"*! Posso confirmar sua consulta com *"& p("NomeProfissional") &"*  no dia "& Data &" às "& ft(a("Hora")) &"?%0a%0aEste horário foi especialmente reservado para você, portanto, se não puder comparecer não deixe de nos avisar com antecedência!"
+                            Texto = "Olá,  *"& a("NomePaciente") &"*! Posso confirmar sua consulta com *"& p("NomeProfissional") &"*  no dia *"& Data &"* às *"& ft(a("Hora")) &"*?%0a%0aEste horário foi especialmente reservado para você, portanto, se não puder comparecer não deixe de nos avisar com antecedência!"
 
                             Classe = ""
                             if a("StaID")=7 then

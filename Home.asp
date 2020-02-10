@@ -1095,7 +1095,9 @@ function getNews(onlyUnread) {
 <%
 if session("Status")="C" then
 %>
-getNews(1);
+if (!ModalOpened){
+    getNews(1);
+}
 <%
 end if
 %>

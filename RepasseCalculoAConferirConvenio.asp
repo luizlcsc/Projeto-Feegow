@@ -342,7 +342,7 @@ end if
 "WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiaconsulta' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gcContaProfissional & sqlUnidadesGC &_
                 "UNION ALL "&_
-"select concat(gs.tipoProfissionalSolicitante,'_', gs.ProfissionalSolicitanteID), concat(IF(gs.tipoProfissionalSolicitante='E', '8_', '5_'), gs.ProfissionalSolicitanteID) ProfissionalSolicitanteID , concat(ps.Associacao,'_',ps.ProfissionalID) Especialidade,gs.PacienteID, gs.ConvenioID, 'tissguiasadt' link, 'SADT' Tipo, gs.id, ps.ProfissionalID, gs.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gs.UnidadeID, ifnull(ps.ValorPago, gs.ValorPago) ValorPago, ps.Quantidade, gs.sysDate FROM sys_financialmovement m "&_
+"select concat(gs.tipoProfissionalSolicitante,'_', gs.ProfissionalSolicitanteID), concat(IF(gs.tipoProfissionalSolicitante='E', '8_', '5_'), gs.ProfissionalSolicitanteID) ProfissionalSolicitanteID , concat(ps.Associacao,'_',ps.ProfissionalID) Especialidade,gs.PacienteID, gs.ConvenioID, 'tissguiasadt' link, 'SADT' Tipo, ps.id, ps.ProfissionalID, gs.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gs.UnidadeID, ifnull(ps.ValorPago, gs.ValorPago) ValorPago, ps.Quantidade, gs.sysDate FROM sys_financialmovement m "&_
 "LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
 "LEFT JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID=ii.id "&_
@@ -351,7 +351,7 @@ end if
 "WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiasadt' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &_
                 "UNION ALL "&_
-"select concat( '5_',gh.Contratado), concat('5_', gh.Contratado) ProfissionalSolicitanteID,  concat(ps.Associacao,'_',ps.ProfissionalID) Especialidade, gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, gh.id, ps.ProfissionalID, gh.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gh.UnidadeID, ifnull(ps.ValorPago, gh.ValorPago) ValorPago, ps.Quantidade, gh.sysDate FROM sys_financialmovement m "&_
+"select concat( '5_',gh.Contratado), concat('5_', gh.Contratado) ProfissionalSolicitanteID,  concat(ps.Associacao,'_',ps.ProfissionalID) Especialidade, gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, ps.id, ps.ProfissionalID, gh.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gh.UnidadeID, ifnull(ps.ValorPago, gh.ValorPago) ValorPago, ps.Quantidade, gh.sysDate FROM sys_financialmovement m "&_
 "LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
 "LEFT JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID=ii.id "&_
@@ -448,7 +448,7 @@ end if
                 %>
             <tr class="panel<%= idPanel %>">
                 <td rowspan="2" valign="top" style="vertical-align:top">
-                    <a target="_blank" class="btn btn-xs text-dark mn" href="./?P=<%= Link %>&Pers=1&I=<%= GuiaID %>">
+                    <a target="_blank" class="btn btn-xs text-dark mn" href="./?P=<%= Link %>&Pers=1&I=<%= GuiaID %>&ItemGuiaID=<%=ItemGuiaID%>">
                         <i class="fa fa-chevron-right"></i>
                     </a>
                 </td>
@@ -568,7 +568,7 @@ end if
                                 </td>
                             </tr>
                             <%
-                            if not isnull(ItemContaAPagar) or not isnull(ItemContaAReceber) or not isnull(CreditoID) then
+                            if (not isnull(ItemContaAPagar) or not isnull(ItemContaAReceber) or not isnull(CreditoID)) and idBtnDesc&""<>"" then
                                 desfazBtnCons = desfazBtnCons & "$('#desconsolidar"& ColunaRR &"_"& IDColunaRR &"_"& GrupoConsolidacao &", #"& idBtnDesc &"').prop('disabled', true);"
                                 %>
                                 <script><%=desfazBtnCons %></script>

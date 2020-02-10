@@ -16,6 +16,40 @@ if aut("formsaeI")=0 and req("Inserir")="1" then
     erro = "Sem permissão para inserção."
 end if
 
+if lcase(session("Table"))="profissionais" then
+    TipoUser = "P"
+elseif lcase(session("Table"))="funcionarios" then
+    TipoUser = "F"
+end if
+
+PermissaoOk = True
+
+set BuiSQL = db.execute("SELECT IF(su.`table`='profissionais',su.idInTable,null) ProfissionalID FROM buiformspreenchidos bui INNER JOIN sys_users su ON su.id=bui.sysUser WHERE bui.id="&treatvalzero(I))
+
+if not BuiSQL.eof then
+    ProfissionalID =  BuiSQL("ProfissionalID")
+end if
+
+sqlPerm = "SELECT * FROM buipermissoes WHERE Tipo='"&TipoUser&"' AND FormID="&treatvalzero(ModeloID)&" AND Grupo LIKE '%|"&session("idInTable")&"|%'"
+set PermissaoFormSQL = db.execute(sqlPerm)
+if not PermissaoFormSQL.eof then
+    Permissoes = PermissaoFormSQL("Permissoes")
+    ProfissionalIDProprio = session("idInTable")
+
+    if req("Inserir")="1" and instr(Permissoes,"IN")=0 then
+        PermissaoOk=False
+        erro="Voce não possui permissões para inserir este formulário"
+    end if
+    if req("Inserir")<>"1" and instr(Permissoes,"AP")=0 and ProfissionalID=ProfissionalIDProprio then
+        PermissaoOk=False
+        erro="Voce não possui permissões para alterar este formulário"
+    end if
+    if req("Inserir")<>"1" and instr(Permissoes,"AO")=0 and ProfissionalID<>ProfissionalIDProprio then
+        PermissaoOk=False
+        erro="Voce não possui permissões para alterar este formulário de outro profissional"
+    end if
+end if
+
 if erro<>"" then
     if aut("formsaeV")=1 and req("A")="P" then
         %>

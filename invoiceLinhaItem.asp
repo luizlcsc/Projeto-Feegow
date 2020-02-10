@@ -24,6 +24,7 @@ set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&trea
 
             if TemRepasseGerado then
             %>
+            <input type="hidden" name="InvoiceTemRepasse" value="S" />
             <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
             <%
             end if

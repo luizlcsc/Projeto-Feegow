@@ -36,6 +36,14 @@ if session("banco")<>"" then
 		%>
 		<!--#include file="connect.asp"-->
 		<%
+
+		set sysUser = db.execute("select * from sys_users where id="&vcaOE("id"))
+		if not sysUser.eof then
+			session("Permissoes") = sysUser("Permissoes")
+			session("idInTable")=sysUser("idInTable")
+			session("Table") = lcase(sysUser("Table"))
+		end if
+
 		set caixa = db.execute("select * from caixa where sysUser="&session("User")&" and isnull(dtFechamento)")
 		if caixa.eof then
 			session("CaixaID")=""
@@ -60,19 +68,20 @@ if session("banco")<>"" then
 		end if
 	
 	
-		set outrosUsers = db.execute("select * from sys_users")
+ 		set outrosUsers = db.execute("select su.*,lu.Admin from sys_users su INNER JOIN cliniccentral.licencasusuarios lu ON lu.id=su.id AND su.ID="&session("User"))
 		while not outrosUsers.eof
-			session("UsersChat") = session("UsersChat")&"|"&outrosUsers("id")&"|"'colocando A só pra simular aberto depois tira o A
-            if outrosUsers("id")=session("User") then
-                session("idInTable") = outrosUsers("idInTable")
-            end if
+			session("UsersChat") = "" 'colocando A só pra simular aberto depois tira o A
+            session("idInTable") = outrosUsers("idInTable")
+            session("Permissoes") = outrosUsers("Permissoes")
+            session("UnidadeID") = outrosUsers("UnidadeID")
+            session("Admin") = outrosUsers("Admin")
 		outrosUsers.movenext
 		wend
 		outrosUsers.close
 		set outrosUsers=nothing
 	
 		db_execute("update atendimentos set HoraFim=( select time(UltRef) from sys_users where id="&session("User")&" ) where isnull(HoraFim) and sysUser="&session("User")&" order by id desc limit 1")
-	
+		session("SelecionarLicenca") = 0
 		response.Redirect("./?P=Home&Pers=1")
 	end if
 end if

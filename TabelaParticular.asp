@@ -25,7 +25,7 @@ set reg = db.execute("select * from "& req("P") &" where id="&req("I"))
             </div>
             <div class="col-md-3">
                  <div class="checkbox-custom checkbox-primary">
-                    <input type="checkbox" class="ace 1" name="ExibirAgendamentoOnline" id="ExibirAgendamentoOnline" value="1" <% if reg("ExibirAgendamentoOnline")="S" then %>checked<%end if%>>
+                    <input type="checkbox" class="ace 1" name="ExibirAgendamentoOnline" id="ExibirAgendamentoOnline" value="1" <% if reg("ExibirAgendamentoOnline")="1" then %>checked<%end if%>>
                     <label class="checkbox" for="ExibirAgendamentoOnline"> Exibir no agendamento online</label>
                 </div>  
             </div>

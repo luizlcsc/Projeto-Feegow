@@ -275,9 +275,12 @@ if not tryLogin.EOF then
 		'db_execute("delete from atendimentos where isnull(HoraFim) and sysUser="&session("User"))
 		'db_execute("create TABLE if not exists `agendaobservacoes` (`id` INT NOT NULL AUTO_INCREMENT,	`ProfissionalID` INT NULL DEFAULT NULL,	`Data` DATE NULL DEFAULT NULL,	`Observacoes` TEXT NULL DEFAULT NULL,	PRIMARY KEY (`id`)) COLLATE='utf8_general_ci' ENGINE=InnoDB")
 
-		set caixa = db.execute("select * from caixa where sysUser="&session("User")&" and isnull(dtFechamento)")
+		set caixa = db.execute("select c.id, ca.Empresa UnidadeID from caixa c  "&_
+                               "INNER JOIN sys_financialcurrentaccounts ca ON ca.id=c.ContaCorrenteID  "&_
+                               "WHERE c.sysUser="&session("User")&" and isnull(c.dtFechamento)")
 		if not caixa.eof then
 			session("CaixaID") = caixa("id")
+			session("UnidadeID") = caixa("UnidadeID")
 		end if
 
         set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',id,'|') SEPARATOR '') AtendimentosIDS from atendimentos where sysUser="&session("User")&" and isnull(HoraFim) and Data='"&myDate(date())&"'")

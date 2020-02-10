@@ -29,10 +29,17 @@
     <div class="panel hidden-print">
         <div class="panel-body">
             <div class="row">
+                <%
+                    if req("Helpdesk") <> "" then
+                        StatusDe = "Enviada"
+                    else
+                        StatusDe=""
+                    end if
+                %>
                 <% if req("Helpdesk") = "" then %>
                     <%= quickfield("simpleSelect", "De", "Autor", 3, "", "select su.id, t.Nome from (	select id, NomeProfissional Nome, 'profissionais' Tipo from profissionais where ativo='on'	UNION ALL	select id, NomeFuncionario, 'funcionarios' from funcionarios where ativo='on') t INNER JOIN sys_users su ON (su.idInTable=t.id AND lcase(su.`Table`)=t.Tipo) order by Nome", "Nome", " empty ") %>
                 <% end if %>
-                <%=quickfield("simpleSelect", "StatusDe", "Status (autor)", 3, "", "select id, De from cliniccentral.tarefasstatus where not isnull(De)", "De", " no-select2  empty ") %>
+                <%=quickfield("simpleSelect", "StatusDe", "Status (autor)", 3, StatusDe, "select id, De from cliniccentral.tarefasstatus where not isnull(De)", "De", " no-select2  empty ") %>
                 <%=quickfield("datepicker", "AberturaDe", "Abertura entre", 2, "", "", "", "") %>
                 <%=quickfield("datepicker", "AberturaAte", "&nbsp;", 2, "", "", "", "") %>
                 <div class="col-md-1">
@@ -48,14 +55,16 @@
                 <%
                     if req("Helpdesk") <> "" then
                         ParaSelecionado = ""
+                        StatusPara = ""
                     else
                         ParaSelecionado = session("User")
+                        StatusPara="Pendente"
                     end if
                 %>
                 <% if req("Helpdesk") = "" then %>
                     <%= quickfield("simpleSelect", "Para", "Destinatário", 3, ParaSelecionado, "select concat(su.id, '') id, t.Nome from (	select id, NomeProfissional Nome, 'profissionais' Tipo from profissionais where ativo='on'	UNION ALL	select id, NomeFuncionario, 'funcionarios' from funcionarios where ativo='on') t INNER JOIN sys_users su ON (su.idInTable=t.id AND lcase(su.`Table`)=t.Tipo)  UNION ALL select cc.id*(-1), concat('&raquo; ', cc.NomeCentroCusto) from centrocusto cc where cc.sysActive=1 order by Nome", "Nome", " empty ") %>
                 <% end if %>
-                <%=quickfield("simpleSelect", "StatusPara", "Status (destinatário)", 3, "Pendente", "select id, Para from cliniccentral.tarefasstatus where not isnull(Para)", "Para", " no-select2  empty ") %>
+                <%=quickfield("simpleSelect", "StatusPara", "Status (destinatário)", 3, StatusPara, "select id, Para from cliniccentral.tarefasstatus where not isnull(Para)", "Para", " no-select2  empty ") %>
                 <% if req("Helpdesk") = "" then %>
                     <%=quickfield("datepicker", "PrazoDe", "Prazo entre", 2, "", "", "", "") %>
                     <%=quickfield("datepicker", "PrazoAte", "&nbsp;", 2, "", "", "", "") %>
@@ -70,6 +79,7 @@
                     <button class="btn-export btn btn-sm btn-success btn-block" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i></button>
                 </div>
             </div>
+            <% if req("Helpdesk") = "" then %>
             <div class="row hidden" id="maisOpcoes">
                 <%= quickfield("text", "Filtrar", "Filtrar", 4, "", "", "", "") %>
                 <%=quickfield("simpleSelect", "Prioridade", "Prioridade", 3, "", "select id, Prioridade from cliniccentral.tarefasprioridade order by id", "Prioridade", " no-select2  empty ") %>
@@ -87,6 +97,9 @@
                 end if
                 %>
             </div>
+            <%
+            end if
+            %>
 
 
 

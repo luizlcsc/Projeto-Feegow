@@ -59,7 +59,13 @@ if ref("Projeto")<>"" then
 end if
 
 if ref("Para")<>"" then
-    set cc = db.execute("select CentroCustoID from "& session("Table") &" WHERE id="& session("idInTable") &" AND CentroCustoID<>0 AND NOT ISNULL(CentroCustoID)")
+    sqlCusto = "select CentroCustoID from "& session("Table") &" WHERE id="& session("idInTable") &" AND CentroCustoID<>0 AND NOT ISNULL(CentroCustoID)"
+
+    if ref("Helpdesk") <> "" then
+        set dblicense = db.execute(sqlCusto)
+    else
+        set cc = db.execute(sqlCusto)
+    end if
     if not cc.eof then
         sqlCC = " OR t.Para LIKE '%|-"& cc("CentroCustoID") &"|%' "
     end if
@@ -83,7 +89,7 @@ end if
             <%'if ref("Tipo")="R" then %>
               <th>De</th>
             <%'else %>
-              <th class="<%=tdHidden%>">Para</th>
+              <th >Para</th>
             <%'end if %>
             <th>Título</th>
             <th>Projeto</th>
@@ -118,6 +124,7 @@ end if
                    "GROUP BY t.id ORDER BY Pontos desc, t.DtPrazo, t.HrPrazo LIMIT 1000"
 
         if ref("Helpdesk") <> "" then
+'dd(sqlLista)
             set lista = dblicense.execute(sqlLista)
         else
             set lista = db.execute(sqlLista)
@@ -140,7 +147,12 @@ end if
                 set p = db.execute("select group_concat(substring_index(Nome, ' ', 3) SEPARATOR ', ') ParaU from cliniccentral.licencasusuarios where id in("&replace(Para, "|", "")&")")
                 ParaU = p("ParaU")
                 if instr(Para, "-") then
-                    set g = db.execute("select group_concat(NomeCentroCusto SEPARATOR ', ') ParaG from centrocusto where id*(-1) in("&replace(Para, "|", "")&")")
+                    sqlCusto = "select group_concat(NomeCentroCusto SEPARATOR ', ') ParaG from centrocusto where id*(-1) in("&replace(Para, "|", "")&")"
+                    if ref("Helpdesk") <> "" then
+                        set g = dblicense.execute(sqlCusto)
+                    else
+                        set g = db.execute(sqlCusto)
+                    end if
                     ParaG = g("ParaG")
                 end if
                 if ParaU<>"" and not isnull(ParaU) then
@@ -190,7 +202,7 @@ end if
                 <td><%=lista("DtAbertura") %></td>
                 <td class="<%=ClassePrazo%>"><strong><%=DataPrazo %></strong></td>
                 <td><span class="label label-sm arrowed-right label-<%=ClasseDe %>"><%=StaDe %></span> <%=lista("Nome") %></td>
-                <td class="<%=tdHidden%>"><span class="label label-sm arrowed-right label-<%=ClassePara %>"><%=StaPara %></span> <%=Para %></td>
+                <td ><span class="label label-sm arrowed-right label-<%=ClassePara %>"><%=StaPara %></span> <%=Para %></td>
 
                 <td><%=lista("Titulo") %></td>
                 <td><%=lista("Projeto") %></td>

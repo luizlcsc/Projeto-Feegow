@@ -24,10 +24,10 @@ wend
 omit.close
 set omit = nothing
 
-set CamposNaAgendaSQL = db.execute("SELECT Exibir FROM obrigacampos WHERE Recurso='Agendamento'")
+set CamposNaAgendaSQL = db.execute("SELECT Exibir, Obrigar FROM obrigacampos WHERE Recurso='Agendamento'")
 if not CamposNaAgendaSQL.eof then
     ExibirCamposAgenda = CamposNaAgendaSQL("Exibir")&""
-
+    camposObrigatorioPaciente= CamposNaAgendaSQL("Obrigar")&""
 end if
 
 
@@ -140,9 +140,13 @@ end if
 camposPedir = replace(camposPedir, "|", "")
 camposPedir= replace(camposPedir, " ", "")
 
+camposObrigatorioPaciente = replace(camposObrigatorioPaciente, "|", "")
+camposObrigatorioPaciente= replace(camposObrigatorioPaciente, " ", "")
+
     %>
 <script >
 var camposProtegerArr = "<%=camposPedir%>".split(",");
+var camposObrigatoriosArr =  "<%=camposObrigatorioPaciente%>".split(",");
 
 for(let i=0;i<camposProtegerArr.length;i++){
     let campoProteger = camposProtegerArr[i];
@@ -159,6 +163,13 @@ for(let i=0;i<camposProtegerArr.length;i++){
         }else{
             $campo.attr("readonly", "true").attr("title", "Preencha este campo acima.");
         }
+    }
+}
+
+for(let i=0;i<camposObrigatoriosArr.length;i++){
+    let $campo = $("#"+camposObrigatoriosArr[i]);
+    if($campo){
+        $campo.attr("required",true);
     }
 }
 

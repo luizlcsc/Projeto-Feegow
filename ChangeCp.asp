@@ -36,6 +36,14 @@ if session("banco")<>"" then
 		%>
 		<!--#include file="connect.asp"-->
 		<%
+
+		set sysUser = db.execute("select * from sys_users where id="&vcaOE("id"))
+		if not sysUser.eof then
+			session("Permissoes") = sysUser("Permissoes")
+			session("idInTable")=sysUser("idInTable")
+			session("Table") = lcase(sysUser("Table"))
+		end if
+
 		set caixa = db.execute("select * from caixa where sysUser="&session("User")&" and isnull(dtFechamento)")
 		if caixa.eof then
 			session("CaixaID")=""
@@ -72,7 +80,7 @@ if session("banco")<>"" then
 		set outrosUsers=nothing
 	
 		db_execute("update atendimentos set HoraFim=( select time(UltRef) from sys_users where id="&session("User")&" ) where isnull(HoraFim) and sysUser="&session("User")&" order by id desc limit 1")
-	
+		session("SelecionarLicenca") = 0
 		response.Redirect("./?P=Home&Pers=1")
 	end if
 end if

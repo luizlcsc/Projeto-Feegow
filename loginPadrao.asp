@@ -323,6 +323,7 @@ if not tryLogin.EOF then
 		set tryLogin=nothing
 		if clic>1 then
 			session("Licencas") = Licencas & "<li class='divider'></li>"
+			session("SelecionarLicenca") = 1
 		end if
 
         'if device()<>"" then

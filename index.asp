@@ -1111,13 +1111,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
               response.Write(abreDiv)
 
           %>
-<div id="modalAlterarSenha" class="modal fade" tabindex="-1">
-  <div class="modal-dialog">
-      <div class="modal-content" id="modalAlterarSenhaContent">
-        Carregando...
-      </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
 <div id="modal-youtube-tour" class="modal fade" role="dialog" aria-hidden="true">
     <div class="modal-lg modal-dialog">
         <div class="modal-content"  >
@@ -1708,30 +1701,54 @@ function facialRecognition () {
 	    openComponentsModal('facerecognition/get-face', false, false, true, false, "lg")
 }
 
-$(document).ready(function() {
-    <%
-      if session("UnidadeID")=-1 then
-    %>
-abreModalUnidade();
-    <%
-    end if
-    %>
+function openSelecionarLicenca(isbackdrop=true){
+    let backdrop={};
+    if(isbackdrop){
+        backdrop={backdrop: 'static', keyboard: false};
+    }
+  $.post("loginescolhelicenca.asp", '', function(data){
+      $("#modalCaixa").modal(backdrop);
+      $("#modalCaixaContent").html(data);
+  });
+}
 
+function openRedefinirSenha(){
+     openComponentsModal("RedefinirSenha.asp",{
+              T:'<%=session("Table")%>',
+              I:'<%=session("idInTable")%>',
+            },"Alteração de senha",true, 
+              function(){
+                $("#frmAcesso").submit();
+              },"md",false);
+}
+
+$(document).ready(function() {
     $(".callTicketBtn").attr("disabled", false);
     $(".facialRecogButton").attr("disabled", false);
 
+    //SEQUENCIA DE MODAIS DE ABERTURA AUTOMATICA
+    var ModalOpened = false;
+
+    <% if session("SelecionarLicenca") = 1 then %>
+    if (!ModalOpened){
+      ModalOpened = true;
+      openSelecionarLicenca();
+    }
+    <% end if%>
+    
+    <% if session("UnidadeID")=-1 then %>
+    if (!ModalOpened){
+      ModalOpened = true;
+        abreModalUnidade();
+      });
+    }
+    <% end if %>
+    
     <% if session("AlterarSenha") = 1 then %>
-
-    setTimeout(() => {
-      openComponentsModal("RedefinirSenha.asp",{
-            T:'<%=session("Table")%>',
-            I:'<%=session("idInTable")%>',
-          },"Alteração de senha",true, 
-            function(){
-              $("#frmAcesso").submit();
-            },"md",false);
-
-    }, 1000);
+    if (!ModalOpened){
+      ModalOpened = true;
+      openRedefinirSenha();
+    }
     <% end if%>
 
 });

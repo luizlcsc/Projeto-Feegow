@@ -9,6 +9,7 @@ data_inicio = Request.QueryString("data_inicio")
 unidades = Request.QueryString("unidades")
 especialidades = Request.QueryString("especialidades")
 profissionais = Request.QueryString("profissionais")
+convenioId = Request.QueryString("convenioId")
 
 
 get_payload = Request.QueryString("get_payload")
@@ -29,10 +30,10 @@ if not LicenseSQL.eof then
     %>
 <!--#include file="../connect.asp"-->
     <%
-    call ocupacao(data_inicio, data_fim, especialidades, "", profissionais, "", unidades)
+    call ocupacao(data_inicio, data_fim, especialidades, "", profissionais, convenioId, unidades)
 
     if get_payload="true" then
-        set HorariosSQL = dbclient.execute("SELECT * FROM agenda_horarios WHERE sysUser=0")
+        set HorariosSQL = dbclient.execute("SELECT * FROM agenda_horarios WHERE sysUser=0 ORDER BY Data, ProfissionalID, Hora")
 
         response.write(recordToJSON(HorariosSQL))
         response.end

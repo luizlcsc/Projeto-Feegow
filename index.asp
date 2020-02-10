@@ -1701,9 +1701,13 @@ function facialRecognition () {
 	    openComponentsModal('facerecognition/get-face', false, false, true, false, "lg")
 }
 
-function openSelecionarLicenca(){
+function openSelecionarLicenca(isbackdrop=true){
+    let backdrop={};
+    if(isbackdrop){
+        backdrop={backdrop: 'static', keyboard: false};
+    }
   $.post("loginescolhelicenca.asp", '', function(data){
-      $("#modalCaixa").modal({backdrop: 'static', keyboard: false});
+      $("#modalCaixa").modal(backdrop);
       $("#modalCaixaContent").html(data);
   });
 }

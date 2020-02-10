@@ -349,7 +349,7 @@ else
     <%
 
     %>
-    <td <%if not isnull(Imagem) and not Imagem="" then%>class="hotspot" onMouseOver="tooltip.show('<img src=<%=EnderecoImagens%>/<%=Imagem%> width=100>');"<%end if%>>
+    <td <%if not isnull(Imagem) and not Imagem="" then%>class="hotspot" onMouseOver1="tooltip.show('<img src=<%=EnderecoImagens%>/<%=Imagem%> width=100>');"<%end if%>>
     	<%
         'set veSePre=db.execute("select * from PacienteAnamneses where preAtendimento like 'S' and Data like '"&DataHoje&"' and PacienteID = '"&PacId&"'")
         'if not veSePre.EOF then

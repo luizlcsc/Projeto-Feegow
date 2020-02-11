@@ -164,72 +164,132 @@ end if
                 </td>
             </tr>
             <%
-            Intervalo = Horarios("Intervalo")
-            if isnull(Intervalo) then
-                Intervalo = 30
-            end if
-            HoraDe = cdate(Horarios("HoraDe"))
-
-            horarioAFix = (formatdatetime(Horarios("HoraA"), 4))
-            ultimoValorMinuto = Mid(horarioAFix,Len(horarioAFix)-0,1)
-
-            HoraA = cdate(Horarios("HoraA"))
-            if ultimoValorMinuto <> "9" then
-                HoraA = cdate(dateAdd("n", 1, Horarios("HoraA")))
-            end if
-
-            Hora = HoraDe
-            while Hora<=HoraA
-                HoraID = formatdatetime(Hora, 4)
-                HoraID = replace(HoraID, ":", "")
-				if session("FilaEspera")<>"" then
-				%>
-                <tr class="l vazio" data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
-                    <td width="1%"></td>
-                    <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
-                    <td colspan="4">
-                    	<button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(Hora,4)%>')" class="btn btn-xs btn-primary">
-                        	<i class="fa fa-chevron-left"></i> Agendar Aqui
-                        </button>
-                    </td>
-                </tr>
-                <%
-				elseif session("RemSol")<>"" then
-				%>
-                <tr class="l vazio" data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
-                    <td width="1%"></td>
-                    <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
-                    <td colspan="4">
-                    	<button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-                        	<i class="fa fa-chevron-left"></i> Agendar Aqui
-                        </button>
-                    </td>
-                </tr>
-                <%
-				elseif session("RepSol")<>"" then
-				%>
-                <tr class="l vazio" data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
-                    <td width="1%"></td>
-                    <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
-                    <td colspan="4">
-                    	<button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-                        	<i class="fa fa-chevron-left"></i> Repetir Aqui
-                        </button>
-                    </td>
-                </tr>
-                <%
-				else
-					HLivres = HLivres+1
-                %>
-                <tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=EquipamentoID%>,<%= Horarios("id") %>)" class="l vazio" data-grade='<%= Horarios("id") %>' data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
-                    <td width="1%"></td>
-                    <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
-                    <td colspan="4"><%= Tipo %></td>
-                </tr>
-                <%
+			if Horarios("tipograde")&"" ="0" then
+				Intervalo = Horarios("Intervalo")
+				if isnull(Intervalo) then
+					Intervalo = 30
 				end if
-                Hora = dateadd("n", Intervalo, Hora)
-            wend
+				HoraDe = cdate(Horarios("HoraDe"))
+
+				horarioAFix = (formatdatetime(Horarios("HoraA"), 4))
+				ultimoValorMinuto = Mid(horarioAFix,Len(horarioAFix)-0,1)
+
+				HoraA = cdate(Horarios("HoraA"))
+				if ultimoValorMinuto <> "9" then
+					HoraA = cdate(dateAdd("n", 1, Horarios("HoraA")))
+				end if
+
+				Hora = HoraDe
+				while Hora<=HoraA
+					HoraID = formatdatetime(Hora, 4)
+					HoraID = replace(HoraID, ":", "")
+					if session("FilaEspera")<>"" then
+					%>
+					<tr class="l vazio" data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
+						<td width="1%"></td>
+						<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
+						<td colspan="4">
+							<button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(Hora,4)%>')" class="btn btn-xs btn-primary">
+								<i class="fa fa-chevron-left"></i> Agendar Aqui
+							</button>
+						</td>
+					</tr>
+					<%
+					elseif session("RemSol")<>"" then
+					%>
+					<tr class="l vazio" data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
+						<td width="1%"></td>
+						<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
+						<td colspan="4">
+							<button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
+								<i class="fa fa-chevron-left"></i> Agendar Aqui
+							</button>
+						</td>
+					</tr>
+					<%
+					elseif session("RepSol")<>"" then
+					%>
+					<tr class="l vazio" data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
+						<td width="1%"></td>
+						<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
+						<td colspan="4">
+							<button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
+								<i class="fa fa-chevron-left"></i> Repetir Aqui
+							</button>
+						</td>
+					</tr>
+					<%
+					else
+						HLivres = HLivres+1
+					%>
+					<tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=EquipamentoID%>,<%= Horarios("id") %>)" class="l vazio" data-grade='<%= Horarios("id") %>' data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
+						<td width="1%"></td>
+						<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
+						<td colspan="4"><%= Tipo %></td>
+					</tr>
+					<%
+					end if
+					Hora = dateadd("n", Intervalo, Hora)
+				wend
+			else
+				txtHorarios = Horarios("Horarios")&""
+				if instr(txtHorarios, ",") then
+					splHorarios = split(txtHorarios, ",")
+					for ih=0 to ubound(splHorarios)
+						HoraPers = trim(splHorarios(ih))	
+						if isdate(HoraPers) then
+							HLivres = HLivres+1
+							HoraID = horaToID(HoraPers)
+							if session("FilaEspera")<>"" then
+								%>
+								<tr class="l vazio" data-hora="<%=formatdatetime(HoraPers, 4)%>" id="<%=HoraID%>">
+									<td width="1%"></td>
+									<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
+									<td colspan="4">
+										<button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(HoraPers,4)%>')" class="btn btn-xs btn-primary">
+											<i class="fa fa-chevron-left"></i> Agendar Aqui
+										</button>
+									</td>
+								</tr>
+								<%
+								elseif session("RemSol")<>"" then
+								%>
+								<tr class="l vazio" data-hora="<%=formatdatetime(HoraPers, 4)%>" id="<%=HoraID%>">
+									<td width="1%"></td>
+									<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
+									<td colspan="4">
+										<button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
+											<i class="fa fa-chevron-left"></i> Agendar Aqui
+										</button>
+									</td>
+								</tr>
+								<%
+								elseif session("RepSol")<>"" then
+								%>
+								<tr class="l vazio" data-hora="<%=formatdatetime(HoraPers, 4)%>" id="<%=HoraID%>">
+									<td width="1%"></td>
+									<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
+									<td colspan="4">
+										<button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(HHoraPersora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
+											<i class="fa fa-chevron-left"></i> Repetir Aqui
+										</button>
+									</td>
+								</tr>
+								<%
+								else
+									HLivres = HLivres+1
+								%>
+								<tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=EquipamentoID%>,<%= Horarios("id") %>)" class="l vazio" data-grade='<%= Horarios("id") %>' data-hora="<%=formatdatetime(HoraPers, 4)%>" id="<%=HoraID%>">
+									<td width="1%"></td>
+									<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
+									<td colspan="4"><%= Tipo %></td>
+								</tr>
+								<%
+								end if
+						end if
+					next
+				end if
+			end if
         Horarios.movenext
         wend
         Horarios.close

@@ -233,7 +233,7 @@ else
         cNot = 0
     
 	    if buscaAtu("TemNotificacao") then
-	        set NotificacoesSQL = db.execute("SELECT n.*, nt.TextoNotificacao FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1,2) AND TipoNotificacaoID != 4 AND n.UsuarioID="&buscaAtu("id"))
+	        set NotificacoesSQL = db.execute("SELECT n.*, nt.TextoNotificacao, NT.Descricao DescricaoNotificacao FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1,2) AND TipoNotificacaoID != 4 AND n.UsuarioID="&buscaAtu("id"))
 
 	        while not NotificacoesSQL.eof
 	            cNot=cNot+1
@@ -241,10 +241,12 @@ else
 
 	            TextoNotificacao = replace(replace(NotificacoesSQL("TextoNotificacao"),chr(13),""),chr(10),"")
 
+	            'TextoNotificacao = replace(TextoNotificacao, "[DATA_HORA]", datediff("d", NotificacoesSQL("DataHora"), time()))
 	            TextoNotificacao = replace(TextoNotificacao, "[USUARIO_CRIADOR.NOME]", userName)
 	            TextoNotificacao = replace(TextoNotificacao, "[METADATA.TEXTO]", replace(replace(NotificacoesSQL("metadata"), chr(10), " "), chr(13), " "))
 	            TextoNotificacao = replace(TextoNotificacao, "[NOTIFICACAO.ID]", NotificacoesSQL("id"))
 	            TextoNotificacao = replace(TextoNotificacao, "[ID_RELATIVO]", NotificacoesSQL("NotificacaoIDRelativo"))
+	            TextoNotificacao = replace(TextoNotificacao, "[TIPO_NOTIFICACAO]", NotificacoesSQL("DescricaoNotificacao"))
 
                 Notificacoes = Notificacoes & TextoNotificacao
 
@@ -255,6 +257,7 @@ else
 	    end if
 
         'Buscar os descontos pendentes
+
         set NotificacoesSQL = db.execute("SELECT count(n.id) total FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1) AND TipoNotificacaoID = 4 AND n.UsuarioID="&Session("User"))
         if not NotificacoesSQL.eof then 
             if ccur(NotificacoesSQL("total")) > 0 then 
@@ -297,55 +300,6 @@ else
 				    end if
 			    next
 		    end if
-
-
-            ' Adicionar notificação se existem descontos pendentes de aprovação para este usuario
-            descontoPendenteSql = "select dp.Desconto DescontoPendente, ValorUnitario " &_
-                                " from descontos_pendentes dp inner join itensinvoice ii ON ii.id = dp.ItensInvoiceID " &_
-                                " inner join cliniccentral.licencasusuarios lu ON lu.id = dp.SysUser  " &_
-                                " where dp.SysUserAutorizado is null AND dp.STATUS = 0  "
-
-
-            set rsDescontoPendenteNotificacao = db.execute(descontoPendenteSql)
-
-            set rsDescontosUsuario = db.execute("select DescontoMaximo, TipoDesconto "&_
-                                " from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') "&_
-                                " WHERE suser.id = "&session("User")&" AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' )")
-
-            podePermitirDesconto = 0
-            if not rsDescontosUsuario.eof and not rsDescontoPendenteNotificacao.eof then
-            while not rsDescontoPendenteNotificacao.eof and podePermitirDesconto = 0
-                while not rsDescontosUsuario.eof and podePermitirDesconto = 0
-                    valorLimiteRegra = rsDescontosUsuario("DescontoMaximo")
-                    if rsDescontosUsuario("TipoDesconto") = "P" then
-                        valorLimiteRegra = rsDescontoPendenteNotificacao("ValorUnitario") * rsDescontosUsuario("DescontoMaximo") / 100
-                    end if
-
-                    if valorLimiteRegra >= rsDescontoPendenteNotificacao("DescontoPendente") then
-                        podePermitirDesconto = 1
-                        Notificacoes = Notificacoes & "<div class='media'> <div class='media-body'> <h5 class='media-heading'>Existem descontos pendentes de aprovação </h5> </div><button onclick=\""location.href='?P=DescontoPendente&Pers=1&De="&date()&"&Ate="&date()&"'\"" type='button' class='btn btn-default btn-xs light'> <i class='fa fa-check text-success'></i> VER DESCONTOS</button>  </div>"
-                        cNot = cNot+1
-                    end if
-
-                    rsDescontosUsuario.movenext
-                wend
-                rsDescontosUsuario.movefirst
-                rsDescontoPendenteNotificacao.movenext
-            wend
-            end if
-
-            'ja existe uma implementacao disso usando a cliniccentral.notificacoes_tipos
-            'Adicionar notificação para as requisições de estoque
-            sqlRequisicaoEstoque = "SELECT count(*) total FROM estoque_requisicao er WHERE er.StatusID = 1 AND er.sysActive = 1 AND AutorizadorID IS NOT NULL AND er.AutorizadorID="&session("User")
-            set rsRequisicaoEstoque = db.execute(sqlRequisicaoEstoque)
-
-            if not rsRequisicaoEstoque.eof then
-                total = rsRequisicaoEstoque("total")
-                if cint(total) > 0 then
-                    Notificacoes = Notificacoes & "<div class='media'> <div class='media-body'> <h5 class='media-heading'>Existem requisições de estoque para você</h5> </div><button onclick=\""location.href='?P=ListaRequisicaoEstoque&Pers=1'\"" type='button' class='btn btn-default btn-xs light'> <i class='fa fa-check text-success'></i> VER REQUISIÇÕES DE ESTOQUE</button>  </div>"
-                    cNot = cNot+1
-                end if
-            end if
 
 
 		    if Notificacoes<>"" then

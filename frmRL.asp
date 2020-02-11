@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
 <%
 if req("Dup")<>"" then
     db.execute("insert into rateiodominios (nomeDominio, Tipo, Procedimentos, Profissionais, Formas, GruposProfissionais, Tabelas, Unidades, Dias, Horas, UsarValorNoProcedimento, dominioSuperior, sysUser, sysActive) select nomeDominio, Tipo, Procedimentos, Profissionais, Formas, GruposProfissionais, Tabelas, Unidades, Dias, Horas, UsarValorNoProcedimento, dominioSuperior, "& session("User") &", sysActive from rateiodominios where id="& req("Dup"))
@@ -151,6 +152,12 @@ end if
                         strProcedimentosGrupos = ""
                         if Procedimentos<>"" then
                             Procedimentos =  replace(replace(Procedimentos&"@", ",@", ""), "@", "")
+                            if Procedimentos&""="" then
+                                Procedimentos="0"
+                            end if
+
+                            Procedimentos = fix_array_comma(Procedimentos)
+
                             set sqlProcs = db.execute("select group_concat(NomeProcedimento separator ', ') procedimentos from procedimentos where sysActive=1 and ativo='on' and id in("& Procedimentos &") order by NomeProcedimento")
                             strProcedimentos = sqlProcs("Procedimentos")
                             set sqlGrupos = db.execute("select group_concat(NomeGrupo separator ', ') procedimentosgrupos from procedimentosgrupos where sysActive=1 and id*(-1) in("& Procedimentos &") order by NomeGrupo")

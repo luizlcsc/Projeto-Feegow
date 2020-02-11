@@ -26,11 +26,7 @@ if strIds<>"" then
         %>
         <div class="media">
             <a class="media-left" href="#">
-                <% if len(Foto)>3 then %>
-                <img class="media-object mw40" alt="64x64" src="<%=Foto %>">
-                <%else %>
-                <span class="glyphicon glyphicon-user text-info"></span> 
-                <%end if %>
+                <span class="glyphicon glyphicon-alert text-warning"></span>
             </a>
             <div class="media-body">
             <h5 class="media-heading" style="width:80%"><a href="<%=link %>"><%=tar("Titulo")%></a>

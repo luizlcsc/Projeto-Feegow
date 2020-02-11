@@ -1,9 +1,10 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Connection.asp"-->
 <%
+if req("Helpdesk")<>"" then
 licencaCliente = 5459
 set dblicense = newConnection("clinic5459", "")
-
+end if
 if ref("De")<>"" then
     sqlDe = " AND t.De="& treatvalnull(ref("De")) &" "
 end if

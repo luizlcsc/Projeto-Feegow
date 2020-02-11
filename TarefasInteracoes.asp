@@ -9,8 +9,9 @@
     </span>
 
 <%
-set dblicense = newConnection("clinic5459", "")
-
+if req("Helpdesk")<>"" then
+    set dblicense = newConnection("clinic5459", "")
+end if
 if ref("msgInteracao")<>"" then
     Publico = 1
     if ref("Publico") <> "on" then

@@ -243,7 +243,12 @@ if lcase(ref("P")) = "estoque_requisicao" then
     prioridadeId = ref("PrioridadeID")
     Metadata = ref("obsEstoque")
 
-    call addNotificacao(2, autorizadorId, filaTransferenciaId, prioridadeId, 1, Metadata)
+    if ref("StatusID")="1" then
+        call addNotificacao(2, autorizadorId, filaTransferenciaId, prioridadeId, 1, Metadata)
+    else
+        %><!--#include file="Classes/Notificacoes.asp"--><%
+        call clearNotificacoes(2, filaTransferenciaId, 4)
+    end if
 end if
 
 

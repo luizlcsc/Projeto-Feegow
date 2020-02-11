@@ -91,6 +91,10 @@ if erro ="" then
     if ref("LocalID")&"" <>"" and ref("rdValorPlano") = "P" then
         erro = addError(erro, ValidaLocalConvenio(1,ref("ConvenioID")&"",ref("LocalID")&""))
     end if
+    if ref("GradeID")&"" <>"" and ref("rdValorPlano") = "P" then
+        'ValidaConvenioGrade(linha,vConvenio, vProfessionalID, vGrade )
+        erro = addError(erro, ValidaConvenioGrade(1,ref("ConvenioID")&"", rfProfissionalID, ref("GradeID")&""))
+    end if
     '-> procedimentos adicionais na agenda
     ProcedimentosAgendamento = trim(ref("ProcedimentosAgendamento"))
 
@@ -112,7 +116,10 @@ if erro ="" then
 
                 if apLocalID <>"" and aprdValorPlano  = "P" then
                     erro = addError(erro, ValidaLocalConvenio((iPA+2),apConvenioID&"",apLocalID&""))
+                end if
 
+                if  ref("GradeID")&"" <>"" and aprdValorPlano  = "P" then
+                    erro = addError(erro, ValidaConvenioGrade((iPA+2),apConvenioID&"",rfProfissionalID,ref("GradeID")&""))
                 end if
             end if
         next

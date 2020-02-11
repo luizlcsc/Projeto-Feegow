@@ -753,6 +753,7 @@ end if
                         end if
 
 						%>
+
                             <div class="col-md-4">
                             <%if ServicoSMS="S" then%>
                                 <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar SMS</label></div>
@@ -1124,8 +1125,7 @@ function RegistrarMultiplasPendencias(liberar) {
             if(data.length > 0) {
                 openModal(data, "Selecionar procedimento do pacote contratado", true, false);
             }
-        });
-        //crumbAgendaUpdate();
+        })
     });
 
     $("#Retorno").change(function() {
@@ -1205,15 +1205,18 @@ function abasAux(){
 abasAux();
 
 function btnSalvarToggleLoading(state, force, waitMessage="Aguarde...") {
-  var $el = $('#btnSalvarAgenda');
+  var $el = $('#btnSalvarAgenda'), timeout= state ?  500 : 0;
 
-  if($el.attr("data-force-disabled") !== 'true' || force){
-      if(state){
-          $el.attr('disabled', false).html("<i class='fa fa-save'></i> Salvar", false);
-      }else{
-          $el.attr('disabled', true).html("<i class='fa fa-spinner fa-spin'></i> "+waitMessage, true);
+
+  setTimeout(function() {
+    if($el.attr("data-force-disabled") !== 'true' || force){
+          if(state){
+              $el.attr('disabled', false).html("<i class='fa fa-save'></i> Salvar", false);
+          }else{
+              $el.attr('disabled', true).html("<i class='fa fa-spinner fa-spin'></i> "+waitMessage, true);
+          }
       }
-  }
+  }, timeout);
 }
 
 function parametros(tipo, id){
@@ -1691,7 +1694,7 @@ $(function(){
 });
 
 function logAgendamento(agendamentoId) {
-    openComponentsModal("DefaultLog.asp", {R: "agendamentos", I: agendamentoId}, "Alterações do agendamento", true);
+    openComponentsModal("DefaultLog.asp", {Impressao: "S",R: "agendamentos", I: agendamentoId}, "Alterações do agendamento", true);
 }
 
 

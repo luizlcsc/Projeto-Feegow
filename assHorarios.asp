@@ -1,6 +1,44 @@
 <!--#include file="connect.asp"-->
 
 <%
+
+function getNomeEspecialidades(stringIDs)
+	newStringIds = replace(stringIDs&"","|","")
+	getNomeEspecialidades =""
+
+	if newStringIds <> "" then
+		set esp = db.execute("select group_concat(especialidade separator ', ' ) as esp from especialidades where id in("&newStringIds&")")
+		if not esp.eof then
+			getNomeEspecialidades = esp("esp")
+		end if 
+	end if 
+end function
+
+function getNomeProcedimentos(stringIDs)
+	newStringIds = replace(stringIDs&"","|","")
+	getNomeProcedimentos =""
+
+	if newStringIds <> "" then
+		set procs = db.execute("select group_concat( nomeprocedimento separator ', ' ) procs from procedimentos where id in("&newStringIds&")")
+		if not procs.eof then
+			getNomeProcedimentos = procs("procs")
+		end if 
+	end if 
+end function
+
+function getNomeConvenios(stringIDs)
+	newStringIds = replace(stringIDs&"","|","")
+	getNomeConvenios =""
+
+	if newStringIds <> "" then
+		set convs = db.execute("select group_concat( nomeconvenio separator ', ' ) convs from convenios where id in("&newStringIds&")")
+		if not convs.eof then
+			getNomeConvenios = convs("convs")
+		end if 
+	end if 
+end function
+
+
 if request.QueryString("X")<>"" then
 	db_execute("delete from assPeriodoLocalXProfissional where id = '"&req("X")&"'")
 end if
@@ -98,6 +136,7 @@ if ref("h")="h" then
 	LocalID=ref("LocalID")
 	Procedimentos=ref("Procedimentos")&""
 	Especialidades=ref("Especialidades")&""
+	Convenios=ref("Convenios")&""
 
 	Intervalo = ref("Intervalo")
 	Compartilhar = ref("Compartilhada")
@@ -116,7 +155,7 @@ if ref("h")="h" then
 		end if
 	end if
 	if erro="" then
-		db_execute("insert into assPeriodoLocalXProfissional (DataDe,DataA,HoraDe,HoraA,ProfissionalID,LocalID, Intervalo, Compartilhar, Procedimentos, Especialidades) values ("&mydatenull(DataDe)&","&mydatenull(DataA)&",'"&HoraDe&"','"&HoraA&"', "&treatvalzero(ProfissionalID)&", "&treatvalzero(LocalID)&", '"&Intervalo&"','"&Compartilhar&"', '"&Procedimentos&"', '"&Especialidades&"')")
+		db_execute("insert into assPeriodoLocalXProfissional (DataDe,DataA,HoraDe,HoraA,ProfissionalID,LocalID, Intervalo, Compartilhar, Procedimentos, Especialidades,Convenios) values ("&mydatenull(DataDe)&","&mydatenull(DataA)&",'"&HoraDe&"','"&HoraA&"', "&treatvalzero(ProfissionalID)&", "&treatvalzero(LocalID)&", '"&Intervalo&"','"&Compartilhar&"', '"&Procedimentos&"', '"&Especialidades&"','"&Convenios&"')")
 	end if
 end if
 %>
@@ -142,8 +181,9 @@ while not pass.EOF
     <td class="text-center"><%=pass("Intervalo")%></td>
     <td><%=pass("NomeProfissional")%></td>
     <td><%=pass("NomeLocal")%> <%=getNomeLocalUnidade(pass("UnidadeID"))%></td>
-    <td class="text-center"><%=pass("Procedimentos")%></td>
-    <td class="text-center"><%=pass("Especialidades")%></td>
+    <td class="text-center"><%=getNomeProcedimentos(pass("Procedimentos"))%></td>
+    <td class="text-center"><%=getNomeEspecialidades(pass("Especialidades"))%></td>
+    <td class="text-center"><%=getNomeConvenios(pass("Convenios"))%></td>
     <td class="text-center"><%=pass("Compartilhar")%></td>
 	<td width="1%"><button type="button" value="Excluir" onClick="location.href='?X=<%=pass("id")%>&ProfissionalID=<%=req("ProfissionalID")%>&LocalID=<%=req("LocalID")%>';" style="font-size:10px" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> </button></td>
 </tr>

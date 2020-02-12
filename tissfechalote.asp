@@ -11,6 +11,7 @@ Unidades = req("CompanyUnitID")
 Planos = req("Planos")
 Contratados = request.QueryString("Contratados")
 Procedimentos =  req("Procedimentos")
+Executantes =  req("Executantes")
 
 if Unidades="" then
 	Unidades = session("Unidades")
@@ -69,7 +70,7 @@ end if
         </div>
         <br>
         <div class="row">
-            <%= quickField("simpleSelect", "GuiaStatus", "Status", 3, req("GuiaStatus"), "SELECT * FROM cliniccentral.tissguiastatus ORDER BY Status", "Status", " empty") %>
+            <%= quickField("simpleSelect", "GuiaStatus", "Status", 2, req("GuiaStatus"), "SELECT * FROM cliniccentral.tissguiastatus ORDER BY Status", "Status", " empty") %>
             <%=quickfield("simpleSelect", "Procedimentos", "Procedimentos", 3, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' order by NomeProcedimento", "NomeProcedimento", " empty")%>
 
             <div class="col-md-2" id="tag-planos" >
@@ -84,10 +85,11 @@ end if
                     <option value="">Selecione o Convênio</option>
                 </select>
             </div>
+            <%=quickfield("simpleSelect", "Executantes", "Executantes", 3, Executantes, "select id, NomeProfissional from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " empty")%>
 
             <div class="col-md-2"><br>
-                Guias encontradas: <span id="encontradas">0</span>.<br>
-                Guias selecionadas: <span id="selecionadas">0</span>.
+                <strong>Guias encontradas:</strong> <span id="encontradas">0</span>.<br>
+                <strong>Guias selecionadas:</strong> <span id="selecionadas">0</span>.
             </div>
         </div>
 
@@ -185,8 +187,11 @@ if request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaConsu
     if Contratados<>"" then
         sqlContratados = " and g.CodigoNaOperadora IN ("&Contratados&") "
     end if
+    if Executantes<>"" then
+        sqlExecutantes = " and g.ProfissionalID IN ("&Executantes&") "
+    end if
 
-    sqlGuia = "select g.*, proc.NomeProcedimento from tissguiaconsulta g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN procedimentos proc ON proc.id = g.ProcedimentoID where g.sysActive=1"&sqlLote&sqlContratados&sqlPlanos&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia &orderBy
+    sqlGuia = "select g.*, proc.NomeProcedimento from tissguiaconsulta g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN procedimentos proc ON proc.id = g.ProcedimentoID where g.sysActive=1"&sqlLote&sqlContratados&sqlPlanos&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&sqlExecutantes&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia &orderBy
 
 	set guias = db.execute(sqlGuia)
 	while not guias.EOF
@@ -303,7 +308,11 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaH
         sqlContratados = " and g.CodigoNaOperadora IN ("&Contratados&") "
     end if
 
-    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') NomeProcedimentos  from tissguiahonorarios g LEFT JOIN tissprocedimentoshonorarios tph ON tph.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tph.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlPlanos&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia & "GROUP BY g.id "&orderBy
+    if Executantes<>"" then
+        sqlExecutantes = " and tph.ProfissionalID IN ("&Executantes&") "
+    end if
+
+    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') NomeProcedimentos  from tissguiahonorarios g LEFT JOIN tissprocedimentoshonorarios tph ON tph.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tph.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlPlanos&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia &sqlExecutantes& "GROUP BY g.id "&orderBy
 
 	set guias = db.execute(sqlGuias)
 	while not guias.EOF
@@ -440,7 +449,12 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaS
         sqlContratados = " and g.CodigoNaOperadora IN ("&Contratados&") "
     end if
 
-    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') Procedimentos from tissguiasadt g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN tissprocedimentossadt tps ON tps.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlPlanos&sqlProcedimentos&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia & " GROUP BY g.id "& orderBy
+    if Executantes<>"" then
+        sqlExecutantes = " and tps.ProfissionalID IN ("&Executantes&") "
+    end if
+
+
+    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') Procedimentos from tissguiasadt g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN tissprocedimentossadt tps ON tps.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlPlanos&sqlProcedimentos&" and g.ConvenioID="&request.QueryString("ConvenioID")&sqlUnidades &sqlStatusGuia &sqlExecutantes& " GROUP BY g.id "& orderBy
 	set guias = db.execute(sqlGuias)
 
 	while not guias.EOF

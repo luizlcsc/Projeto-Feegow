@@ -7,7 +7,7 @@
                         <th valign="bottom"><%=quickfield("datepicker", "DataDe", "De", 12, date(), "", "", "") %></th>
                         <th valign="bottom"><%=quickfield("datepicker", "DataA", "Até", 12, date(), "", "", "") %></th>
                         <th valign="bottom"><%=quickfield("timepicker", "HoraDe", "Das", 12, "08:00", "", "", "") %></th>
-                        <th valign="bottom"><%=quickfield("timepicker", "HoraA", "Às", 12, "18:00", "", "", "") %></th>
+                        <th colspan="2" valign="bottom"><%=quickfield("timepicker", "HoraA", "Às", 12, "18:00", "", "", "") %></th>
                         <th colspan="2" valign="bottom" nowrap><label>Intervalo (min)</label><br />
                             <input type="number" name="Intervalo" class="form-control" size="5" maxlength="5" value="15" min="1" />
                         </th>
@@ -15,29 +15,29 @@
                     <tr class="alert">
 
                         <%
-      if ProfissionalID>=0 then %>
+                    if ProfissionalID>=0 then %>
                         <th width="20%" valign="bottom"><label>Profissional</label><br />
                             <select name="ProfissionalID" class="form-control">
                                 <option value="0">Selecione</option>
                                 <%
-          set pProf=db.execute("select * from profissionais where sysActive=1 order by NomeProfissional")
-          while not pProf.EOF
+                            set pProf=db.execute("select * from profissionais where sysActive=1 order by NomeProfissional")
+                        while not pProf.EOF
                                 %><option value="<%=pProf("id")%>" <%if ProfissionalID=pProf("id") then%> selected="selected" <%end if%>><%=pProf("NomeProfissional")%></option>
                                 <%
-          pProf.moveNext
-          wend
-          pProf.close
-          set pProf=nothing
+                            pProf.moveNext
+                        wend
+                        pProf.close
+                        set pProf=nothing
                                 %>
                             </select>
                         </th>
 
                         <%
-      else
+                    else
                         %>
                         <input type="hidden" name="ProfissionalID" id="ProfissionalID" value="<%=ProfissionalID %>" />
                         <%
-      end if
+                    end if
                         %>
                         <th valign="bottom"><label>Local</label><br />
                             <select name="LocalID" class="form-control">
@@ -61,6 +61,10 @@
 
                         <th  valign="bottom">
                         <%=quickField("multiple", "Especialidades", "Especialidades", 12, "", "select id, especialidade from especialidades where sysActive=1 order by especialidade", "especialidade", "")%>
+                        </th>
+
+                        <th  valign="bottom">
+                        <%=quickField("multiple", "Convenios", "Convenios", 12, "", "select id, nomeconvenio from convenios where sysActive=1 and ativo = 'on' order by nomeconvenio", "nomeconvenio", "")%>
                         </th>
 
                         <th valign="bottom" style="vertical-align:top;">

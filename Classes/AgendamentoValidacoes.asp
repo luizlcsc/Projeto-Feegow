@@ -47,6 +47,24 @@ function ValidaLocalConvenio(linha,vConvenio,vLocal)
     end if
 end function
 
+function ValidaConvenioGrade(linha, vConvenio, vProfessionalID, vGrade )
+    ValidaConvenioGrade = ""
+    stringGradeSql = "select convenios from assfixalocalxprofissional where id="&vGrade&" and profissionalID="&vProfessionalID
+    if GradeID<0 then
+        stringGradeSql = "select convenios from assperiodolocalxprofissional where id="&vGrade*-1&" and profissionalID="&vProfessionalID
+    end if
+    set gradesql = db.execute(stringGradeSql) 
+
+    if not gradesql.eof then
+        vLimitarConvenios = gradesql("convenios")&""
+        if vLimitarConvenios <>"" then
+            if instr(vLimitarConvenios, "|"&vConvenio&"|")<=0 then
+                ValidaConvenioGrade = linha&"° procedimento, A grade deste profissional não aceita o convenio selecionado."
+            end if
+        end if
+    end if
+end function
+
 function addError(error, valor)
     if valor <> "" then
         addError = error&"\n"&valor

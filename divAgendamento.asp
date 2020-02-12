@@ -123,20 +123,6 @@ else
     Convenios = "Todos"
 end if
 
-if session("UnidadeID")=0 then
-    set getNome = db.execute("select * from empresa")
-    if not getNome.eof then
-        FusoHorario = getNome("FusoHorario")
-        HorarioVerao = getNome("HorarioVerao")
-    end if
-elseif session("UnidadeID")>0 then
-    set getNome = db.execute("select * from sys_financialcompanyunits where id="&session("UnidadeID"))
-    if not getNome.eof then
-        FusoHorario = getNome("FusoHorario")
-        HorarioVerao = getNome("HorarioVerao")
-    end if
-end if
-
 Hora = request.QueryString("horario")
 Hora = left(Hora,2)&":"&mid(Hora, 3, 2)
 Data = ""
@@ -262,7 +248,7 @@ if PacienteID<>"" then
         end if
 
         if agendamentoIDSelecionado <> "" then
-            set agendaInfo = db.execute("select *, TabelaParticularID from agendamentos where id="&agendamentoIDSelecionado)
+            set agendaInfo = db.execute("select TabelaParticularID from agendamentos where id="&agendamentoIDSelecionado)
             if not agendaInfo.eof then
                 TabelaParticularID = agendaInfo("TabelaParticularID")
             end if
@@ -453,7 +439,7 @@ end if
                 </div>
 
         <%
-		set msgs = db.execute("select * from agendamentosrespostas where AgendamentoID like '"&AgendamentoID&"'")
+		set msgs = db.execute("select DataHora,Resposta from agendamentosrespostas where AgendamentoID like '"&AgendamentoID&"'")
 		while not msgs.eof
 			%>
 			<span class="label label-alert">Paciente respondeu em <%=msgs("DataHora")%>: <em><%=msgs("Resposta")%></em></span>
@@ -509,7 +495,7 @@ end if
             </div>
 
 			<%if req("Tipo")="Quadro" or req("ProfissionalID")="" or req("ProfissionalID")="0" or req("ProfissionalID")="null" then%>
-                <%= quickField("simpleSelect", "ProfissionalID", "Profissional", 2, ProfissionalID, "select * from profissionais where sysActive=1 and Ativo='on' AND (id IN ("&ProfissionaisEquipamentos&") or '"&ProfissionaisEquipamentos&"'='0') order by NomeProfissional", "NomeProfissional", " required") %>
+                <%= quickField("simpleSelect", "ProfissionalID", "Profissional", 2, ProfissionalID, "select id, NomeProfissional from profissionais where sysActive=1 and Ativo='on' AND (id IN ("&ProfissionaisEquipamentos&") or '"&ProfissionaisEquipamentos&"'='0') order by NomeProfissional", "NomeProfissional", " required") %>
             <%else %>
                 <div class="col-md-2">
                     <input type="hidden" name="ProfissionalID" id="ProfissionalID" value="<%=ProfissionalID%>" />
@@ -556,7 +542,7 @@ end if
                                 <label>Status</label><br />
 	                	        <select name="StaID" id="StaID" class="form-control">
                                 <%
-						        set sta = db.execute("select * from StaConsulta order by StaConsulta")
+						        set sta = db.execute("select id,StaConsulta from StaConsulta order by StaConsulta")
 						        while not sta.eof
 							        %>
 							        <option value="<%=sta("id")%>"<%if StaID=sta("id") then%> selected="selected"<%end if%> style="background-image:url(assets/img/<%=sta("id")%>.png); background-repeat:no-repeat; padding-left:22px; background-position:3px 3px"><%=sta("StaConsulta")%></option>
@@ -732,8 +718,8 @@ end if
                     <div class="col-md-8">
                         <div class="row">
                         <%
-						set s = dbc.execute("select * from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
-						set m = dbc.execute("select * from cliniccentral.emailshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+						set s = dbc.execute("select EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+						set m = dbc.execute("select EnviadoEm from cliniccentral.emailshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
 
 						if not s.eof then
 							SMSEnviado = "S"
@@ -759,10 +745,15 @@ end if
                                 <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar SMS</label></div>
                             <%end if%>
                                 <%
-								'response.Write("select * from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and LicencaID="&replace( session("banco"), "clinic", "" ))
+								'response.Write("select EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and LicencaID="&replace( session("banco"), "clinic", "" ))
 								while not s.eof
+								    SmsOuWhatsApp="SMS"
+								    if s("WhatsApp") then
+								        SmsOuWhatsApp="WhatsApp"
+								    end if
+
 									%>
-									<br><small><em>SMS enviado em <%=s("EnviadoEm")%></em></small>
+									<br><small><em><%=SmsOuWhatsApp%> enviado em <%=s("EnviadoEm")%></em></small>
 									<%
 								s.movenext
 								wend
@@ -1348,7 +1339,7 @@ var saveAgenda = function(){
                 crumbAgenda();
 
                 <% if recursoAdicional(27)=4 then
-                    set pacs_config = db.execute("select * from pacs_config where expired = 0")
+                    set pacs_config = db.execute("select id from pacs_config where expired = 0")
                     if not pacs_config.eof and ConsultaID<>0 then %>
                         postUrl("pacs", {agendamento_id:'<%=AgendamentoID%>',profissional_id:'<%=ProfissionalID%>'});
                     <% end if    

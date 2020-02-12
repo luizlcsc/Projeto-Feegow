@@ -84,8 +84,11 @@ end if
 if Acao="Remarcar" then
     Encaixe=0
 
-    set AgendamentoSQL = db.execute("SELECT Hora, HoraFinal, Tempo, EquipamentoID, IF(rdValorPlano='P',ValorPlano,0) ConvenioID FROM agendamentos WHERE id="&session("RemSol"))
-
+    set AgendamentoSQL = db.execute("SELECT localid ,Hora, HoraFinal, Tempo, EquipamentoID, IF(rdValorPlano='P',ValorPlano,0) ConvenioID FROM agendamentos WHERE id="&session("RemSol"))
+    if LocalID="Search" then
+        LocalID = AgendamentoSQL("localid")
+    end if 
+    
     rfTempo = AgendamentoSQL("Tempo")
     AgendamentoID=session("RemSol")
     ConvenioID=AgendamentoSQL("ConvenioID")

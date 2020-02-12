@@ -1740,7 +1740,6 @@ $(document).ready(function() {
     if (!ModalOpened){
       ModalOpened = true;
         abreModalUnidade();
-      });
     }
     <% end if %>
     

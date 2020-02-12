@@ -116,6 +116,36 @@ end if
 
 
 <%
+
+function existeGrade(ProfissionalID, UnidadeID, Hora, Data,Procedimento,Especialidade,Convenio )
+    existeGrade = false
+    if UnidadeID<>"" then
+        sqlUnidade = " AND loc.UnidadeID='"&UnidadeID&"'"
+    end if
+
+    if Hora <>"" then
+        horaWhere = " AND "&mytime(Hora)&" BETWEEN HoraDe AND HoraA "
+    end if
+
+    sqlProcedimentoPermitido =  " AND ((Procedimentos = '' OR Procedimentos IS NULL)"&_
+                                " OR Procedimentos LIKE '%|"&Procedimento&"|%') "
+
+    sqlEspecialidadePermitido =  " AND ((Especialidades = '' OR Especialidades IS NULL)"&_
+                                " OR Especialidades LIKE '%|"& Especialidade &"|%') "
+
+    sqlConvenioPermitido =  " AND ((Convenios = '' OR Convenios IS NULL)"&_
+                                " OR Convenios LIKE '%|"& Convenio &"|%') "
+
+    sqlGrade = "SELECT id GradeID, Especialidades, Procedimentos,Convenios, LocalID FROM (SELECT ass.id, Especialidades, Procedimentos, LocalID,Convenios FROM assfixalocalxprofissional ass LEFT JOIN locais loc ON loc.id=ass.LocalID WHERE ProfissionalID="&treatvalzero(ProfissionalID)&sqlUnidade&" AND DiaSemana=dayofweek("&mydatenull(Data)&") "&horaWhere&"AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&")) UNION ALL SELECT ex.id*-1 id, Especialidades, Procedimentos, LocalID,Convenios FROM assperiodolocalxprofissional ex LEFT JOIN locais loc ON loc.id=ex.LocalID WHERE ProfissionalID="&ProfissionalID&sqlUnidade&" AND DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&")t"&_
+                " where true "&sqlProcedimentoPermitido&sqlEspecialidadePermitido&sqlConvenioPermitido
+    'response.write sqlGrade
+
+    set Grade = db.execute(sqlGrade)
+    if not Grade.eof then
+        existeGrade = true
+    end if 
+end function
+
 if session("FilaEspera")<>"" then
 	set fila = db.execute("select f.id, p.NomePaciente from filaespera as f left join pacientes as p on p.id=f.PacienteID where f.id="&session("FilaEspera")&" and f.ProfissionalID like '"&ProfissionalID&"'")
 	if not fila.eof then
@@ -133,17 +163,18 @@ AlterarNumeroProntuario = getConfig("AlterarNumeroProntuario")
 
 if session("RemSol")<>"" then
 Ativo = "off"
-testesql = "select a.TipoCompromissoID, a.ProfissionalID, a.EspecialidadeID, if(a.rdValorPlano='P',a.rdValorPlano,'') as ConvenioID from agendamentos a where id="&session("RemSol")
-'response.write testesql
-set teste = db.execute(testesql)
+remarcarSql = "select a.TipoCompromissoID, a.ProfissionalID, a.EspecialidadeID, if(a.rdValorPlano='P',a.ValorPlano,'') as ConvenioID from agendamentos a where id="&session("RemSol")
+'response.write remarcarSql
+set RemSQL = db.execute(remarcarSql)
 
 RemarcarAssociacao = 5
 RemarcarProfissionalID = req("ProfissionalID")
-RemarcarEspecialidadeID = teste("EspecialidadeID")
-RemarcarProcedimentoID = teste("TipoCompromissoID")
-RemarcarConvenio = teste("ConvenioID")
+RemarcarEspecialidadeID = RemSQL("EspecialidadeID")
+RemarcarProcedimentoID = RemSQL("TipoCompromissoID")
+RemarcarConvenio = RemSQL("ConvenioID")
 
 profissionalValido = validaProcedimentoProfissional(5 ,RemarcarProfissionalID, RemarcarEspecialidadeID,  RemarcarProcedimentoID,"")
+existegradeval = existeGrade(RemarcarProfissionalID,"", "", Data,RemarcarProcedimentoID,RemarcarEspecialidadeID,RemarcarConvenio)
 
 if profissionalValido = true then
     Ativo = "on"
@@ -160,26 +191,41 @@ if profissionalValido = true then
 
 end if
 
-'response.write "<br>prof:"&RemarcarProfissionalID&" <br>esp:"&RemarcarEspecialidadeID&" <br>proc:"&RemarcarProcedimentoID&" <br>ag:"&session("RemSol")&" <br>conv:"&RemarcarConvenio&" <br>result:"&profissionalValido
+'response.write "<br>prof:"&RemarcarProfissionalID&" <br>esp:"&RemarcarEspecialidadeID&" <br>proc:"&RemarcarProcedimentoID&" <br>ag:"&session("RemSol")&" <br>conv:"&RemarcarConvenio&" <br>result:"&profissionalValido&" <br>existegrade:"&existegradeval
 
-%>
-<div class="panel panel-footer row">
-    <div class="col-md-6">
-        <div class="input-group">
-            <span class="input-group-addon">Selecione um hor&aacute;rio abaixo ou digite</span>
-            <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
-            <span class="input-group-btn">
-                <button type="button" class="btn btn-default" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', $('#HoraRemarcar').val(), 'Search')">
-                    <i class="fa fa-clock-o bigger-110"></i>
-                    Remarcar</button>
-            </span>
-            <span class="input-group-btn">
-                <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
-            </span>
+    if existegradeval or getConfig("PermitirRemarcarSemGrade")=1 then
+    %>
+    <div class="panel panel-footer row">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-addon">Selecione um hor&aacute;rio abaixo ou digite</span>
+                <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', $('#HoraRemarcar').val(), 'Search')">
+                        <i class="fa fa-clock-o bigger-110"></i>
+                        Remarcar</button>
+                </span>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
+                </span>
+            </div>
         </div>
     </div>
-</div>
-<%
+    <%
+    else
+    %>
+     <div class="panel panel-footer row">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-addon">Não é possível remarcar o agendamente no dia selecionado.</span>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <%
+    end if
 end if
 if session("RepSol")<>"" then
 	%>

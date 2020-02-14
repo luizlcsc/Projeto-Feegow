@@ -2300,11 +2300,14 @@ select case lcase(req("P"))
                 'mioloOutrasCaracteristicas = right(mioloOutrasCaracteristicas, len(mioloOutrasCaracteristicas)-4)
                 sqlOutrasCaracteristicas = sqlOutrasCaracteristicas & mioloOutrasCaracteristicas &") "
             end if
-            set telas = db.execute("select id, Recurso from treinamento where sysActive=1 AND Recurso<>'' AND LENGTH(Detalhamento)>12 AND (PerfisEmpresa='' OR ISNULL(PerfisEmpresa) OR PerfisEmpresa LIKE '%|"& PerfilEmpresaID &"|%') AND (Persona='' OR ISNULL(Persona) OR Persona LIKE '%|"& PerfilPersonaID &"|%') "& sqlOutrasCaracteristicas &" order by Ordem")
+            set telas = db.execute("select t.id, t.Recurso, tg.NomeGrupo from treinamento t LEFT JOIN treinamento_grupo tg ON tg.id=t.GrupoID where t.sysActive=1 AND t.Recurso<>'' AND LENGTH(t.Detalhamento)>12 AND (t.PerfisEmpresa='' OR ISNULL(t.PerfisEmpresa) OR t.PerfisEmpresa LIKE '%|"& PerfilEmpresaID &"|%') AND (t.Persona='' OR ISNULL(t.Persona) OR t.Persona LIKE '%|"& PerfilPersonaID &"|%') "& sqlOutrasCaracteristicas &" order by ifnull(tg.Ordem,100), ifnull(t.Ordem,100)")
+
+            ultimoGrupo = ""
             while not telas.eof
                 if req("T")="" AND PrimeiroID="" then
                     response.Redirect("./?P=Treinamentos&Pers=1&T="& telas("id"))
                 end if
+                GrupoTreinamento = telas("NomeGrupo")
                 PrimeiroID = "N"
                 if classActive<>"" then
                     Proximo = telas("id")
@@ -2336,6 +2339,14 @@ select case lcase(req("P"))
                     </script>
                     <%
                 end if
+
+                if ultimoGrupo<>GrupoTreinamento&"" then
+                    %>
+                    <li class="sidebar-label pt20"><%=GrupoTreinamento&""%></li>
+                    <%
+                end if
+
+                ultimoGrupo=GrupoTreinamento&""
                 %>
                 <li <%= classActive %>>
                     <a href="./?P=Treinamentos&Pers=1&T=<%= telas("id") %>"><span class="fa fa-file-text bigger-110"></span> <span class="sidebar-title"><%= telas("Recurso") %></span></a>

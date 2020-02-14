@@ -1,21 +1,26 @@
 ﻿<!--#include file="connect.asp"-->
 <%
+
+set dblicense = newConnection("clinic5459", "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
+
 if req("Fim")="1" then
-    db.execute("update treinamentos set Fim=now() where AnalistaID="& session("User") &" and isnull(Fim)")
+    dblicense.execute("update treinamentos set Fim=now() where AnalistaID="& session("User") &" and isnull(Fim)")
     response.Redirect("./?P=Treinamentos&Pers=1")
 end if
+
+
 %>
 <div class="panel mt20">
     <div class="panel-body">
         <%
-        set vca = db.execute("select * from treinamentos where AnalistaID="& session("User") &" and isnull(Fim)")
+        set vca = dblicense.execute("select * from treinamentos where AnalistaID="& session("User") &" and isnull(Fim)")
         if vca.eof then
             if ref("Usuario")<>"" and ref("LicencaUsuarioID")="" then
                 %>
                 <div class="alert alert-danger">Selecione um usuário para iniciar a apresentação.</div>
                 <%
             elseif ref("Usuario")<>"" and ref("LicencaUsuarioID")<>"" then
-                db.execute("insert into treinamentos (LicencaUsuarioID, PerfilPersonaID, PerfilEmpresaID, OutrasCaracteristicas, AnalistaID, Inicio) VALUES ("& ref("LicencaUsuarioID") &", "& ref("PerfilEmpresa") &", "& ref("Persona") &", '"& ref("Caracteristicas") &"', "& session("User") &", NOW() )")
+                dblicense.execute("insert into treinamentos (LicencaUsuarioID, PerfilPersonaID, PerfilEmpresaID, OutrasCaracteristicas, AnalistaID, Inicio) VALUES ("& ref("LicencaUsuarioID") &", "& ref("PerfilEmpresa") &", "& ref("Persona") &", '"& ref("Caracteristicas") &"', "& session("User") &", NOW() )")
                 response.Redirect("./?P=Treinamentos&Pers=1&H="& time())
             end if
             %>
@@ -72,11 +77,11 @@ end if
             <%
         else
             TreinamentoID = vca("id")
-            set cli = db.execute("SELECT lu.id, upper(ifnull(lu.Nome,'')) Nome, lower(lu.email) Email, upper(IFNULL(p.NomePaciente, '')) Empresa FROM cliniccentral.licencasusuarios lu LEFT JOIN cliniccentral.licencas l ON l.id=lu.LicencaID LEFT JOIN clinic5459.pacientes p ON p.id=l.Cliente WHERE lu.id="& vca("LicencaUsuarioID"))
+            set cli = dblicense.execute("SELECT lu.id, upper(ifnull(lu.Nome,'')) Nome, lower(lu.email) Email, upper(IFNULL(p.NomePaciente, '')) Empresa FROM cliniccentral.licencasusuarios lu LEFT JOIN cliniccentral.licencas l ON l.id=lu.LicencaID LEFT JOIN clinic5459.pacientes p ON p.id=l.Cliente WHERE lu.id="& vca("LicencaUsuarioID"))
             Nome = cli("Nome")
             Empresa = cli("Empresa")
             if req("T")<>"" then
-                db.execute("insert into treinamentosnav set TreinamentoID="& TreinamentoID &", Tela="& req("T") &", Hora=now()")
+                dblicense.execute("insert into treinamentosnav set TreinamentoID="& TreinamentoID &", Tela="& req("T") &", Hora=now()")
                 %>
                 <script type="text/javascript">
                     $(".crumb-active a").html("<%= Nome %>");
@@ -92,7 +97,7 @@ end if
                     %>
                 </script>
                 <%
-                set tela = db.execute("SELECT * FROM treinamento WHERE id="& req("T"))
+                set tela = dblicense.execute("SELECT * FROM treinamento WHERE id="& req("T"))
                 Recurso = tela("Recurso")
                 FraseCurta = tela("FraseCurta")
                 ProblemasResolvidos = tela("ProblemasResolvidos")
@@ -112,7 +117,7 @@ end if
                     arrLTipos = array("Críticas", "Bugs", "Sugestões", "Elogios")
                     for j=0 to ubound(arrTipos)
                         Memo = ""
-                        set vcaM = db.execute("select Memo from treinamentosmemo where Tela="& req("T") &" and TreinamentoID="& TreinamentoID &" and Tipo='"& arrTipos(j) &"'")
+                        set vcaM = dblicense.execute("select Memo from treinamentosmemo where Tela="& req("T") &" and TreinamentoID="& TreinamentoID &" and Tipo='"& arrTipos(j) &"'")
                         if not vcaM.eof then
                             Memo = vcaM("Memo")
                         end if

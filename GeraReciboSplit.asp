@@ -115,7 +115,13 @@ if myValor > 0  then
         set OrigemNFeSQL = db.execute("SELECT o.id, o.NotaInicio FROM nfe_origens o WHERE REPLACE(REPLACE(REPLACE(o.cnpj, '.', ''),'-',''),'/','')='"&cnpj&"'")
 
         if not OrigemNFeSQL.eof then
-            set UltimoRPSSQL = db.execute("SELECT nfe.numero, nfe.serie FROM nfe_notasemitidas nfe WHERE nfe.cnpj='"&cnpj&"' "&AddSQLNfe&" ORDER BY nfe.numero DESC LIMIT 1")
+            set UltimaNotaEmitidaSQL = db.execute("SELECT nfe.serie FROM nfe_notasemitidas nfe WHERE nfe.cnpj='"&cnpj&"' ORDER BY nfe.datageracao DESC LIMIT 1")
+            sqlSerie=""
+            if not UltimaNotaEmitidaSQL.eof then
+                sqlSerie=" AND nfe.serie="&UltimaNotaEmitidaSQL("serie")
+            end if
+
+            set UltimoRPSSQL = db.execute("SELECT nfe.numero, nfe.serie FROM nfe_notasemitidas nfe WHERE nfe.cnpj='"&cnpj&"' "&AddSQLNfe&sqlSerie&" ORDER BY nfe.numero DESC LIMIT 1")
             numeroRps = OrigemNFeSQL("NotaInicio")
 
             rpsSerie=2

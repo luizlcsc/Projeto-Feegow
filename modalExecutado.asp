@@ -39,13 +39,21 @@ else
 end if
 
 
-TemRepasse=False
+NaoPermitirAlterarExecutante=False
+MensagemBloqueioExecutante=""
 set RepasseSQL = db.execute("SELECT rr.ItemContaAPagar FROM rateiorateios rr WHERE rr.ItemInvoiceID="&II)
 if not RepasseSQL.eof then
     if not RepasseSQL.eof then
-        TemRepasse=True
+        NaoPermitirAlterarExecutante=True
+        MensagemBloqueioExecutante="Existem repasses consolidados para esta conta. Para alterar por favor desconsolide os repasses."
     end if
 end if
+
+if Executado="S" AND getConfig("NaoPermitirAlterarExecutante") AND session("Admin")=1 then
+    NaoPermitirAlterarExecutante=True
+    MensagemBloqueioExecutante="Não é possível alterar o executante."
+end if
+
 PermissaoParaAlterar=True
 
 if getConfig("NaoPermitirAlterarExecutanteEExecucao")=1 and aut("areceberpacienteV")=0 and aut("contasareceberV")=0 and session("table")="profissionais" then
@@ -53,6 +61,12 @@ if getConfig("NaoPermitirAlterarExecutanteEExecucao")=1 and aut("areceberpacient
     ProfissionalID=session("idInTable")
     Associacao = 5
     DataExecucao=date()
+end if
+
+disabledExecutado =""
+
+if NaoPermitirAlterarExecutante then
+    disabledExecutado=" disabled"
 end if
 
 %>
@@ -73,11 +87,11 @@ end if
     <div class="modal-body">
         <div class="row">
             <%
-            if TemRepasse then
+            if NaoPermitirAlterarExecutante then
             %>
 <div class="col-md-12">
     <div class="alert alert-warning">
-        <strong>Atenção!</strong> Existem repasses consolidados para esta conta. Para alterar por favor desconsolide os repasses.
+        <strong>Atenção!</strong> <%=MensagemBloqueioExecutante%>
     </div>
 </div>
 <script >
@@ -87,7 +101,7 @@ end if
             end if
             %>
 
-            <%=quickField("simpleCheckbox", "Executado"&II, "Executado", "6", Executado, "", "", "")%>
+            <%=quickField("simpleCheckbox", "Executado"&II, "Executado", "6", Executado, "", "", ""&disabledExecutado)%>
         </div>
         <br>
 
@@ -97,7 +111,7 @@ end if
         <div class="row">
             <div class="col-md-6">
                 <label>Executante</label><br />
-                <%=simpleSelectCurrentAccounts("ProfissionalID"&II, "5, 8, 2", Associacao&"_"&ProfissionalID, " onchange=""espProfChange("& II &");"" ")%>
+                <%=simpleSelectCurrentAccounts("ProfissionalID"&II, "5, 8, 2", Associacao&"_"&ProfissionalID, " onchange=""espProfChange("& II &");"" "&disabledExecutado)%>
 
             </div>
             <div id="divEspecialidadeID<%= II %>">
@@ -116,7 +130,7 @@ end if
                     end if
                 end if
                 %>
-                <%= quickField("simpleSelect", "EspecialidadeID"&II, "Especialidade", 6, EspecialidadeID, sqlEspecialidades, "especialidade", " no-select2 "&camposRequired) %>
+                <%= quickField("simpleSelect", "EspecialidadeID"&II, "Especialidade", 6, EspecialidadeID, sqlEspecialidades, "especialidade", " no-select2 "&camposRequired&disabledExecutado) %>
             </div>
         </div>
         <%
@@ -134,7 +148,7 @@ end if
         <%
         if PermissaoParaAlterar then
         %>
-            <%= quickField("datepicker", "DataExecucao"&II, "Data da Execu&ccedil;&atilde;o", 6, DataExecucao,"" , "", "") %>
+            <%= quickField("datepicker", "DataExecucao"&II, "Data da Execu&ccedil;&atilde;o", 6, DataExecucao,"" , "", ""&disabledExecutado) %>
         <%
         else
         %>

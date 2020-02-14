@@ -45,7 +45,7 @@ end if
     <div class="col-md-12">
         <table class="table table-striped">
             <thead>
-                <tr>
+                <tr class="success">
                     <th>Unidade</th>
                     <th>Tabela</th>
                     <th>Valor Base - Procedimento</th>

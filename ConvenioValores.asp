@@ -122,7 +122,7 @@ CoeficientePorte = coalesce(CoeficientePorte,1,null)
     <div class="row">
        <%=quickField("currency", "ValorUnitario", "Valor Unit&aacute;rio Geral", 2, ValorUnitario, " valor-unitario ", "", " placeholder="&PHValorFixo&" ")%>
        <%=quickField("currency", "ValorCH", "Valor do CH", 2, ValorCH, " sql-mask-4-digits valor-ch ", "", " placeholder='"&PlaceholderValorCH&"'")%>
-       <%=quickField("number", "QuantidadeCH", "Quantidade de CH", 2, QuantidadeCH, " QuantidadeCH ", "", " placeholder='"&PHQuantidadeCH&"' ")%>
+       <%=quickField("currency", "QuantidadeCH", "Quantidade de CH", 2, QuantidadeCH, " sql-mask-4-digits QuantidadeCH ", "", " placeholder='"&PHQuantidadeCH&"' ")%>
        <%=quickField("currency", "CustoOperacional", "Custo Operacional", 2, CustoOperacional, " CustoOperacional sql-mask-4-digits ", "",  " placeholder='"&PHCustoOperacional&"'")%>
        <%=quickField("currency", "ValorFilme", "Valor do Filme", 2, ValorFilme, "ValorFilme sql-mask-4-digits", "",  " placeholder='"&PHValorFilme&"'")%>
        <%=quickField("float"  , "QuantidadeFilme", "Quantidade de Filme", 2, QuantidadeFilme, " QuantidadeFilme sql-mask-4-digits ", "",  " placeholder='"&PHQuantidadeFilme&"'")%>
@@ -229,7 +229,7 @@ CoeficientePorte = coalesce(CoeficientePorte,1,null)
                     <tr>
                     	<td><%=plan("NomePlano")%></td>
                         <td><%=quickField("text"    , "Codigo" &plan("id")          , "", 12, CodigoPlano       , " CodigoPlano"                , "", "placeholder='"&PHPCodigo&"'")%></td>
-                        <td><%=quickField("number", "QuantidadeCH"&plan("id")     , "", 12, QuantidadeCH      , "", "", " placeholder='"&PHPQuantidadeCH&"'")%></td>
+                        <td><%=quickField("currency", "QuantidadeCH"&plan("id")     , "", 12, QuantidadeCH      , " sql-mask-4-digits ", "", " placeholder='"&PHPQuantidadeCH&"'")%></td>
                         <!--<td> <%=quickField("currency", "CustoOperacional"&plan("id") , "", 12, CustoOperacional  , "sql-mask-4-digits ", "", " placeholder='"&PHPCustoOperacional&"'")%> </td>-->
                         <td><%=quickField("currency", "ValorFilme"&plan("id")       , "", 12, ValorFilme        , "sql-mask-4-digits ", "", "placeholder='"&PHPValorFilme&"'")%></td>
                         <td><%=quickField("float", "QuantidadeFilme"&plan("id")      , "", 12, QuantidadeFilme     , " sql-mask-4-digits ", "", " placeholder='"&PHPQuantidadeFilme&"'")%></td>

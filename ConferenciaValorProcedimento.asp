@@ -1,9 +1,25 @@
 <!--#include file="connect.asp"-->
 <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+
 <meta charset="utf-8">
 <meta http-equiv="Content-Language" content="pt-br">
 <div class="container">
-
+<form id="form-conferencia">
+<div class="row">
+<%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, Request.QueryString("Unidades"), "", "", "")%>
+<%=quickField("simpleSelect", "GrupoID", "Grupo", 2, Request.QueryString("GrupoID"), "select * from procedimentosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "  ")%>
+<%=quickField("simpleSelect", "TabelaID", "Tabela", 2, Request.QueryString("TabelaID"), "select * from tabelaparticular where sysActive=1 order by NomeTabela", "NomeTabela", "  ")%>
+<div class="col-md-3">
+<br><button class="btn btn-primary">
+    Consultar valores
+</button>
+</div>
+</div>
+</form>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -14,6 +30,7 @@
             <th>Diferença - Tabela</th>
             <th>Valor Tabela</th>
             <th>Diferença - Variação</th>
+            <th>Diferença - Variação (%)</th>
             <th>Valor final</th>
         </tr>
     </thead>
@@ -31,7 +48,21 @@ function getDiferencaCor(valor)
     getDiferencaCor = "<span style='color:"&Cor&"'>"&fn(valor)&"</span>"
 end function
 
-set UnidadesSQL = db.execute("SELECT id, NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa UNION ALL SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t ORDER BY t.NomeFantasia LIMIT 1" )
+Unidades=Request.QueryString("Unidades")
+GrupoID=Request.QueryString("GrupoID")
+TabelaID=Request.QueryString("TabelaID")
+
+if GrupoID="" then
+    Response.End
+end if
+
+if Unidades="" then
+    Unidades="0"
+end if
+
+Unidades=replace(Unidades,"|","")
+
+set UnidadesSQL = db.execute("SELECT id, NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa UNION ALL SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE id in ("&Unidades&") ORDER BY t.NomeFantasia" )
 
 while not UnidadesSQL.eof
     NomeFantasia=UnidadesSQL("NomeFantasia")
@@ -41,13 +72,17 @@ while not UnidadesSQL.eof
 
     <tbody>
         <%
-        set TabelasSQL = db.execute("SELECT * FROM tabelaparticular WHERE sysActive=1 AND Ativo='on' AND (Unidades LIKE '%|"&UnidadeID&"|%' OR Unidades='' OR Unidades IS NULL)")
+        sqlTabela=""
+        if TabelaID<>"0" and TabelaID<>"" then
+            sqlTabela=" AND id="&TabelaID
+        end if
+        set TabelasSQL = db.execute("SELECT * FROM tabelaparticular WHERE sysActive=1 AND Ativo='on' AND (Unidades LIKE '%|"&UnidadeID&"|%' OR Unidades='' OR Unidades IS NULL)"&sqlTabela)
 
         while not TabelasSQL.eof
             TabelaID=TabelasSQL("id")
             NomeTabela=TabelasSQL("NomeTabela")
 
-            set ProcedimentosSQL= db.execute("SELECT id,NomeProcedimento, Valor, GrupoID FROM procedimentos WHERE sysActive=1 AND Ativo='on'")
+            set ProcedimentosSQL= db.execute("SELECT id,NomeProcedimento, Valor, GrupoID FROM procedimentos WHERE sysActive=1 AND Ativo='on' AND GrupoID="&treatvalzero(GrupoID))
 
             while not ProcedimentosSQL.eof
                 ProcedimentoID=ProcedimentosSQL("id")
@@ -170,10 +205,12 @@ while not UnidadesSQL.eof
                     </td>
                     <td>
                         <%= getDiferencaCor(ValorVariacao - ValorBase) %>
+                    </td>
+                    <td>
                         <%
                         if (pmTipo="D" or pmTipo="A") and pmTipoValor="P" then
                             %>
-                            (<%=pmValorPerc%>%)
+                            <%=pmValorPerc%>%
                             <%
                         end if
                         %>

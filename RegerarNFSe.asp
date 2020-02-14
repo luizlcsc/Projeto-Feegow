@@ -65,7 +65,13 @@ if not ValorInvoiceSQL.eof then
             TemReciboGerado=True
             NumeroRps=TemReciboRpsSQL("NumeroRps")
         else
-            set UltimoRPSSQL = db.execute("SELECT nfe.numero, nfe.serie FROM nfe_notasemitidas nfe WHERE nfe.cnpj='"&cnpj&"' ORDER BY nfe.numero DESC LIMIT 1")
+            set UltimaNotaEmitidaSQL = db.execute("SELECT nfe.serie FROM nfe_notasemitidas nfe WHERE nfe.cnpj='"&cnpj&"' ORDER BY nfe.datageracao DESC LIMIT 1")
+            sqlSerie=""
+            if not UltimaNotaEmitidaSQL.eof then
+                sqlSerie=" AND nfe.serie="&UltimaNotaEmitidaSQL("serie")
+            end if
+
+            set UltimoRPSSQL = db.execute("SELECT nfe.numero, nfe.serie FROM nfe_notasemitidas nfe WHERE nfe.cnpj='"&cnpj&"' "&sqlSerie&" ORDER BY nfe.numero DESC LIMIT 1")
 
             if not UltimoRPSSQL.eof then
                 NumeroRps = UltimoRPSSQL("numero") + 1

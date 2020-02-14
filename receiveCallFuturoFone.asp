@@ -2,7 +2,11 @@
 <%
 LicencaID = req("LicencaID")
 session("Banco")="clinic"& LicencaID
-set servidor = db.execute("cliniccentral.licencas where id = "&LicencaID)
+set servidorAWS = db.execute("select * from cliniccentral.licencas where id = "&LicencaID)
+if not servidorAWS.eof then
+    session("Servidor") = servidorAWS("Servidor")
+end if
+
 IF session("Servidor") = "" THEN
     session("Servidor") = "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com"
 END IF

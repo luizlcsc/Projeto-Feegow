@@ -4,12 +4,12 @@ LicencaID = req("LicencaID")
 session("Banco")="clinic"& LicencaID
 set servidorAWS = db.execute("select * from cliniccentral.licencas where id = "&LicencaID)
 if not servidorAWS.eof then
-    session("Servidor") = servidorAWS("Servidor")
+    servidorClinic = servidorAWS("Servidor")
 end if
+servidorCentral = "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com"
 
-IF session("Servidor") = "" THEN
-    session("Servidor") = "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com"
-END IF
+session("Servidor") = servidorCentral
+
 
 %>
 <!--#include file="connect.asp"-->
@@ -47,6 +47,7 @@ while not calls.eof
     Contato = ""
     
     RamalOrigem = ""
+    session("Servidor") = servidorClinic
     set vca = db.execute("select * from chamadas where keypabx='"& uniqueid &"' order by id desc limit 1")
     if vca.eof then
         if direcao="entrada" then
@@ -97,7 +98,7 @@ while not calls.eof
             db.execute( sql )
         end if
     end if
-
+    session("Servidor") = servidorCentral
     db.execute("replace into cliniccentral.pabxfuturofone_backup select * from cliniccentral.pabxfuturofone where id="& calls("id"))
 
     db.execute("delete from cliniccentral.pabxfuturofone where id="& calls("id"))

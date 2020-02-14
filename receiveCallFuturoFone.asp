@@ -2,7 +2,7 @@
 <%
 LicencaID = req("LicencaID")
 session("Banco")="clinic"& LicencaID
-
+set servidor = db.execute("cliniccentral.licencas where id = "&LicencaID)
 IF session("Servidor") = "" THEN
     session("Servidor") = "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com"
 END IF

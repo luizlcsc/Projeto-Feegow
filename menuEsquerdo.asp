@@ -65,7 +65,7 @@ select case lcase(req("P"))
 
 
 <%
-    case "home"
+    case "home", "areadocliente"
         if ref("Texto")<>"" then
             db_execute("insert into cliniccentral.pesquisa (LicencaID, UserID, Texto) values ("&replace(session("Banco"), "clinic", "")&", "&session("User")&", '"&ref("Texto")&"')")
             %>
@@ -75,6 +75,7 @@ select case lcase(req("P"))
             <%
         end if
 
+    if lcase(req("P"))="home" then
         %>
         <li class="sidebar-label"></li>
         <%
@@ -124,6 +125,7 @@ select case lcase(req("P"))
             </li>            <%
             end if
         end if
+    end if
             %>
 
                     <script type="text/javascript">
@@ -151,10 +153,10 @@ select case lcase(req("P"))
                   
                 </div>
 
-                <% if true and recursoAdicional(12)<>4 then %>
+                <% if true and recursoAdicional(12)<>4 and lcase(req("P"))="home" then %>
                 <div class="panel-footer br-t p12">
                   <span class="fs11">
-                        <button onclick="location.href='./?P=listatarefas&Pers=1&Helpdesk=1';" class="btn btn-sm btn-block btn-primary"><i class="fa fa-comments-o"></i> MEUS CHAMADOS</button>
+                        <button onclick="location.href='./?P=AreaDoCliente&Pers=1&Helpdesk=1';" class="btn btn-sm btn-block btn-primary"><i class="fa fa-question-circle"></i> ÁREA DO CLIENTE</button>
                   </span>
                 </div>
                 <% end if %>
@@ -163,11 +165,11 @@ select case lcase(req("P"))
 
             </div>
 
+<%
+    if lcase(req("P"))="home" then
+%>
             <div class="col-sm-12">
                 <button onclick="getNews(0)" class="btn btn-sm btn-block btn-system"><i class="fa fa-plus"></i> VER NOVIDADES</button>
-            </div>
-            <div class="col-sm-12 mt10">
-                <button onclick="__loadMsgs(0)" class="btn btn-sm btn-block btn-warning"><i class="fa fa-plus"></i> VER MENSAGENS</button>
             </div>
             <div id="feedbackButton" style="margin-top: 10px; visibility: hidden" class="col-sm-12">
                 <button onclick="openPendingTables()" class="btn btn-sm btn-block btn-warning"><i class="fa fa-warning"></i> VER ALTERAÇÕES</button>
@@ -182,6 +184,9 @@ select case lcase(req("P"))
                         <br />
                 </div>
             </div>
+            <%
+              end if
+            %>
         </li>
         <%
     case "equipamentosalocados"

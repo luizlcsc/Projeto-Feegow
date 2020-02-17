@@ -236,7 +236,7 @@ if erro="" then
         Valor=0
     end if
 
-    if ccur(Valor)=0 and ref("InvoiceTemRepasse")<>"" then
+    if ccur(Valor)=0 and ref("NaoAlterarExecutante")<>"" then
         ZeradoComRepasse=True
     end if
 

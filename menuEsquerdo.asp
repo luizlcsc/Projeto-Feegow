@@ -65,7 +65,7 @@ select case lcase(req("P"))
 
 
 <%
-    case "home"
+    case "home", "areadocliente"
         if ref("Texto")<>"" then
             db_execute("insert into cliniccentral.pesquisa (LicencaID, UserID, Texto) values ("&replace(session("Banco"), "clinic", "")&", "&session("User")&", '"&ref("Texto")&"')")
             %>
@@ -75,6 +75,7 @@ select case lcase(req("P"))
             <%
         end if
 
+    if lcase(req("P"))="home" then
         %>
         <li class="sidebar-label"></li>
         <%
@@ -124,6 +125,7 @@ select case lcase(req("P"))
             </li>            <%
             end if
         end if
+    end if
             %>
 
                     <script type="text/javascript">
@@ -151,10 +153,10 @@ select case lcase(req("P"))
                   
                 </div>
 
-                <% if true and recursoAdicional(12)<>4 then %>
+                <% if true and recursoAdicional(12)<>4 and lcase(req("P"))="home" then %>
                 <div class="panel-footer br-t p12">
                   <span class="fs11">
-                        <button onclick="location.href='./?P=listatarefas&Pers=1&Helpdesk=1';" class="btn btn-sm btn-block btn-primary"><i class="fa fa-comments-o"></i> MEUS CHAMADOS</button>
+                        <button onclick="location.href='./?P=AreaDoCliente&Pers=1&Helpdesk=1';" class="btn btn-sm btn-block btn-primary"><i class="fa fa-question-circle"></i> ÁREA DO CLIENTE</button>
                   </span>
                 </div>
                 <% end if %>
@@ -163,11 +165,11 @@ select case lcase(req("P"))
 
             </div>
 
+<%
+    if lcase(req("P"))="home" then
+%>
             <div class="col-sm-12">
                 <button onclick="getNews(0)" class="btn btn-sm btn-block btn-system"><i class="fa fa-plus"></i> VER NOVIDADES</button>
-            </div>
-            <div class="col-sm-12 mt10">
-                <button onclick="__loadMsgs(0)" class="btn btn-sm btn-block btn-warning"><i class="fa fa-plus"></i> VER MENSAGENS</button>
             </div>
             <div id="feedbackButton" style="margin-top: 10px; visibility: hidden" class="col-sm-12">
                 <button onclick="openPendingTables()" class="btn btn-sm btn-block btn-warning"><i class="fa fa-warning"></i> VER ALTERAÇÕES</button>
@@ -182,6 +184,9 @@ select case lcase(req("P"))
                         <br />
                 </div>
             </div>
+            <%
+              end if
+            %>
         </li>
         <%
     case "equipamentosalocados"
@@ -2295,11 +2300,14 @@ select case lcase(req("P"))
                 'mioloOutrasCaracteristicas = right(mioloOutrasCaracteristicas, len(mioloOutrasCaracteristicas)-4)
                 sqlOutrasCaracteristicas = sqlOutrasCaracteristicas & mioloOutrasCaracteristicas &") "
             end if
-            set telas = db.execute("select id, Recurso from treinamento where sysActive=1 AND Recurso<>'' AND LENGTH(Detalhamento)>12 AND (PerfisEmpresa='' OR ISNULL(PerfisEmpresa) OR PerfisEmpresa LIKE '%|"& PerfilEmpresaID &"|%') AND (Persona='' OR ISNULL(Persona) OR Persona LIKE '%|"& PerfilPersonaID &"|%') "& sqlOutrasCaracteristicas &" order by Ordem")
+            set telas = db.execute("select t.id, t.Recurso, tg.NomeGrupo from treinamento t LEFT JOIN treinamento_grupo tg ON tg.id=t.GrupoID where t.sysActive=1 AND t.Recurso<>'' AND LENGTH(t.Detalhamento)>12 AND (t.PerfisEmpresa='' OR ISNULL(t.PerfisEmpresa) OR t.PerfisEmpresa LIKE '%|"& PerfilEmpresaID &"|%') AND (t.Persona='' OR ISNULL(t.Persona) OR t.Persona LIKE '%|"& PerfilPersonaID &"|%') "& sqlOutrasCaracteristicas &" order by ifnull(tg.Ordem,100), ifnull(t.Ordem,100)")
+
+            ultimoGrupo = ""
             while not telas.eof
                 if req("T")="" AND PrimeiroID="" then
                     response.Redirect("./?P=Treinamentos&Pers=1&T="& telas("id"))
                 end if
+                GrupoTreinamento = telas("NomeGrupo")
                 PrimeiroID = "N"
                 if classActive<>"" then
                     Proximo = telas("id")
@@ -2331,6 +2339,14 @@ select case lcase(req("P"))
                     </script>
                     <%
                 end if
+
+                if ultimoGrupo<>GrupoTreinamento&"" then
+                    %>
+                    <li class="sidebar-label pt20"><%=GrupoTreinamento&""%></li>
+                    <%
+                end if
+
+                ultimoGrupo=GrupoTreinamento&""
                 %>
                 <li <%= classActive %>>
                     <a href="./?P=Treinamentos&Pers=1&T=<%= telas("id") %>"><span class="fa fa-file-text bigger-110"></span> <span class="sidebar-title"><%= telas("Recurso") %></span></a>

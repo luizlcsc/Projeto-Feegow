@@ -348,7 +348,7 @@ if not tryLogin.EOF then
         if AppEnv="production" then
             set vcaTrei = dbc.execute("select id from clinic5459.treinamentos where LicencaUsuarioID="& session("User") &" and not isnull(Fim) and isnull(Nota)")
             if not vcaTrei.eof then
-                urlRedir = "./?P=AvaliaTreinamento&Pers=1"
+                urlRedir = "./?P=AreaDoCliente&Pers=1"
             end if
         end if
         if Cupom="GSC" then

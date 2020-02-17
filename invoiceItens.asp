@@ -21,6 +21,15 @@ if not TemRegrasDeDescontoSQL.eof then
     TemRegrasDeDesconto=True
 end if
 
+set ValorPagoSQL = db.execute("SELECT SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement WHERE InvoiceID="&InvoiceID)
+
+if not ValorPagoSQL.eof then
+    if ValorPagoSQL("ValorPago")>0 and session("Admin")=0 then
+        NaoPermitirAlterarExecutante=getConfig("NaoPermitirAlterarExecutante")
+    end if
+end if
+
+
 if Acao="" then
 	%>
 	<table width="100%" class="duplo table table-striped table-condensed">

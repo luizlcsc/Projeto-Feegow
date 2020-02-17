@@ -30,14 +30,19 @@
         <div class="panel-body">
             <div class="row">
                 <%
+                    MeusTickets = req("MeusTickets")
                     if req("Helpdesk") <> "" then
                         StatusDe = "Enviada"
                     else
                         StatusDe=""
                     end if
                 %>
-                <% if req("Helpdesk") = "" then %>
-                    <%= quickfield("simpleSelect", "De", "Autor", 3, "", "select su.id, t.Nome from (	select id, NomeProfissional Nome, 'profissionais' Tipo from profissionais where ativo='on'	UNION ALL	select id, NomeFuncionario, 'funcionarios' from funcionarios where ativo='on') t INNER JOIN sys_users su ON (su.idInTable=t.id AND lcase(su.`Table`)=t.Tipo) order by Nome", "Nome", " empty ") %>
+                <% if req("Helpdesk") = "" then
+                    if MeusTickets="1" then
+                        Autor=session("User")
+                    end if
+                %>
+                    <%= quickfield("simpleSelect", "De", "Autor", 3, Autor, "select su.id, t.Nome from (	select id, NomeProfissional Nome, 'profissionais' Tipo from profissionais where ativo='on'	UNION ALL	select id, NomeFuncionario, 'funcionarios' from funcionarios where ativo='on') t INNER JOIN sys_users su ON (su.idInTable=t.id AND lcase(su.`Table`)=t.Tipo) order by Nome", "Nome", " empty ") %>
                 <% end if %>
                 <%=quickfield("simpleSelect", "StatusDe", "Status (autor)", 3, StatusDe, "select id, De from cliniccentral.tarefasstatus where not isnull(De)", "De", " no-select2  empty ") %>
                 <%=quickfield("datepicker", "AberturaDe", "Abertura entre", 2, "", "", "", "") %>
@@ -57,8 +62,11 @@
                         ParaSelecionado = ""
                         StatusPara = ""
                     else
-                        ParaSelecionado = session("User")
-                        StatusPara="Pendente"
+
+                        if MeusTickets<>"1" then
+                            ParaSelecionado = session("User")
+                            StatusPara="Pendente"
+                        end if
                     end if
                 %>
                 <% if req("Helpdesk") = "" then %>

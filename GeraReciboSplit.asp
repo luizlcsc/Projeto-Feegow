@@ -6,24 +6,27 @@ InvoiceID=ref("InvoiceID")
 Servicos=ref("Servicos")
 RepasseIDS=ref("RepasseIDS")
 
-set InvoiceSQL = db.execute("SELECT CompanyUnitID, AccountID FROM sys_financialinvoices WHERE id="&InvoiceID)
+set InvoiceSQL = db.execute("SELECT CompanyUnitID, AccountID, DataHora FROM sys_financialinvoices WHERE id="&InvoiceID)
 
 UnidadeID = InvoiceSQL("CompanyUnitID")
 pacienteid = InvoiceSQL("AccountID")
+DataHora = InvoiceSQL("DataHora")
 
 if ContaCredito="0" then
     set EmpresaCnpjSQL = db.execute("SELECT cnpj,id FROM (SELECT 0 id, cnpj FROM empresa UNION ALL SELECT id, cnpj FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE t.id="&UnidadeID)
     if not EmpresaCnpjSQL.eof then
         cnpj = EmpresaCnpjSQL("cnpj")
+        response.write("CNPJ:"&cnpj)
+
         nomeProfissional = "Empresa"
 
-        set totRateios = db.execute("select "&_
-                                    " round(sum(rr.valor),2) as Value "&_
-                                    " from rateiorateios as rr "&_
-                                    " join itensinvoice as ii on ii.id = rr.ItemInvoiceID "&_
-                                    " join sys_financialinvoices as fi on fi.id = ii.InvoiceID "&_
-                                    " where  fi.id ="&invoiceID&" and (ii.Tipo != 'S' OR (ii.Tipo='S' AND ii.Executado='S'))")
-
+        sqlRateios = "select "&_
+                                                         " round(sum(rr.valor),2) as Value "&_
+                                                         " from rateiorateios as rr "&_
+                                                         " join itensinvoice as ii on ii.id = rr.ItemInvoiceID "&_
+                                                         " join sys_financialinvoices as fi on fi.id = ii.InvoiceID "&_
+                                                         " where  fi.id ="&invoiceID&" and (ii.Tipo != 'S' OR (ii.Tipo='S' AND ii.Executado='S')) AND rr.ContaCredito != '0' AND rr.ContaCredito != '0_0' "
+        set totRateios = db.execute(sqlRateios)
         set totalItensInvoiice = db.execute("select"&_
                                             " round(sum(ii.Quantidade*(ii.ValorUnitario + ii.Acrescimo - ii.Desconto)),2) as 'ValorTotalInvoice'"&_
                                             " from sys_financialinvoices as fi "&_
@@ -56,7 +59,13 @@ if ContaCredito="0" then
         end if
 
         myValorTotalInvoice = totalItensInvoiice("ValorTotalInvoice")
-        myValorRestante = myValorTotalInvoice - totRateios("Value")
+        totalReteios = totRateios("Value")
+
+        if totalReteios&"" = "" then
+            totalReteios=0
+        end if
+
+        myValorRestante = myValorTotalInvoice - totalReteios
         myValor = myValor + myValorRestante
 
         'response.write "valor total itens da invoice: "&myValorTotalInvoice&"<br>"
@@ -154,7 +163,7 @@ if myValor > 0  then
         NumeroSequencial=1
     end if
 
-    sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, ContaCredito, Auto) VALUES ("&treatvalnull(numeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&cnpj&"','"&nomeProfissional&" ("&funcao&")', "&mydatenull(date())&", "&treatvalzero(myValor)&", NULL, '"&pacienteid&"', "&session("User")&", '"&Servicos&"', 0, "&invoiceID&", "&UnidadeID&", "&NumeroSequencial&", '"&CPFPACIENTE&"', '"&ContaCredito&"', 1)"
+    sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, ContaCredito, Auto, sysDate) VALUES ("&treatvalnull(numeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&cnpj&"','"&nomeProfissional&" ("&funcao&")', "&mydatenull(date())&", "&treatvalzero(myValor)&", NULL, '"&pacienteid&"', "&session("User")&", '"&Servicos&"', 0, "&invoiceID&", "&UnidadeID&", "&NumeroSequencial&", '"&CPFPACIENTE&"', '"&ContaCredito&"', 1, "&mydatetime(DataHora)&")"
     response.write(sqlRecibo)
     db.execute(sqlRecibo)
 end if

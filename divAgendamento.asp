@@ -3,6 +3,7 @@
 <%
 
 set config = db.execute("select ChamarAposPagamento from sys_config limit 1")
+HorarioVerao="N"
 
 omitir = ""
 if session("Admin")=0 then
@@ -321,7 +322,7 @@ end if
 
 'verificar convenios pelo local e pela unidade
 mUnidadeID = session("UnidadeID")
-if LocalID <> 0 then    
+if LocalID <> 0 then
     set sqlUnidadeID = db.execute("select UnidadeID from locais where id="&treatvalzero(LocalID))
     if not sqlUnidadeID.eof then
         mUnidadeID = sqlUnidadeID("UnidadeID")
@@ -491,7 +492,7 @@ else
 <input type="hidden" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>>
 <%
 end if
-%>				
+%>
             </div>
 
 			<%if req("Tipo")="Quadro" or req("ProfissionalID")="" or req("ProfissionalID")="0" or req("ProfissionalID")="null" then%>
@@ -1127,11 +1128,11 @@ function RegistrarMultiplasPendencias(liberar) {
             $("#btnSalvarAgenda").attr("data-force-disabled", true);
             var $dadosAgendamentos = $("#dadosAgendamento" );
             let ConvenioId = "";
-            
+
             if($dadosAgendamentos.find("#rdValorPlanoP").prop("checked") && !$dadosAgendamentos.find("#rdValorPlanoP").prop("disabled") ){
                 ConvenioId = $dadosAgendamentos.find("#ConvenioID").val();
             }
-            
+
             $.get("EscolheAtendimentoParaRetorno.asp", {
                 PacienteID: $dadosAgendamentos.find("#PacienteID").val(),
                 ProcedimentoID: $dadosAgendamentos.find("#ProcedimentoID").val(),
@@ -1342,7 +1343,7 @@ var saveAgenda = function(){
                     set pacs_config = db.execute("select id from pacs_config where expired = 0")
                     if not pacs_config.eof and ConsultaID<>0 then %>
                         postUrl("pacs", {agendamento_id:'<%=AgendamentoID%>',profissional_id:'<%=ProfissionalID%>'});
-                    <% end if    
+                    <% end if
                 end if%>
             })
 
@@ -1397,7 +1398,7 @@ function submitAgendamento(check) {
                 return false;
             });
         }else{
-            
+
             saveAgenda();
         }
     }
@@ -1581,7 +1582,7 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
         $("#nProcedimentos").val( I );
         let formapgt = $("[name=rdValorPlano]:checked").val();
         let convenioID = $("#ConvenioID").val();
-        
+
         $.post("procedimentosagenda.asp?EquipamentoID="+Equipamento, {
             A: A, I: I ,
             LocalID:LocalID,

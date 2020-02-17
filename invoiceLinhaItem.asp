@@ -13,24 +13,29 @@ set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&trea
             ItemInvoiceID = id
             ProdutoInvoiceID = ""
 
-            DisabledRepasse = ""
-            TemRepasseGerado=False
+            DisabledNaoAlterarExecutante = " "
+            NaoAlterarExecutante=False
             set RepasseSQL = db.execute("SELECT id FROM rateiorateios WHERE ItemContaAPagar is not null and ItemInvoiceID="&ItemInvoiceID)
 
             if not RepasseSQL.eof then
-                TemRepasseGerado=True
-                DisabledRepasse=" disabled"
+                NaoAlterarExecutante=True
+                DisabledNaoAlterarExecutante=" disabled"
             end if
 
-            if TemRepasseGerado then
+            if NaoPermitirAlterarExecutante and Executado="S" then
+                NaoAlterarExecutante=True
+                DisabledNaoAlterarExecutante=" disabled"
+            end if
+
+            if NaoAlterarExecutante then
             %>
-            <input type="hidden" name="InvoiceTemRepasse" value="S" />
+            <input type="hidden" name="NaoAlterarExecutante" value="S" />
             <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
             <%
             end if
             %>
             <input type="hidden" name="PacoteID<%= id %>" value="<%= PacoteID %>" />
-            <td colspan="2"><%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange="" parametrosInvoice("&id&", this.value);"" data-row='"& id &"' "&DisabledRepasse, " required ", "") %>
+            <td colspan="2"><%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange="" parametrosInvoice("&id&", this.value);"" data-row='"& id &"' "&DisabledNaoAlterarExecutante, " required ", "") %>
                                 <%if session("Odonto")=1 then
                     %>
                     <textarea class="hidden" name="OdontogramaObj<%=id %>" id="OdontogramaObj<%=id %>"><%=OdontogramaObj %></textarea>
@@ -41,7 +46,7 @@ set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&trea
             </td>
             <td nowrap="nowrap" >
             <% if  Executado<>"C" then %>
-                <span class="checkbox-custom checkbox-primary"><input type="checkbox" class="checkbox-executado" name="Executado<%=id%>" id="Executado<%=id%>" value="S"<%if Executado="S" then%> checked="checked"<%end if%> /><label for="Executado<%=id%>"> Executado</label></span>
+                <span class="checkbox-custom checkbox-primary"><input type="checkbox" class="checkbox-executado" name="Executado<%=id%>" id="Executado<%=id%>" value="S"<%if Executado="S" then%> checked="checked"<%end if%> <%=DisabledNaoAlterarExecutante%> /><label for="Executado<%=id%>"> Executado</label></span>
             <% end if %>
                 <%
                 if id>0 and (session("Banco")="clinic5760" or session("Banco")="clinic105" or session("Banco")="clinic100000" or session("Banco")="clinic4421" or session("Banco")="clinic5856" or session("Banco")="clinic5445" or session("Banco")="clinic5968" or session("Banco")="clinic5857" or session("Banco")="clinic6118" or session("Banco")="clinic6273" or session("Banco")="clinic5563" or session("Banco")="clinic6346" or session("Banco")="clinic2665" or session("Banco")="clinic6289" or session("Banco")="clinic5563" or session("Banco")="clinic6451" or session("Banco")="clinic6256") then
@@ -302,7 +307,7 @@ end if
                     ExecutanteTipos = "5"
 			    end if
 			    %>
-                <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutanteTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional&DisabledRepasse)%>
+                <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutanteTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional&DisabledNaoAlterarExecutante)%>
 			    <%'=selectInsertCA("", "ProfissionalID"&id, Associacao&"_"&ProfissionalID, "5, 8, 2", " onchange=""setTimeout(function()calcRepasse("& id &"), 500)""", "", "")%>
             </div>
             <%if Tipo="S" then
@@ -326,9 +331,9 @@ end if
                     end if
                 end if
                 %>
-                <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledRepasse&" no-select2 "&camposRequired) %>
+                <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" no-select2 "&camposRequired) %>
                 </div>
-                <%= quickField("datepicker", "DataExecucao"&id, "Data da Execu&ccedil;&atilde;o", 2, DataExecucao, "", "", ""&ExecucaoRequired&DisabledRepasse) %>
+                <%= quickField("datepicker", "DataExecucao"&id, "Data da Execu&ccedil;&atilde;o", 2, DataExecucao, "", "", ""&ExecucaoRequired&DisabledNaoAlterarExecutante) %>
                 <%= quickField("text", "HoraExecucao"&id, "In&iacute;cio", 1, HoraExecucao, " input-mask-l-time", "", "") %>
                 <%= quickField("text", "HoraFim"&id, "Fim", 1, HoraFim, " input-mask-l-time", "", "") %>
                 <%= quickField("text", "Descricao"&id, "Observações", 3, Descricao, "", "", " maxlength='50'") %>

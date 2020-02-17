@@ -244,6 +244,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <!-- FooTable Addon -->
   <script src="vendor/plugins/footable/js/footable.filter.min.js"></script>
     <script type="text/javascript">
+        var ModalOpened = false;
+
         var feegow_components_path = "/feegow_components/";
         <%
         if request.ServerVariables("REMOTE_ADDR")="::1" OR request.ServerVariables("REMOTE_ADDR")="127.0.0.1" OR instr(request.ServerVariables("REMOTE_ADDR"), "192.168.0.") then
@@ -1215,7 +1217,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                       <button type="button" class="btn btn-xs btn-success light" onclick="window.open('videoAula.asp?P=<%=req("P") %>&T='+ $('.crumb-active a').html())">
                           <i class="fa fa-video-camera"></i> Vídeo-aula
                       </button>
-                      <button type="button" onclick="location.href='./?P=Ajuda&Pers=1'" class="btn btn-xs btn-default">
+                      <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" class="btn btn-xs btn-default">
                           <i class="fa fa-question-circle"></i> Suporte
                       </button>
                       <button type="button" class="btn btn-xs btn-default">
@@ -1727,7 +1729,6 @@ $(document).ready(function() {
     $(".facialRecogButton").attr("disabled", false);
 
     //SEQUENCIA DE MODAIS DE ABERTURA AUTOMATICA
-    var ModalOpened = false;
 
     <% if session("SelecionarLicenca") = 1 then %>
     if (!ModalOpened){

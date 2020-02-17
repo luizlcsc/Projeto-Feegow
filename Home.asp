@@ -1,4 +1,5 @@
-﻿<%
+﻿
+<%
 if (session("Banco")="clinic5760"  or session("Banco")="clinic6118") and false then %>
 <div class="alert alert-alert text-center mt15">
     <h4><i class="fa fa-cog fa-spin"></i> Sua licença do Feegow está recebendo atualizações e melhorias. <br />Enquanto isso você pode continuar utilizando o sistema normalmente, porém alguns relatórios podem não funcionar neste momento.
@@ -36,8 +37,53 @@ end if
 
     $("#modal-descontos-pendentes").css("z-index", 9999999999999999999999999);
 </script>
-<!-- Isso é um testão  --->
+
 <!--#include file="connect.asp"-->
+
+<%
+if session("Admin")=1 then
+    ComunicadoID = 1
+    LicencaID = replace(session("Banco"), "clinic", "")
+    NaoAparecer = "|6503|, |6517|, |6617|, |6706|, |6827|, |6416|, |7302|, |6834|, |6625|, |7427|, |7576|, |7629|, |7710|, |7782|, |7846|, |7995|, |5459|"
+    if instr(NaoAparecer, "|"& LicencaID &"|")=0 then
+        set vcom = db.execute("select * from cliniccentral.comunicados where ComunicadoID="& ComunicadoID &" and UserID="& session("User"))
+        if vcom.eof then
+        %>
+        <div id="comunicado" style="background-color:#fff; border:1px solid #CCC; position:fixed; bottom:70px; right:60px; z-index:1000000; padding:15px">
+            <div class="row">
+                <div class="col-xs-12">
+                    <i class="fa fa-remove pull-right" onclick="$('#comunicado').fadeOut();"></i>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <img width="500" src="images/feegow_marketing.png" />
+                </div>
+            </div>
+            <hr class="short alt" />
+            <div class="row">
+                <div class="col-xs-6">
+                    <button type="button" class="btn btn-xlg btn-success btn-block" onclick="inCom(1); $('#comunicado').fadeOut(); alert('Obrigado pelo interesse no Feegow Marketing!\n Nosso especialista em marketing para clínicas entrará em contato.')"><i class="fa fa-thumb-up"></i> TENHO INTERESSE</button>
+                </div>
+                <div class="col-xs-6">
+                    <button type="button" class="btn btn-xlg btn-danger btn-block" onclick="inCom(0); $('#comunicado').fadeOut();"><i class="fa fa-thumb-down"></i> NÃO TENHO INTERESSE</button>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            function inCom(v) {
+                $.get("comunicadoSave.asp?I=<%= ComunicadoID %>&Int=" + v, function (data) { eval(data) });
+            }
+        </script>
+        <%
+        end if
+    end if
+end if %>
+
+
+
+
+
 <!--#include file="connectCentral.asp"-->
 <!--#include file="modal.asp"-->
 <!--#include file="Classes/EventosEmailSMS.asp"-->
@@ -131,7 +177,7 @@ if 0 and session("Status")="C" and date()>cdate("01/05/2017") then
 		    if session("Admin")=1 then
             %>
 			    Existem faturas em aberto do seu sistema. Evite a suspensão parcial dos serviços quitando os débitos.<br /><br />
-        <a href="?P=MinhasFaturas&Pers=1" class="btn btn-danger">
+        <a href="?P=AreaDoCliente&Pers=1" class="btn btn-danger">
             <i class="fa fa-barcode"></i> Clique aqui para gerenciar suas faturas.
         </a>
         <%
@@ -280,6 +326,44 @@ end if
 </div>
 <div class="row">
     <%
+'SÓ PRA QUEM TEM PABX INTEGRADO
+if session("Banco")="clinic5459" then
+    set ram = db.execute("select Ramal from sys_users where id="& session("User"))
+    Ramal = ram("Ramal")&""
+    session("Ramal") = Ramal
+    %>
+
+    <div class="col-sm-3 col-xl-3">
+        <div class="panel panel-tile text-center br-a br-grey">
+        <div class="panel-body">
+            <h1 class="fs30 mt5 mbn col-xs-6 col-xs-offset-3">
+                <input type="text" class="form-control text-center fs30" name="Ramal" id="Ramal" value="<%= Ramal %>" placeholder="-" />
+            </h1>
+            <div class="row"></div>
+            <h6 class="text-success">SEU RAMAL NO PABX</h6>
+        </div>
+        <div class="panel-footer br-t p12">
+            <span class="fs11">
+                <div class="row">
+                    <div class="col-xs-12">
+                        PABX Integrado
+                    </div>
+                </div>
+            </span>
+        </div>
+        </div>
+    </div>
+<script type="text/javascript">
+    $("#Ramal").keyup(function () {
+        $.get("saveRamal.asp?U=<%= session("User") %>&Ramal=" + $(this).val(), function (data) { eval(data) });
+    });
+</script>
+
+<% end if
+
+
+
+
 
     set diasVencimento = db.execute("SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1")
 

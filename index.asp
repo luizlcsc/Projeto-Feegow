@@ -831,7 +831,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
                                  %>
                                     <li class="list-group-item menu-click-meu-perfil-minhas-faturas">
-                                        <a class="animated animated-short fadeInUp" href="?P=MinhasFaturas&Pers=1">
+                                        <a class="animated animated-short fadeInUp" href="?P=AreaDoCliente&Pers=1">
                                             <i class="fa fa-barcode"></i>
                                             Minhas Faturas
                                             <% IF session("QuantidadeFaturasAbertas") > "0" THEN %>

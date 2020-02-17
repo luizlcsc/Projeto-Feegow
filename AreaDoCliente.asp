@@ -1,10 +1,17 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Connection.asp"-->
 <%
-set dblicense = newConnection("clinic5459", "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
+set dbc = newConnection("clinic5459", "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
 
+LicencaID=replace(session("Banco"),"clinic","")
+'LicencaID=6118
+
+set PacienteSQL = dbc.execute("SELECT Cliente From cliniccentral.licencas WHERE id="&LicencaID)
+if not PacienteSQL.eof then
+    ClienteID=PacienteSQL("CLiente")
+end if
 function getLastTickets(status)
-    set getLastTickets = dblicense.execute("SELECT t.*, ts.Classe ClasseStatus FROM tarefas t LEFT JOIN cliniccentral.tarefasstatus ts ON ts.id=t.StaPara INNER JOIN cliniccentral.licencas l ON l.id="&LicencaID&" AND t.Solicitantes LIKE CONCAT('%3_',l.Cliente,'%') ORDER BY t.DtAbertura DESC LIMIT 3")
+    set getLastTickets = dbc.execute("SELECT t.*, ts.Classe ClasseStatus FROM tarefas t LEFT JOIN cliniccentral.tarefasstatus ts ON ts.id=t.StaPara WHERE t.Solicitantes LIKE CONCAT('%3_"&ClienteID&"%') ORDER BY t.DtAbertura DESC LIMIT 3")
 end function
 %>
 <script type="text/javascript">
@@ -18,7 +25,7 @@ end function
     <%
     User= session("User")
     'User=734
-        set t = dblicense.execute("select t.*, Date(t.Inicio) Data, time(t.Inicio) Hora from clinic5459.treinamentos t "&_
+        set t = dbc.execute("select t.*, Date(t.Inicio) Data, time(t.Inicio) Hora from clinic5459.treinamentos t "&_
         "LEFT JOIN avaliacoes a ON a.RelativoID=t.id AND a.TipoID='treinamentos' where a.id is null AND isnull(t.Nota) and t.LicencaUsuarioID="& User)
 
     if not t.eof then
@@ -127,7 +134,7 @@ end if
 
 
                     <%
-                    'set TopicosTreinamentoSQL = dblicense.execute("SELECT * FROM treinamento WHERE Principal=1 AND sysActive=1 order by id DESC LIMIT 5")
+                    'set TopicosTreinamentoSQL = dbc.execute("SELECT * FROM treinamento WHERE Principal=1 AND sysActive=1 order by id DESC LIMIT 5")
                     set VideoAulaSQL = db.execute("SELECT * FROM cliniccentral.videoaula WHERE Principal=1 order by id DESC LIMIT 5")
 
                     while not VideoAulaSQL.eof
@@ -151,7 +158,7 @@ end if
                   <div class="panel-group accordion accordion-lg" id="accordion1">
 
                     <%
-                        set RespostasSQL = dblicense.execute("SELECT * FROM perguntas WHERE sysActive=1 ORDER BY sysDate DESC LIMIT 5")
+                        set RespostasSQL = dbc.execute("SELECT * FROM perguntas WHERE sysActive=1 ORDER BY sysDate DESC LIMIT 5")
 
                         while not RespostasSQL.eof
                             idTopico = RespostasSQL("id")
@@ -187,7 +194,7 @@ end if
                                                   "FROM cliniccentral.novidades n  " &_
                                                   "LEFT JOIN cliniccentral.novidades_permissoes np ON n.id = np.NovidadeID " &_
                                                   "LEFT JOIN cliniccentral.novidades_tipos nt ON nt.id = n.Tipo " &_
-                                                  "WHERE n.Tipo IN (1) AND Ativo=1 " &_
+                                                  "WHERE n.Tipo IN (1, 3) AND Ativo=1 " &_
                                                   "GROUP BY n.id " &_
                                                   "ORDER BY n.DataHora DESC LIMIT 5")
 
@@ -215,7 +222,7 @@ end if
                                                      "FROM cliniccentral.novidades n  " &_
                                                      "LEFT JOIN cliniccentral.novidades_permissoes np ON n.id = np.NovidadeID " &_
                                                      "LEFT JOIN cliniccentral.novidades_tipos nt ON nt.id = n.Tipo " &_
-                                                     "WHERE n.Tipo IN (2,4, 3) AND Ativo=1  " &_
+                                                     "WHERE n.Tipo IN (2,4) AND Ativo=1  " &_
                                                      "GROUP BY n.id " &_
                                                      "ORDER BY n.DataHora DESC LIMIT 5")
 
@@ -223,7 +230,7 @@ end if
                        %>
                          <li>
                            <span class="link-unstyled" href="#" title="">
-                             <i class="fa fa-exclamation-circle text-info fa-lg pr10"></i>
+                             <i class="fa fa-bug text-info fa-lg pr10"></i>
                              <%=NovidadesSQL("Titulo")%></span>
                          </li>
                      <%
@@ -248,6 +255,114 @@ end if
               <button data-toggle="modal" data-target="#modal-horarios-atendimentos" type="button" class="btn btn-info btn-block pv10 fw600"><i class="fa fa-headphones"></i> Entre em contato</button>
             </div>
 
+<%
+if session("Admin")=1 then
+%>
+            <div class="panel mb10">
+              <div class="panel-heading">
+                <span class="panel-icon">
+                  <i class="fa fa-barcode"></i>
+                </span>
+                <span class="panel-title"> Minhas Faturas</span>
+              </div>
+
+
+                <%
+
+                i=0
+
+                set FaturasSQL = dbc.execute("select * from clinic5459.sys_financialinvoices where CD ='C' AND AccountID = '"&ClienteID&"' AND AssociationAccountID=3 order by sysDate desc LIMIT 2")
+                ExibeLinha=False
+                if not FaturasSQL.eof then
+                %>
+                 <div class="panel-body text-muted p10">
+                <%
+                    while not FaturasSQL.eof
+                        id=FaturasSQL("id")
+                        Status=""
+                        Valor=FaturasSQL("Value")
+                        Vencimento=FaturasSQL("sysDate")
+
+
+                        exibe="N"
+                        CId = FaturasSQL("id")
+                        %>
+                        <!--#include file="minhasFaturasCalculo.asp"-->
+                        <%
+                        VencimentoOriginal=FaturasSQL("sysDate")
+                        if cdate(Vencimento)<dateadd("d",4,date()) then
+                            exibe="S"
+                        end if
+                        if  cdate(Vencimento) < cdate("2019-01-01") then
+                            exibe="N"
+                        end if
+                        if exibe="S" then
+                            if classe="danger" then
+                                ExibeLinha=True
+                            end if
+
+                            boletoURL = "#"
+                            set boleto = dbc.execute("select * from clinic5459.iugu_invoices WHERE BillID ="& MovID&" ORDER BY DataHora DESC Limit 1")
+                            if not boleto.eof then
+                                boletoURL = boleto("FaturaURL")
+                            end if
+
+                            IF boletoURL = "#" THEN
+                                'response.write("select * from clinic5459.boletos_emitidos WHERE MovementID ="& MovID&" ORDER BY DataHora DESC Limit 1")
+                                set boleto2 = dbc.execute("select * from clinic5459.boletos_emitidos WHERE MovementID ="& MovID&" ORDER BY DataHora DESC Limit 1")
+                                if not boleto2.eof then
+                                    boletoURL = boleto2("InvoiceURL")
+                                end if
+                            END IF
+                    %>
+                                <ul class="list-unstyled <% if i>0 then %>br-t<%end if%> pt10">
+                                  <div class="mb10" style="float: right;">
+                                            <a <% if boletoURL="#" then %> disabled <%end if %> href="<%=boletoURL%>" target="_blank" class="btn btn-default btn-xs"><i class="fa fa-barcode"></i> Imprimir boleto</a>
+                                        </div>
+                                   <li>Valor:
+                                     <strong class="text-dark"> R$ <%=fn(Valor)%></strong>
+                                   </li>
+                                   <li>Vencimento:
+                                     <strong class="text-dark"> <%=Vencimento%></strong>
+                                   </li>
+
+                                   <li>Status:
+                                    <span class="label arrowed arrowed-in arrowed-right-in label-sm label-<%=classe%>"><%=msg%></span>
+                                   </li>
+
+
+                                 </ul>
+                      <%
+                            end if
+                        i=i+1
+                      FaturasSQL.movenext
+                      wend
+                      FaturasSQL.close
+                      set FaturasSQL=nothing
+
+                        if not ExibeLinha then
+                        %>
+                        Nenhuma fatura pendente :)
+                        <%
+                        end if
+                      %>
+                   </div>
+                      <%
+                  else
+                    %>
+                 <div class="panel-body text-muted p10">
+                    Nenhuma fatura pendente :)
+                </div>
+                    <%
+                  end if
+                  %>
+
+            </div>
+<%
+end if
+%>
+
+
             <div class="panel mb10">
               <div class="panel-heading">
                 <span class="panel-icon">
@@ -258,8 +373,6 @@ end if
 
 
                 <%
-                LicencaID=replace(session("Banco"),"clinic","")
-                'LicencaID=5760
 
                 i=0
 
@@ -316,6 +429,7 @@ end if
                   %>
 
             </div>
+
             <div class="panel mb10">
               <div class="panel-heading">
                 <span class="panel-icon">
@@ -354,12 +468,10 @@ end if
 
 
                 <%
-                LicencaID=replace(session("Banco"),"clinic","")
-                'LicencaID=522
 
                 i=0
 
-                set InteracoesSQL = dblicense.execute("SELECT t.*, lu.Nome NomeUsuario, prof.Foto, ca.Nota FROM chamadas t "&_
+                set InteracoesSQL = dbc.execute("SELECT t.*, lu.Nome NomeUsuario, prof.Foto, ca.Nota FROM chamadas t "&_
                                                       "INNER JOIN cliniccentral.licencasusuarios lu ON lu.id=t.sysUserAtend "&_
                                                       "INNER JOIN cliniccentral.licencas l ON l.id="&LicencaID&" AND t.Contato = CONCAT('3_',l.Cliente) "&_
                                                       "LEFT JOIN sys_users su ON su.id=lu.id "&_
@@ -383,8 +495,8 @@ end if
                             urlImg="/assets/img/user.png"
                         end if
                     %>
-                                <ul data-toggle="tooltip" title="<%=Notas%>" class="list-unstyled <% if i>0 then %>br-t<%end if%> pt10">
-                                   <span style="cursor:pointer; float: right;" id="stars-existing0" data-rating='<%=InteracoesSQL("Nota")%>' class="starrr text-warning hidden" ></span>
+                                <ul class="list-unstyled <% if i>0 then %>br-t<%end if%> pt10">
+                                   <span style="cursor:pointer; float: right;" id="stars-existing0" data-rating='<%=InteracoesSQL("Nota")%>' class="starrr text-warning " ></span>
                                    <li style="float: left;" class="mr10">
                                         <img style="height: 30px;" src="<%=urlImg%>" class="mw30 br64">
                                    </li>

@@ -230,6 +230,7 @@ if request.QueryString("ConvenioID")<>"" then
                     <button class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown"><i class="fa fa-angle-down icon-only"></i></button>
                     <ul class="dropdown-menu dropdown-warning">
                         <li>
+                            <a href="<%=link%>_030401.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.04.01</a>
                             <a href="<%=link%>_030303.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.03</a>
                             <a href="<%=link%>_0302.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.02</a>
                             <a href="<%=link%>_0301.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.01</a>

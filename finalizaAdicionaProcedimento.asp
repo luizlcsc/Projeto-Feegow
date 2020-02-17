@@ -282,8 +282,10 @@ if 1=1 and AtendimentoID<>"N" then
     sqlItens= "select proc.NomeProcedimento, proc.id ProcedimentoID "&_
                   " from ( select id, TipoCompromissoID ProcedimentoID from agendamentos where id="&treatvalzero(AgendamentoID)&" "&_
                               " UNION ALL SELECT AgendamentoID * -1 as id, TipoCompromissoID ProcedimentoID FROM agendamentosprocedimentos proc WHERE proc.AgendamentoID="&treatvalzero(AgendamentoID)&") age "&_
-                  " LEFT JOIN procedimentos proc on proc.id=age.ProcedimentoID "&_
-                  " GROUP BY proc.id ORDER BY proc.NomeProcedimento "
+                  " LEFT JOIN procedimentos proc on proc.id=age.ProcedimentoID "&_            
+                  " ORDER BY proc.NomeProcedimento "
+                  'retirado pois não estava listando todos os procedimentos 
+                  '" GROUP BY proc.id "
     set part = db.execute(sqlItens)
 
     itensNaListagem="-1"

@@ -383,7 +383,7 @@ end if
                             urlImg="/assets/img/user.png"
                         end if
                     %>
-                                <ul class="list-unstyled <% if i>0 then %>br-t<%end if%> pt10">
+                                <ul data-toggle="tooltip" title="<%=Notas%>" class="list-unstyled <% if i>0 then %>br-t<%end if%> pt10">
                                    <span style="cursor:pointer; float: right;" id="stars-existing0" data-rating='<%=InteracoesSQL("Nota")%>' class="starrr text-warning hidden" ></span>
                                    <li style="float: left;" class="mr10">
                                         <img style="height: 30px;" src="<%=urlImg%>" class="mw30 br64">
@@ -392,7 +392,6 @@ end if
                                      <strong class="text-dark"> <%=NomeUsuario%></strong>
                                    </li>
                                    <li><%=DataHora%></li>
-
                                  </ul>
                       <%
                         i=i+1

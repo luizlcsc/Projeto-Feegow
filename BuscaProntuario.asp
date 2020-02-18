@@ -425,8 +425,14 @@ if len(q)>1 then
         set ClinicosSQL=nothing
     end if
 
-    if req("AE")="1" then
-        set FormsSQL = db.execute("SELECT id, Nome FROM buiforms WHERE Tipo IN (1,2)")
+    if req("AE")="1" or req("L")="1"  then
+        
+        formSqlWhere = "(1,2)"
+        if req("L")="1" then
+            formSqlWhere = "(3, 4, 0) or isnull(Tipo)"
+        end if
+
+        set FormsSQL = db.execute("SELECT id, Nome FROM buiforms WHERE Tipo IN "&formSqlWhere)
 
             if not FormsSQL.eof then
                 while not FormsSQL.eof
@@ -444,57 +450,62 @@ if len(q)>1 then
                 set FormColunasSQL=nothing
 
                 FiltrosPaciente=AplicaFiltros("PacienteID","DataHora")
+                
+                set tabelaExiste = db.execute("SHOW TABLES LIKE '_"&FormsSQL("id")&"'")
 
-                sql = "SELECT "&SelectClause&" FROM `_"&FormsSQL("id")&"` WHERE ("&WhereClause&")"&FiltrosPaciente
+                if not tabelaExiste.eof then
 
-                set FormsResultadoSQL = db.execute(sql)
-                if not FormsResultadoSQL.eof then
-                    on error resume next
-                    while not FormsResultadoSQL.eof
-                        set CamposPacienteSQL = db.execute("SELECT COLUMN_NAME FROM information_schema.COLUMNS where TABLE_SCHEMA='"&session("Banco")&"' AND TABLE_NAME='_"&FormsSQL("id")&"' AND DATA_TYPE!='int'")
-                        ColunaResultado=""
-                        Resultado=""
+                    sql = "SELECT "&SelectClause&" FROM `_"&FormsSQL("id")&"` WHERE ("&WhereClause&")"&FiltrosPaciente
 
-                        while not CamposPacienteSQL.eof
-                            Coluna = CamposPacienteSQL("COLUMN_NAME")
-                            'response.write(Coluna)
-                            if FormsResultadoSQL("_"&Coluna)="1" then
-                                ColunaResultado=CamposPacienteSQL("COLUMN_NAME")
-                                set NomeColuna = db.execute("SELECT RotuloCampo FROM buicamposforms WHERE id="&ColunaResultado)
-                                ColunaResultado=NomeColuna("RotuloCampo")
-                                Resultado = FormsResultadoSQL(Coluna)
-                                Resultado = replace(Resultado,q,"<em>"&q&"</em>")
-                            end if
-                        CamposPacienteSQL.movenext
+                    set FormsResultadoSQL = db.execute(sql)
+                    if not FormsResultadoSQL.eof then
+                        on error resume next
+                        while not FormsResultadoSQL.eof
+                            set CamposPacienteSQL = db.execute("SELECT COLUMN_NAME FROM information_schema.COLUMNS where TABLE_SCHEMA='"&session("Banco")&"' AND TABLE_NAME='_"&FormsSQL("id")&"' AND DATA_TYPE!='int'")
+                            ColunaResultado=""
+                            Resultado=""
+
+                            while not CamposPacienteSQL.eof
+                                Coluna = CamposPacienteSQL("COLUMN_NAME")
+                                'response.write(Coluna)
+                                if FormsResultadoSQL("_"&Coluna)="1" then
+                                    ColunaResultado=CamposPacienteSQL("COLUMN_NAME")
+                                    set NomeColuna = db.execute("SELECT RotuloCampo FROM buicamposforms WHERE id="&ColunaResultado)
+                                    ColunaResultado=NomeColuna("RotuloCampo")
+                                    Resultado = FormsResultadoSQL(Coluna)
+                                    Resultado = replace(Resultado,q,"<em>"&q&"</em>")
+                                end if
+                            CamposPacienteSQL.movenext
+                            wend
+                            CamposPacienteSQL.close
+                            set CamposPacienteSQL=nothing
+
+                            set PacienteSQL = db.execute("SELECT id,NomePaciente FROM pacientes WHERE id="&FormsResultadoSQL("PacienteID"))
+
+                            %>
+                            <tr>
+                                <td>
+                                    <a href="?P=pacientes&I=<%=PacienteSQL("id")%>&Pers=1"><%=PacienteSQL("NomePaciente")%></a>
+                                </td>
+                                <td>
+                                    <%=FormsSQL("Nome")%>
+                                </td>
+                            <td>
+                                <%=FormsResultadoSQL("DataHora")%>
+                            </td>
+                                <td>
+                                    <%=ColunaResultado&": "&Resultado%>
+                                </td>
+                            </tr>
+                            <%
+
+                        FormsResultadoSQL.movenext
                         wend
-                        CamposPacienteSQL.close
-                        set CamposPacienteSQL=nothing
-
-                        set PacienteSQL = db.execute("SELECT id,NomePaciente FROM pacientes WHERE id="&FormsResultadoSQL("PacienteID"))
-
-                        %>
-        <tr>
-            <td>
-                <a href="?P=pacientes&I=<%=PacienteSQL("id")%>&Pers=1"><%=PacienteSQL("NomePaciente")%></a>
-            </td>
-            <td>
-                <%=FormsSQL("Nome")%>
-            </td>
-        <td>
-            <%=FormsResultadoSQL("DataHora")%>
-        </td>
-            <td>
-                <%=ColunaResultado&": "&Resultado%>
-            </td>
-        </tr>
-                        <%
-
-
-                    FormsResultadoSQL.movenext
-                    wend
-                    FormsResultadoSQL.close
-                    set FormsResultadoSQL=nothing
-
+                        FormsResultadoSQL.close
+                        set FormsResultadoSQL=nothing
+                        set tabelaExiste=nothing
+                        
+                    end if
                 end if
 
                         FormsSQL.movenext

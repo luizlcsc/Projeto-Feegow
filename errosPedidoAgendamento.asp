@@ -302,7 +302,10 @@ if ref("GradeID")<> "" then
              if not MaximoRetornosGradeSQL.eof then
                  if MaximoRetornosGradeSQL("MaximoRetornos")&"" <> "" then
                      if isnumeric(MaximoRetornosGradeSQL("MaximoRetornos")&"") then
-                         sqlAgendamentosRetornos = "SELECT count(agendamentos.id)NumeroRetornos FROM agendamentos INNER JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID WHERE ProfissionalID="&treatvalzero(MaximoRetornosGradeSQL("ProfissionalID"))&" AND Hora BETWEEN TIME('"&right(MaximoRetornosGradeSQL("HoraDe"),8)&"') AND TIME('"&right(MaximoRetornosGradeSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData)&" AND StaId NOT IN (6,11) AND procedimentos.TipoProcedimentoID=9"
+                        if ConsultaID<>"0" then
+                            whereRetorno = " AND agendamentos.id NOT IN("&ConsultaID&")"
+                        end if
+                         sqlAgendamentosRetornos = "SELECT count(agendamentos.id)NumeroRetornos FROM agendamentos INNER JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID WHERE ProfissionalID="&treatvalzero(MaximoRetornosGradeSQL("ProfissionalID"))&" AND Hora BETWEEN TIME('"&right(MaximoRetornosGradeSQL("HoraDe"),8)&"') AND TIME('"&right(MaximoRetornosGradeSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData)&" AND StaId NOT IN (6,11) AND procedimentos.TipoProcedimentoID=9"&whereRetorno
                          set AgendamentosRetornosSQL = db.execute(sqlAgendamentosRetornos)
 
                          if not AgendamentosRetornosSQL.eof then

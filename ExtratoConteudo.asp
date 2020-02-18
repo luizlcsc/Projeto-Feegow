@@ -140,7 +140,6 @@ end if
     else
         sqlGM = "select m.*, lu.Nome from sys_financialMovement m LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=m.sysUser where 1=1 "& sqlAcc & sqlLancadoPor & sqlUnidades & sqlCD & sqlFormas &" order by m.Date, m.id"
     end if
-    'response.write( sqlGM )
     set getMovement = db.execute( sqlGM )
 
 	while not getMovement.eof

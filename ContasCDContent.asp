@@ -59,7 +59,7 @@ if req("X")<>"" then
         set iInvoice = db.execute("select * from sys_financialinvoices WHERE id="& req("X"))
         columns = "|AccountID|AssociationAccountID|Value|Tax|CompanyUnitID|TabelaID|"
         'oldValues = "|^"&iInvoice("AccountID")&"|^"&iInvoice("AssociationAccountID")&"|^"&iInvoice("Value")&"|^"&iInvoice("Tax")&"|^"&iInvoice("CompanyUnitID")&"|^"&iInvoice("TabelaID")&"|"
-        call createLog("X", req("X"), "sys_financialinvoices", columns, oldValues, "")
+        'call createLog("X", req("X"), "sys_financialinvoices", columns, oldValues, "","")
         db_execute("delete from sys_financialinvoices where id="&req("X"))
         set vcaII = db.execute("select id from itensinvoice WHERE InvoiceID="& req("X"))
         while not vcaII.eof

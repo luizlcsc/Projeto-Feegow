@@ -5280,6 +5280,7 @@ end function
 function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
     set ValorProcedimentoSQL = db.execute("SELECT Valor FROM procedimentos WHERE id="&ProcedimentoID)
     DataReferencia = ref("Data")
+    obsLog = "procedimento (id:"&ProcedimentoID&")"
 
     if DataReferencia="" then
         DataReferencia = date()
@@ -5287,10 +5288,10 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
 
     if not ValorProcedimentoSQL.eof then
         procValor=ValorProcedimentoSQL("Valor")
-
+        obsLog = obsLog&" valor ("&procValor&")"
         sqlTabelaID = ""
 
-        sqlProcedimentoTabela = "SELECT ptv.Valor, Profissionais, TabelasParticulares, Especialidades FROM procedimentostabelasvalores ptv INNER JOIN procedimentostabelas pt ON pt.id=ptv.TabelaID WHERE ProcedimentoID="&ProcedimentoID&" AND "&_
+        sqlProcedimentoTabela = "SELECT ptv.id, ptv.Valor, Profissionais, TabelasParticulares, Especialidades FROM procedimentostabelasvalores ptv INNER JOIN procedimentostabelas pt ON pt.id=ptv.TabelaID WHERE ProcedimentoID="&ProcedimentoID&" AND "&_
         "(Especialidades='' OR Especialidades IS NULL OR Especialidades LIKE '%|"&EspecialidadeID&"|%' ) AND "&_
         "(Profissionais='' OR Profissionais IS NULL OR Profissionais LIKE '%|"&ProfissionalID&"|%' ) AND "&_
         "(TabelasParticulares='' OR TabelasParticulares IS NULL OR TabelasParticulares LIKE '%|"&TabelaID&"|%' OR TabelasParticulares LIKE '%|ALL|%' ) AND "&_
@@ -5298,42 +5299,44 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
         "pt.Fim>="&mydatenull(DataReferencia)&" AND pt.Inicio<="&mydatenull(DataReferencia)&" AND pt.sysActive=1 AND pt.Tipo='V' "
 
         ultimoPonto=0
-        'response.write(sqlProcedimentoTabela)
 
         set ProcedimentoVigenciaSQL = db.execute(sqlProcedimentoTabela)
-        while not ProcedimentoVigenciaSQL.eof
-            estePonto=0
+        if not ProcedimentoVigenciaSQL.eof then
+            while not ProcedimentoVigenciaSQL.eof
+                estePonto=0
 
 
-            if instr(ProcedimentoVigenciaSQL("Profissionais"), "|"&ProfissionalID&"|")>0 then
-                estePonto = estePonto + 1
-            end if
+                if instr(ProcedimentoVigenciaSQL("Profissionais"), "|"&ProfissionalID&"|")>0 then
+                    estePonto = estePonto + 1
+                end if
 
-            if instr(ProcedimentoVigenciaSQL("TabelasParticulares"), "|"&TabelaID&"|")>0 then
-                estePonto = estePonto + 1
-            end if
+                if instr(ProcedimentoVigenciaSQL("TabelasParticulares"), "|"&TabelaID&"|")>0 then
+                    estePonto = estePonto + 1
+                end if
 
-            if instr(ProcedimentoVigenciaSQL("Especialidades"), "|"&EspecialidadeID&"|")>0 then
-                estePonto = estePonto + 1
-            end if
+                if instr(ProcedimentoVigenciaSQL("Especialidades"), "|"&EspecialidadeID&"|")>0 then
+                    estePonto = estePonto + 1
+                end if
 
-            if estePonto>=ultimoPonto then
-				ultimoPonto=estePonto
-                procValor = ProcedimentoVigenciaSQL("Valor")
-            end if
+                if estePonto>=ultimoPonto then
+                    ultimoPonto=estePonto
+                    ptvID = ProcedimentoVigenciaSQL("id")
+                    procValor = ProcedimentoVigenciaSQL("Valor")
+                end if
 
-
-        ProcedimentoVigenciaSQL.movenext
-        wend
-        ProcedimentoVigenciaSQL.close
-        set ProcedimentoVigenciaSQL=nothing
-
+            ProcedimentoVigenciaSQL.movenext
+            wend
+            ProcedimentoVigenciaSQL.close
+            set ProcedimentoVigenciaSQL=nothing
+            obsLog = obsLog&" novo valor ("&procValor&") referente a procedimentostabelasvalores (id:"&ptvID&")"
+        end if
     end if
 
     if PacoteID<>"" then
         set ValorPacoteSQL = db.execute("SELECT pi.ValorUnitario FROM pacotesitens pi WHERE pi.PacoteID="&treatvalzero(PacoteID)&" AND pi.ProcedimentoID="&ProcedimentoID)
         if not ValorPacoteSQL.eof then
             procValor=ValorPacoteSQL("ValorUnitario")
+            obsLog = obsLog&" (Pacote) com valor ("&procValor&")"
         end if
     end if
 
@@ -5352,6 +5355,9 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
                        "(Tabelas='' OR Tabelas IS NULL OR Tabelas LIKE '%|"&TabelaID&"|%' ) AND "&_
                        "(Unidades='' OR Unidades='0' OR Unidades IS NULL OR Unidades LIKE '%|"&UnidadeID&"|%' ) ORDER BY Ordem"&_
                    ") t ) t2 order by PrioridadeProc desc"
+
+    'response.write sqlVarPreco
+    
     set vcaTab = db.execute(sqlVarPreco)
 
     while not vcaTab.eof
@@ -5366,6 +5372,7 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
 
         if PermiteVariacao then
             'response.Write("//"& sqlVarPreco )
+            pmId = vcaTab("id")
             pmTipo = vcaTab("Tipo")
             pmValor = vcaTab("Valor")
             pmTipoValor = vcaTab("TipoValor")
@@ -5377,21 +5384,33 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
 
     if pmTipo="F" then
         Valor2 = pmValor
+        obsLog = obsLog&" modificado pelo valor fixo da regra de variacao (id: "&pmId&") valor final "&Valor2
     elseif pmTipo="D" or pmTipo="A" then
+        obsLog = obsLog&" modificado pela regra de variacao (id: "&pmId&")"
+
         if pmTipoValor="V" then
             pmDescAcre = pmValor
+            obsLog = obsLog&" valor de R$"&pmDescAcre
         else
             pmFator = pmValor/100
             pmDescAcre = pmFator * procValor
+            obsLog = obsLog&" percentual "&pmValor&"%"
+
         end if
         if pmTipo="D" then
             pmValor = procValor - pmDescAcre
+            obsLog = obsLog&" de desconto"
         else
             pmValor = procValor + pmDescAcre
+            obsLog = obsLog&" de acressimo"
         end if
         Valor2 = pmValor
+        obsLog = obsLog&", valor final("&Valor2&")"
+
     end if
 
+    session("obslog") = "Agendamento(id:"&ref("ConsultaID")&") grade(id:"&ref("GradeID")&")"&obsLog
+    
     if Valor2="" then
         calcValorProcedimento = procValor
     else

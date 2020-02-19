@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 
 <%
 
@@ -40,7 +41,9 @@ end function
 
 
 if request.QueryString("X")<>"" then
-	db_execute("delete from assPeriodoLocalXProfissional where id = '"&req("X")&"'")
+    sqlDel = "delete from assPeriodoLocalXProfissional where id = '"&req("X")&"'"
+    call gravaLogs(sqlDel, "AUTO", "", "ProfissionalID")
+	db_execute(sqlDel)
 end if
 %>
 <!DOCTYPE html>
@@ -155,7 +158,12 @@ if ref("h")="h" then
 		end if
 	end if
 	if erro="" then
-		db_execute("insert into assPeriodoLocalXProfissional (DataDe,DataA,HoraDe,HoraA,ProfissionalID,LocalID, Intervalo, Compartilhar, Procedimentos, Especialidades,Convenios) values ("&mydatenull(DataDe)&","&mydatenull(DataA)&",'"&HoraDe&"','"&HoraA&"', "&treatvalzero(ProfissionalID)&", "&treatvalzero(LocalID)&", '"&Intervalo&"','"&Compartilhar&"', '"&Procedimentos&"', '"&Especialidades&"','"&Convenios&"')")
+
+	    sqlInsert = "insert into assPeriodoLocalXProfissional (DataDe,DataA,HoraDe,HoraA,ProfissionalID,LocalID, Intervalo, Compartilhar, Procedimentos, Especialidades,Convenios) values ("&mydatenull(DataDe)&","&mydatenull(DataA)&",'"&HoraDe&"','"&HoraA&"', "&treatvalzero(ProfissionalID)&", "&treatvalzero(LocalID)&", '"&Intervalo&"','"&Compartilhar&"', '"&Procedimentos&"', '"&Especialidades&"','"&Convenios&"')"
+		db_execute(sqlInsert)
+
+	    call gravaLogs(sqlInsert, "AUTO", "", "ProfissionalID")
+
 	end if
 end if
 %>

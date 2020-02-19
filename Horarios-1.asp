@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 'on error resume next
 
@@ -43,7 +44,9 @@ if req("X")<>"" then
     end if
 
     if LiberaDeletar then
-	    db_execute("delete from assfixalocalxprofissional where id="&req("X"))
+	    sqlDel = "delete from assfixalocalxprofissional where id="&req("X")
+	    call gravaLogs(sqlDel, "AUTO", "Grade removida", "ProfissionalID")
+	    db_execute(sqlDel)
     end if
 end if
 
@@ -70,6 +73,7 @@ end if
         <div class="panel-heading">
             <span class="panel-title">Horários de Atendimento de  <%=NomeProfissional%></span>
             <span class="panel-controls">
+                <button class="btn btn-default btn-sm" type="button" onclick="HistoricoAlteracoes()" title="Histórico de alterações"><i class="fa fa-history"></i></button>
                 <button type="button" onclick="ajxContent('DiferencaGrade', <%=ProfissionalID%>, 1, 'divHorarios');" class="btn btn-alert btn-sm"><i class="fa fa-calendar"></i> LISTAR GRADES POR DATA</button>
             </span>
         </div>
@@ -210,6 +214,15 @@ end if
             setTimeout(function(){ $("#modal").html(data) }, 1000 );
         });
     }
+
+    function HistoricoAlteracoes() {
+        openComponentsModal("LogUltimasAlteracoes.asp", {
+            PaiID: "<%=ProfissionalID%>",
+            TipoPai: "ProfissionalID",
+            Tabelas: "assfixalocalxprofissional,assperiodolocalxprofissional"
+        }, "Log de alterações", true);
+    }
     <!--#include file="jQueryFunctions.asp"-->
+
 </script>
 <!--#include file = "disconnect.asp"-->

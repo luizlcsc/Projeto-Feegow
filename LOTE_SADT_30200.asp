@@ -245,7 +245,7 @@ response.Charset="utf-8"
                         ValorUnitario =  procs("Fator")*procs("ValorUnitario")
                         ValorTotal = procs("ValorTotal")
 
-                        set SerieSQL = db.execute("SELECT "&mydatenull(procs("Data")))
+                        set SerieSQL = db.execute("SELECT "&mydatenull(procs("Data"))&" as Data")
                         if Quantidade&"" <> "" then
                             if ProcedimentoSeriado&"" = "S" and ccur(Quantidade)>0 then
                                 sqlSerie = "SELECT DATE(DATA)DATA FROM ( "&_

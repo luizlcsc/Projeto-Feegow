@@ -1,7 +1,7 @@
 <%
-function createLog(operacao, ID, recurso, colunas, valorAnterior, valorNovo)
+function createLog(operacao, ID, recurso, colunas, valorAnterior, valorNovo, obs)
     if ID <> "" and recurso <> "" then
-        db.execute("INSERT INTO log(Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser) VALUES('"&operacao&"', "&ID&", '"&recurso&"', '"&colunas&"', '"&valorAnterior&"', '"&valorNovo&"',"&Session("User")&")")
+        db.execute("INSERT INTO log(Operacao, I, recurso, colunas, valorAnterior, valorAtual, obs, sysUser) VALUES('"&operacao&"', "&ID&", '"&recurso&"', '"&colunas&"', '"&valorAnterior&"', '"&valorNovo&"','"&obs&"','"&Session("User")&"')")
         createLog = true
     else 
         createLog = false

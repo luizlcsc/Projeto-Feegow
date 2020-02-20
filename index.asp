@@ -680,7 +680,16 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                   <div class="panel-footer text-center p7">
                     <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1'">
                     <i class="fa fa-list"></i> Listar tarefas 
-                    </button>                    
+                    </button>
+                    <%
+                    if session("Banco")="clinic5459" then
+                    %>
+                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1&MeusTickets=1'">
+                    <i class="fa fa-list"></i> Meus Tickets
+                    </button>
+                    <%
+                    end if
+                    %>
                   </div>
               </div>
             </div>

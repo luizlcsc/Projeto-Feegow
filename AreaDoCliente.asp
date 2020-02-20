@@ -496,7 +496,7 @@ end if
                         end if
                     %>
                                 <ul class="list-unstyled <% if i>0 then %>br-t<%end if%> pt10">
-                                   <span style="cursor:pointer; float: right;" id="stars-existing0" data-rating='<%=InteracoesSQL("Nota")%>' class="starrr text-warning " ></span>
+'                                   <span style="cursor:pointer; float: right;" id="stars-existing0" data-rating='<%=InteracoesSQL("Nota")%>' class="starrr text-warning hidden" ></span>
                                    <li style="float: left;" class="mr10">
                                         <img style="height: 30px;" src="<%=urlImg%>" class="mw30 br64">
                                    </li>

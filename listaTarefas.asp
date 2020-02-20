@@ -21,16 +21,19 @@
      '<a class="btn btn-sm btn-primary" href="./?P=listaProjetos&Pers=1" <% if req("Helpdesk") <> "" then response.write(" style=""display:none"" ") end if %>><i class="fa fa-th-large"></i><span class="menu-text"> Projetos</span></a><%=botaoSprints%>');
     <%
     end if
+
+    MeusTickets = req("MeusTickets")
     %>
 </script>
 
 <form id="frm">
     <br />
+
+
     <div class="panel hidden-print">
         <div class="panel-body">
             <div class="row">
                 <%
-                    MeusTickets = req("MeusTickets")
                     if req("Helpdesk") <> "" then
                         StatusDe = "Enviada"
                     else
@@ -124,10 +127,77 @@
 
         </div>
     </div>
+<%
+    if MeusTickets="1"  then
+    %>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Seus tickets</h4>
+                    </div>
+                    <div class="col-sm-4 ">
+                      <div class="panel panel-tile text-center br-a br-grey">
+                        <div class="panel-body">
+                        <%
+                        set SeusTicketsAbertosSQL = db.execute("SELECT COUNT(t.id) Qtd, t.staPara, t.staDe FROM tarefas t WHERE t.sysUser="&session("User")&" AND t.staDe != 'Finalizada'")
+                        %>
+                          <h1 class="fs30 mt5 mbn"><%=SeusTicketsAbertosSQL("Qtd")%></h1>
+                          <h6 class="text-warning">TICKETS PENDENTES</h6>
+                        </div>
+                        <div class="hidden panel-footer br-t p12">
+                          <span class="fs11">
+                            <i class="fa fa-arrow-up pr5"></i> 3% INCREASE
+                            <b>1W AGO</b>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
 
+                    <div class="col-sm-4 ">
+                      <div class="panel panel-tile text-center br-a br-grey">
+                        <div class="panel-body">
+                        <%
+                        set SeusTicketsAbertosSQL = db.execute("SELECT COUNT(t.id) Qtd, t.staPara, t.staDe FROM tarefas t WHERE t.sysUser="&session("User")&" AND t.DtPrazo<=curdate() and t.staDe != 'Finalizada' and t.staPara not in ('Finalizada')")
+                        %>
+                          <h1 class="fs30 mt5 mbn"><%=SeusTicketsAbertosSQL("Qtd")%></h1>
+                          <h6 class="text-danger">TICKETS VENCIDOS</h6>i
+                        </div>
+                        <div class="hidden panel-footer br-t p12">
+                          <span class="fs11">
+                            <i class="fa fa-arrow-up pr5"></i> 3% INCREASE
+                            <b>1W AGO</b>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-4 ">
+                      <div class="panel panel-tile text-center br-a br-grey">
+                        <div class="panel-body">
+                        <%
+                        set SeusTicketsAbertosSQL = db.execute("SELECT COUNT(t.id) Qtd, t.staPara, t.staDe FROM tarefas t WHERE t.sysUser="&session("User")&" AND t.staPara='finalizada' AND t.staDe = 'Finalizada'")
+                        %>
+                          <h1 class="fs30 mt5 mbn"><%=SeusTicketsAbertosSQL("Qtd")%></h1>
+                          <h6 class="text-system">TICKETS FINALIZADOS</h6>
+                        </div>
+                        <div class="hidden panel-footer br-t p12">
+                          <span class="fs11">
+                            <i class="fa fa-arrow-up pr5"></i> 3% INCREASE
+                            <b>1W AGO</b>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+    <%
+    end if
+    %>
     <div class="panel">
-        <div class="panel-body" id="lista">
+        <div class="panel-body" >
+            <div class="row">
+                <div class="col-md-12" id="lista">
 
+                </div>
+            </div>
         </div>
     </div>
 </form>

@@ -834,11 +834,25 @@ min-width: 150px;
 
 
 <div class="clearfix form-actions no-margin">
+    <div class="btn-group">
     <button class="btn btn-primary btn-md" id="btnSalvar" onclick="isSolicitar = false;" ><i class="fa fa-save"></i> Salvar</button>
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="javascript:SalvarEimprimir=true;$('#btnSalvar').click();"><i class="fa fa-print"></i> Salvar e imprimir</a></li>
+      </ul>
+    </div>
 
     <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="fa fa-history"></i></button>
     <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISSPrint()"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
+    <%
+    if reg("sysActive")=1 then
+    %>
     <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaSADT()"><i class="fa fa-file"></i> Imprimir Guia</button>
+    <%
+    end if
+    %>
     <%if AutorizadorTiss then %>
                   <button type="button" onclick="AutorizarGuiaTisss();" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>
                   <button type="button" onclick="Autorizador.cancelarGuia(1)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="fa fa-times"></i> Cancelar guia</button>
@@ -1040,9 +1054,10 @@ $("#Contratado, #UnidadeID").change(function(){
 $("#ContratadoSolicitanteID").change(function(){
     tissCompletaDados("ContratadoSolicitante", $(this).val());
 });
-
 var isSolicitar = false;
+var SalvarEimprimir = false;
 $("#GuiaSADT").submit(function(){
+
     var $plano = $("#PlanoID"),
         planoId = $plano.val();
 
@@ -1052,7 +1067,7 @@ $("#GuiaSADT").submit(function(){
     }
 
     setTimeout(() => {
-        
+
         let isRedirect = "";
         if(isSolicitar)
             isRedirect="S";
@@ -1062,12 +1077,21 @@ $("#GuiaSADT").submit(function(){
             url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=request.QueryString("I")%>"+"&close=<%=close%>&isRedirect="+isRedirect,
             data:$("#GuiaSADT").serialize(),
             success:function(data){
-                let result = eval(data);
-                
-                if(isSolicitar && !data.includes("ERRO")){
-                    Autorizador.autorizaProcedimentos();
+                var timeoutSave = 0;
+                if(SalvarEimprimir){
+                    imprimirGuiaSADT();
+                    timeoutSave = 1000;
+
                 }
-                isSolicitar = false;
+                setTimeout(function() {
+                    let result = eval(data);
+
+                    if(isSolicitar && !data.includes("ERRO")){
+                        Autorizador.autorizaProcedimentos();
+                    }
+                    isSolicitar = false;
+                }, timeoutSave);
+
             },
             error:function(data){
                 alert("error ao salvar")
@@ -1077,6 +1101,7 @@ $("#GuiaSADT").submit(function(){
     }, 120);
 	return false;
 });
+
 
 function AutorizarGuiaTisss()
 {

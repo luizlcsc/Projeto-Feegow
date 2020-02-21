@@ -5357,7 +5357,7 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
                    ") t ) t2 order by PrioridadeProc desc"
 
     'response.write sqlVarPreco
-    
+
     set vcaTab = db.execute(sqlVarPreco)
 
     while not vcaTab.eof

@@ -1,4 +1,4 @@
-﻿<!--#include file="modal.asp"-->
+﻿﻿<!--#include file="modal.asp"-->
 <%
 function DefaultForm(tableName, id)
 	if lcase(tableName)="pacientes" then
@@ -299,7 +299,7 @@ function DefaultForm(tableName, id)
                     end if
                     if req("sysActive")="" then
                         if lcase(tableName)="profissionais" or lcase(tableName)="funcionarios" or lcase(tableName)="fornecedores" or lcase(tableName)="equipamentos" or lcase(tableName)="convenios" or lcase(tableName)="tabelaparticular" or lcase(tableName)="pacotes" then
-    					    sqlReg = "select * from "&tableName&" where sysActive=1 "&sqlInitial & sqlConstatus &" order by ativo desc, "&initialOrder& palLimit &partirde&limite
+    					    sqlReg = "select * from "&tableName&" where sysActive=1 "&sqlInitial & sqlConstatus &"  "&franquia(" AND Unidades like '%|[UnidadeID]|%' ")&" order by ativo desc, "&initialOrder& palLimit &partirde&limite
                         elseif lcase(tableName)="procedimentos" then
     					    sqlReg = "select * from "&tableName&" where sysActive=1 "&sqlInitial & sqlConstatus &" order by ativo desc, "&initialOrder& palLimit&partirde&limite
                         elseif lcase(tableName)="pacientes" and session("SepararPacientes") and aut("vistodospacsV")=0 and lcase(session("Table"))="profissionais" then
@@ -322,7 +322,7 @@ function DefaultForm(tableName, id)
     						sqlReg = "select * from pacientes where trim(NomePaciente) like '%"&q&"%' or TRIM(NomeSocial) like '%"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0) "& sqlNasc &" and sysActive=1 order by NomePaciente LIMIT 1000"
                         end if
                     elseif lcase(tableName)="profissionais" or lcase(tablename)="funcionarios" then
-						sqlReg = "select * from "&tableName&" where sysActive=1 and ("&initialOrder&" like '%"&q&"%' "& sqlNasc &") order by "&initialOrder
+    					sqlReg = "select * from "&tableName&" where sysActive=1 and ("&initialOrder&" like '%"&q&"%' "& sqlNasc &") "&franquia(" AND Unidades like '%|[UnidadeID]|%' ")&" order by "&initialOrder
 					elseif lcase(tableName)="procedimentos" then
 						sqlReg = "select * from "&tableName&" where sysActive=1 and "&initialOrder&" like '%"&q&"%' OR Sigla LIKE '%"&q&"%' OR Codigo LIKE '%"&q&"%' order by "&initialOrder
 					elseif lcase(tableName)="fornecedores" then
@@ -700,7 +700,7 @@ function DefaultForm(tableName, id)
 					calendars = left(calendars, len(calendars)-2 )
 					'response.Write(calendars)
 					response.Write("<script>")
-					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data>=date(now()) and not isnull(Hora) group by a.PacienteID order by a.Data")
+					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data>=date(now()) and not isnull(Hora) group by a.PacienteID order by a.Data, a.Hora")
 					while not age.eof
 						Hora = age("Hora")
 						if not isnull(Hora) then
@@ -715,7 +715,7 @@ function DefaultForm(tableName, id)
 					set age=nothing
 
 
-					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data<date(now()) and not isnull(a.Hora) order by a.PacienteID, a.Data desc limit 200")
+					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data<date(now()) and not isnull(a.Hora) order by a.PacienteID, a.Data, a.Hora desc limit 200")
 					while not age.eof
 						if UltPac<>age("PacienteID") then
 						%>

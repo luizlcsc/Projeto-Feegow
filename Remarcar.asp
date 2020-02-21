@@ -102,12 +102,13 @@ if Acao="Remarcar" then
     HoraSolFin=dateAdd("n",TempoSol,HoraSolIni)
     HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
-    sql = "SELECT total_agendamentos >= max_agendamentos AS nao_pode_agendar FROM (SELECT COUNT(*) AS total_agendamentos, IF(procedimentos.MaximoAgendamentos='' or procedimentos.MaximoAgendamentos Is null, 1, procedimentos.MaximoAgendamentos) AS max_agendamentos from agendamentos LEFT JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID where StaID!=11 AND ProfissionalID = "&treatvalzero(ProfissionalID)&" and ProfissionalID<>0 and Data = "&mydatenull(Data)&" and ((Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora < time('"&HoraSolFin&"') and Encaixe IS NULL and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')) or Hora="&mytime(HoraSolIni)&")   GROUP BY 2) AS t HAVING nao_pode_agendar = 1"
+    sql = "SELECT total_agendamentos >= max_agendamentos AS nao_pode_agendar FROM (SELECT COUNT(*) AS total_agendamentos, IF(procedimentos.MaximoAgendamentos='' or procedimentos.MaximoAgendamentos Is null, 1, procedimentos.MaximoAgendamentos) AS max_agendamentos from agendamentos LEFT JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID where StaID not in (11,15) AND ProfissionalID = "&treatvalzero(ProfissionalID)&" and ProfissionalID<>0 and Data = "&mydatenull(Data)&" and ((Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora < time('"&HoraSolFin&"') and Encaixe IS NULL and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')) or Hora="&mytime(HoraSolIni)&")   GROUP BY 2) AS t HAVING nao_pode_agendar = 1"
+
     set ve1=db.execute(sql)
     if not ve1.eof then
         check = ve1("nao_pode_agendar")
         if check = "1" then
-            erro="Erro: O horário solicitado não dispõe do tempo requerido para o agendamento deste procedimento."
+            erro="Erro: O horário solicitado não dispõe do tempo requerido (entre "&HoraSolIni&" e "&HoraSolFin&") para o agendamento deste procedimento."
         end if
     end if
 
@@ -122,7 +123,7 @@ if Acao="Remarcar" then
         end if
 
         if Encaixe="1" and erro="" then
-            set MaximoEncaixesSQL = db.execute("select MaximoEncaixes, (select count(id) from agendamentos where ProfissionalID="&ProfissionalID&" and Encaixe=1 and Data="&mydatenull(Data)&" and id!='"&session("RemSol")&"') NumeroEncaixes from profissionais where id="&ProfissionalID&" and not isnull(MaximoEncaixes)")
+            set MaximoEnc   aixesSQL = db.execute("select MaximoEncaixes, (select count(id) from agendamentos where ProfissionalID="&ProfissionalID&" and Encaixe=1 and Data="&mydatenull(Data)&" and id!='"&session("RemSol")&"') NumeroEncaixes from profissionais where id="&ProfissionalID&" and not isnull(MaximoEncaixes)")
 
             if not MaximoEncaixesSQL.eof then
                 NumeroEncaixes = ccur(MaximoEncaixesSQL("NumeroEncaixes"))+1

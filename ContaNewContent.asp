@@ -3,6 +3,8 @@
 </div>
 
 <%
+moduloLaboratorial = recursoAdicional(24)
+
 if ProcedimentoAgendado<>"" then
 %>
     <div id="NotificacaoLancto" class="alert alert-warning text-center">
@@ -51,11 +53,16 @@ function retornastatusguia(id)
     else 
         retornastatusguia = ""
     end if 
-end function 
+end function
+
+
+if moduloLaboratorial=4 then
 %>
 
 <!--#include file="modalAlertaMultiplo.asp" -->
-
+<%
+end if
+%>
  
 <input type="hidden" id="AccountID" name="AccountID" value="3_<%=PacienteID%>" />
 <div class="containerConta">
@@ -95,7 +102,6 @@ end function
           %>
               <tr data-datafatura="99999999"></tr>
           <%
-            integracaoPleres = recursoAdicional(19)
 		  while not inv.eof
                 NaoImprimirGuia = inv("NaoImprimirGuia")
                 TipoFatura = inv("TipoFatura")

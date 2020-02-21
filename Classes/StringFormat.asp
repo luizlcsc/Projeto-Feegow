@@ -36,9 +36,15 @@ FUNCTION fix_array_comma(array_string)
     end if
 END FUNCTION
 
-'corrige strings com caracteres que quebram no javascript
+'corrige strings com caracteres que quebram no javascript (quebras de linha) ATENCAO: funcao utilizada nas agendas
 FUNCTION fix_string_chars(string)
-    fix_string_chars = trim(replace(replace(replace(replace(replace(string&"", chr(13), ""), chr(10), ""), """", "\"""),"'","\'"),"	",""))
+    fix_string_chars = replace(replace(string&"", chr(13), ""), chr(10), "")
+END FUNCTION
+
+
+'corrige strings com caracteres que quebram no javascript (quebras de linha) ATENCAO: funcao utilizada nas agendas
+FUNCTION fix_string_chars_full(string)
+    fix_string_chars_full = trim(replace(replace(replace(replace(replace(string&"", chr(13), ""), chr(10), ""), """", "\"""),"'","\'"),"	",""))
 END FUNCTION
 
 Function TratarNome(ByVal formato, ByVal str)

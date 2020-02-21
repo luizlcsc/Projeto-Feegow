@@ -889,20 +889,74 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								</li>
 								<%
 							end if
+
+
+							licencas = session("Licencas")
+
+							if licencas<>"" and instr(licencas,",")>0 then
+
+							    set LicencasSQL = db.execute("SELECT id, NomeEmpresa FROM cliniccentral.licencas WHERE id IN ("&replace(licencas,"|","")&")")
+
+%>
+
+							    <li class="list-group-item animated animated-short fadeInUp p10">
+							        <strong class="text-center" style="color: #737373; ">Licenças</strong>
+                                </li>
+<%
+							    while not LicencasSQL.eof
+
+							        LicencaIDLoop = LicencasSQL("id")&""
+
+							    %>
+                                <li class="animated animated-short fadeInUp">
+                                    <a href='./?P=ChangeCp&LicID=<%=LicencaIDLoop%>&Pers=1'>
+                                        <i class="fa <%if LicencaIDLoop=replace(session("Banco"),"clinic","") then%>fa-check-square-o<%else%>fa-square-o<%end if%>"></i>
+                                        <%= LicencasSQL("NomeEmpresa") %>
+                                    </a>
+                                </li>
+							    <%
+							    LicencasSQL.movenext
+							    wend
+							    LicencasSQL.close
+							    set LicencasSQL=nothing
+							end if
 							  	  %>
 
 
-                                <li><%=session("Licencas")%></li>
                                 <%
 								if not isnull(session("Unidades")) and session("Unidades")<>"" then
-								    %>
-								    <li class="list-group-item">
-                                        <a class="animated animated-short fadeInUp" href="javascript:abreModalUnidade(false);">
-                                            <i class="fa fa-building"></i>
-                                            Alterar Unidade
-                                        </a>
-                                    </li>
-								    <%
+
+								    'verifica se o usuario possui apenas uma unidade e nao exibe o "Altera unidade"
+
+								    if instr(session("Unidades"),",")=0 then
+								        set UnidadeSQL = db.execute("SELECT id, NomeFantasia FROM (SELECT 0 id, IFNULL(NomeFantasia, NomeEmpresa) NomeFantasia FROM empresa  UNION ALL SELECT id, IFNULL(NomeFantasia, UnitName) NomeFantasia FROM sys_financialcompanyunits where sysActive=1)t")
+
+                                        if not UnidadeSQL.eof then
+                                            idUnidade=UnidadeSQL("id")
+                                            nomeUnidade=UnidadeSQL("NomeFantasia")
+
+                                            if nomeUnidade&"" <> "" then
+								        %>
+                                        <li class="list-group-item menu-click-meu-perfil-muda-local">
+                                            <a class="animated animated-short fadeInUp">
+                                                <i class="fa <%if ccur(idUnidade)=session("UnidadeID") then%>fa-check-square-o<%else%>fa-square-o<%end if%>"></i>
+                                                <%= nomeUnidade %>
+                                            </a>
+                                        </li>
+								        <%
+								            end if
+								        end if
+                                    else
+                                        %>
+                                        <li class="list-group-item">
+                                            <a class="animated animated-short fadeInUp" href="javascript:abreModalUnidade(false);">
+                                                <i class="fa fa-building"></i>
+                                                Alterar Unidade
+                                            </a>
+                                        </li>
+                                        <%
+								    end if
+
 								end if
 
                                 'response.write( session("sTopo") )
@@ -1739,23 +1793,24 @@ $(document).ready(function() {
 
     //SEQUENCIA DE MODAIS DE ABERTURA AUTOMATICA
 
-    <% if session("SelecionarLicenca") = 1 then %>
+    <%
+    if session("SelecionarLicenca")&"" = "1"  then %>
     if (!ModalOpened){
-      ModalOpened = true;
+      // ModalOpened = true;
       openSelecionarLicenca();
     }
     <% end if%>
     
     <% if session("UnidadeID")=-1 then %>
     if (!ModalOpened){
-      ModalOpened = true;
+      // ModalOpened = true;
         abreModalUnidade();
     }
     <% end if %>
     
     <% if session("AlterarSenha") = 1 then %>
     if (!ModalOpened){
-      ModalOpened = true;
+      // ModalOpened = true;
       openRedefinirSenha();
     }
     <% end if%>

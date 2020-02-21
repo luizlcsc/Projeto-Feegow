@@ -300,7 +300,11 @@ if not tryLogin.EOF then
 		while not tryLogin.EOF
 			if tryLogin("Status")="C" then
 				clic = clic+1
-				licencas = licencas & "<li class='animated animated-short fadeInUp'><a href='./?P=ChangeCp&LicID="&tryLogin("LicencaID")&"&Pers=1'>"&tryLogin("NomeEmpresa")&"</a></li>"
+
+				if licencas<>"" then
+				    licencas = licencas & ","
+				end if
+				licencas = licencas & "|"&tryLogin("LicencaID")&"|"
                 if tryLogin("Versao")=7 then
     				urlRedir = "./?P=Home&Pers=1"
                 else
@@ -325,7 +329,7 @@ if not tryLogin.EOF then
 		tryLogin.close
 		set tryLogin=nothing
 		if clic>1 then
-			session("Licencas") = Licencas & "<li class='divider'></li>"
+			session("Licencas") = Licencas
 			session("SelecionarLicenca") = 1
 		end if
 

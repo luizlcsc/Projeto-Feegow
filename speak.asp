@@ -55,6 +55,9 @@ for u=0 to ubound(list)
                 end if
             end if
         end if
+
+        Texto = replace(Texto,chr(10),"")
+        Texto = replace(Texto,chr(13),"")
         %>
 
         if ('speechSynthesis' in window) {

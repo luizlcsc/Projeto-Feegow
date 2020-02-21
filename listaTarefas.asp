@@ -134,7 +134,7 @@
                     <div class="col-md-12">
                         <h4>Seus tickets</h4>
                     </div>
-                    <div class="col-sm-4 ">
+                    <div class="col-sm-3 ">
                       <div class="panel panel-tile text-center br-a br-grey">
                         <div class="panel-body">
                         <%
@@ -152,14 +152,14 @@
                       </div>
                     </div>
 
-                    <div class="col-sm-4 ">
+                    <div class="col-sm-3 ">
                       <div class="panel panel-tile text-center br-a br-grey">
                         <div class="panel-body">
                         <%
                         set SeusTicketsAbertosSQL = db.execute("SELECT COUNT(t.id) Qtd, t.staPara, t.staDe FROM tarefas t WHERE t.sysUser="&session("User")&" AND t.DtPrazo<=curdate() and t.staDe != 'Finalizada' and t.staPara not in ('Finalizada')")
                         %>
                           <h1 class="fs30 mt5 mbn"><%=SeusTicketsAbertosSQL("Qtd")%></h1>
-                          <h6 class="text-danger">TICKETS VENCIDOS</h6>i
+                          <h6 class="text-danger">TICKETS VENCIDOS</h6>
                         </div>
                         <div class="hidden panel-footer br-t p12">
                           <span class="fs11">
@@ -170,7 +170,7 @@
                       </div>
                     </div>
 
-                    <div class="col-sm-4 ">
+                    <div class="col-sm-3 ">
                       <div class="panel panel-tile text-center br-a br-grey">
                         <div class="panel-body">
                         <%
@@ -178,6 +178,24 @@
                         %>
                           <h1 class="fs30 mt5 mbn"><%=SeusTicketsAbertosSQL("Qtd")%></h1>
                           <h6 class="text-system">TICKETS FINALIZADOS</h6>
+                        </div>
+                        <div class="hidden panel-footer br-t p12">
+                          <span class="fs11">
+                            <i class="fa fa-arrow-up pr5"></i> 3% INCREASE
+                            <b>1W AGO</b>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                     <div class="col-sm-3 ">
+                      <div class="panel panel-tile text-center br-a br-grey">
+                        <div class="panel-body">
+                        <%
+                        set SeusTicketsAbertosSQL = db.execute("SELECT COUNT(t.id) Qtd, t.staPara, t.staDe FROM tarefas t WHERE t.sysUser="&session("User")&" AND t.staPara IN ('Não entendido','Reavaliar') AND t.staDe != 'Finalizada'")
+                        %>
+                          <h1 class="fs30 mt5 mbn"><%=SeusTicketsAbertosSQL("Qtd")%></h1>
+                          <h6 class="text-warning">TICKETS NÃO ENTENDIDOS</h6>
                         </div>
                         <div class="hidden panel-footer br-t p12">
                           <span class="fs11">

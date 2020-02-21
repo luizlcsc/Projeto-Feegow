@@ -1,4 +1,4 @@
-<%
+﻿<%
 
 'remove tags html de uma string
 FUNCTION stripHTML(strHTML)
@@ -38,7 +38,7 @@ END FUNCTION
 
 'corrige strings com caracteres que quebram no javascript
 FUNCTION fix_string_chars(string)
-    fix_string_chars = replace(replace(string&"", chr(13), ""), chr(10), "")
+    fix_string_chars = trim(replace(replace(replace(replace(replace(string&"", chr(13), ""), chr(10), ""), """", "\"""),"'","\'"),"	",""))
 END FUNCTION
 
 Function TratarNome(ByVal formato, ByVal str)

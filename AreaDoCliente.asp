@@ -1,6 +1,9 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Connection.asp"-->
+<!--#include file="Classes/ApiClient.asp"-->
 <%
+Set api = new ApiClient
+
 set dbc = newConnection("clinic5459", "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
 
 LicencaID=replace(session("Banco"),"clinic","")
@@ -297,9 +300,9 @@ if session("Admin")=1 then
                             exibe="N"
                         end if
                         if exibe="S" then
-                            if classe="danger" then
+                            'if classe="danger" then
                                 ExibeLinha=True
-                            end if
+                            'end if
 
                             boletoURL = "#"
                             set boleto = dbc.execute("select * from clinic5459.iugu_invoices WHERE BillID ="& MovID&" ORDER BY DataHora DESC Limit 1")
@@ -316,9 +319,11 @@ if session("Admin")=1 then
                             END IF
                     %>
                                 <ul class="list-unstyled <% if i>0 then %>br-t<%end if%> pt10">
-                                  <div class="mb10" style="float: right;">
-                                            <a <% if boletoURL="#" then %> disabled <%end if %> href="<%=boletoURL%>" target="_blank" class="btn btn-default btn-xs"><i class="fa fa-barcode"></i> Imprimir boleto</a>
-                                        </div>
+                                  <div class="mb10 " style="float: right;">
+                                          <a target="_blank" <% if boletoURL="#" then %> disabled <%end if %> href="<%=boletoURL%>"  class="btn-block btn btn-default btn-xs <% if msg="QUITADA" then %> hidden <% end if %>"><i class="fa fa-barcode"></i> Imprimir boleto</a>
+                                          <a class="btn-block btn btn-primary btn-xs mt5" href="<%=api.getApiEndpoint("billing/detailing/by-invoice","ClientID="&ClienteID&"&InvoiceID="&id&"&licenca="&licencaId)%>"
+                                          target="_blank" ><i class="fa fa-info-circle"></i> Ver detalhamento</a>
+                                    </div>
                                    <li>Valor:
                                      <strong class="text-dark"> R$ <%=fn(Valor)%></strong>
                                    </li>

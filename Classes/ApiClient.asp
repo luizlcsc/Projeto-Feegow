@@ -12,6 +12,10 @@ Class ApiClient
         token = request.Cookies("tk")
     end Sub
 
+    Public Function getApiEndpoint(route, queryString)
+        getApiEndpoint = endpoint&route&"?"&queryString
+    End Function
+
     Public Function submitPost(url, data)
         if token="" then
             token="0"

@@ -1,14 +1,15 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
-<div class="app" style="padding-top: 11px;">
-    Carregando ...
-</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
 
 <% IF recursoAdicional(31)=4 THEN %>
     <% set whatsapp_instace = db.execute("select * from cliniccentral.whatsapp_instancias w where (w.LicencaID = "&replace(Session("Banco"), "clinic", "")&")") %>
     <% IF not whatsapp_instace.eof THEN %>
+    <div class="app" style="padding-top: 11px;">
+        Carregando ...
+    </div>
+
         <script type="text/javascript">
             getUrl("chat-pro/show", {}, function(data) {
                 $(".app").hide();

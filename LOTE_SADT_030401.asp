@@ -251,6 +251,8 @@ prefixo = right(prefixo, 20)
                     </ans:dadosAtendimento>
                     <ans:procedimentosExecutados>
                     <%
+                    sequencialItem = 1
+
 					set procs = db.execute("select * from tissprocedimentossadt where GuiaiD="&guias("id"))
 					while not procs.eof
 						Data = mydatetiss(procs("Data"))
@@ -272,6 +274,7 @@ prefixo = right(prefixo, 20)
 						hash = hash & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
 						%>
                         <ans:procedimentoExecutado>
+                            <ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>
                             <%if Data<>"" then%><ans:dataExecucao><%= Data %></ans:dataExecucao><% End If %>
                             <%if HoraInicio<>"" then%><ans:horaInicial><%= HoraInicio %></ans:horaInicial><% End If %>
                             <%if HoraFim<>"" then%><ans:horaFinal><%= HoraFim %></ans:horaFinal><% End If %>
@@ -340,6 +343,7 @@ prefixo = right(prefixo, 20)
 							%>
                         </ans:procedimentoExecutado>
                         <%
+                        sequencialItem=sequencialItem+1
 					procs.movenext
 					wend
 					procs.close

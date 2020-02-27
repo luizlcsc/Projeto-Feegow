@@ -12,10 +12,8 @@ else
     <%
 
 
-    if session("OtherCurrencies")="phone"  or recursoAdicional(21) = 4 or recursoAdicional(4) = 4  then
-	    %>
-	    <!--#include file="callsSoft.asp"-->
-	    <%
+    if session("OtherCurrencies")="phone"  or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 and False  then
+
     end if
     set buscaAtu = db.execute("select * from sys_users where id="&session("User"))
     if not buscaAtu.eof then

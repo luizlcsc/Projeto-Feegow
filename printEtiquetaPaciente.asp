@@ -26,13 +26,14 @@ if ProfissionalID&""<>"" then
 end if
 
 
-sql = " SELECT age.Hora,                                                                               "&chr(13)&_
+sql = " SELECT age.Hora,     conv.NomeConvenio  ,                                                      "&chr(13)&_
       "        IF(proc2.NomeProcedimento is NULL, GROUP_CONCAT(proc.NomeProcedimento SEPARATOR '<br>'),"&chr(13)&_
       "           CONCAT(GROUP_CONCAT(proc.NomeProcedimento SEPARATOR '<br>'), '<br>',                 "&chr(13)&_
       "                  GROUP_CONCAT(proc2.NomeProcedimento SEPARATOR '<br>'))) Procedimentos,        "&chr(13)&_
       "  coalesce(sys_financialcompanyunits.Sigla,'') as Sigla                                         "&chr(13)&_
       " FROM agendamentos age                                                                          "&chr(13)&_
       "  LEFT JOIN agendamentosprocedimentos agproc ON agproc.AgendamentoID = age.id                   "&chr(13)&_
+      "  LEFT JOIN convenios conv ON conv.id = age.ValorPlano and age.rdValorPlano='P'                 "&chr(13)&_
       "  LEFT JOIN procedimentos proc ON proc.id = age.TipoCompromissoID                               "&chr(13)&_
       "  LEFT JOIN procedimentos proc2 ON proc2.id = agproc.TipoCompromissoID                          "&chr(13)&_
       "  LEFT JOIN locais ON locais.id = age.LocalID                                                   "&chr(13)&_
@@ -71,6 +72,7 @@ if not PacienteSQL.eof then
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Procedimento.Nome]", NomeProcedimento)
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Profissional.Nome]", NomeProfissional)
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Local.Sigla]", AgendamentoProcedimentoSQL("Sigla"))
+    EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Paciente.Convenio]", AgendamentoProcedimentoSQL("NomeConvenio")&"")
 
 	Cabecalho = replaceTags(EtiquetaAgendamento, PacienteSQL("id"), session("User"), session("Unidade"))
     %>

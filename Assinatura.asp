@@ -32,7 +32,7 @@ if vca.eof then
         </div>
     </form>
 <% else %>
-<img src="./../uploads/<%= replace(session("Banco"), "clinic", "") &"/Imagens/"& vca("Assinatura") %>" class="img-thumbnail" width="100%" />
+<img src="./../uploads/<%= replace(session("Banco"), "clinic", "") &"/Imagens/"& vca("Assinatura") %>" class="img-thumbnail" style="height: 150px;" />
 <br />
-<button type="button" class="btn btn-block btn-danger btn-xs" onclick="if(confirm('Tem certeza de que deseja excluir esta assinatura?'))location.href='./Assinatura.asp?ProfissionalID=<%= ProfissionalID %>&X=S';">EXCLUIR</button>
+<button type="button" class="btn btn-block btn-danger btn-xs mt10" onclick="if(confirm('Tem certeza de que deseja excluir esta assinatura?'))location.href='./Assinatura.asp?ProfissionalID=<%= ProfissionalID %>&X=S';"> <i class="fa fa-trash"></i> EXCLUIR</button>
 <% end if %>

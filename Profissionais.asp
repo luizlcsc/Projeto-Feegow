@@ -138,6 +138,8 @@ end if
                         </div>
                     </div>
 
+                    <button type="button" onclick="VisualizarEnvioDasAgendas()" class="btn btn-default btn-sm btn-block"><i class="fa fa-envelope"></i> Visualizar envio das agendas</button>
+
 
 
                 </div>
@@ -500,6 +502,10 @@ if req("GT")="Permissoes" then
 end if
 %>
 $("#ObsAgenda").ckeditor();
+
+function VisualizarEnvioDasAgendas() {
+    openComponentsModal("ProfissionalEnvioAgenda.asp", {ProfissionalID:"<%=req("I")%>"}, "Envio das agendas", true)
+}
 </script>
 
 <!--#include file="disconnect.asp"-->

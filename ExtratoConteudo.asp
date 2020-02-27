@@ -94,7 +94,7 @@ end if
 			<th ></th>
 		</tr>
 	</thead>
-	<%
+    <%
 	Balance = 0
     subBalance = 0
 	linhas = 0
@@ -244,7 +244,6 @@ end if
 		'-
 		cType = getMovement("Type")
 
-
 		if (screenType="Statement" or CD=ref("AccountID")) and getMovement("Date")>=session("DateFrom") and getMovement("Date")<=session("DateTo") then
 			if not isnull(getMovement("InvoiceID")) then
 				cItens = 0
@@ -271,7 +270,7 @@ end if
 					cItens = cItens+1
 				itens.movenext
 				wend
-				itens.close
+				itens.closeSELECT id, NomePaciente, NomeSocial FROM pacientes
 				set itens=nothing
 		'		if cItens>1 then
 		'			Descricao = cItens&" itens"

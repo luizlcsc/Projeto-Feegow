@@ -8,10 +8,12 @@ tableName = ref("P")
 id = ref("I")
 spl = split(request.Form(), "&")
 Novo=False
+sysActive=0
 
 set ActiveSQL = db.execute("SELECT sysActive FROM "&tableName&" WHERE id="&id&" LIMIT 1")
 if not ActiveSQL.eof then
-    if ActiveSQL("sysActive")=0 then
+    sysActive=ActiveSQL("sysActive")
+    if sysActive=0 then
         Novo=True
     end if
 end if
@@ -389,6 +391,11 @@ if not getResource.EOF then
 	wend
 	getFields.close
 	set getFields=nothing
+
+	if sysActive=0 and lcase(tableName)="pacientes" then
+	    'atualiza a hora do cadastro
+	    sqlFields = sqlFields & ", sysDate=NOW()"
+	end if
 
 	sql = "update "&tableName&" set "&sqlFields&" where id="&id
 '	response.Write(sql)

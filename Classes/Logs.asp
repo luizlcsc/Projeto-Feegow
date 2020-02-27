@@ -29,7 +29,6 @@ function getLogs(logTable, logId, paiId)
     if logId<>"" then
         sqlLogId = " AND (I="&treatvalzero(logId)&" OR PaiID="&Treatvalzero(paiId)&")"
     end if
-    
     set getLogs = db.execute("SELECT * FROM log WHERE recurso='"&logTable&"' "&sqlLogId&" ORDER BY DataHora DESC LIMIT 25")
 end function
 
@@ -38,6 +37,7 @@ function getLogTableHtml(LogsSQL)
     <table class="table table-striped mt5">
             <tr class="primary">
                 <th>#</th>
+                <th width="18%">Tipo</th>
                 <th>Data e hora</th>
                 <th>Usuário</th>
                 <th>Obs.</th>
@@ -49,11 +49,27 @@ function getLogTableHtml(LogsSQL)
 
                 while not LogsSQL.eof
 
+                    operacao = LogsSQL("operacao")
+                    operacaoStr = LogsSQL("operacao")
                     colunas = LogsSQL("colunas")
                     spltCampos = split(colunas, "|")
                     spltValorAnterior = split(LogsSQL("valorAnterior")&"", "|^")
                     valorAtual = LogsSQL("valorAtual")
                     spltValorAtual = split(valorAtual&"", "|^")
+
+                    if operacao="X" then
+                        operacaoStr = "Exclusão"
+                        operacaoIcon = "trash"
+                        operacaoClass = "danger"
+                    elseif operacao="E" then
+                        operacaoStr="Edição"
+                        operacaoIcon = "edit"
+                        operacaoClass = "primary"
+                    elseif operacao="I" then
+                        operacaoStr="Inserção"
+                        operacaoIcon = "plus"
+                        operacaoClass = "success"
+                    end if
 
                     for i=1 to ubound(spltCampos) - 1
 
@@ -65,13 +81,14 @@ function getLogTableHtml(LogsSQL)
                 if i = 1 then
                 %>
                 <th><code>#<%=LogsSQL("id")%></code></th>
+                <th><span class="label label-<%=operacaoClass%>"><i class="fa fa-<%=OperacaoIcon%>"></i> <%=operacaoStr%></span></th>
                 <th><%=LogsSQL("DataHora")%></th>
                 <th><%=nameInTable(LogsSQL("sysUser"))%></th>
                 <th><%=LogsSQL("Obs")%></th>
                 <%
                 else
                 %>
-                <td colspan="4"></td>
+                <td colspan="5"></td>
                 <%
                 end if
                 %>

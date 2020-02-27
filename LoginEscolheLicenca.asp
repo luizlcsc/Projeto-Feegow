@@ -1,10 +1,10 @@
 <!--#include file="connect.asp"-->
 <!--#include file="classes/arquivo.asp"-->
+<!--#include file="classes/Connection.asp"-->
 <%
-sqllicencas = "SELECT u.licencaID, l.NomeEmpresa, l.Logo"& _
-              " FROM cliniccentral.licencasusuarios AS u "&_
-              " LEFT JOIN cliniccentral.licencas AS l ON l.id=u.LicencaID "&_
-              " WHERE u.Email= (select email from cliniccentral.licencasusuarios where id="&session("user")&") "
+sqllicencas = "SELECT l.id LicencaID, l.NomeEmpresa, l.Logo,l.Servidor "& _
+              " FROM cliniccentral.licencas AS l "&_
+              " WHERE l.id IN ("&replace(session("Licencas"),"|","")&") "
 
 set licencas = db.execute(sqllicencas)
 
@@ -17,29 +17,29 @@ set licencas = db.execute(sqllicencas)
 
     <div class="row">
         <div class="col-md-12">
-            <p>Selecione a <strong>Licença</strong> que deseja entrar:</p>
+            <p>Selecione a <strong>Licença</strong> que deseja acessar:</p>
         </div>
         <%
         if not licencas.eof then
             while not licencas.eof
-                set empresa = db.execute("select nomeempresa,nomefantasia, foto from clinic"&licencas("licencaID")&".empresa where id=1")
+                set connLicense = newConnection("clinic"&licencas("licencaID"), licencas("Servidor"))
+
                 NomeEmpresa = licencas("NomeEmpresa")
-                FotoEmpresa = "https://via.placeholder.com/200?text=Sem foto"
-                
-                if not empresa.eof then
-                    NomeEmpresa =empresa("nomefantasia")
-                    if empresa("foto")&"" <>"" then
-                        FotoEmpresa = findFile( empresa("foto"), "perfil", licencas("licencaID"))
-                    end if 
-                end if 
+                'FotoEmpresa = "https://via.placeholder.com/200?text=Sem foto"
+                FotoEmpresa = "https://clinic8.feegow.com.br/v7/images/hospital-icon.png"
+
+                set FotoSQL = connLicense.execute("SELECT Logo FROM sys_config WHERE id=1 and Logo Like 'http%'")
+                if not FotoSQL.eof then
+                    FotoEmpresa = FotoSQL("Logo")
+                end if
                 
                 %>
                 <div class="col-md-6 pt10">
                     <a  style="font-size: 11px" 
                         href="?P=ChangeCp&Pers=1&LicID=<%=licencas("licencaID")%>" 
                         class="btn btn-block">
-                    <img src="<%=FotoEmpresa%>">
-                    <p><%=NomeEmpresa%></p>
+                    <img style="height: 60px; width: auto" src="<%=FotoEmpresa%>">
+                    <p class="mt10"><%=NomeEmpresa%></p>
                     </a>
                 </div>
                 <%

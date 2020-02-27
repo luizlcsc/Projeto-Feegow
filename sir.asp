@@ -1,4 +1,5 @@
-﻿﻿<!--#include file="connect.asp"-->
+﻿<!--#include file="connect.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
 {
 <%
 
@@ -13,7 +14,7 @@ function existeGrade(ProfissionalID, UnidadeID, DiaSemana, Hora, Data)
     set Grade = db.execute(sqlGrade)
     if Grade.eof then
         existeGrade = true
-    end if 
+    end if
 end function
 
 
@@ -126,10 +127,10 @@ if aut(lcase(ref("resource"))&"A")=1 then
             sqlLimitProcedimentos = ""
             if getConfig("BloqueioProcedimentoUnidadeProfissional")=1 then
                 set procUnidades = db.execute("select count(id) total from procedimento_profissional_unidade ppu where ppu.id_profissional = " & ProfissionalID)
-                if not procUnidades.eof then 
-                    if ccur(procUnidades("total")) > 0 then 
+                if not procUnidades.eof then
+                    if ccur(procUnidades("total")) > 0 then
                         set procedimentosPermitidos = db.execute("SELECT GROUP_CONCAT(id_procedimento) procs FROM procedimento_profissional_unidade WHERE id_unidade = "&session("UnidadeID")&" AND id_profissional = " & ProfissionalID)
-                        if not procedimentosPermitidos.eof then 
+                        if not procedimentosPermitidos.eof then
                             if procedimentosPermitidos("procs")&"" <> "" then
                                 sqlLimitProcedimentos = " AND id IN (" & procedimentosPermitidos("procs") & ") "
                             end if
@@ -139,18 +140,6 @@ if aut(lcase(ref("resource"))&"A")=1 then
 
             end if
             sqlSomenteProcedimento=""
-            if ref("encaixe")&"" <> "" and ref("ProfissionalID")&"" <> "0" then
-                Data=ref("data")
-                UnidadeID=session("UnidadeID")
-                DiaSemana=weekday(Data)
-                Hora=ref("hora")
-
-                gradeExiste = existeGrade(ProfissionalID, UnidadeID,DiaSemana, Hora, Data)
-                if gradeExiste then
-                    sqlExibir = ""
-                    sqlSomenteProcedimento=" AND (opcoesagenda IN (4,5) and SomenteProfissionais like '%|"& ProfissionalID &"|%') "
-                end if 
-            end if
 
             sql = "select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"
             initialOrder = "NomeProcedimento"
@@ -161,37 +150,11 @@ if aut(lcase(ref("resource"))&"A")=1 then
             initialOrder = "codigo"
         elseif ref("t")="procedimentos" then
             Typed=ref("q")
-            
+
             if instr(ref("oti"), "guia-tiss")>0 and (session("Banco")="clinic6178" or session("Banco")="clinic100000") and ref("cs")<>"" then
                 sql = "select proc.id, proc.NomeProcedimento from procedimentos proc LEFT JOIN tissprocedimentosvalores tpv ON tpv.ProcedimentoID=proc.id where (tpv.ConvenioID="&ref("cs")&") AND proc.sysActive=1 and (proc.NomeProcedimento like '%"&ref("q")&"%' or proc.Codigo like '%"&ref("q")&"%') and proc.Ativo='on' GROUP BY proc.id order by proc.OpcoesAgenda desc, proc.NomeProcedimento"
             else
-                if ref("encaixe")&"" <> "" and ref("ProfissionalID")&"" <> "0" then
-                    qlSomenteProcedimento=" "
-                    ProfissionalID = ref("ProfissionalID")
-                    Data=ref("data")
-                    UnidadeID=session("UnidadeID")
-                    DiaSemana=weekday(Data)
-                    Hora=ref("hora")
-                    gradeProcedimentosExibir = " AND paci.ProcedimentoID IN ("&exibir&") "
-
-                    gradeExiste = existeGrade(ProfissionalID, UnidadeID,DiaSemana, Hora, Data)
-                    if gradeExiste then
-                        sqlExibir = ""
-                        gradeProcedimentosExibir = ""
-                        sqlSomenteProcedimento=" AND (opcoesagenda IN (4,5) and SomenteProfissionais like '%|"& ProfissionalID &"|%') "
-                    end if 
-                end if
-                sql =   "SELECT id, NomeProcedimento "&_
-                        "FROM ((select id, NomeProcedimento "&_
-                        "FROM procedimentos "&_
-                        "WHERE sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') and Ativo='on' "&sqlSomenteProcedimento&" "&_
-                        " order by OpcoesAgenda desc, NomeProcedimento) UNION ALL ("&_
-                        "SELECT (-1*CAST(pac.id as SIGNED))id, CONCAT(pac.NomePacote, ' (Pacote)') NomeProcedimento "&_
-                        "FROM pacotes AS pac "&_
-                        "JOIN pacotesitens AS paci ON paci.PacoteID = pac.id "&_
-                        "WHERE pac.sysActive=1 AND pac.NomePacote like '%"&ref("q")&"%' "&gradeProcedimentosExibir&" "&_
-                        "GROUP BY pac.id))t "&_
-                        "LIMIT 20"
+                sql = "select id, NomeProcedimento from ((select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') and Ativo='on' order by OpcoesAgenda desc, NomeProcedimento) UNION ALL (SELECT (-1*CAST(id as SIGNED))id, CONCAT(NomePacote, ' (Pacote)') NomeProcedimento FROM pacotes WHERE sysActive=1 AND NomePacote like '%"&ref("q")&"%'))t LIMIT 20"
             end if
 
             initialOrder = "NomeProcedimento"
@@ -270,7 +233,6 @@ end if
 %>
   "items": [
     <%
-    'response.write sql
     set q = db.execute(sql)
 
     if q.eof and sqlAlternativo<>"" then
@@ -321,7 +283,7 @@ end if
     %>
     {
       "id": <%=q("id") %>,<%=Nascimento%>
-      "full_name": "<%=replace(replace(q(ref("c"))&"","""","\"""),"	","") %><%=NomeUnidadeLocal%>"
+      "full_name": "<%=fix_string_chars_full(q(ref("c"))) %><%=NomeUnidadeLocal%>"
     }
     <%
     q.movenext
@@ -337,7 +299,7 @@ end if
         {
           "id": -1,
           "permission":<%=PermissaoParaAdd%>,
-          "full_name": "<%=replace(trim(ref("q")), """", "\""") %>",
+          "full_name": "<%= fix_string_chars_full(ref("q")) %>",
           "buscado": "<%=ref("q") %>"
         }
         <%

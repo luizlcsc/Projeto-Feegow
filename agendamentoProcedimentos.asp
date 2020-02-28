@@ -80,9 +80,10 @@ if req("Checkin")="1" then
     while not agp.eof
 
         procedimentos = ""
+        PermitirFaturamentoContaZerada = getConfig("PermitirFaturamentoContaZerada")
+
 
         if agp("rdValorPlano")="V" then
-            PermitirFaturamentoContaZerada = getConfig("PermitirFaturamentoContaZerada")
 
             if PermitirFaturamentoContaZerada="0" and agp("ValorPlano")=0 then
                 staPagto = "success"
@@ -121,6 +122,24 @@ if req("Checkin")="1" then
             
         else
             staPagto = "danger"'verifica as guias antes de dar DANGER
+            set sqlGuiaGerada = db.execute("SELECT * FROM  "&_
+                                       "(SELECT ValorProcedimento, DataAtendimento, ProcedimentoID, PacienteID, ProfissionalID, AgendamentoID "&_
+                                       "FROM tissguiaconsulta "&_
+                                       "UNION ALL "&_
+                                       "SELECT tps.ValorTotal ValorProcedimento, tps.`Data` DataAtendimento, tps.ProcedimentoID, tgs.PacienteID, tps.ProfissionalID, tps.AgendamentoID "&_
+                                       "FROM tissprocedimentossadt tps "&_
+                                       "LEFT JOIN tissguiasadt tgs ON tgs.id=tps.GuiaID) t "&_
+                                       "WHERE t.PacienteID IS NOT NULL AND DataAtendimento = CURDATE() AND t.ProcedimentoID="&agp("TipoCompromissoID")&" AND (ISNULL(t.ProfissionalID) or t.ProfissionalID=0 OR t.ProfissionalID="& treatvalnull(ProfissionalID) &") AND t.PacienteID="&PacienteID&" LIMIT 1")
+            if not sqlGuiaGerada.eof then
+                ValorProcedimento = sqlGuiaGerada("ValorProcedimento")
+                if ValorProcedimento > 0 then
+                    staPagto = "success"
+                end if
+                if PermitirFaturamentoContaZerada = 1 and ValorProcedimento = 0 then
+                    staPagto = "success"
+                end if
+            end if
+
         end if
 
       '  response.write(FormaIDSelecionado)

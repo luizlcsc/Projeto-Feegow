@@ -160,6 +160,9 @@ else
                     showOriginalCheckinTab();
                 }
                 ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico');
+                if($('#Checkin').val()=='1'){
+                    $.get("callAgendamentoProcedimentos.asp?Checkin=1&ConsultaID="+ $("#ConsultaID").val() +"&PacienteID="+ $("#PacienteID").val() +"&ProfissionalID="+ $("#ProfissionalID").val() +"&ProcedimentoID="+ $("#ProcedimentoID").val(), function(data){ $("#divAgendamentoCheckin").html(data) });
+                }
             }else{
                 location.href='./?P=tissbuscaguias&ConvenioID=<%=guia("ConvenioID")%>&T=GuiaConsulta&LoteID=<%=guia("LoteID")%>&Pers=1';
             }

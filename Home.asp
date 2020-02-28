@@ -1209,7 +1209,7 @@ function openPendingTables() {
 }
 
 if("false"!=="<%=session("AutenticadoPHP")%>"){
-    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z");
+    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z");
 }
 
 </script>

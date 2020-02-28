@@ -299,8 +299,8 @@ posModalPagar = "fixed"
         </div>
         <% end if %>
         
-        <% if CD = "D" then 
-            if aut("|rateiocontaspagarV|") = 1 then 
+        <% if CD = "D" OR getConfig("RateioContasAReceber") = "1"  then
+            if aut("|rateiocontaspagarV|") = 1 or aut("|rateiocontasreceberV|") = 1 then
         %>
         <div class="row">
             <div class="col-md-12 mt10">

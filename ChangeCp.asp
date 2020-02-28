@@ -25,6 +25,7 @@ if session("banco")<>"" then
 		session("Admin")=vcaOE("Admin")
 		session("User")=vcaOE("id")
 		session("NameUser")=vcaOE("Nome")
+        session("AutenticadoPHP") = "false"
 		session("Banco")="clinic"&req("LicID")
 
 

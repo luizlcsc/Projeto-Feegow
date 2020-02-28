@@ -59,7 +59,7 @@ if req("Checkin")="1" then
 <div id="divLanctoCheckin"><!--#include file="invoiceEstilo.asp"--></div>
     <table class="table table-condensed table-hover">
     <%
-    sql = "SELECT t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, tpv.Valor ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal FROM ("&_
+    sql = "SELECT t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal FROM ("&_
     "SELECT '' id, a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID, a.Tempo, a.LocalID, a.EquipamentoID,a.PlanoID from agendamentos a where id="& ConsultaID &_
     " UNION ALL "&_
     " SELECT ap.id, ap.rdValorPlano, ap.ValorPlano, ap.TipoCompromissoID, ap.Tempo, ap.LocalID, ap.EquipamentoID,ap.PlanoID FROM agendamentosprocedimentos ap "&_
@@ -67,6 +67,7 @@ if req("Checkin")="1" then
     ") t "&_
     " LEFT JOIN procedimentos proc ON proc.id=t.TipoCompromissoID "&_
     " LEFT JOIN tissprocedimentosvalores tpv ON tpv.ProcedimentoId = t.TipoCompromissoID AND (tpv.ConvenioID=t.ValorPlano AND t.rdValorPlano='P')  "&_
+    " LEFT JOIN tissprocedimentosvaloresplanos tpvp ON tpvp.AssociacaoID=tpv.id AND tpvp.PlanoID=t.PlanoID  "&_
     " LEFT JOIN convenios conv ON (conv.id=t.ValorPlano AND t.rdValorPlano='P') "&_
     " GROUP BY t.id ORDER BY t.rdValorPlano DESC, t.ValorPlano, proc.TipoGuia"
 
@@ -191,6 +192,15 @@ if req("Checkin")="1" then
     if blocoPend=1 then
         if UrdValorPlano = "V" or (UrdValorPlano = "P" and ValorConvenio&"" <> "") then
             call linhaPagtoCheckin( UTipoGuia, UrdValorPlano , "danger", "" )
+        elseif (UrdValorPlano = "P" and (ValorConvenio&""="" or ValorConvenio&""="0")) then
+        %>
+        <tr class="danger">
+            <td class="default" colspan="10" style="border-top:none">
+                <i class="fa fa-exclamation-circle"></i> Não possui valor cadastrado no convênio
+            </td>
+        </tr>
+        <%
+
         end if
     elseif blocoPendParcial=1 then
         if UrdValorPlano = "V" or (UrdValorPlano = "P" and ValorConvenio&"" <> "") then

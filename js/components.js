@@ -321,8 +321,8 @@ function showMessageDialog(message, messageType, title, delay) {
     });
 }
 
-function authenticate(u) {
-    getUrl("auth", {_u: u}, function(data) {
+function authenticate(u, l = false) {
+    getUrl("auth", {l: l,_u: u}, function(data) {
         if(data.success==true){
             $.post("confAut.asp", data);
 

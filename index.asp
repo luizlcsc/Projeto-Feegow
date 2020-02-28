@@ -2383,20 +2383,7 @@ end if
 
 
                 if("false"==="<%=session("AutenticadoPHP")%>"){
-                    getUrl("auth", {_u: "-<%= session("User") * (9878 + Day(now())) %>Z"}, function(data) {
-                        if(data.success==true){
-                            $.post("confAut.asp", data);
-
-                            localStorage.setItem("tk", data.t);
-
-
-							$.ajaxSetup({
-								headers: { 'x-access-token': data.t }
-							});
-
-
-                        }
-                    });
+                    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z");
                 }else{
 					if(localStorage.getItem("tk")){
 						$.ajaxSetup({

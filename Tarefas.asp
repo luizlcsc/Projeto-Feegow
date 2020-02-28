@@ -261,7 +261,7 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
 
                     <% if req("Helpdesk") <> "" then %>
                         <input type="hidden" value="<%=Para%>" id="Para" name="Para">
-                        <%=Para%>
+                        <%'=Para%>
 
                     <% else %>
                         <%=quickField("multiple", "Para", "Para", 6, Para, "select su.id, t.Nome from (	select id, NomeProfissional Nome, 'profissionais' Tipo from profissionais where ativo='on'	UNION ALL	select id, NomeFuncionario, 'funcionarios' from funcionarios where ativo='on') t INNER JOIN sys_users su ON (su.idInTable=t.id AND lcase(su.`Table`)=t.Tipo)  UNION ALL select cc.id*(-1), concat('&raquo; ', cc.NomeCentroCusto) from centrocusto cc where cc.sysActive=1 "& CentroCustoSQLAux &" order by Nome", "Nome", " required")%>

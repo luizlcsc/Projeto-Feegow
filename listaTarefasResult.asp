@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Connection.asp"-->
 <%
-if req("Helpdesk")<>"" then
+if ref("Helpdesk")<>"" then
 licencaCliente = 5459
 set dblicense = newConnection("clinic5459", "")
 end if
@@ -191,7 +191,7 @@ end if
             end if
             classPara = ""
             if inStr(lista("Para"), ",")&""="0" and inStr(lista("Para"), "-")&""<>"0" then
-                classPara = "warning"
+                'classPara = "warning"
             end if
 
 

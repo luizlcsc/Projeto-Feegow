@@ -2098,9 +2098,45 @@ FormaID = replace(FormaID, "|", "")
 	dominioRepasse = 0
 	EspecialidadeIDsent = EspecialidadeID&""
 	pontomaior = 0
+    ProfissionalID= replace(ProfissionalID, "5_","")
 
+    set pprofs = db.Execute("select GrupoID from profissionais where not isnull(GrupoID) and GrupoID<>0 and id="& treatvalzero(ProfissionalID))
+    if not pprofs.eof then
+        GrupoProfissionalID = pprofs("GrupoID")
+    end if
 
-	set dom = db.execute("select * from rateiodominios order by Tipo desc")
+    set pproc = db.Execute("select GrupoID from procedimentos where not isnull(GrupoID) and GrupoID<>0 and id="& treatvalzero(ProcedimentoID))
+    if not pproc.eof then
+        GrupoProcedimentoID = "-"& pproc("GrupoID")
+    end if
+
+    if ProfissionalID&""<>"" and isnumeric(ProfissionalID&"") then
+        set vesp = db.execute("select EspecialidadeID from profissionais where id="& ProfissionalID&" and not isnull(EspecialidadeID) and EspecialidadeID<>0")
+        if not vesp.eof then
+            EspecialidadeID = "-"& vesp("EspecialidadeID")
+        else
+            EspecialidadeID = ""
+        end if
+    end if
+    'se a especialidade for valida postada leva em conta a postada
+    if EspecialidadeIDsent<>"" and isnumeric(EspecialidadeIDsent) and EspecialidadeIDsent<>"0" then
+        EspecialidadeID = "-"& EspecialidadeIDsent
+    end if
+
+    if req("debugarRepasse")="1" then
+	set dom = db.execute("select * from rateiodominios WHERE "&_
+	"(IFNULL(Unidades,'')='' or Unidades LIKE '%|"&UnidadeID&"|%') "&_
+	" AND (IFNULL(Tabelas,'')='' or Tabelas LIKE '%|"&TabelaID&"|%') "&_
+	" AND ((IFNULL(Profissionais,'')='' or Profissionais LIKE '%|"&ProfissionalID&"|%') or "&_
+	"  (IFNULL(Profissionais,'')='' or Profissionais LIKE '%|"&EspecialidadeID&"|%'))"&_
+
+	" AND ((IFNULL(Procedimentos,'')='' or Procedimentos LIKE '%|"&ProcedimentoID&"|%') OR "&_
+	"  (IFNULL(Procedimentos,'')='' or Procedimentos LIKE '%|"&GrupoProcedimentoID&"|%')) "&_
+	"order by Tipo desc")
+	else
+	    set dom = db.execute("select * from rateiodominios order by Tipo desc")
+	end if
+
 	while not dom.eof
         Tabelas = dom("Tabelas")&""
         Unidades = dom("Unidades")&""
@@ -2108,18 +2144,7 @@ FormaID = replace(FormaID, "|", "")
         GruposProfissionais = dom("GruposProfissionais")&""
         Dias = dom("Dias")&""
         Horas = dom("Horas")&""
-        if ProfissionalID&""<>"" and isnumeric(ProfissionalID&"") then
-            set vesp = db.execute("select EspecialidadeID from profissionais where id="& ProfissionalID&" and not isnull(EspecialidadeID) and EspecialidadeID<>0")
-            if not vesp.eof then
-                EspecialidadeID = "-"& vesp("EspecialidadeID")
-            else
-                EspecialidadeID = ""
-            end if
-        end if
-		'se a especialidade for valida postada leva em conta a postada
-		if EspecialidadeIDsent<>"" and isnumeric(EspecialidadeIDsent) and EspecialidadeIDsent<>"0" then
-			EspecialidadeID = "-"& EspecialidadeIDsent
-		end if
+
 
 		esteponto = 0
 		queima = 0
@@ -2156,10 +2181,8 @@ FormaID = replace(FormaID, "|", "")
 		else
 			if trim(Procedimentos)<>"" then
                 'antes de queimar, ve o grupo desse procedimento e incrementa ou queima
-                set pproc = db.Execute("select GrupoID from procedimentos where not isnull(GrupoID) and GrupoID<>0 and id="& treatvalzero(ProcedimentoID))
-                if not pproc.eof then
-                    GrupoID = "-"& pproc("GrupoID")
-                    if instr(Procedimentos, "|"&GrupoID&"|")>0 then
+                if GrupoProcedimentoID<>"" then
+                    if instr(Procedimentos, "|"&GrupoProcedimentoID&"|")>0 then
 			            esteponto = esteponto+1
                     else
         				queima = 1
@@ -2177,13 +2200,10 @@ FormaID = replace(FormaID, "|", "")
 		if trim(GruposProfissionais)<>"" then
 
             'antes de queimar, ve o grupo desse procedimento e incrementa ou queima
-            ProfissionalID= replace(ProfissionalID, "5_","")
 
-            set pprofs = db.Execute("select GrupoID from profissionais where not isnull(GrupoID) and GrupoID<>0 and id="& treatvalzero(ProfissionalID))
-            if not pprofs.eof then
-                GrupoID = pprofs("GrupoID")
+            if GrupoProfissionalID<>"" then
 
-                if instr(GruposProfissionais, "|"&GrupoID&"|")>0 then
+                if instr(GruposProfissionais, "|"&GrupoProfissionalID&"|")>0 then
 			        esteponto = esteponto+1
                 else
         			queima = 1
@@ -4849,7 +4869,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
                         <%
                         end if
                         if not ConvenioSQL.eof then
-                            ObsConvenio = ConvenioSQL("Obs")
+                            ObsConvenio = replace(ConvenioSQL("Obs"),"""","\'")
                             %>
                             <button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="openModal('<%=replace(replace(ObsConvenio,chr(10),"<br>"),chr(13),"<br>")%>', 'Observações do convênio', true, false, 'md')"><i class="fa fa-align-justify"></i></button>
                             <%
@@ -5355,9 +5375,6 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
                        "(Tabelas='' OR Tabelas IS NULL OR Tabelas LIKE '%|"&TabelaID&"|%' ) AND "&_
                        "(Unidades='' OR Unidades='0' OR Unidades IS NULL OR Unidades LIKE '%|"&UnidadeID&"|%' ) ORDER BY Ordem"&_
                    ") t ) t2 order by PrioridadeProc desc"
-
-    'response.write sqlVarPreco
-
     set vcaTab = db.execute(sqlVarPreco)
 
     while not vcaTab.eof

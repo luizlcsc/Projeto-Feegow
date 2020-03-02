@@ -260,7 +260,7 @@ end if
         $.post("laudoLog.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
     }
 
-    function syncLabResult(invoices, labid =1) {
+    function syncLabResult(invoices, labid =2) {
         var caminhointegracao = "";
         $("#syncInvoiceResultsButton").prop("disabled", true);  
         switch (labid.toString()) {

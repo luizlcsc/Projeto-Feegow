@@ -9,6 +9,10 @@ Tipo = req("t")
 erro = ""
 habilitarVazio = req("v")
 
+if ModeloID = 0 then 
+    Response.End
+end if 
+
 if aut("formsaeA")=0 and req("Inserir")<>"1" then
     erro = "Sem permissão para alteração."
 end if

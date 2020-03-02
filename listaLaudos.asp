@@ -240,11 +240,13 @@ end if
                         <td><%= ii("NomeConvenio") %></td>
                         <td><%= Status %> <% if cint(ii("TemArquivos")) > 0 then %> <span><i style="color: #36bf92" class="fa fa-paperclip"></i></span> <% end if %></td>
                         <td>
-                            <% if ii("labid")="1" then %>  
-                                <a class="btn btn-xs btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>')" title="Solicitar Resultado São Marcos"><i class="fa fa-flask"></i></a>
-                            <% end if %>
-                            <% if ii("labid")="2"    then %>  
-                                <a class="btn btn-xs btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>')" title="Solicitar Resultado Diagnósticos do Brasil"><i class="fa fa-flask"></i></a>
+                            <% if Status <> "Liberado" then %>
+                                <% if ii("labid")="1" then %>  
+                                    <a id="<%=ii("invoiceid") %>" class="btn btn-xs btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>');  $(this).attr('display','none');" title="Solicitar Resultado São Marcos"><i class="fa fa-flask"></i></a>
+                                <% end if %>
+                                <% if ii("labid")="2"    then %>  
+                                    <a class="btn btn-xs btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $(this).attr('display','none');" title="Solicitar Resultado Diagnósticos do Brasil"><i class="fa fa-flask"></i></a>
+                                <% end if %>
                             <% end if %>
                         </td>
                         <td>                            
@@ -281,7 +283,7 @@ end if
   end if
 %>
     <div class="col-md-3">
-        <button class="btn btn-primary btn-block mt20 lab-sync" type="button"><i class="fa fa-flask bigger-110"></i> Sincronizar laboratório</button>
+        <!-- <button class="btn btn-primary btn-block mt20 lab-sync" type="button"><i class="fa fa-flask bigger-110"></i> Sincronizar laboratório</button> -->
         <p style="margin-top: 10px; opacity: 0.80">Última sincronização: <%=UltSinc%></p>
     </div>
 <%
@@ -354,7 +356,6 @@ function syncLabResult(invoices, labid =1) {
         //$("#syncInvoiceResultsButton").prop("disabled", false);
         if(data.success) {
             alert(data.content);
-            location.reload();
         } else {
             alert(data.content)
         }

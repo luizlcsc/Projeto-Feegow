@@ -2247,13 +2247,15 @@ select case lcase(req("P"))
                 if recursoAdicional(24)=4 and LaudoID<>"" then
                     set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
                     if not labAutenticacao.eof then
-                        set solicInfo = db.execute("SELECT ls.InvoiceID FROM labs_solicitacoes ls INNER JOIN laudos l ON ls.InvoiceID = l.IDTabela WHERE l.Tabela = 'sys_financialinvoices' and l.id ="&LaudoID)
+                        sql = "SELECT ls.InvoiceID, ls.labid FROM labs_solicitacoes ls INNER JOIN laudos l ON ls.InvoiceID = l.IDTabela WHERE l.Tabela = 'sys_financialinvoices' and l.id ="&LaudoID
+                        set solicInfo = db.execute(sql)
                         if not solicInfo.eof then
                             InvoiceID = solicInfo("InvoiceID")
+                            labid = solicInfo("labid")
             %>
-            <button type="button" id="syncInvoiceResultsButton" class="btn btn-primary btn-sm" onclick="javascript:syncLabResult([<%=InvoiceID%>])">
+            <button type="button" id="syncInvoiceResultsButton" class="btn btn-primary btn-sm" onclick="javascript:syncLabResult([<%=InvoiceID%>],<%=labid%>)">
                             <i class="fa fa-flask"></i>
-                             Sincronizar resultados
+                             Sincronizar resultados 
                         </button>
             <%
                         end if

@@ -59,7 +59,7 @@ if req("Checkin")="1" then
 <div id="divLanctoCheckin"><!--#include file="invoiceEstilo.asp"--></div>
     <table class="table table-condensed table-hover">
     <%
-    sql = "SELECT t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, tpv.Valor ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal FROM ("&_
+    sql = "SELECT t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal FROM ("&_
     "SELECT '' id, a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID, a.Tempo, a.LocalID, a.EquipamentoID,a.PlanoID from agendamentos a where id="& ConsultaID &_
     " UNION ALL "&_
     " SELECT ap.id, ap.rdValorPlano, ap.ValorPlano, ap.TipoCompromissoID, ap.Tempo, ap.LocalID, ap.EquipamentoID,ap.PlanoID FROM agendamentosprocedimentos ap "&_
@@ -67,6 +67,7 @@ if req("Checkin")="1" then
     ") t "&_
     " LEFT JOIN procedimentos proc ON proc.id=t.TipoCompromissoID "&_
     " LEFT JOIN tissprocedimentosvalores tpv ON tpv.ProcedimentoId = t.TipoCompromissoID AND (tpv.ConvenioID=t.ValorPlano AND t.rdValorPlano='P')  "&_
+    " LEFT JOIN tissprocedimentosvaloresplanos tpvp ON tpvp.AssociacaoID=tpv.id AND tpvp.PlanoID=t.PlanoID  "&_
     " LEFT JOIN convenios conv ON (conv.id=t.ValorPlano AND t.rdValorPlano='P') "&_
     " GROUP BY t.id ORDER BY t.rdValorPlano DESC, t.ValorPlano, proc.TipoGuia"
 
@@ -80,9 +81,10 @@ if req("Checkin")="1" then
     while not agp.eof
 
         procedimentos = ""
+        PermitirFaturamentoContaZerada = getConfig("PermitirFaturamentoContaZerada")
+
 
         if agp("rdValorPlano")="V" then
-            PermitirFaturamentoContaZerada = getConfig("PermitirFaturamentoContaZerada")
 
             if PermitirFaturamentoContaZerada="0" and agp("ValorPlano")=0 then
                 staPagto = "success"
@@ -121,6 +123,24 @@ if req("Checkin")="1" then
             
         else
             staPagto = "danger"'verifica as guias antes de dar DANGER
+            set sqlGuiaGerada = db.execute("SELECT * FROM  "&_
+                                       "(SELECT ValorProcedimento, DataAtendimento, ProcedimentoID, PacienteID, ProfissionalID, AgendamentoID "&_
+                                       "FROM tissguiaconsulta "&_
+                                       "UNION ALL "&_
+                                       "SELECT tps.ValorTotal ValorProcedimento, tps.`Data` DataAtendimento, tps.ProcedimentoID, tgs.PacienteID, tps.ProfissionalID, tps.AgendamentoID "&_
+                                       "FROM tissprocedimentossadt tps "&_
+                                       "LEFT JOIN tissguiasadt tgs ON tgs.id=tps.GuiaID) t "&_
+                                       "WHERE t.PacienteID IS NOT NULL AND DataAtendimento = CURDATE() AND t.ProcedimentoID="&agp("TipoCompromissoID")&" AND (ISNULL(t.ProfissionalID) or t.ProfissionalID=0 OR t.ProfissionalID="& treatvalnull(ProfissionalID) &") AND t.PacienteID="&PacienteID&" LIMIT 1")
+            if not sqlGuiaGerada.eof then
+                ValorProcedimento = sqlGuiaGerada("ValorProcedimento")
+                if ValorProcedimento > 0 then
+                    staPagto = "success"
+                end if
+                if PermitirFaturamentoContaZerada = 1 and ValorProcedimento = 0 then
+                    staPagto = "success"
+                end if
+            end if
+
         end if
 
       '  response.write(FormaIDSelecionado)
@@ -172,6 +192,15 @@ if req("Checkin")="1" then
     if blocoPend=1 then
         if UrdValorPlano = "V" or (UrdValorPlano = "P" and ValorConvenio&"" <> "") then
             call linhaPagtoCheckin( UTipoGuia, UrdValorPlano , "danger", "" )
+        elseif (UrdValorPlano = "P" and (ValorConvenio&""="" or ValorConvenio&""="0")) then
+        %>
+        <tr class="danger">
+            <td class="default" colspan="10" style="border-top:none">
+                <i class="fa fa-exclamation-circle"></i> Não possui valor cadastrado no convênio
+            </td>
+        </tr>
+        <%
+
         end if
     elseif blocoPendParcial=1 then
         if UrdValorPlano = "V" or (UrdValorPlano = "P" and ValorConvenio&"" <> "") then

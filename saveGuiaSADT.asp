@@ -200,7 +200,9 @@ else
                 showOriginalCheckinTab();
             }
             ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico');
-            loadAgenda($("#Data").val(), $("#ProfissionalID").val());
+            if($('#Checkin').val()=='1'){
+                $.get("callAgendamentoProcedimentos.asp?Checkin=1&ConsultaID="+ $("#ConsultaID").val() +"&PacienteID="+ $("#PacienteID").val() +"&ProfissionalID="+ $("#ProfissionalID").val() +"&ProcedimentoID="+ $("#ProcedimentoID").val(), function(data){ $("#divAgendamentoCheckin").html(data) });
+            }
         }else{
             <%if isClose = "1" then%>
             window.close();

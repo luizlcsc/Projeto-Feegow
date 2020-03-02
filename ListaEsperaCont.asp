@@ -1,6 +1,12 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <%
+
+IF ref("Rechamar") = "1" THEN
+    db.execute("UPDATE agendamentos SET Falado = NULL WHERE id = "&ref("id"))
+    response.write("true")
+END IF
+
 configExibirNaSalaDeEspera = getConfig("ExibirEquipamentoNaSalaDeEspera")
 OrdensNome="Hor&aacute;rio Agendado, Hor&aacute;rio de Chegada, Idade do Paciente"
 Ordens="HoraSta, Hora, pac.Nascimento ASC"
@@ -385,22 +391,36 @@ else
     <td nowrap="nowrap" class="text-center"><%=Valor%></td>
     <%if ExibirChamar=1 then%>
     <td>
-        <% if session("Banco")<>"clinic5760" then %>
-        <button class="btn btn-xs btn-warning" type="button" <%=disabPagto%> <%
-        if veseha("StaID")<>4 and veseha("StaID")<>101 and veseha("StaID")<>102 and veseha("StaID")<>33 then
-            %> disabled<%
-        else
-            %> onClick="window.location='?P=ListaEspera&Pers=1&Chamar=<%=veseha("id")%>';"<%
-        end if
-		%>><i class="fa fa-bell"></i> CHAMAR
-		<%
-        if disabPagto <> "" then
-            %>
-            <small>*<%=labelDisabled%></small>
+        <% if session("Banco")<>"clinic5760" then
+            Rechamar = false
+         %>
+            <button class="btn btn-xs btn-warning" type="button" <%=disabPagto%> <%
+            if veseha("StaID")<>4 and veseha("StaID")<>101 and veseha("StaID")<>102 and veseha("StaID")<>33 then
+
+                Rechamar = getConfig("ReChamarAtendimento")
+                IF Rechamar THEN
+                    %> onClick="rechamar(<%=veseha("id")%>)"<%
+                ELSE
+                    response.write("disabled")
+                END IF
+            else
+                %> onClick="window.location='?P=ListaEspera&Pers=1&Chamar=<%=veseha("id")%>';"<%
+            end if
+            %>><i class="fa fa-bell"></i>
+             <% IF Rechamar THEN %>
+                RECHAMAR
+             <% ELSE %>
+                CHAMAR
+             <% END IF %>
+
             <%
-        end if
-        %>
-		</button>
+            if disabPagto <> "" then
+                %>
+                <small>*<%=labelDisabled%></small>
+                <%
+            end if
+            %>
+            </button>
         <% end if %>
 
     </td>
@@ -541,6 +561,18 @@ else
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
     });
+
+    function rechamar(arg){
+
+        $.post("ListaEsperaCont.asp", {Rechamar:"1",id: arg}, function(data){
+            showMessageDialog("Chamando paciente.", "success");
+            window.location='?P=ListaEspera&Pers=1&Chamar='+arg;
+         });
+
+
+    }
+
 </script>
+
 <%end if%>
 <!--#include file = "disconnect.asp"-->

@@ -29,6 +29,7 @@ else
         	<th>Dias da Semana</th>
         	<th>Profissionais</th>
         	<th>Unidades</th>
+        	<th>Data de Alteração</th>
         	<%if aut("bloqueioagendaX") then%>
             <th width="1%"></th>
             <% End If %>
@@ -85,6 +86,7 @@ while not lista.eof
     	<td><%= DiasSemana %></td>
     	<td><%= Profissionais %></td>
     	<td><small><%= Unidades %></small></td>
+    	<td><small><%= formatdatetime(lista("Data"), 2) &" - "& formatdatetime(lista("Data"), 4) %></small></td>
         <%if aut("bloqueioagendaX") then%>
     	<td><button class="btn btn-xs btn-danger" type="button" onClick="if(confirm('Tem certeza de que deseja excluir este bloqueio?'))ajxContent('listaBloqueios&X=<%=lista("id")%>', <%=ProfissionalID%>, '1', 'listaBloqueios')"><i class="fa fa-remove"></i></button></td>
         <% End If %>

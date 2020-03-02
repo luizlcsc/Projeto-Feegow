@@ -1,4 +1,4 @@
-﻿<!--#include file="connect.asp"--><!--#include file="Classes/StringFormat.asp"--><% 'NÃO DESCOLAR DAQUI SENÃO BUGA TUDO!!!
+﻿<!--#include file="connect.asp"--><!--#include file="Classes/StringFormat.asp"--><!--#include file="Classes/ValidaProcedimentoProfissional.asp"--><% 'NÃO DESCOLAR DAQUI SENÃO BUGA TUDO!!!
 NomeEspecialidade = ref("NomeEspecialidade")
 ProfissionalID = ref("ProfissionalID")
 Data = ref("Data")
@@ -26,7 +26,7 @@ if ProcedimentoID<>"" then
     if not EspecialidadesPermitidasNoProcedimentoSQL.eof then
         ProcedimentoSomenteEspecialidades = EspecialidadesPermitidasNoProcedimentoSQL("SomenteEspecialidades")
     end if
-    sqlProcedimentosGrade = " AND (Procedimentos LIKE '%|"&ProcedimentoID&"|%' OR Procedimentos is null or Procedimentos='') "
+    sqlProcedimentoPermitido = " AND (Procedimentos LIKE '%|"&ProcedimentoID&"|%' OR Procedimentos is null or Procedimentos='') "
 end if
 
 if ProcedimentoSomenteEspecialidades<>"" then
@@ -45,19 +45,49 @@ if Especialidades<>""  then
     for i=0 to ubound(spltEspecialidades)
         EspecialidadeID=spltEspecialidades(i)
 
-        sqlGradeEspecialidade =  sqlGradeEspecialidade&" OR ass.Especialidades LIKE '%"&EspecialidadeID&"%'"
+        sqlGradeEspecialidade =  sqlGradeEspecialidade&" OR ass.Especialidades LIKE '%|"&EspecialidadeID&"|%' "
     next
-    sqlGradeEspecialidade=sqlGradeEspecialidade&")"
+    sqlEspecialidadePermitido=sqlGradeEspecialidade&")"
+end if
+
+
+if session("RemSol")<>"" then
+Ativo = "off"
+testesql = "select a.TipoCompromissoID, a.ProfissionalID, a.EspecialidadeID, if(a.rdValorPlano='P',a.ValorPlano,'') as ConvenioID from agendamentos a where id="&session("RemSol")
+'response.write testesql
+set teste = db.execute(testesql)
+
+RemarcarAssociacao = 5
+RemarcarProfissionalID = req("ProfissionalID")
+RemarcarEspecialidadeID = teste("EspecialidadeID")
+RemarcarProcedimentoID = teste("TipoCompromissoID")
+RemarcarConvenio = teste("ConvenioID")
+
+profissionalValido = validaProcedimentoProfissional(5 ,RemarcarProfissionalID, RemarcarEspecialidadeID,  RemarcarProcedimentoID,"")
+    if profissionalValido = true then
+        Ativo = "on"
+        sqlProcedimentoPermitido =  " AND ((ass.Procedimentos = '' OR ass.Procedimentos IS NULL)"&_
+                                    " OR ass.Procedimentos LIKE '%|"&RemarcarProcedimentoID&"|%') "
+
+        sqlEspecialidadePermitido =  " AND ((ass.Especialidades = '' OR ass.Especialidades IS NULL)"&_
+                                    " OR ass.Especialidades LIKE '%|"& RemarcarEspecialidadeID &"|%') "
+
+        if RemarcarConvenio<>"" then
+        sqlConvenioPermitido =  " AND ((ass.Convenios = '' OR ass.Convenios IS NULL)"&_
+                                    " OR ass.Convenios LIKE '%|"& RemarcarConvenio &"|%') "
+        end if
+    end if
 end if
 
 
 Hora = cdate("00:00")
-sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentosGrade& sqlGradeEspecialidade &" order by HoraDe"
+sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentoPermitido& sqlEspecialidadePermitido &" order by HoraDe"
 set Horarios = db.execute(sqlHorarios)
 if Horarios.EOF then
-    sqlHorarios2 = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, Mensagem from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) "&sqlUnidadesHorarios & sqlProcedimentosGrade& sqlGradeEspecialidade &" order by ass.HoraDe"
+    sqlHorarios2 = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, Mensagem from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) "&sqlUnidadesHorarios & sqlProcedimentoPermitido& sqlEspecialidadePermitido&sqlConvenioPermitido &" order by ass.HoraDe"
     set Horarios = db.execute(sqlHorarios2)
 end if
+'response.write sqlHorarios&"<br>"&sqlHorarios2
 if not Horarios.eof then
 %>
 
@@ -204,7 +234,7 @@ if not Horarios.eof then
                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                     <td colspan="4">
                         <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>', '<%=ProfissionalID%>')" class="btn btn-xs btn-warning">
-                            <i class="fa fa-chevron-left"></i> Agendar Aqui
+                            <i class="fa fa-chevron-left"></i> Remarcar Aqui
                         </button>
                     </td>
                 </tr>
@@ -249,20 +279,82 @@ if not Horarios.eof then
 			end if
             Hora = dateadd("n", Intervalo, Hora)
         wend
-else
-    txtHorarios = Horarios("Horarios")&""
-    if instr(txtHorarios, ",") then
-        splHorarios = split(txtHorarios, ",")
-        for ih=0 to ubound(splHorarios)
-            HoraPers = trim(splHorarios(ih))
-            if isdate(HoraPers) then
-				HLivres = HLivres+1
-                HoraID = horaToID(HoraPers)
-                %><tr  data-unidade="<%=UnidadeID%>" onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=ProfissionalID %>,'','<%=Horarios("id")%>' )" class="p<%=ProfissionalID%> l<%= LocalID %>" data-pro="<%=ProfissionalID%>" data-id="<%=HoraID%>" data-hora="<%= ft(HoraPers) %>" id="<%=ProfissionalID&"_"&HoraID%>"><td width="1%" style="background-color:<%= Cor %>"></td><td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td><td colspan="4"><%= Tipo %></td></tr><%
-            end if
-        next
+    else
+        txtHorarios = Horarios("Horarios")&""
+        if instr(txtHorarios, ",") then
+            splHorarios = split(txtHorarios, ",")
+            for ih=0 to ubound(splHorarios)
+                HoraPers = trim(splHorarios(ih))
+                if isdate(HoraPers) then
+                    HLivres = HLivres+1
+                    HoraID = horaToID(HoraPers)
+                    if session("FilaEspera")<>"" then
+                    %>
+                    <tr data-unidade="<%=UnidadeID%>" class="p vazio l<%= LocalID %>" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-pro="<%=ProfissionalID%>" id="<%=HoraID%>">
+                        <td width="1%"></td>
+                        <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
+                        <td colspan="4">
+                            <button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(HoraPers,4)%>', '<%=ProfissionalID%>','<%=Data%>', '<%=LocalID%>'); $('#buscar').click();" class="btn btn-xs btn-primary">
+                                <i class="fa fa-chevron-left"></i> Agendar Aqui
+                            </button>
+                        </td>
+                    </tr>
+                    <%
+                    elseif session("RemSol")<>"" then
+                        if Bloqueia="" then
+                        %>
+                        <tr data-unidade="<%=UnidadeID%>" class="p<%=ProfissionalID%> l<%= LocalID %> vazio" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-pro="<%=ProfissionalID%>" data-id="<%=HoraID%>" id="<%=ProfissionalID&"_"&HoraID%>">
+                            <td width="1%"></td>
+                            <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
+                            <td colspan="4">
+                                <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>', '<%=ProfissionalID%>')" class="btn btn-xs btn-warning">
+                                    <i class="fa fa-chevron-left"></i> Remarcar Aqui
+                                </button>
+                            </td>
+                        </tr>
+                        <%
+                        end if
+                    elseif session("RepSol")<>"" then
+                    %>
+                    <tr data-unidade="<%=UnidadeID%>" class="p<%=ProfissionalID%> l<%= LocalID %> vazio" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-pro="<%=ProfissionalID%>" data-id="<%=HoraID%>" id="<%=ProfissionalID&"_"&HoraID%>">
+                        <td width="1%"></td>
+                        <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
+                        <td colspan="4">
+                            <button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>', '<%=ProfissionalID%>')" class="btn btn-xs btn-warning">
+                                <i class="fa fa-chevron-left"></i> Repetir Aqui
+                            </button>
+                        </td>
+                    </tr>
+                    <%
+                    elseif instr(strAB, "|"&ProfissionalID&"_"&Data&"_"&formatdatetime(Hora,4))>0 then
+                        'ProfissionalAB = splAB(0)
+                        'DataAB = splAB(1)
+                        'HoraAB = splAB(2)
+                        '!!! aqui tera um if em js pra ver se a data é a mesma
+                        set pusuAb = db.execute("select id from sys_users where AgAberto like '%"& ProfissionalID&"_"&Data&"_"&formatdatetime(Hora,4) &"%'")
+                        if not pusuAb.eof then
+                            nUsuAb = nameInTable(pusuAb("id"))
+                        else
+                            nUsuAb = " outro usuário"
+                        end if
+                        txtAB = "<em>Este horário está sendo utilizado por "& nUsuAb &"."'"& nameInTable(vcaAB("id")) &".</em>"
+
+                    %>
+                    <tr data-unidade="<%=UnidadeID%>" class="alert l l<%= LocalID %> vazio" data-hora="<%=formatdatetime(Hora, 4)%>" data-horaid="<%= horaid %>" id="<%=HoraID%>">
+                        <td width="1%"></td>
+                        <td width="1%"><button type="button" class="btn btn-xs btn-alert"><%= formatdatetime(Hora,4) %></button></td>
+                        <td colspan="2">
+                            <%= txtAB %>
+                        </td>
+                    </tr>
+                    <%
+                    else
+                    %><tr  data-unidade="<%=UnidadeID%>" onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=ProfissionalID %>,'','<%=Horarios("id")%>' )" class="p<%=ProfissionalID%> l<%= LocalID %>" data-pro="<%=ProfissionalID%>" data-id="<%=HoraID%>" data-hora="<%= ft(HoraPers) %>" id="<%=ProfissionalID&"_"&HoraID%>"><td width="1%" style="background-color:<%= Cor %>"></td><td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td><td colspan="4"><%= Tipo %></td></tr><%
+                    end if
+                end if
+            next
+        end if
     end if
-end if
 end if
 %><tr class="hidden l p<%=ProfissionalID%> l<%= LocalID %>" data-id="2359"></tr><%
 

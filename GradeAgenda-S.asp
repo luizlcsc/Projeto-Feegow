@@ -96,15 +96,15 @@ if session("FilaEspera")<>"" then
 end if
 if session("RemSol")<>"" then
 Ativo = "off"
-testesql = "select a.TipoCompromissoID, a.ProfissionalID, a.EspecialidadeID, if(a.rdValorPlano='P',a.rdValorPlano,'') as ConvenioID from agendamentos a where id="&session("RemSol")
+remarcarSql = "select a.TipoCompromissoID, a.ProfissionalID, a.EspecialidadeID, if(a.rdValorPlano='P',a.ValorPlano,'') as ConvenioID from agendamentos a where id="&session("RemSol")
 'response.write testesql
-set teste = db.execute(testesql)
+set RemSql = db.execute(remarcarSql)
 
 RemarcarAssociacao = 5
 RemarcarProfissionalID = req("ProfissionalID")
-RemarcarEspecialidadeID = teste("EspecialidadeID")
-RemarcarProcedimentoID = teste("TipoCompromissoID")
-RemarcarConvenio = teste("ConvenioID")
+RemarcarEspecialidadeID = RemSql("EspecialidadeID")
+RemarcarProcedimentoID = RemSql("TipoCompromissoID")
+RemarcarConvenio = RemSql("ConvenioID")
 
 profissionalValido = validaProcedimentoProfissional(5 ,RemarcarProfissionalID, RemarcarEspecialidadeID,  RemarcarProcedimentoID,"")
 
@@ -170,8 +170,9 @@ while diaS<n
             Hora = cdate("00:00")
             set Horarios = db.execute("select ass.*, '' Cor, l.NomeLocal, '0' TipoGrade,  l.UnidadeID, '0' GradePadrao from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
             if Horarios.EOF then
-                set Horarios = db.execute("select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, '' Cor from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe")
+                set Horarios = db.execute("select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, '' Cor from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&sqlProcedimentoPermitido & sqlConvenioPermitido & sqlEspecialidadePermitido &" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe")
             end if
+
             while not Horarios.EOF
                 LocalID = Horarios("LocalID")
                 UnidadeID = Horarios("UnidadeID")
@@ -255,7 +256,7 @@ while diaS<n
                             <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                             <td colspan="4">
                                 <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>', '<%= Data %>')" class="btn btn-xs btn-warning">
-                                    <i class="fa fa-chevron-left"></i> Agendar Aqui 
+                                    <i class="fa fa-chevron-left"></i> Remarcar Aqui 
                                 </button>
                             </td>
                         </tr>

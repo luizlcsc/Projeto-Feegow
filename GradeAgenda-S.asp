@@ -168,7 +168,7 @@ while diaS<n
             <tr class="hidden l<%=LocalID%>" id="<%=DiaSemana%>0000"></tr>
          <%
             Hora = cdate("00:00")
-            set Horarios = db.execute("select ass.*, '' Cor, l.NomeLocal, '0' TipoGrade,  l.UnidadeID, '0' GradePadrao from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
+            set Horarios = db.execute("select ass.*, '' Cor, l.NomeLocal, '0' TipoGrade,  l.UnidadeID, '0' GradePadrao from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&sqlProcedimentoPermitido & sqlConvenioPermitido & sqlEspecialidadePermitido &" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
             if Horarios.EOF then
                 set Horarios = db.execute("select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, '' Cor from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&sqlProcedimentoPermitido & sqlConvenioPermitido & sqlEspecialidadePermitido &" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe")
             end if

@@ -240,6 +240,7 @@ if request.QueryString("ConvenioID")<>"" then
                                 <a href="<%=link%>_01.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.02.01</a>
                             <%end if %>
                             <a href="<%=link%>.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.02.00</a>
+                            <a href="<%=link%>_020201.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 2.02.01</a>
                         </li>
                     </ul>
                 </div>

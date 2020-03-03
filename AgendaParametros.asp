@@ -228,7 +228,7 @@ $(document).ready(function() {
             $("#ProcedimentoID option").text("<%=vcaItemInvoice("NomeProcedimento")%>");
             $("#ProcedimentoID option").val("<%=vcaItemInvoice("ItemID")%>");
             $("#ProcedimentoID").val("<%=vcaItemInvoice("ItemID")%>");
-            s2aj("ProcedimentoID", 'procedimentos', 'NomeProcedimento', '');
+            s2aj("ProcedimentoID", 'procedimentos', 'NomeProcedimento', '','','agenda');
             $("#Valor").val("<%=formatnumber(vcaItemInvoice("Valor"),2)%>");
             <%
         end if

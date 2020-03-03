@@ -157,7 +157,7 @@ if(count=="0"){
         somarValores();
 
        $("#rdValorPlanoV"+count).click();
-       s2aj("ProcedimentoID"+count, 'procedimentos', 'NomeProcedimento', '');
+       s2aj("ProcedimentoID"+count, 'procedimentos', 'NomeProcedimento', '', '','agenda');
    }
 
 </script>

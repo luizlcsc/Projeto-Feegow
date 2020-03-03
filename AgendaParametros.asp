@@ -218,18 +218,19 @@ $(document).ready(function() {
 			$("#searchConvenioID").val("");
 		<%
 	end if
-	
-	set vcaItemInvoice = db.execute("select ii.ItemID, proc.NomeProcedimento, ii.ValorUnitario+ii.Acrescimo-ii.Desconto Valor FROM itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID LEFT JOIN procedimentos proc on proc.id=ii.ItemID WHERE Tipo='S' AND (Executado='' OR isnull(Executado)) AND i.AssociationAccountID=3 AND i.AccountID="&PacienteID&" LIMIT 1")
+	if getConfig("ProcedimentosContratadosParaSelecao")&"" <> "1" then
+        set vcaItemInvoice = db.execute("select ii.ItemID, proc.NomeProcedimento, ii.ValorUnitario+ii.Acrescimo-ii.Desconto Valor FROM itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID LEFT JOIN procedimentos proc on proc.id=ii.ItemID WHERE Tipo='S' AND (Executado='' OR isnull(Executado)) AND i.AssociationAccountID=3 AND i.AccountID="&PacienteID&" LIMIT 1")
 
-	if not vcaItemInvoice.EOF then
-		%>
-		$("#rdValorPlanoV").click();
-        $("#ProcedimentoID option").text("<%=vcaItemInvoice("NomeProcedimento")%>");
-        $("#ProcedimentoID option").val("<%=vcaItemInvoice("ItemID")%>");
-        $("#ProcedimentoID").val("<%=vcaItemInvoice("ItemID")%>");
-        s2aj("ProcedimentoID", 'procedimentos', 'NomeProcedimento', '');
-        $("#Valor").val("<%=formatnumber(vcaItemInvoice("Valor"),2)%>");
-		<%
+        if not vcaItemInvoice.EOF then
+            %>
+            $("#rdValorPlanoV").click();
+            $("#ProcedimentoID option").text("<%=vcaItemInvoice("NomeProcedimento")%>");
+            $("#ProcedimentoID option").val("<%=vcaItemInvoice("ItemID")%>");
+            $("#ProcedimentoID").val("<%=vcaItemInvoice("ItemID")%>");
+            s2aj("ProcedimentoID", 'procedimentos', 'NomeProcedimento', '','','agenda');
+            $("#Valor").val("<%=formatnumber(vcaItemInvoice("Valor"),2)%>");
+            <%
+        end if
 	end if
     if session("Banco")="clinic100000" or session("Banco")="clinic2901" or session("Banco")="clinic5355" or session("Banco")="clinic105" or session("Banco")="clinic5583" or session("Banco")="clinic5968" or session("Banco")="clinic5710" or session("Banco")="clinic5563" then
         saldo = accountBalance("3_"&PacienteID, 0)

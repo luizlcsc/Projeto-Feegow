@@ -19,14 +19,13 @@ jQuery(function($) {
 $("#frm<%=ChatID%>").submit(function(){
    let cxMsg = $("#frm<%=ChatID%> input.cx-mensagem")
    if(cxMsg.val()=="")return false;
-	let dados =  $(this).serialize();
-	cxMsg.val('');
-	
+
 	$.ajax({
 		type:"POST",
 		url:"saveChat.asp",
-		data:dados,
+		data:$(this).serialize(),
 		success:function(data){
+			cxMsg.val('');
 			eval(data);
 		}
 	});

@@ -3119,7 +3119,7 @@ function googleCalendar(Acao, Email, AgendamentoID, ProfissionalID, NomePaciente
 			NomePaciente = dadosAge("NomePaciente")
 			Data = dadosAge("Data")
 
-			SubtrairHoras = -1
+			SubtrairHoras = 0'-1
 
 			'if session("Banco") = "clinic3776" then
 			 '   Hora = dadosAge("Hora")

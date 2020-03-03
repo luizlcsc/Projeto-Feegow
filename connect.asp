@@ -3053,7 +3053,7 @@ function googleCalendarNovo(Acao, Email, AgendamentoID, ProfissionalID, NomePaci
 			NomePaciente = dadosAge("NomePaciente")
 			Data = dadosAge("Data")
 
-			SubtrairHoras = 0'-1
+			SubtrairHoras = -1
 
 			'if session("Banco") = "clinic3776" then
 			 '   Hora = dadosAge("Hora")

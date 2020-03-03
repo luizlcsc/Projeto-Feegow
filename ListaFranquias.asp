@@ -29,7 +29,7 @@ if not ListaFranquiasSQL.eof then
 <br>
 <div class="panel">
     <div class="panel-body">
-        <table class="table table-striped">
+        <table class="table table-striped" id="ListaFranquia">
             <thead>
                 <tr class="success">
                     <th>ID</th>
@@ -89,6 +89,17 @@ if not ListaFranquiasSQL.eof then
 end if
 %>
 <script >
+
+
+$(document).ready( function () {
+    $("#ListaFranquia").dataTable({
+        bPaginate: false,
+        blengthMenu: [[10, 50, 100, -1], [10, 50, 100, "Todos"]],
+        "oLanguage": {"sSearch": "Buscar: "}
+
+    });
+} );
+
 function EditarLicenciado(id) {
     $("#modal-table").modal("show");
     $("#modal").html("Carregando...");

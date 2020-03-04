@@ -270,7 +270,7 @@ end if
 					cItens = cItens+1
 				itens.movenext
 				wend
-				itens.closeSELECT id, NomePaciente, NomeSocial FROM pacientes
+				itens.close
 				set itens=nothing
 		'		if cItens>1 then
 		'			Descricao = cItens&" itens"

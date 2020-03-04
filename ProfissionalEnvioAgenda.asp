@@ -22,10 +22,10 @@ if not EnviosSQL.eof then
     <%
     while not EnviosSQL.eof
 
-        if EnviosSQL("Enviado") and EnviosSQL("StatusEnvio")&""="202"  then
+        if EnviosSQL("Enviado") and EnviosSQL("NumeroAgendamentos")>0 and EnviosSQL("StatusEnvio")&""="202"  then
             strStatus="Enviado"
             classeStatus="success"
-        elseif EnviosSQL("Enviado") and EnviosSQL("StatusEnvio")&""<>"202" then
+        elseif EnviosSQL("Enviado") and EnviosSQL("NumeroAgendamentos")>0 and EnviosSQL("StatusEnvio")&""<>"202" then
             strStatus="Erro no envio"
             classeStatus="danger"
         else

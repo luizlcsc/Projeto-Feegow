@@ -101,6 +101,9 @@ if existePagto="" then
 	totInvo = 0
 	for i=0 to ubound(splInv)
 		valInv = ref("ValorUnitario"&splInv(i))
+		if valInv&"" = "" then
+		    valInv="0"
+		end if
 		quaInv = ref("Quantidade"&splInv(i))
 		' Validar quando não tiver desconto
 		desInv = ref("Desconto"&splInv(i))
@@ -287,7 +290,10 @@ if erro="" then
         next
         '---- Termina a verificação de o profissional pod executar o procedimento
 
-		sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID&" AND id not in ("&itensStr&")"
+        sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
+        if itensStr&""<>"" then
+		    sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID&" AND id not in ("&itensStr&")"
+		end if
 
 		call gravaLogs(sqlExecute ,"AUTO", "Item excluído manualmente","InvoiceID")
 		db_execute(sqlExecute)
@@ -357,6 +363,11 @@ if erro="" then
 						end if
                     end if
 
+                    valorUnitario = ref("ValorUnitario"&ii)
+                    if valorUnitario="" then
+                        valorUnitario="0"
+                    end if
+
 					if descontoIgual = False then 
 						if not rsDescontosUsuario.eof then
 							while not rsDescontosUsuario.eof
@@ -365,7 +376,7 @@ if erro="" then
 									if rsDescontosUsuario("idUser")&"" = Session("User")&"" then 
 										VDesconto = rsDescontosUsuario("DescontoMaximo")
 										if rsDescontosUsuario("TipoDesconto")="P" then
-											VDesconto = ref("ValorUnitario"&ii) * rsDescontosUsuario("DescontoMaximo") / 100
+											VDesconto = valorUnitario * rsDescontosUsuario("DescontoMaximo") / 100
 										end if
 
 										if VDesconto > DescontoMaximo then DescontoMaximo = VDesconto end if

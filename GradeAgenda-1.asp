@@ -276,7 +276,7 @@ end if
         if Ativo="on" then
             DiaSemana = weekday(Data)
             Hora = cdate("00:00")
-            sqlAssfixaperiodo = "select ass.*, l.NomeLocal, '' Cor, '0' TipoGrade, l.UnidadeID, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' as CorOriginal from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID& sqlProcedimentoPermitido & sqlEspecialidadePermitido &"  and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe"
+            sqlAssfixaperiodo = "select ass.*, l.NomeLocal, '' Cor, '0' TipoGrade, l.UnidadeID, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' as CorOriginal from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID& sqlProcedimentoPermitido & sqlEspecialidadePermitido & sqlConvenioPermitido&"  and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe"
             'response.write sqlAssfixaperiodo&"<br>"
             set Horarios = db.execute(sqlAssfixaperiodo)
 

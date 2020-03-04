@@ -123,7 +123,7 @@ if Acao="Remarcar" then
         end if
 
         if Encaixe="1" and erro="" then
-            set MaximoEnc   aixesSQL = db.execute("select MaximoEncaixes, (select count(id) from agendamentos where ProfissionalID="&ProfissionalID&" and Encaixe=1 and Data="&mydatenull(Data)&" and id!='"&session("RemSol")&"') NumeroEncaixes from profissionais where id="&ProfissionalID&" and not isnull(MaximoEncaixes)")
+            set MaximoEncaixesSQL = db.execute("select MaximoEncaixes, (select count(id) from agendamentos where ProfissionalID="&ProfissionalID&" and Encaixe=1 and Data="&mydatenull(Data)&" and id!='"&session("RemSol")&"') NumeroEncaixes from profissionais where id="&ProfissionalID&" and not isnull(MaximoEncaixes)")
 
             if not MaximoEncaixesSQL.eof then
                 NumeroEncaixes = ccur(MaximoEncaixesSQL("NumeroEncaixes"))+1

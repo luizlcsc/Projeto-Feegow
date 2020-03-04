@@ -215,7 +215,7 @@ end if
                             NomeProcedimento = siglasSQL("Siglas")
                         end if
                     end if
-                    if NomeProcedimento&" " = " " then 
+                    if NomeProcedimento&"" = "" then
                         NomeProcedimento = ""
                     end if 
 

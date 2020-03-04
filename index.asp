@@ -1796,21 +1796,21 @@ $(document).ready(function() {
     <%
     if session("SelecionarLicenca")&"" = "1"  then %>
     if (!ModalOpened){
-      // ModalOpened = true;
+      ModalOpened = true;
       openSelecionarLicenca();
     }
     <% end if%>
     
     <% if session("UnidadeID")=-1 then %>
     if (!ModalOpened){
-      // ModalOpened = true;
+      ModalOpened = true;
         abreModalUnidade();
     }
     <% end if %>
     
     <% if session("AlterarSenha") = 1 then %>
     if (!ModalOpened){
-      // ModalOpened = true;
+      ModalOpened = true;
       openRedefinirSenha();
     }
     <% end if%>

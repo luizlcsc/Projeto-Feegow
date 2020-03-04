@@ -290,7 +290,10 @@ if erro="" then
         next
         '---- Termina a verificação de o profissional pod executar o procedimento
 
-		sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID&" AND id not in ("&itensStr&")"
+        sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
+        if itensStr&""<>"" then
+		    sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID&" AND id not in ("&itensStr&")"
+		end if
 
 		call gravaLogs(sqlExecute ,"AUTO", "Item excluído manualmente","InvoiceID")
 		db_execute(sqlExecute)

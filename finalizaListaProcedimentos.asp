@@ -48,11 +48,14 @@ END IF
   </tr>
 </thead>
 <%
-set proc = db.execute("select NomeProcedimento, Valor, id from procedimentos where sysActive=1 and Ativo='on' and NomeProcedimento<>'' order by NomeProcedimento")
+set proc = db.execute("select NomeProcedimento, Valor, id, SomenteConvenios from procedimentos where sysActive=1 and Ativo='on' and NomeProcedimento<>'' order by NomeProcedimento")
 while not proc.eof
     Valor=NULL
+    SomenteConvenios = proc("SomenteConvenios")
+    ExibirLancar = 0
 
-	if Forma="P" then
+	if Forma="P" AND instr(SomenteConvenios, "||NOTPARTICULAR||")<1  then
+	    ExibirLancar = 1
 		if not isnull(proc("Valor")) and proc("Valor")<>0 then
 			Valor =  formatnumber(proc("Valor"), 2)
 			vp = Valor
@@ -65,8 +68,8 @@ while not proc.eof
 		end if
 		rd = "V"
 		ConvenioID = 0
-	else
-
+	elseif Forma<>"P" AND instr(SomenteConvenios, "||NONE||")<1 then
+	    ExibirLancar = 1
 	    CodigoNaOperadora = NULL
         sqlCodigoNaOperador = "SELECT * FROM contratosconvenio WHERE ConvenioID = "&Forma&" AND (Contratado = "&session("idInTable")&" OR Contratado = "&session("UnidadeID")&"*-1) ORDER BY Contratado DESC"
         set ContratosConvenio = db.execute(sqlCodigoNaOperador)
@@ -136,6 +139,7 @@ while not proc.eof
 		ConvenioID = Forma
 	end if
 	'if (Forma<>"P" and Valor<>"") or Forma="P" then
+	if ExibirLancar=1 then
     %>
     <tr>
         <td>
@@ -152,7 +156,7 @@ while not proc.eof
         <td width="1%"><button type="button" onclick="addProc('I', <%=proc("id")%>, '<%= ConvenioID %>', '<%= vp %>')" class="btn btn-success btn-xs rt" style="position:absolute; right:0"><i class="fa fa-chevron-right"></i></button></td>
     </tr>
     <%
-	'end if
+	end if
 proc.movenext
 wend
 proc.close

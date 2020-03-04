@@ -169,14 +169,17 @@ if request.QueryString("Save")="Save" then
             if disponibilizarsaldo = "N" then 
                 CD = "T"
             end if
-            
+            UnidadeID = 0
+            if ref("UnidadeID")&""<>"" then
+                UnidadeID = ref("UnidadeID")
+            end if
             if ref("transactionAction")&"" = "Credit" then 
                 CategoryID = (ref("CategoriaIncome"))
             elseif ref("transactionAction")&"" = "Debit" then 
                 CategoryID = (ref("CategoriaExpensive"))
             end if
         
-            sql = "insert into sys_financialMovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Currency, Rate, CaixaID, sysUser, UnidadeID, CategoryID) values ('"&ref("TransactionDescription")&"', '"&splCreditAccount(0)&"', '"&splCreditAccount(1)&"', '"&splDebitAccount(0)&"', '"&splDebitAccount(1)&"', '"&ref("PaymentMethodID")&"', '"&treatVal(ref("TransactionValue"))&"', '"&myDate(ref("TransactionDate"))&"', '"&CD&"', 'Transfer', '"&gCurrency&"', '"&treatVal(saveRate)&"', "&treatvalnull(CaixaID)&", "&session("User")&", 0, "&treatvalnull(CategoryID)&")"
+            sql = "insert into sys_financialMovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Currency, Rate, CaixaID, sysUser, UnidadeID, CategoryID) values ('"&ref("TransactionDescription")&"', '"&splCreditAccount(0)&"', '"&splCreditAccount(1)&"', '"&splDebitAccount(0)&"', '"&splDebitAccount(1)&"', '"&ref("PaymentMethodID")&"', '"&treatVal(ref("TransactionValue"))&"', '"&myDate(ref("TransactionDate"))&"', '"&CD&"', 'Transfer', '"&gCurrency&"', '"&treatVal(saveRate)&"', "&treatvalnull(CaixaID)&", "&session("User")&", "&treatvalzero(UnidadeID)&", "&treatvalnull(CategoryID)&")"
         '	response.Write(sql)
             db_execute(sql)
             %>
@@ -260,6 +263,10 @@ end if
                <div>
                 <label>Conta</label>
                 <%=selectInsertCA("", "transactionAccountID", ref("transactionAccountID"), "5, 4, 3, 2, 6, 1", "", " onchange='cPlan()' ", "")%>
+               </div>
+               <div>
+               <label>Unidade</label>
+               <%=quickField("empresa", "UnidadeID", "", 12, session("UnidadeID"), "", "", "")%>
                </div>
                <div>
                 <label>Categoria</label>

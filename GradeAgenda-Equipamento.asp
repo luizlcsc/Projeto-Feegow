@@ -143,7 +143,7 @@ end if
      <%
         DiaSemana = weekday(Data)
         Hora = cdate("00:00")
-		set Horarios = db.execute("select ass.*, l.NomeLocal, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID=-"&EquipamentoID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
+		set Horarios = db.execute("select ass.*, '0' tipograde,  l.NomeLocal, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID=-"&EquipamentoID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
 		if Horarios.EOF then
 	        set Horarios = db.execute("select ass.*, l.NomeLocal, '' Cor from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID=-"&EquipamentoID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe")
 		end if

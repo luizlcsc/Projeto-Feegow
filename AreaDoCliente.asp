@@ -255,12 +255,17 @@ end if
 
             <div class="mb15">
               <a href="?P=tarefas&I=N&Pers=1&Helpdesk=1" type="button" class="btn btn-primary btn-block pv10 fw600 mb10"><i class="fa fa-plus"></i> Abrir Chamado</a>
+            </div>
+            <div class="mb15">
               <button data-toggle="modal" data-target="#modal-horarios-atendimentos" type="button" class="btn btn-info btn-block pv10 fw600"><i class="fa fa-headphones"></i> Entre em contato</button>
             </div>
 
 <%
 if session("Admin")=1 then
 %>
+<div class="mb15">
+    <a href="./?P=ClExtratoSMS&Pers=1" class="btn btn-success btn-block pv10 fw600"><i class="fa fa-envelope"></i> Extrato de SMS</a>
+</div>
             <div class="panel mb10">
               <div class="panel-heading">
                 <span class="panel-icon">

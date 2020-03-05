@@ -92,7 +92,7 @@ if I="N" then
         db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &")")
     else
         'salva com id do atendimento
-         db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior, AtendimentoID) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &", "&atendimentoReg("id")&")")
+        db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior, AtendimentoID) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &", "&atendimentoReg("id")&")")
     end if
 
     set pult = db.execute("select id from buiformspreenchidos where ModeloID="&ModeloID&" and PacienteID="&PacienteID&" and sysUser="&session("User")&" order by id desc limit 1")

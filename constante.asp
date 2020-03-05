@@ -9,6 +9,8 @@ else
     $("#disc").addClass('hidden');
     <!--#include file="connect.asp"-->
     <!--#include file="connectCentral.asp"-->
+    <!--#include file="Classes/StringFormat.asp"-->
+
     <%
 
 

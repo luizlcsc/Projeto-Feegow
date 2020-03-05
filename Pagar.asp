@@ -254,12 +254,11 @@ function BuscarCreditosPaciente(ContaID) {
                         <div class="col-md-3">
                             <input type="hidden" id="InvoiceId" value="<%=InvoiceID%>">
                             <input type="hidden" id="LicencaID" value="<%=session("Banco")%>">
-                            <% if session("Banco")="clinic5760" or session("Banco")="clinic100000" or session("Banco")="clinic5968" or session("Banco")="clinic6118" then %>
                             <input type="hidden" id="StoneCode" value="<%=StoneCode%>">
                             <input type="hidden" id="MovementID" value="<%=Parcelas%>">
                             <input type="hidden" id="UsuarioID" value="<%=session("User")%>">
                             <input type="hidden" id="CaixaID" value="<%=session("CaixaID")%>">
-                            <%end if%>
+
                             <%
                             if aut("altunirectoA")=0 then
                                     disabUN = " disabled "

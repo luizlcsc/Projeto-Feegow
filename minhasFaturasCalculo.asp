@@ -21,7 +21,6 @@ Total = formatnumber(pwr("Value"),2)
 Devedor = formatnumber(pwr("Value")-Pago,2)
 
 if Pago = 0 then
-'response.write(MovID)
 
 	msg = "N&Atilde;O PAGA"
 	cor = "#FF0000"
@@ -38,7 +37,19 @@ if Pago > pwr("Value") then
 	classe = "success"
 end if
 if Pago < pwr("Value") and Pago > ccur(0) then
-	msg = "PARCIALMENTE PAGA - Deve: R$&nbsp;"&ExiVal(Devedor)
+    ValExiAtu = Devedor
+    if isnull(ValExiAtu) then
+        ValExiAtu="0"
+    end if
+    if ccur("1,00")=100 then
+        ExiVal=replace(ValExiAtu,",","@")
+        ExiVal=replace(Exival,".",",")
+        ExiVal=replace(Exival,"@",".")
+    else
+        ExiVal=ValExiAtu
+    end if
+
+	msg = "PARCIALMENTE PAGA - Deve: R$&nbsp;"&ExiVal
 	cor = "#FFCC00"
 	classe = "warning"
 end if
@@ -47,4 +58,7 @@ if Devedor=0 then
 	cor = "#006600"
 	classe = "success"
 end if
+
+
+
 %>

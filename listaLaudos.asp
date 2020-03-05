@@ -166,8 +166,9 @@ end if
                 'Identificacao = ii("Identificacao")
 
                 Previsao = dateAdd("d", DiasLaudo, DataExecucao)
-
-                set vca = db.execute("select l.id, ls.Status, l.PrevisaoEntrega from laudos l LEFT JOIN laudostatus ls ON ls.id=l.StatusID where l.Tabela='"& Tabela &"' and l.IDTabela="& IDTabela &" and l.Serie="&ItemN)
+                sql = "select l.id, ls.Status, l.PrevisaoEntrega from laudos l LEFT JOIN laudostatus ls ON ls.id=l.StatusID where l.Tabela='"& Tabela &"' and l.IDTabela="& IDTabela &" and l.Serie="&ItemN
+                ' response.write (sql)
+                set vca = db.execute(sql)
                 if not vca.eof then
                     Status = vca("Status")
                     Previsao = vca("PrevisaoEntrega")
@@ -240,17 +241,21 @@ end if
                         <td><%= ii("NomeConvenio") %></td>
                         <td><%= Status %> <% if cint(ii("TemArquivos")) > 0 then %> <span><i style="color: #36bf92" class="fa fa-paperclip"></i></span> <% end if %></td>
                         <td>
-                            <% if Status <> "Liberado" then %>
+                            <% if Status = "Pendente" then %>
                                 <% if ii("labid")="1" then %>  
-                                    <a id="<%=ii("invoiceid") %>" class="btn btn-xs btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>');  $(this).attr('display','none');" title="Solicitar Resultado São Marcos"><i class="fa fa-flask"></i></a>
+                                    <a id="a<%=ii("invoiceid") %>"  class="btn btn-xs btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado São Marcos"><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
-                                <% if ii("labid")="2"    then %>  
-                                    <a class="btn btn-xs btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $(this).attr('display','none');" title="Solicitar Resultado Diagnósticos do Brasil"><i class="fa fa-flask"></i></a>
+                                <% if ii("labid")="2" then %>  
+                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-xs btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
                             <% end if %>
                         </td>
-                        <td>                            
-                            <a class="btn btn-xs btn-success" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%= link %>"><i class="fa fa-edit"></i></a>
+                        <td>   
+                             <% if ii("labid")="2" then %> 
+                                <a class="btn btn-xs btn-success" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=739&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
+                             <% else %>                         
+                                <a class="btn btn-xs btn-success" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%= link %>"><i class="fa fa-edit"></i></a>
+                            <% end if %>
                         </td>
                         <td><button class="btn btn-xs btn-info hidden"><i class="fa fa-print"></i></button></td>
                     </tr>
@@ -356,8 +361,12 @@ function syncLabResult(invoices, labid =1) {
         //$("#syncInvoiceResultsButton").prop("disabled", false);
         if(data.success) {
             alert(data.content);
+            $("#a"+invoices).hide();
+
         } else {
             alert(data.content)
+            $("#"+invoices).removeClass('fa-flask fa-spinner fa-spin'); 
+            $("#"+invoices).addClass('fa-flask');
         }
     })
 }
@@ -386,7 +395,7 @@ $(".cklaudostodos").on('change', function(){
     }
 });
 
-$(".lab-sync").on("click", function (labid){
+$(".lab-sync").on("click", function (labid =2){
     const allowedLabs = ["laboratório são marcos"];
     let invoices = [];
 
@@ -395,8 +404,19 @@ $(".lab-sync").on("click", function (labid){
             invoices.push($(el).find("td:nth-child(2)").data("id"));
         }
     });
-    
-    postUrl("labs-integration/matrix/sync-invoice", {
+    var caminhointegracao = "";
+    switch (labid) {
+        case '1':      
+            caminhointegracao = "matrix"; 
+            break;
+        case '2': 
+            caminhointegracao = "diagbrasil";
+            break;
+        default:
+            alert ('Erro ao integrar com Laboratório');
+            return false;
+    } 
+    postUrl("labs-integration/"+caminhointegracao+"/sync-invoice", {
         "invoices": invoices
     }, function (data) {
         $("#syncInvoiceResultsButton").prop("disabled", false);

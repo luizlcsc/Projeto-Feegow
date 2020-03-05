@@ -80,6 +80,38 @@ ProcedimentoID = req("Proc")
 Execucao = req("E")
 NomePaciente = ""
 NomeProcedimento = ""
+
+invoiceid = req("invoiceid")
+formid    = req("formid")
+
+if invoiceid <> "" then
+    sql = "SELECT lau.id, lau.pacienteID "&_
+          "FROM sys_financialinvoices fi "&_
+          "INNER JOIN laudos lau ON (lau.PacienteID = fi.AccountID AND fi.AssociationAccountID =3 AND lau.IDTabela = fi.id) "&_
+          "WHERE fi.id = "&invoiceid&" AND tabela = 'sys_financialinvoices' AND formid = '739' order by lau.id desc limit 1"
+    set laudobyinvoiceid  = db.execute(sql)
+    if laudobyinvoiceid.eof then
+        sql ="insert into laudos (PacienteID, ProcedimentoID, Tabela, IDTabela, FormID,  StatusID) "&_ 
+             "values ("& PacienteID &", "& treatvalzero(ProcedimentoID) &", 'sys_financialinvoices', "& invoiceid &", '739', 1)"
+        'response.write (sql)
+        db.execute(sql)
+
+        sql = "select id from laudos where Tabela='sys_financialinvoices' and IDTabela="& invoiceid &" and pacienteid = "&PacienteID&" and procedimentoid="&treatvalzero(ProcedimentoID) &" and formid='739' order by id desc limit 1"
+        set pult = db.execute(sql)
+
+        if not pult.eof then
+            LaudoID = pult("id")
+        end if 
+    else 
+        LaudoID = laudobyinvoiceid("id")
+    end if 
+    'response.write(LaudoID)
+    'response.end 
+    redir = "./?P=Laudo&Pers=1&I="& LaudoID    
+    response.Redirect(redir)
+end if 
+
+
 if LaudoID="" then
     sql = "select ifnull(DiasLaudo, 0) DiasLaudo, FormulariosLaudo, NomeProcedimento FROM procedimentos where id='"&ProcedimentoID&"'"
     set pproc = db.execute(sql)

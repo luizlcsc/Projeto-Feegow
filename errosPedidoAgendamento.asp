@@ -95,6 +95,12 @@ if erro ="" then
         'ValidaConvenioGrade(linha,vConvenio, vProfessionalID, vGrade )
         erro = addError(erro, ValidaConvenioGrade(1,ref("ConvenioID")&"", rfProfissionalID, ref("GradeID")&""))
     end if
+    'valida se equipamento esta disponivel
+    if ref("EquipamentoID")&""<> "" then
+            msgEquip = dispEquipamento(ref("Data"), ref("Hora"), ref("Tempo"), ref("EquipamentoID"))
+            msgEquip = replace(msgEquip,"Este equipamento","Equipamento da linha 1")
+            erro = addError(erro, msgEquip)
+    end if
     '-> procedimentos adicionais na agenda
     ProcedimentosAgendamento = trim(ref("ProcedimentosAgendamento"))
 
@@ -107,6 +113,8 @@ if erro ="" then
                 apLocalID = ref("LocalID"& apID)
                 apConvenioID = ref("ConvenioID"& apID)
                 aprdValorPlano = ref("rdValorPlano"& apID)
+                apTempo = ref("Tempo"& apID)
+                apEquipamento = ref("EquipamentoID"& apID)
                 
                 erro = addError(erro, ValidaProcedimentoLocal((iPA+2),apTipoCompromissoID&"", apLocalID&""))
                 
@@ -120,6 +128,13 @@ if erro ="" then
 
                 if  ref("GradeID")&"" <>"" and aprdValorPlano  = "P" then
                     erro = addError(erro, ValidaConvenioGrade((iPA+2),apConvenioID&"",rfProfissionalID,ref("GradeID")&""))
+                end if
+
+                'valida se equipamento esta disponivel
+                if apEquipamento&""<> "" then
+                        msgEquip = dispEquipamento(ref("Data"), ref("Hora"), apTempo, apEquipamento)
+                        msgEquip = replace(msgEquip,"Este equipamento","Equipamento da linha "&(iPA+2))
+                        erro = addError(erro, msgEquip)
                 end if
             end if
         next

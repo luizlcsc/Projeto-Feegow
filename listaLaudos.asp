@@ -126,7 +126,7 @@ end if
             ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID INNER JOIN pacientes pac ON pac.id=t.PacienteID "&_
             " LEFT JOIN Laudos l ON (l.Tabela=t.Tabela AND l.IDTabela=t.id) "&_
             " LEFT JOIN labs_exames_procedimentos lep ON (lep.ProcedimentoID=t.ProcedimentoID) "&_
-            " LEFT JOIN profissionais prof ON prof.id=IFNULL(l.ProfissionalID, t.ProfissionalID) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente"
+            " LEFT JOIN profissionais prof ON prof.id=IFNULL(l.ProfissionalID, t.ProfissionalID) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id ORDER BY pac.NomePaciente"
 
         set ii = db.execute( sql )
 
@@ -364,7 +364,7 @@ function syncLabResult(invoices, labid =1) {
             $("#a"+invoices).hide();
 
         } else {
-            alert(data.content)
+            alert("Falha ao sincronizar o laudo:"+data.message)
             $("#"+invoices).removeClass('fa-flask fa-spinner fa-spin'); 
             $("#"+invoices).addClass('fa-flask');
         }

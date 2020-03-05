@@ -1511,8 +1511,20 @@ select case lcase(req("P"))
         <% END IF %>
         <li>
         <a data-toggle="tab" href="#divProcedimentoLaboratorio" onclick="ajxContent('ProcedimentoLaboratorio', '', 1, 'divProcedimentoLaboratorio');">
-            <span class="fa fa-flask"></span> <span class="sidebar-title">Procedimentos Laboratorios <span class="label label-system label-xs fleft">Novo</span></span></a>
+            <span class="fa fa-flask"></span> <span class="sidebar-title">Procedimentos Laboratorios</a>
         </li>
+        <%
+         set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs ")
+         while not dadoslab.eof
+        %>
+         <li>
+        <a  href="?P=DeParaLabs&Pers=1&labid=<%=dadoslab("id")%>">
+            <span class="fa fa-flask"></span> <span class="sidebar-title" title="Procedimentos <=> Exames (<%=dadoslab("NomeLaboratorio")%>)">Proc. Exames (<%=dadoslab("NomeLaboratorio")%>) <span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li>
+        <% 
+         dadoslab.movenext
+         wend
+        %>
          <li>
             <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');">
             <span class="fa fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>
@@ -2173,7 +2185,6 @@ select case lcase(req("P"))
                        " LEFT JOIN tissprocedimentossadt tpsadt ON tpsadt.id=l.IDTabela AND l.Tabela='tissprocedimentossadt' "&_
                        " LEFT JOIN procedimentos proc ON proc.id=COALESCE(ii.ItemID, tpsadt.ProcedimentoID) "&_
                        " WHERE l.id="& LaudoID
-
             set pLaudo = db.execute( sqlLaudo )
             if not pLaudo.eof then
                 FormulariosLaudo = replace(pLaudo("FormulariosLaudo")&"", "|", "")
@@ -2235,7 +2246,10 @@ select case lcase(req("P"))
         </li>
         <li>
             <div class="row p10">
-                <%= quickfield("simpleSelect", "ProfissionalID", "Laudador", 12, ProfissionalID, "select id, NomeProfissional from (select CONCAT('5_',id)id,IF(NomeSocial is null or NomeSocial='',NomeProfissional,NomeSocial)NomeProfissional from profissionais where sysActive=1 AND Ativo='on' UNION ALL SELECT CONCAT('8_',id)id,NomeFornecedor FROM fornecedores WHERE TipoPrestadorID IN (1))t ORDER BY NomeProfissional", "NomeProfissional", " no-select2 "& disabledProf) %>
+                <%
+                    sql = "select id, NomeProfissional from (select CONCAT('5_',id)id,IF(NomeSocial is null or NomeSocial='',NomeProfissional,NomeSocial)NomeProfissional from profissionais where sysActive=1 AND Ativo='on' UNION ALL SELECT CONCAT('8_',id)id,NomeFornecedor FROM fornecedores WHERE TipoPrestadorID IN (1))t ORDER BY NomeProfissional"
+                   response.write( quickfield("simpleSelect", "ProfissionalID", "Laudador", 12, ProfissionalID, sql, "NomeProfissional", " no-select2 "& disabledProf) )
+                %>
             </div>
         </li>
         <li  class="p10">

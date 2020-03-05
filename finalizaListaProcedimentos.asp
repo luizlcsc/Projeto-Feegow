@@ -54,7 +54,7 @@ while not proc.eof
     SomenteConvenios = proc("SomenteConvenios")
     ExibirLancar = 0
 
-	if Forma="P" AND instr(SomenteConvenios, "||NOTPARTICULAR||")<1  then
+	if Forma="P" AND (instr(SomenteConvenios, "||NOTPARTICULAR||")<1 OR SomenteConvenios&""="") then
 	    ExibirLancar = 1
 		if not isnull(proc("Valor")) and proc("Valor")<>0 then
 			Valor =  formatnumber(proc("Valor"), 2)
@@ -68,7 +68,7 @@ while not proc.eof
 		end if
 		rd = "V"
 		ConvenioID = 0
-	elseif Forma<>"P" AND instr(SomenteConvenios, "||NONE||")<1 then
+	elseif Forma<>"P" AND (instr(SomenteConvenios, "||NONE||")<1 OR SomenteConvenios&""="")then
 	    ExibirLancar = 1
 	    CodigoNaOperadora = NULL
         sqlCodigoNaOperador = "SELECT * FROM contratosconvenio WHERE ConvenioID = "&Forma&" AND (Contratado = "&session("idInTable")&" OR Contratado = "&session("UnidadeID")&"*-1) ORDER BY Contratado DESC"

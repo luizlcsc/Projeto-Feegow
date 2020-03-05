@@ -176,7 +176,7 @@ else
 			    if spl(i)<>"" and isnumeric(spl(i)) then
                 set buscaChatName = db.execute("select lu.Nome from sys_users u left join cliniccentral.licencasusuarios lu ON lu.id=u.id where u.id="&spl(i))
 				    if not buscaChatName.eof then
-				    set msg = db.execute("SELECT Mensagem FROM chatmensagens WHERE De = "&spl(i)&" AND Para = "&session("User")&" ORDER BY id DESC LIMIT 1")
+				    set msg = db.execute("SELECT Mensagem FROM chatmensagens WHERE De = "&spl(i)&" AND Para = "&session("User")&" AND visualizado=0 ORDER BY id DESC LIMIT 1")
 
 				    if not msg.eof then
                         %>
@@ -189,7 +189,7 @@ else
                         <% IF (getConfig("SonsNotificacao")) THEN %>
                         document.getElementById("audioNotificacao").play();
                         <% END IF %>
-                        chatNotificacao("Nova mensagem de <%=buscaChatName("Nome")%>", "<%=msg("Mensagem")%>");
+                        chatNotificacao('Nova mensagem de <%=buscaChatName("Nome")%>', '<%=fix_string_chars_full(msg("Mensagem")&"")%>');
                         <%
                         end if
                     end if

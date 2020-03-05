@@ -194,8 +194,12 @@ function postUrl(url, data, callback) {
     }).done(function(data) {
         if (callback) {
             callback(data);
-        }
-    });
+        }}).fail(function(xhr, textStatus, error) {
+            //Ajax request failed.
+            var mensagem  = error;
+            var data = {success:false, message:mensagem};
+            callback(data);
+      });
 }
 
 function openModal(data, title, closeBtn, saveBtn, modalSize) {

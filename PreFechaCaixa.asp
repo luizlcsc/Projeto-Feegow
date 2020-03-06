@@ -75,12 +75,13 @@ end if
 <%
 if DetalharEntradas="S" then
 
-set BoletosEmitidosSQL = db.execute(" SELECT be.DataHora, be.DueDate, be.AmountCents, pac.NomePaciente, (be.AmountCents /100)Valor FROM boletos_emitidos be"&chr(13)&_
-                                    "                                                                                                         "&chr(13)&_
-                                    " INNER JOIN sys_financialinvoices i ON i.id=be.InvoiceID                                                 "&chr(13)&_
-                                    " LEFT JOIN pacientes pac ON pac.id=i.AccountID AND i.AssociationAccountID=3                              "&chr(13)&_
-                                    "                                                                                                         "&chr(13)&_
-                                    " WHERE i.CaixaID="&CaixaID)
+sqlBoletos = " SELECT be.DataHora, be.DueDate, be.AmountCents, pac.NomePaciente, (be.AmountCents /100)Valor FROM boletos_emitidos be"&chr(13)&_
+                                                 "                                                                                                         "&chr(13)&_
+                                                 " INNER JOIN sys_financialinvoices i ON i.id=be.InvoiceID                                                 "&chr(13)&_
+                                                 " LEFT JOIN pacientes pac ON pac.id=i.AccountID AND i.AssociationAccountID=3                              "&chr(13)&_
+                                                 "                                                                                                         "&chr(13)&_
+                                                 " WHERE i.CaixaID="&CaixaID
+set BoletosEmitidosSQL = db.execute(sqlBoletos)
 
 if not BoletosEmitidosSQL.eof then
     %>
@@ -99,7 +100,7 @@ while not BoletosEmitidosSQL.eof
         <td><%=BoletosEmitidosSQL("NomePaciente")%></td>
         <td><%=BoletosEmitidosSQL("DataHora")%></td>
         <td><%=BoletosEmitidosSQL("DueDate")%></td>
-        <th><%=fn(BoletosEmitidosSQL("Valor"))%></th>
+        <th><%=BoletosEmitidosSQL("Valor")%></th>
     </tr>
 <%
 BoletosEmitidosSQL.movenext

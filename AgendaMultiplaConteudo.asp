@@ -82,15 +82,15 @@ Especialidades = ref("Especialidade")
 ProcedimentoID = ref("filtroProcedimentoID")
 
 
-'RemarcacaoID= session("RemSol")
+RemarcacaoID= session("RemSol")
 
-'if RemarcacaoID<>"" then
-   ' set AgendamentoRemarcacaoSQL = db.execute("SELECT TipoCompromissoID, EspecialidadeID FROM agendamentos WHERE id="& RemarcacaoID)
-   ' if not AgendamentoRemarcacaoSQL.eof then
-        'Especialidades= AgendamentoRemarcacaoSQL("EspecialidadeID")
-       ' ProcedimentoID= AgendamentoRemarcacaoSQL("TipoCompromissoID")
-    'end if
-'end if
+if RemarcacaoID<>"" then
+    set AgendamentoRemarcacaoSQL = db.execute("SELECT TipoCompromissoID, EspecialidadeID FROM agendamentos WHERE id="& RemarcacaoID)
+    if not AgendamentoRemarcacaoSQL.eof then
+        Especialidades= AgendamentoRemarcacaoSQL("EspecialidadeID")
+        ProcedimentoID= AgendamentoRemarcacaoSQL("TipoCompromissoID")
+    end if
+end if
 
 
 if ProcedimentoID<>"" then
@@ -204,7 +204,7 @@ if Especialidades<>""  then
     for i=0 to ubound(spltEspecialidades)
         EspecialidadeID=spltEspecialidades(i)
 
-        sqlGradeEspecialidade =  sqlGradeEspecialidade&" OR Especialidades LIKE '%|"&EspecialidadeID&"|%'"
+        sqlGradeEspecialidade =  sqlGradeEspecialidade&" OR Especialidades LIKE '%"&EspecialidadeID&"%'"
     next
     sqlGradeEspecialidade=sqlGradeEspecialidade&")"
 

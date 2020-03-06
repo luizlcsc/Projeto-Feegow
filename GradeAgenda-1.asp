@@ -217,7 +217,7 @@ end if
      <div class="panel panel-footer row">
         <div class="col-md-6">
             <div class="input-group">
-                <span class="input-group-addon">Não é possível remarcar o agendamente no dia selecionado.</span>
+                <span class="input-group-addon">Não é possível remarcar o agendamento no dia selecionado.</span>
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
                 </span>

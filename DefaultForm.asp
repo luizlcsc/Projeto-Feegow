@@ -131,6 +131,8 @@ function DefaultForm(tableName, id)
                     <%
                     btnInserir = "<a class=""btn btn-sm btn-success"" href=""?P="& request.QueryString("P")&"&I=N&Pers="&Pers&"""><i class=""fa fa-plus""></i> INSERIR</a>"
 				end if
+							end if
+
                 %>
 <script type="text/javascript">
     $(document).ready(function(){
@@ -179,7 +181,6 @@ function DefaultForm(tableName, id)
         end if
     %>
 <%
-			end if
 			if aut(lcase(tableName)&"A")=1 or aut(lcase(tableName)&"V")=1 then
 				if req("X")<>"" then
 					AutX = "S"

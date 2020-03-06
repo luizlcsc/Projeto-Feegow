@@ -449,7 +449,7 @@ end if
               </div>
 
               <div class="list-group fs14 fw600">
-                <a class="list-group-item" href="mailto:suporte@feegow.com.br">
+                <a class="list-group-item" href="mailto:sucesso@feegow.com.br">
                   &nbsp;<i class="fa fa-envelope-o fa-fw text-primary"></i>&nbsp;&nbsp; Envie um e-mail</a>
                 <a data-toggle="modal" data-target="#modal-horarios-atendimentos" class="list-group-item" href="#">
                   &nbsp;<i class="fa fa-phone fa-fw text-primary"></i>&nbsp;&nbsp; Ligue para nós</a>

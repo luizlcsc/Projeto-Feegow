@@ -63,10 +63,116 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         Profissionais = "0"
     end if
 
+    ProcedimentoID = reffiltroProcedimentoID
+
+
+    if ProcedimentoID<>"" then
+        sqlProcFiltro = "select ifnull(OpcoesAgenda, 0) OpcoesAgenda, SomenteProfissionais, SomenteEquipamentos, SomenteEspecialidades, SomenteLocais, EquipamentoPadrao from procedimentos where id="&ProcedimentoID
+
+
+        set proc = db.execute(sqlProcFiltro)
+        if not proc.eof then
+            OpcoesAgenda=proc("OpcoesAgenda")
+            if OpcoesAgenda="4" or OpcoesAgenda="5" then
+                SomenteProfissionais = proc("SomenteProfissionais")&""
+                SomenteProfissionais = replace(SomenteProfissionais, ",", "")
+                SomenteProfissionais = replace(SomenteProfissionais, " ", "")
+                splSomProf = split(SomenteProfissionais, "|")
+                SomenteProfissionais = ""
+                for i=0 to ubound(splSomProf)
+                    if isnumeric(splSomProf(i)) and splSomProf(i)<>"" then
+                        SomenteProfissionais = SomenteProfissionais & "," & splSomProf(i)
+                    end if
+                next
+                SomenteEspecialidades = proc("SomenteEspecialidades")&""
+                if refEspecialidade="" and SomenteEspecialidades<>"" then
+                    refEspecialidade=SomenteEspecialidades
+                end if
+            end if
+            EquipamentoPadrao = proc("EquipamentoPadrao")
+
+            SomenteEquipamentos = proc("SomenteEquipamentos")
+
+            if EquipamentoPadrao&""<>"" then
+                EquipamentoPadrao="|"&EquipamentoPadrao&"|"
+
+                if SomenteEquipamentos&""="" then
+                    SomenteEquipamentos=EquipamentoPadrao
+                else
+                    SomenteEquipamentos=SomenteEquipamentos&","&EquipamentoPadrao
+                end if
+            end if
+
+            SomenteLocais = proc("SomenteLocais")&""
+            if instr(SomenteProfissionais, ",")>0 then
+                'Profissionais = replace(SomenteProfissionais, "||", ",")
+                'Profissionais = replace(Profissionais, ", , ", ", ")
+                'Profissionais = replace(Profissionais, "|", "")
+                Profissionais = SomenteProfissionais
+
+                if left(Profissionais, 1)="," then
+                    Profissionais = right(Profissionais, len(Profissionais)-1)
+                end if
+
+
+                if Profissionais&""<>"" then
+                    sqlProfissionais = " t.ProfissionalID IN("& Profissionais &") "
+                end if
+            end if
+            if instr(SomenteEspecialidades, "|")>0 then
+                set GroupConcat = db.execute("SET SESSION group_concat_max_len = 1000000;")
+                set profesp = db.execute("select group_concat(pro.id) Profissionais from profissionais pro LEFT JOIN profissionaisespecialidades pe on pe.ProfissionalID=pro.id where pro.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &") or pe.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &")")
+
+                sqlEspecialidades = ""
+                if not profesp.eof then
+                    ProfissionaisEspecialidade = profesp("Profissionais")
+                    if trim(ProfissionaisEspecialidade&"") <> "" then
+                        sqlEspecialidades = " t.ProfissionalID IN ("&ProfissionaisEspecialidade&") "
+                    end if
+                end if
+            end if
+
+            if sqlProfissionais<>"" and sqlEspecialidades<>"" then
+                if OpcoesAgenda="4" then
+                    sqlProfesp = " AND ("&sqlProfissionais&" OR "&sqlEspecialidades&") "
+                else
+                    sqlProfesp = " AND ("&sqlProfissionais&" AND "&sqlEspecialidades&") "
+                end if
+            elseif sqlProfissionais="" and sqlEspecialidades<>"" then
+                sqlProfesp = " AND "&sqlEspecialidades&" "
+            elseif sqlProfissionais<>"" and sqlEspecialidades="" then
+                sqlProfesp = " AND "&sqlProfissionais&" "
+            end if
+
+            sqlProfissionais = ""
+
+            if instr(SomenteLocais, "|")=0 then
+                SomenteLocais = ""
+            end if
+
+            sqlProcedimentosGrade = " AND (Procedimentos LIKE '%|"&ProcedimentoID&"|%' OR Procedimentos is null or Procedimentos='') "
+        end if
+    end if
+
+    if ProcedimentoID<>"" then
+        set EspecialidadesPermitidasNoProcedimentoSQL = db.execute("SELECT SomenteEspecialidades FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
+        if not EspecialidadesPermitidasNoProcedimentoSQL.eof then
+            ProcedimentoSomenteEspecialidades = EspecialidadesPermitidasNoProcedimentoSQL("SomenteEspecialidades")
+        end if
+        sqlProcedimentosGrade = " AND (Procedimentos LIKE '%|"&ProcedimentoID&"|%' OR Procedimentos is null or Procedimentos='') "
+    end if
+
+    if ProcedimentoSomenteEspecialidades<>"" then
+        if SomenteEspecialidades="" then
+            SomenteEspecialidades = ProcedimentoSomenteEspecialidades
+        else
+            SomenteEspecialidades = SomenteEspecialidades&", "&ProcedimentoSomenteEspecialidades
+        end if
+    end if
+
 
     splrfesp = split(refEspecialidade, ", ")
-    ProcedimentoID = reffiltroProcedimentoID
-    'rfEspecialidade = ref("Especialidade")
+
     for k=0 to ubound(splrfesp)
         EspecialidadeID = replace(splrfesp(k), "|","")
         rfEspecialidade = EspecialidadeID
@@ -77,106 +183,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                     DiaSemana = weekday(Data)
                     Mes = month(Data)
                     '-> procedimento filtrado selecionado
-                    if ProcedimentoID<>"" then
-                        sqlProcFiltro = "select ifnull(OpcoesAgenda, 0) OpcoesAgenda, SomenteProfissionais, SomenteEquipamentos, SomenteEspecialidades, SomenteLocais, EquipamentoPadrao from procedimentos where id="&ProcedimentoID
 
-
-                        set proc = db.execute(sqlProcFiltro)
-                        if not proc.eof then
-                            OpcoesAgenda=proc("OpcoesAgenda")
-                            if OpcoesAgenda="4" or OpcoesAgenda="5" then
-                                SomenteProfissionais = proc("SomenteProfissionais")&""
-                                SomenteProfissionais = replace(SomenteProfissionais, ",", "")
-                                SomenteProfissionais = replace(SomenteProfissionais, " ", "")
-                                splSomProf = split(SomenteProfissionais, "|")
-                                SomenteProfissionais = ""
-                                for i=0 to ubound(splSomProf)
-                                    if isnumeric(splSomProf(i)) and splSomProf(i)<>"" then
-                                        SomenteProfissionais = SomenteProfissionais & "," & splSomProf(i)
-                                    end if
-                                next
-                                SomenteEspecialidades = proc("SomenteEspecialidades")&""
-                            end if
-                            EquipamentoPadrao = proc("EquipamentoPadrao")
-
-                            SomenteEquipamentos = proc("SomenteEquipamentos")
-
-                            if EquipamentoPadrao&""<>"" then
-                                EquipamentoPadrao="|"&EquipamentoPadrao&"|"
-
-                                if SomenteEquipamentos&""="" then
-                                    SomenteEquipamentos=EquipamentoPadrao
-                                else
-                                    SomenteEquipamentos=SomenteEquipamentos&","&EquipamentoPadrao
-                                end if
-                            end if
-
-                            SomenteLocais = proc("SomenteLocais")&""
-                            if instr(SomenteProfissionais, ",")>0 then
-                                'Profissionais = replace(SomenteProfissionais, "||", ",")
-                                'Profissionais = replace(Profissionais, ", , ", ", ")
-                                'Profissionais = replace(Profissionais, "|", "")
-                                Profissionais = SomenteProfissionais
-
-                                if left(Profissionais, 1)="," then
-                                    Profissionais = right(Profissionais, len(Profissionais)-1)
-                                end if
-
-
-                                if Profissionais&""<>"" then
-                                    sqlProfissionais = " t.ProfissionalID IN("& Profissionais &") "
-                                end if
-                            end if
-                            if instr(SomenteEspecialidades, "|")>0 then
-                                set GroupConcat = db.execute("SET SESSION group_concat_max_len = 1000000;")
-                                set profesp = db.execute("select group_concat(pro.id) Profissionais from profissionais pro LEFT JOIN profissionaisespecialidades pe on pe.ProfissionalID=pro.id where pro.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &") or pe.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &")")
-
-                                sqlEspecialidades = ""
-                                if not profesp.eof then
-                                    ProfissionaisEspecialidade = profesp("Profissionais")
-                                    if trim(ProfissionaisEspecialidade&"") <> "" then
-                                        sqlEspecialidades = " t.ProfissionalID IN ("&ProfissionaisEspecialidade&") "
-                                    end if
-                                end if
-                            end if
-
-                            if sqlProfissionais<>"" and sqlEspecialidades<>"" then
-                                if OpcoesAgenda="4" then
-                                    sqlProfesp = " AND ("&sqlProfissionais&" OR "&sqlEspecialidades&") "
-                                else
-                                    sqlProfesp = " AND ("&sqlProfissionais&" AND "&sqlEspecialidades&") "
-                                end if
-                            elseif sqlProfissionais="" and sqlEspecialidades<>"" then
-                                sqlProfesp = " AND "&sqlEspecialidades&" "
-                            elseif sqlProfissionais<>"" and sqlEspecialidades="" then
-                                sqlProfesp = " AND "&sqlProfissionais&" "
-                            end if
-
-                            sqlProfissionais = ""
-
-                            if instr(SomenteLocais, "|")=0 then
-                                SomenteLocais = ""
-                            end if
-
-                            sqlProcedimentosGrade = " AND (Procedimentos LIKE '%|"&ProcedimentoID&"|%' OR Procedimentos is null or Procedimentos='') "
-                        end if
-                    end if
-
-                    if ProcedimentoID<>"" then
-                        set EspecialidadesPermitidasNoProcedimentoSQL = db.execute("SELECT SomenteEspecialidades FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
-                        if not EspecialidadesPermitidasNoProcedimentoSQL.eof then
-                            ProcedimentoSomenteEspecialidades = EspecialidadesPermitidasNoProcedimentoSQL("SomenteEspecialidades")
-                        end if
-                        sqlProcedimentosGrade = " AND (Procedimentos LIKE '%|"&ProcedimentoID&"|%' OR Procedimentos is null or Procedimentos='') "
-                    end if
-
-                    if ProcedimentoSomenteEspecialidades<>"" then
-                        if SomenteEspecialidades="" then
-                            SomenteEspecialidades = ProcedimentoSomenteEspecialidades
-                        else
-                            SomenteEspecialidades = SomenteEspecialidades&", "&ProcedimentoSomenteEspecialidades
-                        end if
-                    end if
 
                     if SomenteEspecialidades<>""  then
                         spltEspecialidades = split(SomenteEspecialidades, ", ")

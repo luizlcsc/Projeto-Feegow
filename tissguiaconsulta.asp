@@ -5,6 +5,8 @@
 <%
 call insertRedir(request.QueryString("P"), request.QueryString("I"))
 set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
+ClasseStatus = "primary"
+
 if not reg.eof then
 	PacienteID = reg("PacienteID")
 	CNS = reg("CNS")
@@ -82,6 +84,12 @@ if not reg.eof then
 				</script>
 			<%
 			end if
+
+
+            set StatusSQL = db.execute("SELECT Cor FROM cliniccentral.tissguiastatus WHERE id="&reg("GuiaStatus"))
+            if not StatusSQL.eof then
+                ClasseStatus = StatusSQL("Cor")
+            end if
         end if
     end if
 	'Auto-preenche a guia baseado no lancto
@@ -443,7 +451,7 @@ end if
 
 <br>
 <div class="admin-form theme-primary">
-   <div class="panel heading-border panel-primary">
+   <div class="panel heading-border panel-<%=ClasseStatus%>">
         <div class="panel-body">
             <div class="row">
     <div class="col-md-12">

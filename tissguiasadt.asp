@@ -22,6 +22,7 @@ AutorizadorTiss = False
 if recursoAutorizadorTISS= 4 or recursoUnimed = 4 then
     AutorizadorTiss=True
 end if
+ClasseStatus = "primary"
 
 if not reg.eof then
 	if reg("sysActive")=1 then
@@ -43,6 +44,11 @@ if not reg.eof then
                 <%
                 end if
             end if
+        end if
+
+        set StatusSQL = db.execute("SELECT Cor FROM cliniccentral.tissguiastatus WHERE id="&reg("GuiaStatus"))
+        if not StatusSQL.eof then
+            ClasseStatus = StatusSQL("Cor")
         end if
 	else
 		DataSolicitacao = date()
@@ -359,7 +365,7 @@ if not reg.eof then
                                         while not ProcedimentosAnexosSQL.eof
 
                                             TotalProcedimentos = TotalProcedimentos + ProcedimentosAnexosSQL("Valor")
-
+                                            ValorFinalAnexo = ProcedimentosAnexosSQL("Valor")
                                             IF getConfig("calculostabelas") THEN
                                                 set CalculaValorProcedimentoConvenioObj = CalculaValorProcedimentoConvenio(AssociacaoID,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,ProcedimentosAnexosSQL("id"))
                                                 ValorFinalAnexo = (CalculaValorProcedimentoConvenioObj("TotalGeral"))
@@ -626,7 +632,7 @@ min-width: 150px;
             </div>
 <br />
 <div class="admin-form theme-primary">
-   <div class="panel heading-border panel-primary">
+   <div class="panel heading-border panel-<%=ClasseStatus%>">
         <div class="panel-body">
 
             <input type="hidden" name="tipo" value="GuiaSADT" />
@@ -768,7 +774,10 @@ min-width: 150px;
                     <%server.Execute("tissprocedimentossadt.asp")%>
                 </div>
             </div>
-            <h5 class="page-header blue">Indica&ccedil;&atilde;o do(s) Prossional(is) Executante(s)</h5>
+
+            <div class="section-divider mt20 mb40">
+                <span> Indica&ccedil;&atilde;o do(s) Prossional(is) Executante(s) </span>
+            </div>
             <div class="row">
                 <div class="col-md-12" id="tissprofissionaissadt">
                     <%server.Execute("tissprofissionaissadt.asp")%>

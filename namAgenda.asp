@@ -45,7 +45,7 @@ if Especialidades<>""  then
     for i=0 to ubound(spltEspecialidades)
         EspecialidadeID=spltEspecialidades(i)
 
-        sqlGradeEspecialidade =  sqlGradeEspecialidade&" OR ass.Especialidades LIKE '%|"&EspecialidadeID&"|%' "
+        sqlGradeEspecialidade =  sqlGradeEspecialidade&" OR ass.Especialidades LIKE '%"&EspecialidadeID&"%' "
     next
     sqlEspecialidadePermitido=sqlGradeEspecialidade&")"
 end if

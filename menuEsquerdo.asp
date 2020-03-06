@@ -1552,10 +1552,15 @@ select case lcase(req("P"))
             <li class="active">
                 <a data-toggle="tab" href="#divCadastroProduto" onclick="atualizaLanctos();"><span class="fa fa-medkit"></span> <span class="sidebar-title"> Cadastro do Produto</span></a>
             </li>
+
+            <%
+            if aut("estoquemovimentacaoV")=1 then
+            %>
             <li>
                 <a data-toggle="tab" href="#divLancamentos" onclick="ajxContent('Lancamentos', '<%=req("I")%>', 1, 'divLancamentos');"><span class="fa fa-exchange icon-rotate-90"></span> <span class="sidebar-title">Movimentação</span></a>
             </li>
             <%
+            end if
         end if
               case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodedata", "descontopendente"
               %>

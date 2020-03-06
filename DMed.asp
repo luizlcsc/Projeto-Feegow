@@ -4,6 +4,7 @@ De = ref("De")
 Ate = ref("Ate")
 Profissionais = ref("Profissionais")
 ApenasImpresso = ref("ApenasImpresso")
+ConsiderarValorTotal = ref("ConsiderarValorTotal")
 
 if ApenasImpresso="S" then
     sqlAI = " AND NOT ISNULL(rec.ImpressoEm) "
@@ -87,7 +88,13 @@ if Profissionais<>"" then
                         tValorTotal = 0
                         tTotalRepasse = 0
                         while not ii.eof
-                            set rec = db.execute("select (Valor) TotalRecibo, ImpressoEm FROM recibos rec WHERE rec.ContaCredito=concat('5_', "& prof("id") &") AND rec.InvoiceID="& ii("InvoiceID") & sqlAI &" ORDER BY rec.id desc limit 1")
+                            sqlContaCredito = "rec.ContaCredito=concat('5_', "& prof("id") &") AND "
+
+                            if cdate(Ate)<=cdate("2019-07-31") then
+                                sqlContaCredito = ""
+                            end if
+
+                            set rec = db.execute("select (Valor) TotalRecibo, ImpressoEm FROM recibos rec WHERE "&sqlContaCredito&" rec.InvoiceID="& ii("InvoiceID") & sqlAI &" ORDER BY rec.id desc limit 1")
                             'SÓ EXIBE QUEM TEM RECIBO
                             ReciboGerado=False
                             ImpressoEm=""

@@ -21,11 +21,11 @@ TipoData = req("TipoData")
 <%
 
 if TipoData="P" then
-    sqlData = " AND (movpay.Date >= "&mydatenull(De)&" AND movpay.Date<= "&mydatenull(Ate)&") "
+    sqlData = " AND (movpay.Date >= "&mydatenull(De)&" AND "&mydatenull(Ate)&"  or rec.Data BETWEEN "&mydatenull(De)&" AND "&mydatenull(Ate)&") "
 elseif TipoData="V" then
-    sqlData = " AND (mov.Date >= "&mydatenull(De)&" AND mov.Date<= "&mydatenull(Ate)&") "
+    sqlData = " AND (mov.Date >= "&mydatenull(De)&" AND "&mydatenull(Ate)&"  or rec.Data BETWEEN "&mydatenull(De)&" AND "&mydatenull(Ate)&") "
 else
-    sqlData = " AND (fi.sysDate >= "&mydatenull(De)&" AND fi.sysDate<= "&mydatenull(Ate)&") "
+    sqlData = " AND (fi.sysDate BETWEEN "&mydatenull(De)&" AND "&mydatenull(Ate)&" or rec.Data BETWEEN "&mydatenull(De)&" AND "&mydatenull(Ate)&") "
 end if
 
 
@@ -36,17 +36,18 @@ while not unidade.eof
     Sigla = unidade("Sigla")
     MovementID = 0
 
-    set invDados = db.execute("SELECT fi.id, GROUP_CONCAT(mov.id) MovementID, mov.`Value` Valor, pac.NomePaciente, rec.NumeroSequencial, rec.UnidadeID, tab.NomeTabela, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(rec.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = rec.UnidadeID)) SiglaUnidade "&_
-                              "FROM sys_financialinvoices fi "&_
-                              "INNER JOIN sys_financialmovement mov ON mov.InvoiceID=fi.id "&_
-                              "INNER JOIN pacientes pac ON pac.id=fi.AccountID AND fi.AssociationAccountID=3 "&_
-                              "LEFT JOIN recibos rec ON rec.InvoiceID=fi.id AND rec.sysActive=1 "&_
-                              "LEFT JOIN nfe_notasemitidas nfe ON nfe.InvoiceID=fi.id AND nfe.situacao=1 "&_
-                              "LEFT JOIN tabelaparticular tab ON tab.id=fi.TabelaID "&_
-                              "LEFT JOIN sys_financialdiscountpayments fdp ON fdp.InstallmentID=mov.id "&_
-                              "LEFT JOIN sys_financialmovement movpay ON fdp.MovementID=movpay.id "&_
-                              "WHERE mov.`Type`='Bill' AND mov.CD='C' AND fi.CompanyUnitID="&UnidadeID & sqlData&" "&_
-                              "GROUP BY fi.id ORDER BY rec.NumeroSequencial")
+    sqlCofre = "SELECT fi.id, rec.Data DataRecibo, mov.Date DataVencimento, GROUP_CONCAT(mov.id) MovementID, mov.`Value` Valor, pac.NomePaciente, rec.NumeroSequencial, rec.UnidadeID, tab.NomeTabela, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(rec.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = rec.UnidadeID)) SiglaUnidade "&_
+                                             "FROM sys_financialinvoices fi "&_
+                                             "INNER JOIN sys_financialmovement mov ON mov.InvoiceID=fi.id "&_
+                                             "INNER JOIN pacientes pac ON pac.id=fi.AccountID AND fi.AssociationAccountID=3 "&_
+                                             "LEFT JOIN recibos rec ON rec.InvoiceID=fi.id AND rec.sysActive=1 "&_
+                                             "LEFT JOIN nfe_notasemitidas nfe ON nfe.InvoiceID=fi.id AND nfe.situacao=1 "&_
+                                             "LEFT JOIN tabelaparticular tab ON tab.id=fi.TabelaID "&_
+                                             "LEFT JOIN sys_financialdiscountpayments fdp ON fdp.InstallmentID=mov.id "&_
+                                             "LEFT JOIN sys_financialmovement movpay ON fdp.MovementID=movpay.id "&_
+                                             "WHERE mov.`Type`='Bill' AND mov.CD='C' AND fi.CompanyUnitID="&UnidadeID & sqlData&" "&_
+                                             "GROUP BY fi.id ORDER BY rec.NumeroSequencial"
+    set invDados = db.execute(sqlCofre)
     if not invDados.eof then
     %>
     <h3 class="text-left"><%=NomeFantasia%></h3>
@@ -216,6 +217,15 @@ while not unidade.eof
     </table>
     <br>
     <%
+
+    if invDados("DataRecibo")<>invDados("DataVencimento") then
+        %>
+<div class="alert alert-warning">
+    <strong>Atenção!</strong> A data da geração do recibo (<%=invDados("DataRecibo")%>) é diferente da data do vencimento da conta (<%=invDados("DataVencimento")%>).
+</div>
+        <%
+    end if
+
     invDados.movenext
     wend
     invDados.close

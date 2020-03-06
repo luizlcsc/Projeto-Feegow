@@ -106,16 +106,26 @@ end if
 
 <form id="AgendaCirurgica" action="" method="post">
     <div class="row">
-        <div class="col-md-8 page-header">
+        <div class="col-md-8 ">
         </div>
         <%=quickField("simpleSelect", "StatusID", "Status", 2, StatusID, "select * from agendacirurgicastatus order by NomeStatus", "NomeStatus", " no-select2 ")%>
         <%=quickField("empresa", "UnidadeID", "Unidade", 2, UnidadeID, "", "", "")%>
     </div>
+    <br>
     <input type="hidden" name="tipo" value="AgendaCirurgica" />
-    <div class="panel">
-        <div class="panel-body">
-            <h5 class="page-header blue">Paciente</h5>
-            <div class="row">
+
+    <div class="admin-form theme-primary">
+       <div class="panel heading-border panel-primary">
+            <div class="panel-body">
+
+                <input type="hidden" name="tipo" value="GuiaSADT" />
+                <input type="hidden" name="GuiaID" value="<%=req("I")%>" />
+
+                <div class="section-divider mt20 mb40">
+                    <span> Dados do Benefici&aacute;rio </span>
+                </div>
+
+                <div class="row">
                 <div class="col-md-3"><%= selectInsert("* Nome", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div>
 
                 <div class="col-md-3 pt25">
@@ -134,6 +144,11 @@ end if
                 <input type="hidden" name="identificadorBeneficiario" value="<%=identificadorBeneficiario%>" />
             </div>
             <br />
+
+            <div class="section-divider mt20 mb40">
+                <span> Dados do Contratado </span>
+            </div>
+
             <div class="row">
                 <%= quickField("text", "ContratadoLocalCodigoNaOperadora", "C&oacute;digo na Operadora", 2, ContratadoLocalCodigoNaOperadora, "", "", "") %>
                 <%= quickField("text", "ContratadoLocalNome", "* Nome do Hospital/Local", 7, ContratadoLocalNome, "", "", "") %>
@@ -142,20 +157,31 @@ end if
                 <%= quickField("timepicker", "Hora", "Hora", 2, reg("Hora"), "", "", "") %>
             </div>
 
-            <h5 class="page-header blue">Procedimentos</h5>
+
+            <div class="section-divider mt20 mb40">
+                <span> Dados da cirurgia </span>
+            </div>
+
             <div class="row">
                 <div class="col-md-12" id="procedimentoscirurgia">
                     <%server.Execute("procedimentoscirurgia.asp")%>
                 </div>
             </div>
-            <h5 class="page-header blue">Profissionais</h5>
+
+            <div class="section-divider mt20 mb40">
+                <span> Equipe médica  </span>
+            </div>
+
             <div class="row">
                 <div class="col-md-12" id="profissionaiscirurgia">
                     <%server.Execute("profissionaiscirurgia.asp")%>
                 </div>
             </div>
 
-            <h5 class="page-header blue">Outras Despesas</h5>
+            <div class="section-divider mt20 mb40">
+                <span> Outras Despesas </span>
+            </div>
+
             <div class="row">
                 <div class="col-md-12" id="acoutrasdespesas">
                     <%server.Execute("acoutrasdespesas.asp")%>
@@ -175,6 +201,7 @@ end if
             </div>
         </div>
     </div>
+</div>
 </form>
 
 <script type="text/javascript">

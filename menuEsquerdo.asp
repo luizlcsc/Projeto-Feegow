@@ -1054,7 +1054,22 @@ select case lcase(req("P"))
                 if not labAutenticacao.eof then
                 %>
             <li>
-                <a href="./?P=DeParaLabs&Pers=1"><span class="fa fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span></a>
+                <a> <span class="fa fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span> </a>
+            </li>
+            <li>                
+            <%
+                set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs ")
+                while not dadoslab.eof
+                %>
+                <li>
+                    <a  href="?P=DeParaLabs&Pers=1&labid=<%=dadoslab("id")%>">
+                        &nbsp;&nbsp;&nbsp;<span class="fa fa-angle-double-right"></span> <span class="sidebar-title" title="Procedimentos <=> Exames (<%=dadoslab("NomeLaboratorio")%>)"><%=dadoslab("NomeLaboratorio")%>&nbsp; <span class="label label-system label-xs fleft">Novo</span></span>
+                    </a>
+                </li>
+                <% 
+                dadoslab.movenext
+                wend
+            %>
             </li>
             <%
                 end if
@@ -1513,18 +1528,7 @@ select case lcase(req("P"))
         <a data-toggle="tab" href="#divProcedimentoLaboratorio" onclick="ajxContent('ProcedimentoLaboratorio', '', 1, 'divProcedimentoLaboratorio');">
             <span class="fa fa-flask"></span> <span class="sidebar-title">Procedimentos Laboratorios</a>
         </li>
-        <%
-         set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs ")
-         while not dadoslab.eof
-        %>
-         <li>
-        <a  href="?P=DeParaLabs&Pers=1&labid=<%=dadoslab("id")%>">
-            <span class="fa fa-flask"></span> <span class="sidebar-title" title="Procedimentos <=> Exames (<%=dadoslab("NomeLaboratorio")%>)">Proc. Exames (<%=dadoslab("NomeLaboratorio")%>) <span class="label label-system label-xs fleft">Novo</span></span></a>
-        </li>
-        <% 
-         dadoslab.movenext
-         wend
-        %>
+        
          <li>
             <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');">
             <span class="fa fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>

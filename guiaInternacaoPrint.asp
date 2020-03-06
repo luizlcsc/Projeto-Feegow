@@ -17,6 +17,17 @@ body{
 
 
 <%
+function CidGuia(CidID)
+CidGuia = 0
+if CidID&""<>"" then
+    set CodigoCid =  db.execute("SELECT Codigo FROM cliniccentral.cid10 WHERE id="&CidID)
+    if not CodigoCid.eof then
+        CidGuia = CodigoCid("Codigo")
+    end if
+end if
+
+end function
+
 TipoExibicao = req("TipoExibicao")
 
 set guia = db.execute("select g.*, cons.TISS as ConselhoProfissionalSolicitanteTISS from tissguiainternacao as g left join conselhosprofissionais as cons on cons.id=g.ConselhoProfissionalSolicitanteID where g.id="& treatvalzero(req("I")))
@@ -95,10 +106,10 @@ if not guia.eof then
     QteDiariasSol=guia("QteDiariasSol")
     PrevUsoOPME=guia("PrevUsoOPME")
     PrevUsoQuimio=guia("PrevUsoQuimio")
-    Cid1=guia("Cid1")
-    Cid2=guia("Cid2")
-    Cid3=guia("Cid3")
-    Cid4=guia("Cid4")
+    Cid1=CidGuia(guia("Cid1"))
+    Cid2=CidGuia(guia("Cid2"))
+    Cid3=CidGuia(guia("Cid3"))
+    Cid4=CidGuia(guia("Cid4"))
     DataAdmisHosp=guia("DataAdmisHosp")
     QteDiariasAut=guia("QteDiariasAut")
     TipoAcomodacao=guia("TipoAcomodacao")

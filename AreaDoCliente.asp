@@ -263,15 +263,22 @@ end if
 <%
 if session("Admin")=1 then
 %>
-<div class="mb15">
-    <a href="./?P=ClExtratoSMS&Pers=1" class="btn btn-success btn-block pv10 fw600"><i class="fa fa-envelope"></i> Extrato de SMS</a>
-</div>
+
             <div class="panel mb10">
               <div class="panel-heading">
                 <span class="panel-icon">
                   <i class="fa fa-barcode"></i>
                 </span>
                 <span class="panel-title"> Minhas Faturas</span>
+
+                <span class="panel-controls">
+                    <a class="panel-control-collapse hidden" href="#"></a>
+
+                   <div >
+                       <a href="./?P=ClExtratoSMS&Pers=1" class="btn btn-default btn-xs "><i class="fa fa-envelope"></i> Extrato de SMS</a>
+                   </div>
+
+                </span>
               </div>
 
 
@@ -285,6 +292,7 @@ if session("Admin")=1 then
                 %>
                  <div class="panel-body text-muted p10">
                 <%
+                    FaturasQuitadasExibidas=0
                     while not FaturasSQL.eof
                         id=FaturasSQL("id")
                         Status=""
@@ -304,6 +312,7 @@ if session("Admin")=1 then
                         if  cdate(Vencimento) < cdate("2019-01-01") then
                             exibe="N"
                         end if
+
                         if exibe="S" then
                             'if classe="danger" then
                                 ExibeLinha=True

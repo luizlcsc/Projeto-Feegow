@@ -43,7 +43,7 @@ prefixo = right(prefixo, 20)
                 elseif CalculaCNPJ(CodigoNaOperadora)=true then
                     tipoCodigoNaOperadora = "CNPJ"
                 else
-                    tipoCodigoNaOperadora = "codigoPrestadorNaOperadora"
+                    tipoCodigoNaOperadora = "codigoNaOperadora"
                 end if
                 %>
                 <%="<ans:" & tipoCodigoNaOperadora & ">" & CodigoNaOperadora &"</ans:" & tipoCodigoNaOperadora &">"%>
@@ -126,7 +126,7 @@ prefixo = right(prefixo, 20)
 						end if
 					end if
 
-                    tipoCodigoNaOperadoraContratadoSolicitante = "codigoPrestadorNaOperadora"
+                    tipoCodigoNaOperadoraContratadoSolicitante = "codigoNaOperadora"
                     set TipoContratoSQL = db.execute("SELECT IdentificadorCNPJ FROM contratosconvenio WHERE ConvenioID='"&guias("ConvenioID")&"' AND CodigoNaOperadora='"&CodigoNaOperadora&"'")
                     if not TipoContratoSQL.eof then
                         if TipoContratoSQL("IdentificadorCNPJ")="S" then
@@ -221,7 +221,7 @@ prefixo = right(prefixo, 20)
 								'elseif CalculaCNPJ(CodigoNaOperadoraOuCPF)=true then
 								'	tipoContrato = "cnpjContratado"
 								else
-									tipoContrato = "codigoPrestadorNaOperadora"
+									tipoContrato = "codigoNaOperadora"
 								end if
 
 

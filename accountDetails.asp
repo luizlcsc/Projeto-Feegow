@@ -2,8 +2,7 @@
 <%
 id = ref("id")
 AccountType = ref("AccountType")
-
-set reg = db.execute("select * from sys_financialCurrentAccounts where id="&id)
+set reg = db.execute("select * from sys_financialcurrentaccounts where id="&id)
 
 if not reg.eof then
 	id = reg("id")
@@ -699,9 +698,7 @@ end if
 	}
 
 	persistPercentualConfiguracao = callback => {
-		var accountType = $("#AccountType").select2('val');
-
-		if (accountType != '3' && accountType != '6' && accountType != '4') {
+		if ($("#AccountType").select2('val') != '3' && $("#AccountType").select2('val') != '6' && $("#AccountType").select2('val') != '4') {
 			return;
 		}
 

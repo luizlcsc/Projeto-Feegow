@@ -23,12 +23,20 @@ end if
 conjunto = reg("ApresentacaoNome")
 
 exibirBotaoSaida = TRUE
+exibirBotaoMovimentacao = TRUE
 if req("P")="Produtos" then
     if reg("PermitirSaida")<>"S" then
         exibirBotaoSaida = FALSE
     end if
 end if
 
+if aut("estoquesaidaI")=0 then
+    exibirBotaoSaida=False
+end if
+
+if aut("estoquemovimentacaoI")=0 then
+    exibirBotaoMovimentacao=False
+end if
 
 sqlUnidadesUsuario = ""
 if aut("lctestoqueV")=0 then
@@ -47,10 +55,15 @@ call refazPosicao(ProdutoID)
             <th class="<%=hiddenII %>">
 
                 <button disabled class="btn-xs btn btn-primary fright btn-acao-em-lote" type="button" data-toggle="tooltip" title="Imprimir etiquetas" onclick="printEtiqueta(<%=req("I") %>)"><i class="fa fa-barcode"></i> </button>
-
+<%
+if exibirBotaoMovimentacao then
+%>
                 <button  disabled style="float: right;" class="btn-xs btn btn-warning btn-acao-em-lote" data-toggle="tooltip" title="Mover em lote" type="button"
                 onclick="dividir('<%=req("I") %>', 'S', '<%=req("LocalizacaoID")%>', '', 'LOTE', '<%=req("Quantidade")%>');"
                 ><i class="fa fa-retweet"></i></button>
+                <%
+end if
+                %>
             </th>
         </tr>
         <tr class="info">
@@ -63,7 +76,13 @@ call refazPosicao(ProdutoID)
             <th>Quantidade</th>
             <th nowrap>Valor Médio</th>
             <th class="p5" width="75">
+                <%
+                if aut("estoqueentradaI")=1 then
+                %>
                 <button class="btn btn-system mn btn-block btn-sm btnLancto <%= hiddenE %>" type="button"<%=disabled%> onclick="$('#save').click(); lancar(<%=req("I")%>, 'E', '', '', '', '<%= ItemInvoiceID %>', '', <%= ProdutoInvoiceID %>);"><i class="fa fa-level-down"></i> Entrada</button>
+                <%
+                end if
+                %>
             </th>
         </tr>
     </thead>
@@ -129,7 +148,9 @@ call refazPosicao(ProdutoID)
                         <%if exibirBotaoSaida then%>
                         <button class="btn btn-alert mn btn-block btn-xs btnLancto <%= hiddenS %>" type="button"<%=disabled%> onclick="lancar(<%=req("I") %>, 'S', '<%=req("LocalizacaoID")%>', '', <%=lanc("PosicaoID") %>, '<%=ItemInvoiceID %>', '<%= AtendimentoID %>', <%= ProdutoInvoiceID %>);"><i class="fa fa-level-up"></i> Sa&iacute;da</button>
                         <%end if%>
+                        <%if exibirBotaoMovimentacao then%>
                         <button class="mt10 btn btn-info mn btn-block btn-xs <%=hiddenII %>" type="button"<%=disabled%> onclick="dividir(<%=req("I") %>, 'S', '<%=req("LocalizacaoID")%>', '', <%=lanc("PosicaoID") %>, '<%=req("Quantidade")%>');"><i class="fa fa-retweet"></i> Mover</button>
+                        <%end if%>
                     </td>
                 </tr>
                 <%

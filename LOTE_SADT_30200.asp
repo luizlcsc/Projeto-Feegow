@@ -339,7 +339,7 @@ response.Charset="utf-8"
                                     else
                                         ConselhoProfissional=TirarAcento(cons("TISS"))
                                     end if
-                                    ConselhoProfissional = zeroEsq(ConselhoProfissional, 2)
+                                    'ConselhoProfissional = zeroEsq(ConselhoProfissional, 2)
 
                                     DocumentoConselho = TirarAcento(eq("DocumentoConselho"))
                                     UF = TirarAcento(eq("UF"))

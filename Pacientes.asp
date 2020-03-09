@@ -1077,7 +1077,9 @@ if not memed.eof then
                  prescriptionId: idPrescricao,
                  patientId: '<%=req("I")%>'
              }, function (data) {
-                 console.log(data);
+				 console.log(data);
+    			pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
+				 
              })
          });
        } , 500);

@@ -86,7 +86,7 @@ if not reg.eof then
 			end if
 
 
-            set StatusSQL = db.execute("SELECT Cor FROM cliniccentral.tissguiastatus WHERE id="&reg("GuiaStatus"))
+            set StatusSQL = db.execute("SELECT Cor FROM cliniccentral.tissguiastatus WHERE id="&treatvalzero(reg("GuiaStatus")&""))
             if not StatusSQL.eof then
                 ClasseStatus = StatusSQL("Cor")
             end if

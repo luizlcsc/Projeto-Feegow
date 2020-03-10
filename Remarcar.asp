@@ -84,7 +84,7 @@ end if
 if Acao="Remarcar" then
     Encaixe=0
 
-    set AgendamentoSQL = db.execute("SELECT localid ,Hora, HoraFinal, Tempo, EquipamentoID, IF(rdValorPlano='P',ValorPlano,0) ConvenioID FROM agendamentos WHERE id="&session("RemSol"))
+    set AgendamentoSQL = db.execute("SELECT especialidadeid,tipocompromissoid, localid ,Hora, HoraFinal, Tempo, EquipamentoID, IF(rdValorPlano='P',ValorPlano,0) ConvenioID FROM agendamentos WHERE id="&session("RemSol"))
     if LocalID="Search" then
         LocalID = AgendamentoSQL("localid")
     end if 
@@ -92,6 +92,8 @@ if Acao="Remarcar" then
     rfTempo = AgendamentoSQL("Tempo")
     AgendamentoID=session("RemSol")
     ConvenioID=AgendamentoSQL("ConvenioID")
+    EspecialidadeID=AgendamentoSQL("especialidadeid")
+    ProcedimentoID=AgendamentoSQL("tipocompromissoid")
 
     if EquipamentoID="" then
         EquipamentoID=AgendamentoSQL("EquipamentoID")
@@ -141,25 +143,26 @@ if Acao="Remarcar" then
         end if
 
         if erro = "" then
-            set validaRemarcar = db.execute("SELECT convenios "&_
-                                            " FROM assfixalocalxprofissional AS a "&_
-                                            " WHERE a.profissionalID="&treatvalzero(ProfissionalID)&" "&_
-                                            " AND a.DiaSemana = DAYOFWEEK("&mydatenull(Data)&") "&_
-                                            " AND a.HoraDe <= '"&Hora&"' and a.HoraA >= '"&Hora&"'  "&_
-                                            " AND (a.FimVigencia is null or a.FimVigencia >= "&mydatenull(Data)&" )"&_
-                                            " AND (a.InicioVigencia is null or a.InicioVigencia <= "&mydatenull(Data)&")")
-            if validaRemarcar.eof then
-                set validaRemarcar = db.execute("select * from assperiodolocalxprofissional as a "&_
-                                            " WHERE a.profissionalID="&treatvalzero(ProfissionalID)&"  "&_
-                                            " AND "&mydatenull(Data)&" BETWEEN a.DataDe and a.DataA "&_
-                                            " AND a.HoraDe <= '"&Hora&"' and a.HoraA >= '"&Hora&"' ")
-            end if 
-
+            sqlGrade = "SELECT id GradeID, Especialidades, Procedimentos,Convenios, LocalID FROM (SELECT ass.id, Especialidades, Procedimentos, LocalID,Convenios FROM assfixalocalxprofissional ass  WHERE ProfissionalID="&treatvalzero(ProfissionalID)&" AND DiaSemana=dayofweek("&mydatenull(Data)&") AND "&mytime(Hora)&" BETWEEN HoraDe AND HoraA AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&")) UNION ALL SELECT ex.id*-1 id, Especialidades, Procedimentos, LocalID,Convenios FROM assperiodolocalxprofissional ex LEFT JOIN locais loc ON loc.id=ex.LocalID WHERE ProfissionalID="&ProfissionalID&" AND DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&")t"
+            response.write "//"&sqlGrade
+            set validaRemarcar = db.execute(sqlGrade)
             if not validaRemarcar.eof then
                 vLimitarConvenios = validaRemarcar("convenios")&""
                 if vLimitarConvenios <>"" then
                     if instr(vLimitarConvenios, "|"&ConvenioID&"|")<=0 then
-                        erro = "Grade não aceita o convênio deste agendamento"
+                        erro = erro&" Grade não aceita o convênio deste agendamento\n"
+                    end if
+                end if
+                vLimitarEspecialidade = validaRemarcar("Especialidades")&""
+                if vLimitarEspecialidade <>"" then
+                    if instr(vLimitarEspecialidade, "|"&EspecialidadeID&"|")<=0 then
+                        erro = erro&" Grade não aceita a especialidade deste agendamento\n"
+                    end if
+                end if
+                vLimitarProcedimento = validaRemarcar("Procedimentos")&""
+                if vLimitarProcedimento <>"" then
+                    if instr(vLimitarProcedimento, "|"&ProcedimentoID&"|")<=0 then
+                        erro = erro&" Grade não aceita o procedimento deste agendamento\n"
                     end if
                 end if
             end if

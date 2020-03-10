@@ -103,7 +103,7 @@ if Acao="Remarcar" then
     HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
     sql = "SELECT total_agendamentos >= max_agendamentos AS nao_pode_agendar FROM (SELECT COUNT(*) AS total_agendamentos, IF(procedimentos.MaximoAgendamentos='' or procedimentos.MaximoAgendamentos Is null, 1, procedimentos.MaximoAgendamentos) AS max_agendamentos from agendamentos LEFT JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID where StaID not in (11,15) AND ProfissionalID = "&treatvalzero(ProfissionalID)&" and ProfissionalID<>0 and Data = "&mydatenull(Data)&" and ((Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora < time('"&HoraSolFin&"') and Encaixe IS NULL and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')) or Hora="&mytime(HoraSolIni)&")   GROUP BY 2) AS t HAVING nao_pode_agendar = 1"
-
+        
     set ve1=db.execute(sql)
     if not ve1.eof then
         check = ve1("nao_pode_agendar")
@@ -135,9 +135,35 @@ if Acao="Remarcar" then
 
         end if
     end if
+    if ConvenioID&"" <> "0" then
+        if erro = "" then
+            erro = erro & ValidaLocalConvenio("1",ConvenioID,LocalID)
+        end if
 
-    if erro = "" then
-        erro = erro & ValidaLocalConvenio("1",ConvenioID,LocalID)
+        if erro = "" then
+            set validaRemarcar = db.execute("SELECT convenios "&_
+                                            " FROM assfixalocalxprofissional AS a "&_
+                                            " WHERE a.profissionalID="&treatvalzero(ProfissionalID)&" "&_
+                                            " AND a.DiaSemana = DAYOFWEEK("&mydatenull(Data)&") "&_
+                                            " AND a.HoraDe <= '"&Hora&"' and a.HoraA >= '"&Hora&"'  "&_
+                                            " AND (a.FimVigencia is null or a.FimVigencia >= "&mydatenull(Data)&" )"&_
+                                            " AND (a.InicioVigencia is null or a.InicioVigencia <= "&mydatenull(Data)&")")
+            if validaRemarcar.eof then
+                set validaRemarcar = db.execute("select * from assperiodolocalxprofissional as a "&_
+                                            " WHERE a.profissionalID="&treatvalzero(ProfissionalID)&"  "&_
+                                            " AND "&mydatenull(Data)&" BETWEEN a.DataDe and a.DataA "&_
+                                            " AND a.HoraDe <= '"&Hora&"' and a.HoraA >= '"&Hora&"' ")
+            end if 
+
+            if not validaRemarcar.eof then
+                vLimitarConvenios = validaRemarcar("convenios")&""
+                if vLimitarConvenios <>"" then
+                    if instr(vLimitarConvenios, "|"&ConvenioID&"|")<=0 then
+                        erro = "Grade não aceita o convênio deste agendamento"
+                    end if
+                end if
+            end if
+        end if
     end if
 
     if erro="" then

@@ -84,7 +84,7 @@ end if
 if Acao="Remarcar" then
     Encaixe=0
 
-    set AgendamentoSQL = db.execute("SELECT localid ,Hora, HoraFinal, Tempo, EquipamentoID, IF(rdValorPlano='P',ValorPlano,0) ConvenioID FROM agendamentos WHERE id="&session("RemSol"))
+    set AgendamentoSQL = db.execute("SELECT especialidadeid,tipocompromissoid, localid ,Hora, HoraFinal, Tempo, EquipamentoID, IF(rdValorPlano='P',ValorPlano,0) ConvenioID FROM agendamentos WHERE id="&session("RemSol"))
     if LocalID="Search" then
         LocalID = AgendamentoSQL("localid")
     end if 
@@ -92,6 +92,8 @@ if Acao="Remarcar" then
     rfTempo = AgendamentoSQL("Tempo")
     AgendamentoID=session("RemSol")
     ConvenioID=AgendamentoSQL("ConvenioID")
+    EspecialidadeID=AgendamentoSQL("especialidadeid")
+    ProcedimentoID=AgendamentoSQL("tipocompromissoid")
 
     if EquipamentoID="" then
         EquipamentoID=AgendamentoSQL("EquipamentoID")
@@ -103,7 +105,7 @@ if Acao="Remarcar" then
     HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
     sql = "SELECT total_agendamentos >= max_agendamentos AS nao_pode_agendar FROM (SELECT COUNT(*) AS total_agendamentos, IF(procedimentos.MaximoAgendamentos='' or procedimentos.MaximoAgendamentos Is null, 1, procedimentos.MaximoAgendamentos) AS max_agendamentos from agendamentos LEFT JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID where StaID not in (11,15) AND ProfissionalID = "&treatvalzero(ProfissionalID)&" and ProfissionalID<>0 and Data = "&mydatenull(Data)&" and ((Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora < time('"&HoraSolFin&"') and Encaixe IS NULL and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')) or Hora="&mytime(HoraSolIni)&")   GROUP BY 2) AS t HAVING nao_pode_agendar = 1"
-
+        
     set ve1=db.execute(sql)
     if not ve1.eof then
         check = ve1("nao_pode_agendar")
@@ -135,9 +137,36 @@ if Acao="Remarcar" then
 
         end if
     end if
+    if ConvenioID&"" <> "0" then
+        if erro = "" then
+            erro = erro & ValidaLocalConvenio("1",ConvenioID,LocalID)
+        end if
 
-    if erro = "" then
-        erro = erro & ValidaLocalConvenio("1",ConvenioID,LocalID)
+        if erro = "" then
+            sqlGrade = "SELECT id GradeID, Especialidades, Procedimentos,Convenios, LocalID FROM (SELECT ass.id, Especialidades, Procedimentos, LocalID,Convenios FROM assfixalocalxprofissional ass  WHERE ProfissionalID="&treatvalzero(ProfissionalID)&" AND DiaSemana=dayofweek("&mydatenull(Data)&") AND "&mytime(Hora)&" BETWEEN HoraDe AND HoraA AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&")) UNION ALL SELECT ex.id*-1 id, Especialidades, Procedimentos, LocalID,Convenios FROM assperiodolocalxprofissional ex LEFT JOIN locais loc ON loc.id=ex.LocalID WHERE ProfissionalID="&ProfissionalID&" AND DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&")t"
+            
+            set validaRemarcar = db.execute(sqlGrade)
+            if not validaRemarcar.eof then
+                vLimitarConvenios = validaRemarcar("convenios")&""
+                if vLimitarConvenios <>"" then
+                    if instr(vLimitarConvenios, "|"&ConvenioID&"|")<=0 then
+                        erro = erro&" Grade não aceita o convênio deste agendamento\n"
+                    end if
+                end if
+                vLimitarEspecialidade = validaRemarcar("Especialidades")&""
+                if vLimitarEspecialidade <>"" then
+                    if instr(vLimitarEspecialidade, "|"&EspecialidadeID&"|")<=0 then
+                        erro = erro&" Grade não aceita a especialidade deste agendamento\n"
+                    end if
+                end if
+                vLimitarProcedimento = validaRemarcar("Procedimentos")&""
+                if vLimitarProcedimento <>"" then
+                    if instr(vLimitarProcedimento, "|"&ProcedimentoID&"|")<=0 then
+                        erro = erro&" Grade não aceita o procedimento deste agendamento\n"
+                    end if
+                end if
+            end if
+        end if
     end if
 
     if erro="" then

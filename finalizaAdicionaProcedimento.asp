@@ -69,7 +69,14 @@ if Acao="I" then
 	NomeProcedimento = proc("NomeProcedimento")
 	TipoProcedimentoID = proc("TipoProcedimentoID")
 	if ConvenioID="0" then
-		NomeForma = "Particular"
+        set atenSQL = db.execute("SELECT tp.NomeTabela FROM atendimentos AS aten LEFT JOIN agendamentos AS ag ON aten.AgendamentoID = ag.id LEFT JOIN tabelaparticular AS tp ON tp.id = ag.TabelaParticularID WHERE aten.id="&req("AtendimentoID"))
+		if not atenSQL.eof then
+            if atenSQL("NomeTabela")&"" <>"" then
+                NomeTabela = "<code>"&atenSQL("NomeTabela")&"</code>"
+            end if
+        end if
+        
+        NomeForma = "Particular "&NomeTabela
 		Icone = "money"
 		ValorFinal = ValorBruto*Fator
 	else
@@ -387,12 +394,16 @@ if PermitirInformarProcedimentos then
 	<%
 	if AtendimentoID<>"N" and AtendimentoID<>"" then
 
-	    sqlAtendimento = "select ap.*, p.NomeProcedimento, p.SolIC, p.TipoProcedimentoID, p.Valor, at.PacienteID,agendamentos.PlanoID from atendimentosprocedimentos as ap left join procedimentos as p on p.id=ap.ProcedimentoID left join atendimentos as at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ON AgendamentoID = agendamentos.id where AtendimentoID="&AtendimentoID
+	    sqlAtendimento = "select ap.*, p.NomeProcedimento, p.SolIC, p.TipoProcedimentoID, p.Valor, at.PacienteID,agendamentos.PlanoID, agendamentos.TabelaParticularID, TabelaParticular.NomeTabela from atendimentosprocedimentos as ap left join procedimentos as p on p.id=ap.ProcedimentoID left join atendimentos as at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ON AgendamentoID = agendamentos.id LEFT JOIN TabelaParticular ON TabelaParticular.id = agendamentos.TabelaParticularID where AtendimentoID="&AtendimentoID
 		set procs = db.execute(sqlAtendimento)
 
 		IF getConfig("calculostabelas") THEN
 		    db.execute("DELETE FROM calculos_finalizar_atendimento_log WHERE AtendimentoID="&AtendimentoID)
 		END IF
+
+        if procs("NomeTabela")&"" <> "" then
+            NomeTabela= "<code>"&procs("NomeTabela")&"</code>"
+        end if
 
 		while not procs.eof
 			id = procs("id")
@@ -401,7 +412,7 @@ if PermitirInformarProcedimentos then
 			TipoProcedimentoID = procs("TipoProcedimentoID")
 			if procs("rdValorPlano")="V" then
 				ConvenioID = 0
-				NomeForma = "Particular"
+				NomeForma = "Particular "&NomeTabela
 				Icone = "money"
 			else
 				ConvenioID = procs("ValorPlano")

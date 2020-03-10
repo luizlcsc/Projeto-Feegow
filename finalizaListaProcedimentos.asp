@@ -13,7 +13,22 @@ IF AtendimentoID > "0" AND AtendimentoID<>"N" THEN
     end if
 END IF
 
+set atenSQL = db.execute("SELECT "&_
+                        " ag.LocalID,"&_
+                        " ag.TabelaParticularID,"&_
+                        " ag.ProfissionalID,"&_
+                        " ag.EspecialidadeID,"&_
+                        " tp.NomeTabela"&_
+                        " FROM atendimentos as aten"&_
+                        " LEFT JOIN agendamentos as ag ON aten.AgendamentoID = ag.id"&_
+                        " left join tabelaparticular as tp on tp.id = ag.TabelaParticularID"&_
+                        " WHERE aten.id="&req("AtendimentoID") )
 
+if not atenSQL.eof then
+    if atenSQL("NomeTabela")&"" <> "" then
+        NomeTabela= "<code>"&atenSQL("NomeTabela")&"</code>"
+    end if
+end if
 %>
 <table id="tabela" class="table table-striped table-hover table-condensed">
 <thead>
@@ -43,21 +58,50 @@ END IF
         <label><input name="Forma" type="radio"  value="P"<%
 					if Forma="" or Forma="P" then%> checked<%
 						Forma = "P"
-					end if%>> <span class="lbl"> Particular</span></label>
+					end if%>> <span class="lbl"> Particular <%=NomeTabela%></span></label>
     </td>
   </tr>
 </thead>
 <%
-set proc = db.execute("select NomeProcedimento, Valor, id, SomenteConvenios from procedimentos where sysActive=1 and Ativo='on' and NomeProcedimento<>'' order by NomeProcedimento")
+set proc = db.execute("select "&_
+                        "NomeProcedimento, "&_
+                        "Valor, "&_
+                        "id, "&_
+                        "SomenteConvenios, "&_
+                        "GrupoID "&_
+                        "from procedimentos "&_
+                        "where sysActive=1 and Ativo='on' and NomeProcedimento<>'' "&_
+                        "order by NomeProcedimento")
+
+
+
 while not proc.eof
     Valor=NULL
     SomenteConvenios = proc("SomenteConvenios")
     ExibirLancar = 0
 
 	if Forma="P" AND (instr(SomenteConvenios, "||NOTPARTICULAR||")<1 OR SomenteConvenios&""="") then
+        
+
+        GrupoID = proc("GrupoID")
+        TabelaID = atenSQL("TabelaParticularID")
+        LocalID = atenSQL("LocalID")
+        ProfissionalID = atenSQL("LocalID") 
+        EspecialidadeID = atenSQL("EspecialidadeID") 
+        ProcedimentoID = proc("id")
+
+        UnidadeID=0
+        set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&LocalID)
+        if not LocalSQL.eof then
+            UnidadeID=LocalSQL("UnidadeID")
+        end if
+
 	    ExibirLancar = 1
-		if not isnull(proc("Valor")) and proc("Valor")<>0 then
-			Valor =  formatnumber(proc("Valor"), 2)
+        ValorFinal = proc("Valor")
+        ValorFinal = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
+
+		if not isnull(ValorFinal) and ValorFinal<>0 then
+			Valor =  formatnumber(ValorFinal, 2)
 			vp = Valor
             if  aut("valordoprocedimentoV")=0 then
                 Valor = "<i class=""fa fa-check-circle-o text-success tooltip-info""></i>"
@@ -165,7 +209,7 @@ set proc=nothing
 </table>
 <script>
 $("input[name=Forma]").click(function(){
-	$.get("finalizaListaProcedimentos.asp?PacienteID=<%=PacienteID%>&Forma="+$(this).val(), function(data){ $("#listaProcedimentos").html(data) });
+	$.get("finalizaListaProcedimentos.asp?PacienteID=<%=PacienteID%>&Forma="+$(this).val()+"&AtendimentoID=<%=atendimentoID%>", function(data){ $("#listaProcedimentos").html(data) });
 });
 
 $(function(){

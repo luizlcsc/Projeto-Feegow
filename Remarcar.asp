@@ -144,7 +144,7 @@ if Acao="Remarcar" then
 
         if erro = "" then
             sqlGrade = "SELECT id GradeID, Especialidades, Procedimentos,Convenios, LocalID FROM (SELECT ass.id, Especialidades, Procedimentos, LocalID,Convenios FROM assfixalocalxprofissional ass  WHERE ProfissionalID="&treatvalzero(ProfissionalID)&" AND DiaSemana=dayofweek("&mydatenull(Data)&") AND "&mytime(Hora)&" BETWEEN HoraDe AND HoraA AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&")) UNION ALL SELECT ex.id*-1 id, Especialidades, Procedimentos, LocalID,Convenios FROM assperiodolocalxprofissional ex LEFT JOIN locais loc ON loc.id=ex.LocalID WHERE ProfissionalID="&ProfissionalID&" AND DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&")t"
-            response.write "//"&sqlGrade
+            
             set validaRemarcar = db.execute(sqlGrade)
             if not validaRemarcar.eof then
                 vLimitarConvenios = validaRemarcar("convenios")&""

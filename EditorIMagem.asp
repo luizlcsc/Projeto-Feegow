@@ -26,13 +26,15 @@ min-width:200px;
 <script type="text/javascript" src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
 
 
-<div id="injection_site" style="height: 800px; width: 800px;">
-</div>
+
 
 
 <img id="image1" src="https://clinic7.feegow.com.br/uploads/105/Imagens/4e00ee4c1dab29a0bfc8050d8ecc6079.png" />
 <button type="button" title="Editar Imagem" onclick="return launchEditor('image1', 'https://clinic7.feegow.com.br/uploads/105/Imagens/4e00ee4c1dab29a0bfc8050d8ecc6079.png');">EDITA</button>
 
+<div id="injection_site" >
+
+</div>
 
 <script type="text/javascript">
 

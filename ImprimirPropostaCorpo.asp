@@ -22,7 +22,7 @@ function replaceProposta(PropostaID,valor)
             valor = replace(valor, "[Proposta.ID]",PropostaID)
             valor = replace(valor, "[Proposta.ProfissionalSolicitante]", PropostaSQL("NomeProfissional")&"" )
             valor = replace(valor, "[Proposta.Criador]", nameInTable(PropostaSQL("sysUser"))&"" )
-            valor = replace(valor, "[Proposta.Tabela]",PropostaSQL("NomeTabela"))
+            valor = replace(valor, "[Proposta.Tabela]",PropostaSQL("NomeTabela")&"")
 
         end if
     END IF
@@ -131,22 +131,26 @@ body{
 </div>
                 <%
     			'set itens = db.execute("select ii.*, proc.NomeProcedimento, proc.DiasLaudo from itensproposta ii LEFT JOIN procedimentos proc on proc.id=ii.ItemID where ii.PropostaID="&PropostaID&" ORDER BY Prioridade Desc" )
-    			set itens = db.execute("SELECT T.*,Quantidade*ValorUnitario+(Quantidade*Acrescimo)-(Quantidade*Desconto) as total FROM ("&_
+    			 itensSql = "SELECT T.*,Quantidade*ValorUnitario+(Quantidade*Acrescimo)-(Quantidade*Desconto) as total FROM ("&_
                                         "SELECT "&_
-                                        "         MAX(Prioridade)  AS Prioridade"&_
-                                        "       ,NomeProcedimento  AS NomeProcedimento"&_
-                                        "        ,ValorUnitario    AS ValorUnitario"&_
-                                        "        ,SUM(Quantidade)  AS Quantidade"&_
-                                        "        ,Acrescimo        AS Acrescimo"&_
-                                        "        ,Desconto         AS Desconto"&_
-                                        "        ,TipoDesconto     AS TipoDesconto"&_
-                                        "        ,DiasLaudo        AS DiasLaudo"&_
+                                        "         MAX(ii.Prioridade)    AS Prioridade"&_
+                                        "        ,proc.NomeProcedimento AS NomeProcedimento"&_
+                                        "        ,ii.ValorUnitario      AS ValorUnitario"&_
+                                        "        ,SUM(ii.Quantidade)    AS Quantidade"&_
+                                        "        ,ii.Acrescimo          AS Acrescimo"&_
+                                        "        ,ii.Desconto           AS Desconto"&_
+                                        "        ,ii.TipoDesconto       AS TipoDesconto"&_
+                                        "        ,proc.DiasLaudo        AS DiasLaudo"&_
+                                        "        ,prop.TabelaID         AS Tabela"&_
                                         "      FROM itensproposta ii"&_
-                                        " LEFT JOIN procedimentos proc on proc.id=ii.ItemID "&_
+                                        " LEFT JOIN procedimentos proc  on proc.id=ii.ItemID "&_
+                                        " LEFT JOIN propostas prop       on prop.id=ii.PropostaID "&_
                                         " WHERE ii.PropostaID="&PropostaID&" "&_
                                         " GROUP BY proc.NomeProcedimento, ValorUnitario, proc.NomeProcedimento,Acrescimo,Desconto "&_
                                         " ORDER BY Prioridade DESC, ii.id ASC "&_
-                                        ") AS T")
+                                        ") AS T"
+              'response.write itensSql
+                set itens = db.execute(itensSql)
     			if not itens.eof then
     				%>
     				<h3><%=reg("TituloItens")%></h3>
@@ -162,13 +166,15 @@ body{
                                 <th style="text-align: right" align="right" class="<%=hiddenValor%>"><% IF getConfig("ExibirValorUnitario") = "1" THEN %>Valor Unitário<% END IF %></th>
 
                                 <th style="text-align: right" align="right" class="<%=hiddenValor%>">
-
-
-                                <% IF getConfig("ExibirDesconto") = "1" THEN %>
-                                     Desconto Unitário
-                                <% END IF %>
+                                    <% IF getConfig("ExibirDesconto") = "1" THEN %>
+                                        Desconto Unitário
+                                    <% END IF %>
                                 </th>
-
+                                <th style="text-align: right" align="right" class="<%=hiddenValor%>">
+                                    <% IF getConfig("ExibirDesconto") = "1" THEN %>
+                                        Desconto Total
+                                    <% END IF %>
+                                </th>
                                 <th style="text-align: right" align="right" class="<%=hiddenValor%>">Valor Total</th>
                             </tr>
                         </thead>
@@ -178,6 +184,7 @@ body{
     					TotalTotal = 0
     					TotalDesconto = 0
     					while not itens.EOF
+                            TabelaID = itens("Tabela")&""
     					    Desconto = itens("Desconto")
     					    Acrescimo = itens("Acrescimo")
     					    Prioridade = itens("Prioridade")
@@ -188,6 +195,7 @@ body{
     						ValorUnitario = itens("ValorUnitario")-Desconto+Acrescimo
     						Total = ValorUnitario*itens("Quantidade")
     						Qtd = Qtd+itens("Quantidade")
+                            DescontoQtd = Desconto*itens("Quantidade")
 
     						if Desconto&""<>"" then
     						    TotalDesconto = TotalDesconto + (Desconto * itens("Quantidade"))
@@ -201,8 +209,11 @@ body{
                                 <% END IF%>
                             	<td><%=itens("Quantidade")%></td>
                             	<td><%=itens("NomeProcedimento")%></td>
+
     							<td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirValorUnitario") = "1" THEN %>R$ <%=formatnumber(ValorUnitarioSemDesconto,2)%><% END IF %></td>
-                            	<td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %>R$ <%=formatnumber(Desconto,2)%><% END IF %></td>
+
+                                <td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %>R$ <%=formatnumber(Desconto,2)%><% END IF %></td>
+                                <td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %>R$ <%=formatnumber(DescontoQtd,2)%><% END IF %></td>
                             	<td class="<%=hiddenValor%>" align="right">R$ <%=formatnumber(Total,2)%></td>
                             </tr>
     						<%
@@ -222,6 +233,8 @@ body{
                         <tfoot>
                         	<tr>
                             	<th align="left" colspan="<% IF getConfig("ExibirPrioridadeDePropostas")=0 THEN %>3<%else%>4<%end if%>"><%=Qtd%> ite<%if Qtd>1 then%>ns<%else%>m<%end if%></th>
+                     
+                            	<th style="text-align: right" class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %> <% END IF %></th>
                             	<th style="text-align: right" class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %>R$ <%=formatnumber(TotalDesconto,2)%><% END IF %></th>
                             	<th style="text-align: right" class="<%=hiddenValor%>" align="right">R$ <%=formatnumber(TotalTotal,2)%></th>
                             </tr>

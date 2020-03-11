@@ -11,11 +11,19 @@ min-width:200px;
 	visibility:hidden!important;
 }
 </style>
-<script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css">
+<script src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
+
 
 <!-- Instantiate Feather -->
 <!--#include file="connect.asp"-->
 <script type="text/javascript">
+    var imageEditor = new tui.ImageEditor('#injection_site canvas', {
+        cssMaxWidth: 700, // Component default value: 1000
+        cssMaxHeight: 500  // Component default value: 800
+    });
+    imageEditor.loadImageFromURL('https://clinic7.feegow.com.br/uploads/105/Imagens/4e00ee4c1dab29a0bfc8050d8ecc6079.png', 'My sample image')
+/*
     var featherEditor = new Aviary.Feather({
         apiKey: 'e8fb4c93fc2c4946bd4a5725faa30ebb',
         theme: 'light', // Check out our new 'light' and 'dark' themes!
@@ -42,7 +50,7 @@ min-width:200px;
         onError: function(errorObj) {
             alert(errorObj.message);
         }
-    });
+    });*/
     function launchEditor(id, src) {
         featherEditor.launch({
             image: id,
@@ -52,9 +60,10 @@ min-width:200px;
     }
 
 </script>
+<div id="injection_site" style="height: 800px">
+    <canvas></canvas>
+</div>
 
-
-<div id='injection_site'></div>
 
 
 

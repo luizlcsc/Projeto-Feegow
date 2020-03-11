@@ -152,6 +152,13 @@ body{
               'response.write itensSql
                 set itens = db.execute(itensSql)
     			if not itens.eof then
+
+                    if itens("Tabela")&"" <> "0" then
+                        set tabelaPrivadaSQL = db.execute("select NomeTabela from tabelaparticular where id ="&itens("Tabela"))
+                        if not tabelaPrivadaSQL.eof then
+                            nometabela = "<br>("&tabelaPrivadaSQL("nometabela")&")"
+                        end if
+                    end if
     				%>
     				<h3><%=reg("TituloItens")%></h3>
 
@@ -167,12 +174,12 @@ body{
 
                                 <th style="text-align: right" align="right" class="<%=hiddenValor%>">
                                     <% IF getConfig("ExibirDesconto") = "1" THEN %>
-                                        Desconto Unitário
+                                        Desconto Unitário <%=nometabela%>
                                     <% END IF %>
                                 </th>
                                 <th style="text-align: right" align="right" class="<%=hiddenValor%>">
                                     <% IF getConfig("ExibirDesconto") = "1" THEN %>
-                                        Desconto Total
+                                        Desconto Total <%=nometabela%>
                                     <% END IF %>
                                 </th>
                                 <th style="text-align: right" align="right" class="<%=hiddenValor%>">Valor Total</th>

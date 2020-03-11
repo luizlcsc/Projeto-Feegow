@@ -17,11 +17,13 @@ response.Charset="utf-8"
 
 function replaceProposta(PropostaID,valor)
     IF PropostaID > 0 THEN
-        set PropostaSQL = db.execute("SELECT NomeProfissional, propostas.sysUser FROM propostas LEFT JOIN profissionais ON profissionais.id = propostas.ProfissionalID WHERE propostas.id = "&PropostaID)
+        set PropostaSQL = db.execute("SELECT NomeProfissional, propostas.sysUser, tabelaparticular.NomeTabela FROM propostas LEFT JOIN profissionais ON profissionais.id = propostas.ProfissionalID LEFT JOIN tabelaparticular ON  tabelaparticular.id = propostas.TabelaID WHERE propostas.id = "&PropostaID)
         if not PropostaSQL.eof then
             valor = replace(valor, "[Proposta.ID]",PropostaID)
             valor = replace(valor, "[Proposta.ProfissionalSolicitante]", PropostaSQL("NomeProfissional")&"" )
             valor = replace(valor, "[Proposta.Criador]", nameInTable(PropostaSQL("sysUser"))&"" )
+            valor = replace(valor, "[Proposta.Tabela]",PropostaSQL("NomeTabela"))
+
         end if
     END IF
 

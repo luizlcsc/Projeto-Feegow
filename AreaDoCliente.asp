@@ -568,7 +568,7 @@ end if
                 <tbody>
                     <tr>
                         <td colspan="3">
-                            <h4 class="no-margin blue">Telefônico <small>» seg. a sex. das 7h às 20h</small></h4>
+                            <h4 class="no-margin blue">Telefônico <small>» seg. a sex. das 8h às 19h</small></h4>
                         </td>
                     </tr>
                     <tr>

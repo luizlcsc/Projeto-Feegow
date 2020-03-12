@@ -568,7 +568,7 @@ end if
                                             <div class="col-md-8">
                                                 <button onClick="captureTransaction()" style="display: inline-block;" class="btn btn-system" type="button" id="receberTefButton"><i class="fa fa-credit-card"></i> Receber da maquininha</button>
                                             </div>
-                                            <%if (session("Banco")="clinic5760" or session("Banco")="clinic6118" or session("Banco")="clinic100000" or session("Banco")="clinic5968") and aut("capptaA") then%>
+                                            <%if aut("capptaA") then%>
                                             <div class="col-md-2">
                                                 <button onClick="openPdvConfig()" style="display: inline-block;" class="btn btn-warning" type="button" id="pdv-config"><i class="fa fa-cogs"></i></button>
                                             </div>

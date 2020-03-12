@@ -560,7 +560,7 @@ function imprimirProposta(){
 		alert("Selecione um paciente");
 		return false;
 	}else{
-        propostaSave();
+        propostaSave(false);
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");
         $.get("ImprimirProposta.asp?PropostaID=<%=PropostaID%>", function(data){ $("#modal").html(data) });

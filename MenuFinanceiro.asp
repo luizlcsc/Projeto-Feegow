@@ -271,7 +271,7 @@
 
         if recursoAdicional(7)=4 and session("Banco")<>"clinic6102" then
 
-            if session("Banco")="clinic6118" or session("Banco")="clinic5760" then
+            if session("Banco")="clinic6118" or session("Banco")="clinic5760" or session("Banco")="clinic8676" then
             %>
             <li <% If req("P")="NotaFiscal" Then %> class="active"<% End If %>>
                 <a href="?P=NotaFiscal&Pers=1">

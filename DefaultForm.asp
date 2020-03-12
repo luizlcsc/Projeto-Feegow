@@ -716,7 +716,7 @@ function DefaultForm(tableName, id)
 					set age=nothing
 
 
-					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data<date(now()) and not isnull(a.Hora) order by a.PacienteID, a.Data, a.Hora desc limit 200")
+					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data<date(now()) and not isnull(a.Hora) order by a.PacienteID, a.Data desc, a.Hora desc limit 200")
 					while not age.eof
 						if UltPac<>age("PacienteID") then
 						%>

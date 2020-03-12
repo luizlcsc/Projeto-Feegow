@@ -1145,8 +1145,14 @@ function isJson(item) {
     return false;
 }
 
-
 function getNews(onlyUnread) {
+    
+    <% set contratacao_whatsapp = db.execute("select * from exibicao_conteudo where (conteudo='contratacao_whatsapp' and SysUser = "&Session("User")&")") %>
+   
+    <% IF contratacao_whatsapp.eof THEN %>
+        <% db.execute("insert into exibicao_conteudo (SysUser, conteudo, Data) values ("&Session("User")&", 'contratacao_whatsapp', current_date)") %>
+        openComponentsModal("chat-pro/contratacao/show", {}, "Contratação serviço whatsapp", true, false);
+    <% END IF %>
 
     if(onlyUnread === 1){
         getUrl("/news/get-news", {

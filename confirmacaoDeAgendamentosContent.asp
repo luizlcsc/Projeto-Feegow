@@ -2,22 +2,32 @@
 <!--#include file="Classes/WhatsApp.asp"-->
 <%
 
-function centralWhatsApp(AgendamentoID)
-        sql = "select se.TextoSMS from configeventos ce "&_
-              " left join sys_smsemail se on se.id = ce.ModeloMsgWhatsapp "&_
-              " where ce.id = 1 "
+function centralWhatsApp(AgendamentoID, MensagemPadrao)
 
-		set reg = db.execute(sql)
+        if MensagemPadrao="" then
+            sql = "select se.TextoSMS from configeventos ce "&_
+                " left join sys_smsemail se on se.id = ce.ModeloMsgWhatsapp "&_
+                " where ce.id = 1 "
 
-		Mensagem=""
+            set reg = db.execute(sql)
 
-        if not reg.eof then
-            TextoSMS = reg("TextoSMS")
-            if not isnull(TextoSMS) then
-                Mensagem=TextoSMS
+            Mensagem=""
+
+            if not reg.eof then
+                TextoSMS = reg("TextoSMS")
+                if not isnull(TextoSMS) then
+                    Mensagem=TextoSMS
+                end if
             end if
+
+        else
+            Mensagem = MensagemPadrao
         end if
 
+
+        if Mensagem&"" ="" then
+            Mensagem = "Olá, [NomePaciente] !%0a%0aPosso confirmar [NomeProcedimento] com [NomeProfissional] às [HoraAgendamento]?"
+        end if
         'dados para replace
         set age = db.execute("select a.*, p.TextoEmail, p.TextoSMS, p.MensagemDiferenciada, p.NomeProcedimento from agendamentos a left join procedimentos p on p.id=a.TipoCompromissoID where a.id="&AgendamentoID)
         set pac = db.execute("select NomePaciente, Cel1, Cel2 from pacientes where id="&age("PacienteID"))
@@ -42,10 +52,6 @@ function centralWhatsApp(AgendamentoID)
 
         TratamentoProfissional = ""
 
-
-        if Mensagem&"" ="" then
-            Mensagem = "Olá, [NomePaciente] !%0a%0aPosso confirmar [NomeProcedimento] com [NomeProfissional] às [HoraAgendamento]?"
-        end if
 
         if instr(Mensagem, "[TipoProcedimento]") or instr(Mensagem, "[NomeProcedimento]") then
             set proc = db.execute("select p.NomeProcedimento,t.TipoProcedimento from procedimentos p LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID where p.id="&age("TipoCompromissoID"))
@@ -264,7 +270,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                 end if
 
                 TextoWhatsApp = "Olá, "&PacientePrimeiroNome&"! Posso confirmar "&TipoProcedimentoPronome&" "&TipoProcedimento&" com "&ProfissionalPrimeiroNome&" "&DiaMensagem&" às "&Hora&"?"
-                TextoWhatsApp = centralWhatsApp(ag("id"))
+                TextoWhatsApp = centralWhatsApp(ag("id"),"")
 
                 %>
                 <tr data-id="<%=ag("id")%>">
@@ -297,7 +303,54 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     </td>
                     <td><a href="?P=Agenda-1&Pers=1&AgendamentoID=<%=ag("id")%>" target="_blank"><%= ag("Data") %> - <%=ft(ag("Hora"))%></a></td>
                     <td><a target="_blank" href="?P=Pacientes&Pers=1&I=<%= ag("PacienteID") %>"><%= ag("NomePaciente") %></a></td>
-                    <td><span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline"  onclick="AlertarWhatsapp('<%=CelularFormatadado%>', `<%=TextoWhatsApp%>`, '<%=ag("id")%>')" <% end if%> ><span id="wpp-<%=ag("id")%>"></span> <%= Celular %></span>
+                    <td>
+                        <%
+                        whatsAppFiltro_ProfissionalID = LinhaProfissional
+                        whatsAppFiltro_TipoProcedimentoID = ag("TipoProcedimentoID")
+
+                        listPhonesSQL = " SELECT modelo.Descricao ,modelo.TextoSMS, eventos.Profissionais                                      "&chr(13)&_
+                                        " FROM sys_smsemail modelo                                                                             "&chr(13)&_
+                                        " INNER JOIN eventos_emailsms eventos ON eventos.ModeloID=modelo.id                                    "&chr(13)&_
+                                        " WHERE                                                                                                "&chr(13)&_
+                                        " (eventos.Profissionais LIKE '%|"&whatsAppFiltro_ProfissionalID&"|%' OR eventos.Profissionais='' OR eventos.Profissionais IS NULL) AND"&chr(13)&_
+                                        " (eventos.Procedimentos LIKE '%|"&whatsAppFiltro_TipoProcedimentoID&"|%' OR eventos.Procedimentos LIKE '%|ALL|%'                          "&chr(13)&_
+                                        "    OR   eventos.Procedimentos='' OR eventos.Procedimentos IS NULL)                                   "&chr(13)&_
+                                        " AND eventos.`Status` LIKE '%|1|%'                                                                 "
+                        set listPhones=db.execute(listPhonesSQL)
+                        while not listPhones.eof
+                            msgWhatsApp_titulo = listPhones("Descricao")
+                            msgWhatsApp_conteudo = centralWhatsApp(ag("id"),listPhones("TextoSMS"))
+
+                            msgWhatsApp_numero = Celular
+                            msgWhatsApp_numeroFormatado = CelularFormatadado
+
+                            whatsAppWeb_htmlContent = "<li><a href='https://api.whatsapp.com/send?phone="&msgWhatsApp_numeroFormatado&"&text="&msgWhatsApp_conteudo&"' target='_blank'>"&msgWhatsApp_titulo&"</a></li>"
+
+                            if whatsAppWeb_html ="" then   
+                                whatsAppWeb_html = whatsAppWeb_htmlContent
+                            else
+                                whatsAppWeb_html = whatsAppWeb_html&whatsAppWeb_htmlContent
+                            end if
+                        listPhones.movenext
+                        wend
+                        listPhones.close
+                        set listPhones = nothing
+                        response.write(msgTitle)
+                        'response.Write("<hr>"&listPhonesSQL&"<hr>")
+                        %>
+                        <div class="dropdown">
+                        <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class='fa fa-whatsapp' style="color:#128C7E"></i> <%=msgWhatsApp_numero%>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dLabel">
+                            <%
+                            response.write(whatsAppWeb_html)
+                            whatsAppWeb_html = ""
+                            %>
+                        </ul>
+                        </div>
+
                     <%
                     if not isnull(ag("Resposta")) then
                         'validar se a resposta é do tipo correto 

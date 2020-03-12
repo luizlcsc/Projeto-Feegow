@@ -11,6 +11,11 @@ Checkin = ref("Checkin")
 FormaPagto = request.QueryString("FormaPagto")'Particular ou Convenio
 ProcedimentoTempoProfissional = request.QueryString("ProcedimentoTempoProfissional")
 
+hide = "true"
+if getConfig("NaoRemoverAvisos")=1 then
+    hide = "false"
+end if
+
 if ProcedimentoTempoProfissional = "true" then    
     idProcedimento = request.QueryString("idProcedimento")
     idProfissional = request.QueryString("idProfissional")
@@ -114,6 +119,7 @@ if tipo="PacienteID" then
                 text: '<%=replace(replace(Pendencias, chr(10), "\n"), chr(13), "")%>',
                 sticky: true,
                 type: 'warning',
+                hide: <%=hide%>,
                 delay: 10000
             });
             <%
@@ -397,6 +403,7 @@ if left(tipo, 14)="ProcedimentoID" then
             title: 'ALERTA!',
             text: '<%=replace(replace(AvisoAgenda, chr(10), "\n"), chr(13), "")%>',
             type: 'dark',
+            hide: <%=hide%>,
             delay: 10000
         });
 		<%
@@ -411,6 +418,7 @@ if left(tipo, 14)="ProcedimentoID" then
                 title: 'PREPARO:',
                 text: '<%=replace(replace(TextoPreparo, chr(10), "\n"), chr(13), "")%>',
                 type: 'warning',
+                hide: <%=hide%>,
                 delay: 10000
             });
     		<%

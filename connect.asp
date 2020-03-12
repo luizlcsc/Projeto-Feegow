@@ -4253,7 +4253,7 @@ function subitemRepasse(FM, Funcao, tipoValor, Valor, ContaPadrao, ProdutoID, Va
 
 
 
-                TabelasPermitidas = "5, 4, 3, 2, 6, 1"
+                TabelasPermitidas = "5, 4, 3, 2, 6, 1, 8"
                 if session("Banco")="clinic6118" then
                     TabelasPermitidas = "5"
                 end if

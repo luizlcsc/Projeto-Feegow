@@ -221,8 +221,8 @@ function DefaultForm(tableName, id)
 							if lcase(tableName)="funcionarios" or lcase(tableName)="profissionais" then
 								set userX = db.execute("select * from sys_users where idInTable="&req("X")&" and `Table`like '"&tableName&"'")
 								if not userX.eof then
-									db_execute("delete from sys_Users where id="&userX("id"))
-									db_execute("delete from cliniccentral.licencasusuarios where id="&userX("id")&" and LicencaID="&replace(session("Banco"), "clinic", ""))
+									'db_execute("delete from sys_Users where id="&userX("id"))
+									'db_execute("delete from cliniccentral.licencasusuarios where id="&userX("id")&" and LicencaID="&replace(session("Banco"), "clinic", ""))
 								end if
 							end if
 						end if

@@ -26,6 +26,14 @@ ProfissionalID=req("ProfissionalID")
 DiaSemana=weekday(Data)
 mesCorrente=month(Data)
 
+if getConfig("AbrirAutomaticamenteObsProfissional")=1 then
+    %>
+    <script>
+        oa(<%=treatvalzero(ProfissionalID)%>);
+    </script>
+    <%
+end if
+
 if lcase(session("Table"))="funcionarios" then
 	session("UltimaAgenda") = ProfissionalID
 end if

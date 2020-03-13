@@ -1,7 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/WhatsApp.asp"-->
 <%
-
 function centralWhatsApp(AgendamentoID, MensagemPadrao)
 
         if MensagemPadrao="" then
@@ -304,7 +303,10 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     <td><a href="?P=Agenda-1&Pers=1&AgendamentoID=<%=ag("id")%>" target="_blank"><%= ag("Data") %> - <%=ft(ag("Hora"))%></a></td>
                     <td><a target="_blank" href="?P=Pacientes&Pers=1&I=<%= ag("PacienteID") %>"><%= ag("NomePaciente") %></a></td>
                     <td>
-                        <%
+                    <%
+                    if getConfig("PermitirSelecionarModeloWhatsApp") = 0 then
+                        response.write("<a href='https://api.whatsapp.com/send?phone="&CelularFormatadado&"&text="&TextoWhatsApp&"' target='_blank'><i class='fa fa-whatsapp' style='color:#128C7E'></i> "&Celular&"</a>")
+                    else
                         whatsAppFiltro_ProfissionalID = LinhaProfissional
                         whatsAppFiltro_TipoProcedimentoID = ag("TipoProcedimentoID")
 
@@ -350,8 +352,8 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                             %>
                         </ul>
                         </div>
-
-                    <%
+                    <%    
+                    end if
                     if not isnull(ag("Resposta")) then
                         'validar se a resposta é do tipo correto 
                         sqlmsg = "SELECT m.ConfirmarPorSMS FROM eventos_emailsms e INNER JOIN sys_smsemail m ON m.id=e.ModeloID WHERE e.id=" & ag("RespostaID")

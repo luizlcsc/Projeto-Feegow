@@ -206,6 +206,7 @@ if not inv.eof then
 	<div class="modal-body">
 		<%
 		ContaID = inv("AssociationAccountID")&"_"&inv("AccountID")
+        Solicitante = inv("ProfissionalSolicitante")
 
 		if inv("AssociationAccountID")=3 then
 		    PacienteID=inv("AccountID")
@@ -563,7 +564,6 @@ if not inv.eof then
                         end if
                         'caso o profissional executante não for encontrado utilizar profissional solicitante 
                         if instr(Recibo, "[ProfissionalExecutante.Nome]")>0 then
-                            Solicitante = inv("ProfissionalSolicitante")
 
                             if Solicitante&"" <> "" and Solicitante&""<>"0" then
                                 Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", Accountname("",Solicitante))
@@ -670,6 +670,7 @@ if not inv.eof then
                         Recibo = replace(Recibo, "[Empresa.Tel1]", UnidadeSQL("Tel1"))
                         Recibo = replace(Recibo, "[Empresa.Email1]", UnidadeSQL("Email1"))
                         Recibo = replace(Recibo, "[Empresa.Cep]", UnidadeSQL("Cep"))
+
                         Recibo = replace(Recibo, "[Empresa.Estado]", UnidadeSQL("Estado"))
 
                         Recibo = replace(Recibo, "[NFe.Serie]", NFeSQL("serie"))
@@ -773,6 +774,14 @@ if not inv.eof then
 			Recibo = replace(Recibo, "[Receita.TotalPago]", fn(ValorRecibo) )
 			Recibo = replace(Recibo, "[Receita.TotalPendente]", fn(TotalPendente) )
             Recibo = replace(Recibo, "[Receita.ValorPagoExtenso]", extenso(ValorPagoExtenso))
+
+            NomeSolicitante = ""
+
+            if instr(inv("ProfissionalSolicitante"),"_")>0 then
+                NomeSolicitante = Accountname("",inv("ProfissionalSolicitante"))
+            end if
+            Recibo = replace(Recibo, "[ProfissionalSolicitante.Nome]", NomeSolicitante)
+
 		end if
 
 		UnidadeInvoice = session("UnidadeID")

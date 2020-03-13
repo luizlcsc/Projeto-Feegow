@@ -170,7 +170,7 @@ end if
   </div>
     <br />
   <div class="row mo">
-    <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 12, Convenios, "select 'P' id, ' PARTICULAR' NomeConvenio UNION ALL select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", "")%>
+    <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 12, Convenios, "select 'P' id, ' PARTICULAR' NomeConvenio UNION ALL select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio", "NomeConvenio", "")%>
   </div>
   <div class="row mo">
       <%

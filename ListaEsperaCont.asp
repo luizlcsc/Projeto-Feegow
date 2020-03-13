@@ -472,7 +472,7 @@ else
                             <td><%= esp("Obs") %></td>
                             <td width="200">
                                 <%
-                                set vcaag = db.execute("select a.id, a.Data, a.Hora, a.StaID, p.NomeProfissional, sta.StaConsulta from agendamentos a inner join staconsulta sta ON sta.id=a.StaID left join profissionais p on p.id=a.ProfissionalID where a.Data>=curdate() and a.PacienteID="& veseha("PacienteID") &" and a.TipoCompromissoID="& esp("ProcedimentoID") &" and a.id not in ("&idsExibidos&") order by data, hora limit 1")
+                                set vcaag = db.execute("select a.id, a.Data, a.Hora, a.StaID, p.NomeProfissional, sta.StaConsulta from agendamentos a inner join staconsulta sta ON sta.id=a.StaID left join profissionais p on p.id=a.ProfissionalID where a.Data>=curdate() and a.PacienteID="& veseha("PacienteID") &" and a.TipoCompromissoID="& treatvalzero(esp("ProcedimentoID")) &" and a.id not in ("&idsExibidos&") order by data, hora limit 1")
                                 classeBtnEsp = ""
                                 if vcaag.eof then
                                     %>

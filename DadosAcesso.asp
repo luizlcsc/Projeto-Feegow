@@ -111,7 +111,7 @@ end if
 
 
             <div class="row">
-                <%= quickfield("simpleSelect", "Home", "Página inicial do usuário", 4, Home, "select '' id, 'Tela inicial' Descricao UNION ALL select 'Agenda-1', 'Agenda Diária' UNION ALL select 'AgendaMultipla', 'Agenda Múltipla' UNION ALL select 'ListaEspera', 'Sala de Espera' UNION ALL select 'Financeiro', 'Financeiro'", "Descricao", "semVazio") %>
+                <%= quickfield("simpleSelect", "Home", "Página inicial do usuário", 4, Home, "select '' id, 'Tela inicial' Descricao UNION ALL select 'Agenda-1', 'Agenda Diária' UNION ALL select 'Checkin', 'Check-in' UNION ALL select 'AgendaMultipla', 'Agenda Múltipla' UNION ALL select 'ListaEspera', 'Sala de Espera' UNION ALL select 'Financeiro', 'Financeiro'", "Descricao", "semVazio") %>
                 <% if session("Banco")="clinic5459" then call quickfield("text", "Ramal", "Ramal", 2, Ramal, "", "", "") end if %>
             </div>
             <% if session("Admin") = 1 then %>

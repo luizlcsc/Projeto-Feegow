@@ -764,7 +764,6 @@ end function
                   </tr>
                 </thead>
                 <tbody>
-                    ...
                 </tbody>
             </table>
       </div>

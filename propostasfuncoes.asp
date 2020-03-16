@@ -86,11 +86,11 @@ function propostaSave(reload){
 		$("#frmProposta").serialize(), 
 		function(data){ 
 			eval(data); 
-			if (reload){
+			/*if (reload){
 				location.reload();			
 			}else{
 				$("#ListaProposta").click();
-			}
+			}*/
 		});
 	}
 }

@@ -45,7 +45,7 @@
     function disable(val){
 
         $(".disable, #searchAccountID, input[id^='searchItemID']").prop("disabled", val);
-        $(".nao-mostrar-caso-pago").css("display", val ? "none" : "inline");
+        $(".nao-mostrar-caso-pago").css("display", val ? "none" : "");
         <%
         if aut("tabelacontapagaA")=0 then
             %>
@@ -298,7 +298,32 @@ posModalPagar = "fixed"
                 <%=quickField("text", "guiaManual", "Guia Manual", 1, guiaManual, "text-right", "", readonlyRecibo&" ")%>
         </div>
         <% end if %>
-        
+        <%
+        if session("Banco")="clinic5459" then
+            if CD="C" AND Pagador&""<>"" then
+                Cliente = split(Pagador, "_")
+                if Cliente(0)=3 then
+                    set ClienteStatus = db.execute("SELECT Status FROM cliniccentral.licencas WHERE Cliente="&Cliente(1)&" ORDER BY id LIMIT 1")
+                    if not ClienteStatus.eof then
+                        Status = ClienteStatus("Status")
+                        if Status="C" then
+                            %><span class="label bg-success">Efetivado</span><%
+                        end if
+                        if Status="T" then
+                            %><span class="label bg-warning">Testando</span><%
+                        end if
+                        if Status="B" then
+                            %><span class="label bg-danger">Bloqueado</span><%
+                        end if
+                        if Status="I" then
+                            %><span class="label bg-primary">Implementação</span><%
+                        end if
+                    end if
+                end if
+            end if
+        end if
+
+        %>
         <% if CD = "D" OR getConfig("RateioContasAReceber") = "1"  then
             if aut("|rateiocontaspagarV|") = 1 or aut("|rateiocontasreceberV|") = 1 then
         %>
@@ -424,7 +449,7 @@ end if
                             end if
                             if tipoPessoa="PJ" then
                                 %>
-                                <button onclick="location.href='./?P=invoice&I=<%= InvoiceID %>&Pers=1&T=<%= CD %>&Retencoes=1&RetencaoPFPJ=<%= tipoPessoa %>&RetencaoSimples=<%= Nat %>'" type="button" class="btn btn-sm btn-alert">APLICAR RETENÇÕES - <%= Nat &" - "& tipoPessoa %></button>
+                                <button onclick="location.href='./?P=invoice&I=<%= InvoiceID %>&Pers=1&T=<%= CD %>&Retencoes=1&RetencaoPFPJ=<%= tipoPessoa %>&RetencaoSimples=<%= Nat %>'" type="button" class="btn btn-sm btn-alert"><i class="fa fa-check-circle"></i> APLICAR RETENÇÕES - <%= Nat &" - "& tipoPessoa %></button>
                                 <%
                             end if
                         end if

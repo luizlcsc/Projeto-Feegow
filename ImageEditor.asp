@@ -105,7 +105,8 @@
             menuBarPosition: 'bottom'
         },
         cssMaxWidth: 800, // Component default value: 1000
-        cssMaxHeight: 800  // Component default value: 800
+        cssMaxHeight: 800,  // Component default value: 800
+        usageStatistics:false
     });
 
 </script>

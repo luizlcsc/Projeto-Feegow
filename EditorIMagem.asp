@@ -14,8 +14,8 @@ min-width:200px;
 <!-- Instantiate Feather -->
 <!--#include file="connect.asp"-->
 
-<img id="image1" width="100px" src="https://www.resumoescolar.com.br/wp-content/imagens/resumo-sobre-o-sol.jpg" />
-<button type="button" title="Editar Imagem" onclick=" launchEditor('image1', 'https://www.resumoescolar.com.br/wp-content/imagens/resumo-sobre-o-sol.jpg')">EDITA</button>
+<img id="image1" width="100px" src="assets\img\stock\1.jpg" />
+<button type="button" title="Editar Imagem" onclick=" launchEditor('image1', 'assets\img\stock\1.jpg')">EDITA</button>
 
 
 <script >

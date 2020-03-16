@@ -42,6 +42,7 @@ if req("ProfissionalID")<>"" and req("ProfissionalID")<>"ALL"  then
 else
     ProfissionalID=session("idInTable")
 end if
+
 if req("EspecialidadeID")<>"" and req("EspecialidadeID")<>"0"  then
     EspecialidadeID = req("EspecialidadeID")
     sqlEspecialidade = " AND a.EspecialidadeID="&EspecialidadeID
@@ -103,7 +104,7 @@ if request.QueryString("Chamar")<>"" then
 
     set age = db.execute("select ProfissionalID from agendamentos where id="&req("Chamar"))
     if not age.eof then
-        getEspera(age("ProfissionalID"))
+        getEspera(age("ProfissionalID")) 
     end if
 end if
 

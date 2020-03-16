@@ -40,7 +40,6 @@
                   " AND prof.sysActive=1 and age.Data=curdate() " &_
                   " " &  sqlOR &_
                   " GROUP BY prof.id order by und.NomeFantasia ASC, prof.NomeProfissional "
-
             set Prof = db.execute(sql)
 
 
@@ -51,9 +50,12 @@
                 UnidadeAtual = Prof("NomeFantasia")
                 if lcase(session("table"))="profissionais" and session("idInTable")=Prof("id") then
                     selected = " selected=""selected"""
+                    selectedPropf = Prof("id")
+
                 else
                     if session("UltimaAgenda")=cstr(Prof("id")) then
                         selected = " selected=""selected"""
+                        selectedPropf = Prof("id")
                     else
                         selected = ""
                     end if
@@ -80,6 +82,11 @@
                 %>
                 <option <%=selected%> style="border-left: <%=Prof("Cor")%> 10px solid; background-color: #fff;" value="<%=Prof("id")%>"><%=ucase(NomeProfissional)%></option>
                 <%
+                if ListProID&""<>"" then
+                    sep=","
+                end if
+                ListProID = ListProID&sep&Prof("id")
+                
                 UltimaUnidade=UnidadeAtual
             Prof.movenext
             wend
@@ -90,6 +97,9 @@
                 %>
             </select>
 
+            </div>
+            <div id="divEspecialidade" >
+                <!--#include file="ListaEsperaEspecialidade.asp"-->
             </div>
         </div>
     </div>
@@ -152,19 +162,38 @@ $("#rbtns").html(selectsTop)
               }, 17000);
 
 $("#ProfissionalID").change(function() {
-    atualizaLista();
+    loadEspecialidade();
 });
+
 
 function atualizaLista(){
       var ProfissionalID = $("#ProfissionalID").val();
       if(!ProfissionalID){
           ProfissionalID="";
       }
+      var EspecialidadeID = $("#EspecialidadeID").val();
+      if(!EspecialidadeID){
+          EspecialidadeID="";
+      }
 
-      $.get("ListaEsperaCont.asp?Ordem=<%=req("Ordem")%>&StatusExibir=<%=req("StatusExibir")%>&ProfissionalID="+ProfissionalID, function(data){
+      $.get("ListaEsperaCont.asp?Ordem=<%=req("Ordem")%>&StatusExibir=<%=req("StatusExibir")%>&ProfissionalID="+ProfissionalID+"&EspecialidadeID="+EspecialidadeID, function(data){
           $("#listaespera").html(data);
       });
 }
+
+function loadEspecialidade(){
+      var ProfissionalID = $("#ProfissionalID").val();
+      if(!ProfissionalID){
+          ProfissionalID="";
+      }
+
+      $.get("ListaEsperaEspecialidade.asp?ListaProfissionais=<%=ListProID%>&ProfissionalID="+ProfissionalID, function(data){
+          $("#divEspecialidade").html(data);
+          atualizaLista();
+      });
+}
+
+
 //recurso para clinica do SHopping
     $("#listaespera").on("click",".btn-enviar-sms-espera", function() {
         var $btn = $(this),

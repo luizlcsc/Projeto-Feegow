@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"--><!--#include file="validar.asp"--><!--#include file="md5.asp"--><%
 
 response.ContentType="text/XML"
-
+'test
 RLoteID = replace(request.QueryString("I"),".xml", "")
 set lote = db.execute("select * from tisslotes where id="&RLoteID)
 set guias = db.execute("select g.*, p.NomePaciente, c.TISS as ConselhoProfissional, e.codigo as CodigoUFConselho, pro.NomeProfissional, (CASE WHEN p.ConvenioID1=g.ConvenioID THEN p.Titular1 WHEN p.ConvenioID2=g.ConvenioID THEn p.Titular2 WHEN p.ConvenioID3=g.ConvenioID THEN p.Titular3 END) Titular from tissguiaconsulta as g left join pacientes as p on p.id=g.PacienteID left join conselhosprofissionais as c on c.id=g.Conselho left join estados as e on e.sigla like g.UFConselho left join profissionais as pro on pro.id=g.ProfissionalID where g.LoteID="&lote("id")&" order by NGuiaPrestador")

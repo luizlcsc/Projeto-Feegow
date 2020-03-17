@@ -5,6 +5,7 @@ PacienteID= req("PacienteID")
 ProfissionalID= req("ProfissionalID")
 UnidadeID= req("UnidadeID")
 ImpressoID= req("I")
+Solicitante= req("Solicitante")
 
 
 if ImpressoID<>"" then
@@ -24,6 +25,10 @@ if not ImpressosModeloSQL.eof then
         TextoImpresso = replace(TextoImpresso, "[Profissional.Nome]", NomeProfissional)
     else
         TextoImpresso = replace(TextoImpresso, "[Profissional.Nome]", "")
+    end if
+
+    if Solicitante&"" <> "" and Solicitante&""<>"0" then
+        TextoImpresso = replace(TextoImpresso, "[ProfissionalSolicitante.Nome]", Accountname("",Solicitante))
     end if
 
 

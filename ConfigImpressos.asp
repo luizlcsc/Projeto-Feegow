@@ -61,6 +61,10 @@ if not reg.EOF then
     ReciboHonorarioMedico = reg("ReciboHonorarioMedico")
     RPSModelo = reg("RPSModelo")
 end if
+
+    'PARAMETROS MODAL TAGS - include tags.asp
+    modalModulo = req("P")
+    RecursoTag = ""
 %>
 <form method="post" action="" id="formImpressos">
     <div class="tabbable panel">
@@ -86,6 +90,10 @@ end if
                             <button id="btn-Atestados" onClick="saveImpressos('Atestados');" type="button" class="btn btn-success">Salvar</button>
                         </div>
                     </div>
+                    <%
+
+                    RecursoTag = "atestados"
+                    %>
                 <div class="row">
 					<% call quickField("editor", "Atestados", "Layout dos Atestados", 9, Atestados, "400", "", "") %>
 					<!--#include file="Tags.asp"-->
@@ -261,25 +269,8 @@ end if
                 </div>
                 <div class="row">
 					<% call quickField("editor", "CabecalhoProposta", "Layout padrão do topo da proposta", 9, CabecalhoProposta, "250", "", "") %>
-					<!--#include file="Tags.asp"-->
 					<div class="col-md-3">
-                        <table class="table table-striped">
-                            <tbody>
-                                <tr>
-                                    <td>[Previsao.Entrega]</td>
-                                </tr>
-                                <tr class="success"><td>Proposta</td></tr>
-                                <tr>
-                                    <td>[Proposta.ProfissionalSolicitante]</td>
-                                </tr>
-                                 <tr>
-                                    <td>[Proposta.ID]</td>
-                                </tr>
-                                <tr>
-                                    <td>[Proposta.Criador]</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <!--#include file="Tags.asp"-->
                     </div>
                 </div>
                 <div class="row">
@@ -289,22 +280,7 @@ end if
                 <div class="row">
 					<% call quickField("editor", "ItensProposta", "Layout dos itens contidos nesta proposta", 9, ItensProposta, "250", "", "") %><br />
                     <div class="col-md-3">
-                        <table class="table">
-                            <thead>
-                                <tr class="success">
-                                    <th>ITENS DA PROPOSTA</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>[Proposta.Item.Quantidade]</td></tr>
-                                <tr><td>[Proposta.Item.Nome]</td></tr>
-                                <tr><td>[Proposta.Item.ValorUnitario]</td></tr>
-                                <tr><td>[Proposta.Item.Desconto]</td></tr>
-                                <tr><td>[Proposta.Item.Acrescimo]</td></tr>
-                                <tr><td>[Proposta.Item.Valor]</td></tr>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <!--#include file="Tags.asp"-->
                     </div>
                 </div>
             </div>
@@ -335,49 +311,7 @@ end if
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <table class="table table-striped">
-                        <tbody>
-                            <tr class="success">
-                                <th>Dados do Protocolo</th>
-                            </tr>
-                            <tr>
-                                <td>[Protocolo.ID]</td>
-                            </tr>
-                            <tr>
-                                <td>[Paciente.Nome]</td>
-                            </tr>
-                            <tr>
-                                <td>[Paciente.Prontuario]</td>
-                            </tr>
-                            <tr>
-                                <td>[Paciente.Nascimento]</td>
-                            </tr>
-                            <tr>
-                                <td>[Procedimento.Nome]</td>
-                            </tr>
-                            <tr>
-                                <td>[Procedimento.DiasLaudo]</td>
-                            </tr>
-                            <tr>
-                                <td>[Exame.Data]</td>
-                            </tr>
-                            <tr class="success">
-                                <th>Dados do Sistema</th>
-                            </tr>
-                            <tr>
-                                <td>[Usuario.Nome]</td>
-                            </tr>
-                            <tr>
-                                <td>[Sistema.Hora]</td>
-                            </tr>
-                            <tr>
-                                <td>[Unidade.Nome]</td>
-                            </tr>
-                            <tr>
-                                <td>[Unidade.Telefone]</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!--#include file="Tags.asp"-->
                 </div>
             </div>
 
@@ -394,38 +328,7 @@ end if
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <table class="table table-striped">
-                        <tbody>
-                            <tr class="success">
-                                <th>Dados da Etiqueta</th>
-                            </tr>
-                            <tr>
-                                <td>[Paciente.Prontuario]</td>
-                            </tr>
-                            <tr>
-                                <td>[Paciente.Nome]</td>
-                            </tr>
-                            <tr>
-                                <td>[Paciente.Nascimento]</td>
-                            </tr>
-                            <tr>
-                                <td>[Procedimento.Nome]</td>
-                            </tr>
-                            <tr>
-                                <td>[Agendamento.Protocolo]</td>
-                            </tr>
-                            <tr>
-                                <td>[Agendamento.Data]</td>
-                            </tr>
-                            <tr>
-                                <td>[Profissional.Nome]</td>
-                            </tr>
-                            <tr>
-                                <td>[Data.DDMMAAAA]</td>
-                            </tr>
-
-                        </tbody>
-                    </table>
+                    <!--#include file="Tags.asp"-->
                 </div>
             </div>
 
@@ -443,43 +346,7 @@ end if
                 </div>
             </div>
             <div class="col-md-3">
-                <table class="table table-striped">
-                    <tbody>
-                        <tr class="success">
-                            <th>Dados do Recibo</th>
-                        </tr>
-                        <tr>
-                            <td>[Paciente.Nome]</td>
-                        </tr>
-                        <tr>
-                            <td>[Paciente.Nascimento]</td>
-                        </tr>
-                        <tr>
-                            <td>[Procedimento.Nome]</td>
-                        </tr>
-                        <tr>
-                            <td>[Agendamento.Protocolo]</td>
-                        </tr>
-                        <tr>
-                            <td>[Agendamento.Data]</td>
-                        </tr>
-                        <tr>
-                            <td>[Responsavel.Nome]</td>
-                        </tr>
-                        <tr>
-                            <td>[Responsavel.CPF]</td>
-                        </tr>
-                        <tr>
-                            <td>[Data.DDMMAAAA]</td>
-                        </tr>
-                        <tr>
-                            <td>[Devolucoes.Valor]</td>
-                        </tr>
-                        <tr>
-                            <td>[Devolucoes.data]</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!--#include file="Tags.asp"-->
             </div>
         </div>
 
@@ -499,43 +366,7 @@ end if
                 </div>
             </div>
             <div class="col-md-3">
-                <table class="table table-striped">
-                    <tbody>
-                        <tr class="success">
-                            <th>Dados do Recibo</th>
-                        </tr>
-                        <tr>
-                            <td>[Paciente.Nome]</td>
-                        </tr>
-                        <tr>
-                            <td>[Paciente.Nascimento]</td>
-                        </tr>
-                        <tr>
-                            <td>[Procedimento.Nome]</td>
-                        </tr>
-                        <tr>
-                            <td>[Agendamento.Protocolo]</td>
-                        </tr>
-                        <tr>
-                            <td>[Agendamento.Data]</td>
-                        </tr>
-                        <tr>
-                            <td>[Responsavel.Nome]</td>
-                        </tr>
-                        <tr>
-                            <td>[Responsavel.CPF]</td>
-                        </tr>
-                        <tr>
-                            <td>[Data.DDMMAAAA]</td>
-                        </tr>
-                        <tr>
-                            <td>[Devolucoes.Valor]</td>
-                        </tr>
-                        <tr>
-                            <td>[Devolucoes.data]</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!--#include file="Tags.asp"-->
             </div>
         </div>
 
@@ -554,43 +385,7 @@ end if
                 </div>
             </div>
             <div class="col-md-3">
-                <table class="table table-striped">
-                    <tbody>
-                        <tr class="success">
-                            <th>Dados do Recibo</th>
-                        </tr>
-                        <tr>
-                            <td>[Paciente.Nome]</td>
-                        </tr>
-                        <tr>
-                            <td>[Paciente.Nascimento]</td>
-                        </tr>
-                        <tr>
-                            <td>[Procedimento.Nome]</td>
-                        </tr>
-                        <tr>
-                            <td>[Agendamento.Protocolo]</td>
-                        </tr>
-                        <tr>
-                            <td>[Agendamento.Data]</td>
-                        </tr>
-                        <tr>
-                            <td>[Responsavel.Nome]</td>
-                        </tr>
-                        <tr>
-                            <td>[Responsavel.CPF]</td>
-                        </tr>
-                        <tr>
-                            <td>[Data.DDMMAAAA]</td>
-                        </tr>
-                        <tr>
-                            <td>[Devolucoes.Valor]</td>
-                        </tr>
-                        <tr>
-                            <td>[Devolucoes.data]</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!--#include file="Tags.asp"-->
             </div>
         </div>
 

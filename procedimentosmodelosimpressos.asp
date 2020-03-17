@@ -29,11 +29,7 @@ TelaCheckin = reg("TelaCheckin")
        <div class="row">
            <br/>
            <%= quickfield("editor", "Cabecalho", "Conteúdo", 10, reg("Cabecalho"), "600", "", "") %>
-           <div class="row">
-               <div class="col-md-6 pull-right">
-                   <%=macro("Cabecalho")%>
-               </div>
-           </div>
+           <!--#include file="Tags.asp"-->
            <%'= quickfield("editor", "Rodape", "Rodapé", 12, reg("Rodape"), "200", "", "") %>
            <div class="row">
                <div class="col-md-6 pull-right">

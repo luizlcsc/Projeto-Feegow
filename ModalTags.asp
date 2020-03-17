@@ -55,50 +55,33 @@ while not sqlTagsCategorias.eof
   sqlTags.close
   set sqlTags = nothing
 
+  tabsCategoriasHTML =  ""&_
+  "<li class='active'>"&_
+    "<a href='#abaTag"&tags_categorias_id&"' data-toggle='tab' aria-expanded='true'> <i class='"&tags_categorias_icone&" text-purple pr5'></i> "&tags_categorias_categoria&" </a>"&_
+  "</li>"
 
-  if conta=1 then
-    tabsCategoriasHTML =  ""&_
-    "<li class='active'>"&_
-      "<a href='#abaTag"&tags_categorias_id&"' data-toggle='tab' aria-expanded='true'> <i class='"&tags_categorias_icone&" text-purple pr5'></i> "&tags_categorias_categoria&" </a>"&_
-    "</li>"
+  tabsContentHTML = ""&_
+  "<div id='abaTag"&tags_categorias_id&"' class='tab-pane active'><p>"&_
+  "<table class='table mbn'>"&_
+    "<thead>"&_
+      "<tr class='primary'>"&_
+        "<th>TAG</th>"&_
+        "<th>Resultado</th>"&_
+        "<th>Descrição</th>"&_
+      "</tr>"&_
+    "</thead>"&_
+    "<tbody>"&_
+      tagsGrid&_
+    "</tbody>"&_
+  "</table>"&_
+  "</p></div>"
+  
+  if conta>1 then
+    tabsCategoriasHTML = replace(tabsCategoriasHTML,"class='active'","class=''")
+    tabsCategoriasHTML = replace(tabsCategoriasHTML,"aria-expanded='true''","aria-expanded='false'")
+   
+    tabsContentHTML = replace(tabsContentHTML,"class='tab-pane active''","class='tab-pane'")
 
-    tabsContentHTML = ""&_
-    "<div id='abaTag"&tags_categorias_id&"' class='tab-pane active'><p>"&_
-    "<table class='table mbn'>"&_
-      "<thead>"&_
-        "<tr class='primary'>"&_
-          "<th>TAG</th>"&_
-          "<th>Resultado</th>"&_
-          "<th>Descrição</th>"&_
-        "</tr>"&_
-      "</thead>"&_
-      "<tbody>"&_
-        tagsGrid&_
-      "</tbody>"&_
-    "</table>"&_
-    "</p></div>"
-
-  else
-    tabsCategoriasHTML = ""&_
-    "<li class=''>"&_
-      "<a href='#abaTag"&tags_categorias_id&"' data-toggle='tab' aria-expanded='false'> <i class='"&tags_categorias_icone&" text-purple pr5'></i> "&tags_categorias_categoria&" </a>"&_
-    "</li>"
-
-    tabsContentHTML = ""&_
-    "<div id='abaTag"&tags_categorias_id&"' class='tab-pane'><p>"&_
-    "<table class='table mbn'>"&_
-      "<thead>"&_
-        "<tr class='primary'>"&_
-          "<th>TAG</th>"&_
-          "<th>Resultado</th>"&_
-          "<th>Descrição</th>"&_
-        "</tr>"&_
-      "</thead>"&_
-      "<tbody>"&_
-        tagsGrid&_
-      "</tbody>"&_
-    "</table>"&_
-    "</p></div>"
   end if
   if tabCreate = 1 then
     tabsCategoriasHTML = tabsCategoriasHTML

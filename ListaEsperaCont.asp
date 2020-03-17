@@ -42,6 +42,11 @@ if req("ProfissionalID")<>"" and req("ProfissionalID")<>"ALL"  then
 else
     ProfissionalID=session("idInTable")
 end if
+if req("EspecialidadeID")<>"" and req("EspecialidadeID")<>"0"  then
+    EspecialidadeID = req("EspecialidadeID")
+    sqlEspecialidade = " AND a.EspecialidadeID="&EspecialidadeID
+end if
+
 
 splOrdens=split(Ordens, ", ")
 	if req("Ordem")<>"" then
@@ -111,7 +116,7 @@ if request.QueryString("Atender")<>"" then
 end if
 
 if lcase(session("Table"))<>"profissionais" or req("ProfissionalID")<>"" then
-	sql = "select a.*, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela, ac.NomeCanal, a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join profissionais p on p.id=a.ProfissionalID inner join pacientes pac ON pac.id=a.PacienteID left join locais l on l.id=a.LocalID where Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 33, 102,105,106, 101, 5) and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "&sqlProfissional&" order by "&Ordem
+	sql = "select a.*, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela, ac.NomeCanal, a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join profissionais p on p.id=a.ProfissionalID inner join pacientes pac ON pac.id=a.PacienteID left join locais l on l.id=a.LocalID where Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 33, 102,105,106, 101, 5) and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "&sqlProfissional&sqlEspecialidade&" order by "&Ordem
     sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID                                                                                         where a.Data = '"&mydate(DataHoje)&"' and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID)) "&sqlProfissional&"  group by(l.UnidadeID) order by total desc limit 1 "
 else
     'triagem
@@ -472,7 +477,7 @@ else
                             <td><%= esp("Obs") %></td>
                             <td width="200">
                                 <%
-                                set vcaag = db.execute("select a.id, a.Data, a.Hora, a.StaID, p.NomeProfissional, sta.StaConsulta from agendamentos a inner join staconsulta sta ON sta.id=a.StaID left join profissionais p on p.id=a.ProfissionalID where a.Data>=curdate() and a.PacienteID="& veseha("PacienteID") &" and a.TipoCompromissoID="& esp("ProcedimentoID") &" and a.id not in ("&idsExibidos&") order by data, hora limit 1")
+                                set vcaag = db.execute("select a.id, a.Data, a.Hora, a.StaID, p.NomeProfissional, sta.StaConsulta from agendamentos a inner join staconsulta sta ON sta.id=a.StaID left join profissionais p on p.id=a.ProfissionalID where a.Data>=curdate() and a.PacienteID="& veseha("PacienteID") &" and a.TipoCompromissoID="& treatvalzero(esp("ProcedimentoID")) &" and a.id not in ("&idsExibidos&") order by data, hora limit 1")
                                 classeBtnEsp = ""
                                 if vcaag.eof then
                                     %>

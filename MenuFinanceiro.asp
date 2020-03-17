@@ -182,7 +182,7 @@
 	<%
 	end if
 
-	if aut("configrateio")=1 then
+	if aut("configrateio")=1 and false then
     %>
 	<li <% If req("P")="GerarRateio" Then %> class="active"<% End If %>>
         <a href="?P=GerarRateio&Pers=1">

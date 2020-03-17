@@ -22,6 +22,8 @@ if not ImpressosModeloSQL.eof then
     if not prof.eof then
         NomeProfissional = prof("NomeProfissional")
         TextoImpresso = replace(TextoImpresso, "[Profissional.Nome]", NomeProfissional)
+    else
+        TextoImpresso = replace(TextoImpresso, "[Profissional.Nome]", "")
     end if
 
 

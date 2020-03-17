@@ -45,7 +45,7 @@
     function disable(val){
 
         $(".disable, #searchAccountID, input[id^='searchItemID']").prop("disabled", val);
-        $(".nao-mostrar-caso-pago").css("display", val ? "none" : "inline");
+        $(".nao-mostrar-caso-pago").css("display", val ? "none" : "");
         <%
         if aut("tabelacontapagaA")=0 then
             %>
@@ -449,7 +449,7 @@ end if
                             end if
                             if tipoPessoa="PJ" then
                                 %>
-                                <button onclick="location.href='./?P=invoice&I=<%= InvoiceID %>&Pers=1&T=<%= CD %>&Retencoes=1&RetencaoPFPJ=<%= tipoPessoa %>&RetencaoSimples=<%= Nat %>'" type="button" class="btn btn-sm btn-alert">APLICAR RETENÇÕES - <%= Nat &" - "& tipoPessoa %></button>
+                                <button onclick="location.href='./?P=invoice&I=<%= InvoiceID %>&Pers=1&T=<%= CD %>&Retencoes=1&RetencaoPFPJ=<%= tipoPessoa %>&RetencaoSimples=<%= Nat %>'" type="button" class="btn btn-sm btn-alert"><i class="fa fa-check-circle"></i> APLICAR RETENÇÕES - <%= Nat &" - "& tipoPessoa %></button>
                                 <%
                             end if
                         end if

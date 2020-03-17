@@ -104,15 +104,15 @@ end if
         valorAntigo = accountName(splValAnt(2), splValAnt(1))
         valorAntigo = valorAntigo & " - R$ " & formatnumber(splValAnt(3),2)
     elseif ref("recurso") = "sys_financialmovement" then
-        valorAntigo = accountName(splValAnt(2), splValAnt(1))
-        valorAntigo = valorAntigo & " - R$ " & formatnumber(splValAnt(3),2)
+        valorAntigo = accountName(splValAnt(2), splValAnt(3))
+        valorAntigo = valorAntigo & " - R$ " & formatnumber(splValAnt(7),2)
         
         set payment = db.execute("select PaymentMethod from cliniccentral.sys_financialpaymentmethod where id="& splValAnt(4) &" ")
         if not payment.eof then
             valorAntigo = valorAntigo & "<br>Forma de pagamento: " & payment("PaymentMethod")
         end if
 
-        valorAntigo = valorAntigo & "<br>Data do pagamento: " & splValAnt(5)
+        valorAntigo = valorAntigo & "<br>Data do pagamento: " & splValAnt(8)
     end if
 
 %>

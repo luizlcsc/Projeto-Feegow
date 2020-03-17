@@ -230,7 +230,7 @@ posModalPagar = "fixed"
                 <input type="hidden" name="AccountID" id="AccountID" value="<%=Pagador %>" />
             <%else %>
                 <label><%=Subtitulo%></label><br />
-                <%=selectInsertCA("", "AccountID", Pagador, "5, 4, 3, 2, 6", " onclick=""autoPC($(this).attr(\'data-valor\')) "" ", " required", "")%>
+                <%=selectInsertCA("", "AccountID", Pagador, "5, 4, 3, 2, 6, 8", " onclick=""autoPC($(this).attr(\'data-valor\')) "" ", " required", "")%>
             <%end if %>
         </div>
         <%

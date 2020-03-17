@@ -96,12 +96,16 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
 
     var whatsAppAlertado = false;
     function AlertarWhatsapp(Celular, Texto, id) {
+        var TipoLinkWhatsApp = $("#TipoLinkWhatsApp").val();
+
         if(!whatsAppAlertado){
             whatsAppAlertado=true;
             showMessageDialog("<strong>Atenção!</strong> Para enviar uma mensagem via WhatsApp é preciso ter a ferramenta instalada em seu computador.  <a target='_blank' href='https://www.whatsapp.com/download/'>Clique aqui para instalar.</a>",
             "warning", "Instalar o WhatsApp", 60 * 1000);
         }
-        var url = "whatsapp://send?phone="+Celular+"&text="+Texto;
+        localStorage.setItem("TipoLinkWhatsApp", TipoLinkWhatsApp);
+
+        var url = TipoLinkWhatsApp+"?phone="+Celular+"&text="+Texto;
         $("#wpp-"+id).html("<i class='success fa fa-check-circle'></i>");
 
         if(AdicionarObservacoesAoAlterarStatus == "1"){

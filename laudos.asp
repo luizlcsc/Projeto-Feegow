@@ -65,7 +65,14 @@ end if
 </form>
 
 <div class="panel">
-    <div class="panel-body" id="divListaLaudos">
+    <div class="panel-heading">
+      <span class="panel-title">
+        <span class="fa fa-table"></span>Lista de laudos</span>
+      <div class="pull-right">
+
+      </div>
+    </div>
+    <div class="panel-body pn" id="divListaLaudos">
     </div>
 </div>
 

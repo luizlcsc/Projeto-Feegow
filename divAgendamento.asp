@@ -1616,10 +1616,12 @@ function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpre
         $("body").append("<iframe id='ImpressaoEtiqueta' src='listaDePreparoPorProcedimento.asp?PacienteId="+PacienteID+"&procedimento="+ProcedimentoID+"' style='display:none;'></iframe>")
         return;
     }
+    var solicitante = $("#indicacaoId").val();
 
     $.get("printProcedimentoAgenda.asp", {
         ProcedimentoID:ProcedimentoID,
         PacienteID:PacienteID,
+        Solicitante:solicitante,
         ProfissionalID:ProfissionalID,
         UnidadeID:'<%=UnidadeID%>',
         Tipo: TipoImpresso,

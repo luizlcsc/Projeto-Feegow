@@ -66,7 +66,7 @@ if Profissionais<>"" then
                 </div>
                 
                 <div data-id="<%= prof("id") %>" data-filename="<%= prof("NomeProfissional") %>" class="group1-report" >
-                <table _excel-name="<%= prof("NomeProfissional") %>" class="table table-bordered table-condensed table-hover">
+                <table _excel-name="<%= left(prof("NomeProfissional"), 30) %>" class="table table-bordered table-condensed table-hover">
                     <thead>
                         <tr>
                             <th>Data</th>

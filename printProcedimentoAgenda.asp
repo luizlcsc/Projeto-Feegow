@@ -6,6 +6,7 @@ PacienteID= req("PacienteID")
 ProfissionalID= req("ProfissionalID")
 UnidadeID= req("UnidadeID")
 TipoImpresso= req("Tipo")
+Solicitante= req("solicitante")
 DataAgendamento = req("DataAgendamento")
 Imprime=False
 ProAssociationID = "5"
@@ -86,7 +87,7 @@ if TipoImpresso="Impresso" then
 
     if ProfissionalID <> "" then
         if not ImpressosModeloSQL.eof then
-            UrlPrint = "printProcedimentoImpresso.asp?I="&ImpressosModeloSQL("id")&"&PacienteID="&PacienteID&"&UnidadeID="&UnidadeID&"&ProfissionalID="&ProfissionalID&"&ProcedimentoID="&ProcedimentoID
+            UrlPrint = "printProcedimentoImpresso.asp?I="&ImpressosModeloSQL("id")&"&Solicitante="&Solicitante&"&PacienteID="&PacienteID&"&UnidadeID="&UnidadeID&"&ProfissionalID="&ProfissionalID&"&ProcedimentoID="&ProcedimentoID
             Imprime=True
         %>
         $("#ImpressaoProcedimento").remove();

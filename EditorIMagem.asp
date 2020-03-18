@@ -55,7 +55,9 @@ min-width:200px;
     }
 
     function newSaveImage(base64){
-            $.post("https://clinic7.feegow.com.br/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
+        //https://clinic7.feegow.com.br/imagesave.php
+        //http://localhost:3333/imagesave.php
+            $.post("http://localhost:3333/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
                 {
                     data: base64
                 }, 

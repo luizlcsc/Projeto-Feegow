@@ -1,4 +1,5 @@
 <?php
+
     $data = $_REQUEST['data'];
 	$licenseId = str_replace("clinic", "", $_GET['B']);
 
@@ -32,10 +33,10 @@
     ]));
 
 	if($extensao==".png" || $extensao==".jpg" || $extensao==".bmp" || $extensao==".gif" || $extensao=="jpeg"){
-		file_put_contents("E:\\uploads\\{$licenseId}\\Imagens\\".$fileName[basename], $image_data);
+		file_put_contents("E:\\uploads\\{$licenseId}\\Imagens\\".$fileName, $image_data);
 
 		$db = mysqli_connect($_GET['IP'], 'root', 'pipoca453', $_GET['B']);
-		$sql = "insert into arquivos (NomeArquivo, Tipo, PacienteID) values ('".$fileName[basename]."', 'I', ".$_GET['PacienteID'].")";
+		$sql = "insert into arquivos (NomeArquivo, Tipo, PacienteID) values ('".$fileName."', 'I', ".$_GET['PacienteID'].")";
 		$consulta = mysqli_query($db, $sql);
 		mysqli_close($db);
     }

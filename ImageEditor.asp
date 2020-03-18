@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 
     <div style="height:800px; ">
-        <div id="injection_site"  >
+        <div id="image_panel"  >
 
         </div>
     </div>
@@ -88,7 +88,7 @@
         'colorpicker.title.color': '#fff'
     };
 
-    var imageEditor = new tui.ImageEditor('#injection_site', {
+    var imageEditor = new tui.ImageEditor('#image_panel', {
         includeUI: {
             loadImage: {
                 path: '<%=req("urlImagem")%>',
@@ -103,5 +103,6 @@
         cssMaxHeight: 800,  // Component default value: 800
         usageStatistics:false
     });
+
 
 </script>

@@ -37,12 +37,47 @@ min-width:200px;
             false, 
             true, 
             function(){
-                $("#image1").attr("src", imageEditor.toDataURL());
+                
+                let imageId =imageEditor.getImageName();
+                let objFile = dataURLtoFile(imageEditor.toDataURL(),imageId);
+                let objURL = window.URL.createObjectURL(objFile);
+
+                $("#"+imageId).attr("src", objURL );
+                $("#"+imageId).attr("data-type", objFile.type );
+                
+                newSaveImage(imageEditor.toDataURL());
+
                 closeComponentsModal();
             },
             "lg",
             'auto'
         );
     }
+
+    function newSaveImage(base64){
+            $.post("https://clinic7.feegow.com.br/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
+                {
+                    data: base64
+                }, 
+                function(data){
+                    console.log(data);
+                    atualizaAlbum(0);
+            });
+    }
     
+    function dataURLtoFile(dataurl, filename) {
+ 
+        var arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), 
+            n = bstr.length, 
+            u8arr = new Uint8Array(n);
+            
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        
+        return new File([u8arr], filename, {type:mime});
+    }
+
 </script>

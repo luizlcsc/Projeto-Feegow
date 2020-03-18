@@ -79,7 +79,10 @@ end if
                         </div>
                     </div>
                 <div class="row">
-					<% call quickField("editor", "Prescricoes", "Layout das Prescri&ccedil;&otilde;es", 9, Prescricoes, "400", "", "") %>
+					<%
+                    call quickField("editor", "Prescricoes", "Layout das Prescri&ccedil;&otilde;es", 9, Prescricoes, "400", "", "")
+                    RecursoTag = "Prescricoes"
+                    %>
 					<!--#include file="Tags.asp"-->
                 </div>
             </div>
@@ -90,12 +93,12 @@ end if
                             <button id="btn-Atestados" onClick="saveImpressos('Atestados');" type="button" class="btn btn-success">Salvar</button>
                         </div>
                     </div>
-                    <%
-
-                    RecursoTag = "atestados"
-                    %>
+                    
                 <div class="row">
-					<% call quickField("editor", "Atestados", "Layout dos Atestados", 9, Atestados, "400", "", "") %>
+					<%
+                    call quickField("editor", "Atestados", "Layout dos Atestados", 9, Atestados, "400", "", "")
+                    RecursoTag = "Atestados"
+                    %>
 					<!--#include file="Tags.asp"-->
                 </div>
             </div>
@@ -107,7 +110,10 @@ end if
                         </div>
                     </div>
                 <div class="row">
-					<% call quickField("editor", "PedidosExame", "Layout dos Pedidos de Exame", 9, PedidosExame, "400", "", "") %>
+					<%
+                    call quickField("editor", "PedidosExame", "Layout dos Pedidos de Exame", 9, PedidosExame, "400", "", "")
+                    RecursoTag = "PedidosExame"
+                    %>
 					<!--#include file="Tags.asp"-->
                 </div>
             </div>
@@ -119,7 +125,10 @@ end if
                         </div>
                     </div>
                 <div class="row">
-					<% call quickField("editor", "Recibos", "Layout dos Recibos", 9, Recibos, "400", "", "") %>
+					<%
+                    call quickField("editor", "Recibos", "Layout dos Recibos", 9, Recibos, "400", "", "")
+                    RecursoTag = "Recibos"
+                    %>
                     <!--#include file="Tags.asp"-->
                 </div>
             </div>
@@ -131,7 +140,10 @@ end if
                         </div>
                     </div>
                 <div class="row">
-					<% call quickField("editor", "RecibosIntegrados", "Layout dos Recibos Integrados &agrave;s Contas a Receber", 9, RecibosIntegrados, "400", "", "") %>
+					<%
+                    call quickField("editor", "RecibosIntegrados", "Layout dos Recibos Integrados &agrave;s Contas a Receber", 9, RecibosIntegrados, "400", "", "")
+                    RecursoTag = "RecibosIntegrados"
+                    %>
 					<!--#include file="Tags.asp"-->
                 </div>
                 <div class="row mt10">
@@ -193,7 +205,10 @@ end if
                         </div>
                     </div>
                 <div class="row">
-					<% call quickField("editor", "RecibosIntegradosAPagar", "Layout dos Recibos Integrados &agrave;s Contas a Pagar", 9, RecibosIntegradosAPagar, "400", "", "") %>
+					<%
+                    call quickField("editor", "RecibosIntegradosAPagar", "Layout dos Recibos Integrados &agrave;s Contas a Pagar", 9, RecibosIntegradosAPagar, "400", "", "")
+                    RecursoTag = "RecibosIntegradosAPagar"
+                    %>
 					<!--#include file="Tags.asp"-->
                 </div>
                 <div class="row mt10">
@@ -256,7 +271,10 @@ end if
                         </div>
                     </div>
                 <div class="row">
-					<% call quickField("editor", "Agendamentos", "Layout da impressão dos agendamentos", 9, Agendamentos, "400", "", "") %>
+					<%
+                    call quickField("editor", "Agendamentos", "Layout da impressão dos agendamentos", 9, Agendamentos, "400", "", "")
+                    RecursoTag = "Agendamentos"
+                    %>
 					<!--#include file="Tags.asp"-->
                 </div>
             </div>
@@ -268,7 +286,10 @@ end if
                     </div>
                 </div>
                 <div class="row">
-					<% call quickField("editor", "CabecalhoProposta", "Layout padrão do topo da proposta", 9, CabecalhoProposta, "250", "", "") %>
+					<%
+                    call quickField("editor", "CabecalhoProposta", "Layout padrão do topo da proposta", 9, CabecalhoProposta, "250", "", "")
+                    RecursoTag = "CabecalhoProposta"
+                    %>
 					<div class="col-md-3">
                         <!--#include file="Tags.asp"-->
                     </div>
@@ -278,7 +299,10 @@ end if
                 </div>
                 <br />
                 <div class="row">
-					<% call quickField("editor", "ItensProposta", "Layout dos itens contidos nesta proposta", 9, ItensProposta, "250", "", "") %><br />
+					<%
+                    call quickField("editor", "ItensProposta", "Layout dos itens contidos nesta proposta", 9, ItensProposta, "250", "", "")
+                    RecursoTag = "ItensProposta"
+                    %><br />
                     <div class="col-md-3">
                         <!--#include file="Tags.asp"-->
                     </div>
@@ -307,7 +331,10 @@ end if
                     </div>
                 <div class="col-md-9">
                     <div class="row">
-                        <% call quickField("editor", "LaudosProtocolo", "Layout do Protocolo dos Laudos", 12, LaudosProtocolo, "500", "", "") %>
+                        <%
+                        call quickField("editor", "LaudosProtocolo", "Layout do Protocolo dos Laudos", 12, LaudosProtocolo, "500", "", "")
+                        RecursoTag = "LaudosProtocolo"
+                        %>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -324,7 +351,10 @@ end if
                     </div>
                 <div class="col-md-9">
                     <div class="row">
-                        <% call quickField("editor", "EtiquetaAgendamento", "Layout da Etiqueta dos Agendamentos", 12, EtiquetaAgendamento, "500", "", "") %>
+                        <%
+                        call quickField("editor", "EtiquetaAgendamento", "Layout da Etiqueta dos Agendamentos", 12, EtiquetaAgendamento, "500", "", "")
+                        RecursoTag = "EtiquetaAgendamento"
+                        %>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -342,7 +372,10 @@ end if
                 </div>
             <div class="col-md-9">
                 <div class="row">
-                    <% call quickField("editor", "TermoCancelamento", "Layout do Termo de Cancelamento", 12, TermoCancelamento, "500", "", "") %>
+                    <%
+                    call quickField("editor", "TermoCancelamento", "Layout do Termo de Cancelamento", 12, TermoCancelamento, "500", "", "")
+                    RecursoTag = "TermoCancelamento"
+                    %>
                 </div>
             </div>
             <div class="col-md-3">
@@ -362,7 +395,10 @@ end if
                 </div>
             <div class="col-md-9">
                 <div class="row">
-                    <% call quickField("editor", "ReciboHonorarioMedico", "Layout do Recibo de Honorário Médico", 12, ReciboHonorarioMedico, "500", "", "") %>
+                    <%
+                    call quickField("editor", "ReciboHonorarioMedico", "Layout do Recibo de Honorário Médico", 12, ReciboHonorarioMedico, "500", "", "")
+                    RecursoTag = "ReciboHonorarioMedico"
+                    %>
                 </div>
             </div>
             <div class="col-md-3">
@@ -381,7 +417,10 @@ end if
                 </div>
             <div class="col-md-9">
                 <div class="row">
-                    <% call quickField("editor", "RPSModelo", "Layout do RPS", 12, RPSModelo, "500", "", "") %>
+                    <%
+                    call quickField("editor", "RPSModelo", "Layout do RPS", 12, RPSModelo, "500", "", "")
+                    RecursoTag = "RPSModelo"
+                    %>
                 </div>
             </div>
             <div class="col-md-3">

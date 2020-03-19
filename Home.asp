@@ -46,7 +46,7 @@ if session("Admin")=1 then
     NaoAparecer = "|6503|, |6517|, |6617|, |6706|, |6827|, |6416|, |7302|, |6834|, |6625|, |7427|, |7576|, |7629|, |7710|, |7782|, |7846|, |7995|, |5459|"
     if instr(NaoAparecer, "|"& LicencaID &"|")=0 then
         set vcom = db.execute("select * from cliniccentral.comunicados where ComunicadoID="& ComunicadoID &" and UserID="& session("User"))
-        if vcom.eof then
+        if true then
         %>
 
         <div id="comunicado" style="
@@ -138,28 +138,7 @@ if session("Admin")=1 then
         </div>    
 
         <div class="modal fade whatsapp-plan-details" id="modalWhatsapp" tabindex="-1" role="dialog" aria-labelledby="modalWhatsappLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document" style="width: 720px; margin: 30px auto;">
-            <div class="modal-content">
-                <div class="modal-header" style="
-                    background-image: linear-gradient(to right, #29b53f, #51cd5e);
-                    border-radius: 5px 5px 0 0;
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    align-items: center;">
-                    <div class="logo-whatsapp-configuracao" style="width: 80%;">
-                        <h5 class="modal-title" id="modalWhatsappLabel"><img src="images/whatsapp-logo-configuracao.png" width="60%"></h5></div>
-                    <div class="botao-fechar-modal">
-                        <button id="exibir" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="modal-body">
-                    <div class="conteudo-whatsapp"></div>
-                </div>
-            </div>
+        <div class="modal-dialog conteudo-whatsapp" role="document" style="width: 900px;">
         </div>
     </div>
 

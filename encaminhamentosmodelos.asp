@@ -24,38 +24,12 @@ PapelTimbradoID = reg("PapelTimbradoID")
            <div class="row">
                <br/>
                <%= quickfield("editor", "Conteudo", "Conteúdo", 12, reg("Conteudo"), "600", "", "") %>
-               <div class="row">
-                   <div class="col-md-6 pull-right">
-                       <%=macro("Conteudo")%>
-                   </div>
-               </div>
             </div>
         </div>
         <br/>
         <br/>
         <div class="col-md-3">
-            <table class="table table-striped">
-                <tbody>
-                    <tr class="success">
-                        <th>Dados do Atendimento</th>
-                    </tr>
-                    <tr>
-                        <td>[Paciente.ProntuarioDiagnosticos]</td>
-                    </tr>
-                    <tr>
-                        <td>[Paciente.ProntuarioPrescricoes]</td>
-                    </tr>
-                    <tr>
-                        <td>[Encaminhamento.Motivo]</td>
-                    </tr>
-                    <tr>
-                        <td>[Encaminhamento.Obs]</td>
-                    </tr>
-                    <tr>
-                        <td>[Encaminhamento.Encaminhado]</td>
-                    </tr>
-        		</tbody>
-            </table>
+            <!--#include file="Tags.asp"-->
         </div>
     </div>
 </div>

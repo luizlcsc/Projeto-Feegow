@@ -200,7 +200,7 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
     $(".crumb-link").html("edição de tabela de preço");
     $(".crumb-icon a span").attr("class", "fa fa-table");
     <%
-    if aut("procedimentosA")=1 then
+    if aut("tabelasprecosA")=1 then
     %>
     $("#rbtns").html('<a class="btn btn-sm btn-default" href="./?P=TabelasPreco&Pers=1"><i class="fa fa-list"></i></a> <button onclick="$(\'#Salvar\').click()" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> SALVAR</button>');
     <%

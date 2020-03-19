@@ -398,7 +398,7 @@ else
                         </td>
                         <td>
                             <div class="radio-custom radio-primary">
-                                <input type="radio" name="rdValorPlano" id="rdValorPlanoV" required value="V" <% If rdValorPlano="V" Then %> checked="checked" <% End If %> class="ace valplan" onclick="valplan('', 'V')" style="z-index: -1" /><label for="rdValorPlanoV" class="radio"> Particular</label>
+                                <input type="radio" onchange="parametros('ProcedimentoID', $('#ProcedimentoID').val());" name="rdValorPlano" id="rdValorPlanoV" required value="V" <% If rdValorPlano="V" Then %> checked="checked" <% End If %> class="ace valplan" onclick="valplan('', 'V')" style="z-index: -1" /><label for="rdValorPlanoV" class="radio"> Particular</label>
                             </div>
                             <%
                     if Convenios<>"Nenhum" and (GradeApenasConvenios<> "|P|" or isnull(GradeApenasConvenios)) then

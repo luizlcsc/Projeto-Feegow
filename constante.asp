@@ -306,7 +306,7 @@ else
 
 		    if Notificacoes<>"" then
 			    %>
-    	        $("#Notificacoes").html("<%=Notificacoes%>");
+    	        $("#Notificacoes").html(`<%=Notificacoes%>`);
                 $("#box-bell").addClass("purple");
                 $("#bell").addClass("fa-animated-bell");
                 $("#badge-bell").html("<%=cNot%>");

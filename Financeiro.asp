@@ -21,8 +21,17 @@ if aut("contasareceber")=1 and aut("contasapagar")=1 and aut("movement")=1 then
                 <h2 id="SaldoGeral">Carregando...</h2><br>
                 <div class="row">
                 <%
+				
+				set unidadesSql = db.execute("select unidades from "&session("Table")&" where id="&session("idInTable"))
+				if not unidadesSql.EOF then
+					if unidadesSql("unidades")&""<>"" then
+						whereUnidades = "AND empresa in("&replace(unidadesSql("unidades"),"|","")&")"
+					end if
+				end if
+
 				SaldoGeral = 0
-				set contas = db.execute("select * from sys_financialcurrentaccounts where AccountType in(1, 2) and sysActive=1")
+				
+				set contas = db.execute("select * from sys_financialcurrentaccounts where AccountType in(1, 2) and sysActive=1 "&whereUnidades)
 				while not contas.EOF
 					Saldo = accountBalance("1_"&contas("id"), 0)
 					SaldoGeral = SaldoGeral+Saldo

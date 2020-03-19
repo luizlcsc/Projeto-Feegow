@@ -1,5 +1,4 @@
-﻿
-<%
+﻿<%
 if (session("Banco")="clinic5760"  or session("Banco")="clinic6118") and false then %>
 <div class="alert alert-alert text-center mt15">
     <h4><i class="fa fa-cog fa-spin"></i> Sua licença do Feegow está recebendo atualizações e melhorias. <br />Enquanto isso você pode continuar utilizando o sistema normalmente, porém alguns relatórios podem não funcionar neste momento.
@@ -47,30 +46,108 @@ if session("Admin")=1 then
     NaoAparecer = "|6503|, |6517|, |6617|, |6706|, |6827|, |6416|, |7302|, |6834|, |6625|, |7427|, |7576|, |7629|, |7710|, |7782|, |7846|, |7995|, |5459|"
     if instr(NaoAparecer, "|"& LicencaID &"|")=0 then
         set vcom = db.execute("select * from cliniccentral.comunicados where ComunicadoID="& ComunicadoID &" and UserID="& session("User"))
-        if vcom.eof then
+        if true then
         %>
-        <div id="comunicado" style="background-color:#fff; border:1px solid #CCC; position:fixed; bottom:70px; right:60px; z-index:1000000; padding:15px">
-            <div class="row">
-                <div class="col-xs-12">
-                    <i class="fa fa-remove pull-right" onclick="$('#comunicado').fadeOut();"></i>
+
+        <div id="comunicado" style="
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background-image: linear-gradient(to right, #29b53f, #51cd5e); 
+        max-width:560px;
+        padding: 10px 10px 10px 20px;
+        border-radius: 6px;
+        align-items: center;
+        column-gap: 20px;
+        -webkit-box-shadow: 3px 3px 10px 0px rgba(0,0,0,0.28);
+        -moz-box-shadow: 3px 3px 10px 0px rgba(0,0,0,0.28);
+        box-shadow: 3px 3px 10px 0px rgba(0,0,0,0.28);
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+        position:fixed; 
+        bottom:70px; 
+        z-index:1000000;">
+            <div class="">
+                <div><img src="images/whatsapp-logo.png" width="90%"></div>
+                <div class="botoes" style=" margin-top: 10px;">
+                    <button id="ocultar1" type="button" onclick="inCom(1); $('#comunicado').fadeOut();" data-toggle="modal" data-target="#modalWhatsapp" style="
+                        background: #ffeb00;
+                        font-weight: 500;
+
+                        display: inline-block;
+                        padding: 6px 12px;
+                        margin-bottom: 0;
+                        font-size: 14px;
+                        font-weight: 400;
+                        line-height: 1.42857143;
+                        text-align: center;
+                        white-space: nowrap;
+                        vertical-align: middle;
+                        -ms-touch-action: manipulation;
+                        touch-action: manipulation;
+                        cursor: pointer;
+                        -webkit-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                        background-image: none;
+                        border: 1px solid transparent;
+                        border-radius: 4px;
+
+                        background: #ffeb00;
+                        font-weight: 500;
+                    ">
+                        <strong>Ativar agora!</strong>
+                    </button>
+                    <button id="ocultar2" type="button" class="btn btn-recusar marginleft5" onclick="inCom(0); $('#comunicado').fadeOut();" style="
+                        display: inline-block;
+                        padding: 6px 12px;
+                        margin-bottom: 0;
+                        font-size: 14px;
+                        font-weight: 400;
+                        line-height: 1.42857143;
+                        text-align: center;
+                        white-space: nowrap;
+                        vertical-align: middle;
+                        -ms-touch-action: manipulation;
+                        touch-action: manipulation;
+                        cursor: pointer;
+                        -webkit-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        user-select: none;
+                        background-image: none;
+                        border: 1px solid transparent;
+                        border-radius: 4px;
+
+                        background: #37903f;
+                        font-weight: 500;
+                        color: #ffffff70;
+                        margin-left: 5px;">
+                        <strong>Não, obrigado!</strong>
+                    </button>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <img width="500" src="images/feegow_marketing.png" />
-                </div>
+
+            <div style="padding-left: 20px; border-left: solid 1px rgba(0, 0, 0, 0.13);">
+                <i class="fa fa-remove pull-right" onclick="$('#comunicado').fadeOut();"></i>
+                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: rgba(0, 0, 0, 0.23); padding-right: 10px;"></span> <strong>Confirmação</strong> de consulta</p>
+                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: rgba(0, 0, 0, 0.23); padding-right: 10px;"></span> <strong>Pesquisa</strong> de satisfação</p>
+                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: rgba(0, 0, 0, 0.23); padding-right: 10px;"></span> <strong>Notificação</strong> de falta</p>
             </div>
-            <hr class="short alt" />
-            <div class="row">
-                <div class="col-xs-6">
-                    <button type="button" class="btn btn-xlg btn-success btn-block" onclick="inCom(1); $('#comunicado').fadeOut(); alert('Obrigado pelo interesse no Feegow Marketing!\n Nosso especialista em marketing para clínicas entrará em contato.')"><i class="fa fa-thumb-up"></i> TENHO INTERESSE</button>
-                </div>
-                <div class="col-xs-6">
-                    <button type="button" class="btn btn-xlg btn-danger btn-block" onclick="inCom(0); $('#comunicado').fadeOut();"><i class="fa fa-thumb-down"></i> NÃO TENHO INTERESSE</button>
-                </div>
-            </div>
+        </div>    
+
+        <div class="modal fade whatsapp-plan-details" id="modalWhatsapp" tabindex="-1" role="dialog" aria-labelledby="modalWhatsappLabel" aria-hidden="true">
+        <div class="modal-dialog conteudo-whatsapp" role="document" style="width: 900px;">
         </div>
+    </div>
+
         <script type="text/javascript">
+            $(function () {
+                getUrl("chat-pro/contratacao/show", {}, function(data) {
+                    $(".conteudo-whatsapp").html(data);
+                });
+            });
             function inCom(v) {
                 $.get("comunicadoSave.asp?I=<%= ComunicadoID %>&Int=" + v, function (data) { eval(data) });
             }
@@ -1146,13 +1223,6 @@ function isJson(item) {
 }
 
 function getNews(onlyUnread) {
-    
-    <% set contratacao_whatsapp = db.execute("select * from exibicao_conteudo where (conteudo='contratacao_whatsapp' and SysUser = "&Session("User")&")") %>
-   
-    <% IF contratacao_whatsapp.eof THEN %>
-        <% db.execute("insert into exibicao_conteudo (SysUser, conteudo, Data) values ("&Session("User")&", 'contratacao_whatsapp', current_date)") %>
-        openComponentsModal("chat-pro/contratacao/show", {}, "Contratação serviço whatsapp", true, false);
-    <% END IF %>
 
     if(onlyUnread === 1){
         getUrl("/news/get-news", {

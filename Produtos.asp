@@ -38,7 +38,6 @@ else
 	divDisplayUploadFoto = "none"
 	divDisplayFoto = "block"
 end if
-co
 if reg("sysActive")=0 then
 	disabled = " disabled=""disabled"""
 end if

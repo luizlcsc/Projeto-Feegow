@@ -2,6 +2,32 @@
 <!--#include file="modal.asp"-->
 <%
 
+TipoProduto = req("TipoProduto")&""
+if TipoProduto&""="" then
+    TipoProduto = "1"
+end if
+tableName = "produtos"
+I = req("I")
+if I="N" then
+	sqlVie = "select * from "&tableName&" where sysUser="&session("User")&" and sysActive=0"
+	set vie = db.execute(sqlVie)
+	if vie.eof then
+		db_execute("insert into "&tableName&" (sysUser, sysActive) values ("&session("User")&", 0)")
+		set vie = db.execute(sqlVie)
+	end if
+    response.Redirect("./?P=produtos&I="&vie("id")&"&TipoProduto="&TipoProduto&"&Pers=1")
+else
+	set data = db.execute("select * from "&tableName&" where id="&I)
+	if data.eof then
+        response.Redirect("./?P=produtos&I="&req("I")&"&Pers=1")
+	end if
+end if
+
+
+
+
+
+
 call insertRedir(request.QueryString("P"), request.QueryString("I"))
 set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
 
@@ -12,9 +38,30 @@ else
 	divDisplayUploadFoto = "none"
 	divDisplayFoto = "block"
 end if
-
+co
 if reg("sysActive")=0 then
 	disabled = " disabled=""disabled"""
+end if
+
+if req("TipoProduto")&""="" and reg("TipoProduto")<>1 then
+    TipoProduto = reg("TipoProduto")
+end if
+CodigoTabela = reg("CodigoTabela")
+PrincipioAtivo = reg("PrincipioAtivo")
+TabelaProduto = reg("TabelaProduto")
+DiasAvisoValidade = reg("DiasAvisoValidade")
+ApresentacaoNomeDispensacao = reg("ApresentacaoNomeDispensacao")
+ApresentacaoQuantidadeDispensacao = reg("ApresentacaoQuantidadeDispensacao")
+ApresentacaoUnidadeDispensacao = reg("ApresentacaoUnidadeDispensacao")
+
+if ApresentacaoUnidadeDispensacao&""="" then
+    ApresentacaoUnidadeDispensacao = treatvalzero(ApresentacaoUnidadeDispensacao&"")
+end if
+PrecoTabela = reg("PrecoTabela")
+LocaisEntradas = reg("LocaisEntradas")
+
+if LocaisEntradas&""<>"" then
+    sqlLocalizacoes = " AND id IN ("&replace(LocaisEntradas, "|", "")&") "
 end if
 
 if 0 then
@@ -66,19 +113,17 @@ end if
 %>
 
 <br />
-<div class="tabbable panel">
-    <div class="tab-content panel-body">
-        <div id="divCadastroProduto" class="tab-pane in active">
 
+<form method="post" id="frm" name="frm" action="save.asp">
+    <iframe align="middle" class="hidden" id="CodBarras" name="CodBarras" src="about:blank" width="100%" height="110"></iframe>
 
+    <%=header(req("P"), "Estoque", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
+    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
+    <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
 
-
-            <form method="post" id="frm" name="frm" action="save.asp">
-                <iframe align="middle" class="hidden" id="CodBarras" name="CodBarras" src="about:blank" width="100%" height="110"></iframe>
-                
-                <%=header(req("P"), "Produto", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-                <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-                <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+    <div class="tabbable panel">
+        <div class="tab-content panel-body">
+            <div id="divCadastroProduto" class="tab-pane in active">
                 <div class="row">
                     <div class="col-md-2">
                         <div class="row">
@@ -94,17 +139,19 @@ end if
                         </div>
                         <br />
                         <div class="row">
+                            <%=quickField("multiple", "LocaisEntradas", "Locais de possíveis entradas", 12, LocaisEntradas, "SELECT * FROM produtoslocalizacoes WHERE sysActive=1", "NomeLocalizacao", " empty")%>
                             <%=quickField("memo", "Obs", "Observa&ccedil;&otilde;es", 12, reg("Obs"), "", "", "")%>
                         </div>
                     </div>
                     <div class="col-md-10">
                         <div class="row">
-                            <%=quickField("text", "NomeProduto", "Nome do Produto <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
+                            <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
+                            <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio")%>
                             <%=quickField("text", "Codigo", "C&oacute;digo", 2, reg("Codigo"), "", "", "")%>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <%= selectInsert("Categoria", "CategoriaID", reg("CategoriaID"), "produtoscategorias", "NomeCategoria", "", "", "") %>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <%= selectInsert("Fabricante", "FabricanteID", reg("FabricanteID"), "produtosfabricantes", "NomeFabricante", "", "", "") %>
                             </div>
                         </div>
@@ -120,49 +167,90 @@ end if
                             <%=quickField("text", "ApresentacaoQuantidade", "Contendo", 2, ApresentacaoQuantidade, " input-mask-brl text-right", "", " placeholder=""1,00"" required")%>
                             <%=quickField("simpleSelect", "ApresentacaoUnidade", "Unidade", 2, reg("ApresentacaoUnidade"), "select * from cliniccentral.tissunidademedida order by Descricao", "Descricao", " required empty")%>
                             <div class="col-md-3">
-                                <%= selectInsert("Localiza&ccedil;&atilde;o Padrão", "LocalizacaoID", reg("LocalizacaoID"), "produtoslocalizacoes", "NomeLocalizacao", "", "", "") %>
+                            <%
+                            if LocaisEntradas&""<>"" then
+                                call quickField("simpleSelect", "LocalizacaoID", "Localiza&ccedil;&atilde;o Padrão", 12, reg("LocalizacaoID"), "select * from produtoslocalizacoes where sysActive=1 "&sqlLocalizacoes&" order by NomeLocalizacao", "NomeLocalizacao", "")
+                            else
+                                call selectInsert("Localiza&ccedil;&atilde;o Padrão", "LocalizacaoID", reg("LocalizacaoID"), "produtoslocalizacoes", "NomeLocalizacao", "", "", "")
+                            end if
+                            %>
                             </div>
                             <%=quickField("simpleSelect", "CD", "CD", 3, reg("CD"), "select * from cliniccentral.tisscd order by Descricao", "Descricao", "")%>
                         </div>
                         <br />
-
                         <div class="row">
-                            <%=quickField("text", "EstoqueMinimo", "Estoque M&iacute;nimo", 2, fn(reg("EstoqueMinimo")), " input-mask-brl text-right", "", "")%>
-                            <%=quickfield("simpleSelect", "EstoqueMinimoTipo", "&nbsp;", 2, reg("EstoqueMinimoTipo"), "select 'U' id, 'Unidade' Descricao UNION ALL select 'C', 'Conjunto'", "Descricao", "no-select2 semVazio") %>
-
-
-
-                                    <%=quickField("currency", "PrecoCompra", "Pre&ccedil;o Médio de Compra", 2, reg("PrecoCompra"), "", "", "")%>
-                                    <div class="col-md-2">
-                                        <br />
-                                        <div class="radio-custom radio-system">
-                                            <input type="radio" name="TipoCompra" value="C" id="TipoCompraC" <% If reg("TipoCompra")="C" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoNomeC" for="TipoCompraC"> por conjunto</label></div>
-                                        
-                                        <div class="radio-custom radio-system">
-                                            <input type="radio" name="TipoCompra" value="U" id="TipoCompraU" <% If reg("TipoCompra")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeC" for="TipoCompraU"> por unidade</label></div>
-                                    </div>
-                                    <%=quickField("currency", "PrecoVenda", "Pre&ccedil;o Médio de Venda", 2, reg("PrecoVenda"), "", "", "")%>
-                                    <div class="col-md-2">
-                                        <br />
-                                        <div class="radio-custom radio-alert">
-                                            <input type="radio" name="TipoVenda" id="TipoVendaC" value="C" <% If reg("TipoVenda")="C" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoNomeV" for="TipoVendaC"> por conjunto</label></div>
-                                        
-                                        <div class="radio-custom radio-alert">
-                                            <input type="radio" name="TipoVenda" id="TipoVendaU" value="U" <% If reg("TipoVenda")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeV" for="TipoVendaU"> por unidade</label></div>
-                                    </div>
-
-
-
-
-                        </div>
-                        <br>
-                        <%if aut("|produtosI|")=1 OR aut("|produtosA|")=1 then%>
-                            <div class="row">
-                                <div class="checkbox-custom checkbox-primary">
-                                <input type="checkbox" name="PermitirSaida" id="PermitirSaida" value="S" class="ace" <% If reg("PermitirSaida")="S" Then %> checked="checked" <% End If %> />
-                                <label for="PermitirSaida">Permitir saída do produto pelo cadastro</label></div>
+                            <%=quickField("simpleSelect", "TabelaProduto", "Tabela", 2, TabelaProduto, "select * from cliniccentral.produtostabelas order by id", "TabelaProduto", " required no-select2")%>
+                            <%=quickField("text", "CodigoTabela", "Código da Tabela", 2, CodigoTabela, "", "", "")%>
+                            <%=quickField("currency", "PrecoTabela", "Preço da Tabela", 2, PrecoTabela, "", "", "")%>
+                            <div class="col-md-4 Modulo-Medicamento">
+                                <%= selectInsert("Princípio Ativo", "PrincipioAtivo", PrincipioAtivo, "cliniccentral.principioativo", "Principio", "", "", "") %>
                             </div>
-                        <%end if%>
+                        </div>
+                        <br />
+
+
+                        <div class="Modulo-Medicamento row">
+                            <div class="col-md-12">
+                                <div class="ml15" style="color: #AAA;"><h4> - Dispensação</h4></div>
+                                <%=quickField("text", "ApresentacaoNomeDispensacao", "Apresenta&ccedil;&atilde;o", 2, ApresentacaoNomeDispensacao, "", "", " placeholder=""Ex.: caixa, garrafa..."" ")%>
+                                    <%
+                                'ApresentacaoQuantidadeDispensacao = reg("ApresentacaoQuantidadeDispensacao")
+                                if not isnull(ApresentacaoQuantidadeDispensacao) and not ApresentacaoQuantidadeDispensacao="" and isnumeric(ApresentacaoQuantidadeDispensacao) then
+                                    ApresentacaoQuantidadeDispensacao = formatnumber(ApresentacaoQuantidadeDispensacao,2)
+                                end if
+                                %>
+                                <%=quickField("text", "ApresentacaoQuantidadeDispensacao", "Contendo", 2, ApresentacaoQuantidadeDispensacao, " input-mask-brl text-right", "", " placeholder=""1,00"" ")%>
+                                <%=quickField("simpleSelect", "ApresentacaoUnidadeDispensacao", "Unidade", 2, ApresentacaoUnidadeDispensacao, "select * from cliniccentral.tissunidademedida order by Descricao", "Descricao", "  empty")%>
+                            </div>
+                        </div>
+                        <br />
+
+
+                        <div class="col-md-12">
+                        <hr/>
+                            <div class="row">
+                                <%=quickField("text", "EstoqueMinimo", "Estoque M&iacute;nimo", 2, fn(reg("EstoqueMinimo")), " input-mask-brl text-right", "", "")%>
+                                <%=quickfield("simpleSelect", "EstoqueMinimoTipo", "&nbsp;", 2, reg("EstoqueMinimoTipo"), "select 'U' id, 'Unidade' Descricao UNION ALL select 'C', 'Conjunto'", "Descricao", "no-select2 semVazio") %>
+
+                                <%=quickField("text", "EstoqueMaximo", "Estoque Máximo", 2, fn(EstoqueMaximo), " input-mask-brl text-right", "", "")%>
+                                <%=quickfield("simpleSelect", "EstoqueMaximoTipo", "&nbsp;", 2, EstoqueMaximoTipo, "select 'U' id, 'Unidade' Descricao UNION ALL select 'C', 'Conjunto'", "Descricao", "no-select2 semVazio") %>
+
+                                <%=quickField("number", "DiasAvisoValidade", "Aviso de Validade", 2, DiasAvisoValidade, "", "", " placeholder=""dias"" ")%>
+
+                            </div>
+                            <br/>
+                            <div class="row">
+
+                                <%=quickField("currency", "PrecoCompra", "Pre&ccedil;o Médio - Compra", 2, reg("PrecoCompra"), "", "", "")%>
+                                <div class="col-md-2">
+                                    <br />
+                                    <div class="radio-custom radio-system">
+                                        <input type="radio" name="TipoCompra" value="C" id="TipoCompraC" <% If reg("TipoCompra")="C" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoNomeC" for="TipoCompraC"> por conjunto</label></div>
+
+                                    <div class="radio-custom radio-system">
+                                        <input type="radio" name="TipoCompra" value="U" id="TipoCompraU" <% If reg("TipoCompra")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeC" for="TipoCompraU"> por unidade</label></div>
+                                </div>
+                                <%=quickField("currency", "PrecoVenda", "Pre&ccedil;o Médio - Venda", 2, reg("PrecoVenda"), "", "", "")%>
+                                <div class="col-md-2">
+                                    <br />
+                                    <div class="radio-custom radio-alert">
+                                        <input type="radio" name="TipoVenda" id="TipoVendaC" value="C" <% If reg("TipoVenda")="C" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoNomeV" for="TipoVendaC"> por conjunto</label></div>
+
+                                    <div class="radio-custom radio-alert">
+                                        <input type="radio" name="TipoVenda" id="TipoVendaU" value="U" <% If reg("TipoVenda")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeV" for="TipoVendaU"> por unidade</label></div>
+                                </div>
+
+
+
+                                <%if aut("|produtosI|")=1 OR aut("|produtosA|")=1 then%>
+                                    <div class="checkbox-custom checkbox-primary mt25">
+                                    <input type="checkbox" name="PermitirSaida" id="PermitirSaida" value="S" class="ace" <% If reg("PermitirSaida")="S" Then %> checked="checked" <% End If %> />
+                                    <label for="PermitirSaida">Permitir saída pelo cadastro</label></div>
+                                <%end if%>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <hr class="short alt" />
@@ -204,13 +292,28 @@ end if
 
                     </div>
                 </div>
-            </form>
-        </div>
-        <div id="divLancamentos" class="tab-pane">
-            Carregando...
+            </div>
+            <div id="divLancamentos" class="tab-pane">
+                Carregando...
+            </div>
+            <div id="divInteracoesEstoque" class="tab-pane">
+                Carregando...
+            </div>
+            <div id="divConversaoEstoque" class="tab-pane">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                        Conversão de Medida
+                    </span>
+                </div>
+                <br>
+                <div class="col-md-offset-2 col-md-8 Modulo-Medicamento mt40">
+                <%call Subform("produtosunidademedida", "ProdutoID", req("I"), "frm")%>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</form>
+
 <script type="text/javascript">
 
 
@@ -224,6 +327,29 @@ end if
 
 
     $(document).ready(function(e) {
+        var TipoProduto = $("#TipoProduto").val();
+        if (TipoProduto == 4){
+            $(".Modulo-Medicamento").attr("style", "display:");
+        }else{
+            $(".Modulo-Medicamento").attr("style", "display:none");
+
+        };
+        $("#Header-List").attr("href", "./?P=ListaProdutos&Pers=1&TipoProduto="+TipoProduto);
+        $("#Header-New").addClass("hidden");
+
+        $(".crumb-link").removeClass("hidden");
+        $(".crumb-link").html($("#TipoProduto option:selected").text());
+
+        $("#TipoProduto").on("click", function (){
+            var TipoProduto = $("#TipoProduto").val();
+            if (TipoProduto == 4){
+                $(".Modulo-Medicamento").attr("style", "display:");
+            }else{
+                $(".Modulo-Medicamento").attr("style", "display:none");
+            };
+            $("#Header-List").attr("href", "./?P=ListaProdutos&Pers=1&TipoProduto="+TipoProduto);
+            $(".crumb-link").html($("#TipoProduto option:selected").text());
+        });
 
     $("#ProdutosPosicao").on("click", ".eti",function() {
         var temPosicaoSelecionada = $(".eti:checked").length > 0,

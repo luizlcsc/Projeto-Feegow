@@ -184,14 +184,14 @@ if aut("pacientesV")=1 or aut("pacientesI")=1 or aut("pacientesA")=1 then
 				                if aut("produtosI")=1 then
                         %>
                         <li>
-                            <a href="?P=Produtos&I=N&Pers=1"><i class="fa fa-plus"></i> Cadastrar Produto</a>
+                            <a href="?P=Produtos&I=N&Pers=1"><i class="fa fa-plus"></i> Inserir </a>
                         </li>
                         <%
 				                end if
 				                if aut("produtosA")=1 or aut("produtosV")=1 then
                         %>
                         <li>
-                            <a href="?P=Produtos&Pers=Follow"><i class="fa fa-list"></i> Listar Produtos</a>
+                            <a href="?P=ListaProdutos&Pers=1"><i class="fa fa-list"></i> Listar </a>
                         </li>
                         <%
 				                end if

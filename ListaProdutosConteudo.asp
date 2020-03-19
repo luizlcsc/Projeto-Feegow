@@ -28,6 +28,9 @@
             if ref("ProdutoID")<>0 then
                 sqlProd = " AND pro.id="& ref("ProdutoID") &" "
             end if
+            if ref("TipoProduto")&""<>"" and ref("TipoProduto")<>"1" then
+                sqlTipoProduto = " AND pro.TipoProduto="& ref("TipoProduto") &" "
+            end if
             if ref("Codigo")<>"" then
                 sqlCod = " AND pro.Codigo Like '%"& ref("Codigo") &"%' "
             end if
@@ -68,7 +71,7 @@
             "LEFT JOIN produtosfabricantes profab ON profab.id=pro.FabricanteID "&_
             "LEFT JOIN produtoslocalizacoes proloc ON proloc.id=pro.LocalizacaoID "&_
             "LEFT JOIN estoqueposicao estpos ON estpos.ProdutoID=pro.id "&_
-            "WHERE pro.sysActive=1 "& sqlProd & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem)
+            "WHERE pro.sysActive=1 "& sqlProd & sqlTipoProduto & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem)
             while not prod.EOF
                 if prod("Validade")=<dateAdd("d", 10, date()) then
                     Validade = prod("Validade")

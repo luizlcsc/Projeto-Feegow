@@ -2895,14 +2895,14 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 				if not isnull(lista("anterior")) then
 					rbtns = rbtns & "<a title='Anterior' href='?P="&recurso&"&Pers="&hPers&"&I="&lista("anterior")&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
 				end if
-				rbtns = rbtns & "<a title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
+				rbtns = rbtns & "<a id='Header-List' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
 				if not isnull(lista("proximo")) then
 					rbtns = rbtns & "<a title='Próximo' href='?P="&recurso&"&Pers="&hPers&"&I="&lista("proximo")&"&Proximo=1' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
 				end if
 			end if
 		end if
 		if aut(recurso&"I")=1 and recurso<>"profissionais" and recurso<>"funcionarios" then
-			rbtns = rbtns & "<a title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
+			rbtns = rbtns & "<a id='Header-New' title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
 		end if
 		if recurso="pacientes" then
 			rbtns = rbtns & "<button title='Imprimir Ficha' type='button' id='btnFicha' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-print'></i></button> "

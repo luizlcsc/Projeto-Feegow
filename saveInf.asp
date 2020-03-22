@@ -176,6 +176,7 @@ if req("Origem")="Atendimento" then
 				call logAgendamento(lista("id"), "Atendimento finalizado", "R")
 			end if
 			session("Atendimentos") = replace(session("Atendimentos"), "|"&buscaAtendimento("id")&"|", "")
+			session("AtendimentoTelemedicina")=""
 		end if
 
 		'pos consulta na recepcao

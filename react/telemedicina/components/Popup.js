@@ -5,27 +5,28 @@ const Popup = (props) => {
 
     }, []);
 
-
-    const telemedicine = new Telemedicine(props.licencaId, props.profissionalId, props.pacienteId, props.agendamentoId);
-
-    telemedicine.setApiDomain("http://localhost:8000/patient-interface/" + props.licencaId);
-    telemedicine.setUser("doctor");
-
-
-    setTimeout(() => {
-        telemedicine.init();
-    }, 500);
-
-    setTimeout(() => {
-        telemedicine.login(10000);
-    }, 5000);
+    //
+    // const telemedicine = new Telemedicine(props.licencaId, props.profissionalId, props.pacienteId, props.agendamentoId, function () {
+    //     telemedicine.login(10000);
+    // });
+    //
+    // const env = 'prod';
+    //
+    // telemedicine.setApiDomain((env === "prod" ? 'https://api.feegow.com.br' : 'http://localhost:8000') + "/patient-interface/" + props.licencaId);
+    // telemedicine.setUser("doctor");
+    //
+    //
+    // setTimeout(() => {
+    //
+    //     telemedicine.init();
+    // }, 500);
 
     const onClose = () => {
         if (confirm("Tem certeza que deseja fechar?")) {
             const $popup = document.getElementById("root");
 
             $popup.remove();
-            telemedicine.close();
+            // telemedicine.close();
             TelemedicinaService.base("Finaliza");
         }
     }
@@ -87,12 +88,8 @@ const Popup = (props) => {
 
             <div id={"tm-popup-dialog"}>
                 <div id={"tm-popup-content"}>
-                    <Header onMaximize={() => onMaximize()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
-                    <Video/>
+                    <iframe src="https://feegow.whereby.com/telemedicina01?embed&iframeSource=feegow" allow="camera;microphone;fullscreen;speaker" />
 
-                    <div className={"tm-parent-controls-content"}>
-                        <Controls/>
-                    </div>
                 </div>
 
             </div>

@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+
 <%
 'ATIVA EXIBIÇÃO DAS QUERYS
 sDev = 0
@@ -36,10 +37,12 @@ while not sqlTagsCategorias.eof
       tags_Resultado = sqlTags("Resultado")
       tags_Descricao = sqlTags("Descricao")
       'tags_Exemplo = replaceTags(tags_tagNome,0,0,0)
-      
+      tags_copy = "<code class='copyableInput "&tags_tagNome&"' id='"&tags_tagNome&"'>"&tags_tagNome&"</code>"
+      tags_copy = "<button type='button' class='copyableInputButton btn btn-sm' onclick='copyToClipboard(`"&tags_tagNome&"`)'><i class='fa fa-paste'></i></button>"&tags_copy
+
       tagsGridHTML = ""&_
       "<tr>"&_
-        "<td><code>"&tags_tagNome&"</code></td>"&_
+        "<td>"&tags_copy&"</td>"&_
         "<td>"& tags_Resultado &"</td>"&_
         "<td>"& tags_Descricao &"</td>"&_
       "</tr>"
@@ -105,9 +108,6 @@ set sqlTagsCategorias = nothing
 %>
 
 
-
-
-
 <div class="row">
   <div class="col-md-12">
     <div class="bs-component">
@@ -122,3 +122,46 @@ set sqlTagsCategorias = nothing
     <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div></div>
   </div>
 </div>
+
+<script>
+function copyToClipboard(target) {
+  var element = document.getElementById(target);
+  var text = element.innerHTML;
+  CopyToClipboard(text);
+  //alert("A Tag "+ text +" foi copiada com sucesso!");
+  showMessageDialog("Foi copiada para  sua \n área de transferência.", "success", "A TAG "+text+"!", 5000);
+         
+  }
+  text.innerHTM
+
+function CopyToClipboard (text) {
+	// Copies a string to the clipboard. Must be called from within an 
+	// event handler such as click. May return false if it failed, but
+	// this is not always possible. Browser support for Chrome 43+, 
+	// Firefox 42+, Safari 10+, Edge and IE 10+.
+	// IE: The clipboard feature may be disabled by an administrator. By
+	// default a prompt is shown the first time the clipboard is 
+	// used (per session).
+	if (window.clipboardData && window.clipboardData.setData) {
+		// IE specific code path to prevent textarea being shown while dialog is visible.
+		return clipboardData.setData("Text", text); 
+
+  } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+    var textarea = document.createElement("textarea");
+    textarea.textContent = text;
+    textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+      return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+    } catch (ex) {
+      //console.warn("Cópia de tag falhou.", ex);
+      showMessageDialog("A tag "+text+" \n não foi copiada para área de transferência.", "danger", "ERRO!", 5000);
+      return false;
+    } finally {
+      document.body.removeChild(textarea);
+    }
+	}
+}
+</script>

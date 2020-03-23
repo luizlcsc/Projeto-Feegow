@@ -342,8 +342,33 @@ else
 
     if not ConfigGeraisSQL.eof then
         if ChamarAposPagamento="S" and (inStr(unidadesBloqueioAtendimento, "|"&session("UnidadeID")&"|")<>"0" or unidadesBloqueioAtendimento&""="") then
+            'verifica se procedimento ja foi pago preveamente
+            sqlQuitado =    "SELECT ii.id"&_
+                            " FROM itensinvoice ii"&_
+                            " LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID"&_
+                            " WHERE i.AccountID="&veseha("PacienteID")&" "&_
+                            " AND AssociationAccountID=3 "&_
+                            " AND ii.Tipo='S' "&_
+                            " AND ii.ItemID="&veseha("TipoCompromissoID")&" "&_
+                            " AND FLOOR((ii.Quantidade * (ii.ValorUnitario+ii.Acrescimo-ii.Desconto)))>= FLOOR("&veseha("ValorPlano")&") "&_
+                            " AND FLOOR(IFNULL(("&_
+                            " 				SELECT SUM(Valor)"&_
+                            " 				FROM itensdescontados"&_
+                            " 				WHERE ItemID=ii.id), 0))>= FLOOR("&veseha("ValorPlano")&") "&_
+                            " AND (ISNULL(DataExecucao) OR DataExecucao= '"&mydate(veseha("Data"))&"' OR Executado='') "&_
+                            " AND (ii.ProfissionalID="&veseha("ProfissionalID")&" or ii.ProfissionalID=0) "&_
+                            " AND ii.Executado!='C' "
 
-            if veseha("FormaPagto") < 0 and veseha("ValorPlano")>0 then
+            'response.write sqlQuitado
+
+            set procPrePago = db.execute(sqlQuitado)
+            
+            formaPagamento = veseha("FormaPagto")
+            if not procPrePago.eof then
+                formaPagamento = 1
+            end if
+            
+            if formaPagamento < 0 and veseha("ValorPlano")>0 then
                 if Triagem="S" and ProfissionalTriagem="N" and labelDisabled = "Pendente de Triagem" then
                     'exibeLinha = "N"
                 end if

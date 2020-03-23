@@ -1,4 +1,9 @@
 ﻿<%
+
+if session("Franqueador")<>"" then
+    response.Redirect("./?Pers=1&P=FranqueadorPainel")
+end if
+
 if (session("Banco")="clinic5760"  or session("Banco")="clinic6118") and false then %>
 <div class="alert alert-alert text-center mt15">
     <h4><i class="fa fa-cog fa-spin"></i> Sua licença do Feegow está recebendo atualizações e melhorias. <br />Enquanto isso você pode continuar utilizando o sistema normalmente, porém alguns relatórios podem não funcionar neste momento.
@@ -40,13 +45,14 @@ end if
 <!--#include file="connect.asp"-->
 
 <%
-if session("Admin")=1 then
-    ComunicadoID = 1
+if session("Admin")=1 and (session("Banco")="clinic340" or session("Banco")="clinic105") then
+    ComunicadoID = 2
     LicencaID = replace(session("Banco"), "clinic", "")
-    NaoAparecer = "|6503|, |6517|, |6617|, |6706|, |6827|, |6416|, |7302|, |6834|, |6625|, |7427|, |7576|, |7629|, |7710|, |7782|, |7846|, |7995|, |5459|"
+    'NaoAparecer = "|6503|, |6517|, |6617|, |6706|, |6827|, |6416|, |7302|, |6834|, |6625|, |7427|, |7576|, |7629|, |7710|, |7782|, |7846|, |7995|, |5459|"
+
     if instr(NaoAparecer, "|"& LicencaID &"|")=0 then
         set vcom = db.execute("select * from cliniccentral.comunicados where ComunicadoID="& ComunicadoID &" and UserID="& session("User"))
-        if true then
+        if vcom.eof then
         %>
 
         <div id="comunicado" style="
@@ -70,7 +76,7 @@ if session("Admin")=1 then
             <div class="">
                 <div><img src="images/whatsapp-logo.png" width="90%"></div>
                 <div class="botoes" style=" margin-top: 10px;">
-                    <button id="ocultar1" type="button" onclick="inCom(1); $('#comunicado').fadeOut();" data-toggle="modal" data-target="#modalWhatsapp" style="
+                    <button id="ocultar1" type="button" onclick="inCom(0); $('#comunicado').fadeOut();" data-toggle="modal" data-target="#modalWhatsapp" style="
                         background: #ffeb00;
                         font-weight: 500;
 

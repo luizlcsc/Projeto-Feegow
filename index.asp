@@ -1270,6 +1270,14 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
     <% if device()="" then %>
       <!-- Begin: Page Footer -->
 
+      <%
+      if session("AtendimentoTelemedicina")&""<>"" and Request.QueryString("P")="Pacientes"  then
+      %>
+    <!--#include file="react/telemedicina/main.asp"-->
+    <%
+    end if
+    %>
+
       <footer id="content-footer" class="affix no-print">
         <div class="row">
           <div class="col-md-6 hidden-xs">

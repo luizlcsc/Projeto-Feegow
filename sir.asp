@@ -148,6 +148,11 @@ if aut(lcase(ref("resource"))&"A")=1 then
             Typed=ref("q")
             sql = "select id, concat(codigo, ' - ', descricao) as "&ref("c")&" from cliniccentral.cid10 where codigo like '%"&Typed&"%' or descricao like '%"&Typed&"%' order by codigo limit 10"
             initialOrder = "codigo"
+        elseif ref("t")="cliniccentral.principioativo" then
+            PermissaoParaAdd = 0
+            Typed=ref("q")
+            sql = "select * from cliniccentral.principioativo where Principio like '%"&Typed&"%' order by Principio limit 10"
+            initialOrder = "Principio"
         elseif ref("t")="procedimentos" then
             Typed=ref("q")
 

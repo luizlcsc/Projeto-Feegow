@@ -46,6 +46,11 @@ end if
 QuantidadeTotalUnidade = 0
 QuantidadeTotalConjunto = 0
 call refazPosicao(ProdutoID)
+
+DiasAvisoValidade = reg("DiasAvisoValidade")&""
+if DiasAvisoValidade="" then
+    DiasAvisoValidade = 5
+end if
 %>
 <br />
 <table width="100%" class="table table-striped table-bordered table-hover">
@@ -119,23 +124,26 @@ end if
                 addClass=""
                 addIco=""
                 addTooltip=""
-
+                trAddClass=""
 
                 if Validade&""<>"" then
-                    if Validade=<dateAdd("d", 10, date()) then
+                    if Validade=<dateAdd("d", DiasAvisoValidade, date()) then
                         Validade = Validade
                         addClass = "label label-warning"
+                        trAddClass = "warning"
+                        addIco = "fa fa-exclamation"
                         addTooltip = "Vencendo em "&DateDiff("d",date(), Validade)&" dias"
 
                         if Validade=<date() then
                             addClass = "label label-danger"
+                            trAddClass = "danger"
                             addIco = "fa fa-exclamation-triangle"
                             addTooltip = "Vencido há "&DateDiff("d",Validade,date())&" dias"
                         end if
                     end if
                 end if
                 %>
-                <tr>
+                <tr class="<%=trAddClass%>">
                     <td class="<%=hiddenII %>" width="1%"><input class="eti" type="checkbox" name="etiqueta" value="<%=lanc("PosicaoID") %>" /></td>
                     <td><%=lanc("Lote")%></td>
                     <td><span data-toggle="tooltip" data-title="<%=addTooltip%>" class="<%=addClass%>"><i class="<%=addIco%>"></i> <%=Validade%></span></td>

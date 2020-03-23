@@ -1,4 +1,4 @@
-const Controls = () => {
+const Controls = (props) => {
     const [] = React.useState([]);
 
     React.useEffect(() => {
@@ -28,7 +28,12 @@ const Controls = () => {
             </div>
             <div className={"mh5 control-button-content"}>
                 <button disabled data-control="start-call" style={{width: btnSize, height: btnSize, borderRadius: btnSize/2}} type="button" className="tm-panel-control btn btn-sm btn-rounded btn-success btn-block">
-                    <img style={{width: 35}} src="react/telemedicina/src/img/icone-call-on.png" alt=""/>
+
+                    { props.isConnecting ? (
+                        <div style={{fontSize: 20, display: "flex", textAlign: "center"}}>
+                            <i className="fa fa-spin fa-circle-o-notch"></i>
+                        </div>
+                    ) : (<img style={{width: 35}} src="react/telemedicina/src/img/icone-call-on.png" alt=""/>)}
                 </button>
             </div>
         </div>

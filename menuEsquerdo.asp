@@ -1591,7 +1591,7 @@ select case lcase(req("P"))
         %>
         <!--#include file="MenuEstoque.asp"-->
         <%
-    case "listaprodutos", "produtoscategorias", "produtoslocalizacoes", "produtosfabricantes"
+    case "listaprodutos", "produtoscategorias", "produtoslocalizacoes", "produtosfabricantes", "produtoskits"
         %><li class="sidebar-label pt20">Tipos de Itens</li><%
         set getTipoProduto = db.execute("SELECT * FROM cliniccentral.produtostipos")
         while not getTipoProduto.eof
@@ -1619,6 +1619,9 @@ select case lcase(req("P"))
         </li>
         <li <%if req("P")="ProdutosFabricantes" then%>class="active"<%end if%>>
             <a href="./?P=ProdutosFabricantes&Pers=0"><span class="fa fa-sitemap"></span> <span class="sidebar-title"> Fabricantes</span></a>
+        </li>
+        <li <%if req("P")="ProdutosKits" then%>class="active"<%end if%>>
+            <a href="./?P=ProdutosKits&Pers=Follow"><span class="fa fa-medkit"></span> <span class="sidebar-title"> Kits</span></a>
         </li>
 
 

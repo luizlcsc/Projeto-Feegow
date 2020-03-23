@@ -22,14 +22,12 @@ if Acao="I" then
         db_execute("UPDATE produtosinteracoes SET MedicamentosRestricaoTotal = '"&MedicamentosRestricaoTotal&"', MedicamentosTipoInteracao = '"&MedicamentosTipoInteracao&"', MedicamentosRestricaoParcial = '"&MedicamentosRestricaoParcial&"', AgentesRestricaoTotal = '"&AgentesRestricaoTotal&"', AgentesTipoInteracao = '"&AgentesTipoInteracao&"', AgentesRestricaoParcial = '"&AgentesRestricaoParcial&"', AlimentosRestricaoTotal = '"&AlimentosRestricaoTotal&"', AlimentosTipoInteracao = '"&AlimentosTipoInteracao&"', AlimentosRestricaoParcial = '"&AlimentosRestricaoParcial&"' WHERE ProdutoID="&I)
     end if
     %>
-    <script type="text/javascript">
         new PNotify({
             title: 'Salvo com sucesso',
             text: 'Interação salva com sucesso.',
             type: 'success',
             delay: 5000
         });
-    </script>
     <%
 end if
 
@@ -71,7 +69,7 @@ end if
                 <tr>
                     <td>Restritos (Impede a prescrição)</td>
                     <td>
-                        <%=quickField("multiple", "MedicamentosRestricaoTotal", "Selecione os Medicamentos que possuem Restrição Total", 12, MedicamentosRestricaoTotal, "SELECT * FROM produtos WHERE sysActive=1 AND TipoProduto=4", "NomeProduto", " empty")%>
+                        <%=quickField("multiple", "MedicamentosRestricaoTotal", "Selecione os Medicamentos que possuem Restrição Total", 12, MedicamentosRestricaoTotal, "SELECT * FROM produtos WHERE sysActive=1 AND TipoProduto=4 AND id<>"&I, "NomeProduto", " empty")%>
 
                     </td>
                 </tr>
@@ -79,7 +77,7 @@ end if
                     <td>Restrição parcial (Avisos e alertas)</td>
                     <td>
                         <%=quickField("multiple", "MedicamentosTipoInteracao", "Selecione o Tipo de Restrição Parcial", 12, MedicamentosTipoInteracao, "SELECT * FROM cliniccentral.produtostiposinteracoes", "TipoInteracao", " empty")%>
-                        <%=quickField("multiple", "MedicamentosRestricaoParcial", "Selecione os Medicamentos que possuem Restrição Parcial", 12, MedicamentosRestricaoParcial, "SELECT * FROM produtos WHERE sysActive=1 AND TipoProduto=4", "NomeProduto", " empty")%>
+                        <%=quickField("multiple", "MedicamentosRestricaoParcial", "Selecione os Medicamentos que possuem Restrição Parcial", 12, MedicamentosRestricaoParcial, "SELECT * FROM produtos WHERE sysActive=1 AND TipoProduto=4 AND id<>"&I, "NomeProduto", " empty")%>
                     </td>
                 </tr>
             </tbody>

@@ -48,14 +48,19 @@
             <%= quickfield("datepicker", "De", "Válido De", 2, De, "", "", "") %>
             <%= quickfield("datepicker", "Ate", "Válido Até", 2, Ate, "", "", "") %>
             <%=quickfield("simpleSelect", "Ordem", "Ordernar Por", 2, Ordem, "select 'Nome' id, 'Nome' Ordem union all select 'Validade' id, 'Validade' Ordem ", "Ordem", " semVazio no-select2") %>
+                <div class="col-md-2">
+                    <button class="btn btn-sm btn-primary  mt20"><i class="fa fa-search bigger-110"></i> Buscar</button>
+                    <button class="btn btn-sm btn-info mt20" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
+                    <button class="btn btn-sm btn-success mt20" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i></button>
+                </div>
 
 
-            <div class="col-md-2">
-                <button class="btn btn-sm btn-primary  mt20"><i class="fa fa-search bigger-110"></i> Buscar</button>
-                <button class="btn btn-sm btn-info mt20" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
-                <button class="btn btn-sm btn-success mt20" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i></button>
             </div>
-
+            <div class="row mt20">
+                <div class="col-md-2 Modulo-Medicamento">
+                    <%= selectInsert("Princípio Ativo", "PrincipioAtivo", PrincipioAtivo, "cliniccentral.principioativo", "Principio", "", "", "") %>
+                </div>
+            </div>
         </div>
     </div>
 </form>
@@ -90,11 +95,19 @@ $("#frmListaProdutos").submit(function () {
     $("#frmListaProdutos").submit();
 
     if($("#TipoProduto").val() != 1){$("#TipoProduto").attr("disabled", true);};
+    if($("#TipoProduto").val() != 4){
+        $(".Modulo-Medicamento").addClass("hidden");
+    };
 
     $("#TipoProduto").on("click", function (){
         var TipoProduto = $("#TipoProduto").val();
 
         $("#InserirProduto").attr("href", "?P=Produtos&Pers=1&I=N&TipoProduto="+TipoProduto);
+        if(TipoProduto != 4){
+            $(".Modulo-Medicamento").addClass("hidden");
+        }else{
+            $(".Modulo-Medicamento").removeClass("hidden");
+        };
     });
 
 

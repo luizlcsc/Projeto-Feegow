@@ -6,6 +6,9 @@ TipoProduto = req("TipoProduto")&""
 if TipoProduto&""="" then
     TipoProduto = "1"
 end if
+if TipoProduto <> 1 then
+    TipoProdutoReadonly = " disabled "
+end if
 tableName = "produtos"
 I = req("I")
 if I="N" then
@@ -42,9 +45,15 @@ if reg("sysActive")=0 then
 	disabled = " disabled=""disabled"""
 end if
 
-if req("TipoProduto")&""="" and reg("TipoProduto")<>1 then
+if reg("TipoProduto")&""<>1 then
     TipoProduto = reg("TipoProduto")
+else
+    TipoProduto = req("TipoProduto")&""
 end if
+
+
+EstoqueMaximo = reg("EstoqueMaximo")
+EstoqueMaximoTipo = reg("EstoqueMaximoTipo")
 CodigoTabela = reg("CodigoTabela")
 PrincipioAtivo = reg("PrincipioAtivo")
 TabelaProduto = reg("TabelaProduto")
@@ -145,7 +154,10 @@ end if
                     <div class="col-md-10">
                         <div class="row">
                             <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
-                            <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio")%>
+                            <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
+                            <%if TipoProdutoReadonly&""<>"" then%>
+                                <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
+                            <%end if%>
                             <%=quickField("text", "Codigo", "C&oacute;digo", 2, reg("Codigo"), "", "", "")%>
                             <div class="col-md-2">
                                 <%= selectInsert("Categoria", "CategoriaID", reg("CategoriaID"), "produtoscategorias", "NomeCategoria", "", "", "") %>

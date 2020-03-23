@@ -38,7 +38,7 @@ while not sqlTagsCategorias.eof
       tags_Descricao = sqlTags("Descricao")
       'tags_Exemplo = replaceTags(tags_tagNome,0,0,0)
       tags_copy = "<code class='copyableInput "&tags_tagNome&"' id='"&tags_tagNome&"'>"&tags_tagNome&"</code>"
-      tags_copy = "<button type='button' class='copyableInputButton btn btn-sm' onclick='copyToClipboard(`"&tags_tagNome&"`)'><i class='fa fa-paste'></i></button>"&tags_copy
+      tags_copy = "<button type='button' class='copyableInputButton btn btn-xs btn-dark' onclick='copyToClipboard(`"&tags_tagNome&"`)'><i class='fa fa-paste'></i></button>"&tags_copy
 
       tagsGridHTML = ""&_
       "<tr>"&_

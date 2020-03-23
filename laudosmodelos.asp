@@ -29,17 +29,7 @@ Unidades = reg("UnidadeID")
            <div class="row">
                <br/>
                <%= quickfield("editor", "Cabecalho", "Cabeçalho", 12, reg("Cabecalho"), "200", "", "") %>
-               <div class="row">
-                   <div class="col-md-6 pull-right">
-                       <%=macro("Cabecalho")%>
-                   </div>
-               </div>
                <%= quickfield("editor", "Rodape", "Rodapé", 12, reg("Rodape"), "200", "", "") %>
-               <div class="row">
-                   <div class="col-md-6 pull-right">
-                       <%=macro("Rodape")%>
-                   </div>
-               </div>
             </div>
         </div>
         <br/>

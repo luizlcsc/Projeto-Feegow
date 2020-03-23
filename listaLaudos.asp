@@ -217,15 +217,6 @@ end if
 
                     NomeProcedimento = ii("NomeProcedimento")
 
-                    if NomeProcedimento = "Laboratório" then
-                        sqlSiglas = "SELECT GROUP_CONCAT(DISTINCT ifnull(p.Sigla,'') SEPARATOR ', ') Siglas, GROUP_CONCAT(DISTINCT ifnull(p.Sigla,'') SEPARATOR '<br> ') SiglasDetalhamento FROM itensinvoice ii INNER JOIN procedimentos p ON ii.ItemID = p.id WHERE ii.Executado = 'S' and p.TipoProcedimentoID = 3 and ii.InvoiceID="&IDTabela
-                        set siglasSQL = db.execute(sqlSiglas)
-                        if not siglasSQL.eof then
-                            NomeProcedimento = siglasSQL("Siglas")
-                            ExamesDetalhamento = siglasSQL("SiglasDetalhamento")
-                            ExamesLaboratoriais = True
-                        end if
-                    end if
                     if NomeProcedimento&"" = "" then
                         NomeProcedimento = ""
                     end if
@@ -256,7 +247,11 @@ end if
                         end if
                     end if
                     %>
-                    <tr>
+                    <%if NomeProcedimento = "Laboratório" then %>
+                    <tr class="view" >
+                    <% else %>
+                    <TR>
+                    <% end if %> 
                         <td>
                             <div class="radio-custom square radio-dark ">
                               <input type="checkbox" name="cklaudos" id="cklaudo-<%=counter%>" class="cklaudos" value="<%= link %>" />
@@ -269,24 +264,12 @@ end if
                         <td><small><a target="_blank" href="?P=pacientes&I=<%=ii("PacienteID")%>&Pers=1"><%= left(ii("NomePaciente"), 24) %></a></small></td>
                         <td class="whatsapp" msg="<%=msgPadrao%>"><small><%= ii("Cel1") %></small></td>
                         <td><small><%= left(NomeProfissional, 20) %></small></td>
-                        <td>
-                                                    <%
-                                                    if ExamesLaboratoriais then
-                                                        %>
-                                                        <span data-container="body" data-toggle="popover"
-                                                              data-placement="left"
-                                                              data-html="true"
-                                                              title="Exames laboratoriais"
-                                                              data-content="<%=ExamesDetalhamento%> "
-                                                              data-original-title="Exames"
-                                                              class="label label-system"> <i class="fa fa-flask"></i> <%= left(NomeProcedimento, 20) %> ...</span>
-                                                        <%
-                                                    else
-                                                        %>
-                                                        <small><%= NomeProcedimento %></small>
-                                                        <%
-                                                    end if
-                                                    %>
+                        <td> 
+                            <%if NomeProcedimento = "Laboratório" then %>
+                                <span class="label label-system" title="Ver Detalhes" onclick="esconder('<%=ii("Identificacao")%>',<%=ii("invoiceid")%> );"> <i class="fa fa-flask"></i> <small><%=NomeProcedimento %></small> </span>
+                            <%else %>
+                                <small><%=NomeProcedimento %></small>
+                            <%end if%>
                         </td>
                         <td><%= ii("NomeConvenio") %></td>
                         <td><span class="label label-rounded label-<%=StatusClasse%>"><%= Status %></span></td>
@@ -298,7 +281,7 @@ end if
                                     <a id="a<%=ii("invoiceid") %>"  class="btn btn-sm btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado São Marcos"><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
                                 <% if ii("labid")="2" then %>
-                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
                             <% end if %>
                              <% if ii("labid")="2" then %>
@@ -310,6 +293,14 @@ end if
                             </div>
                         </td>
                     </tr>
+                    <% if NomeProcedimento = "Laboratório"  then%>
+                    <TR id="tr<%=ii("Identificacao")%>" style="display: none;">
+                        <TD> &nbsp;<TD>
+                        <TD colspan="100%"> 
+                            <DIV id="div<%=ii("Identificacao")%>"> </DIV>
+                        </TD> 
+                    </TD>
+                    <% end if %>
                     <%
                     end if
 
@@ -358,6 +349,25 @@ end if
 %>
 
 <script>
+
+function esconder(elemento,invoiceid){
+    var linha = '#tr'+elemento;
+    var conteudo = '#div'+elemento;
+    $(linha).toggle();
+
+    $(conteudo).html('<center>Carregando...</center>');
+    postUrl("labs-integration/diagbrasil/get-Exames-html", {
+        "invoiceid": invoiceid
+    }, function (data) {
+        if(data.success) {
+           $(conteudo).html(data.html);
+        } else {
+           $(conteudo).html('Não foi possivel obter a Informação do exame !');           
+        }
+    }); 
+
+}
+
 $(document).ready(function(){
    $('[data-toggle="tooltip"]').tooltip();
 
@@ -510,3 +520,4 @@ $(".lab-sync").on("click", function (labid =2){
         $(".atualizarstatus").attr("disabled", $(this).val() == 0 );
     });
 </script>
+

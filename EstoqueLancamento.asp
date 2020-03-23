@@ -59,6 +59,11 @@ ApresentacaoNome = prod("ApresentacaoNome")
 if isnull(ApresentacaoNome) or ApresentacaoNome="" then
 	ApresentacaoNome="Conjunto"
 end if
+
+LocaisEntradas = prod("LocaisEntradas")&""
+if LocaisEntradas&""<>"" then
+    sqlLocalizacoes = " AND id IN ("&replace(LocaisEntradas, "|", "")&") "
+end if
 %>
 <div class="modal-header">
     <button class="bootbox-close-button close" type="button" data-dismiss="modal">×</button>
@@ -68,14 +73,14 @@ end if
 <form id="EstoqueLancamento" name="EstoqueLancamento" method="post">
 <%
 'if ItemInvoiceID<>"" then
-'    set ii = db.execute("select ValorUnitario, Quantidade, Executado, Desconto, Acrescimo from itensinvoice where id="& ItemInvoiceID)
-'    if not ii.eof then
-'        Quantidade = ii("Quantidade")
-'        TipoUnidade = ii("Executado")
-'        UnidadePagto = ii("Executado")
-'        Valor = ii("ValorUnitario")-ii("Desconto")+ii("Acrescimo")
-'    end if
-'end if
+ '    set ii = db.execute("select ValorUnitario, Quantidade, Executado, Desconto, Acrescimo from itensinvoice where id="& ItemInvoiceID)
+ '    if not ii.eof then
+ '        Quantidade = ii("Quantidade")
+ '        TipoUnidade = ii("Executado")
+ '        UnidadePagto = ii("Executado")
+ '        Valor = ii("ValorUnitario")-ii("Desconto")+ii("Acrescimo")
+ '    end if
+ 'end if
 if ProdutoInvoiceID<>"" and ProdutoInvoiceID<>"undefined" then
     set ii = db.execute("select ValorUnitario, Quantidade, Executado, Desconto, Acrescimo from itensinvoice where id="& ProdutoInvoiceID)
     if not ii.eof then
@@ -120,8 +125,15 @@ end if
     if TipoLancto="E" then
 		%>
         <div class="row">
+
             <div class="col-md-3">
-                <%= selectInsert("Localização", "LocalizacaoID", 0, "produtoslocalizacoes", "NomeLocalizacao", "", "", "") %>
+            <%
+            if LocaisEntradas&""<>"" then
+                call quickField("simpleSelect", "LocalizacaoID", "Localização", 12, 0, "select * from produtoslocalizacoes where sysActive=1 "&sqlLocalizacoes&" order by NomeLocalizacao", "NomeLocalizacao", "")
+            else
+                call selectInsert("Localização", "LocalizacaoID", 0, "produtoslocalizacoes", "NomeLocalizacao", "", "", "")
+            end if
+            %>
             </div>
             <div class="col-md-3">
                 <%=selectInsertCA("Responsável", "Responsavel", Responsavel, "5, 4, 2, 6, 1, 3", "", "", "")%>

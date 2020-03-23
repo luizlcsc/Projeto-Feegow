@@ -144,10 +144,16 @@ TipoGuia = reg("TipoGuia")
                                 <input type="checkbox" name="ProcedimentoPacs" id="ProcedimentoPacs" value="S" class="ace" <% If reg("ProcedimentoPacs")="S" Then %> checked="checked" <% End If %> />
                                 <label for="ProcedimentoPacs">Procedimento Pacs </label>
                             </div>
+                            <%
+                            if recursoAdicional(32)=4 then
+                            %>
                             <div class="checkbox-custom checkbox-primary">
                                 <input type="checkbox" name="ProcedimentoTelemedicina" id="ProcedimentoTelemedicina" value="S" class="ace" <% If reg("ProcedimentoTelemedicina")="S" Then %> checked="checked" <% End If %> />
                                 <label for="ProcedimentoTelemedicina">Procedimento Telemedicina </label>
                             </div>
+                            <%
+                            end if
+                            %>
                         </div>
                     </div>
                     <hr class="short alt" />

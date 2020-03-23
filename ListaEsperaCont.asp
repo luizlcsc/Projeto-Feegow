@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <%
+TelemedicinaAtiva = recursoAdicional(32) = 4
 
 IF ref("Rechamar") = "1" THEN
     db.execute("UPDATE agendamentos SET Falado = NULL WHERE id = "&ref("id"))
@@ -457,7 +458,7 @@ else
             %> onClick="window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>&isTelemedicina=<% if isTelemedicina then %>true<%end if%>';"<%
         end if
         %><%
-        if isTelemedicina then
+        if isTelemedicina and TelemedicinaAtiva then
         %>
     	 class="btn btn-xs btn-alert" type="button" <%=disabPagto%> >
     	 <i class="fa fa-globe"></i> ATENDER ONLINE

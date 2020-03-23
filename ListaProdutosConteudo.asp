@@ -28,8 +28,15 @@
             if ref("ProdutoID")<>0 then
                 sqlProd = " AND pro.id="& ref("ProdutoID") &" "
             end if
+            if ref("TipoProduto")&""<>"" and ref("TipoProduto")<>"1" then
+                TipoProdutoRef = split(ref("TipoProduto")&"", ", ")
+                sqlTipoProduto = " AND pro.TipoProduto="& TipoProdutoRef(0)
+            end if
             if ref("Codigo")<>"" then
                 sqlCod = " AND pro.Codigo Like '%"& ref("Codigo") &"%' "
+            end if
+            if ref("PrincipioAtivo")<>"" and ref("TipoProduto")="4" then
+                sqlPrincipioAtivo = " AND pro.PrincipioAtivo="& ref("PrincipioAtivo") &" "
             end if
             if ref("CodigoIndividual")<>"" then
                 sqlCodInd = " AND estpos.CBID Like '%"& ref("CodigoIndividual") &"%' "
@@ -62,13 +69,12 @@
                 sqlAbaixo = " AND ( (posicaoConjunto>=EstoqueMinimo) OR ( (posicaoUnidade+(posicaoConjunto*ApresentacaoQuantidade))>EstoqueMinimo) )"
             end if
 '(select Validade from estoqueposicao where ProdutoID=pro.id AND Validade<now() ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1)
-
             set prod = db.execute("SELECT pro.*, estpos.id PosicaoID, procat.NomeCategoria, profab.NomeFabricante, estpos.Validade , proloc.NomeLocalizacao FROM produtos pro "&_
             "LEFT JOIN produtoscategorias procat ON procat.id=pro.CategoriaID "&_
             "LEFT JOIN produtosfabricantes profab ON profab.id=pro.FabricanteID "&_
             "LEFT JOIN produtoslocalizacoes proloc ON proloc.id=pro.LocalizacaoID "&_
             "LEFT JOIN estoqueposicao estpos ON estpos.ProdutoID=pro.id "&_
-            "WHERE pro.sysActive=1 "& sqlProd & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem)
+            "WHERE pro.sysActive=1 "& sqlProd & sqlTipoProduto & sqlPrincipioAtivo & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem)
             while not prod.EOF
                 if prod("Validade")=<dateAdd("d", 10, date()) then
                     Validade = prod("Validade")
@@ -92,7 +98,7 @@
                     <td><%=prod("NomeFabricante")%></td>
                     <td><%=prod("NomeLocalizacao")%></td>
                     <td><span class="<%=addClass%>"><%=Validade%></span></td>
-                    <td class="hidden-print"><a class="btn btn-xs btn-success" target="_blank" href="./?P=Produtos&Pers=1&I=<%=prod("id")%>"><i class="fa fa-edit"></i></a></td>
+                    <td class="hidden-print"><a class="btn btn-xs btn-success" href="./?P=Produtos&Pers=1&I=<%=prod("id")%>"><i class="fa fa-edit"></i></a></td>
                 </tr>
                 </tbody>
             <%

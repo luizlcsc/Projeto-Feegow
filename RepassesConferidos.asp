@@ -76,9 +76,11 @@ De = req("De")
 TipoData = req("TipoData")
 
 if De&""<>"" and TipoData="Comp" then
-    DeExec = dateadd("m", -3, De)
+    DeExec = dateadd("m", -6, De)
+    DeSqlProf = dateadd("d", -15, De)
 else
     DeExec=De
+    DeSqlProf = De
 end if
 
 Ate = req("Ate")
@@ -193,7 +195,7 @@ if ExibeResultado then
                                                                          "WHEN ItemGuiaID is not null then (SELECT ps.Data FROM tissprocedimentossadt ps WHERE ps.id=ItemGuiaID LIMIT 1) "&_
                                                                          "WHEN ItemGuiaID is not null then (SELECT ph.Data FROM tissprocedimentoshonorarios ph WHERE ph.id=ItemHonorarioID LIMIT 1) "&_
                                                                          "WHEN GuiaConsultaID is not null then (SELECT gc.DataAtendimento FROM tissguiaconsulta gc WHERE gc.id=GuiaConsultaID LIMIT 1) "&_
-                                                                         "END) BETWEEN "& mydateNull(De) &" AND "& mydateNull(Ate) &" AND ContaCredito not in ('0', '0_0', 'LAU', '')")
+                                                                         "END) BETWEEN "& mydateNull(DeSqlProf) &" AND "& mydateNull(Ate) &" AND ContaCredito not in ('0', '0_0', 'LAU', '')")
     else
         set ProfissionalSQL = db.execute("SELECT '"&AccountID&"' AccountID")
     end if
@@ -259,6 +261,10 @@ if ExibeResultado then
                 " LEFT JOIN sys_financialreceivedchecks cheque ON cheque.MovementID=mdesc.id "&_
                 " WHERE (t.ContaCredito LIKE CONCAT('%_"& ContaCredito &"') or t.ContaCredito='"& ContaCredito &"') AND t.ConvenioID IN ("& Forma &") "&sqlFormRecto&" AND t.modoCalculo='"& modoCalculo &"' "& sqlUnidades &_
                 " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente, proc.NomeProcedimento"
+
+                if req("Debug")="1" then
+                    response.write( session("Banco") & chr(10) & chr(13) & sqlRR )
+                end if
 
                 set rr = db.execute( sqlRR )
                 if not rr.eof then
@@ -332,7 +338,6 @@ if ExibeResultado then
                         ValorRepasse = fn(calculaRepasse(rr("id"), rr("Sobre"), rr("ValorProcedimento"), rr("Valor"), rr("TipoValor")))
                         TotalRepasse = TotalRepasse+ValorRepasse
                         TotalProcedimento = TotalProcedimento+ValorParcela
-                        ContaRepasses = ContaRepasses+1
                         if not isnull(rr("ItemInvoiceID")) then
                             aLink = "<a target='_blank' href='./?P=invoice&Pers=1&I="& rr("InvoiceID") &"'>"
                             fLink = "</a>"
@@ -386,6 +391,7 @@ if ExibeResultado then
 
 
                         if DataOk then
+                            ContaRepasses = ContaRepasses+1
                         %>
                         <tr invoiceapagarid="<%=rr("InvoiceAPagarID")%>">
                             <td>

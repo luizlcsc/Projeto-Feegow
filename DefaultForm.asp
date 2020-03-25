@@ -1,5 +1,18 @@
 ﻿﻿<!--#include file="modal.asp"-->
 <%
+function desfazBloqueioFeriado(feriadoid)
+	sqlBuscaBloqueios = " select * "&_ 
+						" from compromissos where FeriadoID = "&feriadoid&" "&_ 
+						" and DataA >= '"&mydate(Date)&"'" 
+	set bloqueiosFeriados = db.execute(sqlBuscaBloqueios)
+
+	if not bloqueiosFeriados.eof then
+		db_execute(" delete "&_ 
+					" from compromissos where FeriadoID = "&feriadoid&" "&_ 
+					" and DataA >= '"&mydate(Date)&"' " )
+	end if
+end function
+
 function DefaultForm(tableName, id)
 	if lcase(tableName)="pacientes" then
 		omitir = ""
@@ -225,6 +238,9 @@ function DefaultForm(tableName, id)
 									'db_execute("delete from cliniccentral.licencasusuarios where id="&userX("id")&" and LicencaID="&replace(session("Banco"), "clinic", ""))
 								end if
 							end if
+						end if
+						if lcase(tableName)="feriados" then
+							call desfazBloqueioFeriado(req("X"))
 						end if
 						response.Redirect("?P="&request.QueryString("P")&"&Pers="&request.QueryString("Pers"))
 					end if
@@ -500,6 +516,11 @@ function DefaultForm(tableName, id)
 										end if
 									else
 										valor = reg(splfieldsInList(i))
+									end if
+									if splfieldFieldType(i)=5 then
+										if valor <>"" then
+											valor = "Sim"
+										end if
 									end if
 									if splfieldFieldType(i)=6 then
 										classeRight = " text-right"
@@ -898,6 +919,41 @@ function DefaultForm(tableName, id)
 '				response.Write(sqlUpdate)
                 'call logMessage(tableName,id, "Cadastro alterado.")
 				db_execute(sqlUpdate)
+
+				'verifica se é feriado e se precisa bloquear na agenda
+				if lcase(tableName)="feriados" then
+					nomeferiado = ref("NomeFeriado")
+					data = ref("Data")
+					recorrente = ref("Recorrente")
+					bloquear = ref("BloquearAgenda")
+
+					call desfazBloqueioFeriado(id)
+
+					if bloquear <> "" then
+						ocorrencias = 1
+						inicio = 0
+
+						data = DateValue(DAY(data) & "/" & MONTH(data) & "/" & YEAR(Date))
+
+						if data <= Date then
+							inicio = 1
+						end if 
+
+						data = DateAdd("yyyy",inicio,data)
+						sqlBloqueio = "insert into compromissos (FeriadoID, DataDe, DataA, HoraDe, HoraA, ProfissionalID, Titulo, Descricao, Usuario, Data, DiasSemana, Profissionais, Unidades, BloqueioMulti) values ("&id&",'"&mydate(data)&"', '"&mydate(data)&"', '00:00', '23:59', '0', '"&nomeferiado&"', '"&nomeferiado&"', '"&session("User")&"', '"&now()&"', '1 2 3 4 5 6 7','','','S')"
+						db_execute(sqlBloqueio)
+
+						if recorrente <> "" then
+							inicio = inicio+1
+							For i = 1 To 5 
+								data = DateAdd("yyyy",inicio,data)
+								sqlBloqueio = "insert into compromissos (FeriadoID, DataDe, DataA, HoraDe, HoraA, ProfissionalID, Titulo, Descricao, Usuario, Data, DiasSemana, Profissionais, Unidades, BloqueioMulti) values ("&id&",'"&mydate(data)&"', '"&mydate(data)&"', '00:00', '23:59', '0', '"&nomeferiado&"', '"&nomeferiado&"', '"&session("User")&"', '"&now()&"', '1 2 3 4 5 6 7','','','S')"
+								db_execute(sqlBloqueio)
+							Next
+						end if
+					end if
+				end if
+
 				response.Redirect("?P="&tableName)
 	
 			end if

@@ -350,11 +350,11 @@ else
                             " AND AssociationAccountID=3 "&_
                             " AND ii.Tipo='S' "&_
                             " AND ii.ItemID="&veseha("TipoCompromissoID")&" "&_
-                            " AND FLOOR((ii.Quantidade * (ii.ValorUnitario+ii.Acrescimo-ii.Desconto)))>= FLOOR("&veseha("ValorPlano")&") "&_
+                            " AND FLOOR((ii.Quantidade * (ii.ValorUnitario+ii.Acrescimo-ii.Desconto)))>= FLOOR("&treatvalzero(veseha("ValorPlano"))&") "&_
                             " AND FLOOR(IFNULL(("&_
                             " 				SELECT SUM(Valor)"&_
                             " 				FROM itensdescontados"&_
-                            " 				WHERE ItemID=ii.id), 0))>= FLOOR("&veseha("ValorPlano")&") "&_
+                            " 				WHERE ItemID=ii.id), 0))>= FLOOR("&treatvalzero(veseha("ValorPlano"))&") "&_
                             " AND (ISNULL(DataExecucao) OR DataExecucao= '"&mydate(veseha("Data"))&"' OR Executado='') "&_
                             " AND (ii.ProfissionalID="&veseha("ProfissionalID")&" or ii.ProfissionalID=0) "&_
                             " AND ii.Executado!='C' "

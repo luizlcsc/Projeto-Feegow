@@ -940,14 +940,14 @@ function DefaultForm(tableName, id)
 						end if 
 
 						data = DateAdd("yyyy",inicio,data)
-						sqlBloqueio = "insert into compromissos (FeriadoID, DataDe, DataA, HoraDe, HoraA, ProfissionalID, Titulo, Descricao, Usuario, Data, DiasSemana, Profissionais, Unidades, BloqueioMulti) values ("&id&",'"&mydate(data)&"', '"&mydate(data)&"', '00:00', '23:59', '0', '"&nomeferiado&"', '"&nomeferiado&"', '"&session("User")&"', '"&now()&"', '1 2 3 4 5 6 7','','','S')"
+						sqlBloqueio = "insert into compromissos (FeriadoID, DataDe, DataA, HoraDe, HoraA, ProfissionalID, Titulo, Descricao, Usuario, Data, DiasSemana, Profissionais, Unidades, BloqueioMulti) values ("&id&",'"&mydate(data)&"', '"&mydate(data)&"', '00:00', '23:59', '0', '"&nomeferiado&" (feriado)', '', '"&session("User")&"', '"&now()&"', '1 2 3 4 5 6 7','','','S')"
 						db_execute(sqlBloqueio)
 
 						if recorrente <> "" then
 							inicio = inicio+1
 							For i = 1 To 5 
 								data = DateAdd("yyyy",inicio,data)
-								sqlBloqueio = "insert into compromissos (FeriadoID, DataDe, DataA, HoraDe, HoraA, ProfissionalID, Titulo, Descricao, Usuario, Data, DiasSemana, Profissionais, Unidades, BloqueioMulti) values ("&id&",'"&mydate(data)&"', '"&mydate(data)&"', '00:00', '23:59', '0', '"&nomeferiado&"', '"&nomeferiado&"', '"&session("User")&"', '"&now()&"', '1 2 3 4 5 6 7','','','S')"
+								sqlBloqueio = "insert into compromissos (FeriadoID, DataDe, DataA, HoraDe, HoraA, ProfissionalID, Titulo, Descricao, Usuario, Data, DiasSemana, Profissionais, Unidades, BloqueioMulti) values ("&id&",'"&mydate(data)&"', '"&mydate(data)&"', '00:00', '23:59', '0', '"&nomeferiado&" (feriado)', '', '"&session("User")&"', '"&now()&"', '1 2 3 4 5 6 7','','','S')"
 								db_execute(sqlBloqueio)
 							Next
 						end if
@@ -1292,7 +1292,11 @@ function DefaultForm(tableName, id)
 			set pfields=nothing
 			response.Write(endRow)
 			%>
-
+			<% if lcase(tableName)="feriados" then %>
+				<div class="alert alert-info" role="alert">
+					Ao marcar "Recorrente" em um feriado marcado com "Bloqueia na agenda" ele irá bloquear o dia do feriado pelos próximos 5 anos.
+				</div>
+			<% end if %>
             <script type="text/javascript">
                 $(".crumb-active a").html("<%=res("name")%>");
                 $(".crumb-icon a span").attr("class", "fa fa-<%=dIcone(res("tableName"))%>");

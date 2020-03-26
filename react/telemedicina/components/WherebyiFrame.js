@@ -1,25 +1,6 @@
-const Popup = (props) => {
+const WherebyiFrame = (props) => {
     const [isConnecting, setIsConnecting] = React.useState(false);
 
-
-    const listeners = {
-        onPeerReady: () => {
-            telemedicine.login(10000);
-        }
-    }
-
-    const telemedicine = new Telemedicine(props.licencaId, props.profissionalId, props.pacienteId, props.agendamentoId, null, listeners);
-
-    telemedicine.setApiDomain((props.env === "production" ? 'https://api.feegow.com.br' : 'http://localhost:8000') + "/patient-interface/" + props.licencaId);
-    telemedicine.setUser("doctor");
-    telemedicine.setOnIsConnecting((isConn) => {
-        setIsConnecting(isConn);
-    });
-
-
-    setTimeout(() => {
-        telemedicine.init();
-    }, 500);
 
     const onClose = () => {
         if (confirm("Tem certeza que deseja fechar?")) {
@@ -35,8 +16,10 @@ const Popup = (props) => {
         const $popup = document.getElementById("root"),
             $popupDialog = document.getElementById("tm-popup-dialog"),
             $popupBackdrop = document.getElementById("tm-popup-backdrop"),
-            $videoPatient = document.getElementById("pattern"),
-            $videoDoctor = document.getElementById("local"),
+            // $videoPatient = document.getElementById("pattern"),
+            // $videoDoctor = document.getElementById("local"),
+            $iframe = document.getElementById("tm-iframe"),
+
             $popupContent = document.getElementById("tm-popup-content");
 
 
@@ -50,9 +33,10 @@ const Popup = (props) => {
         $popupContent.classList.add("tm-popup-content-expanded");
         $popupContent.classList.add("modal-content");
 
-        $videoPatient.classList.add("tm-video-maximized");
+        // $videoPatient.classList.add("tm-video-maximized");
         // $videoPatient.style.width = "80%";
-        $videoDoctor.style.width = "150px";
+        // $videoDoctor.style.width = "150px";
+        $iframe.classList.add("tm-iframe-maximized");
 
         $("#root").draggable("destroy");
     };
@@ -61,8 +45,8 @@ const Popup = (props) => {
         const $popup = document.getElementById("root"),
             $popupDialog = document.getElementById("tm-popup-dialog"),
             $popupBackdrop = document.getElementById("tm-popup-backdrop"),
-            $videoPatient = document.getElementById("pattern"),
-            $videoDoctor = document.getElementById("local"),
+            // $videoPatient = document.getElementById("pattern"),
+            $iframe = document.getElementById("tm-iframe"),
             $popupContent = document.getElementById("tm-popup-content");
 
 
@@ -77,17 +61,11 @@ const Popup = (props) => {
         $popupContent.classList.remove("modal-content");
 
         // $videoPatient.style.width = "100%";
-        $videoPatient.classList.remove("tm-video-maximized");
-        $videoDoctor.style.width = "75px";
+        $iframe.classList.remove("tm-iframe-maximized");
+        // $videoDoctor.style.width = "75px";
 
         $("#root").draggable();
     };
-
-    const onReconnect = () => {
-        telemedicine.reconnect();
-    }
-
-
 
     return (
         <div>
@@ -95,15 +73,20 @@ const Popup = (props) => {
 
             <div id={"tm-popup-dialog"}>
                 <div id={"tm-popup-content"}>
-                    <Header renderMode={"absolute"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
-                    <Video/>
-
-                    <div className={"tm-parent-controls-content"}>
-                        <Controls isConnecting={isConnecting}/>
+                    <Header bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
+                    <div style={{
+                        display: "flex"
+                    }}>
+                        <iframe id={"tm-iframe"} style={{
+                            width: "100%"
+                        }} frameBorder="0" src="https://feegow.whereby.com/telemedicina01?embed&iframeSource=feegow"
+                                allow="camera;microphone;fullscreen;speaker;chat"/>
                     </div>
                 </div>
 
             </div>
         </div>
+
+
     );
 };

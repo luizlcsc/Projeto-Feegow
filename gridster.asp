@@ -3,7 +3,8 @@
 	I = req("I")
 %>
 <!--#include file="newFormEstilo.asp"-->
-
+<%RecursoTag = "AnamnesesEvolucoes"%>
+<!--#include file="Tags.asp"-->
   <div id="demo-1" class="gridster">
     <ul style="background-color:#fff; min-width:820px; max-width:820px;">
     <%

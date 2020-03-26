@@ -1,4 +1,5 @@
 <%
+modalModulo = req("P")
 if RecursoTag= "" then
     RecursoTag = request.QueryString("P")
 end if

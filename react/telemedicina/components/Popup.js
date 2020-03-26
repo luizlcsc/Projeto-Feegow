@@ -2,9 +2,13 @@ const Popup = (props) => {
     const [isConnecting, setIsConnecting] = React.useState(false);
 
 
-    const telemedicine = new Telemedicine(props.licencaId, props.profissionalId, props.pacienteId, props.agendamentoId, () => {
-        telemedicine.login(10000);
-    });
+    const listeners = {
+        onPeerReady: () => {
+            telemedicine.login(10000);
+        }
+    }
+
+    const telemedicine = new Telemedicine(props.licencaId, props.profissionalId, props.pacienteId, props.agendamentoId, null, listeners);
 
     telemedicine.setApiDomain((props.env === "production" ? 'https://api.feegow.com.br' : 'http://localhost:8000') + "/patient-interface/" + props.licencaId);
     telemedicine.setUser("doctor");

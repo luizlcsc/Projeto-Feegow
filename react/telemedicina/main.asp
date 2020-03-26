@@ -13,6 +13,7 @@ atendimentos = replace(session("Atendimentos"), "|", "")
 sqlAgendamento = "SELECT age.id FROM agendamentos age INNER JOIN atendimentos ate ON ate.AgendamentoID=age.id AND ate.id IN ("&atendimentos&") WHERE age.PacienteID="&pacienteId&" AND age.ProfissionalID="&profissionalID&" AND age.StaID in (2)"
 set AgendamentoSQL = db.execute(sqlAgendamento)
 
+if not AgendamentoSQL.eof then
     agendamentoId=AgendamentoSQL("id")
     %>
     <script crossorigin  src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
@@ -22,11 +23,11 @@ set AgendamentoSQL = db.execute(sqlAgendamento)
 <%
 if AppEnv="development" then
 %>
-    <script crossorigin  src="http://localhost:8000/modules/patientinterface/js/Telemedicine.js?time=1"></script>
+    <script crossorigin  src="http://localhost:8000/modules/patientinterface/js/Telemedicine.js?time=123"></script>
 <%
 else
 %>
-    <script crossorigin  src="https://api.feegow.com.br/modules/patientinterface/js/Telemedicine.js?time=1"></script>
+    <script crossorigin  src="https://api.feegow.com.br/modules/patientinterface/js/Telemedicine.js?time=123"></script>
 <%
 end if
 %>
@@ -34,7 +35,7 @@ end if
     <script crossorigin type="text/babel" src="react/telemedicina/Services/TelemedicinaService.js"></script>
     <script crossorigin type="text/babel" src="react/telemedicina/components/Video.js"></script>
     <script crossorigin type="text/babel" src="react/telemedicina/components/Controls.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/Popup.js"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/Popup.js?v=1"></script>
     <script crossorigin type="text/babel" src="react/telemedicina/components/WherebyiFrame.js"></script>
     <script crossorigin type="text/babel" src="react/telemedicina/components/Header.js"></script>
     <link type="text/css" rel="stylesheet" href="react/telemedicina/src/css/telemedicina.css" />
@@ -62,4 +63,5 @@ end if
     $("#root").draggable();
     </script>
 <%
+end if
 %>

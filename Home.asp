@@ -45,7 +45,12 @@ end if
 <!--#include file="connect.asp"-->
 
 <%
-if session("Admin")=1 and (session("Banco")="clinic340" or session("Banco")="clinic105") then
+if session("Admin")=1 then
+
+%>
+<!--#include file="react/popup-comunicados/main.asp"-->
+<%
+
     ComunicadoID = 2
     LicencaID = replace(session("Banco"), "clinic", "")
     'NaoAparecer = "|6503|, |6517|, |6617|, |6706|, |6827|, |6416|, |7302|, |6834|, |6625|, |7427|, |7576|, |7629|, |7710|, |7782|, |7846|, |7995|, |5459|"
@@ -58,7 +63,7 @@ if session("Admin")=1 and (session("Banco")="clinic340" or session("Banco")="cli
         <div id="comunicado" style="
         display: grid;
         grid-template-columns: 1fr 1fr;
-        background-image: linear-gradient(to right, #29b53f, #51cd5e); 
+        background-image: linear-gradient(to right, #29b53f, #51cd5e);
         max-width:560px;
         padding: 10px 10px 10px 20px;
         border-radius: 6px;
@@ -70,8 +75,8 @@ if session("Admin")=1 and (session("Banco")="clinic340" or session("Banco")="cli
         position: absolute;
         right: 20px;
         bottom: 20px;
-        position:fixed; 
-        bottom:70px; 
+        position:fixed;
+        bottom:70px;
         z-index:1000000;">
             <div class="">
                 <div><img src="images/whatsapp-logo.png" width="90%"></div>
@@ -141,7 +146,7 @@ if session("Admin")=1 and (session("Banco")="clinic340" or session("Banco")="cli
                 <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: rgba(0, 0, 0, 0.23); padding-right: 10px;"></span> <strong>Pesquisa</strong> de satisfação</p>
                 <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: rgba(0, 0, 0, 0.23); padding-right: 10px;"></span> <strong>Notificação</strong> de falta</p>
             </div>
-        </div>    
+        </div>
 
         <div class="modal fade whatsapp-plan-details" id="modalWhatsapp" tabindex="-1" role="dialog" aria-labelledby="modalWhatsappLabel" aria-hidden="true">
         <div class="modal-dialog conteudo-whatsapp" role="document" style="width: 900px;">

@@ -74,13 +74,13 @@ FormaID = req("FormaID")
 Lancado = req("Lancado")
 De = req("De")
 TipoData = req("TipoData")
+DeSqlProf = De
 
 if De&""<>"" and TipoData="Comp" then
     DeExec = dateadd("m", -6, De)
     DeSqlProf = dateadd("d", -15, De)
 else
     DeExec=De
-    DeSqlProf = De
 end if
 
 Ate = req("Ate")

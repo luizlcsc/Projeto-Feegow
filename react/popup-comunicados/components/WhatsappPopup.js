@@ -1,4 +1,4 @@
-const TelemedicinaPopup = (props) => {
+const WhatsappPopup = (props) => {
     const [] = React.useState([]);
 
     React.useEffect(() => {
@@ -6,22 +6,22 @@ const TelemedicinaPopup = (props) => {
     }, []);
 
     return (
-        <div id="popup-comunicado" className={"popup-tm"} style={{backgroundImage: "linear-gradient(to right, #2b9dc8, #10bed8)"}}>
-            <div className="a123">
-                <div><img src="react/popup-comunicados/src/img/telemedicina-popup.png" width="90%"/></div>
+        <div id="popup-comunicado" className={"popup-tm"} style={{backgroundImage: "linear-gradient(to right, #29b53f, #51cd5e)"}}>
+            <div className="">
+                <div><img src="react/popup-comunicados/src/img/whatsapp-popup.png" width="90%"/></div>
                 <div className="botoes" style={{
                     marginTop: 10
                 }}>
                     <button id="ocultar1" type="button" onClick={() => {
                         props.onActionButton(1, props.comunicadoId)
                     }}
-                            style={{background: "#44e044"}}
+                            style={{background: "#ffeb00"}}
 
                             data-toggle="modal" data-target="#modalWhatsapp" className={"popup-tm-button"}>
                         <strong>Ativar agora!</strong>
                     </button>
                     <button id="ocultar2" type="button" className="btn btn-recusar marginleft5 popup-tm-button-deny"
-                            style={{background: "#1a81ae"}}
+                            style={{background: "#37903f"}}
                             onClick={() => {
                                 props.onActionButton(0, props.comunicadoId)
                             }}>
@@ -34,15 +34,15 @@ const TelemedicinaPopup = (props) => {
                 <p className={"popup-tm-detail"}>
                     <span className="glyphicon glyphicon-ok popup-tm-defail-icon"
                           aria-hidden="true"/>
-                    <strong>Teleconsultas</strong></p>
+                    <strong>Confirmação</strong> de consulta</p>
                 <p className={"popup-tm-detail"}>
                     <span className="glyphicon glyphicon-ok popup-tm-defail-icon"
                           aria-hidden="true"/>
-                    Pagamento <strong>Online</strong></p>
+                    <strong>Pesquisa</strong> de satisfação</p>
                 <p className={"popup-tm-detail"}>
                     <span className="glyphicon glyphicon-ok popup-tm-defail-icon"
                           aria-hidden="true"/>
-                    <strong>Integrado</strong> ao agendamento online</p>
+                    <strong>Notificação</strong> de falta</p>
             </div>
         </div>
     );

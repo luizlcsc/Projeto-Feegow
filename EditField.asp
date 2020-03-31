@@ -177,7 +177,9 @@ set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where
         }
         </script>
     </div>
-	<%=macro("ValorPadrao")%>
+	
+    <%RecursoTag = "AnamnesesEvolucoes"%>
+    <!--#include file="Tags.asp"-->
 	<%
     end if
     if TipoCampoID=11 then
@@ -334,7 +336,9 @@ if TipoCampoID=1 or TipoCampoID=2 or TipoCampoID=6 then
             <label for="ValorPadrao">Valor Padrão</label><br />
 
             <input type="text" class="form-control" name="ValorPadrao" id="ValorPadrao" value="<%= ValorPadrao %>" />
-            <%=macro("ValorPadrao")%>
+            
+            <%RecursoTag = "AnamnesesEvolucoes"%>
+            <!--#include file="Tags.asp"-->
         </div>
         <div class="col-md-3">
             <button type="button" class="btn btn-block btn-alert mt20" onclick="$('#divFormula').slideToggle()">Configurar Fórmula <i class="fa fa-chevron-down"></i></button>
@@ -385,7 +389,9 @@ if TipoCampoID=15 then
 		<%=quickField("simpleSelect", "ValorPadrao", "Valor Padr&atilde;o", 6, ValorPadrao, "select id, RotuloCampo from buicamposforms where TipoCampoID in (1) and FormID="& FormID, "RotuloCampo", "")%>
         <div class="col-md-6">
             <hr class="short alt" />
-            <%=macro("ValorPadrao")%>
+            
+            <%RecursoTag = "AnamnesesEvolucoes"%>
+            <!--#include file="Tags.asp"-->
         </div>
     </div>
 	<%

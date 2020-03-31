@@ -1506,7 +1506,7 @@ select case lcase(req("P"))
         </li>
         <li>
             <a data-toggle="tab" href="#divLaudosOnline" onclick="ajxContent('LaudosOnline', '', 1, 'divLaudosOnline');">
-                <span class="fa fa-flask"></span> <span class="sidebar-title">Laudos Online <span class="label label-system label-xs fleft">Novo</span></span></a>
+                <span class="fa fa-flask"></span> <span class="sidebar-title">Área do paciente <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>
          <a data-toggle="tab" href="#divIntegracoes" onclick="ajxContent('novasConfiguracoes', '', 1, 'divIntegracoes');">

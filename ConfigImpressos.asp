@@ -63,7 +63,6 @@ if not reg.EOF then
 end if
 
     'PARAMETROS MODAL TAGS - include tags.asp
-    modalModulo = req("P")
     RecursoTag = ""
 %>
 <form method="post" action="" id="formImpressos">

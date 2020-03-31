@@ -56,13 +56,25 @@
     padding-top: 10px;
 }
 
-.tm-header-content {
+.tm-header-content-abs {
     flex-direction: row;
     display: flex;
     justify-content: flex-end;
     padding-right: 10px;
     padding-top: 10px;
     position: absolute;
+    right: 0;
+}
+
+
+.tm-header-content {
+    flex-direction: row;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    /*position: absolute;*/
     right: 0;
 }
 
@@ -156,4 +168,11 @@
 .tm-panel-control-black {
     background-color: #2b2b2b;
     color: #fff;
+}
+
+.tm-video-maximized {
+    max-height: calc(100vh - 200px);
+}
+.tm-iframe-maximized {
+    height: calc(100vh - 200px);
 }

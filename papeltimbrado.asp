@@ -32,15 +32,13 @@ set reg = db.execute("select * from "& req("P") &" where id="& req("I"))
                 <br/>
                 <%= quickfield("editor", "Cabecalho", "Cabeçalho", 12, reg("Cabecalho"), "200", "", "") %>
                 <div class="row">
-                    <div class="col-md-6 pull-right">
-                        <%=macro("Cabecalho")%>
+                    <div class="col-md-6">
+                        <br>
+                        <%RecursoTag = "PapelTimbrado"%>
+                        <!--#include file="Tags.asp"-->
                     </div>
                 </div>
                 <%= quickfield("editor", "Rodape", "Rodapé", 12, reg("Rodape"), "200", "", "") %>
-                <div class="row">
-                    <div class="col-md-6 pull-right">
-                        <%=macro("Rodape")%>
-                    </div>
                 </div>
             </div>
         </div>

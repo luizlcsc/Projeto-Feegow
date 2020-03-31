@@ -76,10 +76,12 @@ while not lista.eof
 	        Unidades=UnidadesSQL("NomeUnidades")
 	    end if
 	end if
-
+	IF lista("feriadoID")&"" <>"" then
+		iconferiado = "<i class='fa fa-road' title='Feriado'></i> "
+	end if 		
 	%>
 	<tr>
-    	<td><%= lista("DataDe")&" - "&lista("DataA") %></td>
+    	<td><%= iconferiado&lista("DataDe")&" - "&lista("DataA") %></td>
     	<td><%= Periodo %></td>
     	<td><%= nameInTable(lista("Usuario")) %></td>
     	<td><%= lista("Titulo") %></td>

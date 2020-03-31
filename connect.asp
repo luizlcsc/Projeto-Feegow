@@ -3607,8 +3607,13 @@ function podeExcluir(xCaixaID, xType, xCD, xAccountAssociationIDCredit)
     end if
 end function
 
-function dispEquipamento(Data, Hora, Intervalo, EquipamentoID)
+function dispEquipamento(Data, Hora, Intervalo, EquipamentoID, AgendamentoID)
     dispEquipamento = ""
+    
+    if AgendamentoID&"" <> "" then
+        andAgendamentoID = " AND a.id <>"&AgendamentoID
+    end if
+
     if isnumeric(Intervalo) and Intervalo<>"" and not isnull(Intervalo) then
         Intervalo = ccur(Intervalo)
     else
@@ -3619,15 +3624,16 @@ function dispEquipamento(Data, Hora, Intervalo, EquipamentoID)
         if ccur(EquipamentoID)<>0 then
             sqlDisp = "SELECT a.Hora, a.HoraFinal, p.NomeProfissional FROM agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID WHERE a.StaID not in(11) and a.Data="&mydatenull(Data)&" AND "&_
                     "("&_
-                    "("&mytime(Hora)&">=a.Hora AND "&mytime(Hora)&"<a.HoraFinal)"&_
+                    "("&mytime(Hora)&">=a.Hora AND "&mytime(Hora)&"< ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*60)))"&_
                     " OR "&_
-                    "("&mytime(HoraFinal)&">a.Hora AND "&mytime(HoraFinal)&"<a.HoraFinal)"&_
+                    "("&mytime(HoraFinal)&">a.Hora AND "&mytime(HoraFinal)&"< ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*60)))"&_
                     " OR "&_
-                    "("&mytime(Hora)&"<a.Hora AND "&mytime(HoraFinal)&">a.HoraFinal)"&_
+                    "("&mytime(Hora)&"<a.Hora AND "&mytime(HoraFinal)&"> ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*60)))"&_
                     " OR "&_
                     "("&mytime(Hora)&"=a.Hora)"&_
-                    ") AND a.EquipamentoID="&EquipamentoID
-     '       response.Write(sqlDisp)
+                    ") AND a.EquipamentoID="&EquipamentoID&andAgendamentoID
+                    
+            'response.Write(sqlDisp) 
             set vcaAgEq = db.execute(sqlDisp)
             if not vcaAgEq.eof then
                 dispEquipamento = "Este equipamento já está agendado para o profissional "&vcaAgEq("NomeProfissional")&" nesta data entre as "&formatdatetime(vcaAgEq("Hora"),4)&" e "&formatdatetime(vcaAgEq("HoraFinal"),4)

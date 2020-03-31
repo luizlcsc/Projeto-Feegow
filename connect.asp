@@ -2358,8 +2358,24 @@ end function
 
 function replateTagsPaciente(valor,PacienteID)
     if instr(valor, "[Paciente.")>0 then
-        strPac = "select p.*, ec.EstadoCivil, s.NomeSexo as Sexo, g.GrauInstrucao, o.Origem, c.NomeConvenio from pacientes as p left join estadocivil as ec on ec.id=p.EstadoCivil left join sexo as s on s.id=p.Sexo left join grauinstrucao as g on g.id=p.GrauInstrucao left join origens as o on o.id=p.Origem LEFT JOIN convenios c on c.id=p.ConvenioID1 where p.id="&treatvalzero(PacienteID)
-    '    response.Write( strPac )
+        strPac = "SELECT  "&_
+        "c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3'  "&_
+        ",pla1.NomePlano AS 'Plano1', pla2.NomePlano AS 'Plano2',pla3.NomePlano AS 'Plano3'  "&_
+        ",p.*, ec.EstadoCivil, s.NomeSexo as Sexo, g.GrauInstrucao, o.Origem  "&_
+        "from pacientes as p  "&_
+        "left join estadocivil as ec on ec.id=p.EstadoCivil  "&_
+        "left join sexo as s on s.id=p.Sexo  "&_
+        "left join grauinstrucao as g on g.id=p.GrauInstrucao  "&_
+        "left join origens as o on o.id=p.Origem  "&_
+        "LEFT JOIN convenios c1 ON c1.id=p.ConvenioID1  "&_
+        "LEFT JOIN convenios c2 ON c2.id=p.ConvenioID2  "&_
+        "LEFT JOIN convenios c3 ON c3.id=p.ConvenioID3  "&_
+        "LEFT JOIN conveniosplanos pla1 ON pla1.ConvenioID=c1.id  "&_
+        "LEFT JOIN conveniosplanos pla2 ON pla2.ConvenioID=c2.id  "&_
+        "LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id  "&_
+        "where p.id="&treatvalzero(PacienteID) 
+        'response.write("<pre>"&replace(strPac,"  ","<br>")&"</pre>")
+        
         set pac = db.execute(strPac)
 
         if not pac.eof then
@@ -2395,8 +2411,17 @@ function replateTagsPaciente(valor,PacienteID)
             valor = replace(valor, "[Paciente.Idade]", idade(pac("Nascimento")))
             valor = replace(valor, "[Paciente.Nascimento]", pac("Nascimento")&"")
             valor = replace(valor, "[Paciente.Documento]", pac("Documento")&"")
-            valor = replace(valor, "[Paciente.Prontuario]", pac("id"))
-            valor = replace(valor, "[Paciente.Convenio]", trim(pac("NomeConvenio")&" ") )
+            'POSSIBILIDADE DE UTILIZAR PLANOS E CONVENIOS SECUNDÁRIOS
+            valor = replace(valor, "[Paciente.Convenio1]", pac("Convenio1"))
+            valor = replace(valor, "[Paciente.Convenio2]", pac("Convenio2"))
+            valor = replace(valor, "[Paciente.Convenio3]", pac("Convenio3"))
+            valor = replace(valor, "[Paciente.Plano1]", pac("Plano1"))
+            valor = replace(valor, "[Paciente.Plano2]", pac("Plano2"))
+            valor = replace(valor, "[Paciente.Plano3]", pac("Plano3"))
+            'REDUNDANCIA NOS PLANOS E CONVENIOS 1 TAGs EXISTENTES
+            valor = replace(valor, "[Paciente.Convenio]", trim(pac("Convenio1")&" ") )
+            valor = replace(valor, "[Paciente.Plano]", trim(pac("Plano1")&" ") )
+
             valor = replace(valor, "[Paciente.Matricula]", trim(pac("Matricula1")&" ") )
             valor = replace(valor, "[Paciente.Validade]", trim(pac("Validade1")&" ") )
             valor = replace(valor, "[Paciente.Email]", trim(pac("Email1")&" ") )

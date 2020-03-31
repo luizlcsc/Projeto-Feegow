@@ -44,113 +44,9 @@ end if
 
 <!--#include file="connect.asp"-->
 
-<%
-if session("Admin")=1 and (session("Banco")="clinic340" or session("Banco")="clinic105") then
-    ComunicadoID = 2
-    LicencaID = replace(session("Banco"), "clinic", "")
-    'NaoAparecer = "|6503|, |6517|, |6617|, |6706|, |6827|, |6416|, |7302|, |6834|, |6625|, |7427|, |7576|, |7629|, |7710|, |7782|, |7846|, |7995|, |5459|"
-
-    if instr(NaoAparecer, "|"& LicencaID &"|")=0 then
-        set vcom = db.execute("select * from cliniccentral.comunicados where ComunicadoID="& ComunicadoID &" and UserID="& session("User"))
-        if vcom.eof then
-        %>
-
-        <div id="comunicado" style="
-        display: grid;
-        grid-template-columns: 2fr 3fr;
-        background-image: linear-gradient(to right, #2b9dc8, #10bed8);
-        max-width:630px;
-        padding: 10px 10px 10px 20px;
-        border-radius: 6px;
-        align-items: center;
-        column-gap: 20px;
-        -webkit-box-shadow: 3px 3px 10px 0px rgba(0,0,0,0.28);
-        -moz-box-shadow: 3px 3px 10px 0px rgba(0,0,0,0.28);
-        box-shadow: 3px 3px 10px 0px rgba(0,0,0,0.28);
-        position: absolute;
-        right: 20px;
-        bottom: 20px;
-        position:fixed; 
-        bottom:70px; 
-        z-index:1000000;">
-            <div class="">
-                <div><img src="images/whatsapp-logo.png" width="90%"></div>
-                <div class="row" style=" margin-top: 10px;">
-                    <button id="ocultar1" type="button" onclick="inCom(0); $('#comunicado').fadeOut();" data-toggle="modal" data-target="#modalWhatsapp" style="
-                        background: #44e044;
-                        color: #1f721f;
-                        font-weight: 500;
-                        font-size: 14px;
-                        padding: 4px 10px;
-
-                        display: inline-block;
-                        margin-bottom: 0;
-                        line-height: 1.42857143;
-                        text-align: center;
-                        white-space: nowrap;
-                        vertical-align: middle;
-                        touch-action: manipulation;
-                        cursor: pointer;           
-                        user-select: none; 
-                        border: 1px solid transparent;
-                        border-radius: 4px;"   
-                    >
-                        <strong>Ativar agora!</strong>
-                    </button>
-                    <button id="ocultar2" type="button" class="btn btn-recusar marginleft5" onclick="inCom(0); $('#comunicado').fadeOut();" style="
-                            background: #1a81ae;
-                            font-weight: 500;
-                            color: #ffffffab;
-                            font-size: 14px;
-                            padding: 4px 10px;
-                            margin-left: 5px;
-                            
-                            display: inline-block;
-                            margin-bottom: 0;
-                            line-height: 1.42857143;
-                            text-align: center;
-                            white-space: nowrap;
-                            vertical-align: middle;
-                            touch-action: manipulation;
-                            cursor: pointer;           
-                            user-select: none; 
-                            border: 1px solid transparent;
-                            border-radius: 4px;        
-                        ">
-                        <strong>Não, obrigado!</strong>
-                    </button>
-                </div>
-            </div>
-
-            <div style="padding-left: 20px; border-left: solid 1px rgba(0, 0, 0, 0.13);">
-                <i class="fa fa-remove pull-right" onclick="$('#comunicado').fadeOut();"></i>
-                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <strong>Teleconsultas</strong></p>
-                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Pagamento <strong>Online</strong></p>
-                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <strong>Integrado</strong> ao agendamento online</p>
-            </div>
-        </div>    
-
-        <div class="modal fade whatsapp-plan-details" id="modalWhatsapp" tabindex="-1" role="dialog" aria-labelledby="modalWhatsappLabel" aria-hidden="true">
-        <div class="modal-dialog conteudo-whatsapp" role="document" style="width: 900px;">
-        </div>
-    </div>
-
-        <script type="text/javascript">
-            $(function () {
-                getUrl("modal-telemedicine/", {}, function(data) {
-                    $(".conteudo-whatsapp").html(data);
-                });
-            });
-            function inCom(v) {
-                $.get("comunicadoSave.asp?I=<%= ComunicadoID %>&Int=" + v, function (data) { eval(data) });
-            }
-        </script>
-        <%
-        end if
-    end if
-end if %>
-
-
+<% if session("Admin")=1 then %>
+<!--#include file="react/popup-comunicados/main.asp"-->
+<% end if %>
 
 
 
@@ -162,7 +58,7 @@ end if %>
 <iframe src="ajustaHora.asp" width="1" height="1" frameborder="0"></iframe>
 <%
 
-if req("urlRedir")<>"" then
+if req("urlRedir")< >"" then
     response.redirect("./?P="&req("urlRedir")&"&Pers=1")
 end if
 

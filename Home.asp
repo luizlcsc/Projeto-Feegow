@@ -57,9 +57,9 @@ if session("Admin")=1 and (session("Banco")="clinic340" or session("Banco")="cli
 
         <div id="comunicado" style="
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        background-image: linear-gradient(to right, #29b53f, #51cd5e); 
-        max-width:560px;
+        grid-template-columns: 2fr 3fr;
+        background-image: linear-gradient(to right, #2b9dc8, #10bed8);
+        max-width:630px;
         padding: 10px 10px 10px 20px;
         border-radius: 6px;
         align-items: center;
@@ -75,61 +75,48 @@ if session("Admin")=1 and (session("Banco")="clinic340" or session("Banco")="cli
         z-index:1000000;">
             <div class="">
                 <div><img src="images/whatsapp-logo.png" width="90%"></div>
-                <div class="botoes" style=" margin-top: 10px;">
+                <div class="row" style=" margin-top: 10px;">
                     <button id="ocultar1" type="button" onclick="inCom(0); $('#comunicado').fadeOut();" data-toggle="modal" data-target="#modalWhatsapp" style="
-                        background: #ffeb00;
+                        background: #44e044;
+                        color: #1f721f;
                         font-weight: 500;
+                        font-size: 14px;
+                        padding: 4px 10px;
 
                         display: inline-block;
-                        padding: 6px 12px;
                         margin-bottom: 0;
-                        font-size: 14px;
-                        font-weight: 400;
                         line-height: 1.42857143;
                         text-align: center;
                         white-space: nowrap;
                         vertical-align: middle;
-                        -ms-touch-action: manipulation;
                         touch-action: manipulation;
-                        cursor: pointer;
-                        -webkit-user-select: none;
-                        -moz-user-select: none;
-                        -ms-user-select: none;
-                        user-select: none;
-                        background-image: none;
+                        cursor: pointer;           
+                        user-select: none; 
                         border: 1px solid transparent;
-                        border-radius: 4px;
-
-                        background: #ffeb00;
-                        font-weight: 500;
-                    ">
+                        border-radius: 4px;"   
+                    >
                         <strong>Ativar agora!</strong>
                     </button>
                     <button id="ocultar2" type="button" class="btn btn-recusar marginleft5" onclick="inCom(0); $('#comunicado').fadeOut();" style="
-                        display: inline-block;
-                        padding: 6px 12px;
-                        margin-bottom: 0;
-                        font-size: 14px;
-                        font-weight: 400;
-                        line-height: 1.42857143;
-                        text-align: center;
-                        white-space: nowrap;
-                        vertical-align: middle;
-                        -ms-touch-action: manipulation;
-                        touch-action: manipulation;
-                        cursor: pointer;
-                        -webkit-user-select: none;
-                        -moz-user-select: none;
-                        -ms-user-select: none;
-                        user-select: none;
-                        background-image: none;
-                        border: 1px solid transparent;
-                        border-radius: 4px;
-
-                        background: #37903f;
-                        font-weight: 500;
-                        color: #ffffff70;
-                        margin-left: 5px;">
+                            background: #1a81ae;
+                            font-weight: 500;
+                            color: #ffffffab;
+                            font-size: 14px;
+                            padding: 4px 10px;
+                            margin-left: 5px;
+                            
+                            display: inline-block;
+                            margin-bottom: 0;
+                            line-height: 1.42857143;
+                            text-align: center;
+                            white-space: nowrap;
+                            vertical-align: middle;
+                            touch-action: manipulation;
+                            cursor: pointer;           
+                            user-select: none; 
+                            border: 1px solid transparent;
+                            border-radius: 4px;        
+                        ">
                         <strong>Não, obrigado!</strong>
                     </button>
                 </div>
@@ -137,9 +124,9 @@ if session("Admin")=1 and (session("Banco")="clinic340" or session("Banco")="cli
 
             <div style="padding-left: 20px; border-left: solid 1px rgba(0, 0, 0, 0.13);">
                 <i class="fa fa-remove pull-right" onclick="$('#comunicado').fadeOut();"></i>
-                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: rgba(0, 0, 0, 0.23); padding-right: 10px;"></span> <strong>Confirmação</strong> de consulta</p>
-                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: rgba(0, 0, 0, 0.23); padding-right: 10px;"></span> <strong>Pesquisa</strong> de satisfação</p>
-                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: rgba(0, 0, 0, 0.23); padding-right: 10px;"></span> <strong>Notificação</strong> de falta</p>
+                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <strong>Teleconsultas</strong></p>
+                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Pagamento <strong>Online</strong></p>
+                <p style="padding: 3px 0; margin: 0; color:#fff;"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <strong>Integrado</strong> ao agendamento online</p>
             </div>
         </div>    
 
@@ -150,7 +137,7 @@ if session("Admin")=1 and (session("Banco")="clinic340" or session("Banco")="cli
 
         <script type="text/javascript">
             $(function () {
-                getUrl("chat-pro/contratacao/show", {}, function(data) {
+                getUrl("modal-telemedicine/", {}, function(data) {
                     $(".conteudo-whatsapp").html(data);
                 });
             });

@@ -50,8 +50,6 @@ end if
 
 
 
-
-
 <!--#include file="connectCentral.asp"-->
 <!--#include file="modal.asp"-->
 <!--#include file="Classes/EventosEmailSMS.asp"-->

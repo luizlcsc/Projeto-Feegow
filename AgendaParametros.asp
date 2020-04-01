@@ -452,7 +452,7 @@ if left(tipo, 14)="ProcedimentoID" then
 end if
 
 if tipo="Equipamento" then
-    msgEquip = dispEquipamento(ref("Data"), ref("Hora"), ref("Tempo"), ref("EquipamentoID"))
+    msgEquip = dispEquipamento(ref("Data"), ref("Hora"), ref("Tempo"), ref("EquipamentoID"), ref("ConsultaID"))
     if msgEquip<>"" then
         %>
         new PNotify({

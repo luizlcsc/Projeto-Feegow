@@ -2125,7 +2125,7 @@ $('[data-rel=tooltip]').tooltip();
 
 function abreModalUnidade(backdrop=true){
     if(backdrop){
-        backdrop={backdrop: 'static', keyboard: false};
+        //backdrop={backdrop: 'static', keyboard: false};
     }else{
         backdrop={};
     }

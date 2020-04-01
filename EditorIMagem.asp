@@ -11,52 +11,75 @@ min-width:200px;
 	visibility:hidden!important;
 }
 </style>
-<script type="text/javascript" src="http://feather.aviary.com/js/feather.js"></script>
 
-<!-- Instantiate Feather -->
+<link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css">
+<link type="text/css" href="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.css" rel="stylesheet">
+
+<script type="text/javascript" src="https://uicdn.toast.com/tui.code-snippet/v1.5.0/tui-code-snippet.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.0/fabric.js"></script>
+<script type="text/javascript" src="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
+<script type="text/javascript" src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
+
 <!--#include file="connect.asp"-->
-<script type="text/javascript">
-    var featherEditor = new Aviary.Feather({
-        apiKey: 'e8fb4c93fc2c4946bd4a5725faa30ebb',
-        theme: 'light', // Check out our new 'light' and 'dark' themes!
-        tools: 'all',
-        appendTo: '',
-        language: 'pt_BR',
-        onSave: function (imageID, newURL) {
-            var img = document.getElementById(imageID);
-            var fileName = $("#"+imageID).attr("data-path");
-            img.src = newURL;
-            $.post('save.php?setMain=1', {id:fileName,url: newURL});
-            featherEditor.close();
-        },
-        onSave: function(imageID, newURL) {
-            var img = document.getElementById(imageID);
-            img.src = newURL;
-		   
-            $.post("http://clinic.feegow.com.br/save.php?PacienteID=<%=request.QueryString("PacienteID")%>&B=<%=req("B")%>", {url:newURL}, function(data){
-                atualizaAlbum(0); 
-                featherEditor.close(); 
+
+<img id="image1" width="500px" src="assets\img\stock\1.jpg" onclick=" launchEditor('image1', this.src)" />
+
+
+<script >
+   function launchEditor(id, src) {
+        openComponentsModal(
+            "ImageEditor.asp",
+            {
+                nomeImagem:id,
+                urlImagem: src
+            },
+            false, 
+            true, 
+            function(){
+                
+                let imageId =imageEditor.getImageName();
+                let objFile = dataURLtoFile(imageEditor.toDataURL(),imageId);
+                let objURL = window.URL.createObjectURL(objFile);
+
+                $("#"+imageId).attr("src", objURL );
+                $("#"+imageId).attr("data-type", objFile.type );
+                
+                newSaveImage(imageEditor.toDataURL());
+
+                closeComponentsModal();
+            },
+            "lg",
+            'auto'
+        );
+    }
+
+    function newSaveImage(base64){
+        //https://clinic7.feegow.com.br/imagesave.php
+        //http://localhost:3333/imagesave.php
+            $.post("http://localhost:3333/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
+                {
+                    data: base64
+                }, 
+                function(data){
+                    console.log(data);
+                    atualizaAlbum(0);
             });
-        },
-        postUrl: 'http://clinic.feegow.com.br/save.php?PacienteID=<%=request.QueryString("PacienteID")%>&B=<%=req("B")%>',
-        onError: function(errorObj) {
-            alert(errorObj.message);
+    }
+    
+    function dataURLtoFile(dataurl, filename) {
+ 
+        var arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), 
+            n = bstr.length, 
+            u8arr = new Uint8Array(n);
+            
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
         }
-    });
-    function launchEditor(id, src) {
-        featherEditor.launch({
-            image: id,
-            url: src
-        });
-        return false;
+        
+        return new File([u8arr], filename, {type:mime});
     }
 
 </script>
-
-
-<div id='injection_site'></div>
-
-
-
-<img id="image1" src="http://clinic.feegow.com.br/uploads/2582d6db2b07d0286ff3f8f6b11e5c93.jpg" />
-<button type="button" title="Editar Imagem" onclick="return launchEditor('image1', 'http://clinic.feegow.com.br/uploads/2582d6db2b07d0286ff3f8f6b11e5c93.jpg');">EDITA</button>

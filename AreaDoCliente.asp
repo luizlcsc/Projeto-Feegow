@@ -590,7 +590,7 @@ end if
                     </tr>
                     <tr>
                         <td colspan="3">
-                            <h4 class="no-margin blue">Chat online <small>» seg. a sex. das 8h às 18h</small></h4>
+                            <h4 class="no-margin blue">Chat online <small>» seg. a sex. das 8h às 19h</small></h4>
                         </td>
                     </tr>
                     <tr>

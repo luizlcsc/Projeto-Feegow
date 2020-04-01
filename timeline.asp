@@ -673,7 +673,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
             true, 
             function(){
                 let dataImage = imageEditor.toDataURL();
-                saveImage(objURL);
+                newSaveImage(dataImage);
                 closeComponentsModal();
             },
             "lg",

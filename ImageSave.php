@@ -12,8 +12,6 @@
         }
     
         $data = base64_decode($data);
-        $extensao = '.'.$type;
-        $fileName = uniqid().$extensao;
 
         if ($data === false) {
             throw new \Exception('base64_decode failed');

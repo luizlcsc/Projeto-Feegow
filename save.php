@@ -29,6 +29,7 @@
 	}
 	
     print(json_encode([
+		"novo"=> "ok",
         "ext"=>$extensao,
         "url" => $fileName
     ]));

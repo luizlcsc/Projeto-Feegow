@@ -57,13 +57,13 @@ min-width:200px;
     function newSaveImage(base64){
         //https://clinic7.feegow.com.br/imagesave.php
         //http://localhost:3333/imagesave.php
-            $.post("http://localhost:3333/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
+            $.post("https://clinic7.feegow.com.br/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
                 {
                     data: base64
                 }, 
                 function(data){
                     console.log(data);
-                    atualizaAlbum(0);
+                    //atualizaAlbum(0);
             });
     }
     

@@ -10,6 +10,12 @@ min-width:200px;
 	display:none!important;
 	visibility:hidden!important;
 }
+
+#tui-image-editor {
+  .tui-image-editor {
+    top: 0px !important;
+  }
+}
 </style>
 
 <link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css">
@@ -31,7 +37,7 @@ min-width:200px;
         openComponentsModal(
             "ImageEditor.asp",
             {
-                nomeImagem:id,
+                nomeImagem: id,
                 urlImagem: src
             },
             false, 

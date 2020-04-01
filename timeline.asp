@@ -650,6 +650,11 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 }
 
 
+#tui-image-editor {
+  .tui-image-editor {
+    top: 0px !important;
+  }
+}
 </style>
 <link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css">
 <link type="text/css" href="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.css" rel="stylesheet">
@@ -682,7 +687,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
     }
 
     function newSaveImage(base64){
-        $.post("https://clinic7.feegow.com.br/save.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
+        $.post("https://clinic7.feegow.com.br/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
             {
                 data: base64
             }, 

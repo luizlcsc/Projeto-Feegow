@@ -1,10 +1,6 @@
 <!--#include file="connect.asp"-->
 
-    <div style="height:800px; ">
-        <div id="image_panel"  >
-
-        </div>
-    </div>
+    <div id="image_panel" style="min-height: 800px;"></div>
 
 <script type="text/javascript">
 
@@ -85,24 +81,27 @@
 
         // colorpicker style
         'colorpicker.button.border': '1px solid #1e1e1e',
-        'colorpicker.title.color': '#fff'
+        'colorpicker.title.color': '#fff',
+
     };
 
     var imageEditor = new tui.ImageEditor('#image_panel', {
         includeUI: {
-            loadImage: {
-                path: '<%=req("urlImagem")%>',
-                name: '<%=req("nomeImagem")%>'
+                loadImage: {
+                    path: '<%=req("urlImagem")%>',
+                    name: '<%=req("nomeImagem")%>'
+                },
+                menu: ['crop', 'flip', 'rotate', 'draw', 'text'],
+                theme: FeegowTheme,
+                initMenu: 'draw',
+                menuBarPosition: 'botton'
+                
             },
-            menu: ['crop', 'flip', 'rotate', 'draw', 'text'],
-            theme: FeegowTheme, // or whiteTheme
-            initMenu: 'draw',
-            menuBarPosition: 'right'
-        },
-        cssMaxWidth: 1000, // Component default value: 1000
-        cssMaxHeight: 800,  // Component default value: 800
-        usageStatistics:false
-    });
+        usageStatistics: false
+        });
 
+        window.onresize = function() {
+            imageEditor.ui.resizeEditor();
+        }
 
 </script>

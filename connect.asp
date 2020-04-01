@@ -3649,11 +3649,11 @@ function dispEquipamento(Data, Hora, Intervalo, EquipamentoID, AgendamentoID)
         if ccur(EquipamentoID)<>0 then
             sqlDisp = "SELECT a.Hora, a.HoraFinal, p.NomeProfissional FROM agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID WHERE a.StaID not in(11) and a.Data="&mydatenull(Data)&" AND "&_
                     "("&_
-                    "("&mytime(Hora)&">=a.Hora AND "&mytime(Hora)&"< ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*60)))"&_
+                    "("&mytime(Hora)&">=a.Hora AND "&mytime(Hora)&"< ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*59.99)))"&_
                     " OR "&_
-                    "("&mytime(HoraFinal)&">a.Hora AND "&mytime(HoraFinal)&"< ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*60)))"&_
+                    "("&mytime(HoraFinal)&">a.Hora AND "&mytime(HoraFinal)&"< ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*59.99)))"&_
                     " OR "&_
-                    "("&mytime(Hora)&"<a.Hora AND "&mytime(HoraFinal)&"> ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*60)))"&_
+                    "("&mytime(Hora)&"<a.Hora AND "&mytime(HoraFinal)&"> ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*59.99)))"&_
                     " OR "&_
                     "("&mytime(Hora)&"=a.Hora)"&_
                     ") AND a.EquipamentoID="&EquipamentoID&andAgendamentoID

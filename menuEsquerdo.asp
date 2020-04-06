@@ -1006,7 +1006,7 @@ select case lcase(req("P"))
         %>
         <li class="sidebar-label pt20"></li>
         <%
-    case "procedimentos", "pacotes", "procedimentosgrupos"
+    case "procedimentos", "pacotes", "procedimentosgrupos", "ConferenciadeAmostras"
         if isnumeric(req("I")) and req("I")<>"" and lcase(req("P"))<>"procedimentosgrupos" and lcase(req("P"))<>"pacotes" then
         %>
         <li class="sidebar-label pt20"></li>
@@ -1053,6 +1053,9 @@ select case lcase(req("P"))
                 set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
                 if not labAutenticacao.eof then
                 %>
+            <li>
+                <a  href="./?P=ConferenciadeAmostras&Pers=1"> <span class="fa fa-link"></span> <span class="sidebar-title">Conferência de Amostras</span> </a>
+            </li>
             <li>
                 <a> <span class="fa fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span> </a>
             </li>
@@ -1786,6 +1789,12 @@ select case lcase(req("P"))
                     <a href="#" onClick="callReport('RelatorioLabs');">
                         <i class="fa fa-double-angle-right"></i>
                         Mapa Laboratório
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onClick="callReport('RelatorioRecoletas');">
+                        <i class="fa fa-double-angle-right"></i>
+                        Relatório de Recoletas
                     </a>
                 </li>
 

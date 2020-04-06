@@ -650,44 +650,52 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 }
 
 
+#tui-image-editor {
+  .tui-image-editor {
+    top: 0px !important;
+  }
+}
 </style>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css">
+<link type="text/css" href="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.css" rel="stylesheet">
 
-<!-- Instantiate Feather -->
+<script type="text/javascript" src="https://uicdn.toast.com/tui.code-snippet/v1.5.0/tui-code-snippet.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.0/fabric.js"></script>
+<script type="text/javascript" src="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
+<script type="text/javascript" src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
+
+<!-- image editor -->
 <script type="text/javascript">
-    var featherEditor = new Aviary.Feather({
-        apiKey: '976cdd37bb7247168a9fb072b383edb6',
-        tools: 'all',
-        language: 'pt_BR',
-        onSave: function (imageID, newURL) {
-            var img = document.getElementById(imageID);
-            var fileName = $("#"+imageID).attr("data-path");
-            img.src = newURL;
-            $.post('save.php?IP=<%=sServidor%>&setMain=1', {id:fileName,url: newURL});
-            featherEditor.close();
-        },
-        onSave: function(imageID, newURL) {
-            var img = document.getElementById(imageID);
-            img.src = newURL;
-
-            $.post("https://clinic7.feegow.com.br/save.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", {url:newURL}, function(data){
-                atualizaAlbum(0);
-                featherEditor.close();
-            });
-        },
-        postUrl: 'https://clinic7.feegow.com.br/save.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>',
-        onError: function(errorObj) {
-            alert(errorObj.message);
-        }
-    });
     function launchEditor(id, src) {
-        featherEditor.launch({
-            image: id,
-            url: src
-        });
-        return false;
+        openComponentsModal(
+            "ImageEditor.asp",
+            {
+                nomeImagem: id,
+                urlImagem: src
+            },
+            false, 
+            true, 
+            function(){
+                let dataImage = imageEditor.toDataURL();
+                newSaveImage(dataImage);
+                closeComponentsModal();
+            },
+            "lg",
+            'auto'
+        );
     }
 
- 
+    function newSaveImage(base64){
+        $.post("https://clinic7.feegow.com.br/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
+            {
+                data: base64
+            }, 
+            function(data){
+                console.log(data);
+                atualizaAlbum(0);
+        });
+    }
 
 </script>
 

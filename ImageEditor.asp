@@ -6,8 +6,8 @@
 
     let FeegowTheme = {
     'common.bi.image': 'https://clinic7.feegow.com.br/v7/assets/img/logo_white.png',
-    'common.bisize.width': '100px',
-    'common.bisize.height': '21px',
+    'common.bisize.width': '20%',
+    'common.bisize.height': '20%',
     'common.backgroundImage': 'none',
     'common.backgroundColor': '#1e1e1e',
     'common.border': '0px',
@@ -83,12 +83,50 @@
     'colorpicker.title.color': '#fff'
 };
 
+var locale_pt_BR = { 
+    'Undo': 'Desfazer',
+    'Redo': 'Refazer',
+    'Reset': 'Reiniciar',
+    'Delete': 'Deletar',
+    'DeleteAll': 'Deletar tudo',
+    'Crop': 'Cortar', 
+    'Flip': 'Virar', 
+    'Rotate': 'Girar',
+    'Draw': 'Desenhar',
+    'Text': 'Texto',
+    'Shape': 'Formas',
+    'Cancel': 'Cancelar',
+    'Color': 'Cor',
+    'Free': 'Livre',
+    'Straight': 'Reta',
+    'Text size': 'Tamanho',
+    'Rectangle': 'Retângulo',
+    'Circle': 'Circulo',
+    'Triangle': 'Triângulo',
+    'Fill': 'Preenchimento',
+    'Stroke': 'Contorno',
+    'Bold': 'Negrito',
+    'Italic': 'Itálico',
+    'Underline': 'Sublinhar',
+    'Left': 'Esquerda',
+    'Center': 'Centro',
+    'Right': 'Direita',
+    'Apply': 'Ok',
+    'Square': 'Quadrado',
+    'Custom': 'Livre',
+    'Range': 'Valor',
+    'Flip X': 'Horizontal',
+    'Flip Y': 'Vertical',
+    
+};
+
     var imageEditor = new tui.ImageEditor('#image_panel', {
         includeUI: {
                 loadImage: {
                     path: '<%=req("urlImagem")%>',
                     name: '<%=req("nomeImagem")%>'
                 },
+                locale: locale_pt_BR,
                 menu: ['crop', 'flip', 'rotate', 'draw', 'text', 'shape'],
                 theme: FeegowTheme,
                 initMenu: 'draw',

@@ -157,9 +157,8 @@ let imgId = '<%=req("nomeImagem")%>';
              };
          })();
         
-        let imgData = convertImgToBase64(imgId);
          // Load an image and tell our tui imageEditor instance the new and the old image size:
-         imageEditor.loadImageFromURL(imgData, "SampleImage").then(result=>{
+         imageEditor.loadImageFromURL(path, imgId).then(result=>{
              imageEditor.ui.resizeEditor({
                  imageSize: {oldWidth: result.oldWidth, oldHeight: result.oldHeight, newWidth: result.newWidth, newHeight: result.newHeight},
              });
@@ -176,7 +175,7 @@ let imgId = '<%=req("nomeImagem")%>';
             var oImage = document.getElementById(elemntid),
                 oCanvas = document.createElement('canvas'),
                 oCtx = oCanvas.getContext('2d');
-                
+            oImage.crossOrigin = '*';
             oCanvas.height = oImage.naturalHeight;
             oCanvas.width = oImage.naturalWidth;
             oCtx.drawImage(oImage, 0, 0);

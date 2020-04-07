@@ -38,6 +38,7 @@ end if
 
 
 dividirCompensacao = req("dividirCompensacao")
+ExibirNaoExecutado = req("ExibirNaoExecutado")
 if De="" then
 	De = date()
 end if
@@ -80,11 +81,14 @@ end if
                     </div>
                 </div>
                 <div class="row mt10">
-                    <div class="checkbox-custom checkbox-primary col-md-4 pt20">
+                    <div class="checkbox-custom checkbox-primary col-md-2 pt20">
                         <input type="checkbox" id="dividirCompensacao" name="dividirCompensacao" value="S"<% if dividirCompensacao="S" then response.write(" checked ") end if %> /><label for="dividirCompensacao">Dividir por compensação</label>
                     </div>
                     <div class="col-md-2">
                         <%= quickfield("empresaMultiIgnore", "Unidades", "Unidades", 12, Unidades, "", "", "") %>
+                    </div>
+                    <div class="checkbox-custom checkbox-primary col-md-2 pt20">
+                        <input type="checkbox" id="ExibirNaoExecutado" name="ExibirNaoExecutado" value="S"<% if ExibirNaoExecutado="S" then response.write(" checked ") end if %> /><label for="ExibirNaoExecutado">Exibir não executado</label>
                     </div>
                     <%
                     if req("B")="1" then
@@ -136,11 +140,21 @@ end if
 
     if datediff("d", De, Ate)>91 then
         %>
-        <div class="alert alert-warning">
-            <strong>Atenção! </strong> Escolha um período menor que 3 meses.
+        <div class="alert alert-sm alert-border-left alert-danger alert-dismissable">
+          <i class="fa fa-exclamation-circle pr10"></i>
+          <strong>Atenção!</strong> Escolha um período menor que 3 meses.
         </div>
         <%
     else
+
+    if ExibirNaoExecutado="S" then
+        %>
+        <div class="alert alert-sm alert-border-left alert-warning alert-dismissable">
+          <i class="fa fa-exclamation-circle pr10"></i>
+          <strong>Atenção!</strong> Ao exibir atendimentos não executados, regras com recebedor <i>"Profissional Executante"</i> <strong>não serão aplicadas</strong>.
+        </div>
+<%
+    end if
     %>
         <!--#include file="RepasseCalculoAConferir.asp"-->
     <%
@@ -211,11 +225,27 @@ function descAll() {
 }
 
 
+$(document).ready(function() {
+
+    $("#ExibirNaoExecutado").change(function() {
+        $("#searchAccountID, #AccountID").val("").attr("disabled", $(this).prop("checked"));
+    });
+});
 
 <%
+
+
+if ExibirNaoExecutado="S" then
+    %>
+    $("#searchAccountID, #AccountID").val("").attr("disabled", true);
+    <%
+end if
+
 if req("B")="1" then
 %>
 $(document).ready(function() {
+
+
         $(".botoes-painel").remove();
          $(".checkbox-custom, .btn", "#content").not(".btn-buscar").remove();
 });

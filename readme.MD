@@ -1,4 +1,10 @@
 ## Pré requisitos
+- MySQL - 5.2 >
+- IIS - 7
+
+_Partindo do pré suposto de que já exista um banco mysql funcionando e com as tabelas a seguir_
+- `cliniccentral` 
+- `clinic100000`
 
  **Instale o Mysql ODBC 8.0**
 > https://dev.mysql.com/downloads/connector/odbc/

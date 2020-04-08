@@ -58,7 +58,7 @@ end if
 <iframe src="ajustaHora.asp" width="1" height="1" frameborder="0"></iframe>
 <%
 
-if req("urlRedir")< >"" then
+if req("urlRedir")<>"" then
     response.redirect("./?P="&req("urlRedir")&"&Pers=1")
 end if
 

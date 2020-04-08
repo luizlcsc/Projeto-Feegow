@@ -177,11 +177,17 @@ end if
 ExibirCanal = getConfig("ExibirCanalSalaDeEspera")
 
 if veseha.eof then
-	%>Nenhum paciente aguardando para ser atendido.<%
+	%>
+	<div class="p15">
+	    Nenhum paciente aguardando para ser atendido.
+    </div>
+    <script >
+        $("#total-pacientes").html("")
+    </script>
+	<%
 else
 %>
-<div class="table-responsive">
-<table width="100%" class="table table-striped table-hover table-bordered">
+  <table style="width: 100%" id="listaespera" class="table tc-checkbox-1 admin-form theme-warning br-t">
   <thead>
 	<tr class="info">
     	<th>HORA</th>
@@ -203,7 +209,7 @@ else
   </thead>
   <tbody>
 	<%
-
+    TotalPacientes = 0
 	ExibirLinkParaFicha = getConfig("ExibirLinkParaFicha")
 
     while not veseha.eof
@@ -362,12 +368,12 @@ else
             'response.write sqlQuitado
 
             set procPrePago = db.execute(sqlQuitado)
-            
+
             formaPagamento = veseha("FormaPagto")
             if not procPrePago.eof then
                 formaPagamento = 1
             end if
-            
+
             if formaPagamento < 0 and veseha("ValorPlano")>0 then
                 if Triagem="S" and ProfissionalTriagem="N" and labelDisabled = "Pendente de Triagem" then
                     'exibeLinha = "N"
@@ -486,7 +492,7 @@ else
         if isTelemedicina and TelemedicinaAtiva then
         %>
     	 class="btn btn-xs btn-alert" type="button" <%=disabPagto%> >
-    	 <i class="fa fa-globe"></i> ATENDER ONLINE
+    	 <i class="fa fa-video-camera"></i> ATENDER ONLINE
     	 <%
     	 else
     	 %>
@@ -563,14 +569,14 @@ else
             </tr>
 	        <%
         end if
+        TotalPacientes = TotalPacientes + 1
 	end if
     veseha.movenext
     wend
     veseha.close
     set veseha=nothing%>
-</table>
-</div>
 <script >
+    $("#total-pacientes").html("<strong><%=TotalPacientes%></strong> paciente(s) aguardando");
     var $waitingTime = $(".waiting-time");
 
     function dateFix(datetime) {
@@ -630,6 +636,7 @@ else
     }
 
 </script>
-
+    </tbody>
+  </table>
 <%end if%>
 <!--#include file = "disconnect.asp"-->

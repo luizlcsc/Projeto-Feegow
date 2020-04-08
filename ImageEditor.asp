@@ -4,10 +4,10 @@
 
 <script type="text/javascript">
 
-    let FeegowTheme = {
+let FeegowTheme = {
     'common.bi.image': 'https://clinic7.feegow.com.br/v7/assets/img/logo_white.png',
-    'common.bisize.width': '100px',
-    'common.bisize.height': '21px',
+    'common.bisize.width': '20%',
+    'common.bisize.height': '20%',
     'common.backgroundImage': 'none',
     'common.backgroundColor': '#1e1e1e',
     'common.border': '0px',
@@ -80,15 +80,56 @@
 
     // colorpicker style
     'colorpicker.button.border': '1px solid #1e1e1e',
-    'colorpicker.title.color': '#fff'
+    'colorpicker.title.color': '#fff',
 };
+
+let locale_pt_BR = { 
+    'Undo': 'Desfazer',
+    'Redo': 'Refazer',
+    'Reset': 'Reiniciar',
+    'Delete': 'Deletar',
+    'DeleteAll': 'Deletar tudo',
+    'Crop': 'Cortar', 
+    'Flip': 'Virar', 
+    'Rotate': 'Girar',
+    'Draw': 'Desenhar',
+    'Text': 'Texto',
+    'Shape': 'Formas',
+    'Cancel': 'Cancelar',
+    'Color': 'Cor',
+    'Free': 'Livre',
+    'Straight': 'Reta',
+    'Text size': 'Tamanho',
+    'Rectangle': 'Retângulo',
+    'Circle': 'Circulo',
+    'Triangle': 'Triângulo',
+    'Fill': 'Preenchimento',
+    'Stroke': 'Contorno',
+    'Bold': 'Negrito',
+    'Italic': 'Itálico',
+    'Underline': 'Sublinhar',
+    'Left': 'Esquerda',
+    'Center': 'Centro',
+    'Right': 'Direita',
+    'Apply': 'Ok',
+    'Square': 'Quadrado',
+    'Custom': 'Livre',
+    'Range': 'Valor',
+    'Flip X': 'Horizontal',
+    'Flip Y': 'Vertical',
+    
+};
+
+let path = '<%=req("urlImagem")%>';
+let imgId = '<%=req("nomeImagem")%>';
 
     var imageEditor = new tui.ImageEditor('#image_panel', {
         includeUI: {
                 loadImage: {
-                    path: '<%=req("urlImagem")%>',
-                    name: '<%=req("nomeImagem")%>'
+                     path: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                     name: 'Blank'
                 },
+                locale: locale_pt_BR,
                 menu: ['crop', 'flip', 'rotate', 'draw', 'text', 'shape'],
                 theme: FeegowTheme,
                 initMenu: 'draw',
@@ -98,8 +139,47 @@
         usageStatistics: false
         });
 
-        window.onresize = function() {
-            imageEditor.ui.resizeEditor();
+        // Patch the loadImageFromURL of our tui imageEditor instance:
+         imageEditor.loadImageFromURL = (function() {
+             var cached_function = imageEditor.loadImageFromURL;
+             function waitUntilImageEditorIsUnlocked(imageEditor) {
+                 return new Promise((resolve,reject)=>{
+                     const interval = setInterval(()=>{
+                         if (!imageEditor._invoker._isLocked) {
+                             clearInterval(interval);
+                             resolve();
+                         }
+                     }, 100);
+                 })
+             }
+             return function() {
+                 return waitUntilImageEditorIsUnlocked(imageEditor).then(()=>cached_function.apply(this, arguments));
+             };
+         })();
+        
+         // Load an image and tell our tui imageEditor instance the new and the old image size:
+         imageEditor.loadImageFromURL(path, imgId).then(result=>{
+             imageEditor.ui.resizeEditor({
+                 imageSize: {oldWidth: result.oldWidth, oldHeight: result.oldHeight, newWidth: result.newWidth, newHeight: result.newHeight},
+             });
+         }).catch(err=>{
+             console.error("Something went wrong:", err);
+         })
+
+         // Auto resize the editor to the window size:
+         window.addEventListener("resize", function(){
+             imageEditor.ui.resizeEditor()
+         })
+
+        function convertImgToBase64(elemntid){
+            var oImage = document.getElementById(elemntid),
+                oCanvas = document.createElement('canvas'),
+                oCtx = oCanvas.getContext('2d');
+            oImage.crossOrigin = '*';
+            oCanvas.height = oImage.naturalHeight;
+            oCanvas.width = oImage.naturalWidth;
+            oCtx.drawImage(oImage, 0, 0);
+            return oCanvas.toDataURL();
         }
 
 </script>

@@ -61,7 +61,7 @@ if aut("|esperaoutrosprofissionaisV|")=1 then
             </div>
 
 	          <!-- message listings table -->
-	          <div class="table-responsive">
+	          <div class="table-responsive" id="listaespera">
                     <% server.Execute("ListaEsperaCont.asp") %>
               </div>
 
@@ -230,7 +230,7 @@ function atualizaLista(){
       var EspecialidadeID = $("#EspecialidadeID").val();
       if(!EspecialidadeID){
           EspecialidadeID="";
-      }aut()
+      }
 
       $.get("ListaEsperaCont.asp?Ordem=<%=req("Ordem")%>&StatusExibir=<%=req("StatusExibir")%>&ProfissionalID="+ProfissionalID+"&EspecialidadeID="+EspecialidadeID, function(data){
           $("#listaespera").html(data);

@@ -187,7 +187,7 @@ if veseha.eof then
 	<%
 else
 %>
-  <table style="width: 100%" id="listaespera" class="table tc-checkbox-1 admin-form theme-warning br-t">
+  <table style="width: 100%" id="listaespera" class="table tc-checkbox-1">
   <thead>
 	<tr class="info">
     	<th>HORA</th>
@@ -479,31 +479,37 @@ else
 
     <%if lcase(session("table"))="profissionais" then %>
     <td>
-        <%if veseha("StaID")<>2 then%>
-    	<button
-    	 <%
-
-        if veseha("StaID")<>4 and veseha("StaID")<>5 and veseha("StaID")<>33 then
-            %> disabled<%
+        <%
+        if veseha("StaID")<>2 then
+            btnAtender = "<button "
+        
+            if veseha("StaID")<>4 and veseha("StaID")<>5 and veseha("StaID")<>33 then
+                btnAtenderAcao = " disabled"
+            else
+                if isTelemedicina and TelemedicinaAtiva then
+                    btnTelemedicina = "&isTelemedicina=true"
+                    btnTxt = "ATENDER ONLINE"
+                    btnIcon = "fa fa-video-camera"
+                    btnColor = "btn-alert"
+                else
+                    btnTelemedicina = "&isTelemedicina="
+                    btnTxt = "ATENDER"
+                    btnIcon = "fa fa-play"
+                    btnColor = "btn-success"
+                end if
+                if session("Atendimentos") = "" then
+                    btnAtenderAcao = " onClick='window.location=`?P=ListaEspera&Pers=1&Atender="&veseha("id")&"&PacienteID="&veseha("PacienteID")&btnTelemedicina&"`;'"
+                    btnAtenderClass = "class='btn btn-xs "&btnColor&"' type='button' "&disabPagto&" ><i class='"&btnIcon&"'></i> "&btnTxt&"</button>"
+                else
+                    btnAtenderAcao = " data-toggle='tooltip' data-placement='top' title='Finalize atendimentos em andamento'"
+                    btnAtenderClass = "class='btn btn-xs btn-danger' type='button' "&disabPagto&" ><i class='fa fa-lock'></i> "&btnTxt&"</button>"
+                end if
+                
+            end if
+            response.write(btnAtender&btnAtenderAcao&btnAtenderClass)
         else
-            %> onClick="window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>&isTelemedicina=<% if isTelemedicina then %>true<%end if%>';"<%
-        end if
-        %><%
-        if isTelemedicina and TelemedicinaAtiva then
         %>
-    	 class="btn btn-xs btn-alert" type="button" <%=disabPagto%> >
-    	 <i class="fa fa-video-camera"></i> ATENDER ONLINE
-    	 <%
-    	 else
-    	 %>
-         class="btn btn-xs btn-success btn-block" type="button" <%=disabPagto%> >
-         <i class="fa fa-play"></i> ATENDER
-         <%
-         end if
-    	 %>
-    	 </button>
-    	<%else%>
-    	<button onClick="window.location='?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>'" class="btn btn-xs btn-primary" type="button">IR PARA ATENDIMENTO</button>
+    	    <button onClick="window.location='?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>'" class="btn btn-xs btn-primary" type="button">IR PARA ATENDIMENTO</button>
     	<%end if%>
     </td>
     <%end if %>

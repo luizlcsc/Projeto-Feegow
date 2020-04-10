@@ -624,6 +624,9 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 </div>
 
 <link rel="stylesheet" href="assets/css/colorbox.css" />
+<link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css">
+<link type="text/css" href="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.css" rel="stylesheet">
+
 <style type="text/css">
 .tools {
     background-color: #fff;
@@ -656,14 +659,12 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
   }
 }
 </style>
-<link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css">
-<link type="text/css" href="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.css" rel="stylesheet">
 
-<script type="text/javascript" src="https://uicdn.toast.com/tui.code-snippet/v1.5.0/tui-code-snippet.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.0/fabric.js"></script>
-<script type="text/javascript" src="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
-<script type="text/javascript" src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
+<div id='injection_site'></div>
+<form id="frmComparar">
+    <div id="ImagensPaciente"><%server.execute("Imagens.asp")%></div>
+</form>
+
 
 <!-- image editor -->
 <script type="text/javascript">
@@ -684,7 +685,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
             "lg",
             'auto'
         );
-    }
+    };
 
     function newSaveImage(base64){
         $.post("https://clinic7.feegow.com.br/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
@@ -695,14 +696,17 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                 console.log(data);
                 atualizaAlbum(0);
         });
-    }
+    };
 
 </script>
 
-<div id='injection_site'></div>
-<form id="frmComparar">
-    <div id="ImagensPaciente"><%server.execute("Imagens.asp")%></div>
-</form>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.0/fabric.js"></script>
+<script type="text/javascript" src="https://uicdn.toast.com/tui.code-snippet/v1.5.0/tui-code-snippet.min.js"></script>
+<script type="text/javascript" src="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
+<script type="text/javascript" src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
+      
+
         <%
     end if
     case "|Arquivos|"

@@ -719,8 +719,12 @@ end if
                     <div class="col-md-8">
                         <div class="row">
                         <%
-						set s = dbc.execute("select EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
-						set m = dbc.execute("select EnviadoEm from cliniccentral.emailshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+						set s = dbc.execute("select EventoID, EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+						set m = dbc.execute("select EventoID, EnviadoEm from cliniccentral.emailshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+
+						set smsFila = dbc.execute("select EventoID, DataHora, EventoID, WhatsApp from cliniccentral.smsfila where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+						set emailsFila = dbc.execute("select EventoID, DataHora, EventoID from cliniccentral.emailsfila where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+
 
 						if not s.eof then
 							SMSEnviado = "S"
@@ -753,13 +757,45 @@ end if
 								        SmsOuWhatsApp="WhatsApp"
 								    end if
 
+								    DescricaoEvento=""
+
+								    if s("EventoID")&""<>"" then
+								        'set EventoSQL = db.execute("SELECT Descricao FROM eventos_emailsms WHERE id="&smsFila("EventoID"))
+								        'if not EventoSQL.eof then
+								        '    DescricaoEvento=" ("&EventoSQL("Descricao")&")"
+								        'end if
+                                    end if
+
 									%>
-									<br><small><em><%=SmsOuWhatsApp%> enviado em <%=s("EnviadoEm")%></em></small>
+									<br><small><em><i class="fa fa-check"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%> enviado em <strong><%=s("EnviadoEm")%></strong></em></small>
 									<%
 								s.movenext
 								wend
 								s.close
 								set s=nothing
+
+								while not smsFila.eof
+								    SmsOuWhatsApp="SMS"
+								    if smsFila("WhatsApp") then
+								        SmsOuWhatsApp="WhatsApp"
+								    end if
+
+								    DescricaoEvento=""
+
+								    if smsFila("EventoID")&""<>"" then
+								        'set EventoSQL = db.execute("SELECT Descricao FROM eventos_emailsms WHERE id="&smsFila("EventoID"))
+								        'if not EventoSQL.eof then
+								        '    DescricaoEvento=" ("&EventoSQL("Descricao")&")"
+								        ' end if
+                                    end if
+
+									%>
+									<br><small><em><i class="fa fa-history"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%> programado para <strong><%=smsFila("DataHora")%></strong></em></small>
+									<%
+								smsFila.movenext
+								wend
+								smsFila.close
+								set smsFila=nothing
 								%>
                             </div>
                             <div class="col-md-4">
@@ -776,6 +812,26 @@ end if
 								wend
 								m.close
 								set m=nothing
+
+
+								while not emailsFila.eof
+
+								    DescricaoEvento=""
+
+								    if emailsFila("EventoID")&""<>"" then
+								        'set EventoSQL = db.execute("SELECT Descricao FROM eventos_emailsms WHERE id="&smsFila("EventoID"))
+								        'if not EventoSQL.eof then
+								        '    DescricaoEvento=" ("&EventoSQL("Descricao")&")"
+								        ' end if
+                                    end if
+
+									%>
+									<br><small><em><i class="fa fa-mail"></i>Envio<%=DescricaoEvento%> programado para <strong><%=emailsFila("DataHora")%></strong></em></small>
+									<%
+								emailsFila.movenext
+								wend
+								emailsFila.close
+								set emailsFila=nothing
 								%>
                             </div>
                         </div>

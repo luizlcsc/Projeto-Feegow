@@ -253,7 +253,7 @@ end if
           <!-- FAQ Right Column -->
           <div class="col-md-3">
             <%
-            if aut("chamadossistemaI") then
+            if aut("chamadossistemaI")=1 then
             %>
             <div class="mb15">
               <a href="?P=tarefas&I=N&Pers=1&Helpdesk=1" type="button" class="btn btn-primary btn-block pv10 fw600 mb10"><i class="fa fa-plus"></i> Abrir Chamado</a>
@@ -386,7 +386,7 @@ if session("Admin")=1 then
 end if
 
 
-            if aut("chamadossistemaV") then
+            if aut("chamadossistemaV")=1 then
 %>
 
 

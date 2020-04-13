@@ -1288,9 +1288,12 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                       <button type="button" class="btn btn-xs btn-success light" onclick="window.open('videoAula.asp?P=<%=req("P") %>&T='+ $('.crumb-active a').html())">
                           <i class="fa fa-video-camera"></i> Vídeo-aula
                       </button>
+                      <%if session("Admin")<>1 AND recursoAdicional(12)=4 then%>
+                      <%else%>
                       <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" class="btn btn-xs btn-default">
                           <i class="fa fa-question-circle"></i> Suporte
                       </button>
+                      <%end if%>
                       <button type="button" class="btn btn-xs btn-default">
                           Feegow Clinic : v. 7.0
                       </button>

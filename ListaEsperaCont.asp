@@ -187,6 +187,25 @@ if veseha.eof then
 	<%
 else
 %>
+<script>
+    <% IF getConfig("ValidarCertificadoUsuario") = 1 THEN
+        sql = "SELECT count(*) > 0 as qtd FROM cliniccentral.digitalcertificates WHERE LicencaID = 100000  AND sysActive = 1 AND UsuarioID = "& session("User")
+        set hasCertificadoDigital = db.execute(sql)
+        IF hasCertificadoDigital.EOF THEN %>
+            var certificadoValido = true;
+        <% ELSE %>
+            <%IF hasCertificadoDigital("qtd") = "1" THEN%>
+                var certificadoValido = true;
+            <%ELSE %>
+                var certificadoValido = false;
+            <%END IF %>
+        <% END IF%>
+    <% ELSE  %>
+        var certificadoValido = true;
+    <% END IF %>
+</script>
+
+
   <table style="width: 100%" id="listaespera" class="table tc-checkbox-1 admin-form theme-warning br-t">
   <thead>
 	<tr class="info">
@@ -486,7 +505,7 @@ else
         if veseha("StaID")<>4 and veseha("StaID")<>5 and veseha("StaID")<>33 then
             %> disabled<%
         else
-            %> onClick="window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>&isTelemedicina=<% if isTelemedicina then %>true<%end if%>';"<%
+            %> onClick="isValido(certificadoValido,() => window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>&isTelemedicina=<% if isTelemedicina then %>true<%end if%>')"<%
         end if
         %><%
         if isTelemedicina and TelemedicinaAtiva then
@@ -635,6 +654,17 @@ else
 
     }
 
+    function isValido(arg1,arg2){
+        if(arg1 === true){
+            return arg2();
+        }
+
+        new PNotify({
+            title: '<i class="fa fa-warning"></i> Certificado Digital',
+            text: 'Para avançar com o atendimento, o usuário deverá configurar o certificado digital.',
+            type: 'danger'
+        });
+    }
 </script>
     </tbody>
   </table>

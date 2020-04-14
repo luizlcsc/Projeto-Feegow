@@ -187,27 +187,7 @@ if veseha.eof then
 	<%
 else
 %>
-
-<script>
-    <% IF getConfig("ValidarCertificadoUsuario") = 1 THEN
-        sql = "SELECT count(*) > 0 as qtd FROM cliniccentral.digitalcertificates WHERE LicencaID = 100000  AND sysActive = 1 AND UsuarioID = "& session("User")
-        set hasCertificadoDigital = db.execute(sql)
-        IF hasCertificadoDigital.EOF THEN %>
-            var certificadoValido = true;
-        <% ELSE %>
-            <%IF hasCertificadoDigital("qtd") = "1" THEN%>
-                var certificadoValido = true;
-            <%ELSE %>
-                var certificadoValido = false;
-            <%END IF %>
-        <% END IF%>
-    <% ELSE  %>
-        var certificadoValido = true;
-    <% END IF %>
-</script>
-
-
-  <table style="width: 100%" id="listaespera" class="table tc-checkbox-1">
+  <table style="width: 100%" id="listaespera" class="table tc-checkbox-1 admin-form theme-warning br-t">
   <thead>
 	<tr class="info">
     	<th>HORA</th>
@@ -499,42 +479,31 @@ else
 
     <%if lcase(session("table"))="profissionais" then %>
     <td>
-        <%
-        if veseha("StaID")<>2 then
-            btnAtender = "<button "
-        
-            if veseha("StaID")<>4 and veseha("StaID")<>5 and veseha("StaID")<>33 then
-                btnAtenderAcao = " disabled"
-            else
-                if isTelemedicina and TelemedicinaAtiva then
-                    btnTelemedicina = "&isTelemedicina=true"
-                    btnTxt = "ATENDER ONLINE"
-                    btnIcon = "fa fa-video-camera"
-                    btnColor = "btn-alert"
-                else
-                    btnTelemedicina = "&isTelemedicina="
-                    btnTxt = "ATENDER"
-                    btnIcon = "fa fa-play"
-                    btnColor = "btn-success"
-                end if
-                if session("Atendimentos") = "" then
-                    btnAtenderAcao = " onClick='window.location=`?P=ListaEspera&Pers=1&Atender="&veseha("id")&"&PacienteID="&veseha("PacienteID")&btnTelemedicina&"`;'"
-                    btnAtenderClass = "class='btn btn-xs "&btnColor&"' type='button' "&disabPagto&" ><i class='"&btnIcon&"'></i> "&btnTxt&"</button>"
-                else
-                    btnAtenderAcao = " data-toggle='tooltip' data-placement='top' title='Finalize atendimentos em andamento'"
-                    btnAtenderClass = "class='btn btn-xs btn-danger' type='button' "&disabPagto&" ><i class='fa fa-lock'></i> "&btnTxt&"</button>"
-                end if
-                
-            end if
-            response.write(btnAtender&btnAtenderAcao&btnAtenderClass)
-        else
+        <%if veseha("StaID")<>2 then%>
+    	<button
+    	 <%
 
-            %> onClick="isValido(certificadoValido,() => window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>&isTelemedicina=<% if isTelemedicina then %>true<%end if%>')"<%
+        if veseha("StaID")<>4 and veseha("StaID")<>5 and veseha("StaID")<>33 then
+            %> disabled<%
+        else
+            %> onClick="window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>&isTelemedicina=<% if isTelemedicina then %>true<%end if%>';"<%
         end if
         %><%
         if isTelemedicina and TelemedicinaAtiva then
         %>
-    	    <button onClick="window.location='?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>'" class="btn btn-xs btn-primary" type="button">IR PARA ATENDIMENTO</button>
+    	 class="btn btn-xs btn-alert" type="button" <%=disabPagto%> >
+    	 <i class="fa fa-video-camera"></i> ATENDER ONLINE
+    	 <%
+    	 else
+    	 %>
+         class="btn btn-xs btn-success btn-block" type="button" <%=disabPagto%> >
+         <i class="fa fa-play"></i> ATENDER
+         <%
+         end if
+    	 %>
+    	 </button>
+    	<%else%>
+    	<button onClick="window.location='?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>'" class="btn btn-xs btn-primary" type="button">IR PARA ATENDIMENTO</button>
     	<%end if%>
     </td>
     <%end if %>
@@ -642,11 +611,7 @@ else
         var now = dateFixDmy("<%=now()%>");
 
         var timeDiff = Math.abs(new Date(now) - new Date(arrival));
-        <%if HorarioVerao<>"" then%>
-            timeDiff = Math.floor((timeDiff/1000)/60);
-        <%else%>
-            timeDiff = Math.floor(((timeDiff/1000)/60)-60);
-        <%end if%>
+        timeDiff = Math.floor((timeDiff/1000)/60);
 
         var diffText = "há "+timeDiff+" minuto"+(timeDiff>1 ? "s" : "");
 
@@ -666,17 +631,6 @@ else
 
     }
 
-    function isValido(arg1,arg2){
-        if(arg1 === true){
-            return arg2();
-        }
-
-        new PNotify({
-            title: '<i class="fa fa-warning"></i> Certificado Digital',
-            text: 'Para avançar com o atendimento, o usuário deverá configurar o certificado digital.',
-            type: 'danger'
-        });
-    }
 </script>
     </tbody>
   </table>

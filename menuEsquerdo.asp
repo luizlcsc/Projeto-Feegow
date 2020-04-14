@@ -1053,9 +1053,7 @@ select case lcase(req("P"))
                 set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
                 if not labAutenticacao.eof then
                 %>
-            <li>
-                <a  href="./?P=ConferenciadeAmostras&Pers=1"> <span class="fa fa-link"></span> <span class="sidebar-title">Conferência de Amostras</span> </a>
-            </li>
+           
             <li>
                 <a> <span class="fa fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span> </a>
             </li>
@@ -1789,6 +1787,12 @@ select case lcase(req("P"))
                     <a href="#" onClick="callReport('RelatorioLabs');">
                         <i class="fa fa-double-angle-right"></i>
                         Mapa Laboratório
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onClick="callReport('ConferenciadeAmostras');">
+                        <i class="fa fa-double-angle-right"></i>
+                        Conferência de Amostras
                     </a>
                 </li>
                 <li>

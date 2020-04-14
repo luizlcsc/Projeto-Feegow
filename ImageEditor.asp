@@ -1,8 +1,10 @@
+
 <!--#include file="connect.asp"-->
 
-    <div id="image_panel" style="min-height: 800px;"></div>
+<div id="image_panel" style="min-height: 800px;"></div>
 
 <script type="text/javascript">
+$(document).ready(function(){
 
 let FeegowTheme = {
     'common.bi.image': 'https://clinic7.feegow.com.br/v7/assets/img/logo_white.png',
@@ -181,5 +183,5 @@ let imgId = '<%=req("nomeImagem")%>';
             oCtx.drawImage(oImage, 0, 0);
             return oCanvas.toDataURL();
         }
-
+});
 </script>

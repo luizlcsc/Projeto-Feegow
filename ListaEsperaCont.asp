@@ -195,7 +195,7 @@ else
 
 
     <% IF getConfig("ValidarCertificadoUsuario") = 1 THEN
-        sql = "SELECT count(*) > 0 as qtd FROM cliniccentral.digitalcertificates WHERE LicencaID = 100000  AND sysActive = 1 AND UsuarioID = "& session("User")
+        sql = "SELECT count(*) > 0 as qtd FROM cliniccentral.digitalcertificates WHERE LicencaID = "&replace(session("Banco"), "clinic", "")&" AND sysActive = 1 AND UsuarioID = "& session("User")
         set hasCertificadoDigital = db.execute(sql)
         IF hasCertificadoDigital.EOF THEN %>
             var certificadoValido = true;

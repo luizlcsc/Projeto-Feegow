@@ -1,6 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <%
 ExistePrescricao = "display:none;"
+ArquivoAssinado = ""
 
 if req("i")<>"" then
     set pp = db.execute("select * from pacientesprescricoes where id="& req("i"))
@@ -9,6 +10,10 @@ if req("i")<>"" then
         receituario = pp("Prescricao")
         ControleEspecial = pp("ControleEspecial")
         ExistePrescricao = ""
+
+        if Adicional = "assinado" then
+            ArquivoAssinado = "display:none;"
+        end if
     end if
 end if
 %>
@@ -28,7 +33,7 @@ end if
             <div class="col-md-5">
                 <input type="hidden" id="PrescricaoId" value="<%=PrescricaoId%>">
                 <button type="button" onclick="novo();" class="btn btn-info"><i class="fa fa-plus icon-plus"></i> Nova</button>
-                <button type="button" class="btn btn-primary" id="savePrescription"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
+                <button type="button" class="btn btn-primary" id="savePrescription" style="<%=ArquivoAssinado%>"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
                 <button type="button" class="btn btn-info" style="<%=ExistePrescricao%>" id="printPrescription"><i class="fa fa-print icon-print"></i> Imprimir</button>
             </div>
             <div class="col-md-2">
@@ -227,6 +232,7 @@ $("#printPrescription").click(function(){
 function novo(){
     $('#receituario').val('');
     $("#printPrescription").hide();
+    $("#savePrescription").show();
 }
 
 function SaveAndPrint(salvarPrescricao){

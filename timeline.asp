@@ -35,6 +35,12 @@ end if
 
 %>
 <style type="text/css">
+.timeline-item{
+    margin-left:25px;
+}
+#timeline.timeline-single .timeline-icon {
+    left: -19px !important;
+}
 #folha{
 		font-family: Arial, sans-serif;
 		list-style-type: none;
@@ -748,18 +754,19 @@ end select
         <div id="timeline" class="timeline-single mt30 ">
             <!--#include file="timelineload.asp"-->
         </div>
+        <div class="load-wrapp col-xs-6 col-xs-offset-6 ">
+            <div class="load-3">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+        </div>
     </div>  
 </div>
  
+
 </div>
-</div>
-<div class="load-wrapp col-xs-6 col-xs-offset-6 ">
-    <div class="load-3">
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-    </div>
-</div>
+
 </div>
 
 <%
@@ -920,19 +927,19 @@ function excluirSerie(id) {
         try{
 
         var final = false;
-        var loadMore = 0;
-        var steps = parseInt('<%=MaximoLimit%>');
-        var tipoarquivo = '<%=Tipo%>';
-        var ProfissionalID = '<%=req("ProfessionalID")%>';
+        let loadMore = 0;
+        let steps = parseInt('<%=MaximoLimit%>');
+        let tipoarquivo = '<%=Tipo%>';
+        let ProfissionalID = '<%=req("ProfessionalID")%>';
         var Carregando = false
         $(".load-wrapp").hide();
 
         scroll(0,0);
 
         $(window).scroll(function() {
-            var tamanhoMaximo = $(document).height() - $(window).height();
-            var scrollPosition = $(window).scrollTop();
-            var isEnd = ( (scrollPosition + 50 ) >= tamanhoMaximo);
+            let tamanhoMaximo = $(document).height() - $(window).height();
+            let scrollPosition = $(window).scrollTop();
+            let isEnd = ( (scrollPosition + 50 ) >= tamanhoMaximo);
 
             if(isEnd && !Carregando){
                 $(".timeline-item").slice(loadMore,steps).fadeIn(3000);
@@ -955,7 +962,7 @@ function excluirSerie(id) {
                             $("#timeline").append("</div></div><div class='timeline-divider'><div class='divider-label'>Não há mais registros</div></div>");
                         }
                     }).fail(function(data) {
-
+                        console.log(data);
                     }).always(function(){
                         Carregando = false;
                         $(".load-wrapp").hide();
@@ -972,4 +979,32 @@ function excluirSerie(id) {
 
 
 <!--#include file="jQueryFunctions.asp"-->
+</script>
+<script>
+function prontPrint(tipo, id){
+    let url ="";
+
+    switch (tipo.toLocaleLowerCase()) {
+        case "prescricao":
+            url = domain+"print/prescription/";
+            break;
+        case "atestado":
+            url = domain+"print/medical-certificate/";
+            break;
+        case "pedido":
+            url = domain+"print/exam-request/";
+            break;
+        //case "AE","L":
+            //url = domain+"print/prescription/";
+        // break;
+    }
+    let src = `${url+id}?showPapelTimbrado=1&showCarimbo=1&assinaturaDigital=1&tk=${localStorage.getItem("tk")}`;
+    openModal(`
+        <iframe width="100%" height="800px" src="${src}" frameborder="0"></iframe>`,
+        "",
+        true,
+        false,
+        "modal-lg");
+}
+
 </script>

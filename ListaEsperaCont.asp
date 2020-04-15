@@ -611,11 +611,7 @@ else
         var now = dateFixDmy("<%=now()%>");
 
         var timeDiff = Math.abs(new Date(now) - new Date(arrival));
-        <%if HorarioVerao<>"" then%>
-            timeDiff = Math.floor((timeDiff/1000)/60);
-        <%else%>
-            timeDiff = Math.floor(((timeDiff/1000)/60)-60);
-        <%end if%>
+        timeDiff = Math.floor((timeDiff/1000)/60);
 
         var diffText = "há "+timeDiff+" minuto"+(timeDiff>1 ? "s" : "");
 

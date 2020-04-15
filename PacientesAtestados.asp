@@ -2,6 +2,7 @@
 <%
 ExisteAtestado = "display:none;"
 redirect = req("redirect")&""
+ArquivoAssinado = ""
 
 
 if req("i")<>"" then
@@ -11,6 +12,10 @@ if req("i")<>"" then
         Atestado = pp("Atestado")
         Titulo = pp("Titulo")
         ExisteAtestado = ""
+
+        if Adicional = "assinado" then
+            ArquivoAssinado = "display:none;"
+        end if
     end if
 end if
 %>
@@ -34,7 +39,7 @@ end if
                         <button type="button" onclick="novo();" class="btn btn-info btn-block"><i class="fa fa-plus icon-plus"></i> Novo</button>
                     </div>
                     <div class="col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" id="saveAtestado"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
+                        <button type="button" class="btn btn-primary btn-block" id="saveAtestado" style="<%=ArquivoAssinado%>"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
                     </div>
 
                     <div class="col-md-2">
@@ -135,7 +140,8 @@ $(function () {
 function novo(){
     $('#atestado, #TituloAtestado').val('');
     $("#printAtestado").hide();
-}
+    $("#saveAtestado").show();
+    }
 
 function aplicarTextoAtestado(id){
 	$.post("PacientesAplicarFormula.asp?Tipo=A&PacienteID=<%=PacienteID%>", {id:id}, function(data, status){

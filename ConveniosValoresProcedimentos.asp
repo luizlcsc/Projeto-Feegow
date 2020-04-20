@@ -52,7 +52,15 @@ set planos=nothing
 
 <div class="panel">
     <div class="panel-body">
-        <%= quickfield("text", "ProcedimentoRapido", "Busca rápida de procedimento", 12, "", "", "", " placeholder='Digite o Nome do procedimento...' ") %>
+    <div class="row">
+        <%= quickfield("text", "ProcedimentoRapido", "Busca rápida de procedimento", 10, "", "", "", " placeholder='Digite o Nome do procedimento...' ") %>
+        <div class="col-md-2">
+            <label>&nbsp;</label><br />
+            <a id="filtrarprocedimento" class="btn btn-primary btn-block">
+                <i class="fa fa-search bigger-110"></i> Filtrar
+            </a> 
+        </div>
+    </div>
     </div>
 </div>
 
@@ -87,7 +95,7 @@ set planos=nothing
                 ativo = "class='active'"
             end if
             %>
-            <li <%=ativo%> id="<%=t%>"><a href="#" onclick="pageChange(<%=t%>);"><%=steps%></a></li>
+            <li <%=ativo%> id="<%=t%>"><a href="#!" onclick="pageChange(<%=t%>);"><%=steps%></a></li>
             <%
         end if
     Next
@@ -138,14 +146,14 @@ $('#'+newloadMore).addClass('active');
     });
 }
 
-$("#ProcedimentoRapido").keyup(function(){
-        if($(this).val()==''){
+$("#filtrarprocedimento").click(function(){
+        if($("#ProcedimentoRapido").val()==''){
             $("#pager").show();
             loadMore = 0;
             pageChange(0);
         }else{
             $("#pager").hide();
-            $.get("ConveniosValoresProcedimentosLoad.asp?ConvenioID=<%=ConvenioID%>&txt="+$(this).val(),
+            $.get("ConveniosValoresProcedimentosLoad.asp?ConvenioID=<%=ConvenioID%>&txt="+$("#ProcedimentoRapido").val(),
              function(data){
                 $("#tableValoresConvenio").html(data);
             });

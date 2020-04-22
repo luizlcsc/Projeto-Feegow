@@ -979,13 +979,16 @@ select case lcase(req("P"))
             </li>
             <%
         end if
-    case "laudos" , "frases"
+    case "laudos" , "frases", "laudosv2" 
         %>
         <li>
             <a  href="?P=Laudos&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
         </li>
+        <!--<li>
+            <a  href="?P=Laudosv2&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos <span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li> -->
         <li>
-            <a  href="?P=Frases&Pers=0"><span class="fa fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases <span class="label label-system label-xs fleft">Novo</span></span></a>
+            <a  href="?P=Frases&Pers=0"><span class="fa fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases </span></a>
         </li>
 
         <%

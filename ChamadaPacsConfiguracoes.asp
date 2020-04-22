@@ -8,7 +8,8 @@
 
 <% if recursoAdicional(27)=4 then %>
     <script type="text/javascript">
-        getUrl("pacs/config", {}, function(data) {
+        let token = localStorage.getItem('tk');
+        getUrl("pacs/config", {tk: token}, function(data) {
             $(".app").hide();
             $(".app").html(data);
             $(".app").fadeIn('slow');

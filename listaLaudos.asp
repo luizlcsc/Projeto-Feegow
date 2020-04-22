@@ -124,10 +124,10 @@ end if
                         " FROM cliniccentral.labs_exames le  "&_
                         " INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id)  "&_
                         " WHERE lia.InvoiceID = t.invoiceid  order by le.DiasResultado desc limit 1) ,proc.DiasLaudo) as DiasLaudo , "&_
-                        "(SELECT DATE_ADD(t.DataExecucao , INTERVAL (SELECT le.DiasResultado + le.DiasAdicionais "&_
+                        "(SELECT cliniccentral.sf_adddiasuteis(t.DataExecucao ,  (SELECT le.DiasResultado + le.DiasAdicionais "&_
 						"								    FROM cliniccentral.labs_exames le "&_
 						"								   INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id) "&_
-						"							      WHERE lia.InvoiceID = t.invoiceid ORDER BY  le.DiasResultado DESC LIMIT 1 )  DAY )  ) AS DataPrevisao "
+						"							      WHERE lia.InvoiceID = t.invoiceid ORDER BY  le.DiasResultado DESC LIMIT 1 ) ) AS DataPrevisao "
 
 
 

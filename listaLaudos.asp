@@ -127,7 +127,7 @@ end if
                         "(SELECT cliniccentral.sf_adddiasuteis(t.DataExecucao ,  (SELECT le.DiasResultado + le.DiasAdicionais "&_
 						"								    FROM cliniccentral.labs_exames le "&_
 						"								   INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id) "&_
-						"							      WHERE lia.InvoiceID = t.invoiceid ORDER BY  le.DiasResultado DESC LIMIT 1 ) ) AS DataPrevisao "
+						"							      WHERE lia.InvoiceID = t.invoiceid ORDER BY  le.DiasResultado DESC LIMIT 1 ) )) AS DataPrevisao "
 
 
 

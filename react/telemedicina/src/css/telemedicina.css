@@ -36,7 +36,7 @@
     position: absolute;
     right: 10px;
     top: 130px;
-    z-index: 999999;
+    z-index: 999999999999999;
     cursor: grab;
 }
 

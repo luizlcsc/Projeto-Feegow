@@ -84,7 +84,8 @@ const Popup = (props) => {
     };
 
     const onReconnect = () => {
-        telemedicine.reconnect();
+        location.reload();
+        // telemedicine.reconnect();
     }
 
 

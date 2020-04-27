@@ -48,7 +48,7 @@ const Header = (props) => {
                 <img style={{width: 25}} src="react/telemedicina/src/img/icone-fechar.png" alt=""/>
             </button>
 
-            <div className="btn-group hidden" style={{zIndex: 999999999}}>
+            <div className="btn-group " style={{zIndex: 999999999}}>
                 <button style={{
                     backgroundColor: props.buttonColor
                 }}

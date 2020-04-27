@@ -60,6 +60,11 @@ end if
         </div>
     </div>
     <script >
+    setTimeout(() => {
+        $(document).ready(function(){
+          $('[data-toggle="tooltip"]').tooltip();
+        });
+    }, 3000);
     $("#root").draggable();
     </script>
 <%

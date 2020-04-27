@@ -30,9 +30,11 @@
                     <th>Razão social</th>
                     <th>Celular</th>
                     <th>N. Usuários</th>
+                    <th >Cert. Nasc. (0)</th>
                     <th >Boas-vindas (1)</th>
                     <th >Ag. futuros (2)</th>
                     <th >Ag. concluídos (3)</th>
+                    <th >Banco de Dados</th>
                     <th >Último acesso</th>
                     <th></th>
                 </tr>
@@ -70,19 +72,25 @@ end if
     " LEFT JOIN sys_users su ON su.id=p.sysUser LEFT JOIN profissionais pro ON pro.id=su.idInTable LEFT JOIN itensdescontados id ON id.ItemID=ii.id LEFT JOIN sys_financialmovement m ON m.id=id.PagamentoID " &_
     " WHERE ii.ItemID=3 AND ii.Tipo='S' AND i.CD='C' AND NOT ISNULL(m.Value) GROUP BY i.AccountID ORDER BY m.Date DESC LIMIT 400")
     while not impo.eof
+        Response.Flush()
+
         ClienteID=impo("AccountID")
         LicencaID=impo("LicencaID")
         response.flush()
+        Etapa0OK = False
         Etapa1OK = False
         Etapa2OK = False
         Etapa3OK = False
         Etapa4OK = False
+        Etapa5OK = False
 
 
+        Etapa0Descricao=""
         Etapa1Descricao=""
         Etapa2Descricao=""
         Etapa3Descricao=""
         Etapa4Descricao=""
+        Etapa5Descricao=""
 
         classeUltimoAcesso=""
 
@@ -90,6 +98,12 @@ end if
         if not Etapa1SQL.eof then
             Etapa1OK=True
             Etapa1Descricao = Etapa1SQL("Texto")&" em "&Etapa1SQL("DataHora") &" por "&Etapa1SQL("Usuario")
+        end if
+
+        set CertidaoDeNascimentoSQL = db.execute("SELECT DataHora FROM buiformspreenchidos WHERE PacienteID="&ClienteID&" AND ModeloID=48 AND sysActive=1")
+        if not CertidaoDeNascimentoSQL.eof then
+            Etapa0OK=True
+            Etapa0Descricao="Certidão lançada em "&CertidaoDeNascimentoSQL("DataHora")
         end if
 
         set UltimoAcessoSQL = db.execute("SELECT u.DataHora FROM cliniccentral.licencaslogins u WHERE LicencaID="&treatvalzero(LicencaID)&" AND Sucesso=1 ORDER BY DataHora DESC LIMIT 1")
@@ -120,6 +134,18 @@ end if
             classeNumeroUsuarios = " danger"
         end if
 
+        set BancoDeDadosSQL = db.execute("SELECT csa.DataContratacao, csa.`Status`, ssa.TipoStatus from cliniccentral.clientes_servicosadicionais csa  "&_
+                                         "INNER JOIN cliniccentral.status_servicosadicionais ssa ON ssa.id=csa.`Status` "&_
+                                         "WHERE csa.ServicoID=5 AND csa.LicencaID="&treatvalzero(LicencaID))
+        if not BancoDeDadosSQL.eof then
+            if BancoDeDadosSQL("Status")=4 or BancoDeDadosSQL("Status")=6 then
+                Etapa5OK = True
+            end if
+            Etapa5Descricao = "Status: "&BancoDeDadosSQL("TipoStatus")
+        else
+            Etapa5OK=True
+            Etapa5Descricao = "Serviço não contratado"
+        end if
 
         set Etapa3SQL = db.execute("SELECT count(a.id)Qtd FROM agendamentos a WHERE a.Data<=curdate() AND a.StaID IN (3) AND a.PacienteID="&ClienteID)
         if not Etapa3SQL.eof then
@@ -144,12 +170,14 @@ end if
             <td><code>#<%=LicencaID%></code></td>
             <td><%=impo("DataPagto")%></td>
             <td><%=impo("NomeProfissional")%></td>
-            <td><%= impo("NomePaciente")&"" %></td>
+            <td><small><%= impo("NomePaciente")&"" %></small></td>
             <td><%= impo("Cel1") %></td>
             <th class="<%=classeNumeroUsuarios%>"><%= NumeroUsuarios %></th>
+            <td><%=etapaIcon(Etapa0OK, Etapa0Descricao)%></td>
             <td><%=etapaIcon(Etapa1OK, Etapa1Descricao)%></td>
             <td><%=etapaIcon(Etapa2OK, Etapa2Descricao)%></td>
             <td><%=etapaIcon(Etapa3OK, Etapa3Descricao)%></td>
+            <td><%=etapaIcon(Etapa5OK, Etapa5Descricao)%></td>
             <td><small><span class="label label-<%=classeUltimoAcesso%>"><%=UltimoAcessoDescricao%></span></small></td>
             <td><button class="btn btn-xs btn-primary" type="button" onclick="ed(<%= impo("AccountID") %>)"><i class="fa fa-external-link"></i></button></td>
        </tr>
@@ -199,5 +227,10 @@ end if
             $("#modal").html(data);
         });
     }
-    
+
+    $(document).ready(function() {
+      setTimeout(function() {
+        $("#toggle_sidemenu_l").click()
+      }, 500);
+    })
 </script>

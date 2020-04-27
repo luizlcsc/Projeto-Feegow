@@ -8,6 +8,7 @@ DataDataF=DataFim
 ProfissionalID = ref("ProfissionalID")
 Profissionais = ref("Profissionais")
 Unidades = ref("Unidades")
+FeriadoID = ref("FeriadoID")
 
 DiasSemana=replace(ref("DiasSemana"), ", ", " ")
 
@@ -110,9 +111,9 @@ else
             Unidades=""
         end if
 		if ref("BloqueioID")="0" or ref("BloqueioID")="" or not isnumeric(ref("BloqueioID")) then
-			db_execute("insert into compromissos (DataDe, DataA, HoraDe, HoraA, ProfissionalID, Titulo, Descricao, Usuario, Data, DiasSemana, Profissionais, Unidades, BloqueioMulti) values ('"&mydate(DataInicio)&"', '"&mydate(DataFim)&"', '"&hour(HoraInicio)&":"&minute(HoraInicio)&"', '"&hour(HoraFim)&":"&minute(HoraFim)&"', '"&ProfissionalID&"', '"&ref("Titulo")&"', '"&ref("Descricao")&"', '"&session("User")&"', '"&now()&"', '"&trim(DiasSemana)&"','"&ref("Profissionais")&"','"&Unidades&"','"&BloqueioMulti&"')")
+			db_execute("insert into compromissos (DataDe, DataA, HoraDe, HoraA, ProfissionalID, Titulo, Descricao, Usuario, Data, DiasSemana, Profissionais, Unidades, BloqueioMulti,FeriadoID) values ('"&mydate(DataInicio)&"', '"&mydate(DataFim)&"', '"&hour(HoraInicio)&":"&minute(HoraInicio)&"', '"&hour(HoraFim)&":"&minute(HoraFim)&"', '"&ProfissionalID&"', '"&ref("Titulo")&"', '"&ref("Descricao")&"', '"&session("User")&"', '"&now()&"', '"&trim(DiasSemana)&"','"&ref("Profissionais")&"','"&Unidades&"','"&BloqueioMulti&"',"&FeriadoID&")")
 		else
-			sqlUpBloq = "update compromissos set DataDe='"&mydate(DataInicio)&"', DataA='"&mydate(DataFim)&"', HoraDe='"&hour(HoraInicio)&":"&minute(HoraInicio)&"', HoraA='"&hour(HoraFim)&":"&minute(HoraFim)&"', ProfissionalID='"&ProfissionalID&"', Titulo='"&ref("Titulo")&"', Descricao='"&ref("Descricao")&"', Usuario='"&session("User")&"', Data='"&now()&"', DiasSemana='"&trim(DiasSemana)&"', Profissionais='"&ref("Profissionais")&"', Unidades='"&ref("Unidades")&"', BloqueioMulti='"&BloqueioMulti&"' where id="&ref("BloqueioID")
+			sqlUpBloq = "update compromissos set DataDe='"&mydate(DataInicio)&"', DataA='"&mydate(DataFim)&"', HoraDe='"&hour(HoraInicio)&":"&minute(HoraInicio)&"', HoraA='"&hour(HoraFim)&":"&minute(HoraFim)&"', ProfissionalID='"&ProfissionalID&"', Titulo='"&ref("Titulo")&"', Descricao='"&ref("Descricao")&"', Usuario='"&session("User")&"', Data='"&now()&"', DiasSemana='"&trim(DiasSemana)&"', Profissionais='"&ref("Profissionais")&"', Unidades='"&ref("Unidades")&"', BloqueioMulti='"&BloqueioMulti&"', feriadoID="&FeriadoID&" where id="&ref("BloqueioID")
 	'		response.Write(sqlUpBloq)
 			db_execute(sqlUpBloq)
 		end if

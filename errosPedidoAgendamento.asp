@@ -97,7 +97,7 @@ if erro ="" then
     end if
     'valida se equipamento esta disponivel
     if ref("EquipamentoID")&""<> "" then
-            msgEquip = dispEquipamento(ref("Data"), ref("Hora"), ref("Tempo"), ref("EquipamentoID"))
+            msgEquip = dispEquipamento(ref("Data"), ref("Hora"), ref("Tempo"), ref("EquipamentoID"), ref("ConsultaID"))
             msgEquip = replace(msgEquip,"Este equipamento","Equipamento da linha 1")
             erro = addError(erro, msgEquip)
     end if
@@ -132,7 +132,7 @@ if erro ="" then
 
                 'valida se equipamento esta disponivel
                 if apEquipamento&""<> "" then
-                        msgEquip = dispEquipamento(ref("Data"), ref("Hora"), apTempo, apEquipamento)
+                        msgEquip = dispEquipamento(ref("Data"), ref("Hora"), apTempo, apEquipamento, ref("ConsultaID"))
                         msgEquip = replace(msgEquip,"Este equipamento","Equipamento da linha "&(iPA+2))
                         erro = addError(erro, msgEquip)
                 end if

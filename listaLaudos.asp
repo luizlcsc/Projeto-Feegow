@@ -120,8 +120,23 @@ end if
         IF Procedimentos <> "" THEN
             filtroGrupo = " ii.ItemID in ("&Procedimentos&") AND "
         END IF
+        sqldiaslaudo  = " IF(t.ProcedimentoID =0,(SELECT le.DiasResultado + le.DiasAdicionais "&_
+                        " FROM cliniccentral.labs_exames le  "&_
+                        " INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id)  "&_
+                        " WHERE lia.InvoiceID = t.invoiceid  order by le.DiasResultado desc limit 1) ,proc.DiasLaudo) as DiasLaudo , "&_
+                        "(SELECT cliniccentral.sf_adddiasuteis(t.DataExecucao ,  (SELECT le.DiasResultado + le.DiasAdicionais "&_
+						"								    FROM cliniccentral.labs_exames le "&_
+						"								   INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id) "&_
+						"							      WHERE lia.InvoiceID = t.invoiceid ORDER BY  le.DiasResultado DESC LIMIT 1 ) )) AS DataPrevisao "
 
-        sql = "SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID )TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, proc.DiasLaudo, IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID, labid, invoiceid  FROM ("&_
+
+
+        sql = " SELECT tab.*, (IF(DAYOFWEEK(tab.DataPrevisao) = 6 OR DAYOFWEEK(tab.DataPrevisao) = 7, "&_
+              " IF(DAYOFWEEK(tab.DataPrevisao)=6, "&_
+	          " DATE_ADD(tab.DataPrevisao, INTERVAL + 3 DAY), "&_
+    		  " DATE_ADD(tab.DataPrevisao, INTERVAL + 2 DAY)), "&_
+   		      " DATE_ADD(tab.DataPrevisao, INTERVAL + 1 DAY))) AS DataAtualizada  FROM "&_
+            " (SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID )TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, "& sqldiaslaudo &" , IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID, t.labid, invoiceid  FROM ("&_
             " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, 0 labid, 0 invoiceid FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
             " UNION ALL "&_
             " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, ls.labid, i.id invoiceid FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE "&filtroGrupo&" ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
@@ -130,8 +145,9 @@ end if
             ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID INNER JOIN pacientes pac ON pac.id=t.PacienteID "&_
             " LEFT JOIN Laudos l ON (l.Tabela=t.Tabela AND l.IDTabela=t.id) "&_
             " LEFT JOIN labs_exames_procedimentos lep ON (lep.ProcedimentoID=t.ProcedimentoID) "&_
-            " LEFT JOIN profissionais prof ON prof.id=IFNULL(l.ProfissionalID, t.ProfissionalID) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id ORDER BY pac.NomePaciente"
-
+            " LEFT JOIN cliniccentral.labs_exames le ON le.id  = lep.LabExameID "&_
+            " LEFT JOIN profissionais prof ON prof.id=IFNULL(l.ProfissionalID, t.ProfissionalID) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id ORDER BY pac.NomePaciente ) as tab"
+        'response.write (sql)
         set ii = db.execute( sql )
 
 
@@ -169,8 +185,12 @@ end if
                 ItemN = contador
                 disabledEdit=""
                 'Identificacao = ii("Identificacao")
+                if  ii("NomeProcedimento") = "Laboratório" then
+                    Previsao  =  ii("DataAtualizada")
+                ELSE
+                    Previsao  = dateAdd("d", DiasLaudo, DataExecucao)
+                END IF
 
-                Previsao = dateAdd("d", DiasLaudo, DataExecucao)
                 sql = "select l.id, ls.Status, l.PrevisaoEntrega from laudos l LEFT JOIN laudostatus ls ON ls.id=l.StatusID where l.Tabela='"& Tabela &"' and l.IDTabela="& IDTabela &" and l.Serie="&ItemN
                 ' response.write (sql)
                 set vca = db.execute(sql)
@@ -217,15 +237,6 @@ end if
 
                     NomeProcedimento = ii("NomeProcedimento")
 
-                    if NomeProcedimento = "Laboratório" then
-                        sqlSiglas = "SELECT GROUP_CONCAT(DISTINCT ifnull(p.Sigla,'') SEPARATOR ', ') Siglas, GROUP_CONCAT(DISTINCT ifnull(p.Sigla,'') SEPARATOR '<br> ') SiglasDetalhamento FROM itensinvoice ii INNER JOIN procedimentos p ON ii.ItemID = p.id WHERE ii.Executado = 'S' and p.TipoProcedimentoID = 3 and ii.InvoiceID="&IDTabela
-                        set siglasSQL = db.execute(sqlSiglas)
-                        if not siglasSQL.eof then
-                            NomeProcedimento = siglasSQL("Siglas")
-                            ExamesDetalhamento = siglasSQL("SiglasDetalhamento")
-                            ExamesLaboratoriais = True
-                        end if
-                    end if
                     if NomeProcedimento&"" = "" then
                         NomeProcedimento = ""
                     end if
@@ -256,7 +267,11 @@ end if
                         end if
                     end if
                     %>
-                    <tr>
+                    <%if NomeProcedimento = "Laboratório" then %>
+                    <tr class="view" >
+                    <% else %>
+                    <TR>
+                    <% end if %> 
                         <td>
                             <div class="radio-custom square radio-dark ">
                               <input type="checkbox" name="cklaudos" id="cklaudo-<%=counter%>" class="cklaudos" value="<%= link %>" />
@@ -269,36 +284,24 @@ end if
                         <td><small><a target="_blank" href="?P=pacientes&I=<%=ii("PacienteID")%>&Pers=1"><%= left(ii("NomePaciente"), 24) %></a></small></td>
                         <td class="whatsapp" msg="<%=msgPadrao%>"><small><%= ii("Cel1") %></small></td>
                         <td><small><%= left(NomeProfissional, 20) %></small></td>
-                        <td>
-                                                    <%
-                                                    if ExamesLaboratoriais then
-                                                        %>
-                                                        <span data-container="body" data-toggle="popover"
-                                                              data-placement="left"
-                                                              data-html="true"
-                                                              title="Exames laboratoriais"
-                                                              data-content="<%=ExamesDetalhamento%> "
-                                                              data-original-title="Exames"
-                                                              class="label label-system"> <i class="fa fa-flask"></i> <%= left(NomeProcedimento, 20) %> ...</span>
-                                                        <%
-                                                    else
-                                                        %>
-                                                        <small><%= NomeProcedimento %></small>
-                                                        <%
-                                                    end if
-                                                    %>
+                        <td> 
+                            <%if NomeProcedimento = "Laboratório" then %>
+                                <span class="label label-system" title="Ver Detalhes" onclick="esconder('<%=ii("Identificacao")%>',<%=ii("invoiceid")%> );"> <i class="fa fa-flask"></i> <small><%=NomeProcedimento %></small> </span>
+                            <%else %>
+                                <small><%=NomeProcedimento %></small>
+                            <%end if%>
                         </td>
                         <td><%= ii("NomeConvenio") %></td>
                         <td><span class="label label-rounded label-<%=StatusClasse%>"><%= Status %></span></td>
                         <td><% if cint(ii("TemArquivos")) > 0 then %><span data-toggle="tooltip" title="<%=ii("TemArquivos")%> arquivo(s) anexo(s)" class="label label-rounded label-info"><i class="fa fa-paperclip"></i></span><% end if %></td>
                         <td>
                             <div class="btn-group" style="float: right">
-                            <% if Status = "Pendente" then %>
+                            <% if Status = "Pendente" or Status="Parcial" then %>
                                 <% if ii("labid")="1" then %>
                                     <a id="a<%=ii("invoiceid") %>"  class="btn btn-sm btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado São Marcos"><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
                                 <% if ii("labid")="2" then %>
-                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
                             <% end if %>
                              <% if ii("labid")="2" then %>
@@ -310,6 +313,14 @@ end if
                             </div>
                         </td>
                     </tr>
+                    <% if NomeProcedimento = "Laboratório"  then%>
+                    <TR id="tr<%=ii("Identificacao")%>" style="display: none;">
+                        <TD> &nbsp;<TD>
+                        <TD colspan="100%"> 
+                            <DIV id="div<%=ii("Identificacao")%>"> </DIV>
+                        </TD> 
+                    </TD>
+                    <% end if %>
                     <%
                     end if
 
@@ -358,6 +369,25 @@ end if
 %>
 
 <script>
+
+function esconder(elemento,invoiceid){
+    var linha = '#tr'+elemento;
+    var conteudo = '#div'+elemento;
+    $(linha).toggle();
+
+    $(conteudo).html('<center>Carregando...</center>');
+    postUrl("labs-integration/diagbrasil/get-Exames-html", {
+        "invoiceid": invoiceid
+    }, function (data) {
+        if(data.success) {
+           $(conteudo).html(data.html);
+        } else {
+           $(conteudo).html('Não foi possivel obter a Informação do exame !');           
+        }
+    }); 
+
+}
+
 $(document).ready(function(){
    $('[data-toggle="tooltip"]').tooltip();
 
@@ -510,3 +540,4 @@ $(".lab-sync").on("click", function (labid =2){
         $(".atualizarstatus").attr("disabled", $(this).val() == 0 );
     });
 </script>
+

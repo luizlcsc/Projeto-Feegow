@@ -170,7 +170,7 @@ recursoPermissaoUnimed = recursoAdicional(12)
     function visualizarImpressao(){
         var timbrado = $("#Timbrado").prop("checked") ==true?1:0;
         var carimbo = $("#Carimbo").prop("checked") ==true?1:0;
-        var url = domain+"print/exam-request/<%=reg("id")%>?tk="+localStorage.getItem("tk")+"&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo;
+        var url = domain+"print/exam-request/<%=reg("id")%>?tk="+localStorage.getItem("tk")+"&assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo;
         console.log(url)
         $("#ImpressaoPedido").prop("data", url);
     }
@@ -178,13 +178,13 @@ recursoPermissaoUnimed = recursoAdicional(12)
    $("#Timbrado").on("change",()=>{
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
         carimbo = $("#Carimbo").prop("checked") ==true?1:0;
-        url = domain+"print/exam-request/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        url = domain+"print/exam-request/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
         $("#ImpressaoPedido").prop("data", url);
     });
     $("#Carimbo").on("change",()=>{
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
         carimbo = $("#Carimbo").prop("checked") ==true?1:0;
-        url = domain+"print/exam-request/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        url = domain+"print/exam-request/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
         $("#ImpressaoPedido").prop("data", url);
     });
     $("#btnVisualizar").click(function(){

@@ -20,6 +20,22 @@ end if
 
 sql = "select t.id 'ProfissionalID',t.EspecialidadeID id, especialidade from (select id, EspecialidadeID from Profissionais union all select profissionalID, Especialidadeid from profissionaisespecialidades)t left join especialidades on especialidades.id = t.EspecialidadeID where t.id in("&ListaProfissionais&") group by t.EspecialidadeID"
 
-call quickfield("simpleSelect", "EspecialidadeID", "Especialidade", 4, "", sql, "especialidade", "onchange='atualizaLista();'") 
 
+set EspecialidadesSQL = db.execute(sql)
 %>
+<select name="EspecialidadeID" id="EspecialidadeID">
+    <option value="" selected >Todas as especialidades</option>
+    <%
+    while not EspecialidadesSQL.eof
+
+        if not isnull(EspecialidadesSQL("especialidade")) and EspecialidadesSQL("especialidade")&"" <> "" then
+        %>
+        <option value="<%=EspecialidadesSQL("id")%>"><%=EspecialidadesSQL("especialidade")%></option>
+        <%
+        end if
+    EspecialidadesSQL.movenext
+    wend
+    EspecialidadesSQL.close
+    set EspecialidadesSQL=nothing
+    %>
+</select>

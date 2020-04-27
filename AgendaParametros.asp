@@ -224,7 +224,8 @@ $(document).ready(function() {
 			$("#searchConvenioID").val("");
 		<%
 	end if
-	if getConfig("ProcedimentosContratadosParaSelecao")&"" <> "1" then
+
+    if getConfig("ProcedimentosContratadosParaSelecao")&"" <> "1" then
         set vcaItemInvoice = db.execute("select ii.ItemID, proc.NomeProcedimento, ii.ValorUnitario+ii.Acrescimo-ii.Desconto Valor FROM itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID LEFT JOIN procedimentos proc on proc.id=ii.ItemID WHERE Tipo='S' AND (Executado='' OR isnull(Executado)) AND i.AssociationAccountID=3 AND i.AccountID="&PacienteID&" LIMIT 1")
 
         if not vcaItemInvoice.EOF then
@@ -238,6 +239,7 @@ $(document).ready(function() {
             <%
         end if
 	end if
+
     if session("Banco")="clinic100000" or session("Banco")="clinic2901" or session("Banco")="clinic5355" or session("Banco")="clinic105" or session("Banco")="clinic5583" or session("Banco")="clinic5968" or session("Banco")="clinic5710" or session("Banco")="clinic5563" then
         saldo = accountBalance("3_"&PacienteID, 0)
 
@@ -450,7 +452,7 @@ if left(tipo, 14)="ProcedimentoID" then
 end if
 
 if tipo="Equipamento" then
-    msgEquip = dispEquipamento(ref("Data"), ref("Hora"), ref("Tempo"), ref("EquipamentoID"))
+    msgEquip = dispEquipamento(ref("Data"), ref("Hora"), ref("Tempo"), ref("EquipamentoID"), ref("ConsultaID"))
     if msgEquip<>"" then
         %>
         new PNotify({

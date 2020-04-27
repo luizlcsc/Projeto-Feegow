@@ -14,6 +14,7 @@
                     <th>Localização</th>
                     <th>Validade</th>
                     <th width="1%" class="hidden-print"></th>
+                    <th width="1%" class="hidden-print"></th>
                 </tr>
             </thead>
             <%
@@ -28,8 +29,15 @@
             if ref("ProdutoID")<>0 then
                 sqlProd = " AND pro.id="& ref("ProdutoID") &" "
             end if
+            if ref("TipoProduto")&""<>"" and ref("TipoProduto")<>"1" then
+                TipoProdutoRef = split(ref("TipoProduto")&"", ", ")
+                sqlTipoProduto = " AND pro.TipoProduto="& TipoProdutoRef(0)
+            end if
             if ref("Codigo")<>"" then
                 sqlCod = " AND pro.Codigo Like '%"& ref("Codigo") &"%' "
+            end if
+            if ref("PrincipioAtivo")<>"" and ref("TipoProduto")="4" then
+                sqlPrincipioAtivo = " AND pro.PrincipioAtivo="& ref("PrincipioAtivo") &" "
             end if
             if ref("CodigoIndividual")<>"" then
                 sqlCodInd = " AND estpos.CBID Like '%"& ref("CodigoIndividual") &"%' "
@@ -45,13 +53,13 @@
             end if
             if ref("Ate")<>"" then
                 ValidoAte = ref("Ate")
-                sqlVal = " AND (estpos.Validade<= "& mydatenull(ValidoAte) &") AND estpos.Quantidade<>0 "
+                sqlVal = " AND (estpos.Validade<= "& mydatenull(ValidoAte) &") AND estpos.Quantidade>0 "
             end if
-            sqlCampoValDe = " AND (Validade>= "& mydatenull(date()) &") AND Quantidade<>0 "
+            sqlCampoValDe = " AND (Validade>= "& mydatenull(date()) &") AND Quantidade>0 "
             if ref("De")<>"" then
                 ValidoDe = ref("De")
-                sqlValDe = " AND (estpos.Validade>= "& mydatenull(ValidoDe) &") AND estpos.Quantidade<>0 "
-                sqlCampoValDe = " AND (Validade>= "& mydatenull(ValidoDe) &") AND Quantidade<>0 "
+                sqlValDe = " AND (estpos.Validade>= "& mydatenull(ValidoDe) &") AND estpos.Quantidade>0 "
+                sqlCampoValDe = " AND (Validade>= "& mydatenull(ValidoDe) &") AND Quantidade>0 "
             end if
 
             if ref("AbaixoMinimo")="S" then
@@ -62,26 +70,35 @@
                 sqlAbaixo = " AND ( (posicaoConjunto>=EstoqueMinimo) OR ( (posicaoUnidade+(posicaoConjunto*ApresentacaoQuantidade))>EstoqueMinimo) )"
             end if
 '(select Validade from estoqueposicao where ProdutoID=pro.id AND Validade<now() ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1)
-
-            set prod = db.execute("SELECT pro.*, estpos.id PosicaoID, procat.NomeCategoria, profab.NomeFabricante, estpos.Validade , proloc.NomeLocalizacao FROM produtos pro "&_
+            set prod = db.execute("SELECT pro.*, estpos.id PosicaoID, procat.NomeCategoria, profab.NomeFabricante, (select Validade from estoqueposicao where ProdutoID=pro.id AND Validade<now() AND Quantidade>0 ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1) Validade , proloc.NomeLocalizacao FROM produtos pro "&_
             "LEFT JOIN produtoscategorias procat ON procat.id=pro.CategoriaID "&_
             "LEFT JOIN produtosfabricantes profab ON profab.id=pro.FabricanteID "&_
             "LEFT JOIN produtoslocalizacoes proloc ON proloc.id=pro.LocalizacaoID "&_
             "LEFT JOIN estoqueposicao estpos ON estpos.ProdutoID=pro.id "&_
-            "WHERE pro.sysActive=1 "& sqlProd & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem)
+            "WHERE pro.sysActive=1 "& sqlProd & sqlTipoProduto & sqlPrincipioAtivo & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem)
             while not prod.EOF
-                if prod("Validade")=<dateAdd("d", 10, date()) then
-                    Validade = prod("Validade")
+                Validade = ""
+                disabled = ""
+                title = ""
+                DiasAvisoValidade = prod("DiasAvisoValidade")&""
+                if DiasAvisoValidade = "" then
+                    DiasAvisoValidade = 5
+                end if
+                if prod("Validade")=<dateAdd("d", DiasAvisoValidade, date()) then
+                    Validade = prod("Validade")&""
                     addClass = "label label-warning"
                     if prod("Validade")=<date() then
                         addClass = "label label-danger"
                     end if
                 end if
-                if prod("Validade")&""="" then
-                    'Validade = prod("Vencido")
+                if Validade&""="" then
+                    Validade = prod("Vencido")
                     addClass = "label label-danger"
                 end if
-
+                if prod("PosicaoID")&""<>"" then
+                    disabled = " disabled "
+                    title = "Esse item possui movimentação."
+                end if
             %>
 
                 <tbody>
@@ -92,7 +109,8 @@
                     <td><%=prod("NomeFabricante")%></td>
                     <td><%=prod("NomeLocalizacao")%></td>
                     <td><span class="<%=addClass%>"><%=Validade%></span></td>
-                    <td class="hidden-print"><a class="btn btn-xs btn-success" target="_blank" href="./?P=Produtos&Pers=1&I=<%=prod("id")%>"><i class="fa fa-edit"></i></a></td>
+                    <td class="hidden-print"><a class="btn btn-xs btn-primary" href="./?P=Produtos&Pers=1&I=<%=prod("id")%>"><i class="fa fa-edit"></i></a></td>
+                    <td class="hidden-print" title="<%=title%>"><button class="btn btn-xs btn-danger <%=disabled%>" onClick="removeItem(<%=prod("id")%>)"><i class="fa fa-remove"></i></button></td>
                 </tr>
                 </tbody>
             <%

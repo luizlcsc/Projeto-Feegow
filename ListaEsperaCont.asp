@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <%
+TelemedicinaAtiva = recursoAdicional(32) = 4
 
 IF ref("Rechamar") = "1" THEN
     db.execute("UPDATE agendamentos SET Falado = NULL WHERE id = "&ref("id"))
@@ -110,14 +111,21 @@ end if
 
 'da redirect ao atender
 if request.QueryString("Atender")<>"" then
+    AgendamentoIDAtender = request.QueryString("Atender")
 	'db_execute("update agendamentos set StaID='3' where StaID = '2' and ProfissionalID = '"&ProfissionalID&"'") -  não muda mais automaticamente para atendido, apenas quando encerra o contador
-	db_execute("update agendamentos set StaID='2', ProfissionalID="&ProfissionalID&" where id = '"&request.QueryString("Atender")&"' AND ProfissionalID = 0")
+	db_execute("update agendamentos set StaID='2', ProfissionalID="&ProfissionalID&" where id = '"&AgendamentoIDAtender&"' AND ProfissionalID = 0")
     getEspera(ProfissionalID)
+
+    if req("isTelemedicina")="true" then
+        db.execute("INSERT INTO atendimentoonline (AgendamentoID, PacienteID, hashpaciente, MedicoID, hashmedico) (SELECT age.id, age.PacienteID,'', age.ProfissionalID,'' FROM agendamentos age LEFT JOIN atendimentoonline ao ON ao.AgendamentoID=age.ID WHERE ao.id is NULL AND age.id='"&AgendamentoIDAtender&"')")
+        session("AtendimentoTelemedicina")=AgendamentoIDAtender
+    end if
+
 	response.Redirect("?P=Pacientes&Pers=1&I="&req("PacienteID")&"&Atender="&req("Atender")&"&Acao=Iniciar")
 end if
 
 if lcase(session("Table"))<>"profissionais" or req("ProfissionalID")<>"" then
-	sql = "select a.*, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela, ac.NomeCanal, a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join profissionais p on p.id=a.ProfissionalID inner join pacientes pac ON pac.id=a.PacienteID left join locais l on l.id=a.LocalID where Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 33, 102,105,106, 101, 5) and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "&sqlProfissional&sqlEspecialidade&" order by "&Ordem
+	sql = "select a.*, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela, ac.NomeCanal, a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano ,proc.ProcedimentoTelemedicina from agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join profissionais p on p.id=a.ProfissionalID inner join pacientes pac ON pac.id=a.PacienteID left join locais l on l.id=a.LocalID where Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 33, 102,105,106, 101, 5) and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "&sqlProfissional&sqlEspecialidade&" order by "&Ordem
     sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID                                                                                         where a.Data = '"&mydate(DataHoje)&"' and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID)) "&sqlProfissional&"  group by(l.UnidadeID) order by total desc limit 1 "
 else
     'triagem
@@ -128,7 +136,7 @@ else
 
 	'sql = "select * from Consultas where Data = "&DataHoje&" and DrId = '"&session("DoutorID")&"' and not StaID = '3' and not StaID = '1' and not StaID = '6' and not StaID = '7' order by "&Ordem
     sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID))  group by(l.UnidadeID) order by total desc limit 1 "
-	sql = "select a.*, tp.NomeTabela, ac.NomeCanal,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano from agendamentos a LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) order by "&Ordem
+	sql = "select a.*, tp.NomeTabela, ac.NomeCanal,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano, proc.ProcedimentoTelemedicina from agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) order by "&Ordem
 
 end if
 
@@ -148,7 +156,7 @@ if lcase(session("table"))="profissionais" then
             if not ProfissionalTriagemSQL.eof then
                 if ProfissionalTriagemSQL("EspecialidadeTriagem")="1" then
                     ProfissionalTriagem="S"
-                    sql = "select age.*, profage.NomeProfissional, tp.NomeTabela, ac.NomeCanal from agendamentos age LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID LEFT JOIN profissionais profage ON profage.id=age.ProfissionalID LEFT JOIN agendamentocanais ac ON ac.id=age.CanalID INNER JOIN pacientes pac ON pac.id=age.PacienteID LEFT JOIN locais l ON l.id=age.LocalID where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 33, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' order by "&Ordem
+                    sql = "select age.*, profage.NomeProfissional, tp.NomeTabela, ac.NomeCanal, proc.ProcedimentoTelemedicina from agendamentos age INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID LEFT JOIN profissionais profage ON profage.id=age.ProfissionalID LEFT JOIN agendamentocanais ac ON ac.id=age.CanalID INNER JOIN pacientes pac ON pac.id=age.PacienteID LEFT JOIN locais l ON l.id=age.LocalID where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 33, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' order by "&Ordem
                 end if
             end if
         end if
@@ -169,11 +177,17 @@ end if
 ExibirCanal = getConfig("ExibirCanalSalaDeEspera")
 
 if veseha.eof then
-	%>Nenhum paciente aguardando para ser atendido.<%
+	%>
+	<div class="p15">
+	    Nenhum paciente aguardando para ser atendido.
+    </div>
+    <script >
+        $("#total-pacientes").html("")
+    </script>
+	<%
 else
 %>
-<div class="table-responsive">
-<table width="100%" class="table table-striped table-hover table-bordered">
+  <table style="width: 100%" id="listaespera" class="table tc-checkbox-1 admin-form theme-warning br-t">
   <thead>
 	<tr class="info">
     	<th>HORA</th>
@@ -195,7 +209,7 @@ else
   </thead>
   <tbody>
 	<%
-
+    TotalPacientes = 0
 	ExibirLinkParaFicha = getConfig("ExibirLinkParaFicha")
 
     while not veseha.eof
@@ -330,11 +344,37 @@ else
         cssAdicionl = ""
     end if
 
+    isTelemedicina = veseha("ProcedimentoTelemedicina")&""="S"
 
     if not ConfigGeraisSQL.eof then
         if ChamarAposPagamento="S" and (inStr(unidadesBloqueioAtendimento, "|"&session("UnidadeID")&"|")<>"0" or unidadesBloqueioAtendimento&""="") then
+            'verifica se procedimento ja foi pago preveamente
+            sqlQuitado =    "SELECT ii.id"&_
+                            " FROM itensinvoice ii"&_
+                            " LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID"&_
+                            " WHERE i.AccountID="&veseha("PacienteID")&" "&_
+                            " AND AssociationAccountID=3 "&_
+                            " AND ii.Tipo='S' "&_
+                            " AND ii.ItemID="&veseha("TipoCompromissoID")&" "&_
+                            " AND FLOOR((ii.Quantidade * (ii.ValorUnitario+ii.Acrescimo-ii.Desconto)))>= FLOOR("&treatvalzero(veseha("ValorPlano"))&") "&_
+                            " AND FLOOR(IFNULL(("&_
+                            " 				SELECT SUM(Valor)"&_
+                            " 				FROM itensdescontados"&_
+                            " 				WHERE ItemID=ii.id), 0))>= FLOOR("&treatvalzero(veseha("ValorPlano"))&") "&_
+                            " AND (ISNULL(DataExecucao) OR DataExecucao= '"&mydate(veseha("Data"))&"' OR Executado='') "&_
+                            " AND (ii.ProfissionalID="&veseha("ProfissionalID")&" or ii.ProfissionalID=0) "&_
+                            " AND ii.Executado!='C' "
 
-            if veseha("FormaPagto") < 0 and veseha("ValorPlano")>0 then
+            'response.write sqlQuitado
+
+            set procPrePago = db.execute(sqlQuitado)
+
+            formaPagamento = veseha("FormaPagto")
+            if not procPrePago.eof then
+                formaPagamento = 1
+            end if
+
+            if formaPagamento < 0 and veseha("ValorPlano")>0 then
                 if Triagem="S" and ProfissionalTriagem="N" and labelDisabled = "Pendente de Triagem" then
                     'exibeLinha = "N"
                 end if
@@ -401,6 +441,11 @@ else
             Rechamar = false
          %>
             <button class="btn btn-xs btn-warning" type="button" <%=disabPagto%> <%
+
+            if isTelemedicina then
+            %>disabled <%
+            end if
+
             if veseha("StaID")<>4 and veseha("StaID")<>101 and veseha("StaID")<>102 and veseha("StaID")<>33 then
 
                 Rechamar = getConfig("ReChamarAtendimento")
@@ -441,10 +486,22 @@ else
         if veseha("StaID")<>4 and veseha("StaID")<>5 and veseha("StaID")<>33 then
             %> disabled<%
         else
-            %> onClick="window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>';"<%
+            %> onClick="window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>&isTelemedicina=<% if isTelemedicina then %>true<%end if%>';"<%
         end if
+        %><%
+        if isTelemedicina and TelemedicinaAtiva then
         %>
-    	 class="btn btn-xs btn-success" type="button" <%=disabPagto%> ><i class="fa fa-play"></i> ATENDER</button>
+    	 class="btn btn-xs btn-alert" type="button" <%=disabPagto%> >
+    	 <i class="fa fa-video-camera"></i> ATENDER ONLINE
+    	 <%
+    	 else
+    	 %>
+         class="btn btn-xs btn-success btn-block" type="button" <%=disabPagto%> >
+         <i class="fa fa-play"></i> ATENDER
+         <%
+         end if
+    	 %>
+    	 </button>
     	<%else%>
     	<button onClick="window.location='?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>'" class="btn btn-xs btn-primary" type="button">IR PARA ATENDIMENTO</button>
     	<%end if%>
@@ -512,14 +569,14 @@ else
             </tr>
 	        <%
         end if
+        TotalPacientes = TotalPacientes + 1
 	end if
     veseha.movenext
     wend
     veseha.close
     set veseha=nothing%>
-</table>
-</div>
 <script >
+    $("#total-pacientes").html("<strong><%=TotalPacientes%></strong> paciente(s) aguardando");
     var $waitingTime = $(".waiting-time");
 
     function dateFix(datetime) {
@@ -554,11 +611,7 @@ else
         var now = dateFixDmy("<%=now()%>");
 
         var timeDiff = Math.abs(new Date(now) - new Date(arrival));
-        <%if HorarioVerao<>"" then%>
-            timeDiff = Math.floor((timeDiff/1000)/60);
-        <%else%>
-            timeDiff = Math.floor(((timeDiff/1000)/60)-60);
-        <%end if%>
+        timeDiff = Math.floor((timeDiff/1000)/60);
 
         var diffText = "há "+timeDiff+" minuto"+(timeDiff>1 ? "s" : "");
 
@@ -579,6 +632,7 @@ else
     }
 
 </script>
-
+    </tbody>
+  </table>
 <%end if%>
 <!--#include file = "disconnect.asp"-->

@@ -3,117 +3,173 @@
 
 <br />
         <%
-        if session("Atendimentos")&""="" then
-            session("Atendimentos")=""
-        end if
+if session("Atendimentos")&""="" then
+    session("Atendimentos")=""
+end if
+TelemedicinaAtiva = recursoAdicional(32) = 4
+
 
                 if aut("|esperaoutrosprofissionaisV|")=1 then
                     %>
-<div class="panel">
 
-    <div class="panel-body">
-
-        <div class="row">
-            <div class="col-md-4">
-            <label for="ProfissionalID">Filtrar por profissional</label>
-            <select name="ProfissionalID" id="ProfissionalID" class="form-control select2-single">
-                <option value="">Selecione</option>
-                <option value="ALL">Todos</option>
-                <%
-
-            sqlunidades  = "select Unidades from " & session("table") &" where id = " & session("idInTable")
-            set UnidadesUser  = db.execute(sqlunidades)
-            UnidadesUser = replace(UnidadesUser("Unidades"), "|", "")
-            lista = split(UnidadesUser, ",")
-            sqlOR = ""
-            for z=0 to ubound(lista)
-                sqlOR = sqlOR & " or prof.unidades like '%|"& replace(lista(z), " ","") &"|%' "
-                'response.write ("<script> console.log('"&lista(z)&"');</script>")
-            next
-            sqlOR = " AND (false " & sqlOR & ") "
-            sql = " SELECT und.NomeFantasia, prof.id, prof.unidades, LEFT(prof.NomeProfissional, 20)NomeProfissional, prof.NomeSocial, prof.Cor, prof.Ativo " &_
-                  " FROM Profissionais prof " &_
-                  " INNER JOIN agendamentos age ON age.ProfissionalID=prof.id " &_
-                  " LEFT JOIN locais l ON l.id=age.LocalID " &_
-                  " LEFT JOIN (select un.id, un.NomeFantasia from sys_financialcompanyunits un where un.sysActive=1 UNION ALL select '0', e.NomeFantasia from empresa e) und ON und.id=l.UnidadeID" &_
-                  " WHERE (prof.NaoExibirAgenda != 'S' OR prof.NaoExibirAgenda is null OR prof.NaoExibirAgenda='') " &_
-                  " AND prof.sysActive=1 and age.Data=curdate() " &_
-                  " " &  sqlOR &_
-                  " GROUP BY prof.id order by und.NomeFantasia ASC, prof.NomeProfissional "
-            set Prof = db.execute(sql)
-
-
-            UnidadeAtual = ""
-            UltimaUnidade = "0"
-            TemOptgroup = False
-            while not Prof.EOF
-                UnidadeAtual = Prof("NomeFantasia")
-                if lcase(session("table"))="profissionais" and session("idInTable")=Prof("id") then
-                    selected = " selected=""selected"""
-                    selectedPropf = Prof("id")
-
-                else
-                    if session("UltimaAgenda")=cstr(Prof("id")) then
-                        selected = " selected=""selected"""
-                        selectedPropf = Prof("id")
-                    else
-                        selected = ""
-                    end if
-                end if
-
-                NomeProfissional = Prof("NomeProfissional")
-                unidadesprof = Prof("unidades")
-                if Prof("NomeSocial")&"" <> "" then
-                     NomeProfissional=Prof("NomeSocial")
-                end if
-                if UnidadeAtual&""<>UltimaUnidade&"" then
-                    if TemOptgroup then
-                        %>
-                        </optgroup>
-                        <%
-                    end if
-                    TemOptgroup=True
-                    %>
-                    <optgroup label="<%=UnidadeAtual%>">
                     <%
                 end if
-
-
                 %>
-                <option <%=selected%> style="border-left: <%=Prof("Cor")%> 10px solid; background-color: #fff;" value="<%=Prof("id")%>"><%=ucase(NomeProfissional)%></option>
-                <%
-                if ListProID&""<>"" then
-                    sep=","
-                end if
-                ListProID = ListProID&sep&Prof("id")
-                
-                UltimaUnidade=UnidadeAtual
-            Prof.movenext
-            wend
-            Prof.close
-            set Prof = nothing
+
+<div class="tray tray-center pn bg-light" >
+
+	        <div class="panel">
 
 
-                %>
-            </select>
+            <!-- message toolbar header -->
+            <div class="panel-menu br-n">
+              <div class="row">
+                <div class="hidden-xs hidden-sm col-md-3">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default light" onclick="atualizaLista()">
+                      <i class="fa fa-refresh"></i>
+                    </button>
 
+                  </div>
+                </div>
+                <div class="col-xs-12 col-md-9 text-right">
+                  <span class="hidden-xs va-m text-muted mr15" id="total-pacientes">
+                  </span>
+<%
+if aut("|esperaoutrosprofissionaisV|")=1 then
+%>
+                  <div class="btn-group mr10">
+                   <div class="btn-group ib mr10">
+                       <fieldset>
+                        <!--#include file="ListaEsperaProfissional.asp"-->
+                       </fieldset>
+                   </div>
+                    <div class="btn-group">
+                      <div class="btn-group ib mr10">
+                         <fieldset id="divEspecialidade">
+                      <!--#include file="ListaEsperaEspecialidade.asp"-->
+                        </fieldset>
+                    </div>
+                    </div>
+                  </div>
+                  <%
+                  end if
+                  %>
+
+                </div>
+              </div>
             </div>
-            <div id="divEspecialidade" >
-                <!--#include file="ListaEsperaEspecialidade.asp"-->
+
+	          <!-- message listings table -->
+	          <div class="table-responsive" id="listaespera">
+                    <% server.Execute("ListaEsperaCont.asp") %>
+              </div>
+
+
+        </div>
+    </div>
+
+
+
+<%
+
+isProfissional=False
+
+
+if lcase(session("Table"))="profissionais" then
+    isProfissional=True
+    ProfissionalID=session("idInTable")
+end if
+
+if TelemedicinaAtiva and isProfissional then
+
+htmlMensagensPadrao = ""
+set MensagensPadraoSQL = db.execute("SELECT * FROM cliniccentral.modelo_mensagem_paciente WHERE Telemedicina=1 AND sysActive=1")
+
+while not MensagensPadraoSQL.eof
+    htmlMensagensPadrao = htmlMensagensPadrao & "<li><a data-id='"&MensagensPadraoSQL("id")&"' style='cursor:pointer' onclick='enviaMensagemWhatsApp($(this))'>"&MensagensPadraoSQL("Descricao")&"</a></li>"
+MensagensPadraoSQL.movenext
+wend
+MensagensPadraoSQL.close
+set MensagensPadraoSQL = nothing
+set AgendamentosOnlineSQL = db.execute("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1 FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID!=3")
+
+if not AgendamentosOnlineSQL.eof then
+%>
+<div class="row">
+    <div class="col-md-5" style="float: right">
+        <div class="panel panel-primary panel-border  top mt30">
+            <div class="panel-body bg-light p10">
+              <div class="list-group list-group-links list-group-spacing-xs mbn">
+                  <div class="list-group-header"> Próximos atendimentos online <i data-toggle="tooltip" data-placement="left" title="Aqui você poderá acompanhar os próximos pacientes e enviar uma mensagem a ele solicitando que acesse o link da consulta online" class="fa fa-question-circle"></i> </div>
+
+                  <table class="table mbn ">
+                      <thead>
+                        <tr class="hidden">
+                          <th >#</th>
+                          <th>Paciente</th>
+                          <th>Link enviado</th>
+                          <th>#</th>
+                          <th>#</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <%
+
+                      if AgendamentosOnlineSQL.eof then
+                        %>
+                        <p>Nenhum atendimento online</p>
+                        <%
+                      else
+                        while not AgendamentosOnlineSQL.eof
+
+                            PacienteOnline = AgendamentosOnlineSQL("StaID")=4
+                            LicencaID= replace(session("Banco"),"clinic","")
+
+                            set MensagensEnviadasSQL = db.execute("SELECT count(id)qtd FROM cliniccentral.smshistorico WHERE LicencaID="&LicencaID&" AND AgendamentoID="&AgendamentosOnlineSQL("id"))
+
+                            MensagensEnviadas = MensagensEnviadasSQL("qtd")
+                      %>
+                        <tr data-id="<%=AgendamentosOnlineSQL("id")%>" data-phone="<%=AgendamentosOnlineSQL("Cel1")%>" class="linha-agendamento">
+                          <td>
+                            <strong><%=formatdatetime(AgendamentosOnlineSQL("Hora"), 4)%></strong>
+                          </td>
+
+                          <td> <% if PacienteOnline then %><i class="fa fa-circle text-success"></i><% end if%> <a style="cursor: pointer" onclick="modalPaciente('<%=AgendamentosOnlineSQL("PacienteID")%>')"><%=AgendamentosOnlineSQL("NomePaciente")%></a></td>
+                            <td>
+                                <small class="badge badge-danger"><i class="fa fa-envelope"></i> <%=MensagensEnviadas%></small>
+                            </td>
+                            <td class="text-right">
+                          <div class="btn-group text-right "  data-toggle="tooltip" data-placement="left" title="Enviar mensagem">
+                            <button type="button" class="btn btn-success br2 btn-xs fs12 dropdown-toggle" data-toggle="dropdown" aria-expanded="true" disabled> <i class="fa fa-whatsapp"></i>
+                              <span class="caret ml5"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right dropdown-menu dropdown-menu-right-right" role="menu">
+                              <%=htmlMensagensPadrao%>
+                            </ul>
+                          </div>
+                        </td>
+                        </tr>
+                        <%
+                        AgendamentosOnlineSQL.movenext
+                        wend
+                        AgendamentosOnlineSQL.close
+                        set AgendamentosOnlineSQL=nothing
+                        end if
+                        %>
+
+                      </tbody>
+                    </table>
+              </div>
             </div>
         </div>
     </div>
 </div>
-                    <%
-                end if
-                %>
+<%
+end if
+end if
+%>
 
-<div class="panel">
-
-    <div class="panel-body" id="listaespera">
-        <% server.Execute("ListaEsperaCont.asp") %>
-    </div>
-</div>
 <script type="text/javascript">
 
 <%
@@ -189,6 +245,11 @@ function loadEspecialidade(){
 
       $.get("ListaEsperaEspecialidade.asp?ListaProfissionais=<%=ListProID%>&ProfissionalID="+ProfissionalID, function(data){
           $("#divEspecialidade").html(data);
+
+           $("#EspecialidadeID").multiselect({
+                buttonClass: 'btn btn-default',
+                allSelectedText: 'Todas as especialidades'
+           });
           atualizaLista();
       });
 }
@@ -217,4 +278,46 @@ function loadEspecialidade(){
             $("#modal-table").modal('show');
         });
     });
+
+    $(document).ready(function() {
+        $("#ProfissionalID").multiselect({
+              buttonClass: 'btn btn-default'
+        });
+        $("#EspecialidadeID").multiselect({
+              buttonClass: 'btn btn-default',
+              allSelectedText: 'Todas as especialidades'
+        });
+    })
+
+    function modalPaciente(ID) {
+        $("#modal-table").modal("show");
+        $("#modal").html("Carregando...");
+        $.post("modalPacientes.asp?I="+ID, "", function (data) { $("#modal").html(data) });
+        $("#modal").addClass("modal-lg");
+     }
+
+     function enviaMensagemWhatsApp($message) {
+        const $agendamento = $message.parents(".linha-agendamento"),
+            params = {
+                 AgendamentoID: $agendamento.data("id"),
+                 Celular: $agendamento.data("phone"),
+                 ModeloID: $message.data("id"),
+             };
+
+        function EnviaWhatsApp(params){
+            const $form = getModal().find("form");
+            const mensagem = $form.find("#TextoMensagem").val();
+
+            postUrl("/patient-interaction/notify-patient", {
+                message: mensagem,
+                model_id: params.ModeloID,
+                phone: params.Celular,
+                appointment_id: params.AgendamentoID
+            }, function() {
+              closeComponentsModal();
+              showMessageDialog("Mensagem enviada", "success");
+            });
+        }
+        openComponentsModal("EnviaMensagemPadraoPaciente.asp", params, "Enviar mensagem", true, EnviaWhatsApp, 'xs');
+     }
 </script>

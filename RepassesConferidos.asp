@@ -74,9 +74,11 @@ FormaID = req("FormaID")
 Lancado = req("Lancado")
 De = req("De")
 TipoData = req("TipoData")
+DeSqlProf = De
 
 if De&""<>"" and TipoData="Comp" then
-    DeExec = dateadd("m", -3, De)
+    DeExec = dateadd("m", -6, De)
+    DeSqlProf = dateadd("d", -15, De)
 else
     DeExec=De
 end if
@@ -193,7 +195,7 @@ if ExibeResultado then
                                                                          "WHEN ItemGuiaID is not null then (SELECT ps.Data FROM tissprocedimentossadt ps WHERE ps.id=ItemGuiaID LIMIT 1) "&_
                                                                          "WHEN ItemGuiaID is not null then (SELECT ph.Data FROM tissprocedimentoshonorarios ph WHERE ph.id=ItemHonorarioID LIMIT 1) "&_
                                                                          "WHEN GuiaConsultaID is not null then (SELECT gc.DataAtendimento FROM tissguiaconsulta gc WHERE gc.id=GuiaConsultaID LIMIT 1) "&_
-                                                                         "END) BETWEEN "& mydateNull(De) &" AND "& mydateNull(Ate) &" AND ContaCredito not in ('0', '0_0', 'LAU', '')")
+                                                                         "END) BETWEEN "& mydateNull(DeSqlProf) &" AND "& mydateNull(Ate) &" AND ContaCredito not in ('0', '0_0', 'LAU', '')")
     else
         set ProfissionalSQL = db.execute("SELECT '"&AccountID&"' AccountID")
     end if
@@ -241,7 +243,7 @@ if ExibeResultado then
 
 'Response.End
                 sqlRR = "select  idesc.PagamentoID IDMovPay, ca.IntegracaoSPLIT, cheque.DataCompensacao DataCompenscaoCheque, mdisc.Date DataPagtoConvenio, ri.DateToReceive, mdesc.Value as ParcelaValor,mdesc.PaymentMethodID, mdesc.Date DataPagto, fct.Parcelas, ifnull(pmdesc.PaymentMethod, '-') PaymentMethod, t.*, iip.InvoiceID InvoiceAPagarID, c.NomeConvenio, proc.NomeProcedimento, pac.NomePaciente, t.Executado from	(	"&_
-                " select null GuiaID, null TipoGuia, i.CompanyUnitID UnidadeID, ifnull(tab.NomeTabela, '') NomeTabela, ii.InvoiceID, 'ItemInvoiceID' Tipo, ii.DataExecucao, '0' ConvenioID, ii.ItemID ProcedimentoID, i.AccountID PacienteID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorProcedimento, rrp.*, ii.Executado FROM itensinvoice ii 	INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID	INNER JOIN rateiorateios rrp ON rrp.ItemInvoiceID=ii.id	WHERE ii.Tipo='S' AND ii.Executado='S' AND rrp.ContaCredito='"& ContaCredito &"' AND ii.DataExecucao BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
+                " select null GuiaID, null TipoGuia, i.CompanyUnitID UnidadeID, ifnull(tab.NomeTabela, '') NomeTabela, ii.InvoiceID, 'ItemInvoiceID' Tipo, ii.DataExecucao, '0' ConvenioID, ii.ItemID ProcedimentoID, i.AccountID PacienteID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorProcedimento, rrp.*, ii.Executado FROM itensinvoice ii 	INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID	INNER JOIN rateiorateios rrp ON rrp.ItemInvoiceID=ii.id	WHERE ii.Tipo='S'  AND rrp.ContaCredito='"& ContaCredito &"' AND ii.DataExecucao BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
                 " SELECT gc.id GuiaID, 'GuiaConsulta' TipoGuia, gc.UnidadeID, '', NULL, 'GuiaConsultaID', gc.DataAtendimento, gc.ConvenioID, gc.ProcedimentoID, gc.PacienteID, gc.ValorProcedimento, rrgc.*, '' Executado FROM tissguiaconsulta gc 	INNER JOIN rateiorateios rrgc ON rrgc.GuiaConsultaID=gc.id	WHERE gc.DataAtendimento BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
                 " SELECT gps.id GuiaID, 'GuiaSADT' TipoGuia, gs.UnidadeID, '', NULL, 'ItemGuiaID', gps.Data, gs.ConvenioID, gps.ProcedimentoID, gs.PacienteID, gps.ValorTotal, rrgps.*, '' Executado FROM tissprocedimentossadt gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemGuiaID=gps.id	INNER JOIN tissguiasadt gs ON gps.GuiaID=gs.id WHERE gps.`Data` BETWEEN  "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &" UNION ALL "&_
                 " SELECT gps.id GuiaID, 'GuiaHonorarios' TipoGuia, gh.UnidadeID, '', NULL, 'ItemHonorarioID', gps.Data, gh.ConvenioID, gps.ProcedimentoID, gh.PacienteID, gh.Procedimentos ValorTotal, rrgps.*, '' Executado FROM tissprocedimentoshonorarios gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemHonorarioID=gps.id	INNER JOIN tissguiahonorarios gh ON gps.GuiaID=gh.id WHERE gps.`Data` BETWEEN  "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"	) t "&_
@@ -259,6 +261,10 @@ if ExibeResultado then
                 " LEFT JOIN sys_financialreceivedchecks cheque ON cheque.MovementID=mdesc.id "&_
                 " WHERE (t.ContaCredito LIKE CONCAT('%_"& ContaCredito &"') or t.ContaCredito='"& ContaCredito &"') AND t.ConvenioID IN ("& Forma &") "&sqlFormRecto&" AND t.modoCalculo='"& modoCalculo &"' "& sqlUnidades &_
                 " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente, proc.NomeProcedimento"
+
+                if req("Debug")="1" then
+                    response.write( session("Banco") & chr(10) & chr(13) & sqlRR )
+                end if
 
                 set rr = db.execute( sqlRR )
                 if not rr.eof then
@@ -332,7 +338,6 @@ if ExibeResultado then
                         ValorRepasse = fn(calculaRepasse(rr("id"), rr("Sobre"), rr("ValorProcedimento"), rr("Valor"), rr("TipoValor")))
                         TotalRepasse = TotalRepasse+ValorRepasse
                         TotalProcedimento = TotalProcedimento+ValorParcela
-                        ContaRepasses = ContaRepasses+1
                         if not isnull(rr("ItemInvoiceID")) then
                             aLink = "<a target='_blank' href='./?P=invoice&Pers=1&I="& rr("InvoiceID") &"'>"
                             fLink = "</a>"
@@ -386,6 +391,7 @@ if ExibeResultado then
 
 
                         if DataOk then
+                            ContaRepasses = ContaRepasses+1
                         %>
                         <tr invoiceapagarid="<%=rr("InvoiceAPagarID")%>">
                             <td>

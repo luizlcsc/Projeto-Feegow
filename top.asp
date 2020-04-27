@@ -138,7 +138,7 @@ if device()="" then
     <small style="position:absolute; top:7px; right:0" class="badge badge-danger" id="espera"></small>
     </a>
 </li>
-<%		
+<%
 end if
 if aut("pacientesV")=1 or aut("pacientesI")=1 or aut("pacientesA")=1 then
 %>
@@ -184,14 +184,14 @@ if aut("pacientesV")=1 or aut("pacientesI")=1 or aut("pacientesA")=1 then
 				                if aut("produtosI")=1 then
                         %>
                         <li>
-                            <a href="?P=Produtos&I=N&Pers=1"><i class="fa fa-plus"></i> Cadastrar Produto</a>
+                            <a href="?P=Produtos&I=N&Pers=1"><i class="fa fa-plus"></i> Inserir </a>
                         </li>
                         <%
 				                end if
 				                if aut("produtosA")=1 or aut("produtosV")=1 then
                         %>
                         <li>
-                            <a href="?P=Produtos&Pers=Follow"><i class="fa fa-list"></i> Listar Produtos</a>
+                            <a href="?P=ListaProdutos&Pers=1"><i class="fa fa-list"></i> Listar </a>
                         </li>
                         <%
 				                end if
@@ -334,13 +334,13 @@ if device="" or lcase(req("P"))="cadastros" then
           <li class="dropdown">
             <a class="sub-menu-click-cadastro-contatos" href="?P=Contatos"><i class="fa fa-user"></i> Contatos</a>
           </li>
-        <%		
+        <%
         end if
 
         if aut("|sys_financialcurrentaccountsV|")=1  then
         %>
         <li><a class="sub-menu-click-cadastro-contas-correntes" href="./?P=sys_financialcurrentaccounts&Pers=Follow"><i class="fa fa-money bigger-110"></i> Contas Correntes</a></li>
-        <%		
+        <%
         end if
 
         if aut("|sys_financialcurrentaccountsV|")=1  then
@@ -409,7 +409,7 @@ if device="" or lcase(req("P"))="cadastros" then
         %>
         <li><a href="./?P=buscaPropostas&Pers=1"  class="sub-menu-click-cadastro-propostas" ><i class="fa fa-files-o"></i> Propostas</a></li>
         <%
-        end if  
+        end if
 
         if aut("basedeconhecimento")=1 and False then
         %>

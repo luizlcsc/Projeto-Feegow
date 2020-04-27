@@ -979,13 +979,16 @@ select case lcase(req("P"))
             </li>
             <%
         end if
-    case "laudos" , "frases"
+    case "laudos" , "frases", "laudosv2" 
         %>
         <li>
             <a  href="?P=Laudos&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
         </li>
+        <!--<li>
+            <a  href="?P=Laudosv2&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos <span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li> -->
         <li>
-            <a  href="?P=Frases&Pers=0"><span class="fa fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases <span class="label label-system label-xs fleft">Novo</span></span></a>
+            <a  href="?P=Frases&Pers=0"><span class="fa fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases </span></a>
         </li>
 
         <%
@@ -1006,7 +1009,7 @@ select case lcase(req("P"))
         %>
         <li class="sidebar-label pt20"></li>
         <%
-    case "procedimentos", "pacotes", "procedimentosgrupos"
+    case "procedimentos", "pacotes", "procedimentosgrupos", "ConferenciadeAmostras"
         if isnumeric(req("I")) and req("I")<>"" and lcase(req("P"))<>"procedimentosgrupos" and lcase(req("P"))<>"pacotes" then
         %>
         <li class="sidebar-label pt20"></li>
@@ -1053,6 +1056,7 @@ select case lcase(req("P"))
                 set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
                 if not labAutenticacao.eof then
                 %>
+           
             <li>
                 <a> <span class="fa fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span> </a>
             </li>
@@ -1506,7 +1510,7 @@ select case lcase(req("P"))
         </li>
         <li>
             <a data-toggle="tab" href="#divLaudosOnline" onclick="ajxContent('LaudosOnline', '', 1, 'divLaudosOnline');">
-                <span class="fa fa-flask"></span> <span class="sidebar-title">Laudos Online <span class="label label-system label-xs fleft">Novo</span></span></a>
+                <span class="fa fa-flask"></span> <span class="sidebar-title">Área do paciente <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>
          <a data-toggle="tab" href="#divIntegracoes" onclick="ajxContent('novasConfiguracoes', '', 1, 'divIntegracoes');">
@@ -1550,7 +1554,7 @@ select case lcase(req("P"))
             %>
             <li class="sidebar-label pt20">Opções de Configurações</li>
             <li class="active">
-                <a data-toggle="tab" href="#divCadastroProduto" onclick="atualizaLanctos();"><span class="fa fa-medkit"></span> <span class="sidebar-title"> Cadastro do Produto</span></a>
+                <a data-toggle="tab" href="#divCadastroProduto" onclick="atualizaLanctos();"><span class="fa fa-medkit"></span> <span class="sidebar-title"> Cadastro</span></a>
             </li>
 
             <%
@@ -1561,8 +1565,17 @@ select case lcase(req("P"))
             </li>
             <%
             end if
+            %>
+            <li id="InteracoesEstoque" class="Modulo-Medicamento">
+                <a data-toggle="tab" href="#divInteracoesEstoque" onclick="ajxContent('InteracoesEstoque', '<%=req("I")%>', 1, 'divInteracoesEstoque');"><span class="fa fa-folder"></span> <span class="sidebar-title">Interações</span></a>
+            </li>
+
+            <li id="ConversaoEstoque" class="Modulo-Medicamento">
+                <a data-toggle="tab" href="#divConversaoEstoque"><span class="fa fa-retweet"></span> <span class="sidebar-title">Conversão</span></a>
+            </li>
+            <%
         end if
-              case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodedata", "descontopendente"
+    case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodedata", "descontopendente"
               %>
               <li class="sidebar-label pt20">Financeiro</li>
     	<!--#include file="MenuFinanceiro.asp"-->
@@ -1581,6 +1594,41 @@ select case lcase(req("P"))
     case "estoque"
         %>
         <!--#include file="MenuEstoque.asp"-->
+        <%
+    case "listaprodutos", "produtoscategorias", "produtoslocalizacoes", "produtosfabricantes", "produtoskits"
+        %><li class="sidebar-label pt20">Tipos de Itens</li><%
+        set getTipoProduto = db.execute("SELECT * FROM cliniccentral.produtostipos")
+        while not getTipoProduto.eof
+            TipoProduto = req("TipoProduto")&""
+            if TipoProduto&""="" then
+                TipoProduto = 0
+            end if
+            %>
+            <li <%if getTipoProduto("id")=ccur(TipoProduto) then%>class="active"<%end if%> >
+                <a href="./?P=ListaProdutos&Pers=1&TipoProduto=<%=getTipoProduto("id")%>"><span class="<%=getTipoProduto("Icone")&""%>"></span> <span class="sidebar-title">  <%=getTipoProduto("TipoProduto")&""%></span></a>
+            </li>
+            <%
+        getTipoProduto.movenext
+        wend
+        getTipoProduto.close
+        set getTipoProduto=nothing
+        %>
+        <hr style="margin:10px !important;">
+        <li class="sidebar-label pt20">Configurações</li>
+        <li <%if req("P")="ProdutosCategorias" then%>class="active"<%end if%>>
+            <a href="./?P=ProdutosCategorias&Pers=0"><span class="fa fa-puzzle-piece"></span> <span class="sidebar-title"> Categorias</span></a>
+        </li>
+        <li <%if req("P")="ProdutosLocalizacoes" then%>class="active"<%end if%>>
+            <a href="./?P=ProdutosLocalizacoes&Pers=0"><span class="fa fa-map-marker"></span> <span class="sidebar-title"> Localizações</span></a>
+        </li>
+        <li <%if req("P")="ProdutosFabricantes" then%>class="active"<%end if%>>
+            <a href="./?P=ProdutosFabricantes&Pers=0"><span class="fa fa-sitemap"></span> <span class="sidebar-title"> Fabricantes</span></a>
+        </li>
+        <li <%if req("P")="ProdutosKits" then%>class="active"<%end if%>>
+            <a href="./?P=ProdutosKits&Pers=Follow"><span class="fa fa-medkit"></span> <span class="sidebar-title"> Kits</span></a>
+        </li>
+
+
         <%
     case "relatorios"
         %>
@@ -1742,6 +1790,18 @@ select case lcase(req("P"))
                     <a href="#" onClick="callReport('RelatorioLabs');">
                         <i class="fa fa-double-angle-right"></i>
                         Mapa Laboratório
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onClick="callReport('ConferenciadeAmostras');">
+                        <i class="fa fa-double-angle-right"></i>
+                        Conferência de Amostras
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onClick="callReport('RelatorioRecoletas');">
+                        <i class="fa fa-double-angle-right"></i>
+                        Relatório de Recoletas
                     </a>
                 </li>
 

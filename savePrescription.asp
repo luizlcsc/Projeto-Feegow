@@ -97,7 +97,7 @@ recursoPermissaoUnimed = recursoAdicional(12)
     var impressaoTermica = 0;
     var carimbo = 1;
 
-    url = domain+"print/prescription/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
+    url = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
 
     console.log(url);
     $("#ImpressaoPrescricao").prop("data", url);
@@ -109,22 +109,22 @@ recursoPermissaoUnimed = recursoAdicional(12)
 
     $("#Timbrado").on("change",()=>{
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
-        url = domain+"print/prescription/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
+        url = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
         $("#ImpressaoPrescricao").prop("data", url);
     });
     $("#Datar").on("change",()=>{
         imprimeData = $("#Datar").prop("checked") ==true?1:0;
-        url = domain+"print/prescription/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
+        url = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
         $("#ImpressaoPrescricao").prop("data", url);
     });
     $("#Carimbo").on("change",()=>{
         carimbo = $("#Carimbo").prop("checked") ==true?1:0;
-        url = domain+"print/prescription/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
+        url = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
         $("#ImpressaoPrescricao").prop("data", url);
     });
     $("#Termical").on("change",()=>{
         impressaoTermica = $("#Termical").prop("checked") ==true?1:0;
-        url = domain+"print/prescription/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
+        url = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
         $("#ImpressaoPrescricao").prop("data", url);
     });
 

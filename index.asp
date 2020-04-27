@@ -1270,6 +1270,14 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
     <% if device()="" then %>
       <!-- Begin: Page Footer -->
 
+      <%
+      if session("AtendimentoTelemedicina")&""<>"" and Request.QueryString("P")="Pacientes"  then
+      %>
+    <!--#include file="react/telemedicina/main.asp"-->
+    <%
+    end if
+    %>
+
       <footer id="content-footer" class="affix no-print">
         <div class="row">
           <div class="col-md-6 hidden-xs">
@@ -1278,14 +1286,19 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
               <div class="bs-component">
                 <!--#include file="Classes/Base64.asp"-->
                   <div class="btn-group">
+
                   <button type="button" class="btn btn-xs btn-success light" data-toggle="tooltip" data-placement="top" title="Tutoriais em vídeo"
                   onclick='openComponentsModal(`VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString())%>`, true, `Central de Vídeos`,``,`xl`,``)'>
                   <i class="fa fa-video-camera"></i> Vídeo-aula
                   </button>         
-                      
+
+                      <%if session("Admin")<>1 AND recursoAdicional(12)=4 then%>
+                      <%else%>
+
                       <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" class="btn btn-xs btn-default">
                           <i class="fa fa-question-circle"></i> Suporte
                       </button>
+                      <%end if%>
                       <button type="button" class="btn btn-xs btn-default">
                           Feegow Clinic : v. 7.0
                       </button>
@@ -2120,7 +2133,7 @@ $('[data-rel=tooltip]').tooltip();
 
 function abreModalUnidade(backdrop=true){
     if(backdrop){
-        backdrop={backdrop: 'static', keyboard: false};
+        //backdrop={backdrop: 'static', keyboard: false};
     }else{
         backdrop={};
     }

@@ -35,6 +35,12 @@ end if
 
 %>
 <style type="text/css">
+.timeline-item{
+    margin-left:25px;
+}
+#timeline.timeline-single .timeline-icon {
+    left: -19px !important;
+}
 #folha{
 		font-family: Arial, sans-serif;
 		list-style-type: none;
@@ -624,6 +630,9 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 </div>
 
 <link rel="stylesheet" href="assets/css/colorbox.css" />
+<link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css">
+<link type="text/css" href="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.css" rel="stylesheet">
+
 <style type="text/css">
 .tools {
     background-color: #fff;
@@ -650,51 +659,60 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 }
 
 
+#tui-image-editor {
+  .tui-image-editor {
+    top: 0px !important;
+  }
+}
 </style>
-
-<!-- Instantiate Feather -->
-<script type="text/javascript">
-    var featherEditor = new Aviary.Feather({
-        apiKey: '976cdd37bb7247168a9fb072b383edb6',
-        tools: 'all',
-        language: 'pt_BR',
-        onSave: function (imageID, newURL) {
-            var img = document.getElementById(imageID);
-            var fileName = $("#"+imageID).attr("data-path");
-            img.src = newURL;
-            $.post('save.php?IP=<%=sServidor%>&setMain=1', {id:fileName,url: newURL});
-            featherEditor.close();
-        },
-        onSave: function(imageID, newURL) {
-            var img = document.getElementById(imageID);
-            img.src = newURL;
-
-            $.post("https://clinic7.feegow.com.br/save.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", {url:newURL}, function(data){
-                atualizaAlbum(0);
-                featherEditor.close();
-            });
-        },
-        postUrl: 'https://clinic7.feegow.com.br/save.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>',
-        onError: function(errorObj) {
-            alert(errorObj.message);
-        }
-    });
-    function launchEditor(id, src) {
-        featherEditor.launch({
-            image: id,
-            url: src
-        });
-        return false;
-    }
-
- 
-
-</script>
 
 <div id='injection_site'></div>
 <form id="frmComparar">
     <div id="ImagensPaciente"><%server.execute("Imagens.asp")%></div>
 </form>
+
+
+<!-- image editor -->
+<script type="text/javascript">
+    function launchEditor(id, src) {
+        openComponentsModal(
+            "ImageEditor.asp",
+            {
+                nomeImagem: id,
+                urlImagem: src
+            },
+            false, 
+            true, 
+            function(){
+                let dataImage = imageEditor.toDataURL();
+                newSaveImage(dataImage);
+                closeComponentsModal();
+            },
+            "lg",
+            'auto'
+        );
+    };
+
+    function newSaveImage(base64){
+        $.post("https://clinic7.feegow.com.br/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
+            {
+                data: base64
+            }, 
+            function(data){
+                console.log(data);
+                atualizaAlbum(0);
+        });
+    };
+
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.0/fabric.js"></script>
+<script type="text/javascript" src="https://uicdn.toast.com/tui.code-snippet/v1.5.0/tui-code-snippet.min.js"></script>
+<script type="text/javascript" src="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
+<script type="text/javascript" src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
+      
+
         <%
     end if
     case "|Arquivos|"
@@ -736,18 +754,19 @@ end select
         <div id="timeline" class="timeline-single mt30 ">
             <!--#include file="timelineload.asp"-->
         </div>
+        <div class="load-wrapp col-xs-6 col-xs-offset-6 ">
+            <div class="load-3">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+        </div>
     </div>  
 </div>
  
+
 </div>
-</div>
-<div class="load-wrapp col-xs-6 col-xs-offset-6 ">
-    <div class="load-3">
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-    </div>
-</div>
+
 </div>
 
 <%
@@ -908,19 +927,19 @@ function excluirSerie(id) {
         try{
 
         var final = false;
-        var loadMore = 0;
-        var steps = parseInt('<%=MaximoLimit%>');
-        var tipoarquivo = '<%=Tipo%>';
-        var ProfissionalID = '<%=req("ProfessionalID")%>';
+        let loadMore = 0;
+        let steps = parseInt('<%=MaximoLimit%>');
+        let tipoarquivo = '<%=Tipo%>';
+        let ProfissionalID = '<%=req("ProfessionalID")%>';
         var Carregando = false
         $(".load-wrapp").hide();
 
         scroll(0,0);
 
         $(window).scroll(function() {
-            var tamanhoMaximo = $(document).height() - $(window).height();
-            var scrollPosition = $(window).scrollTop();
-            var isEnd = ( (scrollPosition + 50 ) >= tamanhoMaximo);
+            let tamanhoMaximo = $(document).height() - $(window).height();
+            let scrollPosition = $(window).scrollTop();
+            let isEnd = ( (scrollPosition + 50 ) >= tamanhoMaximo);
 
             if(isEnd && !Carregando){
                 $(".timeline-item").slice(loadMore,steps).fadeIn(3000);
@@ -943,7 +962,7 @@ function excluirSerie(id) {
                             $("#timeline").append("</div></div><div class='timeline-divider'><div class='divider-label'>Não há mais registros</div></div>");
                         }
                     }).fail(function(data) {
-
+                        console.log(data);
                     }).always(function(){
                         Carregando = false;
                         $(".load-wrapp").hide();
@@ -960,4 +979,32 @@ function excluirSerie(id) {
 
 
 <!--#include file="jQueryFunctions.asp"-->
+</script>
+<script>
+function prontPrint(tipo, id){
+    let url ="";
+
+    switch (tipo.toLocaleLowerCase()) {
+        case "prescricao":
+            url = domain+"print/prescription/";
+            break;
+        case "atestado":
+            url = domain+"print/medical-certificate/";
+            break;
+        case "pedido":
+            url = domain+"print/exam-request/";
+            break;
+        //case "AE","L":
+            //url = domain+"print/prescription/";
+        // break;
+    }
+    let src = `${url+id}?showPapelTimbrado=1&showCarimbo=1&assinaturaDigital=1&tk=${localStorage.getItem("tk")}`;
+    openModal(`
+        <iframe width="100%" height="800px" src="${src}" frameborder="0"></iframe>`,
+        "",
+        true,
+        false,
+        "modal-lg");
+}
+
 </script>

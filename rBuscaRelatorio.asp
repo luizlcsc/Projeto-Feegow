@@ -97,6 +97,14 @@ if not FormConfigSQL.eof then
                                                 end if
                                             end if
                                         end if
+                                        
+                                        if TipoCampo=16  then
+                                            set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&ValorCampo&"'")
+                                            if not pcid.eof then
+                                                ValorCampo = pcid("Codigo") &" - "& pcid("Descricao")
+                                            end if
+                                        end if
+                                        
                                     end if
                                 end if
 

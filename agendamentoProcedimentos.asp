@@ -909,14 +909,14 @@ $(document).ready(function(){
     //formaRecto(<%=FormaIDSelecionado %>);
     allRepasses();
     
-    $(document).on('click', '.abaAgendamento', function() {
+    $('.abaAgendamento').on('click',  function() {
         $("#dadosGuiaConsulta").remove();
         if ($(this)[0].id === "liAgendamento") {
             $("#dadosAgendamento").addClass("active");
         }
     })
     
-    $(document).on('click', "#btnAgGuiaSADT", function() {
+    $("#btnAgGuiaSADT").on('click',  function() {
         $.ajax('tissguiasadt.asp?P=tissguiasadt&I=N&Pers=1&Lancto=<%=ConsultaID%>|agendamento', {
             success: function(res) {
                 if (res) {

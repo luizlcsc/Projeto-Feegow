@@ -1281,14 +1281,24 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
       <footer id="content-footer" class="affix no-print">
         <div class="row">
           <div class="col-md-6 hidden-xs">
+                <!--#include file="Classes/Base64.asp"-->
 
+              <script type="text/javascript">
+              function vidau(v){
+                  dva = $("#videoaula");
+                  dva.css("display", "block");
+                  dva.html("Carregando...");
+                  $.get("VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString())%>", function(data){
+                    dva.html( data );
+                    });
+                }
+              </script>
 
               <div class="bs-component">
-                <!--#include file="Classes/Base64.asp"-->
                   <div class="btn-group">
 
                   <button type="button" class="btn btn-xs btn-success light" data-toggle="tooltip" data-placement="top" title="Tutoriais em vídeo"
-                  onclick='openComponentsModal(`VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString())%>`, true, `Central de Vídeos`,``,`xl`,``)'>
+                  onclick='vidau(`VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString())%>`, true, `Central de Vídeos`,``,`xl`,``)'>
                   <i class="fa fa-video-camera"></i> Vídeo-aula
                   </button>         
 
@@ -2377,6 +2387,9 @@ for i=0 to ubound(splChatWindows)
 next
 %>
 </div>
+
+<div id="videoaula" style="position:fixed; left:10px; width:95%; height:600px; top:10px; border-radius:5px; background-color:#fff; border:1px solid #ccc; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); z-index:9999"></div>
+
 <%
 if session("OtherCurrencies")="phone" then
     %>

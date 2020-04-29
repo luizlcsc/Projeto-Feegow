@@ -479,7 +479,6 @@ function atualizaAlbum(X){
 
 	        $el.attr("src", originalSource + "?" + dt );
 	    });
-
 	}
 
 $("#Nascimento").change(function(){

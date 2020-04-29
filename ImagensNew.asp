@@ -1,0 +1,241 @@
+<!--#include file="connect.asp"-->
+<!--#include file="ProntCompartilhamento.asp"-->
+<!--#include file="Classes/Arquivo.asp"-->
+<style>
+
+    :root {
+      --width-main: 280px;
+      --height-main: 280px;
+    }
+
+    .galery{
+        display: flex;
+        flex-wrap: wrap;
+        padding-top: 25px;
+        justify-content: center;
+    }
+    .galery-item{
+        overflow: hidden;
+        text-align: center;
+        margin: 5px;
+        background: #ffffff;
+        border-radius: 5px;
+        max-width: var(--width-main);
+        min-width: var(--width-main);
+        box-shadow: 1px 1px 5px #888888;
+    }
+    .galery-img{
+        height: var(--height-main);
+        text-align: center;
+        padding-bottom: 5px;
+        display: flex;
+        align-items: center;
+    }
+    .galery-img img{
+        margin: 0 auto;
+        display: inline-block;
+        max-height: var(--height-main);
+    }
+    .doc,.rtf{
+        width: 120px;
+    }
+
+    .text-info{
+
+        border: 1px solid #c7c7e5;
+        padding: 2px 10px;
+        color: #efe3ea !important;
+        /*background: #f8f8f8;*/
+        background: rgba(13,13,13,0.5);
+    }
+
+    .config{
+        z-index: 999;
+        position: absolute;
+        display: flex;
+        width: var(--width-main);
+        margin-top: -43px;
+    }
+    [contenteditable]:focus {
+        outline: 0px solid transparent;
+    }
+
+    .data-envio{
+        background: rgba(13,13,13,0.5);
+        display: block;
+        width: 100%;
+        padding: 5px;
+    }
+    .checkbox-custom input[type=checkbox]:checked + label:after, .checkbox-custom input[type=radio]:checked + label:after{
+        color: #1c2730 !important;
+    }
+    .galery-data-envio{
+        z-index: 999;
+        position: absolute;
+        text-align: right;
+        color: #f4f4f4;
+        width: var(--width-main);
+    }
+
+    .galery-item .config-buttons {
+           background: rgba(13,13,13,0.5);
+           opacity: 0;
+           transition: 0.9s;
+           margin-top: 8px;
+           padding: 5px;
+    }
+
+    .galery-item:hover .config-buttons {
+        display: block;
+        opacity: 1;
+    }
+
+    .multiselect.btn-default {
+        background-color: #f0f0f0;
+    }
+</style>
+
+<div class="btn-group ib m20 pull-left ">
+  <button type="button" class="btn btn-default hidden-xs">
+    <span class="fa fa-tag"></span>
+  </button>
+  <div class="btn-group">
+    <fieldset>
+      <select id="filter2" style="display: none;">
+        <option value="">All Labels</option>
+        <option value=".label1">Work</option>
+        <option value=".label3">Clients</option>
+        <option value=".label2">Family</option>
+      </select><div class="btn-group open">
+      <button type="button" class="multiselect dropdown-toggle btn btn-default" data-toggle="dropdown" title="All Labels" aria-expanded="true">Imagens, Arquivos <b class="caret"></b></button>
+        <ul class="multiselect-container dropdown-menu">
+            <li>
+                <a href="javascript:void(0)">
+                    <label class="checkbox"><input type="checkbox" value="A" name="a" onchange="loadItens()"> Imagens</label>
+                </a>
+            <li>
+            <li>
+                <a href="javascript:void(0)">
+                    <label class="checkbox"><input type="checkbox" value="I" name="a" onchange="loadItens()"> Arquivos</label>
+                </a>
+            <li>
+        </ul>
+      </div>
+    </fieldset>
+  </div>
+</div>
+<div class="clearfix"></div>
+<div class="galery" id="galery">
+
+</div>
+
+<script>
+
+    var itens = [];
+
+    function loadItens(){
+        let b = itens.map((item) => {
+                let Descricao = item.Descricao?item.Descricao:item.NomeArquivo;
+                let extension = item.NomeArquivo.substr(item.NomeArquivo.lastIndexOf('.') + 1).toLowerCase();
+                let link = '';
+
+                if(['png','gif','jpeg','jpg'].includes(extension)){
+                    link = item.thumbnailLink?item.thumbnailLink:item.ArquivoLink;
+                }
+
+                if(['docx','doc','rtf'].includes(extension)){
+                    link = 'assets/img/doc.png';
+                }
+
+                if(['pdf'].includes(extension)){
+                    link = 'assets/img/pdf.png';
+                }
+                if(['xml'].includes(extension)){
+                    link = 'assets/img/xml.png';
+                }
+
+                if(['txt'].includes(extension)){
+                    link = 'assets/img/txt.png';
+                }
+
+                if(['pptx'].includes(extension)){
+                    link = 'assets/img/pptx.png';
+                }
+
+                if(['xlsx','csv'].includes(extension)){
+                    link = 'assets/img/xlsx.png';
+                }
+
+                return `<div class="galery-item">
+
+                             <div class="galery-data-envio">
+                                <small class="pull-right data-envio">Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}</small><br/>
+                                <div class="config-buttons">
+                                    <small class="pull-left"><div class="bs-component">
+                                                                                         <div class="checkbox-custom mb5">
+                                                                                           <input type="checkbox" name="comparar[${item.id}]" id="comparar${item.id}">
+                                                                                           <label for="comparar${item.id}">&nbsp</label>
+                                                                                         </div>
+                                                                                       </div></small>
+
+                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}" target="_blank" title="Abrir Imagem Separadamente">
+                                                              <i class="fa fa-external-link icon-external-link"></i>
+                                    </a>
+                                    <a class="btn btn-xs btn-alert" href="javascript:r90('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">
+                                            <i class="fa fa-rotate-right"></i>
+                                    </a>
+                                    <a class="btn btn-xs btn-alert" href="javascript:MaisInfo('${item.NomeArquivo}')" title="Mais informações">
+                                                        <i class="fa fa-info-circle"></i>
+                                    </a>
+                                    <a class="btn btn-xs btn-alert" href="#" title="Editar Imagem" onclick="return launchEditor('image1', '${item.ArquivoLink}');">
+                                                        <i class="fa fa-pencil icon-pencil"></i>
+                                    </a>
+                                    <a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir esta imagem?'))atualizaAlbum(${item.id});" id="excluir" title="Excluir Imagem">
+                                        <i class="fa fa-trash icon-trash"></i>
+                                    </a>
+                                </div>
+
+                             </div>
+                             <div class="galery-img"><img src="${link}" data-id="${item.id}" class="${extension} img-responsive" title="lost_typewritter.jpg"></div>
+                             <div class="config">
+                                <textarea class="galery-description text-info border-edit" style="width: 100%; overflow: auto; max-height: 45px;min-height: 45px">${Descricao}</textarea>
+                             </div>
+                       </div>`;
+             });
+
+             document.getElementById("galery").innerHTML = b.join("");
+    }
+
+
+    fetch('http://localhost:9001/file/arquivos/paciente/<%=request.QueryString("PacienteID")%>/all/list?tk='+localStorage.getItem("tk"))
+    .then((a) => a.json())
+    .then( a =>{
+            itens = a;
+            loadItens();
+    });
+
+    function r90(f, id){
+         let rotateAngle = $("img[data-id="+id+"]").attr("rotateAngle");
+
+         if(!rotateAngle){
+             rotateAngle = 0;
+         }
+
+         rotateAngle = Number(rotateAngle) + 90;
+
+         $("img[data-id="+id+"]").css('transform','rotate(' + rotateAngle + 'deg)');
+         $("img[data-id="+id+"]").attr('rotateAngle',rotateAngle);
+
+        var dt = new Date().getTime();
+        $.get("/feegow_components/rotate_img?img="+f+ "&l=<%=replace(session("Banco"),"clinic","")%>", function(data){
+            var $el = $("img[data-id="+id+"]");
+
+            var originalSource = $el.attr("data-src");
+            console.log($el)
+            console.log(originalSource)
+
+            $el.attr("src", originalSource + "?" + dt );
+        });
+    }
+
+</script>

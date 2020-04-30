@@ -41,7 +41,7 @@ end if
 '    " and Unidades = '"&Unidades&"' and tipo = '"&Tipo&"' AND sysActive = 1 AND Inicio = "&mydatenull(reg("Inicio"))&" AND Fim = "&mydatenull(reg("Fim"))&" ")
 
 sqlLimit = ""
-nregistros = 1500
+nregistros = 3000
 pag = req("pag")&""
 
 set rsTotal = db.execute("select count(p.id) total from procedimentos p left join procedimentostabelasvalores ptv on (ptv.ProcedimentoID=p.id and ptv.TabelaID="& TabelaID &") where sysActive=1 and ativo='on' order by NomeProcedimento")

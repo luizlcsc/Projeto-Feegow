@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-licencaID = replace(session("Licencas"),"|","")
+licencaID = replace(session("Banco"), "clinic", "")
 userID = session("user")
 pageURL = req("refURL")
 videoID = req("v")

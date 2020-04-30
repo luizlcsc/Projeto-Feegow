@@ -66,7 +66,6 @@
     right: 0;
 }
 
-
 .tm-header-content {
     flex-direction: row;
     display: flex;
@@ -173,6 +172,22 @@
 .tm-video-maximized {
     max-height: calc(100vh - 200px);
 }
+
 .tm-iframe-maximized {
     height: calc(100vh - 200px);
+}
+
+.tm-config-container {
+    background-color: #e7e7e7;
+    position: absolute;
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #bcbcbc;
+    display: none;
+}
+
+.tm-canvas-audio {
+    position: absolute;
+    bottom: 4px;
+    /*border-radius: 6px*/
 }

@@ -57,6 +57,11 @@ const Header = (props) => {
                 <ul className="dropdown-menu pull-left" role="menu">
                     <li>
                         <a href="#" onClick={()=> {
+                            props.onConfig()
+                        }}><i className="fa fa-cog"></i> Configurações</a>
+                    </li>
+                    <li>
+                        <a href="#" onClick={()=> {
                             props.onReconnect()
                         }}><i className="fa fa-undo"></i> Reconectar</a>
                     </li>

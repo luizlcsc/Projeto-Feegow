@@ -38,7 +38,7 @@ next
 sDev = 0
 
 videoIdDefault = 0
-licencaID = replace(session("Licencas"),"|","")
+licencaID = replace(session("Banco"), "clinic", "")
 userID = session("user")
 
 if req("refURL") <> "" then

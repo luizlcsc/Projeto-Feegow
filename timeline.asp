@@ -668,7 +668,23 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 
 <div id='injection_site'></div>
 <form id="frmComparar">
-    <div id="ImagensPaciente"><%server.execute("Imagens.asp")%></div>
+<div id="ImagensPaciente">
+<% if getConfig("NovaGaleria") = "1" then %>
+       <div class="galery-ajax"></div>
+       <script>
+        $( document ).ready(function() {
+            $.get("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>",
+               function(data){
+                   $(".galery-ajax").html(data)
+                   $("[value='A']").parent().remove()
+
+           });
+        });
+       </script>
+<% ELSE %>
+    <%server.execute("Imagens.asp")%>
+<% END IF %>
+</div>
 </form>
 
 

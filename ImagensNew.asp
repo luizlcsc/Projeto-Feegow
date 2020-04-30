@@ -2,7 +2,6 @@
 <!--#include file="ProntCompartilhamento.asp"-->
 <!--#include file="Classes/Arquivo.asp"-->
 <style>
-
     :root {
       --width-main: 280px;
       --height-main: 280px;
@@ -49,13 +48,30 @@
         background: rgba(13,13,13,0.5);
     }
 
+    .galery-item:hover .config{
+            margin-top: -45px;
+    }
+
+    .galery-item:hover textarea{
+        max-height: 45px;
+        min-height: 45px
+    }
+
     .config{
         z-index: 999;
         position: absolute;
         display: flex;
         width: var(--width-main);
-        margin-top: -43px;
+        margin-top: -25px;
     }
+    .config textarea{
+        border:none;
+        width: 100%;
+        overflow: auto;
+        max-height: 25px;
+        min-height: 25px
+    }
+
     [contenteditable]:focus {
         outline: 0px solid transparent;
     }
@@ -101,22 +117,17 @@
   </button>
   <div class="btn-group">
     <fieldset>
-      <select id="filter2" style="display: none;">
-        <option value="">All Labels</option>
-        <option value=".label1">Work</option>
-        <option value=".label3">Clients</option>
-        <option value=".label2">Family</option>
-      </select><div class="btn-group open">
-      <button type="button" class="multiselect dropdown-toggle btn btn-default" data-toggle="dropdown" title="All Labels" aria-expanded="true">Imagens, Arquivos <b class="caret"></b></button>
+       <div class="btn-group">
+      <button type="button" class="multiselect dropdown-toggle btn btn-default" data-toggle="dropdown" title="All Labels" aria-expanded="false"><span class="filter-img">Imagens, Arquivos</span><b class="caret"></b></button>
         <ul class="multiselect-container dropdown-menu">
             <li>
                 <a href="javascript:void(0)">
-                    <label class="checkbox"><input type="checkbox" value="A" name="a" onchange="loadItens()"> Imagens</label>
+                    <label class="checkbox"><input type="checkbox" value="I" name="a" onchange="loadItens()" v-v="Imagens">Imagens</label>
                 </a>
             <li>
             <li>
                 <a href="javascript:void(0)">
-                    <label class="checkbox"><input type="checkbox" value="I" name="a" onchange="loadItens()"> Arquivos</label>
+                    <label class="checkbox"><input type="checkbox" value="A" name="a" onchange="loadItens()" v-v="Arquivos">Arquivos</label>
                 </a>
             <li>
         </ul>
@@ -133,38 +144,67 @@
 
     var itens = [];
 
+    function getSelected() {
+
+          let tags = $("[name='a']:checked");
+          if($("[name='a']:checked").length < 1){
+              tags = $("[name='a']");
+          }
+
+
+          let descricoes = [];
+          let result = tags.map(function() {
+                descricoes.push($(this).attr("v-v"));
+                return this.value;
+          }).get();
+
+            $(".filter-img").html(descricoes.join(", "));
+
+          return result;
+    }
+
+    function processaItem(item){
+            item.NovaDescricao = item.Descricao?item.Descricao:item.NomeArquivo;
+
+            let extension = item.NomeArquivo.substr(item.NomeArquivo.lastIndexOf('.') + 1).toLowerCase();
+            let link = '';
+
+            if(['png','gif','jpeg','jpg'].includes(extension)){
+                link = item.thumbnailLink?item.thumbnailLink:item.ArquivoLink;
+            }
+
+            if(['docx','doc','rtf'].includes(extension)){
+                link = 'assets/img/doc.png';
+            }
+
+            if(['pdf'].includes(extension)){
+                link = 'assets/img/pdf.png';
+            }
+            if(['xml'].includes(extension)){
+                link = 'assets/img/xml.png';
+            }
+
+            if(['txt'].includes(extension)){
+                link = 'assets/img/txt.png';
+            }
+
+            if(['pptx'].includes(extension)){
+                link = 'assets/img/pptx.png';
+            }
+
+            if(['xlsx','csv'].includes(extension)){
+                link = 'assets/img/xlsx.png';
+            }
+
+            item.link = link;
+            item.extension = extension;
+    }
+
     function loadItens(){
-        let b = itens.map((item) => {
-                let Descricao = item.Descricao?item.Descricao:item.NomeArquivo;
-                let extension = item.NomeArquivo.substr(item.NomeArquivo.lastIndexOf('.') + 1).toLowerCase();
-                let link = '';
-
-                if(['png','gif','jpeg','jpg'].includes(extension)){
-                    link = item.thumbnailLink?item.thumbnailLink:item.ArquivoLink;
-                }
-
-                if(['docx','doc','rtf'].includes(extension)){
-                    link = 'assets/img/doc.png';
-                }
-
-                if(['pdf'].includes(extension)){
-                    link = 'assets/img/pdf.png';
-                }
-                if(['xml'].includes(extension)){
-                    link = 'assets/img/xml.png';
-                }
-
-                if(['txt'].includes(extension)){
-                    link = 'assets/img/txt.png';
-                }
-
-                if(['pptx'].includes(extension)){
-                    link = 'assets/img/pptx.png';
-                }
-
-                if(['xlsx','csv'].includes(extension)){
-                    link = 'assets/img/xlsx.png';
-                }
+        let b = itens.filter(item => {
+            return getSelected().includes(item.Tipo);
+        }).map((item) => {
+                processaItem(item);
 
                 return `<div class="galery-item">
 
@@ -196,9 +236,9 @@
                                 </div>
 
                              </div>
-                             <div class="galery-img"><img src="${link}" data-id="${item.id}" class="${extension} img-responsive" title="lost_typewritter.jpg"></div>
+                             <div class="galery-img"><img src="${item.link}" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
                              <div class="config">
-                                <textarea class="galery-description text-info border-edit" style="width: 100%; overflow: auto; max-height: 45px;min-height: 45px">${Descricao}</textarea>
+                                <textarea class="galery-description text-info border-edit">${item.NovaDescricao}</textarea>
                              </div>
                        </div>`;
              });
@@ -211,10 +251,20 @@
     .then((a) => a.json())
     .then( a =>{
             itens = a;
+            reloadItens();
             loadItens();
     });
 
-    function r90(f, id){
+    function reloadItens(){
+        $("[id-img-arquivos]").map((a,b) => {
+            let _item = itens.find(item => item.id == $(b).attr("id-img-arquivos"));
+                processaItem(_item);
+               $(b).attr("src",_item.link);
+               $(b).parent().attr("href",_item.ArquivoLink);
+        })
+    }
+
+    function r90_1(f, id){
          let rotateAngle = $("img[data-id="+id+"]").attr("rotateAngle");
 
          if(!rotateAngle){
@@ -231,8 +281,6 @@
             var $el = $("img[data-id="+id+"]");
 
             var originalSource = $el.attr("data-src");
-            console.log($el)
-            console.log(originalSource)
 
             $el.attr("src", originalSource + "?" + dt );
         });

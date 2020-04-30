@@ -4,11 +4,25 @@
 playListsHTML = ""
 if req("refURL")<>"" then
   url_interna = base64Decode(req("refURL"))
+  
+  vStringFull=Split(url_interna,"&")
+  for each stringFull in vStringFull
+    parametroValor = split(stringFull,"=")
+      parametro = parametroValor(0)
+      valor = parametroValor(1)
+
+      if parametro = "P" then
+        pgPlaylist = valor        
+      end if
+      
+  next
+'response.write(pgPlaylist)
+
 end if
 
 playlistsQ = " SELECT DISTINCT vid.vt_playlists_id,pla.playlist FROM cliniccentral.vt_videos AS  vid"&chr(13)_
 &" LEFT JOIN cliniccentral.vt_playlists AS pla ON pla.id = vid.vt_playlists_id"&chr(13)_
-&" WHERE vid.url_interna IS NOT NULL"&chr(13)_
+&" WHERE vid.pagina IS NOT NULL"&chr(13)_
 &" ORDER BY vid.vt_playlists_id ASC"&chr(13)
 'response.write("<pre>"&playlistsQ&"</pre>")
 
@@ -20,7 +34,7 @@ if not playlistsSQL.eof then
     vt_playlists_playlist = playlistsSQL("playlist")
 
     videosQ = " SELECT vtPla.*"_
-    &" ,to_base64(vtVid.url_interna) AS url_interna, vtVid.video, vtVid.previa"&chr(13)_
+    &" ,to_base64(vtVid.pagina) AS pagina, vtVid.video, vtVid.previa"&chr(13)_
     &" ,vtSer.url"&chr(13)_
     &" from cliniccentral.vt_playlists AS vtPla"&chr(13)_
     &" LEFT JOIN cliniccentral.vt_videos AS vtVid ON vtVid.vt_playlists_id = vtPla.id"&chr(13)_
@@ -41,7 +55,7 @@ if not playlistsSQL.eof then
 
       vt_videos_video = videosSQL("video")
       vt_videos_previa = videosSQL("previa")
-      vt_videos_url_interna = videosSQL("url_interna")
+      vt_videos_pagina = videosSQL("pagina")
 
       vt_servidores_url = videosSQL("url") 'PADRÃO YOUTUBE
 
@@ -49,7 +63,7 @@ if not playlistsSQL.eof then
 
       videoContent = videoContent&""_
       &"<div>"_
-      &"<a href='"&videoURL&"' class='atualizaVideo' style='text-decoration:none'>"_
+      &"<a href='"&videoURL&"' class='atualizaVideo' style='text-decoration:none' data-titulo='"&vt_videos_video&"'>"_
       &"  <img style='margin-right:10px' class='pull-left thumbnail' width='90' src='https://i.ytimg.com/vi/"&vt_servidores_url&"/hqdefault.jpg'/>"_
       &"  <h2 style='color:#606c7d;font-size:16px'>"&vt_videos_video&"</h2>"_
       &"  <p style='color:#7C8CA2'>"&vt_videos_previa&"</p>"_
@@ -61,7 +75,7 @@ if not playlistsSQL.eof then
     videosSQL.close
     set videosSQL = nothing
 
-    set vClass = db.execute("SELECT vid.vt_playlists_id FROM cliniccentral.vt_videos AS vid WHERE vid.url_interna LIKE FROM_BASE64('"&req("refURL")&"') ")
+    set vClass = db.execute("SELECT vid.vt_playlists_id FROM cliniccentral.vt_videos AS vid WHERE vid.pagina LIKE '"&pgPlaylist&"'   ")
       if vClass.eof then
         classColapse = "out"
       else

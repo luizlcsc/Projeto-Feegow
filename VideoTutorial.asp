@@ -1,7 +1,31 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Base64.asp"-->
-
 <%
+vRef = Base64Decode(req("refURL"))
+
+'***** GERA CONDIÇÕES PARA O FILTRO DOS VIDEOS POR PAGINA E/OU PARAMETRO
+'Response.write(vRef&"<hr>")
+vStringFull=Split(vRef,"&")
+for each stringFull in vStringFull
+  parametroValor = split(stringFull,"=")
+    parametro = parametroValor(0)
+    valor = parametroValor(1)
+
+    if parametro = "P" then
+      wherePagina = "pagina like '"&valor&"'"
+    else
+      whereVariavelTXT = "(variavel LIKE '"&parametro&"' OR variavel LIKE '"&parametro&"="&valor&"') "&Chr(13)&" "
+      if whereVariavel = "" then
+      whereVariavel = whereVariavelTXT
+      else
+        whereVariavel = whereVariavel&"OR "&whereVariavelTXT
+      end if
+    end if
+    'response.write( "<pre>Parametro: "&parametro&" Valor: "&valor&"</pre>")
+next
+'response.write(whereVariavel)
+'response.write("<hr>")
+
 sDev = 0
 
 videoIdDefault = 0
@@ -20,7 +44,8 @@ videoQ = ""_
 &" ,ser.url,ser.servidor"&Chr(13)_
 &" FROM cliniccentral.vt_videos AS vid"&Chr(13)_
 &" LEFT JOIN cliniccentral.vt_servidores AS ser ON ser.vt_video_id = vid.id"&Chr(13)_
-&" WHERE url_interna LIKE FROM_BASE64('"&refURL&"')"
+&" WHERE ("&wherePagina&")"&Chr(13)_
+&" AND ("&whereVariavel&")"
 
 'response.write("<pre>"&videoQ&"</pre>")
 if sDev = 1 then
@@ -33,7 +58,7 @@ if videoSQL.eof then
   vt_id = videoIdDefault
   vt_video         = "Ops, vídeo não encontrado."
   vt_assunto       = ""
-  vt_previa        = "Nossos produtores de conteúdo estão trabalhando na criação de novos vídeos.<br>Escolha um vídeo em nossa playlist ao lado."
+  vt_previa        = "<span style='font-size:18px' id='notFound'>Nossos produtores de conteúdo estão trabalhando na criação de novos vídeos.<br>Escolha um vídeo em nossa playlist ao lado. <script>$('#ytplayer').css('display', 'none');</script></span>"
 
   'vt_url      = "9wBNQ5euOu8"
 
@@ -45,28 +70,10 @@ else
   vt_video         = videoSQL("video")
   vt_assunto       = videoSQL("assunto")
   vt_previa        = videoSQL("previa")
-  vt_url_ignorar   = videoSQL("url_ignorar")&""
 
   vt_url      = videoSQL("url")
   vt_servidor = videoSQL("servidor")
 
-  if vt_url_ignorar<>"" then
-
-    'VERIFICA SE EXISTE PARAMETROS QUE DEVEM SER IGNORADOS
-    urlFull = refURL
-    varIgnoreSplit=Split(urlFull,"|")
-    varIgnoreCount = 0
-    for each varIgnore in varIgnoreSplit
-      if varIgnoreCount = 0 then
-        refURL = replace(urlFull,varIgnore&"="&req(varIgnore),varIgnore&"=X")
-      else
-        refURL = replace(refURL,varIgnore&"="&req(varIgnore),varIgnore&"=X")
-      end if
-      
-      varIgnoreCount = varIgnoreCount+1
-    next
-
-  end if
 
   'response.write(refURL)
 
@@ -162,10 +169,10 @@ set comentariosSQL = nothing
 </div>
 
 <div class="row">
-  <div class="col-md-8" style="height:450px;">
+  <div class="col-md-8" style="height:450px;overflow:auto;">
     <div class="panel">
       <div class="panel-heading">
-        <span class="panel-title"><%=vt_video%></span>
+        <span class="panel-title" id="titulo"><%=vt_video%></span>
       </div>
       <div class="panel-body">
         <%
@@ -183,7 +190,7 @@ set comentariosSQL = nothing
         <div class="row">
           <div class="col-md-12 text-center">
             
-            <strong>Faça a sua avaliação</strong>
+            <strong>Este vídeo foi útil para você</strong>
             <br>
             <div class="avaliacoes">
               <a id="avaliacaoBom" data-toggle="tooltip" data-placement="top" data-original-title="Gostei do vídeo! ;-)"><i class="fa fa-thumbs-o-up vt_avaliacao <%=avaliacaoBom%>"></i></a>
@@ -193,7 +200,7 @@ set comentariosSQL = nothing
           <div class="col-md-12">
             <strong>Deixe seu comentário</strong>
             <br>
-            <textarea class="form-control" name="comentario" id="comentario"></textarea>
+            <textarea class="form-control" name="comentario" id="comentario" maxlength="200" minlength="10"></textarea>
             <button type="button" class="btn btn-sm btn-block btn-success" id="btnSalvarComentario">
                  Enviar comentário <i class="fa fa-send"></i>
             </button>
@@ -245,6 +252,12 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 
+$(".atualizaVideo").click(function(){
+    $('#ytplayer').css('display', 'block');
+    $('#notFound').css('display', 'none');
+    $('#titulo').html( $(this).attr('data-titulo') );    
+});
+
 var player;
 function onYouTubePlayerAPIReady() {
   
@@ -284,7 +297,7 @@ $(function () {
     $('#avaliacaoBom').on('click', function () {
       var Status = $(this).val();
       $.ajax({
-          url: 'VideoTutorialComentario.asp?refURL=<%=Base64Encode(refURL)%>',
+          url: 'VideoTutorialComentario.asp?refURL=<%=refURL%>',
           data: 'avaliacao=1&v=<%=vt_id%>',
           dataType : 'html'
       });
@@ -301,7 +314,7 @@ $(function () {
     $('#avaliacaoRuim').on('click', function () {
       var Status = $(this).val();
       $.ajax({
-          url: 'VideoTutorialComentario.asp?refURL=<%=Base64Encode(refURL)%>',
+          url: 'VideoTutorialComentario.asp?refURL=<%=refURL%>',
           data: 'avaliacao=2&v=<%=vt_id%>',
           dataType : 'html'
       });
@@ -321,7 +334,7 @@ $(function () {
         var Status = $(this).val();
         
         $.ajax({
-          url: 'VideoTutorialComentario.asp?refURL=<%=Base64Encode(refURL)%>&v=<%=vt_id%>',
+          url: 'VideoTutorialComentario.asp?refURL=<%=refURL%>&v=<%=vt_id%>',
           type: 'post',
           data: $("textarea[name='comentario']")
         });

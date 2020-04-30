@@ -58,7 +58,7 @@ if avaliacao <> "" or form_comentario<> "" then
     acaoSQL = "INSERT INTO `cliniccentral`.`vt_avaliacoes`"_
       &" (`vt_video_id`, avaliacao, "&colunaInsertSQL&", `LicencaID`, `usuarioID`, `ref_url`, `sysDate`)"_
       &" VALUES"_
-      &" ('"&videoID&"','"&avaliacaoUltima&"', "&colunaValorInsertSQL&", '"&licencaID&"', '"&userID&"', from_base64('"&pageURL&"'), NOW() );"
+      &" ('"&videoID&"','"&avaliacaoUltima&"', "&colunaValorInsertSQL&", '"&licencaID&"', '"&userID&"', FROM_BASE64('"&pageURL&"'), NOW() );"
   end if
   'response.write(acaoSQL)
   db.execute(acaoSQL)

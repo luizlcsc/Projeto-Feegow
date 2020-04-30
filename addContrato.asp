@@ -277,50 +277,52 @@ elseif ModeloID<>"" and ModeloID<>"0" then
             set exec=nothing
         end if
 
-        set forma = db.execute("SELECT IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', forma_pagamento.PaymentMethod) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value ,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
-                               "FROM sys_financialmovement debito "&_
-                               "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
-                               "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_
-                               "LEFT JOIN sys_financialpaymentmethod forma_pagamento ON forma_pagamento.id = credito.PaymentMethodID "&_
-                               "LEFT JOIN sys_financialcreditcardtransaction cartao_credito ON cartao_credito.MovementID=credito.id "&_
-                               "LEFT JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID NOT IN (3, 4) "&_
-                               "LEFT JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
-                               "WHERE debito.InvoiceID="&pinv("id"))
+        if req("Tipo")<>"SADT" then
+            set forma = db.execute("SELECT IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', forma_pagamento.PaymentMethod) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value ,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
+                                   "FROM sys_financialmovement debito "&_
+                                   "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
+                                   "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_
+                                   "LEFT JOIN sys_financialpaymentmethod forma_pagamento ON forma_pagamento.id = credito.PaymentMethodID "&_
+                                   "LEFT JOIN sys_financialcreditcardtransaction cartao_credito ON cartao_credito.MovementID=credito.id "&_
+                                   "LEFT JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID NOT IN (3, 4) "&_
+                                   "LEFT JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
+                                   "WHERE debito.InvoiceID="&pinv("id"))
 
-        Parcelas = ""
-        FormaPagto = ""
-        DataVencimento = ""
-        DataPagamento = ""
-        while not forma.EOF
-            PaymentMethod = forma("PaymentMethod")
-            Parcela = forma("Parcelas")
-            value = forma("value")
-            Vencimento = forma("DataVencimento")
-            Pagamento = forma("DataPagamento")
-            DataVencimento = DataVencimento&"<br>"&Vencimento
-            DataPagamento = DataPagamento&"<br>"&Pagamento
+            Parcelas = ""
+            FormaPagto = ""
+            DataVencimento = ""
+            DataPagamento = ""
+            while not forma.EOF
+                PaymentMethod = forma("PaymentMethod")
+                Parcela = forma("Parcelas")
+                value = forma("value")
+                Vencimento = forma("DataVencimento")
+                Pagamento = forma("DataPagamento")
+                DataVencimento = DataVencimento&"<br>"&Vencimento
+                DataPagamento = DataPagamento&"<br>"&Pagamento
 
-            if not isnull(PaymentMethod) then
+                if not isnull(PaymentMethod) then
 
-                if not isnull(Parcela) then
-                    Parcelas =  ccur(Parcela)
-                else
-                    Parcelas = "1"
+                    if not isnull(Parcela) then
+                        Parcelas =  ccur(Parcela)
+                    else
+                        Parcelas = "1"
+                    end if
+                    if not isnull(value) then
+                        valorForma = "R$ "&formatnumber(value, 2)
+                    else
+                        valorForma = "R$ 0,00"
+                    end if
+                    FormaPagtoOri = "<br>"&"("& Parcelas &"x) "&PaymentMethod &" = "&valorForma
+                    FormaPagto = FormaPagto &""& FormaPagtoOri
+
                 end if
-                if not isnull(value) then
-                    valorForma = "R$ "&formatnumber(value, 2)
-                else
-                    valorForma = "R$ 0,00"
-                end if
-                FormaPagtoOri = "<br>"&"("& Parcelas &"x) "&PaymentMethod &" = "&valorForma
-                FormaPagto = FormaPagto &""& FormaPagtoOri
-
-            end if
-            UsuarioRecebimento=nameInTable(forma("sysUser"))
-        forma.movenext
-        wend
-        forma.close
-        set forma=nothing
+                UsuarioRecebimento=nameInTable(forma("sysUser"))
+            forma.movenext
+            wend
+            forma.close
+            set forma=nothing
+        end if
 
 
         'Tags do agendamento
@@ -354,12 +356,14 @@ elseif ModeloID<>"" and ModeloID<>"0" then
         if formaPagto="" then
             FormaPagto = "Não pago"
 
-            FormaID=pinv("FormaID")
-            if not isnull(FormaID) then
-                if FormaID&"" <> "0" then
-                    set MetodoPagamentoSQL = db.execute("SELECT pm.PaymentMethod FROM sys_formasrecto r INNER JOIN sys_financialpaymentmethod pm ON pm.id=r.MetodoID WHERE r.id="&FormaID)
-                    if not MetodoPagamentoSQL.eof then
-                        FormaPagto=MetodoPagamentoSQL("PaymentMethod")
+            if req("Tipo")<>"SADT" then
+                FormaID=pinv("FormaID")
+                if not isnull(FormaID) then
+                    if FormaID&"" <> "0" then
+                        set MetodoPagamentoSQL = db.execute("SELECT pm.PaymentMethod FROM sys_formasrecto r INNER JOIN sys_financialpaymentmethod pm ON pm.id=r.MetodoID WHERE r.id="&FormaID)
+                        if not MetodoPagamentoSQL.eof then
+                            FormaPagto=MetodoPagamentoSQL("PaymentMethod")
+                        end if
                     end if
                 end if
             end if

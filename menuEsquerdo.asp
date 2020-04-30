@@ -2134,7 +2134,7 @@ select case lcase(req("P"))
                 </li>
                 <%
                 end if
-                if aut("|relatoriosformulariosV|")=1 and lcase(session("Table"))="profissionais" then
+                if aut("|relatoriosformulariosV|")=1 then
                 %>
                 <li>
                     <a href="javascript:callReport('relatorioForms');">

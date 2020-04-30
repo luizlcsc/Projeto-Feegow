@@ -319,6 +319,10 @@ posModalPagar = "fixed"
                             %><span class="label bg-primary">Implementação</span><%
                         end if
                     end if
+                    set ClienteCPF = db.execute("SELECT CPF FROM pacientes WHERE id="&treatvalzero(Cliente(1)))
+                    if not ClienteCPF.EOF then
+                        %><span class="label bg-info">CPF / CNPJ: <%=ClienteCPF("CPF")%></span><%
+                    end if
                 end if
             end if
         end if

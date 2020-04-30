@@ -8,9 +8,9 @@ avaliacao = req("avaliacao")
 
 form_comentario = request.form("comentario")
 
-For Each item in Session.Contents
+'For Each item in Session.Contents
   'Response.Write "<pre>"&item & " = " & Session.Contents(item) & "</pre>"
-Next 
+'Next 
 
 if avaliacao <> "" or form_comentario<> "" then
 

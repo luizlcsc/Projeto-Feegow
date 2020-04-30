@@ -5,6 +5,7 @@ vRef = Base64Decode(req("refURL"))
 
 '***** GERA CONDIÇÕES PARA O FILTRO DOS VIDEOS POR PAGINA E/OU PARAMETRO
 'Response.write(vRef&"<hr>")
+
 vStringFull=Split(vRef,"&")
 for each stringFull in vStringFull
   parametroValor = split(stringFull,"=")
@@ -13,14 +14,22 @@ for each stringFull in vStringFull
 
     if parametro = "P" then
       wherePagina = "pagina like '"&valor&"'"
+      whereVariavel = "variavel = '' OR variavel IS NULL"
     else
-      whereVariavelTXT = "(variavel LIKE '"&parametro&"' OR variavel LIKE '"&parametro&"="&valor&"') "&Chr(13)&" "
-      if whereVariavel = "" then
-      whereVariavel = whereVariavelTXT
-      else
-        whereVariavel = whereVariavel&"OR "&whereVariavelTXT
+      '****VALIDA SE EXISTE VARIAVEIS INICIO
+      variavelCheckQ = " SELECT vid.variavel "&Chr(13)_
+      & " FROM cliniccentral.vt_videos AS vid"&Chr(13)_
+      & " Where ("& wherePagina&")"&Chr(13)_
+      & " AND (variavel LIKE '"&parametro&"' OR variavel LIKE '"&parametro&"="&valor&"')"      
+      'response.write("<pre>"&variavelCheckQ&"</pre>")
+      set variavelCheckSQL = db.execute(variavelCheckQ)
+      if not variavelCheckSQL.eof then
+        whereVariavel = "variavel LIKE '"&parametro&"' OR variavel LIKE '"&parametro&"="&valor&"'"
       end if
+      variavelCheckSQL.close
+      set variavelCheckSQL = nothing
     end if
+    '****VALIDA SE EXISTE VARIAVEIS FIM
     'response.write( "<pre>Parametro: "&parametro&" Valor: "&valor&"</pre>")
 next
 'response.write(whereVariavel)
@@ -47,7 +56,6 @@ videoQ = ""_
 &" WHERE ("&wherePagina&")"&Chr(13)_
 &" AND ("&whereVariavel&")"
 
-'response.write("<pre>"&videoQ&"</pre>")
 if sDev = 1 then
   response.write("<pre>"&videoQ&"</pre>")
 end if
@@ -97,10 +105,12 @@ url_interna   = req("P")
 tipoAvaliacaoCSS = ""
 vt_avaliacoes_comentario = ""
 
-avaliacaoAtualQ = "select avaliacao,comentario from cliniccentral.vt_avaliacoes where vt_video_id like '"&vt_id&"' AND ref_url like '"&refURL&"' AND LicencaID like '"&licencaID&"' AND usuarioID LIKE '"&userID&"' order by id DESC"
-if sDev=1 then
-  response.write("<pre>"&avaliacaoAtualQ&"</pre>")
-end if
+avaliacaoAtualQ = " select avaliacao,comentario from cliniccentral.vt_avaliacoes"&chr(13)_
+&" where vt_video_id like '"&vt_id&"' AND ref_url like from_base64('"&refURL&"') AND LicencaID like '"&licencaID&"' AND usuarioID LIKE '"&userID&"'"&chr(13)_
+&" order by id DESC"
+
+'  response.write("<pre>"&avaliacaoAtualQ&"</pre>")
+
 set avaliacaoAtualSQL = db.execute(avaliacaoAtualQ)
 if not avaliacaoAtualSQL.eof then
   vt_avaliacoes_comentario = avaliacaoAtualSQL("comentario")
@@ -122,7 +132,7 @@ set avaliacaoAtualSQL = nothing
 comentariosHTML = "<strong>Últimos comentários</strong><br>"
 
 comentariosQ = "SELECT * FROM cliniccentral.vt_avaliacoes AS ava"&chr(13)_
-&"  WHERE ava.ref_url LIKE '"&refURL&"' AND ava.LicencaID LIKE '"&licencaID&"' AND ava.usuarioID LIKE '"&userID&"'"&chr(13)_
+&"  WHERE ava.ref_url LIKE from_base64('"&refURL&"') AND ava.LicencaID LIKE '"&licencaID&"' AND ava.usuarioID LIKE '"&userID&"'"&chr(13)_
 &" ORDER BY ava.id DESC limit 0,5"
 
 'response.write("<pre>"&comentariosQ&"</pre>")
@@ -169,7 +179,7 @@ set comentariosSQL = nothing
 </div>
 
 <div class="row">
-  <div class="col-md-8" style="height:450px;overflow:auto;">
+  <div class="col-md-8" style="height:500px;overflow:auto;">
     <div class="panel">
       <div class="panel-heading">
         <span class="panel-title" id="titulo"><%=vt_video%></span>

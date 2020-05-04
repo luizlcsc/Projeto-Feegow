@@ -2,7 +2,7 @@
 <!--#include file="ProntCompartilhamento.asp"-->
 <!--#include file="Classes/Arquivo.asp"-->
 
-
+<% IF getConfig("NovaGaleria") = "0" THEN %>
 <div class="row">
 	<div class="col-md-4 pull-right">
     	<button type="button" id="btnComparar" class="btn btn-sm btn-info">Comparar imagens</button>
@@ -186,7 +186,7 @@
 
 </ul><!-- PAGE CONTENT ENDS -->
 </div>
-
+<% END IF %>
 <script type="text/javascript">
 
 function MaisInfo(img) {

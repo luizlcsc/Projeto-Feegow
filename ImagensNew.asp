@@ -13,7 +13,7 @@
         padding-top: 25px;
         justify-content: center;
     }
-    .galery-item{
+    .galery-item,.galery-item-max{
         overflow: hidden;
         text-align: center;
         margin: 5px;
@@ -23,14 +23,25 @@
         min-width: var(--width-main);
         box-shadow: 1px 1px 5px #888888;
     }
-    .galery-img{
+    .galery-item-max{
+        max-width: 100%;
+        min-width: 100%;
+    }
+
+    .galery-item-max .galery-img {
+            max-width: 100%;
+            min-width: 100%;
+            height:auto;
+    }
+
+    .galery-item .galery-img{
         height: var(--height-main);
         text-align: center;
         padding-bottom: 5px;
         display: flex;
         align-items: center;
     }
-    .galery-img img{
+    .galery-item .galery-img img{
         margin: 0 auto;
         display: inline-block;
         max-height: var(--height-main);
@@ -45,7 +56,7 @@
         padding: 2px 10px;
         color: #efe3ea !important;
         /*background: #f8f8f8;*/
-        background: rgba(13,13,13,0.5);
+        background: rgba(55,55,55,0.5);
     }
 
     .galery-item:hover .config{
@@ -93,6 +104,19 @@
         width: var(--width-main);
     }
 
+    .galery-item-max .galery-data-envio{
+        position: static;
+        text-align: left;
+        width: 100%;
+        height: auto;
+    }
+
+    .galery-item-max .data-envio{
+        padding: 10px;
+    }
+
+
+
     .galery-item .config-buttons {
            background: rgba(13,13,13,0.5);
            opacity: 0;
@@ -110,6 +134,18 @@
         background-color: #f0f0f0;
     }
 </style>
+
+<div class="btn-group ib m20 pull-left ">
+  <button type="button" class="btn btn-default hidden-xs" onclick="comparar()">
+    <span class="fa fa-columns	"></span>
+  </button>
+  <div class="btn-group">
+    <fieldset>
+       <div class="btn-group">
+      <button type="button" class="btn btn-default" data-toggle="dropdown" title="All Labels" onclick="comparar()" aria-expanded="false"><span>Comparar</span> </button></div>
+    </fieldset>
+  </div>
+</div>
 
 <div class="btn-group ib m20 pull-left ">
   <button type="button" class="btn btn-default hidden-xs">
@@ -136,8 +172,11 @@
   </div>
 </div>
 <div class="clearfix"></div>
+<div class='max-width' style="display: flex"></div>
 <div class="galery" id="galery">
-
+    <div class="fa-5x" style="text-align: center">
+        <i class="fa fa-spinner fa-spin"></i>
+    </div>
 </div>
 
 <script>
@@ -205,7 +244,6 @@
             return getSelected().includes(item.Tipo);
         }).map((item) => {
                 processaItem(item);
-
                 return `<div class="galery-item">
 
                              <div class="galery-data-envio">
@@ -213,11 +251,14 @@
                                 <div class="config-buttons">
                                     <small class="pull-left"><div class="bs-component">
                                                                                          <div class="checkbox-custom mb5">
-                                                                                           <input type="checkbox" name="comparar[${item.id}]" id="comparar${item.id}">
+                                                                                           <input type="checkbox" class="comparar" name="comparar[${item.id}]" value="${item.id}" id="comparar${item.id}">
                                                                                            <label for="comparar${item.id}">&nbsp</label>
                                                                                          </div>
                                                                                        </div></small>
 
+                                    <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
+                                                              <i class="fa fa-expand icon-external-link"></i>
+                                    </a>
                                     <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}" target="_blank" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-external-link icon-external-link"></i>
                                     </a>
@@ -243,9 +284,29 @@
                        </div>`;
              });
 
-             document.getElementById("galery").innerHTML = b.join("");
+             document.getElementById("galery").innerHTML =b.join("");
     }
 
+    function expandItem(id){
+         let item = itens.find(item => item.id == id);
+         let html = `
+         <div class="galery-item-max">
+            <div class="galery-data-envio">
+             <div class="data-envio">
+            <div class="pull-right">
+                <a class="btn btn-xs btn-danger" onclick="$('.galery-item-max').remove()" id="excluir" title="Excluir Imagem">
+                    <i class="fa fa-times icon-trash"></i>
+                </a>
+            </div>
+Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescricao}
+</div>
+          </div>
+          <div class="galery-img"><img src="${item.ArquivoLink}" width="100%" height="100%" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
+    </div>`;
+
+
+        $(".max-width").html(html);
+    }
 
     fetch('http://localhost:9001/file/arquivos/paciente/<%=request.QueryString("PacienteID")%>/all/list?tk='+localStorage.getItem("tk"))
     .then((a) => a.json())
@@ -262,6 +323,29 @@
                $(b).attr("src",_item.link);
                $(b).parent().attr("href",_item.ArquivoLink);
         })
+    }
+
+    function comparar(){
+        html = "";
+        let quantidade = 100/$(".comparar:checked").length;
+        $(".comparar:checked").map((a,b) => {
+            let item = itens.find(item => item.id == b.value);
+            html += `<div class="galery-item-max" style="width: ${quantidade}%;max-width: ${quantidade}%;min-width: ${quantidade}%">
+                                <div class="galery-data-envio">
+                                 <div class="data-envio">
+                                <div class="pull-right">
+                                    <a class="btn btn-xs btn-danger" onclick="$('.galery-item-max').remove()" id="excluir" title="Excluir Imagem">
+                                        <i class="fa fa-times icon-trash"></i>
+                                    </a>
+                                </div>
+                    Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescricao}
+                    </div>
+                              </div>
+                              <div class="galery-img"><img src="${item.ArquivoLink}" width="100%" height="100%" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
+                    </div>`;
+        })
+
+        $(".max-width").html(html);
     }
 
     function r90_1(f, id){

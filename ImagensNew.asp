@@ -279,7 +279,7 @@
                              </div>
                              <div class="galery-img"><img src="${item.link}" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
                              <div class="config">
-                                <textarea class="galery-description text-info border-edit">${item.NovaDescricao}</textarea>
+                                <textarea class="galery-description text-info border-edit imgpac" name="Desc${item.id}" data-img-id="${item.id}">${item.NovaDescricao}</textarea>
                              </div>
                        </div>`;
              });
@@ -306,6 +306,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
 
 
         $(".max-width").html(html);
+        $(window).scrollTop($('.max-width').offset().top - 120)
     }
 
     fetch('http://localhost:9001/file/arquivos/paciente/<%=request.QueryString("PacienteID")%>/all/list?tk='+localStorage.getItem("tk"))

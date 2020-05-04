@@ -2876,6 +2876,9 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
                 'if session("Banco") = "clinic2496" OR session("Banco") = "clinic100000" OR session("Banco") = "clinic4285" OR session("Banco") = "clinic984" OR session("Banco") = "clinic2263" Then
                 if RecursosAdicionaisSQL("SplitNF")<>1 then
                     rbtns = rbtns & "&nbsp; <button id='btn_NFe' title='Nota Fiscal' class='btn btn-warning btn-sm' onclick='modalNFE()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
+                    if session("Banco")="clinic5459" or session("Banco")="clinic100000" then
+                        rbtns = rbtns & "&nbsp; <button id='btn_NFeBeta' title='Nota Fiscal Beta' class='btn btn-danger btn-sm' onclick='modalNFEBeta()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
+                    end if
                 end if
 	        End if
 	    End if

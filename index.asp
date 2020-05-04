@@ -1281,15 +1281,30 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
       <footer id="content-footer" class="affix no-print">
         <div class="row">
           <div class="col-md-6 hidden-xs">
+                <!--#include file="Classes/Base64.asp"-->
 
+              <script type="text/javascript">
+              function vidau(v){
+                  dva = $("#videoaula");
+                  dva.css("display", "block");
+                  dva.html("Carregando...");
+                  $.get("VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString())%>", function(data){
+                    dva.html( data );
+                    });
+                }
+              </script>
 
               <div class="bs-component">
                   <div class="btn-group">
-                      <button type="button" class="btn btn-xs btn-success light" onclick="window.open('videoAula.asp?P=<%=req("P") %>&T='+ $('.crumb-active a').html())">
-                          <i class="fa fa-video-camera"></i> Vídeo-aula
-                      </button>
+
+                  <button type="button" class="btn btn-xs btn-success light" data-toggle="tooltip" data-placement="top" title="Tutoriais em vídeo"
+                  onclick='vidau(`VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString())%>`, true, `Central de Vídeos`,``,`xl`,``)'>
+                  <i class="fa fa-video-camera"></i> Vídeo-aula
+                  </button>         
+
                       <%if session("Admin")<>1 AND recursoAdicional(12)=4 then%>
                       <%else%>
+
                       <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" class="btn btn-xs btn-default">
                           <i class="fa fa-question-circle"></i> Suporte
                       </button>
@@ -2372,6 +2387,9 @@ for i=0 to ubound(splChatWindows)
 next
 %>
 </div>
+
+<div id="videoaula" style="position:fixed; left:10px; width:95%; height:600px; top:10px; border-radius:5px; background-color:#fff; border:1px solid #ccc; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); z-index:9999"></div>
+
 <%
 if session("OtherCurrencies")="phone" then
     %>

@@ -1,6 +1,5 @@
 <%
 select case lcase(req("P"))
-
     case "checkin"
         StaChk = "|1|, |4|, |5|, |7|, |15|, |101|"
 
@@ -160,6 +159,7 @@ select case lcase(req("P"))
                   </span>
                 </div>
                 <% end if %>
+                
               </div>
 
 
@@ -2134,7 +2134,7 @@ select case lcase(req("P"))
                 </li>
                 <%
                 end if
-                if aut("|relatoriosformulariosV|")=1 and lcase(session("Table"))="profissionais" then
+                if aut("|relatoriosformulariosV|")=1 then
                 %>
                 <li>
                     <a href="javascript:callReport('relatorioForms');">

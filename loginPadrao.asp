@@ -8,13 +8,14 @@ Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
 MasterPwd = objSystemVariables("FC_MASTER")
 
-sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao, u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha=('"&ref("Password")&"') or ('"&ref("Password")&"'='"&MasterPwd&"' and u.LicencaID<>5459))"
+sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha=('"&ref("Password")&"') or ('"&ref("Password")&"'='"&MasterPwd&"' and u.LicencaID<>5459))"
 
 set tryLogin = dbc.execute(sqlLogin)
 if not tryLogin.EOF then
     UsuariosContratadosNS = tryLogin("UsuariosContratadosNS")
     UsuariosContratadosS = tryLogin("UsuariosContratados")
     ServidorAplicacao = tryLogin("ServidorAplicacao")
+    PastaAplicacao = tryLogin("PastaAplicacao")
     Servidor = tryLogin("Servidor")&""
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
@@ -61,7 +62,7 @@ if not tryLogin.EOF then
 
 	if erro="" then
 	    TimeoutToCheckConnection = 60
-	
+
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
 			TempoDist = datediff("s", sysUser("UltRef"), now())
@@ -137,6 +138,11 @@ if not tryLogin.EOF then
 		if ref("password")=MasterPwd then
 			session("MasterPwd") = "S"
 		end if
+
+        if instr(Cupom&"", "Franqueador:")>0 then
+            session("Franqueador") = replace(Cupom&"", "Franqueador:", "")
+            session("FranqueadorID") = tryLogin("LicencaID")
+        end if
 		%>
 		<!--#include file="connect.asp"-->
 		<%
@@ -355,6 +361,11 @@ if not tryLogin.EOF then
                 urlRedir = "./?P=AreaDoCliente&Pers=1"
             end if
         end if
+
+        IF PastaAplicacao <> "" THEN
+            urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")
+        END IF
+
         if Cupom="GSC" then
             urlRedir = replace(urlRedir, "./", "/v7.1/")
         end if

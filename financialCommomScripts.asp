@@ -163,6 +163,10 @@ function modalNFE(reciboId){
     %>
 }
 
+function modalNFEBeta() {
+    openComponentsModal("nfe/invoice/create-view", {invoiceId: invoiceId, provider: 'enotas'})
+}
+
 var $componentsModal = $("#feegow-components-modal"),
         $componentsModalTitle = $componentsModal.find('.modal-title'),
         $componentsModalBodyContent = $componentsModal.find('.modal-body-content'),

@@ -1288,7 +1288,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                   dva = $("#videoaula");
                   dva.css("display", "block");
                   dva.html("Carregando...");
-                  $.get("VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString())%>", function(data){
+                  $.get(v, function(data){
                     dva.html( data );
                     });
                 }

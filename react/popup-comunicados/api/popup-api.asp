@@ -16,7 +16,7 @@ Select Case action
     'retornar um json
     ' cria a tabela de cliniccentral.comunicados
     sql = "insert into cliniccentral.comunicados ( UserID, ComunicadoID, Interesse) values ("& UserID &", "& ComunicadoID &", "& Interesse &")"
-    db.execute( sql )
+    db.exe2cute( sql )
 
   Case "GetComunicadoById"
 
@@ -27,7 +27,7 @@ Select Case action
 
   Case "GetComunicadoNaoVisualizado"
 
-    sql = "SELECT pop.* FROM cliniccentral.popup_comunicados pop LEFT JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id AND com.UserID="&UserID&" WHERE (ExibirApenas is null or ExibirApenas Like '%|"&LicencaID&"|%') AND com.id IS NULL AND sysActive=1 AND pop.id="&Request.QueryString("ComunicadoID")
+    sql = "SELECT pop.* FROM cliniccentral.popup_comunicados pop LEFT JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id AND com.UserID="&UserID&" WHERE (ExibirApenas is null or ExibirApenas Like '%|"&LicencaID&"|%') AND com.id IS NULL AND (com.Interesse=1 or com.Interesse IS NULL) AND sysActive=1 AND pop.id="&Request.QueryString("ComunicadoID")
     set ComunicadoSQL = db.execute( sql )
 
     Exibe=True

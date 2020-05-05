@@ -1,7 +1,9 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Base64.asp"-->
 <%
-vRef = Base64Decode(req("refURL"))
+if req("refURL")<>"" then
+  vRef = Base64Decode(req("refURL"))
+end if
 
 '***** GERA CONDIÇÕES PARA O FILTRO DOS VIDEOS POR PAGINA E/OU PARAMETRO
 'Response.write(vRef&"<hr>")
@@ -47,18 +49,27 @@ end if
 
 refURL = req("refURL")&""
 
-videoQ = ""_
-&" SELECT"&Chr(13)_
-&" vid.*"&Chr(13)_
-&" ,ser.url,ser.servidor"&Chr(13)_
-&" FROM cliniccentral.vt_videos AS vid"&Chr(13)_
-&" LEFT JOIN cliniccentral.vt_servidores AS ser ON ser.vt_video_id = vid.id"&Chr(13)_
-&" WHERE ("&wherePagina&")"&Chr(13)_
-&" AND ("&whereVariavel&")"
+if req("vID")<>"" then
 
-if sDev = 1 then
-  response.write("<pre>"&videoQ&"</pre>")
+  videoQ = ""_
+  &" SELECT"&Chr(13)_
+  &" vid.*"&Chr(13)_
+  &" ,ser.url,ser.servidor"&Chr(13)_
+  &" FROM cliniccentral.vt_videos AS vid"&Chr(13)_
+  &" LEFT JOIN cliniccentral.vt_servidores AS ser ON ser.vt_video_id = vid.id"&Chr(13)_
+  &" WHERE vid.id="& req("vID")
+else
+  videoQ = ""_
+  &" SELECT"&Chr(13)_
+  &" vid.*"&Chr(13)_
+  &" ,ser.url,ser.servidor"&Chr(13)_
+  &" FROM cliniccentral.vt_videos AS vid"&Chr(13)_
+  &" LEFT JOIN cliniccentral.vt_servidores AS ser ON ser.vt_video_id = vid.id"&Chr(13)_
+  &" WHERE ("&wherePagina&")"&Chr(13)_
+  &" AND ("&whereVariavel&")"
 end if
+
+ ' response.write("<pre>"&videoQ&"</pre>")
 set videoSQL = db.execute(videoQ)
 if videoSQL.eof then
   erro = 1
@@ -92,7 +103,6 @@ end if
 
 'response.end
 'RESGISTRA LOGS DOS VIDEOS PARA FILTRAR VIDEOS NÃO ENCONTRADOS
-
 acaoSQL = "INSERT INTO `cliniccentral`.`vt_logs`"_
 &" (`vt_video_id`, `LicencaID`, `usuarioID`, `ref_url`, `sysDate`)"_
 &" VALUES"_
@@ -132,7 +142,7 @@ set avaliacaoAtualSQL = nothing
 comentariosHTML = "<strong>Últimos comentários</strong><br>"
 
 comentariosQ = "SELECT * FROM cliniccentral.vt_avaliacoes AS ava"&chr(13)_
-&"  WHERE ava.ref_url LIKE from_base64('"&refURL&"') AND ava.LicencaID LIKE '"&licencaID&"' AND ava.usuarioID LIKE '"&userID&"'"&chr(13)_
+&" WHERE vt_video_id='"& vt_id &"' AND ava.LicencaID LIKE '"&licencaID&"' AND ava.usuarioID LIKE '"&userID&"'"&chr(13)_
 &" ORDER BY ava.id DESC limit 0,5"
 
 'response.write("<pre>"&comentariosQ&"</pre>")
@@ -167,31 +177,29 @@ set comentariosSQL = nothing
 <%'=tipoAvaliacaoCSS%>
 
 </style>
-<div class="row">
-  <div class="col-md-8">
-    <h2 style="margin-left:15px">Central de vídeos</h2>
-  </div>
-  <div class="col-md-4 text-right">
-      <a href="javascript:$('#videoaula').css('display', 'none')" class="btn btn-sm btn-danger">
-        <i class="fa fa-remove"></i>
-      </a>
+
+<div class="panel">
+  <div class="panel-heading">
+    <span class="panel-title" id="titulo"><%=vt_video%></span>
+    <span class="panel-controls" onclick="javascript:$('#videoaula').css('display', 'none')">
+        <i class="fa fa-remove"></i> Fechar
+    </span>
   </div>
 </div>
+
+
 
 <div class="row">
   <div class="col-md-8" style="height:500px;overflow:auto;">
     <div class="panel">
-      <div class="panel-heading">
-        <span class="panel-title" id="titulo"><%=vt_video%></span>
-      </div>
       <div class="panel-body">
         <%
         if erro = 1 then
           response.write(vt_previa)
-          response.write("<br><div id='ytplayer'></div>")
+          response.write("<br><center><div id='ytplayer'></div></center>")
         else
         'CARREGA PLAYER
-          response.write("<div id='ytplayer'></div>")
+          response.write("<center><div id='ytplayer'></div></center>")
         end if
         %>
       </div>
@@ -202,6 +210,9 @@ set comentariosSQL = nothing
             
             <strong>Este vídeo foi útil para você</strong>
             <br>
+            <%
+            refURLAtual = req("refURL")
+            %>
             <div class="avaliacoes">
               <a id="avaliacaoBom" data-toggle="tooltip" data-placement="top" data-original-title="Gostei do vídeo! ;-)"><i class="fa fa-thumbs-o-up vt_avaliacao <%=avaliacaoBom%>"></i></a>
               <a id="avaliacaoRuim" data-toggle="tooltip" data-placement="top" data-original-title="Não gostei do vídeo! :-("><i class="fa fa-thumbs-o-down vt_avaliacao <%=avaliacaoRuim%>"></i></a>
@@ -232,12 +243,7 @@ set comentariosSQL = nothing
   </div>
   <div class="col-md-4">
     <div class="panel">
-      <div class="panel-heading">
-        <span class="panel-title">Vídeos recomendados</span>
-      </div>
-      <div class="panel-body" style="height:450px;overflow:auto;">
-        <!--#include file="VideoTutorialMenu.asp"-->
-      </div>
+      <!--#include file="VideoTutorialMenu.asp"-->
     </div>
   </div>
 </div>
@@ -265,7 +271,9 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 $(".atualizaVideo").click(function(){
     $('#ytplayer').css('display', 'block');
     $('#notFound').css('display', 'none');
-    $('#titulo').html( $(this).attr('data-titulo') );    
+    $('#titulo').html( $(this).attr('data-titulo') );
+    $("#refURLAtual").val( $(this).attr('id') );
+    console.log(acaoSQL)
 });
 
 var player;
@@ -349,7 +357,6 @@ $(function () {
           data: $("textarea[name='comentario']")
         });
         $("#btnSalvarComentario").addClass("disabled");
-        
         new PNotify({
         title: 'Obrigado pelo seu comentário.',
         sticky: true,
@@ -362,4 +369,7 @@ $(function () {
 
 
 //showMessageDialog("Salvou com sucesso!!!!", 5000);
+
+$("#videosRecomendados").scrollTop( $("#video_<%= vt_id %>").position().top )
+
 </script>

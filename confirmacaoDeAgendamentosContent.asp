@@ -27,7 +27,7 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
 
 
         if Mensagem&"" ="" then
-            Mensagem = "Olá, [NomePaciente] !%0a%0aPosso confirmar [NomeProcedimento] com [NomeProfissional] às [HoraAgendamento]?"
+            Mensagem = "Olá, [Paciente.Nome] !%0a%0aPosso confirmar [Procedimento.Nome] com [Profissional.Nome] às [Agendamento.Hora]?"
         end if
         'dados para replace
         set age = db.execute("select a.*, p.TextoEmail, p.TextoSMS, p.MensagemDiferenciada, p.NomeProcedimento from agendamentos a left join procedimentos p on p.id=a.TipoCompromissoID where a.id="&AgendamentoID)
@@ -54,7 +54,7 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
         TratamentoProfissional = ""
 
 
-        if instr(Mensagem, "[TipoProcedimento]") or instr(Mensagem, "[NomeProcedimento]") then
+        if instr(Mensagem, "[Procedimento.Tipo]") or instr(Mensagem, "[Procedimento.Nome]") then
             set proc = db.execute("select p.NomeProcedimento,t.TipoProcedimento from procedimentos p LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID where p.id="&age("TipoCompromissoID"))
             if not proc.eof then
                 TipoProcedimento = trim(proc("TipoProcedimento"))&""
@@ -70,14 +70,14 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
             Hora=""
         end if
 
-        Mensagem = replace(Mensagem, "[TipoProcedimento]", TipoProcedimento)
-        Mensagem = replace(Mensagem, "[NomeProcedimento]", NomeProcedimento)
-        Mensagem = replace(Mensagem, "[NomePaciente]", NomePaciente)
-        Mensagem = replace(Mensagem, "[NomeCompletoPaciente]", NomeCompletoPaciente)
-        Mensagem = replace(Mensagem, "[TratamentoProfissional]", "")
-        Mensagem = replace(Mensagem, "[NomeProfissional]", NomeProfissional)
-        Mensagem = replace(Mensagem, "[HoraAgendamento]", Hora)
-        Mensagem = replace(Mensagem, "[DataAgendamento]", age("Data"))
+        Mensagem = replace(Mensagem, "[Procedimento.Tipo]", TipoProcedimento)
+        Mensagem = replace(Mensagem, "[Procedimento.Nome]", NomeProcedimento)
+        Mensagem = replace(Mensagem, "[Paciente.Nome]", NomePaciente)
+        Mensagem = replace(Mensagem, "[Paciente.NomeCompleto]", NomeCompletoPaciente)
+        Mensagem = replace(Mensagem, "[Profissional.Tratamento]", "")
+        Mensagem = replace(Mensagem, "[Profissional.Nome]", NomeProfissional)
+        Mensagem = replace(Mensagem, "[Agendamento.Hora]", Hora)
+        Mensagem = replace(Mensagem, "[Agendamento.Data]", age("Data"))
         Mensagem = trim(Mensagem)
         Mensagem = Replace(Mensagem,"""","")
 

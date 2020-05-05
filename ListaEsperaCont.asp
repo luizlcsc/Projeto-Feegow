@@ -163,6 +163,10 @@ if lcase(session("table"))="profissionais" then
     end if
 end if
 
+
+if req("debug")="1" then
+    response.write(sql)
+end if
 set veseha=db.execute(sql)'Hora
 
 if session("Table")="profissionais" then
@@ -660,8 +664,8 @@ else
 
          if(!AtendimentoSimultaneoValidado){
             new PNotify({
-                title: '<i class="fa fa-warning"></i> Certificado Digital',
-                text: 'Para avançar com o atendimento, o usuário não pode está em atendimento.',
+                title: '<i class="fa fa-warning"></i> Finalize o atendimento',
+                text: 'Finalize o atendimento atual para iniciar outro.',
                 type: 'danger'
             });
         }
@@ -669,7 +673,7 @@ else
         if(!(arg1 === true)){
             new PNotify({
                     title: '<i class="fa fa-warning"></i> Certificado Digital',
-                    text: 'Para avançar com o atendimento, o usuário deverá configurar o certificado digital.',
+                    text: 'Para iniciar o atendimento, o usuário deverá configurar o certificado digital.',
                     type: 'danger'
             });
         }

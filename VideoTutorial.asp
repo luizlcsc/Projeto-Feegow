@@ -177,31 +177,29 @@ set comentariosSQL = nothing
 <%'=tipoAvaliacaoCSS%>
 
 </style>
-<div class="row">
-  <div class="col-md-8">
-    <h2 style="margin-left:15px">Central de vídeos</h2>
-  </div>
-  <div class="col-md-4 text-right">
-      <a href="javascript:$('#videoaula').css('display', 'none')" class="btn btn-sm btn-danger">
-        <i class="fa fa-remove"></i>
-      </a>
+
+<div class="panel">
+  <div class="panel-heading">
+    <span class="panel-title" id="titulo"><%=vt_video%></span>
+    <span class="panel-controls" onclick="javascript:$('#videoaula').css('display', 'none')">
+        <i class="fa fa-remove"></i> Fechar
+    </span>
   </div>
 </div>
+
+
 
 <div class="row">
   <div class="col-md-8" style="height:500px;overflow:auto;">
     <div class="panel">
-      <div class="panel-heading">
-        <span class="panel-title" id="titulo"><%=vt_video%></span>
-      </div>
       <div class="panel-body">
         <%
         if erro = 1 then
           response.write(vt_previa)
-          response.write("<br><div id='ytplayer'></div>")
+          response.write("<br><center><div id='ytplayer'></div></center>")
         else
         'CARREGA PLAYER
-          response.write("<div id='ytplayer'></div>")
+          response.write("<center><div id='ytplayer'></div></center>")
         end if
         %>
       </div>

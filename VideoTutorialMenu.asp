@@ -69,13 +69,16 @@ if not playlistsSQL.eof then
   set playlistsSugestaoSQL = nothing
 
 
-  videosQ = " SELECT vtPla.*, vtVid.id as video_id, vtVid.vt_playlists_id "_
+  videosQ = " SELECT l.id AS logs_id, vtPla.*, vtVid.id as video_id, vtVid.vt_playlists_id "_
   &" ,to_base64(vtVid.pagina) AS pagina, vtVid.video, vtVid.previa"&chr(13)_
   &" ,vtSer.url"&chr(13)_
   &" from cliniccentral.vt_playlists AS vtPla"&chr(13)_
   &" LEFT JOIN cliniccentral.vt_videos AS vtVid ON vtVid.vt_playlists_id = vtPla.id"&chr(13)_
   &" LEFT JOIN cliniccentral.vt_servidores AS vtSer ON vtSer.vt_video_id = vtVid.id"&chr(13)_
+  &" LEFT JOIN cliniccentral.vt_logs l ON l.vt_video_id=vtVid.id"&chr(13)_
   &" WHERE vtVid.sys_active like 1 AND vtPla.id LIKE '"&vt_playlists_id&"'"&chr(13)_
+  & "AND (l.usuarioID='"&session("user")&"' OR ISNULL(l.usuarioID))"&chr(13)_
+  &" GROUP BY vtVid.id"&chr(13)_
   &" ORDER BY vtPla.id"    
 
   'response.write("<pre>"&videosQ&"</pre>")
@@ -92,13 +95,20 @@ if not playlistsSQL.eof then
 
     vt_servidores_url = videosSQL("url") 'PADRÃO YOUTUBE
 
+    vt_logs_id = videosSQL("logs_id")
+    if IsNull(vt_logs_id) then
+      classCheck = ""
+    else
+      classCheck = "<i class='fa fa-check-circle text-success'></i>"
+    end if
+
     videoURL = "https://www.youtube.com/embed/"&vt_servidores_url&"?rel=0&amp;showinfo=1&amp;autoplay=0&amp;enablejsapi=1&amp;widgetid=2"
 
     videoContentHTML = videoContentHTML&""_
     &"<div>"_
     &"<a id='video_"&vt_videos_id&"' href='#' onclick='vidau(`VideoTutorial.asp?vID="&  vt_videos_id &"`, true, `Central de Vídeos`,``,`xl`,``)' style='text-decoration:none' data-titulo='"&vt_videos_video&"'>"_
     &"  <img style='margin-right:10px' class='pull-left thumbnail' width='90' src='https://i.ytimg.com/vi/"&vt_servidores_url&"/hqdefault.jpg'/>"_
-    &"  <h2 style='color:#606c7d;font-size:16px'>"&vt_videos_video&"</h2>"_
+    &"  <h2 style='color:#606c7d;font-size:16px'> "&classCheck&" " &vt_videos_video&"</h2>"_
     &"  <p style='color:#7C8CA2'>"&vt_videos_previa&"</p>"_
     &"</a>"_
     &"</div><div class='clearfix'></div>"

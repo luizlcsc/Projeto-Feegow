@@ -7,6 +7,7 @@ videoID = req("v")
 avaliacao = req("avaliacao")
 
 form_comentario = request.form("comentario")
+form_videoAtual = request.form("refURLAtual")
 
 'For Each item in Session.Contents
   'Response.Write "<pre>"&item & " = " & Session.Contents(item) & "</pre>"
@@ -52,8 +53,11 @@ if avaliacao <> "" or form_comentario<> "" then
   'NÃO EXISTE MAIS LIMITE DE COMENTÁRIOS
   if form_comentario<>"" then
     set vAvaliacao = db.execute("select avaliacao from cliniccentral.vt_avaliacoes where LicencaID like '"&licencaID&"' AND usuarioID LIKE '"&userID&"' AND vt_video_id like '"&videoID&"' order by id DESC limit 0,1")
-    avaliacaoUltima = vAvaliacao("avaliacao")
-
+    if vAvaliacao.eof then
+      avaliacaoUltima = 0
+    else
+      avaliacaoUltima = vAvaliacao("avaliacao")
+    end if
 
     acaoSQL = "INSERT INTO `cliniccentral`.`vt_avaliacoes`"_
       &" (`vt_video_id`, avaliacao, "&colunaInsertSQL&", `LicencaID`, `usuarioID`, `ref_url`, `sysDate`)"_
@@ -64,6 +68,5 @@ if avaliacao <> "" or form_comentario<> "" then
   db.execute(acaoSQL)
   
   response.write(msgAcao)
-
 end if
 %>

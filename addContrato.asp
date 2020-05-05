@@ -482,9 +482,10 @@ elseif ModeloID<>"" and ModeloID<>"0" then
                         else
                             profsql = "select * from profissionais where id="&guiaprocedimentos("ProfissionalID")
                         end if
-
                         set prof = db.execute(profsql)
-                        EsteItem = replace(EsteItem, "[Procedimentos.Executante]", prof("NomeProfissional")&"")
+                        if not prof.eof then
+                            EsteItem = replace(EsteItem, "[Procedimentos.Executante]", prof("NomeProfissional")&"")
+                        end if
                     end if
                     ContItens = ContItens & EsteItem
                 guiaprocedimentos.movenext

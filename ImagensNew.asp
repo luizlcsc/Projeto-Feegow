@@ -1,6 +1,20 @@
 <!--#include file="connect.asp"-->
 <!--#include file="ProntCompartilhamento.asp"-->
 <!--#include file="Classes/Arquivo.asp"-->
+<%
+    IF ref("valor") <> "" THEN
+        db.execute("UPDATE arquivos SET Descricao = '"&ref("valor")&"' WHERE id = '"&ref("id")&"' ")
+
+        %>
+        new PNotify({
+            title: '<i class="fa fa-save"></i>',
+            text: 'Descrição alterada com sucesso.',
+            type: 'success'
+        });
+        <%
+        response.end
+    END IF
+%>
 <style>
     :root {
       --width-main: 280px;
@@ -41,7 +55,7 @@
         display: flex;
         align-items: center;
     }
-    .galery-item .galery-img img{
+    .galery-item .galery-img img,.galery-item .galery-img span,.galery-item .galery-img a{
         margin: 0 auto;
         display: inline-block;
         max-height: var(--height-main);
@@ -207,8 +221,9 @@
 
             let extension = item.NomeArquivo.substr(item.NomeArquivo.lastIndexOf('.') + 1).toLowerCase();
             let link = '';
-
+            let formato = 'a';
             if(['png','gif','jpeg','jpg'].includes(extension)){
+                formato = 'span';
                 link = item.thumbnailLink?item.thumbnailLink:item.ArquivoLink;
             }
 
@@ -231,12 +246,17 @@
                 link = 'assets/img/pptx.png';
             }
 
-            if(['xlsx','csv'].includes(extension)){
+            if(['csv'].includes(extension)){
+                link = 'assets/img/csv.png';
+            }
+
+            if(['xlsx','xls'].includes(extension)){
                 link = 'assets/img/xlsx.png';
             }
 
             item.link = link;
             item.extension = extension;
+            item.formato = formato;
     }
 
     function loadItens(){
@@ -262,7 +282,7 @@
                                     <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}" target="_blank" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-external-link icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="javascript:r90('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">
+                                    <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">
                                             <i class="fa fa-rotate-right"></i>
                                     </a>
                                     <a class="btn btn-xs btn-alert" href="javascript:MaisInfo('${item.NomeArquivo}')" title="Mais informações">
@@ -277,9 +297,9 @@
                                 </div>
 
                              </div>
-                             <div class="galery-img"><img src="${item.link}" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
+                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink}" target="_blank"><img src="${item.link}" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></a></div>
                              <div class="config">
-                                <textarea class="galery-description text-info border-edit imgpac" name="Desc${item.id}" data-img-id="${item.id}">${item.NovaDescricao}</textarea>
+                                <textarea class="galery-description text-info border-edit imgpac" name="Desc${item.id}" onchange="changeDescription(${item.id},this)" data-img-id="${item.id}">${item.NovaDescricao}</textarea>
                              </div>
                        </div>`;
              });
@@ -349,26 +369,23 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
         $(".max-width").html(html);
     }
 
+    function changeDescription(id,tag){
+        let valor = tag.value;
+
+        $.post("ImagensNew.asp", {id,valor}, function(data){
+            eval(data);
+        });
+    }
+
     function r90_1(f, id){
          let rotateAngle = $("img[data-id="+id+"]").attr("rotateAngle");
 
          if(!rotateAngle){
              rotateAngle = 0;
          }
-
          rotateAngle = Number(rotateAngle) + 90;
-
          $("img[data-id="+id+"]").css('transform','rotate(' + rotateAngle + 'deg)');
          $("img[data-id="+id+"]").attr('rotateAngle',rotateAngle);
-
-        var dt = new Date().getTime();
-        $.get("/feegow_components/rotate_img?img="+f+ "&l=<%=replace(session("Banco"),"clinic","")%>", function(data){
-            var $el = $("img[data-id="+id+"]");
-
-            var originalSource = $el.attr("data-src");
-
-            $el.attr("src", originalSource + "?" + dt );
-        });
     }
 
 </script>

@@ -1,5 +1,25 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="ProntCompartilhamento.asp"-->
+<%
+
+IF getConfig("NovaGaleria") = "1" THEN
+            %>
+             <div class="galery-ajax"></div>
+
+      <script>
+              fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+              .then(data => data.text())
+              .then(data => {
+                 $(".galery-ajax").html(data);
+                 $("[value='I']").parent().remove();
+              });
+             </script>
+    <%
+    response.end
+END IF
+%>
+
+
 <div id="arquivos-content">
 <div class="panel">
     <div class="panel-body">

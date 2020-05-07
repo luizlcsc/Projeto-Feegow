@@ -290,6 +290,37 @@
             </li>
             <%
             end if
+            if session("Banco")="clinic100000" or session("Banco")="clinic5459" then
+            %>
+               <li<% If req("P")="ListarEmpresasNFse" OR req("P")="BoletosEmitidos" OR req("P")="CriarEmpresaNFse" Then %> class="open"<% End If %>>
+                   <a href="#" class="accordion-toggle">
+                       <span class="fa fa-file-text"></span>
+                       <span class="sidebar-title"> Nota Fiscal <span class="label label-primary">Beta</span></span>
+                       <span class="caret"></span>
+                   </a>
+                   <ul class="nav sub-nav">
+                       <li>
+                           <a href="?P=ListarNotasFiscais&Pers=1">
+                               <span class="fa fa-list"></span>
+                               <span class="sidebar-title"> Listar notas </span>
+                           </a>
+                       </li>
+                       <li <% If req("P")="ListarEmpresasNFse" Then %> class="active"<% End If %>>
+                           <a href="?P=ListarEmpresasNFse&Pers=1">
+                               <span class="fa fa-building"></span>
+                               <span class="sidebar-title"> Listar empresas </span>
+                           </a>
+                       </li>
+                       <li <% If req("P")="CriarEmpresaNFse" Then %> class="active"<% End If %>>
+                              <a href="?P=CriarEmpresaNFse&Pers=1">
+                                  <span class="fa fa-plus"></span>
+                                  <span class="sidebar-title"> Criar empresa </span>
+                              </a>
+                          </li>
+                   </ul>
+               </li>
+           <%
+           end if
         end if
 	end if
 	%>

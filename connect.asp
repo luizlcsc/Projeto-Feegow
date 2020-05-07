@@ -2411,13 +2411,15 @@ function replateTagsPaciente(valor,PacienteID)
             valor = replace(valor, "[Paciente.Idade]", idade(pac("Nascimento")))
             valor = replace(valor, "[Paciente.Nascimento]", pac("Nascimento")&"")
             valor = replace(valor, "[Paciente.Documento]", pac("Documento")&"")
+            valor = replace(valor, "[Paciente.Prontuario]", pac("id"))
+
             'POSSIBILIDADE DE UTILIZAR PLANOS E CONVENIOS SECUNDÁRIOS
-            valor = replace(valor, "[Paciente.Convenio1]", pac("Convenio1"))
-            valor = replace(valor, "[Paciente.Convenio2]", pac("Convenio2"))
-            valor = replace(valor, "[Paciente.Convenio3]", pac("Convenio3"))
-            valor = replace(valor, "[Paciente.Plano1]", pac("Plano1"))
-            valor = replace(valor, "[Paciente.Plano2]", pac("Plano2"))
-            valor = replace(valor, "[Paciente.Plano3]", pac("Plano3"))
+            valor = replace(valor, "[Paciente.Convenio1]", pac("Convenio1")&"")
+            valor = replace(valor, "[Paciente.Convenio2]", pac("Convenio2")&"")
+            valor = replace(valor, "[Paciente.Convenio3]", pac("Convenio3")&"")
+            valor = replace(valor, "[Paciente.Plano1]", pac("Plano1")&"")
+            valor = replace(valor, "[Paciente.Plano2]", pac("Plano2")&"")
+            valor = replace(valor, "[Paciente.Plano3]", pac("Plano3")&"")
             'REDUNDANCIA NOS PLANOS E CONVENIOS 1 TAGs EXISTENTES
             valor = replace(valor, "[Paciente.Convenio]", trim(pac("Convenio1")&" ") )
             valor = replace(valor, "[Paciente.Plano]", trim(pac("Plano1")&" ") )
@@ -2874,6 +2876,9 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
                 'if session("Banco") = "clinic2496" OR session("Banco") = "clinic100000" OR session("Banco") = "clinic4285" OR session("Banco") = "clinic984" OR session("Banco") = "clinic2263" Then
                 if RecursosAdicionaisSQL("SplitNF")<>1 then
                     rbtns = rbtns & "&nbsp; <button id='btn_NFe' title='Nota Fiscal' class='btn btn-warning btn-sm' onclick='modalNFE()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
+                    if session("Banco")="clinic5459" or session("Banco")="clinic100000" then
+                        rbtns = rbtns & "&nbsp; <button id='btn_NFeBeta' title='Nota Fiscal Beta' class='btn btn-danger btn-sm' onclick='modalNFEBeta()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
+                    end if
                 end if
 	        End if
 	    End if

@@ -1,6 +1,5 @@
 <%
 select case lcase(req("P"))
-
     case "checkin"
         StaChk = "|1|, |4|, |5|, |7|, |15|, |101|"
 
@@ -160,6 +159,7 @@ select case lcase(req("P"))
                   </span>
                 </div>
                 <% end if %>
+                
               </div>
 
 
@@ -979,13 +979,16 @@ select case lcase(req("P"))
             </li>
             <%
         end if
-    case "laudos" , "frases"
+    case "laudos" , "frases", "laudosv2" 
         %>
         <li>
             <a  href="?P=Laudos&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
         </li>
+        <!--<li>
+            <a  href="?P=Laudosv2&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos <span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li> -->
         <li>
-            <a  href="?P=Frases&Pers=0"><span class="fa fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases <span class="label label-system label-xs fleft">Novo</span></span></a>
+            <a  href="?P=Frases&Pers=0"><span class="fa fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases </span></a>
         </li>
 
         <%
@@ -1053,9 +1056,7 @@ select case lcase(req("P"))
                 set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
                 if not labAutenticacao.eof then
                 %>
-            <li>
-                <a  href="./?P=ConferenciadeAmostras&Pers=1"> <span class="fa fa-link"></span> <span class="sidebar-title">Conferência de Amostras</span> </a>
-            </li>
+           
             <li>
                 <a> <span class="fa fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span> </a>
             </li>
@@ -1574,7 +1575,7 @@ select case lcase(req("P"))
             </li>
             <%
         end if
-    case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodedata", "descontopendente"
+    case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodedata", "descontopendente", "listarempresasnfse", "listarnotasfiscais", "editarempresanfse", "criarempresanfse"
               %>
               <li class="sidebar-label pt20">Financeiro</li>
     	<!--#include file="MenuFinanceiro.asp"-->
@@ -1789,6 +1790,12 @@ select case lcase(req("P"))
                     <a href="#" onClick="callReport('RelatorioLabs');">
                         <i class="fa fa-double-angle-right"></i>
                         Mapa Laboratório
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onClick="callReport('ConferenciadeAmostras');">
+                        <i class="fa fa-double-angle-right"></i>
+                        Conferência de Amostras
                     </a>
                 </li>
                 <li>
@@ -2127,7 +2134,7 @@ select case lcase(req("P"))
                 </li>
                 <%
                 end if
-                if aut("|relatoriosformulariosV|")=1 and lcase(session("Table"))="profissionais" then
+                if aut("|relatoriosformulariosV|")=1 then
                 %>
                 <li>
                     <a href="javascript:callReport('relatorioForms');">

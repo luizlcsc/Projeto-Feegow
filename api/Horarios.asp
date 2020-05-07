@@ -10,7 +10,7 @@ unidades = Request.QueryString("unidades")
 especialidades = Request.QueryString("especialidades")
 profissionais1 = Request.QueryString("profissionais")
 convenioId = Request.QueryString("convenioId")
-procedimentoId = Request.QueryString("procedimentoId")
+procedimentoId = Request.QueryString("procedimentos")
 
 
 get_payload = Request.QueryString("get_payload")

@@ -37,6 +37,7 @@ end if
     <script crossorigin type="text/babel" src="react/telemedicina/components/Controls.js"></script>
     <script crossorigin type="text/babel" src="react/telemedicina/components/Popup.js?v=1"></script>
     <script crossorigin type="text/babel" src="react/telemedicina/components/WherebyiFrame.js"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/ZoomiFrame.js"></script>
     <script crossorigin type="text/babel" src="react/telemedicina/components/Header.js"></script>
     <link type="text/css" rel="stylesheet" href="react/telemedicina/src/css/telemedicina.css" />
 
@@ -45,10 +46,12 @@ end if
         //    <div id='tm-popup'>dsadsadsa
     // </div>
     //     `;
-        const implementationType = "iframe";
+        const implementationType = "zoom";
 
-        if(implementationType==="popup"){
+        if(implementationType==="whereby"){
             ReactDOM.render(<WherebyiFrame profissionalId={"<%=profissionalId%>"} licencaId={"<%=licencaId%>"} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
+        }else if(implementationType==="zoom"){
+            ReactDOM.render(<ZoomiFrame profissionalId={"<%=profissionalId%>"} licencaId={"<%=licencaId%>"} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
         }else{
             ReactDOM.render(<Popup profissionalId={"<%=profissionalId%>"} licencaId={"<%=licencaId%>"} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
         }
@@ -60,6 +63,11 @@ end if
         </div>
     </div>
     <script >
+    setTimeout(() => {
+        $(document).ready(function(){
+          $('[data-toggle="tooltip"]').tooltip();
+        });
+    }, 3000);
     $("#root").draggable();
     </script>
 <%

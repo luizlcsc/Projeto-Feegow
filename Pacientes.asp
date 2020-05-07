@@ -1,8 +1,70 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Json.asp"-->
+<% IF req("ValidarCertificado") <> "" THEN
+
+    db.execute("SET @sysUSER = "&session("User")&";")
+    db.execute("SET @pacienteID = "&req("PacienteID")&";")
+    db.execute("SET @atendimentoID = (SELECT id FROM atendimentos WHERE AgendamentoID = "&req("AgendamentoID")&");")
+
+    sql = " SELECT count(*) > 0 as qtd,'ATENDIMENTO'                                      "&chr(13)&_
+          " FROM atendimentos as A                                                        "&chr(13)&_
+          " LEFT JOIN dc_pdf_assinados B on A.id = B.DocumentoID and tipo = 'ATENDIMENTO' "&chr(13)&_
+          " WHERE true                                                                    "&chr(13)&_
+          "   AND A.id = @atendimentoID                                                   "&chr(13)&_
+          "   AND A.PacienteID = @pacienteID                                              "&chr(13)&_
+          "   AND B.id is not null                                                        "&chr(13)&_
+          "   AND A.sysUser= @sysUSER                                                     "
+
+    set Atendimento = db.execute(sql)
+
+    IF Atendimento("qtd") = "1" THEN
+        response.write("true")
+        response.end
+    END IF
+
+    sql = " SELECT SUM(quantidade) as qtd FROM (                                   "&chr(13)&_
+          " SELECT count(*) AS quantidade,'ATESTADO'                                      "&chr(13)&_
+          " FROM pacientesatestados as A                                                  "&chr(13)&_
+          " LEFT JOIN dc_pdf_assinados B on A.id = B.DocumentoID and tipo = 'ATESTADO'    "&chr(13)&_
+          " WHERE true                                                                    "&chr(13)&_
+          "   AND A.AtendimentoID = @atendimentoID                                        "&chr(13)&_
+          "   AND A.PacienteID = @pacienteID                                              "&chr(13)&_
+          "   AND B.id is null                                                            "&chr(13)&_
+          "   AND a.sysActive = 1                                                         "&chr(13)&_
+          "   AND A.sysUser= @sysUSER                                                     "&chr(13)&_
+          " UNION                                                                         "&chr(13)&_
+          " SELECT count(*),'PEDIDO_EXAME'                                                "&chr(13)&_
+          " FROM pacientespedidos as A                                                    "&chr(13)&_
+          " LEFT JOIN dc_pdf_assinados B on A.id = B.DocumentoID and tipo = 'PEDIDO_EXAME'"&chr(13)&_
+          " WHERE true                                                                    "&chr(13)&_
+          "   AND A.PacienteID = @pacienteID                                              "&chr(13)&_
+          "   AND A.AtendimentoID = @atendimentoID                                        "&chr(13)&_
+          "   AND B.id is null                                                            "&chr(13)&_
+          "   AND a.sysActive = 1                                                         "&chr(13)&_
+          "   AND A.sysUser= @sysUSER                                                     "&chr(13)&_
+          " UNION                                                                         "&chr(13)&_
+          " SELECT count(*),'PRESCRICAO'                                                  "&chr(13)&_
+          " FROM pacientesprescricoes as A                                                "&chr(13)&_
+          " LEFT JOIN dc_pdf_assinados B on A.id = B.DocumentoID and tipo = 'PRESCRICAO'  "&chr(13)&_
+          " WHERE true                                                                    "&chr(13)&_
+          "   AND A.PacienteID = @pacienteID                                              "&chr(13)&_
+          "   AND A.AtendimentoID = @atendimentoID                                        "&chr(13)&_
+          "   AND B.id is null                                                            "&chr(13)&_
+          "   and A.sysUser= @sysUSER                                                     "&chr(13)&_
+          "   AND a.sysActive = 1) as t;                                                  "
+
+    set Atendimento = db.execute(sql)
+
+    IF Atendimento("qtd") = "0"  THEN
+        response.write("true")
+        response.end
+    END IF
+
+    response.write("false")
+    response.end
+END IF %>
 <!--#include file="modal.asp"-->
 <!--#include file="modalComparar.asp"-->
-
-
 <%
 isProposta = req("isProposta")
 if isProposta = "S" then 
@@ -282,17 +344,46 @@ function elegibilidade(N, codigoPrestadorNaOperadora){
     });
 }
 
-
+var validar = false;
+<% IF getConfig("ValidarDocumentosCertificado") = 1 THEN %>
+    validar = true;
+<% END IF %>
 
 function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
-	$.ajax({
-		type:"POST",
-		data:$("#frmFimAtendimento").serialize(),
-		url:"atender.asp?Atender="+AgendamentoID+"&I="+PacienteID+"&Acao="+Acao+"&Solicitacao="+Solicitacao,
-		success:function(data){
-			$("#divContador").html(data);
-		}
-	});
+
+    var atenderF = () => {
+        $.ajax({
+        		type:"POST",
+        		data:$("#frmFimAtendimento").serialize(),
+        		url:"atender.asp?Atender="+AgendamentoID+"&I="+PacienteID+"&Acao="+Acao+"&Solicitacao="+Solicitacao,
+        		success:function(data){
+        			$("#divContador").html(data);
+        		}
+        });
+    }
+
+    if(validar){
+         $.ajax({
+            type:"POST",
+            data:$("#frmFimAtendimento").serialize(),
+            url:"Pacientes.asp?ValidarCertificado=1&AgendamentoID="+AgendamentoID+"&PacienteID="+PacienteID,
+            success:function(data){
+                if (data === 'false'){
+                    new PNotify({
+                            title: '<i class="fa fa-warning"></i> Certificado Digital',
+                            text: `Para finalizar o atendimento,o usuário deverá certificar os documentos.`,
+                            type: 'danger'
+                        });
+                    return;
+                }
+                atenderF();
+            }
+         });
+         return;
+    }
+
+    atenderF();
+
 }
 
 $(document).ready(function(e) {
@@ -388,7 +479,6 @@ function atualizaAlbum(X){
 
 	        $el.attr("src", originalSource + "?" + dt );
 	    });
-
 	}
 
 $("#Nascimento").change(function(){
@@ -1060,7 +1150,15 @@ if not memed.eof then
 
         var estado = $("#Estado").val() ? " "+$("#Estado").val() : "";
 
-        var fullEndereco = endereco+numero
+        var fullEndereco = endereco+numero;
+
+
+        MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {
+          removePatient: false,
+          deletePatient: false
+        });
+
+
        MdHub.command.send('plataforma.prescricao', 'setPaciente', {
          nome: $("#NomePaciente").val(),
          telefone: $("#Cel1").val().replace("-","").replace("(","").replace(")","").replace(" ",""),

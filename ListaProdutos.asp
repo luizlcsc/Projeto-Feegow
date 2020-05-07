@@ -19,6 +19,19 @@
         TipoProduto = "1"
     end if
 
+    if req("Acao")="X" then
+        db.execute("UPDATE produtos SET sysActive=-1 WHERE id="&treatvalzero(req("ItemID")))
+        %>
+        <script>
+        new PNotify({
+            title: 'Item excluído com sucesso',
+            type: 'success',
+            delay: 5000
+        });
+        </script>
+        <%
+    end if
+
     if aut("|produtosI|")=1 then
     %>
     <script type="text/javascript">
@@ -75,6 +88,10 @@
 </form>
 
 <script type="text/javascript">
+
+function removeItem(ID){
+    $.get("ListaProdutos.asp?ItemID="+ID+"&Acao=X", $(this).serialize(), function (data) {});
+};
 
 function downloadExcel(){
     $("#htmlTable").val($("#divListaProdutosConteudo").html());

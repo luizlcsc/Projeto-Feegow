@@ -84,7 +84,25 @@ const Popup = (props) => {
     };
 
     const onReconnect = () => {
-        telemedicine.reconnect();
+        location.reload();
+        // telemedicine.reconnect();
+    }
+
+    const onConfig = () => {
+        const $configContainer = document.getElementById("tm-config-container");
+        $configContainer.style.display = 'block';
+    }
+
+
+    const onCloseConfig = () => {
+        const $configContainer = document.getElementById("tm-config-container");
+        $configContainer.style.display = 'none';
+    }
+
+
+    const onApplyConfig = () => {
+        const $configContainer = document.getElementById("tm-config-container");
+        $configContainer.style.display = 'none';
     }
 
 
@@ -95,7 +113,7 @@ const Popup = (props) => {
 
             <div id={"tm-popup-dialog"}>
                 <div id={"tm-popup-content"}>
-                    <Header renderMode={"absolute"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
+                    <Header renderMode={"absolute"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onConfig={() => onConfig()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
                     <Video/>
 
                     <div className={"tm-parent-controls-content"}>
@@ -103,6 +121,33 @@ const Popup = (props) => {
                     </div>
                 </div>
 
+            </div>
+            <div className={"tm-config-container"} id={"tm-config-container"}>
+                <div className="row">
+                    <div className="col-md-6">
+                        <label  htmlFor="mic-select">Microfone</label>
+                        <select name="mic-select" id="mic-select" className="form-control input-sm"></select>
+                    </div>
+                    <div className="col-md-6">
+                        <label  htmlFor="cam-select">Câmera</label>
+                        <select name="cam-select" id="cam-select" className="form-control input-sm"></select>
+                    </div>
+
+                    <div className="col-md-3  mt10">
+                        <button onClick={() => {
+                            onCloseConfig()
+                        }} className="btn btn-xs btn-block default">
+                            Fechar
+                        </button>
+                    </div>
+                    <div className="col-md-offset-6 col-md-3 mt10">
+                        <button onClick={() => {
+                            onApplyConfig()
+                        }} data-control="apply-config" className="tm-panel-control btn btn-xs btn-block btn-primary">
+                            Aplicar
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );

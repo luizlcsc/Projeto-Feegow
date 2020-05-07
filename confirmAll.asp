@@ -35,7 +35,7 @@
 function getWppLink(Celular, Mensagem)
     getWppLink=""
     if len(Celular) > 7 then
-        getWppLink="<a target='_blank' href='whatsapp://send?phone="&clearPhone(Celular) &"&text="&Mensagem&"' class='badge'>"&Celular&"</a>"
+        getWppLink="<a target='_blank' href='http://web.whatsapp.com/api/send?phone="&clearPhone(Celular) &"&text="&Mensagem&"' class='badge'>"&Celular&"</a>"
     end if
 end function
 

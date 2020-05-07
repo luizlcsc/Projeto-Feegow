@@ -14,9 +14,12 @@ if not FormConfigSQL.eof then
 
     sqlFiltroData = ""
     while not CamposSQL.eof
-
-        if ref("DataDe"&CamposSQL("id"))<>"" then
+        if ref("DataDe"&CamposSQL("id"))<>"" and ref("DataATE"&CamposSQL("id"))<>"" then
             sqlFiltroData = " AND DATE_FORMAT(STR_TO_DATE(`"&CamposSQL("id")&"`, '%d/%m/%Y'), '%Y-%m-%d') BETWEEN "&mydatenull(ref("DataDe"&CamposSQL("id")))&" AND "&mydatenull(ref("DataAte"&CamposSQL("id")))&"  "
+        elseif ref("DataDe"&CamposSQL("id"))<>"" then
+            sqlFiltroData = " AND DATE_FORMAT(STR_TO_DATE(`"&CamposSQL("id")&"`, '%d/%m/%Y'), '%Y-%m-%d') > "&mydatenull(ref("DataDe"&CamposSQL("id")))&"  "
+        elseif ref("DataATE"&CamposSQL("id"))<>"" then
+            sqlFiltroData = " AND DATE_FORMAT(STR_TO_DATE(`"&CamposSQL("id")&"`, '%d/%m/%Y'), '%Y-%m-%d') < "&mydatenull(ref("DataAte"&CamposSQL("id")))&"  "
         end if
 
     CamposSQL.movenext
@@ -97,6 +100,14 @@ if not FormConfigSQL.eof then
                                                 end if
                                             end if
                                         end if
+                                        
+                                        if TipoCampo=16  then
+                                            set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&ValorCampo&"'")
+                                            if not pcid.eof then
+                                                ValorCampo = pcid("Codigo") &" - "& pcid("Descricao")
+                                            end if
+                                        end if
+                                        
                                     end if
                                 end if
 

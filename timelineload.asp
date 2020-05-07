@@ -10,40 +10,40 @@
     end if 
 
     if instr(Tipo, "|AE|")>0 then
-    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive=1 OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
+    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive=1 OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|L|")>0 then
-        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive=1 OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
+        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive=1 OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
     end if
 
 	if instr(Tipo, "|Prescricao|")>0 then
-        sqlPrescricao = " union all (select 0, id, ControleEspecial, sysUser, 'Prescricao', 'Prescrição', 'flask', 'warning', `Data`, Prescricao from pacientesprescricoes WHERE sysActive=1 AND PacienteID="&PacienteID&") "
+        sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', 'Prescrição', 'flask', 'warning', `Data`, Prescricao,s.id from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Diagnostico|")>0 then
-        sqlDiagnostico = " union all (select 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, concat('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', IFNULL(d.Descricao,'')) FROM pacientesdiagnosticos d LEFT JOIN cliniccentral.cid10 cid on cid.id=d.CidID WHERE PacienteID="&PacienteID&") "
+        sqlDiagnostico = " union all (select 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, concat('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', IFNULL(d.Descricao,'')),'' FROM pacientesdiagnosticos d LEFT JOIN cliniccentral.cid10 cid on cid.id=d.CidID WHERE PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Atestado|")>0 then
-        sqlAtestado = " union all (select 0, id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text-o', 'success', `Data`, Atestado from pacientesatestados  WHERE sysActive=1 AND PacienteID="&PacienteID&") "
+        sqlAtestado = " union all (select 0, pa.id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text-o', 'success', `Data`, Atestado,s.id from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Pedido|")>0 then
-        sqlPedido = " union all (select 0, id, '', sysUser, 'Pedido', 'Pedido de Exame', 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')) from pacientespedidos WHERE sysActive=1 AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
-        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica from pedidossadt WHERE sysActive=1 and PacienteID="&PacienteID&") "
+        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', 'Pedido de Exame', 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive=1 AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
+        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'' from pedidossadt WHERE sysActive=1 and PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Imagens|")>0 then
-        sqlImagens = " union all (select 0, '0', Tipo, '0', 'Imagens', 'Imagens', 'camera', 'alert', DataHora, '' from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
+        sqlImagens = " union all (select 0, '0', Tipo, '0', 'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','' from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
 
     if instr(Tipo, "|Arquivos|")>0 then
-        sqlArquivos = " union all (select 0, '0', Tipo, '0', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora, '' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
+        sqlArquivos = " union all (select 0, '0', Tipo, '0', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
                  c=0
 
-    sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo limit 0) "&_
+    sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlPedido & sqlImagens & sqlArquivos &_
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC limit "&loadMore&","&MaximoLimit
              'response.write(sql)
@@ -198,18 +198,29 @@
                             <%
                             end if
                             recursoUnimed = recursoAdicional(12)
+                            Assinado=""
+                            if ti("Assinado")&"" <> "" then
+                                Assinado = "assinado"
+                            end if
+
                             if (ti("sysUser")<2 or cstr(session("User"))=ti("sysUser")&"" or lcase(session("Table"))="funcionarios") and recursoUnimed=4 then
                             %>
-                            <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '');">
+                            <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
                                 <i class="fa fa-search-plus"></i>
                             </a>
+                           
                             <%
                             elseif recursoUnimed<>4 then
                             %>
-                            <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '');">
+                            <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
                                 <i class="fa fa-search-plus"></i>
                             </a>
-                            <%
+                                <% if ti("Tipo")<>"AE" and ti("Tipo")<>"L" then %>
+                                    <a href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
+                                        <i class="fa fa-print"></i>
+                                    </a>
+                                <%
+                                end if
                             end if
                             if cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0 then %>
                                 <a href="javascript:if(confirm('Tem certeza de que deseja apagar esta prescrição?'))pront('timeline.asp?PacienteID=<%= PacienteID %>&Tipo=|<%= ti("Tipo") %>|&X=<%= ti("id") %>');">
@@ -224,7 +235,11 @@
                         end if
                         %>
 
-                        <div class="panel-header-menu pull-right mr10 text-muted fs12"><%
+                        <div class="panel-header-menu pull-right mr10 text-muted fs12">
+                        <% if Assinado <> "" then %>
+                            <i class="fa fa-shield" style=" color:orange;"></i>
+                        <%end if%>
+                        <%
                             if not isnull(ti("DataHora")) then
                                 response.write( formatdatetime( ti("DataHora"), 2) &" - "& ft( ti("DataHora")) )
                             end if
@@ -432,10 +447,10 @@
                                 %>
                                     <span>
                                     <% if ComEstilo = "S" then %>
-                                            <img style="height:150px; width:150px" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
+                                            <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
                                     <% else %>
                                         <a class="gallery-item" href="<%=arqEx(im("NomeArquivo"), "Imagens")%>" target="_blank">
-                                            <img style="height:150px; width:150px" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
+                                            <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
                                         </a>
                                     <% end if %>
                                     </span>
@@ -495,7 +510,8 @@
                 end select
                 %>
                     </div>
-                </div>
+                
+            </div>
             </div>
             <%
                 end if

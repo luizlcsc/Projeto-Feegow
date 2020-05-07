@@ -66,7 +66,7 @@ set movs=nothing
 
 '------> pegando os creditos
 if 1=1 then
-sqlMovCred = "select m.*, (select sum(DiscountedValue) from sys_financialdiscountpayments where MovementID=m.id) as soma from sys_financialmovement m where ((m.AccountAssociationIDCredit="&AssContaID&" and m.AccountIDCredit="&ContaID&") or (m.AccountAssociationIDDebit="&AssContaID&" and m.AccountIDDebit="&ContaID&")) and m.Type in('Pay', 'Transfer') and m.CD != 'T' "
+sqlMovCred = "select m.*, (select sum(DiscountedValue) from sys_financialdiscountpayments where MovementID=m.id) as soma from sys_financialmovement m where ((m.AccountAssociationIDCredit="&AssContaID&" and m.AccountIDCredit="&ContaID&") or (m.AccountAssociationIDDebit="&AssContaID&" and m.AccountIDDebit="&ContaID&")) and m.Type in('Pay', 'Transfer') and (m.CD != 'T' OR m.CD IS NULL) "
 'response.Write( sqlMovCred )
 set mov = db.execute(sqlMovCred)
 

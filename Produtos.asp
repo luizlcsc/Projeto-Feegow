@@ -61,6 +61,7 @@ DiasAvisoValidade = reg("DiasAvisoValidade")
 ApresentacaoNomeDispensacao = reg("ApresentacaoNomeDispensacao")
 ApresentacaoQuantidadeDispensacao = reg("ApresentacaoQuantidadeDispensacao")
 ApresentacaoUnidadeDispensacao = reg("ApresentacaoUnidadeDispensacao")
+UnidadePrescricao = reg("UnidadePrescricao")
 
 if ApresentacaoUnidadeDispensacao&""="" then
     ApresentacaoUnidadeDispensacao = treatvalzero(ApresentacaoUnidadeDispensacao&"")
@@ -212,6 +213,7 @@ end if
                                 %>
                                 <%=quickField("text", "ApresentacaoQuantidadeDispensacao", "Contendo", 2, ApresentacaoQuantidadeDispensacao, " input-mask-brl text-right", "", " placeholder=""1,00"" ")%>
                                 <%=quickField("simpleSelect", "ApresentacaoUnidadeDispensacao", "Unidade", 2, ApresentacaoUnidadeDispensacao, "select * from cliniccentral.tissunidademedida order by Descricao", "Descricao", "  empty")%>
+                                <%=quickField("simpleSelect", "UnidadePrescricao", "Unidade para Prescrição", 3, UnidadePrescricao, "select * from cliniccentral.unidademedida order by UnidadeMedida", "UnidadeMedida", "  empty")%>
                             </div>
                         </div>
                         <br />

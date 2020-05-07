@@ -48,13 +48,18 @@ const Header = (props) => {
                 <img style={{width: 25}} src="react/telemedicina/src/img/icone-fechar.png" alt=""/>
             </button>
 
-            <div className="btn-group hidden" style={{zIndex: 999999999}}>
+            <div className="btn-group " style={{zIndex: 999999999}}>
                 <button style={{
                     backgroundColor: props.buttonColor
                 }}
                         type="button" className={"tm-header-btn tm-panel-control btn-xs btn-primary dropdown-toggle"} data-toggle="dropdown"><i className="fa fa-cog"></i>
                 </button>
                 <ul className="dropdown-menu pull-left" role="menu">
+                    <li>
+                        <a href="#" onClick={()=> {
+                            props.onConfig()
+                        }}><i className="fa fa-cog"></i> Configurações</a>
+                    </li>
                     <li>
                         <a href="#" onClick={()=> {
                             props.onReconnect()

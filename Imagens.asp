@@ -1,8 +1,29 @@
 <!--#include file="connect.asp"-->
 <!--#include file="ProntCompartilhamento.asp"-->
 <!--#include file="Classes/Arquivo.asp"-->
+<%
+	if isnumeric(request.QueryString("X")) and request.QueryString("X")<>"" and request.QueryString("X")<>"0" then
+		db_execute("delete from arquivos where id="&request.QueryString("X"))
+
+		IF getConfig("NovaGaleria") = "1" THEN
+            %>
+                     <div class="galery-ajax"></div>
+
+              <script>
+                      fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+                      .then(data => data.text())
+                      .then(data => {
+                         $(".galery-ajax").html(data);
+                         $("[value='A']").parent().remove();
+                      });
+                     </script>
+            <%
+		END IF
+	end if
+%>
 
 
+<% IF getConfig("NovaGaleria") = "0" THEN %>
 <div class="row">
 	<div class="col-md-4 pull-right">
     	<button type="button" id="btnComparar" class="btn btn-sm btn-info">Comparar imagens</button>
@@ -12,10 +33,6 @@
 <br>
     <ul class="ace-thumbnails pn mn" id="mix-container">
 	<%
-	if isnumeric(request.QueryString("X")) and request.QueryString("X")<>"" and request.QueryString("X")<>"0" then
-		db_execute("delete from arquivos where id="&request.QueryString("X"))
-	end if
-
 	set imagens = db.execute("select * from arquivos where Tipo='I' and PacienteID="&request.QueryString("PacienteID")&" ORDER BY DataHora DESC")
 	c=0
 
@@ -186,7 +203,7 @@
 
 </ul><!-- PAGE CONTENT ENDS -->
 </div>
-
+<% END IF %>
 <script type="text/javascript">
 
 function MaisInfo(img) {

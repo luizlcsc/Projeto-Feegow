@@ -1627,12 +1627,16 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   </div>
 
 <%if session("ChatSuporte")="S" then%>
-<!-- BEGIN JIVOSITE CODE {literal} -->
-<script type='text/javascript'>
-(function(){ var widget_id = '3j2XOJKoQb';var d=document;var w=window;function l(){
-var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = '//code.jivosite.com/script/widget/'+widget_id; var ss = document.getElementsByTagName('script')[0]; ss.parentNode.insertBefore(s, ss);}if(d.readyState=='complete'){l();}else{if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();</script>
-<!-- {/literal} END JIVOSITE CODE -->
-
+<script src="https://feegow.futurotec.com.br/futurofone_chat/www/core/js/embedChatJs/chat.js"></script>
+<script>
+ffchat.addChat({
+url: 'https://feegow.futurotec.com.br',
+btn_minimizar: true,
+titulo: 'Chat Online',
+titulo_login: 'Feegow',
+hash_chat: 'FFCHAT01'
+});
+</script>
 <%end if%>
 
 

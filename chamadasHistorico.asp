@@ -31,8 +31,10 @@ while not calls.eof
 	if gravacaoSQL.eof then
 		gravacaoPlayer = ""
 	else
+		keypabx = gravacaoSQL("keypabx")
+	'	response.write(keypabx)
 		gravacaoPlayer = ""_
-		&"<a class='btn btn-xs btn-primary' href='#' data-toggle='tooltip' title='Ouvir gravação' onclick=""openComponentsModal('ff_futuroFone.asp?uniqueid=1582036583.369&ff_metodo=GetAudioPlayer', true, 'Gravação do atendimento', true, '')"">"_
+		&"<a class='btn btn-xs btn-primary' href='#' data-toggle='tooltip' title='Ouvir gravação' onclick=""openComponentsModal('ff_futuroFone.asp?uniqueid="&keypabx&"&ff_metodo=GetAudioPlayer', true, 'Gravação do atendimento', true, '')"">"_
 		&"	<i class='fa fa-volume-up' aria-hidden='true'></i>"_
 		&"</a>"
 	end if

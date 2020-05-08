@@ -329,7 +329,11 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
         $(window).scrollTop($('.max-width').offset().top - 120)
     }
 
-    fetch(domain+'file/arquivos/paciente/<%=request.QueryString("PacienteID")%>/all/list?tk='+localStorage.getItem("tk"))
+    if(!typeDoc){
+        typeDoc = "PacienteID";
+    }
+
+    fetch(domain+'file/arquivos/'+typeDoc+'/<%=request.QueryString("PacienteID")%>/all/list?tk='+localStorage.getItem("tk"))
     .then((a) => a.json())
     .then( a =>{
             itens = a;

@@ -2160,9 +2160,29 @@ function abreModalUnidade(backdrop=true){
 }
 </script>
     <!-- old sms << -->
+    <style>
+    .voltarTo{
+        height: 44px;
+        width: 100%;
+        background: rgba(0,0,0,.5);
+        z-index: 10000;
+        position: absolute;
+        bottom: 0;
+        color: #DDDDDD;
+        padding: 12px;
+    }
+    .voltarTo a{
+        color: #DDDDDD;
+    }
+    </style>
+    <% IF session("BancoOld") <> "" THEN %>
+    <script>
+        $("body").append(`<div class='voltarTo'>
+           <a href="sys_financialCompanyUnits.asp?back=1"><i class="fa fa-backward"></i>  Voltar a Licença da Franquiadora</a>
+        </div>`);
+    </script>
 
-
-
+    <% END IF %>
 
   <script type="text/javascript">
   jQuery(document).ready(function() {

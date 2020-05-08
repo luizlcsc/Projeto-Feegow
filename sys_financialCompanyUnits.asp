@@ -1,5 +1,32 @@
 ﻿<!--#include file="connect.asp"-->
 <%
+IF req("back") = "1" and session("Franqueador") <> "" THEN
+        session("NameUser")    = session("NameUserOld")
+        session("Banco")    = session("BancoOld")
+        session("User")     = session("UserOld")
+        session("BancoOld") = ""
+        session("UserOld")  = ""
+        session("NameUserOld")  = ""
+        response.Redirect("./?P=Home&Pers=1")
+        response.end
+END IF
+
+IF req("to") <> "" and session("Franqueador") <> "" THEN
+    set licencaUser     = db.execute("SELECT * FROM cliniccentral.licencasusuarios where LicencaID = "&req("to")&" AND Admin = 1 ORDER BY 1 DESC;")
+
+    session("NameUserOld") = session("NameUser")
+    session("BancoOld")    = session("Banco")
+    session("UserOld")     = session("User")
+
+    session("NameUser")    = licencaUser("Nome")
+    session("Banco")       = "clinic"&req("to")
+    session("User")        = licencaUser("id")
+
+    response.Redirect("./?P=Home&Pers=1")
+    response.end
+END IF
+%>
+<%
 if req("NewID") <> "" and req("OldID") <> "" then
     db.execute("UPDATE sys_financialcompanyunits SET id = "&req("NewID")&" WHERE id = "&req("OldID"))
     response.end
@@ -50,10 +77,15 @@ set reg = db.execute("select * from "&request.QueryString("P")&" where id="&requ
                     <div class="col-md-10">
                     </div>
                     <div class="col-md-2">
+        <% IF reg("sysActive")=1 and session("Franqueador") <> "" AND session("UserOld") = "" THEN %>
+              <a href="sys_financialCompanyUnits.asp?to=<%=reg("id")%>" class="btn  btn-primary">
+                  Logar na Licenca <i class="fa fa-arrow-right"></i>
+              </a>
+        <% END IF %>
         <%
 		if (reg("sysActive")=1 and aut(lcase(request.QueryString("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(request.QueryString("P"))&"I")=1) then
 		%>
-                        <button class="btn btn-block btn-primary" id="save">
+                        <button class="btn  btn-primary" id="save">
                             <i class="fa fa-save"></i> Salvar
                         </button>
 		<%
@@ -153,7 +185,7 @@ function gerarLicenca(id){
     $(".loading-full").css("display","flex");
 
     var formdata = new FormData();
-    formdata.append("NomeContato", "Samuel Pacheco Pereira");
+    formdata.append("NomeContato", $("#NomeFantasia").val());
     formdata.append("Telefone", "(21) 3666-1185");
     formdata.append("Celular", "(21) 99253-8660");
     formdata.append("Email", "amorsaude"+id+"@amorsaude.com.br");

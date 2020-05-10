@@ -216,7 +216,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?a=30"></script>
+  <script src="js/components.js?a=31"></script>
   <script src="feegow_components/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
 <%if aut("capptaI") then%>
@@ -400,6 +400,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 </head>
 
 <body>
+
       <%
       if session("Partner")<>"" then
         %>
@@ -1185,6 +1186,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
+<div id="importa-replicar"></div>
+
 <div id="modal-descontos-pendentes" class="modal fade" role="dialog" aria-hidden="true">
     <div class="modal-lg modal-dialog">
         <div class="modal-content"  >

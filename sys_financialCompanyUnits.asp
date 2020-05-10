@@ -1,12 +1,13 @@
 ﻿<!--#include file="connect.asp"-->
 <%
-IF req("back") = "1" and session("Franqueador") <> "" THEN
+IF req("back") = "1" and session("FranqueadorOld") <> "" THEN
         session("NameUser")    = session("NameUserOld")
         session("Banco")    = session("BancoOld")
         session("User")     = session("UserOld")
         session("BancoOld") = ""
         session("UserOld")  = ""
         session("NameUserOld")  = ""
+        session("Franqueador") = session("FranqueadorOld")
         response.Redirect("./?P=Home&Pers=1")
         response.end
 END IF
@@ -21,7 +22,8 @@ IF req("to") <> "" and session("Franqueador") <> "" THEN
     session("NameUser")    = licencaUser("Nome")
     session("Banco")       = "clinic"&req("to")
     session("User")        = licencaUser("id")
-
+    session("FranqueadorOld") = session("Franqueador")
+    session("Franqueador") = ""
     response.Redirect("./?P=Home&Pers=1")
     response.end
 END IF
@@ -186,8 +188,8 @@ function gerarLicenca(id){
 
     var formdata = new FormData();
     formdata.append("NomeContato", $("#NomeFantasia").val());
-    formdata.append("Telefone", "(21) 3666-1185");
-    formdata.append("Celular", "(21) 99253-8660");
+    formdata.append("Telefone", "(00) 0000-0000");
+    formdata.append("Celular", "(00) 00000-0000");
     formdata.append("Email", "amorsaude"+id+"@amorsaude.com.br");
     formdata.append("senha1", "amorsaude123");
     formdata.append("senha2", "amorsaude123");

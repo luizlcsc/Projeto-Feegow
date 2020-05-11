@@ -55,7 +55,7 @@ END IF %>
                 <input type="hidden" value="<%=ref("tabela")%>" name="tabela">
                 <input type="hidden" value="<%=ref("id")%>" name="id">
                 <%=quickField("multiple", "Unidades", "Unidades", 6, "", "SELECT id,NomeFantasia from sys_financialcompanyunits WHERE sysActive = 1", "NomeFantasia", "")%>
-                <%=quickField("multiple", "SysResorces", "Colunas", 6, "", "select id,label from cliniccentral.sys_resourcesfields WHERE resourceID in (SELECT id from sys_resources WHERE tableName='"&ref("tabela")&"') order by 1", "label", "")%>
+                <%=quickField("multiple", "SysResorces", "Colunas", 6, "", "select id,label from cliniccentral.sys_resourcesfields WHERE resourceID in (SELECT id from sys_resources WHERE tableName='"&ref("tabela")&"') AND id in (SELECT id FROM cliniccentral.sys_resourcesfields_replicar) order by 1", "label", "")%>
             </div>
         </form>
       </div>

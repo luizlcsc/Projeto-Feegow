@@ -4,10 +4,9 @@
 
 IF getConfig("NovaGaleria") = "1" THEN
             %>
-             <div class="galery-ajax"></div>
-
+      <div class="galery-ajax"></div>
       <script>
-              fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+              fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>&MovementID=<%=req("MovementID")%>")
               .then(data => data.text())
               .then(data => {
                  $(".galery-ajax").html(data);

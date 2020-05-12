@@ -42,6 +42,7 @@ class TelemedicinaService {
             dataType: 'json',
             data: JSON.stringify(object),
             success: function (response) {
+                console.log(response);
                 return response;
             },
             error: function(response) {

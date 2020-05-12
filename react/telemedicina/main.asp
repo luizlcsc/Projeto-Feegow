@@ -40,32 +40,50 @@ end if
     <script crossorigin type="text/babel" src="react/telemedicina/components/ZoomiFrame.js"></script>
     <script crossorigin type="text/babel" src="react/telemedicina/components/Header.js"></script>
     <link type="text/css" rel="stylesheet" href="react/telemedicina/src/css/telemedicina.css" />
+    <style>
+        .screen{
+            min-width:400px !important;
 
+        }
+        iframe{
+            height: 350px;
+        }
+    </style>
     <script type="text/babel">
-        // document.getElementById('root').innerHTML = `
-        //    <div id='tm-popup'>dsadsadsa
-    // </div>
-    //     `;
-        const implementationType = "zoom";
+        var implementationType = "";
+
+        if(localStorage.getItem("implementationType") == "zoom")
+        {
+            implementationType = "zoom";
+        }
 
         if(implementationType==="whereby"){
+
             ReactDOM.render(<WherebyiFrame profissionalId={"<%=profissionalId%>"} licencaId={"<%=licencaId%>"} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
         }else if(implementationType==="zoom"){
+            $("#root").addClass("screen");
             ReactDOM.render(<ZoomiFrame profissionalId={"<%=profissionalId%>"} licencaId={"<%=licencaId%>"} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
         }else{
             ReactDOM.render(<Popup profissionalId={"<%=profissionalId%>"} licencaId={"<%=licencaId%>"} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
         }
     </script>
 
-    <div id="root" class="container-popup">
+    <div id="root" class="container-popup" >
         <div style="font-size: 50px;text-align: center; padding: 40px">
             <i class="fa fa-spin fa-circle-o-notch"></i>
         </div>
     </div>
     <script >
+        $("#root").on('load',function(){
+            if(implementationType == "zoom"){
+                 $("#root").css({"min-width":"400px !important"});
+            }
+
+        });
     setTimeout(() => {
         $(document).ready(function(){
           $('[data-toggle="tooltip"]').tooltip();
+
         });
     }, 3000);
     $("#root").draggable();

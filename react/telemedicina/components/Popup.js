@@ -83,15 +83,20 @@ const Popup = (props) => {
         $("#root").draggable();
     };
 
+    const onZoomClick = () => {
+        localStorage.setItem("implementationType","zoom");
+        location.reload();
+    };
     const onReconnect = () => {
+        console.log("teste");
         location.reload();
         // telemedicine.reconnect();
-    }
+    };
 
     const onConfig = () => {
         const $configContainer = document.getElementById("tm-config-container");
         $configContainer.style.display = 'block';
-    }
+    };
 
 
     const onCloseConfig = () => {

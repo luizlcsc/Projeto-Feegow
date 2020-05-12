@@ -65,6 +65,11 @@ const Header = (props) => {
                             props.onReconnect()
                         }}><i className="fa fa-undo"></i> Reconectar</a>
                     </li>
+                    <li>
+                    <a href="#" onClick={()=> {
+                        props.onZoomClick()
+                    }}><i className="fa fa-info"></i> Utilizar Zoom</a>
+                    </li>
                 </ul>
             </div>
 

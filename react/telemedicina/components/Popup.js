@@ -88,7 +88,7 @@ const Popup = (props) => {
         location.reload();
     };
     const onReconnect = () => {
-        console.log("teste");
+
         location.reload();
         // telemedicine.reconnect();
     };
@@ -118,7 +118,7 @@ const Popup = (props) => {
 
             <div id={"tm-popup-dialog"}>
                 <div id={"tm-popup-content"}>
-                    <Header renderMode={"absolute"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onConfig={() => onConfig()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
+                    <Header renderMode={"absolute"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onConfig={() => onConfig()} onClose={() => onClose()} onMinimize={() => onMinimize() } onZoomClick={()=> onZoomClick()}/>
                     <Video/>
 
                     <div className={"tm-parent-controls-content"}>

@@ -5290,7 +5290,7 @@ end function
 function recursoAdicional(RecursoAdicionalID)
     LicencaID=replace(session("Banco"), "clinic", "")
     Status = 0
-    set RecursoAdicionalSQL = db.execute("SELECT Status FROM cliniccentral.clientes_servicosadicionais WHERE LicencaID="&treatvalzero(LicencaID)&" AND ServicoID="&treatvalzero(RecursoAdicionalID))
+    set RecursoAdicionalSQL = db.execute("SELECT Status FROM cliniccentral.clientes_servicosadicionais WHERE LicencaID="&treatvalzero(LicencaID)&" AND ServicoID="&treatvalzero(RecursoAdicionalID)&" order by DataContratacao desc limit 1")
     if not RecursoAdicionalSQL.eof then
         Status=RecursoAdicionalSQL("Status")
 

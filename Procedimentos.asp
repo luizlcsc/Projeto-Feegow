@@ -53,6 +53,7 @@ TipoGuia = reg("TipoGuia")
 
 %>
 
+
 <form method="post" id="frm" name="frm" action="save.asp">
     <%=header(req("P"), "Cadastro de Procedimento", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
     <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
@@ -689,6 +690,10 @@ $(function() {
 
 
 $(document).ready(function(e) {
+    <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>
+          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=request.QueryString("P")%>')"><i class="fa fa-copy"></i> Replicar</button>`)
+    <% end if %>
+
 	<%call formSave("frm", "save", "")%>
 });
 $(function () {

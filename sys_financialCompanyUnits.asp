@@ -1,5 +1,39 @@
 ﻿<!--#include file="connect.asp"-->
 <%
+IF req("back") = "1" and session("FranqueadorOld") <> "" THEN
+        session("NameUser")    = session("NameUserOld")
+        session("Banco")    = session("BancoOld")
+        session("User")     = session("UserOld")
+        session("BancoOld") = ""
+        session("UserOld")  = ""
+        session("NameUserOld")  = ""
+        session("Franqueador") = session("FranqueadorOld")
+        response.Redirect("./?P=Home&Pers=1")
+        response.end
+END IF
+
+IF req("to") <> "" and session("Franqueador") <> "" THEN
+    set licencaUser     = db.execute("SELECT * FROM cliniccentral.licencasusuarios where LicencaID = "&req("to")&" AND Admin = 1 ORDER BY 1 DESC;")
+
+    session("NameUserOld") = session("NameUser")
+    session("BancoOld")    = session("Banco")
+    session("UserOld")     = session("User")
+
+    session("NameUser")    = licencaUser("Nome")
+    session("Banco")       = "clinic"&req("to")
+    session("User")        = licencaUser("id")
+    session("FranqueadorOld") = session("Franqueador")
+    session("Franqueador") = ""
+    response.Redirect("./?P=Home&Pers=1")
+    response.end
+END IF
+%>
+<%
+if req("NewID") <> "" and req("OldID") <> "" then
+    db.execute("UPDATE sys_financialcompanyunits SET id = "&req("NewID")&" WHERE id = "&req("OldID"))
+    response.end
+end if
+
 call insertRedir(request.QueryString("P"), request.QueryString("I"))
 set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
 %>
@@ -8,6 +42,31 @@ set reg = db.execute("select * from "&request.QueryString("P")&" where id="&requ
     $(".crumb-icon a span").attr("class", "fa fa-hospital-o");
 </script>
 
+
+<style>
+.loading-full{
+    top: 0;
+    left: 0;
+    position: fixed;
+    color: #DDDDDD;
+    background: rgba(0,0,0,0.7);
+    opacity: .7;
+    width: 100%;
+    height: 100%;
+    z-index: 100000;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+</style>
+<div class="loading-full">
+    <div>
+        <h2>Aguarde.</h2><h3> Estamos gerando uma nova licença para esta unidade.</h3>
+        <div class="fa-4x text-center">
+          <i class="fa fa-spinner fa-spin"></i>
+        </div>
+    </div>
+</div>
 
 <br>
 
@@ -20,10 +79,15 @@ set reg = db.execute("select * from "&request.QueryString("P")&" where id="&requ
                     <div class="col-md-10">
                     </div>
                     <div class="col-md-2">
+        <% IF reg("sysActive")=1 and session("Franqueador") <> "" AND session("UserOld") = "" THEN %>
+              <a href="sys_financialCompanyUnits.asp?to=<%=reg("id")%>" class="btn  btn-primary">
+                  Logar na Licenca <i class="fa fa-arrow-right"></i>
+              </a>
+        <% END IF %>
         <%
 		if (reg("sysActive")=1 and aut(lcase(request.QueryString("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(request.QueryString("P"))&"I")=1) then
 		%>
-                        <button class="btn btn-block btn-primary" id="save">
+                        <button class="btn  btn-primary" id="save">
                             <i class="fa fa-save"></i> Salvar
                         </button>
 		<%
@@ -116,6 +180,38 @@ Parametros = "P="&request.QueryString("P")&"&I="&req("I")&"&Col=Foto"
 $(document).ready(function(e) {
 	<%call formSave("frm", "save", "")%>
 });
+
+
+function gerarLicenca(id){
+
+    $(".loading-full").css("display","flex");
+
+    var formdata = new FormData();
+    formdata.append("NomeContato", $("#NomeFantasia").val());
+    formdata.append("Telefone", "(00) 0000-0000");
+    formdata.append("Celular", "(00) 00000-0000");
+    formdata.append("Email", "amorsaude"+id+"@amorsaude.com.br");
+    formdata.append("senha1", "amorsaude123");
+    formdata.append("senha2", "amorsaude123");
+    formdata.append("ComoConheceu", "Cupom");
+    formdata.append("Cupom", "AMORSAUDE");
+
+    var requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow'
+    };
+
+    fetch(domain+"/trial/start", requestOptions)
+      .then(response => response.json())
+      .then(result => {
+          fetch(`sys_financialCompanyUnits.asp?NewID=${result.LicencaID}&OldID=${id}`)
+          .then((r) => r.text())
+          .then((r) => window.location.href = `?P=sys_financialcompanyunits&I=${result.LicencaID}&Pers=1`);
+      })
+      .catch(error => console.log('error', error));
+}
+
 
 
 $("#Cep").keyup(function(){

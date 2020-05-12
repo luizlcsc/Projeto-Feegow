@@ -14,9 +14,8 @@ const Video = (props) => {
 
             <div className={"tm-self-video-content"}>
                 <canvas className={"tm-canvas-audio"} id="canvas" width="8" height="100"></canvas>
-                <canvas className={"fa fa-info"} id="canvas" width="8" height="100"></canvas>
 
-                <video className={"tm-video-content"} style={{width: 75}} src="" id="local" autoPlay loop muted playsInline></video>
+                <video className={"tm-video-content"} style={{width: 75}} src="" id="local" autoPlay loop muted playsinline></video>
                 <small className={"message-error"} id="local-log"></small>
             </div>
         </div>

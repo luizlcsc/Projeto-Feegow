@@ -16,20 +16,17 @@ set AgendamentoSQL = db.execute(sqlAgendamento)
 if not AgendamentoSQL.eof then
     agendamentoId=AgendamentoSQL("id")
     %>
-
+    <script crossorigin  src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin  src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
     <script crossorigin  src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script crossorigin  src="https://unpkg.com/peerjs@1.0.0/dist/peerjs.min.js"></script>
 <%
 if AppEnv="development" then
 %>
-    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
     <script crossorigin  src="http://localhost:8000/modules/patientinterface/js/Telemedicine.js?time=123"></script>
 <%
 else
 %>
-    <script crossorigin  src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-    <script crossorigin  src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
     <script crossorigin  src="https://api.feegow.com.br/modules/patientinterface/js/Telemedicine.js?time=123"></script>
 <%
 end if
@@ -61,7 +58,6 @@ end if
         }
 
         if(implementationType==="whereby"){
-
             ReactDOM.render(<WherebyiFrame profissionalId={"<%=profissionalId%>"} licencaId={"<%=licencaId%>"} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
         }else if(implementationType==="zoom"){
             $("#root").addClass("screen");

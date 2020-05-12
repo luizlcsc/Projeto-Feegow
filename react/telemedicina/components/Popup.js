@@ -88,15 +88,14 @@ const Popup = (props) => {
         location.reload();
     };
     const onReconnect = () => {
-
         location.reload();
         // telemedicine.reconnect();
-    };
+    }
 
     const onConfig = () => {
         const $configContainer = document.getElementById("tm-config-container");
         $configContainer.style.display = 'block';
-    };
+    }
 
 
     const onCloseConfig = () => {

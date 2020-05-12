@@ -16,11 +16,34 @@
 Contato = req("Contato")
 ContatoSemAssoc = replace(Contato, "3_", "")
 
+
+
 set calls = db.execute("select l.*, can.NomeCanal, can.Icone from chamadas l LEFT JOIN chamadascanais can on can.id=l.RE where (l.Contato='"&Contato&"' or l.Contato='"&ContatoSemAssoc&"') order by l.id desc")
 while not calls.eof
+
+	licencaDB = session("Banco")
+	
+	qGravacao = " SELECT * FROM "&licencaDB&".chamadas AS cha"&chr(13)_
+	& " WHERE (cha.StaID LIKE 2) AND (cha.keypabx <> '' AND cha.keypabx IS NOT NULL) AND (cha.RE = 1 OR cha.RE = 2) AND (cha.id = '"&calls("id")&"')"
+	'response.write("<pre>"&qGravacao&"</pre>")
+
+	set gravacaoSQL = db.execute(qGravacao)
+	if gravacaoSQL.eof then
+		gravacaoPlayer = ""
+	else
+		keypabx = gravacaoSQL("keypabx")
+	'	response.write(keypabx)
+		gravacaoPlayer = ""_
+		&"<a class='btn btn-xs btn-primary' href='#' data-toggle='tooltip' title='Ouvir gravação' onclick=""openComponentsModal('ff_futuroFone.asp?uniqueid="&keypabx&"&ff_metodo=GetAudioPlayer', true, 'Gravação do atendimento', true, '')"">"_
+		&"	<i class='fa fa-volume-up' aria-hidden='true'></i>"_
+		&"</a>"
+	end if
 	%>
 	<tr>
-        <td><i class="fa fa-<%=calls("Icone")%>" title="<%=calls("NomeCanal")%>"></i> </td>
+        <td>
+					<i class="fa fa-<%=calls("Icone")%>" title="<%=calls("NomeCanal")%>"></i>
+					<%=gravacaoPlayer%>
+				</td>
     	<td><%=calls("DataHora")%></td>
     	<td><%=nameInTable(calls("sysUserAtend"))%></td>
     	<td><%

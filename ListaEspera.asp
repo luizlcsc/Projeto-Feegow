@@ -92,7 +92,7 @@ MensagensPadraoSQL.movenext
 wend
 MensagensPadraoSQL.close
 set MensagensPadraoSQL = nothing
-set AgendamentosOnlineSQL = db.execute("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1 FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID!=3")
+set AgendamentosOnlineSQL = db.execute("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1, age.ProfissionalID FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID!=3")
 
 if not AgendamentosOnlineSQL.eof then
 %>
@@ -109,6 +109,7 @@ if not AgendamentosOnlineSQL.eof then
                           <th >#</th>
                           <th>Paciente</th>
                           <th>Link enviado</th>
+                          <th>Link</th>
                           <th>#</th>
                           <th>#</th>
                         </tr>
@@ -139,6 +140,7 @@ if not AgendamentosOnlineSQL.eof then
                             <td>
                                 <small class="badge badge-danger"><i class="fa fa-envelope"></i> <%=MensagensEnviadas%></small>
                             </td>
+                            <td><a href="#" onclick="CopyLinkToClipboard('<%=AgendamentosOnlineSQL("id")%>', '<%=AgendamentosOnlineSQL("ProfissionalID")%>', '<%=AgendamentosOnlineSQL("PacienteID")%>')">Copiar link</a></td>
                             <td class="text-right">
                           <div class="btn-group text-right "  data-toggle="tooltip" data-placement="left" title="Enviar mensagem">
                             <button type="button" class="btn btn-success br2 btn-xs fs12 dropdown-toggle" data-toggle="dropdown" aria-expanded="true" disabled> <i class="fa fa-whatsapp"></i>
@@ -320,4 +322,43 @@ function loadEspecialidade(){
         }
         openComponentsModal("EnviaMensagemPadraoPaciente.asp", params, "Enviar mensagem", true, EnviaWhatsApp, 'xs');
      }
+
+     function CopyLinkToClipboard(AgendamentoID, ProfissionalID, PacienteID) {
+        getUrl("/telemedicina/gerar-link", {AgendamentoID: AgendamentoID, ProfissionalID: ProfissionalID, PacienteID: PacienteID, LicencaID: '<%=replace(session("Banco"),"clinic", "")%>'}, function(data) {
+            CopyToClipboard(data.link);
+
+            showMessageDialog("Link copiado para a área de transferência.", "primary");
+        });
+     }
+
+function CopyToClipboard (text) {
+	// Copies a string to the clipboard. Must be called from within an
+	// event handler such as click. May return false if it failed, but
+	// this is not always possible. Browser support for Chrome 43+,
+	// Firefox 42+, Safari 10+, Edge and IE 10+.
+	// IE: The clipboard feature may be disabled by an administrator. By
+	// default a prompt is shown the first time the clipboard is
+	// used (per session).
+	if (window.clipboardData && window.clipboardData.setData) {
+		// IE specific code path to prevent textarea being shown while dialog is visible.
+		return clipboardData.setData("Text", text);
+
+  } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+    var textarea = document.createElement("textarea");
+    textarea.textContent = text;
+    textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+      return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+    } catch (ex) {
+      //console.warn("Cópia de tag falhou.", ex);
+      showMessageDialog("Ocorreu um erro ao copiar o link. Por favor copie manualmente.", "danger", "ERRO!", 5000);
+      return false;
+    } finally {
+      document.body.removeChild(textarea);
+    }
+	}
+}
 </script>

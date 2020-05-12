@@ -379,7 +379,7 @@ function completaProcedimentoNew(id, ConvenioID)
        Quantidade = ubound(split(ref("listaProc[]"),","))+2
     END IF
 
-    set Valores = CalculaValorProcedimentoConvenio(null,ConvenioID,id,ref("PlanoID"),ref("CodigoNaOperadora"),Quantidade,null)
+    set Valores = CalculaValorProcedimentoConvenio(null,ConvenioID,id,ref("PlanoID"),ref("CodigoNaOperadora"),Quantidade,null,null)
 
     ValorFinal = "0"
     if not isnull(Valores("TotalGeral")) then

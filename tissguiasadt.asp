@@ -325,7 +325,7 @@ if not reg.eof then
                                                 END IF
                                             end if
                                         END IF
-                                        set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null)
+                                        set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null,null)
                                         ValorProcedimento = CalculaValorProcedimentoConvenioPaiObj("TotalGeral")
                                         AssociacaoID = CalculaValorProcedimentoConvenioPaiObj("AssociacaoID")
                                     END IF
@@ -367,7 +367,7 @@ if not reg.eof then
                                             TotalProcedimentos = TotalProcedimentos + ProcedimentosAnexosSQL("Valor")
                                             ValorFinalAnexo = ProcedimentosAnexosSQL("Valor")
                                             IF getConfig("calculostabelas") THEN
-                                                set CalculaValorProcedimentoConvenioObj = CalculaValorProcedimentoConvenio(AssociacaoID,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,ProcedimentosAnexosSQL("id"))
+                                                set CalculaValorProcedimentoConvenioObj = CalculaValorProcedimentoConvenio(AssociacaoID,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,ProcedimentosAnexosSQL("id"),null)
                                                 ValorFinalAnexo = (CalculaValorProcedimentoConvenioObj("TotalGeral"))
                                                 TotalProcedimentos = TotalProcedimentos + ValorFinalAnexo
                                             END IF

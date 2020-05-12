@@ -1,10 +1,11 @@
 <%
 
-function CalculaValorProcedimentoConvenio(AssociacaoID,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadora,Quantidade,AnexoID)
+function CalculaValorProcedimentoConvenio(AssociacaoID,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadora,Quantidade,AnexoID,Vias)
 
     sql ="  "&chr(13)&_
          "  SET @AssociacaoID   = NULLIF('"&AssociacaoID&"','');                                                                                                                                                                                 "&chr(13)&_
          "  SET @convenio       = NULLIF('"&ConvenioID&"','');                                                                                                                                                                                   "&chr(13)&_
+         "  SET @vias           = NULLIF('"&Vias&"','');                                                                                                                                                                                   "&chr(13)&_
          "  SET @plano          = NULLIF('"&PlanoID&"','');                                                                                                                                                                                      "&chr(13)&_
          "  SET @procedimento   = NULLIF('"&ProcedimentoID&"','');                                                                                                                                                                               "&chr(13)&_
          "  SET @contratos      = (SELECT id FROM contratosconvenio WHERE CodigoNaOperadora = NULLIF('"&CodigoNaOperadora&"','') AND ConvenioID = @convenio limit 1);                                                                            "&chr(13)&_
@@ -200,7 +201,7 @@ function ProcessarValores(AssociacaoID)
         wend
         Planos.close
         set Planos=nothing
-        set ValoresCalculados    = CalculaValorProcedimentoConvenio(ProcedimentosValores("id"),ProcedimentosValores("ConvenioID"),ProcedimentosValores("ProcedimentoID"),PrimeiroPlano,null,1,null)
+        set ValoresCalculados    = CalculaValorProcedimentoConvenio(ProcedimentosValores("id"),ProcedimentosValores("ConvenioID"),ProcedimentosValores("ProcedimentoID"),PrimeiroPlano,null,1,null,null)
         IF xxxCalculaValorProcedimentoConvenioNotIsNull THEN
             ValorTotal               = ValoresCalculados("TotalGeral")+CalculaValorProcedimentoConvenioAnexo(ProcedimentosValores("ConvenioID"),ProcedimentosValores("ProcedimentoID"),ProcedimentosValores("id"),PrimeiroPlano)
         END IF
@@ -220,7 +221,7 @@ function CalculaValorProcedimentoConvenioAnexo(ConvenioID,ProcedimentoID,Associa
           set Anexos = db.execute(sqlAnexos)
 
           while not Anexos.eof
-              set AnexoValue = CalculaValorProcedimentoConvenio(null,null,null,null,null,null,Anexos("id"))
+              set AnexoValue = CalculaValorProcedimentoConvenio(null,null,null,null,null,null,Anexos("id"),null)
               SumAnexos = SumAnexos + AnexoValue("TotalGeral")
           Anexos.movenext
           wend
@@ -298,7 +299,7 @@ function recalcularItensGuia(GuiaID)
 
     set ProcedimentosValores = db.execute("SELECT * FROM tissprocedimentossadt  WHERE COALESCE(Anexo <> 1,TRUE) and  CalcularEscalonamento=1 AND TotalGeral is not null AND GuiaID = "&GuiaID&" ORDER BY TotalGeral DESC;")
     while not ProcedimentosValores.eof
-        set ValoresCalculados = CalculaValorProcedimentoConvenio(null,ProcedimentosValores("CalculoConvenioID"),ProcedimentosValores("ProcedimentoID"),ProcedimentosValores("CalculoPlanoID"),ProcedimentosValores("CalculoContratos"),ProcedimentosValores("Quantidade"),null)
+        set ValoresCalculados = CalculaValorProcedimentoConvenio(null,ProcedimentosValores("CalculoConvenioID"),ProcedimentosValores("ProcedimentoID"),ProcedimentosValores("CalculoPlanoID"),ProcedimentosValores("CalculoContratos"),ProcedimentosValores("Quantidade"),null,null)
 
         TotalCHv = treatvalnull(ValoresCalculados("TotalCH"))
         TotalValorFixov = treatvalnull(ValoresCalculados("TotalValorFixo"))

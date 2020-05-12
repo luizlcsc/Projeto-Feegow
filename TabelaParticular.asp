@@ -35,6 +35,9 @@ set reg = db.execute("select * from "& req("P") &" where id="&req("I"))
 
 <script type="text/javascript">
 $(document).ready(function(e) {
+    <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>
+              $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=request.QueryString("P")%>')"><i class="fa fa-copy"></i> Replicar</button>`)
+        <% end if %>
 	<%call formSave("frm", "save", "")%>
 });
 </script>

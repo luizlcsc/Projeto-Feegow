@@ -66,9 +66,13 @@ const Header = (props) => {
                         }}><i className="fa fa-undo"></i> Reconectar</a>
                     </li>
                     <li>
-                    <a href="#" onClick={()=> {
-                        props.onZoomClick()
-                    }}><i className="fa fa-info"></i> Utilizar Zoom</a>
+                        <button
+                        style={{border: "none", background: "transparent"  }}
+                        onClick={() => {
+                            props.onZoomClick();
+                        }} className={""}>
+                            <img style={{width: 25}} src="react/telemedicina/src/img/icon.png" alt=""/> Utilizar Zoom
+                            </button>
                     </li>
                 </ul>
             </div>

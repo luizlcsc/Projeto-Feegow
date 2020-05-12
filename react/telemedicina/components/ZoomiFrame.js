@@ -1,5 +1,6 @@
 const ZoomiFrame = (props) => {
-    const [isConnecting, setIsConnecting] = React.useState(false);
+    const [isVerified,setIsVerified] = React.useState(false);
+    const [isLoading,setIsLoading] = React.useState(true);
 
 
     const onClose = () => {
@@ -67,28 +68,56 @@ const ZoomiFrame = (props) => {
         $("#root").draggable();
     };
 
-    const userZoom = TelemedicinaService.endpointCreateZoomUser("http://localhost:8000/zoom-integration/17vqr/create-zoom-user/",props.agendamentoId);
+    const getUserZoom = async () => {
+        const userZoom = await TelemedicinaService.endpointCreateZoomUser(props.agendamentoId);
 
-    return (
-        <div>
-            <div className="modal-backdrop fade in" id={"tm-popup-backdrop"} style={{display: "none"}}/>
+        setIsLoading(false);
+        setIsVerified(userZoom.isUserVerified);
+    }
+    const reloadUser = async () => {
+        setIsLoading(true);
+        await getUserZoom();
+    }
+    React.useEffect(() => {
+        getUserZoom();
+    },[]);
 
-            <div id={"tm-popup-dialog"}>
-                <div id={"tm-popup-content"}>
-                    <Header bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
-                    <div style={{
-                        display: "flex"
-                    }}>
-                        <iframe id={"tm-iframe"} style={{
-                            width: "100%"
-                        }} frameBorder="0" src={`http://localhost:8000/patient-interface/17vqr/zoom-host-meeting/${props.agendamentoId}`}
-                                allow="camera;microphone;fullscreen;speaker;chat"/>
-                    </div>
-                </div>
 
+    if(isLoading)
+    {
+        return(
+            <div style={{fontSize: 50,textAlign: "center", padding: 40}}>
+                <i className="fa fa-spin fa-circle-o-notch"></i>
             </div>
-        </div>
+        );
+    }
+    return isVerified ?
+        (
+            <div>
+                <div className="modal-backdrop fade in" id={"tm-popup-backdrop"} style={{display: "none"}}/>
+
+                <div id={"tm-popup-dialog"}>
+                    <div id={"tm-popup-content"}>
+                        <Header bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
+                        <div style={{
+                            display: "flex"
+                        }}>
+                            <iframe id={"tm-iframe"} style={{
+                                width: "100%"
+                            }} frameBorder="0" src={`http://localhost:8000/patient-interface/17vqr/zoom-host-meeting/${props.agendamentoId}`}
+                                    allow="camera;microphone;fullscreen;speaker;chat"/>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
 
 
-    );
+        ): (
+                <div className="alert alert-light">Um link de verificação da sua conta Zoom foi enviado para o e-mail cadastrado.
+                    <br />
+                    <br />
+                    <button className="btn-rounded btn btn-primary btn-sm" style={{marginBottom:15,float:"right"}} onClick={() => {reloadUser()}}>Já confirmei meu e-mail</button>
+                </div>
+        );
 };

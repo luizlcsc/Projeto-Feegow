@@ -13,41 +13,41 @@ class TelemedicinaService {
         ;
     };
 
-    static endpointCreateZoomUser = (url, agendamentoId) => {
+    static getEnvUrl = (env, endpoint) => {
+        return (env === "production" ? "https://app.feegow.com.br/":"http://localhost:8000/") + endpoint;
+    }
+
+    static endpointCreateZoomUser = async (agendamentoId, env) => {
         // AJAX request
+
+
         let objct = {};
         objct.agendamentoId = agendamentoId;
-        jQuery.ajax({
-            url: url,
+        const response  = await jQuery.ajax({
+            url: this.getEnvUrl(env,"zoom-integration/create-zoom-user/"),
             type: 'post',
             dataType: 'json',
             data: JSON.stringify(objct),
-            success: function (response) {
-                return TelemedicinaService.endpointCreateZoomMeeting("http://localhost:8000/zoom-integration/17vqr/create-zoom-meeting/",response,agendamentoId);
-            },
-            error: function(response) {
-                return response;
-            }
+
         });
+        if(!response.isUserVerified)
+        {
+            return {'isUserVerified':false};
+        }
+        const meeting = await TelemedicinaService.endpointCreateZoomMeeting(response,agendamentoId,env);
+        return {isUserVerified:true,meeting: meeting};
     };
 
-    static endpointCreateZoomMeeting = (url, zoomUser, agendamentoId) =>{
+    static endpointCreateZoomMeeting = async (zoomUser, agendamentoId,env) =>{
         // AJAX request
         let object = {};
         object.zoomUserId = zoomUser.zoomUserId;
         object.agendamentoId = agendamentoId;
-        $.ajax({
-            url: url,
+        return await $.ajax({
+            url: this.getEnvUrl(env,"zoom-integration/create-zoom-meeting/"),
             type: 'post',
             dataType: 'json',
-            data: JSON.stringify(object),
-            success: function (response) {
-                console.log(response);
-                return response;
-            },
-            error: function(response) {
-                return response;
-            }
+            data: JSON.stringify(object)
         });
     }
 }

@@ -84,7 +84,7 @@ const Popup = (props) => {
     };
 
     const onZoomClick = () => {
-        localStorage.setItem("implementationType","zoom");
+        localStorage.setItem("telemedicineDefaultApp","zoom");
         location.reload();
     };
     const onReconnect = () => {

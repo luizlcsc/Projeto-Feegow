@@ -71,7 +71,7 @@ const Header = (props) => {
                         onClick={() => {
                             props.onZoomClick();
                         }} className={""}>
-                            <img style={{width: 25}} src="react/telemedicina/src/img/icon.png" alt=""/> Utilizar Zoom
+                             Utilizar video alternativo
                             </button>
                     </li>
                 </ul>

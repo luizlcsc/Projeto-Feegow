@@ -318,7 +318,7 @@
 
                                     IF NOT pguias.eof THEN
                                         IF pguias("Tabela") = "tissguiasadt" THEN
-                                            sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')) WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
+                                            sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')) WHERE TabelaID = '"&tipoTabela&"' AND CodigoProcedimento = '"&codigo&"' AND GuiaID = "&pguias("id")
                                             db.execute(sqlProcedimento)
                                         END IF
 
@@ -368,7 +368,13 @@
                                 tipoTabela = proc.getElementsByTagName("ans:codigoTabela")(0).text
                                 valorProcessado = proc.getElementsByTagName("ans:valorProcessado")(0).text
                                 valorLiberado = proc.getElementsByTagName("ans:valorLiberado")(0).text
-                                tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
+                                set tipoGlosas = proc.getElementsByTagName("ans:tipoGlosa")
+                                tipoGlosa = ""
+
+                                For Each tipoGlosaObj in tipoGlosas
+                                    tipoGlosa = tipoGlosaObj.text
+                                next
+
                                 IF NOT pguias.eof THEN
                                     IF pguias("Tabela") = "tissguiasadt" THEN
                                         sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')),motivoGlosa=NULLIF('"&tipoGlosa&"','')  WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")

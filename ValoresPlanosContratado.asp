@@ -226,7 +226,7 @@ $("#save").on('click',() => salvarProcedimentos());
 
 var salvarProcedimentos = function(){
 
-     if(!($("#divValoresPlanos").length > 0)){
+     if(!$("#divValoresPlanos").is(':visible')){
         return ;
      }
 

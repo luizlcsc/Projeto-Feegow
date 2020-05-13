@@ -44,13 +44,13 @@ sqlrepasse = "select "&_
             " r.ContaCredito,"&_
             " r.RPS,"&_
             " r.Valor,"&_
+            " r.Auto,"&_
             " r.Texto, "&_
             " r.PacienteID "&_
             " FROM recibos as r WHERE r.id="&ReciboID
-            
 set ReciboSQL = db.execute(sqlrepasse)
-if not ReciboSQL.eof then   
-    if isnull(ReciboSQL("Texto")) then
+if not ReciboSQL.eof then
+    if ReciboSQL("Texto")&""="" then
     NumeroRps = ReciboSQL("NumeroRPS")
     repasseIds = ReciboSQL("RepasseIDS")
     Cnpj = ReciboSQL("Cnpj")
@@ -60,21 +60,36 @@ if not ReciboSQL.eof then
     ValorEmpresa = ReciboSQL("Valor")
     ContaCredito = ReciboSQL("ContaCredito")
     PacienteID =  ReciboSQL("PacienteID")
+    Auto =  ReciboSQL("Auto")
+    profissionalExecutanteId="0"
+    ModeloColuna="RPSModelo"
+
+    if isnull(ContaCredito) then
+        ContaCredito="0"
+    end if
 
         if ContaCredito="0" then
+            if Auto then
+                ModeloColuna="RecibosIntegrados"
+                profissionalExecutanteId=""
+            end if
             %>
         <script>
-                getUrl("ifrReciboIntegrado.asp", {ReciboID:'<%=ReciboID%>',NumeroRps:'<%=NumeroRps%>', RepasseIds:'',Cnpj:'<%=Cnpj%>', RPS: 'S' ,NomeRecibo:'<%=RepasseNome%>', ModeloColuna:'RPSModelo', I:'<%=RepasseInvoiceID%>', ProfissionalID: '0', ValorRecibo:'<%=ValorEmpresa%>', PacienteID:'<%=PacienteID%>'});
+                getUrl("ifrReciboIntegrado.asp", {ReciboID:'<%=ReciboID%>',NumeroRps:'<%=NumeroRps%>', RepasseIds:'',Cnpj:'<%=Cnpj%>', RPS: 'S' ,NomeRecibo:'<%=RepasseNome%>', ModeloColuna:'<%=RPSModelo%>', I:'<%=RepasseInvoiceID%>', ProfissionalID: '<%=profissionalExecutanteId%>', ValorRecibo:'<%=ValorEmpresa%>', PacienteID:'<%=PacienteID%>'});
         </script>
             <%
         else
-            ContaSplit = split(ContaCredito, "_")
-            AssociacaoID = ContaSplit(0)
-            ContaID = ContaSplit(1)
+            if isnull(ContaCredito) then
+                AssociacaoID = ""
+                ContaID = ""
+            else
+                ContaSplit = split(ContaCredito, "_")
+                AssociacaoID = ContaSplit(0)
+                ContaID = ContaSplit(1)
+            end if
              %>
         <script>
-
-                getUrl("ifrReciboIntegrado.asp", {ReciboID:'<%=ReciboID%>',NumeroRps:'<%=NumeroRps%>', RepasseIds:'<%=repasseIds%>',Cnpj:'<%=Cnpj%>', RPS: '<%=RPS%>' ,NomeRecibo:'<%=RepasseNome%>', ModeloColuna:'ReciboHonorarioMedico', I:'<%=RepasseInvoiceID%>', ProfissionalID: '<%=ContaID%>', AssociacaoID: '<%=AssociacaoID%>' , tipoProfissionalSelecionado:<%=AssociacaoID%> , ValorRecibo:'<%=ValorEmpresa%>', PacienteID:'<%=PacienteID%>'});
+                getUrl("ifrReciboIntegrado.asp", {ReciboID:'<%=ReciboID%>',NumeroRps:'<%=NumeroRps%>', RepasseIds:'<%=repasseIds%>',Cnpj:'<%=Cnpj%>', RPS: '<%=RPS%>' ,NomeRecibo:'<%=RepasseNome%>', ModeloColuna:'ReciboHonorarioMedico', I:'<%=RepasseInvoiceID%>', ProfissionalID: '<%=ContaID%>', AssociacaoID: '<%=AssociacaoID%>' , tipoProfissionalSelecionado:'<%=AssociacaoID%>' , ValorRecibo:'<%=ValorEmpresa%>', PacienteID:'<%=PacienteID%>'});
         </script>
             
             <%

@@ -24,7 +24,7 @@ class TelemedicinaService {
         let objct = {};
         objct.agendamentoId = agendamentoId;
         const response  = await jQuery.ajax({
-            url: this.getEnvUrl(env,"zoom-integration/create-zoom-user/"),
+            url: this.getEnvUrl(env,"zoom-integration/create-zoom-user"),
             type: 'post',
             dataType: 'json',
             data: JSON.stringify(objct),
@@ -44,7 +44,7 @@ class TelemedicinaService {
         object.zoomUserId = zoomUser.zoomUserId;
         object.agendamentoId = agendamentoId;
         return await $.ajax({
-            url: this.getEnvUrl(env,"zoom-integration/create-zoom-meeting/"),
+            url: this.getEnvUrl(env,"zoom-integration/create-zoom-meeting"),
             type: 'post',
             dataType: 'json',
             data: JSON.stringify(object)

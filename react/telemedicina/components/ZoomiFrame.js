@@ -69,7 +69,7 @@ const ZoomiFrame = (props) => {
     };
 
     const getUserZoom = async () => {
-        const userZoom = await TelemedicinaService.endpointCreateZoomUser(props.agendamentoId);
+        const userZoom = await TelemedicinaService.endpointCreateZoomUser(props.agendamentoId, props.env);
 
         setIsLoading(false);
         setIsVerified(userZoom.isUserVerified);
@@ -91,6 +91,9 @@ const ZoomiFrame = (props) => {
             </div>
         );
     }
+
+    const baseEndpointUrl = TelemedicinaService.getEnvUrl(env,"");
+
     return isVerified ?
         (
             <div>
@@ -104,7 +107,7 @@ const ZoomiFrame = (props) => {
                         }}>
                             <iframe id={"tm-iframe"} style={{
                                 width: "100%"
-                            }} frameBorder="0" src={`http://localhost:8000/patient-interface/17vqr/zoom-host-meeting/${props.agendamentoId}`}
+                            }} frameBorder="0" src={baseEndpointUrl+`zoom-integration/zoom-host-meeting/${props.agendamentoId}?tk=`+localStorage.getItem("tk")}
                                     allow="camera;microphone;fullscreen;speaker;chat"/>
                         </div>
                     </div>

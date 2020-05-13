@@ -52,9 +52,9 @@ ConvenioID = req("ConvenioID")
     <div id="add-nofitificados">
 
     </div>
-    <div class="text-right">
-        <button type="submit" class="btn btn-success btn-sm">Salvar</button>
-    </div>
+<!--    <div class="text-right">-->
+<!--        <button type="submit" class="btn btn-success btn-sm">Salvar</button>-->
+<!--    </div>-->
 </form>
 
 <script type="text/javascript">
@@ -225,6 +225,11 @@ $('#save').replaceWith($('#save').clone());
 $("#save").on('click',() => salvarProcedimentos());
 
 var salvarProcedimentos = function(){
+
+     if(!($("#divValoresPlanos").length > 0)){
+        return ;
+     }
+
       fetch(domain+'api/convenios-modificadores/save',{
          method:"POST",
          headers: {

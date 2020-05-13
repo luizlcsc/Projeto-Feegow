@@ -293,7 +293,7 @@ end if
 <div class="row">
     <%
 'SÓ PRA QUEM TEM PABX INTEGRADO
-if session("Banco")="clinic5459" or Request.ServerVariables("HTTP_HOST") = "localhost" then
+if session("Banco")="clinic5459" then
   %>
   <!--#include file="ff_pabxSituacao.asp"-->
 <% end if

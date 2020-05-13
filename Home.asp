@@ -299,9 +299,6 @@ if session("Banco")="clinic5459" or Request.ServerVariables("HTTP_HOST") = "loca
 <% end if
 
 
-
-
-
     set diasVencimento = db.execute("SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1")
 
     set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade <> 0 AND ep.Validade IS NOT NULL AND ep.Validade < (SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1)")

@@ -3,12 +3,17 @@ set ram = db.execute("select Ramal,pabx_cod,pabx_pausa,pabx_logado from sys_user
 
 Ramal       = ram("Ramal")&""
 pabx_cod    = ram("pabx_cod")&""
-pabx_pausa  = ram("pabx_pausa")&""
-pabx_logado = ram("pabx_logado")&""
+pabx_pausa  = ram("pabx_pausa")
+pabx_logado = ram("pabx_logado")
 
+ram.close
+set ram = nothing
 session("Ramal") = Ramal
 sessionClinicBase = session("banco")
 
+if req("dev") <> "" then
+  response.write("(("&pabx_logado)
+end if
 if pabx_logado<>1 then
   pausaDisabled = "disabled"
 end if
@@ -22,7 +27,7 @@ while not vPausas.eof
   pabx_pausas_tempo  = vPausas("tempo")
   pausaTempo = ""
 
-  if cint(pabx_pausa) = cint(pabx_pausas_id) then
+  if (pabx_pausa) = (pabx_pausas_id) then
     inputSelected = "selected"
   else
     inputSelected = ""
@@ -54,7 +59,7 @@ end if
     <div class="panel-body">
       <div class="row">
         <div class="col-sm-4">
-            <input type="text" class="form-control text-center fs30" name="Ramal" id="Ramal" value="<%=pabx_cod%>" placeholder="-" />
+            <input type="text" class="form-control text-center fs30" name="pabxCod" id="pabxCod" value="<%=pabx_cod%>" placeholder="-" />
           <h6 class="text-success">CÓDIGO</h6>
         </div>
         <div class="col-sm-4">
@@ -85,6 +90,9 @@ end if
     $("#Ramal").keyup(function () {
         $.get("saveRamal.asp?U=<%= session("User") %>&Ramal=" + $(this).val(), function (data) { eval(data) });
     });
+    $("#pabxCod").keyup(function () {
+        $.get("saveRamal.asp?U=<%= session("User") %>&pabxCod=" + $(this).val(), function (data) { eval(data) });
+    });
 
     $("#pabxConn").click(function () {
       
@@ -94,14 +102,14 @@ end if
         .removeClass("btn-primary pabxLogin")
         .text("DESCONECTADO");
         
-        $.get("ff_futurofone.asp?ff_metodo=GetLoginAgenteLogoff&agente=3006");
+        $.get("ff_futurofone.asp?ff_metodo=GetLoginAgenteLogoff&agente=<%=pabx_cod%>");
         $("#pabxPausa").prop('disabled', 'disabled')
       } else {
         $("#pabxConn")
         .addClass("btn-primary pabxLogin")
         .text("CONECTADO");
 
-        $.get("ff_futurofone.asp?ff_metodo=GetLoginAgente&agente=3006&ramal=3006&pausa=&senha=xxx");
+        $.get("ff_futurofone.asp?ff_metodo=GetLoginAgente&agente=<%=pabx_cod%>&ramal=<%=Ramal%>&pausa=&senha=xxx");
         $('#pabxPausa').prop('disabled', false);
       }
       
@@ -109,7 +117,7 @@ end if
 
     $('#pabxPausa').change(function(event){
       var pabxPausaVal = event.currentTarget.value;
-      $.get("ff_futurofone.asp?ff_metodo=GetLoginAgente&agente=3006&ramal=3006&pausa="+pabxPausaVal+"&senha=xxx");
+      $.get("ff_futurofone.asp?ff_metodo=GetLoginAgente&agente=<%=pabx_cod%>&ramal=<%=Ramal%>&pausa="+pabxPausaVal+"&senha=xxx");
     });
  
 </script>

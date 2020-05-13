@@ -221,6 +221,8 @@ function getValues(){
     });
     return result;
 }
+$('#save').replaceWith($('#save').clone());
+$("#save").on('click',() => salvarProcedimentos());
 
 var salvarProcedimentos = function(){
       fetch(domain+'api/convenios-modificadores/save',{

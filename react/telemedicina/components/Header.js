@@ -65,6 +65,15 @@ const Header = (props) => {
                             props.onReconnect()
                         }}><i className="fa fa-undo"></i> Reconectar</a>
                     </li>
+                    <li>
+                        <button
+                        style={{border: "none", background: "transparent"  }}
+                        onClick={() => {
+                            props.onZoomClick();
+                        }} className={""}>
+                             Utilizar video alternativo
+                            </button>
+                    </li>
                 </ul>
             </div>
 

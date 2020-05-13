@@ -18,8 +18,6 @@ class TelemedicinaService {
     }
 
     static endpointCreateZoomUser = async (agendamentoId, env) => {
-        // AJAX request
-
 
         let objct = {};
         objct.agendamentoId = agendamentoId;
@@ -35,6 +33,7 @@ class TelemedicinaService {
             return {'isUserVerified':false};
         }
         const meeting = await TelemedicinaService.endpointCreateZoomMeeting(response,agendamentoId,env);
+        console.log()
         return {isUserVerified:true,meeting: meeting};
     };
 

@@ -45,9 +45,11 @@ end if
 
 
         set UnidadesSQL = db.execute("SELECT id, NomeFantasia FROM (select id, NomeFantasia, 0 Matriz from sys_financialcompanyunits where sysActive=1 UNION ALL select '0', NomeFantasia, 1 Matriz from empresa order by id) t WHERE '"&session("Unidades")&"' LIKE CONCAT('%|',id,'|%') ORDER BY Matriz desc, NomeFantasia")
-
+        set getUnidades = db.execute("select Unidades from "&session("Table")&" where id="&session("idInTable"))
+		selectUnidades = getUnidades("Unidades")
 
         while not UnidadesSQL.eof
+            if instr(selectUnidades,"|"&UnidadesSQL("id")&"|")>0 then 
             %>
             <div <% if unidadeDisabled then %> style="opacity: .4" <% end if %> class="col-md-6 pt10">
                 <a style="font-size: 11px" <% if not unidadeDisabled then %> href="?P=Home&Pers=1&MudaLocal=<%=UnidadesSQL("id")%>" <% else %> disabled onclick="alert('Você precisa fechar o caixa para alterar a unidade.')" <% end if%> class="btn
@@ -58,9 +60,10 @@ end if
                  %>btn-default<%
                  end if
                  %>
-                 btn-block"><i class="fa fa-building"></i> <%=UnidadesSQL("NomeFantasia")%></a>
+                 btn-block" ><i class="fa fa-building"></i> <%=UnidadesSQL("NomeFantasia")%></a>
             </div>
             <%
+            end if 
         UnidadesSQL.movenext
         wend
         UnidadesSQL.close

@@ -51,8 +51,8 @@ if session("banco")<>"" then
 		else
 			session("CaixaID")=caixa("id")
 		end if
-		set getUnidades = db.execute("select group_concat('|', id, '|') Unidades from sys_financialcompanyunits")
-		session("Unidades") = "|0|" & getUnidades("Unidades")
+		set getUnidades = db.execute("SELECT group_concat('|', id, '|') Unidades FROM (select id, NomeFantasia, 0 Matriz from sys_financialcompanyunits where sysActive=1 UNION ALL select '0', NomeFantasia, 1 Matriz from empresa order by id) t ")
+		session("Unidades") = getUnidades("Unidades")
 		session("UnidadeID") = 0
 	
 	

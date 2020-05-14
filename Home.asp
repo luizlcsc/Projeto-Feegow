@@ -293,13 +293,10 @@ end if
 <div class="row">
     <%
 'SÓ PRA QUEM TEM PABX INTEGRADO
-if session("Banco")="clinic5459" or Request.ServerVariables("HTTP_HOST") = "localhost" then
+if session("Banco")="clinic5459" then
   %>
   <!--#include file="ff_pabxSituacao.asp"-->
 <% end if
-
-
-
 
 
     set diasVencimento = db.execute("SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1")

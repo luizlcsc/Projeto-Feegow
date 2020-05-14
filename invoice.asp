@@ -441,7 +441,7 @@ end if
                 <%
                 if (session("Banco")="clinic5459" or session("Banco")="clinic105") AND AssID=3 then
 
-                    if ContaID&"" then
+                    if ContaID&""<> "" then
                         set pNat = db.execute("select Naturalidade, Documento FROM pacientes WHERE id="& ContaID)
                         if not pNat.eof then
                             Nat = ucase(pNat("Naturalidade")&"")

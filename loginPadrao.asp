@@ -218,7 +218,17 @@ if not tryLogin.EOF then
 		end if
 
 		if UnidadeID=0 then
-            UnidadeID = sysUser("UnidadeID")
+            if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then 
+            	UnidadeID = sysUser("UnidadeID")
+			end if 
+
+			if ubound(qtdUnidadesArray) > 0 then
+                UnidadeID= replace(qtdUnidadesArray(0), "|","")
+			else
+				if session("Unidades")&"" <> "" then
+                	UnidadeID= replace(session("Unidades"), "|","")
+				end if
+			end if 
 
             if isnull(UnidadeID) then
                 UnidadeID= replace(qtdUnidadesArray(0), "|","")
@@ -241,8 +251,10 @@ if not tryLogin.EOF then
 
 			if not gradeHoje.EOF then
 				if not isnull(gradeHoje("UnidadeID")) then
-					session("UnidadeID") = gradeHoje("UnidadeID")
-					db_execute("update sys_users set UnidadeID="&gradeHoje("UnidadeID")&" where id="&session("User"))
+					if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then 
+						session("UnidadeID") = gradeHoje("UnidadeID")
+						db_execute("update sys_users set UnidadeID="&gradeHoje("UnidadeID")&" where id="&session("User"))
+					end if
 				end if
 			end if
 		end if
@@ -286,6 +298,10 @@ if not tryLogin.EOF then
                                "WHERE c.sysUser="&session("User")&" and isnull(c.dtFechamento)")
 		if not caixa.eof then
 			session("CaixaID") = caixa("id")
+
+			if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then 
+            	UnidadeID = sysUser("UnidadeID")
+			end if 
 			session("UnidadeID") = caixa("UnidadeID")
 		end if
 

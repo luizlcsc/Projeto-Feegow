@@ -79,7 +79,6 @@ const ZoomiFrame = (props) => {
     const getUserZoom = async () => {
         const userZoom = await TelemedicinaService.endpointCreateZoomUser(props.agendamentoId);
 
-        console.log(userZoom);
         setIsLoading(false);
         setIsVerified(userZoom.isUserVerified);
     }

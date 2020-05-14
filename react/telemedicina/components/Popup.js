@@ -22,9 +22,9 @@ const Popup = (props) => {
     }, 500);
 
     const onClose = () => {
+
         if (confirm("Tem certeza que deseja fechar?")) {
             const $popup = document.getElementById("root");
-
             $popup.remove();
             telemedicine.close();
             TelemedicinaService.base("Finaliza");

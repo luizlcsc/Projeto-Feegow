@@ -1085,8 +1085,21 @@ select case lcase(req("P"))
                 </li>
                 <%
             end if
+            %>
+            <li>
+                <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-th-list"></span> <span class="sidebar-title">Protocolos</span></a>
+            </li>
+            <%
         end if
-
+    case "protocolos", "protocolosgrupos"
+        %>
+        <li <%if req("P")="Protocolos" then%>class="active"<%end if%>>
+            <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-file-text-o"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
+        </li>
+        <li <%if req("P")="ProtocolosGrupos" then%>class="active"<%end if%>>
+            <a href="./?P=ProtocolosGrupos&Pers=Follow"><span class="fa fa-files-o"></span> <span class="sidebar-title">Grupo de Protocolos</span></a>
+        </li>
+        <%
     case "fornecedores"
         if isnumeric(req("I")) and req("I")<>"" then
             %>

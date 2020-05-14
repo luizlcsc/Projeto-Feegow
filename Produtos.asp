@@ -213,6 +213,10 @@ end if
                                 %>
                                 <%=quickField("text", "ApresentacaoQuantidadeDispensacao", "Contendo", 2, ApresentacaoQuantidadeDispensacao, " input-mask-brl text-right", "", " placeholder=""1,00"" ")%>
                                 <%=quickField("simpleSelect", "ApresentacaoUnidadeDispensacao", "Unidade", 2, ApresentacaoUnidadeDispensacao, "select * from cliniccentral.tissunidademedida order by Descricao", "Descricao", "  empty")%>
+                            </div>l
+                            <div class="col-md-12 mt10">
+                                <%=quickField("text", "DoseMin", "Dose Min.", 2, DoseMin, " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
+                                <%=quickField("text", "DoseMax", "Dose Máx.", 2, DoseMax, " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
                                 <%=quickField("simpleSelect", "UnidadePrescricao", "Unidade para Prescrição", 3, UnidadePrescricao, "select * from cliniccentral.unidademedida order by UnidadeMedida", "UnidadeMedida", "  empty")%>
                             </div>
                         </div>

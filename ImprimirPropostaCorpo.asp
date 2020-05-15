@@ -154,7 +154,7 @@ body{
     			if not itens.eof then
 
                     if itens("Tabela")&"" <> "0" then
-                        set tabelaPrivadaSQL = db.execute("select NomeTabela from tabelaparticular where id ="&itens("Tabela"))
+                        set tabelaPrivadaSQL = db.execute("select NomeTabela from tabelaparticular where id ="&treatvalzero(itens("Tabela")))
                         if not tabelaPrivadaSQL.eof then
                             nometabela = "<br>("&tabelaPrivadaSQL("nometabela")&")"
                         end if
@@ -182,7 +182,11 @@ body{
                                         Desconto Total <%=nometabela%>
                                     <% END IF %>
                                 </th>
-                                <th style="text-align: right" align="right" class="<%=hiddenValor%>">Valor Total</th>
+                                <th style="text-align: right" align="right" class="<%=hiddenValor%>">
+                                <% IF getConfig("ExibirValorTotal") = "1" THEN %>
+                                    Valor Total
+                                <% END IF %>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -216,12 +220,11 @@ body{
                                 <% END IF%>
                             	<td><%=itens("Quantidade")%></td>
                             	<td><%=itens("NomeProcedimento")%></td>
-
     							<td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirValorUnitario") = "1" THEN %>R$ <%=formatnumber(ValorUnitarioSemDesconto,2)%><% END IF %></td>
 
                                 <td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %>R$ <%=formatnumber(Desconto,2)%><% END IF %></td>
                                 <td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %>R$ <%=formatnumber(DescontoQtd,2)%><% END IF %></td>
-                            	<td class="<%=hiddenValor%>" align="right">R$ <%=formatnumber(Total,2)%></td>
+                            	<td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirValorTotal") = "1" THEN %>R$ <%=formatnumber(Total,2)%><% END IF %></td>
                             </tr>
     						<%
     						itensPrazoEntrega = itens("DiasLaudo")

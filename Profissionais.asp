@@ -49,11 +49,10 @@ end if
 <%=header(req("P"), "Cadastro de Profissional", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
 
 <br />
+
 <div class="tabbable">
     <div class="tab-content">
         <div id="divCadastroProfissional" class="tab-pane<%=tabCadastro%>">
-
-
 
 
             <form method="post" id="frm" name="frm" action="save.asp">
@@ -66,6 +65,13 @@ end if
                             Dados Principais
                         </span>
                         <span class="panel-controls">
+                        <%
+                        if (reg("sysActive")=1 AND session("Franqueador") <> "") then
+                            %>
+                            <button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=request.QueryString("P")%>')"><i class="fa fa-copy"></i> Replicar</button>
+                            <%
+                        end if
+                        %>
                         <%
 		                if (reg("sysActive")=1 and aut("|profissionaisA|")=1) or (reg("sysActive")=0 and aut("|profissionaisI|")=1) then
 		                    %>

@@ -163,6 +163,10 @@ function modalNFE(reciboId){
     %>
 }
 
+function modalNFEBeta() {
+    openComponentsModal("nfe/invoice/create-view", {invoiceId: invoiceId, provider: 'enotas'})
+}
+
 var $componentsModal = $("#feegow-components-modal"),
         $componentsModalTitle = $componentsModal.find('.modal-title'),
         $componentsModalBodyContent = $componentsModal.find('.modal-body-content'),
@@ -215,7 +219,21 @@ function abrirDiagBrasil(invoiceId,labid,itenscount) {
     openComponentsModal("labs-integration/diagbrasil/invoice-exams", {invoiceId: invoiceId, labid:labid, itens:itenscount }, false, false)
 }
 
+function abrirSelecaoLaboratorio(invoiceId,itenscount){
+    openComponentsModal("labs-integration/invoice-lab-select", {invoiceId: invoiceId, itens:itenscount }, "Integração com Laboratórios", false, false)
+}
+
 function avisoLaboratoriosMultiplos(informacao) {
     $('#modalAlertaMultiploText').html(informacao); 
     $('#modalAlertaMultiplo').modal('toggle');
+}
+
+function selecionaLaboratorio() {
+     var labid  = $('#selectLabID :selected').val();
+     var invoiceid = $('#varinvoiceid').val();
+     var itensCount = $('#varitenscount').val();
+
+     if (labid ==1) { abrirMatrix(invoiceid, labid);  }
+     if (labid ==2) { abrirDiagBrasil(invoiceid,labid,itensCount); }
+     
 }

@@ -480,7 +480,7 @@ end if
                 <a class="list-group-item hidden" href="#">
                   &nbsp;<i class="fa fa-phone fa-fw text-primary"></i>&nbsp;&nbsp; Solicite uma ligação</a>
 
-                <a class="list-group-item" href="./?P=AtivaChat&Pers=1">
+                <a class="list-group-item" target="_blank" href="https://feegow.futurotec.com.br/futurofone_chat/?hash_chat=FFCHAT01">
                   &nbsp;<i class="fa fa-comment fa-fw text-primary"></i>&nbsp;&nbsp; Chat online</a>
                 <a class="list-group-item" href="http://download.teamviewer.com/download/version_12x/TeamViewer_Setup.exe">
                   <img width="26" src="assets/img/Team_Viewer.png" border="0"> Acesso Remoto (Team Viewer)</a>

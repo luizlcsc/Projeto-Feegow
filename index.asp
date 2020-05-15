@@ -216,7 +216,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?a=30"></script>
+  <script src="js/components.js?a=31"></script>
   <script src="feegow_components/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
 <%if aut("capptaI") then%>
@@ -400,6 +400,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 </head>
 
 <body>
+
       <%
       if session("Partner")<>"" then
         %>
@@ -927,9 +928,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								if not isnull(session("Unidades")) and session("Unidades")<>"" then
 
 								    'verifica se o usuario possui apenas uma unidade e nao exibe o "Altera unidade"
-
 								    if instr(session("Unidades"),",")=0 then
-								        set UnidadeSQL = db.execute("SELECT id, NomeFantasia FROM (SELECT 0 id, IFNULL(NomeFantasia, NomeEmpresa) NomeFantasia FROM empresa  UNION ALL SELECT id, IFNULL(NomeFantasia, UnitName) NomeFantasia FROM sys_financialcompanyunits where sysActive=1)t")
+								        set UnidadeSQL = db.execute("SELECT id, NomeFantasia FROM (SELECT 0 id, IFNULL(NomeFantasia, NomeEmpresa) NomeFantasia FROM empresa  UNION ALL SELECT id, IFNULL(NomeFantasia, UnitName) NomeFantasia FROM sys_financialcompanyunits where sysActive=1)t where id="&session("UnidadeID"))
 
                                         if not UnidadeSQL.eof then
                                             idUnidade=UnidadeSQL("id")
@@ -939,7 +939,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								        %>
                                         <li class="list-group-item menu-click-meu-perfil-muda-local">
                                             <a class="animated animated-short fadeInUp">
-                                                <i class="fa <%if ccur(idUnidade)=session("UnidadeID") then%>fa-check-square-o<%else%>fa-square-o<%end if%>"></i>
+                                                <i class="fa <%if ccur(idUnidade)&""=session("UnidadeID") then%>fa-check-square-o<%else%>fa-square-o<%end if%>"></i>
                                                 <%= nomeUnidade %>
                                             </a>
                                         </li>
@@ -1185,6 +1185,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
+<div id="importa-replicar"></div>
+
 <div id="modal-descontos-pendentes" class="modal fade" role="dialog" aria-hidden="true">
     <div class="modal-lg modal-dialog">
         <div class="modal-content"  >
@@ -1281,15 +1283,30 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
       <footer id="content-footer" class="affix no-print">
         <div class="row">
           <div class="col-md-6 hidden-xs">
+                <!--#include file="Classes/Base64.asp"-->
 
+              <script type="text/javascript">
+              function vidau(v){
+                  dva = $("#videoaula");
+                  dva.css("display", "block");
+                  dva.html("Carregando...");
+                  $.get(v, function(data){
+                    dva.html( data );
+                    });
+                }
+              </script>
 
               <div class="bs-component">
                   <div class="btn-group">
-                      <button type="button" class="btn btn-xs btn-success light" onclick="window.open('videoAula.asp?P=<%=req("P") %>&T='+ $('.crumb-active a').html())">
-                          <i class="fa fa-video-camera"></i> Vídeo-aula
-                      </button>
+
+                  <button type="button" class="btn btn-xs btn-success light" data-toggle="tooltip" data-placement="top" title="Tutoriais em vídeo"
+                  onclick='vidau(`VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString())%>`, true, `Central de Vídeos`,``,`xl`,``)'>
+                  <i class="fa fa-video-camera"></i> Vídeo-aula
+                  </button>         
+
                       <%if session("Admin")<>1 AND recursoAdicional(12)=4 then%>
                       <%else%>
+
                       <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" class="btn btn-xs btn-default">
                           <i class="fa fa-question-circle"></i> Suporte
                       </button>
@@ -1612,12 +1629,16 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   </div>
 
 <%if session("ChatSuporte")="S" then%>
-<!-- BEGIN JIVOSITE CODE {literal} -->
-<script type='text/javascript'>
-(function(){ var widget_id = '3j2XOJKoQb';var d=document;var w=window;function l(){
-var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = '//code.jivosite.com/script/widget/'+widget_id; var ss = document.getElementsByTagName('script')[0]; ss.parentNode.insertBefore(s, ss);}if(d.readyState=='complete'){l();}else{if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();</script>
-<!-- {/literal} END JIVOSITE CODE -->
-
+<script src="https://feegow.futurotec.com.br/futurofone_chat/www/core/js/embedChatJs/chat.js"></script>
+<script>
+ffchat.addChat({
+url: 'https://feegow.futurotec.com.br',
+btn_minimizar: true,
+titulo: 'Chat Online',
+titulo_login: 'Feegow',
+hash_chat: 'FFCHAT01'
+});
+</script>
 <%end if%>
 
 
@@ -2141,9 +2162,29 @@ function abreModalUnidade(backdrop=true){
 }
 </script>
     <!-- old sms << -->
+    <style>
+    .voltarTo{
+        height: 44px;
+        width: 100%;
+        background: rgba(0,0,0,.5);
+        z-index: 10000;
+        position: absolute;
+        bottom: 0;
+        color: #DDDDDD;
+        padding: 12px;
+    }
+    .voltarTo a{
+        color: #DDDDDD;
+    }
+    </style>
+    <% IF session("BancoOld") <> "" THEN %>
+    <script>
+        $("body").append(`<div class='voltarTo'>
+           <a href="sys_financialCompanyUnits.asp?back=1"><i class="fa fa-backward"></i>  Voltar a Licença da Franquiadora</a>
+        </div>`);
+    </script>
 
-
-
+    <% END IF %>
 
   <script type="text/javascript">
   jQuery(document).ready(function() {
@@ -2372,6 +2413,9 @@ for i=0 to ubound(splChatWindows)
 next
 %>
 </div>
+
+<div id="videoaula" style="position:fixed; left:10px; width:95%; height:600px; top:10px; border-radius:5px; background-color:#fff; border:1px solid #ccc; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); z-index:9999"></div>
+
 <%
 if session("OtherCurrencies")="phone" then
     %>

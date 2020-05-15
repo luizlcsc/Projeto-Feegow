@@ -668,7 +668,23 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 
 <div id='injection_site'></div>
 <form id="frmComparar">
-    <div id="ImagensPaciente"><%server.execute("Imagens.asp")%></div>
+<div id="ImagensPaciente">
+<% if getConfig("NovaGaleria") = "1" then
+ server.execute("Imagens.asp")
+ %>
+       <div class="galery-ajax"></div>
+       <script>
+        fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+        .then(data => data.text())
+        .then(data => {
+           $(".galery-ajax").html(data);
+           $("[value='A']").parent().remove();
+        });
+       </script>
+<% ELSE %>
+    <%server.execute("Imagens.asp")%>
+<% END IF %>
+</div>
 </form>
 
 
@@ -727,7 +743,23 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                 <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?PacienteID=<%=PacienteID %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Arquivos&Tipo=A"></iframe>
             </div>
         </div>
-        <div id="ArquivosPaciente"><%server.execute("Arquivos.asp") %></div>
+        <div id="ArquivosPaciente">
+        <% IF getConfig("NovaGaleria") = "1" THEN
+         server.execute("Imagens.asp")
+         %>
+               <div class="galery-ajax"></div>
+               <script>
+                fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+                .then(data => data.text())
+                .then(data => {
+                   $(".galery-ajax").html(data);
+                   $("[value='I']").parent().remove();
+                });
+               </script>
+        <% ELSE %>
+            <%server.execute("Arquivos.asp") %>
+        <% END IF %>
+        </div>
         <%
         end if
 end select

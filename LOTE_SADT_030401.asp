@@ -271,7 +271,7 @@ prefixo = right(prefixo, 20)
 						ValorUnitario = treatvaltiss( procs("Fator")*procs("ValorUnitario") )
 						ValorTotal = treatvaltiss(procs("ValorTotal"))
 						
-						hash = hash & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
+						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
 						%>
                         <ans:procedimentoExecutado>
                             <ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>

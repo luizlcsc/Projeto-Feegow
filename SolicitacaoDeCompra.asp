@@ -266,4 +266,22 @@ function itens(T, A, II, autoPCi){
 	}
 });}
 
+var isvalid = false;
+$( "#formItens" ).submit(function() {
+    if (isvalid == false){
+        $.post("SolicitacaoDeCompraValidacao.asp",$('#formItens').serialize(), 
+            function(data, status){
+                if(data){
+                    eval(data);
+                }else{
+                    isvalid = true;
+                    $("#save").click();
+                }
+            });
+        return false;
+    }
+});
+
+
+
 </script>

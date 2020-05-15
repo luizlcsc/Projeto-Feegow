@@ -479,7 +479,6 @@ function atualizaAlbum(X){
 
 	        $el.attr("src", originalSource + "?" + dt );
 	    });
-
 	}
 
 $("#Nascimento").change(function(){
@@ -1151,7 +1150,15 @@ if not memed.eof then
 
         var estado = $("#Estado").val() ? " "+$("#Estado").val() : "";
 
-        var fullEndereco = endereco+numero
+        var fullEndereco = endereco+numero;
+
+
+        MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {
+          removePatient: false,
+          deletePatient: false
+        });
+
+
        MdHub.command.send('plataforma.prescricao', 'setPaciente', {
          nome: $("#NomePaciente").val(),
          telefone: $("#Cel1").val().replace("-","").replace("(","").replace(")","").replace(" ",""),

@@ -1,6 +1,5 @@
 <%
 select case lcase(req("P"))
-
     case "checkin"
         StaChk = "|1|, |4|, |5|, |7|, |15|, |101|"
 
@@ -160,6 +159,7 @@ select case lcase(req("P"))
                   </span>
                 </div>
                 <% end if %>
+                
               </div>
 
 
@@ -1085,8 +1085,21 @@ select case lcase(req("P"))
                 </li>
                 <%
             end if
+            %>
+            <li>
+                <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-th-list"></span> <span class="sidebar-title">Protocolos</span></a>
+            </li>
+            <%
         end if
-
+    case "protocolos", "protocolosgrupos"
+        %>
+        <li <%if req("P")="Protocolos" then%>class="active"<%end if%>>
+            <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-file-text-o"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
+        </li>
+        <li <%if req("P")="ProtocolosGrupos" then%>class="active"<%end if%>>
+            <a href="./?P=ProtocolosGrupos&Pers=Follow"><span class="fa fa-files-o"></span> <span class="sidebar-title">Grupo de Protocolos</span></a>
+        </li>
+        <%
     case "fornecedores"
         if isnumeric(req("I")) and req("I")<>"" then
             %>
@@ -1575,7 +1588,7 @@ select case lcase(req("P"))
             </li>
             <%
         end if
-    case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodedata", "descontopendente"
+    case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodedata", "descontopendente", "listarempresasnfse", "listarnotasfiscais", "editarempresanfse", "criarempresanfse"
               %>
               <li class="sidebar-label pt20">Financeiro</li>
     	<!--#include file="MenuFinanceiro.asp"-->
@@ -2134,7 +2147,7 @@ select case lcase(req("P"))
                 </li>
                 <%
                 end if
-                if aut("|relatoriosformulariosV|")=1 and lcase(session("Table"))="profissionais" then
+                if aut("|relatoriosformulariosV|")=1 then
                 %>
                 <li>
                     <a href="javascript:callReport('relatorioForms');">

@@ -319,6 +319,10 @@ posModalPagar = "fixed"
                             %><span class="label bg-primary">Implementação</span><%
                         end if
                     end if
+                    set ClienteCPF = db.execute("SELECT CPF FROM pacientes WHERE id="&treatvalzero(Cliente(1)))
+                    if not ClienteCPF.EOF then
+                        %><span class="label bg-info">CPF / CNPJ: <%=ClienteCPF("CPF")%></span><%
+                    end if
                 end if
             end if
         end if
@@ -437,7 +441,7 @@ end if
                 <%
                 if (session("Banco")="clinic5459" or session("Banco")="clinic105") AND AssID=3 then
 
-                    if ContaID&"" then
+                    if ContaID&""<> "" then
                         set pNat = db.execute("select Naturalidade, Documento FROM pacientes WHERE id="& ContaID)
                         if not pNat.eof then
                             Nat = ucase(pNat("Naturalidade")&"")
@@ -502,9 +506,18 @@ end if
                                             " WHERE proc.TipoProcedimentoID = 3 AND ii.InvoiceID ="&treatvalzero(InvoiceID)&""&_
                                             "  GROUP BY 1,2 "
                         set laboratorios = db.execute(sqllaboratorios)
+
+                        sqlintegracao = "SELECT le.LabID "&_
+                                        "   FROM labs_invoices_exames lie "&_
+                                        "  INNER JOIN cliniccentral.labs_exames le ON (le.id = lie.LabExameID) "&_
+                                        "  WHERE lie.InvoiceID  ="&treatvalzero(InvoiceID)&" order by 1 limit 1"
+                        set integracao = db.execute(sqlintegracao)
+
+
                         totallabs=0
                         multiploslabs = 0
                         laboratorioid = 1
+                        contintegracao = 0
                         NomeLaboratorio = ""
                         informacao = ""
                         if  not laboratorios.eof then
@@ -521,6 +534,12 @@ end if
                                 NomeLaboratorio = laboratorios("NomeLaboratorio")
                             end if
                         end if 
+
+                         if not integracao.eof then 
+                            laboratorioid = integracao("labid")
+                            multiploslabs = 0
+                            contintegracao = 1
+                        end if
                     
                         if CInt(temintegracao("temintegracao")) > 0 then
 
@@ -533,7 +552,10 @@ end if
 
                                 <div class="btn-group">
                                     <% if multiploslabs = 1 then %> 
-                                        <button type="button" onclick="avisoLaboratoriosMultiplos('<%=informacao%>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
+                                        <!-- <button type="button" onclick="avisoLaboratoriosMultiplos('<%=informacao%>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
+                                            <i class="fa fa-flask"></i>
+                                        </button> -->
+                                        <button type="button" onclick="abrirSelecaoLaboratorio('<%=InvoiceID%>','<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
                                             <i class="fa fa-flask"></i>
                                         </button>
 
@@ -566,7 +588,7 @@ end if
                         end if
                         %>
 
-                        <% if CD="C" and Aut("cancelamentocontareceberI") = 1 then %>
+                        <% if CD="C" and Aut("cancelamentocontareceberI") = 1 and contintegracao = 0 then %>
                         <div class="btn-group ">
                             <button type="button" class="btn btn-danger btn-sm" id="btn-abrir-modal-cancelamento">
                                 Cancelamento
@@ -590,7 +612,11 @@ end if
                             descOutra = "Receita"
                           %>
                             <li>
+                                <% if contintegracao = 0 then %>
                                 <a href="javascript:itens('S', 'I', 0)">Consulta ou Procedimento</a>
+                                <% else %>
+                                <a href="javascript:avisoLaboratoriosMultiplos('Operação NÃO PERMITIDA! Exitem integrações feitas para esta conta!');">Consulta ou Procedimento</a>
+                                <% end if %>
                             </li>
                           <%
                           else

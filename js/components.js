@@ -344,3 +344,14 @@ function authenticate(u, l = false) {
         }
     });
 }
+
+function replicarRegistro(id,tabela){
+    $.post("ReplicarRegistros.asp", {id,tabela}, function(data){
+        $("#importa-replicar").html(data);
+        $('.multisel').multiselect({
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            numberDisplayed: 1,
+        });
+    });
+}

@@ -127,7 +127,7 @@
 
                     set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&inv("id")&" AND Executado!='S'")
                     set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&inv("id")&" and p.IntegracaoPleres = 'S'")
-                    'sqllaboratorios = "SELECT * FROM cliniccentral.labs AS lab INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) WHERE lpl.procedimentoID ="& treatvalzero(ProcedimentoID) 
+                    
                     sqllaboratorios = "SELECT lab.id labID, lab.NomeLaboratorio, count(*) total "&_
                                       " FROM cliniccentral.labs AS lab "&_
                                       " INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) "&_
@@ -137,11 +137,20 @@
                                       "  GROUP BY 1,2 "
 
                     set laboratorios = db.execute(sqllaboratorios)
+
+                    sqlintegracao = "SELECT le.LabID "&_
+                                    "   FROM labs_invoices_exames lie "&_
+                                    "  INNER JOIN cliniccentral.labs_exames le ON (le.id = lie.LabExameID) "&_
+                                    "  WHERE lie.InvoiceID  ='"&inv("id")&"' order by 1 limit 1"
+                    set integracao = db.execute(sqlintegracao)
+
                     totallabs=0
                     multiploslabs = 0
+                    contintegracao = 0
                     laboratorioid = 1
                     NomeLaboratorio = ""
-                    informacao = ""
+                    informacao = ""                   
+
                     if  not laboratorios.eof then
                         while not laboratorios.eof ' recordcount estava retornando -1 então...
                             totallabs = totallabs +1
@@ -150,12 +159,19 @@
                         laboratorios.movefirst
                         if totallabs > 1 then
                             multiploslabs = 1
-                            informacao = "<p> Os <strong>PROCEDIMENTOS</strong> desta conta estão vinculados a laboratórios diferentes. Por favor verifique a<strong> CONFIGURAÇÃO DOS PROCEDIMENTOS ou separe os procedimentos</strong>. <p>"
+                            'informacao = "<p> Os <strong>PROCEDIMENTOS</strong> desta conta estão vinculados a laboratórios diferentes. Por favor verifique a<strong> CONFIGURAÇÃO DOS PROCEDIMENTOS ou separe os procedimentos</strong>. <p>"
+                            informacao = ""
+
                         else 
                             laboratorioid = laboratorios("labID")
                             NomeLaboratorio = laboratorios("NomeLaboratorio")
                         end if
                     end if 
+
+                     if not integracao.eof then 
+                         laboratorioid = integracao("labid")
+                         multiploslabs = 0
+                    end if
 
                     if CInt(temintegracao("temintegracao")) > 0 then
                     %>
@@ -166,9 +182,10 @@
                         </script>
                         <div class="btn-group">
                             <% if multiploslabs = 1 then %> 
-                                <button type="button" onclick="avisoLaboratoriosMultiplos('<%=informacao%>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
+                                <button type="button" onclick="abrirSelecaoLaboratorio('<%=inv("id")%>','<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
                                     <i class="fa fa-flask"></i>
                                 </button>
+                                
 
                             <% else %> 
                                 <% if laboratorioid = "1" then %>
@@ -176,7 +193,7 @@
                                         <i class="fa fa-flask"></i>
                                     </button>
                                 <% else %>
-                                    <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorios("labID")%>', '<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=inv("id")%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
+                                    <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorioid%>', '<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=inv("id")%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
                                         <i class="fa fa-flask"></i>
                                     </button>    
                                 <% end if %>

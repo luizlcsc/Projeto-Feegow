@@ -128,6 +128,7 @@ if ref("Convenio")<>"" then
     Convenios = replace( replace(ref("Convenio"), "'", "") , "|", "'")
     if instr(ref("Convenio"),"|P|") then
         sqlParticular = " or p.ConvenioID1 IS NULL "
+        JoinParticular = " INNER JOIN sys_financialmovement mov ON p.id=mov.AccountIDDebit AND mov.AccountAssociationIDDebit=3 AND mov.CD='C' "
     end if
 
 	sqlWhere = sqlWhere & " AND (p.ConvenioID1 in("& Convenios &") OR p.ConvenioID2 in("& Convenios &") OR p.ConvenioID3 in("& Convenios &")"&sqlParticular&" )"
@@ -210,7 +211,19 @@ end if
 limite = 10000
 
 
-sqlConta = "select count(p.id) total FROM pacientes p LEFT JOIN corpele cp on cp.id=p.CorPele LEFT JOIN estadocivil ec on ec.id=p.EstadoCivil LEFT JOIN grauinstrucao gi on gi.id=p.GrauInstrucao LEFT JOIN origens o on o.id=p.Origem LEFT JOIN paises pa on pa.id=p.Pais LEFT JOIN sexo s on s.id=p.Sexo LEFT JOIN tabelaparticular tp on tp.id=p.Tabela LEFT JOIN convenios c1 on c1.id=p.ConvenioID1 LEFT JOIN convenios c2 on c2.id=p.ConvenioID2 LEFT JOIN convenios c3 on c3.id=ConvenioID3 " & presqlAusencia & " WHERE p.sysActive=1 "& sqlWhere & sqlRetorno & sqlAusencia & sqlCons & sqlEmail & sqlCadastro & sqlProcedimentos & sqlUnidade
+sqlConta = "select count(distinct p.id) total "&_
+            "FROM pacientes p "&_
+            "LEFT JOIN corpele cp on cp.id=p.CorPele "&_
+            "LEFT JOIN estadocivil ec on ec.id=p.EstadoCivil "&_
+            "LEFT JOIN grauinstrucao gi on gi.id=p.GrauInstrucao "&_
+            "LEFT JOIN origens o on o.id=p.Origem "&_
+            "LEFT JOIN paises pa on pa.id=p.Pais "&_
+            "LEFT JOIN sexo s on s.id=p.Sexo "&_
+            "LEFT JOIN tabelaparticular tp on tp.id=p.Tabela "&_
+            "LEFT JOIN convenios c1 on c1.id=p.ConvenioID1 "&_
+            "LEFT JOIN convenios c2 on c2.id=p.ConvenioID2 "&_
+            "LEFT JOIN convenios c3 on c3.id=ConvenioID3 " & JoinParticular & presqlAusencia & " "&_
+            "WHERE p.sysActive=1 "& sqlWhere & sqlRetorno & sqlAusencia & sqlCons & sqlEmail & sqlCadastro & sqlProcedimentos & sqlUnidade
 'response.Write(sqlAusencia)
 
 'response.write( sqlConta )
@@ -235,9 +248,26 @@ end if
 
 sqlLimit = (PaginaAtual-1)*limite &", "& limite
 
-sql = "select "& CamposSelect&" p.Email1 Em1, p.Email2 Em2, cp.NomeCorPele CorPele, ec.EstadoCivil, gi.GrauInstrucao, o.Origem, pa.NomePais pais, s.NomeSexo Sexo, tp.NomeTabela Tabela, c1.NomeConvenio ConvenioID1, c2.NomeConvenio ConvenioID2, c3.NomeConvenio ConvenioID3, p.sysDate, '0' AReceber, '0' AReceberNaoPago FROM pacientes p LEFT JOIN corpele cp on cp.id=p.CorPele LEFT JOIN estadocivil ec on ec.id=p.EstadoCivil LEFT JOIN grauinstrucao gi on gi.id=p.GrauInstrucao LEFT JOIN origens o on o.id=p.Origem LEFT JOIN paises pa on pa.id=p.Pais LEFT JOIN sexo s on s.id=p.Sexo LEFT JOIN tabelaparticular tp on tp.id=p.Tabela LEFT JOIN convenios c1 on c1.id=p.ConvenioID1 LEFT JOIN convenios c2 on c2.id=p.ConvenioID2 LEFT JOIN convenios c3 on c3.id=ConvenioID3 " & presqlAusencia & " WHERE p.sysActive=1 "& sqlWhere & sqlRetorno & sqlAusencia & sqlCons & sqlEmail & sqlCadastro & sqlProcedimentos & sqlUnidade & " LIMIT "& sqlLimit
+sql = "select "& CamposSelect&" p.Email1 Em1, p.Email2 Em2, cp.NomeCorPele CorPele, ec.EstadoCivil, gi.GrauInstrucao, o.Origem, pa.NomePais pais, "&_
+    "s.NomeSexo Sexo, tp.NomeTabela Tabela, c1.NomeConvenio ConvenioID1, c2.NomeConvenio ConvenioID2, c3.NomeConvenio ConvenioID3, "&_
+    "p.sysDate, '0' AReceber, '0' AReceberNaoPago "&_
+    "FROM pacientes p LEFT JOIN corpele cp on cp.id=p.CorPele "&_
+    "LEFT JOIN estadocivil ec on ec.id=p.EstadoCivil "&_
+    "LEFT JOIN grauinstrucao gi on gi.id=p.GrauInstrucao "&_
+    "LEFT JOIN origens o on o.id=p.Origem "&_
+    "LEFT JOIN paises pa on pa.id=p.Pais "&_
+    "LEFT JOIN sexo s on s.id=p.Sexo "&_
+    "LEFT JOIN tabelaparticular tp on tp.id=p.Tabela "&_
+    "LEFT JOIN convenios c1 on c1.id=p.ConvenioID1 "&_
+    "LEFT JOIN convenios c2 on c2.id=p.ConvenioID2 "&_
+    "LEFT JOIN convenios c3 on c3.id=ConvenioID3 " & JoinParticular & presqlAusencia & " "&_
+    "WHERE p.sysActive=1 "& sqlWhere & sqlRetorno & sqlAusencia & sqlCons & sqlEmail & sqlCadastro & sqlProcedimentos & sqlUnidade & " GROUP BY p.id LIMIT "& sqlLimit
 
 'response.write( sql )
+if req("Debug")="1" then
+    response.write(sqlConta&"<br><br>")
+    response.write(sql)
+end if
 
 response.Write("<h4 class=""text-center"">Exibindo "& exibindo &" de "& total &" encontrados</h4><br>")
 %>

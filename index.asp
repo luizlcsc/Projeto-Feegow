@@ -928,9 +928,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								if not isnull(session("Unidades")) and session("Unidades")<>"" then
 
 								    'verifica se o usuario possui apenas uma unidade e nao exibe o "Altera unidade"
-
 								    if instr(session("Unidades"),",")=0 then
-								        set UnidadeSQL = db.execute("SELECT id, NomeFantasia FROM (SELECT 0 id, IFNULL(NomeFantasia, NomeEmpresa) NomeFantasia FROM empresa  UNION ALL SELECT id, IFNULL(NomeFantasia, UnitName) NomeFantasia FROM sys_financialcompanyunits where sysActive=1)t")
+								        set UnidadeSQL = db.execute("SELECT id, NomeFantasia FROM (SELECT 0 id, IFNULL(NomeFantasia, NomeEmpresa) NomeFantasia FROM empresa  UNION ALL SELECT id, IFNULL(NomeFantasia, UnitName) NomeFantasia FROM sys_financialcompanyunits where sysActive=1)t where id="&session("UnidadeID"))
 
                                         if not UnidadeSQL.eof then
                                             idUnidade=UnidadeSQL("id")
@@ -940,7 +939,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								        %>
                                         <li class="list-group-item menu-click-meu-perfil-muda-local">
                                             <a class="animated animated-short fadeInUp">
-                                                <i class="fa <%if ccur(idUnidade)=session("UnidadeID") then%>fa-check-square-o<%else%>fa-square-o<%end if%>"></i>
+                                                <i class="fa <%if ccur(idUnidade)&""=session("UnidadeID") then%>fa-check-square-o<%else%>fa-square-o<%end if%>"></i>
                                                 <%= nomeUnidade %>
                                             </a>
                                         </li>

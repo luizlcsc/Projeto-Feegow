@@ -193,7 +193,7 @@
                                         <i class="fa fa-flask"></i>
                                     </button>
                                 <% else %>
-                                    <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorios("labID")%>', '<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=inv("id")%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
+                                    <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorioid%>', '<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=inv("id")%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
                                         <i class="fa fa-flask"></i>
                                     </button>    
                                 <% end if %>

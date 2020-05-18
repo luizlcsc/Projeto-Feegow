@@ -159,7 +159,15 @@ set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&trea
     <% end if %>
     onclick="modalEstoque('<%=ItemInvoiceID %>', '<%=ItemID %>', '<%= ProdutoInvoiceID %>')" id="btn<%= ProdutoInvoiceID %>" type="button" class="btn btn-alert btn-block btn-sm"><i class="fa fa-medkit"></i></button></td>
     <td>
-        <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+        <%
+            'Caso exista alguma integração para este ítem desabilitar o botão
+            set integracaofeita = db.execute("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))
+        %>
+        <% if integracaofeita.eof then %>
+            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+        <% else %>
+            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="avisoLaboratoriosMultiplos('Operação NÃO PERMITIDA! Exitem integrações feitas para esta conta!');"><i class="fa fa-remove"></i></button>
+        <% end if %>
     </td>
     <td>
     <% if Tipo="S" then 

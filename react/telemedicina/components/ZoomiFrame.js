@@ -12,7 +12,15 @@ const ZoomiFrame = (props) => {
             TelemedicinaService.base("Finaliza");
         }
     }
+    const changeToFeegowVideo = () => {
+        localStorage.setItem("telemedicineDefaultApp","");
+        location.reload();
+    };
 
+    const onZoomClick = () => {
+        localStorage.setItem("telemedicineDefaultApp","zoom");
+        location.reload();
+    };
     const onMaximize = () => {
         const $popup = document.getElementById("root"),
             $popupDialog = document.getElementById("tm-popup-dialog"),
@@ -98,13 +106,13 @@ const ZoomiFrame = (props) => {
 
                 <div id={"tm-popup-dialog"}>
                     <div id={"tm-popup-content"}>
-                        <Header bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
+                        <Header bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()} changeToFeegowVideo={()=>changeToFeegowVideo()} onZoomClick={()=>onZoomClick()} />
                         <div style={{
                             display: "flex"
                         }}>
                             <iframe id={"tm-iframe"} style={{
                                 width: "100%"
-                            }} frameBorder="0" src={`http://localhost:8000/patient-interface/17vqr/zoom-host-meeting/${props.agendamentoId}`}
+                            }} frameBorder="0" src={`http://localhost:8000/zoom-integration/zoom-host-meeting/${props.agendamentoId}?tk=` + localStorage.getItem('tk')  }
                                     allow="camera;microphone;fullscreen;speaker;chat"/>
                         </div>
                     </div>

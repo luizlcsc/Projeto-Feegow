@@ -33,7 +33,6 @@ class TelemedicinaService {
             return {'isUserVerified':false};
         }
         const meeting = await TelemedicinaService.endpointCreateZoomMeeting(response,agendamentoId,env);
-        console.log()
         return {isUserVerified:true,meeting: meeting};
     };
 

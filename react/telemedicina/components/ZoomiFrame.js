@@ -12,9 +12,14 @@ const ZoomiFrame = (props) => {
             TelemedicinaService.base("Finaliza");
         }
     }
-    const changeToFeegowVideo = () => {
-        localStorage.setItem("telemedicine_default_app","");
-        location.reload();
+    const changeToFeegowVideo = async () => {
+        try{
+            const response = await TelemedicinaService.endpointEndZoomMeeting(props.agendamentoId);
+                localStorage.setItem("telemedicine_default_app","");
+                location.reload();
+        }catch(e){
+            console.log(e);
+        }
     };
 
     const onZoomClick = () => {

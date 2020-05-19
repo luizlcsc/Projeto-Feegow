@@ -88,9 +88,15 @@ const Popup = (props) => {
         location.reload();
     };
 
-    const changeToFeegowVideo = () => {
-        localStorage.setItem("telemedicine_default_app","");
-        location.reload();
+    const changeToFeegowVideo = async () => {
+        try{
+            const response = await TelemedicinaService.endpointEndZoomMeeting(props.agendamentoId);
+                localStorage.setItem("telemedicine_default_app","");
+                location.reload();
+        }catch(e){
+            console.log(e);
+        }
+
     };
 
     const onReconnect = () => {
@@ -115,7 +121,7 @@ const Popup = (props) => {
         $configContainer.style.display = 'none';
     }
 
-    const allowVideoChange = parseInt(props.licencaId) === 100000 ? true : false;
+
 
     return (
         <div>
@@ -123,7 +129,7 @@ const Popup = (props) => {
 
             <div id={"tm-popup-dialog"}>
                 <div id={"tm-popup-content"}>
-                    <Header allowVideoChange={allowVideoChange} renderMode={"absolute"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onConfig={() => onConfig()} onClose={() => onClose()} onMinimize={() => onMinimize() } onZoomClick={()=> onZoomClick()} changeToFeegowVideo={()=>changeToFeegowVideo()}/>
+                    <Header renderMode={"absolute"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onConfig={() => onConfig()} onClose={() => onClose()} onMinimize={() => onMinimize() } onZoomClick={()=> onZoomClick()} changeToFeegowVideo={()=>changeToFeegowVideo()}/>
                     <Video/>
 
                     <div className={"tm-parent-controls-content"}>

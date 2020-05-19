@@ -43,10 +43,9 @@ class TelemedicinaService {
             url: this.getEnvUrl(env,"zoom-integration/end-zoom-meeting/"),
             type: 'post',
             dataType: 'json',
-            data: JSON.stringify(objct),
-
+            data: JSON.stringify(objct)
         });
-        console.log(response);
+
         return response;
     };
 

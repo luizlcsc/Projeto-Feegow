@@ -40,7 +40,10 @@ else
     Encaixe = "0"
 end if
 
-
+IF session("PacienteIDSelecionado") <> "" THEN
+    PacienteID = session("PacienteIDSelecionado")
+    session("PacienteIDSelecionado") = ""
+END IF
 IF req("PacienteID") <> "" THEN
     PacienteID = req("PacienteID")
 END IF

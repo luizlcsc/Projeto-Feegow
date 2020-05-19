@@ -32,11 +32,11 @@ if not FormConfigSQL.eof then
     dataAte = ref("DataAte")&""
     sqlFiltroDataBfp = ""
     if dataDe <>"" and dataAte <>"" then
-        sqlFiltroDataBfp = " AND bfp.DataHora BETWEEN "&mydatenull(dataDe)&" AND "&mydatenull(dataAte)&"  "
+        sqlFiltroDataBfp = " AND date(bfp.DataHora) BETWEEN "&mydatenull(dataDe)&" AND "&mydatenull(dataAte)&"  "
     elseif dataDe <>"" then
-        sqlFiltroDataBfp = " AND bfp.DataHora > "&mydatenull(dataDe)&"  "
+        sqlFiltroDataBfp = " AND date(bfp.DataHora) > "&mydatenull(dataDe)&"  "
     elseif dataAte <>"" then
-        sqlFiltroDataBfp = " AND bfp.DataHora < "&mydatenull(dataAte)&"  "
+        sqlFiltroDataBfp = " AND date(bfp.DataHora) < "&mydatenull(dataAte)&"  "
     end if
 
     sql = "SELECT f.*, pac.NomePaciente, conv.NomeConvenio FROM `_"&FormID&"` f INNER JOIN pacientes pac ON pac.id=f.PacienteID LEFT JOIN convenios conv ON conv.id=pac.ConvenioID1 LEFT JOIN buiformspreenchidos bfp ON bfp.id=f.id  WHERE bfp.sysActive=1 AND 1=1 "&sqlFiltroDataBfp&sqlFiltroData

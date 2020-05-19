@@ -33,7 +33,6 @@ class TelemedicinaService {
             return {'isUserVerified':false};
         }
         const meeting = await TelemedicinaService.endpointCreateZoomMeeting(response,agendamentoId,env);
-        console.log()
         return {isUserVerified:true,meeting: meeting};
     };
 
@@ -44,10 +43,9 @@ class TelemedicinaService {
             url: this.getEnvUrl(env,"zoom-integration/end-zoom-meeting/"),
             type: 'post',
             dataType: 'json',
-            data: JSON.stringify(objct),
-
+            data: JSON.stringify(objct)
         });
-        console.log(response);
+
         return response;
     };
 

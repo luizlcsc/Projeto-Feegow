@@ -14,12 +14,12 @@ const ZoomiFrame = (props) => {
     }
     const changeToFeegowVideo = async () => {
         try{
-            const response = await TelemedicinaService.endpointEndZoomMeeting(props.agendamentoId);
-                localStorage.setItem("telemedicine_default_app","");
-                location.reload();
+            const response = await TelemedicinaService.endpointEndZoomMeeting(props.agendamentoId, props.env);
         }catch(e){
-            console.log(e);
+            console.log(e.message);
         }
+            localStorage.setItem("telemedicine_default_app","");
+            location.reload();
     };
 
     const onZoomClick = () => {
@@ -115,7 +115,7 @@ const ZoomiFrame = (props) => {
 
                 <div id={"tm-popup-dialog"}>
                     <div id={"tm-popup-content"}>
-                        <Header allowVideoChange={allowVideoChange} bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()} changeToFeegowVideo={()=>changeToFeegowVideo()} onZoomClick={()=>onZoomClick()} />
+                        <Header allowVideoChange={true} bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()} changeToFeegowVideo={()=>changeToFeegowVideo()} onZoomClick={()=>onZoomClick()} />
                         <div style={{
                             display: "flex"
                         }}>

@@ -39,14 +39,12 @@ class TelemedicinaService {
     static endpointEndZoomMeeting = async (agendamentoId,env) => {
         let objct = {};
         objct.agendamentoId = agendamentoId;
-        const response  = await  jQuery.ajax({
+        return await  jQuery.ajax({
             url: this.getEnvUrl(env,"zoom-integration/end-zoom-meeting/"),
             type: 'post',
             dataType: 'json',
             data: JSON.stringify(objct)
         });
-
-        return response;
     };
 
     static endpointCreateZoomMeeting = async (zoomUser, agendamentoId,env) =>{

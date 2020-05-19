@@ -129,7 +129,7 @@ const Popup = (props) => {
 
             <div id={"tm-popup-dialog"}>
                 <div id={"tm-popup-content"}>
-                    <Header renderMode={"absolute"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onConfig={() => onConfig()} onClose={() => onClose()} onMinimize={() => onMinimize() } onZoomClick={()=> onZoomClick()} changeToFeegowVideo={()=>changeToFeegowVideo()}/>
+                    <Header allowVideoChange={true} renderMode={"absolute"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onConfig={() => onConfig()} onClose={() => onClose()} onMinimize={() => onMinimize() } onZoomClick={()=> onZoomClick()} changeToFeegowVideo={()=>changeToFeegowVideo()}/>
                     <Video/>
 
                     <div className={"tm-parent-controls-content"}>

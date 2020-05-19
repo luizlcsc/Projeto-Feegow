@@ -13,6 +13,7 @@ const ZoomiFrame = (props) => {
         }
     }
     const changeToFeegowVideo = () => {
+        TelemedicinaService.endpointCreateZoomUser(props.agendamentoId);
         localStorage.setItem("telemedicineDefaultApp","");
         location.reload();
     };

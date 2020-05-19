@@ -89,6 +89,7 @@ const Popup = (props) => {
     };
 
     const changeToFeegowVideo = () => {
+        TelemedicinaService.endpointEndZoomMeeting(props.agendamentoId);
         localStorage.setItem("telemedicineDefaultApp","");
         location.reload();
     };

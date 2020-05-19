@@ -52,7 +52,7 @@ end if
     <script type="text/babel">
         var implementationType = "";
 
-        if(localStorage.getItem("telemedicineDefaultApp") === "zoom")
+        if(localStorage.getItem("telemedicine_default_app") === "zoom")
         {
             implementationType = "zoom";
         }

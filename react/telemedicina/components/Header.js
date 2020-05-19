@@ -6,7 +6,7 @@ const Header = (props) => {
     }, []);
 
     const choosenVideo = () => {
-        if(localStorage.getItem("telemedicineDefaultApp") === "zoom")
+        if(localStorage.getItem("telemedicine_default_app") === "zoom")
         {
             return(
                 <button
@@ -15,7 +15,7 @@ const Header = (props) => {
                         props.changeToFeegowVideo();
 
                     }} className={""}>
-                    <i className={"fa fa-info"}  style={{marginRight:5 }}></i> Feegow video
+                    <i className={"fa fa-info"}  style={{marginRight:5 }}></i> Usar vídeo padrão
                 </button>
             )
         }
@@ -25,7 +25,7 @@ const Header = (props) => {
                 onClick={() => {
                     props.onZoomClick();
                 }} className={""}>
-                <i className={"fa fa-info"}  style={{marginRight:5 }}></i> Video alternativo
+                <i className={"fa fa-info"}  style={{marginRight:5 }}></i> Usar Zoom
             </button>)
     }
 
@@ -88,8 +88,9 @@ const Header = (props) => {
                             props.onReconnect()
                         }}><i className="fa fa-undo"></i> Reconectar</a>
                     </li>
+                    <li role="presentation" className="divider"></li>
                     <li>
-                        {choosenVideo()}
+                        {props.allowVideoChange ? choosenVideo() : null}
                     </li>
                 </ul>
             </div>

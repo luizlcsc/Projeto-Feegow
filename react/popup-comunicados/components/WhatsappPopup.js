@@ -18,7 +18,7 @@ const WhatsappPopup = (props) => {
                             style={{background: "#ffeb00"}}
 
                             data-toggle="modal" data-target="#modalWhatsapp" className={"popup-tm-button"}>
-                        <strong>Ativar agora!</strong>
+                        <strong>Ativar gratuitamente!</strong>
                     </button>
                     <button id="ocultar2" type="button" className="btn btn-recusar marginleft5 popup-tm-button-deny"
                             style={{background: "#37903f"}}

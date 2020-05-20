@@ -16,7 +16,8 @@ end if
     <div class="clearfix form-actions">
     	<div class="row">
             <%=quickField("simpleSelect", "FormID", "Formulário", 3, "", "select id, Nome from buiforms where sysActive=1", "Nome", "")%>
-
+            <%=quickField("datepicker", "DataDe", "Data inicio", 3, "", " input-mask-date ", "", "")%>
+            <%=quickField("datepicker", "DataAte", "Data fim", 3, "", " input-mask-date ", "", "")%>
 			<div id="forms-campos"></div>
 
             <div class="col-md-2">

@@ -92,7 +92,14 @@ MensagensPadraoSQL.movenext
 wend
 MensagensPadraoSQL.close
 set MensagensPadraoSQL = nothing
-set AgendamentosOnlineSQL = db.execute("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1, age.ProfissionalID FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID!=3")
+set AgendamentosOnlineSQL = db.execute("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1, age.ProfissionalID FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID!=3 ORDER BY age.Hora")
+
+
+set MensagemWhatsAppSQL = db.execute("SELECT coalesce(mi.Conteudo, tmi.TextoPadrao) Texto FROM cliniccentral.tiposmodelosimpressos tmi LEFT JOIN modelosimpressos mi ON mi.TiposModelosImpressosID=tmi.id WHERE tmi.id=2")
+
+if not MensagemWhatsAppSQL.eof then
+    TextoWhatsApp = MensagemWhatsAppSQL("Texto")
+end if
 
 if not AgendamentosOnlineSQL.eof then
 %>
@@ -140,15 +147,11 @@ if not AgendamentosOnlineSQL.eof then
                             <td>
                                 <small class="badge badge-danger"><i class="fa fa-envelope"></i> <%=MensagensEnviadas%></small>
                             </td>
-                            <td><a href="#" onclick="CopyLinkToClipboard('<%=AgendamentosOnlineSQL("id")%>', '<%=AgendamentosOnlineSQL("ProfissionalID")%>', '<%=AgendamentosOnlineSQL("PacienteID")%>')">Copiar link</a></td>
+                            <td><button class="btn btn-primary btn-xs" onclick="CopyLinkToClipboard('<%=AgendamentosOnlineSQL("id")%>', '<%=AgendamentosOnlineSQL("ProfissionalID")%>', '<%=AgendamentosOnlineSQL("PacienteID")%>')">Copiar link</button></td>
                             <td class="text-right">
-                          <div class="btn-group text-right "  data-toggle="tooltip" data-placement="left" title="Enviar mensagem">
-                            <button type="button" class="btn btn-success br2 btn-xs fs12 dropdown-toggle" data-toggle="dropdown" aria-expanded="true" disabled> <i class="fa fa-whatsapp"></i>
-                              <span class="caret ml5"></span>
+                          <div class="btn-group text-right "  >
+                            <button onclick='enviaMensagemWhatsApp("<%=AgendamentosOnlineSQL("Cel1")%>", `<%=TextoWhatsApp%>`, `<%=AgendamentosOnlineSQL("id")%>`)' type="button" class="btn btn-success br2 btn-xs fs12 dropdown-toggle"  > <i class="fa fa-whatsapp"></i> Enviar mensagem
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-right dropdown-menu dropdown-menu-right-right" role="menu">
-                              <%=htmlMensagensPadrao%>
-                            </ul>
                           </div>
                         </td>
                         </tr>
@@ -290,6 +293,12 @@ function loadEspecialidade(){
               allSelectedText: 'Todas as especialidades'
         });
     })
+    function openInNewTab(href) {
+      Object.assign(document.createElement('a'), {
+        target: '_blank',
+        href,
+      }).click();
+    }
 
     function modalPaciente(ID) {
         $("#modal-table").modal("show");
@@ -298,29 +307,17 @@ function loadEspecialidade(){
         $("#modal").addClass("modal-lg");
      }
 
-     function enviaMensagemWhatsApp($message) {
-        const $agendamento = $message.parents(".linha-agendamento"),
-            params = {
-                 AgendamentoID: $agendamento.data("id"),
-                 Celular: $agendamento.data("phone"),
-                 ModeloID: $message.data("id"),
-             };
+     function enviaMensagemWhatsApp(phone, message, appointmentId) {
 
-        function EnviaWhatsApp(params){
-            const $form = getModal().find("form");
-            const mensagem = $form.find("#TextoMensagem").val();
-
-            postUrl("/patient-interaction/notify-patient", {
-                message: mensagem,
-                model_id: params.ModeloID,
-                phone: params.Celular,
-                appointment_id: params.AgendamentoID
-            }, function() {
-              closeComponentsModal();
-              showMessageDialog("Mensagem enviada", "success");
-            });
-        }
-        openComponentsModal("EnviaMensagemPadraoPaciente.asp", params, "Enviar mensagem", true, EnviaWhatsApp, 'xs');
+        postUrl("/patient-interaction/notify-patient", {
+            message: message,
+            phone: phone,
+            appointment_id: appointmentId
+        }, function(data) {
+            openInNewTab(`https://api.whatsapp.com/send?phone=${data.Celular}&text=${data.Mensagem}&source=feegow&data=&app_absent=`)
+          // closeComponentsModal();
+          // showMessageDialog("Mensagem enviada", "success");
+        });
      }
 
      function CopyLinkToClipboard(AgendamentoID, ProfissionalID, PacienteID) {

@@ -18,13 +18,11 @@ class TelemedicinaService {
     }
 
     static endpointCreateZoomUser = async (agendamentoId, env) => {
-        // AJAX request
-
 
         let objct = {};
         objct.agendamentoId = agendamentoId;
         const response  = await jQuery.ajax({
-            url: this.getEnvUrl(env,"zoom-integration/create-zoom-user/"),
+            url: this.getEnvUrl(env,"zoom-integration/create-zoom-user"),
             type: 'post',
             dataType: 'json',
             data: JSON.stringify(objct),
@@ -38,13 +36,24 @@ class TelemedicinaService {
         return {isUserVerified:true,meeting: meeting};
     };
 
+    static endpointEndZoomMeeting = async (agendamentoId,env) => {
+        let objct = {};
+        objct.agendamentoId = agendamentoId;
+        return await  jQuery.ajax({
+            url: this.getEnvUrl(env,"zoom-integration/end-zoom-meeting/"),
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify(objct)
+        });
+    };
+
     static endpointCreateZoomMeeting = async (zoomUser, agendamentoId,env) =>{
         // AJAX request
         let object = {};
         object.zoomUserId = zoomUser.zoomUserId;
         object.agendamentoId = agendamentoId;
         return await $.ajax({
-            url: this.getEnvUrl(env,"zoom-integration/create-zoom-meeting/"),
+            url: this.getEnvUrl(env,"zoom-integration/create-zoom-meeting"),
             type: 'post',
             dataType: 'json',
             data: JSON.stringify(object)

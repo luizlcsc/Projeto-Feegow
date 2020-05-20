@@ -12,7 +12,20 @@ const ZoomiFrame = (props) => {
             TelemedicinaService.base("Finaliza");
         }
     }
+    const changeToFeegowVideo = async () => {
+        try{
+            const response = await TelemedicinaService.endpointEndZoomMeeting(props.agendamentoId, props.env);
+        }catch(e){
+            console.log(e.message);
+        }
+            localStorage.setItem("telemedicine_default_app","");
+            location.reload();
+    };
 
+    const onZoomClick = () => {
+        localStorage.setItem("telemedicine_default_app","zoom");
+        location.reload();
+    };
     const onMaximize = () => {
         const $popup = document.getElementById("root"),
             $popupDialog = document.getElementById("tm-popup-dialog"),
@@ -69,7 +82,7 @@ const ZoomiFrame = (props) => {
     };
 
     const getUserZoom = async () => {
-        const userZoom = await TelemedicinaService.endpointCreateZoomUser(props.agendamentoId);
+        const userZoom = await TelemedicinaService.endpointCreateZoomUser(props.agendamentoId, props.env);
 
         setIsLoading(false);
         setIsVerified(userZoom.isUserVerified);
@@ -91,6 +104,10 @@ const ZoomiFrame = (props) => {
             </div>
         );
     }
+
+    const baseEndpointUrl = TelemedicinaService.getEnvUrl(env,"");
+    const allowVideoChange = parseInt(props.licencaId) === 100000 ? true : false;
+
     return isVerified ?
         (
             <div>
@@ -98,13 +115,13 @@ const ZoomiFrame = (props) => {
 
                 <div id={"tm-popup-dialog"}>
                     <div id={"tm-popup-content"}>
-                        <Header bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
+                        <Header allowVideoChange={true} bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()} changeToFeegowVideo={()=>changeToFeegowVideo()} onZoomClick={()=>onZoomClick()} />
                         <div style={{
                             display: "flex"
                         }}>
                             <iframe id={"tm-iframe"} style={{
                                 width: "100%"
-                            }} frameBorder="0" src={`http://localhost:8000/patient-interface/17vqr/zoom-host-meeting/${props.agendamentoId}`}
+                            }} frameBorder="0" src={baseEndpointUrl+`zoom-integration/zoom-host-meeting/${props.agendamentoId}?tk=`+localStorage.getItem("tk")}
                                     allow="camera;microphone;fullscreen;speaker;chat"/>
                         </div>
                     </div>

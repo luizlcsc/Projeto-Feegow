@@ -30,7 +30,7 @@ if not tryLogin.EOF then
         response.redirect("http://clinic7.feegow.com.br/v7")
     end if
 
-    if Servidor="dbfeegow02.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
+    if Servidor="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
        ' erro = "Prezado cliente, foi necessário reiniciar os servidores devido a uma atualização emergencial de sistema operacional. Por favor aguarde em torno de 15 minutos."
     end if
 
@@ -305,8 +305,10 @@ if not tryLogin.EOF then
 			session("UnidadeID") = caixa("UnidadeID")
 		end if
 
-        set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',id,'|') SEPARATOR '') AtendimentosIDS from atendimentos where sysUser="&session("User")&" and isnull(HoraFim) and Data='"&myDate(date())&"'")
+        set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, proc.ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
         if not AtendimentosProf.eof then
+            ProcedimentoTelemedicina=AtendimentosProf("ProcedimentoTelemedicina")
+            session("AtendimentoTelemedicina")=AtendimentosProf("AgendamentoID")
             session("Atendimentos")=AtendimentosProf("AtendimentosIDS")&""
         end if
 

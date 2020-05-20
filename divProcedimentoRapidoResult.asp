@@ -6,8 +6,13 @@ end if
 
 
 txt = replace(req("txt"), " ", "%")
+IF req("tipo") <> "" AND req("tipo") <> "0" THEN
+    tipo = req("tipo")
+    whereTipo = "and TipoProcedimentoID = NULLIF('"&tipo&"','')"
+END IF
+SQL = "select procedimentos.id, NomeProcedimento, Codigo, Valor,TipoProcedimento, TempoProcedimento from procedimentos LEFT JOIN tiposprocedimentos ON tiposprocedimentos.id = procedimentos.TipoProcedimentoID where sysActive=1 and Ativo='on' "&whereTipo&" and (NomeProcedimento like '%"& txt &"%' or Codigo like '%"& txt &"%')"
 
-set procs = db.execute("select id, NomeProcedimento, Codigo, Valor, TempoProcedimento from procedimentos where sysActive=1 and Ativo='on' and (NomeProcedimento like '%"& txt &"%' or Codigo like '%"& txt &"%')")
+set procs = db.execute(SQL)
 if not procs.eof then
 %>
 
@@ -16,6 +21,7 @@ if not procs.eof then
     <thead>
         <tr class="primary">
             <th>Nome do Procedimento</th>
+            <th>Tipo do Procedimento</th>
             <th>Código TUSS</th>
             <th>Valor</th>
             <th>Tempo</th>
@@ -28,6 +34,7 @@ if not procs.eof then
             %>
             <tr>
                 <td><%= procs("NomeProcedimento") %></td>
+                <td><%= procs("TipoProcedimento") %></td>
                 <td><%= procs("Codigo") %></td>
                 <td><%= procs("Valor") %></td>
                 <td><%= procs("TempoProcedimento") %></td>

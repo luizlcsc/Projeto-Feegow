@@ -1009,8 +1009,9 @@ select case lcase(req("P"))
         %>
         <li class="sidebar-label pt20"></li>
         <%
-    case "procedimentos", "pacotes", "procedimentosgrupos", "ConferenciadeAmostras"
-        if isnumeric(req("I")) and req("I")<>"" and lcase(req("P"))<>"procedimentosgrupos" and lcase(req("P"))<>"pacotes" then
+    case "procedimentos", "pacotes", "procedimentosgrupos", "ConferenciadeAmostras", "ProcedimentoLaboratorio"
+        
+        if isnumeric(req("I")) and req("I")<>"" and lcase(req("P"))<>"procedimentosgrupos" and lcase(req("P"))<>"pacotes" and lcase(req("P"))<>"ProcedimentoLaboratorio" then
         %>
         <li class="sidebar-label pt20"></li>
         <li class="active">
@@ -1050,6 +1051,10 @@ select case lcase(req("P"))
             </li>
             <li>
                 <a href="./?P=Pacotes&Pers=Follow"><span class="fa fa-stethoscope"></span> <span class="sidebar-title">Pacotes</span></a>
+            </li>
+            <li>
+                <a href="?P=ProcedimentoLaboratorio&Pers=1" >
+                <span class="fa fa-flask"></span> <span class="sidebar-title">Procedimentos Laboratorios</a>
             </li>
             <%
             if recursoAdicional(24)=4 then
@@ -1541,10 +1546,7 @@ select case lcase(req("P"))
                     <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Configuração de Compra</span></a>
             </li>
         <% END IF %>
-        <li>
-        <a data-toggle="tab" href="#divProcedimentoLaboratorio" onclick="ajxContent('ProcedimentoLaboratorio', '', 1, 'divProcedimentoLaboratorio');">
-            <span class="fa fa-flask"></span> <span class="sidebar-title">Procedimentos Laboratorios</a>
-        </li>
+        
         
          <li>
             <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');">

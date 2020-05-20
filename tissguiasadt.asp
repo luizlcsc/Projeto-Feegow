@@ -344,7 +344,7 @@ if not reg.eof then
                                             end if
 
                                             IF getConfig("calculostabelas") THEN
-                                                set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null)
+                                                set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null,null)
                                                 ValorProcedimento = CalculaValorProcedimentoConvenioPaiObj("TotalGeral")
                                             END IF
 

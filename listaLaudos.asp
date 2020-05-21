@@ -201,7 +201,7 @@ end if
                 set vca = db.execute(sql)
                 if not vca.eof then
                     Status = vca("Status")
-                    Previsao = vca("PrevisaoEntrega")
+                    'Previsao = vca("PrevisaoEntrega")
                     IDLaudo = vca("id")
                     link = "I="& IDLaudo
                     adicionaLinha = 1

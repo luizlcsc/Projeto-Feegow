@@ -3611,7 +3611,7 @@ function zeroEsq(val, quant)
 end function
 
 function fSysActive(NomeCampo, psysActive, PacienteID)
-    if session("OtherCurrencies")="phone" then
+    if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
         %>
         <label><input type="radio" name="<%=NomeCampo %>" class="ace dadosContato" onclick="saveSta(-2, <%=PacienteID%>)" value="-2"<%if psysActive=-2 then response.write(" checked ") end if %> /><span class="lbl"> <small>Lead</small></span></label>
         <label><input type="radio" name="<%=NomeCampo %>" class="ace dadosContato" onclick="saveSta(-3, <%=PacienteID%>)" value="-3"<%if psysActive=-3 then response.write(" checked ") end if %> /><span class="lbl"> <small>Pré-cad.</small></span></label>

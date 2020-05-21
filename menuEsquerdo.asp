@@ -923,7 +923,7 @@ select case lcase(req("P"))
             </li>
             <%
 		    end if
-            if session("OtherCurrencies")="phone" then
+            if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
                 %>
                 <li>
                     <a data-toggle="tab" class="tab" href="#pacienteCalls" onclick="pront('pacienteCalls.asp?I=<%= req("I") %>&Contato=3_<%=req("I")%>')">

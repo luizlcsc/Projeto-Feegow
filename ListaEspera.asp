@@ -101,10 +101,12 @@ if not MensagemWhatsAppSQL.eof then
     TextoWhatsApp = MensagemWhatsAppSQL("Texto")
 end if
 
+PermitirIniciarAtendimentoAvulsoTeleconsulta = getConfig("PermitirIniciarAtendimentoAvulsoTeleconsulta")
+
 if not AgendamentosOnlineSQL.eof then
 %>
 <div class="row">
-    <div class="col-md-5" style="float: right">
+    <div class="col-md-6" style="float: right">
         <div class="panel panel-primary panel-border  top mt30">
             <div class="panel-body bg-light p10">
               <div class="list-group list-group-links list-group-spacing-xs mbn">
@@ -117,7 +119,6 @@ if not AgendamentosOnlineSQL.eof then
                           <th>Paciente</th>
                           <th>Link enviado</th>
                           <th>Link</th>
-                          <th>#</th>
                           <th>#</th>
                         </tr>
                       </thead>
@@ -147,13 +148,42 @@ if not AgendamentosOnlineSQL.eof then
                             <td>
                                 <small class="badge badge-danger"><i class="fa fa-envelope"></i> <%=MensagensEnviadas%></small>
                             </td>
-                            <td><button class="btn btn-primary btn-xs" onclick="CopyLinkToClipboard('<%=AgendamentosOnlineSQL("id")%>', '<%=AgendamentosOnlineSQL("ProfissionalID")%>', '<%=AgendamentosOnlineSQL("PacienteID")%>')">Copiar link</button></td>
-                            <td class="text-right">
-                          <div class="btn-group text-right "  >
-                            <button onclick='enviaMensagemWhatsApp("<%=AgendamentosOnlineSQL("Cel1")%>", `<%=TextoWhatsApp%>`, `<%=AgendamentosOnlineSQL("id")%>`)' type="button" class="btn btn-success br2 btn-xs fs12 dropdown-toggle"  > <i class="fa fa-whatsapp"></i> Enviar mensagem
-                            </button>
-                          </div>
-                        </td>
+                            <td>
+
+                                <div class="bs-component">
+                                    <div class="btn-group">
+                                      <button type="button" onclick="CopyLinkToClipboard('<%=AgendamentosOnlineSQL("id")%>', '<%=AgendamentosOnlineSQL("ProfissionalID")%>', '<%=AgendamentosOnlineSQL("PacienteID")%>')" class="btn btn-success btn-sm">
+                                        Copiar link
+                                      </button>
+
+                                      <button type="button" class="btn btn-success dropdown-toggle btn-sm" data-toggle="dropdown">
+                                          <span class="caret"></span>
+                                          <span class="sr-only">Abrir opções</span>
+                                        </button>
+                                      <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                          <a onclick='enviaMensagemWhatsApp("<%=AgendamentosOnlineSQL("Cel1")%>", `<%=TextoWhatsApp%>`, `<%=AgendamentosOnlineSQL("id")%>`)'  href="#"><i class="fa fa-whatsapp"></i>  Enviar WhatsApp</a>
+                                        </li>
+
+                                        <%
+                                        if PermitirIniciarAtendimentoAvulsoTeleconsulta=1 then
+                                        %>
+                                        <li class="divider"></li>
+                                        <li>
+                                          <a href="#" onclick="if(confirm('Tem certeza que deseja iniciar este atendimento?')){window.location='?P=ListaEspera&Pers=1&Atender=<%=AgendamentosOnlineSQL("id")%>&PacienteID=<%=AgendamentosOnlineSQL("PacienteID")%>&isTelemedicina=true'}">
+                                              <i class="fa fa-play"></i> Iniciar atendimento
+                                          </a>
+                                        </li>
+                                        <%
+                                        end if
+                                        %>
+                                      </ul>
+                                    </div>
+                                </div>
+
+                              </div>
+
+                            </td>
                         </tr>
                         <%
                         AgendamentosOnlineSQL.movenext

@@ -47,7 +47,7 @@ prefixo = right(prefixo, 20)
             <ans:horaRegistroTransacao><%=Hora%></ans:horaRegistroTransacao>
         </ans:identificacaoTransacao>
         <ans:origem>
-            <ans:identificacaoPrestador>
+            <ans:codigoPrestadorNaOperadora>
 				<%
                 CodigoNaOperadora = trim(CodigoNaOperadora&" ")
                 CodigoNaOperadora = TirarAcento(replace(replace(replace(replace(replace(CodigoNaOperadora, ".", ""), "-", ""), ",", ""), "_", ""), " ", ""))
@@ -68,17 +68,18 @@ prefixo = right(prefixo, 20)
                 end if
                 %>
                 <%="<ans:" & tipoCodigoNaOperadora & ">" & CodigoNaOperadora &"</ans:" & tipoCodigoNaOperadora &">"%>
-            </ans:identificacaoPrestador>
+            </ans:codigoPrestadorNaOperadora>
         </ans:origem>
         <ans:destino>
             <ans:registroANS><%=RegistroANS%></ans:registroANS>
         </ans:destino>
-        <ans:Padrao><%=versaoTISS %></ans:Padrao>
+        <ans:versaoPadrao><%=versaoTISS %></ans:versaoPadrao>
     </ans:cabecalho>
     <ans:prestadorParaOperadora>
         <ans:loteGuias>
             <ans:numeroLote><%=NLote%></ans:numeroLote>
-            <ans:guiasTISS>
+            <ans:guias>
+            <ans:guiaFaturamento>
 				<%'inicia as guias
 				hash = "ENVIO_LOTE_GUIAS"&NLote&Data&Hora&CodigoNaOperadora&RegistroANS&versaoTISS&NLote
 				while not guias.eof
@@ -205,18 +206,21 @@ prefixo = right(prefixo, 20)
 					
 					hash = hash&RegistroANS&NGuiaPrestador&NGuiaPrincipal&NGuiaOperadora&DataAutorizacao&Senha&DataValidadeSenha&NumeroCarteira&AtendimentoRN&NomePaciente&ContratadoSolicitanteCodigoNaOperadora&NomeContratadoSolicitante&NomeProfissionalSolicitante&ConselhoProfissionalSolicitante&NumeroNoConselhoSolicitante&CodigoUFConselhoSolicitante&CodigoCBOSolicitante&DataSolicitacao&CaraterAtendimentoID&IndicacaoClinica&ContExecCodigoNaOperadora&NomeContratado&CodigoCNES&TipoAtendimentoID&IndicacaoAcidenteID&TipoConsultaID&MotivoEncerramentoID
 					%>
-                <ans:guiaSP-SADT>
-                    <ans:cabecalhoGuia>
-                        <ans:registroANS><%=RegistroANS%></ans:registroANS>
+                <ans:guiaSP_SADT>
+                    <ans:identificacaoGuiaSADTSP>
+                        <ans:identificacaoFontePagadora>
+                            <ans:registroANS><%=RegistroANS%></ans:registroANS>
+                        </ans:identificacaoFontePagadora>
+                        <ans:dataEmissaoGuia><%= DataSolicitacao %></ans:dataEmissaoGuia>
                         <ans:numeroGuiaPrestador><%= NGuiaPrestador %></ans:numeroGuiaPrestador>
                         <%if NGuiaPrincipal<>"" then%><ans:guiaPrincipal><%= NGuiaPrincipal %></ans:guiaPrincipal><%end if%>
-                    </ans:cabecalhoGuia>
+                    </ans:identificacaoGuiaSADTSP>
                     <%
 					if NGuiaOperadora<>"" OR DataAutorizacao<>"" OR Senha<>"" OR DataValidadeSenha<>"" then
 					%>
                     <ans:dadosAutorizacao>
-                        <%if NGuiaOperadora<>"" then%><ans:numeroGuiaOperadora><%= NGuiaOperadora %></ans:numeroGuiaOperadora><%end if%>
                         <%if DataAutorizacao<>"" then%><ans:dataAutorizacao><%= DataAutorizacao %></ans:dataAutorizacao><% End If %>
+                        <%if NGuiaOperadora<>"" then%><ans:numeroGuiaOperadora><%= NGuiaOperadora %></ans:numeroGuiaOperadora><%end if%>
                         <%if Senha<>"" then%><ans:senha><%= Senha %></ans:senha><% End If %>
                         <%if DataValidadeSenha<>"" then%><ans:dataValidadeSenha><%= DataValidadeSenha %></ans:dataValidadeSenha><% End If %>
                     </ans:dadosAutorizacao>
@@ -225,8 +229,8 @@ prefixo = right(prefixo, 20)
 					%>
                     <ans:dadosBeneficiario>
                         <ans:numeroCarteira><%= NumeroCarteira %></ans:numeroCarteira>
-                        <ans:atendimentoRN><%= AtendimentoRN %></ans:atendimentoRN>
                         <ans:nomeBeneficiario><%= NomePaciente %></ans:nomeBeneficiario>
+                        <ans:atendimentoRN><%= AtendimentoRN %></ans:atendimentoRN>
                     </ans:dadosBeneficiario>
                     <ans:dadosSolicitante>
                         <ans:contratadoSolicitante>
@@ -433,7 +437,7 @@ prefixo = right(prefixo, 20)
                         <ans:valorGasesMedicinais><%= GasesMedicinais %></ans:valorGasesMedicinais>
                         <ans:valorTotalGeral><%= TotalGeral %></ans:valorTotalGeral>
                     </ans:valorTotal>
-                </ans:guiaSP-SADT>
+                </ans:guiaSP_SADT>
                 <%
 				guias.movenext
 				wend
@@ -441,7 +445,8 @@ prefixo = right(prefixo, 20)
 				set guias=nothing
 
 				'finaliza as guias%>
-            </ans:guiasTISS>
+            </ans:guiaFaturamento>
+            </ans:guias>
         </ans:loteGuias>
     </ans:prestadorParaOperadora>
     <ans:epilogo>

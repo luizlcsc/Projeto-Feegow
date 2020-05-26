@@ -637,18 +637,27 @@ else
 
     $.each($waitingTime,function() {
         var arrival = dateFix($(this).data("arrival"));
-        var now = dateFixDmy("<%=now()%>");
-
+        /*var now = dateFixDmy("<%=now()%>");
+        
         var timeDiff = Math.abs(new Date(now) - new Date(arrival));
         timeDiff = Math.floor((timeDiff/1000)/60);
-
         var diffText = "há "+timeDiff+" minuto"+(timeDiff>1 ? "s" : "");
-
-        $(this).html(diffText);
+        
+        $(this).html(diffText);*/
+        $(this).html(diferencaEmMinutos(arrival));
     });
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
     });
+
+    function diferencaEmMinutos(data1){
+        const now = new Date(); 
+        const past = new Date(data1); 
+        const diff = Math.abs(now.getTime() - past.getTime()); 
+        const min = Math.floor(diff / (1000 * 60 )); 
+
+        return "há "+min+" minuto"+(min>1 ? "s" : "")
+    }
 
     function rechamar(arg){
 

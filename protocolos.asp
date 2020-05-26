@@ -1,12 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
 
-<script type="text/javascript">
-    $(".crumb-active").html("<a href='#'>Cadastro de Protocolo</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-th-list");
-    $(".crumb-trail").removeClass("hidden");
-    $("#rbtns").html("<div class='topbar-right'><a class='btn btn-sm btn-success' href='./?P=Protocolos&I=N&Pers=1'><i class='fa fa-plus'></i> INSERIR</a></div>");
-</script>
+
 <br />
 
 <%
@@ -35,12 +30,12 @@ if req("I")<>"N" then
         GrupoID = getProtocolo("GrupoID")
         Procedimentos = getProtocolo("Procedimentos")
         Referencia = getProtocolo("Referencia")
-        Ciclos = getProtocolo("Ciclos")
+        NCiclos = getProtocolo("NCiclos")
         AUC = getProtocolo("AUC")
         Marcacao = getProtocolo("Marcacao")
-        Periodo = getProtocolo("Periodo")
+        MaxDias = getProtocolo("MaxDias")
+        Periodicidade = getProtocolo("Periodicidade")
         Duracao = getProtocolo("Duracao")
-        DuracaoTempo = getProtocolo("DuracaoTempo")
         Ativo = getProtocolo("Ativo")
     end if
 end if
@@ -77,15 +72,12 @@ end if
                 </div>
                 <div class="col-md-12 mt10">
                 <%=quickField("text", "Referencia", "Ref. Bibliográfica", 2, Referencia, "", "", "")%>
-                <%=quickField("number", "Ciclos", "Nº Ciclos", 1, Ciclos, " text-right ", "", "") %>
+                <%=quickField("number", "NCiclos", "Nº Ciclos", 1, NCiclos, " text-right ", "", "") %>
                 <%=quickField("text", "AUC", "AUC", 1, AUC, " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
                 <%=quickField("number", "Marcacao", "Máx. agendam. p/ dia", 2, Marcacao, " text-right ", "", "") %>
-                <%=quickField("number", "Periodo", "Máx. dias Ciclo", 2, Periodo, " text-right ", "", "") %>
+                <%=quickField("number", "MaxDias", "Máx. dias Ciclo", 2, MaxDias, " text-right ", "", "") %>
                 <%=quickField("number", "Periodicidade", "Periodicidade", 2, Periodicidade, " text-right ", "", "") %>
                 <%=quickField("number", "Duracao", "Duração do Tratamento", 2, Duracao, " text-right ", "", "") %>
-                <%'=quickField("simpleSelect", "DuracaoTempo", "&nbsp;", 2, DuracaoTempo, "select 'm' id, 'Minuto(s)' Duracao union all select 'h' id, 'Hora(s)' Duracao", "Duracao", " semVazio ")%>
-
-
                 </div>
             </div>
         </div>
@@ -130,7 +122,7 @@ end if
     </div>
 </form>
 
-<script>
+<script type="text/javascript">
     $("#Medicamentos").on("click", function (){
        $("#btnMedicamentos").removeClass("hidden");
        $("#btnKits").addClass("hidden");
@@ -162,15 +154,23 @@ end if
 
     }
     function addMedicamentos(ID){
-        var Dias = $("#Periodo").val();
-        var Ciclos = $("#Ciclos").val();
-    	$.post("ProtocolosMedicamentosTabela.asp?Tipo=I&I="+ID+"&Ciclos="+Ciclos+"&Dias="+Dias, $("#formProtocolos").serialize(), function(data, status){$("#ProtocolosMedicamentosTabela").html(data);});
+        saveProtocolo(ID);
+    	$.post("ProtocolosMedicamentosTabela.asp?Tipo=I&I="+ID, $("#formProtocolos").serialize(), function(data, status){$("#ProtocolosMedicamentosTabela").html(data);});
     }
     function addKits(ID){
+        saveProtocolo(ID);
     	$.post("ProtocolosKitsTabela.asp?Tipo=I&I="+ID, $("#formProtocolos").serialize(), function(data, status){$("#ProtocolosKitsTabela").html(data);});
     }
+    function copiarProtocolo(ID) {
+        $.post("ProtocoloDuplicar.asp?I="+ID,  function(data){
+            eval(data);
+        });
+    }
 </script>
-<%
 
-
-%>
+<script type="text/javascript">
+    $(".crumb-active").html("<a href='#'>Cadastro de Protocolo</a>");
+    $(".crumb-icon a span").attr("class", "fa fa-th-list");
+    $(".crumb-trail").removeClass("hidden");
+    $("#rbtns").html("<div class='topbar-right'><button class='btn btn-sm btn-alert' onclick='copiarProtocolo(<%=I%>)'><i class='fa fa-files-o'></i> COPIAR</button> <a class='btn btn-sm btn-success' href='./?P=Protocolos&I=N&Pers=1'><i class='fa fa-plus'></i> INSERIR</a></div>");
+</script>

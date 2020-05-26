@@ -26,7 +26,7 @@ if Acao="I" then
             title: 'Salvo com sucesso',
             text: 'Interação salva com sucesso.',
             type: 'success',
-            delay: 5000
+            delay: 1000
         });
     <%
 end if

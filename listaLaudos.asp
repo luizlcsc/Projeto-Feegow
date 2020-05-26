@@ -43,7 +43,7 @@ end if
     </thead>
     <tbody>
     <%
-    set GroupConcat = db.execute("SET SESSION group_concat_max_len = 1000000;")
+    set GroupMarketplaceSetup&Pers=1Concat = db.execute("SET SESSION group_concat_max_len = 1000000;")
     set pProcsLaudar = db.execute("select group_concat(id) ProcsLaudar from procedimentos WHERE Laudo=1 AND Ativo='on'")
     procsLaudar = pProcsLaudar("ProcsLaudar")
         'response.write(procsLaudar)

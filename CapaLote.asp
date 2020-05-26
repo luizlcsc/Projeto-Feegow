@@ -262,7 +262,7 @@ function downloadExcel(){
     $("#htmlTable").val($("#capa-lote").html());
     var tk = localStorage.getItem("tk");
 
-    $("#formExcel").attr("action", domain+"components/public/reports/download-excel?title=Lote<%=capa("Lote")%>&tk="+tk).submit();
+    $("#formExcel").attr("action", domain+"reports/download-excel?title=<%=capa("Lote")%>&tk=" + localStorage.getItem("tk")).submit();
 }
 </script>
 

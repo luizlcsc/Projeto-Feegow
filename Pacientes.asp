@@ -62,7 +62,22 @@
 
     response.write("false")
     response.end
-END IF %>
+END IF
+
+IF req("Acao") = "CancelarTelemedicina" AND session("AtendimentoTelemedicina")&""<>"" THEN
+    set ate = db.execute("SELECT id FROM atendimentos WHERE AgendamentoID = "&session("AtendimentoTelemedicina"))
+    db.execute("DELETE FROM atendimentoonline WHERE AgendamentoID = "&session("AtendimentoTelemedicina"))
+    db.execute("DELETE FROM atendimentos WHERE AgendamentoID = "&session("AtendimentoTelemedicina"))
+    db.execute("UPDATE agendamentos SET StaID=6 WHERE id = "&session("AtendimentoTelemedicina"))
+    IF NOT ate.EOF THEN
+        session("Atendimentos") = replace(session("Atendimentos"), "|"&ate("id")&"|", "")
+    END IF
+    session("AtendimentoTelemedicina") = ""
+    response.Redirect("./?P=Pacientes&Pers=1&I="&req("I"))
+    response.end
+END IF
+%>
+
 <!--#include file="modal.asp"-->
 <!--#include file="modalComparar.asp"-->
 <%

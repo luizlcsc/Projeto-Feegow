@@ -79,7 +79,7 @@ set reg = db.execute("select * from "&request.QueryString("P")&" where id="&requ
                     <div class="col-md-10">
                     </div>
                     <div class="col-md-2">
-        <% IF reg("sysActive")=1 and session("Franqueador") <> "" AND session("UserOld") = "" THEN %>
+        <% IF FALSE AND reg("sysActive")=1 and session("Franqueador") <> "" AND session("UserOld") = "" THEN %>
               <a href="sys_financialCompanyUnits.asp?to=<%=reg("id")%>" class="btn  btn-primary">
                   Logar na Licenca <i class="fa fa-arrow-right"></i>
               </a>
@@ -122,9 +122,12 @@ set reg = db.execute("select * from "&request.QueryString("P")&" where id="&requ
                             </div>
                         </div>
                         <%=quickField("text", "UnitName", "Razão Social #" & req("I"), 3, reg("UnitName"), "", "", " required")%>
-                        <%=quickField("text", "NomeFantasia", "Nome Fantasia", 2, reg("NomeFantasia"), "", "", " required")%>
+                        <%=quickField("text", "NomeFantasia", "Nome Fantasia", 3, reg("NomeFantasia"), "", "", " required")%>
                         <%= quickField("text", "CNPJ", "CNPJ", 2, reg("CNPJ"), " input-mask-cnpj", "", "") %>
                         <%= quickField("text", "CNES", "CNES", 2, reg("CNES"), "", "", "") %>
+                        <% IF ModoFranquia THEN %>
+                            <%= quickField("simpleSelect", "RegiaoUnidade", "Região", 3, reg("RegiaoUnidade"), "SELECT * FROM unidadesregioes", "descricao", "") %>
+                        <% END IF %>
                     </div>
                     <div class="row">
                     </div>

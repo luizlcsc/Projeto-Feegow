@@ -148,7 +148,7 @@ while not proc.eof
                     END IF
 
                     if isnull(Valor) AND getConfig("calculostabelas") then
-                        SET Valores   = CalculaValorProcedimentoConvenio(null,Forma,proc("id"),PlanoID,CodigoNaOperadora,1,null)
+                        SET Valores   = CalculaValorProcedimentoConvenio(null,Forma,proc("id"),PlanoID,CodigoNaOperadora,1,null,null)
                         ValoresAnexos = CalculaValorProcedimentoConvenioAnexo(Forma,proc("id"),Valores("AssociacaoID"),PlanoID)
                         Valor = formatnumber(Valores("TotalGeral")+ValoresAnexos, 2)
                         vp=Valor

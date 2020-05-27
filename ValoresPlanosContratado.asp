@@ -203,33 +203,71 @@ function getValues(){
 
 
     let result = {};
-
+    let errors = [];
     ["Contratados","Calculos","Planos","Procedimentos","Grupos","Vias"].forEach((tagName)=>{
         keys.forEach((key) => {
             $("select[name='"+tagName+"["+key+"]']").each((item,tag) => {
                 if(!result[key]){
                     result[key] = {};
                 }
+                let isvalid = validCampos(key,tagName,$(tag).val());
+                if(isvalid!="")
+                    errors.push(isvalid)
                 result[key][tagName] = $(tag).val();
             });
         });
     });
 
     keys.forEach((key) => {
-         result[key]["Tipo"]  = $(`[name='tipo[${key}]']`).val();
-         result[key]["valor"] = $(`[name='valor[${key}]']`).val().replace(".","").replace(",",".");
+        let isvalid = validCampos(key,"Tipo",$(`[name='tipo[${key}]']`).val())
+        if(isvalid != "")
+            errors.push(isvalid)
+
+        isvalid = validCampos(key,"valor",$(`[name='valor[${key}]']`).val())
+        if(isvalid != "")
+            errors.push(isvalid)
+
+        result[key]["Tipo"]  = $(`[name='tipo[${key}]']`).val();
+        result[key]["valor"] = $(`[name='valor[${key}]']`).val().replace(".","").replace(",",".");
     });
+
+    if(errors.length>0)
+        result.errors = errors;
+
     return result;
 }
+
+function validCampos(itemIndex,campo,valor){
+    let RequiredCampos = ["Calculos", "Tipo","valor"];
+    if(RequiredCampos.includes(campo))
+    {
+        if (valor=="" ||valor == null)
+           return "o campo "+campo+" do item "+(parseInt( itemIndex)+1)+" deve ser preenchido";
+    }
+    return "";
+
+}
+
 $('#save').replaceWith($('#save').clone());
 $("#save").on('click',() => salvarProcedimentos());
 
 var salvarProcedimentos = function(){
 
-     if(!$("#divValoresPlanos").is(':visible')){
-        return ;
-     }
-
+    if(!$("#divValoresPlanos").is(':visible')){
+    return ;
+    }
+    let values = getValues();
+    if( values.hasOwnProperty('errors')){
+        for (const error of values.errors) {
+            new PNotify({
+                title: 'Atenção!',
+                text: error,
+                type: 'warning',
+                delay: 2500
+            });
+        }
+        return;
+    }
       fetch(domain+'api/convenios-modificadores/save',{
          method:"POST",
          headers: {
@@ -237,14 +275,24 @@ var salvarProcedimentos = function(){
                  'Accept': 'application/json',
                  'Content-Type': 'application/json'
          },
-         body:JSON.stringify({parametros:getValues(),convenio:<%=ConvenioID%>})
-      }).then(() => {
+         body:JSON.stringify({parametros:values,convenio:<%=ConvenioID%>})
+      }).then(data => data.json()).then( jsonData => {
+          const result = jsonData;
+          if(result.status === "error"){
+             new PNotify({
+                  title: 'Atenção!',
+                  text: result.msg,
+                  type: 'warning',
+                  delay: 2500
+              }); 
+          }else{
              new PNotify({
                   title: 'Sucesso!',
                   text: 'Dados cadastrados com sucesso.',
                   type: 'success',
                   delay: 2500
               });
+            }
       });
 
       return false;

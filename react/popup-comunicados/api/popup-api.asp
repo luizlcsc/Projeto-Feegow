@@ -16,7 +16,7 @@ Select Case action
     'retornar um json
     ' cria a tabela de cliniccentral.comunicados
     sql = "insert into cliniccentral.comunicados ( UserID, ComunicadoID, Interesse) values ("& UserID &", "& ComunicadoID &", "& Interesse &")"
-    db.exe2cute( sql )
+    db.execute( sql )
 
   Case "GetComunicadoById"
 
@@ -27,15 +27,24 @@ Select Case action
 
   Case "GetComunicadoNaoVisualizado"
 
-    sql = "SELECT pop.* FROM cliniccentral.popup_comunicados pop LEFT JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id AND com.UserID="&UserID&" WHERE (ExibirApenas is null or ExibirApenas Like '%|"&LicencaID&"|%') AND com.id IS NULL AND (com.Interesse=1 or com.Interesse IS NULL) AND sysActive=1 AND pop.id="&Request.QueryString("ComunicadoID")
+    sql = "SELECT pop.* FROM cliniccentral.popup_comunicados pop LEFT JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id AND com.UserID="&UserID&" WHERE (ExibirApenas is null or ExibirApenas Like '%|"&LicencaID&"|%') AND (com.id IS NULL OR com.Interesse=1) AND (com.Interesse=1 or com.Interesse IS NULL) AND sysActive=1 AND pop.id="&Request.QueryString("ComunicadoID")
     set ComunicadoSQL = db.execute( sql )
 
     Exibe=True
 
     if not ComunicadoSQL.eof then
-        if not isnull(ComunicadoSQL("RecursoAdicionalID")) then
-            if recursoAdicional(ComunicadoSQL("RecursoAdicionalID"))<>0 then
-                Exibe=False
+        RecursoAdicionalID=ComunicadoSQL("RecursoAdicionalID")
+        RecursoAdicionalStatus=ComunicadoSQL("RecursoAdicionalStatus")
+
+        if not isnull(RecursoAdicionalID) then
+            if isnull(RecursoAdicionalStatus) then
+                if recursoAdicional(RecursoAdicionalID)<>0 then
+                    Exibe=False
+                end if
+            else
+                if recursoAdicional(RecursoAdicionalID)&""<>RecursoAdicionalStatus&"" then
+                    Exibe=False
+                end if
             end if
         end if
     end if

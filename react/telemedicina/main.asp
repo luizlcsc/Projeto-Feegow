@@ -16,10 +16,10 @@ set AgendamentoSQL = db.execute(sqlAgendamento)
 if not AgendamentoSQL.eof then
     agendamentoId=AgendamentoSQL("id")
     %>
-    <script crossorigin  src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-    <script crossorigin  src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-    <script crossorigin  src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script crossorigin  src="https://unpkg.com/peerjs@1.0.0/dist/peerjs.min.js"></script>
+        <script crossorigin  src="react/src/react.production.min.js"></script>
+        <script crossorigin  src="react/src/react-dom.production.min.js"></script>
+        <script crossorigin  src="react/src/babel.min.js"></script>
+        <script crossorigin  src="react/src/peerjs.min.js"></script>
 <%
 if AppEnv="development" then
 %>

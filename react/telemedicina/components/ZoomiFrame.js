@@ -106,7 +106,6 @@ const ZoomiFrame = (props) => {
     }
 
     const baseEndpointUrl = TelemedicinaService.getEnvUrl(env,"");
-    const allowVideoChange = parseInt(props.licencaId) === 100000 ? true : false;
 
     return isVerified ?
         (
@@ -115,7 +114,7 @@ const ZoomiFrame = (props) => {
 
                 <div id={"tm-popup-dialog"}>
                     <div id={"tm-popup-content"}>
-                        <Header allowVideoChange={true} bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()} changeToFeegowVideo={()=>changeToFeegowVideo()} onZoomClick={()=>onZoomClick()} />
+                        <Header allowVideoChange={props.allowVideoChange} bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()} changeToFeegowVideo={()=>changeToFeegowVideo()} onZoomClick={()=>onZoomClick()} />
                         <div style={{
                             display: "flex"
                         }}>

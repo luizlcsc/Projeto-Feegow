@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
+
 call insertRedir(request.QueryString("P"), request.QueryString("I"))
 
 sql = "select * from sys_smsemail WHERE id="&req("I")
@@ -10,12 +11,26 @@ if reg.eof then
     set reg = db.execute(sql)
 end if
 
+if recursoAdicional(31) = 4 then
+    configWhatsApp = 1
+
+    qWhatsAppCheck = "select WhatsApp from eventos_emailsms where id = '"&req("I")&"'"
+    set WhatsAppCheckSQL = db.execute(qWhatsAppCheck)
+    if WhatsAppCheckSQL("WhatsApp") = 1 or WhatsAppCheckSQL("WhatsApp") = True then
+        AtivoWhatsApp = 1
+        txtZap = ", WhatsApp"
+    else
+        AtivoWhatsApp = 0
+    end if
+else
+    configWhatsApp = 0
+end if
 %>
-<%=header(req("P"), "Configuração de E-mail e SMS", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
+<%=header(req("P"), "Configuração de E-mail"&txtZap&" e SMS", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
 <%
 
 if ref("E")="E" then
-    db_execute("update sys_smsemail set InviteEmail='"&ref("InviteEmail")&"' , AtivoEmail='"&ref("AtivoEmail")&"', TextoEmail='"&ref("TextoEmail")&"', ConfirmarPorEmail='"&ref("ConfirmarPorEmail")&"', TempoAntesEmail='"&ref("TempoAntesEmail")&"', AtivoSMS='"&ref("AtivoSMS")&"', TextoSMS='"&ref("TextoSMS")&"', ConfirmarPorSMS='"&ref("ConfirmarPorSMS")&"', TempoAntesSMS='"&ref("TempoAntesSMS")&"', HAntesEmail="&treatvalzero(ref("HAntesEmail"))&", HAntesSMS="&treatvalzero(ref("HAntesSMS"))&", LinkRemarcacao='"&ref("LinkRemarcacao")&"'")
+'    db_execute("update sys_smsemail set InviteEmail='"&ref("InviteEmail")&"' , AtivoEmail='"&ref("AtivoEmail")&"', TextoEmail='"&ref("TextoEmail")&"', ConfirmarPorEmail='"&ref("ConfirmarPorEmail")&"', TempoAntesEmail='"&ref("TempoAntesEmail")&"', AtivoSMS='"&ref("AtivoSMS")&"', TextoSMS='"&ref("TextoSMS")&"', ConfirmarPorSMS='"&ref("ConfirmarPorSMS")&"', TempoAntesSMS='"&ref("TempoAntesSMS")&"', HAntesEmail="&treatvalzero(ref("HAntesEmail"))&", HAntesSMS="&treatvalzero(ref("HAntesSMS"))&", LinkRemarcacao='"&ref("LinkRemarcacao")&"'")
 else
 %>
 <br />
@@ -68,22 +83,25 @@ else
 
     <div class="col-md-6">
         <div class="panel">
+
             <div class="panel-heading">
-                <span class="panel-title">
-                    Enviar SMS &raquo; <small><span class="badge badge-pink">R$ 0,12</span> por SMS enviado</small>
-                </span>
-                <span class="panel-controls">
-                    <div title="Ativar / Desativar" class='mn'>
-                        <div class='switch switch-info switch-inline'>
-                            <input <% If reg("AtivoSMS")="on" Then %> checked="checked" <%end if%> name="AtivoSMS" id="AtivoSMS" type="checkbox" />
-                            <label class="mn" for="AtivoSMS"></label>
-                        </div>
-                    </div>
-                </span>
+                Custo por mensagem enviada <span class="badge badge-pink">R$ 0,12</span>
+                <label class="mn" for="AtivoSMS">
+                        <input <% If reg("AtivoSMS")="on" Then %> checked="checked" <%end if%> name="AtivoSMS" id="AtivoSMS" type="checkbox" />
+                        SMS
+                    </label>
+                    <%if configWhatsApp=1 then%>
+
+                    <label class="mn" for="AtivoWhatsApp">
+                        <input <% If AtivoWhatsApp=1 Then %> checked="checked" <%end if%> name="AtivoWhatsApp" id="AtivoWhatsApp" type="checkbox" />
+                        WhatsApp
+                    </label>
+                    <%end if%>
             </div>
             <div class="panel-body">
+
                 <div class="row">
-                    <%=quickField("memo", "TextoSMS", "Texto do SMS (m&aacute;x. 155 caracteres)", 12, reg("TextoSMS"), " limited", "", " rows='8' maxlength='1000'")%>
+                    <%=quickField("memo", "TextoSMS", "Texto (m&aacute;x. 155 caracteres)", 12, reg("TextoSMS"), " limited", "", " rows='8' maxlength='1000'")%>
                 </div>
                 <hr class="short alt">
                 <div class="row">
@@ -107,10 +125,11 @@ $(document).ready(function(e) {
 
     $("#Salvar").click(function() {
       $("#frm").submit();
+
     })
 });
-
 <!--#include file="jQueryFunctions.asp"-->
 </script>
 <%end if%>
+
 <!--#include file="disconnect.asp"-->

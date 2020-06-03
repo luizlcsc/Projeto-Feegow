@@ -5487,10 +5487,12 @@ End function
 
 function arqEx(nArquivo, nTipo)
 	set fs=Server.CreateObject("Scripting.FileSystemObject")
-	if fs.FileExists("E:\uploads\"& replace(session("Banco"), "clinic", "") &"\"& nTipo &"\"& nArquivo) then
+	if fs.FileExists("E:\uploads\"& replace(session("Banco"), "clinic", "") &"\"& nTipo &"\"& nArquivo) or (1 and nArquivo&""<>"") then
 		arqEx = "/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
+    elseif nArquivo&""="" then
+        arqEx = ""
 	else
-		arqEx = "https://clinic.feegow.com.br/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
+		arqEx = "https://feegow.com/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
 	end if
 	set fs=nothing
 end function

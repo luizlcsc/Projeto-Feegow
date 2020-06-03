@@ -127,6 +127,8 @@ set reg = db.execute("select * from "&request.QueryString("P")&" where id="&requ
                         <%= quickField("text", "CNES", "CNES", 2, reg("CNES"), "", "", "") %>
                         <% IF ModoFranquia THEN %>
                             <%= quickField("simpleSelect", "RegiaoUnidade", "Região", 3, reg("RegiaoUnidade"), "SELECT * FROM unidadesregioes", "descricao", "") %>
+                            <%= quickField("simpleSelect", "ResponsavelMedico", "Responsável Técnico", 3, reg("ResponsavelMedico"), "SELECT * FROM profissionais WHERE  sysActive = 1  order by 2", "NomeProfissional", "") %>
+                            <%= quickField("simpleSelect", "ResponsavelOdontologico", "Responsável Odontológico", 3, reg("ResponsavelOdontologico"), "SELECT * FROM profissionais WHERE sysActive = 1  order by 2", "NomeProfissional", "") %>
                         <% END IF %>
                     </div>
                     <div class="row">

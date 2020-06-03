@@ -19,14 +19,14 @@ response.write("<?xml version=""1.0"" encoding=""ISO-8859-1""?>")
 
 response.Charset="utf-8"
 
-versaoTISS = "3.04.01"
+versaoTISS = "3.05.00"
 
 
 prefixo = "00000000000000000000"&NLote
 prefixo = right(prefixo, 20)
 
 %>
-<ans:mensagemTISS xsi:schemaLocation="http://www.ans.gov.br/padroes/tiss/schemas tissV3_04_01.xsd" xmlns:ans="http://www.ans.gov.br/padroes/tiss/schemas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ans:mensagemTISS xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:schemaLocation="http://www.ans.gov.br/padroes/tiss/schemas/tissV3_05_00.xsd" xmlns:ans="http://www.ans.gov.br/padroes/tiss/schemas">
     <ans:cabecalho>
         <ans:identificacaoTransacao>
             <ans:tipoTransacao>ENVIO_LOTE_GUIAS</ans:tipoTransacao>

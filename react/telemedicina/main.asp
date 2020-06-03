@@ -34,15 +34,15 @@ end if
 
         <script crossorigin  src="react/src/babel.min.js"></script>
         <script crossorigin  src="react/src/peerjs.min.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/Services/TelemedicinaService.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/Video.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/Controls.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/Popup.js?v=1"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/WherebyiFrame.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/ZoomiFrame.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/PopupNative.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/Header.js"></script>
-    <link type="text/css" rel="stylesheet" href="react/telemedicina/src/css/telemedicina.css" />
+    <script crossorigin type="text/babel" src="react/telemedicina/Services/TelemedicinaService.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/Video.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/Controls.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/Popup.js??ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/WherebyiFrame.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/ZoomiFrame.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/PopupNative.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/Header.js?ch=1"></script>
+    <link type="text/css" rel="stylesheet" href="react/telemedicina/src/css/telemedicina.css?ch=1" />
     <style>
         .screen{
             min-width:400px !important;

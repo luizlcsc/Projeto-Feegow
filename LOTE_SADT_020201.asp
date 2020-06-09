@@ -333,9 +333,12 @@ prefixo = right(prefixo, 20)
 						
 						%>
                         <ans:procedimentos>
-							<ans:equipe>
                             <%
 							set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaissadt as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla like e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where GuiaID="&guias("id"))
+							if not eq.eof then
+							%>
+							<ans:equipe>
+							<%
 							while not eq.eof
 								GrauParticipacao = TirarAcento(eq("GrauParticipacao")&"")
 								if GrauParticipacao="" or isnull(GrauParticipacao) then GrauParticipacao="" end if
@@ -393,9 +396,12 @@ prefixo = right(prefixo, 20)
 							wend
 							eq.close
 							set eq = nothing
-							hash = hash &CodigoProcedimento&TabelaID&Descricao&Data&HoraInicio&HoraFim&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
 							%>
                             </ans:equipe>
+							<%
+							end if
+							hash = hash &CodigoProcedimento&TabelaID&Descricao&Data&HoraInicio&HoraFim&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
+							%>
 							<ans:procedimento>
                                 <ans:codigo><%=  CodigoProcedimento%></ans:codigo>
                                 <ans:tipoTabela><%= TabelaID %></ans:tipoTabela>

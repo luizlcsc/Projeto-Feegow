@@ -165,7 +165,7 @@ end if
 
 
 if req("debug")="1" then
-    response.write(sql)
+    response.write("<pre>"&sql&"</pre>")
 end if
 set veseha=db.execute(sql)'Hora
 
@@ -411,10 +411,28 @@ else
                 disabPagto = "disabled"
                 labelDisabled = "Pendente de pgto."
                 tagPaciente = "div"
+
+                
             end if
+            
         end if
     end if
 
+    'DESATIVA BOTÕES DE CHAMAR / ATENDE::: PERMISSAO > OUTRAS CONFIGS > CAT(ATENDIMENTO) :: RAFAEL MAIA ::
+    if instr("|"&getConfig("BloquearAtendimentoMediantePagamento")&"|","|"&session("unidadeID")&"|") > 1 then
+        if accountBalance("3_"&veseha("PacienteID"), 0) < 0 then
+            btnAtenderDisabled  = 1
+            btnChamarDisabled   = 1
+            
+            disabPagto = "disabled"
+            labelDisabled = "Pendente de pgto."
+            tagPaciente = "div"
+        end if
+    else
+        btnAtenderDisabled  = 0
+        btnChamarDisabled   = 0
+    end if
+    '</DESATIVA BOTÕES DE CHAMAR>
     if exibeLinha="S" then
         if Sta=33 then
             fLinha = " class='warning' "
@@ -511,8 +529,8 @@ else
         <%if veseha("StaID")<>2 then%>
     	<button
     	 <%
-
-        if veseha("StaID")<>4 and veseha("StaID")<>5 and veseha("StaID")<>33 then
+        
+        if (veseha("StaID")<>4 and veseha("StaID")<>5 and veseha("StaID")<>33) OR (disabPagto<>"") then
             %> disabled<%
         else
             %> onClick="isValido(certificadoValido,() => window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>&isTelemedicina=<% if isTelemedicina then %>true<%end if%>')"<%
@@ -542,7 +560,7 @@ else
 
             %>
             <tr class="warning">
-                <td colspan="7">
+                <td colspan="8">
                 <table class="table table-condensed table-bordered">
                     <%
                     set esp = db.execute("select e.*, ep.ProcedimentoID, ep.Obs, proc.NomeProcedimento from espera e LEFT JOIN esperaprocedimentos ep ON ep.EsperaID=e.id LEFT JOIN procedimentos proc ON proc.id=ep.ProcedimentoID where e.PacienteID="& veseha("PacienteID") &" and e.ProfissionalID="& veseha("ProfissionalID") &" and isnull(e.Fim)")
@@ -637,18 +655,27 @@ else
 
     $.each($waitingTime,function() {
         var arrival = dateFix($(this).data("arrival"));
-        var now = dateFixDmy("<%=now()%>");
-
+        /*var now = dateFixDmy("<%=now()%>");
+        
         var timeDiff = Math.abs(new Date(now) - new Date(arrival));
         timeDiff = Math.floor((timeDiff/1000)/60);
-
         var diffText = "há "+timeDiff+" minuto"+(timeDiff>1 ? "s" : "");
-
-        $(this).html(diffText);
+        
+        $(this).html(diffText);*/
+        $(this).html(diferencaEmMinutos(arrival));
     });
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
     });
+
+    function diferencaEmMinutos(data1){
+        const now = new Date(); 
+        const past = new Date(data1); 
+        const diff = Math.abs(now.getTime() - past.getTime()); 
+        const min = Math.floor(diff / (1000 * 60 )); 
+
+        return "há "+min+" minuto"+(min>1 ? "s" : "")
+    }
 
     function rechamar(arg){
 

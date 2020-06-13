@@ -145,7 +145,7 @@ else
                                                                                                               " WHERE va.id = "&ref("valor2")&_
                                                                                                               " AND (pl.UnidadeID = "&session("UnidadeID")&" or pl.UnidadeID IS NULL)"&_
                                                                                                               " AND e.Quantidade >= 1"&_
-                                                                                      " AND (CASE WHEN Responsavel IS NOT NULL AND TRIM(Responsavel) <> '' AND TRIM(Responsavel) <> '0' THEN (CASE WHEN Responsavel REGEXP '^3_' THEN Responsavel END) = CONCAT('3_',"&ref("valor1")&") ELSE 1 = 1 END)"
+                                                                                      " AND (CASE WHEN Responsavel IS NOT NULL AND TRIM(Responsavel) <> '' AND TRIM(Responsavel) <> '0' AND Responsavel REGEXP '^3_' THEN (CASE WHEN Responsavel REGEXP '^3_' THEN Responsavel END) = CONCAT('3_',"&ref("valor1")&") ELSE 1 = 1 END)"
 
                                     set produtos = db.execute(sqlLote)
 

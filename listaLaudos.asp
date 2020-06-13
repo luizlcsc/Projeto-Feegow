@@ -43,7 +43,7 @@ end if
     </thead>
     <tbody>
     <%
-    set GroupConcat = db.execute("SET SESSION group_concat_max_len = 1000000;")
+    set GroupMarketplaceSetup&Pers=1Concat = db.execute("SET SESSION group_concat_max_len = 1000000;")
     set pProcsLaudar = db.execute("select group_concat(id) ProcsLaudar from procedimentos WHERE Laudo=1 AND Ativo='on'")
     procsLaudar = pProcsLaudar("ProcsLaudar")
         'response.write(procsLaudar)
@@ -140,11 +140,7 @@ end if
                      "   INNER JOIN cliniccentral.labs_exames le ON (le.id = lie.labexameid) "&_
                      "   WHERE lie.invoiceid = ii.invoiceid LIMIT 1 ) AS labid "
 
-        sql = " SELECT tab.*, (IF(DAYOFWEEK(tab.DataPrevisao) = 6 OR DAYOFWEEK(tab.DataPrevisao) = 7, "&_
-              " IF(DAYOFWEEK(tab.DataPrevisao)=6, "&_
-	          " DATE_ADD(tab.DataPrevisao, INTERVAL + 3 DAY), "&_
-    		  " DATE_ADD(tab.DataPrevisao, INTERVAL + 2 DAY)), "&_
-   		      " DATE_ADD(tab.DataPrevisao, INTERVAL + 1 DAY))) AS DataAtualizada  FROM "&_
+        sql = " SELECT tab.*, DataPrevisao AS DataAtualizada  FROM "&_
             " (SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID )TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, "& sqldiaslaudo &" , IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID, t.labid, invoiceid, nomelab  FROM ("&_
             " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, "&sqllabid&", ii.InvoiceID invoiceid, "&sqlnomelab&" FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
             " UNION ALL "&_
@@ -205,7 +201,7 @@ end if
                 set vca = db.execute(sql)
                 if not vca.eof then
                     Status = vca("Status")
-                    Previsao = vca("PrevisaoEntrega")
+                    'Previsao = vca("PrevisaoEntrega")
                     IDLaudo = vca("id")
                     link = "I="& IDLaudo
                     adicionaLinha = 1

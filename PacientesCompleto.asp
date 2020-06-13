@@ -413,7 +413,7 @@ end if
                     </div><br />
                     <div class="row">
                         <%= quickField("memo", "Observacoes", "Observa&ccedil;&otilde;es", 6, reg("Observacoes"), "", "", "") %>
-                        <div class="col-md-6">
+                        <div class="col-md-6 <%if instr(Omitir, "|pendencias|") then%> hidden<%end if%>">
                         	<div class="checkbox-custom checkbox-warning"><input data-rel="tooltip" title="" data-original-title="Marque para acionar lembrete" type="checkbox" class="tooltip-danger" name="lembrarPendencias" id="lembrarPendencias" value="S"<%if reg("lembrarPendencias")="S" then%> checked="checked"<%end if%> /><label for="lembrarPendencias"> Avisos e Pend&ecirc;ncias</label> <i class="fa fa-flag red pull-right"></i></div>
                         	<textarea class="form-control" name="Pendencias" id="Pendencias"><%=reg("Pendencias")%></textarea>
                         </div>

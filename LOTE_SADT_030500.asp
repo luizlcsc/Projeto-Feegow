@@ -10,18 +10,6 @@ set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left j
 if not guias.eof then
 	RegistroANS = TirarAcento(guias("RegistroANS"))
 	CodigoNaOperadora = TirarAcento(guias("CodigoNaOperadora"))
-    if session("Banco")="clinic3882" then
-        db_execute("update tissguiasadt gs set "&_
-        " gs.Procedimentos=(select sum(ValorTotal) from tissprocedimentossadt where GuiaID="& guias("id") &"), "&_
-        " gs.TaxasEAlugueis=(select sum(ValorTotal) from tissguiaanexa where GuiaID="& guias("id") &" AND CD=7), "&_
-        " gs.Materiais=(select sum(ValorTotal) from tissguiaanexa where GuiaID="& guias("id") &" AND CD=3), "&_
-        " gs.OPME=(select sum(ValorTotal) from tissguiaanexa where GuiaID="& guias("id") &" AND CD=8), "&_
-        " gs.Medicamentos=(select sum(ValorTotal) from tissguiaanexa where GuiaID="& guias("id") &" AND CD=2), "&_
-        " gs.GasesMedicinais=(select sum(ValorTotal) from tissguiaanexa where GuiaID="& guias("id") &" AND CD=1) "&_
-        " where id="& guias("id"))
-        db_execute("update tissguiasadt set TotalGeral=(ifnull(Procedimentos,0)+ifnull(TaxasEAlugueis,0)+ifnull(Materiais,0)+ifnull(OPME,0)+ifnull(Medicamentos,0)+ifnull(GasesMedicinais,0)) where id="& guias("id"))
-        set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" order by g.NGuiaPrestador")
-    end if
 end if
 NLote = TirarAcento(lote("Lote"))
 Data = mydatetiss(lote("sysDate"))
@@ -31,14 +19,14 @@ response.write("<?xml version=""1.0"" encoding=""ISO-8859-1""?>")
 
 response.Charset="utf-8"
 
-versaoTISS = "2.02.01"
+versaoTISS = "3.05.00"
 
 
 prefixo = "00000000000000000000"&NLote
 prefixo = right(prefixo, 20)
 
 %>
-<ans:mensagemTISS xsi:schemaLocation="http://www.ans.gov.br/padroes/tiss/schemastissV2_02_01.xsd" xmlns:ans="http://www.ans.gov.br/padroes/tiss/schemas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ans:mensagemTISS xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:schemaLocation="http://www.ans.gov.br/padroes/tiss/schemas/tissV3_05_00.xsd" xmlns:ans="http://www.ans.gov.br/padroes/tiss/schemas">
     <ans:cabecalho>
         <ans:identificacaoTransacao>
             <ans:tipoTransacao>ENVIO_LOTE_GUIAS</ans:tipoTransacao>
@@ -47,7 +35,7 @@ prefixo = right(prefixo, 20)
             <ans:horaRegistroTransacao><%=Hora%></ans:horaRegistroTransacao>
         </ans:identificacaoTransacao>
         <ans:origem>
-            <ans:codigoPrestadorNaOperadora>
+            <ans:identificacaoPrestador>
 				<%
                 CodigoNaOperadora = trim(CodigoNaOperadora&" ")
                 CodigoNaOperadora = TirarAcento(replace(replace(replace(replace(replace(CodigoNaOperadora, ".", ""), "-", ""), ",", ""), "_", ""), " ", ""))
@@ -59,6 +47,7 @@ prefixo = right(prefixo, 20)
                     tipoCodigoNaOperadora = "codigoPrestadorNaOperadora"
                 end if
 
+
                 tipoCodigoNaOperadoraContratadoSolicitante = "codigoPrestadorNaOperadora"
                 set TipoContratoSQL = db.execute("SELECT IdentificadorCNPJ FROM contratosconvenio WHERE ConvenioID="&guias("ConvenioID")&" AND CodigoNaOperadora='"&CodigoNaOperadora&"'")
                 if not TipoContratoSQL.eof then
@@ -68,18 +57,17 @@ prefixo = right(prefixo, 20)
                 end if
                 %>
                 <%="<ans:" & tipoCodigoNaOperadora & ">" & CodigoNaOperadora &"</ans:" & tipoCodigoNaOperadora &">"%>
-            </ans:codigoPrestadorNaOperadora>
+            </ans:identificacaoPrestador>
         </ans:origem>
         <ans:destino>
             <ans:registroANS><%=RegistroANS%></ans:registroANS>
         </ans:destino>
-        <ans:versaoPadrao><%=versaoTISS %></ans:versaoPadrao>
+        <ans:Padrao><%=versaoTISS %></ans:Padrao>
     </ans:cabecalho>
     <ans:prestadorParaOperadora>
         <ans:loteGuias>
             <ans:numeroLote><%=NLote%></ans:numeroLote>
-            <ans:guias>
-            <ans:guiaFaturamento>
+            <ans:guiasTISS>
 				<%'inicia as guias
 				hash = "ENVIO_LOTE_GUIAS"&NLote&Data&Hora&CodigoNaOperadora&RegistroANS&versaoTISS&NLote
 				while not guias.eof
@@ -156,14 +144,13 @@ prefixo = right(prefixo, 20)
 					set consol = db.execute("select * from conselhosprofissionais where id="&guias("ConselhoProfissionalSolicitanteID"))
 					if not consol.eof then
 						ConselhoProfissionalSolicitante = TirarAcento(consol("TISS"))
-						SiglaConselhoProfissionalSolicitante = TirarAcento(consol("codigo"))
 					end if
+                    ConselhoProfissionalSolicitante = zeroEsq(ConselhoProfissionalSolicitante, 2)
 					NumeroNoConselhoSolicitante = TirarAcento(guias("NumeroNoConselhoSolicitante"))
 					set coduf = db.execute("select codigo from estados where sigla like '"&guias("UFConselhoSolicitante")&"'")
 					if not coduf.eof then
 						CodigoUFConselhoSolicitante = TirarAcento(coduf("codigo"))
 					end if
-					UFConselhoSolicitante = guias("UFConselhoSolicitante")
 					CodigoCBOSolicitante = TirarAcento(guias("CodigoCBOSolicitante"))
 					DataSolicitacao = mydatetiss(guias("DataSolicitacao"))
 					CaraterAtendimentoID = TirarAcento(guias("CaraterAtendimentoID"))
@@ -205,235 +192,174 @@ prefixo = right(prefixo, 20)
 					'==============================================================================================================================================================================
 					if guias("CodigoCNES")="" then CodigoCNES=TirarAcento(CNESContratado) else CodigoCNES=TirarAcento(guias("CodigoCNES")) end if
 					NomeProfissional=TirarAcento(NomeProfissional)
-
-					if guias("planoID")&""<>"" then
-						set plano = db.execute("select * from conveniosplanos where id="&guias("planoID"))
-						if not plano.eof then
-							NomePlano = plano("NomePlano")
-						end if
-					end if
-
-					if CaraterAtendimentoID&""<>"" then
-						if CaraterAtendimentoID&"" = "1" then
-							CaraterAtendimentoSigla = "E"
-						end if
-						if CaraterAtendimentoID&"" = "2" then
-							CaraterAtendimentoSigla = "U"
-						end if
-					end if
 					
-					'set atend = db.execute("select DataHora from atendimentos where id="&guias("AtendimentoID"))
-					'if not atend.eof then
-					'	datahora = atend("DataHora")
-					'	dataHoraAtendimento = mydatetiss(datahora)&"T"&myTimeTISS(datahora)
-					'end if
-					datahora = guias("sysDate")
-					dataHoraAtendimento = mydatetiss(datahora)&"T"&myTimeTISS(datahora)
-                    TipoSaida="5"
-					CodigoCBOSolicitante = Left(CodigoCBOSolicitante,4)&"."&Right(CodigoCBOSolicitante,2)
-					hash = hash&RegistroANS&DataSolicitacao&NGuiaPrestador&NGuiaPrincipal&NGuiaOperadora&DataAutorizacao&Senha&DataValidadeSenha&NumeroCarteira&NomePaciente&NomePlano&ContratadoSolicitanteCodigoNaOperadora&NomeContratadoSolicitante&NomeProfissionalSolicitante&SiglaConselhoProfissionalSolicitante&NumeroNoConselhoSolicitante&UFConselhoSolicitante&CodigoCBOSolicitante&ContExecCodigoNaOperadora&NomeContratado&CodigoCNES&IndicacaoClinica&CaraterAtendimentoSigla&dataHoraAtendimento&TipoSaida&TipoAtendimentoID
+					hash = hash&RegistroANS&NGuiaPrestador&NGuiaPrincipal&NGuiaOperadora&DataAutorizacao&Senha&DataValidadeSenha&NumeroCarteira&AtendimentoRN&NomePaciente&ContratadoSolicitanteCodigoNaOperadora&NomeContratadoSolicitante&NomeProfissionalSolicitante&ConselhoProfissionalSolicitante&NumeroNoConselhoSolicitante&CodigoUFConselhoSolicitante&CodigoCBOSolicitante&DataSolicitacao&CaraterAtendimentoID&IndicacaoClinica&ContExecCodigoNaOperadora&NomeContratado&CodigoCNES&TipoAtendimentoID&IndicacaoAcidenteID&TipoConsultaID&MotivoEncerramentoID
 					%>
-                <ans:guiaSP_SADT>
-                    <ans:identificacaoGuiaSADTSP>
-                        <ans:identificacaoFontePagadora>
-                            <ans:registroANS><%=RegistroANS%></ans:registroANS>
-                        </ans:identificacaoFontePagadora>
-                        <ans:dataEmissaoGuia><%= DataSolicitacao %></ans:dataEmissaoGuia>
+                <ans:guiaSP-SADT>
+                    <ans:cabecalhoGuia>
+                        <ans:registroANS><%=RegistroANS%></ans:registroANS>
                         <ans:numeroGuiaPrestador><%= NGuiaPrestador %></ans:numeroGuiaPrestador>
                         <%if NGuiaPrincipal<>"" then%><ans:guiaPrincipal><%= NGuiaPrincipal %></ans:guiaPrincipal><%end if%>
-                    </ans:identificacaoGuiaSADTSP>
+                    </ans:cabecalhoGuia>
                     <%
 					if NGuiaOperadora<>"" OR DataAutorizacao<>"" OR Senha<>"" OR DataValidadeSenha<>"" then
 					%>
                     <ans:dadosAutorizacao>
                         <%if NGuiaOperadora<>"" then%><ans:numeroGuiaOperadora><%= NGuiaOperadora %></ans:numeroGuiaOperadora><%end if%>
                         <%if DataAutorizacao<>"" then%><ans:dataAutorizacao><%= DataAutorizacao %></ans:dataAutorizacao><% End If %>
-                        <%if Senha<>"" then%><ans:senhaAutorizacao><%= Senha %></ans:senhaAutorizacao><% End If %>
-                        <%if DataValidadeSenha<>"" then%><ans:validadeSenha><%= DataValidadeSenha %></ans:validadeSenha><% End If %>
+                        <%if Senha<>"" then%><ans:senha><%= Senha %></ans:senha><% End If %>
+                        <%if DataValidadeSenha<>"" then%><ans:dataValidadeSenha><%= DataValidadeSenha %></ans:dataValidadeSenha><% End If %>
                     </ans:dadosAutorizacao>
                     <%
 					end if
 					%>
                     <ans:dadosBeneficiario>
                         <ans:numeroCarteira><%= NumeroCarteira %></ans:numeroCarteira>
+                        <ans:atendimentoRN><%= AtendimentoRN %></ans:atendimentoRN>
                         <ans:nomeBeneficiario><%= NomePaciente %></ans:nomeBeneficiario>
-						<ans:nomePlano><%= NomePlano %></ans:nomePlano>
                     </ans:dadosBeneficiario>
                     <ans:dadosSolicitante>
-                        <ans:contratado>
-							<ans:identificacao>
-								<%="<ans:" & tipoCodigoNaOperadoraContratadoSolicitante & ">" & ContratadoSolicitanteCodigoNaOperadora &"</ans:" & tipoCodigoNaOperadoraContratadoSolicitante &">"%>
-                            </ans:identificacao>
-							<ans:nomeContratado><%= NomeContratadoSolicitante %></ans:nomeContratado>
-                        </ans:contratado>
-						<ans:profissional>
+                        <ans:contratadoSolicitante>
+                            <%="<ans:" & tipoCodigoNaOperadoraContratadoSolicitante & ">" & ContratadoSolicitanteCodigoNaOperadora &"</ans:" & tipoCodigoNaOperadoraContratadoSolicitante &">"%>
+                            <ans:nomeContratado><%= NomeContratadoSolicitante %></ans:nomeContratado>
+                        </ans:contratadoSolicitante>
+                        <ans:profissionalSolicitante>
                             <ans:nomeProfissional><%= NomeProfissionalSolicitante %></ans:nomeProfissional>
-							<ans:conselhoProfissional>
-								<ans:siglaConselho><%= SiglaConselhoProfissionalSolicitante %></ans:siglaConselho>
-								<ans:numeroConselho><%= NumeroNoConselhoSolicitante %></ans:numeroConselho>
-								<ans:ufConselho><%= UFConselhoSolicitante %></ans:ufConselho>
-							</ans:conselhoProfissional>
-                            <ans:cbos><%= CodigoCBOSolicitante %></ans:cbos>
-                        </ans:profissional>
+                            <ans:conselhoProfissional><%= ConselhoProfissionalSolicitante %></ans:conselhoProfissional>
+                            <ans:numeroConselhoProfissional><%= NumeroNoConselhoSolicitante %></ans:numeroConselhoProfissional>
+                            <ans:UF><%= CodigoUFConselhoSolicitante %></ans:UF>
+                            <ans:CBOS><%= CodigoCBOSolicitante %></ans:CBOS>
+                        </ans:profissionalSolicitante>
                     </ans:dadosSolicitante>
-					<ans:prestadorExecutante>
-                        <ans:identificacao>
+                    <ans:dadosSolicitacao>
+                        <ans:dataSolicitacao><%= DataSolicitacao %></ans:dataSolicitacao>
+                        <ans:caraterAtendimento><%= CaraterAtendimentoID %></ans:caraterAtendimento>
+                        <%if IndicacaoClinica<>"" then%><ans:indicacaoClinica><%= IndicacaoClinica %></ans:indicacaoClinica><% End If %>
+                    </ans:dadosSolicitacao>
+                    <ans:dadosExecutante>
+                        <ans:contratadoExecutante>
                             <%="<ans:" &tipoContrato &">"&ContExecCodigoNaOperadora &"</ans:"&tipoContrato&">"%>
-                        </ans:identificacao>
-						<ans:nomeContratado><%= NomeContratado %></ans:nomeContratado>
-                        <ans:numeroCNES><%= CodigoCNES %></ans:numeroCNES>
-                    </ans:prestadorExecutante>
-
-					<%if IndicacaoClinica<>"" then%><ans:indicacaoClinica><%= IndicacaoClinica %></ans:indicacaoClinica><% End If %>
-                    <ans:caraterAtendimento><%= CaraterAtendimentoSigla %></ans:caraterAtendimento>
-                    <%if dataHoraAtendimento<>"" then%><ans:dataHoraAtendimento><%= dataHoraAtendimento %></ans:dataHoraAtendimento><% End If %>
-                    <ans:tipoSaida><%= TipoSaida %></ans:tipoSaida>
-                    <ans:tipoAtendimento><%= TipoAtendimentoID %></ans:tipoAtendimento>
-
+                            <ans:nomeContratado><%= NomeContratado %></ans:nomeContratado>
+                        </ans:contratadoExecutante>
+                        <ans:CNES><%= CodigoCNES %></ans:CNES>
+                    </ans:dadosExecutante>
+                    <ans:dadosAtendimento>
+                        <ans:tipoAtendimento><%= TipoAtendimentoID %></ans:tipoAtendimento>
+                        <ans:indicacaoAcidente><%= IndicacaoAcidenteID %></ans:indicacaoAcidente>
+                        <ans:tipoConsulta><%= TipoConsultaID %></ans:tipoConsulta>
+                        <%if MotivoEncerramentoID<>"" then%><ans:motivoEncerramento><%= MotivoEncerramentoID %></ans:motivoEncerramento><% End If %>
+                    </ans:dadosAtendimento>
+                    <ans:procedimentosExecutados>
                     <%
+                    sequencialItem = 1
+
 					set procs = db.execute("select * from tissprocedimentossadt where GuiaiD="&guias("id"))
-                    if not procs.eof then
-                    %>
-                    <ans:procedimentosRealizados>
-                    <%
 					while not procs.eof
 						Data = mydatetiss(procs("Data"))
 						HoraInicio = myTimeTISS(procs("HoraInicio"))
 						HoraFim = myTimeTISS(procs("HoraFim"))
 						TabelaID = TirarAcento(procs("TabelaID"))
-						if TabelaID="99" or TabelaID="0" then
+						if TabelaID="99" OR TabelaID="0" then
 							TabelaID="00"
 						end if
 						CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))
-						Descricao = TirarAcento(procs("Descricao"))
-						Descricao = left(Descricao, 60)
+						Descricao = left(TirarAcento(procs("Descricao")),150)
 						Quantidade = TirarAcento(procs("Quantidade"))
-						
 						ViaID = TirarAcento(procs("ViaID"))
-						Select Case ViaID
-							Case 1:
-								ViaID = "U"
-							Case 2:
-								ViaID = "M"
-							Case 3:
-								ViaID = "D"
-						End Select
-
 						TecnicaID = TirarAcento(procs("TecnicaID"))
-						Select Case TecnicaID
-							Case 1:
-								TecnicaID = "C"
-							Case 2:
-								TecnicaID = "V"
-						End Select
-
 						Fator = treatvaltiss(1)
 						ValorUnitario = treatvaltiss( procs("Fator")*procs("ValorUnitario") )
 						ValorTotal = treatvaltiss(procs("ValorTotal"))
 						
+						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
 						%>
-                        <ans:procedimentos>
+                        <ans:procedimentoExecutado>
+                            <ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>
+                            <%if Data<>"" then%><ans:dataExecucao><%= Data %></ans:dataExecucao><% End If %>
+                            <%if HoraInicio<>"" then%><ans:horaInicial><%= HoraInicio %></ans:horaInicial><% End If %>
+                            <%if HoraFim<>"" then%><ans:horaFinal><%= HoraFim %></ans:horaFinal><% End If %>
+                            <ans:procedimento>
+                                <ans:codigoTabela><%= TabelaID %></ans:codigoTabela>
+                                <ans:codigoProcedimento><%= CodigoProcedimento %></ans:codigoProcedimento>
+                                <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
+                            </ans:procedimento>
+                            <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
+                            <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
+                            <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
+                            <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
+                            <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
+                            <ans:valorTotal><%= ValorTotal %></ans:valorTotal>
                             <%
 							set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaissadt as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla like e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where GuiaID="&guias("id"))
-							if not eq.eof then
-							%>
-							<ans:equipe>
-							<%
 							while not eq.eof
 								GrauParticipacao = TirarAcento(eq("GrauParticipacao")&"")
 								if GrauParticipacao="" or isnull(GrauParticipacao) then GrauParticipacao="" end if
-								CodigoNaOperadoraOuCPF = TirarAcento(eq("CodigoNaOperadoraOuCPF"))
+								CodigoNaOperadoraOuCPF = replace(replace(replace(replace(replace(TirarAcento(eq("CodigoNaOperadoraOuCPF")), ".", ""), "-", ""), ",", ""), "_", ""), " ", "")
 								if CodigoNaOperadoraOuCPF="" then CodigoNaOperadoraOuCPF="-" end if
 
+
 								if CalculaCPF(CodigoNaOperadoraOuCPF)=true then
-									tipoContrato = "cpf"
+									tipoContrato = "cpfContratado"
 								'elseif CalculaCNPJ(CodigoNaOperadoraOuCPF)=true then
 								'	tipoContrato = "cnpjContratado"
 								else
 									tipoContrato = "codigoPrestadorNaOperadora"
 								end if
 
-								NomeProfissional = TirarAcento(eq("NomeProfissional")&" ")
-								set cons = db.execute("select * from conselhosprofissionais where id = '"&eq("ConselhoID")&"'")
-								if cons.eof then ConselhoProfissional = 6 else ConselhoProfissional=TirarAcento(cons("TISS")) end if
-								DocumentoConselho = TirarAcento(eq("DocumentoConselho"))
-								SiglaConselho = cons("codigo")
-								UF = TirarAcento(eq("UF"))
-								UFConselho = TirarAcento(eq("UFConselho"))
-								CodigoCBO = TirarAcento(eq("CodigoCBO"))
 
-								if CodigoNaOperadoraOuCPF = "-" then
-									SiglaConselhoProf = SiglaConselho
-									DocumentoConselhoProf = DocumentoConselho
-									UFConselhoProf = UFConselho
-								end if
-								CodigoCBO = Left(CodigoCBO,4)&"."&Right(CodigoCBO,2)
-								hash = hash & CodigoNaOperadoraOuCPF&SiglaConselhoProf&DocumentoConselhoProf&UFConselhoProf&NomeProfissional&SiglaConselho&DocumentoConselho&UFConselho&CodigoCBO&GrauParticipacao
+
+								NomeProfissional = TirarAcento(eq("NomeProfissional")&" ")
+								set cons = db.execute("select * from conselhosprofissionais where id="&treatvalzero(eq("ConselhoID")))
+								if cons.eof then 
+                                    ConselhoProfissional = 6 
+                                else 
+                                    ConselhoProfissional=TirarAcento(cons("TISS")) 
+                                end if
+                                ConselhoProfissional = zeroEsq(ConselhoProfissional, 2)
+
+								DocumentoConselho = TirarAcento(eq("DocumentoConselho"))
+								UF = TirarAcento(eq("UF"))
+								CodigoCBO = TirarAcento(eq("CodigoCBO"))
+								hash = hash & GrauParticipacao&CodigoNaOperadoraOuCPF&NomeProfissional&ConselhoProfissional&DocumentoConselho&UF&CodigoCBO
 							%>
-								<ans:membroEquipe>
-									<ans:codigoProfissional>
-										<% if CodigoNaOperadoraOuCPF <> "-" then%>
-										<%="<ans:"&tipoContrato&">"& CodigoNaOperadoraOuCPF &"</ans:"&tipoContrato&">"%>
-										<% else %>
-										<ans:siglaConselho><%= SiglaConselhoProf %></ans:siglaConselho>
-										<ans:numeroConselho><%= SiglaConselhoProf %></ans:numeroConselho>
-										<ans:ufConselho><%= UFConselhoProf %></ans:ufConselho>
-										<% end if %>
-									</ans:codigoProfissional>
-									<ans:identificacaoProfissional>
-										<ans:nomeExecutante><%= NomeProfissional %></ans:nomeExecutante>
-										<ans:conselhoProfissional>
-											<ans:siglaConselho><%= SiglaConselho %></ans:siglaConselho>
-											<ans:numeroConselho><%= DocumentoConselho %></ans:numeroConselho>
-											<ans:ufConselho><%= UFConselho %></ans:ufConselho>
-										</ans:conselhoProfissional>
-										<ans:codigoCBOS><%= CodigoCBO%></ans:codigoCBOS>
-									</ans:identificacaoProfissional>
-									<ans:posicaoProfissional><%= GrauParticipacao %></ans:posicaoProfissional>
-								</ans:membroEquipe>
+                            <ans:equipeSadt>
+                                <%if GrauParticipacao<>"" then %>
+                                    <ans:grauPart><%= GrauParticipacao %></ans:grauPart>
+                                <%end if %>
+                                <ans:codProfissional>
+                                    <%="<ans:"&tipoContrato&">"& CodigoNaOperadoraOuCPF &"</ans:"&tipoContrato&">"%>
+                                </ans:codProfissional>
+                                <ans:nomeProf><%= NomeProfissional %></ans:nomeProf>
+                                <ans:conselho><%= ConselhoProfissional %></ans:conselho>
+                                <ans:numeroConselhoProfissional><%= DocumentoConselho %></ans:numeroConselhoProfissional>
+                                <ans:UF><%= UF %></ans:UF>
+                                <ans:CBOS><%= CodigoCBO %></ans:CBOS>
+                            </ans:equipeSadt>
                             <%
 							eq.movenext
 							wend
 							eq.close
 							set eq = nothing
 							%>
-                            </ans:equipe>
-							<%
-							end if
-							hash = hash &CodigoProcedimento&TabelaID&Descricao&Data&HoraInicio&HoraFim&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
-							%>
-							<ans:procedimento>
-                                <ans:codigo><%=  CodigoProcedimento%></ans:codigo>
-                                <ans:tipoTabela><%= TabelaID %></ans:tipoTabela>
-                                <%if Descricao<>"" then%><ans:descricao><%= Descricao %></ans:descricao><%end if%>
-                            </ans:procedimento>
-                            <%if Data<>"" then%><ans:data><%= Data %></ans:data><% End If %>
-                            <%if HoraInicio<>"" then%><ans:horaInicio><%= HoraInicio %></ans:horaInicio><% End If %>
-                            <%if HoraFim<>"" then%><ans:horaFim><%= HoraFim %></ans:horaFim><% End If %>
-                            <ans:quantidadeRealizada><%= Quantidade %></ans:quantidadeRealizada>
-                            <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
-                            <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
-                            <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
-                            <ans:valor><%= ValorUnitario %></ans:valor>
-                            <ans:valorTotal><%= ValorTotal %></ans:valorTotal>
-
-                        </ans:procedimentos>
+                        </ans:procedimentoExecutado>
                         <%
+                        sequencialItem=sequencialItem+1
 					procs.movenext
 					wend
 					procs.close
 					set procs=nothing
 					%>
-                    </ans:procedimentosRealizados>
+                    </ans:procedimentosExecutados>
                     <%
-                    end if
 					set desp = db.execute("select * from tissguiaanexa where GuiaID="&guias("id"))
 					if not desp.eof then
 					%>
                     <ans:outrasDespesas>
                     	<%
+						sequencialItem=0
 						while not desp.eof
-							CD = desp("CD")
+							sequencialItem = sequencialItem+1
+							CD = zEsq(desp("CD"), 2)
 							Data = mydatetiss(desp("Data"))
 							HoraInicio = myTimeTISS(desp("HoraInicio"))
 							HoraFim = myTimeTISS(desp("HoraFim"))
@@ -445,28 +371,31 @@ prefixo = right(prefixo, 20)
 							ValorUnitario = treatvaltiss(desp("ValorUnitario"))
 							ValorTotal = treatvaltiss(desp("ValorTotal"))
 							Descricao = TirarAcento(desp("Descricao"))
-                            Descricao = replace(Descricao, chr(186), "")
-                            Descricao = left(Descricao, 60)
 							RegistroANVISA = TirarAcento(desp("RegistroANVISA"))
 							CodigoNoFabricante = TirarAcento(desp("CodigoNoFabricante"))
 							AutorizacaoEmpresa = TirarAcento(desp("AutorizacaoEmpresa"))
 							
-							hash = hash &CodigoProduto&TabelaProdutoID&Descricao&CD&Data&HoraInicio&HoraFim&Fator&Quantidade&ValorUnitario&ValorTotal
+							hash = hash & sequencialItem&CD&Data&HoraInicio&HoraFim&TabelaProdutoID&CodigoProduto&Quantidade&UnidadeMedidaID&Fator&ValorUnitario&ValorTotal&Descricao&RegistroANVISA&CodigoNoFabricante&AutorizacaoEmpresa
 						%>
                         <ans:despesa>
-                            <ans:identificadorDespesa>
-							    <ans:codigo><%= CodigoProduto %></ans:codigo>
-                                <ans:tipoTabela><%= TabelaProdutoID %></ans:tipoTabela>
-                                <%if Descricao<>"" then%><ans:descricao><%= Descricao %></ans:descricao><%end if%>
-							</ans:identificadorDespesa>
-                            <ans:tipoDespesa><%= CD %></ans:tipoDespesa>
-                            <ans:dataRealizacao><%= Data %></ans:dataRealizacao>
-                            <%if HoraInicio<>"" then%><ans:horaInicial><%= HoraInicio %></ans:horaInicial><% End If %>
-                            <%if HoraFim<>"" then%><ans:horaFinal><%= HoraFim %></ans:horaFinal><% End If %>
-							<%if Fator<>"" then%><ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo><% End If %>
-							<ans:quantidade><%= Quantidade %></ans:quantidade>
-							<ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
-							<ans:valorTotal><%= ValorTotal %></ans:valorTotal>
+                            <ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>
+                            <ans:codigoDespesa><%= CD %></ans:codigoDespesa>
+                            <ans:servicosExecutados>
+                                <%if Data<>"" then%><ans:dataExecucao><%= Data %></ans:dataExecucao><% End If %>
+                                <%if HoraInicio<>"" then%><ans:horaInicial><%= HoraInicio %></ans:horaInicial><% End If %>
+                                <%if HoraFim<>"" then%><ans:horaFinal><%= HoraFim %></ans:horaFinal><% End If %>
+                                <ans:codigoTabela><%= TabelaProdutoID %></ans:codigoTabela>
+                                <ans:codigoProcedimento><%= CodigoProduto %></ans:codigoProcedimento>
+                                <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
+                                <ans:unidadeMedida><%=UnidadeMedidaID%></ans:unidadeMedida>
+                                <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
+                                <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
+                                <ans:valorTotal><%= ValorTotal %></ans:valorTotal>
+                                <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
+                                <%if RegistroANVISA<>"" then%><ans:registroANVISA><%= RegistroANVISA %></ans:registroANVISA><% End If %>
+                                <%if CodigoNoFabricante<>"" then%><ans:codigoRefFabricante><%= CodigoNoFabricante %></ans:codigoRefFabricante><% End If %>
+                                <%if AutorizacaoEmpresa<>"" then%><ans:autorizacaoFuncionamento><%= AutorizacaoEmpresa %></ans:autorizacaoFuncionamento><% End If %>
+                            </ans:servicosExecutados>
                         </ans:despesa>
                         <%
 						desp.movenext
@@ -489,19 +418,20 @@ prefixo = right(prefixo, 20)
 					GasesMedicinais = treatvaltiss(guias("GasesMedicinais"))
 					TotalGeral = treatvaltiss(guias("TotalGeral"))
 					
-					hash = hash & Procedimentos&Diarias&TaxasEAlugueis&Materiais&Medicamentos&GasesMedicinais&TotalGeral&Observacoes
+					hash = hash & Observacoes&Procedimentos&Diarias&TaxasEAlugueis&Materiais&Medicamentos&OPME&GasesMedicinais&TotalGeral
 					%>
-                    <ans:valorTotal>
-                        <ans:servicosExecutados><%= Procedimentos %></ans:servicosExecutados>
-                        <ans:diarias><%= Diarias %></ans:diarias>
-                        <ans:taxas><%= TaxasEAlugueis %></ans:taxas>
-                        <ans:materiais><%= Materiais %></ans:materiais>
-                        <ans:medicamentos><%= Medicamentos %></ans:medicamentos>
-                        <ans:gases><%= GasesMedicinais %></ans:gases>
-                        <ans:totalGeral><%= TotalGeral %></ans:totalGeral>
-                    </ans:valorTotal>
                     <%if Observacoes<>"" then%><ans:observacao><%= Observacoes %></ans:observacao><% End If %>
-                </ans:guiaSP_SADT>
+                    <ans:valorTotal>
+                        <ans:valorProcedimentos><%= Procedimentos %></ans:valorProcedimentos>
+                        <ans:valorDiarias><%= Diarias %></ans:valorDiarias>
+                        <ans:valorTaxasAlugueis><%= TaxasEAlugueis %></ans:valorTaxasAlugueis>
+                        <ans:valorMateriais><%= Materiais %></ans:valorMateriais>
+                        <ans:valorMedicamentos><%= Medicamentos %></ans:valorMedicamentos>
+                        <ans:valorOPME><%= OPME %></ans:valorOPME>
+                        <ans:valorGasesMedicinais><%= GasesMedicinais %></ans:valorGasesMedicinais>
+                        <ans:valorTotalGeral><%= TotalGeral %></ans:valorTotalGeral>
+                    </ans:valorTotal>
+                </ans:guiaSP-SADT>
                 <%
 				guias.movenext
 				wend
@@ -509,8 +439,7 @@ prefixo = right(prefixo, 20)
 				set guias=nothing
 
 				'finaliza as guias%>
-            </ans:guiaFaturamento>
-            </ans:guias>
+            </ans:guiasTISS>
         </ans:loteGuias>
     </ans:prestadorParaOperadora>
     <ans:epilogo>

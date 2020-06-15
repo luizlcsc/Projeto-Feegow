@@ -107,7 +107,15 @@
                     <td><%=prod("NomeLocalizacao")%></td>
                     <td><span class="<%=addClass%>"><%=Validade%></span></td>
                     <td class="hidden-print"><a class="btn btn-xs btn-primary" href="./?P=Produtos&Pers=1&I=<%=prod("id")%>"><i class="fa fa-edit"></i></a></td>
-                    <td class="hidden-print" title="<%=title%>"><button class="btn btn-xs btn-danger <%=disabled%>" onClick="removeItem(<%=prod("id")%>)"><i class="fa fa-remove"></i></button></td>
+                    <td class="hidden-print" title="<%=title%>">
+                        <%
+                        if aut("|produtosX|")=1 then
+                        %>
+                        <button class="btn btn-xs btn-danger <%=disabled%>" onClick="removeItem(<%=prod("id")%>)"><i class="fa fa-remove"></i></button>
+                        <%
+                        end if
+                        %>
+                    </td>
                 </tr>
                 </tbody>
             <%

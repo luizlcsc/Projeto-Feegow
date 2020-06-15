@@ -304,6 +304,8 @@ function verificaElegibilidade(N) {
 			//	1- Guia Glosada 
 			//	2- Processo autorizado 
 			//	3- Retona o status da guia 
+			//  4 - Plano não possui este método
+
 			switch (data.Sucesso) {
 				case 0:
 					message = data.Mensagem;
@@ -329,6 +331,9 @@ function verificaElegibilidade(N) {
 					message  = data.Mensagem;
 					state = 3;
 					break;
+				case 4:
+				    message = 'ATENÇÃO! <BR>Esta operação <strong>NÃO ESTÁ DISPONÍVEL</strong> para este convênio! <BR>';
+					state  = 1;
 			}
 			if (data.CodigoGlosa!=''){
 				message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;  

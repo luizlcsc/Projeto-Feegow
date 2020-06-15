@@ -27,16 +27,18 @@
         }
     };
 
-    let comunicadoId = 3    ;
+    let comunicadoId = 4    ;
     PopupService.getComunicadoByIdUnvisualized(comunicadoId, (comunicadoObj) => {
         let component = null;
 
         if(comunicadoObj[0]){
-            if(comunicadoId === 3){
+            comunicadoId = comunicadoObj[0].id;
+
+            if(comunicadoId == 3){
                 component = <TelemedicinaPopup comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
-            }else if(comunicadoId === 2){
+            }else if(comunicadoId == 2){
                 component = <WhatsappPopup comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
-            }else if(comunicadoId === 4){
+            }else if(comunicadoId == 4){
                 component = <NFSePopup comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
             }
 

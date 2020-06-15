@@ -27,33 +27,19 @@ Select Case action
 
   Case "GetComunicadoNaoVisualizado"
 
-    sql = "SELECT pop.* FROM cliniccentral.popup_comunicados pop LEFT JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id AND com.UserID="&UserID&" WHERE (ExibirApenas is null or ExibirApenas Like '%|"&LicencaID&"|%') AND (com.id IS NULL OR com.Interesse=1) AND (com.Interesse=1 or com.Interesse IS NULL) AND sysActive=1 AND pop.id="&Request.QueryString("ComunicadoID")
+    sql = "SELECT pop.* "&_
+          "FROM cliniccentral.popup_comunicados pop "&_
+          "LEFT JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id AND com.UserID="&UserID&" "&_
+          "LEFT JOIN cliniccentral.clientes_servicosadicionais cs ON cs.LicencaID="&LicencaID&" AND cs.ServicoID=pop.RecursoAdicionalID "&_
+          " "&_
+          "WHERE (ExibirApenas IS NULL OR ExibirApenas LIKE '%|"&LicencaID&"|%') AND (com.id IS NULL OR com.Interesse=1) AND (com.Interesse=1 OR com.Interesse IS NULL) AND sysActive=1 "&_
+          " "&_
+          "AND ((cs.`Status` = pop.RecursoAdicionalStatus AND cs.id IS NOT null) OR (cs.id IS NULL AND pop.RecursoAdicionalStatus IS NULL)) "&_
+          "AND pop.sysActive = 1 "&_
+          "GROUP BY pop.id"
+
     set ComunicadoSQL = db.execute( sql )
-
-    Exibe=True
-
-    if not ComunicadoSQL.eof then
-        RecursoAdicionalID=ComunicadoSQL("RecursoAdicionalID")
-        RecursoAdicionalStatus=ComunicadoSQL("RecursoAdicionalStatus")
-
-        if not isnull(RecursoAdicionalID) then
-            if isnull(RecursoAdicionalStatus) then
-                if recursoAdicional(RecursoAdicionalID)<>0 then
-                    Exibe=False
-                end if
-            else
-                if recursoAdicional(RecursoAdicionalID)&""<>RecursoAdicionalStatus&"" then
-                    Exibe=False
-                end if
-            end if
-        end if
-    end if
-
-    if not Exibe then
-        Content = "False"
-    else
-        Content = recordToJSON(ComunicadoSQL)
-    end if
+    Content = recordToJSON(ComunicadoSQL)
 
     responseJson(Content)
 

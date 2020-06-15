@@ -22,9 +22,9 @@ const Popup = (props) => {
     }, 500);
 
     const onClose = () => {
+
         if (confirm("Tem certeza que deseja fechar?")) {
             const $popup = document.getElementById("root");
-
             $popup.remove();
             telemedicine.close();
             TelemedicinaService.base("Finaliza");
@@ -83,6 +83,22 @@ const Popup = (props) => {
         $("#root").draggable();
     };
 
+    const onZoomClick = () => {
+        localStorage.setItem("telemedicine_default_app","zoom");
+        location.reload();
+    };
+
+    const changeToFeegowVideo = async () => {
+        try{
+            const response = await TelemedicinaService.endpointEndZoomMeeting(props.agendamentoId);
+                localStorage.setItem("telemedicine_default_app","");
+                location.reload();
+        }catch(e){
+            console.log(e);
+        }
+
+    };
+
     const onReconnect = () => {
         location.reload();
         // telemedicine.reconnect();
@@ -113,7 +129,7 @@ const Popup = (props) => {
 
             <div id={"tm-popup-dialog"}>
                 <div id={"tm-popup-content"}>
-                    <Header renderMode={"absolute"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onConfig={() => onConfig()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
+                    <Header allowVideoChange={props.allowVideoChange} renderMode={"absolute"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onConfig={() => onConfig()} onClose={() => onClose()} onMinimize={() => onMinimize() } onZoomClick={()=> onZoomClick()} changeToFeegowVideo={()=>changeToFeegowVideo()}/>
                     <Video/>
 
                     <div className={"tm-parent-controls-content"}>

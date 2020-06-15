@@ -7,6 +7,21 @@ if ult.eof then
 else
 	Lote = ult("Lote")+1
 end if
+
+ConvenioID=req("ConvenioID")
+
+set ConvenioSQL = db.execute("SELECT DiasRecebimento FROM convenios WHERE id="&treatvalzero(ConvenioID))
+
+if not ConvenioSQL.eof then
+    DiasRecebimento=ConvenioSQL("DiasRecebimento")
+
+
+    if DiasRecebimento&"" <> "" then
+        if isnumeric(DiasRecebimento) then
+            DataPrevisao = DateAdd("d", DiasRecebimento, date())
+        end if
+    end if
+end if
 %>
 	<div class="modal-header">
     	<h4>Fechar Lote</h4>
@@ -51,7 +66,7 @@ end if
                 <label for="LoteObs">Observações</label>
                 <textarea name="Obs" id="LoteObs" class="form-control"></textarea>
             </div>
-            <%=quickfield("datepicker", "PrevisaoRecebimento", "Previsão de recebimento", 3, "", "", "", "")%>
+            <%=quickfield("datepicker", "PrevisaoRecebimento", "Previsão de recebimento", 3, DataPrevisao, "", "", "")%>
 
         </div>
     </div>

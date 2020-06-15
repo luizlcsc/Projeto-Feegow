@@ -1,5 +1,6 @@
 const ZoomiFrame = (props) => {
-    const [isConnecting, setIsConnecting] = React.useState(false);
+    const [isVerified,setIsVerified] = React.useState(false);
+    const [isLoading,setIsLoading] = React.useState(true);
 
 
     const onClose = () => {
@@ -11,7 +12,20 @@ const ZoomiFrame = (props) => {
             TelemedicinaService.base("Finaliza");
         }
     }
+    const changeToFeegowVideo = async () => {
+        try{
+            const response = await TelemedicinaService.endpointEndZoomMeeting(props.agendamentoId, props.env);
+        }catch(e){
+            console.log(e.message);
+        }
+            localStorage.setItem("telemedicine_default_app","");
+            location.reload();
+    };
 
+    const onZoomClick = () => {
+        localStorage.setItem("telemedicine_default_app","zoom");
+        location.reload();
+    };
     const onMaximize = () => {
         const $popup = document.getElementById("root"),
             $popupDialog = document.getElementById("tm-popup-dialog"),
@@ -67,26 +81,59 @@ const ZoomiFrame = (props) => {
         $("#root").draggable();
     };
 
-    return (
-        <div>
-            <div className="modal-backdrop fade in" id={"tm-popup-backdrop"} style={{display: "none"}}/>
+    const getUserZoom = async () => {
+        const userZoom = await TelemedicinaService.endpointCreateZoomUser(props.agendamentoId, props.env);
 
-            <div id={"tm-popup-dialog"}>
-                <div id={"tm-popup-content"}>
-                    <Header bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()}/>
-                    <div style={{
-                        display: "flex"
-                    }}>
-                        <iframe id={"tm-iframe"} style={{
-                            width: "100%"
-                        }} frameBorder="0" src="https://localhost:9999/index.html"
-                                allow="camera;microphone;fullscreen;speaker;chat"/>
-                    </div>
-                </div>
+        setIsLoading(false);
+        setIsVerified(userZoom.isUserVerified);
+    }
+    const reloadUser = async () => {
+        setIsLoading(true);
+        await getUserZoom();
+    }
+    React.useEffect(() => {
+        getUserZoom();
+    },[]);
 
+
+    if(isLoading)
+    {
+        return(
+            <div style={{fontSize: 50,textAlign: "center", padding: 40}}>
+                <i className="fa fa-spin fa-circle-o-notch"></i>
             </div>
-        </div>
+        );
+    }
+
+    const baseEndpointUrl = TelemedicinaService.getEnvUrl(env,"");
+
+    return isVerified ?
+        (
+            <div>
+                <div className="modal-backdrop fade in" id={"tm-popup-backdrop"} style={{display: "none"}}/>
+
+                <div id={"tm-popup-dialog"}>
+                    <div id={"tm-popup-content"}>
+                        <Header allowVideoChange={props.allowVideoChange} bgColor={"#fff"} buttonColor={"rgb(21, 21, 21)"} onMaximize={() => onMaximize()}  onReconnect={() => onReconnect()} onClose={() => onClose()} onMinimize={() => onMinimize()} changeToFeegowVideo={()=>changeToFeegowVideo()} onZoomClick={()=>onZoomClick()} />
+                        <div style={{
+                            display: "flex"
+                        }}>
+                            <iframe id={"tm-iframe"} style={{
+                                width: "100%"
+                            }} frameBorder="0" src={baseEndpointUrl+`zoom-integration/zoom-host-meeting/${props.agendamentoId}?tk=`+localStorage.getItem("tk")}
+                                    allow="camera;microphone;fullscreen;speaker;chat"/>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
 
 
-    );
+        ): (
+                <div className="alert alert-light">Um link de verificação da sua conta Zoom foi enviado para o e-mail cadastrado.
+                    <br />
+                    <br />
+                    <button className="btn-rounded btn btn-primary btn-sm" style={{marginBottom:15,float:"right"}} onClick={() => {reloadUser()}}>Já confirmei meu e-mail</button>
+                </div>
+        );
 };

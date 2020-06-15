@@ -2848,7 +2848,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		if req("T")="D" then
 			nomePerm = "contasapagar"
 			rbtns = rbtns & "&nbsp <div class='btn-group'>     <button type='button' class='btn-sm btn btn-success dropdown-toggle' data-toggle='dropdown'><span class='fa fa-upload'></span></button> <ul class='dropdown-menu' role='menu'>    <li><a onclick='addBoleto("&hid&")' href='#'>Boleto</a></li>      <li><a onclick='addXmlNFe("&hid&")' href='#'>NF-e</a></li>  <li><a onclick='cnabBeta("&hid&")' href='#'>Cnab <label class='label label-primary'>Beta</label></a></li>   </ul>  </div> &nbsp"
-		    rbtns = rbtns & "<button class='btn btn-info btn-sm' onclick='imprimir()' type='button'><i class='fa fa-print bigger-110'></i></button>"
+		    rbtns = rbtns & "<button class='btn btn-info btn-sm' onclick='imprimirReciboInvoice()' type='button'><i class='fa fa-print bigger-110'></i></button>"
 		else
 			nomePerm = "contasareceber"
 		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
@@ -2876,11 +2876,11 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
                 'if session("Banco") = "clinic2496" OR session("Banco") = "clinic100000" OR session("Banco") = "clinic4285" OR session("Banco") = "clinic984" OR session("Banco") = "clinic2263" Then
                 if RecursosAdicionaisSQL("SplitNF")<>1 then
                     rbtns = rbtns & "&nbsp; <button id='btn_NFe' title='Nota Fiscal' class='btn btn-warning btn-sm' onclick='modalNFE()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
-                    if session("Banco")="clinic5459" or session("Banco")="clinic100000" then
-                        rbtns = rbtns & "&nbsp; <button id='btn_NFeBeta' title='Nota Fiscal Beta' class='btn btn-danger btn-sm' onclick='modalNFEBeta()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
-                    end if
                 end if
 	        End if
+	        if recursoAdicional(34)=4 then
+                rbtns = rbtns & "&nbsp; <button id='btn_NFeBeta' title='Nota Fiscal Beta' class='btn btn-danger btn-sm' onclick='modalNFEBeta()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
+            end if
 	    End if
 		if aut(nomePerm&"X") or data("CaixaID")=session("CaixaID") then
 		    PermissaoExclusao=True
@@ -3611,7 +3611,7 @@ function zeroEsq(val, quant)
 end function
 
 function fSysActive(NomeCampo, psysActive, PacienteID)
-    if session("OtherCurrencies")="phone" then
+    if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
         %>
         <label><input type="radio" name="<%=NomeCampo %>" class="ace dadosContato" onclick="saveSta(-2, <%=PacienteID%>)" value="-2"<%if psysActive=-2 then response.write(" checked ") end if %> /><span class="lbl"> <small>Lead</small></span></label>
         <label><input type="radio" name="<%=NomeCampo %>" class="ace dadosContato" onclick="saveSta(-3, <%=PacienteID%>)" value="-3"<%if psysActive=-3 then response.write(" checked ") end if %> /><span class="lbl"> <small>Pré-cad.</small></span></label>
@@ -5290,7 +5290,7 @@ end function
 function recursoAdicional(RecursoAdicionalID)
     LicencaID=replace(session("Banco"), "clinic", "")
     Status = 0
-    set RecursoAdicionalSQL = db.execute("SELECT Status FROM cliniccentral.clientes_servicosadicionais WHERE LicencaID="&treatvalzero(LicencaID)&" AND ServicoID="&treatvalzero(RecursoAdicionalID))
+    set RecursoAdicionalSQL = db.execute("SELECT Status FROM cliniccentral.clientes_servicosadicionais WHERE LicencaID="&treatvalzero(LicencaID)&" AND ServicoID="&treatvalzero(RecursoAdicionalID)&" order by DataContratacao desc limit 1")
     if not RecursoAdicionalSQL.eof then
         Status=RecursoAdicionalSQL("Status")
 
@@ -5489,8 +5489,10 @@ function arqEx(nArquivo, nTipo)
 	set fs=Server.CreateObject("Scripting.FileSystemObject")
 	if fs.FileExists("E:\uploads\"& replace(session("Banco"), "clinic", "") &"\"& nTipo &"\"& nArquivo) then
 		arqEx = "/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
+    elseif nArquivo&""="" then
+        arqEx = ""
 	else
-		arqEx = "https://clinic.feegow.com.br/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
+		arqEx = "https://feegow.com/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
 	end if
 	set fs=nothing
 end function

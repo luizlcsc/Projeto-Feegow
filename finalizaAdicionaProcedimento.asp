@@ -116,7 +116,7 @@ if Acao="I" then
 		ValorFinal = ValorBruto*Fator
 
 		IF getConfig("calculostabelas") THEN
-		    set CalculaValorProcedimentoConvenioObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadora,null,null)
+		    set CalculaValorProcedimentoConvenioObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadora,null,null,null)
             AssociacaoID     = (CalculaValorProcedimentoConvenioObj("AssociacaoID"))
         	ValorFinal       = treatvalnull(CalculaValorProcedimentoConvenioObj("TotalGeral"))
         	CalculoContratos = (CalculaValorProcedimentoConvenioObj("Contratos"))
@@ -186,7 +186,7 @@ if Acao="I" then
 
             ValorFinal = ValorBruto*Fator
             IF getConfig("calculostabelas") THEN
-                set CalculaValorProcedimentoConvenioObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadora,null,Anexos("id"))
+                set CalculaValorProcedimentoConvenioObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadora,null,Anexos("id"),null)
                 ValorFinal = (CalculaValorProcedimentoConvenioObj("TotalGeral"))
 
                 CalculoContratos = (CalculaValorProcedimentoConvenioObj("Contratos"))
@@ -442,7 +442,7 @@ if PermitirInformarProcedimentos then
                 END IF
 
                 IF getConfig("calculostabelas") THEN
-                    SET Valores = CalculaValorProcedimentoConvenio(null,ConvenioID,procs("ProcedimentoID"),procs("PlanoID"),CodigoNaOperadora,1,null)
+                    SET Valores = CalculaValorProcedimentoConvenio(null,ConvenioID,procs("ProcedimentoID"),procs("PlanoID"),CodigoNaOperadora,1,null,null)
 
                     if xxxCalculaValorProcedimentoConvenioNotIsNull then
                         AssociacaoID = Valores("AssociacaoID")
@@ -534,7 +534,7 @@ if PermitirInformarProcedimentos then
                     ValorFinal = ValorBruto*Fator
 
                     IF getConfig("calculostabelas") THEN
-                        set CalculaValorProcedimentoConvenioObj = CalculaValorProcedimentoConvenio(null,null,null,null,null,null,Anexos("id"))
+                        set CalculaValorProcedimentoConvenioObj = CalculaValorProcedimentoConvenio(null,null,null,null,null,null,Anexos("id"),null)
                         ValorFinal = (CalculaValorProcedimentoConvenioObj("TotalGeral"))
 
                         CalculoContratos = CalculoContratos

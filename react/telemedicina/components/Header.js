@@ -5,6 +5,29 @@ const Header = (props) => {
 
     }, []);
 
+    const choosenVideo = () => {
+        if(localStorage.getItem("telemedicine_default_app") === "zoom")
+        {
+            return(
+                <button
+                    style={{border: "none", background: "transparent" ,marginLeft:10,marginRight:5 }}
+                    onClick={() => {
+                        props.changeToFeegowVideo();
+
+                    }} className={""}>
+                    <i className={"fa fa-info"}  style={{marginRight:5 }}></i> Usar vídeo padrão
+                </button>
+            )
+        }
+        return (
+            <button
+                style={{border: "none", background: "transparent" ,marginLeft:10 ,marginRight:5 }}
+                onClick={() => {
+                    props.onZoomClick();
+                }} className={""}>
+                <i className={"fa fa-info"}  style={{marginRight:5 }}></i> Usar Zoom
+            </button>)
+    }
 
     return (
         <div className={props.renderMode === "absolute" ? "tm-header-content-abs" : "tm-header-content"}
@@ -48,7 +71,7 @@ const Header = (props) => {
                 <img style={{width: 25}} src="react/telemedicina/src/img/icone-fechar.png" alt=""/>
             </button>
 
-            <div className="btn-group " style={{zIndex: 999999999}}>
+            <div className="btn-group hidden" style={{zIndex: 999999999}}>
                 <button style={{
                     backgroundColor: props.buttonColor
                 }}
@@ -64,6 +87,10 @@ const Header = (props) => {
                         <a href="#" onClick={()=> {
                             props.onReconnect()
                         }}><i className="fa fa-undo"></i> Reconectar</a>
+                    </li>
+                    <li role="presentation" className="divider"></li>
+                    <li>
+                        {props.allowVideoChange ? choosenVideo() : null}
                     </li>
                 </ul>
             </div>

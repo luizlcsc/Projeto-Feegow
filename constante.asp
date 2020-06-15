@@ -14,7 +14,7 @@ else
     <%
 
 
-    if session("OtherCurrencies")="phone"  or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 and session("Banco")<>"clinic5459" then
+    if (session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 ) and session("Banco")<>"clinic5459" then
 	    %>
 	    <!--#include file="callsSoft.asp"-->
 	    <%

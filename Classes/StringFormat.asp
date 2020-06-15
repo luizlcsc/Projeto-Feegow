@@ -44,7 +44,7 @@ END FUNCTION
 
 'corrige strings com caracteres que quebram no javascript (quebras de linha) ATENCAO: funcao utilizada nas agendas
 FUNCTION fix_string_chars_full(string)
-    fix_string_chars_full = trim(replace(replace(replace(replace(replace(string&"", chr(13), ""), chr(10), ""), """", "\"""),"'","\'"),"	",""))
+    fix_string_chars_full = trim(replace(replace(replace(replace(replace(replace(string&"", chr(13), ""), chr(10), ""), """", "\"""),"'",""),"	",""),"\",""))
 END FUNCTION
 
 Function TratarNome(ByVal formato, ByVal str)

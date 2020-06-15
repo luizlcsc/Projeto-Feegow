@@ -7,6 +7,11 @@
         </span>
     </div>
     <div class="panel-body">
+        <div class="row justify-content-md-end">
+            <div class="col-md-8 "></div>
+               <%=quickField("simpleSelect", "TipoProcedimento", "Tipo de Procedimento", 4, "", "SELECT * FROM tiposprocedimentos order by 2 ", "TipoProcedimento", "")%>
+        </div>
+        <div class="clearfix"></div>
         <%
 
         ProfissionalID = req("I")
@@ -51,11 +56,11 @@ $(document).ready(function() {
                 </h4>
             <div class="row">
             <%
-            set proc = db.execute("select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' and ifnull(GrupoID, 0)="& dist("GrupoID")&" order by NomeProcedimento")
+            set proc = db.execute("select id, NomeProcedimento,TipoProcedimentoID from procedimentos where sysActive=1 and Ativo='on' and ifnull(GrupoID, 0)="& dist("GrupoID")&" order by NomeProcedimento")
             while not proc.eof
                 %>
                 <div class="col-md-3 checkbox-custom checkbox-primary">
-                    <input type="checkbox" id="p<%= proc("id") %>" name="ProcedimentosAgenda" value="<%= proc("id") %>" class="g<%= dist("GrupoID") %> procprof" <% if instr(Procedimentos, "|"& proc("id") &"|")>0 then response.write(" checked ") end if %> /> <label for="p<%= proc("id") %>"><%= proc("NomeProcedimento") %></label>
+                    <input type="checkbox" id="p<%= proc("id") %>" name="ProcedimentosAgenda" tipo="<%=proc("TipoProcedimentoID") %>" value="<%= proc("id") %>" class="g<%= dist("GrupoID") %> procprof" <% if instr(Procedimentos, "|"& proc("id") &"|")>0 then response.write(" checked ") end if %> /> <label for="p<%= proc("id") %>"><%= proc("NomeProcedimento") %></label>
                 </div>
                 <%
             proc.movenext
@@ -74,6 +79,20 @@ $(document).ready(function() {
     </div>
 </div>
 <script type="text/javascript">
+    $("#TipoProcedimento").change(() => {
+        let v = $("#TipoProcedimento").val();
+        if(!v){
+            $(".row .checkbox-custom").show();
+            return;
+        }
+
+        $(".row .checkbox-custom").hide();
+        $(".row .checkbox-custom [tipo='"+v+"']").parents(".checkbox-custom").show();
+
+    })
+
+
+
     $("#btnProcsProf").click(function () {
         $.post("ProfProcAgenda.asp?I=<%= req("I") %>&Alt=1&tela=<%= req("tela") %>", $('.procprof').serialize(), function (data) {
             $('#divPermissoes').html(data);

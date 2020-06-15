@@ -357,7 +357,17 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
                         </div>
                         <div class="row">
                             <%
-                            if reg("De")=session("User") then
+                            UserID1=session("User")
+                            UserID2=0
+
+                            set UserAlternativoMultiLicencaSQL = db.execute("SELECT lu2.id FROM cliniccentral.licencasusuarios lu "&_
+                                                                            "INNER JOIN cliniccentral.licencasusuarios lu2 ON lu2.Email = lu.Email AND lu2.LicencaID!=lu.Email "&_
+                                                                            "WHERE lu.id="&UserID1&" AND lu2.LicencaID="&replace(session("Banco"),"clinic",""))
+                            if not UserAlternativoMultiLicencaSQL.eof then
+                                UserID2=UserAlternativoMultiLicencaSQL("id")
+                            end if
+
+                            if reg("De")=UserID1 or reg("De")=UserID2 then
                                 %>
                                 <%=quickfield("simpleSelect", "staDe", "Segundo você", 4, reg("staDe"), "select id, De from cliniccentral.tarefasstatus where not isnull(De)", "De", "") %>
                                 <%
@@ -370,7 +380,7 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
                                 </div>
                                 <%
                             end if
-                            if instr(Para, "|"& session("User") &"|")>0 or instr(Para, "|-"& CentroCustoID &"|")>0 then
+                            if instr(Para, "|"& UserID1 &"|")>0 or instr(Para, "|"& UserID2 &"|")>0 or instr(Para, "|-"& CentroCustoID &"|")>0 then
                                 descPara = "Segundo o recebedor"
                                 %>
                                 <%=quickfield("simpleSelect", "staPara", descPara, 4, reg("staPara"), "select id, Para from cliniccentral.tarefasstatus where not isnull(Para)", "Para", "") %>

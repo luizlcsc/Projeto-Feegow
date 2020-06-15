@@ -774,4 +774,11 @@ end function
     </div>
   </div>
 </div>
+<script>
+$(document).ready(function(e) {
+    <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>
+          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=request.QueryString("P")%>')"><i class="fa fa-copy"></i> Replicar</button>`)
+    <% end if %>
+});
+</script>
 <!--#include file="disconnect.asp"-->

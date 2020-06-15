@@ -268,9 +268,7 @@
     <%
     end if
     if aut("|notafiscalV|") then
-
         if recursoAdicional(7)=4 and session("Banco")<>"clinic6102" then
-
             if session("Banco")="clinic6118" or session("Banco")="clinic5760" or session("Banco")="clinic8676" then
             %>
             <li <% If req("P")="NotaFiscal" Then %> class="active"<% End If %>>
@@ -290,40 +288,40 @@
             </li>
             <%
             end if
-            if session("Banco")="clinic100000" or session("Banco")="clinic5459" then
-            %>
-               <li<% If req("P")="ListarEmpresasNFse" OR req("P")="BoletosEmitidos" OR req("P")="CriarEmpresaNFse" Then %> class="open"<% End If %>>
-                   <a href="#" class="accordion-toggle">
-                       <span class="fa fa-file-text"></span>
-                       <span class="sidebar-title"> Nota Fiscal <span class="label label-primary">Beta</span></span>
-                       <span class="caret"></span>
-                   </a>
-                   <ul class="nav sub-nav">
-                       <li>
-                           <a href="?P=ListarNotasFiscais&Pers=1">
-                               <span class="fa fa-list"></span>
-                               <span class="sidebar-title"> Listar notas </span>
-                           </a>
-                       </li>
-                       <li <% If req("P")="ListarEmpresasNFse" Then %> class="active"<% End If %>>
-                           <a href="?P=ListarEmpresasNFse&Pers=1">
-                               <span class="fa fa-building"></span>
-                               <span class="sidebar-title"> Listar empresas </span>
-                           </a>
-                       </li>
-                       <li <% If req("P")="CriarEmpresaNFse" Then %> class="active"<% End If %>>
-                              <a href="?P=CriarEmpresaNFse&Pers=1">
-                                  <span class="fa fa-plus"></span>
-                                  <span class="sidebar-title"> Criar empresa </span>
-                              </a>
-                          </li>
-                   </ul>
-               </li>
-           <%
-           end if
         end if
 	end if
 	%>
+
+	<% if aut("|notafiscalV|") and recursoAdicional(34)=4 then %>
+       <li<% If req("P")="ListarEmpresasNFse" OR req("P")="BoletosEmitidos" OR req("P")="CriarEmpresaNFse" Then %> class="open"<% End If %>>
+           <a href="#" class="accordion-toggle">
+               <span class="fa fa-file-text"></span>
+               <span class="sidebar-title"> Nota Fiscal <span class="label label-primary">Beta</span></span>
+               <span class="caret"></span>
+           </a>
+           <ul class="nav sub-nav">
+               <li>
+                   <a href="?P=ListarNotasFiscais&Pers=1">
+                       <span class="fa fa-list"></span>
+                       <span class="sidebar-title"> Listar notas </span>
+                   </a>
+               </li>
+               <li <% If req("P")="ListarEmpresasNFse" Then %> class="active"<% End If %>>
+                   <a href="?P=ListarEmpresasNFse&Pers=1">
+                       <span class="fa fa-building"></span>
+                       <span class="sidebar-title"> Listar empresas </span>
+                   </a>
+               </li>
+               <li <% If req("P")="CriarEmpresaNFse" Then %> class="active"<% End If %>>
+                      <a href="?P=CriarEmpresaNFse&Pers=1">
+                          <span class="fa fa-plus"></span>
+                          <span class="sidebar-title"> Criar empresa </span>
+                      </a>
+                  </li>
+           </ul>
+       </li>
+       <% end if %>
+
 	<li <% If req("P")="ChequesRecebidos" Then %> class="active"<% End If %>>
         <a href="?P=ChequesRecebidos&Pers=1">
             <span class="fa fa-list-alt"></span>

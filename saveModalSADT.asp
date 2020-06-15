@@ -201,7 +201,7 @@ elseif Tipo="Procedimentos" then
             AssociacaoID = null
 
             IF getConfig("calculostabelas") THEN
-                set ValorCalculo = CalculaValorProcedimentoConvenio(null,ref("gConvenioID"),pv("ProcedimentoID"),ref("PlanoID"),ref("ContratadoSolicitanteCodigoNaOperadora"),QuantidadeProcedimento,null)
+                set ValorCalculo = CalculaValorProcedimentoConvenio(null,ref("gConvenioID"),pv("ProcedimentoID"),ref("PlanoID"),ref("ContratadoSolicitanteCodigoNaOperadora"),QuantidadeProcedimento,null,null)
                 AssociacaoIDNovo = ValorCalculo("AssociacaoID")
             END IF
 
@@ -231,7 +231,7 @@ elseif Tipo="Procedimentos" then
                     TotalGeral      = 0
 
                     IF getConfig("calculostabelas") THEN
-                        set ValorCalculoAnexo = CalculaValorProcedimentoConvenio(null,null,null,null,null,null,ProcedimentosAnexosSQL("id"))
+                        set ValorCalculoAnexo = CalculaValorProcedimentoConvenio(null,null,null,null,null,null,ProcedimentosAnexosSQL("id"),null)
                         %>console.log(<%=fieldToJSON(ValorCalculoAnexo)%>); <%
                         ValorAnexo      = treatvalzero(ValorCalculoAnexo("TotalGeral"))
                         ValorTotalAnexo = treatvalzero(ValorCalculoAnexo("TotalGeral"))

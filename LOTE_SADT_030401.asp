@@ -271,7 +271,7 @@ prefixo = right(prefixo, 20)
 						ValorUnitario = treatvaltiss( procs("Fator")*procs("ValorUnitario") )
 						ValorTotal = treatvaltiss(procs("ValorTotal"))
 						
-						hash = hash & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
+						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
 						%>
                         <ans:procedimentoExecutado>
                             <ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>
@@ -356,7 +356,9 @@ prefixo = right(prefixo, 20)
 					%>
                     <ans:outrasDespesas>
                     	<%
+						sequencialItem=0
 						while not desp.eof
+							sequencialItem = sequencialItem+1
 							CD = zEsq(desp("CD"), 2)
 							Data = mydatetiss(desp("Data"))
 							HoraInicio = myTimeTISS(desp("HoraInicio"))
@@ -373,9 +375,10 @@ prefixo = right(prefixo, 20)
 							CodigoNoFabricante = TirarAcento(desp("CodigoNoFabricante"))
 							AutorizacaoEmpresa = TirarAcento(desp("AutorizacaoEmpresa"))
 							
-							hash = hash & CD&Data&HoraInicio&HoraFim&TabelaProdutoID&CodigoProduto&Quantidade&UnidadeMedidaID&Fator&ValorUnitario&ValorTotal&Descricao&RegistroANVISA&CodigoNoFabricante&AutorizacaoEmpresa
+							hash = hash & sequencialItem&CD&Data&HoraInicio&HoraFim&TabelaProdutoID&CodigoProduto&Quantidade&UnidadeMedidaID&Fator&ValorUnitario&ValorTotal&Descricao&RegistroANVISA&CodigoNoFabricante&AutorizacaoEmpresa
 						%>
                         <ans:despesa>
+                            <ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>
                             <ans:codigoDespesa><%= CD %></ans:codigoDespesa>
                             <ans:servicosExecutados>
                                 <%if Data<>"" then%><ans:dataExecucao><%= Data %></ans:dataExecucao><% End If %>

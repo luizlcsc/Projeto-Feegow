@@ -19,7 +19,7 @@ else
   response.end()
 end if
 
-ff_host = ff_host1&"/futurofone_api"
+ff_host = ff_host1
 'if Request.ServerVariables("HTTP_HOST") <> "localhost" then 
 '  ff_host  = "http://192.168.0.23/futurofone_api"
 'else

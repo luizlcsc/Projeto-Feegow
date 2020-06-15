@@ -212,9 +212,11 @@ if request.QueryString("ConvenioID")<>"" then
                     response.write(lotes("DataPrevisaoOriginal"))
                 end if
 
-                convenioVersao =""
-                if objConvenio("Versao")&""<>"30200" then
+                convenioVersao = ""
+                fileName = ""
+                if objConvenio("Versao")&""<>30200 then
                     convenioVersao = "_"
+                    fileName = objConvenio("FileName")
                 end if
                 %>
             </td>
@@ -225,11 +227,12 @@ if request.QueryString("ConvenioID")<>"" then
 
                 <div class="btn-group" style="display: flex;">
                     <% IF NOT ISNULL(objConvenio("Versao")) OR objConvenio("Versao")<>"" THEN %>
-                        <a target="_blank" href="<%=link%><%=convenioVersao%><%=objConvenio("FileName")%>.asp?I=<%=lotes("id")%>" class="btn btn-sm btn-warning"><i class="fa fa-download"></i> <%=objConvenio("Versao")%></a>
+                        <a target="_blank" href="<%=link%><%=convenioVersao%><%=fileName%>.asp?I=<%=lotes("id")%>" class="btn btn-sm btn-warning"><i class="fa fa-download"></i> <%=objConvenio("Versao")%></a>
                     <% END IF %>
                     <button class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown"><i class="fa fa-angle-down icon-only"></i></button>
                     <ul class="dropdown-menu dropdown-warning">
                         <li>
+                            <a href="<%=link%>_030500.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.05.00</a>
                             <a href="<%=link%>_030401.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.04.01</a>
                             <a href="<%=link%>_030303.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.03</a>
                             <a href="<%=link%>_0302.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.02</a>

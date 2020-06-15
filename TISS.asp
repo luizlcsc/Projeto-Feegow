@@ -379,7 +379,13 @@ function completaProcedimentoNew(id, ConvenioID)
        Quantidade = ubound(split(ref("listaProc[]"),","))+2
     END IF
 
-    set Valores = CalculaValorProcedimentoConvenio(null,ConvenioID,id,ref("PlanoID"),ref("CodigoNaOperadora"),Quantidade,null)
+    viaID = ref("ViaID")
+
+    IF viaID = "" THEN
+       viaID = 1
+    END IF
+
+    set Valores = CalculaValorProcedimentoConvenio(null,ConvenioID,id,ref("PlanoID"),ref("CodigoNaOperadora"),Quantidade,null,viaID)
 
     ValorFinal = "0"
     if not isnull(Valores("TotalGeral")) then
@@ -427,7 +433,7 @@ function completaProcedimentoNew(id, ConvenioID)
     if($fator){
         $fator.trigger("change");
     }
-    $("#ViaID").val("1");
+    $("#ViaID").val('<%=viaID%>');
     $("#TecnicaID").val("<%=Valores("TecnicaID")%>");
     /////////////////////////////////////////////////////////////////////////////////////
     <%

@@ -17,15 +17,18 @@
 <br />
     <div class="panel mn">
         <div class="panel-body">
-        <%=quickfield("datepicker", "De", "De", 2, dateadd("m", -1, date()), "", "", "") %>
-        <%=quickfield("datepicker", "Ate", "Até", 2, date(), "", "", "") %>
-        <%=quickfield("multiple", "Status", "Status", 2, "|1|", "select id, NomeStatus from propostasstatus", "NomeStatus", " required ") %>
-        <%=quickfield("users", "EmitidaPor", "Emitida por", 2, "", "", "", "") %>
-        <%=quickfield("multiple", "Unidades", "Filtrar Unidades", 2 , "|"&session("UnidadeID")&"|", "SELECT 0 as id,NomeEmpresa as NomeFantasia  FROM empresa UNION SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive = 1", "NomeFantasia", "") %>
-        <%=quickfield("multiple", "Procedimentos", "Filtrar Procedimentos", 2, "", "select distinct ip.ItemID id, p.NomeProcedimento from itensproposta ip LEFT JOIN procedimentos p on p.id=ip.ItemID WHERE NOT ISNULL(p.NomeProcedimento) ORDER BY trim(p.NomeProcedimento)", "NomeProcedimento", "") %>
-        <div class="col-md-2 col-md-offset-10">
-            <label>&nbsp;</label><br />
-            <button class="btn btn-block btn-primary">Buscar</button>
+        <div class="row">
+            <%=quickfield("datepicker", "De", "De", 2, dateadd("m", -1, date()), "", "", "") %>
+            <%=quickfield("datepicker", "Ate", "Até", 2, date(), "", "", "") %>
+            <%=quickfield("multiple", "Procedimentos", "Filtrar Procedimentos", 3, "", "select distinct ip.ItemID id, p.NomeProcedimento from itensproposta ip LEFT JOIN procedimentos p on p.id=ip.ItemID WHERE NOT ISNULL(p.NomeProcedimento) ORDER BY trim(p.NomeProcedimento)", "NomeProcedimento", "") %>
+            <%=quickfield("multiple", "Unidades", "Filtrar Unidades", 3 , "|"&session("UnidadeID")&"|", "SELECT 0 as id,NomeEmpresa as NomeFantasia  FROM empresa UNION SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive = 1", "NomeFantasia", "") %>
+            <%=quickfield("users", "EmitidaPor", "Emitida por", 2, "", "", "", "") %>
+        </div>
+        <div class="row mt10">
+            <%=quickfield("multiple", "Status", "Status", 3, "|1|", "select id, NomeStatus from propostasstatus", "NomeStatus", " required ") %>
+            <div class="col-md-2 col-md-offset-7 mt20">
+                <button class="btn btn-block btn-primary"><i class="fa fa-search"></i> Buscar</button>
+            </div>
         </div>
     </div>
         </div>

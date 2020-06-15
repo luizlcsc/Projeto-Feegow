@@ -294,41 +294,9 @@ end if
     <%
 'SÓ PRA QUEM TEM PABX INTEGRADO
 if session("Banco")="clinic5459" then
-    set ram = db.execute("select Ramal from sys_users where id="& session("User"))
-    Ramal = ram("Ramal")&""
-    session("Ramal") = Ramal
-    %>
-
-    <div class="col-sm-3 col-xl-3">
-        <div class="panel panel-tile text-center br-a br-grey">
-        <div class="panel-body">
-            <h1 class="fs30 mt5 mbn col-xs-6 col-xs-offset-3">
-                <input type="text" class="form-control text-center fs30" name="Ramal" id="Ramal" value="<%= Ramal %>" placeholder="-" />
-            </h1>
-            <div class="row"></div>
-            <h6 class="text-success">SEU RAMAL NO PABX</h6>
-        </div>
-        <div class="panel-footer br-t p12">
-            <span class="fs11">
-                <div class="row">
-                    <div class="col-xs-12">
-                        PABX Integrado
-                    </div>
-                </div>
-            </span>
-        </div>
-        </div>
-    </div>
-<script type="text/javascript">
-    $("#Ramal").keyup(function () {
-        $.get("saveRamal.asp?U=<%= session("User") %>&Ramal=" + $(this).val(), function (data) { eval(data) });
-    });
-</script>
-
+  %>
+  <!--#include file="ff_pabxSituacao.asp"-->
 <% end if
-
-
-
 
 
     set diasVencimento = db.execute("SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1")

@@ -216,7 +216,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?a=30"></script>
+  <script src="js/components.js?a=31"></script>
   <script src="feegow_components/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
 <%if aut("capptaI") then%>
@@ -400,6 +400,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 </head>
 
 <body>
+
       <%
       if session("Partner")<>"" then
         %>
@@ -927,9 +928,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								if not isnull(session("Unidades")) and session("Unidades")<>"" then
 
 								    'verifica se o usuario possui apenas uma unidade e nao exibe o "Altera unidade"
-
 								    if instr(session("Unidades"),",")=0 then
-								        set UnidadeSQL = db.execute("SELECT id, NomeFantasia FROM (SELECT 0 id, IFNULL(NomeFantasia, NomeEmpresa) NomeFantasia FROM empresa  UNION ALL SELECT id, IFNULL(NomeFantasia, UnitName) NomeFantasia FROM sys_financialcompanyunits where sysActive=1)t")
+								        set UnidadeSQL = db.execute("SELECT id, NomeFantasia FROM (SELECT 0 id, IFNULL(NomeFantasia, NomeEmpresa) NomeFantasia FROM empresa  UNION ALL SELECT id, IFNULL(NomeFantasia, UnitName) NomeFantasia FROM sys_financialcompanyunits where sysActive=1)t where id="&session("UnidadeID"))
 
                                         if not UnidadeSQL.eof then
                                             idUnidade=UnidadeSQL("id")
@@ -939,7 +939,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								        %>
                                         <li class="list-group-item menu-click-meu-perfil-muda-local">
                                             <a class="animated animated-short fadeInUp">
-                                                <i class="fa <%if ccur(idUnidade)=session("UnidadeID") then%>fa-check-square-o<%else%>fa-square-o<%end if%>"></i>
+                                                <i class="fa <%if ccur(idUnidade)&""=session("UnidadeID") then%>fa-check-square-o<%else%>fa-square-o<%end if%>"></i>
                                                 <%= nomeUnidade %>
                                             </a>
                                         </li>
@@ -1185,6 +1185,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
+<div id="importa-replicar"></div>
+
 <div id="modal-descontos-pendentes" class="modal fade" role="dialog" aria-hidden="true">
     <div class="modal-lg modal-dialog">
         <div class="modal-content"  >
@@ -1917,7 +1919,7 @@ function callSta(callID, StaID){
 
 <%
 
-    if session("OtherCurrencies")="phone" then
+    if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
 	    %>
 	    setTimeout(function(){constante()}, 1500);
 	    setInterval(function(){constante()}, 7000);
@@ -2160,9 +2162,29 @@ function abreModalUnidade(backdrop=true){
 }
 </script>
     <!-- old sms << -->
+    <style>
+    .voltarTo{
+        height: 44px;
+        width: 100%;
+        background: rgba(0,0,0,.5);
+        z-index: 10000;
+        position: absolute;
+        bottom: 0;
+        color: #DDDDDD;
+        padding: 12px;
+    }
+    .voltarTo a{
+        color: #DDDDDD;
+    }
+    </style>
+    <% IF session("BancoOld") <> "" THEN %>
+    <script>
+        $("body").append(`<div class='voltarTo'>
+           <a href="sys_financialCompanyUnits.asp?back=1"><i class="fa fa-backward"></i>  Voltar a Licença da Franquiadora</a>
+        </div>`);
+    </script>
 
-
-
+    <% END IF %>
 
   <script type="text/javascript">
   jQuery(document).ready(function() {
@@ -2395,7 +2417,7 @@ next
 <div id="videoaula" style="position:fixed; left:10px; width:95%; height:600px; top:10px; border-radius:5px; background-color:#fff; border:1px solid #ccc; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); z-index:9999"></div>
 
 <%
-if session("OtherCurrencies")="phone" then
+if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
     %>
     <div id="calls" style="position:fixed; right:10px; bottom:10px; width:350px; border-radius:10px; background-color:#fff; border:1px solid #ccc; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></div>
     <script type="text/javascript">

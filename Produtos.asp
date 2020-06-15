@@ -55,6 +55,7 @@ end if
 EstoqueMaximo = reg("EstoqueMaximo")
 EstoqueMaximoTipo = reg("EstoqueMaximoTipo")
 CodigoTabela = reg("CodigoTabela")
+CodigoTabelaSimpro = reg("CodigoTabelaSimpro")
 PrincipioAtivo = reg("PrincipioAtivo")
 TabelaProduto = reg("TabelaProduto")
 DiasAvisoValidade = reg("DiasAvisoValidade")
@@ -62,11 +63,16 @@ ApresentacaoNomeDispensacao = reg("ApresentacaoNomeDispensacao")
 ApresentacaoQuantidadeDispensacao = reg("ApresentacaoQuantidadeDispensacao")
 ApresentacaoUnidadeDispensacao = reg("ApresentacaoUnidadeDispensacao")
 UnidadePrescricao = reg("UnidadePrescricao")
+DoseMin = reg("DoseMin")
+DoseMax = reg("DoseMax")
 
 if ApresentacaoUnidadeDispensacao&""="" then
     ApresentacaoUnidadeDispensacao = treatvalzero(ApresentacaoUnidadeDispensacao&"")
 end if
 PrecoTabela = reg("PrecoTabela")
+PrecoTabelaSimpro = reg("PrecoTabelaSimpro")
+PMC = reg("PMC")
+PMCSimpro = reg("PMCSimpro")
 LocaisEntradas = reg("LocaisEntradas")
 
 if LocaisEntradas&""<>"" then
@@ -189,15 +195,7 @@ end if
                             </div>
                             <%=quickField("simpleSelect", "CD", "CD", 3, reg("CD"), "select * from cliniccentral.tisscd order by Descricao", "Descricao", "")%>
                         </div>
-                        <br />
-                        <div class="row">
-                            <%=quickField("simpleSelect", "TabelaProduto", "Tabela", 2, TabelaProduto, "select * from cliniccentral.produtostabelas order by id", "TabelaProduto", " required no-select2")%>
-                            <%=quickField("text", "CodigoTabela", "Código da Tabela", 2, CodigoTabela, "", "", "")%>
-                            <%=quickField("currency", "PrecoTabela", "Preço da Tabela", 2, PrecoTabela, "", "", "")%>
-                            <div class="col-md-4 Modulo-Medicamento">
-                                <%= selectInsert("Princípio Ativo", "PrincipioAtivo", PrincipioAtivo, "cliniccentral.principioativo", "Principio", "", "", "") %>
-                            </div>
-                        </div>
+
                         <br />
 
 
@@ -213,8 +211,31 @@ end if
                                 %>
                                 <%=quickField("text", "ApresentacaoQuantidadeDispensacao", "Contendo", 2, ApresentacaoQuantidadeDispensacao, " input-mask-brl text-right", "", " placeholder=""1,00"" ")%>
                                 <%=quickField("simpleSelect", "ApresentacaoUnidadeDispensacao", "Unidade", 2, ApresentacaoUnidadeDispensacao, "select * from cliniccentral.tissunidademedida order by Descricao", "Descricao", "  empty")%>
-                                <%=quickField("simpleSelect", "UnidadePrescricao", "Unidade para Prescrição", 3, UnidadePrescricao, "select * from cliniccentral.unidademedida order by UnidadeMedida", "UnidadeMedida", "  empty")%>
                             </div>
+                            <div class="col-md-12 mt10">
+                                <%=quickField("text", "DoseMin", "Dose Min.", 2, fn(DoseMin), " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
+                                <%=quickField("text", "DoseMax", "Dose Máx.", 2, fn(DoseMax), " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
+                                <%=quickField("simpleSelect", "UnidadePrescricao", "Unidade para Prescrição", 3, UnidadePrescricao, "select * from cliniccentral.unidademedida order by UnidadeMedida", "UnidadeMedida", "  empty")%>
+                                <div class="col-md-4">
+                                    <%= selectInsert("Princípio Ativo", "PrincipioAtivo", PrincipioAtivo, "cliniccentral.principioativo", "Principio", "", "", "") %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="ml15" style="color: #AAA;"><h4> - Brasíndice</h4></div>
+                                <%=quickField("text", "CodigoTabela", "Código da Tabela", 4, CodigoTabela, "", "", "")%>
+                                <%=quickField("currency", "PrecoTabela", "Preço da Tabela", 4, PrecoTabela, "", "", "")%>
+                                <%=quickField("currency", "PMC", "PMC", 4, PMC, "", "", "")%>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="ml15" style="color: #AAA;"><h4> - Simpro</h4></div>
+                                <%=quickField("text", "CodigoTabelaSimpro", "Código da Tabela", 4, CodigoTabelaSimpro, "", "", "")%>
+                                <%=quickField("currency", "PrecoTabelaSimpro", "Preço da Tabela", 4, PrecoTabelaSimpro, "", "", "")%>
+                                <%=quickField("currency", "PMCSimpro", "PMC", 4, PMCSimpro, "", "", "")%>
+                             </div>
                         </div>
                         <br />
 

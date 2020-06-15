@@ -92,12 +92,21 @@ MensagensPadraoSQL.movenext
 wend
 MensagensPadraoSQL.close
 set MensagensPadraoSQL = nothing
-set AgendamentosOnlineSQL = db.execute("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1 FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID!=3")
+set AgendamentosOnlineSQL = db.execute("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1, age.ProfissionalID FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID!=3 ORDER BY age.Hora")
+
+
+set MensagemWhatsAppSQL = db.execute("SELECT coalesce(mi.Conteudo, tmi.TextoPadrao) Texto FROM cliniccentral.tiposmodelosimpressos tmi LEFT JOIN modelosimpressos mi ON mi.TiposModelosImpressosID=tmi.id WHERE tmi.id=2")
+
+if not MensagemWhatsAppSQL.eof then
+    TextoWhatsApp = MensagemWhatsAppSQL("Texto")
+end if
+
+PermitirIniciarAtendimentoAvulsoTeleconsulta = getConfig("PermitirIniciarAtendimentoAvulsoTeleconsulta")
 
 if not AgendamentosOnlineSQL.eof then
 %>
 <div class="row">
-    <div class="col-md-5" style="float: right">
+    <div class="col-md-6" style="float: right">
         <div class="panel panel-primary panel-border  top mt30">
             <div class="panel-body bg-light p10">
               <div class="list-group list-group-links list-group-spacing-xs mbn">
@@ -109,7 +118,7 @@ if not AgendamentosOnlineSQL.eof then
                           <th >#</th>
                           <th>Paciente</th>
                           <th>Link enviado</th>
-                          <th>#</th>
+                          <th>Link</th>
                           <th>#</th>
                         </tr>
                       </thead>
@@ -139,16 +148,42 @@ if not AgendamentosOnlineSQL.eof then
                             <td>
                                 <small class="badge badge-danger"><i class="fa fa-envelope"></i> <%=MensagensEnviadas%></small>
                             </td>
-                            <td class="text-right">
-                          <div class="btn-group text-right "  data-toggle="tooltip" data-placement="left" title="Enviar mensagem">
-                            <button type="button" class="btn btn-success br2 btn-xs fs12 dropdown-toggle" data-toggle="dropdown" aria-expanded="true" disabled> <i class="fa fa-whatsapp"></i>
-                              <span class="caret ml5"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-right dropdown-menu dropdown-menu-right-right" role="menu">
-                              <%=htmlMensagensPadrao%>
-                            </ul>
-                          </div>
-                        </td>
+                            <td>
+
+                                <div class="bs-component">
+                                    <div class="btn-group">
+                                      <button type="button" onclick="CopyLinkToClipboard('<%=AgendamentosOnlineSQL("id")%>', '<%=AgendamentosOnlineSQL("ProfissionalID")%>', '<%=AgendamentosOnlineSQL("PacienteID")%>')" class="btn btn-success btn-sm">
+                                        Copiar link
+                                      </button>
+
+                                      <button type="button" class="btn btn-success dropdown-toggle btn-sm" data-toggle="dropdown">
+                                          <span class="caret"></span>
+                                          <span class="sr-only">Abrir opções</span>
+                                        </button>
+                                      <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                          <a onclick='enviaMensagemWhatsApp("<%=AgendamentosOnlineSQL("Cel1")%>", `<%=TextoWhatsApp%>`, `<%=AgendamentosOnlineSQL("id")%>`)'  href="#"><i class="fa fa-whatsapp"></i>  Enviar WhatsApp</a>
+                                        </li>
+
+                                        <%
+                                        if PermitirIniciarAtendimentoAvulsoTeleconsulta=1 then
+                                        %>
+                                        <li class="divider"></li>
+                                        <li>
+                                          <a href="#" onclick="if(confirm('Tem certeza que deseja iniciar este atendimento?')){window.location='?P=ListaEspera&Pers=1&Atender=<%=AgendamentosOnlineSQL("id")%>&PacienteID=<%=AgendamentosOnlineSQL("PacienteID")%>&isTelemedicina=true'}">
+                                              <i class="fa fa-play"></i> Iniciar atendimento
+                                          </a>
+                                        </li>
+                                        <%
+                                        end if
+                                        %>
+                                      </ul>
+                                    </div>
+                                </div>
+
+                              </div>
+
+                            </td>
                         </tr>
                         <%
                         AgendamentosOnlineSQL.movenext
@@ -288,6 +323,12 @@ function loadEspecialidade(){
               allSelectedText: 'Todas as especialidades'
         });
     })
+    function openInNewTab(href) {
+      Object.assign(document.createElement('a'), {
+        target: '_blank',
+        href,
+      }).click();
+    }
 
     function modalPaciente(ID) {
         $("#modal-table").modal("show");
@@ -296,28 +337,55 @@ function loadEspecialidade(){
         $("#modal").addClass("modal-lg");
      }
 
-     function enviaMensagemWhatsApp($message) {
-        const $agendamento = $message.parents(".linha-agendamento"),
-            params = {
-                 AgendamentoID: $agendamento.data("id"),
-                 Celular: $agendamento.data("phone"),
-                 ModeloID: $message.data("id"),
-             };
+     function enviaMensagemWhatsApp(phone, message, appointmentId) {
 
-        function EnviaWhatsApp(params){
-            const $form = getModal().find("form");
-            const mensagem = $form.find("#TextoMensagem").val();
-
-            postUrl("/patient-interaction/notify-patient", {
-                message: mensagem,
-                model_id: params.ModeloID,
-                phone: params.Celular,
-                appointment_id: params.AgendamentoID
-            }, function() {
-              closeComponentsModal();
-              showMessageDialog("Mensagem enviada", "success");
-            });
-        }
-        openComponentsModal("EnviaMensagemPadraoPaciente.asp", params, "Enviar mensagem", true, EnviaWhatsApp, 'xs');
+        postUrl("/patient-interaction/notify-patient", {
+            message: message,
+            phone: phone,
+            appointment_id: appointmentId
+        }, function(data) {
+            openInNewTab(`https://api.whatsapp.com/send?phone=${data.Celular}&text=${data.Mensagem}&source=feegow&data=&app_absent=`)
+          // closeComponentsModal();
+          // showMessageDialog("Mensagem enviada", "success");
+        });
      }
+
+     function CopyLinkToClipboard(AgendamentoID, ProfissionalID, PacienteID) {
+        getUrl("/telemedicina/gerar-link", {AgendamentoID: AgendamentoID, ProfissionalID: ProfissionalID, PacienteID: PacienteID, LicencaID: '<%=replace(session("Banco"),"clinic", "")%>'}, function(data) {
+            CopyToClipboard(data.link);
+
+            showMessageDialog("Link copiado para a área de transferência.", "primary");
+        });
+     }
+
+function CopyToClipboard (text) {
+	// Copies a string to the clipboard. Must be called from within an
+	// event handler such as click. May return false if it failed, but
+	// this is not always possible. Browser support for Chrome 43+,
+	// Firefox 42+, Safari 10+, Edge and IE 10+.
+	// IE: The clipboard feature may be disabled by an administrator. By
+	// default a prompt is shown the first time the clipboard is
+	// used (per session).
+	if (window.clipboardData && window.clipboardData.setData) {
+		// IE specific code path to prevent textarea being shown while dialog is visible.
+		return clipboardData.setData("Text", text);
+
+  } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+    var textarea = document.createElement("textarea");
+    textarea.textContent = text;
+    textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+      return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+    } catch (ex) {
+      //console.warn("Cópia de tag falhou.", ex);
+      showMessageDialog("Ocorreu um erro ao copiar o link. Por favor copie manualmente.", "danger", "ERRO!", 5000);
+      return false;
+    } finally {
+      document.body.removeChild(textarea);
+    }
+	}
+}
 </script>

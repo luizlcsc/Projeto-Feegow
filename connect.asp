@@ -2848,7 +2848,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		if req("T")="D" then
 			nomePerm = "contasapagar"
 			rbtns = rbtns & "&nbsp <div class='btn-group'>     <button type='button' class='btn-sm btn btn-success dropdown-toggle' data-toggle='dropdown'><span class='fa fa-upload'></span></button> <ul class='dropdown-menu' role='menu'>    <li><a onclick='addBoleto("&hid&")' href='#'>Boleto</a></li>      <li><a onclick='addXmlNFe("&hid&")' href='#'>NF-e</a></li>  <li><a onclick='cnabBeta("&hid&")' href='#'>Cnab <label class='label label-primary'>Beta</label></a></li>   </ul>  </div> &nbsp"
-		    rbtns = rbtns & "<button class='btn btn-info btn-sm' onclick='imprimir()' type='button'><i class='fa fa-print bigger-110'></i></button>"
+		    rbtns = rbtns & "<button class='btn btn-info btn-sm' onclick='imprimirReciboInvoice()' type='button'><i class='fa fa-print bigger-110'></i></button>"
 		else
 			nomePerm = "contasareceber"
 		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
@@ -5487,7 +5487,7 @@ End function
 
 function arqEx(nArquivo, nTipo)
 	set fs=Server.CreateObject("Scripting.FileSystemObject")
-	if fs.FileExists("E:\uploads\"& replace(session("Banco"), "clinic", "") &"\"& nTipo &"\"& nArquivo) or (1 and nArquivo&""<>"") then
+	if fs.FileExists("E:\uploads\"& replace(session("Banco"), "clinic", "") &"\"& nTipo &"\"& nArquivo) then
 		arqEx = "/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
     elseif nArquivo&""="" then
         arqEx = ""

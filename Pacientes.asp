@@ -1,10 +1,10 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Json.asp"-->
-<% IF req("ValidarCertificado") <> "" THEN
+<% IF req("ValidarCertificado") <> "" and req("AgendamentoID")<>"" THEN
 
     db.execute("SET @sysUSER = "&session("User")&";")
     db.execute("SET @pacienteID = "&req("PacienteID")&";")
-    db.execute("SET @atendimentoID = (SELECT id FROM atendimentos WHERE AgendamentoID = "&req("AgendamentoID")&");")
+    db.execute("SET @atendimentoID = (SELECT id FROM atendimentos WHERE AgendamentoID = "&treatvalzero(req("AgendamentoID"))&" LIMIT 1);")
 
     sql = " SELECT count(*) > 0 as qtd,'ATENDIMENTO'                                      "&chr(13)&_
           " FROM atendimentos as A                                                        "&chr(13)&_

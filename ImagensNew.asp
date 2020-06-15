@@ -334,7 +334,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
 
     let valorConsulta = null;
     let typeDoc = "all";
-    let typeSearch = "";
+    let typeSearch = null;
 
     if(ConfigPacienteID > 0){
         valorConsulta = ConfigPacienteID;
@@ -346,7 +346,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
         typeSearch = 'MovementID'
     }
 
-    if(!typeDoc){
+    if(!typeSearch){
         typeDoc="license_upload";
     }
 

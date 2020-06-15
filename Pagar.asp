@@ -656,7 +656,7 @@ end if
 
         function reciboPadrao() {
            if(typeof imprimir === "function") {
-               imprimir();
+               imprimirReciboInvoice();
            }
         }
 

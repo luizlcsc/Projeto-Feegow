@@ -113,7 +113,7 @@ Hora = formatdatetime( lote("sysDate") ,3)
 
                     CIDNomeTabela="CID-10"
                     codigoDiagnostico="I10"
-                    descricaoDiagnostico=" "
+                    descricaoDiagnostico=""
                     tipoDoenca="C"
                     tempoReferidoValor="30"
                     unidadeTempo="D"
@@ -122,7 +122,7 @@ Hora = formatdatetime( lote("sysDate") ,3)
                     IndicacaoAcidente=""
                     TipoSaida="5"
 
-					hash = hash&RegistroANS&DataAtendimento&NGuiaOperadora&NGuiaPrestador&NumeroCarteira&NomePaciente &NomePlano&ValidadeCarteira&CodigoNaOperadora&NomeContratado& CodigoCNES&NomeProfissional&ConselhoProfissional&DocumentoConselho& CodigoUFConselho&CodigoCBO& hashCid &   DataAtendimento&CodigoTabela&CodigoProcedimento&TipoConsulta&TipoSaida
+					hash = hash&RegistroANS&DataAtendimento&NGuiaOperadora&NGuiaPrestador&NumeroCarteira&NomePaciente&NomePlano&ValidadeCarteira&CodigoNaOperadora&NomeContratado&CodigoCNES&NomeProfissional&ConselhoProfissional&DocumentoConselho&CodigoUFConselho&CodigoCBO& hashCid &DataAtendimento&CodigoTabela&CodigoProcedimento&TipoConsulta&TipoSaida
 					%>
                 <ans:guiaConsulta>
 					<ans:identificacaoGuia>

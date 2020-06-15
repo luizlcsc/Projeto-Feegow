@@ -333,18 +333,24 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
     let ConfigMovementID = '<%=request.QueryString("MovementID")%>';
 
     let valorConsulta = null;
+    let typeDoc = "all";
+    let typeSearch = "";
 
     if(ConfigPacienteID > 0){
         valorConsulta = ConfigPacienteID;
-        typeDoc = 'PacienteID'
+        typeSearch = 'PacienteID'
     }
 
     if(ConfigMovementID > 0){
         valorConsulta = ConfigMovementID;
-        typeDoc = 'MovementID'
+        typeSearch = 'MovementID'
     }
 
-    fetch(domain+'file/arquivos/'+typeDoc+'/'+valorConsulta+'/all/list?tk='+localStorage.getItem("tk"))
+    if(!typeDoc){
+        typeDoc="license_upload";
+    }
+
+    fetch(domain+'file/arquivos/'+typeDoc+'/'+valorConsulta+'/'+typeDoc+'/list?tk='+localStorage.getItem("tk"))
     .then((a) => a.json())
     .then( a =>{
             itens = a;

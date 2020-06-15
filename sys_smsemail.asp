@@ -16,11 +16,13 @@ if recursoAdicional(31) = 4 then
 
     qWhatsAppCheck = "select WhatsApp from eventos_emailsms where id = '"&req("I")&"'"
     set WhatsAppCheckSQL = db.execute(qWhatsAppCheck)
-    if WhatsAppCheckSQL("WhatsApp") = 1 or WhatsAppCheckSQL("WhatsApp") = True then
-        AtivoWhatsApp = 1
-        txtZap = ", WhatsApp"
-    else
-        AtivoWhatsApp = 0
+    if not WhatsAppCheckSQL.eof then
+        if WhatsAppCheckSQL("WhatsApp") = 1 or WhatsAppCheckSQL("WhatsApp") = True then
+            AtivoWhatsApp = 1
+            txtZap = ", WhatsApp"
+        else
+            AtivoWhatsApp = 0
+        end if
     end if
 else
     configWhatsApp = 0

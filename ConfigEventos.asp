@@ -71,6 +71,13 @@ if session("admin")=1 then
         AtivarServicoWhatsapp=reg("AtivarServicoWhatsapp")
         ModeloMsgWhatsapp=reg("ModeloMsgWhatsapp")
         %>
+        <%
+        if recursoAdicional(31)=4 then
+            LabelSmsZap = "WhatsApp"
+        else
+            LabelSmsZap = "SMS"
+        end if
+        %>
         <br />
         <div class="tabbable">
             <div class="tab-content">
@@ -104,7 +111,7 @@ if session("admin")=1 then
                                 </div>
                                 <div class="col-md-2">
                                     <label>
-                                        SMS <small><span class="badge badge-pink">R$ 0,12</span></small>
+                                        <%=LabelSmsZap%> <small><span class="badge badge-pink">R$ 0,12</span></small>
                                         <br />
                                         <div class="switch round">
                                             <input type="checkbox" <% If AtivarServicoSMS="S" Then %> checked="checked"<%end if%> value="S" class="checkbox-ativo" data-type="SMS" data-group="AtivarSMS" name="AtivarServicoSMS" id="AtivarServicoSMS">
@@ -113,7 +120,7 @@ if session("admin")=1 then
 
                                     </label>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 hidden">
                                     <label>
                                         WhatsApp <small><span class="badge badge-pink">R$ 0,30</span></small><small><span class="badge badge-warning">Em breve</span></small>
                                         <br />
@@ -150,7 +157,7 @@ if session("admin")=1 then
                                 </div>
                                 <div class="col-md-2">
                                     <label>
-                                        SMS
+                                        <%=LabelSmsZap%>
                                         <br />
                                         <div class="switch round">
                                             <input type="checkbox" <% If EnvioAutomaticoSMS="S" Then %> checked="checked"<%end if%> value="S" data-group="AtivarSMS" data-type="SMS" class="marcar-envio" name="EnvioAutomaticoSMS" id="EnvioAutomaticoSMS">
@@ -159,7 +166,7 @@ if session("admin")=1 then
 
                                     </label>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 hidden">
                                     <label>
                                         WhatsApp
                                         <br />
@@ -179,9 +186,9 @@ if session("admin")=1 then
 
                                  </div>
                                  <div class="col-md-2">
-                                    <button type="button" onclick="ExcluirFila('sms')" data-group="AtivarSMS" data-type="SMS" class="btn btn-sm btn-danger excluir-fila" disabled><i class="fa fa-exclamation-triangle"></i>  Excluir SMS da Fila  </button>
+                                    <button type="button" onclick="ExcluirFila('sms')" data-group="AtivarSMS" data-type="SMS" class="btn btn-sm btn-danger excluir-fila" disabled><i class="fa fa-exclamation-triangle"></i>  Excluir <%=LabelSmsZap%> da Fila  </button>
                                  </div>
-                                 <div class="col-md-2">
+                                 <div class="col-md-2 hidden">
                                     <button disabled type="button" onclick="ExcluirFila('whatsapp')" data-group="AtivarWhatsApp" data-type="WhatsApp" class="btn btn-sm btn-danger excluir-fila" disabled><i class="fa fa-exclamation-triangle"></i>  Excluir WhatsApp da Fila  </button>
                                  </div>
                             </div>

@@ -795,7 +795,7 @@ if not inv.eof then
             NumeroSequencial = invoiceSequencial("NumeroSequencial")
 
             if SplitNF<>1 then
-                db_execute("UPDATE recibos SET sysActive=-1 WHERE InvoiceID="&inv("id"))
+                db_execute("UPDATE recibos SET sysActive=-1 WHERE InvoiceID="&inv("id")&" AND id!="&treatvalzero(reciboID))
             end if
 
         else

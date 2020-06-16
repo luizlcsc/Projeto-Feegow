@@ -181,7 +181,7 @@ end if
 <h4>Recibos emitidos</h4>
 </div>
 <div class="col-md-2 col-md-offset-7 mt25">
-<button type='button' class='btn btn-<%=classButtom%> btn-sm' <%=desabilita%> onClick='imprimir()'><i class='fa fa-plus'></i> <%=textButtom%></button>
+<button type='button' class='btn btn-<%=classButtom%> btn-sm' <%=desabilita%> onClick='imprimirReciboInvoice()'><i class='fa fa-plus'></i> <%=textButtom%></button>
 </div>
 
 

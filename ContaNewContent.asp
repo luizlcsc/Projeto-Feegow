@@ -180,7 +180,7 @@ end if
                                     db_execute("update atendimentosprocedimentos set ItemInvoiceID="&ii("id")&" where id="&APID)
                                 end if
                             end if
-			            elseif ii("Tipo")="M" then
+			            elseif ii("Tipo")="M" or ii("Tipo")="K" then
 				            set proc = db.execute("select id, NomeProduto from produtos where id="&ii("ItemID"))
 				            if not proc.eof then
 					            Descricao = left(proc("NomeProduto"), 23)

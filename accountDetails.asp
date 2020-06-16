@@ -176,7 +176,17 @@ end select
 									</select>
 								</td>
 								<% end if %>																					
-
+								<% if AccountType = 4 then %>
+								<td>
+									<% 																			
+										Set dictionaryTipoPagamento = Server.CreateObject("Scripting.Dictionary")										
+										dictionaryTipoPagamento.Add "9","Débito"																		
+									 %>
+									<select disabled class="select-tipo-pagamento" name="tipo_pagamento" required onchange="checkTipoPagamento(this)">
+										<option selected value="9">Débito</option>																															
+									</select>
+								</td>
+								<% end if %>
 								<td width="18%" ><button type="button" onclick="excluirItemPercentualConfiguracao(this)" class="btn btn-danger btn-xs fa fa-trash"></button></td>
 							</tr>
 						<%

@@ -1,8 +1,85 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Json.asp"-->
+<% IF req("ValidarCertificado") <> "" and req("AgendamentoID")<>"" THEN
+
+    db.execute("SET @sysUSER = "&session("User")&";")
+    db.execute("SET @pacienteID = "&req("PacienteID")&";")
+    db.execute("SET @atendimentoID = (SELECT id FROM atendimentos WHERE AgendamentoID = "&treatvalzero(req("AgendamentoID"))&" LIMIT 1);")
+
+    sql = " SELECT count(*) > 0 as qtd,'ATENDIMENTO'                                      "&chr(13)&_
+          " FROM atendimentos as A                                                        "&chr(13)&_
+          " LEFT JOIN dc_pdf_assinados B on A.id = B.DocumentoID and tipo = 'ATENDIMENTO' "&chr(13)&_
+          " WHERE true                                                                    "&chr(13)&_
+          "   AND A.id = @atendimentoID                                                   "&chr(13)&_
+          "   AND A.PacienteID = @pacienteID                                              "&chr(13)&_
+          "   AND B.id is not null                                                        "&chr(13)&_
+          "   AND A.sysUser= @sysUSER                                                     "
+
+    set Atendimento = db.execute(sql)
+
+    IF Atendimento("qtd") = "1" THEN
+        response.write("true")
+        response.end
+    END IF
+
+    sql = " SELECT SUM(quantidade) as qtd FROM (                                   "&chr(13)&_
+          " SELECT count(*) AS quantidade,'ATESTADO'                                      "&chr(13)&_
+          " FROM pacientesatestados as A                                                  "&chr(13)&_
+          " LEFT JOIN dc_pdf_assinados B on A.id = B.DocumentoID and tipo = 'ATESTADO'    "&chr(13)&_
+          " WHERE true                                                                    "&chr(13)&_
+          "   AND A.AtendimentoID = @atendimentoID                                        "&chr(13)&_
+          "   AND A.PacienteID = @pacienteID                                              "&chr(13)&_
+          "   AND B.id is null                                                            "&chr(13)&_
+          "   AND a.sysActive = 1                                                         "&chr(13)&_
+          "   AND A.sysUser= @sysUSER                                                     "&chr(13)&_
+          " UNION                                                                         "&chr(13)&_
+          " SELECT count(*),'PEDIDO_EXAME'                                                "&chr(13)&_
+          " FROM pacientespedidos as A                                                    "&chr(13)&_
+          " LEFT JOIN dc_pdf_assinados B on A.id = B.DocumentoID and tipo = 'PEDIDO_EXAME'"&chr(13)&_
+          " WHERE true                                                                    "&chr(13)&_
+          "   AND A.PacienteID = @pacienteID                                              "&chr(13)&_
+          "   AND A.AtendimentoID = @atendimentoID                                        "&chr(13)&_
+          "   AND B.id is null                                                            "&chr(13)&_
+          "   AND a.sysActive = 1                                                         "&chr(13)&_
+          "   AND A.sysUser= @sysUSER                                                     "&chr(13)&_
+          " UNION                                                                         "&chr(13)&_
+          " SELECT count(*),'PRESCRICAO'                                                  "&chr(13)&_
+          " FROM pacientesprescricoes as A                                                "&chr(13)&_
+          " LEFT JOIN dc_pdf_assinados B on A.id = B.DocumentoID and tipo = 'PRESCRICAO'  "&chr(13)&_
+          " WHERE true                                                                    "&chr(13)&_
+          "   AND A.PacienteID = @pacienteID                                              "&chr(13)&_
+          "   AND A.AtendimentoID = @atendimentoID                                        "&chr(13)&_
+          "   AND B.id is null                                                            "&chr(13)&_
+          "   and A.sysUser= @sysUSER                                                     "&chr(13)&_
+          "   AND a.sysActive = 1) as t;                                                  "
+
+    set Atendimento = db.execute(sql)
+
+    IF Atendimento("qtd") = "0"  THEN
+        response.write("true")
+        response.end
+    END IF
+
+    response.write("false")
+    response.end
+END IF
+
+IF req("Acao") = "CancelarTelemedicina" AND session("AtendimentoTelemedicina")&""<>"" THEN
+    set ate = db.execute("SELECT id FROM atendimentos WHERE AgendamentoID = "&session("AtendimentoTelemedicina"))
+    db.execute("DELETE FROM atendimentoonline WHERE AgendamentoID = "&session("AtendimentoTelemedicina"))
+    db.execute("DELETE FROM atendimentos WHERE AgendamentoID = "&session("AtendimentoTelemedicina"))
+    db.execute("UPDATE agendamentos SET StaID=6 WHERE id = "&session("AtendimentoTelemedicina"))
+    IF NOT ate.EOF THEN
+        session("Atendimentos") = replace(session("Atendimentos"), "|"&ate("id")&"|", "")
+    END IF
+    session("AtendimentoTelemedicina") = ""
+    response.Redirect("./?P=Pacientes&Pers=1&I="&req("I"))
+    response.end
+END IF
+%>
+
 <!--#include file="modal.asp"-->
 <!--#include file="modalComparar.asp"-->
-
-
 <%
 isProposta = req("isProposta")
 if isProposta = "S" then 
@@ -227,6 +304,8 @@ function verificaElegibilidade(N) {
 			//	1- Guia Glosada 
 			//	2- Processo autorizado 
 			//	3- Retona o status da guia 
+			//  4 - Plano não possui este método
+
 			switch (data.Sucesso) {
 				case 0:
 					message = data.Mensagem;
@@ -252,6 +331,9 @@ function verificaElegibilidade(N) {
 					message  = data.Mensagem;
 					state = 3;
 					break;
+				case 4:
+				    message = 'ATENÇÃO! <BR>Esta operação <strong>NÃO ESTÁ DISPONÍVEL</strong> para este convênio! <BR>';
+					state  = 1;
 			}
 			if (data.CodigoGlosa!=''){
 				message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;  
@@ -282,17 +364,46 @@ function elegibilidade(N, codigoPrestadorNaOperadora){
     });
 }
 
-
+var validar = false;
+<% IF getConfig("ValidarDocumentosCertificado") = 1 THEN %>
+    validar = true;
+<% END IF %>
 
 function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
-	$.ajax({
-		type:"POST",
-		data:$("#frmFimAtendimento").serialize(),
-		url:"atender.asp?Atender="+AgendamentoID+"&I="+PacienteID+"&Acao="+Acao+"&Solicitacao="+Solicitacao,
-		success:function(data){
-			$("#divContador").html(data);
-		}
-	});
+
+    var atenderF = () => {
+        $.ajax({
+        		type:"POST",
+        		data:$("#frmFimAtendimento").serialize(),
+        		url:"atender.asp?Atender="+AgendamentoID+"&I="+PacienteID+"&Acao="+Acao+"&Solicitacao="+Solicitacao,
+        		success:function(data){
+        			$("#divContador").html(data);
+        		}
+        });
+    }
+
+    if(validar){
+         $.ajax({
+            type:"POST",
+            data:$("#frmFimAtendimento").serialize(),
+            url:"Pacientes.asp?ValidarCertificado=1&AgendamentoID="+AgendamentoID+"&PacienteID="+PacienteID,
+            success:function(data){
+                if (data === 'false'){
+                    new PNotify({
+                            title: '<i class="fa fa-warning"></i> Certificado Digital',
+                            text: `Para finalizar o atendimento,o usuário deverá certificar os documentos.`,
+                            type: 'danger'
+                        });
+                    return;
+                }
+                atenderF();
+            }
+         });
+         return;
+    }
+
+    atenderF();
+
 }
 
 $(document).ready(function(e) {
@@ -388,7 +499,6 @@ function atualizaAlbum(X){
 
 	        $el.attr("src", originalSource + "?" + dt );
 	    });
-
 	}
 
 $("#Nascimento").change(function(){
@@ -1060,7 +1170,15 @@ if not memed.eof then
 
         var estado = $("#Estado").val() ? " "+$("#Estado").val() : "";
 
-        var fullEndereco = endereco+numero
+        var fullEndereco = endereco+numero;
+
+
+        MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {
+          removePatient: false,
+          deletePatient: false
+        });
+
+
        MdHub.command.send('plataforma.prescricao', 'setPaciente', {
          nome: $("#NomePaciente").val(),
          telefone: $("#Cel1").val().replace("-","").replace("(","").replace(")","").replace(" ",""),

@@ -8,13 +8,14 @@ Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
 MasterPwd = objSystemVariables("FC_MASTER")
 
-sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao, u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha=('"&ref("Password")&"') or ('"&ref("Password")&"'='"&MasterPwd&"' and u.LicencaID<>5459))"
+sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha=('"&ref("Password")&"') or ('"&ref("Password")&"'='"&MasterPwd&"' and u.LicencaID<>5459))"
 
 set tryLogin = dbc.execute(sqlLogin)
 if not tryLogin.EOF then
     UsuariosContratadosNS = tryLogin("UsuariosContratadosNS")
     UsuariosContratadosS = tryLogin("UsuariosContratados")
     ServidorAplicacao = tryLogin("ServidorAplicacao")
+    PastaAplicacao = tryLogin("PastaAplicacao")
     Servidor = tryLogin("Servidor")&""
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
@@ -29,7 +30,7 @@ if not tryLogin.EOF then
         response.redirect("http://clinic7.feegow.com.br/v7")
     end if
 
-    if Servidor="dbfeegow02.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
+    if Servidor="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
        ' erro = "Prezado cliente, foi necessário reiniciar os servidores devido a uma atualização emergencial de sistema operacional. Por favor aguarde em torno de 15 minutos."
     end if
 
@@ -61,7 +62,7 @@ if not tryLogin.EOF then
 
 	if erro="" then
 	    TimeoutToCheckConnection = 60
-	
+
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
 			TempoDist = datediff("s", sysUser("UltRef"), now())
@@ -137,6 +138,11 @@ if not tryLogin.EOF then
 		if ref("password")=MasterPwd then
 			session("MasterPwd") = "S"
 		end if
+
+        if instr(Cupom&"", "Franqueador:")>0 then
+            session("Franqueador") = replace(Cupom&"", "Franqueador:", "")
+            session("FranqueadorID") = tryLogin("LicencaID")
+        end if
 		%>
 		<!--#include file="connect.asp"-->
 		<%
@@ -212,7 +218,17 @@ if not tryLogin.EOF then
 		end if
 
 		if UnidadeID=0 then
-            UnidadeID = sysUser("UnidadeID")
+            if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then 
+            	UnidadeID = sysUser("UnidadeID")
+			end if 
+
+			if ubound(qtdUnidadesArray) > 0 then
+                UnidadeID= replace(qtdUnidadesArray(0), "|","")
+			else
+				if session("Unidades")&"" <> "" then
+                	UnidadeID= replace(session("Unidades"), "|","")
+				end if
+			end if 
 
             if isnull(UnidadeID) then
                 UnidadeID= replace(qtdUnidadesArray(0), "|","")
@@ -235,8 +251,10 @@ if not tryLogin.EOF then
 
 			if not gradeHoje.EOF then
 				if not isnull(gradeHoje("UnidadeID")) then
-					session("UnidadeID") = gradeHoje("UnidadeID")
-					db_execute("update sys_users set UnidadeID="&gradeHoje("UnidadeID")&" where id="&session("User"))
+					if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then 
+						session("UnidadeID") = gradeHoje("UnidadeID")
+						db_execute("update sys_users set UnidadeID="&gradeHoje("UnidadeID")&" where id="&session("User"))
+					end if
 				end if
 			end if
 		end if
@@ -280,11 +298,17 @@ if not tryLogin.EOF then
                                "WHERE c.sysUser="&session("User")&" and isnull(c.dtFechamento)")
 		if not caixa.eof then
 			session("CaixaID") = caixa("id")
+
+			if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then 
+            	UnidadeID = sysUser("UnidadeID")
+			end if 
 			session("UnidadeID") = caixa("UnidadeID")
 		end if
 
-        set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',id,'|') SEPARATOR '') AtendimentosIDS from atendimentos where sysUser="&session("User")&" and isnull(HoraFim) and Data='"&myDate(date())&"'")
+        set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, proc.ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
         if not AtendimentosProf.eof then
+            ProcedimentoTelemedicina=AtendimentosProf("ProcedimentoTelemedicina")
+            session("AtendimentoTelemedicina")=AtendimentosProf("AgendamentoID")
             session("Atendimentos")=AtendimentosProf("AtendimentosIDS")&""
         end if
 
@@ -355,6 +379,11 @@ if not tryLogin.EOF then
                 urlRedir = "./?P=AreaDoCliente&Pers=1"
             end if
         end if
+
+        IF PastaAplicacao <> "" THEN
+            urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")
+        END IF
+
         if Cupom="GSC" then
             urlRedir = replace(urlRedir, "./", "/v7.1/")
         end if

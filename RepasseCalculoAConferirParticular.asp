@@ -608,6 +608,14 @@ end if
             end if
             'db_execute("delete from temprepasse where sysUser="&session("User"))
 
+            ExibirNaoExecutado = req("ExibirNaoExecutado")
+            ExecutadoStatus="S"
+
+            if ExibirNaoExecutado="S" then
+                ExecutadoStatus=""
+            end if
+
+
             if req("ProcedimentoID")<>"0" then
                 if instr(req("ProcedimentoID"), "G")>0 then
                     set procsGP = db.execute("select group_concat(id) procs from procedimentos where GrupoID="& replace(req("ProcedimentoID"), "G", ""))
@@ -624,9 +632,9 @@ end if
             end if
 
             if req("InvoiceID")<>"" and 0 then
-                'sqlII = "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& req("InvoiceID") &" AND ii.Executado='S' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
+                'sqlII = "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& req("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
                 sqlII = "select r.*, t.Nomelocal CompanyUnit, esp.especialidade,s.NomeProfissional ProfissionalSolicitante, r.ProfissionalSolicitante ProfissionalSolicitanteID from ( "&_
-                        "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& req("InvoiceID") &" AND ii.Executado='S' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
+                        "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& req("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
                         ") r"&_
                         " LEFT JOIN especialidades esp ON esp.id = r.EspecialidadeID"&_
                         " LEFT JOIN (( SELECT 0 AS 'id', NomeFantasia NomeLocal FROM empresa WHERE id=1) UNION ALL ( SELECT id, NomeFantasia FROM sys_financialcompanyunits)) t ON t.id = r.CompanyUnitID"&_
@@ -656,7 +664,7 @@ end if
                         " FROM profissionalexterno) s) s ON s.id = rs.ProfissionalSolicitante "
             
             elseif req("TipoData")="Comp" then
-                'sqlII = "select ii.*, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE ii.DataExecucao BETWEEN "& mydatenull(De) &" and "& mydatenull(Ate)&" AND ii.Executado='S' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlProcedimento & " ORDER BY ii.DataExecucao"
+                'sqlII = "select ii.*, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE ii.DataExecucao BETWEEN "& mydatenull(De) &" and "& mydatenull(Ate)&" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlProcedimento & " ORDER BY ii.DataExecucao"
                 'sqlII = "select r.id ReconsolidacaoID, ii.*, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE NOT ISNULL(ii.InvoiceID)"& sqlUnidades
                 sqlII = "select r.*, t.Nomelocal CompanyUnit, esp.especialidade,s.NomeProfissional ProfissionalSolicitante, r.ProfissionalSolicitante ProfissionalSolicitanteID from (SELECT "&_
 "ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente "&_
@@ -669,7 +677,7 @@ end if
 "LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) "&_
 "LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
 "WHERE m.Date BETWEEN "&_
-" "& mydatenull(De) &" AND "& mydatenull(Ate) &" AND NOT ISNULL(t.id) AND ii.Executado='S' AND ii.Tipo='S' and i.AssociationAccountID=3 "& ContaProfissional & sqlProcedimento &_
+" "& mydatenull(De) &" AND "& mydatenull(Ate) &" AND NOT ISNULL(t.id) AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "& ContaProfissional & sqlProcedimento &_
                 " UNION ALL "&_
 "SELECT ii.*,i2.ProfissionalSolicitante, i2.CompanyUnitID, i2.AccountID, i2.AssociationAccountID, i2.TabelaID, proc2.NomeProcedimento, pac2.NomePaciente "&_
 "FROM sys_financialmovement m2 "&_
@@ -679,7 +687,7 @@ end if
 "LEFT JOIN pacientes pac2 ON (pac2.id=i2.AccountID AND i2.AssociationAccountID=3) "&_
 "LEFT JOIN procedimentos proc2 ON proc2.id=ii.ItemID "&_
 "WHERE m2.PaymentMethodID NOT IN(8,9) AND m2.Date BETWEEN "&_
-" "& mydatenull(De) &" AND "& mydatenull(Ate) &" AND ii.Executado='S' AND ii.Tipo='S' and i2.AssociationAccountID=3 "& ContaProfissional & sqlProcedimento &") r"&_
+" "& mydatenull(De) &" AND "& mydatenull(Ate) &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i2.AssociationAccountID=3 "& ContaProfissional & sqlProcedimento &") r"&_
 " LEFT JOIN especialidades esp ON esp.id = r.EspecialidadeID"&_
 " LEFT JOIN (( SELECT 0 AS 'id', NomeFantasia NomeLocal FROM empresa WHERE id=1) UNION ALL ( SELECT id, NomeFantasia FROM sys_financialcompanyunits)) t ON t.id = r.CompanyUnitID"&_
 " LEFT JOIN ("&_
@@ -699,11 +707,11 @@ end if
                         "left join (SELECT s.id, s.NomeProfissional FROM (SELECT CONCAT('0_', id) id, NomeEmpresa NomeProfissional FROM empresa "&_
                         "UNION ALL SELECT CONCAT('5_', id) id, NomeProfissional FROM profissionais "&_
                         "UNION ALL SELECT CONCAT('8_', id) id, NomeProfissional FROM profissionalexterno ) s) s on s.id = i.ProfissionalSolicitante "&_
-                        "WHERE ii.DataExecucao BETWEEN "& mydatenull(De) &" and "& mydatenull(Ate)&" AND ii.Executado='S' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlProcedimento & sqlUnidades & " ORDER BY ii.DataExecucao"
+                        "WHERE ii.DataExecucao BETWEEN "& mydatenull(De) &" and "& mydatenull(Ate)&" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlProcedimento & sqlUnidades & " ORDER BY ii.DataExecucao"
             end if
-            'if session("Banco")="clinic522" then
-               ' response.write( sqlII )
-            'end if
+            if req("DEBUG")="1" then
+                response.write( sqlII )
+            end if
             set ii = db.execute( sqlII )
                 'se ii("Repassado")=0 joga pra temprepasse, else exibe o q ja foi pra rateiorateios
             while not ii.eof

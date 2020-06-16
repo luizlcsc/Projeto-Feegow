@@ -57,4 +57,10 @@ function consoleLogJSONRecord(reg)
 <%
 end function
 
+
+function responseJson(stringJson)
+    Response.ContentType = "application/json"
+    response.Write(stringJson)
+    Response.End
+end function
 %>

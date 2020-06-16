@@ -2358,8 +2358,24 @@ end function
 
 function replateTagsPaciente(valor,PacienteID)
     if instr(valor, "[Paciente.")>0 then
-        strPac = "select p.*, ec.EstadoCivil, s.NomeSexo as Sexo, g.GrauInstrucao, o.Origem, c.NomeConvenio from pacientes as p left join estadocivil as ec on ec.id=p.EstadoCivil left join sexo as s on s.id=p.Sexo left join grauinstrucao as g on g.id=p.GrauInstrucao left join origens as o on o.id=p.Origem LEFT JOIN convenios c on c.id=p.ConvenioID1 where p.id="&treatvalzero(PacienteID)
-    '    response.Write( strPac )
+        strPac = "SELECT  "&_
+        "c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3'  "&_
+        ",pla1.NomePlano AS 'Plano1', pla2.NomePlano AS 'Plano2',pla3.NomePlano AS 'Plano3'  "&_
+        ",p.*, ec.EstadoCivil, s.NomeSexo as Sexo, g.GrauInstrucao, o.Origem  "&_
+        "from pacientes as p  "&_
+        "left join estadocivil as ec on ec.id=p.EstadoCivil  "&_
+        "left join sexo as s on s.id=p.Sexo  "&_
+        "left join grauinstrucao as g on g.id=p.GrauInstrucao  "&_
+        "left join origens as o on o.id=p.Origem  "&_
+        "LEFT JOIN convenios c1 ON c1.id=p.ConvenioID1  "&_
+        "LEFT JOIN convenios c2 ON c2.id=p.ConvenioID2  "&_
+        "LEFT JOIN convenios c3 ON c3.id=p.ConvenioID3  "&_
+        "LEFT JOIN conveniosplanos pla1 ON pla1.ConvenioID=c1.id  "&_
+        "LEFT JOIN conveniosplanos pla2 ON pla2.ConvenioID=c2.id  "&_
+        "LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id  "&_
+        "where p.id="&treatvalzero(PacienteID) 
+        'response.write("<pre>"&replace(strPac,"  ","<br>")&"</pre>")
+        
         set pac = db.execute(strPac)
 
         if not pac.eof then
@@ -2396,7 +2412,18 @@ function replateTagsPaciente(valor,PacienteID)
             valor = replace(valor, "[Paciente.Nascimento]", pac("Nascimento")&"")
             valor = replace(valor, "[Paciente.Documento]", pac("Documento")&"")
             valor = replace(valor, "[Paciente.Prontuario]", pac("id"))
-            valor = replace(valor, "[Paciente.Convenio]", trim(pac("NomeConvenio")&" ") )
+
+            'POSSIBILIDADE DE UTILIZAR PLANOS E CONVENIOS SECUNDÁRIOS
+            valor = replace(valor, "[Paciente.Convenio1]", pac("Convenio1")&"")
+            valor = replace(valor, "[Paciente.Convenio2]", pac("Convenio2")&"")
+            valor = replace(valor, "[Paciente.Convenio3]", pac("Convenio3")&"")
+            valor = replace(valor, "[Paciente.Plano1]", pac("Plano1")&"")
+            valor = replace(valor, "[Paciente.Plano2]", pac("Plano2")&"")
+            valor = replace(valor, "[Paciente.Plano3]", pac("Plano3")&"")
+            'REDUNDANCIA NOS PLANOS E CONVENIOS 1 TAGs EXISTENTES
+            valor = replace(valor, "[Paciente.Convenio]", trim(pac("Convenio1")&" ") )
+            valor = replace(valor, "[Paciente.Plano]", trim(pac("Plano1")&" ") )
+
             valor = replace(valor, "[Paciente.Matricula]", trim(pac("Matricula1")&" ") )
             valor = replace(valor, "[Paciente.Validade]", trim(pac("Validade1")&" ") )
             valor = replace(valor, "[Paciente.Email]", trim(pac("Email1")&" ") )
@@ -2821,7 +2848,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		if req("T")="D" then
 			nomePerm = "contasapagar"
 			rbtns = rbtns & "&nbsp <div class='btn-group'>     <button type='button' class='btn-sm btn btn-success dropdown-toggle' data-toggle='dropdown'><span class='fa fa-upload'></span></button> <ul class='dropdown-menu' role='menu'>    <li><a onclick='addBoleto("&hid&")' href='#'>Boleto</a></li>      <li><a onclick='addXmlNFe("&hid&")' href='#'>NF-e</a></li>  <li><a onclick='cnabBeta("&hid&")' href='#'>Cnab <label class='label label-primary'>Beta</label></a></li>   </ul>  </div> &nbsp"
-		    rbtns = rbtns & "<button class='btn btn-info btn-sm' onclick='imprimir()' type='button'><i class='fa fa-print bigger-110'></i></button>"
+		    rbtns = rbtns & "<button class='btn btn-info btn-sm' onclick='imprimirReciboInvoice()' type='button'><i class='fa fa-print bigger-110'></i></button>"
 		else
 			nomePerm = "contasareceber"
 		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
@@ -2851,6 +2878,9 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
                     rbtns = rbtns & "&nbsp; <button id='btn_NFe' title='Nota Fiscal' class='btn btn-warning btn-sm' onclick='modalNFE()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
                 end if
 	        End if
+	        if recursoAdicional(34)=4 then
+                rbtns = rbtns & "&nbsp; <button id='btn_NFeBeta' title='Nota Fiscal Beta' class='btn btn-danger btn-sm' onclick='modalNFEBeta()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
+            end if
 	    End if
 		if aut(nomePerm&"X") or data("CaixaID")=session("CaixaID") then
 		    PermissaoExclusao=True
@@ -2895,14 +2925,14 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 				if not isnull(lista("anterior")) then
 					rbtns = rbtns & "<a title='Anterior' href='?P="&recurso&"&Pers="&hPers&"&I="&lista("anterior")&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
 				end if
-				rbtns = rbtns & "<a title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
+				rbtns = rbtns & "<a id='Header-List' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
 				if not isnull(lista("proximo")) then
 					rbtns = rbtns & "<a title='Próximo' href='?P="&recurso&"&Pers="&hPers&"&I="&lista("proximo")&"&Proximo=1' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
 				end if
 			end if
 		end if
 		if aut(recurso&"I")=1 and recurso<>"profissionais" and recurso<>"funcionarios" then
-			rbtns = rbtns & "<a title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
+			rbtns = rbtns & "<a id='Header-New' title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
 		end if
 		if recurso="pacientes" then
 			rbtns = rbtns & "<button title='Imprimir Ficha' type='button' id='btnFicha' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-print'></i></button> "
@@ -3581,7 +3611,7 @@ function zeroEsq(val, quant)
 end function
 
 function fSysActive(NomeCampo, psysActive, PacienteID)
-    if session("OtherCurrencies")="phone" then
+    if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
         %>
         <label><input type="radio" name="<%=NomeCampo %>" class="ace dadosContato" onclick="saveSta(-2, <%=PacienteID%>)" value="-2"<%if psysActive=-2 then response.write(" checked ") end if %> /><span class="lbl"> <small>Lead</small></span></label>
         <label><input type="radio" name="<%=NomeCampo %>" class="ace dadosContato" onclick="saveSta(-3, <%=PacienteID%>)" value="-3"<%if psysActive=-3 then response.write(" checked ") end if %> /><span class="lbl"> <small>Pré-cad.</small></span></label>
@@ -3607,8 +3637,13 @@ function podeExcluir(xCaixaID, xType, xCD, xAccountAssociationIDCredit)
     end if
 end function
 
-function dispEquipamento(Data, Hora, Intervalo, EquipamentoID)
+function dispEquipamento(Data, Hora, Intervalo, EquipamentoID, AgendamentoID)
     dispEquipamento = ""
+    
+    if AgendamentoID&"" <> "" then
+        andAgendamentoID = " AND a.id <>"&AgendamentoID
+    end if
+
     if isnumeric(Intervalo) and Intervalo<>"" and not isnull(Intervalo) then
         Intervalo = ccur(Intervalo)
     else
@@ -3619,15 +3654,16 @@ function dispEquipamento(Data, Hora, Intervalo, EquipamentoID)
         if ccur(EquipamentoID)<>0 then
             sqlDisp = "SELECT a.Hora, a.HoraFinal, p.NomeProfissional FROM agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID WHERE a.StaID not in(11) and a.Data="&mydatenull(Data)&" AND "&_
                     "("&_
-                    "("&mytime(Hora)&">=a.Hora AND "&mytime(Hora)&"<a.HoraFinal)"&_
+                    "("&mytime(Hora)&">=a.Hora AND "&mytime(Hora)&"< ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*59.99)))"&_
                     " OR "&_
-                    "("&mytime(HoraFinal)&">a.Hora AND "&mytime(HoraFinal)&"<a.HoraFinal)"&_
+                    "("&mytime(HoraFinal)&">a.Hora AND "&mytime(HoraFinal)&"< ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*59.99)))"&_
                     " OR "&_
-                    "("&mytime(Hora)&"<a.Hora AND "&mytime(HoraFinal)&">a.HoraFinal)"&_
+                    "("&mytime(Hora)&"<a.Hora AND "&mytime(HoraFinal)&"> ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*59.99)))"&_
                     " OR "&_
                     "("&mytime(Hora)&"=a.Hora)"&_
-                    ") AND a.EquipamentoID="&EquipamentoID
-     '       response.Write(sqlDisp)
+                    ") AND a.EquipamentoID="&EquipamentoID&andAgendamentoID
+                    
+            'response.Write(sqlDisp) 
             set vcaAgEq = db.execute(sqlDisp)
             if not vcaAgEq.eof then
                 dispEquipamento = "Este equipamento já está agendado para o profissional "&vcaAgEq("NomeProfissional")&" nesta data entre as "&formatdatetime(vcaAgEq("Hora"),4)&" e "&formatdatetime(vcaAgEq("HoraFinal"),4)
@@ -4790,7 +4826,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
             else
             %>
         
-            <div class="radio-custom radio-primary"><input type="radio" name="rdValorPlano<%=n %>" id="rdValorPlanoV<%=n %>" required value="V"<% If rdValorPlano="V" Then %> checked="checked"<% End If %> class="ace valplan clforma" style="z-index:-1" onclick="valplan('<%=n%>', 'V')" /><label for="rdValorPlanoV<%=n %>" class="radio"> Particular</label></div>
+            <div class="radio-custom radio-primary"><input onchange="parametros('ProcedimentoID', $('#ProcedimentoID').val());" type="radio" name="rdValorPlano<%=n %>" id="rdValorPlanoV<%=n %>" required value="V"<% If rdValorPlano="V" Then %> checked="checked"<% End If %> class="ace valplan clforma" style="z-index:-1" onclick="valplan('<%=n%>', 'V')" /><label for="rdValorPlanoV<%=n %>" class="radio"> Particular</label></div>
             <%
                 if Convenios<>"Nenhum" and (GradeApenasConvenios<> "|P|" or isnull(GradeApenasConvenios)) then
                 %>
@@ -5254,7 +5290,7 @@ end function
 function recursoAdicional(RecursoAdicionalID)
     LicencaID=replace(session("Banco"), "clinic", "")
     Status = 0
-    set RecursoAdicionalSQL = db.execute("SELECT Status FROM cliniccentral.clientes_servicosadicionais WHERE LicencaID="&treatvalzero(LicencaID)&" AND ServicoID="&treatvalzero(RecursoAdicionalID))
+    set RecursoAdicionalSQL = db.execute("SELECT Status FROM cliniccentral.clientes_servicosadicionais WHERE LicencaID="&treatvalzero(LicencaID)&" AND ServicoID="&treatvalzero(RecursoAdicionalID)&" order by DataContratacao desc limit 1")
     if not RecursoAdicionalSQL.eof then
         Status=RecursoAdicionalSQL("Status")
 
@@ -5453,8 +5489,10 @@ function arqEx(nArquivo, nTipo)
 	set fs=Server.CreateObject("Scripting.FileSystemObject")
 	if fs.FileExists("E:\uploads\"& replace(session("Banco"), "clinic", "") &"\"& nTipo &"\"& nArquivo) then
 		arqEx = "/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
+    elseif nArquivo&""="" then
+        arqEx = ""
 	else
-		arqEx = "https://clinic.feegow.com.br/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
+		arqEx = "https://feegow.com/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
 	end if
 	set fs=nothing
 end function

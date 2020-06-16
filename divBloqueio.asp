@@ -34,6 +34,7 @@ if BloqueioID<>"0" then
 		Profissionais = bloqueio("Profissionais")
 		Unidades = bloqueio("Unidades")
 		DiasSemana = bloqueio("DiasSemana")
+        FeriadoID = bloqueio("FeriadoID")
 	end if
 end if
 
@@ -105,6 +106,10 @@ end if
                             <%
                             end if
                             %>
+                        </div>
+                        <hr class="short alt" />
+                        <div class="row">
+                            <%= quickField("simpleSelect", "FeriadoID", "Vincular bloqueio à um feriado", 4, FeriadoID, "SELECT id, NomeFeriado FROM feriados where sysActive=1", "NomeFeriado", "") %>
                         </div>
                     </div>
                 </div>

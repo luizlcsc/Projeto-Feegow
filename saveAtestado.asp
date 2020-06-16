@@ -72,7 +72,7 @@ recursoPermissaoUnimed = recursoAdicional(12)
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
         carimbo = $("#Carimbo").prop("checked") ==true?1:0;
 
-        url = domain+"print/medical-certificate/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        url = domain+"print/medical-certificate/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
         console.log(url)
         $("#ImpressaoAtestado").prop("data", url);
     <%
@@ -87,12 +87,12 @@ recursoPermissaoUnimed = recursoAdicional(12)
 
     $("#Timbrado").on("change",()=>{
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
-        url = domain+"print/medical-certificate/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        url = domain+"print/medical-certificate/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
         $("#ImpressaoAtestado").prop("data", url);
     });
     $("#Carimbo").on("change",()=>{
         carimbo = $("#Carimbo").prop("checked") ==true?1:0;
-        url = domain+"print/medical-certificate/<%=reg("id")%>?showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        url = domain+"print/medical-certificate/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
         $("#ImpressaoAtestado").prop("data", url);
     });
 

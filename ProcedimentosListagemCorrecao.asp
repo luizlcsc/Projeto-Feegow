@@ -47,7 +47,7 @@ while not lotesEnv.EOF %>
         <td align="center"><%=lotesEnv("Descricao")%></td>
         <td align="center"><%=lotesEnv("Data")%></td>
         <td align="center"><%=fn(lotesEnv("ValorTotal"))%></td>
-        <td align="center"><%=quickfield("currency", "ValorPago", "", 3, lotesEnv("ValorPago"), "", "", " text-right ") %></td>
+        <td align="center"><%=quickfield("currency", "ValorPago"&lotesEnv("id"), "", 3, lotesEnv("ValorPago"), " valor-pago-field", "", " text-right") %></td>
     </tr>
 <% 
 count = count + 1
@@ -80,7 +80,7 @@ set lotesEnv=nothing
                         <td align="center"><%=despesas("Descricao")%></td>
                         <td align="center"><%=despesas("Quantidade")%></td> 
                         <td align="center"><%=fn(despesas("ValorTotal"))%></td> 
-                        <td align="center"><%=quickfield("currency", "ValorPagoGuia", "", 3, despesas("ValorPago"), "", "", " text-right ") %></td>    
+                        <td align="center"><%=quickfield("currency", "ValorPagoGuia", "", 3, despesas("ValorPago"), " valor-pago-field " , "", " text-right  ") %></td>
 
                     </tr>
                 <% 
@@ -118,6 +118,7 @@ set lotesEnv=nothing
     $("#procedimentos_atualizacao input[name^=ValorPagoGuia]").change(function () {
         calcularValortotal();
     });
+
 
     function calcularValortotal()
     {

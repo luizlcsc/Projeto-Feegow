@@ -252,10 +252,15 @@ end if
 
           <!-- FAQ Right Column -->
           <div class="col-md-3">
-
+            <%
+            if aut("chamadossistemaI")=1 then
+            %>
             <div class="mb15">
               <a href="?P=tarefas&I=N&Pers=1&Helpdesk=1" type="button" class="btn btn-primary btn-block pv10 fw600 mb10"><i class="fa fa-plus"></i> Abrir Chamado</a>
             </div>
+            <%
+            end if
+            %>
             <div class="mb15">
               <button data-toggle="modal" data-target="#modal-horarios-atendimentos" type="button" class="btn btn-info btn-block pv10 fw600"><i class="fa fa-headphones"></i> Entre em contato</button>
             </div>
@@ -379,6 +384,9 @@ if session("Admin")=1 then
             </div>
 <%
 end if
+
+
+            if aut("chamadossistemaV")=1 then
 %>
 
 
@@ -449,6 +457,10 @@ end if
 
             </div>
 
+            <%
+            end if
+            %>
+
             <div class="panel mb10">
               <div class="panel-heading">
                 <span class="panel-icon">
@@ -468,7 +480,7 @@ end if
                 <a class="list-group-item hidden" href="#">
                   &nbsp;<i class="fa fa-phone fa-fw text-primary"></i>&nbsp;&nbsp; Solicite uma ligação</a>
 
-                <a class="list-group-item" href="./?P=AtivaChat&Pers=1">
+                <a class="list-group-item" target="_blank" href="https://feegow.futurotec.com.br/futurofone_chat/?hash_chat=FFCHAT01">
                   &nbsp;<i class="fa fa-comment fa-fw text-primary"></i>&nbsp;&nbsp; Chat online</a>
                 <a class="list-group-item" href="http://download.teamviewer.com/download/version_12x/TeamViewer_Setup.exe">
                   <img width="26" src="assets/img/Team_Viewer.png" border="0"> Acesso Remoto (Team Viewer)</a>
@@ -590,7 +602,7 @@ end if
                     </tr>
                     <tr>
                         <td colspan="3">
-                            <h4 class="no-margin blue">Chat online <small>» seg. a sex. das 8h às 18h</small></h4>
+                            <h4 class="no-margin blue">Chat online <small>» seg. a sex. das 8h às 19h</small></h4>
                         </td>
                     </tr>
                     <tr>

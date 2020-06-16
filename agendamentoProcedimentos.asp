@@ -59,7 +59,7 @@ if req("Checkin")="1" then
 <div id="divLanctoCheckin"><!--#include file="invoiceEstilo.asp"--></div>
     <table class="table table-condensed table-hover">
     <%
-    sql = "SELECT t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal FROM ("&_
+    sql = "SELECT t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal, COALESCE(conv.NaoPermitirGuiaDeConsulta, 0) NaoPermitirGuiaDeConsulta FROM ("&_
     "SELECT '' id, a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID, a.Tempo, a.LocalID, a.EquipamentoID,a.PlanoID from agendamentos a where id="& ConsultaID &_
     " UNION ALL "&_
     " SELECT ap.id, ap.rdValorPlano, ap.ValorPlano, ap.TipoCompromissoID, ap.Tempo, ap.LocalID, ap.EquipamentoID,ap.PlanoID FROM agendamentosprocedimentos ap "&_
@@ -178,6 +178,13 @@ if req("Checkin")="1" then
         UValorPlano = agp("ValorPlano")
         ValorConvenio = agp("ValorConvenio")
         UTipoGuia = agp("TipoGuia")
+
+        NaoPermitirGuiaDeConsulta = agp("NaoPermitirGuiaDeConsulta")
+        if NaoPermitirGuiaDeConsulta=1 then
+            UTipoGuia = "SADT"
+        end if
+
+
         if staPagto="danger" then
             blocoPend = 1
         end if
@@ -398,7 +405,7 @@ else
                         </td>
                         <td>
                             <div class="radio-custom radio-primary">
-                                <input type="radio" name="rdValorPlano" id="rdValorPlanoV" required value="V" <% If rdValorPlano="V" Then %> checked="checked" <% End If %> class="ace valplan" onclick="valplan('', 'V')" style="z-index: -1" /><label for="rdValorPlanoV" class="radio"> Particular</label>
+                                <input type="radio" onchange="parametros('ProcedimentoID', $('#ProcedimentoID').val());" name="rdValorPlano" id="rdValorPlanoV" required value="V" <% If rdValorPlano="V" Then %> checked="checked" <% End If %> class="ace valplan" onclick="valplan('', 'V')" style="z-index: -1" /><label for="rdValorPlanoV" class="radio"> Particular</label>
                             </div>
                             <%
                     if Convenios<>"Nenhum" and (GradeApenasConvenios<> "|P|" or isnull(GradeApenasConvenios)) then
@@ -909,14 +916,14 @@ $(document).ready(function(){
     //formaRecto(<%=FormaIDSelecionado %>);
     allRepasses();
     
-    $(document).on('click', '.abaAgendamento', function() {
+    $('.abaAgendamento').on('click',  function() {
         $("#dadosGuiaConsulta").remove();
         if ($(this)[0].id === "liAgendamento") {
             $("#dadosAgendamento").addClass("active");
         }
     })
     
-    $(document).on('click', "#btnAgGuiaSADT", function() {
+    $("#btnAgGuiaSADT").on('click',  function() {
         $.ajax('tissguiasadt.asp?P=tissguiasadt&I=N&Pers=1&Lancto=<%=ConsultaID%>|agendamento', {
             success: function(res) {
                 if (res) {

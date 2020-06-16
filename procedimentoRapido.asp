@@ -1,23 +1,29 @@
 ﻿<!--#include file="connect.asp"-->
 <div class="panel">
     <div class="panel-body">
-        <%= quickfield("text", "ProcedimentoRapido", "Busca rápida de procedimento", 12, "", "", "", " placeholder='Digite a descrição ou o código do procedimento...' ") %>
+        <%= quickfield("text", "ProcedimentoRapido", "Busca rápida de procedimento", 9, "", "", "", " placeholder='Digite a descrição ou o código do procedimento...' ") %>
+        <%=quickField("simpleSelect", "TipoProcedimento", "Tipo de Procedimento", 3, "", "SELECT * FROM tiposprocedimentos order by 2 ", "TipoProcedimento", "")%>
     </div>
 </div>
 
 <script type="text/javascript">
-$(document).ready(function(){
-    $("#ProcedimentoRapido").keyup(function(){
-        if($(this).val()==''){
+function changePesquisa(){
+        let fil1 = $("#ProcedimentoRapido").val()
+        let fil2 = $("#TipoProcedimento").val()
+
+        if(!(fil1 || fil2)){
             $("#table-, .pagination-sm").show();
             $("#divProcedimentoRapido").html("");
         }else{
             $("#table-, .pagination-sm").hide();
             $("#divProcedimentoRapido").html("Buscando...");
-            $.get("divProcedimentoRapidoResult.asp?txt="+$(this).val(), function(data){
+            $.get("divProcedimentoRapidoResult.asp?tipo="+fil2+"&txt="+fil1, function(data){
                 $("#divProcedimentoRapido").html(data);
             });
         }
-    });
+    }
+$(document).ready(function(){
+    $("#ProcedimentoRapido").keyup(changePesquisa);
+    $("#TipoProcedimento").change(changePesquisa);
 });
 </script>

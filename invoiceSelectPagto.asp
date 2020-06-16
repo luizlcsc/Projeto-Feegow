@@ -116,7 +116,7 @@ else
                 elseif contasSelecionadas<>"" then
                     sqlWhereContas = " AND id IN("&replace(contasSelecionadas, "|", "")&")"
                 end if
-                set contas = db.execute("select * from sys_financialcurrentaccounts where AccountType=(select AccountTypesC from sys_financialpaymentmethod where id="&treatvalzero(forma("MetodoID"))&") AND Empresa="&treatvalzero(UnidadeID) & sqlWhereContas)
+                set contas = db.execute("select * from sys_financialcurrentaccounts where AccountType=(select AccountTypesC from sys_financialpaymentmethod where id="&treatvalzero(forma("MetodoID"))&") AND sysActive=1 AND Empresa="&treatvalzero(UnidadeID) & sqlWhereContas)
 
 
 

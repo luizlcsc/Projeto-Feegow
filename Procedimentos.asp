@@ -53,6 +53,7 @@ TipoGuia = reg("TipoGuia")
 
 %>
 
+
 <form method="post" id="frm" name="frm" action="save.asp">
     <%=header(req("P"), "Cadastro de Procedimento", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
     <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
@@ -144,6 +145,16 @@ TipoGuia = reg("TipoGuia")
                                 <input type="checkbox" name="ProcedimentoPacs" id="ProcedimentoPacs" value="S" class="ace" <% If reg("ProcedimentoPacs")="S" Then %> checked="checked" <% End If %> />
                                 <label for="ProcedimentoPacs">Procedimento Pacs </label>
                             </div>
+                            <%
+                            if recursoAdicional(32)=4 then
+                            %>
+                            <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" name="ProcedimentoTelemedicina" id="ProcedimentoTelemedicina" value="S" class="ace" <% If reg("ProcedimentoTelemedicina")="S" Then %> checked="checked" <% End If %> />
+                                <label for="ProcedimentoTelemedicina">Procedimento Telemedicina </label>
+                            </div>
+                            <%
+                            end if
+                            %>
                         </div>
                     </div>
                     <hr class="short alt" />
@@ -679,6 +690,10 @@ $(function() {
 
 
 $(document).ready(function(e) {
+    <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>
+          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=request.QueryString("P")%>')"><i class="fa fa-copy"></i> Replicar</button>`)
+    <% end if %>
+
 	<%call formSave("frm", "save", "")%>
 });
 $(function () {

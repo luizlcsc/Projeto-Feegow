@@ -11,7 +11,7 @@ User = session("User")
 
 function debugMessage(msg)
     if d then
-        response.write(msg)
+        dd(msg)
     end if
 end function
 
@@ -19,6 +19,7 @@ end function
 function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissionais, rfConvenio, rfLocais)
     De = cdate(De)
     Ate = cdate(Ate)
+    db.execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto = 9 AND DATE_ADD(sysDate, INTERVAL 15 MINUTE) < now()  and sysActive = 1;")
 
     db.execute("delete from agenda_horarios where sysUser="& treatvalzero(session("User")))
     response.Buffer
@@ -30,9 +31,9 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         if lcase(session("table"))="funcionarios" then
              set FuncProf = db.execute("SELECT Profissionais FROM funcionarios WHERE id="&session("idInTable"))
              if not FuncProf.EOF then
-             profissionais=FuncProf("Profissionais")
-                if not isnull(profissionais) and profissionais<>"" then
-                    profissionaisExibicao = replace(profissionais, "|", "")
+             profissionaisExibicao=FuncProf("Profissionais")
+                if not isnull(profissionaisExibicao) and profissionaisExibicao<>"" then
+                    profissionaisExibicao = replace(profissionaisExibicao, "|", "")
                     sqlLimitarProfissionais = "AND id IN ("&profissionaisExibicao&")"
                 end if
              end if
@@ -40,9 +41,9 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         elseif lcase(session("table"))="profissionais" then
              set FuncProf = db.execute("SELECT AgendaProfissionais FROM profissionais WHERE id="&session("idInTable"))
              if not FuncProf.EOF then
-             profissionais=FuncProf("AgendaProfissionais")
-                if not isnull(profissionais) and profissionais<>"" then
-                    profissionaisExibicao = replace(profissionais, "|", "")
+             profissionaisExibicao=FuncProf("AgendaProfissionais")
+                if not isnull(profissionaisExibicao) and profissionaisExibicao<>"" then
+                    profissionaisExibicao = replace(profissionaisExibicao, "|", "")
                     sqlLimitarProfissionais = "AND id IN ("&profissionaisExibicao&")"
                 end if
              end if
@@ -63,8 +64,8 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         Profissionais = "0"
     end if
 
-    ProcedimentoID = reffiltroProcedimentoID
 
+    ProcedimentoID = reffiltroProcedimentoID
 
     if ProcedimentoID<>"" then
         sqlProcFiltro = "select ifnull(OpcoesAgenda, 0) OpcoesAgenda, SomenteProfissionais, SomenteEquipamentos, SomenteEspecialidades, SomenteLocais, EquipamentoPadrao from procedimentos where id="&ProcedimentoID
@@ -72,11 +73,17 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
         set proc = db.execute(sqlProcFiltro)
         if not proc.eof then
+
             OpcoesAgenda=proc("OpcoesAgenda")
             if OpcoesAgenda="4" or OpcoesAgenda="5" then
                 SomenteProfissionais = proc("SomenteProfissionais")&""
                 SomenteProfissionais = replace(SomenteProfissionais, ",", "")
                 SomenteProfissionais = replace(SomenteProfissionais, " ", "")
+
+                SomenteEspecialidades = proc("SomenteEspecialidades")&""
+                SomenteEspecialidades = replace(SomenteEspecialidades, "|", "")
+                SomenteEspecialidades = replace(SomenteEspecialidades, " ", "")
+
                 splSomProf = split(SomenteProfissionais, "|")
                 SomenteProfissionais = ""
                 for i=0 to ubound(splSomProf)
@@ -84,7 +91,6 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         SomenteProfissionais = SomenteProfissionais & "," & splSomProf(i)
                     end if
                 next
-                SomenteEspecialidades = proc("SomenteEspecialidades")&""
                 if refEspecialidade="" and SomenteEspecialidades<>"" then
                     refEspecialidade=SomenteEspecialidades
                 end if
@@ -119,6 +125,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                     sqlProfissionais = " t.ProfissionalID IN("& Profissionais &") "
                 end if
             end if
+
             if instr(SomenteEspecialidades, "|")>0 then
                 set GroupConcat = db.execute("SET SESSION group_concat_max_len = 1000000;")
                 set profesp = db.execute("select group_concat(pro.id) Profissionais from profissionais pro LEFT JOIN profissionaisespecialidades pe on pe.ProfissionalID=pro.id where pro.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &") or pe.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &")")
@@ -233,9 +240,9 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         if lcase(session("table"))="funcionarios" then
                              set FuncProf = db.execute("SELECT Profissionais FROM funcionarios WHERE id="&session("idInTable"))
                              if not FuncProf.EOF then
-                                profissionais=FuncProf("Profissionais")
-                                if not isnull(profissionais) and profissionais<>"" then
-                                    profissionaisExibicao = replace(profissionais, "|", "")
+                                profissionaisExibicao=FuncProf("Profissionais")
+                                if not isnull(profissionaisExibicao) and profissionaisExibicao<>"" then
+                                    profissionaisExibicao = replace(profissionaisExibicao, "|", "")
                                     if profissionaisExibicao<>"" and profissionaisExibicao&""<>"0" then
                                         sqlProfissionais = " AND p.id IN ("&profissionaisExibicao&")"
                                     end if
@@ -244,9 +251,9 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         elseif lcase(session("table"))="profissionais" then
                              set FuncProf = db.execute("SELECT AgendaProfissionais FROM profissionais WHERE id="&session("idInTable"))
                              if not FuncProf.EOF then
-                                profissionais=FuncProf("AgendaProfissionais")
-                                if not isnull(profissionais) and profissionais<>"" then
-                                    profissionaisExibicao = replace(profissionais, "|", "")
+                                profissionaisExibicao=FuncProf("AgendaProfissionais")
+                                if not isnull(profissionaisExibicao) and profissionaisExibicao<>"" then
+                                    profissionaisExibicao = replace(profissionaisExibicao, "|", "")
                                     if profissionaisExibicao<>"" and profissionaisExibicao&""<>"0" then
                                         sqlProfissionais = " AND p.id IN ("&profissionaisExibicao&")"
                                     end if
@@ -283,7 +290,6 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
                     sql = replace(sql, "[DiaSemana]", DiaSemana)
 
-
                     '-> BUSCANDO SE TEM GRADE
                     set comGrade = db.execute( sql )
                     if comGrade.eof then
@@ -291,12 +297,15 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         <%
                     end if
                     cProf = 0
+                       ' debugMessage(sql)
 
                     while not comGrade.eof
                         response.Flush()
                         '-> namAGENDA
 
                         ProfissionalID = comGrade("ProfissionalID")
+
+
                         'if (session("Banco")="clinic5760" or session("Banco")="clinic6118" or session("Banco")="clinic5968" or session("Banco")="clinic105" or session("Banco")="clinic6259" or session("Banco")="clinic6629") and instr(rfLocais, "UNIDADE_ID")>0 then
                         if instr(rfLocais, "UNIDADE_ID")>0 then
                             UnidadesIN = replace(replace(rfLocais, "UNIDADE_ID", ""), "|", "")
@@ -327,7 +336,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                             sqlGradeEspecialidade = " AND (ass.Especialidades is null or ass.Especialidades='' "
 
                             for i=0 to ubound(spltEspecialidades)
-                                EspecialidadeID=spltEspecialidades(i)
+                                EspecialidadeID=replace(spltEspecialidades(i),"|","")
 
                                 sqlGradeEspecialidade =  sqlGradeEspecialidade&" OR ass.Especialidades LIKE '%"&EspecialidadeID&"%'"
                             next
@@ -465,7 +474,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                             IF 1 THEN
 
                             set comps=db.execute("select a.EspecialidadeID, a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo from agendamentos a " & joinLocaisUnidades &_
-                            "where a.ProfissionalID="&ProfissionalID&" and a.Data="&mydatenull(Data) & whereLocaisUnidades &"order by Hora")
+                            "where a.ProfissionalID="&ProfissionalID&" and a.Data="&mydatenull(Data) & whereLocaisUnidades &" and sysActive=1 order by Hora")
                             while not comps.EOF
                                 HoraComp = HoraToID(comps("Hora"))
                                 EspecialidadeIDAgendada = comps("EspecialidadeID")

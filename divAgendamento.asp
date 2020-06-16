@@ -40,7 +40,10 @@ else
     Encaixe = "0"
 end if
 
-
+IF session("PacienteIDSelecionado") <> "" THEN
+    PacienteID = session("PacienteIDSelecionado")
+    session("PacienteIDSelecionado") = ""
+END IF
 IF req("PacienteID") <> "" THEN
     PacienteID = req("PacienteID")
 END IF
@@ -719,8 +722,12 @@ end if
                     <div class="col-md-8">
                         <div class="row">
                         <%
-						set s = dbc.execute("select EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
-						set m = dbc.execute("select EnviadoEm from cliniccentral.emailshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+						set s = dbc.execute("select EventoID, EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+						set m = dbc.execute("select EventoID, EnviadoEm from cliniccentral.emailshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+
+						set smsFila = dbc.execute("select EventoID, DataHora, EventoID, WhatsApp from cliniccentral.smsfila where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+						set emailsFila = dbc.execute("select EventoID, DataHora, EventoID from cliniccentral.emailsfila where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+
 
 						if not s.eof then
 							SMSEnviado = "S"
@@ -739,11 +746,16 @@ end if
                         response.write("    </div>")
                         end if
 
+                        if recursoAdicional(31)=4 then
+                            LabelSmsZap = "WhatsApp"
+                        else
+                            LabelSmsZap = "SMS"
+                        end if
 						%>
 
                             <div class="col-md-4">
                             <%if ServicoSMS="S" then%>
-                                <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar SMS</label></div>
+                                <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar <%=LabelSmsZap%></label></div>
                             <%end if%>
                                 <%
 								'response.Write("select EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and LicencaID="&replace( session("banco"), "clinic", "" ))
@@ -753,13 +765,45 @@ end if
 								        SmsOuWhatsApp="WhatsApp"
 								    end if
 
+								    DescricaoEvento=""
+
+								    if s("EventoID")&""<>"" then
+								        'set EventoSQL = db.execute("SELECT Descricao FROM eventos_emailsms WHERE id="&smsFila("EventoID"))
+								        'if not EventoSQL.eof then
+								        '    DescricaoEvento=" ("&EventoSQL("Descricao")&")"
+								        'end if
+                                    end if
+
 									%>
-									<br><small><em><%=SmsOuWhatsApp%> enviado em <%=s("EnviadoEm")%></em></small>
+									<br><small><em><i class="fa fa-check"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%> enviado em <strong><%=s("EnviadoEm")%></strong></em></small>
 									<%
 								s.movenext
 								wend
 								s.close
 								set s=nothing
+
+								while not smsFila.eof
+								    SmsOuWhatsApp="SMS"
+								    if smsFila("WhatsApp") then
+								        SmsOuWhatsApp="WhatsApp"
+								    end if
+
+								    DescricaoEvento=""
+
+								    if smsFila("EventoID")&""<>"" then
+								        'set EventoSQL = db.execute("SELECT Descricao FROM eventos_emailsms WHERE id="&smsFila("EventoID"))
+								        'if not EventoSQL.eof then
+								        '    DescricaoEvento=" ("&EventoSQL("Descricao")&")"
+								        ' end if
+                                    end if
+
+									%>
+									<br><small><em><i class="fa fa-history"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%> programado para <strong><%=smsFila("DataHora")%></strong></em></small>
+									<%
+								smsFila.movenext
+								wend
+								smsFila.close
+								set smsFila=nothing
 								%>
                             </div>
                             <div class="col-md-4">
@@ -776,6 +820,26 @@ end if
 								wend
 								m.close
 								set m=nothing
+
+
+								while not emailsFila.eof
+
+								    DescricaoEvento=""
+
+								    if emailsFila("EventoID")&""<>"" then
+								        'set EventoSQL = db.execute("SELECT Descricao FROM eventos_emailsms WHERE id="&smsFila("EventoID"))
+								        'if not EventoSQL.eof then
+								        '    DescricaoEvento=" ("&EventoSQL("Descricao")&")"
+								        ' end if
+                                    end if
+
+									%>
+									<br><small><em><i class="fa fa-mail"></i>Envio<%=DescricaoEvento%> programado para <strong><%=emailsFila("DataHora")%></strong></em></small>
+									<%
+								emailsFila.movenext
+								wend
+								emailsFila.close
+								set emailsFila=nothing
 								%>
                             </div>
                         </div>
@@ -904,6 +968,16 @@ end if
             </button>
         </div>
         <%
+        set AgendamentoTeleconsultaSQL = db.execute("SELECT proc.ProcedimentoTelemedicina FROM agendamentos age INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.id="&treatvalzero(agendamentoIDSelecionado))
+        if not AgendamentoTeleconsultaSQL.eof then
+            %>
+            <div class="col-xs-3 col-md-2 pt10">
+                <button class="btn btn-sm btn-link " type="button" onClick="CopyLinkToClipboard('<%=ConsultaID%>', <%=ProfissionalID%>, <%=PacienteID%>)">
+                    <i class="fa fa-link"></i> Copiar link da consulta
+                </button>
+            </div>
+            <%
+        end if
         end if
 
         %>
@@ -1616,10 +1690,12 @@ function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpre
         $("body").append("<iframe id='ImpressaoEtiqueta' src='listaDePreparoPorProcedimento.asp?PacienteId="+PacienteID+"&procedimento="+ProcedimentoID+"' style='display:none;'></iframe>")
         return;
     }
+    var solicitante = $("#indicacaoId").val();
 
     $.get("printProcedimentoAgenda.asp", {
         ProcedimentoID:ProcedimentoID,
         PacienteID:PacienteID,
+        Solicitante:solicitante,
         ProfissionalID:ProfissionalID,
         UnidadeID:'<%=UnidadeID%>',
         Tipo: TipoImpresso,
@@ -1689,12 +1765,53 @@ $(function(){
         somarValores();
     });
     VerGradeDoHorario()
+    $("#Chegada").val(new Date().toTimeString().split(' ')[0]);
 });
 
 function logAgendamento(agendamentoId) {
     openComponentsModal("DefaultLog.asp", {Impressao: "S",R: "agendamentos", I: agendamentoId}, "Alterações do agendamento", true);
 }
 
+
+
+ function CopyLinkToClipboard(AgendamentoID, ProfissionalID, PacienteID) {
+    getUrl("/telemedicina/gerar-link", {AgendamentoID: AgendamentoID, ProfissionalID: ProfissionalID, PacienteID: PacienteID, LicencaID: '<%=replace(session("Banco"),"clinic", "")%>'}, function(data) {
+        CopyToClipboard(data.link);
+
+        showMessageDialog("Link copiado para a área de transferência.", "primary");
+    });
+ }
+
+function CopyToClipboard (text) {
+	// Copies a string to the clipboard. Must be called from within an
+	// event handler such as click. May return false if it failed, but
+	// this is not always possible. Browser support for Chrome 43+,
+	// Firefox 42+, Safari 10+, Edge and IE 10+.
+	// IE: The clipboard feature may be disabled by an administrator. By
+	// default a prompt is shown the first time the clipboard is
+	// used (per session).
+	if (window.clipboardData && window.clipboardData.setData) {
+		// IE specific code path to prevent textarea being shown while dialog is visible.
+		return clipboardData.setData("Text", text);
+
+  } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+    var textarea = document.createElement("textarea");
+    textarea.textContent = text;
+    textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+      return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+    } catch (ex) {
+      //console.warn("Cópia de tag falhou.", ex);
+      showMessageDialog("Ocorreu um erro ao copiar o link. Por favor copie manualmente.", "danger", "ERRO!", 5000);
+      return false;
+    } finally {
+      document.body.removeChild(textarea);
+    }
+	}
+}
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>

@@ -1,6 +1,8 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/WhatsApp.asp"-->
 <%
+PermitirSelecionarModeloWhatsApp=getConfig("PermitirSelecionarModeloWhatsApp")
+
 function centralWhatsApp(AgendamentoID, MensagemPadrao)
 
         if MensagemPadrao="" then
@@ -25,7 +27,7 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
 
 
         if Mensagem&"" ="" then
-            Mensagem = "Olá, [NomePaciente] !%0a%0aPosso confirmar [NomeProcedimento] com [NomeProfissional] às [HoraAgendamento]?"
+            Mensagem = "Olá, [Paciente.Nome] !%0a%0aPosso confirmar [Procedimento.Nome] com [Profissional.Nome] às [Agendamento.Hora]?"
         end if
         'dados para replace
         set age = db.execute("select a.*, p.TextoEmail, p.TextoSMS, p.MensagemDiferenciada, p.NomeProcedimento from agendamentos a left join procedimentos p on p.id=a.TipoCompromissoID where a.id="&AgendamentoID)
@@ -52,7 +54,7 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
         TratamentoProfissional = ""
 
 
-        if instr(Mensagem, "[TipoProcedimento]") or instr(Mensagem, "[NomeProcedimento]") then
+        if instr(Mensagem, "[Procedimento.Tipo]") or instr(Mensagem, "[Procedimento.Nome]") then
             set proc = db.execute("select p.NomeProcedimento,t.TipoProcedimento from procedimentos p LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID where p.id="&age("TipoCompromissoID"))
             if not proc.eof then
                 TipoProcedimento = trim(proc("TipoProcedimento"))&""
@@ -68,14 +70,14 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
             Hora=""
         end if
 
-        Mensagem = replace(Mensagem, "[TipoProcedimento]", TipoProcedimento)
-        Mensagem = replace(Mensagem, "[NomeProcedimento]", NomeProcedimento)
-        Mensagem = replace(Mensagem, "[NomePaciente]", NomePaciente)
-        Mensagem = replace(Mensagem, "[NomeCompletoPaciente]", NomeCompletoPaciente)
-        Mensagem = replace(Mensagem, "[TratamentoProfissional]", "")
-        Mensagem = replace(Mensagem, "[NomeProfissional]", NomeProfissional)
-        Mensagem = replace(Mensagem, "[HoraAgendamento]", Hora)
-        Mensagem = replace(Mensagem, "[DataAgendamento]", age("Data"))
+        Mensagem = replace(Mensagem, "[Procedimento.Tipo]", TipoProcedimento)
+        Mensagem = replace(Mensagem, "[Procedimento.Nome]", NomeProcedimento)
+        Mensagem = replace(Mensagem, "[Paciente.Nome]", NomePaciente)
+        Mensagem = replace(Mensagem, "[Paciente.NomeCompleto]", NomeCompletoPaciente)
+        Mensagem = replace(Mensagem, "[Profissional.Tratamento]", "")
+        Mensagem = replace(Mensagem, "[Profissional.Nome]", NomeProfissional)
+        Mensagem = replace(Mensagem, "[Agendamento.Hora]", Hora)
+        Mensagem = replace(Mensagem, "[Agendamento.Data]", age("Data"))
         Mensagem = trim(Mensagem)
         Mensagem = Replace(Mensagem,"""","")
 
@@ -174,7 +176,18 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
               </div>
             </div>
         </div>
+        <div class="col-md-8">
+            <!--outras configuracoes-->
 
+            <div class="row">
+                <div class="col-md-3 col-md-offset-9">
+                    <select data-toggle='tooltip' title='Comportamento para o envio de WhatsApp' name="TipoLinkWhatsApp" id="TipoLinkWhatsApp" class="form-control input-sm ">
+                        <option value="https://web.whatsapp.com/send">WhatsApp Web</option>
+                        <option value="whatsapp://send">WhatsApp Desktop</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
 
     <table id="datatable2" class="table table-hover table-striped table-bordered">
@@ -304,8 +317,10 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     <td><a target="_blank" href="?P=Pacientes&Pers=1&I=<%= ag("PacienteID") %>"><%= ag("NomePaciente") %></a></td>
                     <td>
                     <%
-                    if getConfig("PermitirSelecionarModeloWhatsApp") = 0 then
-                        response.write("<a href='https://api.whatsapp.com/send?phone="&CelularFormatadado&"&text="&TextoWhatsApp&"' target='_blank'><i class='fa fa-whatsapp' style='color:#128C7E'></i> "&Celular&"</a>")
+                    if PermitirSelecionarModeloWhatsApp = 0 then
+                    %>
+                    <span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline; cursor: pointer;"  onclick="AlertarWhatsapp('<%=CelularFormatadado%>', `<%=TextoWhatsApp%>`, '<%=ag("id")%>')" <% end if%> ><span style="color:#06d755" id="wpp-<%=ag("id")%>"><% if TagWhatsApp then %><i class='fa fa-whatsapp'></i><% end if %> </span> <%= Celular %></span>
+                    <%
                     else
                         whatsAppFiltro_ProfissionalID = LinhaProfissional
                         whatsAppFiltro_TipoProcedimentoID = ag("TipoProcedimentoID")
@@ -389,4 +404,8 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
 <script >
 
     $('[data-toggle="tooltip"]').tooltip();
+
+    if(localStorage.getItem("TipoLinkWhatsApp")){
+        $("#TipoLinkWhatsApp").val(localStorage.getItem("TipoLinkWhatsApp"));
+    }
 </script>

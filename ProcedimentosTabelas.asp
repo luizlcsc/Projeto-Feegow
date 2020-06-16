@@ -41,7 +41,7 @@ end if
 '    " and Unidades = '"&Unidades&"' and tipo = '"&Tipo&"' AND sysActive = 1 AND Inicio = "&mydatenull(reg("Inicio"))&" AND Fim = "&mydatenull(reg("Fim"))&" ")
 
 sqlLimit = ""
-nregistros = 1500
+nregistros = 3000
 pag = req("pag")&""
 
 set rsTotal = db.execute("select count(p.id) total from procedimentos p left join procedimentostabelasvalores ptv on (ptv.ProcedimentoID=p.id and ptv.TabelaID="& TabelaID &") where sysActive=1 and ativo='on' order by NomeProcedimento")
@@ -200,7 +200,7 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
     $(".crumb-link").html("edição de tabela de preço");
     $(".crumb-icon a span").attr("class", "fa fa-table");
     <%
-    if aut("procedimentosA")=1 then
+    if aut("tabelasprecosA")=1 then
     %>
     $("#rbtns").html('<a class="btn btn-sm btn-default" href="./?P=TabelasPreco&Pers=1"><i class="fa fa-list"></i></a> <button onclick="$(\'#Salvar\').click()" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> SALVAR</button>');
     <%

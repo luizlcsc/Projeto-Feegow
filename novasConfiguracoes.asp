@@ -114,6 +114,13 @@ function createFields(fieldType, fieldName, label, width, fieldValue, defaultVal
                 <input type="number" class="ace form-control  <%=sqlOrClass%>" name="<%= fieldName %>" id="<%= fieldName %>" value="<%=fieldValue%>" />
 			</div>
 			<%
+        case "text"
+			%>
+			<div class="form-group">
+                <%= label %>
+                <input type="text" class="ace form-control  <%=sqlOrClass%>" name="<%= fieldName %>" id="<%= fieldName %>" value="<%=fieldValue%>" />
+			</div>
+			<%
 		case "multipleSelect"
 		     set conf = db.execute("select * from config_gerais where ConfigID = "&idConf)
 
@@ -126,6 +133,20 @@ function createFields(fieldType, fieldName, label, width, fieldValue, defaultVal
             <div class="form-group" style="margin-top: 20px;">
                 <%= label %>
                 <%=quickField("multiple", fieldName, "", 3, valorConf, selectSQL, columnToShow, "")%>
+            </div>
+		    <%
+		case "simpleSelect"
+		     set conf = db.execute("select * from config_gerais where ConfigID = "&idConf)
+
+		     valorConf = ""
+		     if not conf.eof then
+		       valorConf = conf("Valor")
+		     end if
+
+		    %>
+            <div class="form-group" >
+                <%= label %>
+                <%=quickField("simpleSelect", fieldName, "", 3, valorConf, selectSQL, columnToShow, "")%>
             </div>
 		    <%
     end select

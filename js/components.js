@@ -79,7 +79,7 @@ function getModal(loading, modalSize, modalWidth,force) {
     return $modalComponents;
 }
 
-function setModalContent(body, title, closeBtn, saveBtn) {
+function setModalContent(body, title, closeBtn, saveBtn, params) {
     var $modalComponents = $("#modal-components");
     var content = "";
 
@@ -107,7 +107,8 @@ function setModalContent(body, title, closeBtn, saveBtn) {
             var onclickEvent = "";
 
             if(typeof saveBtn === "function"){
-                onclickEvent = "type='button' onclick='("+saveBtn+")()'";
+                var paramsEncoded = JSON.stringify(params);
+                onclickEvent = `type='button' onclick='(${saveBtn})(${paramsEncoded})'`;
                 saveBtn = "Salvar";
             }
 
@@ -212,7 +213,7 @@ function openModal(data, title, closeBtn, saveBtn, modalSize) {
     setModalContent(data, title, closeBtn, saveBtn);
 }
 
-function openComponentsModal(url, data, title, closeBtn, saveBtn, modalSize, modalWidth) {
+function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, modalWidth) {
     if (!modalSize) {
         modalSize = "lg";
     }
@@ -232,7 +233,7 @@ function openComponentsModal(url, data, title, closeBtn, saveBtn, modalSize, mod
 	$.ajax({
 		type: 'GET',
 		url: url,
-		data: data,
+		data: params,
 		headers: {
 			"x-access-token":token
 		}
@@ -242,7 +243,7 @@ function openComponentsModal(url, data, title, closeBtn, saveBtn, modalSize, mod
 		//  xhr.setRequestHeader("My-Second-Header", "second value"); 
 		//}
 	}).done(function(data) { 
-        var $modal = setModalContent(data, title, closeBtn, saveBtn);
+        var $modal = setModalContent(data, title, closeBtn, saveBtn, params);
 
         setTimeout(function () {
             setListeners($modal)
@@ -256,6 +257,8 @@ function setListeners($modal) {
 
         setTimeout(function () {
             $btn.attr("disabled", true);
+            $btn.find("i").removeClass();
+            $btn.find("i").addClass("fa fa-circle-o-notch fa-spin");
         }, 100);
     });
 
@@ -339,5 +342,16 @@ function authenticate(u, l = false) {
 
 
         }
+    });
+}
+
+function replicarRegistro(id,tabela){
+    $.post("ReplicarRegistros.asp", {id,tabela}, function(data){
+        $("#importa-replicar").html(data);
+        $('.multisel').multiselect({
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            numberDisplayed: 1,
+        });
     });
 }

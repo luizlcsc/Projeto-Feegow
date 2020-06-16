@@ -10,22 +10,37 @@ end if
 set FormConfigSQL = db.execute("SELECT * FROM buiforms WHERE sysActive=1 AND id="&FormID)
 
 if not FormConfigSQL.eof then
+
     set CamposSQL = db.execute("SELECT * FROM buicamposforms WHERE FormID="&FormID&" AND TipoCampoID=2")
 
     sqlFiltroData = ""
     while not CamposSQL.eof
-
-        if ref("DataDe"&CamposSQL("id"))<>"" then
+        if ref("DataDe"&CamposSQL("id"))<>"" and ref("DataATE"&CamposSQL("id"))<>"" then
             sqlFiltroData = " AND DATE_FORMAT(STR_TO_DATE(`"&CamposSQL("id")&"`, '%d/%m/%Y'), '%Y-%m-%d') BETWEEN "&mydatenull(ref("DataDe"&CamposSQL("id")))&" AND "&mydatenull(ref("DataAte"&CamposSQL("id")))&"  "
+        elseif ref("DataDe"&CamposSQL("id"))<>"" then
+            sqlFiltroData = " AND DATE_FORMAT(STR_TO_DATE(`"&CamposSQL("id")&"`, '%d/%m/%Y'), '%Y-%m-%d') > "&mydatenull(ref("DataDe"&CamposSQL("id")))&"  "
+        elseif ref("DataATE"&CamposSQL("id"))<>"" then
+            sqlFiltroData = " AND DATE_FORMAT(STR_TO_DATE(`"&CamposSQL("id")&"`, '%d/%m/%Y'), '%Y-%m-%d') < "&mydatenull(ref("DataAte"&CamposSQL("id")))&"  "
         end if
 
     CamposSQL.movenext
     wend
     CamposSQL.close
     set CamposSQL=nothing
+    
+    dataDe = ref("DataDe")&""
+    dataAte = ref("DataAte")&""
+    sqlFiltroDataBfp = ""
+    if dataDe <>"" and dataAte <>"" then
+        sqlFiltroDataBfp = " AND date(bfp.DataHora) BETWEEN "&mydatenull(dataDe)&" AND "&mydatenull(dataAte)&"  "
+    elseif dataDe <>"" then
+        sqlFiltroDataBfp = " AND date(bfp.DataHora) > "&mydatenull(dataDe)&"  "
+    elseif dataAte <>"" then
+        sqlFiltroDataBfp = " AND date(bfp.DataHora) < "&mydatenull(dataAte)&"  "
+    end if
 
-
-    sql = "SELECT f.*, pac.NomePaciente, conv.NomeConvenio FROM `_"&FormID&"` f INNER JOIN pacientes pac ON pac.id=f.PacienteID LEFT JOIN convenios conv ON conv.id=pac.ConvenioID1 LEFT JOIN buiformspreenchidos bfp ON bfp.id=f.id  WHERE bfp.sysActive=1 AND 1=1 "&sqlFiltroData
+    sql = "SELECT f.*, pac.NomePaciente, conv.NomeConvenio FROM `_"&FormID&"` f INNER JOIN pacientes pac ON pac.id=f.PacienteID LEFT JOIN convenios conv ON conv.id=pac.ConvenioID1 LEFT JOIN buiformspreenchidos bfp ON bfp.id=f.id  WHERE bfp.sysActive=1 AND 1=1 "&sqlFiltroDataBfp&sqlFiltroData
+    'response.write "<pre>"&sql&"</pre>"
     set FormSQL = db.execute(sql)
 
     if not FormSQL.eof then
@@ -97,6 +112,14 @@ if not FormConfigSQL.eof then
                                                 end if
                                             end if
                                         end if
+                                        
+                                        if TipoCampo=16  then
+                                            set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&ValorCampo&"'")
+                                            if not pcid.eof then
+                                                ValorCampo = pcid("Codigo") &" - "& pcid("Descricao")
+                                            end if
+                                        end if
+                                        
                                     end if
                                 end if
 
@@ -120,6 +143,10 @@ if not FormConfigSQL.eof then
             </table>
         </div>
     </div>
+    <%
+    else
+    %>
+    <p>Nenhum resultado encontrado para esta solicitação</p>
     <%
     end if
 end if

@@ -63,6 +63,11 @@ ApresentacaoNome = prod("ApresentacaoNome")
 if isnull(ApresentacaoNome) or ApresentacaoNome="" then
 	ApresentacaoNome="Conjunto"
 end if
+
+LocaisEntradas = prod("LocaisEntradas")&""
+if LocaisEntradas&""<>"" then
+    sqlLocalizacoes = " AND id IN ("&replace(LocaisEntradas, "|", "")&") "
+end if
 %>
 <div class="modal-header">
     <button class="bootbox-close-button close" type="button" data-dismiss="modal">×</button>
@@ -158,7 +163,13 @@ end if
             <%=selectInsertCA("", "Responsavel", Responsavel, "5, 4, 2, 6, 1", "", "", "")%>
         </div>
             <div class="col-md-3">
-                <%= selectInsert("Localização", "LocalizacaoID", LocalizacaoID, "produtoslocalizacoes", "NomeLocalizacao", "", "", "") %>
+            <%
+            if LocaisEntradas&""<>"" then
+                call quickField("simpleSelect", "LocalizacaoID", "Localização", 12, LocalizacaoID, "select * from produtoslocalizacoes where sysActive=1 "&sqlLocalizacoes&" order by NomeLocalizacao", "NomeLocalizacao", "")
+            else
+                call selectInsert("Localização", "LocalizacaoID", LocalizacaoID, "produtoslocalizacoes", "NomeLocalizacao", "", "", "")
+            end if
+            %>
             </div>
             <div class="col-md-2">
                 <br />

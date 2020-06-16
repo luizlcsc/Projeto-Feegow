@@ -436,6 +436,9 @@ if not getResource.EOF then
             type: 'success',
             delay:500
         });
+        <% IF session("Franqueador") <> "" and tableName = "sys_financialcompanyunits" and Novo THEN %>
+            gerarLicenca(<%=id%>)
+        <% END IF %>
         <%
 
         if ref("cmd")="ReabrirSenha" then

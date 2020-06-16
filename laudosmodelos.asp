@@ -29,74 +29,13 @@ Unidades = reg("UnidadeID")
            <div class="row">
                <br/>
                <%= quickfield("editor", "Cabecalho", "Cabeçalho", 12, reg("Cabecalho"), "200", "", "") %>
-               <div class="row">
-                   <div class="col-md-6 pull-right">
-                       <%=macro("Cabecalho")%>
-                   </div>
-               </div>
                <%= quickfield("editor", "Rodape", "Rodapé", 12, reg("Rodape"), "200", "", "") %>
-               <div class="row">
-                   <div class="col-md-6 pull-right">
-                       <%=macro("Rodape")%>
-                   </div>
-               </div>
             </div>
         </div>
         <br/>
         <br/>
         <div class="col-md-3">
-            <table class="table table-striped">
-                <tbody>
-                    <tr class="success">
-                        <th>Dados da Execução</th>
-                    </tr>
-                    <tr>
-                        <td>[Data.Execucao]</td>
-                    </tr>
-                    <tr>
-                        <td>[Atendimento.ID]</td>
-                    </tr>
-                    <tr>
-                        <td>[Procedimento.Nome]</td>
-                    </tr>
-                    <tr>
-                        <td>[ProfissionalExecutante.Nome]</td>
-                    </tr>
-                    <tr>
-                        <td>[ProfissionalExecutante.Documento]</td>
-                    </tr>
-                    <tr>
-                        <td>[ProfissionalExecutante.Assinatura]</td>
-                    </tr>
-                    <tr class="success">
-                    	<th>Dados do Laudador</th>
-                    </tr>
-                    <tr>
-                        <td>[ProfissionalLaudador.Nome]</td>
-                    </tr>
-                    <tr>
-                        <td>[ProfissionalLaudador.Documento]</td>
-                    </tr>
-                    <tr>
-                        <td>[ProfissionalLaudador.Assinatura]</td>
-                    </tr>
-                    <tr class="success">
-                    	<th>Dados do Solicitante</th>
-                    </tr>
-                    <tr>
-                        <td>[ProfissionalSolicitante.Nome]</td>
-                    </tr>
-                    <tr>
-                        <td>[ProfissionalSolicitante.Conselho]</td>
-                    </tr>
-                    <tr>
-                        <td>[ProfissionalSolicitante.CPF]</td>
-                    </tr>
-                    <tr>
-                        <td>[ProfissionalSolicitante.Documento]</td>
-                    </tr>
-        		</tbody>
-            </table>
+            <!--#include file="Tags.asp"-->
         </div>
     </div>
 </div>

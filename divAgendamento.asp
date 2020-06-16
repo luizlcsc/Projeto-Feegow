@@ -1765,6 +1765,7 @@ $(function(){
         somarValores();
     });
     VerGradeDoHorario()
+    $("#Chegada").val(new Date().toTimeString().split(' ')[0]);
 });
 
 function logAgendamento(agendamentoId) {

@@ -27,23 +27,27 @@
         }
     };
 
-    let comunicadoId = 4    ;
+
+   let comunicadoId=4;
     PopupService.getComunicadoByIdUnvisualized(comunicadoId, (comunicadoObj) => {
         let component = null;
 
-        if(comunicadoObj[0]){
-            comunicadoId = comunicadoObj[0].id;
-
+        for(const index in comunicadoObj){
+        if(comunicadoObj[index]){
+            comunicadoId = comunicadoObj[index].id;
+            console.log(comunicadoObj[index]);
             if(comunicadoId == 3){
                 component = <TelemedicinaPopup comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
             }else if(comunicadoId == 2){
                 component = <WhatsappPopup comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
             }else if(comunicadoId == 4){
                 component = <NFSePopup comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
+            }else if(comunicadoId == 5){
+                component = <NFSePopup comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
             }
 
-            ReactDOM.render(<Popup modalContentEndpoint={comunicadoObj[0].EndpointModal} component={component}/>,document.getElementById('react-popup-root'));
-        }
+            ReactDOM.render(<Popup modalContentEndpoint={comunicadoObj[index].EndpointModal} component={component}/>,document.getElementById('react-popup-root'));
+       } }
 
     });
 

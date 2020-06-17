@@ -601,6 +601,7 @@ end if
                             <i class="fa fa-flask"></i>
                         </button>
                     </div>
+                    <% if contintegracao = 0 then %>
                     <div class="btn-group">
                         <button class="btn btn-success btn-sm dropdown-toggle disable" data-toggle="dropdown">
                         <i class="fa fa-plus"></i> Adicionar Item
@@ -655,13 +656,13 @@ end if
                           %>
                         </ul>
                     </div>
-
+                    <% end if %>
             </span>
 
         </div>
         <div class="panel-body pn">
             <div class="bs-component" id="invoiceItens">
-                <%server.Execute("invoiceItens.asp")%>
+                <% server.Execute("invoiceItens.asp") %>
             </div>
         </div>
    </div>

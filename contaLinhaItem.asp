@@ -185,18 +185,10 @@
                                 <button type="button" onclick="abrirSelecaoLaboratorio('<%=inv("id")%>','<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
                                     <i class="fa fa-flask"></i>
                                 </button>
-                                
-
                             <% else %> 
-                                <% if laboratorioid = "1" then %>
-                                    <button type="button" onclick="abrirMatrix('<%=inv("id")%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=inv("id")%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
-                                        <i class="fa fa-flask"></i>
-                                    </button>
-                                <% else %>
-                                    <button type="button" onclick="abrirDiagBrasil('<%=inv("id")%>','<%=laboratorioid%>', '<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=inv("id")%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
-                                        <i class="fa fa-flask"></i>
-                                    </button>    
-                                <% end if %>
+                                <button type="button" onclick="abrirIntegracao('<%=inv("id")%>','<%=laboratorioid%>', '<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=inv("id")%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
+                                    <i class="fa fa-flask"></i>
+                                </button>    
                             <% end if %>
                         </div>
                     <%

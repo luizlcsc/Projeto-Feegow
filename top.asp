@@ -70,8 +70,18 @@ else
             <li class="hidden sub-menu-click-agenda-multipla-por-locais"><a href="./?P=QuadroDisponibilidade&Pers=1">Múltipla por Locais</a></li>
 		        <%
                 if Aut("|agendaV|")=1  then
-                    %>
+                    %>g
                     <li class="sub-menu-click-agenda-multipla"><a href="./?P=AgendaMultipla&Pers=1">Múltipla</a></li>
+                    <% IF  getConfig("AcessoAgendamentoOnline") = "1" THEN %>
+                        <li class="sub-menu-click-agenda-multipla"><a href="javascript:void(0)" onclick="openAgendamentoOnline()">Agedamento Online</a></li>
+                        <script>
+                            function openAgendamentoOnline() {
+                                $.get("https://api.feegow.com.br/agendamento-online/redirect-token", (data) => {
+                                        window.open(`https://paciente.feegow.com.br/agendamento/amor-saude-telemedicina/?tk=${data.content}`,'_blank');
+                                });
+                            }
+                        </script>
+                    <% END IF %>
 		            <%
                 end if
                 if Aut("|agendaV|")=1 and (session("Banco")="clinic105" or session("Banco")="clinic5710" or session("Banco")="clinic5760") then

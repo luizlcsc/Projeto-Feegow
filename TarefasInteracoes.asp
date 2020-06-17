@@ -65,10 +65,30 @@ else
 end if
 
 if req("Helpdesk") <> "" then
-    set ints = dblicense.execute("SELECT * FROM (SELECT m.*, lu.Nome NomeProfissional, lu.Nome NomeFuncionario, u.Table, coalesce(p.Foto,f.Foto) FotoUsuario, p.Foto Fotop, f.Foto Fotof, TRUE AS Interacao FROM tarefasmsgs m LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id = m.desession LEFT JOIN sys_users u ON u.id=m.desession LEFT JOIN profissionais p ON p.id=u.idInTable LEFT JOIN funcionarios f ON f.id=u.idInTable WHERE m.TarefaID="&req("I")&" AND m.Publico=1 UNION SELECT  l.id, l.TarefaID, NULL AS RequisicaoID, DATE(l.DataHora) AS DATA, TIME(l.DataHora) AS hora, NULL AS desession, NULL AS para, CONCAT(p.NomeProfissional, ' alterou o status de ', IF(l.DePara = 'De', 'origem ', 'destino '), '<span class=''text-', sa.Classe, '''>', l.StatusAnterior, '</span>', ' <i class=''fa fa-arrow-circle-right''></i> ', '<span class=''text-', sd.Classe, '''>', l.StatusAtual, '</span>') AS msg, 0 AS Publico, NULL AS DHUp, p.NomeProfissional, f.NomeFuncionario, u.Table, coalesce(p.Foto,f.Foto) FotoUsuario,p.Foto AS Fotop, f.Foto AS Fotof, FALSE AS Interacao FROM tarefastatus_log l LEFT JOIN sys_users u ON u.id=l.UsuarioID LEFT JOIN profissionais p ON p.id=u.idInTable LEFT JOIN funcionarios f ON f.id=u.idInTable LEFT JOIN cliniccentral.tarefasstatus sa ON sa.id = l.StatusAnterior LEFT JOIN cliniccentral.tarefasstatus sd ON sd.id = l.StatusAtual WHERE l.TarefaID="&req("I")&") t ORDER BY DATA DESC, hora DESC")
+    set ints = dblicense.execute("SELECT * FROM (SELECT m.*, lu.Nome,  lu.Nome Nome2, u.Table, coalesce(p.Foto,f.Foto) FotoUsuario, p.Foto Fotop, f.Foto Fotof, TRUE AS Interacao FROM tarefasmsgs m LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id = m.desession LEFT JOIN sys_users u ON u.id=m.desession LEFT JOIN profissionais p ON p.id=u.idInTable LEFT JOIN funcionarios f ON f.id=u.idInTable WHERE m.TarefaID="&req("I")&" AND m.Publico=1 UNION SELECT  l.id, l.TarefaID, NULL AS RequisicaoID, DATE(l.DataHora) AS DATA, TIME(l.DataHora) AS hora, NULL AS desession, NULL AS para, CONCAT(p.NomeProfissional, ' alterou o status de ', IF(l.DePara = 'De', 'origem ', 'destino '), '<span class=''text-', sa.Classe, '''>', l.StatusAnterior, '</span>', ' <i class=''fa fa-arrow-circle-right''></i> ', '<span class=''text-', sd.Classe, '''>', l.StatusAtual, '</span>') AS msg, 0 AS Publico, NULL AS DHUp, p.NomeProfissional, f.NomeFuncionario, u.Table, coalesce(p.Foto,f.Foto) FotoUsuario,p.Foto AS Fotop, f.Foto AS Fotof, FALSE AS Interacao FROM tarefastatus_log l LEFT JOIN sys_users u ON u.id=l.UsuarioID LEFT JOIN profissionais p ON p.id=u.idInTable LEFT JOIN funcionarios f ON f.id=u.idInTable LEFT JOIN cliniccentral.tarefasstatus sa ON sa.id = l.StatusAnterior LEFT JOIN cliniccentral.tarefasstatus sd ON sd.id = l.StatusAtual WHERE l.TarefaID="&req("I")&") t ORDER BY DATA DESC, hora DESC")
     'response.write("SELECT * FROM (SELECT m.*, lu.Nome NomeProfissional, lu.Nome NomeFuncionario, u.Table, p.Foto Fotop, f.Foto Fotof, TRUE AS Interacao FROM tarefasmsgs m LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id = m.desession LEFT JOIN sys_users u ON u.id=m.desession LEFT JOIN profissionais p ON p.id=u.idInTable LEFT JOIN funcionarios f ON f.id=u.idInTable WHERE m.TarefaID="&req("I")&" UNION SELECT  l.id, l.TarefaID, NULL AS RequisicaoID, DATE(l.DataHora) AS DATA, TIME(l.DataHora) AS hora, NULL AS desession, NULL AS para, CONCAT(p.NomeProfissional, ' alterou o status de ', IF(l.DePara = 'De', 'origem ', 'destino '), '<span class=''text-', sa.Classe, '''>', l.StatusAnterior, '</span>', ' <i class=''fa fa-arrow-circle-right''></i> ', '<span class=''text-', sd.Classe, '''>', l.StatusAtual, '</span>') AS msg, 0 AS Publico, NULL AS DHUp, p.NomeProfissional, f.NomeFuncionario, u.Table, coalesce(p.Foto,f.Foto) FotoUsuario, p.Foto AS Fotop, f.Foto AS Fotof, FALSE AS Interacao FROM tarefastatus_log l LEFT JOIN sys_users u ON u.id=l.UsuarioID LEFT JOIN profissionais p ON p.id=u.idInTable LEFT JOIN funcionarios f ON f.id=u.idInTable LEFT JOIN cliniccentral.tarefasstatus sa ON sa.id = l.StatusAnterior LEFT JOIN cliniccentral.tarefasstatus sd ON sd.id = l.StatusAtual WHERE l.TarefaID="&req("I")&") t ORDER BY DATA DESC, hora DESC")
 else
-    set ints = db.execute("SELECT * FROM (SELECT m.*, p.NomeProfissional, f.NomeFuncionario, u.Table, coalesce(p.Foto,f.Foto) FotoUsuario, p.Foto Fotop, f.Foto Fotof, TRUE AS Interacao FROM tarefasmsgs m LEFT JOIN sys_users u ON u.id=m.desession LEFT JOIN profissionais p ON p.id=u.idInTable LEFT JOIN funcionarios f ON f.id=u.idInTable WHERE m.TarefaID="&req("I")&" UNION SELECT  l.id, l.TarefaID, NULL AS RequisicaoID, DATE(l.DataHora) AS DATA, TIME(l.DataHora) AS hora, NULL AS desession, NULL AS para, CONCAT(p.NomeProfissional, ' alterou o status de ', IF(l.DePara = 'De', 'origem ', 'destino '), '<span class=''text-', sa.Classe, '''>', l.StatusAnterior, '</span>', ' <i class=''fa fa-arrow-circle-right''></i> ', '<span class=''text-', sd.Classe, '''>', l.StatusAtual, '</span>') AS msg, 0 AS Publico, NULL AS DHUp, p.NomeProfissional, f.NomeFuncionario, u.Table,coalesce(p.Foto,f.Foto) FotoUsuario, p.Foto AS Fotop, f.Foto AS Fotof, FALSE AS Interacao FROM tarefastatus_log l LEFT JOIN sys_users u ON u.id=l.UsuarioID LEFT JOIN profissionais p ON p.id=u.idInTable LEFT JOIN funcionarios f ON f.id=u.idInTable LEFT JOIN cliniccentral.tarefasstatus sa ON sa.id = l.StatusAnterior LEFT JOIN cliniccentral.tarefasstatus sd ON sd.id = l.StatusAtual WHERE l.TarefaID="&req("I")&") t ORDER BY DATA DESC, hora DESC")
+    set ints = db.execute("SELECT * FROM (SELECT m.*, COALESCE(p.NomeProfissional, f.NomeFuncionario, lu.Nome)Nome, u.Table, coalesce(p.Foto,f.Foto) FotoUsuario, p.Foto Fotop, f.Foto Fotof, TRUE AS Interacao " &_
+                          "FROM tarefasmsgs m " &_
+                          "LEFT JOIN sys_users u ON u.id=m.desession " &_
+                          "LEFT JOIN profissionais p ON p.id=u.idInTable AND u.`Table`='profissionais' "&_
+                          "LEFT JOIN funcionarios f ON f.id=u.idInTable AND u.`Table`='funcionarios' "&_
+                          "LEFT JOIN clinicclearValuecentral.licencasusuarios lu ON lu.id=m.desession "&_
+                          "WHERE m.TarefaID="&req("I")&" "&_
+                          "UNION "&_clearValue
+                          "SELECT  l.id, l.TarefaID, NULL AS RequisicaoID, DATE(l.DataHora) AS DATA, TIME(l.DataHora) AS hora, "&_
+                          "NULL AS desession, NULL AS para, CONCAT(p.NomeProfissional, ' alterou o status de ', IF(l.DePara = 'De', 'origem ', 'destino '), "&_
+                          "'<span class=''text-', sa.Classe, '''>', l.StatusAnterior, '</span>', ' <i class=''fa fa-arrow-circle-right''></i> ', "&_
+                          "'<span class=''text-', sd.Classe, '''>', l.StatusAtual, '</span>') AS msg, 0 AS Publico, NULL AS DHUp, "&_
+                          "COALESCE(p.NomeProfissional, f.NomeFuncionario, lu.Nome)Nome, u.Table,coalesce(p.Foto,f.Foto) FotoUsuario, p.Foto AS Fotop, f.Foto AS Fotof, FALSE AS Interacao "&_
+                          "FROM tarefastatus_log l "&_
+                          "LEFT JOIN sys_users u ON u.id=l.UsuarioID "&_
+                          "LEFT JOIN profissionais p ON p.id=u.idInTable AND u.`Table`='profissionais' "&_
+                          "LEFT JOIN funcionarios f ON f.id=u.idInTable AND u.`Table`='funcionarios' "&_
+                          "LEFT JOIN cliniccentral.tarefasstatus sa ON sa.id = l.StatusAnterior "&_
+                          "LEFT JOIN cliniccentral.tarefasstatus sd ON sd.id = l.StatusAtual "&_
+                          "LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=l.UsuarioID "&_
+                          "WHERE l.TarefaID="&req("I")&") t ORDER BY DATA DESC, hora DESC")
 end if
 
 'response.write("select m.*, p.NomeProfissional, f.NomeFuncionario, u.Table, coalesce(p.Foto,f.Foto) FotoUsuario, p.Foto Fotop, f.Foto Fotof from tarefasmsgs m LEFT JOIN sys_users u on u.id=m.desession LEFT JOIN profissionais p on p.id=u.idInTable LEFT JOIN funcionarios f on f.id=u.idInTable where m.TarefaID="&req("I")&" order by m.data DESC, m.hora DESC")
@@ -86,16 +106,8 @@ else
 
     while not ints.eof
         Foto = ints("FotoUsuario")
+        Nome = ints("Nome")
 
-        if lcase(ints("Table")&"")="profissionais" then
-            Nome = ints("NomeProfissional")
-          '  Foto = ints("Fotop")
-        elseif lcase(ints("Table")&"")="funcionarios" then
-            Nome = ints("NomeFuncionario")
-           ' Foto = ints("Fotof")
-        else
-            Nome = ints("NomeProfissional")
-        end if
         if isnull(Foto) or Foto="" then
             Foto = "/assets/img/user.png"
         else

@@ -58,8 +58,8 @@
             <div class="row mt20">
             <%=quickField("text", "CodigoIndividual", "Código Individual", 2, CodigoIndividual, "", "", "")%>
             <%=quickfield("simpleSelect", "AbaixoMinimo", "Abaixo do Mínimo", 2, AbaixoMinimo, "SELECT 'S' as id, 'SIM' as valor UNION ALL SELECT 'N', 'NÃO'", "valor", " no-select2 ") %>
-            <%= quickfield("datepicker", "De", "Válido De", 2, De, "", "", "") %>
-            <%= quickfield("datepicker", "Ate", "Válido Até", 2, Ate, "", "", "") %>
+            <%'= quickfield("datepicker", "De", "Válido De", 2, De, "", "", "") %>
+            <%'= quickfield("datepicker", "Ate", "Válido Até", 2, Ate, "", "", "") %>
             <%=quickfield("simpleSelect", "Ordem", "Ordernar Por", 2, Ordem, "select 'Nome' id, 'Nome' Ordem union all select 'Validade' id, 'Validade' Ordem ", "Ordem", " semVazio no-select2") %>
                 <div class="col-md-2">
                     <button class="btn btn-sm btn-primary  mt20"><i class="fa fa-search bigger-110"></i> Buscar</button>

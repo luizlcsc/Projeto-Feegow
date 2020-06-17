@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 
-<% 
-inputStringList = request.form("inputs") 
+<%
+inputStringList = request.form("inputs")
 inputList = split(inputStringList, ", ")
 
 listProfissionalId = array()
@@ -91,7 +91,7 @@ if not ReciboSQL.eof then
         <script>
                 getUrl("ifrReciboIntegrado.asp", {ReciboID:'<%=ReciboID%>',NumeroRps:'<%=NumeroRps%>', RepasseIds:'<%=repasseIds%>',Cnpj:'<%=Cnpj%>', RPS: '<%=RPS%>' ,NomeRecibo:'<%=RepasseNome%>', ModeloColuna:'ReciboHonorarioMedico', I:'<%=RepasseInvoiceID%>', ProfissionalID: '<%=ContaID%>', AssociacaoID: '<%=AssociacaoID%>' , tipoProfissionalSelecionado:'<%=AssociacaoID%>' , ValorRecibo:'<%=ValorEmpresa%>', PacienteID:'<%=PacienteID%>'});
         </script>
-            
+
             <%
         end if
 
@@ -120,7 +120,7 @@ end if
 <% end if %>
 
 <script>
-$(".close").click();
+$(".close", $("#modal-components")).click();
 </script>
 <div class="modal-header">
 	<h1 class="lighter blue">Impressão de Recibo</h1>
@@ -131,7 +131,17 @@ $(".close").click();
         <% For Each element In myDict.items() %>
             <div>
                 <label class="radio-custom radio-primary">
-                    <input type="radio" class="ace" id="profisionalId<%=myDict.item(element)%>" name="profisionalId" onclick="relatorio(this)" value="<%=myDict.item(element)%>" /><label for="profisionalId<%=myDict.item(element)%>"> <%=myDict.item(element)%></label></label>
+                    <input type="radio" class="ace" id="profisionalId<%=myDict.item(element)%>" name="profisionalId" onclick="relatorio(this)" value="<%=myDict.item(element)%>" /><label for="profisionalId<%=myDict.item(element)%>">
+                    <%
+                    val = myDict.item(element)
+
+                    if val&"" = "" then
+                        response.write("Não executado")
+                    elseif instr(val, "_")>0 then
+                        response.write(accountName("", val))
+                    end if
+                    %>
+                    </label></label>
             </div>
         <% next %>
         <div>
@@ -268,14 +278,14 @@ relatorio = (self) => {
         procedimentosStr = procedimentos.join(",");
     }
 
-    var url = `relatorio.asp?TipoRel=ifrReciboIntegrado&I=<%=request.QueryString("I")%>&tipoProfissionalSelecionado=${tipoProfissionalSelecionado}&profissionalSelecionado=${profissionalSelecionado}&executouProcedimento=${pro}&procedimentos=${procedimentosStr}&profissionalParaNaoProcessado=${profissionalParaNaoProcessado}`;
+    var url = `relatorio.asp?TipoRel=ifrReciboIntegrado&Imprimiu=1&I=<%=request.QueryString("I")%>&tipoProfissionalSelecionado=${tipoProfissionalSelecionado}&profissionalSelecionado=${profissionalSelecionado}&executouProcedimento=${pro}&procedimentos=${procedimentosStr}&profissionalParaNaoProcessado=${profissionalParaNaoProcessado}`;
 
 	if(profissionalSelecionado=="0"){
-        url = `relatorio.asp?TipoRel=ifrReciboIntegrado&I=<%=request.QueryString("I")%>`;
+        url = `relatorio.asp?TipoRel=ifrReciboIntegrado&Imprimiu=1&I=<%=request.QueryString("I")%>`;
 	}
 
 	fetch(url,
-		{		
+		{
 			method: "post"
 		})    .then(response => {
 					response.text().then((content) => {
@@ -291,12 +301,12 @@ relatorio = (self) => {
 
 						setTimeout( () => {
 							document.getElementById('iframeprint').contentWindow.document.body.innerHTML = content;
-							document.getElementById('iframeprint').contentWindow.focus() ; 
-							document.getElementById('iframeprint').contentWindow.print() ; 
+							document.getElementById('iframeprint').contentWindow.focus() ;
+							document.getElementById('iframeprint').contentWindow.print() ;
 						}, 100);
-						
+
 					}).catch((errorText) => {
-					
+
 					});
 				});
 }

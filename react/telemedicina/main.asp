@@ -16,30 +16,33 @@ set AgendamentoSQL = db.execute(sqlAgendamento)
 if not AgendamentoSQL.eof then
     agendamentoId=AgendamentoSQL("id")
     %>
-        <script crossorigin  src="react/src/react.production.min.js"></script>
-        <script crossorigin  src="react/src/react-dom.production.min.js"></script>
-        <script crossorigin  src="react/src/babel.min.js"></script>
-        <script crossorigin  src="react/src/peerjs.min.js"></script>
 <%
 if AppEnv="development" then
 %>
-    <script crossorigin  src="http://localhost:8000/modules/patientinterface/js/Telemedicine.js?time=123"></script>
+        <script crossorigin  src="react/src/react.development.js"></script>
+        <script crossorigin  src="react/src/react-dom.development.js"></script>
+        <script crossorigin  src="http://localhost:8000/modules/patientinterface/js/Telemedicine.js?time=123"></script>
 <%
 else
 %>
-    <script crossorigin  src="https://api.feegow.com.br/modules/patientinterface/js/Telemedicine.js?time=123"></script>
+        <script crossorigin  src="react/src/react.production.min.js"></script>
+        <script crossorigin  src="react/src/react-dom.production.min.js"></script>
+        <script crossorigin  src="https://api.feegow.com.br/modules/patientinterface/js/Telemedicine.js?time=123"></script>
 <%
 end if
 %>
 
-    <script crossorigin type="text/babel" src="react/telemedicina/Services/TelemedicinaService.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/Video.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/Controls.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/Popup.js?v=1"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/WherebyiFrame.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/ZoomiFrame.js"></script>
-    <script crossorigin type="text/babel" src="react/telemedicina/components/Header.js"></script>
-    <link type="text/css" rel="stylesheet" href="react/telemedicina/src/css/telemedicina.css" />
+        <script crossorigin  src="react/src/babel.min.js"></script>
+        <script crossorigin  src="react/src/peerjs.min.js"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/Services/TelemedicinaService.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/Video.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/Controls.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/Popup.js??ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/WherebyiFrame.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/ZoomiFrame.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/PopupNative.js?ch=1"></script>
+    <script crossorigin type="text/babel" src="react/telemedicina/components/Header.js?ch=1"></script>
+    <link type="text/css" rel="stylesheet" href="react/telemedicina/src/css/telemedicina.css?ch=1" />
     <style>
         .screen{
             min-width:400px !important;
@@ -50,9 +53,12 @@ end if
         }
     </style>
     <script type="text/babel">
-        var implementationType = "";
+        var implementationType = "native";
+        const licencaId="<%=licencaId%>";
 
-        if(localStorage.getItem("telemedicine_default_app") === "zoom")
+        let allowVideoChange = false;
+
+        if(localStorage.getItem("telemedicine_default_app") === "zoom" && allowVideoChange )
         {
             implementationType = "zoom";
         }
@@ -61,9 +67,12 @@ end if
             ReactDOM.render(<WherebyiFrame profissionalId={"<%=profissionalId%>"} licencaId={"<%=licencaId%>"} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
         }else if(implementationType==="zoom"){
             $("#root").addClass("screen");
-            ReactDOM.render(<ZoomiFrame profissionalId={"<%=profissionalId%>"} licencaId={"<%=licencaId%>"} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
+            ReactDOM.render(<ZoomiFrame allowVideoChange={allowVideoChange} profissionalId={"<%=profissionalId%>"} licencaId={licencaId} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
+        }else if(implementationType==="native"){
+            $("#root").addClass("screen");
+            ReactDOM.render(<PopupNative allowVideoChange={allowVideoChange} profissionalId={"<%=profissionalId%>"} licencaId={licencaId} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
         }else{
-            ReactDOM.render(<Popup profissionalId={"<%=profissionalId%>"} licencaId={"<%=licencaId%>"} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
+            ReactDOM.render(<Popup allowVideoChange={allowVideoChange} profissionalId={"<%=profissionalId%>"} licencaId={"<%=licencaId%>"} pacienteId={"<%=pacienteId%>"} agendamentoId={"<%=agendamentoId%>"} env={"<%=AppEnv%>"}/>,document.getElementById('root'));
         }
     </script>
 

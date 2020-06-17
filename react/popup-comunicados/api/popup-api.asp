@@ -16,7 +16,7 @@ Select Case action
     'retornar um json
     ' cria a tabela de cliniccentral.comunicados
     sql = "insert into cliniccentral.comunicados ( UserID, ComunicadoID, Interesse) values ("& UserID &", "& ComunicadoID &", "& Interesse &")"
-    db.exe2cute( sql )
+    db.execute( sql )
 
   Case "GetComunicadoById"
 
@@ -27,24 +27,19 @@ Select Case action
 
   Case "GetComunicadoNaoVisualizado"
 
-    sql = "SELECT pop.* FROM cliniccentral.popup_comunicados pop LEFT JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id AND com.UserID="&UserID&" WHERE (ExibirApenas is null or ExibirApenas Like '%|"&LicencaID&"|%') AND com.id IS NULL AND (com.Interesse=1 or com.Interesse IS NULL) AND sysActive=1 AND pop.id="&Request.QueryString("ComunicadoID")
+    sql = "SELECT pop.* "&_
+          "FROM cliniccentral.popup_comunicados pop "&_
+          "LEFT JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id AND com.UserID="&UserID&" "&_
+          "LEFT JOIN cliniccentral.clientes_servicosadicionais cs ON cs.LicencaID="&LicencaID&" AND cs.ServicoID=pop.RecursoAdicionalID "&_
+          " "&_
+          "WHERE (ExibirApenas IS NULL OR ExibirApenas LIKE '%|"&LicencaID&"|%') AND (com.id IS NULL OR com.Interesse=1) AND (com.Interesse=1 OR com.Interesse IS NULL) AND sysActive=1 "&_
+          " "&_
+          "AND ((cs.`Status` = pop.RecursoAdicionalStatus AND cs.id IS NOT null) OR (cs.id IS NULL AND pop.RecursoAdicionalStatus IS NULL)) "&_
+          "AND pop.sysActive = 1 "&_
+          "GROUP BY pop.id"
+
     set ComunicadoSQL = db.execute( sql )
-
-    Exibe=True
-
-    if not ComunicadoSQL.eof then
-        if not isnull(ComunicadoSQL("RecursoAdicionalID")) then
-            if recursoAdicional(ComunicadoSQL("RecursoAdicionalID"))<>0 then
-                Exibe=False
-            end if
-        end if
-    end if
-
-    if not Exibe then
-        Content = "False"
-    else
-        Content = recordToJSON(ComunicadoSQL)
-    end if
+    Content = recordToJSON(ComunicadoSQL)
 
     responseJson(Content)
 

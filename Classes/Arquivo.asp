@@ -10,7 +10,7 @@ function findFile(filename, folder, licenseId)
     relativePath = "uploads/"&licenseId&"/"&folder&"/"&filename
 
     Dim ServerHost, i
-    ServerHost = Array("clinic7", "clinic", "clinic8")
+    ServerHost = Array("clinic7.feegow.com.br", "feegow.com", "clinic8.feegow.com.br")
 	set fs=Server.CreateObject("Scripting.FileSystemObject")
 
     Dim xmlhttp
@@ -18,7 +18,9 @@ function findFile(filename, folder, licenseId)
 
 
     For Each host In ServerHost
-        fileURL = "https://"&host&".feegow.com.br/"&relativePath
+        https = "https"
+
+        fileURL = https&"://"&host&"/"&relativePath
 
         Set xmlhttp = Server.CreateObject("MSXML2.ServerXMLHTTP")
 

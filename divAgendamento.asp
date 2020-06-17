@@ -746,11 +746,16 @@ end if
                         response.write("    </div>")
                         end if
 
+                        if recursoAdicional(31)=4 then
+                            LabelSmsZap = "WhatsApp"
+                        else
+                            LabelSmsZap = "SMS"
+                        end if
 						%>
 
                             <div class="col-md-4">
                             <%if ServicoSMS="S" then%>
-                                <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar SMS</label></div>
+                                <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar <%=LabelSmsZap%></label></div>
                             <%end if%>
                                 <%
 								'response.Write("select EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and LicencaID="&replace( session("banco"), "clinic", "" ))
@@ -1760,6 +1765,7 @@ $(function(){
         somarValores();
     });
     VerGradeDoHorario()
+    $("#Chegada").val(new Date().toTimeString().split(' ')[0]);
 });
 
 function logAgendamento(agendamentoId) {

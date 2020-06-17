@@ -853,7 +853,7 @@ function check(mi){
 	}
 }
 
-function imprimir(){
+function imprimirReciboInvoice(){
 	if($("#sysActive").val()==0){
 	    bootbox.alert("Para imprimir este recibo voc&ecirc; precisa salvar esta conta.", function(result) {});
 	}else{

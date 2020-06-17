@@ -143,8 +143,10 @@ MaximoLimit = 20
 Tipo = req("Tipo")
 ComEstilo = req("ComEstilo")
 
-set PacienteSQL = db.execute("SELECT NomePaciente FROM pacientes WHERE id = "&PacienteID)
+set PacienteSQL = db.execute("SELECT NomePaciente, Nascimento, Sexo FROM pacientes WHERE id = "&PacienteID)
 NomePaciente = PacienteSQL("NomePaciente")
+Nascimento = PacienteSQL("Nascimento")
+Sexo = PacienteSQL("Sexo")
 %>
 <h2 class="visible-print"><%=NomePaciente%></h2>
 <%
@@ -251,6 +253,13 @@ select case Tipo
                         <a type="button" class="btn btn-block mb10 mt10 btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="fa fa-external-link"></i> Restaurar Formulário</a>
                     </div>
                 <%
+                if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) then
+                    if datediff("yyyy", Nascimento, date())<15 and Sexo<>0 then
+                    %>
+                    <a class="btn btn-info mt10" href="javascript:curva(<%= PacienteID %>)"><i class="fa fa-bar-chart"></i> Curvas de Evolução</a>
+                    <%
+                    end if
+                end if
 
                 if Tipo = "|L|" then
                     De = DateAdd("d", -7, date())
@@ -766,8 +775,18 @@ end select
     
 %>
 
+
+
     </div>
-    <% 
+
+    <div class="col-xs-12" id="divCurvas"></div>
+    <script type="text/javascript">
+        function curva(){
+            $.get("frmCurva.asp?P=<%= PacienteID %>", function(data){ $("#divCurvas").html(data) })
+        }
+    </script>
+
+    <%
     if instr("|ProdutosUtilizados|AssinaturaDigital|ResultadosExames|AsoPaciente|VacinaPaciente|Arquivos|Imagens|", Tipo) = 0 then
     %>
     <div class="col-xs-12">
@@ -800,7 +819,6 @@ end select
 </div>
 
 </div>
-
 <%
 If Err.Number <> 0 Then
     db.execute("INSERT INTO cliniccentral.exceptions (Message, File, LicencaID, UsuarioID, Linha, Metadata) VALUES ('"&Err.Description&"', '"&Request.ServerVariables("SCRIPT_NAME")&"', '"&replace(session("Banco"), "clinic","")&"', "&session("User")&", 0, "&PacienteID&")")

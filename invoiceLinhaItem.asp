@@ -39,8 +39,17 @@
             end if
             %>
             <input type="hidden" name="PacoteID<%= id %>" value="<%= PacoteID %>" />
-            <td colspan="2"><%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange="" parametrosInvoice("&id&", this.value);"" data-row='"& id &"' "&DisabledNaoAlterarExecutante, " required ", "") %>
-                                <%if session("Odonto")=1 then
+            <td colspan="2">
+            <%
+            if NaoAlterarExecutante then
+                %>
+                <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
+                <input type="hidden" name="ItemID<%= id %>" value="<%=ItemID%>" />
+                <%
+            end if
+            %>
+            <%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange="" parametrosInvoice("&id&", this.value);"" data-row='"& id &"' "&DisabledNaoAlterarExecutante, " required ", "") %>
+                    <%if session("Odonto")=1 then
                     %>
                     <textarea class="hidden" name="OdontogramaObj<%=id %>" id="OdontogramaObj<%=id %>"><%=OdontogramaObj %></textarea>
                     <%
@@ -49,7 +58,15 @@
 
             </td>
             <td nowrap="nowrap" >
-            <% if  Executado<>"C" then %>
+            <% if  Executado<>"C" then
+
+                if NaoAlterarExecutante then
+                    %>
+                    <input type="hidden" name="Executado<%= id %>" value="S" />
+                    <%
+                end if
+
+            %>
                 <span class="checkbox-custom checkbox-primary"><input type="checkbox" class="checkbox-executado" name="Executado<%=id%>" id="Executado<%=id%>" value="S"<%if Executado="S" then%> checked="checked"<%end if%> <%=DisabledNaoAlterarExecutante%> /><label for="Executado<%=id%>"> Executado</label></span>
             <% end if %>
                 <%
@@ -162,12 +179,11 @@
     title="Lançamentos de estoque"
     <% end if %>
     onclick="modalEstoque('<%=ItemInvoiceID %>', '<%=ItemID %>', '<%= ProdutoInvoiceID %>')" id="btn<%= ProdutoInvoiceID %>" type="button" class="btn btn-alert btn-block btn-sm"><i class="fa fa-medkit"></i></button></td>
-    <td>
-       
+    <td>       
         <% if integracaofeita.eof then %>
             <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
         <% else %>
-            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="avisoLaboratoriosMultiplos('Operação NÃO PERMITIDA! Exitem integrações feitas para esta conta!');"><i class="fa fa-remove"></i></button>
+            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="avisoLaboratoriosMultiplos('Operação NÃO PERMITIDA! <%=MensagemExclusaoNaoPermitida%>');"><i class="fa fa-remove"></i></button>
         <% end if %>
     </td>
     <td>
@@ -315,6 +331,11 @@ end if
 			    if session("Banco")="clinic6118" then
                     ExecutanteTipos = "5"
 			    end if
+			    if NaoAlterarExecutante then
+                    %>
+                    <input type="hidden" name="ProfissionalID<%= id %>" value="<%=Associacao&"_"&ProfissionalID%>" />
+                    <%
+                end if
 			    %>
                 <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutanteTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional&DisabledNaoAlterarExecutante)%>
 			    <%'=selectInsertCA("", "ProfissionalID"&id, Associacao&"_"&ProfissionalID, "5, 8, 2", " onchange=""setTimeout(function()calcRepasse("& id &"), 500)""", "", "")%>
@@ -339,9 +360,25 @@ end if
                         camposRequired=" required empty"
                     end if
                 end if
+
+
+			    if NaoAlterarExecutante then
+                    %>
+                    <input type="hidden" name="EspecialidadeID<%= id %>" value="<%=EspecialidadeID%>" />
+                    <%
+                end if
+
                 %>
                 <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" no-select2 "&camposRequired) %>
                 </div>
+                <%
+
+			    if NaoAlterarExecutante then
+                    %>
+                    <input type="hidden" name="DataExecucao<%= id %>" value="<%=DataExecucao%>" />
+                    <%
+                end if
+                %>
                 <%= quickField("datepicker", "DataExecucao"&id, "Data da Execu&ccedil;&atilde;o", 2, DataExecucao, "", "", ""&ExecucaoRequired&DisabledNaoAlterarExecutante) %>
                 <%= quickField("text", "HoraExecucao"&id, "In&iacute;cio", 1, HoraExecucao, " input-mask-l-time", "", "") %>
                 <%= quickField("text", "HoraFim"&id, "Fim", 1, HoraFim, " input-mask-l-time", "", "") %>

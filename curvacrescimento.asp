@@ -196,7 +196,7 @@ function display_growth_chart(patient, el, chartType, dims) {
   svg.append("text")
     .attr("text-anchor", "middle")
     .attr("transform", "translate("+ (width/2) +","+(height-(padding/3))+")")
-    .text("Idade (meses)");
+    .text("Idade (dias)");
 
   // Line labels (Normal, Malnourished, and Severely Malnourished)
   for (var i=0; i<metaData.lines.length; i++) {
@@ -208,7 +208,7 @@ function display_growth_chart(patient, el, chartType, dims) {
     svg.append("text")
       .attr("class","line-label")
       .attr("transform", "translate("+ xOffset +","+ yOffset +")")
-      // .attr("text-anchor", "middle")
+       .attr("text-anchor", "middle")
       .text(metaData.lines[i].name);
   }
 
@@ -250,8 +250,8 @@ function display_growth_chart(patient, el, chartType, dims) {
     .attr("ry", 6)
     .attr("x", (width / 2) - 3 - 46)
     .attr("y", 0 + (padding / 2) - 14 - 3 + 24)
-    // .attr("x", padding*10-3)
-    // .attr("y", padding-14-3)
+     .attr("x", padding*10-3)
+     .attr("y", padding-14-3)
     .attr("width", 101)  // 106
     .attr("height", 25)
     .style("stroke","gray")
@@ -368,7 +368,8 @@ function display_growth_chart(patient, el, chartType, dims) {
   function getTooltipText(d) {
     var age_in_months = parseFloat(d[0]);
     var weight_in_kg = parseFloat(d[1]).toFixed(1);
-    var textAge = 'Idade: ' + getAgeText(age_in_months);
+    //var textAge = 'Idade: ' + getAgeText(age_in_months);
+    var textAge = 'Idade: ' + age_in_months +' dias';
     var textweight = 'Medida: ' + weight_in_kg + 'cm';
     var text = textAge + '; ' + textweight;
 

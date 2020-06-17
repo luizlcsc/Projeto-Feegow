@@ -725,7 +725,8 @@ min-width: 150px;
                     <label>Profissional Solicitante <% if getConfig("OcultarSolicitanteInterno") = 1 then%> (EXTERNO) <% end if %></label>
                         <span class="pull-right">
                         <% if getConfig("OcultarSolicitanteInterno") = 1 then%>
-                            <input type="hidden" name="tipoProfissionalSolicitante" value="E">
+                            <!--<input type="hidden" name="tipoProfissionalSolicitante" value="E">-->
+                            <label><input type="radio" name="tipoProfissionalSolicitante" id="tipoProfissionalSolicitanteE" value="E" checked="checked" hidden />
                         <% else %>
                             <label><input type="radio" name="tipoProfissionalSolicitante" id="tipoProfissionalSolicitanteI" value="I"<% If tipoProfissionalSolicitante="I" Then %> checked="checked"<% End If %> class="ace" onclick="tps('I');" /> <span class="lbl">Interno</span></label>
                             <label><input type="radio" name="tipoProfissionalSolicitante" id="tipoProfissionalSolicitanteE" value="E"<% If tipoProfissionalSolicitante="E" Then %> checked="checked"<% End If %> class="ace" onclick="tps('E');" /> <span class="lbl">Externo</span></label>

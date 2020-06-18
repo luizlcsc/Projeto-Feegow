@@ -298,7 +298,7 @@ end if
                             <%end if%>
                         </td>
                         <td><%= ii("NomeConvenio") %></td>
-                        <td><span class="label label-rounded label-<%=StatusClasse%>"><%= Status %></span></td>
+                        <td id="status<%=ii("invoiceid") %>"><span  class="label label-rounded label-<%=StatusClasse%>"><%= Status %></span></td>
                         <td><% if cint(ii("TemArquivos")) > 0 then %><span data-toggle="tooltip" title="<%=ii("TemArquivos")%> arquivo(s) anexo(s)" class="label label-rounded label-info"><i class="fa fa-paperclip"></i></span><% end if %></td>
                         <td>
                             <div class="btn-group" style="float: right">
@@ -345,18 +345,6 @@ end if
     end if
     %>
     </tbody>
-    <tfoot>
-        <tr class="dark">
-            <td colspan="8"></td>
-            <td colspan="3">
-                <%= quickfield("simpleSelect", "StatusID", "", 6, "", "select id, Status FROM laudostatus ", "Status", " no-select2 ") %>
-
-            </td>
-            <td>
-                <button disabled class="btn btn-success   atualizarstatus" type="button"><i class="fa fa-repeat bigger-110"></i> Atualizar Status</button>
-            </td>
-        </tr>
-    </tfoot>
 </table>
 
 <%
@@ -440,7 +428,6 @@ $('[data-toggle="popover"]').popover();
 function syncLabResult(invoices, labid =1) {
     var caminhointegracao = "";
     var url = "";
-    //$("#syncInvoiceResultsButton").prop("disabled", true);  
     switch (labid) {
         case '1':      
             caminhointegracao = "matrix"; 
@@ -459,10 +446,29 @@ function syncLabResult(invoices, labid =1) {
     postUrl(url, {
         "invoices": invoices
     }, function (data) {
-        //$("#syncInvoiceResultsButton").prop("disabled", false);
         if(data.success) {
             alert(data.content);
-            $("#a"+invoices).hide();
+            
+            switch (data.status) {
+                case 1:
+                    var htmlstatus = '<span  class="label label-rounded label-warning">Pendente</span>';
+                    break;
+
+                case 2:
+                    var htmlstatus = '<span  class="label label-rounded label-success">Liberado</span>';
+                    $("#a"+invoices).hide();
+                    break;
+
+                case 3:
+                    var htmlstatus = '<span  class="label label-rounded label-warning">Parcial</span>';
+                    break;
+                else:
+                    var htmlstatus = '<span  class="label label-rounded label-warning">Pendente</span>';
+            }
+            $("#status"+invoices).html(htmlstatus);
+            $("#tr"+invoices).hide();
+            $("#"+invoices).removeClass('fa-flask fa-spinner fa-spin'); 
+            $("#"+invoices).addClass('fa-flask');
 
         } else {
             alert("Falha ao sincronizar o laudo:"+data.message)
@@ -505,6 +511,9 @@ $(".lab-sync").on("click", function (labid =2){
         case '2': 
             caminhointegracao = "diagbrasil";
             break;
+        case '3': 
+            caminhointegracao = "alvaro";
+            break;
         default:
             alert ('Erro ao integrar com Laboratório');
             return false;
@@ -540,7 +549,7 @@ $(".lab-sync").on("click", function (labid =2){
                 });
 
                 $.post("listaLaudos.asp", $("#frmLaudos").serialize(), function (data) {
-                    $("#divListaLaudos").html(data);
+                $("#divListaLaudos").html(data);
                 });
             }
         }else{

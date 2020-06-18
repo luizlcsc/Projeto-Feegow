@@ -1,5 +1,27 @@
 <!--#include file="connect.asp"--><!--#include file="validar.asp"--><!--#include file="md5.asp"--><%
 
+function getOldCBO( pCodigoCBO)
+	set cboAntigo  = db.execute("select cbosAntigo from  especialidades where codigoTiss="&pCodigoCBO)
+
+	if not cboAntigo.eof then
+		if cboAntigo("cbosAntigo")&""<>"" then
+			pCodigoCBO = Left(cboAntigo("cbosAntigo"),4)&"."&Right(cboAntigo("cbosAntigo"),2)
+		end if
+	end if
+	set cboAntigo = nothing
+	getOldCBO = pCodigoCBO
+end function
+
+function getTabelaOld(pCodigoTabela)
+	if pCodigoTabela="0" or pCodigoTabela="99" or pCodigoTabela="90"then
+		pCodigoTabela="00"
+	elseif pCodigoTabela="22" or pCodigoTabela="20" or pCodigoTabela="19" or pCodigoTabela="18" then
+		pCodigoTabela="16"
+	end if
+	
+	getTabelaOld = pCodigoTabela
+end function
+
 response.ContentType="text/XML"
 
 RLoteID = replace(request.QueryString("I"),".xml", "")
@@ -95,14 +117,17 @@ Hora = formatdatetime( lote("sysDate") ,3)
 					ConselhoProfissional = guias("ConselhoProfissionalSigla")
 					DocumentoConselho = trim(guias("DocumentoConselho"))
 					CodigoUFConselho = guias("CodigoUFConselho")
-					CodigoCBO = trim("2231.05")
+
+					CodigoCBO = TirarAcento(guias("CodigoCBO")) 'trim("2231.05")
+					CodigoCBO = getOldCBO(CodigoCBO)
+
 					IndicacaoAcidente = guias("IndicacaoAcidenteID")
 					DataAtendimento = mydatetiss(guias("DataAtendimento"))
 					TipoConsulta = guias("TipoConsultaID")
 					CodigoTabela = guias("TabelaID")
-					if CodigoTabela="99" then
-						CodigoTabela="00"
-					end if
+
+					CodigoTabela = getTabelaOld(CodigoTabela)
+			
                     NomePlano = guias("NomePlano")
                     ValidadeCarteira = mydatetiss(guias("ValidadeCarteira"))
 					CodigoProcedimento = trim(guias("CodigoProcedimento"))

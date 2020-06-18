@@ -45,7 +45,6 @@ end if
                 end if
                 %>
                 <%= quickfield("simpleSelect", "ConvenioID", "Convênio", 2, "", "select id, NomeConvenio from convenios where sysActive order by NomeConvenio", "NomeConvenio", "") %>
-                <%'quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, Unidades, "", "", "")%>
                 <%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, "", "", "", "")%>
             </div>
             <div class="row mt20">
@@ -53,7 +52,6 @@ end if
                 <%= quickfield("datepicker", "De", "De", 2, De, "", "", "") %>
                 <%= quickfield("datepicker", "Ate", "Até", 2, Ate, "", "", "") %>
                 <%= quickfield("simpleSelect", "TipoData", "Tipo", 2, "1", "select '1' id, 'Data de criação' TipoData UNION SELECT '2' id, 'Previsão de entrega' TipoData", "TipoData", "empty") %>
-                <%'= quickfield("multiple", "Prazo", "Prazo de Entrega", 2, "", "select  'Proxima' id, 'Próxima' Descricao UNION ALL select 'Atrasado', 'Atrasado'", "Descricao", "") %>
                 <%= quickfield("multiple", "Status", "Status", 2, "", "select id, Status FROM laudostatus ", "Status", "") %>
                 <div class="col-md-2">
                     <button class="btn btn-primary btn-block mt20"><i class="fa fa-search bigger-110"></i> Buscar</button>
@@ -80,14 +78,13 @@ end if
     var whatsAppAlertado = false;
 
     $("#frmLaudos").submit(function () {
+        var carregando  = ' <div class=\"panel-body pn\" id=\"divListaLaudos\" style=\"text-align: center;\"> <i class=\"fa fa-circle-o-notch fa-spin\" style="text-align: center; margin: 30px;"></i>  </div>';
+        $("#divListaLaudos").html(carregando);
         $.post("listaLaudos.asp", $(this).serialize(), function (data) {
             $("#divListaLaudos").html(data);
         });
         return false;
     });
-
     $("#frmLaudos").submit();
-
-
 </script>
 

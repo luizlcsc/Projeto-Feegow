@@ -462,7 +462,7 @@ function syncLabResult(invoices, labid =1) {
                 case 3:
                     var htmlstatus = '<span  class="label label-rounded label-warning">Parcial</span>';
                     break;
-                else:
+                default:
                     var htmlstatus = '<span  class="label label-rounded label-warning">Pendente</span>';
             }
             $("#status"+invoices).html(htmlstatus);

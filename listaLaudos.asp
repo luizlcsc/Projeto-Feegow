@@ -43,7 +43,7 @@ end if
     </thead>
     <tbody>
     <%
-    set GroupMarketplaceSetup&Pers=1Concat = db.execute("SET SESSION group_concat_max_len = 1000000;")
+    set GroupMarketplaceSetup = db.execute("SET SESSION group_concat_max_len = 1000000;")
     set pProcsLaudar = db.execute("select group_concat(id) ProcsLaudar from procedimentos WHERE Laudo=1 AND Ativo='on'")
     procsLaudar = pProcsLaudar("ProcsLaudar")
         'response.write(procsLaudar)
@@ -121,13 +121,14 @@ end if
             filtroGrupo = " ii.ItemID in ("&Procedimentos&") AND "
         END IF
         sqldiaslaudo  = " IF(t.ProcedimentoID =0,(SELECT le.DiasResultado + le.DiasAdicionais "&_
-                        " FROM cliniccentral.labs_exames le  "&_
+                        " FROM cliniccentral.labs_exames le  "&_ 
                         " INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id)  "&_
                         " WHERE lia.InvoiceID = t.invoiceid  order by le.DiasResultado desc limit 1) ,proc.DiasLaudo) as DiasLaudo , "&_
-                        "(SELECT cliniccentral.sf_adddiasuteis(t.DataExecucao ,  (SELECT le.DiasResultado + le.DiasAdicionais "&_
-						"								    FROM cliniccentral.labs_exames le "&_
-						"								   INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id) "&_
-						"							      WHERE lia.InvoiceID = t.invoiceid ORDER BY  le.DiasResultado DESC LIMIT 1 ) )) AS DataPrevisao "
+                        "(SELECT max(DataResultado) "&_
+                        " FROM labs_invoices_exames lie  "&_
+                        " INNER JOIN labs_invoices_amostras lia ON lia.id = lie.AmostraID "&_
+                        " INNER JOIN cliniccentral.labs_exames le ON le.id  = lie.LabExameID "&_
+                        " WHERE lia.InvoiceID = t.invoiceid) AS DataPrevisao "
 
         sqlnomelab = "(SELECT lab.NomeLaboratorio "&_
                      "   FROM labs_invoices_exames lie "&_
@@ -308,6 +309,9 @@ end if
                                 <% if ii("labid")="2" then %>
                                     <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
+                                <% if ii("labid")="3" then %>
+                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Álvaro" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                <% end if %>
                             <% end if %>
                              <% if ii("labid")="1" then %>
                                  <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=648&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
@@ -443,6 +447,9 @@ function syncLabResult(invoices, labid =1) {
             break;
         case '2': 
             caminhointegracao = "diagbrasil";
+            break;
+        case '3':
+            caminhointegracao = "alvaro";
             break;
         default:
             alert ('Erro ao integrar com Laboratório');

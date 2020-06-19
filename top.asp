@@ -1,5 +1,5 @@
 <%
-if session("Franqueador")<>"" and "clinic"&session("FranqueadorID")=session("Banco") then
+if FALSE AND session("Franqueador")<>"" and "clinic"&session("FranqueadorID")=session("Banco") then
 
     server.Execute("FranqueadorTop.asp")
 

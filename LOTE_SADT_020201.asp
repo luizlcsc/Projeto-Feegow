@@ -85,7 +85,7 @@ prefixo = right(prefixo, 20)
                 set TipoContratoSQL = db.execute("SELECT IdentificadorCNPJ FROM contratosconvenio WHERE ConvenioID="&guias("ConvenioID")&" AND CodigoNaOperadora='"&CodigoNaOperadora&"'")
                 if not TipoContratoSQL.eof then
                     if TipoContratoSQL("IdentificadorCNPJ")="S" then
-                        tipoCodigoNaOperadoraContratadoSolicitante = "cnpjContratado"
+                        tipoCodigoNaOperadoraContratadoSolicitante = "CNPJ"
                     end if
                 end if
                 %>

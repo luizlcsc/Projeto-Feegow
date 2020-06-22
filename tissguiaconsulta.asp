@@ -111,6 +111,7 @@ if not reg.eof then
 						if Numero<>"" then
 							trocaConvenioID = vpac("ConvenioID"&Numero)
                             ConvenioID = vpac("ConvenioID"&Numero)
+			                drCD = "tissCompletaDados('Convenio', "&ConvenioID&");"
 							'Matricula = vpac("Matricula"&Numero)
 							'Validade = vpac("Validade"&Numero)
 						end if
@@ -833,5 +834,12 @@ function formatCBOGroup(especialidades, $el)
         }
     }
 }
+
+<%
+if drCD<>"" then
+    response.write(drCD)
+end if
+    %>
+
 <!--#include file="JQueryFunctions.asp"-->
 </script>

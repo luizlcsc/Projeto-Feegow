@@ -193,9 +193,9 @@ prefixo = right(prefixo, 20)
 					ContExecCodigoNaOperadora = TirarAcento(guias("CodigoNaOperadora"))
 					ContExecCodigoNaOperadora = TirarAcento(replace(replace(replace(replace(replace(ContExecCodigoNaOperadora, ".", ""), "-", ""), ",", ""), "_", ""), " ", ""))
 					if CalculaCPF(CodigoNaOperadora)=true then
-						tipoContrato = "cpfContratado"
+						tipoContrato = "CPF"
 					elseif CalculaCNPJ(CodigoNaOperadora)=true then
-						tipoContrato = "cnpjContratado"
+						tipoContrato = "CNPJ"
 					else
 						tipoContrato = "codigoPrestadorNaOperadora"
 					end if

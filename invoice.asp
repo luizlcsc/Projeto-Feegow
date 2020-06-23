@@ -73,6 +73,13 @@ TabelaID = req("TabelaID")
 
 Rateado = 0
 
+sqlintegracao = " SELECT le.labid, lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
+                                        " inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
+                                        " INNER JOIN cliniccentral.labs_exames le ON le.id = lie.LabExameID "&_
+                                        " WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
+                       
+set integracao = db.execute(sqlintegracao)
+
 if CD="C" then
 	Titulo = "Contas a Receber"
 	Subtitulo = "Receber de"
@@ -259,9 +266,11 @@ posModalPagar = "fixed"
                 response.write("<input type='hidden' name='CompanyUnitID' id='UnidadeIDPagtoHidden' value='"& UnidadeID &"'>")
            end if
            %>
-
-        <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN)%>
-
+        <% if not integracao.eof then %>
+        <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN & " disabled ")%>
+        <% else %>
+        <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN )%>
+        <% end if %>
         <%
         if scp()=1  then
             call quickField("datepicker", "sysDate", "Data", 1, sysDate, "input-mask-date", "", ""&dateReadonly)
@@ -495,12 +504,7 @@ end if
                                             "  GROUP BY 1,2 "
                         set laboratorios = db.execute(sqllaboratorios)
 
-                        sqlintegracao = " SELECT le.labid, lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
-                                        " inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
-                                        " INNER JOIN cliniccentral.labs_exames le ON le.id = lie.LabExameID "&_
-                                        " WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
-                       
-                        set integracao = db.execute(sqlintegracao)
+                        
 
                         totallabs=0
                         multiploslabs = 0

@@ -23,7 +23,10 @@ end if
 
 set ValorPagoSQL = db.execute("SELECT SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement WHERE InvoiceID="&InvoiceID)
 
-set integracaofeita = db.execute("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))
+sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
+				" inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
+				" WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
+set integracaofeita = db.execute(sqlintegracao)
 
 if not ValorPagoSQL.eof then
     if ValorPagoSQL("ValorPago")>0 and session("Admin")=0 then

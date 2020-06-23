@@ -2,7 +2,10 @@
 
     set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&treatvalzero(InvoiceID))
     'Caso exista alguma integração para este ítem desabilitar o botão
-    set integracaofeita = db.execute("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))
+    sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
+				" inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
+				" WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
+    set integracaofeita = db.execute(sqlintegracao)
 
 %>
 <tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>">

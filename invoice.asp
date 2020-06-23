@@ -475,7 +475,10 @@ end if
                         if not labAutenticacao.eof then
 
                         matrixColor = "warning"
-                        set soliSQL = db.execute("SELECT * FROM labs_solicitacoes WHERE InvoiceID="&treatvalzero(InvoiceID))
+                        sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
+                                        " inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
+                                        " WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
+                        set soliSQL = db.execute(sqlintegracao)
                         if not soliSQL.eof then
                             matrixColor = "success"
                         end if
@@ -483,21 +486,6 @@ end if
                         set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&InvoiceID&" AND Executado!='S'")
                         set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&InvoiceID&" and p.IntegracaoPleres = 'S'")
                          
-                         ' para abrir integração com DB quando hoverem apenas procedimetos direcionados para DB
-                        'sql = "SELECT pl.labID, l.NomeLaboratorio FROM itensinvoice AS ii " &_
-                        '      "INNER JOIN procedimentos AS pro ON (pro.id = ii.itemid) " &_
-                        '      "INNER JOIN labs_procedimentos_laboratorios AS pl ON (pl.procedimentoID = pro.id) " &_
-                        '      "INNER JOIN cliniccentral.labs AS l ON (l.id  = pl.labID) " &_
-                        '      "WHERE invoiceid = "& treatvalzero(InvoiceID) &" ORDER BY 1 LIMIT 1 "
-                        'set procedimentos  = db.execute(sql)
-                        'laboratorioproc  = 1
-                        'nomelaboratorioproc = ""
-                        'if  not procedimentos.eof then
-                        '     laboratorioproc  = procedimentos("labID")
-                        '     nomelaboratorioproc = procedimentos("NomeLaboratorio")
-                        'end if 
-                        '  -----------------------------------------------------------------------------------------
-
                          sqllaboratorios = "SELECT lab.id labID, lab.NomeLaboratorio, count(*) total "&_
                                             " FROM cliniccentral.labs AS lab "&_
                                             " INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) "&_
@@ -507,12 +495,12 @@ end if
                                             "  GROUP BY 1,2 "
                         set laboratorios = db.execute(sqllaboratorios)
 
-                        sqlintegracao = "SELECT le.LabID "&_
-                                        "   FROM labs_invoices_exames lie "&_
-                                        "  INNER JOIN cliniccentral.labs_exames le ON (le.id = lie.LabExameID) "&_
-                                        "  WHERE lie.InvoiceID  ="&treatvalzero(InvoiceID)&" order by 1 limit 1"
+                        sqlintegracao = " SELECT le.labid, lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
+                                        " inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
+                                        " INNER JOIN cliniccentral.labs_exames le ON le.id = lie.LabExameID "&_
+                                        " WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
+                       
                         set integracao = db.execute(sqlintegracao)
-
 
                         totallabs=0
                         multiploslabs = 0

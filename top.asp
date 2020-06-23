@@ -1,5 +1,5 @@
 <%
-if session("Franqueador")<>"" and "clinic"&session("FranqueadorID")=session("Banco") then
+if FALSE AND session("Franqueador")<>"" and "clinic"&session("FranqueadorID")=session("Banco") then
 
     server.Execute("FranqueadorTop.asp")
 
@@ -70,7 +70,7 @@ else
             <li class="hidden sub-menu-click-agenda-multipla-por-locais"><a href="./?P=QuadroDisponibilidade&Pers=1">Múltipla por Locais</a></li>
 		        <%
                 if Aut("|agendaV|")=1  then
-                    %>g
+                    %>
                     <li class="sub-menu-click-agenda-multipla"><a href="./?P=AgendaMultipla&Pers=1">Múltipla</a></li>
                     <% IF  getConfig("AcessoAgendamentoOnline") = "1" THEN %>
                         <li class="sub-menu-click-agenda-multipla"><a href="javascript:void(0)" onclick="openAgendamentoOnline()">Agedamento Online</a></li>
@@ -122,7 +122,7 @@ else
             <%if aut("|agendaequipamentosV|")=1 or Aut("|agendaV|")=1 then %>
                 <li class="sub-menu-click-agenda-equipamentos-alocados"><a href="./?P=EquipamentosAlocados&Pers=1">Equipamentos Alocados</a></li>
 		    <% end if
-		    if (session("Banco")="clinic6118" or session("Banco")="clinic5760" or session("Banco")="clinic105") and Aut("|agendaV|")=1 then %>
+		    if Aut("|agendaV|")=1 then %>
                 <li class="sub-menu-click-agenda-mapa-de-agenda"><a href="./?P=Ocupacao&Pers=1">Mapa de agenda <span class="label label-system label-xs fleft">Novo</span> </a></li>
 		    <% end if
 

@@ -209,6 +209,11 @@ EliminaNotificacao=0
 									                    if not opcoes.eof then
 										                    Valor = opcoes("Valor")
 									                    end if
+                                                    elseif  campos("TipoCampoID")=16 then
+                                                        set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&Valor&"'")
+                                                        if not pcid.eof then
+                                                            Valor = pcid("Codigo") &" - "& pcid("Descricao")
+                                                        end if
 								                    end if
 								                    Tem = 1
 

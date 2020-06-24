@@ -310,15 +310,138 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
                             <input type="hidden" value="<%=reg("TipoEstimado")%>" id="TipoEstimado" name="TipoEstimado">
                         <% end if %>
                     <% end if %>
-
-
-
-
-
-
-
-
                 </div>
+
+
+                <div class="row" style="margin-top: 30px;">
+                    <div class="col-md-129">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <span class="panel-title">Tarefas relacionadas</span>
+                            </div>
+                            <div class="panel-body">
+
+
+<%
+set vtarefasFilho = db.execute("select id,titulo from tarefas Where TarefaPaiID="&req("I")&" order by titulo ASC")
+if vtarefasFilho.eof then
+    tarefasFilhosHTML = "<tr>"_
+    &"  <td colspan='3'><i>Nenuma tarefa foi vinculada neste chamado</i></td>"_
+    &"</tr>"
+    
+else
+while not vtarefasFilho.eof
+
+    tarefaFilho_id      = vtarefasFilho("id")
+    tarefaFilho_titulo  = vtarefasFilho("titulo")
+
+'    tarefasFilhos = "<tr id='tb"&tarefaFilho_id&"'>"_
+'    &"  <td>#"&tarefaFilho_id&"</td>"_
+'    &"  <td>"&tarefaFilho_titulo&"</td>"_
+'    &"  <td>"_
+'    &"      <a class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I="&tarefaFilho_id&"' target='_blank'><i class='fa fa-edit'></i></a>"_
+'    &"      <button type='button' class='btn btn-xs btn-danger' id='"&tarefaFilho_id&"' onclick='tarefaFilhoRemove(this.id)'><i class='fa fa-times'></i></button>"_
+'    &"  </td>"_
+'    &"</tr>"
+
+    tarefasFilhos = "<tr>"_
+    &"    <td><input type='checkbox' name='record' class='tarefasFilhoRemove' value='"&tarefaFilho_id&"'></td>"_
+    &"    <td><a class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I="&tarefaFilho_id&"' target='_blank'><i class='fa fa-edit'> </i> #"&tarefaFilho_id&"</a></td>"_
+    &"    <td>"&tarefaFilho_titulo&"</td>"_
+    &"</tr>"
+
+    if tarefasFilhosHTML="" then
+        tarefasFilhosHTML = tarefasFilhos
+    else
+        tarefasFilhosHTML = tarefasFilhosHTML&tarefasFilhos
+    end if
+
+vtarefasFilho.movenext
+wend
+vtarefasFilho.close
+set vtarefasFilho = nothing
+end if
+
+
+%>    
+<script type="text/javascript">
+
+    function tarefaFilhoRemove(valor) {
+        if (confirm("Deseja desvincular esta tarefa?")) {
+            document.getElementById(valor).value = valor;
+            var tb = 'tb'+valor;
+            data : $.post( "TarefasSave.asp?acao=r&ref=<%=req("I")%>&v="+valor);
+            $('tr').remove('#'+tb);
+            
+        }
+    }
+
+    $(document).ready(function(){
+        $("#tarefaFilhoAdd").click(function(){
+            var protocolo = $("#tarefaFilhoBusca").val();
+            //var titulo    = $("#tarefaFilhoBusca").select2('data');
+            var titulo    = $("#tarefaFilhoBusca").select2('data')[0]['full_name'];
+
+            var markup = "<tr><td><input type='checkbox' name='record'></td><td><a  class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I='><i class='fa fa-edit'> </i> #" + protocolo + "</a></td><td> "+ titulo +" </td></tr>";
+            $("table tbody").append(markup);
+            //console.log(protocolo);
+            data : $.post( "TarefasSave.asp?acao=a&ref=<%=req("I")%>&v="+protocolo);
+        });
+        
+        // Find and remove selected table rows
+        $(".tarefaFilhoRemove").click(function(){
+            var tarefaFilhoRemoveSel = $("input:checkbox[name=record]:checked")
+            .toArray()
+            .map(function(reg){
+                
+                return $(reg).val();
+            });
+            data : $.post("TarefasSave.asp?acao=r&ref=<%=req("I")%>&v="+tarefaFilhoRemoveSel);
+
+            //console.log(val(tarefaFilhoRemoveSel));
+            $("table tbody").find('input[name="record"]').each(function(){
+                if($(this).is(":checked")){
+                    $(this).parents("tr").remove();
+                }
+            });
+
+        });
+    });  
+
+</script>
+
+<div class="col-md-11">
+    <%=selectInsert("Associar a este chamado", "tarefaFilhoBusca", "", "tarefas", "Titulo", "", "", "")%>
+</div>
+<div class="col-md-1 text-right">
+    <br>
+    <button type="button" class="btn btn-sm btn-success" id="tarefaFilhoAdd"><i class="fa fa-plus"></i></button>
+</div>
+
+<div class="col-md-12" style="max-height:300px; overflow:auto;">
+<table class="table" id="tarefasFilho">
+    <thead>
+        <tr>
+            <th width="20"></th>
+            <th width="80">Protocolo</th>
+            <th>Título</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%=tarefasFilhosHTML%>
+    </tbody>
+</table>
+<button type="button" class="tarefaFilhoRemove btn btn-xs btn-danger"><i class='fa fa-times'></i> Remover itens</button>
+</div>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                    
+                </div>
+
+                <hr>
                 <div class="panel" style="margin-top: 30px;" <% if req("Helpdesk") <> "" then response.write("hidden") end if%>>
                     <div class="panel-heading">
                         <span class="panel-title">Solicitantes</span>

@@ -266,11 +266,9 @@ posModalPagar = "fixed"
                 response.write("<input type='hidden' name='CompanyUnitID' id='UnidadeIDPagtoHidden' value='"& UnidadeID &"'>")
            end if
            %>
-        <% if not integracao.eof then %>
-        <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN & " disabled ")%>
-        <% else %>
+
         <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN )%>
-        <% end if %>
+
         <%
         if scp()=1  then
             call quickField("datepicker", "sysDate", "Data", 1, sysDate, "input-mask-date", "", ""&dateReadonly)

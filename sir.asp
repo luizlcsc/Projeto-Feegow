@@ -173,6 +173,25 @@ if aut(lcase(ref("resource"))&"A")=1 then
                   "    AND et.Name like '%[TYPED]%' "&_
                   "    AND (SELECT ifnull(limitarcontaspagar,'') FROM sys_users WHERE sys_users.id = [USERID]) NOT LIKE CONCAT('%|',et.id,'|%') "&_
                   "    AND (SELECT count(id) FROM sys_financialExpenseType WHERE et.id=Category)=0  and sysActive=1 order by et.Name"
+
+          sql = "SELECT id, CONCAT(IFNULL(Pai2,''), IFNULL(Pai1,''), Name) Name FROM ( "&_
+                " "&_
+                "select et.id,  "&_
+                " "&_
+                "(CONCAT(SUBSTR(( SELECT (SELECT etp2.NAME from sys_financialExpenseType etp2 WHERE etp2.id=etp1.Category) from sys_financialExpenseType etp1 WHERE etp1.id=et.Category )  ,1,4),'.', ' > ')) Pai2, "&_
+                " "&_
+                "(CONCAT(SUBSTR((SELECT etp.NAME from sys_financialExpenseType etp WHERE etp.id=et.Category)  ,1,4),'.', ' > ')) Pai1, "&_
+                " "&_
+                "et.NAME  "&_
+                " "&_
+                "from sys_financialExpenseType et  "&_
+                "WHERE TRUE  "&_
+                "AND et.Name LIKE '%[TYPED]%'  "&_
+                "AND (SELECT ifnull(limitarcontaspagar,'') FROM sys_users WHERE sys_users.id = [USERID]) NOT LIKE CONCAT('%|',et.id,'|%')  "&_
+                "AND (SELECT count(id) FROM sys_financialExpenseType WHERE et.id=Category)=0  and sysActive=1 order by et.NAME "&_
+                " "&_
+                ")t"
+
             sql = replace(sql, "[TYPED]", Typed)
             sql = replace(sql, "[USERID]", session("user"))
             sql = replace(sql, "[campoSuperior]", ref("cs"))

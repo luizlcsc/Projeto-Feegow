@@ -1,5 +1,27 @@
 <!--#include file="connect.asp"--><!--#include file="validar.asp"--><!--#include file="md5.asp"--><%
 
+function getOldCBO( pCodigoCBO)
+	set cboAntigo  = db.execute("select cbosAntigo from  especialidades where codigoTiss="&pCodigoCBO)
+
+	if not cboAntigo.eof then
+		if cboAntigo("cbosAntigo")&""<>"" then
+			pCodigoCBO = Left(cboAntigo("cbosAntigo"),4)&"."&Right(cboAntigo("cbosAntigo"),2)
+		end if
+	end if
+	set cboAntigo = nothing
+	getOldCBO = pCodigoCBO
+end function
+
+function getTabelaOld(pCodigoTabela)
+	if pCodigoTabela="0" or pCodigoTabela="99" or pCodigoTabela="90"then
+		pCodigoTabela="00"
+	elseif pCodigoTabela="22" or pCodigoTabela="20" or pCodigoTabela="19" or pCodigoTabela="18" then
+		pCodigoTabela="16"
+	end if
+	
+	getTabelaOld = pCodigoTabela
+end function
+
 response.ContentType="text/XML"
 
 
@@ -63,7 +85,7 @@ prefixo = right(prefixo, 20)
                 set TipoContratoSQL = db.execute("SELECT IdentificadorCNPJ FROM contratosconvenio WHERE ConvenioID="&guias("ConvenioID")&" AND CodigoNaOperadora='"&CodigoNaOperadora&"'")
                 if not TipoContratoSQL.eof then
                     if TipoContratoSQL("IdentificadorCNPJ")="S" then
-                        tipoCodigoNaOperadoraContratadoSolicitante = "cnpjContratado"
+                        tipoCodigoNaOperadoraContratadoSolicitante = "CNPJ"
                     end if
                 end if
                 %>
@@ -171,9 +193,9 @@ prefixo = right(prefixo, 20)
 					ContExecCodigoNaOperadora = TirarAcento(guias("CodigoNaOperadora"))
 					ContExecCodigoNaOperadora = TirarAcento(replace(replace(replace(replace(replace(ContExecCodigoNaOperadora, ".", ""), "-", ""), ",", ""), "_", ""), " ", ""))
 					if CalculaCPF(CodigoNaOperadora)=true then
-						tipoContrato = "cpfContratado"
+						tipoContrato = "CPF"
 					elseif CalculaCNPJ(CodigoNaOperadora)=true then
-						tipoContrato = "cnpjContratado"
+						tipoContrato = "CNPJ"
 					else
 						tipoContrato = "codigoPrestadorNaOperadora"
 					end if
@@ -230,7 +252,10 @@ prefixo = right(prefixo, 20)
 					datahora = guias("sysDate")
 					dataHoraAtendimento = mydatetiss(datahora)&"T"&myTimeTISS(datahora)
                     TipoSaida="5"
-					CodigoCBOSolicitante = Left(CodigoCBOSolicitante,4)&"."&Right(CodigoCBOSolicitante,2)
+					
+					'pegar cbos antigo
+					CodigoCBOSolicitante = getOldCBO(CodigoCBOSolicitante)
+
 					hash = hash&RegistroANS&DataSolicitacao&NGuiaPrestador&NGuiaPrincipal&NGuiaOperadora&DataAutorizacao&Senha&DataValidadeSenha&NumeroCarteira&NomePaciente&NomePlano&ContratadoSolicitanteCodigoNaOperadora&NomeContratadoSolicitante&NomeProfissionalSolicitante&SiglaConselhoProfissionalSolicitante&NumeroNoConselhoSolicitante&UFConselhoSolicitante&CodigoCBOSolicitante&ContExecCodigoNaOperadora&NomeContratado&CodigoCNES&IndicacaoClinica&CaraterAtendimentoSigla&dataHoraAtendimento&TipoSaida&TipoAtendimentoID
 					%>
                 <ans:guiaSP_SADT>
@@ -301,9 +326,10 @@ prefixo = right(prefixo, 20)
 						HoraInicio = myTimeTISS(procs("HoraInicio"))
 						HoraFim = myTimeTISS(procs("HoraFim"))
 						TabelaID = TirarAcento(procs("TabelaID"))
-						if TabelaID="99" or TabelaID="0" then
-							TabelaID="00"
-						end if
+
+						'pega tabela old
+						TabelaID = getTabelaOld(TabelaID)
+
 						CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))
 						Descricao = TirarAcento(procs("Descricao"))
 						Descricao = left(Descricao, 60)
@@ -367,7 +393,7 @@ prefixo = right(prefixo, 20)
 									DocumentoConselhoProf = DocumentoConselho
 									UFConselhoProf = UFConselho
 								end if
-								CodigoCBO = Left(CodigoCBO,4)&"."&Right(CodigoCBO,2)
+								CodigoCBO =getOldCBO(CodigoCBO)
 								hash = hash & CodigoNaOperadoraOuCPF&SiglaConselhoProf&DocumentoConselhoProf&UFConselhoProf&NomeProfissional&SiglaConselho&DocumentoConselho&UFConselho&CodigoCBO&GrauParticipacao
 							%>
 								<ans:membroEquipe>

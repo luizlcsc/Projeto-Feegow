@@ -2,194 +2,31 @@
 
     set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&treatvalzero(InvoiceID))
     'Caso exista alguma integração para este ítem desabilitar o botão
-    sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
-				" inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
-				" WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
-    set integracaofeita = db.execute(sqlintegracao)
+   ' set integracaofeita = db.execute("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))
+    set procedimentos  = db.execute("Select * from procedimentos where id= "&treatvalzero(ItemID))
 
 %>
+
 <tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>">
-    <td>
-    	<input type="hidden" name="AtendimentoID<%=id%>" id="AtendimentoID<%=id%>" value="<%=AtendimentoID%>">
-    	<input type="hidden" name="AgendamentoID<%=id%>" id="AgendamentoID<%=id%>" value="<%=AgendamentoID%>">
-		<%=quickField("text", "Quantidade"&id, "", 4, Quantidade, " text-right disable", "", " required onkeyup=""recalc($(this).attr('id'))""")%><input type="hidden" name="inputs" value="<%= id %>">
-        <input type="hidden" name="Tipo<%=id %>" value="<%=Tipo %>" />
+    <td> 
+    	<%=Quantidade %>
+    </td>  
+    <td colspan=3> 
+    	<%=procedimentos("NomeProcedimento") %>
     </td>
-        <%
-        if Tipo="S" then
-            ItemInvoiceID = id
-            ProdutoInvoiceID = ""
-
-            DisabledNaoAlterarExecutante = " "
-            NaoAlterarExecutante=False
-            set RepasseSQL = db.execute("SELECT id FROM rateiorateios WHERE ItemContaAPagar is not null and ItemInvoiceID="&ItemInvoiceID)
-
-            if not RepasseSQL.eof then
-                NaoAlterarExecutante=True
-                DisabledNaoAlterarExecutante=" disabled"
-            end if
-
-            if NaoPermitirAlterarExecutante and Executado="S" then
-                NaoAlterarExecutante=True
-                DisabledNaoAlterarExecutante=" disabled"
-            end if
-
-            if NaoAlterarExecutante then
-            %>
-            <input type="hidden" name="NaoAlterarExecutante" value="S" />
-            <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
-            <%
-            end if
-            %>
-            <input type="hidden" name="PacoteID<%= id %>" value="<%= PacoteID %>" />
-            <td colspan="2">
-            <%
-            if NaoAlterarExecutante then
-                %>
-                <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
-                <input type="hidden" name="ItemID<%= id %>" value="<%=ItemID%>" />
-                <%
-            end if
-            %>
-            <%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange="" parametrosInvoice("&id&", this.value);"" data-row='"& id &"' "&DisabledNaoAlterarExecutante, " required ", "") %>
-                    <%if session("Odonto")=1 then
-                    %>
-                    <textarea class="hidden" name="OdontogramaObj<%=id %>" id="OdontogramaObj<%=id %>"><%=OdontogramaObj %></textarea>
-                    <%
-                  end if %>
-
-
-            </td>
-            <td nowrap="nowrap" >
-            <% if  Executado<>"C" then
-
-                if NaoAlterarExecutante then
-                    %>
-                    <input type="hidden" name="Executado<%= id %>" value="S" />
-                    <%
-                end if
-
-            %>
-                <span class="checkbox-custom checkbox-primary"><input type="checkbox" class="checkbox-executado" name="Executado<%=id%>" id="Executado<%=id%>" value="S"<%if Executado="S" then%> checked="checked"<%end if%> <%=DisabledNaoAlterarExecutante%> /><label for="Executado<%=id%>"> Executado</label></span>
-            <% end if %>
-                <%
-                if id>0 and (session("Banco")="clinic5760" or session("Banco")="clinic105" or session("Banco")="clinic100000" or session("Banco")="clinic4421" or session("Banco")="clinic5856" or session("Banco")="clinic5445" or session("Banco")="clinic5968" or session("Banco")="clinic5857" or session("Banco")="clinic6118" or session("Banco")="clinic6273" or session("Banco")="clinic5563" or session("Banco")="clinic6346" or session("Banco")="clinic2665" or session("Banco")="clinic6289" or session("Banco")="clinic5563" or session("Banco")="clinic6451" or session("Banco")="clinic6256") then
-                    set vcaPagto = db.execute("select ifnull(sum(Valor), 0) TotalPagoItem from itensdescontados where ItemID="& id)
-                    TotalPagoItem = ccur(vcaPagto("TotalPagoItem"))
-
-                    if TotalPagoItem>=ccur(Quantidade*(ValorUnitario+Acrescimo-Desconto)) and Executado="C" then
-                        %>
-                         <input type="hidden" value="C" name="Cancelado<%=id%>">
-                        <span class="label label-danger">Cancelado</span>
-                        <% '<span class="checkbox-custom checkbox-danger"><input type="checkbox" name="Cancelado id" id="Cancelado id" value="C" checked="checked" /><label for="Cancelado id"> Cancelado</label></span> %>
-                        <%
-                    end if
-                end if
-                %>
-            </td>
-            <%
-        elseif Tipo="M" or Tipo="K" then
-            ItemInvoiceID = ""
-            ProdutoInvoiceID = id
-            if not InvoiceSQL.eof then
-                if InvoiceSQL("CD")="C" then
-                    TabelaCategoria = "sys_financialincometype"
-                    LimitarPlanoContas=""
-                else
-                    TabelaCategoria = "sys_financialexpensetype"
-                    EscondeFormas = 1
-                    II = "0_0"
-                end if
-            end if
-            %>
-            <td  nowrap>
-            <div class="col-md-4">
-                <div class="radio-custom radio-primary">
-                    <input type="radio" name="Executado<%=id %>" id="Executado<%=id %>C" value="C" <%if Executado="C" then %> checked <%end if %> /><label for="Executado<%=id %>C">Conjunto</label>
-                </div>
-                <div class="radio-custom radio-primary">
-                    <input type="radio" name="Executado<%=id %>" id="Executado<%=id %>U" value="U" <%if Executado="U" then %> checked <%end if %> /><label for="Executado<%=id %>U">Unidade</label>
-                </div>
-            </div>
-<div class="col-md-8 mt5"><%= selectInsert("", "ItemID"&id, ItemID, "produtos", "NomeProduto", " onchange=""parametrosProduto("&id&", this.value);""", " required", "") %></div></td>
-<td colspan="2">
-                                        <%'= quickfield("simpleSelect", "CategoriaID"&id, "", 5, CategoriaID, "SELECT t1.id, concat( ifnull(t2.name, ''), ' -> ', t1.name) Categoria FROM sys_financialexpensetype AS t1 LEFT JOIN sys_financialexpensetype AS t2 ON t2.id = t1.category LEFT JOIN sys_financialexpensetype AS t3 ON t3.id = t2.category LEFT JOIN sys_financialexpensetype AS t4 ON t4.id = t3.category where t1.Nivel=(select max(Nivel) from sys_financialexpensetype) order by t2.name, t1.name", "Categoria", "") %>
-                                        <%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%> </td>
-
-            <%
-        elseif Tipo="O" then
-            ItemInvoiceID = id
-            ProdutoInvoiceID = ""
-			if not InvoiceSQL.eof then
-				if InvoiceSQL("CD")="C" then
-					TabelaCategoria = "sys_financialincometype"
-					LimitarPlanoContas=""
-				else
-					TabelaCategoria = "sys_financialexpensetype"
-					EscondeFormas = 1
-					II = "0_0"
-				end if
-			end if
-            %>
-            <td><%=quickField("text", "Descricao"&id, "", 4, Descricao, " ", "", " placeholder='Descri&ccedil;&atilde;o...' required maxlength='50'")%></td>
-            <td >
-                <%'= quickfield("simpleSelect", "CategoriaID"&id, "", 5, CategoriaID, "SELECT t1.id, concat( ifnull(t2.name, ''), ' -> ', t1.name) Categoria FROM sys_financialexpensetype AS t1 LEFT JOIN sys_financialexpensetype AS t2 ON t2.id = t1.category LEFT JOIN sys_financialexpensetype AS t3 ON t3.id = t2.category LEFT JOIN sys_financialexpensetype AS t4 ON t4.id = t3.category where t1.Nivel=(select max(Nivel) from sys_financialexpensetype) order by t2.name, t1.name", "Categoria", "") %>
-                <%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%></td>
-            <td>
-                <%=selectInsert("", "CentroCustoID"&id, CentroCustoID, "CentroCusto", "NomeCentroCusto", "", "", "")%></td>
-            <script>
-                $("#hCentroCusto").html("Centro de Custo");
-                $("#hPlanoContas").html("Plano de Contas");
-            </script>
-            <%
-        end if
-
-
-
-        ValorUnitarioReadonly = " "
-        notEdit = " "
-
-        if ValorUnitario<>"" and ValorUnitario<>0 and TemRegrasDeDesconto and Tipo="S" and isnull(InvoiceSQL("FixaID")) then
-            ValorUnitarioReadonly=" readonly"
-            notEdit = " notedit "
-        end if
-
-        if aut("valordoprocedimentoA")=0 and Tipo="S" then
-            ValorUnitarioReadonly=" readonly"
-            notEdit = " notedit "
-        end if
-        %>
-    <td><%=quickField("currency", "ValorUnitario"&id, "", 4, fn(ValorUnitario), " " & notEdit & " CampoValorUnitario text-right disable", "", " onkeyup=""syncValuePercentReais($(this))""" & ValorUnitarioReadonly)%></td>
-    <td>
-        <div class="input-group">
-            <div class="input-group-btn">
-                <button type="button" class="btn btn-default dropdown-toggle btn-desconto" data-toggle="dropdown" aria-expanded="false"
-                    style="width: 41px !important;">R$</button>
-                <ul class="dropdown-menu dropdown-info pull-right">
-                    <li><a href="javascript:void(0)" onclick="mudarFormatoDesconto(this)" class="dropdown-item">%</a></li>
-                </ul>
-            </div>
-            <%=quickField("text", "Desconto"&id, "", 4, fn(Desconto), " CampoDesconto input-mask-brl text-right disable", "", " data-desconto='"&fn(Desconto)&"' onkeyup=""setInputDescontoEmPorcentagem(this)""")%>
-            <%=quickField("text", "PercentDesconto"&id, "", 4, "0.00", " PercentDesconto input-mask-brl text-right disable", "", "style='display:none' data-desconto='0.00' onkeyup=""setInputDescontoEmReais(this)""")%>
-        </div>
+    <td> 
+    	R$ <%=formatnumber(ValorUnitario,2)%>
     </td>
-    <td><%=quickField("text", "Acrescimo"&id, "", 4, fn(Acrescimo), " input-mask-brl text-right disable", "", " data-acrescimo='"&fn(Acrescimo)&"' onkeyup=""recalc($(this).attr('id'))""")%></td>
-    <td class="text-right" data-valor="<%= fn( Subtotal) %>" id="sub<%=id%>" nowrap>R$ <%= fn( Subtotal) %></td>
-    <td><button
-    <% if id<0 then %>
-    disabled title="Salve a conta para lançar no estoque"
-    <%else %>
-    title="Lançamentos de estoque"
-    <% end if %>
-    onclick="modalEstoque('<%=ItemInvoiceID %>', '<%=ItemID %>', '<%= ProdutoInvoiceID %>')" id="btn<%= ProdutoInvoiceID %>" type="button" class="btn btn-alert btn-block btn-sm"><i class="fa fa-medkit"></i></button></td>
-    <td>       
-        <% if integracaofeita.eof then %>
-            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
-        <% else %>
-            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="avisoLaboratoriosMultiplos('Operação NÃO PERMITIDA! <%=MensagemExclusaoNaoPermitida%>');"><i class="fa fa-remove"></i></button>
-        <% end if %>
+    <td> 
+    	R$ <%=formatnumber(Desconto,2)%>
     </td>
-    <td>
+    <td> 
+    	R$ <%=formatnumber(Acrescimo,2)%>
+    </td>
+    <td> 
+    	R$ <%=formatnumber(Subtotal,2)%>
+    </td>
+     <td>
     <% if Tipo="S" then 
 
     %>
@@ -204,12 +41,11 @@
         </div>
     <%end if%>
     </td>
-</tr>
-<% IF getConfig("ObrigarPlanoDeContas") THEN %>
-<script>
-    $("[name^=CategoriaID]").attr("required","required")
-</script>
-<% END IF %>
+<TR>
+
+
+
+
 <%
 if req("T")="D" then
     'aqui lista os itens caso seja a fatura do cartao
@@ -334,11 +170,6 @@ end if
 			    if session("Banco")="clinic6118" then
                     ExecutanteTipos = "5"
 			    end if
-			    if NaoAlterarExecutante then
-                    %>
-                    <input type="hidden" name="ProfissionalID<%= id %>" value="<%=Associacao&"_"&ProfissionalID%>" />
-                    <%
-                end if
 			    %>
                 <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutanteTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional&DisabledNaoAlterarExecutante)%>
 			    <%'=selectInsertCA("", "ProfissionalID"&id, Associacao&"_"&ProfissionalID, "5, 8, 2", " onchange=""setTimeout(function()calcRepasse("& id &"), 500)""", "", "")%>
@@ -363,25 +194,9 @@ end if
                         camposRequired=" required empty"
                     end if
                 end if
-
-
-			    if NaoAlterarExecutante then
-                    %>
-                    <input type="hidden" name="EspecialidadeID<%= id %>" value="<%=EspecialidadeID%>" />
-                    <%
-                end if
-
                 %>
                 <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" no-select2 "&camposRequired) %>
                 </div>
-                <%
-
-			    if NaoAlterarExecutante then
-                    %>
-                    <input type="hidden" name="DataExecucao<%= id %>" value="<%=DataExecucao%>" />
-                    <%
-                end if
-                %>
                 <%= quickField("datepicker", "DataExecucao"&id, "Data da Execu&ccedil;&atilde;o", 2, DataExecucao, "", "", ""&ExecucaoRequired&DisabledNaoAlterarExecutante) %>
                 <%= quickField("text", "HoraExecucao"&id, "In&iacute;cio", 1, HoraExecucao, " input-mask-l-time", "", "") %>
                 <%= quickField("text", "HoraFim"&id, "Fim", 1, HoraFim, " input-mask-l-time", "", "") %>

@@ -1,0 +1,12 @@
+version: 0.0
+os: windows
+files:
+  - source: \
+    destination: c:\inetpub\wwwroot\v7
+hooks:
+  BeforeInstall:
+  - location: \bat\before-install.bat
+    timeout: 900
+  AfterInstall:
+  - location: \bat\after-install.bat
+    timeout: 900

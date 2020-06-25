@@ -43,7 +43,7 @@ end if
     </thead>
     <tbody>
     <%
-    set GroupMarketplaceSetup&Pers=1Concat = db.execute("SET SESSION group_concat_max_len = 1000000;")
+    set GroupMarketplaceSetup = db.execute("SET SESSION group_concat_max_len = 1000000;")
     set pProcsLaudar = db.execute("select group_concat(id) ProcsLaudar from procedimentos WHERE Laudo=1 AND Ativo='on'")
     procsLaudar = pProcsLaudar("ProcsLaudar")
         'response.write(procsLaudar)
@@ -121,13 +121,14 @@ end if
             filtroGrupo = " ii.ItemID in ("&Procedimentos&") AND "
         END IF
         sqldiaslaudo  = " IF(t.ProcedimentoID =0,(SELECT le.DiasResultado + le.DiasAdicionais "&_
-                        " FROM cliniccentral.labs_exames le  "&_
+                        " FROM cliniccentral.labs_exames le  "&_ 
                         " INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id)  "&_
                         " WHERE lia.InvoiceID = t.invoiceid  order by le.DiasResultado desc limit 1) ,proc.DiasLaudo) as DiasLaudo , "&_
-                        "(SELECT cliniccentral.sf_adddiasuteis(t.DataExecucao ,  (SELECT le.DiasResultado + le.DiasAdicionais "&_
-						"								    FROM cliniccentral.labs_exames le "&_
-						"								   INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id) "&_
-						"							      WHERE lia.InvoiceID = t.invoiceid ORDER BY  le.DiasResultado DESC LIMIT 1 ) )) AS DataPrevisao "
+                        "(SELECT max(DataResultado) "&_
+                        " FROM labs_invoices_exames lie  "&_
+                        " INNER JOIN labs_invoices_amostras lia ON lia.id = lie.AmostraID "&_
+                        " INNER JOIN cliniccentral.labs_exames le ON le.id  = lie.LabExameID "&_
+                        " WHERE lia.InvoiceID = t.invoiceid) AS DataPrevisao "
 
         sqlnomelab = "(SELECT lab.NomeLaboratorio "&_
                      "   FROM labs_invoices_exames lie "&_
@@ -151,7 +152,7 @@ end if
             " LEFT JOIN Laudos l ON (l.Tabela=t.Tabela AND l.IDTabela=t.id) "&_
             " LEFT JOIN labs_exames_procedimentos lep ON (lep.ProcedimentoID=t.ProcedimentoID) "&_
             " LEFT JOIN cliniccentral.labs_exames le ON le.id  = lep.LabExameID "&_
-            " LEFT JOIN profissionais prof ON prof.id=IFNULL(l.ProfissionalID, t.ProfissionalID) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id ORDER BY pac.NomePaciente ) as tab"
+            " LEFT JOIN profissionais prof ON prof.id=IFNULL(t.ProfissionalID, l.ProfissionalID ) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id ORDER BY pac.NomePaciente ) as tab"
         'response.write (sql)
         set ii = db.execute( sql )
 
@@ -297,7 +298,7 @@ end if
                             <%end if%>
                         </td>
                         <td><%= ii("NomeConvenio") %></td>
-                        <td><span class="label label-rounded label-<%=StatusClasse%>"><%= Status %></span></td>
+                        <td id="status<%=ii("invoiceid") %>"><span  class="label label-rounded label-<%=StatusClasse%>"><%= Status %></span></td>
                         <td><% if cint(ii("TemArquivos")) > 0 then %><span data-toggle="tooltip" title="<%=ii("TemArquivos")%> arquivo(s) anexo(s)" class="label label-rounded label-info"><i class="fa fa-paperclip"></i></span><% end if %></td>
                         <td>
                             <div class="btn-group" style="float: right">
@@ -307,6 +308,9 @@ end if
                                 <% end if %>
                                 <% if ii("labid")="2" then %>
                                     <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                <% end if %>
+                                <% if ii("labid")="3" then %>
+                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Álvaro" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
                             <% end if %>
                              <% if ii("labid")="1" then %>
@@ -341,18 +345,6 @@ end if
     end if
     %>
     </tbody>
-    <tfoot>
-        <tr class="dark">
-            <td colspan="8"></td>
-            <td colspan="3">
-                <%= quickfield("simpleSelect", "StatusID", "", 6, "", "select id, Status FROM laudostatus ", "Status", " no-select2 ") %>
-
-            </td>
-            <td>
-                <button disabled class="btn btn-success   atualizarstatus" type="button"><i class="fa fa-repeat bigger-110"></i> Atualizar Status</button>
-            </td>
-        </tr>
-    </tfoot>
 </table>
 
 <%
@@ -436,13 +428,15 @@ $('[data-toggle="popover"]').popover();
 function syncLabResult(invoices, labid =1) {
     var caminhointegracao = "";
     var url = "";
-    //$("#syncInvoiceResultsButton").prop("disabled", true);  
     switch (labid) {
         case '1':      
             caminhointegracao = "matrix"; 
             break;
         case '2': 
             caminhointegracao = "diagbrasil";
+            break;
+        case '3':
+            caminhointegracao = "alvaro";
             break;
         default:
             alert ('Erro ao integrar com Laboratório');
@@ -452,10 +446,29 @@ function syncLabResult(invoices, labid =1) {
     postUrl(url, {
         "invoices": invoices
     }, function (data) {
-        //$("#syncInvoiceResultsButton").prop("disabled", false);
         if(data.success) {
             alert(data.content);
-            $("#a"+invoices).hide();
+            
+            switch (data.status) {
+                case 1:
+                    var htmlstatus = '<span  class="label label-rounded label-warning">Pendente</span>';
+                    break;
+
+                case 2:
+                    var htmlstatus = '<span  class="label label-rounded label-success">Liberado</span>';
+                    $("#a"+invoices).hide();
+                    break;
+
+                case 3:
+                    var htmlstatus = '<span  class="label label-rounded label-warning">Parcial</span>';
+                    break;
+                default:
+                    var htmlstatus = '<span  class="label label-rounded label-warning">Pendente</span>';
+            }
+            $("#status"+invoices).html(htmlstatus);
+            $("#tr"+invoices).hide();
+            $("#"+invoices).removeClass('fa-flask fa-spinner fa-spin'); 
+            $("#"+invoices).addClass('fa-flask');
 
         } else {
             alert("Falha ao sincronizar o laudo:"+data.message)
@@ -498,6 +511,9 @@ $(".lab-sync").on("click", function (labid =2){
         case '2': 
             caminhointegracao = "diagbrasil";
             break;
+        case '3': 
+            caminhointegracao = "alvaro";
+            break;
         default:
             alert ('Erro ao integrar com Laboratório');
             return false;
@@ -533,7 +549,7 @@ $(".lab-sync").on("click", function (labid =2){
                 });
 
                 $.post("listaLaudos.asp", $("#frmLaudos").serialize(), function (data) {
-                    $("#divListaLaudos").html(data);
+                $("#divListaLaudos").html(data);
                 });
             }
         }else{

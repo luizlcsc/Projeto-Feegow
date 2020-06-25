@@ -181,11 +181,11 @@ if aut(lcase(ref("resource"))&"A")=1 then
                 " "&_
                 "from sys_financialExpenseType et  "&_
                 "WHERE TRUE  "&_
-                "AND et.Name LIKE '%[TYPED]%'  "&_
                 "AND (SELECT ifnull(limitarcontaspagar,'') FROM sys_users WHERE sys_users.id = [USERID]) NOT LIKE CONCAT('%|',et.id,'|%')  "&_
                 "AND (SELECT count(id) FROM sys_financialExpenseType WHERE et.id=Category)=0  and sysActive=1 order by et.NAME "&_
                 " "&_
-                ")t"
+                ")t "&_
+                "WHERE CONCAT(IFNULL(Pai2,''), IFNULL(Pai1,''), Name) LIKE '%[TYPED]%'"
 
             sql = replace(sql, "[TYPED]", Typed)
             sql = replace(sql, "[USERID]", session("user"))
@@ -213,10 +213,11 @@ if aut(lcase(ref("resource"))&"A")=1 then
                 " "&_
                 "from sys_financialIncomeType et  "&_
                 "WHERE TRUE  "&_
-                "AND et.Name LIKE '%[TYPED]%'  "&_
                 "AND (SELECT count(id) FROM sys_financialIncomeType WHERE et.id=Category)=0  and sysActive=1 order by et.NAME "&_
                 " "&_
-                ")t"
+                ")t "&_
+                "WHERE CONCAT(IFNULL(Pai2,''), IFNULL(Pai1,''), Name) LIKE '%[TYPED]%'"
+
             sql = replace(sql, "[TYPED]", Typed)
             sql = replace(sql, "[USERID]", session("user"))
             sql = replace(sql, "[campoSuperior]", ref("cs"))

@@ -26,6 +26,21 @@
     <td> 
     	R$ <%=formatnumber(Subtotal,2)%>
     </td>
+     <td>
+    <% if Tipo="S" then 
+
+    %>
+        <div class="btn-group">
+            <button type="button" class="btn btn-info btn-sm  dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print"></i></button>
+            <ul class="dropdown-menu dropdown-info pull-right">
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Protocolo')"><i class="fa fa-plus"></i> Protocolo de laudo </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Impresso')"><i class="fa fa-plus"></i> Impresso </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Etiqueta')"><i class="fa fa-plus"></i> Etiqueta </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Preparos')"><i class="fa fa-plus"></i> Preparos </a></li>
+            </ul>
+        </div>
+    <%end if%>
+    </td>
 <TR>
 
 

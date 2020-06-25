@@ -26,8 +26,9 @@ body {
 <body>
  
 <!-- 3 -->
+<form action="http://localhost:8000/file/uploadAny/?PacienteID=<?php echo @$_GET['PacienteID'];?>&L=<?php echo @$_GET['L'];?>&Pasta=<?php echo @$_GET['Pasta'];?>&Tipo=<?php echo @$_GET['Tipo'];?>&MovementID=<?php echo @$_GET['MovementID'];?>&ExameID=<?php echo @$_GET['ExameID'];?>&guiaID=<?php echo @$_GET['guiaID'];?>&tipoGuia=<?php echo @$_GET['tipoGuia'];?>&LaudoID=<?php echo @$_GET['LaudoID'];?>" class="dropzone"></form>
 <form action="upload.php?PacienteID=<?php echo @$_GET['PacienteID'];?>&L=<?php echo @$_GET['L'];?>&Pasta=<?php echo @$_GET['Pasta'];?>&Tipo=<?php echo @$_GET['Tipo'];?>&MovementID=<?php echo @$_GET['MovementID'];?>&ExameID=<?php echo @$_GET['ExameID'];?>&guiaID=<?php echo @$_GET['guiaID'];?>&tipoGuia=<?php echo @$_GET['tipoGuia'];?>&LaudoID=<?php echo @$_GET['LaudoID'];?>" class="dropzone"></form>
-   
+
 </body>
  
 </html>

@@ -713,18 +713,18 @@ jQuery(function($) {
 	$('.profile-social-links > a').tooltip();
 
 	$('.easy-pie-chart.percentage').each(function(){
-	var barColor = $(this).data('color') || '#555';
-	var trackColor = '#E2E2E2';
-	var size = parseInt($(this).data('size')) || 72;
-	$(this).easyPieChart({
-		barColor: barColor,
-		trackColor: trackColor,
-		scaleColor: false,
-		lineCap: 'butt',
-		lineWidth: parseInt(size/10),
-		animate:false,
-		size: size
-	}).css('color', barColor);
+        var barColor = $(this).data('color') || '#555';
+        var trackColor = '#E2E2E2';
+        var size = parseInt($(this).data('size')) || 72;
+        $(this).easyPieChart({
+                barColor: barColor,
+                trackColor: trackColor,
+                scaleColor: false,
+                lineCap: 'butt',
+                lineWidth: parseInt(size/10),
+                animate:false,
+                size: size
+            }).css('color', barColor);
 	});
 
 	///////////////////////////////////////////
@@ -750,8 +750,7 @@ jQuery(function($) {
 
 
 	///////////////////////////////////////////
-	$('#user-profile-3')
-	.find('input[type=file]').ace_file_input({
+	$('#user-profile-3').find('input[type=file]').ace_file_input({
 		style:'well',
 		btn_choose:'Change avatar',
 		btn_change:null,
@@ -760,6 +759,7 @@ jQuery(function($) {
 		droppable:true,
 		before_change: function(files, dropped) {
 			var file = files[0];
+
 			if(typeof file === "string") {//files is just a file name here (in browsers that don't support FileReader API)
 				if(! (/\.(jpe?g|png|gif)$/i).test(file) ) return false;
 			}
@@ -854,6 +854,7 @@ function removeFoto(){
 		var file_input = $form.find('input[type=file]');
 		var upload_in_progress = false;
 
+
 		file_input.ace_file_input({
 			style : 'well',
 			btn_choose : 'Sem foto',
@@ -894,8 +895,47 @@ function removeFoto(){
 			}
 		});
 
-
+    let endpointuploadperfil =  (objct) => {
+        console.log(objct);
+        url = domain + "/file/perfil/uploadPerfilFile";
+        return  jQuery.ajax({
+            url: url,
+            type: 'post',
+            contentType:false,
+            data: objct,
+        }).fail(function(data){console.log(data);});
+    };
 		$("#Foto").change(function() {
+
+            let objct = new FormData();
+            objct.append('userType','pacientes');
+            objct.append('userId',"<%=req("I")%>");
+            objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
+            objct.append('upload_file' , file_input.data('ace_input_files')[0]);
+            objct.append('folder_name' ,"Perfil");
+            url = domain + "/file/perfil/uploadPerfilFile";
+               $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: objct,
+                    success: function(data) {
+                        alert(data)
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    xhr: function() { // Custom XMLHttpRequest
+                        var myXhr = $.ajaxSettings.xhr();
+                        if (myXhr.upload) { // Avalia se tem suporte a propriedade upload
+                            myXhr.upload.addEventListener('progress', function() {
+                                /* faz alguma coisa durante o progresso do upload */
+                            }, false);
+                        }
+                        return myXhr;
+                    }
+                });
+
+
 			var submit_url = "FotoUpload.php?<%=Parametros%>";
 			if(!file_input.data('ace_input_files')) return false;//no files selected
 
@@ -922,6 +962,7 @@ function removeFoto(){
 					dataType: 'json',
 					data: fd,
 					xhr: function() {
+
 						var req = $.ajaxSettings.xhr();
 						if (req && req.upload) {
 							req.upload.addEventListener('progress', function(e) {
@@ -1051,19 +1092,43 @@ $(".form-control").change(function(){
       $("#NomePaciente").change(function(){
           $(".crumb-active a").html( $(this).val() );
       });
+      //novo envio de foto tirada do paciente
+    let endpointupload =  (objct) => {
+        return  jQuery.ajax({
+            url: "http://localhost:8000/file/perfil/uploadPerfilFile",
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify(objct),
+
+        }).fail(function(data){console.log(data);});
+    };
 
 
 
+       //change to feegow-api
       var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
 
 		$('#clicar').on('click', function(evt) {
 	      //  var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
 			sayCheese.on('start', function() {
 			  $('#take-photo').on('click', function(evt) {
-				sayCheese.takeSnapshot();
-				$.post("uploader.php?P=pacientes&I=<%=req("I")%>&Col=Foto&L=<%= replace(session("Banco"), "clinic", "") %>", $("#takeUpload").serialize(), function(data, status){ eval(data) });
+                sayCheese.takeSnapshot();
+                let objct = {};
+                objct.userType = 'pacientes';
+                objct.userId = "<%=req("I")%>";
+                objct.licenca = "<%= replace(session("Banco"), "clinic", "") %>";
+                objct.upload_file = $("input[name='photo-data']").val();
+                objct.folder_name = "Perfil";
+                endpointupload(objct);
+
 			});
         });
+
+		$("#Foto").change(function() {
+
+		});
+
+
 
 
 		function cancelar(){

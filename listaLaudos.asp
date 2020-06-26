@@ -486,7 +486,7 @@ $(".cklaudostodos").on('change', function(){
 });
 
 $(".lab-sync").on("click", function (labid =2){
-        alert ('teste');
+        alert ('Funcionalidade desabilitada!');
      }  );
 
 

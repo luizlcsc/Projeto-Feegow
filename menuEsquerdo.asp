@@ -2020,6 +2020,23 @@ select case lcase(req("P"))
         </li>
         <li>
             <a href="#" class="accordion-toggle menu-open">
+                <span class="fa fa-calendar"></span>
+                <span class="sidebar-title"> Laboratórios </span>
+
+                <span class="caret"></span>
+            </a>
+
+            <ul class="nav sub-nav">
+                 <li>
+                    <a href="#" onClick="callReport('LabsSyncReport');">
+                        <i class="fa fa-double-angle-right"></i>
+                        Relatório de Sincronização
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="accordion-toggle menu-open">
                 <span class="fa fa-money"></span>
                 <span class="sidebar-title"> Financeiro </span>
 

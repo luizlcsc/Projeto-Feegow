@@ -22,7 +22,7 @@ switch (env){
         domain = "https://api.feegow.com/";
         break;
     case "homolog":
-        domain = "http://api-homolog.feegow.com/";
+        domain = "https://api-homolog.feegow.com/";
         break;
 }
 

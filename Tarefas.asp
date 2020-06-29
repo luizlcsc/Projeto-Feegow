@@ -205,8 +205,15 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
                     end if
                     TipoEstimado = reg("TipoEstimado")
                 end if
+
+                SET vTarefapai = db.execute(" SELECT TarefaPaiID from Tarefas where id="&req("I")&" AND TarefaPaiID>0 ")
+                    if not vTarefapai.eof then
+                        relacionadaTarefaPaiHTML = ", vinculada a tarefa <strong><a href='?P=tarefas&I="&vTarefapai("TarefaPaiID")&"&Pers=1'>#"&vTarefapai("TarefaPaiID")&"</a></strong>"
+                    end if
+                vTarefapai.close
+                set vTarefapai = nothing
                 %>
-                    <span class="panel-title"> Tarefa  <strong>#<%= req("I") %> </strong></span>
+                    <span class="panel-title"> Tarefa  <strong>#<%= req("I") %></strong><%=relacionadaTarefaPaiHTML%></span>
                 <%
                 %>
                     <span class="panel-controls">
@@ -315,7 +322,7 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
 
 
 <%
-qTarefasDependenciasSQL = "SELECT * from tarefas_dependencias"
+qTarefasDependenciasSQL = "SELECT * from tarefas_dependencias where TarefaID="&req("I")
 
 set qTarefasDependencias = db.execute(qTarefasDependenciasSQL)
 if  qTarefasDependencias.eof then

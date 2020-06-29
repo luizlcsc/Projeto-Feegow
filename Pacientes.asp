@@ -895,16 +895,6 @@ function removeFoto(){
 			}
 		});
 
-    let endpointuploadperfil =  (objct) => {
-        console.log(objct);
-        url = domain + "/file/perfil/uploadPerfilFile";
-        return  jQuery.ajax({
-            url: url,
-            type: 'post',
-            contentType:false,
-            data: objct,
-        }).fail(function(data){console.log(data);});
-    };
 		$("#Foto").change(function() {
 
             let objct = new FormData();
@@ -913,30 +903,21 @@ function removeFoto(){
             objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
             objct.append('upload_file' , file_input.data('ace_input_files')[0]);
             objct.append('folder_name' ,"Perfil");
-            url = domain + "/file/perfil/uploadPerfilFile";
-               $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: objct,
-                    success: function(data) {
-                        alert(data)
-                    },
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    xhr: function() { // Custom XMLHttpRequest
-                        var myXhr = $.ajaxSettings.xhr();
-                        if (myXhr.upload) { // Avalia se tem suporte a propriedade upload
-                            myXhr.upload.addEventListener('progress', function() {
-                                /* faz alguma coisa durante o progresso do upload */
-                            }, false);
-                        }
-                        return myXhr;
-                    }
-                });
 
+            $.ajax({
+  					url: domain + "file/perfil/uploadPerfilFile",
+  					type: 'POST',
+  					processData: false,
+  					contentType: false,
+  					data: objct,
+                  // Now you should be able to do this:
+                  mimeType: 'multipart/form-data',    //Property added in 1.5.1
 
-			var submit_url = "FotoUpload.php?<%=Parametros%>";
+                  success: function (data) {
+                      //alert(data);
+                  }
+            });
+
 			if(!file_input.data('ace_input_files')) return false;//no files selected
 
 			var deferred ;
@@ -1045,6 +1026,37 @@ function removeFoto(){
 	});
 
 
+    $(document).ready(function(){
+        getProfilePic();
+    })
+        function getProfilePic()
+        {
+            if(localStorage.getItem('profilePic') != null)
+            {
+                 $("#avatarFoto").attr('src',data);
+            }
+            let objct = new FormData();
+            objct.append('userId',"<%=req("I")%>");
+            objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
+            objct.append('folder_name' ,"Perfil");
+
+            $.ajax({
+                    url: domain + "api/image/perfil",
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    data: objct,
+                  // Now you should be able to do this:
+                  mimeType: 'multipart/form-data',    //Property added in 1.5.1
+
+                  success: function (data) {
+                    $("#avatarFoto").attr('src',data);
+                     localStorage.setItem('profilePic',data);
+                  }
+            });
+        }
+
+
 function itemPacientesConvenios(tbn, act, reg, cln, idc, frm){
 	$.ajax({
 		type: "POST",
@@ -1102,7 +1114,6 @@ $(".form-control").change(function(){
 
         }).fail(function(data){console.log(data);});
     };
-
 
 
        //change to feegow-api

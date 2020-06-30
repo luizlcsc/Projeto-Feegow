@@ -76,10 +76,12 @@ if Acao="" then
                 Subtotal = itens("Quantidade")*(itens("ValorUnitario")-itens("Desconto")+itens("Acrescimo"))
                 Total = Total+Subtotal
                 NomeItem = ""
+				integracaopleres = "N"
                 if itens("Tipo")="S" then
-                    set pItem = db.execute("select NomeProcedimento NomeItem from procedimentos where id="&itens("ItemID"))
+                    set pItem = db.execute("select NomeProcedimento NomeItem, integracaoPleres  from procedimentos where id="&itens("ItemID"))
                     if not pItem.eof then
                         NomeItem = pItem("NomeItem")
+						integracaopleres = pItem("integracaoPleres")
                     end if
                 elseif itens("Tipo")="M" then
                     set pItem = db.execute("select NomeProduto NomeItem from produtos where id="&itens("ItemID"))

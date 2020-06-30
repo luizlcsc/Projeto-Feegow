@@ -8,7 +8,8 @@
 %>
 
 <tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>">
-    <td> 
+    <td>
+        <input type="hidden" name="ItemID<%= id %>" id="ItemID<%= id %>" value="<%=ItemID%>" />
     	<%=Quantidade %>
     </td>  
     <td colspan=3> 
@@ -191,9 +192,9 @@ end if
     	    <div class="col-xs-3">
 			    <label>Profissional</label><br>
 			    <%
-			    if PacoteID&""="" then
+			    'if PacoteID&""="" then
 			        onchangeProfissional = " onchange=""espProf("& id &");"" "
-			    end if
+			    'end if
 
 			    ExecutanteTipos = "5, 8, 2"
 			    if session("Banco")="clinic6118" then

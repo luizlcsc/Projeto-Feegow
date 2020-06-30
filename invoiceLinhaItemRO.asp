@@ -191,9 +191,9 @@ end if
     	    <div class="col-xs-3">
 			    <label>Profissional</label><br>
 			    <%
-			    if PacoteID&""="" then
+			    'if PacoteID&""="" then
 			        onchangeProfissional = " onchange=""espProf("& id &");"" "
-			    end if
+			    'end if
 
 			    ExecutanteTipos = "5, 8, 2"
 			    if session("Banco")="clinic6118" then

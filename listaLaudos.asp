@@ -349,12 +349,14 @@ end if
         set ii = nothing
     end if
     set ultimasync = db.execute("SELECT * FROM labs_integracao_log WHERE metodo = 'SINCRONIZACAO_CRON' ORDER BY id DESC LIMIT 1")
+    if not ultimasync.eof THEN 
     %>
     <TR><TD colspan="100%">        
         <div class="col-md-3 " style="float: right;">
             <p style="margin-top: 10px; opacity: 0.80">Última sincronização:<%=ultimasync("DataHora") %></p>
         </div>              
     </TD></TR>
+    <% end if %>
     </tbody>
 </table>
 

@@ -267,7 +267,7 @@ prefixo = right(prefixo, 20)
 						Quantidade = TirarAcento(procs("Quantidade"))
 						ViaID = TirarAcento(procs("ViaID"))
 						TecnicaID = TirarAcento(procs("TecnicaID"))
-						Fator = treatvaltiss(1)
+						Fator = treatvaltiss(procs("Fator"))
 						ValorUnitario = treatvaltiss( procs("Fator")*procs("ValorUnitario") )
 						ValorTotal = treatvaltiss(procs("ValorTotal"))
 						

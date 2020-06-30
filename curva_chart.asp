@@ -118,7 +118,13 @@ var wfa_boys_0_to_5 = {
 
 <script type="text/javascript" src="curva<%= Tipo %>.asp"></script>
 <script>
-  var growthChart = display_growth_chart(patientGrowth, '#meucanvas' , 'wfa_boys_0_to_5');
+  let xxMin = 0;
+  <% if idCurva = 3 then %>
+    xxMin = 180;
+  <% elseif  idCurva = 4 then %>
+    xxMin = 731;
+  <% end if  %>
+  var growthChart = display_growth_chart(patientGrowth, '#meucanvas' , 'wfa_boys_0_to_5',null,xxMin);
   </script>
 </body>
 </html>

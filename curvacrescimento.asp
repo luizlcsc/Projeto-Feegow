@@ -4,8 +4,7 @@ if 1=2 then
 <script>
 <% End If %>
 
-function display_growth_chart(patient, el, chartType, dims) {
-
+function display_growth_chart(patient, el, chartType, dims, xMin = 0) {
   // Create the background lines
   //
   // json includes "meta" (to tag+name the lines, specify measurement type)
@@ -74,7 +73,7 @@ function display_growth_chart(patient, el, chartType, dims) {
 
   // Graph scale; domain and range
   var xScale = d3.scale.linear()
-    .domain([0, xMax])
+    .domain([xMin, xMax])
     .range([padding, width - padding]);
 
   var yScale = d3.scale.linear()

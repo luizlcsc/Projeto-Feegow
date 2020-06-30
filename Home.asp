@@ -1,7 +1,13 @@
-﻿<%
+﻿<style type="text/css">
+.panel.panel-tile.text-center.br-a.br-grey {
+	height:140px;
+}
+</style>
+
+<%
 
 if session("Franqueador")<>"" then
-    response.Redirect("./?Pers=1&P=FranqueadorPainel")
+    'response.Redirect("./?Pers=1&P=FranqueadorPainel")
 end if
 
 if (session("Banco")="clinic5760"  or session("Banco")="clinic6118") and false then %>
@@ -165,7 +171,7 @@ end if
 
 
 
-on error resume next
+'on error resume next
 
 if req("MudaLocal")<>"" then
 	db_execute("update sys_users set UnidadeID="&req("MudaLocal")&" where id="&session("User"))
@@ -293,17 +299,15 @@ end if
 <div class="row">
     <%
 'SÓ PRA QUEM TEM PABX INTEGRADO
-if session("Banco")="clinic5459" then
+if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
   %>
   <!--#include file="ff_pabxSituacao.asp"-->
 <% end if
 
 
     set diasVencimento = db.execute("SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1")
-    
-    'set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade <> 0 AND ep.Validade IS NOT NULL AND CURDATE() < (SELECT DATE_ADD(ep.Validade, INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1)")
 
-    set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade > 0 AND ep.Validade IS NOT NULL AND p.sysActive = 1 AND (DATEDIFF(validade, CURDATE()) >= 0 AND DATEDIFF(validade, CURDATE()) <= ( IFNULL(p.DiasAvisoValidade, (SELECT IFNULL(DiasVencimentoProduto, 5) DiasVencimentoProduto FROM sys_config LIMIT 1))))")
+    set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade > 0 AND ep.Validade IS NOT NULL AND p.sysActive = 1 AND (DATEDIFF(validade, CURDATE()) >= 0 AND DATEDIFF(validade, CURDATE()) <= ( (SELECT IFNULL(DiasVencimentoProduto, 5) DiasVencimentoProduto FROM sys_config LIMIT 1)))")
     set ac = dbc.execute("select count(id) Total from cliniccentral.licencaslogins where UserID="&session("User"))
     set ultimoAcessoBemSucedido = dbc.execute("select DataHora from cliniccentral.licencaslogins where Sucesso = 1 AND UserID="&session("User")&" ORDER BY id DESC LIMIT 1,1")
     set ultimoAcessoMalSucedido = dbc.execute("select DataHora, count(id)n from cliniccentral.licencaslogins where Sucesso = 0 AND UserID="&session("User")&" ORDER BY id DESC  LIMIT 1")
@@ -355,7 +359,7 @@ if session("Banco")="clinic5459" then
     <div class="col-sm-3 col-xl-3">
         <div class="panel panel-tile text-center br-a br-grey">
         <div class="panel-body">
-            <h1 class="fs30 mt5 mbn"><%=numeroProdutosValidade("total") %></h1>
+            <h1 class="fs30 mt5 mbn" id="prodVencer"><i class="fa fa-spinner fa-spin"></i></h1>
             <h6 class="text-success">PRODUTOS PRÓXIMO A VENCER</h6>
         </div>
         <div class="panel-footer br-t p6">
@@ -1144,7 +1148,7 @@ function openPendingTables() {
 }
 
 if("false"!=="<%=session("AutenticadoPHP")%>"){
-    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z");
+    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z",  "<%=session("Partner")%>");
 }
 
 </script>

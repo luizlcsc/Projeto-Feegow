@@ -15,7 +15,7 @@
     end if
 
 
-    if aut("tarefasI")=1 then
+    if aut("tarefasI")=1 or aut("tarefasgerenciarI")=1 then
     %>
     $("#rbtns").html('<a class="btn btn-sm btn-success" href="./?P=Tarefas&I=N&Pers=1<% if req("Helpdesk") <> "" then response.write("&Helpdesk=1") end if %>"><i class="fa fa-tasks"></i><span class="menu-text"> Inserir tarefa</span></a>&nbsp;&nbsp;' +
      '<a class="btn btn-sm btn-primary" href="./?P=listaProjetos&Pers=1" <% if req("Helpdesk") <> "" then response.write(" style=""display:none"" ") end if %>><i class="fa fa-th-large"></i><span class="menu-text"> Projetos</span></a><%=botaoSprints%>');

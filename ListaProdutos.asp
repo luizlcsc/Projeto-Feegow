@@ -6,7 +6,7 @@
     $(".crumb-icon a span").attr("class", "fa fa-medkit");
 </script>
     <%
-
+    praVencer = req("praVencer")
     Ate = req("Ate")
     De = req("De")
     Ordem = req("Ordem")
@@ -44,6 +44,7 @@
     <div class="panel">
         <div class="panel-body mt20 hidden-print">
             <div class="row">
+                <input type="hidden" name="praVencer" id="praVencer" value="<%=praVencer%>">
                 <%=quickfield("simpleSelect", "ProdutoID", "Produto", 2, ProdutoID, "select id, NomeProduto from produtos where sysActive=1 order by NomeProduto", "NomeProduto", "") %>
                 <%=quickfield("simpleSelect", "TipoProduto", "Tipo Produto", 2, TipoProduto, "select id, TipoProduto from cliniccentral.produtostipos order by id", "TipoProduto", " semVazio no-select2 ") %>
                 <%if TipoProduto<>1 then%>

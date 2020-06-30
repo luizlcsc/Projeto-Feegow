@@ -1476,7 +1476,7 @@ select case lcase(req("P"))
         <%
             end if
         end if
-    case "outrasconfiguracoes", "novasconfiguracoes"
+    case "outrasconfiguracoes", "novasconfiguracoes", "CadastroExamesLab"
         %>
         <li class="sidebar-label pt20">Opções de Configurações</li>
         <li class="hidden">
@@ -1552,6 +1552,15 @@ select case lcase(req("P"))
             <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');">
             <span class="fa fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
+
+         <% IF  aut("exames_laboratoriaisV")=1  THEN %>
+            <li>
+              <a href="?P=CadastroExamesLab&Pers=1">
+                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Cadastro de Exames (Lab)</span></a> 
+    
+            </li>
+        <% END IF %>
+
         <%
     case "chamadasmotivoscontato","chamadascategorias"
     %>
@@ -1650,9 +1659,9 @@ select case lcase(req("P"))
         <li class="sidebar-label pt20">Relatórios</li>
         <%
         favoritosSQL =  "select r.id,r.NomeModelo, r.RelatorioID,rl.Arquivo,rl.Ct "&_
-                            " from cliniccentral.relatorios_preferencias_modelo as r"&_
-                            " join cliniccentral.relatorios rl on rl.id = r.RelatorioID "&_
-                            " where r.Atalho=1 and r.LicencaID = "&replace(session("Banco"),"clinic","")&" and r.sysActive = 1"
+                        " from cliniccentral.relatorios_preferencias_modelo as r"&_
+                        " join cliniccentral.relatorios rl on rl.id = r.RelatorioID "&_
+                        " where r.Atalho=1 and r.LicencaID = "&replace(session("Banco"),"clinic","")&" and r.sysActive = 1"
         set relatoriosFav = db.execute(favoritosSQL)
         if not relatoriosFav.eof then
         %>
@@ -2014,6 +2023,23 @@ select case lcase(req("P"))
                     <a href="javascript:callReport('rpDMed');">
                         <i class="fa fa-double-angle-right"></i>
                         D-Med
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="accordion-toggle menu-open">
+                <span class="fa fa-calendar"></span>
+                <span class="sidebar-title"> Laboratórios </span>
+
+                <span class="caret"></span>
+            </a>
+
+            <ul class="nav sub-nav">
+                 <li>
+                    <a href="#" onClick="callReport('LabsSyncReport');">
+                        <i class="fa fa-double-angle-right"></i>
+                        Relatório de Sincronização
                     </a>
                 </li>
             </ul>

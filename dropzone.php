@@ -257,12 +257,12 @@
             <input type="hidden" name="guiaID" value="<?=$_GET['guiaID']?>">
             <input type="hidden" name="tipoGuia" value="<?=$_GET['tipoGuia']?>">
             <input type="hidden" name="LaudoID" value="<?=$_GET['LaudoID']?>">
-            <label for="file"><strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.</label>
+            <label for="file"><strong>Clique e escolha um arquivo</strong><span class="box__dragndrop"> ou arraste até aqui</span>.</label>
             <button type="submit" class="box__button">Upload</button>
         </div>
         <div class="box__uploading">Uploading&hellip;</div>
-        <div class="box__success">Done! <a href="https://css-tricks.com/examples/DragAndDropFileUploading//?" class="box__restart" role="button">Upload more?</a></div>
-        <div class="box__error">Error! <span></span>. <a href="https://css-tricks.com/examples/DragAndDropFileUploading//?" class="box__restart" role="button">Try again!</a></div>
+        <div class="box__success">Feito! :) <a href="#" class="box__restart" role="button">Novo Upload?</a></div>
+        <div class="box__error">Ops! Parece que houve um problema :( <span></span>. <a href="#" class="box__restart" role="button">Tente Novamente!</a></div>
     </form>
     <footer>
     </footer>
@@ -392,6 +392,7 @@
 						form.classList.remove( 'is-uploading' );
 						if( ajax.status >= 200 && ajax.status < 400 )
 						{
+                            parent.callUpload && parent.callUpload(ajax.responseText)
 							form.classList.add( ajax.statusText == "OK" ? 'is-success' : 'is-error' );
 							if( !ajax.success ) errorMsg.textContent = ajax.error;
 						}

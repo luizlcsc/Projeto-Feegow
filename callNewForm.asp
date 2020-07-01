@@ -45,7 +45,7 @@ session("FP"&FTipo) = FormID
 
 buiFormID = FormID
 
-if session("Banco")="clinic5676" OR session("Banco")="clinic5791" then
+if getConfig("GerarNovoFormulario")=1 then
     'config para DUPLICAR o form inves de editar
     buiFormID="N"
 end if
@@ -194,6 +194,10 @@ set campos=nothing
 </div>
 
 <style>
+.tableFixHead          { overflow-y: auto; height: 550px; }
+.tableFixHead thead th { position: sticky; top: 0; z-index: 9999 }
+table  { border-collapse: collapse; width: 100%; }
+
 .suggest-active{
     background-color: #d6d6d6!important;
 }

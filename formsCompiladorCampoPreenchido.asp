@@ -335,8 +335,10 @@ $(function() {
                 </div>
             <%
 	  	case 9'tabela
-			%><label class="campoLabel"><%=RotuloCampo%></label>
+			%>
+			<label class="campoLabel"><%=RotuloCampo%></label>
     <input name="tblRem<%=CampoID %>" type="hidden" id="tblRem<%=CampoID %>" class="tbl" value="0" />
+    <div class="tableFixHead">
     <table class="table table-condensed table-bordered table-hover"><thead><tr class="info"><%
 			sqlTit = "select * from buitabelastitulos where CampoID="&CampoID
 			set pTit = db.execute(sqlTit)
@@ -480,7 +482,7 @@ $(function() {
                 <tr class="hidden" id="fmodel<%=CampoID %>"></tr>
 
 
-            </tbody></table>
+            </tbody></table></div>
         <%
 		case 10
 			%><h2><%=RotuloCampo%></h2><%

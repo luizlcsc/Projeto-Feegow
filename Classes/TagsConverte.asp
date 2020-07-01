@@ -1,18 +1,5 @@
 <!--#include file="./../connect.asp"-->
 <%
-'Dim variavel
-'Dim i
-'For Each variavel in Session.Contents
-'If IsArray(Session(variavel)) then
-'For i = LBound(Session(variavel)) to UBound(Session(variavel))
-'Response.Write variavel & "(" & i & ") – " & _
-'Session(variavel)(i) & "<BR>"
-'Next
-'Else
-'Response.Write variavel & " – " & Session.Contents(variavel) & "<BR>"
-'End If
-'Next
-
 function tagsConverte(conteudo,itens,moduloExcecao)
   'EXEMPLO: DE USO DESTA FUNÇÃO
   'conteudo = "Atesto que o paciente [Paciente.Nome]<br>foi atendido as [Sistema.Hora]<br>pelo profissional [Profissional.Nome]"
@@ -38,15 +25,16 @@ function tagsConverte(conteudo,itens,moduloExcecao)
     item_nome = itemArray(0)&""
     item_id   = itemArray(1)&""
 
+    '## Add prefixo item_ para evitar conflitos de variaveis
     select case item_nome
       case "PacienteID"
-        PacienteID          = item_id
+        item_PacienteID          = item_id
       case "ProfissionalID"
-        ProfissionalID      = item_id
+        item_ProfissionalID      = item_id
       case "ProfissionalSessao"
-        ProfissionalSessao  = item_id
+        item_ProfissionalSessao  = item_id
       case "UnidadeSessao"
-        UnidadeSessao       = item_id
+        item_UnidadeSessao       = item_id
 
 
     end select
@@ -63,63 +51,69 @@ function tagsConverte(conteudo,itens,moduloExcecao)
     if instr(conteudo, "["&tagsCategoria&".")>0 then
       select case tagsCategoria
         case "Paciente"
-          qPacientesSQL = "SELECT  "&_
-          "c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3'  "&_
-          ",pla1.NomePlano AS 'Plano1', pla2.NomePlano AS 'Plano2',pla3.NomePlano AS 'Plano3'  "&_
-          ",p.*, ec.EstadoCivil, s.NomeSexo as Sexo, g.GrauInstrucao, o.Origem  "&_
-          "from pacientes as p  "&_
-          "left join estadocivil as ec on ec.id=p.EstadoCivil  "&_
-          "left join sexo as s on s.id=p.Sexo  "&_
-          "left join grauinstrucao as g on g.id=p.GrauInstrucao  "&_
-          "left join origens as o on o.id=p.Origem  "&_
-          "LEFT JOIN convenios c1 ON c1.id=p.ConvenioID1  "&_
-          "LEFT JOIN convenios c2 ON c2.id=p.ConvenioID2  "&_
-          "LEFT JOIN convenios c3 ON c3.id=p.ConvenioID3  "&_
-          "LEFT JOIN conveniosplanos pla1 ON pla1.ConvenioID=c1.id  "&_
-          "LEFT JOIN conveniosplanos pla2 ON pla2.ConvenioID=c2.id  "&_
-          "LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id  "&_
-          "where p.id="&treatvalzero(PacienteID) 
 
-          SET PacientesSQL = db.execute(qPacientesSQL)
-            if not PacientesSQL.eof then
-              conteudo = replace(conteudo,"[Paciente.Nome]",PacientesSQL("NomePaciente"))
+          if item_PacienteID>0 then
+            qPacientesSQL = "SELECT  "&_
+            "c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3'  "&_
+            ",pla1.NomePlano AS 'Plano1', pla2.NomePlano AS 'Plano2',pla3.NomePlano AS 'Plano3'  "&_
+            ",p.*, ec.EstadoCivil, s.NomeSexo as Sexo, g.GrauInstrucao, o.Origem  "&_
+            "from pacientes as p  "&_
+            "left join estadocivil as ec on ec.id=p.EstadoCivil  "&_
+            "left join sexo as s on s.id=p.Sexo  "&_
+            "left join grauinstrucao as g on g.id=p.GrauInstrucao  "&_
+            "left join origens as o on o.id=p.Origem  "&_
+            "LEFT JOIN convenios c1 ON c1.id=p.ConvenioID1  "&_
+            "LEFT JOIN convenios c2 ON c2.id=p.ConvenioID2  "&_
+            "LEFT JOIN convenios c3 ON c3.id=p.ConvenioID3  "&_
+            "LEFT JOIN conveniosplanos pla1 ON pla1.ConvenioID=c1.id  "&_
+            "LEFT JOIN conveniosplanos pla2 ON pla2.ConvenioID=c2.id  "&_
+            "LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id  "&_
+            "where p.id="&treatvalzero(item_PacienteID) 
+          end if
 
-              conteudo = replace(conteudo, "[Paciente.Idade]", idade(PacientesSQL("Nascimento")))
-              conteudo = replace(conteudo, "[Paciente.Nascimento]", PacientesSQL("Nascimento")&"")
-              conteudo = replace(conteudo, "[Paciente.Documento]", PacientesSQL("Documento")&"")
-              conteudo = replace(conteudo, "[Paciente.Prontuario]", PacientesSQL("id"))
+          if qPacientesSQL<>"" then
 
-              'POSSIBILIDADE DE UTILIZAR PLANOS E CONVENIOS SECUNDÁRIOS
-              conteudo = replace(conteudo, "[Paciente.Convenio1]", PacientesSQL("Convenio1")&"")
-              conteudo = replace(conteudo, "[Paciente.Convenio2]", PacientesSQL("Convenio2")&"")
-              conteudo = replace(conteudo, "[Paciente.Convenio3]", PacientesSQL("Convenio3")&"")
-              conteudo = replace(conteudo, "[Paciente.Plano1]", PacientesSQL("Plano1")&"")
-              conteudo = replace(conteudo, "[Paciente.Plano2]", PacientesSQL("Plano2")&"")
-              conteudo = replace(conteudo, "[Paciente.Plano3]", PacientesSQL("Plano3")&"")
-              'REDUNDANCIA NOS PLANOS E CONVENIOS 1 TAGs EXISTENTES
-              conteudo = replace(conteudo, "[Paciente.Convenio]", trim(PacientesSQL("Convenio1")&" ") )
-              conteudo = replace(conteudo, "[Paciente.Plano]", trim(PacientesSQL("Plano1")&" ") )
+            SET PacientesSQL = db.execute(qPacientesSQL)
+              if not PacientesSQL.eof then
+                conteudo = replace(conteudo,"[Paciente.Nome]",PacientesSQL("NomePaciente"))
 
-              conteudo = replace(conteudo, "[Paciente.Matricula]", trim(PacientesSQL("Matricula1")&" ") )
-              conteudo = replace(conteudo, "[Paciente.Validade]", trim(PacientesSQL("Validade1")&" ") )
-              conteudo = replace(conteudo, "[Paciente.Email]", trim(PacientesSQL("Email1")&" ") )
-              conteudo = replace(conteudo, "[Paciente.Cpf]", trim(PacientesSQL("CPF")&" ") )
-              conteudo = replace(conteudo, "[Paciente.Telefone]", trim(PacientesSQL("Cel1")&" ") )
-            end if
-          PacientesSQL.close
-          set PacientesSQL = nothing
+                conteudo = replace(conteudo, "[Paciente.Idade]", idade(PacientesSQL("Nascimento")))
+                conteudo = replace(conteudo, "[Paciente.Nascimento]", PacientesSQL("Nascimento")&"")
+                conteudo = replace(conteudo, "[Paciente.Documento]", PacientesSQL("Documento")&"")
+                conteudo = replace(conteudo, "[Paciente.Prontuario]", PacientesSQL("id"))
+
+                'POSSIBILIDADE DE UTILIZAR PLANOS E CONVENIOS SECUNDÁRIOS
+                conteudo = replace(conteudo, "[Paciente.Convenio1]", PacientesSQL("Convenio1")&"")
+                conteudo = replace(conteudo, "[Paciente.Convenio2]", PacientesSQL("Convenio2")&"")
+                conteudo = replace(conteudo, "[Paciente.Convenio3]", PacientesSQL("Convenio3")&"")
+                conteudo = replace(conteudo, "[Paciente.Plano1]", PacientesSQL("Plano1")&"")
+                conteudo = replace(conteudo, "[Paciente.Plano2]", PacientesSQL("Plano2")&"")
+                conteudo = replace(conteudo, "[Paciente.Plano3]", PacientesSQL("Plano3")&"")
+                'REDUNDANCIA NOS PLANOS E CONVENIOS 1 TAGs EXISTENTES
+                conteudo = replace(conteudo, "[Paciente.Convenio]", trim(PacientesSQL("Convenio1")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Plano]", trim(PacientesSQL("Plano1")&" ") )
+
+                conteudo = replace(conteudo, "[Paciente.Matricula]", trim(PacientesSQL("Matricula1")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Validade]", trim(PacientesSQL("Validade1")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Email]", trim(PacientesSQL("Email1")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Cpf]", trim(PacientesSQL("CPF")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Telefone]", trim(PacientesSQL("Cel1")&" ") )
+              end if
+            PacientesSQL.close
+            set PacientesSQL = nothing
+          end if
 
         case "Unidade"
-          if UnidadeID=0 then
+          if item_UnidadeID=0 then
             qUnidadeSQL = "select *, NomeEmpresa Nome from empresa"
           else
-            qUnidadeSQL = "select *, unitName Nome from sys_financialcompanyunits where id="&UnidadeID
+            qUnidadeSQL = "select *, unitName Nome from sys_financialcompanyunits where id="&item_UnidadeID
           end if
           SET UnidadeSQL = db.execute(qUnidadeSQL)
           if not UnidadeSQL.eof then
             conteudo = replace(conteudo, "[Unidade.Nome]", trim(UnidadeSQL("NomeEmpresa")&" ") )
 
-            
+
           end if
 
           'response.write("<pre>"&qUnidadeSQL&"</pre>")
@@ -127,33 +121,33 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Profissional"
 
           'PROFISSIONAIS POR SESSAO
-          if ProfissionalSessao>0 then
+          if item_ProfissionalSessao>0 then
             if session("Table")=lcase("profissionais") then
               qProfissionaisSQL = "SELECT p.*,t.Tratamento FROM profissionais AS p "_
               &"LEFT JOIN tratamento AS t ON t.id=p.TratamentoID "_
               &"WHERE p.id="&session("idInTable")
 
             end if
-          elseif Profissiona>0 then
-            'QUERY PELO ID DO PROFISSIONAL
+          elseif item_ProfissionalID>0 then
+            qProfissionaisSQL = "SELECT p.*,t.Tratamento FROM profissionais AS p "_
+              &"LEFT JOIN tratamento AS t ON t.id=p.TratamentoID "_
+              &"WHERE p.id="&item_ProfissionalID
+          end if     
+
+          if qProfissionaisSQL<>"" then
+            SET ProfissionaisSQL = db.execute(qProfissionaisSQL)
+            if not ProfissionaisSQL.eof then
+
+              conteudo = replace(conteudo, "[Profissional.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
+              conteudo = replace(conteudo, "[Profissional.Documento]", trim(ProfissionaisSQL("DocumentoProfissional")&" ") )
+              conteudo = replace(conteudo, "[Profissional.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
+              conteudo = replace(conteudo, "[Profissional.Assinatura]", "<img src='"&imgURLPathDefault&"/"&trim(ProfissionaisSQL("Assinatura"))&" "&"' "&img404&"'>" )
+              conteudo = replace(conteudo, "[Profissional.Tratamento]", trim(ProfissionaisSQL("Tratamento")&" ") )
+              conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", trim(ProfissionaisSQL("Cel1")&" ") )
+
+
+            end if 
           end if
-
-          
-
-          SET ProfissionaisSQL = db.execute(qProfissionaisSQL)
-          if not ProfissionaisSQL.eof then
-
-            conteudo = replace(conteudo, "[Profissional.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
-            conteudo = replace(conteudo, "[Profissional.Documento]", trim(ProfissionaisSQL("DocumentoProfissional")&" ") )
-            conteudo = replace(conteudo, "[Profissional.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
-            'conteudo = replace(conteudo, "[Profissional.Assinatura]", trim(ProfissionaisSQL("Assinatura")&" ") )
-            conteudo = replace(conteudo, "[Profissional.Assinatura]", "<img src='"&imgURLPathDefault&"/"&trim(ProfissionaisSQL("Assinatura"))&" "&"' "&img404&"'>" )
-            conteudo = replace(conteudo, "[Profissional.Tratamento]", trim(ProfissionaisSQL("Tratamento")&" ") )
-            conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", trim(ProfissionaisSQL("Cel1")&" ") )
-
-
-          end if 
-
           
 
         case "Sistema"
@@ -188,10 +182,10 @@ end function
 
 '***** EXEMPLO DE USO DA FUNÇÃO ******
 'conteudoParaConverter = "Atesto que o paciente [Paciente.Nome]<br>foi atendido as [Sistema.Hora]<br>pelo profissional [Profissional.Nome]"
-'itens = "PacienteID_6365|UserID_478|UnidadeID_8741|Sistema_0"
+'itens = "PacienteID_6365|UserID_478|ProfissionalID_15|UnidadeID_8741"
 'response.write(tagsConverte(conteudoParaConverter,itens,""))
 
-'response.write(tagsConverte("[Sistema.Data] e [Data.DDMMAAAA]","Sistema_0",""))
+'response.write(tagsConverte(conteudoParaConverter,itens,""))
 %>
 
 

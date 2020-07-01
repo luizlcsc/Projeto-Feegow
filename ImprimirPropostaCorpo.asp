@@ -4,11 +4,9 @@
 
 <%
 response.Charset="utf-8"
-
-
-
 %>
 <!--#include file="connect.asp"-->
+<!--#include file="./Classes/TagsConverte.asp"-->
 <a style="position:fixed; background-color:#0CF; color:#FFF; right:14px; z-index:10000000; text-decoration:none; padding:5px;" href="#" onclick="javascript:print();" class="hidden-print" rel="areaImpressao">
 	<img src="assets/img/printer.png" border="0" alt="IMPRIMIR" title="IMPRIMIR" align="absmiddle"> <strong>IMPRIMIR</strong>
 </a>
@@ -55,16 +53,35 @@ if not reg.EOF then
 	PacienteID = reg("PacienteID")
 end if
 
+
 set getImpressos = db.execute("select * from Impressos")
 if not getImpressos.EOF then
-	'Cabecalho = replaceTags(getImpressos("Cabecalho")&" ", PacienteID, session("User"), session("UnidadeID"))
-	'Rodape = replaceTags(getImpressos("Rodape")&" ", PacienteID, session("User"), session("UnidadeID"))
-	CabecalhoProposta = replaceTags(getImpressos("CabecalhoProposta")&" ", PacienteID, session("User"), session("UnidadeID"))
-	CabecalhoProposta = replaceProposta(PropostaID,CabecalhoProposta)
-	RodapeProposta = replaceTags(getImpressos("RodapeProposta")&" ", PacienteID, session("User"), session("UnidadeID"))
-	RodapeProposta = replaceProposta(PropostaID,RodapeProposta)
-end if
+    'Cabecalho = replaceTags(getImpressos("Cabecalho")&" ", PacienteID, session("User"), session("UnidadeID"))
+    'Rodape = replaceTags(getImpressos("Rodape")&" ", PacienteID, session("User"), session("UnidadeID"))
 
+
+    'CONVERSOR DE TAG ANTIGO
+    'CabecalhoProposta = replaceTags(getImpressos("CabecalhoProposta")&" ", PacienteID, session("User"), session("UnidadeID"))
+    'CabecalhoProposta = replaceProposta(PropostaID,CabecalhoProposta)
+    'RodapeProposta = replaceTags(getImpressos("RodapeProposta")&" ", PacienteID, session("User"), session("UnidadeID"))
+    'RodapeProposta = replaceProposta(PropostaID,RodapeProposta)
+
+    'CONVERSOR DE TAG NOVO || RAFAEL MAIA 01/07/2020
+    set ProfissionalSQL = db.execute("SELECT p.id AS ProfissionalID, p.NomeProfissional "_
+    &"FROM propostas "_
+    &"LEFT JOIN profissionais AS p ON p.id = propostas.ProfissionalID "_
+    &"WHERE propostas.id = "&req("PropostaID"))
+        ProfissionalID = ProfissionalSQL("ProfissionalID")
+    ProfissionalSQL.close
+    set ProfissionalSQL=nothing
+    
+    CabecalhoProposta = getImpressos("CabecalhoProposta")
+    CabecalhoProposta = TagsConverte(CabecalhoProposta,"PacienteID_"&PacienteID&"|ProfissionalID_"&ProfissionalID,"")
+
+    RodapeProposta    = getImpressos("RodapeProposta")
+    RodapeProposta    = TagsConverte(RodapeProposta,"PacienteID_"&PacienteID&"|ProfissionalID_"&ProfissionalID,"")    
+    
+end if
 
 
 sqlTimbrado = "select * from papeltimbrado where sysactive=1 and (unidadeid = '' or unidadeid is null or unidadeid like '%|ALL|%' or unidadeid like '%|"&session("UnidadeID")&"|%' ) and (profissionais = '' or profissionais is null or profissionais like '%|ALL|%') order by id desc limit 1"

@@ -1,3 +1,33 @@
+<!--#include file="connect.asp"-->
+<%
+idCurva = req("T")
+PacienteID = req("P")
+set cv = db.execute("select * from curva.curva_curvas where id="& idCurva)
+set pac = db.execute("select id, Sexo, Nascimento, NomePaciente, NomeSocial from pacientes where id="& PacienteID)
+if not pac.eof then
+  Sexo = pac("Sexo")
+  Nascimento = pac("Nascimento")
+  NomePaciente = pac("NomePaciente")
+  NomeSocial = pac("NomeSocial")&""
+  if NomeSocial<>"" then
+      NomePaciente = NomeSocial
+  end if
+end if
+%>
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" media="all" href="assets/css/curva.css" />
+<link rel="stylesheet" type="text/css" href="assets/skin/default_skin/css/fgw.css">
+
+<style>
+body {
+    background-color:#fff;
+}
+</style>
+
+<body>
+
+<h2 class="visible-print text-center"><%= NomePaciente %></h2>
 
 <div style="width:840px;height:449px;">
   <svg width="100%" height="100%" id="meucanvas" xmlns="http://www.w3.org/2000/svg">
@@ -16,11 +46,7 @@
 </div>
 
 
-<!--#include file="connect.asp"-->
 <%
-idCurva = req("T")
-PacienteID = req("P")
-set cv = db.execute("select * from curva.curva_curvas where id="& idCurva)
 
 Tipo = cv("TP")
 Tabela = "curva_"& Tipo
@@ -32,19 +58,10 @@ sqlColunasNULL = cv("sqlColunasNULL")
 Coluna = cv("Coluna")
 arrayColunas = cv("arrayColunas")
 %>
-<!DOCTYPE html>
-<meta charset="utf-8">
-<link rel="stylesheet" type="text/css" media="all" href="assets/css/curva.css" />
-<body>
   <script src="assets/js/grafico.js"></script>
   <script>
   <%
     '-> ABAIXO GERA A LINHA DE VALORES INPUTADOS
-  set pac = db.execute("select id, Sexo, Nascimento from pacientes where id="& PacienteID)
-  if not pac.eof then
-    Sexo = pac("Sexo")
-    Nascimento = pac("Nascimento")
-  end if
   if Sexo&""="" OR Sexo=0 OR Nascimento&""="" then
       response.write("Para utilizar a curva de crescimento, informe o sexo do paciente no cadastro principal.")
       RESPONSE.END
@@ -123,8 +140,40 @@ var wfa_boys_0_to_5 = {
     xxMin = 180;
   <% elseif  idCurva = 4 then %>
     xxMin = 731;
+  <% elseif  idCurva = 12 then %>
+    xxMin = 180;
+  <% elseif  idCurva = 13 then %>
+    xxMin = 731;
   <% end if  %>
   var growthChart = display_growth_chart(patientGrowth, '#meucanvas' , 'wfa_boys_0_to_5',null,xxMin);
   </script>
+
+<div class="hidden-print">
+  <%
+  set per = db.execute("select * from curva.curva_curvas WHERE TP='"& Tipo &"' ORDER BY id")
+  while not per.eof
+      if per("id")&""=idCurva then
+          classe = "info"
+      else
+          classe = "default"
+      end if
+      %>
+      <a class="btn btn-<%= classe %> btn-sm" href="Curva_Chart.asp?P=<%=PacienteID%>&T=<%= per("id")%>"> <%= per("Periodo")%></a>
+      <%
+  per.movenext
+  wend
+  per.close
+  set per = nothing
+  %>
+
+  <a class="btn btn-sm btn-primary pull-right" href="javascript:print()">
+      <i class="fa fa-print"></i>
+  </a>
+</div>
+
+
+
+
+
 </body>
 </html>

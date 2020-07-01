@@ -5,6 +5,7 @@ if 1=2 then
 <% End If %>
 
 function display_growth_chart(patient, el, chartType, dims, xMin = 0) {
+
   // Create the background lines
   //
   // json includes "meta" (to tag+name the lines, specify measurement type)
@@ -77,7 +78,7 @@ function display_growth_chart(patient, el, chartType, dims, xMin = 0) {
     .range([padding, width - padding]);
 
   var yScale = d3.scale.linear()
-    .domain([40, yMax])
+    .domain([1, yMax])
     .range([height - padding, padding]);
 
   // Line generating function
@@ -190,12 +191,12 @@ function display_growth_chart(patient, el, chartType, dims, xMin = 0) {
   svg.append("text")
     .attr("text-anchor", "middle")
     .attr("transform", "translate("+ (padding/3) +","+(height-padding)/2+")rotate(-90)")
-    .text("Altura (cm)");
+    .text("Peso (kg)");
 
   svg.append("text")
     .attr("text-anchor", "middle")
     .attr("transform", "translate("+ (width/2) +","+(height-(padding/3))+")")
-    .text("Idade (dias)");
+    .text("Idade (meses)");
 
   // Line labels (Normal, Malnourished, and Severely Malnourished)
   for (var i=0; i<metaData.lines.length; i++) {
@@ -207,7 +208,7 @@ function display_growth_chart(patient, el, chartType, dims, xMin = 0) {
     svg.append("text")
       .attr("class","line-label")
       .attr("transform", "translate("+ xOffset +","+ yOffset +")")
-       .attr("text-anchor", "middle")
+      // .attr("text-anchor", "middle")
       .text(metaData.lines[i].name);
   }
 
@@ -249,8 +250,8 @@ function display_growth_chart(patient, el, chartType, dims, xMin = 0) {
     .attr("ry", 6)
     .attr("x", (width / 2) - 3 - 46)
     .attr("y", 0 + (padding / 2) - 14 - 3 + 24)
-     .attr("x", padding*10-3)
-     .attr("y", padding-14-3)
+    // .attr("x", padding*10-3)
+    // .attr("y", padding-14-3)
     .attr("width", 101)  // 106
     .attr("height", 25)
     .style("stroke","gray")
@@ -367,9 +368,8 @@ function display_growth_chart(patient, el, chartType, dims, xMin = 0) {
   function getTooltipText(d) {
     var age_in_months = parseFloat(d[0]);
     var weight_in_kg = parseFloat(d[1]).toFixed(1);
-    //var textAge = 'Idade: ' + getAgeText(age_in_months);
-    var textAge = 'Idade: ' + age_in_months +' dias';
-    var textweight = 'Medida: ' + weight_in_kg + 'cm';
+    var textAge = 'Idade: ' + getAgeText(age_in_months);
+    var textweight = 'Peso: ' + weight_in_kg + 'kg';
     var text = textAge + '; ' + textweight;
 
     return text;

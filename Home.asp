@@ -300,8 +300,10 @@ if session("Banco")="clinic5459" then
 
 
     set diasVencimento = db.execute("SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1")
+    
+    'set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade <> 0 AND ep.Validade IS NOT NULL AND CURDATE() < (SELECT DATE_ADD(ep.Validade, INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1)")
 
-    set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade <> 0 AND ep.Validade IS NOT NULL AND ep.Validade < (SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1)")
+    'set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade > 0 AND ep.Validade IS NOT NULL AND p.sysActive = 1 AND (DATEDIFF(validade, CURDATE()) >= 0 AND DATEDIFF(validade, CURDATE()) <= ( IFNULL(p.DiasAvisoValidade, (SELECT IFNULL(DiasVencimentoProduto, 5) DiasVencimentoProduto FROM sys_config LIMIT 1))))")
     set ac = dbc.execute("select count(id) Total from cliniccentral.licencaslogins where UserID="&session("User"))
     set ultimoAcessoBemSucedido = dbc.execute("select DataHora from cliniccentral.licencaslogins where Sucesso = 1 AND UserID="&session("User")&" ORDER BY id DESC LIMIT 1,1")
     set ultimoAcessoMalSucedido = dbc.execute("select DataHora, count(id)n from cliniccentral.licencaslogins where Sucesso = 0 AND UserID="&session("User")&" ORDER BY id DESC  LIMIT 1")
@@ -353,7 +355,7 @@ if session("Banco")="clinic5459" then
     <div class="col-sm-3 col-xl-3">
         <div class="panel panel-tile text-center br-a br-grey">
         <div class="panel-body">
-            <h1 class="fs30 mt5 mbn"><%=numeroProdutosValidade("total") %></h1>
+            <h1 class="fs30 mt5 mbn" id="prodVencer"><i class="fa fa-spinner fa-spin"></i></h1>
             <h6 class="text-success">PRODUTOS PRÓXIMO A VENCER</h6>
         </div>
         <div class="panel-footer br-t p6">
@@ -364,7 +366,7 @@ if session("Banco")="clinic5459" then
                     <b>PRODUTOS</b>
                 </div>
                 <div class="col-md-2">
-                    <a data-toggle="tooltip" title="Visualizar produtos a vencer" href="?P=ListaProdutos&Pers=1&Ate=<%=diasVencimento("DiasVencimentoProduto")%>" class="btn btn-xs btn-system"><i class="fa fa-search"></i></a>
+                    <a data-toggle="tooltip" title="Visualizar produtos a vencer" href="?P=ListaProdutos&Pers=1&praVencer=1" class="btn btn-xs btn-system"><i class="fa fa-search"></i></a>
                 </div>
                 </div>
             </span>

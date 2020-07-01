@@ -3,6 +3,7 @@
 acao       = req("acao")
 referencia = req("ref")
 valor      = req("v")
+
 select Case acao:
   Case "r" 'REMOVE
     separaValor=Split(valor,",")
@@ -22,8 +23,18 @@ select Case acao:
     &removeWhere
 
   Case "a" 'ADICIONA
-    qAcao = "UPDATE tarefas SET TarefaPaiID='"&referencia&"'"_
-    &" WHERE id = "&valor
+    if referencia = "dep" then
+      qAcao = "INSERT INTO `tarefas_dependencias` "&chr(13)_
+      &"(`TarefaID`, `sysUserCreate`, `dependencia`, `descricao`, `responsaveis`, `finalizada`, `prazo`) VALUES "&chr(13)_
+      &"('"&req("I")&"', "&session("User")&", '"&ref("dependencia")&"', '"&ref("dependenciaDescricao")&"', '"&ref("dependenciaResponsaveis")&"', '"&myDate(ref("dependenciaConclusao"))&"', '"&myDate(ref("dependenciaPrazo"))&"'); "
+    else
+      qAcao = "UPDATE tarefas SET TarefaPaiID='"&referencia&"'"_
+      &" WHERE id = "&valor
+    end if
+  Case "e" 'EDITA
+    qAcao = "UPDATE tarefas_dependencias SET "_
+    &"dependencia='"&ref("dependencia")&"', descricao='"&ref("dependenciaDescricao")&"', responsaveis='"&ref("dependenciaResponsaveis")&"', finalizada='"&myDate(ref("dependenciaConclusao"))&"', prazo='"&myDate(ref("dependenciaPrazo"))&"', sysUserUpdate="&session("User")&" "_
+    &"WHERE id = "&valor
 end select
 
 'response.write("<pre>"&qAcao&"</pre>")

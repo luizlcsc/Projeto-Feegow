@@ -205,8 +205,15 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
                     end if
                     TipoEstimado = reg("TipoEstimado")
                 end if
+
+                SET vTarefapai = db.execute(" SELECT TarefaPaiID from Tarefas where id="&req("I")&" AND TarefaPaiID>0 ")
+                    if not vTarefapai.eof then
+                        relacionadaTarefaPaiHTML = ", vinculada a tarefa <strong><a href='?P=tarefas&I="&vTarefapai("TarefaPaiID")&"&Pers=1'>#"&vTarefapai("TarefaPaiID")&"</a></strong>"
+                    end if
+                vTarefapai.close
+                set vTarefapai = nothing
                 %>
-                    <span class="panel-title"> Tarefa  <strong>#<%= req("I") %> </strong></span>
+                    <span class="panel-title"> Tarefa  <strong>#<%= req("I") %></strong><%=relacionadaTarefaPaiHTML%></span>
                 <%
                 %>
                     <span class="panel-controls">
@@ -313,126 +320,183 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
                 </div>
 
 
+
+<%
+qTarefasDependenciasSQL = "SELECT * from tarefas_dependencias where TarefaID="&req("I")
+
+set qTarefasDependencias = db.execute(qTarefasDependenciasSQL)
+if  qTarefasDependencias.eof then
+
+ 
+else
+    while not qTarefasDependencias.eof
+
+    tarEsp_id = qTarefasDependencias("id")
+    tarEsp_prazo = qTarefasDependencias("prazo")
+    tarEsp_finalizada = qTarefasDependencias("finalizada")&""
+
+
+    tarEsp_responsaveis = qTarefasDependencias("responsaveis")&""
+    tarEsp_responsaveis = replace(tarEsp_responsaveis,"|","")
+    usuariosArray=Split(tarEsp_responsaveis,",")
+    for each usuarioId in usuariosArray
+        
+        vUsuarioNomeSQL = "select Nome from cliniccentral.licencasusuarios where id = "&usuarioId
+        'response.write("<pre>"&vUsuarioNomeSQL&"</pre>")
+        set vUsuarioNome = db.execute(vUsuarioNomeSQL)
+        if vUsuarioNome.eof then
+            responsavelNome = "<i class='fa fa-user' style='font-size:20px' data-original-title='Indefinido' data-toggle='tooltip' data-placement='top'></i> "
+        else
+            responsavelNome = "<i class='fa fa-user' style='font-size:20px' data-original-title='"&vUsuarioNome("Nome")&"' data-toggle='tooltip' data-placement='top'></i> "
+        end if
+
+        vUsuarioNome.close
+        set vUsuarioNome = nothing
+
+        if responsavelNomeHTML = "" then
+            responsavelNomeHTML = responsavelNome
+        else
+
+            responsavelNomeHTML = responsavelNomeHTML&responsavelNome
+
+        end if
+        
+        'response.write(x & "<br />")
+    next
+    
+    if qTarefasDependencias("dependencia")&"" = "" then
+        tarEsp_especialidade = "Indefinido"
+    else
+        tarEsp_especialidade = qTarefasDependencias("dependencia")
+    end if
+    if tarEsp_finalizada="" then
+        icoFinalizado = "<i class='fa fa-times' style='color:#ff500069'></i>"
+    else
+        icoFinalizado = "<i class='fa fa-check' style='color:#379c0087'></i>"
+    end if
+
+    dependenciasLista = "<tr>"_
+    &"  <td width='20'>"&icoFinalizado&"</td>"_
+    &"  <td><input type='checkbox' name='dep' class='input_depRemove' value='"&tarEsp_id&"'> <a href='#' class='dependencia' id='"&tarEsp_id&"' onclick='openComponentsModal(`tarefasDependencias.asp?depId=${this.id}`, true, `Editar dependência`, true, depAcaoEdit);'><i class='fa fa-edit'></i> "&tarEsp_especialidade&"</a></td>"_
+    &"  <td width='150'>"&responsavelNomeHTML&"</td>"_
+    &"  <td width='70'>"&tarEsp_prazo&"</td>"_
+    &"</tr>"
+
+    if dependenciasListaHTML="" then
+        dependenciasListaHTML = dependenciasLista
+    else
+        dependenciasListaHTML = dependenciasListaHTML&dependenciasLista
+    end if
+
+    responsavelNomeHTML = ""
+    qTarefasDependencias.movenext
+    wend
+    qTarefasDependencias.close
+    set qTarefasDependencias = nothing
+end if
+
+
+%>
+
                 <div class="row" style="margin-top: 30px;">
-                    <div class="col-md-129">
+                    <%if session("banco")="clinic5459" then%>
+                    <div class="col-md-12">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <span class="panel-title">Dependências</span>
+                                <span class="panel-controls">
+                                    <button class="btn btn-sm btn-success" type="button" onclick="openComponentsModal('tarefasDependencias.asp', true, 'Adicionar dependência', true, depAcaoNew)">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                            
+                                </span>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table" id="">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Dependência</th>
+                                            <th>Atribuída</th>
+                                            <th>Prazo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%=dependenciasListaHTML%>
+                                        <tr>
+                                            <td></td>
+                                            <td colspan="3">
+                                                <button type="button" class="depRemove btn btn-xs btn-danger"><i class='fa fa-times'></i> Remover itens</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                 </table>
+                            </div>
+                        </div>
+                    </div>
+                    <%end if%>
+                    <div class="col-md-12">
                         <div class="panel">
                             <div class="panel-heading">
                                 <span class="panel-title">Tarefas relacionadas</span>
                             </div>
                             <div class="panel-body">
+                                <%
+                                set vtarefasFilho = db.execute("select id,titulo from tarefas Where TarefaPaiID="&req("I")&" order by titulo ASC")
+                                if vtarefasFilho.eof then
+                                    tarefasFilhosHTML = "<tr>"_
+                                    &"  <td colspan='3'><i>Nenuma tarefa foi vinculada neste chamado</i></td>"_
+                                    &"</tr>"
+                                    
+                                else
+                                while not vtarefasFilho.eof
+
+                                    tarefaFilho_id      = vtarefasFilho("id")
+                                    tarefaFilho_titulo  = vtarefasFilho("titulo")
+
+                                    tarefasFilhos = "<tr>"_
+                                    &"    <td><input type='checkbox' name='record' class='tarefasFilhoRemove' value='"&tarefaFilho_id&"'></td>"_
+                                    &"    <td><a class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I="&tarefaFilho_id&"' target='_blank'><i class='fa fa-edit'> </i> #"&tarefaFilho_id&"</a></td>"_
+                                    &"    <td>"&tarefaFilho_titulo&"</td>"_
+                                    &"</tr>"
+
+                                    if tarefasFilhosHTML="" then
+                                        tarefasFilhosHTML = tarefasFilhos
+                                    else
+                                        tarefasFilhosHTML = tarefasFilhosHTML&tarefasFilhos
+                                    end if
+
+                                vtarefasFilho.movenext
+                                wend
+                                vtarefasFilho.close
+                                set vtarefasFilho = nothing
+                                end if
 
 
-<%
-set vtarefasFilho = db.execute("select id,titulo from tarefas Where TarefaPaiID="&req("I")&" order by titulo ASC")
-if vtarefasFilho.eof then
-    tarefasFilhosHTML = "<tr>"_
-    &"  <td colspan='3'><i>Nenuma tarefa foi vinculada neste chamado</i></td>"_
-    &"</tr>"
-    
-else
-while not vtarefasFilho.eof
+                                %>   
+                                <div class="col-md-11">
+                                    <%=selectInsert("Associar a este chamado", "tarefaFilhoBusca", "", "tarefas", "Titulo", "", "", "")%>
+                                </div>
+                                <div class="col-md-1 text-right">
+                                    <br>
+                                    <button type="button" class="btn btn-sm btn-success" id="tarefaFilhoAdd"><i class="fa fa-plus"></i></button>
+                                </div>
 
-    tarefaFilho_id      = vtarefasFilho("id")
-    tarefaFilho_titulo  = vtarefasFilho("titulo")
-
-'    tarefasFilhos = "<tr id='tb"&tarefaFilho_id&"'>"_
-'    &"  <td>#"&tarefaFilho_id&"</td>"_
-'    &"  <td>"&tarefaFilho_titulo&"</td>"_
-'    &"  <td>"_
-'    &"      <a class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I="&tarefaFilho_id&"' target='_blank'><i class='fa fa-edit'></i></a>"_
-'    &"      <button type='button' class='btn btn-xs btn-danger' id='"&tarefaFilho_id&"' onclick='tarefaFilhoRemove(this.id)'><i class='fa fa-times'></i></button>"_
-'    &"  </td>"_
-'    &"</tr>"
-
-    tarefasFilhos = "<tr>"_
-    &"    <td><input type='checkbox' name='record' class='tarefasFilhoRemove' value='"&tarefaFilho_id&"'></td>"_
-    &"    <td><a class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I="&tarefaFilho_id&"' target='_blank'><i class='fa fa-edit'> </i> #"&tarefaFilho_id&"</a></td>"_
-    &"    <td>"&tarefaFilho_titulo&"</td>"_
-    &"</tr>"
-
-    if tarefasFilhosHTML="" then
-        tarefasFilhosHTML = tarefasFilhos
-    else
-        tarefasFilhosHTML = tarefasFilhosHTML&tarefasFilhos
-    end if
-
-vtarefasFilho.movenext
-wend
-vtarefasFilho.close
-set vtarefasFilho = nothing
-end if
-
-
-%>    
-<script type="text/javascript">
-
-    function tarefaFilhoRemove(valor) {
-        if (confirm("Deseja desvincular esta tarefa?")) {
-            document.getElementById(valor).value = valor;
-            var tb = 'tb'+valor;
-            data : $.post( "TarefasSave.asp?acao=r&ref=<%=req("I")%>&v="+valor);
-            $('tr').remove('#'+tb);
-            
-        }
-    }
-
-    $(document).ready(function(){
-        $("#tarefaFilhoAdd").click(function(){
-            var protocolo = $("#tarefaFilhoBusca").val();
-            //var titulo    = $("#tarefaFilhoBusca").select2('data');
-            var titulo    = $("#tarefaFilhoBusca").select2('data')[0]['full_name'];
-
-            var markup = "<tr><td><input type='checkbox' name='record'></td><td><a  class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I='><i class='fa fa-edit'> </i> #" + protocolo + "</a></td><td> "+ titulo +" </td></tr>";
-            $("table tbody").append(markup);
-            //console.log(protocolo);
-            data : $.post( "TarefasSave.asp?acao=a&ref=<%=req("I")%>&v="+protocolo);
-        });
-        
-        // Find and remove selected table rows
-        $(".tarefaFilhoRemove").click(function(){
-            var tarefaFilhoRemoveSel = $("input:checkbox[name=record]:checked")
-            .toArray()
-            .map(function(reg){
-                
-                return $(reg).val();
-            });
-            data : $.post("TarefasSave.asp?acao=r&ref=<%=req("I")%>&v="+tarefaFilhoRemoveSel);
-
-            //console.log(val(tarefaFilhoRemoveSel));
-            $("table tbody").find('input[name="record"]').each(function(){
-                if($(this).is(":checked")){
-                    $(this).parents("tr").remove();
-                }
-            });
-
-        });
-    });  
-
-</script>
-
-<div class="col-md-11">
-    <%=selectInsert("Associar a este chamado", "tarefaFilhoBusca", "", "tarefas", "Titulo", "", "", "")%>
-</div>
-<div class="col-md-1 text-right">
-    <br>
-    <button type="button" class="btn btn-sm btn-success" id="tarefaFilhoAdd"><i class="fa fa-plus"></i></button>
-</div>
-
-<div class="col-md-12" style="max-height:300px; overflow:auto;">
-<table class="table" id="tarefasFilho">
-    <thead>
-        <tr>
-            <th width="20"></th>
-            <th width="80">Protocolo</th>
-            <th>Título</th>
-        </tr>
-    </thead>
-    <tbody>
-        <%=tarefasFilhosHTML%>
-    </tbody>
-</table>
-<button type="button" class="tarefaFilhoRemove btn btn-xs btn-danger"><i class='fa fa-times'></i> Remover itens</button>
-</div>
+                                <div class="col-md-12" style="max-height:300px; overflow:auto;">
+                                <table class="table" id="tarefasFilho">
+                                    <thead>
+                                        <tr>
+                                            <th width="20"></th>
+                                            <th width="80">Protocolo</th>
+                                            <th>Título</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%=tarefasFilhosHTML%>
+                                    </tbody>
+                                </table>
+                                <button type="button" class="tarefaFilhoRemove btn btn-xs btn-danger"><i class='fa fa-times'></i> Remover itens</button>
+                                </div>
                             </div>
                         </div>
                         
@@ -542,6 +606,9 @@ end if
     <div class="col-md-8">
         <div class="panel">
             <div class="panel-body">
+            <%
+            if session("Banco")="clinic5459" then
+            %>
                 <div class="row">
                     <div style="margin-top: 10px;float: right">
                         <% if not isnull(reg("DtAbertura")) then %>
@@ -564,6 +631,9 @@ end if
                          %>
                     </div>
                 </div>
+            <%
+            end if
+            %>
                 <hr class="short alt" />
                 <div class="row" style="margin: 5px">
                     <div class="col-md-1">
@@ -593,46 +663,148 @@ end if
     </div>
 </div>
 
-<script>
-    $(document).ready(function() {
-      setTimeout(function() {
-        $("#toggle_sidemenu_l").click()
-      }, 500);
 
-          <%if session("User")=reg("De") then %>
-        $('#stars-existing').on('starrr:change', function(e, value){
-          $('#AvaliacaoNota').val(value);
+<script type="text/javascript">
+
+function depAcaoNew(data){
+    var $formDependencias = $("#form-components").serialize();
+    $.ajax({
+        method: "POST",
+        url: "TarefasSave.asp?acao=a&ref=dep&I=<%=req("I")%>",
+        data: $formDependencias,
+            success:function(data){
+			eval(data);
+        }
+    });     
+}
+
+var tarDepEditItem = null;
+var tarDepEdit = $('.dependencia').click(function(valor){
+    tarDepEditItem = this.id;
+    //alert(tarDepEditItem);
+});
+
+function depAcaoEdit(data){
+    //console.log(tarDepEditItem);
+    var $formDependencias = $("#form-components").serialize();
+
+    $.ajax({
+        method: "POST",
+        url: "TarefasSave.asp?acao=e&ref=dep&I=<%=req("I")%>&v="+tarDepEditItem,
+        data: $formDependencias,
+            success:function(data){
+			eval(data);
+        }
+    });     
+}
+
+
+
+//  TAREFAS VINCULADAS INICIO
+/*
+    function tarefaFilhoRemove(valor) {
+        if (confirm("Deseja desvincular esta tarefa?")) {
+            document.getElementById(valor).value = valor;
+            var tb = 'tb'+valor;
+            data : $.post( "TarefasSave.asp?acao=r&ref=<%'=req("I")%>&v="+valor);
+            $('tr').remove('#'+tb);
+            
+        }
+    }
+*/
+$(document).ready(function(){
+
+
+    // Find and remove selected table rows
+    $(".depRemove").click(function(){
+        var depRemoveSel = $("input:checkbox[name=input_depRemove]:checked")
+        .toArray()
+        .map(function(reg){
+            
+            return $(reg).val();
         });
-          <%end if%>
+        data : $.post("TarefasSave.asp?acao=r&ref=<%=req("I")%>&v="+depRemoveSel);
+
+        $("table tbody").find('input[name="input_depRemove"]').each(function(){
+            if($(this).is(":checked")){
+                $(this).parents("tr").remove();
+            }
+        });
+
     });
 
-    function tsol(A) {
-        var Solicitantes = "";
-        $("input[name^=Solicitante]").each(function () {
-            Solicitantes += "," + $(this).val();
-        });
-        $.post("TarefasSolicitantes.asp?I=<%=req("I")%>&A="+ A, { Solicitantes: Solicitantes }, function (data) {
-            $("#TarefasSolicitantes").html(data);
-        });
-    }
 
+    $("#tarefaFilhoAdd").click(function(){
+        var protocolo = $("#tarefaFilhoBusca").val();
+        //var titulo    = $("#tarefaFilhoBusca").select2('data');
+        var titulo    = $("#tarefaFilhoBusca").select2('data')[0]['full_name'];
 
-    $("#staDe, #staPara").change(function(){
-        $.get("tarefaSave.asp?I=<%=req("I")%>&onlySta="+$(this).attr("id")+"&Val="+$(this).val(), function(data){
-            eval(data);
-
-            let frm = $("#frm").serialize();
-            $.post("TarefasInteracoes.asp?I=<%=req("I")%>", frm, function(data){
-                $("#interacoes").html(data);
-            })
-        });
+        var markup = "<tr><td><input type='checkbox' name='record' class='tarefasFilhoRemove' value='"+protocolo+"'></td><td><a  class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I='><i class='fa fa-edit'> </i> #" + protocolo + "</a></td><td> "+ titulo +" </td></tr>";
+        $("table tbody").append(markup);
+        //console.log(protocolo);
+        data : $.post( "TarefasSave.asp?acao=a&ref=<%=req("I")%>&v="+protocolo);
     });
-
-    function executarTarefa(A){
-        $.post("tarefasexecucao.asp?I=<%=req("I")%>", {A: A, Texto: $('#TextoExecucao').val()}, function (data) {
-            $("#tarefasExecucao").html(data);
+    
+    // Find and remove selected table rows
+    $(".tarefaFilhoRemove").click(function(){
+        var tarefaFilhoRemoveSel = $("input:checkbox[name=record]:checked")
+        .toArray()
+        .map(function(reg){
+            
+            return $(reg).val();
         });
-    }
+        data : $.post("TarefasSave.asp?acao=r&ref=<%=req("I")%>&v="+tarefaFilhoRemoveSel);
+
+        //console.log(val(tarefaFilhoRemoveSel));
+        $("table tbody").find('input[name="record"]').each(function(){
+            if($(this).is(":checked")){
+                $(this).parents("tr").remove();
+            }
+        });
+
+    });
+});  
+//  TAREFAS VINCULADAS FIM
+
+$(document).ready(function() {
+    setTimeout(function() {
+    $("#toggle_sidemenu_l").click()
+    }, 500);
+
+        <%if session("User")=reg("De") then %>
+    $('#stars-existing').on('starrr:change', function(e, value){
+        $('#AvaliacaoNota').val(value);
+    });
+        <%end if%>
+});
+
+function tsol(A) {
+    var Solicitantes = "";
+    $("input[name^=Solicitante]").each(function () {
+        Solicitantes += "," + $(this).val();
+    });
+    $.post("TarefasSolicitantes.asp?I=<%=req("I")%>&A="+ A, { Solicitantes: Solicitantes }, function (data) {
+        $("#TarefasSolicitantes").html(data);
+    });
+}
+
+
+$("#staDe, #staPara").change(function(){
+    $.get("tarefaSave.asp?I=<%=req("I")%>&onlySta="+$(this).attr("id")+"&Val="+$(this).val(), function(data){
+        eval(data);
+
+        let frm = $("#frm").serialize();
+        $.post("TarefasInteracoes.asp?I=<%=req("I")%>", frm, function(data){
+            $("#interacoes").html(data);
+        })
+    });
+});
+
+function executarTarefa(A){
+    $.post("tarefasexecucao.asp?I=<%=req("I")%>", {A: A, Texto: $('#TextoExecucao').val()}, function (data) {
+        $("#tarefasExecucao").html(data);
+    });
+}
 </script>
 <!--    </div>-->
 <!--</div>-->

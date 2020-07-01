@@ -1,7 +1,14 @@
 <!--#include file="connect.asp"-->
 
 
-
+<div class="row">
+    <div class="col-md-12">
+        <span>Legenda: </span>
+        <span class="label label-danger">Fora da validade</span>
+        <span class="label label-warning">Proximo do vencimento</span>
+        <span class="label label-info">Dentro do prazo</span>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-12">
         <table id="datatableProdutos" class="table table-striped table-bordered table-hover">
@@ -53,13 +60,16 @@
             end if
             if ref("Ate")<>"" then
                 ValidoAte = ref("Ate")
-               ' sqlVal = " AND (estpos.Validade<= "& mydatenull(ValidoAte) &") AND estpos.Quantidade>0 "
+                sqlVal = " AND (estpos.Validade<= "& mydatenull(ValidoAte) &") AND estpos.Quantidade>0 "
             end if
-           ' sqlCampoValDe = " AND (Validade>= "& mydatenull(date()) &") AND Quantidade>0 "
+            sqlCampoValDe = " AND (Validade>= "& mydatenull(date()) &") AND Quantidade>0 "
             if ref("De")<>"" then
                 ValidoDe = ref("De")
-               ' sqlValDe = " AND (estpos.Validade>= "& mydatenull(ValidoDe) &") AND estpos.Quantidade>0 "
-               ' sqlCampoValDe = " AND (Validade>= "& mydatenull(ValidoDe) &") AND Quantidade>0 "
+                sqlValDe = " AND (estpos.Validade>= "& mydatenull(ValidoDe) &") AND estpos.Quantidade>0 "
+                sqlCampoValDe = " AND (Validade>= "& mydatenull(ValidoDe) &") AND Quantidade>0 "
+            end if
+            if ref("praVencer") <>"" then
+                sqlsomentePraVencer = " AND Validade IS NOT NULL AND quantidade > 0 "
             end if
 
             if ref("AbaixoMinimo")="S" then
@@ -67,35 +77,50 @@
                             " (select sum(ep.Quantidade*pro.ApresentacaoQuantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID)<EstoqueMinimo), "&_
                             " (select sum(ep.Quantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID)<EstoqueMinimo) )"
             elseif ref("AbaixoMinimo")="N" then 
-                sqlAbaixo = " AND ( (posicaoConjunto>=EstoqueMinimo) OR ( (posicaoUnidade+(posicaoConjunto*ApresentacaoQuantidade))>EstoqueMinimo) )"
+                sqlAbaixo = " AND ( (posicaoConjunto>=EstoqueMinimo) OR ( (posicaoUnidade+(posicaoConjunto*ApresentacaoQuantidade)) > EstoqueMinimo) )"
             end if
-            '            LEFT JOIN estoqueposicao estpos ON estpos.ProdutoID=pro.id
 '(select Validade from estoqueposicao where ProdutoID=pro.id AND Validade<now() ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1)
-            set prod = db.execute("SELECT pro.*,  procat.NomeCategoria, profab.NomeFabricante, (select Validade from estoqueposicao where ProdutoID=pro.id AND Validade<now() AND Quantidade>0 ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1) Validade , proloc.NomeLocalizacao FROM produtos pro "&_
+            sqlstring = ("SELECT pro.*, estpos.id PosicaoID, procat.NomeCategoria, profab.NomeFabricante, (select Validade from estoqueposicao where ProdutoID=pro.id AND Validade < now() AND Quantidade > 0 ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1) Validade , proloc.NomeLocalizacao, "&_
+            "(SELECT ifnull(DiasVencimentoProduto, 5) DiasVencimentoProduto FROM sys_config LIMIT 1) DiasAvisoValidadeGeral "&_
+            "FROM produtos pro "&_
             "LEFT JOIN produtoscategorias procat ON procat.id=pro.CategoriaID "&_
             "LEFT JOIN produtosfabricantes profab ON profab.id=pro.FabricanteID "&_
             "LEFT JOIN produtoslocalizacoes proloc ON proloc.id=pro.LocalizacaoID "&_
-            "WHERE pro.sysActive=1 "& sqlProd & sqlTipoProduto & sqlPrincipioAtivo & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem)
+            "LEFT JOIN estoqueposicao estpos ON estpos.ProdutoID=pro.id "&_
+            "WHERE pro.sysActive = 1 "& sqlsomentePraVencer & sqlProd & sqlTipoProduto & sqlPrincipioAtivo & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem)
+            'response.write("<pre>"&sqlstring&"</pre>")
+            set prod = db.execute(sqlstring)
             while not prod.EOF
-                Validade = ""
+                Validade = prod("Validade")
                 disabled = ""
                 title = ""
-                DiasAvisoValidade = prod("DiasAvisoValidade")&""
-                if DiasAvisoValidade = "" then
-                    DiasAvisoValidade = 5
+                addClass="label label-info"
+                DiasAvisoValidade = prod("DiasAvisoValidade")
+                if prod("DiasAvisoValidade")&"" = "" then
+                    DiasAvisoValidade = prod("DiasAvisoValidadeGeral")
                 end if
-                if prod("Validade")=<dateAdd("d", DiasAvisoValidade, date()) then
-                    Validade = prod("Validade")&""
-                    addClass = "label label-warning"
-                    if prod("Validade")=<date() then
-                        addClass = "label label-danger"
+
+                if prod("Validade")&"" <>"" then
+                    'if prod("Validade") =< dateAdd("d", DiasAvisoValidade, date()) then
+                    diferenca = dateDiff("d",date(),prod("Validade"))
+                    if (diferenca >= 0 and diferenca <= Cint(DiasAvisoValidade)) then
+                        Validade = prod("Validade")&""
+                        addClass = "label label-warning"
+                        if prod("Validade") =< date() then
+                            addClass = "label label-danger"
+                        end if
                     end if
+                  
                 end if
                 if Validade&""="" then
                     Validade = prod("Vencido")
                     addClass = "label label-danger"
                 end if
 
+                if prod("PosicaoID")&""<>"" then
+                    disabled = " disabled "
+                    title = "Esse item possui movimentação."
+                end if
             %>
 
                 <tbody>

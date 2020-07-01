@@ -208,26 +208,7 @@ end if
 </script>
 
 <script type="text/javascript">
-/*
-function verificaElegibilidade(N){	
-    //$.post("verificaElegibilidade.asp?I=<%=req("I")%>", {
-	var baseUrl = domain + "autorizador-tiss/"	
-	$.post(baseUrl + "verificaElegibilidade", {
-    ConvenioID: $("#ConvenioID"+N).val(),
-    CNS: $("#CNS").val(),
-    IdentificacaoBeneficiario: $("#IdentificacaoBeneficiario").val(),
-    Matricula: $("#Matricula"+N).val(),
-    Validade: $("#Validade"+N).val(),
-    NomePaciente: $("#NomePaciente").val()
-    }, function(data){
-        if(data == "" || !isNaN(data)){
-			elegibilidade(N, data);
-		}else{
-			alert(data)
-		}
-    });
-}
-*/
+
 
 function showMessage(text, state, title) {
 	var states = {
@@ -511,8 +492,7 @@ $("#Cep").keyup(function(){
 });
 var resultadoCEP
 function getEndereco() {
-	//alert()
-	//	alert(($("#Cep").val() *= '_'));
+
 		var temUnder = /_/i.test($("#Cep").val())
 		if(temUnder == false){
 			$.getScript("webservice-cep/cep.php?cep="+$("#Cep").val(), function(){
@@ -713,18 +693,18 @@ jQuery(function($) {
 	$('.profile-social-links > a').tooltip();
 
 	$('.easy-pie-chart.percentage').each(function(){
-	var barColor = $(this).data('color') || '#555';
-	var trackColor = '#E2E2E2';
-	var size = parseInt($(this).data('size')) || 72;
-	$(this).easyPieChart({
-		barColor: barColor,
-		trackColor: trackColor,
-		scaleColor: false,
-		lineCap: 'butt',
-		lineWidth: parseInt(size/10),
-		animate:false,
-		size: size
-	}).css('color', barColor);
+        var barColor = $(this).data('color') || '#555';
+        var trackColor = '#E2E2E2';
+        var size = parseInt($(this).data('size')) || 72;
+        $(this).easyPieChart({
+                barColor: barColor,
+                trackColor: trackColor,
+                scaleColor: false,
+                lineCap: 'butt',
+                lineWidth: parseInt(size/10),
+                animate:false,
+                size: size
+            }).css('color', barColor);
 	});
 
 	///////////////////////////////////////////
@@ -750,8 +730,7 @@ jQuery(function($) {
 
 
 	///////////////////////////////////////////
-	$('#user-profile-3')
-	.find('input[type=file]').ace_file_input({
+	$('#user-profile-3').find('input[type=file]').ace_file_input({
 		style:'well',
 		btn_choose:'Change avatar',
 		btn_change:null,
@@ -760,6 +739,7 @@ jQuery(function($) {
 		droppable:true,
 		before_change: function(files, dropped) {
 			var file = files[0];
+
 			if(typeof file === "string") {//files is just a file name here (in browsers that don't support FileReader API)
 				if(! (/\.(jpe?g|png|gif)$/i).test(file) ) return false;
 			}
@@ -854,6 +834,7 @@ function removeFoto(){
 		var file_input = $form.find('input[type=file]');
 		var upload_in_progress = false;
 
+
 		file_input.ace_file_input({
 			style : 'well',
 			btn_choose : 'Sem foto',
@@ -894,103 +875,31 @@ function removeFoto(){
 			}
 		});
 
-
 		$("#Foto").change(function() {
-			var submit_url = "FotoUpload.php?<%=Parametros%>";
+
+            let objct = new FormData();
+            objct.append('userType','pacientes');
+            objct.append('userId',"<%=req("I")%>");
+            objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
+            objct.append('upload_file' , file_input.data('ace_input_files')[0]);
+            objct.append('folder_name' ,"Perfil");
+
+            $.ajax({
+  					url: domain + "file/perfil/uploadPerfilFile",
+  					type: 'POST',
+  					processData: false,
+  					contentType: false,
+  					data: objct,
+                  // Now you should be able to do this:
+                  mimeType: 'multipart/form-data',    //Property added in 1.5.1
+
+                  success: function (data) {
+                      getProfilePic();
+                  }
+            });
+
 			if(!file_input.data('ace_input_files')) return false;//no files selected
 
-			var deferred ;
-			if( "FormData" in window ) {
-				//for modern browsers that support FormData and uploading files via ajax
-				var fd = new FormData($form.get(0));
-
-				//if file has been drag&dropped , append it to FormData
-				if(file_input.data('ace_input_method') == 'drop') {
-					var files = file_input.data('ace_input_files');
-					if(files && files.length > 0) {
-						fd.append(file_input.attr('name'), files[0]);
-						//to upload multiple files, the 'name' attribute should be something like this: myfile[]
-					}
-				}
-
-				upload_in_progress = true;
-				deferred = $.ajax({
-					url: submit_url,
-					type: $form.attr('method'),
-					processData: false,
-					contentType: false,
-					dataType: 'json',
-					data: fd,
-					xhr: function() {
-						var req = $.ajaxSettings.xhr();
-						if (req && req.upload) {
-							req.upload.addEventListener('progress', function(e) {
-								if(e.lengthComputable) {
-									var done = e.loaded || e.position, total = e.total || e.totalSize;
-									var percent = parseInt((done/total)*100) + '%';
-									//percentage of uploaded file
-								}
-							}, false);
-						}
-						return req;
-					},
-					beforeSend : function() {
-					},
-					success : function(data) {
-
-					}
-				})
-
-			}
-			else {
-				//for older browsers that don't support FormData and uploading files via ajax
-				//we use an iframe to upload the form(file) without leaving the page
-				upload_in_progress = true;
-				deferred = new $.Deferred
-
-				var iframe_id = 'temporary-iframe-'+(new Date()).getTime()+'-'+(parseInt(Math.random()*1000));
-				$form.after('<iframe id="'+iframe_id+'" name="'+iframe_id+'" frameborder="0" width="0" height="0" src="about:blank" style="position:absolute;z-index:-1;"></iframe>');
-				$form.append('<input type="hidden" name="temporary-iframe-id" value="'+iframe_id+'" />');
-				$form.next().data('deferrer' , deferred);//save the deferred object to the iframe
-				$form.attr({'method' : 'POST', 'enctype' : 'multipart/form-data',
-							'target':iframe_id, 'action':submit_url});
-
-				$form.get(0).submit();
-
-				//if we don't receive the response after 60 seconds, declare it as failed!
-				setTimeout(function(){
-					var iframe = document.getElementById(iframe_id);
-					if(iframe != null) {
-						iframe.src = "about:blank";
-						$(iframe).remove();
-
-						deferred.reject({'status':'fail','message':'Timeout!'});
-					}
-				} , 60000);
-			}
-			////////////////////////////
-			deferred.done(function(result){
-				upload_in_progress = false;
-
-				if(result.status == 'OK') {
-					if(result.resultado=="Inserido"){
-						$("#avatarFoto").attr("src", result.url);
-						$("#divDisplayUploadFoto").css("display", "none");
-						$("#divDisplayFoto").css("display", "block");
-					}
-					//alert("File successfully saved. Thumbnail is: " + result.url)
-				}
-				else {
-					alert("File not saved. " + result.message);
-				}
-			}).fail(function(res){
-				upload_in_progress = true;
-				alert("There was an error");
-				//console.log(result.responseText);
-			});
-
-			deferred.promise();
-			return false;
 
 		});
 
@@ -998,10 +907,38 @@ function removeFoto(){
 			file_input.ace_file_input('reset_input');
 		});
 
-
-		if(location.protocol == 'file:') alert("For uploading to server, you should access this page using a webserver.");
-
 	});
+
+
+    $(document).ready(function(){
+        let img = localStorage.getItem('profilePic');
+        if(img == null){
+           return getProfilePic();
+        }
+        return $('#avatarFoto').attr('src',localStorage.getItem('profilePic'));
+    });
+        function getProfilePic()
+        {
+
+            let objct = new FormData();
+            objct.append('userId',"<%=req("I")%>");
+            objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
+            objct.append('folder_name' ,"Perfil");
+            $.ajax({
+                    url: domain + "api/image/perfil",
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    data: objct,
+                  // Now you should be able to do this:
+                  mimeType: 'multipart/form-data',    //Property added in 1.5.1
+
+                  success: function (data) {
+                    $("#avatarFoto").attr('src',data);
+                     localStorage.setItem('profilePic',data);
+                  }
+            });
+        }
 
 
 function itemPacientesConvenios(tbn, act, reg, cln, idc, frm){
@@ -1051,28 +988,46 @@ $(".form-control").change(function(){
       $("#NomePaciente").change(function(){
           $(".crumb-active a").html( $(this).val() );
       });
+      //novo envio de foto tirada do paciente
+    let endpointupload =  (objct) => {
+        return  jQuery.ajax({
+            url: "http://localhost:8000/file/perfil/uploadPerfilFile",
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify(objct),
+
+        }).fail(function(data){console.log(data);});
+    };
 
 
-
+       //change to feegow-api
       var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
 
 		$('#clicar').on('click', function(evt) {
 	      //  var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
 			sayCheese.on('start', function() {
 			  $('#take-photo').on('click', function(evt) {
-				sayCheese.takeSnapshot();
-				$.post("uploader.php?P=pacientes&I=<%=req("I")%>&Col=Foto&L=<%= replace(session("Banco"), "clinic", "") %>", $("#takeUpload").serialize(), function(data, status){ eval(data) });
+                sayCheese.takeSnapshot();
+                let objct = {};
+                objct.userType = 'pacientes';
+                objct.userId = "<%=req("I")%>";
+                objct.licenca = "<%= replace(session("Banco"), "clinic", "") %>";
+                objct.upload_file = $("input[name='photo-data']").val();
+                objct.folder_name = "Perfil";
+                endpointupload(objct);
+
 			});
         });
+
 
 
 		function cancelar(){
 			sayCheese.on('stop', function(evt) {
 			$( "video" ).remove();
 			});
-		sayCheese.stop();
-		//alert("toaqui");return false;
-		//$('#photo').html('');
+            sayCheese.stop();
+            //alert("toaqui");return false;
+            //$('#photo').html('');
 		}
 
 
@@ -1098,25 +1053,25 @@ $(".form-control").change(function(){
 			$('#divAvatar').hide();
         	var img = document.createElement('img');
 
-          $(img).on('load', function() {
-            $('#photo').val(img);
-          });
-          img.src = snapshot.toDataURL('image/jpg');
-          $("#photo-data").val(snapshot.toDataURL('image/jpg'));
+              $(img).on('load', function() {
+                $('#photo').val(img);
+              });
+              img.src = snapshot.toDataURL('image/jpg');
+              $("#photo-data").val(snapshot.toDataURL('image/jpg'));
 
-          $('#photo').empty();
-          $('#photo').html(img);
+              $('#photo').empty();
+              $('#photo').html(img);
         });
 
-        sayCheese.start();
-		$("#divDisplayUploadFoto").css("display", "none");
-		$("#cancelar, #take-photo").css("display", "block");
-  });
+                sayCheese.start();
+                $("#divDisplayUploadFoto").css("display", "none");
+                $("#cancelar, #take-photo").css("display", "block");
+          });
 
-function stopVideo(){
-	$("#cancelar, #take-photo").css("display", "none");
-	$("#divDisplayUploadFoto").css("display", "block");
-}
+        function stopVideo(){
+            $("#cancelar, #take-photo").css("display", "none");
+            $("#divDisplayUploadFoto").css("display", "block");
+        }
 
 
 <%

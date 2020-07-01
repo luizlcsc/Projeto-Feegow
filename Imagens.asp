@@ -8,15 +8,24 @@
 	IF getConfig("NovaGaleria") = "1" THEN
         %>
           <script>
-            if($(".galery-ajax").length === 0){
-                $("#ImagensPaciente").prepend("<div class='galery-ajax'></div>");
-                fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
-                  .then(data => data.text())
-                  .then(data => {
-                     $(".galery-ajax").html(data);
-                     $("[value='A']").parent().remove();
-                  });
+          function getImagensPaciente(arg = false){
+            if(!($(".galery-ajax").length === 0) && arg === false){
+                return;
             }
+            $("#ImagensPaciente").prepend("<div class='galery-ajax'></div>");
+            fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+              .then(data => data.text())
+              .then(data => {
+                 $(".galery-ajax").html(data);
+                 $("[value='A']").parent().remove();
+              });
+
+          }
+
+            function callUpload(){
+               getImagensPaciente(true);
+            }
+            getImagensPaciente();
         </script>
         <%
     END IF

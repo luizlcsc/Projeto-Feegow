@@ -148,7 +148,7 @@ elseif Tipo="Procedimentos" then
 
             if AdicionarProfissionalExecutanteVinculadoAoProcedimento=1 then
                 'adiciona os profissionais executantes
-                sqlProfissional = "SELECT IFNULL(ps.CodigoNaOperadoraOuCPF,prof.CPF)CPF, IFNULL(ps.GrauParticipacaoID,prof.GrauPadrao)GrauParticipacaoID, IFNULL(ps.DocumentoConselho, "&_
+                sqlProfissional = "SELECT IFNULL(ps.CodigoNaOperadoraOuCPF,prof.CPF)CPF, IF(( ps.GrauParticipacaoID IS NULL or ps.GrauParticipacaoID = 0), prof.GrauPadrao, ps.GrauParticipacaoID) GrauParticipacaoID, IFNULL(ps.DocumentoConselho, "&_
                                   "prof.DocumentoConselho)DocumentoConselho, IFNULL(ps.UFConselho, prof.UFConselho)UFConselho, IFNULL(ps.CodigoCBO, esp.codigo)CBOS,IFNULL(ps.ConselhoID, prof.Conselho )ConselhoID  "&_
                                   "FROM  profissionais prof  "&_
                                   "LEFT JOIN tissprofissionaissadt ps ON ps.ProfissionalID=prof.id "&_
@@ -158,7 +158,6 @@ elseif Tipo="Procedimentos" then
                                   "AND (tg.ConvenioID="&ref("gConvenioID")&" or tg.ConvenioID is null) "&_
                                   "ORDER BY ps.sysDate DESC "&_
                                   "LIMIT 1"
-
                 set DadosDoProfissionalParaAdicionarSQL = db.execute(sqlProfissional)
 
                 if not DadosDoProfissionalParaAdicionarSQL.eof then
@@ -171,7 +170,7 @@ elseif Tipo="Procedimentos" then
                     end if
 
                     sqlInsert = "INSERT INTO tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser)" &_
-                                                    "VALUES ("&GuiaID&", "&treatvalzero(Sequencial)&", "&treatvalzero(DadosDoProfissionalParaAdicionarSQL("GrauParticipacaoID"))&", "&treatvalzero(rfProfissionalID)&", '"&DadosDoProfissionalParaAdicionarSQL("CPF")&"', "&_
+                                                    "VALUES ("&GuiaID&", "&treatvalzero(Sequencial)&", "&DadosDoProfissionalParaAdicionarSQL("GrauParticipacaoID")&", "&treatvalzero(rfProfissionalID)&", '"&DadosDoProfissionalParaAdicionarSQL("CPF")&"', "&_
                                                     treatvalzero(DadosDoProfissionalParaAdicionarSQL("ConselhoID"))&", '"&DadosDoProfissionalParaAdicionarSQL("DocumentoConselho")&"', '"&DadosDoProfissionalParaAdicionarSQL("UFConselho")&"', "&treatvalzero(DadosDoProfissionalParaAdicionarSQL("CBOS"))&", "&session("User")&")"
 
                     RecarregaProfissional=True

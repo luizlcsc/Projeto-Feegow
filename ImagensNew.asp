@@ -331,6 +331,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
 
     let ConfigPacienteID = '<%=request.QueryString("PacienteID")%>';
     let ConfigMovementID = '<%=request.QueryString("MovementID")%>';
+    let ConfigLaudoID    = '<%=request.QueryString("LaudoID")%>';
 
     let valorConsulta = null;
     let typeDoc = "all";
@@ -339,6 +340,11 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
     if(ConfigPacienteID > 0){
         valorConsulta = ConfigPacienteID;
         typeSearch = 'PacienteID'
+    }
+
+    if(ConfigLaudoID > 0){
+        valorConsulta = ConfigLaudoID;
+        typeSearch = 'LaudoID'
     }
 
     if(ConfigMovementID > 0){
@@ -350,7 +356,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
         typeDoc="license_upload";
     }
 
-    fetch(domain+'file/arquivos/'+typeDoc+'/'+valorConsulta+'/'+typeDoc+'/list?tk='+localStorage.getItem("tk"))
+    fetch(domain+'file/arquivos/'+typeSearch+'/'+valorConsulta+'/'+typeDoc+'/list?tk='+localStorage.getItem("tk"))
     .then((a) => a.json())
     .then( a =>{
             itens = a;

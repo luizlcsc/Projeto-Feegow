@@ -1,3 +1,4 @@
+<!--#include file="./Classes/TagsConverte.asp"-->
 <style type="text/css">
 .imagem {
 	background-image:url(assets/img/imagem.png);
@@ -179,7 +180,10 @@ while not campos.eof
 	  end if
 
 	  if not isnull(ValorPadrao) then
-	  	ValorPadrao = replaceTags(ValorPadrao, PacienteID, session("UserID"), session("UnidadeID"))
+			'CONVERSOS TAGS NOVO || 30/06/2020 - Rafael Maia ||
+			ValorPadrao = tagsConverte(ValorPadrao,"PacienteID_"&PacienteID&"|ProfissionalSessao_"&session("User")&"|UnidadeSessao_"&session("UnidadeID"),"")
+			'CONVERSOR TAGS ANTIGO
+			'ValorPadrao = replaceTags(ValorPadrao, PacienteID, session("UserID"), session("UnidadeID"))
 	  end if
 	  %>
       <!--#include file="formsCompiladorCampoPreenchido.asp"-->

@@ -12,7 +12,9 @@
             if(!($(".galery-ajax").length === 0) && arg === false){
                 return;
             }
-            $("#ImagensPaciente").prepend("<div class='galery-ajax'></div>");
+            if(arg!==false){
+                $("#ImagensPaciente").prepend("<div class='galery-ajax'></div>");
+            }
             fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
               .then(data => data.text())
               .then(data => {

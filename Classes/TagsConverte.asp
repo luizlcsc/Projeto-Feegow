@@ -41,6 +41,12 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 
   next
   '### <FILTRA OS ITENS SEPARADOS POR PIPE/>
+  conteudo = conteudo&""
+  if conteudo<>"" then
+    conteudo = conteudo
+  else
+    conteudo = "<i>Erro 404 Conteúdo não informado</i>" 
+  end if
 
   SET tagsCategoriasSQL = db.execute("select categoria from cliniccentral.tags_categorias")
   while not tagsCategoriasSQL.eof
@@ -72,12 +78,14 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           end if
 
           if qPacientesSQL<>"" then
-
             SET PacientesSQL = db.execute(qPacientesSQL)
               if not PacientesSQL.eof then
                 conteudo = replace(conteudo,"[Paciente.Nome]",PacientesSQL("NomePaciente"))
-
-                conteudo = replace(conteudo, "[Paciente.Idade]", idade(PacientesSQL("Nascimento")))
+                if isdate(PacientesSQL("Nascimento")) then
+                  conteudo = replace(conteudo, "[Paciente.Idade]", idade(PacientesSQL("Nascimento")&""))
+                else
+                  conteudo = replace(conteudo, "[Paciente.Idade]", "<i>Data de nascimento indefinida</i>")
+                end if
                 conteudo = replace(conteudo, "[Paciente.Nascimento]", PacientesSQL("Nascimento")&"")
                 conteudo = replace(conteudo, "[Paciente.Documento]", PacientesSQL("Documento")&"")
                 conteudo = replace(conteudo, "[Paciente.Prontuario]", PacientesSQL("id"))

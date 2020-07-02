@@ -278,7 +278,10 @@ body{
     			end if
 
 
-    			set formas = db.execute("select * from pacientespropostasformas where PropostaID="&PropostaID)
+    			set formas = db.execute("select pp.Descricao,p.PacienteID from pacientespropostasformas pp "_
+                &"LEFT JOIN propostas p ON p.id=pp.PropostaID "_
+                &"WHERE pp.PropostaID="&PropostaID)
+
     			if not formas.eof then
     				%>
     				<h3><%=reg("TituloPagamento")%></h3>
@@ -287,7 +290,8 @@ body{
                         <tbody>
                         <%
     					while not formas.EOF
-    						Descricao = formas("Descricao")
+    						'Descricao = formas("Descricao")
+                            Descricao = TagsConverte(formas("Descricao"),"PacienteID_"&formas("PacienteID"),"")
                             Descricao = replace(Descricao, chr(10), "<br>")
     						%>
     						<tr>

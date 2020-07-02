@@ -260,6 +260,30 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
             idInTable:'<%=session("idInTable")%>'
         };
 
+        $(document).ready(function(){
+            getProfilePic();
+        });
+       function getProfilePic()
+       {
+           let objct = new FormData();
+           objct.append('userId',sessionObj.idInTable);
+           objct.append('table',sessionObj.Table);
+           objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
+           objct.append('folder_name' ,"Perfil");
+           $.ajax({
+                   url: domain + "api/image/perfil",
+                   type: 'POST',
+                   processData: false,
+                   contentType: false,
+                   data: objct,
+                 // Now you should be able to do this:
+                 mimeType: 'multipart/form-data',    //Property added in 1.5.1
+
+                 success: function (data) {
+                   $("#avatarFoto").attr('src',data);
+                 }
+           });
+       }
         function s2aj(nome, recurso, coluna, campoSuperior, placeholder, oti){
             $.fn.select2.amd.require([
               "select2/core",
@@ -318,6 +342,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                     }
                     return true;
                 }
+
+
 
                 function showNoResults() {
                     "use strict";
@@ -762,7 +788,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         </li>
         <li class="dropdown menu-merge">
           <a href="#" class="dropdown-toggle fw600 p15 menu-click-meu-perfil" data-toggle="dropdown">
-          	<img src="<%=session("photo") %>" class="mw30 br64">
+          	<img src="" class="mw30 br64" id="avatarFoto">
           	<span class="hidden-xs hidden-sm hidden-md pl15"> <%=left(session("NameUser"), 15) %> </span>
             <span class="caret caret-tp hidden-xs hidden-sm hidden-md"></span>
           </a>

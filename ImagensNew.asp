@@ -265,16 +265,17 @@
         }).map((item) => {
                 processaItem(item);
                 return `<div class="galery-item">
-
                              <div class="galery-data-envio">
                                 <small class="pull-right data-envio">Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}</small><br/>
                                 <div class="config-buttons">
-                                    <small class="pull-left"><div class="bs-component">
-                                                                                         <div class="checkbox-custom mb5">
-                                                                                           <input type="checkbox" class="comparar" name="comparar[${item.id}]" value="${item.id}" id="comparar${item.id}">
-                                                                                           <label for="comparar${item.id}">&nbsp</label>
-                                                                                         </div>
-                                                                                       </div></small>
+                                    <small class="pull-left">
+                                        <div class="bs-component">
+                                         <div class="checkbox-custom mb5">
+                                           <input type="checkbox" class="comparar" name="comparar[${item.id}]" value="${item.id}" id="comparar${item.id}">
+                                           <label for="comparar${item.id}">&nbsp</label>
+                                         </div>
+                                       </div>
+                                    </small>
 
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-expand icon-external-link"></i>
@@ -363,6 +364,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
             reloadItens();
             loadItens();
     });
+
 
     function reloadItens(){
         $("[id-img-arquivos]").map((a,b) => {

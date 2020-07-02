@@ -35,7 +35,12 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_ProfissionalSessao  = item_id
       case "UnidadeSessao"
         item_UnidadeSessao       = item_id
-
+      case "AgendamentoID"
+        item_AgendamentoID       = item_id
+      case "ProcedimentoID"
+        item_ProcedimentoID      = item_id
+      case "ProcedimentoNome"     'NO CASO DO AGENDAMENTO QUE O NOME DO AGENDAMENTO PODE != DO PADRÃO
+        item_ProcedimentoNome    = item_id
 
     end select
 
@@ -81,6 +86,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             SET PacientesSQL = db.execute(qPacientesSQL)
               if not PacientesSQL.eof then
                 conteudo = replace(conteudo,"[Paciente.Nome]",PacientesSQL("NomePaciente"))
+                conteudo = replace(conteudo,"[Paciente.Sexo]",PacientesSQL("Sexo"))
                 if isdate(PacientesSQL("Nascimento")) then
                   conteudo = replace(conteudo, "[Paciente.Idade]", idade(PacientesSQL("Nascimento")&""))
                 else
@@ -104,7 +110,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Matricula]", trim(PacientesSQL("Matricula1")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Validade]", trim(PacientesSQL("Validade1")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Email]", trim(PacientesSQL("Email1")&" ") )
-                conteudo = replace(conteudo, "[Paciente.Cpf]", trim(PacientesSQL("CPF")&" ") )
+                conteudo = replace(conteudo, "[Paciente.CPF]", trim(PacientesSQL("CPF")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Telefone]", trim(PacientesSQL("Cel1")&" ") )
               end if
             PacientesSQL.close
@@ -166,8 +172,35 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Financeiro"
 
         case "Agendamento"
+          if item_AgendamentoID>0 then
+            qAgendamentosSQL = "SELECT id, Data,  Hora,  TipoCompromissoID,  StaID,  ValorPlano,  rdValorPlano,  Notas,  Falado,  FormaPagto,  LocalID,  Tempo,  HoraFinal,  SubtipoProcedimentoID,  HoraSta,  ConfEmail,  ConfSMS,  Encaixe,  EquipamentoID,  NomePaciente,  Tel1,  Cel1,  Email1, Procedimentos,  EspecialidadeID,  IndicadoPor,  TabelaParticularID,  CanalID,  Retorno,  RetornoID,  Primeira,  PlanoID, PermiteRetorno "_
+            &"FROM agendamentos "_
+            &"WHERE id="&item_AgendamentoID
+          end if
+
+          if qAgendamentosSQL<>"" then
+            SET AgendamentosSQL = db.execute(qAgendamentosSQL)
+              if not ProfissionaisSQL.eof then
+                conteudo = replace(conteudo, "[Agendamento.Data]", AgendamentosSQL("Data")& formatdatetime(AgendamentosSQL("Hora"),4) )
+              end if
+            AgendamentosSQL.close
+            set AgendamentosSQL = nothing
+
+          end if
 
         case "Procedimento"
+          if item_ProcedimentoID>0 then
+            qProcedimentosSQL = "Select NomeProcedimento from procedimentos where id="&item_ProcedimentoID
+          end if
+          if qProcedimentosSQL<>"" then
+            SET ProcedimentosSQL = db.execute(qProcedimentosSQL)
+            if not ProfissionaisSQL.eof then
+              conteudo = replace(conteudo, "[Procedimento.Nome]", ProcedimentosSQL("NomeProcedimento")&"" )
+            end if
+          end if
+          if item_ProcedimentoNome<>"" then
+            conteudo = replace(conteudo, "[Procedimento.Nome]", item_ProcedimentoNome&"" )
+          end if
 
         case "Devolucao"
 

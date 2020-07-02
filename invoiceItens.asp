@@ -218,6 +218,18 @@ if Acao="" then
 		</tr>
 		</tbody>
 		<tfoot>
+			<% if not integracaofeita.eof then
+				%>
+			<tr>
+				<th colspan="5"><%=conta%> itens</th>
+				<th></th>
+				<th></th>
+				<th id="total" class="text-right" nowrap>R$ <%=formatnumber(Total,2)%></th>
+				<th colspan="2"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
+			</tr>
+			<%
+				else 
+			%>
 			<tr>
 				<th colspan="5"><%=conta%> itens</th>
 				<th><button type="button" class="btn btn-default btn-sm disable" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;"> Aplicar Descontos</button></th>
@@ -225,6 +237,9 @@ if Acao="" then
 				<th id="total" class="text-right" nowrap>R$ <%=formatnumber(Total,2)%></th>
 				<th colspan="2"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
 			</tr>
+			<% 
+				end if 
+			%>
 		</tfoot>
 	</table>
 	<div id="modal-desconto" class="modal fade" role="dialog">

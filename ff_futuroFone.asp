@@ -85,6 +85,7 @@ ff_parametros = replace(ff_parametros,"|","""")
 'response.write(session("banco"))
 'response.write(url)
 url = ff_host&"/"&ff_endPoint&"/?json={"""&ff_metodo&""":{"&ff_parametros&"},""Options"":{""key"":"""&ff_chave&"""}}"
+'response.write(url)
 Dim objWinHttp
 Dim strHTML
 Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")

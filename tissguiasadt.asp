@@ -325,7 +325,7 @@ if not reg.eof then
                                                 END IF
                                             end if
                                         END IF
-                                        set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null)
+                                        set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null,null)
                                         ValorProcedimento = CalculaValorProcedimentoConvenioPaiObj("TotalGeral")
                                         AssociacaoID = CalculaValorProcedimentoConvenioPaiObj("AssociacaoID")
                                     END IF
@@ -344,7 +344,7 @@ if not reg.eof then
                                             end if
 
                                             IF getConfig("calculostabelas") THEN
-                                                set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null)
+                                                set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null,null)
                                                 ValorProcedimento = CalculaValorProcedimentoConvenioPaiObj("TotalGeral")
                                             END IF
 
@@ -367,7 +367,7 @@ if not reg.eof then
                                             TotalProcedimentos = TotalProcedimentos + ProcedimentosAnexosSQL("Valor")
                                             ValorFinalAnexo = ProcedimentosAnexosSQL("Valor")
                                             IF getConfig("calculostabelas") THEN
-                                                set CalculaValorProcedimentoConvenioObj = CalculaValorProcedimentoConvenio(AssociacaoID,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,ProcedimentosAnexosSQL("id"))
+                                                set CalculaValorProcedimentoConvenioObj = CalculaValorProcedimentoConvenio(AssociacaoID,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,ProcedimentosAnexosSQL("id"),null)
                                                 ValorFinalAnexo = (CalculaValorProcedimentoConvenioObj("TotalGeral"))
                                                 TotalProcedimentos = TotalProcedimentos + ValorFinalAnexo
                                             END IF
@@ -725,7 +725,8 @@ min-width: 150px;
                     <label>Profissional Solicitante <% if getConfig("OcultarSolicitanteInterno") = 1 then%> (EXTERNO) <% end if %></label>
                         <span class="pull-right">
                         <% if getConfig("OcultarSolicitanteInterno") = 1 then%>
-                            <input type="hidden" name="tipoProfissionalSolicitante" value="E">
+                            <!--<input type="hidden" name="tipoProfissionalSolicitante" value="E">-->
+                            <label><input type="radio" name="tipoProfissionalSolicitante" id="tipoProfissionalSolicitanteE" value="E" checked="checked" hidden />
                         <% else %>
                             <label><input type="radio" name="tipoProfissionalSolicitante" id="tipoProfissionalSolicitanteI" value="I"<% If tipoProfissionalSolicitante="I" Then %> checked="checked"<% End If %> class="ace" onclick="tps('I');" /> <span class="lbl">Interno</span></label>
                             <label><input type="radio" name="tipoProfissionalSolicitante" id="tipoProfissionalSolicitanteE" value="E"<% If tipoProfissionalSolicitante="E" Then %> checked="checked"<% End If %> class="ace" onclick="tps('E');" /> <span class="lbl">Externo</span></label>

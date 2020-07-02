@@ -73,6 +73,13 @@ TabelaID = req("TabelaID")
 
 Rateado = 0
 
+sqlintegracao = " SELECT le.labid, lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
+                                        " inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
+                                        " INNER JOIN cliniccentral.labs_exames le ON le.id = lie.LabExameID "&_
+                                        " WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
+                       
+set integracao = db.execute(sqlintegracao)
+
 if CD="C" then
 	Titulo = "Contas a Receber"
 	Subtitulo = "Receber de"
@@ -260,7 +267,7 @@ posModalPagar = "fixed"
            end if
            %>
 
-        <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN)%>
+        <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN )%>
 
         <%
         if scp()=1  then
@@ -441,7 +448,7 @@ end if
                 <%
                 if (session("Banco")="clinic5459" or session("Banco")="clinic105") AND AssID=3 then
 
-                    if ContaID&"" then
+                    if ContaID&""<> "" then
                         set pNat = db.execute("select Naturalidade, Documento FROM pacientes WHERE id="& ContaID)
                         if not pNat.eof then
                             Nat = ucase(pNat("Naturalidade")&"")
@@ -475,7 +482,10 @@ end if
                         if not labAutenticacao.eof then
 
                         matrixColor = "warning"
-                        set soliSQL = db.execute("SELECT * FROM labs_solicitacoes WHERE InvoiceID="&treatvalzero(InvoiceID))
+                        sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
+                                        " inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
+                                        " WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
+                        set soliSQL = db.execute(sqlintegracao)
                         if not soliSQL.eof then
                             matrixColor = "success"
                         end if
@@ -483,21 +493,6 @@ end if
                         set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&InvoiceID&" AND Executado!='S'")
                         set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&InvoiceID&" and p.IntegracaoPleres = 'S'")
                          
-                         ' para abrir integração com DB quando hoverem apenas procedimetos direcionados para DB
-                        'sql = "SELECT pl.labID, l.NomeLaboratorio FROM itensinvoice AS ii " &_
-                        '      "INNER JOIN procedimentos AS pro ON (pro.id = ii.itemid) " &_
-                        '      "INNER JOIN labs_procedimentos_laboratorios AS pl ON (pl.procedimentoID = pro.id) " &_
-                        '      "INNER JOIN cliniccentral.labs AS l ON (l.id  = pl.labID) " &_
-                        '      "WHERE invoiceid = "& treatvalzero(InvoiceID) &" ORDER BY 1 LIMIT 1 "
-                        'set procedimentos  = db.execute(sql)
-                        'laboratorioproc  = 1
-                        'nomelaboratorioproc = ""
-                        'if  not procedimentos.eof then
-                        '     laboratorioproc  = procedimentos("labID")
-                        '     nomelaboratorioproc = procedimentos("NomeLaboratorio")
-                        'end if 
-                        '  -----------------------------------------------------------------------------------------
-
                          sqllaboratorios = "SELECT lab.id labID, lab.NomeLaboratorio, count(*) total "&_
                                             " FROM cliniccentral.labs AS lab "&_
                                             " INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) "&_
@@ -506,9 +501,13 @@ end if
                                             " WHERE proc.TipoProcedimentoID = 3 AND ii.InvoiceID ="&treatvalzero(InvoiceID)&""&_
                                             "  GROUP BY 1,2 "
                         set laboratorios = db.execute(sqllaboratorios)
+
+                        
+
                         totallabs=0
                         multiploslabs = 0
                         laboratorioid = 1
+                        contintegracao = 0
                         NomeLaboratorio = ""
                         informacao = ""
                         if  not laboratorios.eof then
@@ -525,6 +524,12 @@ end if
                                 NomeLaboratorio = laboratorios("NomeLaboratorio")
                             end if
                         end if 
+
+                         if not integracao.eof then 
+                            laboratorioid = integracao("labid")
+                            multiploslabs = 0
+                            contintegracao = 1
+                        end if
                     
                         if CInt(temintegracao("temintegracao")) > 0 then
 
@@ -537,7 +542,10 @@ end if
 
                                 <div class="btn-group">
                                     <% if multiploslabs = 1 then %> 
-                                        <button type="button" onclick="avisoLaboratoriosMultiplos('<%=informacao%>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
+                                        <!-- <button type="button" onclick="avisoLaboratoriosMultiplos('<%=informacao%>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
+                                            <i class="fa fa-flask"></i>
+                                        </button> -->
+                                        <button type="button" onclick="abrirSelecaoLaboratorio('<%=InvoiceID%>','<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
                                             <i class="fa fa-flask"></i>
                                         </button>
 
@@ -570,7 +578,7 @@ end if
                         end if
                         %>
 
-                        <% if CD="C" and Aut("cancelamentocontareceberI") = 1 then %>
+                        <% if CD="C" and Aut("cancelamentocontareceberI") = 1 and contintegracao = 0 then %>
                         <div class="btn-group ">
                             <button type="button" class="btn btn-danger btn-sm" id="btn-abrir-modal-cancelamento">
                                 Cancelamento
@@ -583,6 +591,7 @@ end if
                             <i class="fa fa-flask"></i>
                         </button>
                     </div>
+                    <% if contintegracao = 0 then %>
                     <div class="btn-group">
                         <button class="btn btn-success btn-sm dropdown-toggle disable" data-toggle="dropdown">
                         <i class="fa fa-plus"></i> Adicionar Item
@@ -594,7 +603,11 @@ end if
                             descOutra = "Receita"
                           %>
                             <li>
+                                <% if contintegracao = 0 then %>
                                 <a href="javascript:itens('S', 'I', 0)">Consulta ou Procedimento</a>
+                                <% else %>
+                                <a href="javascript:avisoLaboratoriosMultiplos('Operação NÃO PERMITIDA! Exitem integrações feitas para esta conta!');">Consulta ou Procedimento</a>
+                                <% end if %>
                             </li>
                           <%
                           else
@@ -633,13 +646,13 @@ end if
                           %>
                         </ul>
                     </div>
-
+                    <% end if %>
             </span>
 
         </div>
         <div class="panel-body pn">
             <div class="bs-component" id="invoiceItens">
-                <%server.Execute("invoiceItens.asp")%>
+                <% server.Execute("invoiceItens.asp") %>
             </div>
         </div>
    </div>
@@ -830,7 +843,7 @@ function check(mi){
 	}
 }
 
-function imprimir(){
+function imprimirReciboInvoice(){
 	if($("#sysActive").val()==0){
 	    bootbox.alert("Para imprimir este recibo voc&ecirc; precisa salvar esta conta.", function(result) {});
 	}else{

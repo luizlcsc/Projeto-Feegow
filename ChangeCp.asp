@@ -51,8 +51,8 @@ if session("banco")<>"" then
 		else
 			session("CaixaID")=caixa("id")
 		end if
-		set getUnidades = db.execute("select group_concat('|', id, '|') Unidades from sys_financialcompanyunits")
-		session("Unidades") = "|0|" & getUnidades("Unidades")
+		set getUnidades = db.execute("SELECT group_concat('|', id, '|') Unidades FROM (select id, NomeFantasia, 0 Matriz from sys_financialcompanyunits where sysActive=1 UNION ALL select '0', NomeFantasia, 1 Matriz from empresa order by id) t ")
+		session("Unidades") = getUnidades("Unidades")
 		session("UnidadeID") = 0
 	
 	
@@ -68,14 +68,14 @@ if session("banco")<>"" then
 			end if
 		end if
 	
-	
- 		set outrosUsers = db.execute("select su.*,lu.Admin from sys_users su INNER JOIN cliniccentral.licencasusuarios lu ON lu.id=su.id AND su.ID="&session("User"))
+ 		'set outrosUsers = db.execute("select su.*,lu.Admin from sys_users su INNER JOIN cliniccentral.licencasusuarios lu ON lu.id=su.id AND su.ID="&session("User"))
+		set outrosUsers = db.execute("select * from sys_users where id<>"&vcaOE("id"))
 		while not outrosUsers.eof
-			session("UsersChat") = "" 'colocando A só pra simular aberto depois tira o A
-            session("idInTable") = outrosUsers("idInTable")
-            session("Permissoes") = outrosUsers("Permissoes")
-            session("UnidadeID") = outrosUsers("UnidadeID")
-            session("Admin") = outrosUsers("Admin")
+			session("UsersChat") = session("UsersChat")&"|"&outrosUsers("id")&"|"'colocando A só pra simular aberto depois tira o A
+            'session("idInTable") = outrosUsers("idInTable")
+            'session("Permissoes") = outrosUsers("Permissoes")
+            'session("UnidadeID") = outrosUsers("UnidadeID")
+            'session("Admin") = outrosUsers("Admin")
 		outrosUsers.movenext
 		wend
 		outrosUsers.close

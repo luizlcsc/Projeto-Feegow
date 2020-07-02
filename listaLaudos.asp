@@ -43,7 +43,7 @@ end if
     </thead>
     <tbody>
     <%
-    set GroupConcat = db.execute("SET SESSION group_concat_max_len = 1000000;")
+    set GroupMarketplaceSetup = db.execute("SET SESSION group_concat_max_len = 1000000;")
     set pProcsLaudar = db.execute("select group_concat(id) ProcsLaudar from procedimentos WHERE Laudo=1 AND Ativo='on'")
     procsLaudar = pProcsLaudar("ProcsLaudar")
         'response.write(procsLaudar)
@@ -121,32 +121,38 @@ end if
             filtroGrupo = " ii.ItemID in ("&Procedimentos&") AND "
         END IF
         sqldiaslaudo  = " IF(t.ProcedimentoID =0,(SELECT le.DiasResultado + le.DiasAdicionais "&_
-                        " FROM cliniccentral.labs_exames le  "&_
+                        " FROM cliniccentral.labs_exames le  "&_ 
                         " INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id)  "&_
                         " WHERE lia.InvoiceID = t.invoiceid  order by le.DiasResultado desc limit 1) ,proc.DiasLaudo) as DiasLaudo , "&_
-                        "(SELECT cliniccentral.sf_adddiasuteis(t.DataExecucao ,  (SELECT le.DiasResultado + le.DiasAdicionais "&_
-						"								    FROM cliniccentral.labs_exames le "&_
-						"								   INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id) "&_
-						"							      WHERE lia.InvoiceID = t.invoiceid ORDER BY  le.DiasResultado DESC LIMIT 1 ) )) AS DataPrevisao "
+                        "(SELECT max(DataResultado) "&_
+                        " FROM labs_invoices_exames lie  "&_
+                        " INNER JOIN labs_invoices_amostras lia ON lia.id = lie.AmostraID "&_
+                        " INNER JOIN cliniccentral.labs_exames le ON le.id  = lie.LabExameID "&_
+                        " WHERE lia.InvoiceID = t.invoiceid) AS DataPrevisao "
 
+        sqlnomelab = "(SELECT lab.NomeLaboratorio "&_
+                     "   FROM labs_invoices_exames lie "&_
+                     "   INNER JOIN cliniccentral.labs_exames le ON (le.id = lie.labexameid) "&_
+                     "   INNER JOIN cliniccentral.labs lab ON (lab.id = le.labid) "&_
+                     "   WHERE lie.invoiceid = ii.invoiceid LIMIT 1 ) AS nomelab "
 
+        sqllabid = "(SELECT le.labid "&_
+                     "   FROM labs_invoices_exames lie "&_
+                     "   INNER JOIN cliniccentral.labs_exames le ON (le.id = lie.labexameid) "&_
+                     "   WHERE lie.invoiceid = ii.invoiceid LIMIT 1 ) AS labid "
 
-        sql = " SELECT tab.*, (IF(DAYOFWEEK(tab.DataPrevisao) = 6 OR DAYOFWEEK(tab.DataPrevisao) = 7, "&_
-              " IF(DAYOFWEEK(tab.DataPrevisao)=6, "&_
-	          " DATE_ADD(tab.DataPrevisao, INTERVAL + 3 DAY), "&_
-    		  " DATE_ADD(tab.DataPrevisao, INTERVAL + 2 DAY)), "&_
-   		      " DATE_ADD(tab.DataPrevisao, INTERVAL + 1 DAY))) AS DataAtualizada  FROM "&_
-            " (SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID )TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, "& sqldiaslaudo &" , IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID, t.labid, invoiceid  FROM ("&_
-            " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, 0 labid, 0 invoiceid FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
+        sql = " SELECT tab.*, DataPrevisao AS DataAtualizada  FROM "&_
+            " (SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID )TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, "& sqldiaslaudo &" , IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID, t.labid, invoiceid, nomelab  FROM ("&_
+            " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, "&sqllabid&", ii.InvoiceID invoiceid, "&sqlnomelab&" FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
             " UNION ALL "&_
-            " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, ls.labid, i.id invoiceid FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE "&filtroGrupo&" ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
+            " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, ls.labid, i.id invoiceid , '' nomelab FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE "&filtroGrupo&" ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
             " UNION ALL "&_
-            " SELECT gps.id, gps.Quantidade quantidade,  'tissprocedimentossadt', gps.Data, gps.ProcedimentoID, gs.PacienteID, gps.ProfissionalID, gps.Associacao, conv.NomeConvenio, 0 labid, 0 invoiceid FROM tissguiasadt gs LEFT JOIN tissprocedimentossadt gps ON gps.GuiaID=gs.id LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE gps.ProcedimentoID IN("& procsLaudar &") "& sqlDataGPS & sqlProcGS & sqlPacGS & sqlUnidadesG &_
+            " SELECT gps.id, gps.Quantidade quantidade,  'tissprocedimentossadt', gps.Data, gps.ProcedimentoID, gs.PacienteID, gps.ProfissionalID, gps.Associacao, conv.NomeConvenio, 0 labid, 0 invoiceid, '' as nomelab FROM tissguiasadt gs LEFT JOIN tissprocedimentossadt gps ON gps.GuiaID=gs.id LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE gps.ProcedimentoID IN("& procsLaudar &") "& sqlDataGPS & sqlProcGS & sqlPacGS & sqlUnidadesG &_
             ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID INNER JOIN pacientes pac ON pac.id=t.PacienteID "&_
             " LEFT JOIN Laudos l ON (l.Tabela=t.Tabela AND l.IDTabela=t.id) "&_
             " LEFT JOIN labs_exames_procedimentos lep ON (lep.ProcedimentoID=t.ProcedimentoID) "&_
             " LEFT JOIN cliniccentral.labs_exames le ON le.id  = lep.LabExameID "&_
-            " LEFT JOIN profissionais prof ON prof.id=IFNULL(l.ProfissionalID, t.ProfissionalID) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id ORDER BY pac.NomePaciente ) as tab"
+            " LEFT JOIN profissionais prof ON prof.id=IFNULL(t.ProfissionalID, l.ProfissionalID ) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id ORDER BY pac.NomePaciente ) as tab"
         'response.write (sql)
         set ii = db.execute( sql )
 
@@ -196,7 +202,7 @@ end if
                 set vca = db.execute(sql)
                 if not vca.eof then
                     Status = vca("Status")
-                    Previsao = vca("PrevisaoEntrega")
+                    'Previsao = vca("PrevisaoEntrega")
                     IDLaudo = vca("id")
                     link = "I="& IDLaudo
                     adicionaLinha = 1
@@ -292,7 +298,7 @@ end if
                             <%end if%>
                         </td>
                         <td><%= ii("NomeConvenio") %></td>
-                        <td><span class="label label-rounded label-<%=StatusClasse%>"><%= Status %></span></td>
+                        <td id="status<%=ii("invoiceid") %>"><span  class="label label-rounded label-<%=StatusClasse%>"><%= Status %></span></td>
                         <td><% if cint(ii("TemArquivos")) > 0 then %><span data-toggle="tooltip" title="<%=ii("TemArquivos")%> arquivo(s) anexo(s)" class="label label-rounded label-info"><i class="fa fa-paperclip"></i></span><% end if %></td>
                         <td>
                             <div class="btn-group" style="float: right">
@@ -303,11 +309,16 @@ end if
                                 <% if ii("labid")="2" then %>
                                     <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
+                                <% if ii("labid")="3" then %>
+                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Álvaro" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                <% end if %>
                             <% end if %>
-                             <% if ii("labid")="2" then %>
+                             <% if ii("labid")="1" then %>
+                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=648&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
+                             <% elseif ii("labid")="2" then %>
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=739&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
-                             <% else %>
-                                <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%= link %>"><i class="fa fa-edit"></i></a>
+                            <% else %> 
+                                <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%=link%>"><i class="fa fa-edit"></i></a>
                             <% end if %>
                             <button class="btn btn-sm btn-info hidden"><i class="fa fa-print"></i></button>
                             </div>
@@ -334,18 +345,6 @@ end if
     end if
     %>
     </tbody>
-    <tfoot>
-        <tr class="dark">
-            <td colspan="8"></td>
-            <td colspan="3">
-                <%= quickfield("simpleSelect", "StatusID", "", 6, "", "select id, Status FROM laudostatus ", "Status", " no-select2 ") %>
-
-            </td>
-            <td>
-                <button disabled class="btn btn-success   atualizarstatus" type="button"><i class="fa fa-repeat bigger-110"></i> Atualizar Status</button>
-            </td>
-        </tr>
-    </tfoot>
 </table>
 
 <%
@@ -429,13 +428,15 @@ $('[data-toggle="popover"]').popover();
 function syncLabResult(invoices, labid =1) {
     var caminhointegracao = "";
     var url = "";
-    //$("#syncInvoiceResultsButton").prop("disabled", true);  
     switch (labid) {
         case '1':      
             caminhointegracao = "matrix"; 
             break;
         case '2': 
             caminhointegracao = "diagbrasil";
+            break;
+        case '3':
+            caminhointegracao = "alvaro";
             break;
         default:
             alert ('Erro ao integrar com Laboratório');
@@ -445,10 +446,29 @@ function syncLabResult(invoices, labid =1) {
     postUrl(url, {
         "invoices": invoices
     }, function (data) {
-        //$("#syncInvoiceResultsButton").prop("disabled", false);
         if(data.success) {
             alert(data.content);
-            $("#a"+invoices).hide();
+            
+            switch (data.status) {
+                case 1:
+                    var htmlstatus = '<span  class="label label-rounded label-warning">Pendente</span>';
+                    break;
+
+                case 2:
+                    var htmlstatus = '<span  class="label label-rounded label-success">Liberado</span>';
+                    $("#a"+invoices).hide();
+                    break;
+
+                case 3:
+                    var htmlstatus = '<span  class="label label-rounded label-warning">Parcial</span>';
+                    break;
+                default:
+                    var htmlstatus = '<span  class="label label-rounded label-warning">Pendente</span>';
+            }
+            $("#status"+invoices).html(htmlstatus);
+            $("#tr"+invoices).hide();
+            $("#"+invoices).removeClass('fa-flask fa-spinner fa-spin'); 
+            $("#"+invoices).addClass('fa-flask');
 
         } else {
             alert("Falha ao sincronizar o laudo:"+data.message)
@@ -491,6 +511,9 @@ $(".lab-sync").on("click", function (labid =2){
         case '2': 
             caminhointegracao = "diagbrasil";
             break;
+        case '3': 
+            caminhointegracao = "alvaro";
+            break;
         default:
             alert ('Erro ao integrar com Laboratório');
             return false;
@@ -526,7 +549,7 @@ $(".lab-sync").on("click", function (labid =2){
                 });
 
                 $.post("listaLaudos.asp", $("#frmLaudos").serialize(), function (data) {
-                    $("#divListaLaudos").html(data);
+                $("#divListaLaudos").html(data);
                 });
             }
         }else{

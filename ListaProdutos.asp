@@ -6,7 +6,7 @@
     $(".crumb-icon a span").attr("class", "fa fa-medkit");
 </script>
     <%
-
+    praVencer = req("praVencer")
     Ate = req("Ate")
     De = req("De")
     Ordem = req("Ordem")
@@ -44,6 +44,7 @@
     <div class="panel">
         <div class="panel-body mt20 hidden-print">
             <div class="row">
+                <input type="hidden" name="praVencer" id="praVencer" value="<%=praVencer%>">
                 <%=quickfield("simpleSelect", "ProdutoID", "Produto", 2, ProdutoID, "select id, NomeProduto from produtos where sysActive=1 order by NomeProduto", "NomeProduto", "") %>
                 <%=quickfield("simpleSelect", "TipoProduto", "Tipo Produto", 2, TipoProduto, "select id, TipoProduto from cliniccentral.produtostipos order by id", "TipoProduto", " semVazio no-select2 ") %>
                 <%if TipoProduto<>1 then%>
@@ -58,8 +59,8 @@
             <div class="row mt20">
             <%=quickField("text", "CodigoIndividual", "Código Individual", 2, CodigoIndividual, "", "", "")%>
             <%=quickfield("simpleSelect", "AbaixoMinimo", "Abaixo do Mínimo", 2, AbaixoMinimo, "SELECT 'S' as id, 'SIM' as valor UNION ALL SELECT 'N', 'NÃO'", "valor", " no-select2 ") %>
-            <%= quickfield("datepicker", "De", "Válido De", 2, De, "", "", "") %>
-            <%= quickfield("datepicker", "Ate", "Válido Até", 2, Ate, "", "", "") %>
+            <%'= quickfield("datepicker", "De", "Válido De", 2, De, "", "", "") %>
+            <%'= quickfield("datepicker", "Ate", "Válido Até", 2, Ate, "", "", "") %>
             <%=quickfield("simpleSelect", "Ordem", "Ordernar Por", 2, Ordem, "select 'Nome' id, 'Nome' Ordem union all select 'Validade' id, 'Validade' Ordem ", "Ordem", " semVazio no-select2") %>
                 <div class="col-md-2">
                     <button class="btn btn-sm btn-primary  mt20"><i class="fa fa-search bigger-110"></i> Buscar</button>

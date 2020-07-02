@@ -4,22 +4,22 @@
 <%
 	if isnumeric(request.QueryString("X")) and request.QueryString("X")<>"" and request.QueryString("X")<>"0" then
 		db_execute("delete from arquivos where id="&request.QueryString("X"))
-
-		IF getConfig("NovaGaleria") = "1" THEN
-            %>
-                     <div class="galery-ajax"></div>
-
-              <script>
-                      fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
-                      .then(data => data.text())
-                      .then(data => {
-                         $(".galery-ajax").html(data);
-                         $("[value='A']").parent().remove();
-                      });
-                     </script>
-            <%
-		END IF
 	end if
+	IF getConfig("NovaGaleria") = "1" THEN
+        %>
+          <script>
+            if($(".galery-ajax").length === 0){
+                $("#ImagensPaciente").prepend("<div class='galery-ajax'></div>");
+                fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+                  .then(data => data.text())
+                  .then(data => {
+                     $(".galery-ajax").html(data);
+                     $("[value='A']").parent().remove();
+                  });
+            }
+        </script>
+        <%
+    END IF
 %>
 
 

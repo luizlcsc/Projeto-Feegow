@@ -26,11 +26,12 @@ valoPagoGuia = 0
 if(UCase(tabela) = UCase("GuiaSADT")) then 
     if (procedimentosString <> "") then
         For i = 0 to Ubound(procedimentosArray)
-            sqlExecute = "update tissprocedimentossadt set CodigoGlosa='"&(ref("CodigoGlosa"&i))&"', ValorPago="&treatvalzero(valorPagoArray(i))&" where id ="&procedimentosArray(i)&""
+            sqlExecute = "update tissprocedimentossadt set CodigoGlosa='"&(ref("CodigoGlosa"&i))&"', ValorPago="&treatvalzero((ref("ValorPago"&i)))&" where id ="&_
+            procedimentosArray(i)&""
             db_execute(sqlExecute)
         
-            if (valorPagoArray(i) <> "") then 
-                valorPago = valorPagoArray(i)
+            if (ref("ValorPago"&i) <> "") then
+                valorPago = ref("ValorPago"&i)
             end if 
 
             somaTotalProcedimentos = somaTotalProcedimentos + valorPago

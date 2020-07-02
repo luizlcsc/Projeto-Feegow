@@ -1,4 +1,5 @@
-﻿<!--#include file="connect.asp"-->
+﻿﻿<!--#include file="connect.asp"-->
+<!--#include file="Classes/Json.asp"-->
 <%
 ExistePedidoExame="display:none;"
 ArquivoAssinado = ""
@@ -37,8 +38,14 @@ end if
     padding-left: 0;
     margin-top: 10px;
 }
-
 </style>
+<script>
+var listagemExames   = <% response.write(recordToJSON(db.execute(" SELECT PacoteID,procedimentos.id,NomeProcedimento,'Exame' Tipo FROM pacotesprontuariositens                     "&chr(13)&_
+                                                                 " JOIN procedimentos ON procedimentos.id = pacotesprontuariositens.ItemID                            "&chr(13)&_
+                                                                 " WHERE PacoteID in (SELECT id FROM pacotesprontuarios WHERE Tipo = 'pedidoexame' AND sysActive = 1);")))%>
+var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome FROM pacotesprontuarios WHERE Tipo = 'pedidoexame' AND sysActive = 1 ORDER BY 2;")))%>
+</script>
+
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left">
         <li class="active"><a data-toggle="tab" href="#divpedido" id="btnpedido"><i class="fa fa-file-text"></i> Pedidos de Exame</a></li>
@@ -49,25 +56,97 @@ end if
     <div class="tab-content">
       <div id="divpedido" class="tab-pane in active">
         <div class="row">
-            <div class="col-xs-8">
-                <div class="row">
-                    <div class="col-md-2">
-                        <button type="button" onclick="NovoPedido();" class="btn btn-info btn-block"><i class="fa fa-plus icon-plus"></i> Novo</button>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" id="savePedido" style="<%=ArquivoAssinado%>"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="hidden" id="PedidoExameId" value="<%=PedidoExameId%>">
-                        <button type="button" style="<%=ExistePedidoExame%>" class="btn btn-info btn-block" id="printPedido"><i class="fa fa-print icon-print"></i> Imprimir</button>
-                    </div>
-                    <div class="col-md-3 exame-procedimento-content" style="display: none;">
-                        <div class="checkbox-custom checkbox-primary">
-                            <input type="checkbox" name="GerarProposta" id="GerarProposta"
-                            value="S" checked/> <label for="GerarProposta">Gerar Proposta</label>
+            <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <button type="button" onclick="NovoPedido();" class="btn btn-info btn-block"><i class="fa fa-plus icon-plus"></i> Novo</button>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-primary btn-block" id="savePedido" style="<%=ArquivoAssinado%>"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="hidden" id="PedidoExameId" value="<%=PedidoExameId%>">
+                                <button type="button" style="<%=ExistePedidoExame%>" class="btn btn-info btn-block" id="printPedido"><i class="fa fa-print icon-print"></i> Imprimir</button>
+                            </div>
+                            <div class="col-md-3 exame-procedimento-content" style="display: none;">
+                                <div class="checkbox-custom checkbox-primary">
+                                    <input type="checkbox" name="GerarProposta" id="GerarProposta"
+                                    value="S" checked/> <label for="GerarProposta">Gerar Proposta</label>
+                                </div>
+                            </div>
                         </div>
+            </div>
+            <% IF getConfig("ExamesCheckbox") = "1" THEN %>
+                <style>
+                        .wid-3{
+                            width: 32%;
+                            margin-top: 10px;
+                        }
+                        .wid-2{
+                            width: 48%;
+                            margin-top: 10px;
+                        }
+                        .listagem-de-exames{
+                            flex-wrap: wrap;
+                            display: flex;
+                              justify-content: space-evenly;
+                        }
+                </style>
+                <div class="col-xs-12 pn">
+                   <h3 style="margin-left: 10px">Exames
+                      <span style="float: right" onclick="modalPastas('', 'Lista')">
+                          <a href="javascript:void(0)"  class="btn btn-xs btn-dark" data-original-title="Cadastrar modelo de pedido para futuras solicitações" data-rel="tooltip" data-placement="top" title="">
+                              <i class="fa fa-folder text-white"></i> Gerar Pastas
+                          </a>
+                      </span>
+                   </h3>
+
+                   <div class="listagem-de-exames">
+
                     </div>
+                    <script>
+                        var strListagem = "";
+                        var strListagemGrupos = listagemDeGrupos.map((grupo) => {
+                            var mod = 0;
+
+                            strListagem += `<div class='wid-3' style="border: 1px solid #e2e2e2;" >`
+                            strListagem += `<div class="panel panel-widget draft-widget" >
+                                              <div class="panel-heading" style="    height: 35px;    border: 1px solid #fff;">
+                                                <h4 style="text-align: center">${grupo.Nome.toUpperCase()}</h4>
+                                              </div>
+                                              <div class="panel-body p10" style="border: none;">`
+
+                            strListagem += listagemExames.filter(i => i.PacoteID === grupo.id).map((item) => {
+                                let html = '';
+                                 html += `<div class="col-md-6">
+                                                <div class="checkbox-custom checkbox-primary">
+                                                    <input type="checkbox" name="Exame${item.id}_{grupo.id}" id="Exame${item.id}_${grupo.id}"
+                                                    value="S" onclick="changeTexto(${item.id},'${item.Tipo}',this)" /> <label for="Exame${item.id}_${grupo.id}">${item.NomeProcedimento}</label>
+                                                </div>
+                                          </div>`;
+
+
+                                return html;
+                            }).join("");
+                            strListagem += "</div></div></div>"
+                        });
+
+                        $(".listagem-de-exames").html(strListagem);
+
+                        function changeTexto(id,tipo,arg) {
+                            if(arg.checked){
+                                aplicarTextoPedido(id,tipo)
+                            }else{
+                              $(".ProcedimentoExameID[value="+id+"]").parent().remove()
+                            }
+                            //
+                            //
+                        }
+
+                    </script>
                 </div>
+            <% END IF %>
+            <div class="col-xs-8">
                 <div class="row">
                     <div class="col-md-12 exame-procedimento-content" id="PedidoExameLista" ><br>
                         <input type="hidden" name="PedidoExameListaID" id="PedidoExameListaID" value="100">
@@ -107,12 +186,14 @@ end if
                     hiddenTextArea = " hidden"
                 end if
                 %>
+
                 <div class="row">
                     <div class="col-md-12 <%=hiddenTextArea%>"><br />
                         <textarea id="pedido" name="pedido"><%=PedidoExame %></textarea>
                     </div>
                 </div>
             </div>
+            <% IF getConfig("ExamesCheckbox") = "0" THEN %>
             <div class="col-xs-4 pn">
                 <div class="panel">
                     <div class="panel-heading">
@@ -156,10 +237,9 @@ end if
                             </tbody>
                         </table>
                     </div>
-
                 </div>
-
             </div>
+            <% END IF %>
         </div>
     </div>
     <div class="tab-pane" id="pedidosmodelos">

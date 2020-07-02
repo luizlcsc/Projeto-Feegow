@@ -42,7 +42,7 @@ else
     "(select count(id) from pacientesdiagnosticos where sysActive=1 AND PacienteID="&PacienteID&" ) as totaldiagnosticos, "&_
     "(select count(id) from arquivos where PacienteID="&PacienteID&" and Tipo='A' ) as totalarquivos, "&_
     "(select count(id) from arquivos where PacienteID="&PacienteID&" and Tipo='I' ) as totalimagens, "&_
-    "(select count(id) from recibos where PacienteID="&PacienteID&" ) as totalrecibos, "&_
+    "(select count(id) from recibos where (Texto is not null and Texto<>'' ) and PacienteID="&PacienteID&" AND sysActive=1 ) as totalrecibos, "&_
     "(select count(fpae.id) from buiformspreenchidos as fpae left join buiforms as mae on fpae.ModeloID=mae.id where fpae.PacienteID="&PacienteID&" and (fpae.sysActive=1 or fpae.sysActive is null) and (mae.Tipo=1 or mae.Tipo=2 or isnull(mae.Tipo))) as totalae, "&_
     "(select count(fplf.id) from buiformspreenchidos as fplf left join buiforms as mlf on fplf.ModeloID=mlf.id where fplf.PacienteID="&PacienteID&" and (fplf.sysActive=1 or fplf.sysActive is null) and (mlf.Tipo=3 or mlf.Tipo=4)) as totallf "&_
     "from Pacientes as p where id="&PacienteID)
@@ -413,7 +413,7 @@ end if
                     </div><br />
                     <div class="row">
                         <%= quickField("memo", "Observacoes", "Observa&ccedil;&otilde;es", 6, reg("Observacoes"), "", "", "") %>
-                        <div class="col-md-6">
+                        <div class="col-md-6 <%if instr(Omitir, "|pendencias|") then%> hidden<%end if%>">
                         	<div class="checkbox-custom checkbox-warning"><input data-rel="tooltip" title="" data-original-title="Marque para acionar lembrete" type="checkbox" class="tooltip-danger" name="lembrarPendencias" id="lembrarPendencias" value="S"<%if reg("lembrarPendencias")="S" then%> checked="checked"<%end if%> /><label for="lembrarPendencias"> Avisos e Pend&ecirc;ncias</label> <i class="fa fa-flag red pull-right"></i></div>
                         	<textarea class="form-control" name="Pendencias" id="Pendencias"><%=reg("Pendencias")%></textarea>
                         </div>

@@ -9,6 +9,9 @@ if(window.location.href.indexOf('local') == 7){
     env = "local";
 }
 
+if(window.location.href.indexOf('homolog') > 0){
+    env = "homolog";
+}
 var domain = null;
 
 switch (env){
@@ -16,10 +19,10 @@ switch (env){
         domain = "http://localhost:8000/";
         break;
     case "production":
-        domain = "https://app.feegow.com.br/";
+        domain = "https://api.feegow.com/";
         break;
     case "homolog":
-        domain = "http://homolog.feegow.com.br/";
+        domain = "https://api-homolog.feegow.com/";
         break;
 }
 
@@ -342,5 +345,16 @@ function authenticate(u, l = false) {
 
 
         }
+    });
+}
+
+function replicarRegistro(id,tabela){
+    $.post("ReplicarRegistros.asp", {id,tabela}, function(data){
+        $("#importa-replicar").html(data);
+        $('.multisel').multiselect({
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            numberDisplayed: 1,
+        });
     });
 }

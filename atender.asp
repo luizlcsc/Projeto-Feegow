@@ -255,8 +255,19 @@ if Conteudo="Play" then
                 <div class="col-sm-6">
                     <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atEspera()"><i class="fa fa-pause"></i> Espera</button>
                 </div>
+                <% IF session("AtendimentoTelemedicina")&""<>"" THEN %>
+                <div class="col-sm-12">
+                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="cancelarAtendimento()"><i class="fa fa-times"></i> Cancelar Atendimento</button>
+                </div>
+                <% END IF %>
 
                 <script type="text/javascript">
+                    function cancelarAtendimento(){
+                        let conf= confirm("Deseja realmente cancelar o atendimento?");
+                        if (!conf) return;
+                        location.href = "./?P=Pacientes&Acao=CancelarTelemedicina&Pers=1&I=<%=req("I") %>"
+                    }
+
                     function encerrar() {
                         $.post("saveInf.asp?AgendamentoID=<%= AgendamentoID %>&Atendimentos=<%= session("Atendimentos") %>&AtendimentoID=<%=AtendimentoID%>&rPacienteID=<%= PacienteID %>&Origem=Atendimento&Solicitacao=N",
                             {

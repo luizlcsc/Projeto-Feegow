@@ -14,7 +14,7 @@ wend
 feriados.close
 set feriados=nothing
 
-set contar = db.execute("select count(*) as total from agendamentos where EquipamentoID="&EquipamentoID&" and Data="&mydatenull(dia))
+set contar = db.execute("select count(id) as total from agendamentos where EquipamentoID="&EquipamentoID&" and Data="&mydatenull(dia))
 set comp = db.execute("select HoraDe, HoraA, Titulo from compromissos where ProfissionalID=-"&EquipamentoID&" and DataDe <="&mydatenull(dia)&" and DataA>="&mydatenull(dia)&" and DiasSemana like '%"&diaSemana&"%' order by HoraDe")
 %>
 <strong>RESUMO DO DIA</strong>
@@ -45,6 +45,9 @@ comp.movenext
 wend
 comp.close
 set comp=nothing
+
+contar.close
+set contar = nothing
 %>
 
 <!--#include file="disconnect.asp"-->

@@ -59,6 +59,8 @@
 .tm-header-content-abs {
     flex-direction: row;
     display: flex;
+    width: 100%;
+    min-height: 250px;
     justify-content: flex-end;
     padding-right: 10px;
     padding-top: 10px;
@@ -156,7 +158,6 @@
 }
 
 .tm-panel-control {
-    display: flex;
     justify-content: center;
     vertical-align: middle;
     align-content: center;

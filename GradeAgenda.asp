@@ -238,7 +238,7 @@ while not pTemp.EOF
 			<td colspan="4" class="Linhas">Hor&aacute;rio Indispon&iacute;vel</td></tr>
 			<%
 		else
-			set contaAgendamentos = db.execute("select count(*) as total from agendamentos where Data="&mydatenull(Data)&" and Hora='"&hour(pTemp("Hora"))&":"&minute(ptemp("Hora"))&"' and ProfissionalID="&ProfissionalID)
+			set contaAgendamentos = db.execute("select count(id) as total from agendamentos where Data="&mydatenull(Data)&" and Hora='"&hour(pTemp("Hora"))&":"&minute(ptemp("Hora"))&"' and ProfissionalID="&ProfissionalID)
 			totalAgendamentos = ccur(contaAgendamentos("total"))
 			set pagendamentos=db.execute("select * from agendamentos where Data="&mydatenull(Data)&" and Hora='"&hour(pTemp("Hora"))&":"&minute(ptemp("Hora"))&"' and ProfissionalID like '"&ProfissionalID&"'")
 			MaximoAgendamentos=1
@@ -271,6 +271,8 @@ while not pTemp.EOF
 				set pagendamentos=nothing
 				%><%if ccur(contaagendamentos)<ccur(MaximoAgendamentos) then%></td><td><button type="button" onclick="abreAgenda('<%=replace(left(cdate( hour(pTemp("Hora"))&":"&minute(pTemp("Hora")) ),5), ":", "")%>', 0, '<%=Data%>', '<%=pTemp("LocalID")%>')" class="btn btn-success btn-xs"><i class="fa fa-plus"></i></button><%end if%></td></tr><%
 			end if
+			contaAgendamentos.close
+			set contaAgendamentos = nothing
 		end if
 	else
 	tipoMarcacao=""

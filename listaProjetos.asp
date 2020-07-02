@@ -6,7 +6,7 @@
     $(".crumb-link").html("lista de projetos");
     $(".crumb-icon a span").attr("class", "fa fa-th-large");
     <%
-    if aut("tarefasI")=1 then
+    if aut("tarefasI")=1 or aut("tarefasgerenciarI")=1 then
     %>
     $("#rbtns").html('<a class="btn btn-sm btn-success" href="./?P=projetos&I=N&Pers=1"><i class="fa fa-th-large"></i><span class="menu-text"> Inserir projeto</span></a>&nbsp;&nbsp;' +
      '<a class="btn btn-sm btn-primary" href="./?P=listaTarefas&Pers=1"><i class="fa fa-tasks"></i><span class="menu-text"> Tarefas</span></a>');

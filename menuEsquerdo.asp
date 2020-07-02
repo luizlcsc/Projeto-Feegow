@@ -923,7 +923,7 @@ select case lcase(req("P"))
             </li>
             <%
 		    end if
-            if session("OtherCurrencies")="phone" then
+            if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
                 %>
                 <li>
                     <a data-toggle="tab" class="tab" href="#pacienteCalls" onclick="pront('pacienteCalls.asp?I=<%= req("I") %>&Contato=3_<%=req("I")%>')">
@@ -1009,8 +1009,9 @@ select case lcase(req("P"))
         %>
         <li class="sidebar-label pt20"></li>
         <%
-    case "procedimentos", "pacotes", "procedimentosgrupos", "ConferenciadeAmostras"
-        if isnumeric(req("I")) and req("I")<>"" and lcase(req("P"))<>"procedimentosgrupos" and lcase(req("P"))<>"pacotes" then
+    case "procedimentos", "pacotes", "procedimentosgrupos", "ConferenciadeAmostras", "ProcedimentoLaboratorio"
+        
+        if isnumeric(req("I")) and req("I")<>"" and lcase(req("P"))<>"procedimentosgrupos" and lcase(req("P"))<>"pacotes" and lcase(req("P"))<>"ProcedimentoLaboratorio" then
         %>
         <li class="sidebar-label pt20"></li>
         <li class="active">
@@ -1051,6 +1052,10 @@ select case lcase(req("P"))
             <li>
                 <a href="./?P=Pacotes&Pers=Follow"><span class="fa fa-stethoscope"></span> <span class="sidebar-title">Pacotes</span></a>
             </li>
+            <li>
+                <a href="?P=ProcedimentoLaboratorio&Pers=1" >
+                <span class="fa fa-flask"></span> <span class="sidebar-title">Procedimentos Laboratorios</a>
+            </li>
             <%
             if recursoAdicional(24)=4 then
                 set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
@@ -1085,8 +1090,21 @@ select case lcase(req("P"))
                 </li>
                 <%
             end if
+            %>
+            <li>
+                <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-th-list"></span> <span class="sidebar-title">Protocolos</span></a>
+            </li>
+            <%
         end if
-
+    case "protocolos", "protocolosgrupos"
+        %>
+        <li <%if req("P")="Protocolos" then%>class="active"<%end if%>>
+            <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-file-text-o"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
+        </li>
+        <li <%if req("P")="ProtocolosGrupos" then%>class="active"<%end if%>>
+            <a href="./?P=ProtocolosGrupos&Pers=Follow"><span class="fa fa-files-o"></span> <span class="sidebar-title">Grupo de Protocolos</span></a>
+        </li>
+        <%
     case "fornecedores"
         if isnumeric(req("I")) and req("I")<>"" then
             %>
@@ -1528,10 +1546,7 @@ select case lcase(req("P"))
                     <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Configuração de Compra</span></a>
             </li>
         <% END IF %>
-        <li>
-        <a data-toggle="tab" href="#divProcedimentoLaboratorio" onclick="ajxContent('ProcedimentoLaboratorio', '', 1, 'divProcedimentoLaboratorio');">
-            <span class="fa fa-flask"></span> <span class="sidebar-title">Procedimentos Laboratorios</a>
-        </li>
+        
         
          <li>
             <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');">

@@ -211,6 +211,12 @@ body{
     					Qtd = 0
     					TotalTotal = 0
     					TotalDesconto = 0
+
+    					ExibirValorTotal=getConfig("ExibirValorTotal")
+    					ExibirDesconto=getConfig("ExibirDesconto")
+    					ExibirValorUnitario=getConfig("ExibirValorUnitario")
+    					ExibirPrioridadeDePropostas=getConfig("ExibirPrioridadeDePropostas")
+
     					while not itens.EOF
                             TabelaID = itens("Tabela")&""
     					    Desconto = itens("Desconto")
@@ -232,16 +238,16 @@ body{
     						TotalTotal = TotalTotal+Total
     						%>
     						<tr>
-                            	<% IF getConfig("ExibirPrioridadeDePropostas") THEN %>
+                            	<% IF ExibirPrioridadeDePropostas THEN %>
                             	    <td class="<%=hiddenValor%>"><%= prioridadeList.Item(itens("Prioridade")&"")%></td>
                                 <% END IF%>
                             	<td><%=itens("Quantidade")%></td>
                             	<td><%=itens("NomeProcedimento")%></td>
-    							<td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirValorUnitario") = "1" THEN %>R$ <%=formatnumber(ValorUnitarioSemDesconto,2)%><% END IF %></td>
+    							<td class="<%=hiddenValor%>" align="right"><% IF ExibirValorUnitario = "1" THEN %>R$ <%=formatnumber(ValorUnitarioSemDesconto,2)%><% END IF %></td>
 
-                                <td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %>R$ <%=formatnumber(Desconto,2)%><% END IF %></td>
-                                <td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %>R$ <%=formatnumber(DescontoQtd,2)%><% END IF %></td>
-                            	<td class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirValorTotal") = "1" THEN %>R$ <%=formatnumber(Total,2)%><% END IF %></td>
+                                <td class="<%=hiddenValor%>" align="right"><% IF ExibirDesconto = "1" THEN %>R$ <%=formatnumber(Desconto,2)%><% END IF %></td>
+                                <td class="<%=hiddenValor%>" align="right"><% IF ExibirDesconto = "1" THEN %>R$ <%=formatnumber(DescontoQtd,2)%><% END IF %></td>
+                            	<td class="<%=hiddenValor%>" align="right"><% IF ExibirValorTotal = "1" THEN %>R$ <%=formatnumber(Total,2)%><% END IF %></td>
                             </tr>
     						<%
     						itensPrazoEntrega = itens("DiasLaudo")
@@ -259,11 +265,11 @@ body{
                         </tbody>
                         <tfoot>
                         	<tr>
-                            	<th align="left" colspan="<% IF getConfig("ExibirPrioridadeDePropostas")=0 THEN %>3<%else%>4<%end if%>"><%=Qtd%> ite<%if Qtd>1 then%>ns<%else%>m<%end if%></th>
+                            	<th align="left" colspan="<% IF ExibirPrioridadeDePropostas=0 THEN %>3<%else%>4<%end if%>"><%=Qtd%> ite<%if Qtd>1 then%>ns<%else%>m<%end if%></th>
                      
-                            	<th style="text-align: right" class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %> <% END IF %></th>
-                            	<th style="text-align: right" class="<%=hiddenValor%>" align="right"><% IF getConfig("ExibirDesconto") = "1" THEN %>R$ <%=formatnumber(TotalDesconto,2)%><% END IF %></th>
-                            	<th style="text-align: right" class="<%=hiddenValor%>" align="right">R$ <%=formatnumber(TotalTotal,2)%></th>
+                            	<th style="text-align: right" class="<%=hiddenValor%>" align="right"><% IF ExibirDesconto = "1" THEN %> <% END IF %></th>
+                            	<th style="text-align: right" class="<%=hiddenValor%>" align="right"><% IF ExibirDesconto = "1" THEN %>R$ <%=formatnumber(TotalDesconto,2)%><% END IF %></th>
+                            	<th style="text-align: right" class="<%=hiddenValor%>" align="right"><% IF ExibirValorTotal = "1" THEN %>R$ <%=formatnumber(TotalTotal,2)%><% END IF %></th>
                             </tr>
                         </tfoot>
                     </table>

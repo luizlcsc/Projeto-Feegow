@@ -71,7 +71,7 @@ while not proc.eof
         IF NOT isnull(proc("ValorConsolidado")) THEN
             Valor=formatnumber(proc("ValorConsolidado"),2)
         ELSE
-            set reg = CalculaValorProcedimentoConvenio(proc("PvId"),ConvenioID,proc("ProcID"),null,null,null,null)
+            set reg = CalculaValorProcedimentoConvenio(proc("PvId"),ConvenioID,proc("ProcID"),null,null,null,null,null)
             IF xxxCalculaValorProcedimentoConvenioNotIsNull THEN
                 ProcID = reg("AssociacaoID")
                 Valor = "R$"&fn(reg("TotalGeral")+CalculaValorProcedimentoConvenioAnexo(ConvenioID,proc("ProcID"),reg("AssociacaoID"),PrimeiroPlano))

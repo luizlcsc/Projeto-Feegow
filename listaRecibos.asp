@@ -181,7 +181,7 @@ end if
 <h4>Recibos emitidos</h4>
 </div>
 <div class="col-md-2 col-md-offset-7 mt25">
-<button type='button' class='btn btn-<%=classButtom%> btn-sm' <%=desabilita%> onClick='imprimir()'><i class='fa fa-plus'></i> <%=textButtom%></button>
+<button type='button' class='btn btn-<%=classButtom%> btn-sm' <%=desabilita%> onClick='imprimirReciboInvoice()'><i class='fa fa-plus'></i> <%=textButtom%></button>
 </div>
 
 
@@ -301,9 +301,13 @@ end if
                         end if
 
                         if conts("sysActive")=1  then
-                            %>
-                            <button class="btn btn-xs btn-warning "  <%=buttontext%> onclick="geraNFSe('<%=conts("id")%>')"  type="button"><i class="fa fa-file-text"></i></button>
-                            <%
+                            if recursoAdicional(34) = 4 then
+                           %>
+                           <button id='btn_NFeBeta' title='Nota Fiscal Beta' class='btn btn-danger btn-sm' onclick='modalNFEBeta()' type='button'><i class='fa fa-file-text bigger-110'></i></button>
+                           <%else%>
+                           <button class="btn btn-xs btn-warning "  <%=buttontext%> onclick="geraNFSe('<%=conts("id")%>')"  type="button"><i class="fa fa-file-text"></i></button>
+                           <%
+                           end if
                         end if
                     end if
                     %>

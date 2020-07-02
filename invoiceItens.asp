@@ -23,6 +23,11 @@ end if
 
 set ValorPagoSQL = db.execute("SELECT SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement WHERE InvoiceID="&InvoiceID)
 
+sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
+				" inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
+				" WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
+set integracaofeita = db.execute(sqlintegracao)
+
 if not ValorPagoSQL.eof then
     if ValorPagoSQL("ValorPago")>0 and session("Admin")=0 then
         NaoPermitirAlterarExecutante=getConfig("NaoPermitirAlterarExecutante")
@@ -105,6 +110,8 @@ if Acao="" then
                 ProfissionalID = itens("ProfissionalID")
                 EspecialidadeID = itens("EspecialidadeID")
                 Associacao = itens("Associacao")
+				AtendimentoID = itens("AtendimentoID")
+				AgendamentoID = itens("AgendamentoID")
                 DataExecucao = itens("DataExecucao")
                 HoraExecucao = itens("HoraExecucao")
                 PacoteID = itens("PacoteID")
@@ -118,9 +125,16 @@ if Acao="" then
                 if not isnull(HoraFim) and isdate(HoraFim) then
                     HoraFim = formatdatetime(HoraFim, 4)
                 end if
-                %>
-                <!--#include file="invoiceLinhaItem.asp"-->
-                <%
+				if not integracaofeita.eof then
+				%>
+					<!--#include file="invoiceLinhaItemRO.asp"-->
+				<%
+				else 
+				%>
+					<!--#include file="invoiceLinhaItem.asp"-->				
+				<%
+				end if 
+                
             itens.movenext
             wend
             itens.close
@@ -181,9 +195,17 @@ if Acao="" then
 				if not isnull(HoraFim) and isdate(HoraFim) then
 					HoraFim = formatdatetime(HoraFim, 4)
 				end if
+				'response.write("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))			
+				
+				if not integracaofeita.eof then
 				%>
-				<!--#include file="invoiceLinhaItem.asp"-->
+					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
+				else 
+				%>
+					<!--#include file="invoiceLinhaItem.asp"-->				
+				<%
+				end if 
 			itens.movenext
 			wend
 			itens.close
@@ -290,9 +312,15 @@ elseif Acao="I" then
 	if ref("T")<>"P"  and ref("T")<>"K" then
 		ItemID = 0'id do procedimento
 		ValorUnitario = 0
+		if not integracaofeita.eof then
 		%>
-		<!--#include file="invoiceLinhaItem.asp"-->
+			<!--#include file="invoiceLinhaItemRO.asp"-->
 		<%
+		else 
+		%>
+			<!--#include file="invoiceLinhaItem.asp"-->				
+		<%
+		end if 
 	elseif ref("T")="K" then
 		set pct = db.execute("select pdk.ProdutoID, pdk.Valor, pdk.Quantidade from produtosdokit pdk INNER JOIN produtos p ON p.id=pdk.ProdutoID where pdk.KitID="&II)
 		while not pct.EOF
@@ -302,9 +330,15 @@ elseif Acao="I" then
 			Subtotal = ValorUnitario * Quantidade
             PacoteID = II
             Executado="U"
+			if not integracaofeita.eof then
 			%>
-			<!--#include file="invoiceLinhaItem.asp"-->
+				<!--#include file="invoiceLinhaItemRO.asp"-->
 			<%
+			else 
+			%>
+				<!--#include file="invoiceLinhaItem.asp"-->				
+			<%
+			end if 
 			id = id-1
 		pct.movenext
 		wend
@@ -317,9 +351,15 @@ elseif Acao="I" then
 			ValorUnitario = pct("ValorUnitario")
 			Subtotal = ValorUnitario
             PacoteID = II
+			if not integracaofeita.eof then
 			%>
-			<!--#include file="invoiceLinhaItem.asp"-->
+				<!--#include file="invoiceLinhaItemRO.asp"-->
 			<%
+			else 
+			%>
+				<!--#include file="invoiceLinhaItem.asp"-->				
+			<%
+			end if 
 			id = id-1
 		pct.movenext
 		wend

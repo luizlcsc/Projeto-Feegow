@@ -991,7 +991,7 @@ $(".form-control").change(function(){
       //novo envio de foto tirada do paciente
     let endpointupload =  (objct) => {
         return  jQuery.ajax({
-            url: "http://localhost:8000/file/perfil/uploadPerfilFile",
+            url: "" + domain + "/file/perfil/uploadPerfilFile",
             type: 'post',
             dataType: 'json',
             data: JSON.stringify(objct),

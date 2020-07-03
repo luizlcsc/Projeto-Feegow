@@ -286,9 +286,9 @@
                                     <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">
                                             <i class="fa fa-rotate-right"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="javascript:MaisInfo('${item.NomeArquivo}')" title="Mais informações">
+                                    <!--<a class="btn btn-xs btn-alert" href="javascript:MaisInfo('')" title="Mais informações">
                                                         <i class="fa fa-info-circle"></i>
-                                    </a>
+                                    </a>-->
                                     <a class="btn btn-xs btn-alert" href="#" title="Editar Imagem" onclick="return launchEditor('image1', '${item.ArquivoLink}');">
                                                         <i class="fa fa-pencil icon-pencil"></i>
                                     </a>

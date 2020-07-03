@@ -85,8 +85,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           if qPacientesSQL<>"" then
             SET PacientesSQL = db.execute(qPacientesSQL)
               if not PacientesSQL.eof then
-                conteudo = replace(conteudo,"[Paciente.Nome]",PacientesSQL("NomePaciente"))
-                conteudo = replace(conteudo,"[Paciente.Sexo]",PacientesSQL("Sexo"))
+                conteudo = replace(conteudo,"[Paciente.Nome]",PacientesSQL("NomePaciente")&"")
+                conteudo = replace(conteudo,"[Paciente.Sexo]",PacientesSQL("Sexo")&"")
                 if isdate(PacientesSQL("Nascimento")) then
                   conteudo = replace(conteudo, "[Paciente.Idade]", idade(PacientesSQL("Nascimento")&""))
                 else
@@ -180,8 +180,9 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 
           if qAgendamentosSQL<>"" then
             SET AgendamentosSQL = db.execute(qAgendamentosSQL)
-              if not ProfissionaisSQL.eof then
-                conteudo = replace(conteudo, "[Agendamento.Data]", AgendamentosSQL("Data")& formatdatetime(AgendamentosSQL("Hora"),4) )
+              if not AgendamentosSQL.eof then
+                conteudo = replace(conteudo, "[Agendamento.Data]", AgendamentosSQL("Data")&"" )
+                conteudo = replace(conteudo, "[Agendamento.Hora]", formatdatetime(AgendamentosSQL("Hora"),4)&"" )
               end if
             AgendamentosSQL.close
             set AgendamentosSQL = nothing
@@ -190,14 +191,23 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 
         case "Procedimento"
           if item_ProcedimentoID>0 then
-            qProcedimentosSQL = "Select NomeProcedimento from procedimentos where id="&item_ProcedimentoID
+            qProcedimentosSQL = "SELECT p.NomeProcedimento, p.DiasLaudo, t.TipoProcedimento "_
+            &"FROM procedimentos p "_
+            &"LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID "_
+            &"WHERE p.id="&item_ProcedimentoID
           end if
           if qProcedimentosSQL<>"" then
             SET ProcedimentosSQL = db.execute(qProcedimentosSQL)
-            if not ProfissionaisSQL.eof then
+            if not ProcedimentosSQL.eof then
               conteudo = replace(conteudo, "[Procedimento.Nome]", ProcedimentosSQL("NomeProcedimento")&"" )
+              conteudo = replace(conteudo, "[Procedimento.DiasLaudo]", ProcedimentosSQL("DiasLaudo")&"" )
+
+              conteudo = replace(conteudo, "[Procedimento.Tipo]", ProcedimentosSQL("TipoProcedimento")&"" )
             end if
+            ProcedimentosSQL.close
+            set ProcedimentosSQL = nothing
           end if
+
           if item_ProcedimentoNome<>"" then
             conteudo = replace(conteudo, "[Procedimento.Nome]", item_ProcedimentoNome&"" )
           end if

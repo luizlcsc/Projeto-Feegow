@@ -267,8 +267,8 @@ prefixo = right(prefixo, 20)
 						Quantidade = TirarAcento(procs("Quantidade"))
 						ViaID = TirarAcento(procs("ViaID"))
 						TecnicaID = TirarAcento(procs("TecnicaID"))
-						Fator = treatvaltiss(1)
-						ValorUnitario = treatvaltiss( procs("Fator")*procs("ValorUnitario") )
+						Fator = treatvaltiss(procs("Fator"))
+						ValorUnitario = treatvaltiss( procs("ValorUnitario") )
 						ValorTotal = treatvaltiss(procs("ValorTotal"))
 						
 						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal

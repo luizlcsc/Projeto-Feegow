@@ -31,7 +31,7 @@ if not tryLogin.EOF then
     end if
 
     if Servidor="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
-       ' erro = "Prezado cliente, foi necessário reiniciar os servidores devido a uma atualização emergencial de sistema operacional. Por favor aguarde em torno de 15 minutos."
+        ' erro = "Prezado cliente, foi necessário reiniciar os servidores devido a uma atualização emergencial de sistema operacional. Por favor aguarde alguns minutos."
     end if
 
 	if erro="" then
@@ -259,6 +259,19 @@ if not tryLogin.EOF then
 			end if
 		end if
 
+
+		set caixa = db.execute("select c.id, ca.Empresa UnidadeID from caixa c  "&_
+                               "INNER JOIN sys_financialcurrentaccounts ca ON ca.id=c.ContaCorrenteID  "&_
+                               "WHERE c.sysUser="&session("User")&" and isnull(c.dtFechamento)")
+		if not caixa.eof then
+			session("CaixaID") = caixa("id")
+
+			if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then
+            	UnidadeID = sysUser("UnidadeID")
+			end if
+			session("UnidadeID") = caixa("UnidadeID")
+		end if
+
 		if session("UnidadeID")=0 then
 			set getNome = db.execute("select * from empresa")
 			if not getNome.eof then
@@ -293,22 +306,21 @@ if not tryLogin.EOF then
 		'db_execute("delete from atendimentos where isnull(HoraFim) and sysUser="&session("User"))
 		'db_execute("create TABLE if not exists `agendaobservacoes` (`id` INT NOT NULL AUTO_INCREMENT,	`ProfissionalID` INT NULL DEFAULT NULL,	`Data` DATE NULL DEFAULT NULL,	`Observacoes` TEXT NULL DEFAULT NULL,	PRIMARY KEY (`id`)) COLLATE='utf8_general_ci' ENGINE=InnoDB")
 
-		set caixa = db.execute("select c.id, ca.Empresa UnidadeID from caixa c  "&_
-                               "INNER JOIN sys_financialcurrentaccounts ca ON ca.id=c.ContaCorrenteID  "&_
-                               "WHERE c.sysUser="&session("User")&" and isnull(c.dtFechamento)")
-		if not caixa.eof then
-			session("CaixaID") = caixa("id")
+        set temColunaTelemedicinaSQL = dbProvi.execute("select i.COLUMN_NAME from information_schema.`COLUMNS` i where i.TABLE_SCHEMA='clinic"&tryLogin("LicencaID")&"' and i.TABLE_NAME='procedimentos' and i.COLUMN_NAME='ProcedimentoTelemedicina'")
+        if not temColunaTelemedicinaSQL.eof then
+            FieldTelemedicina=" proc.ProcedimentoTelemedicina "
+        else
+            FieldTelemedicina=" '' "
+        end if
 
-			if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then 
-            	UnidadeID = sysUser("UnidadeID")
-			end if 
-			session("UnidadeID") = caixa("UnidadeID")
-		end if
-
-        set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, proc.ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
+        set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, "&FieldTelemedicina&" ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
         if not AtendimentosProf.eof then
             ProcedimentoTelemedicina=AtendimentosProf("ProcedimentoTelemedicina")
-            session("AtendimentoTelemedicina")=AtendimentosProf("AgendamentoID")
+
+            if ProcedimentoTelemedicina="S" then
+                session("AtendimentoTelemedicina")=AtendimentosProf("AgendamentoID")
+            end if
+
             session("Atendimentos")=AtendimentosProf("AtendimentosIDS")&""
         end if
 

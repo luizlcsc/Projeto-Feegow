@@ -209,7 +209,7 @@ end if
 
 <script type="text/javascript">
 
-
+$("#divDisplayFoto #avatarFoto").attr('src',localStorage.getItem('profilePicPac'));
 function showMessage(text, state, title) {
 	var states = {
 		0: {
@@ -911,11 +911,8 @@ function removeFoto(){
 
 
     $(document).ready(function(){
-        let img = localStorage.getItem('profilePic');
-        //if(img == null){
-           return getProfilePic();
-       // }
-       // return $('#avatarFoto').attr('src',localStorage.getItem('profilePic'));
+
+       $("#divDisplayFoto #avatarFoto").attr('src',localStorage.getItem('profilePicPac'));
     });
         function getProfilePic()
         {
@@ -923,6 +920,7 @@ function removeFoto(){
             objct.append('userId',"<%=req("I")%>");
             objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
             objct.append('folder_name' ,"Perfil");
+            objct.append('userType' ,"pacientes");
             $.ajax({
                     url: domain + "api/image/perfil",
                     type: 'POST',
@@ -933,8 +931,8 @@ function removeFoto(){
                   mimeType: 'multipart/form-data',    //Property added in 1.5.1
 
                   success: function (data) {
-                    $("#avatarFoto").attr('src',data);
-                     localStorage.setItem('profilePic',data);
+                     localStorage.setItem('profilePicPac',data);
+                    $("#divDisplayFoto #avatarFoto").attr('src',localStorage.getItem('profilePicPac'));
                   }
             });
         }

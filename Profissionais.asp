@@ -322,6 +322,9 @@ function esps(A, E){
 <script type="text/javascript">
 
 $(document).ready(function(){
+    $("#avatarFoto").attr('src',localStorage.getItem('profilePicProf'));
+    $("#divDisplayFoto #avatarFoto").attr('src',localStorage.getItem('profilePicProf'));
+
     return getProfilePic();
 });
 <%
@@ -395,7 +398,6 @@ function removeFoto(){
             objct.append('upload_file' , file_input.data('ace_input_files')[0]);
             objct.append('col' , "Foto");
             objct.append('folder_name' ,"Perfil");
-
             $.ajax({
                     url: domain + "file/perfil/uploadPerfilFile",
                     type: 'POST',
@@ -430,7 +432,6 @@ function removeFoto(){
     objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
     objct.append('folder_name' ,"Perfil");
     objct.append('userType' ,"profissionais");
-    debugger;
     $.ajax(
         {
             url: domain + "api/image/perfil",
@@ -440,9 +441,9 @@ function removeFoto(){
             data: objct,
           // Now you should be able to do this:
               success: function (data) {
-                   // console.log(data);
+                   console.log(data);
                     $("#avatarFoto").attr('src',data);
-                 //localStorage.setItem('profilePic',data);
+                    localStorage.setItem('profilePicProf',data);
               }
         });
 }

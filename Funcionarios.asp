@@ -207,18 +207,21 @@ function getEndereco() {
 <%
 Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
 %>
+console.log('teste');
 function removeFoto(){
-	if(confirm('Tem certeza de que deseja excluir esta imagem?')){
-		$.ajax({
-			type:"POST",
-			url:"FotoUploadSave.asp?<%=Parametros%>&Action=Remove",
-			success:function(data){
-				$("#divDisplayUploadFoto").css("display", "block");
-				$("#divDisplayFoto").css("display", "none");
-				$("#avatarFoto").attr("src", "/uploads/");
-				$("#Foto").ace_file_input('reset_input');
-			}
-		});
+	if(confirm('Tem certeza de que deseja excluir esta imagem?'))
+	{
+		$.ajax(
+		    {
+			    type:"POST",
+			    url:"FotoUploadSave.asp?<%=Parametros%>&Action=Remove",
+			        success:function(data){
+				        $("#divDisplayUploadFoto").css("display", "block");
+                        $("#divDisplayFoto").css("display", "none");
+                        $("#avatarFoto").attr("src", "/uploads/");
+                        $("#Foto").ace_file_input('reset_input');
+			        }
+		    });
 	}
 }
 
@@ -226,7 +229,7 @@ function removeFoto(){
 		var $form = $('#frm');
 		var file_input = $form.find('input[type=file]');
 		var upload_in_progress = false;
-		
+        debugger;
 		file_input.ace_file_input({
 			style : 'well',
 			btn_choose : 'Sem foto',
@@ -271,12 +274,12 @@ function removeFoto(){
 		$("#Foto").change(function() {
 			var submit_url = "FotoUpload.php?<%=Parametros%>&L=<%=replace(session("Banco"), "clinic", "")%>";
 			if(!file_input.data('ace_input_files')) return false;//no files selected
-			
+
 			var deferred ;
 			if( "FormData" in window ) {
 				//for modern browsers that support FormData and uploading files via ajax
 				var fd = new FormData($form.get(0));
-			
+
 				//if file has been drag&dropped , append it to FormData
 				if(file_input.data('ace_input_method') == 'drop') {
 					var files = file_input.data('ace_input_files');
@@ -298,7 +301,7 @@ function removeFoto(){
 						var req = $.ajaxSettings.xhr();
 						if (req && req.upload) {
 							req.upload.addEventListener('progress', function(e) {
-								if(e.lengthComputable) {	
+								if(e.lengthComputable) {
 									var done = e.loaded || e.position, total = e.total || e.totalSize;
 									var percent = parseInt((done/total)*100) + '%';
 									//percentage of uploaded file
@@ -310,7 +313,7 @@ function removeFoto(){
 					beforeSend : function() {
 					},
 					success : function(data) {
-						
+
 					}
 				})
 
@@ -320,7 +323,7 @@ function removeFoto(){
 				//we use an iframe to upload the form(file) without leaving the page
 				upload_in_progress = true;
 				deferred = new $.Deferred
-				
+
 				var iframe_id = 'temporary-iframe-'+(new Date()).getTime()+'-'+(parseInt(Math.random()*1000));
 				$form.after('<iframe id="'+iframe_id+'" name="'+iframe_id+'" frameborder="0" width="0" height="0" src="about:blank" style="position:absolute;z-index:-1;"></iframe>');
 				$form.append('<input type="hidden" name="temporary-iframe-id" value="'+iframe_id+'" />');
@@ -329,14 +332,14 @@ function removeFoto(){
 							'target':iframe_id, 'action':submit_url});
 
 				$form.get(0).submit();
-				
+
 				//if we don't receive the response after 60 seconds, declare it as failed!
 				setTimeout(function(){
 					var iframe = document.getElementById(iframe_id);
 					if(iframe != null) {
 						iframe.src = "about:blank";
 						$(iframe).remove();
-						
+
 						deferred.reject({'status':'fail','message':'Timeout!'});
 					}
 				} , 60000);
@@ -344,7 +347,7 @@ function removeFoto(){
 			////////////////////////////
 			deferred.done(function(result){
 				upload_in_progress = false;
-				
+
 				if(result.status == 'OK') {
 					if(result.resultado=="Inserido"){
 						$("#avatarFoto").attr("src", result.url);
@@ -364,7 +367,7 @@ function removeFoto(){
 
 			deferred.promise();
 			return false;
-			
+
 		});
 		
 		$form.on('reset', function() {

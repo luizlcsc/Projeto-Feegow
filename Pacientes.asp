@@ -912,14 +912,13 @@ function removeFoto(){
 
     $(document).ready(function(){
         let img = localStorage.getItem('profilePic');
-        if(img == null){
+        //if(img == null){
            return getProfilePic();
-        }
-        return $('#avatarFoto').attr('src',localStorage.getItem('profilePic'));
+       // }
+       // return $('#avatarFoto').attr('src',localStorage.getItem('profilePic'));
     });
         function getProfilePic()
         {
-
             let objct = new FormData();
             objct.append('userId',"<%=req("I")%>");
             objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");

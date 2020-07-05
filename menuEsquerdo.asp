@@ -1833,18 +1833,7 @@ select case lcase(req("P"))
                 end if
                     end if
                 end if
-                %>
-                <%
-                if aut("|agendaV|")=1 or lcase(session("Table"))="profissionais" then
-                %>
-                <li>
-                    <a href="https://clinic.feegow.com.br/components/public/reports/r/duration-of-service" target="_blank">
-                        <i class="fa fa-double-angle-right"></i>
-                        Duração do Atendimento
-                    </a>
-                </li>
-                <%
-                end if
+
 
                 if aut("|relatoriosagendaV|")=1 then
                 %>

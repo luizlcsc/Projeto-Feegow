@@ -41,6 +41,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_ProcedimentoID      = item_id
       case "ProcedimentoNome"     'NO CASO DO AGENDAMENTO QUE O NOME DO AGENDAMENTO PODE != DO PADRÃO
         item_ProcedimentoNome    = item_id
+      case "ReciboID"
+        item_ReciboID            = item_id
 
     end select
 
@@ -220,6 +222,38 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Proposta"
 
         case "Encaminhamento"
+
+        case "Recibo"
+
+          'response.write("RECIBOID:::::: "&item_ReciboID)
+
+          if item_ReciboID>0 then
+            'QUERY DE REFERENCIA ifrReciboIntegrado.asp
+            qRecibosSQL = "SELECT COALESCE(CONCAT(debito.InvoiceID,'.',rec.id),debito.InvoiceID) AS ReciboID, IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','CrÃ©dito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "_
+            &"FROM sys_financialmovement debito "_
+            &"LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id "_
+            &"LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "_
+            &"LEFT JOIN sys_financialpaymentmethod forma_pagamento ON forma_pagamento.id = credito.PaymentMethodID "_
+            &"LEFT JOIN sys_financialcreditcardtransaction cartao_credito ON cartao_credito.MovementID=credito.id "_
+            &"LEFT JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID NOT IN (3, 4) "_
+            &"LEFT JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "_
+            &"LEFT JOIN recibos rec ON rec.InvoiceID=debito.InvoiceID "_
+            &"WHERE debito.InvoiceID="&item_ReciboID
+          
+          end if
+          'response.write("<pre>"&qRecibosSQL&"</pre>")
+          if qRecibosSQL<>"" then
+            SET RecibosSQL = db.execute(qRecibosSQL)
+            if not RecibosSQL.eof then
+              conteudo = replace(conteudo, "[Recibo.ID]", RecibosSQL("ReciboID")&"" )
+              conteudo = replace(conteudo, "[Recibo.DataVencimento]", RecibosSQL("DataVencimento")&"" )
+              conteudo = replace(conteudo, "[Recibo.DataPagamento]", RecibosSQL("DataPagamento")&"" )
+
+            end if
+            RecibosSQL.close
+            set RecibosSQL = nothing
+          end if
+
     
       end select
     end if

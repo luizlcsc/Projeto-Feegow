@@ -16,7 +16,7 @@ Data = mydatetiss(lote("sysDate"))
 Hora = myTimeTISS( lote("sysDate") )
 
 response.write("<?xml version=""1.0"" encoding=""ISO-8859-1""?>")
-
+Response.CodePage = 28591
 response.Charset="utf-8"
 
 versaoTISS = "3.05.00"

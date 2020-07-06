@@ -158,6 +158,9 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               conteudo = replace(conteudo, "[Profissional.Assinatura]", "<img src='"&imgURLPathDefault&"/"&trim(ProfissionaisSQL("Assinatura"))&" "&"' "&img404&"'>" )
               conteudo = replace(conteudo, "[Profissional.Tratamento]", trim(ProfissionaisSQL("Tratamento")&" ") )
               conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", trim(ProfissionaisSQL("Cel1")&" ") )
+              'NOVAS TAGS 06/07/2020
+              conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
+              conteudo = replace(conteudo, "[Profissional.CRM]", trim(ProfissionaisSQL("Conselho")&" ") )
 
 
             end if 

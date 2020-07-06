@@ -182,15 +182,27 @@
     title="Lançamentos de estoque"
     <% end if %>
     onclick="modalEstoque('<%=ItemInvoiceID %>', '<%=ItemID %>', '<%= ProdutoInvoiceID %>')" id="btn<%= ProdutoInvoiceID %>" type="button" class="btn btn-alert btn-block btn-sm"><i class="fa fa-medkit"></i></button></td>
-    <td>       
-        <% if integracaofeita.eof then %>
-            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
-        <% else %>
-            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="avisoLaboratoriosMultiplos('Operação NÃO PERMITIDA! <%=MensagemExclusaoNaoPermitida%>');"><i class="fa fa-remove"></i></button>
-        <% end if %>
+    <td>
+        <%
+        set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.ItemInvoiceID="& ItemInvoiceID &" AND NOT ISNULL(rr.ItemContaAPagar)")
+        if not vcaRep.eof then
+            %>
+            <button title="Repasses Gerados" onclick="repasses('ItemInvoiceID', <%= ItemInvoiceID %>)" type="button" class="btn btn-sm btn-dark">
+                <i class="fa fa-puzzle-piece"></i>
+            </button>
+            <%
+        else
+            if integracaofeita.eof then %>
+                <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+            <% else %>
+                <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="avisoLaboratoriosMultiplos('Operação NÃO PERMITIDA! <%=MensagemExclusaoNaoPermitida%>');"><i class="fa fa-remove"></i></button>
+                <%
+            end if
+        end if
+        %>
     </td>
     <td>
-    <% if Tipo="S" then 
+    <% if Tipo="S" then
 
     %>
         <div class="btn-group">
@@ -579,7 +591,7 @@ $(document).ready(function(){
         let descontoEmReais         = $(this).closest('tr').find("input[name^='Desconto']").val().replace(",",".");
         let descontoEmPercentual    = convertRealParaPorcentagem(descontoEmReais, valorUnitario);
         $(input).val(descontoEmPercentual);
-        $(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());        
+        $(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
     });
 });
 
@@ -654,4 +666,10 @@ function inputBRL(value) {
     return inputBRLCurrency;
 }
 
+function repasses(T, I){
+    $("#modal-table").modal("show");
+    $.get("repassesGerados.asp?T="+ T +"&I="+ I, function(data){
+        $("#modal").html(data);
+    });
+}
 </script>

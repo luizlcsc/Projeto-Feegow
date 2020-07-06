@@ -965,6 +965,7 @@ if($("#DadosAlterados").val()=="S"){
 $(".form-control").change(function(){
 	$("#DadosAlterados").val("S");
 });
+
 </script>
 
 <!--#include file="disconnect.asp"-->

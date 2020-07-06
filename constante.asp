@@ -429,6 +429,15 @@ else
         'db.execute("update cliniccentral.licencas set ultimoRefresh=now() where id="& replace(session("Banco"), "clinic", ""))
     end if
 
+    if req("P")="Home" then
+        set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade > 0 AND ep.Validade IS NOT NULL AND p.sysActive = 1 AND (DATEDIFF(validade, CURDATE()) >= 0 AND DATEDIFF(validade, CURDATE()) <= ( IFNULL(p.DiasAvisoValidade, (SELECT IFNULL(DiasVencimentoProduto, 5) DiasVencimentoProduto FROM sys_config LIMIT 1))))")
+        %>
+        setTimeout(function(){
+            $("#prodVencer").html("<%=numeroProdutosValidade("total") %>");
+        }, 1000);
+        <%
+    end if 
+
     %>
     <!--#include file="disconnect.asp"-->
 

@@ -76,10 +76,12 @@ if Acao="" then
                 Subtotal = itens("Quantidade")*(itens("ValorUnitario")-itens("Desconto")+itens("Acrescimo"))
                 Total = Total+Subtotal
                 NomeItem = ""
+				integracaopleres = "N"
                 if itens("Tipo")="S" then
-                    set pItem = db.execute("select NomeProcedimento NomeItem from procedimentos where id="&itens("ItemID"))
+                    set pItem = db.execute("select NomeProcedimento NomeItem, integracaoPleres  from procedimentos where id="&itens("ItemID"))
                     if not pItem.eof then
                         NomeItem = pItem("NomeItem")
+						integracaopleres = pItem("integracaoPleres")
                     end if
                 elseif itens("Tipo")="M" then
                     set pItem = db.execute("select NomeProduto NomeItem from produtos where id="&itens("ItemID"))
@@ -216,6 +218,18 @@ if Acao="" then
 		</tr>
 		</tbody>
 		<tfoot>
+			<% if not integracaofeita.eof then
+				%>
+			<tr>
+				<th colspan="5"><%=conta%> itens</th>
+				<th></th>
+				<th></th>
+				<th id="total" class="text-right" nowrap>R$ <%=formatnumber(Total,2)%></th>
+				<th colspan="2"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
+			</tr>
+			<%
+				else 
+			%>
 			<tr>
 				<th colspan="5"><%=conta%> itens</th>
 				<th><button type="button" class="btn btn-default btn-sm disable" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;"> Aplicar Descontos</button></th>
@@ -223,6 +237,9 @@ if Acao="" then
 				<th id="total" class="text-right" nowrap>R$ <%=formatnumber(Total,2)%></th>
 				<th colspan="2"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
 			</tr>
+			<% 
+				end if 
+			%>
 		</tfoot>
 	</table>
 	<div id="modal-desconto" class="modal fade" role="dialog">
@@ -377,7 +394,9 @@ elseif Acao="X" then
 	%>
 	$("#row<%= II %>, #row2_<%= II %>").replaceWith("");
     recalc();
+
 	<%
+	response.end
 end if
 
 if Acao<>"X" then
@@ -467,4 +486,131 @@ $(".checkbox-executado").click(function() {
 <%
 end if
 %>
+<script >
+
+$(function(){
+    $(".notedit").on('keydown', function() {
+       return false
+    });
+})
+
+document.onkeyup  = function(evt) {
+    if(evt.keyCode == 13){
+        var proc = $("#VariosProcedimentos").is(':checked');
+        if(proc == true){
+            var todospreenchidos = 1;
+            var i = 1;
+            $("select[name^='ItemID-']").each(function(){
+                console.log($(this).attr("id"));
+                var value = $(this).val();
+
+                if(value == 0) todospreenchidos = 0;
+                i++;
+            });
+
+            let elem = document.activeElement;
+            let labelid = elem.getAttribute("aria-labelledby");
+            let result = labelid.match( /select2-ItemID-([0-9]+)-container/ig );
+
+            if(labelid != null && result != null && result.length > 0){
+                if(todospreenchidos == 1){
+                    itens('S', 'I', 0, '', function(){
+                        $("select[name=ItemID-"+i+"]").select2('open');
+                        $("select[name=ItemID-"+i+"]").focus();
+                    });
+                }
+            }
+        }
+    }
+};
+
+$(document).ready(function(){
+    inputs = $("input[name^='PercentDesconto']");
+    inputs.each(function (key, input) {
+        let valorUnitario           = $(this).closest('tr').find("input[name^='ValorUnitario']").val().replace(",",".");
+        let descontoEmReais         = $(this).closest('tr').find("input[name^='Desconto']").val().replace(",",".");
+        let descontoEmPercentual    = convertRealParaPorcentagem(descontoEmReais, valorUnitario);
+        $(input).val(descontoEmPercentual);
+        $(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
+    });
+});
+
+$('.PercentDesconto').change(function () {
+    $('.CampoDesconto').change();
+})
+
+function syncValuePercentReais(inputUnitario) {
+    let valorDescontoReais = $(inputUnitario).closest('tr').find("input[name^='Desconto']");
+    let valorDescontoPercentual = $(inputUnitario).closest('tr').find("input[name^='PercentDesconto']");
+    let botaoDesconto = $(inputUnitario).closest('tr').find(".btn-desconto");
+    if(botaoDesconto.text() == '%'){
+        setInputDescontoEmReais(valorDescontoPercentual);
+    }else{
+        setInputDescontoEmPorcentagem(valorDescontoReais);
+    }
+    recalc();
+}
+
+function mudarFormatoDesconto(menu){
+    let text = $(menu).text();
+    if(text == 'R$'){
+        $(menu).closest('.input-group').find("input[name^='Desconto']").show();
+        $(menu).closest('.input-group').find("input[name^='PercentDesconto']").hide();
+        $(menu).closest('.input-group-btn').find('button').text('R$');
+        $(menu).text('%');
+    }else{
+        $(menu).closest('.input-group').find("input[name^='Desconto']").hide();
+        $(menu).closest('.input-group').find("input[name^='PercentDesconto']").show();
+        $(menu).closest('.input-group-btn').find('button').text('%');
+        $(menu).text('R$');
+    }
+}
+
+function setInputDescontoEmReais(descontoInput){
+    let percentDesconto = $(descontoInput).closest('.input-group').find("input[name^='PercentDesconto']").val();
+    let valorUnitario   = $(descontoInput).closest('tr').find("input[name^='ValorUnitario']").val();
+    valorDesconto       = convertPorcentagemParaReal(percentDesconto, valorUnitario);
+    $(descontoInput).closest('.input-group').find("input[name^='Desconto']").val(valorDesconto);
+    recalc();
+}
+
+function setInputDescontoEmPorcentagem(descontoInput){
+    let desconto                = $(descontoInput).val();
+    let valorUnitario           = $(descontoInput).closest('tr').find("input[name^='ValorUnitario']").val();
+    let valorDescontoPercentual = convertRealParaPorcentagem(desconto, valorUnitario);
+    $(descontoInput).closest('.input-group').find("input[name^='PercentDesconto']").val(valorDescontoPercentual);
+    recalc();
+}
+
+function convertRealParaPorcentagem(valorReal, valorUnitario){
+    valorReal      = valorReal.replace(".","");
+    valorUnitario  = valorUnitario.replace(".","");
+    valorReal      = parseFloat(valorReal.replace(",","."));
+    valorUnitario  = parseFloat(valorUnitario.replace(",","."));
+    if(valorReal == "0.00" || valorUnitario == "0.00") return "0,00";
+    return inputBRL((valorReal/valorUnitario)*100);
+}
+
+function convertPorcentagemParaReal(valorPorcentagem, valorUnitario){
+    valorPorcentagem    = valorPorcentagem.replace(".","");
+    valorUnitario       = valorUnitario.replace(".","");
+    valorPorcentagem    = parseFloat(valorPorcentagem.replace(",","."));
+    valorUnitario       = parseFloat(valorUnitario.replace(",","."));
+    if(valorPorcentagem == "0.00" || valorUnitario == "0.00") return "0,00";
+    return inputBRL(valorPorcentagem * (valorUnitario/100));
+}
+
+function inputBRL(value) {
+    let replacedValue    = value.toString().replace(",",".");
+    let inputBRLCurrency = parseFloat(replacedValue).toFixed(2).replace(".",",");
+    return inputBRLCurrency;
+}
+
+function repasses(T, I){
+    $("#modal-table").modal("show");
+    $.get("repassesGerados.asp?T="+ T +"&I="+ I, function(data){
+        $("#modal").html(data);
+    });
+}
+</script>
 <!--#include file="disconnect.asp"-->

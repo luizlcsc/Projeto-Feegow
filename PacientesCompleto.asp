@@ -776,6 +776,6 @@ $(function () {
     if(!$("#Foto").is(':focusable')){
       $("#Foto").prop("required", false);
     }
-  }, 150);
+  }, 300);
 })
 </script>

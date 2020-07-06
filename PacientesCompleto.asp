@@ -771,6 +771,11 @@ $(function(){
 
 
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="tooltip"]').tooltip();
+  setTimeout(() => {
+    if(!$("#Foto").is(':focusable')){
+      $("#Foto").prop("required", false);
+    }
+  }, 150);
 })
 </script>

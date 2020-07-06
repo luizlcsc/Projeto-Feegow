@@ -272,11 +272,11 @@ if not reg.eof then
 						    end if
 
 
-
-
-						    if HoraInicio=HoraFim then
-                                HoraInicio = "NULL"
-                                HoraFim = "NULL"
+                            if getConfig("HorarioAtendimentoGuia")=1 then
+                                if HoraInicio=HoraFim then
+                                    HoraInicio = "NULL"
+                                    HoraFim = "NULL"
+                                end if
                             end if
 						    've se há valor definido pra este procedimento neste convênio
 
@@ -1310,6 +1310,13 @@ function formatCBOGroup(especialidades, $el)
             $cont.append("</optgroup>");
         }
     }
+}
+
+function repasses(T, I){
+    $("#modal-table").modal("show");
+    $.get("repassesGerados.asp?T="+ T +"&I="+ I, function(data){
+        $("#modal").html(data);
+    });
 }
 
 <%

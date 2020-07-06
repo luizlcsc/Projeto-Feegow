@@ -189,11 +189,14 @@
             set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.ItemInvoiceID="& ItemInvoiceID &" AND NOT ISNULL(rr.ItemContaAPagar)")
             if not vcaRep.eof then
                 PodeExcluirItem = False
+
+                if aut("repassesV")=1 then
                 %>
                 <button title="Repasses Gerados" onclick="repasses('ItemInvoiceID', <%= ItemInvoiceID %>)" type="button" class="btn btn-sm btn-dark">
                     <i class="fa fa-puzzle-piece"></i>
                 </button>
                 <%
+                end if
             end if
         end if
 

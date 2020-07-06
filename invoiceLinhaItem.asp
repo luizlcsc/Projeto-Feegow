@@ -184,20 +184,26 @@
     onclick="modalEstoque('<%=ItemInvoiceID %>', '<%=ItemID %>', '<%= ProdutoInvoiceID %>')" id="btn<%= ProdutoInvoiceID %>" type="button" class="btn btn-alert btn-block btn-sm"><i class="fa fa-medkit"></i></button></td>
     <td>
         <%
-        set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.ItemInvoiceID="& ItemInvoiceID &" AND NOT ISNULL(rr.ItemContaAPagar)")
-        if not vcaRep.eof then
-            %>
-            <button title="Repasses Gerados" onclick="repasses('ItemInvoiceID', <%= ItemInvoiceID %>)" type="button" class="btn btn-sm btn-dark">
-                <i class="fa fa-puzzle-piece"></i>
-            </button>
-            <%
-        else
-            if integracaofeita.eof then %>
-                <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
-            <% else %>
-                <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="avisoLaboratoriosMultiplos('Operação NÃO PERMITIDA! <%=MensagemExclusaoNaoPermitida%>');"><i class="fa fa-remove"></i></button>
+        PodeExcluirItem = True
+        if ItemInvoiceID&""<>"" then
+            set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.ItemInvoiceID="& ItemInvoiceID &" AND NOT ISNULL(rr.ItemContaAPagar)")
+            if not vcaRep.eof then
+                PodeExcluirItem = False
+                %>
+                <button title="Repasses Gerados" onclick="repasses('ItemInvoiceID', <%= ItemInvoiceID %>)" type="button" class="btn btn-sm btn-dark">
+                    <i class="fa fa-puzzle-piece"></i>
+                </button>
                 <%
             end if
+        end if
+
+        if not integracaofeita.eof then
+            PodeExcluirItem = False
+        end if
+
+        if PodeExcluirItem then %>
+            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+        <%
         end if
         %>
     </td>

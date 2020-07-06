@@ -72,10 +72,10 @@ while not proc.eof
             Valor=formatnumber(proc("ValorConsolidado"),2)
         ELSE
             set reg = CalculaValorProcedimentoConvenio(proc("PvId"),ConvenioID,proc("ProcID"),null,null,null,null,null)
-            IF xxxCalculaValorProcedimentoConvenioNotIsNull THEN
+            On Error Resume Next
                 ProcID = reg("AssociacaoID")
                 Valor = "R$"&fn(reg("TotalGeral")+CalculaValorProcedimentoConvenioAnexo(ConvenioID,proc("ProcID"),reg("AssociacaoID"),PrimeiroPlano))
-            END IF
+            On Error Goto 0
         END IF
     END IF
 

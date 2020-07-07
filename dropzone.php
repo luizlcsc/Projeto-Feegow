@@ -259,7 +259,7 @@
             <input type="hidden" name="guiaID" value="<?=$_GET['guiaID']?>">
             <input type="hidden" name="tipoGuia" value="<?=$_GET['tipoGuia']?>">
             <input type="hidden" name="LaudoID" value="<?=$_GET['LaudoID']?>">
-            <label for="file"><strong>Clique e escolha um arquivo</strong><span class="box__dragndrop"> ou arraste até aqui</span>.</label>
+            <label for="file"><strong>Clique aqui e escolha um arquivo</strong><span class="box__dragndrop"> ou arraste até aqui</span>.</label>
             <button type="submit" class="box__button">Upload</button>
         </div>
         <div class="box__uploading">Carregando&hellip;</div>
@@ -279,6 +279,8 @@
 	( function ( document, window, index )
 	{
 		// feature detection for drag&drop upload
+
+
 		var isAdvancedUpload = function()
 			{
 				var div = document.createElement( 'div' );
@@ -361,7 +363,10 @@
 									});
 			}
 
-
+            $("#form-upload").on('click',function()
+            {
+                form.querySelector( 'input[type="file"]' ).click();
+            })
 			// if the form was submitted
 			form.addEventListener( 'submit', function( e )
 			{
@@ -462,9 +467,11 @@
 			input.addEventListener( 'blur', function(){ input.classList.remove( 'has-focus' ); });
 
 		});
+
 	}( document, window, 0 ));
 
 	$("#form-upload").attr("action", parent.domain + "/api/image/uploadAnyFile?tk="+localStorage.getItem('tk'));
+
 
 </script>
 <script src="https://ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js" data-cf-settings="886de5421c6c96677a1a3b09-|49" defer=""></script></body>

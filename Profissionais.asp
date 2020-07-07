@@ -321,12 +321,6 @@ function esps(A, E){
 <script src="assets/js/ace-elements.min.js"></script>
 <script type="text/javascript">
 
-$(document).ready(function(){
-    $("#avatarFoto").attr('src',localStorage.getItem('profilePicProf'));
-    $("#divDisplayFoto #avatarFoto").attr('src',localStorage.getItem('profilePicProf'));
-
-    return getProfilePic();
-});
 <%
 Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
 %>
@@ -408,7 +402,7 @@ function removeFoto(){
                   mimeType: 'multipart/form-data',    //Property added in 1.5.1
 
                   success: function (data) {
-                      getProfilePic();
+                       getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'profissionais');
                   }
             });
 			
@@ -425,28 +419,7 @@ function removeFoto(){
 
 	});
 	
- function getProfilePic()
-{
-    let objct = new FormData();
-    objct.append('userId',"<%=req("I")%>");
-    objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
-    objct.append('folder_name' ,"Perfil");
-    objct.append('userType' ,"profissionais");
-    $.ajax(
-        {
-            url: domain + "api/image/perfil",
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            data: objct,
-          // Now you should be able to do this:
-              success: function (data) {
-                   console.log(data);
-                    $("#avatarFoto").attr('src',data);
-                    localStorage.setItem('profilePicProf',data);
-              }
-        });
-}
+
 $(document).ready(function(){
 	<%=chamaScript%>
 });
@@ -465,6 +438,11 @@ $("#ObsAgenda").ckeditor();
 function VisualizarEnvioDasAgendas() {
     openComponentsModal("ProfissionalEnvioAgenda.asp", {ProfissionalID:"<%=req("I")%>"}, "Envio das agendas", true)
 }
+$(document).ready(function(){
+    getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'profissionais',true);
+});
 </script>
+
+<script src="src/imageUtil.js"></script>
 
 <!--#include file="disconnect.asp"-->

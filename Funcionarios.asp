@@ -176,11 +176,7 @@ $(document).ready(function(e) {
 	<%call formSave("frm", "save", "")%>
 });
 $(document).ready(function(){
-    $("#avatarFoto").attr('src',localStorage.getItem('profilePicProf'));
-    $("#divDisplayFoto #avatarFoto").attr('src',localStorage.getItem('profilePicFunc'));
-
-    return getProfilePic();
-
+    getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'funcionarios');
 });
 
 $("#Cep").keyup(function(){
@@ -205,28 +201,7 @@ function getEndereco() {
 		});
 	}
 }
-function getProfilePic()
-{
-    let objct = new FormData();
-    objct.append('userId',"<%=req("I")%>");
-    objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
-    objct.append('folder_name' ,"Perfil");
-    objct.append('userType' ,"profissionais");
-    $.ajax(
-        {
-            url: domain + "api/image/perfil",
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            data: objct,
-          // Now you should be able to do this:
-              success: function (data) {
-                   console.log(data);
-                    //$("#avatarFoto").attr('src',data);
-                    localStorage.setItem('profilePicFunc',data);
-              }
-        });
-}
+
 </script>
 <script src="../assets/js/ace-elements.min.js"></script>
 <script type="text/javascript">
@@ -299,28 +274,28 @@ function removeFoto(){
 		
 		
 			$("#Foto").change(function() {
-                        let objct = new FormData();
-                        objct.append('userType','funcionarios');
-                        objct.append('userId',"<%=req("I")%>");
-                        objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
-                        objct.append('upload_file' , file_input.data('ace_input_files')[0]);
-                        objct.append('col' , "Foto");
-                        objct.append('folder_name' ,"Perfil");
-                        $.ajax({
-                                url: domain + "file/perfil/uploadPerfilFile",
-                                type: 'POST',
-                                processData: false,
-                                contentType: false,
-                                data: objct,
-                              // Now you should be able to do this:
-                              mimeType: 'multipart/form-data',    //Property added in 1.5.1
+                let objct = new FormData();
+                objct.append('userType','funcionarios');
+                objct.append('userId',"<%=req("I")%>");
+                objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
+                objct.append('upload_file' , file_input.data('ace_input_files')[0]);
+                objct.append('col' , "Foto");
+                objct.append('folder_name' ,"Perfil");
+                $.ajax({
+                        url: domain + "file/perfil/uploadPerfilFile",
+                        type: 'POST',
+                        processData: false,
+                        contentType: false,
+                        data: objct,
+                      // Now you should be able to do this:
+                      mimeType: 'multipart/form-data',    //Property added in 1.5.1
 
-                              success: function (data) {
-                                  getProfilePic();
-                              }
-                        });
+                      success: function (data) {
+                           getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'funcionarios');
+                      }
+                });
 
-            		});
+            });
 		$form.on('reset', function() {
 			file_input.ace_file_input('reset_input');
 		});

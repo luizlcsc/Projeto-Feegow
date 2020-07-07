@@ -260,30 +260,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
             idInTable:'<%=session("idInTable")%>'
         };
 
-        $(document).ready(function(){
-            getProfilePic();
-        });
-       function getProfilePic()
-       {
-           let objct = new FormData();
-           objct.append('userId',sessionObj.idInTable);
-           objct.append('table',sessionObj.Table);
-           objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
-           objct.append('folder_name' ,"Perfil");
-           $.ajax({
-                   url: domain + "api/image/perfil",
-                   type: 'POST',
-                   processData: false,
-                   contentType: false,
-                   data: objct,
-                 // Now you should be able to do this:
-                 mimeType: 'multipart/form-data',    //Property added in 1.5.1
-
-                 success: function (data) {
-                   $("#avatarFoto").attr('src',data);
-                 }
-           });
-       }
         function s2aj(nome, recurso, coluna, campoSuperior, placeholder, oti){
             $.fn.select2.amd.require([
               "select2/core",
@@ -2572,3 +2548,11 @@ function chatNotificacao(titulo, mensagem) {
 }
 
 </script>
+<script>
+$(document).ready(function(){
+   getProfilePic("<%=session("User")%>","<%= replace(session("Banco"), "clinic", "") %>",'profissionais');
+
+});
+</script>
+<script src="src/imageUtil.js"></script>
+

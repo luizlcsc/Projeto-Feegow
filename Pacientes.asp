@@ -208,8 +208,10 @@ end if
 </script>
 
 <script type="text/javascript">
+$(document).ready(function(){
+    getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'pacientes');
+});
 
-$("#divDisplayFoto #avatarFoto").attr('src',localStorage.getItem('profilePicPac'));
 function showMessage(text, state, title) {
 	var states = {
 		0: {
@@ -894,7 +896,7 @@ function removeFoto(){
                   mimeType: 'multipart/form-data',    //Property added in 1.5.1
 
                   success: function (data) {
-                      getProfilePic();
+                      getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'pacientes');
                   }
             });
 
@@ -909,33 +911,6 @@ function removeFoto(){
 
 	});
 
-
-    $(document).ready(function(){
-
-       $("#divDisplayFoto #avatarFoto").attr('src',localStorage.getItem('profilePicPac'));
-    });
-        function getProfilePic()
-        {
-            let objct = new FormData();
-            objct.append('userId',"<%=req("I")%>");
-            objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
-            objct.append('folder_name' ,"Perfil");
-            objct.append('userType' ,"pacientes");
-            $.ajax({
-                    url: domain + "api/image/perfil",
-                    type: 'POST',
-                    processData: false,
-                    contentType: false,
-                    data: objct,
-                  // Now you should be able to do this:
-                  mimeType: 'multipart/form-data',    //Property added in 1.5.1
-
-                  success: function (data) {
-                     localStorage.setItem('profilePicPac',data);
-                    $("#divDisplayFoto #avatarFoto").attr('src',localStorage.getItem('profilePicPac'));
-                  }
-            });
-        }
 
 
 function itemPacientesConvenios(tbn, act, reg, cln, idc, frm){
@@ -1156,7 +1131,7 @@ if not memed.eof then
     }
 </script>
 <% end if %>
-
+<script src="src/imageUtil.js"></script>
 <script>
 <% IF req("ToArea")<>"" THEN %>
     $(".<%=req("ToArea")%>").click();

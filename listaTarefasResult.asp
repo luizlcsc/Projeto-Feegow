@@ -48,7 +48,7 @@ if ref("Solicitante")<>"" and instr(ref("Solicitante"), "_")>0 then
 end if
 
 if ref("Filtrar")<>"" then
-    sqlFiltrar = " AND (t.id LIKE '"&ref("Filtrar")&"' OR t.Titulo LIKE '%"& ref("Filtrar") &"%' OR t.ta LIKE '%"& ref("Filtrar") &"%') "
+    sqlFiltrar = " AND (t.id = '"&ref("Filtrar")&"' OR t.Titulo LIKE '%"& ref("Filtrar") &"%' OR t.ta LIKE '%"& ref("Filtrar") &"%') "
 end if
 
 if ref("Projeto")<>"" then

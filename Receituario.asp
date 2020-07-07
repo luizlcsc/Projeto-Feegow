@@ -3,6 +3,7 @@ response.Charset="utf-8"
 
 %>
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/TagsConverte.asp"-->
 
 		<link type="text/css" rel="stylesheet" href="assets/js/qtip/jquery.qtip.css" />
 		<link rel="shortcut icon" href="icon_clinic.png" type="image/x-icon" />
@@ -176,14 +177,18 @@ body{
         end if
 
         
+        'DESATIVADO A CONVERSAO DE TAGS MANUAL | Rafael Maia 07/07/2020
+        'strVarPac = "[Paciente.Nome]|^[Paciente.NomeSocial]|^[Paciente.Idade]|^[Paciente.Endereco]|^[Paciente.Bairro]|^[Paciente.Cidade]|^[Paciente.Estado]|^[Paciente.Email]|^[Paciente.Telefone]|^[Data.DDMMAAAA]|^[Data.Extenso]|^[Sistema.Hora]"
+        'strValPac = NomePaciente&"|^"&NomeSocial&"|^"&IdadePaciente&"|^"&EnderecoPaciente&"|^"&BairroPaciente&"|^"&CidadePaciente&"|^"&EstadoPaciente&"|^"&EmailPaciente&"|^"&TelefonePaciente&"|^"&DDMMAAAA&"|^"&Extenso&"|^"&Hora
+        'spl = split(strVarPac, "|^")
+        'spl2 = split(strValPac, "|^")
+        'for i=0 to ubound(spl)
+        '    Prescricoes = replace(Prescricoes, spl(i), spl2(i))
+        'next
 
-        strVarPac = "[Paciente.Nome]|^[Paciente.NomeSocial]|^[Paciente.Idade]|^[Paciente.Endereco]|^[Paciente.Bairro]|^[Paciente.Cidade]|^[Paciente.Estado]|^[Paciente.Email]|^[Paciente.Telefone]|^[Data.DDMMAAAA]|^[Data.Extenso]|^[Sistema.Hora]"
-        strValPac = NomePaciente&"|^"&NomeSocial&"|^"&IdadePaciente&"|^"&EnderecoPaciente&"|^"&BairroPaciente&"|^"&CidadePaciente&"|^"&EstadoPaciente&"|^"&EmailPaciente&"|^"&TelefonePaciente&"|^"&DDMMAAAA&"|^"&Extenso&"|^"&Hora
-        spl = split(strVarPac, "|^")
-        spl2 = split(strValPac, "|^")
-        for i=0 to ubound(spl)
-            Prescricoes = replace(Prescricoes, spl(i), spl2(i))
-        next
+        'NOVA FUNÇÃO PARA CONVERTER TAGS
+        Prescricoes = tagsConverte(Prescricoes,"PacienteID_"&reg("PacienteID"),"")
+
         %>
         <script type="text/javascript">
         function Carimbo(checked){

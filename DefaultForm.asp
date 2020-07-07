@@ -138,6 +138,8 @@ function DefaultForm(tableName, id)
 					%>
                 </script>
                 <%
+                elseif (lcase(tableName)="buiforms") and (ModoFranquiaUnidade or getConfig("ReplicarFormulario")) then
+                    btnInserir = ("<a class=""btn btn-sm btn-dark"" href=""?P=buiforms-duplicar&I=N&Pers="&Pers&"""><i class=""fa fa-copy""></i> Duplicar da Central</a>")&"&nbsp;<a class=""btn btn-sm btn-success"" href=""?P="& request.QueryString("P")&"&I=N&Pers="&Pers&"""><i class=""fa fa-plus""></i> INSERIR</a>"
 				else
                     %>
                     <br />
@@ -158,6 +160,10 @@ function DefaultForm(tableName, id)
     <%
         if lcase(tableName)="procedimentos" then
             server.execute("procedimentoRapido.asp")
+        end if
+
+        if lcase(tableName)="sys_preparos" or lcase(tableName)="sys_restricoes" then
+            server.execute("preparoRestricaoRapido.asp")
         end if
 
         if lcase(tableName)="produtos" then
@@ -821,7 +827,17 @@ function DefaultForm(tableName, id)
                           <%=ordersNull%>
                           { "bSortable": false }
 			            ] } );
-					
+
+                    <% IF session("Franqueador") <> "" THEN %>
+                        oTable1 = $('#table-').dataTable( {
+                        "aoColumns": [
+                          { "bSortable": false },
+                          <%=ordersNull%>
+                          { "bSortable": false }
+                        ] } );
+                    <% END IF %>
+
+
 					
 			        $('table th input:checkbox').on('click' , function(){
 			            var that = this;

@@ -149,8 +149,15 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           SET UnidadeSQL = db.execute(qUnidadeSQL)
           if not UnidadeSQL.eof then
             conteudo = replace(conteudo, "[Unidade.Nome]", trim(UnidadeSQL("NomeEmpresa")&" ") )
-
-
+            'ENDERECO
+            conteudo = replace(conteudo, "[Unidade.CEP]", trim(UnidadeSQL("CEP")&" ") )
+            conteudo = replace(conteudo, "[Unidade.Estado]", trim(UnidadeSQL("Estado")&" ") )
+            conteudo = replace(conteudo, "[Unidade.Cidade]", trim(UnidadeSQL("Cidade")&" ") )
+            conteudo = replace(conteudo, "[Unidade.Bairro]", trim(UnidadeSQL("Bairro")&" ") )
+            conteudo = replace(conteudo, "[Unidade.Endereco]", trim(UnidadeSQL("Endereco")&" ") )
+            conteudo = replace(conteudo, "[Unidade.Numero]", trim(UnidadeSQL("Numero")&" ") )
+            conteudo = replace(conteudo, "[Unidade.Complemento]", trim(UnidadeSQL("Complemento")&" ") )
+            
           end if
 
           'response.write("<pre>"&qUnidadeSQL&"</pre>")
@@ -175,12 +182,12 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             SET ProfissionaisSQL = db.execute(qProfissionaisSQL)
             if not ProfissionaisSQL.eof then
 
+              conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", "[Profissional.Nome]" )
               conteudo = replace(conteudo, "[Profissional.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
               conteudo = replace(conteudo, "[Profissional.Documento]", trim(ProfissionaisSQL("DocumentoProfissional")&" ") )
               conteudo = replace(conteudo, "[Profissional.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
               conteudo = replace(conteudo, "[Profissional.Assinatura]", "<img src='"&imgURLPathDefault&"/"&trim(ProfissionaisSQL("Assinatura"))&" "&"' "&img404&"'>" )
               conteudo = replace(conteudo, "[Profissional.Tratamento]", trim(ProfissionaisSQL("Tratamento")&" ") )
-              conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", trim(ProfissionaisSQL("Cel1")&" ") )
               'NOVAS TAGS 06/07/2020
               conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
               conteudo = replace(conteudo, "[Profissional.CRM]", trim(ProfissionaisSQL("Conselho")&" ") )

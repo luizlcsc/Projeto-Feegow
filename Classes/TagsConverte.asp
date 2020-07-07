@@ -52,7 +52,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
   if conteudo<>"" then
     conteudo = conteudo
   else
-    conteudo = "<i>Erro 404 Conteúdo não informado</i>" 
+    conteudo = ""
   end if
 
   SET tagsCategoriasSQL = db.execute("select categoria from cliniccentral.tags_categorias")

@@ -122,6 +122,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Cel1]", "[Paciente.Celular]"&"" )
                 conteudo = replace(conteudo, "[Paciente.Celular]", PacientesSQL("Cel1")&"" )
                 conteudo = replace(conteudo, "[Paciente.Cel2]", PacientesSQL("Cel2")&"" )
+                conteudo = replace(conteudo, "[Paciente.IndicadoPor]", trim(PacientesSQL("IndicadoPor")&" ") )
 
                 'ENDEREÇO
                 conteudo = replace(conteudo, "[Paciente.Estado]", trim(PacientesSQL("Estado")&" ") )
@@ -130,6 +131,11 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Endereco]", trim(PacientesSQL("Endereco")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Numero]", trim(PacientesSQL("Numero")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Complemento]", trim(PacientesSQL("Complemento")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Cep]", trim(PacientesSQL("Cep")&" ") )
+                
+                'GERAIS
+                conteudo = replace(conteudo, "[Paciente.Profissao]", trim(PacientesSQL("Profissao")&" ") )
+                
 
 
 
@@ -157,7 +163,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             conteudo = replace(conteudo, "[Unidade.Endereco]", trim(UnidadeSQL("Endereco")&" ") )
             conteudo = replace(conteudo, "[Unidade.Numero]", trim(UnidadeSQL("Numero")&" ") )
             conteudo = replace(conteudo, "[Unidade.Complemento]", trim(UnidadeSQL("Complemento")&" ") )
-            
+
           end if
 
           'response.write("<pre>"&qUnidadeSQL&"</pre>")

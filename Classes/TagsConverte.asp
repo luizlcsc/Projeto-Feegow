@@ -43,6 +43,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_ProcedimentoNome    = item_id
       case "ReciboID"
         item_ReciboID            = item_id
+      case "PropostaID"          
+        item_PropostaID          = item_id
 
     end select
 
@@ -83,7 +85,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             "LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id  "&_
             "where p.id="&treatvalzero(item_PacienteID) 
           end if
-
+          'response.write("<pre>"&qPacientesSQL&"</pre>")
           if qPacientesSQL<>"" then
             SET PacientesSQL = db.execute(qPacientesSQL)
               if not PacientesSQL.eof then
@@ -113,7 +115,26 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Validade]", trim(PacientesSQL("Validade1")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Email]", trim(PacientesSQL("Email1")&" ") )
                 conteudo = replace(conteudo, "[Paciente.CPF]", trim(PacientesSQL("CPF")&" ") )
-                conteudo = replace(conteudo, "[Paciente.Telefone]", trim(PacientesSQL("Cel1")&" ") )
+                'CONTATOS
+                conteudo = replace(conteudo, "[Paciente.Tel1]", "[Paciente.Telefone]" )
+                conteudo = replace(conteudo, "[Paciente.Telefone]", trim(PacientesSQL("Tel1")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Tel2]", trim(PacientesSQL("Tel2")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Cel1]", "[Paciente.Celular]"&"" )
+                conteudo = replace(conteudo, "[Paciente.Celular]", PacientesSQL("Cel1")&"" )
+                conteudo = replace(conteudo, "[Paciente.Cel2]", PacientesSQL("Cel2")&"" )
+
+                'ENDEREÇO
+                conteudo = replace(conteudo, "[Paciente.Estado]", trim(PacientesSQL("Estado")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Cidade]", trim(PacientesSQL("Cidade")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Bairro]", trim(PacientesSQL("Bairro")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Endereco]", trim(PacientesSQL("Endereco")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Numero]", trim(PacientesSQL("Numero")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Complemento]", trim(PacientesSQL("Complemento")&" ") )
+
+
+
+
+
               end if
             PacientesSQL.close
             set PacientesSQL = nothing
@@ -220,7 +241,24 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Devolucao"
 
         case "Proposta"
+          if item_PropostaID>0 then
+            qPropostasSQL = "SELECT NomeProfissional, propostas.sysUser, tabelaparticular.NomeTabela FROM propostas "_
+            &"LEFT JOIN profissionais ON profissionais.id = propostas.ProfissionalID "_
+            &"LEFT JOIN tabelaparticular ON  tabelaparticular.id = propostas.TabelaID "_
+            &"WHERE propostas.id ="&item_PropostaID
+          end if
+          'response.write("<pre>"&qPropostasSQL&"</pre>")
+          if qPropostasSQL<>"" then
+            SET PropostasSQL = db.execute(qPropostasSQL)
+              
+              conteudo = replace(conteudo, "[Proposta.ID]",item_PropostaID&"")
+              conteudo = replace(conteudo, "[Proposta.ProfissionalSolicitante]", PropostasSQL("NomeProfissional")&"" )
+              conteudo = replace(conteudo, "[Proposta.Criador]", nameInTable(PropostasSQL("sysUser"))&"" )
+              conteudo = replace(conteudo, "[Proposta.Tabela]",PropostasSQL("NomeTabela")&"")
 
+            PropostasSQL.close
+            set PropostasSQL = nothing
+          end if
         case "Encaminhamento"
 
         case "Recibo"

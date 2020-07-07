@@ -13,20 +13,20 @@ response.Charset="utf-8"
 <div id="areaImpressao" class="container-fluid">
 <%
 
-function replaceProposta(PropostaID,valor)
-    IF PropostaID > 0 THEN
-        set PropostaSQL = db.execute("SELECT NomeProfissional, propostas.sysUser, tabelaparticular.NomeTabela FROM propostas LEFT JOIN profissionais ON profissionais.id = propostas.ProfissionalID LEFT JOIN tabelaparticular ON  tabelaparticular.id = propostas.TabelaID WHERE propostas.id = "&PropostaID)
-        if not PropostaSQL.eof then
-            valor = replace(valor, "[Proposta.ID]",PropostaID)
-            valor = replace(valor, "[Proposta.ProfissionalSolicitante]", PropostaSQL("NomeProfissional")&"" )
-            valor = replace(valor, "[Proposta.Criador]", nameInTable(PropostaSQL("sysUser"))&"" )
-            valor = replace(valor, "[Proposta.Tabela]",PropostaSQL("NomeTabela")&"")
+'FUNCAO DESATIVADA 08/07/2020 | Migrado 100% para a nova função TagsConverte
+'function replaceProposta(PropostaID,valor)
+'    IF PropostaID > 0 THEN
+'        set PropostaSQL = db.execute("SELECT NomeProfissional, propostas.sysUser, tabelaparticular.NomeTabela FROM propostas LEFT JOIN profissionais ON profissionais.id = propostas.ProfissionalID LEFT JOIN tabelaparticular ON  tabelaparticular.id = propostas.TabelaID WHERE propostas.id = "&PropostaID)
+'        if not PropostaSQL.eof then
+'            valor = replace(valor, "[Proposta.ID]",PropostaID)
+'            valor = replace(valor, "[Proposta.ProfissionalSolicitante]", PropostaSQL("NomeProfissional")&"" )
+'            valor = replace(valor, "[Proposta.Criador]", nameInTable(PropostaSQL("sysUser"))&"" )
+'            valor = replace(valor, "[Proposta.Tabela]",PropostaSQL("NomeTabela")&"")
+'        end if
+'    END IF
 
-        end if
-    END IF
-
-    replaceProposta = valor
-end function
+'    replaceProposta = valor
+'end function
 
 Dim prioridadeList
 Set prioridadeList=Server.CreateObject("Scripting.Dictionary")
@@ -76,10 +76,10 @@ if not getImpressos.EOF then
     set ProfissionalSQL=nothing
     
     CabecalhoProposta = getImpressos("CabecalhoProposta")
-    CabecalhoProposta = TagsConverte(CabecalhoProposta,"PacienteID_"&PacienteID&"|ProfissionalID_"&ProfissionalID,"")
+    CabecalhoProposta = TagsConverte(CabecalhoProposta,"PacienteID_"&PacienteID&"|ProfissionalID_"&ProfissionalID&"|PropostaID_"&PropostaID,"")
 
     RodapeProposta    = getImpressos("RodapeProposta")
-    RodapeProposta    = TagsConverte(RodapeProposta,"PacienteID_"&PacienteID&"|ProfissionalID_"&ProfissionalID,"")    
+    RodapeProposta    = TagsConverte(RodapeProposta,"PacienteID_"&PacienteID&"|ProfissionalID_"&ProfissionalID&"|PropostaID_"&PropostaID,"")    
     
 end if
 

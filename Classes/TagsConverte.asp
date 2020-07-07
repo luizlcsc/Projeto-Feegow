@@ -94,7 +94,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 if isdate(PacientesSQL("Nascimento")) then
                   conteudo = replace(conteudo, "[Paciente.Idade]", idade(PacientesSQL("Nascimento")&""))
                 else
-                  conteudo = replace(conteudo, "[Paciente.Idade]", "<i>Data de nascimento indefinida</i>")
+                  conteudo = replace(conteudo, "[Paciente.Idade]", "")
                 end if
                 conteudo = replace(conteudo, "[Paciente.Nascimento]", PacientesSQL("Nascimento")&"")
                 conteudo = replace(conteudo, "[Paciente.Documento]", PacientesSQL("Documento")&"")
@@ -135,11 +135,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 
                 'GERAIS
                 conteudo = replace(conteudo, "[Paciente.Profissao]", trim(PacientesSQL("Profissao")&" ") )
-                
-
-
-
-
+                conteudo = replace(conteudo, "[Paciente.CNS]", trim(PacientesSQL("CNS")&" ") )
 
               end if
             PacientesSQL.close
@@ -206,8 +202,9 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Sistema"
           conteudo = replace(conteudo, "[Sistema.Extenso]", formatdatetime(date(),1) )
           conteudo = replace(replace(conteudo, "[Data.DDMMAAAA]", "[Sistema.Data]"),"[Sistema.Data]",date())
-          
           conteudo = replace(conteudo, "[Sistema.Hora]", time())
+          conteudo = replace(conteudo, "[Data.Extenso]", formatdatetime(date(),1))
+          
         case "Financeiro"
 
         case "Agendamento"

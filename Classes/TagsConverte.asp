@@ -14,7 +14,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
   'response.write("<img src='imagem-nao-existe.png'" & img404&">")
 
   'CONVERSAO DA CATEGORIA SISTEMA É PADRÃO
-  itens = itens&"|Sistema_0"
+  itens = itens
 
   '### FILTRA OS ITENS SEPARADOS POR PIPE
   itensArray=Split(itens,"|")
@@ -53,6 +53,13 @@ function tagsConverte(conteudo,itens,moduloExcecao)
   conteudo = conteudo&""
   if conteudo<>"" then
     conteudo = conteudo
+
+    'TAGS RELACIONADAS AO SISTEMA
+    conteudo = replace(conteudo, "[Sistema.Extenso]", formatdatetime(date(),1) )
+    conteudo = replace(conteudo, "[Data.DDMMAAAA]", "[Sistema.Data]" )
+    conteudo = replace(conteudo, "[Sistema.Data]",date())
+    conteudo = replace(conteudo, "[Sistema.Hora]", time())
+    conteudo = replace(conteudo, "[Data.Extenso]", formatdatetime(date(),1))    
   else
     conteudo = ""
   end if
@@ -150,15 +157,21 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           end if
           SET UnidadeSQL = db.execute(qUnidadeSQL)
           if not UnidadeSQL.eof then
+            conteudo = replace(conteudo, "[Empresa.Nome]", "[Unidade.Nome]" )
             conteudo = replace(conteudo, "[Unidade.Nome]", trim(UnidadeSQL("NomeEmpresa")&" ") )
             'ENDERECO
-            conteudo = replace(conteudo, "[Unidade.CEP]", trim(UnidadeSQL("CEP")&" ") )
+            conteudo = replace(conteudo, "[Unidade.Cep]", trim(UnidadeSQL("CEP")&" ") )
             conteudo = replace(conteudo, "[Unidade.Estado]", trim(UnidadeSQL("Estado")&" ") )
             conteudo = replace(conteudo, "[Unidade.Cidade]", trim(UnidadeSQL("Cidade")&" ") )
             conteudo = replace(conteudo, "[Unidade.Bairro]", trim(UnidadeSQL("Bairro")&" ") )
             conteudo = replace(conteudo, "[Unidade.Endereco]", trim(UnidadeSQL("Endereco")&" ") )
             conteudo = replace(conteudo, "[Unidade.Numero]", trim(UnidadeSQL("Numero")&" ") )
             conteudo = replace(conteudo, "[Unidade.Complemento]", trim(UnidadeSQL("Complemento")&" ") )
+            'DOCUMENTOS
+            conteudo = replace(conteudo, "[Unidade.CNPJ]", trim(UnidadeSQL("CNPJ")&" ") )
+            'CONTATOS
+            conteudo = replace(conteudo, "[Unidade.Tel1]", "[Unidade.Telefone]" )
+            conteudo = replace(conteudo, "[Unidade.Telefone]", trim(UnidadeSQL("tel1")&" ") )
 
           end if
 
@@ -197,13 +210,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 
             end if 
           end if
-          
-
-        case "Sistema"
-          conteudo = replace(conteudo, "[Sistema.Extenso]", formatdatetime(date(),1) )
-          conteudo = replace(replace(conteudo, "[Data.DDMMAAAA]", "[Sistema.Data]"),"[Sistema.Data]",date())
-          conteudo = replace(conteudo, "[Sistema.Hora]", time())
-          conteudo = replace(conteudo, "[Data.Extenso]", formatdatetime(date(),1))
+        
           
         case "Financeiro"
 

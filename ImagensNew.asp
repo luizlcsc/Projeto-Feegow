@@ -14,6 +14,9 @@
         <%
         response.end
     END IF
+
+    ArquivoImagem = "ArquivoImagem"
+
 %>
 <style>
     :root {
@@ -148,7 +151,9 @@
         background-color: #f0f0f0;
     }
 </style>
-
+<%
+if ArquivoImagem="Imagem" then
+%>
 <div class="btn-group ib m20 pull-left ">
   <button type="button" class="btn btn-default hidden-xs" onclick="comparar()">
     <span class="fa fa-columns	"></span>
@@ -160,7 +165,9 @@
     </fieldset>
   </div>
 </div>
-
+<%
+end if
+%>
 <div class="btn-group ib m20 pull-left ">
   <button type="button" class="btn btn-default hidden-xs">
     <span class="fa fa-tag"></span>
@@ -185,11 +192,12 @@
     </fieldset>
   </div>
 </div>
+
 <div class="clearfix"></div>
 <div class='max-width' style="display: flex"></div>
 <div class="galery" id="galery">
-    <div class="fa-5x" style="text-align: center">
-        <i class="fa fa-spinner fa-spin"></i>
+    <div class="fa-2x" style="text-align: center">
+        <i class="fa fa-circle-o-notch fa-spin"></i>
     </div>
 </div>
 

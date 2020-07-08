@@ -1,12 +1,13 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="ProntCompartilhamento.asp"-->
 <%
+' getConfig("NovaGaleria") = "1"
 
-IF getConfig("NovaGaleria") = "1" THEN
+IF True THEN
             %>
       <div class="galery-ajax"></div>
       <script>
-              fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>&MovementID=<%=req("MovementID")%>")
+              fetch("ImagensNew.asp?ArquivoImagem=Arquivo&PacienteID=<%=req("PacienteID")%>&MovementID=<%=req("MovementID")%>")
               .then(data => data.text())
               .then(data => {
                  $(".galery-ajax").html(data);

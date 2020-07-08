@@ -20,7 +20,7 @@
                 $("#ImagensPaciente").prepend("<div class='galery-ajax'></div>");
             }
 
-            fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+            fetch("ImagensNew.asp?ArquivoImagem=Imagem&PacienteID=<%=req("PacienteID")%>")
               .then(data => data.text())
               .then(data => {
                  $(".galery-ajax").html(data);

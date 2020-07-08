@@ -119,7 +119,11 @@ else
 
             Foto = getFileUrlWithCustomDB(Foto, "Perfil", L)
         end if
-
+        Publico = ints("Publico")
+        MsgPublico = "Público"
+        if Publico = "0" then
+            MsgPublico = "Privado"
+        end if
 
         %>
         <% if ints("Interacao") = "1" then %>

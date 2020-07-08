@@ -4907,7 +4907,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
                         if not ConvenioSQL.eof then
                             ObsConvenio = replace(ConvenioSQL("Obs"),"""","\'")
                             %>
-                            <button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="openModal('<%=replace(replace(ObsConvenio,chr(10),"<br>"),chr(13),"<br>")%>', 'Observações do convênio', true, false, 'md')"><i class="fa fa-align-justify"></i></button>
+                            <button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=ConvenioID%>)"><i class="fa fa-align-justify"></i></button>
                             <%
                         end if
                     end if

@@ -189,6 +189,10 @@ if not guia.eof then
             NomeContratadoExecutante = ""
         end if
 	end if
+	if Contratado=0 AND recursoAdicional(12)=4 then
+	    NomeContratadoExecutante = ""
+	end if
+
 	CodigoCNESExecutante=guia("CodigoCNES")
 	TipoAtendimentoID=guia("TipoAtendimentoID")
 	IndicacaoAcidenteID=guia("IndicacaoAcidenteID")

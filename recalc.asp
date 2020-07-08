@@ -60,7 +60,6 @@ for i=0 to ubound(spl)
                                         "(Procedimentos IS NULL OR Procedimentos ='' OR Procedimentos LIKE '%|"&ProcedimentoID&"|%') AND "&_
                                         " (Unidades IS NULL OR Unidades ='' OR Unidades LIKE '"&CompanyUnitID&"' OR Unidades = "&treatvalzero(CompanyUnitID)&") "&_
                                         "  AND ( Recursos = '' OR Recursos LIKE '%|"&TipoConta&"|%') AND RegraID IS NOT NULL"
-
         set RegraSQLSuperior = db.execute(sqlRegraSuperior)
         if not RegraSQLSuperior.eof then
             Regras = RegraSQLSuperior("regras")&""

@@ -7,6 +7,7 @@
         <%=quickField("datepicker", "De", "De", 2, req("De"), "", "", "")%>
         <%=quickField("datepicker", "Ate", "Ate", 2, req("Ate"), "", "", "")%>
 		<%=quickField("text", "Cupom", "Cupom", 2, req("Cupom"), "", "", "")%>
+		<%=quickField("text", "ValorSMS", "Valor SMS", 2, fn(req("ValorSMS")), " input-mask-brl text-right", "", "")%>
         <div class="col-md-2">
         	<label>&nbsp;</label><br>
         	<button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Buscar</button>
@@ -39,7 +40,13 @@ if req("De")<>"" and req("Ate")<>"" then
 	End if
 	
 	set lic = dbc.execute(query)
-	
+    ValorSMS = 0.12
+
+
+	if req("ValorSMS")&""<>"" AND req("ValorSMS")<>"0,00" then
+		ValorSMS  = req("ValorSMS")
+	end if
+
 	while not lic.eof
 		NomeCliente = ""
 		sql = "select count(id) as total from smshistorico WHERE LicencaID="&lic("LicencaID")&" AND date(DataHora)>="&mydatenull(req("De"))&" AND date(DataHora)<="&mydatenull(req("Ate"))
@@ -48,7 +55,7 @@ if req("De")<>"" and req("Ate")<>"" then
 		cl = cl+1
 		total = ccur(conta("total"))
 		tot = total+tot
-		valor = total*0.12
+		valor = eval(total * ValorSMS)
 
 		%>
 		<tr>
@@ -69,7 +76,7 @@ if req("De")<>"" and req("Ate")<>"" then
     	<tr>
         	<td colspan="3"><%=cl%> clientes enviaram SMS no período.</td>
             <td class="text-right"><%=tot%></td>
-            <td class="text-right"><%=formatnumber(tot*0.08, 2)%></td>
+            <td class="text-right"><%=formatnumber(eval(tot * ValorSMS), 2)%></td>
     </tfoot>
 	<%
 

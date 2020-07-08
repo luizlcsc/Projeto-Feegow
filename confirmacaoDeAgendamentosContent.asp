@@ -84,9 +84,6 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
         'Mensagem = trim(Mensagem)
         'Mensagem = Replace(Mensagem,"""","")
 
-        'APLICADO A FUNÇÃO PARA CONVERSÃO DE TAGS || Rafael Maia - 03/07/2020
-        Mensagem = tagsConverte(Mensagem,"PacienteID_"&age("PacienteID")&"|ProcedimentoID_"&ProcedimentoID&"|AgendamentoID_"&age("id"),"")
-
         UnidadeID = 0
         set pUnidade = db.execute("select u.id from locais l left join sys_financialcompanyunits u on u.id=l.UnidadeID where l.id like '"&age("LocalID")&"'")
         if not pUnidade.eof then
@@ -94,8 +91,12 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
                 UnidadeID = pUnidade("id")
             end if
         end if
+        'Mensagem = replaceTags(Mensagem, age("PacienteID"), session("UserID"), UnidadeID)
 
-        Mensagem = replaceTags(Mensagem, age("PacienteID"), session("UserID"), UnidadeID)
+        'APLICADO A FUNÇÃO PARA CONVERSÃO DE TAGS || Rafael Maia - 03/07/2020
+        Mensagem = "UnidadeID: "&UnidadeID&tagsConverte(Mensagem,"PacienteID_"&age("PacienteID")&"|ProcedimentoID_"&ProcedimentoID&"|AgendamentoID_"&age("id")&"|UnidadeID_"&UnidadeID&"|ProfissionalID_"&age("ProfissionalID"),"")
+
+        
 
         centralWhatsApp = Mensagem
 end function
@@ -287,7 +288,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     end if
                 end if
 
-                TextoWhatsApp = "Olá, "&PacientePrimeiroNome&"! Posso confirmar "&TipoProcedimentoPronome&" "&TipoProcedimento&" com "&ProfissionalPrimeiroNome&" "&DiaMensagem&" às "&Hora&"?"
+                'TextoWhatsApp = "Olá, "&PacientePrimeiroNome&"! Posso confirmar "&TipoProcedimentoPronome&" "&TipoProcedimento&" com "&ProfissionalPrimeiroNome&" "&DiaMensagem&" às "&Hora&"?"
                 TextoWhatsApp = centralWhatsApp(ag("id"),"")
 
                 %>

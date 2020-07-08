@@ -1,6 +1,11 @@
 ﻿<script type="text/javascript">
     $(".crumb-active a").html("Administrar Lotes");
     $(".crumb-icon a span").attr("class", "fa fa-folder-open");
+    $("#rbtns").html("<button class='btn btn-primary btn-sm btn-block' onclick='OpenValidator()'><i class='fa fa-search'></i> Validar XML</button>");
+
+    function OpenValidator() {
+        openComponentsModal("validadorxml.asp",false, false,true);
+    }
 </script>
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->

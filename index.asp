@@ -1882,7 +1882,7 @@ if session("Atendimentos")<>"" then
 	%>
 	new PNotify({
 			title: 'Atendimento<%if contaAtendimentos>1 then%>s<%end if%> em curso',
-			text: '<%=strAtendimentos%>',
+			text: '<%= replace(strAtendimentos&"", "'", "") %>',
 			image: 'assets/img/Doctor.png',
 			icon: '',
 			sticky: true,

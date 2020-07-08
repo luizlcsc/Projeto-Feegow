@@ -209,7 +209,7 @@ if ref("LocalID")&""<>"" and ConsultaID="0" then
 end if
 
 if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("StaID")<>"4" then
-    set ve1=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and StaID !=11 and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora<time('"&HoraSolFin&"') and Encaixe IS NULL and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')")
+    set ve1=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and StaID !=11 and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora<time('"&HoraSolFin&"') and Encaixe IS NULL and sysactive=1 and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')")
     if not ve1.eof then
         erro="Erro: O horário solicitado não dispõe dos "&TempoSol&" minutos requeridos para o agendamento deste procedimento."
     end if

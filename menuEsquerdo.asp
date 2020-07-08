@@ -783,6 +783,17 @@ select case lcase(req("P"))
             </li>
 		    <%
 		    end if
+		    %>
+            <li>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
+                    <span class="fa fa-file-text-o bigger-110"></span>
+                    <span class="sidebar-title">Protocolos</span>
+                    <span class="sidebar-title-tray">
+                      <span class="label label-xs bg-primary" id="totalprotocolos"></span>
+                    </span>
+                </a>
+            </li>
+		    <%
 		    if aut("vacinapacienteV")=1 then
 		    %>
             <li>
@@ -1619,7 +1630,7 @@ select case lcase(req("P"))
         %>
         <!--#include file="MenuEstoque.asp"-->
         <%
-    case "listaprodutos", "produtoscategorias", "produtoslocalizacoes", "produtosfabricantes", "produtoskits"
+    case "listaprodutos", "produtoscategorias", "produtoslocalizacoes", "produtosfabricantes", "produtoskits", "medicamentosconvenios"
         %><li class="sidebar-label pt20">Tipos de Itens</li><%
         set getTipoProduto = db.execute("SELECT * FROM cliniccentral.produtostipos")
         while not getTipoProduto.eof
@@ -1639,6 +1650,9 @@ select case lcase(req("P"))
         %>
         <hr style="margin:10px !important;">
         <li class="sidebar-label pt20">Configurações</li>
+        <li <%if req("P")="MedicamentosConvenios" then%>class="active"<%end if%>>
+            <a href="./?P=MedicamentosConvenios&Pers=1"><span class="fa fa-sitemap"></span> <span class="sidebar-title"> Medicamentos por Convênios</span></a>
+        </li>
         <li <%if req("P")="ProdutosCategorias" then%>class="active"<%end if%>>
             <a href="./?P=ProdutosCategorias&Pers=0"><span class="fa fa-puzzle-piece"></span> <span class="sidebar-title"> Categorias</span></a>
         </li>
@@ -1646,7 +1660,7 @@ select case lcase(req("P"))
             <a href="./?P=ProdutosLocalizacoes&Pers=0"><span class="fa fa-map-marker"></span> <span class="sidebar-title"> Localizações</span></a>
         </li>
         <li <%if req("P")="ProdutosFabricantes" then%>class="active"<%end if%>>
-            <a href="./?P=ProdutosFabricantes&Pers=0"><span class="fa fa-sitemap"></span> <span class="sidebar-title"> Fabricantes</span></a>
+            <a href="./?P=ProdutosFabricantes&Pers=0"><span class="fa fa-building"></span> <span class="sidebar-title"> Fabricantes</span></a>
         </li>
         <li <%if req("P")="ProdutosKits" then%>class="active"<%end if%>>
             <a href="./?P=ProdutosKits&Pers=Follow"><span class="fa fa-medkit"></span> <span class="sidebar-title"> Kits</span></a>

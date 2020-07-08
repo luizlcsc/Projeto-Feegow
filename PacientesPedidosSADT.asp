@@ -80,6 +80,9 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
         <div class="row">
             <div class="col-xs-8">
                 <div class="row">
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-info btn-block" onClick="GerarNovo('PedidosSADT', '<%=PacienteID%>', '0', '', '');"><i class="fa fa-plus"></i></button>
+                    </div>
                     <div class="col-md-2">
                         <button type="button" onclick="saveConteudoPedidoSADT('E')" class="btn btn-primary btn-block"><i class="fa fa-save"></i> Salvar</button>
                     </div>
@@ -147,7 +150,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                         disabledProf = " disabled"
                     end if
                     %>
-                    <%=quickField("simpleSelect", "ProfissionalID", " ", 4, Solicitante, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", "  empty='' "&disabledProf) %>
+                    <%=quickField("simpleSelect", "ProfissionalID", " ", 3, Solicitante, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", "  empty='' "&disabledProf) %>
                     </div>
                 </div>
                 <br />
@@ -384,6 +387,13 @@ function saveConteudoPedidoSADT(E){
         $("#pedidosmodelos").html(data);
     });
     return false;
+}
+
+function GerarNovo(t, p, m, i, a) {
+    $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+    $.get("iPront.asp?t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
+        $("#modal-form .panel").html(data);
+    })
 }
 <!--#include file="JQueryFunctions.asp"-->
 </script>

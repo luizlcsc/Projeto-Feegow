@@ -165,11 +165,14 @@ end if
 
 	if CD="D" then
         idUser = session("User")
-        set regraspermissoes = db.execute("SELECT REPLACE(limitarcontaspagar, '|', '') AS limitarcontaspagar FROM sys_users WHERE id ="&idUser)
-
+        set regraspermissoes = db.execute("SELECT REPLACE(limitarcontaspagar, '|', '') AS limitarcontaspagar, IF( Permissoes like '%[%', SUBSTRING_INDEX(SUBSTRING_INDEX(Permissoes, '[', -1), ']', 1), '') RegraUsuario FROM sys_users WHERE id ="&idUser)
         if not regraspermissoes.eof then
             OcultarCategorias = regraspermissoes("limitarcontaspagar")
-
+            RegraUsuario = regraspermissoes("RegraUsuario")
+            set limitarCategoria = db.execute("SELECT limitarcontaspagar FROM regraspermissoes WHERE id = "&treatvalzero(RegraUsuario))
+            if not limitarCategoria.eof then
+                OcultarCategorias = limitarCategoria("limitarcontaspagar")
+            end if
             if OcultarCategorias&"" <> "" then
                 OcultarCategorias = replace(OcultarCategorias, "|","")
                 sqlOcultarCategorias = " AND ii.CategoriaID NOT IN ("&OcultarCategorias&")"

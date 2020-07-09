@@ -611,12 +611,23 @@ end if
 
     %>
         <button class="btn btn-primary btn-md"><i class="fa fa-save"></i> Salvar</button>
+        <%
+        if aut("repassesV")=1 then
+            set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.GuiaConsultaID="& req("I") &" AND NOT ISNULL(rr.ItemContaAPagar)")
+            if not vcaRep.eof then
+                btnrepasse = "<button title='Repasses Gerados' onclick='repasses(`GuiaConsultaID`, "& req("I") &")' type='button' class='btn ml5 btn-dark pull-right'> <i class='fa fa-puzzle-piece'></i>  </button>"
+                response.write( btnRepasse )
+            end if
+        end if
+        %>
         <%if AutorizadorTiss then %>
         <button type="button" onclick="AutorizarGuiaTisss()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>
         <button type="button" onclick="Autorizador.cancelarGuia(2)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="fa fa-times"></i> Cancelar guia</button>
         <button type="button" onclick="tissVerificarStatusGuia()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="fa fa-search"></i> Verificar status</button>
         <%end if %>
         <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="fa fa-history"></i></button>
+
+
         <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaConsulta', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
         <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaConsulta()"><i class="fa fa-file"></i> Imprimir Guia</button>
     </div>
@@ -684,8 +695,11 @@ $(document).ready(function(){
     GuiaStatusSQL.close
     set GuiaStatusSQL = nothing
     Status = Status&"</select>"
+
+
+
     %>
-        $("#rbtns").html("<%=Status%>");
+        $("#rbtns").html("<%=Status %>");
 
         $("select[name='GuiaStatus']").change(function(data) {
             $.get("AlteraStatusGuia.asp", {GuiaID:"<%=req("I")%>", TipoGuia:$("input[name='tipo']").val(), Status: $(this).val()}, function() {
@@ -833,6 +847,13 @@ function formatCBOGroup(especialidades, $el)
             $cont.append("</optgroup>");
         }
     }
+}
+
+function repasses(T, I){
+    $("#modal-table").modal("show");
+    $.get("repassesGerados.asp?T="+ T +"&I="+ I, function(data){
+        $("#modal").html(data);
+    });
 }
 
 <%

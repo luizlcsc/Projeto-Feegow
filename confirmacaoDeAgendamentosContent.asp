@@ -1,5 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/WhatsApp.asp"-->
+<!--#include file="Classes/TagsConverte.asp"-->
 <%
 PermitirSelecionarModeloWhatsApp=getConfig("PermitirSelecionarModeloWhatsApp")
 
@@ -55,10 +56,11 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
 
 
         if instr(Mensagem, "[Procedimento.Tipo]") or instr(Mensagem, "[Procedimento.Nome]") then
-            set proc = db.execute("select p.NomeProcedimento,t.TipoProcedimento from procedimentos p LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID where p.id="&age("TipoCompromissoID"))
+            set proc = db.execute("select p.id,p.NomeProcedimento,t.TipoProcedimento from procedimentos p LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID where p.id="&age("TipoCompromissoID"))
             if not proc.eof then
                 TipoProcedimento = trim(proc("TipoProcedimento"))&""
                 NomeProcedimento = trim(proc("NomeProcedimento"))&""
+                ProcedimentoID = proc("id")&""
             end if
         end if
 
@@ -70,16 +72,17 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
             Hora=""
         end if
 
-        Mensagem = replace(Mensagem, "[Procedimento.Tipo]", TipoProcedimento)
-        Mensagem = replace(Mensagem, "[Procedimento.Nome]", NomeProcedimento)
-        Mensagem = replace(Mensagem, "[Paciente.Nome]", NomePaciente)
-        Mensagem = replace(Mensagem, "[Paciente.NomeCompleto]", NomeCompletoPaciente)
-        Mensagem = replace(Mensagem, "[Profissional.Tratamento]", "")
-        Mensagem = replace(Mensagem, "[Profissional.Nome]", NomeProfissional)
-        Mensagem = replace(Mensagem, "[Agendamento.Hora]", Hora)
-        Mensagem = replace(Mensagem, "[Agendamento.Data]", age("Data"))
-        Mensagem = trim(Mensagem)
-        Mensagem = Replace(Mensagem,"""","")
+        'CONVERSÃO DE TAGS MANUAL DESATIVADO 
+        'Mensagem = replace(Mensagem, "[Procedimento.Tipo]", TipoProcedimento)
+        'Mensagem = replace(Mensagem, "[Procedimento.Nome]", NomeProcedimento)
+        'Mensagem = replace(Mensagem, "[Paciente.Nome]", NomePaciente)
+        'Mensagem = replace(Mensagem, "[Paciente.NomeCompleto]", NomeCompletoPaciente)
+        'Mensagem = replace(Mensagem, "[Profissional.Tratamento]", "")
+        'Mensagem = replace(Mensagem, "[Profissional.Nome]", NomeProfissional)
+        'Mensagem = replace(Mensagem, "[Agendamento.Hora]", Hora)
+        'Mensagem = replace(Mensagem, "[Agendamento.Data]", age("Data"))
+        'Mensagem = trim(Mensagem)
+        'Mensagem = Replace(Mensagem,"""","")
 
         UnidadeID = 0
         set pUnidade = db.execute("select u.id from locais l left join sys_financialcompanyunits u on u.id=l.UnidadeID where l.id like '"&age("LocalID")&"'")
@@ -88,8 +91,12 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
                 UnidadeID = pUnidade("id")
             end if
         end if
+        'Mensagem = replaceTags(Mensagem, age("PacienteID"), session("UserID"), UnidadeID)
 
-        Mensagem = replaceTags(Mensagem, age("PacienteID"), session("UserID"), UnidadeID)
+        'APLICADO A FUNÇÃO PARA CONVERSÃO DE TAGS || Rafael Maia - 03/07/2020
+        Mensagem = "UnidadeID: "&UnidadeID&tagsConverte(Mensagem,"PacienteID_"&age("PacienteID")&"|ProcedimentoID_"&ProcedimentoID&"|AgendamentoID_"&age("id")&"|UnidadeID_"&UnidadeID&"|ProfissionalID_"&age("ProfissionalID"),"")
+
+        
 
         centralWhatsApp = Mensagem
 end function
@@ -281,7 +288,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     end if
                 end if
 
-                TextoWhatsApp = "Olá, "&PacientePrimeiroNome&"! Posso confirmar "&TipoProcedimentoPronome&" "&TipoProcedimento&" com "&ProfissionalPrimeiroNome&" "&DiaMensagem&" às "&Hora&"?"
+                'TextoWhatsApp = "Olá, "&PacientePrimeiroNome&"! Posso confirmar "&TipoProcedimentoPronome&" "&TipoProcedimento&" com "&ProfissionalPrimeiroNome&" "&DiaMensagem&" às "&Hora&"?"
                 TextoWhatsApp = centralWhatsApp(ag("id"),"")
 
                 %>
@@ -332,7 +339,9 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                                         " (eventos.Profissionais LIKE '%|"&whatsAppFiltro_ProfissionalID&"|%' OR eventos.Profissionais='' OR eventos.Profissionais IS NULL) AND"&chr(13)&_
                                         " (eventos.Procedimentos LIKE '%|"&whatsAppFiltro_TipoProcedimentoID&"|%' OR eventos.Procedimentos LIKE '%|ALL|%'                          "&chr(13)&_
                                         "    OR   eventos.Procedimentos='' OR eventos.Procedimentos IS NULL)                                   "&chr(13)&_
-                                        " AND eventos.`Status` LIKE '%|1|%'                                                                 "
+                                        " AND eventos.`Status` LIKE '%|1|%' "&chr(13)&_
+                                        " AND (eventos.Ativo=1) GROUP BY modelo.id"
+
                         set listPhones=db.execute(listPhonesSQL)
                         while not listPhones.eof
                             msgWhatsApp_titulo = listPhones("Descricao")

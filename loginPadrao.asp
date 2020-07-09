@@ -8,7 +8,29 @@ Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
 MasterPwd = objSystemVariables("FC_MASTER")
 
-sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha=('"&ref("Password")&"') or ('"&ref("Password")&"'='"&MasterPwd&"' and u.LicencaID<>5459))"
+User = ref("User")
+Password = ref("Password")
+masterLogin = false
+masterLoginErro = false
+
+%>
+	<!--#include file="LoginMaster.asp"-->
+<%
+
+if masterLogin then
+    sqlLogin = "SELECT u.*, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom "&_
+    " FROM licencasusuarios AS u "&_
+    " LEFT JOIN licencas AS l ON l.id='"&tryLoginMaster("licencaId")&"'"&_
+    " WHERE u.id='"&userMasterID&"' "
+else
+    sqlMaster="0"
+    if Password=MasterPwd then
+        sqlMaster = " 1=1 and u.LicencaID<>5459 "
+        permiteMasterLogin = True
+    end if
+	sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&User&"' and (Senha=('"&ref("Password")&"') or ("&sqlMaster&")  )"
+end if
+
 
 set tryLogin = dbc.execute(sqlLogin)
 if not tryLogin.EOF then
@@ -22,7 +44,7 @@ if not tryLogin.EOF then
 
     if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
-            Response.Redirect("https://"&ServidorAplicacao&"/v7/?P=Login&U="&ref("User"))
+            Response.Redirect("https://"&ServidorAplicacao&"/v7/?P=Login&U="&User)
         end if
     end if
 
@@ -31,7 +53,7 @@ if not tryLogin.EOF then
     end if
 
     if Servidor="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
-       ' erro = "Prezado cliente, foi necessário reiniciar os servidores devido a uma atualização emergencial de sistema operacional. Por favor aguarde em torno de 15 minutos."
+        ' erro = "Prezado cliente, foi necessário reiniciar os servidores devido a uma atualização emergencial de sistema operacional. Por favor aguarde alguns minutos."
     end if
 
 	if erro="" then
@@ -66,11 +88,11 @@ if not tryLogin.EOF then
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
 			TempoDist = datediff("s", sysUser("UltRef"), now())
-			if TempoDist<20 and TempoDist>0 and ref("password")<>MasterPwd and mobileDevice()="" then
+			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" then
 				erro = "Este usuário já está conectado em outra máquina."
             else
 
-                if UsuariosContratadosNS>0 and ref("password")<>MasterPwd  then
+                if UsuariosContratadosNS>0 and not permiteMasterLogin  then
                 'excecao para a Minha Clinica :'/
                     if tryLogin("LicencaID")=4285 then
                         set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &" and NameColumn='NomeFuncionario' and UltRef>DATE_ADD(NOW(), INTERVAL -"&TimeoutToCheckConnection&" SECOND)")
@@ -112,7 +134,7 @@ if not tryLogin.EOF then
 				set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
 			else
 				TempoDistDevice = datediff("s", sysUser("UltRefDevice"), now())
-				if TempoDistDevice<20 and TempoDistDevice>0 and ref("password")<>MasterPwd then
+				if TempoDistDevice<20 and TempoDistDevice>0 and not permiteMasterLogin then
 					erro = "Este usuário já está conectado em outro aparelho."
 				end if
 			end if
@@ -162,7 +184,7 @@ if not tryLogin.EOF then
         end if
 
         if ref("Lembrarme")="S" then
-            response.Cookies("User") = ref("User")
+            response.Cookies("User") = User
             Response.Cookies("User").Expires = Date() + 365
         else
             response.Cookies("User") = ""
@@ -259,6 +281,19 @@ if not tryLogin.EOF then
 			end if
 		end if
 
+
+		set caixa = db.execute("select c.id, ca.Empresa UnidadeID from caixa c  "&_
+                               "INNER JOIN sys_financialcurrentaccounts ca ON ca.id=c.ContaCorrenteID  "&_
+                               "WHERE c.sysUser="&session("User")&" and isnull(c.dtFechamento)")
+		if not caixa.eof then
+			session("CaixaID") = caixa("id")
+
+			if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then
+            	UnidadeID = sysUser("UnidadeID")
+			end if
+			session("UnidadeID") = caixa("UnidadeID")
+		end if
+
 		if session("UnidadeID")=0 then
 			set getNome = db.execute("select * from empresa")
 			if not getNome.eof then
@@ -285,7 +320,7 @@ if not tryLogin.EOF then
 		wend
 		outrosUsers.close
 		set outrosUsers=nothing
-		if ref("password")<>MasterPwd then
+		if not permiteMasterLogin then
 			dbc.execute("insert into licencaslogins (LicencaID, UserID, IP, Agente) values ("&tryLogin("LicencaID")&", "&tryLogin("id")&", '"&request.ServerVariables("REMOTE_ADDR")&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
 		end if
 
@@ -293,22 +328,21 @@ if not tryLogin.EOF then
 		'db_execute("delete from atendimentos where isnull(HoraFim) and sysUser="&session("User"))
 		'db_execute("create TABLE if not exists `agendaobservacoes` (`id` INT NOT NULL AUTO_INCREMENT,	`ProfissionalID` INT NULL DEFAULT NULL,	`Data` DATE NULL DEFAULT NULL,	`Observacoes` TEXT NULL DEFAULT NULL,	PRIMARY KEY (`id`)) COLLATE='utf8_general_ci' ENGINE=InnoDB")
 
-		set caixa = db.execute("select c.id, ca.Empresa UnidadeID from caixa c  "&_
-                               "INNER JOIN sys_financialcurrentaccounts ca ON ca.id=c.ContaCorrenteID  "&_
-                               "WHERE c.sysUser="&session("User")&" and isnull(c.dtFechamento)")
-		if not caixa.eof then
-			session("CaixaID") = caixa("id")
+        set temColunaTelemedicinaSQL = dbProvi.execute("select i.COLUMN_NAME from information_schema.`COLUMNS` i where i.TABLE_SCHEMA='clinic"&tryLogin("LicencaID")&"' and i.TABLE_NAME='procedimentos' and i.COLUMN_NAME='ProcedimentoTelemedicina'")
+        if not temColunaTelemedicinaSQL.eof then
+            FieldTelemedicina=" proc.ProcedimentoTelemedicina "
+        else
+            FieldTelemedicina=" '' "
+        end if
 
-			if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then 
-            	UnidadeID = sysUser("UnidadeID")
-			end if 
-			session("UnidadeID") = caixa("UnidadeID")
-		end if
-
-        set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, proc.ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
+        set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, "&FieldTelemedicina&" ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
         if not AtendimentosProf.eof then
             ProcedimentoTelemedicina=AtendimentosProf("ProcedimentoTelemedicina")
-            session("AtendimentoTelemedicina")=AtendimentosProf("AgendamentoID")
+
+            if ProcedimentoTelemedicina="S" then
+                session("AtendimentoTelemedicina")=AtendimentosProf("AgendamentoID")
+            end if
+
             session("Atendimentos")=AtendimentosProf("AtendimentosIDS")&""
         end if
 
@@ -398,7 +432,7 @@ if not tryLogin.EOF then
 
 	end if
 else
-    set licenca = dbc.execute("SELECT * FROM licencasusuarios WHERE Email = '"&ref("User") &"' LIMIT 1")
+    set licenca = dbc.execute("SELECT * FROM licencasusuarios WHERE Email = '"&User &"' LIMIT 1")
 
     if not licenca.eof then
 '                                if licenca("Bloqueado") = 0 then
@@ -415,10 +449,18 @@ else
             <%
 '                                end if
     else
-        dbc.execute("insert into licencaslogins (Sucesso, Email, LicencaID, UserID, IP, Agente) values (0,'"&ref("User")&"',NULL, NULL, '"&request.ServerVariables("REMOTE_ADDR")&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
+        dbc.execute("insert into licencaslogins (Sucesso, Email, LicencaID, UserID, IP, Agente) values (0,'"&User&"',NULL, NULL, '"&request.ServerVariables("REMOTE_ADDR")&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
     end if
 
-    %>
+	If masterLoginErro Then
+	%>
+    <div id="divError" class="step-pane active m10 pt10">
+        <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
+            <i class="fa fa-remove"></i>
+            <strong>Senha expirada</strong>
+        </div>
+    </div>
+    <% else %>
     <div id="divError" class="step-pane active m10 pt10">
         <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
             <i class="fa fa-remove"></i>
@@ -426,5 +468,6 @@ else
         </div>
     </div>
     <%
+	end if
 end if
 %>

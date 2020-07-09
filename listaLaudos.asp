@@ -108,7 +108,12 @@ end if
         sqlDataII = ""
         sqlDataI = ""
         sqlDataGPS = ""
-        sqlPrevisao = " AND l.PrevisaoEntrega BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
+        'sqlPrevisao = " AND l.PrevisaoEntrega BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
+        sqlPrevisao =  "AND (SELECT max(DataResultado) "&_
+                        " FROM labs_invoices_exames lie  "&_
+                        " INNER JOIN labs_invoices_amostras lia ON lia.id = lie.AmostraID "&_
+                        " INNER JOIN cliniccentral.labs_exames le ON le.id  = lie.LabExameID "&_
+                        " WHERE lia.InvoiceID = t.invoiceid)  BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
 
         if ref("TipoData")="1" then
             sqlDataII = " AND ii.DataExecucao BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
@@ -304,7 +309,7 @@ end if
                             <div class="btn-group" style="float: right">
                             <% if Status = "Pendente" or Status="Parcial" then %>
                                 <% if ii("labid")="1" then %>
-                                    <a id="a<%=ii("invoiceid") %>"  class="btn btn-sm btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado São Marcos"><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                    <a id="a<%=ii("invoiceid") %>"  class="btn btn-sm btn-alert" <%=disabledEdit%> href="javascript:syncLabResult(['<%=ii("invoiceid") %>'],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado São Marcos"><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
                                 <% if ii("labid")="2" then %>
                                     <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
@@ -343,29 +348,17 @@ end if
         ii.close
         set ii = nothing
     end if
+    set ultimasync = db.execute("SELECT * FROM labs_integracao_log WHERE metodo = 'SINCRONIZACAO_CRON' ORDER BY id DESC LIMIT 1")
+    if not ultimasync.eof THEN 
     %>
+    <TR><TD colspan="100%">        
+        <div class="col-md-3 " style="float: right;">
+            <p style="margin-top: 10px; opacity: 0.80">Última sincronização:<%=ultimasync("DataHora") %></p>
+        </div>              
+    </TD></TR>
+    <% end if %>
     </tbody>
 </table>
-
-<%
-  if recursoAdicional(24)=4 then
-  set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
-  if not labAutenticacao.eof then
-  set soliSQL = db.execute("SELECT DataHora FROM labs_solicitacoes WHERE TipoSolicitacao='request-results' ORDER BY DataHora DESC LIMIT 1")
-
-  UltSinc = "Não sincronizado"
-  if not soliSQL.eof then
-    UltSinc = soliSQL("DataHora")
-  end if
-%>
-    <div class="col-md-3 hidden ">
-        <!-- <button class="btn btn-primary btn-block mt20 lab-sync" type="button"><i class="fa fa-flask bigger-110"></i> Sincronizar laboratório</button> -->
-        <p style="margin-top: 10px; opacity: 0.80">Última sincronização: <%=UltSinc%></p>
-    </div>
-<%
-    end if
-end if
-%>
 
 <script>
 
@@ -462,6 +455,11 @@ function syncLabResult(invoices, labid =1) {
                 case 3:
                     var htmlstatus = '<span  class="label label-rounded label-warning">Parcial</span>';
                     break;
+                
+                case 4:
+                    var htmlstatus = '<span  class="label label-rounded label-info">Sincronizado</span>';
+                    $("#a"+invoices).hide(); 
+                    break;
                 default:
                     var htmlstatus = '<span  class="label label-rounded label-warning">Pendente</span>';
             }
@@ -495,47 +493,14 @@ $(".cklaudostodos").on('change', function(){
 });
 
 $(".lab-sync").on("click", function (labid =2){
-    const allowedLabs = ["laboratório são marcos"];
-    let invoices = [];
-
-    $("#divListaLaudos > table > tbody > tr").each(function(i, el) {
-        if(allowedLabs.includes($(el).find("td:nth-child(6)").html().toLowerCase())) {
-            invoices.push($(el).find("td:nth-child(2)").data("id"));
-        }
-    });
-    var caminhointegracao = "";
-    switch (labid) {
-        case '1':      
-            caminhointegracao = "matrix"; 
-            break;
-        case '2': 
-            caminhointegracao = "diagbrasil";
-            break;
-        case '3': 
-            caminhointegracao = "alvaro";
-            break;
-        default:
-            alert ('Erro ao integrar com Laboratório');
-            return false;
-    } 
-    postUrl("labs-integration/"+caminhointegracao+"/sync-invoice", {
-        "invoices": invoices
-    }, function (data) {
-        $("#syncInvoiceResultsButton").prop("disabled", false);
-        if(data.success) {
-            location.reload();
-        } else {
-            alert(data.content)
-        }
-    })
-});
+        alert ('Funcionalidade desabilitada!');
+     }  );
 
 
     $(".atualizarstatus").on('click', function(){
         var values = $("#StatusID").val();
         if(values != null){
             var todos = values.toString().split(",");
-
             if( todos.length > 1){
                 showMessageDialog("Escolha apenas 1 status", "danger")
             }else{

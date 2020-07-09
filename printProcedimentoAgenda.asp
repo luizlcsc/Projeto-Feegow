@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
+ConvenioID= req("ConvenioID")
 ProcedimentoID= req("ProcedimentoID")
 EspecialidadeID= req("EspecialidadeID")
 PacienteID= req("PacienteID")
@@ -16,6 +17,11 @@ if instr(ProfissionalID,"_")>0 then
 	ProfissionalID = splAccountInQuestion(1)
 end if
 
+TipoFaturamentoLaudo = "PARTICULAR"
+if ConvenioID&"" <> "" and ConvenioID&""<>"0" then
+    TipoFaturamentoLaudo = "CONVENIO"
+end if
+
 if TipoImpresso="Protocolo" then
     set ProcedimentoLaudoSQL = db.execute("SELECT Laudo, DiasLaudo FROM procedimentos WHERE id="&ProcedimentoID&" AND Laudo=1")
     if not ProcedimentoLaudoSQL.eof then
@@ -29,16 +35,24 @@ if TipoImpresso="Protocolo" then
             LaudoID=LaudoExisteSQL("id")
         else
             if ProfissionalID&""<>"" then
-                set ItemInvoiceSQL = db.execute("SELECT ii.id FROM itensinvoice ii INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE i.AssociationAccountID=3 AND i.AccountID="&PacienteID&" AND ii.ProfissionalID="&ProfissionalID&" AND ii.Associacao in (5,0) AND ii.ItemID="&ProcedimentoID&" AND ii.Tipo='S' AND ii.DataExecucao=CURDATE()")
-                if not ItemInvoiceSQL.eof then
-                    ItemInvoiceID=ItemInvoiceSQL("id")
+
+                if TipoFaturamentoLaudo="CONVENIO" then
+                    sqlRegistroLaudo = "SELECT 'tissprocedimentossadt' TipoRegistro, ii.id IDRegistro FROM tissprocedimentossadt ii INNER JOIN tissguiasadt i ON i.id=ii.GuiaID WHERE i.PacienteID="&PacienteID&" AND ii.ProfissionalID="&ProfissionalID&" AND ii.Associacao in (5,0) AND ii.ProcedimentoID="&ProcedimentoID&" AND ii.Data=CURDATE()"
+                else
+                    sqlRegistroLaudo = "SELECT 'itensinvoice' TipoRegistro, ii.id IDRegistro FROM itensinvoice ii INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE i.AssociationAccountID=3 AND i.AccountID="&PacienteID&" AND ii.ProfissionalID="&ProfissionalID&" AND ii.Associacao in (5,0) AND ii.ItemID="&ProcedimentoID&" AND ii.Tipo='S' AND ii.DataExecucao=CURDATE()"
+                end if
+
+                set RegistroLaudoSQL = db.execute(sqlRegistroLaudo)
+                if not RegistroLaudoSQL.eof then
+                    IdRegistro=RegistroLaudoSQL("IDRegistro")
+                    TipoRegistro=RegistroLaudoSQL("TipoRegistro")
                     PrazoEntrega=ProcedimentoLaudoSQL("DiasLaudo")
 
                     if isnull(PrazoEntrega) then
                         PrazoEntrega=1
                     end if
 
-                    db.execute("INSERT INTO laudos (PacienteID, ProcedimentoID, PrevisaoEntrega, ProfissionalID, StatusID, Tabela, IDTabela) VALUES ("&PacienteID&", "&ProcedimentoID&", "&mydatenull(dateadd("d", PrazoEntrega, date()))&","&ProfissionalID&",1,'itensinvoice', "&ItemInvoiceID&")")
+                    db.execute("INSERT INTO laudos (PacienteID, ProcedimentoID, PrevisaoEntrega, ProfissionalID, StatusID, Tabela, IDTabela) VALUES ("&PacienteID&", "&ProcedimentoID&", "&mydatenull(dateadd("d", PrazoEntrega, date()))&","&ProfissionalID&",1,'"&TipoRegistro&"', "&IdRegistro&")")
 
                     set LaudoSQL = db.execute("SELECT id FROM laudos ORDER BY id DESC LIMIT 1")
                     LaudoID=LaudoSQL("id")
@@ -54,8 +68,14 @@ if TipoImpresso="Protocolo" then
             $("body").append("<iframe id='ImpressaoProcedimento' src='<%=UrlPrint%>' style='display:none;'></iframe>")
             <%
         else
+            if TipoFaturamentoLaudo="CONVENIO" then
+                TipoConta="Guia SP/SADT"
+            else
+                TipoConta="conta"
+            end if
+
             %>
-            showMessageDialog("Nenhuma conta foi gerada para este atendimento.", "warning");
+            showMessageDialog("Nenhuma <%=TipoConta%> foi gerada para este atendimento.", "warning");
             <%
         end if
     else

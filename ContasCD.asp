@@ -32,12 +32,19 @@ else
 
     idUser = session("User")
    
-    set regraspermissoes = db.execute("SELECT REPLACE(limitarcontaspagar, '|', '') AS limitarcontaspagar FROM sys_users WHERE id ="&idUser)    
+    set regraspermissoes = db.execute("SELECT REPLACE(limitarcontaspagar, '|', '') AS limitarcontaspagar, IF( Permissoes like '%[%', SUBSTRING_INDEX(SUBSTRING_INDEX(Permissoes, '[', -1), ']', 1), '') RegraUsuario FROM sys_users WHERE id ="&idUser)
     queryTotal = " SELECT * from sys_financialexpensetype WHERE 1=1 "
 
     if not regraspermissoes.eof THEN
         limitarContasPagarValores = regraspermissoes("limitarcontaspagar")
+        RegraUsuario = regraspermissoes("RegraUsuario")
+        set limitarCategoria = db.execute("SELECT limitarcontaspagar FROM regraspermissoes WHERE id = "&treatvalzero(RegraUsuario))
+        if not limitarCategoria.eof then
+            limitarContasPagarValores = limitarCategoria("limitarcontaspagar")
+        end if
+
         IF limitarContasPagarValores <> "" then
+            limitarContasPagarValores = replace(limitarContasPagarValores, "|","")
             queryTotal = " "&queryTotal&" and id not in("&limitarContasPagarValores&")"
         END IF
     end if
@@ -301,7 +308,7 @@ $('#frmCD').submit(function(){
     $("#frmCD").submit();
 <% end if %>
 
-  <% if getConfig("ListarAutomaticamenteContas") = "1" or req("Buscar")="1" then%>
+<% if getConfig("ListarAutomaticamenteContas") = "1" or req("Buscar")="1" then%>
     $('#Filtrate').click();
 <%
 else

@@ -5,25 +5,41 @@
 	if isnumeric(request.QueryString("X")) and request.QueryString("X")<>"" and request.QueryString("X")<>"0" then
 		db_execute("delete from arquivos where id="&request.QueryString("X"))
 	end if
-	IF getConfig("NovaGaleria") = "1" THEN
+	'getConfig("NovaGaleria")
+	IF true THEN
         %>
           <script>
-            if($(".galery-ajax").length === 0){
-                $("#ImagensPaciente").prepend("<div class='galery-ajax'></div>");
-                fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
-                  .then(data => data.text())
-                  .then(data => {
-                     $(".galery-ajax").html(data);
-                     $("[value='A']").parent().remove();
-                  });
+          function getImagensPaciente(onlyRefresh = false){
+              const uploaderSetado = $(".galery-ajax").length > 0;
+
+            if(uploaderSetado && onlyRefresh === false){
+                return;
             }
+
+            if(!uploaderSetado){
+                $("#ImagensPaciente").prepend("<div class='galery-ajax'></div>");
+            }
+
+            fetch("ImagensNew.asp?ArquivoImagem=Imagem&PacienteID=<%=req("PacienteID")%>")
+              .then(data => data.text())
+              .then(data => {
+                 $(".galery-ajax").html(data);
+                 $("[value='A']").parent().remove();
+              });
+
+          }
+
+            function callUpload(){
+               getImagensPaciente(true);
+            }
+            getImagensPaciente();
         </script>
         <%
     END IF
 %>
 
 
-<% IF getConfig("NovaGaleria") = "0" THEN %>
+<% IF false THEN %>
 <div class="row">
 	<div class="col-md-4 pull-right">
     	<button type="button" id="btnComparar" class="btn btn-sm btn-info">Comparar imagens</button>

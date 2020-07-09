@@ -158,7 +158,7 @@ $(document).ready(function() {
 
                 if ObsConvenio&""<>"" then
                 %>
-                var btnObs = '<button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="openModal(\'<%=replace(replace(ObsConvenio,chr(10),"<br>"),chr(13),"<br>")%>\', \'Observações do convênio\', true, false, \'md\')"><i class="fa fa-align-justify"></i></button>';
+                var btnObs = '<button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=conv("id")%>)"><i class="fa fa-align-justify"></i></button>';
                 $("#ConvenioID").before(btnObs);
                 <%
                 end if
@@ -499,7 +499,7 @@ if left(tipo, 10)="ConvenioID" then
 
         if ObsConvenio&""<>"" then
             %>
-            var btnObs = '<button title="Observações do convênio" id="ObsConvenios<%=apID%>" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="openModal(\'<%=replace(replace(ObsConvenio,chr(10),"<br>"),chr(13),"<br>")%>\', \'Observações do convênio\', true, false, \'md\')"><i class="fa fa-align-justify"></i></button>';
+            var btnObs = '<button title="Observações do convênio" id="ObsConvenios<%=apID%>" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=ConvenioID%>)"><i class="fa fa-align-justify"></i></button>';
             $("#ConvenioID<%=apID%>").before(btnObs);
             <%
         else

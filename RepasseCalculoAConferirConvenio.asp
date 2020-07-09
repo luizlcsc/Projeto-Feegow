@@ -2,6 +2,7 @@
 <%
 
 totalRepasses = 0
+totalRecebido = 0
 totalMateriais = 0
 totalProcedimentos = 0
 
@@ -19,7 +20,7 @@ private function tituloTabelaRepasseConvenio(Classe, Titulo, ItemGuiaID, GuiaCon
         <div><%= Extras %></div>
     </td>
     <%
-
+    totalRecebido = totalRecebido + fn(ValorRecebido)
 end function
 
 private function calcCreditado(ContaCredito, ProfissionalExecutante)
@@ -606,17 +607,19 @@ end if
             <table class="table table-condensed table-bordered">
                 <thead>
                     <tr>
-                        <th width="25%" class="text-center">Total Serviços</th>
-                        <th width="25%" class="text-center">Total Repasses</th>
-                        <th width="25%" class="text-center">Total Materiais</th>
-                        <th width="25%" class="text-center">Total Resultado</th>
+                        <th width="20%" class="text-center">Total Serviços</th>
+                        <th width="20%" class="text-center">Total Recebido</th>
+                        <th width="20%" class="text-center">Total Repasses</th>
+                        <th width="20%" class="text-center">Total Materiais</th>
+                        <th width="20%" class="text-center">Total Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
-                        <th width="25%" class="text-right"><%= fn(totalProcedimentos) %></th>
-                        <th width="25%" class="text-right"><%= fn(totalRepasses) %></th>
-                        <th width="25%" class="text-right"><%= fn(totalMateriais) %></th>
-                        <th width="25%" class="text-right"><%= fn( totalProcedimentos - totalRepasses - totalMateriais ) %></th>
+                        <th width="20%" class="text-right"><%= fn(totalProcedimentos) %></th>
+                        <th width="20%" class="text-right"><%= fn(totalRecebido) %></th>
+                        <th width="20%" class="text-right"><%= fn(totalRepasses) %></th>
+                        <th width="20%" class="text-right"><%= fn(totalMateriais) %></th>
+                        <th width="20%" class="text-right"><%= fn( totalProcedimentos - totalRepasses - totalMateriais ) %></th>
                 </tbody>
             </table>
         </div>

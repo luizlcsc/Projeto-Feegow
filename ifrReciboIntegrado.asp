@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="extenso.asp"-->
+<!--#include file="Classes/TagsConverte.asp"-->
 <% if session("Banco")="clinic5760" then %>
 <style type="text/css">
     body {
@@ -692,22 +693,26 @@ if not inv.eof then
 
 			Recibo = replace(Recibo, "[Receita.Itens]", tabelinha)
             Recibo = replace(Recibo&"", "[Receita.ItensExtenso]", NomeItens&"")
-
-			set forma = db.execute("SELECT IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','Crédito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value ,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
-                                           "FROM sys_financialmovement debito "&_
-                                           "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
-                                           "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_
-                                           "LEFT JOIN sys_financialpaymentmethod forma_pagamento ON forma_pagamento.id = credito.PaymentMethodID "&_
-                                           "LEFT JOIN sys_financialcreditcardtransaction cartao_credito ON cartao_credito.MovementID=credito.id "&_
-                                           "LEFT JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID NOT IN (3, 4) "&_
-                                           "LEFT JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
-                                           "WHERE debito.InvoiceID="&inv("id"))
+            qFormaSQL = "SELECT COALESCE(CONCAT(debito.InvoiceID,'.',rec.id),debito.InvoiceID) AS ReciboID, IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','Crédito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value ,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
+                "FROM sys_financialmovement debito "&_
+                "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
+                "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_
+                "LEFT JOIN sys_financialpaymentmethod forma_pagamento ON forma_pagamento.id = credito.PaymentMethodID "&_
+                "LEFT JOIN sys_financialcreditcardtransaction cartao_credito ON cartao_credito.MovementID=credito.id "&_
+                "LEFT JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID NOT IN (3, 4) "&_
+                "LEFT JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
+                "LEFT JOIN recibos rec ON rec.InvoiceID=debito.InvoiceID "&_
+                "WHERE debito.InvoiceID="&inv("id")
+                '"GROUP BY debito.InvoiceID"
+            'response.write("<pre>"&qFormaSQL&"</pre>")
+			set forma = db.execute(qFormaSQL)
 
 			Parcelas = ""
             FormaPagto = ""
             DataVencimento = ""
             DataPagamento = ""
             while not forma.EOF
+                ReciboID = forma("ReciboID")&""
                 PaymentMethod = forma("PaymentMethod")
                 Parcela = forma("Parcelas")
                 value = forma("value")
@@ -763,17 +768,26 @@ if not inv.eof then
                 ValorPagoExtenso = TotalPago
             end if
 
-            Recibo = replace(Recibo, "[Recibo.Mes]", MonthName(month(date())))
-            Recibo = replace(Recibo, "[Recibo.DataVencimento]", DataVencimento)
-            Recibo = replace(Recibo, "[Recibo.DataPagamento]", DataPagamento)
-            Recibo = replace(Recibo, "[Recibo.Dia]", day(date()))
-            Recibo = replace(Recibo, "[Recibo.Ano]", year(date()))
-			Recibo = replace(Recibo, "[-Usuario.Nome-]", UsuarioRecebimento)
+            Recibo = replace(Recibo, "[-Usuario.Nome-]", UsuarioRecebimento)
+
 			Recibo = replace(Recibo, "[Receita.FormaPagamento]", FormaPagto)
 			Recibo = replace(Recibo, "[Receita.ValorTotal]", fn(TotalTotal) )
 			Recibo = replace(Recibo, "[Receita.TotalPago]", fn(ValorRecibo) )
 			Recibo = replace(Recibo, "[Receita.TotalPendente]", fn(TotalPendente) )
             Recibo = replace(Recibo, "[Receita.ValorPagoExtenso]", extenso(ValorPagoExtenso))
+
+            Recibo = replace(Recibo, "[Recibo.Mes]", MonthName(month(date())))
+            Recibo = replace(Recibo, "[Recibo.Dia]", day(date()))
+            Recibo = replace(Recibo, "[Recibo.Ano]", year(date()))
+
+
+            'CONVERSÃO DAS TAGS MIGRADAS PARA A FUNÇÃO tagsConverte()
+            'Recibo = replace(Recibo, "[Recibo.ID]", ReciboID)
+            'Recibo = replace(Recibo, "[Recibo.DataVencimento]", DataVencimento)
+            'Recibo = replace(Recibo, "[Recibo.DataPagamento]", DataPagamento)
+
+            'NOVA FUNCAO DE TAGS | Rafael Maia 06/07/2020
+            Recibo = tagsConverte(Recibo,"ReciboID_"&req("I"),"")
 
             NomeSolicitante = ""
 
@@ -825,11 +839,11 @@ if not inv.eof then
             NomeItens = left(NomeItens, 200)
             CPFPACIENTE = ""
 
-            set ReciboSQL = db.execute("SELECT id FROM recibos ORDER BY id DESC LIMIT 1")
-
-            if not ReciboSQL.eof then
-                Recibo = replace(Recibo, "[Recibo.ID]", ReciboSQL("id") + 1)
-            end if
+            'DESATIVADO Tag e migrado para a Função TagsConverte
+            'set ReciboSQL = db.execute("SELECT id FROM recibos ORDER BY id DESC LIMIT 1")
+            'if not ReciboSQL.eof then
+            '    Recibo = replace(Recibo, "[Recibo.ID]", ReciboSQL("id") + 1)
+            'end if
 
             set PacSQL = db.execute("SELECT cpf FROM pacientes WHERE id = "&PacienteID)
 

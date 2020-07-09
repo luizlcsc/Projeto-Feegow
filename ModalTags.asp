@@ -21,6 +21,7 @@ while not sqlTagsCategorias.eof
   "LEFT JOIN cliniccentral.tags_modulos tagMod ON tagMod.TagID=tag.id  "&_
   "LEFT JOIN cliniccentral.tags_categorias tagCat ON tagCat.id=tag.tags_categorias_id  "&_
   "WHERE (tag.Padrao=1 AND tagCat.id = '"&tags_categorias_id&"') OR (tagMod.Modulo='"&req("P")&"' AND tagMod.Recurso='"&req("R")&"' AND tagCat.id = '"&tags_categorias_id&"')  "&_
+  "GROUP BY tag.id "&_
   "ORDER BY tag.padrao"
   if sDev=1 then
     response.write("<pre>"&replace(qTags,"  ","<br>")&"</pre>")

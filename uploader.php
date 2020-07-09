@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 
 $nomeArquivo = date('ymdhisu', time('hisu')) . rand(5);
 $nomeArquivo = md5($nomeArquivo).".jpg";
-
+var_dump($data);
 $data  = $_POST['photo-data'];
 $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $data));
 
@@ -23,6 +23,5 @@ if(is_numeric($l)) {
 
     file_put_contents($path . $nomeArquivo, $data);
     header("location:FotoUploadSave.asp?Action=InsertCamera&P=" . $_GET['P'] . "&I=" . $_GET['I'] . "&Col=" . $_GET['Col'] . "&FileName=" . $nomeArquivo);
-//header("Content-type:image/jpeg");
-//imagepng($data);
+
 }

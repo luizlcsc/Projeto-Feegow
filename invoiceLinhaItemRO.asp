@@ -8,11 +8,125 @@
 %>
 
 <tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>">
+
     <td> 
+        <input type="hidden" name="AtendimentoID<%=id%>" id="AtendimentoID<%=id%>" value="<%=AtendimentoID%>">
+    	<input type="hidden" name="AgendamentoID<%=id%>" id="AgendamentoID<%=id%>" value="<%=AgendamentoID%>">
+        <input type="hidden" name="Quantidade<%=id%>" id="Quantidade<%=id%>" value="<%=Quantidade%>">
+        <input type="hidden" name="ItemID<%=id%>" id="ItemID<%=id%>" value="<%=id%>">
+
     	<%=Quantidade %>
     </td>  
+          <%
+        if Tipo="S" then
+            ItemInvoiceID = id
+            ProdutoInvoiceID = ""
+
+            DisabledNaoAlterarExecutante = " "
+            NaoAlterarExecutante=False
+            set RepasseSQL = db.execute("SELECT id FROM rateiorateios WHERE ItemContaAPagar is not null and ItemInvoiceID="&ItemInvoiceID)
+
+            if not RepasseSQL.eof then
+                NaoAlterarExecutante=True
+                DisabledNaoAlterarExecutante=" disabled"
+            end if
+
+            if NaoPermitirAlterarExecutante and Executado="S" then
+                NaoAlterarExecutante=True
+                DisabledNaoAlterarExecutante=" disabled"
+            end if
+
+            if NaoAlterarExecutante then
+            %>
+            <input type="hidden" name="NaoAlterarExecutante" value="S" />
+            <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
+            <%
+            end if
+            %>
+            <input type="hidden" name="PacoteID<%= id %>" value="<%= PacoteID %>" />
+            
+            <%
+            if NaoAlterarExecutante then
+                %>
+                <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
+                <input type="hidden" name="ItemID<%= id %>" value="<%=ItemID%>" />
+                <%
+            end if
+            %>
+                    <%if session("Odonto")=1 then
+                    %>
+                    <textarea class="hidden" name="OdontogramaObj<%=id %>" id="OdontogramaObj<%=id %>"><%=OdontogramaObj %></textarea>
+                    <%
+                  end if %>
+
+            <% if  Executado<>"C" then
+
+                if NaoAlterarExecutante then
+                    %>
+                    <input type="hidden" name="Executado<%= id %>" value="S" />
+                    <%
+                end if
+
+         end if %>
+                <%
+                if id>0 and (session("Banco")="clinic5760" or session("Banco")="clinic105" or session("Banco")="clinic100000" or session("Banco")="clinic4421" or session("Banco")="clinic5856" or session("Banco")="clinic5445" or session("Banco")="clinic5968" or session("Banco")="clinic5857" or session("Banco")="clinic6118" or session("Banco")="clinic6273" or session("Banco")="clinic5563" or session("Banco")="clinic6346" or session("Banco")="clinic2665" or session("Banco")="clinic6289" or session("Banco")="clinic5563" or session("Banco")="clinic6451" or session("Banco")="clinic6256") then
+                    set vcaPagto = db.execute("select ifnull(sum(Valor), 0) TotalPagoItem from itensdescontados where ItemID="& id)
+                    TotalPagoItem = ccur(vcaPagto("TotalPagoItem"))
+
+                    if TotalPagoItem>=ccur(Quantidade*(ValorUnitario+Acrescimo-Desconto)) and Executado="C" then
+                        %>
+                         <input type="hidden" value="C" name="Cancelado<%=id%>">
+                        <%
+                    end if
+                end if
+                %>
+            </td>
+            <%
+        elseif Tipo="M" or Tipo="K" then
+            ItemInvoiceID = ""
+            ProdutoInvoiceID = id
+            if not InvoiceSQL.eof then
+                if InvoiceSQL("CD")="C" then
+                    TabelaCategoria = "sys_financialincometype"
+                    LimitarPlanoContas=""
+                else
+                    TabelaCategoria = "sys_financialexpensetype"
+                    EscondeFormas = 1
+                    II = "0_0"
+                end if
+            end if
+        end if    %>
     <td colspan=3> 
     	<%=procedimentos("NomeProcedimento") %>
+    </td>
+    <td>
+        <% if integracaopleres <>"S" then %>
+            <% if  Executado<>"C" then
+
+                if NaoAlterarExecutante then
+                    %>
+                    <input type="hidden" name="Executado<%= id %>" value="S" />
+                    <%
+                end if
+
+            %>
+                <span class="checkbox-custom checkbox-primary"><input type="checkbox" class="checkbox-executado" name="Executado<%=id%>" id="Executado<%=id%>" value="S"<%if Executado="S" then%> checked="checked"<%end if%> <%=DisabledNaoAlterarExecutante%> /><label for="Executado<%=id%>"> Executado</label></span>
+            <% end if %>
+            <%
+                if id>0 and (session("Banco")="clinic5760" or session("Banco")="clinic105" or session("Banco")="clinic100000" or session("Banco")="clinic4421" or session("Banco")="clinic5856" or session("Banco")="clinic5445" or session("Banco")="clinic5968" or session("Banco")="clinic5857" or session("Banco")="clinic6118" or session("Banco")="clinic6273" or session("Banco")="clinic5563" or session("Banco")="clinic6346" or session("Banco")="clinic2665" or session("Banco")="clinic6289" or session("Banco")="clinic5563" or session("Banco")="clinic6451" or session("Banco")="clinic6256") then
+                    set vcaPagto = db.execute("select ifnull(sum(Valor), 0) TotalPagoItem from itensdescontados where ItemID="& id)
+                    TotalPagoItem = ccur(vcaPagto("TotalPagoItem"))
+
+                    if TotalPagoItem>=ccur(Quantidade*(ValorUnitario+Acrescimo-Desconto)) and Executado="C" then
+                        %>
+                        <input type="hidden" value="C" name="Cancelado<%=id%>">
+                        <span class="label label-danger">Cancelado</span>
+                        <% '<span class="checkbox-custom checkbox-danger"><input type="checkbox" name="Cancelado id" id="Cancelado id" value="C" checked="checked" /><label for="Cancelado id"> Cancelado</label></span> %>
+                        <%
+                    end if
+                end if
+            %>
+        <% end if %>
     </td>
     <td> 
     	R$ <%=formatnumber(ValorUnitario,2)%>
@@ -162,9 +276,9 @@ end if
     	    <div class="col-xs-3">
 			    <label>Profissional</label><br>
 			    <%
-			    if PacoteID&""="" then
+			    'if PacoteID&""="" then
 			        onchangeProfissional = " onchange=""espProf("& id &");"" "
-			    end if
+			    'end if
 
 			    ExecutanteTipos = "5, 8, 2"
 			    if session("Banco")="clinic6118" then

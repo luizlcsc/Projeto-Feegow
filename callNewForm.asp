@@ -1,3 +1,4 @@
+<!--#include file="./Classes/TagsConverte.asp"-->
 <style type="text/css">
 .imagem {
 	background-image:url(assets/img/imagem.png);
@@ -45,7 +46,7 @@ session("FP"&FTipo) = FormID
 
 buiFormID = FormID
 
-if session("Banco")="clinic5676" OR session("Banco")="clinic5791" then
+if getConfig("GerarNovoFormulario")=1 then
     'config para DUPLICAR o form inves de editar
     buiFormID="N"
 end if
@@ -179,7 +180,10 @@ while not campos.eof
 	  end if
 
 	  if not isnull(ValorPadrao) then
-	  	ValorPadrao = replaceTags(ValorPadrao, PacienteID, session("UserID"), session("UnidadeID"))
+			'CONVERSOS TAGS NOVO || 30/06/2020 - Rafael Maia ||
+			ValorPadrao = tagsConverte(ValorPadrao,"PacienteID_"&PacienteID&"|ProfissionalSessao_"&session("User")&"|UnidadeSessao_"&session("UnidadeID"),"")
+			'CONVERSOR TAGS ANTIGO
+			'ValorPadrao = replaceTags(ValorPadrao, PacienteID, session("UserID"), session("UnidadeID"))
 	  end if
 	  %>
       <!--#include file="formsCompiladorCampoPreenchido.asp"-->
@@ -194,6 +198,10 @@ set campos=nothing
 </div>
 
 <style>
+.tableFixHead          { overflow-y: auto; height: 550px; }
+.tableFixHead thead th { position: sticky; top: 0; z-index: 9999 }
+table  { border-collapse: collapse; width: 100%; }
+
 .suggest-active{
     background-color: #d6d6d6!important;
 }

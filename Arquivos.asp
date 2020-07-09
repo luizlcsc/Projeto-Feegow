@@ -1,12 +1,13 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="ProntCompartilhamento.asp"-->
 <%
+' getConfig("NovaGaleria") = "1"
 
-IF getConfig("NovaGaleria") = "1" THEN
+IF True THEN
             %>
       <div class="galery-ajax"></div>
       <script>
-              fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>&MovementID=<%=req("MovementID")%>")
+              fetch("ImagensNew.asp?ArquivoImagem=Arquivo&PacienteID=<%=req("PacienteID")%>&MovementID=<%=req("MovementID")%>")
               .then(data => data.text())
               .then(data => {
                  $(".galery-ajax").html(data);
@@ -28,7 +29,9 @@ END IF
     	        <th width="1%"></th>
                 <th width="1%">Arquivo</th>
                 <th>Descrição</th>
+                <th>Tipo</th>
                 <th width="5%" nowrap>Data de Envio</th>
+                <th width="5%" nowrap>Validade</th>
                 <th width="90px"></th>
             </tr>
         </thead>
@@ -97,7 +100,9 @@ END IF
         	        <td><img height="32" width="32" src="<%=icone%>" /></td>
                     <td><a target="_blank" <% if setOnclick then %>onclick="getFile('<%=arquivos("NomePasta")%>', '<%=arquivos("NomeArquivo")%>')" <% end if %> href="<%= fullFile %>" class="btn btn-info"><i class="fa fa-download"></i></a></td>
                     <td><%=quickfield("text", "Desc"&arquivos("id"), "", 11, arquivos("Descricao"), " imgpac", "", " data-img-id='"&arquivos("id")&"'") %></td>
+                    <td><%=quickfield("simpleSelect", "TipoArquivoID_"&arquivos("id"), "", 11, arquivos("TipoArquivoID"), " select * from tipoarquivo where sysActive=1 order by NomeArquivo", "NomeArquivo", " data-img-id='"&arquivos("id")&"'") %></td>
                     <td width="5%" nowrap><%=arquivos("DataHora")%></td>
+                    <td width="5%" nowrap><%=quickField("datepicker", "Validade_"&arquivos("id"), "", 2, arquivos("Validade"), "", "", "") %></td>
                     <td>
 					<div>
 					<% if cstr(session("User"))=arquivos("sysUser")&"" then %>

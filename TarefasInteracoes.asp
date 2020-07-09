@@ -73,9 +73,9 @@ else
                           "LEFT JOIN sys_users u ON u.id=m.desession " &_
                           "LEFT JOIN profissionais p ON p.id=u.idInTable AND u.`Table`='profissionais' "&_
                           "LEFT JOIN funcionarios f ON f.id=u.idInTable AND u.`Table`='funcionarios' "&_
-                          "LEFT JOIN clinicclearValuecentral.licencasusuarios lu ON lu.id=m.desession "&_
+                          "LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=m.desession "&_
                           "WHERE m.TarefaID="&req("I")&" "&_
-                          "UNION "&_clearValue
+                          "UNION "&_
                           "SELECT  l.id, l.TarefaID, NULL AS RequisicaoID, DATE(l.DataHora) AS DATA, TIME(l.DataHora) AS hora, "&_
                           "NULL AS desession, NULL AS para, CONCAT(p.NomeProfissional, ' alterou o status de ', IF(l.DePara = 'De', 'origem ', 'destino '), "&_
                           "'<span class=''text-', sa.Classe, '''>', l.StatusAnterior, '</span>', ' <i class=''fa fa-arrow-circle-right''></i> ', "&_
@@ -119,7 +119,11 @@ else
 
             Foto = getFileUrlWithCustomDB(Foto, "Perfil", L)
         end if
-
+        Publico = ints("Publico")
+        MsgPublico = "Público"
+        if Publico = "0" then
+            MsgPublico = "Privado"
+        end if
 
         %>
         <% if ints("Interacao") = "1" then %>

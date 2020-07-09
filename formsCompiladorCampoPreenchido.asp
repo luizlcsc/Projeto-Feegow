@@ -7,6 +7,11 @@ else
     EstiloImagem = ""
 end if
 %>
+<style>
+    .tableFixHead          { overflow-y: auto; height: 100px; }
+    .tableFixHead thead th { position: sticky; top: 0; z-index: 9999 }
+    table  { border-collapse: collapse; width: 100%; }
+</style>
 
 <li id="<%=CampoID%>" class="<%if TipoCampoID=13 then response.Write("caixaGrupo campo") else response.Write("campo") end if%>" data-row="<%=pTop%>" style="text-align:left; <%=EstiloImagem%>" data-col="<%=pLeft%>" data-sizex="<%=Colunas%>" data-sizey="<%=Linhas%>">
 	<%if TipoCampoID<>3 and TipoCampoID<>12 and getConfig("LembreteFormulario")=1 then%><span class="badge badge-info lembrar hidden-print checkbox-custom checkbox-danger"><i class="fa fa-flag red"></i> <input class="postvalue lembrarme tbl" type="checkbox" data-campoid="<%=CampoID%>" id="lembrarme_<%=CampoID%>" value="<%=CampoID %>" name="lembrarme" <%if instr(LembrarmeS, "|"&CampoID&"|") then response.Write("checked") end if %> /><label for="lembrarme_<%=CampoID%>"> Lembrar-me disso</label></span><%end if%>
@@ -335,8 +340,10 @@ $(function() {
                 </div>
             <%
 	  	case 9'tabela
-			%><label class="campoLabel"><%=RotuloCampo%></label>
+			%>
+			<label class="campoLabel"><%=RotuloCampo%></label>
     <input name="tblRem<%=CampoID %>" type="hidden" id="tblRem<%=CampoID %>" class="tbl" value="0" />
+    <div class="tableFixHead">
     <table class="table table-condensed table-bordered table-hover"><thead><tr class="info"><%
 			sqlTit = "select * from buitabelastitulos where CampoID="&CampoID
 			set pTit = db.execute(sqlTit)
@@ -480,7 +487,7 @@ $(function() {
                 <tr class="hidden" id="fmodel<%=CampoID %>"></tr>
 
 
-            </tbody></table>
+            </tbody></table></div>
         <%
 		case 10
 			%><h2><%=RotuloCampo%></h2><%

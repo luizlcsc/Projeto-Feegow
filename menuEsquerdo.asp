@@ -783,6 +783,17 @@ select case lcase(req("P"))
             </li>
 		    <%
 		    end if
+		    %>
+            <li>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
+                    <span class="fa fa-file-text-o bigger-110"></span>
+                    <span class="sidebar-title">Protocolos</span>
+                    <span class="sidebar-title-tray">
+                      <span class="label label-xs bg-primary" id="totalprotocolos"></span>
+                    </span>
+                </a>
+            </li>
+		    <%
 		    if aut("vacinapacienteV")=1 then
 		    %>
             <li>
@@ -1476,7 +1487,7 @@ select case lcase(req("P"))
         <%
             end if
         end if
-    case "outrasconfiguracoes", "novasconfiguracoes"
+    case "outrasconfiguracoes", "novasconfiguracoes", "CadastroExamesLab"
         %>
         <li class="sidebar-label pt20">Opções de Configurações</li>
         <li class="hidden">
@@ -1552,6 +1563,15 @@ select case lcase(req("P"))
             <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');">
             <span class="fa fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
+
+         <% IF  aut("exames_laboratoriaisV")=1  THEN %>
+            <li>
+              <a href="?P=CadastroExamesLab&Pers=1">
+                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Cadastro de Exames (Lab)</span></a> 
+    
+            </li>
+        <% END IF %>
+
         <%
     case "chamadasmotivoscontato","chamadascategorias"
     %>
@@ -1610,7 +1630,7 @@ select case lcase(req("P"))
         %>
         <!--#include file="MenuEstoque.asp"-->
         <%
-    case "listaprodutos", "produtoscategorias", "produtoslocalizacoes", "produtosfabricantes", "produtoskits"
+    case "listaprodutos", "produtoscategorias", "produtoslocalizacoes", "produtosfabricantes", "produtoskits", "medicamentosconvenios"
         %><li class="sidebar-label pt20">Tipos de Itens</li><%
         set getTipoProduto = db.execute("SELECT * FROM cliniccentral.produtostipos")
         while not getTipoProduto.eof
@@ -1630,6 +1650,9 @@ select case lcase(req("P"))
         %>
         <hr style="margin:10px !important;">
         <li class="sidebar-label pt20">Configurações</li>
+        <li <%if req("P")="MedicamentosConvenios" then%>class="active"<%end if%>>
+            <a href="./?P=MedicamentosConvenios&Pers=1"><span class="fa fa-sitemap"></span> <span class="sidebar-title"> Medicamentos por Convênios</span></a>
+        </li>
         <li <%if req("P")="ProdutosCategorias" then%>class="active"<%end if%>>
             <a href="./?P=ProdutosCategorias&Pers=0"><span class="fa fa-puzzle-piece"></span> <span class="sidebar-title"> Categorias</span></a>
         </li>
@@ -1637,7 +1660,7 @@ select case lcase(req("P"))
             <a href="./?P=ProdutosLocalizacoes&Pers=0"><span class="fa fa-map-marker"></span> <span class="sidebar-title"> Localizações</span></a>
         </li>
         <li <%if req("P")="ProdutosFabricantes" then%>class="active"<%end if%>>
-            <a href="./?P=ProdutosFabricantes&Pers=0"><span class="fa fa-sitemap"></span> <span class="sidebar-title"> Fabricantes</span></a>
+            <a href="./?P=ProdutosFabricantes&Pers=0"><span class="fa fa-building"></span> <span class="sidebar-title"> Fabricantes</span></a>
         </li>
         <li <%if req("P")="ProdutosKits" then%>class="active"<%end if%>>
             <a href="./?P=ProdutosKits&Pers=Follow"><span class="fa fa-medkit"></span> <span class="sidebar-title"> Kits</span></a>
@@ -1650,9 +1673,9 @@ select case lcase(req("P"))
         <li class="sidebar-label pt20">Relatórios</li>
         <%
         favoritosSQL =  "select r.id,r.NomeModelo, r.RelatorioID,rl.Arquivo,rl.Ct "&_
-                            " from cliniccentral.relatorios_preferencias_modelo as r"&_
-                            " join cliniccentral.relatorios rl on rl.id = r.RelatorioID "&_
-                            " where r.Atalho=1 and r.LicencaID = "&replace(session("Banco"),"clinic","")&" and r.sysActive = 1"
+                        " from cliniccentral.relatorios_preferencias_modelo as r"&_
+                        " join cliniccentral.relatorios rl on rl.id = r.RelatorioID "&_
+                        " where r.Atalho=1 and r.LicencaID = "&replace(session("Banco"),"clinic","")&" and r.sysActive = 1"
         set relatoriosFav = db.execute(favoritosSQL)
         if not relatoriosFav.eof then
         %>
@@ -1824,18 +1847,7 @@ select case lcase(req("P"))
                 end if
                     end if
                 end if
-                %>
-                <%
-                if aut("|agendaV|")=1 or lcase(session("Table"))="profissionais" then
-                %>
-                <li>
-                    <a href="https://clinic.feegow.com.br/components/public/reports/r/duration-of-service" target="_blank">
-                        <i class="fa fa-double-angle-right"></i>
-                        Duração do Atendimento
-                    </a>
-                </li>
-                <%
-                end if
+
 
                 if aut("|relatoriosagendaV|")=1 then
                 %>
@@ -2014,6 +2026,23 @@ select case lcase(req("P"))
                     <a href="javascript:callReport('rpDMed');">
                         <i class="fa fa-double-angle-right"></i>
                         D-Med
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="accordion-toggle menu-open">
+                <span class="fa fa-calendar"></span>
+                <span class="sidebar-title"> Laboratórios </span>
+
+                <span class="caret"></span>
+            </a>
+
+            <ul class="nav sub-nav">
+                 <li>
+                    <a href="#" onClick="callReport('LabsSyncReport');">
+                        <i class="fa fa-double-angle-right"></i>
+                        Relatório de Sincronização
                     </a>
                 </li>
             </ul>

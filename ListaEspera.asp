@@ -92,7 +92,7 @@ MensagensPadraoSQL.movenext
 wend
 MensagensPadraoSQL.close
 set MensagensPadraoSQL = nothing
-set AgendamentosOnlineSQL = db.execute("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1, age.ProfissionalID FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID!=3 ORDER BY age.Hora")
+set AgendamentosOnlineSQL = db.execute("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1, age.ProfissionalID FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID!=3 and age.sysActive=1 ORDER BY age.Hora")
 
 
 set MensagemWhatsAppSQL = db.execute("SELECT coalesce(mi.Conteudo, tmi.TextoPadrao) Texto FROM cliniccentral.tiposmodelosimpressos tmi LEFT JOIN modelosimpressos mi ON mi.TiposModelosImpressosID=tmi.id WHERE tmi.id=2")
@@ -138,10 +138,15 @@ if not AgendamentosOnlineSQL.eof then
                             set MensagensEnviadasSQL = db.execute("SELECT count(id)qtd FROM cliniccentral.smshistorico WHERE LicencaID="&LicencaID&" AND AgendamentoID="&AgendamentosOnlineSQL("id"))
 
                             MensagensEnviadas = MensagensEnviadasSQL("qtd")
+
+                            Hora = AgendamentosOnlineSQL("Hora")
+                            if not isnull(Hora) then
+                                Hora = formatdatetime(AgendamentosOnlineSQL("Hora"), 4)
+                            end if
                       %>
                         <tr data-id="<%=AgendamentosOnlineSQL("id")%>" data-phone="<%=AgendamentosOnlineSQL("Cel1")%>" class="linha-agendamento">
                           <td>
-                            <strong><%=formatdatetime(AgendamentosOnlineSQL("Hora"), 4)%></strong>
+                            <strong><%=Hora%></strong>
                           </td>
 
                           <td> <% if PacienteOnline then %><i class="fa fa-circle text-success"></i><% end if%> <a style="cursor: pointer" onclick="modalPaciente('<%=AgendamentosOnlineSQL("PacienteID")%>')"><%=AgendamentosOnlineSQL("NomePaciente")%></a></td>

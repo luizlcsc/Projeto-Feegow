@@ -1863,12 +1863,6 @@ select case lcase(req("P"))
                         Produtividade - Sintético
                     </a>
                 </li>
-                <li>
-                    <a href="https://clinic.feegow.com.br/components/public/reports/r/productivity" target="_blank">
-                        <i class="fa fa-double-angle-right"></i>
-                        Produtividade - Analítico
-                    </a>
-                </li>
                 <%
                 end if
                 %>
@@ -1935,12 +1929,6 @@ select case lcase(req("P"))
                         <a href="#" onClick="javascript:callReport('ServicosPorExecucao');">
                             <i class="fa fa-double-angle-right"></i>
                              Serviços por Execução
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://clinic.feegow.com.br/components/public/reports/r/guides" target="_blank">
-                            <i class="fa fa-double-angle-right"></i>
-                             Guias Fora de Lote
                         </a>
                     </li>
                     <%
@@ -2122,12 +2110,6 @@ select case lcase(req("P"))
                         Serviços a Executar
                     </a>
                 </li>
-                <li class="hidden">
-                    <a href="https://clinic.feegow.com.br/components/public/reports/r/medical-transfer" target="_blank">
-                        <i class="fa fa-double-angle-right"></i>
-                        Repasses - Analítico
-                    </a>
-                </li>
                 <li>
                     <a href="javascript:callReport('repassesAnalitico');">
                         <i class="fa fa-double-angle-right"></i>
@@ -2168,16 +2150,6 @@ select case lcase(req("P"))
             </a>
             <ul class="nav sub-nav">
                 <%
-                if 1=2 then
-                %>
-                <li>
-                    <a href="https://clinic.feegow.com.br/components/public/reports/r/medical-report">
-                        <i class="fa fa-double-angle-right"></i>
-                        Laudos Sintético
-                    </a>
-                </li>
-                <%
-                end if
                 if aut("|relatoriosformulariosV|")=1 then
                 %>
                 <li>
@@ -2192,26 +2164,6 @@ select case lcase(req("P"))
             </ul>
         </li>
         <%
-        if aut("propostasV") then
-        %>
-        <li>
-            <a href="#" class="accordion-toggle menu-open">
-                <span class="fa fa-files-o"></span>
-                <span class="sidebar-title"> Propostas </span>
-
-                <span class="caret"></span>
-            </a>
-            <ul class="nav sub-nav">
-                <li>
-                    <a href="https://clinic.feegow.com.br/components/public/reports/r/proposal" target="_blank">
-                        <i class="fa fa-double-angle-right"></i>
-                        Propostas Emitidas
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <%
-        end if
         if aut("estoqueV") then
         %>
         <li>
@@ -2226,12 +2178,6 @@ select case lcase(req("P"))
                     <a href="javascript:callReport('rEstoquePosicao');">
                         <i class="fa fa-double-angle-right"></i>
                         Posição
-                    </a>
-                </li>
-                <li>
-                    <a href="https://clinic.feegow.com.br/components/public/reports/r/stock-movement" target="_blank">
-                        <i class="fa fa-double-angle-right"></i>
-                        Movimentação
                     </a>
                 </li>
             </ul>

@@ -606,9 +606,6 @@ end if
     <div class="col-md-8">
         <div class="panel">
             <div class="panel-body">
-            <%
-            if session("Banco")="clinic5459" then
-            %>
                 <div class="row">
                     <div style="margin-top: 10px;float: right">
                         <% if not isnull(reg("DtAbertura")) then %>
@@ -631,9 +628,6 @@ end if
                          %>
                     </div>
                 </div>
-            <%
-            end if
-            %>
                 <hr class="short alt" />
                 <div class="row" style="margin: 5px">
                     <div class="col-md-1">

@@ -167,9 +167,9 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             conteudo = replace(conteudo, "[Empresa.Nome]", "[Unidade.Nome]" )
 
             if item_UnidadeID=0 then
-              conteudo = replace(conteudo, "[Unidade.Nome]", trim(UnidadeSQL("NomeEmpresa")&" YY") )
+              conteudo = replace(conteudo, "[Unidade.Nome]", trim(UnidadeSQL("NomeEmpresa")&" ") )
             else
-              conteudo = replace(conteudo, "[Unidade.Nome]", trim(UnidadeSQL("UnitName")&" XX") )
+              conteudo = replace(conteudo, "[Unidade.Nome]", trim(UnidadeSQL("UnitName")&" ") )
             end if
 
             conteudo = replace(conteudo, "[Unidade.NomeFantasia]", trim(UnidadeSQL("NomeFantasia")&" ") )

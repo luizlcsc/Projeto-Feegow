@@ -145,18 +145,13 @@ if not tryLogin.EOF then
 
 	if erro<>"" then
         if deslogarUsuario then
-        session("User")=tryLogin("id")
-        session("Banco")="clinic"&tryLogin("LicencaID")
+            session("User")=tryLogin("id")
+            session("Banco")="clinic"&tryLogin("LicencaID")
              %>
                 <script type="text/javascript">
                     $(window).on('load',function(){
-                        let resultDesloga = window.confirm('<%=erro%>'+' Ao prosseguir irá desloga-lo.');
-
-                        if(resultDesloga){
-                            $.post("DeslogarUsuario.asp", function(data){
-                                console.log(data);
-                            });
-                        }
+                        $("form").html("<div id='confirmaDesloga'><div class='modal-dialog' role='document'> <div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Este usuário já está conectado em outra máquina. Ao prosseguir irá desloga-lo.</h5></div><div class='modal-body'><div class='container'><input type='hidden' class='usuario' type='email' name='User' id='User' value='<%=User %>' placeholder='digite seu e-mail de acesso' autofocus required><input type='password' class='senha' placeholder='senha' type='password' name='password' id='password' required></div></div><div class='modal-footer'><button class='botao' data-style='zoom-in' id='Deslogar'>Deslogar usuário</button><button type='button' class='btn btn-secondary' onclick='window.history.back();'>Cancelar</button></div></div></div></div>");
+                        $.post('DeslogarUsuario.asp');
                     });
                 </script>
             <%
@@ -164,7 +159,7 @@ if not tryLogin.EOF then
         else
             %>
                 <script>
-                alert('<%=erro%>');
+                    alert('<%=erro%>');
                 </script>
             <%
         end if

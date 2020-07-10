@@ -84,11 +84,13 @@ if not tryLogin.EOF then
 
 	if erro="" then
 	    TimeoutToCheckConnection = 60
+        deslogarUsuario = false
 
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
 			TempoDist = datediff("s", sysUser("UltRef"), now())
 			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" then
+                deslogarUsuario = true
 				erro = "Este usuário já está conectado em outra máquina."
             else
 
@@ -142,11 +144,30 @@ if not tryLogin.EOF then
 	end if
 
 	if erro<>"" then
-		%>
-        <script>
-		alert('<%=erro%>');
-		</script>
-        <%
+        if deslogarUsuario then
+        session("User")=tryLogin("id")
+             %>
+                <script type="text/javascript">
+                    $(window).on('load',function(){
+                        let resultDesloga = window.confirm('<%=erro%>'+' Ao prosseguir irá desloga-lo.');
+
+                        if(resultDesloga){
+                            $.post("DeslogarUsuario.asp", function(data){
+                                console.log(data);
+                            });
+                        }
+                    });
+                </script>
+            <%
+            
+        else
+            %>
+                <script>
+                alert('<%=erro%>');
+                </script>
+            <%
+        end if
+		
 	else
 		session("Banco")="clinic"&tryLogin("LicencaID")
 		session("Admin")=tryLogin("Admin")

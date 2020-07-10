@@ -7,6 +7,8 @@
   if not trySysUser.EOF then
     If trySysUser("notiftarefas") = "" Then
       notiftarefas = "|DISCONNECT|"
+    elseif trySysUser("notiftarefas") = "|DISCONNECT|" Then
+     deslogarUser = false
     Else
       notiftarefas=replace(trim(notiftarefas&" "), "|DISCONNECT|", "")
     End if
@@ -14,6 +16,5 @@
   
   If deslogarUser Then
     db_execute("update sys_users set notifTarefas='"&notifTarefas&"' where id="&Session("User"))
-    Response.Write "Deslogado"
   end if
 %>

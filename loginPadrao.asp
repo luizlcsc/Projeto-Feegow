@@ -146,6 +146,7 @@ if not tryLogin.EOF then
 	if erro<>"" then
         if deslogarUsuario then
         session("User")=tryLogin("id")
+        session("Banco")="clinic"&tryLogin("LicencaID")
              %>
                 <script type="text/javascript">
                     $(window).on('load',function(){

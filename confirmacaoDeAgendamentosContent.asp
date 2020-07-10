@@ -94,7 +94,7 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
         'Mensagem = replaceTags(Mensagem, age("PacienteID"), session("UserID"), UnidadeID)
 
         'APLICADO A FUNÇÃO PARA CONVERSÃO DE TAGS || Rafael Maia - 03/07/2020
-        Mensagem = "UnidadeID: "&UnidadeID&tagsConverte(Mensagem,"PacienteID_"&age("PacienteID")&"|ProcedimentoID_"&ProcedimentoID&"|AgendamentoID_"&age("id")&"|UnidadeID_"&UnidadeID&"|ProfissionalID_"&age("ProfissionalID"),"")
+        Mensagem = tagsConverte(Mensagem,"PacienteID_"&age("PacienteID")&"|ProcedimentoID_"&ProcedimentoID&"|AgendamentoID_"&age("id")&"|UnidadeID_"&UnidadeID&"|ProfissionalID_"&age("ProfissionalID"),"")
 
         
 

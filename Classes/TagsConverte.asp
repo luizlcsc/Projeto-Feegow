@@ -212,7 +212,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             SET ProfissionaisSQL = db.execute(qProfissionaisSQL)
             if not ProfissionaisSQL.eof then
 
-              conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", "[Profissional.Nome]" )
+              conteudo = replace(conteudo, "[NomeProfissional]", "[Profissional.Nome]" ) )
               conteudo = replace(conteudo, "[Profissional.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
               conteudo = replace(conteudo, "[Profissional.Documento]", trim(ProfissionaisSQL("DocumentoProfissional")&" ") )
               conteudo = replace(conteudo, "[Profissional.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
@@ -239,7 +239,11 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           if qAgendamentosSQL<>"" then
             SET AgendamentosSQL = db.execute(qAgendamentosSQL)
               if not AgendamentosSQL.eof then
+
+                conteudo = replace(conteudo, "[DataAgendamento]", "[Agendamento.Data]" )
                 conteudo = replace(conteudo, "[Agendamento.Data]", AgendamentosSQL("Data")&"" )
+
+                conteudo = replace(conteudo, "[HoraAgendamento]", "[Agendamento.Hora]" )
                 conteudo = replace(conteudo, "[Agendamento.Hora]", formatdatetime(AgendamentosSQL("Hora"),4)&"" )
               end if
             AgendamentosSQL.close

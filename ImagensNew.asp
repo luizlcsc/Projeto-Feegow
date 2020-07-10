@@ -20,8 +20,8 @@
 %>
 <style>
     :root {
-      --width-main: 280px;
-      --height-main: 280px;
+      --width-main: 200px;
+      --height-main: 200px;
     }
 
     .galery{
@@ -305,7 +305,7 @@ end if
                                 </div>
 
                              </div>
-                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink}" target="_blank"><img src="${item.link}" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></a></div>
+                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink}" target="_blank"><img src="${item.link}" data-id="${item.id}" class="${item.extension} img-responsive" title="${item.Descricao}"></a></div>
                              <div class="config">
                                 <textarea class="galery-description text-info border-edit imgpac" name="Desc${item.id}" onchange="changeDescription(${item.id},this)" data-img-id="${item.id}">${item.NovaDescricao}</textarea>
                              </div>

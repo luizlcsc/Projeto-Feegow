@@ -118,6 +118,7 @@ response.Write(abreDivMaster)
 					set regs = db.execute(regsSql)
 				end if
                 while not regs.eof
+                    counter = counter + 1
                     %>
                     <tr>
                         <%
@@ -203,6 +204,9 @@ response.Write(abreDivMaster)
                         %>
                     </tr>
                     <%
+                if counter mod 10 = 0 then
+                    Response.Flush
+                End If
                 regs.movenext
                 wend
                 regs.close

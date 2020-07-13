@@ -147,11 +147,28 @@ if not tryLogin.EOF then
         if deslogarUsuario then
             session("User")=tryLogin("id")
             session("Banco")="clinic"&tryLogin("LicencaID")
+            session("Servidor") = Servidor&""
              %>
                 <script type="text/javascript">
                     $(window).on('load',function(){
-                        $("form").html("<div id='confirmaDesloga'><div class='modal-dialog' role='document'> <div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Este usuário já está conectado em outra máquina. Ao prosseguir irá desloga-lo.</h5></div><div class='modal-body'><div class='container'><input type='hidden' class='usuario' type='email' name='User' id='User' value='<%=User %>' placeholder='digite seu e-mail de acesso' autofocus required><input type='password' class='senha' placeholder='senha' type='password' name='password' id='password' required></div></div><div class='modal-footer'><button class='botao' data-style='zoom-in' id='Deslogar'>Deslogar usuário</button><button type='button' class='btn btn-secondary' onclick='window.history.back();'>Cancelar</button></div></div></div></div>");
-                        $.post('DeslogarUsuario.asp');
+                        var preventClick = false;
+
+                        $("form").html("<div id='confirmaDesloga'><div class='modal-dialog' role='document'> <div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Este usuário já está conectado em outra máquina.</h5></div><div class='modal-body'><div id='deslogar-container' class='container'><input type='hidden' class='usuario' type='email' name='User' id='User' value='<%=User %>' placeholder='digite seu e-mail de acesso' autofocus required><input type='password' class='senha' placeholder='senha' type='password' name='password' id='password' required></div></div><div class='modal-footer'><button class='botao' data-style='zoom-in' id='Deslogar'>Deslogar usuário</button><button type='button' class='btn btn-secondary' onclick='window.history.back();'>Cancelar</button></div></div></div></div>");
+
+                        $("#Deslogar").click(function (e) {
+                            e.preventDefault();
+                            if(preventClick) return;
+                            preventClick = true;
+                            
+                            $("#Deslogar").attr("style", "opacity: 0.5");
+                            $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
+                            $.post('DeslogarUsuario.asp');
+                            $("#password").hide();
+                            $("#deslogar-container").append("<p type='hidden' id='deslogarTexto' class='text-center' style='margin-to: 15px'>Aguarde alguns instantes ...</p>");
+                            setTimeout(() => {
+                                $("form").submit();
+                            }, 20000);
+                        });
                     });
                 </script>
             <%

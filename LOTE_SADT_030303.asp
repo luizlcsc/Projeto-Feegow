@@ -319,7 +319,7 @@ prefixo = right(prefixo, 20)
                             HoraInicio = myTimeTISS(procs("HoraInicio"))
                             HoraFim = myTimeTISS(procs("HoraFim"))
                             TabelaID = TirarAcento(procs("TabelaID"))
-                            if TabelaID="99" ORTabelaID="95" OR TabelaID="0" then
+                            if TabelaID="99" OR TabelaID="95" OR TabelaID="0" then
                                 TabelaID="00"
                             end if
                             CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))

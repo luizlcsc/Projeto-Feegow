@@ -170,7 +170,8 @@ if not tryLogin.EOF then
                             $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
                             $.post('DeslogarUsuario.asp');
                             $("#password").hide();
-                            $("#deslogar-container").append("<p type='hidden' id='deslogarTexto' class='text-center' style='margin-to: 15px'>Aguarde alguns instantes ...</p>");
+                            $(".textoTituloInput").hide();
+                            $("#deslogar-container").append("<p style='text-align: center' id='deslogarTexto'>Aguarde alguns instantes ...</p>");
                             setTimeout(() => {
                                 $("form").submit();
                             }, 20000);
@@ -201,13 +202,13 @@ if not tryLogin.EOF then
 			session("MasterPwd") = "S"
 		end if
 
-		if forcar_login then
-		    notiftarefas = sysUser("notiftarefas")&""
+        if forcar_login then
+            notiftarefas = sysUser("notiftarefas")&""
 
-		    if instr(notiftarefas, "|DISCONNECT|")>0 then
-		        dbProvi.execute("update `clinic"&tryLogin("LicencaID")&"`.sys_users set notiftarefas='"&replace(trim(notiftarefas&" "), "|DISCONNECT|", "")&"' where id="&sysUser("id"))
-		    end if
-		end if
+            if instr(notiftarefas, "|DISCONNECT|")>0 then
+                dbProvi.execute("update clinic"&tryLogin("LicencaID")&".sys_users set notiftarefas='"&replace(trim(notiftarefas&" "), "|DISCONNECT|", "")&"' where id="&sysUser("id"))
+            end if
+        end if
 
         if instr(Cupom&"", "Franqueador:")>0 then
             session("Franqueador") = replace(Cupom&"", "Franqueador:", "")

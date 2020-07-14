@@ -1,13 +1,17 @@
 <!--#include file="connect.asp"-->
 <%
 if ref("Acao")="Abrir" then
-	Descricao = "Caixa de "&nameInTable(session("User"))&" em "&date()&" (Aberto)"
+	'Removendo plick do nome para previnir erro de sql
+	nameUser = Replace(nameInTable(session("User")),"'","")
+	
+	Descricao = "Caixa de "&nameUser&" em "&date()&" (Aberto)"
 	SaldoInicial = ref("SaldoInicial")
 	if SaldoInicial="" or not isnumeric(SaldoInicial) then
 		SaldoInicial = 0
 	else
 		SaldoInicial = ccur(SaldoInicial)
 	end if
+	
 	db_execute("insert into caixa (sysUser, dtAbertura, SaldoInicial, ContaCorrenteID, Descricao) values ("&session("User")&", "&mydatetime(now())&", "&treatvalzero(SaldoInicial)&", "&ref("ContaCorrenteID")&", '"&Descricao&"')")
 
 	set plast = db.execute("select id from caixa where sysUser="&session("User")&" and isnull(dtFechamento) order by id desc")
@@ -16,6 +20,7 @@ if ref("Acao")="Abrir" then
 	if SaldoInicial>0 then
 		db_execute("insert into sys_financialmovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Rate, CaixaID, sysUser, UnidadeID) values ('Saldo para abertura de caixa', 1, "&treatvalzero(ref("ContaCorrenteID"))&", 7, "&plast("id")&", 1, "&treatvalzero(SaldoInicial)&", "&mydatenull(date())&", '', 'Transfer', 1, "&plast("id")&", "&session("User")&", "&session("UnidadeID")&")")
 	end if
+
 	%>
     $("#badge-caixa").html("$");
     new PNotify({

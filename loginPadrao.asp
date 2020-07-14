@@ -201,6 +201,14 @@ if not tryLogin.EOF then
 			session("MasterPwd") = "S"
 		end if
 
+		if forcar_login then
+		    notiftarefas = sysUser("notiftarefas")&""
+
+		    if instr(notiftarefas, "|DISCONNECT|")>0 then
+		        dbProvi.execute("update `clinic"&tryLogin("LicencaID")&"`.sys_users set notiftarefas='"&replace(trim(notiftarefas&" "), "|DISCONNECT|", "")&"' where id="&sysUser("id"))
+		    end if
+		end if
+
         if instr(Cupom&"", "Franqueador:")>0 then
             session("Franqueador") = replace(Cupom&"", "Franqueador:", "")
             session("FranqueadorID") = tryLogin("LicencaID")

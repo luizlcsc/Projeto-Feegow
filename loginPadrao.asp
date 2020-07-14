@@ -89,7 +89,13 @@ if not tryLogin.EOF then
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
 			TempoDist = datediff("s", sysUser("UltRef"), now())
-			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" then
+
+            forcar_login = false
+            if Session("Deslogar_user")<>"" then
+                forcar_login = Session("Deslogar_user")
+            end if
+            
+			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login  then
                 deslogarUsuario = true
 				erro = "Este usuário já está conectado em outra máquina."
             else

@@ -88,10 +88,14 @@ prefixo = right(prefixo, 20)
 					RegistroANS = TirarAcento(guias("RegistroANS"))
 					NGuiaPrestador = TirarAcento(guias("NGuiaPrestador"))
 					NGuiaPrincipal = TirarAcento(guias("NGuiaPrincipal"))
-					NGuiaOperadora = TirarAcento(guias("NGuiaOperadora"))
-					DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
-					Senha = TirarAcento(guias("Senha"))
-					DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
+					
+                    DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
+                    if DataAutorizacao<>"" then
+                        NGuiaOperadora = TirarAcento(guias("NGuiaOperadora"))
+                        Senha = TirarAcento(guias("Senha"))
+                        DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
+                    end if 
+
 					NumeroCarteira = TirarAcento(guias("NumeroCarteira"))
 					AtendimentoRN = TirarAcento(guias("AtendimentoRN"))
 					NomePaciente = TirarAcento(guias("NomePaciente"))
@@ -208,12 +212,8 @@ prefixo = right(prefixo, 20)
 					'==============================================================================================================================================================================
 					if guias("CodigoCNES")="" then CodigoCNES=TirarAcento(CNESContratado) else CodigoCNES=TirarAcento(guias("CodigoCNES")) end if
 					NomeProfissional=TirarAcento(NomeProfissional)
-
-                    if DataAutorizacao <>"" then
-                        dadosAutorizacao = NGuiaOperadora&DataAutorizacao&Senha&DataValidadeSenha
-                    end if 
 					
-					hash = hash&RegistroANS&NGuiaPrestador&NGuiaPrincipal&dadosAutorizacao&NumeroCarteira&AtendimentoRN&NomePaciente&ContratadoSolicitanteCodigoNaOperadora&NomeContratadoSolicitante&NomeProfissionalSolicitante&ConselhoProfissionalSolicitante&NumeroNoConselhoSolicitante&CodigoUFConselhoSolicitante&CodigoCBOSolicitante&DataSolicitacao&CaraterAtendimentoID&IndicacaoClinica&ContExecCodigoNaOperadora&NomeContratado&CodigoCNES&TipoAtendimentoID&IndicacaoAcidenteID&TipoConsultaID&MotivoEncerramentoID
+					hash = hash&RegistroANS&NGuiaPrestador&NGuiaPrincipal&NGuiaOperadora&DataAutorizacao&Senha&DataValidadeSenha&NumeroCarteira&AtendimentoRN&NomePaciente&ContratadoSolicitanteCodigoNaOperadora&NomeContratadoSolicitante&NomeProfissionalSolicitante&ConselhoProfissionalSolicitante&NumeroNoConselhoSolicitante&CodigoUFConselhoSolicitante&CodigoCBOSolicitante&DataSolicitacao&CaraterAtendimentoID&IndicacaoClinica&ContExecCodigoNaOperadora&NomeContratado&CodigoCNES&TipoAtendimentoID&IndicacaoAcidenteID&TipoConsultaID&MotivoEncerramentoID
 					%>
                 <ans:guiaSP-SADT>
                     <ans:cabecalhoGuia>

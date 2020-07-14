@@ -64,6 +64,10 @@ function tagsConverte(conteudo,itens,moduloExcecao)
     conteudo = ""
   end if
 
+
+  conteudo = replace(conteudo, "[DataAgendamento]", "[Agendamento.Data]" )
+  conteudo = replace(conteudo, "[HoraAgendamento]", "[Agendamento.Hora]" )
+
   SET tagsCategoriasSQL = db.execute("select categoria from cliniccentral.tags_categorias")
   while not tagsCategoriasSQL.eof
 
@@ -226,10 +230,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             SET AgendamentosSQL = db.execute(qAgendamentosSQL)
               if not AgendamentosSQL.eof then
 
-                  conteudo = replace(conteudo, "[DataAgendamento]", "[Agendamento.Data]" )
                   conteudo = replace(conteudo, "[Agendamento.Data]", AgendamentosSQL("Data")&"" )
-
-                  conteudo = replace(conteudo, "[HoraAgendamento]", "[Agendamento.Hora]" )
                   conteudo = replace(conteudo, "[Agendamento.Hora]", formatdatetime(AgendamentosSQL("Hora"),4)&"" )
                 end if
             AgendamentosSQL.close

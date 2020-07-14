@@ -287,7 +287,7 @@ end if
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-expand icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}" target="_blank" title="Abrir Imagem Separadamente">
+                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink.replace('redirect', 'download')}" target="_blank" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-external-link icon-external-link"></i>
                                     </a>
                                     <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">

@@ -84,11 +84,19 @@ if not tryLogin.EOF then
 
 	if erro="" then
 	    TimeoutToCheckConnection = 60
+        deslogarUsuario = false
 
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
 			TempoDist = datediff("s", sysUser("UltRef"), now())
-			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" then
+
+            forcar_login = false
+            if Session("Deslogar_user")<>"" then
+                forcar_login = Session("Deslogar_user")
+            end if
+            
+			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login  then
+                deslogarUsuario = true
 				erro = "Este usuário já está conectado em outra máquina."
             else
 
@@ -142,11 +150,43 @@ if not tryLogin.EOF then
 	end if
 
 	if erro<>"" then
-		%>
-        <script>
-		alert('<%=erro%>');
-		</script>
-        <%
+        if deslogarUsuario then
+            session("User")=tryLogin("id")
+            session("Banco")="clinic"&tryLogin("LicencaID")
+            session("Servidor") = Servidor&""
+            %>
+                <script type="text/javascript">
+                    $(window).on('load',function(){
+                        var preventClick = false;
+
+                        $("form").html("<div id='confirmaDesloga'><div class='modal-dialog' role='document'> <div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Este usuário já está conectado em outra máquina.</h5></div><div class='modal-body'><div id='deslogar-container' class='container'><span class='textoTituloInput'>Por farvor, digite sua senha novamente:</span><input type='hidden' class='usuario' type='email' name='User' id='User' value='<%=User %>' placeholder='digite seu e-mail de acesso' autofocus required><input type='password' class='senha' placeholder='senha' type='password' name='password' id='password' required></div></div><div class='modal-footer'><button class='botao' data-style='zoom-in' id='Deslogar'>Deslogar usuário</button><button type='button' class='btn btn-secondary' onclick='window.history.back();'>Cancelar</button></div></div></div></div>");
+
+                        $("#Deslogar").click(function (e) {
+                            e.preventDefault();
+                            if(preventClick) return;
+                            preventClick = true;
+                            
+                            $("#Deslogar").attr("style", "opacity: 0.5");
+                            $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
+                            $.post('DeslogarUsuario.asp');
+                            $("#password").hide();
+                            $("#deslogar-container").append("<p type='hidden' id='deslogarTexto' class='text-center' style='margin-to: 15px'>Aguarde alguns instantes ...</p>");
+                            setTimeout(() => {
+                                $("form").submit();
+                            }, 20000);
+                        });
+                    });
+                </script>
+            <%
+            
+        else
+            %>
+                <script>
+                    alert('<%=erro%>');
+                </script>
+            <%
+        end if
+		
 	else
 		session("Banco")="clinic"&tryLogin("LicencaID")
 		session("Admin")=tryLogin("Admin")

@@ -218,7 +218,7 @@ prefixo = right(prefixo, 20)
                         <%if NGuiaPrincipal<>"" then%><ans:guiaPrincipal><%= NGuiaPrincipal %></ans:guiaPrincipal><%end if%>
                     </ans:cabecalhoGuia>
                     <%
-					if NGuiaOperadora<>"" OR DataAutorizacao<>"" OR Senha<>"" OR DataValidadeSenha<>"" then
+					if DataAutorizacao<>"" then
 					%>
                     <ans:dadosAutorizacao>
                         <%if NGuiaOperadora<>"" then%><ans:numeroGuiaOperadora><%= NGuiaOperadora %></ans:numeroGuiaOperadora><%end if%>
@@ -319,9 +319,11 @@ prefixo = right(prefixo, 20)
                             HoraInicio = myTimeTISS(procs("HoraInicio"))
                             HoraFim = myTimeTISS(procs("HoraFim"))
                             TabelaID = TirarAcento(procs("TabelaID"))
+
                             if TabelaID="99" OR TabelaID="95" OR TabelaID="0" then
                                 TabelaID="00"
                             end if
+
                             CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))
                             Descricao = left(TirarAcento(procs("Descricao")),150)
                             ViaID = TirarAcento(procs("ViaID"))
@@ -419,6 +421,11 @@ prefixo = right(prefixo, 20)
 							HoraInicio = myTimeTISS(desp("HoraInicio"))
 							HoraFim = myTimeTISS(desp("HoraFim"))
 							TabelaProdutoID = zeroEsq(TirarAcento(desp("TabelaProdutoID")), 2)
+
+                            if TabelaProdutoID="99" OR TabelaProdutoID="95" OR TabelaProdutoID="0" then
+                                TabelaProdutoID="00"
+                            end if
+
 							CodigoProduto = TirarAcento(desp("CodigoProduto"))
 							Quantidade = treatvaltiss(desp("Quantidade"))
 							UnidadeMedidaID = zEsq(desp("UnidadeMedidaID"), 3)

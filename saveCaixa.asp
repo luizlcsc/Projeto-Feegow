@@ -1,9 +1,8 @@
 <!--#include file="connect.asp"-->
 <%
+'->Removendo plick do nome para previnir erro de sql
+nameUser = Replace(nameInTable(session("User")),"'","")
 if ref("Acao")="Abrir" then
-	'Removendo plick do nome para previnir erro de sql
-	nameUser = Replace(nameInTable(session("User")),"'","")
-	
 	Descricao = "Caixa de "&nameUser&" em "&date()&" (Aberto)"
 	SaldoInicial = ref("SaldoInicial")
 	if SaldoInicial="" or not isnumeric(SaldoInicial) then
@@ -66,7 +65,7 @@ if ref("Acao")="Fechar" then
 	set getCheques=nothing
 	'<-
 
-	Descricao = "Caixa de "&nameInTable(session("User"))&" ("&caixa("dtAbertura")&" a "&now()&")"
+	Descricao = "Caixa de "&nameUser&" ("&caixa("dtAbertura")&" a "&now()&")"
 	db_execute("update caixa set dtFechamento="&mydatetime(now)&", SaldoFinal="&treatvalzero(SaldoFinalFinal)&", Descricao='"&Descricao&"' where id="&ref("idCaixa"))
 	%>
         new PNotify({

@@ -90,7 +90,11 @@ prefixo = right(prefixo, 20)
 					NGuiaPrincipal = TirarAcento(guias("NGuiaPrincipal"))
 					
                     DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
-                    if DataAutorizacao<>"" then
+                    NGuiaOperadora =""
+                    Senha =""
+                    DataValidadeSenha =""
+
+                    if DataAutorizacao <> "" then
                         NGuiaOperadora = TirarAcento(guias("NGuiaOperadora"))
                         Senha = TirarAcento(guias("Senha"))
                         DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))

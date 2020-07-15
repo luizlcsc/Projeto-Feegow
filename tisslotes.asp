@@ -239,6 +239,7 @@ if request.QueryString("ConvenioID")<>"" then
                         <li>
                             <a href="<%=link%>_030500.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.05.00</a>
                             <a href="<%=link%>_030401.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.04.01</a>
+                            <a href="<%=link%>_030400.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.04.00</a>
                             <a href="<%=link%>_030303.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.03</a>
                             <a href="<%=link%>_0302.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.02</a>
                             <a href="<%=link%>_0301.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.01</a>

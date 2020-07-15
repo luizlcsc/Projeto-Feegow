@@ -622,9 +622,9 @@ end if
                             <% else %>
                                 <%= quickfield("text", "Titulo", "Título", 12, reg("Titulo"), "", "", "") %>
                             <% end if %>
-                        <% else
-                            response.write(selectList("Título", "Titulo", reg("Titulo"), "tarefas", "Titulo", "location.href=""?P=tarefas&Pers=1&I=""+$(this).val()", " "& disabled &" required", ""))
-                        end if
+                        <% else %>
+                            <%= quickfield("text", "Titulo", "Título", 12, reg("Titulo"), "", "", " "& disabled &" required") %>
+                        <% end if
                          %>
                     </div>
                 </div>

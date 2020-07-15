@@ -3,7 +3,7 @@
 <%
 MedicamentosConveniosID = req("I")
 
-set getConvenios = db.execute("SELECT con.id ConvenioID, med.Planos, con.NomeConvenio  FROM medicamentosconvenios med LEFT JOIN convenios con ON  med.Convenios LIKE (CONCAT('%|', con.id, '|%')) WHERE med.id ="&MedicamentosConveniosID)
+set getConvenios = db.execute("SELECT con.id ConvenioID, med.Planos, con.NomeConvenio  FROM medicamentosconvenios med LEFT JOIN convenios con ON  med.Convenios LIKE (CONCAT('%|', con.id, '|%')) WHERE med.Convenios is not null AND med.Convenios<>'' AND med.id ="&treatvalzero(MedicamentosConveniosID))
 %>
 
 
@@ -39,12 +39,17 @@ set getConvenios = db.execute("SELECT con.id ConvenioID, med.Planos, con.NomeCon
 
     </div>
      <div class="modal-footer no-margin-top">
-        <button class="btn btn-sm btn-primary pull-right" onclick="saveRegra()"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-sm btn-primary pull-right" onclick="saveRegra(<%=MedicamentosConveniosID%>)"><i class="fa fa-save"></i> Salvar</button>
     </div>
 </form>
 
 
 <script type="text/javascript">
+
+function saveRegra(id) {
+    $.post("saveMedicamentosConvenios.asp?Tipo=P&I="+id, $("#frmMedicamentosPlanos").serialize(), function(data, status){ window.location.reload(); });
+    return false;
+  };
 
 <!--#include file="JQueryFunctions.asp"-->
 </script>

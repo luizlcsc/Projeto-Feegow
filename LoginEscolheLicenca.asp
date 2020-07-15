@@ -8,6 +8,11 @@ sqllicencas = "SELECT l.id LicencaID, l.NomeEmpresa, l.Logo,l.Servidor "& _
 
 set licencas = db.execute(sqllicencas)
 
+
+IF session("UnidadeID") >= "0" THEN
+    UnidadeID = session("UnidadeID")
+END IF
+
 %>
 
 <div class="modal-header">

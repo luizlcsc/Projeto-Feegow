@@ -65,8 +65,8 @@ set getMedicamentosItens = db.execute("SELECT * FROM medicamentosconvenios WHERE
 
 <script type="text/javascript">
 function excluirLinha(id) {
-    $.post("MedicamentosConvenios.asp?Tipo=X&I="+id, "", function (data){
-        $("#frmMedicamentosConvenios").html(data);
+    $.post("MedicamentosConvenios.asp?Tipo=X&I="+id, $("#frmMedicamentosConvenios").serialize(), function (data){
+         window.location.reload();
     });
 }
 
@@ -77,8 +77,8 @@ function salvarRegras() {
 
 }
 function inserirRegras(id) {
-    $.post("MedicamentosConvenios.asp?Tipo=I", "", function (data){
-        $("#frmMedicamentosConvenios").html(data);
+    $.post("MedicamentosConvenios.asp?Tipo=I", $("#frmMedicamentosConvenios").serialize(), function (data){
+         window.location.reload();
     });
 }
 function RegraPlanos(id) {

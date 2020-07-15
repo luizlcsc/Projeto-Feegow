@@ -249,7 +249,8 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
                         ValorTabela = ValorTabela *  Quantidade
                         Valor = ValorTabela
-                        ValorBase = Valor
+                        'O valor base abaixo estava sendo substituida pelo valor do procedimento
+                        'ValorBase = Valor
                     end if
 
 
@@ -258,8 +259,6 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
                     set valBase = db.execute("select Valor from procedimentos where id="& ProcedimentoID)
                     if not valBase.eof then
                         ValorBase = valBase("Valor")
-
-
                         ValorBase = ValorBase *  Quantidade
                     end if
                     TipoValor = "P"
@@ -274,7 +273,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
             Creditado = calcCreditado(ContaCredito, ProfissionalExecutante)
             ShowValor = calcValor(Valor, TipoValor, ValorBase, "show")
             ValorItem = calcValor(Valor, TipoValor, ValorBase, "calc")
-                                
+
             if Creditado<>"" then
                 somaDesteSobre = somaDesteSobre+ValorItem
                 if Creditado<>"0" then

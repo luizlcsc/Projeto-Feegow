@@ -189,8 +189,8 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
             <div class="row">
                 <div class="col-md-3 col-md-offset-9">
                     <select data-toggle='tooltip' title='Comportamento para o envio de WhatsApp' name="TipoLinkWhatsApp" id="TipoLinkWhatsApp" class="form-control input-sm ">
-                        <option value="https://web.whatsapp.com/send">WhatsApp Web</option>
                         <option value="whatsapp://send">WhatsApp Desktop</option>
+                        <option value="https://web.whatsapp.com/send">WhatsApp Web</option>
                     </select>
                 </div>
             </div>

@@ -67,6 +67,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 
   conteudo = replace(conteudo, "[DataAgendamento]", "[Agendamento.Data]" )
   conteudo = replace(conteudo, "[HoraAgendamento]", "[Agendamento.Hora]" )
+  conteudo = replace(conteudo, "[NomeProfissional]", "[Profissional.Nome]" )
 
   SET tagsCategoriasSQL = db.execute("select categoria from cliniccentral.tags_categorias")
   while not tagsCategoriasSQL.eof

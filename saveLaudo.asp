@@ -40,6 +40,12 @@ elseif Tipo="Entrega" then
     %>
     $("#modal-table").modal("hide");
     <%
+elseif Tipo="EntregaPDF" then
+    db.execute("update laudos set Entregue=1 where id="& LaudoID)
+    db.execute("insert into laudoslog (LaudoID, sysUser, Entregue, Receptor, Obs, DataHora) values ("& LaudoID &", "& session("User") &", 1, '"& Receptor &"', '"& Obs &"', "& mydatetime(Entrega) &")")
+    %>
+    $("#modal-table").modal("hide");
+    <%
 end if
 
 %>

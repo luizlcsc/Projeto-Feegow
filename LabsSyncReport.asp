@@ -12,12 +12,21 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
 <script type="text/javascript">
-    $("#rbtns").html("<a class='btn btn-warning' href='#'>Sincronizar Resultados</a>");
+    
 
     getUrl("labs-integration/relatorio-sincronizacao", {}, function(data) {
         $(".app").hide();
         $(".app").html(data);
         $(".app").fadeIn('slow');
+    });
+
+    $(".checkbox-executado").click(function() {
+        var checked = $(this).prop("checked");
+        var id = $(this).parents("tr").data("id");
+        var $divExecucao = $(".div-execucao[data-id="+id+"]");
+
+        $divExecucao.find("select").attr("required", checked);
+        $divExecucao.find(".input-mask-date").attr("required", checked);
     });
 
 </script>

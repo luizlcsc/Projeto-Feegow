@@ -173,31 +173,65 @@ end if
 
 'on error resume next
 
-if req("MudaLocal")<>"" then
-	db_execute("update sys_users set UnidadeID="&req("MudaLocal")&" where id="&session("User"))
-	session("UnidadeID") = ccur(req("MudaLocal"))
-	if session("UnidadeID")=0 then
-		set getNome = db.execute("select NomeEmpresa, NomeFantasia, DDDAuto from empresa")
-		if not getNome.eof then
-			session("NomeEmpresa") = getNome("NomeFantasia")
-            session("DDDAuto") = getNome("DDDAuto")
-		end if
-	else
-		set getNome = db.execute("select UnitName, NomeFantasia, DDDAuto from sys_financialcompanyunits where id="&session("UnidadeID"))
-		if not getNome.eof then
-			session("NomeEmpresa") = getNome("NomeFantasia")
-            session("DDDAuto") = getNome("DDDAuto")
-		end if
-	end if
+if req("Msg")<>"" then
+    %>
+<script >
+    $(document).ready(function() {
+        showMessageDialog("<%=req("Msg")%>", "warning");
+    });
+</script>
+    <%
+end if
 
-    set tryLogin = db.execute("select Home from cliniccentral.licencasusuarios where id="& session("User"))
-    if tryLogin("Home")&""<>"" then
-        urlRedir = "./?P="&tryLogin("Home")&"&Pers=1"
+if req("MudaLocal")<>"" then
+%>
+    <!--#include file="Classes/Logs.asp"-->
+<%
+    NewUnidadeID=req("MudaLocal")
+
+	MensagemRetorno=""
+    urlRedir = "./?P=Home&Pers=1"
+
+'bloqueia se o caixa estiver aberto
+    if session("CaixaID")&""="" or session("CaixaID")&""="0" then
+        sqlUpdateUnidade = "update sys_users set UnidadeID="&NewUnidadeID&" where id="&session("User")
+        session("UnidadeID") = ccur(NewUnidadeID)
+
+'pega o nome da unidade
+        if NewUnidadeID=0 then
+            set getNome = db.execute("select NomeEmpresa, NomeFantasia, DDDAuto from empresa")
+            if not getNome.eof then
+                NomeUnidade=getNome("NomeFantasia")
+
+                session("NomeEmpresa") = NomeUnidade
+                session("DDDAuto") = getNome("DDDAuto")
+            end if
+        else
+            set getNome = db.execute("select UnitName, NomeFantasia, DDDAuto from sys_financialcompanyunits where id="&NewUnidadeID)
+            if not getNome.eof then
+                NomeUnidade=getNome("NomeFantasia")
+
+                session("NomeEmpresa") = NomeUnidade
+                session("DDDAuto") = getNome("DDDAuto")
+            end if
+        end if
+
+'grava log
+        MensagemRetorno="Unidade alterada para "&NomeUnidade
+        call gravaLogs(sqlUpdateUnidade ,"AUTO", MensagemRetorno, "")
+    	db_execute(sqlUpdateUnidade)
+
+        set tryLogin = db.execute("select Home from cliniccentral.licencasusuarios where id="& session("User"))
+        if tryLogin("Home")&""<>"" then
+            urlRedir = "./?P="&tryLogin("Home")&"&Pers=1"
+        end if
     else
-        urlRedir = "./?P=Home&Pers=1"
+        MensagemRetorno="Não é possível trocar a unidade com o caixa aberto."
+
+        call gravaLogs(sqlUpdateUnidade ,"AUTO", MensagemRetorno, "")
     end if
 
-	response.Redirect( urlRedir )
+	response.Redirect( urlRedir  & "&Msg="&MensagemRetorno )
 end if
 
 DiaAtual = weekday(date())

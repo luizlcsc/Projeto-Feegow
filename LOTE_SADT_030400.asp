@@ -187,7 +187,7 @@ prefixo = right(prefixo, 20)
 					TipoAtendimentoID = TirarAcento(zEsq(guias("TipoAtendimentoID"),2))
 					IndicacaoAcidenteID = TirarAcento(guias("IndicacaoAcidenteID"))
 					MotivoEncerramentoID = TirarAcento(guias("MotivoEncerramentoID"))
-					if MotivoEncerramentoID=0 then MotivoEncerramentoID="" end if
+					if MotivoEncerramentoID&""="0" then MotivoEncerramentoID="" end if
 					TipoConsultaID = TirarAcento(guias("TipoConsultaID"))
 					'==============================================================================================================================================================================
 					if guias("CodigoCNES")="" then CodigoCNES=TirarAcento(CNESContratado) else CodigoCNES=TirarAcento(guias("CodigoCNES")) end if

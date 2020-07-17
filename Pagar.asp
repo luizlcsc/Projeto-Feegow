@@ -587,7 +587,7 @@ end if
     <script src="https://s3.amazonaws.com/cappta.api/v2/dist/cappta-checkout.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-    <%if session("Banco")="clinic7212" then%>
+    <%if session("Banco")="clinic7211" then%>
        const feegowPay = new FeegowPay("zoop", false, "https://api.feegow.com.br/");
     <%end if%>
 
@@ -652,7 +652,7 @@ end if
            }
         }
 
-    <%if session("Banco")="clinic7212" then%>
+    <%if session("Banco")="clinic7211" then%>
         function openPdvConfig() {
             openComponentsModal("microtef/pdv-config", false, false, true, false, "md");
         }
@@ -669,7 +669,7 @@ end if
            }
         }
 
-        <%if session("Banco")="clinic7212" then%>
+        <%if session("Banco")="clinic7211" then%>
             async function captureTransaction() {
                 try {
                     const serializedArray = $("#frmPagto, .parcela, #AccountID").serializeArray();

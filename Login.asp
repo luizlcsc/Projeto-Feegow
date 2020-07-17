@@ -1,4 +1,3 @@
-<!--#include file="./Classes/Sha256.asp"-->
 <%
 if request("Log")="Off" then
 	if session("Partner")="" then

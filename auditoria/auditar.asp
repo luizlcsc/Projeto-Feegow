@@ -133,12 +133,13 @@ var constroiLinhas = (data,tabela,header,evento) => {
     var linha = [];
     $.each(data,function(index,val){
         linha.push("<tr>");
+        let param = val['_InTable'] + ",\""+evento+"\"";
+         val["Ação"] = "<button class='btn btn-danger btn-sm' id='auditar' onclick='clickAutic("+ param +")'>Auditado</button>";
          $.each(header, function(key, value){
              linha.push("<td>" + val[value] + "</td>");
          });
-         let param = val['_InTable'] + ",\""+evento+"\"";
-         linha.push("<td> <button class='btn btn-danger btn-sm' id='auditar' onclick='clickAutic("+ param +")'>Auditado</button></td>");
-         linha.push("</tr>");
+         console.log(val);
+                  linha.push("</tr>");
     });
 
     $(tabela).append(linha.join());
@@ -163,7 +164,6 @@ $("#filtrando").click(function(){
     objct.services.push({service:"ContaAPagarSemCaixa",filters:{unidade:$("#unidade").val(),dataInicio:dataInicial,dataFim:dataFinal}});
     objct.services.push({service:"ContaCancelada",filters:{unidade:$("#unidade").val(),dataInicio:dataInicial,dataFim:dataFinal}});
 
-    console.log(JSON.stringify(objct));
 
     $.ajax({
         url: domain + "api/financial/auditoria/list",
@@ -183,7 +183,7 @@ $("#filtrando").click(function(){
             fail(data){
                 $(".loading").html("");
                 limpaTudo()
-                console.log(data);
+                //console.log(data);
             },
     });
 });
@@ -195,7 +195,7 @@ function clickAutic(TableId,evento){
     objct.auditar = [];
     objct.auditar.push({service:evento,id:TableId});
     objct.tk = localStorage.getItem('tk');
-    console.log(objct.auditar);
+   // console.log(objct.auditar);
     $.ajax({
        url: domain + "api/financial/auditoria/list",
        type: 'post',

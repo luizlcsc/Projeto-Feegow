@@ -247,50 +247,53 @@ end if
             let baseLink = "https://cdn.feegow.com/icons/";
 
             if(['docx','doc','rtf'].includes(extension)){
-                link = 'doc.png';
+                link = baseLink + 'doc.png';
             }
 
             if(['pdf'].includes(extension)){
-                link = 'pdf.png';
+                link = baseLink + 'pdf.png';
             }
+            // if(['png'].includes(extension)){
+            //     link = 'png.png';
+            // }
             if(['mp4'].includes(extension)){
-                link = 'pdf.png';
+                link = baseLink + 'pdf.png';
             }
             if(['xml'].includes(extension)){
                 // link = 'xml.png';
             }
 
             if(['txt'].includes(extension)){
-                link = 'txt.png';
+                link = baseLink + 'txt.png';
             }
 
             if(['pptx'].includes(extension)){
-                link = 'ppt.png';
+                link = baseLink + 'ppt.png';
             }
 
             if(['csv'].includes(extension)){
-                link = 'csv.png';
+                link = baseLink + 'csv.png';
             }
 
             if(['xlsx','xls'].includes(extension)){
-                link = 'xls.png';
+                link = baseLink + 'xls.png';
             }
 
-            if(['jpg','jpeg'].includes(extension)){
-                link = 'jpg.png';
-            }
+            // if(['jpg','jpeg'].includes(extension)){
+            //     link = 'jpg.png';
+            // }
 
             if(['mp3'].includes(extension)){
-                link = 'mp3.png';
+                link = baseLink + 'mp3.png';
             }
             if(['mp4'].includes(extension)){
-                link = 'mp4.png';
+                link = baseLink + 'mp4.png';
             }
             if(['txt'].includes(extension)){
-                link = 'txt.png';
+                link = baseLink + 'txt.png';
             }
 
-            item.link = baseLink + link;
+            item.link = link;
             item.extension = extension;
             item.formato = formato;
     }

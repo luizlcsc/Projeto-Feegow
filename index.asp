@@ -220,7 +220,11 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
 <%if aut("capptaI") then%>
-    <script src="assets/js/feegow-cappta.js"></script>
+    <%if session("Banco")="clinic7211" then%>
+        <script src="https://cdn.feegow.com/feegow-pay/feegow-pay.js"></script>
+    <%else%>
+        <script src="assets/js/feegow-cappta.js"></script>
+    <%end if%>
   <%end if%>
 
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.full.min.js"></script>

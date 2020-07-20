@@ -1,8 +1,10 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
 <%
 PM = request.QueryString("PM")
 response.Buffer
 if PM<>"" then
+	
 	if left(PM, 1)="X" then
 		db_execute("delete from sys_formasrecto where id="&replace(PM, "X", ""))
 		%>
@@ -18,8 +20,17 @@ if PM<>"" then
 	end if
 	set formas = db.execute("select * from sys_formasrecto")
 	while not formas.eof
-	
-		db_execute("update sys_formasrecto set Bandeiras='"&ref("Bandeiras_"&formas("id"))&"', Contas='"&ref("Contas_"&formas("id"))&"', ParcelasDe='"&ref("ParcelasDe_"&formas("id"))&"', ParcelasAte='"&ref("ParcelasAte_"&formas("id"))&"', Acrescimo="&treatvalzero(ref("Acrescimo_"&formas("id")))&", tipoAcrescimo='"&ref("tipoAcrescimo_"&formas("id"))&"', Desconto="&treatvalzero(ref("Desconto_"&formas("id")))&", tipoDesconto='"&ref("tipoDesconto_"&formas("id"))&"', Procedimentos='"&ref("Procedimentos_"&formas("id"))&"', Unidades='"&ref("Unidades_"&formas("id"))&"', UnidadesExcecao='"&ref("UnidadesExcecao_"&formas("id"))&"'       where id="&formas("id"))
+		input_procedimentos = trim(ref("Procedimentos_"&formas("id")))
+		
+		input_procedimentos = replace(ref("Procedimentos_"&formas("id")&""),"|","")
+		input_procedimentos = replace(input_procedimentos," ","")
+		input_procedimentos = removeDuplicatas(input_procedimentos,",")
+		input_procedimentos = converteEncapsulamento(",|",input_procedimentos)
+
+		'response.write("<script> console.log('"&input_procedimentos&"') </script>")
+
+
+		db_execute("update sys_formasrecto set Bandeiras='"&ref("Bandeiras_"&formas("id"))&"', Contas='"&ref("Contas_"&formas("id"))&"', ParcelasDe='"&ref("ParcelasDe_"&formas("id"))&"', ParcelasAte='"&ref("ParcelasAte_"&formas("id"))&"', Acrescimo="&treatvalzero(ref("Acrescimo_"&formas("id")))&", tipoAcrescimo='"&ref("tipoAcrescimo_"&formas("id"))&"', Desconto="&treatvalzero(ref("Desconto_"&formas("id")))&", tipoDesconto='"&ref("tipoDesconto_"&formas("id"))&"', Procedimentos='"&input_procedimentos&"', Unidades='"&ref("Unidades_"&formas("id"))&"', UnidadesExcecao='"&ref("UnidadesExcecao_"&formas("id"))&"'       where id="&formas("id"))
 	formas.movenext
 	wend
 	formas.close
@@ -139,8 +150,14 @@ end if
                 </select>
             
             	<label>&nbsp;</label><br>
-            	<%=quickField("multiple", "Procedimentos_"&formas("id"), "", 8, Procedimentos, "SELECT id, NomeProcedimento FROM (select id, NomeProcedimento, 1 Ordem from procedimentos where sysActive=1 and ativo='on'  UNION ALL select id*-1, concat('>>> ',NomeGrupo) NomeProcedimento, 0 Ordem from procedimentosgrupos where sysactive=1)t order by Ordem, NomeProcedimento", "NomeProcedimento", "")%>
-            </td>
+            	<%'=quickField("multiple", "Procedimentos_"&formas("id"), "", 8, Procedimentos, "SELECT id, NomeProcedimento FROM (select id, NomeProcedimento, 1 Ordem from procedimentos where sysActive=1 and ativo='on'  UNION ALL select id*-1, concat('>>> ',NomeGrupo) NomeProcedimento, 0 Ordem from procedimentosgrupos where sysactive=1)t order by Ordem, NomeProcedimento", "NomeProcedimento", "")%>
+							<%
+							sqlOrClass = "SELECT id, NomeProcedimento as nome FROM (select id, NomeProcedimento, 1 Ordem from procedimentos where sysActive=1 and ativo='on'  UNION ALL select id*-1, concat('>>> ',NomeGrupo) NomeProcedimento, 0 Ordem from procedimentosgrupos where sysactive=1)t"
+							%>
+							<%=quickField("multipleModal", "Procedimentos_"&formas("id"), "Procedimentos", "width", converteEncapsulamento("|,",Procedimentos), sqlOrClass, "columnToShow", "remove_EXCEPT,ONLY,ALL")%>
+							
+							
+						</td>
             <td width="10">
             	<label>&nbsp;</label><br>
             	<button type="button" class="btn btn-danger btn-xs" onClick="addForma('X<%=formas("id")%>');"><i class="fa fa-remove"></i></button>

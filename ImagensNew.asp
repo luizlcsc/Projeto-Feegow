@@ -15,8 +15,12 @@
         response.end
     END IF
 
-    ArquivoImagem = "ArquivoImagem"
+ArquivoImagem = req("ArquivoImagem")
+ImageRenderType = "download"
 
+if req("PacienteID")<>"" and req("PacienteID")<>"0" then
+    ImageRenderType = "redirect"
+end if
 %>
 <style>
     :root {
@@ -152,6 +156,11 @@
     }
 </style>
 <%
+
+if ArquivoImagem="" then
+    ArquivoImagem="Imagem"
+end if
+
 if ArquivoImagem="Imagem" then
 %>
 <div class="btn-group ib m20 pull-left ">
@@ -235,34 +244,53 @@ end if
                 link = item.thumbnailLink?item.thumbnailLink:item.ArquivoLink;
             }
 
+            let baseLink = "https://cdn.feegow.com/icons/";
+
             if(['docx','doc','rtf'].includes(extension)){
-                link = 'assets/img/doc.png';
+                link = 'doc.png';
             }
 
             if(['pdf'].includes(extension)){
-                link = 'assets/img/pdf.png';
+                link = 'pdf.png';
+            }
+            if(['mp4'].includes(extension)){
+                link = 'pdf.png';
             }
             if(['xml'].includes(extension)){
-                link = 'assets/img/xml.png';
+                // link = 'xml.png';
             }
 
             if(['txt'].includes(extension)){
-                link = 'assets/img/txt.png';
+                link = 'txt.png';
             }
 
             if(['pptx'].includes(extension)){
-                link = 'assets/img/pptx.png';
+                link = 'ppt.png';
             }
 
             if(['csv'].includes(extension)){
-                link = 'assets/img/csv.png';
+                link = 'csv.png';
             }
 
             if(['xlsx','xls'].includes(extension)){
-                link = 'assets/img/xlsx.png';
+                link = 'xls.png';
             }
 
-            item.link = link;
+            if(['jpg','jpeg'].includes(extension)){
+                link = 'jpg.png';
+            }
+
+            if(['mp3'].includes(extension)){
+                link = 'mp3.png';
+            }
+            if(['mp4'].includes(extension)){
+                link = 'mp4.png';
+            }
+            if(['txt'].includes(extension)){
+                link = 'txt.png';
+            }
+
+            item.link = baseLink + link;
             item.extension = extension;
             item.formato = formato;
     }
@@ -287,7 +315,7 @@ end if
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-expand icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink.replace('redirect', 'download')}" target="_blank" title="Abrir Imagem Separadamente">
+                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink.replace('redirect', '<%=ImageRenderType%>')}" target="_blank" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-external-link icon-external-link"></i>
                                     </a>
                                     <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">

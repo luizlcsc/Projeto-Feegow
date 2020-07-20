@@ -587,8 +587,11 @@ end if
     <script src="https://s3.amazonaws.com/cappta.api/v2/dist/cappta-checkout.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
+    <%if session("Banco")="clinic7211" then%>
+       const feegowPay = new FeegowPay("zoop", false, "https://api.feegow.com.br/");
+    <%end if%>
+
        function checkForPendingTransactions(movementId) {
-           console.log("Buscando transações pendentes para movementId: " + movementId);
             const logs = localStorage.getItem("cappta-logs");
             if(logs) {
                 const logsArray = JSON.parse(logs);
@@ -649,10 +652,16 @@ end if
            }
         }
 
+    <%if session("Banco")="clinic7211" then%>
+        function openPdvConfig() {
+            openComponentsModal("microtef/pdv-config", false, false, true, false, "md");
+        }
+    <%else%>
         function openPdvConfig() {
            const cappta = new FeegowCappta();
            cappta.openPdvConfig();
         }
+    <%end if %>
 
         function reciboPadrao() {
            if(typeof imprimir === "function") {
@@ -660,29 +669,47 @@ end if
            }
         }
 
-        async function captureTransaction() {
-            try {
-                loadingButton(true);
-                const cappta = await new FeegowCappta(false);
-                const serializedArray = $("#frmPagto, .parcela, #AccountID").serializeArray();
-                const transactionInfo = await getTransactionInfo();
-                const payment = await cappta.createTransaction(transactionInfo, serializedArray);
+        <%if session("Banco")="clinic7211" then%>
+            async function captureTransaction() {
+                try {
+                    const serializedArray = $("#frmPagto, .parcela, #AccountID").serializeArray();
+                    const transactionInfo = await getTransactionInfo();
+                    const payment = await feegowPay.charge(transactionInfo, true, serializedArray);
 
-                if(payment.autoConsolidate) {
-                    autoConsolidate();
-                }
+                    if(payment.savePagtoResponse && payment.savePagtoResponse.autoConsolidate) {
+                        autoConsolidate();
+                    }
 
-                reciboPadrao();
-                refreshPage();
-            } catch (e) {
-                loadingButton(false);
-                if(e.substr(11, 20) == "Cannot read property") {
-                    showMessageDialog("Ocorreu um erro interno na operação. Atualize a página e tente novamente", 'danger', "Erro na transação")
-                } else {
-                    showMessageDialog(e, 'danger', "Erro na transação")
+                    refreshPage();
+                } catch (e) {
+                  showMessageDialog(e.message, 'danger', "Erro na transação");
                 }
             }
-        }
+        <%else%>
+            async function captureTransaction() {
+                try {
+                    loadingButton(true);
+                    const cappta = await new FeegowCappta(false);
+                    const serializedArray = $("#frmPagto, .parcela, #AccountID").serializeArray();
+                    const transactionInfo = await getTransactionInfo();
+                    const payment = await cappta.createTransaction(transactionInfo, serializedArray);
+
+                    if(payment.autoConsolidate) {
+                        autoConsolidate();
+                    }
+
+                    reciboPadrao();
+                    refreshPage();
+                } catch (e) {
+                    loadingButton(false);
+                    if(e.substr(11, 20) == "Cannot read property") {
+                        showMessageDialog("Ocorreu um erro interno na operação. Atualize a página e tente novamente", 'danger', "Erro na transação")
+                    } else {
+                        showMessageDialog(e, 'danger', "Erro na transação")
+                    }
+                }
+            }
+        <%end if%>
 
        async function payPendingTransaction() {
            const index = $("#hasPendingPayments").data("index");

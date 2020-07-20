@@ -193,7 +193,17 @@ if req("MudaLocal")<>"" then
     urlRedir = "./?P=Home&Pers=1"
 
 'bloqueia se o caixa estiver aberto
-    if session("CaixaID")&""="" or session("CaixaID")&""="0" then
+
+    PermiteAlterarUnidade = True
+
+    if (session("CaixaID")&""<>"" and session("CaixaID")&""<>"0") and aut("aberturacaixinha") then
+        MensagemRetorno="Não é possível trocar a unidade com o caixa aberto."
+
+        call gravaLogs(sqlUpdateUnidade ,"AUTO", MensagemRetorno, "")
+        PermiteAlterarUnidade = False
+    end if
+
+    if PermiteAlterarUnidade then
         sqlUpdateUnidade = "update sys_users set UnidadeID="&NewUnidadeID&" where id="&session("User")
         session("UnidadeID") = ccur(NewUnidadeID)
 
@@ -225,10 +235,6 @@ if req("MudaLocal")<>"" then
         if tryLogin("Home")&""<>"" then
             urlRedir = "./?P="&tryLogin("Home")&"&Pers=1"
         end if
-    else
-        MensagemRetorno="Não é possível trocar a unidade com o caixa aberto."
-
-        call gravaLogs(sqlUpdateUnidade ,"AUTO", MensagemRetorno, "")
     end if
 
 	response.Redirect( urlRedir  & "&Msg="&MensagemRetorno )

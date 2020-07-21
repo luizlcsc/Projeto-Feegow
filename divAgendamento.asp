@@ -1749,7 +1749,6 @@ function VerGradeDoHorario() {
     var Hora = $("#Hora").val();
     var EncaixeMarcado = $("#Encaixe").is(":checked");
     let dataAgendamento = new Date($("#dadosAgendamento #Data").val().split("/").reverse().join("-")+" "+$("#dadosAgendamento #Hora").val());
-    console.log(dataAgendamento);
     if(EncaixeMarcado && '<%=ProfissionalID%>' !== ''  && dataAgendamento >= new Date()){
         $.get("VerificaGradeDoHorario.asp", {Data: '<%=Data%>', Hora: Hora, ProfissionalID: '<%=ProfissionalID%>', UnidadeID: '<%=req("UnidadeID")%>'}, function(data) {
             eval(data);

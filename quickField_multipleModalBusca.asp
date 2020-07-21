@@ -8,7 +8,7 @@ checksID  = req("v")
 multipleModal_sessionSQL = Session("multipleModal_session")
 
 conteudoHeader = ""&_
-"<div style='border-bottom:1px dotted #ccc'>"&_
+"<div style='border-bottom:1px dotted #ccc;max-height:350px;overflow: auto;'>"&_
 "<table class='table'>"&_
 "  <thead>"&_
 "    <tr>"&_
@@ -36,7 +36,7 @@ if formBusca<>"" then
   end if
 
   'DEFINIR COLUNAS E TABELA DINAMICAMENTE...
-  qItemBuscaSQL = multipleModal_sessionSQL&qItemBuscaWhere&" limit 0,5"
+  qItemBuscaSQL = multipleModal_sessionSQL&qItemBuscaWhere&" limit 0,30"
   'response.write("<pre>"&qItemBuscaSQL&"</pre>")
   SET ItemBuscaSQL = db.execute(qItemBuscaSQL)
   if ItemBuscaSQL.eof then

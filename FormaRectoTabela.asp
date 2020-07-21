@@ -152,9 +152,23 @@ end if
             	<label>&nbsp;</label><br>
             	<%'=quickField("multiple", "Procedimentos_"&formas("id"), "", 8, Procedimentos, "SELECT id, NomeProcedimento FROM (select id, NomeProcedimento, 1 Ordem from procedimentos where sysActive=1 and ativo='on'  UNION ALL select id*-1, concat('>>> ',NomeGrupo) NomeProcedimento, 0 Ordem from procedimentosgrupos where sysactive=1)t order by Ordem, NomeProcedimento", "NomeProcedimento", "")%>
 							<%
-							sqlOrClass = "SELECT id, NomeProcedimento as nome FROM (select id, NomeProcedimento, 1 Ordem from procedimentos where sysActive=1 and ativo='on'  UNION ALL select id*-1, concat('>>> ',NomeGrupo) NomeProcedimento, 0 Ordem from procedimentosgrupos where sysactive=1)t"
+							sqlOrClass = "SELECT id, IF(id<0,CONCAT('<span class=""badge"">',NomeProcedimento,'</span>'),NomeProcedimento) AS nome "&_
+							"	FROM ( "&_
+							"	SELECT id, NomeProcedimento, 1 Ordem "&_
+							"	FROM procedimentos "&_
+							"	WHERE sysActive=1 AND ativo='on' UNION ALL "&_
+							"	SELECT id*-1, NomeGrupo AS NomeProcedimento, 0 Ordem "&_
+							"	FROM procedimentosgrupos "&_
+							"	WHERE sysactive=1)t "
+
+							qntRegistros_array = converteEncapsulamento("|,",formas("Procedimentos"))
+							'response.write("<script>console.log('"&qntRegistros_array&"')</script>")
+							qntRegistros_array = Split(qntRegistros_array,",")
+							qntRegistros = Ubound(qntRegistros_array)
+
+							response.write(quickField("multipleModal", "Procedimentos_"&formas("id"), "Procedimentos ("&qntRegistros&")", "width", converteEncapsulamento("|,",Procedimentos), sqlOrClass, "columnToShow", "remove_EXCEPT,ONLY,ALL"))
+
 							%>
-							<%=quickField("multipleModal", "Procedimentos_"&formas("id"), "Procedimentos", "width", converteEncapsulamento("|,",Procedimentos), sqlOrClass, "columnToShow", "remove_EXCEPT,ONLY,ALL")%>
 							
 							
 						</td>

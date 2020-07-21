@@ -109,6 +109,7 @@ function converteEncapsulamento(tipo,valor)
       next
       if right(trim(resultado),1) = "," then
         resultado = left(string,(len(string)-2)) 'REMOVER 2 ÚLTIMOS CARACTERS
+        'resultado = mid(resultado,1,len(resultado)-2) 'REMOVER 2 ÚLTIMOS CARACTERS
       end if
 
       converteEncapsulamento = resultado
@@ -123,7 +124,17 @@ function converteEncapsulamento(tipo,valor)
             resultado = resultado&","&valor_virgula
           end if
       next
-      converteEncapsulamento = replace(resultado,"|","")
+
+      resultado = replace(resultado,"|","")
+      if right(trim(resultado),1) = "," then
+       converteEncapsulamento = mid(resultado,1,len(resultado)-1) 'REMOVER ÚLTIMO CARACTERS
+      else
+        converteEncapsulamento = resultado
+      end if
+
+      'converteEncapsulamento = resultado
+
+      'converteEncapsulamento = replace(resultado,"|","")
 
     Case ",'" 'CONVERTE VALORES "item1,item2,item3" PARA "'item1','item2','item3'"
       valor_array=Split(valor,",")

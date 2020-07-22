@@ -12,8 +12,8 @@ else
   checks_varItensDefault = "var itensDefault = '"&checksID&"'.split(',');"
 
   conteudoHeader = ""&_
-  "<div>"&_
   "<h3 class='text-center'>Itens Adicionados</h3>"&_
+  "<div style='max-height:200px;overflow: auto;'>"&_
   "<table class='table'>"&_
   "  <thead>"&_
   "    <tr>"&_
@@ -92,16 +92,29 @@ response.write(conteudoItensHTML)
 <script type="text/javascript">
 
 var buscaValor = $("#busca");
-$(buscaValor).keyup(function() {
 
-  $.post(
-    'quickField_multipleModalBusca.asp?<%="I="&req("I")&"&v="&checksID%>',
-    buscaValor,
-    function(resultado){
+//$(buscaValor).keyup(function() {
+$(buscaValor).ready(function() {
+  
+  if (buscaValor.val()==''){
+    $.post(
+      'quickField_multipleModalBusca.asp?<%="I="&req("I")&"&v="&checksID%>',
+      buscaValor,
+      function(resultado){
+        $("#resultado").html(resultado);
+      }
+    );
+  };
+
+  $(buscaValor).keyup(function() {
+    $.post(
+      'quickField_multipleModalBusca.asp?<%="I="&req("I")&"&v="&checksID%>',
+      buscaValor,
+      function(resultado){
       $("#resultado").html(resultado);
     }
   );
-  //console.log('Valor: '+buscaValor.val());
+  });
 });
 
 <%=checks_varItensDefault%>

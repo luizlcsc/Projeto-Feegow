@@ -281,36 +281,44 @@ if not tryLogin.EOF then
 
 		qtdUnidadesArray = split(session("Unidades"), ",")
         UnidadeID=0
+        UnidadeDefinida=False
 
+        'verifica se o usuario ja se logou na data
 		if ubound(qtdUnidadesArray) > 0 then
 			set PrimeiroLoginDoDiaSQL = dbc.execute("SELECT id FROM cliniccentral.licencaslogins WHERE UserID="&tryLogin("id")&" AND date(DataHora)=curdate()")
 			if PrimeiroLoginDoDiaSQL.eof then
                 UnidadeID = -1
+                UnidadeDefinida=True
+                UnidadeMotivoDefinicao = "Primeiro login do dia"
 			end if
 		end if
 
-		if UnidadeID=0 then
-            if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then 
-            	UnidadeID = sysUser("UnidadeID")
-			end if 
+        'pega a ultima unidade definida
+        if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 and not UnidadeDefinida then
+            UnidadeID = sysUser("UnidadeID")
+            UnidadeDefinida = True
+            UnidadeMotivoDefinicao = "Última unidade do usuário"
+        end if
 
-			if ubound(qtdUnidadesArray) > 0 then
+        'seta a unidade de acordo com a que o usuario tem permissa
+        if not UnidadeDefinida then
+            if ubound(qtdUnidadesArray) > 0 then
                 UnidadeID= replace(qtdUnidadesArray(0), "|","")
-			else
-				if session("Unidades")&"" <> "" then
-                	UnidadeID= replace(session("Unidades"), "|","")
-				end if
-			end if 
-
-            if isnull(UnidadeID) then
-                UnidadeID= replace(qtdUnidadesArray(0), "|","")
-                db.execute("UPDATE sys_users SET UnidadeID="&UnidadeID&" WHERE id="&session("User"))
+            else
+                if session("Unidades")&"" <> "" then
+                    UnidadeID= replace(session("Unidades"), "|","")
+                end if
             end if
-		end if
+            UnidadeDefinida = True
+            UnidadeMotivoDefinicao = "Primeira unidade do array do usuário"
+        end if
 
-        session("UnidadeID") = UnidadeID
+        'Verifica se a unidadeId está como null, se sim, pega a primeira unidade do array
+        if isnull(UnidadeID) then
+            UnidadeID= replace(qtdUnidadesArray(0), "|","")
+        end if
 
-
+        'verifica se o profissional tem grade aberta, se sim, abre a sessao com aquela unidade
 		if lcase(session("Table"))="profissionais" then
 			set gradeHoje = db.execute("select l.UnidadeID, g.HoraDe from assfixalocalxprofissional g "&_
                                        "INNER JOIN locais l on l.id=g.LocalID "&_
@@ -324,14 +332,16 @@ if not tryLogin.EOF then
 			if not gradeHoje.EOF then
 				if not isnull(gradeHoje("UnidadeID")) then
 					if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then 
-						session("UnidadeID") = gradeHoje("UnidadeID")
-						db_execute("update sys_users set UnidadeID="&gradeHoje("UnidadeID")&" where id="&session("User"))
+						UnidadeID = gradeHoje("UnidadeID")
+                        UnidadeMotivoDefinicao = "Unidade da Grade do profissional"
 					end if
 				end if
 			end if
 		end if
 
 
+
+        'verifica se o usuario tem caixa aberto em alguma unidade
 		set caixa = db.execute("select c.id, ca.Empresa UnidadeID from caixa c  "&_
                                "INNER JOIN sys_financialcurrentaccounts ca ON ca.id=c.ContaCorrenteID  "&_
                                "WHERE c.sysUser="&session("User")&" and isnull(c.dtFechamento)")
@@ -340,9 +350,13 @@ if not tryLogin.EOF then
 
 			if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then
             	UnidadeID = sysUser("UnidadeID")
+                UnidadeMotivoDefinicao = "Unidade do caixa aberto"
 			end if
-			session("UnidadeID") = caixa("UnidadeID")
 		end if
+
+		session("UnidadeID") = UnidadeID
+		db_execute("update sys_users set UnidadeID="&UnidadeID&" where id="&session("User"))
+
 
 		if session("UnidadeID")=0 then
 			set getNome = db.execute("select * from empresa")

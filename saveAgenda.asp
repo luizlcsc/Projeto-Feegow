@@ -392,13 +392,15 @@ if erro="" then
 
     'verifica se status é desmarcado se for muda a ação para remover registro do googlecalendar
     Action = "XI"
+    GCNomePaciente = ""
     if rfStaID&"" = "11" or rfStaID&"" = "16" then
         Action = "X"
+        GCNomePaciente = "excluir_da_agenda"
     end if
 
 	%>
 	if (typeof feegow_components_path !== 'undefined'<% if request.ServerVariables("REMOTE_ADDR")="::1" then response.write("  && 0 ") end if %>){
-        $.get(feegow_components_path+"/googlecalendar/save", {Acao:"<%=Action%>", Email:"vca", AgendamentoID:"<%=ConsultaID%>", ProfissionalID:"<%=rfProfissionalID%>", NomePaciente:"", Data:"", Hora:"", Tempo:"", NomeProcedimento:"", Notas:""}, function(){})
+        $.get(feegow_components_path+"/googlecalendar/save", {Acao:"<%=Action%>", Email:"vca", AgendamentoID:"<%=ConsultaID%>", ProfissionalID:"<%=rfProfissionalID%>", NomePaciente:"<%=GCNomePaciente%>", Data:"", Hora:"", Tempo:"", NomeProcedimento:"", Notas:""}, function(){})
 
         <%
         'call centralSMS(ref("ConfSMS"), rfData, rfHora, ConsultaID)

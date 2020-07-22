@@ -94,7 +94,7 @@ if not tryLogin.EOF then
             if Session("Deslogar_user")<>"" then
                 forcar_login = Session("Deslogar_user")
             end if
-            
+
 			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login  then
                 deslogarUsuario = true
 				erro = "Este usuário já está conectado em outra máquina."
@@ -165,7 +165,7 @@ if not tryLogin.EOF then
                             e.preventDefault();
                             if(preventClick) return;
                             preventClick = true;
-                            
+
                             $("#Deslogar").attr("style", "opacity: 0.5");
                             $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
                             $.post('DeslogarUsuario.asp');
@@ -179,7 +179,7 @@ if not tryLogin.EOF then
                     });
                 </script>
             <%
-            
+
         else
             %>
                 <script>
@@ -187,7 +187,7 @@ if not tryLogin.EOF then
                 </script>
             <%
         end if
-		
+
 	else
 		session("Banco")="clinic"&tryLogin("LicencaID")
 		session("Admin")=tryLogin("Admin")
@@ -290,9 +290,9 @@ if not tryLogin.EOF then
 		end if
 
 		if UnidadeID=0 then
-            if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then 
+            if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then
             	UnidadeID = sysUser("UnidadeID")
-			end if 
+			end if
 
 			if ubound(qtdUnidadesArray) > 0 then
                 UnidadeID= replace(qtdUnidadesArray(0), "|","")
@@ -300,7 +300,7 @@ if not tryLogin.EOF then
 				if session("Unidades")&"" <> "" then
                 	UnidadeID= replace(session("Unidades"), "|","")
 				end if
-			end if 
+			end if
 
             if isnull(UnidadeID) then
                 UnidadeID= replace(qtdUnidadesArray(0), "|","")
@@ -323,7 +323,7 @@ if not tryLogin.EOF then
 
 			if not gradeHoje.EOF then
 				if not isnull(gradeHoje("UnidadeID")) then
-					if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then 
+					if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then
 						session("UnidadeID") = gradeHoje("UnidadeID")
 						db_execute("update sys_users set UnidadeID="&gradeHoje("UnidadeID")&" where id="&session("User"))
 					end if

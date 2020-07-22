@@ -28,7 +28,7 @@ conteudoFooter = ""&_
 "</table>"&_
 "</div>"
 
-if formBusca<>"" then
+
   qItemBuscaWhere = " WHERE "
   qItemBuscaWhere = qItemBuscaWhere&" (id='"&formBusca&"' OR NomeProcedimento LIKE '%"&formBusca&"%') "
   if checksID<>"" then
@@ -36,7 +36,7 @@ if formBusca<>"" then
   end if
 
   'DEFINIR COLUNAS E TABELA DINAMICAMENTE...
-  qItemBuscaSQL = multipleModal_sessionSQL&qItemBuscaWhere&" limit 0,30"
+  qItemBuscaSQL = multipleModal_sessionSQL&qItemBuscaWhere&" limit 0,100"
   'response.write("<pre>"&qItemBuscaSQL&"</pre>")
   SET ItemBuscaSQL = db.execute(qItemBuscaSQL)
   if ItemBuscaSQL.eof then
@@ -87,16 +87,18 @@ if formBusca<>"" then
   end if
   ItemBuscaSQL.close
   set ItemBuscaSQL = nothing
-  
+  if formBusca<>"" then
+    termoBuscaHTML = "<small>(Resultado da Busca por: "&formBusca&")</small>" 
+  end if
   'IMPRIME RESULTADO DA BUSCA
   cabecalhoBusca = ""&_
   "<h3 class='text-center'>"&_
   "  Adicionar itens"&_
-  "  <small>(Resultado da Busca por: "&formBusca&")</small>"&_
+    termoBuscaHTML&_
   "</h3>"
   response.write(cabecalhoBusca&conteudoHeader&conteudoBusca&conteudoFooter)
   'response.write(conteudoBusca)
-end if
+
 %>
 
 

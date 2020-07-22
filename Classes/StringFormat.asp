@@ -151,8 +151,6 @@ function converteEncapsulamento(tipo,valor)
 
   End Select
 end function
-'TESTES convertePipeVirgula()
-'response.write(convertePipeVirgula("|,","|ALL|, |622|, |588|") )
 
 
 'REMOVE ITENS DUPLICADOS DE UMA STRING SEPARADOS POR UM DELIMITADOR
@@ -166,6 +164,5 @@ Function removeDuplicatas(conteudo,delimitador)
   
   Set oDict = Nothing
 End Function
-'TESTE
-'response.write(removeDuplicatas("ONLY,ONLY,ONLY,-51,-52,-50,1",","))
+
 %>

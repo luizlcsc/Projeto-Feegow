@@ -16,7 +16,7 @@ else
   "<div style='max-height:200px;overflow: auto;'>"&_
   "<table class='table'>"&_
   "  <thead>"&_
-  "    <tr>"&_
+  "    <tr class='primary'>"&_
   "      <th width='150'>Código</th>"&_
   "      <th colspan='2'>Nome</th>"&_
   "    </tr>"&_
@@ -50,7 +50,7 @@ else
 
       conteudoHTML = ""&_
       "<tr>"&_
-      "  <td># "&item_id&"</td>"&_
+      "  <td><code># "&item_id&"</code></td>"&_
       "  <td>"&item_Nome&"</td>"&_
       "  <td width='60'>"&_
       "    <div class='checkbox-custom checkbox-success'>"&_
@@ -78,7 +78,7 @@ end if
 
 
 <form method="POST" id="form-pesquisa" action="">
-  <input type="text" class="form-control" name="busca" id="busca" placeholder="Busque pelo ID ou nome" >
+  <input type="text" class="form-control" name="busca" id="busca" placeholder="Busque pelo nome ou código" >
 </form>
 
 

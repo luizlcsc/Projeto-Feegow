@@ -11,7 +11,7 @@ conteudoHeader = ""&_
 "<div style='border-bottom:1px dotted #ccc;max-height:350px;overflow: auto;'>"&_
 "<table class='table'>"&_
 "  <thead>"&_
-"    <tr>"&_
+"    <tr class='primary'>"&_
 "      <th width='150'>Código</th>"&_
 "      <th colspan='2'>Nome</th>"&_
 "    </tr>"&_
@@ -63,7 +63,7 @@ conteudoFooter = ""&_
       
       conteudoBuscaHTML = ""&_
       "<tr>"&_
-      "  <td># "&item_id&"</td>"&_
+      "  <td><code># "&item_id&"</code></td>"&_
       "  <td>"&item_Nome&"</td>"&_
       "  <td width='60'>"&_
       "    <div class='checkbox-custom checkbox-primary'>"&_

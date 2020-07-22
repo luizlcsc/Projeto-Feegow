@@ -1,4 +1,4 @@
-﻿﻿<!--#include file="Classes/Connection.asp"--><%
+﻿<!--#include file="Classes/Connection.asp"--><%
 Session.Timeout=600
 session.LCID=1046
 if session("Servidor")="" then

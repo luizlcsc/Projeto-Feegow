@@ -68,6 +68,7 @@ TipoGuia = reg("TipoGuia")
                 <div class="col-md-12">
                     <div class="row">
                         <%=quickField("text", "NomeProcedimento", "Nome do Procedimento", 3, reg("NomeProcedimento"), "", "", " required")%>
+
                         <%=quickField("simpleSelect", "TipoProcedimentoID", "Tipo", 2, reg("TipoProcedimentoID"), "select * from TiposProcedimentos", "TipoProcedimento", "")%>
                         <%= quickField("currency", "Valor", "Valor <button type='button' onclick='VerDetalhesValor()' class='btn btn-link btn-xs'>Ver mais</button>", 2, formatnumber(Valor,2), "", "", "") %>
                         <%= quickField("text", "TempoProcedimento", "Tempo", 1, reg("TempoProcedimento"), " text-right", "", " placeholder='minutos'")%>
@@ -77,6 +78,7 @@ TipoGuia = reg("TipoGuia")
 			            </div>
 
                         <%=quickField("cor", "Cor", "Cor", 2, reg("Cor"), "select * from cliniccentral.Cores order by id desc", "Cor", "")%>
+
                         <div class="col-md-1">
                             <label>
                                 Ativo
@@ -88,6 +90,7 @@ TipoGuia = reg("TipoGuia")
 
                             </label>
                         </div>
+                        <%=quickField("text", "Sinonimo", "Nome Técnico do Procedimento", 3, reg("Sinonimo"), "", "", "")%>
                     </div>
                     <hr class="short alt" />
                     <div class="row">
@@ -384,7 +387,7 @@ TipoGuia = reg("TipoGuia")
                     </div>
                 <script>
                     $(document).ready(function(e) {
-                        $.post("SubFormVacina.asp?VacinaID="+<%=regVacina("id")%>,function(data){
+                        $.post("SubFormVacina.asp?VacinaID=" + <%=regVacina("id")%>,function(data){
                             $("#divSubFormVacina").html(data);
                         });
                         $('.select-produto').select2();
@@ -543,7 +546,7 @@ persist = _ => {
                 body: $("#form-procedimento-tempo-profissional").serialize(),        
                 headers: {
                    "Content-Type": "application/x-www-form-urlencoded",
-                    } 
+                    }
                 };
 
     return fetch(`persistProcedimentoTempoProfissional.asp`, header)

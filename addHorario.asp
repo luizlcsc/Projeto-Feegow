@@ -1,4 +1,4 @@
-<!--#include file="connect.asp"-->
+﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <%
 Dia = req("Dia")
@@ -149,7 +149,7 @@ end if
             <div class="panel-heading">
                 <span class="panel-title">
                 <i class="fa fa-calendar"></i>
-                    Recorrências
+                    Marque para duplicar a marcação para o dia da semana escolhido
                 </span>
             </div>
             <div class="panel-body p7" style="text-align: center">

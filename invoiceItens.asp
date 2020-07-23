@@ -640,6 +640,7 @@ const filtraExecutantes = async (procedimentoId, linhaId) => {
         ID: null,
     });
     if(executantes){
+        var valorSelecionado = $selectExecutantes.val();
         $selectExecutantes.html("");
         let htmlExecutantes = "";
 
@@ -648,8 +649,8 @@ const filtraExecutantes = async (procedimentoId, linhaId) => {
 
             htmlExecutantes += `<option value="${executanteIdentificador}">${executante.NomeProfissional}</option>`;
         });
-
-        $selectExecutantes.html(htmlExecutantes)
+        $selectExecutantes.html(htmlExecutantes);
+        $selectExecutantes.val(valorSelecionado);
     }
 
 }

@@ -305,7 +305,7 @@ if not tryLogin.EOF then
                 	UnidadeID= replace(session("Unidades"), "|","")
 				end if
 			end if
-
+        end if
 
         'seta a unidade de acordo com a que o usuario tem permissa
         if not UnidadeDefinida then

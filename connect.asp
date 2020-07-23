@@ -1016,6 +1016,38 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			%>
 			</select>
             <%
+
+        case "multipleModal"
+            btn="<button type='button' class='btn btn-default btn-block' onclick='openComponentsModal(`quickField_multipleModal.asp?I="&fieldName&"`, {v: $(""#"&fieldName&""").val()}, `Gerenciar "&label&"`, true, function(data){closeComponentsModal(true)})'> "&_
+                    "<i class='fa fa-plus'></i> "&label&" "&_
+                "</button>" 
+
+            'CONDIÇÃO PARA O USO DA VARIÁVEL fieldValue
+            if additionalTags<>"" then
+                additionalTags_array=Split(additionalTags,"_")
+                'EXEMPLO PARA REMOVER REGISTROS SEPARADOS POR VÍRGULA remove_1,2,3...
+                if additionalTags_array(0)="remove" then
+                    itensRemove_array=Split(additionalTags_array(1),",")
+                    for each itensRemove in itensRemove_array
+                        fieldValue = replace(fieldValue,itensRemove,"")
+                    'response.write("<script>console.log('"&itensRemove&" XX ')</script>")
+                    next
+                    fieldValue = replace(fieldValue,additionalTags_array(1),"")
+                    if left(fieldValue,1) = "," then
+                        fieldValue=right(fieldValue,(len(fieldValue)-1))
+                    end if
+                end if
+            end if
+            
+            input = "<div class='text-right'><input type='hidden' name='"&fieldName&"' id='"&fieldName&"' value='"&fieldValue&"'></div>"
+                        
+            response.write(btn&input)
+            
+            'DEFINE QUERYS PARA CONSULTAS E GRAVA EM SESSÃO
+            'Select Case X .....
+            Session("multipleModal_session")=sqlOrClass        
+
+
         case "selectCheck"
 			response.Write(LabelFor)
             %>

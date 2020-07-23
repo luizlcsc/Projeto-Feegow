@@ -1,5 +1,12 @@
 <%
 
+function getSqlExcecutantesPorProcedimento(procedimentoId, grupoId)
+    getSqlExcecutantesPorProcedimento = "
+    SELECT
+
+    "
+end function
+
 function validaProcedimentoProfissional(AssociacaoID, ProfissionalID, EspecialidadeID, ProcedimentoID, UnidadeID)
     sqlItem = "SELECT SomenteEspecialidades, SomenteProfissionais, SomenteProfissionaisExterno, SomenteFornecedor, OpcoesAgenda FROM procedimentos WHERE id = "&ProcedimentoID
     set procedimentoObj = db.execute(sqlItem)

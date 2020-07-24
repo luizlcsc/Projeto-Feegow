@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="extenso.asp"-->
+<!--#include file="Classes/TagsConverte.asp"-->
 <% if session("Banco")="clinic5760" then %>
 <style type="text/css">
     body {
@@ -556,10 +557,14 @@ if not inv.eof then
                                 ProfissionalExecutante=NomeProfissional&""
                                 ProfissionalExecutanteCPF=CPFProfissional&""
 
+                                'TAGS DESATIVADAS EM 22/07/2020
+                                'Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho )
+                                'Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", ProfissionalExecutante )
+                                'Recibo = replace(Recibo, "[ProfissionalExecutante.CPF]", ProfissionalExecutanteCPF )
+                                
+                                'CONVERSOR DE TAG APLICADO EM 22/07/2020
+                                Recibo = tagsConverte(Recibo,"ProfissionalID_"&ProfissionalID,"")
 
-                                Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho )
-                                Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", ProfissionalExecutante )
-                                Recibo = replace(Recibo, "[ProfissionalExecutante.CPF]", ProfissionalExecutanteCPF )
                             end if
                         end if
                         'caso o profissional executante não for encontrado utilizar profissional solicitante 

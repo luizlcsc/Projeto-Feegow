@@ -72,12 +72,12 @@ else
                 if Aut("|agendaV|")=1  then
                     %>
                     <li class="sub-menu-click-agenda-multipla"><a href="./?P=AgendaMultipla&Pers=1">Múltipla</a></li>
-                    <% IF  getConfig("AcessoAgendamentoOnline") = "1" THEN %>
+                    <% IF getConfig("AcessoAgendamentoOnline") <> "0" AND getConfig("AcessoAgendamentoOnline") <> "0"  THEN %>
                         <li class="sub-menu-click-agenda-multipla"><a href="javascript:void(0)" onclick="openAgendamentoOnline()">Agedamento Online</a></li>
                         <script>
                             function openAgendamentoOnline() {
                                 $.get("https://api.feegow.com.br/agendamento-online/redirect-token", (data) => {
-                                        window.open(`https://paciente.feegow.com.br/agendamento/amor-saude-telemedicina/?tk=${data.content}`,'_blank');
+                                        window.open(`https://paciente.feegow.com.br/agendamento/<%=getConfig("AcessoAgendamentoOnline")%>/?tk=${data.content}`,'_blank');
                                 });
                             }
                         </script>

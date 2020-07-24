@@ -309,7 +309,7 @@ end if
                             <div class="btn-group" style="float: right">
                             <% if Status = "Pendente" or Status="Parcial" then %>
                                 <% if ii("labid")="1" then %>
-                                    <a id="a<%=ii("invoiceid") %>"  class="btn btn-sm btn-alert" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado São Marcos"><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                    <a id="a<%=ii("invoiceid") %>"  class="btn btn-sm btn-alert" <%=disabledEdit%> href="javascript:syncLabResult(['<%=ii("invoiceid") %>'],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado São Marcos"><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
                                 <% if ii("labid")="2" then %>
                                     <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
@@ -454,6 +454,11 @@ function syncLabResult(invoices, labid =1) {
 
                 case 3:
                     var htmlstatus = '<span  class="label label-rounded label-warning">Parcial</span>';
+                    break;
+                
+                case 4:
+                    var htmlstatus = '<span  class="label label-rounded label-info">Sincronizado</span>';
+                    $("#a"+invoices).hide(); 
                     break;
                 default:
                     var htmlstatus = '<span  class="label label-rounded label-warning">Pendente</span>';

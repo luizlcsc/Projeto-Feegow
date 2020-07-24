@@ -87,7 +87,7 @@ end if
                 <%=quickField("simpleSelect", "Medicamento_"&id, "Medicamentos", 12, Medicamento, "select id, NomeProduto from produtos where sysActive=1 and TipoProduto=4", "NomeProduto", " onchange=""unidadeMedida('M', "&id&", this.value)"" ")%>
             </td>
             <td width="2%" class="DoseMedicamento">
-                <%=quickField("text", "Dose_"&id, "Dose", 12, Dose, " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
+                <%=quickField("text", "Dose_"&id, "Dose", 12, fn(Dose), " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
             </td>
             <td width="1%" class="QteDoseMedicamento">
                 <div id="QteDoseMedicamento_<%=id%>">
@@ -114,7 +114,7 @@ end if
                 <%=quickField("simpleSelect", "DiluenteID_"&id, "Diluente", 12, DiluenteID, "select id, NomeProduto from produtos where sysActive=1 and TipoProduto=4", "NomeProduto", " onchange=""unidadeMedida('D', "&id&", this.value)"" ")%>
             </td>
             <td class="DoseMedicamento">
-                <%=quickField("text", "QtdDiluente_"&id, "Qtd.", 12, QtdDiluente, " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
+                <%=quickField("text", "QtdDiluente_"&id, "Qtd.", 12, fn(QtdDiluente), " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
             </td>
             <td class="QteDoseMedicamento">
                 <div id="QteDiluenteMedicamento_<%=id%>">
@@ -124,7 +124,7 @@ end if
                 <%=quickField("simpleSelect", "ReconstituinteID_"&id, "Reconstituinte", 12, ReconstituinteID, "select id, NomeProduto from produtos where sysActive=1 and TipoProduto=4", "NomeProduto", " onchange=""unidadeMedida('R', "&id&", this.value)"" ")%>
             </td>
             <td class="DoseMedicamento">
-                <%=quickField("text", "QtdReconstituinte_"&id, "Qtd.", 12, QtdReconstituinte, " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
+                <%=quickField("text", "QtdReconstituinte_"&id, "Qtd.", 12, fn(QtdReconstituinte), " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
             </td>
             <td class="QteDoseMedicamento">
                 <div id="QteReconstituinteMedicamento_<%=id%>">

@@ -443,7 +443,7 @@ end if
                 </div>
 
         <%
-		set msgs = db.execute("select DataHora,Resposta from agendamentosrespostas where AgendamentoID like '"&AgendamentoID&"'")
+		set msgs = db.execute("select DataHora,Resposta from agendamentosrespostas where AgendamentoID like '"&AgendamentoID&"' and AgendamentoID<>0")
 		while not msgs.eof
 			%>
 			<span class="label label-alert">Paciente respondeu em <%=msgs("DataHora")%>: <em><%=msgs("Resposta")%></em></span>
@@ -657,6 +657,27 @@ if instr(camposPedir, "IndicadoPorSelecao")>0 then
 end if
           %>
         </div>
+
+
+<%
+if session("Banco")="clinic5459" then
+    %>
+    <hr class="short alt">
+    <div class="panel">
+        <div class="panel-heading">
+            <span class="panel-title">Pessoas de contato</span>
+            <span class="panel-controls"><i class="btn btn-success btn-xs fa fa-plus"></i></span>
+        </div>
+        <div class="panel-body" id="agendamentosContatos">
+            <% server.execute("agendamentosContatos.asp") %>
+        </div>
+    </div>
+    <%
+end if
+%>
+
+
+
 
 
         <% if req("Checkin")="1" then %>
@@ -1692,8 +1713,11 @@ function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpre
     }
     var solicitante = $("#indicacaoId").val();
 
+    var ConvenioID = $("#ConvenioID").val();
+
     $.get("printProcedimentoAgenda.asp", {
         ProcedimentoID:ProcedimentoID,
+        ConvenioID:ConvenioID,
         PacienteID:PacienteID,
         Solicitante:solicitante,
         ProfissionalID:ProfissionalID,
@@ -1724,8 +1748,8 @@ $("#ProfissionalID", "#dadosAgendamento").change(function() {
 function VerGradeDoHorario() {
     var Hora = $("#Hora").val();
     var EncaixeMarcado = $("#Encaixe").is(":checked");
-
-    if(EncaixeMarcado && '<%=ProfissionalID%>' !== ''){
+    let dataAgendamento = new Date($("#dadosAgendamento #Data").val().split("/").reverse().join("-")+" "+$("#dadosAgendamento #Hora").val());
+    if(EncaixeMarcado && '<%=ProfissionalID%>' !== ''  && dataAgendamento >= new Date()){
         $.get("VerificaGradeDoHorario.asp", {Data: '<%=Data%>', Hora: Hora, ProfissionalID: '<%=ProfissionalID%>', UnidadeID: '<%=req("UnidadeID")%>'}, function(data) {
             eval(data);
         });
@@ -1811,6 +1835,18 @@ function CopyToClipboard (text) {
       document.body.removeChild(textarea);
     }
 	}
+}
+
+
+function ObsConvenio(ConvenioID) {
+    $("#modal-table").modal("show");
+    $("#modal").html("Carregando...");
+    $.post("ObsConvenio.asp?ConvenioID="+ConvenioID, "", function (data) {
+        $("#modal").html(data);
+
+    });
+    $("#modal").addClass("modal-lg");
+
 }
 
 <!--#include file="jQueryFunctions.asp"-->

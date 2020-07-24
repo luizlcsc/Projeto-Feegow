@@ -135,7 +135,7 @@ if existePagto="" then
                     end if
 
 					if descontoIgual = False then 
-                        ValorDesconto = ref("Desconto"&splInv(i))
+                        ValorDesconto = ref("Quantidade"&splInv(i)) * ref("Desconto"&splInv(i))
 						if not rsDescontosUsuario.eof then
 
 							while not rsDescontosUsuario.eof
@@ -211,7 +211,7 @@ if existePagto="" then
 		end if
 	next
 
-	if totInvo<=(totParc-0.03) or totInvo>=(totParc+0.03) then
+	if totInvo<=(totParc-0.05) or totInvo>=(totParc+0.05) then
 		erro = "O valor total n&atilde;o coincide com a soma das parcelas."
 	end if
 end if
@@ -289,6 +289,9 @@ if erro="" then
             END IF
         next
         '---- Termina a verificação de o profissional pod executar o procedimento
+        if session("Banco")="clinic105" or session("Banco")="clinic5760" then
+            db.execute("insert into itensinvoice_bck select * from itensinvoice where InvoiceID="&InvoiceID)
+        end if
 
         sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
         if itensStr&""<>"" then

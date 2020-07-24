@@ -1,7 +1,13 @@
-﻿<%
+﻿<style type="text/css">
+.panel.panel-tile.text-center.br-a.br-grey {
+	height:140px;
+}
+</style>
+
+<%
 
 if session("Franqueador")<>"" then
-    response.Redirect("./?Pers=1&P=FranqueadorPainel")
+    'response.Redirect("./?Pers=1&P=FranqueadorPainel")
 end if
 
 if (session("Banco")="clinic5760"  or session("Banco")="clinic6118") and false then %>
@@ -165,33 +171,73 @@ end if
 
 
 
-on error resume next
+'on error resume next
+
+if req("Msg")<>"" then
+    %>
+<script >
+    $(document).ready(function() {
+        showMessageDialog("<%=req("Msg")%>", "warning");
+    });
+</script>
+    <%
+end if
 
 if req("MudaLocal")<>"" then
-	db_execute("update sys_users set UnidadeID="&req("MudaLocal")&" where id="&session("User"))
-	session("UnidadeID") = ccur(req("MudaLocal"))
-	if session("UnidadeID")=0 then
-		set getNome = db.execute("select NomeEmpresa, NomeFantasia, DDDAuto from empresa")
-		if not getNome.eof then
-			session("NomeEmpresa") = getNome("NomeFantasia")
-            session("DDDAuto") = getNome("DDDAuto")
-		end if
-	else
-		set getNome = db.execute("select UnitName, NomeFantasia, DDDAuto from sys_financialcompanyunits where id="&session("UnidadeID"))
-		if not getNome.eof then
-			session("NomeEmpresa") = getNome("NomeFantasia")
-            session("DDDAuto") = getNome("DDDAuto")
-		end if
-	end if
+%>
+    <!--#include file="Classes/Logs.asp"-->
+<%
+    NewUnidadeID=req("MudaLocal")
 
-    set tryLogin = db.execute("select Home from cliniccentral.licencasusuarios where id="& session("User"))
-    if tryLogin("Home")&""<>"" then
-        urlRedir = "./?P="&tryLogin("Home")&"&Pers=1"
-    else
-        urlRedir = "./?P=Home&Pers=1"
+	MensagemRetorno=""
+    urlRedir = "./?P=Home&Pers=1"
+
+'bloqueia se o caixa estiver aberto
+
+    PermiteAlterarUnidade = True
+
+    if (session("CaixaID")&""<>"" and session("CaixaID")&""<>"0") and aut("aberturacaixinha") then
+        MensagemRetorno="Não é possível trocar a unidade com o caixa aberto."
+
+        call gravaLogs(sqlUpdateUnidade ,"AUTO", MensagemRetorno, "")
+        PermiteAlterarUnidade = False
     end if
 
-	response.Redirect( urlRedir )
+    if PermiteAlterarUnidade then
+        sqlUpdateUnidade = "update sys_users set UnidadeID="&NewUnidadeID&" where id="&session("User")
+        session("UnidadeID") = ccur(NewUnidadeID)
+
+'pega o nome da unidade
+        if NewUnidadeID=0 then
+            set getNome = db.execute("select NomeEmpresa, NomeFantasia, DDDAuto from empresa")
+            if not getNome.eof then
+                NomeUnidade=getNome("NomeFantasia")
+
+                session("NomeEmpresa") = NomeUnidade
+                session("DDDAuto") = getNome("DDDAuto")
+            end if
+        else
+            set getNome = db.execute("select UnitName, NomeFantasia, DDDAuto from sys_financialcompanyunits where id="&NewUnidadeID)
+            if not getNome.eof then
+                NomeUnidade=getNome("NomeFantasia")
+
+                session("NomeEmpresa") = NomeUnidade
+                session("DDDAuto") = getNome("DDDAuto")
+            end if
+        end if
+
+'grava log
+        MensagemRetorno="Unidade alterada para "&NomeUnidade
+        call gravaLogs(sqlUpdateUnidade ,"AUTO", MensagemRetorno, "")
+    	db_execute(sqlUpdateUnidade)
+
+        set tryLogin = db.execute("select Home from cliniccentral.licencasusuarios where id="& session("User"))
+        if tryLogin("Home")&""<>"" then
+            urlRedir = "./?P="&tryLogin("Home")&"&Pers=1"
+        end if
+    end if
+
+	response.Redirect( urlRedir  & "&Msg="&MensagemRetorno )
 end if
 
 DiaAtual = weekday(date())
@@ -293,17 +339,15 @@ end if
 <div class="row">
     <%
 'SÓ PRA QUEM TEM PABX INTEGRADO
-if session("Banco")="clinic5459" then
+if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
   %>
   <!--#include file="ff_pabxSituacao.asp"-->
 <% end if
 
 
     set diasVencimento = db.execute("SELECT DATE_ADD(CURDATE(), INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1")
-    
-    'set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade <> 0 AND ep.Validade IS NOT NULL AND CURDATE() < (SELECT DATE_ADD(ep.Validade, INTERVAL IFNULL(DiasVencimentoProduto, 0) DAY) DiasVencimentoProduto FROM sys_config LIMIT 1)")
 
-    'set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade > 0 AND ep.Validade IS NOT NULL AND p.sysActive = 1 AND (DATEDIFF(validade, CURDATE()) >= 0 AND DATEDIFF(validade, CURDATE()) <= ( IFNULL(p.DiasAvisoValidade, (SELECT IFNULL(DiasVencimentoProduto, 5) DiasVencimentoProduto FROM sys_config LIMIT 1))))")
+    set numeroProdutosValidade = db.execute("SELECT COUNT(distinct p.id) total FROM estoqueposicao ep INNER JOIN produtos p ON p.id = ep.ProdutoID WHERE ep.Quantidade > 0 AND ep.Validade IS NOT NULL AND p.sysActive = 1 AND (DATEDIFF(validade, CURDATE()) >= 0 AND DATEDIFF(validade, CURDATE()) <= ( (SELECT IFNULL(DiasVencimentoProduto, 5) DiasVencimentoProduto FROM sys_config LIMIT 1)))")
     set ac = dbc.execute("select count(id) Total from cliniccentral.licencaslogins where UserID="&session("User"))
     set ultimoAcessoBemSucedido = dbc.execute("select DataHora from cliniccentral.licencaslogins where Sucesso = 1 AND UserID="&session("User")&" ORDER BY id DESC LIMIT 1,1")
     set ultimoAcessoMalSucedido = dbc.execute("select DataHora, count(id)n from cliniccentral.licencaslogins where Sucesso = 0 AND UserID="&session("User")&" ORDER BY id DESC  LIMIT 1")
@@ -1144,7 +1188,7 @@ function openPendingTables() {
 }
 
 if("false"!=="<%=session("AutenticadoPHP")%>"){
-    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z");
+    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z",  "<%=session("Partner")%>");
 }
 
 </script>

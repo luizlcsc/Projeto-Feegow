@@ -43,8 +43,10 @@ end if
                             <th>Título</th>
                             <th>Data</th>
                             <th>Desconto Pendente</th>
+                            <th>Desconto Total</th>
                             <th>Quantidade</th>
                             <th>Valor</th>
+                            <th>Valor Total</th>
                             <th>Percentual</th>
                             <th>Solicitante</th>
                             <th>Unidade</th>
@@ -163,8 +165,10 @@ end if
                                 <td><%=rsDescontoPendente("titulo")%></td>
                                 <td><%=rsDescontoPendente("DataHora")%></td>
                                 <th  align="center">R$ <%=formatnumber(rsDescontoPendente("DescontoPendente"), 2)%></th>
+                                <th  align="center">R$ <%=formatnumber(rsDescontoPendente("DescontoPendente"), 2) * rsDescontoPendente("Quantidade")%></th>
                                 <td align="center"><%=rsDescontoPendente("Quantidade")%></td>
                                 <td  align="center">R$ <%=formatnumber(rsDescontoPendente("ValorUnitario"), 2)%></td>
+                                <td  align="center">R$ <%=formatnumber(rsDescontoPendente("ValorUnitario"), 2) * rsDescontoPendente("Quantidade")%></td>
                                 <td  align="center"><span class="<%=ClassePercentual%>"><%= fn(Percentual)%>%</span></td>
                                 <td><%=rsDescontoPendente("Nome")%></td>
                                 <td><%=rsDescontoPendente("NomeUnidade") %></td>

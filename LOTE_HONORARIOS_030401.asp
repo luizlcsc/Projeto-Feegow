@@ -137,6 +137,12 @@ prefixo = right(prefixo, 20)
 					if guias("CodigoCNES")="" then CodigoCNES=TirarAcento(CNESContratado) else CodigoCNES=TirarAcento(guias("CodigoCNES")) end if
 					NomeProfissional=TirarAcento(NomeProfissional)
 
+                    if CalculaCNPJ(ContratadoLocalCodigoNaOperadora)=true then
+                        rotuloLocal = "cnpjLocalExecutante"
+                    else
+                        rotuloLocal = "codigoNaOperadora"
+                    end if
+
 					hash = hash & RegistroANS & NGuiaPrestador & NGuiaSolicitacaoInternacao & Senha & NGuiaOperadora & NumeroCarteira & NomePaciente & AtendimentoRN & ContratadoLocalCodigoNaOperadora & ContratadoLocalNome & ContratadoLocalCNES & ContExecCodigoNaOperadora & NomeContratado & CodigoCNES & DataInicioFaturamento & DataFimFaturamento
 					%>
                 <ans:guiaHonorarios>
@@ -152,14 +158,6 @@ prefixo = right(prefixo, 20)
                         <ans:nomeBeneficiario><%= NomePaciente %></ans:nomeBeneficiario>
                         <ans:atendimentoRN><%= AtendimentoRN %></ans:atendimentoRN>
                     </ans:beneficiario>
-
-                    <%
-                    if CalculaCNPJ(ContratadoLocalCodigoNaOperadora)=true then
-                        rotuloLocal = "cnpjLocalExecutante"
-                    else
-                        rotuloLocal = "codigoNaOperadora"
-                    end if
-                    %>
 
                     <ans:localContratado>
                         <ans:codigoContratado>
@@ -189,7 +187,7 @@ prefixo = right(prefixo, 20)
 						HoraInicio = myTimeTISS(procs("HoraInicio"))
 						HoraFim = myTimeTISS(procs("HoraFim"))
 						TabelaID = TirarAcento(procs("TabelaID"))
-						if TabelaID="99" or TabelaID="101" or or TabelaID="0" then
+						if TabelaID="99" or TabelaID="101" or TabelaID="0" then
 							TabelaID="00"
 						end if
 						CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))

@@ -88,9 +88,9 @@
                 checkFinanceiro = ""
                 valorLiberadoGuia = vbrl(valorLiberadoGuia)
 
-                sql = "select * from (select id, 'tissguiaconsulta' Tabela, ifnull(ValorPago, 0) ValorPago from tissguiaconsulta where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
-                " UNION ALL select id, 'tissguiasadt', ifnull(ValorPago, 0) from tissguiasadt where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
-                " UNION ALL select id, 'tissguiahonorarios', ifnull(ValorPago, 0) from tissguiahonorarios where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
+                sql = "select * from (select id, 'tissguiaconsulta' Tabela, null TabelaProcedimentos, ifnull(ValorPago, 0) ValorPago from tissguiaconsulta where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
+                " UNION ALL select id, 'tissguiasadt', 'tissprocedimentossadt' TabelaProcedimentos, ifnull(ValorPago, 0) from tissguiasadt where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
+                " UNION ALL select id, 'tissguiahonorarios', 'tissprocedimentoshonorarios' TabelaProcedimentos, ifnull(ValorPago, 0) from tissguiahonorarios where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
                 " ) t"
               '  response.write( sql )
                 set pguia = db.execute( sql )
@@ -149,6 +149,10 @@
 
                 if update then
                     db_execute("update "& pguia("Tabela") &" set ValorPago="& treatvalzero(valorLiberadoGuia) &", GuiaStatus="& statusGuia &" where id="& pguia("id"))
+                    if not isnull(pguia("TabelaProcedimentos")) then
+                        'atualiza o procedimento sadt
+
+                    end if
                 end if
 
 

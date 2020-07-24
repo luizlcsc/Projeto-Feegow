@@ -2,28 +2,6 @@
 <!--#include file="Classes\ValorProcedimento.asp"-->
 <!--#include file="Classes\JSON.asp"-->
 <%
-
-IF req("ConvenioAtualizado") <> "" THEN
-	db_execute("UPDATE tissprocedimentossadt SET CalculoConvenioID = "&req("ConvenioAtualizado")&",CalculoPlanoID=NULL WHERE GuiaID = "&req("I"))
-	recalcularItensGuia(req("I"))
-	%>
-    <script type="text/javascript">
-        atualizaTabela('tissoutrasdespesas', 'tissoutrasdespesas.asp?I=<%=req("I")%>');
-    </script>
-    <%
-END IF
-
-
-IF req("PlanoAtualizado") <> "" THEN
-	db_execute("UPDATE tissprocedimentossadt SET CalculoPlanoID = "&req("PlanoAtualizado")&" WHERE GuiaID = "&req("I"))
-	recalcularItensGuia(req("I"))
-	%>
-    <script type="text/javascript">
-        atualizaTabela('tissoutrasdespesas', 'tissoutrasdespesas.asp?I=<%=req("I")%>');
-    </script>
-    <%
-END IF
-
 if req("X")<>"" then
 	db_execute("delete from tissprocedimentossadt where id="&req("X"))
 	db_execute("delete from rateiorateios where ItemGuiaID="&req("X"))
@@ -125,7 +103,26 @@ end if
               end if
               %>
       </td>
-      <td align="center"><button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('tissprocedimentossadt', 'tissprocedimentossadt.asp?I=<%=request.QueryString("I")%>&X=<%=p("id")%>')"><i class="fa fa-remove"></i></button></td>
+      <td align="center">
+      <%
+        set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.ItemGuiaID="& p("id") &" AND NOT ISNULL(rr.ItemContaAPagar)")
+        if not vcaRep.eof then
+            if aut("repassesV")=1 then
+            %>
+            <a title="Repasses Gerados" href="javascript:repasses('ItemGuiaID', <%= p("id") %>)" type="button" class="btn btn-xs btn-dark">
+                <i class="fa fa-puzzle-piece"></i>
+            </a>
+            <%
+            end if
+        else
+            %>
+            <button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('tissprocedimentossadt', 'tissprocedimentossadt.asp?I=<%=request.QueryString("I")%>&X=<%=p("id")%>')"><i class="fa fa-remove"></i></button>
+            <%
+        end if
+      %>
+
+
+      </td>
     </tr>
     <tr>
         <td colspan="15" class="hidden" id="Procedimentos<%=p("id") %>"></td>

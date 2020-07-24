@@ -68,7 +68,7 @@ end if
             %>
             <br />
             <div class="row">
-                <%=quickField("multiple", "Formas", "Filtrar Formas", 6, "", "select id, PaymentMethod from sys_financialpaymentmethod", "PaymentMethod", "")%>
+                <%=quickField("multiple", "Formas", "Filtrar Formas", 6, "", "select id, PaymentMethod from cliniccentral.sys_financialpaymentmethod", "PaymentMethod", "")%>
                 <div class="col-md-4">
                     <label>Tipos de operação</label><br />
                     <span class="btn-group">

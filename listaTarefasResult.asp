@@ -48,7 +48,7 @@ if ref("Solicitante")<>"" and instr(ref("Solicitante"), "_")>0 then
 end if
 
 if ref("Filtrar")<>"" then
-    sqlFiltrar = " AND (t.Titulo LIKE '%"& ref("Filtrar") &"%' OR t.ta LIKE '%"& ref("Filtrar") &"%') "
+    sqlFiltrar = " AND (t.id = '"&ref("Filtrar")&"' OR t.Titulo LIKE '%"& ref("Filtrar") &"%' OR t.ta LIKE '%"& ref("Filtrar") &"%') "
 end if
 
 if ref("Projeto")<>"" then
@@ -121,7 +121,7 @@ end if
                    "LEFT JOIN projetos proj ON proj.id = t.ProjetoID LEFT JOIN cliniccentral.tarefasprioridade tp on tp.id = t.urgencia "&_
                    "LEFT JOIN tarefastipos tt on tt.id = t.Tipo "&_
                    "LEFT JOIN pacientes p ON t.Solicitantes LIKE CONCAT('%3_',p.id,'%') "&_
-                   "WHERE t.sysActive=1 AND ( 1=1 "& sqlCC &" ) " & sqlDe & sqlPara & sqlStatusDe & sqlStatusPara & sqlAberturaDe & sqlAberturaAte & sqlPrazoDe & sqlPrazoAte & sqlPrioridade & sqlTipoTarefa & sqlSolicitante & sqlResponsavel & sqlFiltrar & sqlProjeto & sqlLicencaPaciente &" "&_
+                   "WHERE t.sysActive=1 AND t.TarefaPaiID=0 AND ( 1=1 "& sqlCC &" ) " & sqlDe & sqlPara & sqlStatusDe & sqlStatusPara & sqlAberturaDe & sqlAberturaAte & sqlPrazoDe & sqlPrazoAte & sqlPrioridade & sqlTipoTarefa & sqlSolicitante & sqlResponsavel & sqlFiltrar & sqlProjeto & sqlLicencaPaciente &" "&_
                    "GROUP BY t.id ORDER BY Pontos desc, t.DtPrazo, t.HrPrazo LIMIT 1000"
 
         if ref("Helpdesk") <> "" then

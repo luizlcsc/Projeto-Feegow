@@ -91,4 +91,78 @@ FUNCTION NomeNoPadrao(stringNome)
 
 END FUNCTION
 
+'*************************************************************
+'*DESCREVER CADA FUNÇÃO E COLOCAR UM EXEMPLO DE USO/APLICAÇÃO*
+'*************************************************************
+
+function converteEncapsulamento(tipo,valor)
+  Select Case tipo
+    Case ",|" ''CONVERTE VALORES "item1,item2,item3" PARA "|item1|, |item2|, |item3|"
+      valor_array=Split(valor,",")
+      for each valor_item in valor_array
+          valor_pipe = "|"&valor_item&"|"
+          if resultado="" then
+            resultado = valor_pipe
+          else
+            resultado = resultado&", "&valor_pipe
+          end if
+      next
+      if right(trim(resultado),1) = "," then
+        resultado = left(string,(len(string)-2)) 'REMOVER 2 ÚLTIMOS CARACTERS
+        'resultado = mid(resultado,1,len(resultado)-2) 'REMOVER 2 ÚLTIMOS CARACTERS
+      end if
+
+      converteEncapsulamento = resultado
+
+    Case "|," 'CONVERTE VALORES "|item1|, |item2|, |item3|" PARA "item1,item2,item3"
+      valor_array=Split(valor,"|,")
+      for each valor_item in valor_array
+          valor_virgula = trim(valor_item)
+          if resultado="" then
+            resultado = valor_virgula
+          else
+            resultado = resultado&","&valor_virgula
+          end if
+      next
+
+      resultado = replace(resultado,"|","")
+      if right(trim(resultado),1) = "," then
+       converteEncapsulamento = mid(resultado,1,len(resultado)-1) 'REMOVER ÚLTIMO CARACTERS
+      else
+        converteEncapsulamento = resultado
+      end if
+
+      'converteEncapsulamento = resultado
+
+      'converteEncapsulamento = replace(resultado,"|","")
+
+    Case ",'" 'CONVERTE VALORES "item1,item2,item3" PARA "'item1','item2','item3'"
+      valor_array=Split(valor,",")
+      for each valor_item in valor_array
+          valor_pipe = "'"&valor_item&"'"
+          if resultado="" then
+            resultado = valor_pipe
+          else
+            resultado = resultado&", "&valor_pipe
+          end if
+      next
+      converteEncapsulamento = resultado
+
+
+  End Select
+end function
+
+
+'REMOVE ITENS DUPLICADOS DE UMA STRING SEPARADOS POR UM DELIMITADOR
+Function removeDuplicatas(conteudo,delimitador)
+  Set oDict = Server.CreateObject("Scripting.Dictionary")
+  oDict.CompareMode = vbTextCompare
+  For Each word In Split(conteudo, delimitador)
+      oDict(word) = Null
+  Next
+  removeDuplicatas = Join(oDict.Keys, delimitador)
+  
+  Set oDict = Nothing
+End Function
+
 %>

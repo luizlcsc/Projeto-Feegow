@@ -34,6 +34,10 @@
         sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'' from pedidossadt WHERE sysActive=1 and PacienteID="&PacienteID&") "
     end if
 
+    if instr(Tipo, "|Protocolos|")>0 then
+        sqlProtocolos = " union all (select 0, po.id, '', sysUser, 'Protocolos', 'Protocolos', 'file-text-o', 'success', `Data`, '', '' from pacientesprotocolos po WHERE po.sysActive=1 AND po.PacienteID="&PacienteID&") "
+    end if
+
     if instr(Tipo, "|Imagens|")>0 then
         sqlImagens = " union all (select 0, '0', Tipo, '0', 'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','' from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
@@ -44,7 +48,7 @@
                  c=0
 
     sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado limit 0) "&_
-                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlPedido & sqlImagens & sqlArquivos &_
+                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC limit "&loadMore&","&MaximoLimit
              'response.write(sql)
              set ti = db.execute( sql )
@@ -215,7 +219,7 @@
                             <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
                                 <i class="fa fa-search-plus"></i>
                             </a>
-                                <% if ti("Tipo")<>"AE" and ti("Tipo")<>"L" then %>
+                                <% if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Protocolos" then %>
                                     <a href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
                                         <i class="fa fa-print"></i>
                                     </a>
@@ -429,6 +433,22 @@
                         <br />
                         <em><%= ti("Conteudo") %></em>
                         <%
+                    case "Protocolos"
+                        set getProtocolos = db.execute("SELECT NomeProtocolo, GROUP_CONCAT(NomeProduto SEPARATOR ', ') Produtos "&_
+                                                       "FROM pacientesprotocolosmedicamentos ppm "&_
+                                                       "LEFT JOIN protocolos prot ON prot.id=ppm.ProtocoloID "&_
+                                                       "LEFT JOIN protocolosmedicamentos pm ON ppm.ProtocoloMedicamentoID=pm.id "&_
+                                                       "LEFT JOIN produtos prod ON prod.id=ppm.MedicamentoPrescritoID "&_
+                                                       "WHERE ppm.PacienteProtocoloID="&ti("id")&" GROUP BY ppm.ProtocoloID")
+
+                        while not getProtocolos.eof
+                            %>
+                            <%= "<b>"&getProtocolos("NomeProtocolo")&"</b>: <br />"&getProtocolos("Produtos") %><br /><br />
+                            <%
+                        getProtocolos.movenext
+                        wend
+                        getProtocolos.close
+                        set getProtocolos = nothing
                     case "Imagens"
                         %>
                     <div class="row">

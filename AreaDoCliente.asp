@@ -482,8 +482,9 @@ end if
 
                 <a class="list-group-item" target="_blank" href="https://feegow.futurotec.com.br/futurofone_chat/?hash_chat=FFCHAT01">
                   &nbsp;<i class="fa fa-comment fa-fw text-primary"></i>&nbsp;&nbsp; Chat online</a>
-                <a class="list-group-item" href="http://download.teamviewer.com/download/version_12x/TeamViewer_Setup.exe">
-                  <img width="26" src="assets/img/Team_Viewer.png" border="0"> Acesso Remoto (Team Viewer)</a>
+
+                <a class="list-group-item" target="_blank" href="https://anydesk.com/pt/downloads">
+                  <i class="fa fa-exchange fa-fw text-primary"></i>&nbsp;&nbsp; Acesso Remoto (AnyDesk)</a>
 
 
               </div>

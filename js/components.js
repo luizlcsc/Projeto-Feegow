@@ -9,6 +9,9 @@ if(window.location.href.indexOf('local') == 7){
     env = "local";
 }
 
+if(window.location.href.indexOf('homolog') > 0){
+    env = "homolog";
+}
 var domain = null;
 
 switch (env){
@@ -28,7 +31,7 @@ var modalTimeout = 1000;
 var modal = "<div id=\"modal-components\" class=\"modal fade\" tabindex=\"-1\">" +
     "    <div \[MODAL-WIDTH]\ class=\"modal-dialog [MODAL-SIZE]\"> " +
     "       <form id='form-components' method='post'>" +
-    "           <div class=\"modal-content\" id=\"modal\">" +
+    "           <div class=\"modal-content fgw-modal-content\" id=\"modal\">" +
     "           " +
     "           </div>" +
     "       </form>" +
@@ -119,7 +122,7 @@ function setModalContent(body, title, closeBtn, saveBtn, params) {
         content += "      </div>";
     }
 
-    $modalComponents.find(".modal-content").html(content);
+    $modalComponents.find(".fgw-modal-content").html(content);
 
 
     return $modalComponents;
@@ -328,8 +331,8 @@ function showMessageDialog(message, messageType, title, delay) {
     });
 }
 
-function authenticate(u, l = false) {
-    getUrl("auth", {l: l,_u: u}, function(data) {
+function authenticate(u, l = false, cupom="") {
+    getUrl("auth", {l: l,_u: u, _p: cupom}, function(data) {
         if(data.success==true){
             $.post("confAut.asp", data);
 

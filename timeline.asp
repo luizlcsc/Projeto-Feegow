@@ -24,11 +24,17 @@ if req("X")<>"" then
         'db_execute("delete from pacientespedidos where id="& req("X"))
         db_execute("update pacientesdiag set sysActive=-1 where id="& req("X"))
     end if
+    if req("Tipo")="|Protocolos|" then
+        'db_execute("update pacientesdiag set sysActive=-1 where id="& req("X"))
+    end if
     if req("Tipo")="|AE|" then
         db_execute("update buiformspreenchidos set sysActive=-1 where id="& req("X"))
     end if
     if req("Tipo")="|L|" then
         db_execute("update buiformspreenchidos set sysActive=-1 where id="& req("X"))
+    end if
+    if req("Tipo")="|Protocolos|" then
+        db_execute("update pacientesprotocolos set sysActive=-1 where id="& req("X"))
     end if
 end if
 
@@ -621,6 +627,26 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
         <%
     case "|ResultadosExames|"
         %><!--#include file="ResultadosExames.asp"--><%
+    case "|Protocolos|"
+        %>
+        <div class="panel timeline-add">
+            <div class="panel-heading">
+                <span class="panel-title"> Protocolos
+                </span>
+            </div>
+            <%if lcase(session("table"))="profissionais" then%>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <div class="btn-group col-md-3">
+                        <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
+                            <i class="fa fa-plus"></i> Inserir Protocolo
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <%end if%>
+         </div>
+         <%
     case "|ProdutosUtilizados|"
         %><!--#include file="ProdutosUtilizados.asp"--><%
     case "|AssinaturaDigital|"
@@ -803,7 +829,7 @@ end select
     </script>
 
     <%
-    if instr("|ProdutosUtilizados|AssinaturaDigital|ResultadosExames|AsoPaciente|VacinaPaciente|Arquivos|Imagens|", Tipo) = 0 then
+    if instr("|ProdutosUtilizados|AssinaturaDigital|ResultadosExames|AsoPaciente|VacinaPaciente|Arquivos|Imagens|", Tipo) = 0 and getConfig("FiltrarProfissionaisProntuario")=1 then
     %>
     <div class="col-xs-12">
         <div class="row">

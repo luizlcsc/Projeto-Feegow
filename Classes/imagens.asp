@@ -18,17 +18,19 @@ end function
 'EXEMPLO DE USO
 'response.write("<img src='imagem-nao-existe.png' "&img404(1)&">")
 
-function imgSRC(path,licenceID,Folder,File)
-  if path="" then path=0 else path=path end if
-  Select Case path
-    Case 0 'Função Lambida
-      imagemSRC = "https://functions.feegow.com/load-image?licenseId="&licenceID&"&folder="&Folder&"&file="&File
-  End Select
-  
-  imgSRC = imagemSRC
+function imgSRC(Folder,File)
+    urlImagem = arqEx(File, Folder)
+
+    if instr(urlImagem, "?")>0 then
+        urlImagem = urlImagem&"&imageFallback=FALSE"
+    else
+        urlImagem = urlImagem&"?imageFallback=FALSE"
+    end if
+
+    imgSRC = urlImagem
 end function
 'EXEMPLO DE USO
 'response.write(imgSRC(0,"5760","Imagens","5760_81788_07052020095048.jpg"))
-'response.write("<img src='"&imgSRC(0,"5760","Imagens","5760_81788_07052020095048.jpg")&"' "&img404(1)&">")
+'response.write("<img src='"&imgSRC("Imagens","5760_81788_07052020095048.jpg")&"' "&img404(1)&">")
 %>
 

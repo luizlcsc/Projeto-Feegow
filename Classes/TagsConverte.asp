@@ -228,7 +228,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               if ProfissionaisSQL("Assinatura")&"" = "" then
                 conteudo = replace(conteudo, "[Profissional.Assinatura]", "______________________________________________")
               else
-                conteudo = replace(conteudo, "[Profissional.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC(0,replace(session("Banco")&"", "clinic", ""),"Imagens",trim(ProfissionaisSQL("Assinatura")))&"'>" )
+                conteudo = replace(conteudo, "[Profissional.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(ProfissionaisSQL("Assinatura")))&"'>" )
               end if
               conteudo = replace(conteudo, "[Profissional.Tratamento]", trim(ProfissionaisSQL("Tratamento")&" ") )
               'NOVAS TAGS 06/07/2020

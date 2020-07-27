@@ -15,9 +15,10 @@ function getProfilePic(userId,db,table,isFunc = false)
     if(localStorage.getItem('perfilImg'))
     {
         image = localStorage.getItem('perfilImg');
+        $('li a #avatarFoto').attr('src',image);
         if(table == 'profissionais')
         {
-            $('li a #avatarFoto').attr('src',image);
+            
             if(isFunc == true){
 
                 $('#divDisplayFoto #avatarFoto').attr('src',image);

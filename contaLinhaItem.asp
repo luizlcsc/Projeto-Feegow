@@ -183,7 +183,7 @@
                             $("#btn-pleres").css("display", "none");
                         }, 1000)
                         </script>
-                        <div class="btn-group">
+                        <div class="btn-group" id="btnIntegracao_<%=inv("id")%>">
                             <% if multiploslabs = 1 and foiIntegrado = 0 then %> 
                                 <button type="button" onclick="abrirSelecaoLaboratorio('<%=inv("id")%>','<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
                                     <i class="fa fa-flask"></i>

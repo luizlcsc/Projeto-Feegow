@@ -62,7 +62,7 @@ end if
 
 <script type="text/javascript">
 function openPrint(){
-	window.open("https://functions.feegow.com/load-image?licenseId=100000&folder=laudos&file=<%=LaudoID%>.pdf");
+	window.open("https://functions.feegow.com/load-image?licenseId=<%=replace(session("Banco"),"clinic","") %>&folder=laudos&file=<%=LaudoID%>.pdf&rnd=<%=timer %>");
 }
 
 function saveLaudo(){

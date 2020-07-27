@@ -9,8 +9,9 @@
     </span>
 
 <%
+
 if req("Helpdesk")<>"" then
-    set dblicense = newConnection("clinic5459", "")
+    set dblicense = newConnection("clinic100000", "")
 end if
 if ref("msgInteracao")<>"" then
     Publico = 1
@@ -143,6 +144,26 @@ else
                     </div>
                     <div class="widget-body <%if (descricao="" OR isnull(descricao)) AND size = atual then response.write(" alert-primary ") end if %>">
                         <p><%=ints("msg") %></p>
+                    </div>
+                    <div class="widget-body">
+                        <div class="row">
+                        <%
+                          set imgs = db.execute("SELECT * FROM arquivos WHERE TarefaId="&req("I"))
+
+                            while not imgs.eof
+                            %>
+                                <div class="col-md-4">
+                                   <div class="thumbnail">
+                                      <a href="<%=arqEx(imgs("NomeArquivo"),"FEEGOW-SCREENSHOT")%>" target="new"><img src="<%=arqEx(imgs("NomeArquivo"),"FEEGOW-SCREENSHOT")%>"></a>
+                                  </div>
+                              </div>
+
+                            <%
+                                imgs.movenext
+                            wend
+
+                        %>
+                        </div>
                     </div>
                 </div>
             </div>

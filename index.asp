@@ -1338,6 +1338,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                             <% IF session("Banco")<>"clinic7126" THEN %>
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
+                            <button class="btn btn-xs btn-success light"><span class="fa fa-whatsapp"></span></button>
                   </div>
               </div>
 
@@ -1777,6 +1778,20 @@ function ajxContent(P, I, Pers, Div, ParametrosAdicionais){
 		}
 	});
 }
+
+function whasappVerifyConnection()
+{
+    	$.ajax({
+    		type: "GET",
+    		url: domain + '',
+    		success: function( data )
+    		{
+    			//alert(data);
+    			$("#"+Div).html(data);
+    		}
+    	});
+}
+
 
 function callTicket (pacienteId) {
         var license = '<%= session("Banco") %>';

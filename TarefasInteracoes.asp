@@ -11,7 +11,7 @@
 <%
 
 if req("Helpdesk")<>"" then
-    set dblicense = newConnection("clinic100000", "")
+    set dblicense = newConnection("clinic5459", "")
 end if
 if ref("msgInteracao")<>"" then
     Publico = 1

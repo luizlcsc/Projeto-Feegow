@@ -239,7 +239,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               conteudo = replace(conteudo, "[ProfissionalExecutante.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
               conteudo = replace(conteudo, "[ProfissionalExecutante.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
 
-              if ProfissionaisSQL("Conselho")=1 then
+              if ProfissionaisSQL("Conselho")&""="1" then
                 conteudo = replace(conteudo, "[Profissional.CRM]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
               end if
               conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )

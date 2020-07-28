@@ -318,11 +318,34 @@
                                     tipoTabela = proc.getElementsByTagName("ansTISS:tipoTabela")(0).text
                                     valorInformado = proc.getElementsByTagName("ansTISS:valorProcessado")(0).text
                                     valorLiberado = proc.getElementsByTagName("ansTISS:valorLiberado")(0).text
+                                    descricao = proc.getElementsByTagName("ansTISS:descricao")(0).text
                                     grauParticipacao = proc.getElementsByTagName("ansTISS:grauParticipacao")(0).text
+
 
                                     IF NOT pguias.eof THEN
                                         IF pguias("Tabela") = "tissguiasadt" THEN
-                                            sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')) WHERE TabelaID = '"&tipoTabela&"' AND CodigoProcedimento = '"&codigo&"' AND GuiaID = "&pguias("id")
+                                            ' busca o motivo da glosa
+                                             set codigoGlosaTag = proc.selectSingleNode("ansTISS:codigoGlosa")
+
+                                             codigoGlosa = ""
+                                             GlosaID=0
+
+                                             'nao implementado corretamente - nao ira atualizar o glosaId
+                                             If Not codigoGlosaTag Is Nothing Then
+
+                                                 set codigoGlosa = proc.getElementsByTagName("ansTISS:codigoGlosa")(0).text
+                                                 GlosaID=0
+
+                                                 set MotivoGlosaSQL = db.execute("SELECT id, Descricao FROM cliniccentral.tissmotivoglosa WHERE Codigo="&treatvalnull(codigoGlosa)&"")
+                                                 if not MotivoGlosaSQL.eof then
+                                                    GlosaID=MotivoGlosaSQL("id")
+                                                 end if
+
+                                             end if
+
+                                            ' a tabela vem 00 sempre, portanto nao podemos usar como parametro do where. TabelaID = '"&tipoTabela&"' AND
+                                            sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')), motivoGlosa="&GlosaID&", CodigoGlosa="&treatvalnull(codigoGlosa)&" WHERE  CodigoProcedimento = '"&codigo&"' AND GuiaID = "&pguias("id")
+
                                             db.execute(sqlProcedimento)
                                         END IF
 

@@ -34,6 +34,9 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 <head>
     <meta name="robots" content="noindex">
   <style type="text/css">
+  	.tooltip{
+          z-index:99999999; overflow: visible !important;overflow: visible !important;
+       }
        @media print
        {
            .no-print, .no-print *
@@ -69,9 +72,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 		margin:0;
 		padding:0;
 	}
-	.tooltip.top{
-        z-index:-100000000000; overflow: visible !important;
-     }
+
 	.select-insert li {
 		cursor:pointer;
 		list-style-type:none;
@@ -1341,7 +1342,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                             <% IF session("Banco")<>"clinic7126" THEN %>
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
-                            <button class="btn btn-xs btn-success light" id="footer-whats"  data-rel="tooltip" data-placement="top" title="" data-original-title="Status de Conexão com o WhastApp" >
+                            <button class="btn btn-xs btn-success light" id="footer-whats" onclick="location.href='?P=OutrasConfiguracoes&Pers=1'" data-rel="tooltip" data-placement="right" title="" data-original-title="" >
                                 <span class="fa fa-whatsapp"></span>
                             </button>
                   </div>
@@ -2556,19 +2557,51 @@ function chatNotificacao(titulo, mensagem) {
 }
 
 $(document).ready(function(){
-    whatsAppConnection();
+    runWhatsAppTest();
 });
 
+function runWhatsAppTest(){
+    if(!localStorage.getItem('whatsAppStatus'))
+    {
+       return whatsAppConnection();
+    }
+    return footerWhatsapButton();
+}
 function whatsAppConnection(){
 	$.ajax({
 		type:"GET",
 		url: domain + "chat-pro/get-status",
 		success:function(data){
-		   $("#footer-whats").css({"background-color":"#70ca63"});
+            if(data.connected === true){
+                whatsAppStatusTrue();
+                 localStorage.setItem('whatsAppStatus',true);
+            }
+            localStorage.setItem('whatsAppStatus',false);
+            whatsAppStatusFalse();
 		},
 		error: function (data){
-		   $("#footer-whats").css({"background-color":"red"});
+            whatsAppStatusFalse();
 		}
 	});
 }
+function footerWhatsapButton(){
+    if(localStorage.getItem('whatsAppStatus')=="true")
+    {
+        whatsAppStatusTrue()
+        return;
+    }
+        whatsAppStatusFalse();
+        return;
+}
+
+function whatsAppStatusTrue(){
+    $("#footer-whats").css({"background-color":"#70ca63"});
+    $("#footer-whats").attr("data-original-title","Conectado!");
+}
+
+function whatsAppStatusFalse(){
+    $("#footer-whats").css({"background-color":"red"});
+    $("#footer-whats").attr("data-original-title","Desconectado!");
+}
+
 </script>

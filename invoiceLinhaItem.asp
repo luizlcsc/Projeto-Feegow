@@ -51,7 +51,7 @@
                 <%
             end if
             %>
-            <%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange="" parametrosInvoice("&id&", this.value);"" data-row='"& id &"' "&DisabledNaoAlterarExecutante, " required ", "") %>
+            <%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange="" onChangeProcedimento("&id&", this.value);"" data-row='"& id &"' "&DisabledNaoAlterarExecutante, " required ", "") %>
                     <%if session("Odonto")=1 then
                     %>
                     <textarea class="hidden" name="OdontogramaObj<%=id %>" id="OdontogramaObj<%=id %>"><%=OdontogramaObj %></textarea>
@@ -351,17 +351,13 @@ end if
 			        onchangeProfissional = " onchange=""espProf("& id &");"" "
 			    end if
 
-			    ExecutanteTipos = "5, 8, 2"
-			    if session("Banco")="clinic6118" then
-                    ExecutanteTipos = "5"
-			    end if
 			    if NaoAlterarExecutante then
                     %>
                     <input type="hidden" name="ProfissionalID<%= id %>" value="<%=Associacao&"_"&ProfissionalID%>" />
                     <%
                 end if
 			    %>
-                <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutanteTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional&DisabledNaoAlterarExecutante)%>
+                <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutantesTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional&DisabledNaoAlterarExecutante)%>
 			    <%'=selectInsertCA("", "ProfissionalID"&id, Associacao&"_"&ProfissionalID, "5, 8, 2", " onchange=""setTimeout(function()calcRepasse("& id &"), 500)""", "", "")%>
             </div>
             <%if Tipo="S" then
@@ -557,4 +553,5 @@ if TemRepasse and aut("|repassesA|")=0 then
 end if
 %>
 <script>
+
 </script>

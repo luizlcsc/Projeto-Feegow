@@ -69,6 +69,9 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 		margin:0;
 		padding:0;
 	}
+	.tooltip.top{
+        z-index:-100000000000; overflow: visible !important;
+     }
 	.select-insert li {
 		cursor:pointer;
 		list-style-type:none;
@@ -1338,7 +1341,9 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                             <% IF session("Banco")<>"clinic7126" THEN %>
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
-                            <button class="btn btn-xs btn-success light"><span class="fa fa-whatsapp"></span></button>
+                            <button class="btn btn-xs btn-success light" id="footer-whats"  data-rel="tooltip" data-placement="top" title="" data-original-title="Status de Conexão com o WhastApp" >
+                                <span class="fa fa-whatsapp"></span>
+                            </button>
                   </div>
               </div>
 
@@ -2061,7 +2066,7 @@ function chatUsers(){
 		url:"chatNotificacoes.asp"+pesquiArgs,
 		success:function(data){
 
-      $("#notifchat").html(data);
+            $("#notifchat").html(data);
 		}
 	});
 }
@@ -2550,4 +2555,20 @@ function chatNotificacao(titulo, mensagem) {
   // want to be respectful there is no need to bother them any more.
 }
 
+$(document).ready(function(){
+    whatsAppConnection();
+});
+
+function whatsAppConnection(){
+	$.ajax({
+		type:"GET",
+		url: domain + "chat-pro/get-status",
+		success:function(data){
+		   $("#footer-whats").css({"background-color":"#70ca63"});
+		},
+		error: function (data){
+		   $("#footer-whats").css({"background-color":"red"});
+		}
+	});
+}
 </script>

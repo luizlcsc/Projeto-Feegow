@@ -34,7 +34,7 @@ set reg = db.execute("select * from Impressos")
 if reg.EOF then
 	db_execute("insert into Impressos (Cabecalho) values ('')")
 end if
-db_execute("update Impressos set "&sql)
+db_execute("update Impressos set "&sql & " WHERE Executante IS NULL")
 
 %>
 

@@ -2,9 +2,9 @@ $(document).ready(function(){
 
 
 });
+
 function getProfilePic(userId,db,table,isFunc = false)
 {
-
     let objct = new FormData();
     objct.append('userId',userId);
     objct.append('licenca' ,db);
@@ -18,14 +18,11 @@ function getProfilePic(userId,db,table,isFunc = false)
         $('li a #avatarFoto').attr('src',image);
         if(table == 'profissionais')
         {
-            
             if(isFunc == true){
 
                 $('#divDisplayFoto #avatarFoto').attr('src',image);
             }
 
-        }else{
-            $('#divDisplayFoto #avatarFoto').attr('src',image);
         }
         return false;
     }
@@ -48,8 +45,6 @@ function getProfilePic(userId,db,table,isFunc = false)
                         $('#divDisplayFoto #avatarFoto').attr('src',image);
                     }
 
-                }else{
-                    $('#divDisplayFoto #avatarFoto').attr('src',image);
                 }
             }
         });

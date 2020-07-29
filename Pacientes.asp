@@ -951,7 +951,8 @@ $(".form-control").change(function(){
             db:"<%= LicenseID %>",
             table:'pacientes',
             content: objct ,
-            contentType: "base64"
+            contentType: "base64",
+            elem:$('#divDisplayFoto img')
         });
     };
 

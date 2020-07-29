@@ -278,9 +278,11 @@ function removeFoto(){
         		        contentType: "form"
         		    });
 
+
+
         			if(!file_input.data('ace_input_files')) return false;//no files selected
         		});
-		
+
 		$form.on('reset', function() {
 			file_input.ace_file_input('reset_input');
 		});

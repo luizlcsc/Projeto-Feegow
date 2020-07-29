@@ -359,7 +359,7 @@ function replicarRegistro(id,tabela){
     });
 }
 
-const uploadProfilePic = async ({userId, db, table, content, contentType, $elem = false}) => {
+const uploadProfilePic = async ({userId, db, table, content, contentType, elem = false}) => {
     let response = false;
     let enpoint = domain + "file/perfil/uploadPerfilFile";
 
@@ -382,17 +382,21 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, $elem 
         });
 
     }else{
+
         response = await jQuery.ajax({
             url: enpoint,
             type: 'post',
             dataType: 'json',
             data: JSON.stringify(content)
         });
+        $('#divAvatar').show();
+        $('#divAvatar video').hide();
+        $('#divDisplayFoto').css('display','block');
 
     }
 
-    if ($elem) {
-        $elem.attr("src", response.url);
+    if (elem) {
+        elem.attr("src", response.url);
     }
 
     return response;

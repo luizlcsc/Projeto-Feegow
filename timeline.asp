@@ -766,7 +766,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                   mimeType: 'multipart/form-data',    //Property added in 1.5.1
 
                   success: function (data) {
-                      getProfilePic();
+
                   }
             });
         };

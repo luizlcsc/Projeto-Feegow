@@ -208,9 +208,6 @@ end if
 </script>
 
 <script type="text/javascript">
-$(document).ready(function(){
-    getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'pacientes');
-});
 
 function showMessage(text, state, title) {
 	var states = {
@@ -877,32 +874,18 @@ function removeFoto(){
 			}
 		});
 
-		$("#Foto").change(function() {
+		$("#Foto").change(async function() {
 
-            let objct = new FormData();
-            objct.append('userType','pacientes');
-            objct.append('userId',"<%=req("I")%>");
-            objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
-            objct.append('upload_file' , file_input.data('ace_input_files')[0]);
-            objct.append('folder_name' ,"Perfil");
-
-            $.ajax({
-  					url: domain + "file/perfil/uploadPerfilFile",
-  					type: 'POST',
-  					processData: false,
-  					contentType: false,
-  					data: objct,
-                  // Now you should be able to do this:
-                  mimeType: 'multipart/form-data',    //Property added in 1.5.1
-
-                  success: function (data) {
-                      getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'pacientes');
-                  }
-            });
+		    await uploadProfilePic({
+		        $elem: $("#Foto"),
+		        userId: "<%=req("I")%>",
+		        db: "<%= LicenseID %>",
+		        table: 'pacientes',
+		        content: file_input.data('ace_input_files')[0] ,
+		        contentType: "form"
+		    });
 
 			if(!file_input.data('ace_input_files')) return false;//no files selected
-
-
 		});
 
 		$form.on('reset', function() {
@@ -961,14 +944,15 @@ $(".form-control").change(function(){
           $(".crumb-active a").html( $(this).val() );
       });
       //novo envio de foto tirada do paciente
-    let endpointupload =  (objct) => {
-        return  jQuery.ajax({
-            url: "" + domain + "/file/perfil/uploadPerfilFile",
-            type: 'post',
-            dataType: 'json',
-            data: JSON.stringify(objct),
-
-        }).fail(function(data){console.log(data);});
+    let endpointupload =  async (objct) => {
+        await uploadProfilePic({
+            $elem: $("#Foto"),
+            userId: "<%=req("I")%>",
+            db:"<%= LicenseID %>",
+            table:'pacientes',
+            content: objct ,
+            contentType: "base64"
+        });
     };
 
 

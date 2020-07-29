@@ -358,3 +358,42 @@ function replicarRegistro(id,tabela){
         });
     });
 }
+
+const uploadProfilePic = async ({userId, db, table, content, contentType, $elem = false}) => {
+    let response = false;
+    let enpoint = domain + "file/perfil/uploadPerfilFile";
+
+    if (contentType === "form") {
+        let objct = new FormData();
+        objct.append('userType', table);
+        objct.append('userId', userId);
+        objct.append('licenca', db);
+        objct.append('upload_file', content);
+        objct.append('folder_name', "Perfil");
+
+        response = await $.ajax({
+            url: enpoint,
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: objct,
+            // Now you should be able to do this:
+            mimeType: 'multipart/form-data',    //Property added in 1.5.1
+        });
+
+    }else{
+        response = await jQuery.ajax({
+            url: enpoint,
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify(content)
+        });
+
+    }
+
+    if ($elem) {
+        $elem.attr("src", response.url);
+    }
+
+    return response;
+}

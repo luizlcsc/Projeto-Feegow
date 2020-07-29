@@ -111,9 +111,6 @@ end if
 $(document).ready(function(e) {
 	<%call formSave("frm", "save", "")%>
 });
-$(document).ready(function(){
-    getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'equipamentos');
-});
 
 
 </script>
@@ -204,7 +201,7 @@ function removeFoto(){
                   mimeType: 'multipart/form-data',    //Property added in 1.5.1
 
                   success: function (data) {
-                      getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'equipamentos');
+
                   }
             });
 

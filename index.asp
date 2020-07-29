@@ -2531,11 +2531,3 @@ function chatNotificacao(titulo, mensagem) {
 }
 
 </script>
-<script>
-$(document).ready(function(){
-   getProfilePic("<%=session("User")%>","<%= replace(session("Banco"), "clinic", "") %>",'profissionais');
-
-});
-</script>
-<script src="src/imageUtil.js"></script>
-

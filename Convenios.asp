@@ -505,9 +505,6 @@ end function
         });
     });
 
-    $(document).ready(function(){
-        getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'convenios');
-    });
 
 
 
@@ -627,7 +624,7 @@ end function
                        mimeType: 'multipart/form-data',    //Property added in 1.5.1
 
                        success: function (data) {
-                            getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'convenios');
+
                        }
                  });
 

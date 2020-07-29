@@ -403,7 +403,6 @@ function removeFoto(){
 
                   success: function (data) {
                         //localStorage.removeItem('perfilImg');
-                       getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'profissionais');
                   }
             });
 			
@@ -439,9 +438,6 @@ $("#ObsAgenda").ckeditor();
 function VisualizarEnvioDasAgendas() {
     openComponentsModal("ProfissionalEnvioAgenda.asp", {ProfissionalID:"<%=req("I")%>"}, "Envio das agendas", true)
 }
-$(document).ready(function(){
-    getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'profissionais',true);
-});
 </script>
 
 <script src="src/imageUtil.js"></script>

@@ -118,9 +118,6 @@ Parametros = "P="&request.QueryString("P")&"&I=1&Col=Foto"
 $(document).ready(function(e) {
 	<%call formSave("frmEmpresa", "save", "")%>
 });
-$(document).ready(function(){
-    getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'empresa',true);
-});
 
 $("#Cep").keyup(function(){
 	getEndereco();
@@ -225,7 +222,7 @@ function removeFoto(){
                           mimeType: 'multipart/form-data',    //Property added in 1.5.1
 
                           success: function (data) {
-                               getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'empresa');
+
                           }
                     });
 

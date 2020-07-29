@@ -85,8 +85,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
       case "FaturaID"          
         item_FaturaID          = item_id
         'ALIAS DE TAGS RELACIONADAS A FATURAS / Invoices
-        'Adicionar aqui...
-        
+        conteudo = replace(conteudo, "[Fatura.Protocolo]", "[Fatura.Codigo]" )
     end select
   next
   '### <FILTRA OS ITENS SEPARADOS POR PIPE/>
@@ -287,9 +286,6 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         
           
         case "Financeiro"
-          'SELECT CONCAT('IN',UPPER(left(md5(id), 7))) FROM sys_financialinvoices WHERE id = 3
-          '[Financeiro.FaturaCodigo]
-
 
         case "Agendamento"
           if item_AgendamentoID>0 then
@@ -377,17 +373,21 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             set RecibosSQL = nothing
           end if
         case "Fatura"
+          '***QUERY DE PROFISSIONAIS QUE EXECUTARAM UM SERVIÇO***
+          'SELECT GROUP_CONCAT(p.NomeProfissional SEPARATOR ', ') FROM itensinvoice ii
+          'LEFT JOIN profissionais p ON p.id=ii.ProfissionalID
+          'WHERE ii.InvoiceID='9298' AND ii.Associacao=5 AND NOT ISNULL(p.NomeProfissional)
+          'VALIDAR NOME DA TAG QUE OBTERÁ ESTA INFORMAÇÃO [Fatura.ProfissionaisExexutantes]
+
           if item_FaturaID>0 then
-            qFaturasSQL = "SELECT id "_
-            &"FROM sys_financialinvoices "_
-            &"WHERE id=9164"
-          end if
-          if qFaturasSQL<>"" then
+            qFaturasSQL = "SELECT CONCAT('IN',UPPER(left(md5(id), 7))) as Codigo FROM sys_financialinvoices WHERE id="&item_FaturaID
             SET FaturasSQL = db.execute(qFaturasSQL)
             if not FaturasSQL.eof then
-              conteudo = replace(conteudo, "[Fatura.Protocolo]", FaturasSQL("id")&"" )
+              conteudo = replace(conteudo, "[Fatura.Codigo]", trim(FaturasSQL("Codigo")&" ") )
             end if
-          end if
+            FaturasSQL.close
+            set FaturasSQL = nothing
+          end if 
     
       end select
     end if
@@ -408,4 +408,5 @@ end function
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalID_1",""))
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalSessao_1",""))
 'response.write("<br>"&TagsConverte("[ProfissionalSolicitante.Nome]","ProfissionalSolicitanteID_200",""))
+'response.write(TagsConverte("Fatura: [Fatura.Codigo]","FaturaID_2",""))
 %>

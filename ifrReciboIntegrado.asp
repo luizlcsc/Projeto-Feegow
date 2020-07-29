@@ -230,13 +230,16 @@ if not inv.eof then
             end if
 
             Recibo = rec(ReciboModelo)&""
-
             'NOVO CONVERSOR DE TAGS 28/07/2020 || RAFAEL MAIA
-            ProfissionalSolicitanteArray = Split(inv("ProfissionalSolicitante"),"_")
-            if ubound(ProfissionalSolicitanteArray)=1 then
-                ProfissionalSolicitanteID = ProfissionalSolicitanteArray(1)
+            if inv("ProfissionalSolicitante")&"" <>"" then
+                ProfissionalSolicitanteArray = Split(inv("ProfissionalSolicitante"),"_")
+                if ubound(ProfissionalSolicitanteArray)=1 then
+                    ProfissionalSolicitanteID = ProfissionalSolicitanteArray(1)
+                else
+                    ProfissionalSolicitanteID = 0
+                end if
             else
-                ProfissionalSolicitanteID = 0
+                ProfissionalSolicitanteID=0
             end if
             'response.write("<script>console.log('Valor: '"&ProfissionalSolicitanteID&")</script>")
             Recibo = TagsConverte(Recibo,"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|FaturaID_"&req("I"),"")

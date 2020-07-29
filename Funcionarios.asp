@@ -209,7 +209,7 @@ function getEndereco() {
 <%
 Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
 %>
-console.log('teste');
+
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?'))
 	{

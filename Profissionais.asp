@@ -402,7 +402,7 @@ function removeFoto(){
                   mimeType: 'multipart/form-data',    //Property added in 1.5.1
 
                   success: function (data) {
-                        localStorage.removeItem('perfilImg');
+                        //localStorage.removeItem('perfilImg');
                        getProfilePic("<%=req("I")%>","<%= replace(session("Banco"), "clinic", "") %>",'profissionais');
                   }
             });

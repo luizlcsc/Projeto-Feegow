@@ -99,7 +99,7 @@ end if
                                 <input type="file" name="Foto" id="Foto" />
                             </div>
                             <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
-                                <img id="avatarFoto" src="" class="img-thumbnail" width="100%" />
+                                <img id="avatarFoto" src="<%=arqEx(reg("Foto"), "Perfil")%>" class="img-thumbnail" width="100%" />
                                 <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>

@@ -5,6 +5,7 @@ $(document).ready(function(){
 
 function getProfilePic(userId,db,table,isFunc = false)
 {
+    return;
     let objct = new FormData();
     objct.append('userId',userId);
     objct.append('licenca' ,db);

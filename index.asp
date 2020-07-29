@@ -764,7 +764,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         </li>
         <li class="dropdown menu-merge">
           <a href="#" class="dropdown-toggle fw600 p15 menu-click-meu-perfil" data-toggle="dropdown">
-          	<img src="" class="mw30 br64" id="avatarFoto">
+          	<img src="<%=session("photo") %>" class="mw30 br64">
           	<span class="hidden-xs hidden-sm hidden-md pl15"> <%=left(session("NameUser"), 15) %> </span>
             <span class="caret caret-tp hidden-xs hidden-sm hidden-md"></span>
           </a>

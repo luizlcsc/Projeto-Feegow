@@ -387,8 +387,12 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
             url: enpoint,
             type: 'post',
             dataType: 'json',
-            data: JSON.stringify(content)
+            data: JSON.stringify(content),
+            beforeSend:function () {
+                $('#divAvatar').show();
+            }
         });
+
         $('#divAvatar').show();
         $('#divAvatar video').hide();
         $('#divDisplayFoto').css('display','block');

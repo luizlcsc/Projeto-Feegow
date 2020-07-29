@@ -230,7 +230,7 @@ if not inv.eof then
             end if
 
             Recibo = rec(ReciboModelo)&""
-            'NOVO CONVERSOR DE TAGS 28/07/2020 || RAFAEL MAIA 
+            'NOVO CONVERSOR DE TAGS 28/07/2020 || RAFAEL MAIA
             if inv("ProfissionalSolicitante")&"" <>"" then
                 ProfissionalSolicitanteArray = Split(inv("ProfissionalSolicitante"),"_")
                 if ubound(ProfissionalSolicitanteArray)=1 then

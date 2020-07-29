@@ -84,11 +84,19 @@ if not tryLogin.EOF then
 
 	if erro="" then
 	    TimeoutToCheckConnection = 60
+        deslogarUsuario = false
 
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
 			TempoDist = datediff("s", sysUser("UltRef"), now())
-			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" then
+
+            forcar_login = false
+            if Session("Deslogar_user")<>"" then
+                forcar_login = Session("Deslogar_user")
+            end if
+
+			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login  then
+                deslogarUsuario = true
 				erro = "Este usuário já está conectado em outra máquina."
             else
 
@@ -142,11 +150,44 @@ if not tryLogin.EOF then
 	end if
 
 	if erro<>"" then
-		%>
-        <script>
-		alert('<%=erro%>');
-		</script>
-        <%
+        if deslogarUsuario then
+            session("User")=tryLogin("id")
+            session("Banco")="clinic"&tryLogin("LicencaID")
+            session("Servidor") = Servidor&""
+            %>
+                <script type="text/javascript">
+                    $(window).on('load',function(){
+                        var preventClick = false;
+
+                         $("form").html("<div id='confirmaDesloga'><div class='modal-dialog' role='document'> <div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Este usuário já está conectado em outra máquina.</h5></div><div class='modal-body'><div id='deslogar-container' class='container'><span class='textoTituloInput'>Por favor, digite sua senha para confirmar.</span><input type='hidden' class='usuario' type='email' name='User' id='User' value='<%=User %>' placeholder='digite seu e-mail de acesso' autofocus required><input type='password' class='senha' style='margin-top: 25px' placeholder='senha' type='password' name='password' id='password' required></div></div><div class='modal-footer'><button class='botao' data-style='zoom-in' id='Deslogar'>Deslogar usuário</button><button type='button' class='btn btn-secondary' onclick='window.history.back();'>Cancelar</button></div></div></div></div>");
+
+                        $("#Deslogar").click(function (e) {
+                            e.preventDefault();
+                            if(preventClick) return;
+                            preventClick = true;
+
+                            $("#Deslogar").attr("style", "opacity: 0.5");
+                            $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
+                            $.post('DeslogarUsuario.asp');
+                            $("#password").hide();
+                            $(".textoTituloInput").hide();
+                            $("#deslogar-container").append("<p style='text-align: center' id='deslogarTexto'>Aguarde alguns instantes ...</p>");
+                            setTimeout(() => {
+                                $("form").submit();
+                            }, 20000);
+                        });
+                    });
+                </script>
+            <%
+
+        else
+            %>
+                <script>
+                    alert('<%=erro%>');
+                </script>
+            <%
+        end if
+
 	else
 		session("Banco")="clinic"&tryLogin("LicencaID")
 		session("Admin")=tryLogin("Admin")
@@ -160,6 +201,15 @@ if not tryLogin.EOF then
 		if ref("password")=MasterPwd then
 			session("MasterPwd") = "S"
 		end if
+
+
+        if forcar_login then
+            notiftarefas = sysUser("notiftarefas")&""
+
+            if instr(notiftarefas, "|DISCONNECT|")>0 then
+                dbProvi.execute("update clinic"&tryLogin("LicencaID")&".sys_users set notiftarefas='"&replace(trim(notiftarefas&" "), "|DISCONNECT|", "")&"' where id="&sysUser("id"))
+            end if
+        end if
 
         if instr(Cupom&"", "Franqueador:")>0 then
             session("Franqueador") = replace(Cupom&"", "Franqueador:", "")
@@ -231,18 +281,22 @@ if not tryLogin.EOF then
 
 		qtdUnidadesArray = split(session("Unidades"), ",")
         UnidadeID=0
+        UnidadeDefinida=False
 
+        'verifica se o usuario ja se logou na data
 		if ubound(qtdUnidadesArray) > 0 then
 			set PrimeiroLoginDoDiaSQL = dbc.execute("SELECT id FROM cliniccentral.licencaslogins WHERE UserID="&tryLogin("id")&" AND date(DataHora)=curdate()")
 			if PrimeiroLoginDoDiaSQL.eof then
                 UnidadeID = -1
+                UnidadeDefinida=True
+                UnidadeMotivoDefinicao = "Primeiro login do dia"
 			end if
 		end if
 
 		if UnidadeID=0 then
-            if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then 
+            if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then
             	UnidadeID = sysUser("UnidadeID")
-			end if 
+			end if
 
 			if ubound(qtdUnidadesArray) > 0 then
                 UnidadeID= replace(qtdUnidadesArray(0), "|","")
@@ -250,17 +304,28 @@ if not tryLogin.EOF then
 				if session("Unidades")&"" <> "" then
                 	UnidadeID= replace(session("Unidades"), "|","")
 				end if
-			end if 
+			end if
+        end if
 
-            if isnull(UnidadeID) then
+        'seta a unidade de acordo com a que o usuario tem permissa
+        if not UnidadeDefinida then
+            if ubound(qtdUnidadesArray) > 0 then
                 UnidadeID= replace(qtdUnidadesArray(0), "|","")
-                db.execute("UPDATE sys_users SET UnidadeID="&UnidadeID&" WHERE id="&session("User"))
+            else
+                if session("Unidades")&"" <> "" then
+                    UnidadeID= replace(session("Unidades"), "|","")
+                end if
             end if
-		end if
+            UnidadeDefinida = True
+            UnidadeMotivoDefinicao = "Primeira unidade do array do usuário"
+        end if
 
-        session("UnidadeID") = UnidadeID
+        'Verifica se a unidadeId está como null, se sim, pega a primeira unidade do array
+        if isnull(UnidadeID) then
+            UnidadeID= replace(qtdUnidadesArray(0), "|","")
+        end if
 
-
+        'verifica se o profissional tem grade aberta, se sim, abre a sessao com aquela unidade
 		if lcase(session("Table"))="profissionais" then
 			set gradeHoje = db.execute("select l.UnidadeID, g.HoraDe from assfixalocalxprofissional g "&_
                                        "INNER JOIN locais l on l.id=g.LocalID "&_
@@ -273,15 +338,18 @@ if not tryLogin.EOF then
 
 			if not gradeHoje.EOF then
 				if not isnull(gradeHoje("UnidadeID")) then
+
 					if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then 
-						session("UnidadeID") = gradeHoje("UnidadeID")
-						db_execute("update sys_users set UnidadeID="&gradeHoje("UnidadeID")&" where id="&session("User"))
+						  UnidadeID = gradeHoje("UnidadeID")
+              UnidadeMotivoDefinicao = "Unidade da Grade do profissional"
 					end if
 				end if
 			end if
 		end if
 
 
+
+        'verifica se o usuario tem caixa aberto em alguma unidade
 		set caixa = db.execute("select c.id, ca.Empresa UnidadeID from caixa c  "&_
                                "INNER JOIN sys_financialcurrentaccounts ca ON ca.id=c.ContaCorrenteID  "&_
                                "WHERE c.sysUser="&session("User")&" and isnull(c.dtFechamento)")
@@ -290,9 +358,13 @@ if not tryLogin.EOF then
 
 			if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then
             	UnidadeID = sysUser("UnidadeID")
+                UnidadeMotivoDefinicao = "Unidade do caixa aberto"
 			end if
-			session("UnidadeID") = caixa("UnidadeID")
 		end if
+
+		session("UnidadeID") = UnidadeID
+		db_execute("update sys_users set UnidadeID="&UnidadeID&" where id="&session("User"))
+
 
 		if session("UnidadeID")=0 then
 			set getNome = db.execute("select * from empresa")

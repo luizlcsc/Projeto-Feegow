@@ -27,9 +27,11 @@ if req("AgendamentoID") then
             'ModeloImpressaoAgendamento = replace(ModeloImpressaoAgendamento, "[Agendamento.Hora]", Hora)
             'ModeloImpressaoAgendamento = replace(ModeloImpressaoAgendamento, "[Paciente.Nome]", Paciente)
             'ModeloImpressaoAgendamento = replace(ModeloImpressaoAgendamento, "[Paciente.Nascimento]", Nascimento)
-            'ModeloImpressaoAgendamento = replace(ModeloImpressaoAgendamento, "[Procedimentos.Nome]", Procedimentos)
             'ModeloImpressaoAgendamento = replace(ModeloImpressaoAgendamento, "[Profissional.Nome]", Profissional)
-            'ModeloImpressaoAgendamento = replace(ModeloImpressaoAgendamento, "[Forma.Nome]", Forma)
+
+
+            ModeloImpressaoAgendamento = replace(ModeloImpressaoAgendamento, "[Procedimentos.Nome]", Procedimentos)
+            ModeloImpressaoAgendamento = replace(ModeloImpressaoAgendamento, "[Forma.Nome]", Forma)
             
             'INCLUSÃO DA NOVA FUNÇÃO TAGS | Rafael Maia 02/07/2020
             ModeloImpressaoAgendamento = tagsConverte(ModeloImpressaoAgendamento,"PacienteID_"&Prontuario&"|ProfissionalID_"&ProfissionalID&"|AgendamentoID_"&Agendamento&"|ProcedimentoNome_"&Procedimentos,"")

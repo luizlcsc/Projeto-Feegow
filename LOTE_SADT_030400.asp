@@ -16,17 +16,17 @@ Data = mydatetiss(lote("sysDate"))
 Hora = myTimeTISS( lote("sysDate") )
 
 response.write("<?xml version=""1.0"" encoding=""ISO-8859-1""?>")
-
+Response.CodePage = 28591
 response.Charset="utf-8"
 
-versaoTISS = "3.03.03"
+versaoTISS = "3.04.00"
 
 
 prefixo = "00000000000000000000"&NLote
 prefixo = right(prefixo, 20)
 
 %>
-<ans:mensagemTISS xsi:schemaLocation="http://www.ans.gov.br/padroes/tiss/schemas tissV3_03_03.xsd" xmlns:ans="http://www.ans.gov.br/padroes/tiss/schemas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ans:mensagemTISS xsi:schemaLocation="http://www.ans.gov.br/padroes/tiss/schemas tissV3_04_00.xsd" xmlns:ans="http://www.ans.gov.br/padroes/tiss/schemas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ans:cabecalho>
         <ans:identificacaoTransacao>
             <ans:tipoTransacao>ENVIO_LOTE_GUIAS</ans:tipoTransacao>
@@ -46,7 +46,15 @@ prefixo = right(prefixo, 20)
                 else
                     tipoCodigoNaOperadora = "codigoPrestadorNaOperadora"
                 end if
-                
+
+
+                tipoCodigoNaOperadoraContratadoSolicitante = "codigoPrestadorNaOperadora"
+                set TipoContratoSQL = db.execute("SELECT IdentificadorCNPJ FROM contratosconvenio WHERE ConvenioID="&guias("ConvenioID")&" AND CodigoNaOperadora='"&CodigoNaOperadora&"'")
+                if not TipoContratoSQL.eof then
+                    if TipoContratoSQL("IdentificadorCNPJ")="S" then
+                        tipoCodigoNaOperadoraContratadoSolicitante = "cnpjContratado"
+                    end if
+                end if
                 %>
                 <%="<ans:" & tipoCodigoNaOperadora & ">" & CodigoNaOperadora &"</ans:" & tipoCodigoNaOperadora &">"%>
             </ans:identificacaoPrestador>
@@ -88,18 +96,10 @@ prefixo = right(prefixo, 20)
 					RegistroANS = TirarAcento(guias("RegistroANS"))
 					NGuiaPrestador = TirarAcento(guias("NGuiaPrestador"))
 					NGuiaPrincipal = TirarAcento(guias("NGuiaPrincipal"))
-					
-                    DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
-                    NGuiaOperadora =""
-                    Senha =""
-                    DataValidadeSenha =""
-
-                    if DataAutorizacao <> "" then
-                        NGuiaOperadora = TirarAcento(guias("NGuiaOperadora"))
-                        Senha = TirarAcento(guias("Senha"))
-                        DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
-                    end if 
-
+					NGuiaOperadora = TirarAcento(guias("NGuiaOperadora"))
+					DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
+					Senha = TirarAcento(guias("Senha"))
+					DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
 					NumeroCarteira = TirarAcento(guias("NumeroCarteira"))
 					AtendimentoRN = TirarAcento(guias("AtendimentoRN"))
 					NomePaciente = TirarAcento(guias("NomePaciente"))
@@ -131,29 +131,6 @@ prefixo = right(prefixo, 20)
 						end if
 					end if
 					ContratadoSolicitanteCodigoNaOperadora = TirarAcento(guias("ContratadoSolicitanteCodigoNaOperadora"))
-                    tipoCodigoNaOperadoraContratadoSolicitante = "codigoPrestadorNaOperadora"
-                    set TipoContratoSQL = db.execute("SELECT IdentificadorCNPJ,Contratado FROM contratosconvenio WHERE ConvenioID="&guias("ConvenioID")&" AND CodigoNaOperadora='"&CodigoNaOperadora&"'")
-                    if not TipoContratoSQL.eof then
-                        if TipoContratoSQL("IdentificadorCNPJ")&""="S" then
-                            tipoCodigoNaOperadoraContratadoSolicitante = "cnpjContratado"
-
-                            if TipoContratoSQL("Contratado") > 0 then
-                                identificadorSql =  "SELECT * FROM profissionais where id ="
-                            else
-                                identificadorSql = " SELECT * FROM (SELECT  0 id, nomefantasia, cnpj "&_
-                                                " FROM empresa "&_
-                                                " WHERE id=1 UNION ALL "&_ 
-                                                " SELECT id*-1 id, nomefantasia, cnpj "&_
-                                                " FROM sys_financialcompanyunits "&_
-                                                " WHERE sysActive=1)t where id = "&TipoContratoSQL("Contratado")
-                            end if
-                            set getIdentificador = db.execute(identificadorSql)
-                            if not getIdentificador.eof then
-                                ContratadoSolicitanteCodigoNaOperadora =  TirarAcento(replace(replace(replace(replace(replace(getIdentificador("cnpj"), ".", ""), "-", ""), ",", ""), "_", ""), " ", ""))
-                            end if
-                        end if
-                    end if
-
 					if ContratadoSolicitanteCodigoNaOperadora="" then ContratadoSolicitanteCodigoNaOperadora="-" end if
 					ProfissionalSolicitanteID = TirarAcento(guias("ProfissionalSolicitanteID"))
 					if guias("tipoProfissionalSolicitante")="I" then
@@ -207,11 +184,10 @@ prefixo = right(prefixo, 20)
 							CNESContratado = "9999999"
 						end if
 					end if
-                    
 					TipoAtendimentoID = TirarAcento(zEsq(guias("TipoAtendimentoID"),2))
 					IndicacaoAcidenteID = TirarAcento(guias("IndicacaoAcidenteID"))
 					MotivoEncerramentoID = TirarAcento(guias("MotivoEncerramentoID"))
-					if MotivoEncerramentoID=0 then MotivoEncerramentoID="" end if
+					if MotivoEncerramentoID&""="0" then MotivoEncerramentoID="" end if
 					TipoConsultaID = TirarAcento(guias("TipoConsultaID"))
 					'==============================================================================================================================================================================
 					if guias("CodigoCNES")="" then CodigoCNES=TirarAcento(CNESContratado) else CodigoCNES=TirarAcento(guias("CodigoCNES")) end if
@@ -226,7 +202,7 @@ prefixo = right(prefixo, 20)
                         <%if NGuiaPrincipal<>"" then%><ans:guiaPrincipal><%= NGuiaPrincipal %></ans:guiaPrincipal><%end if%>
                     </ans:cabecalhoGuia>
                     <%
-					if DataAutorizacao<>"" then
+					if NGuiaOperadora<>"" OR DataAutorizacao<>"" OR Senha<>"" OR DataValidadeSenha<>"" then
 					%>
                     <ans:dadosAutorizacao>
                         <%if NGuiaOperadora<>"" then%><ans:numeroGuiaOperadora><%= NGuiaOperadora %></ans:numeroGuiaOperadora><%end if%>
@@ -275,146 +251,103 @@ prefixo = right(prefixo, 20)
                     </ans:dadosAtendimento>
                     <ans:procedimentosExecutados>
                     <%
-					set procs = db.execute("select tps.*, proc.ProcedimentoSeriado from tissprocedimentossadt tps INNER JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where tps.GuiaiD="&guias("id"))
+                    sequencialItem = 1
+
+					set procs = db.execute("select * from tissprocedimentossadt where GuiaiD="&guias("id"))
 					while not procs.eof
-					    ProcedimentoSeriado=procs("ProcedimentoSeriado")
 						Data = mydatetiss(procs("Data"))
-                        Quantidade = TirarAcento(procs("Quantidade"))
-                        Fator = treatvaltiss(1)
-                        ValorUnitario =  procs("Fator")*procs("ValorUnitario")
-                        ValorTotal = procs("ValorTotal")
-
-                        set SerieSQL = db.execute("SELECT "&mydatenull(procs("Data"))&" as Data")
-                        if Quantidade&"" <> "" then
-                            if ProcedimentoSeriado&"" = "S" and ccur(Quantidade)>0 then
-                                sqlSerie = "SELECT DATE(DATA)DATA FROM ( "&_
-                                             "SELECT IFNULL(DataSerie01, "&mydatenull(procs("Data"))&") Data FROM tissguiasadt WHERE id="&guias("id")&" "&_
-                                             "UNION ALL  "&_
-                                             "SELECT DataSerie02 FROM tissguiasadt WHERE id="&guias("id")&" "&_
-                                             "UNION ALL  "&_
-                                             "SELECT DataSerie03 FROM tissguiasadt WHERE id="&guias("id")&" "&_
-                                             "UNION ALL  "&_
-                                             "SELECT DataSerie04 FROM tissguiasadt WHERE id="&guias("id")&" "&_
-                                             "UNION ALL  "&_
-                                             "SELECT DataSerie05 FROM tissguiasadt WHERE id="&guias("id")&" "&_
-                                             "UNION ALL  "&_
-                                             "SELECT DataSerie06 FROM tissguiasadt WHERE id="&guias("id")&" "&_
-                                             "UNION ALL  "&_
-                                             "SELECT DataSerie07 FROM tissguiasadt WHERE id="&guias("id")&" "&_
-                                             "UNION ALL  "&_
-                                             "SELECT DataSerie08 FROM tissguiasadt WHERE id="&guias("id")&" "&_
-                                             "UNION ALL  "&_
-                                             "SELECT DataSerie09 FROM tissguiasadt WHERE id="&guias("id")&" "&_
-                                             "UNION ALL  "&_
-                                             "SELECT DataSerie10 FROM tissguiasadt WHERE id="&guias("id")&" "&_
-                                             " "&_
-                                             ")t "&_
-                                             " "&_
-                                             "WHERE DATA IS NOT null"
-                                set SerieSQL = db.execute(sqlSerie)
-
-                                Quantidade=1
-                                ValorTotal=ValorUnitario
-                            end if
-                        end if
-
-                        ValorUnitario=treatvaltiss(ValorUnitario)
-                        ValorTotal=treatvaltiss(ValorTotal)
-
-                        while not SerieSQL.eof
-						    Data = mydatetiss(SerieSQL("Data"))
-
-                            HoraInicio = myTimeTISS(procs("HoraInicio"))
-                            HoraFim = myTimeTISS(procs("HoraFim"))
-                            TabelaID = TirarAcento(procs("TabelaID"))
-
-                            if TabelaID="99" OR TabelaID="95" OR TabelaID="0" then
-                                TabelaID="00"
-                            end if
-
-                            CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))
-                            Descricao = left(TirarAcento(procs("Descricao")),150)
-                            ViaID = TirarAcento(procs("ViaID"))
-                            TecnicaID = TirarAcento(procs("TecnicaID"))
-
-                            hash = hash & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
-                            %>
-                            <ans:procedimentoExecutado>
-                                <%if Data<>"" then%><ans:dataExecucao><%= Data %></ans:dataExecucao><% End If %>
-                                <%if HoraInicio<>"" then%><ans:horaInicial><%= HoraInicio %></ans:horaInicial><% End If %>
-                                <%if HoraFim<>"" then%><ans:horaFinal><%= HoraFim %></ans:horaFinal><% End If %>
-                                <ans:procedimento>
-                                    <ans:codigoTabela><%= TabelaID %></ans:codigoTabela>
-                                    <ans:codigoProcedimento><%= CodigoProcedimento %></ans:codigoProcedimento>
-                                    <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
-                                </ans:procedimento>
-                                <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
-                                <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
-                                <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
-                                <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
-                                <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
-                                <ans:valorTotal><%= ValorTotal %></ans:valorTotal>
-                                <%
-                                set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaissadt as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla like e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where GuiaID="&guias("id"))
-                                while not eq.eof
-                                    GrauParticipacao = TirarAcento(eq("GrauParticipacao")&"")
-                                    if GrauParticipacao="" or isnull(GrauParticipacao) then GrauParticipacao="" end if
-                                    CodigoNaOperadoraOuCPF = replace(replace(replace(replace(replace(TirarAcento(eq("CodigoNaOperadoraOuCPF")), ".", ""), "-", ""), ",", ""), "_", ""), " ", "")
-                                    if CodigoNaOperadoraOuCPF="" then CodigoNaOperadoraOuCPF="-" end if
-
-
-                                    if CalculaCPF(CodigoNaOperadoraOuCPF)=true then
-                                        tipoContrato = "cpfContratado"
-                                    'elseif CalculaCNPJ(CodigoNaOperadoraOuCPF)=true then
-                                    '	tipoContrato = "cnpjContratado"
-                                    else
-                                        tipoContrato = "codigoPrestadorNaOperadora"
-                                    end if
-
-
-
-                                    NomeProfissional = TirarAcento(eq("NomeProfissional")&" ")
-                                    set cons = db.execute("select * from conselhosprofissionais where id="&treatvalzero(eq("ConselhoID")))
-                                    if cons.eof then
-                                        ConselhoProfissional = 6
-                                    else
-                                        ConselhoProfissional=TirarAcento(cons("TISS"))
-                                    end if
-                                    ConselhoProfissional = zeroEsq(ConselhoProfissional, 2)
-
-                                    DocumentoConselho = TirarAcento(eq("DocumentoConselho"))
-                                    UF = TirarAcento(eq("UF"))
-                                    CodigoCBO = TirarAcento(eq("CodigoCBO"))
-                                    hash = hash & GrauParticipacao&CodigoNaOperadoraOuCPF&NomeProfissional&ConselhoProfissional&DocumentoConselho&UF&CodigoCBO
-                                %>
-                                <ans:equipeSadt>
-                                    <%if GrauParticipacao<>"" then %>
-                                        <ans:grauPart><%= GrauParticipacao %></ans:grauPart>
-                                    <%end if %>
-                                    <ans:codProfissional>
-                                        <%="<ans:"&tipoContrato&">"& CodigoNaOperadoraOuCPF &"</ans:"&tipoContrato&">"%>
-                                    </ans:codProfissional>
-                                    <ans:nomeProf><%= NomeProfissional %></ans:nomeProf>
-                                    <ans:conselho><%= ConselhoProfissional %></ans:conselho>
-                                    <ans:numeroConselhoProfissional><%= DocumentoConselho %></ans:numeroConselhoProfissional>
-                                    <ans:UF><%= UF %></ans:UF>
-                                    <ans:CBOS><%= CodigoCBO %></ans:CBOS>
-                                </ans:equipeSadt>
-                                <%
-                                eq.movenext
-                                wend
-                                eq.close
-                                set eq = nothing
-                                %>
-                            </ans:procedimentoExecutado>
+						HoraInicio = myTimeTISS(procs("HoraInicio"))
+						HoraFim = myTimeTISS(procs("HoraFim"))
+						TabelaID = TirarAcento(procs("TabelaID"))
+						if TabelaID="99" OR TabelaID="0" then
+							TabelaID="00"
+						end if
+						CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))
+						Descricao = left(TirarAcento(procs("Descricao")),150)
+						Quantidade = TirarAcento(procs("Quantidade"))
+						ViaID = TirarAcento(procs("ViaID"))
+						TecnicaID = TirarAcento(procs("TecnicaID"))
+						Fator = treatvaltiss(procs("Fator"))
+						ValorUnitario = treatvaltiss( procs("ValorUnitario") )
+						ValorTotal = treatvaltiss(procs("ValorTotal"))
+						
+						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
+						%>
+                        <ans:procedimentoExecutado>
+                            <ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>
+                            <%if Data<>"" then%><ans:dataExecucao><%= Data %></ans:dataExecucao><% End If %>
+                            <%if HoraInicio<>"" then%><ans:horaInicial><%= HoraInicio %></ans:horaInicial><% End If %>
+                            <%if HoraFim<>"" then%><ans:horaFinal><%= HoraFim %></ans:horaFinal><% End If %>
+                            <ans:procedimento>
+                                <ans:codigoTabela><%= TabelaID %></ans:codigoTabela>
+                                <ans:codigoProcedimento><%= CodigoProcedimento %></ans:codigoProcedimento>
+                                <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
+                            </ans:procedimento>
+                            <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
+                            <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
+                            <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
+                            <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
+                            <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
+                            <ans:valorTotal><%= ValorTotal %></ans:valorTotal>
                             <%
-                        SerieSQL.movenext
-                        wend
-                        set SerieSQL=nothing
-                    procs.movenext
-                    wend
-                    procs.close
-                    set procs=nothing
+							set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaissadt as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla like e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where GuiaID="&guias("id"))
+							while not eq.eof
+								GrauParticipacao = TirarAcento(eq("GrauParticipacao")&"")
+								if GrauParticipacao="" or isnull(GrauParticipacao) then GrauParticipacao="" end if
+								CodigoNaOperadoraOuCPF = replace(replace(replace(replace(replace(TirarAcento(eq("CodigoNaOperadoraOuCPF")), ".", ""), "-", ""), ",", ""), "_", ""), " ", "")
+								if CodigoNaOperadoraOuCPF="" then CodigoNaOperadoraOuCPF="-" end if
+
+
+								if CalculaCPF(CodigoNaOperadoraOuCPF)=true then
+									tipoContrato = "cpfContratado"
+								'elseif CalculaCNPJ(CodigoNaOperadoraOuCPF)=true then
+								'	tipoContrato = "cnpjContratado"
+								else
+									tipoContrato = "codigoPrestadorNaOperadora"
+								end if
+
+
+
+								NomeProfissional = TirarAcento(eq("NomeProfissional")&" ")
+								set cons = db.execute("select * from conselhosprofissionais where id="&treatvalzero(eq("ConselhoID")))
+								if cons.eof then 
+                                    ConselhoProfissional = 6 
+                                else 
+                                    ConselhoProfissional=TirarAcento(cons("TISS")) 
+                                end if
+                                ConselhoProfissional = zeroEsq(ConselhoProfissional, 2)
+
+								DocumentoConselho = TirarAcento(eq("DocumentoConselho"))
+								UF = TirarAcento(eq("UF"))
+								CodigoCBO = TirarAcento(eq("CodigoCBO"))
+								hash = hash & GrauParticipacao&CodigoNaOperadoraOuCPF&NomeProfissional&ConselhoProfissional&DocumentoConselho&UF&CodigoCBO
+							%>
+                            <ans:equipeSadt>
+                                <%if GrauParticipacao<>"" then %>
+                                    <ans:grauPart><%= GrauParticipacao %></ans:grauPart>
+                                <%end if %>
+                                <ans:codProfissional>
+                                    <%="<ans:"&tipoContrato&">"& CodigoNaOperadoraOuCPF &"</ans:"&tipoContrato&">"%>
+                                </ans:codProfissional>
+                                <ans:nomeProf><%= NomeProfissional %></ans:nomeProf>
+                                <ans:conselho><%= ConselhoProfissional %></ans:conselho>
+                                <ans:numeroConselhoProfissional><%= DocumentoConselho %></ans:numeroConselhoProfissional>
+                                <ans:UF><%= UF %></ans:UF>
+                                <ans:CBOS><%= CodigoCBO %></ans:CBOS>
+                            </ans:equipeSadt>
+                            <%
+							eq.movenext
+							wend
+							eq.close
+							set eq = nothing
+							%>
+                        </ans:procedimentoExecutado>
+                        <%
+                        sequencialItem=sequencialItem+1
+					procs.movenext
+					wend
+					procs.close
+					set procs=nothing
 					%>
                     </ans:procedimentosExecutados>
                     <%
@@ -423,31 +356,29 @@ prefixo = right(prefixo, 20)
 					%>
                     <ans:outrasDespesas>
                     	<%
+						sequencialItem=0
 						while not desp.eof
+							sequencialItem = sequencialItem+1
 							CD = zEsq(desp("CD"), 2)
 							Data = mydatetiss(desp("Data"))
 							HoraInicio = myTimeTISS(desp("HoraInicio"))
 							HoraFim = myTimeTISS(desp("HoraFim"))
 							TabelaProdutoID = zeroEsq(TirarAcento(desp("TabelaProdutoID")), 2)
-
-                            if TabelaProdutoID="99" OR TabelaProdutoID="95" OR TabelaProdutoID="0" then
-                                TabelaProdutoID="00"
-                            end if
-
 							CodigoProduto = TirarAcento(desp("CodigoProduto"))
 							Quantidade = treatvaltiss(desp("Quantidade"))
 							UnidadeMedidaID = zEsq(desp("UnidadeMedidaID"), 3)
 							Fator = treatvaltiss(desp("Fator"))
 							ValorUnitario = treatvaltiss(desp("ValorUnitario"))
 							ValorTotal = treatvaltiss(desp("ValorTotal"))
-							Descricao = left(TirarAcento(desp("Descricao")),150)
+							Descricao = TirarAcento(desp("Descricao"))
 							RegistroANVISA = TirarAcento(desp("RegistroANVISA"))
 							CodigoNoFabricante = TirarAcento(desp("CodigoNoFabricante"))
 							AutorizacaoEmpresa = TirarAcento(desp("AutorizacaoEmpresa"))
 							
-							hash = hash & CD&Data&HoraInicio&HoraFim&TabelaProdutoID&CodigoProduto&Quantidade&UnidadeMedidaID&Fator&ValorUnitario&ValorTotal&Descricao&RegistroANVISA&CodigoNoFabricante&AutorizacaoEmpresa
+							hash = hash & sequencialItem&CD&Data&HoraInicio&HoraFim&TabelaProdutoID&CodigoProduto&Quantidade&UnidadeMedidaID&Fator&ValorUnitario&ValorTotal&Descricao&RegistroANVISA&CodigoNoFabricante&AutorizacaoEmpresa
 						%>
                         <ans:despesa>
+                            <ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>
                             <ans:codigoDespesa><%= CD %></ans:codigoDespesa>
                             <ans:servicosExecutados>
                                 <%if Data<>"" then%><ans:dataExecucao><%= Data %></ans:dataExecucao><% End If %>

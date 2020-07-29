@@ -45,7 +45,12 @@ else
     <div class="col-md-12">
         <div class="panel">
             <div class="panel-body">
-                <%=quickField("text", "Descricao", "Descrição do modelo", 4, reg("Descricao"), 200, "", "")%>
+                <div class="col-md-12">
+                    <%=quickField("text", "Descricao", "Descrição do modelo", 4, reg("Descricao"), 200, "", "")%>
+                    <span class="panel-controls">
+                        <!--#include file="Tags.asp"-->
+                    </span>
+                </div>
             </div>
         </div>
     </div>

@@ -14,6 +14,7 @@ if Row<>"" then
 	Row=ccur(Row)
 end if
 
+
 TemRegrasDeDesconto=False
 
 set TemRegrasDeDescontoSQL = db.execute("SELECT rd.id FROM regrasdescontos rd INNER JOIN regraspermissoes rp ON rp.id=rd.RegraID LIMIT 1")
@@ -34,6 +35,13 @@ if not ValorPagoSQL.eof then
     end if
 end if
 
+
+ExecutantesTipos = "5, 8, 2"
+ExecutantesTiposAjax = "5, 8, 2"
+if session("Banco")="clinic6118" then
+    ExecutantesTipos = "5"
+    ExecutantesTiposAjax = "5"
+end if
 
 if Acao="" then
 	%>
@@ -612,5 +620,46 @@ function repasses(T, I){
         $("#modal").html(data);
     });
 }
+
+const filtraExecutantes = async (procedimentoId, linhaId) => {
+//      obtém um json dos executantes
+    const response = await doApiRequest({
+        url: "jsonProfissionaisPorProcedimento.asp", //executantes/lista-executante
+        params: {
+            procedimento_id: procedimentoId,
+            tipo_executantes: "<%=ExecutantesTiposAjax%>"
+        }
+    });
+    const $selectExecutantes = $("#ProfissionalID" + linhaId);
+
+    const executantes = response.data;
+
+    executantes.unshift({
+        NomeProfissional: "Selecione",
+        AssociacaoID: null,
+        ID: null,
+    });
+    if(executantes){
+        var valorSelecionado = $selectExecutantes.val();
+        $selectExecutantes.html("");
+        let htmlExecutantes = "";
+
+        executantes.map(function(executante) {
+            var executanteIdentificador = executante.AssociacaoID + "_" + executante.ID;
+
+            htmlExecutantes += `<option value="${executanteIdentificador}">${executante.NomeProfissional}</option>`;
+        });
+        $selectExecutantes.html(htmlExecutantes);
+        $selectExecutantes.val(valorSelecionado);
+    }
+
+}
+
+
+function onChangeProcedimento(linhaId, procedimentoId) {
+  parametrosInvoice(linhaId, procedimentoId);
+  filtraExecutantes(procedimentoId, linhaId);
+}
+
 </script>
 <!--#include file="disconnect.asp"-->

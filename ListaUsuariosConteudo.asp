@@ -38,18 +38,30 @@
             Quantidade = 0
             QuantSA = 0
             QuantCA = 0
-            set usu = db.execute("select l.id LicencaID, lu.Nome, lu.Tipo, lu.Email, l.NomeEmpresa from cliniccentral.licencasusuarios lu left join cliniccentral.licencas l on l.id=lu.licencaid where l.cupom like '"&Cupom&"' "&sqlEmpresa&" "&sqlTipo&" "&sqlNome&" order by l.NomeEmpresa asc, lu.Nome asc")
+            set usu = db.execute("select l.id LicencaID, lu.Nome, lu.Tipo, lu.Email, l.NomeEmpresa, lu.Ativo from cliniccentral.licencasusuarios lu left join cliniccentral.licencas l on l.id=lu.licencaid where l.cupom like '"&Cupom&"' "&sqlEmpresa&" "&sqlTipo&" "&sqlNome&" order by l.NomeEmpresa asc, lu.Nome asc")
             while not usu.EOF
                 Quantidade = Quantidade + 1
-                if usu("Email")&""="" then
+                inactive_user = false
+
+                If usu("Email")&""="" then
+                    inactive_user = true
+                End if
+
+                If usu("Ativo") = 0 or isNull(usu("Ativo")) or usu("Ativo") = "" or usu("Email")&""="" then
+                    inactive_user = true
+                End if
+
+                
+
+                If inactive_user Then
                     Email = "<b><i>Sem acesso</i></b>"
                     cor = "danger"
                     QuantSA = QuantSA + 1
-                else
+                Else
                     Email = usu("Email")
                     cor = "success"
                     QuantCA = QuantCA + 1
-                end if
+                End if
                 %>
 
                 <tbody>

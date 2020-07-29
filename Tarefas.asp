@@ -622,9 +622,9 @@ end if
                             <% else %>
                                 <%= quickfield("text", "Titulo", "Título", 12, reg("Titulo"), "", "", "") %>
                             <% end if %>
-                        <% else
-                            response.write(selectList("Título", "Titulo", reg("Titulo"), "tarefas", "Titulo", "location.href=""?P=tarefas&Pers=1&I=""+$(this).val()", " "& disabled &" required", ""))
-                        end if
+                        <% else %>
+                            <%= quickfield("text", "Titulo", "Título", 12, reg("Titulo"), "", "", " "& disabled &" required") %>
+                        <% end if
                          %>
                     </div>
                 </div>
@@ -652,6 +652,16 @@ end if
                 <div id="interacoes" class="tab-pane chat-widget active" role="tabpanel">
                     <%server.Execute("TarefasInteracoes.asp") %>
                 </div>
+                <hr class="short alt" />
+                <div class="row">
+                <div class="col-md-12">
+                    <h3>Imagens/Arquivos/Evidências</h3>
+                </div>
+                    <div class="col-md-12">
+                       <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?tarefaId=<%=request.QueryString("I")%>&Tipo=I&Pasta=feegow-screenshot"></iframe>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

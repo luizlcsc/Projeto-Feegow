@@ -15,13 +15,17 @@
         response.end
     END IF
 
-    ArquivoImagem = "ArquivoImagem"
+ArquivoImagem = req("ArquivoImagem")
+ImageRenderType = "download"
 
+if req("PacienteID")<>"" and req("PacienteID")<>"0" then
+    ImageRenderType = "redirect"
+end if
 %>
 <style>
     :root {
-      --width-main: 280px;
-      --height-main: 280px;
+      --width-main: 200px;
+      --height-main: 200px;
     }
 
     .galery{
@@ -152,6 +156,11 @@
     }
 </style>
 <%
+
+if ArquivoImagem="" then
+    ArquivoImagem="Imagem"
+end if
+
 if ArquivoImagem="Imagem" then
 %>
 <div class="btn-group ib m20 pull-left ">
@@ -235,31 +244,53 @@ end if
                 link = item.thumbnailLink?item.thumbnailLink:item.ArquivoLink;
             }
 
+            let baseLink = "https://cdn.feegow.com/icons/";
+
             if(['docx','doc','rtf'].includes(extension)){
-                link = 'assets/img/doc.png';
+                link = baseLink + 'doc.png';
             }
 
             if(['pdf'].includes(extension)){
-                link = 'assets/img/pdf.png';
+                link = baseLink + 'pdf.png';
+            }
+            // if(['png'].includes(extension)){
+            //     link = 'png.png';
+            // }
+            if(['mp4'].includes(extension)){
+                link = baseLink + 'pdf.png';
             }
             if(['xml'].includes(extension)){
-                link = 'assets/img/xml.png';
+                // link = 'xml.png';
             }
 
             if(['txt'].includes(extension)){
-                link = 'assets/img/txt.png';
+                link = baseLink + 'txt.png';
             }
 
             if(['pptx'].includes(extension)){
-                link = 'assets/img/pptx.png';
+                link = baseLink + 'ppt.png';
             }
 
             if(['csv'].includes(extension)){
-                link = 'assets/img/csv.png';
+                link = baseLink + 'csv.png';
             }
 
             if(['xlsx','xls'].includes(extension)){
-                link = 'assets/img/xlsx.png';
+                link = baseLink + 'xls.png';
+            }
+
+            // if(['jpg','jpeg'].includes(extension)){
+            //     link = 'jpg.png';
+            // }
+
+            if(['mp3'].includes(extension)){
+                link = baseLink + 'mp3.png';
+            }
+            if(['mp4'].includes(extension)){
+                link = baseLink + 'mp4.png';
+            }
+            if(['txt'].includes(extension)){
+                link = baseLink + 'txt.png';
             }
 
             item.link = link;
@@ -287,7 +318,7 @@ end if
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-expand icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}" target="_blank" title="Abrir Imagem Separadamente">
+                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink.replace('redirect', '<%=ImageRenderType%>')}" target="_blank" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-external-link icon-external-link"></i>
                                     </a>
                                     <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">
@@ -305,7 +336,7 @@ end if
                                 </div>
 
                              </div>
-                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink}" target="_blank"><img src="${item.link}" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></a></div>
+                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink}" target="_blank"><img src="${item.link}" data-id="${item.id}" class="${item.extension} img-responsive" title="${item.Descricao}"></a></div>
                              <div class="config">
                                 <textarea class="galery-description text-info border-edit imgpac" name="Desc${item.id}" onchange="changeDescription(${item.id},this)" data-img-id="${item.id}">${item.NovaDescricao}</textarea>
                              </div>

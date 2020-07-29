@@ -185,7 +185,16 @@ select case lcase(req("P"))
                 </div>
             </div>
             <%
-              end if
+      elseif lcase(req("P"))="areadocliente" then
+
+            if recursoAdicional(32)<>4  then
+            %>
+            <div class="col-sm-12">
+                <button onclick="openComponentsModal('modal-telemedicine'); $('#modal').removeClass('modal-content')" class="btn btn-sm btn-block btn-system">Ativar telemedicina</button>
+            </div>
+            <%
+            end if
+      end if
             %>
         </li>
         <%
@@ -783,17 +792,6 @@ select case lcase(req("P"))
             </li>
 		    <%
 		    end if
-		    %>
-            <li>
-                <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
-                    <span class="fa fa-file-text-o bigger-110"></span>
-                    <span class="sidebar-title">Protocolos</span>
-                    <span class="sidebar-title-tray">
-                      <span class="label label-xs bg-primary" id="totalprotocolos"></span>
-                    </span>
-                </a>
-            </li>
-		    <%
 		    if aut("vacinapacienteV")=1 then
 		    %>
             <li>
@@ -1487,7 +1485,7 @@ select case lcase(req("P"))
         <%
             end if
         end if
-    case "outrasconfiguracoes", "novasconfiguracoes", "CadastroExamesLab"
+    case "outrasconfiguracoes", "novasconfiguracoes"
         %>
         <li class="sidebar-label pt20">Opções de Configurações</li>
         <li class="hidden">
@@ -1563,15 +1561,6 @@ select case lcase(req("P"))
             <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');">
             <span class="fa fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
-
-         <% IF  aut("exames_laboratoriaisV")=1  THEN %>
-            <li>
-              <a href="?P=CadastroExamesLab&Pers=1">
-                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Cadastro de Exames (Lab)</span></a> 
-    
-            </li>
-        <% END IF %>
-
         <%
     case "chamadasmotivoscontato","chamadascategorias"
     %>
@@ -1610,7 +1599,7 @@ select case lcase(req("P"))
             </li>
             <%
         end if
-    case "financeiro","auditoria/auditar", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodedata", "descontopendente", "listarempresasnfse", "listarnotasfiscais", "editarempresanfse", "criarempresanfse"
+    case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodedata", "descontopendente", "listarempresasnfse", "listarnotasfiscais", "editarempresanfse", "criarempresanfse"
               %>
               <li class="sidebar-label pt20">Financeiro</li>
     	<!--#include file="MenuFinanceiro.asp"-->
@@ -1630,7 +1619,7 @@ select case lcase(req("P"))
         %>
         <!--#include file="MenuEstoque.asp"-->
         <%
-    case "listaprodutos", "produtoscategorias", "produtoslocalizacoes", "produtosfabricantes", "produtoskits", "medicamentosconvenios"
+    case "listaprodutos", "produtoscategorias", "produtoslocalizacoes", "produtosfabricantes", "produtoskits"
         %><li class="sidebar-label pt20">Tipos de Itens</li><%
         set getTipoProduto = db.execute("SELECT * FROM cliniccentral.produtostipos")
         while not getTipoProduto.eof
@@ -1650,9 +1639,6 @@ select case lcase(req("P"))
         %>
         <hr style="margin:10px !important;">
         <li class="sidebar-label pt20">Configurações</li>
-        <li <%if req("P")="MedicamentosConvenios" then%>class="active"<%end if%>>
-            <a href="./?P=MedicamentosConvenios&Pers=1"><span class="fa fa-sitemap"></span> <span class="sidebar-title"> Medicamentos por Convênios</span></a>
-        </li>
         <li <%if req("P")="ProdutosCategorias" then%>class="active"<%end if%>>
             <a href="./?P=ProdutosCategorias&Pers=0"><span class="fa fa-puzzle-piece"></span> <span class="sidebar-title"> Categorias</span></a>
         </li>
@@ -1660,7 +1646,7 @@ select case lcase(req("P"))
             <a href="./?P=ProdutosLocalizacoes&Pers=0"><span class="fa fa-map-marker"></span> <span class="sidebar-title"> Localizações</span></a>
         </li>
         <li <%if req("P")="ProdutosFabricantes" then%>class="active"<%end if%>>
-            <a href="./?P=ProdutosFabricantes&Pers=0"><span class="fa fa-building"></span> <span class="sidebar-title"> Fabricantes</span></a>
+            <a href="./?P=ProdutosFabricantes&Pers=0"><span class="fa fa-sitemap"></span> <span class="sidebar-title"> Fabricantes</span></a>
         </li>
         <li <%if req("P")="ProdutosKits" then%>class="active"<%end if%>>
             <a href="./?P=ProdutosKits&Pers=Follow"><span class="fa fa-medkit"></span> <span class="sidebar-title"> Kits</span></a>
@@ -1673,9 +1659,9 @@ select case lcase(req("P"))
         <li class="sidebar-label pt20">Relatórios</li>
         <%
         favoritosSQL =  "select r.id,r.NomeModelo, r.RelatorioID,rl.Arquivo,rl.Ct "&_
-                        " from cliniccentral.relatorios_preferencias_modelo as r"&_
-                        " join cliniccentral.relatorios rl on rl.id = r.RelatorioID "&_
-                        " where r.Atalho=1 and r.LicencaID = "&replace(session("Banco"),"clinic","")&" and r.sysActive = 1"
+                            " from cliniccentral.relatorios_preferencias_modelo as r"&_
+                            " join cliniccentral.relatorios rl on rl.id = r.RelatorioID "&_
+                            " where r.Atalho=1 and r.LicencaID = "&replace(session("Banco"),"clinic","")&" and r.sysActive = 1"
         set relatoriosFav = db.execute(favoritosSQL)
         if not relatoriosFav.eof then
         %>
@@ -1812,7 +1798,9 @@ select case lcase(req("P"))
                         Taxa de Ocupação
                     </a>
                 </li>
-
+                <%
+                if recursoAdicional(35)=4 then
+                %>
                 <li>
                     <a href="#" onClick="callReport('UraReport');">
                         <i class="fa fa-double-angle-right"></i>
@@ -1820,6 +1808,7 @@ select case lcase(req("P"))
                     </a>
                 </li>
                 <%
+                end if
                 if recursoAdicional(24)=4 then
                     set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
                     if not labAutenticacao.eof then
@@ -1847,7 +1836,18 @@ select case lcase(req("P"))
                 end if
                     end if
                 end if
-
+                %>
+                <%
+                if aut("|agendaV|")=1 or lcase(session("Table"))="profissionais" then
+                %>
+                <li>
+                    <a href="https://clinic.feegow.com.br/components/public/reports/r/duration-of-service" target="_blank">
+                        <i class="fa fa-double-angle-right"></i>
+                        Duração do Atendimento
+                    </a>
+                </li>
+                <%
+                end if
 
                 if aut("|relatoriosagendaV|")=1 then
                 %>
@@ -1861,6 +1861,12 @@ select case lcase(req("P"))
                     <a href="#" onClick="callReport('ProdutividadeSintetico');">
                         <i class="fa fa-double-angle-right"></i>
                         Produtividade - Sintético
+                    </a>
+                </li>
+                <li>
+                    <a href="https://clinic.feegow.com.br/components/public/reports/r/productivity" target="_blank">
+                        <i class="fa fa-double-angle-right"></i>
+                        Produtividade - Analítico
                     </a>
                 </li>
                 <%
@@ -1931,6 +1937,12 @@ select case lcase(req("P"))
                              Serviços por Execução
                         </a>
                     </li>
+                    <li>
+                        <a href="https://clinic.feegow.com.br/components/public/reports/r/guides" target="_blank">
+                            <i class="fa fa-double-angle-right"></i>
+                             Guias Fora de Lote
+                        </a>
+                    </li>
                     <%
                 end if
 				%>
@@ -1941,13 +1953,14 @@ select case lcase(req("P"))
                         Faturamento Agrupado
                     </a>
                 </li>
-
-                <li class="hidden">
-                    <a href="javascript:callReport('FaturamentoSintetico');">
+                <% if session("Banco")="clinic5459" then %>
+                <li>
+                    <a href="javascript:callReport('rpOperador');">
                         <i class="fa fa-double-angle-right"></i>
-                        Faturamento Sintético
+                        Produção por Operador
                     </a>
                 </li>
+                <% end if %>
             </ul>
         </li>
         <%end if %>
@@ -2014,23 +2027,6 @@ select case lcase(req("P"))
                     <a href="javascript:callReport('rpDMed');">
                         <i class="fa fa-double-angle-right"></i>
                         D-Med
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <a href="#" class="accordion-toggle menu-open">
-                <span class="fa fa-calendar"></span>
-                <span class="sidebar-title"> Laboratórios </span>
-
-                <span class="caret"></span>
-            </a>
-
-            <ul class="nav sub-nav">
-                 <li>
-                    <a href="#" onClick="callReport('LabsSyncReport');">
-                        <i class="fa fa-double-angle-right"></i>
-                        Relatório de Sincronização
                     </a>
                 </li>
             </ul>
@@ -2110,6 +2106,12 @@ select case lcase(req("P"))
                         Serviços a Executar
                     </a>
                 </li>
+                <li class="hidden">
+                    <a href="https://clinic.feegow.com.br/components/public/reports/r/medical-transfer" target="_blank">
+                        <i class="fa fa-double-angle-right"></i>
+                        Repasses - Analítico
+                    </a>
+                </li>
                 <li>
                     <a href="javascript:callReport('repassesAnalitico');">
                         <i class="fa fa-double-angle-right"></i>
@@ -2150,6 +2152,16 @@ select case lcase(req("P"))
             </a>
             <ul class="nav sub-nav">
                 <%
+                if 1=2 then
+                %>
+                <li>
+                    <a href="https://clinic.feegow.com.br/components/public/reports/r/medical-report">
+                        <i class="fa fa-double-angle-right"></i>
+                        Laudos Sintético
+                    </a>
+                </li>
+                <%
+                end if
                 if aut("|relatoriosformulariosV|")=1 then
                 %>
                 <li>
@@ -2164,6 +2176,26 @@ select case lcase(req("P"))
             </ul>
         </li>
         <%
+        if aut("propostasV") then
+        %>
+        <li>
+            <a href="#" class="accordion-toggle menu-open">
+                <span class="fa fa-files-o"></span>
+                <span class="sidebar-title"> Propostas </span>
+
+                <span class="caret"></span>
+            </a>
+            <ul class="nav sub-nav">
+                <li>
+                    <a href="https://clinic.feegow.com.br/components/public/reports/r/proposal" target="_blank">
+                        <i class="fa fa-double-angle-right"></i>
+                        Propostas Emitidas
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <%
+        end if
         if aut("estoqueV") then
         %>
         <li>
@@ -2178,6 +2210,12 @@ select case lcase(req("P"))
                     <a href="javascript:callReport('rEstoquePosicao');">
                         <i class="fa fa-double-angle-right"></i>
                         Posição
+                    </a>
+                </li>
+                <li>
+                    <a href="https://clinic.feegow.com.br/components/public/reports/r/stock-movement" target="_blank">
+                        <i class="fa fa-double-angle-right"></i>
+                        Movimentação
                     </a>
                 </li>
             </ul>
@@ -2284,7 +2322,7 @@ select case lcase(req("P"))
             <a data-toggle="tab" href="#folha"><span class="fa fa-file-text bigger-110"></span> <span class="sidebar-title">Cadastro Principal</span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divAnexos" onclick="ajxContent('Imagens&PacienteID=<%= PacienteID %>', 0, 1, 'ImagensPaciente')"><span class="fa fa-file"></span> <span class="sidebar-title">Anexos e Textos</span></a>
+            <a data-toggle="tab" href="#divAnexos" onclick="loadImagensLaudo()"><span class="fa fa-file"></span> <span class="sidebar-title">Anexos e Textos</span></a>
         </li>
         <li>
             <a href="javascript:entrega()"><span class="fa fa-print"></span> <span class="sidebar-title">Entrega</span></a>

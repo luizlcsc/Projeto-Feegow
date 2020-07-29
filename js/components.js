@@ -392,6 +392,8 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
         $('#divAvatar').show();
         $('#divAvatar video').hide();
         $('#divDisplayFoto').css('display','block');
+        $("#take-photo").hide();
+        $("#cancelar").hide();
 
     }
 

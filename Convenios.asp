@@ -606,29 +606,19 @@ end function
         });
 
 
- 			$("#Foto").change(function() {
-                 let objct = new FormData();
-                 objct.append('userType','convenios');
-                 objct.append('userId',"<%=req("I")%>");
-                 objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
-                 objct.append('upload_file' , file_input.data('ace_input_files')[0]);
-                 objct.append('col' , "Foto");
-                 objct.append('folder_name' ,"Perfil");
-                 $.ajax({
-                         url: domain + "file/perfil/uploadPerfilFile",
-                         type: 'POST',
-                         processData: false,
-                         contentType: false,
-                         data: objct,
-                       // Now you should be able to do this:
-                       mimeType: 'multipart/form-data',    //Property added in 1.5.1
+				$("#Foto").change(async function() {
 
-                       success: function (data) {
+        		    await uploadProfilePic({
+        		        $elem: $("#Foto"),
+        		        userId: "<%=req("I")%>",
+        		        db: "<%= LicenseID %>",
+        		        table: 'convenios',
+        		        content: file_input.data('ace_input_files')[0] ,
+        		        contentType: "form"
+        		    });
 
-                       }
-                 });
-
-             });
+        			if(!file_input.data('ace_input_files')) return false;//no files selected
+        		});
 
         $form.on('reset', function() {
             file_input.ace_file_input('reset_input');

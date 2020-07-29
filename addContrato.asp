@@ -124,7 +124,7 @@ elseif ModeloID<>"" and ModeloID<>"0" then
         end if
         'TAG ANTIGA DESATIVADA | RAFAEL MAIA 28/07/2020
         'ModeloContrato = replace(ModeloContrato, "[Contrato.Protocolo]", InvoiceID)
-        ModeloContrato = TagsConverte(ModeloContrato,"ContratoID_"&req("InvoiceID"),"")
+        ModeloContrato = TagsConverte(ModeloContrato,"ContratoID_"&req("InvoiceID"),"") 
 
         if instr(ModeloContrato, "[UltimoFormulario.")>0 then
             splUF = split( ModeloContrato, "[UltimoFormulario." )

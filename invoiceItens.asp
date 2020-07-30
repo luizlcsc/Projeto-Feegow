@@ -36,10 +36,8 @@ if not ValorPagoSQL.eof then
 end if
 
 
-ExecutantesTipos = "5, 8, 2"
 ExecutantesTiposAjax = "5, 8, 2"
 if session("Banco")="clinic6118" then
-    ExecutantesTipos = "5"
     ExecutantesTiposAjax = "5"
 end if
 

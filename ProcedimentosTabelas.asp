@@ -63,6 +63,13 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
 %>
 <form id="frmPT">
     <div class="panel mt20 mtn hidden-print">
+        <div class="panel-heading">
+            <span class="panel-title"><i class="fa fa-info-circle"></i> Detalhes da tabela de preço</span>
+            <span class="panel-controls">
+                <button type="button" onclick="HistoricoAlteracoes()" class="btn btn-default btn-sm" title="Histórico de alterações"><i class="fa fa-history"></i> </button>
+                <button class="btn btn-info btn-sm" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
+            </span>
+        </div>
         <div class="panel-body">
             <div class="row">
                 <%= quickfield("text", "NomeTabela", "Nome da tabela", 3, reg("NomeTabela"), "", "", " required ") %>
@@ -70,11 +77,7 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
                 <%= quickfield("datepicker", "Inicio", "Vigência de", 2, reg("Inicio"), "", "", " required ") %>
                 <%= quickfield("datepicker", "Fim", "até", 2, reg("Fim"), "", "", " required ") %>
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-warning mt25" onclick="$('#filtros').slideDown()">Parâmetros adicionais <i class="fa fa-chevron-down"> </i></button>
-                </div>
-                <div class="col-md-1">
-                    <label>&nbsp;</label><br />
-                    <button class="btn btn-info" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
+                    <button type="button" class="btn btn-default mt25" onclick="$('#filtros').slideDown()">Parâmetros adicionais <i class="fa fa-chevron-down"> </i></button>
                 </div>
             </div>
             <div class="row mt15" id="filtros" style="display:none">
@@ -88,6 +91,10 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
         </div>
     </div>
     <div class="panel">
+
+        <div class="panel-heading">
+            <span class="panel-title"><i class="fa fa-list"></i> Procedimentos da tabela</span>
+        </div>
         <div class="panel-body">
             <table class="table table-condensed table-hover">
             <%
@@ -106,8 +113,8 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
             end if
             %>
                 <thead>
-                    <tr>
-                        <th width="1%" class="hidden-print"><input type="checkbox" onclick="$('.chk').prop('checked', $(this).prop('checked'))" /></th>
+                    <tr class="primary">
+                        <th width="1%" class="hidden hidden-print"><input type="checkbox" onclick="$('.chk').prop('checked', $(this).prop('checked'))" /></th>
                         <th>Procedimento</th>
                         <th class="text-right">Valor Base</th>
                         <%
@@ -142,7 +149,7 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
                         
                         %>
                         <tr>
-                            <td class="hidden-print"><input type="checkbox" class="chk" name="chk<%= t("id") %>" /></td>
+                            <td class="hidden hidden-print"><input type="checkbox" class="chk" name="chk<%= t("id") %>" /></td>
                             <td><%= t("NomeProcedimento") %></td>
                             <td class="text-right"><%= fn(t("Valor")) %></td>
                             <%
@@ -164,8 +171,8 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
                     %>
                 </tbody>
                 <tfoot>
-                    <tr>
-                        <td colspan="10"><%= c %> procedimentos</td>
+                    <tr class="dark">
+                        <th colspan="10"><%= c %> procedimentos</th>
                     </tr>
                 </tfoot>
             </table>
@@ -184,13 +191,15 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
         <% end if %>
         </div>
         </div>
-                
-        
-        <div>
-            Gerado em <%=reg("sysDate")%> por <%=nameInTable(reg("sysUser"))%>
-        </div>
+
 
     </div>
+
+
+
+        <div>
+            Criado em <%=reg("sysDate")%> por <%=nameInTable(reg("sysUser"))%>
+        </div>
     <button type="submit" class="hidden" id="Salvar"></button>
 </form>
 
@@ -238,5 +247,15 @@ set regOutraTabela = db.execute("select *,IF(NomeTabela = '"&NomeTabela&"', 1,0)
         
                
         })
+
+
+    function HistoricoAlteracoes() {
+        openComponentsModal("LogUltimasAlteracoes.asp", {
+            Tabelas: "procedimentostabelas,procedimentostabelasvalores",
+            ID: "<%=TabelaID%>",
+            PaiID: "<%=TabelaID%>",
+            TipoPai: "TabelaID",
+        }, "Log de alterações", true);
+    }
 
 </script>

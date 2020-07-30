@@ -94,7 +94,7 @@ elseif ModeloID<>"" and ModeloID<>"0" then
                     if Valor<=0 then
                         Valor = 0
                     end if
-                    Proc    sDist = ProcsDist & "<p>" & distProcs("Quantidade") & "x " & distProcs("NomeProcedimento") &" - Valor: R$" & Valor & "</p>"
+                    ProcsDist = ProcsDist & "<p>" & distProcs("Quantidade") & "x " & distProcs("NomeProcedimento") &" - Valor: R$" & Valor & "</p>"
                 else
                     ProcsDist = ProcsDist & ", " & distProcs("NomeProcedimento")
                 end if

@@ -76,6 +76,10 @@ function tagsConverte(conteudo,itens,moduloExcecao)
       case "ReciboID"
         item_ReciboID            = item_id
         'ALIAS DE TAGS RELACIONADAS AO RECIBO
+      
+      case "ContratoID"
+        item_ContratoID            = item_id
+        'ALIAS DE TAGS RELACIONADAS AO RECIBO
         
       case "PropostaID"          
         item_PropostaID          = item_id
@@ -372,6 +376,18 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             RecibosSQL.close
             set RecibosSQL = nothing
           end if
+
+
+        case "Contrato"
+          if item_ContratoID>0 then
+            'REPLICADO COM BASE NO "addContrato.asp"
+            qContratosSQL = "SELECT id FROM sys_financialinvoices WHERE id="&item_ContratoID
+            SET ContratosSQL = db.execute(qContratosSQL)
+            if not ContratosSQL.eof then
+              conteudo = replace(conteudo, "[Contrato.Protocolo]", trim(ContratosSQL("id")&" ") )
+            end if
+          end if
+          
         case "Fatura"
           '***QUERY DE PROFISSIONAIS QUE EXECUTARAM UM SERVIÇO***
           'SELECT GROUP_CONCAT(p.NomeProfissional SEPARATOR ', ') FROM itensinvoice ii
@@ -383,7 +399,9 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             qFaturasSQL = "SELECT CONCAT('IN',UPPER(left(md5(id), 7))) as Codigo FROM sys_financialinvoices WHERE id="&item_FaturaID
             SET FaturasSQL = db.execute(qFaturasSQL)
             if not FaturasSQL.eof then
+              
               conteudo = replace(conteudo, "[Fatura.Codigo]", trim(FaturasSQL("Codigo")&" ") )
+
             end if
             FaturasSQL.close
             set FaturasSQL = nothing
@@ -408,5 +426,5 @@ end function
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalID_1",""))
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalSessao_1",""))
 'response.write("<br>"&TagsConverte("[ProfissionalSolicitante.Nome]","ProfissionalSolicitanteID_200",""))
-'response.write(TagsConverte("Fatura: [Fatura.Codigo]","FaturaID_2",""))
+'response.write(TagsConverte("Contrato: [Contrato.Protocolo]","ContratoID_9368",""))
 %>

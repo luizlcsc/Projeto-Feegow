@@ -219,9 +219,9 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="js/components.js?a=31"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
-<%if aut("capptaI") then%>
+    <%if aut("capptaI") then%>
     <script src="assets/js/feegow-cappta.js"></script>
-  <%end if%>
+    <%end if%>
 
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.full.min.js"></script>
   <%
@@ -318,6 +318,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                     }
                     return true;
                 }
+
+
 
                 function showNoResults() {
                     "use strict";
@@ -767,13 +769,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
             <span class="caret caret-tp hidden-xs hidden-sm hidden-md"></span>
           </a>
           <ul class="dropdown-menu list-group dropdown-persist w250" role="menu" style="overflow-y: auto; max-height: 500px">
-
-
-
-
-
-
-
                             <%
 							if session("Partner")="" then
 							%>

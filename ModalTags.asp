@@ -84,7 +84,7 @@ while not sqlTagsCategorias.eof
     tabsCategoriasHTML = replace(tabsCategoriasHTML,"class='active'","class=''")
     tabsCategoriasHTML = replace(tabsCategoriasHTML,"aria-expanded='true''","aria-expanded='false'")
    
-    tabsContentHTML = replace(tabsContentHTML,"class='tab-pane active''","class='tab-pane'")
+    tabsContentHTML = replace(tabsContentHTML,"class='tab-pane active'","class='tab-pane'")
 
   end if
   if tabCreate = 1 then

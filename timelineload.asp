@@ -249,7 +249,7 @@
                             end if
                             %> </div>
                     </div>
-                    <div class="panel-body timelineApp" <% if device()<>"" then %> style="overflow-x:scroll!important" <% end if %> >
+                    <div class="panel-body timelineApp" style=" word-break: break-all; <% if device()<>"" then %> overflow-x:scroll!important; <% end if %>" >
                 <%
 '                response.Write( Rotulo & Valor  &"<br>{{"& ti("Tipo") &"}}" )
                 select case ti("Tipo")

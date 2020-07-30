@@ -1,5 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
+<!--#include file="modal.asp"-->
 <%
 if ref("De")<>"" then
     De = ref("De")
@@ -38,7 +39,7 @@ end if
             <th>Convênio</th>
             <th>Status</th>
             <th width="1%"></th>
-            <th width="5%"></th>
+            <th width="100"></th>
         </tr>
     </thead>
     <tbody>
@@ -203,7 +204,7 @@ end if
                 END IF
 
                 sql = "select l.id, ls.Status, l.PrevisaoEntrega from laudos l LEFT JOIN laudostatus ls ON ls.id=l.StatusID where l.Tabela='"& Tabela &"' and l.IDTabela="& IDTabela &" and l.Serie="&ItemN
-                ' response.write (sql)
+                 'response.write (sql)
                 set vca = db.execute(sql)
                 if not vca.eof then
                     Status = vca("Status")
@@ -324,8 +325,11 @@ end if
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=739&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
                             <% else %> 
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%=link%>"><i class="fa fa-edit"></i></a>
-                            <% end if %>
-                            <button class="btn btn-sm btn-info hidden"><i class="fa fa-print"></i></button>
+                            <% end if
+                            if Status="Liberado" then
+                                response.write("<a href='javascript:entrega("&IDLaudo&")' class='btn btn-sm btn-info'><span class='fa fa-print'></span> </a>")
+                            end if
+                            %>
                             </div>
                         </td>
                     </tr>
@@ -361,6 +365,18 @@ end if
 </table>
 
 <script>
+function entrega(laudoID) {
+    $("#modal-table").modal("show");
+    $("#modal").html("Carregando...");
+    $.post("laudoEntrega.asp?L="+laudoID, "", function (data) { $("#modal").html(data) });
+    
+}
+function saveLaudo(T, print){
+    $.post("saveLaudo.asp?L=<%= LaudoID %>&T="+ T, $("#Texto, #StatusID, #ProfissionalID, #Restritivo, #DataEntrega, #HoraEntrega, #ObsEntrega, #Receptor").serialize(), function(data){
+        eval(data);
+    });
+}
+
 
 function esconder(elemento,invoiceid){
     var linha = '#tr'+elemento;

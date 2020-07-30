@@ -260,6 +260,7 @@
             <input type="hidden" name="ExameID" value="<?=$_GET['ExameID']?>">
             <input type="hidden" name="guiaID" value="<?=$_GET['guiaID']?>">
             <input type="hidden" name="tipoGuia" value="<?=$_GET['tipoGuia']?>">
+            <input type="hidden" name="tarefaId" value="<?=$_GET['tarefaId']?>">
             <input type="hidden" name="LaudoID" value="<?=$_GET['LaudoID']?>">
             <label for="file"><strong>Clique aqui e escolha um arquivo</strong><span class="box__dragndrop"> ou arraste até aqui</span>.</label>
             <button type="submit" class="box__button">Upload</button>
@@ -422,6 +423,7 @@
 					ajaxData.append('ExameID',$('input[name="ExameID"]').val());
 					ajaxData.append('guiaID',$('input[name="guiaID"]').val());
 					ajaxData.append('tipoGuia',$('input[name="tipoGuia"]').val());
+					ajaxData.append('tarefaId',$('input[name="tarefaId"]').val());
 					ajaxData.append('LaudoID',$('input[name="LaudoID"]').val());
 					ajax.send( ajaxData );
                     parent.callUpload && parent.callUpload(ajax.responseText);

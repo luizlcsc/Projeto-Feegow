@@ -2885,7 +2885,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 			nomePerm = "contasareceber"
 		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
 
-            set vcaCont = db.execute("select id, NomeModelo from contratosmodelos where sysActive=1")
+            set vcaCont = db.execute("select id, NomeModelo from contratosmodelos WHERE (sysActive=1) AND (UrlContrato='' OR UrlContrato IS NULL)")
             if not vcaCont.eof then
                 rbtns = rbtns & " <div class='btn-group'><button class='btn btn-info btn-sm dropdown-toggle' data-toggle='dropdown'  title='Adicionar Contrato'><i class='fa fa-file'></i></button>"
                 rbtns = rbtns & "<ul class='dropdown-menu dropdown-info pull-right' style='overflow-y: scroll; max-height: 400px;'>"

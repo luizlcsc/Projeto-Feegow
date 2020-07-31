@@ -100,7 +100,7 @@ else
                     <%if configWhatsApp=1 then%>
 
                     <label class="mn" for="AtivoWhatsApp">
-                        <input <% If AtivoWhatsApp=1 Then %> checked="checked" <%end if%> name="AtivoWhatsApp" id="AtivoWhatsApp" type="checkbox" />
+                        <input <% If reg("AtivoWhatsApp")="on" Then %> checked="checked" <%end if%> name="AtivoWhatsApp" id="AtivoWhatsApp" type="checkbox" />
                         WhatsApp
                     </label>
                     <%end if%>

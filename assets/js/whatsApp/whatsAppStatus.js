@@ -1,7 +1,7 @@
 $(document).ready(function(){
     window.setInterval(function(){
         whatsAppConnection();
-    }, 60000);
+    }, 600000);
     runWhatsAppTest();
 });
 

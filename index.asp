@@ -1346,6 +1346,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
                             <% IF session("Admin")="1" THEN %>
+                            <script>localStorage.setItem("Admin",true);</script>
                             <button class="btn btn-xs btn-success light" id="footer-whats" onclick="location.href='?P=OutrasConfiguracoes&Pers=1&whatsApp=true'"  data-rel="tooltip" data-placement="right" title="" data-original-title="" >
                                 <span class="fa fa-whatsapp"></span>
                             </button>

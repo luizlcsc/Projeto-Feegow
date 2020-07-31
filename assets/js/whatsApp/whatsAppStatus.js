@@ -1,8 +1,12 @@
 $(document).ready(function(){
-    window.setInterval(function(){
-        whatsAppConnection();
-    }, 600000);
-    runWhatsAppTest();
+    if(localStorage.getItem('Admin') == "true")
+    {
+        window.setInterval(function(){
+            whatsAppConnection();
+        }, 600000);
+        runWhatsAppTest();
+    }
+
 });
 
 function runWhatsAppTest(){

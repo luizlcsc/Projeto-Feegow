@@ -407,6 +407,20 @@ if not tryLogin.EOF then
             FieldTelemedicina=" '' "
         end if
 
+        IF session("ModoFranquia") THEN
+            strOrdem = "Padrao"
+
+            IF lcase(session("Table"))="funcionarios" THEN
+                strOrdem = "PadraoFuncionario"
+            END IF
+
+            set ResultPermissoes = db.execute("SELECT Permissoes FROM usuarios_regras JOIN regraspermissoes ON regraspermissoes.id = usuarios_regras.regra WHERE usuario = "&sysUser("id")&" AND unidade = "&session("UnidadeID")&" or "&strOrdem&" = 1 ORDER BY "&strOrdem&" ")
+
+            IF NOT ResultPermissoes.EOF THEN
+                session("Permissoes") = ResultPermissoes("Permissoes")
+            END IF
+        END IF
+
         set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, "&FieldTelemedicina&" ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
         if not AtendimentosProf.eof then
             ProcedimentoTelemedicina=AtendimentosProf("ProcedimentoTelemedicina")

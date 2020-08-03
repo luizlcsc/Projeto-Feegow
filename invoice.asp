@@ -548,17 +548,10 @@ end if
                                         <button type="button" onclick="abrirSelecaoLaboratorio('<%=InvoiceID%>','<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
                                             <i class="fa fa-flask"></i>
                                         </button>
-
                                     <% else %> 
-                                        <% if laboratorioid = "1" then %>
-                                            <button type="button" onclick="abrirMatrix('<%=InvoiceID%>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
-                                                <i class="fa fa-flask"></i>
-                                            </button>
-                                        <% else %>
-                                            <button type="button" onclick="abrirDiagBrasil('<%=InvoiceID%>','<%=laboratorios("labID")%>', '<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
-                                                <i class="fa fa-flask"></i>
-                                            </button>    
-                                        <% end if %>
+                                        <button type="button" onclick="abrirIntegracao('<%=InvoiceID%>','<%=laboratorioid%>', '<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=InvoiceID%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
+                                            <i class="fa fa-flask"></i>
+                                        </button>
                                     <% end if %>
 
                                 </div>

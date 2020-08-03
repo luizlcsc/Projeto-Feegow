@@ -121,8 +121,10 @@
 
                     matrixColor = "warning"
                     set soliSQL = db.execute("SELECT * FROM labs_solicitacoes  WHERE success='S' AND InvoiceID="&treatvalzero(inv("id")))
+                    foiIntegrado = 0
                     if not soliSQL.eof then
                         matrixColor = "success"
+                        foiIntegrado  = 1
                     end if
 
                     set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&inv("id")&" AND Executado!='S'")
@@ -142,12 +144,13 @@
                                     "   FROM labs_invoices_exames lie "&_
                                     "  INNER JOIN cliniccentral.labs_exames le ON (le.id = lie.LabExameID) "&_
                                     "  WHERE lie.InvoiceID  ='"&inv("id")&"' order by 1 limit 1"
+                    'response.write(sqlintegracao)
                     set integracao = db.execute(sqlintegracao)
 
                     totallabs=0
                     multiploslabs = 0
                     contintegracao = 0
-                    laboratorioid = 1
+                    laboratorioid = 4
                     NomeLaboratorio = ""
                     informacao = ""                   
 
@@ -180,8 +183,8 @@
                             $("#btn-pleres").css("display", "none");
                         }, 1000)
                         </script>
-                        <div class="btn-group">
-                            <% if multiploslabs = 1 then %> 
+                        <div class="btn-group" id="btnIntegracao_<%=inv("id")%>">
+                            <% if multiploslabs = 1 and foiIntegrado = 0 then %> 
                                 <button type="button" onclick="abrirSelecaoLaboratorio('<%=inv("id")%>','<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
                                     <i class="fa fa-flask"></i>
                                 </button>
@@ -197,7 +200,7 @@
               end if
 			  	set mov = db.execute("select id, ifnull(ValorPago, 0) ValorPago, Value, Date, CD, CaixaID from sys_financialmovement where InvoiceID="&inv("id")&" AND Type='Bill' ORDER BY Date")
 				set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&inv("id")&" AND Executado!='S'")
-				set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&inv("id")&" and p.IntegracaoPleres = 'S'")
+				'set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&inv("id")&" and p.IntegracaoPleres = 'S'")
 				
 				while not mov.eof
                   response.Write( btnParcela(mov("id"), mov("ValorPago"), mov("Value"), mov("Date"), mov("CD"), mov("CaixaID")) )

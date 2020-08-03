@@ -230,6 +230,9 @@ function abrirIntegracao(invoiceId,labid,itenscount) {
         case '3':
             openComponentsModal("labs-integration/alvaro/invoice-exams", {invoiceId: invoiceId, labid:labid, itens:itenscount }, false, false);
             break;
+        case '4':
+            openComponentsModal("labs-integration/hermespardini/invoice-exams", {invoiceId: invoiceId, labid:labid, itens:itenscount }, false, false);
+            break;
         default:
             alert ('Código de Laboratório não implementado');
         }

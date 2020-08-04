@@ -38,18 +38,24 @@ if not tryLogin.EOF then
     UsuariosContratadosS = tryLogin("UsuariosContratados")
     ServidorAplicacao = tryLogin("ServidorAplicacao")
     PastaAplicacao = tryLogin("PastaAplicacao")
+    PastaAplicacaoRedirect = PastaAplicacao
+
+    if isnull(PastaAplicacaoRedirect) then
+        PastaAplicacaoRedirect="v7"
+    end if
+
     Servidor = tryLogin("Servidor")&""
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
 
     if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
-            Response.Redirect("https://"&ServidorAplicacao&"/v7/?P=Login&U="&User)
+            Response.Redirect("https://"&ServidorAplicacao&"/"&PastaAplicacaoRedirect&"/?P=Login&U="&User)
         end if
     end if
 
     if Servidor="aws" then
-        response.redirect("http://clinic7.feegow.com.br/v7")
+        response.redirect("http://clinic7.feegow.com.br/"&PastaAplicacaoRedirect)
     end if
 
     if Servidor="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then

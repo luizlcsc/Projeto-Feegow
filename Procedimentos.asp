@@ -154,7 +154,13 @@ TipoGuia = reg("TipoGuia")
                             </div>
                             <%
                             end if
+                            if recursoAdicional(8)=4 then
                             %>
+                            <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" name="PermitePagamentoOnline" id="PermitePagamentoOnline" value="S" class="ace" <% If reg("PermitePagamentoOnline")="S" Then %> checked="checked" <% End If %> />
+                                <label for="PermitePagamentoOnline">Permite pagamento online </label>
+                            </div>
+                            <%end if%>
                         </div>
                     </div>
                     <hr class="short alt" />

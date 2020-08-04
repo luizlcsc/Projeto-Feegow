@@ -43,8 +43,15 @@ set reg = db.execute("select * from ProfissionalExterno where id="&req("I"))
                 <div class="col-md-10">
                     <div class="row">
                         <%=quickField("simpleSelect", "TratamentoID", "T&iacute;tulo", 2, reg("TratamentoID"), "select * from tratamento order by Tratamento", "Tratamento", "")%>
-                        <%=quickField("text", "NomeProfissional", "Nome", 6, reg("NomeProfissional"), "", "", " required")%>
+                        <%=quickField("text", "NomeProfissional", "Nome", 5, reg("NomeProfissional"), "", "", " required")%>
                         <%=quickField("simpleSelect", "EspecialidadeID", "Especialidade", 4, reg("EspecialidadeID"), "select * from especialidades WHERE sysActive=1 order by Especialidade", "Especialidade", "")%>
+                    <div class="col-md-1 <%=hideInactive %>">
+                        <label for="Ativo">Ativo</label><br />
+                            <div class="switch round">
+                                <input <% If reg("Ativo")="on" or isnull(reg("Ativo")) Then %> checked="checked"<%end if%> name="Ativo" id="Ativo" type="checkbox" />
+                                <label for="Ativo"></label>
+                            </div>
+                    </div>
                     </div>
                     <div class="row">
                         <%=quickField("simpleSelect", "Sexo", "Sexo", 2, reg("Sexo"), "select * from Sexo where sysActive=1", "NomeSexo", "")%>

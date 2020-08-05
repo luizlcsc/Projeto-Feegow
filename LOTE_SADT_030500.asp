@@ -356,9 +356,7 @@ prefixo = right(prefixo, 20)
 					%>
                     <ans:outrasDespesas>
                     	<%
-						sequencialItem=0
 						while not desp.eof
-							sequencialItem = sequencialItem+1
 							CD = zEsq(desp("CD"), 2)
 							Data = mydatetiss(desp("Data"))
 							HoraInicio = myTimeTISS(desp("HoraInicio"))

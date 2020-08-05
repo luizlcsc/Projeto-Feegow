@@ -77,14 +77,29 @@ end if
 <script type="text/javascript">
     var whatsAppAlertado = false;
 
-    $("#frmLaudos").submit(function () {
-        var carregando  = ' <div class=\"panel-body pn\" id=\"divListaLaudos\" style=\"text-align: center;\"> <i class=\"fa fa-circle-o-notch fa-spin\" style="text-align: center; margin: 30px;"></i>  </div>';
-        $("#divListaLaudos").html(carregando);
-        $.post("listaLaudos.asp", $(this).serialize(), function (data) {
-            $("#divListaLaudos").html(data);
+    function formLaudos() {
+        $("#frmLaudos").submit(function () {
+            var carregando  = ' <div class=\"panel-body pn\" id=\"divListaLaudos\" style=\"text-align: center;\"> <i class=\"fa fa-circle-o-notch fa-spin\" style="text-align: center; margin: 30px;"></i>  </div>';
+            $("#divListaLaudos").html(carregando);
+            $.post("listaLaudos.asp", $(this).serialize(), function (data) {
+                $("#divListaLaudos").html(data);
+            });
+            return false;
         });
-        return false;
+
+        $("#frmLaudos").submit();
+    }
+
+    //caso tenha dados do paciente no request
+    $(function () {
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        const paciente_id = url.searchParams.get("PacienteID");
+        const data_abertura = url.searchParams.get("De");
+        
+        if(paciente_id){
+            formLaudos();
+        }
     });
-    $("#frmLaudos").submit();
 </script>
 

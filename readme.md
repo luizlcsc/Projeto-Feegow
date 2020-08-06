@@ -8,6 +8,7 @@ _Partindo do pré suposto de que já exista um banco mysql funcionando e com as 
 
  **Instale o Mysql ODBC 8.0**
 > https://dev.mysql.com/downloads/connector/odbc/
+> Baixe o dump inicial https://www.dropbox.com/s/4x5lqb19kjeqsvd/BANCOS.zip?dl=0
 
 
  **Instale o IIs**

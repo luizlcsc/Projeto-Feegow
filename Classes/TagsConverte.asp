@@ -10,6 +10,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
   LicencaID_session = replace(session("Banco"), "clinic", "")
   'CONVERSAO DA CATEGORIA SISTEMA É PADRÃO
   itens = itens
+
   '### FILTRA OS ITENS SEPARADOS POR PIPE
   itensArray=Split(itens,"|")
   
@@ -20,7 +21,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
     item_id   = itemArray(1)&""
     conteudo = conteudo&""
     '## Add prefixo item_ para evitar conflitos de variaveis
-    
+
     select case item_nome
       case "PacienteID"
         item_PacienteID          = item_id

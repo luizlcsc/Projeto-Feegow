@@ -396,6 +396,7 @@ prefixo = right(prefixo, 20)
                             </ans:servicosExecutados>
                         </ans:despesa>
                         <%
+                        sequencialItem=sequencialItem+1
 						desp.movenext
 						wend
 						desp.close

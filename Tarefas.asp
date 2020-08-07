@@ -276,9 +276,12 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
 
                     <% if req("Helpdesk") <> "" then %>
                         <input type="hidden" value="<%=reg("ProjetoID")%>" id="ProjetoID" name="ProjetoID">
+                        <input type="hidden" value="<%=reg("CategoriaID")%>" id="SprintID" name="SprintID">
                         <input type="hidden" value="<%=reg("SprintID")%>" id="SprintID" name="SprintID">
                     <% else %>
                         <%=quickfield("simpleSelect", "ProjetoID", "Projeto", 6, cstr(reg("ProjetoID")&""), "SELECT '0' AS id, '- NÃO SE APLICA -' AS Titulo UNION (SELECT id, Titulo FROM projetos WHERE StatusID NOT IN (3, 4) "&projetoAuxQuery&" ORDER BY Titulo)", "Titulo", " semVazio ") %>
+                        &nbsp
+                        <%=quickfield("simpleSelect", "CategoriaID", "Categoria", 6, cstr(reg("CategoriaID")&""), "SELECT * FROM tarefa_categoria WHERE PaiID != 0 AND sysActive=1 ", "NomeCategoria", "") %>
                         <%=quickfield("simpleSelect", "SprintID", "Sprint", 6, cstr(reg("SprintID")&""), "SELECT '0' AS id, '- NÃO SE APLICA -' AS Descricao UNION (SELECT id, Descricao FROM sprints WHERE StatusID NOT IN (3, 4) "&projetoAuxQuery&" ORDER BY Descricao)", "Descricao", " semVazio ") %>
                     <% end if %>
 
@@ -434,7 +437,6 @@ end if
                             </div>
                         </div>
                     </div>
-                    <%end if%>
                     <div class="col-md-12">
                         <div class="panel">
                             <div class="panel-heading">
@@ -502,7 +504,8 @@ end if
                         
                         
                     </div>
-                    
+                    <%end if%>
+
                 </div>
 
                 <hr>

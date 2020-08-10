@@ -321,6 +321,12 @@ function recalcularItensGuia(GuiaID)
 
 end function
 
+function updateWithPlanoAndConvenio(GuiaID,Convenio,PlanoID)
+
+    sqlUpdate = "UPDATE tissprocedimentossadt SET CalculoPlanoID = NULLIF('"&PlanoID&"',''),CalculoConvenioID=NULLIF('"&Convenio&"','')  WHERE  GuiaID = "&GuiaID&";"
+    db.execute(sqlUpdate)
+    recalcularItensGuia(GuiaID)
+end function
 
 function recalcularEscalonamento(GuiaID)
 

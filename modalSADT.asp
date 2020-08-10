@@ -370,23 +370,28 @@ function alertCalculo(arg){
     $("[name='CalcularEscalonamento']").val("1");
 
 
-}
-function tissCompletaDados(T, I){
+}function tissCompletaDados(T, I){
 
-	$.ajax({
-		type:"POST",
-		url:"tissCompletaDados.asp?I="+I+"&T="+T,
-		data:$("#GuiaSADT").serialize()+"&"+$("#frmModal").serialize(),
-		success:function(data){
-			eval(data);
-			var convenio = $("#gConvenioID").val();
-            $.get(
-                'CamposObrigatoriosConvenio.asp?ConvenioID=' + convenio,
-                function(data){
-                    eval(data)
-                }
-            );
-		}
-	});
-}
+ 	$.ajax({
+ 		type:"POST",
+ 		url:"tissCompletaDados.asp?I="+I+"&T="+T,
+ 		data:$("#GuiaSADT").serialize(),
+ 		success:function(data){
+ 			eval(data);
+ 			var convenio = $("#gConvenioID").val();
+             $.get(
+                 'CamposObrigatoriosConvenio.asp?ConvenioID=' + convenio,
+                 function(data){
+                     eval(data)
+                 }
+             );
+ 		}
+ 	});
+     if(T === "Plano"){
+ 		let setConvenio = $("#gConvenioID").val();
+ 		let setPlano = $("#PlanoID").val();
+ 		let GuiadID = $("[name=GuiaID]").val();
+ 		atualizaTabela("tissprocedimentossadt", `tissprocedimentossadt.asp?I=${GuiadID}&T=${T}&setPlano=${setPlano}&setConvenio=${setConvenio}`)
+     }
+ }
 </script>

@@ -1036,7 +1036,6 @@ function ExibeHistoricoSADT(GuiaID) {
             GuiaID: GuiaID
         }, "Histórico de alterações", true);
 }
-
 function tissCompletaDados(T, I){
 
 	$.ajax({
@@ -1054,6 +1053,12 @@ function tissCompletaDados(T, I){
             );
 		}
 	});
+    if(T === "Plano"){
+		let setConvenio = $("#gConvenioID").val();
+		let setPlano = $("#PlanoID").val();
+		let GuiadID = $("[name=GuiaID]").val();
+		atualizaTabela("tissprocedimentossadt", `tissprocedimentossadt.asp?I=${GuiadID}&T=${T}&setPlano=${setPlano}&setConvenio=${setConvenio}`)
+    }
 }
 
 $("#gConvenioID, #UnidadeID").change(function(){

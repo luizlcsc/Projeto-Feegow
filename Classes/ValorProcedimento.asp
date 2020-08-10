@@ -166,7 +166,7 @@ end function
 
 function ProcessarTodasAssociacoes(Convenio)
 
-    set ProcedimentosValoresCalc = db.execute("SELECT *FROM tissprocedimentosvalores WHERE ValorConsolidado IS NULL and ConvenioID="&Convenio)
+    set ProcedimentosValoresCalc = db.execute("SELECT *FROM tissprocedimentosvalores WHERE ValorConsolidado IS NULL and ConvenioID="&Convenio&" ")
     while not ProcedimentosValoresCalc.eof
         call ProcessarValores(ProcedimentosValoresCalc("id"))
     ProcedimentosValoresCalc.movenext
@@ -182,31 +182,10 @@ function ProcessarValores(AssociacaoID)
 
     if not ProcedimentosValores.eof then
         set Planos = db.execute("SELECT * FROM tissprocedimentosvaloresplanos JOIN conveniosplanos ON conveniosplanos.id = PlanoID WHERE conveniosplanos.sysActive = 1 AND AssociacaoID = "&AssociacaoID&" ORDER BY PlanoID")
-
-        PrimeiroPlano = null
-        while not Planos.eof
-
-            On Error Resume Next
-                IF ISNULL(PrimeiroPlano) THEN
-                    PrimeiroPlano = Planos("PlanoID")
-                END IF
-
-                set ValoresCalculados = CalculaValorProcedimentoConvenio(ProcedimentosValores("id"),ProcedimentosValores("ConvenioID"),ProcedimentosValores("ProcedimentoID"),Planos("PlanoID"),null,1,null)
-
-                ValorTotal = ValoresCalculados("TotalGeral") + CalculaValorProcedimentoConvenioAnexo(ProcedimentosValores("ConvenioID"),ProcedimentosValores("ProcedimentoID"),ProcedimentosValores("id"),Planos("PlanoID"))
-
-                sql = "UPDATE tissprocedimentosvaloresplanos SET ValorConsolidado="&treatvalnull(ValorTotal)&" WHERE id = "&Planos("id")
-                db.execute(sql)
-            On Error Goto 0
-
-        Planos.movenext
-        wend
-        Planos.close
-        set Planos=nothing
         set ValoresCalculados    = CalculaValorProcedimentoConvenio(ProcedimentosValores("id"),ProcedimentosValores("ConvenioID"),ProcedimentosValores("ProcedimentoID"),PrimeiroPlano,null,1,null,null)
-        IF xxxCalculaValorProcedimentoConvenioNotIsNull THEN
-            ValorTotal               = ValoresCalculados("TotalGeral")+CalculaValorProcedimentoConvenioAnexo(ProcedimentosValores("ConvenioID"),ProcedimentosValores("ProcedimentoID"),ProcedimentosValores("id"),PrimeiroPlano)
-        END IF
+
+        ValorTotal               = ValoresCalculados("TotalGeral")+CalculaValorProcedimentoConvenioAnexo(ProcedimentosValores("ConvenioID"),ProcedimentosValores("ProcedimentoID"),ProcedimentosValores("id"),PrimeiroPlano)
+
         sql                      = "UPDATE tissprocedimentosvalores SET ValorConsolidado="&treatvalnull(ValorTotal)&" WHERE id = "&AssociacaoID
         db.execute(sql)
     end if

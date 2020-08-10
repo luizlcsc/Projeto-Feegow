@@ -16,6 +16,10 @@ if req("txt")<>"" then
     limit = ""
 end if
 
+IF limit = "" THEN
+    limit = "limit 150"
+END IF
+
 txt = replace(req("txt"), " ", "%")
 
 sqlProcedimentos = "select p.id as ProcID, p.NomeProcedimento, v.*, v.id as PvId, pt.*, (SELECT group_concat(DISTINCT CodigoNaOperadora) FROM contratosconvenio cc WHERE v.Contratados like CONCAT('%|',cc.id,'|%') AND CodigoNaOperadora <> '' ) as CodigoNaOperadora  from procedimentos as p "&_
@@ -57,7 +61,9 @@ if not proc.eof then
 
 
 IF getConfig("calculostabelas") THEN
-    ProcessarTodasAssociacoes(ConvenioID)
+    On Error Resume Next
+        ProcessarTodasAssociacoes(ConvenioID)
+    On Error Goto 0
 END IF
 
 while not proc.eof
@@ -74,7 +80,7 @@ while not proc.eof
             set reg = CalculaValorProcedimentoConvenio(proc("PvId"),ConvenioID,proc("ProcID"),null,null,null,null,null)
             On Error Resume Next
                 ProcID = reg("AssociacaoID")
-                Valor = "R$"&fn(reg("TotalGeral")+CalculaValorProcedimentoConvenioAnexo(ConvenioID,proc("ProcID"),reg("AssociacaoID"),PrimeiroPlano))
+                Valor = "R$"&fn(reg("TotalGeral")+CalculaValorProcedimentoConvenioAnexo(ConvenioID,proc("ProcID"),reg("AssociacaoID"),null))
             On Error Goto 0
         END IF
     END IF

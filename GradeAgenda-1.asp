@@ -829,7 +829,7 @@ end if
 					%>
 					$( ".vazio" ).each(function(){
 						if( $(this).attr("id")>='<%=HoraDe%>' && $(this).attr("id")<'<%=HoraA%>' ){
-							$(this).replaceWith(`<%= conteudo %>`);
+							$(this).replaceWith('<%= conteudo %>');
 						}
 					});
 					$( ".btn-comp" ).each(function(){

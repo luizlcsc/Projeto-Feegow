@@ -20,8 +20,12 @@ function tagsConverte(conteudo,itens,moduloExcecao)
     item_nome = itemArray(0)&""
     item_id   = itemArray(1)&""
     conteudo = conteudo&""
-    '## Add prefixo item_ para evitar conflitos de variaveis
+    'LINHA INSERIDA PARA TRATAR VARIÁVEL item_id SEM O ID DO PROFISSIONAL
+    'if item_nome = "ProfissionalID" and item_id = "" then
+    '  item_nome = ""
+    'end if
 
+    '## Add prefixo item_ para evitar conflitos de variaveis
     select case item_nome
       case "PacienteID"
         item_PacienteID          = item_id
@@ -32,7 +36,16 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_ProfissionalID      = item_id
         'ALIAS DE TAGS RELACIONADAS AO PROFISSIONAL
         conteudo = replace(conteudo, "[NomeProfissional]", "[Profissional.Nome]" )
-        
+        'TRATAMENTO DA VARIÁVEL item_ProfissionalID QUANDO VAZIA - Airton 11-08-2020
+        if item_ProfissionalID = "" then
+          conteudo = replace(conteudo, "[Profissional.Especialidade]"," " )
+          conteudo = replace(conteudo, "[Profissional.RQE]", " " )
+          conteudo = replace(conteudo, "[Profissional.Documento]", " " )
+          conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", " " )
+          conteudo = replace(conteudo, "[Profissional.Nome]", " " )
+          item_ProfissionalID = 0
+        end if
+
       case "ProfissionalSessao"
         item_ProfissionalSessao  = session("idInTable")
         'ALIAS DE TAGS RELACIONADAS AO PROFISSIONAL - SESSÃO
@@ -236,16 +249,6 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           "LEFT JOIN tratamento t ON t.id=prof.TratamentoID "&_
           "WHERE prof.id="
 
-          'QUERY CRIADA PARA RESGATAR OUTRAS ESPECIALIDADES NA TABELA profissionaisespecialidades -Airton 09-08-2020
-          pOutrasEspecialidadesSQL = "SELECT pe.Conselho,pe.DocumentoConselho,pe.RQE, "&_
-          "CONCAT(cp.descricao, ' ', pe.DocumentoConselho, ' ', pe.UFConselho) Documento,  "&_
-          "e.especialidade Especialidade, "&_
-          "cp.descricao "&_
-          "FROM profissionaisespecialidades AS pe "&_
-          "LEFT JOIN conselhosprofissionais AS cp ON cp.id=pe.Conselho "&_
-          "LEFT JOIN especialidades AS e ON e.id=pe.EspecialidadeID "&_
-          "WHERE pe.ProfissionalID="
-
           'PROFISSIONAL SOLICITANTE
           if item_ProfissionalSolicitanteID>0 then
             SET ProfissionaisSQL = db.execute(qProfissionaisContentSQL&item_ProfissionalSolicitanteID)
@@ -276,43 +279,14 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           if qProfissionaisSQL<>"" then
             SET ProfissionaisSQL = db.execute(qProfissionaisSQL)
             if not ProfissionaisSQL.eof then
-
-              'LINHAS INSERIDAS PARA VERIFICAR SE PROFISSIONAL CADASTROU MAIS DE UMA ESPECIALIDADE -Airton 09-08-2020
-              SET OutrasEspecialidadesSQL = db.execute(pOutrasEspecialidadesSQL&item_ProfissionalID)
-              'TRATAMENTO DAS TAGS COM O NOME DO CONSELHO NO NOME DA TAG EX: "Profissional.CRM"-Airton 09-08-2020
-              if not OutrasEspecialidadesSQL.eof AND inStr(conteudo, "Profissional."&ProfissionaisSQL("descricao")) = 0 then
-
-                while not OutrasEspecialidadesSQL.eof
-
-                  If inStr(conteudo, "Profissional."&OutrasEspecialidadesSQL("descricao")) <> 0 Then
-                    conteudo = replace(conteudo, "[Profissional.Especialidade]", trim(OutrasEspecialidadesSQL("Especialidade")&" ") )
-                    conteudo = replace(conteudo, "[Profissional.RQE]", trim(OutrasEspecialidadesSQL("RQE")&" ") )
-                    conteudo = replace(conteudo, "[Profissional."&OutrasEspecialidadesSQL("descricao")&"]", trim(OutrasEspecialidadesSQL("Documento")&" ") )
-                    conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(OutrasEspecialidadesSQL("DocumentoConselho")&" ") )
-                  End if
-                  OutrasEspecialidadesSQL.movenext
-                wend
-                OutrasEspecialidadesSQL.close
-              else
-                conteudo = replace(conteudo, "[Profissional.Especialidade]", trim(ProfissionaisSQL("Especialidade")&" ") )
-                conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
-                conteudo = replace(conteudo, "[Profissional."&ProfissionaisSQL("descricao")&"]", trim(ProfissionaisSQL("Documento")&" ") )
-                conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
-              end if
-              'FIM DE LINHAS INSERIDAS PARA VERIFICAR SE PROFISSIONAL CADASTROU MAIS DE UMA ESPECIALIDADE -Airton 09-08-2020
-
               conteudo = replace(conteudo, "[Profissional.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
               conteudo = replace(conteudo, "[Profissional.PrimeiroNome]", trim(ProfissionaisSQL("PrimeiroNome")&" ") )
               conteudo = replace(conteudo, "[Profissional.NomeSocial]", trim(ProfissionaisSQL("NomeSocial")&" ") )
 
-              'TRATAMENTO DA TAG [Profissional.Documento] - Airton 11-08-2020
-              'ESTA TAG RECUPERA APENAS OS DADOS DE SELECT DA TABELA profissionais
-              if inStr(conteudo, "Profissional.Documento") <> 0 then
-                conteudo = replace(conteudo, "[Profissional.Especialidade]", trim(ProfissionaisSQL("Especialidade")&" ") )
-                conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
-                conteudo = replace(conteudo, "[Profissional.Documento]", trim(ProfissionaisSQL("Documento")&" ") )
-                conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
-              end if
+              conteudo = replace(conteudo, "[Profissional.Especialidade]", trim(ProfissionaisSQL("Especialidade")&" ") )
+              conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
+              conteudo = replace(conteudo, "[Profissional.Documento]", trim(ProfissionaisSQL("Documento")&" ") )
+              conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
 
               conteudo = replace(conteudo, "[Profissional.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
               if ProfissionaisSQL("Assinatura")&"" = "" then
@@ -322,23 +296,15 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               end if
               conteudo = replace(conteudo, "[Profissional.Tratamento]", trim(ProfissionaisSQL("Tratamento")&" ") )
               'NOVAS TAGS 06/07/2020
-' Linha sendo tratada em uma condição que verifica em qual tabela está cadastrada a Especialidade se está na pesquisa ProfissionaisSQL ou OutrasEspecialidadesSQL -Airton 09-08-2020
-              'conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
+              conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
 
               'Referencia ifrReciboIntegrado.asp ||| Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho ) 'LINHA 561
               conteudo = replace(conteudo, "[ProfissionalExecutante.Conselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
               conteudo = replace(conteudo, "[ProfissionalExecutante.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
               conteudo = replace(conteudo, "[ProfissionalExecutante.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
-' Linha sendo tratada em uma condição que verifica em qual tabela está cadastrada a Especialidade se está na pesquisa ProfissionaisSQL ou OutrasEspecialidadesSQL -Airton 09-08-2020
-              'if ProfissionaisSQL("Conselho")&""="1" then
-              '  conteudo = replace(conteudo, "[Profissional.CRM]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
-              'end if
-' Linha sendo tratada em uma condição que verifica em qual tabela está cadastrada a Especialidade se está na pesquisa ProfissionaisSQL ou OutrasEspecialidadesSQL -Airton 09-08-2020
-              'conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
             end if 
           end if
-        
-          
+ 
         case "Financeiro"
 
         case "Agendamento"

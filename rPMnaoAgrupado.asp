@@ -171,8 +171,11 @@
                         else
                             idColuna = replace(G("Data"), "/", "") &"_"& G("ProcedimentoID") &"_"& prof("id") &"_"& G("PacienteID") &"_NF"
                         end if
+                        'Preciso fazer a ordenação por data porém está bugando no datatable, resolvi transformar a data em ID e colocar na primeira coluna para ordernar por ele.
+                        orderData = replace(G("Data"), "/", "")
 				        %>
 				        <tr class="linhaPac">
+				            <td style="display: none">orderData</td>
 					        <td><%=Prontuario%> </td>
 					        <td id="<%= idColuna %>">
                                 <a class="btn btn-xs btn-primary btnPac hidden-print" href="./?P=Pacientes&Pers=1&I=<%=PacienteID %>&Ct=1" target="_blank"><i class="fa fa-external-link"></i></a>

@@ -1,11 +1,25 @@
 $(document).ready(function(){
-
+    clearLocalStorage();
     if(localStorage.getItem('Admin') == "true")
     {
         runWhatsAppTest()
     }
 
 });
+function clearLocalStorage(){
+    // Clear on startup if expired
+    let hours = 12; // Reset when storage is more than 24hours
+    let now = new Date().getTime();
+    let setupTime = localStorage.getItem('setupTime');
+    if (setupTime == null) {
+       return;
+    } else {
+        if(now-setupTime > hours*60*60*1000) {
+            localStorage.removeItem("whatsAppStatus");
+            localStorage.removeItem('setupTime');
+        }
+    }
+}
 
 function runWhatsAppTest(){
     if(!localStorage.getItem('whatsAppStatus'))
@@ -22,6 +36,7 @@ function whatsAppConnection(){
             if(data.connected == true){
                 whatsAppStatusTrue();
                 localStorage.setItem('whatsAppStatus',true);
+                localStorage.setItem('setupTime',new Date().getTime());
                 return true;
             }
             localStorage.setItem('whatsAppStatus',false);

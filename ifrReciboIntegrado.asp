@@ -577,13 +577,12 @@ if not inv.eof then
                                 ProfissionalExecutante=NomeProfissional&""
                                 ProfissionalExecutanteCPF=CPFProfissional&""
 
-                                'TAGS DESATIVADAS EM 22/07/2020
-                                'Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho )
-                                'Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", ProfissionalExecutante )
-                                'Recibo = replace(Recibo, "[ProfissionalExecutante.CPF]", ProfissionalExecutanteCPF )
+                                Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho )
+                                Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", ProfissionalExecutante )
+                                Recibo = replace(Recibo, "[ProfissionalExecutante.CPF]", ProfissionalExecutanteCPF )
                                 
                                 'CONVERSOR DE TAG APLICADO EM 22/07/2020
-                                Recibo = tagsConverte(Recibo,"ProfissionalID_"&ProfissionalID,"")
+                                'Recibo = tagsConverte(Recibo,"ProfissionalID_"&ProfissionalID,"")
 
                             end if
                         end if
@@ -832,6 +831,7 @@ if not inv.eof then
             end if
         end if
         Recibo = replace(Recibo, "[Recibo.Protocolo]", NumeroSequencial)
+        Recibo = replace(Recibo, "[Fatura.NumeroSequencial]", inv("NumeroFatura")&"")
 
         nroNFe = 0
         set nfeEmitido = db.execute("select numeronfse from nfe_notasemitidas where numeronfse<>'' and InvoiceID="&inv("id"))
@@ -846,7 +846,7 @@ if not inv.eof then
 
 
         if (PacienteID<>"" and TotalPago>0) or (PacienteID<>"" and session("Banco")="clinic5968") or (PacienteID<>"" and session("Banco")="clinic100000") then
-            Recibo = replace(Recibo, "'", """")
+                                                           Recibo = replace(Recibo, "'", """")
             NomeItens = left(NomeItens, 200)
             CPFPACIENTE = ""
 

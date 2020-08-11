@@ -39,6 +39,10 @@ end if
   <%
 
   IF getConfig("calculostabelas") THEN
+     IF req("setPlano") <> "" AND req("setConvenio") <> "" THEN
+        call updateWithPlanoAndConvenio(req("I"),req("setConvenio"),req("setPlano"))
+     END IF
+
      recalcularEscalonamento(req("I"))
   END IF
 

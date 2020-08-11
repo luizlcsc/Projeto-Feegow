@@ -1,10 +1,8 @@
 $(document).ready(function(){
+
     if(localStorage.getItem('Admin') == "true")
     {
-        window.setInterval(function(){
-            whatsAppConnection();
-        }, 600000);
-        runWhatsAppTest();
+        runWhatsAppTest()
     }
 
 });
@@ -21,9 +19,10 @@ function whatsAppConnection(){
         type:"GET",
         url: domain + "chat-pro/get-status",
         success:function(data){
-            if(data.connected === true){
+            if(data.connected == true){
                 whatsAppStatusTrue();
                 localStorage.setItem('whatsAppStatus',true);
+                return true;
             }
             localStorage.setItem('whatsAppStatus',false);
             whatsAppStatusFalse();
@@ -49,6 +48,11 @@ function whatsAppStatusTrue(){
 }
 
 function whatsAppStatusFalse(){
-    $("#footer-whats").css({"background-color":"red"});
-    $("#footer-whats").attr("data-original-title","Desconectado!");
+    new PNotify({
+        title: 'ALERTA!',
+        text: 'Atenção: Sua conta do WhatsApp não está conectada!<br />' +
+            '<a onclick="location.href=\'?P=OutrasConfiguracoes&Pers=1&whatsApp=true\'"  style="color:#FFFFFF;cursor:pointer;font-weight: bolder;"><span class="fa fa-whatsapp" style="margin-right: 15px"></span>Clique aqui para conectar!\n' +'</a>',
+        type: 'danger',
+        delay: 20000
+    });
 }

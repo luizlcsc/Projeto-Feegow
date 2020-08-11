@@ -140,8 +140,8 @@ end if
                             <span class="panel-title">Assinatura</span>
                         </div>
                         <div class="panel-body" style="padding:5px !important">
-                         <iframe width="100%" height="200" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens/Assinatura&Tipo=I&Assinatura=true"></iframe>
-                            <img src="<%=arqEx(reg("Assinatura"), "IMAGENS/ASSINATURA")%>" class="img-thumbnail"/>
+                         <iframe width="100%" height="200" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens&Tipo=I&Assinatura=true"></iframe>
+                            <img src="<%=arqEx(reg("Assinatura"), "Imagens")%>" class="img-thumbnail"/>
                         </div>
                     </div>
 

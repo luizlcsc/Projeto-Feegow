@@ -171,16 +171,21 @@ if not tryLogin.EOF then
                             e.preventDefault();
                             if(preventClick) return;
                             preventClick = true;
-                            
-                            $("#Deslogar").attr("style", "opacity: 0.5");
-                            $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
-                            $.post('DeslogarUsuario.asp');
-                            $("#password").hide();
-                            $(".textoTituloInput").hide();
-                            $("#deslogar-container").append("<p style='text-align: center' id='deslogarTexto'>Aguarde alguns instantes ...</p>");
-                            setTimeout(() => {
-                                $("form").submit();
-                            }, 20000);
+
+                            if($("#password").val() !== ""){
+                                $("#Deslogar").attr("style", "opacity: 0.5");
+                                $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
+                                $.post('DeslogarUsuario.asp');
+                                $("#password").hide();
+                                $(".textoTituloInput").hide();
+                                $("#deslogar-container").append("<p style='text-align: center' id='deslogarTexto'>Aguarde alguns instantes ...</p>");
+                                setTimeout(() => {
+                                    $("form").submit();
+                                }, 20000);
+                            }else{
+                                showMessageDialog("Preencha a senha");
+                            }
+
                         });
                     });
                 </script>

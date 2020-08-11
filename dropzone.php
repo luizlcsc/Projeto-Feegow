@@ -255,8 +255,10 @@
             <input type="hidden" name="PacienteID" value="<?=$_GET['PacienteID']?>">
             <input type="hidden" name="L" value="<?=$_GET['L']?>">
             <input type="hidden" name="Pasta" value="<?=$_GET['Pasta']?>">
+            <input type="hidden" name="ProfissionalID" value="<?=$_GET['ProfissionalID']?>">
             <input type="hidden" name="Tipo" value="<?=$_GET['Tipo']?>">
             <input type="hidden" name="MovementID" value="<?=$_GET['MovementID']?>">
+            <input type="hidden" name="Assinatura" value="<?=$_GET['Assinatura']?>">
             <input type="hidden" name="ExameID" value="<?=$_GET['ExameID']?>">
             <input type="hidden" name="guiaID" value="<?=$_GET['guiaID']?>">
             <input type="hidden" name="tipoGuia" value="<?=$_GET['tipoGuia']?>">
@@ -416,8 +418,10 @@
 					};
 
 					ajaxData.append('PacienteID',$('input[name="PacienteID"]').val());
+					ajaxData.append('ProfissionalID',$('input[name="ProfissionalID"]').val());
 					ajaxData.append('Licenca',$('input[name="L"]').val());
 					ajaxData.append('Pasta',$('input[name="Pasta"]').val());
+					ajaxData.append('Assinatura',$('input[name="Assinatura"]').val());
 					ajaxData.append('Tipo',$('input[name="Tipo"]').val());
 					ajaxData.append('MovementID',$('input[name="MovementID"]').val());
 					ajaxData.append('ExameID',$('input[name="ExameID"]').val());

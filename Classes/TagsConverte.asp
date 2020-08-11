@@ -10,7 +10,6 @@ function tagsConverte(conteudo,itens,moduloExcecao)
   LicencaID_session = replace(session("Banco"), "clinic", "")
   'CONVERSAO DA CATEGORIA SISTEMA É PADRÃO
   itens = itens
-
   '### FILTRA OS ITENS SEPARADOS POR PIPE
   itensArray=Split(itens,"|")
   
@@ -303,7 +302,13 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               if not AgendamentosSQL.eof then
                 
                 conteudo = replace(conteudo, "[Agendamento.Data]", AgendamentosSQL("Data")&"" )
-                conteudo = replace(conteudo, "[Agendamento.Hora]", formatdatetime(AgendamentosSQL("Hora"),4)&"" )
+
+                if isnull(AgendamentosSQL("Hora")) then
+                    conteudo = replace(conteudo, "[Agendamento.Hora]", "" )
+                else
+                    conteudo = replace(conteudo, "[Agendamento.Hora]", formatdatetime(AgendamentosSQL("Hora"),4)&"" )
+                end if
+
               end if
             AgendamentosSQL.close
             set AgendamentosSQL = nothing

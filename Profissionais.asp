@@ -8,6 +8,7 @@
 .listaUnidades li span{
 	font-size:12px!important;
 }
+
 </style>
 <%
 call insertRedir(request.QueryString("P"), request.QueryString("I"))
@@ -100,7 +101,7 @@ end if
                             </div>
                             <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
                                 <img id="avatarFoto" src="<%=arqEx(reg("Foto"), "Perfil")%>" class="img-thumbnail" width="100%" />
-                                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+                                <button  type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
                     </div>
@@ -140,8 +141,9 @@ end if
                             <span class="panel-title">Assinatura</span>
                         </div>
                         <div class="panel-body" style="padding:5px !important">
-                         <iframe width="100%" height="200" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens/Assinatura&Tipo=I&Assinatura=true"></iframe>
-                            <img src="<%=arqEx(reg("Assinatura"), "IMAGENS/ASSINATURA")%>" class="img-thumbnail"/>
+                         <iframe width="100%" height="200" id="iframeDropZone" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens/Assinatura&Tipo=I&Assinatura=true"></iframe>
+                            <img src="<%=arqEx(reg("Assinatura"), "IMAGENS/ASSINATURA")%>" class="img-thumbnail" id="assinatura-img"/>
+                            <button style="    position: absolute; bottom: 20px; right:20px;" id="buttonDeleteSignature" class="btn btn-xs btn-danger pull-right" onclick="if(confirm('Tem certeza de que deseja excluir esta assinatura?')){deleteSignature(<%= req("I") %>)};"><span class="fa fa-trash "></span></button>
                         </div>
                     </div>
 
@@ -411,6 +413,7 @@ function removeFoto(){
 
 $(document).ready(function(){
 	<%=chamaScript%>
+        signature();
 });
 
 <%

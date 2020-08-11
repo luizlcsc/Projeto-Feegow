@@ -241,10 +241,8 @@
         }
 
     </style>
-
     <script type="886de5421c6c96677a1a3b09-text/javascript">(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
 </head>
-
 <body>
 <div class="container" role="main">
     <form method="post" enctype="multipart/form-data" novalidate class="box" id="form-upload">
@@ -406,6 +404,7 @@
                             parent.callUpload && parent.callUpload(ajax.responseText)
 							form.classList.add( ajax.statusText == "OK" ? 'is-success' : 'is-error' );
 							if( !ajax.success ) errorMsg.textContent = ajax.error;
+                            parent.location.reload();
 						}
 						else alert( 'Error. Please, contact the webmaster!' );
 					};
@@ -429,6 +428,7 @@
 					ajaxData.append('LaudoID',$('input[name="LaudoID"]').val());
 					ajax.send( ajaxData );
                     parent.callUpload && parent.callUpload(ajax.responseText);
+
 
 				}
 				else // fallback Ajax solution upload for older browsers

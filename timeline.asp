@@ -709,10 +709,12 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
  %>
        <div class="galery-ajax"></div>
        <script>
-        $.get("ImagensNew.asp?ArquivoImagem=Imagem&PacienteID=<%=req("PacienteID")%>", function(data) {
+        fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+        .then(data => data.text())
+        .then(data => {
            $(".galery-ajax").html(data);
            $("[value='A']").parent().remove();
-         });
+        });
        </script>
 <% ELSE %>
     <%server.execute("Imagens.asp")%>
@@ -784,10 +786,12 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
          %>
                <div class="galery-ajax"></div>
                <script>
-                $.get("ImagensNew.asp?ArquivoImagem=Imagem&PacienteID=<%=req("PacienteID")%>", function(data) {
+                fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+                .then(data => data.text())
+                .then(data => {
                    $(".galery-ajax").html(data);
-                   $("[value='A']").parent().remove();
-                 });
+                   $("[value='I']").parent().remove();
+                });
                </script>
         <% ELSE %>
             <%server.execute("Arquivos.asp") %>

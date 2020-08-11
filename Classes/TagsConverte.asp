@@ -279,7 +279,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 
               'LINHAS INSERIDAS PARA VERIFICAR SE PROFISSIONAL CADASTROU MAIS DE UMA ESPECIALIDADE -Airton 09-08-2020
               SET OutrasEspecialidadesSQL = db.execute(pOutrasEspecialidadesSQL&item_ProfissionalID)
-
+              'TRATAMENTO DAS TAGS COM O NOME DO CONSELHO NO NOME DA TAG EX: "Profissional.CRM"-Airton 09-08-2020
               if not OutrasEspecialidadesSQL.eof AND inStr(conteudo, "Profissional."&ProfissionaisSQL("descricao")) = 0 then
 
                 while not OutrasEspecialidadesSQL.eof
@@ -288,7 +288,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                     conteudo = replace(conteudo, "[Profissional.Especialidade]", trim(OutrasEspecialidadesSQL("Especialidade")&" ") )
                     conteudo = replace(conteudo, "[Profissional.RQE]", trim(OutrasEspecialidadesSQL("RQE")&" ") )
                     conteudo = replace(conteudo, "[Profissional."&OutrasEspecialidadesSQL("descricao")&"]", trim(OutrasEspecialidadesSQL("Documento")&" ") )
-                    conteudo = replace(conteudo, "[Profissional.Documento]", trim(OutrasEspecialidadesSQL("DocumentoConselho")&" ") )
+                    conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(OutrasEspecialidadesSQL("DocumentoConselho")&" ") )
                   End if
                   OutrasEspecialidadesSQL.movenext
                 wend
@@ -304,10 +304,16 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               conteudo = replace(conteudo, "[Profissional.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
               conteudo = replace(conteudo, "[Profissional.PrimeiroNome]", trim(ProfissionaisSQL("PrimeiroNome")&" ") )
               conteudo = replace(conteudo, "[Profissional.NomeSocial]", trim(ProfissionaisSQL("NomeSocial")&" ") )
-' Linha sendo tratada em uma condição que verifica em qual tabela está cadastrada a Especialidade se está na pesquisa ProfissionaisSQL ou OutrasEspecialidadesSQL -Airton 09-08-2020
-              'conteudo = replace(conteudo, "[Profissional.Especialidade]", trim(ProfissionaisSQL("Especialidade")&" ") )
-' Linha sendo tratada em uma condição que verifica em qual tabela está cadastrada a Especialidade se está na pesquisa ProfissionaisSQL ou OutrasEspecialidadesSQL -Airton 09-08-2020
-              'conteudo = replace(conteudo, "[Profissional.Documento]", trim(ProfissionaisSQL("Documento")&" ") )
+
+              'TRATAMENTO DA TAG [Profissional.Documento] - Airton 11-08-2020
+              'ESTA TAG RECUPERA APENAS OS DADOS DE SELECT DA TABELA profissionais
+              if inStr(conteudo, "Profissional.Documento") <> 0 then
+                conteudo = replace(conteudo, "[Profissional.Especialidade]", trim(ProfissionaisSQL("Especialidade")&" ") )
+                conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
+                conteudo = replace(conteudo, "[Profissional.Documento]", trim(ProfissionaisSQL("Documento")&" ") )
+                conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
+              end if
+
               conteudo = replace(conteudo, "[Profissional.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
               if ProfissionaisSQL("Assinatura")&"" = "" then
                 conteudo = replace(conteudo, "[Profissional.Assinatura]", "______________________________________________")

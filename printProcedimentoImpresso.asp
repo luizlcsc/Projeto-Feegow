@@ -32,6 +32,7 @@ if not ImpressosModeloSQL.eof then
 
 
     set proc = db.execute("SELECT NomeProcedimento, TextoPreparo FROM procedimentos WHERE id="&ProcedimentoID)
+
     if not proc.eof then
         NomeProcedimento = proc("NomeProcedimento")
         TextoPreparo = proc("TextoPreparo")&""
@@ -39,10 +40,6 @@ if not ImpressosModeloSQL.eof then
         TextoImpresso = replace(TextoImpresso, "[Procedimento.Nome]", NomeProcedimento&"")
         TextoImpresso = replace(TextoImpresso, "[Procedimento.Preparo]", TextoPreparo&"")
     end if
-        'TRATAMENTO DA TEG [Sistema.Data] - Airton 12/08/2020
-        TextoImpresso = replace(TextoImpresso, "[Sistema.Data]", now&"")
-        'TRATAMENTO DA TAG [Sistema.Extenso] - Airton 12/08/2020
-        TextoImpresso = replace(TextoImpresso, "[Sistema.Extenso]", FormatDateTime(now,1)&"")
 %>
 <body>
 

@@ -20,10 +20,6 @@ function tagsConverte(conteudo,itens,moduloExcecao)
     item_nome = itemArray(0)&""
     item_id   = itemArray(1)&""
     conteudo = conteudo&""
-    'LINHA INSERIDA PARA TRATAR VARIÁVEL item_id SEM O ID DO PROFISSIONAL
-    'if item_nome = "ProfissionalID" and item_id = "" then
-    '  item_nome = ""
-    'end if
 
     '## Add prefixo item_ para evitar conflitos de variaveis
     select case item_nome
@@ -36,13 +32,9 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_ProfissionalID      = item_id
         'ALIAS DE TAGS RELACIONADAS AO PROFISSIONAL
         conteudo = replace(conteudo, "[NomeProfissional]", "[Profissional.Nome]" )
+
         'TRATAMENTO DA VARIÁVEL item_ProfissionalID QUANDO VAZIA - Airton 11-08-2020
         if item_ProfissionalID = "" then
-          conteudo = replace(conteudo, "[Profissional.Especialidade]"," " )
-          conteudo = replace(conteudo, "[Profissional.RQE]", " " )
-          conteudo = replace(conteudo, "[Profissional.Documento]", " " )
-          conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", " " )
-          conteudo = replace(conteudo, "[Profissional.Nome]", " " )
           item_ProfissionalID = 0
         end if
 
@@ -274,8 +266,19 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             qProfissionaisSQL=qProfissionaisContentSQL&item_ProfissionalID
           elseif item_ProfissionalSessao>0 AND session("Table")=lcase("profissionais") then 'EXCEÇÃO POR CONTA DO MÓDULO DE RECIBOS E OUTROS LOCAIS QUE PODEM ESTAR UTILIZANDO TAGS [Profissional.ALGUMACOISA] E REFERENCIANDO A SESSÃO DO PROFISSIONAL LOGADO
             qProfissionaisSQL = qProfissionaisContentSQL&item_ProfissionalSessao
+          elseif item_ProfissionalID=0 then
+          'TRATAMENTO DAS TAGS QUE NÃO FORAM CONVERTIDAS - Airton 12-08-2020
+          qtagsSQL="SELECT tagNome FROM cliniccentral.tags WHERE tagNome LIKE 'Profissional.%'"
+          SET tagsSQL=db.execute(qtagsSQL)
+          while not tagsSQL.eof
+              If inStr(conteudo, tagsSQL("tagNome")) <> 0 Then
+                  conteudo = replace(conteudo, "["&tagsSQL("tagNome")&"]", trim(" ") )
+                End if
+            tagsSQL.movenext
+          wend
+          tagsSQL.close
           end if
-          
+          'FIM TRATAMENTODAS TAGS QUE NÃO FORAM CONVERTIDAS
           if qProfissionaisSQL<>"" then
             SET ProfissionaisSQL = db.execute(qProfissionaisSQL)
             if not ProfissionaisSQL.eof then

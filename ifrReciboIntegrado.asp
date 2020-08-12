@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="extenso.asp"-->
+<!--#include file="Classes/TagsConverte.asp"-->
 <% if session("Banco")="clinic5760" then %>
 <style type="text/css">
     body {
@@ -185,6 +186,7 @@ for keySplit=0 to ubound(splitInvoiceID)
 set inv = db.execute("select * from sys_financialinvoices where id in("&InvoiceID&")")
 
 if not inv.eof then
+
     if ReciboModelo="" then
         if inv("CD")="D" then
             ReciboModelo = "RecibosIntegradosAPagar"
@@ -208,26 +210,45 @@ if not inv.eof then
 		ContaID = inv("AssociationAccountID")&"_"&inv("AccountID")
         Solicitante = inv("ProfissionalSolicitante")
 
+
 		if inv("AssociationAccountID")=3 then
 		    PacienteID=inv("AccountID")
 		end if
-
-		set rec = db.execute("select "&ReciboModelo&" from impressos WHERE Executante IS NULL or Executante LIKE '%|"&AssociacaoID&"_"&ProfissionalExecutanteID&"|%' ORDER BY Executante DESC")
+        recSQL = "select "&ReciboModelo&" from impressos WHERE Executante IS NULL or Executante LIKE '%|"&AssociacaoID&"_"&ProfissionalExecutanteID&"|%' ORDER BY Executante DESC"
+        'response.write(recSQL)
+		set rec = db.execute(recSQL)
 		if not rec.eof then
 		    User = session("User")
 
             if inv("AssociationAccountID")="5" then
-                set UserSQL = db.execute("SELECT su.id FROM sys_users su WHERE su.idInTable="&inv("AccountID")&" AND su.NameColumn = 'NomeProfissional'")
+                vUserSQL = "SELECT su.id FROM sys_users su WHERE su.idInTable="&inv("AccountID")&" AND su.NameColumn = 'NomeProfissional'"
+                'response.write(vUserSQL)
+                set UserSQL = db.execute(vUserSQL)
                 if not UserSQL.eof then
                     User=UserSQL("id")
                 end if
             end if
 
             Recibo = rec(ReciboModelo)&""
+            'NOVO CONVERSOR DE TAGS 28/07/2020 || RAFAEL MAIA
+            if inv("ProfissionalSolicitante")&"" <>"" then
+                ProfissionalSolicitanteArray = Split(inv("ProfissionalSolicitante"),"_")
+                if ubound(ProfissionalSolicitanteArray)=1 then
+                    ProfissionalSolicitanteID = ProfissionalSolicitanteArray(1)
+                else
+                    ProfissionalSolicitanteID = 0
+                end if
+            else
+                ProfissionalSolicitanteID=0
+            end if
+            'response.write("<script>console.log('Valor: '"&ProfissionalSolicitanteID&")</script>")
+            Recibo = TagsConverte(Recibo,"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
+            ' Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
 
-            Recibo = replace(Recibo, "[Usuario.Nome]","[-Usuario.Nome-]")
-
+            'CONVERSOR ANTIGO DE TAGS DESATIVADO
+            'Recibo = replace(Recibo, "[Usuario.Nome]","[-Usuario.Nome-]")
 			Recibo = replaceTags(Recibo, ContaID, User, inv("CompanyUnitID"))
+
 		end if
 
 		'Tags do agendamento
@@ -556,10 +577,13 @@ if not inv.eof then
                                 ProfissionalExecutante=NomeProfissional&""
                                 ProfissionalExecutanteCPF=CPFProfissional&""
 
-
                                 Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho )
                                 Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", ProfissionalExecutante )
                                 Recibo = replace(Recibo, "[ProfissionalExecutante.CPF]", ProfissionalExecutanteCPF )
+                                
+                                'CONVERSOR DE TAG APLICADO EM 22/07/2020
+                                'Recibo = tagsConverte(Recibo,"ProfissionalID_"&ProfissionalID,"")
+
                             end if
                         end if
                         'caso o profissional executante não for encontrado utilizar profissional solicitante 
@@ -807,6 +831,7 @@ if not inv.eof then
             end if
         end if
         Recibo = replace(Recibo, "[Recibo.Protocolo]", NumeroSequencial)
+        Recibo = replace(Recibo, "[Fatura.NumeroSequencial]", inv("NumeroFatura")&"")
 
         nroNFe = 0
         set nfeEmitido = db.execute("select numeronfse from nfe_notasemitidas where numeronfse<>'' and InvoiceID="&inv("id"))
@@ -821,7 +846,7 @@ if not inv.eof then
 
 
         if (PacienteID<>"" and TotalPago>0) or (PacienteID<>"" and session("Banco")="clinic5968") or (PacienteID<>"" and session("Banco")="clinic100000") then
-            Recibo = replace(Recibo, "'", """")
+                                                           Recibo = replace(Recibo, "'", """")
             NomeItens = left(NomeItens, 200)
             CPFPACIENTE = ""
 

@@ -1,5 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="extenso.asp"-->
+<!--#include file="Classes/TagsConverte.asp"-->
 <div class="modal-header">
     <h3 class="blue">Contrato</h3>
 </div>
@@ -94,7 +95,7 @@ elseif ModeloID<>"" and ModeloID<>"0" then
                     if Valor<=0 then
                         Valor = 0
                     end if
-                    Proc    sDist = ProcsDist & "<p>" & distProcs("Quantidade") & "x " & distProcs("NomeProcedimento") &" - Valor: R$" & Valor & "</p>"
+                    ProcsDist = ProcsDist & "<p>" & distProcs("Quantidade") & "x " & distProcs("NomeProcedimento") &" - Valor: R$" & Valor & "</p>"
                 else
                     ProcsDist = ProcsDist & ", " & distProcs("NomeProcedimento")
                 end if
@@ -121,8 +122,9 @@ elseif ModeloID<>"" and ModeloID<>"0" then
             end if
             ModeloContrato = replace(ModeloContrato, "[ProximoAgendamento.Profissional]", NomeProfissional)
         end if
-
-        ModeloContrato = replace(ModeloContrato, "[Contrato.Protocolo]", InvoiceID)
+        'TAG ANTIGA DESATIVADA | RAFAEL MAIA 28/07/2020
+        'ModeloContrato = replace(ModeloContrato, "[Contrato.Protocolo]", InvoiceID)
+        ModeloContrato = TagsConverte(ModeloContrato,"ContratoID_"&req("InvoiceID"),"") 
 
         if instr(ModeloContrato, "[UltimoFormulario.")>0 then
             splUF = split( ModeloContrato, "[UltimoFormulario." )

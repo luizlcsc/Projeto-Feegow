@@ -1,8 +1,62 @@
 <!--#include file="connect.asp"-->
 <%
-De = cdate(ref("DataDe"))
-Ate = cdate(ref("DataAte"))
+periodoTipo=ref("a")
+Select Case periodoTipo
+    Case "a1"
+    De  = cdate("01/" & right("0"&ref("mesDe"),2) & "/" & ref("anoDe"))
+    Ate = DateAdd("m",1,cdate("01/" & right("0"&ref("mesAte"),2) & "/" & ref("anoAte")) )
+    Ate = DateAdd("d",-1,Ate)
+
+    periodoTitulo = "De "&Ucase(left(MonthName(ref("mesDe")),1))&right(MonthName(ref("mesDe")),len(MonthName(ref("mesDe")))-1)&"/"& ref("anoDe")& " até "& Ucase(left(MonthName(ref("mesAte")),1))&right(MonthName(ref("mesAte")),len(MonthName(ref("mesAte")))-1)&"/"& ref("anoAte")
+    for i = 0 to DateDiff("m",De,Ate)
+        Data = right(DateAdd("m",i,De),7)
+        periodoThHTML       = "<th class='text-center' colspan='4'>"&Data&"</th>"
+        periodoThItensHTML  = "<th class='text-center'>Qtd.</th>"&_
+            "<th class='text-center'>Qtd. Itens</th>"&_
+            "<th class='text-center'>Bruto</th>"&_
+            "<th class='text-center'>Líquido</th>"
+
+        if periodoTh="" then
+            periodoTh       = periodoThHTML
+            periodoThItens  = periodoThItensHTML
+        else
+            periodoTh       = periodoTh&periodoThHTML
+            periodoThItens  = periodoThItens&periodoThItensHTML
+        end if
+
+    next
+
+    Case "a2"
+    De = cdate(ref("DataDe"))
+    Ate = cdate(ref("DataAte"))
+
+    periodoTitulo = De &" a "& Ate
+
+    Data = De
+    while Data<=Ate
+        periodoThHTML       = "<th class='text-center' colspan='4'>"&left(Data, 5)&"</th>"
+        periodoThItensHTML  = "<th class='text-center'>Qtd.</th>"&_
+            "<th class='text-center'>Qtd. Itens</th>"&_
+            "<th class='text-center'>Bruto</th>"&_
+            "<th class='text-center'>Líquido</th>"
+
+        if periodoTh="" then
+            periodoTh       = periodoThHTML
+            periodoThItens  = periodoThItensHTML
+        else
+            periodoTh       = periodoTh&periodoThHTML
+            periodoThItens  = periodoThItens&periodoThItensHTML
+        end if
+
+        Data = Data+1
+    wend
+
+
+
+End Select
+
 Unidades = replace(ref("Unidades"), "|", "")
+
 
 if Unidades="" then
     %>
@@ -19,7 +73,7 @@ end if
 %>
 <h2 class="m25 text-center">PRODUÇÃO POR GRUPO - SINTÉTICO
     <br />
-    <small><%= De &" a "& Ate %>
+    <small><%= periodoTitulo %>
         <br />
         <%= NomeFantasia %>
     </small>
@@ -30,32 +84,12 @@ end if
     <thead>
         <tr class="info">
             <th rowspan="2">Grupo</th>
-            <%
-            Data = De
-            while Data<=Ate
-                %>
-                <th class="text-center" colspan="3"><%= left(Data, 5) %></th>
-                <%
-                Data = Data+1
-            wend
-            %>
+                <%=periodoTituloTh%>
+                <%=periodoTh%>
             <th colspan="5" class="text-center">Total</th>
         </tr>
         <tr class="info">
-            <%
-            De = cdate(ref("DataDe"))
-            Ate = cdate(ref("DataAte"))
-            Data = De
-            while Data<=Ate
-                %>
-                <th class="text-center">Qtd.</th>
-                <th class="text-center">Qtd. Itens</th>
-                <th class="text-center">Bruto</th>
-                <th class="text-center">Líquido</th>
-                <%
-                Data = Data+1
-            wend
-            %>
+            <%=periodoThItens%>
             <th class="text-center">Qtd.</th>
             <th class="text-center">Qtd. Itens</th>
             <th class="text-center">Total Bruto</th>
@@ -77,8 +111,53 @@ end if
         <tr>
             <td><%= grupo("NomeGrupo") %></td>
             <%
+        if periodoTipo="a1" then
+            for i = 0 to DateDiff("m",De,Ate)
+
+            dataWhere = replace(mydatenull(DateAdd("m",i,De)),"-01'","'")
+            dataWhere = " DATE_FORMAT(ii.DataExecucao, '%Y-%m')="&dataWhere
+            'response.write("<script>console.log(`"&dataWhere&"`)</script>")
+
+            set vqtd = db.execute("select ifnull(count(ii.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND "&dataWhere&" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
+            set vqtdinv = db.execute("select count(t.id) Qtd from (select i.id from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND "&dataWhere&" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") GROUP BY i.id)t")
+            set vval = db.execute("select ifnull(sum((ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo))), 0) Valor from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND "&dataWhere&" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
+            sqlRep = "select ifnull(sum(rr.Valor), 0) Repasses from rateiorateios rr LEFT JOIN itensinvoice ii ON ii.id=rr.ItemInvoiceID LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND "&dataWhere&" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") AND ContaCredito LIKE '%\_%'"
+            set vrep = db.execute( sqlRep )
+            Qtd = ccur(vqtd("Qtd"))
+            QtdInvoice = 0
+            if not vqtdinv.eof  then
+                if vqtdinv("Qtd")&""<>"" then
+                    QtdInvoice = ccur(vqtdinv("Qtd"))
+                end if
+            end if
+
+            Valor = ccur(vval("Valor"))
+            Repasses = ccur(vrep("Repasses"))
+            ValorLiquido = Valor - Repasses
+
+            QtdInvoiceGrupo = QtdInvoiceGrupo + QtdInvoice
+            QtdGrupo = QtdGrupo + Qtd
+            ValorGrupo = ValorGrupo + Valor
+            LiquidoGrupo = LiquidoGrupo + ValorLiquido
+            %>
+            <td class="text-right"><%= QtdInvoice %></td>
+            <td class="text-right"><%= Qtd %></td>
+            <td class="text-right"><%= fn(Valor) %></td>
+            <td class="text-right"><%= fn(ValorLiquido) %></td>
+            <%
+            vqtd.close
+            set vqtd = nothing
+            vqtdinv.close
+            set vqtdinv = nothing
+            vval.close
+            set vval = nothing
+            vrep.close
+            set vrep = nothing
+            next
+        elseif periodoTipo="a2" then
             Data = De
             while Data<=Ate
+
                 set vqtd = db.execute("select ifnull(count(ii.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
 
                 set vqtdinv = db.execute("select count(t.id) Qtd from (select i.id from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") GROUP BY i.id)t")
@@ -108,6 +187,14 @@ end if
                 <%
                 Data = Data+1
             wend
+
+            vqtd.close
+            set vqtd = nothing
+            vqtdinv.close
+            set vqtdinv = nothing
+            vrep.close
+            set vrep = nothing
+        end if
             %>
             <th class="text-right"><%=QtdInvoiceGrupo%></th>
             <th class="text-right"><a target="_blank" href="PrintStatement.asp?R=rProducaoPorGrupoDet&De=<%= De %>&Ate=<%= Ate %>&U=<%= Unidades %>&G=<%= grupo("GrupoID") %>"> <%= QtdGrupo %> </a></th>

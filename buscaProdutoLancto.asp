@@ -82,7 +82,7 @@ else
     end if
 
     if not AchouDireto then
-        sqlBusca = " AND (NomeProduto like '%"& BuscaProduto &"%' OR Codigo LIKE '%"& BuscaProduto &"%')"
+        sqlBusca = " AND (NomeProduto like '%"& BuscaProduto &"%' OR Codigo LIKE '%"& BuscaProduto &"%' OR CBID LIKE '%"& BuscaProduto &"%')"
     end if
 end if
 %>
@@ -97,7 +97,10 @@ end if
             </thead>
             <tbody>
             <%
-            sql = "select id, NomeProduto, Codigo from produtos where sysActive=1 "& sqlbusca & sqlProdutos &" order by NomeProduto"
+            sql = "select p.id, p.NomeProduto, p.Codigo from produtos p "&_
+            "LEFT JOIN estoqueposicao ep ON ep.ProdutoID=p.id "&_
+            "where p.sysActive=1 "& sqlbusca & sqlProdutos &" GROUP BY p.id order by NomeProduto"
+
             set prod = db.execute( sql )
 			while not prod.eof
 				%>

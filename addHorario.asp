@@ -82,13 +82,20 @@ if ref("HoraDe")<>"" and ref("HoraA")<>"" and ref("Intervalo")<>"" then
     if PermiteSalvar then
 
         if req("H")="" then
-            sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios,Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor) values ("&req("Dia")&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"','"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"')"
+        diaSemanaArray = split(ref("diaSemanaArray[]"),",")
+        numberArray = UBound(diaSemanaArray)
+            For i = 0 To numberArray
+              sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios,Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor) values ("&diaSemanaArray(i)&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"','"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"')"
+               call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
+               db_execute(sqlGrade)
+            Next
         else
             sqlGrade = "update assfixalocalxprofissional set HoraDe="&mytime(ref("HoraDe"))&", HoraA="&mytime(ref("HoraA"))&", LocalID="&treatvalzero(ref("LocalID"))&", Intervalo="&treatvalnull(ref("Intervalo"))&", Compartilhada='"&ref("Compartilhada")&"', Especialidades='"&ref("Especialidades")&"', Procedimentos='"&ref("Procedimentos")&"', Convenios='"&ref("Convenios")&"', Profissionais='"&ref("Profissionais")&"', TipoGrade="& treatvalzero(ref("TipoGrade")) &", Horarios='"& ref("Horarios") &"', MaximoRetornos="& treatvalnull(ref("MaximoRetornos")) &", MaximoEncaixes="& treatvalnull(ref("MaximoEncaixes")) &", InicioVigencia="& mydatenull(ref("InicioVigencia")) &", FimVigencia="& mydatenull(ref("FimVigencia")) &", FrequenciaSemanas="&treatvalzero(ref("FrequenciaSemanas"))&", Mensagem='"& ref("Mensagem") &"', Cor='"& ref("Cor") &"' WHERE id="&req("H")
+            call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
+            db_execute(sqlGrade)
         end if
 
-        call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
-        db_execute(sqlGrade)
+
 	%>
 	<script>
 		$("#modal-table").modal("hide");
@@ -123,11 +130,61 @@ end if
 
 
 %>
+<style>
+    .inlinex{
+        display: inline-block;
+        margin-left: 15px;
+    }
+    .checkbox-daysweek input[type=checkbox]{
+        border:1px solid #4ea5e0;
+    }
+</style>
 <form id="formAddHorario" method="post">
 <div class="modal-header">
 	<h3><%=weekdayname(Dia)%></h3>
 </div>
 <div class="modal-body">
+    <div class="row">
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title">
+                <i class="fa fa-calendar"></i>
+                    Marque para duplicar a marcação para o dia da semana escolhido
+                </span>
+            </div>
+            <div class="panel-body p7" style="text-align: center">
+                <div class="checkbox-primary checkbox-daysweek inlinex">
+                    <input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="1" <% if weekdayname(Dia) ="domingo" then  response.write(" checked ") end if  %> />
+                    <label for="Unidades0"><small>Domingo</small></label>
+                </div>
+                <div class="checkbox-primary checkbox-daysweek inlinex">
+                    <input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="2" <% if weekdayname(Dia) ="segunda-feira" then  response.write(" checked ") end if %> />
+                    <label for="Unidades0"><small>Segunda-feira</small></label>
+                </div>
+                <div class="checkbox-primary checkbox-daysweek inlinex">
+                    <input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="3" <% if weekdayname(Dia) ="terça-feira" then  response.write(" checked ") end if %> />
+                    <label for="Unidades0"><small>Terça-feira</small></label>
+                </div>
+                <div class="checkbox-primary checkbox-daysweek inlinex">
+                    <input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="4" <% if weekdayname(Dia) ="quarta-feira" then  response.write(" checked ") end if %> />
+                    <label for="Unidades0"><small>Quarta-feira</small></label>
+                </div>
+                <div class="checkbox-primary checkbox-daysweek inlinex">
+                    <input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="5" <% if weekdayname(Dia) ="quinta-feira" then  response.write(" checked ") end if %> />
+                    <label for="Unidades0"><small>Quinta-feira</small></label>
+                </div>
+                <div class="checkbox-primary checkbox-daysweek inlinex">
+                    <input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="6" <% if weekdayname(Dia) ="sexta-feira" then  response.write(" checked ") end if %> />
+                    <label for="Unidades0"><small>Sexta-feira</small></label>
+                </div>
+                <div class="checkbox-primary checkbox-daysweek inlinex">
+                    <input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="7" <% if weekdayname(Dia) ="sábado" then  response.write(" checked ") end if %> />
+                    <label for="Unidades0"><small>Sábado</small></label>
+                </div>
+
+            </div>
+        </div>
+    </div>
   <div class="row">
 	<%=quickField("text", "HoraDe", "De", 2, HoraDe, " input-mask-l-time", "", " required")%>
     <%=quickField("text", "HoraA", "At&eacute;", 2, HoraA, " input-mask-l-time", "", " required")%>
@@ -189,9 +246,9 @@ end if
     </div>
     <% end if %>
     <div class="col-md-4">
-            <%=quickField("cor", "Cor", "Cor na agenda", 12, Cor, "select * from Cores", "Cor", "")%>
+        <%=quickField("cor", "Cor", "Cor na agenda", 12, Cor, "select * from Cores", "Cor", "")%>
     </div>
-    <%=quickField("memo", "Horarios", tituloHorarios, 12, Horarios, "", "", " placeholder='Ex.: 08:00, 08:35, 09:00'")%>
+        <%=quickField("memo", "Horarios", tituloHorarios, 12, Horarios, "", "", " placeholder='Ex.: 08:00, 08:35, 09:00'")%>
   </div>
     <br />
   <div class="row mo">

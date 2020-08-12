@@ -6,6 +6,7 @@ if erro="" and req("onlySta")="" and req("tarefasProjetos")="" and req("tarefasS
     set tar = db.execute("select sysActive from tarefas where id="&TarefaID)
     staDe = ref("staDe")
     staPara = ref("staPara")
+    CategoriaID = ref("CategoriaID")
     if tar("sysActive")=0 then
         sqlAbertura = ", DtAbertura=curdate(), HrAbertura=curtime()"
  '       staDe = "Pendente"
@@ -18,7 +19,7 @@ if erro="" and req("onlySta")="" and req("tarefasProjetos")="" and req("tarefasS
         HoraPrazo = "NULL"
     end if
 
-    db_execute("update tarefas set De="&session("User")&", Para='"&ref("Para")&"' "& sqlAbertura &", DtPrazo="&mydatenull(ref("DtPrazo"))&", HrPrazo="& HoraPrazo &", Solicitantes='"&req("Solicitantes")&"', Titulo='"&ref("Titulo")&"', ta='"&ref("Texto")&"', AvaliacaoNota="&treatvalzero(ref("AvaliacaoNota"))&", staDe='"&staDe&"', staPara='"&staPara&"', sysActive=1, Urgencia="&treatvalzero(ref("Urgencia"))&", ProjetoID="&treatvalzero(ref("Projeto-ID"))&" where id="&TarefaID)
+    db_execute("update tarefas set De="&session("User")&", Para='"&ref("Para")&"' "& sqlAbertura &", DtPrazo="&mydatenull(ref("DtPrazo"))&", HrPrazo="& HoraPrazo &", Solicitantes='"&req("Solicitantes")&"', Titulo='"&ref("Titulo")&"', ta='"&ref("Texto")&"', AvaliacaoNota="&treatvalzero(ref("AvaliacaoNota"))&", staDe='"&staDe&"', staPara='"&staPara&"', sysActive=1, Urgencia="&treatvalzero(ref("Urgencia"))&", CategoriaID="&treatvalzero("CategoriaID")&" , ProjetoID="&treatvalzero(ref("Projeto-ID"))&" where id="&TarefaID)
 
     %>
     new PNotify({
@@ -90,6 +91,7 @@ if req("tarefasProjetos")<>"" then
     TipoEstimado = req("TipoEstimado")
     TempoEstimado = req("TempoEstimado")
     ProjetoID = req("ProjetoID")
+    CategoriaID = req("CategoriaID")
     Para = req("Para")
     Solicitantes = req("Solicitantes")
 
@@ -124,7 +126,7 @@ if req("tarefasProjetos")<>"" then
     Para = CCs & PRs
 
     'response.write("INSERT INTO tarefas (Ordem, Titulo, TipoEstimado, TempoEstimado, ProjetoID, Para, Solicitantes, sysActive, De) VALUES ("&Ordem&", '"&Titulo&"', "&TipoEstimado&", "&TempoEstimado&", "&ProjetoID&", '"&Para&"', '"&Solicitantes&"', 1, "&session("User")&")")
-    db.execute("INSERT INTO tarefas (Ordem, Titulo, TipoEstimado, TempoEstimado, ProjetoID, Para, Solicitantes, sysActive, De) VALUES ("&Ordem&", '"&Titulo&"', "&TipoEstimado&", "&TempoEstimado&", "&ProjetoID&", '"&Para&"', '"&Solicitantes&"', 1, "&session("User")&")")
+    db.execute("INSERT INTO tarefas (Ordem, Titulo, TipoEstimado, TempoEstimado, ProjetoID, Para, Solicitantes, sysActive, De, CategoriaID) VALUES ("&Ordem&", '"&Titulo&"', "&TipoEstimado&", "&TempoEstimado&", "&ProjetoID&", '"&Para&"', '"&Solicitantes&"', 1, "&session("User")&", "&treatvalzero("CategoriaID")&")")
 
 end if
 

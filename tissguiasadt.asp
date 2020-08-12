@@ -170,11 +170,12 @@ if not reg.eof then
                 if spl(i)<>"" then
 				    splAEA = split(spl(i), "|")
 				    if splAEA(1)="agendamento" then
-					    set aEa = db.execute("select ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, ag.EspecialidadeID from agendamentos as ag where ag.id like '"&splAEA(0)&"' order by ag.Data desc, ag.Hora desc, ag.HoraFinal desc")
+					    set aEa = db.execute("select ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, ag.EspecialidadeID, ag.PlanoID from agendamentos as ag where ag.id like '"&splAEA(0)&"' order by ag.Data desc, ag.Hora desc, ag.HoraFinal desc")
 				    else
-					    set aEa = db.execute("select ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado' Tipo, 'executado' Icone, at.AgendamentoID, ag.EspecialidadeID FROM  atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ag ON ag.id=at.AgendamentoID where ap.id like '"&splAEA(0)&"' order by at.Data desc, at.HoraInicio desc, at.HoraFim desc")
+					    set aEa = db.execute("select ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado' Tipo, 'executado' Icone, at.AgendamentoID, ag.EspecialidadeID, ag.PlanoID FROM  atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ag ON ag.id=at.AgendamentoID where ap.id like '"&splAEA(0)&"' order by at.Data desc, at.HoraInicio desc, at.HoraFim desc")
 				    end if
 				    if not aEa.eof then
+        			    PlanoID =  aEa("PlanoID")
 					    DataAtendimento = aEa("Data")
 					    PacienteID = aEa("PacienteID")
 					    ProcedimentoID = aEa("ProcedimentoID")
@@ -267,7 +268,9 @@ if not reg.eof then
 								    ConvenioID = vpac("ConvenioID"&Numero)
 								    NumeroCarteira = vpac("Matricula"&Numero)
 								    ValidadeCarteira = vpac("Validade"&Numero)
-								    PlanoID = vpac("PlanoID"&Numero)
+								    IF PlanoID&"" = "" or PlanoID = "0" THEN
+                                        PlanoID = vpac("PlanoID"&Numero)
+                                    END IF
 							    end if
 						    end if
 
@@ -325,7 +328,7 @@ if not reg.eof then
                                                 END IF
                                             end if
                                         END IF
-                                        set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null,null)
+                                        set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null,1)
                                         ValorProcedimento = CalculaValorProcedimentoConvenioPaiObj("TotalGeral")
                                         AssociacaoID = CalculaValorProcedimentoConvenioPaiObj("AssociacaoID")
                                     END IF
@@ -344,7 +347,7 @@ if not reg.eof then
                                             end if
 
                                             IF getConfig("calculostabelas") THEN
-                                                set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null,null)
+                                                set CalculaValorProcedimentoConvenioPaiObj = CalculaValorProcedimentoConvenio(null,ConvenioID,ProcedimentoID,PlanoID,CodigoNaOperadoraNew,null,null,1)
                                                 ValorProcedimento = CalculaValorProcedimentoConvenioPaiObj("TotalGeral")
                                             END IF
 
@@ -396,6 +399,7 @@ if not reg.eof then
                                 TotalProcedimentos = TotalProcedimentos+ValorProcedimento
 
                                 sqlExecute = "insert into tissprocedimentossadt (GuiaID, ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser, AgendamentoID, AtendimentoID, HoraInicio, HoraFim) values ("&reg("id")&", "&ProfissionalID&", "&mydatenull(DataAtendimento)&", "&ProcedimentoID&", "&treatvalzero(TabelaID)&", '"&rep(CodigoProcedimento)&"', '"&rep(Descricao)&"', 1, 1, "&treatvalzero(TecnicaID)&", 1, "&treatvalzero(ValorProcedimento)&", "&treatvalzero(ValorProcedimento)&", "&session("User")&", "&AgendamentoID&", "&AtendimentoID&", "&mytime(HoraInicio)&", "&mytime(HoraFim)&")"
+
                                 db_execute(sqlExecute)
 
                                 IF getConfig("calculostabelas") THEN
@@ -1032,7 +1036,6 @@ function ExibeHistoricoSADT(GuiaID) {
             GuiaID: GuiaID
         }, "Histórico de alterações", true);
 }
-
 function tissCompletaDados(T, I){
 
 	$.ajax({
@@ -1050,6 +1053,12 @@ function tissCompletaDados(T, I){
             );
 		}
 	});
+    if(T === "Plano"){
+		let setConvenio = $("#gConvenioID").val();
+		let setPlano = $("#PlanoID").val();
+		let GuiadID = $("[name=GuiaID]").val();
+		atualizaTabela("tissprocedimentossadt", `tissprocedimentossadt.asp?I=${GuiadID}&T=${T}&setPlano=${setPlano}&setConvenio=${setConvenio}`)
+    }
 }
 
 $("#gConvenioID, #UnidadeID").change(function(){
@@ -1190,12 +1199,16 @@ function atualizaTabela(D, U){
 
 
 function tissplanosguia(ConvenioID){
+
+    let PlanoID = "<%=PlanoID%>";
+
 	$.ajax({
 		type:"POST",
 		url:"chamaTissplanosguia.asp?PlanoID=<%=PlanoID %>&ConvenioID="+ConvenioID,
 		data:$("#GuiaSADT").serialize(),
 		success: function(data){
 			$("#tissplanosguia").html(data);
+    		$("[name='PlanoID']").val(PlanoID);
 		}
 	});
 }

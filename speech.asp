@@ -60,24 +60,38 @@
         </div>
       </div>
       <script type="text/javascript">
-          //>pers1
-          var rec = false;
           function mdSpee(cid) {
-              var $speeBtn = $("#spee"+cid);
-              if(rec){
+              if(recognizing){
+                if($("#speeFLD").val() != cid){
+                  alert("gravação em curso, finalize para iniciar outra");
+                  return;
+                }
+                paraEscuta(cid);
+              }else{
+                  iniciaEscuta(cid);
+              }
+          }
+
+          function paraEscuta(cid){
+                  let $speeBtn = $("#spee"+cid);
+                  recognition.stop();
+                  recognizing = false;
                   $speeBtn.removeClass("btn-recording");
                   $speeBtn.find(".fa").removeClass("fa-stop").addClass("fa-microphone");
+          }
 
-                  recognition.stop();
-              }else{
+          function iniciaEscuta(cid){
+                   $("#speeFLD").val(cid);
+
+                  recognition.start();
+                  recognizing = true;
+
+                  let $speeBtn = $("#spee"+cid);
                   $speeBtn.find(".fa").removeClass("fa-microphone").addClass("fa-stop");
                   $speeBtn.addClass("btn-recording");
-                    $("#speeFLD").val(cid);
-                    $("#start_img").click();
-              }
-                rec = !rec;
           }
-        //<pers1
+
+
 
 var langs =
 [['Português',       ['pt-BR', 'Brasil']]];
@@ -105,22 +119,28 @@ var final_transcript = '';
 var recognizing = false;
 var ignore_onend;
 var start_timestamp;
+var interim_span
+var original_innerText;
 if (!('webkitSpeechRecognition' in window)) {
   upgrade();
 } else {
+
   start_button.style.display = 'inline-block';
   var recognition = new webkitSpeechRecognition();
   recognition.continuous = true;
   recognition.interimResults = true;
 
   recognition.onstart = function() {
-    recognizing = true;
-    showInfo('info_speak_now');
-    start_img.src = 'assets/img/speak.gif';
+    //recognizing = true;
+    //showInfo('info_speak_now');
+    //start_img.src = 'assets/img/speak.gif';
+    let inputmen  = document.getElementById($("#speeFLD").val() +"mem");
+    original_innerText = inputmen.innerText.trim() == ""? "" : inputmen.innerText+" ";
+
   };
 
   recognition.onerror = function(event) {
-    if (event.error == 'no-speech') {
+    /*if (event.error == 'no-speech') {
       start_img.src = 'assets/img/microphone.png';
       showInfo('info_no_speech');
       ignore_onend = true;
@@ -137,11 +157,11 @@ if (!('webkitSpeechRecognition' in window)) {
         showInfo('info_denied');
       }
       ignore_onend = true;
-    }
+    }*/
   };
 
   recognition.onend = function() {
-    recognizing = false;
+    /*recognizing = false;
     if (ignore_onend) {
       return;
     }
@@ -157,12 +177,27 @@ if (!('webkitSpeechRecognition' in window)) {
       range.selectNode(document.getElementById('final_span'));
       window.getSelection().addRange(range);
     }
-
-    console.log("end")
+*/
+    paraEscuta($("#speeFLD").val());
   };
 
   recognition.onresult = function(event) {
-
+    let input  = document.getElementById($("#speeFLD").val());
+    let inputmen  = document.getElementById($("#speeFLD").val() +"mem");
+    var final = "";
+    let interim = "";
+    for (var i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        final += event.results[i][0].transcript;
+        inputmen.innerText = original_innerText + final;
+        original_innerText = inputmen.innerText;
+        input.innerHTML = inputmen.innerHTML;
+      }else{
+        interim += event.results[i][0].transcript;
+        inputmen.innerText = original_innerText + interim;
+      }
+    }
+    /*
     var interim_transcript = '';
     if (typeof(event.results) == 'undefined') {
       recognition.onend = null;
@@ -191,7 +226,7 @@ if (!('webkitSpeechRecognition' in window)) {
     interim_span.innerHTML = linebreak(interim_transcript);
     if (final_transcript || interim_transcript) {
       showButtons('inline-block');
-    }
+    }*/
   };
 }
 
@@ -213,6 +248,7 @@ function capitalize(s) {
 
 var campoValorPadrao="";
 function startButton(event) {
+  /*console.log("startButton")
   campoValorPadrao=$("#" + $("#speeFLD").val() +"mem").html();
 
   if(typeof campoValorPadrao === "undefined"){
@@ -236,7 +272,7 @@ function startButton(event) {
   start_img.src = 'assets/img/microphone.png';
   showInfo('info_allow');
   showButtons('none');
-  start_timestamp = event.timeStamp;
+  start_timestamp = event.timeStamp;*/
 }
 
 function showInfo(s) {
@@ -258,4 +294,5 @@ function showButtons(style) {
     return;
   }
 }
-    </script>
+
+</script>

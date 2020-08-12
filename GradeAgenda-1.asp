@@ -33,6 +33,7 @@ if session("Admin")=0 then
 end if
 LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 ExibirCorPacienteAgenda = getConfig("ExibirCorPacienteAgenda")
+NaoExibirAgendamentoLocal = getConfig("NaoExibirAgendamentoLocal")
 
 'verifica se há agendamento aberto e bloqueia o id concatenado
 set vcaAB = db.execute("select id, AgAberto, UltRef from sys_users where AgAberto like '%_%' and id<>"& session("User"))
@@ -152,7 +153,7 @@ function existeGrade(ProfissionalID, UnidadeID, Hora, Data,Procedimento,Especial
     set Grade = db.execute(sqlGrade)
     if not Grade.eof then
         existeGrade = true
-    end if 
+    end if
 end function
 
 if session("FilaEspera")<>"" then
@@ -562,7 +563,7 @@ end if
                     ValorProcedimentosAnexos = 0
                     podeVerAgendamento=True
 
-                    if UnidadeID&""<>"" and session("admin")=0 and session("Partner")="" then
+                    if UnidadeID&""<>"" and session("admin")=0 and session("Partner")="" and NaoExibirAgendamentoLocal=1 then
                         if instr(session("Unidades"),"|"&UnidadeID&"|")=0 then
                             podeVerAgendamento=False
                         end if
@@ -771,7 +772,7 @@ end if
                     {
                         var gradeId = $(this).data("grade");
                         HorarioAdicionado=true;
-                        $(this).replaceWith('<%= conteudo %>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                        $(this).replaceWith(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
                         return false;
                     }
                 });
@@ -785,7 +786,7 @@ end if
                                     $('[data-horaid=<%=HoraComp%>]').remove();
                                 <% end if %>
 
-                                $(this).before('<%= conteudo %>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                                $(this).before(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
                                 return false;
                            }
                     });

@@ -1,5 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
+<!--#include file="modal.asp"-->
 <%
 if ref("De")<>"" then
     De = ref("De")
@@ -38,7 +39,7 @@ end if
             <th>Convênio</th>
             <th>Status</th>
             <th width="1%"></th>
-            <th width="5%"></th>
+            <th width="100"></th>
         </tr>
     </thead>
     <tbody>
@@ -203,7 +204,7 @@ end if
                 END IF
 
                 sql = "select l.id, ls.Status, l.PrevisaoEntrega from laudos l LEFT JOIN laudostatus ls ON ls.id=l.StatusID where l.Tabela='"& Tabela &"' and l.IDTabela="& IDTabela &" and l.Serie="&ItemN
-                ' response.write (sql)
+                 'response.write (sql)
                 set vca = db.execute(sql)
                 if not vca.eof then
                     Status = vca("Status")
@@ -317,15 +318,30 @@ end if
                                 <% if ii("labid")="3" then %>
                                     <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Álvaro" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
                                 <% end if %>
+                                <% if ii("labid")="4" then %>
+                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Hermes Pardini" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                <% end if %>
                             <% end if %>
                              <% if ii("labid")="1" then %>
                                  <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=648&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
                              <% elseif ii("labid")="2" then %>
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=739&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
-                            <% else %> 
+                             <% elseif ii("labid")="3" then %>
+                                <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=9739&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
+                             <% elseif ii("labid")="4" then %>
+                                <% if  Status="Liberado" then %>
+                                <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>);" href="#"><i class="fa fa-file-pdf-o"></i></a>
+                                <% end if %>
+                             <% else %> 
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%=link%>"><i class="fa fa-edit"></i></a>
-                            <% end if %>
+                            <% end if
+                            
+                            if Status="Liberado" then
+                                response.write("<a href='javascript:entrega("&IDLaudo&")' class='btn btn-sm btn-info'><span class='fa fa-print'></span> </a>")
+                            end if
+                            %>
                             <button class="btn btn-sm btn-info hidden"><i class="fa fa-print"></i></button>
+
                             </div>
                         </td>
                     </tr>
@@ -361,6 +377,18 @@ end if
 </table>
 
 <script>
+function entrega(laudoID) {
+    $("#modal-table").modal("show");
+    $("#modal").html("Carregando...");
+    $.post("laudoEntrega.asp?L="+laudoID, "", function (data) { $("#modal").html(data) });
+    
+}
+function saveLaudo(T, print){
+    $.post("saveLaudo.asp?L=<%= LaudoID %>&T="+ T, $("#Texto, #StatusID, #ProfissionalID, #Restritivo, #DataEntrega, #HoraEntrega, #ObsEntrega, #Receptor").serialize(), function(data){
+        eval(data);
+    });
+}
+
 
 function esconder(elemento,invoiceid){
     var linha = '#tr'+elemento;
@@ -431,6 +459,9 @@ function syncLabResult(invoices, labid =1) {
         case '3':
             caminhointegracao = "alvaro";
             break;
+        case '4':
+            caminhointegracao = "hermespardini";
+            break;
         default:
             alert ('Erro ao integrar com Laboratório');
             return false;
@@ -469,7 +500,7 @@ function syncLabResult(invoices, labid =1) {
             $("#"+invoices).addClass('fa-flask');
 
         } else {
-            alert("Falha ao sincronizar o laudo:"+data.message)
+            alert("Laudo não sincronizado: "+data.content)
             $("#"+invoices).removeClass('fa-flask fa-spinner fa-spin'); 
             $("#"+invoices).addClass('fa-flask');
         }
@@ -529,3 +560,9 @@ $(".lab-sync").on("click", function (labid =2){
     });
 </script>
 
+<script>
+ function entrega(laudoid) {
+        $("#modal-table").modal("show");
+        $("#modal").html("Carregando...");
+        $.post("laudoEntregaPDF.asp?L="+laudoid, "", function (data) { $("#modal").html(data) });}
+</script>

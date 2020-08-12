@@ -38,18 +38,24 @@ if not tryLogin.EOF then
     UsuariosContratadosS = tryLogin("UsuariosContratados")
     ServidorAplicacao = tryLogin("ServidorAplicacao")
     PastaAplicacao = tryLogin("PastaAplicacao")
+    PastaAplicacaoRedirect = PastaAplicacao
+
+    if isnull(PastaAplicacaoRedirect) then
+        PastaAplicacaoRedirect="v7"
+    end if
+
     Servidor = tryLogin("Servidor")&""
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
 
     if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
-            Response.Redirect("https://"&ServidorAplicacao&"/v7/?P=Login&U="&User)
+            Response.Redirect("https://"&ServidorAplicacao&"/"&PastaAplicacaoRedirect&"/?P=Login&U="&User)
         end if
     end if
 
     if Servidor="aws" then
-        response.redirect("http://clinic7.feegow.com.br/v7")
+        response.redirect("http://clinic7.feegow.com.br/"&PastaAplicacaoRedirect)
     end if
 
     if Servidor="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
@@ -94,7 +100,7 @@ if not tryLogin.EOF then
             if Session("Deslogar_user")<>"" then
                 forcar_login = Session("Deslogar_user")
             end if
-
+            
 			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login  then
                 deslogarUsuario = true
 				erro = "Este usuário já está conectado em outra máquina."
@@ -166,20 +172,25 @@ if not tryLogin.EOF then
                             if(preventClick) return;
                             preventClick = true;
 
-                            $("#Deslogar").attr("style", "opacity: 0.5");
-                            $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
-                            $.post('DeslogarUsuario.asp');
-                            $("#password").hide();
-                            $(".textoTituloInput").hide();
-                            $("#deslogar-container").append("<p style='text-align: center' id='deslogarTexto'>Aguarde alguns instantes ...</p>");
-                            setTimeout(() => {
-                                $("form").submit();
-                            }, 20000);
+                            if($("#password").val() !== ""){
+                                $("#Deslogar").attr("style", "opacity: 0.5");
+                                $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
+                                $.post('DeslogarUsuario.asp');
+                                $("#password").hide();
+                                $(".textoTituloInput").hide();
+                                $("#deslogar-container").append("<p style='text-align: center' id='deslogarTexto'>Aguarde alguns instantes ...</p>");
+                                setTimeout(() => {
+                                    $("form").submit();
+                                }, 20000);
+                            }else{
+                                showMessageDialog("Preencha a senha");
+                            }
+
                         });
                     });
                 </script>
             <%
-
+            
         else
             %>
                 <script>
@@ -187,7 +198,7 @@ if not tryLogin.EOF then
                 </script>
             <%
         end if
-
+		
 	else
 		session("Banco")="clinic"&tryLogin("LicencaID")
 		session("Admin")=tryLogin("Admin")
@@ -293,18 +304,11 @@ if not tryLogin.EOF then
 			end if
 		end if
 
-		if UnidadeID=0 then
-            if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then
-            	UnidadeID = sysUser("UnidadeID")
-			end if
-
-			if ubound(qtdUnidadesArray) > 0 then
-                UnidadeID= replace(qtdUnidadesArray(0), "|","")
-			else
-				if session("Unidades")&"" <> "" then
-                	UnidadeID= replace(session("Unidades"), "|","")
-				end if
-			end if
+        'pega a ultima unidade definida
+        if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 and not UnidadeDefinida then
+            UnidadeID = sysUser("UnidadeID")
+            UnidadeDefinida = True
+            UnidadeMotivoDefinicao = "Última unidade do usuário"
         end if
 
         'seta a unidade de acordo com a que o usuario tem permissa
@@ -338,10 +342,9 @@ if not tryLogin.EOF then
 
 			if not gradeHoje.EOF then
 				if not isnull(gradeHoje("UnidadeID")) then
-
 					if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then 
-						  UnidadeID = gradeHoje("UnidadeID")
-              UnidadeMotivoDefinicao = "Unidade da Grade do profissional"
+						UnidadeID = gradeHoje("UnidadeID")
+                        UnidadeMotivoDefinicao = "Unidade da Grade do profissional"
 					end if
 				end if
 			end if
@@ -406,6 +409,19 @@ if not tryLogin.EOF then
         else
             FieldTelemedicina=" '' "
         end if
+
+        IF session("ModoFranquia") THEN
+            strOrdem = "Padrao"
+            IF lcase(session("Table"))="funcionarios" THEN
+                strOrdem = "PadraoFuncionario"
+            END IF
+
+            set ResultPermissoes = db.execute("SELECT Permissoes FROM usuarios_regras JOIN regraspermissoes ON regraspermissoes.id = usuarios_regras.regra WHERE usuario = "&sysUser("id")&" AND unidade = "&session("UnidadeID")&" or "&strOrdem&" = 1 ORDER BY "&strOrdem&" ")
+
+            IF NOT ResultPermissoes.EOF THEN
+                session("Permissoes") = ResultPermissoes("Permissoes")
+            END IF
+        END IF
 
         set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, "&FieldTelemedicina&" ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
         if not AtendimentosProf.eof then

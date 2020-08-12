@@ -118,11 +118,15 @@ if not reg.eof then
                     end if
 		else
 			if spl(1)="agendamento" then
-				set aEa = db.execute("select ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, l.UnidadeID, ag.EspecialidadeID from agendamentos as ag left join locais l on l.id=ag.LocalID where ag.id like '"&spl(0)&"' order by ag.Data desc, ag.Hora desc, ag.HoraFinal desc")
+			    sqlaEa = "select ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, l.UnidadeID, ag.EspecialidadeID, ag.PlanoID from agendamentos as ag left join locais l on l.id=ag.LocalID where ag.id like '"&spl(0)&"' order by ag.Data desc, ag.Hora desc, ag.HoraFinal desc"
 			else
-				set aEa = db.execute("select ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado' Tipo, 'executado' Icone, at.AgendamentoID, at.UnidadeID, ag.EspecialidadeID FROM  atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ag ON ag.id=at.AgendamentoID where ap.id like '"&spl(0)&"' order by at.Data desc, at.HoraInicio desc, at.HoraFim desc")
+			    sqlaEa =("select ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado' Tipo, 'executado' Icone, at.AgendamentoID, at.UnidadeID, ag.EspecialidadeID, ag.PlanoID  FROM  atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ag ON ag.id=at.AgendamentoID where ap.id like '"&spl(0)&"' order by at.Data desc, at.HoraInicio desc, at.HoraFim desc")
 			end if
+
+
+			set aEa = db.execute(sqlaEa)
 			if not aEa.eof then
+			    PlanoID =  aEa("PlanoID")
 			    ProfissionalID = aEa("ProfissionalID")
 			    ConvenioID = aEa("ValorPlano")
 				PacienteID = aEa("PacienteID")
@@ -296,11 +300,13 @@ if not reg.eof then
 							ConvenioID = vpac("ConvenioID"&Numero)
 							NumeroCarteira = vpac("Matricula"&Numero)
 							ValidadeCarteira = vpac("Validade"&Numero)
-							PlanoID = vpac("PlanoID"&Numero)
+							IF PlanoID&"" = "" or PlanoID = "0" THEN
+							    PlanoID = vpac("PlanoID"&Numero)
+							END IF
 						end if
 					end if
-					
-					
+
+
 					've se há valor definido pra este procedimento neste convênio
 					set tpv = db.execute("select pv.id, pv.Valor, pt.TabelaID, pt.Codigo from tissprocedimentosvalores as pv left join tissprocedimentostabela as pt on pv.ProcedimentoTabelaID=pt.id where pv.ProcedimentoID="&ProcedimentoID&" and pv.ConvenioID="&ConvenioID)
 					if not tpv.eof then
@@ -742,12 +748,15 @@ $("#GuiaConsulta").submit(function(){
 });
 
 function tissplanosguia(ConvenioID){
+    let PlanoID = "<%=PlanoID%>";
+
 	$.ajax({
 		type:"POST",
 		url:"chamaTissplanosguia.asp?ConvenioID="+ConvenioID,
 		data:$("#GuiaConsulta").serialize(),
 		success: function(data){
 			$("#tissplanosguia").html(data);
+			$("[name='PlanoID']").val(PlanoID);
 		}
 	})
 }

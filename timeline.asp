@@ -748,28 +748,14 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 
 
         function newSaveImage(base64,id){
-            let objct = new FormData();
-            objct.append('userType','pacientes');
-            objct.append('userId',"<%=req("PacienteID")%>");
-            objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
-            objct.append('upload_file' , base64);
-            objct.append('folder_name' ,"Imagens");
-            objct.append('image_type' ,"base64");
-
-            $.ajax({
-  					url: domain + "api/image/uploadAnyFile",
-  					type: 'POST',
-  					processData: false,
-  					contentType: false,
-  					data: objct,
-                  // Now you should be able to do this:
-                  mimeType: 'multipart/form-data',    //Property added in 1.5.1
-
-                  success: function (data) {
-
-                  }
+            uploadProfilePic({
+                userId: "<%=req("I")%>",
+                db: "<%= LicenseID %>",
+                table: 'pacientes',
+                content: base64,
+                contentType: "base64"
             });
-        };
+        }
 
 </script>
 

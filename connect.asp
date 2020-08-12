@@ -5524,8 +5524,6 @@ function arqEx(nArquivo, nTipo)
 		arqEx = "/uploads/"& LicenseID &"/"& nTipo &"/"& nArquivo
     elseif nArquivo&""="" then
         arqEx = ""
-	elseif nArquivo&""="" and folder="IMAGENS/ASSINATURA" then
-	    arqEx = ""
     else
 		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&folder="&nTipo&"&file="&nArquivo&"&type=user"
 	end if

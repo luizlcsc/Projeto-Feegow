@@ -1,4 +1,6 @@
 <!--#include file="connect.asp"-->
+<!-- INCLUIDO ARQUIVO tagsConvert.asp PARA CONVERTER AS TAGS-->
+<!--#include file="Classes/TagsConverte.asp"-->
 <%
 ProcedimentoID= req("ProcedimentoID")
 PacienteID= req("PacienteID")
@@ -18,28 +20,33 @@ set ImpressosModeloSQL = db.execute(sqlImpresso)
 if not ImpressosModeloSQL.eof then
     TextoImpresso  = replaceTags(ImpressosModeloSQL("Cabecalho"), PacienteID, session("User"), UnidadeID)
 
-    set prof = db.execute("SELECT NomeProfissional FROM profissionais WHERE id="&treatvalzero(req("ProfissionalID")))
-    if not prof.eof then
-        NomeProfissional = prof("NomeProfissional")
-        TextoImpresso = replace(TextoImpresso, "[Profissional.Nome]", NomeProfissional)
-    else
-        TextoImpresso = replace(TextoImpresso, "[Profissional.Nome]", "")
-    end if
+    tags = tagsConverte(TextoImpresso,"ProfissionalID_"&ProcedimentoID&"|PacienteID_"&PacienteID&"|ProcedimentoID_"&ProcedimentoID&"|UnidadeID_"&UnidadeID&"|Solicitante_"&Solicitante,"")
 
-    if Solicitante&"" <> "" and Solicitante&""<>"0" then
-        TextoImpresso = replace(TextoImpresso, "[ProfissionalSolicitante.Nome]", Accountname("",Solicitante))
-    end if
+    'BLOCO DO CÓDIGO SENDO ENVIADO PARA O ARUIVO tagsConverte.asp converter as tags
+
+    'set prof = db.execute("SELECT NomeProfissional FROM profissionais WHERE id="&treatvalzero(req("ProfissionalID")))
+    'if not prof.eof then
+    '    NomeProfissional = prof("NomeProfissional")
+    '    TextoImpresso = replace(TextoImpresso, "[Profissional.Nome]", NomeProfissional)
+    'else
+    '    TextoImpresso = replace(TextoImpresso, "[Profissional.Nome]", "")
+    'end if
+
+    'if Solicitante&"" <> "" and Solicitante&""<>"0" then
+    '    TextoImpresso = replace(TextoImpresso, "[ProfissionalSolicitante.Nome]", Accountname("",Solicitante))
+    'end if
 
 
-    set proc = db.execute("SELECT NomeProcedimento, TextoPreparo FROM procedimentos WHERE id="&ProcedimentoID)
+    'set proc = db.execute("SELECT NomeProcedimento, TextoPreparo FROM procedimentos WHERE id="&ProcedimentoID)
 
-    if not proc.eof then
-        NomeProcedimento = proc("NomeProcedimento")
-        TextoPreparo = proc("TextoPreparo")&""
+    'if not proc.eof then
+    '    NomeProcedimento = proc("NomeProcedimento")
+    '    TextoPreparo = proc("TextoPreparo")&""
 
-        TextoImpresso = replace(TextoImpresso, "[Procedimento.Nome]", NomeProcedimento&"")
-        TextoImpresso = replace(TextoImpresso, "[Procedimento.Preparo]", TextoPreparo&"")
-    end if
+    '    TextoImpresso = replace(TextoImpresso, "[Procedimento.Nome]", NomeProcedimento&"")
+    '    TextoImpresso = replace(TextoImpresso, "[Procedimento.Preparo]", TextoPreparo&"")
+    'end if
+    'FIM BLOCO DO CÓDIGO SENDO ENVIADO PARA O ARUIVO tagsConverte.asp converter as tags
 %>
 <body>
 

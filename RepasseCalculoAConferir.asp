@@ -1,5 +1,5 @@
 ﻿<%
-Forma = req("Forma")
+Forma = reqf("Forma")
 if instr(Forma, "|0|") then
     server.execute("RepasseCalculoAConferirParticular.asp")
 end if

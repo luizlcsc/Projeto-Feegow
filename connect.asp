@@ -360,6 +360,14 @@ function req(Val)
 	req = replace(request.QueryString(Val), "'", "''")
 end function
 
+function reqf(P)
+    if req(P)<>"" then
+        reqf = req(P)
+    else
+        reqf = ref(P)
+    end if
+end function
+
 function refNull(Val)
 	if request.Form(Val)="" then
 		refNull = "NULL"
@@ -5524,7 +5532,7 @@ function arqEx(nArquivo, nTipo)
 		arqEx = "/uploads/"& LicenseID &"/"& nTipo &"/"& nArquivo
     elseif nArquivo&""="" then
         arqEx = ""
-    else
+	else
 		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&folder="&nTipo&"&file="&nArquivo&"&type=user"
 	end if
 	set fs=nothing

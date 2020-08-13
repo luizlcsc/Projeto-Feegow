@@ -249,13 +249,13 @@ private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePacien
 
 end function
 
-De = req("De")
-Ate = req("Ate")
-StatusBusca = req("Status")
-if req("Unidades")="" then
+De = reqf("De")
+Ate = reqf("Ate")
+StatusBusca = reqf("Status")
+if reqf("Unidades")="" then
     Unidades = session("Unidades")&""
 else
-    Unidades = req("Unidades")
+    Unidades = reqf("Unidades")
 end if
 %>
 
@@ -283,16 +283,16 @@ end if
             <%
             'db_execute("delete from temprepasse where sysUser="&session("User"))
             ContaProfissional = ""
-            if instr(req("AccountID"), "_") then
-                ContaProfissionalSplt =split(req("AccountID"),"_")
+            if instr(reqf("AccountID"), "_") then
+                ContaProfissionalSplt =split(reqf("AccountID"),"_")
                 gsContaProfissional = " AND ps.ProfissionalID="& ContaProfissionalSplt(1)
                 gcContaProfissional = " AND ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID)="& ContaProfissionalSplt(1)
             end if
 
             
-            if req("ProcedimentoID")<>"0" then
-                if instr(req("ProcedimentoID"), "G")>0 then
-                    set procsGP = db.execute("select group_concat(id) procs from procedimentos where GrupoID="& replace(req("ProcedimentoID"), "G", ""))
+            if reqf("ProcedimentoID")<>"0" then
+                if instr(reqf("ProcedimentoID"), "G")>0 then
+                    set procsGP = db.execute("select group_concat(id) procs from procedimentos where GrupoID="& replace(reqf("ProcedimentoID"), "G", ""))
                     procs=procsGP("procs")
                     if isnull(procs) then
                         sqlProcedimento = " AND t.ProcedimentoID IN (-1) "
@@ -300,7 +300,7 @@ end if
                         sqlProcedimento = " AND t.ProcedimentoID IN ("& procs &") "
                     end if
                 else
-                    sqlProcedimento = " AND t.ProcedimentoID="& req("ProcedimentoID") &" "
+                    sqlProcedimento = " AND t.ProcedimentoID="& reqf("ProcedimentoID") &" "
 
                 end if
             end if
@@ -311,15 +311,15 @@ end if
                 sqlUnidadesGH = " AND gh.UnidadeID IN ("& replace(Unidades, "|", "") &") "
             end if
 
-            if req("TipoData")="Exec" then
+            if reqf("TipoData")="Exec" then
 
                 sqlII = "select  u.CompanyUnit, t.sysDate,s.Nome ProfissionalSolicitante, t.ProfissionalSolicitanteID, esp.Especialidade, link, Tipo, ConvenioID, t.id, t.PacienteID, ProfissionalID, GuiaID, t.ProcedimentoID, `Data`, ValorTotal, t.UnidadeID, ValorPago, proc.NomeProcedimento, pac.NomePaciente, c.NomeConvenio, pac.Tabela, ValorPagoOriginal, Quantidade FROM "&_
                                 "(select concat(gs.tipoProfissionalSolicitante,'_', gs.ProfissionalSolicitanteID) ProfissionalSolicitante, concat(IF(gs.tipoProfissionalSolicitante='E', '8_', '5_'), gs.ProfissionalSolicitanteID) ProfissionalSolicitanteID, concat(ps.Associacao,'_',ps.ProfissionalID) Especialidade,gs.PacienteID, gs.ConvenioID, 'tissguiasadt' link, 'SP/SADT' Tipo, ps.id, ps.ProfissionalID, ps.GuiaID, ps.ProcedimentoID, ps.`Data`, ps.ValorTotal, gs.UnidadeID, ifnull(gs.ValorPago, 0) ValorPago, ps.ValorPago as ValorPagoOriginal, ps.Quantidade, gs.sysDate from tissguiasadt gs "&_
-                                 "INNER JOIN tissprocedimentossadt ps on ps.GuiaID=gs.id WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND ps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &" "&_
+                                 "INNER JOIN tissprocedimentossadt ps on ps.GuiaID=gs.id WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND ps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &" "&_
                                  "UNION ALL select concat( '5_',gh.Contratado), concat('5_', gh.Contratado) ProfissionalSolicitanteID, concat(ps.Associacao,'_',ps.ProfissionalID) Especialidade, gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, ps.id, ps.ProfissionalID, ps.GuiaID, ps.ProcedimentoID, ps.`Data`, ps.ValorTotal, gh.UnidadeID, ifnull(gh.ValorPago, 0) ValorPago,ps.ValorPago  as ValorPagoOriginal, ps.Quantidade, gh.sysDate from tissguiahonorarios gh "&_
-                                 "INNER JOIN tissprocedimentoshonorarios ps on ps.GuiaID=gh.id WHERE gh.sysActive=1 AND gh.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND ps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGH &" "&_
+                                 "INNER JOIN tissprocedimentoshonorarios ps on ps.GuiaID=gh.id WHERE gh.sysActive=1 AND gh.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND ps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGH &" "&_
                                  "UNION ALL select '' ProfissionalSolicitante, '' ProfissionalSolicitanteID, concat('5_',gc.ProfissionalID) Especialidade, gc.PacienteID, gc.ConvenioID, 'tissguiaconsulta' link, 'Consulta' Tipo, gc.id, ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID), gc.id GuiaID, gc.ProcedimentoID, gc.DataAtendimento `Data`, gc.ValorProcedimento ValorTotal, gc.UnidadeID, ifnull(gc.ValorPago, 0) ValorPago, ifnull(gc.ValorPago, 0) as ValorPagoOriginal, 1 Quantidade, gc.sysDate from tissguiaconsulta gc "&_
-                                 "WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND gc.DataAtendimento BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gcContaProfissional & sqlUnidadesGC &" ) t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID "&_
+                                 "WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND gc.DataAtendimento BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gcContaProfissional & sqlUnidadesGC &" ) t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID "&_
                                  "left join ((select 0 as 'id',  NomeFantasia CompanyUnit FROM empresa WHERE id=1) UNION ALL (select id,  NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia)) u on u.id = t.UnidadeID"&_
                                 " left join (select * from (select concat('I_',z.id) id, z.Nome, z.EspecialidadeID from ( "&_
                                 " SELECT '0' id, e.NomeFantasia Nome, '' EspecialidadeID FROM empresa e WHERE NOT ISNULL(e.NomeFantasia) "&_
@@ -340,7 +340,7 @@ end if
 "LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
 "LEFT JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID=ii.id "&_
 "LEFT JOIN tissguiaconsulta gc ON gc.id=tgi.GuiaID "&_
-"WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiaconsulta' AND "&_
+"WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiaconsulta' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gcContaProfissional & sqlUnidadesGC &_
 "GROUP BY gc.id "&_
                 "UNION ALL "&_
@@ -350,7 +350,7 @@ end if
 "LEFT JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID=ii.id "&_
 "LEFT JOIN tissguiasadt gs ON gs.id=tgi.GuiaID "&_
 "LEFT JOIN tissprocedimentossadt ps ON ps.GuiaID=gs.id "&_
-"WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiasadt' AND "&_
+"WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiasadt' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &_
 "GROUP BY gs.id "&_
                 "UNION ALL "&_
@@ -361,7 +361,7 @@ end if
 
 "LEFT JOIN tissguiahonorarios gh ON gh.id=tgi.GuiaID "&_
 "LEFT JOIN tissprocedimentoshonorarios ps ON ps.GuiaID=gh.id "&_
-"WHERE gh.sysActive=1 AND gh.ConvenioID IN ("& replace(req("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiahonorarios' AND "&_
+"WHERE gh.sysActive=1 AND gh.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiahonorarios' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGH &_
 "GROUP BY gh.id "&_
                 ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID"&_
@@ -377,7 +377,7 @@ end if
                 " SELECT CONCAT('8_', id) id, EspecialidadeID FROM profissionalexterno ) w"&_
                 " left join especialidades e on e.id = EspecialidadeID) esp on esp.id = t.Especialidade "
             end if
-            if req("DEBUG")="1" then
+            if reqf("DEBUG")="1" then
                 response.write( sqlII )
             end if
 
@@ -619,7 +619,7 @@ end if
                         <th width="20%" class="text-right"><%= fn(totalRecebido) %></th>
                         <th width="20%" class="text-right"><%= fn(totalRepasses) %></th>
                         <th width="20%" class="text-right"><%= fn(totalMateriais) %></th>
-                        <th width="20%" class="text-right"><%= fn( totalProcedimentos - totalRepasses - totalMateriais ) %></th>
+                        <th width="20%" class="text-right"><%= fn( totalRecebido - totalRepasses - totalMateriais ) %></th>
                 </tbody>
             </table>
         </div>

@@ -18,7 +18,7 @@
       
     <%
 
-Unidades = req("Unidades")
+Unidades = reqf("Unidades")
 if Unidades="" then
     Unidades = "|"& session("UnidadeID") &"|"
 end if
@@ -37,8 +37,8 @@ if instr(De, "-")>0 then
 end if
 
 
-dividirCompensacao = req("dividirCompensacao")
-ExibirNaoExecutado = req("ExibirNaoExecutado")
+dividirCompensacao = reqf("dividirCompensacao")
+ExibirNaoExecutado = reqf("ExibirNaoExecutado")
 if De="" then
 	De = date()
 end if
@@ -52,7 +52,7 @@ if not ConfigSQL.eof then
 end if
 %>
 
-    <form action="" id="buscaRepasses" name="buscaRepasses" method="get">
+    <form action="" id="buscaRepasses" name="buscaRepasses" method="post">
         <input type="hidden" name="P" value="RepassesAConferir" />
         <input type="hidden" name="AutoConsolidarRepasse" value="<%=AutoConsolidarRepasse%>" />
         <input type="hidden" name="Pers" value="1" />
@@ -60,8 +60,8 @@ end if
         <div class="panel">
             <div class="panel-body hidden-print">
                 <div class="row">
-                    <%= quickfield("multiple", "Forma", "Convênio", 2, req("Forma"), "select '0' id, '   PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 and Ativo='on' order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
-                    <%= quickfield("multiple", "TipoRecebedor", "Tipo do recebedor", 2, req("TipoRecebedor"), "select id, AssociationName from sys_financialaccountsassociation where id in (2,4,5,8) ORDER BY AssociationName", "AssociationName", "") %>
+                    <%= quickfield("multiple", "Forma", "Convênio", 2, reqf("Forma"), "select '0' id, '   PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 and Ativo='on' order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
+                    <%= quickfield("multiple", "TipoRecebedor", "Tipo do recebedor", 2, reqf("TipoRecebedor"), "select id, AssociationName from sys_financialaccountsassociation where id in (2,4,5,8) ORDER BY AssociationName", "AssociationName", "") %>
                     <div class="col-md-2">
                         <label for="Status">Status de Recto</label><br />
                         <select name="Status" class="form-control" id="Status">
@@ -75,9 +75,9 @@ end if
                     <%= quickField("datepicker", "Ate", "&nbsp;", 2, Ate, "", "", " placeholder='At&eacute;' required='required'") %>
                     <div class="col-md-2">
                         <label>Tipo de Data:</label><br />
-                        <span class="radio-custom"><input type="radio" name="TipoData" value="Exec" <% if req("TipoData")="Exec" or req("TipoData")="" then response.write(" checked ") end if %> id="TDE" /><label for="TDE"> Execução</label></span>
+                        <span class="radio-custom"><input type="radio" name="TipoData" value="Exec" <% if reqf("TipoData")="Exec" or reqf("TipoData")="" then response.write(" checked ") end if %> id="TDE" /><label for="TDE"> Execução</label></span>
                         <br />
-                        <span class="radio-custom"><input type="radio" name="TipoData" value="Comp" <% if req("TipoData")="Comp" then response.write(" checked ") end if %> id="TDC" /><label for="TDC"> Compensação</label></span>
+                        <span class="radio-custom"><input type="radio" name="TipoData" value="Comp" <% if reqf("TipoData")="Comp" then response.write(" checked ") end if %> id="TDC" /><label for="TDC"> Compensação</label></span>
                     </div>
                 </div>
                 <div class="row mt10">
@@ -91,26 +91,26 @@ end if
                         <input type="checkbox" id="ExibirNaoExecutado" name="ExibirNaoExecutado" value="S"<% if ExibirNaoExecutado="S" then response.write(" checked ") end if %> /><label for="ExibirNaoExecutado">Exibir não executado</label>
                     </div>
                     <%
-                    if req("B")="1" then
+                    if reqf("B")="1" then
                     %>
-                    <input type="hidden" id="AccountID" name="AccountID" value="<%=req("AccountID")%>">
+                    <input type="hidden" id="AccountID" name="AccountID" value="<%=reqf("AccountID")%>">
                     <input type="hidden" id="B" name="B" value="1">
                     <%
                     else
                     %>
                     <div class="col-md-2">
-                        <%=selectInsertCA("Executante", "AccountID", req("AccountID"), "5, 8, 2, 4", "", " ", "")%>
+                        <%=selectInsertCA("Executante", "AccountID", reqf("AccountID"), "5, 8, 2, 4", "", " ", "")%>
 
                     </div>
                     <%
                     end if
                     %>
-                    <%= quickfield("simpleSelect", "ProcedimentoID", "Limitar procedimento", 2, req("ProcedimentoID"), "select distinct(concat('G', pg.id)) id, concat('&raquo; ', trim(NomeGrupo)) NomeProcedimento from procedimentosgrupos pg      UNION ALL       select id, NomeProcedimento from procedimentos where ativo='on' and sysActive=1 order by NomeProcedimento limit 1000", "NomeProcedimento", "") %>
+                    <%= quickfield("simpleSelect", "ProcedimentoID", "Limitar procedimento", 2, reqf("ProcedimentoID"), "select distinct(concat('G', pg.id)) id, concat('&raquo; ', trim(NomeGrupo)) NomeProcedimento from procedimentosgrupos pg      UNION ALL       select id, NomeProcedimento from procedimentos where ativo='on' and sysActive=1 order by NomeProcedimento limit 1000", "NomeProcedimento", "") %>
                     <div class="col-md-2">
                         <button id="BtnBuscar" class="btn btn-primary btn-buscar btn-block mt25"><i class="fa fa-search"></i>Buscar</button>
                     </div>
                 </div>
-               <% if req("Forma")<>"" or req("AC")="1" then %>
+               <% if reqf("Forma")<>"" or reqf("AC")="1" then %>
                <hr class="short alt" />
                 <div class="row botoes-painel">
                     <div class="col-md-12">
@@ -241,7 +241,7 @@ if ExibirNaoExecutado="S" then
     <%
 end if
 
-if req("B")="1" then
+if reqf("B")="1" then
 %>
 $(document).ready(function() {
 
@@ -252,8 +252,8 @@ $(document).ready(function() {
 <%
 end if
 'roda esse bloco caso ja esteja com resultados na tela
-if req("AccountID")<>"" then
-    if req("AutoConsolidarRepasse")="S" then
+if reqf("AccountID")<>"" then
+    if reqf("AutoConsolidarRepasse")="S" then
     %>
     var AConsolidarLen = $('input[name=linhaRepasse]').length;
 

@@ -483,9 +483,6 @@ end if
                 <a class="list-group-item" target="_blank" href="https://feegow.futurotec.com.br/futurofone_chat/?hash_chat=FFCHAT01">
                   &nbsp;<i class="fa fa-comment fa-fw text-primary"></i>&nbsp;&nbsp; Chat online</a>
 
-                <a class="list-group-item" target="_blank" href="https://anydesk.com/pt/downloads">
-                  <i class="fa fa-exchange fa-fw text-primary"></i>&nbsp;&nbsp; Acesso Remoto (AnyDesk)</a>
-
 
               </div>
             </div>

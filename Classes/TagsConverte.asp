@@ -12,25 +12,31 @@ function tagsConverte(conteudo,itens,moduloExcecao)
   itens = itens
   '### FILTRA OS ITENS SEPARADOS POR PIPE
   itensArray=Split(itens,"|")
-  
+
   for each itensValor in itensArray
     '### <SEPARA OS ITENS SEPARADOS POR UNDERLINE>
     itemArray = split(itensValor, "_")
     item_nome = itemArray(0)&""
     item_id   = itemArray(1)&""
     conteudo = conteudo&""
-    '## Add prefixo item_ para evitar conflitos de variaveis
 
+    '## Add prefixo item_ para evitar conflitos de variaveis
     select case item_nome
       case "PacienteID"
         item_PacienteID          = item_id
         'ALIAS DE TAGS RELACIONADAS AO PACIENTE
         conteudo = replace(conteudo,"[NomePaciente]","[Paciente.Nome]")
+
       case "ProfissionalID"
         item_ProfissionalID      = item_id
         'ALIAS DE TAGS RELACIONADAS AO PROFISSIONAL
         conteudo = replace(conteudo, "[NomeProfissional]", "[Profissional.Nome]" )
-        
+
+        'TRATAMENTO DA VARIÁVEL item_ProfissionalID QUANDO VAZIA - Airton 11-08-2020
+        if item_ProfissionalID = "" then
+          item_ProfissionalID = 0
+        end if
+
       case "ProfissionalSessao"
         item_ProfissionalSessao  = session("idInTable")
         'ALIAS DE TAGS RELACIONADAS AO PROFISSIONAL - SESSÃO
@@ -40,13 +46,19 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_ProfissionalSolicitanteID  = item_id
         'ALIAS DE TAGS RELACIONADAS AO PROFISSIONAL - SESSÃO
         'Adicionar aqui...
-      
+
+      'CASE INCLUIDO PARA TRATAR ENVIO DE SOLICITANTE DO ARQUIVO printProcedimentoImpresso.asp - Airton 12-08-2020
+      case "ProfissionalSolicitanteNome"
+        if ProfissionalSolicitanteNome&"" <> "" then
+          conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", item_id)
+        else
+          conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", " " )
+        end if
 
       case "UnidadeSessao"
         item_UnidadeSessao       = item_id
         'ALIAS DE TAGS RELACIONADAS A UNIDADE SESSAO
         'Adicionar aqui...
-      
       
       case "UnidadeID"          
         item_UnidadeID           = item_id
@@ -60,19 +72,23 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         conteudo = replace(conteudo, "[Empresa.Email1]", "[Unidade.Email1]")
         conteudo = replace(conteudo, "[Empresa.Cep]", "[Unidade.Cep]")
         conteudo = replace(conteudo, "[Empresa.Estado]", "[Unidade.Estado]")
+
       case "AgendamentoID"
         item_AgendamentoID       = item_id
         'ALIAS DE TAGS RELACIONADAS AO AGENDAMENTO
         conteudo = replace(conteudo, "[DataAgendamento]", "[Agendamento.Data]" )
         conteudo = replace(conteudo, "[HoraAgendamento]", "[Agendamento.Hora]" )
+
       case "ProcedimentoID"
         item_ProcedimentoID      = item_id
         'ALIAS DE TAGS RELACIONADAS AO PROCEDIMENTO
         'Adicionar aqui...
+
       case "ProcedimentoNome"     'NO CASO DO AGENDAMENTO QUE O NOME DO AGENDAMENTO PODE != DO PADRÃO
         item_ProcedimentoNome    = item_id
         'ALIAS DE TAGS RELACIONADAS AO NOME DO PROCEDIMENTO
         'Adicionar aqui...
+
       case "ReciboID"
         item_ReciboID            = item_id
         'ALIAS DE TAGS RELACIONADAS AO RECIBO
@@ -94,6 +110,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
   next
   '### <FILTRA OS ITENS SEPARADOS POR PIPE/>
   if conteudo<>"" then
+
     conteudo = conteudo
     '<TAGS RELACIONADAS AO SISTEMA>
     conteudo = replace(conteudo, "[Sistema.Extenso]", formatdatetime(date(),1) )
@@ -105,17 +122,18 @@ function tagsConverte(conteudo,itens,moduloExcecao)
     conteudo = replace(conteudo, "[Usuario.Nome]", session("NameUser"))
 
     '</TAGS RELACIONADAS AO SISTEMA>
-    
   else
     conteudo = ""
   end if
   SET tagsCategoriasSQL = db.execute("select categoria from cliniccentral.tags_categorias")
+
   while not tagsCategoriasSQL.eof
     tagsCategoria = tagsCategoriasSQL("categoria")
     'CHECA SE FOI INSERIDA A TAG PERTENCENTE A UMA CATEGORIA EXISTENTE 
     if instr(conteudo, "["&tagsCategoria)>0 then
       select case tagsCategoria
         case "Paciente"
+
           if item_PacienteID>0 then
             qPacientesSQL = "SELECT  "&_
             "c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3'  "&_
@@ -137,6 +155,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           'response.write("<pre>"&qPacientesSQL&"</pre>")
           if qPacientesSQL<>"" then
             SET PacientesSQL = db.execute(qPacientesSQL)
+
               if not PacientesSQL.eof then
                 conteudo = replace(conteudo,"[Paciente.Nome]",PacientesSQL("NomePaciente")&"")
                 conteudo = replace(conteudo,"[Paciente.Sexo]",PacientesSQL("Sexo")&"")
@@ -178,7 +197,6 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Numero]", trim(PacientesSQL("Numero")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Complemento]", trim(PacientesSQL("Complemento")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Cep]", trim(PacientesSQL("Cep")&" ") )
-                
                 'GERAIS
                 conteudo = replace(conteudo, "[Paciente.Profissao]", trim(PacientesSQL("Profissao")&" ") )
                 conteudo = replace(conteudo, "[Paciente.CNS]", trim(PacientesSQL("CNS")&" ") )
@@ -188,6 +206,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             set PacientesSQL = nothing
           end if
         case "Unidade"
+
           if item_UnidadeID=0 then
             qUnidadeSQL = "select *, NomeEmpresa Nome from empresa"
             'response.write("<script>console.log('Empresa ("&item_UnidadeID&")')</script>")
@@ -195,13 +214,16 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             qUnidadeSQL = "select *, unitName Nome from sys_financialcompanyunits where id="&item_UnidadeID
             'response.write("<script>console.log('Unidade')</script>")
           end if
+
           SET UnidadeSQL = db.execute(qUnidadeSQL)
           if not UnidadeSQL.eof then
+
             if item_UnidadeID=0 then
               conteudo = replace(conteudo, "[Unidade.Nome]", trim(UnidadeSQL("NomeEmpresa")&" ") )
             else
               conteudo = replace(conteudo, "[Unidade.Nome]", trim(UnidadeSQL("UnitName")&" ") )
             end if
+
             conteudo = replace(conteudo, "[Unidade.NomeFantasia]", trim(UnidadeSQL("NomeFantasia")&" ") )
             'ENDERECO
             conteudo = replace(conteudo, "[Unidade.Cep]", trim(UnidadeSQL("CEP")&" ") )
@@ -221,14 +243,13 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Profissional"
           
           'QUERY ALTERADA PARA A MESMA QUERY DO FEEGOW API 27/07/2020
-          
-          qProfissionaisContentSQL = "SELECT prof.RQE, prof.Conselho, prof.NomeProfissional, t.Tratamento, CONCAT(IF(t.Tratamento is null,'',concat(t.Tratamento,' ')),IF(prof.NomeSocial is null or prof.NomeSocial ='', SUBSTRING_INDEX(prof.NomeProfissional,' ', 1), prof.NomeSocial)) PrimeiroNome, "&_
+          qProfissionaisContentSQL = "SELECT prof.RQE, prof.Conselho, prof.NomeProfissional, t.Tratamento, cp.descricao, CONCAT(IF(t.Tratamento is null,'',concat(t.Tratamento,' ')),IF(prof.NomeSocial is null or prof.NomeSocial ='', SUBSTRING_INDEX(prof.NomeProfissional,' ', 1), prof.NomeSocial)) PrimeiroNome, "&_
           "CONCAT(cp.descricao, ' ', prof.DocumentoConselho, ' ', prof.UFConselho) Documento, prof.Assinatura, prof.DocumentoConselho, prof.CPF, prof.NomeSocial, esp.especialidade Especialidade "&_
           "FROM profissionais prof "&_
           "LEFT JOIN conselhosprofissionais cp ON cp.id=prof.Conselho "&_
-          "LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID LEFT JOIN tratamento t ON t.id=prof.TratamentoID "&_
+          "LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
+          "LEFT JOIN tratamento t ON t.id=prof.TratamentoID "&_
           "WHERE prof.id="
-
 
           'PROFISSIONAL SOLICITANTE
           if item_ProfissionalSolicitanteID>0 then
@@ -251,47 +272,56 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             set ProfissionaisSQL = nothing
           end if
 
-          
           if item_ProfissionalID>0 then
             qProfissionaisSQL=qProfissionaisContentSQL&item_ProfissionalID
           elseif item_ProfissionalSessao>0 AND session("Table")=lcase("profissionais") then 'EXCEÇÃO POR CONTA DO MÓDULO DE RECIBOS E OUTROS LOCAIS QUE PODEM ESTAR UTILIZANDO TAGS [Profissional.ALGUMACOISA] E REFERENCIANDO A SESSÃO DO PROFISSIONAL LOGADO
             qProfissionaisSQL = qProfissionaisContentSQL&item_ProfissionalSessao
+          elseif item_ProfissionalID=0 then
+            'TRATAMENTO DAS TAGS QUE NÃO FORAM CONVERTIDAS - Airton 12-08-2020
+            qtagsSQL="SELECT tagNome FROM cliniccentral.tags WHERE tagNome LIKE 'Profissional.%'"
+            SET tagsSQL=db.execute(qtagsSQL)
+            while not tagsSQL.eof
+                If inStr(conteudo, tagsSQL("tagNome")) <> 0 Then
+                    conteudo = replace(conteudo, "["&tagsSQL("tagNome")&"]", trim(" ") )
+                  End if
+              tagsSQL.movenext
+            wend
+            tagsSQL.close
           end if
+          'FIM TRATAMENTODAS TAGS QUE NÃO FORAM CONVERTIDAS
           if qProfissionaisSQL<>"" then
             SET ProfissionaisSQL = db.execute(qProfissionaisSQL)
             if not ProfissionaisSQL.eof then
-               
+
               conteudo = replace(conteudo, "[Profissional.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
               conteudo = replace(conteudo, "[Profissional.PrimeiroNome]", trim(ProfissionaisSQL("PrimeiroNome")&" ") )
               conteudo = replace(conteudo, "[Profissional.NomeSocial]", trim(ProfissionaisSQL("NomeSocial")&" ") )
               conteudo = replace(conteudo, "[Profissional.Especialidade]", trim(ProfissionaisSQL("Especialidade")&" ") )
+              conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
               conteudo = replace(conteudo, "[Profissional.Documento]", trim(ProfissionaisSQL("Documento")&" ") )
+              conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
               conteudo = replace(conteudo, "[Profissional.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
+
               if ProfissionaisSQL("Assinatura")&"" = "" then
                 conteudo = replace(conteudo, "[Profissional.Assinatura]", "______________________________________________")
               else
                 conteudo = replace(conteudo, "[Profissional.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(ProfissionaisSQL("Assinatura")))&"'>" )
               end if
+
               conteudo = replace(conteudo, "[Profissional.Tratamento]", trim(ProfissionaisSQL("Tratamento")&" ") )
               'NOVAS TAGS 06/07/2020
               conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
-
               'Referencia ifrReciboIntegrado.asp ||| Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho ) 'LINHA 561
               conteudo = replace(conteudo, "[ProfissionalExecutante.Conselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
               conteudo = replace(conteudo, "[ProfissionalExecutante.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
               conteudo = replace(conteudo, "[ProfissionalExecutante.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
-
-              if ProfissionaisSQL("Conselho")&""="1" then
-                conteudo = replace(conteudo, "[Profissional.CRM]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
-              end if
-              conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
             end if 
           end if
-        
-          
+ 
         case "Financeiro"
 
         case "Agendamento"
+
           if item_AgendamentoID>0 then
             qAgendamentosSQL = "SELECT id, Data,  Hora,  TipoCompromissoID,  StaID,  ValorPlano,  rdValorPlano,  Notas,  Falado,  FormaPagto,  LocalID,  Tempo,  HoraFinal,  SubtipoProcedimentoID,  HoraSta,  ConfEmail,  ConfSMS,  Encaixe,  EquipamentoID,  NomePaciente,  Tel1,  Cel1,  Email1, Procedimentos,  EspecialidadeID,  IndicadoPor,  TabelaParticularID,  CanalID,  Retorno,  RetornoID,  Primeira,  PlanoID, PermiteRetorno "_
             &"FROM agendamentos "_
@@ -314,8 +344,9 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             set AgendamentosSQL = nothing
           end if
         case "Procedimento"
+
           if item_ProcedimentoID>0 then
-            qProcedimentosSQL = "SELECT p.NomeProcedimento, p.DiasLaudo, t.TipoProcedimento "_
+            qProcedimentosSQL = "SELECT p.NomeProcedimento, p.DiasLaudo, p.TextoPreparo, t.TipoProcedimento "_
             &"FROM procedimentos p "_
             &"LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID "_
             &"WHERE p.id="&item_ProcedimentoID
@@ -326,6 +357,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               conteudo = replace(conteudo, "[Procedimento.Nome]", ProcedimentosSQL("NomeProcedimento")&"" )
               conteudo = replace(conteudo, "[Procedimento.DiasLaudo]", ProcedimentosSQL("DiasLaudo")&"" )
               conteudo = replace(conteudo, "[Procedimento.Tipo]", ProcedimentosSQL("TipoProcedimento")&"" )
+              conteudo = replace(conteudo, "[Procedimento.Preparo]", ProcedimentosSQL("TextoPreparo")&"" )
             end if
             ProcedimentosSQL.close
             set ProcedimentosSQL = nothing
@@ -334,7 +366,9 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             conteudo = replace(conteudo, "[Procedimento.Nome]", item_ProcedimentoNome&"" )
           end if
         case "Devolucao"
+
         case "Proposta"
+
           if item_PropostaID>0 then
             qPropostasSQL = "SELECT NomeProfissional, propostas.sysUser, tabelaparticular.NomeTabela FROM propostas "_
             &"LEFT JOIN profissionais ON profissionais.id = propostas.ProfissionalID "_
@@ -355,6 +389,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Encaminhamento"
         
         case "Recibo"
+
           'response.write("RECIBOID:::::: "&item_ReciboID)
           if item_ReciboID>0 then
             'QUERY DE REFERENCIA ifrReciboIntegrado.asp
@@ -385,6 +420,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 
 
         case "Contrato"
+
           if item_ContratoID>0 then
             'REPLICADO COM BASE NO "addContrato.asp"
             qContratosSQL = "SELECT id FROM sys_financialinvoices WHERE id="&item_ContratoID
@@ -395,6 +431,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           end if
           
         case "Fatura"
+
           '***QUERY DE PROFISSIONAIS QUE EXECUTARAM UM SERVIÇO***
           'SELECT GROUP_CONCAT(p.NomeProfissional SEPARATOR ', ') FROM itensinvoice ii
           'LEFT JOIN profissionais p ON p.id=ii.ProfissionalID

@@ -310,6 +310,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 
               conteudo = replace(conteudo, "[Profissional.Tratamento]", trim(ProfissionaisSQL("Tratamento")&" ") )
               'NOVAS TAGS 06/07/2020
+              conteudo = replace(conteudo, "[Profissional.CRM]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
               conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
               'Referencia ifrReciboIntegrado.asp ||| Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho ) 'LINHA 561
               conteudo = replace(conteudo, "[ProfissionalExecutante.Conselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )

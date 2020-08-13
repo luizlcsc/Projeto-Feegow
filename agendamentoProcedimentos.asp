@@ -59,7 +59,7 @@ if req("Checkin")="1" then
 <div id="divLanctoCheckin"><!--#include file="invoiceEstilo.asp"--></div>
     <table class="table table-condensed table-hover">
     <%
-    sql = "SELECT t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal, COALESCE(conv.NaoPermitirGuiaDeConsulta, 0) NaoPermitirGuiaDeConsulta FROM ("&_
+    sql = "SELECT proc.TipoProcedimentoID, t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal, COALESCE(conv.NaoPermitirGuiaDeConsulta, 0) NaoPermitirGuiaDeConsulta FROM ("&_
     "SELECT '' id, a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID, a.Tempo, a.LocalID, a.EquipamentoID,a.PlanoID from agendamentos a where id="& ConsultaID &_
     " UNION ALL "&_
     " SELECT ap.id, ap.rdValorPlano, ap.ValorPlano, ap.TipoCompromissoID, ap.Tempo, ap.LocalID, ap.EquipamentoID,ap.PlanoID FROM agendamentosprocedimentos ap "&_
@@ -78,7 +78,10 @@ if req("Checkin")="1" then
     blocoPendParcial = 0
     Bloco = 0
     ValorConvenio = ""
+    TipoProcedimentoID = 0
+
     while not agp.eof
+        TipoProcedimentoID=agp("TipoProcedimentoID")
 
         procedimentos = ""
         PermitirFaturamentoContaZerada = getConfig("PermitirFaturamentoContaZerada")
@@ -123,6 +126,12 @@ if req("Checkin")="1" then
             
         else
             staPagto = "danger"'verifica as guias antes de dar DANGER
+
+            'libera guia de retorno
+            if TipoProcedimentoID&""="9" then
+                staPagto = "success"
+            end if
+
             set sqlGuiaGerada = db.execute("SELECT * FROM  "&_
                                        "(SELECT ValorProcedimento, DataAtendimento, ProcedimentoID, PacienteID, ProfissionalID, AgendamentoID "&_
                                        "FROM tissguiaconsulta "&_
@@ -132,6 +141,7 @@ if req("Checkin")="1" then
                                        "LEFT JOIN tissguiasadt tgs ON tgs.id=tps.GuiaID) t "&_
                                        "WHERE t.PacienteID IS NOT NULL AND DataAtendimento = CURDATE() AND t.ProcedimentoID="&agp("TipoCompromissoID")&" AND (ISNULL(t.ProfissionalID) or t.ProfissionalID=0 OR t.ProfissionalID="& treatvalnull(ProfissionalID) &") AND t.PacienteID="&PacienteID&" LIMIT 1")
             if not sqlGuiaGerada.eof then
+
                 ValorProcedimento = sqlGuiaGerada("ValorProcedimento")
                 if ValorProcedimento > 0 then
                     staPagto = "success"

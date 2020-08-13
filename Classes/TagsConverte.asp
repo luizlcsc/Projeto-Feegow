@@ -50,7 +50,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 
       'CASE INCLUIDO PARA TRATAR ENVIO DE SOLICITANTE DO ARQUIVO printProcedimentoImpresso.asp - Airton 12-08-2020
       case "ProfissionalSolicitanteNome"
-        if ProfissionalSolicitanteNome&"" <> "" or ProfissionalSolicitanteNome&""<>0 then
+        if ProfissionalSolicitanteNome&"" <> "" then
           conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", item_id)
         else
           conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", " " )

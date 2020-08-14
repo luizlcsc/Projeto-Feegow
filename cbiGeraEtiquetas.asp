@@ -151,8 +151,8 @@ else
 
                     %>
                         <td align="center" style="padding-left: <%=ref("MargemEsquerda")%>mm;">
-                            <iframe align="middle" name="CBInd" frameborder="0" src="CBInd.asp?NumeroCodigo=<%= CodigoDeBarras %>" width="100%" height="25"></iframe>
-                            <span><%=CodigoDeBarras %></span>
+                            <iframe align="middle" name="CBInd" frameborder="0" src="https://api.feegow.com.br/barcode/render?type=code128&width_factor=2&content=<%= CodigoDeBarras %>" width="100%" height="25"></iframe>
+                            <code><%=CodigoDeBarras %></code>
                              <br>
                             <span style="font-size: 7px"><%=left(CodigoBarrasSQL("NomeProduto"),20)%><%=Lote%></span>
 

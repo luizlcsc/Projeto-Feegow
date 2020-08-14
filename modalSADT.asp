@@ -375,7 +375,7 @@ function alertCalculo(arg){
  	$.ajax({
  		type:"POST",
  		url:"tissCompletaDados.asp?I="+I+"&T="+T,
- 		data:$("#GuiaSADT").serialize(),
+ 		data:$("#GuiaSADT, #frmModal").serialize(),
  		success:function(data){
  			eval(data);
  			var convenio = $("#gConvenioID").val();

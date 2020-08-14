@@ -438,7 +438,7 @@ if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
     if aut("|produtosV|")=1 then
     set abaixo = db.execute("select count(id) Quantidade from produtos pro where pro.sysActive=1  AND if(EstoqueMinimoTipo='U',"&_
                             "((select sum(ep.Quantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='U' group by ep.ProdutoID)+"&_
-                            "(select sum(ep.Quantidade*pro.ApresentacaoQuantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID)<EstoqueMinimo),"&_
+                            "IFNULL((select sum(ep.Quantidade*pro.ApresentacaoQuantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID),0)<EstoqueMinimo),"&_
                             "(select sum(ep.Quantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID)<EstoqueMinimo) ")
     %>
     <div class="col-sm-3 col-xl-3">

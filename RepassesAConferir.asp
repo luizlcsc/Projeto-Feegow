@@ -24,12 +24,12 @@ if Unidades="" then
 end if
 
 	
-ContaCredito = request.QueryString("ContaCredito")
-FormaID = request.QueryString("FormaID")
-Lancado = request.QueryString("Lancado")
-Status = request.QueryString("Status")
-De = request.QueryString("De")
-Ate = request.QueryString("Ate")
+ContaCredito = reqf("ContaCredito")
+FormaID = reqf("FormaID")
+Lancado = reqf("Lancado")
+Status = reqf("Status")
+De = reqf("De")
+Ate = reqf("Ate")
 
 if instr(De, "-")>0 then
     De = cdate(De)
@@ -167,7 +167,7 @@ end if
 $(".repasse, #marcar").change(function(){
 	$.ajax({
 		type:"POST",
-		url:"calculaRepasse.asp?ContaCredito=<%=request.QueryString("ContaCredito")%>",
+		url:"calculaRepasse.asp?ContaCredito=<%=reqf("ContaCredito")%>",
 		data:$("#frmRepasses").serialize(),
 		success: function(data){
 			$("#calculaRepasses").html(data);

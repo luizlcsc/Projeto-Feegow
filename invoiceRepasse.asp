@@ -27,7 +27,7 @@ TabelaID = ref("invTabelaID")
 
 
 
-db.execute("delete from itensinvoiceoutros where InvoiceID="&InvoiceID&" and sysActive=0 and ItemInvoiceID="& Row)
+db.execute("delete from itensinvoiceoutros where InvoiceID="&InvoiceID&" and ItemInvoiceID="& Row)
 
 DominioID = dominioRepasse(FormaID, ProfissionalID, ProcedimentoID, UnidadeID, TabelaID, EspecialidadeID, "", "")
 

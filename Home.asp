@@ -58,20 +58,12 @@ end if
 
 <!--#include file="connectCentral.asp"-->
 <!--#include file="modal.asp"-->
-<!--#include file="Classes/EventosEmailSMS.asp"-->
 <!--#include file="FuncoesAntigas.asp"-->
 <!--#include file="atualizabanco2.asp"-->
-<iframe src="ajustaHora.asp" width="1" height="1" frameborder="0"></iframe>
 <%
 
 if req("urlRedir")<>"" then
     response.redirect("./?P="&req("urlRedir")&"&Pers=1")
-end if
-
-if session("Banco")="clinic100000XXX" then
-%>
-<a href="./?P=Visita&Pers=1" class="btn btn-lg btn-primary btn-block"><i class="fa fa-map-marker"></i>CADASTRAR VISITA</a>
-<%
 end if
 
 
@@ -365,9 +357,6 @@ if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
         malSucedidoText = "<i style='color:orange' class='fa fa-exclamation-circle'></i> Últ. acesso mal sucedido: <strong>"&ultimoAcessoMalSucedido("DataHora")&" "&mais&"</strong>"
     end if
 
-    Set eventos = new EventosEmailSMS
-
-    eventos.updateStatusAgendamentos()
 
 
     %>

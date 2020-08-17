@@ -149,15 +149,32 @@ else
                     for j = 1  to Quantidade
                         c = c+1
 
-                    %>
-                        <td align="center" style="padding-left: <%=ref("MargemEsquerda")%>mm;">
-                            <iframe align="middle" name="CBInd" frameborder="0" src="https://api.feegow.com.br/barcode/render?type=code128&width_factor=2&content=<%= CodigoDeBarras %>" width="100%" height="25"></iframe>
-                            <code><%=CodigoDeBarras %></code>
-                             <br>
-                            <span style="font-size: 7px"><%=left(CodigoBarrasSQL("NomeProduto"),20)%><%=Lote%></span>
+                        if CodigoDeBarras<>"" then
 
-                        </td>
-                    <%
+                            %>
+                                <td align="center" style="padding-left: <%=ref("MargemEsquerda")%>mm;">
+                                    <img align="middle" name="CBInd"
+                                    frameborder="0"
+                                    src="https://api.feegow.com.br/barcode/render?type=code128&width_factor=2&content=<%= CodigoDeBarras %>" height="25"/>
+                                    <br>
+                                    <span style="font-size: 10px;"><%=CodigoDeBarras %></span>
+                                     <br>
+                                    <span style="font-size: 7px"><%=left(CodigoBarrasSQL("NomeProduto"),20)%><%=Lote%></span>
+
+                                </td>
+                            <%
+                        else
+
+                            %>
+                                <td align="center" style="padding-left: <%=ref("MargemEsquerda")%>mm;">
+                                    <code>Cod. barras não informado</code>
+                                     <br>
+                                    <span style="font-size: 7px"><%=left(CodigoBarrasSQL("NomeProduto"),20)%><%=Lote%></span>
+
+                                </td>
+                            <%
+                        end if
+
                     if c=Colunas then
                         response.write("</tr>")
                         response.write("<tr>")

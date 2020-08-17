@@ -660,7 +660,7 @@ end if
                         end if
                     end if
                     linkAg = " onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"" "
-                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&replace(replace(replace(comps("NomePaciente")&" ", "'", "\'"), chr(10), ""), chr(13), "")&"<br>Prontuário: "&Prontuario&"<br>"
+                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&replace(replace(replace(replace(comps("NomePaciente")&" ", "'", "\'"), chr(10), ""), chr(13), ""),"`","")&"<br>Prontuário: "&Prontuario&"<br>"
 
                     if session("RemSol")<>"" and session("RemSol")&"" <> comps("id")&"" then
                         remarcarlink = " onclick=""remarcar("&session("RemSol")&", \'Remarcar\', \'"&compsHora&"\', \'"&comps("LocalID")&"\')"" "

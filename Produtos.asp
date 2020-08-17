@@ -344,6 +344,9 @@ end if
                 <%call Subform("produtosunidademedida", "ProdutoID", req("I"), "frm")%>
                 </div>
             </div>
+            <div id="divVincularMedicamento" class="tab-pane">
+                Carregando...
+            </div>
         </div>
     </div>
 </form>

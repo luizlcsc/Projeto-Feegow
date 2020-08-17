@@ -899,6 +899,15 @@ select case lcase(req("P"))
             </li>
 		    <%
 		    end if
+             %>
+            <li>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-protocolo" href="#divProtocolo" onclick="pront('protocolo.asp?PacienteID=<%=req("I")%>');">
+                    <span class="fa fa-calendar bigger-110"></span>
+                    <span class="sidebar-title">Protocolo</span>
+                </a>
+            </li>
+		    <%
+		    
 		    if aut("recibos")=1 then
 		    %>
             <li>
@@ -1444,8 +1453,10 @@ select case lcase(req("P"))
         <li>
             <a data-toggle="tab" href="#divAgendamentos"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Agendamentos</a>
         </li>
+        <li>
+            <a data-toggle="tab" href="#divProtocolo"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Protocolos</a>
+        </li>
         <li><a data-toggle="tab" href="#divPropostas"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Propostas</a></li>
-
         <li>
             <a data-toggle="tab" href="#divLaudosProtocolo"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Protocolo dos Laudos</a>
         </li>

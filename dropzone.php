@@ -405,7 +405,6 @@
                             parent.callUpload && parent.callUpload(ajax.responseText)
 							form.classList.add( ajax.statusText == "OK" ? 'is-success' : 'is-error' );
 							if( !ajax.success ) errorMsg.textContent = ajax.error;
-                            parent.location.reload();
 						}
 						else alert( 'Error. Please, contact the webmaster!' );
 					};

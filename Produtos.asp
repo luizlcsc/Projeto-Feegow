@@ -488,6 +488,7 @@ function lbl(){
     }
     $("#lblApresentacaoNomeC, #lblApresentacaoNomeV").html("por "+ ApresentacaoNome);
     $("#EstoqueMinimoTipo option[value=C]").html(ApresentacaoNome);
+    $("#EstoqueMaximoTipo option[value=C]").html(ApresentacaoNome);
     if($("#ApresentacaoUnidade").val()=="" || $("#ApresentacaoUnidade").val()=="0"){
         var ApresentacaoUnidade = "Unidade";
     }else{
@@ -495,6 +496,7 @@ function lbl(){
     }
     $("#lblApresentacaoUnidadeC, #lblApresentacaoUnidadeV").html("por "+ ApresentacaoUnidade);
     $("#EstoqueMinimoTipo option[value=U]").html(ApresentacaoUnidade);
+    $("#EstoqueMaximoTipo option[value=U]").html(ApresentacaoUnidade);
 }
 
 $("#ApresentacaoNome, #ApresentacaoUnidade").on("keyup change", function(){

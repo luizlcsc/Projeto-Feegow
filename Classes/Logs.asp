@@ -26,7 +26,7 @@ end function
 
 function getLogs(logTable, logId, paiId)
     sqlLogId=""
-    if logId<>"" then
+    if logId<>"" or paiId<>"" then
         sqlLogId = " AND (I="&treatvalzero(logId)&" OR PaiID="&Treatvalzero(paiId)&")"
     end if
     set getLogs = db.execute("SELECT * FROM log WHERE recurso='"&logTable&"' "&sqlLogId&" ORDER BY DataHora DESC LIMIT 25")

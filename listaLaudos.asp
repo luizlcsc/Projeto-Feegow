@@ -377,12 +377,6 @@ end if
 </table>
 
 <script>
-function entrega(laudoID) {
-    $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
-    $.post("laudoEntrega.asp?L="+laudoID, "", function (data) { $("#modal").html(data) });
-    
-}
 function saveLaudo(T, print){
     $.post("saveLaudo.asp?L=<%= LaudoID %>&T="+ T, $("#Texto, #StatusID, #ProfissionalID, #Restritivo, #DataEntrega, #HoraEntrega, #ObsEntrega, #Receptor").serialize(), function(data){
         eval(data);
@@ -560,9 +554,3 @@ $(".lab-sync").on("click", function (labid =2){
     });
 </script>
 
-<script>
- function entrega(laudoid) {
-        $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
-        $.post("laudoEntregaPDF.asp?L="+laudoid, "", function (data) { $("#modal").html(data) });}
-</script>

@@ -1561,6 +1561,14 @@ select case lcase(req("P"))
             <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');">
             <span class="fa fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
+         <% IF  aut("exames_laboratoriaisV")=1  THEN %>
+            <li>
+              <a href="?P=CadastroExamesLab&Pers=1">
+                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Cadastro de Exames (Lab)</span></a> 
+    
+            </li>
+        <% END IF %>
+
         <%
     case "chamadasmotivoscontato","chamadascategorias"
     %>
@@ -2423,6 +2431,22 @@ select case lcase(req("P"))
             telas.close
             set telas = nothing
     end if
+    case "labsconfigintegracao", "labscadastrocredenciais"
+    %>
+    <li>
+        <a href="?P=labscadastrocredenciais&Pers=1"><span class="fa fa-users"></span> <span class="sidebar-title">Cadastro de Credenciais</span></a>
+    </li>
+    <li>
+        <a href="#"><span class="fa fa-exchange"></span> <span class="sidebar-title">Sincronização de Resultados</span></a>
+        
+    </li>
+    <li>
+        <a href="?P=labsconfigintegracao&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Implantação de Laboratórios</span></a>
+    </li>
+    <li>
+        <a href="#"><span class="fa fa-list "></span> <span class="sidebar-title">Listagem de exames</span></a>
+    </li>
+    <%
 end select
 
 if session("AutoConsolidar")="" then

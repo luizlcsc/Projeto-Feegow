@@ -327,7 +327,9 @@ end if
                              <% elseif ii("labid")="2" then %>
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=739&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
                              <% elseif ii("labid")="3" then %>
-                                <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=9739&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
+                                 <% if  Status="Liberado" then %>
+                                    <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>);" href="#"><i class="fa fa-file-pdf-o"></i></a>
+                                 <% end if %>
                              <% elseif ii("labid")="4" then %>
                                 <% if  Status="Liberado" then %>
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>);" href="#"><i class="fa fa-file-pdf-o"></i></a>

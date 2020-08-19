@@ -551,6 +551,13 @@ else
             if session("Admin")=1 then
             %>
             <li>
+                <a href="?P=labsconfigintegracao"><i class="fa fa-flask"></i> Integração Laboratorial</a>
+            </li>
+            <%
+            end if
+            if session("Admin")=1 then
+            %>
+            <li>
                 <a href="?P=OutrasConfiguracoes&Pers=1"><i class="fa fa-cogs"></i> Outras Configura&ccedil;&otilde;es</a>
             </li>
             <%

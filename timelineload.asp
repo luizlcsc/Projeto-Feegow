@@ -249,7 +249,7 @@
                             end if
                             %> </div>
                     </div>
-                    <div class="panel-body timelineApp" <% if device()<>"" then %> style="overflow-x:scroll!important" <% end if %> >
+                    <div class="panel-body timelineApp" style=" word-break: break-all; <% if device()<>"" then %> overflow-x:scroll!important; <% end if %>" >
                 <%
 '                response.Write( Rotulo & Valor  &"<br>{{"& ti("Tipo") &"}}" )
                 select case ti("Tipo")
@@ -438,7 +438,7 @@
                                                        "FROM pacientesprotocolosmedicamentos ppm "&_
                                                        "LEFT JOIN protocolos prot ON prot.id=ppm.ProtocoloID "&_
                                                        "LEFT JOIN protocolosmedicamentos pm ON ppm.ProtocoloMedicamentoID=pm.id "&_
-                                                       "LEFT JOIN produtos prod ON prod.id=pm.Medicamento "&_
+                                                       "LEFT JOIN produtos prod ON prod.id=ppm.MedicamentoPrescritoID "&_
                                                        "WHERE ppm.PacienteProtocoloID="&ti("id")&" GROUP BY ppm.ProtocoloID")
 
                         while not getProtocolos.eof

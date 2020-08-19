@@ -16,13 +16,58 @@ if X<>"" then
     db.execute("delete from procedimentostabelas where id="& X)
     db.execute("delete from procedimentostabelasvalores where TabelaID="& X)
 end if
+
+TipoTabela = req("Tipo")
+Especialidades = req("Especialidades")
+TabelasParticulares = req("TabelasParticulares")
+ProcedimentoID = req("ProcedimentoID")
+
+if TipoTabela&""="0" then
+    TipoTabela=""
+end if
+if Especialidades&""="0" then
+    Especialidades=""
+end if
+if TabelasParticulares&""="0" then
+    TabelasParticulares=""
+end if
+if ProcedimentoID&""="0" then
+    ProcedimentoID=""
+end if
+
 %>
+<div class="panel mt20 mtn hidden-print">
+    <div class="panel-heading">
+        <span class="panel-title"><i class="fa fa-filter"></i> Filtrar</span>
+    </div>
+    <div class="panel-body">
+        <form action="" id="form-filtro-tabela-de-preco" method="get">
+            <div class="row">
+                <input type="hidden" name="P" value="TabelasPreco">
+                <input type="hidden" name="Pers" value="1">
+
+                <%= quickfield("simpleSelect", "Tipo", "Tipo", 2, TipoTabela, "select 'C' id, 'Custo' Tipo UNION ALL select 'V', 'Venda'", "Tipo", " no-select2 empty  ") %>
+                <%= quickfield("simpleSelect", "TabelasParticulares", "Tabela Particular", 2, TabelasParticulares, "select * from tabelaparticular where  sysActive=1 order by NomeTabela", "NomeTabela", " empty ") %>
+                <%= quickfield("simpleSelect", "Especialidades", "Especialidade", 2, Especialidades, "select id, especialidade from especialidades where sysActive=1 order by especialidade", "especialidade", " empty ") %>
+                <div class="col-md-2">
+                    <%= selectInsert("Procedimento", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " ", "", "") %>
+                </div>
+
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-default mt25" onclick="LimparFiltros()"><i class="fa fa-eraser"> </i> Limpar </button>
+                    <button class="btn btn-primary mt25" ><i class="fa fa-search"> </i> Buscar </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div class="panel mt20">
     <div class="panel-body">
         <table class="table table-condensed table-hover table-bordered table-striped">
             <thead>
                 <tr class="info">
+                    <th>Status</th>
                     <th>Descrição</th>
                     <th>Tabelas Particulares</th>
                     <th>Tipo</th>
@@ -38,16 +83,66 @@ end if
             </thead>
             <tbody>
                 <%
+
+                sqlFiltros = ""
+
+                if Especialidades<>"" then
+                    sqlFiltros = sqlFiltros & " AND pt.Especialidades LIKE '%|"&replace(Especialidades, "|", "")&"|%'"
+                end if
+                if TipoTabela<>"" then
+                    sqlFiltros = sqlFiltros & " AND pt.Tipo= '"&TipoTabela&"'"
+                end if
+                if TabelasParticulares<>"" then
+                    sqlFiltros = sqlFiltros & " AND pt.TabelasParticulares LIKE '%|"&replace(TabelasParticulares, "|", "")&"|%'"
+                end if
+
+                if ProcedimentoID<>"" then
+                    set TabelasComProcedimentoSQL = db.execute("SELECT GROUP_CONCAT(TabelaID) Tabelas FROM procedimentostabelasvalores ptv WHERE ProcedimentoID="&ProcedimentoID)
+                    TabelasComOProcedimento = "0"
+
+                    if not TabelasComProcedimentoSQL.eof then
+                        Tabelas = TabelasComProcedimentoSQL("Tabelas")&""
+
+                        if Tabelas&"" <> "" then
+                            TabelasComOProcedimento = TabelasComOProcedimento&","&Tabelas
+                        end if
+                    end if
+                    sqlFiltros = sqlFiltros & " AND pt.id IN ("&TabelasComOProcedimento&")"
+                end if
+
                 'set t = db.execute("select pt.* from procedimentostabelas pt where pt.sysActive=1 group by pt.Inicio, pt.Fim, pt.TabelasParticulares")
-                set t = db.execute("select pt.* from procedimentostabelas pt where pt.sysActive=1")
+                set t = db.execute("select pt.* from procedimentostabelas pt where pt.sysActive=1 "&sqlFiltros&" ORDER BY YEAR(pt.Fim) DESC, pt.NomeTabela")
+
+                if t.eof then
+                    %>
+<tr>
+    <td colspan="8">Nenhuma tabela de preço encontrada</td>
+</tr>
+                    <%
+                end if
+
+                countTabelas= 0
+
                 while not t.eof
                     TabelasParticulares = t("TabelasParticulares")&""
                     if TabelasParticulares<>"" then
                         set tp = db.execute("select group_concat(NomeTabela separator ', ') tps from tabelaparticular where id in("& replace(TabelasParticulares, "|", "") &")")
                         TabelasParticulares = tp("tps")&""
                     end if
+
+                    LabelTabela = ""
+
+                    if cdate(t("Fim")) < date() then
+                        LabelTabela = "<span class='label label-danger'><i class='fa fa-exclamation-circle'></i> Expirada</span>"
+                    end if
+
+                    if cdate(t("Fim")) >= date() and cdate(t("Inicio")) <= date() then
+                        LabelTabela = "<span class='label label-success'><i class='fa fa-check-circle'></i> Vigente</span>"
+                    end if
+
                     %>
                     <tr>
+                        <td><%=LabelTabela%></td>
                         <td><%= t("NomeTabela") %></td>
                         <td><%= TabelasParticulares %></td>
                         <td><%= t("Tipo") %></td>
@@ -61,11 +156,17 @@ end if
                         <% end if %>
                     </tr>
                     <%
+                    countTabelas = countTabelas + 1
                 t.movenext
                 wend
                 t.close
                 set t=nothing
                 %>
+                <tfoot>
+                    <tr class="dark">
+                        <th colspan="8"><%=countTabelas%> tabela(s)</th>
+                    </tr>
+                </tfoot>
             </tbody>
         </table>
     </div>
@@ -83,4 +184,9 @@ end if
     <%
     end if
     %>
+
+    function LimparFiltros() {
+        $("#ProcedimentoID, #Tipo, #Especialidades, #TabelasParticulares").val("").change();
+
+    }
 </script>

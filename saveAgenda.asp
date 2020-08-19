@@ -325,6 +325,7 @@ if erro="" then
                 end if
                 db.execute("insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID, UnidadeID) values ('"&rfPaciente&"', '"&rfProfissionalID&"', '"&rfProcedimento&"', '"&DataHoraFeito&"', '"&mydate(rfData)&"', '"&rfHora&"', '"&rfStaID&"', '"&session("User")&"', '0', '"&ObsR&"', 'R', '"&ConsultaID&"', "&session("UnidadeID")&")")
             end if
+         
 
             sqlUpdateAgendamento = "update agendamentos set IndicadoPor='"&indicacaoID&"', PacienteId='"&rfPaciente&"', ProfissionalID='"&rfProfissionalID&"', Data='"&mydate(rfData)&"', Hora='"&rfHora&"', TipoCompromissoID='"&rfProcedimento&"', StaID='"&rfStaID&"', ValorPlano='"&treatVal(rfValorPlano)&"', PlanoID="&treatvalzero(PlanoID)&", rdValorPlano='"&rfrdValorPlano&"', Notas='"&Notas&"', FormaPagto='0', HoraSta='"&HoraSta&"', LocalID='"&rfLocal&"', Tempo='"&rfTempo&"' ,HoraFinal='"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', SubtipoProcedimentoID='"&rfSubtipoProcedimento&"', ConfEmail='"&ref("ConfEmail")&"', ConfSMS='"&ref("ConfSMS")&"', Encaixe="&treatvalnull(ref("Encaixe"))&", Retorno="&treatvalnull(ref("Retorno"))&", EquipamentoID="&treatvalnull(ref("EquipamentoID"))&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& refnull("ageTabela") &" where id = '"&ConsultaID&"'"
 
@@ -389,11 +390,17 @@ if erro="" then
     call atuAge(ConsultaID)
     '<- procedimentos adicionais na agenda
 
-
+    'verifica se status é desmarcado se for muda a ação para remover registro do googlecalendar
+    Action = "XI"
+    GCNomePaciente = ""
+    if rfStaID&"" = "11" or rfStaID&"" = "16" then
+        Action = "X"
+        GCNomePaciente = "excluir_da_agenda"
+    end if
 
 	%>
 	if (typeof feegow_components_path !== 'undefined'<% if request.ServerVariables("REMOTE_ADDR")="::1" then response.write("  && 0 ") end if %>){
-        $.get(feegow_components_path+"/googlecalendar/save", {Acao:"XI", Email:"vca", AgendamentoID:"<%=ConsultaID%>", ProfissionalID:"<%=rfProfissionalID%>", NomePaciente:"", Data:"", Hora:"", Tempo:"", NomeProcedimento:"", Notas:""}, function(){})
+        $.get(feegow_components_path+"/googlecalendar/save", {Acao:"<%=Action%>", Email:"vca", AgendamentoID:"<%=ConsultaID%>", ProfissionalID:"<%=rfProfissionalID%>", NomePaciente:"<%=GCNomePaciente%>", Data:"", Hora:"", Tempo:"", NomeProcedimento:"", Notas:""}, function(){})
 
         <%
         'call centralSMS(ref("ConfSMS"), rfData, rfHora, ConsultaID)

@@ -13,16 +13,20 @@ if(window.location.href.indexOf('homolog') > 0){
     env = "homolog";
 }
 var domain = null;
+var api = null;
 
 switch (env){
     case "local":
         domain = "http://localhost:8000/";
+        api = "/feegowclinic-v7/api/";
         break;
     case "production":
         domain = "https://app.feegow.com.br/";
+        api = "/v7/api/";
         break;
     case "homolog":
         domain = "http://homolog.feegow.com.br/";
+        api = "/v7/api/";
         break;
 }
 
@@ -38,7 +42,7 @@ var modal = "<div id=\"modal-components\" class=\"modal fade\" tabindex=\"-1\">"
     "    </div>" +
     "</div>";
 
-    
+
 
 function getModal(loading, modalSize, modalWidth,force) {
     var modalComponents = "#modal-components";
@@ -98,7 +102,7 @@ function setModalContent(body, title, closeBtn, saveBtn, params) {
             "        " + body +
             "      </div>";
     }
-    
+
     if (closeBtn) {
         content += "<div class=\"modal-footer\">\n" +
             "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Fechar</button>\n";
@@ -138,7 +142,7 @@ function getUrl(url, data, callback) {
         url = domain + url;
 
     }
-	
+
 	var token="";
 	if(localStorage.getItem("tk")){
 		token= localStorage.getItem("tk")
@@ -152,16 +156,16 @@ function getUrl(url, data, callback) {
 		url: url,
 		data: data,
 		//OR
-		//beforeSend: function(xhr) { 
-		//  xhr.setRequestHeader("My-First-Header", "first value"); 
-		//  xhr.setRequestHeader("My-Second-Header", "second value"); 
+		//beforeSend: function(xhr) {
+		//  xhr.setRequestHeader("My-First-Header", "first value");
+		//  xhr.setRequestHeader("My-Second-Header", "second value");
 		//}
-	}).done(function(data) { 
+	}).done(function(data) {
 		if (callback) {
             callback(data);
         }
     })
-    .fail(function(data) { 
+    .fail(function(data) {
 		if (callback) {
             callback(data);
         }
@@ -232,7 +236,7 @@ function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, m
 	if(localStorage.getItem("tk")){
 		token= localStorage.getItem("tk")
 	}
-	
+
 	$.ajax({
 		type: 'GET',
 		url: url,
@@ -241,11 +245,11 @@ function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, m
 			"x-access-token":token
 		}
 		//OR
-		//beforeSend: function(xhr) { 
-		//  xhr.setRequestHeader("My-First-Header", "first value"); 
-		//  xhr.setRequestHeader("My-Second-Header", "second value"); 
+		//beforeSend: function(xhr) {
+		//  xhr.setRequestHeader("My-First-Header", "first value");
+		//  xhr.setRequestHeader("My-Second-Header", "second value");
 		//}
-	}).done(function(data) { 
+	}).done(function(data) {
         var $modal = setModalContent(data, title, closeBtn, saveBtn, params);
 
         setTimeout(function () {
@@ -276,7 +280,7 @@ function setListeners($modal) {
 
 function getComponentUrl(url){
 	var tk = localStorage.getItem("tk");
-	
+
 	return domain + url +	"?tk="+tk
 }
 
@@ -358,3 +362,76 @@ function replicarRegistro(id,tabela){
         });
     });
 }
+
+const uploadProfilePic = async ({userId, db, table, content, contentType, elem = false}) => {
+    let response = false;
+    let enpoint = domain + "file/perfil/uploadPerfilFile";
+
+    if (contentType === "form") {
+        let objct = new FormData();
+        objct.append('userType', table);
+        objct.append('userId', userId);
+        objct.append('licenca', db);
+        objct.append('upload_file', content);
+        objct.append('folder_name', "Perfil");
+
+        response = await $.ajax({
+            url: enpoint,
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: objct,
+            // Now you should be able to do this:
+            mimeType: 'multipart/form-data',    //Property added in 1.5.1
+        });
+
+    }else{
+
+        response = await jQuery.ajax({
+            url: enpoint,
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify(content),
+            beforeSend:function () {
+                $('#divAvatar').show();
+            }
+        });
+
+        $('#divAvatar').show();
+        $('#divAvatar video').hide();
+        $('#divDisplayFoto').css('display','block');
+        $("#take-photo").hide();
+        $("#cancelar").hide();
+
+    }
+
+    if (elem) {
+        elem.attr("src", response.url);
+    }
+
+    return response;
+}
+  
+const doApiRequest = async (
+    {
+        url,
+        params,
+        method="get"
+    }) => {
+
+
+    return new Promise(function (resolve, reject) {
+        $.get(api + url, params, function (data) {
+            resolve({
+                success: true,
+                data: data,
+                params: params
+            });
+        }).error(function (err) {
+            reject({
+                success: false,
+                error: err
+            })
+        });
+    })
+};

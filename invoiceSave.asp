@@ -65,6 +65,19 @@ end if
 
 'Verificar se há lancto financeiro em qualquer das parcelas antes de alterar dados da invoice
 set inv = db.execute("select * from sys_financialinvoices where id="&InvoiceID)
+if getConfig("PermitirAlterarPacienteContaAReceber") = "0" then'TROCAR PARA VERIFICACAO SE HA CONFIG DE BLOQUEIO DE TROCA DE UNIDADE E CONTA NA FATURA
+	if inv("sysActive")=1 and instr(ref("AccountID"), "_")>0 then
+		splAcc = split(ref("AccountID"), "_")
+		AssociationAccountID = ccur(splAcc(0))
+		AccountID = ccur(splAcc(1))
+		if AssociationAccountID<>inv("AssociationAccountID") or AccountID<>inv("AccountID") then
+			erro = "Você não pode alterar a conta de uma fatura já salva."
+		end if
+		if inv("AssociationAccountID")=3 and ref("CompanyUnitID")<>inv("CompanyUnitID")&"" then
+			erro = "Você não pode alterar a unidade de uma fatura já salva."
+		end if
+	end if
+end if
 
 set pg = db.execute("select m.id from sys_financialmovement m left join sys_financialdiscountpayments d on (d.InstallmentID=m.id or d.MovementID=m.id) where m.InvoiceID="&InvoiceID&" and not isnull(d.InstallmentID) and not isnull(d.MovementID)")
 if not pg.eof then
@@ -555,11 +568,11 @@ if erro="" then
             DescricaoLog=""
         end if
         if scp()=1 then
-			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe="& treatvalnull(ref("nroNFe")) &", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe="& treatvalnull(ref("nroNFe")) &", CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 			'call gravaLog(sqlInvoice, "AUTO")
 	    	db_execute(sqlInvoice)
         else
-			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe="& treatvalnull(ref("nroNFe")) &", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe="& treatvalnull(ref("nroNFe")) &", CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 		' 	call gravaLog(sqlInvoice, "AUTO")
 			db_execute(sqlInvoice)
         end if

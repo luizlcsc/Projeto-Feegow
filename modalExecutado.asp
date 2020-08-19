@@ -56,7 +56,7 @@ end if
 
 PermissaoParaAlterar=True
 
-if getConfig("NaoPermitirAlterarExecutanteEExecucao")=1 and aut("areceberpacienteV")=0 and aut("contasareceberV")=0 and session("table")="profissionais" then
+if getConfig("NaoPermitirAlterarExecutante")=1 and aut("areceberpacienteV")=0 and aut("contasareceberV")=0 and session("table")="profissionais" then
     PermissaoParaAlterar=False
     ProfissionalID=session("idInTable")
     Associacao = 5

@@ -46,15 +46,7 @@ prefixo = right(prefixo, 20)
                 else
                     tipoCodigoNaOperadora = "codigoPrestadorNaOperadora"
                 end if
-
-
-                tipoCodigoNaOperadoraContratadoSolicitante = "codigoPrestadorNaOperadora"
-                set TipoContratoSQL = db.execute("SELECT IdentificadorCNPJ FROM contratosconvenio WHERE ConvenioID="&guias("ConvenioID")&" AND CodigoNaOperadora='"&CodigoNaOperadora&"'")
-                if not TipoContratoSQL.eof then
-                    if TipoContratoSQL("IdentificadorCNPJ")="S" then
-                        tipoCodigoNaOperadoraContratadoSolicitante = "cnpjContratado"
-                    end if
-                end if
+                
                 %>
                 <%="<ans:" & tipoCodigoNaOperadora & ">" & CodigoNaOperadora &"</ans:" & tipoCodigoNaOperadora &">"%>
             </ans:identificacaoPrestador>
@@ -96,10 +88,18 @@ prefixo = right(prefixo, 20)
 					RegistroANS = TirarAcento(guias("RegistroANS"))
 					NGuiaPrestador = TirarAcento(guias("NGuiaPrestador"))
 					NGuiaPrincipal = TirarAcento(guias("NGuiaPrincipal"))
-					NGuiaOperadora = TirarAcento(guias("NGuiaOperadora"))
-					DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
-					Senha = TirarAcento(guias("Senha"))
-					DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
+					
+                    DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
+                    NGuiaOperadora =""
+                    Senha =""
+                    DataValidadeSenha =""
+
+                    if DataAutorizacao <> "" then
+                        NGuiaOperadora = TirarAcento(guias("NGuiaOperadora"))
+                        Senha = TirarAcento(guias("Senha"))
+                        DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
+                    end if 
+
 					NumeroCarteira = TirarAcento(guias("NumeroCarteira"))
 					AtendimentoRN = TirarAcento(guias("AtendimentoRN"))
 					NomePaciente = TirarAcento(guias("NomePaciente"))
@@ -131,6 +131,29 @@ prefixo = right(prefixo, 20)
 						end if
 					end if
 					ContratadoSolicitanteCodigoNaOperadora = TirarAcento(guias("ContratadoSolicitanteCodigoNaOperadora"))
+                    tipoCodigoNaOperadoraContratadoSolicitante = "codigoPrestadorNaOperadora"
+                    set TipoContratoSQL = db.execute("SELECT IdentificadorCNPJ,Contratado FROM contratosconvenio WHERE ConvenioID="&guias("ConvenioID")&" AND CodigoNaOperadora='"&CodigoNaOperadora&"'")
+                    if not TipoContratoSQL.eof then
+                        if TipoContratoSQL("IdentificadorCNPJ")&""="S" then
+                            tipoCodigoNaOperadoraContratadoSolicitante = "cnpjContratado"
+
+                            if TipoContratoSQL("Contratado") > 0 then
+                                identificadorSql =  "SELECT * FROM profissionais where id ="
+                            else
+                                identificadorSql = " SELECT * FROM (SELECT  0 id, nomefantasia, cnpj "&_
+                                                " FROM empresa "&_
+                                                " WHERE id=1 UNION ALL "&_ 
+                                                " SELECT id*-1 id, nomefantasia, cnpj "&_
+                                                " FROM sys_financialcompanyunits "&_
+                                                " WHERE sysActive=1)t where id = "&TipoContratoSQL("Contratado")
+                            end if
+                            set getIdentificador = db.execute(identificadorSql)
+                            if not getIdentificador.eof then
+                                ContratadoSolicitanteCodigoNaOperadora =  TirarAcento(replace(replace(replace(replace(replace(getIdentificador("cnpj"), ".", ""), "-", ""), ",", ""), "_", ""), " ", ""))
+                            end if
+                        end if
+                    end if
+
 					if ContratadoSolicitanteCodigoNaOperadora="" then ContratadoSolicitanteCodigoNaOperadora="-" end if
 					ProfissionalSolicitanteID = TirarAcento(guias("ProfissionalSolicitanteID"))
 					if guias("tipoProfissionalSolicitante")="I" then
@@ -184,6 +207,7 @@ prefixo = right(prefixo, 20)
 							CNESContratado = "9999999"
 						end if
 					end if
+                    
 					TipoAtendimentoID = TirarAcento(zEsq(guias("TipoAtendimentoID"),2))
 					IndicacaoAcidenteID = TirarAcento(guias("IndicacaoAcidenteID"))
 					MotivoEncerramentoID = TirarAcento(guias("MotivoEncerramentoID"))
@@ -202,7 +226,7 @@ prefixo = right(prefixo, 20)
                         <%if NGuiaPrincipal<>"" then%><ans:guiaPrincipal><%= NGuiaPrincipal %></ans:guiaPrincipal><%end if%>
                     </ans:cabecalhoGuia>
                     <%
-					if NGuiaOperadora<>"" OR DataAutorizacao<>"" OR Senha<>"" OR DataValidadeSenha<>"" then
+					if DataAutorizacao<>"" then
 					%>
                     <ans:dadosAutorizacao>
                         <%if NGuiaOperadora<>"" then%><ans:numeroGuiaOperadora><%= NGuiaOperadora %></ans:numeroGuiaOperadora><%end if%>
@@ -303,9 +327,11 @@ prefixo = right(prefixo, 20)
                             HoraInicio = myTimeTISS(procs("HoraInicio"))
                             HoraFim = myTimeTISS(procs("HoraFim"))
                             TabelaID = TirarAcento(procs("TabelaID"))
-                            if TabelaID="99" OR TabelaID="0" then
+
+                            if TabelaID="99" OR TabelaID="95" OR TabelaID="0" then
                                 TabelaID="00"
                             end if
+
                             CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))
                             Descricao = left(TirarAcento(procs("Descricao")),150)
                             ViaID = TirarAcento(procs("ViaID"))
@@ -403,13 +429,18 @@ prefixo = right(prefixo, 20)
 							HoraInicio = myTimeTISS(desp("HoraInicio"))
 							HoraFim = myTimeTISS(desp("HoraFim"))
 							TabelaProdutoID = zeroEsq(TirarAcento(desp("TabelaProdutoID")), 2)
+
+                            if TabelaProdutoID="99" OR TabelaProdutoID="95" OR TabelaProdutoID="0" then
+                                TabelaProdutoID="00"
+                            end if
+
 							CodigoProduto = TirarAcento(desp("CodigoProduto"))
 							Quantidade = treatvaltiss(desp("Quantidade"))
 							UnidadeMedidaID = zEsq(desp("UnidadeMedidaID"), 3)
 							Fator = treatvaltiss(desp("Fator"))
 							ValorUnitario = treatvaltiss(desp("ValorUnitario"))
 							ValorTotal = treatvaltiss(desp("ValorTotal"))
-							Descricao = TirarAcento(desp("Descricao"))
+							Descricao = left(TirarAcento(desp("Descricao")),150)
 							RegistroANVISA = TirarAcento(desp("RegistroANVISA"))
 							CodigoNoFabricante = TirarAcento(desp("CodigoNoFabricante"))
 							AutorizacaoEmpresa = TirarAcento(desp("AutorizacaoEmpresa"))

@@ -14,6 +14,7 @@
     }
 </style>
 <%
+
 function ConstroiConteudoTabela(usuario, tipoderecibo,quantidade,senha,subtotal,acrescimo,desconto,unitario,valorpago,valorpendente,descricao,valorunitario)
     ConstroiConteudoTabela =""
     sqlvar = "select rcm.Nome, rc.* from recibo_campos rc join cliniccentral.recibo_campos_modelo rcm on rc.campoId = rcm.id where rc.tipo='"&tipoderecibo&"' order by rc.ordem"
@@ -53,6 +54,7 @@ function ConstroiConteudoTabela(usuario, tipoderecibo,quantidade,senha,subtotal,
     ConstroiConteudoTabela = teste&"</tr>"
     end if
 end function
+
 function ConstroiCabecalhoTabela(usuario, tipoderecibo)
     ConstroiCabecalhoTabela = ""
     sqlvar = "select rcm.Nome, rc.* from recibo_campos rc join cliniccentral.recibo_campos_modelo rcm on rc.campoId = rcm.id where rc.tipo='"&tipoderecibo&"' order by rc.ordem"
@@ -93,16 +95,19 @@ function ConstroiCabecalhoTabela(usuario, tipoderecibo)
     ConstroiCabecalhoTabela = teste&"</tr></thead><tbody>"
     end if
 end function
+
 function ConstroiRodapeTabela(usuario, tipoderecibo)
     ConstroiRodapeTabela=""
     if tipoderecibo="RPSModelo" then
         tipoderecibo="RecibosIntegrados"
     end if
+
     sqlvar = "select rcm.Nome, rc.* from recibo_campos rc join cliniccentral.recibo_campos_modelo rcm on rc.campoId = rcm.id where rc.tipo='"&tipoderecibo&"' order by rc.ordem"
     set exec = db.execute(sqlvar)
     if not exec.eof then
         teste = "</tbody><tfoot><tr>"
 			    tabelinha = tabelinha &""
+
         while not exec.eof
             if exec("exibir") = "S" then
                 Select Case exec("campoId")
@@ -136,6 +141,7 @@ function ConstroiRodapeTabela(usuario, tipoderecibo)
     ConstroiRodapeTabela = teste&"</tr></tfoot></table>"
     end if
 end function
+
 Imprimiu=req("Imprimiu")
 InvoiceID=req("I")
 GravaRecibo=req("GravaRecibo")
@@ -155,23 +161,32 @@ profissionalParaNaoProcessado=req("profissionalParaNaoProcessado")
 reciboID = req("ReciboID")
 ValorRecibo = req("ValorRecibo")
 PacienteID = req("PacienteID")
+
 if NomeRecibo="" then
     NomeRecibo="Recibo Padrão"
 end if
+
 if RPS="" then
     RPS="N"
 end if
+
 set ConfigSQL = db.execute("SELECT SplitNF FROM sys_config WHERE id=1")
 if not ConfigSQL.eof then
     SplitNF = ConfigSQL("SplitNF")
 end if
+
 NomeItens = ""
 splitInvoiceID = split(InvoiceID, ",")
+
 for keySplit=0 to ubound(splitInvoiceID)
     InvoiceID = splitInvoiceID(keySplit)
     TabelaRepasses = ""
+
+
 set inv = db.execute("select * from sys_financialinvoices where id in("&InvoiceID&")")
+
 if not inv.eof then
+
     if ReciboModelo="" then
         if inv("CD")="D" then
             ReciboModelo = "RecibosIntegradosAPagar"
@@ -179,33 +194,63 @@ if not inv.eof then
             ReciboModelo="RecibosIntegrados"
         end if
     end if
+
     DataHora = inv("DataHora")
+
     TipoReciboModelo = ReciboModelo
+
     if TipoReciboModelo="RPSModelo" then
         TipoReciboModelo="RecibosIntegrados"
     end if
+
 	%>
 	<div class="pagebreak">
 	<div class="modal-body">
 		<%
 		ContaID = inv("AssociationAccountID")&"_"&inv("AccountID")
         Solicitante = inv("ProfissionalSolicitante")
+
+
 		if inv("AssociationAccountID")=3 then
 		    PacienteID=inv("AccountID")
 		end if
-		set rec = db.execute("select "&ReciboModelo&" from impressos WHERE Executante IS NULL or Executante LIKE '%|"&AssociacaoID&"_"&ProfissionalExecutanteID&"|%' ORDER BY Executante DESC")
+        recSQL = "select "&ReciboModelo&" from impressos WHERE Executante IS NULL or Executante LIKE '%|"&AssociacaoID&"_"&ProfissionalExecutanteID&"|%' ORDER BY Executante DESC"
+        'response.write(recSQL)
+		set rec = db.execute(recSQL)
 		if not rec.eof then
 		    User = session("User")
+
             if inv("AssociationAccountID")="5" then
-                set UserSQL = db.execute("SELECT su.id FROM sys_users su WHERE su.idInTable="&inv("AccountID")&" AND su.NameColumn = 'NomeProfissional'")
+                vUserSQL = "SELECT su.id FROM sys_users su WHERE su.idInTable="&inv("AccountID")&" AND su.NameColumn = 'NomeProfissional'"
+                'response.write(vUserSQL)
+                set UserSQL = db.execute(vUserSQL)
                 if not UserSQL.eof then
                     User=UserSQL("id")
                 end if
             end if
+
             Recibo = rec(ReciboModelo)&""
-            Recibo = replace(Recibo, "[Usuario.Nome]","[-Usuario.Nome-]")
+            'NOVO CONVERSOR DE TAGS 28/07/2020 || RAFAEL MAIA
+            if inv("ProfissionalSolicitante")&"" <>"" then
+                ProfissionalSolicitanteArray = Split(inv("ProfissionalSolicitante"),"_")
+                if ubound(ProfissionalSolicitanteArray)=1 then
+                    ProfissionalSolicitanteID = ProfissionalSolicitanteArray(1)
+                else
+                    ProfissionalSolicitanteID = 0
+                end if
+            else
+                ProfissionalSolicitanteID=0
+            end if
+            'response.write("<script>console.log('Valor: '"&ProfissionalSolicitanteID&")</script>")
+            Recibo = TagsConverte(Recibo,"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
+            ' Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
+
+            'CONVERSOR ANTIGO DE TAGS DESATIVADO
+            'Recibo = replace(Recibo, "[Usuario.Nome]","[-Usuario.Nome-]")
 			Recibo = replaceTags(Recibo, ContaID, User, inv("CompanyUnitID"))
+
 		end if
+
 		'Tags do agendamento
         set itensConta= db.execute("SELECT * FROM itensinvoice WHERE (AgendamentoID<>0 OR AgendamentoID IS NOT NULL) AND InvoiceID="&InvoiceID&" LIMIT 1")
         if not itensConta.eof then
@@ -235,31 +280,41 @@ if not inv.eof then
                 Recibo = replace(Recibo, "[Responsavel.Nome]", dadosAgendamento("ResponsavelNome")&"")
                 Recibo = replace(Recibo, "[Responsavel.CPF]", dadosAgendamento("ResponsavelCPF")&"")
             end if
+
         end if
+
 		if instr(Recibo, "[Receita.")>0 then
+
 			'if session("Banco")="clinic105" or session("Banco")="clinic1752" then
 				'tabelinha = "<table class='table table-striped table-condensed table-bordered table-hover'>"&_
 					'"<thead><tr><th width='1%'>Quantidade</th><th>Senha</th><th>Item</th><th class='text-right'>Valor</th><th class='text-right'>Subtotal</th><th class='text-right'>Valor Pago</th></tr></thead><tbody>"
 			'else
 			    'if ProfissionalExecutanteID<>"" or RPS="S" then
 			        'aqui eh o recibo de honorario de repasse
+
                     'if RPS="N" then
 			        '    tabelinha = "<table class='table table-striped table-condensed table-bordered table-hover'>"&_
                                         '    "<thead><tr><th>Item</th><th class='text-right'>Valor</th></tr></thead><tbody>"
                    ' end if
+
 			    'else
                     'tabelinha = ConstroiCabecalhoTabela(session("User"),TipoReciboModelo)
                     'tabelinha = "<table class='table table-striped table-condensed table-bordered table-hover'>"&_
                      '   "<thead><tr><th width='1%'>Quantidade</th><th>Item</th><th class='text-right'>Valor</th><th class='text-right'>Subtotal</th><th class='text-right'>Valor Pago</th></tr></thead><tbody>"
+
 			    'end if
 			'end if
+
                 if RPS<>"S" then
                     tabelinha = ConstroiCabecalhoTabela(session("User"),TipoReciboModelo)
                 end if
+
                 AgruparPacote = false
                 AgruparItem = false
+
                 SqlAgruparPacote = 0
                 SqlAgruparItem = 0
+
                 sqlConfig = "select co.Coluna, cg.valor from cliniccentral.config_opcoes co join config_gerais cg on cg.ConfigID = co.id where co.sysActive = 1 and co.Coluna ='AgruparItem' or co.Coluna ='AgruparPacote'"
                 set checkConfig = db.execute(sqlConfig)
                 if not checkConfig.eof then
@@ -268,6 +323,7 @@ if not inv.eof then
                             AgruparPacote = true
                             SqlAgruparPacote = 1
                         end if 
+
                         if (checkConfig("Coluna") = "AgruparItem") and (checkConfig("valor") = "1") then
                             AgruparItem = true
                             SqlAgruparItem = 1
@@ -276,21 +332,28 @@ if not inv.eof then
                     wend
                     checkConfig.close
                 end if
+
                 'sqlItens = "select ii.*, upper(left(md5(ii.id), 7)) Senha, p.NomeProcedimento, p.TipoProcedimentoID, p.DiasRetorno, (select sum(Valor) from itensdescontados where ItemID=ii.id) ValorPago from itensinvoice ii left join procedimentos p on p.id=ii.ItemID where InvoiceID="&InvoiceID&sqlProfissional          
                 
                 profissionalSelecionadoQuery = ""
                 if profissionalSelecionado <> "" then
                     profissionalSelecionadoQuery = " and ii.ProfissionalID = "&profissionalSelecionado
                 end if
+
                 IF profissionalSelecionado = "" and profissionalParaNaoProcessado <> "" THEN
                     profissionalSelecionado = profissionalParaNaoProcessado
                 END IF
+
                 sqlwhereprof = sqlItens&profissionalSelecionadoQuery
+
                 profissionalExecutouProcedimentoQuery = ""
+
                 if executouProcedimento = "N" or executouProcedimento = "X" then
                     profissionalExecutouProcedimentoQuery = " AND COALESCE(EXECUTADO <> 'S',TRUE) "
                 end if
+
                 sqlwhereprof = sqlwhereprof&profissionalExecutouProcedimentoQuery
+
                 if procedimentos <> "" then
                     sqlwhereprof = sqlwhereprof&" AND ii.id in("&procedimentos&")"
                 end if
@@ -334,18 +397,22 @@ if not inv.eof then
                             " group by "&_
                             " 	if("&SqlAgruparItem&",ITEMUNICO,id)"
 				set itens = db.execute(sqlItens)
+
 				TotalTotal = 0
                 TotalPago = 0
                 TotalQuantidade = 0
                 TotalDesconto = 0
                 TotalAcrescimo = 0
                 ProfissionalExecutante = ""
+
 				while not itens.eof
+
                     UnitarioSimples = itens("ValorUnitario")
                     ValorDesconto = itens("Desconto")
                     ValorAcrescimo = itens("Acrescimo")
                     ValorPago = itens("ValorPago")
                     Quantidade = itens("Quantidade")
+
                     if AgruparPacote and itens("grupo") <> "1" then
                         UnitarioSimples = itens("PacoteValorUnitario")
                         ValorDesconto = itens("PacoteDesconto")
@@ -353,6 +420,7 @@ if not inv.eof then
                         ValorPago = itens("PacoteValorPago")
                        ' Quantidade = itens("PacoteQuantidade")
                     end if
+
                     if AgruparItem and itens("itens") <> "1" then
                         'UnitarioSimples = itens("ItensValorUnitario")
                         'ValorDesconto = itens("ItensDesconto")
@@ -360,19 +428,24 @@ if not inv.eof then
                         ValorPago = itens("ItensValorPago")
                         Quantidade = itens("ItensQuantidade")
                     end if
+
 					Unitario = UnitarioSimples-ValorDesconto+ValorAcrescimo
 					Subtotal = Unitario*Quantidade
                     ValorPendente = Subtotal - ValorPago
+
 					TotalTotal = TotalTotal + Subtotal
                     TotalQuantidade = TotalQuantidade + Quantidade
                     TotalDesconto = TotalDesconto + ValorDesconto
                     TotalAcrescimo = TotalAcrescimo + ValorAcrescimo
+
                     if inv("CD")="D" then
                         set vcaRep = db.execute("select rr.* from rateiorateios rr WHERE rr.ItemContaAPagar="&itens("id"))
+
                         while not vcaRep.eof
                             if not isnull(vcaRep("ItemGuiaID")) then
                                 TipoRegra = "Guia SP/SADT"
                                 set DadosRepasseSQL = db.execute("SELECT p.NomePaciente,p.CPF,proc.NomeProcedimento, tgc.Data FROM tissprocedimentossadt tgc LEFT JOIN tissguiasadt tg ON tg.id = tgc.GuiaID LEFT JOIN pacientes p ON p.id = tg.PacienteID LEFT JOIN procedimentos proc ON proc.id = tgc.ProcedimentoID WHERE tgc.id="&vcaRep("ItemGuiaID"))
+
                                 if not DadosRepasseSQL.eof then
                                     NomeProcedimento = DadosRepasseSQL("NomeProcedimento")
                                     NomePaciente =DadosRepasseSQL("NomePaciente")
@@ -384,6 +457,7 @@ if not inv.eof then
                             if not isnull(vcaRep("GuiaConsultaID")) then
                                 TipoRegra = "Guia de Consulta"
                                 set DadosRepasseSQL = db.execute("SELECT p.NomePaciente,p.CPF,proc.NomeProcedimento,tgc.ValorProcedimento, tgc.DataAtendimento FROM tissguiaconsulta tgc LEFT JOIN pacientes p ON p.id = tgc.PacienteID LEFT JOIN procedimentos proc ON proc.id = tgc.ProcedimentoID WHERE tgc.id="&vcaRep("GuiaConsultaID"))
+
                                 if not DadosRepasseSQL.eof then
                                     NomeProcedimento = DadosRepasseSQL("NomeProcedimento")
                                     NomePaciente =DadosRepasseSQL("NomePaciente")
@@ -393,6 +467,7 @@ if not inv.eof then
                                 end if
                             end if
                             if not isnull(vcaRep("ItemHonorarioID")) then
+
                                 TipoRegra = "Guia de Honorário"
                                 set DadosHonorarioSQL = db.execute("SELECT proc.NomeProcedimento, p.NomePaciente, p.CPF, tph.ValorTotal, tph.Data as DataHonorario FROM tissguiahonorarios tgh INNER JOIN tissprocedimentoshonorarios tph LEFT JOIN procedimentos proc ON proc.id = tph.ProcedimentoID LEFT JOIN  pacientes p ON p.id=tgh.PacienteID WHERE tph.id=" & vcaRep("ItemHonorarioID"))
                                 if not DadosHonorarioSQL.eof then
@@ -406,6 +481,7 @@ if not inv.eof then
                             end if
                             if not isnull(vcaRep("ItemInvoiceID")) then
                                 TipoRegra = "Particular"
+
                                 set DadosRepasseSQL = db.execute("SELECT proc.NomeProcedimento,p.NomePaciente,p.CPF,(ii.Quantidade * (ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal,ii.ValorUnitario, ii.DataExecucao FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id = ii.InvoiceID LEFT JOIN pacientes p ON p.id=i.AccountID LEFT JOIN procedimentos proc ON proc.id = ii.ItemID WHERE ii.id="&vcaRep("ItemInvoiceID"))
                                 if not DadosRepasseSQL.eof then
                                     NomeProcedimento = DadosRepasseSQL("NomeProcedimento")
@@ -430,17 +506,21 @@ if not inv.eof then
                         vcaRep.close
                         set vcaRep=nothing
                     end if
+
                     NomeItem=itens("NomeProcedimento")
+
                     if isnull(NomeItem) then
                         NomeItem = itens("Descricao")
                     end if
                     if instr("MK", itens("Tipo")) then
                         NomeItem = itens("NomeProduto")
                     end if
+
                     if AgruparPacote and itens("grupo") <> "1" then
                         NomeItem = itens("NomePacote")
                     end if
                     
+
                     if session("Banco")="clinic5445" or session("Banco")="clinic100000" then
                         if itens("TipoProcedimentoID")=2 then
                             if itens("DiasRetorno")&"" <>"" then
@@ -448,21 +528,26 @@ if not inv.eof then
                             end if
                         end if
                     end if
+
                     if instr(Recibo, "[ProfissionalExecutante.Nome]")>0 then
                         if ProfissionalExecutanteID="" then
                             ProfissionalID=itens("ProfissionalID")
                         else
                             ProfissionalID=ProfissionalExecutanteID
                         end if
+
                         IF profissionalParaNaoProcessado <> "" THEN
                             ProfissionalID = profissionalParaNaoProcessado
                         END IF
+
                         if (executouProcedimento = "N" OR executouProcedimento = "X") AND profissionalParaNaoProcessado = "" then
                             Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", "" )
                             Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", "" )
                             Recibo = replace(Recibo, "[ProfissionalExecutante.CPF]", "" )
                         end if
+
                         if ProfissionalID&"" <> "" then
+
                             IF NOT IsNumeric(tipoProfissionalSelecionado) THEN
                                 set ProfissionalExecutanteSQL = db.execute("SELECT prof.FornecedorID, prof.NomeProfissional, prof.DocumentoConselho, prof.UFConselho ,cons.codigo, prof.CPF  FROM profissionais prof LEFT JOIN conselhosprofissionais cons ON cons.id = prof.Conselho WHERE prof.id="&ProfissionalID)
                             ELSEIF tipoProfissionalSelecionado = 2 THEN
@@ -472,10 +557,12 @@ if not inv.eof then
                             ELSE
                                 set ProfissionalExecutanteSQL = db.execute("SELECT prof.FornecedorID, prof.NomeProfissional, prof.DocumentoConselho, prof.UFConselho ,cons.codigo, prof.CPF  FROM profissionais prof LEFT JOIN conselhosprofissionais cons ON cons.id = prof.Conselho WHERE prof.id="&ProfissionalID)
                             END IF
+
                             if not ProfissionalExecutanteSQL.eof then
                                 ProfissionalExecutanteConselho= ProfissionalExecutanteSQL("codigo")& " " & ProfissionalExecutanteSQL("DocumentoConselho")& " - "& ProfissionalExecutanteSQL("UFConselho")
                                 NomeProfissional= ProfissionalExecutanteSQL("NomeProfissional")
                                 CPFProfissional= ProfissionalExecutanteSQL("CPF")&""
+
                                 MedicoPJ = ProfissionalExecutanteSQL("FornecedorID")
                                 if not isnull(MedicoPJ) then
                                     if MedicoPJ>0 then
@@ -486,36 +573,50 @@ if not inv.eof then
                                         end if
                                     end if
                                 end if
+
                                 ProfissionalExecutante=NomeProfissional&""
                                 ProfissionalExecutanteCPF=CPFProfissional&""
+
                                 Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho )
                                 Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", ProfissionalExecutante )
                                 Recibo = replace(Recibo, "[ProfissionalExecutante.CPF]", ProfissionalExecutanteCPF )
+                                
+                                'CONVERSOR DE TAG APLICADO EM 22/07/2020
+                                'Recibo = tagsConverte(Recibo,"ProfissionalID_"&ProfissionalID,"")
+
                             end if
                         end if
                         'caso o profissional executante não for encontrado utilizar profissional solicitante 
                         if instr(Recibo, "[ProfissionalExecutante.Nome]")>0 then
+
                             if Solicitante&"" <> "" and Solicitante&""<>"0" then
                                 Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", Accountname("",Solicitante))
                             end if
                         end if 
                     end if
+
 					'if session("Banco")="clinic105" or session("Banco")="clinic1752" then
 						'tabelinha = tabelinha &"<tr> <td class='text-right'>"&itens("Quantidade")&"</td><td>"&itens("Senha")&"</td><td>"&NomeItem&"</td><td class='text-right'>"&fn( Unitario) &"</td><td class='text-right'>"&fn( Subtotal) &"</td> </tr>"
 					'else
+
 					    if ProfissionalExecutanteID<>"" or RPS="S" then
 					        'pega o valor do repasse
                             AdicionaItem=True
                             ValorRepasse = 0
                             sqlContaCredito = AssociacaoID&"_"&ProfissionalExecutanteID
+
                             if RPS="S" then
                                 sqlContaCredito="0"
                             end if
+
                             if ProfissionalExecutanteID<>"" AND ProfissionalExecutanteID<>"0" AND AssociacaoID="5" then
                                 sqlProfissional = " AND ii.ProfissionalID="&ProfissionalExecutanteID&" AND ii.Associacao="&AssociacaoID
                             end if
+
                             sqlRateio = "select valor from (SELECT SUM(ifnull(Valor,0)) Valor FROM rateiorateios WHERE ItemInvoiceID="&itens("id")&" AND ContaCredito='"&sqlContaCredito&"')t where valor is not null"
+
                             set ValorRepasseSQL = db.execute(sqlRateio)
+
                             if not ValorRepasseSQL.eof then
                                 ValorPago = ValorRepasseSQL("Valor")
                             elseif ProfissionalExecutanteID="0" then
@@ -527,6 +628,7 @@ if not inv.eof then
                             else
                                 AdicionaItem=False
                             end if
+
                             if AdicionaItem then
                                 if RPS="S" then
                                     tabelinha = tabelinha &"<br>"&NomeItem&" : &nbsp;&nbsp;&nbsp;&nbsp; R$ "&fn( ValorPago) &""
@@ -535,6 +637,7 @@ if not inv.eof then
                                     if instr(tabelinha,"<table>")>0 then
                                         tabelinha = tabelinha &"<tr><td>"&NomeItem&" </td><td class='text-right'> "&fn( ValorPago) &"</td></tr>"
                                     end if
+
                                     if ValorPago>0 then
                                         if NomeItens<>"" then
                                             NomeItens = NomeItens & ", "&NomeItem
@@ -542,6 +645,7 @@ if not inv.eof then
                                             NomeItens = NomeItem
                                         end if
                                     end if
+
                                 end if
                             end if
                         else
@@ -554,12 +658,15 @@ if not inv.eof then
                             end if
                         end if
                         'else
+
                             'tabelinha = tabelinha &"<tr> <td class='text-right'>"&itens("Quantidade")&"</td><td>"&NomeItem&InformacoesAdicionaisProcedimento&"</td><td class='text-right'>"&fn( Unitario) &"</td><td class='text-right'>"&fn( Subtotal) &"</td> <td class='text-right'>"&fn( ValorPago) &"</td> </tr>"
                             if RPS<>"S" then
                                 tabelinha = tabelinha &ConstroiConteudoTabela(session("User"),TipoReciboModelo,Quantidade,itens("Senha"),Subtotal,ValorAcrescimo,ValorDesconto,Unitario,ValorPago,ValorPendente,NomeItem,UnitarioSimples) &"</tr>"
                             end if
                         'end if
+
 					'end if
+
                     if isnull(ValorPago) then
                         ValorPago=0
                     end if
@@ -568,6 +675,7 @@ if not inv.eof then
 				wend
 				itens.close
 				set itens=nothing
+
             if ProfissionalExecutanteID<>"" or RPS="S" then
                 'if RPS="N" then
                    ' tabelinha = tabelinha &"</tbody><tfoot><tr><th colspan='1'></th><th class='text-right'>"&fn(TotalPago)&"</th></tr></tfoot></table>"
@@ -577,6 +685,7 @@ if not inv.eof then
                     if not NFeSQL.eof then
                         set UnidadeSQL = db.execute("SELECT RazaoSocial, Endereco,Bairro, Numero, Complemento, Estado, Tel1, Email1, Cep FROM (SELECT UnitName RazaoSocial,Endereco,Bairro, Numero, Complemento, Estado, Tel1, Email1, Cep FROM sys_financialcompanyunits WHERE cnpj='"&NFeSQL("cnpj")&"' "&_
                         "UNION ALL SELECT  NomeEmpresa RazaoSocial,Endereco,Bairro, Numero, Complemento, Estado, Tel1, Email1, Cep FROM empresa WHERE cnpj='"&NFeSQL("cnpj")&"')t")
+
                         Recibo = replace(Recibo, "[Empresa.Endereco]", UnidadeSQL("Endereco"))
                         Recibo = replace(Recibo, "[Empresa.Nome]", UnidadeSQL("RazaoSocial"))
                         Recibo = replace(Recibo, "[Empresa.Numero]", UnidadeSQL("Numero"))
@@ -585,7 +694,9 @@ if not inv.eof then
                         Recibo = replace(Recibo, "[Empresa.Tel1]", UnidadeSQL("Tel1"))
                         Recibo = replace(Recibo, "[Empresa.Email1]", UnidadeSQL("Email1"))
                         Recibo = replace(Recibo, "[Empresa.Cep]", UnidadeSQL("Cep"))
+
                         Recibo = replace(Recibo, "[Empresa.Estado]", UnidadeSQL("Estado"))
+
                         Recibo = replace(Recibo, "[NFe.Serie]", NFeSQL("serie"))
                         Recibo = replace(Recibo, "[NFe.RPS]", NFeSQL("numero"))
                         Recibo = replace(Recibo, "[NFe.DataEmissao]", NFeSQL("datageracao"))
@@ -598,11 +709,14 @@ if not inv.eof then
                 'tabelinha = tabelinha &ConstroiRodapeTabela(session("User"),TipoReciboModelo)
 			    'tabelinha = tabelinha &"</tbody><tfoot><tr><th colspan='3'></th><th class='text-right'>"&fn(TotalTotal)&"</th><th class='text-right'>"&fn(TotalPago)&"</th></tr></tfoot></table>"
             end if
+
             if RPS<>"S" then
                 tabelinha = tabelinha &ConstroiRodapeTabela(session("User"),TipoReciboModelo)
             end if
+
 			Recibo = replace(Recibo, "[Receita.Itens]", tabelinha)
             Recibo = replace(Recibo&"", "[Receita.ItensExtenso]", NomeItens&"")
+
 			set forma = db.execute("SELECT IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','Crédito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value ,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
                                            "FROM sys_financialmovement debito "&_
                                            "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
@@ -612,6 +726,7 @@ if not inv.eof then
                                            "LEFT JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID NOT IN (3, 4) "&_
                                            "LEFT JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
                                            "WHERE debito.InvoiceID="&inv("id"))
+
 			Parcelas = ""
             FormaPagto = ""
             DataVencimento = ""
@@ -624,7 +739,9 @@ if not inv.eof then
                 Pagamento = forma("DataPagamento")
                 DataVencimento = DataVencimento&"<br>"&Vencimento
                 DataPagamento = DataPagamento&"<br>"&Pagamento
+
                 if not isnull(PaymentMethod) then
+
                     if not isnull(Parcela) then
                         Parcelas =  ccur(Parcela)
                     else
@@ -637,12 +754,15 @@ if not inv.eof then
                     end if
                     FormaPagtoOri = "<br>"&"("& Parcelas &"x) "&PaymentMethod &" = "&valorForma
                     FormaPagto = FormaPagto &""& FormaPagtoOri
+
                 end if
                 UsuarioRecebimento=nameInTable(forma("sysUser"))
             forma.movenext
             wend
             forma.close
             set forma=nothing
+
+
             if formaPagto="" then
                 if TotalTotal=0 then
                     FormaPagto = "-"
@@ -652,15 +772,21 @@ if not inv.eof then
                 UsuarioRecebimento=nameInTable(session("User"))
                 Parcelas = ""
             end if
+
+
 			'response.write("bb"&ValorPago)
+
 			if TotalPago&"" = "" then
 			    TotalPago=0
 			end if
+
             ValorPagoExtenso = ValorRecibo
+
             if ValorRecibo="" then
                 ValorRecibo=TotalPago
                 ValorPagoExtenso = TotalPago
             end if
+
             Recibo = replace(Recibo, "[Recibo.Mes]", MonthName(month(date())))
             Recibo = replace(Recibo, "[Recibo.DataVencimento]", DataVencimento)
             Recibo = replace(Recibo, "[Recibo.DataPagamento]", DataPagamento)
@@ -672,23 +798,30 @@ if not inv.eof then
 			Recibo = replace(Recibo, "[Receita.TotalPago]", fn(ValorRecibo) )
 			Recibo = replace(Recibo, "[Receita.TotalPendente]", fn(TotalPendente) )
             Recibo = replace(Recibo, "[Receita.ValorPagoExtenso]", extenso(ValorPagoExtenso))
+
             NomeSolicitante = ""
+
             if instr(inv("ProfissionalSolicitante"),"_")>0 then
                 NomeSolicitante = Accountname("",inv("ProfissionalSolicitante"))
             end if
             Recibo = replace(Recibo, "[ProfissionalSolicitante.Nome]", NomeSolicitante)
+
 		end if
+
 		UnidadeInvoice = session("UnidadeID")
         set getUnidadeInvoice = db.execute("SELECT CompanyUnitID FROM sys_financialinvoices WHERE id="&inv("id"))
         if not getUnidadeInvoice.eof then
             UnidadeInvoice = getUnidadeInvoice("CompanyUnitID")
         end if
+
         set invoiceSequencial = db.execute("SELECT * FROM recibos WHERE InvoiceID="&inv("id")&" AND UnidadeID="&UnidadeInvoice)
         if not invoiceSequencial.eof then
             NumeroSequencial = invoiceSequencial("NumeroSequencial")
+
             if SplitNF<>1 then
                 db_execute("UPDATE recibos SET sysActive=-1 WHERE InvoiceID="&inv("id")&" AND id!="&treatvalzero(reciboID))
             end if
+
         else
             set reciboSequencial = db.execute("SELECT NumeroSequencial FROM recibos WHERE UnidadeID="&UnidadeInvoice&" ORDER BY NumeroSequencial DESC LIMIT 1")
             if not reciboSequencial.eof then
@@ -698,6 +831,8 @@ if not inv.eof then
             end if
         end if
         Recibo = replace(Recibo, "[Recibo.Protocolo]", NumeroSequencial)
+        Recibo = replace(Recibo, "[Fatura.NumeroSequencial]", inv("NumeroFatura")&"")
+
         nroNFe = 0
         set nfeEmitido = db.execute("select numeronfse from nfe_notasemitidas where numeronfse<>'' and InvoiceID="&inv("id"))
         if not nfeEmitido.eof then
@@ -710,26 +845,29 @@ if not inv.eof then
         Recibo = replace(Recibo, "[Recibo.NotaFiscal]", nroNFe)
 
 
-        'IMPLANTACAO DA REPLACETAGS | Apenas para converter Tags
-        Recibo = tagsConverte(Recibo,"ProfissionalID_"&ProfissionalID,"")
-
-
         if (PacienteID<>"" and TotalPago>0) or (PacienteID<>"" and session("Banco")="clinic5968") or (PacienteID<>"" and session("Banco")="clinic100000") then
-            Recibo = replace(Recibo, "'", """")
+                                                           Recibo = replace(Recibo, "'", """")
             NomeItens = left(NomeItens, 200)
             CPFPACIENTE = ""
+
             set ReciboSQL = db.execute("SELECT id FROM recibos ORDER BY id DESC LIMIT 1")
+
             if not ReciboSQL.eof then
                 Recibo = replace(Recibo, "[Recibo.ID]", ReciboSQL("id") + 1)
             end if
+
             set PacSQL = db.execute("SELECT cpf FROM pacientes WHERE id = "&PacienteID)
+
             if not PacSQL.eof then
                 CPFPACIENTE = PacSQL("cpf")
             end if
+
             if reciboID<>"" then
                 sqlRecibo = "UPDATE recibos SET Texto = '"&Recibo&"', ImpressoEm = now() WHERE id="&reciboID
             else
+
                 sqlDataHora = mydatetime(DataHora)
+
                 if Imprimiu="1" then
                     sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, Auto,ImpressoEm, sysDate) VALUES ("&treatvalzero(NumeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&Cnpj&"','"&NomeRecibo&"', "&mydatenull(date())&", "&treatvalzero(ValorRecibo)&", '"&Recibo&"', '"&PacienteID&"', "&session("User")&", '"&NomeItens&"', 0, "&InvoiceID&", "&UnidadeInvoice&", "&NumeroSequencial&", '"&CPFPACIENTE&"', 0, now(), "&sqlDataHora&")"
                 else
@@ -740,7 +878,10 @@ if not inv.eof then
             if GravaRecibo="" then
 		        db_execute(sqlRecibo)
             end if
+
+
         end if
+
 		%>
 		<%=Recibo%>
 	</div>

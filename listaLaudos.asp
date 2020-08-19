@@ -39,7 +39,7 @@ end if
             <th>Convênio</th>
             <th>Status</th>
             <th width="1%"></th>
-            <th width="5%"></th>
+            <th width="100"></th>
         </tr>
     </thead>
     <tbody>
@@ -148,7 +148,7 @@ end if
                      "   WHERE lie.invoiceid = ii.invoiceid LIMIT 1 ) AS labid "
 
         sql = " SELECT tab.*, DataPrevisao AS DataAtualizada  FROM "&_
-            " (SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.PacienteID=t.PacienteID )TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, "& sqldiaslaudo &" , IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID, t.labid, invoiceid, nomelab  FROM ("&_
+            " (SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.LaudoID=t.id )TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, "& sqldiaslaudo &" , IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID, t.labid, invoiceid, nomelab  FROM ("&_
             " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, "&sqllabid&", ii.InvoiceID invoiceid, "&sqlnomelab&" FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
             " UNION ALL "&_
             " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, ls.labid, i.id invoiceid , '' nomelab FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE "&filtroGrupo&" ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
@@ -204,7 +204,7 @@ end if
                 END IF
 
                 sql = "select l.id, ls.Status, l.PrevisaoEntrega from laudos l LEFT JOIN laudostatus ls ON ls.id=l.StatusID where l.Tabela='"& Tabela &"' and l.IDTabela="& IDTabela &" and l.Serie="&ItemN
-                ' response.write (sql)
+                 'response.write (sql)
                 set vca = db.execute(sql)
                 if not vca.eof then
                     Status = vca("Status")
@@ -336,8 +336,14 @@ end if
                                 <% end if %>
                              <% else %> 
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%=link%>"><i class="fa fa-edit"></i></a>
-                             <% end if %>
+                            <% end if
+                            
+                            if Status="Liberado" then
+                                response.write("<a href='javascript:entrega("&IDLaudo&")' class='btn btn-sm btn-info'><span class='fa fa-print'></span> </a>")
+                            end if
+                            %>
                             <button class="btn btn-sm btn-info hidden"><i class="fa fa-print"></i></button>
+
                             </div>
                         </td>
                     </tr>
@@ -373,6 +379,18 @@ end if
 </table>
 
 <script>
+function entrega(laudoID) {
+    $("#modal-table").modal("show");
+    $("#modal").html("Carregando...");
+    $.post("laudoEntrega.asp?L="+laudoID, "", function (data) { $("#modal").html(data) });
+    
+}
+function saveLaudo(T, print){
+    $.post("saveLaudo.asp?L=<%= LaudoID %>&T="+ T, $("#Texto, #StatusID, #ProfissionalID, #Restritivo, #DataEntrega, #HoraEntrega, #ObsEntrega, #Receptor").serialize(), function(data){
+        eval(data);
+    });
+}
+
 
 function esconder(elemento,invoiceid){
     var linha = '#tr'+elemento;

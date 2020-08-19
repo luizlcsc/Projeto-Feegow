@@ -6,7 +6,7 @@ db.execute("UPDATE pacientesprotocolos SET ProfissionalID='"&ref("ProfissionalID
 set getMedicamentos = db.execute("SELECT * FROM pacientesprotocolosmedicamentos WHERE PacienteProtocoloID="&I)
 while not getMedicamentos.eof
     MedicamentoID = getMedicamentos("id")
-    db.execute("UPDATE pacientesprotocolosmedicamentos SET DoseMedicamento="&treatvalzero(ref("DoseMedicamento_"&MedicamentoID))&" , Obs='"&ref("Obs_"&MedicamentoID)&"' WHERE id="&MedicamentoID)
+    db.execute("UPDATE pacientesprotocolosmedicamentos SET MedicamentoPrescritoID="&treatvalzero(ref("MedicamentoID_"&MedicamentoID))&" , DoseMedicamento="&treatvalzero(ref("DoseMedicamento_"&MedicamentoID))&" , Obs='"&ref("Obs_"&MedicamentoID)&"' WHERE id="&MedicamentoID)
 getMedicamentos.movenext
 wend
 getMedicamentos.close

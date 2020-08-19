@@ -146,6 +146,9 @@ if aut(lcase(ref("resource"))&"A")=1 then
             sqlSomenteProcedimento=""
 
             sql = "select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"
+            IF ModoFranquiaUnidade THEN
+                sql = "select id, NomeProcedimento from procedimentos where id in (SELECT idOrigem FROM registros_importados_franquia WHERE tabela = 'procedimentos' AND unidade = "&session("UnidadeID")&") AND sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"
+            END IF
             initialOrder = "NomeProcedimento"
         elseif ref("t")="cliniccentral.cid10" then
             PermissaoParaAdd = 0
@@ -222,9 +225,6 @@ if aut(lcase(ref("resource"))&"A")=1 then
                 ")t "&_
                 "WHERE CONCAT(IFNULL(Pai2,''), IFNULL(Pai1,''), Name) LIKE '%[TYPED]%'"
 
-            sql = replace(sql, "[TYPED]", Typed)
-            sql = replace(sql, "[USERID]", session("user"))
-            sql = replace(sql, "[campoSuperior]", ref("cs"))
             othersToAddSelectInsert = dadosResource("othersToAddSelectInsert")
             ResourceID = dadosResource("id")
             initialOrder = dadosResource("initialOrder")
@@ -232,10 +232,9 @@ if aut(lcase(ref("resource"))&"A")=1 then
             Pers = dadosResource("Pers")
             mainFormColumn = dadosResource("mainFormColumn")
         else
-    	    set dadosResource = db.execute("select * from cliniccentral.sys_resources where tableName like '"&ref("t")&"'")
+    	    set dadosResource = db.execute("select * from cliniccentral.sys_resources where tableName = '"&ref("t")&"'")
     	    Typed= ref("q")
-	        sql = replace(dadosResource("sqlSelectQuickSearch")&"", "[TYPED]", Typed)
-	        sql = replace(sql, "[campoSuperior]", ref("cs"))
+	        sql = dadosResource("sqlSelectQuickSearch")&""
 	        othersToAddSelectInsert = dadosResource("othersToAddSelectInsert")
 	        ResourceID = dadosResource("id")
 	        initialOrder = dadosResource("initialOrder")
@@ -248,6 +247,9 @@ if aut(lcase(ref("resource"))&"A")=1 then
             end if
 
         end if
+        sql = replace(sql, "[campoSuperior]", ref("cs"))
+        sql = replace(sql, "[UNIDADES]", session("Unidades"))
+        sql = replace(sql, "[TYPED]", Typed)
 
         if sqlExibir<>"" then
             sql = replace(sql, " order ",sqlExibir&" order ")
@@ -273,7 +275,9 @@ end if
     set q = db.execute(sql)
 
     if q.eof and sqlAlternativo<>"" then
-        set q = db.execute(sqlAlternativo)
+        IF not ModoFranquia then
+            set q = db.execute(sqlAlternativo)
+        END IF
     end if
     'set q = db.execute("select id, "&ref("c")&" from "&ref("t")&" where TRIM("&ref("c")&") like '"&trim(ref("q"))&"%' order by TRIM("&ref("c")&") limit "& page*30 &", 30")
     c = 0

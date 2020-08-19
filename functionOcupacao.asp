@@ -19,7 +19,13 @@ end function
 function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissionais, rfConvenio, rfLocais)
     De = cdate(De)
     Ate = cdate(Ate)
-    db.execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto = 9 AND DATE_ADD(sysDate, INTERVAL 15 MINUTE) < now()  and sysActive = 1;")
+
+    if license_id=8932 then
+    ' :(
+        db.execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto IN (0,9) AND DATE_ADD(sysDate, INTERVAL 15 MINUTE) < now()  and sysActive = 1 AND sysUser=1 AND StaID=1;")
+    else
+        db.execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto = 9 AND DATE_ADD(sysDate, INTERVAL 15 MINUTE) < now()  and sysActive = 1;")
+    end if
 
     db.execute("delete from agenda_horarios where sysUser="& treatvalzero(session("User")))
     response.Buffer
@@ -52,11 +58,13 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
 
     if refEspecialidade="" and rfProfissionais<>"" then
-        set ProfissionalSQL = db.execute("SELECT group_concat(EspecialidadeID SEPARATOR ', ')EspecialidadeID FROM ( "&_
-                                         "SELECT EspecialidadeID FROM profissionais WHERE id IN ("&rfProfissionais&") "&_
-                                         "UNION ALL "&_
-                                         "SELECT EspecialidadeID FROM profissionaisespecialidades WHERE ProfissionalID IN ("&rfProfissionais&") "&_
-                                         ") t")
+        sqlEsp2 = "SELECT group_concat(EspecialidadeID SEPARATOR ', ')EspecialidadeID FROM ( "&_
+                   "SELECT EspecialidadeID FROM profissionais WHERE id IN ("&rfProfissionais&") "&_
+                   "UNION ALL "&_
+                   "SELECT EspecialidadeID FROM profissionaisespecialidades WHERE ProfissionalID IN ("&rfProfissionais&") "&_
+                   ") t"
+
+        set ProfissionalSQL = db.execute(sqlEsp2)
         if not ProfissionalSQL.eof then
             refEspecialidade=ProfissionalSQL("EspecialidadeID")&""
         end if
@@ -126,7 +134,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                 end if
             end if
 
-            if instr(SomenteEspecialidades, "|")>0 then
+            if SomenteEspecialidades&"" <> "" then
                 set GroupConcat = db.execute("SET SESSION group_concat_max_len = 1000000;")
                 set profesp = db.execute("select group_concat(pro.id) Profissionais from profissionais pro LEFT JOIN profissionaisespecialidades pe on pe.ProfissionalID=pro.id where pro.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &") or pe.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &")")
 
@@ -297,7 +305,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         <%
                     end if
                     cProf = 0
-                       ' debugMessage(sql)
+
 
                     while not comGrade.eof
                         response.Flush()
@@ -392,7 +400,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                     'response.write("<br> -> P: "& ProfissionalID &" ("& comGrade("NomeProfissional") &") L: "& LocalID &" U: "& UnidadeID &"</br>")
                                     if Horarios("TipoGrade")=0 then
                                         GradeID=Horarios("id")
-                                        if Horarios("GradePadrao")="0" then
+                                        if Horarios("GradePadrao")&""="0" then
                                             GradeID=GradeID*-1
                                         end if
                                         Intervalo = Horarios("Intervalo")
@@ -400,6 +408,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                         if isnull(Intervalo) or Intervalo=0 then
                                             Intervalo = 30
                                         end if
+
                                         HoraDe = cdate(Horarios("HoraDe"))
 		                                if isnull(Horarios("HoraA")) then
 			                                HoraA = HoraDe
@@ -437,7 +446,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                             HoraID = replace(HoraID, ":", "")
                                             'HORARIO VAZIO
 
-                                            sqlInsertV = sqlInsertV & ", ("& treatvalzero(session("User")) &", "& mydatenull(Data) &", "& mytime(Hora) &", 'V', "& treatvalzero(ProfissionalID) &", "& EspecialidadeID &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& Horarios("id") &", 1, "&ExibeAgendamentoOnline&")"
+                                            sqlInsertV = sqlInsertV & ", ("& treatvalzero(session("User")) &", "& mydatenull(Data) &", "& mytime(Hora) &", 'V', "& treatvalzero(ProfissionalID) &", "& EspecialidadeID &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& GradeID &", 1, "&ExibeAgendamentoOnline&")"
 
                                             Hora = dateadd("n", Intervalo, Hora)
                                         wend
@@ -452,7 +461,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 				                                    HLivres = HLivres+1
                                                     HoraID = horaToID(HoraPers)
 
-                                                sqlInsertV = sqlInsertV & ", ("& treatvalzero(session("User")) &", "& mydatenull(Data) &", "& mytime(HoraPers) &", 'V', "& treatvalzero(ProfissionalID) &", "& EspecialidadeID &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& Horarios("id") &", 1, "&ExibeAgendamentoOnline&")"
+                                                sqlInsertV = sqlInsertV & ", ("& treatvalzero(session("User")) &", "& mydatenull(Data) &", "& mytime(HoraPers) &", 'V', "& treatvalzero(ProfissionalID) &", "& EspecialidadeID &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& GradeID &", 1, "&ExibeAgendamentoOnline&")"
                                                 end if
                                             next
                                         end if
@@ -474,7 +483,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                             IF 1 THEN
 
                             set comps=db.execute("select a.EspecialidadeID, a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo from agendamentos a " & joinLocaisUnidades &_
-                            "where a.ProfissionalID="&ProfissionalID&" and a.Data="&mydatenull(Data) & whereLocaisUnidades &" and sysActive=1 order by Hora")
+                            "where a.ProfissionalID="&ProfissionalID&" and a.Data="&mydatenull(Data) & whereLocaisUnidades &" and a.sysActive=1 order by Hora")
                             while not comps.EOF
                                 HoraComp = HoraToID(comps("Hora"))
                                 EspecialidadeIDAgendada = comps("EspecialidadeID")
@@ -508,12 +517,17 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 	                            end if
 	                            Horario = comps("Hora")
 	                            if isdate(Horario) and Horario<>"" then
+	                                if Tempo>1 then
+	                                    Tempo=Tempo-1
+	                                end if
+
 		                            HoraFinal = dateadd("n", Tempo, Horario)
 		                            HoraFinal = formatdatetime( HoraFinal, 4 )
 		                            'HoraFinal = HoraToID(HoraFinal)
 		                            if HoraFinal<=HoraComp then
 			                            HoraFinal = Horario
 		                            end if
+
 	                            else
 		                            HoraFinal = Horario
 	                            end if

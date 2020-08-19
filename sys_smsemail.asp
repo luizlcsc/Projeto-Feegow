@@ -45,7 +45,12 @@ else
     <div class="col-md-12">
         <div class="panel">
             <div class="panel-body">
-                <%=quickField("text", "Descricao", "Descrição do modelo", 4, reg("Descricao"), 200, "", "")%>
+                <div class="col-md-12">
+                    <%=quickField("text", "Descricao", "Descrição do modelo", 4, reg("Descricao"), 200, "", "")%>
+                    <span class="panel-controls">
+                        <!--#include file="Tags.asp"-->
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -95,7 +100,7 @@ else
                     <%if configWhatsApp=1 then%>
 
                     <label class="mn" for="AtivoWhatsApp">
-                        <input <% If AtivoWhatsApp=1 Then %> checked="checked" <%end if%> name="AtivoWhatsApp" id="AtivoWhatsApp" type="checkbox" />
+                        <input <% If reg("AtivoWhatsApp")="on" Then %> checked="checked" <%end if%> name="AtivoWhatsApp" id="AtivoWhatsApp" type="checkbox" />
                         WhatsApp
                     </label>
                     <%end if%>

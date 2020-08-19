@@ -241,23 +241,26 @@
         }
 
     </style>
-
     <script type="886de5421c6c96677a1a3b09-text/javascript">(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
 </head>
 <body>
 <div class="container" role="main">
     <form method="post" enctype="multipart/form-data" novalidate class="box" id="form-upload">
         <div class="box__input">
-            <svg class="box__icon" xmlns="http://www.w3.org/2000/svg" width="50" height="30" viewBox="0 0 50 43"><path d="M48.4 26.5c-.9 0-1.7.7-1.7 1.7v11.6h-43.3v-11.6c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v13.2c0 .9.7 1.7 1.7 1.7h46.7c.9 0 1.7-.7 1.7-1.7v-13.2c0-1-.7-1.7-1.7-1.7zm-24.5 6.1c.3.3.8.5 1.2.5.4 0 .9-.2 1.2-.5l10-11.6c.7-.7.7-1.7 0-2.4s-1.7-.7-2.4 0l-7.1 8.3v-25.3c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v25.3l-7.1-8.3c-.7-.7-1.7-.7-2.4 0s-.7 1.7 0 2.4l10 11.6z" /></svg>
+            <svg class="box__icon" xmlns="http://www.w3.org/2000/svg" width="50" height="30" viewBox="0 0 50 43">
+                <path d="M48.4 26.5c-.9 0-1.7.7-1.7 1.7v11.6h-43.3v-11.6c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v13.2c0 .9.7 1.7 1.7 1.7h46.7c.9 0 1.7-.7 1.7-1.7v-13.2c0-1-.7-1.7-1.7-1.7zm-24.5 6.1c.3.3.8.5 1.2.5.4 0 .9-.2 1.2-.5l10-11.6c.7-.7.7-1.7 0-2.4s-1.7-.7-2.4 0l-7.1 8.3v-25.3c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v25.3l-7.1-8.3c-.7-.7-1.7-.7-2.4 0s-.7 1.7 0 2.4l10 11.6z" /></svg>
             <input type="file" name="files[]" id="file" class="box__file" data-multiple-caption="{count} files selected" multiple />
             <input type="hidden" name="PacienteID" value="<?=$_GET['PacienteID']?>">
             <input type="hidden" name="L" value="<?=$_GET['L']?>">
             <input type="hidden" name="Pasta" value="<?=$_GET['Pasta']?>">
+            <input type="hidden" name="ProfissionalID" value="<?=$_GET['ProfissionalID']?>">
             <input type="hidden" name="Tipo" value="<?=$_GET['Tipo']?>">
             <input type="hidden" name="MovementID" value="<?=$_GET['MovementID']?>">
+            <input type="hidden" name="Assinatura" value="<?=$_GET['Assinatura']?>">
             <input type="hidden" name="ExameID" value="<?=$_GET['ExameID']?>">
             <input type="hidden" name="guiaID" value="<?=$_GET['guiaID']?>">
             <input type="hidden" name="tipoGuia" value="<?=$_GET['tipoGuia']?>">
+            <input type="hidden" name="tarefaId" value="<?=$_GET['tarefaId']?>">
             <input type="hidden" name="LaudoID" value="<?=$_GET['LaudoID']?>">
             <label for="file"><strong>Clique aqui e escolha um arquivo</strong><span class="box__dragndrop"> ou arraste até aqui</span>.</label>
             <button type="submit" class="box__button">Upload</button>
@@ -413,16 +416,20 @@
 					};
 
 					ajaxData.append('PacienteID',$('input[name="PacienteID"]').val());
+					ajaxData.append('ProfissionalID',$('input[name="ProfissionalID"]').val());
 					ajaxData.append('Licenca',$('input[name="L"]').val());
 					ajaxData.append('Pasta',$('input[name="Pasta"]').val());
+					ajaxData.append('Assinatura',$('input[name="Assinatura"]').val());
 					ajaxData.append('Tipo',$('input[name="Tipo"]').val());
 					ajaxData.append('MovementID',$('input[name="MovementID"]').val());
 					ajaxData.append('ExameID',$('input[name="ExameID"]').val());
 					ajaxData.append('guiaID',$('input[name="guiaID"]').val());
 					ajaxData.append('tipoGuia',$('input[name="tipoGuia"]').val());
+					ajaxData.append('tarefaId',$('input[name="tarefaId"]').val());
 					ajaxData.append('LaudoID',$('input[name="LaudoID"]').val());
 					ajax.send( ajaxData );
                     parent.callUpload && parent.callUpload(ajax.responseText);
+
 
 				}
 				else // fallback Ajax solution upload for older browsers

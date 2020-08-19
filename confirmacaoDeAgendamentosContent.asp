@@ -94,7 +94,7 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
         'Mensagem = replaceTags(Mensagem, age("PacienteID"), session("UserID"), UnidadeID)
 
         'APLICADO A FUNÇÃO PARA CONVERSÃO DE TAGS || Rafael Maia - 03/07/2020
-        Mensagem = "UnidadeID: "&UnidadeID&tagsConverte(Mensagem,"PacienteID_"&age("PacienteID")&"|ProcedimentoID_"&ProcedimentoID&"|AgendamentoID_"&age("id")&"|UnidadeID_"&UnidadeID&"|ProfissionalID_"&age("ProfissionalID"),"")
+        Mensagem = tagsConverte(Mensagem,"PacienteID_"&age("PacienteID")&"|ProcedimentoID_"&ProcedimentoID&"|AgendamentoID_"&age("id")&"|UnidadeID_"&UnidadeID&"|ProfissionalID_"&age("ProfissionalID"),"")
 
         
 
@@ -189,8 +189,8 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
             <div class="row">
                 <div class="col-md-3 col-md-offset-9">
                     <select data-toggle='tooltip' title='Comportamento para o envio de WhatsApp' name="TipoLinkWhatsApp" id="TipoLinkWhatsApp" class="form-control input-sm ">
-                        <option value="https://web.whatsapp.com/send">WhatsApp Web</option>
                         <option value="whatsapp://send">WhatsApp Desktop</option>
+                        <option value="https://web.whatsapp.com/send">WhatsApp Web</option>
                     </select>
                 </div>
             </div>

@@ -2,7 +2,6 @@
 <!--#include file="connectCentral.asp"-->
 
 
-
 <form id="frmOC" >
 
     <input type="hidden" name="E" value="E" />
@@ -15,26 +14,26 @@ LicencaID = replace(session("Banco"), "clinic", "")
 if E = "E" then
 
     if not confNew.eof then
-        while not confNew.eof 
+        while not confNew.eof
             valor = ref(confNew("Coluna"))
-            
+
             if ccur(confNew("VIsClinicCentral")) = 1 then
                 'response.write("select * from cliniccentral.config where ConfigID = " & confNew("id") & " AND LicencaID = " & LicencaID)
                 set confGeral = dbc.execute("select * from cliniccentral.config where ConfigID = " & confNew("id") & " AND LicencaID = " & LicencaID)
                 if not confGeral.eof then
                     dbc.execute("update cliniccentral.config set Valor = '" & Valor & "' where ConfigID = " & confNew("id") & " AND LicencaID = " & LicencaID)
-                else 
+                else
                     dbc.execute("insert into cliniccentral.config(ConfigID, LicencaID, Valor, sysActive, sysUser) values(" & confNew("id") & ", " &LicencaID& ", '" & Valor & "', 1, " & session("user") & ")")
                 end if
-            else 
+            else
                 set confGeral = db.execute("select * from config_gerais where ConfigID = " & confNew("id") & " ")
                 'if valor <> "" then
                     if not confGeral.eof then
                         db.execute("update config_gerais set Valor = '" & Valor & "' where ConfigID = " & confNew("id") & " ")
-                    else 
+                    else
                         db.execute("insert into config_gerais(ConfigID, Valor, sysActive, sysUser) values(" & confNew("id") & ", '" & Valor & "', 1, " & session("user") & ")")
                     end if
-                'else 
+                'else
                 '    if not confGeral.eof then
                 '        db.execute("update config_gerais set Valor = '" & confNew("ValorPadrao") & "' where ConfigID = " & confNew("id") & " ")
                 '    end if
@@ -44,15 +43,15 @@ if E = "E" then
         wend
         confNew.movefirst
     end if
-else 
+else
 
 
 titulo = ""
 i = 0
 if not confNew.eof then
-    while not confNew.eof 
-        if UCase(titulo) <> UCase(confNew("Secao")) then 
-            if i > 0 then 
+    while not confNew.eof
+        if UCase(titulo) <> UCase(confNew("Secao")) then
+            if i > 0 then
                 response.write("<div class='row'><br><hr /></div>")
             end if
             titulo = UCase(confNew("Secao"))
@@ -60,21 +59,21 @@ if not confNew.eof then
         end if
 
         valorPadrao = confNew("ValorPadrao")
-        
+
         if ccur(confNew("VIsClinicCentral")) = 1 then
           '  response.write("select * from cliniccentral.config where ConfigID = " & confNew("id") & " AND LicencaID = " & LicencaID)
             set confGeral = dbc.execute("select * from cliniccentral.config where ConfigID = " & confNew("id") & " AND LicencaID = " & LicencaID)
             if not confGeral.eof then
                 valorPadrao = confGeral("Valor")
             end if
-        else 
+        else
          '   response.write("select * from config_gerais where ConfigID = " & confNew("id") & " ")
             set confGeral = db.execute("select * from config_gerais where ConfigID = " & confNew("id") & " ")
-            if not confGeral.eof then 
+            if not confGeral.eof then
                 valorPadrao = confGeral("Valor")
             end if
         end if
-        
+
         call createFields(confNew("TipoCampo"), confNew("Coluna"), confNew("Label"), 6, valorPadrao,  confNew("ValorMarcado"), "", confNew("selectColumnToShow"), confNew("id"), confNew("selectSQL"))
         i = i + 1
         confNew.movenext
@@ -101,6 +100,12 @@ function createFields(fieldType, fieldName, label, width, fieldValue, defaultVal
 	response.Write(abreDivBoot)
 
     select case fieldType
+        case "simpleCheckboxHidden"
+    			%>
+    			<div class="checkbox-custom checkbox-primary" style="display: none">
+                    <input type="checkbox" class="ace <%=sqlOrClass%>" name="<%= fieldName %>" id="<%= fieldName %>" value="<%=defaultValue%>"<%if fieldValue=defaultValue then response.write("checked") end if %> /> <label class="checkbox" for="<%= fieldName %>"> <%= label %></label>
+    			</div>
+    			<%
 		case "simpleCheckbox"
 			%>
 			<div class="checkbox-custom checkbox-primary">

@@ -24,14 +24,6 @@ TotalRec = 0
 TotalAtendimentos = 0
 db_execute("delete from tempfaturamento where sysUser="&session("User"))
 
-function reqf(P)
-    if req(P)<>"" then
-        reqf = req(P)
-    else
-        reqf = ref(P)
-    end if
-end function
-
 DataDe = reqf("DataDe")
 DataAte = reqf("DataAte")
 

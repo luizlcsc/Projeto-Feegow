@@ -1,11 +1,11 @@
 ﻿<!--#include file="connect.asp"-->
 <%
 
-if req("InvoiceID")<>"" and 0 then
+if reqf("InvoiceID")<>"" and 0 then
     db_execute("delete from temp_nfsplit where sysUser="& session("User"))
 end if
 
-dividirCompensacao = req("dividirCompensacao")
+dividirCompensacao = reqf("dividirCompensacao")
 
 totalRepasses = 0
 totalMateriais = 0
@@ -249,7 +249,8 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
                         ValorTabela = ValorTabela *  Quantidade
                         Valor = ValorTabela
-                        ValorBase = Valor
+                        'O valor base abaixo estava sendo substituida pelo valor do procedimento
+                        'ValorBase = Valor
                     end if
 
 
@@ -258,8 +259,6 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
                     set valBase = db.execute("select Valor from procedimentos where id="& ProcedimentoID)
                     if not valBase.eof then
                         ValorBase = valBase("Valor")
-
-
                         ValorBase = ValorBase *  Quantidade
                     end if
                     TipoValor = "P"
@@ -274,7 +273,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
             Creditado = calcCreditado(ContaCredito, ProfissionalExecutante)
             ShowValor = calcValor(Valor, TipoValor, ValorBase, "show")
             ValorItem = calcValor(Valor, TipoValor, ValorBase, "calc")
-                                
+
             if Creditado<>"" then
                 somaDesteSobre = somaDesteSobre+ValorItem
                 if Creditado<>"0" then
@@ -294,9 +293,9 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
                 ExibeLinha=True
 
-                if req("TipoRecebedor")<>"" then
+                if reqf("TipoRecebedor")<>"" then
                     contaSplt = split(Creditado,"_")
-                    if instr(req("TipoRecebedor"), "|"&contaSplt(0)&"|")=0 and Creditado&"" <> "0" then
+                    if instr(reqf("TipoRecebedor"), "|"&contaSplt(0)&"|")=0 and Creditado&"" <> "0" then
                         ExibeLinha=False
                     end if
                 end if
@@ -562,13 +561,13 @@ end function
 'Todas as regras onde esse profissional seja mencionado na equipe
 'Todas as invoiceoutros onde ele esteja mencionado
 
-De = req("De")
-Ate = req("Ate")
-StatusBusca = req("Status")
-if req("Unidades")="" then
+De = reqf("De")
+Ate = reqf("Ate")
+StatusBusca = reqf("Status")
+if reqf("Unidades")="" then
     Unidades = session("Unidades")&""
 else
-    Unidades = req("Unidades")
+    Unidades = reqf("Unidades")
 end if
 %>
 
@@ -596,11 +595,11 @@ end if
             <%
 
 
-            AccountID = req("AccountID")
+            AccountID = reqf("AccountID")
             ContaProfissional = ""
 
             if AccountID<>"" and AccountID<>"0" then
-                ContaProfissionalSplt =split(req("AccountID"),"_")
+                ContaProfissionalSplt =split(reqf("AccountID"),"_")
                 ContaProfissional = " AND ii.Associacao="&ContaProfissionalSplt(0)&" AND ii.ProfissionalID="&ContaProfissionalSplt(1) &" "
             end if
             if Unidades<>"" then
@@ -608,7 +607,7 @@ end if
             end if
             'db_execute("delete from temprepasse where sysUser="&session("User"))
 
-            ExibirNaoExecutado = req("ExibirNaoExecutado")
+            ExibirNaoExecutado = reqf("ExibirNaoExecutado")
             ExecutadoStatus="S"
 
             if ExibirNaoExecutado="S" then
@@ -616,9 +615,9 @@ end if
             end if
 
 
-            if req("ProcedimentoID")<>"0" then
-                if instr(req("ProcedimentoID"), "G")>0 then
-                    set procsGP = db.execute("select group_concat(id) procs from procedimentos where GrupoID="& replace(req("ProcedimentoID"), "G", ""))
+            if reqf("ProcedimentoID")<>"0" then
+                if instr(reqf("ProcedimentoID"), "G")>0 then
+                    set procsGP = db.execute("select group_concat(id) procs from procedimentos where GrupoID="& replace(reqf("ProcedimentoID"), "G", ""))
                     procs=procsGP("procs")
 
                     if isnull(procs) then
@@ -627,14 +626,14 @@ end if
                         sqlProcedimento = " AND ii.ItemID IN ("& procs &") "
                     end if
                 else
-                    sqlProcedimento = " AND ii.ItemID="& req("ProcedimentoID") &" "
+                    sqlProcedimento = " AND ii.ItemID="& reqf("ProcedimentoID") &" "
                 end if
             end if
 
-            if req("InvoiceID")<>"" and 0 then
-                'sqlII = "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& req("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
+            if reqf("InvoiceID")<>"" and 0 then
+                'sqlII = "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& reqf("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
                 sqlII = "select r.*, t.Nomelocal CompanyUnit, esp.especialidade,s.NomeProfissional ProfissionalSolicitante, r.ProfissionalSolicitante ProfissionalSolicitanteID from ( "&_
-                        "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& req("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
+                        "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& reqf("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
                         ") r"&_
                         " LEFT JOIN especialidades esp ON esp.id = r.EspecialidadeID"&_
                         " LEFT JOIN (( SELECT 0 AS 'id', NomeFantasia NomeLocal FROM empresa WHERE id=1) UNION ALL ( SELECT id, NomeFantasia FROM sys_financialcompanyunits)) t ON t.id = r.CompanyUnitID"&_
@@ -647,10 +646,10 @@ end if
                         " FROM profissionais UNION ALL"&_
                         " SELECT CONCAT('8_', id) id, NomeProfissional"&_
                         " FROM profissionalexterno) s) s ON s.id = r.ProfissionalSolicitante "
-            elseif req("AC")="1" then
+            elseif reqf("AC")="1" then
                 'sqlII = "select r.id ReconsolidacaoID, ii.*, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE NOT ISNULL(ii.InvoiceID)" & sqlUnidades
                 sqlII = "select rs.*, t.Nomelocal CompanyUnit, esp.especialidade,s.NomeProfissional ProfissionalSolicitante, rs.ProfissionalSolicitante ProfissionalSolicitanteID from ("&_
-                        "select r.id ReconsolidacaoID, ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE NOT ISNULL(ii.InvoiceID)" & sqlUnidades &") rs"&_
+                        "select r.id ReconsolidacaoID, ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE ii.Executado='S' AND NOT ISNULL(ii.InvoiceID)" & sqlUnidades &") rs"&_
                         " LEFT JOIN especialidades esp ON esp.id = rs.EspecialidadeID"&_
                         " LEFT JOIN (( SELECT 0 AS 'id', NomeFantasia NomeLocal FROM empresa WHERE id=1) UNION ALL ( SELECT id, NomeFantasia FROM sys_financialcompanyunits)) t ON t.id = rs.CompanyUnitID"&_
                         " LEFT JOIN ("&_
@@ -663,7 +662,7 @@ end if
                         " SELECT CONCAT('8_', id) id, NomeProfissional"&_
                         " FROM profissionalexterno) s) s ON s.id = rs.ProfissionalSolicitante "
             
-            elseif req("TipoData")="Comp" then
+            elseif reqf("TipoData")="Comp" then
                 'sqlII = "select ii.*, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE ii.DataExecucao BETWEEN "& mydatenull(De) &" and "& mydatenull(Ate)&" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlProcedimento & " ORDER BY ii.DataExecucao"
                 'sqlII = "select r.id ReconsolidacaoID, ii.*, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE NOT ISNULL(ii.InvoiceID)"& sqlUnidades
                 sqlII = "select r.*, t.Nomelocal CompanyUnit, esp.especialidade,s.NomeProfissional ProfissionalSolicitante, r.ProfissionalSolicitante ProfissionalSolicitanteID from (SELECT "&_
@@ -709,7 +708,7 @@ end if
                         "UNION ALL SELECT CONCAT('8_', id) id, NomeProfissional FROM profissionalexterno ) s) s on s.id = i.ProfissionalSolicitante "&_
                         "WHERE ii.DataExecucao BETWEEN "& mydatenull(De) &" and "& mydatenull(Ate)&" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlProcedimento & sqlUnidades & " ORDER BY ii.DataExecucao"
             end if
-            if req("DEBUG")="1" then
+            if reqf("DEBUG")="1" then
                 response.write( sqlII )
             end if
             set ii = db.execute( sqlII )
@@ -1158,7 +1157,7 @@ desfazBtnCons = ""
                     </td>
                 </tr>
                 <%
-                if req("AC")="1" then
+                if reqf("AC")="1" then
                     ReconsApagar = ReconsApagar &"|"& ii("ReconsolidacaoID") &"|"
                 end if
 

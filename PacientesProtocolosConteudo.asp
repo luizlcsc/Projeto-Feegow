@@ -32,12 +32,14 @@ end if
         <input type="hidden" name="ProtocoloListaID" id="ProtocoloListaID" value="100">
         <table class="table" width="100%" style="padding: 4px;!important;">
             <%
-            sql = "SELECT promed.*, promed.id ProtocoloMedicamentoID, prot.NomeProtocolo, prodMed.NomeProduto Medicamento, proDil.NomeProduto Diluente, unMed.Sigla SiglaMed, unDil.Sigla SiglaDil, protmed.Dose, protmed.QtdDiluente, protmed.Obs ObservacaoMedicamento "&_
+            sql = "SELECT promed.*, promed.id ProtocoloMedicamentoID, promed.MedicamentoPrescritoID MedicamentoPrescritoID, prodMedPres.NomeProduto NomeMedicamentoPrescrito, protmed.Medicamento MedicamentoID, prot.NomeProtocolo, prodMed.NomeProduto NomeMedicamento, proDil.NomeProduto Diluente, unMed.Sigla SiglaMed, unDil.Sigla SiglaDil, protmed.Dose, protmed.QtdDiluente, protmed.Obs ObservacaoMedicamento, pac.ConvenioID1 ConvenioID, pac.PlanoID1 PlanoID "&_
                   "FROM pacientesprotocolosmedicamentos promed "&_
                   "LEFT JOIN pacientesprotocolos pacpro ON promed.PacienteProtocoloID=pacpro.id "&_
                   "LEFT JOIN protocolos prot ON prot.id=promed.ProtocoloID "&_
                   "LEFT JOIN protocolosmedicamentos protmed ON protmed.id = promed.ProtocoloMedicamentoID  AND protmed.ProtocoloID = promed.ProtocoloID  "&_
-                  "LEFT JOIN produtos prodMed ON prodMed.id=protmed.Medicamento "&_
+                  "LEFT JOIN produtos prodMed ON prodMed.id = protmed.Medicamento "&_
+                  "LEFT JOIN produtos prodMedPres ON prodMedPres.id = promed.MedicamentoPrescritoID "&_
+                  "LEFT JOIN pacientes pac ON pac.id=pacpro.PacienteID "&_
                   "LEFT JOIN cliniccentral.unidademedida unMed ON prodMed.UnidadePrescricao=unMed.id "&_
                   "LEFT JOIN produtos proDil ON proDil.id=protmed.DiluenteID "&_
                   "LEFT JOIN cliniccentral.unidademedida unDil ON proDil.UnidadePrescricao=unDil.id "&_
@@ -45,8 +47,11 @@ end if
             set getProtocolo = db.execute(sql)
             while not getProtocolo.eof
                 ProtocoloID = getProtocolo("ProtocoloID")
-                ProtocoloMedicamentoID = getProtocolo("ProtocoloMedicamentoID")
                 DoseMedicamento = getProtocolo("DoseMedicamento")
+                MedicamentoID = getProtocolo("MedicamentoPrescritoID")
+                Obs = getProtocolo("Obs")
+                ConvenioID = getProtocolo("ConvenioID")
+                PlanoID = getProtocolo("PlanoID")
                 Obs = getProtocolo("Obs")
                 ProtocoloMedicamentoID = getProtocolo("ProtocoloMedicamentoID")
                 if NomeProtocolo&"" <> getProtocolo("NomeProtocolo") then
@@ -58,11 +63,36 @@ end if
                 <%
                 end if
 
+                Medicamento = getProtocolo("NomeMedicamentoPrescrito")
+                MedicamentoID = getProtocolo("MedicamentoPrescritoID")
+
+                if MedicamentoID&""="" then
+
+                    Medicamento = getProtocolo("NomeMedicamento")
+                    MedicamentoID = getProtocolo("MedicamentoID")
+
+                    if isnumeric(ConvenioID) then
+                        sqlRegraConv = " AND (medconv.Convenios LIKE '%|"&ConvenioID&"|%' OR medconv.Convenios IS NULL OR medconv.Convenios='')"
+                    end if
+                    if isnumeric(PlanoID) then
+                        sqlRegraPlan = " AND (medconv.Planos LIKE '%|"&PlanoID&"|%' OR medconv.Planos IS NULL OR medconv.Planos='')"
+                    end if
+                    set getRegraMedicamento = db.execute("SELECT prod.id MedicamentoID, prod.NomeProduto "&_
+                                                        "FROM medicamentosconvenios medconv "&_
+                                                        "LEFT JOIN produtos prod ON prod.id=medconv.MedicamentoSubstitutoID "&_
+                                                        "WHERE medconv.MedicamentoSubstitutoID!=0 AND medconv.sysActive=1 "&sqlRegraConv & sqlRegraPlan&" LIMIT 1")
+
+                    if not getRegraMedicamento.eof then
+                        Medicamento = getRegraMedicamento("NomeProduto")
+                        MedicamentoID = getRegraMedicamento("MedicamentoID")
+                    end if
+
+                end if
+
                 if DoseMedicamento&""="" then
                     DoseMedicamento = getProtocolo("Dose")
                 end if
                 DoseDiluente = getProtocolo("QtdDiluente")
-                Medicamento = getProtocolo("Medicamento")
                 Diluente = getProtocolo("Diluente")
                 SiglaMed = getProtocolo("SiglaMed")
                 SiglaDil = getProtocolo("SiglaDil")
@@ -75,7 +105,10 @@ end if
                 if Medicamento&""<>"" then
                 %>
                 <tr style="background-color: #f9f9f9;" class="mt10">
-                    <td width="60%" colspan="2"><b>Medicamento:</b> <%=Medicamento%></td>
+                    <td width="60%" colspan="2">
+                        <input id="MedicamentoID_<%=ProtocoloMedicamentoID%>" hidden name="MedicamentoID_<%=ProtocoloMedicamentoID%>" value="<%=MedicamentoID%>">
+                        <b>Medicamento:</b> <%=Medicamento%>
+                    </td>
                     <td width="10%">
                         <div class="input-group">
                             <input id="DoseMedicamento_<%=ProtocoloMedicamentoID%>" class="form-control input-mask-brl text-right" placeholder="0,00" type="text" style="text-align:right" name="DoseMedicamento_<%=ProtocoloMedicamentoID%>" value="<%=fn(DoseMedicamento)%>">

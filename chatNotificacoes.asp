@@ -47,7 +47,7 @@ while not u.eof
         end if
     end if
 	%>
-                <li class="media" onclick="callWindow(<%=u("id")%>, '<%=u("Nome")%>')" style="cursor:pointer">
+                <li class="media" onclick="callWindow(<%=u("id")%>, '<%=replace(u("Nome"), "'", "\'")%>')" style="cursor:pointer">
                     <a class="media-left" href="javascript:void(0)">
         	<%
 			if isnull(u("Foto")) or u("Foto")="" then

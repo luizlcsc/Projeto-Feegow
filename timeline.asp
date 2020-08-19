@@ -736,6 +736,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
             true, 
             function(){
                 let dataImage = imageEditor.toDataURL();
+
                 newSaveImage(dataImage);
                 closeComponentsModal();
             },
@@ -744,16 +745,17 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
         );
     };
 
-    function newSaveImage(base64){
-        $.post("https://clinic7.feegow.com.br/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>", 
-            {
-                data: base64
-            }, 
-            function(data){
-                console.log(data);
-                atualizaAlbum(0);
-        });
-    };
+
+
+        function newSaveImage(base64,id){
+            uploadProfilePic({
+                userId: "<%=req("I")%>",
+                db: "<%= LicenseID %>",
+                table: 'pacientes',
+                content: base64,
+                contentType: "base64"
+            });
+        }
 
 </script>
 

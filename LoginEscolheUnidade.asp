@@ -10,6 +10,12 @@ if not UltimaUnidadeSQL.eof then
     end if
 end if
 
+IF session("UnidadeID") >= "0" THEN
+    UnidadeID = session("UnidadeID")
+END IF
+
+
+
 %>
 <div class="modal-header">
     <h4 class="modal-title">Selecione a Unidade</h4>

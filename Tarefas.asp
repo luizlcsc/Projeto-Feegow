@@ -276,9 +276,12 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
 
                     <% if req("Helpdesk") <> "" then %>
                         <input type="hidden" value="<%=reg("ProjetoID")%>" id="ProjetoID" name="ProjetoID">
+                        <input type="hidden" value="<%=reg("CategoriaID")%>" id="SprintID" name="SprintID">
                         <input type="hidden" value="<%=reg("SprintID")%>" id="SprintID" name="SprintID">
                     <% else %>
                         <%=quickfield("simpleSelect", "ProjetoID", "Projeto", 6, cstr(reg("ProjetoID")&""), "SELECT '0' AS id, '- NÃO SE APLICA -' AS Titulo UNION (SELECT id, Titulo FROM projetos WHERE StatusID NOT IN (3, 4) "&projetoAuxQuery&" ORDER BY Titulo)", "Titulo", " semVazio ") %>
+                        &nbsp
+                        <%=quickfield("simpleSelect", "CategoriaID", "Categoria", 6, cstr(reg("CategoriaID")&""), "SELECT * FROM tarefa_categoria WHERE PaiID != 0 AND sysActive=1 ", "NomeCategoria", "") %>
                         <%=quickfield("simpleSelect", "SprintID", "Sprint", 6, cstr(reg("SprintID")&""), "SELECT '0' AS id, '- NÃO SE APLICA -' AS Descricao UNION (SELECT id, Descricao FROM sprints WHERE StatusID NOT IN (3, 4) "&projetoAuxQuery&" ORDER BY Descricao)", "Descricao", " semVazio ") %>
                     <% end if %>
 
@@ -434,7 +437,6 @@ end if
                             </div>
                         </div>
                     </div>
-                    <%end if%>
                     <div class="col-md-12">
                         <div class="panel">
                             <div class="panel-heading">
@@ -502,7 +504,8 @@ end if
                         
                         
                     </div>
-                    
+                    <%end if%>
+
                 </div>
 
                 <hr>
@@ -622,9 +625,9 @@ end if
                             <% else %>
                                 <%= quickfield("text", "Titulo", "Título", 12, reg("Titulo"), "", "", "") %>
                             <% end if %>
-                        <% else
-                            response.write(selectList("Título", "Titulo", reg("Titulo"), "tarefas", "Titulo", "location.href=""?P=tarefas&Pers=1&I=""+$(this).val()", " "& disabled &" required", ""))
-                        end if
+                        <% else %>
+                            <%= quickfield("text", "Titulo", "Título", 12, reg("Titulo"), "", "", " "& disabled &" required") %>
+                        <% end if
                          %>
                     </div>
                 </div>
@@ -652,6 +655,16 @@ end if
                 <div id="interacoes" class="tab-pane chat-widget active" role="tabpanel">
                     <%server.Execute("TarefasInteracoes.asp") %>
                 </div>
+                <hr class="short alt" />
+                <div class="row">
+                <div class="col-md-12">
+                    <h3>Imagens/Arquivos/Evidências</h3>
+                </div>
+                    <div class="col-md-12">
+                       <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?tarefaId=<%=request.QueryString("I")%>&Tipo=I&Pasta=feegow-screenshot"></iframe>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

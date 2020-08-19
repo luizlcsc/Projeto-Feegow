@@ -181,7 +181,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   }
   </style>
 
-  <link type="text/css" rel="stylesheet" href="assets/js/qtip/jquery.qtip.css" />
+  <link type="text/css" rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.css" />
   <!-- Meta, title, CSS, favicons, etc. -->
   <meta charset="utf-8">
   <title>Feegow Software :: <%=session("NameUser")%></title>
@@ -194,55 +194,55 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <% end if %>
 
-  <link rel="stylesheet" type="text/css" href="assets/fonts/icomoon/icomoon.css">
-  <link rel="stylesheet" type="text/css" href="vendor/plugins/magnific/magnific-popup.css">
-  <link rel="stylesheet" type="text/css" href="vendor/plugins/footable/css/footable.core.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/assets/fonts/icomoon/icomoon.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/magnific/magnific-popup.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/css/footable.core.min.css">
 
-  <link rel="stylesheet" href="assets/css/datepicker.css" />
-  <link rel="stylesheet" type="text/css" href="vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="assets/skin/default_skin/css/fgw.css">
-  <link rel="stylesheet" type="text/css" href="assets/admin-tools/admin-forms/css/admin-forms.css">
-  <link rel="shortcut icon" href="assets/img/feegowclinic.ico" type="image/x-icon" />
-  <link href="vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css"> 
-  <link href="vendor/plugins/select2/select2-bootstrap.css" rel="stylesheet" type="text/css"> 
-  <link rel="stylesheet" href="assets/css/old.css" />
-  <link rel="stylesheet" type="text/css" href="vendor/plugins/ladda/ladda.min.css">
+  <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/assets/skin/default_skin/css/fgw.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/assets/admin-tools/admin-forms/css/admin-forms.css">
+  <link rel="shortcut icon" href="https://cdn.feegow.com/feegowclinic-v7/assets/img/feegowclinic.ico" type="image/x-icon" />
+  <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">
+  <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2-bootstrap.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/old.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
-  <script src="assets/js/html5shiv.js"></script>
-  <script src="assets/js/respond.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/html5shiv.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/respond.min.js"></script>
 <![endif]-->
-  <script src="vendor/jquery/jquery-1.11.1.min.js"></script>
-  <script src="vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
-  <script src="vendor/plugins/select2/select2.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.11.1.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
   <script src="js/components.js?a=31"></script>
-  <script src="feegow_components/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
-<%if aut("capptaI") then%>
+    <%if aut("capptaI") then%>
     <script src="assets/js/feegow-cappta.js"></script>
-  <%end if%>
+    <%end if%>
 
-  <script src="vendor/plugins/select2/select2.full.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.full.min.js"></script>
   <%
   if req("P")="Laudo" and session("Banco")<>"clinic5703" and session("Banco")<>"clinic8039" then
   %>
-    <script type="text/javascript" src="ckeditornew2/ckeditor.js"></script>
+    <script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/ckeditornew2/ckeditor.js"></script>
   <%
   else
   %>
-  <script type="text/javascript" src="ckeditornew/ckeditor.js"></script>
+  <script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/ckeditornew/ckeditor.js"></script>
   <%
   end if
   %>
-  <script src="ckeditornew/adapters/jquery.js"></script>
-  <script src="vendor/plugins/footable/js/footable.all.min.js"></script>
-  <script src="assets/js/vue-2.5.17.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/ckeditornew/adapters/jquery.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.all.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
 
 
   <!-- FooTable Addon -->
-  <script src="vendor/plugins/footable/js/footable.filter.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.filter.min.js"></script>
     <script type="text/javascript">
         var ModalOpened = false;
 
@@ -318,6 +318,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                     }
                     return true;
                 }
+
+
 
                 function showNoResults() {
                     "use strict";
@@ -395,7 +397,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
             });
         }
     </script>
-      <link rel="stylesheet" type="text/css" href="vendor/plugins/bstour/bootstrap-tour.css">
+      <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/bstour/bootstrap-tour.css">
 
 </head>
 
@@ -415,7 +417,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                 <div class="row">
                     <div class="col-md-12">
                             <div class="bg-primary" style="height:80px">
-                                <img src="assets/img/logo_white.png" width="120" class="ml15 mt25" border="0">
+                                <img src="https://cdn.feegow.com/feegowclinic-v7/assets/img/logo_white.png" width="120" class="ml15 mt25" border="0">
                             </div>
                             <ul class="nav pt15">
                                 <%
@@ -556,7 +558,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         <a class="navbar-brand" href="./?P=Home&Pers=1">
                     <%
 					if session("Logo")="" then
-						Logo = "assets/img/logo_white.png"
+						Logo = "https://cdn.feegow.com/feegowclinic-v7/assets/img/logo_white.png"
 					else
 						Logo = "/logo/"&session("Logo")
 					end if
@@ -680,7 +682,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                   </div>
                   <div class="panel-footer text-center p7">
                     <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1'">
-                    <i class="fa fa-list"></i> Listar tarefas 
+                    <i class="fa fa-list"></i> Listar tarefas
                     </button>
                     <%
                     if session("Banco")="clinic5459" then
@@ -767,13 +769,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
             <span class="caret caret-tp hidden-xs hidden-sm hidden-md"></span>
           </a>
           <ul class="dropdown-menu list-group dropdown-persist w250" role="menu" style="overflow-y: auto; max-height: 500px">
-
-
-
-
-
-
-
                             <%
 							if session("Partner")="" then
 							%>
@@ -799,7 +794,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 										Logs de Ações
 									</a>
 								</li>
-								
+
                                  <%
                                  end if
 								 'teste
@@ -1258,7 +1253,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								  FileName = "DefaultContent.asp"
 								end if
 								set fs=nothing
-                
+
 								server.Execute(FileName)
 								%>
 
@@ -1302,7 +1297,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                   <button type="button" class="btn btn-xs btn-success light" data-toggle="tooltip" data-placement="top" title="Tutoriais em vídeo"
                   onclick='vidau(`VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString())%>`, true, `Central de Vídeos`,``,`xl`,``)'>
                   <i class="fa fa-video-camera"></i> Vídeo-aula
-                  </button>         
+                  </button>
 
                       <%if session("Admin")<>1 AND recursoAdicional(12)=4 then%>
                       <%else%>
@@ -1415,11 +1410,11 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
                     @font-face {
                          font-family: rubidBold;
-                         src: url('assets/recurso-indisponivel/Fonte/Rubik-Bold.ttf');
+                         src: url('https://cdn.feegow.com/feegowclinic-v7/assets/recurso-indisponivel/Fonte/Rubik-Bold.ttf');
                     }
                     @font-face {
                          font-family: rubid;
-                         src: url('assets/recurso-indisponivel/Fonte/Rubik-Regular.ttf');
+                         src: url('https://cdn.feegow.com/feegowclinic-v7/assets/recurso-indisponivel/Fonte/Rubik-Regular.ttf');
                     }
 
                     .icon-circle-tour{
@@ -1490,14 +1485,14 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                     }
 
                     .icon-circle-tour-video{
-                          background: url("assets/img/icone-video-vermelho.png");
+                          background: url("https://cdn.feegow.com/feegowclinic-v7/assets/img/icone-video-vermelho.png");
                           width: 22px;
                           height: 22px;
                           margin-top: 8px;
                           display: block;
                     }
                     .ativeTour .icon-circle-tour-video{
-                          background: url("assets/img/icone-video-verde.png");
+                          background: url("https://cdn.feegow.com/feegowclinic-v7/assets/img/icone-video-verde.png");
                     }
 
                 </style>
@@ -1649,90 +1644,80 @@ hash_chat: 'FFCHAT01'
   <!-- jQuery -->
 
   <!-- HighCharts Plugin -->
-  <script src="vendor/plugins/highcharts/highcharts.js"></script>
-<%
-    'desabilitando pra ver no que da
-    if 1=2 then %>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/highcharts/highcharts.js"></script>
 
-  <!-- JvectorMap Plugin + US Map (more maps in plugin/assets folder) -->
-  <script src="vendor/plugins/jvectormap/jquery.jvectormap.min.js"></script>
-  <script src="vendor/plugins/jvectormap/assets/jquery-jvectormap-us-lcc-en.js"></script>
-
-  <!-- Bootstrap Tabdrop Plugin -->
-  <script src="vendor/plugins/tabdrop/bootstrap-tabdrop.js"></script>
-<%end if %>
   <!-- FullCalendar Plugin + moment Dependency -->
-  <script src="vendor/plugins/fullcalendar/lib/moment.min.js"></script>
-  <script src="vendor/plugins/fullcalendar/fullcalendar.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/lib/moment.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.js"></script>
 
   <!-- jQuery Validate Plugin-->
-  <script src="assets/admin-tools/admin-forms/js/jquery.validate.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/assets/admin-tools/admin-forms/js/jquery.validate.min.js"></script>
 
   <!-- jQuery Validate Addon -->
-  <script src="assets/admin-tools/admin-forms/js/additional-methods.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/assets/admin-tools/admin-forms/js/additional-methods.min.js"></script>
 
   <!-- Theme Javascript -->
-  <script src="assets/js/utility/utility.js"></script>
-  <script src="assets/js/demo/demo.js"></script>
-  <script src="assets/js/main.js"></script>
-  <script src="assets/admin-tools/admin-forms/js/jquery.spectrum.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/utility/utility.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/demo/demo.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/main.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/assets/admin-tools/admin-forms/js/jquery.spectrum.min.js"></script>
 
   <!-- Widget Javascript -->
-  <script src="assets/js/demo/widgets.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/demo/widgets.js"></script>
 
-  <script src="vendor/plugins/pnotify/pnotify.js"></script>
-  <script src="vendor/plugins/ladda/ladda.min.js"></script>
-  <script src="vendor/plugins/magnific/jquery.magnific-popup.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/pnotify/pnotify.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/magnific/jquery.magnific-popup.js"></script>
 
     <!-- old sms -->
-    	<script type="text/javascript" src="assets/js/qtip/jquery.qtip.js"></script>
-		<script src="assets/js/typeahead-bs2.min.js"></script>
-		<script src="assets/js/jquery.maskMoney.js" type="text/javascript"></script>
+    	<script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/typeahead-bs2.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.maskMoney.js" type="text/javascript"></script>
 
 		<!-- page specific plugin scripts -->
-		<script src="assets/js/jquery-ui-1.10.3.custom.min.js"></script>
-		<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
-		<script src="assets/js/jquery.gritter.min.js"></script>
-        <script src="assets/js/jquery.slimscroll.min.js"></script>
-		<script src="assets/js/jquery.hotkeys.min.js"></script>
-		<script src="assets/js/bootstrap-wysiwyg.min.js"></script>
-        <script src="assets/js/jquery.easy-pie-chart.min.js"></script>
-		<script src="assets/js/jquery.sparkline.min.js"></script>
-		<script src="assets/js/flot/jquery.flot.min.js"></script>
-		<script src="assets/js/flot/jquery.flot.pie.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.ui.touch-punch.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.gritter.min.js"></script>
+        <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.slimscroll.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.hotkeys.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/bootstrap-wysiwyg.min.js"></script>
+        <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.easy-pie-chart.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.sparkline.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/flot/jquery.flot.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/flot/jquery.flot.pie.min.js"></script>
 			<!-- table scripts -->
-		<script src="assets/js/jquery.dataTables.min.js"></script>
-		<script src="assets/js/bootbox.min.js"></script>
-		<script src="assets/js/jquery.dataTables.bootstrap.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.dataTables.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/bootbox.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.dataTables.bootstrap.js"></script>
 
 
 		<!--[if lte IE 8]>
-		  <script src="assets/js/excanvas.min.js"></script>
+		  <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/excanvas.min.js"></script>
 		<![endif]-->
 
-		<script src="assets/js/chosen.jquery.min.js"></script>
-		<script src="assets/js/fuelux/fuelux.spinner.min.js"></script>
-		<script src="assets/js/date-time/bootstrap-datepicker.min.js"></script>
-		<script src="assets/js/date-time/bootstrap-timepicker.min.js"></script>
-		<script src="assets/js/date-time/moment.min.js"></script>
-		<script src="assets/js/date-time/daterangepicker.min.js"></script>
-		<script src="assets/js/bootstrap-colorpicker.min.js"></script>
-		<script src="assets/js/jquery.knob.min.js"></script>
-		<script src="assets/js/jquery.autosize.min.js"></script>
-		<script src="assets/js/jquery.inputlimiter.1.3.1.min.js"></script>
-		<script src="assets/js/jquery.maskedinput.min.js"></script>
-		<script src="assets/js/bootstrap-tag.min.js"></script>
-		<script src="assets/js/x-editable/bootstrap-editable.min.js"></script>
-		<script src="assets/js/x-editable/ace-editable.min.js"></script>
-        <script type="text/javascript" src="assets/js/bootstrap-datetimepicker.min.js"></script>
-        <script type="text/javascript" src="assets/js/bootstrap-datetimepicker.pt-BR.js"></script>
-        <script src="assets/js/tracking-min.js"></script>
-        <script src="assets/js/face-min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/chosen.jquery.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/fuelux/fuelux.spinner.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/date-time/bootstrap-datepicker.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/date-time/bootstrap-timepicker.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/date-time/moment.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/date-time/daterangepicker.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/bootstrap-colorpicker.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.knob.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.autosize.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.inputlimiter.1.3.1.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.maskedinput.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/bootstrap-tag.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/x-editable/bootstrap-editable.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/x-editable/ace-editable.min.js"></script>
+        <script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/assets/js/bootstrap-datetimepicker.min.js"></script>
+        <script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/assets/js/bootstrap-datetimepicker.pt-BR.js"></script>
+        <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/tracking-min.js"></script>
+        <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/face-min.js"></script>
 
 		<!-- ace scripts -->
 
-		<script src="assets/js/ace-elements.min.js"></script>
-		<script src="assets/js/ace.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/ace-elements.min.js"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/ace.min.js"></script>
 	<script type="text/javascript">
 /*	    function fajx() {
 	        ninput = $("#isi" ).val().replace("select2-", "");
@@ -1813,7 +1798,7 @@ function openRedefinirSenha(){
      openComponentsModal("RedefinirSenha.asp",{
               T:'<%=session("Table")%>',
               I:'<%=session("idInTable")%>',
-            },"Alteração de senha",true, 
+            },"Alteração de senha",true,
               function(){
                 $("#frmAcesso").submit();
               },"md",false);
@@ -1832,14 +1817,14 @@ $(document).ready(function() {
       openSelecionarLicenca();
     }
     <% end if%>
-    
+
     <% if session("UnidadeID")=-1 then %>
     if (!ModalOpened){
       ModalOpened = true;
         abreModalUnidade();
     }
     <% end if %>
-    
+
     <% if session("AlterarSenha") = 1 then %>
     if (!ModalOpened){
       ModalOpened = true;
@@ -1883,7 +1868,7 @@ if session("Atendimentos")<>"" then
 	new PNotify({
 			title: 'Atendimento<%if contaAtendimentos>1 then%>s<%end if%> em curso',
 			text: '<%= replace(strAtendimentos&"", "'", "") %>',
-			image: 'assets/img/Doctor.png',
+			image: 'https://cdn.feegow.com/feegowclinic-v7/assets/img/Doctor.png',
 			icon: '',
 			sticky: true,
 			type: 'system',
@@ -2438,7 +2423,7 @@ end if
 
 
                 if("false"==="<%=session("AutenticadoPHP")%>"){
-                    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z");
+                    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z", "<%=session("Partner")%>");
                 }else{
 					if(localStorage.getItem("tk")){
 						$.ajaxSetup({
@@ -2480,7 +2465,7 @@ end if
 <%
 if session("Status")="T" or session("Status")="F" then
 %>
-            <script src="vendor/plugins/bstour/bootstrap-tour.js"></script>
+            <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/bstour/bootstrap-tour.js"></script>
             <script src="src/tour.js"></script>
             <!--#include file="RecursoBloqueado.asp"-->
 
@@ -2520,7 +2505,7 @@ end if
 function chatNotificacao(titulo, mensagem) {
     let options = {
       body: mensagem,
-      icon: "https://clinic7.feegow.com.br/v7/assets/img/logo_white_icon.png",
+      icon: "https://cdn.feegow.com/feegowclinic-v7/assets/img/logo_white_icon.png",
       silent: true
   };
   // Verifica se o browser suporta notificações

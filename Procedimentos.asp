@@ -116,10 +116,10 @@ TipoGuia = reg("TipoGuia")
                                 <label for="ObrigarSolicitante"> Obrigar Profissional Solicitante</label></div>
                             <%
                             
-                            if recursoAdicional(19) = 4 then %>
+                            if recursoAdicional(24) = 4 then %>
                             <div class="checkbox-custom checkbox-primary">
                                 <input type="checkbox" name="IntegracaoPleres" id="IntegracaoPleres" value="S" class="ace" <% If reg("IntegracaoPleres")="S" Then %> checked="checked" <% End If %> />
-                                <label for="IntegracaoPleres"> Integração com o Pleres</label></div>
+                                <label for="IntegracaoPleres"> Integração laboratorial</label></div>
                             <% end if %>
                         </div>
                         <%= quickfield("multiple", "SomenteConvenios", "Limitar convênios", 3, reg("SomenteConvenios"), "(select '|NOTPARTICULAR|' id, 'NÃO PERMITIR PARTICULAR' NomeConvenio) UNION ALL (select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio)", "NomeConvenio", "") %>
@@ -154,7 +154,13 @@ TipoGuia = reg("TipoGuia")
                             </div>
                             <%
                             end if
+                            if recursoAdicional(8)=4 then
                             %>
+                            <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" name="PermitePagamentoOnline" id="PermitePagamentoOnline" value="S" class="ace" <% If reg("PermitePagamentoOnline")="S" Then %> checked="checked" <% End If %> />
+                                <label for="PermitePagamentoOnline">Permite pagamento online </label>
+                            </div>
+                            <%end if%>
                         </div>
                     </div>
                     <hr class="short alt" />

@@ -8,6 +8,7 @@
 .listaUnidades li span{
 	font-size:12px!important;
 }
+
 </style>
 <%
 call insertRedir(request.QueryString("P"), request.QueryString("I"))
@@ -99,8 +100,8 @@ end if
                                 <input type="file" name="Foto" id="Foto" />
                             </div>
                             <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
-                                <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail" width="100%" />
-                                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+                                <img id="avatarFoto" src="<%=arqEx(reg("Foto"), "Perfil")%>" class="img-thumbnail" width="100%" />
+                                <button  type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
                     </div>
@@ -140,7 +141,10 @@ end if
                             <span class="panel-title">Assinatura</span>
                         </div>
                         <div class="panel-body" style="padding:5px !important">
-                            <iframe width="100%" frameborder="no" scrolling="no" height="200" src="Assinatura.asp?ProfissionalID=<%= req("I") %>"></iframe>
+                         <iframe width="100%" height="200" id="iframeDropZone" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens/Assinatura&Tipo=I&Assinatura=true"></iframe>
+                            <img src="<%=arqEx(reg("Assinatura"), "IMAGENS/ASSINATURA")%>" class="img-thumbnail" id="assinatura-img"/>
+                            <button style="    position: absolute; bottom: 20px; right:20px;" id="buttonDeleteSignature" class="btn btn-xs btn-danger pull-right" onclick="if(confirm('Tem certeza de que deseja excluir esta assinatura?')){deleteSignature(<%= req("I") %>)};"><span class="fa fa-trash "></span></button>
+
                         </div>
                     </div>
 
@@ -316,11 +320,11 @@ function esps(A, E){
     });
 }
 
-</script>
 
+</script>
 <script src="assets/js/ace-elements.min.js"></script>
 <script type="text/javascript">
-//js exclusivo avatar
+
 <%
 Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
 %>
@@ -343,7 +347,7 @@ function removeFoto(){
 		var $form = $('#frm');
 		var file_input = $form.find('input[type=file]');
 		var upload_in_progress = false;
-		
+
 		file_input.ace_file_input({
 			style : 'well',
 			btn_choose : 'Sem foto',
@@ -384,104 +388,18 @@ function removeFoto(){
 			}
 		});
 		
-		
-		$("#Foto").change(function() {
-			var submit_url = "FotoUpload.php?<%=Parametros%>&L=<%=replace(session("Banco"), "clinic", "")%>";
+		$("#Foto").change(async function() {
+
+		    await uploadProfilePic({
+		        $elem: $("#Foto"),
+		        userId: "<%=req("I")%>",
+		        db: "<%= LicenseID %>",
+		        table: 'profissionais',
+		        content: file_input.data('ace_input_files')[0] ,
+		        contentType: "form"
+		    });
+
 			if(!file_input.data('ace_input_files')) return false;//no files selected
-			
-			var deferred ;
-			if( "FormData" in window ) {
-				//for modern browsers that support FormData and uploading files via ajax
-				var fd = new FormData($form.get(0));
-			
-				//if file has been drag&dropped , append it to FormData
-				if(file_input.data('ace_input_method') == 'drop') {
-					var files = file_input.data('ace_input_files');
-					if(files && files.length > 0) {
-						fd.append(file_input.attr('name'), files[0]);
-						//to upload multiple files, the 'name' attribute should be something like this: myfile[]
-					}
-				}
-
-				upload_in_progress = true;
-				deferred = $.ajax({
-					url: submit_url,
-					type: $form.attr('method'),
-					processData: false,
-					contentType: false,
-					dataType: 'json',
-					data: fd,
-					xhr: function() {
-						var req = $.ajaxSettings.xhr();
-						if (req && req.upload) {
-							req.upload.addEventListener('progress', function(e) {
-								if(e.lengthComputable) {	
-									var done = e.loaded || e.position, total = e.total || e.totalSize;
-									var percent = parseInt((done/total)*100) + '%';
-									//percentage of uploaded file
-								}
-							}, false);
-						}
-						return req;
-					},
-					beforeSend : function() {
-					},
-					success : function(data) {
-						
-					}
-				})
-
-			}
-			else {
-				//for older browsers that don't support FormData and uploading files via ajax
-				//we use an iframe to upload the form(file) without leaving the page
-				upload_in_progress = true;
-				deferred = new $.Deferred
-				
-				var iframe_id = 'temporary-iframe-'+(new Date()).getTime()+'-'+(parseInt(Math.random()*1000));
-				$form.after('<iframe id="'+iframe_id+'" name="'+iframe_id+'" frameborder="0" width="0" height="0" src="about:blank" style="position:absolute;z-index:-1;"></iframe>');
-				$form.append('<input type="hidden" name="temporary-iframe-id" value="'+iframe_id+'" />');
-				$form.next().data('deferrer' , deferred);//save the deferred object to the iframe
-				$form.attr({'method' : 'POST', 'enctype' : 'multipart/form-data',
-							'target':iframe_id, 'action':submit_url});
-
-				$form.get(0).submit();
-				
-				//if we don't receive the response after 60 seconds, declare it as failed!
-				setTimeout(function(){
-					var iframe = document.getElementById(iframe_id);
-					if(iframe != null) {
-						iframe.src = "about:blank";
-						$(iframe).remove();
-						
-						deferred.reject({'status':'fail','message':'Timeout!'});
-					}
-				} , 60000);
-			}
-			////////////////////////////
-			deferred.done(function(result){
-				upload_in_progress = false;
-				
-				if(result.status == 'OK') {
-					if(result.resultado=="Inserido"){
-						$("#avatarFoto").attr("src", result.url);
-						$("#divDisplayUploadFoto").css("display", "none");
-						$("#divDisplayFoto").css("display", "block");
-					}
-					//alert("File successfully saved. Thumbnail is: " + result.url)
-				}
-				else {
-					alert("File not saved. " + result.message);
-				}
-			}).fail(function(res){
-				upload_in_progress = true;
-				alert("There was an error");
-				//console.log(result.responseText);
-			});
-
-			deferred.promise();
-			return false;
-			
 		});
 		
 		$form.on('reset', function() {
@@ -496,6 +414,7 @@ function removeFoto(){
 
 $(document).ready(function(){
 	<%=chamaScript%>
+        signature();
 });
 
 <%
@@ -513,5 +432,7 @@ function VisualizarEnvioDasAgendas() {
     openComponentsModal("ProfissionalEnvioAgenda.asp", {ProfissionalID:"<%=req("I")%>"}, "Envio das agendas", true)
 }
 </script>
+
+<script src="src/imageUtil.js"></script>
 
 <!--#include file="disconnect.asp"-->

@@ -76,7 +76,7 @@ function cadastrarOutro(){
 	$.post("propostaCadastroOutro.asp", '', function(data, status) { $("#modal").html(data) });
 }
 
-function propostaSave(reload){
+function propostaSave(reload, callback){
 //	---> Form do paciente.serialize
 	if($("#PacienteID").val() == ""){
 		alert("Selecione um paciente");
@@ -85,7 +85,10 @@ function propostaSave(reload){
 		$.post("propostaSave.asp?PropostaID=<%=PropostaID%>", 
 		$("#frmProposta").serialize(), 
 		function(data){ 
-			eval(data); 
+			eval(data);
+			if(callback){
+			    callback(data);
+			}
 			/*if (reload){
 				location.reload();			
 			}else{

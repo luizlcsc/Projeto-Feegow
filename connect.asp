@@ -8,7 +8,7 @@ else
 end if
 set db = newConnection(session("Banco"), sServidor)
 'db.Open ConnString
-
+LicenseID=replace(session("Banco"), "clinic", "")
 
 function permissoesPadrao()
 '	permissoesPadrao = "chatI, contatosV, contatosI, contatosA, contatosX, sys_financialcurrentaccountsV, sys_financialcurrentaccountsI, sys_financialcurrentaccountsA, sys_financialcurrentaccountsX, formasrectoV, formasrectoI, formasrectoA, formasrectoX, origensV, origensI, origensA, origensX, contasapagarV, contasapagarI, contasapagarA, contasapagarX, contasareceberV, contasareceberI, contasareceberA, contasareceberX, contratadoexternoV, contratadoexternoI, contratadoexternoA, contratadoexternoX, fornecedoresV, fornecedoresI, fornecedoresA, fornecedoresX, funcionariosV, funcionariosI, funcionariosA, funcionariosX, locaisgruposV, locaisgruposI, locaisgruposA, locaisgruposX, lancamentosV, lancamentosI, lancamentosA, lancamentosX, locaisV, locaisI, locaisA, locaisX, movementV, movementI, movementA, movementX, orcamentosV, orcamentosI, orcamentosA, orcamentosX, pacotesV, pacotesI, pacotesA, pacotesX, procedimentosV, procedimentosI, procedimentosA, procedimentosX, profissionalexternoV, profissionalexternoI, profissionalexternoA, profissionalexternoX, tabelasV, tabelasI, tabelasA, tabelasX, sys_financialexpensetypeV, sys_financialexpensetypeI, sys_financialexpensetypeA, sys_financialexpensetypeX, sys_financialincometypeV, sys_financialincometypeI, sys_financialincometypeA, sys_financialincometypeX, sys_financialcompanyunitsV, sys_financialcompanyunitsI, sys_financialcompanyunitsA, sys_financialcompanyunitsX, buiformsV, buiformsI, buiformsA, buiformsX, chamadaporvozA, configconfirmacaoA, configrateioV, configrateioI, configrateioA, configrateioX, emailsV, emailsI, emailsA, emailsX, configimpressosV, configimpressosA, produtoscategoriasV, produtoscategoriasI, produtoscategoriasA, produtoscategoriasX, produtosfabricantesV, produtosfabricantesI, produtosfabricantesA, produtosfabricantesX, lctestoqueV, lctestoqueI, lctestoqueA, lctestoqueX, produtoslocalizacoesV, produtoslocalizacoesI, produtoslocalizacoesA, produtoslocalizacoesX, produtosV, produtosI, produtosA, produtosX, conveniosV, conveniosI, conveniosA, conveniosX, faturasV, guiasV, guiasI, guiasA, guiasX, conveniosplanosV, conveniosplanosI, conveniosplanosA, conveniosplanosX, repassesV, repassesI, repassesA, repassesX, formsaeV, formsaeI, formsaeA, arquivosV, arquivosI, arquivosA, arquivosX, atestadosV, atestadosI, atestadosA, atestadosX, pacientesV, pacientesI, pacientesA, pacientesX, historicopacienteV, contapacV, contapacI, contapacX, areceberpacienteV, areceberpacienteI, areceberpacienteA, areceberpacienteX, diagnosticosV, diagnosticosI, diagnosticosA, diagnosticosX, envioemailsI, imagensV, imagensI, imagensA, imagensX, formslV, formslI, formslA, pedidosexamesV, pedidosexamesI, pedidosexamesX, prescricoesV, prescricoesI, prescricoesA, prescricoesX, recibosV, recibosI, recibosA, recibosX, agendaV, agendaI, agendaA, agendaX, horariosV, horariosA, contaprofV, contaprofI, contaprofX, profissionaisV, profissionaisI, profissionaisA, profissionaisX, relatoriosestoqueV, relatoriosfinanceiroV, relatoriospacienteV, chamadatxtV, chamadavozV, senhapA, usuariosI, usuariosA, usuariosX, bloqueioagendaV, bloqueioagendaA, bloqueioagendaI, bloqueioagendaX, ageoutunidadesV, ageoutunidadesA, ageoutunidadesI, ageoutunidadesX, relatoriosfaturamentoV, relatoriosfaturamentoV, relatoriosagendaV"
@@ -358,6 +358,14 @@ end function
 
 function req(Val)
 	req = replace(request.QueryString(Val), "'", "''")
+end function
+
+function reqf(P)
+    if req(P)<>"" then
+        reqf = req(P)
+    else
+        reqf = ref(P)
+    end if
 end function
 
 function refNull(Val)
@@ -1016,6 +1024,38 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			%>
 			</select>
             <%
+
+        case "multipleModal"
+            btn="<button type='button' class='btn btn-default btn-block' onclick='openComponentsModal(`quickField_multipleModal.asp?I="&fieldName&"`, {v: $(""#"&fieldName&""").val()}, `Gerenciar "&label&"`, true, function(data){closeComponentsModal(true)})'> "&_
+                    "<i class='fa fa-plus'></i> "&label&" "&_
+                "</button>" 
+
+            'CONDIÇÃO PARA O USO DA VARIÁVEL fieldValue
+            if additionalTags<>"" then
+                additionalTags_array=Split(additionalTags,"_")
+                'EXEMPLO PARA REMOVER REGISTROS SEPARADOS POR VÍRGULA remove_1,2,3...
+                if additionalTags_array(0)="remove" then
+                    itensRemove_array=Split(additionalTags_array(1),",")
+                    for each itensRemove in itensRemove_array
+                        fieldValue = replace(fieldValue,itensRemove,"")
+                    'response.write("<script>console.log('"&itensRemove&" XX ')</script>")
+                    next
+                    fieldValue = replace(fieldValue,additionalTags_array(1),"")
+                    if left(fieldValue,1) = "," then
+                        fieldValue=right(fieldValue,(len(fieldValue)-1))
+                    end if
+                end if
+            end if
+            
+            input = "<div class='text-right'><input type='hidden' name='"&fieldName&"' id='"&fieldName&"' value='"&fieldValue&"'></div>"
+                        
+            response.write(btn&input)
+            
+            'DEFINE QUERYS PARA CONSULTAS E GRAVA EM SESSÃO
+            'Select Case X .....
+            Session("multipleModal_session")=sqlOrClass        
+
+
         case "selectCheck"
 			response.Write(LabelFor)
             %>
@@ -2853,7 +2893,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 			nomePerm = "contasareceber"
 		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
 
-            set vcaCont = db.execute("select id, NomeModelo from contratosmodelos where sysActive=1")
+            set vcaCont = db.execute("select id, NomeModelo from contratosmodelos WHERE (sysActive=1) AND (UrlContrato='' OR UrlContrato IS NULL)")
             if not vcaCont.eof then
                 rbtns = rbtns & " <div class='btn-group'><button class='btn btn-info btn-sm dropdown-toggle' data-toggle='dropdown'  title='Adicionar Contrato'><i class='fa fa-file'></i></button>"
                 rbtns = rbtns & "<ul class='dropdown-menu dropdown-info pull-right' style='overflow-y: scroll; max-height: 400px;'>"
@@ -5486,13 +5526,14 @@ End function
 
 
 function arqEx(nArquivo, nTipo)
+
 	set fs=Server.CreateObject("Scripting.FileSystemObject")
-	if fs.FileExists("E:\uploads\"& replace(session("Banco"), "clinic", "") &"\"& nTipo &"\"& nArquivo) then
-		arqEx = "/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
+	if fs.FileExists("E:\uploads\"& LicenseID &"\"& nTipo &"\"& nArquivo) then
+		arqEx = "/uploads/"& LicenseID &"/"& nTipo &"/"& nArquivo
     elseif nArquivo&""="" then
         arqEx = ""
 	else
-		arqEx = "https://feegow.com/uploads/"& replace(session("Banco"), "clinic", "") &"/"& nTipo &"/"& nArquivo
+		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&folder="&nTipo&"&file="&nArquivo&"&type=user"
 	end if
 	set fs=nothing
 end function
@@ -5510,14 +5551,35 @@ function getConfig(configName)
 end function
 
 
-function franquia(sqlfranquia)
-    IF session("ModoFranquia")&"" <> "1" THEN
+function franquiaUnidade(sqlfranquia)
+    IF NOT ModoFranquiaUnidade THEN
         EXIT function
     END IF
 
     sqlfranquia = replace(sqlfranquia,"[UnidadeID]",session("UnidadeID"))
+    'sqlfranquia = replace(sqlfranquia,"[Unidades]","|0|")
+    sqlfranquia = replace(sqlfranquia,"[Unidades]","|"&session("Unidades")&"|")
 
-    franquia = ""
+    franquiaUnidade = sqlfranquia
+end function
+
+
+function franquia(sqlfranquia)
+    IF getConfig("ModoFranquia")&"" <> "1" THEN
+        EXIT function
+    END IF
+
+    IF ModoFranquiaUnidade THEN
+        sqlfranquia = replace(sqlfranquia,"[UnidadeID]",session("UnidadeID"))
+        sqlfranquia = replace(sqlfranquia,"[Unidades]","|"&session("UnidadeID")&"|")
+    END IF
+
+    IF ModoFranquiaCentral THEN
+        sqlfranquia = replace(sqlfranquia,"[UnidadeID]",session("UnidadeID"))
+        sqlfranquia = replace(sqlfranquia,"[Unidades]",session("Unidades"))
+    END IF
+
+    franquia = sqlfranquia
 end function
 
 function dd(variable)

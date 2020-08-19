@@ -199,6 +199,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Cep]", trim(PacientesSQL("Cep")&" ") )
                 'GERAIS
                 conteudo = replace(conteudo, "[Paciente.Profissao]", trim(PacientesSQL("Profissao")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Peso]", trim(PacientesSQL("Peso")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Altura]", trim(PacientesSQL("Altura")&" ") )
                 conteudo = replace(conteudo, "[Paciente.CNS]", trim(PacientesSQL("CNS")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Observacoes]", trim(PacientesSQL("Observacoes")&" ") )
               end if

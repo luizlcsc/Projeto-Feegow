@@ -83,7 +83,7 @@
                 <td data-prescrito='${linha.produtoPrescrito}'>${linha.produtoPrescritoNome}</td>
                 <td data-referencia='${linha.produtoReferencia}'>${linha.produtoReferenciaNome}</td>
                 <td>
-                    <button class='btn btn-warning' onClick='medicamentosConvenio.modalMedicamentos("Editar",${linha.id})'><i class="fa fa-plus"></i> Editar</button>
+                    <button class='btn btn-warning btn-xs' onClick='medicamentosConvenio.modalMedicamentos("Editar",${linha.id})'><i class="fa fa-plus"></i> Editar</button>
                 </td>
             </tr>
         `

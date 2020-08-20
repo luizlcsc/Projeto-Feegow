@@ -1113,7 +1113,7 @@ $("#GuiaSADT").submit(function(){
 
             },
             error:function(data){
-                alert("error ao salvar")
+                showMessageDialog("Ocorreu um erro ao tentar salvar", "danger", "Erro!")
                 //eval(data);
             }
         });

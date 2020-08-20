@@ -4,6 +4,8 @@
 I = rep(request.QueryString("I"))
 GuiaStatus = rep(request.QueryString("GuiaStatus"))
 redirecionar = false
+ProcedimentoID=ref("gProcedimentoID")
+ConvenioID = ref("gConvenioID")
 
 if req("isRedirect")="S" then
     redirecionar =true
@@ -32,6 +34,20 @@ if ObrigarValidade=1 then
     end if
 end if
 
+
+sqlPermitido = "SELECT COALESCE(tpvp.NaoCobre, tpv.NaoCobre)NaoCobre, p.NomeProcedimento FROM tissprocedimentosvalores tpv "&_
+"LEFT JOIN tissprocedimentosvaloresplanos tpvp ON tpvp.AssociacaoID=tpv.id AND tpvp.PlanoID="&treatvalzero(PlanoID)&" "&_
+"LEFT JOIN procedimentos p ON p.id=tpv.ProcedimentoID "&_
+"WHERE tpv.ProcedimentoID="&treatvalzero(ProcedimentoID)&" AND tpv.ConvenioID="&ConvenioID
+
+set ProcedimentoPermitidoSQL = db.execute(sqlPermitido)
+
+if not ProcedimentoPermitidoSQL.eof then
+    IF ProcedimentoPermitidoSQL("NaoCobre")="S" then
+        erro = "Procedimento "&ProcedimentoPermitidoSQL("NomeProcedimento")&" não é coberto para o convênio/plano selecionado."
+    END IF
+end if
+
 if erro<>"" then
 	%>
     new PNotify({
@@ -46,7 +62,6 @@ else
 	'atualiza os dados do paciente, profissional, convenio, contratado e procedimento
     NGuiaPrestador = ref("NGuiaPrestador")
     PlanoID = treatvalzero(ref("PlanoID"))
-    ConvenioID = ref("gConvenioID")
     've se ja existe alguma guia deste convenio, com esta numeracao no prestador. se existir, mostra mensagem
     sqlGuia = "SELECT numero, id, Tipo FROM  ((SELECT cast(gc.NGuiaPrestador as signed integer) numero, id, 'Consulta' as Tipo FROM tissguiaconsulta gc WHERE gc.ConvenioID = '"&ConvenioID&"' AND gc.NGuiaPrestador='"&NGuiaPrestador&"') UNION ALL (SELECT cast(gs.NGuiaPrestador as signed integer) numero, id, 'SADT' as Tipo FROM tissguiasadt gs WHERE gs.ConvenioID = '"&ConvenioID&"' AND gs.NGuiaPrestador='"&NGuiaPrestador&"') UNION ALL (SELECT cast(gh.NGuiaPrestador as signed integer) numero, id, 'Honorário' as Tipo FROM tissguiahonorarios gh WHERE gh.ConvenioID = '"&ConvenioID&"' AND gh.NGuiaPrestador='"&NGuiaPrestador&"')) as numero WHERE id != "&I&" AND numero = '"&NGuiaPrestador&"'"
     set guiaExiste = db.execute(sqlGuia)
@@ -123,9 +138,9 @@ else
             end if
 
             'tabela de valores gerais do proc. no convênio (não no plano)
-            set pv = db.execute("select * from tissprocedimentosvalores where ProcedimentoID="&treatvalzero(ref("gProcedimentoID"))&" and ConvenioID="&treatvalzero(ref("gConvenioID")))
+            set pv = db.execute("select * from tissprocedimentosvalores where ProcedimentoID="&treatvalzero(ProcedimentoID)&" and ConvenioID="&treatvalzero(ref("gConvenioID")))
             if pv.eof then
-                db_execute("insert into tissprocedimentosvalores (ProcedimentoID, ConvenioID, ProcedimentoTabelaID, Valor, TecnicaID, NaoCobre) values ('"&ref("gProcedimentoID")&"', '"&ref("gConvenioID")&"', "&pt("id")&", "&treatvalzero(ref("ValorProcedimento"))&", 1, '')")
+                db_execute("insert into tissprocedimentosvalores (ProcedimentoID, ConvenioID, ProcedimentoTabelaID, Valor, TecnicaID, NaoCobre) values ('"&ProcedimentoID&"', '"&ref("gConvenioID")&"', "&pt("id")&", "&treatvalzero(ref("ValorProcedimento"))&", 1, '')")
             else
                 if ref("PlanoID")="0" or ref("PlanoID")="" then
                     db_execute("update tissprocedimentosvalores set ProcedimentoTabelaID="&pt("id")&", Valor="&treatvalzero(ref("ValorProcedimento"))&" where id="&pv("id"))

@@ -45,15 +45,16 @@ end if
 set ProcedimentosGuiaSQL = db.execute("SELECT ProcedimentoID FROM tissprocedimentossadt WHERE GuiaID="&I)
 
 while not ProcedimentosGuiaSQL.eof
-    sqlPermitido = "SELECT COALESCE(tpvp.NaoCobre, tpv.NaoCobre)NaoCobre FROM tissprocedimentosvalores tpv "&_
+    sqlPermitido = "SELECT p.NomeProcedimento, COALESCE(tpvp.NaoCobre, tpv.NaoCobre)NaoCobre FROM tissprocedimentosvalores tpv "&_
     "LEFT JOIN tissprocedimentosvaloresplanos tpvp ON tpvp.AssociacaoID=tpv.id AND tpvp.PlanoID="&treatvalzero(PlanoID)&" "&_
+    "LEFT JOIN procedimentos p ON p.id=tpv.ProcedimentoID "&_
     "WHERE tpv.ProcedimentoID="&treatvalzero(ProcedimentosGuiaSQL("ProcedimentoID"))&" AND tpv.ConvenioID="&ConvenioID
 
     set ProcedimentoPermitidoSQL = db.execute(sqlPermitido)
 
     if not ProcedimentoPermitidoSQL.eof then
         IF ProcedimentoPermitidoSQL("NaoCobre")="S" then
-            erro = "Procedimento(s) não permitido(s) para o convênio/plano selecionado."
+            erro = "Procedimento "&ProcedimentoPermitidoSQL("NomeProcedimento")&" não é coberto para o convênio/plano selecionado."
         END IF
     end if
 

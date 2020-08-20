@@ -242,7 +242,7 @@ if not inv.eof then
                 ProfissionalSolicitanteID=0
             end if
             'response.write("<script>console.log('Valor: '"&ProfissionalSolicitanteID&")</script>")
-            Recibo = TagsConverte(Recibo,"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
+            Recibo = TagsConverte(Recibo,"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalExecutanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
             ' Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
 
             'CONVERSOR ANTIGO DE TAGS DESATIVADO

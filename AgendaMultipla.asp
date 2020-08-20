@@ -252,7 +252,7 @@ $(document).ready(function () {
         $("#div-agendamento").html("<div class='row'><div class='col-xs-12 text-right'><button class='btn btn-xs btn-default' data-dismiss='modal' type='button'><i class='fa fa-remove'></i> Fechar</button></div></div><div class='row'><div class='col-xs-12 text-right'><iframe src='GradeAgenda1Print.asp?Data=" + $("#Data").val() + "&ProfissionalID=" + $("#ProfissionalID").val() + "' width='100%' height='800' scrolling='auto' frameborder='0'></iframe></div></div>");
     }
 
-    <% if session("Banco")="clinic5760" or session("Banco")="clinic6118" then %>
+    <% if getConfig("ListarAgendasPorPadrao")<>"1"  then %>
         $("#contQuadro").html("Selecione os parâmetros acima para buscar na agenda.");
     <% else %>
         loadAgenda();

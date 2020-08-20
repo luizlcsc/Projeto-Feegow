@@ -11,7 +11,8 @@ var medicamentosConvenio  = function(){
         'convenios'                     :  [],
         'modal'                         :  false,
         'fns'                           :  {},
-        'conveniosSelecionados'         : [],
+        'conveniosSelecionados'         :  [],
+        'selectsPlano'                  :  [],
         'config'                        : {
             enableFiltering: true,
             enableCaseInsensitiveFiltering: true,
@@ -140,21 +141,28 @@ var medicamentosConvenio  = function(){
 
     function planosBtn(valor){
         $opts.conveniosSelecionados = valor
-        if(valor.length>0){
-            $('#planos').slideDown()
+        $('#planosSelect').html('')
+        if(valor){
+            $opts.conveniosSelecionados.map((convenio)=>{
+                getPlano(convenio,(data)=>{
+                    if(data.length>0){
+                        let tem = false
+                        $('#planos').slideDown()
+                        createNewSelect(convenio,data)
+
+                    }
+                })
+            })
         }else{
             $('#planos').slideUp()
+            $('#planosSelect').slideUp()
+            $opts.selectsPlano = []
         }
     }
 
     function planoSelects(){
         let status = $('#planosSelect').css('display')
         if(status=='none'){
-            $opts.conveniosSelecionados.map((convenio)=>{
-                getPlano(convenio,(data)=>{
-                    createNewSelect(convenio,data)
-                })
-            })
             $('#planosSelect').slideDown()
         }else{
             $('#planosSelect').slideUp()
@@ -221,6 +229,7 @@ var medicamentosConvenio  = function(){
                 getPlano(convenio,(data)=>{
                     if(data){
                         createNewSelect(convenio,data)
+                        $opts.selectsPlano.push(convenio)
                         $('#planos').slideDown()
                         $('#planosSelect').slideDown()
                     }
@@ -278,9 +287,20 @@ var medicamentosConvenio  = function(){
         })
     }
 
-    function remove(ids){
+    function removeDireto (id){
+        let apagar = $('#linha_'+id).attr('data-id')
+        remove(apagar,()=>{
+            $opts.fns.loadInfos()
+        })
+    }
+
+    function remove(ids,callback=false){
         $opts.fns.utilitarios.request('convenio/removeMedicamentosConvenio','ids='+ids,(data)=>{
-            return data
+            if(callback){
+                callback(data)
+            }else{
+                return data
+            }
         })
     }
 
@@ -289,6 +309,7 @@ var medicamentosConvenio  = function(){
      */
     return {
         init                : init,
-        modalMedicamentos   : modalMedicamentos
+        modalMedicamentos   : modalMedicamentos,
+        removeDireto        : removeDireto
     };
 }() 

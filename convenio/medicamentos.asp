@@ -36,7 +36,6 @@
         <table class="table table-striped">
             <thead>
                 <th>Convenios</th>
-                <th>Planos</th>
                 <th>Medicamento prescrito</th>
                 <th>Medicamento Referência</th>
                 <th>Ações</th>
@@ -79,11 +78,11 @@
         let html = `
             <tr id='linha_${linha.id}' data-id='${linha.idDelete}'>
                 <td class="convenios" data-convenios='${linha.convenios}'>${linha.conveniosnomes}</td>
-                <td data-planos='${linha.planos}'>${linha.planosNomes}</td>
                 <td data-prescrito='${linha.produtoPrescrito}'>${linha.produtoPrescritoNome}</td>
                 <td data-referencia='${linha.produtoReferencia}'>${linha.produtoReferenciaNome}</td>
                 <td>
-                    <button class='btn btn-warning btn-xs' onClick='medicamentosConvenio.modalMedicamentos("Editar",${linha.id})'><i class="fa fa-plus"></i> Editar</button>
+                    <button class='btn btn-warning btn-xs' onClick='medicamentosConvenio.modalMedicamentos("Editar",${linha.id})'><i class="fa fa-pencil"></i> Editar</button>
+                    <button class='btn btn-danger btn-xs' onClick='medicamentosConvenio.removeDireto(${linha.id})'><i class="fa fa-trash"></i> Apagar</button>
                 </td>
             </tr>
         `

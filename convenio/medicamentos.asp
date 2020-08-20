@@ -73,7 +73,6 @@
     loadInfos()
 
     function montaLinha(linha){
-        console.log(linha)
 
         let html = `
             <tr id='linha_${linha.id}' data-id='${linha.idDelete}'>

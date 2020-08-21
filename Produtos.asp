@@ -347,6 +347,9 @@ end if
                 <%call Subform("produtosunidademedida", "ProdutoID", req("I"), "frm")%>
                 </div>
             </div>
+            <div id="divVincularMedicamento" class="tab-pane">
+                Carregando...
+            </div>
         </div>
     </div>
 </form>
@@ -361,9 +364,17 @@ end if
         });
     }
 
-
+    function showSalvar(opcao){
+        if(opcao){
+            $('#rbtns #Salvar').show()
+        }else{
+            $('#rbtns #Salvar').hide()
+        }
+    }
+    showSalvar(true)
 
     $(document).ready(function(e) {
+
         var TipoProduto = $("#TipoProduto").val();
         if (TipoProduto == 4){
             $(".Modulo-Medicamento").attr("style", "display:");
@@ -388,12 +399,12 @@ end if
             $(".crumb-link").html($("#TipoProduto option:selected").text());
         });
 
-    $("#ProdutosPosicao").on("click", ".eti",function() {
-        var temPosicaoSelecionada = $(".eti:checked").length > 0,
-            $btnAcaoEmLote = $(".btn-acao-em-lote");
+        $("#ProdutosPosicao").on("click", ".eti",function() {
+            var temPosicaoSelecionada = $(".eti:checked").length > 0,
+                $btnAcaoEmLote = $(".btn-acao-em-lote");
 
-        $btnAcaoEmLote.attr("disabled", !temPosicaoSelecionada);
-    });
+            $btnAcaoEmLote.attr("disabled", !temPosicaoSelecionada);
+        });
         <%call formSave("frm", "save", "$('.btnLancto').removeAttr('disabled');")%>
 
         <%

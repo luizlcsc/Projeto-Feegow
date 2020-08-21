@@ -76,6 +76,21 @@ IF req("Acao") = "CancelarTelemedicina" AND session("AtendimentoTelemedicina")&"
     response.Redirect("./?P=Pacientes&Pers=1&I="&req("I"))
     response.end
 END IF
+
+sqlArquivo = 	" select                                                 	"&chr(13)&_
+				" 	count(a.id) as qtd                                    	"&chr(13)&_
+				" from                                                   	"&chr(13)&_
+				" 	arquivos a                                            	"&chr(13)&_
+				" 	join tipos_de_arquivos tda on a.TipoArquivoID = tda.id	"&chr(13)&_
+				" where                                                  	"&chr(13)&_
+				" 	a.PacienteID = "&req("I")&"                 			"&chr(13)&_
+				" 	and a.Validade is not null                           	"&chr(13)&_
+				" 	and a.Validade <= now()                               	"&chr(13)&_
+				" 	and tda.Obrigatorio = 1                               	"
+
+' response.write(sqlArquivo)
+ arquivoVencido = recordToJSON(db.execute(sqlArquivo))
+ 
 %>
 
 <!--#include file="modal.asp"-->
@@ -120,8 +135,8 @@ if lcase(session("Table"))="profissionais" then
             <%
         end if
     end if
-
 end if
+
 %>
 
 
@@ -208,7 +223,6 @@ end if
 </script>
 
 <script type="text/javascript">
-
 function showMessage(text, state, title) {
 	var states = {
 		0: {
@@ -230,9 +244,13 @@ function showMessage(text, state, title) {
 			"class": "gritter-success",
 			"type": "info",
 			"label": "Status da guia"
+		},
+		4: {
+			"class": "gritter-warning",
+			"type": "warning",
+			"label": "Arquivo(s) obrigatório(s) vencido(s)"
 		}
 	};
-	console.log(text);
 	// && !PNotify
 	if (PNotify) {
 		//    pnotify
@@ -386,9 +404,16 @@ function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
 
 }
 
+function verificaArquivos(){
+	let arquivoVencido = JSON.parse('<%= arquivoVencido %>')[0];
+	if(arquivoVencido.qtd >0){
+		showMessage(`Este paciente tem ${arquivoVencido.qtd} arquivo${arquivoVencido.qtd>1?'s':''} vencido${arquivoVencido.qtd>1?'s':''}`,4,`Arquivo${arquivoVencido.qtd>1?'s':''} obrigatório${arquivoVencido.qtd>1?'s':''} vencido${arquivoVencido.qtd>1?'s':''}`)
+	}
+}
+
 $(document).ready(function(e) {
     <%call formSave("frm", "save", "$(""#DadosAlterados"").attr('value', ''); callbackAgendamentoPaciente(); ")%>
-
+	verificaArquivos()
 
 function callbackAgendamentoPaciente() {
     <%

@@ -96,12 +96,20 @@ end if
                         <i class="fa fa-medkit bigger-110"></i> Kits
                     </a>
                 </li>
+                <li>
+                    <a data-toggle="tab" href="#Documentos" id="Documentos">
+                        <i class="fa fa-file bigger-110"></i> Documentos
+                    </a>
+                </li>
                 <div style="float: right">
-                    <button type="button" id="btnMedicamentos" class="btn btn-success btn-sm m10" name="TipoBotao" onclick="addMedicamentos('<%=I%>')" value="Medicamentos">
+                    <button type="button" id="btnMedicamentos" class="btn btn-primary btn-sm m10" name="TipoBotao" onclick="addMedicamentos('<%=I%>')" value="Medicamentos">
                         <i class="fa fa-plus"></i> Adicionar Medicamentos
                     </button>
-                    <button type="button" id="btnKits" class="btn btn-success btn-sm m10 hidden" name="TipoBotao" onclick="addKits('<%=I%>')" value="Kits">
+                    <button type="button" id="btnKits" class="btn btn-primary btn-sm m10 hidden" name="TipoBotao" onclick="addKits('<%=I%>')" value="Kits">
                         <i class="fa fa-plus"></i> Adicionar Kits
+                    </button>
+                    <button type="button" id="btnDocumentos" class="btn btn-primary btn-sm m10 hidden" name="TipoBotao" onclick="addDocumentos('<%=I%>')" value="Documentos">
+                        <i class="fa fa-plus"></i> Documentos
                     </button>
                 </div>
             </ul>
@@ -117,6 +125,10 @@ end if
                 <div id="ProtocolosKitsTabela" class="tab-pane">
                     <%server.Execute("ProtocolosKitsTabela.asp")%>
                 </div>
+
+                <div id="ProtocolosDocumentos" class="tab-pane">
+                    <%server.Execute("ProtocolosDocumentos.asp")%>
+                </div>
             </div>
         </div>
     </div>
@@ -124,19 +136,34 @@ end if
 
 <script type="text/javascript">
     $("#Medicamentos").on("click", function (){
-       $("#btnMedicamentos").removeClass("hidden");
+       $("#btnDocumentos").addClass("hidden");
        $("#btnKits").addClass("hidden");
+       $("#btnMedicamentos").removeClass("hidden");
 
-       $("#ProtocolosMedicamentosTabela").addClass("active");
        $("#ProtocolosKitsTabela").removeClass("active");
+       $("#ProtocolosDocumentos").removeClass("active");
+       $("#ProtocolosMedicamentosTabela").addClass("active");
 
     });
     $("#Kits").on("click", function (){
        $("#btnMedicamentos").addClass("hidden");
+       $("#btnDocumentos").addClass("hidden");
        $("#btnKits").removeClass("hidden");
 
        $("#ProtocolosMedicamentosTabela").removeClass("active");
+       $("#ProtocolosDocumentos").removeClass("active");
        $("#ProtocolosKitsTabela").addClass("active");
+    });
+    $("#Documentos").on("click", function (){
+       $("#btnMedicamentos").addClass("hidden");
+       $("#btnKits").addClass("hidden");
+       $("#btnDocumentos").removeClass("hidden");
+
+       $("#ProtocolosMedicamentosTabela").removeClass("active");
+       $("#ProtocolosMedicamentosTabela").removeClass("active");
+       $("#ProtocolosDocumentos").addClass("active");
+
+       getDocumentos('<%=req("I")%>')
     });
     function saveProtocolo(ID){
         $.post("saveProtocolo.asp?I="+ID, $("#formProtocolos").serialize(), function(data){

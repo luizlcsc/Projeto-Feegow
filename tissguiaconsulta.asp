@@ -616,7 +616,7 @@ end if
     end if
 
     %>
-        <button class="btn btn-primary btn-md"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-primary btn-md" id="salvar-guia"><i class="fa fa-save"></i> Salvar</button>
         <%
         if aut("repassesV")=1 then
             set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.GuiaConsultaID="& req("I") &" AND NOT ISNULL(rr.ItemContaAPagar)")
@@ -825,12 +825,12 @@ function imprimirGuiaConsulta(){
     		type:"POST",
     		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
     		data:$("#GuiaConsulta").serialize(),
-    		success:function(data){
-    			guiaTISS('GuiaConsulta', <%=request.QueryString("I")%> ,$("#gConvenioID").val())
-    		},
-    		error:function(data){
-                alert("Preencher todos os campos obrigatórios")
-            }
+			success: (suc) => {
+				guiaTISS('GuiaConsulta', <%=request.QueryString("I")%> ,$("#gConvenioID").val());
+			},
+			error: (err) => {
+				alert("Preencher todos os campos obrigatórios");
+			}
     	});
 }
 

@@ -26,6 +26,9 @@ PacienteID = req("P")
         <li>
             <a href="#tab17_3" data-toggle="tab">Perímetro Cefálico</a>
         </li>
+        <li>
+            <a href="#tab20_4" data-toggle="tab">imc</a>
+        </li>
         </ul>
         <div class="clearfix"></div>
         <div class="tab-content br-n pn">
@@ -52,6 +55,15 @@ PacienteID = req("P")
             <div class="col-md-12">
                 <p class="text-center">
                     <iframe id="frmPerimetro" src="Curva_Chart.asp?P=<%= PacienteID %>&T=16" scrolling="no" width="840" frameborder=0 height="450"></iframe>
+                </p>
+            </div>
+            </div>
+        </div>
+        <div id="tab20_4" class="tab-pane">
+            <div class="row">
+            <div class="col-md-12">
+                <p class="text-center">
+                    <iframe id="frmPerimetro" src="Curva_Chart.asp?P=<%= PacienteID %>&T=20" scrolling="no" width="840" frameborder=0 height="450"></iframe>
                 </p>
             </div>
             </div>

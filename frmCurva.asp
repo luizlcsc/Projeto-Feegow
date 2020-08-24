@@ -63,7 +63,7 @@ PacienteID = req("P")
             <div class="row">
             <div class="col-md-12">
                 <p class="text-center">
-                    <iframe id="frmPerimetro" src="Curva_Chart.asp?P=<%= PacienteID %>&T=20" scrolling="no" width="840" frameborder=0 height="450"></iframe>
+                    <iframe id="frmPerimetro" src="Curva_Chart.asp?P=<%= PacienteID %>&T=15" scrolling="no" width="840" frameborder=0 height="450"></iframe>
                 </p>
             </div>
             </div>

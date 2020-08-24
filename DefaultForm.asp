@@ -174,6 +174,10 @@ function DefaultForm(tableName, id)
             server.execute("ConvenioRapido.asp")
         end if
 
+		if lcase(tableName)="protocolos" then
+            server.execute("protocoloBuscaRapida.asp")
+        end if
+
 
         if lcase(tableName)="pacientes" and session("OtherCurrencies")="phone" then
     %>

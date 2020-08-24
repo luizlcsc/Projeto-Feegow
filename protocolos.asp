@@ -160,7 +160,7 @@ end if
        $("#btnDocumentos").removeClass("hidden");
 
        $("#ProtocolosMedicamentosTabela").removeClass("active");
-       $("#ProtocolosMedicamentosTabela").removeClass("active");
+       $("#ProtocolosKitsTabela").removeClass("active");
        $("#ProtocolosDocumentos").addClass("active");
 
        getDocumentos('<%=req("I")%>')

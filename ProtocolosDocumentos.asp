@@ -34,7 +34,6 @@
         $.get( `ProtocolosDocumentosgetDocumentos.asp?protocolo=${protocolo}` )
         .done(function(data) {
             data = JSON.parse(data)
-            console.log(data)
             $('#documentosWarper').html('')
             data.map(doc=>{
                 addLine(doc)
@@ -52,8 +51,9 @@
 
     function addLine(preset=false){
         let linhas = $($('#documentosWarper .row')).length
+        let linha = `linha_${linhas+1}`
         let html = `
-        <div class='row linha_${linhas+1}' >
+        <div class='row ${linha}' >
             <div class="form-group col-md-6">
                 <label for="NomeArquivo">Tipo de Arquivo</label>
                 <select name="tipos" class="form-control">
@@ -68,6 +68,11 @@
             </div>
         </div>`
         $('#documentosWarper').append(html)
+
+        $(`.${linha} button`).click((event)=>{
+            event.preventDefault()
+            apagarRelacao(linha)
+        })
     }
     function documentosSalvar() {
         event.preventDefault()
@@ -88,7 +93,7 @@
     }
 
     function apagarRelacoes(callback){
-        $.get( `ProtocolosDocumentosRemoveAssoc.asp?protocolo=${Gprotocolo}` )
+        $.get( `ProtocolosDocumentosRemoveAssoc.asp?protocolo=${Gprotocolo}&tipo=` )
         .done(function(data) {
             callback(true)
         })
@@ -98,6 +103,15 @@
         $.get( `ProtocolosDocumentosSalvarDoc.asp?protocolo=${Gprotocolo}&tipo=${tipo}` )
         .done(function(data) {
             callback(true)
+        })
+    }
+    function apagarRelacao(seletor){
+        event.preventDefault()
+
+        let tipo = $(`.${seletor} select`).val()
+        $.get( `ProtocolosDocumentosRemoveAssoc.asp?protocolo=${Gprotocolo}&tipo=${tipo}` )
+        .done(function(data) {
+            getDocumentos(Gprotocolo)
         })
     }
 </script>

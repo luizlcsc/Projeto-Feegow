@@ -8,9 +8,8 @@ if Tipo = "I" then
     ProtocoloID = req("ProtocoloID")
     if ID&""<>"" then
         set getPacientesProtocolos = db.execute("SELECT * FROM pacientesprotocolos WHERE id="&ID)
-        set atendimento =  db.execute("select id from atendimentos a2 where PacienteID = "&PacienteID&" and `Data` = CAST( now() AS Date )")
         if getPacientesProtocolos.eof then
-            db.execute("INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID,AtendimentoID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&session("User")&", "&atendimento("id")&", "&session("User")&", 1)")
+            db.execute("INSERT INTO pacientesprotocolos (id, sysUser, sysActive, PacienteID) VALUES ("&ID&", "&session("User")&", 1, "&PacienteID&")")
         end if
         set getMedicamentosProtocolos = db.execute("SELECT * FROM protocolosmedicamentos WHERE ProtocoloID="&ProtocoloID)
         while not getMedicamentosProtocolos.eof
@@ -75,15 +74,15 @@ end if
                     MedicamentoID = getProtocolo("MedicamentoID")
 
                     if isnumeric(ConvenioID) then
-                        sqlRegraConv = " AND (medconv.convenioID LIKE '%|"&ConvenioID&"|%' OR medconv.convenioID IS NULL OR medconv.convenioID='')"
+                        sqlRegraConv = " AND (medconv.Convenios LIKE '%|"&ConvenioID&"|%' OR medconv.Convenios IS NULL OR medconv.Convenios='')"
                     end if
                     if isnumeric(PlanoID) then
-                        sqlRegraPlan = " AND (medconv.planoID LIKE '%|"&PlanoID&"|%' OR medconv.planoID IS NULL OR medconv.planoID='')"
+                        sqlRegraPlan = " AND (medconv.Planos LIKE '%|"&PlanoID&"|%' OR medconv.Planos IS NULL OR medconv.Planos='')"
                     end if
                     set getRegraMedicamento = db.execute("SELECT prod.id MedicamentoID, prod.NomeProduto "&_
-                                                        "FROM medicamentos_convenio medconv "&_
-                                                        "LEFT JOIN produtos prod ON prod.id=medconv.produtoReferencia "&_
-                                                        "WHERE medconv.produtoReferencia!=0 AND medconv.sysActive=1 "&sqlRegraConv & sqlRegraPlan&" LIMIT 1")
+                                                        "FROM medicamentosconvenios medconv "&_
+                                                        "LEFT JOIN produtos prod ON prod.id=medconv.MedicamentoSubstitutoID "&_
+                                                        "WHERE medconv.MedicamentoSubstitutoID!=0 AND medconv.sysActive=1 "&sqlRegraConv & sqlRegraPlan&" LIMIT 1")
 
                     if not getRegraMedicamento.eof then
                         Medicamento = getRegraMedicamento("NomeProduto")

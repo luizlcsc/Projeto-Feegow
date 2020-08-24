@@ -150,9 +150,9 @@ var wfa_boys_0_to_5 = {
     xxMin = 180;
   <% elseif  idCurva = 13 then %>
     xxMin = 731;
-  <% elseif  idCurva = 24 then %>
+  <% elseif  idCurva = 23 then %>
     xxMin = 61;  
-  <% elseif  idCurva = 25 then %>
+  <% elseif  idCurva = 24 then %>
     xxMin = 122;  
   <% end if  %>
   var growthChart = display_growth_chart(patientGrowth, '#meucanvas' , 'wfa_boys_0_to_5',null,xxMin);

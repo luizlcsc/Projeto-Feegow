@@ -20,34 +20,6 @@ else
 end if
 %>
 
-<!-- Modal -->
-<div class="modal fade" id="modalOpcoesImpressao" tabindex="-1" role="dialog" aria-labelledby="modalOpcoesImpressaoLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalOpcoesImpressaoLabel">Impressão de Pedido Simplificado</h5>
-        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Fechar">-->
-          <!--<span aria-hidden="true">&times;</span>-->
-        <!--</button>-->
-      </div>
-      <div class="modal-body">
-        <form>
-            <div class="form-group">
-                <input type="checkbox" id="cabecalho" value="1" checked> <label for="cabecalho">Imprimir cabecalho e Rodapé </label><BR>
-            </div>
-            <div class="form-group">
-                Quantidade de Registros: <input type="text" id="quantidade" size="5" value="10" class="form-control">
-            </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <button type="button" class="btn btn-primary" id="savePedidoExameProtocolo">Imprimir</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!----------------------------------------------------------------->
 
 
 <div class="panel-heading">
@@ -73,7 +45,7 @@ end if
                     <div class="col-md-4">
                         <%= simpleSelectCurrentAccounts("ProfissionalID", "5, 8", ProfissionalID, " ") %>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 hidden">
                         <button type="button" class="btn btn-info btn btn-xs"><i class="fa fa-credit-card"></i></button> <span>Gerar Guia de Tratamento</span>
                         <br>
                         <button type="button" class="btn btn-success btn btn-xs mt5"><i class="fa fa-files-o"></i></button> <span>Gerar Proposta</span>

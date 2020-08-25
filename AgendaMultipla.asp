@@ -224,6 +224,11 @@ $(document).ready(function () {
 
 
 <script type="text/javascript">
+    $(".crumb-active").html("<a href='./?P=AgendaMultipla&Pers=1'>Agenda</a>");
+    $(".crumb-icon a span").attr("class", "fa fa-calendar");
+    $(".crumb-link").replaceWith("");
+    $(".crumb-trail").removeClass("hidden");
+    $("#rbtns").html("");
 
     $("#frmFiltros select").change(function () {
         //loadAgenda();

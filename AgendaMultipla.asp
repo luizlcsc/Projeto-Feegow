@@ -154,6 +154,7 @@ function initialize() {
 
             $unidadesIpt.val("");
             $unidadesIpt.multiselect("select", ids);
+            $unidadesIpt.multiselect("refresh");
             $unidadesIpt.change();
         };
 

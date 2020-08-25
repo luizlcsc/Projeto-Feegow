@@ -8,12 +8,12 @@ function guiaTISS(T, I, ConvenioID){
 	$.ajax({
 	   type:"GET",
 	   url:"modalGuiaTISS.asp?T="+T+"&I="+I+"&ConvenioID="+ConvenioID,
-	   success:function(data){
-		   $("#modal").html(data);
-		   $("#modal-table").modal("show");
-	   },error:function(data){
-            alert("Preencha todos os campos obrigatórios")
-
+	   success: (suc) => {
+		$("#modal").html(suc);
+		$("#modal-table").modal("show");
+	   }
+	   ,error: (err) => {
+        lert("Preencha todos os campos obrigatórios")
 	   }
    });
 }

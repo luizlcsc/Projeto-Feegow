@@ -100,6 +100,8 @@ var wfa_all_0_to_5_meta = {
 	]
 };
 
+console.log(wfa_all_0_to_5_meta)
+
 var wfa_boys_0_to_5_meta = {};
 wfa_boys_0_to_5_meta.lines =  wfa_all_0_to_5_meta.lines.slice();
 wfa_boys_0_to_5_meta.title = "<%=Rotulo%>";
@@ -108,13 +110,17 @@ wfa_boys_0_to_5_meta.title = "<%=Rotulo%>";
 var wfa_boys_0_to_5_zscores = [
 <%
 sql = "select * from curva."&Tabela&" WHERE NOT ISNULL("& Intervalo &") AND Sexo="& Sexo &" AND "& Intervalo&" BETWEEN "& Inicio &" AND "& Fim
-'response.write( sql )
+'dd(sql)
 set c = db.execute( sql )
 while not c.eof
   if Coluna="PerimetroCefalico" then
     %>
     {"Month":"<%=c(Intervalo)%>","SD0":"<%=c("SD0")%>","SD1":"<%=c("SD1")%>","SD2":"<%=c("SD2")%>","SD3":"<%=c("SD3")%>","SD1neg":"<%=c("SD1neg")%>","SD2neg":"<%=c("SD2neg")%>","SD3neg":"<%=c("SD3neg")%>"},
     <%
+  elseif Coluna="imc" and Intervalo="month" then
+    %>
+    {"Month":"<%=c("month")%>","SD0":"<%=c("SD0")%>","SD1":"<%=c("SD1")%>","SD2":"<%=c("SD2")%>","SD3":"<%=c("SD3")%>","SD1neg":"<%=c("SD1neg")%>","SD2neg":"<%=c("SD2neg")%>","SD3neg":"<%=c("SD3neg")%>"},
+    <%  
   else
     %>
     {"Month":"<%=c(Intervalo)%>","SD0":"<%=c("SD0")%>","SD2":"<%=c("SD2")%>","SD3":"<%=c("SD3")%>","SD2neg":"<%=c("SD2neg")%>","SD3neg":"<%=c("SD3neg")%>"},
@@ -144,6 +150,10 @@ var wfa_boys_0_to_5 = {
     xxMin = 180;
   <% elseif  idCurva = 13 then %>
     xxMin = 731;
+  <% elseif  idCurva = 23 then %>
+    xxMin = 61;  
+  <% elseif  idCurva = 24 then %>
+    xxMin = 122;  
   <% end if  %>
   var growthChart = display_growth_chart(patientGrowth, '#meucanvas' , 'wfa_boys_0_to_5',null,xxMin);
   </script>

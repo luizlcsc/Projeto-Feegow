@@ -13,7 +13,7 @@ function guiaTISS(T, I, ConvenioID){
 		$("#modal-table").modal("show");
 	   }
 	   ,error: (err) => {
-        lert("Preencha todos os campos obrigatórios")
+        alert("Preencha todos os campos obrigatórios")
 	   }
    });
 }

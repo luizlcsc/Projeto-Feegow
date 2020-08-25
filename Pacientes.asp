@@ -77,23 +77,16 @@ IF req("Acao") = "CancelarTelemedicina" AND session("AtendimentoTelemedicina")&"
     response.end
 END IF
 
-sqlArquivo = 	" select                                                                      	"&chr(13)&_
-				" count(a.id) as qtd                                                            "&chr(13)&_
-				" from arquivos a                                                             	"&chr(13)&_
-				" where a.PacienteID = "&req("I")&"                                             "&chr(13)&_
-				" and a.TipoArquivoID in (                                                    	"&chr(13)&_
-				" 	select tda.id                                                              	"&chr(13)&_
-				" 	from pacientes p2                                                          	"&chr(13)&_
-				" 	join pacientesprotocolos pp on pp.PacienteID = p2.id                       	"&chr(13)&_
-				" 	join pacientesprotocolosmedicamentos ppm on ppm.PacienteProtocoloID = pp.id	"&chr(13)&_
-				" 	join protocolos_documentos pd on ppm.ProtocoloID  = pd.protocoloID         	"&chr(13)&_
-				" 	join tipos_de_arquivos tda on tda.id = pd.tipoDocumentoID 	                "&chr(13)&_
-				" 	where p2.id = "&req("I")&"                                                  "&chr(13)&_
-				" 	and tda.Obrigatorio = 1                                                    	"&chr(13)&_
-				" 	and tda.sysActive =1                                                       	"&chr(13)&_
-				" )                                                                           	"&chr(13)&_
-				"  	and a.Validade is not null                           	                    "&chr(13)&_
-				"  	and a.Validade <= now()                                                   	"
+sqlArquivo = 	" select count(tda.id) as qtd_arquivoInvalido, group_concat(tda.NomeArquivo ORDER BY  tda.NomeArquivo ASC SEPARATOR ', ') as descricao	"&chr(13)&_
+				" 	from pacientesprotocolos pp                                                           												"&chr(13)&_
+				" 	join pacientesprotocolosmedicamentos ppm on ppm.PacienteProtocoloID = pp.id           												"&chr(13)&_
+				" 	join protocolos_documentos pd on ppm.ProtocoloID  = pd.protocoloID                    												"&chr(13)&_
+				" 	join tipos_de_arquivos tda on tda.id = pd.tipoDocumentoID                             												"&chr(13)&_
+				" 	left join arquivos a on a.TipoArquivoID = tda.id                                      												"&chr(13)&_
+				" 	where pp.PacienteID = 18663                                                           												"&chr(13)&_
+				" 	and tda.Obrigatorio = 1                                                               												"&chr(13)&_
+				" 	and tda.sysActive =1                                                                  												"&chr(13)&_
+				" 	and a.id is null or a.Validade <= now()                                               												"
 
 ' response.write(sqlArquivo)
  arquivoVencido = recordToJSON(db.execute(sqlArquivo))
@@ -413,8 +406,8 @@ function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
 
 function verificaArquivos(){
 	let arquivoVencido = JSON.parse('<%= arquivoVencido %>')[0];
-	if(arquivoVencido.qtd >0){
-		showMessage(`Este paciente tem ${arquivoVencido.qtd} arquivo${arquivoVencido.qtd>1?'s':''} vencido${arquivoVencido.qtd>1?'s':''}`,4,`Arquivo${arquivoVencido.qtd>1?'s':''} obrigatório${arquivoVencido.qtd>1?'s':''} vencido${arquivoVencido.qtd>1?'s':''}`)
+	if(arquivoVencido.qtd_arquivoInvalido >0){
+		showMessage(`Este paciente tem ${arquivoVencido.qtd_arquivoInvalido} arquivo${arquivoVencido.qtd_arquivoInvalido>1?'s':''} vencido${arquivoVencido.qtd_arquivoInvalido>1?'s':''} ou faltantes sendo ele${arquivoVencido.qtd_arquivoInvalido>1?'s':''} : ${arquivoVencido.descricao}`,4,`Arquivo${arquivoVencido.qtd_arquivoInvalido>1?'s':''} obrigatório${arquivoVencido.qtd_arquivoInvalido>1?'s':''} vencido${arquivoVencido.qtd_arquivoInvalido>1?'s':''} ou faltantes` )
 	}
 }
 

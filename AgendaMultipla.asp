@@ -73,7 +73,7 @@ Unidades = Session("Unidades")
 spltUnidades = split(Unidades)
 qtdUnidades = ubound(spltUnidades) + 1
 
-ExibirFiltroPorLocalizacao = qtdUnidades > 5
+ExibirFiltroPorLocalizacao = qtdUnidades > 2
 
 
 if ExibirFiltroPorLocalizacao then

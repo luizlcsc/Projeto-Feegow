@@ -14,7 +14,9 @@ sql = "SELECT u.id, u.NomeFantasia, u.Bairro ,"&_
       "  "&_
       " FROM sys_financialcompanyunits u "&_
       " WHERE u.sysActive=1 "&_
-      " HAVING distance < 15 "
+      " HAVING distance < 15 "&_
+      " ORDER BY distance ASC "&_
+      " LIMIT 4 "
 
 set UnidadesSQL = db.execute(sql)
 

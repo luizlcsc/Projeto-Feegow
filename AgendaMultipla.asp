@@ -66,12 +66,122 @@ PacienteID = req("PacienteID")
 SolicitanteID = req("SolicitanteID")
 
 %>
+<br>
+<%
+
+Unidades = Session("Unidades")
+spltUnidades = split(Unidades)
+qtdUnidades = ubound(spltUnidades) + 1
+
+ExibirFiltroPorLocalizacao = qtdUnidades > 5
+
+
+if ExibirFiltroPorLocalizacao then
+%>
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title"><i class="fa fa-filter"></i> Filtrar por localização</span>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4">
+                <input class="form-control" id="searchTextField" type="text" size="50">
+            </div>
+        </div>
+    </div>
+</div>
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&key=AIzaSyCz2FUHAQGogZ13ajRNE3UQBCfdo-igcDc"></script>
+
+<script >
+function initialize() {
+    const $input = document.getElementById('searchTextField');
+    const autocomplete = new google.maps.places.Autocomplete($input);
+
+    // Set initial restrict to the greater list of countries.
+    autocomplete.setComponentRestrictions({
+    country: ["br"]
+    });
+
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+
+        //1) extrai variaveis de endereco: bairro / cep etc.
+        const addressComponents = place.address_components;
+
+        let addressMaping = {
+            "postal_code": "cep",
+            "sublocality_level_1": "bairro",
+            "administrative_area_level_2": "cidade",
+            "administrative_area_level_1": "uf",
+            "country": "pais",
+        };
+
+        let address = {
+            cep: null,
+            numero: null,
+            cidade: null,
+            uf: null,
+            bairro: null,
+            pais: null,
+        };
+
+        const setAddressComponentVariable = function(addressComponent) {
+            let addressComponentKey = addressMaping[addressComponent.types[0]];
+
+            console.log(addressComponentKey)
+
+            if(addressComponentKey){
+                address[addressComponentKey] = addressComponent.short_name;
+            }
+        };
+
+        for(let i=0;i<addressComponents.length;i++){
+            setAddressComponentVariable(addressComponents[i]);
+        }
+
+        //2) extrai lat/lng
+        const lat = place.geometry.location.lat(),
+            placeName = place.name,
+            lng = place.geometry.location.lng();
+
+        const setUnidadeIds = function(unidades){
+            var $unidadesIpt = $("#Locais"),
+                ids = [];
+
+            for(let i=0;i<unidades.length;i++){
+                ids.push(`|UNIDADE_ID${unidades[i].id}|`);
+            }
+
+            $unidadesIpt.val("");
+            $unidadesIpt.multiselect("select", ids);
+            $unidadesIpt.change();
+        };
+
+
+          $.get("api/jsonBuscaUnidades.asp", {
+              lat: lat,
+              lng: lng
+          }, function(data) {
+                setUnidadeIds(data);
+          });
+        });
+
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
+<%
+end if
+%>
 
 <div class="panel">
     <div class="panel-body">
         <form id="frmFiltros">
             <div class="row">
-                <%=quickField("select", "filtroProcedimentoID", "Procedimento", 2, ProcedimentoID, "select '' id, '-' NomeProcedimento UNION ALL select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' and OpcoesAgenda!=3 order by NomeProcedimento", "NomeProcedimento", " empty ") %>
+                <div class="col-md-2">
+                    <%= selectInsert("Procedimento", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " ", "", "") %>
+                </div>
                 <%=quickField("multiple", "Profissionais", "Profissionais", 2, req("Profissionais"), "SELECT id, NomeProfissional, Ordem FROM (SELECT 0 as 'id', 'Nenhum' as 'NomeProfissional', 0 'Ordem' UNION SELECT id, IF(NomeSocial != '' and NomeSocial IS NOT NULL, NomeSocial, NomeProfissional)NomeProfissional, 1 'Ordem' FROM profissionais WHERE (NaoExibirAgenda != 'S' OR NaoExibirAgenda is null OR NaoExibirAgenda='') AND sysActive=1 and Ativo='on' "&sqlLimitarProfissionais&" ORDER BY NomeProfissional)t ORDER BY Ordem, NomeProfissional", "NomeProfissional", " empty ") %>
                 <%=quickField("multiple", "Especialidade", "Especialidades", 2, req("Especialidades"), "SELECT t.EspecialidadeID id, IFNULL(e.nomeEspecialidade, e.especialidade) especialidade FROM (	SELECT EspecialidadeID from profissionais WHERE ativo='on'	UNION ALL	select pe.EspecialidadeID from profissionaisespecialidades pe LEFT JOIN profissionais p on p.id=pe.ProfissionalID WHERE p.Ativo='on') t LEFT JOIN especialidades e ON e.id=t.EspecialidadeID WHERE NOT ISNULL(especialidade) AND e.sysActive=1 GROUP BY t.EspecialidadeID ORDER BY especialidade", "especialidade", " empty ") %>
                 <%=quickField("multiple", "Convenio", "Convênios", 2, "", "select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio", "NomeConvenio", " empty ") %>

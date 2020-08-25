@@ -77,16 +77,23 @@ IF req("Acao") = "CancelarTelemedicina" AND session("AtendimentoTelemedicina")&"
     response.end
 END IF
 
-sqlArquivo = 	" select                                                 	"&chr(13)&_
-				" 	count(a.id) as qtd                                    	"&chr(13)&_
-				" from                                                   	"&chr(13)&_
-				" 	arquivos a                                            	"&chr(13)&_
-				" 	join tipos_de_arquivos tda on a.TipoArquivoID = tda.id	"&chr(13)&_
-				" where                                                  	"&chr(13)&_
-				" 	a.PacienteID = "&req("I")&"                 			"&chr(13)&_
-				" 	and a.Validade is not null                           	"&chr(13)&_
-				" 	and a.Validade <= now()                               	"&chr(13)&_
-				" 	and tda.Obrigatorio = 1                               	"
+sqlArquivo = 	" select                                                                      	"&chr(13)&_
+				" count(a.id) as qtd                                                            "&chr(13)&_
+				" from arquivos a                                                             	"&chr(13)&_
+				" where a.PacienteID = "&req("I")&"                                             "&chr(13)&_
+				" and a.TipoArquivoID in (                                                    	"&chr(13)&_
+				" 	select tda.id                                                              	"&chr(13)&_
+				" 	from pacientes p2                                                          	"&chr(13)&_
+				" 	join pacientesprotocolos pp on pp.PacienteID = p2.id                       	"&chr(13)&_
+				" 	join pacientesprotocolosmedicamentos ppm on ppm.PacienteProtocoloID = pp.id	"&chr(13)&_
+				" 	join protocolos_documentos pd on ppm.ProtocoloID  = pd.protocoloID         	"&chr(13)&_
+				" 	join tipos_de_arquivos tda on tda.id = pd.tipoDocumentoID 	                "&chr(13)&_
+				" 	where p2.id = "&req("I")&"                                                  "&chr(13)&_
+				" 	and tda.Obrigatorio = 1                                                    	"&chr(13)&_
+				" 	and tda.sysActive =1                                                       	"&chr(13)&_
+				" )                                                                           	"&chr(13)&_
+				"  	and a.Validade is not null                           	                    "&chr(13)&_
+				"  	and a.Validade <= now()                                                   	"
 
 ' response.write(sqlArquivo)
  arquivoVencido = recordToJSON(db.execute(sqlArquivo))

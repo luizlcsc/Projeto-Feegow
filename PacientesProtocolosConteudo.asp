@@ -2,6 +2,9 @@
 <%
 Tipo = req("Tipo")
 
+usuario = db.execute("SELECT Auditor FROM profissionais where id = "&session("User")&" and sysActive= 1")
+auditor = usuario("Auditor")
+
 if Tipo = "I" then
     ID = req("ID")
     PacienteID = req("PacienteID")
@@ -165,12 +168,15 @@ $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 
+
+
 function pedirMudanca(tipo,id,medicamentoId){
     let dose = parseFloat(($(`#DoseMedicamento_${id}`).val()).replace(',','.'))
     let obs = $(`#Obs_${id}`).val()
     let paciente = "<%=req("P")%>";    
-
+    let auditor = "<%=auditor%>"
     let data = {
+        id,
         dose,
         obs,
         medicamentoId,
@@ -183,15 +189,29 @@ function pedirMudanca(tipo,id,medicamentoId){
         msg('Os campos de dose e observação devem estar preenchidos','warning')
         return false
     }
-    $.ajax({
-    type: "POST",
-    url: "notificacao_mudancaProtocolo.asp",
-    data: data,
-    contentType:"application/x-www-form-urlencoded"
-    })
-    .done((data)=>{
-        msg('Sua solicitação foi enviada ao Auditor', "success")
-    })
+
+    if (auditor==1){
+        $.ajax({
+        type: "POST",
+        url: "PacientesProtocolosConteudoSave.asp",
+        data: data,
+        contentType:"application/x-www-form-urlencoded"
+        })
+        .done((data)=>{
+            msg('Atualização feita com sucesso', "success")
+            $('.mfp-close').click()
+        })
+    }else{
+        $.ajax({
+        type: "POST",
+        url: "notificacao_mudancaProtocolo.asp",
+        data: data,
+        contentType:"application/x-www-form-urlencoded"
+        })
+        .done((data)=>{
+            msg('Sua solicitação foi enviada ao Auditor', "success")
+        })
+    }
 
 }
 

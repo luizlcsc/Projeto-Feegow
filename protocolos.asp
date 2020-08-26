@@ -191,12 +191,20 @@ end if
         $('[data-toggle="tooltip"]').tooltip()
         $('#formProtocolos input').attr('disabled',true)
         $('#formProtocolos button').attr('disabled',true)
+        $('#Ativo').attr('disabled',false)
         setTimeout(() => {
             $('#formProtocolos .select2').css('pointer-events',"none")
             $('#formProtocolos .multiselect').css('pointer-events',"none")
             $('#formProtocolos .multiselect').css('background-color',"#fafafa")
             $('#formProtocolos .select2-selection').css('background-color','#fafafa')
         }, 200);
+        $('#Ativo').click(event=>{
+            let valor = (($('#Ativo').prop('checked'))?'on':'off')
+
+            $.post(`saveProtocolo.asp?I=<%=I%>&soAtivo=${valor}`, function(data){
+                eval(data);
+            });
+        })
     }
 
     $(".crumb-active").html("<a href='#'>Cadastro de Protocolo</a>");

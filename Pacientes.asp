@@ -88,7 +88,6 @@ sqlArquivo = 	" select count(tda.id) as qtd_arquivoInvalido, group_concat(distin
 				" 	and tda.sysActive =1                                                                  												"&chr(13)&_
 				" 	and a.id is null or a.Validade <= now()                                               												"
 
-response.write(sqlArquivo)
  arquivoVencido = recordToJSON(db.execute(sqlArquivo))
  
 %>

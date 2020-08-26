@@ -2952,24 +2952,15 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 	else
 		if isnumeric(hid) then
 			set nomeColuna = db.execute("select initialOrder from cliniccentral.sys_resources where tableName='"&recurso&"' limit 1")
-			if not nomeColuna.EOF then
-				set lista = db.execute("select (select id from "&recurso&" where "&nomeColuna("initialOrder")&"<r."&nomeColuna("initialOrder")&" and sysActive=1 order by "&nomeColuna("initialOrder")&" desc limit 1) anterior, (select id from "&recurso&" where "&nomeColuna("initialOrder")&">r."&nomeColuna("initialOrder")&" and sysActive=1 order by "&nomeColuna("initialOrder")&" limit 1) proximo from "&recurso&" r where id="&hid)
-			else
-				set lista = db.execute("select (select id from "&recurso&" where id<"&hid&" and sysActive=1 order by id desc limit 1) anterior, (select id from "&recurso&" where id>"&hid&" and sysActive=1 order by id limit 1) proximo")
-			end if
+
             if recurso="pacientes" then
 '                rbtns = rbtns & "<div class='switch switch-info switch-inline'>  <input id='exampleCheckboxSwitch1' type='checkbox' checked=''>  <label for='exampleCheckboxSwitch1'></label></div>"
                 rbtns = rbtns & "<div title='Ativar / Inativar paciente' class='mn hidden-xs' style='float:left'><div class='switch switch-info switch-inline'><input checked name='Ativo' id='Ativo' type='checkbox' /><label style='height:30px' class='mn' for='Ativo'></label></div></div> &nbsp; "
             end if
-			if not lista.EOF then
-				if not isnull(lista("anterior")) then
-					rbtns = rbtns & "<a title='Anterior' href='?P="&recurso&"&Pers="&hPers&"&I="&lista("anterior")&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
-				end if
-				rbtns = rbtns & "<a id='Header-List' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
-				if not isnull(lista("proximo")) then
-					rbtns = rbtns & "<a title='Próximo' href='?P="&recurso&"&Pers="&hPers&"&I="&lista("proximo")&"&Proximo=1' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
-				end if
-			end if
+
+            rbtns = rbtns & "<a title='Anterior' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Previous&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
+            rbtns = rbtns & "<a id='Header-List' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
+            rbtns = rbtns & "<a title='Próximo' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Next&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
 		end if
 		if aut(recurso&"I")=1 and recurso<>"profissionais" and recurso<>"funcionarios" then
 			rbtns = rbtns & "<a id='Header-New' title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "

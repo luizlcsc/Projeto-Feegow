@@ -45,7 +45,7 @@ end if
                   "LEFT JOIN cliniccentral.unidademedida unMed ON prodMed.UnidadePrescricao=unMed.id "&_
                   "LEFT JOIN produtos proDil ON proDil.id=protmed.DiluenteID "&_
                   "LEFT JOIN cliniccentral.unidademedida unDil ON proDil.UnidadePrescricao=unDil.id "&_
-                  "WHERE pacpro.id="&ID&" ORDER BY promed.id"
+                  "WHERE pacpro.id="&ID&" and promed.sysActive =1 ORDER BY promed.id"
 
             set getProtocolo = db.execute(sql)
             while not getProtocolo.eof
@@ -120,7 +120,10 @@ end if
                             </span>
                         </div>
                     </td>
-                    <td width="1%"><i class='ml20 mt5 btn-xs btn btn-danger fa fa-remove' disabled="disabled"> </i></td>
+                    <td class='row' width="9%">
+                        <i class='ml5 col-md-5 btn-xs btn btn-warning fa fa-pencil' onclick="pedirMudanca('E','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')"  data-toggle="tooltip" data-placement="top" title="Pedir edição de protocolo"> </i>
+                        <i class='ml5 col-md-5 btn-xs btn btn-danger fa fa-remove' onclick="pedirMudanca('R','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')" data-toggle="tooltip" data-placement="top" title="Pedir remoção de protocolo"> </i>
+                    </td>
                 </tr>
                 <%
                 end if
@@ -130,9 +133,9 @@ end if
                     <td class="text-right"><i class="fa fa-chevron-right"></i></td>
                     <td ><b>Diluente:</b> <%=Diluente%>
                     <b>
-                    <%if DoseDiluente&""<>"" then%>
-                    <%=DoseDiluente&" "&SiglaDil%>
-                    <%end if%>
+                        <%if DoseDiluente&""<>"" then%>
+                        <%=DoseDiluente&" "&SiglaDil%>
+                        <%end if%>
                     </b>
                     </td>
                     <td></td>
@@ -157,7 +160,47 @@ end if
         </table>
     </div>
 </div>
-
 <script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+function pedirMudanca(tipo,id,medicamentoId){
+    let dose = parseFloat(($(`#DoseMedicamento_${id}`).val()).replace(',','.'))
+    let obs = $(`#Obs_${id}`).val()
+    let paciente = "<%=req("P")%>";    
+
+    let data = {
+        dose,
+        obs,
+        medicamentoId,
+        paciente,
+        tipo
+    }
+
+    // valida os campos
+    if(dose.length==0 || obs.length ==0){
+        msg('Os campos de dose e observação devem estar preenchidos','warning')
+        return false
+    }
+    $.ajax({
+    type: "POST",
+    url: "notificacao_mudancaProtocolo.asp",
+    data: data,
+    contentType:"application/x-www-form-urlencoded"
+    })
+    .done((data)=>{
+        msg('Sua solicitação foi enviada ao Auditor', "success")
+    })
+
+}
+
+function msg(titulo,tipo){
+    new PNotify({
+        title: titulo,
+        type: tipo,
+        delay: 3000
+    });
+}
 
 </script>

@@ -45,7 +45,7 @@ end if
                         <button type="button" class="btn btn-info btn-block" onClick="GerarNovo('Protocolos', '<%=PacienteID%>', '0', '', '');"><i class="fa fa-plus"></i> Novo</button>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" onClick="saveProtocolo('<%=ID%>')" class="btn btn-primary "><i class="fa fa-save"></i></button>
+                        <!--<button type="button" onClick="saveProtocolo('<%=ID%>')" class="btn btn-primary "><i class="fa fa-save"></i></button> -->
                         <button type="button" class="btn btn-info" onClick="print()">
                             <i class="fa fa-print"></i>
                         </button>

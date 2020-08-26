@@ -77,7 +77,7 @@ IF req("Acao") = "CancelarTelemedicina" AND session("AtendimentoTelemedicina")&"
     response.end
 END IF
 
-sqlArquivo = 	" select count(tda.id) as qtd_arquivoInvalido, group_concat(tda.NomeArquivo ORDER BY  tda.NomeArquivo ASC SEPARATOR ', ') as descricao	"&chr(13)&_
+sqlArquivo = 	" select count(tda.id) as qtd_arquivoInvalido, group_concat(distinct tda.NomeArquivo ORDER BY  tda.NomeArquivo ASC SEPARATOR ', ') as descricao	"&chr(13)&_
 				" 	from pacientesprotocolos pp                                                           												"&chr(13)&_
 				" 	join pacientesprotocolosmedicamentos ppm on ppm.PacienteProtocoloID = pp.id           												"&chr(13)&_
 				" 	join protocolos_documentos pd on ppm.ProtocoloID  = pd.protocoloID                    												"&chr(13)&_
@@ -88,7 +88,7 @@ sqlArquivo = 	" select count(tda.id) as qtd_arquivoInvalido, group_concat(tda.No
 				" 	and tda.sysActive =1                                                                  												"&chr(13)&_
 				" 	and a.id is null or a.Validade <= now()                                               												"
 
-' response.write(sqlArquivo)
+response.write(sqlArquivo)
  arquivoVencido = recordToJSON(db.execute(sqlArquivo))
  
 %>

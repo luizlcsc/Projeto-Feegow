@@ -15,7 +15,7 @@ bloquear = recordToJSON(db.execute(sqlBloquear))
 
 <script type="text/javascript">
     let bloquear = JSON.parse('<%=bloquear%>');
-    console.log("bloquear",bloquear)
+
 function changePesquisa(){
         let fil1 = $("#ProtocoloRapido").val()
         let fil2 = $("#TipoProtocolo").val()
@@ -28,6 +28,7 @@ function changePesquisa(){
             $(".target").html("Buscando...");
             $.get("divProtocoloRapidoResult.asp?tipo="+fil2+"&txt="+fil1, function(data){
                 $(".target").html(data);
+                bloquearBtn()
             });
         }
     }
@@ -36,15 +37,21 @@ $(document).ready(function(){
     $("#ProtocoloRapido").keyup(changePesquisa);
     $("#TipoProtocolo").change(changePesquisa);
 
+    bloquearBtn()
+});
+
+function bloquearBtn(){
+
     links = $('.btn.btn-xs.btn-info.tooltip-info')
 
     links.map((key,link)=>{
         let href = $(link).attr('href')
         bloquear.map((block)=>{
+            console.log(block)
             if(href.indexOf(`I=${block.ProtocoloID}`)>0){
                 $(link).parent().find('.btn.btn-xs.btn-danger.tooltip-danger').attr('disabled',true)
             }
         })
     })
-});
+}
 </script>

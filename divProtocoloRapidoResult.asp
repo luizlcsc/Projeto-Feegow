@@ -1,8 +1,12 @@
 ﻿<!--#include file="connect.asp"-->
 <%
 txt = replace(req("txt"), " ", "%")
-SQL = "select id,NomeProtocolo from protocolos where NomeProtocolo like '%"&txt&"%'"
 
+if req("tipo") = 0 then 
+    SQL = "select id,NomeProtocolo from protocolos where sysActive = 1"
+else
+    SQL = "select id,NomeProtocolo from protocolos where NomeProtocolo like '%"&txt&"%'  and GrupoID = NULLIF('"&(req("tipo"))&"','')"
+end if
 
 set protocolos = db.execute(SQL)
 if not protocolos.eof then
@@ -23,7 +27,7 @@ if not protocolos.eof then
             <tr>
                 <td><%= protocolos("NomeProtocolo") %></td>
                 <td nowrap>
-                    <a href="./?P=Protocolos&I=<%=protocolos("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-edit"></i></a>
+                    <a href="./?P=Protocolos&I=<%=protocolos("id") %>&Pers=1" class="btn-info tooltip-info btn btn-xs"><i class="fa fa-edit"></i></a>
                     <a class="btn btn-xs btn-danger tooltip-danger" title="" data-rel="tooltip" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))location.href='?P=Protocolos&X=<%= protocolos("id") %>&Pers=Follow';"><i class="fa fa-remove bigger-130"></i></a>
                 </td>
             </tr>
@@ -38,7 +42,7 @@ if not protocolos.eof then
 <%
 else
     %>
-    Nenhum protocolo ativo com o termo '<%= txt %>'.
+    Nenhum protocolo ativo com o termo ou Grupo.
     <%
 end if
 %>

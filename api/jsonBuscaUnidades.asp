@@ -3,7 +3,12 @@
 <%
 lat = req("Lat")
 lng = req("Lng")
+raioBusca = req("raioBusca")
 unidadeId = req("UnidadeID")
+
+if isnumeric(raioBusca) then
+    raioBusca = ccur(raioBusca)
+end if
 
 sql = "SELECT u.id, u.NomeFantasia, u.Bairro ,"&_
       "  ROUND(( 3959 * acos( cos( radians("&lat&") ) "&_
@@ -14,7 +19,7 @@ sql = "SELECT u.id, u.NomeFantasia, u.Bairro ,"&_
       "  "&_
       " FROM sys_financialcompanyunits u "&_
       " WHERE u.sysActive=1 "&_
-      " HAVING distance < 10 "&_
+      " HAVING distance < "&treatvalzero(raioBusca)&" "&_
       " ORDER BY distance ASC "&_
       " LIMIT 4 "
 

@@ -2958,9 +2958,11 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
                 rbtns = rbtns & "<div title='Ativar / Inativar paciente' class='mn hidden-xs' style='float:left'><div class='switch switch-info switch-inline'><input checked name='Ativo' id='Ativo' type='checkbox' /><label style='height:30px' class='mn' for='Ativo'></label></div></div> &nbsp; "
             end if
 
-            rbtns = rbtns & "<a title='Anterior' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Previous&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
-            rbtns = rbtns & "<a id='Header-List' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
-            rbtns = rbtns & "<a title='Próximo' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Next&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
+            if aut("|profissionaisV|")=1 then
+                rbtns = rbtns & "<a title='Anterior' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Previous&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
+                rbtns = rbtns & "<a id='Header-List' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
+                rbtns = rbtns & "<a title='Próximo' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Next&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
+            end if
 		end if
 		if aut(recurso&"I")=1 and recurso<>"profissionais" and recurso<>"funcionarios" then
 			rbtns = rbtns & "<a id='Header-New' title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "

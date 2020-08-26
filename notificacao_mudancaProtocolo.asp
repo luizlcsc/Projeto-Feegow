@@ -1,4 +1,4 @@
-<!--#include file="connect.asp"-->
+b<!--#include file="connect.asp"-->
 <!--#include file="Classes/Json.asp"-->
 <% 
     response.Charset="utf-8" 
@@ -55,14 +55,12 @@
 
         sqlAutorizar = "INSERT INTO paciente_medicamentos_aprovacao (pacientesProtocolosMedicamentosID, MedicamentoPrescritoID, ProfissionalID, tipo, DoseMedicamento, Obs, statusId) VALUES("&paciente&", "&medicamentoId&", "&session("User")&", '"&tipo&"', "&dose&", '"&obs&"', 0);" 
 
-        ' response.write(sqlAutorizar)
         db.execute(sqlAutorizar)
         
-        selecaoSql = "SELECT id from paciente_medicamentos_aprovacao where pacientesProtocolosMedicamentosID="&paciente&" and MedicamentoPrescritoID="&medicamentoId&" and ProfissionalID = "&session("User")&" and tipo = '"&tipo&"' and DoseMedicamento = "&dose&" and Obs = '"&obs&"' and statusId = 0"
+        selecaoSql = "SELECT id from paciente_medicamentos_aprovacao where pacientesProtocolosMedicamentosID="&paciente&" and MedicamentoPrescritoID="&medicamentoId&" and ProfissionalID = "&session("User")&" and tipo = '"&tipo&"' and Obs = '"&obs&"' and statusId = 0"
         selecao2 = db.execute(selecaoSql)
 
         updateNotificacao = "UPDATE notificacoes set NotificacaoIDRelativo="&selecao2("id")&" where id in ("&toUpdate&")"
-        ' response.write(updateNotificacao)
 
         db.execute(updateNotificacao)
 

@@ -44,6 +44,8 @@ end if
 sqlBloquear = "select count(id)as qtd from pacientesprotocolosmedicamentos where ProtocoloID = 1 and sysActive = 1"
 bloquear = db.execute(sqlBloquear)
 
+
+
 if CInt(bloquear("qtd")) > 0 then
     bloquear = 1
 else
@@ -183,17 +185,17 @@ end if
     let bloquear = '<%=bloquear%>';
 
     if(bloquear == 1){
-        $('#salvar').attr('disabled',true)
-        $('#salvar').parent().attr('data-toggle',"tooltip")
-        $('#salvar').parent().attr('data-placement',"top")
+        $('#formProtocolos #salvar').attr('disabled',true)
+        $('#formProtocolos #salvar').parent().attr('data-toggle',"tooltip")
+        $('#formProtocolos #salvar').parent().attr('data-placement',"top")
         $('[data-toggle="tooltip"]').tooltip()
-        $('input').attr('disabled',true)
-        $('button').attr('disabled',true)
+        $('#formProtocolos input').attr('disabled',true)
+        $('#formProtocolos button').attr('disabled',true)
         setTimeout(() => {
-            $('.select2').css('pointer-events',"none")
-            $('.multiselect').css('pointer-events',"none")
-            $('.multiselect').css('background-color',"#fafafa")
-            $('.select2-selection').css('background-color','#fafafa')
+            $('#formProtocolos .select2').css('pointer-events',"none")
+            $('#formProtocolos .multiselect').css('pointer-events',"none")
+            $('#formProtocolos .multiselect').css('background-color',"#fafafa")
+            $('#formProtocolos .select2-selection').css('background-color','#fafafa')
         }, 200);
     }
 

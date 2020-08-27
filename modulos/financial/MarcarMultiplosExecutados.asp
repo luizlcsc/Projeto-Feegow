@@ -2,11 +2,12 @@
 <%
 InvoiceID=req("InvoiceID")
 
-sql = "select p.NomeProcedimento, ii.Desconto, ii.Acrescimo, ii.ValorUnitario, ii.id as iditensinvoice, ii.Executado, rr.id RepasseID, ii.Tipo "&_
+sql = "select p.NomeProcedimento, ii.Desconto, ii.Acrescimo, ii.ValorUnitario, ii.id as iditensinvoice, ii.Executado, rr.id RepasseID, lie.id LabIntegracaoID, ii.Tipo "&_
       "from sys_financialinvoices invoice "&_
       "inner join itensinvoice ii on ii.InvoiceID = invoice.id "&_
       "inner join procedimentos p ON p.id = ii.ItemID "&_
       "left join rateiorateios rr ON rr.ItemInvoiceID = ii.id "&_
+      "left join labs_invoices_exames lie ON lie.ItemInvoiceID = ii.id AND lie.StatusID=1 "&_
       "where  invoice.id = " & InvoiceID &" "&_
       "GROUP BY ii.id "&_
       "ORDER BY ii.id ASC"
@@ -49,10 +50,17 @@ if not ItensInvoiceSQL.eof then
                 Executado=""
                 PermiteSelecionar=True
                 DescricaoPermiteSelecionar=""
+                ItemInvoiceID=ItensInvoiceSQL("iditensinvoice")
 
                 if not isnull(ItensInvoiceSQL("RepasseID")) then
                     PermiteSelecionar=False
                     DescricaoPermiteSelecionar="Há um ou mais repasse(s) consolidado(s) para este item"
+                end if
+
+
+                if not isnull(ItensInvoiceSQL("LabIntegracaoID")) then
+                    PermiteSelecionar=False
+                    DescricaoPermiteSelecionar="Há integrações realizadas para este item"
                 end if
 
 

@@ -560,7 +560,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 					if session("Logo")="" then
 						Logo = "https://cdn.feegow.com/feegowclinic-v7/assets/img/logo_white.png"
 					else
-						Logo = "/logo/"&session("Logo")
+						Logo = "https://cdn.feegow.com/logos/"&session("Logo")
 					end if
 					%>
           <img class="logol" src="<%=Logo %>" height="32" />

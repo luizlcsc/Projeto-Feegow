@@ -848,8 +848,11 @@ function imprimirReciboInvoice(){
 	}
 }
 
+var itensAlterados = false;
 
 function itens(T, A, II, autoPCi, cb){
+    itensAlterados=true;
+
 	var inc = $('[data-val]:last').attr('data-val');
 	var centroCustoId = $("#CentroCustoBase").val();
 	var LimitarPlanoContas = $("#LimitarPlanoContas").val();
@@ -1263,8 +1266,8 @@ function historicoInvoice() {
 }
 
 function marcarMultiplosExecutados(){
-    saveInvoiceSubmit(function() {
-      openComponentsModal("modulos/financial/MarcarMultiplosExecutados.asp", {
+    const proceed = function(){
+        openComponentsModal("modulos/financial/MarcarMultiplosExecutados.asp", {
               invoiceId: "<%=InvoiceID%>"
           }, "Marcar múltiplas execuções", true, function(data) {
               const formData = getFormData($("#form-components"));
@@ -1301,6 +1304,15 @@ function marcarMultiplosExecutados(){
               closeComponentsModal();
 
           }, "md");
+    };
+
+
+    if(!itensAlterados){
+        return proceed()
+    }
+
+    saveInvoiceSubmit(function() {
+      proceed();
     })
 
 };

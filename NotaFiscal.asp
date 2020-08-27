@@ -84,7 +84,7 @@ end if
                         Ações <span class="caret"></span></button>
                         <ul class="dropdown-menu" role="menu">
                           <li><a href="#" id="EmitirEmLote">Emitir em lote</a></li>
-                          <!--<li><a href="#" id="ConsultarEmLote">Consultar em lote</a></li>-->
+                          <li><a href="#" id="ConsultarEmLote">Consultar em lote</a></li>
                         </ul>
                       </div>
                     </div>

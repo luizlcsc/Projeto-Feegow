@@ -117,7 +117,7 @@ while not c.eof
     %>
     {"Month":"<%=c(Intervalo)%>","SD0":"<%=c("SD0")%>","SD1":"<%=c("SD1")%>","SD2":"<%=c("SD2")%>","SD3":"<%=c("SD3")%>","SD1neg":"<%=c("SD1neg")%>","SD2neg":"<%=c("SD2neg")%>","SD3neg":"<%=c("SD3neg")%>"},
     <%
-  elseif Coluna="imc" and Intervalo="month" then
+  elseif Intervalo="month" then
     %>
     {"Month":"<%=c("month")%>","SD0":"<%=c("SD0")%>","SD1":"<%=c("SD1")%>","SD2":"<%=c("SD2")%>","SD3":"<%=c("SD3")%>","SD1neg":"<%=c("SD1neg")%>","SD2neg":"<%=c("SD2neg")%>","SD3neg":"<%=c("SD3neg")%>"},
     <%  
@@ -153,7 +153,11 @@ var wfa_boys_0_to_5 = {
   <% elseif  idCurva = 23 then %>
     xxMin = 61;  
   <% elseif  idCurva = 24 then %>
-    xxMin = 122;  
+    xxMin = 122;
+  <% elseif  idCurva = 26 then %>
+    xxMin = 61;  
+  <% elseif  idCurva = 27 then %>
+    xxMin = 122;      
   <% end if  %>
   var growthChart = display_growth_chart(patientGrowth, '#meucanvas' , 'wfa_boys_0_to_5',null,xxMin);
   </script>

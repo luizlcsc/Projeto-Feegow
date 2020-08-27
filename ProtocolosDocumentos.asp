@@ -38,6 +38,7 @@
             data.map(doc=>{
                 addLine(doc)
             })
+            block()
         })
         if(tipos.length == 0){
             let localTipos = '<%= recordToJSON(db.execute("select id,NomeArquivo from tipos_de_arquivos")) %>' ;

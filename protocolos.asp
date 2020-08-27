@@ -164,6 +164,7 @@ end if
        $("#ProtocolosDocumentos").addClass("active");
 
        getDocumentos('<%=req("I")%>')
+       block()
     });
     function saveProtocolo(ID){
         $.post("saveProtocolo.asp?I="+ID, $("#formProtocolos").serialize(), function(data){

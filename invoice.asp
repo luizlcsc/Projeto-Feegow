@@ -1272,15 +1272,16 @@ function marcarMultiplosExecutados(){
           }, "Marcar múltiplas execuções", true, function(data) {
               const formData = getFormData($("#form-components"));
               let itemMultiplosExecutados = formData["item-multiplos-executados"];
-              if(typeof itemMultiplosExecutados!=="object"){
-                  itemMultiplosExecutados=[itemMultiplosExecutados];
-              }
 
               if(!formData.ExecutanteIDMultiplo){
                   return showMessageDialog("Preencha o executante", "warning");
               }
               if(!itemMultiplosExecutados){
-                  return showMessageDialog("Selecione um item", "warning");
+                  return showMessageDialog("Selecione pelo menos um item", "warning");
+              }
+
+              if(typeof itemMultiplosExecutados!=="object"){
+                  itemMultiplosExecutados=[itemMultiplosExecutados];
               }
 
               if(itemMultiplosExecutados){

@@ -198,6 +198,7 @@ end if
                 $('#formProtocolos .multiselect').css('pointer-events',"none")
                 $('#formProtocolos .multiselect').css('background-color',"#fafafa")
                 $('#formProtocolos .select2-selection').css('background-color','#fafafa')
+                $('select').attr('disabled',true)
             }, 200);
             $('#Ativo').click(event=>{
                 let valor = (($('#Ativo').prop('checked'))?'on':'off')

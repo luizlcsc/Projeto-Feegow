@@ -51,11 +51,13 @@ if Acao="B" then
 		<%
 	else
 		%>
-    $.gritter.add({
-        title: '<i class="fa fa-thumbs-down"></i> N&Atilde;O BAIXADO!',
-        text: '<%=Erro%>',
-        class_name: 'gritter-error'
-    });
+        new PNotify({
+            title: 'Falha!',
+            text: '<%=Erro%>',
+            type: 'danger',
+            delay:5000
+        });
+
 		<%
 	end if
 end if

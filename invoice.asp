@@ -358,12 +358,9 @@ posModalPagar = "fixed"
     %>
         <div class="panel-body mb15">
             <div class="col-md-2 pt10">
-                <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago">
-                    <input type="checkbox" name="AExecutadoTodos" id="ExecutadoTodos" value="S">
-                    <label for="ExecutadoTodos">
-                        Marcar todos como executados
-                    </label>
-                </span>
+                <button type="button" onclick="marcarMultiplosExecutados()" class="btn btn-default btn-sm">
+                    <i class="fa fa-check-circle"></i> Marcar itens como executado
+                </button>
             </div>
             <div class="col-md-2"><br/>
             <%
@@ -1264,6 +1261,49 @@ function historicoInvoice() {
         TipoPai: "InvoiceID",
     }, "Log de alterações", true);
 }
+
+function marcarMultiplosExecutados(){
+    saveInvoiceSubmit(function() {
+      openComponentsModal("modulos/financial/MarcarMultiplosExecutados.asp", {
+              invoiceId: "<%=InvoiceID%>"
+          }, "Marcar múltiplas execuções", true, function(data) {
+              const formData = getFormData($("#form-components"));
+              let itemMultiplosExecutados = formData["item-multiplos-executados"];
+              if(typeof itemMultiplosExecutados!=="object"){
+                  itemMultiplosExecutados=[itemMultiplosExecutados];
+              }
+
+              if(!formData.ExecutanteIDMultiplo){
+                  return showMessageDialog("Preencha o executante", "warning");
+              }
+              if(!itemMultiplosExecutados){
+                  return showMessageDialog("Selecione um item", "warning");
+              }
+
+              if(itemMultiplosExecutados){
+
+                  for(let i=0;i<itemMultiplosExecutados.length;i++){
+                      let itemSelecionarId = itemMultiplosExecutados[i];
+
+                      let $itemSelecionar = $("#row"+itemSelecionarId);
+
+                      let sel = "#ProfissionalID"+itemSelecionarId +" option[value=\""+formData.ExecutanteIDMultiplo+"\"]";
+
+                      if($(sel).length > 0){
+                          $itemSelecionar.find(".checkbox-executado").prop("checked", true);
+                          $("#row2_"+itemSelecionarId).removeClass("hidden");
+                          $("#ProfissionalID"+itemSelecionarId).val(formData.ExecutanteIDMultiplo ).change();
+                          $("#DataExecucao"+itemSelecionarId).val(formData.DataExecucaoMultiplo );
+                      }
+                  }
+              }
+
+              closeComponentsModal();
+
+          }, "md");
+    })
+
+};
 
 </script>
 

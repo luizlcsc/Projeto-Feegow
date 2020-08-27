@@ -358,12 +358,9 @@ posModalPagar = "fixed"
     %>
         <div class="panel-body mb15">
             <div class="col-md-2 pt10">
-                <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago">
-                    <input type="checkbox" name="AExecutadoTodos" id="ExecutadoTodos" value="S">
-                    <label for="ExecutadoTodos">
-                        Marcar todos como executados
-                    </label>
-                </span>
+                <button id="AExecutadoTodos" class="btn btn-default btn-sm">
+                    <i class="fa fa-check-circle"/> Marcar itens como executado
+                </button>
             </div>
             <div class="col-md-2"><br/>
             <%
@@ -1264,6 +1261,10 @@ function historicoInvoice() {
         TipoPai: "InvoiceID",
     }, "Log de alterações", true);
 }
+
+$("#AExecutadoTodos").click(function() {
+    openComponentsModal("");
+});
 
 </script>
 

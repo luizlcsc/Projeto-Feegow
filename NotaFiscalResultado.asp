@@ -267,9 +267,6 @@ if not NotasFiscaisSQL.eof then
             TotalRepasse= TotalRepasse + ValorRepasse
             TotalLiquido= TotalLiquido + ValorLiquido
             TotalPrefeitura= TotalPrefeitura + ValorNota
-
-            if
-            classNotaAguardando = "notaAguardando"
         %>
         <tr class="linha-nf-<%=NotasFiscaisSQL("id")%> <%=classeLinha%> <%=classExecutado%>">
             <td>

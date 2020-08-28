@@ -27,7 +27,7 @@ PacienteID = req("P")
             <a href="#tab17_3" data-toggle="tab">Perímetro Cefálico</a>
         </li>
         <li>
-            <a href="#tab20_4" data-toggle="tab">imc</a>
+            <a href="#tab20_4" data-toggle="tab">IMC</a>
         </li>
         </ul>
         <div class="clearfix"></div>

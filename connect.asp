@@ -2209,7 +2209,13 @@ FormaID = replace(FormaID, "|", "")
 			end if
 		end if
 		if instr(dom("Profissionais"), "|"&replace(ProfissionalID&"", "5_", "")&"|")>0 or instr(dom("Profissionais"), "|"&EspecialidadeID&"|")>0 then
-			esteponto = esteponto+1
+		    if instr(dom("Profissionais"), "|"&replace(ProfissionalID&"", "5_", "")&"|")>0 then
+			    esteponto = esteponto+1
+		    end if
+
+		    if instr(dom("Profissionais"), "|"&EspecialidadeID&"|")>0 then
+			    esteponto = esteponto+1
+		    end if
 		else
 			if trim(dom("Profissionais"))<>"" then
 				queima = 1

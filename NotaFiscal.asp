@@ -89,7 +89,6 @@ end if
                       </div>
                     </div>
             </div>
-            <button type="button" id="ConsultarEmLote2" class="btn btn-primary dropdown-toggle" >Consultar Em Lote</button>
             <div class="col-md-2">
                 <br>
 
@@ -106,7 +105,6 @@ end if
                     </div>
                 </div>
             </form>
-
         </div>
     </div>
 
@@ -160,26 +158,6 @@ end if
          });
 
         //alert("Serviço adicional em manutenção")
-    });
-
-    $("#ConsultarEmLote2").click(function(){
-        var nfe = [];
-        var nfeAguardando = $(".notaAguardando");
-        $.each(nfeAguardando, function() {
-            nfe.push($(this).data('notaid'));
-         });
-
-        var test = false;
-
-        $.post(feegow_components_path+"nota_fiscal_eletronica/ConsultarEmLote",{nfe: nfe, invoiceId:1, test:test,'NFe[DataNota]':$("#De").val()},function(data){
-            $("#btnBuscar").click();
-            $("#acoes-notas-fiscais").fadeIn();
-            alert("Envio com sucesso. Aguarde para receber o retorno.");
-        }).error(function() {
-          alert("Ocorreu um erro.");
-          $("#btnBuscar").click();
-        });
-
     });
 
     $("#ConsultarEmLote").click(function() {

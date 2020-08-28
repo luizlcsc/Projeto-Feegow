@@ -268,12 +268,15 @@ if not NotasFiscaisSQL.eof then
             TotalLiquido= TotalLiquido + ValorLiquido
             TotalPrefeitura= TotalPrefeitura + ValorNota
             classNotaAguardando = ""
-            if NotasFiscaisSQL("Motivo")&"" = "Aguardando envio" then
+
+            NotaFiscalMotivo = NotasFiscaisSQL("Motivo")
+            NotaFiscalID = NotasFiscaisSQL("id")
+            if NotaFiscalMotivo&"" = "Aguardando envio" then
                 classNotaAguardando = " notaAguardando "
             end if
 
         %>
-        <tr class="linha-nf-<%=NotasFiscaisSQL("id")%> <%=classeLinha%> <%=classExecutado%> <%=classNotaAguardando%>" data-notaID="<%=NotasFiscaisSQL("id")%>" >
+        <tr class="linha-nf-<%=NotaFiscalID%> <%=classeLinha%> <%=classExecutado%> <%=classNotaAguardando%>" data-notaID="<%=NotaFiscalID%>" >
             <td>
                 <a href="?P=invoice&I=<%=NotasFiscaisSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" class="btn btn-link btn-xs" target="_blank"><i class="fa fa-external-link"></i></a>
 
@@ -305,7 +308,7 @@ if not NotasFiscaisSQL.eof then
             <td><%=CPFTomador%></td>
             <td><strong><%=numero%></strong></td>
             <td><%=rps%></td>
-            <td><%=NotasFiscaisSQL("Motivo")%></td>
+            <td><%=NotaFiscalMotivo%></td>
             <td><%=fn(ValorTotalInvoice)%></td>
             <td><%=fn(ValorRepasse)%></td>
             <td><%=fn(ValorLiquido)%></td>

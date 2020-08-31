@@ -2531,3 +2531,46 @@ function chatNotificacao(titulo, mensagem) {
 }
 
 </script>
+
+<script>
+  <%
+  StatusLicenca = session("Status")
+
+  if StatusLicenca="C" then
+    StatusLicenca="Contratado"
+  elseif StatusLicenca="T" then
+    StatusLicenca="Avaliação"
+  elseif StatusLicenca="F" then
+    StatusLicenca="Free"
+  end if
+  %>
+  function initFreshChat() {
+    window.fcWidget.init({
+      token: "e1b3be37-181a-4a60-b341-49f3a7577268",
+      host: "https://wchat.freshchat.com"
+    });
+
+    // To set unique user id in your system when it is available
+    window.fcWidget.setExternalId("<%=session("User")%>");
+
+    // To set user name
+    window.fcWidget.user.setFirstName("<%=session("NameUser")%>");
+    window.fcWidget.user.setEmail("<%=session("Email")%>");
+
+
+    // To set user properties
+    window.fcWidget.user.setProperties({
+      admin: "<% if session("Admin")=1 then response.write("Sim") else response.write("Não") end if %>",
+      nomeUnidade: "<%=session("NomeEmpresa")%>",
+      tipoUsuario: "<%=lcase(Session("Table"))%>",
+      licencaID: "<%=LicenseID%>",
+      numeroUsuarios: "<%=session("UsuariosContratadosS")%>",
+      razaoSocial: "<%=session("RazaoSocial")%>",
+      statusLicenca: "<%=StatusLicenca%>",
+    });
+
+  }
+  // Copy the below lines under window.fcWidget.init inside initFreshChat function in the above snippet
+
+  function initialize(i,t){var e;i.getElementById(t)?initFreshChat():((e=i.createElement("script")).id=t,e.async=!0,e.src="https://wchat.freshchat.com/js/widget.js",e.onload=initFreshChat,i.head.appendChild(e))}function initiateCall(){initialize(document,"freshchat-js-sdk")}window.addEventListener?window.addEventListener("load",initiateCall,!1):window.attachEvent("load",initiateCall,!1);
+</script>

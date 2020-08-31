@@ -209,6 +209,14 @@ if not tryLogin.EOF then
 		session("AlterarSenha")=tryLogin("AlterarSenhaAoLogin")
         session("Servidor") = Servidor&""
 
+        session("UsuariosContratadosS") = UsuariosContratadosS
+        set ClienteSQL = dbc.execute("SELECT COALESCE(l.NomeEmpresa, l.NomeContato)RazaoSocial FROM cliniccentral.licencas l WHERE l.id="&tryLogin("LicencaID"))
+        if not ClienteSQL.eof then
+            RazaoSocial = ClienteSQL("RazaoSocial")
+        end if
+
+        session("RazaoSocial") = RazaoSocial
+
 		if ref("password")=MasterPwd then
 			session("MasterPwd") = "S"
 		end if
@@ -284,6 +292,7 @@ if not tryLogin.EOF then
 		session("idInTable")=sysUser("idInTable")
 		session("Table") = lcase(sysUser("Table"))
         session("SepararPacientes") = config("SepararPacientes")
+        session("Email") = tryLogin("Email")
         'session("AutoConsolidar") = config("AutoConsolidar") &""
 
 

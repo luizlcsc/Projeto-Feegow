@@ -479,11 +479,6 @@ end if
                   &nbsp;<i class="fa fa-film fa-fw text-primary"></i>&nbsp;&nbsp; Vídeos explicativos</a>
                 <a class="list-group-item hidden" href="#">
                   &nbsp;<i class="fa fa-phone fa-fw text-primary"></i>&nbsp;&nbsp; Solicite uma ligação</a>
-
-                <a class="list-group-item" target="_blank" href="https://feegow.futurotec.com.br/futurofone_chat/?hash_chat=FFCHAT01">
-                  &nbsp;<i class="fa fa-comment fa-fw text-primary"></i>&nbsp;&nbsp; Chat online</a>
-
-
               </div>
             </div>
 
@@ -598,23 +593,6 @@ end if
                             <strong>DF</strong> 61 2626.1004<br>
                         </td>
                     </tr>
-                    <tr>
-                        <td colspan="3">
-                            <h4 class="no-margin blue">Chat online <small>» seg. a sex. das 8h às 19h</small></h4>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="1">
-                        <div class="col-md-12">
-                        Clique no botão abaixo, e na parte inferior da tela será exibida a caixa para iniciar a conversa com nossos atendentes.
-</div>
-                                                   <div class="col-md-6">
-                                                   <br>
-         <a href="./?P=AtivaChat&amp;Pers=1" class="btn btn-success btn-block "> <i class="fa fa-comment"></i> Acessar Chat</a>
-</div>
-                        </td>
-                    </tr>
-
                 </tbody>
             </table>
             </div>

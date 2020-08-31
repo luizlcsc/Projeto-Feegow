@@ -168,6 +168,7 @@ if aut("recibosI")<>1 or session("Admin")<>1 then
 end if
 
 set recibosGerados = db.execute("SELECT * FROM recibos WHERE sysActive=1 AND InvoiceID="&InvoiceID)
+desabilitarReemitirRecibo = " disabled "
 if not recibosGerados.eof then
     textButtom = "Gerar novamente o recibo"
     classButtom = "warning"
@@ -176,12 +177,18 @@ if not recibosGerados.eof then
         'desabilita = " disabled "
     end if
 end if
+
+if getconfig("PermitirReemitirRecibo") = 1 then
+    desabilitarReemitirRecibo = ""
+end if
+
 %>
+
 <div class="col-md-2 mt25">
 <h4>Recibos emitidos</h4>
 </div>
 <div class="col-md-2 col-md-offset-7 mt25">
-<button type='button' class='btn btn-<%=classButtom%> btn-sm' <%=desabilita%> onClick='imprimirReciboInvoice()'><i class='fa fa-plus'></i> <%=textButtom%></button>
+<button type='button' class='btn btn-<%=classButtom%> <%=desabilitarReemitirRecibo%> btn-sm' <%=desabilita%> onClick='imprimirReciboInvoice()'><i class='fa fa-plus'></i> <%=textButtom%></button>
 </div>
 
 

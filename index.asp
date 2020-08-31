@@ -2532,10 +2532,18 @@ function chatNotificacao(titulo, mensagem) {
 
 </script>
 
-<%
-if session("Status")="C" THEN
-%>
 <script>
+  <%
+  StatusLicenca = session("Status")
+
+  if StatusLicenca="C" then
+    StatusLicenca="Contratado"
+  elseif StatusLicenca="T" then
+    StatusLicenca="Avaliação"
+  elseif StatusLicenca="F" then
+    StatusLicenca="Free"
+  end if
+  %>
   function initFreshChat() {
     window.fcWidget.init({
       token: "e1b3be37-181a-4a60-b341-49f3a7577268",
@@ -2558,6 +2566,7 @@ if session("Status")="C" THEN
       licencaID: "<%=LicenseID%>",
       numeroUsuarios: "<%=session("UsuariosContratadosS")%>",
       razaoSocial: "<%=session("RazaoSocial")%>",
+      statusLicenca: "<%=StatusLicenca%>",
     });
 
   }
@@ -2565,6 +2574,3 @@ if session("Status")="C" THEN
 
   function initialize(i,t){var e;i.getElementById(t)?initFreshChat():((e=i.createElement("script")).id=t,e.async=!0,e.src="https://wchat.freshchat.com/js/widget.js",e.onload=initFreshChat,i.head.appendChild(e))}function initiateCall(){initialize(document,"freshchat-js-sdk")}window.addEventListener?window.addEventListener("load",initiateCall,!1):window.attachEvent("load",initiateCall,!1);
 </script>
-<%
-END IF
-%>

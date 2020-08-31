@@ -479,11 +479,6 @@ end if
                   &nbsp;<i class="fa fa-film fa-fw text-primary"></i>&nbsp;&nbsp; Vídeos explicativos</a>
                 <a class="list-group-item hidden" href="#">
                   &nbsp;<i class="fa fa-phone fa-fw text-primary"></i>&nbsp;&nbsp; Solicite uma ligação</a>
-
-                <a class="list-group-item" target="_blank" href="https://feegow.futurotec.com.br/futurofone_chat/?hash_chat=FFCHAT01">
-                  &nbsp;<i class="fa fa-comment fa-fw text-primary"></i>&nbsp;&nbsp; Chat online</a>
-
-
               </div>
             </div>
 

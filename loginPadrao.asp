@@ -49,7 +49,7 @@ if not tryLogin.EOF then
     Cupom = tryLogin("Cupom")
 
     ClienteUnimed = instr(Cupom, "UNIMED") > 0
-    session("ClienteUnimed") = ClienteUnimed
+    session("ClienteUnimed") = instr(Cupom, "UNIMED") > 0
 
     if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then

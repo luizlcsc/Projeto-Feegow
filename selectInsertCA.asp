@@ -31,7 +31,7 @@ for un=0 to ubound(splUnions)
     'response.write(resultado(1))
 
     IF (resultado(1) = "Paciente") THEN
-	    selectUnion = selectUnion&"(select id, '"&splUnions(un)&"' associacao, '"&resultado(1)&"' recurso, "&colunaValor&" coluna from `"&resultado(0)&"` where ("&resultado(2)&" like '%"&replace(ref("typed"), " ", "%")&"%' "&nomeSocial&sqlWhereOr&") "&Ativo&active&" order by "&resultado(2)&" limit 50) UNION ALL "
+	    selectUnion = selectUnion&"(select id, '"&splUnions(un)&"' associacao, '"&resultado(1)&"' recurso, "&colunaValor&" coluna from `"&resultado(0)&"` where ("&resultado(2)&" like '"&replace(ref("typed"), " ", "%")&"%' "&nomeSocial&sqlWhereOr&") "&Ativo&active&" order by "&resultado(2)&" limit 50) UNION ALL "
 	ELSE
 	    selectUnion = selectUnion&"(select id, '"&splUnions(un)&"' associacao, '"&resultado(1)&"' recurso, "&colunaValor&" coluna from `"&resultado(0)&"` where ("&resultado(2)&" like '"&replace(ref("typed"), " ", "%")&"%' "&nomeSocial&") "&Ativo&sqlWhereOr&active&" order by "&resultado(2)&" limit 50) UNION ALL "
 	END IF

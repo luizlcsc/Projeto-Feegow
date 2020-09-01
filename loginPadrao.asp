@@ -48,6 +48,9 @@ if not tryLogin.EOF then
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
 
+    ClienteUnimed = instr(Cupom, "UNIMED") > 0
+    session("ClienteUnimed") = ClienteUnimed
+
     if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
             Response.Redirect("https://"&ServidorAplicacao&"/"&PastaAplicacaoRedirect&"/?P=Login&U="&User)

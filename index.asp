@@ -22,6 +22,10 @@ if session("User")="" and request.QueryString("P")<>"Login" and request.QueryStr
 	response.Redirect("./?P=Login&qs="&Server.URLEncode(QueryStringParameters))
 end if
 
+set shellExec = createobject("WScript.Shell")
+Set objSystemVariables = shellExec.Environment("SYSTEM")
+AppEnv = objSystemVariables("APP_ENV")
+
 if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
 	if request.QueryString("P")<>"Home" and session("Bloqueado")<>"" then
 		response.Redirect("./?P=Home&Pers=1")
@@ -811,10 +815,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                  if session("Admin")=1 then
 
                                  IF session("QuantidadeFaturasAbertas") = "" THEN
-                                    set shellExec = createobject("WScript.Shell")
-                                    Set objSystemVariables = shellExec.Environment("SYSTEM")
-                                    AppEnv = objSystemVariables("APP_ENV")
-
                                     if AppEnv="production" then
 
 								 %>
@@ -2531,7 +2531,16 @@ function chatNotificacao(titulo, mensagem) {
 }
 
 </script>
+<%
+PermiteChat = True
 
+if session("ClienteUnimed") or AppEnv<>"production" then
+    PermiteChat= False
+end if
+
+
+if PermiteChat then
+%>
 <script>
   <%
   StatusLicenca = session("Status")
@@ -2574,3 +2583,6 @@ function chatNotificacao(titulo, mensagem) {
 
   function initialize(i,t){var e;i.getElementById(t)?initFreshChat():((e=i.createElement("script")).id=t,e.async=!0,e.src="https://wchat.freshchat.com/js/widget.js",e.onload=initFreshChat,i.head.appendChild(e))}function initiateCall(){initialize(document,"freshchat-js-sdk")}window.addEventListener?window.addEventListener("load",initiateCall,!1):window.attachEvent("load",initiateCall,!1);
 </script>
+<%
+end if
+%>

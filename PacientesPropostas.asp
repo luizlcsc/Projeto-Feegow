@@ -230,7 +230,7 @@ end if
                                                      <label>Profissional</label>
                                                      <%
 
-                                                      if getconfig("profissionalsolicitanteobrigatorio")=1 then
+                                                      if getconfig("profissionalsolicitanteobrigatorioproposta")=1 then
                                                           SolicitanteRequired = " required empty "
                                                       end if
 

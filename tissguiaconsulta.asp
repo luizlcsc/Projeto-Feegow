@@ -595,7 +595,7 @@ end if
 
 	if aut("valorprocedimentoguiaA") then
 	    response.Write(quickField("currency", "ValorProcedimento", "* Valor", 12, ValorProcedimento, "", "", " required='required'"))
-    elseif false then
+    elseif aut("valorprocedimentoguiaV") then
         %>
         <div class="col-md-12">
             <strong>R$ <span class="valor-procedimento"><%=fn(ValorProcedimento)%></span></strong>

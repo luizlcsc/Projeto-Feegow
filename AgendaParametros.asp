@@ -7,7 +7,7 @@ ProfissionalID = ref("ProfissionalID")
 PacienteID = ref("PacienteID")
 Checkin = ref("Checkin")
 
-
+ValidarRetornos=getConfig("ValidarRetornos")
 FormaPagto = request.QueryString("FormaPagto")'Particular ou Convenio
 ProcedimentoTempoProfissional = request.QueryString("ProcedimentoTempoProfissional")
 
@@ -310,7 +310,7 @@ if left(tipo, 14)="ProcedimentoID" then
     TabelaID = ref("ageTabela")
 	ProcedimentoID = id
     procValor = 0
-    
+
     if ProcedimentoID="" then
         Response.End
     end if
@@ -328,10 +328,14 @@ if left(tipo, 14)="ProcedimentoID" then
         TipoProcedimentoID = proc("TipoProcedimentoID")
 
         if not isnull(TipoProcedimentoID) then
-            if TipoProcedimentoID="9" then
-                if getConfig("ValidarRetornos")="1" then
+            if ValidarRetornos="1" then
+                if TipoProcedimentoID="9" then
                     %>
                     $("#Retorno").prop("checked", true).change();
+                    <%
+                else
+                    %>
+                    $("#Retorno").prop("checked", false).change();
                     <%
                 end if
             end if

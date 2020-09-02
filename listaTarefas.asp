@@ -103,6 +103,7 @@
                 %>
                 <%= quickfield("simpleSelect", "Responsavel", "Responsável", 3, "", "select su.id, t.Nome from (	select id, NomeProfissional Nome, 'profissionais' Tipo from profissionais where ativo='on' and sysActive=1	UNION ALL	select id, NomeFuncionario, 'funcionarios' from funcionarios where ativo='on' and sysActive=1) t INNER JOIN sys_users su ON (su.idInTable=t.id AND lcase(su.`Table`)=t.Tipo) order by Nome", "Nome", " empty ") %>
                  <%=quickfield("simpleSelect", "TipoTarefa", "Tipo da Tarefa", 2, "", "select '0' id, 'Sem Tipo' Descricao UNION ALL  select id, Descricao from tarefastipos order by id", "Descricao", " semVazio") %>
+                        <%=quickfield("simpleSelect", "CategoriaID", "Categoria", 3, "", "SELECT '0' id, 'SEM CATEGORIA' NomeCategoria UNION ALL SELECT id, CONCAT(IFNULL(Pai2,''), IFNULL(Pai1,''), NomeCategoria) NomeCategoria FROM (SELECT et.id, (CONCAT(SUBSTR((SELECT (SELECT etp2.NomeCategoria FROM tarefa_categoria etp2 WHERE etp2.id=etp1.PaiID) FROM tarefa_categoria etp1 WHERE etp1.id=et.PaiID),1,14),'', ' > ')) Pai2, (CONCAT(SUBSTR((SELECT etp.NomeCategoria FROM tarefa_categoria etp WHERE etp.id=et.PaiID),1,14),'', ' > ')) Pai1, et.NomeCategoria FROM tarefa_categoria et WHERE (SELECT COUNT(id) FROM tarefa_categoria WHERE et.id=PaiID)=0 AND sysActive=1 ORDER BY et.NomeCategoria)t ", "NomeCategoria", " empty ") %>
 
                 <%
                 end if

@@ -1986,11 +1986,12 @@ select case lcase(req("P"))
                     </a>
                 </li>
                 <li>
-                    <a href="#" onClick="javascript:callReport('FCofre');">
+                    <a href="#" onClick="javascript:callReport('FCofreNovo');">
                         <i class="fa fa-double-angle-right"></i>
                         Fechamento de Cofre
                     </a>
                 </li>
+
                 <% if session("Banco")="clinic6118" or session("Banco")="clinic5760" or session("Banco")="clinic4285" or session("Banco")="clinic100000" then %>
                 <li>
                     <a href="#" onClick="javascript:callReport('AnaliseCompleta');">

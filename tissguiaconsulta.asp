@@ -585,14 +585,29 @@ end if
 	<td nowrap="nowrap" width="30%"><div class="col-md-12"><%= selectInsert("* Procedimento", "gProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""tissCompletaDados(4, this.value);""", "required", "") %></div></td>
 	<td width="25%"><%= quickField("simpleSelect", "TabelaID", "* Tabela", 12, TabelaID, "select id, concat(id, ' - ', descricao) descricao from tisstabelas order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
 	<td nowrap="nowrap" width="30%">
-
+<br>
         <%=selectProc("* Código do Procedimento", "CodigoProcedimento", CodigoProcedimento, "codigo", "TabelaID", "CodigoProcedimento", "", " required='required' ", "", "", "") %>
         <%'= quickField("text", "CodigoProcedimento", "C&oacute;digo do procedimento", 12, CodigoProcedimento, "", "", " required='required'") %></td>
 	<td nowrap="nowrap" width="15%" class="<% if aut("valordoprocedimentoV")=0 then %>hidden<%end if%>"><%
 	if not isnull(reg("ValorProcedimento")) then
 		ValorProcedimento = formatnumber(ValorProcedimento,2)
 	end if
-	response.Write(quickField("currency", "ValorProcedimento", "* Valor", 12, ValorProcedimento, "", "", " required='required'")) %></td>
+
+	if aut("valorprocedimentoguiaA") then
+	    response.Write(quickField("currency", "ValorProcedimento", "* Valor", 12, ValorProcedimento, "", "", " required='required'"))
+    elseif false then
+        %>
+        <div class="col-md-12">
+            <strong>R$ <span class="valor-procedimento"><%=fn(ValorProcedimento)%></span></strong>
+            <input type="hidden" name="ValorProcedimento" id="ValorProcedimento" value="<%=ValorProcedimento%>">
+        </div>
+        <%
+    else
+        %>
+        <input type="hidden" name="ValorProcedimento" id="ValorProcedimento" value="<%=ValorProcedimento%>">
+        <%
+    end if
+    %></td>
 	</tr></table></td></tr>
 
 	<tr><td><%= quickField("memo", "Observacoes", "Observa&ccedil;&otilde;es", 12, Observacoes, "", "", "") %></td></tr>

@@ -75,7 +75,7 @@ if not ReciboSQL.eof then
             end if
             %>
         <script>
-                getUrl("ifrReciboIntegrado.asp", {ReciboID:'<%=ReciboID%>',NumeroRps:'<%=NumeroRps%>', RepasseIds:'',Cnpj:'<%=Cnpj%>', RPS: 'S' ,NomeRecibo:'<%=RepasseNome%>', ModeloColuna:'<%=RPSModelo%>', I:'<%=RepasseInvoiceID%>', ProfissionalID: '<%=profissionalExecutanteId%>', ValorRecibo:'<%=ValorEmpresa%>', PacienteID:'<%=PacienteID%>'});
+                getUrl("ifrReciboIntegrado.asp", {ReciboID:'<%=ReciboID%>',NumeroRps:'<%=NumeroRps%>', RepasseIds:'',Cnpj:'<%=Cnpj%>', RPS: '<%=RPS%>' ,NomeRecibo:'<%=RepasseNome%>', ModeloColuna:'<%=RPSModelo%>', I:'<%=RepasseInvoiceID%>', ProfissionalID: '<%=profissionalExecutanteId%>', ValorRecibo:'<%=ValorEmpresa%>', PacienteID:'<%=PacienteID%>'});
         </script>
             <%
         else

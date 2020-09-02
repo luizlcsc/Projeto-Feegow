@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/AccountBalance.asp"-->
 
 <script type="text/javascript">
     $(".crumb-active").html("<a href='#'>Financeiro</a>");
@@ -9,6 +10,13 @@
 
 <%
 if aut("contasareceber")=1 and aut("contasapagar")=1 and aut("movement")=1 then
+
+
+DataReferencia=req("DataReferencia")
+
+if DataReferencia="" then
+    DataReferencia=date()
+end if
 %>
 <br />
 	<div class="panel">
@@ -18,6 +26,13 @@ if aut("contasareceber")=1 and aut("contasapagar")=1 and aut("movement")=1 then
         <div class="panel-body">
             <div class="col-md-12">
                 <h4>Saldo Geral</h4>
+                <form action="" id="form-saldo">
+                    <input type="hidden" name="P" value="Financeiro">
+                    <input type="hidden" name="Pers" value="1">
+                    <div class="row">
+                        <%=quickfield("datepicker", "DataReferencia", "Data do saldo", 3, DataReferencia, "", "", "")%>
+                    </div>
+                </form>
                 <h2 id="SaldoGeral">Carregando...</h2><br>
                 <div class="row">
                 <%
@@ -28,17 +43,18 @@ if aut("contasareceber")=1 and aut("contasapagar")=1 and aut("movement")=1 then
 						whereUnidades = "AND empresa in("&replace(unidadesSql("unidades"),"|","")&")"
 					end if
 				end if
+				Data=date()
 
 				SaldoGeral = 0
 				
 				set contas = db.execute("select * from sys_financialcurrentaccounts where AccountType in(1, 2) and sysActive=1 "&whereUnidades)
 				while not contas.EOF
-					Saldo = accountBalance("1_"&contas("id"), 0)
+					Saldo = accountBalancePerDate("1_"&contas("id"), 0, DataReferencia)
 					SaldoGeral = SaldoGeral+Saldo
 					%>
                     <div class="col-xs-3 img-thumbnail" style="padding-left:42px">
                         <a href="?P=Extrato&Pers=1&T=1_<%=contas("id") %>">
-                            <img style="position:absolute; left:5px; margin-top:2px" src="/assets/banks/financeiro.png" width="32" height="32">
+                            <img style="position:absolute; left:5px; margin-top:2px" src="http://cdn.feegow.com/feegowclinic-v7/assets/banks/financeiro.png" width="32" height="32">
                             <strong><%=left(contas("AccountName"),23)%></strong><br>R$ <%=formatnumber(Saldo, 2)%>
                         </a>
                     </div>
@@ -71,6 +87,10 @@ if aut("contasareceber")=1 and aut("contasapagar")=1 and aut("movement")=1 then
 
 <script>
 $("#SaldoGeral").html('R$ <%=formatnumber(SaldoGeral, 2)%>');
+
+$("#DataReferencia").change(function() {
+    $("#form-saldo").submit()
+});
 
 $(function () {
     $('#container').highcharts({

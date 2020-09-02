@@ -2533,7 +2533,7 @@ function chatNotificacao(titulo, mensagem) {
 </script>
 <%
 PermiteChat = True
-if session("ClienteUnimed")=True or AppEnv<>"production" then
+if session("ClienteUnimed")=True or AppEnv<>"production"  or req("P")="Login" then
     PermiteChat= False
 end if
 

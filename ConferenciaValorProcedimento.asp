@@ -10,9 +10,9 @@
 <div class="container">
 <form id="form-conferencia">
 <div class="row">
-<%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, Request.QueryString("Unidades"), "", "", "")%>
-<%=quickField("simpleSelect", "GrupoID", "Grupo", 2, Request.QueryString("GrupoID"), "select * from procedimentosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "  ")%>
-<%=quickField("simpleSelect", "TabelaID", "Tabela", 2, Request.QueryString("TabelaID"), "select * from tabelaparticular where sysActive=1 order by NomeTabela", "NomeTabela", "  ")%>
+<%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, Request.QueryString("Unidades"), "", "", " required ")%>
+<%=quickField("simpleSelect", "GrupoID", "Grupo", 2, Request.QueryString("GrupoID"), "select * from procedimentosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "  required ")%>
+<%=quickField("simpleSelect", "TabelaID", "Tabela", 2, Request.QueryString("TabelaID"), "select * from tabelaparticular where sysActive=1 order by NomeTabela", "NomeTabela", " required  ")%>
 <div class="col-md-3">
 <br><button class="btn btn-primary">
     Consultar valores

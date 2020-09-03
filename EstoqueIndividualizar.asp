@@ -7,12 +7,15 @@
     <tbody>
     <%
     ProdutoID = req("ProdutoID")
-    set ultCod = db.execute("select CAST(CBID AS UNSIGNED) CBID from estoqueposicao where CBID REGEXP ('^[0-9]') and ProdutoID="&ProdutoID&" order by CAST(CBID AS UNSIGNED) desc")
+    set ultCod = db.execute("select CAST(CBID AS UNSIGNED) CBID from estoqueposicao "&_
+        "where CBID REGEXP ('^[0-9]') and ProdutoID="&ProdutoID&" "&_
+        "order by CAST(CBID AS UNSIGNED) desc LIMIT 1")
+
     if not ultCod.eof then
-        if isnumeric(ultCod("CBID")) then
-            UltimoCodigo = ultCod("CBID")
-        end if
+        UltimoCodigo = ultCod("CBID")
     end if
+
+
     if UltimoCodigo="" then
         UltimoCodigo = ProdutoID & "000000"
         UltimoCodigo = left(UltimoCodigo, 7)

@@ -7,7 +7,7 @@
     <tbody>
     <%
     ProdutoID = req("ProdutoID")
-    set ultCod = db.execute("select CBID from estoqueposicao where CBID REGEXP ('^[0-9]') and ProdutoID="&ProdutoID&" order by CBID desc")
+    set ultCod = db.execute("select CAST(CBID AS UNSIGNED) CBID from estoqueposicao where CBID REGEXP ('^[0-9]') and ProdutoID="&ProdutoID&" order by CAST(CBID AS UNSIGNED) desc")
     if not ultCod.eof then
         if isnumeric(ultCod("CBID")) then
             UltimoCodigo = ultCod("CBID")

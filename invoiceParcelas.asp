@@ -37,6 +37,10 @@ Parcela = ref("Parcela")
             PacelaCD = parcelas("CD")
             ParcelaCaixaID = parcelas("CaixaID")
             TotalPago = TotalPago + ValorPago
+
+			If IsNull(ParcelaValor) Then
+				ParcelaValor = 0
+			End if
 			%>
 			<!--#include file="invoiceLinhaParcela.asp"-->
 			<%

@@ -2097,7 +2097,7 @@ select case lcase(req("P"))
                         Repasses - Analítico
                     </a>
                 </li>
-                <li class="hidden">
+                <li>
                     <a href="javascript:callReport('DRE');">
                         <i class="fa fa-double-angle-right"></i>
                         DRE

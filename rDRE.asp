@@ -31,6 +31,7 @@ UnidadeID = ref("UnidadeID")
         <%
         db.execute("delete from cliniccentral.dre_temp where sysUser="& session("User"))
         set pQueries = db.execute("select * from cliniccentral.dre where not isnull(sqlCorpo)")
+
         while not pQueries.eof
             response.flush()
             qId = pQueries("id")
@@ -54,6 +55,7 @@ UnidadeID = ref("UnidadeID")
                 while not fixa.eof
                     response.flush()
                     PrimeiroVencto = fixa("PrimeiroVencto")
+                    InvoiceID = fixa("InvoiceID")
                     Valor = fixa("Valor")
                     Intervalo = fixa("Intervalo")
                     TipoIntervalo = fixa("TipoIntervalo")
@@ -77,7 +79,8 @@ UnidadeID = ref("UnidadeID")
                         numero = numero+1
                         if Vencimento>date() and instr(Geradas, "|"& numero &"|")=0 then
 ''                            response.write("> "& Vencimento &" ( "& UltimaData &" )<br>" )
-                            db.execute("insert into cliniccentral.dre_temp (sysUser, LinhaID, Data, Conta, Valor, Link, InvoiceID) values ("& session("User") &", "& qID &", "& mydatenull(Vencimento) &", '"& Conta &"', "& treatvalzero(Valor) &", './?P=Recorrente&I="& FixaID &"&T="& CD &"&Pers=1')")
+                            sqlIns = "insert into cliniccentral.dre_temp (sysUser, LinhaID, Data, Conta, Valor, Link, InvoiceID) values ("& session("User") &", "& qID &", "& mydatenull(Vencimento) &", '"& Conta &"', "& treatvalzero(Valor) &", './?P=Recorrente&I="& FixaID &"&T="& CD &"&Pers=1', "&treatvalnull(InvoiceID)&")"
+                            db.execute(sqlIns       )
                         end if
                         Vencimento = dateAdd( TipoIntervalo, Intervalo, Vencimento )
                     wend

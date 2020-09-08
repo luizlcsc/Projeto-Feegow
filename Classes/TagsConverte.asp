@@ -245,11 +245,12 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Profissional"
           
           'QUERY ALTERADA PARA A MESMA QUERY DO FEEGOW API 27/07/2020
-          qProfissionaisContentSQL = "SELECT prof.RQE, prof.Conselho, prof.NomeProfissional, t.Tratamento, cp.descricao, CONCAT(IF(t.Tratamento is null,'',concat(t.Tratamento,' ')),IF(prof.NomeSocial is null or prof.NomeSocial ='', SUBSTRING_INDEX(prof.NomeProfissional,' ', 1), prof.NomeSocial)) PrimeiroNome, "&_
+          qProfissionaisContentSQL = "SELECT prof.FornecedorID, prof.RQE, prof.Conselho, prof.NomeProfissional, t.Tratamento, cp.descricao, f.NomeFornecedor NomeProfissionalPJ, f.CPF CPFCNPJ , CONCAT(IF(t.Tratamento is null,'',concat(t.Tratamento,' ')),IF(prof.NomeSocial is null or prof.NomeSocial ='', SUBSTRING_INDEX(prof.NomeProfissional,' ', 1), prof.NomeSocial)) PrimeiroNome, "&_
           "CONCAT(cp.descricao, ' ', prof.DocumentoConselho, ' ', prof.UFConselho) Documento, prof.Assinatura, prof.DocumentoConselho, prof.CPF, prof.NomeSocial, esp.especialidade Especialidade "&_
           "FROM profissionais prof "&_
           "LEFT JOIN conselhosprofissionais cp ON cp.id=prof.Conselho "&_
           "LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
+          "LEFT JOIN fornecedores f ON f.id=prof.FornecedorID "&_
           "LEFT JOIN tratamento t ON t.id=prof.TratamentoID "&_
           "WHERE prof.id="
 
@@ -257,12 +258,20 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           if item_ProfissionalSolicitanteID>0 then
             SET ProfissionaisSQL = db.execute(qProfissionaisContentSQL&item_ProfissionalSolicitanteID)
             if not ProfissionaisSQL.eof then
-              conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
+                NomeProfissional = trim(ProfissionaisSQL("NomeProfissional")&" ")
+                CPFCNPJProfissional = trim(ProfissionaisSQL("CPF")&" ")
+
+                if not isnull(ProfissionaisSQL("FornecedorID")) then
+                    NomeProfissional = trim(ProfissionaisSQL("NomeProfissionalPJ")&" ")
+                    CPFCNPJProfissional = trim(ProfissionaisSQL("CPFCNPJ")&" ")
+                end if
+
+              conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", NomeProfissional )
               conteudo = replace(conteudo, "[ProfissionalSolicitante.PrimeiroNome]", trim(ProfissionaisSQL("PrimeiroNome")&" ") )
               conteudo = replace(conteudo, "[ProfissionalSolicitante.NomeSocial]", trim(ProfissionaisSQL("NomeSocial")&" ") )
               conteudo = replace(conteudo, "[ProfissionalSolicitante.Especialidade]", trim(ProfissionaisSQL("Especialidade")&" ") )
               conteudo = replace(conteudo, "[ProfissionalSolicitante.Documento]", trim(ProfissionaisSQL("Documento")&" ") )
-              conteudo = replace(conteudo, "[ProfissionalSolicitante.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
+              conteudo = replace(conteudo, "[ProfissionalSolicitante.CPF]", CPFCNPJProfissional )
               if ProfissionaisSQL("Assinatura")&"" = "" then
                 conteudo = replace(conteudo, "[ProfissionalSolicitante.Assinatura]", "______________________________________________")
               else
@@ -295,14 +304,23 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             SET ProfissionaisSQL = db.execute(qProfissionaisSQL)
             if not ProfissionaisSQL.eof then
 
-              conteudo = replace(conteudo, "[Profissional.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
+                NomeProfissional = trim(ProfissionaisSQL("NomeProfissional")&" ")
+                CPFCNPJProfissional = trim(ProfissionaisSQL("CPF")&" ")
+
+                if not isnull(ProfissionaisSQL("FornecedorID")) then
+                    NomeProfissional = trim(ProfissionaisSQL("NomeProfissionalPJ")&" ")
+                    CPFCNPJProfissional = trim(ProfissionaisSQL("CPFCNPJ")&" ")
+                end if
+
+
+              conteudo = replace(conteudo, "[Profissional.Nome]", NomeProfissional )
               conteudo = replace(conteudo, "[Profissional.PrimeiroNome]", trim(ProfissionaisSQL("PrimeiroNome")&" ") )
               conteudo = replace(conteudo, "[Profissional.NomeSocial]", trim(ProfissionaisSQL("NomeSocial")&" ") )
               conteudo = replace(conteudo, "[Profissional.Especialidade]", trim(ProfissionaisSQL("Especialidade")&" ") )
               conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
               conteudo = replace(conteudo, "[Profissional.Documento]", trim(ProfissionaisSQL("Documento")&" ") )
               conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
-              conteudo = replace(conteudo, "[Profissional.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
+              conteudo = replace(conteudo, "[Profissional.CPF]", CPFCNPJProfissional )
 
               if ProfissionaisSQL("Assinatura")&"" = "" then
                 conteudo = replace(conteudo, "[Profissional.Assinatura]", "______________________________________________")
@@ -316,8 +334,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               conteudo = replace(conteudo, "[Profissional.RQE]", trim(ProfissionaisSQL("RQE")&" ") )
               'Referencia ifrReciboIntegrado.asp ||| Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho ) 'LINHA 561
               conteudo = replace(conteudo, "[ProfissionalExecutante.Conselho]", trim(ProfissionaisSQL("DocumentoConselho")&" ") )
-              conteudo = replace(conteudo, "[ProfissionalExecutante.Nome]", trim(ProfissionaisSQL("NomeProfissional")&" ") )
-              conteudo = replace(conteudo, "[ProfissionalExecutante.CPF]", trim(ProfissionaisSQL("CPF")&" ") )
+              conteudo = replace(conteudo, "[ProfissionalExecutante.Nome]", NomeProfissional )
+              conteudo = replace(conteudo, "[ProfissionalExecutante.CPF]", CPFCNPJProfissional )
             end if 
           end if
  

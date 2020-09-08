@@ -242,6 +242,14 @@ if not inv.eof then
                 ProfissionalSolicitanteID=0
             end if
             'response.write("<script>console.log('Valor: '"&ProfissionalSolicitanteID&")</script>")
+
+            if ProfissionalExecutanteID&""="" then
+                set ExecutanteSQL = db.execute("SELECT ProfissionalID FROM itensinvoice WHERE InvoiceID="&InvoiceID&" LIMIT 1")
+                if not ExecutanteSQL.eof then
+                    ProfissionalExecutanteID=ExecutanteSQL("ProfissionalID")
+                end if
+            end if
+
             Recibo = TagsConverte(Recibo,"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalExecutanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
             ' Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
 

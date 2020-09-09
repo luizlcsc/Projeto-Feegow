@@ -261,7 +261,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 NomeProfissional = trim(ProfissionaisSQL("NomeProfissional")&" ")
                 CPFCNPJProfissional = trim(ProfissionaisSQL("CPF")&" ")
 
-                if not isnull(ProfissionaisSQL("FornecedorID")) then
+                if not ProfissionaisSQL("FornecedorID")&""<>"" then
                     NomeProfissional = trim(ProfissionaisSQL("NomeProfissionalPJ")&" ")
                     CPFCNPJProfissional = trim(ProfissionaisSQL("CPFCNPJ")&" ")
                 end if
@@ -307,7 +307,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 NomeProfissional = trim(ProfissionaisSQL("NomeProfissional")&" ")
                 CPFCNPJProfissional = trim(ProfissionaisSQL("CPF")&" ")
 
-                if not isnull(ProfissionaisSQL("FornecedorID")) then
+                if ProfissionaisSQL("FornecedorID")&""<>"" then
                     NomeProfissional = trim(ProfissionaisSQL("NomeProfissionalPJ")&" ")
                     CPFCNPJProfissional = trim(ProfissionaisSQL("CPFCNPJ")&" ")
                 end if

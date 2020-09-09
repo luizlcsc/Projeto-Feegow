@@ -352,7 +352,6 @@ end if
 "LEFT JOIN tissprocedimentossadt ps ON ps.GuiaID=gs.id "&_
 "WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiasadt' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &_
-"GROUP BY gs.id "&_
                 "UNION ALL "&_
 "select concat( '5_',gh.Contratado), concat('5_', gh.Contratado) ProfissionalSolicitanteID,  concat(ps.Associacao,'_',ps.ProfissionalID) Especialidade, gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, ps.id, ps.ProfissionalID, gh.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gh.UnidadeID, ifnull(ps.ValorPago, gh.ValorPago) ValorPago, ps.Quantidade, gh.sysDate FROM sys_financialmovement m "&_
 "LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
@@ -363,7 +362,6 @@ end if
 "LEFT JOIN tissprocedimentoshonorarios ps ON ps.GuiaID=gh.id "&_
 "WHERE gh.sysActive=1 AND gh.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiahonorarios' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGH &_
-"GROUP BY gh.id "&_
                 ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID"&_
                 " left join ((select 0 as 'id',  NomeFantasia CompanyUnit FROM empresa WHERE id=1) UNION ALL (select id,  NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia)) u on u.id = t.UnidadeID"&_
                 " left join (select * from (select concat('I_',z.id) id, z.Nome, z.EspecialidadeID from ( "&_

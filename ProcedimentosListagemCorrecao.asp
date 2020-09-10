@@ -43,7 +43,7 @@ while not lotesEnv.EOF %>
         <input type="hidden" name="ProcedimentoID" value="<%=lotesEnv("id")%>" />
         <td align="center">
         <% CodigoGlosa = lotesEnv("CodigoGlosa")%>
-        <%=quickField("multiple", "CodigoGlosa"&count, "", 2,CodigoGlosa, "SELECT id, concat(Codigo,' - ',Descricao) Descricao FROM cliniccentral.tabelaglosas", "Descricao", " semVazio no-select2")%></td>
+        <%=quickField("multiple", "CodigoGlosa"&lotesEnv("id"), "", 2,CodigoGlosa, "SELECT id, concat(Codigo,' - ',Descricao) Descricao FROM cliniccentral.tabelaglosas", "Descricao", " semVazio no-select2")%></td>
         <td align="center"><%=lotesEnv("Descricao")%></td>
         <td align="center"><%=lotesEnv("Data")%></td>
         <td align="center"><%=fn(lotesEnv("ValorTotal"))%></td>
@@ -163,7 +163,8 @@ set lotesEnv=nothing
                 data:  dataString,
                 cache: false,
                 dataType: "html",
-                success: function(responseText) {                
+                success: function(responseText) {
+                    return;
                     showMessageDialog("Procedimentos salvo com sucesso.", "success");   
                     setTimeout(() => {
                         location.reload();

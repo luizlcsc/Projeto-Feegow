@@ -75,7 +75,7 @@ end if
 
             <%=quickField("multiple", "Executantes", "Executantes", 4, req("Executantes"), "select concat('5_',id)id, NomeProfissional from profissionais where ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
             <%=quickField("multiple", "GrupoProcedimentos", "Grupo de procedimentos", 4, req("GrupoProcedimentos"), "select id, NomeGrupo from procedimentosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "")%>
-
+            <button type="button" id="ConsultarEmLote2" class="btn btn-primary dropdown-toggle" >Consultar Em Lote</button>
             <div class="col-md-2">
             <br>
                  <div class="btn-group" id="acoes-notas-fiscais" style="display:none;">
@@ -159,6 +159,33 @@ end if
 
         //alert("Serviço adicional em manutenção")
     });
+
+     $("#ConsultarEmLote2").click(async function(){
+            var nfe = [];
+            var nfeAguardando = $(".notaAguardando");
+
+            await $.each(nfeAguardando, async function() {
+                var nota = [];
+                await nota.push($(this).data('notainvoiceid'));
+                await nota.push($(this).data('notatoken'));
+                await nota.push($(this).data('origemcnpj'));
+                await nfe.push(nota)
+             });
+
+           setTimeout(async function(){
+               for (const notaFiscal of nfe){
+                    try{
+                     const response = await $.get(feegow_components_path+`nota_fiscal_eletronica/ConsultarNFe?invoiceId=${notaFiscal[0]}&nfType=nota_fiscal_servico_eletronica&token=${notaFiscal[1]}`)
+
+                     const res = await $.get(feegow_components_path+`nota_fiscal_eletronica/ObterRetorno/ObterRetornoConsultaNFSe?protocol=${response.protocolo}&cnpj=${notaFiscal[2]}&ci_csrf_token=&invoiceId=${notaFiscal[0]}&nfType=nota_fiscal_servico_eletronica&token=${notaFiscal[1]}`)
+                        }catch (e) {
+                          console.log(e)
+                        }
+
+                 }
+           }, 4000)
+
+        });
 
     $("#ConsultarEmLote").click(function() {
          var nfe = [];

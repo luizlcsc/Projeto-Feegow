@@ -36,6 +36,7 @@ set tryLogin = dbc.execute(sqlLogin)
 if not tryLogin.EOF then
     UsuariosContratadosNS = tryLogin("UsuariosContratadosNS")
     UsuariosContratadosS = tryLogin("UsuariosContratados")
+    Versao = tryLogin("Versao")
     ServidorAplicacao = tryLogin("ServidorAplicacao")
     PastaAplicacao = tryLogin("PastaAplicacao")
     PastaAplicacaoRedirect = PastaAplicacao
@@ -49,8 +50,7 @@ if not tryLogin.EOF then
     Cupom = tryLogin("Cupom")
 
     ClienteUnimed = instr(Cupom, "UNIMED") > 0
-    session("ClienteUnimed") = instr(Cupom, "UNIMED") > 0
-
+    session("ClienteUnimed") = ClienteUnimed
     if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
             Response.Redirect("https://"&ServidorAplicacao&"/"&PastaAplicacaoRedirect&"/?P=Login&U="&User)
@@ -463,7 +463,7 @@ if not tryLogin.EOF then
 				    licencas = licencas & ","
 				end if
 				licencas = licencas & "|"&tryLogin("LicencaID")&"|"
-                if tryLogin("Versao")=7 then
+                if Versao=7 then
     				urlRedir = "./?P=Home&Pers=1"
                 else
                     urlRedir = "./../?P=Home&Pers=1"
@@ -472,7 +472,7 @@ if not tryLogin.EOF then
                     urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
                 end if
             else
-                if tryLogin("Versao")=7 then
+                if Versao=7 then
                     urlRedir = "./?P=Home&Pers=1"
                 else
                     urlRedir = "./../?P=Home&Pers=1"
@@ -514,9 +514,10 @@ if not tryLogin.EOF then
             end if
         end if
 
-        IF PastaAplicacao <> "" THEN
+        IF PastaAplicacao <> "" and Versao&""="7" THEN
             urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")
         END IF
+
 
         if Cupom="GSC" then
             urlRedir = replace(urlRedir, "./", "/v7.1/")

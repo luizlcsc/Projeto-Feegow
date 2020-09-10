@@ -164,8 +164,7 @@ set lotesEnv=nothing
                 cache: false,
                 dataType: "html",
                 success: function(responseText) {
-                    return;
-                    showMessageDialog("Procedimentos salvo com sucesso.", "success");   
+                    showMessageDialog("Procedimentos salvo com sucesso.", "success");
                     setTimeout(() => {
                         location.reload();
                     }, 1000);

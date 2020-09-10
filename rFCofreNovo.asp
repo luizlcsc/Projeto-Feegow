@@ -59,7 +59,7 @@ while not unidade.eof
 	"LEFT JOIN sys_financialmovement pagto ON pagto.id=dp.MovementID  "&_
 	"LEFT JOIN sys_financialpaymentmethod pm ON pm.id=pagto.PaymentMethodID  "&_
     "LEFT JOIN tabelaparticular tab ON tab.id=inv.TabelaID "&_
-	"WHERE inv.AssociationAccountID=3 and not isnull(inv.AccountID) and (rec.sysActive IN (1,-1,NULL))  "&_
+	"WHERE inv.AssociationAccountID=3 and not isnull(inv.AccountID)  "&_
 	"AND (pagto.CD='D' OR ISNULL(pagto.CD))  "&_
 	"AND inv.CompanyUnitID="& UnidadeID &" "&_
 	"AND (  "&_

@@ -674,7 +674,11 @@ end if
                         Conteudo = Conteudo & "Cel.: "&replace(comps("Cel1")&" ", "'", "\'")&"<br>"
                     end if
                     'if session("Banco")="clinic5594" then
-                        Conteudo = Conteudo & "Notas: "&replace(replace(replace(replace(comps("Notas")&"", chr(13), ""), chr(10), ""), "'", ""), """", "")&"<br>"
+                        notas = comps("Notas")
+                        'notas = RemoveCaracters(comps("Notas"),"!?:;*/"&chr(13)&chr(10))
+                        notas = fix_string_chars_full(notas)
+                        Conteudo = Conteudo & "Notas: "&notas&"<br>"
+                        'Conteudo = Conteudo & "Notas: "&replace(replace(replace(replace(comps("Notas")&"", chr(13), ""), chr(10), ""), "'", ""), """", "")&"<br>"
                     'end if
 
                     Conteudo = Conteudo & "Idade: "& IdadeAbreviada(comps("Nascimento")) &"<br>"

@@ -1,5 +1,6 @@
 <%InicioProcessamento = Timer%>
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
 <!--#include file="Classes/ValidaProcedimentoProfissional.asp"-->
 
 <%
@@ -489,7 +490,7 @@ while diaS<n
         if comps("Encaixe")=1 then
             Conteudo = Conteudo & "<span class=""label label-alert"">enc</span>"
         end if
-        Conteudo = Conteudo & "<span class=""nomePac"">"&replace(comps("NomePaciente")&" ", "'", "\'")&"</span>  <span class=""pull-right"">"& sinalAgenda(FormaPagto) &"</span>"
+        Conteudo = Conteudo & "<span class=""nomePac"">"&fix_string_chars_full(comps("NomePaciente"))&"</span>  <span class=""pull-right"">"& sinalAgenda(FormaPagto) &"</span>"
         Conteudo = Conteudo & "</td>"&_
         "</tr>"
         

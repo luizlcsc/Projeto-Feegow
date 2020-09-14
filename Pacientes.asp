@@ -403,6 +403,13 @@ function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
 
 }
 
+function verificaArquivos(){
+	let arquivoVencido = JSON.parse('<%= arquivoVencido %>')[0];
+	if(arquivoVencido.qtd_arquivoInvalido >0){
+		showMessage(`Este paciente tem ${arquivoVencido.qtd_arquivoInvalido} arquivo${arquivoVencido.qtd_arquivoInvalido>1?'s':''} vencido${arquivoVencido.qtd_arquivoInvalido>1?'s':''} ou faltantes sendo ele${arquivoVencido.qtd_arquivoInvalido>1?'s':''} : ${arquivoVencido.descricao}`,4,`Arquivo${arquivoVencido.qtd_arquivoInvalido>1?'s':''} obrigatório${arquivoVencido.qtd_arquivoInvalido>1?'s':''} vencido${arquivoVencido.qtd_arquivoInvalido>1?'s':''} ou faltantes` )
+	}
+}
+
 $(document).ready(function(e) {
     <%call formSave("frm", "save", "$(""#DadosAlterados"").attr('value', ''); callbackAgendamentoPaciente(); ")%>
 	verificaArquivos()

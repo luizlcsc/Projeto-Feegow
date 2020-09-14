@@ -375,7 +375,6 @@ function DefaultForm(tableName, id)
 <br />
 <div class="panel">
 <div class="panel-body <%if paginar="" and 1=2 then%> table-responsive <%end if%>">
-
     <div id="divProcedimentoRapido">
 
     </div>

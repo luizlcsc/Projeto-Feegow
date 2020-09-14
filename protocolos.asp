@@ -219,20 +219,31 @@ end if
 
 <script type="text/javascript">
     let bloquear = '<%=bloquear%>';
+    block()
+    function block(){
+        if(bloquear == 1){
+            $('#formProtocolos #salvar').attr('disabled',true)
+            $('#formProtocolos #salvar').parent().attr('data-toggle',"tooltip")
+            $('#formProtocolos #salvar').parent().attr('data-placement',"top")
+            $('[data-toggle="tooltip"]').tooltip()
+            $('#formProtocolos input').attr('disabled',true)
+            $('#formProtocolos button').attr('disabled',true)
+            $('#Ativo').attr('disabled',false)
+            setTimeout(() => {
+                $('#formProtocolos .select2').css('pointer-events',"none")
+                $('#formProtocolos .multiselect').css('pointer-events',"none")
+                $('#formProtocolos .multiselect').css('background-color',"#fafafa")
+                $('#formProtocolos .select2-selection').css('background-color','#fafafa')
+                $('select').attr('disabled',true)
+            }, 200);
+            $('#Ativo').click(event=>{
+                let valor = (($('#Ativo').prop('checked'))?'on':'off')
 
-    if(bloquear == 1){
-        $('#formProtocolos #salvar').attr('disabled',true)
-        $('#formProtocolos #salvar').parent().attr('data-toggle',"tooltip")
-        $('#formProtocolos #salvar').parent().attr('data-placement',"top")
-        $('[data-toggle="tooltip"]').tooltip()
-        $('#formProtocolos input').attr('disabled',true)
-        $('#formProtocolos button').attr('disabled',true)
-        setTimeout(() => {
-            $('#formProtocolos .select2').css('pointer-events',"none")
-            $('#formProtocolos .multiselect').css('pointer-events',"none")
-            $('#formProtocolos .multiselect').css('background-color',"#fafafa")
-            $('#formProtocolos .select2-selection').css('background-color','#fafafa')
-        }, 200);
+                $.post(`saveProtocolo.asp?I=<%=I%>&soAtivo=${valor}`, function(data){
+                    eval(data);
+                });
+            })
+        }
     }
 
     $(".crumb-active").html("<a href='#'>Cadastro de Protocolo</a>");

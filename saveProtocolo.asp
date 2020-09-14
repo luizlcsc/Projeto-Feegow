@@ -2,6 +2,18 @@
 <%
 I = req("I")
 Tipo = req("Tipo")
+soAtivo = req("soAtivo")
+
+if soAtivo <> "" then
+    if soAtivo = "off" then
+        db.execute("UPDATE protocolos SET Ativo='' WHERE id="&I)
+    else
+        db.execute("UPDATE protocolos SET Ativo='on' WHERE id="&I)
+    end if
+    response.end
+end if
+
+
 if Tipo="Regra" then
     SexoRegra = ref("SexoRegra")
     SexoValor = ref("SexoValor")

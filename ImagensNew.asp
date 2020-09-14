@@ -316,7 +316,7 @@ end if
                                        </div>
                                     </small>
 
-                                    <a class="btn btn-xs btn-alert" href="javascript:modalTipo(${item.id})" title="Cadastrar tipo de imageme">
+                                    <a class="btn btn-xs btn-alert" href="javascript:modalTipo(${item.id})" title="Cadastrar tipo de imagem">
                                                               <i class="fa fa-cog"></i>
                                     </a>
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">

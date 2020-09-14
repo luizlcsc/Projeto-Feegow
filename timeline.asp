@@ -169,7 +169,11 @@ if not ConfigIniciarAtendimentoSQL.eof then
         EmAtendimento=1
     end if
 end if
-InserirDinamico = "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|"
+InserirDinamico = ""
+
+if FormularioNaTimeline then
+    InserirDinamico = "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|"
+end if
 
 select case Tipo
     case ""
@@ -868,7 +872,7 @@ LocalStorageRestoreHabilitar();
     IF FormularioNaTimeline THEN
     %>
     function iPront(t, p, m, i, a, FormID, CampoID) {
-        if (t == 'AE' || t == 'PrescricaoAELDiagnosticoAtestadoImagensArquivosPedidoPrescricao') {
+        if (t == 'AE' || t == 'PrescricaoAELDiagnosticoAtestadoImagensArquivosPedido') {
             $(".timeline-add").slideUp();
             divAff = "#divProtocolo";
             scr = "protocolo";

@@ -457,7 +457,7 @@ else
 
                         if not isnull(ConvenioID) and ConvenioID<>"" then
                             ObsConvenios = ""
-                            set ConvenioSQL = db.execute("SELECT Obs FROM convenios WHERE id="&ConvenioID&"")
+                            set ConvenioSQL = db.execute("SELECT Obs FROM convenios WHERE id="&treatvalzero(ConvenioID)&"")
                             if not ConvenioSQL.eof then
 
                                  planosOptions = getPlanosOptions(ConvenioID, PlanoID)

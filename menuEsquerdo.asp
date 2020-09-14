@@ -2432,7 +2432,7 @@ select case lcase(req("P"))
             telas.close
             set telas = nothing
     end if
-    case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames"
+    case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara"
     %>
     <li>
         <a href="?P=labscadastrocredenciais&Pers=1"><span class="fa fa-users"></span> <span class="sidebar-title">Cadastro de Credenciais</span></a>
@@ -2446,6 +2446,9 @@ select case lcase(req("P"))
     </li>
     <li>
         <a href="?P=labslistagemexames&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Listagem de exames</span></a>
+    </li>
+    <li>
+        <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
     <%
 end select

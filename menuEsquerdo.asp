@@ -678,7 +678,7 @@ select case lcase(req("P"))
                     </span>
                 </a>
             </li>
-            <% END IF %>
+            <% END IF %>            
 		    <%
             if aut("aso")=1 and false then
 		    %>
@@ -814,6 +814,15 @@ select case lcase(req("P"))
                       <span class="label label-xs bg-primary" id="totalprodutosutilizados"></span>
                     </span>
 
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
+                    <span class="fa fa-file-text-o bigger-110"></span>
+                    <span class="sidebar-title">Protocolos</span>
+                    <span class="sidebar-title-tray">
+                        <span class="label label-xs bg-primary" id="totalprotocolos"></span>
+                    </span>
                 </a>
             </li>
             <%

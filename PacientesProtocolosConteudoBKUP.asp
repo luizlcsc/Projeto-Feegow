@@ -2,18 +2,14 @@
 <%
 Tipo = req("Tipo")
 
-usuario = db.execute("SELECT Auditor FROM profissionais where id = "&session("User")&" and sysActive= 1")
-auditor = usuario("Auditor")
-
 if Tipo = "I" then
     ID = req("ID")
     PacienteID = req("PacienteID")
     ProtocoloID = req("ProtocoloID")
     if ID&""<>"" then
         set getPacientesProtocolos = db.execute("SELECT * FROM pacientesprotocolos WHERE id="&ID)
-        set atendimento =  db.execute("select id from atendimentos a2 where PacienteID = "&PacienteID&" and `Data` = CAST( now() AS Date )")
         if getPacientesProtocolos.eof then
-            db.execute("INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID,AtendimentoID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&session("User")&", "&atendimento("id")&", "&session("User")&", 1)")
+            db.execute("INSERT INTO pacientesprotocolos (id, sysUser, sysActive, PacienteID) VALUES ("&ID&", "&session("User")&", 1, "&PacienteID&")")
         end if
         set getMedicamentosProtocolos = db.execute("SELECT * FROM protocolosmedicamentos WHERE ProtocoloID="&ProtocoloID)
         while not getMedicamentosProtocolos.eof
@@ -48,7 +44,7 @@ end if
                   "LEFT JOIN cliniccentral.unidademedida unMed ON prodMed.UnidadePrescricao=unMed.id "&_
                   "LEFT JOIN produtos proDil ON proDil.id=protmed.DiluenteID "&_
                   "LEFT JOIN cliniccentral.unidademedida unDil ON proDil.UnidadePrescricao=unDil.id "&_
-                  "WHERE pacpro.id="&ID&" and promed.sysActive =1 ORDER BY promed.id"
+                  "WHERE pacpro.id="&ID&" ORDER BY promed.id"
 
             set getProtocolo = db.execute(sql)
             while not getProtocolo.eof
@@ -78,15 +74,15 @@ end if
                     MedicamentoID = getProtocolo("MedicamentoID")
 
                     if isnumeric(ConvenioID) then
-                        sqlRegraConv = " AND (medconv.convenioID LIKE '%|"&ConvenioID&"|%' OR medconv.convenioID IS NULL OR medconv.convenioID='')"
+                        sqlRegraConv = " AND (medconv.Convenios LIKE '%|"&ConvenioID&"|%' OR medconv.Convenios IS NULL OR medconv.Convenios='')"
                     end if
                     if isnumeric(PlanoID) then
-                        sqlRegraPlan = " AND (medconv.planoID LIKE '%|"&PlanoID&"|%' OR medconv.planoID IS NULL OR medconv.planoID='')"
+                        sqlRegraPlan = " AND (medconv.Planos LIKE '%|"&PlanoID&"|%' OR medconv.Planos IS NULL OR medconv.Planos='')"
                     end if
                     set getRegraMedicamento = db.execute("SELECT prod.id MedicamentoID, prod.NomeProduto "&_
-                                                        "FROM medicamentos_convenio medconv "&_
-                                                        "LEFT JOIN produtos prod ON prod.id=medconv.produtoReferencia "&_
-                                                        "WHERE medconv.produtoReferencia!=0 AND medconv.sysActive=1 "&sqlRegraConv & sqlRegraPlan&" LIMIT 1")
+                                                        "FROM medicamentosconvenios medconv "&_
+                                                        "LEFT JOIN produtos prod ON prod.id=medconv.MedicamentoSubstitutoID "&_
+                                                        "WHERE medconv.MedicamentoSubstitutoID!=0 AND medconv.sysActive=1 "&sqlRegraConv & sqlRegraPlan&" LIMIT 1")
 
                     if not getRegraMedicamento.eof then
                         Medicamento = getRegraMedicamento("NomeProduto")
@@ -123,10 +119,7 @@ end if
                             </span>
                         </div>
                     </td>
-                    <td class='row' width="9%">
-                        <i class='ml5 col-md-5 btn-xs btn btn-warning fa fa-pencil' onclick="pedirMudanca('E','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')"  data-toggle="tooltip" data-placement="top" title="Pedir edição de protocolo"> </i>
-                        <i class='ml5 col-md-5 btn-xs btn btn-danger fa fa-remove' onclick="pedirMudanca('R','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')" data-toggle="tooltip" data-placement="top" title="Pedir remoção de protocolo"> </i>
-                    </td>
+                    <td width="1%"><i class='ml20 mt5 btn-xs btn btn-danger fa fa-remove' disabled="disabled"> </i></td>
                 </tr>
                 <%
                 end if
@@ -136,9 +129,9 @@ end if
                     <td class="text-right"><i class="fa fa-chevron-right"></i></td>
                     <td ><b>Diluente:</b> <%=Diluente%>
                     <b>
-                        <%if DoseDiluente&""<>"" then%>
-                        <%=DoseDiluente&" "&SiglaDil%>
-                        <%end if%>
+                    <%if DoseDiluente&""<>"" then%>
+                    <%=DoseDiluente&" "&SiglaDil%>
+                    <%end if%>
                     </b>
                     </td>
                     <td></td>
@@ -163,64 +156,7 @@ end if
         </table>
     </div>
 </div>
+
 <script>
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
-
-
-
-function pedirMudanca(tipo,id,medicamentoId){
-    let dose = parseFloat(($(`#DoseMedicamento_${id}`).val()).replace(',','.'))
-    let obs = $(`#Obs_${id}`).val()
-    let paciente = "<%=req("P")%>";    
-    let auditor = "<%=auditor%>"
-    let data = {
-        id,
-        dose,
-        obs,
-        medicamentoId,
-        paciente,
-        tipo
-    }
-
-    // valida os campos
-    if(dose.length==0 || obs.length ==0){
-        msg('Os campos de dose e observação devem estar preenchidos','warning')
-        return false
-    }
-
-    if (auditor==1){
-        $.ajax({
-        type: "POST",
-        url: "PacientesProtocolosConteudoSave.asp",
-        data: data,
-        contentType:"application/x-www-form-urlencoded"
-        })
-        .done((data)=>{
-            msg('Atualização feita com sucesso', "success")
-            $('.mfp-close').click()
-        })
-    }else{
-        $.ajax({
-        type: "POST",
-        url: "notificacao_mudancaProtocolo.asp",
-        data: data,
-        contentType:"application/x-www-form-urlencoded"
-        })
-        .done((data)=>{
-            msg('Sua solicitação foi enviada ao Auditor', "success")
-        })
-    }
-
-}
-
-function msg(titulo,tipo){
-    new PNotify({
-        title: titulo,
-        type: tipo,
-        delay: 3000
-    });
-}
 
 </script>

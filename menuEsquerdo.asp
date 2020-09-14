@@ -1616,6 +1616,10 @@ select case lcase(req("P"))
             <li id="ConversaoEstoque" class="Modulo-Medicamento">
                 <a data-toggle="tab" href="#divConversaoEstoque"><span class="fa fa-retweet"></span> <span class="sidebar-title">Conversão</span></a>
             </li>
+
+            <li id="vincularMedicamento" class="Modulo-Medicamento">
+                <a data-toggle="tab" href="#divVincularMedicamento" onclick="ajxContent('produto/vincularMedicamento', '<%=req("I") %>', 1, 'divVincularMedicamento')"><span class="fa fa-link"></span> <span class="sidebar-title">Vincular medicamento</span></a>
+            </li>
             <%
         end if
     case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodedata", "descontopendente", "listarempresasnfse", "listarnotasfiscais", "editarempresanfse", "criarempresanfse"

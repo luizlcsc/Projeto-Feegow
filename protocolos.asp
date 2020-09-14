@@ -2,6 +2,14 @@
 <!--#include file="modal.asp"-->
 
 
+<style>
+    #formProtocolos .panel-heading{
+        position: sticky;
+        top: 12%;
+        z-index: 3;
+    }
+</style>
+
 <br />
 
 <%

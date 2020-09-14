@@ -48,6 +48,19 @@ if req("I")<>"N" then
     end if
 end if
 
+
+sqlBloquear = "select count(id)as qtd from pacientesprotocolosmedicamentos where ProtocoloID = 1 and sysActive = 1"
+bloquear = db.execute(sqlBloquear)
+
+
+
+if CInt(bloquear("qtd")) > 0 then
+    bloquear = 1
+else
+    bloquear = 0
+end if
+
+
 %>
 
 <form method="post" id="formProtocolos" name="formProtocolos" action="save.asp">
@@ -74,8 +87,8 @@ end if
                     <div class="col-md-1">
                         <button type="button" class="btn btn-warning btn-block mt20" onClick="RegraProtocolo('<%=I%>')"><i class="fa fa-lock"></i></button>
                     </div>
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-primary btn-block mt20" onClick="saveProtocolo('<%=I%>')"><i class="fa fa-save"></i> Salvar</button>
+                    <div class="col-md-2" title="Este protocolo está em uso e não pode ser alterado" >
+                        <button id='salvar' type="button" class="btn btn-primary btn-block mt20" onClick="saveProtocolo('<%=I%>')"><i class="fa fa-save"></i> Salvar</button>
                     </div>
                 </div>
                 <div class="col-md-12 mt10">
@@ -177,6 +190,23 @@ end if
 </script>
 
 <script type="text/javascript">
+    let bloquear = '<%=bloquear%>';
+
+    if(bloquear == 1){
+        $('#formProtocolos #salvar').attr('disabled',true)
+        $('#formProtocolos #salvar').parent().attr('data-toggle',"tooltip")
+        $('#formProtocolos #salvar').parent().attr('data-placement',"top")
+        $('[data-toggle="tooltip"]').tooltip()
+        $('#formProtocolos input').attr('disabled',true)
+        $('#formProtocolos button').attr('disabled',true)
+        setTimeout(() => {
+            $('#formProtocolos .select2').css('pointer-events',"none")
+            $('#formProtocolos .multiselect').css('pointer-events',"none")
+            $('#formProtocolos .multiselect').css('background-color',"#fafafa")
+            $('#formProtocolos .select2-selection').css('background-color','#fafafa')
+        }, 200);
+    }
+
     $(".crumb-active").html("<a href='#'>Cadastro de Protocolo</a>");
     $(".crumb-icon a span").attr("class", "fa fa-th-list");
     $(".crumb-trail").removeClass("hidden");

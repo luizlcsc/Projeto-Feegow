@@ -524,11 +524,6 @@ if not tryLogin.EOF then
             urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")
         END IF
 
-
-        if Cupom="GSC" then
-            urlRedir = replace(urlRedir, "./", "/v7.1/")
-        end if
-
         QueryStringParameters = Request.Form("qs")
 
         if QueryStringParameters<>"" then

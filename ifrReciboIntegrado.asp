@@ -838,7 +838,7 @@ if not inv.eof then
                 NumeroSequencial = 1
             end if
         end if
-        Recibo = replace(Recibo, "[Recibo.Protocolo]", NumeroSequencial)
+        Recibo = replace(Recibo, "[Recibo.Protocolo]", NumeroSequencial&"")
         Recibo = replace(Recibo, "[Fatura.NumeroSequencial]", inv("NumeroFatura")&"")
 
         nroNFe = 0

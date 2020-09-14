@@ -245,7 +245,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Profissional"
           
           'QUERY ALTERADA PARA A MESMA QUERY DO FEEGOW API 27/07/2020
-          qProfissionaisContentSQL = "SELECT prof.FornecedorID, prof.RQE, prof.Conselho, prof.NomeProfissional, t.Tratamento, cp.descricao, f.NomeFornecedor NomeProfissionalPJ, f.CPF CPFCNPJ , CONCAT(IF(t.Tratamento is null,'',concat(t.Tratamento,' ')),IF(prof.NomeSocial is null or prof.NomeSocial ='', SUBSTRING_INDEX(prof.NomeProfissional,' ', 1), prof.NomeSocial)) PrimeiroNome, "&_
+          qProfissionaisContentSQL = "SELECT f.id FornecedorID, prof.RQE, prof.Conselho, prof.NomeProfissional, t.Tratamento, cp.descricao, f.NomeFornecedor NomeProfissionalPJ, f.CPF CPFCNPJ , CONCAT(IF(t.Tratamento is null,'',concat(t.Tratamento,' ')),IF(prof.NomeSocial is null or prof.NomeSocial ='', SUBSTRING_INDEX(prof.NomeProfissional,' ', 1), prof.NomeSocial)) PrimeiroNome, "&_
           "CONCAT(cp.descricao, ' ', prof.DocumentoConselho, ' ', prof.UFConselho) Documento, prof.Assinatura, prof.DocumentoConselho, prof.CPF, prof.NomeSocial, esp.especialidade Especialidade "&_
           "FROM profissionais prof "&_
           "LEFT JOIN conselhosprofissionais cp ON cp.id=prof.Conselho "&_

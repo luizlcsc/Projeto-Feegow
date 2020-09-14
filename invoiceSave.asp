@@ -301,10 +301,6 @@ if erro="" then
                 END IF
             END IF
         next
-        '---- Termina a verificação de o profissional pod executar o procedimento
-        if session("Banco")="clinic105" or session("Banco")="clinic5760" then
-            db.execute("insert into itensinvoice_bck select * from itensinvoice where InvoiceID="&InvoiceID)
-        end if
 
         sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
         if itensStr&""<>"" then

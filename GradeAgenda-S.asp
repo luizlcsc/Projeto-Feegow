@@ -1,5 +1,6 @@
 <%InicioProcessamento = Timer%>
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
 <!--#include file="Classes/ValidaProcedimentoProfissional.asp"-->
 
 <%
@@ -489,7 +490,7 @@ while diaS<n
         if comps("Encaixe")=1 then
             Conteudo = Conteudo & "<span class=""label label-alert"">enc</span>"
         end if
-        Conteudo = Conteudo & "<span class=""nomePac"">"&replace(comps("NomePaciente")&" ", "'", "\'")&"</span>  <span class=""pull-right"">"& sinalAgenda(FormaPagto) &"</span>"
+        Conteudo = Conteudo & "<span class=""nomePac"">"&fix_string_chars_full(comps("NomePaciente"))&"</span>  <span class=""pull-right"">"& sinalAgenda(FormaPagto) &"</span>"
         Conteudo = Conteudo & "</td>"&_
         "</tr>"
         
@@ -499,19 +500,41 @@ while diaS<n
  
         HAgendados = HAgendados+1
 
+        if comps("LocalID")<>LocalID then
+            LocalDiferenteDaGrade=1
+            classeL = ".l"&comps("LocalID")&", .l"
+        else
+            LocalDiferenteDaGrade=0
+            classeL = ".l"&comps("LocalID")
+        end if
+
         if LiberarHorarioRemarcado=1 then
             StatusRemarcado = " && Status !== '15'"
         end if
         %>
+        var classe = "<%=classeL%>";
 
+        var LocalDiferenteDaGrade = "<%=LocalDiferenteDaGrade%>";
+        if(LocalDiferenteDaGrade==="1"){
+            if( $(".l<%= comps("LocalID") %>", $(".dia-semana-coluna[data-weekday=<%=diaS%>]")).length>0 ){
+                classe = ".l<%= comps("LocalID") %>";
+            }else{
+                classe = "<%=classeL%>";
+            }
+        }
+
+
+        var HorarioAdicionado = false;
         var Status = '<%=comps("StaID")%>';
 
-        $( ".dia-semana-coluna[data-weekday=<%=diaS%>] tr.l" ).each(function(){
+        $( classe ).each(function(){
             if( $(this).attr("id")=='<%=DiaSemana&HoraComp%>' && (Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
             {
                 var gradeId = $(this).data("grade");
 
                 var conteudo ='<%= conteudo %>';
+                HorarioAdicionado=true;
+
                 if (!$(this).hasClass("l<%=comps("LocalID")%>")){
                     conteudo = conteudo.replace("[LOCAL_DIF]",'<%=LocalDiferente%>');
                 }else{
@@ -520,10 +543,16 @@ while diaS<n
 
                 $(this).replaceWith(conteudo.replace(new RegExp("GRADE_ID",'g'), gradeId));
                 return false;
-            }else{
-                if ( $(this).attr("id")>'<%=DiaSemana&HoraComp%>' )
-                    {
-                        var gradeId = $(this).data("grade");
+            }
+        });
+        if(!HorarioAdicionado){
+            $( classe + ", .l").each(function(){
+                   if ( $(this).attr("id")>'<%=DiaSemana&HoraComp%>' )
+                   {
+                       var gradeId = $(this).data("grade");
+                        <%if session("FilaEspera")<>"" then %>
+                            $('[id=<%=DiaSemana&HoraComp%>]').remove();
+                        <% end if %>
 
                         var conteudo ='<%= conteudo %>';
                         if (!$(this).hasClass("l<%=comps("LocalID")%>")){
@@ -531,17 +560,11 @@ while diaS<n
                         }else{
                             conteudo = conteudo.replace("[LOCAL_DIF]",'');
                         }
-
-                        <%if session("FilaEspera")<>"" then %>
-                            $('[id=<%=DiaSemana&HoraComp%>]').remove();
-                        <% end if %>
-
-                        $(this).before(conteudo.replace(new RegExp("GRADE_ID",'g'), gradeId));
-                        return false;
-                    }
-            }
-        });
-      
+                       $(this).before(conteudo.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                       return false;
+                   }
+            });
+        }
 	<%
 	if HoraFinal<>"" then
 		%>

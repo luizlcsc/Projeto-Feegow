@@ -32,8 +32,11 @@ if session("Admin")=0 then
 	Tipo=""
 end if
 LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
+NaoExibirNaAgendaOsStatus = getConfig("NaoExibirNaAgendaOsStatus")
 ExibirCorPacienteAgenda = getConfig("ExibirCorPacienteAgenda")
 NaoExibirAgendamentoLocal = getConfig("NaoExibirAgendamentoLocal")
+AumentarAlturaLinhaAgendamento = getConfig("AumentarAlturaLinhaAgendamento")
+ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
 
 'verifica se há agendamento aberto e bloqueia o id concatenado
 set vcaAB = db.execute("select id, AgAberto, UltRef from sys_users where AgAberto like '%_%' and id<>"& session("User"))
@@ -538,7 +541,7 @@ end if
                 $("#AbrirEncaixe").attr("disabled", <% if Ativo<>"on" then %>true<%else %>false<% end if%>);
 
                 <%
-                somenteStatus = getConfig("NaoExibirNaAgendaOsStatus")
+                somenteStatus = NaoExibirNaAgendaOsStatus
                 if somenteStatus&"" <> "" then
                     sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
                 end if
@@ -649,18 +652,18 @@ end if
 					'<--
 					CorLinha = ""
                     AlturaLinha = " style=\'height: 30px\' "
-                    if getConfig("ColorirLinhaAgendamento")=1 then
+                    if ColorirLinhaAgendamento=1 then
                         if comps("Cor") <> "#fff" and not isnull(comps("Cor")) then
                             CorLinha = " bgcolor =\'"&comps("Cor")&"\'"
                         end if
                     end if
-                    if getConfig("AumentarAlturaLinhaAgendamento")=1 then
+                    if AumentarAlturaLinhaAgendamento=1 then
                         if Tempo&""<>"" and Tempo>30 then
                             AlturaLinha = " style=\'height: "&Tempo&"px\' "
                         end if
                     end if
                     linkAg = " onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"" "
-                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&replace(replace(replace(replace(comps("NomePaciente")&" ", "'", "\'"), chr(10), ""), chr(13), ""),"`","")&"<br>Prontuário: "&Prontuario&"<br>"
+                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&fix_string_chars_full(comps("NomePaciente"))&"<br>Prontuário: "&Prontuario&"<br>"
 
                     if session("RemSol")<>"" and session("RemSol")&"" <> comps("id")&"" then
                         remarcarlink = " onclick=""remarcar("&session("RemSol")&", \'Remarcar\', \'"&compsHora&"\', \'"&comps("LocalID")&"\')"" "
@@ -674,7 +677,11 @@ end if
                         Conteudo = Conteudo & "Cel.: "&replace(comps("Cel1")&" ", "'", "\'")&"<br>"
                     end if
                     'if session("Banco")="clinic5594" then
-                        Conteudo = Conteudo & "Notas: "&replace(replace(replace(replace(comps("Notas")&"", chr(13), ""), chr(10), ""), "'", ""), """", "")&"<br>"
+                        notas = comps("Notas")
+                        'notas = RemoveCaracters(comps("Notas"),"!?:;*/"&chr(13)&chr(10))
+                        notas = fix_string_chars_full(notas)
+                        Conteudo = Conteudo & "Notas: "&notas&"<br>"
+                        'Conteudo = Conteudo & "Notas: "&replace(replace(replace(replace(comps("Notas")&"", chr(13), ""), chr(10), ""), "'", ""), """", "")&"<br>"
                     'end if
 
                     Conteudo = Conteudo & "Idade: "& IdadeAbreviada(comps("Nascimento")) &"<br>"
@@ -704,7 +711,7 @@ end if
                     if comps("Encaixe")=1 then
                         Conteudo = Conteudo & "&nbsp;<span class=""label bg-alert label-sm arrowed-in mr10 arrowed-in-right"">Encaixe</span>"
                     end if
-                    Conteudo = Conteudo & "<span class=""nomePac"">"&replace(replace(replace(comps("NomePaciente")&" ", "'", "\'"), chr(10), ""), chr(13), "")&"</span>"
+                    Conteudo = Conteudo & "<span class=""nomePac"">"& fix_string_chars_full(comps("NomePaciente")) &"</span>"
                     CorProcedimento = ""
                     if comps("Cor") <> "#fff" and not isnull(comps("Cor")) then
                         CorProcedimento = "<div class=""mr5 mt5"" style=""float:left;position:relative;background-color:"&comps("Cor")&";height:5px;width:5px;border-radius:50%""></div>"

@@ -333,6 +333,9 @@ end if
             <div id="divInteracoesEstoque" class="tab-pane">
                 Carregando...
             </div>
+            <div id="divConvenioMedicamentos" class="tab-pane">
+                Carregando...
+            </div>
             <div id="divConversaoEstoque" class="tab-pane">
                 <div class="panel-heading">
                     <span class="panel-title">

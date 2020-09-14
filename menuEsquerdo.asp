@@ -840,7 +840,7 @@ select case lcase(req("P"))
 		    if aut("formsae")=1 then
 		    %>
 		    <li>
-                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Prescricao|');">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|');">
                     <span class="fa fa-line-chart bigger-110"></span>
                     <span class="sidebar-title">Linha do tempo</span>
                     <span class="sidebar-title-tray">

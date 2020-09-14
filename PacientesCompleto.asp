@@ -575,6 +575,17 @@ $("#Ativo").click(function(){
     }
 });
 
+<%
+if reg("sysActive") = 1 and lcase(session("Table"))="profissionais" and getConfig("FormularioNaTimeline") then
+        %>
+        $(document).ready(function () {
+            $("#abaTimeline").click();
+        });
+    <%
+end if
+%>
+
+
 <!--#include file="JQueryFunctions.asp"-->
 
 

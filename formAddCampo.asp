@@ -182,6 +182,61 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 2
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+	case 19
+		'prescrição
+		NomeCampo = ""
+		RotuloCampo = "Prescrição"
+		ValorPadrao = ""
+		MaxCarac = 3
+		Checado = "S"
+		Texto = ""
+		Colunas = 7
+		Linhas = 4
+		tipoCampo = " text NULL DEFAULT NULL"
+	case 20
+		'pedidos de exames e procedimentos
+		NomeCampo = ""
+		RotuloCampo = "Pedidos de exames e procedimentos"
+		ValorPadrao = ""
+		MaxCarac = 3
+		Checado = "S"
+		Texto = ""
+		Colunas = 7
+		Linhas = 4
+		tipoCampo = " text NULL DEFAULT NULL"
+	case 21
+		'textos e atestados
+		NomeCampo = ""
+		RotuloCampo = "Textos e atestados"
+		ValorPadrao = ""
+		MaxCarac = 3
+		Checado = "S"
+		Texto = ""
+		Colunas = 7
+		Linhas = 4
+		tipoCampo = " text NULL DEFAULT NULL"
+	case 23
+		'encaminhamento
+		NomeCampo = ""
+		RotuloCampo = "Encaminhamento"
+		ValorPadrao = ""
+		MaxCarac = 3
+		Checado = "S"
+		Texto = ""
+		Colunas = 7
+		Linhas = 4
+		tipoCampo = " text NULL DEFAULT NULL"
+	case 24
+		'carteira de vacinação
+		NomeCampo = ""
+		RotuloCampo = "Carteira de Vacinação"
+		ValorPadrao = ""
+		MaxCarac = 3
+		Checado = "S"
+		Texto = ""
+		Colunas = 7
+		Linhas = 4
+		tipoCampo = " text NULL DEFAULT NULL"
 end select
 
 sql = "insert into buicamposforms (TipoCampoID, NomeCampo, RotuloCampo, FormID, Ordem, ValorPadrao, pTop, pLeft, MaxCarac, Checado, Obrigatorio, Texto, Colunas, Linhas, GrupoID, Tamanho, Largura) values ("&TipoCampoID&", '"&NomeCampo&"', '"&RotuloCampo&"', "&I&", 0, '"&ValorPadrao&"', 0, 0, '"&MaxCarac&"', '"&Checado&"', '', '"&Texto&"', "&Colunas&", "&Linhas&", "&GrupoID&", "&treatvalnull(Tamanho)&", '"&Largura&"')"

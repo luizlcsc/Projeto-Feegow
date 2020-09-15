@@ -42,7 +42,7 @@ if not tryLogin.EOF then
     PastaAplicacaoRedirect = PastaAplicacao
 
     if isnull(PastaAplicacaoRedirect) then
-        PastaAplicacaoRedirect="v7"
+        PastaAplicacaoRedirect="v7-master"
     end if
 
     Servidor = tryLogin("Servidor")&""

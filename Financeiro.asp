@@ -54,7 +54,7 @@ end if
 					%>
                     <div class="col-xs-3 img-thumbnail" style="padding-left:42px">
                         <a href="?P=Extrato&Pers=1&T=1_<%=contas("id") %>">
-                            <img style="position:absolute; left:5px; margin-top:2px" src="http://cdn.feegow.com/feegowclinic-v7/assets/banks/financeiro.png" width="32" height="32">
+                            <img style="position:absolute; left:5px; margin-top:2px" src="https://cdn.feegow.com/feegowclinic-v7/assets/banks/financeiro.png" width="32" height="32">
                             <strong><%=left(contas("AccountName"),23)%></strong><br>R$ <%=formatnumber(Saldo, 2)%>
                         </a>
                     </div>

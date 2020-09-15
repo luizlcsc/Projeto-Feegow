@@ -434,11 +434,12 @@ end if
         end if
     end if
 %>
-    <form method="post" action="">
+    <form method="post">
         <div class="container">
             <div class="row formlogin">
                 <div class="col-lg-5 col-xl-5 formloginCol1">
                     <a href="./?P=Login2" title="Logo">
+                        <input type="hidden" name="RedirectLogin" value="">
                         <%
                         if request.ServerVariables("HTTP_HOST")<>"livenote.feegow.com.br" then
                             if req("Partner")="" then
@@ -458,6 +459,16 @@ end if
                         %>
                     </a>
                         <%
+                        RedirectLogin = False
+
+                        if request.form("RedirectLogin")<>"" then
+                            RedirectLogin=True
+                        end if
+
+                        if request.form("Password")<>"" and RedirectLogin then
+                            PasswordValue = request.form("Password")
+                        end if
+
                         if request.form("User")<>"" then
                             User = request.form("User")
                         else
@@ -469,7 +480,7 @@ end if
                         end if
                         %>
                         <div id="divFormLogin">
-
+                            <!--#include file="LoginPrincipal.asp"-->
                         </div>
                 </div>
                 <div id="carouselExampleIndicators" class="col-lg-7 col-xl-7 d-none d-lg-block d-xl-block carousel slide" data-ride="carousel" style="width: 506px">
@@ -523,11 +534,10 @@ end if
 
         jQuery(document).ready(function () {
 
-            $.post("LoginPrincipal.asp?User=<%=User%>",function(data){
-                $("#divFormLogin").html(data);
-            });
+            //$.post("LoginPrincipal.asp?User=<%=User%>",function(data){
+            //    $("#divFormLogin").html(data);
+            //});
 
-            destroyPhpSession();
             //startPki();
             "use strict";
             // Init Theme Core
@@ -708,6 +718,11 @@ end if
                 var result = (certificado.keyUsage.nonRepudiation && certificado.keyUsage.digitalSignature);
                 return result;
             }
+
+            if (true) {
+              //   location.href="https://app.feegow.com/v7-master/"
+            }
+
         });
     </script>
 </body>

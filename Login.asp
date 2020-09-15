@@ -433,13 +433,24 @@ end if
 <%
         end if
     end if
+
+    'essa variavel eh utilizada no clinic7 e clinic8 para que os clientes logem em app.feegow.com
+    LoginFTP = False
+
+    if LoginFTP then
+        URLRedirectLogin = "https://app.feegow.com/v7-master/?P=Login"
+
+        if req("Partner")<>"" then
+            URLRedirectLogin = URLRedirectLogin & "&Partner="&req("Partner")
+        end if
+    end if
 %>
-    <form method="post">
+    <form method="post" action="<%=URLRedirectLogin%>">
         <div class="container">
             <div class="row formlogin">
                 <div class="col-lg-5 col-xl-5 formloginCol1">
                     <a href="./?P=Login2" title="Logo">
-                        <input type="hidden" name="RedirectLogin" value="">
+                        <input type="hidden" name="RedirectLogin" value="<% if LoginFTP then %>S<% end if %>">
                         <%
                         if request.ServerVariables("HTTP_HOST")<>"livenote.feegow.com.br" then
                             if req("Partner")="" then

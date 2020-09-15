@@ -520,7 +520,7 @@ if not tryLogin.EOF then
             end if
         end if
 
-        IF PastaAplicacao <> "" and Versao&""="7" THEN
+        IF PastaAplicacao <> "" and Versao&""="7" and AppEnv="production" THEN
             urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")
         END IF
 

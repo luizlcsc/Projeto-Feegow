@@ -46,7 +46,11 @@
             <div class="row">
                 <input type="hidden" name="praVencer" id="praVencer" value="<%=praVencer%>">
                 <%=quickfield("simpleSelect", "ProdutoID", "Produto", 2, ProdutoID, "select id, NomeProduto from produtos where sysActive=1 order by NomeProduto", "NomeProduto", "") %>
-                <%=quickfield("simpleSelect", "TipoProduto", "Tipo Produto", 2, TipoProduto, "select id, TipoProduto from cliniccentral.produtostipos order by id", "TipoProduto", " semVazio no-select2 ") %>
+                <% if TipoProduto = 1 then %>
+                    <%=quickfield("simpleSelect", "TipoProduto", "Tipo Produto", 2, TipoProduto, "select id, TipoProduto from cliniccentral.produtostipos WHERE id <> 5 order by id", "TipoProduto", " semVazio no-select2 ") %>
+                <% else %>
+                    <%=quickfield("simpleSelect", "TipoProduto", "Tipo Produto", 2, TipoProduto, "select id, TipoProduto from cliniccentral.produtostipos order by id", "TipoProduto", " semVazio no-select2 ") %>
+                <% end if %>
                 <%if TipoProduto<>1 then%>
                     <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
                 <%end if%>

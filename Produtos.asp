@@ -138,6 +138,18 @@ end if
 
     <div class="tabbable panel">
         <div class="tab-content panel-body">
+           <%  if TipoProduto = 5 then %>
+            <div id="divCadastroProduto" class="tab-pane in active">
+                <div class="row">
+                    <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
+                    <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
+                    <%if TipoProdutoReadonly&""<>"" then%>
+                        <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
+                    <%end if%>
+                    <%=quickField("simpleSelect", "CD", "CD", 3, reg("CD"), "select * from cliniccentral.tisscd order by Descricao", "Descricao", "")%>
+                </div>
+            </div>
+           <% else %>
             <div id="divCadastroProduto" class="tab-pane in active">
                 <div class="row">
                     <div class="col-md-2">
@@ -161,7 +173,7 @@ end if
                     <div class="col-md-10">
                         <div class="row">
                             <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
-                            <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
+                            <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos WHERE id <> 5 order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
                             <%if TipoProdutoReadonly&""<>"" then%>
                                 <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
                             <%end if%>
@@ -327,6 +339,8 @@ end if
                     </div>
                 </div>
             </div>
+            <% end if %>
+
             <div id="divLancamentos" class="tab-pane">
                 Carregando...
             </div>

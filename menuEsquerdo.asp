@@ -816,6 +816,7 @@ select case lcase(req("P"))
 
                 </a>
             </li>
+            <% if aut("protocolosV")=1 then%>
             <li>
                 <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
                     <span class="fa fa-file-text-o bigger-110"></span>
@@ -825,6 +826,7 @@ select case lcase(req("P"))
                     </span>
                 </a>
             </li>
+            <% end if%>
             <%
 
             if recursoAdicional(20) = 4  then
@@ -1118,9 +1120,11 @@ select case lcase(req("P"))
                 <%
             end if
             %>
+            <% if aut("protocolosV")=1 then%>
             <li>
                 <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-th-list"></span> <span class="sidebar-title">Protocolos</span></a>
             </li>
+            <% end if%>
             <%
         end if
     case "protocolos", "protocolosgrupos"

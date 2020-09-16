@@ -15,7 +15,7 @@
                 </thead>
                 <tbody>
                 <%
-                sqlTipoProduto = "SELECT * FROM produtos WHERE TipoProduto = 5"
+                sqlTipoProduto = "SELECT * FROM produtos WHERE TipoProduto = 5 and sysActive=1"
                 set prod = db.execute(sqlTipoProduto)
                    while not prod.EOF
                 %>
@@ -195,3 +195,15 @@
     </div>
 </div>
 <% end if %>
+
+<script>
+function removeItem(ID){
+    $.get("ListaProdutos.asp?ItemID="+ID+"&Acao=X",
+        $(this).serialize(),
+        function (data) {
+
+        }).done(function (){
+           location.reload();
+        });
+}
+</script>

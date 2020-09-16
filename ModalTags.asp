@@ -44,7 +44,6 @@ while not sqlTagsCategorias.eof
       tagsGridHTML = ""&_
       "<tr>"&_
         "<td>"&tags_copy&"</td>"&_
-        "<td>"& tags_Resultado &"</td>"&_
         "<td>"& tags_Descricao &"</td>"&_
       "</tr>"
 
@@ -70,7 +69,6 @@ while not sqlTagsCategorias.eof
     "<thead>"&_
       "<tr class='primary'>"&_
         "<th>TAG</th>"&_
-        "<th>Resultado</th>"&_
         "<th>Descrição</th>"&_
       "</tr>"&_
     "</thead>"&_

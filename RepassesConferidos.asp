@@ -606,6 +606,9 @@ function repassesCredito(I){
 $(document).ready( function () {
     $("#datatableRepasses").dataTable({
         bPaginate: false,
+         bFilter: false,
+         bInfo: false,
+         bAutoWidth: false,
         blengthMenu: [[10, 50, 100, -1], [10, 50, 100, "Todos"]]
     });
 } );

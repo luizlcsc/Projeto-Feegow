@@ -1558,7 +1558,7 @@ select case lcase(req("P"))
         
         
          <li>
-            <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');">
+            <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');" class="whats">
             <span class="fa fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
          <% IF  aut("exames_laboratoriaisV")=1  THEN %>
@@ -2509,4 +2509,12 @@ function __loadMsgs(){
 
 
 }
+$(document).ready(function(){
+    let whats = "<%=req("whatsApp")%>";
+
+    if(whats == "true")
+    {
+        $( ".whats" ).trigger( "click" );
+    }
+});
 </script>

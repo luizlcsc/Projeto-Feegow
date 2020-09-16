@@ -141,8 +141,8 @@ end if
                             <span class="panel-title">Assinatura</span>
                         </div>
                         <div class="panel-body" style="padding:5px !important">
-                         <iframe width="100%" height="200" id="iframeDropZone" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens&Tipo=I&Assinatura=true"></iframe>
-                            <img src="<%=arqEx(reg("Assinatura"), "Imagens")%>" class="img-thumbnail" id="assinatura-img"/>
+                         <iframe width="100%" height="200" id="iframeDropZone" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens/Assinatura&Tipo=I&Assinatura=true"></iframe>
+                            <img src="<%=arqEx(reg("Assinatura"), "IMAGENS/ASSINATURA")%>" class="img-thumbnail" id="assinatura-img"/>
                             <button style="    position: absolute; bottom: 20px; right:20px;" id="buttonDeleteSignature" class="btn btn-xs btn-danger pull-right" onclick="if(confirm('Tem certeza de que deseja excluir esta assinatura?')){deleteSignature(<%= req("I") %>)};"><span class="fa fa-trash "></span></button>
 
                         </div>
@@ -245,10 +245,12 @@ end if
                             <%end if%>
                             <div class='col-md-5'>
                                 <%=quickField("simpleCheckbox", "NaoExibirAgenda", "Não exibir o profissional na agenda", 12, reg("NaoExibirAgenda"), "", "", "")%>
-                                
-                                <%if session("admin")=1 then %>
-                                <%=quickField("simpleCheckbox", "auditor", "Este profissional é auditor", 12,reg("auditor"), "", "", "")%>
-                                <%end if%>
+
+                                <% IF session("admin")=1 THEN %>
+                                  <%=quickField("simpleCheckbox", "auditor", "Este profissional é auditor", 12,reg("auditor"), "", "", "")%>
+                                <% ELSE %>
+                                    <input type="hidden" value="<%=reg("auditor")%>" name="auditor">
+                                <% END IF %>
                             </div>
                             <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
 

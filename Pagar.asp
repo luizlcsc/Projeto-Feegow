@@ -15,6 +15,8 @@
 
 
 <%
+RestringirFormasDeRecebimento= getConfig("RestringirFormasDeRecebimento")
+
 BandeiraCartaoObrigatorio = 0
 if getConfig("ObrigarBandeiraCartao")="1" then
     BandeiraCartaoObrigatorio = 1
@@ -275,7 +277,12 @@ function BuscarCreditosPaciente(ContaID) {
                     	<div class="row">
                             <div class="col-md-4" id="listRadioFormaPagamento">
                                 <%
-                    '			set vcaFormas = db.execute("select * from sys_formasrecto")
+                    			set vcaFormas = db.execute("select * from sys_formasrecto")
+
+                                if vcaFormas.EOF then
+                                    TodasFormas = "todas"
+                                end if
+
                     '			if vcaFormas.EOF THEN
                                     if CD="D" AND session("CaixaID")<>"" then
                                         sqlFormasAceitas = " AND id IN(1) "
@@ -292,7 +299,7 @@ function BuscarCreditosPaciente(ContaID) {
                                       set sysFormasRecto = db.execute("select sys_formasrecto.*, sys_financialinvoices.FormaID, sys_financialinvoices.ContaRectoID, REPLACE(sys_formasrecto.bandeiras, '|', '') as bandeirasId "&_
                                                                      " from sys_financialinvoices "&_
                                                                      " join sys_formasrecto on sys_formasrecto.id = sys_financialinvoices.FormaID "&_
-                                                                    " where sys_financialinvoices.id = "&InvoiceID)  
+                                                                    " where sys_financialinvoices.id = "&InvoiceID)
 
                                     if not sysFormasRecto.eof then
                                         if sysFormasRecto("MetodoID")=1 OR sysFormasRecto("MetodoID")=2 OR sysFormasRecto("MetodoID")=7  OR sysFormasRecto("MetodoID")=8 then
@@ -300,10 +307,13 @@ function BuscarCreditosPaciente(ContaID) {
                                         end if
                                         ContaRectoSelect = sysFormasRecto("ContaRectoID")
                                         BandeirasIDSelect = sysFormasRecto("bandeirasId")
-                                    end if    
+                                    end if
                                     set PaymentMethod = db.execute("select * from cliniccentral.sys_financialPaymentMethod where AccountTypes"&CD&"<>'' "& sqlFormasAceitas &" order by PaymentMethod")
 '                                    set PaymentMethod = db.execute("select * from sys_financialPaymentMethod where AccountTypes"&CD&"<>'' or id=3 order by PaymentMethod")
                                     while not PaymentMethod.eof
+										set RecebimentoLimitadoSQL = db.execute("SELECT * FROM sys_formasrecto WHERE MetodoID="&PaymentMethod("id"))
+
+                                        if (not RecebimentoLimitadoSQL.eof  or TodasFormas<>"") or not RestringirFormasDeRecebimento then
                                         %>
                                         <div class="radio-custom radio-primary" data-id="<%=PaymentMethod("id") %>">
                                             <input type="radio" class="ace Metodo" data-id="<%=PaymentMethod("id") %>" name="MetodoID" id="MetodoID<%=PaymentMethod("id") %>" onclick="subConta(<%=PaymentMethod("id")%>);" value="<%=PaymentMethod("id")%>"<%if MetodoID=PaymentMethod("id") then%> checked<%end if%>><label for="MetodoID<%=PaymentMethod("id") %>"> <%=PaymentMethod("PaymentMethod")%></label>
@@ -312,25 +322,23 @@ function BuscarCreditosPaciente(ContaID) {
                                         <%
 										if session("CaixaID")="" OR PaymentMethod("id")=7 OR PaymentMethod("id")=8 OR PaymentMethod("id")=9 OR PaymentMethod("id")=4 OR PaymentMethod("id")=5 OR PaymentMethod("id")=6 then
 										    sqlContasLiberadas = ""
-										    set RecebimentoLimitadoSQL = db.execute("SELECT * FROM sys_formasrecto WHERE MetodoID="&PaymentMethod("id"))
 
 										    Contas=""
+                                            while not RecebimentoLimitadoSQL.eof
+                                                ContasCartao = RecebimentoLimitadoSQL("Contas")
 
-										    while not RecebimentoLimitadoSQL.eof
-										        ContasCartao = RecebimentoLimitadoSQL("Contas")
-
-										        if Contas="" then
-										            Contas = ContasCartao
+                                                if Contas="" then
+                                                    Contas = ContasCartao
                                                 else
-                                                    if ContasCartao&"" <> "" then 
-										                Contas = Contas&","&ContasCartao
-                                                    end if 
-										        end if
+                                                    if ContasCartao&"" <> "" then
+                                                        Contas = Contas&","&ContasCartao
+                                                    end if
+                                                end if
 
-										    RecebimentoLimitadoSQL.movenext
-										    wend
-										    RecebimentoLimitadoSQL.close
-										    set RecebimentoLimitadoSQL=nothing
+                                            RecebimentoLimitadoSQL.movenext
+                                            wend
+                                            RecebimentoLimitadoSQL.close
+                                            set RecebimentoLimitadoSQL=nothing
 
                                             if instr(Contas, "|ALL|")=0 and Contas<>"" then
                                                 sqlContasLiberadas= " AND id IN ("&replace(Contas, "|", "")&")"
@@ -386,6 +394,7 @@ end if
 										%>
 										</div>
 										<%
+                                    end if
                                     PaymentMethod.movenext
                                     wend
                                     PaymentMethod.close

@@ -126,14 +126,12 @@ set sqlTagsCategorias = nothing
 
 <script>
 function copyToClipboard(target) {
-  var element = document.getElementById(target);
-  var text = element.innerHTML;
-  CopyToClipboard(text);
-  //alert("A Tag "+ text +" foi copiada com sucesso!");
-  showMessageDialog("Foi copiada para  sua \n área de transferência.", "success", "A TAG "+text+"!", 5000);
-         
-  }
-  text.innerHTM
+    var element = document.getElementById(target);
+    var text = element.innerHTML;
+    CopyToClipboard(text);
+    //alert("A Tag "+ text +" foi copiada com sucesso!");
+    showMessageDialog("A tag "+text+" foi copiada para  sua área de transferência.", "success", "Tag copiada!", 5000);
+}
 
 function CopyToClipboard (text) {
 	// Copies a string to the clipboard. Must be called from within an 

@@ -133,7 +133,7 @@ end if
     <iframe align="middle" class="hidden" id="CodBarras" name="CodBarras" src="about:blank" width="100%" height="110"></iframe>
 
     <%=header(req("P"), "Estoque", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
+    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" class="idItem"/>
     <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
 
     <div class="tabbable panel">
@@ -364,6 +364,12 @@ end if
 
 <script type="text/javascript">
 
+    $(document).ready(function()
+    {
+        let TipoProduto = $("#TipoProduto").val();
+        let IdTipoProduto = $(".idItem").val();
+
+    })
 
     function printEtiqueta(ProdutoID) {
         $.post("printEtiqueta.asp?ProdutoID="+ ProdutoID, $(".eti").serialize(), function (data) {
@@ -372,18 +378,19 @@ end if
         });
     }
 
-
-
-    $(document).ready(function(e) {
+    $(document).ready(function() {
         var TipoProduto = $("#TipoProduto").val();
+
         if (TipoProduto == 4){
             $(".Modulo-Medicamento").attr("style", "display:");
         }else{
             $(".Modulo-Medicamento").attr("style", "display:none");
-
-        };
+        }
         $("#Header-List").attr("href", "./?P=ListaProdutos&Pers=1&TipoProduto="+TipoProduto);
+
         $("#Header-New").addClass("hidden");
+
+
 
         $(".crumb-link").removeClass("hidden");
         $(".crumb-link").html($("#TipoProduto option:selected").text());

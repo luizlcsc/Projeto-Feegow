@@ -362,6 +362,7 @@ end if
 "LEFT JOIN tissprocedimentoshonorarios ps ON ps.GuiaID=gh.id "&_
 "WHERE gh.sysActive=1 AND gh.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiahonorarios' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGH &_
+" GROUP BY gh.id " &_
                 ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID"&_
                 " left join ((select 0 as 'id',  NomeFantasia CompanyUnit FROM empresa WHERE id=1) UNION ALL (select id,  NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia)) u on u.id = t.UnidadeID"&_
                 " left join (select * from (select concat('I_',z.id) id, z.Nome, z.EspecialidadeID from ( "&_
@@ -384,6 +385,7 @@ end if
                 if session("Banco")="clinic3882" then
                     'response.write( sqlII )
                 end if
+
             while not ii.eof
 
                 ProfissionalExecutante = ii("ProfissionalID")

@@ -245,10 +245,12 @@ end if
                             <%end if%>
                             <div class='col-md-5'>
                                 <%=quickField("simpleCheckbox", "NaoExibirAgenda", "Não exibir o profissional na agenda", 12, reg("NaoExibirAgenda"), "", "", "")%>
-                                
-                                <%if session("admin")=1 then %>
-                                <%=quickField("simpleCheckbox", "auditor", "Este profissional é auditor", 12,reg("auditor"), "", "", "")%>
-                                <%end if%>
+
+                                <% IF session("admin")=1 THEN %>
+                                  <%=quickField("simpleCheckbox", "auditor", "Este profissional é auditor", 12,reg("auditor"), "", "", "")%>
+                                <% ELSE %>
+                                    <input type="hidden" value="<%=reg("auditor")%>" name="auditor">
+                                <% END IF %>
                             </div>
                             <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
 

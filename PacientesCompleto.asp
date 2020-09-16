@@ -465,6 +465,15 @@ end if
 					<%call Subform("PacientesRelativos", "PacienteID", PacienteID, "frm")%>
                 </div>
             </div>
+            <div class="row">
+                <div id="block-programa-saude" class="col-md-6">
+                </div>
+                <div id="block-care-team" class="col-md-6">
+                    <div style="width: 100%; text-align: center">
+                        <i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i>
+                    </div>
+                </div>
+            </div>
 
             <div class="panel" id="dCad">
                 <div class="panel-body">
@@ -631,6 +640,16 @@ function mesclar(p1, p2){
 		location.href="mesclar.asp?p1="+p1+"&p2="+p2;
 	}
 }
+
+<% if PacienteID <> "" then %>
+// Chamada Ajax Programa Saúde e Care Team
+$(document).ready(function () {
+
+    getUrl("patient-record/care-team/<%=PacienteID %>", {}, function(data) {
+        $("#block-care-team").html(data);
+    });
+});
+<% end if %>
 
 </script>
 <%

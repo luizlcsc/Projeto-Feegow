@@ -141,8 +141,8 @@ end if
                             <span class="panel-title">Assinatura</span>
                         </div>
                         <div class="panel-body" style="padding:5px !important">
-                         <iframe width="100%" height="200" id="iframeDropZone" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens/Assinatura&Tipo=I&Assinatura=true"></iframe>
-                            <img src="<%=arqEx(reg("Assinatura"), "IMAGENS/ASSINATURA")%>" class="img-thumbnail" id="assinatura-img"/>
+                         <iframe width="100%" height="200" id="iframeDropZone" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens&Tipo=I&Assinatura=true"></iframe>
+                            <img src="<%=arqEx(reg("Assinatura"), "Imagens")%>" class="img-thumbnail" id="assinatura-img"/>
                             <button style="    position: absolute; bottom: 20px; right:20px;" id="buttonDeleteSignature" class="btn btn-xs btn-danger pull-right" onclick="if(confirm('Tem certeza de que deseja excluir esta assinatura?')){deleteSignature(<%= req("I") %>)};"><span class="fa fa-trash "></span></button>
 
                         </div>

@@ -38,6 +38,9 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 <head>
     <meta name="robots" content="noindex">
   <style type="text/css">
+  	.tooltip{
+          z-index:99999999; overflow: visible !important;overflow: visible !important;
+       }
        @media print
        {
            .no-print, .no-print *
@@ -73,6 +76,10 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 		margin:0;
 		padding:0;
 	}
+	#footer-whats{
+	    background-color: red;
+	}
+
 	.select-insert li {
 		cursor:pointer;
 		list-style-type:none;
@@ -1333,6 +1340,12 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                             <% IF session("Banco")<>"clinic7126" THEN %>
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
+                            <% IF (session("Admin")="1") and (req("P")="Home") THEN %>
+                            <script>localStorage.setItem("Admin",true);</script>
+                            <button class="btn btn-xs btn-success light" id="footer-whats" onclick="location.href='?P=OutrasConfiguracoes&Pers=1&whatsApp=true'"  data-rel="tooltip" data-placement="right" title="" data-original-title="" >
+                                <span class="fa fa-whatsapp"></span>
+                            </button>
+                            <% END IF %>
                   </div>
               </div>
 
@@ -1773,6 +1786,20 @@ function ajxContent(P, I, Pers, Div, ParametrosAdicionais){
 	});
 }
 
+function whasappVerifyConnection()
+{
+    	$.ajax({
+    		type: "GET",
+    		url: domain + '',
+    		success: function( data )
+    		{
+    			//alert(data);
+    			$("#"+Div).html(data);
+    		}
+    	});
+}
+
+
 function callTicket (pacienteId) {
         var license = '<%= session("Banco") %>';
         var licenseId = license.replace("clinic", "");
@@ -2041,7 +2068,7 @@ function chatUsers(){
 		url:"chatNotificacoes.asp"+pesquiArgs,
 		success:function(data){
 
-      $("#notifchat").html(data);
+            $("#notifchat").html(data);
 		}
 	});
 }
@@ -2585,3 +2612,6 @@ if PermiteChat then
 <%
 end if
 %>
+<% IF (session("Admin")="1") and (req("P")="Home") THEN %>
+<script src="assets/js/whatsApp/whatsAppStatus.js"></script>
+<% END IF %>

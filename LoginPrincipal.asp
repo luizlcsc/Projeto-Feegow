@@ -1,6 +1,3 @@
-<%
-User = request.QueryString("User")
-%>
 
 <br>
 <span class="textoTitulo">Faça o login na sua conta</span>
@@ -18,7 +15,7 @@ User = request.QueryString("User")
 <br>
 <span class="textoTituloInput">Senha</span>
 <br>
-<input type="password" class="senha" placeholder="senha" type="password" name="password" id="password" required>
+<input type="password" class="senha" placeholder="senha" type="password" value="<%=PasswordValue%>" name="password" id="password" required>
 <br>
 <br>
 <div class="container">

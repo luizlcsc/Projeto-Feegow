@@ -246,7 +246,10 @@ if not inv.eof then
             if ProfissionalExecutanteID&""="" then
                 set ExecutanteSQL = db.execute("SELECT ProfissionalID FROM itensinvoice WHERE InvoiceID="&InvoiceID&" LIMIT 1")
                 if not ExecutanteSQL.eof then
-                    ProfissionalExecutanteID=ExecutanteSQL("ProfissionalID")
+                    ProfissionalExecutanteID=ExecutanteSQL("ProfissionalID")&""
+                    if ProfissionalExecutanteID="0" then
+                        ProfissionalExecutanteID=""
+                    end if
                 end if
             end if
 

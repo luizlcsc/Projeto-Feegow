@@ -243,7 +243,15 @@ end if
                             %>
                                 <%=quickField("multiple", "AgendaProfissionais", "Acesso as agendas dos profissionais", 4, AgendaProfissionais, "select id, NomeProfissional from profissionais where ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
                             <%end if%>
-                            <%=quickField("simpleCheckbox", "NaoExibirAgenda", "Não exibir o profissional na agenda", "5", reg("NaoExibirAgenda"), "", "", "")%>
+                            <div class='col-md-5'>
+                                <%=quickField("simpleCheckbox", "NaoExibirAgenda", "Não exibir o profissional na agenda", 12, reg("NaoExibirAgenda"), "", "", "")%>
+
+                                <% IF session("admin")=1 THEN %>
+                                  <%=quickField("simpleCheckbox", "auditor", "Este profissional é auditor", 12,reg("auditor"), "", "", "")%>
+                                <% ELSE %>
+                                    <input type="hidden" value="<%=reg("auditor")%>" name="auditor">
+                                <% END IF %>
+                            </div>
                             <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
 
                             <%'= quickField("simpleSelect", "PlanoContaID", "Plano de Contas", 4, "", "select id,Name from sys_financialexpensetype where sysActive=1 order by Name", "Name", "") %>

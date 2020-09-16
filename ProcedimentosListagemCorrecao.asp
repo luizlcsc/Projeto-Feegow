@@ -4,6 +4,7 @@
 <% 
 guiaId = req("guiaId")
 tabela = req("tabela")
+inputValorPago = req("valor")
 
 if(UCase(tabela) = UCase("GuiaHonorarios")) then 
     set lotesEnv = db.execute("SELECT * FROM tissprocedimentoshonorarios WHERE GuiaID = "&guiaId&"")
@@ -11,7 +12,7 @@ if(UCase(tabela) = UCase("GuiaHonorarios")) then
     despesas = empty
 end if
 
-if(UCase(tabela) = UCase("GuiaSADT")) then 
+if(UCase(tabela) = UCase("GuiaSADT")) then
     set lotesEnv = db.execute("SELECT * FROM tissprocedimentossadt WHERE GuiaID = "&guiaId&"")
     set despesas = db.execute("SELECT * FROM tissguiaanexa WHERE GuiaID = "&guiaId&"")
     set tissGuia = db.execute("SELECT * FROM tissguiasadt WHERE id = "&guiaId&"")
@@ -38,7 +39,23 @@ end if
 <%
 dim count
 count = 0
-while not lotesEnv.EOF %>
+countGuias = 0
+
+set countRows = db.execute("SELECT count(*) as id FROM tissprocedimentossadt WHERE GuiaID = "&guiaId&"")
+if not countRows.eof then
+    countGuias = CInt(countRows("id"))
+end if
+
+if countGuias <= 1 then
+    valorPago = inputValorPago
+end if
+
+
+while not lotesEnv.EOF
+
+
+%>
+
     <tr>
         <input type="hidden" name="ProcedimentoID" value="<%=lotesEnv("id")%>" />
         <td align="center">
@@ -47,9 +64,9 @@ while not lotesEnv.EOF %>
         <td align="center"><%=lotesEnv("Descricao")%></td>
         <td align="center"><%=lotesEnv("Data")%></td>
         <td align="center"><%=fn(lotesEnv("ValorTotal"))%></td>
-        <td align="center"><%=quickfield("currency", "ValorPago"&lotesEnv("id"), "", 3, lotesEnv("ValorPago"), " valor-pago-field", "", " text-right") %></td>
+        <td align="center"><%=quickfield("currency", "ValorPago"&lotesEnv("id"), "", 3, valorPago, " valor-pago-field", "", " text-right") %></td>
     </tr>
-<% 
+<%
 count = count + 1
 lotesEnv.movenext
 wend

@@ -1,0 +1,40 @@
+insert
+	into
+	cliniccentral.sys_resourcesfields (
+	resourceID, 
+	label, 
+	columnName, 
+	categoria, 
+	defaultValue, 
+	placeholder, 
+	showInList, 
+	showInForm, 
+	required, 
+	fieldTypeID, 
+	rowNumber, 
+	mainField, 
+	selectSQL, 
+	selectColumnToShow, 
+	responsibleColumnHidden, 
+	`size`, 
+	ordem
+)
+values(
+	6, 
+	'Este profissional é auditor', 
+	'auditor', 
+	'Preferências', 
+	null, 
+	null, 
+	0, 
+	1, 
+	0, 
+	1, 
+	111, 
+	0, 
+	null, 
+	null, 
+	null, 
+	4, 
+	10
+);

@@ -1,4 +1,4 @@
-<%
+<!--#include file="Classes/Connection.asp"--><%
 						set tryLogin = dbc.execute("select lu.*, l.Servidor from licencasusuariosmulti lu left join licencas l on l.id=LicencaAtual where lu.Email='"&ref("User")&"' and lu.Senha='"&ref("Password")&"' and lu.Cupom='"&req("Partner")&"'")
                         if not tryLogin.EOF then
 
@@ -21,10 +21,8 @@
 							session("idInTable")=tryLogin("id")
 							session("Table") = "licencasusuariosmulti"
 							session("Partner")=req("Partner")
-
-                            ConnStringProvi = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& Servidor &";Database=clinic"&tryLogin("LicencaAtual")&";uid=root;pwd=pipoca453;"
-                            Set dbProvi = Server.CreateObject("ADODB.Connection")
-                            dbProvi.Open ConnStringProvi
+' "clinic"&tryLogin("LicencaAtual")
+                            				set dbProvi = newConnection("clinic"&tryLogin("LicencaAtual"), Servidor)
 
 							set getUnidades = dbProvi.execute("select group_concat('|', id, '|') Unidades from sys_financialcompanyunits")
 							session("Unidades") = "|0|" & getUnidades("Unidades")

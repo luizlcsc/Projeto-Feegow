@@ -73,9 +73,8 @@
             end if
 
             if ref("AbaixoMinimo")="S" then
-                sqlAbaixo = " AND (if(EstoqueMinimoTipo='U',((select sum(ep.Quantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='U' group by ep.ProdutoID)+ "&_
-                            " (select sum(ep.Quantidade*pro.ApresentacaoQuantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID)<EstoqueMinimo), "&_
-                            " (select sum(ep.Quantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID)<EstoqueMinimo) )"
+                sqlAbaixo = " AND (if(EstoqueMinimoTipo='U',((select sum(ep.Quantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='U' group by ep.ProdutoID)+  IFNULL((select sum(ep.Quantidade*pro.ApresentacaoQuantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID),0) < EstoqueMinimo),  (select sum(ep.Quantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID) < EstoqueMinimo) )"
+
             elseif ref("AbaixoMinimo")="N" then 
                 sqlAbaixo = " AND ( (posicaoConjunto>=EstoqueMinimo) OR ( (posicaoUnidade+(posicaoConjunto*ApresentacaoQuantidade)) > EstoqueMinimo) )"
             end if
@@ -90,7 +89,8 @@
             "LEFT JOIN estoqueposicao estpos ON estpos.ProdutoID=pro.id "&_
             "WHERE pro.sysActive = 1 "& sqlsomentePraVencer & sqlProd & sqlTipoProduto & sqlPrincipioAtivo & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem &""&_
             ") pro")
-            'response.write("<pre>"&sqlstring&"</pre>")
+
+
             set prod = db.execute(sqlstring)
             while not prod.EOF
                 Validade = prod("Validade")

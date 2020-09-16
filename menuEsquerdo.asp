@@ -840,7 +840,7 @@ select case lcase(req("P"))
 		    if aut("formsae")=1 then
 		    %>
 		    <li>
-                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Prescricao|');">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|');">
                     <span class="fa fa-line-chart bigger-110"></span>
                     <span class="sidebar-title">Linha do tempo</span>
                     <span class="sidebar-title-tray">
@@ -1558,9 +1558,17 @@ select case lcase(req("P"))
         
         
          <li>
-            <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');">
+            <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');" class="whats">
             <span class="fa fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
+         <% IF  aut("exames_laboratoriaisV")=1  THEN %>
+            <li>
+              <a href="?P=CadastroExamesLab&Pers=1">
+                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Cadastro de Exames (Lab)</span></a> 
+    
+            </li>
+        <% END IF %>
+
         <%
     case "chamadasmotivoscontato","chamadascategorias"
     %>
@@ -1978,11 +1986,12 @@ select case lcase(req("P"))
                     </a>
                 </li>
                 <li>
-                    <a href="#" onClick="javascript:callReport('FCofre');">
+                    <a href="#" onClick="javascript:callReport('FCofreNovo');">
                         <i class="fa fa-double-angle-right"></i>
                         Fechamento de Cofre
                     </a>
                 </li>
+
                 <% if session("Banco")="clinic6118" or session("Banco")="clinic5760" or session("Banco")="clinic4285" or session("Banco")="clinic100000" then %>
                 <li>
                     <a href="#" onClick="javascript:callReport('AnaliseCompleta');">
@@ -2088,7 +2097,7 @@ select case lcase(req("P"))
                         Repasses - Analítico
                     </a>
                 </li>
-                <li class="hidden">
+                <li>
                     <a href="javascript:callReport('DRE');">
                         <i class="fa fa-double-angle-right"></i>
                         DRE
@@ -2423,6 +2432,25 @@ select case lcase(req("P"))
             telas.close
             set telas = nothing
     end if
+    case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara"
+    %>
+    <li>
+        <a href="?P=labscadastrocredenciais&Pers=1"><span class="fa fa-users"></span> <span class="sidebar-title">Cadastro de Credenciais</span></a>
+    </li>
+    <li>
+        <a href="#"><span class="fa fa-exchange"></span> <span class="sidebar-title">Sincronização de Resultados</span></a>
+        
+    </li>
+    <li>
+        <a href="?P=labsconfigintegracao&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Implantação de Laboratórios</span></a>
+    </li>
+    <li>
+        <a href="?P=labslistagemexames&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Listagem de exames</span></a>
+    </li>
+    <li>
+        <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
+    </li>
+    <%
 end select
 
 if session("AutoConsolidar")="" then
@@ -2481,4 +2509,12 @@ function __loadMsgs(){
 
 
 }
+$(document).ready(function(){
+    let whats = "<%=req("whatsApp")%>";
+
+    if(whats == "true")
+    {
+        $( ".whats" ).trigger( "click" );
+    }
+});
 </script>

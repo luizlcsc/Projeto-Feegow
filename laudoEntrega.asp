@@ -63,7 +63,7 @@ end if
 function openPrint(){
 	var tk = localStorage.getItem("tk");
 
-	window.open(domain+'print-medical-report?.asp?p=<%= l("PacienteID") %>&m=<%= l("FormID") %>&i=<%= l("FormPID") %>&l=<%= l("id") %>&tk='+tk);
+	window.open(domain+'print-medical-report?p=<%= l("PacienteID") %>&m=<%= l("FormID") %>&i=<%= l("FormPID") %>&l=<%= l("id") %>&tk='+tk);
 }
 <!--#include file="JQueryFunctions.asp"-->
 </script>

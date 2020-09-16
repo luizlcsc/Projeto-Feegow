@@ -242,13 +242,21 @@ if not inv.eof then
                 ProfissionalSolicitanteID=0
             end if
             'response.write("<script>console.log('Valor: '"&ProfissionalSolicitanteID&")</script>")
-            Recibo = TagsConverte(Recibo,"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|FaturaID_"&req("I"),"")
-            Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
+
+            if ProfissionalExecutanteID&""="" then
+                set ExecutanteSQL = db.execute("SELECT ProfissionalID FROM itensinvoice WHERE InvoiceID="&InvoiceID&" LIMIT 1")
+                if not ExecutanteSQL.eof then
+                    ProfissionalExecutanteID=ExecutanteSQL("ProfissionalID")
+                end if
+            end if
+
+            Recibo = TagsConverte(Recibo,"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalExecutanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
+            ' Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
 
             'CONVERSOR ANTIGO DE TAGS DESATIVADO
             'Recibo = replace(Recibo, "[Usuario.Nome]","[-Usuario.Nome-]")
 			Recibo = replaceTags(Recibo, ContaID, User, inv("CompanyUnitID"))
-            
+
 		end if
 
 		'Tags do agendamento
@@ -577,13 +585,12 @@ if not inv.eof then
                                 ProfissionalExecutante=NomeProfissional&""
                                 ProfissionalExecutanteCPF=CPFProfissional&""
 
-                                'TAGS DESATIVADAS EM 22/07/2020
-                                'Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho )
-                                'Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", ProfissionalExecutante )
-                                'Recibo = replace(Recibo, "[ProfissionalExecutante.CPF]", ProfissionalExecutanteCPF )
+                                Recibo = replace(Recibo, "[ProfissionalExecutante.Conselho]", ProfissionalExecutanteConselho )
+                                Recibo = replace(Recibo, "[ProfissionalExecutante.Nome]", ProfissionalExecutante )
+                                Recibo = replace(Recibo, "[ProfissionalExecutante.CPF]", ProfissionalExecutanteCPF )
                                 
                                 'CONVERSOR DE TAG APLICADO EM 22/07/2020
-                                Recibo = tagsConverte(Recibo,"ProfissionalID_"&ProfissionalID,"")
+                                'Recibo = tagsConverte(Recibo,"ProfissionalID_"&ProfissionalID,"")
 
                             end if
                         end if
@@ -831,7 +838,8 @@ if not inv.eof then
                 NumeroSequencial = 1
             end if
         end if
-        Recibo = replace(Recibo, "[Recibo.Protocolo]", NumeroSequencial)
+        Recibo = replace(Recibo, "[Recibo.Protocolo]", NumeroSequencial&"")
+        Recibo = replace(Recibo, "[Fatura.NumeroSequencial]", inv("NumeroFatura")&"")
 
         nroNFe = 0
         set nfeEmitido = db.execute("select numeronfse from nfe_notasemitidas where numeronfse<>'' and InvoiceID="&inv("id"))
@@ -846,7 +854,7 @@ if not inv.eof then
 
 
         if (PacienteID<>"" and TotalPago>0) or (PacienteID<>"" and session("Banco")="clinic5968") or (PacienteID<>"" and session("Banco")="clinic100000") then
-            Recibo = replace(Recibo, "'", """")
+                                                           Recibo = replace(Recibo, "'", """")
             NomeItens = left(NomeItens, 200)
             CPFPACIENTE = ""
 

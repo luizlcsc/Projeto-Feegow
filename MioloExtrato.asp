@@ -25,14 +25,13 @@ end if
         <div class="panel-body">
             <div class="row">
                 <%
-                if (aut("contasareceber") and aut("contasapagar")) or aut("contaprofV") then
-                    %>
-                    <div class="col-md-4">
-                        <label>Selecione a conta ou paciente</label><br>
-                        <%=selectInsertCA("", "AccountID", AccountID, "5, 4, 3, 2, 8, 6, 1", "", "", "")%>
-                    </div>
-                    <%
-                elseif aut("proprioextratoV") then
+                PermiteSelecionarConta = (aut("contasareceber") and aut("contasapagar")) or aut("contaprofV")
+
+                if AccountID<>"" then
+                    PermiteSelecionarConta = False
+                end if
+
+                if not PermiteSelecionarConta and aut("proprioextratoV") and AccountID="" then
                     if lcase(session("table"))="profissionais" then
                         AccountID = "5_"& session("idInTable")
                     elseif lcase(session("table"))="funcionarios" then
@@ -40,12 +39,23 @@ end if
                     else
                         AccountID = "5_1"
                     end if
+                end if
+
+
+                if PermiteSelecionarConta then
                     %>
-                    <input type="hidden" id="AccountID" name="AccountID" value="<%= AccountID %>" />
+                    <div class="col-md-4">
+                        <label>Selecione a conta ou paciente</label><br>
+                        <%=selectInsertCA("", "AccountID", AccountID, "5, 4, 3, 2, 8, 6, 1", "", "", "")%>
+                    </div>
                     <%
                 else
                     %>
-                    <input type="hidden" id="AccountID" name="AccountID" value="-1" />
+                    <div class="col-md-4">
+                        <br>
+                        <input type="hidden" id="AccountID" name="AccountID" value="<%=AccountID%>" />
+                        <%=accountName(null, AccountID)%>
+                    </div>
                     <%
                 end if
                 %>

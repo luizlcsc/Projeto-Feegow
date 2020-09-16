@@ -93,7 +93,7 @@ end if
     </thead>
     <tbody>
         <%
-        set lanc = db.execute("select ep.id PosicaoID, ep.Lote, ep.Validade, ep.Quantidade, ep.LocalizacaoID, ep.CBID, ep.Responsavel, ep.TipoUnidade, ep.ValorPosicao, pl.NomeLocalizacao from estoqueposicao ep LEFT JOIN produtoslocalizacoes pl ON pl.id=ep.LocalizacaoID WHERE ep.ProdutoID="&req("I")&sqlUnidadesUsuario)
+        set lanc = db.execute("select ep.id PosicaoID, ep.Lote, ep.Validade, ep.Quantidade, ep.LocalizacaoID, ep.CBID, ep.Responsavel, ep.TipoUnidade, ep.ValorPosicao, pl.NomeLocalizacao from estoqueposicao ep LEFT JOIN produtoslocalizacoes pl ON pl.id=ep.LocalizacaoID WHERE ep.ProdutoID="&req("I")&sqlUnidadesUsuario &" ORDER BY ep.CBID, ep.Validade")
         while not lanc.eof
             Responsavel = lanc("Responsavel")&""
             if instr(Responsavel, "_")>0 then

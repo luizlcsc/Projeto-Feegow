@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="buiforms.css">
 <link rel="stylesheet" type="text/css" href="assets/css/colorbox.css" />
 <script src="site/jquery.gridster.js" type="text/javascript" charset="utf-8"></script>
-
+<script crossorigin type="text/babel" src="react/telemedicina/Services/TelemedicinaService.js"></script>
 
 <script type="text/javascript">
     $(".crumb-active a").html("Laudo");
@@ -183,7 +183,7 @@ end if
 
 <div class="tabbable panel mt20">
     <div class="tab-content panel-body">
-    <p><strong>Paciente:</strong> <%=NomePaciente%></p>
+    <p><strong>Paciente:</strong> <%=NomePaciente%> <span class="pull-right"><button class="btn btn-primary" id="btnSoliciaRetorna">Comunicar ao Paciente</button></span></p>
     <p><strong>Procedimento:</strong> <%=NomeProcedimento%></p>
         <div class="tab-pane cel_input active" id="folha">
 
@@ -208,9 +208,23 @@ end if
                         </div>
                         <div id="divImagens" class="panel-body pn">
                             <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?PacienteID=<%=PacienteID %>&LaudoID=<%= LaudoID %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens&Tipo=I"></iframe>
-
-                            <div id="ImagensPaciente">
-                            </div>
+                            <script>
+                                   function loadImagensLaudo(){
+                                       	 <% IF getConfig("NovaGaleria") = "1" THEN %>
+                                               if($(".galery-ajax").length === 0){
+                                                  $("#ImagensPaciente").prepend("<div class='galery-ajax'></div>");
+                                                  fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>&LaudoID=<%= LaudoID %>")
+                                                    .then(data => data.text())
+                                                    .then(data => {
+                                                       $(".galery-ajax").html(data);
+                                                    });
+                                               }
+                                          <%  ELSE %>
+                                               ajxContent('Imagens&PacienteID=<%= PacienteID %>', 0, 1, 'ImagensPaciente')
+                                          <%  END IF %>
+                                   }
+                            </script>
+                            <div id="ImagensPaciente"></div>
                         </div>
                     </div>
                 </div>
@@ -218,12 +232,91 @@ end if
         </div>
     </div>
 </div>
+<script>
+
+function changeTexto(arg){
+        let texto = `Olá [NomePaciente],
+                 Após análise dos documentos enviados, Dr(a). [NomeProfissional] identificou alguns detalhes que necessitam de acompanhamento.
+                 Favor entrar em contato para agendar um retorno próximo para dar continuidade ao tratamento.`
+
+
+    $(".btn-texto").removeClass("btn-dark");
+
+    $(".btn-texto").removeClass("btn-default");
+    if(arg === 2){
+
+        texto = `Olá [NomePaciente],
+                 Após análise dos arquivos enviados, Dr(a). [NomeProfissional] identificou que não há problemas imediatos.
+                 Caso haja alguma dúvida você pode entrar em contato com a clínica e solicitar um novo acompanhamento.`;
+
+        $(".btn-texto-2").addClass("btn-dark");
+        $(".btn-texto-1").addClass("btn-default");
+        $(".btn-texto-1").attr("data-return",0);
+    }else{
+        $(".btn-texto-1").attr("data-return",1);
+        $(".btn-texto-1").addClass("btn-dark");
+        $(".btn-texto-2").addClass("btn-default");
+    }
+
+
+    $("#texto").val(texto);
+}
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="modalPreecherTexto" tabindex="-1" role="dialog" aria-labelledby="modalPreecherTexto" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Resposta ao Paciente</h5>
+      </div>
+      <div class="modal-body">
+        <button class="btn btn-sm btn-dark btn-texto btn-texto-1" type="button" onclick="changeTexto(1,this)">Retorno</button>
+        <button class="btn btn-sm btn-default btn-texto btn-texto-2" onclick="changeTexto(2,this)" type="button">Não Retorno</button>
+            <textarea class="form-control mt15" id="texto" style="height: 250px"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" onclick="enviarEmailLaudo()">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script type="text/javascript">
+
+    function enviarEmailLaudo(){
+        endpointSendMailToPatient($("#LaudoID").val(),env);
+                showMessageDialog("Email de retorno enviado com sucesso.", "success");
+    }
+
     function callForm(F, I) {
         //alert(I);
         $.get("iPront.asp?t=L&p=<%= PacienteID %>&m="+ F +"&i="+ I +"&a=&LaudoSC=1", function (data) { $("#folha").html(data) });    
     }
+
+    endpointSendMailToPatient = (laudoID,env) => {
+        let objct = {};
+        objct.laudoID = laudoID;
+        objct.retorno = $(".btn-texto-1").attr("data-return");
+        objct.mensagemLaudo = $("#texto").val();
+        return $.ajax({
+            url: getEnvUrl(env,"medical-report-integration/send-mail-medical-reply"),
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify(objct)
+        });
+    };
+
+    getEnvUrl = (env, endpoint) => {
+        return (env === "production" ? "https://app.feegow.com.br/":"http://localhost:8000/") + endpoint;
+    }
+
+    $("#btnSoliciaRetorna").click(function(){
+            $('#modalPreecherTexto').modal('toggle');
+            changeTexto();
+    });
 
     $("#FormularioID").change(function () {
         callForm($(this).val(), 'N');
@@ -232,7 +325,7 @@ end if
 
 
     $(document).ready(function () {
-
+        $(".btn-texto-1").attr("data-return",1);
         <% if chamaFP= "" then %>
         alert('chamando form preenchido: '+ $("#FormularioID").val() );
         if ($("#FormularioID").val() != "0") {

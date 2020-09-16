@@ -18,15 +18,15 @@
       
 <%
 
-Unidades = req("Unidades")
+Unidades = reqf("Unidades")
 if Unidades="" then
     Unidades = "|"& session("UnidadeID") &"|"
 end if
 
-if req("X")<>"" then
-    set LinhaRepasseSQL = db.execute("SELECT ItemInvoiceID,ItemGuiaID,GuiaConsultaID,ItemHonorarioID,ItemDescontadoID FROM rateiorateios WHERE id="&req("X"))
+if reqf("X")<>"" then
+    set LinhaRepasseSQL = db.execute("SELECT ItemInvoiceID,ItemGuiaID,GuiaConsultaID,ItemHonorarioID,ItemDescontadoID FROM rateiorateios WHERE id="&reqf("X"))
     if not LinhaRepasseSQL.eof then
-	    'db_execute("delete from rateiorateios where id="&req("X"))
+	    'db_execute("delete from rateiorateios where id="&reqf("X"))
 	    ItemDescontadoID=LinhaRepasseSQL("ItemDescontadoID")
 	    if isnull(ItemDescontadoID) then
 	        ItemDescontadoID = " IS NULL"
@@ -65,15 +65,15 @@ if req("X")<>"" then
 	    'response.write(sqlDel)
 	    db_execute(sqlDel)
     end if
-	response.Redirect("./?P=RepassesConferidos&Pers=1&AccountID="&req("AccountID")&"&Forma="&req("Forma")&"&Lancado="&req("Lancado")&"&Status="&req("Status")&"&De="&req("De")&"&Ate="&req("Ate"))
+	response.Redirect("./?P=RepassesConferidos&Pers=1&AccountID="&reqf("AccountID")&"&Forma="&reqf("Forma")&"&Lancado="&reqf("Lancado")&"&Status="&reqf("Status")&"&De="&reqf("De")&"&Ate="&reqf("Ate"))
 end if
 
-	
-ContaCredito = req("AccountID")
-FormaID = req("FormaID")
-Lancado = req("Lancado")
-De = req("De")
-TipoData = req("TipoData")
+
+ContaCredito = reqf("AccountID")
+FormaID = reqf("FormaID")
+Lancado = reqf("Lancado")
+De = reqf("De")
+TipoData = reqf("TipoData")
 DeSqlProf = De
 
 if De&""<>"" and TipoData="Comp" then
@@ -83,7 +83,7 @@ else
     DeExec=De
 end if
 
-Ate = req("Ate")
+Ate = reqf("Ate")
 if De="" or not isdate(De) then
 	De = date()'dateadd("m", -1, date())
 end if
@@ -92,30 +92,30 @@ if Ate="" or not isdate(Ate) then
 end if
 %>
 
-    <form action="" id="buscaRepasses" name="buscaRepasses" method="get">
+    <form action="" id="buscaRepasses" name="buscaRepasses" method="post">
         <input type="hidden" name="P" value="RepassesConferidos" />
         <input type="hidden" name="Pers" value="1" />
         <br />
         <div class="panel">
             <div class="panel-body hidden-print">
                 <div class="row">
-                    <%= quickfield("multiple", "Forma", "Convênio", 2, req("Forma"), "select '0' id, '     PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
-                    <%= quickfield("multiple", "FormaRecto", "Forma de recto.", 2, req("FormaRecto"), "select id, PaymentMethod from cliniccentral.sys_financialpaymentmethod where TextC<>'' ORDER BY PaymentMethod", "PaymentMethod", "") %>
-                    <%= quickfield("multiple", "Status", "Status de recto.", 2, req("Status"), "select 'RC' id, 'Recebido - Compensado' descricao UNION ALL select 'RN', 'Recebido - Não compensado' UNION ALL select 'NR', 'Não Recebidos'", "descricao", "") %>
+                    <%= quickfield("multiple", "Forma", "Convênio", 2, reqf("Forma"), "select '0' id, '     PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
+                    <%= quickfield("multiple", "FormaRecto", "Forma de recto.", 2, reqf("FormaRecto"), "select id, PaymentMethod from cliniccentral.sys_financialpaymentmethod where TextC<>'' ORDER BY PaymentMethod", "PaymentMethod", "") %>
+                    <%= quickfield("multiple", "Status", "Status de recto.", 2, reqf("Status"), "select 'RC' id, 'Recebido - Compensado' descricao UNION ALL select 'RN', 'Recebido - Não compensado' UNION ALL select 'NR', 'Não Recebidos'", "descricao", "") %>
 
                     <%= quickField("datepicker", "De", "Execução", 2, De, "", "", " placeholder='De' required='required'") %>
                     <%= quickField("datepicker", "Ate", "&nbsp;", 2, Ate, "", "", " placeholder='At&eacute;' required='required'") %>
                     <div class="col-md-2 ">
                         <label>Tipo de Data:</label><br />
-                        <span class="radio-custom"><input type="radio" name="TipoData" value="Exec" <% if req("TipoData")="Exec" or req("TipoData")="" then response.write(" checked ") end if %> id="TDE" /><label for="TDE"> Execução</label></span>
+                        <span class="radio-custom"><input type="radio" name="TipoData" value="Exec" <% if reqf("TipoData")="Exec" or reqf("TipoData")="" then response.write(" checked ") end if %> id="TDE" /><label for="TDE"> Execução</label></span>
                         <br />
-                        <span class="radio-custom"><input type="radio" name="TipoData" value="Comp" <% if req("TipoData")="Comp" then response.write(" checked ") end if %> id="TDC" /><label for="TDC"> Compensação</label></span>
+                        <span class="radio-custom"><input type="radio" name="TipoData" value="Comp" <% if reqf("TipoData")="Comp" then response.write(" checked ") end if %> id="TDC" /><label for="TDC"> Compensação</label></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-1 pt20 checkbox-custom checkbox-warning">
                     <br>
-                        <input type="checkbox" name="modoCalculo" id="modoCalculo" value="I" <% if req("modoCalculo")="I" then response.write(" checked ") end if %> /><label for="modoCalculo"> Invertido</label>
+                        <input type="checkbox" name="modoCalculo" id="modoCalculo" value="I" <% if reqf("modoCalculo")="I" then response.write(" checked ") end if %> /><label for="modoCalculo"> Invertido</label>
                     </div>
                     <div class="col-md-5" id="calculaRepasses">
                         <%server.Execute("calculaRepasse.asp")%>
@@ -125,8 +125,8 @@ end if
                     </div>
                     <div class="col-md-2">
                         <label>Conta Cr&eacute;dito</label><br />
-                        <%= simpleSelectCurrentAccounts("AccountID", "00, 5, 8, 4, 2, 1", req("AccountID"), " ") %>
-                        <%'=selectInsertCA("Profissional", "AccountID", req("AccountID"), "5, 8, 2, 6", "", " required ", "")%>
+                        <%= simpleSelectCurrentAccounts("AccountID", "00, 5, 8, 4, 2, 1", reqf("AccountID"), " ") %>
+                        <%'=selectInsertCA("Profissional", "AccountID", reqf("AccountID"), "5, 8, 2, 6", "", " required ", "")%>
                     </div>
                     <div class="col-md-1">
                         <label>&nbsp;</label><br />
@@ -176,7 +176,7 @@ if datediff("d", De, Ate)>122 then
     <%
     ExibeResultado=False
 end if
-if datediff("d", De, Ate)>15 and req("AccountID")="" then
+if datediff("d", De, Ate)>15 and reqf("AccountID")="" then
 
     %>
 <div class="alert alert-warning m10">
@@ -188,7 +188,7 @@ end if
 
 if ExibeResultado then
     TemRepasse=0
-    AccountID = req("AccountID")
+    AccountID = reqf("AccountID")
     if AccountID="" then
         set ProfissionalSQL = db.execute("SELECT DISTINCT ContaCredito AccountID FROM rateiorateios WHERE (CASE "&_
                                                                         "WHEN ItemInvoiceID is not null then (SELECT ii.DataExecucao FROM itensinvoice ii where ii.id=ItemInvoiceID LIMIT 1) "&_
@@ -218,7 +218,7 @@ if ExibeResultado then
             TotalProcedimento = 0
             ContaRepasses = 0
 
-            Forma = replace(req("Forma"), "|", "")
+            Forma = replace(reqf("Forma"), "|", "")
 
 
             if ContaCredito<>"" and Forma<>"" then
@@ -226,43 +226,104 @@ if ExibeResultado then
                     'response.write(sql)
 '                set rr = db.execute(sql)
 
-                modoCalculo = req("modoCalculo")
+                modoCalculo = reqf("modoCalculo")
                 if modoCalculo="" then
                     modoCalculo = "N"
                 end if
 
-                Unidades = req("Unidades")
+                Unidades = reqf("Unidades")
                 if Unidades<>"" then
                     sqlUnidades = " AND t.UnidadeID IN ("& replace(Unidades, "|", "") &") "
                 end if
 
-                FormaRecto = replace(req("FormaRecto"),"|","")
+                FormaRecto = replace(reqf("FormaRecto"),"|","")
                 if FormaRecto<>"" then
                     sqlFormRecto=" AND pmdesc.id IN ("&FormaRecto&") "
                 end if
 
 'Response.End
-                sqlRR = "select  idesc.PagamentoID IDMovPay, ca.IntegracaoSPLIT, cheque.DataCompensacao DataCompenscaoCheque, mdisc.Date DataPagtoConvenio, ri.DateToReceive, mdesc.Value as ParcelaValor,mdesc.PaymentMethodID, mdesc.Date DataPagto, fct.Parcelas, ifnull(pmdesc.PaymentMethod, '-') PaymentMethod, t.*, iip.InvoiceID InvoiceAPagarID, c.NomeConvenio, proc.NomeProcedimento, pac.NomePaciente, t.Executado from	(	"&_
-                " select null GuiaID, null TipoGuia, i.CompanyUnitID UnidadeID, ifnull(tab.NomeTabela, '') NomeTabela, ii.InvoiceID, 'ItemInvoiceID' Tipo, ii.DataExecucao, '0' ConvenioID, ii.ItemID ProcedimentoID, i.AccountID PacienteID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorProcedimento, rrp.*, ii.Executado FROM itensinvoice ii 	INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID	INNER JOIN rateiorateios rrp ON rrp.ItemInvoiceID=ii.id	WHERE ii.Tipo='S'  AND rrp.ContaCredito='"& ContaCredito &"' AND ii.DataExecucao BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
-                " SELECT gc.id GuiaID, 'GuiaConsulta' TipoGuia, gc.UnidadeID, '', NULL, 'GuiaConsultaID', gc.DataAtendimento, gc.ConvenioID, gc.ProcedimentoID, gc.PacienteID, gc.ValorProcedimento, rrgc.*, '' Executado FROM tissguiaconsulta gc 	INNER JOIN rateiorateios rrgc ON rrgc.GuiaConsultaID=gc.id	WHERE gc.DataAtendimento BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
-                " SELECT gps.id GuiaID, 'GuiaSADT' TipoGuia, gs.UnidadeID, '', NULL, 'ItemGuiaID', gps.Data, gs.ConvenioID, gps.ProcedimentoID, gs.PacienteID, gps.ValorTotal, rrgps.*, '' Executado FROM tissprocedimentossadt gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemGuiaID=gps.id	INNER JOIN tissguiasadt gs ON gps.GuiaID=gs.id WHERE gps.`Data` BETWEEN  "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &" UNION ALL "&_
-                " SELECT gps.id GuiaID, 'GuiaHonorarios' TipoGuia, gh.UnidadeID, '', NULL, 'ItemHonorarioID', gps.Data, gh.ConvenioID, gps.ProcedimentoID, gh.PacienteID, gh.Procedimentos ValorTotal, rrgps.*, '' Executado FROM tissprocedimentoshonorarios gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemHonorarioID=gps.id	INNER JOIN tissguiahonorarios gh ON gps.GuiaID=gh.id WHERE gps.`Data` BETWEEN  "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"	) t "&_
-                " LEFT JOIN itensinvoice iip ON (iip.id=t.ItemContaAPagar) LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID "&_
-                " LEFT JOIN itensdescontados idesc ON idesc.id=t.ItemDescontadoID "&_
-                " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID "&_
-                " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit "&_
-                " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID "&_
-                " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id "&_
-                " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=t.ParcelaID "&_
-                " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia=t.TipoGuia AND tgi.GuiaID=t.GuiaID "&_
-                " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID "&_
-                " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id "&_
-                " LEFT JOIN sys_financialmovement mdisc ON mdisc.id=disc.MovementID "&_
-                " LEFT JOIN sys_financialreceivedchecks cheque ON cheque.MovementID=mdesc.id "&_
-                " WHERE (t.ContaCredito LIKE CONCAT('%_"& ContaCredito &"') or t.ContaCredito='"& ContaCredito &"') AND t.ConvenioID IN ("& Forma &") "&sqlFormRecto&" AND t.modoCalculo='"& modoCalculo &"' "& sqlUnidades &_
-                " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente, proc.NomeProcedimento"
+                if reqf("TipoData")="Exec" then
+                                sqlRR = "select  idesc.PagamentoID IDMovPay, ca.IntegracaoSPLIT, cheque.DataCompensacao DataCompenscaoCheque, mdisc.Date DataPagtoConvenio, ri.DateToReceive, mdesc.Value as ParcelaValor,mdesc.PaymentMethodID, mdesc.Date DataPagto, fct.Parcelas, ifnull(pmdesc.PaymentMethod, '-') PaymentMethod, t.*, iip.InvoiceID InvoiceAPagarID, c.NomeConvenio, proc.NomeProcedimento, pac.NomePaciente, t.Executado from	(	"&_
+                                " select null GuiaID, null TipoGuia, i.CompanyUnitID UnidadeID, ifnull(tab.NomeTabela, '') NomeTabela, ii.InvoiceID, 'ItemInvoiceID' Tipo, ii.DataExecucao, '0' ConvenioID, ii.ItemID ProcedimentoID, i.AccountID PacienteID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorProcedimento, rrp.*, ii.Executado FROM itensinvoice ii 	INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID	INNER JOIN rateiorateios rrp ON rrp.ItemInvoiceID=ii.id	WHERE ii.Tipo='S'  AND rrp.ContaCredito='"& ContaCredito &"' AND ii.DataExecucao BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
+                                " SELECT gc.id GuiaID, 'GuiaConsulta' TipoGuia, gc.UnidadeID, '', NULL, 'GuiaConsultaID', gc.DataAtendimento, gc.ConvenioID, gc.ProcedimentoID, gc.PacienteID, gc.ValorProcedimento, rrgc.*, '' Executado FROM tissguiaconsulta gc 	INNER JOIN rateiorateios rrgc ON rrgc.GuiaConsultaID=gc.id	WHERE gc.DataAtendimento BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
+                                " SELECT gps.id GuiaID, 'GuiaSADT' TipoGuia, gs.UnidadeID, '', NULL, 'ItemGuiaID', gps.Data, gs.ConvenioID, gps.ProcedimentoID, gs.PacienteID, gps.ValorTotal, rrgps.*, '' Executado FROM tissprocedimentossadt gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemGuiaID=gps.id	INNER JOIN tissguiasadt gs ON gps.GuiaID=gs.id WHERE gps.`Data` BETWEEN  "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &" UNION ALL "&_
+                                " SELECT gps.id GuiaID, 'GuiaHonorarios' TipoGuia, gh.UnidadeID, '', NULL, 'ItemHonorarioID', gps.Data, gh.ConvenioID, gps.ProcedimentoID, gh.PacienteID, gh.Procedimentos ValorTotal, rrgps.*, '' Executado FROM tissprocedimentoshonorarios gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemHonorarioID=gps.id	INNER JOIN tissguiahonorarios gh ON gps.GuiaID=gh.id WHERE gps.`Data` BETWEEN  "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"	) t "&_
+                                " LEFT JOIN itensinvoice iip ON (iip.id=t.ItemContaAPagar) LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID "&_
+                                " LEFT JOIN itensdescontados idesc ON idesc.id=t.ItemDescontadoID "&_
+                                " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID "&_
+                                " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit "&_
+                                " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID "&_
+                                " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id "&_
+                                " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=t.ParcelaID "&_
+                                " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia=t.TipoGuia AND tgi.GuiaID=t.GuiaID "&_
+                                " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID "&_
+                                " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id "&_
+                                " LEFT JOIN sys_financialmovement mdisc ON mdisc.id=disc.MovementID "&_
+                                " LEFT JOIN sys_financialreceivedchecks cheque ON cheque.MovementID=mdesc.id "&_
+                                " WHERE (t.ContaCredito LIKE CONCAT('%_"& ContaCredito &"') or t.ContaCredito='"& ContaCredito &"') AND t.ConvenioID IN ("& Forma &") "&sqlFormRecto&" AND t.modoCalculo='"& modoCalculo &"' "& sqlUnidades &_
+                                " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente, proc.NomeProcedimento"
+                else
+                                 sqlRR = "select  idesc.PagamentoID IDMovPay, ca.IntegracaoSPLIT, cheque.DataCompensacao DataCompenscaoCheque, mdisc.Date DataPagtoConvenio, ri.DateToReceive, mdesc.Value as ParcelaValor,mdesc.PaymentMethodID, mdesc.Date DataPagto, fct.Parcelas, ifnull(pmdesc.PaymentMethod, '-') PaymentMethod, t.*, iip.InvoiceID InvoiceAPagarID, c.NomeConvenio, proc.NomeProcedimento, pac.NomePaciente, t.Executado from	(	"&_
+                                 " select null GuiaID, null TipoGuia, i.CompanyUnitID UnidadeID, ifnull(tab.NomeTabela, '') NomeTabela, ii.InvoiceID, 'ItemInvoiceID' Tipo, ii.DataExecucao, '0' ConvenioID, ii.ItemID ProcedimentoID, i.AccountID PacienteID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorProcedimento, rrp.*, ii.Executado FROM itensinvoice ii 	INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID	INNER JOIN rateiorateios rrp ON rrp.ItemInvoiceID=ii.id	WHERE ii.Tipo='S'  AND rrp.ContaCredito='"& ContaCredito &"' AND ii.DataExecucao BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"		UNION ALL	"&_
+                                 " SELECT gc.id GuiaID, 'GuiaConsulta' TipoGuia, gc.UnidadeID, '', NULL, 'GuiaConsultaID', gc.DataAtendimento, gc.ConvenioID, gc.ProcedimentoID, gc.PacienteID, gc.ValorProcedimento, rrgc.*, '' Executado"&_
+                                 " FROM tissguiaconsulta gc"&_
+                                 " INNER JOIN rateiorateios rrgc ON rrgc.GuiaConsultaID=gc.id"&_
+                                 " LEFT JOIN itensinvoice iip ON (iip.id=rrgc.ItemContaAPagar)"&_
+                                 " LEFT JOIN pacientes pac ON pac.id=gc.PacienteID"&_
+                                 " LEFT JOIN convenios c ON c.id=gc.ConvenioID"&_
+                                 " LEFT JOIN procedimentos proc ON proc.id=gc.ProcedimentoID"&_
+                                 " LEFT JOIN itensdescontados idesc ON idesc.id=rrgc.ItemDescontadoID"&_
+                                 " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID"&_
+                                 " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit"&_
+                                 " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID"&_
+                                 " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id"&_
+                                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=rrgc.ParcelaID"&_
+                                 " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia='GuiaConsulta' AND tgi.GuiaID=gc.id"&_
+                                 " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID"&_
+                                 " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id"&_
+                                 " LEFT JOIN sys_financialmovement mdisc ON mdisc.id=disc.MovementID"&_
+                                 " LEFT JOIN sys_financialreceivedchecks cheque ON cheque.MovementID=mdesc.id"&_
+                                 " where mdisc.date BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &_
+                                 " UNION ALL	"&_
+                                 " SELECT gps.GuiaID GuiaID, 'GuiaSADT' TipoGuia, gs.UnidadeID, '', NULL, 'ItemGuiaID', gps.Data, gs.ConvenioID, gps.ProcedimentoID, gs.PacienteID, gps.ValorTotal, rrgps.*, '' Executado"&_
+                                 " FROM tissprocedimentossadt gps"&_
+                                 " INNER JOIN rateiorateios rrgps ON rrgps.ItemGuiaID=gps.id"&_
+                                 " INNER JOIN tissguiasadt gs ON gps.GuiaID=gs.id"&_
+                                 " LEFT JOIN itensinvoice iip ON (iip.id=rrgps.ItemContaAPagar)"&_
+                                 " LEFT JOIN pacientes pac ON pac.id=gs.PacienteID"&_
+                                 " LEFT JOIN convenios c ON c.id=gs.ConvenioID"&_
+                                 " LEFT JOIN procedimentos proc ON proc.id=gps.ProcedimentoID"&_
+                                 " LEFT JOIN itensdescontados idesc ON idesc.id=rrgps.ItemDescontadoID"&_
+                                 " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID"&_
+                                 " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit"&_
+                                 " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID"&_
+                                 " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id"&_
+                                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=rrgps.ParcelaID"&_
+                                 " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia= 'GuiaSADT' AND tgi.GuiaID=gps.GuiaID"&_
+                                 " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID"&_
+                                 " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id"&_
+                                 " LEFT JOIN sys_financialmovement mdisc ON mdisc.id=disc.MovementID"&_
+                                 " LEFT JOIN sys_financialreceivedchecks cheque ON cheque.MovementID=mdesc.id"&_
+                                 " where mdisc.date BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &_
+                                 " UNION ALL "&_
+                                 " SELECT gps.id GuiaID, 'GuiaHonorarios' TipoGuia, gh.UnidadeID, '', NULL, 'ItemHonorarioID', gps.Data, gh.ConvenioID, gps.ProcedimentoID, gh.PacienteID, gh.Procedimentos ValorTotal, rrgps.*, '' Executado FROM tissprocedimentoshonorarios gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemHonorarioID=gps.id	INNER JOIN tissguiahonorarios gh ON gps.GuiaID=gh.id WHERE gps.`Data` BETWEEN  "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"	) t "&_
+                                 " LEFT JOIN itensinvoice iip ON (iip.id=t.ItemContaAPagar) LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID "&_
+                                 " LEFT JOIN itensdescontados idesc ON idesc.id=t.ItemDescontadoID "&_
+                                 " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID "&_
+                                 " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit "&_
+                                 " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID "&_
+                                 " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id "&_
+                                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=t.ParcelaID "&_
+                                 " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia=t.TipoGuia AND tgi.GuiaID=t.GuiaID "&_
+                                 " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID "&_
+                                 " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id "&_
+                                 " LEFT JOIN sys_financialmovement mdisc ON mdisc.id=disc.MovementID "&_
+                                 " LEFT JOIN sys_financialreceivedchecks cheque ON cheque.MovementID=mdesc.id "&_
+                                 " WHERE COALESCE(mdisc.date, mdesc.Date) BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &" and (t.ContaCredito LIKE CONCAT('%_"& ContaCredito &"') or t.ContaCredito='"& ContaCredito &"') AND t.ConvenioID IN ("& Forma &") "&sqlFormRecto&" AND t.modoCalculo='"& modoCalculo &"' "& sqlUnidades &_
+                                 " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente, proc.NomeProcedimento"
+                end if
 
-                if req("Debug")="1" then
+                if reqf("Debug")="1" then
                     response.write( session("Banco") & chr(10) & chr(13) & sqlRR )
                 end if
 
@@ -308,7 +369,7 @@ if ExibeResultado then
 
                     ValorProcedimento = rr("ValorProcedimento")
                     ValorParcela = rr("ParcelaValor")
-                    
+
                     Forma = rr("PaymentMethod")
                     Parcelas = rr("Parcelas")
                     if Parcelas&""="" then
@@ -316,7 +377,7 @@ if ExibeResultado then
                     end if
                     aLink = ""
                     fLink = ""
-                    Status = req("Status")
+                    Status = reqf("Status")
                     NomeTabela = rr("NomeTabela")
 
                     Exibe = 0
@@ -332,7 +393,7 @@ if ExibeResultado then
                         end if
                     end if
                     DataComp = ""
-                    
+
 
                     if Exibe=1 then
                         ValorRepasse = fn(calculaRepasse(rr("id"), rr("Sobre"), rr("ValorProcedimento"), rr("Valor"), rr("TipoValor")))
@@ -414,7 +475,7 @@ if ExibeResultado then
                                     <span class="label label-warning"><%=TextoOcultarCheckbox%></span>
                                     <% end if %>
                                 <% end if %>
-                                
+
                             </td>
                             <td><%= DataExecucao %></td>
                             <td><%= DataComp %></td>
@@ -464,7 +525,7 @@ if ExibeResultado then
         set ProfissionalSQL=nothing
         end if
 
-        if TemRepasse = 0 and req("Forma")<>"" then
+        if TemRepasse = 0 and reqf("Forma")<>"" then
 
                     %>
 <div class="alert alert-default">
@@ -485,7 +546,7 @@ if ExibeResultado then
 $("input[name=Repasses], .checkAll").change(function(){
 	$.ajax({
 		type:"POST",
-		url:"calculaRepasse.asp?ContaCredito=<%=req("ContaCredito")%>&modoCalculo=<%=modoCalculo%>",
+		url:"calculaRepasse.asp?ContaCredito=<%=reqf("ContaCredito")%>&modoCalculo=<%=modoCalculo%>",
 		data:$("input[name=Repasses]").serialize(),
 		success: function(data){
 			$("#calculaRepasses").html(data);

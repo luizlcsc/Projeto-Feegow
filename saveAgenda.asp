@@ -4,25 +4,6 @@
 <!--#include file="Classes/FuncoesRepeticaoMensalAgenda.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <%
-function RecalculaValorProcedimento(fvalor,fHora,fProcedimentoID, fTabelaID, fLocal, fProfissionalID, fEspecialidadeID, fGrupoID)
-    RecalculaValorProcedimento = fvalor
-    if aut("|valordoprocedimentoA|")=0 and aut("|valordoprocedimentoV|")=1  then
-        session("obslog")=""
-        set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(fLocal))
-
-	    fUnidadeID=session("UnidadeID")
-	    if not LocalSQL.eof then
-	        fUnidadeID=LocalSQL("UnidadeID")
-	    end if
-
-        novoValor = calcValorProcedimento(fProcedimentoID,fTabelaID, fUnidadeID, fProfissionalID, fEspecialidadeID, fGrupoID)
-        call createLog("E", ref("ConsultaID")&"", "agendamentos", "|Valor|", fvalor&"", novoValor&"", "hora("&fHora&") "&session("obslog")&"")
-        session("obslog")=""
-        
-        RecalculaValorProcedimento = novoValor
-    end if
-end function
-
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
 	'on error resume next
 end if
@@ -247,10 +228,6 @@ if erro="" then
 
     if req("PreSalvarCheckin")="" then
         '<--Verifica se paciente já tem esse convênio. Se não, cria esse convênio para esse paciente\\
-
-        'caso usuario não tenha permissao para alterar o valor reclcular valor do procedimento
-        rfValorPlano = RecalculaValorProcedimento(rfValorPlano,rfHora,rfProcedimento, ref("ageTabela"), rfLocal, rfProfissionalID, ref("EspecialidadeID"), "0")
-        
         if ConsultaID="0" then
             sql = "insert into agendamentos (PacienteId, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, PlanoID, rdValorPlano, Notas, FormaPagto, HoraSta, LocalID, Tempo, HoraFinal, SubtipoProcedimentoID, ConfEmail, ConfSMS, Encaixe, Retorno, EquipamentoID, EspecialidadeID, TabelaParticularID, Primeira, IndicadoPor, sysUser) values ('"&rfPaciente&"','"&rfProfissionalID&"','"&mydate(rfData)&"','"&rfHora&"','"&rfProcedimento&"','"&rfStaID&"','"&treatVal(rfValorPlano)&"', "&treatvalzero(PlanoID)&",'"&rfrdValorPlano&"','"&Notas&"','0', '"&HoraSta&"',"&treatvalzero(rfLocal)&",'"&rfTempo&"','"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', '"&rfSubtipoProcedimento&"', '"&ref("ConfEmail")&"', '"&ref("ConfSMS")&"', "&treatvalnull(ref("Encaixe"))&","&treatvalnull(ref("Retorno"))&", "&treatvalnull(ref("EquipamentoID"))&", "& treatvalnull(ref("EspecialidadeID")) &", "& refnull("ageTabela") &", "&PrimeiraVez&", '"&indicacaoID&"', "&session("User")&")"
 
@@ -325,7 +302,6 @@ if erro="" then
                 end if
                 db.execute("insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID, UnidadeID) values ('"&rfPaciente&"', '"&rfProfissionalID&"', '"&rfProcedimento&"', '"&DataHoraFeito&"', '"&mydate(rfData)&"', '"&rfHora&"', '"&rfStaID&"', '"&session("User")&"', '0', '"&ObsR&"', 'R', '"&ConsultaID&"', "&session("UnidadeID")&")")
             end if
-         
 
             sqlUpdateAgendamento = "update agendamentos set IndicadoPor='"&indicacaoID&"', PacienteId='"&rfPaciente&"', ProfissionalID='"&rfProfissionalID&"', Data='"&mydate(rfData)&"', Hora='"&rfHora&"', TipoCompromissoID='"&rfProcedimento&"', StaID='"&rfStaID&"', ValorPlano='"&treatVal(rfValorPlano)&"', PlanoID="&treatvalzero(PlanoID)&", rdValorPlano='"&rfrdValorPlano&"', Notas='"&Notas&"', FormaPagto='0', HoraSta='"&HoraSta&"', LocalID='"&rfLocal&"', Tempo='"&rfTempo&"' ,HoraFinal='"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', SubtipoProcedimentoID='"&rfSubtipoProcedimento&"', ConfEmail='"&ref("ConfEmail")&"', ConfSMS='"&ref("ConfSMS")&"', Encaixe="&treatvalnull(ref("Encaixe"))&", Retorno="&treatvalnull(ref("Retorno"))&", EquipamentoID="&treatvalnull(ref("EquipamentoID"))&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& refnull("ageTabela") &" where id = '"&ConsultaID&"'"
 
@@ -348,6 +324,23 @@ if erro="" then
 	    db.execute("UPDATE agendamentos SET CanalID="&treatvalnull(ref("ageCanal"))&" WHERE id="&ConsultaID)
     end if
 
+    if session("Banco")="clinic5459" then
+        n = 0
+        while n<5
+            n = n+1
+            if ref("EmailAcesso"&n)<>"" or ref("Nome"&n)<>"" or ref("Telefone"&n)<>"" then
+                set vca = db.execute("select id from agendamentoscontatos where AgendamentoID="& ConsultaID &" and n="& n)
+                sqlRep = "agendamentoscontatos set AgendamentoID='"& ConsultaID &"', EmailAcesso='"& ref("EmailAcesso"&n) &"', Nome='"& ref("Nome"&n) &"', Telefone='"& ref("Telefone"& n) &"', n="& n &", sysUser="& session("User") &" "
+                if vca.eof then
+                    db.execute("insert into "& sqlRep)
+                else
+                    db.execute("update "& sqlRep &" where id="& vca("id"))
+                end if
+            else
+                db.execute("delete from agendamentoscontatos where AgendamentoID="& ConsultaID &" and n="& n)
+            end if
+        wend
+    end if
 
     '-> procedimentos adicionais na agenda
     ProcedimentosAgendamento = trim(ref("ProcedimentosAgendamento"))
@@ -366,15 +359,14 @@ if erro="" then
                 apTipoCompromissoID = ref("ProcedimentoID"& apID)
                 apTempo = ref("Tempo"& apID)
                 aprdValorPlano = ref("rdValorPlano"& apID)
-                apLocalID = ref("LocalID"& apID)
                 if aprdValorPlano="V" then
                     apValorPlano = ref("Valor"& apID)
                     applanoId=""
-                    apValorPlano = RecalculaValorProcedimento( apValorPlano,rfHora, apTipoCompromissoID,ref("ageTabela"),apLocalID,ProfissionalID,EspecialidadeID,"0") 
                 else
                     apValorPlano = ref("ConvenioID"& apID)
                     applanoId = ref("PlanoID"& apID)
                 end if
+                apLocalID = ref("LocalID"& apID)
                 apEquipamentoID = ref("EquipamentoID"& apID)
                 if apID<0 then
                     db.execute("insert into agendamentosprocedimentos (AgendamentoID, TipoCompromissoID, Tempo, rdValorPlano, ValorPlano,PlanoID, LocalID, EquipamentoID) values ("& ConsultaID &", "& treatvalzero(apTipoCompromissoID) &", "& treatvalnull(apTempo) &", '"& aprdValorPlano &"', "& treatvalzero(apValorPlano) &",  "& treatvalzero(applanoId) &","& treatvalzero(apLocalID) &", "& treatvalzero(apEquipamentoID) &")")

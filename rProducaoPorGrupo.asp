@@ -211,6 +211,9 @@ end if
     %>
     </tbody>
     <tfoot>
+        <%
+        if periodoTipo="a2" then
+        %>
         <tr>
             <th></th>
             <%
@@ -218,6 +221,7 @@ end if
             ValorGrupo = 0
             LiquidoGrupo = 0
             Data = De
+
             while Data<=Ate
                 set vqtd = db.execute("select ifnull(count(ii.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
                 set vqtdinv = db.execute("select ifnull(count(i.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
@@ -250,5 +254,8 @@ end if
             <th class="text-right"><%= fn(ValorGrupo) %></th>
             <th class="text-right"><%= fn(Liquidogrupo) %></th>
         </tr>
+        <%
+        end if
+        %>
     </tfoot>
 </table>

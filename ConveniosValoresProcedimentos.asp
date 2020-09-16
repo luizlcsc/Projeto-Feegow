@@ -35,19 +35,6 @@ if request.QueryString("Clonar")<>"" then
     next
 
 end if
-
-set planos = db.execute("SELECT * FROM conveniosplanos where ConvenioID="&ConvenioID&" and sysActive=1 and not NomePlano like '' ORDER BY 1")
-PrimeiroPlano = null
-while not planos.eof
-	strNomePlano = strNomePlano&planos("NomePlano")&"|"
-	strPlanoID = strPlanoID&planos("id")&"|"
-	IF ISNULL(PrimeiroPlano) THEN
-	    PrimeiroPlano = planos("id")
-	END IF
-planos.movenext
-wend
-planos.close
-set planos=nothing
 %>
 
 <div class="panel">

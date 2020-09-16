@@ -6,6 +6,7 @@ if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("RE
 end if
 
 OcultarBtn=req("OcultarBtn")
+FormularioNaTimeline=getConfig("FormularioNaTimeline")
 
 if req("X")<>"" then
     if req("Tipo")="|Prescricao|" then
@@ -168,12 +169,17 @@ if not ConfigIniciarAtendimentoSQL.eof then
         EmAtendimento=1
     end if
 end if
+InserirDinamico = ""
+
+if FormularioNaTimeline then
+    InserirDinamico = "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|"
+end if
 
 select case Tipo
     case ""
 
-    case "|AE|", "|L|"
-        if Tipo="|AE|" then
+    case "|AE|", "|L|", InserirDinamico
+        if Tipo="|AE|" OR Tipo=InserirDinamico then
             subTitulo = "Anamneses e Evoluções"
             rotuloBotao = "Inserir Anamnese / Evolução"
             sqlForm = " Tipo IN(1,2) "
@@ -748,28 +754,14 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 
 
         function newSaveImage(base64,id){
-            let objct = new FormData();
-            objct.append('userType','pacientes');
-            objct.append('userId',"<%=req("PacienteID")%>");
-            objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
-            objct.append('upload_file' , base64);
-            objct.append('folder_name' ,"Imagens");
-            objct.append('image_type' ,"base64");
-
-            $.ajax({
-  					url: domain + "api/image/uploadAnyFile",
-  					type: 'POST',
-  					processData: false,
-  					contentType: false,
-  					data: objct,
-                  // Now you should be able to do this:
-                  mimeType: 'multipart/form-data',    //Property added in 1.5.1
-
-                  success: function (data) {
-
-                  }
+            uploadProfilePic({
+                userId: "<%=req("I")%>",
+                db: "<%= LicenseID %>",
+                table: 'pacientes',
+                content: base64,
+                contentType: "base64"
             });
-        };
+        }
 
 </script>
 
@@ -843,6 +835,9 @@ end select
     end if
     ProfessionalID = req("ProfessionalID")
     %>
+    <div id="divProtocolo">
+    </div>
+
     <div class="col-xs-12">
         <div id="timeline" class="timeline-single mt30 ">
             <!--#include file="timelineload.asp"-->
@@ -872,6 +867,34 @@ End If
 LocalStorageRestoreHabilitar();
 
     $('[data-toggle="tooltip"]').tooltip();
+
+    <%
+    IF FormularioNaTimeline THEN
+    %>
+    function iPront(t, p, m, i, a, FormID, CampoID) {
+        if (t == 'AE' || t == 'PrescricaoAELDiagnosticoAtestadoImagensArquivosPedido') {
+            $(".timeline-add").slideUp();
+            divAff = "#divProtocolo";
+            scr = "protocolo";
+        } else if (t == 'L') {
+            mfpform('#modal-form');
+            divAff = "#modal-form .panel";
+            scr = "iPront";
+        }else{
+            //mfp('#modal-form');
+            $("#modal-table").modal("show");
+            divAff = "#modal";
+            scr = "iPront";
+        }
+        $(divAff).html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+        $.get(scr + ".asp?t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
+            $(divAff).html(data);
+        });
+    }
+
+    <%
+    ELSE
+    %>
     function iPront(t, p, m, i, a) {
         $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
         if(t=='AE'||t=='L'){
@@ -901,6 +924,9 @@ LocalStorageRestoreHabilitar();
             $("#modal-form .panel").html(data);
         })
     }
+    <%
+    END IF
+    %>
 
 function sendWorklist(ProcedimentoID, FormID){
     $.get("../feegow_components/diagnext/newworklist", {
@@ -1023,7 +1049,7 @@ function excluirSerie(id) {
         let steps = parseInt('<%=MaximoLimit%>');
         let tipoarquivo = '<%=Tipo%>';
         let ProfissionalID = '<%=req("ProfessionalID")%>';
-        var Carregando = false
+        var Carregando = false;
         $(".load-wrapp").hide();
 
         scroll(0,0);
@@ -1051,7 +1077,10 @@ function excluirSerie(id) {
                         } else
                         {
                             final = true;
-                            $("#timeline").append("</div></div><div class='timeline-divider'><div class='divider-label'>Não há mais registros</div></div>");
+
+                            if($(".no-more-registers").length <= 0){
+                                $("#timeline").append("</div></div><div class='timeline-divider'><div class='divider-label no-more-registers'>Não há mais registros</div></div>");
+                            }
                         }
                     }).fail(function(data) {
                         console.log(data);

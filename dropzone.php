@@ -241,10 +241,8 @@
         }
 
     </style>
-
     <script type="886de5421c6c96677a1a3b09-text/javascript">(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
 </head>
-
 <body>
 <div class="container" role="main">
     <form method="post" enctype="multipart/form-data" novalidate class="box" id="form-upload">
@@ -255,8 +253,10 @@
             <input type="hidden" name="PacienteID" value="<?=$_GET['PacienteID']?>">
             <input type="hidden" name="L" value="<?=$_GET['L']?>">
             <input type="hidden" name="Pasta" value="<?=$_GET['Pasta']?>">
+            <input type="hidden" name="ProfissionalID" value="<?=$_GET['ProfissionalID']?>">
             <input type="hidden" name="Tipo" value="<?=$_GET['Tipo']?>">
             <input type="hidden" name="MovementID" value="<?=$_GET['MovementID']?>">
+            <input type="hidden" name="Assinatura" value="<?=$_GET['Assinatura']?>">
             <input type="hidden" name="ExameID" value="<?=$_GET['ExameID']?>">
             <input type="hidden" name="guiaID" value="<?=$_GET['guiaID']?>">
             <input type="hidden" name="tipoGuia" value="<?=$_GET['tipoGuia']?>">
@@ -416,8 +416,10 @@
 					};
 
 					ajaxData.append('PacienteID',$('input[name="PacienteID"]').val());
+					ajaxData.append('ProfissionalID',$('input[name="ProfissionalID"]').val());
 					ajaxData.append('Licenca',$('input[name="L"]').val());
 					ajaxData.append('Pasta',$('input[name="Pasta"]').val());
+					ajaxData.append('Assinatura',$('input[name="Assinatura"]').val());
 					ajaxData.append('Tipo',$('input[name="Tipo"]').val());
 					ajaxData.append('MovementID',$('input[name="MovementID"]').val());
 					ajaxData.append('ExameID',$('input[name="ExameID"]').val());
@@ -427,6 +429,7 @@
 					ajaxData.append('LaudoID',$('input[name="LaudoID"]').val());
 					ajax.send( ajaxData );
                     parent.callUpload && parent.callUpload(ajax.responseText);
+
 
 				}
 				else // fallback Ajax solution upload for older browsers

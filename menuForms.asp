@@ -3,6 +3,7 @@
 if GrupoID="" then
 	GrupoID = request.QueryString("GrupoID")
 end if
+FormularioNaTimeline = getConfig("FormularioNaTimeline")
 %>
 <div class="col-xs-12 widget-container-span">
     <div class="widget-box">
@@ -50,10 +51,35 @@ end if
                         <ul class="dropdown-menu dropdown-info pull-right">
                             <li><a href="javascript:addCampo(14, <%=GrupoID%>)"><i class="fa fa-child"></i> Curva de Crescimento</a></li>
                             <li><a href="javascript:addCampo(12, <%= GrupoID %>)"><i class="fa fa-headphones"></i> Audiometria</a></li>
+
+                            <%
+                            IF FormularioNaTimeline THEN
+                            %>
+                            <li><a href="javascript:addCampo(24, <%= GrupoID %>)"><i class="fa fa-table"></i> Carteira de Vacinação</a></li>
+                            <%
+                            END IF
+                            %>
                         </ul>
                         </div>
                     </td>
                 </tr>
+                <%
+                IF FormularioNaTimeline THEN
+                %>
+                <tr>
+                    <td><button type="button" onClick="addCampo(19, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="fa fa-flask bigger-200"></i><br>Prescri&ccedil;&otilde;es</button></td>
+                    <td><button type="button" onClick="addCampo(20, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="fa fa-hospital-o bigger-200"></i><br>Pedidos</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" onClick="addCampo(21, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="fa fa-file-text-o bigger-200"></i><br>Atestados</button></td>
+                    <td><button type="button" onClick="addCampo(16, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="fa fa-stethoscope bigger-200"></i><br>CID-10</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" onClick="addCampo(23, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="fa fa-external-link bigger-200"></i><br>Encaminhamento</button></td>
+                </tr>
+                <%
+                end if
+                %>
                 <%if GrupoID=0 then
                     set pform = db.execute("select * from buiforms where id="& req("I"))
                     Prior = pform("Prior")

@@ -76,23 +76,40 @@ function cadastrarOutro(){
 	$.post("propostaCadastroOutro.asp", '', function(data, status) { $("#modal").html(data) });
 }
 
-function propostaSave(reload){
+function propostaSave(reload, callback){
 //	---> Form do paciente.serialize
 	if($("#PacienteID").val() == ""){
 		alert("Selecione um paciente");
 		return false;
-	}else{
+	}
+	<% if getconfig("profissionalsolicitanteobrigatorioproposta")=1 then %>
+	if($("#ProfissionalID").val() == ""){
+    	    alert("Selecione um profissional")
+    	    return false;
+    	}
+	<%end if%>
+
+    <% if getconfig("tabelaobrigatorioproposta")=1 then %>
+    	if($("#TabelaID").val() == "" || $("#TabelaID").val() == "0"){
+        	    alert("Selecione uma tabela")
+        	    return false;
+        	}
+    <%end if%>
+
 		$.post("propostaSave.asp?PropostaID=<%=PropostaID%>", 
 		$("#frmProposta").serialize(), 
 		function(data){ 
-			eval(data); 
+			eval(data);
+			if(callback){
+			    callback(data);
+			}
 			/*if (reload){
 				location.reload();			
 			}else{
 				$("#ListaProposta").click();
 			}*/
 		});
-	}
+
 }
 /*
 $("#StaID").on("change",function(){

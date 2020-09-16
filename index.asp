@@ -22,6 +22,10 @@ if session("User")="" and request.QueryString("P")<>"Login" and request.QueryStr
 	response.Redirect("./?P=Login&qs="&Server.URLEncode(QueryStringParameters))
 end if
 
+set shellExec = createobject("WScript.Shell")
+Set objSystemVariables = shellExec.Environment("SYSTEM")
+AppEnv = objSystemVariables("FC_APP_ENV")
+
 if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
 	if request.QueryString("P")<>"Home" and session("Bloqueado")<>"" then
 		response.Redirect("./?P=Home&Pers=1")
@@ -34,6 +38,9 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 <head>
     <meta name="robots" content="noindex">
   <style type="text/css">
+  	.tooltip{
+          z-index:99999999; overflow: visible !important;overflow: visible !important;
+       }
        @media print
        {
            .no-print, .no-print *
@@ -69,6 +76,10 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 		margin:0;
 		padding:0;
 	}
+	#footer-whats{
+	    background-color: red;
+	}
+
 	.select-insert li {
 		cursor:pointer;
 		list-style-type:none;
@@ -216,7 +227,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?a=31"></script>
+  <script src="js/components.js?a=40"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
     <%if aut("capptaI") then%>
@@ -560,7 +571,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 					if session("Logo")="" then
 						Logo = "https://cdn.feegow.com/feegowclinic-v7/assets/img/logo_white.png"
 					else
-						Logo = "/logo/"&session("Logo")
+						Logo = "https://cdn.feegow.com/logos/"&session("Logo")
 					end if
 					%>
           <img class="logol" src="<%=Logo %>" height="32" />
@@ -811,10 +822,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                  if session("Admin")=1 then
 
                                  IF session("QuantidadeFaturasAbertas") = "" THEN
-                                    set shellExec = createobject("WScript.Shell")
-                                    Set objSystemVariables = shellExec.Environment("SYSTEM")
-                                    AppEnv = objSystemVariables("APP_ENV")
-
                                     if AppEnv="production" then
 
 								 %>
@@ -1333,6 +1340,12 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                             <% IF session("Banco")<>"clinic7126" THEN %>
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
+                            <% IF (session("Admin")="1") and (req("P")="Home") THEN %>
+                            <script>localStorage.setItem("Admin",true);</script>
+                            <button class="btn btn-xs btn-success light" id="footer-whats" onclick="location.href='?P=OutrasConfiguracoes&Pers=1&whatsApp=true'"  data-rel="tooltip" data-placement="right" title="" data-original-title="" >
+                                <span class="fa fa-whatsapp"></span>
+                            </button>
+                            <% END IF %>
                   </div>
               </div>
 
@@ -1773,6 +1786,20 @@ function ajxContent(P, I, Pers, Div, ParametrosAdicionais){
 	});
 }
 
+function whasappVerifyConnection()
+{
+    	$.ajax({
+    		type: "GET",
+    		url: domain + '',
+    		success: function( data )
+    		{
+    			//alert(data);
+    			$("#"+Div).html(data);
+    		}
+    	});
+}
+
+
 function callTicket (pacienteId) {
         var license = '<%= session("Banco") %>';
         var licenseId = license.replace("clinic", "");
@@ -2041,7 +2068,7 @@ function chatUsers(){
 		url:"chatNotificacoes.asp"+pesquiArgs,
 		success:function(data){
 
-      $("#notifchat").html(data);
+            $("#notifchat").html(data);
 		}
 	});
 }
@@ -2531,3 +2558,60 @@ function chatNotificacao(titulo, mensagem) {
 }
 
 </script>
+<%
+PermiteChat = True
+if session("ExibeChatAtendimento")=False or AppEnv<>"production"  or req("P")="Login" then
+    PermiteChat= False
+end if
+
+
+if PermiteChat then
+%>
+<script>
+  <%
+  StatusLicenca = session("Status")
+
+  if StatusLicenca="C" then
+    StatusLicenca="Contratado"
+  elseif StatusLicenca="T" then
+    StatusLicenca="Avaliação"
+  elseif StatusLicenca="F" then
+    StatusLicenca="Free"
+  end if
+  %>
+  function initFreshChat() {
+    window.fcWidget.init({
+      token: "e1b3be37-181a-4a60-b341-49f3a7577268",
+      host: "https://wchat.freshchat.com"
+    });
+
+    // To set unique user id in your system when it is available
+    window.fcWidget.setExternalId("<%=session("User")%>");
+
+    // To set user name
+    window.fcWidget.user.setFirstName("<%=session("NameUser")%>");
+    window.fcWidget.user.setEmail("<%=session("Email")%>");
+
+
+    // To set user properties
+    window.fcWidget.user.setProperties({
+      admin: "<% if session("Admin")=1 then response.write("Sim") else response.write("Não") end if %>",
+      nomeUnidade: "<%=session("NomeEmpresa")%>",
+      tipoUsuario: "<%=lcase(Session("Table"))%>",
+      licencaID: "<%=LicenseID%>",
+      numeroUsuarios: "<%=session("UsuariosContratadosS")%>",
+      razaoSocial: "<%=session("RazaoSocial")%>",
+      statusLicenca: "<%=StatusLicenca%>",
+    });
+
+  }
+  // Copy the below lines under window.fcWidget.init inside initFreshChat function in the above snippet
+
+  function initialize(i,t){var e;i.getElementById(t)?initFreshChat():((e=i.createElement("script")).id=t,e.async=!0,e.src="https://wchat.freshchat.com/js/widget.js",e.onload=initFreshChat,i.head.appendChild(e))}function initiateCall(){initialize(document,"freshchat-js-sdk")}window.addEventListener?window.addEventListener("load",initiateCall,!1):window.attachEvent("load",initiateCall,!1);
+</script>
+<%
+end if
+%>
+<% IF (session("Admin")="1") and (req("P")="Home") THEN %>
+<script src="assets/js/whatsApp/whatsAppStatus.js"></script>
+<% END IF %>

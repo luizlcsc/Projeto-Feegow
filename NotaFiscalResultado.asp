@@ -113,9 +113,9 @@ if not NotasFiscaisSQL.eof then
     TemReciboAGerar= False
 
     while not NotasFiscaisSQL.eof
-        set sqlExecutado = db.execute("SELECT id FROM itensinvoice where Executado != 'S' and InvoiceID ="&NotasFiscaisSQL("InvoiceID"))
+
         classExecutado = ""
-        if not sqlExecutado.eof then
+        if NotasFiscaisSQL("Executado")&""<>"S" and NotasFiscaisSQL("IntensInvoiceID")&"" <> ""  then
              classExecutado = " warning"
         end if
 
@@ -267,8 +267,20 @@ if not NotasFiscaisSQL.eof then
             TotalRepasse= TotalRepasse + ValorRepasse
             TotalLiquido= TotalLiquido + ValorLiquido
             TotalPrefeitura= TotalPrefeitura + ValorNota
+            classNotaAguardando = ""
+            NotaFiscalMotivo = NotasFiscaisSQL("Motivo")
+            NotaFiscalID = NotasFiscaisSQL("id")
+            if NotaFiscalMotivo&"" = "Aguardando envio" then
+                classNotaAguardando = " notaAguardando "
+            end if
+            NotaFiscalToken = ""
+            if NotasFiscaisSQL("DFeTokenApp")&"" <> "" then
+                NotaFiscalToken = NotasFiscaisSQL("DFeTokenApp")
+            end if
+            notaInvoiceID = NotasFiscaisSQL("InvoiceID")
+            origemCNPJ = NotasFiscaisSQL("CNPJ")
         %>
-        <tr class="linha-nf-<%=NotasFiscaisSQL("id")%> <%=classeLinha%> <%=classExecutado%>">
+        <tr class="linha-nf-<%=NotaFiscalID%> <%=classeLinha%> <%=classExecutado%> <%=classNotaAguardando%>" data-notainvoiceID="<%=notaInvoiceID%>" data-notaToken="<%=NotaFiscalToken%>" data-origemCNPJ="<%=origemCNPJ%>">
             <td>
                 <a href="?P=invoice&I=<%=NotasFiscaisSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" class="btn btn-link btn-xs" target="_blank"><i class="fa fa-external-link"></i></a>
 
@@ -300,7 +312,7 @@ if not NotasFiscaisSQL.eof then
             <td><%=CPFTomador%></td>
             <td><strong><%=numero%></strong></td>
             <td><%=rps%></td>
-            <td><%=NotasFiscaisSQL("Motivo")%></td>
+            <td><%=NotaFiscalMotivo%></td>
             <td><%=fn(ValorTotalInvoice)%></td>
             <td><%=fn(ValorRepasse)%></td>
             <td><%=fn(ValorLiquido)%></td>

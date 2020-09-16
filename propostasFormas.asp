@@ -13,7 +13,7 @@ if Row<>"" then
 	Row=ccur(Row)
 end if
 
-set propostaSql = db.execute("select StaID from propostas where id="&PropostaID)
+set propostaSql = db.execute("select StaID from propostas where id="&treatvalzero(PropostaID))
 if not propostaSql.eof then
 	if propostaSql("StaID")&"" = "5" then
 		desabilitarProposta =" disabled "

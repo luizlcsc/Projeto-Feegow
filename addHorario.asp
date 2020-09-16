@@ -82,13 +82,20 @@ if ref("HoraDe")<>"" and ref("HoraA")<>"" and ref("Intervalo")<>"" then
     if PermiteSalvar then
 
         if req("H")="" then
-            sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios,Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor) values ("&req("Dia")&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"','"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"')"
+        diaSemanaArray = split(ref("diaSemanaArray[]"),",")
+        numberArray = UBound(diaSemanaArray)
+            For i = 0 To numberArray
+              sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios,Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor) values ("&diaSemanaArray(i)&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"','"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"')"
+               call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
+               db_execute(sqlGrade)
+            Next
         else
             sqlGrade = "update assfixalocalxprofissional set HoraDe="&mytime(ref("HoraDe"))&", HoraA="&mytime(ref("HoraA"))&", LocalID="&treatvalzero(ref("LocalID"))&", Intervalo="&treatvalnull(ref("Intervalo"))&", Compartilhada='"&ref("Compartilhada")&"', Especialidades='"&ref("Especialidades")&"', Procedimentos='"&ref("Procedimentos")&"', Convenios='"&ref("Convenios")&"', Profissionais='"&ref("Profissionais")&"', TipoGrade="& treatvalzero(ref("TipoGrade")) &", Horarios='"& ref("Horarios") &"', MaximoRetornos="& treatvalnull(ref("MaximoRetornos")) &", MaximoEncaixes="& treatvalnull(ref("MaximoEncaixes")) &", InicioVigencia="& mydatenull(ref("InicioVigencia")) &", FimVigencia="& mydatenull(ref("FimVigencia")) &", FrequenciaSemanas="&treatvalzero(ref("FrequenciaSemanas"))&", Mensagem='"& ref("Mensagem") &"', Cor='"& ref("Cor") &"' WHERE id="&req("H")
+            call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
+            db_execute(sqlGrade)
         end if
 
-        call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
-        db_execute(sqlGrade)
+
 	%>
 	<script>
 		$("#modal-table").modal("hide");
@@ -115,26 +122,84 @@ end if
 
 set Prof = db.execute("SELECT Unidades FROM profissionais WHERE id="&ProfissionalID)
 if not Prof.eof then
-    if Prof("Unidades")&""<>"" then
-        Unidades = replace(Prof("Unidades"), "|", "")
-        sqlUnidades = " and l.UnidadeID IN ("&Unidades&")"
+    UnidadesProfissional = Prof("Unidades")
+    if UnidadesProfissional&""<>"" then
+        UnidadesProfissional = replace(UnidadesProfissional&"", "|", "")
+
+        if UnidadesProfissional="" then
+            UnidadesProfissional = 0
+        end if
+        sqlUnidades = " and l.UnidadeID IN ("&UnidadesProfissional&")"
     end if
 end if
 
 
 %>
+<style>
+    .inlinex{
+        display: inline-block;
+        margin-left: 15px;
+    }
+    .checkbox-daysweek input[type=checkbox]{
+        border:1px solid #4ea5e0;
+    }
+</style>
 <form id="formAddHorario" method="post">
 <div class="modal-header">
 	<h3><%=weekdayname(Dia)%></h3>
 </div>
 <div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-heading">
+                    <span class="panel-title">
+                    <i class="fa fa-calendar"></i>
+                        Marque para duplicar a marcação para o dia da semana escolhido
+                    </span>
+                </div>
+                <div class="panel-body p7" style="text-align: center">
+                    <div class="checkbox-primary checkbox-daysweek inlinex">
+                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="1" <% if weekdayname(Dia) ="domingo" then  response.write(" checked ") end if  %> />
+                        <small>Domingo</small></label>
+                    </div>
+                    <div class="checkbox-primary checkbox-daysweek inlinex">
+                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="2" <% if weekdayname(Dia) ="segunda-feira" then  response.write(" checked ") end if %> />
+                        <small>Segunda-feira</small></label>
+                    </div>
+                    <div class="checkbox-primary checkbox-daysweek inlinex">
+                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="3" <% if weekdayname(Dia) ="terça-feira" then  response.write(" checked ") end if %> />
+                        <small>Terça-feira</small></label>
+                    </div>
+                    <div class="checkbox-primary checkbox-daysweek inlinex">
+                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="4" <% if weekdayname(Dia) ="quarta-feira" then  response.write(" checked ") end if %> />
+                        <small>Quarta-feira</small></label>
+                    </div>
+                    <div class="checkbox-primary checkbox-daysweek inlinex">
+                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="5" <% if weekdayname(Dia) ="quinta-feira" then  response.write(" checked ") end if %> />
+                        <small>Quinta-feira</small></label>
+                    </div>
+                    <div class="checkbox-primary checkbox-daysweek inlinex">
+                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="6" <% if weekdayname(Dia) ="sexta-feira" then  response.write(" checked ") end if %> />
+                        <small>Sexta-feira</small></label>
+                    </div>
+                    <div class="checkbox-primary checkbox-daysweek inlinex">
+                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="7" <% if weekdayname(Dia) ="sábado" then  response.write(" checked ") end if %> />
+                        <small>Sábado</small></label>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
   <div class="row">
 	<%=quickField("text", "HoraDe", "De", 2, HoraDe, " input-mask-l-time", "", " required")%>
     <%=quickField("text", "HoraA", "At&eacute;", 2, HoraA, " input-mask-l-time", "", " required")%>
     <%=quickField("number", "Intervalo", "Grade (min.)", 2, Intervalo, "", "", " required min='1' max='240'")%>
     <%
         'if ProfissionalID>0 then
-            response.write(quickField("simpleSelect", "LocalID", "Local", 6, LocalID, "select l.*, CONCAT(l.NomeLocal, IF(l.UnidadeID=0,IFNULL(concat(' - ', e.Sigla), ''),IFNULL(concat(' - ', fcu.Sigla), '')))NomeLocal from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID where l.sysActive=1 "&sqlUnidades&" order by l.NomeLocal", "NomeLocal", ""))
+
+            response.write(quickField("simpleSelect", "LocalID", "Local", 6, LocalID, "select l.*, CONCAT(l.NomeLocal, IF(l.UnidadeID=0,IFNULL(concat(' - ', e.Sigla), ''),IFNULL(concat(' - ', fcu.Sigla), '')))NomeLocal from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID where "&franquia(" COALESCE(cliniccentral.overlap(CONCAT('|',l.UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND")&"  l.sysActive=1 "&sqlUnidades&" order by l.NomeLocal", "NomeLocal", ""))
         'end if
     %>
   </div>
@@ -145,62 +210,64 @@ end if
       <%= quickfield("datepicker", "InicioVigencia", "Vigente desde", 3, InicioVigencia, "", "", " placeholder='Sempre' ") %>
       <%= quickfield("datepicker", "FimVigencia", "até", 3, FimVigencia, "", "", " placeholder='Sempre' ") %>
       <div class="col-md-2">
-          <a href="javascript:void(0)" onclick="$('.mo').slideDown();" class="btn mt25 pull-right"><i class="fa fa-plus"></i> mais opções <i class="fa fa-chevron-down"></i></a>
+          <button type="button" data-toggle="collapse" data-target="#collapse-horarios" class="btn mt25 pull-right"> Mais opções <i class="fa fa-chevron-down"></i></button>
       </div>
-       <%= quickfield("text", "Mensagem", "Mensagem de título", 7, Mensagem, "2", "", "") %>
  </div>
 
     <hr class="short alt" />
-  <div class="row mo">
-  <%
-  if ccur(req("ProfissionalID"))>0 then
-  %>
-    <%=quickField("multiple", "Especialidades", "Especificar especialidades que o profissional atende neste período", 12, Especialidades, "select id, especialidade from especialidades where sysActive=1 order by especialidade", "especialidade", "")%>
-  <%
-  else
-  %>
-    <%=quickField("multiple", "Profissionais", "Especificar profissionais que podem utilizar este equipamento neste período", 12, Profissionais, "select id, NomeProfissional from profissionais WHERE sysActive=1 AND Ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
-  <%
-  end if
-  %>
-  </div>
-    <br />
-  <div class="row mo">
-    <%=quickField("multiple", "Procedimentos", "Limitar os procedimentos realizados neste período", 12, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' order by OpcoesAgenda desc, NomeProcedimento", "NomeProcedimento", "")%>
-  </div>
-    <br />
-  <div class="row mo">
-    <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 12, Convenios, "select 'P' id, ' PARTICULAR' NomeConvenio UNION ALL select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio", "NomeConvenio", "")%>
-  </div>
-  <div class="row mo">
+    <div id="collapse-horarios" class="collapse">
+      <div class="row mo">
       <%
-      if TipoGrade=1 then
-          tgCheck = " checked "
-      end if
-      tituloHorarios = "<input type='checkbox' name='TipoGrade' value='1' "& tgCheck &" > Utilizar horários personalizados (preencha abaixo os horários separados por vírgula)"
+      if ccur(req("ProfissionalID"))>0 then
       %>
-      <%if ProfissionalID>0 then %>
-    <div class="col-md-4">
-        <label for="FrequenciaSemanas">Frequência</label>
-        <select name="FrequenciaSemanas" id="FrequenciaSemanas" class="form-control">
-            <option value="1" <% if FrequenciaSemanas=1 then %> selected <% end if %>>Semanal</option>
-            <option value="2" <% if FrequenciaSemanas=2 then %> selected <% end if %>>Quinzenal</option>
-        </select>
-    </div>
-    <% end if %>
-    <div class="col-md-4">
+        <%=quickField("multiple", "Especialidades", "Especificar especialidades que o profissional atende neste período", 12, Especialidades, "select id, especialidade from especialidades where sysActive=1 "&franquia("and id in (SELECT EspecialidadeID FROM profissionais WHERE profissionais.id = "&req("ProfissionalID")&" UNION SELECT EspecialidadeID FROM profissionaisespecialidades WHERE profissionaisespecialidades.ProfissionalID = "&req("ProfissionalID")&")")&" order by especialidade", "especialidade", "")%>
+      <%
+      else
+      %>
+        <%=quickField("multiple", "Profissionais", "Especificar profissionais que podem utilizar este equipamento neste período", 12, Profissionais, "select id, NomeProfissional from profissionais WHERE sysActive=1 AND Ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
+      <%
+      end if
+      %>
+      </div>
+      <div class="row mo">
+        <%=quickField("multiple", "Procedimentos", "Limitar os procedimentos realizados neste período", 12, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' "&franquia("AND CASE WHEN procedimentos.OpcoesAgenda IN (4,5) THEN COALESCE(NULLIF(SomenteProfissionais,'') LIKE '%|"&req("ProfissionalID")&"|%',TRUE) ELSE TRUE END")&" order by OpcoesAgenda desc, NomeProcedimento", "NomeProcedimento", "")%>
+        <%
+        sqlConvenios = "select 'P' id, ' PARTICULAR' NomeConvenio UNION ALL select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' AND COALESCE((SELECT CASE WHEN SomenteConvenios LIKE '%|NONE|%' THEN FALSE ELSE NULLIF(SomenteConvenios,'') END FROM profissionais  WHERE id = "&treatvalzero(ProfissionalID)&") LIKE CONCAT('%|',id,'|%'),TRUE) "&franquia("AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")&" order by NomeConvenio"
+        %>
+        <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 12, Convenios, sqlConvenios, "NomeConvenio", "")%>
+      </div>
+      <hr class="short alt" />
+      <div class="row mo">
+          <%
+          if TipoGrade=1 then
+              tgCheck = " checked "
+          end if
+          tituloHorarios = "<label><input type='checkbox' name='TipoGrade' value='1' "& tgCheck &" > Utilizar horários personalizados (preencha abaixo os horários separados por vírgula)</label>"
+          %>
+          <%if ProfissionalID>0 then %>
+          <%= quickfield("text", "Mensagem", "Mensagem de título", 4, Mensagem, "2", "", "") %>
+        <div class="col-md-4">
+            <label for="FrequenciaSemanas">Frequência</label>
+            <select name="FrequenciaSemanas" id="FrequenciaSemanas" class="form-control">
+                <option value="1" <% if FrequenciaSemanas=1 then %> selected <% end if %>>Semanal</option>
+                <option value="2" <% if FrequenciaSemanas=2 then %> selected <% end if %>>Quinzenal</option>
+            </select>
+        </div>
+        <% end if %>
+        <div class="col-md-4">
             <%=quickField("cor", "Cor", "Cor na agenda", 12, Cor, "select * from Cores", "Cor", "")%>
+        </div>
+            <%=quickField("memo", "Horarios", tituloHorarios, 12, Horarios, "", "", " placeholder='Ex.: 08:00, 08:35, 09:00'")%>
+      </div>
+        <br />
+      <div class="row mo">
+        <%if ProfissionalID>0 then %>
+        <div class="col-md-12">
+            <label><input type="checkbox" class="ace" name="Compartilhada" value="S"<%if Compartilhada="S" then response.write(" checked ") end if %> /><span class="lbl"> Compartilhar esta grade para agendamentos externos</span></label>
+        </div>
+        <%end if %>
+      </div>
     </div>
-    <%=quickField("memo", "Horarios", tituloHorarios, 12, Horarios, "", "", " placeholder='Ex.: 08:00, 08:35, 09:00'")%>
-  </div>
-    <br />
-  <div class="row mo">
-    <%if ProfissionalID>0 then %>
-    <div class="col-md-12">
-        <label><input type="checkbox" class="ace" name="Compartilhada" value="S"<%if Compartilhada="S" then response.write(" checked ") end if %> /><span class="lbl"> Compartilhar esta grade para agendamentos externos</span></label>
-    </div>
-    <%end if %>
-  </div>
 
 
 </div>
@@ -214,7 +281,6 @@ $("#formAddHorario").submit(function(){
 	return false;
 });
 
-$(".mo").slideUp();
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>

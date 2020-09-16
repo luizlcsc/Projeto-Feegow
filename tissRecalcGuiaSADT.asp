@@ -57,8 +57,14 @@ if not reg.eof then
 	Medicamentos = reg("Medicamentos")
 	GasesMedicinais = reg("GasesMedicinais")
 	TotalGeral = reg("TotalGeral")
+
+	hiddenValores = ""
+
+	if aut("valorprocedimentoguia")=0 then
+        hiddenValores=" hidden "
+	end if
 	%>
-	<table class="table table-striped">
+	<table class="table table-striped <%=hiddenValores%>">
 		<tr>
 			<td width="25%"><%= quickField("currency", "Procedimentos", "Procedimentos", 12, Procedimentos, "", "", " readonly") %></td>
 			<td width="25%"><%= quickField("currency", "TaxasEAlugueis", "Taxas e Alugu&eacute;is", 12, TaxasEAlugueis, "", "", " readonly") %></td>

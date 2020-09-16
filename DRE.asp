@@ -5,8 +5,8 @@
 	<input type="hidden" name="R" value="rDRE">
     <div class="row">
         <%'= quickfield("simpleSelect", "Exibicao", "Modo de Exibição", 2, "", "select 'm' id, 'Mensal' Exibicao UNION select 'a', 'Anual'", "Exibicao", " no-select2 semVazio") %>
-        <%= quickfield("simpleSelect", "Exibicao", "Modo de Exibição", 2, "", "select 'm' id, 'Mensal' Exibicao", "Exibicao", " no-select2 semVazio") %>
-        <%= quickfield("multiple", "Exercicio", "Exercício", 2, "|"&year(date())&"|", "select distinct year(sysDate) id, year(sysDate) Ano from sys_financialinvoices where not isnull(sysDate) and year(sysDate)<=year(curdate()) order by year(sysDate)", "Ano", " placeholder='Exercício'") %>
+        <%= quickfield("simpleSelect", "Exercicio", "Exercício", 2, year(date()), "select distinct year(sysDate) id, year(sysDate) Ano from sys_financialinvoices where not isnull(sysDate) and year(sysDate)<=year(curdate()) order by year(sysDate) desc", "Ano", " semVazio placeholder='Exercício'") %>
+        <%=quickField("empresaMultiIgnore", "UnidadeID", "Unidade", 4, "|"& session("UnidadeID") &"|", " input-sm", "", "")%>
         <div class="col-md-2">
             <button class="btn btn-primary btn-block mt25">Gerar</button>
         </div>

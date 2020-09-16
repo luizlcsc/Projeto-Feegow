@@ -360,6 +360,14 @@ function req(Val)
 	req = replace(request.QueryString(Val), "'", "''")
 end function
 
+function reqf(P)
+    if req(P)<>"" then
+        reqf = req(P)
+    else
+        reqf = ref(P)
+    end if
+end function
+
 function refNull(Val)
 	if request.Form(Val)="" then
 		refNull = "NULL"
@@ -2201,7 +2209,13 @@ FormaID = replace(FormaID, "|", "")
 			end if
 		end if
 		if instr(dom("Profissionais"), "|"&replace(ProfissionalID&"", "5_", "")&"|")>0 or instr(dom("Profissionais"), "|"&EspecialidadeID&"|")>0 then
-			esteponto = esteponto+1
+		    if instr(dom("Profissionais"), "|"&replace(ProfissionalID&"", "5_", "")&"|")>0 then
+			    esteponto = esteponto+1
+		    end if
+
+		    if instr(dom("Profissionais"), "|"&EspecialidadeID&"|")>0 then
+			    esteponto = esteponto+1
+		    end if
 		else
 			if trim(dom("Profissionais"))<>"" then
 				queima = 1
@@ -2885,7 +2899,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 			nomePerm = "contasareceber"
 		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
 
-            set vcaCont = db.execute("select id, NomeModelo from contratosmodelos where sysActive=1")
+            set vcaCont = db.execute("select id, NomeModelo from contratosmodelos WHERE (sysActive=1) AND (UrlContrato='' OR UrlContrato IS NULL)")
             if not vcaCont.eof then
                 rbtns = rbtns & " <div class='btn-group'><button class='btn btn-info btn-sm dropdown-toggle' data-toggle='dropdown'  title='Adicionar Contrato'><i class='fa fa-file'></i></button>"
                 rbtns = rbtns & "<ul class='dropdown-menu dropdown-info pull-right' style='overflow-y: scroll; max-height: 400px;'>"
@@ -2944,24 +2958,17 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 	else
 		if isnumeric(hid) then
 			set nomeColuna = db.execute("select initialOrder from cliniccentral.sys_resources where tableName='"&recurso&"' limit 1")
-			if not nomeColuna.EOF then
-				set lista = db.execute("select (select id from "&recurso&" where "&nomeColuna("initialOrder")&"<r."&nomeColuna("initialOrder")&" and sysActive=1 order by "&nomeColuna("initialOrder")&" desc limit 1) anterior, (select id from "&recurso&" where "&nomeColuna("initialOrder")&">r."&nomeColuna("initialOrder")&" and sysActive=1 order by "&nomeColuna("initialOrder")&" limit 1) proximo from "&recurso&" r where id="&hid)
-			else
-				set lista = db.execute("select (select id from "&recurso&" where id<"&hid&" and sysActive=1 order by id desc limit 1) anterior, (select id from "&recurso&" where id>"&hid&" and sysActive=1 order by id limit 1) proximo")
-			end if
+
             if recurso="pacientes" then
 '                rbtns = rbtns & "<div class='switch switch-info switch-inline'>  <input id='exampleCheckboxSwitch1' type='checkbox' checked=''>  <label for='exampleCheckboxSwitch1'></label></div>"
                 rbtns = rbtns & "<div title='Ativar / Inativar paciente' class='mn hidden-xs' style='float:left'><div class='switch switch-info switch-inline'><input checked name='Ativo' id='Ativo' type='checkbox' /><label style='height:30px' class='mn' for='Ativo'></label></div></div> &nbsp; "
             end if
-			if not lista.EOF then
-				if not isnull(lista("anterior")) then
-					rbtns = rbtns & "<a title='Anterior' href='?P="&recurso&"&Pers="&hPers&"&I="&lista("anterior")&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
-				end if
-				rbtns = rbtns & "<a id='Header-List' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
-				if not isnull(lista("proximo")) then
-					rbtns = rbtns & "<a title='Próximo' href='?P="&recurso&"&Pers="&hPers&"&I="&lista("proximo")&"&Proximo=1' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
-				end if
-			end if
+
+            if aut("|profissionaisV|")=1 then
+                rbtns = rbtns & "<a title='Anterior' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Previous&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
+                rbtns = rbtns & "<a id='Header-List' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
+                rbtns = rbtns & "<a title='Próximo' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Next&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
+            end if
 		end if
 		if aut(recurso&"I")=1 and recurso<>"profissionais" and recurso<>"funcionarios" then
 			rbtns = rbtns & "<a id='Header-New' title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
@@ -5543,14 +5550,35 @@ function getConfig(configName)
 end function
 
 
-function franquia(sqlfranquia)
-    IF session("ModoFranquia")&"" <> "1" THEN
+function franquiaUnidade(sqlfranquia)
+    IF NOT ModoFranquiaUnidade THEN
         EXIT function
     END IF
 
     sqlfranquia = replace(sqlfranquia,"[UnidadeID]",session("UnidadeID"))
+    'sqlfranquia = replace(sqlfranquia,"[Unidades]","|0|")
+    sqlfranquia = replace(sqlfranquia,"[Unidades]","|"&session("Unidades")&"|")
 
-    franquia = ""
+    franquiaUnidade = sqlfranquia
+end function
+
+
+function franquia(sqlfranquia)
+    IF getConfig("ModoFranquia")&"" <> "1" THEN
+        EXIT function
+    END IF
+
+    IF ModoFranquiaUnidade THEN
+        sqlfranquia = replace(sqlfranquia,"[UnidadeID]",session("UnidadeID"))
+        sqlfranquia = replace(sqlfranquia,"[Unidades]","|"&session("UnidadeID")&"|")
+    END IF
+
+    IF ModoFranquiaCentral THEN
+        sqlfranquia = replace(sqlfranquia,"[UnidadeID]",session("UnidadeID"))
+        sqlfranquia = replace(sqlfranquia,"[Unidades]",session("Unidades"))
+    END IF
+
+    franquia = sqlfranquia
 end function
 
 function dd(variable)

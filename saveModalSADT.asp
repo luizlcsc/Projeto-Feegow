@@ -229,21 +229,24 @@ elseif Tipo="Procedimentos" then
                     TotalFILME      = 0
                     TotalGeral      = 0
 
+                    CodigoProcedimento = ProcedimentosAnexosSQL("Codigo")
+
                     IF getConfig("calculostabelas") THEN
                         set ValorCalculoAnexo = CalculaValorProcedimentoConvenio(null,null,null,null,null,null,ProcedimentosAnexosSQL("id"),null)
                         %>console.log(<%=fieldToJSON(ValorCalculoAnexo)%>); <%
-                        ValorAnexo      = treatvalzero(ValorCalculoAnexo("TotalGeral"))
-                        ValorTotalAnexo = treatvalzero(ValorCalculoAnexo("TotalGeral"))
-                        TotalCH         = treatvalzero(ValorCalculoAnexo("TotalCH"))
-                        TotalValorFixo  = treatvalzero(ValorCalculoAnexo("TotalValorFixo"))
-                        TotalUCO        = treatvalzero(ValorCalculoAnexo("TotalUCO"))
-                        TotalPORTE      = treatvalzero(ValorCalculoAnexo("TotalPORTE"))
-                        TotalFILME      = treatvalzero(ValorCalculoAnexo("TotalFILME"))
-                        TotalGeral      = treatvalzero(ValorCalculoAnexo("TotalGeral"))
+                        ValorAnexo         = treatvalzero(ValorCalculoAnexo("TotalGeral"))
+                        ValorTotalAnexo    = treatvalzero(ValorCalculoAnexo("TotalGeral"))
+                        TotalCH            = treatvalzero(ValorCalculoAnexo("TotalCH"))
+                        TotalValorFixo     = treatvalzero(ValorCalculoAnexo("TotalValorFixo"))
+                        TotalUCO           = treatvalzero(ValorCalculoAnexo("TotalUCO"))
+                        TotalPORTE         = treatvalzero(ValorCalculoAnexo("TotalPORTE"))
+                        TotalFILME         = treatvalzero(ValorCalculoAnexo("TotalFILME"))
+                        TotalGeral         = treatvalzero(ValorCalculoAnexo("TotalGeral"))
+                        CodigoProcedimento = ValorCalculoAnexo("CodigoProcedimento")
                     END IF
 
                     sqlIns = "insert into tissprocedimentossadt (GuiaID, ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, Anexo, sysUser, Associacao,TotalCH,TotalValorFixo,TotalUCO,TotalPORTE,TotalFILME,TotalGeral,CalculoConvenioID,CalculoPlanoID,CalculoContratos)"&_
-                            " values ("&ref("GuiaID")&", "& treatvalzero(ProfissionalID) &", "&mydatenull(DataAtendimento)&", "&treatvalzero(ProcedimentosAnexosSQL("ProcedimentoAnexoID"))&", 22, '"&rep(ProcedimentosAnexosSQL("Codigo"))&"', '"&rep(ProcedimentosAnexosSQL("Descricao"))&"', 1, 1, "&treatvalzero(1)&", "&treatvalzero(FatorReal)&","&(ValorTotalAnexo)&", "&(ValorTotalAnexo)&", 1, "&session("User")&", "& treatvalnull(rfAssociacao)&","& TotalCH &", "& TotalValorFixo &", "& TotalUCO &", "& TotalPORTE &", "& TotalFILME &", "& TotalGeral &",NULLIF('"&ref("gConvenioID")&"',''),NULLIF('"&ref("PlanoID")&"',''),NULLIF('"&ref("ContratadoSolicitanteCodigoNaOperadora")&"',''));"
+                            " values ("&ref("GuiaID")&", "& treatvalzero(ProfissionalID) &", "&mydatenull(DataAtendimento)&", "&treatvalzero(ProcedimentosAnexosSQL("ProcedimentoAnexoID"))&", 22, '"&rep(CodigoProcedimento)&"', '"&rep(ProcedimentosAnexosSQL("Descricao"))&"', 1, 1, "&treatvalzero(1)&", "&treatvalzero(FatorReal)&","&(ValorTotalAnexo)&", "&(ValorTotalAnexo)&", 1, "&session("User")&", "& treatvalnull(rfAssociacao)&","& TotalCH &", "& TotalValorFixo &", "& TotalUCO &", "& TotalPORTE &", "& TotalFILME &", "& TotalGeral &",NULLIF('"&ref("gConvenioID")&"',''),NULLIF('"&ref("PlanoID")&"',''),NULLIF('"&ref("ContratadoSolicitanteCodigoNaOperadora")&"',''));"
 
                     db_execute( sqlIns )
 

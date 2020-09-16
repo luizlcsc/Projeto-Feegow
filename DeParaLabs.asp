@@ -28,8 +28,18 @@
     Vue.component('vue-multiselect', window.VueMultiselect.default)
 <%
 Input = req("Input")
+select Case idLab
+    case 1
+     labnome = "matrix"
+    case 2
+     labnome = "diagbrasil"
+    case 3
+     labnome = "alvaro"
+    case 4
+     labnome = "hermespardini"
+End Select
 %>
-    getUrl("labs-integration/<% if idLab = "1" then %>matrix<% else %>diagbrasil<%end if%>/proc-relation", {
+    getUrl("labs-integration/<%=labnome %>/proc-relation", {
         input: "<%=Input%>", labid:"<%=idLab%>"
     }, function(data) {
         $(".app").hide();

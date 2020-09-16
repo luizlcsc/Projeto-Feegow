@@ -26,7 +26,7 @@ end function
 
 function getLogs(logTable, logId, paiId)
     sqlLogId=""
-    if logId<>"" then
+    if logId<>"" or paiId<>"" then
         sqlLogId = " AND (I="&treatvalzero(logId)&" OR PaiID="&Treatvalzero(paiId)&")"
     end if
     set getLogs = db.execute("SELECT * FROM log WHERE recurso='"&logTable&"' "&sqlLogId&" ORDER BY DataHora DESC LIMIT 25")
@@ -40,7 +40,7 @@ function getLogTableHtml(LogsSQL)
                 <th width="18%">Tipo</th>
                 <th>Data e hora</th>
                 <th>Usuário</th>
-                <th>Obs.</th>
+                <th>Detalhes</th>
                 <th>Campo</th>
                 <th>Valor Anterior</th>
                 <th>Valor Alterado</th>
@@ -92,9 +92,9 @@ function getLogTableHtml(LogsSQL)
                 <%
                 end if
                 %>
-                <td><%=campo%></td>
-                <td><%=spltValorAnterior(i)%></td>
-                <td><% if not isnull(valorAtual) then response.write(spltValorAtual(i)) end if %></td>
+                <td style="background-color: #fff3cf; font-weight: 600; border-color: #efd79d"><%=campo%></td>
+                <td style="background-color: #fff3cf; font-weight: 600; border-color: #efd79d"><%=spltValorAnterior(i)%></td>
+                <td style="background-color: #fff3cf; font-weight: 600; border-color: #efd79d"><% if not isnull(valorAtual) then response.write(spltValorAtual(i)) end if %></td>
             </tr>
     <%
                     next

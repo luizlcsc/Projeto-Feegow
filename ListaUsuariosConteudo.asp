@@ -1,5 +1,5 @@
 <!--#include file="connect.asp"-->
-
+<!--#include file="Classes/Connection.asp"-->
 <div class="row">
     <div class="col-md-12">
         <table id="datatableUsuarios" class="table table-striped table-bordered table-hover">
@@ -38,20 +38,43 @@
             Quantidade = 0
             QuantSA = 0
             QuantCA = 0
-            set usu = db.execute("select l.id LicencaID, lu.Nome, lu.Tipo, lu.Email, l.NomeEmpresa, lu.Ativo from cliniccentral.licencasusuarios lu left join cliniccentral.licencas l on l.id=lu.licencaid where l.cupom like '"&Cupom&"' "&sqlEmpresa&" "&sqlTipo&" "&sqlNome&" order by l.NomeEmpresa asc, lu.Nome asc")
+            lastServerID = 0
+
+            sqlUsuariosConteudo = " SELECT l.id LicencaID, lu.Nome, lu.Tipo, lu.Email, l.NomeEmpresa, lu.Ativo, l.Servidor, lu.id, l.ServidorID"&chr(13)&_
+                                    " FROM cliniccentral.licencasusuarios lu                                                "&chr(13)&_
+                                    " LEFT JOIN cliniccentral.licencas l ON l.id=lu.licencaid                               "&chr(13)&_
+                                    " WHERE l.cupom LIKE 'UNIMEDLONDRINA'                                                   "&chr(13)&_
+                                    " ORDER BY l.ServidorID ASC, l.NomeEmpresa ASC, lu.Nome ASC                             "&chr(13)&_
+                                    "                                                                                       "
+            set usu = db.execute(sqlUsuariosConteudo)
+            
             while not usu.EOF
                 Quantidade = Quantidade + 1
                 inactive_user = false
+                license_user = usu("LicencaID")
+                type_user = lcase(usu("Tipo"))
+                id_user = usu("id")
+                server_user = usu("Servidor")
+                server_id_user = usu("ServidorID")
 
                 If usu("Email")&""="" then
                     inactive_user = true
                 End if
 
-                If usu("Ativo") = 0 or isNull(usu("Ativo")) or usu("Ativo") = "" or usu("Email")&""="" then
-                    inactive_user = true
+                'Criar nova conexao quando for de outro servidor
+                If lastServerID <> server_id_user Then
+                    set dbProvider = newConnection("clinic"&license_user, server_user)
+                    lastServerID = lastServerID + 1
                 End if
-
                 
+                sqlVerifyActiveUser = "SELECT p.Ativo FROM profissionais p WHERE p.id="&id_user  
+
+                set AtivoSQL = dbProvider.execute(sqlVerifyActiveUser)
+                if not AtivoSQL.eof then
+                    if AtivoSQL("Ativo")<>"on" then
+                        inactive_user = false
+                    end if
+                end if
 
                 If inactive_user Then
                     Email = "<b><i>Sem acesso</i></b>"
@@ -68,7 +91,7 @@
                 <tr class="<%=cor%>">
                     <td><%=usu("LicencaID")%></td>
                     <td><%=usu("Nome")%></td>
-                    <td><%=lcase(usu("Tipo"))%></td>
+                    <td><%=type_user%></td>
                     <td><%=Email%></td>
                     <td><%=usu("NomeEmpresa")%></td>
                 </tr>

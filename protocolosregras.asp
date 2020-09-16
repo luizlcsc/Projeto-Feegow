@@ -1,7 +1,21 @@
 <!--#include file="connect.asp"-->
 <%
-'id = req("I")
-
+id = req("I")
+set getRegra = db.execute("select * from protocolos WHERE id="&id)
+if not getRegra.eof then
+    SexoRegra = getRegra("SexoRegra")
+    SexoValor = getRegra("SexoValor")
+    PesoRegra = getRegra("PesoRegra")
+    PesoValor = getRegra("PesoValor")
+    AlturaRegra = getRegra("AlturaRegra")
+    AlturaValor = getRegra("AlturaValor")
+    IdadeRegra = getRegra("IdadeRegra")
+    IdadeValor = getRegra("IdadeValor")
+    ConvenioRegra = getRegra("ConvenioRegra")
+    ConvenioValor = getRegra("ConvenioValor")
+    CidRegra = getRegra("CidRegra")
+    CidValor = getRegra("CidValor")
+end if
 %>
 
 <div class="modal-header ">
@@ -23,169 +37,68 @@
         <div class="row">
             <input type="hidden" name="I" id="I" value="<%=id%>" />
             <div class="col-md-12">
-                <button class="btn btn-sm btn-primary pull-right" ><i class="fa fa-plus"></i> Adicionar nova regra</button>
-            </div>
-
-            <!-- Regra 1-->
-            <div class="col-md-12">
                 <table width="100%" class="table table-striped table-hover mt20">
                     <thead>
                         <tr class="success">
-                            <th colspan="3"><b>REGRA 1</b></th>
-                            <th width="1%"><button class="btn btn-sm btn-alert"><i class="fa fa-files-o"></i></button></th>
-                            <th width="1%"><button class="btn btn-sm btn-success pull-right" ><i class="fa fa-plus"></i></button></th>
-                            <th width="1%"><button class="btn btn-sm btn-dark pull-right" ><i class="fa fa-close"></i></button></th>
+                            <th width="30%">Dados Demográficos</th>
+                            <th width="35%">Regras</th>
+                            <th width="35%">Valor</th>
                         </tr>
                     </thead>
                     <tbody>
                             <tr>
-                                <td width="40%">
-                                    <select id="Campo" name="Campo" class="select2-single form-control">
-                                        <optgroup label="Dados Cadastrais">
-                                            <option value="1" selected>Sexo</option>
-                                            <option value="1">Idade</option>
-                                            <option value="2">Convênio</option>
-                                        </optgroup>
-                                        <optgroup label="Dados Estruturados">
-                                            <option value="3">Altura</option>
-                                            <option value="4">Peso</option>
-                                            <option value="4">CID</option>
-                                        </optgroup>
-                                        <optgroup label="Campos dos Formulários">
-                                            <option value="3">Queixa Principal (Primeira Consulta)</option>
-                                            <option value="4">Estadiamento (Evolução)</option>
-                                        </optgroup>
-                                    </select>
+                                <td>Sexo</td>
+                                <td>
+                                    <%=quickField("simpleSelect", "SexoRegra", "", 12, SexoRegra, "select '|ALL|' id, 'Todos' SexoRegra union all select '|ONLY|' id, 'Somente' SexoRegra union all select '|EXCEPT|' id, 'Exceto' SexoRegra", "SexoRegra", " semVazio ")%>
                                 </td>
                                 <td>
-                                    <%=quickfield("simpleSelect", "SexoValor", "", 12, SexoValor, "select id, NomeSexo from sexo where sysActive=1 order by NomeSexo", "NomeSexo", "")%>
+                                    <%=quickfield("multiple", "SexoValor", "", 12, SexoValor, "select id, NomeSexo from sexo where sysActive=1 order by NomeSexo", "NomeSexo", "")%>
                                 </td>
-                                <td>
-                                </td>
-                                <td></td>
-                                <td> <code><b>e</b></code> </td>
-                                <td><button class="btn btn-sm btn-danger pull-right" ><i class="fa fa-minus"></i></button></td>
                             </tr>
                             <tr>
-                                <td width="40%">
-                                    <select id="Campo" name="Campo" class="select2-single form-control">
-                                        <optgroup label="Dados Cadastrais">
-                                            <option value="1">Sexo</option>
-                                            <option value="1">Idade</option>
-                                            <option value="2">Convênio</option>
-                                        </optgroup>
-                                        <optgroup label="Dados Estruturados">
-                                            <option value="3" selected>Altura</option>
-                                            <option value="4">Peso</option>
-                                            <option value="4">CID</option>
-                                        </optgroup>
-                                        <optgroup label="Campos dos Formulários">
-                                            <option value="3">Queixa Principal (Primeira Consulta)</option>
-                                            <option value="4">Estadiamento (Evolução)</option>
-                                        </optgroup>
-                                    </select>
-                                </td>
+                                <td>Peso</td>
                                 <td>
                                     <%=quickField("simpleSelect", "PesoRegra", "", 12, PesoRegra, "select '|IGUAL|' id, 'Igual a' PesoRegra union all select '|DIFERENTE|' id, 'Diferente de' PesoRegra union all select '|MAIOR|' id, 'Maior que' PesoRegra union all select '|MENOR|' id, 'Menor que' PesoRegra", "PesoRegra", " semVazio ")%>
                                 </td>
                                 <td>
-                                    <div class="input-group">
-                                        <input class="form-control input-mask-brl text-right" placeholder="0,00" type="text" style="text-align:right">
-                                        <span class="input-group-addon">
-                                            <strong>m</strong>
-                                        </span>
-                                    </div>
+                                    <%=quickField("text", "PesoValor", "", 1, PesoValor, " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
                                 </td>
-                                <td></td>
-                                <td> <code><b>e</b></code> </td>
-                                <td><button class="btn btn-sm btn-danger pull-right" ><i class="fa fa-minus"></i></button></td>
                             </tr>
-
-                    </tbody>
-                </table>
-            </div>
-
-
-            <br>
-            <div class="col-md-12 text-center">
-            <code><b>ou</b></code>
-            </div>
-            <br>
-
-
-            <div class="col-md-12">
-                <table width="100%" class="table table-striped table-hover mt20">
-                    <thead>
-                        <tr class="success">
-                            <th colspan="3"><b>REGRA 2</b></th>
-                            <th width="1%"><button class="btn btn-sm btn-alert"><i class="fa fa-files-o"></i></button></th>
-                            <th width="1%"><button class="btn btn-sm btn-success pull-right" ><i class="fa fa-plus"></i></button></th>
-                            <th width="1%"><button class="btn btn-sm btn-dark pull-right" ><i class="fa fa-close"></i></button></th>
-                        </tr>
-                    </thead>
-                    <tbody>
                             <tr>
-                                <td width="40%">
-                                    <select id="Campo" name="Campo" class="select2-single form-control">
-                                        <optgroup label="Dados Cadastrais">
-                                            <option value="1">Sexo</option>
-                                            <option value="1">Idade</option>
-                                            <option value="2" selected>Convênio</option>
-                                        </optgroup>
-                                        <optgroup label="Dados Estruturados">
-                                            <option value="3">Altura</option>
-                                            <option value="4">Peso</option>
-                                            <option value="4">CID</option>
-                                        </optgroup>
-                                        <optgroup label="Campos dos Formulários">
-                                            <option value="3">Queixa Principal (Primeira Consulta)</option>
-                                            <option value="4">Estadiamento (Evolução)</option>
-                                        </optgroup>
-                                    </select>
+                                <td>Altura</td>
+                                <td>
+                                    <%=quickField("simpleSelect", "AlturaRegra", "", 12, AlturaRegra, "select '|IGUAL|' id, 'Igual a' AlturaRegra union all select '|DIFERENTE|' id, 'Diferente de' AlturaRegra union all select '|MAIOR|' id, 'Maior que' AlturaRegra union all select '|MENOR|' id, 'Menor que' AlturaRegra", "AlturaRegra", " semVazio ")%>
                                 </td>
+                                <td>
+                                    <%=quickField("text", "AlturaValor", "", 1, AlturaValor, " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Idade</td>
+                                <td>
+                                    <%=quickField("simpleSelect", "IdadeRegra", "", 12, IdadeRegra, "select '|IGUAL|' id, 'Igual a' IdadeRegra union all select '|DIFERENTE|' id, 'Diferente de' IdadeRegra union all select '|MAIOR|' id, 'Maior que' IdadeRegra union all select '|MENOR|' id, 'Menor que' IdadeRegra", "IdadeRegra", " semVazio ")%>
+                                </td>
+                                <td>
+                                    <%=quickField("number", "IdadeValor", "", 1, IdadeValor, " text-right", "", " placeholder=""0"" ")%>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Convênio</td>
                                 <td>
                                     <%=quickField("simpleSelect", "ConvenioRegra", "", 12, ConvenioRegra, "select '|ALL|' id, 'Todos' ConvenioRegra union all select '|ONLY|' id, 'Somente' ConvenioRegra union all select '|EXCEPT|' id, 'Exceto' ConvenioRegra", "ConvenioRegra", " semVazio ")%>
                                 </td>
                                 <td>
-                                    <%=quickfield("simpleSelect", "ConvenioValor", "", 12, ConvenioValor, "select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio", "NomeConvenio", "")%>
+                                    <%=quickfield("multiple", "ConvenioValor", "", 12, ConvenioValor, "select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio", "NomeConvenio", "")%>
                                 </td>
-                                <td></td>
-                                <td> <code><b>e</b></code> </td>
-                                <td><button class="btn btn-sm btn-danger pull-right" ><i class="fa fa-minus"></i></button></td>
                             </tr>
                             <tr>
-                                <td width="40%">
-                                    <select id="Campo" name="Campo" class="select2-single form-control">
-                                        <optgroup label="Dados Cadastrais">
-                                            <option value="1">Sexo</option>
-                                            <option value="1">Idade</option>
-                                            <option value="2">Convênio</option>
-                                        </optgroup>
-                                        <optgroup label="Dados Estruturados">
-                                            <option value="3">Altura</option>
-                                            <option value="4" selected>Peso</option>
-                                            <option value="4">CID</option>
-                                        </optgroup>
-                                        <optgroup label="Campos dos Formulários">
-                                            <option value="3">Queixa Principal (Primeira Consulta)</option>
-                                            <option value="4">Estadiamento (Evolução)</option>
-                                        </optgroup>
-                                    </select>
+                                <td>CID</td>
+                                <td>
+                                    <%=quickField("simpleSelect", "CidRegra", "", 12, CidRegra, "select '|ALL|' id, 'Todos' CidRegra union all select '|ONLY|' id, 'Somente' CidRegra union all select '|EXCEPT|' id, 'Exceto' CidRegra", "CidRegra", " semVazio ")%>
                                 </td>
                                 <td>
-                                    <%=quickField("simpleSelect", "PesoRegra", "", 12, PesoRegra, "select '|IGUAL|' id, 'Igual a' PesoRegra union all select '|DIFERENTE|' id, 'Diferente de' PesoRegra union all select '|MAIOR|' id, 'Maior que' PesoRegra union all select '|MENOR|' id, 'Menor que' PesoRegra", "PesoRegra", " semVazio ")%>
+                                    <%=quickfield("multiple", "CidValor", "", 12, CidValor, "select id, concat(codigo, ' ' , descricao) NomeCid from cliniccentral.cid10 order by Codigo limit 100", "NomeCid", "")%>
                                 </td>
-                                <td>
-                                    <div class="input-group">
-                                        <input class="form-control input-mask-brl text-right" placeholder="0,00" type="text" style="text-align:right">
-                                        <span class="input-group-addon">
-                                            <strong>Kg</strong>
-                                        </span>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td> <code><b>e</b></code> </td>
-                                <td><button class="btn btn-sm btn-danger pull-right" ><i class="fa fa-minus"></i></button></td>
                             </tr>
 
                     </tbody>
@@ -213,6 +126,4 @@ function saveRegra(ID){
 <script type="text/javascript">
 
 <!--#include file="JQueryFunctions.asp"-->
-
-
 </script>

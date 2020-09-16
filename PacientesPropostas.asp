@@ -230,7 +230,7 @@ end if
                                                      <label>Profissional</label>
                                                      <%
 
-                                                      if getconfig("profissionalsolicitanteobrigatorio")=1 then
+                                                      if getconfig("profissionalsolicitanteobrigatorioproposta")=1 then
                                                           SolicitanteRequired = " required empty "
                                                       end if
 
@@ -496,10 +496,13 @@ function ListaProFormas(Filtro, X, Aplicar){
 	  $("#ListaProFormas").html(data);
 	});
 }
+
 function GerarContrato(){
-    var profissional = document.getElementById("ProfissionalID");
-    document.location.href = "?P=GerarContrato&Pers=1&PropostaID=<%=req("PropostaID")%>&ProfissionalSolicitante=" + profissional.options[profissional.selectedIndex].value;
-};
+    propostaSave(false, function() {
+        var profissional = document.getElementById("ProfissionalID");
+        document.location.href = "?P=GerarContrato&Pers=1&PropostaID=<%=req("PropostaID")%>&ProfissionalSolicitante=" + profissional.options[profissional.selectedIndex].value;
+    });
+}
 
 $('#FiltroProItens').keypress(function(e){
     if ( e.which == 13 ){
@@ -560,10 +563,11 @@ function imprimirProposta(){
 		alert("Selecione um paciente");
 		return false;
 	}else{
-        propostaSave(false);
+        propostaSave(false, function() {
+            $.get("ImprimirProposta.asp?PropostaID=<%=PropostaID%>", function(data){ $("#modal").html(data) });
+        });
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");
-        $.get("ImprimirProposta.asp?PropostaID=<%=PropostaID%>", function(data){ $("#modal").html(data) });
     }
 }
 

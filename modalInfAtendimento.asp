@@ -134,9 +134,6 @@ db.execute("DELETE FROM calculos_finalizar_atendimento_log WHERE AtendimentoID =
 
 %>
 <script >
-     $(document).ready(function() {
-        TelemedicinaService.endpointEndZoomMeeting("<%=req("AgendamentoID")%>");
-     });
 function saveInf(AI){
 	$("#btnSaveInf").prop("disabled", true);
 	$("#btnSaveInf").html("salvando...");

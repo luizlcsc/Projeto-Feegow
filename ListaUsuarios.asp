@@ -22,7 +22,7 @@ end if
                 <%= quickfield("multiple", "Empresa", "Empresa", 3, "", "select id, NomeEmpresa from cliniccentral.licencas where NomeEmpresa<>'' and Cupom like '"&Cupom&"' ", "NomeEmpresa", "") %>
 
                 <div class="col-md-offset-1 col-md-2">
-                    <button class="btn btn-primary btn-block mt20"><i class="fa fa-search bigger-110"></i> Buscar</button>
+                    <button class="btn btn-primary btn-block mt20" id="buscaListaUsuarios"><i class="fa fa-search bigger-110"></i> Buscar</button>
                 </div>
             </div>
 
@@ -38,15 +38,15 @@ end if
 
 <script type="text/javascript">
     $("#frmListaUsuarios").submit(function () {
+        $(".buscaListaUsuarios").on('subimit',$("#divListaUsuariosConteudo").html("<p style='text-align: center'><i class='fa-9x fa fa-spin fa-spinner'></i> Aguarde, estamos carregando a lista de usuários ...</p>"))
+
         $.post("ListaUsuariosConteudo.asp", $(this).serialize(), function (data) {
             $("#divListaUsuariosConteudo").html(data);
         });
         return false;
     });
-
+    
     $("#frmListaUsuarios").submit();
-
-
 </script>
 
 <script type="text/javascript">

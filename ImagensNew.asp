@@ -304,16 +304,17 @@ end if
         }).map((item) => {
                 processaItem(item);
                 return `<div class="galery-item">
-
                              <div class="galery-data-envio">
                                 <small class="pull-right data-envio">Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}</small><br/>
                                 <div class="config-buttons">
-                                    <small class="pull-left"><div class="bs-component">
-                                                                                         <div class="checkbox-custom mb5">
-                                                                                           <input type="checkbox" class="comparar" name="comparar[${item.id}]" value="${item.id}" id="comparar${item.id}">
-                                                                                           <label for="comparar${item.id}">&nbsp</label>
-                                                                                         </div>
-                                                                                       </div></small>
+                                    <small class="pull-left">
+                                        <div class="bs-component">
+                                         <div class="checkbox-custom mb5">
+                                           <input type="checkbox" class="comparar" name="comparar[${item.id}]" value="${item.id}" id="comparar${item.id}">
+                                           <label for="comparar${item.id}">&nbsp</label>
+                                         </div>
+                                       </div>
+                                    </small>
 
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-expand icon-external-link"></i>
@@ -324,9 +325,9 @@ end if
                                     <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">
                                             <i class="fa fa-rotate-right"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="javascript:MaisInfo('${item.NomeArquivo}')" title="Mais informações">
+                                    <!--<a class="btn btn-xs btn-alert" href="javascript:MaisInfo('')" title="Mais informações">
                                                         <i class="fa fa-info-circle"></i>
-                                    </a>
+                                    </a>-->
                                     <a class="btn btn-xs btn-alert" href="#" title="Editar Imagem" onclick="return launchEditor('image1', '${item.ArquivoLink}');">
                                                         <i class="fa fa-pencil icon-pencil"></i>
                                     </a>
@@ -402,6 +403,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
             reloadItens();
             loadItens();
     });
+
 
     function reloadItens(){
         $("[id-img-arquivos]").map((a,b) => {

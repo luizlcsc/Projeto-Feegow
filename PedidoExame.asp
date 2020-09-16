@@ -2,6 +2,8 @@
 response.Charset="utf-8"
 %>
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/TagsConverte.asp"-->
+
 		<link type="text/css" rel="stylesheet" href="assets/js/qtip/jquery.qtip.css" />
 		<link rel="shortcut icon" href="icon_clinic.png" type="image/x-icon" />
 		<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
@@ -109,8 +111,8 @@ response.Charset="utf-8"
                                         'if timb("MarcaDagua")<>"" or not isnull(timb("MarcaDagua"))  then
                                             MarcaDagua = "background-image: url('https://clinic.feegow.com.br/uploads/"&replace(session("Banco"), "clinic", "")&"/Arquivos/"&timb("MarcaDagua")&"')"
                                         end if
-                                        Cabecalho = replaceTags(timb("Cabecalho"), reg("PacienteID"), session("UserID"), session("UnidadeID"))
-                                        Rodape = replaceTags(timb("Rodape"), reg("PacienteID"), session("UserID"), session("UnidadeID"))
+                                        Cabecalho = timb("Cabecalho")
+                                        Rodape = timb("Rodape")
 
                                             if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
                                             if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
@@ -121,8 +123,8 @@ response.Charset="utf-8"
                                     if lcase(session("table"))="profissionais" then
                                         set timb = db.execute("select pt.*, ff.`font-family` from papeltimbrado pt LEFT JOIN cliniccentral.`font-family` ff ON ff.id=pt.`font-family` where pt.sysActive=1 AND pt.profissionais like '%|"&session("idInTable")&"|%'  AND (UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&Unidade&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0)")
                                         if not timb.eof then
-                                            Cabecalho = replaceTags(timb("Cabecalho"), reg("PacienteID"), session("UserID"), session("UnidadeID"))
-                                            Rodape = replaceTags(timb("Rodape"), reg("PacienteID"), session("UserID"), session("UnidadeID"))
+                                            Cabecalho = timb("Cabecalho")
+                                            Rodape = timb("Rodape")
 
                                             if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
                                             if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
@@ -133,6 +135,8 @@ response.Charset="utf-8"
                                     end if
                                 end if
 
+                        Cabecalho= tagsConverte(Cabecalho,"PacienteID_"&reg("PacienteID"),"")
+                        Rodape= tagsConverte(Rodape,"PacienteID_"&reg("PacienteID"),"")
 
                         strVarPac = "[Paciente.Nome]|^[Paciente.NomeSocial]|^[Paciente.Idade]|^[Paciente.Endereco]|^[Paciente.Bairro]|^[Paciente.Cidade]|^[Paciente.Estado]|^[Paciente.Email]|^[Paciente.Telefone]|^[Data.DDMMAAAA]|^[Data.Extenso]|^[Sistema.Hora]"
                         strValPac = NomePaciente&"|^"&NomeSocial&"|^"&IdadePaciente&"|^"&EnderecoPaciente&"|^"&BairroPaciente&"|^"&CidadePaciente&"|^"&EstadoPaciente&"|^"&EmailPaciente&"|^"&TelefonePaciente&"|^"&DDMMAAAA&"|^"&Extenso&"|^"&Hora
@@ -337,8 +341,8 @@ response.Charset="utf-8"
                         'if timb("MarcaDagua")<>"" or not isnull(timb("MarcaDagua"))  then
                             MarcaDagua = "background-image: url('https://clinic.feegow.com.br/uploads/"&replace(session("Banco"), "clinic", "")&"/Arquivos/"&timb("MarcaDagua")&"')"
                         end if
-                        Cabecalho = replaceTags(timb("Cabecalho"), reg("PacienteID"), session("UserID"), session("UnidadeID"))
-                        Rodape = replaceTags(timb("Rodape"), reg("PacienteID"), session("UserID"), session("UnidadeID"))
+                        Cabecalho = timb("Cabecalho")
+                        Rodape = timb("Rodape")
 
                             if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
                             if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
@@ -349,8 +353,8 @@ response.Charset="utf-8"
                     if lcase(session("table"))="profissionais" then
                         set timb = db.execute("select pt.*, ff.`font-family` from papeltimbrado pt LEFT JOIN cliniccentral.`font-family` ff ON ff.id=pt.`font-family` where pt.sysActive=1 AND pt.profissionais like '%|"&session("idInTable")&"|%'  AND (UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&Unidade&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0)")
                         if not timb.eof then
-                            Cabecalho = replaceTags(timb("Cabecalho"), reg("PacienteID"), session("UserID"), session("UnidadeID"))
-                            Rodape = replaceTags(timb("Rodape"), reg("PacienteID"), session("UserID"), session("UnidadeID"))
+                            Cabecalho = timb("Cabecalho")
+                            Rodape = timb("Rodape")
 
                             if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
                             if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
@@ -360,6 +364,9 @@ response.Charset="utf-8"
                         end if
                     end if
                 end if
+
+                Cabecalho= tagsConverte(Cabecalho,"PacienteID_"&reg("PacienteID"),"")
+                Rodape= tagsConverte(Rodape,"PacienteID_"&reg("PacienteID"),"")
 
 
         strVarPac = "[Paciente.Nome]|^[Paciente.NomeSocial]|^[Paciente.Idade]|^[Paciente.Endereco]|^[Paciente.Bairro]|^[Paciente.Cidade]|^[Paciente.Estado]|^[Paciente.Email]|^[Paciente.Telefone]|^[Data.DDMMAAAA]|^[Data.Extenso]|^[Sistema.Hora]"

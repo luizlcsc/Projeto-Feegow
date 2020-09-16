@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="modal.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Laudos");
     $(".crumb-link").removeClass("hidden");
@@ -85,6 +86,14 @@ end if
         });
         return false;
     });
-    $("#frmLaudos").submit();
+
+    function entrega(I) {
+            $("#modal-table").modal("show");
+            $("#modal").html("Carregando...");
+
+            $.post("laudoEntrega.asp?L="+I, "", function (data) { $("#modal").html(data) });
+    }
+
+    //$("#frmLaudos").submit();
 </script>
 

@@ -16,12 +16,16 @@ if req("txt")<>"" then
     limit = ""
 end if
 
+IF limit = "" THEN
+    limit = "limit 150"
+END IF
+
 txt = replace(req("txt"), " ", "%")
 
 sqlProcedimentos = "select p.id as ProcID, p.NomeProcedimento, v.*, v.id as PvId, pt.*, (SELECT group_concat(DISTINCT CodigoNaOperadora) FROM contratosconvenio cc WHERE v.Contratados like CONCAT('%|',cc.id,'|%') AND CodigoNaOperadora <> '' ) as CodigoNaOperadora  from procedimentos as p "&_
                     "left join tissprocedimentosvalores as v on (v.ProcedimentoID=p.id and v.ConvenioID="&ConvenioID&") "&_
                     "left join tissprocedimentostabela as pt on (v.ProcedimentoTabelaID=pt.id)"&_
-                    "where p.NomeProcedimento like '%"&txt&"%' and p.sysActive=1 and Ativo='on' and (v.ConvenioID="&ConvenioID&" or v.ConvenioID is null) and (isnull(SomenteConvenios) or SomenteConvenios like '%|"&ConvenioID&"|%' or SomenteConvenios like '') and (SomenteConvenios not like '%|NONE|%' or isnull(SomenteConvenios)) order by (IF(v.id IS NOT NULL, 0,1)) , NomeProcedimento "&limit
+                    "where (p.NomeProcedimento like '%"&txt&"%' or p.Codigo = '"&txt&"' ) and p.sysActive=1 and Ativo='on' and (v.ConvenioID="&ConvenioID&" or v.ConvenioID is null) and (isnull(SomenteConvenios) or SomenteConvenios like '%|"&ConvenioID&"|%' or SomenteConvenios like '') and (SomenteConvenios not like '%|NONE|%' or isnull(SomenteConvenios)) order by (IF(v.id IS NOT NULL, 0,1)) , NomeProcedimento "&limit
 
 
     set proc = db.execute(sqlProcedimentos)
@@ -57,7 +61,9 @@ if not proc.eof then
 
 
 IF getConfig("calculostabelas") THEN
-    ProcessarTodasAssociacoes(ConvenioID)
+    On Error Resume Next
+        ProcessarTodasAssociacoes(ConvenioID)
+    On Error Goto 0
 END IF
 
 while not proc.eof
@@ -74,7 +80,7 @@ while not proc.eof
             set reg = CalculaValorProcedimentoConvenio(proc("PvId"),ConvenioID,proc("ProcID"),null,null,null,null,null)
             On Error Resume Next
                 ProcID = reg("AssociacaoID")
-                Valor = "R$"&fn(reg("TotalGeral")+CalculaValorProcedimentoConvenioAnexo(ConvenioID,proc("ProcID"),reg("AssociacaoID"),PrimeiroPlano))
+                Valor = "R$"&fn(reg("TotalGeral")+CalculaValorProcedimentoConvenioAnexo(ConvenioID,proc("ProcID"),reg("AssociacaoID"),null))
             On Error Goto 0
         END IF
     END IF

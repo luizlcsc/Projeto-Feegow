@@ -401,89 +401,91 @@ if PermitirInformarProcedimentos then
 		    db.execute("DELETE FROM calculos_finalizar_atendimento_log WHERE AtendimentoID="&AtendimentoID)
 		END IF
 
-        if procs("NomeTabela")&"" <> "" then
-            NomeTabela= "<code>"&procs("NomeTabela")&"</code>"
-        end if
+        if not procs.eof then
+            if procs("NomeTabela")&"" <> "" then
+                NomeTabela= "<code>"&procs("NomeTabela")&"</code>"
+            end if
 
-		while not procs.eof
-			id = procs("id")
-			ProcedimentoID = procs("ProcedimentoID")
-			NomeProcedimento = procs("NomeProcedimento")
-			TipoProcedimentoID = procs("TipoProcedimentoID")
-			if procs("rdValorPlano")="V" then
-				ConvenioID = 0
-				NomeForma = "Particular "&NomeTabela
-				Icone = "money"
-			else
-				ConvenioID = procs("ValorPlano")
-				set conv = db.execute("select NomeConvenio, segundoProcedimento, terceiroProcedimento, quartoProcedimento from convenios where id="&treatvalzero(ConvenioID))
-				if not conv.eof then
-					NomeForma = conv("NomeConvenio")
-				else
-					NomeForma = ""
-				end if
-				Icone = "credit-card"
-			end if
+            while not procs.eof
+                id = procs("id")
+                ProcedimentoID = procs("ProcedimentoID")
+                NomeProcedimento = procs("NomeProcedimento")
+                TipoProcedimentoID = procs("TipoProcedimentoID")
+                if procs("rdValorPlano")="V" then
+                    ConvenioID = 0
+                    NomeForma = "Particular "&NomeTabela
+                    Icone = "money"
+                else
+                    ConvenioID = procs("ValorPlano")
+                    set conv = db.execute("select NomeConvenio, segundoProcedimento, terceiroProcedimento, quartoProcedimento from convenios where id="&treatvalzero(ConvenioID))
+                    if not conv.eof then
+                        NomeForma = conv("NomeConvenio")
+                    else
+                        NomeForma = ""
+                    end if
+                    Icone = "credit-card"
+                end if
 
-			ValorFinal = procs("ValorFinal")
+                ValorFinal = procs("ValorFinal")
 
-			IF ConvenioID <> 0 THEN
-                CodigoNaOperadora = NULL
+                IF ConvenioID <> 0 THEN
+                    CodigoNaOperadora = NULL
 
-                'sqlCodigoNaOperador = "SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" AND (Contratado = "&session("idInTable")&" OR Contratado = "&session("UnidadeID")&"*-1) ORDER BY Contratado DESC "
-                ConvenioIDStr = ConvenioID
+                    'sqlCodigoNaOperador = "SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" AND (Contratado = "&session("idInTable")&" OR Contratado = "&session("UnidadeID")&"*-1) ORDER BY Contratado DESC "
+                    ConvenioIDStr = ConvenioID
 
-                sqlCodigoNaOperador = "SELECT * FROM contratosconvenio WHERE ConvenioID = "&treatvalnull(ConvenioIDStr)&" ORDER BY (Contratado = "&session("idInTable")&") DESC, coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) DESC "
+                    sqlCodigoNaOperador = "SELECT * FROM contratosconvenio WHERE ConvenioID = "&treatvalnull(ConvenioIDStr)&" ORDER BY (Contratado = "&session("idInTable")&") DESC, coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) DESC "
 
-                set ContratosConvenio = db.execute(sqlCodigoNaOperador)
+                    set ContratosConvenio = db.execute(sqlCodigoNaOperador)
 
-                IF NOT ContratosConvenio.eof THEN
-                    CodigoNaOperadora = ContratosConvenio("CodigoNaOperadora")
-                END IF
+                    IF NOT ContratosConvenio.eof THEN
+                        CodigoNaOperadora = ContratosConvenio("CodigoNaOperadora")
+                    END IF
 
-                IF getConfig("calculostabelas") THEN
-                    SET Valores = CalculaValorProcedimentoConvenio(null,ConvenioID,procs("ProcedimentoID"),procs("PlanoID"),CodigoNaOperadora,1,null,null)
+                    IF getConfig("calculostabelas") THEN
+                        SET Valores = CalculaValorProcedimentoConvenio(null,ConvenioID,procs("ProcedimentoID"),procs("PlanoID"),CodigoNaOperadora,1,null,null)
 
-                    if xxxCalculaValorProcedimentoConvenioNotIsNull then
-                        AssociacaoID = Valores("AssociacaoID")
+                        if xxxCalculaValorProcedimentoConvenioNotIsNull then
+                            AssociacaoID = Valores("AssociacaoID")
 
-                        ValorFinal       = (Valores("TotalGeral"))
+                            ValorFinal       = (Valores("TotalGeral"))
 
-                        CalculoContratos = (Valores("Contratos"))
-                        TotalCH = treatvalnull(Valores("TotalCH"))
-                        TotalValorFixo = treatvalnull(Valores("TotalValorFixo"))
-                        TotalUCO = treatvalnull(Valores("TotalUCO"))
-                        TotalPORTE = treatvalnull(Valores("TotalPORTE"))
-                        TotalFILME = treatvalnull(Valores("TotalFILME"))
-                        TotalGeral = treatvalnull(Valores("TotalGeral"))
-                        sqlInsert = "INSERT INTO calculos_finalizar_atendimento_log(AtendimentoID,AtendimentoProcedimentoID,ProcedimentoID, CalculoConvenioID,CalculoContratos,CalculoPlanoID,TotalCH,TotalValorFixo,TotalUCO,TotalPORTE,TotalFILME,TotalGeral)"&_
-                                    "VALUE(NULLIF('"&AtendimentoID&"',''),"&id&",NULLIF('"&ProcedimentoID&"',''),NULLIF('"&ConvenioID&"',''),NULLIF('"&CalculoContratos&"',''),NULLIF('"&PlanoID&"',''),"&TotalCH&","&TotalValorFixo&","&TotalUCO&","&TotalPORTE&","&TotalFILME&","&TotalGeral&")"
+                            CalculoContratos = (Valores("Contratos"))
+                            TotalCH = treatvalnull(Valores("TotalCH"))
+                            TotalValorFixo = treatvalnull(Valores("TotalValorFixo"))
+                            TotalUCO = treatvalnull(Valores("TotalUCO"))
+                            TotalPORTE = treatvalnull(Valores("TotalPORTE"))
+                            TotalFILME = treatvalnull(Valores("TotalFILME"))
+                            TotalGeral = treatvalnull(Valores("TotalGeral"))
+                            sqlInsert = "INSERT INTO calculos_finalizar_atendimento_log(AtendimentoID,AtendimentoProcedimentoID,ProcedimentoID, CalculoConvenioID,CalculoContratos,CalculoPlanoID,TotalCH,TotalValorFixo,TotalUCO,TotalPORTE,TotalFILME,TotalGeral)"&_
+                                        "VALUE(NULLIF('"&AtendimentoID&"',''),"&id&",NULLIF('"&ProcedimentoID&"',''),NULLIF('"&ConvenioID&"',''),NULLIF('"&CalculoContratos&"',''),NULLIF('"&PlanoID&"',''),"&TotalCH&","&TotalValorFixo&","&TotalUCO&","&TotalPORTE&","&TotalFILME&","&TotalGeral&")"
 
-                        db.execute(sqlInsert)
+                            db.execute(sqlInsert)
 
-                        ValorFinal = formatnumber(Valores("TotalGeral"), 2)
+                            ValorFinal = formatnumber(Valores("TotalGeral"), 2)
 
+                        END IF
                     END IF
                 END IF
-            END IF
 
-			Fator = procs("Fator")
-			Obs = procs("Obs")
-            SolIC = procs("SolIC")
+                Fator = procs("Fator")
+                Obs = procs("Obs")
+                SolIC = procs("SolIC")
 
-            IF getConfig("calculostabelas") = "1" and ConvenioID <> "0" THEN
-                IF ConvenioID = 0 THEN
+                IF getConfig("calculostabelas") = "1" and ConvenioID <> "0" THEN
+                    IF ConvenioID = 0 THEN
 
-                %>
-                  <!--#include file="apLinhaItem.asp"-->
-                <% END IF %>
-            <% ELSE %>
-            <!--#include file="apLinhaItem.asp"-->
-            <% END IF
-		procs.movenext
-		wend
-		procs.close
-		set procs=nothing
+                    %>
+                      <!--#include file="apLinhaItem.asp"-->
+                    <% END IF %>
+                <% ELSE %>
+                <!--#include file="apLinhaItem.asp"-->
+                <% END IF
+            procs.movenext
+            wend
+            procs.close
+            set procs=nothing
+        end if
 
             IF getConfig("calculostabelas") THEN
                 sqlAnexos =  "SELECT * FROM tissprocedimentosanexos WHERE COALESCE(AssociacaoID=('"&AssociacaoID&"'), ConvenioID = "&treatvalzero(ConvenioID)&" AND ProcedimentoPrincipalID = "&treatvalzero(ProcedimentoID)&") "

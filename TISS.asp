@@ -194,6 +194,7 @@ function completaPlano(PlanoID, ProcedimentoID)
 		else
 			%>
 			$("#ValorProcedimento").val("<%=formatnumber(pvp("Valor"),2)%>");
+			$(".valor-procedimento").html("<%=formatnumber(pvp("Valor"),2)%>");
 			<%
 		end if
 	end if
@@ -429,6 +430,7 @@ function completaProcedimentoNew(id, ConvenioID)
         $("#Fator").val("1,00");
     }
     $("#ValorProcedimento, #ValorUnitario, #ValorTotal").val("<%=formatnumber(ValorFinal, 2)%>");
+    $(".valor-procedimento").html("<%=formatnumber(ValorFinal, 2)%>");
     var $fator = $("#Fator");
     if($fator){
         $fator.trigger("change");
@@ -622,6 +624,7 @@ function completaProcedimento(id, ConvenioID)
         $("#Fator").val("1,00");
     }
     $("#ValorProcedimento, #ValorUnitario, #ValorTotal").val("<%=formatnumber(ValorProcedimento, 2)%>");
+    $(".valor-procedimento").html("<%=formatnumber(ValorProcedimento, 2)%>");
 	var $fator = $("#Fator");
 	if($fator){
 	    $fator.trigger("change");

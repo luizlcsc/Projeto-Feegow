@@ -2,6 +2,8 @@
 <!--#include file="Classes/Logs.asp"-->
 <%
 I = req("I")
+ConvenioID = ref("gConvenioID")
+PlanoID = ref("PlanoID")
 isClose = req("close")
 
 redirecionar = false
@@ -39,6 +41,28 @@ if ObrigarValidade=1 then
         erro = "É obrigatório o preenchimento da validade da carteira para este convênio."
     end if
 end if
+
+set ProcedimentosGuiaSQL = db.execute("SELECT ProcedimentoID FROM tissprocedimentossadt WHERE GuiaID="&I)
+
+while not ProcedimentosGuiaSQL.eof
+    sqlPermitido = "SELECT p.NomeProcedimento, COALESCE(tpvp.NaoCobre, tpv.NaoCobre)NaoCobre FROM tissprocedimentosvalores tpv "&_
+    "LEFT JOIN tissprocedimentosvaloresplanos tpvp ON tpvp.AssociacaoID=tpv.id AND tpvp.PlanoID="&treatvalzero(PlanoID)&" "&_
+    "LEFT JOIN procedimentos p ON p.id=tpv.ProcedimentoID "&_
+    "WHERE tpv.ProcedimentoID="&treatvalzero(ProcedimentosGuiaSQL("ProcedimentoID"))&" AND tpv.ConvenioID="&ConvenioID
+
+    set ProcedimentoPermitidoSQL = db.execute(sqlPermitido)
+
+    if not ProcedimentoPermitidoSQL.eof then
+        IF ProcedimentoPermitidoSQL("NaoCobre")="S" then
+            erro = "Procedimento "&ProcedimentoPermitidoSQL("NomeProcedimento")&" não é coberto para o convênio/plano selecionado."
+        END IF
+    end if
+
+ProcedimentosGuiaSQL.movenext
+wend
+ProcedimentosGuiaSQL.close
+set ProcedimentosGuiaSQL=nothing
+
 
 set vcaProc = db.execute("select * from tissprocedimentossadt where GuiaID="&I)
 if vcaProc.eof and (session("Banco")<>"clinic3882" and session("Banco")<>"clinic5868") then

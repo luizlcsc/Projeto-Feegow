@@ -209,7 +209,6 @@ end if
 
 <script type="text/javascript">
 
-
 function showMessage(text, state, title) {
 	var states = {
 		0: {
@@ -875,32 +874,18 @@ function removeFoto(){
 			}
 		});
 
-		$("#Foto").change(function() {
+		$("#Foto").change(async function() {
 
-            let objct = new FormData();
-            objct.append('userType','pacientes');
-            objct.append('userId',"<%=req("I")%>");
-            objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
-            objct.append('upload_file' , file_input.data('ace_input_files')[0]);
-            objct.append('folder_name' ,"Perfil");
-
-            $.ajax({
-  					url: domain + "file/perfil/uploadPerfilFile",
-  					type: 'POST',
-  					processData: false,
-  					contentType: false,
-  					data: objct,
-                  // Now you should be able to do this:
-                  mimeType: 'multipart/form-data',    //Property added in 1.5.1
-
-                  success: function (data) {
-                      getProfilePic();
-                  }
-            });
+		    await uploadProfilePic({
+		        $elem: $("#Foto"),
+		        userId: "<%=req("I")%>",
+		        db: "<%= LicenseID %>",
+		        table: 'pacientes',
+		        content: file_input.data('ace_input_files')[0] ,
+		        contentType: "form"
+		    });
 
 			if(!file_input.data('ace_input_files')) return false;//no files selected
-
-
 		});
 
 		$form.on('reset', function() {
@@ -909,36 +894,6 @@ function removeFoto(){
 
 	});
 
-
-    $(document).ready(function(){
-        let img = localStorage.getItem('profilePic');
-        if(img == null){
-           return getProfilePic();
-        }
-        return $('#avatarFoto').attr('src',localStorage.getItem('profilePic'));
-    });
-        function getProfilePic()
-        {
-
-            let objct = new FormData();
-            objct.append('userId',"<%=req("I")%>");
-            objct.append('licenca' ,"<%= replace(session("Banco"), "clinic", "") %>");
-            objct.append('folder_name' ,"Perfil");
-            $.ajax({
-                    url: domain + "api/image/perfil",
-                    type: 'POST',
-                    processData: false,
-                    contentType: false,
-                    data: objct,
-                  // Now you should be able to do this:
-                  mimeType: 'multipart/form-data',    //Property added in 1.5.1
-
-                  success: function (data) {
-                    $("#avatarFoto").attr('src',data);
-                     localStorage.setItem('profilePic',data);
-                  }
-            });
-        }
 
 
 function itemPacientesConvenios(tbn, act, reg, cln, idc, frm){
@@ -989,14 +944,16 @@ $(".form-control").change(function(){
           $(".crumb-active a").html( $(this).val() );
       });
       //novo envio de foto tirada do paciente
-    let endpointupload =  (objct) => {
-        return  jQuery.ajax({
-            url: "http://localhost:8000/file/perfil/uploadPerfilFile",
-            type: 'post',
-            dataType: 'json',
-            data: JSON.stringify(objct),
-
-        }).fail(function(data){console.log(data);});
+    let endpointupload =  async (objct) => {
+        await uploadProfilePic({
+            $elem: $("#Foto"),
+            userId: "<%=req("I")%>",
+            db:"<%= LicenseID %>",
+            table:'pacientes',
+            content: objct ,
+            contentType: "base64",
+            elem:$('#divDisplayFoto img')
+        });
     };
 
 
@@ -1159,7 +1116,7 @@ if not memed.eof then
     }
 </script>
 <% end if %>
-
+<script src="src/imageUtil.js"></script>
 <script>
 <% IF req("ToArea")<>"" THEN %>
     $(".<%=req("ToArea")%>").click();

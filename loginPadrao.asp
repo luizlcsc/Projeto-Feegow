@@ -18,7 +18,7 @@ masterLoginErro = false
 <%
 
 if masterLogin then
-    sqlLogin = "SELECT u.*, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom "&_
+    sqlLogin = "SELECT u.*, l.ExibeChatAtendimento, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom "&_
     " FROM licencasusuarios AS u "&_
     " LEFT JOIN licencas AS l ON l.id='"&tryLoginMaster("licencaId")&"'"&_
     " WHERE u.id='"&userMasterID&"' "
@@ -28,7 +28,7 @@ else
         sqlMaster = " 1=1 and u.LicencaID<>5459 "
         permiteMasterLogin = True
     end if
-	sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&User&"' and (Senha=('"&ref("Password")&"') or ("&sqlMaster&")  )"
+	sqlLogin = "select u.*, l.ExibeChatAtendimento, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&User&"' and (Senha=('"&ref("Password")&"') or ("&sqlMaster&")  )"
 end if
 
 
@@ -36,20 +36,35 @@ set tryLogin = dbc.execute(sqlLogin)
 if not tryLogin.EOF then
     UsuariosContratadosNS = tryLogin("UsuariosContratadosNS")
     UsuariosContratadosS = tryLogin("UsuariosContratados")
+    Versao = tryLogin("Versao")
     ServidorAplicacao = tryLogin("ServidorAplicacao")
     PastaAplicacao = tryLogin("PastaAplicacao")
+    PastaAplicacaoRedirect = PastaAplicacao
+
+    if isnull(PastaAplicacaoRedirect) then
+        PastaAplicacaoRedirect="v7-master"
+    end if
+
     Servidor = tryLogin("Servidor")&""
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
+    ExibeChatAtendimento = tryLogin("ExibeChatAtendimento")
+
+    ClienteUnimed = instr(Cupom, "UNIMED") > 0
+    if ClienteUnimed then
+        ExibeChatAtendimento=False
+    end if
+
+    session("ExibeChatAtendimento") = ExibeChatAtendimento
 
     if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
-            Response.Redirect("https://"&ServidorAplicacao&"/v7/?P=Login&U="&User)
+            Response.Redirect("https://"&ServidorAplicacao&"/"&PastaAplicacaoRedirect&"/?P=Login&U="&User)
         end if
     end if
 
     if Servidor="aws" then
-        response.redirect("http://clinic7.feegow.com.br/v7")
+        response.redirect("http://clinic7.feegow.com.br/"&PastaAplicacaoRedirect)
     end if
 
     if Servidor="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
@@ -94,7 +109,7 @@ if not tryLogin.EOF then
             if Session("Deslogar_user")<>"" then
                 forcar_login = Session("Deslogar_user")
             end if
-
+            
 			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login  then
                 deslogarUsuario = true
 				erro = "Este usuário já está conectado em outra máquina."
@@ -166,20 +181,25 @@ if not tryLogin.EOF then
                             if(preventClick) return;
                             preventClick = true;
 
-                            $("#Deslogar").attr("style", "opacity: 0.5");
-                            $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
-                            $.post('DeslogarUsuario.asp');
-                            $("#password").hide();
-                            $(".textoTituloInput").hide();
-                            $("#deslogar-container").append("<p style='text-align: center' id='deslogarTexto'>Aguarde alguns instantes ...</p>");
-                            setTimeout(() => {
-                                $("form").submit();
-                            }, 20000);
+                            if($("#password").val() !== ""){
+                                $("#Deslogar").attr("style", "opacity: 0.5");
+                                $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
+                                $.post('DeslogarUsuario.asp');
+                                $("#password").hide();
+                                $(".textoTituloInput").hide();
+                                $("#deslogar-container").append("<p style='text-align: center' id='deslogarTexto'>Aguarde alguns instantes ...</p>");
+                                setTimeout(() => {
+                                    $("form").submit();
+                                }, 20000);
+                            }else{
+                                showMessageDialog("Preencha a senha");
+                            }
+
                         });
                     });
                 </script>
             <%
-
+            
         else
             %>
                 <script>
@@ -187,7 +207,7 @@ if not tryLogin.EOF then
                 </script>
             <%
         end if
-
+		
 	else
 		session("Banco")="clinic"&tryLogin("LicencaID")
 		session("Admin")=tryLogin("Admin")
@@ -197,6 +217,14 @@ if not tryLogin.EOF then
 		session("Status")=tryLogin("Status")
 		session("AlterarSenha")=tryLogin("AlterarSenhaAoLogin")
         session("Servidor") = Servidor&""
+
+        session("UsuariosContratadosS") = UsuariosContratadosS
+        set ClienteSQL = dbc.execute("SELECT COALESCE(l.NomeEmpresa, l.NomeContato)RazaoSocial FROM cliniccentral.licencas l WHERE l.id="&tryLogin("LicencaID"))
+        if not ClienteSQL.eof then
+            RazaoSocial = ClienteSQL("RazaoSocial")
+        end if
+
+        session("RazaoSocial") = RazaoSocial
 
 		if ref("password")=MasterPwd then
 			session("MasterPwd") = "S"
@@ -273,6 +301,7 @@ if not tryLogin.EOF then
 		session("idInTable")=sysUser("idInTable")
 		session("Table") = lcase(sysUser("Table"))
         session("SepararPacientes") = config("SepararPacientes")
+        session("Email") = tryLogin("Email")
         'session("AutoConsolidar") = config("AutoConsolidar") &""
 
 
@@ -293,18 +322,11 @@ if not tryLogin.EOF then
 			end if
 		end if
 
-		if UnidadeID=0 then
-            if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then
-            	UnidadeID = sysUser("UnidadeID")
-			end if
-
-			if ubound(qtdUnidadesArray) > 0 then
-                UnidadeID= replace(qtdUnidadesArray(0), "|","")
-			else
-				if session("Unidades")&"" <> "" then
-                	UnidadeID= replace(session("Unidades"), "|","")
-				end if
-			end if
+        'pega a ultima unidade definida
+        if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 and not UnidadeDefinida then
+            UnidadeID = sysUser("UnidadeID")
+            UnidadeDefinida = True
+            UnidadeMotivoDefinicao = "Última unidade do usuário"
         end if
 
         'seta a unidade de acordo com a que o usuario tem permissa
@@ -338,10 +360,9 @@ if not tryLogin.EOF then
 
 			if not gradeHoje.EOF then
 				if not isnull(gradeHoje("UnidadeID")) then
-
 					if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then 
-						  UnidadeID = gradeHoje("UnidadeID")
-              UnidadeMotivoDefinicao = "Unidade da Grade do profissional"
+						UnidadeID = gradeHoje("UnidadeID")
+                        UnidadeMotivoDefinicao = "Unidade da Grade do profissional"
 					end if
 				end if
 			end if
@@ -407,6 +428,19 @@ if not tryLogin.EOF then
             FieldTelemedicina=" '' "
         end if
 
+        IF session("ModoFranquia") THEN
+            strOrdem = "Padrao"
+            IF lcase(session("Table"))="funcionarios" THEN
+                strOrdem = "PadraoFuncionario"
+            END IF
+
+            set ResultPermissoes = db.execute("SELECT Permissoes FROM usuarios_regras JOIN regraspermissoes ON regraspermissoes.id = usuarios_regras.regra WHERE usuario = "&sysUser("id")&" AND unidade = "&session("UnidadeID")&" or "&strOrdem&" = 1 ORDER BY "&strOrdem&" ")
+
+            IF NOT ResultPermissoes.EOF THEN
+                session("Permissoes") = ResultPermissoes("Permissoes")
+            END IF
+        END IF
+
         set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, "&FieldTelemedicina&" ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
         if not AtendimentosProf.eof then
             ProcedimentoTelemedicina=AtendimentosProf("ProcedimentoTelemedicina")
@@ -435,7 +469,7 @@ if not tryLogin.EOF then
 				    licencas = licencas & ","
 				end if
 				licencas = licencas & "|"&tryLogin("LicencaID")&"|"
-                if tryLogin("Versao")=7 then
+                if Versao=7 then
     				urlRedir = "./?P=Home&Pers=1"
                 else
                     urlRedir = "./../?P=Home&Pers=1"
@@ -444,7 +478,7 @@ if not tryLogin.EOF then
                     urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
                 end if
             else
-                if tryLogin("Versao")=7 then
+                if Versao=7 then
                     urlRedir = "./?P=Home&Pers=1"
                 else
                     urlRedir = "./../?P=Home&Pers=1"
@@ -486,13 +520,9 @@ if not tryLogin.EOF then
             end if
         end if
 
-        IF PastaAplicacao <> "" THEN
+        IF PastaAplicacao <> "" and Versao&""="7" and AppEnv="production" THEN
             urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")
         END IF
-
-        if Cupom="GSC" then
-            urlRedir = replace(urlRedir, "./", "/v7.1/")
-        end if
 
         QueryStringParameters = Request.Form("qs")
 

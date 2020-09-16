@@ -21,8 +21,10 @@ if not EnviosSQL.eof then
     <tbody>
     <%
     while not EnviosSQL.eof
+        'Com agora está retornando uma string no formato json e verificando na posição 11 o conteudo 200 para ver se foi enviado o e-mail.
+        statusEnviado = instr(EnviosSQL("StatusEnvio"), "200")
 
-        if EnviosSQL("Enviado") and EnviosSQL("NumeroAgendamentos")>0 and EnviosSQL("StatusEnvio")&""="202"  then
+        if EnviosSQL("Enviado") and EnviosSQL("NumeroAgendamentos")>0 and (EnviosSQL("StatusEnvio")&""="202" or statusEnviado = 11)  then
             strStatus="Enviado"
             classeStatus="success"
         elseif EnviosSQL("Enviado") and EnviosSQL("NumeroAgendamentos")>0 and EnviosSQL("StatusEnvio")&""<>"202" then

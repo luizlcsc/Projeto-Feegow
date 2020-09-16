@@ -47,6 +47,13 @@ if ref("Solicitante")<>"" and instr(ref("Solicitante"), "_")>0 then
     sqlSolicitante = " AND t.Solicitantes LIKE '%"& ref("Solicitante") &"%' "
 end if
 
+if ref("CategoriaID")<>"" and ref("CategoriaID")<>"0" then
+    sqlCategoria = " AND t.CategoriaID="& ref("CategoriaID") &" "
+elseif ref("CategoriaID")="0" then
+    sqlCategoria = " AND (t.CategoriaID="& ref("CategoriaID") &" OR ISNULL(CategoriaID)) "
+end if
+
+
 if ref("Filtrar")<>"" then
     sqlFiltrar = " AND (t.id = '"&ref("Filtrar")&"' OR t.Titulo LIKE '%"& ref("Filtrar") &"%' OR t.ta LIKE '%"& ref("Filtrar") &"%') "
 end if
@@ -121,9 +128,9 @@ end if
                    "LEFT JOIN projetos proj ON proj.id = t.ProjetoID LEFT JOIN cliniccentral.tarefasprioridade tp on tp.id = t.urgencia "&_
                    "LEFT JOIN tarefastipos tt on tt.id = t.Tipo "&_
                    "LEFT JOIN pacientes p ON t.Solicitantes LIKE CONCAT('%3_',p.id,'%') "&_
-                   "WHERE t.sysActive=1 AND t.TarefaPaiID=0 AND ( 1=1 "& sqlCC &" ) " & sqlDe & sqlPara & sqlStatusDe & sqlStatusPara & sqlAberturaDe & sqlAberturaAte & sqlPrazoDe & sqlPrazoAte & sqlPrioridade & sqlTipoTarefa & sqlSolicitante & sqlResponsavel & sqlFiltrar & sqlProjeto & sqlLicencaPaciente &" "&_
+                   "WHERE t.sysActive=1 AND (t.TarefaPaiID=0 OR t.TarefaPaiID IS NULL) AND ( 1=1 "& sqlCC &" ) " & sqlDe & sqlPara & sqlStatusDe & sqlStatusPara & sqlAberturaDe & sqlAberturaAte & sqlPrazoDe & sqlPrazoAte & sqlPrioridade & sqlTipoTarefa & sqlSolicitante & sqlResponsavel & sqlFiltrar & sqlProjeto & sqlLicencaPaciente & sqlCategoria &" "&_
                    "GROUP BY t.id ORDER BY Pontos desc, t.DtPrazo, t.HrPrazo LIMIT 1000"
-
+                   'dd(sqlLista)
         if ref("Helpdesk") <> "" then
 'dd(sqlLista)
             set lista = dblicense.execute(sqlLista)

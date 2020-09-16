@@ -73,22 +73,24 @@
             end if
 
             if ref("AbaixoMinimo")="S" then
-                sqlAbaixo = " AND (if(EstoqueMinimoTipo='U',((select sum(ep.Quantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='U' group by ep.ProdutoID)+ "&_
-                            " (select sum(ep.Quantidade*pro.ApresentacaoQuantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID)<EstoqueMinimo), "&_
-                            " (select sum(ep.Quantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID)<EstoqueMinimo) )"
+                sqlAbaixo = " AND (if(EstoqueMinimoTipo='U',((select sum(ep.Quantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='U' group by ep.ProdutoID)+  IFNULL((select sum(ep.Quantidade*pro.ApresentacaoQuantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID),0) < EstoqueMinimo),  (select sum(ep.Quantidade) from estoqueposicao ep where ep.ProdutoID = pro.id and ep.TipoUnidade='C' group by ep.ProdutoID) < EstoqueMinimo) )"
+
             elseif ref("AbaixoMinimo")="N" then 
                 sqlAbaixo = " AND ( (posicaoConjunto>=EstoqueMinimo) OR ( (posicaoUnidade+(posicaoConjunto*ApresentacaoQuantidade)) > EstoqueMinimo) )"
             end if
 '(select Validade from estoqueposicao where ProdutoID=pro.id AND Validade<now() ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1)
-            sqlstring = ("SELECT pro.*, estpos.id PosicaoID, procat.NomeCategoria, profab.NomeFabricante, (select Validade from estoqueposicao where ProdutoID=pro.id AND Validade < now() AND Quantidade > 0 ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1) Validade , proloc.NomeLocalizacao, "&_
-            "(SELECT ifnull(DiasVencimentoProduto, 5) DiasVencimentoProduto FROM sys_config LIMIT 1) DiasAvisoValidadeGeral "&_
+            sqlstring = ("SELECT pro.*, (select Validade from estoqueposicao where ProdutoID=pro.id AND Validade < now() AND Quantidade > 0 ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1) Validade, "&_
+             "(SELECT ifnull(DiasVencimentoProduto, 5) DiasVencimentoProduto FROM sys_config LIMIT 1) DiasAvisoValidadeGeral FROM ("&_
+            " SELECT pro.*, estpos.id PosicaoID, procat.NomeCategoria, profab.NomeFabricante,proloc.NomeLocalizacao "&_
             "FROM produtos pro "&_
             "LEFT JOIN produtoscategorias procat ON procat.id=pro.CategoriaID "&_
             "LEFT JOIN produtosfabricantes profab ON profab.id=pro.FabricanteID "&_
             "LEFT JOIN produtoslocalizacoes proloc ON proloc.id=pro.LocalizacaoID "&_
             "LEFT JOIN estoqueposicao estpos ON estpos.ProdutoID=pro.id "&_
-            "WHERE pro.sysActive = 1 "& sqlsomentePraVencer & sqlProd & sqlTipoProduto & sqlPrincipioAtivo & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem)
-            'response.write("<pre>"&sqlstring&"</pre>")
+            "WHERE pro.sysActive = 1 "& sqlsomentePraVencer & sqlProd & sqlTipoProduto & sqlPrincipioAtivo & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem &""&_
+            ") pro")
+
+
             set prod = db.execute(sqlstring)
             while not prod.EOF
                 Validade = prod("Validade")

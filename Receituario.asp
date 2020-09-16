@@ -4,7 +4,10 @@ response.Charset="utf-8"
 %>
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/TagsConverte.asp"-->
+<%
+set reg=db.execute("select * from PacientesPrescricoes where id="&request.QueryString("PrescricaoID"))
 
+%>
 		<link type="text/css" rel="stylesheet" href="assets/js/qtip/jquery.qtip.css" />
 		<link rel="shortcut icon" href="icon_clinic.png" type="image/x-icon" />
 		<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
@@ -27,8 +30,7 @@ response.Charset="utf-8"
         set getImpressos = db.execute("select * from Impressos")
         MarcaDagua = ""
         if not getImpressos.EOF then
-            'Cabecalho = getImpressos("Cabecalho")
-            Cabecalho = replaceTags(getImpressos("Cabecalho"), 0, session("UserID"), session("UnidadeID"))
+            Cabecalho = getImpressos("Cabecalho")
 
             Rodape = replaceTags(getImpressos("Rodape"), 0, session("UserID"), session("UnidadeID"))
 
@@ -42,9 +44,8 @@ response.Charset="utf-8"
                 'if timb("MarcaDagua")<>"" or not isnull(timb("MarcaDagua"))  then
                     MarcaDagua = "background-image: url('https://clinic.feegow.com.br/uploads/"&replace(session("Banco"), "clinic", "")&"/Arquivos/"&timb("MarcaDagua")&"')"
                 end if
-                Cabecalho = replaceTags(timb("Cabecalho"), 0, session("UserID"), session("UnidadeID"))
-
-                Rodape = replaceTags(timb("Rodape"), 0, session("UserID"), session("UnidadeID"))
+                Cabecalho = timb("Cabecalho")
+                Rodape = timb("Rodape")
 
                     if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
                     if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
@@ -55,8 +56,8 @@ response.Charset="utf-8"
             if lcase(session("table"))="profissionais" then
                 set timb = db.execute("select pt.*, ff.`font-family` from papeltimbrado pt LEFT JOIN cliniccentral.`font-family` ff ON ff.id=pt.`font-family` where pt.sysActive=1 AND pt.profissionais like '%|"&session("idInTable")&"|%' AND (UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&Unidade&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0)")
                 if not timb.eof then
-                    Cabecalho = replaceTags(timb("Cabecalho"), 0, session("UserID"), session("UnidadeID"))
-                    Rodape = replaceTags(timb("Rodape"), 0, session("UserID"), session("UnidadeID"))
+                    Cabecalho = timb("Cabecalho")
+                    Rodape = timb("Rodape")
 
                     if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
                     if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
@@ -66,6 +67,9 @@ response.Charset="utf-8"
                 end if
             end if
         end if
+
+        Cabecalho= tagsConverte(Cabecalho,"PacienteID_"&reg("PacienteID"),"")
+        Rodape= tagsConverte(Rodape,"PacienteID_"&reg("PacienteID"),"")
 %>
 <style>
 #areaImpressao .corpoPrescricao td, #areaImpressao .corpoCarimbo td{
@@ -127,7 +131,6 @@ body{
         </div>
         <div id="areaImpressao">
         <%
-        set reg=db.execute("select * from PacientesPrescricoes where id="&request.QueryString("PrescricaoID"))
         if not reg.EOF then
             set user = db.execute("select * from sys_users where id="&session("User"))
             if not user.EOF then

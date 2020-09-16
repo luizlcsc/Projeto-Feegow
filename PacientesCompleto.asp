@@ -575,6 +575,17 @@ $("#Ativo").click(function(){
     }
 });
 
+<%
+if reg("sysActive") = 1 and lcase(session("Table"))="profissionais" and getConfig("FormularioNaTimeline") then
+        %>
+        $(document).ready(function () {
+            $("#abaTimeline").click();
+        });
+    <%
+end if
+%>
+
+
 <!--#include file="JQueryFunctions.asp"-->
 
 
@@ -648,10 +659,13 @@ if getConfig("LembreteFormulario")=1 then
                             end if
                         next
                     elseif Campo("TipoCampoID")=5 or Campo("TipoCampoID")=6 then
-                        set ValOp = db.execute("select * from buiopcoescampos where id = '"&replace( Registro(""&Campo("id")&"") , "|", "")&"'")
-                        Valor = ValOp("Nome")
+                        RegistroValor = Registro(""&Campo("id")&"")
+                        set ValOp = db.execute("select * from buiopcoescampos where id = '"&replace(valor , "|", "")&"'")
+                        if not ValOp.eof then
+                            Valor = ValOp("Nome")
+                        end if
                     else
-                        Valor = Registro(""&Campo("id")&"")
+                        'Valor = Registro(""&Campo("id")&"")
                     end if
                     %>
                     new PNotify({

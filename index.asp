@@ -22,6 +22,10 @@ if session("User")="" and request.QueryString("P")<>"Login" and request.QueryStr
 	response.Redirect("./?P=Login&qs="&Server.URLEncode(QueryStringParameters))
 end if
 
+set shellExec = createobject("WScript.Shell")
+Set objSystemVariables = shellExec.Environment("SYSTEM")
+AppEnv = objSystemVariables("FC_APP_ENV")
+
 if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
 	if request.QueryString("P")<>"Home" and session("Bloqueado")<>"" then
 		response.Redirect("./?P=Home&Pers=1")
@@ -223,12 +227,12 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?a=31"></script>
+  <script src="js/components.js?a=40"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
-<%if aut("capptaI") then%>
+    <%if aut("capptaI") then%>
     <script src="assets/js/feegow-cappta.js"></script>
-  <%end if%>
+    <%end if%>
 
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.full.min.js"></script>
   <%
@@ -325,6 +329,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                     }
                     return true;
                 }
+
+
 
                 function showNoResults() {
                     "use strict";
@@ -565,7 +571,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 					if session("Logo")="" then
 						Logo = "https://cdn.feegow.com/feegowclinic-v7/assets/img/logo_white.png"
 					else
-						Logo = "/logo/"&session("Logo")
+						Logo = "https://cdn.feegow.com/logos/"&session("Logo")
 					end if
 					%>
           <img class="logol" src="<%=Logo %>" height="32" />
@@ -774,13 +780,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
             <span class="caret caret-tp hidden-xs hidden-sm hidden-md"></span>
           </a>
           <ul class="dropdown-menu list-group dropdown-persist w250" role="menu" style="overflow-y: auto; max-height: 500px">
-
-
-
-
-
-
-
                             <%
 							if session("Partner")="" then
 							%>
@@ -823,10 +822,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                  if session("Admin")=1 then
 
                                  IF session("QuantidadeFaturasAbertas") = "" THEN
-                                    set shellExec = createobject("WScript.Shell")
-                                    Set objSystemVariables = shellExec.Environment("SYSTEM")
-                                    AppEnv = objSystemVariables("APP_ENV")
-
                                     if AppEnv="production" then
 
 								 %>
@@ -2563,6 +2558,60 @@ function chatNotificacao(titulo, mensagem) {
 }
 
 </script>
+<%
+PermiteChat = True
+if session("ExibeChatAtendimento")=False or AppEnv<>"production"  or req("P")="Login" then
+    PermiteChat= False
+end if
+
+
+if PermiteChat then
+%>
+<script>
+  <%
+  StatusLicenca = session("Status")
+
+  if StatusLicenca="C" then
+    StatusLicenca="Contratado"
+  elseif StatusLicenca="T" then
+    StatusLicenca="Avaliação"
+  elseif StatusLicenca="F" then
+    StatusLicenca="Free"
+  end if
+  %>
+  function initFreshChat() {
+    window.fcWidget.init({
+      token: "e1b3be37-181a-4a60-b341-49f3a7577268",
+      host: "https://wchat.freshchat.com"
+    });
+
+    // To set unique user id in your system when it is available
+    window.fcWidget.setExternalId("<%=session("User")%>");
+
+    // To set user name
+    window.fcWidget.user.setFirstName("<%=session("NameUser")%>");
+    window.fcWidget.user.setEmail("<%=session("Email")%>");
+
+
+    // To set user properties
+    window.fcWidget.user.setProperties({
+      admin: "<% if session("Admin")=1 then response.write("Sim") else response.write("Não") end if %>",
+      nomeUnidade: "<%=session("NomeEmpresa")%>",
+      tipoUsuario: "<%=lcase(Session("Table"))%>",
+      licencaID: "<%=LicenseID%>",
+      numeroUsuarios: "<%=session("UsuariosContratadosS")%>",
+      razaoSocial: "<%=session("RazaoSocial")%>",
+      statusLicenca: "<%=StatusLicenca%>",
+    });
+
+  }
+  // Copy the below lines under window.fcWidget.init inside initFreshChat function in the above snippet
+
+  function initialize(i,t){var e;i.getElementById(t)?initFreshChat():((e=i.createElement("script")).id=t,e.async=!0,e.src="https://wchat.freshchat.com/js/widget.js",e.onload=initFreshChat,i.head.appendChild(e))}function initiateCall(){initialize(document,"freshchat-js-sdk")}window.addEventListener?window.addEventListener("load",initiateCall,!1):window.attachEvent("load",initiateCall,!1);
+</script>
+<%
+end if
+%>
 <% IF (session("Admin")="1") and (req("P")="Home") THEN %>
 <script src="assets/js/whatsApp/whatsAppStatus.js"></script>
 <% END IF %>

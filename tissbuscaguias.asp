@@ -746,9 +746,11 @@ end if
 
 
 function correcaoValoresProcedimentos(self, guiaId, valorTotalCheck, tabela) {
+    var valor = document.getElementById('ValorPago'+guiaId).value;
     if(valorTotalCheck != self.value){
         document.getElementById('procedimentos_button_'+guiaId).style.display = "flex"
-        openComponentsModal("ProcedimentosListagemCorrecao.asp", {guiaId: guiaId, tabela: tabela}, "Procedimentos", true);
+
+        openComponentsModal("ProcedimentosListagemCorrecao.asp", {guiaId: guiaId, tabela: tabela, valor: valor }, "Procedimentos", true);
     }
 }
 

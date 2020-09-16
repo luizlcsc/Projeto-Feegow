@@ -22,7 +22,7 @@
 							session("Table") = "licencasusuariosmulti"
 							session("Partner")=req("Partner")
 ' "clinic"&tryLogin("LicencaAtual")
-                            				set dbProvi = newConnection(clinic"&tryLogin("LicencaAtual"), Servidor)
+                            				set dbProvi = newConnection("clinic"&tryLogin("LicencaAtual"), Servidor)
 
 							set getUnidades = dbProvi.execute("select group_concat('|', id, '|') Unidades from sys_financialcompanyunits")
 							session("Unidades") = "|0|" & getUnidades("Unidades")

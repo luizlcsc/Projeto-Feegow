@@ -1,7 +1,9 @@
-<!--#include file="Classes/Connection.asp"--><%
-if request.ServerVariables("REMOTE_ADDR")<>"::1" then
+<!--#include file="Classes/Connection.asp"--><!--#include file="Classes/IPUtil.asp"--><%
+if IP<>"::1" then
    'on error resume next
 end if
+
+IP = getUserIp() 
 
 set shellExec = createobject("WScript.Shell")
 Set objSystemVariables = shellExec.Environment("SYSTEM")
@@ -80,8 +82,8 @@ if not tryLogin.EOF then
     'end if
 		'response.Write("if "&tryLogin("Cliente")&"=0 and "&formatdatetime(tryLogin("DataHora"),2)&" < "&dateadd("d", -15, date())&" then")
 	IPsAcesso = tryLogin("IPsAcesso")
-	if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, request.ServerVariables("REMOTE_ADDR"))=0 and tryLogin("Admin")=0 then
-		erro = "ACESSO NÃO AUTORIZADO: Para acessar o sistema deste local, solicite ao administrador a liberação do IP "&request.ServerVariables("REMOTE_ADDR")
+	if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 then
+		erro = "ACESSO NÃO AUTORIZADO: Para acessar o sistema deste local, solicite ao administrador a liberação do IP "&IP
 	end if
 	if not isnull(tryLogin("FimTeste")) then
 		if cdate(formatdatetime(tryLogin("FimTeste"),2))<cdate(date()) and tryLogin("Status")<>"C" and tryLogin("Status")<>"I" and tryLogin("Status")<>"B" then
@@ -414,7 +416,7 @@ if not tryLogin.EOF then
 		outrosUsers.close
 		set outrosUsers=nothing
 		if not permiteMasterLogin then
-			dbc.execute("insert into licencaslogins (LicencaID, UserID, IP, Agente) values ("&tryLogin("LicencaID")&", "&tryLogin("id")&", '"&request.ServerVariables("REMOTE_ADDR")&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
+			dbc.execute("insert into licencaslogins (LicencaID, UserID, IP, Agente) values ("&tryLogin("LicencaID")&", "&tryLogin("id")&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
 		end if
 
 		db_execute("update atendimentos set HoraFim=( select time(UltRef) from sys_users where id="&session("User")&" ) where isnull(HoraFim) and Data<>'"&myDate(date())&"' and sysUser="&session("User")&" order by id desc limit 1")
@@ -538,7 +540,7 @@ else
 
     if not licenca.eof then
 '                                if licenca("Bloqueado") = 0 then
-            dbc.execute("insert into licencaslogins (Sucesso, LicencaID, UserID, IP, Agente) values (0,"&licenca("LicencaID")&", "&licenca("id")&", '"&request.ServerVariables("REMOTE_ADDR")&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
+            dbc.execute("insert into licencaslogins (Sucesso, LicencaID, UserID, IP, Agente) values (0,"&licenca("LicencaID")&", "&licenca("id")&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
 
 '                                    set tentativasLogin = dbc.execute("SELECT IF(COUNT(Sucesso > 0), 0,1)Bloquear FROM (SELECT Sucesso FROM licencaslogins WHERE LicencaID = "&licenca("LicencaID")&" AND UserID = "&licenca("id")&" AND DataHora LIKE CONCAT(CURDATE(),'%') ORDER BY DataHora DESC LIMIT 10) t WHERE t.Sucesso = 1")
 
@@ -551,7 +553,7 @@ else
             <%
 '                                end if
     else
-        dbc.execute("insert into licencaslogins (Sucesso, Email, LicencaID, UserID, IP, Agente) values (0,'"&User&"',NULL, NULL, '"&request.ServerVariables("REMOTE_ADDR")&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
+        dbc.execute("insert into licencaslogins (Sucesso, Email, LicencaID, UserID, IP, Agente) values (0,'"&User&"',NULL, NULL, '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
     end if
 
 	If masterLoginErro Then

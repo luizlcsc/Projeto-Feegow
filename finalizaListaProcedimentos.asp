@@ -91,7 +91,7 @@ while not proc.eof
         ProcedimentoID = proc("id")
 
         UnidadeID=0
-        set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&LocalID)
+        set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id='"&LocalID&"'")
         if not LocalSQL.eof then
             UnidadeID=LocalSQL("UnidadeID")
         end if

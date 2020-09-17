@@ -5,6 +5,7 @@ TipoLancto = req("T")
 ItemInvoiceID = req("ItemInvoiceID")
 ProdutoInvoiceID = req("ProdutoInvoiceID")
 AtendimentoID = req("AtendimentoID")
+Motivo = req("Motivo")
 Quantidade = 1
 if ItemInvoiceID="undefined" then
     ItemInvoiceID = ""
@@ -71,6 +72,9 @@ end if
 </div>
 <div class="modal-body">
 <form id="EstoqueLancamento" name="EstoqueLancamento" method="post">
+<div class="alert alert-danger" id="notifyy" role="alert">
+
+</div>
 <%
 'if ItemInvoiceID<>"" then
  '    set ii = db.execute("select ValorUnitario, Quantidade, Executado, Desconto, Acrescimo from itensinvoice where id="& ItemInvoiceID)
@@ -105,6 +109,7 @@ end if
             <label><input class="ace" type="radio" name="UnidadePagto" value="C" required<%if UnidadePagto="C" then%> checked<%end if%>><span class="lbl"> Por <%=lcase(ApresentacaoNome)%> com <%=formatnumber(ApresentacaoQuantidade,2)%>&nbsp;<%=lcase(NomeUnidade)%></span></label><br>
             <label><input class="ace" type="radio" name="UnidadePagto" value="U" required<%if UnidadePagto="U" then%> checked<%end if%>><span class="lbl"> Por <%=lcase(QuantidadeNoConjunto)%> <%=NomeUnidade%></span></label>
         </div>
+
     </div>
 
 
@@ -147,7 +152,9 @@ end if
             <%=quickField("datepicker", "Validade", "Validade", 3, "", "", "", "")%>
             <%
                 call quickfield("text", "CBID", "Código Individual", 3, "", "", "", "")
+
             %>
+            <%= quickfield("simpleSelect", "Motivo", "Motivo", 4, "", "SELECT * FROM cliniccentral.estoque_fluxo where tipo='entrada' and sysActive = 1 order by id ASC", "Motivo", "required") %>
         </div>
 		<%
     else
@@ -186,15 +193,14 @@ end if
             <%
         else
             %>
-            <div class="row">
                 <div class="col-md-3">
                     <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
                 </div>
-            </div>
             <%
         end if
-    end if
-    %>
+        %>
+        <%= quickfield("simpleSelect", "Motivo", "Motivo", 4, "", "SELECT * FROM cliniccentral.estoque_fluxo WHERE tipo='saida' AND sysActive=1 ORDER BY id ASC", "Motivo", "required") %>
+   <% end if %>
 
         <div class="row">
 			<%=quickField("memo", "Observacoes", "Observa&ccedil;&otilde;es", 12, "", "", "", "")%>
@@ -263,18 +269,53 @@ function changeLancar(value){
        	});
     }
 }
-
+ $("#notifyy").hide();
 $("#lancar").click(function(){
-	$.ajax({
-		type:"POST",
-		url:"saveEstoqueLancamento.asp?P=<%=P%>&T=<%=TipoLancto%>&PosicaoID=<%=PosicaoID%>&ItemInvoiceID=<%=ItemInvoiceID%>&ProdutoInvoiceID=<%=ProdutoInvoiceID%>&AtendimentoID=<%=AtendimentoID%>",
-		data:$("#EstoqueLancamento").serialize(),
-		success: function(data){
-			eval(data);
-		}
-	});
-});
+    if(verificaCampoVazio() === true){
+         $("#notifyy").show();
+         return false
+    }
 
+        $.ajax({
+            type:"POST",
+            url:"saveEstoqueLancamento.asp?P=<%=P%>&T=<%=TipoLancto%>&PosicaoID=<%=PosicaoID%>&ItemInvoiceID=<%=ItemInvoiceID%>&ProdutoInvoiceID=<%=ProdutoInvoiceID%>&AtendimentoID=<%=AtendimentoID%>&Motivo=<%=Motivo%>",
+            data:$("#EstoqueLancamento").serialize(),
+            success: function(data){
+                eval(data);
+            }
+        });
+
+});
+function verificaCampoVazio()
+{
+        $("#notifyy").html();
+        let erro = false;
+        let motivo = $("#EstoqueLancamento #Motivo").val();
+        let FornecedorID = $("#FornecedorID").val();
+        let Responsavel = $("#Responsavel").val();
+        if(motivo == 0)
+        {
+            erro = true;
+            //$("#notifyy").show();
+            $("#notifyy").append("<p>Preencha o campo <b>Motivo</b></p>")
+            //return false
+        }
+        if(FornecedorID == 0 || FornecedorID == "")
+        {
+            erro = true;
+                //$("#notifyy").show();
+                $("#notifyy").append("<p>Preencha o campo <b>Fornecedor</b></p>")
+                //return false
+        }
+        if(Responsavel == 0 || Responsavel == "")
+            {
+                erro = true;
+                    //$("#notifyy").show();
+                    $("#notifyy").append("<p>Preencha o campo <b>Reponsavel</b></p>")
+                    //return false
+            }
+       return erro;
+}
 <%
 if AtendimentoID<>"" or ItemInvoiceID<>"" or ProdutoInvoiceID<>"" then
     %>

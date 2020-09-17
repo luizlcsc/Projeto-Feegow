@@ -69,8 +69,8 @@ if not tryLogin.EOF then
         response.redirect("http://clinic7.feegow.com.br/"&PastaAplicacaoRedirect)
     end if
 
-    if Servidor="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
-        ' erro = "Prezado cliente, foi necessário reiniciar os servidores devido a uma atualização emergencial de sistema operacional. Por favor aguarde alguns minutos."
+    if Servidor="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" or Servidor="dbfeegow02.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
+         erro = "Prezado cliente, estamos passando por uma instabilidade nos serviços. Tente novamente mais tarde."
     end if
 
 	if erro="" then

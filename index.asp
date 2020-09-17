@@ -1341,7 +1341,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
                             <% IF (session("Admin")="1") and (req("P")="Home") THEN
-                                if recursoAdicional(31)=4 then
+                                TemRecursoWhatsApp= recursoAdicional(31)=4
+                                if TemRecursoWhatsApp then
                             %>
                             <script>localStorage.setItem("Admin",true);</script>
                             <button class="btn btn-xs btn-success light" id="footer-whats" onclick="location.href='?P=OutrasConfiguracoes&Pers=1&whatsApp=true'"  data-rel="tooltip" data-placement="right" title="" data-original-title="" >
@@ -2616,6 +2617,6 @@ if PermiteChat then
 <%
 end if
 %>
-<% IF (session("Admin")="1") and (req("P")="Home") THEN %>
+<% IF (session("Admin")="1") and (req("P")="Home") and TemRecursoWhatsApp THEN %>
 <script src="assets/js/whatsApp/whatsAppStatus.js"></script>
 <% END IF %>

@@ -22,7 +22,7 @@ set atenSQL = db.execute("SELECT "&_
                         " FROM atendimentos as aten"&_
                         " LEFT JOIN agendamentos as ag ON aten.AgendamentoID = ag.id"&_
                         " left join tabelaparticular as tp on tp.id = ag.TabelaParticularID"&_
-                        " WHERE aten.id="&req("AtendimentoID") )
+                        " WHERE aten.id='"&req("AtendimentoID")&"'" )
 
 if not atenSQL.eof then
     if atenSQL("NomeTabela")&"" <> "" then

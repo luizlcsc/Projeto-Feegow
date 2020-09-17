@@ -66,6 +66,7 @@ if LocaisEntradas&""<>"" then
     sqlLocalizacoes = " AND id IN ("&replace(LocaisEntradas, "|", "")&") "
 end if
 %>
+<input type="hidden" id="validationConfig" value="<%=getConfig("Motivo")%>">
 <div class="modal-header">
     <button class="bootbox-close-button close" type="button" data-dismiss="modal">×</button>
     <h4 class="modal-title"><i class="<%=icone%>"></i> Lan&ccedil;amento de <%=tipo%> &raquo; <small><%=prod("NomeProduto")&NomeLocalizacao%></small></h4>
@@ -271,10 +272,14 @@ function changeLancar(value){
 }
  $("#notifyy").hide();
 $("#lancar").click(function(){
-    if(verificaCampoVazio() === true){
-         $("#notifyy").show();
-         return false
+    if($("#validationConfig").val() == 1)
+    {
+        if(verificaCampoVazio() === true){
+             $("#notifyy").show();
+             return false
+        }
     }
+
 
         $.ajax({
             type:"POST",

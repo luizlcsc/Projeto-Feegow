@@ -300,20 +300,20 @@ function verificaCampoVazio()
             $("#notifyy").append("<p>Preencha o campo <b>Motivo</b></p>")
             //return false
         }
-        if(FornecedorID == 0 || FornecedorID == "")
-        {
-            erro = true;
-                //$("#notifyy").show();
-                $("#notifyy").append("<p>Preencha o campo <b>Fornecedor</b></p>")
-                //return false
-        }
-        if(Responsavel == 0 || Responsavel == "")
-            {
-                erro = true;
-                    //$("#notifyy").show();
-                    $("#notifyy").append("<p>Preencha o campo <b>Reponsavel</b></p>")
-                    //return false
-            }
+        // if(FornecedorID == 0 || FornecedorID == "")
+        // {
+        //     erro = true;
+        //         //$("#notifyy").show();
+        //         $("#notifyy").append("<p>Preencha o campo <b>Fornecedor</b></p>")
+        //         //return false
+        // }
+        // if(Responsavel == 0 || Responsavel == "")
+        // {
+        //     erro = true;
+        //         //$("#notifyy").show();
+        //         $("#notifyy").append("<p>Preencha o campo <b>Reponsavel</b></p>")
+        //         //return false
+        // }
        return erro;
 }
 <%

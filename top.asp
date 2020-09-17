@@ -421,6 +421,13 @@ else
             <%
             end if
 
+            if aut("programasdesaude")=1 then
+            %>
+            <li><a href="./?P=programasdesaude&Pers=1"  class="sub-menu-click-cadastro-profissionais" ><i class="fa fa-medkit bigger-110"></i> Programas de Saúde</a></li>
+
+            <%
+            end if
+
             if aut("propostasV")=1  then
             %>
             <li><a href="./?P=buscaPropostas&Pers=1"  class="sub-menu-click-cadastro-propostas" ><i class="fa fa-files-o"></i> Propostas</a></li>

@@ -245,7 +245,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Profissional"
           
           'QUERY ALTERADA PARA A MESMA QUERY DO FEEGOW API 27/07/2020
-          qProfissionaisContentSQL = "SELECT f.id FornecedorID, prof.RQE, prof.Conselho, prof.NomeProfissional, t.Tratamento, cp.descricao, f.NomeFornecedor NomeProfissionalPJ, f.CPF CPFCNPJ , CONCAT(IF(t.Tratamento is null,'',concat(t.Tratamento,' ')),IF(prof.NomeSocial is null or prof.NomeSocial ='', SUBSTRING_INDEX(prof.NomeProfissional,' ', 1), prof.NomeSocial)) PrimeiroNome, "&_
+          qProfissionaisContentSQL = "SELECT f.id FornecedorID, prof.RQE, prof.Conselho, prof.NomeProfissional, t.Tratamento, cp.descricao, COALESCE(f.NomeFornecedor, prof.NomeProfissional) RazaoSocial, f.CPF CPFCNPJ , CONCAT(IF(t.Tratamento is null,'',concat(t.Tratamento,' ')),IF(prof.NomeSocial is null or prof.NomeSocial ='', SUBSTRING_INDEX(prof.NomeProfissional,' ', 1), prof.NomeSocial)) PrimeiroNome, "&_
           "CONCAT(cp.descricao, ' ', prof.DocumentoConselho, ' ', prof.UFConselho) Documento, prof.Assinatura, prof.DocumentoConselho, prof.CPF, prof.NomeSocial, esp.especialidade Especialidade "&_
           "FROM profissionais prof "&_
           "LEFT JOIN conselhosprofissionais cp ON cp.id=prof.Conselho "&_
@@ -262,11 +262,11 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 CPFCNPJProfissional = trim(ProfissionaisSQL("CPF")&" ")
 
                 if not ProfissionaisSQL("FornecedorID")&""<>"" then
-                    NomeProfissional = trim(ProfissionaisSQL("NomeProfissionalPJ")&" ")
                     CPFCNPJProfissional = trim(ProfissionaisSQL("CPFCNPJ")&" ")
                 end if
 
               conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", NomeProfissional )
+              conteudo = replace(conteudo, "[ProfissionalSolicitante.RazaoSocial]", trim(ProfissionaisSQL("RazaoSocial")&" ") )
               conteudo = replace(conteudo, "[ProfissionalSolicitante.PrimeiroNome]", trim(ProfissionaisSQL("PrimeiroNome")&" ") )
               conteudo = replace(conteudo, "[ProfissionalSolicitante.NomeSocial]", trim(ProfissionaisSQL("NomeSocial")&" ") )
               conteudo = replace(conteudo, "[ProfissionalSolicitante.Especialidade]", trim(ProfissionaisSQL("Especialidade")&" ") )
@@ -308,12 +308,12 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 CPFCNPJProfissional = trim(ProfissionaisSQL("CPF")&" ")
 
                 if ProfissionaisSQL("FornecedorID")&""<>"" then
-                    NomeProfissional = trim(ProfissionaisSQL("NomeProfissionalPJ")&" ")
                     CPFCNPJProfissional = trim(ProfissionaisSQL("CPFCNPJ")&" ")
                 end if
 
 
               conteudo = replace(conteudo, "[Profissional.Nome]", NomeProfissional )
+              conteudo = replace(conteudo, "[Profissional.RazaoSocial]", trim(ProfissionaisSQL("RazaoSocial")&" ") )
               conteudo = replace(conteudo, "[Profissional.PrimeiroNome]", trim(ProfissionaisSQL("PrimeiroNome")&" ") )
               conteudo = replace(conteudo, "[Profissional.NomeSocial]", trim(ProfissionaisSQL("NomeSocial")&" ") )
               conteudo = replace(conteudo, "[Profissional.Especialidade]", trim(ProfissionaisSQL("Especialidade")&" ") )

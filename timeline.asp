@@ -13,6 +13,9 @@ if req("X")<>"" then
         'db_execute("delete from pacientesprescricoes where id="& req("X"))
         db_execute("update pacientesprescricoes set sysActive=-1 where id="& req("X"))
     end if
+    if req("Tipo")="|PedidosSADT|" then
+        db_execute("update pedidossadt set sysActive=-1 where id="& req("X"))
+    end if
     if req("Tipo")="|Atestado|" then
         'db_execute("delete from pacientesatestados where id="& req("X"))
         db_execute("update pacientesatestados set sysActive=-1 where id="& req("X"))

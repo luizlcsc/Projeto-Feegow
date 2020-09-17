@@ -324,21 +324,40 @@ $("#savePedidoExameProtocoloS").click(function () {
 function GerarGuiaSADT(){
     var ConvenioIDPedidoSADT = $("#ConvenioIDPedidoSADT").val();
     if(ConvenioIDPedidoSADT > 0){
-        $.get('LanctoPedidoSADT.asp?I=0&PacienteID=<%=req("p")%>&PedidoSADTID='+ $("#PedidoSADTID").val() +'&ConvenioIDPedidoSADT='+ $("#ConvenioIDPedidoSADT").val() +'&IndicacaoClinicaPedidoSADT='+ $("#IndicacaoClinicaPedidoSADT").val() +'&ObservacoesPedidoSADT='+ $("#ObservacoesPedidoSADT").val()+'&ProfissionalExecutanteIDPedidoSADT='+ $("#ProfissionalExecutanteIDPedidoSADT").val()+'&DataSolicitacao='+ $("#DataSolicitacao").val(),
-        function(result){ 
-            eval(result) 
-            window.open(url);
+        $.post('LanctoPedidoSADT.asp',
+        {
+            I: 0,
+            PacienteID: '<%=req("p")%>',
+            PedidoSADTID: $("#PedidoSADTID").val(),
+            ConvenioIDPedidoSADT: $("#ConvenioIDPedidoSADT").val(),
+            IndicacaoClinicaPedidoSADT: $("#IndicacaoClinicaPedidoSADT").val(),
+            ObservacoesPedidoSADT: $("#ObservacoesPedidoSADT").val(),
+            ProfissionalExecutanteIDPedidoSADT: $("#ProfissionalExecutanteIDPedidoSADT").val(),
+            DataSolicitacao: $("#DataSolicitacao").val()
+        },
+        function(result){
+            if(result.success){
 
-            $("#GerarGuiaSADT").hide();
-            $("#AbrirGuiaSADT").removeClass("hidden");
-            $("#AbrirGuiaSADT").show();
-            $("#AbrirGuiaSADT").attr('href', '?P=tissguiasadt&I=' + GuiaID + '&Pers=1');
-            $("#AbrirGuiaSADT").html('<i class="fa fa-expand"></i> Guia ' + GuiaID);
+                var GuiaID = result.guia_id;
+                var url = result.url_redirect;
 
-            $("#ConvenioIDPedidoSADT, #IndicacaoClinicaPedidoSADT, #ProfissionalExecutanteIDPedidoSADT, #ObservacoesPedidoSADT, #DataSolicitacao").attr("disabled", true);
-            $("#savePedidoSADT").html(" Guia SP/SADT");
-            $("#savePedidoSADT").attr('id',"PedidoSADTPrint");
-            $("#GuiaID").attr('value', GuiaID);
+                window.open(url);
+
+                $("#GerarGuiaSADT").hide();
+                $("#AbrirGuiaSADT").removeClass("hidden");
+                $("#AbrirGuiaSADT").show();
+                $("#AbrirGuiaSADT").attr('href', '?P=tissguiasadt&I=' + GuiaID + '&Pers=1');
+                $("#AbrirGuiaSADT").html('<i class="fa fa-expand"></i> Guia ' + GuiaID);
+
+                $("#ConvenioIDPedidoSADT, #IndicacaoClinicaPedidoSADT, #ProfissionalExecutanteIDPedidoSADT, #ObservacoesPedidoSADT, #DataSolicitacao").attr("disabled", true);
+                $("#savePedidoSADT").html(" Guia SP/SADT");
+                $("#savePedidoSADT").attr('id',"PedidoSADTPrint");
+                $("#GuiaID").attr('value', GuiaID);
+
+                reloadTimeline();
+            }else{
+                showMessageDialog(result.message)
+            }
         });
     }else{
         alert("Escolha um convênio");

@@ -5232,13 +5232,16 @@ function getNomeLocalUnidade(UnidadeID)
             UnidadeID=1
         end if
 
-        set UnidadeLocalSQL = db.execute("SELECT IFNULL(CONCAT(' - ', Sigla),'')NomeUnidade FROM "&UnidadeTabela&" WHERE id="&treatvalzero(UnidadeID))
+        set UnidadeLocalSQL = db.execute("SELECT Sigla,NomeFantasia FROM "&UnidadeTabela&" WHERE id="&treatvalzero(UnidadeID))
         if not UnidadeLocalSQL.eof then
-            getNomeLocalUnidade = UnidadeLocalSQL("NomeUnidade")
+            if UnidadeLocalSQL("Sigla")&""<>"" then
+                getNomeLocalUnidade = UnidadeLocalSQL("Sigla")
+            else
+                getNomeLocalUnidade = UnidadeLocalSQL("NomeFantasia")
+            end if
         else
             getNomeLocalUnidade=""
         end if
-
 end function
 
 function descTI(T)

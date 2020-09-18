@@ -115,9 +115,11 @@ if session("Partner")<>"" then
 
         if not p.eof then
 
+        NomeEmpresa=ucase(l("NomeEmpresa"))
+
 %>
 <div class="panel">
-    <div class="panel-heading mt10"><span class="panel-title"><code>#<%= LicencaID %></code>  <strong><%= ucase(l("NomeEmpresa")) %></strong></span></div>
+    <div class="panel-heading mt10"><span class="panel-title"><code>#<%= LicencaID %></code>  <strong><%= NomeEmpresa %></strong></span></div>
 <div class="panel-body">
 
 <%
@@ -190,8 +192,11 @@ if session("Partner")<>"" then
 
                         <%
                         while not a.eof
+                            QuebraDeLinha="%0a%0a"
 
-                            Texto = "Olá,  *"& a("NomePaciente") &"*! Posso confirmar sua consulta com *"& p("NomeProfissional") &"*  no dia *"& Data &"* às *"& ft(a("Hora")) &"*?%0a%0aEste horário foi especialmente reservado para você, portanto, se não puder comparecer não deixe de nos avisar com antecedência!"
+                            QuebraDeLinha=""
+
+                            Texto = "*"&NomeEmpresa&"*"&QuebraDeLinha&"Olá,  *"& a("NomePaciente") &"*! Posso confirmar sua consulta com *"& p("NomeProfissional") &"*  no dia *"& Data &"* às *"& ft(a("Hora")) &"*?"&QuebraDeLinha&"_Este horário foi especialmente reservado para você, portanto, se não puder comparecer não deixe de nos avisar, assim podemos liberar seu horário para outro paciente._ "&QuebraDeLinha&" _Obrigada!_"
 
                             Classe = ""
                             if a("StaID")=7 then

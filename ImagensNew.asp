@@ -21,7 +21,7 @@ ImageRenderType = "download"
 PacienteID=req("PacienteID")
 
 if PacienteID<>"" and PacienteID<>"0" then
-    ImageRenderType = "redirect"
+    'ImageRenderType = "redirect"
 end if
 %>
 <style>

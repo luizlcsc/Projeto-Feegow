@@ -286,7 +286,7 @@ else
 					    set atend = db.execute("select at.*, p.NomePaciente, p.Foto from atendimentos as at left join pacientes as p on at.PacienteID=p.id where at.id="&splnotiflanctos(nl)&" and not isnull(p.NomePaciente)")
 					    if not atend.eof then
 						    if atend("Foto")<>"" and not isnull(atend("Foto")) then
-							    FotoNotif = "/uploads/"&replace(session("Banco"),"clinic","")&"/Perfil"&"/"&atend("Foto")
+							    FotoNotif = arqEx(atend("Foto"), "Perfil")
 						    else
 							    FotoNotif = "assets/img/atFim.png"
 						    end if

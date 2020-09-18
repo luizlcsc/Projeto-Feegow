@@ -256,13 +256,13 @@ end if
             if aut("chamadossistemaI")=1 then
             %>
             <div class="mb15">
-              <a href="?P=tarefas&I=N&Pers=1&Helpdesk=1" type="button" class="btn btn-primary btn-block pv10 fw600 mb10"><i class="fa fa-plus"></i> Abrir Chamado</a>
+              <button onclick="javascript:window.fcWidget.open();window.fcWidget.show();" type="button" class="btn btn-primary btn-block pv10 fw600 mb10"><i class="fa fa-plus"></i> Abrir Chamado</a>
             </div>
             <%
             end if
             %>
             <div class="mb15">
-              <button data-toggle="modal" data-target="#modal-horarios-atendimentos" type="button" class="btn btn-info btn-block pv10 fw600"><i class="fa fa-headphones"></i> Entre em contato</button>
+              <button onclick="javascript:window.fcWidget.open();window.fcWidget.show();" type="button" class="btn btn-info btn-block pv10 fw600"><i class="fa fa-headphones"></i> Entre em contato</button>
             </div>
 
 <%

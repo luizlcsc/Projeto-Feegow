@@ -261,7 +261,8 @@ end if
                             <%= quickField("memo", "ObsAgenda", "Mensagem informativa na agenda", 6, reg("ObsAgenda"), "", "", "") %>
                             <br>
                             <div class="col-md-6">
-                            <%call Subform("profissionaissubespecialidades", "ProfissionalID", request.QueryString("I"), "frm")%>
+                                <%call Subform("profissionaissubespecialidades", "ProfissionalID", request.QueryString("I"), "frm")%>
+                                <div id="block-programas-saude"></div>
                             </div>
                         </div>
                     </div>
@@ -328,6 +329,17 @@ function esps(A, E){
     });
 }
 
+
+<% if req("I") <> "" then %>
+// Chamada Ajax Programa Saúde
+$(document).ready(function () {
+
+    getUrl("health-programs/professional-view/<%=req("I") %>", {}, function(data) {
+        $("#block-programas-saude").html(data);
+    });
+
+});
+<% end if %>
 
 </script>
 <script src="assets/js/ace-elements.min.js"></script>

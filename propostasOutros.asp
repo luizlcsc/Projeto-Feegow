@@ -5,6 +5,11 @@ if req("PropostaID")<>"" then
 else
 	PropostaID=req("I")
 end if
+
+IF PropostaID = "" THEN
+    PropostaID=ref("PropostaID")
+END IF
+
 Acao = ref("A")
 II = ref("II")
 Row = req("Row")

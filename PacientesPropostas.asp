@@ -541,10 +541,10 @@ function modalProFormas(tipo, id){
 	  $("#modal").html(data);
 	});
 }
-
+var propostaIDAplicar = '<%=PropostaID%>';
 function aplicarProOutros(II, A){
 	if(A=='I'){
-		$.post("propostasOutros.asp?PacienteID=<%=PacienteID%>", {II:II, A:A, minorRowOutros:$("#minorRowOutros").val()}, function(data, status){ $("#PropostasOutros").before(data) } );
+		$.post("propostasOutros.asp?PacienteID=<%=PacienteID%>", {PropostaID:propostaIDAplicar,II:II, A:A, minorRowOutros:$("#minorRowOutros").val()}, function(data, status){ $("#PropostasOutros").before(data) } );
 	}else if(A=='X'){
 		$("#rowOutros"+II).replaceWith("");
 	}

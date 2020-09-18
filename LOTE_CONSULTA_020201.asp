@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"--><!--#include file="validar.asp"--><!--#include file="md5.asp"--><%
 
 function getOldCBO( pCodigoCBO)
-	set cboAntigo  = db.execute("select cbosAntigo from  especialidades where codigoTiss="&pCodigoCBO)
+	set cboAntigo  = db.execute("select cbos2_2 cbosAntigo from cliniccentral.especialidades_correcao where codigoTiss="&pCodigoCBO)
 
 	if not cboAntigo.eof then
 		if cboAntigo("cbosAntigo")&""<>"" then

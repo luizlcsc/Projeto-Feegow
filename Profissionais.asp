@@ -243,6 +243,15 @@ end if
                             %>
                                 <%=quickField("multiple", "AgendaProfissionais", "Acesso as agendas dos profissionais", 4, AgendaProfissionais, "select id, NomeProfissional from profissionais where ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
                             <%end if%>
+
+                            <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
+
+                            <%= quickfield("multiple", "ProgramasAgendamento", "Programas para agendamento", 3, reg("ProgramasAgendamento"), "SELECT pp.id, p.NomePrograma FROM profissionaisprogramas pp INNER JOIN programas p ON p.id = pp.ProgramaID WHERE pp.ProfissionalID = '" & reg("id") & "'", "NomePrograma", "") %>
+
+                            <%'= quickField("simpleSelect", "PlanoContaID", "Plano de Contas", 3, "", "select id,Name from sys_financialexpensetype where sysActive=1 order by Name", "Name", "") %>
+
+                        </div>
+                        <div class="row">
                             <div class='col-md-5'>
                                 <%=quickField("simpleCheckbox", "NaoExibirAgenda", "Não exibir o profissional na agenda", 12, reg("NaoExibirAgenda"), "", "", "")%>
 
@@ -252,16 +261,14 @@ end if
                                     <input type="hidden" value="<%=reg("auditor")%>" name="auditor">
                                 <% END IF %>
                             </div>
-                            <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
-
-                            <%'= quickField("simpleSelect", "PlanoContaID", "Plano de Contas", 4, "", "select id,Name from sys_financialexpensetype where sysActive=1 order by Name", "Name", "") %>
                         </div>
                         <br>
                         <div class="row">
                             <%= quickField("memo", "ObsAgenda", "Mensagem informativa na agenda", 6, reg("ObsAgenda"), "", "", "") %>
                             <br>
                             <div class="col-md-6">
-                                <%call Subform("profissionaissubespecialidades", "ProfissionalID", request.QueryString("I"), "frm")%>
+                            <%call Subform("profissionaissubespecialidades", "ProfissionalID", request.QueryString("I"), "frm")%>
+
                                 <div id="block-programas-saude"></div>
                             </div>
                         </div>
@@ -330,16 +337,17 @@ function esps(A, E){
 }
 
 
-<% if req("I") <> "" then %>
 // Chamada Ajax Programa Saúde
 $(document).ready(function () {
 
+    <% if reg("id") <> "" then %>
+    $("#block-programas-saude").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
     getUrl("health-programs/professional-view/<%=req("I") %>", {}, function(data) {
         $("#block-programas-saude").html(data);
     });
+    <% end if %>
 
 });
-<% end if %>
 
 </script>
 <script src="assets/js/ace-elements.min.js"></script>

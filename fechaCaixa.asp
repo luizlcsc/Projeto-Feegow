@@ -18,12 +18,23 @@ Credito = ccur(ref("Credito"))
 Debito = ccur(ref("Debito"))
 
 Diferenca = Dinheiro-DinheiroInformado
+PermitirFechamentoDeCaixaValorAbaixo = getConfig("PermitirFechamentoDeCaixaValorAbaixo")
+
 
 if Diferenca<>0 and req("Msg")<>"Ok" then
-    erro = "Há uma diferença de R$ "& fn(Diferenca) &" do valor calculado com relação ao valor informado. Caso confirme este fechamento, será debitado este valor da sua conta. Deseja prosseguir com o fechamento?"
-    %>
-    if(confirm('<%= erro %>')) $.post("fechaCaixa.asp?Msg=Ok", $("#frmCx").serialize(), function(data){ eval(data) });
-    <%
+    erro = "Há uma diferença de R$ "& fn(Diferenca) &" do valor calculado com relação ao valor informado. "
+
+    if PermitirFechamentoDeCaixaValorAbaixo then
+        erro = erro & "Caso confirme este fechamento, será debitado este valor da sua conta. Deseja prosseguir com o fechamento?"
+        %>
+        if(confirm('<%= erro %>')) $.post("fechaCaixa.asp?Msg=Ok", $("#frmCx").serialize(), function(data){ eval(data) });
+        <%
+    else
+        erro = erro & "Fechamento não permitido!"
+        %>
+        alert("<%=erro%>");
+        <%
+    end if
 else
     set CaixaSQL = db.execute("SELECT id FROM caixa WHERE id="&session("CaixaID")&" AND Reaberto='S'")
     if CaixaSQL.eof then

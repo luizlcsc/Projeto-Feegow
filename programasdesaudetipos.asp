@@ -10,7 +10,7 @@
 </div>
 
 <script type="text/javascript">
-    getUrl("health-programs/tipos-view",{}, function(data) {
+    getUrl("health-programs/types-view",{}, function(data) {
         $(".app").hide();
         $(".app").html(data);
         $(".app").fadeIn('slow');

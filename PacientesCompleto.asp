@@ -466,7 +466,10 @@ end if
                 </div>
             </div>
             <div class="row">
-                <div id="block-programa-saude" class="col-md-6">
+                <div id="block-programas-saude" class="col-md-6">
+                    <div style="width: 100%; text-align: center">
+                        <i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i>
+                    </div>
                 </div>
                 <div id="block-care-team" class="col-md-6">
                     <div style="width: 100%; text-align: center">
@@ -645,9 +648,14 @@ function mesclar(p1, p2){
 // Chamada Ajax Programa Saúde e Care Team
 $(document).ready(function () {
 
-    getUrl("patient-record/care-team/<%=PacienteID %>", {}, function(data) {
+    getUrl("health-programs/patient-view/<%=PacienteID %>", {}, function(data) {
+        $("#block-programas-saude").html(data);
+    });
+
+    getUrl("care-team/view/<%=PacienteID %>", {}, function(data) {
         $("#block-care-team").html(data);
     });
+
 });
 <% end if %>
 

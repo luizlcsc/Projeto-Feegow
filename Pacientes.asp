@@ -542,7 +542,7 @@ $(".mainTab").click(function(){
 	}
 	$("#resumoConvenios").addClass("hidden");
 	$("#pront, .tray-left").addClass("hidden");
-	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team").removeClass("hidden");
+	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team, #block-programas-saude").removeClass("hidden");
 	//$("#save").removeClass("hidden");
 });
 $(".tab").click(function(){
@@ -552,7 +552,7 @@ $(".tab").click(function(){
 	$("#divDisplayUploadFoto").css("display", "none");
 	$("#resumoConvenios").removeClass("hidden");
 	$("#pront, .tray-left").removeClass("hidden");
-	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team").addClass("hidden");
+	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team, #block-programas-saude").addClass("hidden");
     //$("#save").addClass("hidden");
 });
 function pront(U){

@@ -301,6 +301,12 @@ if erro="" then
                 END IF
             END IF
         next
+        '---- Termina a verificação de o profissional pod executar o procedimento
+
+
+        if session("Banco")="clinic5760" then
+            db.execute("insert into itensinvoice_bck (`id`, `InvoiceID`, `Tipo`, `Quantidade`, `CategoriaID`, `ItemID`, `ValorUnitario`, `Desconto`, `Descricao`, `Executado`, `DataExecucao`, `HoraExecucao`, `GrupoID`, `AgendamentoID`, `sysUser`, `sysDate`, `ProfissionalID`, `EspecialidadeID`, `HoraFim`, `Acrescimo`, `AtendimentoID`, `Associacao`, `CentroCustoID`, `OdontogramaObj`, `PacoteID`, `DHUp`, `GeradoAutomaticamente`) select `id`, `InvoiceID`, `Tipo`, `Quantidade`, `CategoriaID`, `ItemID`, `ValorUnitario`, `Desconto`, `Descricao`, `Executado`, `DataExecucao`, `HoraExecucao`, `GrupoID`, `AgendamentoID`, `sysUser`, `sysDate`, `ProfissionalID`, `EspecialidadeID`, `HoraFim`, `Acrescimo`, `AtendimentoID`, `Associacao`, `CentroCustoID`, `OdontogramaObj`, `PacoteID`, `DHUp`, `GeradoAutomaticamente` from itensinvoice where InvoiceID="&InvoiceID)
+        end if
 
         sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
         if itensStr&""<>"" then

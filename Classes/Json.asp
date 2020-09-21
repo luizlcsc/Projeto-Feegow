@@ -63,4 +63,8 @@ function responseJson(stringJson)
     response.Write(stringJson)
     Response.End
 end function
+
+function jsonHeader(param1)
+    Response.ContentType = "application/json"
+end function
 %>

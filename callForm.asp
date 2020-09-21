@@ -276,6 +276,9 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         let atual = JSON.stringify( $(".campoInput, .campoCheck, .tbl").serializeFormJSON());
 
         if(atual!=ultimo){
+
+            //desabilita feature
+            return;
             $.ajax({
                 url: domain+"log/saveFormLog",
                 method: 'POST',

@@ -83,6 +83,42 @@ if not getImpressos.EOF then
     
 end if
 
+itensSql = "SELECT T.*,Quantidade*ValorUnitario+(Quantidade*Acrescimo)-(Quantidade*Desconto) as total FROM ("&_
+            "SELECT "&_
+            "         MAX(ii.Prioridade)    AS Prioridade"&_
+            "        ,proc.NomeProcedimento AS NomeProcedimento"&_
+            "        ,ii.ValorUnitario      AS ValorUnitario"&_
+            "        ,SUM(ii.Quantidade)    AS Quantidade"&_
+            "        ,ii.Acrescimo          AS Acrescimo"&_
+            "        ,ii.Desconto           AS Desconto"&_
+            "        ,ii.TipoDesconto       AS TipoDesconto"&_
+            "        ,proc.DiasLaudo        AS DiasLaudo"&_
+            "        ,prop.TabelaID         AS Tabela"&_
+            "      FROM itensproposta ii"&_
+            " LEFT JOIN procedimentos proc  on proc.id=ii.ItemID "&_
+            " LEFT JOIN propostas prop       on prop.id=ii.PropostaID "&_
+            " WHERE ii.PropostaID="&PropostaID&" "&_
+            " GROUP BY proc.NomeProcedimento, ValorUnitario, proc.NomeProcedimento,Acrescimo,Desconto "&_
+            " ORDER BY Prioridade DESC, ii.id ASC "&_
+            ") AS T"
+
+set ItensResumoSQL = db.execute(itensSql)
+
+
+while not ItensResumoSQL.EOF
+
+    NomeProcedimento=ItensResumoSQL("NomeProcedimento")
+
+    if DescricaoProposta<>"" then
+        DescricaoProposta = DescricaoProposta &", "
+    end if
+    DescricaoProposta = DescricaoProposta & NomeProcedimento
+
+ItensResumoSQL.movenext
+wend
+ItensResumoSQL.close
+set ItensResumoSQL=nothing
+
 
 sqlTimbrado = "select * from papeltimbrado where sysactive=1 and (unidadeid = '' or unidadeid is null or unidadeid like '%|ALL|%' or unidadeid like '%|"&session("UnidadeID")&"|%' ) and (profissionais = '' or profissionais is null or profissionais like '%|ALL|%') order by id desc limit 1"
 set getTimbrado = db.execute(sqlTimbrado)
@@ -93,6 +129,12 @@ else
 	Cabecalho=""
 	Rodape=""
 end if
+Rodape = replace(Rodape, "[Procedimento.Nome]", DescricaoProposta)
+RodapeProposta = replace(RodapeProposta, "[Procedimento.Nome]", DescricaoProposta)
+Cabecalho = replace(Cabecalho, "[Procedimento.Nome]", DescricaoProposta)
+CabecalhoProposta = replace(CabecalhoProposta, "[Procedimento.Nome]", DescricaoProposta)
+
+
 
 if MarcaDagua <> "" then
             %>
@@ -148,24 +190,7 @@ body{
 </div>
                 <%
     			'set itens = db.execute("select ii.*, proc.NomeProcedimento, proc.DiasLaudo from itensproposta ii LEFT JOIN procedimentos proc on proc.id=ii.ItemID where ii.PropostaID="&PropostaID&" ORDER BY Prioridade Desc" )
-    			 itensSql = "SELECT T.*,Quantidade*ValorUnitario+(Quantidade*Acrescimo)-(Quantidade*Desconto) as total FROM ("&_
-                                        "SELECT "&_
-                                        "         MAX(ii.Prioridade)    AS Prioridade"&_
-                                        "        ,proc.NomeProcedimento AS NomeProcedimento"&_
-                                        "        ,ii.ValorUnitario      AS ValorUnitario"&_
-                                        "        ,SUM(ii.Quantidade)    AS Quantidade"&_
-                                        "        ,ii.Acrescimo          AS Acrescimo"&_
-                                        "        ,ii.Desconto           AS Desconto"&_
-                                        "        ,ii.TipoDesconto       AS TipoDesconto"&_
-                                        "        ,proc.DiasLaudo        AS DiasLaudo"&_
-                                        "        ,prop.TabelaID         AS Tabela"&_
-                                        "      FROM itensproposta ii"&_
-                                        " LEFT JOIN procedimentos proc  on proc.id=ii.ItemID "&_
-                                        " LEFT JOIN propostas prop       on prop.id=ii.PropostaID "&_
-                                        " WHERE ii.PropostaID="&PropostaID&" "&_
-                                        " GROUP BY proc.NomeProcedimento, ValorUnitario, proc.NomeProcedimento,Acrescimo,Desconto "&_
-                                        " ORDER BY Prioridade DESC, ii.id ASC "&_
-                                        ") AS T"
+
               'response.write itensSql
                 set itens = db.execute(itensSql)
     			if not itens.eof then
@@ -261,6 +286,8 @@ body{
     					wend
     					itens.close
     					set itens=nothing
+
+
     					%>
                         </tbody>
                         <tfoot>
@@ -336,6 +363,7 @@ body{
     				<%
     			end if
     			RodapeProposta = replace(RodapeProposta, "[Previsao.Entrega]", PrazoEntrega)
+
     			Preparo=""
 
     			if instr(RodapeProposta, "[Procedimentos.Preparo]")>0 then

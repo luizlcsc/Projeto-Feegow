@@ -42,9 +42,15 @@ if ObrigarValidade=1 then
     end if
 end if
 
-set ProcedimentosGuiaSQL = db.execute("SELECT ProcedimentoID FROM tissprocedimentossadt WHERE GuiaID="&I)
+ObrigarIndicacaoClinica=False
+
+set ProcedimentosGuiaSQL = db.execute("SELECT tsadt.ProcedimentoID, proc.SolIC ObrigarIndicacaoClinica FROM tissprocedimentossadt tsadt INNER JOIN procedimentos proc ON proc.id=tsadt.ProcedimentoID WHERE tsadt.GuiaID="&I)
 
 while not ProcedimentosGuiaSQL.eof
+    if ProcedimentosGuiaSQL("ObrigarIndicacaoClinica")&""="S" then
+        ObrigarIndicacaoClinica=True
+    end if
+
     sqlPermitido = "SELECT p.NomeProcedimento, COALESCE(tpvp.NaoCobre, tpv.NaoCobre)NaoCobre FROM tissprocedimentosvalores tpv "&_
     "LEFT JOIN tissprocedimentosvaloresplanos tpvp ON tpvp.AssociacaoID=tpv.id AND tpvp.PlanoID="&treatvalzero(PlanoID)&" "&_
     "LEFT JOIN procedimentos p ON p.id=tpv.ProcedimentoID "&_
@@ -63,6 +69,9 @@ wend
 ProcedimentosGuiaSQL.close
 set ProcedimentosGuiaSQL=nothing
 
+if ObrigarIndicacaoClinica and ref("IndicacaoClinica")="" then
+    erro = "O campo ""Indicação Clínica"" é obrigatório para um dos procedimentos."
+end if
 
 set vcaProc = db.execute("select * from tissprocedimentossadt where GuiaID="&I)
 if vcaProc.eof and (session("Banco")<>"clinic3882" and session("Banco")<>"clinic5868") then

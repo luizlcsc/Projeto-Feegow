@@ -253,19 +253,22 @@ end if
           <!-- FAQ Right Column -->
           <div class="col-md-3">
             <%
-            if aut("chamadossistemaI")=1 then
+            if aut("chamadossistemaI")=1 and session("ExibeChatAtendimento")=True then
             %>
             <div class="mb15">
-              <a href="?P=tarefas&I=N&Pers=1&Helpdesk=1" type="button" class="btn btn-primary btn-block pv10 fw600 mb10"><i class="fa fa-plus"></i> Abrir Chamado</a>
+              <button onclick="javascript:window.fcWidget.open();window.fcWidget.show();" type="button" class="btn btn-primary btn-block pv10 fw600 mb10"><i class="fa fa-plus"></i> Abrir Chamado</a>
             </div>
             <%
             end if
+
+            if session("ExibeChatAtendimento")=True then
             %>
             <div class="mb15">
-              <button data-toggle="modal" data-target="#modal-horarios-atendimentos" type="button" class="btn btn-info btn-block pv10 fw600"><i class="fa fa-headphones"></i> Entre em contato</button>
+              <button onclick="javascript:window.fcWidget.open();window.fcWidget.show();" type="button" class="btn btn-info btn-block pv10 fw600"><i class="fa fa-headphones"></i> Entre em contato</button>
             </div>
 
 <%
+            end if
 if session("Admin")=1 then
 %>
 
@@ -482,76 +485,7 @@ end if
               </div>
             </div>
 
-            <div class="panel mb10">
-              <div class="panel-heading">
-                <span class="panel-icon">
-                  <i class="fa fa-phone"></i>
-                </span>
-                <span class="panel-title"> Interações</span>
-              </div>
-
-
-                <%
-
-                i=0
-
-                set InteracoesSQL = dbc.execute("SELECT t.*, lu.Nome NomeUsuario, prof.Foto, ca.Nota FROM chamadas t "&_
-                                                      "INNER JOIN cliniccentral.licencasusuarios lu ON lu.id=t.sysUserAtend "&_
-                                                      "INNER JOIN cliniccentral.licencas l ON l.id="&LicencaID&" AND t.Contato = CONCAT('3_',l.Cliente) "&_
-                                                      "LEFT JOIN sys_users su ON su.id=lu.id "&_
-                                                      "LEFT JOIN avaliacoes ca ON ca.RelativoID=t.id AND ca.TipoID='chamadas' "&_
-                                                      "LEFT JOIN profissionais prof ON prof.id=su.idInTable "&_
-                                                      "ORDER BY t.DataHora DESC LIMIT 5")
-
-                if not InteracoesSQL.eof then
-                %>
-                 <div class="panel-body text-muted p10">
-                <%
-                    while not InteracoesSQL.eof
-                        id=InteracoesSQL("id")
-                        Telefone=InteracoesSQL("Telefone")
-                        DataHora=InteracoesSQL("DataHora")
-                        Notas=InteracoesSQL("Notas")
-                        NomeUsuario=InteracoesSQL("NomeUsuario")
-
-                        urlImg = "https://clinic7.feegow.com.br/uploads/5459/Perfil/"&InteracoesSQL("Foto")
-                        if InteracoesSQL("Foto")&""="" then
-                            urlImg="/assets/img/user.png"
-                        end if
-                    %>
-                                <ul class="list-unstyled <% if i>0 then %>br-t<%end if%> pt10">
-                                   <span style="cursor:pointer; float: right;" id="stars-existing0" data-rating='<%=InteracoesSQL("Nota")%>' class="starrr text-warning hidden" ></span>
-                                   <li style="float: left;" class="mr10">
-                                        <img style="height: 30px;" src="<%=urlImg%>" class="mw30 br64">
-                                   </li>
-                                   <li>
-                                     <strong class="text-dark"> <%=NomeUsuario%></strong>
-                                   </li>
-                                   <li><%=DataHora%></li>
-                                 </ul>
-                      <%
-                        i=i+1
-                      InteracoesSQL.movenext
-                      wend
-                      InteracoesSQL.close
-                      set InteracoesSQL=nothing
-
-                      %>
-                   </div>
-
-                      <%
-                  else
-                    %>
-                 <div class="panel-body text-muted p10">
-                    Nenhuma interação registrada
-                </div>
-                    <%
-                  end if
-                  %>
-
-            </div>
-
-          </div>
+            
 
         </div>
 

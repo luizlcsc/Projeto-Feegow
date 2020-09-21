@@ -544,7 +544,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
     sql = sql & " WHERE g.sysActive=1" & sqlLote & sqlNumero & sqlPaciente & sqlDataDe&sqlDataAte & sqlDataDePreenchimento & sqlPlano
     sql = sql & sqlDataAtePreenchimento & sqlUnidades & sqlGuiaStatus 
     sql = sql & " and g.ConvenioID="&request.QueryString("ConvenioID")
-    sql = sql & " ORDER BY "&orderBy&" LIMIT 200"
+    sql = sql & " GROUP BY g.id ORDER BY "&orderBy&" LIMIT 200"
 	set guias = db.execute(sql)
 	while not guias.EOF
         Total = guias(ColunaTotal)

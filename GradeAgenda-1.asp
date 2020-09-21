@@ -35,6 +35,7 @@ LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 NaoExibirNaAgendaOsStatus = getConfig("NaoExibirNaAgendaOsStatus")
 ExibirCorPacienteAgenda = getConfig("ExibirCorPacienteAgenda")
 NaoExibirAgendamentoLocal = getConfig("NaoExibirAgendamentoLocal")
+NaoExibirOutrasAgendas = getConfig("NaoExibirOutrasAgendas")
 AumentarAlturaLinhaAgendamento = getConfig("AumentarAlturaLinhaAgendamento")
 ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
 
@@ -289,13 +290,18 @@ end if
         if Ativo="on" then
             DiaSemana = weekday(Data)
             Hora = cdate("00:00")
-            sqlAssfixaperiodo = "select ass.*, l.NomeLocal, '' Cor, '0' TipoGrade, l.UnidadeID, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' as CorOriginal from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID& sqlProcedimentoPermitido & sqlEspecialidadePermitido & sqlConvenioPermitido&"  and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe"
+            sqlAssfixaperiodo = "select ass.*, l.NomeLocal, '' Cor, '0' TipoGrade, l.UnidadeID, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' as CorOriginal from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID& sqlProcedimentoPermitido & sqlEspecialidadePermitido & sqlConvenioPermitido&"  and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" AND l.UnidadeID="&session("UnidadeID")&" order by HoraDe"
             'response.write sqlAssfixaperiodo&"<br>"
             set Horarios = db.execute(sqlAssfixaperiodo)
 
             if Horarios.EOF then
+
+                if NaoExibirOutrasAgendas = 0 then
                 sqlAssfixa = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, ass.Mensagem, ass.Cor as Cor, profissionais.cor as CorOriginal from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID left join profissionais on profissionais.id = ass.ProfissionalID where ass.ProfissionalID="&ProfissionalID& sqlProcedimentoPermitido & sqlConvenioPermitido & sqlEspecialidadePermitido &" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe"
                 'response.write sqlAssfixa&"<br>"
+                else
+                    sqlAssfixa = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, ass.Mensagem, ass.Cor as Cor, profissionais.cor as CorOriginal from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID left join profissionais on profissionais.id = ass.ProfissionalID where ass.ProfissionalID="&ProfissionalID& sqlProcedimentoPermitido & sqlConvenioPermitido & sqlEspecialidadePermitido &" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by ass.HoraDe"
+                end if
 
                 set Horarios = db.execute(sqlAssfixa)
             end if
@@ -339,7 +345,7 @@ end if
                     <tr class="hidden l l<%=LocalID%>" data-horaid="0000" id="<%= LocalID %>0000"></tr>
                     <tr>
                         <td colspan="6" nowrap class="nomeProf text-center" style="background-color:<%=Cor%>;">
-                             <%=ucase(Horarios("NomeLocal")&" ")%> <%=getNomeLocalUnidade(Horarios("UnidadeID"))%> <input type="hidden" name="LocalEncaixe" id="LocalEncaixe" value="<%=LocalID%>">
+                             <%=ucase(Horarios("NomeLocal")&" ")%> (<%=getNomeLocalUnidade(Horarios("UnidadeID"))%>) <input type="hidden" name="LocalEncaixe" id="LocalEncaixe" value="<%=LocalID%>">
                              <br><%= Horarios("Mensagem") %>
                         </td>
                     </tr>
@@ -455,7 +461,7 @@ end if
                             %>
                             <tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=ProfissionalID%>,<%=GradeID%>)" data-grade="<%=GradeID%>"  class="l l<%= LocalID %> vazio" data-hora="<%=formatdatetime(Hora, 4)%>" data-horaid="<%= horaid %>" id="<%=HoraID%>">
                                 <td width="1%"></td>
-                                <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
+                                <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button> </td>
                                 <td colspan="4"><%= Tipo %></td>
                             </tr>
                             <%
@@ -526,8 +532,6 @@ end if
                     <tr><td class="text-center" colspan="6"><small>Não há grade configurada para este dia da semana.</small></td></tr>
                     <%
                     end if
-                    %>
-                    <%
                 Horarios.movenext
                 wend
                 Horarios.close
@@ -548,19 +552,26 @@ end if
 
                 procedimentosQuery = " (select group_concat(procedimentos.NomeProcedimento) from agendamentosprocedimentos left join procedimentos on procedimentos.id = agendamentosprocedimentos.TipoCompromissoID where agendamentosprocedimentos.AgendamentoID = a.id) as procedimento1, (select group_concat(procedimentos.NomeProcedimento) from agendamentos left join  procedimentos on procedimentos.id = agendamentos.TipoCompromissoID where agendamentos.id = a.id) as procedimento2 "
 
-                compsSql = "select *, concat(procedimento1, ', ', procedimento2) as ProcedimentosList, k.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = k.id) as ValorPlano from (select a.id, "& procedimentosQuery &", a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo, a.FormaPagto, a.Notas, p.Nascimento, p.NomePaciente, p.IdImportado,a.PacienteID, p.Tel1, p.Cel1, proc.NomeProcedimento,proc.Cor, s.StaConsulta, a.rdValorPlano, a.ValorPlano,a.Procedimentos, a.Primeira, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, p.CorIdentificacao from agendamentos a "&_
+                compsSql = "select *, concat(procedimento1, ', ', procedimento2) as ProcedimentosList, k.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = k.id) as ValorPlano from (select a.id, "& procedimentosQuery &", a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo, a.FormaPagto, a.Notas, p.Nascimento, p.NomePaciente, p.IdImportado,a.PacienteID, p.Tel1, p.Cel1, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, proc.NomeProcedimento,proc.Cor, s.StaConsulta, a.rdValorPlano, a.ValorPlano,a.Procedimentos, a.Primeira, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, p.CorIdentificacao from agendamentos a "&_
                 "left join pacientes p on p.id=a.PacienteID "&_
+                "LEFT JOIN cliniccentral.pacientesprioridades pacPri ON pacPri.id=p.Prioridade "&_
                 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
                 "left join staconsulta s on s.id=a.StaID "&_
                 "left join convenios c on c.id=a.ValorPlano "&_
-				"left join locais l on l.id=a.LocalID "&_
-                "where a.Data="&mydatenull(Data)&" and a.sysActive= 1 and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
+                "left join locais l on l.id=a.LocalID "
+                if NaoExibirOutrasAgendas = 0 then
+                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and a.sysActive= 1 and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
+                else
+                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and a.sysActive= 1 and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
+                end if
 
-                set comps=db.execute(compsSql)
+                set comps=db.execute(compsSql&compsWhereSql)
                 while not comps.EOF
                     FormaPagto = comps("FormaPagto")
                     UnidadeID = comps("UnidadeID")
                     CorIdentificacao = comps("CorIdentificacao")
+                    pacientePrioridadeIcone = comps("PrioridadeIcone")
+
 
                     Tempo = 0
                     ValorProcedimentosAnexos = 0
@@ -707,7 +718,7 @@ end if
                         Conteudo = Conteudo & "<button type=""button"" onclick=""abreAgenda(\'"&HoraComp&"\', 0, \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')"" class=""btn btn-xs btn-system ml5""><i class=""fa fa-plus""></i></button>"
                     end if
                     Conteudo = Conteudo & "</td>"&_
-                    "<td  nowrap "& linkAg &"><img src=""assets/img/"&comps("StaID")&".png""> "
+                    "<td  nowrap "& linkAg &">"&pacientePrioridadeIcone&" <img src=""assets/img/"&comps("StaID")&".png""> "
                     if comps("Encaixe")=1 then
                         Conteudo = Conteudo & "&nbsp;<span class=""label bg-alert label-sm arrowed-in mr10 arrowed-in-right"">Encaixe</span>"
                     end if
@@ -1006,5 +1017,4 @@ else
 end if
 %>
 </script>
-
 <!--#include file = "disconnect.asp"-->

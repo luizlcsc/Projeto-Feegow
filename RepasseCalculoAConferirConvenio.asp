@@ -352,6 +352,7 @@ end if
 "LEFT JOIN tissprocedimentossadt ps ON ps.GuiaID=gs.id "&_
 "WHERE gs.sysActive=1 AND gs.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND m.Type<>'Bill' AND tgi.TipoGuia='guiasadt' AND "&_
 "m.Date BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGS &_
+" GROUP BY ps.id " &_
                 "UNION ALL "&_
 "select concat( '5_',gh.Contratado), concat('5_', gh.Contratado) ProfissionalSolicitanteID,  concat(ps.Associacao,'_',ps.ProfissionalID) Especialidade, gh.PacienteID, gh.ConvenioID, 'tissguiahonorarios' link, 'Honorários' Tipo, ps.id, ps.ProfissionalID, gh.id GuiaID, ps.ProcedimentoID, ps.Data, ps.ValorTotal, gh.UnidadeID, ifnull(ps.ValorPago, gh.ValorPago) ValorPago, ps.Quantidade, gh.sysDate FROM sys_financialmovement m "&_
 "LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_

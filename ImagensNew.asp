@@ -238,6 +238,7 @@ end if
     function processaItem(item){
             item.NovaDescricao = item.Descricao?item.Descricao:item.NomeArquivo;
 
+            let isImage = true
             let extension = item.NomeArquivo.substr(item.NomeArquivo.lastIndexOf('.') + 1).toLowerCase();
             let link = '';
             let formato = 'a';
@@ -250,16 +251,20 @@ end if
 
             if(['docx','doc','rtf'].includes(extension)){
                 link = baseLink + 'doc.png';
+                isImage=false;
             }
 
             if(['pdf'].includes(extension)){
                 link = baseLink + 'pdf.png';
+                isImage=false;
+
             }
             // if(['png'].includes(extension)){
             //     link = 'png.png';
             // }
             if(['mp4'].includes(extension)){
                 link = baseLink + 'pdf.png';
+                isImage=false;
             }
             if(['xml'].includes(extension)){
                 // link = 'xml.png';
@@ -267,18 +272,22 @@ end if
 
             if(['txt'].includes(extension)){
                 link = baseLink + 'txt.png';
+                isImage=false;
             }
 
             if(['pptx'].includes(extension)){
                 link = baseLink + 'ppt.png';
+                isImage=false;
             }
 
             if(['csv'].includes(extension)){
                 link = baseLink + 'csv.png';
+                isImage=false;
             }
 
             if(['xlsx','xls'].includes(extension)){
                 link = baseLink + 'xls.png';
+                isImage=false;
             }
 
             // if(['jpg','jpeg'].includes(extension)){
@@ -287,15 +296,19 @@ end if
 
             if(['mp3'].includes(extension)){
                 link = baseLink + 'mp3.png';
+                isImage=false;
             }
             if(['mp4'].includes(extension)){
                 link = baseLink + 'mp4.png';
+                isImage=false;
             }
             if(['txt'].includes(extension)){
                 link = baseLink + 'txt.png';
+                isImage=false;
             }
 
             item.link = link;
+            item.isImage = isImage;
             item.extension = extension;
             item.formato = formato;
     }
@@ -305,6 +318,12 @@ end if
             return getSelected().includes(item.Tipo);
         }).map((item) => {
                 processaItem(item);
+                let renderType = 'download';
+
+                if(!item.isImage){
+                    renderType="redirect";
+                }
+
                 return `<div class="galery-item">
                              <div class="galery-data-envio">
                                 <small class="pull-right data-envio">Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}</small><br/>
@@ -321,7 +340,7 @@ end if
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-expand icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink.replace('redirect', '<%=ImageRenderType%>')}" target="_blank" title="Abrir Imagem Separadamente">
+                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink.replace('redirect', renderType)}" target="_blank" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-external-link icon-external-link"></i>
                                     </a>
                                     <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">
@@ -339,7 +358,7 @@ end if
                                 </div>
 
                              </div>
-                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink.replace('redirect', '<%=ImageRenderType%>')}" target="_blank"><img src="${item.link.replace('redirect', '<%=ImageRenderType%>')}" data-id="${item.id}" class="${item.extension} img-responsive" title="${item.Descricao}"></a></div>
+                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink.replace('redirect', renderType)}" target="_blank"><img src="${item.link.replace('redirect', renderType)}" data-id="${item.id}" class="${item.extension} img-responsive" title="${item.Descricao}"></a></div>
                              <div class="config">
                                 <textarea class="galery-description text-info border-edit imgpac" name="Desc${item.id}" onchange="changeDescription(${item.id},this)" data-img-id="${item.id}">${item.NovaDescricao}</textarea>
                              </div>

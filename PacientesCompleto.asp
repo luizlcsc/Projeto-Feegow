@@ -466,16 +466,8 @@ end if
                 </div>
             </div>
             <div class="row">
-                <div id="block-programas-saude" class="col-md-6">
-                    <div style="width: 100%; text-align: center">
-                        <i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i>
-                    </div>
-                </div>
-                <div id="block-care-team" class="col-md-6">
-                    <div style="width: 100%; text-align: center">
-                        <i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i>
-                    </div>
-                </div>
+                <div id="block-programas-saude" class="col-md-6"></div>
+                <div id="block-care-team" class="col-md-6"></div>
             </div>
 
             <div class="panel" id="dCad">
@@ -644,14 +636,16 @@ function mesclar(p1, p2){
 	}
 }
 
-<% if PacienteID <> "" then %>
+<% if getConfig("ExibirProgramasDeSaude") = 1 and PacienteID <> "" then %>
 // Chamada Ajax Programa Saúde e Care Team
 $(document).ready(function () {
 
+    $("#block-programas-saude").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
     getUrl("health-programs/patient-view/<%=PacienteID %>", {}, function(data) {
         $("#block-programas-saude").html(data);
     });
 
+    $("#block-care-team").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
     getUrl("care-team/view/<%=PacienteID %>", {}, function(data) {
         $("#block-care-team").html(data);
     });

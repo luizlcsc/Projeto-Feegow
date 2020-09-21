@@ -145,7 +145,7 @@ end if
     <div class="panel-heading">
 
         <div class="btn-group">
-            <button class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i> Inserir Guia  <i class="fa fa-angle-down icon-on-right"></i></button>
+            <button class="btn btn-sm btn-primary dropdown-toggle dropdown-status" data-toggle="dropdown"><i class="fa fa-plus"></i> Inserir Guia  <i class="fa fa-angle-down icon-on-right"></i></button>
             <ul class="dropdown-menu dropdown-danger">
             <li><a href="./?P=tissguiaconsulta&I=N&Pers=1"><i class="fa fa-plus"></i> Consulta</a></li>
             <li><a href="./?P=tissguiasadt&I=N&Pers=1"><i class="fa fa-plus"></i> SP/SADT</a></li>
@@ -185,7 +185,7 @@ if req("ConvenioID")<>"" then
     else
         desativar = "disabled"
     end if
-    StatusSelect = "<div class='btn-group mb10'><button class='btn btn-sm btn-COR-- dropdown-toggle "&desativar&"' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>LABEL--</span>  <i class='fa fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
+    StatusSelect = "<div class='btn-group mb10'><button class='btn btn-sm btn-COR-- dropdown-status dropdown-toggle "&desativar&"' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>LABEL--</span>  <i class='fa fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
     while not GuiaStatusSQL.eof
 
         StatusSelect = StatusSelect&"<li ><a data-value='"&GuiaStatusSQL("id")&"' style='cursor:pointer' class='StatusGuia'><div style='border-radius:50%;width:8px;height:8px;float:left;' class='mr5 mt5 btn-"&GuiaStatusSQL("Cor")&"'></div>"&GuiaStatusSQL("Status")&"</a></option>"
@@ -199,7 +199,7 @@ end if
 
 if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" then
 	%>
-    <table width="100%" class="table table-striped">
+    <table width="100%" class="table table-striped" id="table-busca-guias">
 	<thead>
     	<tr class="info">
         	<th colspan="5">
@@ -316,8 +316,8 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
         end if
 
 		%>
-		<tr>
-            <td>
+		<tr id="guia-linha-<%=guias("id")%>" >
+            <td >
                 <div class="col-md-3">
 
                     <input type="hidden" class="loteid_val" value="<%=guias("LoteID") %>" />
@@ -349,6 +349,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
                     <strong>Preenchimento: </strong><%= left(guias("sysDate"),10) %>
                     - <b>Valor: </b>R$ <%=fn(guias("ValorProcedimento")) %>
 				</div>
+                <input class="valor-total-guia" value="<%=fn(guias("ValorProcedimento")) %>" type="hidden">
                 <div class="col-md-3"><div class="col-md-8">
                  <%
                 'if aut("|guiasA|")=1 then
@@ -435,7 +436,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
         ColunaTotal = "TotalGeral"
     end if
 	%>
-    <table width="100%" class="table table-striped">
+    <table width="100%" class="table table-striped" id="table-busca-guias">
 	<thead>
     	<tr class="info">
         	<th><div class="pl10 checkbox-custom checkbox-primary">
@@ -577,7 +578,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
         end if
 
 		%>
-		<tr>
+		<tr id="guia-linha-<%=guias("id")%>">
         	<td>
 
                 <div class="col-md-3">
@@ -663,6 +664,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 				<%if req("T")<>"GuiaInternacao" then%>
                 <div class="col-md-3">Valor: R$ <%=fn(Total)%></div>
                 <%end if%>
+                <input class="valor-total-guia" value="<%=fn(Total) %>" type="hidden">
                 <div class="col-md-3"><strong>Cód. na Operadora: </strong><%= guias("CodigoNaOperadora") %></div>
                 
                 <%if req("T")="GuiaSADT" or req("T")="guiasadt" then%>
@@ -746,11 +748,16 @@ end if
 
 
 function correcaoValoresProcedimentos(self, guiaId, valorTotalCheck, tabela) {
-    var valor = document.getElementById('ValorPago'+guiaId).value;
-    if(valorTotalCheck != self.value){
+    var valorDigitado = document.getElementById('ValorPago'+guiaId).value;
+    var valor = valorDigitado.replace(",00","").replace(".","");
+    var valorTotalCheck = valorTotalCheck.replace(",00","").replace(".","");
+    
+    if(valorTotalCheck != valor){
         document.getElementById('procedimentos_button_'+guiaId).style.display = "flex"
 
         openComponentsModal("ProcedimentosListagemCorrecao.asp", {guiaId: guiaId, tabela: tabela, valor: valor }, "Procedimentos", true);
+    }else{
+        lancamentoValorPago(guiaId, tabela, valorDigitado);
     }
 }
 
@@ -768,16 +775,47 @@ function modalPaciente(ID) {
     $("#modal").addClass("modal-lg");
  }
 
-$(".StatusGuia").click(function() {
-    var $lb = $(this).parents("tr").find(".dropdown-toggle");
-     $.get("AlteraStatusGuia.asp", {GuiaID:$(this).parents("tr").find(".guia").val(), TipoGuia:"<%=req("T")%>", Status: $(this).attr("data-value"), Lista:1}, function(data) {
+function lancamentoValorPago(guiaId, tipoGuia, valorNovo, statusId=false, Operacao=""){
+    $.post("Glosa.asp?TG=<%=req("T")%>&I="+guiaId+"&T="+Operacao, {
+        n: "ValorPago"+guiaId,
+        vp: valorNovo,
+    }, function (data) {
+        eval(data);
+        
+        if(statusId){
+            alteraStatusGuia(guiaId, tipoGuia, statusId);
+        }
+
+        $("#guia-linha-"+guiaId).find(".input-valor-pago").val(valorNovo);
+
+        showMessageDialog("Salvo com sucesso", "success");
+    });
+
+    if(statusId){
+        alteraStatusGuia(guiaId, tipoGuia, statusId);
+    }
+}
+
+ function alteraStatusGuia(guiaId, tipoGuia, statusId){
+     var $lb = $("#guia-linha-"+guiaId, "#table-busca-guias").find(".dropdown-status");
+
+    $.get("AlteraStatusGuia.asp", {GuiaID:guiaId, TipoGuia:tipoGuia, Status: statusId, Lista:1}, function(data) {
         data = JSON.parse(data);
 
         $lb.find(".label-status").html(data.Status);
-        $lb.removeClass("btn-primary btn-warning btn-success btn-danger");
+        $lb.removeClass("btn-primary btn-warning btn-success btn-danger btn-dark");
 
         $lb.addClass("btn-"+data.Cor);
     })
+ }
+
+$(".StatusGuia").click(function() {
+    var $lb = $(this).parents("tr").find(".dropdown-toggle");
+    var guiaId = $(this).parents("tr").find(".guia").val();
+    var tipoGuia = "<%=req("T")%>";
+    var statusId = $(this).attr("data-value");
+
+     alteraStatusGuia(guiaId, tipoGuia, statusId);
 });
 
 function tissplanosguia(ConvenioID){
@@ -833,14 +871,6 @@ function glosa(T, I){
     })
 }
 
-$("input[name^=ValorPago]").change(function () {
-    $.post("Glosa.asp?TG=<%=req("T")%>", {
-        n: $(this).attr("id"),
-        vp: $(this).val()
-    }, function (data) {
-        eval(data);
-    });
-});
 
 $(".guia, input[id^='all']").click(function(){
 

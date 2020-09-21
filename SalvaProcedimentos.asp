@@ -30,6 +30,8 @@ if(UCase(tabela) = UCase("GuiaSADT")) then
     if (procedimentosString <> "") then
         For i = 0 to Ubound(procedimentosArray)
 
+            valorPago = 0
+
             if (ref("ValorPago"&procedimentosArray(i)) <> "") then
                 valorPago = ref("ValorPago"&procedimentosArray(i))
             end if
@@ -65,7 +67,11 @@ end if
 if(UCase(tabela) = UCase("GuiaHonorarios")) then 
    if (procedimentosString <> "") then
         For i = 0 to Ubound(procedimentosArray)
-            valorPago = ref("ValorPago"&procedimentosArray(i))
+            valorPago = 0
+            
+            if (ref("ValorPago"&procedimentosArray(i)) <> "") then
+                valorPago = ref("ValorPago"&procedimentosArray(i))
+            end if
         
             sqlExecute = "update tissprocedimentoshonorarios set ValorPago="& treatvalzero(valorPago) & " where id ="&procedimentosArray(i)&""
             db_execute(sqlExecute)

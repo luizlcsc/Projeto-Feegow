@@ -253,19 +253,22 @@ end if
           <!-- FAQ Right Column -->
           <div class="col-md-3">
             <%
-            if aut("chamadossistemaI")=1 then
+            if aut("chamadossistemaI")=1 and session("ExibeChatAtendimento")=True then
             %>
             <div class="mb15">
               <button onclick="javascript:window.fcWidget.open();window.fcWidget.show();" type="button" class="btn btn-primary btn-block pv10 fw600 mb10"><i class="fa fa-plus"></i> Abrir Chamado</a>
             </div>
             <%
             end if
+
+            if session("ExibeChatAtendimento")=True then
             %>
             <div class="mb15">
               <button onclick="javascript:window.fcWidget.open();window.fcWidget.show();" type="button" class="btn btn-info btn-block pv10 fw600"><i class="fa fa-headphones"></i> Entre em contato</button>
             </div>
 
 <%
+            end if
 if session("Admin")=1 then
 %>
 

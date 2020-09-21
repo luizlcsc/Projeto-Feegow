@@ -53,7 +53,13 @@ if not tryLogin.EOF then
     ExibeChatAtendimento = tryLogin("ExibeChatAtendimento")
 
     ClienteUnimed = instr(Cupom, "UNIMED") > 0
-    if ClienteUnimed then
+    
+
+    if tryLogin("Admin")=1 then
+        ExibeChatAtendimento=True
+    end if
+
+    if ClienteUnimed or AppEnv<>"production" then
         ExibeChatAtendimento=False
     end if
 

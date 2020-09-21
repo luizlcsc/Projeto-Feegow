@@ -2451,6 +2451,15 @@ select case lcase(req("P"))
         <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
     <%
+    case "programasdesaude", "programasdesaudetipos"
+    %>
+    <li>
+        <a href="?P=programasdesaude&Pers=1"><span class="fa fa-medkit"></span> <span class="sidebar-title">Programas de Saúde</span></a>
+    </li>
+    <li>
+        <a href="?P=programasdesaudetipos&Pers=1"><span class="fa fa-list"></span> <span class="sidebar-title">Tipos de Programa</span></a>
+    </li>
+    <%
 end select
 
 if session("AutoConsolidar")="" then

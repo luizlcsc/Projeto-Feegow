@@ -56,7 +56,7 @@ if ref("n")<>"" then
             end if
         end if
 
-    response.write("$('.guia[value="&GuiaID&"]').click();$('.guia[value="&GuiaID&"]').click();")
+    response.write("$('.guia[value="&GuiaID&"]').click();")
 
     db.execute(sqlup)
 
@@ -65,11 +65,18 @@ if ref("n")<>"" then
     if not ValorTotalSQL.eof then
 
         if ValorTotalSQL(coluna) <= ValorTotalSQL("ValorPago") then
-            db.execute("UPDATE tiss"&TG&" SET GuiaStatus =10 WHERE id IN("&GuiaID&")")
-        elseif ValorPago="0" or ValorPago="" then
+            statusId=10
+        elseif ValorPago="0" or ValorPago="" or ValorPago="0,00" then
+            statusId=2
             'db.execute("UPDATE tiss"&TG&" SET GuiaStatus =2 WHERE id IN("&GuiaID&")")
         else
-            db.execute("UPDATE tiss"&TG&" SET GuiaStatus =11 WHERE id IN("&GuiaID&")")
+            statusId=11
+        end if
+
+        if statusId<>"" then
+            %>
+            alteraStatusGuia("<%=GuiaID%>", "<%=TG%>", "<%=statusId%>");
+            <%
         end if
     end if
 

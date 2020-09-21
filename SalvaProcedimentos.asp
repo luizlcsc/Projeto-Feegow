@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Json.asp"-->
 <%
 procedimentosString = ref("ProcedimentoID")
 valorPagoString = ref("ValorPago")
@@ -14,6 +15,8 @@ valorPagoArray = split(valorPagoString, ", ")
 
 guiaIdAnexaArray = split(guiaIdAnexaString, ", ")
 valorPagoGuiaArray = split(valorPagoGuiaString, ", ")
+
+novoStatusId=Null
 
 dim somaTotalProcedimentos
 somaTotalProcedimentos = 0
@@ -62,12 +65,10 @@ end if
 if(UCase(tabela) = UCase("GuiaHonorarios")) then 
    if (procedimentosString <> "") then
         For i = 0 to Ubound(procedimentosArray)
-            sqlExecute = "update tissprocedimentoshonorarios set ValorPago="& treatvalzero(valorPagoArray(i)) & " where id ="&procedimentosArray(i)&""
-            db_execute(sqlExecute)
+            valorPago = ref("ValorPago"&procedimentosArray(i))
         
-            if (valorPagoArray(i) <> "") then 
-                valorPago = valorPagoArray(i)
-            end if 
+            sqlExecute = "update tissprocedimentoshonorarios set ValorPago="& treatvalzero(valorPago) & " where id ="&procedimentosArray(i)&""
+            db_execute(sqlExecute)
 
             somaTotalProcedimentos = somaTotalProcedimentos + valorPago
         Next
@@ -78,4 +79,11 @@ if(UCase(tabela) = UCase("GuiaHonorarios")) then
     db_execute(sqlExecute)
 end if
 
+call jsonHeader("")
 %>
+{
+    "total_pago": "<%=fn(valorTotalGuiasProcedimentos)%>",
+    "status_id": "<%=novoStatusId%>",
+    "guia_id": "<%=guiaId%>",
+    "tipo_guia": "<%=tabela%>"
+}

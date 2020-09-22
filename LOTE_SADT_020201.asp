@@ -385,7 +385,7 @@ prefixo = right(prefixo, 20)
 								DocumentoConselho = TirarAcento(eq("DocumentoConselho"))
 								SiglaConselho = cons("codigo")
 								UF = TirarAcento(eq("UF"))
-								UFConselho = TirarAcento(eq("UFConselho"))
+								UFConselho = ucase(TirarAcento(eq("UFConselho")))
 								CodigoCBO = TirarAcento(eq("CodigoCBO"))
 
 								if CodigoNaOperadoraOuCPF = "-" then

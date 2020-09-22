@@ -37,7 +37,7 @@ if Acao="Inserir" then
 		next
 		if getConfig("FechamentoLoteCR") = "1" then
             if Tipo="GuiaConsulta" then
-                set valorProc = db.execute("select sum(ValorProcedimento) Valor from tissguiaconsulta t where LoteID = "&pult("id")&"")
+                set valorProc = db.execute("select sum(ValorProcedimento) Valor, ProcedimentoID  from tissguiaconsulta t where LoteID = "&pult("id")&"")
             elseif Tipo="GuiaSADT" then
                 set valorProc = db.execute("select sum(ValorPago) Valor from tissguiasadt t where LoteID = "&pult("id")&"")
             elseif Tipo="GuiaHonorarios" then
@@ -47,6 +47,11 @@ if Acao="Inserir" then
                 set pultInv = db.execute("select id from sys_financialinvoices where sysUser="&session("User")&" order by id desc limit 1")
                 InvoiceID = pultInv("id")
                 db.execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, UnidadeID) values (0, 0, 6, "&request.QueryString("ConvenioID")&", "&treatvalzero(valorProc("Valor"))&", CURDATE(), 'C', 'Bill', 'BRL', 1, "&InvoiceID&", 1, "&session("User")&", "&session("UnidadeID")&")")
+                if Tipo="GuiaConsulta" then
+                    db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, sysUser, Executado) values ("&InvoiceID&", 'S', 1, 0, "&valorProc("ProcedimentoID")&", "&treatvalzero(valorProc("Valor"))&", 0, 'fechamento de lote', "&session("User")&", '')")
+                else
+                    db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, sysUser, Executado) values ("&InvoiceID&", '0', 1, 0, '', "&treatvalzero(valorProc("Valor"))&", 0, 'fechamento de lote', "&session("User")&", '')")
+                end if
         end if
 		%>
         alert('O lote foi salvo com sucesso. Para gerar o arquivo XML, acesse o menu TISS -> Administrar Lotes.');

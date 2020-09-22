@@ -110,7 +110,7 @@ if session("Partner")<>"" then
         Set dbS = Server.CreateObject("ADODB.Connection")
         dbS.Open ConnStringS
 
-        sqlProf = "select prof.id, CONCAT(IFNULL(trat.Tratamento,''),' ',prof.NomeProfissional)NomeProfissional from clinic"& LicencaID &".profissionais prof LEFT JOIN clinic"& LicencaID &".agendamentos ag ON ag.Data="& mydatenull(Data) &" AND ag.ProfissionalID=prof.id AND ag.StaID IN ("&replace(Status,"|","")&") LEFT JOIN clinic"& LicencaID &".tratamento trat on trat.id=prof.TratamentoID where prof.sysActive=1 and prof.ativo='on'  GROUP BY prof.id HAVING count(ag.id) > 0 order by prof.NomeProfissional"
+        sqlProf = "select prof.id, CONCAT(IFNULL(concat(trat.Tratamento,' '),''),prof.NomeProfissional)NomeProfissional from clinic"& LicencaID &".profissionais prof LEFT JOIN clinic"& LicencaID &".agendamentos ag ON ag.Data="& mydatenull(Data) &" AND ag.ProfissionalID=prof.id AND ag.StaID IN ("&replace(Status,"|","")&") LEFT JOIN clinic"& LicencaID &".tratamento trat on trat.id=prof.TratamentoID where prof.sysActive=1 and prof.ativo='on'  GROUP BY prof.id HAVING count(ag.id) > 0 order by prof.NomeProfissional"
         set p = dbs.execute(sqlProf)
 
         if not p.eof then
@@ -196,7 +196,7 @@ if session("Partner")<>"" then
 
                             QuebraDeLinha="  "
 
-                            Texto = "*"&NomeEmpresa&"*"&QuebraDeLinha&"Olá, *"& a("NomePaciente") &"*! Posso confirmar sua consulta com *"& p("NomeProfissional") &"*  no dia *"& Data &"* às *"& ft(a("Hora")) &"*?"&QuebraDeLinha&"_Este horário foi especialmente reservado para você, portanto, se não puder comparecer não deixe de nos avisar, assim podemos liberar seu horário para outro paciente._ "&QuebraDeLinha&" _Obrigada!_"
+                            Texto = "Olá, *"& a("NomePaciente") &"*! Posso confirmar sua consulta com *"& p("NomeProfissional") &"*  no dia *"& Data &"* às *"& ft(a("Hora")) &"*?"&QuebraDeLinha&"_Este horário foi especialmente reservado para você, portanto, se não puder comparecer não deixe de nos avisar, assim podemos liberar seu horário para outro paciente._ "&QuebraDeLinha&" _Obrigada!_"
 
                             Classe = ""
                             if a("StaID")=7 then

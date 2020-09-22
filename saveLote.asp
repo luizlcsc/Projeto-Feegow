@@ -35,7 +35,7 @@ if Acao="Inserir" then
 		    loteSql = "update "&tabela&" set LoteID="&pult("id")&" where id="&spl(i)
 			db_execute(loteSql)
 		next
-		if getConfig("FechamentoLoteCR") = 1 then
+		if getConfig("FechamentoLoteCR") = "1" then
             if Tipo="GuiaConsulta" then
                 set valorProc = db.execute("select sum(ValorProcedimento) Valor from tissguiaconsulta t where LoteID = "&pult("id")&"")
             elseif Tipo="GuiaSADT" then
@@ -43,10 +43,10 @@ if Acao="Inserir" then
             elseif Tipo="GuiaHonorarios" then
                 set valorProc = db.execute("select sum(ValorPago) Valor from tissguiahonorarios t where LoteID = "&pult("id")&"")
             end if
-              db.execute("insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser,sysDate, FormaID, ContaRectoID) values ("Fechamento de Lotes", "&request.QueryString("ConvenioID")&", 6, "&treatvalzero(valorProc("Valor"))&", 1, 'BRL', "&session("UnidadeID")&", 1, 'm', 'C', 1, "&session("User")&",CURDATE(), 0, 0)")
+              db.execute("insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser,sysDate, FormaID, ContaRectoID) values ('Fechamento de Lotes', "&request.QueryString("ConvenioID")&", 6, "&treatvalzero(valorProc("Valor"))&", 1, 'BRL', "&session("UnidadeID")&", 1, 'm', 'C', 1, "&session("User")&",CURDATE(), 0, 0)")
                 set pultInv = db.execute("select id from sys_financialinvoices where sysUser="&session("User")&" order by id desc limit 1")
                 InvoiceID = pultInv("id")
-                db_execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, UnidadeID) values (0, 0, 6, "&request.QueryString("ConvenioID")&", "&treatvalzero(valorProc("Valor"))&", CURDATE(), 'C', 'Bill', 'BRL', 1, "&InvoiceID&", 1, "&session("User")&", "&session("UnidadeID")&")")
+                db.execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, UnidadeID) values (0, 0, 6, "&request.QueryString("ConvenioID")&", "&treatvalzero(valorProc("Valor"))&", CURDATE(), 'C', 'Bill', 'BRL', 1, "&InvoiceID&", 1, "&session("User")&", "&session("UnidadeID")&")")
         end if
 		%>
         alert('O lote foi salvo com sucesso. Para gerar o arquivo XML, acesse o menu TISS -> Administrar Lotes.');

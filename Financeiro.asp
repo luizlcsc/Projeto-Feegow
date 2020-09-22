@@ -9,14 +9,13 @@
 </script>
 
 <%
-if aut("contasareceber")=1 and aut("contasapagar")=1 and aut("movement")=1 then
+    if aut("contasareceber")=1 and aut("contasapagar")=1 and aut("movement")=1 then
 
+    DataReferencia=req("DataReferencia")
 
-DataReferencia=req("DataReferencia")
-
-if DataReferencia="" then
-    DataReferencia=date()
-end if
+    if DataReferencia="" then
+        DataReferencia=date()
+    end if
 %>
 <br />
 	<div class="panel">
@@ -40,7 +39,7 @@ end if
 				set unidadesSql = db.execute("select unidades from "&session("Table")&" where id="&session("idInTable"))
 				if not unidadesSql.EOF then
 					if unidadesSql("unidades")&""<>"" then
-						whereUnidades = "AND empresa in("&replace(unidadesSql("unidades"),"|","")&")"
+						'whereUnidades = "AND empresa in("&replace(unidadesSql("unidades"),"|","")&")"
 					end if
 				end if
 				Data=date()

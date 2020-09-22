@@ -276,6 +276,7 @@ $(document).ready(function() {
     $('.categoria-single').select2();
 });
 
+
 function printInvoices(){
         let invoices = [];
         $(".conta-a-pagar-checkbox").each((item,key) => {

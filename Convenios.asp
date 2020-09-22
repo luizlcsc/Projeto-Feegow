@@ -519,15 +519,14 @@ end function
         $("#qfdatarecebimentoespecifico").hide();
     });
 
-$("#DiasReceb").change(function(){
-    console.log($(this).val());
+$("#DiasReceb").change(function()
+{
     let DU = $("#qfdiasrecebimento");
     let DE = $("#qfdatarecebimentoespecifico");
     if($(this).val() == "2"){
         DU.hide();
         DE.show();
     }
-
     if($(this).val() == "1"){
         DE.hide();
         DU.show();

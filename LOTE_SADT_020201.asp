@@ -367,7 +367,7 @@ prefixo = right(prefixo, 20)
 							<%
 							while not eq.eof
 								GrauParticipacao = TirarAcento(eq("GrauParticipacao")&"")
-								if GrauParticipacao="" or isnull(GrauParticipacao) then GrauParticipacao="" end if
+								if GrauParticipacao="" or isnull(GrauParticipacao) then GrauParticipacao="00" end if
 								CodigoNaOperadoraOuCPF = TirarAcento(eq("CodigoNaOperadoraOuCPF"))
 								if CodigoNaOperadoraOuCPF="" then CodigoNaOperadoraOuCPF="-" end if
 

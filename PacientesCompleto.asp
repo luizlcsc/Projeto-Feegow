@@ -685,8 +685,8 @@ if getConfig("LembreteFormulario")=1 then
                         if not ValOp.eof then
                             Valor = ValOp("Nome")
                         end if
-                    else
-                        'Valor = Registro(""&Campo("id")&"")
+                    elseif Campo("TipoCampoID")=1 or Campo("TipoCampoID")=8 then
+                        Valor = Registro(""&Campo("id")&"")
                     end if
                     %>
                     new PNotify({

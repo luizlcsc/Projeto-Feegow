@@ -5,9 +5,8 @@ Tabela = req("Tabela")
 
 
 if Tabela="itensinvoice" then
-    set AtendimentoSQL = db.execute("SELECT ")
+    set AtendimentoSQL = db.execute("SELECT ii.* FROM itensinvoice II WHERE ii.id="&ID)
 end if
-
 
 
 %>
@@ -31,7 +30,12 @@ end if
             </thead>
             <tbody>
                 <%
-                while not
+                while not AtendimentoSQL.eof
+
+                AtendimentoSQL.movenext
+                wend
+                AtendimentoSQL.close
+                set AtendimentoSQL=nothing
                 %>
             </tbody>
         </table>

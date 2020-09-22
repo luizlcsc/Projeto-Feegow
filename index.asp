@@ -2570,7 +2570,7 @@ if session("ExibeChatAtendimento")=False or req("P")="Login" then
 end if
 
 
-if PermiteChat then
+if PermiteChat or 1 then
 %>
 <script>
   <%
@@ -2587,7 +2587,14 @@ if PermiteChat then
   function initFreshChat() {
     window.fcWidget.init({
       token: "e1b3be37-181a-4a60-b341-49f3a7577268",
-      host: "https://wchat.freshchat.com"
+      host: "https://wchat.freshchat.com",
+      config: {
+        content:{
+            headers: {
+            csat_question: 'Com relação ao atendimento do seu Analista de Sucesso, você achou bom?',
+          }
+        }
+      }
     });
 
     // To set unique user id in your system when it is available

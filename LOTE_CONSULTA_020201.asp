@@ -116,7 +116,7 @@ Hora = formatdatetime( lote("sysDate") ,3)
 					if guias("CodigoCNES")="" then CodigoCNES=CNESContratado else CodigoCNES=trim(guias("CodigoCNES")) end if
 					ConselhoProfissional = guias("ConselhoProfissionalSigla")
 					DocumentoConselho = trim(guias("DocumentoConselho"))
-					CodigoUFConselho = guias("CodigoUFConselho")
+					CodigoUFConselho = ucase(guias("CodigoUFConselho"))
 
 					CodigoCBO = TirarAcento(guias("CodigoCBO")) 'trim("2231.05")
 					CodigoCBO = getOldCBO(CodigoCBO)
@@ -128,7 +128,7 @@ Hora = formatdatetime( lote("sysDate") ,3)
 
 					CodigoTabela = getTabelaOld(CodigoTabela)
 			
-                    NomePlano = guias("NomePlano")
+                    NomePlano = TirarAcento(guias("NomePlano"))
                     ValidadeCarteira = mydatetiss(guias("ValidadeCarteira"))
 					CodigoProcedimento = trim(guias("CodigoProcedimento"))
 					ValorProcedimento = ""

@@ -185,7 +185,7 @@ prefixo = right(prefixo, 20)
 					if not coduf.eof then
 						CodigoUFConselhoSolicitante = TirarAcento(coduf("codigo"))
 					end if
-					UFConselhoSolicitante = guias("UFConselhoSolicitante")
+					UFConselhoSolicitante = ucase(guias("UFConselhoSolicitante"))
 					CodigoCBOSolicitante = TirarAcento(guias("CodigoCBOSolicitante"))
 					DataSolicitacao = mydatetiss(guias("DataSolicitacao"))
 					CaraterAtendimentoID = TirarAcento(guias("CaraterAtendimentoID"))
@@ -231,7 +231,7 @@ prefixo = right(prefixo, 20)
 					if guias("planoID")&""<>"" then
 						set plano = db.execute("select * from conveniosplanos where id="&guias("planoID"))
 						if not plano.eof then
-							NomePlano = plano("NomePlano")
+							NomePlano = TirarAcento(plano("NomePlano"))
 						end if
 					end if
 

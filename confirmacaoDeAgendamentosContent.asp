@@ -5,8 +5,8 @@
 PermitirSelecionarModeloWhatsApp=getConfig("PermitirSelecionarModeloWhatsApp")
 
 function centralWhatsApp(AgendamentoID, MensagemPadrao)
-
-        if MensagemPadrao="" then
+        Mensagem = MensagemPadrao
+        if Mensagem="" then
             sql = "select se.TextoSMS from configeventos ce "&_
                 " left join sys_smsemail se on se.id = ce.ModeloMsgWhatsapp "&_
                 " where ce.id = 1 "
@@ -21,9 +21,6 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
                     Mensagem=TextoSMS
                 end if
             end if
-
-        else
-            Mensagem = MensagemPadrao
         end if
 
 
@@ -225,7 +222,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                                    "LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID LEFT JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN locais l ON l.id=a.LocalID "&_
                                    "LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN convenios conv ON conv.id=a.ValorPlano LEFT JOIN tabelaparticular tab ON tab.id=a.TabelaParticularID "&_
                                    "WHERE "&sqlData& sqlSta & sqlProf & sqlPac & sqlTipoProc & sqlGrupoProc & sqlUnidade &" AND a.sysActive=1 ORDER BY Data, ProfissionalID, Hora"
-            'response.write sqlConf
+            'dd(sqlConf)
             set ag = db.execute(sqlConf)
             while not ag.eof
                 i = i + 1

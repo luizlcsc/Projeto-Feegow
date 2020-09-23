@@ -649,9 +649,13 @@ end if
 
 <%
 if instr(camposPedir, "IndicadoPorSelecao")>0 then
+    ObrigarCampoIndicado = ""
+    if instr(camposObrigatorioPaciente, "IndicadoPorSelecao")>0 then
+        ObrigarCampoIndicado = " required "
+    end if
 %>
           <div class="col-md-3">
-            <%= selectInsertCA("Indicação", "indicacaoId", Pagador, "5, 8", " onclick=""autoPC($(this).attr(\'data-valor\')) "" ", " "&fieldReadonly, "") %>
+            <%= selectInsertCA("Indicação", "indicacaoId", Pagador, "5, 8", " onclick=""autoPC($(this).attr(\'data-valor\')) "" ", " "&fieldReadonly&ObrigarCampoIndicado, "") %>
           </div>
           <%
 end if

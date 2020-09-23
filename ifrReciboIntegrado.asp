@@ -294,7 +294,7 @@ if not inv.eof then
 
         end if
 
-		if instr(Recibo, "[Receita.")>0 then
+		if instr(Recibo, "[Receita.")>0 or true then
 
 			'if session("Banco")="clinic105" or session("Banco")="clinic1752" then
 				'tabelinha = "<table class='table table-striped table-condensed table-bordered table-hover'>"&_

@@ -47,7 +47,7 @@
             sqlUsuariosConteudo = " SELECT l.id LicencaID, lu.Nome, lu.Tipo, lu.Email, l.NomeEmpresa, lu.Ativo, l.Servidor, lu.id, l.ServidorID"&chr(13)&_
                                     " FROM cliniccentral.licencasusuarios lu                                                "&chr(13)&_
                                     " LEFT JOIN cliniccentral.licencas l ON l.id=lu.licencaid                               "&chr(13)&_
-                                    " WHERE l.cupom LIKE '"&Cupom&"'                                                   "&chr(13)&_
+                                    " WHERE l.cupom = '"&Cupom&"'                                                   "&chr(13)&_
                                     " ORDER BY l.ServidorID ASC, l.NomeEmpresa ASC, lu.Nome ASC                             "&chr(13)&_
                                     "                                                                                       "
             set usu = db.execute(sqlUsuariosConteudo)

@@ -2570,7 +2570,7 @@ if session("ExibeChatAtendimento")=False or req("P")="Login" then
 end if
 
 
-if PermiteChat or 1 then
+if PermiteChat then
 %>
 <script>
   <%

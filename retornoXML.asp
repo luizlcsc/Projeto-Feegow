@@ -151,6 +151,7 @@
                     db_execute("update "& pguia("Tabela") &" set ValorPago="& treatvalzero(valorLiberadoGuia) &", GuiaStatus="& statusGuia &" where id="& pguia("id"))
                     if not isnull(pguia("TabelaProcedimentos")) then
                         'atualiza o procedimento sadt
+                        'db_execute("update "& pguia("TabelaProcedimentos") &" set ValorPago="& treatvalzero(valorLiberadoGuia) &" where GuiaID="& pguia("id"))
 
                     end if
                 end if
@@ -259,7 +260,7 @@
 
                              IF NOT pguias.eof THEN
                                 IF pguias("Tabela") = "tissguiasadt" THEN
-                                    sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')) WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
+                                    sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF(CAST('"&valorLiberado&"' AS UNSIGNED) * IFNULL(CAST(Quantidade AS UNSIGNED),1),'')) WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
                                     db.execute(sqlProcedimento)
                                 END IF
                             END IF

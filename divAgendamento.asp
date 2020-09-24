@@ -1329,7 +1329,9 @@ function parametros(tipo, id){
 
             },
             error:function(data){
-                btnSalvarToggleLoading(true);
+
+                //comentado por possivel erro para clientes: Valor divergente da tabela particular (variacao)
+                // btnSalvarToggleLoading(true);
             }
         });
     }, 100);

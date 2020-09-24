@@ -14,6 +14,12 @@ totalProcedimentos = 0
 totalTaxas = 0
 response.Buffer
 
+function buttonDetalharDominio(itemId)
+    buttonDetalharDominio="<div class='pb5 ' style='float: right'>" &_
+                          "<button title='Detalhar regras de repasse' data-toggle='tooltip' onclick='detalhaDominio(""itensinvoice"","""&itemId&""")' type='button' class='btn btn-default btn-xs'><i class='fa fa-question-circle'></i></button>" &_
+                          "</div>"
+end function
+
 private function tituloTabelaRepasse(Classe, Titulo, ItemInvoiceID, PagtoID, FormaPagto, NumeroParcela, Parcelas, ValorRecebido, ParcelaID, Extras)
 
     %>
@@ -99,6 +105,8 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
     'response.write( sqlFD )
     set fd = db.execute( sqlFD )
     nLinha = 0
+
+    response.write(buttonDetalharDominio(ItemInvoiceID))
 
     while not fd.eof
         '-> Começa a coletar os dados pra temprepasses (antiga rateiorateios)
@@ -302,6 +310,9 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
                 if ExibeLinha then
                     descricaoRegraRepasse="AAAAAAA"
+
+                    'CONSOLIDADO LINHA
+
                     call lrResult( "Calculo", rDataExecucao, DominioID & ": "& fd("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
                 end if
             end if
@@ -826,6 +837,8 @@ desfazBtnCons = ""
                     GrupoConsolidacao = rr("GrupoConsolidacao")
 
                     if StatusBusca="" or StatusBusca="C" then
+                    'CONSOLIDADO LINHA
+                        response.write(buttonDetalharDominio(ItemInvoiceID))
 
                         call lrResult( "RateioRateios", rDataExecucao, rr("DominioID") &": "& rr("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rr("ContaCredito"), rValorProcedimento, rValorRecebido, rr("Valor"), nLinha, rr("FM"), rr("Sobre"), rr("modoCalculo") )
                         if not isnull(rr("ItemContaAPagar")) or not isnull(rr("ItemContaAReceber")) or not isnull(rr("CreditoID")) then

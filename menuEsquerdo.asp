@@ -334,8 +334,10 @@ select case lcase(req("P"))
                            end if
                         end if
                     end if
-
-
+                    set FranquiaCodigoSQL = db.execute("SELECT id, NomeContato, DataHora, Status, Cupom FROM cliniccentral.licencas WHERE Franquia='P' AND id='"&session("Franquia")&"'")
+                    if not FranquiaCodigoSQL.eof then
+                        sqlLimitarProfissionais = " "
+                    end if
                     set Prof = db.execute("select id, LEFT(NomeProfissional, 20)NomeProfissional, NomeSocial, Cor, Ativo from profissionais where (NaoExibirAgenda != 'S' OR NaoExibirAgenda is null OR NaoExibirAgenda='') AND sysActive=1  "&sqlAtivo&" "&sqlLimitarProfissionais&" order by Ativo DESC,NomeProfissional")
                     while not Prof.EOF
                     if req("ProfissionalID")="" then

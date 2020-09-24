@@ -446,7 +446,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                             HoraID = replace(HoraID, ":", "")
                                             'HORARIO VAZIO
 
-                                            sqlInsertV = sqlInsertV & ", ("& treatvalzero(session("User")) &", "& mydatenull(Data) &", "& mytime(Hora) &", 'V', "& treatvalzero(ProfissionalID) &", "& EspecialidadeID &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& GradeID &", 1, "&ExibeAgendamentoOnline&")"
+                                            sqlInsertV = sqlInsertV & ", ("& treatvalzero(session("User")) &", "& mydatenull(Data) &", "& mytime(Hora) &", 'V', "& treatvalzero(ProfissionalID) &", "& EspecialidadeID &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& treatvalnull(GradeID) &", 1, "&ExibeAgendamentoOnline&")"
 
                                             Hora = dateadd("n", Intervalo, Hora)
                                         wend
@@ -569,13 +569,13 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                 sqlGradeId=""
 
                                 if not GradeExcecaoSQL.eof then
-                                    sqlGradeId = ", GradeID="&GradeExcecaoSQL("id")*-1
+                                    sqlGradeId = ", GradeID="&treatvalnull(GradeExcecaoSQL("id")*-1)
                                 else
                                     sqlGradePadrao0 = "select id from assfixalocalxprofissional where DiaSemana = " & DiaSemana & " AND HoraDe <= " & mytime(horario) & " AND HoraA >= "  &  mytime(horario) &  " AND ( (InicioVigencia <= " &mydatenull(Data)& " OR InicioVigencia IS NULL) AND (FimVigencia >= " &mydatenull(Data)& " OR FimVigencia  IS NULL) )  AND ProfissionalID=" &treatvalzero(ProfissionalID)& " ORDER BY 1 "
                                     set GradePadraoSQL = db.execute(sqlGradePadrao0)
 
                                     if not GradePadraoSQL.eof then
-                                        sqlGradeId = ", GradeID="&GradePadraoSQL("id")
+                                        sqlGradeId = ", GradeID="&treatvalnull(GradePadraoSQL("id"))
                                     end if
                                 end if
 

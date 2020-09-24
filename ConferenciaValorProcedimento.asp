@@ -16,17 +16,15 @@
                 </div>
             </div>
         </form>
-        <table class="table table-striped mt20">
+        <table class="table table-striped mt20 table-bordered table-striped">
             <thead>
                 <tr class="primary">
                     <th>Unidade</th>
                     <th>Tabela</th>
                     <th>Procedimento</th>
-                    <th>Valor Base - Procedimento</th>
-                    <th>Diferença - Tabela</th>
+                    <th>Valor Base (procedimento)</th>
                     <th>Valor Tabela</th>
-                    <th>Diferença - Variação</th>
-                    <th>Diferença - Variação (%)</th>
+                    <th>Variação de preço</th>
                     <th>Valor final</th>
                 </tr>
             </thead>
@@ -84,10 +82,12 @@
                             NomeProcedimento=ProcedimentosSQL("NomeProcedimento")
                             ValorProcedimento=ProcedimentosSQL("Valor")
                             ValorBase=ValorProcedimento
+                            TabelaDePrecoID=""
+                            DescricaoTabelaDePreco=""
                             Valor=0
                             VariacaoID=0
 
-                            sqlProcedimentoTabela = "SELECT pt.id, ptv.Valor, Profissionais, TabelasParticulares, Especialidades FROM procedimentostabelasvalores ptv INNER JOIN procedimentostabelas pt ON pt.id=ptv.TabelaID WHERE ProcedimentoID="&ProcedimentoID&" AND "&_
+                            sqlProcedimentoTabela = "SELECT pt.NomeTabela, pt.id, ptv.Valor, Profissionais, TabelasParticulares, Especialidades FROM procedimentostabelasvalores ptv INNER JOIN procedimentostabelas pt ON pt.id=ptv.TabelaID WHERE ProcedimentoID="&ProcedimentoID&" AND "&_
                             "(Especialidades='' OR Especialidades IS NULL OR Especialidades LIKE '%|"&ref("EspecialidadeID")&"|%' ) AND "&_
                             "(Profissionais='' OR Profissionais IS NULL OR Profissionais LIKE '%|"&ref("ProfissionalID")&"|%' ) AND "&_
                             "(TabelasParticulares='' OR TabelasParticulares IS NULL OR TabelasParticulares LIKE '%|"&TabelaID&"|%' ) AND "&_
@@ -109,6 +109,8 @@
 
                                 if estePonto>=ultimoPonto then
                                     ValorBase = ProcedimentoVigenciaSQL("Valor")
+                                    TabelaDePrecoID = ProcedimentoVigenciaSQL("id")
+                                    DescricaoTabelaDePreco = ProcedimentoVigenciaSQL("NomeTabela")
                                 end if
 
                                 ultimoPonto=estePonto
@@ -138,6 +140,8 @@
 
                                 pmValorPerc=0
 
+                                sinalVariacao=""
+
                                 if not vcaTab.eof then
                                     while not vcaTab.eof
                                         'response.Write("//"& sqlVarPreco )
@@ -163,8 +167,10 @@
                                             pmDescAcre = pmFator * ValorBase
                                         end if
                                         if pmTipo="D" then
+                                            sinalVariacao="-"
                                             pmValor = ValorBase - pmDescAcre
                                         else
+                                            sinalVariacao="+"
                                             pmValor = ValorBase + pmDescAcre
                                         end if
                                         Valor = pmValor
@@ -187,37 +193,28 @@
                                 <td>
                                     <%=NomeProcedimento%>
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     <%=fn(ValorProcedimento)%>
                                 </td>
-                                <td>
-                                    <%= getDiferencaCor(ValorBase - ValorProcedimento) %>
+                                <td class="text-right">
+                                    <%=fn(ValorBase)%><% if DescricaoTabelaDePreco<>"" then %> (<a target="_blank" href="?P=TabelasPreco&Pers=1I=<%=TabelaDePrecoID%>"><%=DescricaoTabelaDePreco%></a>)<% end if %>
                                 </td>
-                                <td>
-                                    <%=fn(ValorBase)%>
-
-                                </td>
-                                <td>
-                                    <%= getDiferencaCor(ValorVariacao - ValorBase) %>
-                                </td>
-                                <td>
+                                <td class="text-right">
                                     <%
                                     if (pmTipo="D" or pmTipo="A") and pmTipoValor="P" then
                                         %>
-                                        <%=pmValorPerc%>%
+                                        <%=sinalVariacao&pmValorPerc%>%
                                         <%
+                                    end if
+                                    if VariacaoID>0 then
+                                    %>
+                                    (<a target="_blank" href="./?P=VariacoesPrecos&I=<%=VariacaoID%>&Pers=1"><%=VariacaoID%></a>)
+                                    <%
                                     end if
                                     %>
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     <strong><%=fn(ValorVariacao)%></strong>
-                                    <%
-                                    if VariacaoID>0 then
-                                    %>
-                                    (<a href="./?P=VariacoesPrecos&I=<%=VariacaoID%>&Pers=1"><%=VariacaoID%></a>)
-                                    <%
-                                    end if
-                                    %>
                                 </td>
                             </tr>
                         <%

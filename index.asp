@@ -781,12 +781,20 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
           </a>
           <ul class="dropdown-menu list-group dropdown-persist w250" role="menu" style="overflow-y: auto; max-height: 500px">
                             <%
+                            msgDisabled = "Meu Perfil"
 							if session("Partner")="" then
+							    set franqueadaUsuario = db.execute("select * from cliniccentral.licencasusuarios where id = "&session("User")&" and LicencaID = "&LicenseID)
+							    disabled = " "
+
+							    if franqueadaUsuario.eof then
+							        disabled = " pointer-events:none; "
+							        msgDisabled = " Para acessar seu Perfil, acessar a licença principal"
+							    end if
 							%>
 								<li class="list-group-item menu-click-meu-perfil-meu-perfil">
-									<a class="animated animated-short fadeInUp" href="?P=<%=session("Table")%>&Pers=1&I=<%=session("idInTable")%>">
+									<a class="animated animated-short fadeInUp" href="?P=<%=session("Table")%>&Pers=1&I=<%=session("idInTable")%>" style="<%=disabled%>">
 										<i class="fa fa-user"></i>
-										Meu Perfil
+										<%=msgDisabled%>
 									</a>
 								</li>
                                 <%if session("banco")="clinic100000" or session("banco")="clinic5459" then %>

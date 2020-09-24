@@ -347,9 +347,9 @@ if left(tipo, 14)="ProcedimentoID" then
                 SomenteConvenios = replace(SomenteConvenios, "|NONE|","")
             end if
             SomenteConvenios = replace(SomenteConvenios,"|","'")
+            SomenteConvenios = replace(SomenteConvenios,"''", "'")
 
             if SomenteConvenios<>"" and SomenteConvenios<>"NONE" then
-                SomenteConvenios = replace(SomenteConvenios,"''", "'")
 
                 set ConveniosSQL = db.execute("SELECT NomeConvenio,id FROM convenios WHERE id IN("&SomenteConvenios&")")
                 %>

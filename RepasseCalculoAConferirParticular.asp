@@ -16,7 +16,7 @@ response.Buffer
 
 function buttonDetalharDominio(itemId)
     buttonDetalharDominio="<div class='pb5 ' style='float: right'>" &_
-                          "<button title='Detalhar domínios' onclick='detalhaDominio(""itensinvoice"","""&itemId&""")' type='button' class='btn btn-default btn-xs'><i class='fa fa-question-circle'></i></button>" &_
+                          "<button title='Detalhar regras de repasse' data-toggle='tooltip' onclick='detalhaDominio(""itensinvoice"","""&itemId&""")' type='button' class='btn btn-default btn-xs'><i class='fa fa-question-circle'></i></button>" &_
                           "</div>"
 end function
 

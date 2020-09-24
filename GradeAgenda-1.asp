@@ -296,29 +296,33 @@ end if
 
             if Horarios.EOF then
 
-                if NaoExibirOutrasAgendas = 0 then
                 sqlAssfixa = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, ass.Mensagem, ass.Cor as Cor, profissionais.cor as CorOriginal from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID left join profissionais on profissionais.id = ass.ProfissionalID where ass.ProfissionalID="&ProfissionalID& sqlProcedimentoPermitido & sqlConvenioPermitido & sqlEspecialidadePermitido &" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe"
-                'response.write sqlAssfixa&"<br>"
-                else
-                    sqlAssfixa = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, ass.Mensagem, ass.Cor as Cor, profissionais.cor as CorOriginal from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID left join profissionais on profissionais.id = ass.ProfissionalID where ass.ProfissionalID="&ProfissionalID& sqlProcedimentoPermitido & sqlConvenioPermitido & sqlEspecialidadePermitido &" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by ass.HoraDe"
-                end if
 
                 set Horarios = db.execute(sqlAssfixa)
             end if
+
             if Horarios.eof then
                 %>
                 <tr><td class="text-center" colspan="6"><small>Não há grade configurada para este dia da semana.</small></td></tr>
                 <%
             end if
             while not Horarios.EOF
+
                 MostraGrade=True
                 UnidadeID=Horarios("UnidadeID")
 
                 if UnidadeID&"" <> "" and session("admin")=0 and session("Partner")="" then
+                    if NaoExibirOutrasAgendas = 1 then
+                        if session("UnidadeID")<>UnidadeID then
+                            MostraGrade=False
+                        end if
+                    end if
+
                     if instr(session("Unidades"),"|"&UnidadeID&"|")=0 then
                         MostraGrade=False
                     end if
                 end if
+
                 if Horarios("GradePadrao")=1 then
                     FrequenciaSemanas = Horarios("FrequenciaSemanas")
                     InicioVigencia = Horarios("InicioVigencia")

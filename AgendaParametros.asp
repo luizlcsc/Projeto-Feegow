@@ -343,11 +343,14 @@ if left(tipo, 14)="ProcedimentoID" then
 
         if SomenteConvenios<>"" then
             if instr(SomenteConvenios,"|NONE|")>0 then
+                SomenteConvenios = replace(SomenteConvenios, "||NONE||","")
                 SomenteConvenios = replace(SomenteConvenios, "|NONE|","")
             end if
             SomenteConvenios = replace(SomenteConvenios,"|","'")
+            SomenteConvenios = replace(SomenteConvenios,"''", "'")
 
             if SomenteConvenios<>"" and SomenteConvenios<>"NONE" then
+
                 set ConveniosSQL = db.execute("SELECT NomeConvenio,id FROM convenios WHERE id IN("&SomenteConvenios&")")
                 %>
                 if($("#ConvenioID<%= apID %>").length > 0){

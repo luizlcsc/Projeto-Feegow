@@ -957,7 +957,6 @@ if session("Bloqueado")="FimTeste" or session("DiasTeste") then
 <%
 end if
 
-call odonto()
 
 if session("Admin")=1 then
 set preg = db.execute("select Endereco, Numero, Bairro, Cidade from pacientes where Endereco<>'' and Bairro<>'' and Cidade<>'' order by id desc limit 100")

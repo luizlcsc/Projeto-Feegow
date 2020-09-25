@@ -2,6 +2,18 @@
 
 <% server.execute("preXML.asp") %>
 
+<%
+function updateTabelaProcedimentos(tabelaGuia, tabelaId, codigo, valor, GuiaId, motivoGlosa, codigoGlosa)
+    if codigo&"" <> "" then
+        sqlUpdateTabela = "UPDATE `"&tabelaGuia&"` SET ValorPago=COALESCE(ValorPago,NULLIF(CAST('"&valor&"' AS UNSIGNED) * IFNULL(CAST(Quantidade AS UNSIGNED),1),'')), "&_
+                            "motivoGlosa='"&motivoGlosa&"', CodigoGlosa="&treatvalnull(codigoGlosa)&" "&_
+                            "WHERE  CodigoProcedimento = '"&codigo&"' and Quantidade=1 AND GuiaID = "&GuiaID
+
+        db_execute(sqlUpdateTabela)
+    end if
+end function
+%>
+
 <div class="panel">
     <div class="panel-body">
         <div class="row">
@@ -151,6 +163,7 @@
                     db_execute("update "& pguia("Tabela") &" set ValorPago="& treatvalzero(valorLiberadoGuia) &", GuiaStatus="& statusGuia &" where id="& pguia("id"))
                     if not isnull(pguia("TabelaProcedimentos")) then
                         'atualiza o procedimento sadt
+                        'db_execute("update "& pguia("TabelaProcedimentos") &" set ValorPago="& treatvalzero(valorLiberadoGuia) &" where GuiaID="& pguia("id"))
 
                     end if
                 end if
@@ -259,8 +272,10 @@
 
                              IF NOT pguias.eof THEN
                                 IF pguias("Tabela") = "tissguiasadt" THEN
-                                    sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')) WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
-                                    db.execute(sqlProcedimento)
+                                    call updateTabelaProcedimentos("tissprocedimentossadt", tipoTabela, codigo, valorLiberado, pguias("id"), null, null)
+
+                                    'sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF(CAST('"&valorLiberado&"' AS UNSIGNED) * IFNULL(CAST(Quantidade AS UNSIGNED),1),'')) WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
+                                    'db.execute(sqlProcedimento)
                                 END IF
                             END IF
                         next
@@ -344,9 +359,11 @@
                                              end if
 
                                             ' a tabela vem 00 sempre, portanto nao podemos usar como parametro do where. TabelaID = '"&tipoTabela&"' AND
-                                            sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')), motivoGlosa="&GlosaID&", CodigoGlosa="&treatvalnull(codigoGlosa)&" WHERE  CodigoProcedimento = '"&codigo&"' AND GuiaID = "&pguias("id")
 
-                                            db.execute(sqlProcedimento)
+                                            call updateTabelaProcedimentos("tissprocedimentossadt", tipoTabela, codigo, valorLiberado, pguias("id"), GlosaID, codigoGlosa)
+                                            'sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')), motivoGlosa="&GlosaID&", CodigoGlosa="&treatvalnull(codigoGlosa)&" WHERE  CodigoProcedimento = '"&codigo&"' AND GuiaID = "&pguias("id")
+
+                                            'db.execute(sqlProcedimento)
                                         END IF
 
                                     END IF
@@ -404,8 +421,10 @@
 
                                 IF NOT pguias.eof THEN
                                     IF pguias("Tabela") = "tissguiasadt" THEN
-                                        sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')),motivoGlosa=NULLIF('"&tipoGlosa&"','')  WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
-                                        db.execute(sqlProcedimento)
+
+                                        call updateTabelaProcedimentos("tissprocedimentossadt", tipoTabela, codigo, valorLiberado, pguias("id"), tipoGlosa, codigoGlosa)
+                                        'sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')),motivoGlosa=NULLIF('"&tipoGlosa&"','')  WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
+                                        'db.execute(sqlProcedimento)
                                     END IF
 
                                 END IF
@@ -456,8 +475,12 @@
                                 tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
                                 IF NOT pguias.eof THEN
                                     IF pguias("Tabela") = "tissguiasadt" THEN
-                                        sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')),motivoGlosa=NULLIF('"&tipoGlosa&"','')  WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
-                                        db.execute(sqlProcedimento)
+                                    
+                                        call updateTabelaProcedimentos("tissprocedimentossadt", tipoTabela, codigo, valorLiberado, pguias("id"), tipoGlosa, codigoGlosa)
+
+
+                                        'sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')),motivoGlosa=NULLIF('"&tipoGlosa&"','')  WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
+                                        'db.execute(sqlProcedimento)
                                     END IF
 
                                 END IF
@@ -508,8 +531,10 @@
                                 tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
                                 IF NOT pguias.eof THEN
                                     IF pguias("Tabela") = "tissguiasadt" THEN
-                                        sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')),motivoGlosa=NULLIF('"&tipoGlosa&"','')  WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
-                                        db.execute(sqlProcedimento)
+                                        call updateTabelaProcedimentos("tissprocedimentossadt", tipoTabela, codigo, valorLiberado, pguias("id"), tipoGlosa, codigoGlosa)
+
+                                        'sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')),motivoGlosa=NULLIF('"&tipoGlosa&"','')  WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
+                                        'db.execute(sqlProcedimento)
                                     END IF
 
                                 END IF

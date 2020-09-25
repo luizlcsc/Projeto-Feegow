@@ -191,7 +191,7 @@ if not getMovement.EOF then
             <button type="button" class="btn btn-xs btn-danger pull-right" onclick="xMov(<%=getMovement("id") %>)"><i class="fa fa-trash"></i></button>
             <%
         elseif EhStone then
-            set microtefLogs = db.execute("SELECT * FROM microtef_logs WHERE InvoiceID ="&mInvoiceId)
+            set microtefLogs = db.execute("SELECT * FROM microtef_logs WHERE InvoiceID ="&treatvalzero(mInvoiceId))
                 if microtefLogs.eof then
                 %>
                 <button type="button" class="btn btn-xs btn-danger pull-right" onclick="xMov(<%=getMovement("id") %>)"><i class="fa fa-trash"></i></button>

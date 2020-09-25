@@ -334,8 +334,10 @@ select case lcase(req("P"))
                            end if
                         end if
                     end if
-
-
+                    set FranquiaCodigoSQL = db.execute("SELECT id, NomeContato, DataHora, Status, Cupom FROM cliniccentral.licencas WHERE Franquia='P' AND id='"&session("Franquia")&"'")
+                    if not FranquiaCodigoSQL.eof then
+                        sqlLimitarProfissionais = " "
+                    end if
                     set Prof = db.execute("select id, LEFT(NomeProfissional, 20)NomeProfissional, NomeSocial, Cor, Ativo from profissionais where (NaoExibirAgenda != 'S' OR NaoExibirAgenda is null OR NaoExibirAgenda='') AND sysActive=1  "&sqlAtivo&" "&sqlLimitarProfissionais&" order by Ativo DESC,NomeProfissional")
                     while not Prof.EOF
                     if req("ProfissionalID")="" then
@@ -880,7 +882,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("agenda")=1 then
             'ODONTOGRAMA
-            if (session("Banco")="clinic2901" or session("Banco")="clinic6776" or session("Banco")="clinic8039" or session("Banco")="clinic3656" or session("Banco")="clinic100000" or session("Banco")="clinic105" or session("Banco")="clinic5676" or session("Banco")="clinic5299") and 1=1 then
+            if session("Odonto")=1 then
                 %>
                 <li>
                     <a data-toggle="tab" class="tab menu-aba-pacientes-odontograma" href="#pront" onclick="pront('Odontograma.asp?I=<%=req("I")%>')">

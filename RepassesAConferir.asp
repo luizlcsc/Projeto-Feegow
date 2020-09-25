@@ -269,5 +269,10 @@ if reqf("AccountID")<>"" then
     end if
 end if
 %>
-
+function detalhaDominio(tipoItem, itemId) {
+    openComponentsModal("TestaRegraDeRepasse.asp", {
+        Tabela: tipoItem,
+        I: itemId
+    },"Teste da regra de repasse", true, false, "lg");
+}
 </script>

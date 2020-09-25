@@ -10,6 +10,8 @@
                             end if
 
 							session("Banco")="clinic"&tryLogin("LicencaAtual")
+							session("ExibeChatAtendimento")= True
+							session("Email")= tryLogin("Email")
 							session("Admin")=tryLogin("Admin")
 							session("Logo")=req("Partner")&".png"
 							session("Status")="C"

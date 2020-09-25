@@ -4,10 +4,13 @@
 
 <%
 function updateTabelaProcedimentos(tabelaGuia, tabelaId, codigo, valor, GuiaId, motivoGlosa, codigoGlosa)
-    sqlUpdateTabela = "UPDATE `"&tabelaGuia&"` SET ValorPago=COALESCE(ValorPago,NULLIF(CAST('"&valor&"' AS UNSIGNED) * IFNULL(CAST(Quantidade AS UNSIGNED),1),'')), "&_
-                        "motivoGlosa='"&motivoGlosa&"', CodigoGlosa="&treatvalnull(codigoGlosa)&" "&_
-                        "WHERE TabelaID = "&tabelaId&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&GuiaID
-    db_execute(sqlUpdateTabela)
+    if codigo&"" <> "" then
+        sqlUpdateTabela = "UPDATE `"&tabelaGuia&"` SET ValorPago=COALESCE(ValorPago,NULLIF(CAST('"&valor&"' AS UNSIGNED) * IFNULL(CAST(Quantidade AS UNSIGNED),1),'')), "&_
+                            "motivoGlosa='"&motivoGlosa&"', CodigoGlosa="&treatvalnull(codigoGlosa)&" "&_
+                            "WHERE  CodigoProcedimento = '"&codigo&"' and Quantidade=1 AND GuiaID = "&GuiaID
+
+        db_execute(sqlUpdateTabela)
+    end if
 end function
 %>
 
@@ -472,6 +475,7 @@ end function
                                 tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
                                 IF NOT pguias.eof THEN
                                     IF pguias("Tabela") = "tissguiasadt" THEN
+                                    
                                         call updateTabelaProcedimentos("tissprocedimentossadt", tipoTabela, codigo, valorLiberado, pguias("id"), tipoGlosa, codigoGlosa)
 
 

@@ -1,4 +1,7 @@
 <!--#include file="connect.asp"-->
+<%
+Unidades=Request.QueryString("Unidades")
+%>
 <br>
 <div class="panel">
     <div class="panel-body">
@@ -6,7 +9,7 @@
             <div class="row">
                 <input type="hidden" name="P" value="ConferenciaValorProcedimento">
                 <input type="hidden" name="Pers" value="1">
-                <%=quickfield("empresa", "UnidadeID", "Unidades", 2, session("UnidadeID"), "", "", "")%>
+                <%=quickfield("empresa", "UnidadeID", "Unidades", 2, Unidades, "", "", "")%>
                 <%=quickField("simpleSelect", "GrupoID", "Grupo", 2, Request.QueryString("GrupoID"), "select * from procedimentosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "  required ")%>
                 <%=quickField("simpleSelect", "TabelaID", "Tabela", 2, Request.QueryString("TabelaID"), "select * from tabelaparticular where sysActive=1 order by NomeTabela", "NomeTabela", " required  ")%>
                 <div class="col-md-3">
@@ -42,7 +45,6 @@
             getDiferencaCor = "<span style='color:"&Cor&"'>"&fn(valor)&"</span>"
         end function
 
-        Unidades=Request.QueryString("Unidades")
         GrupoID=Request.QueryString("GrupoID")
         TabelaID=Request.QueryString("TabelaID")
 

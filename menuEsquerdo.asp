@@ -882,7 +882,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("agenda")=1 then
             'ODONTOGRAMA
-            if (session("Banco")="clinic2901" or session("Banco")="clinic6776" or session("Banco")="clinic8039" or session("Banco")="clinic3656" or session("Banco")="clinic100000" or session("Banco")="clinic105" or session("Banco")="clinic5676" or session("Banco")="clinic5299") and 1=1 then
+            if session("Odonto")=1 then
                 %>
                 <li>
                     <a data-toggle="tab" class="tab menu-aba-pacientes-odontograma" href="#pront" onclick="pront('Odontograma.asp?I=<%=req("I")%>')">

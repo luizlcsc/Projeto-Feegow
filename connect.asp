@@ -4125,10 +4125,32 @@ end function
 
 function odonto()
     if session("Odonto")="" then
+        sqlProfissional = ""
+
+        if session("Table")="profissionais" then
+            sqlProfissional = " AND p.id = "&session("idInTable")
+        end if
+
         EspecialidadesOdonto = "154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 238, 239, 240, 241, 242, 243, 244, 245"
-        set vcaOdonto = db.execute("select p.EspecialidadeID from profissionais p LEFT JOIN profissionaisespecialidades e on e.ProfissionalID=p.id WHERE p.EspecialidadeID IN("& EspecialidadesOdonto &") or e.EspecialidadeID IN ("& EspecialidadesOdonto &") or p.Conselho = 3")
+
+        sqlOdonto = "SELECT * FROM ( "&_
+                    "    select p.EspecialidadeID from profissionais p  "&_
+                    "    WHERE p.Ativo='on' AND p.sysActive=1  "&sqlProfissional&" "&_
+                    "    UNION ALL  "&_
+                    "    select e.EspecialidadeID from profissionais p  "&_
+                    "    LEFT JOIN profissionaisespecialidades e on e.ProfissionalID=p.id  "&_
+                    "    WHERE p.Ativo='on' AND p.sysActive=1  "&sqlProfissional&" "&_
+                    "    )t "&_
+                    "    INNER JOIN especialidades esp ON esp.id=t.EspecialidadeID "&_
+                    ""&_
+                    "    WHERE esp.especialidade LIKE '%odonto%' OR esp.especialidade LIKE '%dentista%'"
+
+        set vcaOdonto = db.execute(sqlOdonto)
+
         if NOT vcaOdonto.EOF then
             session("Odonto")=1
+        else
+            session("Odonto")=0
         end if
     end if
 end function

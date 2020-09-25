@@ -765,7 +765,7 @@ if not inv.eof then
                     end if
                     FormaPagtoOri = "<br>"&"("& Parcelas &"x) "&PaymentMethod &" = "&valorForma
                     FormaPagto = FormaPagto &""& FormaPagtoOri
-
+                    MetodoRecebimento = PaymentMethod
                 end if
                 UsuarioRecebimento=nameInTable(forma("sysUser"))
             forma.movenext
@@ -805,6 +805,7 @@ if not inv.eof then
             Recibo = replace(Recibo, "[Recibo.Ano]", year(date()))
 			Recibo = replace(Recibo, "[-Usuario.Nome-]", UsuarioRecebimento)
 			Recibo = replace(Recibo, "[Receita.FormaPagamento]", FormaPagto)
+			Recibo = replace(Recibo, "[Receita.MetodoRecebimento]", MetodoRecebimento)
 			Recibo = replace(Recibo, "[Receita.ValorTotal]", fn(TotalTotal) )
 			Recibo = replace(Recibo, "[Receita.TotalPago]", fn(ValorRecibo) )
 			Recibo = replace(Recibo, "[Receita.TotalPendente]", fn(TotalPendente) )

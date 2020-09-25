@@ -534,6 +534,8 @@ if not tryLogin.EOF then
 
         QueryStringParameters = Request.Form("qs")
 
+        call odonto()
+
         if QueryStringParameters<>"" then
             response.Redirect("./?"&QueryStringParameters)
         else

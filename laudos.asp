@@ -98,11 +98,17 @@ end if
         }
     });
 
-    function entrega(I) {
+    function entrega(I,tipo) {
             $("#modal-table").modal("show");
             $("#modal").html("Carregando...");
-
-            $.post("laudoEntrega.asp?L="+I, "", function (data) { $("#modal").html(data) });
+            if (tipo == 'html')
+            {
+                $.post("laudoEntrega.asp?L="+I, "", function (data) { $("#modal").html(data) });
+            } 
+            else
+            {
+                $.post("laudoEntregaPDF.asp?L="+I, "", function (data) { $("#modal").html(data) });
+            }
     }
 </script>
 

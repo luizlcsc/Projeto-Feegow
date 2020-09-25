@@ -328,18 +328,18 @@ end if
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=739&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
                              <% elseif ii("labid")="3" then %>
                                  <% if  Status="Liberado" then %>
-                                    <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>);" href="#"><i class="fa fa-file-pdf-o"></i></a>
+                                    <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>,'pdf');" href="#"><i class="fa fa-file-pdf-o"></i></a>
                                  <% end if %>
                              <% elseif ii("labid")="4" then %>
                                 <% if  Status="Liberado" then %>
-                                <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>);" href="#"><i class="fa fa-file-pdf-o"></i></a>
+                                    <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>,'pdf');" href="#"><i class="fa fa-file-pdf-o"></i></a>
                                 <% end if %>
                              <% else %> 
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%=link%>"><i class="fa fa-edit"></i></a>
                             <% end if
                             
-                            if Status="Liberado" then
-                                response.write("<a href='javascript:entrega("&IDLaudo&")' class='btn btn-sm btn-info'><span class='fa fa-print'></span> </a>")
+                            if Status="Liberado" and ii("labid")<>"4" and ii("labid")<>"3" then
+                                response.write("<a href=""javascript:entrega("&IDLaudo&",'html')"" class='btn btn-sm btn-info'><span class='fa fa-print'></span> </a>")
                             end if
                             %>
                             <button class="btn btn-sm btn-info hidden"><i class="fa fa-print"></i></button>

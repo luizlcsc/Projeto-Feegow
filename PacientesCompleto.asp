@@ -641,8 +641,19 @@ function mesclar(p1, p2){
 $(document).ready(function () {
 
     $("#block-programas-saude").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
-    getUrl("health-programs/patient-view/<%=PacienteID %>", {}, function(data) {
-        $("#block-programas-saude").html(data);
+    function loadProgramasSaude() {
+        getUrl("health-programs/patient-view/<%=PacienteID %>", {}, function(data) {
+            $("#block-programas-saude").html(data);
+        });
+    }
+    loadProgramasSaude();
+
+    // recarrega o box de programas de saúde ao clicar no salvar
+    // para atualizar a regra de programa atrelado ao convênio do paciente
+    $('#Salvar').on('click', function() {
+        if ($("#block-programas-saude").length) {
+            loadProgramasSaude();
+        }
     });
 
     $("#block-care-team").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');

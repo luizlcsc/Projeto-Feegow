@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
 <%
 id = req("id")'variavel de acordo com o tipo
 tipo = req("tipo")
@@ -350,7 +351,7 @@ if left(tipo, 14)="ProcedimentoID" then
             SomenteConvenios = replace(SomenteConvenios,"''", "'")
 
             if SomenteConvenios<>"" and SomenteConvenios<>"NONE" then
-
+                SomenteConvenios = fix_array_comma(SomenteConvenios)
                 set ConveniosSQL = db.execute("SELECT NomeConvenio,id FROM convenios WHERE id IN("&SomenteConvenios&")")
                 %>
                 if($("#ConvenioID<%= apID %>").length > 0){

@@ -368,7 +368,7 @@ function changeTexto(arg){
             $("#modal").html("Carregando...");
             $.post("laudoEntrega.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
         } else {
-            alert("Não é possível entregar o laudo pois o mesmo ainda não foi liberado.");
+            alert("Não é possível entregar o laudo pois ainda não foi liberado.");
         }
     }
 

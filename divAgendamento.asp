@@ -1185,23 +1185,25 @@ function RegistrarMultiplasPendencias(liberar) {
 }
 
     function addRemoveRetorno(increment = true){
+        <% if getConfig("SubtrairUmMinutoAgendamentoRetorno") then %>
+            var hora = $("#Hora").val();
+            var horas = hora.split(":");
+
+            var d = new Date(0,0,0, horas[0], horas[1], 0);
+            var dVal=d.valueOf();
+            if(increment){
+                // adicionar 1 minuto
+                var newDate=new Date(dVal + 1000 * 60);
+            }else{
+                var newDate=new Date(dVal - 1000 * 60);
+            }
+            var vhora = (newDate.getHours() < 10)?"0"+newDate.getHours():newDate.getHours();
+            var vmin = (newDate.getMinutes() < 10)?"0"+newDate.getMinutes():newDate.getMinutes();
+            $("#Hora").val( vhora + ":" + vmin);
+        <% end if %>
+
         <% if getConfig("MarcarRetornosComoEncaixe") then %>
-
-        $("#Encaixe").prop("checked", increment);
-        var hora = $("#Hora").val();
-        var horas = hora.split(":");
-
-        var d = new Date(0,0,0, horas[0], horas[1], 0);
-        var dVal=d.valueOf();
-        if(increment){
-            // adicionar 1 minuto
-            var newDate=new Date(dVal + 1000 * 60);
-        }else{
-            var newDate=new Date(dVal - 1000 * 60);
-        }
-        var vhora = (newDate.getHours() < 10)?"0"+newDate.getHours():newDate.getHours();
-        var vmin = (newDate.getMinutes() < 10)?"0"+newDate.getMinutes():newDate.getMinutes();
-        $("#Hora").val( vhora + ":" + vmin);
+            $("#Encaixe").prop("checked", increment);
         <% end if %>
     }
 

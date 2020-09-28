@@ -159,13 +159,13 @@ elseif Tipo="Procedimentos" then
                                   "ORDER BY ps.sysDate DESC "&_
                                   "LIMIT 1)"&_
                                   " UNION ALL"&_
-                                  " SELECT p.id, p.CPF, COALESCE(a.Funcao, 0) GrauParticipacaoID, p.DocumentoConselho, p.UFConselho, p.CBOS, p.Conselho ConselhoID FROM procedimentosequipeconvenio a"&_
+                                  " (SELECT p.id, p.CPF, COALESCE(a.Funcao, 0) GrauParticipacaoID, p.DocumentoConselho, p.UFConselho, p.CBOS, p.Conselho ConselhoID FROM procedimentosequipeconvenio a"&_
                                   " inner JOIN profissionais p ON p.id = SUBSTRING_INDEX(a.ContaPadrao,'_' , -1) AND SUBSTRING_INDEX(a.ContaPadrao,'_' , 1) = '5'"&_
                                   " WHERE a.ProcedimentoID = "&ProcedimentoID&_
-                                  " UNION ALL"&_
-                                  " SELECT proext.id, proext.cpf, COALESCE(a.Funcao, 0), proext.DocumentoConselho, proext.UFConselho, proext.CBOS, proext.Conselho FROM procedimentosequipeconvenio a "&_
+                                  ") UNION ALL"&_
+                                  " (SELECT proext.id, proext.cpf, COALESCE(a.Funcao, 0), proext.DocumentoConselho, proext.UFConselho, proext.CBOS, proext.Conselho FROM procedimentosequipeconvenio a "&_
                                   " inner JOIN profissionalexterno proext ON proext.id = SUBSTRING_INDEX(a.ContaPadrao,'_' , -1) AND SUBSTRING_INDEX(a.ContaPadrao,'_' , 1) = '8'"&_
-                                  " WHERE a.ProcedimentoID = "&ProcedimentoID
+                                  " WHERE a.ProcedimentoID = "&ProcedimentoID&")"
 
                 set DadosDoProfissionalParaAdicionarSQL = db.execute(sqlProfissional)
 

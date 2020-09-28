@@ -8,7 +8,7 @@ Acao = req("Acao")
 
 if AgendamentoID="" or not isnumeric(AgendamentoID) then
 	AgendamentoID = 0
-	set getAgendamentoID = db.execute("SELECT id FROM agendamentos WHERE Data= '"&mydate(date())&"' AND PacienteID="&PacienteID&" AND ProfissionalID="&treatvalzero(session("idInTable"))&" LIMIT 1 ")
+	set getAgendamentoID = db.execute("SELECT id FROM agendamentos WHERE Data= '"&mydate(date())&"' AND PacienteID="&PacienteID&" AND ProfissionalID="&treatvalzero(session("idInTable"))&" AND sysActive = 1 LIMIT 1 ")
 	if not getAgendamentoID.eof then
 	    AgendamentoID = getAgendamentoID("id")
 	end if

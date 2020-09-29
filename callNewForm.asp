@@ -181,7 +181,7 @@ while not campos.eof
 
 	  if not isnull(ValorPadrao) then
 			'CONVERSOS TAGS NOVO || 30/06/2020 - Rafael Maia ||
-			ValorPadrao = tagsConverte(ValorPadrao,"PacienteID_"&PacienteID&"|ProfissionalSessao_"&session("User")&"|UnidadeSessao_"&session("UnidadeID"),"")
+			ValorPadrao = tagsConverte(ValorPadrao,"PacienteID_"&PacienteID&"|ProfissionalSessao_"&session("User")&"|UnidadeSessao_"&session("UnidadeID")&"|ProfissionalLaudadorID_"&req("pl")&"","")
 			'CONVERSOR TAGS ANTIGO
 			'ValorPadrao = replaceTags(ValorPadrao, PacienteID, session("UserID"), session("UnidadeID"))
 	  end if

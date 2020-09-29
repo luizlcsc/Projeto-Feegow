@@ -199,8 +199,27 @@ select case Tipo
                 </span>
             </div>
             <div class="panel-body" style="overflow: inherit!important;">
+                <%
+                if req("Tipo")="|L|" then
+                %>
                 <div class="col-md-3">
                     <%
+                    qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
+                                                " WHERE p.sysActive=1                                "&chr(13)&_
+                                                " ORDER BY p.NomeProfissional ASC                    "
+                    
+                    if session("Table")="profissionais" then
+                        valorCheck = session("idInTable")
+                    end if
+                    response.write(quickfield("select", "ProfissionalLaudadorID", "Profissional Laudador", "", valorCheck, qProfissionalLaudadorSQL, "NomeProfissional", ""))
+                    %>
+                </div>
+                <%
+                end if 
+                %>
+                <div class="col-md-3">
+                        <br>
+                        <%
                         sqlBuiforms = "select Nome,id from buiforms where sysActive=1 and "& sqlForm &" order by Nome"
                         nForms = 0
 			            set forms = db.execute(sqlBuiforms)
@@ -219,7 +238,7 @@ select case Tipo
 
                         if nForms<>1 then %>
                         <div class="btn-group btn-block">
-                            <button type="button" class="mt10 btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-plus"></i> <%=rotuloBotao %>
                                 <span class="caret ml5"></span>
                             </button>
@@ -246,6 +265,7 @@ select case Tipo
                                 %>
                             </ul>
                         </div>
+                        
                     <% else %>
                         <button type="button" class="btn btn-primary btn-block" <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%> <% if EmAtendimento=1 then%> onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, <%= idFormUnico %>, 'N', '');"<% end if %>><i class="fa fa-plus"></i> <%= nomeFormUnico %></button>
                     <% end if %>
@@ -265,7 +285,8 @@ select case Tipo
 
                 %>
                     <div class="col-md-3 col-xs-12">
-                        <a type="button" class="btn btn-block mb10 mt10 btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="fa fa-external-link"></i> Restaurar Formulário</a>
+                        <br>
+                        <a type="button" class="btn btn-block btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="fa fa-external-link"></i> Restaurar Formulário</a>
                     </div>
                 <%
                 if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) then
@@ -280,7 +301,8 @@ select case Tipo
                     De = DateAdd("d", -7, date())
                 %>
                 <div class="col-md-3">
-                    <a type="button" class="btn btn-system" href="./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1" target="_blank"><i class="fa fa-external-link"></i> Ir para Laudos</a>
+                    <br>
+                    <a type="button" class="btn btn-block btn-system" href="./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1" target="_blank"><i class="fa fa-external-link"></i> Ir para Laudos</a>
                 </div>
                  <%
                 end if
@@ -297,7 +319,7 @@ select case Tipo
                 </span>
             </div>
             <div class="panel-body">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <button type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%else %>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, 'N', '');" <%end if%>>
                         <i class="fa fa-plus"></i> Inserir Diagnóstico
                     </button>
@@ -923,7 +945,8 @@ LocalStorageRestoreHabilitar();
         }else{
             mfp('#modal-form');
         }
-        $.get("iPront.asp?t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
+        var pl = $("#ProfissionalLaudadorID").val();
+        $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
             $("#modal-form .panel").html(data);
         })
     }

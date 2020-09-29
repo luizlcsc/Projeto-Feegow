@@ -2626,7 +2626,9 @@ function replaceTags(valor, PacienteID, UserID, UnidadeID)
 	end if
 
 	valor = replace(valor, "[Data.DDMMAAAA]", date())
-	valor = replace(valor, "[Data.Extenso]", formatdatetime(date(),1) )
+    valor = replace(valor, "[Data.Extenso]", formatdatetime(date(),1) )
+    valor = replace(valor, "[Sistema.Extenso]", formatdatetime(date(),1) )
+    valor = replace(valor, "[Sistema.Data]", date() )
 	valor = replace(valor, "[Sistema.Hora]", time())
 
 	'aqui usa as tags referentes ao agendamento do paciente - para formularios de folha de rosto por ex

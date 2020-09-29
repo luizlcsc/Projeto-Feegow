@@ -37,6 +37,13 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           item_ProfissionalID = 0
         end if
 
+      case "ProfissionalLaudadorID"
+        item_ProfissionalLaudadorID      = item_id
+
+        if item_ProfissionalLaudadorID = "" then
+          item_ProfissionalLaudadorID = 0
+        end if
+
       case "ProfissionalSessao"
         item_ProfissionalSessao  = session("idInTable")
         'ALIAS DE TAGS RELACIONADAS AO PROFISSIONAL - SESSÃO
@@ -243,8 +250,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             conteudo = replace(conteudo, "[Unidade.Telefone]", trim(UnidadeSQL("tel1")&" ") )
           end if
           'response.write("<pre>"&qUnidadeSQL&"</pre>")
-        case "Profissional"
-          
+        case "Profissional" 
           'QUERY ALTERADA PARA A MESMA QUERY DO FEEGOW API 27/07/2020
           qProfissionaisContentSQL = "SELECT f.id FornecedorID, prof.RQE, prof.Conselho, prof.NomeProfissional, t.Tratamento, cp.descricao, COALESCE(f.NomeFornecedor, prof.NomeProfissional) RazaoSocial, f.CPF CPFCNPJ , CONCAT(IF(t.Tratamento is null,'',concat(t.Tratamento,' ')),IF(prof.NomeSocial is null or prof.NomeSocial ='', SUBSTRING_INDEX(prof.NomeProfissional,' ', 1), prof.NomeSocial)) PrimeiroNome, "&_
           "CONCAT(cp.descricao, ' ', prof.DocumentoConselho, ' ', prof.UFConselho) Documento, prof.Assinatura, prof.DocumentoConselho, prof.CPF, prof.NomeSocial, esp.especialidade Especialidade "&_
@@ -254,7 +260,24 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           "LEFT JOIN fornecedores f ON f.id=prof.FornecedorID "&_
           "LEFT JOIN tratamento t ON t.id=prof.TratamentoID "&_
           "WHERE prof.id="
+          'PROFISSIONAL LAUDADOR
+          if item_ProfissionalLaudadorID>0 then
+            SET ProfissionaisSQL = db.execute(qProfissionaisContentSQL&item_ProfissionalLaudadorID)
+            if not ProfissionaisSQL.eof then
+                
+                conteudo = replace(conteudo, "[ProfissionalLaudador.Nome]",       trim(ProfissionaisSQL("NomeProfissional")&""))
+                conteudo = replace(conteudo, "[ProfissionalLaudador.Documento]",  trim(ProfissionaisSQL("Documento")&""))            
+              
+              if ProfissionaisSQL("Assinatura")&"" = "" then
+                conteudo = replace(conteudo, "[ProfissionalLaudador.Assinatura]", "______________________________________________")
+              else
+                conteudo = replace(conteudo, "[ProfissionalLaudador.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(ProfissionaisSQL("Assinatura")))&"'>" )
+              end if
 
+            end if
+            ProfissionaisSQL.close
+            set ProfissionaisSQL = nothing
+          end if
           'PROFISSIONAL SOLICITANTE
           if item_ProfissionalSolicitanteID>0 then
             SET ProfissionaisSQL = db.execute(qProfissionaisContentSQL&item_ProfissionalSolicitanteID)

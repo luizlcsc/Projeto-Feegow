@@ -591,6 +591,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                 end if
 
 
+
                             if LiberaInsert then
                                 db.execute("INSERT INTO agenda_horarios SET AgendamentoID="&treatvalzero(comps("id"))&", sysUser="& treatvalzero(session("User")) &", Data="& mydatenull(Data) &", Hora="& mytime(Horario) &", StaID="& StaID &", Situacao='A', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& EspecialidadeID &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID) &", ExibeAgendamentoOnline="&treatvalzero(ExibeAgendamentoOnline)&",Encaixe="& treatvalnull(comps("Encaixe")) &", GradeOriginal="& GradeOriginal & sqlGradeId)
                             '                            set vcaPL = db.execute("select id from agenda_horarios where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND LocalID="& treatvalnull(LocalID))

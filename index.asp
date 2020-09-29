@@ -236,7 +236,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.full.min.js"></script>
   <%
-  if req("P")="Laudo" and session("Banco")<>"clinic5703" and session("Banco")<>"clinic8039" then
+  if req("P")="Laudo" and session("Banco")<>"clinic5703" and session("Banco")<>"clinic6629" and session("Banco")<>"clinic8039" then
   %>
     <script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/ckeditornew2/ckeditor.js"></script>
   <%

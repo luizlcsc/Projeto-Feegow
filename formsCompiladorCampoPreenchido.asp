@@ -340,10 +340,12 @@ $(function() {
                 </div>
             <%
 	  	case 9'tabela
+	  	    AlturaTabela = Linhas * 32
+
 			%>
 			<label class="campoLabel"><%=RotuloCampo%></label>
     <input name="tblRem<%=CampoID %>" type="hidden" id="tblRem<%=CampoID %>" class="tbl" value="0" />
-    <div class="tableFixHead">
+    <div class="tableFixHead" style="height: <%=AlturaTabela%>px">
     <table class="table table-condensed table-bordered table-hover"><thead><tr class="info"><%
 			sqlTit = "select * from buitabelastitulos where CampoID="&CampoID
 			set pTit = db.execute(sqlTit)

@@ -192,13 +192,15 @@ campos.movenext
 wend
 campos.close
 set campos=nothing
+
+
 %>
 </ul>
 </div>
 </div>
 
 <style>
-.tableFixHead          { overflow-y: auto; height: 550px; }
+.tableFixHead          { overflow-y: auto;}
 .tableFixHead thead th { position: sticky; top: 0; z-index: 9999 }
 table  { border-collapse: collapse; width: 100%; }
 

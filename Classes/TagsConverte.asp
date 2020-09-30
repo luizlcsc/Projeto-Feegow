@@ -261,22 +261,24 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           "LEFT JOIN tratamento t ON t.id=prof.TratamentoID "&_
           "WHERE prof.id="
           'PROFISSIONAL LAUDADOR
-          if item_ProfissionalLaudadorID>0 then
-            SET ProfissionaisSQL = db.execute(qProfissionaisContentSQL&item_ProfissionalLaudadorID)
-            if not ProfissionaisSQL.eof then
+          if inStr(conteudo, "[ProfissionalLaudador") <> 0 Then
+            if item_ProfissionalLaudadorID>0 then
+              SET ProfissionaisSQL = db.execute(qProfissionaisContentSQL&item_ProfissionalLaudadorID)
+              if not ProfissionaisSQL.eof then
+                  
+                  conteudo = replace(conteudo, "[ProfissionalLaudador.Nome]",       trim(ProfissionaisSQL("NomeProfissional")&""))
+                  conteudo = replace(conteudo, "[ProfissionalLaudador.Documento]",  trim(ProfissionaisSQL("Documento")&""))            
                 
-                conteudo = replace(conteudo, "[ProfissionalLaudador.Nome]",       trim(ProfissionaisSQL("NomeProfissional")&""))
-                conteudo = replace(conteudo, "[ProfissionalLaudador.Documento]",  trim(ProfissionaisSQL("Documento")&""))            
-              
-              if ProfissionaisSQL("Assinatura")&"" = "" then
-                conteudo = replace(conteudo, "[ProfissionalLaudador.Assinatura]", "______________________________________________")
-              else
-                conteudo = replace(conteudo, "[ProfissionalLaudador.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(ProfissionaisSQL("Assinatura")))&"'>" )
-              end if
+                if ProfissionaisSQL("Assinatura")&"" = "" then
+                  conteudo = replace(conteudo, "[ProfissionalLaudador.Assinatura]", "______________________________________________")
+                else
+                  conteudo = replace(conteudo, "[ProfissionalLaudador.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(ProfissionaisSQL("Assinatura")))&"'>" )
+                end if
 
+              end if
+              ProfissionaisSQL.close
+              set ProfissionaisSQL = nothing
             end if
-            ProfissionaisSQL.close
-            set ProfissionaisSQL = nothing
           end if
           'PROFISSIONAL SOLICITANTE
           if item_ProfissionalSolicitanteID>0 then

@@ -263,6 +263,10 @@ end if
            Boleto = " <i class='fa fa-barcode text-danger'></i> "
         END IF
 
+        if isnull(ValorPago) then
+            ValorPago=0
+        end if
+
 
 		if formatnumber(Valor,2)=formatnumber(ValorPago,2) or ValorPago+0.02 > Valor then
 		    PagoSta = "S"

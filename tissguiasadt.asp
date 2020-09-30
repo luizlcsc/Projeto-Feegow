@@ -799,7 +799,7 @@ min-width: 150px;
                 <%= quickField("simpleSelect", "TipoAtendimentoID", "* Tipo de Atendimento", 2, TipoAtendimentoID, "select * from tisstipoatendimento order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
                 <%= quickField("simpleSelect", "AtendimentoRN", "* Atendimento RN", 2, AtendimentoRN, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
                 <%= quickField("simpleSelect", "IndicacaoAcidenteID", "* Indica&ccedil;&atilde;o de acidente", 2, IndicacaoAcidenteID, "select * from tissindicacaoacidente order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
-                <%= quickField("simpleSelect", "TipoConsultaID", "* Tipo de Consulta", 2, TipoConsultaID, "select * from tisstipoconsulta order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
+                <%= quickField("simpleSelect", "TipoConsultaID", "Tipo de Consulta", 2, TipoConsultaID, "select * from tisstipoconsulta order by descricao", "descricao", " empty='' no-select2 ") %>
                 <%= quickField("simpleSelect", "CaraterAtendimentoID", "* Car&aacute;ter do Atendimento", 2, CaraterAtendimentoID, "select * from cliniccentral.tisscarateratendimento order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
                 <%= quickField("simpleSelect", "MotivoEncerramentoID", "Motivo de Encerramento", 2, MotivoEncerramentoID, "select * from tissmotivoencerramento order by descricao", "descricao", " no-select2 ") %>
             </div>

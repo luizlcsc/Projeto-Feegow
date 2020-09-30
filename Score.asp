@@ -62,7 +62,7 @@ response.Buffer
 
 if session("Admin")=1 or session("User")=11072 then
     if req("Operador")<>"" then
-        sqlTipo = " p.sysUser="& req("Operador")
+        sqlTipo = " p.sysUser="& treatvalzero(req("Operador"))
     end if
     %>
     <form method="get">

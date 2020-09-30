@@ -264,8 +264,7 @@ end if
         END IF
 
 
-
-		if formatnumber(Valor,2)=formatnumber(ValorPago,2) then
+		if formatnumber(Valor,2)=formatnumber(ValorPago,2) or ValorPago+0.02 > Valor then
 		    PagoSta = "S"
 			Paid = "<i class='fa fa-check text-success' title='Quitado'></i>"
         elseif Valor > ValorPago and ValorPago>0 then

@@ -226,12 +226,16 @@ else
 	Chegada = buscaAgendamentos("HoraSta")
 	hh = Right("00" & Hour(Chegada), 2)
     nn = Right("00" & Minute(Chegada), 2)
+    'Chegada = hh & ":" & nn
+    if Chegada&""<>"" then
+        Chegada = Hour(Chegada)&":"&Minute(Chegada)
+    else
+        Chegada = Hour(time)&":"&Minute(time)
+    end if
 
     if LocalID&""="" or LocalID="undefined" then
         LocalID=0
     end if
-
-	Chegada = hh & ":" & nn
 
 	ProfissionalID = buscaAgendamentos("ProfissionalID")
 
@@ -1797,7 +1801,7 @@ $(function(){
         somarValores();
     });
     VerGradeDoHorario()
-    $("#Chegada").val(new Date().toTimeString().split(' ')[0]);
+    //$("#Chegada").val(new Date().toTimeString().split(' ')[0]);
 });
 
 function logAgendamento(agendamentoId) {

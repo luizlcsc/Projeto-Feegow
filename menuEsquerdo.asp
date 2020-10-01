@@ -851,7 +851,7 @@ select case lcase(req("P"))
 		    if aut("formsae")=1 then
 		    %>
 		    <li>
-                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Prescricao|');">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|');">
                     <span class="fa fa-line-chart bigger-110"></span>
                     <span class="sidebar-title">Linha do tempo</span>
                     <span class="sidebar-title-tray">
@@ -2463,7 +2463,7 @@ select case lcase(req("P"))
             telas.close
             set telas = nothing
     end if
-    case "labsconfigintegracao", "labscadastrocredenciais"
+    case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara"
     %>
     <li>
         <a href="?P=labscadastrocredenciais&Pers=1"><span class="fa fa-users"></span> <span class="sidebar-title">Cadastro de Credenciais</span></a>
@@ -2476,7 +2476,10 @@ select case lcase(req("P"))
         <a href="?P=labsconfigintegracao&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Implantação de Laboratórios</span></a>
     </li>
     <li>
-        <a href="#"><span class="fa fa-list "></span> <span class="sidebar-title">Listagem de exames</span></a>
+        <a href="?P=labslistagemexames&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Listagem de exames</span></a>
+    </li>
+    <li>
+        <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
     <%
 end select

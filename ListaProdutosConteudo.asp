@@ -1,6 +1,46 @@
 <!--#include file="connect.asp"-->
+<% TipoProduto = ref("TipoProduto")%>
 
-
+<% if TipoProduto = "5, 5" then %>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="datatableProdutos" class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr class="primary">
+                        <th>Taxa</th>
+                        <th>CD</th>
+                        <th>Editar</th>
+                        <th>Excluir</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <%
+                sqlTipoProduto = "SELECT * FROM produtos WHERE TipoProduto = 5 and sysActive=1"
+                set prod = db.execute(sqlTipoProduto)
+                   while not prod.EOF
+                %>
+                    <tr>
+                        <td><%=prod("NomeProduto")%></td>
+                        <td><%=prod("CD")%></td>
+                        <td class="hidden-print"><a class="btn btn-xs btn-primary" href="./?P=Produtos&Pers=1&I=<%=prod("id")%>"><i class="fa fa-edit"></i></a></td>
+                        <td class="hidden-print" title="<%=title%>">
+                            <%
+                            if aut("|produtosX|")=1 then
+                            %>
+                            <button class="btn btn-xs btn-danger <%=disabled%>" onClick="removeItem(<%=prod("id")%>)"><i class="fa fa-remove"></i></button>
+                            <%
+                            end if
+                            %>
+                        </td>
+                    </tr>
+            <%
+             prod.movenext
+                wend
+             prod.close
+            %>
+                </tbody>
+            </table>
+<% else %>
 <div class="row">
     <div class="col-md-12">
         <span>Legenda: </span>
@@ -90,7 +130,6 @@
             "WHERE pro.sysActive = 1 "& sqlsomentePraVencer & sqlProd & sqlTipoProduto & sqlPrincipioAtivo & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem &""&_
             ") pro")
 
-
             set prod = db.execute(sqlstring)
             while not prod.EOF
                 Validade = prod("Validade")
@@ -155,4 +194,16 @@
         </table>
     </div>
 </div>
+<% end if %>
 
+<script>
+function removeItem(ID){
+    $.get("ListaProdutos.asp?ItemID="+ID+"&Acao=X",
+        $(this).serialize(),
+        function (data) {
+
+        }).done(function (){
+           location.reload();
+        });
+}
+</script>

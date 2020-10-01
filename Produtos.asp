@@ -133,11 +133,23 @@ end if
     <iframe align="middle" class="hidden" id="CodBarras" name="CodBarras" src="about:blank" width="100%" height="110"></iframe>
 
     <%=header(req("P"), "Estoque", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
+    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" class="idItem"/>
     <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
 
     <div class="tabbable panel">
         <div class="tab-content panel-body">
+           <%  if TipoProduto = 5 then %>
+            <div id="divCadastroProduto" class="tab-pane in active">
+                <div class="row">
+                    <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
+                    <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
+                    <%if TipoProdutoReadonly&""<>"" then%>
+                        <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
+                    <%end if%>
+                    <%=quickField("simpleSelect", "CD", "CD", 3, reg("CD"), "select * from cliniccentral.tisscd order by Descricao", "Descricao", "")%>
+                </div>
+            </div>
+           <% else %>
             <div id="divCadastroProduto" class="tab-pane in active">
                 <div class="row">
                     <div class="col-md-2">
@@ -161,7 +173,7 @@ end if
                     <div class="col-md-10">
                         <div class="row">
                             <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
-                            <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
+                            <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos WHERE id <> 5 order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
                             <%if TipoProdutoReadonly&""<>"" then%>
                                 <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
                             <%end if%>
@@ -327,6 +339,8 @@ end if
                     </div>
                 </div>
             </div>
+            <% end if %>
+
             <div id="divLancamentos" class="tab-pane">
                 Carregando...
             </div>
@@ -356,6 +370,12 @@ end if
 
 <script type="text/javascript">
 
+    $(document).ready(function()
+    {
+        let TipoProduto = $("#TipoProduto").val();
+        let IdTipoProduto = $(".idItem").val();
+
+    })
 
     function printEtiqueta(ProdutoID) {
         $.post("printEtiqueta.asp?ProdutoID="+ ProdutoID, $(".eti").serialize(), function (data) {
@@ -373,17 +393,19 @@ end if
     }
     showSalvar(true)
 
-    $(document).ready(function(e) {
-
+    $(document).ready(function() {
         var TipoProduto = $("#TipoProduto").val();
+
         if (TipoProduto == 4){
             $(".Modulo-Medicamento").attr("style", "display:");
         }else{
             $(".Modulo-Medicamento").attr("style", "display:none");
-
-        };
+        }
         $("#Header-List").attr("href", "./?P=ListaProdutos&Pers=1&TipoProduto="+TipoProduto);
+
         $("#Header-New").addClass("hidden");
+
+
 
         $(".crumb-link").removeClass("hidden");
         $(".crumb-link").html($("#TipoProduto option:selected").text());

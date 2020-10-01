@@ -18,7 +18,7 @@ masterLoginErro = false
 <%
 
 if masterLogin then
-    sqlLogin = "SELECT u.*, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom "&_
+    sqlLogin = "SELECT u.*, l.ExibeChatAtendimento, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom "&_
     " FROM licencasusuarios AS u "&_
     " LEFT JOIN licencas AS l ON l.id='"&tryLoginMaster("licencaId")&"'"&_
     " WHERE u.id='"&userMasterID&"' "
@@ -28,7 +28,7 @@ else
         sqlMaster = " 1=1 and u.LicencaID<>5459 "
         permiteMasterLogin = True
     end if
-	sqlLogin = "select u.*, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&User&"' and (Senha=('"&ref("Password")&"') or ("&sqlMaster&")  )"
+	sqlLogin = "select u.*, l.ExibeChatAtendimento, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&User&"' and (Senha=('"&ref("Password")&"') or ("&sqlMaster&")  )"
 end if
 
 
@@ -48,9 +48,15 @@ if not tryLogin.EOF then
     Servidor = tryLogin("Servidor")&""
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
+    ExibeChatAtendimento = tryLogin("ExibeChatAtendimento")
 
     ClienteUnimed = instr(Cupom, "UNIMED") > 0
-    session("ClienteUnimed") = ClienteUnimed
+    if ClienteUnimed then
+        ExibeChatAtendimento=False
+    end if
+
+    session("ExibeChatAtendimento") = ExibeChatAtendimento
+
     if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
             Response.Redirect("https://"&ServidorAplicacao&"/"&PastaAplicacaoRedirect&"/?P=Login&U="&User)
@@ -517,11 +523,6 @@ if not tryLogin.EOF then
         IF PastaAplicacao <> "" and Versao&""="7" THEN
             urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")
         END IF
-
-
-        if Cupom="GSC" then
-            urlRedir = replace(urlRedir, "./", "/v7.1/")
-        end if
 
         QueryStringParameters = Request.Form("qs")
 

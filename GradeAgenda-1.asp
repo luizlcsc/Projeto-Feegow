@@ -73,14 +73,8 @@ end if
 ProfissionalID=req("ProfissionalID")
 DiaSemana=weekday(Data)
 mesCorrente=month(Data)
+set prof = db.execute("select Cor, NomeProfissional, Foto, ObsAgenda, Ativo from profissionais where id="&ProfissionalID)
 
-if getConfig("AbrirAutomaticamenteObsProfissional")=1 then
-    %>
-    <script>
-        oa(<%=treatvalzero(ProfissionalID)%>);
-    </script>
-    <%
-end if
 
 
 if lcase(session("Table"))="funcionarios" then
@@ -89,8 +83,17 @@ end if
 
 escreveData = formatdatetime(Data, 1)
 
-set prof = db.execute("select Cor, NomeProfissional, Foto, ObsAgenda, Ativo from profissionais where id="&ProfissionalID)
 if not prof.eof then
+    ObsAgenda=prof("ObsAgenda")&""
+
+    if getConfig("AbrirAutomaticamenteObsProfissional")=1 and ObsAgenda<>"" then
+        %>
+        <script>
+            oa(<%=treatvalzero(ProfissionalID)%>);
+        </script>
+        <%
+    end if
+
 	Cor = prof("Cor")
 	Ativo = prof("Ativo")
 	NomeProfissional = prof("NomeProfissional")

@@ -9,6 +9,15 @@ GuiaID = request.QueryString("I")
 Tipo = request.QueryString("T")
 QuantidadeFilme = treatvalzero(ref("QuantidadeFilme"))
 ValorFilme = treatvalzero(ref("ValorFilmeADD"))
+ConvenioID=ref("gConvenioID")
+
+if ConvenioID="" then
+    %>
+    showMessageDialog("Selecione o convênio", "warning");
+    <%
+    Response.End
+end if
+
 
 Dim ProcedimentoIncluidos
 Set ProcedimentoIncluidos=Server.CreateObject("Scripting.Dictionary")

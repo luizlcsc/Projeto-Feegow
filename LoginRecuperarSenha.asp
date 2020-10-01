@@ -1,5 +1,7 @@
-<!--#include file="connectCentral.asp"-->
+<!--#include file="Classes/Connection.asp"-->
 <%
+set dbc = newConnection("", "")
+
 'VERIFICA SE USUÁRIO DE ACESSO EXISTE
 if request.form("opt") = "verificaUsuarioAcesso" then
 
@@ -303,7 +305,7 @@ o nome do seu animal de estimação.</span>
             } else {
                 $erroSenha.fadeIn();
             } 
-	        return false;
+	        window.location.href = "https://app.feegow.com";
         });        
     });
 

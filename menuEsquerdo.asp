@@ -1094,7 +1094,7 @@ select case lcase(req("P"))
             <%
                 end if
             end if
-            if session("Admin")=1 then
+            if aut("procedimentosgrupos") then
                 %>
                 <li>
                     <a href="./?P=ProcedimentosGrupos&Pers=Follow"><span class="fa fa-stethoscope"></span> <span class="sidebar-title">Grupos de Procedimentos</span></a>
@@ -1274,9 +1274,15 @@ select case lcase(req("P"))
             	    <span class="fa fa-stethoscope"></span> <span class="sidebar-title">Procedimentos</span></a>
             </li>
             <% end if %>
+            <%
+            if aut("profissionaisgruposV") then
+            %>
             <li>
                 <a class="menu-aba-meu-perfil-grupo-de-profissionais" href="?P=ProfissionaisGrupos&Pers=Follow"><span class="fa fa-users bigger-110"></span> <span class="sidebar-title">Grupos de Profissionais</span></a>
             </li>
+            <%
+            end if
+            %>
             <li>
                 <a class="menu-aba-meu-perfil-especialidades" href="?P=Especialidades&Pers=Follow"><span class="fa fa-stethoscope bigger-110"></span> <span class="sidebar-title">Especialidades</span></a>
             </li>

@@ -273,14 +273,14 @@ end function
                             <%'=quickField("text", "NumeroContrato", "C&oacute;digo na Operadora", 3, reg("NumeroContrato"), "", "", "")%>
                             <%= quickField("number", "RetornoConsulta", "Retorno Consulta", 2, reg("RetornoConsulta"), "", "", " placeholder='Dias'") %>
                             <div class="col-md-2 qf">
-                                <label>Tipo Recebimento</label>
-                                <select class="form-control" id="DiasReceb">
-                                    <option value="1">Dias Úteis</option>
-                                    <option value="2">Dia do Mês</option>
+                                <label>Tipo Recebimento</label><% response.write(reg("DiasRecebimento")) %>
+                                <select class="form-control" id="DiasReceb" name="DiasReceb">
+                                    <option value="1" <%if reg("DiasRecebimento") then Response.Write(" checked ") end if%>>Dias Úteis</option>
+                                    <option value="2" <% if reg("DataRecebimentoEspecifico") then Response.Write(" checked ") end if%>>Dia do Mês</option>
                                 </select>
                             </div>
                             <%= quickField("number", "DiasRecebimento", "Dias para Recebimento", 3, reg("DiasRecebimento"), "", "", " placeholder='Dias'") %>
-                            <%= quickfield("number", "DataRecebimentoEspecifico", "Dia do Recebimento", 3, "", "", "", "") %>
+                            <%= quickfield("number", "DataRecebimentoEspecifico", "Dia do Recebimento", 3, reg("DataRecebimentoEspecifico"), "", "", "") %>
                             <%'= quickField("text", "FaturaAtual", "Fatura Atual", 2, reg("FaturaAtual"), "", "", " placeholder='N&uacute;mero'") %>
 
                             <%= quickField("simpleSelect", "VersaoTISS", "Versão da TISS", 2, reg("VersaoTISS"), "select * from cliniccentral.tissversao", "Versao", "") %>
@@ -510,14 +510,25 @@ end function
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function(e) {
+$(document).ready(function(e) {
         <%call formSave("frm, #WS, #frmRegras", "save", "")%>
         $("#save").click(function() {
             $("#frm").submit();
         });
-        $("#qfdiasrecebimento").show();
-        $("#qfdatarecebimentoespecifico").hide();
-    });
+
+        let DU = $("#qfdiasrecebimento");
+        let DE = $("#qfdatarecebimentoespecifico");
+        if($("#DiasRecebimento").val() == ""){
+            $('select[name="DiasReceb"]').find('option[value="2"]').attr("selected",true);
+            DU.hide();
+            DE.show();
+        }
+        if($("#DataRecebimentoEspecifico").val() == ""){
+            $('select[name="DiasReceb"]').find('option[value="1"]').attr("selected",true);
+            DE.hide();
+            DU.show();
+        }
+});
 
 $("#DiasReceb").change(function()
 {

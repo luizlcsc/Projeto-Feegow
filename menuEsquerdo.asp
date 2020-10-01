@@ -1094,7 +1094,7 @@ select case lcase(req("P"))
             <%
                 end if
             end if
-            if aut("procedimentosgrupos") then
+            if aut("procedimentosgruposV") then
                 %>
                 <li>
                     <a href="./?P=ProcedimentosGrupos&Pers=Follow"><span class="fa fa-stethoscope"></span> <span class="sidebar-title">Grupos de Procedimentos</span></a>

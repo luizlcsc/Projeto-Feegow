@@ -2,12 +2,22 @@
 
 <%
 LaudoID = req("L")
-set l = db.execute("select l.*, p.NomePaciente, p.id PacienteProntuario, p.Nascimento from laudos l LEFT JOIN pacientes p ON p.id=l.PacienteID WHERE l.id="& LaudoID)
-if not l.eof then
-    set ProcedimentoSQL = db.execute("SELECT proc.NomeProcedimento, proc.DiasLaudo FROM procedimentos proc WHERE proc.id="&l("ProcedimentoID"))
-    if not ProcedimentoSQL.eof then
-        Procedimento = ProcedimentoSQL("NomeProcedimento")
-        DiasLaudo = ProcedimentoSQL("DiasLaudo")
+qLaudoSQL = "select l.*, p.NomePaciente, p.id PacienteProntuario, p.Nascimento from laudos l LEFT JOIN pacientes p ON p.id=l.PacienteID WHERE l.id="& LaudoID
+'response.write("<pre>"&qLaudoSQL&"</pre>")
+set l = db.execute(qLaudoSQL)
+if l.eof then
+    ProtocoloConteudo = "Não foi possível imprimir o protocolo."
+else
+    'TRATA ERRO DE QUANDO NÃO EXISTE PROCEDIMENTOS VINCULADOS, GERALMENTE EXAMES LABORATORIAIS.
+    ProcedimentoID = l("ProcedimentoID")&""
+    if ProcedimentoID<>"" then
+        qProcedimentoSQL = "SELECT proc.NomeProcedimento, proc.DiasLaudo FROM procedimentos proc WHERE proc.id="&l("ProcedimentoID")
+        response.write("<pre>"&qProcedimentoSQL&"</pre>")
+        set ProcedimentoSQL = db.execute(qProcedimentoSQL)
+        if not ProcedimentoSQL.eof then
+            Procedimento = ProcedimentoSQL("NomeProcedimento")
+            DiasLaudo = ProcedimentoSQL("DiasLaudo")
+        end if
     end if
 
     NomePaciente = l("NomePaciente")
@@ -96,20 +106,22 @@ if not l.eof then
     end if
 
 %>
-    <body>
-
-        <div class="modal-body" id="areaImpressao" >
-            <%=ProtocoloConteudo%>
-        </div>
-
-    </body>
+    
 
 <%
 end if
 %>
-
-
-
-<script type="text/javascript">
-print();
-</script>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Feegow Clinic - Impressãod e Protocolo</title>
+    </head>
+    <body>
+        <div class="modal-body" id="areaImpressao" >
+            <%=ProtocoloConteudo%>
+        </div>
+        <script type="text/javascript">
+        print();
+        </script>
+    </body>
+</html>

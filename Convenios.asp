@@ -276,11 +276,11 @@ end function
                                 <label>Tipo Recebimento</label>
                                 <select class="form-control" id="DiasReceb">
                                     <option value="1">Dias Úteis</option>
-                                    <option value="2">Data Específica</option>
+                                    <option value="2">Dia do Mês</option>
                                 </select>
                             </div>
                             <%= quickField("number", "DiasRecebimento", "Dias para Recebimento", 3, reg("DiasRecebimento"), "", "", " placeholder='Dias'") %>
-                            <%= quickfield("datepicker", "DataRecebimentoEspecifico", "Data Recebimento", 3, date(), "", "", "") %>
+                            <%= quickfield("number", "DataRecebimentoEspecifico", "Dia do Recebimento", 3, "", "", "", "") %>
                             <%'= quickField("text", "FaturaAtual", "Fatura Atual", 2, reg("FaturaAtual"), "", "", " placeholder='N&uacute;mero'") %>
 
                             <%= quickField("simpleSelect", "VersaoTISS", "Versão da TISS", 2, reg("VersaoTISS"), "select * from cliniccentral.tissversao", "Versao", "") %>

@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <div class="panel">
     <div class="panel-body">
-        <%= quickfield("text", "ConvenioRapido", "Busca rápida de Convênio", 12, "", "", "", " placeholder='Digite a descrição ou o código do connvênio...' ") %>
+        <%= quickfield("text", "ConvenioRapido", "Busca rápida de Convênio", 12, "", "", "", " placeholder='Digite a descrição ou o código do convênio...' ") %>
     </div>
 </div>
 

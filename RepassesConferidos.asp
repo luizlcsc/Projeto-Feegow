@@ -397,8 +397,8 @@ if ExibeResultado then
 
                     if Exibe=1 then
                         ValorRepasse = fn(calculaRepasse(rr("id"), rr("Sobre"), rr("ValorProcedimento"), rr("Valor"), rr("TipoValor")))
-                        TotalRepasse = TotalRepasse+ValorRepasse
-                        TotalProcedimento = TotalProcedimento+ValorParcela
+
+
                         if not isnull(rr("ItemInvoiceID")) then
                             aLink = "<a target='_blank' href='./?P=invoice&Pers=1&I="& rr("InvoiceID") &"'>"
                             fLink = "</a>"
@@ -453,6 +453,8 @@ if ExibeResultado then
 
                         if DataOk then
                             ContaRepasses = ContaRepasses+1
+                            TotalRepasse = TotalRepasse+ValorRepasse
+                            TotalProcedimento = TotalProcedimento+ValorParcela
                         %>
                         <tr invoiceapagarid="<%=rr("InvoiceAPagarID")%>">
                             <td>
@@ -604,6 +606,9 @@ function repassesCredito(I){
 $(document).ready( function () {
     $("#datatableRepasses").dataTable({
         bPaginate: false,
+         bFilter: false,
+         bInfo: false,
+         bAutoWidth: false,
         blengthMenu: [[10, 50, 100, -1], [10, 50, 100, "Todos"]]
     });
 } );

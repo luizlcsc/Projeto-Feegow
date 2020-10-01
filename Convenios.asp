@@ -272,13 +272,23 @@ end function
                             <%=quickField("text", "RegistroANS", "Registro na ANS", 2, reg("RegistroANS"), "", "", "")%>
                             <%'=quickField("text", "NumeroContrato", "C&oacute;digo na Operadora", 3, reg("NumeroContrato"), "", "", "")%>
                             <%= quickField("number", "RetornoConsulta", "Retorno Consulta", 2, reg("RetornoConsulta"), "", "", " placeholder='Dias'") %>
-                            <%= quickField("number", "DiasRecebimento", "Dias para Recebimento", 2, reg("DiasRecebimento"), "", "", " placeholder='Dias'") %>
+                            <div class="col-md-2 qf">
+                                <label>Tipo Recebimento</label>
+                                <select class="form-control" id="DiasReceb">
+                                    <option value="1">Dias Úteis</option>
+                                    <option value="2">Data Específica</option>
+                                </select>
+                            </div>
+                            <%= quickField("number", "DiasRecebimento", "Dias para Recebimento", 3, reg("DiasRecebimento"), "", "", " placeholder='Dias'") %>
+                            <%= quickfield("datepicker", "DataRecebimentoEspecifico", "Data Recebimento", 3, date(), "", "", "") %>
                             <%'= quickField("text", "FaturaAtual", "Fatura Atual", 2, reg("FaturaAtual"), "", "", " placeholder='N&uacute;mero'") %>
 
                             <%= quickField("simpleSelect", "VersaoTISS", "Versão da TISS", 2, reg("VersaoTISS"), "select * from cliniccentral.tissversao", "Versao", "") %>
 
                             <%'= quickField("contratado", "Contratado", "Contratado", 3 , reg("Contratado"), "", "", "") %>
                             <%'= quickField("simpleSelect", "ContaRecebimento", "Conta para Recebimento", 3, reg("ContaRecebimento"), "select * from sys_financialcurrentaccounts where AccountType=2 order by AccountName", "AccountName", "") %>
+                        </div>
+                        <div class="row">
                             <%= quickField("text", "NumeroGuiaAtual", "Nº da Guia Atual",2 , reg("NumeroGuiaAtual"), "", "", "") %>
                             <%=quickField("empresaMultiIgnore", "Unidades", "Limitar Unidades", 2, reg("Unidades"), "", "", "")%>
                         </div>
@@ -307,12 +317,14 @@ end function
                     <%= quickField("number", "terceiroProcedimento", "% do 3&deg; Procedimento", 2, reg("terceiroProcedimento"), "", "", "") %>
                     <%= quickField("number", "quartoProcedimento", "% do 4&deg; Procedimento", 2, reg("quartoProcedimento"), "", "", "") %>
                     <%= quickField("multiple", "LimitarEscalonamento", "Limitar Grupo de Escalonamento", 2, LimitarEscalonamento, "SELECT ID,NomeGrupo FROM procedimentosgrupos WHERE sysActive = 1 ORDER BY  2", "NomeGrupo", " semVazio no-select2") %>
+
                 </div>
                 <div class="row mt15">
                     <%= quickField("multiple", "ModoDeCalculo", "Unidade de Cálculo", 2, reg("ModoDeCalculo"), "select 'R$' id, 'R$' Descricao UNION ALL select 'CH', 'CH' UNION ALL SELECT 'UCO', 'UCO' UNION ALL SELECT 'PORTE', 'PORTE' UNION ALL SELECT 'FILME', 'FILME'", "Descricao", " semVazio no-select2") %>
                     <%= quickField("currency", "ValorCH", "Valor do CH", 2, reg("ValorCH"), " sql-mask-4-digits " , "", "") %>
                     <%= quickField("currency", "ValorUCO", "Valor da UCO", 2, reg("ValorUCO"), " sql-mask-4-digits " , "", "") %>
                     <%= quickField("currency", "ValorFilme", "Valor m² do Filme", 2, reg("ValorFilme"), " sql-mask-4-digits ", "", "") %>
+
                 </div>
                 <hr class="short alt" />
                 <h4>Tabelas Padrão</h4>
@@ -503,9 +515,23 @@ end function
         $("#save").click(function() {
             $("#frm").submit();
         });
+        $("#qfdiasrecebimento").show();
+        $("#qfdatarecebimentoespecifico").hide();
     });
 
-
+$("#DiasReceb").change(function()
+{
+    let DU = $("#qfdiasrecebimento");
+    let DE = $("#qfdatarecebimentoespecifico");
+    if($(this).val() == "2"){
+        DU.hide();
+        DE.show();
+    }
+    if($(this).val() == "1"){
+        DE.hide();
+        DU.show();
+    }
+});
 
 
     $("#Cep").keyup(function(){

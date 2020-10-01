@@ -544,7 +544,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
     sql = sql & " WHERE g.sysActive=1" & sqlLote & sqlNumero & sqlPaciente & sqlDataDe&sqlDataAte & sqlDataDePreenchimento & sqlPlano
     sql = sql & sqlDataAtePreenchimento & sqlUnidades & sqlGuiaStatus 
     sql = sql & " and g.ConvenioID="&request.QueryString("ConvenioID")
-    sql = sql & " ORDER BY "&orderBy&" LIMIT 200"
+    sql = sql & " GROUP BY g.id ORDER BY "&orderBy&" LIMIT 200"
 	set guias = db.execute(sql)
 	while not guias.EOF
         Total = guias(ColunaTotal)
@@ -746,9 +746,11 @@ end if
 
 
 function correcaoValoresProcedimentos(self, guiaId, valorTotalCheck, tabela) {
+    var valor = document.getElementById('ValorPago'+guiaId).value;
     if(valorTotalCheck != self.value){
         document.getElementById('procedimentos_button_'+guiaId).style.display = "flex"
-        openComponentsModal("ProcedimentosListagemCorrecao.asp", {guiaId: guiaId, tabela: tabela}, "Procedimentos", true);
+
+        openComponentsModal("ProcedimentosListagemCorrecao.asp", {guiaId: guiaId, tabela: tabela, valor: valor }, "Procedimentos", true);
     }
 }
 

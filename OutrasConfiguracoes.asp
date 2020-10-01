@@ -4,6 +4,7 @@
 <script type="text/javascript">
     $(".crumb-active a").html("Outras Configurações");
     $(".crumb-icon a span").attr("class", "fa fa-cogs");
+
 </script>
 
 

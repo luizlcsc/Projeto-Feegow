@@ -18,7 +18,9 @@
 
 ArquivoImagem = req("ArquivoImagem")
 ImageRenderType = "download"
-if req("PacienteID")<>"" and req("PacienteID")<>"0" then
+PacienteID=req("PacienteID")
+
+if PacienteID<>"" and PacienteID<>"0" then
     ImageRenderType = "redirect"
 end if
 %>
@@ -340,7 +342,7 @@ end if
                                 </div>
 
                              </div>
-                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink}" target="_blank"><img src="${item.link}" data-id="${item.id}" class="${item.extension} img-responsive" title="${item.Descricao}"></a></div>
+                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink.replace('redirect', '<%=ImageRenderType%>')}" target="_blank"><img src="${item.link.replace('redirect', '<%=ImageRenderType%>')}" data-id="${item.id}" class="${item.extension} img-responsive" title="${item.Descricao}"></a></div>
                              <div class="config">
                                 <textarea class="galery-description text-info border-edit imgpac" name="Desc${item.id}" onchange="changeDescription(${item.id},this)" data-img-id="${item.id}">${item.NovaDescricao}</textarea>
                              </div>
@@ -399,7 +401,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
                                         <select name="tipos" class="form-control" id="tipos">
                                             <option>Selecionar tipo</option>
                                             ${ tipos.map(tipo=>{
-                                                return `<option ${(preset?(preset.TipoArquivoID == tipo.id?'selected':''):'')} value='${tipo.id}'>${tipo.NomeArquivo}</option>`    
+                                                return `<option ${(preset?(preset.TipoArquivoID == tipo.id?'selected':''):'')} value='${tipo.id}'>${tipo.NomeArquivo}</option>`
                                             }).join('')}
                                         </select>
                                     </div>
@@ -429,7 +431,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
         let tipo= $('#tipos').val()
         let validade  = $('#validade').val()
         validade = validade.split('/').reverse().join('-')
-        
+
         if(tipo){
             $.get(`imagemTipoSave.asp?id=${id}&tipo=${tipo}&validade=${validade}` )
             .done(function(data) {
@@ -441,7 +443,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
     }
 
 
-    let ConfigPacienteID = '<%=request.QueryString("PacienteID")%>';
+    let ConfigPacienteID = '<%=PacienteID%>';
     let ConfigMovementID = '<%=request.QueryString("MovementID")%>';
     let ConfigLaudoID    = '<%=request.QueryString("LaudoID")%>';
 

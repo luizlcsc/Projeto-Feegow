@@ -196,22 +196,22 @@ end if
                         </div>
                         <Div class="row">
                             <Div class="col-md-12 mt5">
-                                                                <% IF session("Banco")="clinic100000" or session("Banco")="clinic100003" or session("Banco")="clinic5459" THEN  %>
-                                                                         <button type="button" class="btn btn-primary" onclick="controleDeMensalidades()">
-                                                                             Controle de Mensalidades
-                                                                         </button>&nbsp;
-                                                                         <button type="button" class="btn btn-primary" onclick="controleDeProcessos()">
-                                                                              Controle de Processos
-                                                                         </button>
-                                                                         <script>
-                                                                        function controleDeMensalidades(){
-                                                                                window.open(domain+"/billing/detailing-fixas/detailing/interface?tk="+localStorage.getItem("tk"), '_blank');
-                                                                        }
-                                                                        function controleDeProcessos(){
-                                                                                window.open(domain+"/billing/detailing-fixas/detailing/processos?tk="+localStorage.getItem("tk"), '_blank');
-                                                                        }
-                                                                     </script>
-                                                                 <% END  IF %>
+                            <% IF session("Banco")="clinic100000" or session("Banco")="clinic100003" or session("Banco")="clinic5459" THEN  %>
+                                     <button type="button" class="btn btn-primary" onclick="controleDeMensalidades()">
+                                         Controle de Mensalidades
+                                     </button>&nbsp;
+                                     <button type="button" class="btn btn-primary" onclick="controleDeProcessos()">
+                                          Controle de Processos
+                                     </button>
+                                     <script>
+                                    function controleDeMensalidades(){
+                                            window.open(domain+"/billing/detailing-fixas/detailing/interface?tk="+localStorage.getItem("tk"), '_blank');
+                                    }
+                                    function controleDeProcessos(){
+                                            window.open(domain+"/billing/detailing-fixas/detailing/processos?tk="+localStorage.getItem("tk"), '_blank');
+                                    }
+                                 </script>
+                             <% END  IF %>
 </Div>
                         </Div>
                         <%
@@ -275,6 +275,7 @@ end if
 $(document).ready(function() {
     $('.categoria-single').select2();
 });
+
 
 function printInvoices(){
         let invoices = [];

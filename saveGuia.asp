@@ -210,8 +210,8 @@ else
         sqlGuiaDisponivel = "SELECT numero, id, Tipo FROM  ((SELECT cast(gc.NGuiaPrestador as signed integer) numero, id, 'Consulta' as Tipo FROM tissguiaconsulta gc WHERE gc.ConvenioID = '"&ConvenioID&"' and gc.sysActive=1) UNION ALL "&_
          "(SELECT cast(gs.NGuiaPrestador as signed integer) numero, id, 'SADT' as Tipo FROM tissguiasadt gs WHERE gs.ConvenioID = '"&ConvenioID&"' and gs.sysActive=1) UNION ALL "&_
          "(SELECT cast(gh.NGuiaPrestador as signed integer) numero, id, 'Honorário' as Tipo FROM tissguiahonorarios gh WHERE gh.ConvenioID = '"&ConvenioID&"' AND gh.sysActive=1)) as numero WHERE id != "&I&" AND cast(numero as signed integer) >= "&NGuiaPrestador &" AND cast(numero as signed integer) < ( 100 + "&NGuiaPrestador &") ORDER BY cast(numero as signed integer) DESC LIMIT 1"
-
         set GuiaDisponivelSQL = db.execute(sqlGuiaDisponivel)
+
 
         if not GuiaDisponivelSQL.eof then
             GuiaDisponivel = ccur(GuiaDisponivelSQL("numero")) + 1

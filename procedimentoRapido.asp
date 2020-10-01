@@ -1,7 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <div class="panel">
     <div class="panel-body">
-        <%= quickfield("text", "ProcedimentoRapido", "Busca rápida de procedimento", 9, "", "", "", " placeholder='Digite a descrição ou o código do procedimento...' ") %>
+        <%= quickfield("text", "ProcedimentoRapido", "Busca rápida de procedimento", 9, "", "", "", " placeholder='Digite a descrição ou código do procedimento ou nome técnico do procedimento...' ") %>
         <%=quickField("simpleSelect", "TipoProcedimento", "Tipo de Procedimento", 3, "", "SELECT * FROM tiposprocedimentos order by 2 ", "TipoProcedimento", "")%>
     </div>
 </div>

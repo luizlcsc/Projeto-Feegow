@@ -9,14 +9,13 @@
 </script>
 
 <%
-if aut("contasareceber")=1 and aut("contasapagar")=1 and aut("movement")=1 then
+    if aut("contasareceber")=1 and aut("contasapagar")=1 and aut("movement")=1 then
 
+    DataReferencia=req("DataReferencia")
 
-DataReferencia=req("DataReferencia")
-
-if DataReferencia="" then
-    DataReferencia=date()
-end if
+    if DataReferencia="" then
+        DataReferencia=date()
+    end if
 %>
 <br />
 	<div class="panel">
@@ -40,7 +39,7 @@ end if
 				set unidadesSql = db.execute("select unidades from "&session("Table")&" where id="&session("idInTable"))
 				if not unidadesSql.EOF then
 					if unidadesSql("unidades")&""<>"" then
-						whereUnidades = "AND empresa in("&replace(unidadesSql("unidades"),"|","")&")"
+						'whereUnidades = "AND empresa in("&replace(unidadesSql("unidades"),"|","")&")"
 					end if
 				end if
 				Data=date()
@@ -54,7 +53,7 @@ end if
 					%>
                     <div class="col-xs-3 img-thumbnail" style="padding-left:42px">
                         <a href="?P=Extrato&Pers=1&T=1_<%=contas("id") %>">
-                            <img style="position:absolute; left:5px; margin-top:2px" src="http://cdn.feegow.com/feegowclinic-v7/assets/banks/financeiro.png" width="32" height="32">
+                            <img style="position:absolute; left:5px; margin-top:2px" src="https://cdn.feegow.com/feegowclinic-v7/assets/banks/financeiro.png" width="32" height="32">
                             <strong><%=left(contas("AccountName"),23)%></strong><br>R$ <%=formatnumber(Saldo, 2)%>
                         </a>
                     </div>

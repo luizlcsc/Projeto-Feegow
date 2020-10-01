@@ -27,13 +27,6 @@ ProfissionalID=req("ProfissionalID")
 DiaSemana=weekday(Data)
 mesCorrente=month(Data)
 
-if getConfig("AbrirAutomaticamenteObsProfissional")=1 then
-    %>
-    <script>
-        oa(<%=treatvalzero(ProfissionalID)%>);
-    </script>
-    <%
-end if
 
 if lcase(session("Table"))="funcionarios" then
 	session("UltimaAgenda") = ProfissionalID
@@ -43,6 +36,15 @@ LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 
 set prof = db.execute("select Cor, NomeProfissional, Foto, ObsAgenda from profissionais where id="&ProfissionalID)
 if not prof.eof then
+    ObsAgenda=prof("ObsAgenda")&""
+
+    if getConfig("AbrirAutomaticamenteObsProfissional")=1 and ObsAgenda<>"" then
+        %>
+        <script>
+            oa(<%=treatvalzero(ProfissionalID)%>);
+        </script>
+        <%
+    end if
 	Cor = prof("Cor")
 	NomeProfissional = prof("NomeProfissional")
 	if isnull(prof("Foto")) or prof("Foto")="" then

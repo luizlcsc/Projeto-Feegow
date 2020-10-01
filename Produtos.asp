@@ -17,12 +17,14 @@ if I="N" then
 	if vie.eof then
 		db_execute("insert into "&tableName&" (sysUser, sysActive) values ("&session("User")&", 0)")
 		set vie = db.execute(sqlVie)
+		vie.close
 	end if
     response.Redirect("./?P=produtos&I="&vie("id")&"&TipoProduto="&TipoProduto&"&Pers=1")
 else
 	set data = db.execute("select * from "&tableName&" where id="&I)
 	if data.eof then
         response.Redirect("./?P=produtos&I="&req("I")&"&Pers=1")
+        data.close
 	end if
 end if
 
@@ -323,6 +325,7 @@ end if
                             <%
                         end if
                     end if
+                    uii.close
 				end if
 
 				%>
@@ -358,7 +361,7 @@ end if
                 </div>
                 <br>
                 <div class="col-md-offset-2 col-md-8 Modulo-Medicamento mt40">
-                <%call Subform("produtosunidademedida", "ProdutoID", req("I"), "frm")%>
+                <%'call Subform("produtosunidademedida", "1", req("I"), "frm")%>
                 </div>
             </div>
             <div id="divVincularMedicamento" class="tab-pane">
@@ -432,9 +435,9 @@ end if
         <%
         if req("BaixarPosicao")<>"" then
         %>
-setTimeout(function() {
-    lancar('<%=req("I")%>', 'S', '', '', '<%=req("BaixarPosicao")%>', '', '', );
-}, 700);
+            setTimeout(function() {
+                    lancar('<%=req("I")%>', 'S', '', '', '<%=req("BaixarPosicao")%>', '', '', );
+                }, 700);
         <%
         end if
         %>
@@ -454,7 +457,8 @@ setTimeout(function() {
             }
         });
     }
-    function dividir(P, T, L, V, PosicaoID){
+    function dividir(P, T, L, V, PosicaoID)
+    {
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");
 
@@ -487,7 +491,7 @@ setTimeout(function() {
             success: function(data){
                 $("#ProdutosPosicao").html(data);
             }
-    });
+        });
     }
 
 
@@ -496,19 +500,6 @@ setTimeout(function() {
         $("#CodBarras").removeClass("hidden");
         $("#CodBarras").attr("src", "CodBarras.asp?NumeroCodigo="+ $(this).val() );
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </script>
@@ -542,10 +533,7 @@ $("#ApresentacaoNome, #ApresentacaoUnidade").on("keyup change", function(){
 lbl();
 
     //js exclusivo avatar
-<%
-    Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
-
-    %>
+<%   Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")   %>
     function removeFoto(){
         if(confirm('Tem certeza de que deseja excluir esta imagem?')){
             $.ajax({

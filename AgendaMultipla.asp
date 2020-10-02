@@ -35,6 +35,18 @@ elseif lcase(session("table"))="profissionais" then
      end if
 end if
 if aut("ageoutunidadesV")=0 then
+    set uniProf = db.execute("SELECT Unidades FROM "&tipoUsuario&" WHERE id="&session("idInTable"))
+    spuni = ""
+    contador = 0
+    if not uniProf.eof then
+        if Len(uniProf("unidades"))>0 then
+            if contador > 0 then
+                spuni=spuni&","
+            end if
+            contador=cotador+1
+            spuni = spuni&replace(uniProf("unidades"),"|","")
+         end if
+    end if
     spuni = replace(uniProf("unidades"),"|","")
     uniWhere = " AND u.id in("&spuni&")"
 end if

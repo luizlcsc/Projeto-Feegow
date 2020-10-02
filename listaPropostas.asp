@@ -60,7 +60,6 @@
                         sqlUser = " AND p.sysUser="& ref("EmitidaPor") &" "
                     end if
                     sqlp = "select p.id, p.PacienteID, p.InvoiceID, s.NomeStatus, p.DataProposta, pac.Tel1, pac.Tel2, pac.Cel1, pac.Cel2, p.Valor, pac.NomePaciente, (select group_concat(' ', proc.NomeProcedimento) from itensproposta ip left join procedimentos proc on proc.id=ip.ItemID where ip.PropostaID=p.id) procedimentos from propostas p LEFT JOIN propostasstatus s on s.id=p.StaID LEFT JOIN pacientes pac on pac.id=p.PacienteID "&leftProc&" WHERE p.sysActive=1 and p.StaID IN("&replace(ref("Status"), "|", "")&") AND p.DataProposta BETWEEN "&mydatenull(ref("De"))&" AND "&mydatenull(ref("Ate"))&" "& sqlProc & sqlUser & whereUnidade &" group by p.id order by p.DataProposta desc"
-                    'response.write(sqlp)
 			        set p = db.execute(sqlp)
 		        end if
 
@@ -68,10 +67,8 @@
 		        if not ConfigSQL.eof then
     		        NomeEmpresa = ConfigSQL("NomeEmpresa")
 		        end if
-
 		        while not p.eof
                     PropostaNaoExecutada = false
-
 			        %>
 			        <tr>
             	        <td><%=p("DataProposta")%></td>
@@ -116,7 +113,12 @@
                             <%end if%>
                         </td>
                         <% if session("Banco")<>"clinic4456" or (session("Banco")="clinic4456" and lcase(session("Table"))="funcionarios") then %>
-            	            <td class="text-right">R$ <%=formatnumber(p("Valor"),2)%></td>
+                            <%
+                                valor = treatvalzero(p("Valor"))
+                                valor = replace(valor,"'","")
+                                valor = round(valor,3)
+                            %>
+            	            <td class="text-right">R$ <%=formatnumber(valor,2)%></td>
                         <% end if %>
             	        <td nowrap>
                             <%if session("OtherCurrencies")="phone" then %>

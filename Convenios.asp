@@ -273,10 +273,10 @@ end function
                             <%'=quickField("text", "NumeroContrato", "C&oacute;digo na Operadora", 3, reg("NumeroContrato"), "", "", "")%>
                             <%= quickField("number", "RetornoConsulta", "Retorno Consulta", 2, reg("RetornoConsulta"), "", "", " placeholder='Dias'") %>
                             <div class="col-md-2 qf">
-                                <label>Tipo Recebimento</label><% response.write(reg("DiasRecebimento")) %>
+                                <label>Tipo Recebimento</label>
                                 <select class="form-control" id="DiasReceb" name="DiasReceb">
-                                    <option value="1" <%if reg("DiasRecebimento") then Response.Write(" checked ") end if%>>Dias Úteis</option>
-                                    <option value="2" <% if reg("DataRecebimentoEspecifico") then Response.Write(" checked ") end if%>>Dia do Mês</option>
+                                    <option value="1">Dias Úteis</option>
+                                    <option value="2">Dia do Mês</option>
                                 </select>
                             </div>
                             <%= quickField("number", "DiasRecebimento", "Dias para Recebimento", 3, reg("DiasRecebimento"), "", "", " placeholder='Dias'") %>
@@ -518,12 +518,11 @@ $(document).ready(function(e) {
 
         let DU = $("#qfdiasrecebimento");
         let DE = $("#qfdatarecebimentoespecifico");
-        if($("#DiasRecebimento").val() == ""){
+        if($("#DiasRecebimento").val() == "" || $("#DiasRecebimento").val() == 0){
             $('select[name="DiasReceb"]').find('option[value="2"]').attr("selected",true);
             DU.hide();
             DE.show();
-        }
-        if($("#DataRecebimentoEspecifico").val() == ""){
+        }else{
             $('select[name="DiasReceb"]').find('option[value="1"]').attr("selected",true);
             DE.hide();
             DU.show();
@@ -536,10 +535,12 @@ $("#DiasReceb").change(function()
     let DE = $("#qfdatarecebimentoespecifico");
     if($(this).val() == "2"){
         DU.hide();
+        $("#DiasRecebimento").val("");
         DE.show();
     }
     if($(this).val() == "1"){
         DE.hide();
+        $("#DataRecebimentoEspecifico").val("");
         DU.show();
     }
 });

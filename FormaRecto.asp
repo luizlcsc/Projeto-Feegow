@@ -51,14 +51,14 @@
         <div id="FormaRectoTabela" class="panel-body">
             <%server.Execute("FormaRectoTabela.asp")%>
         </div>
-        <div class="panel-footer">
+        <!-- <div class="panel-footer">
             <div class="row">
                 <%=quickField("multiple", "UsuariosLivres", "Usu&aacute;rios com permiss&atilde;o para recebimento em todas os m&eacute;todos poss&iacute;veis", 8, UsuariosLivres, "select * from (select f.sysActive, f.Ativo, u.id, concat(f.NomeFuncionario, ' - Funcionário') as Nome from sys_users as u left join funcionarios as f on f.id=u.idInTable                                  union all                                          select p.sysActive, p.Ativo, u.id, concat(p.NomeProfissional, ' - Profissional') from sys_users as u left join profissionais as p on p.id=u.idInTable)t  WHERE t.sysActive=1 AND t.Ativo='on'  order by Nome", "Nome", "")%>
                 <div class="col-md-4">
 	                <label><input type="checkbox" class="ace" name="UsuariosLivres" checked="checked" value="|ALL|" /><span class="lbl"> Todos (desmarque esta op&ccedil;&atilde;o para que apenas os usu&aacute;rios selecionados ao lado possam ter acesso a todas as formas de recebimento poss&iacute;veis)</span></label>
                 </div>
             </div>
-        </div>
+        </div>-->
     </div>
 </form>
 

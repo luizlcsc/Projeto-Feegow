@@ -34,25 +34,44 @@ elseif lcase(session("table"))="profissionais" then
         end if
      end if
 end if
-
-if getConfig("ExibirApenasUnidadesNoFiltroDeLocais") then
-    sqlAM = "(select CONCAT('UNIDADE_ID',0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal FROM empresa WHERE id=1) UNION ALL (select CONCAT('UNIDADE_ID',id), CONCAT('Unidade: ', NomeFantasia) FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia)"
-else
-    sqlAM = "(select CONCAT('UNIDADE_ID',0) as 'id', CONCAT('Unidade: ', NomeFantasia)NomeLocal FROM empresa WHERE id=1) UNION ALL (select CONCAT('UNIDADE_ID',id), CONCAT('Unidade: ', NomeFantasia) FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia) UNION ALL (SELECT concat('G', id) id, concat('Grupo: ', NomeGrupo) NomeLocal from locaisgrupos where sysActive=1 order by NomeGrupo) UNION ALL (select l.id, CONCAT(l.NomeLocal, IF(l.UnidadeID=0,IFNULL(concat(' - ', e.Sigla), ''),IFNULL(concat(' - ', fcu.Sigla), '')))NomeLocal from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID where l.sysActive=1 order by l.NomeLocal)"
-end if
-
 if aut("ageoutunidadesV")=0 then
-    'response.write "SELECT Unidades FROM "&tipoUsuario&" WHERE id="&session("idInTable")
     set uniProf = db.execute("SELECT Unidades FROM "&tipoUsuario&" WHERE id="&session("idInTable"))
+    spuni = ""
+    contador = 0
     if not uniProf.eof then
-        uniWhere = " where id is null"
         if Len(uniProf("unidades"))>0 then
-            spuni = replace(uniProf("unidades"),"|","")
-            uniWhere = " where id in("&spuni&")"
+            if contador > 0 then
+                spuni=spuni&","
+            end if
+            contador=cotador+1
+            spuni = spuni&replace(uniProf("unidades"),"|","")
          end if
-        sqlAM = "SELECT CONCAT('UNIDADE_ID',id) as 'id', CONCAT('Unidade: ', NomeFantasia)NomeLocal FROM (SELECT 0 id, NomeFantasia FROM empresa UNION ALL SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia )t "&uniWhere&" ORDER BY t.NomeFantasia"
-        'response.write sqlAM
     end if
+    spuni = replace(uniProf("unidades"),"|","")
+    uniWhere = " AND u.id in("&spuni&")"
+end if
+if getConfig("ExibirApenasUnidadesNoFiltroDeLocais") then
+    sqlAM = "(select CONCAT('UNIDADE_ID',0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal FROM empresa AS u WHERE id=1 "&uniWhere&") UNION ALL (select CONCAT('UNIDADE_ID',id), CONCAT('Unidade: ', NomeFantasia) FROM sys_financialcompanyunits AS u WHERE sysActive=1 "&uniWhere&" order by NomeFantasia)"
+else
+    sqlAM = " (                                                                                "&chr(13)&_
+            " SELECT CONCAT('UNIDADE_ID',0) AS 'id', CONCAT('Unidade: ', NomeFantasia)NomeLocal"&chr(13)&_
+            " FROM empresa AS u                                                                "&chr(13)&_
+            " WHERE id=1 "&uniWhere&"                                                          "&chr(13)&_
+            " ) UNION ALL (                                                                    "&chr(13)&_
+            " SELECT CONCAT('UNIDADE_ID',id), CONCAT('Unidade: ', NomeFantasia)                "&chr(13)&_
+            " FROM sys_financialcompanyunits AS u                                              "&chr(13)&_
+            " WHERE sysActive=1 "&uniWhere&"                                                   "&chr(13)&_
+            " ORDER BY NomeFantasia) UNION ALL (                                               "&chr(13)&_
+            " SELECT CONCAT('G', id) id, CONCAT('Grupo: ', NomeGrupo) NomeLocal                "&chr(13)&_
+            " FROM locaisgrupos                                                                "&chr(13)&_
+            " WHERE sysActive=1                                                                "&chr(13)&_
+            " ORDER BY NomeGrupo) UNION ALL (                                                  "&chr(13)&_
+            " SELECT l.id, CONCAT(l.NomeLocal, IFNULL(CONCAT(' - ', u.Sigla), ''))NomeLocal    "&chr(13)&_
+            " FROM locais l                                                                    "&chr(13)&_
+            " LEFT JOIN vw_unidades u ON u.id = l.UnidadeID                                    "&chr(13)&_
+            "                                                                                  "&chr(13)&_
+            " WHERE l.sysActive=1 "&uniWhere&"                                                 "&chr(13)&_
+            " ORDER BY l.NomeLocal)                                                            "
 end if
 
 if req("Data")<>"" then
@@ -212,7 +231,7 @@ end if
                 <%=quickField("multiple", "Especialidade", "Especialidades", 2, req("Especialidades"), "SELECT t.EspecialidadeID id, IFNULL(e.nomeEspecialidade, e.especialidade) especialidade FROM (	SELECT EspecialidadeID from profissionais WHERE ativo='on'	UNION ALL	select pe.EspecialidadeID from profissionaisespecialidades pe LEFT JOIN profissionais p on p.id=pe.ProfissionalID WHERE p.Ativo='on') t LEFT JOIN especialidades e ON e.id=t.EspecialidadeID WHERE NOT ISNULL(especialidade) AND e.sysActive=1 GROUP BY t.EspecialidadeID ORDER BY especialidade", "especialidade", " empty ") %>
                 <%=quickField("multiple", "Convenio", "Convênios", 2, "", "select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio", "NomeConvenio", " empty ") %>
                 <%'=quickField("empresaMultiIgnore", "Unidades", "Unidades", 2, "", "", "", "") %>
-                <%=quickField("multiple", "Locais", "Locais", 2, sUnidadeID, sqlAM, "NomeLocal", " empty ") %>
+                <%=quickField("multiple", "Locais", "Locais", 2, sUnidadeID, sqlAM, "NomeLocal", " empty ")%>
                 <%=quickField("multiple", "Equipamentos", "Equipamentos", 2, "", "SELECT id, NomeEquipamento FROM equipamentos WHERE sysActive=1 and Ativo='on' ORDER BY NomeEquipamento", "NomeEquipamento", "empty") %>
                 <input type="hidden" id="hData" name="hData" value="<%= hData %>" />
             </div>

@@ -164,7 +164,16 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             SET PacientesSQL = db.execute(qPacientesSQL)
 
               if not PacientesSQL.eof then
-                conteudo = replace(conteudo,"[Paciente.Nome]",PacientesSQL("NomePaciente")&"")
+                nomePaciente = PacientesSQL("NomePaciente")&""
+                nomeSocial = PacientesSQL("NomeSocial")&""
+
+                if nomeSocial<>"" then
+                  nomePaciente=nomeSocial
+                end if
+
+                conteudo = replace(conteudo,"[Paciente.Nome]",nomePaciente)
+                conteudo = replace(conteudo,"[Paciente.NomeSocial]",nomePaciente)
+
                 conteudo = replace(conteudo,"[Paciente.Sexo]",PacientesSQL("Sexo")&"")
                 if isdate(PacientesSQL("Nascimento")) then
                   conteudo = replace(conteudo, "[Paciente.Idade]", idade(PacientesSQL("Nascimento")&""))
@@ -187,6 +196,11 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Matricula]", trim(PacientesSQL("Matricula1")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Validade]", trim(PacientesSQL("Validade1")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Email]", trim(PacientesSQL("Email1")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Email1]", trim(PacientesSQL("Email1")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Religiao]", trim(PacientesSQL("Religiao")&" ") )
+
+                conteudo = replace(conteudo, "[Paciente.Cor]", trim(PacientesSQL("CorIdentificacao")&" ") )
+
                 conteudo = replace(conteudo, "[Paciente.CPF]", trim(PacientesSQL("CPF")&" ") )
                 'CONTATOS
                 conteudo = replace(conteudo, "[Paciente.Tel1]", "[Paciente.Telefone]" )

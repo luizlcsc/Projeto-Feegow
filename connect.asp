@@ -5649,7 +5649,7 @@ function appUrl(includeVersionFolder)
     Set objSystemVariables = shellExec.Environment("SYSTEM")
     getAppEnv = objSystemVariables("FC_APP_ENV")
 
-    app_url_var = Request.ServerVariables("REMOTE_ADDR")
+    app_url_var = Request.ServerVariables("SERVER_NAME")
     versionFolder = "/v7-master"
     httpProtocol = "https"
 

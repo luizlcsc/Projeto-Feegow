@@ -91,7 +91,14 @@
 <script type="text/javascript">
 
 function removeItem(ID){
-    $.get("ListaProdutos.asp?ItemID="+ID+"&Acao=X", $(this).serialize(), function (data) {});
+    $.get("ListaProdutos.asp?ItemID="+ID+"&Acao=X", $(this).serialize(), function (data) {
+        new PNotify({
+            title: 'Item excluído com sucesso',
+            type: 'success',
+            delay: 5000
+        });
+        $("#linha"+ID).remove();
+    });
 };
 
 function downloadExcel(){

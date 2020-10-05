@@ -1,3 +1,4 @@
+<!--#include file="./Classes/ServerPath.asp"-->
 <link rel="stylesheet" href="assets/css/colorbox.css" />
 <style type="text/css">
 .ace-thumbnails > li img {

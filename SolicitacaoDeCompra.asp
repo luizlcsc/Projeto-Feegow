@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modalcontrato.asp"-->
+<!--#include file="./Classes/ServerPath.asp"-->
 <%
 tableName = "solicitacao_compra"
 CD = req("T")

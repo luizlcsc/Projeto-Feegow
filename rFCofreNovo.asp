@@ -63,15 +63,12 @@ while not unidade.eof
 	"AND (pagto.CD='D' OR ISNULL(pagto.CD))  "&_
 	"AND inv.CompanyUnitID="& UnidadeID &" "&_
 	"AND (  "&_
-	"	rec.`Data` BETWEEN "& mDe &" AND "& mAte &"  "&_
-	"	OR  "&_
 	"	date(rec.`sysDate`) BETWEEN "& mDe &" AND "& mAte &"  "&_
 	"	OR  "&_
 	"	inv.sysDate BETWEEN "& mDe &" AND "& mAte &"  "&_
 	"	OR  "&_
 	"	pagto.Date BETWEEN "& mDe &" AND "& mAte &"  "&_
 	") GROUP BY inv.id ORDER BY inv.NumeroFatura, inv.id"
-    'Response.Write( sql )
 
     'sql = "select i.*, tab.NomeTabela from sys_financialinvoices i "&_
     '                        "LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID "&_

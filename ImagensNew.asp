@@ -320,10 +320,15 @@ end if
                 processaItem(item);
                 let renderType = 'download';
 
+
+                
                 if(!item.isImage){
                     renderType="redirect";
                 }
-
+                item.ArquivoLink = item.ArquivoLink.replace('redirect','download')
+                // console.log(item.isImage)
+                // console.log(item.ArquivoLink)
+                
                 return `<div class="galery-item">
                              <div class="galery-data-envio">
                                 <small class="pull-right data-envio">Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}</small><br/>

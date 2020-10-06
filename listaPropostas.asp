@@ -114,9 +114,12 @@
                         </td>
                         <% if session("Banco")<>"clinic4456" or (session("Banco")="clinic4456" and lcase(session("Table"))="funcionarios") then %>
                             <%
-                                valor = treatvalzero(p("Valor"))
-                                valor = replace(valor,"'","")
-                                valor = round(valor,3)
+                                valor = p("Valor")
+
+                                if valor&"" = "" then
+                                    valor=0
+                                end if
+
                             %>
             	            <td class="text-right">R$ <%=formatnumber(valor,2)%></td>
                         <% end if %>

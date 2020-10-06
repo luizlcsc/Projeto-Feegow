@@ -108,6 +108,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_PropostaID          = item_id
         'ALIAS DE TAGS RELACIONADAS APROPOSTA
         'Adicionar aqui...
+      case "AtendimentoID"          
+        item_AtendimentoID          = item_id
 
       case "FaturaID"          
         item_FaturaID          = item_id
@@ -426,8 +428,40 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           if item_ProcedimentoNome<>"" then
             conteudo = replace(conteudo, "[Procedimento.Nome]", item_ProcedimentoNome&"" )
           end if
-        case "Devolucao"
+        case "Atendimento"
+          if item_AtendimentoID>0 then
+            qAtendimentosSQL = " SELECT ate.Data,ate.HoraInicio,COALESCE(ate.HoraFim,'_____:______') AS HoraFim,COALESCE(TIMEDIFF(HoraFim,HoraInicio),'_____:______') AS Duracao,ate.Obs,IF(ate.Triagem='S','Sim','Não') AS Triagem,"&chr(13)&_
+                            " pac.id AS PacienteID,                                          "&chr(13)&_
+                            " uni.NomeEmpresa                                                "&chr(13)&_
+                            " FROM atendimentos AS ate                                       "&chr(13)&_
+                            " LEFT JOIN pacientes AS pac ON pac.id=ate.PacienteID            "&chr(13)&_
+                            " LEFT JOIN profissionais AS pro ON pro.id=ate.ProfissionalID    "&chr(13)&_
+                            " LEFT JOIN vw_unidades AS uni ON uni.id=ate.UnidadeID           "&chr(13)&_
+                            " WHERE ate.id="&item_AtendimentoID
 
+            SET AtendimentosSQL = db.execute(qAtendimentosSQL)
+            if not AtendimentosSQL.eof then
+              conteudo = replace(conteudo, "[Atendimento.Data]", AtendimentosSQL("Data")&"" )
+              conteudo = replace(conteudo, "[Atendimento.HoraInicio]", right(AtendimentosSQL("HoraInicio"),8)&"" )
+              conteudo = replace(conteudo, "[Atendimento.HoraFim]", AtendimentosSQL("HoraFim")&"" )
+              conteudo = replace(conteudo, "[Atendimento.Duracao]", AtendimentosSQL("Duracao")&"" )
+              conteudo = replace(conteudo, "[Atendimento.Obs]", AtendimentosSQL("Obs")&"" )
+              conteudo = replace(conteudo, "[Atendimento.Triagem]", AtendimentosSQL("Triagem")&"" )
+              conteudo = replace(conteudo, "[Atendimento.Unidade]", AtendimentosSQL("NomeEmpresa")&"" )
+
+              'PUXA INFORMAÇÕES DO PACIENTE QUE FOI ATENDIDO
+              if inStr(conteudo, "[Paciente.") > 0 Then
+                Call TagsConverte(conteudo,"PacienteID_"&AtendimentosSQL("PacienteID"),"")
+              end if
+
+            end if
+            AtendimentosSQL.close
+            set AtendimentosSQL = nothing
+
+
+            
+
+          end if
         case "Proposta"
 
           if item_PropostaID>0 then

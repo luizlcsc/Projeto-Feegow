@@ -1,5 +1,5 @@
 <!--#include file="connect.asp"-->
-aaa<%
+<%
 ExisteAtestado = "display:none;"
 redirect = req("redirect")&""
 ArquivoAssinado = ""

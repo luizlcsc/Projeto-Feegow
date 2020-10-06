@@ -112,7 +112,7 @@
                     	        <a href="./?P=invoice&I=<%=p("InvoiceID")%>&A=&Pers=1&T=C" class="btn btn-xs btn-info">Ver Contrato</a>
                             <%end if%>
                         </td>
-                        <% if true or session("Banco")<>"clinic4456" or (session("Banco")="clinic4456" and lcase(session("Table"))="funcionarios") then %>
+                        <% if session("Banco")<>"clinic4456" or (session("Banco")="clinic4456" and lcase(session("Table"))="funcionarios") then %>
                             <%
                                 valor = p("Valor")
 

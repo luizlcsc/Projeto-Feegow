@@ -112,11 +112,14 @@
                     	        <a href="./?P=invoice&I=<%=p("InvoiceID")%>&A=&Pers=1&T=C" class="btn btn-xs btn-info">Ver Contrato</a>
                             <%end if%>
                         </td>
-                        <% if session("Banco")<>"clinic4456" or (session("Banco")="clinic4456" and lcase(session("Table"))="funcionarios") then %>
+                        <% if true or session("Banco")<>"clinic4456" or (session("Banco")="clinic4456" and lcase(session("Table"))="funcionarios") then %>
                             <%
-                                valor = treatvalzero(p("Valor"))
-                                valor = replace(valor,"'","")
-                                valor = round(valor,3)
+                                valor = p("Valor")
+
+                                if valor&"" = "" then
+                                    valor=0
+                                end if
+
                             %>
             	            <td class="text-right">R$ <%=formatnumber(valor,2)%></td>
                         <% end if %>

@@ -324,10 +324,10 @@ end if
                 
                 if(!item.isImage){
                     renderType="redirect";
+                }else{
+                    item.ArquivoLink = item.ArquivoLink.replace('redirect','download')
                 }
-                item.ArquivoLink = item.ArquivoLink.replace('redirect','download')
-                // console.log(item.isImage)
-                // console.log(item.ArquivoLink)
+
                 
                 return `<div class="galery-item">
                              <div class="galery-data-envio">

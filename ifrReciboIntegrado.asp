@@ -878,7 +878,12 @@ if not inv.eof then
                 sqlRecibo = "UPDATE recibos SET Texto = '"&Recibo&"', ImpressoEm = now() WHERE id="&reciboID
             else
 
-                sqlDataHora = mydatetime(DataHora)
+
+                if getConfig("registrarReciboDataHoraConta") then
+                    sqlDataHora = mydatetime(DataHora)
+                else
+                    sqlDataHora = mydatetime(now())
+                end if
 
                 if Imprimiu="1" then
                     sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, Auto,ImpressoEm, sysDate) VALUES ("&treatvalzero(NumeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&Cnpj&"','"&NomeRecibo&"', "&mydatenull(date())&", "&treatvalzero(ValorRecibo)&", '"&Recibo&"', '"&PacienteID&"', "&session("User")&", '"&NomeItens&"', 0, "&InvoiceID&", "&UnidadeInvoice&", "&NumeroSequencial&", '"&CPFPACIENTE&"', 0, now(), "&sqlDataHora&")"

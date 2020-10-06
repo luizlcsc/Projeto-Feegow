@@ -26,6 +26,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_PacienteID          = item_id
         'ALIAS DE TAGS RELACIONADAS AO PACIENTE
         conteudo = replace(conteudo,"[NomePaciente]","[Paciente.Nome]")
+        conteudo = replace(conteudo,"[Paciente.NomeSocial]","[Paciente.Nome]")
 
       case "ProfissionalID"
         item_ProfissionalID      = item_id
@@ -144,22 +145,26 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Paciente"
 
           if item_PacienteID>0 then
-            qPacientesSQL = "SELECT  "&_
-            "c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3'  "&_
-            ",pla1.NomePlano AS 'Plano1', pla2.NomePlano AS 'Plano2',pla3.NomePlano AS 'Plano3'  "&_
-            ",p.*, ec.EstadoCivil, s.NomeSexo as Sexo, g.GrauInstrucao, o.Origem  "&_
-            "from pacientes as p  "&_
-            "left join estadocivil as ec on ec.id=p.EstadoCivil  "&_
-            "left join sexo as s on s.id=p.Sexo  "&_
-            "left join grauinstrucao as g on g.id=p.GrauInstrucao  "&_
-            "left join origens as o on o.id=p.Origem  "&_
-            "LEFT JOIN convenios c1 ON c1.id=p.ConvenioID1  "&_
-            "LEFT JOIN convenios c2 ON c2.id=p.ConvenioID2  "&_
-            "LEFT JOIN convenios c3 ON c3.id=p.ConvenioID3  "&_
-            "LEFT JOIN conveniosplanos pla1 ON pla1.ConvenioID=c1.id  "&_
-            "LEFT JOIN conveniosplanos pla2 ON pla2.ConvenioID=c2.id  "&_
-            "LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id  "&_
-            "where p.id="&treatvalzero(item_PacienteID) 
+            qPacientesSQL = " SELECT                                                                                        "&chr(13)&_
+                            " p.*,                                                                                          "&chr(13)&_
+                            " c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3',"&chr(13)&_
+                            " pla1.NomePlano AS 'Plano1', pla2.NomePlano AS 'Plano2',pla3.NomePlano AS 'Plano3',            "&chr(13)&_
+                            " ec.EstadoCivil, s.NomeSexo AS Sexo, g.GrauInstrucao, o.Origem, corPel.NomeCorPele             "&chr(13)&_
+                            " FROM pacientes AS p                                                                           "&chr(13)&_
+                            " LEFT JOIN estadocivil AS ec ON ec.id=p.EstadoCivil                                            "&chr(13)&_
+                            " LEFT JOIN sexo AS s ON s.id=p.Sexo                                                            "&chr(13)&_
+                            " LEFT JOIN grauinstrucao AS g ON g.id=p.GrauInstrucao                                          "&chr(13)&_
+                            " LEFT JOIN origens AS o ON o.id=p.Origem                                                       "&chr(13)&_
+                            " LEFT JOIN convenios c1 ON c1.id=p.ConvenioID1                                                 "&chr(13)&_
+                            " LEFT JOIN convenios c2 ON c2.id=p.ConvenioID2                                                 "&chr(13)&_
+                            " LEFT JOIN convenios c3 ON c3.id=p.ConvenioID3                                                 "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla1 ON pla1.ConvenioID=c1.id                                       "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla2 ON pla2.ConvenioID=c2.id                                       "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id                                       "&chr(13)&_
+                            " LEFT JOIN corpele corPel ON corPel.id=p.`CorPele`                                             "&chr(13)&_
+                            "where p.id="&treatvalzero(item_PacienteID)                                                      &chr(13)&_
+                            " GROUP BY p.id                                                                                 "
+             
           end if
           'response.write("<pre>"&qPacientesSQL&"</pre>")
           if qPacientesSQL<>"" then
@@ -199,9 +204,11 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Validade]", trim(PacientesSQL("Validade1")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Email]", trim(PacientesSQL("Email1")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Email1]", trim(PacientesSQL("Email1")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Email2]", trim(PacientesSQL("Email2")&"") )
                 conteudo = replace(conteudo, "[Paciente.Religiao]", trim(PacientesSQL("Religiao")&" ") )
+                conteudo = replace(conteudo, "[Paciente.EstadoCivil]", trim(PacientesSQL("EstadoCivil")&" ") )                
 
-                conteudo = replace(conteudo, "[Paciente.Cor]", trim(PacientesSQL("CorIdentificacao")&" ") )
+                conteudo = replace(conteudo, "[Paciente.CorIdentificacao]", trim(PacientesSQL("CorIdentificacao")&" ") )
 
                 conteudo = replace(conteudo, "[Paciente.CPF]", trim(PacientesSQL("CPF")&" ") )
                 'CONTATOS
@@ -212,6 +219,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Celular]", PacientesSQL("Cel1")&"" )
                 conteudo = replace(conteudo, "[Paciente.Cel2]", PacientesSQL("Cel2")&"" )
                 conteudo = replace(conteudo, "[Paciente.IndicadoPor]", trim(PacientesSQL("IndicadoPor")&" ") )
+                conteudo = replace(conteudo, "[Paciente.Origem]", trim(PacientesSQL("Origem")&" ") )
+
                 'ENDEREÇO
                 conteudo = replace(conteudo, "[Paciente.Estado]", trim(PacientesSQL("Estado")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Cidade]", trim(PacientesSQL("Cidade")&" ") )
@@ -224,6 +233,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Profissao]", trim(PacientesSQL("Profissao")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Peso]", trim(PacientesSQL("Peso")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Altura]", trim(PacientesSQL("Altura")&" ") )
+                conteudo = replace(conteudo, "[Paciente.CorPele]", trim(PacientesSQL("NomeCorPele")&" ") )
                 conteudo = replace(conteudo, "[Paciente.IMC]", trim(PacientesSQL("IMC")&" ") )
                 conteudo = replace(conteudo, "[Paciente.CNS]", trim(PacientesSQL("CNS")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Observacoes]", trim(PacientesSQL("Observacoes")&" ") )

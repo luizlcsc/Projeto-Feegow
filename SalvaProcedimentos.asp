@@ -48,7 +48,7 @@ if(UCase(tabela) = UCase("GuiaSADT")) then
 
     if (guiaIdAnexaString <> "") then
             For i = 0 to Ubound(guiaIdAnexaArray)
-                
+
                 valorPago = 0
 
                 if (ref("ValorPagoGuia"&guiaIdAnexaArray(i)) <> "") then

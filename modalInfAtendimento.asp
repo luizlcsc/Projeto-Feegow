@@ -301,7 +301,7 @@ function expand(I){
 
 
 <%
-if getConfig("NaoExibirModalFinalizacaoAtendimento")=1 or aut("finalizaratendimentoV")=0 then
+if getConfig("BaixarItensContratadosAoFinalizarAtendimento")=0 or getConfig("NaoExibirModalFinalizacaoAtendimento")=1 or aut("finalizaratendimentoV")=0 then
     %>
     $("#btnSaveInf").click();
     <%

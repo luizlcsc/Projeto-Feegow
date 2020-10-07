@@ -34,7 +34,7 @@ if not BuiSQL.eof then
     ProfissionalID =  BuiSQL("ProfissionalID")
 end if
 
-sqlPerm = "SELECT * FROM buipermissoes WHERE Tipo='"&TipoUser&"' AND FormID="&treatvalzero(ModeloID)&" AND Grupo LIKE '%|"&session("idInTable")&"|%'"
+sqlPerm = "SELECT * FROM buipermissoes WHERE Tipo='"&TipoUser&"' AND FormID="&treatvalzero(ModeloID)&" AND Grupo LIKE '%|"&session("idInTable")&"|%' ORDER BY LENGTH(Grupo) "
 set PermissaoFormSQL = db.execute(sqlPerm)
 if not PermissaoFormSQL.eof then
     Permissoes = PermissaoFormSQL("Permissoes")

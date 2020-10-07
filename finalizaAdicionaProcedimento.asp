@@ -12,7 +12,7 @@ end if
 PlanoID = null
 AtendimentoID = req("AtendimentoID")
 PermitirInformarProcedimentos = getConfig("PermitirInformarProcedimentos")
-
+response.write("Acao: "&Acao&" AtendimentoID: "&AtendimentoID&" PermitirInformarProcedimentos: "&PermitirInformarProcedimentos)
 IF AtendimentoID > "0" AND AtendimentoID<>"N" THEN
     set AtendimentoSQL = db.execute("select at.AgendamentoID ,ap.*, p.NomeProcedimento, p.SolIC, p.TipoProcedimentoID, p.Valor, at.PacienteID,agendamentos.PlanoID from atendimentosprocedimentos as ap left join procedimentos as p on p.id=ap.ProcedimentoID INNER join atendimentos as at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ON AgendamentoID = agendamentos.id where AtendimentoID="&AtendimentoID)
     if not AtendimentoSQL.eof then
@@ -392,6 +392,8 @@ if PermitirInformarProcedimentos then
 	</thead>
 	<tbody>
 	<%
+    sqlAtendimento = "select ap.*, p.NomeProcedimento, p.SolIC, p.TipoProcedimentoID, p.Valor, at.PacienteID,agendamentos.PlanoID, agendamentos.TabelaParticularID, TabelaParticular.NomeTabela from atendimentosprocedimentos as ap left join procedimentos as p on p.id=ap.ProcedimentoID left join atendimentos as at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ON AgendamentoID = agendamentos.id LEFT JOIN TabelaParticular ON TabelaParticular.id = agendamentos.TabelaParticularID where AtendimentoID="&AtendimentoID
+		response.write(sqlAtendimento)
 	if AtendimentoID<>"N" and AtendimentoID<>"" then
 
 	    sqlAtendimento = "select ap.*, p.NomeProcedimento, p.SolIC, p.TipoProcedimentoID, p.Valor, at.PacienteID,agendamentos.PlanoID, agendamentos.TabelaParticularID, TabelaParticular.NomeTabela from atendimentosprocedimentos as ap left join procedimentos as p on p.id=ap.ProcedimentoID left join atendimentos as at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ON AgendamentoID = agendamentos.id LEFT JOIN TabelaParticular ON TabelaParticular.id = agendamentos.TabelaParticularID where AtendimentoID="&AtendimentoID

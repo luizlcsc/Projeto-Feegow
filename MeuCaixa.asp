@@ -77,7 +77,7 @@ function downloadExcel(){
     $("#htmlTable").val($("#Extrato").html());
     var tk = localStorage.getItem("tk");
 
-    $("#formExcel").attr("action", domain+"components/public/reports/download-excel?title=ExtratoCaixa&tk="+tk).submit();
+    $("#formExcel").attr("action", domain+"reports/download-excel?title=ExtratoCaixa&tk="+tk).submit();
 }
 </script>
 

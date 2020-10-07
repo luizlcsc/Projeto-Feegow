@@ -80,7 +80,7 @@ while not proc.eof
     SomenteConvenios = proc("SomenteConvenios")
     ExibirLancar = 0
 
-	if Forma="P" AND (instr(SomenteConvenios, "||NOTPARTICULAR||")<1 OR SomenteConvenios&""="") and not atenSQL.eof then
+	if Forma="P" AND (instr(SomenteConvenios, "||NOTPARTICULAR||")<1 OR SomenteConvenios&""="") then
         
 
         GrupoID = proc("GrupoID")
@@ -183,7 +183,7 @@ while not proc.eof
 		ConvenioID = Forma
 	end if
 	'if (Forma<>"P" and Valor<>"") or Forma="P" then
-	'if ExibirLancar=1 then
+	if ExibirLancar=1 then
     %>
     <tr>
         <td>
@@ -200,7 +200,7 @@ while not proc.eof
         <td width="1%"><button type="button" onclick="addProc('I', <%=proc("id")%>, '<%= ConvenioID %>', '<%= vp %>')" class="btn btn-success btn-xs rt" style="position:absolute; right:0"><i class="fa fa-chevron-right"></i></button></td>
     </tr>
     <%
-	'end if
+	end if
 proc.movenext
 wend
 proc.close

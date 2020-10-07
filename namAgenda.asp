@@ -513,7 +513,7 @@ end if
 HoraDe = HoraToID(bloq("HoraDe"))
 HoraA = HoraToID(bloq("HoraA"))
 if session("HVazios")="" then
-    Conteudo = "<tr id=""'+$(this).attr('id')+'"" class=""bloq"& ProfissionalID &"_"& LocalID &""" onClick=""abreBloqueio("&bloq("id")&", \'\', \'\');"">"&_
+    Conteudo = "<tr id=""'+$(this).attr('id')+'"" class=""bloq"& ProfissionalID &"_"& LocalID &""" onClick=""abreBloqueio("&bloq("id")&", `"&replace(mydatenull(Data)&"","'","")&"`, \'\');"">"&_
     "<td width=""1%""></td><td width=""1%""><button type=""button"" class=""btn btn-xs btn-danger"">'+$(this).attr('data-hora')+'</button></td>"&_ 
     "<td nowrap><img src=""assets/img/bloqueio.png""> <span class=""nomePac"">"&replace(bloq("Titulo")&" ", "'", "\'")&"</span></td>"&_ 
     "<td class=""hidden-xs text-center""></td>"&_ 

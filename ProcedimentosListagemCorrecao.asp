@@ -106,7 +106,7 @@ set lotesEnv=nothing
                         <td align="center"><%=despesas("Descricao")%></td>
                         <td align="center"><%=despesas("Quantidade")%></td> 
                         <td align="center"><%=fn(despesas("ValorTotal"))%></td> 
-                        <td align="center"><%=quickfield("currency", "ValorPagoGuia", "", 3, despesas("ValorPago"), " valor-pago-field " , "", " text-right  ") %></td>
+                        <td align="center"><%=quickfield("currency", "ValorPagoGuia"&despesas("id"), "", 3, despesas("ValorPago"), " valor-pago-field " , "", " text-right  ") %></td>
 
                     </tr>
                 <% 

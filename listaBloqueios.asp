@@ -12,7 +12,24 @@ if req("X")<>"" then
     </script>
     <%
 end if
-set lista = db.execute("select * from compromissos where (ProfissionalID="&ProfissionalID&" OR (ProfissionalID=0 AND BloqueioMulti='S')) AND DataA>=date(now()) order by DataDe, HoraDe")
+
+if req("Data")&""<>"" then
+	Data = req("Data")
+	if Instr(Data,"/")>0 then
+		DataArray = split(DateAdd("d",0,Data),"/")
+		Data = DataArray(2) & "-" & DataArray(1) & "-" & DataArray(0)
+	else
+		Data = req("Data")
+	end if
+
+	qListaWhereData = " AND ('"&Data&"' BETWEEN DataDe AND DataA) "
+else
+	qListaWhereData = "AND DataA>=date(now())"
+end if
+
+qListaSQL = "select * from compromissos where (ProfissionalID="&ProfissionalID&" OR (ProfissionalID=0 AND BloqueioMulti='S')) "&qListaWhereData&" order by DataDe, HoraDe"
+'response.write("<pre>"&qListaSQL&"</pre>")
+set lista = db.execute(qListaSQL)
 if lista.eof then
 	%>
 	<em>Nenhum bloqueio encontrado na agenda deste profissional.</em>

@@ -1,4 +1,5 @@
-﻿<%
+﻿<!--#include file="./Classes/ServerPath.asp"-->
+<%
 'on error resume next
 FormID = Id
 

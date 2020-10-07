@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
+<!--#include file="./Classes/ServerPath.asp"-->
 
 <script type="text/javascript">
     $(".crumb-active a").html("Outras Configurações");
@@ -80,7 +81,7 @@ if session("Admin")=1 then
                         Banco = replace(session("banco"), "clinic", "")
                         Banco = 5533356-ccur(Banco)
                         %>
-                        <a class="btn btn-default" href="<%=appUrl(False)%>/feegow_components/agendamento-online/client/<%=Banco%>-AAAW" target="_blank"><i class="fa fa-external-link"></i> Iframe para agendamento online</a>
+                        <a class="btn btn-default" href="https://clinic7.feegow.com.br/feegow_components/agendamento-online/client/<%=Banco%>-AAAW" target="_blank"><i class="fa fa-external-link"></i> Iframe para agendamento online</a>
                     </div>
                 </div>
             </form>

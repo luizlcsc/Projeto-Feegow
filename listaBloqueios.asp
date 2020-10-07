@@ -12,8 +12,17 @@ if req("X")<>"" then
     </script>
     <%
 end if
+
 if req("Data")&""<>"" then
-	qListaWhereData = "AND DataA = '"&req("Data")&"'"
+	Data = req("Data")
+	if Instr(Data,"/")>0 then
+		DataArray = split(DateAdd("d",0,Data),"/")
+		Data = DataArray(2) & "-" & DataArray(1) & "-" & DataArray(0)
+	else
+		Data = req("Data")
+	end if
+
+	qListaWhereData = " AND ('"&Data&"' BETWEEN DataDe AND DataA) "
 else
 	qListaWhereData = "AND DataA>=date(now())"
 end if

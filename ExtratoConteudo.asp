@@ -151,19 +151,19 @@ end if
 		PaymentMethodID = getMovement("PaymentMethodID")
 
 		'tratei as variáveis para não receber valor nulo (André Coutinho)
-		if AccountAssociationIDCredit isnull then
+		if IsNull(AccountAssociationIDCredit) then
 			AccountAssociationIDCredit = 0
 		end if	
 
-		if AccountAssociationID isnull then
+		if IsNull(AccountAssociationID) then
 			AccountAssociationID = 0
 		end if
 
-		if AccountIDCredit isnull then
+		if IsNull(AccountIDCredit) then
 			AccountIDCredit = 0
 		end if
 
-		if AccountID isnull then
+		if IsNull(AccountID) then
 			AccountID = 0
 		end if
 

@@ -283,7 +283,7 @@ if not guia.eof then
 	<%
 end if
 
-if 1=1 and AtendimentoID<>"N" then
+if 1=1 and AtendimentoID<>"N" and GetConfig("BaixarItensContratadosAoFinalizarAtendimento")=1 then
 'aqui ira listar os itens contratados do agendamento que foi feito e iniciado
 
     sqlItens= "select proc.NomeProcedimento, proc.id ProcedimentoID "&_

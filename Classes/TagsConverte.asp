@@ -26,7 +26,6 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_PacienteID          = item_id
         'ALIAS DE TAGS RELACIONADAS AO PACIENTE
         conteudo = replace(conteudo,"[NomePaciente]","[Paciente.Nome]")
-        conteudo = replace(conteudo,"[Paciente.NomeSocial]","[Paciente.Nome]")
 
       case "ProfissionalID"
         item_ProfissionalID      = item_id
@@ -171,16 +170,15 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             SET PacientesSQL = db.execute(qPacientesSQL)
 
               if not PacientesSQL.eof then
-                nomePaciente = PacientesSQL("NomePaciente")&""
-                nomeSocial = PacientesSQL("NomeSocial")&""
 
-                if nomeSocial<>"" then
-                  nomePaciente=nomeSocial
+                if PacientesSQL("NomeSocial")&""<>"" then
+                  pacienteNomeSocial=PacientesSQL("NomeSocial")
+                else
+                  pacienteNomeSocial=PacientesSQL("NomePaciente")
                 end if
 
-                conteudo = replace(conteudo,"[Paciente.Nome]",nomePaciente)
-                conteudo = replace(conteudo,"[Paciente.NomeSocial]",nomePaciente)
-
+                conteudo = replace(conteudo,"[Paciente.NomeSocial]",pacienteNomeSocial)
+                conteudo = replace(conteudo,"[Paciente.Nome]",PacientesSQL("NomePaciente")&"")
                 conteudo = replace(conteudo,"[Paciente.Sexo]",PacientesSQL("Sexo")&"")
                 if isdate(PacientesSQL("Nascimento")) then
                   conteudo = replace(conteudo, "[Paciente.Idade]", idade(PacientesSQL("Nascimento")&""))

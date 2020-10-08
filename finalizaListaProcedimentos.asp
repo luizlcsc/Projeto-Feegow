@@ -80,7 +80,7 @@ while not proc.eof
     SomenteConvenios = proc("SomenteConvenios")
     ExibirLancar = 0
 
-	if Forma="P" AND (instr(SomenteConvenios, "||NOTPARTICULAR||")<1 OR SomenteConvenios&""="") then
+	if Forma="P" AND (instr(SomenteConvenios, "||NOTPARTICULAR||")<1 OR SomenteConvenios&""="") and not atenSQL.eof then
         
 
         GrupoID = proc("GrupoID")

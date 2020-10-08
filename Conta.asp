@@ -148,7 +148,8 @@ EliminaNotificacao=0
                         <%
                         end if
 
-                        if getConfig("PermitirAtendimentoAvulso")=1 then
+                        'if getConfig("PermitirAtendimentoAvulso")=1 then
+                        if false then
                         %>
                         <button type="button" class="btn btn-sm btn-default" onClick="infAten('N');"><i class="fa fa-stethoscope"></i> Atendimento</button>
                         <%

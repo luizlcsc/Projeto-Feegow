@@ -671,7 +671,7 @@ select case lcase(req("P"))
                 </a>
             </li>
             <% IF session("Banco")="clinic5459" or session("Banco")="clinic100000" or session("Banco")="clinic105" THEN %>
-             <li>
+             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#resumoclinico" onclick="loadResumoClinico()">
                     <span class="fa fa-heart-o bigger-110"></span>
                     <span class="sidebar-title">Resumo Clínico</span>
@@ -684,7 +684,7 @@ select case lcase(req("P"))
 		    <%
             if aut("aso")=1 and false then
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab" id="abaForms" href="#forms" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AsoPaciente|');">
                     <span class="fa fa-bar-chart bigger-110"></span>
                     <span class="sidebar-title">Medicina ocupacional</span>
@@ -697,7 +697,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("formsae")=1 then
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-anamneses" id="abaForms" href="#forms" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AE|');">
                     <span class="fa fa-bar-chart bigger-110"></span>
                     <span class="sidebar-title">Anamnese e Evolu&ccedil;&otilde;es</span>
@@ -714,7 +714,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("formsl")=1 then
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#forms" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|L|');">
                     <span class="fa fa-align-justify bigger-110"></span>
                     <span class="sidebar-title">Laudos e Formul&aacute;rios</span>
@@ -727,7 +727,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("diagnosticos")=1 then
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-diagnosticos" id="tabDiagnosticos" href="#pront" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Diagnostico|');">
                     <span class="fa fa-stethoscope bigger-110"></span>
                     <span class="sidebar-title">Diagn&oacute;sticos &raquo; <small>CID-10</small></span>
@@ -741,7 +741,7 @@ select case lcase(req("P"))
 		    if aut("prescricoes")=1 then
 		    %>
 
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-prescricoes" id="abaPrescricoes" href="#pront" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Prescricao|');">
                     <span class="fa fa-flask bigger-110"></span>
                     <span class="sidebar-title">Prescri&ccedil;&otilde;es</span>
@@ -755,7 +755,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("atestados")=1 then
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-textos-e-atestados" id="abaAtestados" href="#pront" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Atestado|');">
                     <span class="fa fa-file-text-o bigger-110"></span>
                     <span class="sidebar-title">Textos e Atestados</span>
@@ -768,7 +768,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("pedidosexame")=1 then
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-pedidos-de-exame" id="abaPedidos" href="#pront" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Pedido|');">
                     <span class="fa fa-hospital-o bigger-110"></span>
                     <span class="sidebar-title">Pedidos de Exame</span>
@@ -783,7 +783,7 @@ select case lcase(req("P"))
 
 		    if recursoPermissaoUnimed=4 or session("Banco")="clinic100000" then
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaResultadosExames" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ResultadosExames|');">
                     <span class="fa fa-list-alt bigger-110"></span>
                     <span class="sidebar-title">Resultados de Exames</span>
@@ -796,7 +796,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("vacinapacienteV")=1 then
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaVacinas" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|VacinaPaciente|');">
                     <span class="glyphicon glyphicon-pushpin"></span>
                     <span class="sidebar-title">Vacinas</span>
@@ -808,7 +808,7 @@ select case lcase(req("P"))
 		    <%
 		    end if
             %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-produtos-utilizados" id="abaProdutdosUtilizados" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ProdutosUtilizados|');">
                     <span class="fa fa-medkit bigger-110"></span>
                     <span class="sidebar-title">Produtos Utilizados</span>
@@ -826,7 +826,7 @@ select case lcase(req("P"))
 
                 if not certiDidital.eof then
                 %>
-                <li>
+                <li class="checkStatus">
                     <a data-toggle="tab" class="tab menu-aba-pacientes-assinatura-digital"  id="abaAssinarturaDigital" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|AssinaturaDigital|');">
                         <span class="fa fa-shield"></span>
                         <span class="sidebar-title">Assinatura digital
@@ -841,7 +841,7 @@ select case lcase(req("P"))
 
 		    if aut("formsae")=1 then
 		    %>
-		    <li>
+		    <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|');">
                     <span class="fa fa-line-chart bigger-110"></span>
                     <span class="sidebar-title">Linha do tempo</span>
@@ -856,7 +856,7 @@ select case lcase(req("P"))
 
 		    if aut("imagens")=1 then
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-imagens" id="tabImagens" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Imagens|');">
                     <span class="fa fa-camera bigger-110"></span>
                     <span class="sidebar-title">Imagens</span>
@@ -869,7 +869,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("arquivos")=1 then
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-arquivos" id="tabArquivos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Arquivos|');">
                     <span class="fa fa-file bigger-110"></span>
                     <span class="sidebar-title">Arquivos</span>
@@ -884,7 +884,7 @@ select case lcase(req("P"))
             'ODONTOGRAMA
             if session("Odonto")=1 then
                 %>
-                <li>
+                <li class="checkStatus">
                     <a data-toggle="tab" class="tab menu-aba-pacientes-odontograma" href="#pront" onclick="pront('Odontograma.asp?I=<%=req("I")%>')">
                         <span class="fa fa-life-bouy bigger-110"></span>
                         <span class="sidebar-title">Odontograma</span>
@@ -893,7 +893,7 @@ select case lcase(req("P"))
                 <%
             end if
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-agendamentos" href="#pront" onclick="pront('HistoricoPaciente.asp?PacienteID=<%=req("I")%>');">
                     <span class="fa fa-calendar bigger-110"></span>
                     <span class="sidebar-title">Agendamentos</span>
@@ -903,7 +903,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("recibos")=1 then
 		    %>
-            <li>
+            <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-recibos" href="#divRecibos" onclick="pront('Recibos.asp?PacienteID=<%=req("I")%>')">
                     <span class="fa fa-edit bigger-110"></span>
                     <span class="sidebar-title">Recibos</span>
@@ -916,7 +916,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("propostas")=1 then
 		    %>
-		    <li>
+		    <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-propostas" id="tabPropostas" href="#divPropostas" onclick="pront('ListaPropostas.asp?PacienteID=<%=req("I")%>')">
                     <span class="fa fa-files-o"></span>
                     <span class="sidebar-title">Propostas</span>
@@ -926,7 +926,7 @@ select case lcase(req("P"))
 		    end if
 		    if aut("contapac")=1 then
 		    %>
-		    <li>
+		    <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-conta" id="tabExtrato" href="#divHistorico" onclick="ajxContent('divHistorico', '<%=req("I")%>&A=<%=req("A") %>', '1', 'pront')">
                     <span class="fa fa-money"></span>
                     <span class="sidebar-title">Conta</span>
@@ -936,7 +936,7 @@ select case lcase(req("P"))
 		    end if
             if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
                 %>
-                <li>
+                <li class="checkStatus">
                     <a data-toggle="tab" class="tab" href="#pacienteCalls" onclick="pront('pacienteCalls.asp?I=<%= req("I") %>&Contato=3_<%=req("I")%>')">
                         <span class="fa fa-phone bigger-110"></span>
                         <span class="sidebar-title">Interações</span>

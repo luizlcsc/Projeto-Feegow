@@ -66,8 +66,17 @@ end if
 
 
 <%=header(req("P"), "Paciente", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-
     <script type="text/javascript">
+        <%
+        if reg("sysActive")=0 then
+        %>
+            $('#lMenu .checkStatus > a').css('pointer-events','none');
+            $('li.checkStatus').css('cursor','no-drop');
+        <%
+        end if
+        %>
+       
+
         $(document).ready(function(){
             <%
             for i=0 to ubound(splBdgs)

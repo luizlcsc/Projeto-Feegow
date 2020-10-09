@@ -474,6 +474,7 @@ else
             <li><a href="./?P=buiforms&Pers=Follow"><i class="fa fa-bar-chart"></i> Formul&aacute;rios</a></li>
             <%
 			    end if
+                'Foi colocado na condição a permissão aut("configimpressos")
 			    if session("Admin") = 1 or aut("configimpressos")=1  then
             %>
             <li><a href="./?P=ConfigImpressos&Pers=1"><i class="fa fa-file bigger-110"></i> Impressos</a></li>

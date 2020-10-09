@@ -436,7 +436,15 @@ if not getResource.EOF then
             type: 'success',
             delay:500
         });
-        <% IF session("Franqueador") <> "" and tableName = "sys_financialcompanyunits" and Novo THEN %>
+        <%
+        if tableName="pacientes" and sysActive=0 then
+        %>
+        $('#lMenu .checkStatus > a').css('pointer-events','all');
+        $('li.checkStatus').css('cursor','pointer');
+        <%    
+        end if
+
+        IF session("Franqueador") <> "" and tableName = "sys_financialcompanyunits" and Novo THEN %>
             gerarLicenca(<%=id%>)
         <% END IF %>
         <%

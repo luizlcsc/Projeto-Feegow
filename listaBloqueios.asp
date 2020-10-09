@@ -36,8 +36,7 @@ end if
         <%= quickField("datepicker", "DataInicioBloqueio", "Data Início", 3, DataInicio, "", "", " placeholder='Data Início'") %>
         <%'= quickField("datepicker", "DataFimBloqueio", "Data Fim", 3, DataFim, "", "", " placeholder='Data Fim'") %>
 
-        <br>
-        <button class="btn btn-success" type="button" onclick="listaBloqueios()"><i class="fa fa-search"></i> Buscar bloqueios</button>
+        <button class="btn btn-success mt25" type="button" onclick="listaBloqueios()"><i class="fa fa-search"></i> Buscar bloqueios</button>
 
         <div class="col-md-12">
             <hr>

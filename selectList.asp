@@ -7,7 +7,7 @@ typed = trim(ref("typed"))
 'response.Write(request.Form())
 if r="pacientes" then
     if session("Logo")="UNIMEDLONDRINA.png" then
-        sql = "select id, NomePaciente, CPF from pacientes where trim(NomePaciente) like '"& typed &"%' and id not like '"& id &"' UNION ALL SELECT 1000000000+id, concat(NomePaciente, ' (Base Unimed)'), CPF FROM clinic5803.pacientes WHERE trim(NomePaciente) like '"& typed &"%'"
+        sql = "select id, NomePaciente, CPF from pacientes where trim(NomePaciente) like '"& typed &"%' and id not like '"& id &"' UNION ALL SELECT 1000000000+id, concat(NomePaciente, ' (Base Unimed)'), CPF FROM "&session("Banco")&".pacientes WHERE trim(NomePaciente) like '"& typed &"%'"
     else
         sql = "select id, NomePaciente, CPF from pacientes where trim(NomePaciente) like '"& typed &"%' and id not like '"& id &"'"
     end if

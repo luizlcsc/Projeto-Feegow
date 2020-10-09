@@ -1,0 +1,6 @@
+INSERT INTO `sys_permissoes` (`Acao`, `Nome`, `Categoria`, `Visualizar`, `Inserir`, `Alterar`, `Excluir`) VALUES ('Impressos Encaminhamentos Modelo', 'encaminhamentosmodelos', 'Configurações do sistema', 's', 'n', 's', 'n');
+INSERT INTO `sys_permissoes` (`Acao`, `Nome`, `Categoria`, `Visualizar`, `Inserir`, `Alterar`, `Excluir`) VALUES ('Impressos laudos Modelo', 'laudosmodelos', 'Configurações do sistema', 's', 'n', 's', 'n');
+INSERT INTO `sys_permissoes` (`Acao`, `Nome`, `Categoria`, `Visualizar`, `Inserir`, `Alterar`, `Excluir`) VALUES ('Impressos Procedimentos Modelo', 'procedimentosmodelosimpressos', 'Configurações do sistema', 's', 'n', 's', 'n');
+INSERT INTO `sys_permissoes` (`Acao`, `Nome`, `Categoria`, `Visualizar`, `Inserir`, `Alterar`, `Excluir`) VALUES ('Impressos Contrato Modelo', 'contratosmodelos', 'Configurações do sistema', 's', 'n', 's', 'n');
+INSERT INTO `sys_permissoes` (`Acao`, `Nome`, `Categoria`, `Visualizar`, `Inserir`, `Alterar`, `Excluir`) VALUES ('Impressos Papel Timbrado', 'papeltimbrado', 'Configurações do sistema', 's', 'n', 's', 'n');
+INSERT INTO `sys_permissoes` (`Acao`, `Nome`, `Categoria`, `Visualizar`, `Inserir`, `Alterar`, `Excluir`) VALUES ('Impressos', 'configimpressos', 'Configurações do sistema', 's', 'n', 's', 'n');

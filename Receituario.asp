@@ -36,7 +36,7 @@ set reg=db.execute("select * from PacientesPrescricoes where id="&request.QueryS
 
             Prescricoes = getImpressos("Prescricoes")
             Unidade = session("UnidadeID")
-            set timb = db.execute("select pt.*, ff.`font-family` from papeltimbrado pt LEFT JOIN cliniccentral.`font-family` ff ON ff.id=pt.`font-family` where pt.sysActive=1 AND (pt.profissionais like '%|ALL|%' OR pt.profissionais LIKE '%|"&session("idInTable")&"|%') AND (UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&Unidade&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0)")
+            set timb = db.execute("select pt.*, ff.`font-family` from papeltimbrado pt LEFT JOIN cliniccentral.`font-family` ff ON ff.id=pt.`font-family` where pt.sysActive=1 AND (pt.profissionais like '%|ALL|%' OR pt.profissionais = '' OR pt.profissionais is null OR pt.profissionais LIKE '%|"&session("idInTable")&"|%') AND (UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&Unidade&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0), IF(profissionais LIKE '%|ALL|%',1,0)")
             if not timb.eof then
                 Cabecalho = timb("Cabecalho")
                 Margens = "padding-left:"&timb("mLeft")&"px;padding-top:"&timb("mTop")&"px;padding-bottom:"&timb("mBottom")&"px;padding-right:"&timb("mRight")&"px;"

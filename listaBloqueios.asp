@@ -13,19 +13,39 @@ if req("X")<>"" then
     <%
 end if
 
-if req("Data")&""<>"" then
-	Data = req("Data")
+DataInicio=req("Data")
+DataFim=req("DataFim")
+
+if DataInicio&""<>"" then
+	Data = DataInicio
 	if Instr(Data,"/")>0 then
 		DataArray = split(DateAdd("d",0,Data),"/")
 		Data = DataArray(2) & "-" & DataArray(1) & "-" & DataArray(0)
 	else
-		Data = req("Data")
+		Data = DataInicio
 	end if
 
-	qListaWhereData = " AND ('"&Data&"' BETWEEN DataDe AND DataA) "
+	qListaWhereData = " AND ('"&Data&"' <= DataDe) "
 else
 	qListaWhereData = "AND DataA>=date(now())"
 end if
+
+%>
+<form action="">
+    <div class="row ">
+        <%= quickField("datepicker", "DataInicioBloqueio", "Data Início", 3, DataInicio, "", "", " placeholder='Data Início'") %>
+        <%'= quickField("datepicker", "DataFimBloqueio", "Data Fim", 3, DataFim, "", "", " placeholder='Data Fim'") %>
+
+        <br>
+        <button class="btn btn-success" type="button" onclick="listaBloqueios()"><i class="fa fa-search"></i> Buscar bloqueios</button>
+
+        <div class="col-md-12">
+            <hr>
+        </div>
+    </div>
+</form>
+<%
+
 
 qListaSQL = "select * from compromissos where (ProfissionalID="&ProfissionalID&" OR (ProfissionalID=0 AND BloqueioMulti='S')) "&qListaWhereData&" order by DataDe, HoraDe"
 'response.write("<pre>"&qListaSQL&"</pre>")
@@ -117,3 +137,13 @@ lista.close
 set lista=nothing
 response.Write(fechar)
 %>
+    </tbody>
+</table>
+
+<script >
+function listaBloqueios(){
+    ajxContent('listaBloqueios&Data='+$("#DataInicioBloqueio").val()+"&DataFim="+$("#DataFimBloqueio").val(), '<%=ProfissionalID%>', '1', 'listaBloqueios');
+}
+<!--#include file="JQueryFunctions.asp"-->
+
+</script>

@@ -3,7 +3,7 @@ set usr = db.execute("SELECT lu.Email, u.idInTable FROM cliniccentral.licencasus
 
 txt = "O período do validade de sua senha venceu. Favor altere-a, escolhendo uma senha diferente da anterior."
 if session("AlterarSenha") = "1" then
-    txt = "O administrador do sistema solicitou alteração de sua senha."
+    txt = "É necessário definir uma nova senha."
 end if
 
 if not usr.eof then

@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/ExecuteAllServers.asp"-->
 <%
-db_execute("update cliniccentral.licencasusuarios SET AlterarSenhaAoLogin = 1 WHERE id = "&req("id"))
+call ExecuteAllServers("update cliniccentral.licencasusuarios SET AlterarSenhaAoLogin = 1 WHERE id = "&req("id"))
 %>

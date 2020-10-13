@@ -29,7 +29,7 @@ end if
 
 if ref("User")<>"" then
 	'1. Se ja existe esse email pra outro usuario
-	set vca = dbc.execute("select id from licencasusuarios where Email = '"&ref("User")&"' and not id = '"&UserID&"'" )
+	set vca = dbc.execute("select id from licencasusuarios where Email = '"&ref("User")&"' and not id = '"&UserID&"' AND LicencaID="&LicencaID)
 
 	if not vca.eof then
 		%>

@@ -85,7 +85,7 @@ end if
                 <div class="col-md-3">
                             Definir senha de acesso<br>
                     <label for="password" class="field prepend-icon">
-                        <input type="password" class="form-control" autocomplete="off" name="password" id="senha-acesso" placeholder="Senha" />
+                        <input type="password" class="form-control" name="password" id="senha-acesso" placeholder="Senha" autocomplete="new-password" />
                         <label for="password" class="field-icon">
                         <i class="fa fa-lock"></i>
                         </label>
@@ -95,7 +95,7 @@ end if
                 <div class="col-md-3">
                         Confirme a senha<br>
                     <label for="password2" class="field prepend-icon">
-                        <input type="password" class="form-control" autocomplete="off" name="password2" id="senha-confirmacao-acesso" placeholder="Senha" />
+                        <input type="password" class="form-control" autocomplete="new-password" name="password2" id="senha-confirmacao-acesso" placeholder="Senha" />
                         <label for="password2" class="field-icon">
                         <i class="fa fa-lock"></i>
                         </label>

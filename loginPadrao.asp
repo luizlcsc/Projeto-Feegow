@@ -1,14 +1,12 @@
-<!--#include file="Classes/Connection.asp"--><!--#include file="Classes/IPUtil.asp"--><%
+<!--#include file="Classes/Connection.asp"--><!--#include file="Classes/IPUtil.asp"--><!--#include file="Classes/Environment.asp"--><%
 if IP<>"::1" then
    'on error resume next
 end if
 
 IP = getUserIp() 
 
-set shellExec = createobject("WScript.Shell")
-Set objSystemVariables = shellExec.Environment("SYSTEM")
-AppEnv = objSystemVariables("FC_APP_ENV")
-MasterPwd = objSystemVariables("FC_MASTER")
+AppEnv = getEnv("FC_APP_ENV", "local")
+MasterPwd = getEnv("FC_MASTER", "----")
 
 User = ref("User")
 Password = ref("Password")
@@ -30,9 +28,25 @@ else
         sqlMaster = " 1=1 and u.LicencaID<>5459 "
         permiteMasterLogin = True
     end if
-	sqlLogin = "select u.*, l.ExibeChatAtendimento, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&User&"' and (Senha=('"&ref("Password")&"') or ("&sqlMaster&")  )"
-end if
+    PasswordSalt = getEnv("FC_PWD_SALT", "SALT_")
 
+    'versao 1 = plain
+    'versao 2 = Cript + UPPER
+    'versao 3 = Cript FINAL
+
+    sqlSenha = " ((Senha='"&Password&"' AND VersaoSenha=1) "&_
+                "or ("&sqlMaster&") "&_
+                "or (SenhaCript=SHA1('"&PasswordSalt& uCase(Password) &"') AND VersaoSenha=2)"&_
+                "or (SenhaCript=SHA1('"&PasswordSalt& Password &"') AND VersaoSenha=3)"&_
+                ") "
+
+	sqlLogin = "select u.*, l.ExibeChatAtendimento, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, "&_
+	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor,  "&_
+	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom                                           "&_
+	           "from licencasusuarios as u                                                                                        "&_
+	           "left join licencas as l on l.id=u.LicencaID                                                                       "&_
+	           "where Email='"&User&"' AND u.Ativo=1 and "&sqlSenha
+end if
 
 set tryLogin = dbc.execute(sqlLogin)
 if not tryLogin.EOF then

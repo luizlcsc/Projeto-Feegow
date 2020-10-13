@@ -1649,6 +1649,15 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
   </div>
 
+
+<%
+if session("AlterarSenha") <> "0" then
+  %>
+  <!--#include file="AlteraSenhaForcada.asp"-->
+  <%
+end if
+%>
+
 <%if session("ChatSuporte")="S" then%>
 <script src="https://feegow.futurotec.com.br/futurofone_chat/www/core/js/embedChatJs/chat.js"></script>
 <script>
@@ -1864,13 +1873,6 @@ $(document).ready(function() {
         abreModalUnidade();
     }
     <% end if %>
-
-    <% if session("AlterarSenha") = 1 then %>
-    if (!ModalOpened){
-      ModalOpened = true;
-      openRedefinirSenha();
-    }
-    <% end if%>
 
 });
 

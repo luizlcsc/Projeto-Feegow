@@ -1,7 +1,9 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
 <%
-set dadosUser = db.execute("select su.*, lu.AlterarSenhaAoLogin from sys_users su LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id = su.id where su.`Table` like '"&request.QueryString("T")&"' and su.idInTable="&request.QueryString("I"))
+set dadosUser = db.execute("select su.*, lu.AlterarSenhaAoLogin from sys_users su "&_
+                           "LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id = su.id "&_
+                           "where su.`Table` like '"&request.QueryString("T")&"' and su.idInTable="&request.QueryString("I"))
 alterarSenha = ""
 if dadosUser.EOF then
 	comAcesso = "N"
@@ -11,6 +13,7 @@ else
     id = dadosUser("id")
     if dadosUser("AlterarSenhaAoLogin") = "1" then
         alterarSenha = " disabled "
+        alterarSenhaIcon = " fa fa-check-circle "
     end if
 	set dadosAcesso = dbc.execute("select * from licencasusuarios where id="&dadosUser("id")&" and LicencaID="&replace(session("Banco"), "clinic", ""))
 	if dadosAcesso.eof then
@@ -82,7 +85,7 @@ end if
                 <div class="col-md-3">
                             Definir senha de acesso<br>
                     <label for="password" class="field prepend-icon">
-                        <input type="password" class="form-control" autocomplete="off" name="password" id="senha-acesso" placeholder="Senha" />
+                        <input type="password" class="form-control" name="password" id="senha-acesso" placeholder="Senha" autocomplete="new-password" />
                         <label for="password" class="field-icon">
                         <i class="fa fa-lock"></i>
                         </label>
@@ -92,13 +95,19 @@ end if
                 <div class="col-md-3">
                         Confirme a senha<br>
                     <label for="password2" class="field prepend-icon">
-                        <input type="password" class="form-control" autocomplete="off" name="password2" id="senha-confirmacao-acesso" placeholder="Senha" />
+                        <input type="password" class="form-control" autocomplete="new-password" name="password2" id="senha-confirmacao-acesso" placeholder="Senha" />
                         <label for="password2" class="field-icon">
                         <i class="fa fa-lock"></i>
                         </label>
                     </label>
                 </div>
 
+                </div>
+
+                <div class="row"><br>
+                    <div class="col-md-4">
+                        <button <%=alterarSenha%> class="btn btn-primary btn-sm btn-block" id="solicitar-alteracao-de-senha" type="button"><i class="<%=alterarSenhaIcon%>"></i> Solicitar que o usuário altere a senha após login</button>
+                    </div>
                 </div>
 
             <hr class="short alt" />
@@ -114,11 +123,6 @@ end if
                 <%= quickfield("simpleSelect", "Home", "Página inicial do usuário", 4, Home, "select '' id, 'Tela inicial' Descricao UNION ALL select 'Agenda-1', 'Agenda Diária' UNION ALL select 'Checkin', 'Check-in' UNION ALL select 'AgendaMultipla', 'Agenda Múltipla' UNION ALL select 'ListaEspera', 'Sala de Espera' UNION ALL select 'Financeiro', 'Financeiro'", "Descricao", "semVazio") %>
                 <% if session("Banco")="clinic5459" then call quickfield("text", "Ramal", "Ramal", 2, Ramal, "", "", "") end if %>
             </div>
-            <% if session("Admin") = 1 then %>
-                <div class="row">
-                    <%= quickfield("simpleCheckbox", "AlterarSenhaAoLogin", "Alterar senha ao logar", 4, AlterarSenhaAoLogin, " ", "", "semVazio") %>
-                </div>
-            <%end if%>
             <hr class="short alt" />
 
             <div class="clearfix form-actions">
@@ -132,15 +136,6 @@ end if
 <script type="text/javascript">
 var $senha = $("#senha-acesso");
 var $erroSenha = $("#erro-senha");
-
-$("#solicitar-alteracao-de-senha").click(function() {
-    $(this).attr("disabled",true);
-    var id = parseInt('<%=id%>');
-
-    if(id>0){
-        $.get("SolicitarAlteracaoDeSenha.asp", {id: id});
-    }
-});
 
 $("#frmAcesso").submit(function(){
         var str = $senha.val();
@@ -165,6 +160,17 @@ $("#frmAcesso").submit(function(){
 
 	return false;
     });
+
+$("#solicitar-alteracao-de-senha").click(function() {
+    $(this).attr("disabled",true);
+    var id = parseInt('<%=id%>');
+
+    if(id>0){
+        $.get("SolicitarAlteracaoDeSenha.asp", {id: id} , function(data) {
+            showMessageDialog("O usuário será solicitado para alterar a senha no próximo login.", "success");
+        });
+    }
+});
 
     $("#Ramal").change(function () {
         $.get("saveRamal.asp?U=<%= id %>&Ramal=" + $(this).val(), function (data) { eval(data) });

@@ -131,7 +131,10 @@ end if
                     end if
 
                     LabelTabela = ""
-
+                    dataFimTabela = t("Fim")
+                    if isNull (dataFimTabela) then 
+                        dataFimTabela = date()
+                    end if
                     if cdate(t("Fim")) < date() then
                         LabelTabela = "<span class='label label-danger'><i class='fa fa-exclamation-circle'></i> Expirada</span>"
                     end if

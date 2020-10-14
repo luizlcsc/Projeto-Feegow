@@ -819,7 +819,7 @@ end if
                 	<%
 					if HoraFinal<>"" then
 						%>
-						if(Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>){
+						if(Status !== "11" && Status !== "22" <%=StatusRemarcado%>){
                             $( ".vazio" ).each(function(){
                                 if( $(this).attr("data-horaid")>'<%=HoraComp%>' && $(this).attr("data-horaid")<'<%=HoraFinal%>' )
                                 {

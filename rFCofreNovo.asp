@@ -204,7 +204,7 @@ while not unidade.eof
                 " INNER JOIN cliniccentral.boletos_status bolSta ON bolSta.id=bol.StatusID " &_
                 " WHERE inv.CompanyUnitID="& UnidadeID &" AND inv.sysDate BETWEEN "& mDe &" AND "& mAte &" AND inv.CD='C' " &_
                 " AND mBill.InvoiceID="&InvoiceID&" "&_
-                " AND bol.StatusID NOT IN (2,5,6,7) " &_
+                " AND bol.StatusID NOT IN (2,5,6,7) HAVING Value > 0 " &_
                 
                 ")t")
 

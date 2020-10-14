@@ -35,7 +35,7 @@ end if
         <tbody>
         <%
 
-        sqlLista = "select t.*, u.Nome, l.NomeLocalizacao, s.NomeStatus from estoque_requisicao t INNER JOIN estoque_requisicao_status s ON s.id=t.StatusID LEFT JOIN produtoslocalizacoes l ON l.id=t.LocalizacaoID LEFT JOIN cliniccentral.licencasusuarios u on u.id=t.sysUser LEFT JOIN estoque_requisicao_status sta on sta.id=t.StatusID WHERE t.sysActive=1 "&sqlPrioridade&sqlPrazo&sqlStatus&sqlSolicitante&" ORDER BY t.DataPrazo LIMIT 300"
+        sqlLista = "select t.*, u.Nome, l.NomeLocalizacao, s.NomeStatus from estoque_requisicao t INNER JOIN estoque_requisicao_status s ON s.id=t.StatusID LEFT JOIN produtoslocalizacoes l ON l.id=t.LocalizacaoID LEFT JOIN cliniccentral.licencasusuarios u on u.id=t.sysUser LEFT JOIN estoque_requisicao_status sta on sta.id=t.StatusID WHERE t.sysActive=1 "&sqlPrioridade&sqlPrazo&sqlStatus&sqlSolicitante&" ORDER BY t.sysDate DESC LIMIT 300"
 
         'response.write( sqlLista )
         set lista = db.execute(sqlLista)

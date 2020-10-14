@@ -69,6 +69,10 @@ if NaoPermitirAlterarExecutante then
     disabledExecutado=" disabled"
 end if
 
+if Executado="S" then
+    disabledExecutado = disabledExecutado & " required" 
+end if
+
 %>
 
 <form method="post" action="" id="frmExecutado">
@@ -272,7 +276,7 @@ $("#ProfissionalID<%=II%>").change(function(){
 
 $("#Executado<%=II%>").click(function(){
     if($(this).prop("checked")==false){
-        $("#ProfissionalID<%=II%>").val("");
+        $("#ProfissionalID<%=II%>").val("").change();
         $("#ProfissionalID<%=II%>, #DataExecucao<%=II%>").removeAttr("required");
     }else{
         $("#ProfissionalID<%=II%>, #DataExecucao<%=II%>").prop("required", true);

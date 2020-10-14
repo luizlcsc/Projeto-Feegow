@@ -276,7 +276,7 @@ $("#ProfissionalID<%=II%>").change(function(){
 
 $("#Executado<%=II%>").click(function(){
     if($(this).prop("checked")==false){
-        $("#ProfissionalID<%=II%>").val("");
+        $("#ProfissionalID<%=II%>").val("").change();
         $("#ProfissionalID<%=II%>, #DataExecucao<%=II%>").removeAttr("required");
     }else{
         $("#ProfissionalID<%=II%>, #DataExecucao<%=II%>").prop("required", true);

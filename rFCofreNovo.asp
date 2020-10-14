@@ -53,7 +53,7 @@ while not unidade.eof
 	"pagto.Date dataPagto, pagto.Value valorPago, "&_
 	"pm.PaymentMethod "&_
 	"FROM sys_financialinvoices inv  "&_
-	"LEFT JOIN recibos rec ON inv.id=rec.InvoiceID "&_
+	"LEFT JOIN recibos rec ON inv.id=rec.InvoiceID AND rec.sysActive=1 "&_
 	"LEFT JOIN sys_financialmovement parc ON parc.InvoiceID=inv.id "&_
 	"LEFT JOIN sys_financialdiscountpayments dp ON dp.InstallmentID=parc.id  "&_
 	"LEFT JOIN sys_financialmovement pagto ON pagto.id=dp.MovementID  "&_

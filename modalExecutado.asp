@@ -69,6 +69,10 @@ if NaoPermitirAlterarExecutante then
     disabledExecutado=" disabled"
 end if
 
+if Executado="S" then
+    disabledExecutado = disabledExecutado & " required" 
+end if
+
 %>
 
 <form method="post" action="" id="frmExecutado">

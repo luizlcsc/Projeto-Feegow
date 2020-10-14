@@ -308,7 +308,7 @@ while not unidade.eof
                 " INNER JOIN sys_financialmovement mBill ON mBill.id=bol.MovementID " &_
                 " INNER JOIN sys_financialinvoices inv ON inv.id=bol.InvoiceID " &_
                 " WHERE inv.CompanyUnitID="& UnidadeID &" AND inv.sysDate BETWEEN "& mDe &" AND "& mAte &" AND inv.CD='C' " &_
-                " AND bol.StatusID NOT IN (2,5,6,7) " &_
+                " AND bol.StatusID NOT IN (2,5,6,7) HAVING Value > 0" &_
                 
                 ")t")
 
@@ -334,6 +334,7 @@ while not unidade.eof
             if ccur(pg("PaymentMethodID"))=8 then
                 Descricao = Parcelas &"x "& Descricao
             end if
+            
             %>
             <tr>
                 <td></td>

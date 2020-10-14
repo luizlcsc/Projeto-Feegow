@@ -572,7 +572,7 @@ while diaS<n
 		%>
         if(Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>){
             $( ".vazio<%=DiaSemana%>" ).each(function(){
-                if( $(this).attr("id")>='<%=DiaSemana&HoraComp%>' && $(this).attr("id")<='<%=DiaSemana&HoraFinal%>' )
+                if( $(this).attr("id")>'<%=DiaSemana&HoraComp%>' && $(this).attr("id")<'<%=DiaSemana&HoraFinal%>' )
                 {
                     //alert('oi');
                     $(this).replaceWith('');

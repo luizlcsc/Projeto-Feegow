@@ -188,13 +188,24 @@ while not unidade.eof
                 InvoiceID=fat("InvoiceID")
 
                 'pegando os recebimentos desta fatura
-                set pg = db.execute("select pg.*, mPag.Date DataPagto, mPag.Value, pm.PaymentMethod, mPag.PaymentMethodID, ifnull(t.Parcelas,1) Parcelas, b.Bandeira from sys_financialdiscountpayments pg "&_
+                set pg = db.execute("SELECT * FROM (select pg.id, count(mPag.id) Qtd, mPag.Date DataPagto, SUM(mPag.Value) Value, pm.PaymentMethod, mPag.PaymentMethodID, ifnull(t.Parcelas, 1) Parcelas, null StatusBoleto from sys_financialdiscountpayments pg "&_
                 " LEFT JOIN sys_financialmovement mBill ON mBill.id=pg.InstallmentID "&_
                 " LEFT JOIN sys_financialmovement mPag ON mPag.id=pg.MovementID "&_
                 " LEFT JOIN sys_financialpaymentmethod pm ON pm.id=mPag.PaymentMethodID "&_
                 " LEFT JOIN sys_financialcreditcardtransaction t ON t.MovementID=mPag.id "&_
-                " LEFT JOIN cliniccentral.bandeiras_cartao b ON b.id=t.BandeiraCartaoID "&_
-                " WHERE mBill.InvoiceID="& InvoiceID)
+                " WHERE mBill.UnidadeID="& UnidadeID &" AND mPag.Date BETWEEN "& mDe &" AND "& mAte &" AND mPag.Type='Pay' AND mPag.CD='D' GROUP BY mPag.PaymentMethodID, t.Parcelas "&_
+                " AND mBill.InvoiceID="&InvoiceID&" "&_
+                " UNION ALL "&_
+                " select bol.id, count(bol.id) Qtd, mBill.Date DataPagto, SUM(bol.AmountCents/ 100) Value, 'Boleto' PaymentMethod, 4 PaymentMethodID, 1 Parcelas, bolSta.NomeStatus StatusBoleto " &_
+                " FROM boletos_emitidos bol " &_
+                " INNER JOIN sys_financialmovement mBill ON mBill.id=bol.MovementID " &_
+                " INNER JOIN sys_financialinvoices inv ON inv.id=bol.InvoiceID " &_
+                " INNER JOIN cliniccentral.boletos_status bolSta ON bolSta.id=bol.StatusID " &_
+                " WHERE inv.CompanyUnitID="& UnidadeID &" AND inv.sysDate BETWEEN "& mDe &" AND "& mAte &" AND inv.CD='C' " &_
+                " AND mBill.InvoiceID="&InvoiceID&" "&_
+                " AND bol.StatusID NOT IN (2,5,6,7) " &_
+                
+                ")t")
 
                 if pg.eof AND Total>0 then
 
@@ -245,14 +256,28 @@ while not unidade.eof
 
 
                     Descricao = pg("PaymentMethod")
+                    Subdescricao=""
+
                     Parcelas = pg("Parcelas")
-                    if pg("PaymentMethodID")=8 then
+                    if ccur(pg("PaymentMethodID"))=8 then
                         Descricao = Parcelas &"x "& Descricao &" ("& pg("Bandeira") &")"
+                    end if
+
+                    if ccur(pg("PaymentMethodID"))=4 then
+                        StatusBoleto = pg("StatusBoleto")
+                        ClasseBadgeStatusBoleto = "warning"
+
+                        if StatusBoleto="Paga" then
+                            ClasseBadgeStatusBoleto="success"
+                        end if
+
+                        Subdescricao = "<span class='label label-"&ClasseBadgeStatusBoleto&"'>"&StatusBoleto&"</span>"
+
                     end if
                     %>
                     <tr class="<%= classePagto %>">
                         <td colspan="2"></td>
-                        <td><b><em><%= DataPagto &" -> "&  Descricao %></em></b></td>
+                        <td><b><em><%= DataPagto &" > "&  Descricao %></em></b> <small><%=Subdescricao%></small></td>
                         <td class="text-right"><b><em><%= "R$ "& fn(pg("Value")) %></em></b></td>
                     </tr>
                     <%
@@ -270,12 +295,21 @@ while not unidade.eof
     end if
 
     'pegando os pagtos do período
-    set pg = db.execute("select pg.*, count(mPag.id) Qtd, mPag.Date DataPagto, SUM(mPag.Value) Value, pm.PaymentMethod, mPag.PaymentMethodID, ifnull(t.Parcelas, 1) Parcelas from sys_financialdiscountpayments pg "&_
+    set pg = db.execute("SELECT * FROM (select pg.id, count(mPag.id) Qtd, mPag.Date DataPagto, SUM(mPag.Value) Value, pm.PaymentMethod, mPag.PaymentMethodID, ifnull(t.Parcelas, 1) Parcelas from sys_financialdiscountpayments pg "&_
                 " LEFT JOIN sys_financialmovement mBill ON mBill.id=pg.InstallmentID "&_
                 " LEFT JOIN sys_financialmovement mPag ON mPag.id=pg.MovementID "&_
                 " LEFT JOIN sys_financialpaymentmethod pm ON pm.id=mPag.PaymentMethodID "&_
                 " LEFT JOIN sys_financialcreditcardtransaction t ON t.MovementID=mPag.id "&_
-                " WHERE mBill.UnidadeID="& UnidadeID &" AND mPag.Date BETWEEN "& mDe &" AND "& mAte &" AND mPag.Type='Pay' AND mPag.CD='D' GROUP BY mPag.PaymentMethodID, t.Parcelas")
+                " WHERE mBill.UnidadeID="& UnidadeID &" AND mPag.Date BETWEEN "& mDe &" AND "& mAte &" AND mPag.Type='Pay' AND mPag.CD='D' GROUP BY mPag.PaymentMethodID, t.Parcelas "&_
+                " UNION ALL "&_
+                " select bol.id, count(bol.id) Qtd, mBill.Date DataPagto, SUM(bol.AmountCents/ 100) Value, 'Boleto' PaymentMethod, 4 PaymentMethodID, 1 Parcelas " &_
+                " FROM boletos_emitidos bol " &_
+                " INNER JOIN sys_financialmovement mBill ON mBill.id=bol.MovementID " &_
+                " INNER JOIN sys_financialinvoices inv ON inv.id=bol.InvoiceID " &_
+                " WHERE inv.CompanyUnitID="& UnidadeID &" AND inv.sysDate BETWEEN "& mDe &" AND "& mAte &" AND inv.CD='C' " &_
+                " AND bol.StatusID NOT IN (2,5,6,7) " &_
+                
+                ")t")
 
     idsPagto = 0
 
@@ -296,7 +330,7 @@ while not unidade.eof
 
             Descricao = pg("PaymentMethod")
             Parcelas = pg("Parcelas")
-            if pg("PaymentMethodID")=8 then
+            if ccur(pg("PaymentMethodID"))=8 then
                 Descricao = Parcelas &"x "& Descricao
             end if
             %>

@@ -1,0 +1,12 @@
+<!--#include file="connect.asp"-->
+<%
+    sql = "select count(1)"
+    set retorno = db.execute(sql)
+
+    dd(retorno)
+    if retorno.eof then
+        response.write("ok")
+    else
+        response.write("500")
+    end if
+%>

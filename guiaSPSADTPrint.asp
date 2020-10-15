@@ -424,7 +424,7 @@ end if
 </td>
 <td width="8%" nowrap="nowrap" class="campo">
 <label>22 - Data da Solicitação</label>
-<%=req("DataSolicitacao")%>
+<%=DataSolicitacao%>
 </td>
 
 <td width="83%" class="campo">

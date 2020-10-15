@@ -1,0 +1,203 @@
+﻿<!--#include file="connect.asp"-->
+<!--#include file="modal.asp"-->
+
+<style type="text/css">
+    body {
+        font-size:12px;
+        color:#000;
+        padding:20px;
+    }
+</style>
+<%
+response.buffer
+
+Exibicao = ref("Exibicao")
+Exercicio = ref("Exercicio")
+UnidadeID = replace(ref("UnidadeID"), "|", "")
+ModeloID = ref("ModeloID")
+
+%>
+<div class="row mb20">
+    <div class="col-md-2">
+        <img width="250" src="https://clinic7.feegow.com.br/v7/assets/img/login_logo.png" />
+    </div>
+    <h2 class="text-center col-md-10">Demonstração do Resultado do Exercício
+         - <%= Exercicio %>
+    </h2>
+</div>
+
+<table class="table table-hover">
+    <tr>
+        <th class="system"></th>
+        <%
+        db.execute("delete from cliniccentral.dre_temp where sysUser="& session("User"))
+        set pcon = db.execute("select c.*, ccond.sqlAnalitico, ccond.CD, ccond.Tipo, ccond.Grupos tabcolGrupos, ccond.Categorias tabcolCategorias from dre_modeloscondicoes c LEFT JOIN dre_modeloslinhas l ON l.id=c.LinhaID LEFT JOIN cliniccentral.dre_condicoes ccond ON ccond.id=c.CondicaoID where l.ModeloID="& ModeloID)
+        while not pcon.eof
+            SemGrupo = 0
+            SemCategoria = 0
+            Grupos = pcon("Grupos")&""
+            Categorias = pcon("Categorias")&""
+            if instr(Grupos, "|0|")>0 then
+                SemGrupo=1
+            end if
+            if instr(Categorias, "|0|")>0 then
+                SemCategoria=1
+            end if
+            Grupos = replace( Grupos , "|", "" )
+            Categorias = replace( Categorias , "|", "" )
+            Pessoas = replace( pcon("Pessoas")&"" , "|", "" )
+            tabcolGrupos = pcon("tabcolGrupos")&""
+            tabcolCategorias = pcon("tabcolCategorias")&""
+            CD = pcon("CD")&""
+            Tipo = pcon("Tipo")&""
+            multiploValor = pcon("Valor")
+            multiploDesconto = pcon("Desconto")
+            multiploAcrescimo = pcon("Acrescimo")
+
+            'FILTROS
+            leftGrupoProcedimentos = ""
+            leftCategorias = ""
+
+            andGrupoProcedimentos = ""
+            andCategorias = ""
+            andPessoas = ""
+
+            if tabcolGrupos<>"" then
+                splGrupos = split(tabcolGrupos, ";")
+                tabGruposTabLeft = splGrupos(0)
+                tabGruposColLeft = splGrupos(1)
+                tabGruposTabLeft2 = splGrupos(2)
+                tabGruposColLeft2 = splGrupos(3)
+                leftGrupoProcedimentos = " LEFT JOIN "& tabGruposTabLeft2 &" ti ON ti.id=ii.ItemID LEFT JOIN "& tabGruposTabLeft &" tg ON tg.id=ti."& tabGruposColLeft2 &" "
+            end if
+
+            if tabcolCategorias<>"" then
+                splCategorias = split(tabcolCategorias, ";")
+                tabCategoriasTabLeft = splCategorias(0)
+                tabCategoriasColLeft = splCategorias(1)
+                leftCategorias = " LEFT JOIN "& tabCategoriasTabLeft &" ct ON ct.id=ii.CategoriaID"
+            end if
+
+            if Grupos<>"" then
+                if SemGrupo=1 then
+                    sqlSemGrupo = " OR ISNULL(tg."& tabGruposColLeft &") "
+                end if
+                andGrupoProcedimentos = " AND (tg."& tabGruposColLeft &" IN ("& Grupos &") "& sqlSemCategoria &" ) "
+            end if
+            if Categorias<>"" and tabcolCategorias<>"" then
+                if SemCategoria=1 then
+                    sqlSemCategoria = " OR ISNULL(ii.CategoriaID) "
+                end if
+                andCategorias = " AND (ii.CategoriaID IN ("& Categorias &") "& sqlSemCategoria &" ) "
+            end if
+            if Pessoas<>"" then
+                andPessoas = " AND i.AssociationAccountID IN ("& Pessoas &") "
+            end if
+
+
+
+            sql = pcon("sqlAnalitico")&""
+            sql = replace(sql, "[sysUser]", session("User"))
+            sql = replace(sql, "[LinhaID]", pcon("LinhaID"))
+            sql = replace(sql, "[Ano]", Exercicio)
+            sql = replace(sql, "[Unidades]", UnidadeID)
+            sql = replace(sql, "[Unidades]", UnidadeID)
+            sql = replace(sql, "[CD]", CD)
+            sql = replace(sql, "[multiploValor]", multiploValor)
+            sql = replace(sql, "[multiploDesconto]", multiploDesconto)
+            sql = replace(sql, "[multiploAcrescimo]", multiploAcrescimo)
+            sql = replace(sql, "[Tipo]", Tipo)
+            if Tipo="S" then
+                Agrupamento = ", tg.NomeGrupo "
+            elseif Tipo="O" then
+                Agrupamento = ", ct.Name "
+            else
+                Agrupamento = ", '' "
+            end if
+            sql = replace(sql, "[agrupamento]", Agrupamento)
+            sql = replace(sql, "[leftGrupoProcedimentos]", leftGrupoProcedimentos)
+            sql = replace(sql, "[andGrupoProcedimentos]", andGrupoProcedimentos)
+            sql = replace(sql, "[leftCategorias]", leftCategorias)
+            sql = replace(sql, "[andCategorias]", andCategorias)
+            sql = replace(sql, "[andPessoas]", andPessoas)
+
+
+            'response.write(sql &"<br>")
+            if sql<>"" then
+                db.execute("insert into cliniccentral.dre_temp (sysUser, LinhaID, Data, Conta, Valor, Link, NF, ItemInvoiceID, Agrupamento)" & sql )
+            end if
+        pcon.movenext
+        wend
+        pcon.close
+        set pcon = nothing
+
+        m = 1
+        while m<=12
+            %>
+            <th class="system text-center"><%= ucase(left(monthname(m),30)) %></th>
+            <%
+            m = m+1
+        wend
+        %>
+    </tr>
+    <%
+    set l = db.execute("select * from dre_modeloslinhas WHERE ModeloID="& ModeloID &" ORDER BY ordem   ")
+    while not l.eof
+        response.flush()
+        Classe = l("CorFundo")&""
+        LinhaID = l("id")
+        Tipo = l("Tipo")
+        if Classe="" then
+            tag = "td"
+        else
+            tag = "th"
+        end if
+        %>
+        <tr class="<%= Classe %>">
+            <%= "<"& tag &">" & l("Descricao") & "</"& tag &">" %>
+            <%
+            m = 1
+            while m<=12
+                if Tipo="LINHA" then
+                    set t = db.execute("select ifnull(sum(Valor),0) Total from cliniccentral.dre_temp where sysUser="& session("User") &" and month(Data)="& m &" and LinhaID="& LinhaID)
+                else
+                    Tots = ""
+                    set plt = db.execute("select * from dre_totalizadores where LinhaTotID="& LinhaID)
+                    while not plt.eof
+                        Tots = Tots & " + ifnull(((select sum(Valor) from cliniccentral.dre_temp where LinhaID="& plt("LinhaID") &" and sysUser="& session("User") &" and month(Data)="& m &" and year(Data)="& Exercicio &") * "& plt("SomarSubtrair") &"),0) "
+                    plt.movenext
+                    wend
+                    plt.close
+                    set plt = nothing
+
+                    st = "select 0 "& Tots &" Total"
+                    'response.write( st &"<br>")
+                    set t = db.execute( st )
+                end if
+                Valor = t("Total")
+                %>
+                <%= "<"& tag &" data-l='"& LinhaID &"' data-m='"& m &"' class='text-right'>" & fn(Valor) & "</"& tag &">" %>
+                <%
+                m = m+1
+            wend
+            %>
+        </tr>
+        <%
+    l.movenext
+    wend
+    l.close
+    set l = nothing
+    %>
+</table>
+
+<script type="text/javascript">
+    $("tr td").click(function () {
+        var LinhaID = $(this).attr("data-l");
+        var Mes = $(this).attr("data-m");
+        $("#modal").html("Carregando...");
+        $("#modal-table").modal("show");
+        $.get("rDRE_detalhes.asp?LinhaID=" + LinhaID + "&Mes=" + Mes, function (data) {
+            $("#modal").html(data);
+        });
+    });
+</script>

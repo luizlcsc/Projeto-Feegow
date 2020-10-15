@@ -299,6 +299,18 @@ end if
         </div>
     </div>
 </div>
+<!--#include file="Classes/Logs.asp"-->
+<%
+if session("Admin")=1 then
+%>
+<div class="tabbable panel">
+    <div class="tab-content panel-body">
+        <%=dadosCadastro("profissionais" , req("I"))%>
+    </div>
+</div>
+<%
+end if
+%>
 <script type="text/javascript">
 $(document).ready(function(e) {
 	<%call formSave("frm", "save", "")%>

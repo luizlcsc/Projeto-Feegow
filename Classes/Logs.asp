@@ -411,4 +411,12 @@ function gravaLogsResumeNext(query, operacaoForce, obs, ColunaPai)
         end if
     end if
 End function
+
+function dadosCadastro(nomeTabela, idTabela)
+    set DadosSQL = db.execute("SELECT sysActive, sysUser from `"&nomeTabela&"` WHERE id="&idTabela)
+
+    mensagemCadastro = "<code>#"&idTabela&"</code>  Cadastrado por "&nameInTable(DadosSQL("sysUser"))
+
+    dadosCadastro = mensagemCadastro
+end function
 %>

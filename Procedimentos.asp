@@ -244,8 +244,6 @@ TipoGuia = reg("TipoGuia")
                     </div>
                 </div>
             </div>
-
-            <code>ID: #<%=reg("id")%></code> Cadastrado por <%=nameInTable(reg("sysUser"))%>
         </div>
         <div id="divConfirmacoes" class="tab-pane">
             <div class="row panel">
@@ -470,6 +468,18 @@ TipoGuia = reg("TipoGuia")
     </div>
   </div>
 </div>
+<!--#include file="Classes/Logs.asp"-->
+<%
+if session("Admin")=1 then
+%>
+<div class="tabbable panel">
+    <div class="tab-content panel-body">
+        <%=dadosCadastro("procedimentos" , req("I"))%>
+    </div>
+</div>
+<%
+end if
+%>
 <script>
 let jsonProfissionalJson = JSON.parse('[]');
 

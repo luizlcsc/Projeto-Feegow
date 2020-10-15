@@ -122,7 +122,7 @@ ModeloID = ref("ModeloID")
             sql = replace(sql, "[andPessoas]", andPessoas)
 
 
-            response.write(sql &"<br>")
+            'response.write(sql &"<br>")
             if sql<>"" then
                 db.execute("insert into cliniccentral.dre_temp (sysUser, LinhaID, Data, Conta, Valor, Link, NF, ItemInvoiceID, Agrupamento)" & sql )
             end if

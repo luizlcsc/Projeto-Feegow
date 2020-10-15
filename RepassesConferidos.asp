@@ -204,7 +204,6 @@ if ExibeResultado then
         ContaCredito = ProfissionalSQL("AccountID")
         if ContaCredito<>"0" then
             spltContaCredito = split(ContaCredito, "_")
-
             AssociationAccountID = spltContaCredito(0)
             AccountID = spltContaCredito(1)
 
@@ -219,7 +218,6 @@ if ExibeResultado then
             ContaRepasses = 0
 
             Forma = replace(reqf("Forma"), "|", "")
-
 
             if ContaCredito<>"" and Forma<>"" then
             sql="select rr.*, ii.InvoiceID InvoiceAPagarID from rateiorateios rr LEFT JOIN itensinvoice ii ON ii.id=rr.ItemContaAPagar where rr.ContaCredito='"& ContaCredito &"'"
@@ -275,7 +273,7 @@ if ExibeResultado then
                                  " LEFT JOIN itensdescontados idesc ON idesc.id=rrgc.ItemDescontadoID"&_
                                  " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID"&_
                                  " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit"&_
-                                 " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID"&_
+                                 " LEFT JOIN cliniccentral.sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID"&_
                                  " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id"&_
                                  " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=rrgc.ParcelaID"&_
                                  " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia='GuiaConsulta' AND tgi.GuiaID=gc.id"&_
@@ -296,7 +294,7 @@ if ExibeResultado then
                                  " LEFT JOIN itensdescontados idesc ON idesc.id=rrgps.ItemDescontadoID"&_
                                  " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID"&_
                                  " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit"&_
-                                 " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID"&_
+                                 " LEFT JOIN cliniccentral.sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID"&_
                                  " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id"&_
                                  " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=rrgps.ParcelaID"&_
                                  " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia= 'GuiaSADT' AND tgi.GuiaID=gps.GuiaID"&_
@@ -311,7 +309,7 @@ if ExibeResultado then
                                  " LEFT JOIN itensdescontados idesc ON idesc.id=t.ItemDescontadoID "&_
                                  " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID "&_
                                  " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit "&_
-                                 " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID "&_
+                                 " LEFT JOIN cliniccentral.sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID "&_
                                  " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id "&_
                                  " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=t.ParcelaID "&_
                                  " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia=t.TipoGuia AND tgi.GuiaID=t.GuiaID "&_
@@ -322,11 +320,11 @@ if ExibeResultado then
                                  " WHERE COALESCE(mdisc.date, mdesc.Date) BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &" and (t.ContaCredito LIKE CONCAT('%_"& ContaCredito &"') or t.ContaCredito='"& ContaCredito &"') AND t.ConvenioID IN ("& Forma &") "&sqlFormRecto&" AND t.modoCalculo='"& modoCalculo &"' "& sqlUnidades &_
                                  " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente, proc.NomeProcedimento"
                 end if
-
+                       
                 if reqf("Debug")="1" then
                     response.write( session("Banco") & chr(10) & chr(13) & sqlRR )
                 end if
-
+              
                 set rr = db.execute( sqlRR )
                 if not rr.eof then
                 %>
@@ -390,6 +388,8 @@ if ExibeResultado then
                             Exibe = 1
                         elseif instr(Status, "|RC|")>0 and rr("Tipo")="ItemInvoiceID" and (rr("PaymentMethodID")=8 or rr("PaymentMethodID")=9) then
                             'set vcBaixado = db.execute("")
+                        elseif instr(Status, "|RC|")>0 and rr("Tipo")="ItemInvoiceID" and (rr("PaymentMethodID")=12 or rr("PaymentMethodID")=13) then
+                            Exibe = 1
                         end if
                     end if
                     DataComp = ""
@@ -403,7 +403,7 @@ if ExibeResultado then
                             aLink = "<a target='_blank' href='./?P=invoice&Pers=1&I="& rr("InvoiceID") &"'>"
                             fLink = "</a>"
                         end if
-                        if rr("PaymentMethodID")=1 or rr("PaymentMethodID")=7 or rr("PaymentMethodID")=3 then
+                        if rr("PaymentMethodID")=1 or rr("PaymentMethodID")=7 or rr("PaymentMethodID")=3 or rr("PaymentMethodID")=12 or rr("PaymentMethodID")=13 then
                             DataComp = rr("DataPagto")
                         elseif rr("PaymentMethodID")=8 or rr("PaymentMethodID")=9 then
                             DataComp = DateToReceive
@@ -450,7 +450,7 @@ if ExibeResultado then
                             end if
                         end if
 
-
+                            
                         if DataOk then
                             ContaRepasses = ContaRepasses+1
                             TotalRepasse = TotalRepasse+ValorRepasse

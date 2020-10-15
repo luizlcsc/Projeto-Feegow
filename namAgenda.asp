@@ -91,7 +91,7 @@ end if
 if not Horarios.eof then
 %>
 
-<table class="table table-striped table-condensed table-hover" width="100%"><thead><tr><th colspan="3" style="min-width:200px" class="text-center pn">
+<table class="table table-condensed table-hover" width="100%"><thead><tr><th colspan="3" style="min-width:200px" class="text-center pn">
 
     <div class="panel-heading p5 mn" style="line-height:14px!important; color:#777; font-size:11px; font-weight:bold">
         <span class="panel-title">

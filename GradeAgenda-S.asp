@@ -372,7 +372,7 @@ while diaS<n
         sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
     end if
 
-    set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.PacienteID,a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, a.Primeira, p.NomePaciente, p.IdImportado, p.Tel1, p.Cel1, proc.NomeProcedimento, s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Notas, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta from agendamentos a "&_
+    set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.PacienteID,a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, a.Primeira, p.NomePaciente, p.IdImportado, p.Tel1, p.Cel1, p.CorIdentificacao, proc.NomeProcedimento, s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Notas, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta from agendamentos a "&_
     "left join pacientes p on p.id=a.PacienteID "&_
     "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
     "left join staconsulta s on s.id=a.StaID "&_
@@ -385,6 +385,7 @@ while diaS<n
         ValorProcedimentosAnexos=0
         podeVerAgendamento=True
         UnidadeID=comps("UnidadeID")
+        CorIdentificacao = comps("CorIdentificacao")
 
 
         if UnidadeID&""<>"" and session("admin")=0 then
@@ -487,7 +488,11 @@ while diaS<n
             Conteudo = Conteudo & " [LOCAL_DIF] "
             LocalDiferente = "<i class=""fa fa-exclamation-triangle grey"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
         end if
-        Conteudo = Conteudo & "</td><td width=""1%""><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
+        FirstTdBgColor = ""
+        if getConfig("ExibirCorPacienteAgenda")&""=1 then
+            FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
+        end if
+        Conteudo = Conteudo & "</td><td width=""1%"" "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
         "<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
         if comps("Encaixe")=1 then
             Conteudo = Conteudo & "<span class=""label label-alert"">enc</span>"

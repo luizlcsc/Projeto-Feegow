@@ -690,6 +690,18 @@ end function
     </div>
   </div>
 </div>
+<!--#include file="Classes/Logs.asp"-->
+<%
+if session("Admin")=1 then
+%>
+<div class="tabbable panel">
+    <div class="tab-content panel-body">
+        <%=dadosCadastro("convenios" , req("I"))%>
+    </div>
+</div>
+<%
+end if
+%>
 <script>
 $(document).ready(function(e) {
     <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>

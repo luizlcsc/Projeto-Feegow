@@ -73,12 +73,14 @@ prefixo = right(prefixo, 20)
 					if  val&""=""then
 						val = ""
 					end if
+					treatStrNull = Val
 				end function
 
 				function treatNumberNull(Val)
 					if  val&""=""then
 						val = 0
 					end if
+					treatNumberNull = Val
 				end function
 				hash = "ENVIO_LOTE_GUIAS"&NLote&Data&Hora&CodigoNaOperadora&RegistroANS&versaoTISS&NLote
 				while not guias.eof

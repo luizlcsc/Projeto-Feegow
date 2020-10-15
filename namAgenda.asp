@@ -388,8 +388,11 @@ while not comps.EOF
     LocalID = comps("LocalID")
     FormaPagto = comps("FormaPagto")
     AgendamentoUnidadeID = comps("UnidadeID")
-    CorIdentificacao = comps("CorIdentificacao")
-
+    if comps("CorIdentificacao")&""="" then
+        CorIdentificacao = "transparent"
+    else
+        CorIdentificacao = comps("CorIdentificacao")
+    end if
 	if not isnull(compsHora) then
 		compsHora = formatdatetime(compsHora, 4)
 	end if
@@ -434,7 +437,9 @@ while not comps.EOF
 	else
 		HoraFinal = ""
 	end if
-    CorProcedimento = comps("CorProcedimento")
+    if getConfig("ColorirLinhaAgendamento")&""=1 then
+        CorProcedimento = comps("CorProcedimento")
+    end if
 
     FirstTdBgColor = ""
     if getConfig("ExibirCorPacienteAgenda")&""=1 then
@@ -444,7 +449,7 @@ while not comps.EOF
 	'<-hora final
 
     if session("HVazios")="" then
-		Conteudo = "<tr style=""background-color:"&CorProcedimento&"!important"" data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'\',\'"&GradeID&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" "&FirstTdBgColor&" ><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
+		Conteudo = "<tr style=\'background-color:"&CorProcedimento&"!important\' data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'\',\'"&GradeID&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" "&FirstTdBgColor&" ><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
 	    if comps("Encaixe")=1 then
 		    Conteudo = Conteudo & "<span class=""label label-alert label-sm arrowed-in arrowed-in-right"">Enc</span>"
 	    end if

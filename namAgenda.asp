@@ -388,8 +388,11 @@ while not comps.EOF
     LocalID = comps("LocalID")
     FormaPagto = comps("FormaPagto")
     AgendamentoUnidadeID = comps("UnidadeID")
-    CorIdentificacao = comps("CorIdentificacao")
-
+    if comps("CorIdentificacao")&""="" then
+        CorIdentificacao = "transparent"
+    else
+        CorIdentificacao = comps("CorIdentificacao")
+    end if
 	if not isnull(compsHora) then
 		compsHora = formatdatetime(compsHora, 4)
 	end if

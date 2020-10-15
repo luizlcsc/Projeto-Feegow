@@ -161,23 +161,24 @@ if SplitNF=1 then
 end if
 'Response.End
 
+desabilitarReemitirRecibo = ""
 textButtom  = "Gerar recibo"
 classButtom = "success"
-if aut("recibosI")<>1 or session("Admin")<>1 then
-    'desabilita = " disabled "
+    desabilita = " disabled "
+if aut("recibosI") = 1 or session("Admin")=1 then
+    desabilita = ""
 end if
-
+ 
 set recibosGerados = db.execute("SELECT * FROM recibos WHERE sysActive=1 AND InvoiceID="&InvoiceID)
-desabilitarReemitirRecibo = " disabled "
 if not recibosGerados.eof then
+    desabilitarReemitirRecibo = " disabled "
     textButtom = "Gerar novamente o recibo"
     classButtom = "warning"
-    desabilita = ""
-    if aut("recibosA")<>1 or session("Admin")<>1 then
-        'desabilita = " disabled "
+    if aut("recibosA") = 1 or session("Admin") = 1 then
+        desabilita = " "
     end if
 end if
-
+ 
 if getconfig("PermitirReemitirRecibo") = 1 then
     desabilitarReemitirRecibo = ""
 end if

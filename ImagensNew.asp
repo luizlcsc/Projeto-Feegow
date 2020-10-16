@@ -482,4 +482,14 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
          $("img[data-id="+id+"]").attr('rotateAngle',rotateAngle);
     }
 
+function atualizaAlbum(X){
+	$.ajax({
+		type:"POST",
+		url:"Imagens.asp?PacienteID=<%=request.QueryString("I")%>&X="+X,
+		success:function(data){
+			$("#galery").html(data);
+            $("#modal-table").modal('toggle')
+		}
+	});
+}
 </script>

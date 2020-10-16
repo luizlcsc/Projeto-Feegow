@@ -401,7 +401,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
                  if guias("Glosado")=1 then
                      response.write("<center><span class='label label-danger'>Glosada</span></center>")
                  else
-                     response.write quickfield("text", "ValorPago"&guias("id"), "Valor", 12, fn(guias("ValorPago")), " text-right input-mask-brl input-valor-pago", "", " "& disabled &" ")
+                     response.write quickfield("text", "ValorPago"&guias("id"), "Valor", 12, fn(guias("ValorPago"))&9, " text-right input-mask-brl input-valor-pago", "", " "& disabled &" ")
                  end if
                  %>
 
@@ -547,7 +547,16 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
     sql = sql & " and g.ConvenioID="&request.QueryString("ConvenioID")
     sql = sql & " GROUP BY g.id ORDER BY "&orderBy&" LIMIT 200"
 	set guias = db.execute(sql)
+    TotalPago = 0
 	while not guias.EOF
+        if IsNumeric(guias("ValorPago")) then
+            guia_valorPago = guias("ValorPago")
+        else
+           guia_valorPago = 0
+        end if
+        
+        TotalPago = TotalPago+guia_valorPago
+        
         Total = guias(ColunaTotal)
         ItemInvoiceID = guias("ItemInvoiceID")
 		set pac = db.execute("select NomePaciente from pacientes where id="&guias("PacienteID"))
@@ -699,7 +708,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 
                          eventModal = "onchange=correcaoValoresProcedimentos(this,'"&guiaIdCheck&"','"&valorTotalCheck&"',"&Chr(34)&qualtabela&Chr(34)&")"
                          response.write quickfield("text", "ValorPago"&guias("id"), "Valor Pago", 12, fn(guias("ValorPago")), " text-right input-mask-brl input-valor-pago", ""," "&eventModal& disabled &" ")
-
+                        
                          if(UCase(req("T")) = UCase("GuiaHonorarios")) or (UCase(req("T")) = UCase("GuiaSADT")) then
                             set ProcedimentoComValorPagoNullSQL = db.execute("SELECT id FROM tissprocedimentossadt WHERE GuiaID="&guias("id")&" AND ValorPago IS NULL")
                             if not ProcedimentoComValorPagoNullSQL.eof then
@@ -728,12 +737,27 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 	wend
 	guias.close
 	set guias=nothing
+
+    saldoTotal = FormatNumber(TotalPago-fn(ValorTotal))
+    if saldoTotal<0 then
+        saldoTotal__class = "text-danger"
+    else
+        saldoTotal__class = "text-primary"
+    end if
 	%>
         </tbody>
         <tfoot>
             <tr>
-                <th><%=c %> registros encontrados.</th>
-                <th>Total: R$<%=fn(ValorTotal) %></th>
+                <th>
+                    <div class="col-md-6"><%=c&" registros encontrados." %></div>
+                    <div class="col-md-6"><%="Total Gerado: <br><small>R$"&fn(ValorTotal)&"</small>"%> </div>
+                </th>
+                <th>
+                    <%="Total Pago: <br><small>R$"&TotalPago&"</small>" %>
+                </th>
+                <th colspan="3">
+                    <%="Saldo: <br><small class='"&saldoTotal__class&"'>R$"&saldoTotal&"</small>"%>
+                </th>
             </tr>
         </tfoot>
     </table><%

@@ -728,15 +728,22 @@ if not inv.eof then
 			Recibo = replace(Recibo, "[Receita.Itens]", tabelinha)
             Recibo = replace(Recibo&"", "[Receita.ItensExtenso]", NomeItens&"")
 
-			set forma = db.execute("SELECT IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','Crédito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value ,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
-                                           "FROM sys_financialmovement debito "&_
-                                           "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
-                                           "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_
-                                           "LEFT JOIN sys_financialpaymentmethod forma_pagamento ON forma_pagamento.id = credito.PaymentMethodID "&_
-                                           "LEFT JOIN sys_financialcreditcardtransaction cartao_credito ON cartao_credito.MovementID=credito.id "&_
-                                           "LEFT JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID NOT IN (3, 4) "&_
-                                           "LEFT JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
-                                           "WHERE debito.InvoiceID="&inv("id"))
+            sqlPagtos = "SELECT cartao_credito.Parcelas Parcelas, IF(credito.`Type` = 'Transfer','Crédito', forma_pagamento.PaymentMethod) PaymentMethod, "&_
+                        "pagamento.MovementID, credito.`value` Value, credito.sysUser sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
+                        "FROM sys_financialmovement debito "&_
+                        "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
+                        "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_
+                        "LEFT JOIN sys_financialpaymentmethod forma_pagamento ON forma_pagamento.id = credito.PaymentMethodID "&_
+                        "LEFT JOIN sys_financialcreditcardtransaction cartao_credito ON cartao_credito.MovementID=credito.id "&_
+                        "WHERE debito.InvoiceID="&inv("id") &" "&_
+                        "UNION ALL "&_
+                        "SELECT 1 Parcelas, 'Boleto' PaymentMethod, NULL, debito.Value VALUE, debito.sysUser  sysUser, debito.Date DataVencimento, null DataPagamento "&_
+                        "FROM sys_financialmovement debito "&_
+                        "INNER JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID NOT IN (2, 3, 4) "&_
+                        "INNER JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
+                        "WHERE debito.InvoiceID="&inv("id")
+
+			set forma = db.execute(sqlPagtos)
 
 			Parcelas = ""
             FormaPagto = ""

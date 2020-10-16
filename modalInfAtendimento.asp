@@ -1,6 +1,10 @@
 <!--#include file="connect.asp"-->
 
 <%
+    btn = "0"
+    if req("btn") <> "0" then
+        btn = "1"
+    end if
 
 %>
 <style>
@@ -120,7 +124,9 @@ end if
 
 set atendimento = db.execute("select a.*, p.* from atendimentos as a left join pacientes as p on a.PacienteID=p.id where a.id="&AtendimentoID)
 set un = db.execute("select *,COALESCE((SELECT concat('|',GROUP_CONCAT(UsuarioID SEPARATOR '|, |'),'|') FROM config_usuarios_solicitacoes where UnidadeID  = "&session("UnidadeID")&"),sys_users.UsuariosNotificar) as UsuariosNotificar FROM  sys_users where id="&session("User"))
-UsuariosNotificar = un("UsuariosNotificar")&" "
+if btn = "0" then
+    UsuariosNotificar = un("UsuariosNotificar")&" "
+end if
 PacienteID = atendimento("PacienteID")
 Solicitacao = request.QueryString("Solicitacao")
 

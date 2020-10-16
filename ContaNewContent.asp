@@ -350,7 +350,7 @@ function infAten(I){
     if($('#modal-agenda').hasClass('in')==false){
         $("#modal").html("Carregando...");
         $("#modal-table").modal("show");
-        $.post("modalInfAtendimento.asp?PacienteID=<%=PacienteID%>&AtendimentoID="+I, "", function(data, status){
+        $.post("modalInfAtendimento.asp?PacienteID=<%=PacienteID%>&btn=1&AtendimentoID="+I, "", function(data, status){
             setTimeout(function(){ $("#modal").html(data) }, 500);
         });
     }else{

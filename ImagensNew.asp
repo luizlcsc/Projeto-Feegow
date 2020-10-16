@@ -320,10 +320,12 @@ end if
                 processaItem(item);
                 let renderType = 'download';
 
+                let cacheControl="1";
 
                 
                 if(!item.isImage){
                     renderType="redirect";
+                    cacheControl = Math.floor(Date.now() / 1000);
                 }else{
                     item.ArquivoLink = item.ArquivoLink.replace('redirect','download')
                 }
@@ -345,7 +347,7 @@ end if
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-expand icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink.replace('redirect', renderType)}" target="_blank" title="Abrir Imagem Separadamente">
+                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink.replace('redirect', renderType)}&cache-control=${cacheControl}" target="_blank" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-external-link icon-external-link"></i>
                                     </a>
                                     <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">

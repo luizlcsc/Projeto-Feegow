@@ -188,14 +188,14 @@ while not unidade.eof
                 InvoiceID=fat("InvoiceID")
 
                 'pegando os recebimentos desta fatura
-                set pg = db.execute("SELECT * FROM (select pg.id, count(mPag.id) Qtd, mPag.Date DataPagto, SUM(mPag.Value) Value, pm.PaymentMethod, mPag.PaymentMethodID, ifnull(t.Parcelas, 1) Parcelas, null StatusBoleto, b.Bandeira  from sys_financialdiscountpayments pg "&_
+
+                sqlPagamentos="SELECT * FROM (select pg.id, count(mPag.id) Qtd, mPag.Date DataPagto, SUM(mPag.Value) Value, pm.PaymentMethod, mPag.PaymentMethodID, ifnull(t.Parcelas, 1) Parcelas, null StatusBoleto, b.Bandeira  from sys_financialdiscountpayments pg "&_
                 " LEFT JOIN sys_financialmovement mBill ON mBill.id=pg.InstallmentID "&_
                 " LEFT JOIN sys_financialmovement mPag ON mPag.id=pg.MovementID "&_
                 " LEFT JOIN sys_financialpaymentmethod pm ON pm.id=mPag.PaymentMethodID "&_
                 " LEFT JOIN sys_financialcreditcardtransaction t ON t.MovementID=mPag.id "&_
                 " LEFT JOIN cliniccentral.bandeiras_cartao b ON b.id=t.BandeiraCartaoID "&_
-                " WHERE mBill.UnidadeID="& UnidadeID &" AND mPag.Date BETWEEN "& mDe &" AND "& mAte &" AND mPag.Type='Pay' AND mPag.CD='D' GROUP BY mPag.PaymentMethodID, t.Parcelas "&_
-                " AND mBill.InvoiceID="&InvoiceID&" "&_
+                " WHERE mBill.UnidadeID="& UnidadeID &" AND mPag.Date BETWEEN "& mDe &" AND "& mAte &" AND mPag.Type='Pay' AND mPag.CD='D' AND mBill.InvoiceID="&InvoiceID&" GROUP BY mPag.PaymentMethodID, t.Parcelas "&_
                 " UNION ALL "&_
                 " select bol.id, count(bol.id) Qtd, mBill.Date DataPagto, SUM(bol.AmountCents/ 100) Value, 'Boleto' PaymentMethod, 4 PaymentMethodID, 1 Parcelas, bolSta.NomeStatus StatusBoleto, null Bandeira " &_
                 " FROM boletos_emitidos bol " &_
@@ -206,7 +206,9 @@ while not unidade.eof
                 " AND mBill.InvoiceID="&InvoiceID&" "&_
                 " AND bol.StatusID NOT IN (2,5,6,7) HAVING Value > 0 " &_
                 
-                ")t")
+                ")t"
+
+                set pg = db.execute(sqlPagamentos)
 
                 if pg.eof AND Total>0 then
 

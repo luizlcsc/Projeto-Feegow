@@ -63,8 +63,6 @@ while not unidade.eof
 	"AND (pagto.CD='D' OR ISNULL(pagto.CD))  "&_
 	"AND inv.CompanyUnitID="& UnidadeID &" "&_
 	"AND (  "&_
-	"	date(rec.`sysDate`) BETWEEN "& mDe &" AND "& mAte &"  "&_
-	"	OR  "&_
 	"	inv.sysDate BETWEEN "& mDe &" AND "& mAte &"  "&_
 	"	OR  "&_
 	"	pagto.Date BETWEEN "& mDe &" AND "& mAte &"  "&_
@@ -195,7 +193,7 @@ while not unidade.eof
                 " LEFT JOIN sys_financialpaymentmethod pm ON pm.id=mPag.PaymentMethodID "&_
                 " LEFT JOIN sys_financialcreditcardtransaction t ON t.MovementID=mPag.id "&_
                 " LEFT JOIN cliniccentral.bandeiras_cartao b ON b.id=t.BandeiraCartaoID "&_
-                " WHERE mBill.UnidadeID="& UnidadeID &" AND mPag.Date BETWEEN "& mDe &" AND "& mAte &" AND mPag.Type='Pay' AND mPag.CD='D' AND mBill.InvoiceID="&InvoiceID&" GROUP BY mPag.PaymentMethodID, t.Parcelas "&_
+                " WHERE mBill.UnidadeID="& UnidadeID &" AND mPag.Type='Pay' AND mPag.CD='D' AND mBill.InvoiceID="&InvoiceID&" GROUP BY mPag.Date, mPag.PaymentMethodID, t.Parcelas "&_
                 " UNION ALL "&_
                 " select bol.id, count(bol.id) Qtd, mBill.Date DataPagto, SUM(bol.AmountCents/ 100) Value, 'Boleto' PaymentMethod, 4 PaymentMethodID, 1 Parcelas, bolSta.NomeStatus StatusBoleto, null Bandeira " &_
                 " FROM boletos_emitidos bol " &_
@@ -204,8 +202,7 @@ while not unidade.eof
                 " INNER JOIN cliniccentral.boletos_status bolSta ON bolSta.id=bol.StatusID " &_
                 " WHERE inv.CompanyUnitID="& UnidadeID &" AND inv.sysDate BETWEEN "& mDe &" AND "& mAte &" AND inv.CD='C' " &_
                 " AND mBill.InvoiceID="&InvoiceID&" "&_
-                " AND bol.StatusID NOT IN (2,5,6,7) HAVING Value > 0 " &_
-                
+                " AND bol.StatusID NOT IN (2,5,6,7) HAVING Value > 0 " &_                
                 ")t"
 
                 set pg = db.execute(sqlPagamentos)
@@ -233,9 +230,21 @@ while not unidade.eof
                         <%
                     end if
                 end if
+
+                if not pg.eof then
+                    %>
+<tr class="" >
+<td colspan="2"></td>
+<td colspan="4"><b>Pagamento(s) realizado(s):</b></td>
+</tr>
+                    <%
+                end if
+
                 while not pg.eof
                     cl = cl+1
                     DataPagto = pg("DataPagto")
+                    AvisoDataDivergente = False
+
                     if DataPagto>=cdate(De) and DataPagto<=Ate then
                         classePagto = ""
                         if DataFatura<>pg("DataPagto") then
@@ -251,6 +260,7 @@ while not unidade.eof
                         end if
                     else
                         classePagto = "warning"
+                        AvisoDataDivergente = True
 '                        toData = toData + pg("Value")
 '                        qoData = qoData + 1
 '                        gtoData = gtoData + pg("Value")
@@ -280,7 +290,15 @@ while not unidade.eof
                     %>
                     <tr class="<%= classePagto %>">
                         <td colspan="2"></td>
-                        <td><b><em><%= DataPagto &" > "&  Descricao %></em></b> <small><%=Subdescricao%></small></td>
+                        <td><em><%= DataPagto &" > "&  Descricao %></em> <small><%=Subdescricao%></small>
+                        <%
+                        if AvisoDataDivergente then
+                        %> 
+                        <span class="badge badge-pill badge-warning"><i class="fa fa-info-circle"></i> Data do recebimento divergente </span>
+                        <%
+                        end if
+                        %>
+                        </td>
                         <td class="text-right"><b><em><%= "R$ "& fn(pg("Value")) %></em></b></td>
                     </tr>
                     <%

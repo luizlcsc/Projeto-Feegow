@@ -115,7 +115,7 @@ end if
                             <td colspan="2">
                                 <table class="table table-striped table-condensed">
                                     <%
-                            sqlGrade = "select a.*,  substring(l.NomeLocal, 1, 10) NomeLocal, l.UnidadeID from assfixalocalxprofissional a LEFT JOIN locais l on l.id=a.LocalID where a.ProfissionalID="&ProfissionalID&" and a.DiaSemana="& Dia &" and "& mydatenull(ViewDate) &">=ifnull(InicioVigencia, '1900-01-01') and "& mydatenull(ViewDate) &"<=ifnull(FimVigencia, '3000-01-01')"
+                            sqlGrade = "select a.*,  substring(l.NomeLocal, 1, 20) NomeLocal, l.UnidadeID from assfixalocalxprofissional a LEFT JOIN locais l on l.id=a.LocalID where a.ProfissionalID="&ProfissionalID&" and a.DiaSemana="& Dia &" and "& mydatenull(ViewDate) &">=ifnull(InicioVigencia, '1900-01-01') and "& mydatenull(ViewDate) &"<=ifnull(FimVigencia, '3000-01-01')"
                             'response.write( sqlGrade )
 				            set h = db.execute( sqlGrade )
 				            'set h = db.execute("select a.*, l.NomeLocal, l.UnidadeID from assfixalocalxprofissional a LEFT JOIN locais l on l.id=a.LocalID where a.ProfissionalID="&ProfissionalID&" and a.DiaSemana="& Dia )
@@ -140,7 +140,7 @@ end if
                                                 <small><em>Das <%=ft(h("HoraDe"))%> às <%=ft(h("HoraA"))%>.
                                                     <br />
                                                     De <%=h("Intervalo")%> em <%=h("Intervalo")%> minutos.<br />
-                                                    Local: <%=h("NomeLocal")%> <%=getNomeLocalUnidade(h("UnidadeID"))%><br />
+                                                    Local: <%=h("NomeLocal")%> <%="<br>Unidade: "&left(getNomeLocalUnidade(h("UnidadeID")),20)%><br />
                                                     <% if not isnull(MaximoRetornos) then response.write("Máx. Retornos: "& MaximoRetornos &"<br>") end if %>
                                                     Início em: <%= InicioVigencia %><br />
                                                     Fim em: <%= FimVigencia %>

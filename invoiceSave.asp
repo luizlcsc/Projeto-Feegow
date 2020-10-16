@@ -40,6 +40,7 @@ if temregradesconto=1 then
 	if querydesconto<>"" then
 		set rsDescontoItem = db.execute("select * from regrasdescontos descontos INNER JOIN regraspermissoes rp ON rp.id=descontos.RegraID where descontos.Recursos LIKE '%|"&querydesconto&"|%'")
 		if not rsDescontoItem.eof then
+		response.end
 			temdescontocadastrado=1
 		end if
 

@@ -605,7 +605,7 @@ function DefaultForm(tableName, id)
 								Permissoes = ""
 								Perfil = "<i class=""fa fa-exclamation-triangle red""></i> Nenhum"
 								if not perf.eof then
-                                    set lu = db.execute("select * from cliniccentral.licencasusuarios where id="&perf("id")&" and Email<>'' and Senha<>''")
+                                    set lu = db.execute("select * from cliniccentral.licencasusuarios where id="&perf("id")&" and Email<>'' and (Senha<>'' or SenhaCript<>'')")
                                     if lu.eof then
                                         Key = ""
                                     else

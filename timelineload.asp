@@ -451,39 +451,41 @@
                         getProtocolos.close
                         set getProtocolos = nothing
                     case "Imagens"
+                        if aut("ImagensV") = 1 then
                         %>
-                    <div class="row">
-                        <%
-                            set im = db.execute("select * from arquivos where date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='I' AND PacienteID="&PacienteID)
-                            while not im.eof
-                                permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
-                                podever = true
+                        <div class="row">
+                            <%
+                                set im = db.execute("select * from arquivos where date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='I' AND PacienteID="&PacienteID)
+                                while not im.eof
+                                    permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
+                                    podever = true
 
-                                if permissao <> "" then
-                                    permissaoSplit = split(permissao,"|")
-                                    podever = permissaoSplit(0)
-                                end if
+                                    if permissao <> "" then
+                                        permissaoSplit = split(permissao,"|")
+                                        podever = permissaoSplit(0)
+                                    end if
 
-                                if podever then
+                                    if podever then
+                                    %>
+                                        <span>
+                                        <% if ComEstilo = "S" then %>
+                                                <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
+                                        <% else %>
+                                            <a class="gallery-item" href="<%=arqEx(im("NomeArquivo"), "Imagens")%>" target="_blank">
+                                                <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
+                                            </a>
+                                        <% end if %>
+                                        </span>
+                                    <%
+                                    end if
+                                    im.movenext
+                                wend
+                                im.close
+                                set im=nothing
                                 %>
-                                    <span>
-                                    <% if ComEstilo = "S" then %>
-                                            <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
-                                    <% else %>
-                                        <a class="gallery-item" href="<%=arqEx(im("NomeArquivo"), "Imagens")%>" target="_blank">
-                                            <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
-                                        </a>
-                                    <% end if %>
-                                    </span>
-                                <%
-                                end if
-                                im.movenext
-                            wend
-                            im.close
-                            set im=nothing
-                             %>
-                    </div>
+                        </div>
                         <%
+                        end if
                     case "Arquivos"
                             %>
                        <div class="row">

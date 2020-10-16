@@ -24,8 +24,8 @@ temRegraCadastradaProUsuario=0
 set TemRegrasDescontoSQL = db.execute("SELECT rd.id, rd.Recursos, rd.DescontoMaximo, rd.RegraID "&_
 " FROM regrasdescontos rd "&_
 " INNER JOIN regraspermissoes rp ON rp.id = rd.RegraID "&_
-" WHERE rd.Recursos LIKE '%|"&TipoFuncaoDesconto&"|%' OR rd.Recursos='' OR rd.Recursos IS NULL "&_
-" ORDER BY rd.DescontoMaximo ASC"&_
+" WHERE (rd.Recursos LIKE '%|"&TipoFuncaoDesconto&"|%' OR rd.Recursos='' OR rd.Recursos IS NULL) "&_
+" ORDER BY rd.DescontoMaximo ASC")
 
 TemDescontoParaOGrupoDoUsuario=False
 

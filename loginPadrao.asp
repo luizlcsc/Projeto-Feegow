@@ -45,7 +45,8 @@ else
 	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom                                           "&_
 	           "from licencasusuarios as u                                                                                        "&_
 	           "left join licencas as l on l.id=u.LicencaID                                                                       "&_
-	           "where Email='"&User&"' AND "&sqlSenha
+	           "where Email='"&User&"' AND "&sqlSenha &" "&_
+               "ORDER BY IF(l.`Status`='C',0, 1)"
 end if
 
 set tryLogin = dbc.execute(sqlLogin)

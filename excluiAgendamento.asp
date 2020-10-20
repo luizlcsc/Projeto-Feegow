@@ -11,8 +11,7 @@ if request.QueryString("Confirma")="0" then
 
 <div class="panel-heading">
 <span class="panel-title">Tem certeza de que deseja excluir este agendamento?</span>
-    <div class="panel-controls">
-        <button class="btn btn-sm btn-default" onclick="af('f');" type="button">&times;</button>
+    <div class="panel-controls" onclick="af('f');" type="button"><i class="fa fa-arrow-left"></i> <span class="hidden-xs">Voltar</span>
     </div>
 </div>
 
@@ -58,12 +57,13 @@ if request.QueryString("Confirma")="0" then
             <input type="hidden" name="tipoequipamento" id="tipoequipamento">
         </div>
 	</div>
+    <div class="panel-footer">
+        <button class="btn btn-sm btn-danger" id="btnConfirmarExclusao" data-bb-handler="danger">
+            <i class="fa fa-trash"></i> Confirmar Exclus&atilde;o
+        </button>
+    </div>
 </div>
-<div class="panel-footer">
-    <button class="btn btn-sm btn-danger" id="btnConfirmarExclusao" data-bb-handler="danger">
-    	<i class="fa fa-trash"></i> Confirmar Exclus&atilde;o
-    </button>
-</div>
+
 </form>
 <script >
     $(document).ready(function() {
@@ -104,7 +104,7 @@ else
 	
 	db_execute(sql)
 
-	sqlDel = "delete from agendamentos where id="&ConsultaID
+	sqlDel = "update agendamentos set sysActive=-1 where id="&ConsultaID
 	call gravaLogs(sqlDel, "AUTO", "Agendamento excluído", "")
 
 	db_execute(sqlDel)

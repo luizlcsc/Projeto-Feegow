@@ -38,7 +38,7 @@ end if
 
     <table class="table footable fw-labels" data-page-size="20">
         <thead>
-            <tr>
+            <tr class="primary">
                 <th>Status</th>
                 <th>Data/Hora</th>
                 <th>Profissional</th>
@@ -55,7 +55,7 @@ end if
 	    c = 0
 
 	    agends = ""
-        set pCons = db.execute("select a.id, a.rdValorPlano, a.ValorPlano, a.Data, a.Hora, a.StaID, a.Procedimentos, s.StaConsulta, p.NomeProcedimento, eq.NomeEquipamento, c.NomeConvenio, prof.NomeProfissional, esp.Especialidade NomeEspecialidade FROM agendamentos a LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN profissionais prof on prof.id=a.ProfissionalID LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID or (a.EspecialidadeID is null and prof.EspecialidadeID=esp.id) LEFT JOIN procedimentos p on a.TipoCompromissoID=p.id LEFT JOIN staconsulta s ON s.id=a.StaID LEFT JOIN convenios c on c.id=a.ValorPlano WHERE a.PacienteID="&PacienteID&" ORDER BY a.Data DESC, a.Hora DESC")
+        set pCons = db.execute("select a.sysActive, a.id, a.rdValorPlano, a.ValorPlano, a.Data, a.Hora, a.StaID, a.Procedimentos, s.StaConsulta, p.NomeProcedimento, eq.NomeEquipamento, c.NomeConvenio, prof.NomeProfissional, esp.Especialidade NomeEspecialidade FROM agendamentos a LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN profissionais prof on prof.id=a.ProfissionalID LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID or (a.EspecialidadeID is null and prof.EspecialidadeID=esp.id) LEFT JOIN procedimentos p on a.TipoCompromissoID=p.id LEFT JOIN staconsulta s ON s.id=a.StaID LEFT JOIN convenios c on c.id=a.ValorPlano WHERE a.PacienteID="&PacienteID&" ORDER BY a.Data DESC, a.Hora DESC")
         while not pCons.EOF
 		    c = c+1
 		    if pCons("rdValorPlano")="V" then
@@ -96,13 +96,21 @@ end if
                 NomeProcedimento = VariosProcedimentos
             end if
 
+            staconsulta = pCons("StaConsulta")
+
+
+            if pCons("sysActive")=-1 then
+                staconsulta = "Excluído"
+                classe = "danger"
+            end if
+
 
 
             %>
             <tr class="row-<%=classe %>" onclick="">
                 <td class="pn">
                     <span class="label label-<%=classe %> mn">
-                        <%=left(pCons("StaConsulta"), 18) %>
+                        <%=left(staconsulta, 18) %>
                     </span>
                 </td>
                 <td><%="<img src=""assets/img/"&pCons("StaID")&".png"">"%> &nbsp; <%=pCons("Data")&" - "&consHora %></td>

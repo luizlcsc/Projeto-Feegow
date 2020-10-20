@@ -24,7 +24,7 @@ if DiasRetorno&"" = "" then
     if not ProcedimentoSQL.eof then
         DiasRetorno = ProcedimentoSQL("DiasRetorno")
     else
-        set UltimoProcedimentoSQL = db.execute("SELECT proc.DiasRetorno FROM agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID WHERE a.PacienteID="&treatvalzero(PacienteID)&" AND StaID=3 and Data<"&mydatenull(Data)&" ORDER BY Data DESC LIMIT 1")
+        set UltimoProcedimentoSQL = db.execute("SELECT proc.DiasRetorno FROM agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID WHERE a.PacienteID="&treatvalzero(PacienteID)&" AND StaID=3 and Data<"&mydatenull(Data)&" and a.sysActive=1 ORDER BY Data DESC LIMIT 1")
         if not UltimoProcedimentoSQL.eof then
             DiasRetorno = UltimoProcedimentoSQL("DiasRetorno")
         end if

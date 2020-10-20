@@ -710,7 +710,7 @@ end if
                         "FROM agendamentos a "&_
                         "INNER JOIN profissionais prof ON prof.id=a.ProfissionalID "&_
                         "INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID "&_
-                        "WHERE a.PacienteID="&treatvalzero(PacienteID)&" AND a.Data="&mydatenull(Data)&" AND a.Hora <> "&mytime(Hora)&" ORDER BY a.Hora")
+                        "WHERE a.PacienteID="&treatvalzero(PacienteID)&" AND a.sysActive=1 AND a.Data="&mydatenull(Data)&" AND a.Hora <> "&mytime(Hora)&" ORDER BY a.Hora")
                         if not OutrosAgendamentosSQL.eof then
                             %>
                             <h4>Este paciente possui outros agendamentos nessa data.</h4>

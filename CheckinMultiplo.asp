@@ -61,6 +61,7 @@ else
                         " AND (l.UnidadeID="&UnidadeID&" OR a.LocalID="&LocalID&")"&_
                         " AND (pac.id = "&PacienteID&")"&_
                         " AND a.id <> "&AgendamentoID&" "&_
+                        " AND a.sysActive = 1 "&_
                         " ORDER BY Hora"
     set agendamentos = db.execute(agendamentosSQL)
 

@@ -1,4 +1,4 @@
-﻿<!--#include file="Classes/Connection.asp"--><%
+<!--#include file="Classes/Connection.asp"--><%
 Session.Timeout=600
 session.LCID=1046
 if session("Servidor")="" then
@@ -4171,7 +4171,7 @@ function getEspera(Profissionais)
         eProfissional = trim(splProfs(y))
         if eProfissional<>"" then
             if eProfissional<>"0" then
-                db_execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate() and StaID IN (4) and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
+                db_execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate() and StaID IN (4) and sysActive = 1 and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
             end if
         end if
     next

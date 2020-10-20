@@ -256,6 +256,9 @@ if not inv.eof then
                 if tipoProfissionalSelecionado&""=8 then
                     Converte_ProfissionalExecutanteExterno = "ProfissionalExecutanteExternoID_"&profissionalSelecionado&"|"
                 end if
+                if tipoProfissionalSelecionado&""=5 then
+                    ProfissionalExecutanteID = profissionalSelecionado
+                end if
             end if
 
             Recibo = TagsConverte(Recibo,Converte_ProfissionalExecutanteExterno&"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalExecutanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
@@ -937,5 +940,5 @@ end if %>
 </div>
 <% next %>
 <script type="text/javascript">
-print();
+    print();
 </script>

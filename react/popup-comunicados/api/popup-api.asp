@@ -28,7 +28,7 @@ Select Case action
   Case "GetComunicadoNaoVisualizado"
 
     sql = "SELECT pop.*, "&_
-          "(SELECT com.Interesse FROM cliniccentral.comunicados com WHERE com.ComunicadoID=pop.id AND com.UserID=101802 ORDER BY id DESC) feedback_comunicado "&_
+          "(SELECT com.Interesse FROM cliniccentral.comunicados com WHERE com.ComunicadoID=pop.id AND com.UserID=101802 ORDER BY id DESC LIMIT 1) feedback_comunicado "&_
           "FROM cliniccentral.popup_comunicados pop "&_
           "LEFT JOIN cliniccentral.clientes_servicosadicionais cs ON cs.LicencaID="&LicencaID&" AND cs.ServicoID=pop.RecursoAdicionalID "&_
           " "&_

@@ -20,12 +20,16 @@ function tagsConverte(conteudo,itens,moduloExcecao)
     item_id   = itemArray(1)&""
     conteudo = conteudo&""
 
+    'response.write("<pre>"&item_nome&": "&item_id&"</pre>")
+    
     '## Add prefixo item_ para evitar conflitos de variaveis
     select case item_nome
       case "PacienteID"
         item_PacienteID          = item_id
         'ALIAS DE TAGS RELACIONADAS AO PACIENTE
         conteudo = replace(conteudo,"[NomePaciente]","[Paciente.Nome]")
+      case "ProfissionalExecutanteExternoID"
+        item_ProfissionalExternoID          = item_id
 
       case "ProfissionalID"
         item_ProfissionalID      = item_id
@@ -274,7 +278,23 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             conteudo = replace(conteudo, "[Unidade.Telefone]", trim(UnidadeSQL("tel1")&" ") )
           end if
           'response.write("<pre>"&qUnidadeSQL&"</pre>")
-        case "Profissional" 
+               
+        case "Profissional"
+          if item_ProfissionalExternoID>0 then
+            qContentSQL = "SELECT pro.NomeProfissional, pro.DocumentoConselho "&_
+            "FROM profissionalexterno AS pro "&_
+            "LEFT JOIN conselhosprofissionais conPro ON conPro.id=pro.Conselho "&_
+            "where pro.id="&item_ProfissionalExternoID
+            
+            SET ContentSQL = db.execute(qContentSQL)
+            if not ContentSQL.eof then
+              conteudo = replace(conteudo, "[ProfissionalExecutante.Nome]", trim(ContentSQL("NomeProfissional")&""))
+              conteudo = replace(conteudo, "[ProfissionalExecutante.Conselho]", trim(ContentSQL("DocumentoConselho")&" ") )
+
+            end if
+           
+          end if
+        
           'QUERY ALTERADA PARA A MESMA QUERY DO FEEGOW API 27/07/2020
           qProfissionaisContentSQL = "SELECT f.id FornecedorID, prof.RQE, prof.Conselho, prof.NomeProfissional, t.Tratamento, cp.descricao, COALESCE(f.NomeFornecedor, prof.NomeProfissional) RazaoSocial, f.CPF CPFCNPJ , CONCAT(IF(t.Tratamento is null,'',concat(t.Tratamento,' ')),IF(prof.NomeSocial is null or prof.NomeSocial ='', SUBSTRING_INDEX(prof.NomeProfissional,' ', 1), prof.NomeSocial)) PrimeiroNome, "&_
           "CONCAT(cp.descricao, ' ', prof.DocumentoConselho, ' ', prof.UFConselho) Documento, prof.Assinatura, prof.DocumentoConselho, prof.CPF, prof.NomeSocial, esp.especialidade Especialidade "&_

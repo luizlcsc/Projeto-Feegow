@@ -252,8 +252,13 @@ if not inv.eof then
                     end if
                 end if
             end if
+            if profissionalSelecionado&""<>"" then
+                if tipoProfissionalSelecionado&""=8 then
+                    Converte_ProfissionalExecutanteExterno = "ProfissionalExecutanteExternoID_"&profissionalSelecionado&"|"
+                end if
+            end if
 
-            Recibo = TagsConverte(Recibo,"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalExecutanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
+            Recibo = TagsConverte(Recibo,Converte_ProfissionalExecutanteExterno&"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalExecutanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
             ' Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
 
             'CONVERSOR ANTIGO DE TAGS DESATIVADO
@@ -932,5 +937,5 @@ end if %>
 </div>
 <% next %>
 <script type="text/javascript">
-print();
+//print();
 </script>

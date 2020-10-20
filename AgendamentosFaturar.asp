@@ -33,7 +33,7 @@ end if
 
             <table class="table table-striped table-condesed">
                 <thead>
-                    <tr>
+                    <tr class="primary">
                         <th width="2%"><label><input type="checkbox" onchange="SelecionaTodosAgendamentos($(this))" value="1"><span class="lbl"></span></label></th>
                         <th>Data</th>
                         <th>Hora</th>
@@ -58,7 +58,7 @@ end if
 
                 set qtdAg = db.execute("select FLOOR(COUNT(*)/20) AS totalPaginas from agendamentos ag LEFT JOIN staconsulta sta on sta.id=ag.StaID LEFT JOIN profissionais prof on prof.id=ag.ProfissionalID LEFT JOIN procedimentos proc on proc.id=ag.TipoCompromissoID LEFT JOIN convenios conv on ag.ValorPlano=conv.id where PacienteID="&PacienteID &" "& sqlData & sqlStatus)
                 qtdAgAux = CInt(qtdAg("totalPaginas"))*20
-                set ag = db.execute("select ag.id, ag.Data, ag.Hora, ag.rdValorPlano, ag.ValorPlano, prof.NomeProfissional, proc.NomeProcedimento, conv.NomeConvenio, sta.StaConsulta from agendamentos ag LEFT JOIN staconsulta sta on sta.id=ag.StaID LEFT JOIN profissionais prof on prof.id=ag.ProfissionalID LEFT JOIN procedimentos proc on proc.id=ag.TipoCompromissoID LEFT JOIN convenios conv on ag.ValorPlano=conv.id where PacienteID="&PacienteID &" "& sqlData & sqlStatus&" order by Data desc limit " & Offset)
+                set ag = db.execute("select ag.id, ag.Data, ag.Hora, ag.rdValorPlano, ag.ValorPlano, prof.NomeProfissional, proc.NomeProcedimento, conv.NomeConvenio, sta.StaConsulta from agendamentos ag LEFT JOIN staconsulta sta on sta.id=ag.StaID LEFT JOIN profissionais prof on prof.id=ag.ProfissionalID LEFT JOIN procedimentos proc on proc.id=ag.TipoCompromissoID LEFT JOIN convenios conv on ag.ValorPlano=conv.id where PacienteID="&PacienteID &" "& sqlData & sqlStatus&" AND ag.sysActive=1 order by Data desc limit " & Offset)
                 while not ag.eof
                     if ag("rdValorPlano")="V" then
                         ValorConvenio = ag("ValorPlano")

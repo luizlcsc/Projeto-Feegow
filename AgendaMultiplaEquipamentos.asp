@@ -68,6 +68,11 @@ while not equ.eof
                             <%
 '							end if
                             Hora = dateadd("n", Intervalo, Hora)
+
+                            if instr(Hora, "08:30") <> -1 then
+                                HoraA = dateadd("n", 1, HoraA)
+                            end if
+                            
                         wend
                     Horarios.movenext
                     wend

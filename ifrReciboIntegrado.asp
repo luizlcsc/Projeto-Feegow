@@ -937,5 +937,5 @@ end if %>
 </div>
 <% next %>
 <script type="text/javascript">
-//print();
+print();
 </script>

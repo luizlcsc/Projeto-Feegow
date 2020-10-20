@@ -55,7 +55,7 @@ end if
 	    c = 0
 
 	    agends = ""
-        set pCons = db.execute("select a.sysActive, a.id, a.rdValorPlano, a.ValorPlano, a.Data, a.Hora, a.StaID, a.Procedimentos, s.StaConsulta, p.NomeProcedimento, eq.NomeEquipamento, c.NomeConvenio, prof.NomeProfissional, esp.Especialidade NomeEspecialidade FROM agendamentos a LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN profissionais prof on prof.id=a.ProfissionalID LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID or (a.EspecialidadeID is null and prof.EspecialidadeID=esp.id) LEFT JOIN procedimentos p on a.TipoCompromissoID=p.id LEFT JOIN staconsulta s ON s.id=a.StaID LEFT JOIN convenios c on c.id=a.ValorPlano WHERE a.PacienteID="&PacienteID&" ORDER BY a.Data DESC, a.Hora DESC")
+        set pCons = db.execute("select a.sysActive, a.id, a.rdValorPlano, a.ValorPlano, a.Data, a.Hora, a.StaID, a.Procedimentos, s.StaConsulta, p.NomeProcedimento, eq.NomeEquipamento, c.NomeConvenio, prof.NomeProfissional, esp.Especialidade NomeEspecialidade FROM agendamentos a LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN profissionais prof on prof.id=a.ProfissionalID LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID or (a.EspecialidadeID is null and prof.EspecialidadeID=esp.id) LEFT JOIN procedimentos p on a.TipoCompromissoID=p.id LEFT JOIN staconsulta s ON s.id=a.StaID LEFT JOIN convenios c on c.id=a.ValorPlano WHERE a.PacienteID="&PacienteID&"  ORDER BY a.Data DESC, a.Hora DESC")
         while not pCons.EOF
 		    c = c+1
 		    if pCons("rdValorPlano")="V" then
@@ -73,6 +73,11 @@ end if
 		    if not isnull(consHora) then
 			    consHora = formatdatetime(consHora, 4)
 		    end if
+            disabledAbrir = " " 
+
+if pCons("sysActive")=-1 then
+            disabledAbrir = " disabled " 
+            end if
 
 
             select case pCons("StaID")
@@ -122,7 +127,7 @@ end if
                 <td>
                     <div class="btn-group">
                         <button class="btn btn-primary btn-xs" data-agendamentoid="<%= pCons("id") %>" id="hist<%=pCons("id")%>">Detalhes</button>
-                        <a class="btn btn-primary btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="fa fa-external-link"></i></a>
+                        <a <%=disabledAbrir%> class="btn btn-primary btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="fa fa-external-link"></i></a>
                     </div>
                     <div id="divhist<%=pCons("id")%>" style="position:absolute; display:none;z-index: 99999; background-color:#fff; margin-left:-740px; border:1px solid #2384c6; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
                 </td>

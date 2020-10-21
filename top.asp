@@ -96,19 +96,19 @@ else
                     <%
                     end if
                 end if
-		        if Aut("|agendaA|")=1 then %>
+		        if Aut("|agendaA|")=1 or Aut("agendaaheckin")=1  or Aut("confirmaragendamentos")=1 then %>
                 <li class="divider"></li>
                 <%
-                'if Aut("agendaaheckin")=1 then
+                if Aut("agendaaheckin")=1 then
                 %>
                 <li class="sub-menu-click-agenda-checkin"><a href="./?P=Checkin&Pers=1"> Check-in</a></li>
                 <%
-                'end if
-                'if Aut("confirmaragendamentos")=1 then
+                end if
+                if Aut("confirmaragendamentos")=1 then
                 %>
                 <li  class="sub-menu-click-agenda-confirmar-agendamentos"><a href="./?P=ConfirmacaoDeAgendamentos&Pers=1"> Confirmar agendamentos</a></li>
                 <%
-                'end if
+                end if
                 if recursoAdicional(24) = 4 then
                 %>
                 <li class="sub-menu-click-agenda-consultar-valores"><a href="./?P=FilaColeta&Pers=1"> Fila de coleta <span class="label label-system label-xs fleft">Novo</span> </a></li>

@@ -97,7 +97,7 @@ elseif req("Tipo")="E" then
         set listaPedido = db.execute("select * from pacientespedidostextos where id="&ref("id"))
         if not listaPedido.eof then
 
-            Pedido = "<p><strong>"&listaPedido("TituloPedido")&"</strong><br /><br />"
+            Pedido = "<p><strong>"&listaPedido("TituloPedido")&"</strong>"
             Pedido = Pedido &listaPedido("TextoPedido")&"</p>"
             TextoFinal = Pedido
         end if

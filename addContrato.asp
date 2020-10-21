@@ -1,6 +1,34 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="extenso.asp"-->
 <!--#include file="Classes/TagsConverte.asp"-->
+<%
+'##############
+'*** PREPARA DADOS PARA CONVERTER TAGS DE PROFISSIONAL EXECUTANTE QNDO EXTERNO OU INTERNO
+'21/10/2020 NÃO EXISTE TAG QUE TRATE LISTA DE PROFISSIONAIS EXECUTANTES EX.: [ProfissionalExecutante.Lista] Caso seja criado basta ajustar o código abaixo.
+'##############
+ProfissionaisExecutante = req("ProfissionalExecutante")
+if ProfissionaisExecutante&""<>"" then
+    ProfExec__array = split(ProfissionaisExecutante, ",")
+    For ProfExecLista = 0 To ubound(ProfExec__array)
+        ProfExec = split(ProfissionaisExecutante, ",")
+
+        ProfExecItem = split(ProfExec(ProfExecLista), "_")
+
+        val__ProfissionalExecutanteTipo = ProfExecItem(0)
+        val__ProfissionalExecutanteID = ProfExecItem(1)
+
+        if val__ProfissionalExecutanteTipo=5 then
+            ProfissionalExecutanteID = "|ProfissionalID_"&val__ProfissionalExecutanteID
+        end if
+        if val__ProfissionalExecutanteTipo=8 then
+            ProfissionalExecutanteExternoID = "|ProfissionalExecutanteExternoID_"&val__ProfissionalExecutanteID
+        end if
+        'response.write("Valor: "& ProfExec(ProfExecLista) &" :: "&ProfissionalExecutanteTipo&"<br>")
+    next
+end if
+%>
+
+
 <div class="modal-header">
     <h3 class="blue">Contrato</h3>
 </div>
@@ -127,7 +155,7 @@ elseif ModeloID<>"" and ModeloID<>"0" then
         end if
         'TAG ANTIGA DESATIVADA | RAFAEL MAIA 28/07/2020
         'ModeloContrato = replace(ModeloContrato, "[Contrato.Protocolo]", InvoiceID)
-        ModeloContrato = TagsConverte(ModeloContrato,"ContratoID_"&req("InvoiceID"),"") 
+        ModeloContrato = TagsConverte(ModeloContrato,"ContratoID_"&req("InvoiceID")&ProfissionalExecutanteExternoID&ProfissionalExecutanteID,"") 
 
         if instr(ModeloContrato, "[UltimoFormulario.")>0 then
             splUF = split( ModeloContrato, "[UltimoFormulario." )

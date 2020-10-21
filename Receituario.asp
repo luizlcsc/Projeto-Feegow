@@ -46,11 +46,15 @@ set reg=db.execute("select * from PacientesPrescricoes where id="&request.QueryS
                 end if
                 Cabecalho = timb("Cabecalho")
                 Rodape = timb("Rodape")
+                
+                timb__fontFamily  = timb("font-family")&""
+                timb__color     = timb("color")&""
+                timb__fontSize  = replace(treatvalzero(timb("font-size")),"'","")
 
-                    if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
-                    if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
-                    if not isnull(timb("color")) then fontColor = "color: "& timb("color") &"!important; " end if
-                    if not isnull(timb("line-height")) then lineHeight = "line-height: "& timb("line-height") &"px!important; " end if
+                if timb__fontFamily<>"" then fontFamily = "font-family: "& timb__fontFamily &"!important; " end if
+                if timb__color<>""      then fontColor  = "color: "& timb__color &"!important; " end if
+                if timb__fontSize>0 then fontSize = "font-size: "& timb__fontSize &"px!important; " end if
+                if not isnull(timb("line-height")) then lineHeight = "line-height: "& timb("line-height") &"px!important; " end if
 
             end if
             if lcase(session("table"))="profissionais" then

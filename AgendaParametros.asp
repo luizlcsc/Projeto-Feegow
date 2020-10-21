@@ -352,7 +352,7 @@ if left(tipo, 14)="ProcedimentoID" then
 
             if SomenteConvenios<>"" and SomenteConvenios<>"NONE" then
                 SomenteConvenios = fix_array_comma(SomenteConvenios)
-                set ConveniosSQL = db.execute("SELECT NomeConvenio,id FROM convenios WHERE id IN("&SomenteConvenios&")")
+                set ConveniosSQL = db.execute("SELECT NomeConvenio,id FROM convenios WHERE id IN("&SomenteConvenios&") AND sysActive=1 AND Ativo='on'")
                 %>
                 if($("#ConvenioID<%= apID %>").length > 0){
                     $("#ConvenioID<%= apID %>").select2("destroy");

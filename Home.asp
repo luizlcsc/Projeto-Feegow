@@ -738,8 +738,12 @@ end if
     <%
     end if
     if aut("agendaV") then
-        'set age = db.execute("select age.*, prof.NomeProfissional from cliniccentral.agendamento_online_log age LEFT JOIN profissionais prof ON prof.id=age.ProfissionalID where age.LicencaID="& replace(session("Banco"), "clinic", "") &" order by age.DataHora desc limit 6")
-        set age = db.execute("select age.Data, age.Hora, prof.NomeProfissional,  pac.NomePaciente, lm.DataHora DataHoraFeito from agendamentos age inner join logsmarcacoes lm on age.id = lm.ConsultaID inner join profissionais prof on prof.id = age.ProfissionalID LEFT JOIN pacientes pac ON pac.id=age.PacienteID where lm.Sta = 1 and (lm.Usuario=1 or age.CanalID=1) and age.CanalID IS NOT NULL order by lm.DataHora desc limit 6")
+        sqlAgendamentoOnline = "select age.Data, age.Hora, prof.NomeProfissional,  pac.NomePaciente, lm.sysDate DataHoraFeito from agendamentos "&_
+                                "inner join profissionais prof on prof.id = age.ProfissionalID "&_
+                                "LEFT JOIN pacientes pac ON pac.id=age.PacienteID "&_
+                                "where lm.Sta = 1 and (lm.Usuario=1 or age.CanalID=1) and age.CanalID IS NOT NULL order by lm.DataHora desc limit 6"
+
+        set age = db.execute(sqlAgendamentoOnline)
         %>
         <div class="col-md-6 admin-grid">
             <div class="panel panel-widget">

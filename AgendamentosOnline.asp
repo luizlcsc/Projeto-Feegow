@@ -11,13 +11,24 @@
     $(".crumb-icon a span").attr("class", "fa fa-calendar");
 </script>
 <% if aut("agendaV") then
-    set age = db.execute("select age.*, prof.NomeProfissional, proc.NomeProcedimento, conv.NomeConvenio, age.Valor, loc.NomeLocal, age.CPF, age.Celular, age.Email, age.Obs from cliniccentral.agendamento_online_log age LEFT JOIN profissionais prof ON prof.id=age.ProfissionalID LEFT JOIN procedimentos proc ON proc.id=age.ProcedimentoID LEFT JOIN convenios conv ON conv.id=age.ConvenioID LEFT JOIN locais loc ON loc.id=age.LocalID where age.LicencaID="& replace(session("Banco"), "clinic", "") &" order by age.DataHora desc limit 1000")
+    sqlAgendamentoOnline = "select age.*, age.sysDate DataHora, prof.NomeProfissional, proc.NomeProcedimento, conv.NomeConvenio, age.ValorPlano Valor, loc.NomeLocal, pac.CPF, pac.Cel1 Celular, pac.Email1 Email, age.Notas Obs "&_
+                           "from agendamentos age "&_
+                           "LEFT JOIN profissionais prof ON prof.id=age.ProfissionalID "&_
+                           "LEFT JOIN pacientes pac ON pac.id=age.PacienteID "&_
+                           "LEFT JOIN procedimentos proc ON proc.id=age.TipoCompromissoID "&_
+                           "LEFT JOIN convenios conv ON conv.id=age.ValorPlano AND age.rdValorPlano='P' "&_
+                           "LEFT JOIN locais loc ON loc.id=age.LocalID "&_
+                           "order by age.sysDate desc "&_
+                           "limit 1000"
+
+
+    set age = db.execute(sqlAgendamentoOnline)
     %>
     <div class="panel mt15">
         <div class="panel-body bg-white p15">
             <table class="table table-striped table-condensed table-hover">
                 <thead>
-                    <tr>
+                    <tr class="primary">
                         <th>Data</th>
                         <th width="22%">Paciente / CPF</th>
                         <th width="22%">Profissional / Procedimento</th>
@@ -37,7 +48,7 @@
                     %>
                     <tr>
                         <td nowrap>Em: <%= age("DataHora") %><br />
-                        Para: <%= age("DataAgendamento")&" "& ft(age("HoraAgendamento")) %></td>
+                        Para: <%= age("Data")&" "& ft(age("Hora")) %></td>
                         <td><a href="./?P=Pacientes&I=<%= age("PacienteID") %>&Pers=1" target="_blank"><%= age("NomePaciente") %></a>
                             <br /> <%= age("CPF") %>
                         </td>

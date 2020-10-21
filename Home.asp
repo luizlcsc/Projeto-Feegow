@@ -738,10 +738,10 @@ end if
     <%
     end if
     if aut("agendaV") then
-        sqlAgendamentoOnline = "select age.Data, age.Hora, prof.NomeProfissional,  pac.NomePaciente, lm.sysDate DataHoraFeito from agendamentos "&_
+        sqlAgendamentoOnline = "select age.Data, age.Hora, prof.NomeProfissional,  pac.NomePaciente, age.sysDate DataHoraFeito from agendamentos age "&_
                                 "inner join profissionais prof on prof.id = age.ProfissionalID "&_
                                 "LEFT JOIN pacientes pac ON pac.id=age.PacienteID "&_
-                                "where lm.Sta = 1 and (lm.Usuario=1 or age.CanalID=1) and age.CanalID IS NOT NULL order by lm.DataHora desc limit 6"
+                                "where (age.CanalID=1) and age.CanalID IS NOT NULL order by age.sysDate desc limit 6"
 
         set age = db.execute(sqlAgendamentoOnline)
         %>

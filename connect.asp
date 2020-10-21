@@ -3694,7 +3694,7 @@ function dispEquipamento(Data, Hora, Intervalo, EquipamentoID, AgendamentoID)
     HoraFinal = dateadd("n", Intervalo, Hora)
     if isnumeric(EquipamentoID) and EquipamentoID<>"" and not isnull(EquipamentoID) then
         if ccur(EquipamentoID)<>0 then
-            sqlDisp = "SELECT a.Hora, a.HoraFinal, p.NomeProfissional FROM agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID WHERE a.StaID not in(11) and a.Data="&mydatenull(Data)&" AND "&_
+            sqlDisp = "SELECT a.Hora, a.HoraFinal, p.NomeProfissional FROM agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID WHERE a.sysActive=1 AND a.StaID not in(11) and a.Data="&mydatenull(Data)&" AND "&_
                     "("&_
                     "("&mytime(Hora)&">=a.Hora AND "&mytime(Hora)&"< ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*59.99)))"&_
                     " OR "&_
@@ -3972,8 +3972,8 @@ private function statusPagto(AgendamentoID, PacienteID, Datas, rdValorPlano, Val
     for ida=0 to ubound(splsDatas)
         sData = splsDatas(ida)
         if isdate(sData) and not isnull(sData) and PacienteID&""<>"" and isnumeric(PacienteID&"") then
-'            sqlAgAt = "select 'agendamentos' tabela, id, rdValorPlano, ifnull(ValorPlano, 0) ValorPlano, ifnull(ProfissionalID, 0) ProfissionalID, ifnull(TipoCompromissoID, 0) TipoCompromissoID, FormaPagto from agendamentos where PacienteID="& PacienteID &" and Data="& mydatenull(sData) &" and StaID IN ("& statusEnvolvidos &")"
-            sqlAgAt = "select 'agendamentos' tabela, ag.id, ag.rdValorPlano, ifnull(ag.ValorPlano, 0) ValorPlano, ifnull(ag.ProfissionalID, 0) ProfissionalID, ifnull(ag.TipoCompromissoID, 0) TipoCompromissoID, ag.FormaPagto from agendamentos ag where ag.PacienteID="& PacienteID &" and ag.Data="& mydatenull(sData) &" and ag.StaID IN ("& statusEnvolvidos &") "&_
+'            sqlAgAt = "select 'agendamentos' tabela, id, rdValorPlano, ifnull(ValorPlano, 0) ValorPlano, ifnull(ProfissionalID, 0) ProfissionalID, ifnull(TipoCompromissoID, 0) TipoCompromissoID, FormaPagto from agendamentos where sysActive=1 AND PacienteID="& PacienteID &" and Data="& mydatenull(sData) &" and StaID IN ("& statusEnvolvidos &")"
+            sqlAgAt = "select 'agendamentos' tabela, ag.id, ag.rdValorPlano, ifnull(ag.ValorPlano, 0) ValorPlano, ifnull(ag.ProfissionalID, 0) ProfissionalID, ifnull(ag.TipoCompromissoID, 0) TipoCompromissoID, ag.FormaPagto from agendamentos ag where sysActive=1 AND ag.PacienteID="& PacienteID &" and ag.Data="& mydatenull(sData) &" and ag.StaID IN ("& statusEnvolvidos &") "&_
             " UNION ALL select 'agendamentos', agm.id, agp.rdValorPlano, ifnull(agp.ValorPlano, 0), ifnull(agm.ProfissionalID, 0), ifnull(agp.TipoCompromissoID, 0), agm.FormaPagto FROM agendamentos agm LEFT JOIN agendamentosprocedimentos agp ON agp.AgendamentoID=agm.id where agm.PacienteID="& PacienteID &" and agm.Data="& mydatenull(sData) &" and agm.StaID IN ("& statusEnvolvidos &") and not isnull(agp.id) "&_
             " UNION ALL	SELECT 'atendimentos', ate.id, atp.rdValorPlano, ifnull(atp.ValorPlano, 0), ifnull(ate.ProfissionalID, 0), ifnull(atp.ProcedimentoID, 0), 0 FROM atendimentos ate LEFT JOIN atendimentosprocedimentos atp ON ate.id=atp.AtendimentoID WHERE ate.PacienteID="& PacienteID &" AND ate.`Data`="& mydatenull(sData) &""
 
@@ -4178,7 +4178,7 @@ function getEspera(Profissionais)
     next
 
 
-    set esperaT = db.execute("select UnidadeID, count(UnidadeID) EsperaTotal from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() and StaID=4 order by l.UnidadeID) t group by UnidadeID")
+    set esperaT = db.execute("select UnidadeID, count(UnidadeID) EsperaTotal from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() AND a.sysActive=1 and StaID=4 order by l.UnidadeID) t group by UnidadeID")
     while not esperaT.eof
         esperaTotal = esperaTotal & "|"& esperaT("UnidadeID") &", "& EsperaT("EsperaTotal") &"|"
     esperaT.movenext
@@ -4186,7 +4186,7 @@ function getEspera(Profissionais)
     esperaT.close
     set esperaT=nothing
 
-    set esperaV = db.execute("select UnidadeID, count(UnidadeID) EsperaVazia from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() and StaID=4 and ProfissionalID=0 order by l.UnidadeID) t group by UnidadeID")
+    set esperaV = db.execute("select UnidadeID, count(UnidadeID) EsperaVazia from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() AND a.sysActive=1 and StaID=4 and ProfissionalID=0 order by l.UnidadeID) t group by UnidadeID")
     while not esperaV.eof
         esperaVazia = esperaVazia & "|"& esperaV("UnidadeID") &", "& EsperaV("EsperaVazia") &"|"
     esperaV.movenext

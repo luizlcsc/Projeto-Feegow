@@ -11,7 +11,7 @@
     $(".crumb-icon a span").attr("class", "fa fa-calendar");
 </script>
 <% if aut("agendaV") then
-    sqlAgendamentoOnline = "select age.*, age.sysDate DataHora, prof.NomeProfissional, proc.NomeProcedimento, conv.NomeConvenio, age.ValorPlano Valor, loc.NomeLocal, pac.CPF, pac.Cel1 Celular, pac.Email1 Email, age.Notas Obs "&_
+    sqlAgendamentoOnline = "select age.*, pac.NomePaciente, age.sysDate DataHora, prof.NomeProfissional, proc.NomeProcedimento, conv.NomeConvenio, age.ValorPlano Valor, loc.NomeLocal, pac.CPF, pac.Cel1 Celular, pac.Email1 Email, age.Notas Obs "&_
                            "from agendamentos age "&_
                            "LEFT JOIN profissionais prof ON prof.id=age.ProfissionalID "&_
                            "LEFT JOIN pacientes pac ON pac.id=age.PacienteID "&_
@@ -29,11 +29,17 @@
             <table class="table table-striped table-condensed table-hover">
                 <thead>
                     <tr class="primary">
-                        <th>Data</th>
-                        <th width="22%">Paciente / CPF</th>
-                        <th width="22%">Profissional / Procedimento</th>
-                        <th>Valor / Local</th>
-                        <th width="22%">Celular / E-mail / Obs</th>
+                        <th>Criado em</th>
+                        <th>Data/Hora</th>
+                        <th>Paciente</th>
+                        <th>CPF</th>
+                        <th>Profissional</th>
+                        <th>Procedimento</th>
+                        <th>Valor</th>
+                        <th>Local</th>
+                        <th>Celular</th>
+                        <th>E-mail</th>
+                        <th>Obs</th>
                         <th width="1%"></th>
                     </tr>
                 </thead>
@@ -47,18 +53,17 @@
                     end if
                     %>
                     <tr>
-                        <td nowrap>Em: <%= age("DataHora") %><br />
-                        Para: <%= age("Data")&" "& ft(age("Hora")) %></td>
-                        <td><a href="./?P=Pacientes&I=<%= age("PacienteID") %>&Pers=1" target="_blank"><%= age("NomePaciente") %></a>
-                            <br /> <%= age("CPF") %>
-                        </td>
-                        <td><%= age("NomeProfissional") %> <br />
-                        <%= age("NomeProcedimento") %></td>
-                        <td><%= Valor %> <br />
-                        <%= age("NomeLocal") %></td>
-                        <td><%= age("Celular") %> <br />
-                            <%= age("Email") %> <br />
-                            <%= age("Obs") %></td>
+                        <td nowrap><%= age("DataHora") %></td>
+                        <td nowrap><%= age("Data")&" "& ft(age("Hora")) %></td>
+                        <td><a href="./?P=Pacientes&I=<%= age("PacienteID") %>&Pers=1" target="_blank"><%= age("NomePaciente") %></a></td>
+                        <td><%= age("CPF") %></td>
+                        <td><%= age("NomeProfissional") %></td>
+                        <td><%= age("NomeProcedimento") %></td>
+                        <td><%= Valor %></td>
+                        <td><%= age("NomeLocal") %></td>
+                        <td><%= age("Celular") %></td>
+                        <td><%= age("Email") %></td>
+                        <td><%= age("Obs") %></td>
                         <td></td>
                     </tr>
                     <%

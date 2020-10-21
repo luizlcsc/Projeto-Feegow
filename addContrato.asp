@@ -11,19 +11,22 @@ if ProfissionaisExecutante&""<>"" then
     ProfExec__array = split(ProfissionaisExecutante, ",")
     For ProfExecLista = 0 To ubound(ProfExec__array)
         ProfExec = split(ProfissionaisExecutante, ",")
+        ProfissionalLinha = ProfExec(ProfExecLista)
 
-        ProfExecItem = split(ProfExec(ProfExecLista), "_")
+        if ProfissionalLinha<> "" then
+            ProfExecItem = split(ProfissionalLinha, "_")
 
-        val__ProfissionalExecutanteTipo = ProfExecItem(0)
-        val__ProfissionalExecutanteID = ProfExecItem(1)
+            val__ProfissionalExecutanteTipo = ProfExecItem(0)
+            val__ProfissionalExecutanteID = ProfExecItem(1)
 
-        if val__ProfissionalExecutanteTipo=5 then
-            ProfissionalExecutanteID = "|ProfissionalID_"&val__ProfissionalExecutanteID
+            if val__ProfissionalExecutanteTipo=5 then
+                ProfissionalExecutanteID = "|ProfissionalID_"&val__ProfissionalExecutanteID
+            end if
+            if val__ProfissionalExecutanteTipo=8 then
+                ProfissionalExecutanteExternoID = "|ProfissionalExecutanteExternoID_"&val__ProfissionalExecutanteID
+            end if
+            'response.write("Valor: "& ProfExec(ProfExecLista) &" :: "&ProfissionalExecutanteTipo&"<br>")
         end if
-        if val__ProfissionalExecutanteTipo=8 then
-            ProfissionalExecutanteExternoID = "|ProfissionalExecutanteExternoID_"&val__ProfissionalExecutanteID
-        end if
-        'response.write("Valor: "& ProfExec(ProfExecLista) &" :: "&ProfissionalExecutanteTipo&"<br>")
     next
 end if
 %>

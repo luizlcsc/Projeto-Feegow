@@ -1013,9 +1013,10 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			<select multiple class="multisel tag-input-style" id="<%=fieldName%>" name="<%=fieldName%>"<%=additionalTags%>>
 			<%
 			set listItems = db.execute(sqlOrClass)
+            multipleValorEntrada = fieldValue
 			while not listItems.EOF
 			%>
-			<option value="|<%=listItems("id")%>|"<%if inStr(fieldValue, "|"&listItems("id")&"|")>0 then%> selected="selected"<%end if%>><%=listItems(""&columnToShow&"")%></option>
+			<option value="|<%=listItems("id")%>|"<%if inStr(multipleValorEntrada, "|"&listItems("id")&"|")>0 then%> selected="selected"<%end if%>><%=listItems(""&columnToShow&"")%></option>
 			<%
 			listItems.movenext
 			wend

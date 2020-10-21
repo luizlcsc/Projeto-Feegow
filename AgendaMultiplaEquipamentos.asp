@@ -55,6 +55,8 @@ while not equ.eof
                         HoraA = cdate(Horarios("HoraA"))
 
                         Hora = HoraDe
+                        HoraA = dateadd("s", 1, HoraA)
+
                         while Hora<=HoraA
                             HoraID = formatdatetime(Hora, 4)
                             HoraID = replace(HoraID, ":", "")
@@ -68,10 +70,6 @@ while not equ.eof
                             <%
 '							end if
                             Hora = dateadd("n", Intervalo, Hora)
-
-                            ' if instr(Hora, "08:30") <> -1 then
-                            '     HoraA = dateadd("n", 1, HoraA)
-                            ' end if
                             
                         wend
                     Horarios.movenext

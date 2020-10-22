@@ -45,17 +45,21 @@ elseif request.form("opt") = "regerarCodigo" or (request.form("opt") = "gerarCod
                                       " lu.Bloqueado, "&_
                                       " luas.Tentativas, "&_
                                       " lu.LicencaID, "&_
-                                      " lu.id UsuarioID"&_
+                                      " lu.id UsuarioID,"&_
+                                      " l.Servidor"&_
                                  " FROM licencasusuarios lu "&_
                             " LEFT JOIN licencasusuariosalterarsenhas luas ON luas.LicencaUsuarioID = lu.id "&_
+                            " LEFT JOIN licencas l ON l.id = lu.LicencaID ON"&_
                                 " WHERE email='"&request.form("email")&"' "&_
                                 "   AND MD5(lu.id) = '"&varEmailEnviar(1)&"'"
-
+    response.write(sqlVerificaEmail)
     set verificaEmail = dbc.execute(sqlVerificaEmail)
 
     if not verificaEmail.EOF then
 
         sqlUsuario = "SELECT * FROM clinic"&verificaEmail("LicencaID")&".sys_users WHERE id = "&verificaEmail("UsuarioID")
+
+        set dbc = newConnection("clinic"&verificaEmail("LicencaID"), verificaEmail("Servidor"))
 
         set Usuario = dbc.execute(sqlUsuario)
 

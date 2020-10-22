@@ -1211,6 +1211,14 @@ function itemSADT(T, I, II){
 }*/
 
 function itemSADT(T, I, II, A){
+    if(T==="Procedimentos"){
+        if($("#gConvenioID").val() == ''){
+            showMessageDialog("Selecione o convênio e plano", "warning");
+            $("#gConvenioID").focus();
+            return;
+        }
+    }
+
 //    $("[id^="+T+"]").fadeOut();
     $("[id^="+T+"]").html('');
 //    $("[id^=l"+T+"]").fadeIn();

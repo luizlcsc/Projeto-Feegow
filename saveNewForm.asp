@@ -34,7 +34,7 @@ if not BuiSQL.eof then
     ProfissionalID =  BuiSQL("ProfissionalID")
 end if
 
-sqlPerm = "SELECT * FROM buipermissoes WHERE Tipo='"&TipoUser&"' AND FormID="&treatvalzero(ModeloID)&" AND Grupo LIKE '%|"&session("idInTable")&"|%'"
+sqlPerm = "SELECT * FROM buipermissoes WHERE Tipo='"&TipoUser&"' AND FormID="&treatvalzero(ModeloID)&" AND Grupo LIKE '%|"&session("idInTable")&"|%' ORDER BY LENGTH(Grupo) "
 set PermissaoFormSQL = db.execute(sqlPerm)
 if not PermissaoFormSQL.eof then
     Permissoes = PermissaoFormSQL("Permissoes")
@@ -89,7 +89,7 @@ if I="N" then
     'verifica se tem atendimento aberto
     set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&PacienteID&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
     if atendimentoReg.EOF  then
-        db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &")")
+        db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", 1, "& treatvalzero(Prior) &")")
     else
         'salva com id do atendimento
          db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior, AtendimentoID) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &", "&atendimentoReg("id")&")")

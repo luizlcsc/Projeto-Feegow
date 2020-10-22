@@ -55,6 +55,8 @@ while not equ.eof
                         HoraA = cdate(Horarios("HoraA"))
 
                         Hora = HoraDe
+                        HoraA = dateadd("s", 1, HoraA)
+
                         while Hora<=HoraA
                             HoraID = formatdatetime(Hora, 4)
                             HoraID = replace(HoraID, ":", "")
@@ -68,6 +70,7 @@ while not equ.eof
                             <%
 '							end if
                             Hora = dateadd("n", Intervalo, Hora)
+                            
                         wend
                     Horarios.movenext
                     wend
@@ -87,7 +90,7 @@ while not equ.eof
                 "left join pacientes p on p.id=a.PacienteID "&_
                 "left join profissionais pro on pro.id=a.ProfissionalID "&_
                 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
-                "where (a.EquipamentoID="&EquipamentoID&" or eq.EquipamentoID="&EquipamentoID&" or ap.EquipamentoID="&EquipamentoID&") and a.Data="&mydatenull(Data)&" GROUP BY a.id order by Hora")
+                "where a.sysActive=1 AND (a.EquipamentoID="&EquipamentoID&" or eq.EquipamentoID="&EquipamentoID&" or ap.EquipamentoID="&EquipamentoID&") and a.Data="&mydatenull(Data)&" GROUP BY a.id order by Hora")
                 while not comps.EOF
                     HoraComp = HoraToID(comps("Hora"))
                     compsHora = comps("Hora")

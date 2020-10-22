@@ -95,6 +95,14 @@ $("#Observacoes").prop("required", false);
             if InStr(convenios, "|Nome do Contratado") then 
                 %>$("#Contratado").prop("required", true);<%
             end if
+
+            if InStr(convenios, "|TipoConsultaID")>0 then
+                %>$("#TipoConsultaID").prop("required", true);<%
+            end if
+        else
+            if InStr(convenios, "|TipoConsultaID")=0 then
+                %>$("#TipoConsultaID").prop("required", false);<%
+            end if
         end if
         regConvenio.movenext
     end if

@@ -13,27 +13,25 @@
                 </tr>
             </thead>
             <%
-            Cupom = ref("Cupom")&""
+            Cupom   = ref("Cupom")&""
             Empresa = ref("Empresa")&""
-            Tipo = ref("Tipo")&""
-            Nome = ref("Nome")&""
+            Tipo    = ref("Tipo")&""
+            Nome    = ref("Nome")&""
+            
+            qUsuariosConteudoWhere = ""
 
-            sqlEmpresa=""
+            if Cupom<>"" then
+                qUsuariosConteudoWhere = qUsuariosConteudoWhere&" AND Cupom LIKE '%"&Cupom&"%' "
+            end if
             if Empresa<>"" then
-                ListaEmpresas = replace(Empresa, "|", "")
-                sqlEmpresa = " AND l.id in ("&ListaEmpresas&") "
+                qUsuariosConteudoWhere = qUsuariosConteudoWhere&" AND l.id in ("&replace(Empresa, "|", "")&") "
             end if
-
-            sqlTipo=""
             if Tipo<>"" then
-                sqlTipo = " AND lu.tipo like '"&Tipo&"' "
+                qUsuariosConteudoWhere = qUsuariosConteudoWhere&" AND lu.tipo like '"&Tipo&"' "
             end if
-
-            sqlNome=""
             if Nome<>"" then
-                sqlNome = " AND lu.Nome like '%"&Nome&"%' "
+                qUsuariosConteudoWhere = qUsuariosConteudoWhere&" AND lu.Nome like '%"&Nome&"%' "
             end if
-
 
             Quantidade = 0
             QuantSA = 0
@@ -47,9 +45,10 @@
             sqlUsuariosConteudo = " SELECT l.id LicencaID, lu.Nome, lu.Tipo, lu.Email, l.NomeEmpresa, lu.Ativo, l.Servidor, lu.id, l.ServidorID"&chr(13)&_
                                     " FROM cliniccentral.licencasusuarios lu                                                "&chr(13)&_
                                     " LEFT JOIN cliniccentral.licencas l ON l.id=lu.licencaid                               "&chr(13)&_
-                                    " WHERE l.cupom = '"&Cupom&"'                                                   "&chr(13)&_
+                                    " WHERE TRUE "&qUsuariosConteudoWhere&"                                                 "&chr(13)&_
                                     " ORDER BY l.ServidorID ASC, l.NomeEmpresa ASC, lu.Nome ASC                             "&chr(13)&_
                                     "                                                                                       "
+            'response.write("<pre>"&sqlUsuariosConteudo&"</pre>")
             set usu = db.execute(sqlUsuariosConteudo)
 
             while not usu.EOF

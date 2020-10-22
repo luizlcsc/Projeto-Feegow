@@ -4,6 +4,9 @@ ProfissionalID = req("ProfissionalID")
 if ProfissionalID="" then
     ProfissionalID=0
 end if
+if req("Data")&""<>"" then
+    bloqueioData = "&Data="&req("Data")
+end if
 Hora = request.QueryString("Hora")
 if isdate(Hora) then
 	HoraDe = Hora
@@ -48,7 +51,7 @@ end if
     <div class="panel-heading">
         <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab4">
             <li class="active"><a data-toggle="tab" href="#dadosAgendamento"><i class="fa fa-lock"></i> <span class="hidden-480">Bloqueio / Compromisso</span></a></li>
-            <li id="abaLista" class="abasAux"><a data-toggle="tab" onclick="ajxContent('listaBloqueios', <%=ProfissionalID%>, '1', 'listaBloqueios')" href="#listaBloqueios"><i class="fa fa-user"></i> <span class="hidden-480">Listar Bloqueios</span></a></li>
+            <li id="abaLista" class="abasAux"><a data-toggle="tab" onclick="ajxContent('listaBloqueios', <%=ProfissionalID%>, '1', 'listaBloqueios', '<%=bloqueioData%>')" href="#listaBloqueios"><i class="fa fa-user"></i> <span class="hidden-480">Listar Bloqueios</span></a></li>
 	    </ul>
 
 

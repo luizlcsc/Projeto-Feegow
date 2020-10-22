@@ -249,7 +249,7 @@
                             end if
                             %> </div>
                     </div>
-                    <div class="panel-body timelineApp" style=" word-break: break-all; <% if device()<>"" then %> overflow-x:scroll!important; <% end if %>" >
+                    <div class="panel-body timelineApp" style="text-align:justify; <% if device()<>"" then %> overflow-x:scroll!important; <% end if %>" >
                 <%
 '                response.Write( Rotulo & Valor  &"<br>{{"& ti("Tipo") &"}}" )
                 select case ti("Tipo")
@@ -282,8 +282,9 @@
                                 if not checktable.eof then
                                     set reg = db.execute("select * from `_"& ti("Modelo") &"` where id="& ti("id"))
                                     if not reg.eof then
+                                        sqlCampos="select * from buicamposforms where FormID="&ti("Modelo")&" and TipoCampoID NOT IN(7,10,11,12,15) ORDER BY IF(Ordem=0, 999, Ordem)"
 
-                                        set pcampos = db.execute("select * from buicamposforms where FormID="&ti("Modelo")&" and TipoCampoID NOT IN(7,10,11,12,15) ORDER BY Ordem")
+                                        set pcampos = db.execute(sqlCampos)
                                         while not pcampos.eof
                                             Rotulo = trim(pcampos("RotuloCampo")&"")
                                             if Rotulo<>"" then
@@ -450,39 +451,41 @@
                         getProtocolos.close
                         set getProtocolos = nothing
                     case "Imagens"
+                        if aut("ImagensV") = 1 then
                         %>
-                    <div class="row">
-                        <%
-                            set im = db.execute("select * from arquivos where date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='I' AND PacienteID="&PacienteID)
-                            while not im.eof
-                                permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
-                                podever = true
+                        <div class="row">
+                            <%
+                                set im = db.execute("select * from arquivos where date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='I' AND PacienteID="&PacienteID)
+                                while not im.eof
+                                    permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
+                                    podever = true
 
-                                if permissao <> "" then
-                                    permissaoSplit = split(permissao,"|")
-                                    podever = permissaoSplit(0)
-                                end if
+                                    if permissao <> "" then
+                                        permissaoSplit = split(permissao,"|")
+                                        podever = permissaoSplit(0)
+                                    end if
 
-                                if podever then
+                                    if podever then
+                                    %>
+                                        <span>
+                                        <% if ComEstilo = "S" then %>
+                                                <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
+                                        <% else %>
+                                            <a class="gallery-item" href="<%=arqEx(im("NomeArquivo"), "Imagens")%>" target="_blank">
+                                                <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
+                                            </a>
+                                        <% end if %>
+                                        </span>
+                                    <%
+                                    end if
+                                    im.movenext
+                                wend
+                                im.close
+                                set im=nothing
                                 %>
-                                    <span>
-                                    <% if ComEstilo = "S" then %>
-                                            <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
-                                    <% else %>
-                                        <a class="gallery-item" href="<%=arqEx(im("NomeArquivo"), "Imagens")%>" target="_blank">
-                                            <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
-                                        </a>
-                                    <% end if %>
-                                    </span>
-                                <%
-                                end if
-                                im.movenext
-                            wend
-                            im.close
-                            set im=nothing
-                             %>
-                    </div>
+                        </div>
                         <%
+                        end if
                     case "Arquivos"
                             %>
                        <div class="row">

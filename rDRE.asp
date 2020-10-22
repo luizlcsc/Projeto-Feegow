@@ -46,6 +46,7 @@ UnidadeID = ref("UnidadeID")
             sqlFixa = replace( sqlFixa, "[Ano]", Exercicio )
 
             'GRAVANDO AS INVOICES CONSOLIDADAS
+                    'dd("insert into cliniccentral.dre_temp (sysUser, LinhaID, Data, Conta, Valor, Link, InvoiceID) SELECT "& sqlAnalitico &" "& sqlCorpo &"")
             db.execute("insert into cliniccentral.dre_temp (sysUser, LinhaID, Data, Conta, Valor, Link, InvoiceID) SELECT "& sqlAnalitico &" "& sqlCorpo &"")
 
             'LISTANDO AS INVOICES FIXAS
@@ -55,7 +56,7 @@ UnidadeID = ref("UnidadeID")
                 while not fixa.eof
                     response.flush()
                     PrimeiroVencto = fixa("PrimeiroVencto")
-                    InvoiceID = fixa("InvoiceID")
+                    'InvoiceID = fixa("InvoiceID")
                     Valor = fixa("Valor")
                     Intervalo = fixa("Intervalo")
                     TipoIntervalo = fixa("TipoIntervalo")

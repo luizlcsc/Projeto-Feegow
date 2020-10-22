@@ -1013,9 +1013,10 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			<select multiple class="multisel tag-input-style" id="<%=fieldName%>" name="<%=fieldName%>"<%=additionalTags%>>
 			<%
 			set listItems = db.execute(sqlOrClass)
+            multipleValorEntrada = fieldValue
 			while not listItems.EOF
 			%>
-			<option value="|<%=listItems("id")%>|"<%if inStr(fieldValue, "|"&listItems("id")&"|")>0 then%> selected="selected"<%end if%>><%=listItems(""&columnToShow&"")%></option>
+			<option value="|<%=listItems("id")%>|"<%if inStr(multipleValorEntrada, "|"&listItems("id")&"|")>0 then%> selected="selected"<%end if%>><%=listItems(""&columnToShow&"")%></option>
 			<%
 			listItems.movenext
 			wend
@@ -2626,7 +2627,9 @@ function replaceTags(valor, PacienteID, UserID, UnidadeID)
 	end if
 
 	valor = replace(valor, "[Data.DDMMAAAA]", date())
-	valor = replace(valor, "[Data.Extenso]", formatdatetime(date(),1) )
+    valor = replace(valor, "[Data.Extenso]", formatdatetime(date(),1) )
+    valor = replace(valor, "[Sistema.Extenso]", formatdatetime(date(),1) )
+    valor = replace(valor, "[Sistema.Data]", date() )
 	valor = replace(valor, "[Sistema.Hora]", time())
 
 	'aqui usa as tags referentes ao agendamento do paciente - para formularios de folha de rosto por ex
@@ -3691,7 +3694,7 @@ function dispEquipamento(Data, Hora, Intervalo, EquipamentoID, AgendamentoID)
     HoraFinal = dateadd("n", Intervalo, Hora)
     if isnumeric(EquipamentoID) and EquipamentoID<>"" and not isnull(EquipamentoID) then
         if ccur(EquipamentoID)<>0 then
-            sqlDisp = "SELECT a.Hora, a.HoraFinal, p.NomeProfissional FROM agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID WHERE a.StaID not in(11) and a.Data="&mydatenull(Data)&" AND "&_
+            sqlDisp = "SELECT a.Hora, a.HoraFinal, p.NomeProfissional FROM agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID WHERE a.sysActive=1 AND a.StaID not in(11) and a.Data="&mydatenull(Data)&" AND "&_
                     "("&_
                     "("&mytime(Hora)&">=a.Hora AND "&mytime(Hora)&"< ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*59.99)))"&_
                     " OR "&_
@@ -3969,8 +3972,8 @@ private function statusPagto(AgendamentoID, PacienteID, Datas, rdValorPlano, Val
     for ida=0 to ubound(splsDatas)
         sData = splsDatas(ida)
         if isdate(sData) and not isnull(sData) and PacienteID&""<>"" and isnumeric(PacienteID&"") then
-'            sqlAgAt = "select 'agendamentos' tabela, id, rdValorPlano, ifnull(ValorPlano, 0) ValorPlano, ifnull(ProfissionalID, 0) ProfissionalID, ifnull(TipoCompromissoID, 0) TipoCompromissoID, FormaPagto from agendamentos where PacienteID="& PacienteID &" and Data="& mydatenull(sData) &" and StaID IN ("& statusEnvolvidos &")"
-            sqlAgAt = "select 'agendamentos' tabela, ag.id, ag.rdValorPlano, ifnull(ag.ValorPlano, 0) ValorPlano, ifnull(ag.ProfissionalID, 0) ProfissionalID, ifnull(ag.TipoCompromissoID, 0) TipoCompromissoID, ag.FormaPagto from agendamentos ag where ag.PacienteID="& PacienteID &" and ag.Data="& mydatenull(sData) &" and ag.StaID IN ("& statusEnvolvidos &") "&_
+'            sqlAgAt = "select 'agendamentos' tabela, id, rdValorPlano, ifnull(ValorPlano, 0) ValorPlano, ifnull(ProfissionalID, 0) ProfissionalID, ifnull(TipoCompromissoID, 0) TipoCompromissoID, FormaPagto from agendamentos where sysActive=1 AND PacienteID="& PacienteID &" and Data="& mydatenull(sData) &" and StaID IN ("& statusEnvolvidos &")"
+            sqlAgAt = "select 'agendamentos' tabela, ag.id, ag.rdValorPlano, ifnull(ag.ValorPlano, 0) ValorPlano, ifnull(ag.ProfissionalID, 0) ProfissionalID, ifnull(ag.TipoCompromissoID, 0) TipoCompromissoID, ag.FormaPagto from agendamentos ag where sysActive=1 AND ag.PacienteID="& PacienteID &" and ag.Data="& mydatenull(sData) &" and ag.StaID IN ("& statusEnvolvidos &") "&_
             " UNION ALL select 'agendamentos', agm.id, agp.rdValorPlano, ifnull(agp.ValorPlano, 0), ifnull(agm.ProfissionalID, 0), ifnull(agp.TipoCompromissoID, 0), agm.FormaPagto FROM agendamentos agm LEFT JOIN agendamentosprocedimentos agp ON agp.AgendamentoID=agm.id where agm.PacienteID="& PacienteID &" and agm.Data="& mydatenull(sData) &" and agm.StaID IN ("& statusEnvolvidos &") and not isnull(agp.id) "&_
             " UNION ALL	SELECT 'atendimentos', ate.id, atp.rdValorPlano, ifnull(atp.ValorPlano, 0), ifnull(ate.ProfissionalID, 0), ifnull(atp.ProcedimentoID, 0), 0 FROM atendimentos ate LEFT JOIN atendimentosprocedimentos atp ON ate.id=atp.AtendimentoID WHERE ate.PacienteID="& PacienteID &" AND ate.`Data`="& mydatenull(sData) &""
 
@@ -4169,13 +4172,13 @@ function getEspera(Profissionais)
         eProfissional = trim(splProfs(y))
         if eProfissional<>"" then
             if eProfissional<>"0" then
-                db_execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate() and StaID IN (4) and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
+                db_execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate() and StaID IN (4) and sysActive = 1 and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
             end if
         end if
     next
 
 
-    set esperaT = db.execute("select UnidadeID, count(UnidadeID) EsperaTotal from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() and StaID=4 order by l.UnidadeID) t group by UnidadeID")
+    set esperaT = db.execute("select UnidadeID, count(UnidadeID) EsperaTotal from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() AND a.sysActive=1 and StaID=4 order by l.UnidadeID) t group by UnidadeID")
     while not esperaT.eof
         esperaTotal = esperaTotal & "|"& esperaT("UnidadeID") &", "& EsperaT("EsperaTotal") &"|"
     esperaT.movenext
@@ -4183,7 +4186,7 @@ function getEspera(Profissionais)
     esperaT.close
     set esperaT=nothing
 
-    set esperaV = db.execute("select UnidadeID, count(UnidadeID) EsperaVazia from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() and StaID=4 and ProfissionalID=0 order by l.UnidadeID) t group by UnidadeID")
+    set esperaV = db.execute("select UnidadeID, count(UnidadeID) EsperaVazia from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() AND a.sysActive=1 and StaID=4 and ProfissionalID=0 order by l.UnidadeID) t group by UnidadeID")
     while not esperaV.eof
         esperaVazia = esperaVazia & "|"& esperaV("UnidadeID") &", "& EsperaV("EsperaVazia") &"|"
     esperaV.movenext
@@ -5049,7 +5052,22 @@ end function
 
 private function atuAge(AgendamentoID)
     'set procs = db.execute("select group_concat(concat(replace(ifnull(Cor, ''), '#', '^#'), ' ', NomeProcedimento) separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
-    set procs = db.execute("select group_concat(NomeProcedimento separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
+    'set procs = db.execute("select group_concat(NomeProcedimento separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
+        set procs = db.execute("SELECT GROUP_CONCAT(t.procedimentos SEPARATOR ', ') procedimentos FROM ( "&_
+        "SELECT GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') procedimentos "&_
+        "FROM procedimentos "&_
+        "WHERE id=( "&_
+        "SELECT TipoCompromissoID "&_
+        "FROM agendamentos "&_
+        "WHERE id="& AgendamentoID &") "&_
+        "UNION  "&_
+        "SELECT GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') procedimentos "&_
+        "FROM procedimentos "&_
+        "WHERE id in( "&_
+        "SELECT TipoCompromissoID "&_
+        "FROM agendamentosprocedimentos "&_
+        "WHERE AgendamentoID="& AgendamentoID &")) AS t")
+    
     procedimentos = procs("procedimentos")
     db_execute("update agendamentos ag LEFT JOIN pacientes pac ON pac.id=ag.PacienteID set ag.NomePaciente=pac.NomePaciente, ag.Tel1=pac.Tel1, ag.Cel1=pac.Cel1, ag.Email1=pac.Email1, ag.Procedimentos='"& rep(Procedimentos) &"' where ag.id="& AgendamentoID)
 end function

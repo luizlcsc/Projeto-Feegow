@@ -1,3 +1,4 @@
+<!--#include file="./Classes/ServerPath.asp"-->
 <link rel="stylesheet" href="assets/css/colorbox.css" />
 <style type="text/css">
 .ace-thumbnails > li img {
@@ -58,7 +59,7 @@ min-width:200px;
     function newSaveImage(base64,id){
         //https://clinic7.feegow.com.br/imagesave.php
         //http://localhost:3333/imagesave.php
-            $.post("https://clinic7.feegow.com.br/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>&imgId="+ id +"",
+            $.post("<%=appUrl(True)%>/imagesave.php?IP=<%=sServidor%>&PacienteID=<%=req("PacienteID")%>&B=<%=session("Banco")%>&imgId="+ id +"",
                 {
                     data: base64
                 }, 

@@ -1013,13 +1013,24 @@ function pagar(){
 
 
 function addContrato(ModeloID, InvoiceID, ContaID){
+    var ProfissionalExecutante_final = ""
+    //PEGA O PROFISSIONAL EXECUTANTE
+    $('select[id*="ProfissionalID"]').each(function(index, value){ 
+        if(index>0){
+            ProfissionalExecutante_final+=","
+        }
+        var ProfissionalExecutante = $(value).val();
+        ProfissionalExecutante_final+= ProfissionalExecutante
+    });
+    //console.log(ProfissionalExecutante_final);
+
     if($("#AccountID").val()=="" || $("#AccountID").val()=="0" || $("#AccountID").val()=="_"){
         alert("Selecione um pagador para gerar o contrato.");
         $("#searchAccountID").focus();
     }else{
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");
-        $.post("addContrato.asp?ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID="+ContaID, "", function(data){
+        $.post("addContrato.asp?ProfissionalExecutante="+ProfissionalExecutante_final+"&ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID="+ContaID, "", function(data){
             $("#modal").html(data);
         });
     }

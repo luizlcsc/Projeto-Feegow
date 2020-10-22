@@ -69,10 +69,25 @@ prefixo = right(prefixo, 20)
             <ans:numeroLote><%=NLote%></ans:numeroLote>
             <ans:guiasTISS>
 				<%'inicia as guias
+				function treatStrNull(Val)
+					if  val&""=""then
+						val = ""
+					end if
+					treatStrNull = Val
+				end function
+
+				function treatNumberNull(Val)
+					if  val&""=""then
+						val = 0
+					end if
+					treatNumberNull = Val
+				end function
 				hash = "ENVIO_LOTE_GUIAS"&NLote&Data&Hora&CodigoNaOperadora&RegistroANS&versaoTISS&NLote
 				while not guias.eof
 					'response.Write("{"&guias("NGuiaPrestador")&"}")
-					Contratado = TirarAcento(guias("Contratado"))
+					
+					Contratado = treatNumberNull(guias("Contratado"))
+				
 					if Contratado=0 then
 						set emp = db.execute("select NomeEmpresa, CNES from empresa where NomeEmpresa<>''")
 						if not emp.eof then
@@ -96,9 +111,9 @@ prefixo = right(prefixo, 20)
 					RegistroANS = TirarAcento(guias("RegistroANS"))
 					NGuiaPrestador = TirarAcento(guias("NGuiaPrestador"))
 					NGuiaPrincipal = TirarAcento(guias("NGuiaPrincipal"))
-					NGuiaOperadora = TirarAcento(guias("NGuiaOperadora"))
+					NGuiaOperadora = treatStrNull(TirarAcento(guias("NGuiaOperadora")))
 					DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
-					Senha = TirarAcento(guias("Senha"))
+					Senha = treatStrNull(TirarAcento(guias("Senha")))
 					DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
 					NumeroCarteira = TirarAcento(guias("NumeroCarteira"))
 					AtendimentoRN = TirarAcento(guias("AtendimentoRN"))

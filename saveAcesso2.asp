@@ -1,36 +1,26 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/ExecuteAllServers.asp"-->
 <!--#include file="Classes/Connection.asp"-->
+<!--#include file="Classes/Senhas.asp"-->
+<!--#include file="connectCentral.asp"-->
 
 <%
-'ConnString43 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
-'Set db43 = newConnection("ADODB.Connection")
-'db43.Open ConnString43
-
-'ConnString45 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow02.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
-'Set db45 = Server.CreateObject("ADODB.Connection")
-'db45.Open ConnString45
-
-'ConnString34 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
-'Set db34 = Server.CreateObject("ADODB.Connection")
-'db34.Open ConnString34
-
-
-Set db43 = newConnection("","dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
-Set db45 = newConnection("","dbfeegow02.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
-Set db34 = newConnection("","dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
 
 idInTable = ref("I")
 Table = ref("T")
 LicencaID = replace(session("Banco"), "clinic", "")
 Acao = ref("Acao")
+Home = ref("Home")
+
 AlterarSenhaAoLogin = 0
+Password = ref("password")
+PasswordSalt = getEnv("FC_PWD_SALT", "SALT_")
 
 if ref("AlterarSenhaAoLogin") <>"" then
 	AlterarSenhaAoLogin = 1
 end if 
 
-set getUserID = db.execute("select * from sys_users where `Table` like '"&Table&"' and idInTable="&idInTable)
+set getUserID = db.execute("select id from sys_users where `Table` = '"&Table&"' and idInTable="&idInTable)
 if not getUserID.EOF then
 	UserID = getUserID("id")
 else
@@ -39,84 +29,63 @@ end if
 
 if ref("User")<>"" then
 	'1. Se ja existe esse email pra outro usuario
-	set vca = db43.execute("select * from licencasusuarios where Email like '"&ref("User")&"' and not id = '"&UserID&"' AND LicencaID="&replace(session("Banco"), "clinic", ""))
+	set vca = dbc.execute("select id from licencasusuarios where Email = '"&ref("User")&"' and not id = '"&UserID&"' AND LicencaID="&LicencaID)
+
 	if not vca.eof then
 		%>
-        new PNotify({
-            title: 'ERRO',
-            text: 'Este e-mail j&aacute; est&aacute; associado a outro usu&aacute;rio.',
-            type: 'danger'
-        });
+        showMessageDialog('Este e-mail j&aacute; est&aacute; associado a outro usu&aacute;rio.');
         <%
 		erro = "S"
 	end if
-	'2. Se a senha tem no minimo 4 caracteres
-	if len(ref("password"))<4 then
+
+    mensagemErroSenha = validaCriteriosSenha(ref("password"), ref("password2"))
+
+	if mensagemErroSenha<>"" then
 		%>
-        new PNotify({
-            title: 'ERRO',
-            text: 'A senha deve conter no m&iacute;nimo 4 caracteres.',
-            type: 'danger'
-        });
+        showMessageDialog('<%=mensagemErroSenha%>');
         <%
 		erro = "S"
 	end if
-	'3. Se a senha 2 bate com a senha 1
-	if ref("password")<>ref("password2") then
-		%>
-        new PNotify({
-            title: 'ERRO',
-            text: 'As senhas digitadas n&atilde;o conferem.',
-            type: 'danger'
-        });
-        <%
-		erro = "S"
-	end if
+
 	if erro = "" then
 		tipo = lcase(Table)
 		if tipo="profissionais" then Nome = "NomeProfissional" end if
 		if tipo="funcionarios" then Nome = "NomeFuncionario" end if
-'		response.Write("select "&Nome&" FROM "&tipo&" WHERE id="&idInTable)
+
 		set pNome = db.execute("select "&Nome&" FROM "&tipo&" WHERE id="&idInTable)
 		if not pNome.EOF then
 			NomePessoa = rep(trim(pNome(""&Nome&"")&" "))
 		end if
 
-	'	if UserID="" AND idInTable<>"" and not isnull(idInTable) and isnumeric(idInTable) then
-	'		set vcaInSys=db.execute("select * from sys_users where `Table`='"&lcase(Table)&"' AND idInTable="&idInTable)
-	'		if not vcaInSys.EOF then
-	'			UserID = idInTable("id")
-	'		end if
-	'	end if
-
 		if UserID="" then
-			db43.execute("insert into licencasusuarios (Nome, Tipo, Email, Senha, LicencaID, Admin, Home) values ('"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', '"&ref("password")&"', '"&LicencaID&"', 0, '"&ref("Home")&"')")
-			set pult = db43.execute("select * from licencasusuarios where Email like '"&ref("User")&"' order by id desc")
-			set getNomeColuna = db.execute("select * from cliniccentral.sys_financialaccountsassociation where `table` like '"&Table&"'")
-			
-			sqlinsert = "insert into licencasusuarios (id, Nome, Tipo, Email, Senha, LicencaID, Admin, Home) values ("&pult("id")&", '"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', '"&ref("password")&"', '"&LicencaID&"', 0, '"&ref("Home")&"')"
-			db45.execute(sqlinsert)
-			db34.execute(sqlinsert)
+			dbc.execute("replace into licencasusuarios (Nome, Tipo, Email, Senha, LicencaID, Admin, Home) values ('"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', '"&ref("password")&"', '"&LicencaID&"', 0, '"&Home&"')")
+			set pult = dbc.execute("select * from licencasusuarios where Email = '"&ref("User")&"' order by id desc")
+			UserID = pult("id")
+
+			set getNomeColuna = db.execute("select * from cliniccentral.sys_financialaccountsassociation where `table` = '"&Table&"'")
+
+			sqlinsert = "replace into licencasusuarios (id, Nome, Tipo, Email, VersaoSenha, SenhaCript, Senha, LicencaID, Admin, Home) "&_
+			            "values "&_
+			            "("&UserID&", '"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', 3, SHA1('"&PasswordSalt&Password&"'), NULL, '"&LicencaID&"', 0, '"&Home&"')"
+
+			call ExecuteAllServers(sqlInsert)
 			'local
-			db_execute("insert into sys_users (id, `Table`, NameColumn, idInTable, Permissoes) values ("&pult("id")&", '"&Table&"', '"&getNomeColuna("column")&"', '"&idInTable&"', '"&permissoesPadrao()&"')")
+			db_execute("replace into sys_users (id, `Table`, NameColumn, idInTable, Permissoes) values ("&pult("id")&", '"&Table&"', '"&getNomeColuna("column")&"', '"&idInTable&"', '"&permissoesPadrao()&"')")
 		else
 			if Acao= "Redefinir" then
-				sqlupdate = "update cliniccentral.licencasusuarios set Senha='"&ref("password")&"', AlterarSenhaAoLogin=0 where id="&UserID&" and LicencaID="&LicencaID
+				sqlupdate = "update cliniccentral.licencasusuarios set Ativo=1, Senha=NULL, VersaoSenha=3, SenhaCript=SHA1('"&PasswordSalt&Password&"'), AlterarSenhaAoLogin=0 " &_
+				            "where id="&UserID&" and LicencaID="&LicencaID
 
-				db43.execute(sqlupdate)
-				db45.execute(sqlupdate)
-				db34.execute(sqlupdate)
-				'local
-				db.execute(sqlupdate)
+				call ExecuteAllServers(sqlupdate)
 				session("AlterarSenha") = 0
 			else
-				sqlupdate = "update cliniccentral.licencasusuarios set Nome='"&NomePessoa&"', Tipo='"&Table&"', Email='"&ref("User")&"', Senha='"&ref("password")&"', Home='"&ref("Home")&"', AlterarSenhaAoLogin="&AlterarSenhaAoLogin&" where id="&UserID&" and LicencaID="&LicencaID
-				db43.execute(sqlupdate)
-				db45.execute(sqlupdate)
-				db34.execute(sqlupdate)
-				'local
-				db.execute(sqlupdate)
+				sqlupdate = "update cliniccentral.licencasusuarios set Ativo=1, Nome='"&NomePessoa&"', Tipo='"&Table&"', Email='"&ref("User")&"', " &_
+				            "Senha=NULL, VersaoSenha=3, SenhaCript=SHA1('"&PasswordSalt&Password&"'), " &_
+				            "Home='"&Home&"', AlterarSenhaAoLogin="&AlterarSenhaAoLogin&" where id="&UserID&" and LicencaID="&LicencaID
+                call ExecuteAllServers(sqlUpdate)
 			end if
+
+            dbc.execute("INSERT INTO cliniccentral.licencasusuariossenhas (LicencaID,UsuarioID,Senha) VALUES ("&LicencaID&", "&UserID&", SHA1('" & PasswordSalt & Password &"'))")
 		end if
 	%>
         new PNotify({
@@ -126,12 +95,14 @@ if ref("User")<>"" then
             delay: 1000
         });
         $('#msg').html('<div class="badge badge-success">Usu&aacute;rio com acesso ao sistema</div>');
-		closeComponentsModal();
+		if($("#modal-alterar-senha").length > 0){
+		    $("#modal-alterar-senha").modal("hide");
+		}
 		<%
 	end if
 else
 	'desabilita acesso ao usuario
-	set vceAdmin = db43.execute("select * from licencasusuarios where id = '"&UserID&"' and LicencaID="&LicencaID)
+	set vceAdmin = dbc.execute("select id, Admin from licencasusuarios where id = '"&UserID&"' and LicencaID="&LicencaID)
 	if not vceAdmin.EOF then
 		if vceAdmin("Admin")=1 then
 			%>
@@ -143,12 +114,8 @@ else
 				});
 			<%
 		else
-			sqlupdate = "update licencasusuarios set Email='', Senha='', Home='"&ref("Home")&"' where id = '"&UserID&"' and LicencaID="&LicencaID
-			db43.execute(sqlupdate)
-			db45.execute(sqlupdate)
-			db34.execute(sqlupdate)
-			'local
-			db.execute(sqlupdate)
+			sqlupdate = "update licencasusuarios set Ativo=0, Home='"&Home&"' where id = '"&UserID&"' and LicencaID="&LicencaID
+			call ExecuteAllServers(sqlupdate)
 
 			%>
 				new PNotify({

@@ -482,6 +482,7 @@ end function
                                     " (SELECT 'Indicação Clínica' id, 'Indicação Clínica' Campo) UNION ALL " &_
                                     " (SELECT 'Profissional Solicitante' id, 'Profissional Solicitante' Campo) UNION ALL " &_
                                     " (SELECT 'Código de Barras' id, 'Código de Barras' Campo) UNION ALL " &_
+                                    " (SELECT 'TipoConsultaID' id, 'Tipo de Consulta' Campo) UNION ALL " &_
                                     " (SELECT 'Via' id, 'Via' Campo) UNION ALL " &_
                                     " (SELECT 'Grau de participação' id, 'Grau de participação' Campo) UNION ALL " &_
                                     " (SELECT 'Nome do Contratado' id, 'Nome do Contratado' Campo) "
@@ -690,6 +691,18 @@ end function
     </div>
   </div>
 </div>
+<!--#include file="Classes/Logs.asp"-->
+<%
+if session("Admin")=1 then
+%>
+<div class="tabbable panel">
+    <div class="tab-content panel-body">
+        <%=dadosCadastro("convenios" , req("I"))%>
+    </div>
+</div>
+<%
+end if
+%>
 <script>
 $(document).ready(function(e) {
     <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>

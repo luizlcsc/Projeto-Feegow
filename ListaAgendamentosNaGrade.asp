@@ -116,7 +116,7 @@ function downloadExcel(){
 }
 
 function ForceDeleteGrade() {
-    ajxContent('Horarios-1&T=Profissionais&X=<%=GradeID%>&Force=1', 1, 1, 'divHorarios');
+    ajxContent('Horarios-1&T=Profissionais&X=<%=GradeID%>&Force=1', <%=ProfissionalID%>, 1, 'divHorarios');
     closeComponentsModal();
 }
 

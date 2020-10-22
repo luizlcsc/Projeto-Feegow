@@ -1,4 +1,4 @@
-﻿<!--#include file="connect.asp"-->
+<!--#include file="connect.asp"-->
 <%
 
 if reqf("InvoiceID")<>"" and 0 then
@@ -102,11 +102,12 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
     end if
 
     sqlFD = "select * from (select id, Funcao, DominioID, tipoValor, Valor, ContaPadrao, sysUser, Sobre, FM, ProdutoID, ValorUnitario, Quantidade, sysActive, Variavel, ValorVariavel, modoCalculo from rateiofuncoes where DominioID="& DominioID & sqlunion &") t order by t.Sobre, t.Valor"
-    'response.write( sqlFD )
+    ' response.write( sqlFD )
     set fd = db.execute( sqlFD )
     nLinha = 0
 
     response.write(buttonDetalharDominio(ItemInvoiceID))
+    seTemConfigAntesDasRegras = getConfig("antesDasRegras")
 
     while not fd.eof
         '-> Começa a coletar os dados pra temprepasses (antiga rateiorateios)
@@ -126,6 +127,10 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
         modoCalculo = fd("modoCalculo")
         if ultimoSobre&""="" then
             ultimoSobre="0"
+        end if
+
+        if seTemConfigAntesDasRegras <> 1 and Sobre = "-1" then
+            Sobre = 0
         end if
 
         gravaTemp = 0

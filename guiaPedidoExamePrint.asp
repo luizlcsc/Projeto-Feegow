@@ -145,7 +145,7 @@ color: <%=color%>;
 
 	    <tr>
 	        <td style="width: 50%">
-	            <strong><%if len(Foto)>2 then%><img src="/uploads/<%= replace(session("Banco"), "clinic", "") %>/Perfil/<%=Foto%>" id="logo" /><%else%><%= NomeConvenio %><%end if%></strong>
+	            <strong><%if len(Foto)>2 then%><img src="<%= arqEx(Foto, "Perfil") %>" id="logo" /><%else%><%= NomeConvenio %><%end if%></strong>
 	        </td>
 	        <td style="text-align: center">  <p><%=NomeConvenio%></p>
           <%=EnderecoConvenios%></td>

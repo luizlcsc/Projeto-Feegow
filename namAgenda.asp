@@ -91,7 +91,7 @@ end if
 if not Horarios.eof then
 %>
 
-<table class="table table-striped table-condensed table-hover" width="100%"><thead><tr><th colspan="3" style="min-width:200px" class="text-center pn">
+<table class="table table-condensed table-hover" width="100%"><thead><tr><th colspan="3" style="min-width:200px" class="text-center pn">
 
     <div class="panel-heading p5 mn" style="line-height:14px!important; color:#777; font-size:11px; font-weight:bold">
         <span class="panel-title">
@@ -375,7 +375,7 @@ if somenteStatus&"" <> "" then
 	sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
 end if
 
-set comps=db.execute("select loc.UnidadeID, a.id, a.Data, a.Hora,coalesce(a.LocalID,0) AS LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento from agendamentos a "&_
+set comps=db.execute("select loc.UnidadeID, a.id, a.Data, a.Hora,coalesce(a.LocalID,0) AS LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, p.corIdentificacao, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento from agendamentos a "&_
 "left join pacientes p on p.id=a.PacienteID " & joinLocaisUnidades &_ 
 "left join profissionais pro on pro.id=a.ProfissionalID "&_ 
 "left join locais loc on loc.id=a.LocalID "&_
@@ -388,7 +388,11 @@ while not comps.EOF
     LocalID = comps("LocalID")
     FormaPagto = comps("FormaPagto")
     AgendamentoUnidadeID = comps("UnidadeID")
-
+    if comps("CorIdentificacao")&""="" then
+        CorIdentificacao = "transparent"
+    else
+        CorIdentificacao = comps("CorIdentificacao")
+    end if
 	if not isnull(compsHora) then
 		compsHora = formatdatetime(compsHora, 4)
 	end if
@@ -433,11 +437,19 @@ while not comps.EOF
 	else
 		HoraFinal = ""
 	end if
-    CorProcedimento = comps("CorProcedimento")
+    if getConfig("ColorirLinhaAgendamento")&""=1 then
+        CorProcedimento = comps("CorProcedimento")
+    end if
+
+    FirstTdBgColor = ""
+    if getConfig("ExibirCorPacienteAgenda")&""=1 then
+        FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
+    end if
+
 	'<-hora final
 
     if session("HVazios")="" then
-		Conteudo = "<tr data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'\',\'"&GradeID&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" style=""background-color:"&CorProcedimento&"!important""><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
+		Conteudo = "<tr style=\'background-color:"&CorProcedimento&"!important\' data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'\',\'"&GradeID&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" "&FirstTdBgColor&" ><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
 	    if comps("Encaixe")=1 then
 		    Conteudo = Conteudo & "<span class=""label label-alert label-sm arrowed-in arrowed-in-right"">Enc</span>"
 	    end if
@@ -513,7 +525,7 @@ end if
 HoraDe = HoraToID(bloq("HoraDe"))
 HoraA = HoraToID(bloq("HoraA"))
 if session("HVazios")="" then
-    Conteudo = "<tr id=""'+$(this).attr('id')+'"" class=""bloq"& ProfissionalID &"_"& LocalID &""" onClick=""abreBloqueio("&bloq("id")&", \'\', \'\');"">"&_
+    Conteudo = "<tr id=""'+$(this).attr('id')+'"" class=""bloq"& ProfissionalID &"_"& LocalID &""" onClick=""abreBloqueio("&bloq("id")&", `"&replace(mydatenull(Data)&"","'","")&"`, \'\');"">"&_
     "<td width=""1%""></td><td width=""1%""><button type=""button"" class=""btn btn-xs btn-danger"">'+$(this).attr('data-hora')+'</button></td>"&_ 
     "<td nowrap><img src=""assets/img/bloqueio.png""> <span class=""nomePac"">"&replace(bloq("Titulo")&" ", "'", "\'")&"</span></td>"&_ 
     "<td class=""hidden-xs text-center""></td>"&_ 

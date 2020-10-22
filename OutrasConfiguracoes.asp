@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
+<!--#include file="./Classes/ServerPath.asp"-->
 
 <script type="text/javascript">
     $(".crumb-active a").html("Outras Configurações");

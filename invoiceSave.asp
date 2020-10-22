@@ -38,14 +38,16 @@ if temregradesconto=1 then
 	end if
 
 	if querydesconto<>"" then
-		set rsDescontoItem = db.execute("select * from regrasdescontos descontos where Recursos LIKE '%|"&querydesconto&"|%'")
+		set rsDescontoItem = db.execute("select * from regrasdescontos descontos INNER JOIN regraspermissoes rp ON rp.id=descontos.RegraID where descontos.Recursos LIKE '%|"&querydesconto&"|%'")
 		if not rsDescontoItem.eof then
 			temdescontocadastrado=1
 		end if
 
 		'Pegar todos os descontos do usuário pelo perfil dele
 		set rsDescontosUsuario = db.execute("select suser.id as idUser, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto "&_
-											" from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') "&_
+											" from regrasdescontos rd  "&_
+											" INNER JOIN regraspermissoes rp ON rp.id = rd.RegraID "&_
+											" INNER JOIN sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') "&_
 											" WHERE  rd.Recursos LIKE '%"&querydesconto&"%' AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' OR rd.Unidades IS NULL OR rd.Unidades  = '0' ) AND rd.RegraID IS NOT NULL")
 
 		'select suser.id, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') WHERE suser.id = 3531 AND rd.Recursos LIKE '%ContasAReceber%' AND (rd.Unidades LIKE '%|6|%' OR rd.Unidades = '' )

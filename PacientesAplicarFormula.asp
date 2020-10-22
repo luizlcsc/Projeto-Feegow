@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/TagsConverte.asp"-->
 <%
 PrintSpan = True
 
@@ -66,6 +67,26 @@ elseif req("Tipo")="A" then
 		Atestado = "<p><strong>"&listaAtestado("TituloAtestado")&"</strong><br /><br />"
 		Atestado = Atestado &listaAtestado("TextoAtestado")&"</p>"
 		TextoFinal = Atestado
+
+		PacienteID = req("PacienteID")
+		if session("Table")="profissionais" then
+			ProfissionalID = session("idInTable")
+			qAtendimentosSQL = 	" SELECT a.id                               "														&chr(13)&_
+													" FROM atendimentos AS a                    "														&chr(13)&_
+													" WHERE PacienteID="&PacienteID&" AND a.ProfissionalID="&ProfissionalID	&chr(13)&_
+													" ORDER BY a.id DESC                        "														&chr(13)&_
+													" LIMIT 1                                   "
+			SET AtendimentoSQL = db.execute(qAtendimentosSQL)
+				if not AtendimentoSQL.eof then
+					AtendimentoID = AtendimentoSQL("id")
+					TextoFinal = tagsConverte(TextoFinal,"AtendimentoID_"&AtendimentoID,"")
+				end if
+			AtendimentoSQL.close
+			set AtendimentoSQL = nothing
+		else
+			ProfissionalID=0
+		end if
+		
 	end if
 elseif req("Tipo")="E" then
     if ref("Tipo")="Exame" then
@@ -76,7 +97,7 @@ elseif req("Tipo")="E" then
         set listaPedido = db.execute("select * from pacientespedidostextos where id="&ref("id"))
         if not listaPedido.eof then
 
-            Pedido = "<p><strong>"&listaPedido("TituloPedido")&"</strong><br /><br />"
+            Pedido = "<p><strong>"&listaPedido("TituloPedido")&"</strong>"
             Pedido = Pedido &listaPedido("TextoPedido")&"</p>"
             TextoFinal = Pedido
         end if
@@ -87,6 +108,8 @@ elseif req("Tipo")="E" then
 end if
 
 TextoFinal = replaceTags(TextoFinal, req("PacienteID"), session("User"), session("UnidadeID"))
+
+
 
 if PrintSpan then
     response.Write("<span style=""font-family:courier new,courier,monospace"">" & TextoFinal & "</span>")

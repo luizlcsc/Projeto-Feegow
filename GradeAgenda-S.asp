@@ -27,13 +27,6 @@ ProfissionalID=req("ProfissionalID")
 DiaSemana=weekday(Data)
 mesCorrente=month(Data)
 
-if getConfig("AbrirAutomaticamenteObsProfissional")=1 then
-    %>
-    <script>
-        oa(<%=treatvalzero(ProfissionalID)%>);
-    </script>
-    <%
-end if
 
 if lcase(session("Table"))="funcionarios" then
 	session("UltimaAgenda") = ProfissionalID
@@ -43,6 +36,15 @@ LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 
 set prof = db.execute("select Cor, NomeProfissional, Foto, ObsAgenda from profissionais where id="&ProfissionalID)
 if not prof.eof then
+    ObsAgenda=prof("ObsAgenda")&""
+
+    if getConfig("AbrirAutomaticamenteObsProfissional")=1 and ObsAgenda<>"" then
+        %>
+        <script>
+            oa(<%=treatvalzero(ProfissionalID)%>);
+        </script>
+        <%
+    end if
 	Cor = prof("Cor")
 	NomeProfissional = prof("NomeProfissional")
 	if isnull(prof("Foto")) or prof("Foto")="" then
@@ -370,7 +372,7 @@ while diaS<n
         sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
     end if
 
-    set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.PacienteID,a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, a.Primeira, p.NomePaciente, p.IdImportado, p.Tel1, p.Cel1, proc.NomeProcedimento, s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Notas, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta from agendamentos a "&_
+    set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.PacienteID,a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, a.Primeira, p.NomePaciente, p.IdImportado, p.Tel1, p.Cel1, p.CorIdentificacao, proc.NomeProcedimento, s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Notas, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta from agendamentos a "&_
     "left join pacientes p on p.id=a.PacienteID "&_
     "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
     "left join staconsulta s on s.id=a.StaID "&_
@@ -383,6 +385,7 @@ while diaS<n
         ValorProcedimentosAnexos=0
         podeVerAgendamento=True
         UnidadeID=comps("UnidadeID")
+        CorIdentificacao = comps("CorIdentificacao")
 
 
         if UnidadeID&""<>"" and session("admin")=0 then
@@ -485,7 +488,11 @@ while diaS<n
             Conteudo = Conteudo & " [LOCAL_DIF] "
             LocalDiferente = "<i class=""fa fa-exclamation-triangle grey"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
         end if
-        Conteudo = Conteudo & "</td><td width=""1%""><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
+        FirstTdBgColor = ""
+        if getConfig("ExibirCorPacienteAgenda")&""=1 then
+            FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
+        end if
+        Conteudo = Conteudo & "</td><td width=""1%"" "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
         "<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
         if comps("Encaixe")=1 then
             Conteudo = Conteudo & "<span class=""label label-alert"">enc</span>"
@@ -592,7 +599,7 @@ while diaS<n
     while not bloq.EOF
         HoraDe = HoraToID(bloq("HoraDe"))
         HoraA = HoraToID(bloq("HoraA"))
-        Conteudo = "<tr id=""'+$(this).attr('data-hora')+'"" onClick=""abreBloqueio("&bloq("id")&", \'\', \'\');"">"&_
+        Conteudo = "<tr id=""'+$(this).attr('data-hora')+'"" onClick=""abreBloqueio("&bloq("id")&", `"&replace(mydatenull(Data)&"","'","")&"`, \'\');"">"&_
         "<td width=""1%""></td><td width=""1%""><button type=""button"" class=""btn btn-xs btn-danger"">'+$(this).attr('data-hora')+'</button></td>"&_
         "<td nowrap><img src=""assets/img/bloqueio.png""> <span class=""nomePac"">"&replace(bloq("Titulo")&" ", "'", "\'")&"</span></td>"&_
         "</tr>"

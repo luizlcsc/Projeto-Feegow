@@ -73,14 +73,8 @@ end if
 ProfissionalID=req("ProfissionalID")
 DiaSemana=weekday(Data)
 mesCorrente=month(Data)
+set prof = db.execute("select Cor, NomeProfissional, Foto, ObsAgenda, Ativo from profissionais where id="&ProfissionalID)
 
-if getConfig("AbrirAutomaticamenteObsProfissional")=1 then
-    %>
-    <script>
-        oa(<%=treatvalzero(ProfissionalID)%>);
-    </script>
-    <%
-end if
 
 
 if lcase(session("Table"))="funcionarios" then
@@ -89,8 +83,17 @@ end if
 
 escreveData = formatdatetime(Data, 1)
 
-set prof = db.execute("select Cor, NomeProfissional, Foto, ObsAgenda, Ativo from profissionais where id="&ProfissionalID)
 if not prof.eof then
+    ObsAgenda=prof("ObsAgenda")&""
+
+    if getConfig("AbrirAutomaticamenteObsProfissional")=1 and ObsAgenda<>"" then
+        %>
+        <script>
+            oa(<%=treatvalzero(ProfissionalID)%>);
+        </script>
+        <%
+    end if
+
 	Cor = prof("Cor")
 	Ativo = prof("Ativo")
 	NomeProfissional = prof("NomeProfissional")
@@ -715,7 +718,7 @@ end if
 
                     FirstTdBgColor = ""
                     if ExibirCorPacienteAgenda=1 then
-                        FirstTdBgColor = " style=\'background-color:"&CorIdentificacao&"!important\' "
+                        FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
                     end if
                     Conteudo = Conteudo & "</td><td width=""1%"" nowrap "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"" "& linkAg &">"&compsHora&"</button>"
                     if session("Banco")="clinic4134" then
@@ -837,9 +840,9 @@ end if
 
 				set bloq = db.execute(bloqueioSql)
 				while not bloq.EOF
-					HoraDe = HoraToID(bloq("HoraDe"))
+                    HoraDe = HoraToID(bloq("HoraDe"))
 					HoraA = HoraToID(bloq("HoraA"))
-                    Conteudo = "<tr id=""'+$(this).attr('data-hora')+'"" onClick=""abreBloqueio("&bloq("id")&", \'\', \'\');"">"&_
+                    Conteudo = "<tr id=""'+$(this).attr('data-hora')+'"" onClick=""abreBloqueio("&bloq("id")&", `"&replace(mydatenull(Data)&"","'","")&"`, \'\');"">"&_
 					"<td width=""1%""></td><td width=""1%""><button type=""button"" class=""btn btn-xs btn-danger"">'+$(this).attr('data-hora')+'</button></td>"&_
 					"<td nowrap><img src=""assets/img/bloqueio.png""> <span class=""nomePac"">"&replace(bloq("Titulo")&" ", "'", "\'")&"</span></td>"&_
 					"<td class=""hidden-xs text-center""></td>"&_

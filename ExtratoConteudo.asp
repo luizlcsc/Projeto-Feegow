@@ -149,11 +149,28 @@ end if
 		AccountAssociationIDDebit = getMovement("AccountAssociationIDDebit")
 		AccountIDDebit = getMovement("AccountIDDebit")
 		PaymentMethodID = getMovement("PaymentMethodID")
+
+		'tratei as variáveis para não receber valor nulo (André Coutinho)
+		if IsNull(AccountAssociationIDCredit) then
+			AccountAssociationIDCredit = 0
+		end if	
+
+		if IsNull(AccountAssociationID) then
+			AccountAssociationID = 0
+		end if
+
+		if IsNull(AccountIDCredit) then
+			AccountIDCredit = 0
+		end if
+
+		if IsNull(AccountID) then
+			AccountID = 0
+		end if
+
 		Rate = getMovement("Rate")
 		Descricao = ""
 		SaldoAnterior = Balance
 		Paid = ""
-
 
 		if instr(ref("AccountID"), "_") then
 			if ccur(AccountAssociationIDCredit)=ccur(AccountAssociationID) and ccur(AccountIDCredit)=ccur(AccountID) then

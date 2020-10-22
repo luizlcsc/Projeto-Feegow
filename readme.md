@@ -49,6 +49,8 @@ _Em "variaveis de sistema" insira como está a seguir_
 >**FC_MYSQL_DATABASE**=cliniccentral
 >
 >**FC_APP_ENV**=local
+>
+>**FC_PWD_SALT**=pdw_salt
 
 **Configurando o projeto no IIS**
 

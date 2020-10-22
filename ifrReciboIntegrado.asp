@@ -252,8 +252,16 @@ if not inv.eof then
                     end if
                 end if
             end if
+            if profissionalSelecionado&""<>"" then
+                if tipoProfissionalSelecionado&""=8 then
+                    Converte_ProfissionalExecutanteExterno = "ProfissionalExecutanteExternoID_"&profissionalSelecionado&"|"
+                end if
+                if tipoProfissionalSelecionado&""=5 then
+                    ProfissionalExecutanteID = profissionalSelecionado
+                end if
+            end if
 
-            Recibo = TagsConverte(Recibo,"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalExecutanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
+            Recibo = TagsConverte(Recibo,Converte_ProfissionalExecutanteExterno&"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalExecutanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
             ' Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
 
             'CONVERSOR ANTIGO DE TAGS DESATIVADO
@@ -395,7 +403,7 @@ if not inv.eof then
                             " p.DiasRetorno, "&_
                             " (select sum(Valor) from itensdescontados where ItemID=ii.id) ValorPago,"&_
                             " (if(ii.PacoteID is null,CONCAT(ii.ValorUnitario, ii.ItemID, ii.id),ii.PacoteID)) PACUNICO,"&_
-                            " (if(ii.PacoteID is not null,CONCAT(ii.ItemID, ii.id),CONCAT(ii.ValorUnitario, ii.acrescimo, ii.Desconto,ii.ItemID))) ITEMUNICO"&_
+                            " (if(ii.PacoteID is not null,CONCAT(ii.ItemID, ii.id),CONCAT(ii.ValorUnitario, ii.acrescimo, ii.Desconto,ii.ItemID,ii.Descricao))) ITEMUNICO"&_
                             " "&_
                             " from itensinvoice ii "&_
                             " left join procedimentos p on p.id=ii.ItemID "&_
@@ -728,15 +736,22 @@ if not inv.eof then
 			Recibo = replace(Recibo, "[Receita.Itens]", tabelinha)
             Recibo = replace(Recibo&"", "[Receita.ItensExtenso]", NomeItens&"")
 
-			set forma = db.execute("SELECT IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','Crédito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value ,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
-                                           "FROM sys_financialmovement debito "&_
-                                           "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
-                                           "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_
-                                           "LEFT JOIN sys_financialpaymentmethod forma_pagamento ON forma_pagamento.id = credito.PaymentMethodID "&_
-                                           "LEFT JOIN sys_financialcreditcardtransaction cartao_credito ON cartao_credito.MovementID=credito.id "&_
-                                           "LEFT JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID NOT IN (3, 4) "&_
-                                           "LEFT JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
-                                           "WHERE debito.InvoiceID="&inv("id"))
+            sqlPagtos = "SELECT cartao_credito.Parcelas Parcelas, IF(credito.`Type` = 'Transfer','Crédito', forma_pagamento.PaymentMethod) PaymentMethod, "&_
+                        "pagamento.MovementID, credito.`value` Value, credito.sysUser sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
+                        "FROM sys_financialmovement debito "&_
+                        "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
+                        "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_
+                        "LEFT JOIN sys_financialpaymentmethod forma_pagamento ON forma_pagamento.id = credito.PaymentMethodID "&_
+                        "LEFT JOIN sys_financialcreditcardtransaction cartao_credito ON cartao_credito.MovementID=credito.id "&_
+                        "WHERE debito.InvoiceID="&inv("id") &" "&_
+                        "UNION ALL "&_
+                        "SELECT 1 Parcelas, 'Boleto' PaymentMethod, NULL, debito.Value VALUE, debito.sysUser  sysUser, debito.Date DataVencimento, null DataPagamento "&_
+                        "FROM sys_financialmovement debito "&_
+                        "INNER JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID NOT IN (2, 3, 4) "&_
+                        "INNER JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
+                        "WHERE debito.InvoiceID="&inv("id")
+
+			set forma = db.execute(sqlPagtos)
 
 			Parcelas = ""
             FormaPagto = ""
@@ -878,7 +893,12 @@ if not inv.eof then
                 sqlRecibo = "UPDATE recibos SET Texto = '"&Recibo&"', ImpressoEm = now() WHERE id="&reciboID
             else
 
-                sqlDataHora = mydatetime(DataHora)
+
+                if getConfig("registrarReciboDataHoraConta") then
+                    sqlDataHora = mydatetime(DataHora)
+                else
+                    sqlDataHora = mydatetime(now())
+                end if
 
                 if Imprimiu="1" then
                     sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, Auto,ImpressoEm, sysDate) VALUES ("&treatvalzero(NumeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&Cnpj&"','"&NomeRecibo&"', "&mydatenull(date())&", "&treatvalzero(ValorRecibo)&", '"&Recibo&"', '"&PacienteID&"', "&session("User")&", '"&NomeItens&"', 0, "&InvoiceID&", "&UnidadeInvoice&", "&NumeroSequencial&", '"&CPFPACIENTE&"', 0, now(), "&sqlDataHora&")"
@@ -927,5 +947,5 @@ end if %>
 </div>
 <% next %>
 <script type="text/javascript">
-print();
+    print();
 </script>

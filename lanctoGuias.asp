@@ -1,6 +1,10 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/Json.asp"-->
 <%
+
+' response.write("select count(id) Qtd, sum(ValorPago) Total, ConvenioID from tiss"&req("T")&" where id in("&ref("guia")&")")
+
+
 set g = db.execute("select count(id) Qtd, sum(ValorPago) Total, ConvenioID from tiss"&req("T")&" where id in("&ref("guia")&")")
 
 Qtd = ccur(g("Qtd"))
@@ -10,10 +14,12 @@ end if
 
 
 if not g.eof then
-    set ContasSQL = db.execute(" SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total "&_
+    sqlcontas = " SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total "&_
                                " FROM sys_financialinvoices conta "&_
                                " LEFT JOIN itensinvoice ON itensinvoice.InvoiceID = conta.id "&_
-                               " WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 180 DAY)")
+                               " WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 180 DAY)"
+    ' response.write(sqlcontas)
+    set ContasSQL = db.execute(sqlcontas)
 end if
 
 if g("Total") > 0 then

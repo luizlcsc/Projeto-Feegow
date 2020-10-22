@@ -9,6 +9,15 @@ GuiaID = request.QueryString("I")
 Tipo = request.QueryString("T")
 QuantidadeFilme = treatvalzero(ref("QuantidadeFilme"))
 ValorFilme = treatvalzero(ref("ValorFilmeADD"))
+ConvenioID=ref("gConvenioID")
+
+if ConvenioID="" then
+    %>
+    showMessageDialog("Selecione o convênio", "warning");
+    <%
+    Response.End
+end if
+
 
 Dim ProcedimentoIncluidos
 Set ProcedimentoIncluidos=Server.CreateObject("Scripting.Dictionary")
@@ -133,6 +142,8 @@ elseif Tipo="Procedimentos" then
             rfProfissionalID = splProf(1)
         end if
 
+        AssociacaoID=rfAssociacao
+
         set ConvenioConfigSQL = db.execute("SELECT AdicionarProfissionalExecutanteVinculadoAoProcedimento FROM convenios WHERE id="&treatvalzero(ref("gConvenioID")))
         if not ConvenioConfigSQL.eof then
             AdicionarProfissionalExecutanteVinculadoAoProcedimento=ConvenioConfigSQL("AdicionarProfissionalExecutanteVinculadoAoProcedimento")
@@ -212,7 +223,6 @@ elseif Tipo="Procedimentos" then
             've se tem procedimento anexo
             set QuantidadeProcedimentos = db.execute("SELECT count(*) as Quantidade FROM tissprocedimentossadt WHERE GuiaID="&ref("GuiaID"))
             QuantidadeProcedimento = QuantidadeProcedimentos("Quantidade")
-            AssociacaoID = null
 
             IF getConfig("calculostabelas") THEN
                 set ValorCalculo = CalculaValorProcedimentoConvenio(null,ref("gConvenioID"),pv("ProcedimentoID"),ref("PlanoID"),ref("ContratadoSolicitanteCodigoNaOperadora"),QuantidadeProcedimento,null,null)
@@ -397,22 +407,26 @@ elseif Tipo="Procedimentos" then
                 next
             end if
         end if
-
         '-> inserindo o profissional executor nesta guia se ele nao existe
-        if rfProfissionalID&""<>"0" and rfAssociacao&""="5" then
-            set vca = db.execute("select id from tissprofissionaissadt where ProfissionalID="& treatvalzero(rfProfissionalID) &" and GuiaID="&GuiaID)
+
+        if rfProfissionalID&""<>"0" and AssociacaoID&""="5" then
+
+            sqlProfissional = "select id from tissprofissionaissadt where ProfissionalID="& treatvalzero(rfProfissionalID) &" and GuiaID="&GuiaID
+            set vca = db.execute(sqlProfissional)
+
             if vca.eof then
-               sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="& treatvalzero(rfProfissionalID) &" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
-               'response.write(sqlProf)
+               sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="& treatvalzero(rfProfissionalID) &" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho != '' and p.UFConselho != '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+
                set prof = db.execute(sqlProf)
                if not prof.eof then
                     if len(prof("CPF"))>3 then
                         CodigoNaOperadora = prof("CPF")
                     end if
-                    set vcaContrato = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado="& treatvalzero(rfProfissionalID) &" and CodigoNaOperadora not like ''")
+                    set vcaContrato = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado="& treatvalzero(rfProfissionalID) &" and CodigoNaOperadora != ''")
                     if not vcaContrato.eof then
                         CodigoNaOperadora = vcaContrato("CodigoNaOperadora")
                     end if
+
                     if CodigoNaOperadora<>"" then
                         sqlExecute = "insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO) values ("&GuiaID&", "&getSequencial(GuiaID)&", "&treatvalnull(prof("GrauPadrao"))&", "&prof("id")&", '"&rep(CodigoNaOperadora)&"', "&treatvalzero(prof("Conselho"))&", '"&rep(prof("DocumentoConselho"))&"', '"&rep(left(prof("UFConselho")&" ", 2))&"', '"&prof("codigoTISS")&"')"
                         db_execute(sqlExecute)

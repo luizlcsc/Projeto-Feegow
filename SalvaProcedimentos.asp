@@ -48,14 +48,18 @@ if(UCase(tabela) = UCase("GuiaSADT")) then
 
     if (guiaIdAnexaString <> "") then
             For i = 0 to Ubound(guiaIdAnexaArray)
-                sqlExecute = "update tissguiaanexa set ValorPago="& treatvalzero(valorPagoGuiaArray(i)) & " where id ="&guiaIdAnexaArray(i)&""
+
+                valorPago = 0
+
+                if (ref("ValorPagoGuia"&guiaIdAnexaArray(i)) <> "") then
+                    valorPago = ref("ValorPagoGuia"&guiaIdAnexaArray(i))
+                end if
+
+                sqlExecute = "update tissguiaanexa set ValorPago="& treatvalzero(valorPago) & " where id ="&guiaIdAnexaArray(i)&""
                 db_execute(sqlExecute)
                 
-                if (valorPagoGuiaArray(i) <> "") then 
-                    valoPagoGuia = valorPagoGuiaArray(i)
-                end if 
 
-                somaTotalGuias = somaTotalGuias + valoPagoGuia
+                somaTotalGuias = somaTotalGuias + valorPago
             Next
     end if
 

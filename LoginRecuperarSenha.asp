@@ -52,7 +52,7 @@ elseif request.form("opt") = "regerarCodigo" or (request.form("opt") = "gerarCod
                             " LEFT JOIN licencas l ON l.id = lu.LicencaID "&_
                                 " WHERE email='"&request.form("email")&"' "&_
                                 "   AND MD5(lu.id) = '"&varEmailEnviar(1)&"'"
-    response.write(sqlVerificaEmail)
+
     set verificaEmail = dbc.execute(sqlVerificaEmail)
 
     if not verificaEmail.EOF then
@@ -77,7 +77,7 @@ elseif request.form("opt") = "regerarCodigo" or (request.form("opt") = "gerarCod
             EmailEnviar = Email("Email")
 
         end if
-
+        set dbc = newConnection("", "")
         dim max
         max = 10
         Randomize

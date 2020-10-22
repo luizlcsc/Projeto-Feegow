@@ -21,7 +21,7 @@ end if
 $(function(){
     $(".valorprocedimento, .linha-procedimento").on('change', function(){
         somarValores();
-        dispEquipamento();
+        // dispEquipamento();
 
     });
     $("#Tempo<%=n%>").change(function(){

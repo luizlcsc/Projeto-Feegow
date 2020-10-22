@@ -1,6 +1,9 @@
 <!--#include file="Classes/Connection.asp"-->
+<!--#include file="Classes/Environment.asp"-->
 <%
 set dbc = newConnection("", "")
+
+PasswordSalt = getEnv("FC_PWD_SALT", "SALT_")
 
 'VERIFICA SE USUÁRIO DE ACESSO EXISTE
 if request.form("opt") = "verificaUsuarioAcesso" then
@@ -23,9 +26,9 @@ if request.form("opt") = "verificaUsuarioAcesso" then
 
 'ALTERA A SENHA
 elseif request.form("opt") = "salvarNovaSenha" and request.form("email") <> "" then
-
+    response.write(PasswordSalt&request.form("password"))
     if (request.form("password") <> "" and request.form("newpassword") <> "") and (request.form("password") = request.form("newpassword")) then
-        dbc.execute("UPDATE licencasusuarios SET Senha = '"&request.form("password")&"' WHERE Email = '"&request.form("email")&"' AND MD5(id)='"&request.form("hashControl")&"'")
+        dbc.execute("UPDATE licencasusuarios SET Senha = '"&request.form("password")&"', SenhaCript = SHA1('"&PasswordSalt&request.form("password")&"') WHERE Email = '"&request.form("email")&"' AND MD5(id)='"&request.form("hashControl")&"'")
 %>
         alert('Senha alterada com sucesso');
         window.location = '/';

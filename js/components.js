@@ -21,7 +21,7 @@ switch (env){
         api = "/feegowclinic-v7/api/";
         break;
     case "production":
-        domain = "https://api.feegow.com.br/";
+        domain = "https://app.feegow.com.br/";
         api = "/v7/api/";
         break;
     case "homolog":

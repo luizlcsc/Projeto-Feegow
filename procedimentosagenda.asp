@@ -20,9 +20,18 @@ end if
 
 $(function(){
     $(".valorprocedimento, .linha-procedimento").on('change', function(){
+        somarValores();
+        dispEquipamento();
 
-                somarValores();
-            });
+    });
+    $("#Tempo<%=n%>").change(function(){
+        dispEquipamento();
+    })
+    function dispEquipamento(){
+        $.post("agendaParametros.asp?tipo=Equipamento", $("#formAgenda").serialize(), function(data){
+            eval(data);
+        });
+    }
 });
 
 $(document)

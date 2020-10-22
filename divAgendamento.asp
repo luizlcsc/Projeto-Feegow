@@ -1695,6 +1695,7 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
         $("#nProcedimentos").val( I );
         let formapgt = $("[name=rdValorPlano]:checked").val();
         let convenioID = $("#ConvenioID").val();
+        let linhas = $('select[id^="ProcedimentoID"]')
 
         $.post("procedimentosagenda.asp?EquipamentoID="+Equipamento, {
             A: A, I: I ,
@@ -1704,7 +1705,8 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
             GradeApenasConvenios: GradeApenasConvenios,
             EquipamentoID: Equipamento,
             Forma: formapgt,
-            ConvenioSelecionado: convenioID
+            ConvenioSelecionado: convenioID,
+            linhas: "-"+linhas.length
             }, function (data) {
             addProcedimentos(I);
             $('#bprocs').append(data);

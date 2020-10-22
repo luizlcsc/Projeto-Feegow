@@ -29,7 +29,7 @@ $(function(){
         // dispEquipamento();
 
     });
-    $("#Tempo<%=n%>").change(function(){
+    $("#Tempo<%=linhas%>").change(function(){
         dispEquipamento();
     })
     function dispEquipamento(){

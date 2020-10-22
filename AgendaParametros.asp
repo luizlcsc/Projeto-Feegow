@@ -492,7 +492,7 @@ end if
 if tipo="Equipamento" then
 
     tempoFinal = somatempo()
-    dd(ref("Hora"))
+
     msgEquip = dispEquipamento(ref("Data"), ref("Hora"), tempoFinal, ref("EquipamentoID"), ref("ConsultaID"))
     if msgEquip<>"" then
         %>

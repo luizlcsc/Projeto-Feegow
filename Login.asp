@@ -459,7 +459,7 @@ end if
                         <%
                             else
                         %>
-                                <img src="logo/<%=req("Partner")%>.png" border="0" width="250">
+                                <img src="logo/<%=req("Partner")%>.png" border="0" style="max-height: 80px; object-fit: cover">
                         <%
                             end if
                         else 

@@ -17,7 +17,7 @@
 							session("Status")="C"
 							session("Permissoes") = tryLogin("Permissoes")
 							session("NameUser") = tryLogin("Nome")
-							session("Photo") = "uploads/"&tryLogin("Foto")
+							session("Photo") = "assets/img/user.png"
 							session("OtherCurrencies") = ""
 							session("User")=tryLogin("id")*(-1)
 							session("idInTable")=tryLogin("id")

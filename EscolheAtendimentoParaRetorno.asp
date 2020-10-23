@@ -39,7 +39,7 @@ end if
          " INNER JOIN procedimentos p2 ON p2.id=a2.TipoCompromissoID"&_
          " WHERE "&_
          " "&_
-         " a2.sysActive=1 AND a2.StaID NOT IN (11,6) AND a2.PacienteID = a.PacienteID AND a2.ProfissionalID = a.ProfissionalID AND "&_
+         " a2.sysActive=1 AND a2.StaID NOT IN (11,6,15) AND a2.PacienteID = a.PacienteID AND a2.ProfissionalID = a.ProfissionalID AND "&_
          " (a2.TipoCompromissoID = a.TipoCompromissoID OR p2.TipoProcedimentoID=9) "&_
          " AND a2.Data > a.Data AND a2.Data <= ADDDATE(a.Data, INTERVAL proc.DiasRetorno DAY) AND a2.Retorno = 1) RetornoID FROM "&_
                           "agendamentos a INNER JOIN profissionais prof ON prof.id=a.ProfissionalID INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID "&_

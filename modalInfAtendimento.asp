@@ -143,7 +143,8 @@ db.execute("DELETE FROM calculos_finalizar_atendimento_log WHERE AtendimentoID =
 function saveInf(AI){
 	$("#btnSaveInf").prop("disabled", true);
 	$("#btnSaveInf").html("salvando...");
-	$.post("saveInf.asp?AgendamentoID=<%=req("AgendamentoID")%>&AtendimentoID="+AI+"&Origem=<%=req("Origem")%>&Solicitacao=<%=req("Solicitacao")%>", $("#frmFimAtendimento").serialize(), function(data, status){ eval(data) });
+    let excluir = $('#procedimentosAdicionados').attr('data-excluir')
+	$.post("saveInf.asp?AgendamentoID=<%=req("AgendamentoID")%>&AtendimentoID="+AI+"&Origem=<%=req("Origem")%>&Solicitacao=<%=req("Solicitacao")%>&excluir="+excluir, $("#frmFimAtendimento").serialize(), function(data, status){ eval(data) });
 }
 </script>
 <div class="modal-header">
@@ -269,6 +270,14 @@ function addProc(Acao, ProcedimentoID, ConvenioID, ValorBruto){
 		    $("#fimListaAP").before( data );
 		  <% END IF %>
 	  }else if(Acao=="X"){
+            let valorInicial = $('#procedimentosAdicionados').attr('data-excluir')
+            if (valorInicial == undefined){
+                valorInicial= ""
+            }else{
+                valorInicial+=","
+            }
+            let excluir =  valorInicial + ProcedimentoID
+            $('#procedimentosAdicionados').attr('data-excluir',excluir)
 	      if($("#row"+ProcedimentoID+", #row2"+ProcedimentoID).html().indexOf("Particular") != -1){
 	            $("#row"+ProcedimentoID+", #row2"+ProcedimentoID).replaceWith('');
                 $("#fimListaAP").after( "<input type='hidden' name='Excluir' value='"+ProcedimentoID+"'>" );

@@ -88,7 +88,7 @@ if ubound(splLinhas) > 1 then
 end if
 
 if ref("Excluir")<>"" then
-	db_execute("delete from atendimentosprocedimentos where id in("&ref("Excluir")&")")
+	db_execute("delete from atendimentosprocedimentos where id in("&req("Excluir")&")")
 end if
 
 %>

@@ -1,6 +1,9 @@
 <!--#include file="Classes/Connection.asp"-->
+<!--#include file="Classes/Environment.asp"-->
 <%
 set dbc = newConnection("", "")
+
+PasswordSalt = getEnv("FC_PWD_SALT", "SALT_")
 
 'VERIFICA SE USUÁRIO DE ACESSO EXISTE
 if request.form("opt") = "verificaUsuarioAcesso" then
@@ -23,9 +26,8 @@ if request.form("opt") = "verificaUsuarioAcesso" then
 
 'ALTERA A SENHA
 elseif request.form("opt") = "salvarNovaSenha" and request.form("email") <> "" then
-
     if (request.form("password") <> "" and request.form("newpassword") <> "") and (request.form("password") = request.form("newpassword")) then
-        dbc.execute("UPDATE licencasusuarios SET Senha = '"&request.form("password")&"' WHERE Email = '"&request.form("email")&"' AND MD5(id)='"&request.form("hashControl")&"'")
+        dbc.execute("UPDATE licencasusuarios SET Senha = '"&request.form("password")&"', SenhaCript = SHA1('"&PasswordSalt&request.form("password")&"'), VersaoSenha = 3 WHERE Email = '"&request.form("email")&"' AND MD5(id)='"&request.form("hashControl")&"'")
 %>
         alert('Senha alterada com sucesso');
         window.location = '/';
@@ -43,9 +45,11 @@ elseif request.form("opt") = "regerarCodigo" or (request.form("opt") = "gerarCod
                                       " lu.Bloqueado, "&_
                                       " luas.Tentativas, "&_
                                       " lu.LicencaID, "&_
-                                      " lu.id UsuarioID"&_
+                                      " lu.id UsuarioID,"&_
+                                      " l.Servidor"&_
                                  " FROM licencasusuarios lu "&_
                             " LEFT JOIN licencasusuariosalterarsenhas luas ON luas.LicencaUsuarioID = lu.id "&_
+                            " LEFT JOIN licencas l ON l.id = lu.LicencaID "&_
                                 " WHERE email='"&request.form("email")&"' "&_
                                 "   AND MD5(lu.id) = '"&varEmailEnviar(1)&"'"
 
@@ -54,6 +58,8 @@ elseif request.form("opt") = "regerarCodigo" or (request.form("opt") = "gerarCod
     if not verificaEmail.EOF then
 
         sqlUsuario = "SELECT * FROM clinic"&verificaEmail("LicencaID")&".sys_users WHERE id = "&verificaEmail("UsuarioID")
+
+        set dbc = newConnection("clinic"&verificaEmail("LicencaID"), verificaEmail("Servidor"))
 
         set Usuario = dbc.execute(sqlUsuario)
 
@@ -71,7 +77,7 @@ elseif request.form("opt") = "regerarCodigo" or (request.form("opt") = "gerarCod
             EmailEnviar = Email("Email")
 
         end if
-
+        set dbc = newConnection("", "")
         dim max
         max = 10
         Randomize

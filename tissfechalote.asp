@@ -467,21 +467,11 @@ elseif request.QueryString("ConvenioID")<>"" and request.QueryString("T")="GuiaS
 
         '--> INICIO - Pegar o profissional executor da guia
 		if request.QueryString("ExibirProfissional") = "1" then
-            set proguia = db.execute("SELECT group_concat(profissionalid) profissionais FROM tissprofissionaissadt WHERE guiaID="&guias("id"))
-            if proguia.EOF then
-                NomeProfissional = ""
-            elseif not isnull(proguia("profissionais")) or proguia("profissionais")<>"" then
-                profissionais = proguia("profissionais")
-                set prof = db.execute("SELECT group_concat(NomeProfissional) NomeProfissional FROM profissionais WHERE id IN ("&profissionais&")  ")
-                if prof.eof then
-                	NomeProfissional = ""
-                elseif not isnull(prof("NomeProfissional")) or prof("NomeProfissional")<>"" then
-                	NomeProfissional = prof("NomeProfissional")
-                else
-                    NomeProfissional = ""
-                end if
-            else
-                NomeProfissional = ""
+            set proguia = db.execute("SELECT group_concat(profissionalid) profissionais FROM tissprofissionaissadt WHERE guiaID="&guias("id")&" limit 1")
+            profissionais = proguia("profissionais")
+            if not isnull(profissionais) or profissionais<>"" then
+                set prof = db.execute("SELECT group_concat(NomeProfissional) NomeProfissional FROM profissionais WHERE id IN ("&profissionais&")")
+                NomeProfissional = prof("NomeProfissional")
             end if
 		end if
         '--> FIM - Pegar o profissional executor da guia

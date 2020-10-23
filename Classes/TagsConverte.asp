@@ -148,25 +148,27 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Paciente"
 
           if item_PacienteID>0 then
-            qPacientesSQL = " SELECT                                                                                        "&chr(13)&_
-                            " p.*,                                                                                          "&chr(13)&_
-                            " c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3',"&chr(13)&_
-                            " pla1.NomePlano AS 'Plano1', pla2.NomePlano AS 'Plano2',pla3.NomePlano AS 'Plano3',            "&chr(13)&_
-                            " ec.EstadoCivil, s.NomeSexo AS Sexo, g.GrauInstrucao, o.Origem, corPel.NomeCorPele             "&chr(13)&_
-                            " FROM pacientes AS p                                                                           "&chr(13)&_
-                            " LEFT JOIN estadocivil AS ec ON ec.id=p.EstadoCivil                                            "&chr(13)&_
-                            " LEFT JOIN sexo AS s ON s.id=p.Sexo                                                            "&chr(13)&_
-                            " LEFT JOIN grauinstrucao AS g ON g.id=p.GrauInstrucao                                          "&chr(13)&_
-                            " LEFT JOIN origens AS o ON o.id=p.Origem                                                       "&chr(13)&_
-                            " LEFT JOIN convenios c1 ON c1.id=p.ConvenioID1                                                 "&chr(13)&_
-                            " LEFT JOIN convenios c2 ON c2.id=p.ConvenioID2                                                 "&chr(13)&_
-                            " LEFT JOIN convenios c3 ON c3.id=p.ConvenioID3                                                 "&chr(13)&_
-                            " LEFT JOIN conveniosplanos pla1 ON pla1.ConvenioID=c1.id                                       "&chr(13)&_
-                            " LEFT JOIN conveniosplanos pla2 ON pla2.ConvenioID=c2.id                                       "&chr(13)&_
-                            " LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id                                       "&chr(13)&_
-                            " LEFT JOIN corpele corPel ON corPel.id=p.`CorPele`                                             "&chr(13)&_
-                            "where p.id="&treatvalzero(item_PacienteID)                                                      &chr(13)&_
-                            " GROUP BY p.id                                                                                 "
+            qPacientesSQL = " SELECT                                                                                                "&chr(13)&_
+                            " p.*,                                                                                                  "&chr(13)&_
+                            " c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3',        "&chr(13)&_
+                            " pla1.NomePlano AS 'Plano1', pla2.NomePlano AS 'Plano2',pla3.NomePlano AS 'Plano3',                    "&chr(13)&_
+                            " ec.EstadoCivil, s.NomeSexo AS Sexo, g.GrauInstrucao, o.Origem, corPel.NomeCorPele,                    "&chr(13)&_
+                            " pacrel.CPFParente AS ResponsavelCPF, pacrel.Nome AS ResponsavelNome                                   "&chr(13)&_
+                            " FROM pacientes AS p                                                                                   "&chr(13)&_
+                            " LEFT JOIN estadocivil AS ec ON ec.id=p.EstadoCivil                                                    "&chr(13)&_
+                            " LEFT JOIN sexo AS s ON s.id=p.Sexo                                                                    "&chr(13)&_
+                            " LEFT JOIN grauinstrucao AS g ON g.id=p.GrauInstrucao                                                  "&chr(13)&_
+                            " LEFT JOIN origens AS o ON o.id=p.Origem                                                               "&chr(13)&_
+                            " LEFT JOIN convenios c1 ON c1.id=p.ConvenioID1                                                         "&chr(13)&_
+                            " LEFT JOIN convenios c2 ON c2.id=p.ConvenioID2                                                         "&chr(13)&_
+                            " LEFT JOIN convenios c3 ON c3.id=p.ConvenioID3                                                         "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla1 ON pla1.ConvenioID=c1.id                                               "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla2 ON pla2.ConvenioID=c2.id                                               "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id                                               "&chr(13)&_
+                            " LEFT JOIN corpele corPel ON corPel.id=p.`CorPele`                                                     "&chr(13)&_
+                            " LEFT JOIN pacientesrelativos AS pacrel ON pacrel.PacienteID=p.id AND pacrel.Dependente='S'            "&chr(13)&_
+                            " where p.id="&treatvalzero(item_PacienteID)                                                             &chr(13)&_
+                            " GROUP BY p.id                                                                                         "
              
           end if
           'response.write("<pre>"&qPacientesSQL&"</pre>")
@@ -239,6 +241,9 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.IMC]", trim(PacientesSQL("IMC")&" ") )
                 conteudo = replace(conteudo, "[Paciente.CNS]", trim(PacientesSQL("CNS")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Observacoes]", trim(PacientesSQL("Observacoes")&" ") )
+                'RESPONSAVEL PELO PACIENTE
+                conteudo = replace(conteudo, "[Responsavel.Nome]", trim(PacientesSQL("ResponsavelNome")&" ") )
+                conteudo = replace(conteudo, "[Responsavel.CPF]",  trim(PacientesSQL("ResponsavelCPF")&" ") )
               end if
             PacientesSQL.close
             set PacientesSQL = nothing

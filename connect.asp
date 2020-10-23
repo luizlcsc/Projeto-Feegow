@@ -5575,7 +5575,7 @@ function arqEx(nArquivo, nTipo)
     elseif nArquivo&""="" then
         arqEx = ""
 	else
-		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&folder="&nTipo&"&file="&nArquivo&"&type=user"
+		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&renderMode=download&folder="&nTipo&"&file="&nArquivo&"&type=user"
 	end if
 	set fs=nothing
 end function

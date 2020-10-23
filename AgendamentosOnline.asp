@@ -18,6 +18,7 @@
                            "LEFT JOIN procedimentos proc ON proc.id=age.TipoCompromissoID "&_
                            "LEFT JOIN convenios conv ON conv.id=age.ValorPlano AND age.rdValorPlano='P' "&_
                            "LEFT JOIN locais loc ON loc.id=age.LocalID "&_
+                           "WHERE age.CanalID=1 "&_
                            "order by age.sysDate desc "&_
                            "limit 1000"
 

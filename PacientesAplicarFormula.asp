@@ -107,6 +107,10 @@ elseif req("Tipo")="E" then
 '	$("#pedidoexame").val($("#pedidoexame").val()+PedidoExame);
 end if
 
+'CONVERTER ALGUNS BUGS DE TAGS DE PACIENTE QUE NÃO CONVERTEM
+TextoFinal = tagsConverte(TextoFinal,"PacienteID_"&req("PacienteID"),"")
+
+'MANTIVE O CONVERSOR DE TAGS ANTIGO PARA NÃO AFETAR OUTRAS POSSÍVEIS CONVERSÕES.
 TextoFinal = replaceTags(TextoFinal, req("PacienteID"), session("User"), session("UnidadeID"))
 
 

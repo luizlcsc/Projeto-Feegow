@@ -49,7 +49,7 @@ if not RepasseSQL.eof then
     end if
 end if
 
-if Executado="S" AND getConfig("NaoPermitirAlterarExecutante") AND session("Admin")=1 then
+if Executado="S" AND getConfig("NaoPermitirAlterarExecutante") AND session("Admin")<>1 then
     NaoPermitirAlterarExecutante=True
     MensagemBloqueioExecutante="Não é possível alterar o executante."
 end if

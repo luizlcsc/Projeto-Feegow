@@ -980,7 +980,7 @@ $("#restoreForm").click(function() {
     }
     , function (data) {
         if(data.length > 0) {
-            openModal(data, "Lita de formulário não salvos", true, false);
+            openModal(data, "Lista de formulário não salvos", true, false);
         }
     });
 });

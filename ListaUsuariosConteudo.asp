@@ -73,6 +73,14 @@
                     lastServerID = lastServerID + 1
                 End if
 
+                sqlVerifyActiveUser = "SELECT p.Ativo FROM profissionais p WHERE p.id="&id_user  
+                set AtivoSQL = dbProvider.execute(sqlVerifyActiveUser)
+                if not AtivoSQL.eof then
+                    if AtivoSQL("Ativo")<>"on" then
+                        inactive_user = false
+                    end if
+                end if
+
                 If inactive_user Then
                     Email = "<b><i>Sem acesso</i></b>"
                     cor = "danger"

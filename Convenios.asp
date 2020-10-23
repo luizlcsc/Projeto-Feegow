@@ -437,9 +437,10 @@ end function
                                 end if
                             end if
                             Valor = reg(Coluna)
-                            if Valor=true then
+                            if Valor=true or Valor&""="" then
                                 Valor = 1
                             end if
+
 
                             %>
                             <div class="checkbox-custom checkbox-primary">

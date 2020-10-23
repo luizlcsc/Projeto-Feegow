@@ -55,8 +55,6 @@ while not equ.eof
                         HoraA = cdate(Horarios("HoraA"))
 
                         Hora = HoraDe
-                        HoraA = dateadd("s", 1, HoraA)
-
                         while Hora<=HoraA
                             HoraID = formatdatetime(Hora, 4)
                             HoraID = replace(HoraID, ":", "")
@@ -70,6 +68,10 @@ while not equ.eof
                             <%
 '							end if
                             Hora = dateadd("n", Intervalo, Hora)
+
+                            ' if instr(Hora, "08:30") <> -1 then
+                            '     HoraA = dateadd("n", 1, HoraA)
+                            ' end if
                             
                         wend
                     Horarios.movenext
@@ -84,7 +86,7 @@ while not equ.eof
 
                 <script type="text/javascript">
                 <%
-                set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, p.NomePaciente, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento from agendamentos a "&_
+                set comps=db.execute("select a.Procedimentos, a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, p.NomePaciente, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento from agendamentos a "&_
                 "left join equipamentoprocedimentos eq ON eq.ProcedimentoID=a.TipoCompromissoID "&_
                 "left join agendamentosprocedimentos ap ON ap.AgendamentoID=a.id "&_
                 "left join pacientes p on p.id=a.PacienteID "&_
@@ -99,9 +101,30 @@ while not equ.eof
 						compsHora = formatdatetime(compsHora, 4)
 					end if
 
+                    NomeProcedimento = comps("NomeProcedimento")
+					VariosProcedimentos = comps("Procedimentos")&""
+					if VariosProcedimentos<>"" then
+					    NomeProcedimento = VariosProcedimentos
+					end if
+                    Tempo = 0
+                    ValorProcedimentosAnexos = 0
+
+                    'soma o tempo dos procedimentos anexos
+                    if VariosProcedimentos<>"" and instr(VariosProcedimentos, ",") then
+                        set ProcedimentosAnexosTempoSQL = db.execute("SELECT sum(Tempo)Tempo, sum(IF(rdValorPlano='V',ValorPlano,0))Valor FROM agendamentosprocedimentos WHERE Tempo IS NOT NULL AND AgendamentoID="&comps("id"))
+                        if not ProcedimentosAnexosTempoSQL.eof then
+                            if not isnull(ProcedimentosAnexosTempoSQL("Tempo")) then
+                                Tempo = Tempo + ccur(ProcedimentosAnexosTempoSQL("Tempo"))
+                            end if
+                            if not isnull(ProcedimentosAnexosTempoSQL("Valor")) then
+                                ValorProcedimentosAnexos = ValorProcedimentosAnexos + ccur(ProcedimentosAnexosTempoSQL("Valor"))
+                            end if
+                        end if
+                    end if
+
 					'->hora final
 					if not isnull(comps("Tempo")) and comps("Tempo")<>"" and isnumeric(comps("Tempo")) then
-						Tempo = ccur(comps("Tempo"))
+						Tempo = Tempo + ccur(comps("Tempo"))
 					else
 						Tempo = 0
 					end if

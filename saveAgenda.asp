@@ -91,7 +91,8 @@ controle = 0
     somatempo = tempoFinal 
 end function 
 
-rfTempo=somatempo()
+TempoTotal=somatempo()
+rfTempo=ref("Tempo")
 rfHora=ref("Hora")
 rfProfissionalID=ref("ProfissionalID")
 rfEspecialidadeID=ref("EspecialidadeID")

@@ -565,11 +565,15 @@ $(document).ready(function() {
 
             nProcedimentos = 0
             set ageprocs = db.execute("select * from agendamentosprocedimentos where AgendamentoID="& ConsultaID)
+            contador = 1
             while not ageprocs.eof
-                call linhaAgenda(ageprocs("id"), ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios)
+                call linhaAgenda("-"&contador, ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios)
+                contador = contador + 1
+  
             ageprocs.movenext
             wend
             ageprocs.close
+            nProcedimentos = contador
             set ageprocs=nothing
                     %>
                 </tbody>

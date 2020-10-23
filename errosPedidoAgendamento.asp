@@ -193,7 +193,12 @@ end if
 '    end if
 'end if
 
-if isNumeric(rfTempo) and not rfTempo="" then TempoSol=rfTempo else TempoSol=0 end if
+if isNumeric(TempoTotal) and not TempoTotal="" then
+    TempoSol=TempoTotal
+else
+    TempoSol=0
+end if
+
 HoraSolIni=cDate(hour(rfHora)&":"&minute(rfHora))
 HoraSolFin=dateAdd("n",TempoSol,HoraSolIni)
 HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))

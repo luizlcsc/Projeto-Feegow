@@ -8,6 +8,36 @@ ProfissionalID = ref("ProfissionalID")
 PacienteID = ref("PacienteID")
 Checkin = ref("Checkin")
 
+function somatempo()
+controle = 0
+    contador = 0
+    variavel = ""
+    tracinho = ""
+    tempoFinal = 0
+
+       
+    While controle = 0
+        if contador = 1 then
+            variavel = 1
+            tracinho= "-"
+        end if  
+        if contador > 1 then
+            variavel = variavel +1
+        end if  
+        tempoLocal =  ref("Tempo"&tracinho&variavel)
+        if tempoLocal = "" then
+            controle = 1
+        else
+            tempoLocal = cint(tempoLocal)
+            tempoFinal = tempoFinal + tempoLocal
+        end if
+        contador = contador +1
+    wend
+
+    tempoFinal = tempoFinal&""
+    somatempo = tempoFinal 
+end function 
+
 ValidarRetornos=getConfig("ValidarRetornos")
 FormaPagto = request.QueryString("FormaPagto")'Particular ou Convenio
 ProcedimentoTempoProfissional = request.QueryString("ProcedimentoTempoProfissional")
@@ -315,7 +345,6 @@ if left(tipo, 14)="ProcedimentoID" then
     if ProcedimentoID="" then
         Response.End
     end if
-
 	set proc = db.execute("select * from procedimentos where id="&ProcedimentoID)
 	if not proc.EOF then
 		ObrigarTempo = proc("ObrigarTempo")
@@ -452,15 +481,19 @@ if left(tipo, 14)="ProcedimentoID" then
              $("#Valor<%= apID %>").val('<%=fn(ValorAgendamento)%>');
              $("#ValorText<%= apID %>").html('<%=fn(ValorAgendamento)%>');
              somarValores();
+             dispEquipamento();
             <%
         end if
     end if
 
-    '<
+    '<br
 end if
 
 if tipo="Equipamento" then
-    msgEquip = dispEquipamento(ref("Data"), ref("Hora"), ref("Tempo"), ref("EquipamentoID"), ref("ConsultaID"))
+
+    tempoFinal = somatempo()
+
+    msgEquip = dispEquipamento(ref("Data"), ref("Hora"), tempoFinal, ref("EquipamentoID"), ref("ConsultaID"))
     if msgEquip<>"" then
         %>
         new PNotify({

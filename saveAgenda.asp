@@ -62,7 +62,36 @@ if 0 then
 	    set p=nothing
     end if
 end if
+function somatempo()
+controle = 0
+    contador = 0
+    variavel = ""
+    tracinho = ""
+    tempoFinal = 0
+       
+    While controle = 0
+        if contador = 1 then
+            variavel = 1
+            tracinho= "-"
+        end if  
+        if contador > 1 then
+            variavel = variavel +1
+        end if  
+        tempoLocal =  ref("Tempo"&tracinho&variavel)
+        if tempoLocal = "" then
+            controle = 1
+        else
+            tempoLocal = cint(tempoLocal)
+            tempoFinal = tempoFinal + tempoLocal
+        end if
+        contador = contador +1
+    wend
 
+    tempoFinal = tempoFinal&""
+    somatempo = tempoFinal 
+end function 
+
+TempoTotal=somatempo()
 rfTempo=ref("Tempo")
 rfHora=ref("Hora")
 rfProfissionalID=ref("ProfissionalID")

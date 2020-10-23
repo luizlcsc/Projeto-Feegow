@@ -22,6 +22,7 @@ Executado = ai("Executado")
 ProfissionalID = ai("ProfissionalID")
 if not isnull(HoraFim) then HoraFim=formatdatetime(HoraFim,3) end if
 if Executado="S" then
+    ItemExecutadoJaSalvo="S"
     checked = " checked "
 else
     set ap = db.execute("select ap.*, a.ProfissionalID, a.Data, a.HoraInicio, a.HoraFim from atendimentosprocedimentos ap left join atendimentos a on a.id=ap.AtendimentoID where a.Data=date(now()) and ap.ProcedimentoID like '"&ItemID&"' and ap.ItemInvoiceID=0")
@@ -49,7 +50,7 @@ if not RepasseSQL.eof then
     end if
 end if
 
-if Executado="S" AND getConfig("NaoPermitirAlterarExecutante") AND session("Admin")<>1 then
+if ItemExecutadoJaSalvo="S" AND getConfig("NaoPermitirAlterarExecutante") AND session("Admin")<>1 then
     NaoPermitirAlterarExecutante=True
     MensagemBloqueioExecutante="Não é possível alterar o executante."
 end if

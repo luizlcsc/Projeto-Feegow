@@ -911,8 +911,9 @@ LocalStorageRestoreHabilitar();
             divAff = "#modal";
             scr = "iPront";
         }
+        var pl = $("#ProfissionalLaudadorID").val();
         $(divAff).html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
-        $.get(scr + ".asp?t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
+        $.get(scr + ".asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
             $(divAff).html(data);
         });
     }

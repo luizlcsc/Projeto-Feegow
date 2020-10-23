@@ -2,17 +2,6 @@
 <!--#include file="modal.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 
-<style>
-
-
-.sb-l-o #content_wrapper {
-    margin-left: 0;
-}
-#sidebar_left {
-    background-color: transparent!important;
-    border:none!important;
-}
-</style>
 
 <%
 

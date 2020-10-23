@@ -1854,6 +1854,14 @@ function openRedefinirSenha(){
 }
 
 $(document).ready(function() {
+    var lenMenu = $(".sidebar-menu li").length
+    setTimeout(function() {
+        if(lenMenu === 0){
+            $("#toggle_sidemenu_l").click()
+        }
+    }, 200);
+
+
     $(".callTicketBtn").attr("disabled", false);
     $(".facialRecogButton").attr("disabled", false);
 

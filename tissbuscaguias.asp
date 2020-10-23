@@ -401,7 +401,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
                  if guias("Glosado")=1 then
                      response.write("<center><span class='label label-danger'>Glosada</span></center>")
                  else
-                     response.write quickfield("text", "ValorPago"&guias("id"), "Valor", 12, fn(guias("ValorPago"))&9, " text-right input-mask-brl input-valor-pago", "", " "& disabled &" ")
+                     response.write quickfield("text", "ValorPago"&guias("id"), "Valor", 12, fn(guias("ValorPago")), " text-right input-mask-brl input-valor-pago", "", " "& disabled &" ")
                  end if
                  %>
 

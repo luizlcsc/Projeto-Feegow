@@ -21,7 +21,7 @@
 							session("OtherCurrencies") = ""
 							session("User")=tryLogin("id")*(-1)
 							session("idInTable")=tryLogin("id")
-							session("Table") = "licencasusuariosmulti"
+							session("Table") = "cliniccentral.licencasusuariosmulti"
 							session("Partner")=req("Partner")
 ' "clinic"&tryLogin("LicencaAtual")
                             				set dbProvi = newConnection("clinic"&tryLogin("LicencaAtual"), Servidor)

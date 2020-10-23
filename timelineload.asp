@@ -282,7 +282,7 @@
                                 if not checktable.eof then
                                     set reg = db.execute("select * from `_"& ti("Modelo") &"` where id="& ti("id"))
                                     if not reg.eof then
-                                        sqlCampos="select * from buicamposforms where FormID="&ti("Modelo")&" and TipoCampoID NOT IN(7,10,11,12,15) ORDER BY IF(Ordem=0, 999, Ordem)"
+                                        sqlCampos="select * from buicamposforms where FormID="&ti("Modelo")&" and TipoCampoID NOT IN(7,10,11,12,15) ORDER BY IF(Ordem=0, 999, Ordem), pTop, pLeft"
 
                                         set pcampos = db.execute(sqlCampos)
                                         while not pcampos.eof

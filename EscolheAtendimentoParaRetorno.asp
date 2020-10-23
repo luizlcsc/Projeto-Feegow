@@ -46,6 +46,7 @@ end if
                           " LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID "&_
                           "WHERE proc.TipoProcedimentoID!=9 AND  (a.ProfissionalID="&ProfissionalID&" or a.EspecialidadeID="&treatvalzero(EspecialidadeID)&") AND a.PacienteID="&PacienteID&" AND a.StaID IN (3) AND DATEDIFF("&mydatenull(Data)&", a.Data) BETWEEN 1 AND "&DiasRetorno&" AND a.Data<="&mydatenull(Data)&"  and "&DiasRetorno&">0 AND (a.Retorno!=1 OR a.Retorno IS NULL) "&_
                           "ORDER BY a.Data"
+    '!!!! - f/6978 - permite agendamento de retorno para atendimento do mesmo dia
 
     set AtendimentosAnterioresSQL = db.execute(sql)
 

@@ -939,9 +939,4 @@ function geraInvoice(T, V, Incrementar){
     });
 }
 
-$(document).ready(function() {
-  setTimeout(function() {
-    $("#toggle_sidemenu_l").click()
-  }, 500);
-})
 </script>

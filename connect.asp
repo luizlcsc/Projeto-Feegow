@@ -5060,7 +5060,7 @@ private function atuAge(AgendamentoID)
         "SELECT TipoCompromissoID "&_
         "FROM agendamentos "&_
         "WHERE id="& AgendamentoID &") "&_
-        "UNION  "&_
+        "UNION  ALL "&_
         "SELECT GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') procedimentos "&_
         "FROM procedimentos "&_
         "WHERE id in( "&_

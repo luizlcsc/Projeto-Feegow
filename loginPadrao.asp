@@ -53,7 +53,7 @@ else
                " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID "&_
 	           "where Email='"&User&"' AND "&sqlSenha &" "&_
                " AND ( l.DominioHomologacao IS NULL OR l.DominioHomologacao='"&Dominio&"' )" &_
-               "ORDER BY IF(l.`Status`='C',0, 1)"
+               "ORDER BY IF(l.`Status`='C',0, 1), IF(l.DominioHomologacao='"&Dominio&"',0, 1)"
 end if
 
 set tryLogin = dbc.execute(sqlLogin)

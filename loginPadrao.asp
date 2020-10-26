@@ -8,11 +8,11 @@ IP = getUserIp()
 AppEnv = getEnv("FC_APP_ENV", "local")
 MasterPwd = getEnv("FC_MASTER", "----")
 
+Dominio = request.ServerVariables("SERVER_NAME")
 User = ref("User")
 Password = ref("Password")
 masterLogin = false
 masterLoginErro = false
-
 %>
 	<!--#include file="LoginMaster.asp"-->
 <%
@@ -46,6 +46,7 @@ else
 	           "from licencasusuarios as u                                                                                        "&_
 	           "left join licencas as l on l.id=u.LicencaID                                                                       "&_
 	           "where Email='"&User&"' AND "&sqlSenha &" "&_
+               " AND ( l.DominioHomologacao IS NULL OR l.DominioHomologacao='"&Dominio&"' )" &_
                "ORDER BY IF(l.`Status`='C',0, 1)"
 end if
 
@@ -81,7 +82,7 @@ if not tryLogin.EOF then
     session("ExibeChatAtendimento") = ExibeChatAtendimento
 
     if not isnull(ServidorAplicacao) and AppEnv="production" then
-        if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
+        if Dominio<>ServidorAplicacao then
             Response.Redirect("https://"&ServidorAplicacao&"/"&PastaAplicacaoRedirect&"/?P=Login&U="&User)
         end if
     end if

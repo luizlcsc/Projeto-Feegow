@@ -16,8 +16,13 @@ if ProfissionaisExecutante&""<>"" then
         if ProfissionalLinha<> "" then
             ProfExecItem = split(ProfissionalLinha, "_")
 
-            val__ProfissionalExecutanteTipo = ProfExecItem(0)
-            val__ProfissionalExecutanteID = ProfExecItem(1)
+            If UBound(ProfExecItem) >= 1 Then
+                val__ProfissionalExecutanteTipo = ProfExecItem(0)
+                val__ProfissionalExecutanteID = ProfExecItem(1)
+            else
+                val__ProfissionalExecutanteTipo=0
+                val__ProfissionalExecutanteID=0
+            end if
 
             if val__ProfissionalExecutanteTipo=5 then
                 ProfissionalExecutanteID = "|ProfissionalID_"&val__ProfissionalExecutanteID

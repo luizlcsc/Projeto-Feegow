@@ -4024,14 +4024,17 @@ private function statusPagto(AgendamentoID, PacienteID, Datas, rdValorPlano, Val
                     end if
                 elseif srdValorPlano="P" then
                     Valor = valConvenio(sValorPlano, "", PacienteID, sProcedimentoID)
-                    if Valor>0 then
-                        set gcons = db.Execute("select gc.ProcedimentoID, gc.ProfissionalID, gc.ProfissionalEfetivoID, gc.ValorProcedimento, gc.ConvenioID from tissguiaconsulta gc where gc.PacienteID="&treatvalnull(PacienteID) & sqlsProfissionalGC &" and gc.DataAtendimento="&mydatenull(sData)&_
-                        " UNION ALL "&_
-                        " select gis.ProcedimentoID, gis.ProfissionalID, NULL, gis.ValorTotal, gs.ConvenioID from tissguiasadt gs left join tissprocedimentossadt gis on gis.GuiaID=gs.id where gs.PacienteID="&treatvalnull(PacienteID) & sqlsProfissionalGS &" and gis.Data="&mydatenull(sData))
-                        if gcons.eof then
-                            statusPagto = -2
-                        else
-                            statusPagto = 1
+
+                    if isnumeric(Valor) then
+                        if Valor>0 then
+                            set gcons = db.Execute("select gc.ProcedimentoID, gc.ProfissionalID, gc.ProfissionalEfetivoID, gc.ValorProcedimento, gc.ConvenioID from tissguiaconsulta gc where gc.PacienteID="&treatvalnull(PacienteID) & sqlsProfissionalGC &" and gc.DataAtendimento="&mydatenull(sData)&_
+                            " UNION ALL "&_
+                            " select gis.ProcedimentoID, gis.ProfissionalID, NULL, gis.ValorTotal, gs.ConvenioID from tissguiasadt gs left join tissprocedimentossadt gis on gis.GuiaID=gs.id where gs.PacienteID="&treatvalnull(PacienteID) & sqlsProfissionalGS &" and gis.Data="&mydatenull(sData))
+                            if gcons.eof then
+                                statusPagto = -2
+                            else
+                                statusPagto = 1
+                            end if
                         end if
                     end if
                 end if

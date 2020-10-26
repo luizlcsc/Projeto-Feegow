@@ -64,7 +64,11 @@
                         </th>
 
                         <th  valign="bottom">
-                        <%=quickField("multiple", "Convenios", "Convenios", 12, "", "select id, nomeconvenio from convenios where sysActive=1 and ativo = 'on' order by nomeconvenio", "nomeconvenio", "")%>
+                        <%
+                        sqlConvenios = "select 'P' id, ' PARTICULAR' NomeConvenio UNION ALL select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' AND COALESCE((SELECT CASE WHEN SomenteConvenios LIKE '%|NONE|%' THEN FALSE ELSE NULLIF(SomenteConvenios,'') END FROM profissionais  WHERE id = "&treatvalzero(ProfissionalID)&") LIKE CONCAT('%|',id,'|%'),TRUE) "&franquia("AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")&" order by NomeConvenio"
+                        %>
+                        <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 12, Convenios, sqlConvenios, "NomeConvenio", "")%>
+                        
                         </th>
 
                         <th valign="bottom" style="vertical-align:top;">

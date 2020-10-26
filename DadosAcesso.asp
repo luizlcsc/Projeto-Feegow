@@ -37,11 +37,6 @@ else
     end if
 
 end if
-if comAcesso="N" then
-	msg = "<div class=""badge badge-danger"">Usu&aacute;rio sem acesso ao sistema</div>"
-else
-	msg = "<div class=""badge badge-success"">Usu&aacute;rio com acesso ao sistema</div>"
-end if
 
 PessoaID = req("I")
 T = lcase(req("T"))
@@ -50,9 +45,17 @@ if T="profissionais" then
 elseif T="funcionarios" then
 	NomeColuna = "NomeFuncionario"
 end if
-set pnome = db.execute("select "&NomeColuna&" from "&T&" where id="&PessoaID)
+set pnome = db.execute("select "&NomeColuna&", Ativo from "&T&" where id="&PessoaID)
 if not pnome.eof then
 	Nome = pnome(""&NomeColuna&"")
+	Ativo = pnome("Ativo")
+end if
+
+
+if comAcesso="N" or Ativo&""="" then
+	msg = "<div class=""badge badge-danger"">Usu&aacute;rio sem acesso ao sistema</div>"
+else
+	msg = "<div class=""badge badge-success"">Usu&aacute;rio com acesso ao sistema</div>"
 end if
 
 %>

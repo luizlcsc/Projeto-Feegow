@@ -72,13 +72,13 @@ if ref("User")<>"" then
 			'local
 			db_execute("replace into sys_users (id, `Table`, NameColumn, idInTable, Permissoes) values ("&pult("id")&", '"&Table&"', '"&getNomeColuna("column")&"', '"&idInTable&"', '"&permissoesPadrao()&"')")
 		else
-            call ExecuteAllServers(sqlupdate)
+            session("AlterarSenha") = 0
 
 			if Acao= "Redefinir" then
 				sqlupdate = "update cliniccentral.licencasusuarios set Ativo=1, Senha=NULL, VersaoSenha=3, SenhaCript=SHA1('"&PasswordSalt&Password&"'), AlterarSenhaAoLogin=0 " &_
 				            "where id="&UserID&" and LicencaID="&LicencaID
 
-				session("AlterarSenha") = 0
+				call ExecuteAllServers(sqlupdate)
 			else
 				sqlupdate = "update cliniccentral.licencasusuarios set Ativo=1, Nome='"&NomePessoa&"', Tipo='"&Table&"', Email='"&ref("User")&"', " &_
 				            "Senha=NULL, VersaoSenha=3, SenhaCript=SHA1('"&PasswordSalt&Password&"'), " &_

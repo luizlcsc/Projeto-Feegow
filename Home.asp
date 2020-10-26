@@ -778,7 +778,7 @@ end if
                         age.close
                         set age = nothing
                     else
-                        %><tr><td>Nenhum agendamento online encontrado.</td></tr><%
+                        %><tr><td colspan="4">Nenhum agendamento online encontrado.</td></tr><%
                     end if
                     %>
                     </table>

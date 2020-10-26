@@ -19,7 +19,7 @@ else
 	if dadosAcesso.eof then
 		comAcesso = "N"
 	else
-		if dadosAcesso("Email")="" then
+		if dadosAcesso("Email")&""="" then
 			comAcesso="N"
 		else
 			comAcesso = "S"

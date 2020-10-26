@@ -281,7 +281,7 @@ else
                 StaConsulta=pSta("StaConsulta")
             end if
             if veseha("rdValorPlano")="V" then
-				if aut("areceberpacienteV")=1 then
+				if aut("areceberpacienteV")=1 or aut("|valordoprocedimentoV|")=1 then
 	                Valor = veseha("ValorPlano")
 				else
 					Valor = ""

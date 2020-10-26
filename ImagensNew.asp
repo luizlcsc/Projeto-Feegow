@@ -356,7 +356,7 @@ end if
                                     <!--<a class="btn btn-xs btn-alert" href="javascript:MaisInfo('')" title="Mais informações">
                                                         <i class="fa fa-info-circle"></i>
                                     </a>-->
-                                    <a class="btn btn-xs btn-alert" href="#" title="Editar Imagem" onclick="return launchEditor('image1', '${item.ArquivoLink}');">
+                                    <a class="hidden btn btn-xs btn-alert" href="#" title="Editar Imagem" onclick="return launchEditor('image1', '${item.ArquivoLink}');">
                                                         <i class="fa fa-pencil icon-pencil"></i>
                                     </a>
                                     <a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir esta imagem?'))atualizaAlbum(${item.id});" id="excluir" title="Excluir Imagem">

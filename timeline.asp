@@ -768,7 +768,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
             function(){
                 let dataImage = imageEditor.toDataURL();
 
-                newSaveImage(dataImage);
+                newSaveImage(dataImage, id, "arquivos");
                 closeComponentsModal();
             },
             "lg",
@@ -777,15 +777,32 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
     };
 
 
+    function uploadImage(form) {
+        data = {
+           url: domain + '/api/image/uploadAnyFile?tk='+localStorage.getItem('tk'),
+            type: 'POST',
+            processData: false,
+           contentType: false,
+           data: $(form).serialize(),
+           mimeType: 'multipart/form-data',
+       }
 
-        function newSaveImage(base64,id){
-            uploadProfilePic({
-                userId: "<%=req("I")%>",
-                db: "<%= LicenseID %>",
-                table: 'pacientes',
-                content: base64,
-                contentType: "base64"
-            });
+        response = jQuery.ajax(data);
+    }
+
+
+        function newSaveImage(base64,id = 'auto', table='pacientes'){
+            if(id === 'auto'){
+                id="<%=req("I")%>";
+            }
+            let objctImg = new FormData();
+            objctImg.append('Tipo', 'I');
+            objctImg.append('L', '<%=LicenseId%>');
+            objctImg.append('userId', '<%=session("User")%>');
+            objctImg.append('files[]', content);
+            objctImg.append('Pasta', 'Imagens');
+
+            uploadImage(objctImg);
         }
 
 </script>

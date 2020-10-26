@@ -7,6 +7,18 @@
 </script>
 <%end if %>
 <style type="text/css">
+.proposta-item-procedimentos  span.select2-selection.select2-selection--single {
+    height: 30px!important;
+    font-size: 11px;
+}
+
+.PropostaDesconto{
+    border-right: 0!important;
+}
+
+.proposta-item-procedimentos > td {
+    padding: 3px!important;
+}
 .duplo>tbody>tr:nth-child(4n+1)>td,
 .duplo>tbody>tr:nth-child(4n+2)>td
 {    background-color: #f9f9f9;
@@ -298,7 +310,7 @@ end if
                                 </div>
                           </div>
                           <div class="panel-body panel-scroller scroller-md scroller-pn pn">
-                            <table class="table mbn tc-icon-1 tc-med-2">
+                            <table class="table mbn tc-icon-1 tc-med-2" >
                               <tbody id="ListaProItens">
 
                               </tbody>

@@ -902,7 +902,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			 <% if fieldType = "currency" then %>
             <div class="input-group">
 
-                <span class="input-group-addon <%=sqlOrClass%>">
+                <span class="input-group-addon">
                 <strong>R$</strong>
             <% end if %>
             </span>

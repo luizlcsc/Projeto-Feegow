@@ -114,7 +114,7 @@ else
 				});
 			<%
 		else
-			sqlupdate = "update licencasusuarios set Ativo=0, Home='"&Home&"' where id = '"&UserID&"' and LicencaID="&LicencaID
+			sqlupdate = "update licencasusuarios set Email=null,Senha=null,Ativo=0, Home='"&Home&"' where id = '"&UserID&"' and LicencaID="&LicencaID
 			call ExecuteAllServers(sqlupdate)
 
 			%>

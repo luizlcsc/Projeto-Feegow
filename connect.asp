@@ -4942,7 +4942,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
                         if not ConvenioSQL.eof then
                             if PlanoID&""<>"" then
                                 set PlanoSQL = db.execute("SELECT NomePlano FROM conveniosplanos "&_
-                                                    " WHERE id="&PlanoID&" AND NomePlano!=''")
+                                                    " WHERE id="&PlanoID&" AND sysActive=1 AND NomePlano!=''")
                                 if not PlanoSQL.eof then
                                     NomePlano = "<label> - Plano:</label><span>"&PlanoSQL("NomePlano")&"</span>"
                                 end if

@@ -253,12 +253,13 @@ if erro="" then
     if Valor&"" = "" then
         Valor=0
     end if
-
+dd(')
     if ccur(Valor)=0 and ref("NaoAlterarExecutante")<>"" then
+		'variavel nao sendo utilizada mais. #6765
         ZeradoComRepasse=True
     end if
 
-	if existePagto="" and not ZeradoComRepasse then
+	if existePagto="" then
 		'itens
 
 		'--- Verifica se o profissional executa o procedimento antes do delete.
@@ -423,12 +424,18 @@ if erro="" then
 				end if
 			end if
 
+			if ref("RepasseGerado"&ii)="S" then
+			    sqlInsert = "update itensinvoice set Descricao='"&ref("Descricao"&II)&"', HoraExecucao="&mytime(ref("HoraExecucao"&ii))&", HoraFim="&mytime(ref("HoraFim"&ii))&" WHERE id="&ii
 
-			if session("Odonto")=1 then
-				sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, OdontogramaObj, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", '"&replace(request.form("OdontogramaObj"&ii), "\", "\\")&"', "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
+				call gravaLogs(sqlInsert, "AUTO", "Item com repasse alterado", "")
             else
-                sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
-            end if
+			
+				if session("Odonto")=1 then
+					sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, OdontogramaObj, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", '"&replace(request.form("OdontogramaObj"&ii), "\", "\\")&"', "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
+				else
+					sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
+				end if
+			end if
 
             'call gravaLogs(sqlInsert ,"E", "Item alterado manualmente","InvoiceID")
 
@@ -616,6 +623,7 @@ if erro="" then
 			    sqlUpdate = "update itensinvoice set Descricao='"&ref("Descricao"&II)&"', Executado='"& Executado &"', DataExecucao="&mydatenull(ref("DataExecucao"&ii))&", HoraExecucao="&mytime(ref("HoraExecucao"&ii))&", AgendamentoID="&treatvalzero(ref("AgendamentoID"&ii))&", CategoriaID="&treatvalzero(ref("CategoriaID"&ii))&", CentroCustoID="&treatvalzero(ref("CentroCustoID"&ii))&", ProfissionalID="&treatvalzero(ProfissionalID)&", HoraFim="&mytime(ref("HoraFim"&ii))&", AtendimentoID="&AtendimentoID&", Associacao="&treatvalzero(Associacao)&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID"&ii)) &" WHERE id="&valID
             end if
 
+			call gravaLogs(sqlUpdate, "AUTO", "Itens alterados", "")
 			db.execute(sqlUpdate)
 			'->itens do rateio irão aqui-----
 '			if Row<0 then

@@ -873,7 +873,6 @@ function itens(T, A, II, autoPCi, cb){
 
 function formaRecto(){
 
-    console.log("invoiceSelectPagto.asp?I=<%=req("I")%>&T=<%=req("T")%>&FormaID=");
     $.post("invoiceSelectPagto.asp?I=<%=req("I")%>&T=<%=req("T")%>&FormaID="+ $("#FormaID option:selected").attr("data-frid"), $("#formItens").serialize(), function(data, status){ $("#selectPagto").html(data) });
 }
 function planPag(I){

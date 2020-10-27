@@ -100,10 +100,11 @@
                           					"WHERE m.AccountAssociationIDDebit=1 " & sqlConta & sqlAutorizacao & sqlTransacao & sqlData & sqlBaixados & " AND coalesce(NULLIF('"&ref("Bandeira")&"','') like CONCAT('%|',Bandeira,'|%'),true) GROUP BY p.id order by DateToReceive"
 
 					set rec = db.execute(sql)
-					
-					
-														
-					while not rec.eof						
+
+					response.Buffer = "true"
+
+					while not rec.eof
+					response.flush()
 						if not isnull(rec("Value")) and not isnull(rec("Total")) and not isnull(rec("NomePaciente")) then
 						    Fee = rec("Fee")
 						    if isnull(Fee) then

@@ -214,7 +214,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
             LinhaProfissional = ""
 
             sqlConf = "select a.PacienteID, a.id, a.Notas, a.Data, a.id, a.ProfissionalID, a.LocalID, a.StaID, s.StaConsulta, a.Hora, pac.NomePaciente, pac.Cel1, trat.Tratamento, concat(if(isnull(pro.NomeSocial) or pro.NomeSocial='', pro.NomeProfissional, pro.NomeSocial)) NomeProfissional,"&_
-                                   "esp.Especialidade, proc.NomeProcedimento, proc.TipoProcedimentoID, l.Nomelocal, eq.NomeEquipamento, a.rdValorPlano, a.ValorPlano, conv.NomeConvenio, tab.NomeTabela "&_
+                                   "esp.Especialidade, proc.NomeProcedimento, proc.TipoProcedimentoID, a.TipoCompromissoID, l.Nomelocal, eq.NomeEquipamento, a.rdValorPlano, a.ValorPlano, conv.NomeConvenio, tab.NomeTabela "&_
                                    ", (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, (select EventoID from agendamentosrespostas where AgendamentoID=a.id limit 1) RespostaID "&_
                                    "FROM agendamentos a LEFT JOIN staconsulta s ON a.StaID=s.id LEFT JOIN pacientes pac ON pac.id=a.PacienteID "&_
                                    "LEFT JOIN profissionais pro ON pro.id=a.ProfissionalID "&_
@@ -327,7 +327,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     <%
                     else
                         whatsAppFiltro_ProfissionalID = LinhaProfissional
-                        whatsAppFiltro_TipoProcedimentoID = ag("TipoProcedimentoID")
+                        whatsAppFiltro_TipoProcedimentoID = ag("TipoCompromissoID")
 
                         listPhonesSQL = " SELECT modelo.Descricao ,modelo.TextoSMS, eventos.Profissionais                                      "&chr(13)&_
                                         " FROM sys_smsemail modelo                                                                             "&chr(13)&_

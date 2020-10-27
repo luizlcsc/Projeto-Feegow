@@ -1106,7 +1106,7 @@ function excluirSerie(id) {
             if(isEnd && !Carregando){
                 $(".timeline-item").slice(loadMore,steps).fadeIn(3000);
                 newloadMore = loadMore+steps;
-                if(!final){
+                if(!final && !Carregando){
                     Carregando = true;
                     $(".load-wrapp").show();
                     $.get("timelineloadmore.asp",{

@@ -84,7 +84,7 @@ select case lcase(req("P"))
 
         <%
             cpd = 0
-            set pacDia = db.execute("select a.StaID, a.Hora, a.PacienteID, p.NomePaciente, ifnull(p.Foto, '') Foto from agendamentos a left join pacientes p on a.PacienteID=p.id where a.Data=curdate() and a.ProfissionalID="&session("idInTable")&" order by Hora")
+            set pacDia = db.execute("select a.StaID, a.Hora, a.PacienteID, p.NomePaciente, ifnull(p.Foto, '') Foto from agendamentos a left join pacientes p on a.PacienteID=p.id where a.Data=curdate() and a.ProfissionalID="&session("idInTable")&" AND a.sysActive=1 order by Hora")
             while not pacDia.eof
                 cpd = cpd+1
                 Foto = pacDia("Foto")

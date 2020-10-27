@@ -921,7 +921,8 @@ function saveInvoiceSubmit(cb){
 
         notifyEvent({
             description: "Erro ao salvar conta.",
-            criticity: 1 
+            criticity: 1,
+            moduleName: "<%=req("P")%>" 
         });
     });
 }

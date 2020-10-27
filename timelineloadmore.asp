@@ -6,7 +6,7 @@ Tipo = req("Tipo")
 PacienteID = req("PacienteID")
 ComEstilo = req("ComEstilo")
 loadMore = req("loadMore")
-MaximoLimit = 20
+MaximoLimit = 40
 
 %>
 

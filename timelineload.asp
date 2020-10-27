@@ -50,7 +50,7 @@
     sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC limit "&loadMore&","&MaximoLimit
-             'response.write(sql)
+
              set ti = db.execute( sql )
              while not ti.eof
                  Ano = year(ti("DataHora"))
@@ -68,6 +68,8 @@
 
                 c = c + 1
                 exibe = 1
+
+
                 if ti("Tipo")="AE" or ti("Tipo")="L" then
                 	if ti("Tipo")="L" then
 		                sqlTipo = " and (buiforms.Tipo=3 or buiforms.Tipo=4 or buiforms.Tipo=0 or isnull(buiforms.Tipo))"
@@ -76,6 +78,8 @@
 	                end if
 
                     set preen = db.execute("select buiformspreenchidos.id idpreen, buiforms.Nome, buiformspreenchidos.ModeloID, buiformspreenchidos.Autorizados, buiformspreenchidos.sysUser preenchedor, buiformspreenchidos.PacienteID, buiformspreenchidos.DataHora, buiforms.* from buiformspreenchidos left join buiforms on buiformspreenchidos.ModeloID=buiforms.id where buiformspreenchidos.id="& ti("id") &" order by buiformspreenchidos.DataHora desc, id desc")
+
+
                     if not preen.eof then
 	                    if preen("preenchedor")=session("User") or preen("Autorizados")="|ALL|" or isnull(preen("Autorizados")) then
 		                    if preen("Autorizados")="|ALL|" or isnull(preen("Autorizados")) then
@@ -92,7 +96,7 @@
                         end if
                     end if
                 end if
-                if exibe=1 then
+                if true then
              %>
             <%
             PermissaoArquivo = true
@@ -144,7 +148,38 @@
             end if
 
             if cstr(session("User"))=ti("sysUser")&"" then
-            PermissaoArquivo = true
+                PermissaoArquivo = true
+            end if
+
+            if exibe=0 then
+                PermissaoArquivo=false
+            end if
+
+            if not PermissaoArquivo then
+                %>
+            <div class="timeline-item">
+                <div class="timeline-icon hidden-xs">
+                    <span class="fa fa-lock text-danger"></span>
+                </div>
+                <div class="panel">
+                    <div class="panel-heading">
+                        <span class="panel-title panel-warning">
+                            <span class="fa fa-align-justify"></span>
+                            <% if ti("sysUser")<>0 then response.write( nameInTable(ti("sysUser")) ) end if %>
+                            <code><%=ti("Titulo") %></code>
+                        </span>
+
+                        <div class="panel-header-menu pull-right mr10 text-muted fs12">
+<%
+                        if not isnull(ti("DataHora")) then
+                            response.write( formatdatetime( ti("DataHora"), 2) &" - "& ft( ti("DataHora")) )
+                        end if
+%>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%
             end if
 
             if PermissaoArquivo then

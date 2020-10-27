@@ -321,7 +321,11 @@ function closeComponentsModal() {
     $modal.modal('hide');
 }
 
-function showMessageDialog(message, messageType, title, delay) {
+const notifyEvent = ({description, criticity}) => {
+    //gravar no analytics
+}
+
+function showMessageDialog(message, messageType, title, delay=3000) {
     if (!messageType) {
         messageType = "danger";
     }

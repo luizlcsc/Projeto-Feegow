@@ -255,6 +255,7 @@ if erro="" then
     end if
 
     if ccur(Valor)=0 and ref("NaoAlterarExecutante")<>"" then
+		'variavel nao sendo utilizada mais. #6765
         ZeradoComRepasse=True
     end if
 

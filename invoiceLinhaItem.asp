@@ -38,18 +38,13 @@
                 DisabledNaoAlterarExecutante=" disabled"
             end if
 
-            if NaoAlterarExecutante then
-            %>
-            <input type="hidden" name="NaoAlterarExecutante" value="S" />
-            <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
-            <%
-            end if
             %>
             <input type="hidden" name="PacoteID<%= id %>" value="<%= PacoteID %>" />
             <td colspan="2">
             <%
             if NaoAlterarExecutante then
                 %>
+                <input type="hidden" name="NaoAlterarExecutante" value="S" />
                 <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
                 <input type="hidden" name="ItemID<%= id %>" value="<%=ItemID%>" />
                 <%

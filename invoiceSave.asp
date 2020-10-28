@@ -314,6 +314,7 @@ if erro="" then
         sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
         if itensStr&""<>"" then
 		    sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID&" AND id not in ("&itensStr&")"
+			db.execute("DELETE FROM tissguiasinvoice WHERE InvoiceID="&InvoiceID&" AND ItemInvoiceID not in ("&itensStr&")")			
 		end if
 
 		call gravaLogs(sqlExecute ,"AUTO", "Item excluído manualmente","InvoiceID")

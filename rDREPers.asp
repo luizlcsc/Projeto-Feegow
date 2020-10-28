@@ -153,7 +153,7 @@ ModeloID = ref("ModeloID")
             tag = "th"
         end if
         %>
-        <tr class="<%= Classe %>">
+        <tr class="<%= Classe %>" id="prin<%= LinhaID %>">
             <%= "<"& tag &">" & l("Descricao") & "</"& tag &">" %>
             <%
             m = 1
@@ -191,13 +191,24 @@ ModeloID = ref("ModeloID")
 </table>
 
 <script type="text/javascript">
-    $("tr td").click(function () {
-        var LinhaID = $(this).attr("data-l");
-        var Mes = $(this).attr("data-m");
+    
+    function det(l, m, a) {
         $("#modal").html("Carregando...");
         $("#modal-table").modal("show");
-        $.get("rDRE_detalhes.asp?LinhaID=" + LinhaID + "&Mes=" + Mes, function (data) {
+        $.get("rDRE_detalhes.asp?LinhaID=" + l + "&Mes=" + m +"&A="+ a, function (data) {
             $("#modal").html(data);
         });
+    }
+    
+
+    $("tr[id^='prin']").click(function(){
+        i = $(this).attr('id').replace('prin', '');
+        //$('#append'+i).append('<tr><td colspan=13>Carregando...</td></tr>');
+        $.get("rDreCats.asp?L="+i, function(data){
+            $('.tmp'+i).remove();
+            $('#prin'+i).after( data );
+        });
+
     });
+
 </script>

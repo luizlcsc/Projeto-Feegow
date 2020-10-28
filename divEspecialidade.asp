@@ -86,6 +86,6 @@ if ProfissionalID<>"" and isnumeric(ProfissionalID) then
 elseif req("EquipamentoID")="" then
     sqlEsp = "SELECT t.EspecialidadeID id, IFNULL(e.nomeEspecialidade, e.especialidade) especialidade FROM (	SELECT EspecialidadeID from profissionais WHERE ativo='on'	UNION ALL	select pe.EspecialidadeID from profissionaisespecialidades pe LEFT JOIN profissionais p on p.id=pe.ProfissionalID WHERE p.Ativo='on') t LEFT JOIN especialidades e ON e.id=t.EspecialidadeID WHERE NOT ISNULL(especialidade) GROUP BY t.EspecialidadeID ORDER BY especialidade"
 
-    call quickfield("simpleSelect", "EspecialidadeID", "Especialidade", 12, EspecialidadeID, sqlEsp, "especialidade", " onchange=""$.each($('.linha-procedimento'), function(){ parametros('ProcedimentoID'+$(this).data('id'),$(this).find('select[data-showcolumn=\'NomeProcedimento\']').val()); })""  semVazio no-select2 ")
+    call quickfield("simpleSelect", "EspecialidadeID", "Especialidade", 12, EspecialidadeID, sqlEsp, "especialidade", " onchange=""$.each($('.linha-procedimento'), function(){ parametros('ProcedimentoID'+$(this).data('id'),$(this).find('select[data-showcolumn=\'NomeProcedimento\']').val()); })""  empty  no-select2 ")
 end if
 %>

@@ -92,7 +92,7 @@
 						sqlLimit = "LIMIT "&((PaginaAtual-1)*Limite)&","&Limite
 					end if
 
-                    sql = "select pac.NomePaciente, pac.id Prontuario, p.*, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
+                    sql = "select * from (select pac.NomePaciente, pac.id Prontuario, p.*, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
                           					" (select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID and DateToReceive<p.DateToReceive) Parcela, "&_
                           					"(select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID) NumeroParcelas "&queryBlock&" from sys_financialcreditcardreceiptinstallments p  "&_
                           					"INNER JOIN sys_financialcreditcardtransaction t on t.id=p.TransactionID  "&_
@@ -106,7 +106,7 @@
                                               "LEFT JOIN sys_financialinvoices fi ON fi.id=movrec.InvoiceID "&_
                           					"LEFT JOIN cliniccentral.bandeiras_cartao bc on bc.id=t.BandeiraCartaoID "&_
                           					"WHERE m.AccountAssociationIDDebit=1 " & sqlConta & sqlAutorizacao & sqlTransacao & sqlData & sqlBaixados & " AND coalesce(NULLIF('"&ref("Bandeira")&"','') like CONCAT('%|',Bandeira,'|%'),true) GROUP BY p.id order by DateToReceive"&_
-											" "&sqlLimit
+											")t "&sqlLimit
 
 					sqlQtd = "SELECT COUNT(p.id) qtd "&_
 							"	FROM sys_financialcreditcardreceiptinstallments p "&_

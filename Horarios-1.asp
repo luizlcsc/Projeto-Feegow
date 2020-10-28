@@ -98,7 +98,7 @@ end if
                             %>
                             <th><%=ucase(weekdayname(Dia))%></th>
                             <th width="1%">
-                                <% if aut("horariosI") = 1 then %>
+                                <% if aut("horariosA") = 1 then %>
                                 <button type="button" class="btn btn-xs btn-success" onclick="addHorario(<%=Dia%>)"><i class="fa fa-plus"></i></button>
                                 <% end if %>
                             </th>

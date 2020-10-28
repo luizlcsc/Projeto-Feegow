@@ -151,7 +151,7 @@ end if
 											<td>
 												<%
 												if tabcolCategorias<>"" then
-													call quickfield("multiple", "Categorias"& ConID, "", 12, Categorias, "select '0' id, '        SEM CATEGORIA' "& colCategorias &" UNION select id, "& colCategorias &" from "& tabCategorias &" WHERE sysActive=1 ORDER BY "& colCategorias, colCategorias, " no-select2 semVazio onchange='lin(`C`, `U`, "& plinhas("id") &" )' ")
+													call quickfield("multiple", "Categorias"& ConID, "", 12, Categorias, "select '0' id, '        SEM CATEGORIA' "& colCategorias &", '       ' Posicao UNION select id, concat(ifnull(Posicao, ''), ' - ', "& colCategorias &") "& colCategorias &", Posicao from "& tabCategorias &" WHERE sysActive=1 ORDER BY Posicao, "& colCategorias, colCategorias, " no-select2 semVazio onchange='lin(`C`, `U`, "& plinhas("id") &" )' ")
 												end if
 												%>
 											</td>
@@ -182,7 +182,7 @@ end if
 							<table class="table table-condensed table-bordered mt10">
 								<thead>
 									<tr>
-										<th>Somar / Subtrair</th>
+										<th nowrap width="1%">Somar / Subtrair</th>
 										<th>Linha</th>
 										<th width="1%"></th>
 									</tr>
@@ -197,7 +197,7 @@ end if
 										end if
 										%>
 										<tr>
-											<td><%= SoSu %></td>
+											<td class="text-center"><%= SoSu %></td>
 											<td><%= ptot("Descricao") %></td>
 											<td><i class="fa fa-remove btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta condição do totalizador?'))lin('T', 'XLT', <%= ptot("id") %>)"></i></td>
 										</tr>

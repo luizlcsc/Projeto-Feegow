@@ -13,7 +13,7 @@ if LC="L" then
 	elseif Acao="U" then
 		set l = db.execute("select id from dre_modeloslinhas where ModeloID="& ModeloID)
 		while not l.eof
-			sqlUP = "update dre_modeloslinhas set Descricao='"& ref("Descricao"& l("id")) &"', CorFundo='"& ref("CorFundo"& l("id")) &"', Ordem="& treatvalzero(ref("Ordem"& l("id"))) &" where id="& l("id")
+			sqlUP = "update dre_modeloslinhas set Descricao='"& ref("Descricao"& l("id")) &"', TipoValor='"& ref("TipoValor"& l("id")) &"', CorFundo='"& ref("CorFundo"& l("id")) &"', Ordem="& treatvalzero(ref("Ordem"& l("id"))) &" where id="& l("id")
 			'response.write(sqlUP &"<br>")
 			db.execute( sqlUP )
 		l.movenext
@@ -65,6 +65,7 @@ end if
 			Descricao = plinhas("Descricao")
 			Ordem = plinhas("Ordem")
 			CorFundo = plinhas("CorFundo")
+			TipoValor = plinhas("TipoValor")
 			%>
 			<tr>
 				<td>
@@ -78,6 +79,8 @@ end if
 
 						if Tipo="LINHA" then
 							call quickfield("simpleSelect", "AddCon", "Condições", 2, "", "select '' id, '+ Adicionar' Descricao UNION ALL select id, Descricao from cliniccentral.dre_condicoes", "Descricao", " semVazio  no-select2 onchange='lin(`C`, $(this).val(), "& plinhas("id") &" )' ")
+
+							call quickfield("simpleSelect", "TipoValor"& id, "Tipo de Valor", 2, TipoValor, "select 'Competencia' id, 'Competência' Descricao UNION ALL select 'Vencimento', 'Vencimento' UNION ALL select 'Pagamento', 'Pagamento'", "Descricao", " semVazio  no-select2 onchange='lin(`L`, `U`, "& plinhas("id") &" )' ")
 						else
 							%>
 							<div class="col-md-2">

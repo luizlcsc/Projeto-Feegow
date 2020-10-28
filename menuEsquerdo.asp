@@ -2441,14 +2441,15 @@ select case lcase(req("P"))
             set telas = nothing
     end if
     case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara"
+        if recursoAdicional(24) = 4 and Aut("labsconfigintegracao") = 1 then
     %>
     <li>
         <a href="?P=labscadastrocredenciais&Pers=1"><span class="fa fa-users"></span> <span class="sidebar-title">Cadastro de Credenciais</span></a>
     </li>
-    <li>
-        <a href="#"><span class="fa fa-exchange"></span> <span class="sidebar-title">Sincronização de Resultados</span></a>
-        
-    </li>
+<!--    <li>-->
+<!--        <a href="#"><span class="fa fa-exchange"></span> <span class="sidebar-title">Sincronização de Resultados</span></a>-->
+<!--        -->
+<!--    </li>-->
     <li>
         <a href="?P=labsconfigintegracao&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Implantação de Laboratórios</span></a>
     </li>
@@ -2459,6 +2460,7 @@ select case lcase(req("P"))
         <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
     <%
+        end if
     case "programasdesaude", "programasdesaudetipos"
     %>
     <li>

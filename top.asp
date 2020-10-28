@@ -556,7 +556,7 @@ else
             </li>
             <%
             end if
-            if session("Admin")=1 then
+            if recursoAdicional(24) = 4 and Aut("labsconfigintegracao") = 1 then
             %>
             <li>
                 <a href="?P=labsconfigintegracao"><i class="fa fa-flask"></i> Integração Laboratorial</a>

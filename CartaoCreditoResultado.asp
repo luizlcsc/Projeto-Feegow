@@ -84,7 +84,7 @@
 																       " from sys_financialcreditcardreceiptinstallments "&_
 																	  " where TransactionID = p.TransactionID) order by acrescimoPercentual desc limit 1), bc.Bandeira) AS Bandeira "														
 
-					Limite = 5
+					Limite = 350
 					sqlLimit = "LIMIT "&Limite&""
 
 					PaginaAtual = ccur(ref("PaginaAtual"))

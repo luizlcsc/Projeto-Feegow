@@ -1,10 +1,11 @@
-<!--#include file="connect.asp"-->
+<!--#include file="Classes/Connection.asp"-->
 <%
-    sql = "select count(1)"
+    set db = newConnection(session("Banco"), "")
+
+    sql = "select count(1) as count"
     set retorno = db.execute(sql)
 
-    dd(retorno)
-    if retorno.eof then
+    if not isNull(retorno) then
         response.write("Health")
     else
         response.write("Error")

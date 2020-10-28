@@ -5,8 +5,8 @@
 
     dd(retorno)
     if retorno.eof then
-        response.write("ok")
+        response.write("Health")
     else
-        response.write("500")
+        response.write("Error")
     end if
 %>

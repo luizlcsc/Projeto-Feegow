@@ -98,7 +98,9 @@ end if
                             %>
                             <th><%=ucase(weekdayname(Dia))%></th>
                             <th width="1%">
+                                <% if aut("horariosI") = 1 then %>
                                 <button type="button" class="btn btn-xs btn-success" onclick="addHorario(<%=Dia%>)"><i class="fa fa-plus"></i></button>
+                                <% end if %>
                             </th>
                             <%
 	              wend
@@ -147,8 +149,12 @@ end if
                                                 </em></small>
                                             </div>
                                             <div class="text-right">
+                                                <% if aut("horariosA")then%>
                                                 <button onclick="editGrade(<%=h("id")%>, <%=ProfissionalID%>);" class="btn btn-xs btn-success" type="button"><i class="fa fa-edit"></i></button>
+                                                <% end if%>
+                                                <% if aut("horariosX")then%>
                                                 <button onclick="if(confirm('Tem certeza de que deseja excluir esta programação da grade de horários?'))ajxContent('Horarios-1&T=Profissionais&X=<%=h("id")%>', <%=ProfissionalID%>, 1, 'divHorarios');" class="btn btn-xs btn-danger" type="button"><i class="fa fa-remove"></i></button>
+                                                <% end if%>
                                             </div>
                                         </td>
                                     </tr>

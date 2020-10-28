@@ -2,6 +2,12 @@
 <%
     set db = newConnection(session("Banco"), "")
 
+    if isNull(db) then
+        response.write("Error")
+        response.end
+
+    end if
+
     sql = "select count(1) as count"
     set retorno = db.execute(sql)
 

@@ -105,7 +105,7 @@
                                               "LEFT JOIN nfe_notasemitidas nfe ON nfe.InvoiceID=movrec.InvoiceID AND nfe.situacao=1 "&_
                                               "LEFT JOIN sys_financialinvoices fi ON fi.id=movrec.InvoiceID "&_
                           					"LEFT JOIN cliniccentral.bandeiras_cartao bc on bc.id=t.BandeiraCartaoID "&_
-                          					"WHERE m.AccountAssociationIDDebit=1 " & sqlConta & sqlAutorizacao & sqlTransacao & sqlData & sqlBaixados & " AND coalesce(NULLIF('"&ref("Bandeira")&"','') like CONCAT('%|',Bandeira,'|%'),true) GROUP BY p.id order by DateToReceive"&_
+                          					"WHERE m.AccountAssociationIDDebit=1 " & sqlConta & sqlAutorizacao & sqlTransacao & sqlData & sqlBaixados & " AND coalesce(NULLIF('"&ref("Bandeira")&"','') like CONCAT('%|',Bandeira,'|%'),true) GROUP BY p.id order by DateToReceive, m.Date, NomePaciente"&_
 											")t "&sqlLimit
 
 					sqlQtd = "SELECT COUNT(p.id) qtd "&_

@@ -92,7 +92,7 @@
 						sqlLimit = "LIMIT "&((PaginaAtual-1)*Limite)&","&Limite
 					end if
 
-                    sql = "select * from (select pac.NomePaciente, pac.id Prontuario, p.*, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
+                    sql = "select * from (select pac.NomePaciente, pac.id Prontuario, p.id, p.DateToReceive, p.Fee,p.Value,p.TransactionID,p.InvoiceReceiptID, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
                           					" (select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID and DateToReceive<p.DateToReceive) Parcela, "&_
                           					"(select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID) NumeroParcelas "&queryBlock&" from sys_financialcreditcardreceiptinstallments p  "&_
                           					"INNER JOIN sys_financialcreditcardtransaction t on t.id=p.TransactionID  "&_

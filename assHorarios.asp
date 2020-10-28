@@ -31,12 +31,16 @@ function getNomeConvenios(stringIDs)
 	newStringIds = replace(stringIDs&"","|","")
 	getNomeConvenios =""
 
-	if newStringIds <> "" then
-		set convs = db.execute("select group_concat( nomeconvenio separator ', ' ) convs from convenios where id in("&newStringIds&")")
-		if not convs.eof then
-			getNomeConvenios = convs("convs")
+	if instr(newStringIds,"N")>0 then
+
+		if newStringIds <> "" then
+			set convs = db.execute("select group_concat( nomeconvenio separator ', ' ) convs from convenios where id in("&newStringIds&")")
+			if not convs.eof then
+				getNomeConvenios = convs("convs")
+			end if 
 		end if 
-	end if 
+		
+	end if
 end function
 
 

@@ -830,7 +830,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								   </li>
 								 <%
                                  end if
-                                 if session("Admin")=1 then
+                                 if session("ExibeFaturas") then
 
                                  IF session("QuantidadeFaturasAbertas") = "" THEN
                                     if AppEnv="production" then

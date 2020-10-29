@@ -107,10 +107,28 @@ end if
               </tr>
               <tr class="success">
                   <th>Regras para Aplicação de Desconto</th>
+                  <%
+                  disabled = ""
+                  if RegraID = "N" then
+                    disabled= " disabled "
+                  end if
+                  %>
                   <th colspan="4" class="pn">
-                      <button type="button" class="btn btn-sm btn-block btn-success" onclick="rd('I', 0)"><i class="fa fa-plus"></i> Adicionar</button>
+                      <button type="button" class="btn btn-sm btn-block btn-success"<%=disabled%> onclick="rd('I', 0)"><i class="fa fa-plus"></i> Adicionar</button>
+                  
                   </th>
               </tr>
+                
+                <%
+                  if RegraID = "N" then
+                    %> 
+                    <tr>
+                    <td colspan=10>Para adicionar regras de desconto é necessário salvar o perfil de permissão.</td>
+                    </tr>
+                    <%
+                  end if
+                %>
+                
               <tbody id="divRD">
                   <% server.execute("rd.asp") %>
               </tbody>

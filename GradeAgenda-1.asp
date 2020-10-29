@@ -2,6 +2,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
 <!--#include file="Classes/ValidaProcedimentoProfissional.asp"-->
+<!--#include file="Classes/GradeAgendaUtil.asp"-->
 
 <script>
 $(".dia-calendario").removeClass("danger");
@@ -836,10 +837,11 @@ end if
                 set comps = nothing
 
 
-                bloqueioSql = "select c.* from compromissos c where (c.ProfissionalID="&ProfissionalID&" or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"&ProfissionalID&"%|'))) AND ((false "&sqlUnidadesBloqueio&") or c.Unidades='' OR c.Unidades IS NULL) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
-
-				set bloq = db.execute(bloqueioSql)
-				while not bloq.EOF
+                'bloqueioSql = "select c.* from compromissos c where (c.ProfissionalID="&ProfissionalID&" or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"&ProfissionalID&"%|'))) AND ((false "&sqlUnidadesBloqueio&") or c.Unidades='' OR c.Unidades IS NULL) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
+				bloqueioSql = getBloqueioSql(ProfissionalID, Data, sqlUnidadesBloqueio)
+                set bloq = db.execute(bloqueioSql)
+				
+                while not bloq.EOF
                     HoraDe = HoraToID(bloq("HoraDe"))
 					HoraA = HoraToID(bloq("HoraA"))
                     Conteudo = "<tr id=""'+$(this).attr('data-hora')+'"" onClick=""abreBloqueio("&bloq("id")&", `"&replace(mydatenull(Data)&"","'","")&"`, \'\');"">"&_

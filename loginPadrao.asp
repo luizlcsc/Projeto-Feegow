@@ -19,7 +19,7 @@ masterLoginErro = false
 <%
 
 if masterLogin then
-    sqlLogin = "SELECT u.*,l.ExibeChatAtendimento, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, "&_
+    sqlLogin = "SELECT u.*,l.ExibeChatAtendimento,l.ExibeFaturas, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, "&_
     " l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom, "&_
     " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, COALESCE(serv.DNS, l.Servidor) Servidor "&_
     " FROM licencasusuarios AS u "&_
@@ -44,7 +44,7 @@ else
                 "or (SenhaCript=SHA1('"&PasswordSalt& Password &"') AND VersaoSenha=3)"&_
                 ") "
 
-	sqlLogin = "select u.*, l.ExibeChatAtendimento, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, "&_
+	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, "&_
 	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,  "&_
 	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, COALESCE(serv.DNS, l.Servidor) Servidor,   "&_
 	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom                                           "&_
@@ -74,9 +74,13 @@ if not tryLogin.EOF then
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
     ExibeChatAtendimento = tryLogin("ExibeChatAtendimento")
+    ExibeFaturas = tryLogin("ExibeFaturas")
 
     ClienteUnimed = instr(Cupom, "UNIMED") > 0
 
+    if tryLogin("Admin")<>1 then
+        ExibeFaturas=0
+    end if
 
     if tryLogin("Admin")=1 then
         ExibeChatAtendimento=True
@@ -85,8 +89,9 @@ if not tryLogin.EOF then
     if ClienteUnimed or AppEnv<>"production" or tryLogin("Status")<>"C" then
         ExibeChatAtendimento=False
     end if
-
+    
     session("ExibeChatAtendimento") = ExibeChatAtendimento
+    session("ExibeFaturas") = ExibeFaturas
 
     if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then

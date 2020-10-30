@@ -1068,32 +1068,6 @@ select case lcase(req("P"))
                 <span class="fa fa-flask"></span> <span class="sidebar-title">Procedimentos Laboratorios</a>
             </li>
             <%
-            if recursoAdicional(24)=4 then
-                set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
-                if not labAutenticacao.eof then
-                %>
-           
-            <li>
-                <a> <span class="fa fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span> </a>
-            </li>
-            <li>                
-            <%
-                set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs ")
-                while not dadoslab.eof
-                %>
-                <li>
-                    <a  href="?P=DeParaLabs&Pers=1&labid=<%=dadoslab("id")%>">
-                        &nbsp;&nbsp;&nbsp;<span class="fa fa-angle-double-right"></span> <span class="sidebar-title" title="Procedimentos <=> Exames (<%=dadoslab("NomeLaboratorio")%>)"><%=dadoslab("NomeLaboratorio")%>&nbsp; <span class="label label-system label-xs fleft">Novo</span></span>
-                    </a>
-                </li>
-                <% 
-                dadoslab.movenext
-                wend
-            %>
-            </li>
-            <%
-                end if
-            end if
             if aut("procedimentosgruposV") then
                 %>
                 <li>
@@ -2440,7 +2414,7 @@ select case lcase(req("P"))
             telas.close
             set telas = nothing
     end if
-    case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara"
+    case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara", "labslistagemprocedimentos", "deparalabs"
         if recursoAdicional(24) = 4 and Aut("labsconfigintegracao") = 1 then
     %>
     <li>
@@ -2460,7 +2434,31 @@ select case lcase(req("P"))
         <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
     <%
+        set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
+        if not labAutenticacao.eof then
+        %>
+        
+        <li>
+            <a> <span class="fa fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span> </a>
+        </li>
+        <li>                
+        <%
+            set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs ")
+            while not dadoslab.eof
+            %>
+            <li>
+                <a  href="?P=DeParaLabs&Pers=1&labid=<%=dadoslab("id")%>">
+                    &nbsp;&nbsp;&nbsp;<span class="fa fa-angle-double-right"></span> <span class="sidebar-title" title="Procedimentos <=> Exames (<%=dadoslab("NomeLaboratorio")%>)"><%=dadoslab("NomeLaboratorio")%>&nbsp; <span class="label label-system label-xs fleft">Novo</span></span>
+                </a>
+            </li>
+            <% 
+            dadoslab.movenext
+            wend
+        %>
+        </li>
+        <%
         end if
+    end if
     case "programasdesaude", "programasdesaudetipos"
     %>
     <li>

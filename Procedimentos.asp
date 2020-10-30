@@ -100,7 +100,9 @@ TipoGuia = reg("TipoGuia")
                         <%=quickField("simpleSelect", "GrupoID", "Grupo", 2, reg("GrupoID"), "select * from procedimentosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "")%>
                         <%=quickField("text", "Sigla", "Sigla", 1, reg("Sigla"), "", "", "")%>
                         <%=quickField("text", "Codigo", "Código TUSS", 1, reg("Codigo"), "", "", "")%>
-                        <%=quickField("number", "MaximoNoMes", "Máximo no mês", 2, reg("MaximoNoMes"), " text-right", "", "")%>
+                        <% if getConfig("procedimentosPorMes") = 1 then%>
+                            <%=quickField("number", "MaximoNoMes", "Máximo de procedimentos no mês", 2, reg("MaximoNoMes"), " text-right", "", "")%>
+                        <% end if%>
                    </div>
                     <hr class="short alt" />
                     <div class="row">

@@ -112,7 +112,11 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
    }
    @media print{
        #content_wrapper{
-        margin-left: 0;
+        position: initial!important;
+        margin-left: 0!important;
+       }
+       .navbar.navbar-fixed-top + #sidebar_left + #content_wrapper{
+         padding-top:0!important;
        }
        #sidebar_left{
          display:none;

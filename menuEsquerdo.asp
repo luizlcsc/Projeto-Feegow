@@ -2448,7 +2448,7 @@ select case lcase(req("P"))
             %>
             <li>
                 <a  href="?P=DeParaLabs&Pers=1&labid=<%=dadoslab("id")%>">
-                    &nbsp;&nbsp;&nbsp;<span class="fa fa-angle-double-right"></span> <span class="sidebar-title" title="Procedimentos <=> Exames (<%=dadoslab("NomeLaboratorio")%>)"><%=dadoslab("NomeLaboratorio")%>&nbsp; <span class="label label-system label-xs fleft">Novo</span></span>
+                    &nbsp;&nbsp;&nbsp;<span class="fa fa-angle-double-right"></span> <span class="sidebar-title" title="Procedimentos <=> Exames (<%=dadoslab("NomeLaboratorio")%>)"><%=dadoslab("NomeLaboratorio")%></span>
                 </a>
             </li>
             <% 

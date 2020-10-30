@@ -740,4 +740,15 @@ function validaConvenio(convenioID, localID)
     end if
 
 end function
+
+' valida se o procedimento já ultrapasou o limite mensal
+if getConfig("procedimentosPorMes") = 1 then
+    dt = left(mydate(ref("Data")),8)&"%"
+    sql = "SELECT IF(COUNT(a.id) >= p.MaximoNoMes AND p.MaximoNoMes IS NOT NULL, 1, 0)ultimos FROM agendamentos a LEFT JOIN procedimentos p ON p.id = a.TipoCompromissoID WHERE a.Data LIKE '"&dt&"'  AND a.TipoCompromissoID = "&ref("ProcedimentoID")
+    set ultimosAgendamentos = db.execute(sql)
+    if ultimosAgendamentos("ultimos") = "1" then
+        erro = "Este procedimento já ultrapassou o seu limite para este mês."
+    end if
+end if
 %>
+

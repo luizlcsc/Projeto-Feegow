@@ -5,6 +5,8 @@
 'ALTER TABLE `buiformspreenchidos`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `sysActive`
 'ALTER TABLE `buiforms`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `Versao`
 
+SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
+
     if ProfessionalID <>"" then
         sqlProf = "left join sys_users as us on us.id = sysUser where us.idInTable = "&ProfessionalID
     end if 
@@ -156,8 +158,15 @@
             end if
 
             if not PermissaoArquivo then
+    
+                hiddenRegistro = ""
+
+                if SinalizarFormulariosSemPermissao&""<>"1" then
+                    hiddenRegistro = " hidden "
+                end if
+            
                 %>
-            <div class="timeline-item">
+            <div class="timeline-item <%=hiddenRegistro%>">
                 <div class="timeline-icon hidden-xs">
                     <span class="fa fa-lock text-danger"></span>
                 </div>

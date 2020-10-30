@@ -113,7 +113,7 @@ if not tryLogin.EOF then
     'end if
 		'response.Write("if "&tryLogin("Cliente")&"=0 and "&formatdatetime(tryLogin("DataHora"),2)&" < "&dateadd("d", -15, date())&" then")
 	IPsAcesso = tryLogin("IPsAcesso")
-	if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 then
+	if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 and not permiteMasterLogin then
 		erro = "ACESSO NÃO AUTORIZADO: Para acessar o sistema deste local, solicite ao administrador a liberação do IP "&IP
 	end if
 	if not isnull(tryLogin("FimTeste")) then

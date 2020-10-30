@@ -2431,6 +2431,9 @@ select case lcase(req("P"))
         <a href="?P=labslistagemexames&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Listagem de exames</span></a>
     </li>
     <li>
+        <a href="?P=labslistagemprocedimentos&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Listagem de procedimentos</span></a>
+    </li>
+    <li>
         <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
     <%

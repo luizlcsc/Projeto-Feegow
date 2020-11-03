@@ -17,6 +17,11 @@ BETWEEN = " BETWEEN "& De &" AND "& Ate &" "
                 if qtdProfissionais < 40 then
                     set punits = db.execute("select id, NomeProfissional from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional")
                 else
+
+                IF getConfig("ApenasAdminVisualizaProducaoDeProfissionais") = 1 AND session("Admin") = 0 THEN
+                    AndFilter = " AND prof.id = ("&session("idInTable")&")"
+                END IF
+
                     set punits = db.execute("select distinct t.ProfissionalID id, prof.NomeProfissional from ("&_
     "	select distinct ProfissionalID from itensinvoice where Executado='S' and Associacao=5 and DataExecucao "& BETWEEN &_
     "	UNION ALL "&_
@@ -25,7 +30,9 @@ BETWEEN = " BETWEEN "& De &" AND "& Ate &" "
     "	select distinct ProfissionalID from tissprocedimentoshonorarios where Data "& BETWEEN &_
     "	UNION ALL"&_
     "	select distinct ifnull(ProfissionalEfetivoID, ProfissionalID) from tissguiaconsulta WHERE DataAtendimento "& BETWEEN &_
-    "   ) t LEFT JOIN profissionais prof ON prof.id=t.ProfissionalID WHERE NOT ISNULL(prof.NomeProfissional) ORDER BY NomeProfissional")
+    "   ) t LEFT JOIN profissionais prof ON prof.id=t.ProfissionalID WHERE NOT ISNULL(prof.NomeProfissional) "&AndFilter&" ORDER BY NomeProfissional")
+
+
                 end if
                 while not punits.eof
 					if aut("|agendaV|")=1 or (lcase(session("Table"))="profissionais" and session("idInTable")=punits("id")) then

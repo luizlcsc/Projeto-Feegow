@@ -193,9 +193,19 @@ end if
     <div class="panel-body pn">
         <%
         ProfissionalID = ccur(req("I"))
+
+        if aut("|horariosV|") then
+
+            if aut("|horariosA|") then
         %>
         <!--#include file="formExcecoes.asp"-->
+        <%
+            end if
+        %>
         <iframe width="100%" height="300" name="assHorarios" frameborder="0" src="assHorarios.asp?ProfissionalID=<%= ProfissionalID %>"></iframe>
+        <%
+            end if
+        %>
     </div>
 </div>
 

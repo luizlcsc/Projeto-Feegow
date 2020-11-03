@@ -197,7 +197,15 @@ while not pass.EOF
     <td class="text-center"><%=getNomeEspecialidades(pass("Especialidades"))%></td>
     <td class="text-center"><%=getNomeConvenios(pass("Convenios"))%></td>
     <td class="text-center"><%=pass("Compartilhar")%></td>
-	<td width="1%"><button type="button" value="Excluir" onClick="location.href='?X=<%=pass("id")%>&ProfissionalID=<%=req("ProfissionalID")%>&LocalID=<%=req("LocalID")%>';" style="font-size:10px" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> </button></td>
+	<td width="1%">
+	    <%
+	    if aut("|horariosX|") then
+	    %>
+	    <button type="button" value="Excluir" onClick="location.href='?X=<%=pass("id")%>&ProfissionalID=<%=req("ProfissionalID")%>&LocalID=<%=req("LocalID")%>';" style="font-size:10px" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> </button>
+	    <%
+	    end if
+	    %>
+    </td>
 </tr>
 <%
 pass.moveNext

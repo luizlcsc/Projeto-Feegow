@@ -86,7 +86,13 @@ if erro="" then
     splU = split(reqf("Unidades"), ", ")
     for i=0 to ubound(splU)
 	      Total = 0
-	      set prof = db.execute("select p.*, u.id UsuarioID from profissionais p left join sys_users u on u.idInTable=p.id and `Table` like 'profissionais' where p.sysActive=1 and p.Ativo='on' "&sqlProf&" and p.id in("&reqf("ProfissionalID")&") order by p.NomeProfissional")
+	      IF getConfig("ApenasAdminVisualizaProducaoDeProfissionais") = 0 OR session("Admin") = 1 THEN
+	        set prof = db.execute("select p.*, u.id UsuarioID from profissionais p left join sys_users u on u.idInTable=p.id and `Table` like 'profissionais' where p.sysActive=1 and p.Ativo='on' "&sqlProf&" and p.id in("&reqf("ProfissionalID")&") order by p.NomeProfissional")
+	      ELSE
+	        set prof = db.execute("select p.*, u.id UsuarioID from profissionais p left join sys_users u on u.idInTable=p.id and `Table` like 'profissionais' where p.sysActive=1 and p.Ativo='on' "&sqlProf&" and p.id in("&session("idInTable")&") order by p.NomeProfissional")
+	      END IF
+
+
 	      while not prof.eof
 	  	    if isnull(prof("UsuarioID")) then
 			    UsuarioID = 0

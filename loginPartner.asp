@@ -5,9 +5,6 @@
                             Servidor = tryLogin("Servidor")&""
 							session("Servidor")=Servidor
 
-                            if Servidor="aws" then
-                                response.redirect("http://clinic7.feegow.com.br/v7?P=Login&Partner="&req("Partner"))
-                            end if
 
 							session("Banco")="clinic"&tryLogin("LicencaAtual")
 							session("ExibeChatAtendimento")= True

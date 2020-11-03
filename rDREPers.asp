@@ -19,7 +19,7 @@ ModeloID = ref("ModeloID")
 %>
 <div class="row mb20">
     <div class="col-md-2">
-        <img width="250" src="https://clinic7.feegow.com.br/v7/assets/img/login_logo.png" />
+        <img width="250" src="https://feegow-public-cdn.s3.us-east-1.amazonaws.com/feegowclinic-v7/assets/img/login_logo.png" />
     </div>
     <h2 class="text-center col-md-10">Demonstração do Resultado do Exercício
          - <%= Exercicio %>

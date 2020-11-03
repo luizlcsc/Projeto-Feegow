@@ -31,7 +31,7 @@ END IF
 
                 NomeEmpresa = licencas("NomeEmpresa")
                 'FotoEmpresa = "https://via.placeholder.com/200?text=Sem foto"
-                FotoEmpresa = "https://clinic8.feegow.com.br/v7/images/hospital-icon.png"
+                FotoEmpresa = "https://cdn.feegow.com/feegowclinic-v7/images/hospital-icon.png"
 
                 set FotoSQL = connLicense.execute("SELECT Logo FROM sys_config WHERE id=1 and Logo Like 'http%'")
                 if not FotoSQL.eof then

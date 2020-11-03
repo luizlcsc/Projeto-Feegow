@@ -7,11 +7,8 @@ if request.ServerVariables("HTTPS")="off" then
 	if request.ServerVariables("REMOTE_ADDR")="::1" OR request.ServerVariables("REMOTE_ADDR")="127.0.0.1" OR left(request.ServerVariables("REMOTE_ADDR"), 7)="192.168" OR request.QueryString("Partner")<>"" OR SESSION("Partner")<>"" then
 '		response.Redirect( "https://localhost/feegowclinic/?P="&request.QueryString("P") )
 	else
-        if request.ServerVariables("SERVER_NAME")="clinic7.feegow.com.br" then
-    		response.Redirect( "https://clinic7.feegow.com.br/v7/?P="&request.QueryString("P") )
-        end if
-        if request.ServerVariables("SERVER_NAME")="clinic8.feegow.com.br" then
-    		response.Redirect( "https://clinic8.feegow.com.br/v7/?P="&request.QueryString("P") )
+        if request.ServerVariables("SERVER_NAME")="app.feegow.com" then
+    		response.Redirect( "https://app.feegow.com/?P="&request.QueryString("P") )
         end if
 	end if
 end if

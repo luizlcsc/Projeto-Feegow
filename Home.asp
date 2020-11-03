@@ -709,7 +709,7 @@ end if
                 </div>
                 <div class="panel-body bg-white p15" style="height:431px!important; overflow-y:auto">
                     <%
-                    set aniversariantesDeHoje = db.execute("SELECT id,NomePaciente,IF(Cel1 IS NULL,Tel1,Cel1)cel,Nascimento FROM pacientes WHERE CURDATE() LIKE CONCAT('%',substr(Nascimento,6)) AND (Cel1 IS NOT NULL OR Tel1 IS NOT NULL) LIMIT 15")
+                    set aniversariantesDeHoje = db.execute("SELECT id,NomePaciente,IF(Cel1 IS NULL,Tel1,Cel1)cel,Nascimento FROM pacientes WHERE CURDATE() LIKE CONCAT('%',substr(Nascimento,6)) AND (Cel1 IS NOT NULL OR Tel1 IS NOT NULL) AND sysActive=1 LIMIT 15")
                     if not aniversariantesDeHoje.eof then
                         %>
                         <ul class="list-group">

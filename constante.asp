@@ -235,7 +235,7 @@ else
         cNot = 0
     
 	    if buscaAtu("TemNotificacao") then
-	        set NotificacoesSQL = db.execute("SELECT n.*, nt.TextoNotificacao, NT.Descricao DescricaoNotificacao FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1,2) AND TipoNotificacaoID != 4 AND n.UsuarioID="&buscaAtu("id"))
+	        set NotificacoesSQL = db.execute("SELECT n.*, nt.TextoNotificacao, NT.Descricao DescricaoNotificacao FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1) AND TipoNotificacaoID != 4 AND n.UsuarioID="&buscaAtu("id"))
 
 	        while not NotificacoesSQL.eof
 	            cNot=cNot+1

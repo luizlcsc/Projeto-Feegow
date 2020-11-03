@@ -8,7 +8,6 @@ if request.ServerVariables("HTTPS")="off" then
 '		response.Redirect( "https://localhost/feegowclinic/?P="&request.QueryString("P") )
 	else
         if request.ServerVariables("SERVER_NAME")="app.feegow.com" then
-    		response.Redirect( "https://app.feegow.com/?P="&request.QueryString("P") )
         end if
 	end if
 end if

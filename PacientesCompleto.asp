@@ -11,6 +11,8 @@ end if
 
 response.Charset="utf-8"
 
+LicencaID=replace(session("Banco"),"clinic","")
+
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and req("Debug")="" then
 	on error resume next
 end if
@@ -211,9 +213,14 @@ end if
                   mask = ""
                 END IF
 
+                CorIdentificacao = reg("CorIdentificacao")
+
+                if (ISNULL(CorIdentificacao) or CorIdentificacao="") and LicencaID = "8015" then
+                    CorIdentificacao = "#ffffff"
+                end if
             %>
             <%=quickField("CPF", "CPF", "CPF", 3, reg("CPF"), " "&mask&" ", "", " ") %>
-            <%=quickField("simpleColor", "CorIdentificacao", "Cor de Identificação", 2, reg("CorIdentificacao"), "select * from Cores", "Cor", "")%>
+            <%=quickField("simpleColor", "CorIdentificacao", "Cor de Identificação", 2, CorIdentificacao, "select * from Cores", "Cor", "")%>
 
         </div><br />
         <div class="row">

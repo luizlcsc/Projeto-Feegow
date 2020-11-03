@@ -5,6 +5,7 @@
 
 <%
 'on error resume next
+LicencaID=replace(session("Banco"),"clinic","")
 
 HLivres = 0
 HAgendados = 0
@@ -387,6 +388,9 @@ while diaS<n
         UnidadeID=comps("UnidadeID")
         CorIdentificacao = comps("CorIdentificacao")
 
+        if (ISNULL(CorIdentificacao) or CorIdentificacao="") and LicencaID = "8015" then
+            CorIdentificacao = "#ffffff"
+        end if
 
         if UnidadeID&""<>"" and session("admin")=0 then
             if instr(session("Unidades"),"|"&UnidadeID&"|")=0 then

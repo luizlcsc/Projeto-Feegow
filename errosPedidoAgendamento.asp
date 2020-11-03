@@ -70,7 +70,8 @@ if aut("|agestafinA|")=0 and ref("Checkin")<>"1" then
 end if
 
 if ref("rdValorPlano")="P" then
-    set ConfigConvenio = db.execute("select id from convenios where NaoAgendaSemPlano = 1 and id="&treatvalzero(ref("ConvenioID")))
+    set ConfigConvenio = db.execute("select conv.id, (SELECT COUNT(p.id) FROM conveniosplanos p WHERE p.ConvenioID=CONV.id AND p.NomePlano!='' AND p.sysActive=1) qtdPlanos from convenios conv where conv.NaoAgendaSemPlano = 1 and CONV.id="&treatvalzero(ref("ConvenioID"))&" HAVING qtdPlanos>0")
+
     if not ConfigConvenio.EOF and ref("PlanoID") = "" then
         erro = "Erro: Selecione um Plano"
     end if

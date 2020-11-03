@@ -173,6 +173,10 @@ end if
 set ConfigSQL = db.execute("SELECT SplitNF FROM sys_config WHERE id=1")
 if not ConfigSQL.eof then
     SplitNF = ConfigSQL("SplitNF")
+
+    if SplitNF&""<>"1" then
+        RPS="N"
+    end if
 end if
 
 NomeItens = ""

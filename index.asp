@@ -3,15 +3,6 @@ if request.ServerVariables("SERVER_NAME")="clinic.feegow.com.br" and session("ba
 '    response.Redirect("http://clinic4.feegow.com.br/v7/?P=Login")
 end if
 
-if request.ServerVariables("HTTPS")="off" then
-	if request.ServerVariables("REMOTE_ADDR")="::1" OR request.ServerVariables("REMOTE_ADDR")="127.0.0.1" OR left(request.ServerVariables("REMOTE_ADDR"), 7)="192.168" OR request.QueryString("Partner")<>"" OR SESSION("Partner")<>"" then
-'		response.Redirect( "https://localhost/feegowclinic/?P="&request.QueryString("P") )
-	else
-        if request.ServerVariables("SERVER_NAME")="app.feegow.com" then
-        end if
-	end if
-end if
-
 if session("User")="" and request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
     QueryStringParameters = Request.QueryString
 

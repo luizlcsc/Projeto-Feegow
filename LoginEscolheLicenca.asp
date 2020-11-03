@@ -44,7 +44,7 @@ END IF
                         href="?P=ChangeCp&Pers=1&LicID=<%=licencas("licencaID")%>" 
                         class="btn btn-block">
                     <img style="height: 60px; width: auto" src="<%=FotoEmpresa%>">
-                    <p class="mt10"><%=NomeEmpresa%></p>
+                    <p class="mt10"><%=NomeEmpresa%> (<%=licencas("licencaID")%>)</p>
                     </a>
                 </div>
                 <%

@@ -260,14 +260,14 @@ else
 
         'Buscar os descontos pendentes
 
-        set NotificacoesSQL = db.execute("SELECT count(n.id) total FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1,2) AND TipoNotificacaoID = 4 AND n.UsuarioID="&Session("User"))
+        set NotificacoesSQL = db.execute("SELECT count(n.id) total FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1) AND TipoNotificacaoID = 4 AND n.UsuarioID="&Session("User"))
         if not NotificacoesSQL.eof then 
             if ccur(NotificacoesSQL("total")) > 0 then 
                 %>
                     openModal("Existem descontos pendentes de aprovação. <br><a href='?P=DescontoPendente&Pers=1'>Ir para a tela</a>", "Descontos Pendentes", true, false, "lg")
                      $("#audioNotificacao").trigger("play");
                 <%
-                sqlAtualizar = "update notificacoes set StatusID = 2 where StatusID IN (1,2) AND TipoNotificacaoID = 4 AND UsuarioID="&Session("User")
+                sqlAtualizar = "update notificacoes set StatusID = 2 where StatusID IN (1) AND TipoNotificacaoID = 4 AND UsuarioID="&Session("User")
                 db.execute(sqlAtualizar)
             end if
         end if

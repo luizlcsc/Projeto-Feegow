@@ -173,7 +173,11 @@ versaoTISS = "3.02.03"
 					IndicacaoAcidenteID = TirarAcento(guias("IndicacaoAcidenteID"))
 					MotivoEncerramentoID = TirarAcento(guias("MotivoEncerramentoID"))
 					if MotivoEncerramentoID=0 then MotivoEncerramentoID="" end if
-					TipoConsultaID = TirarAcento(guias("TipoConsultaID"))
+						if guias("TipoConsultaID")&""="" or guias("TipoConsultaID")=0 then
+							TipoConsultaID = ""
+						else
+							TipoConsultaID = TirarAcento(guias("TipoConsultaID")&"")
+						end if
 					'==============================================================================================================================================================================
 					if guias("CodigoCNES")="" then CodigoCNES=TirarAcento(CNESContratado) else CodigoCNES=TirarAcento(guias("CodigoCNES")) end if
 					NomeProfissional=TirarAcento(NomeProfissional)
@@ -231,7 +235,7 @@ versaoTISS = "3.02.03"
                     <ans:dadosAtendimento>
                         <ans:tipoAtendimento><%= TipoAtendimentoID %></ans:tipoAtendimento>
                         <ans:indicacaoAcidente><%= IndicacaoAcidenteID %></ans:indicacaoAcidente>
-                        <ans:tipoConsulta><%= TipoConsultaID %></ans:tipoConsulta>
+                        <%if TipoConsultaID<>"" then%><ans:tipoConsulta><%= TipoConsultaID %></ans:tipoConsulta><%end if%>
                         <%if MotivoEncerramentoID<>"" then%><ans:motivoEncerramento><%= MotivoEncerramentoID %></ans:motivoEncerramento><% End If %>
                     </ans:dadosAtendimento>
                     <ans:procedimentosExecutados>

@@ -171,7 +171,7 @@ select case lcase(req("P"))
             <div class="col-sm-12">
                 <button onclick="getNews(0)" class="btn btn-sm btn-block btn-system"><i class="fa fa-plus"></i> VER NOVIDADES</button>
 
-                <a href='https://www.feegowclinic.com.br/blog-medico/?utm_source=software-feegow&utm_medium=referral&utm_campaign=botao-de-conteudo' class="btn btn-sm btn-block" style="background:#F2206C;color:#fff">ACESSE O BLOG FEEGOW</a>
+                <a href='https://www.feegowclinic.com.br/blog-medico/?utm_source=software-feegow&utm_medium=referral&utm_campaign=botao-de-conteudo' target="_blank" class="btn btn-sm btn-block" style="background:#FF8C00;color:#fff">ACESSE O BLOG FEEGOW</a>
             </div>
 
             <div id="feedbackButton" style="margin-top: 10px; visibility: hidden" class="col-sm-12">

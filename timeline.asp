@@ -1092,7 +1092,7 @@ function excluirSerie(id) {
         let loadMore = 0;
         let steps = parseInt('<%=MaximoLimit%>');
         let tipoarquivo = '<%=Tipo%>';
-        let ProfissionalID = '<%=req("ProfessionalID")%>';
+        let ProfissionalID = $("#Profissionais").val();
         var Carregando = false;
         $(".load-wrapp").hide();
 

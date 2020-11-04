@@ -38,7 +38,6 @@ NaoExibirAgendamentoLocal = getConfig("NaoExibirAgendamentoLocal")
 NaoExibirOutrasAgendas = getConfig("NaoExibirOutrasAgendas")
 AumentarAlturaLinhaAgendamento = getConfig("AumentarAlturaLinhaAgendamento")
 ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
-LicencaID=replace(session("Banco"),"clinic","")
 
 'verifica se há agendamento aberto e bloqueia o id concatenado
 set vcaAB = db.execute("select id, AgAberto, UltRef from sys_users where AgAberto like '%_%' and id<>"& session("User"))

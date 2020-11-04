@@ -11,7 +11,6 @@ end if
 
 response.Charset="utf-8"
 
-LicencaID=replace(session("Banco"),"clinic","")
 
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and req("Debug")="" then
 	on error resume next

@@ -5,7 +5,6 @@
 
 <%
 'on error resume next
-LicencaID=replace(session("Banco"),"clinic","")
 
 HLivres = 0
 HAgendados = 0

@@ -216,7 +216,7 @@ end if
                 CorIdentificacao = reg("CorIdentificacao")
 
                 if (ISNULL(CorIdentificacao) or CorIdentificacao="") then
-                    CorIdentificacao = "transparente"
+                    CorIdentificacao = "transparent"
                 end if
             %>
             <%=quickField("CPF", "CPF", "CPF", 3, reg("CPF"), " "&mask&" ", "", " ") %>

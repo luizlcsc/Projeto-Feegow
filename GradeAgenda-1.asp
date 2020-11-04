@@ -580,7 +580,7 @@ end if
                     CorIdentificacao = comps("CorIdentificacao")
 
                     if (ISNULL(CorIdentificacao) or CorIdentificacao="") then
-                        CorIdentificacao = "transparente"
+                        CorIdentificacao = "transparent"
                     end if
                     pacientePrioridadeIcone = comps("PrioridadeIcone")
 

@@ -389,7 +389,7 @@ while diaS<n
         CorIdentificacao = comps("CorIdentificacao")
 
         if (ISNULL(CorIdentificacao) or CorIdentificacao="") then
-            CorIdentificacao = "transparente"
+            CorIdentificacao = "transparent"
         end if
 
         if UnidadeID&""<>"" and session("admin")=0 then

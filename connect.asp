@@ -5568,15 +5568,11 @@ End function
 
 function arqEx(nArquivo, nTipo)
 
-	set fs=Server.CreateObject("Scripting.FileSystemObject")
-	if fs.FileExists("E:\uploads\"& LicenseID &"\"& nTipo &"\"& nArquivo) then
-		arqEx = "/uploads/"& LicenseID &"/"& nTipo &"/"& nArquivo
-    elseif nArquivo&""="" then
+	if nArquivo&""="" then
         arqEx = ""
 	else
-		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&renderMode=download&folder="&nTipo&"&file="&nArquivo&"&type=user"
+		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&renderMode=download&folder="&nTipo&"&file="&nArquivo
 	end if
-	set fs=nothing
 end function
 
 function getConfig(configName)

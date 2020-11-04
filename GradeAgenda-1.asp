@@ -579,8 +579,8 @@ end if
                     UnidadeID = comps("UnidadeID")
                     CorIdentificacao = comps("CorIdentificacao")
 
-                    if (ISNULL(CorIdentificacao) or CorIdentificacao="") and LicencaID = "8015" then
-                        CorIdentificacao = "#ffffff"
+                    if (ISNULL(CorIdentificacao) or CorIdentificacao="") then
+                        CorIdentificacao = "transparente"
                     end if
                     pacientePrioridadeIcone = comps("PrioridadeIcone")
 

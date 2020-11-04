@@ -30,8 +30,8 @@ set lote = db.execute("select * from tisslotes where id="&RLoteID)
 'set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id"))
 set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" order by g.NGuiaPrestador")
 if not guias.eof then
-	RegistroANS = TirarAcento(guias("RegistroANS"))
-	CodigoNaOperadora = TirarAcento(guias("CodigoNaOperadora"))
+	RegistroANS = TISS__FormataConteudo(guias("RegistroANS"))
+	CodigoNaOperadora = TISS__FormataConteudo(guias("CodigoNaOperadora"))
     if session("Banco")="clinic3882" then
         db_execute("update tissguiasadt gs set "&_
         " gs.Procedimentos=(select sum(ValorTotal) from tissprocedimentossadt where GuiaID="& guias("id") &"), "&_
@@ -45,7 +45,7 @@ if not guias.eof then
         set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" order by g.NGuiaPrestador")
     end if
 end if
-NLote = TirarAcento(lote("Lote"))
+NLote = TISS__FormataConteudo(lote("Lote"))
 Data = mydatetiss(lote("sysDate"))
 Hora = myTimeTISS( lote("sysDate") )
 
@@ -72,7 +72,7 @@ prefixo = right(prefixo, 20)
             <ans:codigoPrestadorNaOperadora>
 				<%
                 CodigoNaOperadora = trim(CodigoNaOperadora&" ")
-                CodigoNaOperadora = TirarAcento(replace(replace(replace(replace(replace(CodigoNaOperadora, ".", ""), "-", ""), ",", ""), "_", ""), " ", ""))
+                CodigoNaOperadora = TISS__FormataConteudo(TISS__RemoveCaracters(CodigoNaOperadora))
                 if CalculaCPF(CodigoNaOperadora)=true then
                     tipoCodigoNaOperadora = "CPF"
                 elseif CalculaCNPJ(CodigoNaOperadora)=true then
@@ -106,92 +106,92 @@ prefixo = right(prefixo, 20)
 				hash = "ENVIO_LOTE_GUIAS"&NLote&Data&Hora&CodigoNaOperadora&RegistroANS&versaoTISS&NLote
 				while not guias.eof
 					'response.Write("{"&guias("NGuiaPrestador")&"}")
-					Contratado = TirarAcento(guias("Contratado"))
+					Contratado = TISS__FormataConteudo(guias("Contratado"))
 					if Contratado=0 then
 						set emp = db.execute("select NomeEmpresa, CNES from empresa where NomeEmpresa<>''")
 						if not emp.eof then
-							NomeContratado = TirarAcento(emp("NomeEmpresa"))
-							CNESContratado = TirarAcento(emp("CNES"))
+							NomeContratado = TISS__FormataConteudo(emp("NomeEmpresa"))
+							CNESContratado = TISS__FormataConteudo(emp("CNES"))
 						end if
 					elseif Contratado<0 then
 						set fil = db.execute("select UnitName, CNES from sys_financialcompanyunits where id="&Contratado*(-1))
 						if not fil.eof then
-							NomeContratado = TirarAcento(fil("UnitName"))
-							CNESContratado = TirarAcento(fil("CNES"))
+							NomeContratado = TISS__FormataConteudo(fil("UnitName"))
+							CNESContratado = TISS__FormataConteudo(fil("CNES"))
 						end if
 					else
 						set prof = db.execute("select NomeProfissional from profissionais where id="&Contratado)
 						if not prof.eof then
-							NomeContratado = TirarAcento(prof("NomeProfissional"))
+							NomeContratado = TISS__FormataConteudo(prof("NomeProfissional"))
 							CNESContratado = "9999999"
 						end if
 					end if
 				
-					RegistroANS = TirarAcento(guias("RegistroANS"))
-					NGuiaPrestador = TirarAcento(guias("NGuiaPrestador"))
-					NGuiaPrincipal = TirarAcento(guias("NGuiaPrincipal"))
-					NGuiaOperadora = TirarAcento(guias("NGuiaOperadora"))
+					RegistroANS = TISS__FormataConteudo(guias("RegistroANS"))
+					NGuiaPrestador = TISS__FormataConteudo(guias("NGuiaPrestador"))
+					NGuiaPrincipal = TISS__FormataConteudo(guias("NGuiaPrincipal"))
+					NGuiaOperadora = TISS__FormataConteudo(guias("NGuiaOperadora"))
 					DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
-					Senha = TirarAcento(guias("Senha"))
+					Senha = TISS__FormataConteudo(guias("Senha"))
 					DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
-					NumeroCarteira = TirarAcento(guias("NumeroCarteira"))
-					AtendimentoRN = TirarAcento(guias("AtendimentoRN"))
-					NomePaciente = TirarAcento(guias("NomePaciente"))
-					ContratadoSolicitanteID = TirarAcento(guias("ContratadoSolicitanteID"))
+					NumeroCarteira = TISS__FormataConteudo(guias("NumeroCarteira"))
+					AtendimentoRN = TISS__FormataConteudo(guias("AtendimentoRN"))
+					NomePaciente = TISS__FormataConteudo(guias("NomePaciente"))
+					ContratadoSolicitanteID = TISS__FormataConteudo(guias("ContratadoSolicitanteID"))
 					if guias("tipoContratadoSolicitante")="I" then
 						if ContratadoSolicitanteID=0 then
 							set emp = db.execute("select NomeEmpresa, CNES from empresa where NomeEmpresa<>''")
 							if not emp.eof then
-								NomeContratadoSolicitante = TirarAcento(emp("NomeEmpresa"))
-								CNESContratadoSolicitante = TirarAcento(emp("CNES"))
+								NomeContratadoSolicitante = TISS__FormataConteudo(emp("NomeEmpresa"))
+								CNESContratadoSolicitante = TISS__FormataConteudo(emp("CNES"))
 							end if
 						elseif ContratadoSolicitanteID<0 then
 							set fil = db.execute("select UnitName, CNES from sys_financialcompanyunits where id="&ContratadoSolicitanteID*(-1))
 							if not fil.eof then
-								NomeContratadoSolicitante = TirarAcento(fil("UnitName"))
-								CNESContratadoSolicitante = TirarAcento(fil("CNES"))
+								NomeContratadoSolicitante = TISS__FormataConteudo(fil("UnitName"))
+								CNESContratadoSolicitante = TISS__FormataConteudo(fil("CNES"))
 							end if
 						else
 							set prof = db.execute("select NomeProfissional from profissionais where id="&ContratadoSolicitanteID)
 							if not prof.eof then
-								NomeContratadoSolicitante = TirarAcento(prof("NomeProfissional"))
+								NomeContratadoSolicitante = TISS__FormataConteudo(prof("NomeProfissional"))
 								CNESContratadoSolicitante = "9999999"
 							end if
 						end if
 					else
 						set context = db.execute("select * from contratadoexterno where id="&ContratadoSolicitanteID)
 						if not context.eof then
-							NomeContratadoSolicitante = TirarAcento(contExt("NomeContratado"))
+							NomeContratadoSolicitante = TISS__FormataConteudo(contExt("NomeContratado"))
 						end if
 					end if
-					ContratadoSolicitanteCodigoNaOperadora = TirarAcento(guias("ContratadoSolicitanteCodigoNaOperadora"))
+					ContratadoSolicitanteCodigoNaOperadora = TISS__FormataConteudo(guias("ContratadoSolicitanteCodigoNaOperadora"))
 					if ContratadoSolicitanteCodigoNaOperadora="" then ContratadoSolicitanteCodigoNaOperadora="-" end if
-					ProfissionalSolicitanteID = TirarAcento(guias("ProfissionalSolicitanteID"))
+					ProfissionalSolicitanteID = TISS__FormataConteudo(guias("ProfissionalSolicitanteID"))
 					if guias("tipoProfissionalSolicitante")="I" then
 						set prof = db.execute("select NomeProfissional from profissionais where id="&ProfissionalSolicitanteID)
 					else
 						set prof = db.execute("select NomeProfissional from profissionalexterno where id="&ProfissionalSolicitanteID)
 					end if
 					if not prof.eof then
-						NomeProfissionalSolicitante = TirarAcento(prof("NomeProfissional"))
+						NomeProfissionalSolicitante = TISS__FormataConteudo(prof("NomeProfissional"))
 					end if
 					set consol = db.execute("select * from conselhosprofissionais where id="&guias("ConselhoProfissionalSolicitanteID"))
 					if not consol.eof then
-						ConselhoProfissionalSolicitante = TirarAcento(consol("TISS"))
-						SiglaConselhoProfissionalSolicitante = TirarAcento(consol("codigo"))
+						ConselhoProfissionalSolicitante = TISS__FormataConteudo(consol("TISS"))
+						SiglaConselhoProfissionalSolicitante = TISS__FormataConteudo(consol("codigo"))
 					end if
-					NumeroNoConselhoSolicitante = TirarAcento(guias("NumeroNoConselhoSolicitante"))
+					NumeroNoConselhoSolicitante = TISS__FormataConteudo(guias("NumeroNoConselhoSolicitante"))
 					set coduf = db.execute("select codigo from estados where sigla like '"&guias("UFConselhoSolicitante")&"'")
 					if not coduf.eof then
-						CodigoUFConselhoSolicitante = TirarAcento(coduf("codigo"))
+						CodigoUFConselhoSolicitante = TISS__FormataConteudo(coduf("codigo"))
 					end if
 					UFConselhoSolicitante = ucase(guias("UFConselhoSolicitante"))
-					CodigoCBOSolicitante = TirarAcento(guias("CodigoCBOSolicitante"))
+					CodigoCBOSolicitante = TISS__FormataConteudo(guias("CodigoCBOSolicitante"))
 					DataSolicitacao = mydatetiss(guias("DataSolicitacao"))
-					CaraterAtendimentoID = TirarAcento(guias("CaraterAtendimentoID"))
-					IndicacaoClinica = TirarAcento(guias("IndicacaoClinica"))
-					ContExecCodigoNaOperadora = TirarAcento(guias("CodigoNaOperadora"))
-					ContExecCodigoNaOperadora = TirarAcento(replace(replace(replace(replace(replace(ContExecCodigoNaOperadora, ".", ""), "-", ""), ",", ""), "_", ""), " ", ""))
+					CaraterAtendimentoID = TISS__FormataConteudo(guias("CaraterAtendimentoID"))
+					IndicacaoClinica = TISS__FormataConteudo(guias("IndicacaoClinica"))
+					ContExecCodigoNaOperadora = TISS__FormataConteudo(guias("CodigoNaOperadora"))
+					ContExecCodigoNaOperadora = TISS__FormataConteudo(TISS__RemoveCaracters(ContExecCodigoNaOperadora))
 					if CalculaCPF(CodigoNaOperadora)=true then
 						tipoContrato = "CPF"
 					elseif CalculaCNPJ(CodigoNaOperadora)=true then
@@ -203,35 +203,43 @@ prefixo = right(prefixo, 20)
 					if Contratado=0 then
 						set emp = db.execute("select NomeEmpresa, CNES from empresa where NomeEmpresa<>''")
 						if not emp.eof then
-							NomeContratado = TirarAcento(emp("NomeEmpresa"))
-							CNESContratado = TirarAcento(emp("CNES"))
+							NomeContratado = TISS__FormataConteudo(emp("NomeEmpresa"))
+							CNESContratado = TISS__FormataConteudo(emp("CNES"))
 						end if
 					elseif Contratado<0 then
 						set fil = db.execute("select UnitName, CNES from sys_financialcompanyunits where id="&Contratado*(-1))
 						if not fil.eof then
-							NomeContratado = TirarAcento(fil("UnitName"))
-							CNESContratado = TirarAcento(fil("CNES"))
+							NomeContratado = TISS__FormataConteudo(fil("UnitName"))
+							CNESContratado = TISS__FormataConteudo(fil("CNES"))
 						end if
 					else
 						set prof = db.execute("select NomeProfissional from profissionais where id="&Contratado)
 						if not prof.eof then
-							NomeContratado = TirarAcento(prof("NomeProfissional"))
+							NomeContratado = TISS__FormataConteudo(prof("NomeProfissional"))
 							CNESContratado = "9999999"
 						end if
 					end if
-					TipoAtendimentoID = TirarAcento(zEsq(guias("TipoAtendimentoID"),2))
-					IndicacaoAcidenteID = TirarAcento(guias("IndicacaoAcidenteID"))
-					MotivoEncerramentoID = TirarAcento(guias("MotivoEncerramentoID"))
+					TipoAtendimentoID = TISS__FormataConteudo(zEsq(guias("TipoAtendimentoID"),2))
+					IndicacaoAcidenteID = TISS__FormataConteudo(guias("IndicacaoAcidenteID"))
+					MotivoEncerramentoID = TISS__FormataConteudo(guias("MotivoEncerramentoID"))
 					if MotivoEncerramentoID=0 then MotivoEncerramentoID="" end if
+<<<<<<< Updated upstream
 					TipoConsultaID = TirarAcento(guias("TipoConsultaID"))
+=======
+						if guias("TipoConsultaID")&""="" or guias("TipoConsultaID")=0 then
+							TipoConsultaID = ""
+						else
+							TipoConsultaID = TISS__FormataConteudo(guias("TipoConsultaID")&"")
+						end if
+>>>>>>> Stashed changes
 					'==============================================================================================================================================================================
-					if guias("CodigoCNES")="" then CodigoCNES=TirarAcento(CNESContratado) else CodigoCNES=TirarAcento(guias("CodigoCNES")) end if
-					NomeProfissional=TirarAcento(NomeProfissional)
+					if guias("CodigoCNES")="" then CodigoCNES=TISS__FormataConteudo(CNESContratado) else CodigoCNES=TISS__FormataConteudo(guias("CodigoCNES")) end if
+					NomeProfissional=TISS__FormataConteudo(NomeProfissional)
 
 					if guias("planoID")&""<>"" then
 						set plano = db.execute("select * from conveniosplanos where id="&guias("planoID"))
 						if not plano.eof then
-							NomePlano = TirarAcento(plano("NomePlano"))
+							NomePlano = TISS__FormataConteudo(plano("NomePlano"))
 						end if
 					end if
 
@@ -256,7 +264,7 @@ prefixo = right(prefixo, 20)
 					'pegar cbos antigo
 					CodigoCBOSolicitante = getOldCBO(CodigoCBOSolicitante)
 
-					hash = hash&RegistroANS&DataSolicitacao&NGuiaPrestador&NGuiaPrincipal&NGuiaOperadora&DataAutorizacao&Senha&DataValidadeSenha&NumeroCarteira&NomePaciente&NomePlano&ContratadoSolicitanteCodigoNaOperadora&NomeContratadoSolicitante&NomeProfissionalSolicitante&SiglaConselhoProfissionalSolicitante&NumeroNoConselhoSolicitante&UFConselhoSolicitante&CodigoCBOSolicitante&ContExecCodigoNaOperadora&NomeContratado&CodigoCNES&IndicacaoClinica&CaraterAtendimentoSigla&dataHoraAtendimento&TipoSaida&TipoAtendimentoID
+					hash = hash&RegistroANS&DataSolicitacao&NGuiaPrestador&NGuiaPrincipal&DataAutorizacao&Senha&DataValidadeSenha&NumeroCarteira&NomePaciente&NomePlano&ContratadoSolicitanteCodigoNaOperadora&NomeContratadoSolicitante&NomeProfissionalSolicitante&SiglaConselhoProfissionalSolicitante&NumeroNoConselhoSolicitante&UFConselhoSolicitante&CodigoCBOSolicitante&ContExecCodigoNaOperadora&NomeContratado&CodigoCNES&IndicacaoClinica&CaraterAtendimentoSigla&dataHoraAtendimento&TipoSaida&TipoAtendimentoID
 					%>
                 <ans:guiaSP_SADT>
                     <ans:identificacaoGuiaSADTSP>
@@ -271,7 +279,6 @@ prefixo = right(prefixo, 20)
 					if NGuiaOperadora<>"" OR DataAutorizacao<>"" OR Senha<>"" OR DataValidadeSenha<>"" then
 					%>
                     <ans:dadosAutorizacao>
-                        <%if NGuiaOperadora<>"" then%><ans:numeroGuiaOperadora><%= NGuiaOperadora %></ans:numeroGuiaOperadora><%end if%>
                         <%if DataAutorizacao<>"" then%><ans:dataAutorizacao><%= DataAutorizacao %></ans:dataAutorizacao><% End If %>
                         <%if Senha<>"" then%><ans:senhaAutorizacao><%= Senha %></ans:senhaAutorizacao><% End If %>
                         <%if DataValidadeSenha<>"" then%><ans:validadeSenha><%= DataValidadeSenha %></ans:validadeSenha><% End If %>
@@ -325,17 +332,17 @@ prefixo = right(prefixo, 20)
 						Data = mydatetiss(procs("Data"))
 						HoraInicio = myTimeTISS(procs("HoraInicio"))
 						HoraFim = myTimeTISS(procs("HoraFim"))
-						TabelaID = TirarAcento(procs("TabelaID"))
+						TabelaID = TISS__FormataConteudo(procs("TabelaID"))
 
 						'pega tabela old
 						TabelaID = getTabelaOld(TabelaID)
 
-						CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))
-						Descricao = TirarAcento(procs("Descricao"))
+						CodigoProcedimento = TISS__FormataConteudo(procs("CodigoProcedimento"))
+						Descricao = TISS__FormataConteudo(procs("Descricao"))
 						Descricao = left(Descricao, 60)
-						Quantidade = TirarAcento(procs("Quantidade"))
+						Quantidade = TISS__FormataConteudo(procs("Quantidade"))
 						
-						ViaID = TirarAcento(procs("ViaID"))
+						ViaID = TISS__FormataConteudo(procs("ViaID"))
 						Select Case ViaID
 							Case 1:
 								ViaID = "U"
@@ -345,7 +352,7 @@ prefixo = right(prefixo, 20)
 								ViaID = "D"
 						End Select
 
-						TecnicaID = TirarAcento(procs("TecnicaID"))
+						TecnicaID = TISS__FormataConteudo(procs("TecnicaID"))
 						Select Case TecnicaID
 							Case 1:
 								TecnicaID = "C"
@@ -366,9 +373,9 @@ prefixo = right(prefixo, 20)
 							<ans:equipe>
 							<%
 							while not eq.eof
-								GrauParticipacao = TirarAcento(eq("GrauParticipacao")&"")
+								GrauParticipacao = TISS__FormataConteudo(eq("GrauParticipacao")&"")
 								if GrauParticipacao="" or isnull(GrauParticipacao) then GrauParticipacao="00" end if
-								CodigoNaOperadoraOuCPF = TirarAcento(eq("CodigoNaOperadoraOuCPF"))
+								CodigoNaOperadoraOuCPF = TISS__FormataConteudo(eq("CodigoNaOperadoraOuCPF"))
 								if CodigoNaOperadoraOuCPF="" then CodigoNaOperadoraOuCPF="-" end if
 
 								if CalculaCPF(CodigoNaOperadoraOuCPF)=true then
@@ -379,14 +386,14 @@ prefixo = right(prefixo, 20)
 									tipoContrato = "codigoPrestadorNaOperadora"
 								end if
 
-								NomeProfissional = TirarAcento(eq("NomeProfissional")&" ")
+								NomeProfissional = TISS__FormataConteudo(eq("NomeProfissional")&" ")
 								set cons = db.execute("select * from conselhosprofissionais where id = '"&eq("ConselhoID")&"'")
-								if cons.eof then ConselhoProfissional = 6 else ConselhoProfissional=TirarAcento(cons("TISS")) end if
-								DocumentoConselho = TirarAcento(eq("DocumentoConselho"))
+								if cons.eof then ConselhoProfissional = 6 else ConselhoProfissional=TISS__FormataConteudo(cons("TISS")) end if
+								DocumentoConselho = TISS__FormataConteudo(eq("DocumentoConselho"))
 								SiglaConselho = cons("codigo")
-								UF = TirarAcento(eq("UF"))
-								UFConselho = ucase(TirarAcento(eq("UFConselho")))
-								CodigoCBO = TirarAcento(eq("CodigoCBO"))
+								UF = TISS__FormataConteudo(eq("UF"))
+								UFConselho = ucase(TISS__FormataConteudo(eq("UFConselho")))
+								CodigoCBO = TISS__FormataConteudo(eq("CodigoCBO"))
 
 								if CodigoNaOperadoraOuCPF = "-" then
 									SiglaConselhoProf = SiglaConselho
@@ -463,19 +470,19 @@ prefixo = right(prefixo, 20)
 							Data = mydatetiss(desp("Data"))
 							HoraInicio = myTimeTISS(desp("HoraInicio"))
 							HoraFim = myTimeTISS(desp("HoraFim"))
-							TabelaProdutoID = zeroEsq(TirarAcento(desp("TabelaProdutoID")), 2)
-							CodigoProduto = TirarAcento(desp("CodigoProduto"))
+							TabelaProdutoID = zeroEsq(TISS__FormataConteudo(desp("TabelaProdutoID")), 2)
+							CodigoProduto = TISS__FormataConteudo(desp("CodigoProduto"))
 							Quantidade = treatvaltiss(desp("Quantidade"))
 							UnidadeMedidaID = zEsq(desp("UnidadeMedidaID"), 3)
 							Fator = treatvaltiss(desp("Fator"))
 							ValorUnitario = treatvaltiss(desp("ValorUnitario"))
 							ValorTotal = treatvaltiss(desp("ValorTotal"))
-							Descricao = TirarAcento(desp("Descricao"))
+							Descricao = TISS__FormataConteudo(desp("Descricao"))
                             Descricao = replace(Descricao, chr(186), "")
                             Descricao = left(Descricao, 60)
-							RegistroANVISA = TirarAcento(desp("RegistroANVISA"))
-							CodigoNoFabricante = TirarAcento(desp("CodigoNoFabricante"))
-							AutorizacaoEmpresa = TirarAcento(desp("AutorizacaoEmpresa"))
+							RegistroANVISA = TISS__FormataConteudo(desp("RegistroANVISA"))
+							CodigoNoFabricante = TISS__FormataConteudo(desp("CodigoNoFabricante"))
+							AutorizacaoEmpresa = TISS__FormataConteudo(desp("AutorizacaoEmpresa"))
 							
 							hash = hash &CodigoProduto&TabelaProdutoID&Descricao&CD&Data&HoraInicio&HoraFim&Fator&Quantidade&ValorUnitario&ValorTotal
 						%>
@@ -505,7 +512,7 @@ prefixo = right(prefixo, 20)
 					end if
 					
 					Observacoes = guias("Observacoes")
-					Observacoes = TirarAcento(Observacoes)
+					Observacoes = TISS__FormataConteudo(Observacoes)
 					Procedimentos = treatvaltiss(guias("Procedimentos"))
 					Diarias = "0.00"
 					TaxasEAlugueis = treatvaltiss(guias("TaxasEAlugueis"))

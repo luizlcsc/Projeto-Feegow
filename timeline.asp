@@ -872,7 +872,7 @@ end select
                 <%=quickfield("simpleSelect", "Profissionais", "", 4, req("ProfessionalID"), "select '0' as id,'Todos os profissionais' as NomeProfissional, 0 as ordem union select id, NomeProfissional, 1 as ordem from profissionais where ativo='on' and sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", " semVazio onchange='professionalFilter(this.value,"""&Tipo&""","&PacienteID&");'" ) %>
             </div>
         </div>
-    </div>
+    </div>  
     <%
     end if
     ProfessionalID = req("ProfessionalID")
@@ -1092,7 +1092,7 @@ function excluirSerie(id) {
         let loadMore = 0;
         let steps = parseInt('<%=MaximoLimit%>');
         let tipoarquivo = '<%=Tipo%>';
-        let ProfissionalID = $("#Profissionais").val();
+        let ProfissionalID = ($("#Profissionais").val()==0?'':$("#Profissionais").val());
         var Carregando = false;
         $(".load-wrapp").hide();
 

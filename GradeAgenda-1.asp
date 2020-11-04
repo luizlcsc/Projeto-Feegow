@@ -577,6 +577,7 @@ end if
                     FormaPagto = comps("FormaPagto")
                     UnidadeID = comps("UnidadeID")
                     CorIdentificacao = comps("CorIdentificacao")
+
                     pacientePrioridadeIcone = comps("PrioridadeIcone")
 
 
@@ -718,6 +719,9 @@ end if
 
                     FirstTdBgColor = ""
                     if ExibirCorPacienteAgenda=1 then
+                        if (ISNULL(CorIdentificacao) or CorIdentificacao="") then
+                            CorIdentificacao = "transparent"
+                        end if
                         FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
                     end if
                     Conteudo = Conteudo & "</td><td width=""1%"" nowrap "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"" "& linkAg &">"&compsHora&"</button>"

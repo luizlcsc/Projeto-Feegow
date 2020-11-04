@@ -387,7 +387,6 @@ while diaS<n
         UnidadeID=comps("UnidadeID")
         CorIdentificacao = comps("CorIdentificacao")
 
-
         if UnidadeID&""<>"" and session("admin")=0 then
             if instr(session("Unidades"),"|"&UnidadeID&"|")=0 then
                 podeVerAgendamento=False
@@ -490,6 +489,9 @@ while diaS<n
         end if
         FirstTdBgColor = ""
         if getConfig("ExibirCorPacienteAgenda")&""=1 then
+            if (ISNULL(CorIdentificacao) or CorIdentificacao="") then
+                CorIdentificacao = "transparent"
+            end if
             FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
         end if
         Conteudo = Conteudo & "</td><td width=""1%"" "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_

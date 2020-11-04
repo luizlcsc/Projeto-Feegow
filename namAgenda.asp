@@ -443,6 +443,9 @@ while not comps.EOF
 
     FirstTdBgColor = ""
     if getConfig("ExibirCorPacienteAgenda")&""=1 then
+        if (ISNULL(CorIdentificacao) or CorIdentificacao="") then
+            CorIdentificacao = "transparent"
+        end if
         FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
     end if
 

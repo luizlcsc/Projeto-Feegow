@@ -107,9 +107,9 @@ end if
     'response.write(sqlTipo)
 
 if session("admin") = 1 then 
-historicoSql = "select bfp.id, bf.Nome, bfp.DataHora ,bfp.sysUser, bfp.ModeloID from buiformspreenchidos bfp join buiforms bf on bf.id = bfp.ModeloID where bfp.sysActive <> 1 AND bfp.PacienteID="&paciente + sqlTipo&" order by bfp.id desc"
+set restForm = db.execute("select bfp.id, bf.Nome, bfp.DataHora ,bfp.sysUser, bfp.ModeloID from buiformspreenchidos bfp join buiforms bf on bf.id = bfp.ModeloID where bfp.sysActive <> 1 AND bfp.PacienteID="&paciente + sqlTipo&" order by bfp.id desc")
 else 
-historicoSql = "select bfp.id, bf.Nome, bfp.DataHora ,bfp.sysUser, bfp.ModeloID from buiformspreenchidos bfp join buiforms bf on bf.id = bfp.ModeloID where bfp.sysActive <> 1 AND bfp.PacienteID="&paciente + sqlTipo&" and bfp.sysUser ="&session("User")&" order by bfp.id desc"
+set restForm = db.execute("select bfp.id, bf.Nome, bfp.DataHora ,bfp.sysUser, bfp.ModeloID from buiformspreenchidos bfp join buiforms bf on bf.id = bfp.ModeloID where bfp.sysActive <> 1 AND bfp.PacienteID="&paciente + sqlTipo&" and bfp.sysUser ="&session("User")&" order by bfp.id desc")
 
 end if
 if not restForm.eof then

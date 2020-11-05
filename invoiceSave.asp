@@ -291,12 +291,11 @@ if erro="" then
 
                     if validaProcedimentoProfissional(Associacao, ProfissionalID, EspecialidadeID, ProcedimentoID,0)=False then
 
-					                    if validaProcedimentoProfissional(Associacao, ProfissionalID, EspecialidadeID, ProcedimentoID,0)=False then
 
-					set ProcedimentoErroSQL = db.execute("SELECT NomeProcedimento FROM procedimentos where id="&ProcedimentoID)
-					if not ProcedimentoErroSQL.eof then
-						NomeProcedimentoErro = ProcedimentoErroSQL("NomeProcedimento")
-					end if
+						set ProcedimentoErroSQL = db.execute("SELECT NomeProcedimento FROM procedimentos where id="&ProcedimentoID)
+						if not ProcedimentoErroSQL.eof then
+							NomeProcedimentoErro = ProcedimentoErroSQL("NomeProcedimento")
+						end if
 
                     %>
                     new PNotify({

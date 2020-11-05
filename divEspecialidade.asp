@@ -32,7 +32,6 @@ if EspecialidadeID&""="" then
         end if
    end if
 end if
-
 if ProfissionalID<>"" and isnumeric(ProfissionalID) then
     if GradeID<>"" and GradeID<>"undefined" then
         if GradeID > 0 then
@@ -44,19 +43,23 @@ if ProfissionalID<>"" and isnumeric(ProfissionalID) then
         sql = "select Especialidades from assfixalocalxprofissional where DiaSemana="& DiaSemana &" and HoraDe <= '"& Hora &"' and HoraA >= '"& Hora &"' and "& mydatenull(Data) &">=ifnull(InicioVigencia, '1899-01-01') and "& mydatenull(Data) &"<=ifnull(FimVigencia, '2999-01-01') and ProfissionalID="& ProfissionalID
     end if
     'response.Write( sql )
+    sqlFiltraEspecialidadesGrade=""
+
     set pgrade = db.execute( sql )
     if not pgrade.eof then
-        Especialidades = pgrade("Especialidades")&""
-        sqlEsp = "select id, especialidade from especialidades where id in("& replace(Especialidades, "|", "") &") AND sysActive=1 and especialidade!=''"
+        Especialidades = replace(pgrade("Especialidades")&"", "|", "")
+
+        if Especialidades<>"" then
+            sqlFiltraEspecialidadesGrade= " AND esp.EspecialidadeID IN ("&Especialidades&")"
+        end if
     end if
 
-    if Especialidades="" then
         'sql = "select group_concat(EspecialidadeID) Especialidades from (	select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID)		union all 	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp"
         'response.write( sql )
         'set espMedico = db.execute( sql )
         'Especialidades = espMedico("Especialidades")&""
-        sqlEsp = "select esp.EspecialidadeID id, e.especialidade from (select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID) union all	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp left join especialidades e ON e.id=esp.EspecialidadeID"
-    end if
+    sqlEsp = "select esp.EspecialidadeID id, e.especialidade from (select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID) union all	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp left join especialidades e ON e.id=esp.EspecialidadeID "&_
+                "WHERE TRUE "&sqlFiltraEspecialidadesGrade
 
     if sqlEsp<>"" then
         response.Write("<div class='row'>")

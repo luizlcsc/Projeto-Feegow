@@ -3710,7 +3710,7 @@ function dispEquipamento(Data, Hora, Intervalo, EquipamentoID, AgendamentoID)
                     
             'response.Write(sqlDisp)
 
-            if getConfig("LiberarEncaixeEquipamentos") = false then
+            if getConfig("LiberarEncaixeEquipamentos") <> 1 then
                 set vcaAgEq = db.execute(sqlDisp)
                 if not vcaAgEq.eof then
                     dispEquipamento = "Este equipamento já está agendado para o profissional "&vcaAgEq("NomeProfissional")&" nesta data entre as "&formatdatetime(vcaAgEq("Hora"),4)&" e "&formatdatetime(vcaAgEq("HoraFinal"),4)

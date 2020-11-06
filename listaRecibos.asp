@@ -175,7 +175,7 @@ if not recibosGerados.eof then
     textButtom = "Gerar novamente o recibo"
     classButtom = "warning"
     if aut("recibosA") = 1 or session("Admin") = 1 then
-        desabilita = " "
+        desabilitarReemitirRecibo = " "
     end if
 end if
  

@@ -1,12 +1,12 @@
                     <div class="panel" id="p1">
                         <div class="panel-heading">
-                            <span class="panel-title"><%'= getResource("name") %>Convênios do Paciente</span>
+                            <span class="panel-title <%if instr(Omitir, "|convenio|") then%> hidden<%end if%>"><%'= getResource("name") %>Convênios do Paciente</span>
                     
                             <span class="panel-controls">
                             <a class="panel-control-collapse hidden" href="#"></a>
                             </span>
                         </div>
-                        <div class="panel-body pn">
+                        <div class="panel-body pn <%if instr(Omitir, "|convenio|") then%> hidden<%end if%>">
                         
                             <div class="widget-main padding-6 no-padding-left no-padding-right">
                              <script>
@@ -29,8 +29,8 @@
                                         <tr class="">
                                             <th class="<%if instr(Omitir, "|convenioid") then%> hidden<%end if%>" width="12%">Convênio</th>
                                             <th class="<%if instr(Omitir, "|planoid") then%> hidden<%end if%>" width="12%">Plano</th>
-                                            <th class="<%if instr(Omitir, "|matricular") then%> hidden<%end if%>"  width="22%">Matrícula / Carteirinha</th>
-                                            <th width="18%">Token Carteirinha</th>
+                                            <th class="<%if instr(Omitir, "|matricula") then%> hidden<%end if%>"  width="22%">Matrícula / Carteirinha</th>
+                                            <th class="<%if instr(Omitir, "|token") then%> hidden<%end if%>"  width="18%">Token Carteirinha</th>
                                             <th class="<%if instr(Omitir, "|validade") then%> hidden<%end if%>" width="18%">Validade</th>
                                             <th class="<%if instr(Omitir, "|titular") then%> hidden<%end if%>" width="21%">Titular</th>
                                             <th width="1%"></th>
@@ -47,8 +47,8 @@
                                         	<td class="<%if instr(Omitir, "|convenioid"&Numero&"|") then%> hidden<%end if%>"><%=selectInsert("", "ConvenioID"&Numero, reg("ConvenioID"&Numero), "convenios", "NomeConvenio", "onchange='getConvenioDetails("&Numero&");'", "empty", "")%>
                                             </td>
                                         	<td class="<%if instr(Omitir, "|planoid"&Numero&"|") then%> hidden<%end if%>"><%=selectInsert("", "PlanoID"&Numero, reg("PlanoID"&Numero), "conveniosplanos", "NomePlano", "", "", "ConvenioID"&Numero)%></td>
-                                        	<td class="<%if instr(Omitir, "|matricular"&Numero&"|") then%> hidden<%end if%>" nowrap><%=quickField("text", "Matricula"&Numero, "", 12, reg("Matricula"&Numero), " lt ", "", "")%></td>
-                                            <td><%=quickField("text", "Token"&Numero, "", 12, reg("Token"&Numero), " lt ", "", "")%></td>
+                                        	<td class="<%if instr(Omitir, "|matricula"&Numero&"|") then%> hidden<%end if%>" nowrap><%=quickField("text", "Matricula"&Numero, "", 12, reg("Matricula"&Numero), " lt ", "", "")%></td>
+                                            <td class="<%if instr(Omitir, "|token"&Numero&"|") then%> hidden<%end if%>" nowrap><%=quickField("text", "Token"&Numero, "", 12, reg("Token"&Numero), " lt ", "", "")%></td>
                                         	<td class="<%if instr(Omitir, "|validade"&Numero&"|") then%> hidden<%end if%>"><%=quickField("datepicker", "Validade"&Numero, "", 12, reg("Validade"&Numero), " input-mask-date ", "", "")%></td>
                                         	<td class="<%if instr(Omitir, "|titular"&Numero&"|") then%> hidden<%end if%>" ><%=quickField("text", "Titular"&Numero, "", 12, reg("Titular"&Numero), "", "", "")%></td>
                                         	<td>

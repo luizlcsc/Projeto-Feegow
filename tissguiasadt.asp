@@ -496,15 +496,18 @@ if not reg.eof then
 					    'response.Write("insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&reg("id")&", 1, 1, "&ProfissionalID&", '"&CPF&"', '"&ConselhoProfissionalSolicitanteID&"', '"&NumeroNoConselhoSolicitante&"', '"&UFConselhoSolicitante&"', '"&CodigoCBOSolicitante&"', "&session("User")&")")
 					    sqlExecute = "insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&reg("id")&", 1, "&GrauParticipacaoID&", "&ProfissionalID&", '"&CPF&"', "&treatvalnull(ConselhoProfissionalSolicitanteID)&", '"&NumeroNoConselhoSolicitante&"', '"&UFConselhoSolicitante&"', '"&CodigoCBOSolicitante&"', "&session("User")&")"
 				        db_execute(sqlExecute)
-                        end if
+                        end if  
 
-                         sqlProfissionaisEquipe = (" SELECT p.id ProfissionalID, p.CPF, COALESCE(a.Funcao, 0) GrauParticipacaoID, p.DocumentoConselho, p.UFConselho, p.CBOS, p.Conselho ConselhoID FROM procedimentosequipeconvenio a"&_
+                         sqlProfissionaisEquipe = (" SELECT p.id ProfissionalID, p.CPF, COALESCE(a.Funcao, 0) GrauParticipacaoID, p.DocumentoConselho, p.UFConselho, esp.codigoTISS CBOS, p.Conselho ConselhoID FROM procedimentosequipeconvenio a"&_
                                                                 " inner JOIN profissionais p ON p.id = SUBSTRING_INDEX(a.ContaPadrao,'_' , -1) AND SUBSTRING_INDEX(a.ContaPadrao,'_' , 1) = '5'"&_
+                                                                " LEFT JOIN especialidades esp ON esp.id=p.EspecialidadeID "&_
                                                                 " WHERE a.ProcedimentoID = "&ProcedimentoID&_
-                                                                " UNION ALL"&_
-                                                                " SELECT proext.id, proext.cpf, COALESCE(a.Funcao, 0), proext.DocumentoConselho, proext.UFConselho, proext.CBOS, proext.Conselho FROM procedimentosequipeconvenio a "&_
+                                                                " UNION ALL "&_
+                                                                " SELECT proext.id, proext.cpf, COALESCE(a.Funcao, 0), proext.DocumentoConselho, proext.UFConselho, esp.codigoTISS CBOS, proext.Conselho FROM procedimentosequipeconvenio a "&_
                                                                 " inner JOIN profissionalexterno proext ON proext.id = SUBSTRING_INDEX(a.ContaPadrao,'_' , -1) AND SUBSTRING_INDEX(a.ContaPadrao,'_' , 1) = '8'"&_
+                                                                " LEFT JOIN especialidades esp ON esp.id=proext.EspecialidadeID "&_
                                                                 " WHERE a.ProcedimentoID = "&ProcedimentoID)
+                                                                
 
                         set ProfissionaisEquipe = db.execute(sqlProfissionaisEquipe)
                         while not ProfissionaisEquipe.eof

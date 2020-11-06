@@ -3151,10 +3151,7 @@ function googleCalendarNovo(Acao, Email, AgendamentoID, ProfissionalID, NomePaci
            '     response.write("<br>")
 			HoraFinal = dateadd("n", Tempo, Hora)
 			Fim = dataGoogleNovo(Data, HoraFinal, FusoHorario)
-			'response.Write("alert('http://localhost/feegowclinic/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento&"\tempo="&Tempo&"')")
-         '   response.end
-        ' response.write("http://clinic.feegow.com.br/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento)
-			objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
+			objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
 		objWinHttp.Send
 		resposta = objWinHttp.ResponseText
 		'response.write(resposta)
@@ -3166,8 +3163,7 @@ function googleCalendarNovo(Acao, Email, AgendamentoID, ProfissionalID, NomePaci
 		if not vcaAge.EOF then
 		    GoogleID=vcaAge("GoogleID")
 			Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
-				objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/excluir_dados.php?EventoID="&GoogleID
-				'response.Write("http://localhost/feegowclinic/calendar/excluir_dados.php?EventoID="&GoogleID)
+				objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/excluir_dados.php?EventoID="&GoogleID
 			objWinHttp.Send
 			resposta = objWinHttp.ResponseText
 			db_execute("delete from googleagenda where AgendamentoID="&AgendamentoID)
@@ -3212,7 +3208,7 @@ function googleCalendar(Acao, Email, AgendamentoID, ProfissionalID, NomePaciente
 			Inicio = dataGoogle(Data, Hora)
 			HoraFinal = dateadd("n", Tempo, Hora)
 			Fim = dataGoogle(Data, HoraFinal)
-			objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
+			objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
 		objWinHttp.Send
 		resposta = objWinHttp.ResponseText
 		db_execute("insert into googleagenda (AgendamentoID, ProfissionalID, GoogleID) values ("&AgendamentoID&", "&ProfissionalID&", '"&resposta&"')")
@@ -3222,7 +3218,7 @@ function googleCalendar(Acao, Email, AgendamentoID, ProfissionalID, NomePaciente
 		if not vcaAge.EOF then
 		    GoogleID=vcaAge("GoogleID")
 			Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
-				objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/excluir_dados.php?EventoID="&GoogleID
+				objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/excluir_dados.php?EventoID="&GoogleID
 				'response.Write("http://localhost/feegowclinic/calendar/excluir_dados.php?EventoID="&GoogleID)
 			objWinHttp.Send
 			resposta = objWinHttp.ResponseText
@@ -5572,15 +5568,11 @@ End function
 
 function arqEx(nArquivo, nTipo)
 
-	set fs=Server.CreateObject("Scripting.FileSystemObject")
-	if fs.FileExists("E:\uploads\"& LicenseID &"\"& nTipo &"\"& nArquivo) then
-		arqEx = "/uploads/"& LicenseID &"/"& nTipo &"/"& nArquivo
-    elseif nArquivo&""="" then
+	if nArquivo&""="" then
         arqEx = ""
 	else
-		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&renderMode=download&folder="&nTipo&"&file="&nArquivo&"&type=user"
+		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&renderMode=download&folder="&nTipo&"&file="&nArquivo
 	end if
-	set fs=nothing
 end function
 
 function getConfig(configName)

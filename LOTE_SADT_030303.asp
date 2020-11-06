@@ -212,6 +212,7 @@ prefixo = right(prefixo, 20)
 					IndicacaoAcidenteID = TISS__FormataConteudo(guias("IndicacaoAcidenteID"))
 					MotivoEncerramentoID = TISS__FormataConteudo(guias("MotivoEncerramentoID"))
 					if MotivoEncerramentoID=0 then MotivoEncerramentoID="" end if
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 					TipoConsultaID = TirarAcento(guias("TipoConsultaID"))
 =======
@@ -221,6 +222,13 @@ prefixo = right(prefixo, 20)
                                 TipoConsultaID = TISS__FormataConteudo(guias("TipoConsultaID")&"")
                             end if
 >>>>>>> Stashed changes
+=======
+                        if guias("TipoConsultaID")&""="" or guias("TipoConsultaID")=0 then
+                                TipoConsultaID = ""
+                            else
+                                TipoConsultaID = TirarAcento(guias("TipoConsultaID")&"")
+                            end if
+>>>>>>> master
 					'==============================================================================================================================================================================
 					if guias("CodigoCNES")="" then CodigoCNES=TISS__FormataConteudo(CNESContratado) else CodigoCNES=TISS__FormataConteudo(guias("CodigoCNES")) end if
 					NomeProfissional=TISS__FormataConteudo(NomeProfissional)
@@ -278,7 +286,7 @@ prefixo = right(prefixo, 20)
                     <ans:dadosAtendimento>
                         <ans:tipoAtendimento><%= TipoAtendimentoID %></ans:tipoAtendimento>
                         <ans:indicacaoAcidente><%= IndicacaoAcidenteID %></ans:indicacaoAcidente>
-                        <ans:tipoConsulta><%= TipoConsultaID %></ans:tipoConsulta>
+                        <%if TipoConsultaID<>"" then%><ans:tipoConsulta><%= TipoConsultaID %></ans:tipoConsulta><%end if%>
                         <%if MotivoEncerramentoID<>"" then%><ans:motivoEncerramento><%= MotivoEncerramentoID %></ans:motivoEncerramento><% End If %>
                     </ans:dadosAtendimento>
                     <ans:procedimentosExecutados>

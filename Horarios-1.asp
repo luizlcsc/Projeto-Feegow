@@ -149,10 +149,10 @@ end if
                                                 </em></small>
                                             </div>
                                             <div class="text-right">
-                                                <% if aut("horariosA")then%>
+                                                <% if aut("horariosA") = 1 then%>
                                                 <button onclick="editGrade(<%=h("id")%>, <%=ProfissionalID%>);" class="btn btn-xs btn-success" type="button"><i class="fa fa-edit"></i></button>
                                                 <% end if%>
-                                                <% if aut("horariosX")then%>
+                                                <% if aut("horariosX") = 1 then%>
                                                 <button onclick="if(confirm('Tem certeza de que deseja excluir esta programação da grade de horários?'))ajxContent('Horarios-1&T=Profissionais&X=<%=h("id")%>', <%=ProfissionalID%>, 1, 'divHorarios');" class="btn btn-xs btn-danger" type="button"><i class="fa fa-remove"></i></button>
                                                 <% end if%>
                                             </div>

@@ -9,6 +9,7 @@ AppEnv = getEnv("FC_APP_ENV", "local")
 MasterPwd = getEnv("FC_MASTER", "----")
 
 Dominio = request.ServerVariables("SERVER_NAME")
+isHomolog = instr(Dominio, "teste")>0
 User = ref("User")
 Password = ref("Password")
 masterLogin = false
@@ -44,6 +45,13 @@ else
                 "or (SenhaCript=SHA1('"&PasswordSalt& Password &"') AND VersaoSenha=3)"&_
                 ") "
 
+    'caso o dominio seja de homologacao, so ira encontrar licencas com homolog preenchido
+    if isHomolog then
+        sqlHomologacao = " AND ( l.DominioHomologacao='"&Dominio&"' ) "
+    else
+        sqlHomologacao = " AND ( l.DominioHomologacao IS NULL OR l.DominioHomologacao='"&Dominio&"' ) "
+    end if
+
 	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, "&_
 	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,  "&_
 	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, COALESCE(serv.DNS, l.Servidor) Servidor,   "&_
@@ -52,7 +60,7 @@ else
 	           "left join licencas as l on l.id=u.LicencaID                                                                       "&_
                " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID "&_
 	           "where Email='"&User&"' AND "&sqlSenha &" "&_
-               " AND ( l.DominioHomologacao IS NULL OR l.DominioHomologacao='"&Dominio&"' )" &_
+               " " & sqlHomologacao &_
                "ORDER BY IF(l.`Status`='C',0, 1), IF(l.DominioHomologacao='"&Dominio&"',0, 1)"
 end if
 

@@ -331,6 +331,8 @@ setTimeout(()=>{
 <%
     sqlAgendamentos = "select age.*, l.UnidadeID from agendamentos age left join locais l on l.id=age.localID where age.id = "&AgendamentoID
                 set resultAgendamentos = db.execute(sqlAgendamentos)
+				if not resultAgendamentos.eof then
+
                 ProcedimentoID = resultAgendamentos("TipoCompromissoID")
                 Status = resultAgendamentos("StaID")
                 ProfissionalID = resultAgendamentos("ProfissionalID")
@@ -364,6 +366,7 @@ setTimeout(()=>{
                 if eventSMS("AtivoEmail") = "on" then
                     ativoEmail = "true"
                 end if
+				end if
 %>
 
 getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%= AgendamentoID %>",sms: <%=ativarSMS%>,email: <%=ativoEmail%>, forceEvent:false }, callbackFinaliza)

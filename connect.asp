@@ -3718,7 +3718,7 @@ function dispEquipamento(Data, Hora, Intervalo, EquipamentoID, AgendamentoID)
             end if
         end if
     end if
-    'dispEquipamento = ""
+    ' dispEquipamento = ""
 end function
 
 function replacePagto(txt, Total)

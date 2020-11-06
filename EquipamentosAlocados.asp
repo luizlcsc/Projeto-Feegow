@@ -190,6 +190,9 @@ function abreAgenda(horario, id, data, LocalID, ProfissionalID, GradeID){
     });
 }
 function abreBloqueio(BloqueioID, Data, Hora){
+    if(BloqueioID==-1){
+        return;
+    }
     af('a');
     $.ajax({
         type:"POST",

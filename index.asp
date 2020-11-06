@@ -13,6 +13,8 @@ set shellExec = createobject("WScript.Shell")
 Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
 
+
+
 if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
 	if request.QueryString("P")<>"Home" and session("Bloqueado")<>"" then
 		response.Redirect("./?P=Home&Pers=1")
@@ -245,6 +247,37 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
 
+
+  <script type="text/javascript">
+      try{
+        var PastaAplicacaoRedirect = '<%=session("PastaAplicacaoRedirect") %>'
+        var __currentPage = window.location.href;
+
+        let __force = false;
+
+        if(sessionStorage.hasOwnProperty('force')){
+             __force = true;
+        }
+
+        if(window.location.href.includes("force")){
+            __force = true;
+            sessionStorage.setItem("force","1");
+        }
+
+
+        if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force){
+            ['/base/','/main/','/v7-master/','/feegowclinic-v7/'].forEach((item) => {
+                __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
+            });
+            
+            if(__currentPage != window.location.href){
+              window.location.href = (__currentPage);
+            }
+        }
+      }catch (e) {
+
+      }
+  </script>
 
   <!-- FooTable Addon -->
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.filter.min.js"></script>
@@ -2626,6 +2659,8 @@ if PermiteChat then
       numeroUsuarios: "<%=session("UsuariosContratadosS")%>",
       razaoSocial: "<%=session("RazaoSocial")%>",
       statusLicenca: "<%=StatusLicenca%>",
+      urlSistema: window.location.href,
+      pastaRedicionamento: '<%= session("PastaAplicacaoRedirect") %>'
     });
 
   }

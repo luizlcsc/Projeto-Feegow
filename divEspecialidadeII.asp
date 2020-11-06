@@ -55,6 +55,15 @@ else
         call quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", col, EspecialidadeID, sqlEsp, "especialidade", " no-select2 semVazio ")
     end if
 
+    if left(ProfissionalID, 2)="8_" then
+        ProfissionalExternoID = replace(ProfissionalID, "8_", "")
+        sqlEsp = "select e.id, e.especialidade FROM profissionalexterno p "&_
+                 "INNER JOIN especialidades e ON e.id=p.EspecialidadeID "&_
+                 "WHERE p.id="&ProfissionalExternoID
+
+    end if
+    call quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", col, EspecialidadeID, sqlEsp, "especialidade", " no-select2 semVazio ")
+
     %>
     <script type="text/javascript">
         parametrosInvoice('<%=id%>', $('#ItemID<%= id %>').val());

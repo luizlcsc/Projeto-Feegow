@@ -18,7 +18,7 @@ var api = null;
 switch (env){
     case "local":
         domain = "http://localhost:8000/";
-        api = "/feegowclinic-v7/api/";
+        api = "./api/";
         break;
     case "production":
         domain = "https://app.feegow.com.br/";

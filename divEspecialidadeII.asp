@@ -48,11 +48,30 @@ else
                  "WHERE p.id="&ProfissionalExternoID
 
     end if
-    call quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", col, EspecialidadeID, sqlEsp, "especialidade", " no-select2 semVazio ")
 
+
+    if left(ProfissionalID, 2)="8_" then
+        ProfissionalExternoID = replace(ProfissionalID, "8_", "")
+        sqlEsp = "select e.id, e.especialidade FROM profissionalexterno p "&_
+                 "INNER JOIN especialidades e ON e.id=p.EspecialidadeID "&_
+                 "WHERE p.id="&ProfissionalExternoID
+
+    end if
+
+
+    if sqlEsp<>"" then
+        set QtdEspecialidadesSQL = db.execute(sqlEsp)
+
+        if not QtdEspecialidadesSQL.eof then
+            call quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", col, EspecialidadeID, sqlEsp, "especialidade", " no-select2 semVazio ")
+
+        %>
+        <script type="text/javascript">
+            parametrosInvoice('<%=id%>', $('#ItemID<%= id %>').val());
+        // PRIMEIRO COLOCAR PRA PEGAR O VALOR CORRETO DESSA LINHA E DEPOIS -> calcRepasse(<%= id %>);
+        </script>
+    <%  end if 
+        end if 
+    end if 
+    
     %>
-    <script type="text/javascript">
-        parametrosInvoice('<%=id%>', $('#ItemID<%= id %>').val());
-    // PRIMEIRO COLOCAR PRA PEGAR O VALOR CORRETO DESSA LINHA E DEPOIS -> calcRepasse(<%= id %>);
-    </script>
-<% end if %>

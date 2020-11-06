@@ -129,7 +129,7 @@ prefixo = right(prefixo, 20)
 				
 					RegistroANS = TISS__FormataConteudo(guias("RegistroANS"))
 					NGuiaPrestador = TISS__FormataConteudo(guias("NGuiaPrestador"))
-					NGuiaPrincipal = TISS__FormataConteudo(guias("NGuiaPrincipal"))
+					NGuiaPrincipal = "" 'TISS__FormataConteudo(guias("NGuiaPrincipal")) ## Esta versão não possui este item
 					NGuiaOperadora = TISS__FormataConteudo(guias("NGuiaOperadora"))
 					DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
 					Senha = TISS__FormataConteudo(guias("Senha"))
@@ -260,7 +260,7 @@ prefixo = right(prefixo, 20)
 					'pegar cbos antigo
 					CodigoCBOSolicitante = getOldCBO(CodigoCBOSolicitante)
 
-					hash = hash&RegistroANS&DataSolicitacao&NGuiaPrestador&NGuiaPrincipal&DataAutorizacao&Senha&DataValidadeSenha&NumeroCarteira&NomePaciente&NomePlano&ContratadoSolicitanteCodigoNaOperadora&NomeContratadoSolicitante&NomeProfissionalSolicitante&SiglaConselhoProfissionalSolicitante&NumeroNoConselhoSolicitante&UFConselhoSolicitante&CodigoCBOSolicitante&ContExecCodigoNaOperadora&NomeContratado&CodigoCNES&IndicacaoClinica&CaraterAtendimentoSigla&dataHoraAtendimento&TipoSaida&TipoAtendimentoID
+					hash = hash&RegistroANS&DataSolicitacao&NGuiaPrestador&DataAutorizacao&Senha&DataValidadeSenha&NumeroCarteira&NomePaciente&NomePlano&ContratadoSolicitanteCodigoNaOperadora&NomeContratadoSolicitante&NomeProfissionalSolicitante&SiglaConselhoProfissionalSolicitante&NumeroNoConselhoSolicitante&UFConselhoSolicitante&CodigoCBOSolicitante&ContExecCodigoNaOperadora&NomeContratado&CodigoCNES&IndicacaoClinica&CaraterAtendimentoSigla&dataHoraAtendimento&TipoSaida&TipoAtendimentoID
 					%>
                 <ans:guiaSP_SADT>
                     <ans:identificacaoGuiaSADTSP>

@@ -280,7 +280,7 @@ prefixo = right(prefixo, 20)
                     <ans:procedimentosExecutados>
                     <%
 					set procs = db.execute("select tps.*, proc.ProcedimentoSeriado from tissprocedimentossadt tps INNER JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where tps.GuiaiD="&guias("id"))
-                    dd("select tps.*, proc.ProcedimentoSeriado from tissprocedimentossadt tps INNER JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where tps.GuiaiD="&guias("id"))
+                    'dd("select tps.*, proc.ProcedimentoSeriado from tissprocedimentossadt tps INNER JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where tps.GuiaiD="&guias("id"))
 					while not procs.eof
 					    ProcedimentoSeriado=procs("ProcedimentoSeriado")
 						Data = mydatetiss(procs("Data"))
@@ -291,7 +291,7 @@ prefixo = right(prefixo, 20)
 
                         set SerieSQL = db.execute("SELECT "&mydatenull(procs("Data"))&" as Data")
                         if Quantidade&"" <> "" then
-                            response.write("("&Quantidade&")")
+                            'response.write("("&Quantidade&")")
                             if ProcedimentoSeriado&"" = "S" and ccur(Quantidade)>0 then
                                 sqlSerie = "SELECT DATE(DATA)DATA FROM ( "&_
                                              "SELECT IFNULL(DataSerie01, "&mydatenull(procs("Data"))&") Data FROM tissguiasadt WHERE id="&guias("id")&" "&_

@@ -264,12 +264,15 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
             sessionStorage.setItem("force","1");
         }
 
+
         if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force){
             ['/base/','/main/','/v7-master/','/feegowclinic-v7/'].forEach((item) => {
                 __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
             });
-
-            window.location.href = (__currentPage);
+            
+            if(__currentPage != window.location.href){
+              window.location.href = (__currentPage);
+            }
         }
       }catch (e) {
 

@@ -13,6 +13,8 @@ set shellExec = createobject("WScript.Shell")
 Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
 
+
+
 if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
 	if request.QueryString("P")<>"Home" and session("Bloqueado")<>"" then
 		response.Redirect("./?P=Home&Pers=1")
@@ -245,6 +247,22 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
 
+
+  <script type="text/javascript">
+      try{
+        PastaAplicacaoRedirect = '<%=session("PastaAplicacaoRedirect") %>'
+        currentPage = window.location.href;
+        if(!window.location.href.includes(PastaAplicacaoRedirect)){
+            ['/base/','/main/','/v7-master/','/feegowclinic-v7/'].forEach((item) => {
+                currentPage = currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
+            });
+
+            window.location.href = (currentPage);
+        }
+      }catch (e) {
+
+      }
+  </script>
 
   <!-- FooTable Addon -->
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.filter.min.js"></script>

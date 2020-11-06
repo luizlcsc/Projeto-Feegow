@@ -45,7 +45,7 @@ if reg("sysActive")=0 then
 	disabled = " disabled=""disabled"""
 end if
 
-if reg("TipoProduto")&""<>1 then
+if reg("TipoProduto")&""<>"1" then
     TipoProduto = reg("TipoProduto")
 else
     TipoProduto = req("TipoProduto")&""

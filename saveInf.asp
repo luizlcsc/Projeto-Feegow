@@ -361,7 +361,7 @@ setTimeout(()=>{
 					set eventSMS = db.execute(sqlEventoSMS)
 					ativarSMS = "false"
 					ativarEmail= "false"
-					if eventSMS.eof then 
+					if not eventSMS.eof then 
 						if eventSMS("AtivoSMS")&"" = "on" then
 							ativarSMS = "true"
 						end if

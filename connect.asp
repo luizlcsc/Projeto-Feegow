@@ -563,8 +563,15 @@ function simpleSelectCurrentAccounts(id, associations, selectedValue, others)
 					<%
 				else
 					set Associations = db.execute("select * from cliniccentral.sys_financialaccountsAssociation where id="&splAssociations(t))
+
+
 					while not Associations.EOF
-						set AssRegs = db.execute(Associations("sql")&" limit 10000")
+                        sqlAssociation = Associations("sql")&" limit 10000"
+                        'casos de profissional excluido
+                        if selectedValue&""<>"" then
+                            sqlAssociation = replace(sqlAssociation, "where", " where (concat('"&Associations("id")&"_',ID)='"&selectedValue&"') OR ")
+                        end if
+						set AssRegs = db.execute(sqlAssociation)
 						while not AssRegs.EOF
 						%><option value="<%=Associations("id")&"_"&AssRegs("id")%>"<%if Associations("id")&"_"&AssRegs("id")=selectedValue then%> selected="selected"<%end if%>><%= AssRegs(""&Associations("column")&"") %> &raquo; <%= Associations("AssociationName") %></option>
 						<%

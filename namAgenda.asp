@@ -1,4 +1,4 @@
-﻿<!--#include file="connect.asp"--><!--#include file="Classes/StringFormat.asp"--><!--#include file="Classes/ValidaProcedimentoProfissional.asp"--><% 'NÃO DESCOLAR DAQUI SENÃO BUGA TUDO!!!
+﻿<!--#include file="connect.asp"--><!--#include file="Classes/StringFormat.asp"--><!--#include file="Classes/ValidaProcedimentoProfissional.asp"--><!--#include file="Classes/GradeAgendaUtil.asp"--><% 'NÃO DESCOLAR DAQUI SENÃO BUGA TUDO!!!
 NomeEspecialidade = ref("NomeEspecialidade")
 ProfissionalID = ref("ProfissionalID")
 Data = ref("Data")
@@ -512,9 +512,9 @@ comps.close
 set comps = nothing
 
 
-bloqueioSql = "select c.* from compromissos c where (c.ProfissionalID="&ProfissionalID&" or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"&ProfissionalID&"%|'))) AND ((false "&sqlUnidadesBloqueio&") or c.Unidades='' OR c.Unidades IS NULL) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
-
-set bloq = db.execute(bloqueioSql)
+    'bloqueioSql = "select c.* from compromissos c where (c.ProfissionalID="&ProfissionalID&" or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"&ProfissionalID&"%|'))) AND (c.Unidades LIKE '%|"&UnidadeID&"|%' or c.Unidades='' or c.Unidades is null) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
+    bloqueioSql = getBloqueioSql(ProfissionalID, Data, sqlUnidadesBloqueio)
+    set bloq = db.execute(bloqueioSql)
 
 while not bloq.EOF
 

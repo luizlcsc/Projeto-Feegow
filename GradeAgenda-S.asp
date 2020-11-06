@@ -2,7 +2,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
 <!--#include file="Classes/ValidaProcedimentoProfissional.asp"-->
-
+<!--#include file="Classes/GradeAgendaUtil.asp"-->
 <%
 'on error resume next
 
@@ -178,6 +178,7 @@ while diaS<n
          <tbody>
             <tr class="hidden l<%=LocalID%>" id="<%=DiaSemana%>0000"></tr>
          <%
+            sqlUnidadesBloqueio=""
             Hora = cdate("00:00")
             set Horarios = db.execute("select ass.*, '' Cor, l.NomeLocal, '0' TipoGrade,  l.UnidadeID, '0' GradePadrao from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&sqlProcedimentoPermitido & sqlConvenioPermitido & sqlEspecialidadePermitido &" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
             if Horarios.EOF then
@@ -224,6 +225,10 @@ while diaS<n
                 </tr>
                 <%
                 if Horarios("TipoGrade")=0 then
+
+                    if UnidadeID&"" <> "" and session("Partner")="" then
+                        sqlUnidadesBloqueio = sqlUnidadesBloqueio&" OR c.Unidades LIKE '%|"&UnidadeID&"|%'"
+                    end if
                     Intervalo = Horarios("Intervalo")
                     if isnull(Intervalo) then
                         Intervalo = 30
@@ -595,9 +600,10 @@ while diaS<n
     comps.close
     set comps = nothing
 
-    bloqueioSql = "select c.* from compromissos c where (c.ProfissionalID="&ProfissionalID&" or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"&ProfissionalID&"%|'))) AND (c.Unidades LIKE '%|"&UnidadeID&"|%' or c.Unidades='' or c.Unidades is null) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
-
+    'bloqueioSql = "select c.* from compromissos c where (c.ProfissionalID="&ProfissionalID&" or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"&ProfissionalID&"%|'))) AND (c.Unidades LIKE '%|"&UnidadeID&"|%' or c.Unidades='' or c.Unidades is null) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
+    bloqueioSql = getBloqueioSql(ProfissionalID, Data, sqlUnidadesBloqueio)
     set bloq = db.execute(bloqueioSql)
+
     while not bloq.EOF
         HoraDe = HoraToID(bloq("HoraDe"))
         HoraA = HoraToID(bloq("HoraA"))

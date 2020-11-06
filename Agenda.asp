@@ -205,6 +205,9 @@ function abreAgenda(horario, id, data, LocalID){
 	});
 }
 function abreBloqueio(BloqueioID, Data, Hora){
+	if(BloqueioID==-1){
+		return;
+	}
 	$("#modal-agenda").modal('show');
 	$.ajax({
 		type:"POST",

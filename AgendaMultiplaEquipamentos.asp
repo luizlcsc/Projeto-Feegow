@@ -1,4 +1,5 @@
-﻿<%
+﻿<!--#include file="Classes/GradeAgendaUtil.asp"-->
+<%
 refEquipamentos = replace(refEquipamentos, "|", "")
 if ref("Equipamentos")<>"" then
     sqlRefEquipamentos = " id IN ("&refEquipamentos&") "
@@ -37,8 +38,15 @@ while not equ.eof
 					if Horarios.EOF then
 	                    set Horarios = db.execute("select ass.* from assfixalocalxprofissional ass where ass.ProfissionalID="&EquipamentoID*(-1)&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe")
 					end if
+                    
+                    sqlUnidadesBloqueio= ""
+
                     while not Horarios.EOF
 
+                        if UnidadeID&"" <> "" then
+                            sqlUnidadesBloqueio = sqlUnidadesBloqueio&" OR c.Unidades LIKE '%|"&UnidadeID&"|%'"
+                        end if
+                        
                         LocalID=Horarios("LocalID")
                         %>
                         <tr>
@@ -179,7 +187,10 @@ while not equ.eof
                 comps.close
                 set comps = nothing
 
-                set bloq = db.execute("select c.* from compromissos c where c.ProfissionalID=-"&EquipamentoID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'")
+                'set bloq = db.execute("select c.* from compromissos c where c.ProfissionalID=-"&EquipamentoID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'")
+				bloqueioSql = getBloqueioSql("-"&EquipamentoID, Data, sqlUnidadesBloqueio)
+                set bloq = db.execute(bloqueioSql)
+
                 while not bloq.EOF
                     HoraDe = HoraToID(bloq("HoraDe"))
                     HoraA = HoraToID(bloq("HoraA"))

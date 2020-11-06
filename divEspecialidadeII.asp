@@ -37,18 +37,9 @@ if(executeLote = "S") then
 else 
     if left(ProfissionalID, 2)="5_" then
         ProfissionalID = replace(ProfissionalID, "5_", "")
-        sqlEsp = "select esp.EspecialidadeID id, e.especialidade from (select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID) union all	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp left join especialidades e ON e.id=esp.EspecialidadeID"
+        sqlEsp = "select esp.EspecialidadeID id, e.especialidade from (select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID) union all	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp left join especialidades e ON e.id=esp.EspecialidadeID WHERE e.id is not null"
 
     end if
-
-    if left(ProfissionalID, 2)="8_" then
-        ProfissionalExternoID = replace(ProfissionalID, "8_", "")
-        sqlEsp = "select e.id, e.especialidade FROM profissionalexterno p "&_
-                 "INNER JOIN especialidades e ON e.id=p.EspecialidadeID "&_
-                 "WHERE p.id="&ProfissionalExternoID
-
-    end if
-
 
     if left(ProfissionalID, 2)="8_" then
         ProfissionalExternoID = replace(ProfissionalID, "8_", "")
@@ -65,13 +56,14 @@ else
         if not QtdEspecialidadesSQL.eof then
             call quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", col, EspecialidadeID, sqlEsp, "especialidade", " no-select2 semVazio ")
 
-        %>
+         end if 
+        end if 
+         %>
         <script type="text/javascript">
             parametrosInvoice('<%=id%>', $('#ItemID<%= id %>').val());
         // PRIMEIRO COLOCAR PRA PEGAR O VALOR CORRETO DESSA LINHA E DEPOIS -> calcRepasse(<%= id %>);
         </script>
-    <%  end if 
-        end if 
+    <%
     end if 
     
     %>

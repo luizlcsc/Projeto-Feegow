@@ -250,26 +250,26 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
   <script type="text/javascript">
       try{
-        PastaAplicacaoRedirect = '<%=session("PastaAplicacaoRedirect") %>'
-        currentPage = window.location.href;
+        var PastaAplicacaoRedirect = '<%=session("PastaAplicacaoRedirect") %>'
+        var __currentPage = window.location.href;
 
-        let force = false;
+        let __force = false;
 
         if(sessionStorage.hasOwnProperty('force')){
-             force = true;
+             __force = true;
         }
 
         if(window.location.href.includes("force")){
-            force = true;
+            __force = true;
             sessionStorage.setItem("force","1");
         }
 
-        if(!window.location.href.includes(PastaAplicacaoRedirect) && !force){
+        if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force){
             ['/base/','/main/','/v7-master/','/feegowclinic-v7/'].forEach((item) => {
-                currentPage = currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
+                __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
             });
 
-            window.location.href = (currentPage);
+            window.location.href = (__currentPage);
         }
       }catch (e) {
 

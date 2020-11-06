@@ -76,6 +76,7 @@ if not tryLogin.EOF then
     if isnull(PastaAplicacaoRedirect) then
         PastaAplicacaoRedirect="v7-master"
     end if
+    session("PastaAplicacaoRedirect") = PastaAplicacaoRedirect
 
     Servidor = tryLogin("Servidor")&""
     ServerRead = tryLogin("ServerRead")&""

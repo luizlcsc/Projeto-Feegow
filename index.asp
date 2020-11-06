@@ -2659,6 +2659,8 @@ if PermiteChat then
       numeroUsuarios: "<%=session("UsuariosContratadosS")%>",
       razaoSocial: "<%=session("RazaoSocial")%>",
       statusLicenca: "<%=StatusLicenca%>",
+      urlSistema: window.location.href,
+      pastaRedicionamento: '<%= session("PastaAplicacaoRedirect") %>'
     });
 
   }

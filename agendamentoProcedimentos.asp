@@ -1,6 +1,8 @@
 <!--#include file="Classes/Restricao.asp"-->
 <!--#include file="Classes/Json.asp"-->
 <%
+ObrigarFormaRecebimentoCheckin=getConfig("ObrigarFormaRecebimentoCheckin")
+
 function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBill)
 
 
@@ -21,7 +23,7 @@ function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBil
                     styleDisabled = "style='cursor: not-allowed; opacity:0.65'"
                 end if                
                 
-                if getConfig("ObrigarFormaRecebimentoCheckin") = "1" then %>
+                if ObrigarFormaRecebimentoCheckin = "1" then %>
                     <button type="button" class="ckpagar btn btn-xs btn-warning" <%=styleDisabled%> <%=recebimentoFuncCaixinha%> data-toggle="modal" onclick='lanctoCheckinNovoUpdate(<%=Bloco%>)'>
                         <i class="fa fa-arrow-circle-up"></i> <%= Rotulo %>
                     </button>                    
@@ -38,7 +40,7 @@ function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBil
                     TipoGuia = spl(i)
                     Rotulo = "Guia de "& TipoGuia
                     %>
-                    <button type="button" id="btnAgGuia<%=TipoGuia%>" onclick="GeraGuia('<%=TipoGuia%>')" class="btn btn-xs btn-warning"><i class="fa fa-arrow-circle-up"></i> <%= ucase(Rotulo) %></button>
+                    <button type="button" onclick="GeraGuia('<%=TipoGuia%>')" class="btn btn-xs btn-warning"><i class="fa fa-arrow-circle-up"></i> <%= ucase(Rotulo) %></button>
                     <%
                 next
             end if
@@ -914,17 +916,31 @@ function validaProcedimento(id,value){
 }
 
 function GeraGuia(TipoGuia) {
-    $.ajax('tissguiaconsulta.asp?P=tissguia'+TipoGuia+'&I=N&Pers=1&Lancto=<%=ConsultaID%>|agendamento', {
-        success: function(res) {
-            if (res) {
-                $("#divHistorico").html("");
-                $("#tabContentCheckin").append("<div id='dadosGuiaConsulta'></div>");
-                var divAgendamento = $("#dadosGuiaConsulta");
-                divAgendamento.html(res);
-                $("#dadosAgendamento").removeClass("active");
+    if(TipoGuia === "SADT"){
+        $.ajax('tissguiasadt.asp?P=tissguiasadt&I=N&Pers=1&ApenasProcedimentosNaoFaturados=S&Lancto=<%=ConsultaID%>|agendamento', {
+            success: function(res) {
+                if (res) {
+                    $("#tabContentCheckin").append("<div id='dadosGuiaConsulta'></div>");
+                    var divAgendamento = $("#dadosGuiaConsulta");
+                    divAgendamento.html(res);
+                    $("#dadosAgendamento").removeClass("active");
+                }
             }
-        }
-    });
+        });
+    }else{
+        $.ajax('tissguiaconsulta.asp?P=tissguia'+TipoGuia+'&I=N&Pers=1&ApenasProcedimentosNaoFaturados=S&Lancto=<%=ConsultaID%>|agendamento', {
+            success: function(res) {
+                if (res) {
+                    $("#divHistorico").html("");
+                    $("#tabContentCheckin").append("<div id='dadosGuiaConsulta'></div>");
+                    var divAgendamento = $("#dadosGuiaConsulta");
+                    divAgendamento.html(res);
+                    $("#dadosAgendamento").removeClass("active");
+                }
+            }
+        });
+    }
+
 }
 $(document).ready(function(){        
     //formaRecto(<%=FormaIDSelecionado %>);
@@ -936,18 +952,6 @@ $(document).ready(function(){
             $("#dadosAgendamento").addClass("active");
         }
     })
-    
-    $("#btnAgGuiaSADT").on('click',  function() {
-        $.ajax('tissguiasadt.asp?P=tissguiasadt&I=N&Pers=1&Lancto=<%=ConsultaID%>|agendamento', {
-            success: function(res) {
-                if (res) {
-                    $("#tabContentCheckin").append("<div id='dadosGuiaConsulta'></div>");
-                    var divAgendamento = $("#dadosGuiaConsulta");
-                    divAgendamento.html(res);
-                    $("#dadosAgendamento").removeClass("active");
-                }
-            }
-        });
-    });
+
 });
 </script>

@@ -2110,8 +2110,11 @@ function insertRedir(tableName, id)
 			set vie = db.execute(sqlVie)
 		end if
 		'===> Exceções
-		if request.QueryString("Lancto")<>"" then
-			strLancto = "&Lancto="&request.QueryString("Lancto")
+		if req("Lancto")<>"" then
+			strLancto = "&Lancto="&req("Lancto")
+		end if
+		if req("ApenasProcedimentosNaoFaturados")<>"" then
+			strApenasNaoFaturados = "&ApenasProcedimentosNaoFaturados="&req("ApenasProcedimentosNaoFaturados")
 		end if
         if req("Solicitantes")<>"" then
             strSolicitantes = "&Solicitantes="&req("Solicitantes")
@@ -2124,7 +2127,7 @@ function insertRedir(tableName, id)
             qsCmd = "&cmd="&req("cmd")
         end if
 
-		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&request.QueryString("Pers") &strLancto & strSolicitantes& qsCmd)
+		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&request.QueryString("Pers") &strLancto & strApenasNaoFaturados & strSolicitantes& qsCmd)
 	else
 		set data = db.execute("select * from "&tableName&" where id="&id)
 		if data.eof then
@@ -4988,7 +4991,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
                     else
                         if (len(Convenios)>2 or (isnumeric(Convenios) and not isnull(Convenios))) and instr(Convenios&" ", "Nenhum")=0 then
                         %>
-                        <%=quickfield("simpleSelect", "ConvenioID"&n, "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " onchange=""parametros(this.id, this.value+'_'+$('#ProcedimentoID').val());""") %>
+                        <%=quickfield("simpleSelect", "ConvenioID"&n, "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where sysActive=1 AND Ativo='ON' AND id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " onchange=""parametros(this.id, this.value+'_'+$('#ProcedimentoID').val());""") %>
                         <%
                         end if
                     end if

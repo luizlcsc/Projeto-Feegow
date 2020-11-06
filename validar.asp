@@ -1,3 +1,4 @@
+<!--#include file="Classes/StringFormat.asp"-->
 <%
 'if Request("chkCPF") = "on" then
 'CalculaCPF()
@@ -212,5 +213,23 @@ If Palavra <> "" Then
       TrocarAcento = Texto
 End If
 End Function
- 
+
+function TISS__FormataConteudo(Conteudo)
+    'INICIO DE CARACTERS ATÍPICOS/ESTRANHOS
+    Conteudo = replace(Conteudo,"ï¿½","")'ESTE ITEM PODE SER 'o' OU 'a' 
+    'FIM DE CARACTERS ATÍPICOS/ESTRANHOS
+
+    Conteudo = RemoveAcentoPalavras(Conteudo)
+    Conteudo = RemoveCaracters(Conteudo,"-_./,")
+    Conteudo = AlteraCaracters(Conteudo,"º°","..")
+
+    TISS__FormataConteudo = Conteudo
+End Function
+
+function TISS__RemoveCaracters(Conteudo)
+    
+    Conteudo = RemoveCaracters(Conteudo," -_./,")
+
+    TISS__RemoveCaracters = Conteudo
+End Function
 %>

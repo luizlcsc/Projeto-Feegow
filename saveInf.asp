@@ -329,6 +329,8 @@ setTimeout(()=>{
 	callbackFinaliza();
 }, 3000)
 <%
+	ativarSMS="true"
+	ativarEmail="true"
     sqlAgendamentos = "select age.*, l.UnidadeID from agendamentos age left join locais l on l.id=age.localID where age.id = "&AgendamentoID
                 set resultAgendamentos = db.execute(sqlAgendamentos)
 				if not resultAgendamentos.eof then
@@ -359,17 +361,17 @@ setTimeout(()=>{
                       " ORDER BY IF(evt.Procedimentos LIKE '%|"&ProcedimentoID&"|%',0,1) ASC limit 1"
                 set eventSMS = db.execute(sqlEventoSMS)
                 ativarSMS = "false"
-                ativoEmail= "false"
+                ativarEmail= "false"
                 if eventSMS("AtivoSMS") = "on" then
                     ativarSMS = "true"
                 end if
                 if eventSMS("AtivoEmail") = "on" then
-                    ativoEmail = "true"
+                    ativarEmail = "true"
                 end if
 				end if
 %>
 
-getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%= AgendamentoID %>",sms: <%=ativarSMS%>,email: <%=ativoEmail%>, forceEvent:false }, callbackFinaliza)
+getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%= AgendamentoID %>",sms: <%=ativarSMS%>,email: <%=ativarEmail%>, forceEvent:false }, callbackFinaliza)
 <%
 end if
 %>

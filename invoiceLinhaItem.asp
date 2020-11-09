@@ -346,9 +346,9 @@ end if
     	    <div class="col-xs-3">
 			    <label>Profissional</label><br>
 			    <%
-			    if PacoteID&""="" then
+			    'if PacoteID&""="" then
 			        onchangeProfissional = " onchange=""espProf("& id &");"" "
-			    end if
+			    'end if
 
 			    if NaoAlterarExecutante then
                     %>
@@ -387,11 +387,14 @@ end if
                     <%
                 end if
 
+                if EspecialidadeID&""="" or EspecialidadeID&""="0" then
+                    camposRequired=""
+                end if
+
                 %>
-                <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" no-select2 "&camposRequired) %>
+                <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" empty no-select2 "&camposRequired) %>
                 </div>
                 <%
-
 			    if NaoAlterarExecutante then
                     %>
                     <input type="hidden" name="DataExecucao<%= id %>" value="<%=DataExecucao%>" />

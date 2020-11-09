@@ -80,7 +80,9 @@ if req("t")="Saldos" then
     Tel = u("Tel1") &" - "& u("Tel2")
     %>
     <div class="row p25">
+
         <div class="col-xs-3"><img width="150" src="https://site.feegowclinic.com.br/wp-content/uploads/2019/05/logo-feegow-clinic.png"></div>
+
         <div class="col-xs-9 pt15">
             <b><%= NomeUnidade %></b><br>
             <%= Endereco %> <br>
@@ -141,7 +143,9 @@ elseif req("t")="Analitico" then
     Tel = u("Tel1") &" - "& u("Tel2")
     %>
     <div class="row p25">
+
         <div class="col-xs-3"><img width="150" src="https://site.feegowclinic.com.br/wp-content/uploads/2019/05/logo-feegow-clinic.png"></div>
+
         <div class="col-xs-9 pt15">
             <b><%= NomeUnidade %></b><br>
             <%= Endereco %> <br>
@@ -224,7 +228,9 @@ elseif req("t")="Sintetico" then
     Tel = u("Tel1") &" - "& u("Tel2")
     %>
     <div class="row p25">
+
         <div class="col-xs-3"><img width="150" src="https://site.feegowclinic.com.br/wp-content/uploads/2019/05/logo-feegow-clinic.png"></div>
+
         <div class="col-xs-9 pt15">
             <b><%= NomeUnidade %></b><br>
             <%= Endereco %> <br>
@@ -387,7 +393,9 @@ if not pultf.eof then
     sqlMaior = " AND m.Date>"& mydatenull(UltimaFechada) &" "
 end if
 
+
 set pulta = db.execute("select m.Date from sys_financialmovement m where Type<>'Bill' "& sqlMaior &" and m.UnidadeID="& session("UnidadeID") &" order by m.Date limit 1")
+
 if not pulta.eof then
     UltimaAberta = pulta("Date")
 end if
@@ -502,7 +510,9 @@ end if
                         set cc = nothing
                     end if
 
+
                     if isdate(UltimaAberta) and session("Banco")="clinic7211" then
+
                         if PrimeiraDaLista>(UltimaAberta+1) then
                             bloqFec = cdate(UltimaAberta)+15
                             btnF = "<i class='fa fa-exclamation-circle text-danger' title='A data de "& UltimaAberta &" precisa ser fechada para que você possa fechar as seguintes.'></i>"

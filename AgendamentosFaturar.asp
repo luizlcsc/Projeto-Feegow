@@ -41,6 +41,7 @@ end if
                         <th>Status</th>
                         <th>Procedimento</th>
                         <th>Valor/Convênio</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,10 +57,22 @@ end if
 
                 i=0
 
-                set qtdAg = db.execute("select FLOOR(COUNT(*)/20) AS totalPaginas from agendamentos ag LEFT JOIN staconsulta sta on sta.id=ag.StaID LEFT JOIN profissionais prof on prof.id=ag.ProfissionalID LEFT JOIN procedimentos proc on proc.id=ag.TipoCompromissoID LEFT JOIN convenios conv on ag.ValorPlano=conv.id where PacienteID="&PacienteID &" "& sqlData & sqlStatus)
+                set qtdAg = db.execute("select FLOOR(COUNT(*)/20) AS totalPaginas from agendamentos ag LEFT JOIN staconsulta sta on sta.id=ag.StaID LEFT JOIN profissionais prof on prof.id=ag.ProfissionalID LEFT JOIN procedimentos proc on proc.id=ag.TipoCompromissoID LEFT JOIN convenios conv on ag.ValorPlano=conv.id where ag.sysActive=1 AND PacienteID="&PacienteID &" "& sqlData & sqlStatus)
                 qtdAgAux = CInt(qtdAg("totalPaginas"))*20
-                set ag = db.execute("select ag.id, ag.Data, ag.Hora, ag.rdValorPlano, ag.ValorPlano, prof.NomeProfissional, proc.NomeProcedimento, conv.NomeConvenio, sta.StaConsulta from agendamentos ag LEFT JOIN staconsulta sta on sta.id=ag.StaID LEFT JOIN profissionais prof on prof.id=ag.ProfissionalID LEFT JOIN procedimentos proc on proc.id=ag.TipoCompromissoID LEFT JOIN convenios conv on ag.ValorPlano=conv.id where PacienteID="&PacienteID &" "& sqlData & sqlStatus&" AND ag.sysActive=1 order by Data desc limit " & Offset)
+                set ag = db.execute("select ii.id ItemInvoiceID, ag.id, ag.Data, ag.Hora, ag.rdValorPlano, ag.ValorPlano, prof.NomeProfissional, proc.NomeProcedimento, conv.NomeConvenio, sta.StaConsulta "&_
+                "from agendamentos ag "&_
+                "LEFT JOIN staconsulta sta on sta.id=ag.StaID  "&_
+                "LEFT JOIN profissionais prof on prof.id=ag.ProfissionalID  "&_
+                "LEFT JOIN procedimentos proc on proc.id=ag.TipoCompromissoID  "&_
+                "LEFT JOIN convenios conv on ag.ValorPlano=conv.id  "&_
+                "LEFT JOIN itensinvoice ii ON ii.AgendamentoID=ag.id  "&_
+                "where PacienteID="&PacienteID &" "& sqlData & sqlStatus&" AND ag.sysActive=1  "&_
+                "GROUP BY ag.id  "&_
+                "order by Data desc  "&_
+                "limit " & Offset)
+
                 while not ag.eof
+                    ItemInvoiceID=ag("ItemInvoiceID")
                     if ag("rdValorPlano")="V" then
                         ValorConvenio = ag("ValorPlano")
                         if not isnull(ValorConvenio) and ValorConvenio<>"" and isnumeric(ValorConvenio) then
@@ -68,6 +81,13 @@ end if
                     else
                         ValorConvenio = ag("NomeConvenio")
                     end if
+
+                    badgeFaturado = ""
+
+                    if ItemInvoiceID&""<>"" then
+                        badgeFaturado = "<div class='badge badge-warning'><i class='fa fa-exclamation-circle'></i> Faturado</div>"
+                    end if
+
                     %><tr>
                         <td  width="2%"><label><input type="checkbox" class="fromAgenda" name="Lancto" value="<%=ag("id")%>|agendamento"><span class="lbl"></span></label></td>
                         <td><%=ag("Data")%></td>
@@ -76,6 +96,7 @@ end if
                         <td><%=ag("StaConsulta")%></td>
                         <td><%=ag("NomeProcedimento")%></td>
                         <td class="text-center"><%=ValorConvenio%></td>
+                        <td><%=badgeFaturado%></td>
                     </tr><%
                     i = i + 1
                 ag.movenext
@@ -83,13 +104,15 @@ end if
                 ag.close
                 set ag=nothing
                 %>
+                <tr >
+                    <td colspan="8" class="dark">
+                    <button style="float: left;<%if (CInt(Offset) > qtdAgAux) then%> <%=";display:none"%> <% end if %> " class="btn btn-sm btn-primary" type="button" onclick="FiltrarAgendamentosFaturar(<%=Offset+20%>)">Mostrar mais</button>
+                    <strong style="float: right;"><%=i%> agendamentos</strong>
+                    </td>
+                </div>
                 </tbody>
             </table>
-
-    </div>
-    <div class="col-md-12 mt5">
-        <button style="float: left;<%if (CInt(Offset) > qtdAgAux) then%> <%=";display:none"%> <% end if %> " class="btn btn-sm btn-primary" type="button" onclick="FiltrarAgendamentosFaturar(<%=Offset+20%>)">Mostrar mais</button>
-        <strong style="float: right;"><%=i%> agendamentos</strong>
+    <hr>
     </div>
 
 </div>

@@ -290,7 +290,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             "FROM profissionalexterno AS pro "&_
             "LEFT JOIN conselhosprofissionais conPro ON conPro.id=pro.Conselho "&_
             "where pro.id="&item_ProfissionalExternoID
-            
+            'response.write("<pre>"&qContentSQL&"</pre>")
             SET ContentSQL = db.execute(qContentSQL)
             if not ContentSQL.eof then
               conteudo = replace(conteudo, "[ProfissionalExecutante.Nome]", trim(ContentSQL("NomeProfissional")&""))

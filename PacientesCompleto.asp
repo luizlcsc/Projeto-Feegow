@@ -11,6 +11,7 @@ end if
 
 response.Charset="utf-8"
 
+
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and req("Debug")="" then
 	on error resume next
 end if
@@ -211,9 +212,10 @@ end if
                   mask = ""
                 END IF
 
+                CorIdentificacao = reg("CorIdentificacao")
             %>
             <%=quickField("CPF", "CPF", "CPF", 3, reg("CPF"), " "&mask&" ", "", " ") %>
-            <%=quickField("simpleColor", "CorIdentificacao", "Cor de Identificação", 2, reg("CorIdentificacao"), "select * from Cores", "Cor", "")%>
+            <%=quickField("simpleColor", "CorIdentificacao", "Cor de Identificação", 2, CorIdentificacao, "select * from Cores", "Cor", "")%>
 
         </div><br />
         <div class="row">
@@ -467,10 +469,10 @@ end if
                 </div>
             </div>
             <div class="row">
-            	<div class="col-md-6<%if instr(Omitir, "|retornos|") then%> hidden<%end if%>">
+            	<div class="col-md-6<%if instr(Omitir, "|programação de agendamentos (retornos)|") then%> hidden<%end if%>">
 					<%call Subform("PacientesRetornos", "PacienteID", PacienteID,"frm")%>
                 </div>
-            	<div class="col-md-6<%if instr(Omitir, "|relativos|") then%> hidden<%end if%>">
+            	<div class="col-md-6<%if instr(Omitir, "|pessoas relacionadas e parentes|") then%> hidden<%end if%>">
 					<%call Subform("PacientesRelativos", "PacienteID", PacienteID, "frm")%>
                 </div>
             </div>

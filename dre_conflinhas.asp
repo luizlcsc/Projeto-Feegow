@@ -13,7 +13,7 @@ if LC="L" then
 	elseif Acao="U" then
 		set l = db.execute("select id from dre_modeloslinhas where ModeloID="& ModeloID)
 		while not l.eof
-			sqlUP = "update dre_modeloslinhas set Descricao='"& ref("Descricao"& l("id")) &"', CorFundo='"& ref("CorFundo"& l("id")) &"', Ordem="& treatvalzero(ref("Ordem"& l("id"))) &" where id="& l("id")
+			sqlUP = "update dre_modeloslinhas set Descricao='"& ref("Descricao"& l("id")) &"', TipoValor='"& ref("TipoValor"& l("id")) &"', CorFundo='"& ref("CorFundo"& l("id")) &"', Ordem="& treatvalzero(ref("Ordem"& l("id"))) &" where id="& l("id")
 			'response.write(sqlUP &"<br>")
 			db.execute( sqlUP )
 		l.movenext
@@ -65,6 +65,7 @@ end if
 			Descricao = plinhas("Descricao")
 			Ordem = plinhas("Ordem")
 			CorFundo = plinhas("CorFundo")
+			TipoValor = plinhas("TipoValor")
 			%>
 			<tr>
 				<td>
@@ -78,6 +79,8 @@ end if
 
 						if Tipo="LINHA" then
 							call quickfield("simpleSelect", "AddCon", "Condições", 2, "", "select '' id, '+ Adicionar' Descricao UNION ALL select id, Descricao from cliniccentral.dre_condicoes", "Descricao", " semVazio  no-select2 onchange='lin(`C`, $(this).val(), "& plinhas("id") &" )' ")
+
+							call quickfield("simpleSelect", "TipoValor"& id, "Tipo de Valor", 2, TipoValor, "select 'Competencia' id, 'Competência' Descricao UNION ALL select 'Vencimento', 'Vencimento' UNION ALL select 'Pagamento', 'Pagamento'", "Descricao", " semVazio  no-select2 onchange='lin(`L`, `U`, "& plinhas("id") &" )' ")
 						else
 							%>
 							<div class="col-md-2">
@@ -151,7 +154,7 @@ end if
 											<td>
 												<%
 												if tabcolCategorias<>"" then
-													call quickfield("multiple", "Categorias"& ConID, "", 12, Categorias, "select '0' id, '        SEM CATEGORIA' "& colCategorias &" UNION select id, "& colCategorias &" from "& tabCategorias &" WHERE sysActive=1 ORDER BY "& colCategorias, colCategorias, " no-select2 semVazio onchange='lin(`C`, `U`, "& plinhas("id") &" )' ")
+													call quickfield("multiple", "Categorias"& ConID, "", 12, Categorias, "select '0' id, '        SEM CATEGORIA' "& colCategorias &", '       ' Posicao UNION select id, concat(ifnull(Posicao, ''), ' - ', "& colCategorias &") "& colCategorias &", Posicao from "& tabCategorias &" WHERE sysActive=1 ORDER BY Posicao, "& colCategorias, colCategorias, " no-select2 semVazio onchange='lin(`C`, `U`, "& plinhas("id") &" )' ")
 												end if
 												%>
 											</td>
@@ -182,7 +185,7 @@ end if
 							<table class="table table-condensed table-bordered mt10">
 								<thead>
 									<tr>
-										<th>Somar / Subtrair</th>
+										<th nowrap width="1%">Somar / Subtrair</th>
 										<th>Linha</th>
 										<th width="1%"></th>
 									</tr>
@@ -197,7 +200,7 @@ end if
 										end if
 										%>
 										<tr>
-											<td><%= SoSu %></td>
+											<td class="text-center"><%= SoSu %></td>
 											<td><%= ptot("Descricao") %></td>
 											<td><i class="fa fa-remove btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta condição do totalizador?'))lin('T', 'XLT', <%= ptot("id") %>)"></i></td>
 										</tr>

@@ -70,7 +70,8 @@ if aut("|agestafinA|")=0 and ref("Checkin")<>"1" then
 end if
 
 if ref("rdValorPlano")="P" then
-    set ConfigConvenio = db.execute("select id from convenios where NaoAgendaSemPlano = 1 and id="&treatvalzero(ref("ConvenioID")))
+    set ConfigConvenio = db.execute("select conv.id, (SELECT COUNT(p.id) FROM conveniosplanos p WHERE p.ConvenioID=CONV.id AND p.NomePlano!='' AND p.sysActive=1) qtdPlanos from convenios conv where conv.NaoAgendaSemPlano = 1 and CONV.id="&treatvalzero(ref("ConvenioID"))&" HAVING qtdPlanos>0")
+
     if not ConfigConvenio.EOF and ref("PlanoID") = "" then
         erro = "Erro: Selecione um Plano"
     end if
@@ -740,4 +741,15 @@ function validaConvenio(convenioID, localID)
     end if
 
 end function
+
+' valida se o procedimento já ultrapasou o limite mensal
+if getConfig("procedimentosPorMes") = 1 then
+    dt = left(mydate(ref("Data")),8)&"%"
+    sql = "SELECT IF(COUNT(a.id) >= p.MaximoNoMes AND p.MaximoNoMes IS NOT NULL, 1, 0)ultimos FROM agendamentos a LEFT JOIN procedimentos p ON p.id = a.TipoCompromissoID WHERE a.Data LIKE '"&dt&"'  AND a.TipoCompromissoID = "&ref("ProcedimentoID")
+    set ultimosAgendamentos = db.execute(sql)
+    if ultimosAgendamentos("ultimos") = "1" then
+        erro = "Este procedimento já ultrapassou o seu limite para este mês."
+    end if
+end if
 %>
+

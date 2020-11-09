@@ -3,19 +3,6 @@ if request.ServerVariables("SERVER_NAME")="clinic.feegow.com.br" and session("ba
 '    response.Redirect("http://clinic4.feegow.com.br/v7/?P=Login")
 end if
 
-if request.ServerVariables("HTTPS")="off" then
-	if request.ServerVariables("REMOTE_ADDR")="::1" OR request.ServerVariables("REMOTE_ADDR")="127.0.0.1" OR left(request.ServerVariables("REMOTE_ADDR"), 7)="192.168" OR request.QueryString("Partner")<>"" OR SESSION("Partner")<>"" then
-'		response.Redirect( "https://localhost/feegowclinic/?P="&request.QueryString("P") )
-	else
-        if request.ServerVariables("SERVER_NAME")="clinic7.feegow.com.br" then
-    		response.Redirect( "https://clinic7.feegow.com.br/v7/?P="&request.QueryString("P") )
-        end if
-        if request.ServerVariables("SERVER_NAME")="clinic8.feegow.com.br" then
-    		response.Redirect( "https://clinic8.feegow.com.br/v7/?P="&request.QueryString("P") )
-        end if
-	end if
-end if
-
 if session("User")="" and request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
     QueryStringParameters = Request.QueryString
 
@@ -25,6 +12,8 @@ end if
 set shellExec = createobject("WScript.Shell")
 Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
+
+
 
 if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
 	if request.QueryString("P")<>"Home" and session("Bloqueado")<>"" then
@@ -111,8 +100,15 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
        margin-top: 33px!important;
    }
    @media print{
-       #content{
-           margin-left:-250px!important;
+       #content_wrapper{
+        position: initial!important;
+        margin-left: 0!important;
+       }
+       .navbar.navbar-fixed-top + #sidebar_left + #content_wrapper{
+         padding-top:0!important;
+       }
+       #sidebar_left{
+         display:none;
        }
    }
 
@@ -251,6 +247,42 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
 
+
+  <script type="text/javascript">
+        <% 
+          set licencaConsulta = db.execute("select PastaAplicacao from cliniccentral.licencas where id = "&replace(session("Banco"), "clinic", "")) 
+          licenca = licencaConsulta("PastaAplicacao")
+        %>
+        try{
+          const licenca = '<%=licenca%>';
+          var PastaAplicacaoRedirect = licenca
+          var __currentPage = window.location.href;
+
+          let __force = false;
+
+          if(sessionStorage.hasOwnProperty('force')){
+              __force = true;
+          }
+
+          if(window.location.href.includes("force")){
+              __force = true;
+              sessionStorage.setItem("force","1");
+          }
+
+
+          if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force && !window.location.href.includes("localhost") ){
+              ['/base/','/main/','/v7-master/'].forEach((item) => {
+                  __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
+              });
+              
+              if(__currentPage != window.location.href){
+                window.location.href = (__currentPage);
+              }
+          }
+        }catch (e) {
+
+        }
+  </script>
 
   <!-- FooTable Addon -->
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.filter.min.js"></script>
@@ -827,7 +859,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								   </li>
 								 <%
                                  end if
-                                 if session("Admin")=1 then
+                                 if session("ExibeFaturas") then
 
                                  IF session("QuantidadeFaturasAbertas") = "" THEN
                                     if AppEnv="production" then
@@ -2632,6 +2664,8 @@ if PermiteChat then
       numeroUsuarios: "<%=session("UsuariosContratadosS")%>",
       razaoSocial: "<%=session("RazaoSocial")%>",
       statusLicenca: "<%=StatusLicenca%>",
+      urlSistema: window.location.href,
+      pastaRedicionamento: '<%= session("PastaAplicacaoRedirect") %>'
     });
 
   }

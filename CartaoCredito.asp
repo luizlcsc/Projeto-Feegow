@@ -42,6 +42,7 @@ end if
                 </div>
             </div>
             <div class="row">
+                <input type="hidden" id="Pagina" value="1" name="PaginaAtual"/>
                 <%=quickField("text", "Transacao", "Transação", 2, "", "", "", "")%>
                 <%=quickField("text", "Autorizacao", "Autorização", 2, "", "", "", "")%>
                 <%= quickfield("multiple", "Bandeira", "Selecione a bandeira", 4, req("Bandeira"), "SELECT Bandeira,Bandeira as id FROM cliniccentral.bandeiras_cartao", "Bandeira", "") %>
@@ -68,6 +69,11 @@ end if
     <input type="hidden" name="html" id="htmlTable">
 </form>
 <script>
+function buscaPagina(pagina){
+    $("#Pagina").val(pagina);
+    $("#frmCC").submit();
+}
+
 function downloadExcel(){
     $("#htmlTable").val($("#resultado").html());
     var tk = localStorage.getItem("tk");

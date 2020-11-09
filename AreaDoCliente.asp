@@ -267,7 +267,7 @@ end if
             </div>
 
 <%
-            if session("Admin")=1 then
+            if session("ExibeFaturas") then
 %>
 
             <div class="panel mb10">
@@ -391,7 +391,7 @@ end if
 %>
 
 
-            <div class="panel mb10">
+            <div class="panel mb10 hidden">
               <div class="panel-heading">
                 <span class="panel-icon">
                   <i class="fa fa-life-ring"></i>

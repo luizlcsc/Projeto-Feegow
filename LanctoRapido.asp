@@ -16,7 +16,7 @@ if Tipo="AReceber" then
 	'Ve se tem alguma invoice CD=C com sysActive=0 no user=session, se não tiver cria e guarda o id
 	set inv = db.execute(sqlInv)
 	if inv.eof then
-		db_execute("insert into sys_financialinvoices (`Value`, Tax, Currency, Recurrence, RecurrenceType, CD, sysActive, sysUser) values (0, 1, 'BRL', 1, 'm', 'C', 0, "&session("User")&")")
+		db_execute("insert into sys_financialinvoices (`Name`,`Value`, Tax, Currency, Recurrence, RecurrenceType, CD, sysActive, sysUser) values ('Gerado a partir de agendamento {1}', 0, 1, 'BRL', 1, 'm', 'C', 0, "&session("User")&")")
 		set inv = db.execute(sqlInv)
 	end if
 	InvoiceID = inv("id")

@@ -32,7 +32,6 @@ if EspecialidadeID&""="" then
         end if
    end if
 end if
-
 if ProfissionalID<>"" and isnumeric(ProfissionalID) then
     if GradeID<>"" and GradeID<>"undefined" then
         if GradeID > 0 then
@@ -44,19 +43,23 @@ if ProfissionalID<>"" and isnumeric(ProfissionalID) then
         sql = "select Especialidades from assfixalocalxprofissional where DiaSemana="& DiaSemana &" and HoraDe <= '"& Hora &"' and HoraA >= '"& Hora &"' and "& mydatenull(Data) &">=ifnull(InicioVigencia, '1899-01-01') and "& mydatenull(Data) &"<=ifnull(FimVigencia, '2999-01-01') and ProfissionalID="& ProfissionalID
     end if
     'response.Write( sql )
+    sqlFiltraEspecialidadesGrade=""
+
     set pgrade = db.execute( sql )
     if not pgrade.eof then
-        Especialidades = pgrade("Especialidades")&""
-        sqlEsp = "select id, especialidade from especialidades where id in("& replace(Especialidades, "|", "") &") AND sysActive=1 and especialidade!=''"
+        Especialidades = replace(pgrade("Especialidades")&"", "|", "")
+
+        if Especialidades<>"" then
+            sqlFiltraEspecialidadesGrade= " AND esp.EspecialidadeID IN ("&Especialidades&")"
+        end if
     end if
 
-    if Especialidades="" then
         'sql = "select group_concat(EspecialidadeID) Especialidades from (	select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID)		union all 	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp"
         'response.write( sql )
         'set espMedico = db.execute( sql )
         'Especialidades = espMedico("Especialidades")&""
-        sqlEsp = "select esp.EspecialidadeID id, e.especialidade from (select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID) union all	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp left join especialidades e ON e.id=esp.EspecialidadeID"
-    end if
+    sqlEsp = "select esp.EspecialidadeID id, e.especialidade from (select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID) union all	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp left join especialidades e ON e.id=esp.EspecialidadeID "&_
+                "WHERE TRUE "&sqlFiltraEspecialidadesGrade
 
     if sqlEsp<>"" then
         response.Write("<div class='row'>")
@@ -86,6 +89,6 @@ if ProfissionalID<>"" and isnumeric(ProfissionalID) then
 elseif req("EquipamentoID")="" then
     sqlEsp = "SELECT t.EspecialidadeID id, IFNULL(e.nomeEspecialidade, e.especialidade) especialidade FROM (	SELECT EspecialidadeID from profissionais WHERE ativo='on'	UNION ALL	select pe.EspecialidadeID from profissionaisespecialidades pe LEFT JOIN profissionais p on p.id=pe.ProfissionalID WHERE p.Ativo='on') t LEFT JOIN especialidades e ON e.id=t.EspecialidadeID WHERE NOT ISNULL(especialidade) GROUP BY t.EspecialidadeID ORDER BY especialidade"
 
-    call quickfield("simpleSelect", "EspecialidadeID", "Especialidade", 12, EspecialidadeID, sqlEsp, "especialidade", " onchange=""$.each($('.linha-procedimento'), function(){ parametros('ProcedimentoID'+$(this).data('id'),$(this).find('select[data-showcolumn=\'NomeProcedimento\']').val()); })""  semVazio no-select2 ")
+    call quickfield("simpleSelect", "EspecialidadeID", "Especialidade", 12, EspecialidadeID, sqlEsp, "especialidade", " onchange=""$.each($('.linha-procedimento'), function(){ parametros('ProcedimentoID'+$(this).data('id'),$(this).find('select[data-showcolumn=\'NomeProcedimento\']').val()); })""  empty  no-select2 ")
 end if
 %>

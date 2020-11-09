@@ -182,7 +182,7 @@ if session("Partner")<>"" then
 <%
         while not p.eof
             response.flush()
-            set a = dbs.execute("select a.id, a.StaID, a.Data, a.Hora, a.Notas, pac.NomePaciente, pac.Tel1, pac.Tel2, pac.Cel1, pac.Cel2, proc.NomeProcedimento, s.StaConsulta from clinic"& LicencaID &".agendamentos a LEFT JOIN clinic"& LicencaID &".pacientes pac ON pac.id=a.PacienteID LEFT JOIN clinic"& LicencaID &".procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN StaConsulta s ON s.id=a.StaID where a.ProfissionalID="& p("id") &" and a.Data="& mydatenull(Data) &" and a.StaID IN ("&replace(Status,"|","")&") order by a.Hora")
+            set a = dbs.execute("select a.id, a.StaID, a.Data, a.Hora, a.Notas, pac.NomePaciente, pac.Tel1, pac.Tel2, pac.Cel1, pac.Cel2, proc.NomeProcedimento, s.StaConsulta from clinic"& LicencaID &".agendamentos a LEFT JOIN clinic"& LicencaID &".pacientes pac ON pac.id=a.PacienteID LEFT JOIN clinic"& LicencaID &".procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN StaConsulta s ON s.id=a.StaID where a.ProfissionalID="& p("id") &" and a.Data="& mydatenull(Data) &" and a.StaID IN ("&replace(Status,"|","")&") and a.sysActive=1 order by a.Hora")
             if not a.eof then
                 %>
                 <tr class="dark">

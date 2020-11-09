@@ -1,5 +1,6 @@
 ﻿<%InicioProcessamento = Timer%>
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/GradeAgendaUtil.asp"-->
 <script>
 $(".dia-calendario").removeClass("danger");
 </script>
@@ -152,6 +153,8 @@ end if
             <tr><td class="text-center" colspan="6"><small>Não há grade configurada para este dia da semana.</small></td></tr> 
             <%
         end if
+		sqlUnidadesBloqueio=""
+
         while not Horarios.EOF
 			LocalID = Horarios("LocalID")
 			if Horarios("Cor")&""<>"" then
@@ -165,6 +168,11 @@ end if
             </tr>
             <%
 			if Horarios("tipograde")&"" ="0" then
+
+				if UnidadeID&"" <> "" and session("Partner")="" then
+					sqlUnidadesBloqueio = sqlUnidadesBloqueio&" OR c.Unidades LIKE '%|"&UnidadeID&"|%'"
+				end if
+
 				Intervalo = Horarios("Intervalo")
 				if isnull(Intervalo) then
 					Intervalo = 30
@@ -468,9 +476,10 @@ end if
                 comps.close
                 set comps = nothing
 
-                sqlBloqueio = "select c.* from compromissos c where c.ProfissionalID=-"&EquipamentoID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
+                'sqlBloqueio = "select c.* from compromissos c where c.ProfissionalID=-"&EquipamentoID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
+				bloqueioSql = getBloqueioSql("-"&EquipamentoID, Data, sqlUnidadesBloqueio)
+                set bloq = db.execute(bloqueioSql)
 
-				set bloq = db.execute(sqlBloqueio)
 				while not bloq.EOF
 					HoraDe = HoraToID(bloq("HoraDe"))
 					HoraA = HoraToID(bloq("HoraA"))

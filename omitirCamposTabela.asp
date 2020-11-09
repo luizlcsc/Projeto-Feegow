@@ -43,7 +43,7 @@ end if
                   response.write("Campos a omitir na tela de checkin:")
 			end if
 			%></td>
-            <td><%=quickfield("multiple", "Omitir"&perm("id"), "Campos a omitir", 12, perm("Omitir"), "select ColumnName id from cliniccentral.sys_resourcesfields where ResourceID=1 UNION ALL select 'Convenio' UNION ALL select 'Retornos' UNION ALL select 'Relativos' order by id", "id", "")%></td>
+            <td><%=quickfield("multiple", "Omitir"&perm("id"), "Campos a omitir", 12, perm("Omitir"), "select ColumnName id, label from cliniccentral.sys_resourcesfields where ResourceID=1 UNION ALL select 'Convenio' id, 'Convenio' label UNION ALL select 'Programação de Agendamentos (Retornos)' label,'Retornos' id UNION ALL select 'Pessoas Relacionadas e Parentes' label, 'Relativos' order by id", "id", "")%></td>
             <td><button onClick="xPerm(<%=perm("id")%>)" type="button" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button></td>
           </tr>
           <%

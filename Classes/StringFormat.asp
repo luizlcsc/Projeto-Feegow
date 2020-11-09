@@ -165,4 +165,84 @@ Function removeDuplicatas(conteudo,delimitador)
   Set oDict = Nothing
 End Function
 
+'REMOVE VALOR CONCATENADO VAZIO GERALMENTE UTILIZADO NO IN(|123|, |475|,|)
+Function removeNullDelimiter(Conteudo)
+  Conteudo = trim(Conteudo)
+  if right(trim(Conteudo),4) = "|, |" then
+      ConteudoTratado =  mid(Conteudo,1,len(Conteudo)-3)
+  end if
+  if right(trim(Conteudo),1) = "," then
+      ConteudoTratado =  mid(Conteudo,1,len(Conteudo)-1)
+  end if
+  if ConteudoTratado&"" = "" then
+    removeNullDelimiter = Conteudo
+  else
+    removeNullDelimiter = ConteudoTratado
+  end if
+End Function
+'Response.write(removeNullDelimiter("1, 1, 1, 2, "))
+'Response.write(removeNullDelimiter("|1|, |2|, |9|, |17|, |240829|, |240832|, |241301|, |-83|, |-84|, |-94|, |"))
+Function RemoveCaractersRegex(Conteudo,QuebraLinha)
+  Set regEx = New RegExp
+  'regEx.Pattern = "[^\w]"
+  regEx.Pattern = "[^\w\s]|[ºª]"
+  regEx.Global = True
+  valorTratado = regEx.Replace(Conteudo, "")
+  if QuebraLinha=false then
+    valorTratado = replace(replace(valorTratado,chr(13)," "),chr(10)," ")
+  end if
+  valorTratado = replace(replace(valorTratado,"  "," "),"  "," ")
+  RemoveCaractersRegex = valorTratado
+End Function
+Function RemoveCaracters(Conteudo,Valores) 
+AddVal = Valores 'Exemplo("!?:;*/") 
+RemVal = "" 
+Texto = "" 
+    if Conteudo <> "" then 
+        For X = 1 to Len(Conteudo) 
+            Letra = mid(Conteudo,X,1) 
+            Pos_Val = inStr(AddVal,Letra) 
+                if Pos_Val > 0 then 
+                    Letra = mid(RemVal,Pos_Val,1) 
+                end if 
+            Texto = Texto & Letra 
+        next 
+        RemoveCaracters = replace(replace(Texto&"","  "," "),"  "," ")
+    end if 
+end function
+
+Function AlteraCaracters(Conteudo,De,Para)
+'EXEMPLO DE USO
+'response.write(AlteraCaracters("Oi. Tudo Bem?",".?",",!"))
+
+Texto = "" 
+    if Conteudo <> "" then 
+        For X = 1 to Len(Conteudo) 
+            Letra = mid(Conteudo,X,1) 
+            Pos_Acento = inStr(De,Letra) 
+                if Pos_Acento > 0 then 
+                    Letra = mid(Para,Pos_Acento,1) 
+                end if 
+            Texto = Texto & Letra 
+        next 
+        AlteraCaracters = Texto 
+    end if 
+end function
+
+Function RemoveAcentoPalavras(Conteudo) 
+CAcento = "àáâãäèéêëìíîïòóôõöùúûüÀÁÂÃÄÈÉÊËÌÍÎÒÓÔÕÖÙÚÛÜçÇñÑ" 
+SAcento = "aaaaaeeeeiiiiooooouuuuAAAAAEEEEIIIOOOOOUUUUcCnN" 
+Texto = "" 
+    if Conteudo <> "" then 
+        For X = 1 to Len(Conteudo) 
+            Letra = mid(Conteudo,X,1) 
+            Pos_Acento = inStr(CAcento,Letra) 
+                if Pos_Acento > 0 then 
+                    Letra = mid(SAcento,Pos_Acento,1) 
+                end if 
+            Texto = Texto & Letra 
+        next 
+        RemoveAcentoPalavras = Texto 
+    end if 
+end function
 %>

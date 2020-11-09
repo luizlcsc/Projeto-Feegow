@@ -106,7 +106,15 @@ else
 end if
     'response.write(sqlTipo)
 
-set restForm = db.execute("select bfp.id, bf.Nome, bfp.DataHora ,bfp.sysUser, bfp.ModeloID from buiformspreenchidos bfp join buiforms bf on bf.id = bfp.ModeloID where bfp.sysActive <> 1 AND bfp.PacienteID="&paciente + sqlTipo&" order by bfp.id desc")
+if session("admin") = 1 then 
+sqlRestForm = "select bfp.id, bf.Nome, bfp.DataHora ,bfp.sysUser, bfp.ModeloID from buiformspreenchidos bfp join buiforms bf on bf.id = bfp.ModeloID where bfp.sysActive <> 1 AND bfp.PacienteID="&paciente + sqlTipo&" order by bfp.id desc"
+else 
+sqlRestForm = "select bfp.id, bf.Nome, bfp.DataHora ,bfp.sysUser, bfp.ModeloID from buiformspreenchidos bfp join buiforms bf on bf.id = bfp.ModeloID where bfp.sysActive <> 1 AND bfp.PacienteID="&paciente + sqlTipo&" and bfp.sysUser ="&session("User")&" order by bfp.id desc"
+
+end if
+
+set restForm=db.execute(sqlRestForm)
+
 if not restForm.eof then
     while not restForm.eof
     asql = "select bfp.id from buiformspreenchidos bfp join buiforms bf on bf.id = bfp.ModeloID where bfp.sysActive = 1 AND bfp.PacienteID="&paciente&" and abs(TIMESTAMPDIFF(MINUTE,bfp.DataHora, DATE_FORMAT(str_to_date('"&restForm("DataHora")&"','%d/%m/%Y %H:%i:%s'),'%Y-%m-%d %H:%i:%s')))<240"&sqlTipo

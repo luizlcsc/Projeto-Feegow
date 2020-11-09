@@ -375,7 +375,13 @@ else
     isTelemedicina = veseha("ProcedimentoTelemedicina")&""="S"
 
     if not ConfigGeraisSQL.eof then
-        if ChamarAposPagamento="S" and (inStr(unidadesBloqueioAtendimento, "|"&session("UnidadeID")&"|")<>"0" or unidadesBloqueioAtendimento&""="") then
+        UnidadeBloqueiaPagamento = False
+
+        if unidadesBloqueioAtendimento&""<>"" then
+            UnidadeBloqueiaPagamento = (inStr(unidadesBloqueioAtendimento, "|"&session("UnidadeID")&"|")<>"0" or unidadesBloqueioAtendimento&""="")
+        end if
+    
+        if ChamarAposPagamento="S" or UnidadeBloqueiaPagamento then
             'verifica se procedimento ja foi pago preveamente
             sqlQuitado =    "SELECT ii.id"&_
                             " FROM itensinvoice ii"&_

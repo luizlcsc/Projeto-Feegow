@@ -1,12 +1,12 @@
                     <div class="panel" id="p1">
                         <div class="panel-heading">
-                            <span class="panel-title <%if instr(Omitir, "|convenio|") then%> hidden<%end if%>"><%'= getResource("name") %>Convênios do Paciente</span>
+                            <span class="panel-title"><%'= getResource("name") %>Convênios do Paciente</span>
                     
                             <span class="panel-controls">
                             <a class="panel-control-collapse hidden" href="#"></a>
                             </span>
                         </div>
-                        <div class="panel-body pn <%if instr(Omitir, "|convenio|") then%> hidden<%end if%>">
+                        <div class="panel-body pn">
                         
                             <div class="widget-main padding-6 no-padding-left no-padding-right">
                              <script>
@@ -27,30 +27,84 @@
                                 <table class="table">
                                     <thead>
                                         <tr class="">
-                                            <th class="<%if instr(Omitir, "|convenioid") then%> hidden<%end if%>" width="12%">Convênio</th>
-                                            <th class="<%if instr(Omitir, "|planoid") then%> hidden<%end if%>" width="12%">Plano</th>
-                                            <th class="<%if instr(Omitir, "|matricula") then%> hidden<%end if%>"  width="22%">Matrícula / Carteirinha</th>
-                                            <th class="<%if instr(Omitir, "|token") then%> hidden<%end if%>"  width="18%">Token Carteirinha</th>
-                                            <th class="<%if instr(Omitir, "|validade") then%> hidden<%end if%>" width="18%">Validade</th>
-                                            <th class="<%if instr(Omitir, "|titular") then%> hidden<%end if%>" width="21%">Titular</th>
+                                            <th width="12%">Convênio</th>
+                                            <th width="12%">Plano</th>
+                                            <th width="22%">Matrícula / Carteirinha</th>
+                                            <th width="18%">Token Carteirinha</th>
+                                            <th width="18%">Validade</th>
+                                            <th width="21%">Titular</th>
                                             <th width="1%"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                     <%
 									Numero = 0
-									while Numero<3
+                                    ExibeConvenio=1
+                                    while Numero<3
 										Numero=Numero+1
-                                        
+                                        if instr(Omitir, "|convenioid"&Numero&"|")>0 AND instr(Omitir, "|planoid"&Numero&"|")>0 AND instr(Omitir, "|matricula"&Numero&"|")>0 AND instr(Omitir, "|token"&Numero&"|")>0 AND instr(Omitir, "|validade"&Numero&"|")>0 AND instr(Omitir, "|titular"&Numero&"|")>0 then
+                                            ExibeConvenio=0
+                                            ExibeConvenioClass = "hidden"
+                                        else
+                                            ExibeConvenioClass = ""
+                                        end if
 										%>
-                                    	<tr>
-                                        	<td class="<%if instr(Omitir, "|convenioid"&Numero&"|") then%> hidden<%end if%>"><%=selectInsert("", "ConvenioID"&Numero, reg("ConvenioID"&Numero), "convenios", "NomeConvenio", "onchange='getConvenioDetails("&Numero&");'", "empty", "")%>
+                                    	<tr class="<%=ExibeConvenioClass%>">
+                                        	<td>
+                                                <%
+                                                if instr(Omitir, "|convenioid"&Numero&"|") then
+                                                    response.write("<input type='hidden' name='ConvenioID"&Numero&"' value='"&reg("ConvenioID"&Numero)&"'><center> - </center>")
+                                                else
+                                                    response.write(selectInsert("", "ConvenioID"&Numero, reg("ConvenioID"&Numero), "convenios", "NomeConvenio", "onchange='getConvenioDetails("&Numero&");'", "empty", ""))
+                                                end if
+                                                %>
                                             </td>
-                                        	<td class="<%if instr(Omitir, "|planoid"&Numero&"|") then%> hidden<%end if%>"><%=selectInsert("", "PlanoID"&Numero, reg("PlanoID"&Numero), "conveniosplanos", "NomePlano", "", "", "ConvenioID"&Numero)%></td>
-                                        	<td class="<%if instr(Omitir, "|matricula"&Numero&"|") then%> hidden<%end if%>" nowrap><%=quickField("text", "Matricula"&Numero, "", 12, reg("Matricula"&Numero), " lt ", "", "")%></td>
-                                            <td class="<%if instr(Omitir, "|token"&Numero&"|") then%> hidden<%end if%>" nowrap><%=quickField("text", "Token"&Numero, "", 12, reg("Token"&Numero), " lt ", "", "")%></td>
-                                        	<td class="<%if instr(Omitir, "|validade"&Numero&"|") then%> hidden<%end if%>"><%=quickField("datepicker", "Validade"&Numero, "", 12, reg("Validade"&Numero), " input-mask-date ", "", "")%></td>
-                                        	<td class="<%if instr(Omitir, "|titular"&Numero&"|") then%> hidden<%end if%>" ><%=quickField("text", "Titular"&Numero, "", 12, reg("Titular"&Numero), "", "", "")%></td>
+                                            <td>
+                                                <%
+                                                if instr(Omitir, "|planoid"&Numero&"|") then
+                                                    response.write("<input type='hidden' name='planoid"&Numero&"' value='"&reg("planoid"&Numero)&"'><center> - </center>")
+                                                else
+                                                    response.write(selectInsert("", "PlanoID"&Numero, reg("PlanoID"&Numero), "conveniosplanos", "NomePlano", "", "", "ConvenioID"&Numero))
+                                                end if
+                                                %>
+                                            </td>
+                                            <td>
+                                                <%
+                                                if instr(Omitir, "|matricula"&Numero&"|") then
+                                                    response.write("<input type='hidden' name='Matricula"&Numero&"' value='"&reg("Matricula"&Numero)&"'><center> - </center>")
+                                                else
+                                                    response.write(quickField("text", "Matricula"&Numero, "", 12, reg("Matricula"&Numero), " lt ", "", ""))
+                                                end if
+                                                %>
+                                            </td>
+                                            <td>
+                                                <%
+                                                if instr(Omitir, "|token"&Numero&"|") then
+                                                    response.write("<input type='hidden' name='Token"&Numero&"' value='"&reg("Token"&Numero)&"'><center> - </center>")
+                                                else
+                                                    response.write(quickField("text", "Token"&Numero, "", 12, reg("Token"&Numero), " lt ", "", ""))
+                                                end if
+                                                %>
+                                            </td>
+                                            <td>
+                                                <%
+                                                if instr(Omitir, "|validade"&Numero&"|") then
+                                                    response.write("<input type='hidden' name='Validade"&Numero&"' value='"&reg("Validade"&Numero)&"'><center> - </center>")
+                                                else
+                                                    response.write(quickField("datepicker", "Validade"&Numero, "", 12, reg("Validade"&Numero), " input-mask-date ", "", ""))
+                                                end if
+                                                %>
+                                            </td>
+                                            <td>
+                                                <%
+                                                if instr(Omitir, "|titular"&Numero&"|") then
+                                                    response.write("<input type='hidden' name='Titular"&Numero&"' value='"&reg("Titular"&Numero)&"'><center> - </center>")
+                                                else
+                                                    response.write(quickField("text", "Titular"&Numero, "", 12, reg("Titular"&Numero), "", "", ""))
+                                                end if
+                                                %>
+                                            </td>
+
                                         	<td>
                                                 <button id="btnElegibilidade<%=Numero %>" title="Verificar elegibilidade" class="btn btn-xs btn-warning" onclick="verificaElegibilidade(<%=Numero %>)" type="button">
                                                     <i id="icoElegibilidade<%=Numero %>" class="fa fa-compress"></i>
@@ -61,6 +115,17 @@
                                         </tr>
                                         <%
 									wend
+                                    if ExibeConvenio=0 and session("admin")=0 then
+                                    %>
+                                    <tr>
+                                        <td colspan="7" class="text-right">
+                                            <i>
+                                            Habilite o cadastro de até <%=Numero%> convênios acessando <strong>configurações > Omissão de dados</strong>.
+                                            </i>
+                                        </td>
+                                    </tr>
+                                    <%
+                                    end if
 									%>
                                     </tbody>
                                 </table>

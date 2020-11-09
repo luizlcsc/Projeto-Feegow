@@ -249,9 +249,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
 
   <script type="text/javascript">
-
-      const AppEnv = '<%= getEnv("FC_APP_ENV", "local") %>';
-      if(AppEnv != "local"){
         try{
           var PastaAplicacaoRedirect = '<%=session("PastaAplicacaoRedirect") %>'
           var __currentPage = window.location.href;
@@ -268,8 +265,8 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
           }
 
 
-          if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force){
-              ['/base/','/main/','/v7-master/','/feegowclinic-v7/'].forEach((item) => {
+          if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force && !window.location.href.includes("localhost") ){
+              ['/base/','/main/','/v7-master/'].forEach((item) => {
                   __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
               });
               
@@ -280,7 +277,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         }catch (e) {
 
         }
-      }
   </script>
 
   <!-- FooTable Addon -->

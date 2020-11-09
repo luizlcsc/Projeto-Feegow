@@ -21,11 +21,15 @@ masterLoginErro = false
 
 if masterLogin then
     sqlLogin = "SELECT u.*,l.ExibeChatAtendimento,l.ExibeFaturas, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, "&_
-    " l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom, "&_
-    " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, COALESCE(serv.DNS, l.Servidor) Servidor "&_
+    " l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom, "&_
+    "l.Servidor, "&_
+    " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, "&_
+    " servHomolog.DNS ServerHomolog, "&_
+    "COALESCE(serv.DNS, l.Servidor) Servidor "&_
     " FROM licencasusuarios AS u "&_
     " LEFT JOIN licencas AS l ON l.id='"&tryLoginMaster("licencaId")&"'"&_
     " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID "&_
+    " LEFT JOIN db_servers AS servHomolog ON servHomolog.id=l.ServidorHomologacaoID "&_
     " WHERE u.id='"&userMasterID&"' "
 else
     sqlMaster="0"
@@ -54,11 +58,14 @@ else
 
 	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, "&_
 	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,  "&_
-	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, COALESCE(serv.DNS, l.Servidor) Servidor,   "&_
+	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, "&_
+	           "COALESCE(serv.DNS, l.Servidor) Servidor,   "&_
+	           "servHomolog.DNS ServerHomolog,   "&_
 	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom                                           "&_
 	           "from licencasusuarios as u                                                                                        "&_
 	           "left join licencas as l on l.id=u.LicencaID                                                                       "&_
                " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID "&_
+               " LEFT JOIN db_servers AS servHomolog ON servHomolog.id=l.ServidorHomologacaoID "&_
 	           "where Email='"&User&"' AND "&sqlSenha &" "&_
                " " & sqlHomologacao &_
                "ORDER BY IF(l.`Status`='C',0, 1), IF(l.DominioHomologacao='"&Dominio&"',0, 1)"
@@ -78,8 +85,15 @@ if not tryLogin.EOF then
     end if
     session("PastaAplicacaoRedirect") = PastaAplicacaoRedirect
 
+    ServerHomolog = tryLogin("ServerHomolog")&""
     Servidor = tryLogin("Servidor")&""
     ServerRead = tryLogin("ServerRead")&""
+
+    if isHomolog and ServerHomolog<>"" then
+        Servidor = ServerHomolog
+        ServerRead = ServerHomolog
+    end if
+
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
     ExibeChatAtendimento = tryLogin("ExibeChatAtendimento")

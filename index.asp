@@ -253,35 +253,46 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
           set licencaConsulta = db.execute("select PastaAplicacao from cliniccentral.licencas where id = "&replace(session("Banco"), "clinic", "")) 
           licenca = licencaConsulta("PastaAplicacao")
         %>
-        try{
-          const licenca = '<%=licenca%>';
-          var PastaAplicacaoRedirect = licenca
-          var __currentPage = window.location.href;
 
-          let __force = false;
+        const redirVersao = () => {
+            try{
+              const licenca = '<%=licenca%>';
+              var PastaAplicacaoRedirect = licenca
+              var __currentPage = window.location.href;
 
-          if(sessionStorage.hasOwnProperty('force')){
-              __force = true;
-          }
+              let __force = false;
 
-          if(window.location.href.includes("force")){
-              __force = true;
-              sessionStorage.setItem("force","1");
-          }
-
-
-          if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force && !window.location.href.includes("localhost") ){
-              ['/base/','/main/','/v7-master/'].forEach((item) => {
-                  __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
-              });
-              
-              if(__currentPage != window.location.href){
-                window.location.href = (__currentPage);
+              if(sessionStorage.hasOwnProperty('force')){
+                  __force = true;
               }
-          }
-        }catch (e) {
 
+              if(window.location.href.includes("force")){
+                  __force = true;
+                  sessionStorage.setItem("force","1");
+              }
+
+
+              if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force && !window.location.href.includes("localhost") ){
+                  ['/base/','/main/','/v7-master/'].forEach((item) => {
+                      __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
+                  });
+
+                  if(__currentPage != window.location.href){
+                    window.location.href = (__currentPage);
+                  }
+              }
+            }catch (e) {
+
+            }
         }
+
+        <%
+        if AppEnv="production" then
+        %>
+        redirVersao();
+        <%
+        end if
+        %>
   </script>
 
   <!-- FooTable Addon -->

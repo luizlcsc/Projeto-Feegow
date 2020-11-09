@@ -122,7 +122,10 @@ if ID <> "" and OP <> "" then
                     db.execute(sqlPropostaUpdate)
 
                     NovoValor = sqlBuscarUltimoItemProposta("Valor") - ValorDoDesconto
-                    sqlPropostaUpdate2 = "update propostas set Valor = " & treatValZero(NovoValor) & " WHERE id = " & sqlBuscarUltimoItemProposta("idproposta")
+                    sqlPropostaUpdate2 = "UPDATE propostas prop "&_
+                                        "SET Valor = (SELECT SUM((ValorUnitario-Desconto)) FROM itensproposta WHERE PropostaID=prop.id) "&_
+                                        "WHERE prop.id= " & sqlBuscarUltimoItemProposta("idproposta")
+                                        
                     db.execute(sqlPropostaUpdate2)
                 end if
 

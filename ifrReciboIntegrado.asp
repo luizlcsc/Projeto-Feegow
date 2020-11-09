@@ -173,6 +173,10 @@ end if
 set ConfigSQL = db.execute("SELECT SplitNF FROM sys_config WHERE id=1")
 if not ConfigSQL.eof then
     SplitNF = ConfigSQL("SplitNF")
+
+    if SplitNF&""<>"1" then
+        RPS="N"
+    end if
 end if
 
 NomeItens = ""
@@ -244,14 +248,20 @@ if not inv.eof then
             'response.write("<script>console.log('Valor: '"&ProfissionalSolicitanteID&")</script>")
 
             if ProfissionalExecutanteID&""="" then
-                set ExecutanteSQL = db.execute("SELECT ProfissionalID FROM itensinvoice WHERE InvoiceID="&InvoiceID&" LIMIT 1")
+                set ExecutanteSQL = db.execute("SELECT ProfissionalID,Associacao FROM itensinvoice WHERE InvoiceID="&InvoiceID&" LIMIT 1")
                 if not ExecutanteSQL.eof then
-                    ProfissionalExecutanteID=ExecutanteSQL("ProfissionalID")&""
+                    if ExecutanteSQL("Associacao")=8 then
+                        Converte_ProfissionalExecutanteExterno = "ProfissionalExecutanteExternoID_"&ExecutanteSQL("ProfissionalID")&"|"
+                    else
+                        ProfissionalExecutanteID=ExecutanteSQL("ProfissionalID")&""
+                    end if
+                    
                     if ProfissionalExecutanteID="0" then
                         ProfissionalExecutanteID=""
                     end if
                 end if
             end if
+            
             if profissionalSelecionado&""<>"" then
                 if tipoProfissionalSelecionado&""=8 then
                     Converte_ProfissionalExecutanteExterno = "ProfissionalExecutanteExternoID_"&profissionalSelecionado&"|"
@@ -947,5 +957,5 @@ end if %>
 </div>
 <% next %>
 <script type="text/javascript">
-    print();
+   print();
 </script>

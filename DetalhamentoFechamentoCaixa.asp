@@ -136,7 +136,7 @@ elseif LinhaID=14 then
 
       '  SELECT ii.id, ii.InvoiceID,(ii.Quantidade * (ii.ValorUnitario - ii.Desconto + ii.Acrescimo)) Valor FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE (DATE(i.sysDate)='2018-12-19') AND i.CD='C' AND i.CompanyUnitID=7 AND ii.Tipo='S' AND ii.Executado = ''
 
-sql = "SELECT i.id InvoiceID, IFNULl(ii.Quantidade * (ii.ValorUnitario - ii.Desconto + ii.Acrescimo),d.totalDevolucao) TotalDevolucao, pac.NomePaciente, proc.NomeProcedimento, d.sysDate DataDevolucao FROM devolucoes d INNER JOIN devolucoes_itens di ON di.devolucoesID=d.id LEFT JOIN itensinvoice ii ON ii.id=di.itensInvoiceID LEFT JOIN procedimentos proc on proc.id=ii.ItemID INNER JOIN sys_financialinvoices i ON i.id=d.invoiceID INNER JOIN pacientes pac ON pac.id=i.AccountID and i.AssociationAccountID=3 WHERE date(d.sysDate)="&mydatenull(Data)&" AND i.CD='C' AND i.CompanyUnitID="& UnidadeID &" AND (ii.Tipo='S' AND ii.Executado = 'C' or ii.id is null)"
+sql = "SELECT i.id InvoiceID, IFNULl(ii.Quantidade * (ii.ValorUnitario - ii.Desconto + ii.Acrescimo),d.totalDevolucao) TotalDevolucao, pac.NomePaciente, proc.NomeProcedimento, d.sysDate DataDevolucao FROM devolucoes d INNER JOIN devolucoes_itens di ON di.devolucoesID=d.id LEFT JOIN itensinvoice ii ON ii.id=di.itensInvoiceID LEFT JOIN procedimentos proc on proc.id=ii.ItemID INNER JOIN sys_financialinvoices i ON i.id=d.invoiceID INNER JOIN pacientes pac ON pac.id=i.AccountID and i.AssociationAccountID=3 WHERE date(d.sysDate)="&mydatenull(Data)&" AND i.CD='C' AND i.CompanyUnitID="& UnidadeID &" AND (ii.Tipo='S' AND ii.Executado = 'C' or ii.id is null) AND d.sysActive=1"
 set DevolucoesSQL = db.execute(sql)
 
     %>

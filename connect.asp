@@ -563,8 +563,15 @@ function simpleSelectCurrentAccounts(id, associations, selectedValue, others)
 					<%
 				else
 					set Associations = db.execute("select * from cliniccentral.sys_financialaccountsAssociation where id="&splAssociations(t))
+
+
 					while not Associations.EOF
-						set AssRegs = db.execute(Associations("sql")&" limit 10000")
+                        sqlAssociation = Associations("sql")&" limit 10000"
+                        'casos de profissional excluido
+                        if selectedValue&""<>"" then
+                            sqlAssociation = replace(sqlAssociation, "where", " where (concat('"&Associations("id")&"_',ID)='"&selectedValue&"') OR ")
+                        end if
+						set AssRegs = db.execute(sqlAssociation)
 						while not AssRegs.EOF
 						%><option value="<%=Associations("id")&"_"&AssRegs("id")%>"<%if Associations("id")&"_"&AssRegs("id")=selectedValue then%> selected="selected"<%end if%>><%= AssRegs(""&Associations("column")&"") %> &raquo; <%= Associations("AssociationName") %></option>
 						<%
@@ -3151,10 +3158,7 @@ function googleCalendarNovo(Acao, Email, AgendamentoID, ProfissionalID, NomePaci
            '     response.write("<br>")
 			HoraFinal = dateadd("n", Tempo, Hora)
 			Fim = dataGoogleNovo(Data, HoraFinal, FusoHorario)
-			'response.Write("alert('http://localhost/feegowclinic/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento&"\tempo="&Tempo&"')")
-         '   response.end
-        ' response.write("http://clinic.feegow.com.br/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento)
-			objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
+			objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
 		objWinHttp.Send
 		resposta = objWinHttp.ResponseText
 		'response.write(resposta)
@@ -3166,8 +3170,7 @@ function googleCalendarNovo(Acao, Email, AgendamentoID, ProfissionalID, NomePaci
 		if not vcaAge.EOF then
 		    GoogleID=vcaAge("GoogleID")
 			Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
-				objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/excluir_dados.php?EventoID="&GoogleID
-				'response.Write("http://localhost/feegowclinic/calendar/excluir_dados.php?EventoID="&GoogleID)
+				objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/excluir_dados.php?EventoID="&GoogleID
 			objWinHttp.Send
 			resposta = objWinHttp.ResponseText
 			db_execute("delete from googleagenda where AgendamentoID="&AgendamentoID)
@@ -3212,7 +3215,7 @@ function googleCalendar(Acao, Email, AgendamentoID, ProfissionalID, NomePaciente
 			Inicio = dataGoogle(Data, Hora)
 			HoraFinal = dateadd("n", Tempo, Hora)
 			Fim = dataGoogle(Data, HoraFinal)
-			objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
+			objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
 		objWinHttp.Send
 		resposta = objWinHttp.ResponseText
 		db_execute("insert into googleagenda (AgendamentoID, ProfissionalID, GoogleID) values ("&AgendamentoID&", "&ProfissionalID&", '"&resposta&"')")
@@ -3222,7 +3225,7 @@ function googleCalendar(Acao, Email, AgendamentoID, ProfissionalID, NomePaciente
 		if not vcaAge.EOF then
 		    GoogleID=vcaAge("GoogleID")
 			Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
-				objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/excluir_dados.php?EventoID="&GoogleID
+				objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/excluir_dados.php?EventoID="&GoogleID
 				'response.Write("http://localhost/feegowclinic/calendar/excluir_dados.php?EventoID="&GoogleID)
 			objWinHttp.Send
 			resposta = objWinHttp.ResponseText
@@ -3369,7 +3372,7 @@ end function
 
 function limpa(limtabela, limcoluna, limid)
 	Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
-	objWinHttp.Open "GET", "http://clinic.feegow.com.br/RTFtoHTML.php?banco="&session("banco")&"&tabela="&limtabela&"&coluna="&limcoluna&"&id="&limid &"&IP="& sServidor
+	objWinHttp.Open "GET", "https://app.feegow.com/base/RTFtoHTML.php?banco="&session("banco")&"&tabela="&limtabela&"&coluna="&limcoluna&"&id="&limid &"&IP="& sServidor
 	objWinHttp.Send
 	strHTML = objWinHttp.ResponseText
 	Set objWinHttp = Nothing
@@ -3705,14 +3708,17 @@ function dispEquipamento(Data, Hora, Intervalo, EquipamentoID, AgendamentoID)
                     "("&mytime(Hora)&"=a.Hora)"&_
                     ") AND a.EquipamentoID="&EquipamentoID&andAgendamentoID
                     
-            'response.Write(sqlDisp) 
-            set vcaAgEq = db.execute(sqlDisp)
-            if not vcaAgEq.eof then
-                dispEquipamento = "Este equipamento já está agendado para o profissional "&vcaAgEq("NomeProfissional")&" nesta data entre as "&formatdatetime(vcaAgEq("Hora"),4)&" e "&formatdatetime(vcaAgEq("HoraFinal"),4)
+            'response.Write(sqlDisp)
+
+            if getConfig("LiberarEncaixeEquipamentos") <> "1" then
+                set vcaAgEq = db.execute(sqlDisp)
+                if not vcaAgEq.eof then
+                    dispEquipamento = "Este equipamento já está agendado para o profissional "&vcaAgEq("NomeProfissional")&" nesta data entre as "&formatdatetime(vcaAgEq("Hora"),4)&" e "&formatdatetime(vcaAgEq("HoraFinal"),4)
+                end if
             end if
         end if
     end if
-    'dispEquipamento = ""
+    ' dispEquipamento = ""
 end function
 
 function replacePagto(txt, Total)
@@ -5572,15 +5578,11 @@ End function
 
 function arqEx(nArquivo, nTipo)
 
-	set fs=Server.CreateObject("Scripting.FileSystemObject")
-	if fs.FileExists("E:\uploads\"& LicenseID &"\"& nTipo &"\"& nArquivo) then
-		arqEx = "/uploads/"& LicenseID &"/"& nTipo &"/"& nArquivo
-    elseif nArquivo&""="" then
+	if nArquivo&""="" then
         arqEx = ""
 	else
-		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&renderMode=download&folder="&nTipo&"&file="&nArquivo&"&type=user"
+		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&renderMode=download&folder="&nTipo&"&file="&nArquivo
 	end if
-	set fs=nothing
 end function
 
 function getConfig(configName)

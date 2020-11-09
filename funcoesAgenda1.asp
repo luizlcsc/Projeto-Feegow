@@ -88,7 +88,11 @@ function abreAgenda(horario, id, data, LocalID,ProfissionalID,GradeID){
     });
 }
     function abreBloqueio(BloqueioID, Data, Hora, LocalID){
+        if(BloqueioID==-1){
+            return;
+        }
         af('a');
+        
         if(typeof LocalID=="undefined"){
             LocalID=""
         }

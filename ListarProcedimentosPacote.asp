@@ -122,6 +122,7 @@ if(count=="0"){
        $procedimentos.each(function() {
             var $procedimento = $(this);
             var NomeProcedimento = $procedimento.data("nome");
+            
             var ProcPreco = $procedimento.data("valor");
             var TempoProcedimento = $procedimento.data("tempo");
             var SolicitanteID = $procedimento.data("solicitante-id");
@@ -129,35 +130,40 @@ if(count=="0"){
             var ProcedimentoID = $procedimento.data("id");
             var count = "";
 
+            if(SolicitanteID){
+                $("#indicacaoId").val(SolicitanteID);
+                $("#searchindicacaoId").val(Solicitante);
+            }
+            
             if(i > 0){
                 count = i*-1;
-                adicionarProcedimentos();
-            }
 
-            setTimeout(function() {
-                if(SolicitanteID){
-                    $("#indicacaoId").val(SolicitanteID);
-                    $("#searchindicacaoId").val(Solicitante);
-                }
-                procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count);
-            }, 200);
+                setTimeout(function(){
+                    adicionarProcedimentos();
+                }, 50 * i);
+            }
+            
+            procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i);
 
             i++;
        });
        closeComponentsModal();
    }
 
-   function procedimentoSelect2(procedimentoId, nomeProcedimento, tempo, preco, count) {
-       $("#ProcedimentoID"+count+" option").text(nomeProcedimento);
-       $("#ProcedimentoID"+count+" option").val(procedimentoId);
-       $("#ProcedimentoID"+count).val(procedimentoId);
-       $("#Tempo"+count).val(tempo);
+   function procedimentoSelect2(procedimentoId, nomeProcedimento, tempo, preco, count, i) {
 
-        $("#Valor"+count).val(preco);
-        somarValores();
+        setTimeout(function() {
+            $("#ProcedimentoID"+count+" option").text(nomeProcedimento);
+            $("#ProcedimentoID"+count+" option").val(procedimentoId);
+            $("#ProcedimentoID"+count).val(procedimentoId);
+            $("#Tempo"+count).val(tempo);
 
-       $("#rdValorPlanoV"+count).click();
-       s2aj("ProcedimentoID"+count, 'procedimentos', 'NomeProcedimento', '', '','agenda');
+                $("#Valor"+count).val(preco);
+                somarValores();
+
+            $("#rdValorPlanoV"+count).click();
+            s2aj("ProcedimentoID"+count, 'procedimentos', 'NomeProcedimento', '', '','agenda');
+        },250*i);
    }
 
 </script>

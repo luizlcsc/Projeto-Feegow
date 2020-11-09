@@ -1,7 +1,5 @@
 ﻿<%
 if session("Banco")="" then
-'    response.Write(111)
-'    response.Redirect("https://clinic7.feegow.com.br")
     session("Banco")="clinic5459"
     session("Servidor") = "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com"
     sServidor = "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com"

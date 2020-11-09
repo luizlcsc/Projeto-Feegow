@@ -9,7 +9,6 @@ if request("Log")="Off" then
 	response.Redirect(urlRedir)
 end if
 
-'response.Redirect("https://clinic7.feegow.com.br/v7?P=Login&Pers=1")
 
 %>
 <!--#include file="connectCentral.asp"-->

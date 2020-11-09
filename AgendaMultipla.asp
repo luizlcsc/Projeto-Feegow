@@ -92,7 +92,7 @@ Unidades = Session("Unidades")
 spltUnidades = split(Unidades)
 qtdUnidades = ubound(spltUnidades) + 1
 
-ExibirFiltroPorLocalizacao = qtdUnidades >= 5 and False
+ExibirFiltroPorLocalizacao = qtdUnidades >= 2 and session("Banco")="clinic10901"
 
 
 if ExibirFiltroPorLocalizacao then

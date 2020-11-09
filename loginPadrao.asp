@@ -9,6 +9,7 @@ AppEnv = getEnv("FC_APP_ENV", "local")
 MasterPwd = getEnv("FC_MASTER", "----")
 
 Dominio = request.ServerVariables("SERVER_NAME")
+isHomolog = instr(Dominio, "teste")>0
 User = ref("User")
 Password = ref("Password")
 masterLogin = false
@@ -19,7 +20,7 @@ masterLoginErro = false
 <%
 
 if masterLogin then
-    sqlLogin = "SELECT u.*,l.ExibeChatAtendimento, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, "&_
+    sqlLogin = "SELECT u.*,l.ExibeChatAtendimento,l.ExibeFaturas, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, "&_
     " l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom, "&_
     " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, COALESCE(serv.DNS, l.Servidor) Servidor "&_
     " FROM licencasusuarios AS u "&_
@@ -44,7 +45,14 @@ else
                 "or (SenhaCript=SHA1('"&PasswordSalt& Password &"') AND VersaoSenha=3)"&_
                 ") "
 
-	sqlLogin = "select u.*, l.ExibeChatAtendimento, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, "&_
+    'caso o dominio seja de homologacao, so ira encontrar licencas com homolog preenchido
+    if isHomolog then
+        sqlHomologacao = " AND ( l.DominioHomologacao='"&Dominio&"' ) "
+    else
+        sqlHomologacao = " AND ( l.DominioHomologacao IS NULL OR l.DominioHomologacao='"&Dominio&"' ) "
+    end if
+
+	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, "&_
 	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,  "&_
 	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, COALESCE(serv.DNS, l.Servidor) Servidor,   "&_
 	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom                                           "&_
@@ -52,7 +60,7 @@ else
 	           "left join licencas as l on l.id=u.LicencaID                                                                       "&_
                " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID "&_
 	           "where Email='"&User&"' AND "&sqlSenha &" "&_
-               " AND ( l.DominioHomologacao IS NULL OR l.DominioHomologacao='"&Dominio&"' )" &_
+               " " & sqlHomologacao &_
                "ORDER BY IF(l.`Status`='C',0, 1), IF(l.DominioHomologacao='"&Dominio&"',0, 1)"
 end if
 
@@ -68,15 +76,20 @@ if not tryLogin.EOF then
     if isnull(PastaAplicacaoRedirect) then
         PastaAplicacaoRedirect="v7-master"
     end if
+    session("PastaAplicacaoRedirect") = PastaAplicacaoRedirect
 
     Servidor = tryLogin("Servidor")&""
     ServerRead = tryLogin("ServerRead")&""
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
     ExibeChatAtendimento = tryLogin("ExibeChatAtendimento")
+    ExibeFaturas = tryLogin("ExibeFaturas")
 
     ClienteUnimed = instr(Cupom, "UNIMED") > 0
 
+    if tryLogin("Admin")<>1 then
+        ExibeFaturas=0
+    end if
 
     if tryLogin("Admin")=1 then
         ExibeChatAtendimento=True
@@ -85,8 +98,9 @@ if not tryLogin.EOF then
     if ClienteUnimed or AppEnv<>"production" or tryLogin("Status")<>"C" then
         ExibeChatAtendimento=False
     end if
-
+    
     session("ExibeChatAtendimento") = ExibeChatAtendimento
+    session("ExibeFaturas") = ExibeFaturas
 
     if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
@@ -108,7 +122,7 @@ if not tryLogin.EOF then
     'end if
 		'response.Write("if "&tryLogin("Cliente")&"=0 and "&formatdatetime(tryLogin("DataHora"),2)&" < "&dateadd("d", -15, date())&" then")
 	IPsAcesso = tryLogin("IPsAcesso")
-	if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 then
+	if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 and not permiteMasterLogin then
 		erro = "ACESSO NÃO AUTORIZADO: Para acessar o sistema deste local, solicite ao administrador a liberação do IP "&IP
 	end if
 	if not isnull(tryLogin("FimTeste")) then

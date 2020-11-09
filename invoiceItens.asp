@@ -539,6 +539,18 @@ $(document).ready(function(){
         $(input).val(descontoEmPercentual);
         $(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
     });
+	let executados = $("input[id^='Executado']")
+	executados.each((key,input)=>{
+		let id = $(input).attr('id').replace('Executado','')
+		let numOptions = $("#EspecialidadeID"+id).find("option").length ;
+
+		if(numOptions<=1){return;}
+		if($(input).prop('checked')){
+			$("#EspecialidadeID"+id).attr('required',true) 
+		}else{
+			$("#EspecialidadeID"+id).attr('required',false) 
+		}
+	})
 });
 
 $('.PercentDesconto').change(function () {

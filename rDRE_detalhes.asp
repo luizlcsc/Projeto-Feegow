@@ -4,6 +4,14 @@ LinhaID = req("LinhaID")
 Mes = req("Mes")
 Total = 0
 c = 0
+
+Agrupamento = req("A")
+if Agrupamento="Outros" then
+	sqlAgrupamento = " is null "
+else
+	sqlAgrupamento = "='"& Agrupamento &"'"
+end if
+
 %>
 
 <div class="panel">
@@ -25,7 +33,7 @@ c = 0
             </thead>
             <tbody>
                 <%
-                set reg = db.execute("select dre.*, if(i.CD='C', ctC.Name, ctD.Name) Categoria from cliniccentral.dre_temp dre LEFT JOIN itensinvoice ii ON ii.id=dre.ItemInvoiceID LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN sys_financialexpensetype ctD ON ctD.id=ii.CategoriaID LEFT JOIN sys_financialincometype ctC ON ctC.id=ii.CategoriaID where dre.Valor>0 and dre.sysUser="& session("User") &" and month(dre.Data)="& Mes &" and dre.LinhaID="& LinhaID)
+                set reg = db.execute("select dre.*, if(i.CD='C', ctC.Name, ctD.Name) Categoria from cliniccentral.dre_temp dre LEFT JOIN itensinvoice ii ON ii.id=dre.ItemInvoiceID LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN sys_financialexpensetype ctD ON ctD.id=ii.CategoriaID LEFT JOIN sys_financialincometype ctC ON ctC.id=ii.CategoriaID where dre.Valor>0 and dre.sysUser="& session("User") &" and month(dre.Data)="& Mes &" and dre.LinhaID="& LinhaID &" AND Agrupamento "& sqlAgrupamento)
                 while not reg.eof
                     c = c+1
                     Total = Total+reg("Valor")

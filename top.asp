@@ -421,7 +421,7 @@ else
             <%
             end if
 
-            if getConfig("ExibirProgramasDeSaude")=1 then
+            if 0 then
             %>
             <li><a href="./?P=programasdesaude&Pers=1"  class="sub-menu-click-cadastro-profissionais" ><i class="fa fa-medkit bigger-110"></i> Programas de Saúde</a></li>
 
@@ -556,7 +556,7 @@ else
             </li>
             <%
             end if
-            if session("Admin")=1 then
+            if recursoAdicional(24) = 4 and Aut("labsconfigintegracao") = 1 then
             %>
             <li>
                 <a href="?P=labsconfigintegracao"><i class="fa fa-flask"></i> Integração Laboratorial</a>

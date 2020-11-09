@@ -1,7 +1,7 @@
 <%
 set usr = db.execute("SELECT lu.Email, u.idInTable FROM cliniccentral.licencasusuarios lu LEFT JOIN sys_users u ON u.id = lu.id WHERE lu.id = "&session("User"))
 
-txt = "O período do validade de sua senha venceu. Favor altere-a, escolhendo uma senha diferente da anterior."
+txt = "O período de validade de sua senha venceu. Favor altere-a, escolhendo uma senha diferente da anterior."
 if session("AlterarSenha") = "1" then
     txt = "É necessário definir uma nova senha."
 end if

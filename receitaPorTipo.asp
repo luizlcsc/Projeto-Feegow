@@ -19,6 +19,8 @@ end if
             <%=quickField("datepicker", "DataAte", "&nbsp;", 2, DataAte, "", "", "")%>
             <%=quickField("text", "NF", "Número da Nota", 2, NF, "", "", " placeholder='Opcional' ")%>
             <%=quickField("empresaMulti", "UnidadeID", "Unidade", 3, session("Unidades"), " input-sm", "", "")%>
+            <%=quickField("multiple", "Profissionais", "Profissionais", 4, Profissionais, "select id, NomeProfissional from profissionais where ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
+            <%=quickfield("multiple", "Procedimentos", "Procedimentos", 4, ref("Procedimentos"), "select id, NomeProcedimento from procedimentos where sysActive=1 order by NomeProcedimento", "NomeProcedimento", "")%>
 
             <div class="col-md-2">
                 <label>&nbsp;</label><br>

@@ -249,33 +249,37 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
 
   <script type="text/javascript">
-      try{
-        var PastaAplicacaoRedirect = '<%=session("PastaAplicacaoRedirect") %>'
-        var __currentPage = window.location.href;
 
-        let __force = false;
+      const AppEnv = '<%= getEnv("FC_APP_ENV", "local") %>';
+      if(AppEnv != "local"){
+        try{
+          var PastaAplicacaoRedirect = '<%=session("PastaAplicacaoRedirect") %>'
+          var __currentPage = window.location.href;
 
-        if(sessionStorage.hasOwnProperty('force')){
-             __force = true;
+          let __force = false;
+
+          if(sessionStorage.hasOwnProperty('force')){
+              __force = true;
+          }
+
+          if(window.location.href.includes("force")){
+              __force = true;
+              sessionStorage.setItem("force","1");
+          }
+
+
+          if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force){
+              ['/base/','/main/','/v7-master/','/feegowclinic-v7/'].forEach((item) => {
+                  __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
+              });
+              
+              if(__currentPage != window.location.href){
+                window.location.href = (__currentPage);
+              }
+          }
+        }catch (e) {
+
         }
-
-        if(window.location.href.includes("force")){
-            __force = true;
-            sessionStorage.setItem("force","1");
-        }
-
-
-        if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force){
-            ['/base/','/main/','/v7-master/','/feegowclinic-v7/'].forEach((item) => {
-                __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
-            });
-            
-            if(__currentPage != window.location.href){
-              window.location.href = (__currentPage);
-            }
-        }
-      }catch (e) {
-
       }
   </script>
 

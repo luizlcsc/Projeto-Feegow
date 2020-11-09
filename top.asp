@@ -421,10 +421,9 @@ else
             <%
             end if
 
-            if 0 then
+            if getconfig("ExibirProgramasDeSaude") = 1 then
             %>
             <li><a href="./?P=programasdesaude&Pers=1"  class="sub-menu-click-cadastro-profissionais" ><i class="fa fa-medkit bigger-110"></i> Programas de Saúde</a></li>
-
             <%
             end if
 

@@ -99,7 +99,7 @@ end if
         end if
 
         if ref("ProfissionalID")<>"0" then
-            sqlProf = " AND (IFNULL(l.ProfissionalID, t.ProfissionalID)="& ref("ProfissionalID") &" "
+            sqlProf = " AND (IFNULL(t.ProfissionalID, l.ProfissionalID)="& ref("ProfissionalID") &" "
             if lcase(session("Table"))="profissionais" then
                 'sqlProf = sqlProf & " OR ISNULL(l.ProfissionalID) "
             end if

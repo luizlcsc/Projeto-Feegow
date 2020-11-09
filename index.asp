@@ -249,8 +249,13 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
 
   <script type="text/javascript">
+        <% 
+          set licencaConsulta = db.execute("select PastaAplicacao from cliniccentral.licencas where id = "&replace(session("Banco"), "clinic", "")) 
+          licenca = licencaConsulta("PastaAplicacao")
+        %>
         try{
-          var PastaAplicacaoRedirect = '<%=session("PastaAplicacaoRedirect") %>'
+          const licenca = '<%=licenca%>';
+          var PastaAplicacaoRedirect = licenca
           var __currentPage = window.location.href;
 
           let __force = false;

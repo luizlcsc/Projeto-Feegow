@@ -24,7 +24,12 @@ function unidadeMedida(T, ID, Valor){
         });
     }
 }
+
+ $("#ReconstituinteID_").change(function(){ $("#QtdReconstituinte_").attr("required","required") });
+
 </script>
+
+
 
 <%
 ProtocoloID = req("I")
@@ -66,6 +71,7 @@ end if
             unidadeMedida('M', '<%=id%>', '<%=Medicamento%>');
             unidadeMedida('D', '<%=id%>', '<%=DiluenteID%>');
             unidadeMedida('R', '<%=id%>', '<%=ReconstituinteID%>');
+   
             </script>
             <%
 
@@ -84,20 +90,20 @@ end if
             %>
         <tr style="background-color: #f2f2f2;">
             <td width="20%" colspan="2">
-                <%=quickField("simpleSelect", "Medicamento_"&id, "Medicamentos", 12, Medicamento, "select id, NomeProduto from produtos where sysActive=1 and TipoProduto=4", "NomeProduto", " onchange=""unidadeMedida('M', "&id&", this.value)"" ")%>
+                <%=quickField("simpleSelect", "Medicamento_"&id, "Medicamentos ", 12, Medicamento, "select id, NomeProduto from produtos where sysActive=1 and TipoProduto=4", "NomeProduto", " onchange=""unidadeMedida('M', "&id&", this.value)"", required ")%>
             </td>
             <td width="2%" class="DoseMedicamento">
-                <%=quickField("text", "Dose_"&id, "Dose", 12, fn(Dose), " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
+                <%=quickField("text", "Dose_"&id, "Dose", 12, fn(Dose), " input-mask-brl text-right", "", " placeholder=""0,00""required ")%>
             </td>
             <td width="1%" class="QteDoseMedicamento">
                 <div id="QteDoseMedicamento_<%=id%>">
                 </div>
             </td>
             <td width="2%">
-                <%=quickfield("multiple", "Dias_"&id, "Dias", 12, Dias, "select id, CONCAT('d', id) Dias from cliniccentral.produtos order by id "&LimitDias, "Dias", "") %>
+                <%=quickfield("multiple", "Dias_"&id, "Dias", 12, Dias, "select id, CONCAT('d', id) Dias from cliniccentral.produtos order by id "&LimitDias, "Dias", "required") %>
             </td>
             <td width="2%">
-                <%=quickfield("multiple", "Ciclos_"&id, "Ciclos", 12, Ciclos, "select id, id Ciclo from cliniccentral.produtos order by id "&LimitCiclos, "Ciclo", "") %>
+                <%=quickfield("multiple", "Ciclos_"&id, "Ciclos", 12, Ciclos, "select id, id Ciclo from cliniccentral.produtos order by id "&LimitCiclos, "Ciclo", "required") %>
             </td>
             <td width="10%" colspan="2">
                 <%=quickField("text", "Obs_"&id, "Obs.", 12, Obs, "", "", "")%>

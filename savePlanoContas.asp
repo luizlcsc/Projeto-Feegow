@@ -1,19 +1,47 @@
 <!--#include file="connect.asp"-->
+<!--#include file="planoLog.asp"-->
 <%
+response.Charset="utf-8"
 table = request.QueryString("R")
 itens = split(request.Form(), "&")
 Ordem = 0
-for i=0 to ubound(itens)
+
+
+for i=0 to ubound(itens)-1
 	Ordem = Ordem+1
-	spl2 = split(itens(i), "=")
-	Item = replace(replace(spl2(0), "list[", ""), "]", "")
-	Category = spl2(1)
-	if Category="null" then
-		Category = 0
-	end if
-	up = "update "&table&" set Category="&Category&", Ordem="&Ordem&" where id="&Item
-'	response.Write(up)
-	db_execute(up)
+	spl2 = split(itens(i), ",")
+
+	Id = ""
+	Name=""
+	Categoria = 0
+	posicao = ""
+	for v=0 to ubound(spl2)
+		spl3 = split(spl2(v),":")
+
+		campo = replace(spl3(0), "[", "")
+		valor = replace(spl3(1), "]", "")
+
+
+		select Case campo
+			case "id"
+				Id = valor
+			case "categoria"
+				Categoria = valor
+			case "nome"
+				Name = valor
+            case "posicao"
+                posicao = valor
+		end select
+	next
+
+	up = "update "&table&" SET Name='"&Name&"', Category="&Categoria&", Ordem="&Ordem&", Posicao='"&posicao&"' where id="&Id
+
+	' response.Write(up)
+	' response.write("</br>")
+
+	db.execute(up)
 	'response.Write("Item: "&Item&" Categoria: "&Category&" |"
 next
+call makePrecoLogAllTable(table)
+
 %>

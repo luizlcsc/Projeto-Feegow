@@ -280,7 +280,6 @@ prefixo = right(prefixo, 20)
                     <ans:procedimentosExecutados>
                     <%
 					set procs = db.execute("select tps.*, proc.ProcedimentoSeriado from tissprocedimentossadt tps INNER JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where tps.GuiaiD="&guias("id"))
-                    'dd("select tps.*, proc.ProcedimentoSeriado from tissprocedimentossadt tps INNER JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where tps.GuiaiD="&guias("id"))
 					while not procs.eof
 					    ProcedimentoSeriado=procs("ProcedimentoSeriado")
 						Data = mydatetiss(procs("Data"))

@@ -3372,7 +3372,7 @@ end function
 
 function limpa(limtabela, limcoluna, limid)
 	Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
-	objWinHttp.Open "GET", "http://clinic.feegow.com.br/RTFtoHTML.php?banco="&session("banco")&"&tabela="&limtabela&"&coluna="&limcoluna&"&id="&limid &"&IP="& sServidor
+	objWinHttp.Open "GET", "https://app.feegow.com/base/RTFtoHTML.php?banco="&session("banco")&"&tabela="&limtabela&"&coluna="&limcoluna&"&id="&limid &"&IP="& sServidor
 	objWinHttp.Send
 	strHTML = objWinHttp.ResponseText
 	Set objWinHttp = Nothing

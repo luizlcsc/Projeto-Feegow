@@ -249,37 +249,43 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
 
   <script type="text/javascript">
+        <% 
+          set licencaConsulta = db.execute("select PastaAplicacao from cliniccentral.licencas where id = "&replace(session("Banco"), "clinic", "")) 
+          licenca = licencaConsulta("PastaAplicacao")
+        %>
+
         const redirVersao = () => {
-          try{
+            try{
+              const licenca = '<%=licenca%>';
+              var PastaAplicacaoRedirect = licenca
+              var __currentPage = window.location.href;
 
-            var PastaAplicacaoRedirect = '<%=session("PastaAplicacaoRedirect") %>'
-            var __currentPage = window.location.href;
+              let __force = false;
 
-            let __force = false;
+              if(sessionStorage.hasOwnProperty('force')){
+                  __force = true;
+              }
 
-            if(sessionStorage.hasOwnProperty('force')){
-                 __force = true;
+              if(window.location.href.includes("force")){
+                  __force = true;
+                  sessionStorage.setItem("force","1");
+              }
+
+
+              if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force && !window.location.href.includes("localhost") ){
+                  ['/base/','/main/','/v7-master/'].forEach((item) => {
+                      __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
+                  });
+
+                  if(__currentPage != window.location.href){
+                    window.location.href = (__currentPage);
+                  }
+              }
+            }catch (e) {
+
             }
-
-            if(window.location.href.includes("force")){
-                __force = true;
-                sessionStorage.setItem("force","1");
-            }
-
-
-            if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force){
-                ['/base/','/main/','/v7-master/','/feegowclinic-v7/'].forEach((item) => {
-                    __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
-                });
-
-                if(__currentPage != window.location.href){
-                  window.location.href = (__currentPage);
-                }
-            }
-          }catch (e) {
-
-          }
         }
+
         <%
         if AppEnv="production" then
         %>

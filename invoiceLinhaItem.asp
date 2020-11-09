@@ -387,12 +387,14 @@ end if
                     <%
                 end if
 
-                if  EspecialidadeID then
+                if EspecialidadeID&""="" or EspecialidadeID&""="0" then
+                    camposRequired=""
+                end if
+
                 %>
                 <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" empty no-select2 "&camposRequired) %>
                 </div>
                 <%
-                end if
 			    if NaoAlterarExecutante then
                     %>
                     <input type="hidden" name="DataExecucao<%= id %>" value="<%=DataExecucao%>" />

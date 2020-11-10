@@ -362,8 +362,9 @@ body{<%=Margens%>}
 <script >
     $(document).ready(function() {
         if('<%=req("LaudoID")%>'!==''){
-            print();
-            // window.close();
+            window.print();
+            window.addEventListener("afterprint", function(event) { window.close(); });
+            window.onafterprint();
         }
     });
 </script>

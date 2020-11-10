@@ -868,7 +868,9 @@ end if
 </body>
 </html>
 <script type="text/javascript">
-    print();
+  window.print();
+	window.addEventListener("afterprint", function(event) { window.close(); });
+	window.onafterprint();
 <%
 if TipoExibicao="Pedido" then
     %>

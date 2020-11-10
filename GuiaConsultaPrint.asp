@@ -332,10 +332,7 @@ end if
 </body>
 </html>
 <script type="text/javascript">
-    setTimeout(function () {
-        print();
-    <%if req("close") = "1" then%>
-        window.close();
-    <%end if%>
-    }, 1000);
+	window.print();
+	window.addEventListener("afterprint", function(event) { window.close(); });
+	window.onafterprint();
 </script>

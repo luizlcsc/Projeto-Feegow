@@ -196,7 +196,7 @@ function display_growth_chart(patient, el, chartType, dims, xMin = 0) {
   svg.append("text")
     .attr("text-anchor", "middle")
     .attr("transform", "translate("+ (width/2) +","+(height-(padding/3))+")")
-    .text("Idade (meses)");
+    .text("Idade");
 
   // Line labels (Normal, Malnourished, and Severely Malnourished)
   for (var i=0; i<metaData.lines.length; i++) {

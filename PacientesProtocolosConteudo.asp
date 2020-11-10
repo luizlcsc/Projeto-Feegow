@@ -2,8 +2,10 @@
 <%
 Tipo = req("Tipo")
 
-usuario = db.execute("SELECT Auditor FROM profissionais where id = "&session("User")&" and sysActive= 1")
-auditor = usuario("Auditor")
+set usuario = db.execute("SELECT Auditor FROM profissionais where id = "&session("User")&" and sysActive= 1")
+if not usuario.eof then
+    auditor = usuario("Auditor")
+end if 
 
 if Tipo = "I" then
     ID = req("ID")
@@ -13,7 +15,7 @@ if Tipo = "I" then
         set getPacientesProtocolos = db.execute("SELECT * FROM pacientesprotocolos WHERE id="&ID)
         set atendimento =  db.execute("select id from atendimentos a2 where PacienteID = "&PacienteID&" and `Data` = CAST( now() AS Date )")
         if getPacientesProtocolos.eof then
-            db.execute("INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID,AtendimentoID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&session("User")&", "&atendimento("id")&", "&session("User")&", 1)")
+            db.execute("INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&session("User")&",  "&session("User")&", 1)")
         end if
         set getMedicamentosProtocolos = db.execute("SELECT * FROM protocolosmedicamentos WHERE ProtocoloID="&ProtocoloID)
         while not getMedicamentosProtocolos.eof

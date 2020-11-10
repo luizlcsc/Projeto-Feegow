@@ -293,9 +293,10 @@ if request.QueryString("ConvenioID")<>"" then
     %>
     <tfoot>
         <tr>
-            <td colspan="3" class="text-right"><strong>Valor Total:</strong></td>
+            <td colspan="2"><strong>Total:</strong></td>
+            <td><strong><%=NumeroGuias%></strong></td>
             <td class="text-right"><strong>R$ <%=formatnumber(ValotTotalGuias,2)%></strong></td>
-            <td colspan="10" class="text-right"><strong>Quantidade: <%=NumeroGuias%> guias</strong></td>
+            <td colspan="10"></td>
         </tr>
     </tfoot>
     <%

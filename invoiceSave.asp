@@ -587,11 +587,11 @@ if erro="" then
             DescricaoLog=""
         end if
         if scp()=1 then
-			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe="& treatvalnull(ref("nroNFe")) &", CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 			'call gravaLog(sqlInvoice, "AUTO")
 	    	db_execute(sqlInvoice)
         else
-			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe="& treatvalnull(ref("nroNFe")) &", CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 		' 	call gravaLog(sqlInvoice, "AUTO")
 			db_execute(sqlInvoice)
         end if
@@ -658,9 +658,9 @@ if erro="" then
     end if
 
   if scp()=1 then
-    sqlUp = "update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe="& treatvalnull(ref("nroNFe")) &", dataNFe="& mydatenull(ref("dataNFe")) &", valorNFe="& treatvalzero(ref("valorNFe")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"' where id="&InvoiceID
+    sqlUp = "update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe='"& ref("nroNFe") &"', dataNFe="& mydatenull(ref("dataNFe")) &", valorNFe="& treatvalzero(ref("valorNFe")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"' where id="&InvoiceID
   else
-    sqlUp = "update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe="& treatvalnull(ref("nroNFe")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"' where id="&InvoiceID
+    sqlUp = "update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe='"& ref("nroNFe") &"', ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"' where id="&InvoiceID
   end if
 
   call gravaLogs(sqlUp, TipoLogOp, DescricaoLog, "")

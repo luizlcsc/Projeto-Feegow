@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="geraPacientesProtocolosCiclos.asp"-->
 <%
 Tipo = req("Tipo")
 
@@ -24,6 +25,8 @@ if Tipo = "I" then
         wend
         getMedicamentosProtocolos.close
         set getMedicamentosProtocolos=nothing
+
+        call geraPacientesProtocolosCiclos(ID)
     end if
 end if
 

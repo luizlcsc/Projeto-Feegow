@@ -65,11 +65,6 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         else
           conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", " " )
         end if
-
-      case "UnidadeSessao"
-        item_UnidadeSessao       = item_id
-        'ALIAS DE TAGS RELACIONADAS A UNIDADE SESSAO
-        'Adicionar aqui...
       
       case "UnidadeID"          
         item_UnidadeID           = item_id
@@ -138,6 +133,13 @@ function tagsConverte(conteudo,itens,moduloExcecao)
   else
     conteudo = ""
   end if
+
+  'CONVERTE TAGS BASEADO NA SESSÃO PARA QUANDO NÃO FOR PASSADO O VALOR
+  if item_UnidadeID&""="" then
+    item_UnidadeID = session("UnidadeID")
+  end if
+
+
   SET tagsCategoriasSQL = db.execute("select categoria from cliniccentral.tags_categorias")
 
   while not tagsCategoriasSQL.eof
@@ -597,5 +599,5 @@ end function
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalID_1",""))
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalSessao_1",""))
 'response.write("<br>"&TagsConverte("[ProfissionalSolicitante.Nome]","ProfissionalSolicitanteID_200",""))
-'response.write(TagsConverte("Contrato: [Contrato.Protocolo]","ContratoID_9368",""))
+'response.write(TagsConverte("Unidade: [Unidade.Nome]","UnidadeID_63",""))
 %>

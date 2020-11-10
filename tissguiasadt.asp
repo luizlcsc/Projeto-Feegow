@@ -282,11 +282,34 @@ if not reg.eof then
                                 end if
                             end if
 						    've se há valor definido pra este procedimento neste convênio
+                            AgendamentoID=splAEA(0)
+
+						    ApenasProcedimentosNaoFaturados = req("ApenasProcedimentosNaoFaturados")
+
+						    IF ApenasProcedimentosNaoFaturados&""="S" THEN
+                                set ProcedimentosJaFaturadosSQL = db.execute("SELECT group_concat(t.ProcedimentoID)ids FROM "&_
+                                                                             "(SELECT tp.ProcedimentoID FROM tissprocedimentossadt tp "&_
+                                                                             "INNER JOIN tissguiasadt t ON t.id=tp.GuiaID "&_
+                                                                             "WHERE t.sysActive=1 AND tp.AgendamentoID="&AgendamentoID&" "&_
+                                                                             "UNION ALL "&_
+                                                                             "SELECT ProcedimentoID FROM tissguiaconsulta WHERE AgendamentoID="&AgendamentoID&" "&_
+                                                                             "AND sysActive=1"&_
+                                                                             ")t")
+                                if not ProcedimentosJaFaturadosSQL.eof then
+                                    procedimentosFaturados = ProcedimentosJaFaturadosSQL("ids")
+
+                                    if procedimentosFaturados&""<>"" then
+                                        sqlProcedimentosJaFaturados = " AND TipoCompromissoID NOT IN ("&procedimentosFaturados&")"
+                                    end if
+                                end if
+						    END IF
+
+
 
                             if splAEA(1)="agendamento" then
-                                set ProcedimentosSQL = db.execute("SELECT a.TipoCompromissoID from agendamentos a where a.id like '"&splAEA(0)&"' UNION ALL select ap.TipoCompromissoID from agendamentosprocedimentos ap where ap.agendamentoid like '"&splAEA(0)&"' ")
+                                set ProcedimentosSQL = db.execute("select TipoCompromissoID FROM (SELECT a.TipoCompromissoID from agendamentos a where a.id = '"&AgendamentoID&"' UNION ALL select ap.TipoCompromissoID from agendamentosprocedimentos ap where ap.agendamentoid = '"&AgendamentoID&"')t WHERE true "&sqlProcedimentosJaFaturados)
                             else
-                                set ProcedimentosSQL = db.execute("select ap.ProcedimentoID TipoCompromissoID FROM atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID where ap.id like '"&splAEA(0)&"'")
+                                set ProcedimentosSQL = db.execute("select TipoCompromissoID FROM (select ap.ProcedimentoID TipoCompromissoID FROM atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID where ap.id = '"&AgendamentoID&"')t WHERE true "&sqlProcedimentosJaFaturados)
                             end if
 
                             Dim ProcedimentoIncluidos

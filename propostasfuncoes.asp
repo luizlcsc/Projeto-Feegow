@@ -18,6 +18,7 @@ function imprimir(){
 
 
 function itens(T, A, II, Q = "", incP = 0, valor, profissionalID){
+
 	var inc = $('[data-val]:last').attr('data-val');
 	var PacienteID = $('#PacienteID').val();
     var TabelaID = $('#TabelaID').val();
@@ -26,6 +27,8 @@ function itens(T, A, II, Q = "", incP = 0, valor, profissionalID){
 	if(inc==undefined){inc=0}
 	if(incP > 0) { inc = incP}
 
+	$('#botao-aplicar-proposta-'+II).attr('disabled',true)
+
     var $itens = $(".proposta-item-procedimentos").find("[data-resource=procedimentos]");
     var procedimentoIds = [];
     $itens.each(function(){
@@ -33,39 +36,43 @@ function itens(T, A, II, Q = "", incP = 0, valor, profissionalID){
     });
 
 
-	$.post("propostaItens.asp?I=<%=PropostaID%>&Row="+inc, {procedimentoIds: procedimentoIds.join(","), valor:valor, T:T,A:A,II:II,PacienteID:PacienteID,TabelaID:TabelaID, Q:Q, profissionalID:profissionalID}, function(data, status){
-	if(A=="I"){
-        $("#footItens").before(data);
+		$.post("propostaItens.asp?I=<%=PropostaID%>&Row="+inc, {procedimentoIds: procedimentoIds.join(","), valor:valor, T:T,A:A,II:II,PacienteID:PacienteID,TabelaID:TabelaID, Q:Q, profissionalID:profissionalID}, function(data, status){
 
-	    let removido = false
-        $("[unico]").each((arg,arg1)=>{
-           let id = $(arg1).attr("unico");
-           if($(`[unico="${id}"]`).length > 1 && !removido){
-               removido = true;
-               $(`[unico="${id}"]`).last().remove();
-               $("#ListaProItens").parent().parent().before(`<div class="text-danger confirm-add" style="padding:5px">Este procedimento não permite duplicidade em propostas.</div>`)
-                setTimeout(() => {
-                    $(".confirm-add").fadeOut();
-                },2000);
-           }
-        });
+		$('#botao-aplicar-proposta-'+II).attr('disabled',false)
+		
+		if(A=="I"){
+			$("#footItens").before(data);
 
-	    if(!removido){
-            $("#ListaProItens").parent().parent().before(`<div class="text-success confirm-add" style="padding:5px">Item incluído com sucesso.</div>`)
-            $("#FiltroProItens").val("").focus();
-            ListaProItens("", '', '')
-            setTimeout(() => {
-                    $(".confirm-add").fadeOut();
-            },1000);
+			let removido = false
+			$("[unico]").each((arg,arg1)=>{
+			let id = $(arg1).attr("unico");
+			if($(`[unico="${id}"]`).length > 1 && !removido){
+				removido = true;
+				$(`[unico="${id}"]`).last().remove();
+				$("#ListaProItens").parent().parent().before(`<div class="text-danger confirm-add" style="padding:5px">Este procedimento não permite duplicidade em propostas.</div>`)
+					setTimeout(() => {
+						$(".confirm-add").fadeOut();
+					},2000);
+			}
+			});
 
-	    }
+			if(!removido){
+				$("#ListaProItens").parent().parent().before(`<div class="text-success confirm-add" style="padding:5px">Item incluído com sucesso.</div>`)
+				$("#FiltroProItens").val("").focus();
+				ListaProItens("", '', '')
+				setTimeout(() => {
+						$(".confirm-add").fadeOut();
+				},1000);
 
-	}else if(A=="X"){
-		eval(data);
-	}else{
-		$("#propostaItens").html(data);
+			}
+
+		}else if(A=="X"){
+			eval(data);
+		}else{
+			$("#propostaItens").html(data);
+		}
 	}
-});}
+);}
 
 function recalc(input){
 	$.post("recalcProposta.asp?PropostaID=<%=PropostaID%>&input="+input, $("#frmProposta").serialize(), function(data, status){ eval(data) });

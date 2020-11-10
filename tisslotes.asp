@@ -134,11 +134,12 @@ if request.QueryString("ConvenioID")<>"" then
 			ValorTotal=total("ValorTotal")
 		end if
 
-		ValotTotalGuias = ValotTotalGuias + ValorTotal
+		
 		NumeroGuias = NumeroGuias + cint(nguias("total"))
 		if cint(nguias("total")) > 0 then
 
-		%>
+        ValotTotalGuias = ValotTotalGuias + ValorTotal
+        %>
 		<tr dias-para-recebimento="<%=objConvenio("DiasRecebimento") %>" lote-id="<%=lotes("id")%>">
         	<td><%=lotes("Lote")%></td>
             <td>
@@ -292,8 +293,10 @@ if request.QueryString("ConvenioID")<>"" then
     %>
     <tfoot>
         <tr>
-            <td colspan="4"><strong>Quantidade: <%=NumeroGuias%> guias</strong></td>
-            <td colspan="10"><strong>Valor Total: R$ <%=formatnumber(ValotTotalGuias,2)%></strong></td>
+            <td colspan="2"><strong>Total:</strong></td>
+            <td><strong><%=NumeroGuias%></strong></td>
+            <td class="text-right"><strong>R$ <%=formatnumber(ValotTotalGuias,2)%></strong></td>
+            <td colspan="10"></td>
         </tr>
     </tfoot>
     <%

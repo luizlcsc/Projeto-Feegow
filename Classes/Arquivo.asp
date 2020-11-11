@@ -10,7 +10,7 @@ function findFile(filename, folder, licenseId)
     relativePath = "uploads/"&licenseId&"/"&folder&"/"&filename
 
     Dim ServerHost, i
-    ServerHost = Array("clinic7.feegow.com.br", "feegow.com", "clinic8.feegow.com.br")
+    ServerHost = Array("app.feegow.com")
 	set fs=Server.CreateObject("Scripting.FileSystemObject")
 
     Dim xmlhttp

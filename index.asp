@@ -188,6 +188,12 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   }
   </style>
 
+  <%
+    if Session("Permissoes")&"" = "" then
+      response.redirect("?P=Login&amp;Log=Off")
+    end if
+  %>
+
   <link type="text/css" rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.css" />
   <!-- Meta, title, CSS, favicons, etc. -->
   <meta charset="utf-8">

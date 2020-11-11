@@ -1911,10 +1911,8 @@ $(document).ready(function() {
             allowEscapeKey:false,
             allowOutsideClick:false,
             timerProgressBar:true,
-            preConfirm: ()=>{
-              <%
-                response.redirect("?P=Login&amp;Log=Off")
-              %>
+            preConfirm: (val)=>{
+              window.location.replace("?P=Login&amp;Log=Off");
             }
           })
         <%

@@ -246,9 +246,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.all.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-  <script src="sweetalert2.min.js"></script>
-  <link rel="stylesheet" href="sweetalert2.min.css">
+  
 
   <script type="text/javascript">
         <% 
@@ -1899,26 +1897,7 @@ function openRedefinirSenha(){
 }
 
 $(document).ready(function() {
-
-       <%
-        if Session("Permissoes")&"" = "" then
-        %>
-          Swal.fire({
-            title: 'Desculpe o transtorno!',
-            text: 'Algo não ocorreu como devia no seu login precisaremos que relogue',
-            icon: 'error',
-            confirmButtonText: 'ok',
-            allowEscapeKey:false,
-            allowOutsideClick:false,
-            timerProgressBar:true,
-            preConfirm: (val)=>{
-              window.location.replace("?P=Login&amp;Log=Off");
-            }
-          })
-        <%
-        end if
-      %>
-
+  
     var lenMenu = $(".sidebar-menu li").length
     setTimeout(function() {
         if(lenMenu === 0){

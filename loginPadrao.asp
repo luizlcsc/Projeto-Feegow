@@ -220,11 +220,13 @@ if not tryLogin.EOF then
 		end if
 	end if
 
+    
+
 	if erro<>"" then
         if deslogarUsuario then
-            session("User")=tryLogin("id")
-            session("Banco")="clinic"&tryLogin("LicencaID")
-            session("Servidor") = Servidor&""
+            ' session("User")=tryLogin("id")
+            ' session("Banco")="clinic"&tryLogin("LicencaID")
+            ' session("Servidor") = Servidor&""
             %>
                 <script type="text/javascript">
                     $(window).on('load',function(){

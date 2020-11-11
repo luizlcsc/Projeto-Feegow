@@ -5,7 +5,7 @@
 <!--#include file="Classes/GradeAgendaUtil.asp"-->
 <%
 'on error resume next
-
+ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
 HLivres = 0
 HAgendados = 0
 HBloqueados = 0
@@ -377,7 +377,7 @@ while diaS<n
         sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
     end if
 
-    set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.PacienteID,a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, a.Primeira, p.NomePaciente, p.IdImportado, p.Tel1, p.Cel1, p.CorIdentificacao, proc.NomeProcedimento, s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Notas, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta from agendamentos a "&_
+    set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.PacienteID,a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, a.Primeira, p.NomePaciente, p.IdImportado, p.Tel1, p.Cel1, p.CorIdentificacao, proc.NomeProcedimento,proc.Cor , s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Notas, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta from agendamentos a "&_
     "left join pacientes p on p.id=a.PacienteID "&_
     "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
     "left join staconsulta s on s.id=a.StaID "&_
@@ -477,10 +477,16 @@ while diaS<n
             Prontuario = comps("PacienteID")
         end if
         '<--
+        CorLinha = ""
+        if ColorirLinhaAgendamento=1 then
+            if comps("Cor") <> "#fff" and not isnull(comps("Cor")) then
+                CorLinha = " bgcolor =\'"&comps("Cor")&"\'"
+            end if
+        end if
         LocalDiferente=""
 		titleSemanal= replace(comps("NomePaciente")&"<br>"&NomeProcedimento&"<br>Prontuário: "&Prontuario&"<br>Tel.: "&comps("Tel1")&"<br>Cel.: "&comps("Cel1")&" "&"<br> ", "'", "\'") & "Notas: "&replace(replace(replace(replace(comps("Notas")&"", chr(13), ""), chr(10), ""), "'", ""), """", "")&"<br>"
                
-        Conteudo = "<tr id="""&DiaSemana&HoraComp&""" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&titleSemanal&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"">"&_
+        Conteudo = "<tr id="""&DiaSemana&HoraComp&""""&CorLinha &" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&titleSemanal&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"">"&_
         "<td width=""1%"">"
                 if not isnull(comps("Resposta")) then
             Conteudo = Conteudo & "<i class=""fa fa-envelope pink""></i> "

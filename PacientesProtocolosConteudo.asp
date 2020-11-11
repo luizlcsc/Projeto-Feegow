@@ -16,7 +16,7 @@ if Tipo = "I" then
         set getPacientesProtocolos = db.execute("SELECT * FROM pacientesprotocolos WHERE id="&ID)
         set atendimento =  db.execute("select id from atendimentos a2 where PacienteID = "&PacienteID&" and `Data` = CAST( now() AS Date )")
         if getPacientesProtocolos.eof then
-            db.execute("INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&session("User")&",  "&session("User")&", 1)")
+            db.execute("INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&session("User")&",  "&session("UnidadeID")&", "&session("User")&", 1)")
         end if
         set getMedicamentosProtocolos = db.execute("SELECT * FROM protocolosmedicamentos WHERE ProtocoloID="&ProtocoloID)
         while not getMedicamentosProtocolos.eof

@@ -246,7 +246,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.all.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
-
+  
 
   <script type="text/javascript">
         <% 
@@ -1897,6 +1897,7 @@ function openRedefinirSenha(){
 }
 
 $(document).ready(function() {
+  
     var lenMenu = $(".sidebar-menu li").length
     setTimeout(function() {
         if(lenMenu === 0){

@@ -9,7 +9,17 @@ _Partindo do pré suposto de que já exista um banco mysql funcionando e com as 
  **Instale o Mysql ODBC 8.0**
 > https://dev.mysql.com/downloads/connector/odbc/
 
-- Baixe o dump inicial https://www.dropbox.com/s/4x5lqb19kjeqsvd/BANCOS.zip?dl=0
+#### Dump inicial:
+- `cliniccentral`:  https://www.dropbox.com/s/dh5ruv84wmipa4r/BANCOS%20-%20cc_temp.zip?dl=0
+
+- `clinic100105`: https://www.dropbox.com/s/ef7xyw27i4x5363/BANCO%20-%20100105%20-%20DEV.zip?dl=0
+
+#### Credenciais de acesso
+
+**Usuário**: teste@novobanco10.com
+
+**Senha**: 1234
+
 
 
  **Instale o IIs**

@@ -1,7 +1,10 @@
 <!--#include file="connect.asp"-->
 <!--#include file="geraPacientesProtocolosCiclos.asp"-->
 <%
-ID = req("i")
+if ID&"" = "" then
+    ID = req("i")
+end if
+
 Tipo = req("Tipo")
 readOnly = false
 if req("readonly") = "1" then

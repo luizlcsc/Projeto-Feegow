@@ -167,9 +167,15 @@ while diaS<n
   diaS=diaS+1
   
   escreveData = left(weekdayname(DiaSemana), 3) &", "&Data
+
+  table_striped = "table-striped"
+  if ColorirLinhaAgendamento=1 then
+    table_striped = ""
+  end if
+  
   %>
   <td width="14%" class="pn" style="vertical-align:top">
-    <table data-weekday="<%=diaS%>" class="table dia-semana-coluna table-striped table-hover table-bordered table-condensed table-agenda mn">
+    <table data-weekday="<%=diaS%>" class="table dia-semana-coluna <%=table_striped%> table_striped table-hover table-bordered table-condensed table-agenda mn">
     <thead>
         <tr>
             <th colspan="6" class="text-center<% If cdate(Data)=DataSel Then %> success<% End If %>" nowrap><%=ucase(escreveData)%></th>
@@ -480,7 +486,7 @@ while diaS<n
         CorLinha = ""
         if ColorirLinhaAgendamento=1 then
             if comps("Cor") <> "#fff" and not isnull(comps("Cor")) then
-                CorLinha = " bgcolor =\'"&comps("Cor")&"\'"
+                CorLinha = "style=\'background-color:"&comps("Cor")&"!important\'"
             end if
         end if
         LocalDiferente=""

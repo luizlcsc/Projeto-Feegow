@@ -47,8 +47,8 @@ function geraPacientesProtocolosCiclos(PacienteProtocoloID)
 
                             '  se não existir, insere o registro do dia do ciclo e o medicamento do dia
                             if protocoloCicloDia.eof then
-                                db.execute("INSERT INTO pacientesprotocolosciclos (PacienteProtocoloID, ProtocoloID, Ciclo, Dia, DataSugerida, StatusAutorizacaoID, StatusProtocoloID, StatusDispensacaoID) " & _
-                                    "VALUES ('" & PacienteProtocoloID & "', '" & ProtocoloID & "', '" & ciclo & "', '" & dia & "', '" & myDate(DataSugerida) & "', 1, 4, 8)")
+                                db.execute("INSERT INTO pacientesprotocolosciclos (PacienteProtocoloID, ProtocoloID, Ciclo, Dia, DataSugerida, StatusAutorizacaoID, StatusProtocoloID, StatusDispensacaoID, sysUser) " & _
+                                    "VALUES ('" & PacienteProtocoloID & "', '" & ProtocoloID & "', '" & ciclo & "', '" & dia & "', '" & myDate(DataSugerida) & "', 1, 4, 8, '" & session("User") & "')")
 
                                 db.execute("SET @lastid = LAST_INSERT_ID();")
 

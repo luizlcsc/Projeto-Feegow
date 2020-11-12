@@ -47,22 +47,22 @@ function geraPacientesProtocolosCiclos(PacienteProtocoloID)
 
                             '  se não existir, insere o registro do dia do ciclo e o medicamento do dia
                             if protocoloCicloDia.eof then
-                                db.execute("INSERT INTO pacientesprotocolosciclos (PacienteProtocoloID, ProtocoloID, Ciclo, Dia, DataSugerida, StatusAutorizacao, StatusProtocolo, StatusDispensacao) " & _
-                                    "VALUES ('" & PacienteProtocoloID & "', '" & ProtocoloID & "', '" & ciclo & "', '" & dia & "', '" & myDate(DataSugerida) & "', 1, 1, 1)")
+                                db.execute("INSERT INTO pacientesprotocolosciclos (PacienteProtocoloID, ProtocoloID, Ciclo, Dia, DataSugerida, StatusAutorizacaoID, StatusProtocoloID, StatusDispensacaoID) " & _
+                                    "VALUES ('" & PacienteProtocoloID & "', '" & ProtocoloID & "', '" & ciclo & "', '" & dia & "', '" & myDate(DataSugerida) & "', 1, 4, 8)")
 
                                 db.execute("SET @lastid = LAST_INSERT_ID();")
 
-                                db.execute("INSERT INTO pacientesprotocolosciclosmedicamentos (PacienteProtocoloID, PacienteProtocolosCicloID, PacienteProtocolosMedicamentosID) " & _
+                                db.execute("INSERT INTO pacientesprotocolosciclos_medicamentos (PacienteProtocoloID, PacienteProtocolosCicloID, PacienteProtocolosMedicamentosID) " & _
                                     "VALUES ('" & PacienteProtocoloID & "', @lastid, '" & pacienteProcoloMedicamentoId & "')")
 
                             ' se já existi o registro do dia, insere o registro do medicamento do dia 
                             else
                                 cicloId = protocoloCicloDia("id")
-                                set protocoloCicloDiaMed = db.execute("SELECT id FROM pacientesprotocolosciclosmedicamentos " & _
+                                set protocoloCicloDiaMed = db.execute("SELECT id FROM pacientesprotocolosciclos_medicamentos " & _
                                     "WHERE PacienteProtocolosCicloID = '" & cicloId & "' AND PacienteProtocolosMedicamentosID = '" & pacienteProcoloMedicamentoId & "'")
 
                                 if protocoloCicloDiaMed.eof then
-                                        db.execute("INSERT INTO pacientesprotocolosciclosmedicamentos (PacienteProtocoloID, PacienteProtocolosCicloID, PacienteProtocolosMedicamentosID) " & _
+                                        db.execute("INSERT INTO pacientesprotocolosciclos_medicamentos (PacienteProtocoloID, PacienteProtocolosCicloID, PacienteProtocolosMedicamentosID) " & _
                                                     "VALUES ('" & PacienteProtocoloID & "', '" & cicloId & "', '" & pacienteProcoloMedicamentoId & "')")
                                 end if
 

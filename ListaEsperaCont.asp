@@ -412,10 +412,10 @@ else
                 if Triagem="S" and ProfissionalTriagem="N" and labelDisabled = "Pendente de Triagem" then
                     'exibeLinha = "N"
                 end if
-
-                disabPagto = "disabled"
-                labelDisabled = "Pendente de pgto."
-                tagPaciente = "div"
+                ' COMENTADA AS LINHAS ABAIXO POR QUE ESTÁ BLOQUEANDO PAGAMENTOS COM DESCONTOS
+                'disabPagto = "disabled"
+                'labelDisabled = "Pendente de pgto."
+                'tagPaciente = "div"
 
                 
             end if

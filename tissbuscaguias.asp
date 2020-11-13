@@ -401,7 +401,9 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
                  if guias("Glosado")=1 then
                      response.write("<center><span class='label label-danger'>Glosada</span></center>")
                  else
-                     response.write quickfield("text", "ValorPago"&guias("id"), "Valor", 12, fn(guias("ValorPago")), " text-right input-mask-brl input-valor-pago", "", " "& disabled &" ")
+                    jsAtualizaValor = "onchange='lancamentoValorPago(`"&guias("id")&"`,`"&req("T")&"`)'"
+                    'response.write(jsAtualizaValor)
+                    response.write quickfield("text", "ValorPago"&guias("id"), "Valor", 12, fn(guias("ValorPago")), " text-right input-mask-brl input-valor-pago", "", " "&jsAtualizaValor& disabled &" ")
                  end if
                  %>
 
@@ -800,6 +802,11 @@ function modalPaciente(ID) {
  }
 
 function lancamentoValorPago(guiaId, tipoGuia, valorNovo, statusId=false, Operacao=""){
+    
+    if (valorNovo === undefined){
+        valorNovo = $("#ValorPago"+guiaId).val();
+    }
+
     $.post("Glosa.asp?TG=<%=req("T")%>&I="+guiaId+"&T="+Operacao, {
         n: "ValorPago"+guiaId,
         vp: valorNovo,
@@ -819,6 +826,8 @@ function lancamentoValorPago(guiaId, tipoGuia, valorNovo, statusId=false, Operac
         alteraStatusGuia(guiaId, tipoGuia, statusId);
     }
 }
+
+
 
  function alteraStatusGuia(guiaId, tipoGuia, statusId){
      var $lb = $("#guia-linha-"+guiaId, "#table-busca-guias").find(".dropdown-status");

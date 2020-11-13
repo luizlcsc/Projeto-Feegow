@@ -40,6 +40,9 @@ end if
 if ref("n")<>"" then
     GuiaID = replace(ref("n"), "ValorPago", "")
     ValorPago = ref("vp")
+
+
+    'response.write("console.log(`update tiss"&TG&" set ValorPago="&treatvalzero(ValorPago)&" WHERE id IN("&GuiaID&")`);")
     sqlup = "update tiss"&TG&" set ValorPago="&treatvalzero(ValorPago)&" WHERE id IN("&GuiaID&")"
 
 

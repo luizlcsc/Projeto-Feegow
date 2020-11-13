@@ -15,9 +15,8 @@ if not listaFormulas.eof then
         %>
             <tr>
               <td>
-                <a href="javascript:itens('S', 'I', <%=listaFormulas("id")%>)" class="blue" id="<%=listaFormulas("id")%>" title="" data-placement="top" data-rel="tooltip" data-original-title="Aplicar">
-                    <i class="fa fa-hand-o-left icon-hand-left bigger-125"></i>
-                </a>
+                <button style="border:none;color:#3498db;background-color:white" onclick='itens("S", "I", "<%= listaFormulas("id") %>")' id="botao-aplicar-proposta-<%=listaFormulas("id")%>">
+                    <i class="fa fa-hand-o-left icon-hand-left bigger-125"></i></button>
               </td>
               <td><code>Procedimento</code> <%=listaFormulas("NomeProcedimento")%></td>
             </tr>
@@ -61,14 +60,25 @@ $("#ulItens li").hover(function(){
 	
 	//javascript:itens('S', 'I', 0);
 	
-	
-	$(this).find(".btns").html('<div class="tools action-buttons"><span class="tooltip-info" title="" data-placement="top" data-rel="tooltip" data-original-title="Inserir na Proposta"><a href="#" data-toggle="modal" class="blue" onClick="itens(\'S\', \'I\', '+ $(this).attr('id') +')"><i class="fa fa-hand-o-left icon-hand-left bigger-125"></i></a></span></div>');
+  
+  let html = `
+    <div class="tools action-buttons">
+      <span class="tooltip-info" title="" data-placement="top" data-rel="tooltip" data-original-title="Inserir na Proposta">
+        <a href="#" data-toggle="modal" class="blue" onClick="itens(\'S\', \'I\', '+ $(this).attr('id') +')">
+          <i class="fa fa-hand-o-left icon-hand-left bigger-125"></i>
+        </a>
+      </span>
+    </div>`
+
+	$(this).find(".btns").html(html);
 	
 	
 });
 $("#ulItens li").mouseleave(function(){
 	$(this).find(".btns").html('');
 });
+
+
 /*
 function filtra(v){
 	var texto = v;

@@ -1,3 +1,4 @@
+<!--#include file="../connect.asp"-->
 <%
 
 function getFileUrl(filename, folder)
@@ -7,36 +8,9 @@ function getFileUrl(filename, folder)
 end function
 
 function findFile(filename, folder, licenseId)
-    relativePath = "uploads/"&licenseId&"/"&folder&"/"&filename
 
-    Dim ServerHost, i
-    ServerHost = Array("clinic7.feegow.com.br", "feegow.com", "clinic8.feegow.com.br")
-	set fs=Server.CreateObject("Scripting.FileSystemObject")
+   img =  arqEx(filenme, folder)
 
-    Dim xmlhttp
-
-
-
-    For Each host In ServerHost
-        https = "https"
-
-        fileURL = https&"://"&host&"/"&relativePath
-
-        Set xmlhttp = Server.CreateObject("MSXML2.ServerXMLHTTP")
-
-        xmlhttp.open "HEAD", fileURL, False
-        xmlhttp.send
-
-        Select Case Cint(xmlhttp.status)
-            Case 200, 202, 302
-                Set xmlhttp = Nothing
-                findFile=fileURL
-                Exit For
-            Case Else
-                Set xmlhttp = Nothing
-        End Select
-
-    Next
 end function
 
 function getFileUrlWithCustomDB(filename, folder, licenseId)

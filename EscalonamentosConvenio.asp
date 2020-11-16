@@ -22,16 +22,16 @@ ConvenioID = req("ConvenioID")
                    <div class="col-md-3">
                     <label for="tabela[0]">Tabela</label>
                     <select class="form-control" id="tabela[0]" name="tabela[0]">
-                    <option value="" selected disabled>Tabela</option>
-                    <option value="|Brasindice|">Brasindice</option>
-                    <option value="|Simpro|">Simpro</option>
+                    <option value="">Selecione</option>
+                                   <option value="|Brasindice|">Brasindice</option>
+                                   <option value="|Simpro|">Simpro</option>
+                            </select>
                     </select>
                   </div>
                 <div class="col-md-3">
                         <label for="preco[0]">Preço</label>
                         <select class="form-control" id="preco[0]" name="preco[0]">
-                             <option value="" selected desabled>Preco</option>
-                            <option value="|PFB|" >PFB</option>
+                              <option value="|PFB|">PFB</option>
                             <option value="|PMC|">PMC</option>
                         </select>
                     </div>

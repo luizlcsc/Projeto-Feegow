@@ -216,7 +216,7 @@ End Function
 
 function TISS__FormataConteudo(Conteudo)
     'INICIO DE CARACTERS ATÍPICOS/ESTRANHOS
-    Conteudo = replace(Conteudo,"ï¿½","")'ESTE ITEM PODE SER 'o' OU 'a' 
+    Conteudo = replace(Conteudo&"","ï¿½","")'ESTE ITEM PODE SER 'o' OU 'a' 
     'FIM DE CARACTERS ATÍPICOS/ESTRANHOS
 
     Conteudo = RemoveAcentoPalavras(Conteudo)

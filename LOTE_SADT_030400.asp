@@ -6,10 +6,20 @@ response.ContentType="text/XML"
 RLoteID = replace(request.QueryString("I"),".xml", "")
 set lote = db.execute("select * from tisslotes where id="&RLoteID)
 'set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id"))
-set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" order by g.NGuiaPrestador")
+guiasSQL = 	" SELECT g.*, p.NomePaciente,c.XMLTagsOmitir   "&chr(13)&_
+						" FROM tissguiasadt AS g                       "&chr(13)&_
+						" LEFT JOIN pacientes AS p ON p.id=g.PacienteID"&chr(13)&_
+						" LEFT JOIN convenios AS c ON c.id=g.ConvenioID"&chr(13)&_
+						" WHERE g.LoteID="&lote("id")&"                "&chr(13)&_
+						" ORDER BY g.NGuiaPrestador                    "
+'response.write(guiasSQL)
+set guias = db.execute(guiasSQL)
 if not guias.eof then
 	RegistroANS = TISS__FormataConteudo(guias("RegistroANS"))
 	CodigoNaOperadora = TISS__FormataConteudo(guias("CodigoNaOperadora"))
+	XMLTagsOmitir = guias("XMLTagsOmitir")&""
+	'InStr(XMLTagsOmitir,"|procedimentosExecutados|")
+
 end if
 NLote = TISS__FormataConteudo(lote("Lote"))
 Data = mydatetiss(lote("sysDate"))
@@ -253,6 +263,7 @@ prefixo = right(prefixo, 20)
                         <%if TipoConsultaID<>"" then%><ans:tipoConsulta><%= TipoConsultaID %></ans:tipoConsulta><%end if%>
                         <%if MotivoEncerramentoID<>"" then%><ans:motivoEncerramento><%= MotivoEncerramentoID %></ans:motivoEncerramento><% End If %>
                     </ans:dadosAtendimento>
+										<%if InStr(XMLTagsOmitir,"|procedimentosExecutados|")=0 then%>
                     <ans:procedimentosExecutados>
                     <%
                     sequencialItem = 1
@@ -355,8 +366,10 @@ prefixo = right(prefixo, 20)
 					%>
                     </ans:procedimentosExecutados>
                     <%
+										end if
 					set desp = db.execute("select * from tissguiaanexa where GuiaID="&guias("id"))
 					if not desp.eof then
+						if InStr(XMLTagsOmitir,"|procedimentosExecutados|")=0 then
 					%>
                     <ans:outrasDespesas>
                     	<%
@@ -409,6 +422,7 @@ prefixo = right(prefixo, 20)
 						%>
                     </ans:outrasDespesas>
                     <%
+										end if 'NÃO IMPRIME OUTRAS DESPESAS
 					end if
 					
 					Observacoes = guias("Observacoes")
@@ -451,5 +465,5 @@ prefixo = right(prefixo, 20)
     </ans:epilogo>
 </ans:mensagemTISS>
 <%
-Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
+'Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
 %>

@@ -22,6 +22,7 @@ if not ConvenioSQL.eof then
         end if
     end if
 end if
+
 %>
 	<div class="modal-header">
     	<h4>Fechar Lote</h4>
@@ -66,7 +67,8 @@ end if
                 <label for="LoteObs">Observações</label>
                 <textarea name="Obs" id="LoteObs" class="form-control"></textarea>
             </div>
-            <%=quickfield("datepicker", "PrevisaoRecebimento", "Previsão de recebimento", 3, DataPrevisao, "", "", "")%>
+
+            <%=quickfield("datepicker", "PrevisaoRecebimento", "Previsão de recebimento ", 3, DataPrevisao, "", "", "")%>
 
         </div>
     </div>

@@ -275,8 +275,8 @@ end function
                             <div class="col-md-2 qf">
                                 <label>Tipo Recebimento</label>
                                 <select class="form-control" id="DiasReceb" name="DiasReceb">
-                                    <option value="1">Dias Úteis</option>
-                                    <option value="2">Dia do Mês</option>
+                                    <option value="1">Dias corridos</option>
+                                    <option value="2">Dia do Mês Fixos</option>
                                 </select>
                             </div>
                             <%= quickField("number", "DiasRecebimento", "Dias para Recebimento", 3, reg("DiasRecebimento"), "", "", " placeholder='Dias'") %>

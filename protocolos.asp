@@ -49,10 +49,8 @@ if req("I")<>"N" then
 end if
 
 
-sqlBloquear = "select count(id)as qtd from pacientesprotocolosmedicamentos where ProtocoloID = 1 and sysActive = 1"
+sqlBloquear = "select count(id)as qtd from pacientesprotocolosmedicamentos where ProtocoloID = "&ProtocoloID&" and sysActive = 1"
 bloquear = db.execute(sqlBloquear)
-
-
 
 if CInt(bloquear("qtd")) > 0 then
     bloquear = 1
@@ -72,7 +70,7 @@ end if
             <div id="divCadastroProtocolo" class="tab-pane in active">
                 <div class="col-md-12">
                 <%=quickField("text", "NomeProtocolo", "Nome <code>#"&ProtocoloID&"</code>", 3, NomeProtocolo, "", "", " required")%>
-                <%=quickfield("multiple", "Procedimentos", "Procedimentos", 3, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and ativo='on' order by NomeProcedimento", "NomeProcedimento", "") %>
+                <%=quickfield("simpleSelect", "Procedimentos", "Procedimentos", 3, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and ativo='on' order by NomeProcedimento", "NomeProcedimento", "required") %>
                 <%=quickField("simpleSelect", "GrupoID", "Grupo", 2, GrupoID, "select * from protocolosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "")%>
                     <% if aut("protocoloA")=1 then%>
                     <div class="col-md-1">
@@ -94,11 +92,11 @@ end if
                 </div>
                 <div class="col-md-12 mt10">
                 <%=quickField("text", "Referencia", "Ref. Bibliográfica", 2, Referencia, "", "", "")%>
-                <%=quickField("number", "NCiclos", "Nº Ciclos", 1, NCiclos, " text-right ", "", "") %>
+                <%=quickField("number", "NCiclos", "Nº Ciclos", 1, NCiclos, " text-right ", "", "required") %>
                 <%=quickField("text", "AUC", "AUC", 1, AUC, " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
                 <%=quickField("number", "Marcacao", "Máx. agendam. p/ dia", 2, Marcacao, " text-right ", "", "") %>
-                <%=quickField("number", "MaxDias", "Máx. dias Ciclo", 2, MaxDias, " text-right ", "", "") %>
-                <%=quickField("number", "Periodicidade", "Periodicidade", 2, Periodicidade, " text-right ", "", "") %>
+                <%=quickField("number", "MaxDias", "Máx. dias Ciclo", 2, MaxDias, " text-right ", "", "required") %>
+                <%=quickField("number", "Periodicidade", "Periodicidade", 2, Periodicidade, " text-right ", "", "required") %>
                 <%=quickField("number", "Duracao", "Duração do Tratamento", 2, Duracao, " text-right ", "", "") %>
                 </div>
             </div>
@@ -189,10 +187,44 @@ end if
        block()
     });
     function saveProtocolo(ID){
-        $.post("saveProtocolo.asp?I="+ID, $("#formProtocolos").serialize(), function(data){
+
+        var cont = validateform();
+        if(cont == 0)
+         {
+            $.post("saveProtocolo.asp?I="+ID, $("#formProtocolos").serialize(), function(data){
             eval(data);
-        });
+            });
+         }
+   
+    
     };
+    function validateform() {
+        var control = 0;
+        $(document).ready(function(){
+        $("[required]").each(function(){
+            if($(this).val() == "")
+               {
+                  $(this).css({"border" : "1px solid #F00", "padding": "2px"});
+                  control++;
+               }
+            if($('#Procedimentos option:selected').val() == 0)
+               {
+                  $('#select2-Procedimentos-container').css({"border" : "1px solid #F00", "padding": "2px"});
+                  control++;
+               }
+
+        });
+        $(".select2-single, .input-mask-brl").each(function(){ 
+            if($(this).val() == 0)
+               {
+                  $(".select2-selection__rendered, .multiselect, .input-mask-brl").css({"border" : "1px solid #F00", "padding": "2px"});
+                  control++;
+               }
+
+        });
+        });
+        return control; 
+    }
     function RegraProtocolo(ID) {
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");

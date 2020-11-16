@@ -1408,7 +1408,7 @@ checkAgendasMarcadas = _ => {
 };
 
 function bootbox(){
-    $("#modal").html("<div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal'>&times;</button><h4 class='modal-title'>Atenção</h4></div><div class='modal-body'><p>Foi identificado agendamentos futuros nesse horário, deseja continuar?.</p></div><div class='modal-footer'><button type='button' onclick='submitAgendamento(false);' class='btn btn-default' data-dismiss='modal'>Sim</button><button type='button' class='btn btn-default' data-dismiss='modal'>Não</button></div></div>");
+    $("#modal").html("<div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal'>&times;</button><h4 class='modal-title'>Atenção</h4></div><div class='modal-body'><p>Foram identificados agendamentos futuros ou bloqueios nesse horário, deseja continuar?.</p></div><div class='modal-footer'><button type='button' onclick='submitAgendamento(false);' class='btn btn-default' data-dismiss='modal'>Sim</button><button type='button' class='btn btn-default' data-dismiss='modal'>Não</button></div></div>");
     $("#modal-table").modal('show');
 
 }

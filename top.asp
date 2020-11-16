@@ -176,6 +176,8 @@ else
                   <a class="sub-menu-click-paciente-listar" href="?P=Pacientes&Pers=Follow"><i class="fa fa-list"></i> Listar</a>
                   </li>
             <%end if%>
+            <li class="divider"></li>
+            <li class="sub-menu-click-pacientes-gestaoprotocolos"><a href="./?P=gestaoprotocolos&Pers=1"><i class="fa fa-th-list"></i> Gestão de Protocolos</a></li>
         </ul>
     </li>
     <%		end if

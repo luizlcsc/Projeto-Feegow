@@ -8,10 +8,12 @@ if tipo = "N" then
     NomeArquivo = ""
     Obrigatorio = 0
 else
-    sql = "select NomeArquivo,Obrigatorio from tipos_de_arquivos where id="&tipo
+   sql = "select NomeArquivo, Obrigatorio from tipos_de_arquivos where id="&treatvalzero(tipo)
     set tipo = db.execute(sql)
-    NomeArquivo = tipo("NomeArquivo")
-    Obrigatorio = tipo("Obrigatorio")
+    if not tipo.eof then
+        NomeArquivo = tipo("NomeArquivo")
+        Obrigatorio = tipo("Obrigatorio")
+    end if
 end if
 
 

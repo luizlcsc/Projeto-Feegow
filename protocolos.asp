@@ -214,7 +214,7 @@ end if
                }
 
         });
-        $(".select2-single").each(function(){
+        $(".select2-single, .input-mask-brl").each(function(){ 
             if($(this).val() == 0)
                {
                   $(".select2-selection__rendered, .multiselect, .input-mask-brl").css({"border" : "1px solid #F00", "padding": "2px"});
@@ -223,7 +223,7 @@ end if
 
         });
         });
-        return control;
+        return control; 
     }
     function RegraProtocolo(ID) {
         $("#modal-table").modal("show");

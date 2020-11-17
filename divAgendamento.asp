@@ -751,7 +751,7 @@ end if
                     <div class="col-md-8">
                         <div class="row">
                         <%
-						set s = dbc.execute("select EventoID, EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+						set s = dbc.execute("select EventoID, EnviadoEm, WhatsApp, Resultado from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
 						set m = dbc.execute("select EventoID, EnviadoEm from cliniccentral.emailshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
 
 						set smsFila = dbc.execute("select EventoID, DataHora, EventoID, WhatsApp from cliniccentral.smsfila where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
@@ -789,9 +789,15 @@ end if
                                 <%
 								'response.Write("select EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and LicencaID="&replace( session("banco"), "clinic", "" ))
 								while not s.eof
-								    SmsOuWhatsApp="SMS"
+								    SmsOuWhatsApp="SMS enviado em "
+								    enviadoEm = s("EnviadoEm")
 								    if s("WhatsApp") then
-								        SmsOuWhatsApp="WhatsApp"
+								        SmsOuWhatsApp="WhatsApp enviado em "
+
+								        if s("Resultado") = "400" then
+								            enviadoEm = ""
+								            SmsOuWhatsApp = "Falha no envio - problema de conexão com o celular"
+								        end if
 								    end if
 
 								    DescricaoEvento=""
@@ -804,7 +810,7 @@ end if
                                     end if
 
 									%>
-									<br><small><em><i class="fa fa-check"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%> enviado em <strong><%=s("EnviadoEm")%></strong></em></small>
+									<br><small><em><i class="fa fa-check"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%>  <strong><%=enviadoEm%></strong></em></small>
 									<%
 								s.movenext
 								wend

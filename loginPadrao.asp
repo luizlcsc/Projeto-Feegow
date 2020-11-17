@@ -57,7 +57,7 @@ else
     end if
 
 	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, "&_
-	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,  "&_
+	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`,l.TipoCobranca, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,  "&_
 	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, "&_
 	           "COALESCE(serv.DNS, l.Servidor) Servidor,   "&_
 	           "servHomolog.DNS ServerHomolog,   "&_
@@ -158,6 +158,10 @@ if not tryLogin.EOF then
         deslogarUsuario = false
 
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
+        if sysUser.eof then
+            response.write("<style>.info{display: flex;justify-content: center;align-items: center;height: 100vh;}.msg {padding: 50px;opacity: 0.7;border-radius: 10px;}</style><div class='info'><div class='msg'>Entrar em contato com o adiministrador e preencha os dados de acesso. </div></div>")
+            response.end
+        end if 
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
 			TempoDist = datediff("s", sysUser("UltRef"), now())
 
@@ -190,7 +194,9 @@ if not tryLogin.EOF then
                         set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &sqlUsuariosProfissionais&" and UltRef>DATE_ADD(NOW(), INTERVAL -"&TimeoutToCheckConnection&" SECOND)")
                         Conectados = ccur(contaUsers("Conectados"))
 
-                        if Conectados>=UsuariosContratadosS then
+                        dd(tryLogin("TipoCobranca"))
+
+                        if Conectados>=UsuariosContratadosS and tryLogin("TipoCobranca") = 1 then
                             erro = "O máximo de usuários conectados simultaneamente foi atingido para sua licença.\n Solicite o aumento da quantidade de usuários simultâneos."
                             dbc.execute("insert into logsns (UserID, LicencaID) values ("&tryLogin("id")&", "&tryLogin("LicencaID")&")")
                         end if

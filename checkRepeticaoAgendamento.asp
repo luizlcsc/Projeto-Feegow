@@ -2,6 +2,7 @@
 <!--#include file="validar.asp"-->
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/FuncoesRepeticaoMensalAgenda.asp"-->
+<!--#include file="Classes/GradeAgendaUtil.asp"-->
 <%
 if req("rpt") <> "S" then
     Response.ContentType = "application/json"
@@ -128,10 +129,28 @@ end if
             Response.end       
         end if
 
-        datesString = Join(listDates, ", " )        
+        UnidadeID = session("UnidadeID")
+        sqlUnidadesBloqueio = ""
+        if UnidadeID&"" <> "" and session("Partner")="" then
+            sqlUnidadesBloqueio = sqlUnidadesBloqueio&" OR c.Unidades LIKE '%|"&UnidadeID&"|%'"
+        end if
+
+        datesString = Join(listDates, ", " )
+        itensArray=replace(datesString, "'", "")
+        itensArray=Split(itensArray,", ")
+        validaBloqueio = 0
+        
+        for each itensValor in itensArray
+            bloqueioSql = getBloqueioSql(rfProfissionalID, itensValor, sqlUnidadesBloqueio)
+            set bloq = db.execute(bloqueioSql)
+            if not bloq.eof then
+            validaBloqueio = 1
+            end if
+        next
+
         set existsDatesConflict = db.execute("select count(id) >= 1 as existeAgendamento from agendamentos where Data in ("&datesString&") and Hora = '"&rfHora&"'") 
 
-        if existsDatesConflict("existeAgendamento") = "1" then
+        if existsDatesConflict("existeAgendamento") = "1" or validaBloqueio = 1 then
             Response.ContentType = "application/json"
             Response.write("{""existeAgendamentosFuturos"":  true}")    
             Response.end                

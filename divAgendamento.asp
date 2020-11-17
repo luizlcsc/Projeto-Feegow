@@ -1688,6 +1688,13 @@ function addProcedimentos(I) {
         });
 };
 function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasConvenios,Equipamento,count) {
+    if(!count){
+        let linhas = $("tr[class='linha-procedimento']").length
+        console.log(linhas)
+        count = linhas*-1
+    }
+
+
     if(A=='I'){
         I = parseInt($("#nProcedimentos").val())-1;
         $("#nProcedimentos").val( I );

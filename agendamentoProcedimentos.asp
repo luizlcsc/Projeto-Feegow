@@ -391,8 +391,7 @@ else
                         </th>
                         <script>
                         function adicionarProcedimentos(count=false) {
-                            contador = count!=""?count:'-0'
-                            procs('I', 0, <%=LocalID%>, '<%=Convenios%>', '<%=GradeApenasProcedimentos%>', '<%=GradeApenasConvenios%>', '<%=EquipamentoID%>',contador);
+                            procs('I', 0, <%=LocalID%>, '<%=Convenios%>', '<%=GradeApenasProcedimentos%>', '<%=GradeApenasConvenios%>', '<%=EquipamentoID%>',count);
                         }
 </script>
                     </tr>

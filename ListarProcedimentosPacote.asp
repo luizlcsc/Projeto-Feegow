@@ -119,8 +119,6 @@ if(count=="0"){
 
        var i = 0;
 
-       $('.linha-procedimento').detach()
-
        $procedimentos.each(function() {
             var $procedimento = $(this);
             var NomeProcedimento = $procedimento.data("nome");
@@ -138,18 +136,16 @@ if(count=="0"){
                 $("#searchindicacaoId").val(Solicitante);
             }
             
-            // if(i > 0){
-                count = i*-1;
+            count = i*-1;
 
-                if(count == 0){
-                    count= '-0'
-                }
-
+            if(count == 0){
+                count= ''
+            }else{
                 adicionarProcedimentos(count);
-            // }
-  
-                procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i);
-                return false
+            }
+
+            procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i);
+
             i++;
        });
        closeComponentsModal();
@@ -158,10 +154,7 @@ if(count=="0"){
    function procedimentoSelect2(procedimentoId, nomeProcedimento, tempo, preco, count, i) {
 
         time = 250
-        // if(i==0){
-        //     time = 500
-        // }
-
+     
         setTimeout(function() { 
             $("#ProcedimentoID"+count+" option").text(nomeProcedimento);
             $("#ProcedimentoID"+count+" option").val(procedimentoId).attr('selected');
@@ -175,7 +168,7 @@ if(count=="0"){
             setTimeout(function() { 
                 s2aj("ProcedimentoID"+count, 'procedimentos', 'NomeProcedimento', '', '','agenda');
             },50*i+1);
-        },time*i+1);
+        },time*(i+1));
 
    }
 

@@ -107,6 +107,7 @@ if Acao="" then
 <script>
 function parametrosProduto(ElementoID, ProdutoID) {
     $.get("getProdutoCompra.asp", {ProdutoID:ProdutoID, ElementoID:ElementoID},function(data) {
+        console.log('compra',data)
         eval(data);
         recalcular($("#ValorUnitario"+ElementoID))
     });

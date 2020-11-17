@@ -853,12 +853,15 @@ var itensAlterados = false;
 function itens(T, A, II, autoPCi, cb){
     itensAlterados=true;
 
-	var inc = $('[data-val]:last').attr('data-val');
+    var inc = $('[data-val]:last').attr('data-val');
+    console.log(inc)
 	var centroCustoId = $("#CentroCustoBase").val();
 	var LimitarPlanoContas = $("#LimitarPlanoContas").val();
 
 	if(inc==undefined){inc=0}
 	$.post("invoiceItens.asp?I=<%=InvoiceID%>&Row="+inc+"&autoPCi="+autoPCi, {T:T,A:A,II:II, CC: centroCustoId, LimitarPlanoContas: LimitarPlanoContas}, function(data, status){
+        console.log(data)
+        console.log(A)
 	if(A=="I"){
 		$("#footItens").before(data);
 	}else if(A=="X"){
@@ -1160,7 +1163,12 @@ function espProf(I,profissionaisID,executeLote){
     if(executeLote == "S"){
         $.post("divEspecialidadeII.asp?Change=1&R="+I+"&executeLote=S", { ProfissionalID: profissionaisID }, function(data){ eval(data) });
     }else{
-        $.post("divEspecialidadeII.asp?Change=1&R="+I, { ProfissionalID: $('#ProfissionalID'+I).val() }, function(data){ $("#divEspecialidadeID"+I).html(data) });
+        $.post("divEspecialidadeII.asp?Change=1&R="+I, { ProfissionalID: $('#ProfissionalID'+I).val() }, function(data){ 
+            let pacoteId = $("#PacoteID"+I).val()
+            if(pacoteId ==""){
+                $("#divEspecialidadeID"+I).html(data) 
+            }
+        });
     }
 }
 

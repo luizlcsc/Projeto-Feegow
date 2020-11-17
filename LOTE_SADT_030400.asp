@@ -465,5 +465,5 @@ prefixo = right(prefixo, 20)
     </ans:epilogo>
 </ans:mensagemTISS>
 <%
-'Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
+Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
 %>

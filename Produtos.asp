@@ -28,13 +28,9 @@ else
 	end if
 end if
 
-
-
-
-
-
 call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
+sqlTiposproduto  = "select * from "&request.QueryString("P")&" where id="&request.QueryString("I")
+set reg = db.execute(sqlTiposproduto)
 
 if reg("Foto")="" or isnull(reg("Foto")) then
 	divDisplayUploadFoto = "block"
@@ -47,7 +43,7 @@ if reg("sysActive")=0 then
 	disabled = " disabled=""disabled"""
 end if
 
-if reg("TipoProduto")&""<>1 then
+if reg("TipoProduto")&""=1 then
     TipoProduto = reg("TipoProduto")
 else
     TipoProduto = req("TipoProduto")&""

@@ -151,7 +151,7 @@ end if
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <% if req("addGrade") = 0 then %>
+            <% if req("addGrade")&"" = "0" then %>
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">

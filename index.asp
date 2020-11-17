@@ -315,14 +315,14 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         };
 
         function s2aj(nome, recurso, coluna, campoSuperior, placeholder, oti){
+          console.log(nome)
             $.fn.select2.amd.require([
               "select2/core",
               "select2/utils",
               "select2/compat/matcher"
             ], function (Select2, Utils, oldMatcher) {
                 var $ajax = $("#"+nome);
-                //$ajax.css("display", "none");
-                //        $.fn.select2.defaults.set("width", "100%");
+
                 function formatRepo(repo) {
                     if (repo.loading) return repo.text;
 

@@ -261,12 +261,12 @@ $(document).ready(function() {
 
         if not vcaItemInvoice.EOF then
             %>
-            $("#rdValorPlanoV").click();
             $("#ProcedimentoID option").text("<%=vcaItemInvoice("NomeProcedimento")%>");
             $("#ProcedimentoID option").val("<%=vcaItemInvoice("ItemID")%>");
             $("#ProcedimentoID").val("<%=vcaItemInvoice("ItemID")%>");
-            s2aj("ProcedimentoID", 'procedimentos', 'NomeProcedimento', '','','agenda');
             $("#Valor").val("<%=formatnumber(vcaItemInvoice("Valor"),2)%>");
+            s2aj("ProcedimentoID", 'procedimentos', 'NomeProcedimento', '','','agenda');
+            $("#rdValorPlanoV").click();
             <%
         end if
 	end if

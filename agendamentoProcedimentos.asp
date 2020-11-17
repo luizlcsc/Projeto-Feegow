@@ -390,8 +390,9 @@ else
                             <button type="button" id="addProcedimentos" onclick="adicionarProcedimentos()" class="btn btn-xs btn-success"><i class="fa fa-plus"></i></button>
                         </th>
                         <script>
-                        function adicionarProcedimentos() {
-                           procs('I', 0, <%=LocalID%>, '<%=Convenios%>', '<%=GradeApenasProcedimentos%>', '<%=GradeApenasConvenios%>', '<%=EquipamentoID%>');
+                        function adicionarProcedimentos(count=false) {
+                            contador = count!=""?count:'-0'
+                            procs('I', 0, <%=LocalID%>, '<%=Convenios%>', '<%=GradeApenasProcedimentos%>', '<%=GradeApenasConvenios%>', '<%=EquipamentoID%>',contador);
                         }
 </script>
                     </tr>

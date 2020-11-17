@@ -728,7 +728,7 @@ function DefaultForm(tableName, id)
 					calendars = left(calendars, len(calendars)-2 )
 					'response.Write(calendars)
 					response.Write("<script>")
-					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data>=date(now()) and not isnull(Hora) group by a.PacienteID order by a.Data, a.Hora")
+					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data>=date(now()) and not isnull(Hora) and a.sysActive = 1 group by a.PacienteID order by a.Data, a.Hora")
 					while not age.eof
 						Hora = age("Hora")
 						if not isnull(Hora) then

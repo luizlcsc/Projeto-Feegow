@@ -317,7 +317,7 @@ end if
                 "left join convenios c on c.id=a.ValorPlano "&_ 
 				"left join locais l on l.id=a.LocalID "&_ 
 				"left join profissionais prof on prof.id=a.ProfissionalID "&_
-                "where a.Data="&mydatenull(Data)&" and a.sysActive=1 and (a.EquipamentoID="&EquipamentoID&" or eq.EquipamentoID="&EquipamentoID&" ) GROUP BY a.id order by Hora"
+                "where a.Data="&mydatenull(Data)&" and a.sysActive=1 and (a.EquipamentoID="&EquipamentoID&" or eq.EquipamentoID="&EquipamentoID&" or ap.EquipamentoID="&EquipamentoID&" ) GROUP BY a.id order by Hora"
 				'response.write sqlcomps
 
 				set comps=db.execute(sqlcomps)

@@ -218,7 +218,7 @@ end if
     function addHorario(Dia){
         $("#modal").html("Carregando...");
         $("#modal-table").modal("show");
-        $.post("addHorario.asp?ProfissionalID=<%=ProfissionalID%>&Dia="+Dia, '', function(data, status){
+        $.post("addHorario.asp?addGrade=0&ProfissionalID=<%=ProfissionalID%>&Dia="+Dia, '', function(data, status){
             setTimeout(function(){ $("#modal").html(data) }, 1000 );
         });
     }
@@ -226,7 +226,7 @@ end if
     function editGrade(H, ProfissionalID){
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");
-        $.get("addHorario.asp?H="+H+"&ProfissionalID="+ProfissionalID, function(data){
+        $.get("addHorario.asp?addGrade=1&H="+H+"&ProfissionalID="+ProfissionalID, function(data){
             setTimeout(function(){ $("#modal").html(data) }, 1000 );
         });
     }

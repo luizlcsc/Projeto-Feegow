@@ -264,108 +264,125 @@ prefixo = right(prefixo, 20)
                         <%if MotivoEncerramentoID<>"" then%><ans:motivoEncerramento><%= MotivoEncerramentoID %></ans:motivoEncerramento><% End If %>
                     </ans:dadosAtendimento>
 										<%if InStr(XMLTagsOmitir,"|procedimentosExecutados|")=0 then%>
-                    <ans:procedimentosExecutados>
+                    
                     <%
                     sequencialItem = 1
-
-					set procs = db.execute("select * from tissprocedimentossadt where GuiaiD="&guias("id"))
-					while not procs.eof
-						Data = mydatetiss(procs("Data"))
-						HoraInicio = myTimeTISS(procs("HoraInicio"))
-						HoraFim = myTimeTISS(procs("HoraFim"))
-						TabelaID = TISS__FormataConteudo(procs("TabelaID"))
-						if TabelaID="99" OR TabelaID="0" then
-							TabelaID="00"
-						end if
-						CodigoProcedimento = TISS__FormataConteudo(procs("CodigoProcedimento"))
-						Descricao = left(TISS__FormataConteudo(procs("Descricao")),150)
-						Quantidade = TISS__FormataConteudo(procs("Quantidade"))
-						ViaID = TISS__FormataConteudo(procs("ViaID"))
-						TecnicaID = TISS__FormataConteudo(procs("TecnicaID"))
-						Fator = treatvaltiss(procs("Fator"))
-						ValorUnitario = treatvaltiss( procs("ValorUnitario") )
-						ValorTotal = treatvaltiss(procs("ValorTotal"))
-						
-						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
-						%>
-                        <ans:procedimentoExecutado>
-                            <ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>
-                            <%if Data<>"" then%><ans:dataExecucao><%= Data %></ans:dataExecucao><% End If %>
-                            <%if HoraInicio<>"" then%><ans:horaInicial><%= HoraInicio %></ans:horaInicial><% End If %>
-                            <%if HoraFim<>"" then%><ans:horaFinal><%= HoraFim %></ans:horaFinal><% End If %>
-                            <ans:procedimento>
-                                <ans:codigoTabela><%= TabelaID %></ans:codigoTabela>
-                                <ans:codigoProcedimento><%= CodigoProcedimento %></ans:codigoProcedimento>
-                                <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
-                            </ans:procedimento>
-                            <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
-                            <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
-                            <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
-                            <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
-                            <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
-                            <ans:valorTotal><%= ValorTotal %></ans:valorTotal>
-                            <%
-							set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaissadt as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla like e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where GuiaID="&guias("id"))
-							while not eq.eof
-								GrauParticipacao = TISS__FormataConteudo(eq("GrauParticipacao")&"")
-								if GrauParticipacao="" or isnull(GrauParticipacao) then GrauParticipacao="" end if
-								CodigoNaOperadoraOuCPF = TISS__RemoveCaracters(TISS__FormataConteudo(eq("CodigoNaOperadoraOuCPF")))
-								if CodigoNaOperadoraOuCPF="" then CodigoNaOperadoraOuCPF="-" end if
+					tagProcedimentosExecutados = 0
+					set procs = db.execute("select * from tissprocedimentossadt where GuiaiD="&guias("id") & " AND Quantidade > 0")
 
 
-								if CalculaCPF(CodigoNaOperadoraOuCPF)=true then
-									tipoContrato = "cpfContratado"
-								'elseif CalculaCNPJ(CodigoNaOperadoraOuCPF)=true then
-								'	tipoContrato = "cnpjContratado"
-								else
-									tipoContrato = "codigoPrestadorNaOperadora"
-								end if
+					if not procs.eof then
+
+								%>
+				<ans:procedimentosExecutados>
+								<%
+						while not procs.eof
+							tagProcedimentosExecutados = tagProcedimentosExecutados+1
+
+							Data = mydatetiss(procs("Data"))
+							HoraInicio = myTimeTISS(procs("HoraInicio"))
+							HoraFim = myTimeTISS(procs("HoraFim"))
+							TabelaID = TISS__FormataConteudo(procs("TabelaID"))
+							if TabelaID="99" OR TabelaID="0" then
+								TabelaID="00"
+							end if
+							CodigoProcedimento = TISS__FormataConteudo(procs("CodigoProcedimento"))
+							Descricao = left(TISS__FormataConteudo(procs("Descricao")),150)
+							Quantidade = TISS__FormataConteudo(procs("Quantidade"))
+							ViaID = TISS__FormataConteudo(procs("ViaID"))
+							TecnicaID = TISS__FormataConteudo(procs("TecnicaID"))
+							Fator = treatvaltiss(procs("Fator"))
+							ValorUnitario = treatvaltiss( procs("ValorUnitario") )
+							ValorTotal = treatvaltiss(procs("ValorTotal"))
+
+							hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
+
+										%>
+													<ans:procedimentoExecutado>
+															<ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>
+															<%if Data<>"" then%><ans:dataExecucao><%= Data %></ans:dataExecucao><% End If %>
+															<%if HoraInicio<>"" then%><ans:horaInicial><%= HoraInicio %></ans:horaInicial><% End If %>
+															<%if HoraFim<>"" then%><ans:horaFinal><%= HoraFim %></ans:horaFinal><% End If %>
+															<ans:procedimento>
+																	<ans:codigoTabela><%= TabelaID %></ans:codigoTabela>
+																	<ans:codigoProcedimento><%= CodigoProcedimento %></ans:codigoProcedimento>
+																	<ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
+															</ans:procedimento>
+															<ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
+															<ans:viaAcesso><%= ViaID %></ans:viaAcesso>
+															<ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
+															<ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
+															<ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
+															<ans:valorTotal><%= ValorTotal %></ans:valorTotal>
+															<%
+								set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaissadt as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla like e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where GuiaID="&guias("id"))
+								while not eq.eof
+									GrauParticipacao = TISS__FormataConteudo(eq("GrauParticipacao")&"")
+									if GrauParticipacao="" or isnull(GrauParticipacao) then GrauParticipacao="" end if
+									CodigoNaOperadoraOuCPF = TISS__RemoveCaracters(TISS__FormataConteudo(eq("CodigoNaOperadoraOuCPF")))
+									if CodigoNaOperadoraOuCPF="" then CodigoNaOperadoraOuCPF="-" end if
+
+
+									if CalculaCPF(CodigoNaOperadoraOuCPF)=true then
+										tipoContrato = "cpfContratado"
+									'elseif CalculaCNPJ(CodigoNaOperadoraOuCPF)=true then
+									'	tipoContrato = "cnpjContratado"
+									else
+										tipoContrato = "codigoPrestadorNaOperadora"
+									end if
 
 
 
-								NomeProfissional = TISS__FormataConteudo(eq("NomeProfissional")&" ")
-								set cons = db.execute("select * from conselhosprofissionais where id="&treatvalzero(eq("ConselhoID")))
-								if cons.eof then 
-                                    ConselhoProfissional = 6 
-                                else 
-                                    ConselhoProfissional=TISS__FormataConteudo(cons("TISS")) 
-                                end if
-                                ConselhoProfissional = zeroEsq(ConselhoProfissional, 2)
+									NomeProfissional = TISS__FormataConteudo(eq("NomeProfissional")&" ")
+									set cons = db.execute("select * from conselhosprofissionais where id="&treatvalzero(eq("ConselhoID")))
+									if cons.eof then 
+																			ConselhoProfissional = 6 
+																	else 
+																			ConselhoProfissional=TISS__FormataConteudo(cons("TISS")) 
+																	end if
+																	ConselhoProfissional = zeroEsq(ConselhoProfissional, 2)
 
-								DocumentoConselho = TISS__FormataConteudo(eq("DocumentoConselho"))
-								UF = TISS__FormataConteudo(eq("UF"))
-								CodigoCBO = TISS__FormataConteudo(eq("CodigoCBO"))
-								hash = hash & GrauParticipacao&CodigoNaOperadoraOuCPF&NomeProfissional&ConselhoProfissional&DocumentoConselho&UF&CodigoCBO
-							%>
-                            <ans:equipeSadt>
-                                <%if GrauParticipacao<>"" then %>
-                                    <ans:grauPart><%= GrauParticipacao %></ans:grauPart>
-                                <%end if %>
-                                <ans:codProfissional>
-                                    <%="<ans:"&tipoContrato&">"& CodigoNaOperadoraOuCPF &"</ans:"&tipoContrato&">"%>
-                                </ans:codProfissional>
-                                <ans:nomeProf><%= NomeProfissional %></ans:nomeProf>
-                                <ans:conselho><%= ConselhoProfissional %></ans:conselho>
-                                <ans:numeroConselhoProfissional><%= DocumentoConselho %></ans:numeroConselhoProfissional>
-                                <ans:UF><%= UF %></ans:UF>
-                                <ans:CBOS><%= CodigoCBO %></ans:CBOS>
-                            </ans:equipeSadt>
-                            <%
-							eq.movenext
-							wend
-							eq.close
-							set eq = nothing
-							%>
-                        </ans:procedimentoExecutado>
-                        <%
-                        sequencialItem=sequencialItem+1
-					procs.movenext
-					wend
-					procs.close
-					set procs=nothing
+									DocumentoConselho = TISS__FormataConteudo(eq("DocumentoConselho"))
+									UF = TISS__FormataConteudo(eq("UF"))
+									CodigoCBO = TISS__FormataConteudo(eq("CodigoCBO"))
+									hash = hash & GrauParticipacao&CodigoNaOperadoraOuCPF&NomeProfissional&ConselhoProfissional&DocumentoConselho&UF&CodigoCBO
+								%>
+															<ans:equipeSadt>
+																	<%if GrauParticipacao<>"" then %>
+																			<ans:grauPart><%= GrauParticipacao %></ans:grauPart>
+																	<%end if %>
+																	<ans:codProfissional>
+																			<%="<ans:"&tipoContrato&">"& CodigoNaOperadoraOuCPF &"</ans:"&tipoContrato&">"%>
+																	</ans:codProfissional>
+																	<ans:nomeProf><%= NomeProfissional %></ans:nomeProf>
+																	<ans:conselho><%= ConselhoProfissional %></ans:conselho>
+																	<ans:numeroConselhoProfissional><%= DocumentoConselho %></ans:numeroConselhoProfissional>
+																	<ans:UF><%= UF %></ans:UF>
+																	<ans:CBOS><%= CodigoCBO %></ans:CBOS>
+															</ans:equipeSadt>
+															<%
+								eq.movenext
+								wend
+								eq.close
+								set eq = nothing
+								%>
+													</ans:procedimentoExecutado>
+													<%
+													sequencialItem=sequencialItem+1
+													
+													%>
+								
+													<%
+
+						procs.movenext
+						wend
+						procs.close
+						set procs=nothing
 					%>
-                    </ans:procedimentosExecutados>
-                    <%
+					</ans:procedimentosExecutados>
+					<%
+						end if
+						
 										end if
 					set desp = db.execute("select * from tissguiaanexa where GuiaID="&guias("id"))
 					if not desp.eof then

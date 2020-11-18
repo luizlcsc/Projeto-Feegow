@@ -12,7 +12,10 @@ _Partindo do pré suposto de que já exista um banco mysql funcionando e com as 
 #### Dump inicial:
 - `cliniccentral`:  https://www.dropbox.com/s/dh5ruv84wmipa4r/BANCOS%20-%20cc_temp.zip?dl=0
 
-- `clinic100105`: https://www.dropbox.com/s/ef7xyw27i4x5363/BANCO%20-%20100105%20-%20DEV.zip?dl=0
+###### Banco de cliente:
+- Execute o `feegow-api`
+- Abra o Postman
+- Execute em POST o seguinte request: http://localhost:8000/trial/start?NomeContato=dev&Celular=-&Email=dev@feegow.com&senha1=feegow&senha2=feegow&ComoConheceu=-&Cupom=-
 
 #### Credenciais de acesso
 

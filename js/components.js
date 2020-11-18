@@ -4,7 +4,7 @@ var urlSplit = currentUrl.split(".br");
 var mainDomain = urlSplit[0] + ".br/";
 
 
-var env = "production";
+var env = "homolog";
 if(window.location.href.indexOf('local') == 7){
     env = "local";
 }
@@ -25,7 +25,7 @@ switch (env){
         api = "/v7/api/";
         break;
     case "homolog":
-        domain = "http://homolog.feegow.com.br/";
+        domain = "https://api-homolog.feegow.com/index.php/";
         api = "/v7/api/";
         break;
 }

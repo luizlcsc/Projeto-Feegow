@@ -72,7 +72,6 @@ end if
                 <%=quickField("text", "NomeProtocolo", "Nome <code>#"&ProtocoloID&"</code>", 3, NomeProtocolo, "", "", " required")%>
                 <%=quickfield("simpleSelect", "Procedimentos", "Procedimentos", 3, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and ativo='on' order by NomeProcedimento", "NomeProcedimento", "required") %>
                 <%=quickField("simpleSelect", "GrupoID", "Grupo", 2, GrupoID, "select * from protocolosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "")%>
-                    <% if aut("protocoloA")=1 then%>
                     <div class="col-md-1">
                         <label>
                             Ativo
@@ -82,7 +81,6 @@ end if
                             </div>
                         </label>
                     </div>
-                    <% end if%>
                     <div class="col-md-1">
                         <button type="button" class="btn btn-warning btn-block mt20" onClick="RegraProtocolo('<%=I%>')"><i class="fa fa-lock"></i></button>
                     </div>

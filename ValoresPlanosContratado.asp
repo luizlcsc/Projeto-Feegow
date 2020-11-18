@@ -30,7 +30,7 @@ ConvenioID = req("ConvenioID")
                         
                           
                             <div class="col-md-3">
-                            <label for="tabela[0]">Tabela</label>
+                            <label for="tabela[0]">Selecione</label>
                             <select class="form-control" id="tabela[0]" name="tabela[0]">                        
                              <option value="">Selecione</option>
                                    <option value="|Brasindice|">Brasindice</option>

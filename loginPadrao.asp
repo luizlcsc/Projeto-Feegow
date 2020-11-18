@@ -56,18 +56,18 @@ else
         sqlHomologacao = " AND ( l.DominioHomologacao IS NULL OR l.DominioHomologacao='"&Dominio&"' ) "
     end if
 
-	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, "&_
-	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`,l.TipoCobranca, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,  "&_
-	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, "&_
-	           "COALESCE(serv.DNS, l.Servidor) Servidor,   "&_
-	           "servHomolog.DNS ServerHomolog,   "&_
-	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom                                           "&_
-	           "from licencasusuarios as u                                                                                        "&_
-	           "left join licencas as l on l.id=u.LicencaID                                                                       "&_
-               " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID "&_
-               " LEFT JOIN db_servers AS servHomolog ON servHomolog.id=l.ServidorHomologacaoID "&_
-	           "where Email='"&User&"' AND "&sqlSenha &" "&_
-               " " & sqlHomologacao &_
+	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora,    "&_
+	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`,l.TipoCobranca, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,                 "&_
+	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, u.Tipo as tipoUsuario,                                                "&_
+	           "COALESCE(serv.DNS, l.Servidor) Servidor,                                                                                            "&_
+	           "servHomolog.DNS ServerHomolog,                                                                                                      "&_
+	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom                                                             "&_
+	           "from licencasusuarios as u                                                                                                          "&_
+	           "left join licencas as l on l.id=u.LicencaID                                                                                         "&_
+               " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID                                                                               "&_
+               " LEFT JOIN db_servers AS servHomolog ON servHomolog.id=l.ServidorHomologacaoID                                                      "&_
+	           "where Email='"&User&"' AND "&sqlSenha &"                                                                                            "&_
+               " " & sqlHomologacao                                                                                                                  &_
                "ORDER BY IF(l.`Status`='C',0, 1), IF(l.DominioHomologacao='"&Dominio&"',0, 1)"
 end if
 
@@ -79,6 +79,7 @@ if not tryLogin.EOF then
     ServidorAplicacao = tryLogin("ServidorAplicacao")
     PastaAplicacao = tryLogin("PastaAplicacao")
     PastaAplicacaoRedirect = PastaAplicacao
+    tipoUsuario =  lcase(tryLogin("tipoUsuario"))
 
     if isnull(PastaAplicacaoRedirect) then
         PastaAplicacaoRedirect="v7-master"
@@ -187,16 +188,23 @@ if not tryLogin.EOF then
                     else
 						sqlUsuariosProfissionais = ""
 
-						if TipoCobranca&""="0" then
+
+                        ' Caso o contrato seja por profissional e o usuario que esta se logando seja um profissional
+						if TipoCobranca&""="0" and tipoUsuario = "profissionais" then
 							sqlUsuariosProfissionais = " and `table`='profissionais' "
 						end if
 
+                        ' Contabiliza os usuarios da licença que estão logados 
                         set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &sqlUsuariosProfissionais&" and UltRef>DATE_ADD(NOW(), INTERVAL -"&TimeoutToCheckConnection&" SECOND)")
                         Conectados = ccur(contaUsers("Conectados"))
+                        
+                        'Desconsidera os usuarios logados caso o contrato seja por profissional e o usuario NÃO seja um profissional 
+                        if TipoCobranca&""="0" and tipoUsuario <> "profissionais" then
+                            Conectados = 0
+                        end if
 
-                        dd(tryLogin("TipoCobranca"))
-
-                        if Conectados>=UsuariosContratadosS and tryLogin("TipoCobranca") = 1 then
+                        ' Trava o login do usuario caso esteja exedido o numero de usuarios
+                        if Conectados>=UsuariosContratadosS  then
                             erro = "O máximo de usuários conectados simultaneamente foi atingido para sua licença.\n Solicite o aumento da quantidade de usuários simultâneos."
                             dbc.execute("insert into logsns (UserID, LicencaID) values ("&tryLogin("id")&", "&tryLogin("LicencaID")&")")
                         end if

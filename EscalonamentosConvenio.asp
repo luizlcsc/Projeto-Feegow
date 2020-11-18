@@ -288,7 +288,9 @@ var resultados = [];
        calculos:     '<%=objRec("calculos") %>',
        contratos:     '<%=objRec("contratos") %>',
        escalonamentos:     '<%=objRec("escalonamento") %>',
-       procedimentos:'<%=objRec("procedimentos") %>'
+       procedimentos:'<%=objRec("procedimentos") %>',
+         tabela          :'<%=objRec("tabela") %>',
+       preco          :'<%=objRec("preco") %>',
     });
     <%
       objRec.MoveNext
@@ -301,7 +303,7 @@ resultados.map((key) => {
         i++;
            jQuery("#Calculos\\[0\\]").val(key.calculos.split(","));
            jQuery("#Planos\\[0\\]").val(key.planos.split(","));
-           jQuery("#Grupos\\[0\\]").val(key.grupos.split(","))
+           jQuery("#Grupos\\[0\\]").val(key.grupos.split(","));
            jQuery("#Procedimentos\\[0\\]").val(key.grupos.split(","))
            jQuery("#Contratos\\[0\\]").val(key.contratos.split(","))
            jQuery("#Escalonamentos\\[0\\]").val(key.escalonamentos.split(","))
@@ -353,6 +355,16 @@ function ocultar_campos(id){
      objRec.MoveNext
      wend 
   %>
+
+  a=-1;
+resultados.map((key) => { 
+    console.log(key);
+    a++;
+    console.log(a)
+jQuery("#preco\\["+a+"\\]").val(key.preco);
+jQuery("#tabela\\["+a+"\\]").val(key.tabela);
+
+});
 
 <!--#include file="JQueryFunctions.asp"-->
 </script>

@@ -60,7 +60,7 @@ TelemedicinaAtiva = recursoAdicional(32) = 4
             </div>
 
             <%
-              if aut("salaesperaV")=1 then
+              if aut("salaesperaV")=1 or True then
             %>
 	          <!-- message listings table -->
 	          <div class="table-responsive" id="listaespera">

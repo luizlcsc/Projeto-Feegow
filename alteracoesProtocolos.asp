@@ -2,7 +2,10 @@
 <%
 
     notificacao=req("notificacao")
-
+    'set getNotificacao = db.execute("SELECT NotificacaoIDRelativo FROM notificacoes WHERE id="&treatvalzero(notificacao))
+    'if not getNotificacao.eof then
+    '    aprovacaoID = getNotificacao("NotificacaoIDRelativo")
+    'end if
     sqlAlteracoes =     " select                                                                                    "&chr(13)&_
                         " 	pma.id as id,                                                                           "&chr(13)&_
                         " 	pma.pacientesProtocolosMedicamentosID as pacienteId,                                    "&chr(13)&_
@@ -29,17 +32,18 @@
                         " LEFT JOIN cliniccentral.unidademedida unMed ON unMed.id = p2.UnidadePrescricao            "&chr(13)&_
                         " where pma.id = "&notificacao&"                                "
 
-    alteracoes = db.execute(sqlAlteracoes)
+    set alteracoes = db.execute(sqlAlteracoes)
 
 
-    if alteracoes("acao") = "E" then
-        acao    = "Editar"
-        cor     = "btn-warning"
-    else
-        acao    = "Remover"
-        cor     = "btn-danger"
+    if not alteracoes.eof then
+        if alteracoes("acao") = "E" then
+            acao    = "Editar"
+            cor     = "btn-warning"
+        else
+            acao    = "Remover"
+            cor     = "btn-danger"
+        end if
     end if
-
 %>
 <style>
     #acaoNotificacao .panel-title{

@@ -1127,13 +1127,16 @@ select case lcase(req("P"))
             <% end if%>
             <%
         end if
-    case "protocolos", "protocolosgrupos"
+    case "protocolos", "protocolosgrupos", "tipos_de_arquivos"
         %>
         <li <%if req("P")="Protocolos" then%>class="active"<%end if%>>
             <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-file-text-o"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
         </li>
         <li <%if req("P")="ProtocolosGrupos" then%>class="active"<%end if%>>
             <a href="./?P=ProtocolosGrupos&Pers=Follow"><span class="fa fa-files-o"></span> <span class="sidebar-title">Grupo de Protocolos</span></a>
+        </li>
+        <li <%if req("P")="tipos_de_arquivos" then%>class="active"<%end if%>>
+            <a href="./?P=tipos_de_arquivos&Pers=Follow"><span class="fa fa-file-o"></span> <span class="sidebar-title">Tipo de arquivos</span></a>
         </li>
         <%
     case "fornecedores"

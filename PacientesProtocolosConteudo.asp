@@ -196,7 +196,7 @@ $(function () {
 function pedirMudanca(tipo,id,medicamentoId){
     let dose = parseFloat(($(`#DoseMedicamento_${id}`).val()).replace(',','.'))
     let obs = $(`#Obs_${id}`).val()
-    let paciente = "<%=req("P")%>";    
+    let paciente = "<%=req("PacienteID")%>";    
     let auditor = "<%=auditor%>"
     let data = {
         id,

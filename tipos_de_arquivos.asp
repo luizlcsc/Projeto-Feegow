@@ -7,12 +7,14 @@ tipo = req("I")
 if tipo = "N" then
     NomeArquivo = ""
     Obrigatorio = 0
+    Existe = 0
 else
-   sql = "select NomeArquivo, Obrigatorio from tipos_de_arquivos where id="&treatvalzero(tipo)
+    sql = "select NomeArquivo, Obrigatorio from tipos_de_arquivos where id="&treatvalzero(tipo)
     set tipo = db.execute(sql)
     if not tipo.eof then
         NomeArquivo = tipo("NomeArquivo")
         Obrigatorio = tipo("Obrigatorio")
+        Existe = 1
     end if
 end if
 
@@ -72,7 +74,7 @@ end if
         }
 
         let target = 'tipoArquivo/updateTipoArquivo.asp'
-        let params = '?id=<%=req("I")%>&NomeArquivo='+NomeArquivo+'&Obrigatorio='+Obrigatorio
+        let params = '?id=<%=req("I")%>&NomeArquivo='+NomeArquivo+'&Obrigatorio='+Obrigatorio+'&Existe=<%=Existe%>'
 
         if(acao){
             target = 'tipoArquivo/saveTipoArquivo.asp'
@@ -86,7 +88,7 @@ end if
                 delay: 1500
             });
             let url = window.location.href
-            url = url.replace(/.$/,"Follow").replace('&I=N',"")
+            url = "./?P=tipos_de_arquivos&Pers=Follow"
             window.location.href = url
         })
     }

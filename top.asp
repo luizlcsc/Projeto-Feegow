@@ -149,11 +149,18 @@ else
     %>
         </ul>
     </li>
+    <%
+        if aut("salaesperaV")=1 or aut("esperaoutrosprofissionaisV")=1 then 
+    %>
     <li class="<%=classMenu %>"><a href="./?P=ListaEspera&Pers=1" class="menu-click-espera">
         <%=abreSpanTitulo %> <i class="fa fa-clock-o hidden"></i> <span class=""> Espera </span> <%= fechaSpanTitulo %>
         <small style="position:absolute; top:7px; right:0" class="badge badge-danger" id="espera"></small>
         </a>
     </li>
+
+    <%
+    end if
+    %>
     <%
     end if
     if aut("pacientesV")=1 or aut("pacientesI")=1 or aut("pacientesA")=1 then

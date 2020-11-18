@@ -39,7 +39,8 @@ body{
 TipoExibicao = req("TipoExibicao")
 if TipoExibicao="Pedido" then
     db_execute("update pedidossadt set ConvenioID="& treatvalzero(req("ConvenioIDPedidoSADT")) &", ProfissionalID="&treatvalzero(req("ProfissionalID"))&", Data="&mydatenull(req("DataSolicitacao"))&", IndicacaoClinica='"& req("IndicacaoClinicaPedidoSADT") &"', Observacoes='"& req("ObservacoesPedidoSADT") &"', ProfissionalExecutante='"& req("ProfissionalExecutanteIDPedidoSADT") &"' where id="& req("PedidoSADTID"))
-    set procs = db.execute("select pps.*, ps.ConvenioID, ps.PacienteID, ps.ProfissionalID, ps.IndicacaoClinica, ps.Observacoes, pac.NomePaciente, pac.Matricula1, pac.Validade1 from pedidossadtprocedimentos pps LEFT JOIN pedidossadt ps ON pps.PedidoID=ps.id LEFT JOIN pacientes pac ON pac.id=ps.PacienteID where pps.PedidoID="& req("PedidoSADTID"))
+    set procs = db.execute("select pps.*, ps.ConvenioID, ps.PacienteID, ps.ProfissionalID, ps.IndicacaoClinica, ps.Observacoes, pac.NomePaciente, pac.Matricula1, pac.Validade1, ps.`Data` from pedidossadtprocedimentos pps LEFT JOIN pedidossadt ps ON pps.PedidoID=ps.id LEFT JOIN pacientes pac ON pac.id=ps.PacienteID where pps.PedidoID="& req("PedidoSADTID"))
+
     if not procs.EOF then
         set conv = db.execute("select * from convenios where id='"& procs("ConvenioID")&"'")
         if not conv.EOF then
@@ -54,6 +55,7 @@ if TipoExibicao="Pedido" then
         ValidadeCarteira = procs("Validade1")
         IndicacaoClinica = procs("IndicacaoClinica")
         Observacoes = procs("Observacoes")
+        DataSolicitacao = procs("Data")
         set profSol = db.execute("select p.*, e.CodigoTISS, cons.TISS ConselhoProfissionalSolicitanteTISS from profissionais p LEFT JOIN especialidades e ON e.id=p.EspecialidadeID LEFT JOIN conselhosprofissionais cons ON cons.id=p.Conselho where p.id='"& procs("ProfissionalID") &"'")
         if not profSol.eof then
             NomeProfissionalSolicitante = profSol("NomeProfissional")

@@ -28,6 +28,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_PacienteID          = item_id
         'ALIAS DE TAGS RELACIONADAS AO PACIENTE
         conteudo = replace(conteudo,"[NomePaciente]","[Paciente.Nome]")
+        conteudo = replace(conteudo,"[Responsavel.Nome]","[PacienteResponsavel.Nome]")
+        conteudo = replace(conteudo,"[Responsavel.CPF]","[PacienteResponsavel.CPF]")
       case "ProfissionalExecutanteExternoID"
         item_ProfissionalExternoID          = item_id
 
@@ -244,8 +246,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.CNS]", trim(PacientesSQL("CNS")&" ") )
                 conteudo = replace(conteudo, "[Paciente.Observacoes]", trim(PacientesSQL("Observacoes")&" ") )
                 'RESPONSAVEL PELO PACIENTE
-                conteudo = replace(conteudo, "[Responsavel.Nome]", trim(PacientesSQL("ResponsavelNome")&" ") )
-                conteudo = replace(conteudo, "[Responsavel.CPF]",  trim(PacientesSQL("ResponsavelCPF")&" ") )
+                conteudo = replace(conteudo, "[PacienteResponsavel.Nome]", trim(PacientesSQL("ResponsavelNome")&" ") )
+                conteudo = replace(conteudo, "[PacienteResponsavel.CPF]",  trim(PacientesSQL("ResponsavelCPF")&" ") )
               end if
             PacientesSQL.close
             set PacientesSQL = nothing
@@ -599,5 +601,5 @@ end function
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalID_1",""))
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalSessao_1",""))
 'response.write("<br>"&TagsConverte("[ProfissionalSolicitante.Nome]","ProfissionalSolicitanteID_200",""))
-'response.write(TagsConverte("Unidade: [Unidade.Nome]","UnidadeID_63",""))
+'response.write(TagsConverte("Nome: [xxx.Nome] [Responsavel.Nome] [Responsavel.CPF]","PacienteID_1",""))
 %>

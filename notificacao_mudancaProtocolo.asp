@@ -1,10 +1,9 @@
-<!--#include file="connect.asp"-->
+b<!--#include file="connect.asp"-->
 <!--#include file="Classes/Json.asp"-->
 <% 
     response.Charset="utf-8" 
 
-    'id = ref("id")
-    paciente = ref("paciente")
+    paciente = ref("id")
     dose = ref("dose")
     obs = ref("obs")
     medicamentoId = ref("medicamentoId")
@@ -15,23 +14,23 @@
     count = 0
 
     '  pegar os medicos auditores
-    slqAuditor = "SELECT id FROM profissionais where auditor = 'S' and sysActive= 1"
+    slqAuditor = "SELECT su.id FROM profissionais p LEFT JOIN sys_users su ON su.idInTable = p.id AND (su.table='profissionais' or su.table='Profissionais') where p.auditor = 'S' and p.sysActive = 1"
     set auditores = db.execute(slqAuditor)
     while not auditores.eof
 
         sqlSelectNotificacao = "select count(id) as qtd from notificacoes n where TipoNotificacaoID  = 13 and UsuarioID = "&auditores("id")&" and NotificacaoIDRelativo = "&paciente&" and StatusID = 1"
 
-        set existeNotificacao = db.execute(sqlSelectNotificacao)
+        existeNotificacao = db.execute(sqlSelectNotificacao)
 
         if CInt(existeNotificacao("qtd")) = 0 then
 
             ' gerar notificação para os medicos auditores
-            sqlCriarNotificacao = "INSERT INTO notificacoes (TipoNotificacaoID, UsuarioID, NotificacaoIDRelativo, CriadoPorID, Prioridade, StatusID, metadata) VALUES(13, "&session("User")&", "&paciente&", 1, 1, 1,'');"
+            sqlCriarNotificacao = "INSERT INTO notificacoes (TipoNotificacaoID, UsuarioID, NotificacaoIDRelativo, CriadoPorID, Prioridade, StatusID, metadata) VALUES(13, "&auditores("id")&", "&paciente&", 1, 1, 1,'');"
 
             db.execute(sqlCriarNotificacao)
             ' dar update na query  UPDATE sys_users SET TemNotificacao=1 WHERE id=1 para os medicos auditores
 
-            sqlSelectToUpdate = "select id from notificacoes where TipoNotificacaoID =13 and UsuarioID = "&session("User")&" and NotificacaoIDRelativo="&paciente
+            sqlSelectToUpdate = "select id from notificacoes where TipoNotificacaoID =13 and UsuarioID = "&auditores("id")&" and NotificacaoIDRelativo="&paciente
             selecao1 = db.execute(sqlSelectToUpdate)
 
             if count > 0 then

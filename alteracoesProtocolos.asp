@@ -20,8 +20,8 @@
                         " 	unmed.Sigla as unidade                                                                  "&chr(13)&_
                         " from paciente_medicamentos_aprovacao pma                                                  "&chr(13)&_
                         " left join produtos p2 on p2.id = pma.MedicamentoPrescritoID                                    "&chr(13)&_
-                        " left join pacientes p3 on p3.id = pma.pacientesProtocolosMedicamentosID                        "&chr(13)&_
                         " left join pacientesprotocolos pp on pp.PacienteID = pma.pacientesProtocolosMedicamentosID      "&chr(13)&_
+                        " left join pacientes p3 on p3.id = pp.PacienteID                                                "&chr(13)&_
                         " left join pacientesprotocolosmedicamentos ppm on ppm.PacienteProtocoloID = pp.id               "&chr(13)&_
                         " left join protocolos p on p.id = ppm.ProtocoloID                                               "&chr(13)&_
                         " left join profissionais p4 on p4.id = pma.ProfissionalID                                       "&chr(13)&_

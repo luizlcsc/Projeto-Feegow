@@ -264,12 +264,14 @@ prefixo = right(prefixo, 20)
                         <%if MotivoEncerramentoID<>"" then%><ans:motivoEncerramento><%= MotivoEncerramentoID %></ans:motivoEncerramento><% End If %>
                     </ans:dadosAtendimento>
 										<%if InStr(XMLTagsOmitir,"|procedimentosExecutados|")=0 then%>
-                    <ans:procedimentosExecutados>
+                    
                     <%
                     sequencialItem = 1
-
-					set procs = db.execute("select * from tissprocedimentossadt where GuiaiD="&guias("id"))
+					tagProcedimentosExecutados = 0
+					set procs = db.execute("select * from tissprocedimentossadt where GuiaiD="&guias("id") & " AND Quantidade > 0")
 					while not procs.eof
+						tagProcedimentosExecutados = tagProcedimentosExecutados+1
+
 						Data = mydatetiss(procs("Data"))
 						HoraInicio = myTimeTISS(procs("HoraInicio"))
 						HoraFim = myTimeTISS(procs("HoraFim"))
@@ -285,9 +287,15 @@ prefixo = right(prefixo, 20)
 						Fator = treatvaltiss(procs("Fator"))
 						ValorUnitario = treatvaltiss( procs("ValorUnitario") )
 						ValorTotal = treatvaltiss(procs("ValorTotal"))
-						
+
 						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
-						%>
+
+									if tagProcedimentosExecutados=1 then
+									%>
+					<ans:procedimentosExecutados>
+									<%
+									end if
+									%>
                         <ans:procedimentoExecutado>
                             <ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>
                             <%if Data<>"" then%><ans:dataExecucao><%= Data %></ans:dataExecucao><% End If %>
@@ -359,13 +367,20 @@ prefixo = right(prefixo, 20)
                         </ans:procedimentoExecutado>
                         <%
                         sequencialItem=sequencialItem+1
+												
+												%>
+							
+												<%
+
 					procs.movenext
 					wend
 					procs.close
 					set procs=nothing
+					if tagProcedimentosExecutados>0 then
 					%>
-                    </ans:procedimentosExecutados>
-                    <%
+					</ans:procedimentosExecutados>
+					<%
+					end if
 										end if
 					set desp = db.execute("select * from tissguiaanexa where GuiaID="&guias("id"))
 					if not desp.eof then

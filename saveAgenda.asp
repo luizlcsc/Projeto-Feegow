@@ -7,11 +7,15 @@
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
 	'on error resume next
 end if
+
+
 if ref("Chegada")<>"" and isdate(ref("Chegada")) then
 	HoraSta = formatdatetime(ref("Chegada"), 3)
 else
-	HoraSta = time()
+    hora = db.execute("select DATE_FORMAT( now() , '%T' ) as now")
+	HoraSta = hora("now")
 end if
+
 
 if ref("ProcedimentoID")="0" or ref("ProcedimentoID")="" then
 	erro = "Selecione um procedimento"

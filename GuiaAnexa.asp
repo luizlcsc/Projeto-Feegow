@@ -134,7 +134,6 @@ if not guia.eof then
 end if
 %>
 <body>
-<%=arqEx(Foto, "Perfil")%>
 	<table cellpading="0" class="campo" bgcolor="white" cellspacing="0" width="100%">
         <tr>
             <td>

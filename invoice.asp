@@ -734,7 +734,6 @@ var $componentsModal = $("#feegow-components-modal"),
 var $btnMarcarTodos = $("#ExecutadoTodos");
 
 $btnMarcarTodos.click(function() {
-//    console.log("c")
 
     var $checks = $(".checkbox-primary");
     var idsProdutos = "";
@@ -854,14 +853,11 @@ function itens(T, A, II, autoPCi, cb){
     itensAlterados=true;
 
     var inc = $('[data-val]:last').attr('data-val');
-    console.log(inc)
 	var centroCustoId = $("#CentroCustoBase").val();
 	var LimitarPlanoContas = $("#LimitarPlanoContas").val();
 
 	if(inc==undefined){inc=0}
 	$.post("invoiceItens.asp?I=<%=InvoiceID%>&Row="+inc+"&autoPCi="+autoPCi, {T:T,A:A,II:II, CC: centroCustoId, LimitarPlanoContas: LimitarPlanoContas}, function(data, status){
-        console.log(data)
-        console.log(A)
 	if(A=="I"){
 		$("#footItens").before(data);
 	}else if(A=="X"){
@@ -1032,7 +1028,6 @@ function addContrato(ModeloID, InvoiceID, ContaID){
         var ProfissionalExecutante = $(value).val();
         ProfissionalExecutante_final+= ProfissionalExecutante
     });
-    //console.log(ProfissionalExecutante_final);
 
     if($("#AccountID").val()=="" || $("#AccountID").val()=="0" || $("#AccountID").val()=="_"){
         alert("Selecione um pagador para gerar o contrato.");
@@ -1062,7 +1057,6 @@ var InvoiceAlterada = false;
         });
 
     if("<%=request.QueryString("time")%>" != ''){
-    console.log('recalc...');
         recalc();
     }
 

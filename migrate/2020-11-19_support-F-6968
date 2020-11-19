@@ -1,0 +1,5 @@
+INSERT INTO config_opcoes (id, ValorMarcado, ValorPadrao, Label, Coluna, Secao, Subsecao, IsClinicCentral, TipoCampo, Descricao, TipoConfig, TipoRegistro, selectSQL, selectColumnToShow, sysActive, sysDate) VALUES (191, '1', '1', 'Baixar itens contratados ao finalizar atendimento', 'BaixarItensContratadosAoFinalizarAtendimento', 'Atendimento', NULL, 0, 'simpleCheckbox', NULL, NULL, NULL, NULL, NULL, 1, '2019-07-17 11:50:44');
+
+INSERT INTO config_opcoes (id, ValorMarcado, ValorPadrao, Label, Coluna, Secao, Subsecao, IsClinicCentral, TipoCampo, Descricao, TipoConfig, TipoRegistro, selectSQL, selectColumnToShow, sysActive, sysDate) VALUES (53, '1', '0', 'Não exibir tela de adicionar procedimentos ao finalizar atendimento', 'NaoExibirModalFinalizacaoAtendimento', 'Atendimento', NULL, NULL, 'simpleCheckbox', NULL, NULL, NULL, NULL, NULL, 1, '2019-08-21 10:46:21');
+
+INSERT INTO sys_permissoes (id, Acao, Nome, Categoria, Visualizar, Inserir, Alterar, Excluir) VALUES (152, 'Adicionar procedimento na finalização do atendimento', 'finalizaratendimento', 'Configurações do sistema', 's', 's', 's', 's');

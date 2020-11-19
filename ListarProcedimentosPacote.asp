@@ -140,11 +140,13 @@ if(count=="0"){
 
             if(count == 0){
                 count= ''
+                procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i);
             }else{
-                adicionarProcedimentos(count);
+                adicionarProcedimentos(count,(retorno)=>{
+                    procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i);
+                });
             }
 
-            procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i);
 
             i++;
        });
@@ -153,22 +155,19 @@ if(count=="0"){
 
    function procedimentoSelect2(procedimentoId, nomeProcedimento, tempo, preco, count, i) {
 
-        time = 250
      
+        $("#ProcedimentoID"+count+" option").text(nomeProcedimento);
+        $("#ProcedimentoID"+count+" option").val(procedimentoId).attr('selected');
+        $("#ProcedimentoID"+count).val(procedimentoId);
+        $("#Tempo"+count).val(tempo);
+
+        $("#Valor"+count).val(preco);
+        somarValores();
+
+        $("#rdValorPlanoV"+count).click();
         setTimeout(function() { 
-            $("#ProcedimentoID"+count+" option").text(nomeProcedimento);
-            $("#ProcedimentoID"+count+" option").val(procedimentoId).attr('selected');
-            $("#ProcedimentoID"+count).val(procedimentoId);
-            $("#Tempo"+count).val(tempo);
-
-            $("#Valor"+count).val(preco);
-            somarValores();
-
-            $("#rdValorPlanoV"+count).click();
-            setTimeout(function() { 
-                s2aj("ProcedimentoID"+count, 'procedimentos', 'NomeProcedimento', '', '','agenda');
-            },50*i+1);
-        },time*(i+1));
+            s2aj("ProcedimentoID"+count, 'procedimentos', 'NomeProcedimento', '', '','agenda');
+        },50*i+1);
 
    }
 

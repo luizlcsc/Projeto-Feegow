@@ -1687,14 +1687,12 @@ function addProcedimentos(I) {
             }
         });
 };
-function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasConvenios,Equipamento,count) {
+function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasConvenios,Equipamento,count,callback=false) {
     if(!count){
         let linhas = $("tr[class='linha-procedimento']").length
         console.log(linhas)
         count = linhas*-1
     }
-
-
     if(A=='I'){
         I = parseInt($("#nProcedimentos").val())-1;
         $("#nProcedimentos").val( I );
@@ -1715,10 +1713,11 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
             }, function (data) {
             addProcedimentos(I);
             $('#bprocs').append(data);
+            if(callback && typeof callback == 'function'){
+                callback(true)
+            }
 
         });
-
-
     }else if(A=='X'){
         $("#la"+I).remove();
         somarValores();

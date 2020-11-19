@@ -128,7 +128,6 @@ if(count=="0"){
             var SolicitanteID = $procedimento.data("solicitante-id");
             var Solicitante = $procedimento.data("solicitante");
             var ProcedimentoID = $procedimento.data("id");
-            console.log(ProcedimentoID)
             var count = "";
 
             if(SolicitanteID){

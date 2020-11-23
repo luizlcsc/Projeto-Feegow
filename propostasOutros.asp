@@ -74,3 +74,4 @@ elseif Acao="X" then'nao esta usando, pois esta fazendo antes por javascript
 end if
 %>
 <!--#include file="disconnect.asp"-->
+<script><!--#include file="jQueryFunctions.asp"--></script>

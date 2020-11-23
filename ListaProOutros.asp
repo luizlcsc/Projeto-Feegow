@@ -28,7 +28,7 @@ while not listaProOutros.EOF
 			                <a class="btn btn-xs btn-success" href="#modal-table" role="button" data-toggle="modal" data-original-title="Cadastrar modelos de atestados e textos para futuras emiss&otilde;es" data-rel="tooltip" data-placement="top" title="" onclick="modalProOutros('ProOutros', <%=listaProOutros("id")%>)">
 				                <i class="fa fa-edit icon-edit bigger-125"></i>
 			                </a>
-			                <a href="javascript:if(confirm('Tem certeza de que deseja excluir este modelo?'))ListaProOutros('ProOutros', <%=listaProOutros("id")%>000)" class="btn btn-xs btn-danger" title="" data-placement="top" data-rel="tooltip" data-original-title="Excluir">
+			                <a href="javascript:if(confirm('Tem certeza de que deseja excluir este modelo?'))ListaProOutros('ProOutros', <%=listaProOutros("id")%>)" class="btn btn-xs btn-danger" title="" data-placement="top" data-rel="tooltip" data-original-title="Excluir">
 				                <i class="fa fa-remove icon-remove bigger-125"></i>
 			                </a>
 

@@ -377,10 +377,10 @@ else
     if not ConfigGeraisSQL.eof then
         UnidadeBloqueiaPagamento = False
 
-        if unidadesBloqueioAtendimento&""<>"" then
+        if unidadesBloqueioAtendimento&""<>"" and unidadesBloqueioAtendimento<>"0" then
             UnidadeBloqueiaPagamento = (inStr(unidadesBloqueioAtendimento, "|"&session("UnidadeID")&"|")<>"0" or unidadesBloqueioAtendimento&""="")
         end if
-    
+
         if ChamarAposPagamento="S" or UnidadeBloqueiaPagamento then
             'verifica se procedimento ja foi pago preveamente
             sqlQuitado =    "SELECT ii.id"&_
@@ -412,7 +412,7 @@ else
                 if Triagem="S" and ProfissionalTriagem="N" and labelDisabled = "Pendente de Triagem" then
                     'exibeLinha = "N"
                 end if
-
+                ' COMENTADA AS LINHAS ABAIXO POR QUE ESTÁ BLOQUEANDO PAGAMENTOS COM DESCONTOS
                 disabPagto = "disabled"
                 labelDisabled = "Pendente de pgto."
                 tagPaciente = "div"
@@ -424,7 +424,7 @@ else
     end if
 
     'DESATIVA BOTÕES DE CHAMAR / ATENDE::: PERMISSAO > OUTRAS CONFIGS > CAT(ATENDIMENTO) :: RAFAEL MAIA ::
-    if instr("|"&getConfig("BloquearAtendimentoMediantePagamento")&"|","|"&session("unidadeID")&"|") > 1 then
+    if instr(unidadesBloqueioAtendimento,"|"&session("unidadeID")&"|") > 1 then
         if accountBalance("3_"&veseha("PacienteID"), 0) < 0 then
             btnAtenderDisabled  = 1
             btnChamarDisabled   = 1

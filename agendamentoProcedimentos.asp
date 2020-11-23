@@ -61,7 +61,7 @@ if req("Checkin")="1" then
 <div id="divLanctoCheckin"><!--#include file="invoiceEstilo.asp"--></div>
     <table class="table table-condensed table-hover">
     <%
-    sql = "SELECT proc.TipoProcedimentoID, t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal, COALESCE(conv.NaoPermitirGuiaDeConsulta, 0) NaoPermitirGuiaDeConsulta FROM ("&_
+    sql = "SELECT ii.desconto, proc.TipoProcedimentoID, t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal, COALESCE(conv.NaoPermitirGuiaDeConsulta, 0) NaoPermitirGuiaDeConsulta FROM ("&_
     "SELECT '' id, a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID, a.Tempo, a.LocalID, a.EquipamentoID,a.PlanoID from agendamentos a where id="& ConsultaID &_
     " UNION ALL "&_
     " SELECT ap.id, ap.rdValorPlano, ap.ValorPlano, ap.TipoCompromissoID, ap.Tempo, ap.LocalID, ap.EquipamentoID,ap.PlanoID FROM agendamentosprocedimentos ap "&_
@@ -71,6 +71,7 @@ if req("Checkin")="1" then
     " LEFT JOIN tissprocedimentosvalores tpv ON tpv.ProcedimentoId = t.TipoCompromissoID AND (tpv.ConvenioID=t.ValorPlano AND t.rdValorPlano='P')  "&_
     " LEFT JOIN tissprocedimentosvaloresplanos tpvp ON tpvp.AssociacaoID=tpv.id AND tpvp.PlanoID=t.PlanoID  "&_
     " LEFT JOIN convenios conv ON (conv.id=t.ValorPlano AND t.rdValorPlano='P') "&_
+    " LEFT JOIN itensinvoice ii ON ii.agendamentoid = "&ConsultaID&_
     " GROUP BY t.id ORDER BY t.rdValorPlano DESC, t.ValorPlano, proc.TipoGuia"
 
     'response.write(sql)
@@ -107,8 +108,14 @@ if req("Checkin")="1" then
                 set vcaIIPaga = db.execute(sqlQuitacao)
                 if not vcaIIPaga.eof then
                     ItemInvoiceID = vcaIIPaga("InvoiceID")    
-                    FormaIDSelecionado = vcaIIPaga("FormaID")       
-                    if round(agp("ValorPlano"),2)<=round(vcaIIPaga("TotalQuitado"),2) then
+                    FormaIDSelecionado = vcaIIPaga("FormaID")
+
+                    calcValorPlano=round(agp("ValorPlano"),2)
+                    if round(agp("desconto"),2) > 0 then
+                        calcValorPlano = calcValorPlano-round(agp("desconto"),2)
+                    end if
+
+                    if calcValorPlano <= round(vcaIIPaga("TotalQuitado"),2) then
                         staPagto = "success"
 
                     else

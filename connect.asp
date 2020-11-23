@@ -4016,11 +4016,7 @@ private function statusPagto(AgendamentoID, PacienteID, Datas, rdValorPlano, Val
                         statusPagto = -1
                     else
                     'vinicius: fiz isso pois em alguns casos quando aplicava desconto, o valor do atendimento nao tinha como mudar o valor
-                        sqlIIAG = "select ii.id from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE i.AccountID="& treatvalzero(PacienteID) &" and AssociationAccountID=3 and ii.Tipo='S' and ii.ItemID="& sProcedimentoID &" and FLOOR((ii.Quantidade * (ii.ValorUnitario+ii.Acrescimo-ii.Desconto)))>=FLOOR("& treatvalzero(sValorPlano) &") and FLOOR(ifnull((select sum(Valor) from itensdescontados where ItemID=ii.id), 0))>=FLOOR("& treatvalzero(sValorPlano) &") and ii.DataExecucao="& mydatenull(sData) &" " & sqlsProfissionalV
-                       if session("Banco")="clinic5472" then
-                        'response.write( sqlIIAG )
-                        end if
-
+                        sqlIIAG = "select ii.id from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE i.AccountID="& treatvalzero(PacienteID) &" and AssociationAccountID=3 and ii.Tipo='S' and ii.ItemID="& sProcedimentoID &" and FLOOR((ii.Quantidade * (ii.ValorUnitario+ii.Acrescimo-ii.Desconto)))>=FLOOR("& treatvalzero(sValorPlano) &"-ii.Desconto+ii.Acrescimo) and FLOOR(ifnull((select sum(Valor) from itensdescontados where ItemID=ii.id), 0))>=FLOOR("& treatvalzero(sValorPlano) &"-ii.Desconto+ii.Acrescimo) and ii.DataExecucao="& mydatenull(sData) &" " & sqlsProfissionalV
 
                         set ii = db.Execute( sqlIIAG )
                         if ii.eof then

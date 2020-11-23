@@ -12,7 +12,6 @@ else
     ProcedimentoID = l("ProcedimentoID")&""
     if ProcedimentoID<>"" then
         qProcedimentoSQL = "SELECT proc.NomeProcedimento, proc.DiasLaudo FROM procedimentos proc WHERE proc.id="&l("ProcedimentoID")
-        response.write("<pre>"&qProcedimentoSQL&"</pre>")
         set ProcedimentoSQL = db.execute(qProcedimentoSQL)
         if not ProcedimentoSQL.eof then
             Procedimento = ProcedimentoSQL("NomeProcedimento")

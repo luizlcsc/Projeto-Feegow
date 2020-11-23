@@ -376,7 +376,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
 
     function modalTipo(id){
 
-        let tipos = '<%= recordToJSON(db.execute("select * from tipos_de_arquivos")) %>' ;
+        let tipos = '<%= recordToJSON(db.execute("select * from tipos_de_arquivos where sysActive=1")) %>' ;
         let preset = false
         $.get(`imagemTipoAtual.asp?id=${id}` )
             .done(  function (data) {

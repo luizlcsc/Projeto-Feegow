@@ -83,9 +83,7 @@ sqlArquivo = 	" select count(tda.id) as qtd_arquivoInvalido, group_concat(distin
 				" 	join protocolos_documentos pd on ppm.ProtocoloID  = pd.protocoloID                    												"&chr(13)&_
 				" 	join tipos_de_arquivos tda on tda.id = pd.tipoDocumentoID                             												"&chr(13)&_
 				" 	left join arquivos a on a.TipoArquivoID = tda.id                                      												"&chr(13)&_
-				" 	where pp.PacienteID = 18663                                                           												"&chr(13)&_
-				" 	and tda.Obrigatorio = 1                                                               												"&chr(13)&_
-				" 	and tda.sysActive =1                                                                  												"&chr(13)&_
+				" 	where tda.sysActive =1                                                                  												"&chr(13)&_
 				" 	and a.id is null or a.Validade <= now()                                               												"
 
  arquivoVencido = recordToJSON(db.execute(sqlArquivo))

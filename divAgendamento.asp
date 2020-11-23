@@ -1690,7 +1690,6 @@ function addProcedimentos(I) {
 function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasConvenios,Equipamento,count,callback=false) {
     if(!count){
         let linhas = $("tr[class='linha-procedimento']").length
-        console.log(linhas)
         count = linhas*-1
     }
     if(A=='I'){
@@ -1711,7 +1710,7 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
             ConvenioSelecionado: convenioID,
             linhas: count //"-"+linhas.length
             }, function (data) {
-            addProcedimentos(I);
+            // addProcedimentos(I);
             $('#bprocs').append(data);
             if(callback && typeof callback == 'function'){
                 callback(true)

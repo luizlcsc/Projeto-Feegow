@@ -111,8 +111,16 @@ if req("Checkin")="1" then
                     FormaIDSelecionado = vcaIIPaga("FormaID")
 
                     calcValorPlano=round(agp("ValorPlano"),2)
-                    if round(agp("desconto"),2) > 0 then
-                        calcValorPlano = calcValorPlano-round(agp("desconto"),2)
+                    desconto = agp("desconto")
+
+                    if desconto&""="" then
+                        desconto=0
+                    end if
+
+                    if desconto>0 then
+                        if round(0,2) > 0 then
+                            calcValorPlano = calcValorPlano-round(0,2)
+                        end if
                     end if
 
                     if calcValorPlano <= round(vcaIIPaga("TotalQuitado"),2) then

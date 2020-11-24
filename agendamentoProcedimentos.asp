@@ -118,8 +118,8 @@ if req("Checkin")="1" then
                     end if
 
                     if desconto>0 then
-                        if round(0,2) > 0 then
-                            calcValorPlano = calcValorPlano-round(0,2)
+                        if round(desconto,2) > 0 then
+                            calcValorPlano = calcValorPlano-round(desconto,2)
                         end if
                     end if
 

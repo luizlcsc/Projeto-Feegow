@@ -33,12 +33,12 @@ function validaProcedimentoProfissional(AssociacaoID, ProfissionalID, Especialid
 
 
         if AssociacaoID&"" = "5" then
-            IF SomenteProfissionaisVazio and SomenteEspecialidadesVazio and SomenteFornecedorVazio and SomenteProfissionaisExternoVazio THEN
+            IF SomenteEspecialidadesVazio THEN
                    SomenteEspecialidadeBoolean = true
             END IF
 
-            IF SomenteProfissionaisVazio and SomenteFornecedorVazio and SomenteProfissionaisExternoVazio THEN
-                   'SomenteProfissionaisBoolean = true
+            IF SomenteProfissionaisVazio THEN
+                   SomenteProfissionaisBoolean = true
             END IF
 
             SomenteEspecialidadeBoolean = SomenteEspecialidadeBoolean OR instr(SomenteEspecialidadesValue, "|"&EspecialidadeID&"|") > 0

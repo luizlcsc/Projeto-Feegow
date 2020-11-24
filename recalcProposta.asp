@@ -14,6 +14,7 @@ for i=0 to ubound(spl)
 	Desconto = ref("Desconto"&spl(i))
 	TipoDesconto = ref("DescontoTipo"&spl(i))
 	Acrescimo = ref("Acrescimo"&spl(i))
+
 	if Quantidade="" or not isnumeric(Quantidade) then
 		Quantidade = 0
 	end if
@@ -28,8 +29,14 @@ for i=0 to ubound(spl)
 	end if
 	Quantidade = ccur(Quantidade)
 	ValorUnitario = ccur(ValorUnitario)
-	Desconto = ccur(Desconto)
-	if TipoDesconto="P" and Desconto>0 then
+	if instr(Desconto, ".") then 
+	
+	Desconto = ccur(Desconto)/10
+
+	end if
+
+	if TipoDesconto ="P" and Desconto>0 then
+
         Desconto = (Desconto/100) * ValorUnitario
     end if
 	Acrescimo = ccur(Acrescimo)

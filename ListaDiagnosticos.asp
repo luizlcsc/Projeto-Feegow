@@ -65,8 +65,7 @@ $(".memodiagnostico").change(function(){
  function openCalculator(cid, patientId) {
     const authToken = localStorage.getItem("tk");
 
-    var iframe = `<!--<iframe width="100%" height="100%" frameborder="0" scrolling="no" src="https://tnm-homolog.feegow.com/?patientId=${patientId}&cid=${cid}&tk=${authToken}"></iframe>-->`;
-    var iframe = `<iframe width="100%" height="100%" frameborder="0" scrolling="no" src="http://localhost:3001/?patientId=${patientId}&cid=${cid}&tk=${authToken}"></iframe>`;
+    var iframe = `<iframe width="100%" height="100%" frameborder="0" scrolling="no" src="https://tnm-homolog.feegow.com/?patientId=${patientId}&cid=${cid}&tk=${authToken}"></iframe>`;
     $("#modal-calculator-content").html(iframe);
     $("#modal-calculator").modal("show");
 }

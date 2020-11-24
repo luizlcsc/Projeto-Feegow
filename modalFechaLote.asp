@@ -10,11 +10,34 @@ end if
 
 ConvenioID=req("ConvenioID")
 
-set ConvenioSQL = db.execute("SELECT DiasRecebimento FROM convenios WHERE id="&treatvalzero(ConvenioID))
+set ConvenioSQL = db.execute("SELECT DiasRecebimento, DataRecebimentoEspecifico FROM convenios WHERE id="&treatvalzero(ConvenioID))
 
 if not ConvenioSQL.eof then
     DiasRecebimento=ConvenioSQL("DiasRecebimento")
+    DataRecebimentoEspecifico=ConvenioSQL("DataRecebimentoEspecifico")
 
+	DateFormat = split(date(), "/")
+	Dia = cint(DateFormat(0))
+
+	if DataRecebimentoEspecifico&"" <> "" AND  DataRecebimentoEspecifico > Dia then
+		Dia = DataRecebimentoEspecifico
+		Mes = DateFormat(1)
+		Ano = DateFormat(2)
+		if isDate(Dia&"/"&Mes&"/"&Ano) then
+			DataPrevisao = Dia&"/"&Mes&"/"&Ano
+		end if
+	else
+		Dia = DataRecebimentoEspecifico
+		if DateFormat(1) = 12 then
+			Mes = 1
+		else 
+			Mes = DateFormat(1) + 1
+		end if
+		Ano = DateFormat(2)
+		if isDate(Dia&"/"&Mes&"/"&Ano) then
+			DataPrevisao = Dia&"/"&Mes&"/"&Ano
+		end if
+	end if
 
     if DiasRecebimento&"" <> "" then
         if isnumeric(DiasRecebimento) then

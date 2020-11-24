@@ -158,7 +158,7 @@ if Acao="Inserir" then
                 end if
         end if
 
-        if getconfig("criarContaReceberAutomatico") = 1 then
+        if getconfig("FechamentoLoteCR") = 1 then
             call gerarcar(pult("id"),request.QueryString("ConvenioID"),lcase(Tipo),valorProc("Valor"))
         end if 
 

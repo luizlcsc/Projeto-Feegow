@@ -112,11 +112,6 @@ end if
         </div>
 
     </div>
-
-
-
-
-
     <div class="row">
         <%=quickField("datepicker", "Data", "Data", 3, date(), "", "", "")%>
         <%
@@ -153,9 +148,15 @@ end if
             <%=quickField("datepicker", "Validade", "Validade", 3, "", "", "", "")%>
             <%
                 call quickfield("text", "CBID", "Código Individual", 3, "", "", "", "")
-
             %>
-            <%= quickfield("simpleSelect", "Motivo", "Motivo", 4, "", "SELECT * FROM cliniccentral.estoque_fluxo where tipo='entrada' and sysActive = 1 order by id ASC", "Motivo", "required") %>
+            
+            
+        </div>
+        <div class="row">
+            <%= quickfield("simpleSelect", "Motivo", "Motivo", 4, "", "SELECT * FROM cliniccentral.estoque_fluxo where tipo='entrada' and sysActive = 1 order by id ASC", "Motivo", "required onchange=""habilitapaciente();""") %>
+            <div class="col-md-6" id="comboPaciente">
+                <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
+            </div>
         </div>
 		<%
     else
@@ -188,19 +189,22 @@ end if
                 pedePac = 1
             end if
         end if
+        combomotivo =  quickfield("simpleSelect", "Motivo", "Motivo", 4, "", "SELECT * FROM cliniccentral.estoque_fluxo WHERE tipo='saida' AND sysActive=1 ORDER BY id ASC", "Motivo", "required onchange=""habilitapaciente();""")
+        response.write (combomotivo)
         if pedePac=0 then
             %>
-            <input type="hidden" name="PacienteID" value="<%= PacienteID %>" />
+               <input type="hidden" name="PacienteID" value="<%= PacienteID %>" />
             <%
         else
             %>
-                <div class="col-md-3">
-                    <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
-                </div>
+            <div class="col-md-3" id="comboPaciente">
+                <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
+            </div>
             <%
         end if
         %>
-        <%= quickfield("simpleSelect", "Motivo", "Motivo", 4, "", "SELECT * FROM cliniccentral.estoque_fluxo WHERE tipo='saida' AND sysActive=1 ORDER BY id ASC", "Motivo", "required") %>
+        
+        
    <% end if %>
 
         <div class="row">
@@ -301,9 +305,7 @@ function verificaCampoVazio()
         if(motivo == 0)
         {
             erro = true;
-            //$("#notifyy").show();
             $("#notifyy").append("<p>Preencha o campo <b>Motivo</b></p>")
-            //return false
         }
         // if(FornecedorID == 0 || FornecedorID == "")
         // {
@@ -320,6 +322,18 @@ function verificaCampoVazio()
         //         //return false
         // }
        return erro;
+}
+$('#comboPaciente').hide();
+function habilitapaciente()
+{
+    if ($( "#Motivo option:selected" ).val() =='8' || $( "#Motivo option:selected" ).val() =='9')
+    {
+        $('#comboPaciente').show();
+    }
+    else 
+    {
+        $('#comboPaciente').hide();
+    }
 }
 <%
 if AtendimentoID<>"" or ItemInvoiceID<>"" or ProdutoInvoiceID<>"" then

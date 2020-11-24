@@ -3,6 +3,110 @@
 Acao = request.QueryString("Acao")
 Tipo = request.QueryString("T")
 
+function gerarcar(loteid,ConvenioID,tipoguiais,valortotal)
+    Lotes = loteid
+    ConvenioID = ConvenioID
+    TG = tipoguiais
+    incrementar = ""
+    sqlguias  = "SELECT GROUP_CONCAT(id) AS ids FROM tissguiasadt WHERE LoteID='"&loteid&"'"
+    set resguias = db.execute(sqlguias)
+    if not resguias.eof then 
+        listadeguias = resguias("ids")
+    else 
+        %>
+            new PNotify({
+                title: 'N&Atilde;O LAN&Ccedil;ADO!',
+                text: 'Não foram encontradas guias para este lote!',
+                type: 'danger',
+                delay: 4000
+            });
+        <%
+        response.end
+    end if
+    if TG="guiaconsulta" then
+        coluna = "ValorProcedimento"
+    elseif TG="guiasadt" then
+        coluna = "TotalGeral"
+    elseif TG="guiahonorarios" then
+        coluna = "Procedimentos"
+    end if
+    sql = "select l.*, (select UnidadeID from tiss"&TG&" where id IN("&listadeguias&") LIMIT 1) UnidadeID, group_concat(Lote) LotesDescricoes from tisslotes l where id IN ("&Lotes&")"
+    set plote = db.execute( sql )
+    if not plote.eof then
+        if incrementar="" then
+            db_execute("insert into sys_financialinvoices (AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser,sysDate, FormaID, ContaRectoID) values ("&ConvenioID&", 6, "&treatvalzero(valortotal)&", 1, 'BRL', "&treatvalzero(plote("UnidadeID"))&", 1, 'm', 'C', 1, "&session("User")&",CURDATE(), 0, 0)")
+            set pultInv = db.execute("select id from sys_financialinvoices where sysUser="&session("User")&" order by id desc limit 1")
+            InvoiceID = pultInv("id")
+            db_execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, UnidadeID) values (0, 0, 6, "&ConvenioID&", "&treatvalzero(valortotal)&", CURDATE(), 'C', 'Bill', 'BRL', 1, "&InvoiceID&", 1, "&session("User")&", "&treatvalzero(plote("UnidadeID"))&")")
+        else
+            InvoiceID=incrementar
+            set HaPagamentosSQL = db.execute("SELECT SUM(credito.Value) ValorPago "&_
+                                            "FROM sys_financialmovement debito "&_
+                                            "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID=debito.id "&_
+                                            "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_
+                                            "WHERE debito.InvoiceID="&InvoiceID)
+            if HaPagamentosSQL("ValorPago")>0 then
+                %>
+                new PNotify({
+                    title: 'N&Atilde;O LAN&Ccedil;ADO!',
+                    text: 'Já há pagamentos lançados para esta conta.',
+                    type: 'danger',
+                    delay: 4000
+                });
+                <%
+                Response.End
+            end if
+            set InvoiceSQL = db.execute("SELECT Value FROM sys_financialinvoices WHERE id="&InvoiceID)
+            Valor = valortotal
+            ValorConta = InvoiceSQL("Value")
+
+            ValorAtualizado = ccur(ValorConta) + ccur(Valor)
+
+            db_execute("update sys_financialmovement SET Value="&treatvalzero(ValorAtualizado)&" WHERE Type='Bill' AND InvoiceID="&InvoiceID)
+            db_execute("update sys_financialinvoices SET Value="&treatvalzero(ValorAtualizado)&" WHERE id="&InvoiceID)
+        end if
+        'valida se ja ha esse registro na tissguiainvoice
+        sqlvalidacao = "SELECT id FROM tissguiasinvoice WHERE GuiaID IN ("&listadeguias&") AND TipoGuia='"&TG&"'"
+        'response.write(sqlvalidacao)
+        set ValidacaoGuiaInvoiceSQL = db.execute(sqlvalidacao)
+
+        if not ValidacaoGuiaInvoiceSQL.eof then
+            %>
+            new PNotify({
+                title: 'N&Atilde;O LAN&Ccedil;ADO!',
+                text: 'Guia já lançada para recebimemto.',
+                type: 'danger',
+                delay: 4000
+            });
+            <%
+            Response.End
+        end if
+        sqlinsertii = "insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, Executado, sysUser, ProfissionalID, Associacao, CentroCustoID) values ("& InvoiceID &", 'O', 1, 0, 0, "&treatvalzero(valortotal)&", 0, 'Lote(s): "&plote("LotesDescricoes")&"', '', "&session("User")&", 0, 0, 0)"
+        db_execute(sqlinsertii)
+        set pultInvItem = db.execute("select id from itensinvoice where InvoiceID="&InvoiceID&" order by id desc limit 1")
+        ItemInvoiceID = pultInvItem("id")
+        spl = split(listadeguias, ",")
+        
+        for i=0 to ubound(spl)
+            sqlinserttg = "insert into tissguiasinvoice (ItemInvoiceID, InvoiceID, GuiaID, TipoGuia) values ("& ItemInvoiceID &", "& InvoiceID &", "& spl(i) &", '"&TG&"')"
+            db_execute(sqlinserttg)
+        next
+ 
+        db_execute(sqlinserttg)
+    else
+        %>
+        new PNotify({
+            title: 'N&Atilde;O LAN&Ccedil;ADO!',
+            text: 'Houve um erro ao lançar conta.',
+            type: 'danger',
+            delay: 4000
+        });
+        <%
+    end if
+end function 
+
+
+
 if Acao="Inserir" then
 	if not isnumeric(ref("Lote")) or ref("Lote")="" then
 		erro = "N&uacute;mero do lote inv&aacute;lido."
@@ -50,9 +154,14 @@ if Acao="Inserir" then
                 if Tipo="GuiaConsulta" then
                     db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, sysUser, Executado) values ("&InvoiceID&", 'S', 1, 0, "&valorProc("ProcedimentoID")&", "&treatvalzero(valorProc("Valor"))&", 0, 'fechamento de lote', "&session("User")&", '')")
                 else
-                    db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, sysUser, Executado) values ("&InvoiceID&", '0', 1, 0, '', "&treatvalzero(valorProc("Valor"))&", 0, 'fechamento de lote', "&session("User")&", '')")
+                    db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, sysUser, Executado) values ("&InvoiceID&", '0', 1, 0, 0, "&treatvalzero(valorProc("Valor"))&", 0, 'fechamento de lote', "&session("User")&", '')")
                 end if
         end if
+
+        if getconfig("FechamentoLoteCR") = 1 then
+            call gerarcar(pult("id"),request.QueryString("ConvenioID"),lcase(Tipo),valorProc("Valor"))
+        end if 
+
 		%>
         alert('O lote foi salvo com sucesso. Para gerar o arquivo XML, acesse o menu TISS -> Administrar Lotes.');
         location.href='./?P=tissfechalote&Pers=1';

@@ -2,11 +2,13 @@
 <%
 txt = replace(req("txt"), " ", "%")
 
-if req("tipo") = 0 then 
-    SQL = "select id,NomeProtocolo from protocolos where sysActive = 1"
-else
-    SQL = "select id,NomeProtocolo from protocolos where NomeProtocolo like '%"&txt&"%'  and GrupoID = NULLIF('"&(req("tipo"))&"','')"
-end if
+
+IF req("tipo") <> "" AND req("tipo") <> "0" THEN
+    tipo = req("tipo")
+    whereTipo = "and GrupoID = NULLIF('"&tipo&"','')"
+END IF
+SQL = "select id, NomeProtocolo from protocolos where sysActive=1 and Ativo='on' "&whereTipo&" and NomeProtocolo like '%"& txt &"%' "
+
 
 set protocolos = db.execute(SQL)
 if not protocolos.eof then

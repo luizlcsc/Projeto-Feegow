@@ -3,7 +3,7 @@ b<!--#include file="connect.asp"-->
 <% 
     response.Charset="utf-8" 
 
-    paciente = ref("paciente")
+    paciente = ref("id")
     dose = ref("dose")
     obs = ref("obs")
     medicamentoId = ref("medicamentoId")
@@ -14,7 +14,7 @@ b<!--#include file="connect.asp"-->
     count = 0
 
     '  pegar os medicos auditores
-    slqAuditor = "SELECT id FROM profissionais where auditor = 1 and sysActive= 1"
+    slqAuditor = "SELECT su.id FROM profissionais p LEFT JOIN sys_users su ON su.idInTable = p.id AND (su.table='profissionais' or su.table='Profissionais') where p.auditor = 'S' and p.sysActive = 1"
     set auditores = db.execute(slqAuditor)
     while not auditores.eof
 

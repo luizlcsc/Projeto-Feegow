@@ -2,7 +2,6 @@
 <%
 
     notificacao=req("notificacao")
-
     sqlAlteracoes =     " select                                                                                    "&chr(13)&_
                         " 	pma.id as id,                                                                           "&chr(13)&_
                         " 	pma.pacientesProtocolosMedicamentosID as pacienteId,                                    "&chr(13)&_
@@ -20,26 +19,27 @@
                         " 	p4.NomeProfissional as Nomeprofissional,                                                "&chr(13)&_
                         " 	unmed.Sigla as unidade                                                                  "&chr(13)&_
                         " from paciente_medicamentos_aprovacao pma                                                  "&chr(13)&_
-                        " join produtos p2 on p2.id = pma.MedicamentoPrescritoID                                    "&chr(13)&_
-                        " join pacientes p3 on p3.id = pma.pacientesProtocolosMedicamentosID                        "&chr(13)&_
-                        " join pacientesprotocolos pp on pp.PacienteID = pma.pacientesProtocolosMedicamentosID      "&chr(13)&_
-                        " join pacientesprotocolosmedicamentos ppm on ppm.PacienteProtocoloID = pp.id               "&chr(13)&_
-                        " join protocolos p on p.id = ppm.ProtocoloID                                               "&chr(13)&_
-                        " join profissionais p4 on p4.id = pma.ProfissionalID                                       "&chr(13)&_
+                        " left join produtos p2 on p2.id = pma.MedicamentoPrescritoID                                    "&chr(13)&_
+                        " left join pacientesprotocolosmedicamentos ppm on ppm.id = pma.pacientesProtocolosMedicamentosID               "&chr(13)&_
+                        " left join pacientesprotocolos pp on pp.id = ppm.PacienteProtocoloID      "&chr(13)&_
+                        " left join pacientes p3 on p3.id = pp.PacienteID                                                "&chr(13)&_
+                        " left join protocolos p on p.id = ppm.ProtocoloID                                               "&chr(13)&_
+                        " left join profissionais p4 on p4.id = pma.ProfissionalID                                       "&chr(13)&_
                         " LEFT JOIN cliniccentral.unidademedida unMed ON unMed.id = p2.UnidadePrescricao            "&chr(13)&_
                         " where pma.id = "&notificacao&"                                "
 
-    alteracoes = db.execute(sqlAlteracoes)
+    set alteracoes = db.execute(sqlAlteracoes)
 
 
-    if alteracoes("acao") = "E" then
-        acao    = "Editar"
-        cor     = "btn-warning"
-    else
-        acao    = "Remover"
-        cor     = "btn-danger"
+    if not alteracoes.eof then
+        if alteracoes("acao") = "E" then
+            acao    = "Editar"
+            cor     = "btn-warning"
+        else
+            acao    = "Remover"
+            cor     = "btn-danger"
+        end if
     end if
-
 %>
 <style>
     #acaoNotificacao .panel-title{

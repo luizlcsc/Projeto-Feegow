@@ -7,10 +7,8 @@
             <table id="datatableProdutos" class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr class="primary">
-                        <th>Taxa</th>
-                        <th>CD</th>
-                        <th>Editar</th>
-                        <th>Excluir</th>
+                        <th width="90%">Taxa</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -20,10 +18,9 @@
                    while not prod.EOF
                 %>
                     <tr>
-                        <td><%=prod("NomeProduto")%></td>
-                        <td><%=prod("CD")%></td>
-                        <td class="hidden-print"><a class="btn btn-xs btn-primary" href="./?P=Produtos&Pers=1&I=<%=prod("id")%>"><i class="fa fa-edit"></i></a></td>
+                        <td><a href="./?P=Produtos&Pers=1&I=<%=prod("id")%>"><%=prod("NomeProduto")%></a></td>
                         <td class="hidden-print" title="<%=title%>">
+                            <a class="btn btn-xs btn-primary" href="./?P=Produtos&Pers=1&I=<%=prod("id")%>"><i class="fa fa-edit"></i></a>
                             <%
                             if aut("|produtosX|")=1 then
                             %>

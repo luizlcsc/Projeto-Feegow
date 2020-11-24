@@ -275,8 +275,8 @@ end function
                             <div class="col-md-2 qf">
                                 <label>Tipo Recebimento</label>
                                 <select class="form-control" id="DiasReceb" name="DiasReceb">
-                                    <option value="1">Dias Úteis</option>
-                                    <option value="2">Dia do Mês</option>
+                                    <option value="1">Dias corridos</option>
+                                    <option value="2">Dia do Mês Fixos</option>
                                 </select>
                             </div>
                             <%= quickField("number", "DiasRecebimento", "Dias para Recebimento", 3, reg("DiasRecebimento"), "", "", " placeholder='Dias'") %>
@@ -475,6 +475,7 @@ end function
                 </div>
                 <div class="row">
                     <%=quickfield("simpleSelect", "SadtImpressao", "Tipo de impressão da SADT", 6, reg("SadtImpressao"), "select 'sadt' id, 'SP/SADT Padrão' Valor UNION ALL select 'sus', 'SUS' UNION ALL SELECT 'gto', 'Odontologia'", "Valor", " semVazio") %>
+                    <%=quickfield("simpleSelect", "EmissaoGuiaProtocolos", "Emissão de guia para os protocolos", 6, reg("EmissaoGuiaProtocolos"), "SELECT 'dia' AS id, 'Por dia' AS Valor UNION ALL SELECT 'mensal', 'Mensal' UNION ALL SELECT 'ciclo', 'Por Ciclo'", "Valor", " semVazio") %>
                 </div>
                 <div class="row">
                     <% camposObrigatorios = reg("camposObrigatorios") %>

@@ -1,9 +1,20 @@
 <!--#include file="connect.asp"-->
+<!--#include file="geraPacientesProtocolosCiclos.asp"-->
 <%
-Tipo = req("Tipo")
+if ID&"" = "" then
+    ID = req("i")
+end if
 
-usuario = db.execute("SELECT Auditor FROM profissionais where id = "&session("User")&" and sysActive= 1")
-auditor = usuario("Auditor")
+Tipo = req("Tipo")
+readOnly = false
+if req("readonly") = "1" then
+    readOnly = true
+end if
+
+set usuario = db.execute("SELECT Auditor FROM profissionais where id = "&session("User")&" and sysActive= 1")
+if not usuario.eof then
+    auditor = usuario("Auditor")
+end if 
 
 if Tipo = "I" then
     ID = req("ID")
@@ -13,7 +24,7 @@ if Tipo = "I" then
         set getPacientesProtocolos = db.execute("SELECT * FROM pacientesprotocolos WHERE id="&ID)
         set atendimento =  db.execute("select id from atendimentos a2 where PacienteID = "&PacienteID&" and `Data` = CAST( now() AS Date )")
         if getPacientesProtocolos.eof then
-            db.execute("INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID,AtendimentoID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&session("User")&", "&atendimento("id")&", "&session("User")&", 1)")
+            db.execute("INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&session("User")&",  "&session("UnidadeID")&", "&session("User")&", 1)")
         end if
         set getMedicamentosProtocolos = db.execute("SELECT * FROM protocolosmedicamentos WHERE ProtocoloID="&ProtocoloID)
         while not getMedicamentosProtocolos.eof
@@ -22,6 +33,8 @@ if Tipo = "I" then
         wend
         getMedicamentosProtocolos.close
         set getMedicamentosProtocolos=nothing
+
+        call geraPacientesProtocolosCiclos(ID)
     end if
 end if
 
@@ -31,11 +44,19 @@ end if
 'end if
 %>
 
+<style type="text/css">
+    #table-protocolo .form-control[readonly] {
+        cursor: default;
+    }
+</style>
+
 <div class="row">
+    <% if not readOnly then %>
     <hr class="short alt">
+    <%end if %>
     <div class="col-md-12 protocolo-content" id="ProtocoloLista" ><br>
         <input type="hidden" name="ProtocoloListaID" id="ProtocoloListaID" value="100">
-        <table class="table" width="100%" style="padding: 4px;!important;">
+        <table id="table-protocolo" class="table" width="100%" style="padding: 4px;!important;">
             <%
             sql = "SELECT promed.*, promed.id ProtocoloMedicamentoID, promed.MedicamentoPrescritoID MedicamentoPrescritoID, prodMedPres.NomeProduto NomeMedicamentoPrescrito, protmed.Medicamento MedicamentoID, prot.NomeProtocolo, prodMed.NomeProduto NomeMedicamento, proDil.NomeProduto Diluente, unMed.Sigla SiglaMed, unDil.Sigla SiglaDil, protmed.Dose, protmed.QtdDiluente, protmed.Obs ObservacaoMedicamento, pac.ConvenioID1 ConvenioID, pac.PlanoID1 PlanoID "&_
                   "FROM pacientesprotocolosmedicamentos promed "&_
@@ -117,15 +138,17 @@ end if
                     </td>
                     <td width="10%">
                         <div class="input-group">
-                            <input id="DoseMedicamento_<%=ProtocoloMedicamentoID%>" class="form-control input-mask-brl text-right" placeholder="0,00" type="text" style="text-align:right" name="DoseMedicamento_<%=ProtocoloMedicamentoID%>" value="<%=fn(DoseMedicamento)%>">
+                            <input id="DoseMedicamento_<%=ProtocoloMedicamentoID%>" class="form-control input-mask-brl text-right" placeholder="0,00" type="text" style="text-align:right" name="DoseMedicamento_<%=ProtocoloMedicamentoID%>" value="<%=fn(DoseMedicamento)%>" <% if readOnly then%> readonly <%end if%>>
                             <span class="input-group-addon">
                                 <strong><%=SiglaMed%></strong>
                             </span>
                         </div>
                     </td>
                     <td class='row' width="9%">
+                        <% if not readonly then %>
                         <i class='ml5 col-md-5 btn-xs btn btn-warning fa fa-pencil' onclick="pedirMudanca('E','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')"  data-toggle="tooltip" data-placement="top" title="Pedir edição de protocolo"> </i>
                         <i class='ml5 col-md-5 btn-xs btn btn-danger fa fa-remove' onclick="pedirMudanca('R','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')" data-toggle="tooltip" data-placement="top" title="Pedir remoção de protocolo"> </i>
+                        <% end if %>
                     </td>
                 </tr>
                 <%
@@ -149,7 +172,7 @@ end if
                 if Medicamento&""<>"" then
                 %>
                 <tr>
-                    <td colspan="2"><textarea id="Obs_<%=ProtocoloMedicamentoID%>" name="Obs_<%=ProtocoloMedicamentoID%>" style='float:left;<%=styleText%>' class='obs-exame form-control' placeholder='Observações'><%=Obs %></textarea></td>
+                    <td colspan="2"><textarea id="Obs_<%=ProtocoloMedicamentoID%>" name="Obs_<%=ProtocoloMedicamentoID%>" style='float:left;<%=styleText%>' class='obs-exame form-control' placeholder='Observações'  <% if readOnly then%> readonly <%end if%>><%=Obs %></textarea></td>
                     <td colspan="2"><%if ObservacaoMedicamento&""<>"" then%><b><i class="fa fa-exclamation-circle"></i> Obs.: </b><%end if%><%=ObservacaoMedicamento%></td>
                 </tr>
                 <%
@@ -173,7 +196,7 @@ $(function () {
 function pedirMudanca(tipo,id,medicamentoId){
     let dose = parseFloat(($(`#DoseMedicamento_${id}`).val()).replace(',','.'))
     let obs = $(`#Obs_${id}`).val()
-    let paciente = "<%=req("P")%>";    
+    let paciente = "<%=req("PacienteID")%>";    
     let auditor = "<%=auditor%>"
     let data = {
         id,

@@ -28,13 +28,9 @@ else
 	end if
 end if
 
-
-
-
-
-
 call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
+sqlTiposproduto  = "select * from "&request.QueryString("P")&" where id="&request.QueryString("I")
+set reg = db.execute(sqlTiposproduto)
 
 if reg("Foto")="" or isnull(reg("Foto")) then
 	divDisplayUploadFoto = "block"
@@ -144,11 +140,11 @@ end if
             <div id="divCadastroProduto" class="tab-pane in active">
                 <div class="row">
                     <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
-                    <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
+                    <%'=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
                     <%if TipoProdutoReadonly&""<>"" then%>
                         <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
                     <%end if%>
-                    <%=quickField("simpleSelect", "CD", "CD", 3, reg("CD"), "select * from cliniccentral.tisscd order by Descricao", "Descricao", "")%>
+                    <%=quickField("simpleSelect", "CD", "CD", 3, reg("CD"), "select * from cliniccentral.tisscd where id=7 order by Descricao", "Descricao", "semVazio")%>
                 </div>
             </div>
            <% else %>

@@ -41,7 +41,7 @@
             block()
         })
         if(tipos.length == 0){
-            let localTipos = '<%= recordToJSON(db.execute("select id,NomeArquivo from tipos_de_arquivos")) %>' ;
+            let localTipos = '<%= recordToJSON(db.execute("select id,NomeArquivo from tipos_de_arquivos where sysActive=1")) %>' ;
             tipos  =  JSON.parse(localTipos)
         }
     }

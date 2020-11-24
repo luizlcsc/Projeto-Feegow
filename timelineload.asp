@@ -434,11 +434,11 @@
                         <em><%= ti("Conteudo") %></em>
                         <%
                     case "Protocolos"
-                        set getProtocolos = db.execute("SELECT NomeProtocolo, GROUP_CONCAT(NomeProduto SEPARATOR ', ') Produtos "&_
+                        set getProtocolos = db.execute("SELECT NomeProtocolo, GROUP_CONCAT(IFNULL(NomeProduto, '') SEPARATOR ', ') Produtos "&_
                                                        "FROM pacientesprotocolosmedicamentos ppm "&_
                                                        "LEFT JOIN protocolos prot ON prot.id=ppm.ProtocoloID "&_
                                                        "LEFT JOIN protocolosmedicamentos pm ON ppm.ProtocoloMedicamentoID=pm.id "&_
-                                                       "LEFT JOIN produtos prod ON prod.id=ppm.MedicamentoPrescritoID "&_
+                                                       "LEFT JOIN produtos prod ON prod.id=ppm.ProtocoloMedicamentoID "&_
                                                        "WHERE ppm.PacienteProtocoloID="&ti("id")&" GROUP BY ppm.ProtocoloID")
 
                         while not getProtocolos.eof

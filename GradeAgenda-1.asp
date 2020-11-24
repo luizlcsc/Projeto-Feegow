@@ -587,7 +587,7 @@ end if
                     ValorProcedimentosAnexos = 0
                     podeVerAgendamento=True
 
-                    if UnidadeID&""<>"" and session("admin")=0 and session("Partner")="" and NaoExibirAgendamentoLocal=1 or aut("ageoutunidadesV")=0 then
+                    if UnidadeID&""<>"" and session("admin")=0 and session("Partner")="" and NaoExibirAgendamentoLocal=1 then
                         if instr(session("Unidades"),"|"&UnidadeID&"|")=0 then
                             podeVerAgendamento=False
                         end if

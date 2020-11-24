@@ -574,6 +574,7 @@ end if
                 end if
 
                 set comps=db.execute(compsSql&compsWhereSql)
+  
                 while not comps.EOF
                     FormaPagto = comps("FormaPagto")
                     UnidadeID = comps("UnidadeID")
@@ -586,7 +587,7 @@ end if
                     ValorProcedimentosAnexos = 0
                     podeVerAgendamento=True
 
-                    if UnidadeID&""<>"" and session("admin")=0 and session("Partner")="" and NaoExibirAgendamentoLocal=1 then
+                    if UnidadeID&""<>"" and session("admin")=0 and session("Partner")="" and NaoExibirAgendamentoLocal=1 or aut("ageoutunidadesV")=0 then
                         if instr(session("Unidades"),"|"&UnidadeID&"|")=0 then
                             podeVerAgendamento=False
                         end if
@@ -612,7 +613,6 @@ end if
                             'end if
                         end if
                     end if
-
 
 					if comps("rdValorPlano")="V" then
 						if (lcase(session("table"))="profissionais" and cstr(session("idInTable"))=ProfissionalID) or (session("admin")=1) or aut("|valordoprocedimentoV|")=1 then
@@ -683,7 +683,7 @@ end if
                         end if
                     end if
                     linkAg = " onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"" "
-                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&fix_string_chars_full(comps("NomePaciente"))&"<br>Prontuário: "&Prontuario&"<br>"
+                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-local='"&comps("LocalID")&"' data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&fix_string_chars_full(comps("NomePaciente"))&"<br>Prontuário: "&Prontuario&"<br>"
 
                     if session("RemSol")<>"" and session("RemSol")&"" <> comps("id")&"" then
                         remarcarlink = " onclick=""remarcar("&session("RemSol")&", \'Remarcar\', \'"&compsHora&"\', \'"&comps("LocalID")&"\')"" "
@@ -714,9 +714,9 @@ end if
                     if comps("Primeira")=1 then
                         Conteudo = Conteudo & "<i class=""fa fa-flag blue"" title=""Primeira vez""></i>"
                     end if
-                    if comps("LocalID")<>LocalID then
-                        Conteudo = Conteudo & "<i class=""fa fa-exclamation-triangle grey"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
-                    end if
+                    ' if comps("LocalID")<>LocalID then
+                        Conteudo = Conteudo & "<i class=""fa fa-exclamation-triangle grey hide"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
+                    'end if
 
                     FirstTdBgColor = ""
                     if ExibirCorPacienteAgenda=1 then
@@ -1002,7 +1002,20 @@ $(document).ready(function(){
             style: 'qtip-wiki'
          });
      });
+    confereLocal()
  });
+
+function confereLocal(){
+    let linhas = $("tr[data-local]")
+
+    linhas.map((key,elem)=>{
+        let idlocal = $(elem).parent().attr('data-localid')
+        let idlinha = $(elem).attr('data-local')
+        if(idlinha != idlocal){
+            $(elem).find('.fa-exclamation-triangle').removeClass("hide")
+        }
+    })
+}
 <%
 if session("RemSol")<>"" or session("RepSol")<>"" then
 	%>

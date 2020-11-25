@@ -2144,7 +2144,7 @@ end function
 
 function dominioRepasse(FormaID, ProfissionalID, ProcedimentoID, UnidadeID, TabelaID, EspecialidadeID, DataExec, HoraExec)
 '        response.write(FormaID)
-FormaID = replace(FormaID, "|", "")
+FormaID = replace(FormaID&"", "|", "")
 'conferir -> FormaID pode ser |P| para todos particulares, |C| para todos convênios, |00_0| para forma predefinida de recto e > |0| para qualquer id de convênio
 	dominioRepasse = 0
 	EspecialidadeIDsent = EspecialidadeID&""

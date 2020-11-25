@@ -1,5 +1,4 @@
 <!--#include file="Classes/Connection.asp"-->
-<!--#include file="connect.asp"-->
 <%
     set db = newConnection("", "")
 

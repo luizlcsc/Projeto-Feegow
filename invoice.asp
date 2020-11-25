@@ -1154,14 +1154,12 @@ if($("#sysActive").val()==1){
 }
 
 function espProf(I,profissionaisID,executeLote){
+    let pacoteId = $("#PacoteID"+I).val()
     if(executeLote == "S"){
-        $.post("divEspecialidadeII.asp?Change=1&R="+I+"&executeLote=S", { ProfissionalID: profissionaisID }, function(data){ eval(data) });
+        $.post("divEspecialidadeII.asp?Change=1&R="+I+"&executeLote=S&PacoteId="+pacoteId, { ProfissionalID: profissionaisID }, function(data){ eval(data) });
     }else{
         $.post("divEspecialidadeII.asp?Change=1&R="+I, { ProfissionalID: $('#ProfissionalID'+I).val() }, function(data){ 
-            let pacoteId = $("#PacoteID"+I).val()
-            if(pacoteId ==""){
-                $("#divEspecialidadeID"+I).html(data) 
-            }
+            $("#divEspecialidadeID"+I).html(data) 
         });
     }
 }

@@ -164,7 +164,7 @@ if myValor > 0  then
     end if
 
     sqlRecibo = "INSERT INTO recibos (NumeroRps, RepasseIds, RPS, Cnpj, Nome, Data, Valor, Texto, PacienteID, sysUser, Servicos, Emitente, InvoiceID, UnidadeID, NumeroSequencial, CPF, ContaCredito, Auto, sysDate) VALUES ("&treatvalnull(numeroRps)&",'"&RepasseIds&"', '"&RPS&"', '"&cnpj&"','"&nomeProfissional&" ("&funcao&")', "&mydatenull(date())&", "&treatvalzero(myValor)&", NULL, '"&pacienteid&"', "&session("User")&", '"&Servicos&"', 0, "&invoiceID&", "&UnidadeID&", "&NumeroSequencial&", '"&CPFPACIENTE&"', '"&ContaCredito&"', 1, "&mydatetime(DataHora)&")"
-    response.write(sqlRecibo)
+    'response.write(sqlRecibo)
     db.execute(sqlRecibo)
 end if
 %>

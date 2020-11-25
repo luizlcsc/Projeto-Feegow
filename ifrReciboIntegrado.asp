@@ -271,13 +271,6 @@ if not inv.eof then
                 end if
             end if
 
-            Recibo = TagsConverte(Recibo,Converte_ProfissionalExecutanteExterno&"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalExecutanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
-            ' Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
-
-            'CONVERSOR ANTIGO DE TAGS DESATIVADO
-            'Recibo = replace(Recibo, "[Usuario.Nome]","[-Usuario.Nome-]")
-			Recibo = replaceTags(Recibo, ContaID, User, inv("CompanyUnitID"))
-
 		end if
 
 		'Tags do agendamento
@@ -797,6 +790,13 @@ if not inv.eof then
             wend
             forma.close
             set forma=nothing
+
+            Recibo = TagsConverte(Recibo,Converte_ProfissionalExecutanteExterno&"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalExecutanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
+            ' Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
+
+            'CONVERSOR ANTIGO DE TAGS DESATIVADO
+            'Recibo = replace(Recibo, "[Usuario.Nome]","[-Usuario.Nome-]")
+			Recibo = replaceTags(Recibo, ContaID, User, inv("CompanyUnitID"))
 
 
             if formaPagto="" then

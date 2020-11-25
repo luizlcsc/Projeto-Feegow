@@ -119,7 +119,7 @@ if PacienteID="0" or PacienteID="" or PacienteID="-1" then
 
 else
     'verifica se eh primeira consulta do paciente
-    set PrimeiroAtendimentoSQL = db.execute("SELECT age.id FROM agendamentos age WHERE PacienteID="&treatvalzero(PacienteID)&" AND StaID IN (1,2,3,4)")
+    set PrimeiroAtendimentoSQL = db.execute("SELECT age.id FROM agendamentos age WHERE sysActive=1 AND PacienteID="&treatvalzero(PacienteID)&" AND StaID IN (1,2,3,4)")
     if PrimeiroAtendimentoSQL.eof then
         PrimeiraVez=1
     end if

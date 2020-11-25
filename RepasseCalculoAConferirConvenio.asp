@@ -63,11 +63,8 @@ private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePacien
     valorPagoPeloConvenio = getConfig("ValorPagoPeloConvenio")
 
     if isnumeric(rValorRecebido) then
-        if valorPagoPeloConvenio = 1 and rValorRecebido>0 then
+        if valorPagoPeloConvenio = 1 and rValorRecebido>=0 then
            ValorBase = rValorRecebido
-        else if valorPagoPeloConvenio = 1 and rValorRecebido=0 then
-           ValorBase = rValorRecebido
-           end if
         end if
     end if
     fQuantidade = rQuantidade

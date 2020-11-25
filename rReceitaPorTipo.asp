@@ -34,6 +34,7 @@ while not ptip.eof
                 <th width="5%">DATA NOTA</th>
                 <th width="5%">VALOR NOTA</th>
                 <th width="5%">VALOR SERVIÇO</th>
+                <th width="5%">VALOR PAGO</th>
                 <th width="5%">VALOR REPASSE</th>
                 <th width="5%">DATA REPASSE</th>
                 <th width="9%">CONVÊNIO</th>
@@ -98,7 +99,7 @@ while not ptip.eof
                             whereProcedimentos = ""
                         end if 
 
-                        sql  = "select gc.ProfissionalID, gc.NGuiaPrestador, gc.id, pac.NomePaciente, conv.NomeConvenio, proc.NomeProcedimento, " &_ 
+                        sql  = "select gc.ValorPago, gc.ProfissionalID, gc.NGuiaPrestador, gc.id, pac.NomePaciente, conv.NomeConvenio, proc.NomeProcedimento, " &_ 
                                "tiproc.TipoProcedimento, gc.DataAtendimento, prof.NomeProfissional, gc.ValorProcedimento, gc.UnidadeID " &_ 
                                "FROM tissguiaconsulta gc LEFT JOIN procedimentos proc ON proc.id=gc.ProcedimentoID " &_
                                "LEFT JOIN tiposprocedimentos tiproc ON tiproc.id=proc.TipoProcedimentoID " &_
@@ -128,6 +129,8 @@ while not ptip.eof
                             ValorBruto = fn(proc("ValorProcedimento"))
                             NomePaciente = proc("NomePaciente")
                             NomeConvenio = proc("NomeConvenio")
+
+                            ValorPago = proc("ValorPago")
                             ValorDespesas = 0
                             set pRep = db.execute("select sum(Valor) Valor, sysDate from rateiorateios where GuiaConsultaID="& treatvalzero(proc("id")) &" AND ContaCredito='5_"& ProfissionalID &"'")
                             if not pRep.eof then
@@ -159,6 +162,7 @@ while not ptip.eof
                                 <td><%= dataNF("dataNFe") %></td>
                                 <td class="text-right"><%= fn(dataNF("valorNFe")) %></td>
                                 <td class="text-right"><%= ValorBruto %></td>
+                                <td class="text-right"><%= ValorPago %></td>
                                 <td class="text-right"><%= fn(ValorRepasse) %></td>
                                 <td class="text-right"><%= DataRepasse %></td>
                                 <td><%= NomeConvenio %></td>
@@ -193,7 +197,7 @@ while not ptip.eof
                             whereProcedimentos = ""
                         end if 
                         
-                        sql  = "select gs.NGuiaPrestador, gps.ProfissionalID, gps.id, pac.NomePaciente, conv.NomeConvenio, " &_ 
+                        sql  = "select gps.ValorPago, gs.NGuiaPrestador, gps.ProfissionalID, gps.id, pac.NomePaciente, conv.NomeConvenio, " &_ 
                                "proc.NomeProcedimento, tiproc.TipoProcedimento, gps.Data, prof.NomeProfissional, gps.ValorTotal, "&_ 
                                "((gs.TotalGeral-gs.Procedimentos)/(select count(id) from tissprocedimentossadt where GuiaID=gs.id)) ValorDespesas, "&_
                                "gs.UnidadeID from tissguiasadt gs " &_
@@ -218,6 +222,7 @@ while not ptip.eof
                             NomeConvenio = proc("NomeConvenio")
                             ValorDespesas = proc("ValorDespesas")
                             ProfissionalID = proc("ProfissionalID")
+                            ValorPago = proc("ValorPago")
                             set pRep = db.execute("select sum(Valor) Valor, sysDate from rateiorateios where ItemGuiaID="& treatvalzero(proc("id")) &" AND ContaCredito='5_"& ProfissionalID &"'")
                             if not pRep.eof then
                                 ValorRepasse = pRep("Valor")
@@ -249,6 +254,7 @@ while not ptip.eof
                                 <td><%= dataNF("dataNFe") %></td>
                                 <td class="text-right"><%= fn(dataNF("valorNFe")) %></td>
                                 <td class="text-right"><%= ValorBruto %></td>
+                                <td class="text-right"><%= fn(ValorPago) %></td>
                                 <td class="text-right"><%= fn(ValorRepasse) %></td>
                                 <td class="text-right"><%= DataRepasse %></td>
                                 <td><%= NomeConvenio %></td>
@@ -326,6 +332,7 @@ while not ptip.eof
                         <td><%= dataNF("dataNFe") %></td>
                         <td class="text-right"><%= fn(dataNF("valorNFe")) %></td>
                         <td class="text-right"><%= ValorBruto %></td>
+                        <td class="text-right"><%= fn(ValorPago) %></td>
                         <td class="text-right"><%= fn(ValorRepasse) %></td>
                         <td class="text-right"><%= DataRepasse %></td>
                         <td><%= NomeConvenio %></td>
@@ -346,7 +353,7 @@ while not ptip.eof
             <tr>
                 <th colspan="8" class="text-right">Valor total</th>
                 <th class="text-right"><%= fn(ValorTotal) %></th>
-                <th class="text-right"></th>
+                <th class="text-right" colspan="5"></th>
             </tr>
         </tbody>
     </table>

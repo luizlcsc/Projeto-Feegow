@@ -445,13 +445,13 @@ $DescontoTotal.keyup(function() {
     $DescontoTipo = $(".DescontoTipo");
     $Desconto = $(".PropostaDesconto");
 
-    var Desconto = parseInt($(this).val());
+    var Desconto = parseFloat($(this).val());
     if (!Desconto){
         Desconto = 0;
     }
     clearTimeout(timeoutDesconto);
     $DescontoTipo.val("P");
-    $Desconto.val(Desconto+",00");
+    $Desconto.val(Desconto);
 
     timeoutDesconto = setTimeout(function() {
         $DescontoTipo.change();
@@ -466,13 +466,17 @@ var $DescontoInvalido = false;
 $Proposta.on("change",".DescontoTipo, .PropostaDesconto", function() {
     var $descontoLinha = $(this).parents("tr");
 
-    var Desconto = parseInt($descontoLinha.find(".PropostaDesconto").val().replace(",00","").replace(".",""));
+    var Desconto = parseFloat($descontoLinha.find(".PropostaDesconto").val().replace(",00","")/*.replace(",",".")*/);
+
     var ProcedimentoID = parseInt($descontoLinha.find("[data-resource=procedimentos]").val());
     var TipoDesconto = $descontoLinha.find(".DescontoTipo").val();
     var ValorUnitario = parseFloat($descontoLinha.find(".ValorUnitario").val().replace(",00","").replace(".",""));
+   
 
-    if(TipoDesconto!=="P"){
+
+    if(TipoDesconto !== "P"){
         Desconto = (Desconto/ValorUnitario) * 100;
+        
     }
 
     CalculaDesconto(ValorUnitario, Desconto, TipoDesconto, ProcedimentoID, "Propostas", $descontoLinha.find(".PropostaDesconto"));

@@ -40,7 +40,7 @@ if ProfissionalID<>"" and isnumeric(ProfissionalID) then
             sql = "SELECT Especialidades FROM assperiodolocalxprofissional WHERE id="&GradeID*-1
         end if
     else
-        sql = "select Especialidades from assfixalocalxprofissional where DiaSemana="& DiaSemana &" and HoraDe <= '"& Hora &"' and HoraA >= '"& Hora &"' and "& mydatenull(Data) &">=ifnull(InicioVigencia, '1899-01-01') and "& mydatenull(Data) &"<=ifnull(FimVigencia, '2999-01-01') and ProfissionalID="& ProfissionalID
+        sql = "select group_concat(Especialidades) from assfixalocalxprofissional where DiaSemana="& DiaSemana &" and HoraDe <= '"& Hora &"' and HoraA >= '"& Hora &"' and "& mydatenull(Data) &">=ifnull(InicioVigencia, '1899-01-01') and "& mydatenull(Data) &"<=ifnull(FimVigencia, '2999-01-01') and ProfissionalID="& ProfissionalID
     end if
     'response.Write( sql )
     sqlFiltraEspecialidadesGrade=""
@@ -60,7 +60,6 @@ if ProfissionalID<>"" and isnumeric(ProfissionalID) then
         'Especialidades = espMedico("Especialidades")&""
     sqlEsp = "select esp.EspecialidadeID id, e.especialidade from (select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID) union all	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp left join especialidades e ON e.id=esp.EspecialidadeID "&_
                 "WHERE TRUE "&sqlFiltraEspecialidadesGrade
-
     if sqlEsp<>"" then
         response.Write("<div class='row'>")
             if session("Banco")="clinic5760" then

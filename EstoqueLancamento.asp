@@ -18,6 +18,18 @@ set prod = db.execute("select p.*, u.* from produtos as p left join cliniccentra
 if len(prod("Descricao"))>6 then
 	NomeUnidade = right(prod("Descricao"), len(prod("Descricao"))-6 )&"(s)"
 end if
+
+if prod("sysActive")<>1 then
+    %>
+    <div class="row">
+        <div class="col-md-12 p20">
+            <strong>Atenção!</strong> Salve o produto antes de registrar uma entrada.
+        </div>
+    </div>
+    <%
+    response.end
+end if
+
 if TipoLancto="E" then
 	tipo = "Entrada"
 	icone = "fa fa-level-down"

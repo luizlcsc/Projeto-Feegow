@@ -492,7 +492,7 @@ end if
 <%
 if getConfig("OcultarBotaoRetorno")&""="0" then
 %>
-            	<div class="checkbox-custom checkbox-warning    "><input type="checkbox" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>><label for="Retorno" class="checkbox"> Retorno</label></div>
+            	<div class="checkbox-custom checkbox-warning"><input type="checkbox" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>><label for="Retorno" class="checkbox"> Retorno</label></div>
 <%
 else
 %>

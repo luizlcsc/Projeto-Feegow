@@ -1,6 +1,7 @@
 <!--#include file="Classes/Connection.asp"-->
+<!--#include file="connect.asp"-->
 <%
-    set db = newConnection(session("Banco"), "")
+    set db = newConnection("", "")
 
     if isNull(db) then
         response.write("Error")
@@ -12,8 +13,8 @@
     set retorno = db.execute(sql)
 
     if not isNull(retorno) then
-        response.write("Health")
+        response.write("OK")
     else
-        response.write("Error")
+        call Err.Raise(500, "unhealthy", "Internal server error.")
     end if
 %>

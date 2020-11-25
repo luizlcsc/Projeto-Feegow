@@ -11,19 +11,42 @@ PaymentMethodID = treatvalnull(ref("PaymentMethodID"))
 Licenca = ref("Licenca")
 TipoContaFixaID = ref("TipoContaFixaID")
 ValorMinimoPorUsuario =  treatvalzero(ref("ValorMinimoPorUsuario"))
+PrimeiroVencto=ref("PrimeiroVencto")
+CD=ref("CD")
+
+Descricao = ""
+
+if CD="C" then
+	Descricao = "receita"
+else
+	Descricao = "despesa"
+end if
 
 
 if session("Banco")="clinic100003" or session("Banco")="clinic5459" then
     sqlFecharAutomatico = ", FecharAutomatico='"&FecharAutomatico&"'"
 end if
 
-    sql = "update invoicesfixas set ValorMinimoPorUsuario=NULLIF("&ValorMinimoPorUsuario&",''), TipoContaFixaID="&TipoContaFixaID&", Licenca=NULLIF('"&Licenca&"',''),EmitirNotaAntecipada="&EmitirNotaAntecipada&",DiasAntes="&DiasAntes&",PaymentMethodID="&PaymentMethodID&", AccountID="&ContaID&sqlFecharAutomatico&", AssociationAccountID="&AssociacaoID&", PrimeiroVencto="&mydatenull(ref("PrimeiroVencto"))&", Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", Intervalo="&ref("Intervalo")&", TipoIntervalo='"&ref("TipoIntervalo")&"', sysActive=1, RepetirAte="& mydatenull(ref("RepetirAte")) &" where id="&InvoiceID
+set InvoiceFixaSQL = db.execute("SELECT PrimeiroVencto, sysActive FROM invoicesfixas WHERE ID="&InvoiceID)
 
-db_execute( sql )
+if InvoiceFixaSQL("sysActive")=1 then
+	set ContasSQL = db.execute("select count(id)qtd from sys_financialinvoices i where i.FixaID="&InvoiceID&"")
+
+	if not ContasSQL.eof then
+		if InvoiceFixaSQL("PrimeiroVencto")&""<>PrimeiroVencto&"" then
+			qtdFaturasGeradas = ContasSQL("qtd")
+			aviso = "Atenção: Já existem "&qtdFaturasGeradas&" conta(s) gerada(s) para esta "&Descricao&" fixa. Ao alterar o primeiro vencimento, atente-se às datas previstas."
+		end if
+	end if
+end if
+
 
 
 
 if erro="" then
+	sql = "update invoicesfixas set ValorMinimoPorUsuario=NULLIF("&ValorMinimoPorUsuario&",''), TipoContaFixaID="&TipoContaFixaID&", Licenca=NULLIF('"&Licenca&"',''),EmitirNotaAntecipada="&EmitirNotaAntecipada&",DiasAntes="&DiasAntes&",PaymentMethodID="&PaymentMethodID&", AccountID="&ContaID&sqlFecharAutomatico&", AssociationAccountID="&AssociacaoID&", PrimeiroVencto="&mydatenull(PrimeiroVencto)&", Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", Intervalo="&ref("Intervalo")&", TipoIntervalo='"&ref("TipoIntervalo")&"', sysActive=1, RepetirAte="& mydatenull(ref("RepetirAte")) &" where id="&InvoiceID
+
+	db_execute( sql )
 
 	splInv = split(ref("inputs"), ", ")
 		
@@ -112,12 +135,13 @@ if erro="" then
 	<%
 else
 	%>
-	new PNotify({
-		title: 'ERRO!',
-		text: '<%=erro%>',
-		type: 'danger',
-        delay: 3000
-	});
+	showMessageDialog('<%=erro%>');
+	<%
+end if
+
+if aviso<> "" then
+	%>
+	showMessageDialog('<%=aviso%>', 'warning' );
 	<%
 end if
 

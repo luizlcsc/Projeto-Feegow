@@ -108,7 +108,7 @@
         <h2 class="mb20 mt30">Guias TISS</h2>
         <div class="row">
             
-            <%= quickfield("multiple", "OmitirValorGuia", "Não exibir o valor do procedimento na impressão da guia para os seguintes usuários:", 12, OmitirValorGuia, "select id, Nome from cliniccentral.licencasusuarios where LicencaID="& replace(session("Banco"), "clinic", "") &" and Email not like '' and Nome not like '' and Senha not like '' order by Nome", "Nome", "") %>
+            <%= quickfield("multiple", "OmitirValorGuia", "Não exibir o valor do procedimento na impressão da guia para os seguintes usuários:", 12, OmitirValorGuia, "select id, Nome from cliniccentral.licencasusuarios where LicencaID="& replace(session("Banco"), "clinic", "") &" and Email <> '' and Nome <> '' order by Nome", "Nome", "") %>
         </div>
 
 

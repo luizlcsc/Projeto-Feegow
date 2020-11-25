@@ -84,6 +84,8 @@ else
     PrimeiroVencto = date()
 end if
 
+LicencaFinanceiro = session("Banco")="clinic100000" or session("Banco")="clinic100003" or session("Banco")="clinic5459"
+
 %>
 
 <script type="text/javascript">
@@ -147,24 +149,27 @@ posModalPagar = "fixed"
                     end if
                     %>
                     <%=quickField("empresa", "CompanyUnitID", "Unidade", 4, UnidadeID, "", "", "")%>
-                    <%=quickField("datepicker", "PrimeiroVencto", "Primeiro Vencimento", 2, PrimeiroVencto, "input-mask-date", "", " required")%>
+
+                   
+
+                    <%=quickField("datepicker", "PrimeiroVencto", "Primeiro Vencimento", 2, PrimeiroVencto, "input-mask-date", "", " required" )%>
                     <%=quickField("datepicker", "RepetirAte", "Repetir até", 2, RepetirAte, "", "", " placeholder='Ilimitado'")%>
                 </div>
                 <div class="row">
-                    <%=quickField("number", "DiasAntes", "Dias Antes para Processamento", 2, DiasAntes, " ", "", " ")%>
                     <%=quickField("number", "Intervalo", "Intervalo da Recorrência", 2, Intervalo, "", "", " min='1' required")%>
                     <%=quickField("simpleSelect", "TipoIntervalo", "&nbsp;", 2, TipoIntervalo, "select 'm' id, 'Mês(es)' label UNION ALL select 'd', 'Dia(s)' UNION ALL select 'yyyy', 'Ano(s)'", "label", " required semVazio ")%>
                     <%= quickfield("simpleSelect", "PaymentMethodID", "Forma de Pagamento", 2, PaymentMethodID, "select id, PaymentMethod from cliniccentral.sys_financialpaymentmethod where TextC<>'' AND id in(1,8,4) ORDER BY PaymentMethod", "PaymentMethod", "") %>
-                    <%= quickfield("simpleSelect", "TipoContaFixaID", "Tipo de Conta de Pagamento", 2, TipoContaFixaID, "SELECT * FROM cliniccentral.tiposcontasfixas", "Descricao", "") %>
-                    <% if session("Banco")="clinic100003" or session("Banco")="clinic5459" then %>
-                    <%=quickField("simpleCheckbox", "FecharAutomatico", "Fechar fatura automático", "3",data("FecharAutomatico"), "", "", "")%>
+                    <% if LicencaFinanceiro then %>
+                        <%=quickField("number", "DiasAntes", "Dias Antes para Processamento", 2, DiasAntes, " ", "", " ")%>
+                        <%= quickfield("simpleSelect", "TipoContaFixaID", "Tipo de Conta de Pagamento", 2, TipoContaFixaID, "SELECT * FROM cliniccentral.tiposcontasfixas", "Descricao", "") %>
+                        <%=quickField("simpleCheckbox", "FecharAutomatico", "Fechar fatura automático", 2,data("FecharAutomatico"), "", "", "")%>
+                        <div style="margin-top: 15px">
+                            <%=quickField("simpleCheckbox", "EmitirNotaAntecipada", "Emitir nota antecipada", "2",EmitirNotaAntecipada, "", "", "")%>
+                        </div>
                     <% end if %>
-                    <div style="margin-top: 15px">
-                         <%=quickField("simpleCheckbox", "EmitirNotaAntecipada", "Emitir nota antecipada", "2",EmitirNotaAntecipada, "", "", "")%>
-                    </div>
                 </div>
                 <div class="row">
-                <% if session("Banco")="clinic100000" or session("Banco")="clinic100003" or session("Banco")="clinic5459" then
+                <% if LicencaFinanceiro then
                     Licencas = ""
                     IF Pagador <> "" THEN
                         licencaSql  = "SELECT GROUP_CONCAT('|',id,'|') as licencas FROM cliniccentral.licencas WHERE Cliente = SUBSTRING_INDEX('"&Pagador&"', '_', -1)"

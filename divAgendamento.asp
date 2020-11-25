@@ -496,7 +496,7 @@ if getConfig("OcultarBotaoRetorno")&""="0" then
 <%
 else
 %>
-<input type="hidden" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>>
+<input type="checkbox" class="hidden" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>>
 <%
 end if
 %>

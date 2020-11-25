@@ -30,7 +30,7 @@
 </div>
 <script type="text/javascript">
 
-    $.get('/feegow_components/odontograma/odontogramaAtendimento?P=<%=req("I")%>&U=<%=session("User")%>',
+    $.get('https://components-legacy.feegow.com/odontograma/odontogramaAtendimento?P=<%=req("I")%>&U=<%=session("User")%>',
     function (data) {
         $("#odontograma-conteudo").html(data);
     });

@@ -1,4 +1,4 @@
-﻿<!--#include file="connect.asp"-->
+﻿<!--#include file="Classes/Connection.asp"--><!--#include file="connect.asp"-->
 
 <script type="text/javascript">
     function myFunction(i) {
@@ -106,9 +106,7 @@ if session("Partner")<>"" then
         LicencaID = l("id")
         LicencaModelo = 5459
 
-        ConnStringS = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& Servidor &";Database=clinic"& LicencaID &";uid=root;pwd=pipoca453;"
-        Set dbS = Server.CreateObject("ADODB.Connection")
-        dbS.Open ConnStringS
+        Set dbS = newConnection("clinic"& LicencaID, Servidor)
 
         sqlProf = "select prof.id, CONCAT(IFNULL(concat(trat.Tratamento,' '),''),prof.NomeProfissional)NomeProfissional from clinic"& LicencaID &".profissionais prof LEFT JOIN clinic"& LicencaID &".agendamentos ag ON ag.Data="& mydatenull(Data) &" AND ag.ProfissionalID=prof.id AND ag.StaID IN ("&replace(Status,"|","")&") LEFT JOIN clinic"& LicencaID &".tratamento trat on trat.id=prof.TratamentoID where prof.sysActive=1 and prof.ativo='on'  GROUP BY prof.id HAVING count(ag.id) > 0 order by prof.NomeProfissional"
         set p = dbs.execute(sqlProf)

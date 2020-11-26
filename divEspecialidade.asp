@@ -40,14 +40,14 @@ if ProfissionalID<>"" and isnumeric(ProfissionalID) then
             sql = "SELECT Especialidades FROM assperiodolocalxprofissional WHERE id="&GradeID*-1
         end if
     else
-        sql = "select group_concat(Especialidades)Especialidades from assfixalocalxprofissional where DiaSemana="& DiaSemana &" and HoraDe <= '"& Hora &"' and HoraA >= '"& Hora &"' and "& mydatenull(Data) &">=ifnull(InicioVigencia, '1899-01-01') and "& mydatenull(Data) &"<=ifnull(FimVigencia, '2999-01-01') and ProfissionalID="& ProfissionalID
+        sql = "select group_concat(Especialidades) as `especialidades` from assfixalocalxprofissional where DiaSemana="& DiaSemana &" and HoraDe <= '"& Hora &"' and HoraA >= '"& Hora &"' and "& mydatenull(Data) &">=ifnull(InicioVigencia, '1899-01-01') and "& mydatenull(Data) &"<=ifnull(FimVigencia, '2999-01-01') and ProfissionalID="& ProfissionalID&" AND IFNULL(Especialidades,'')<>''"
     end if
     'response.Write( sql )
     sqlFiltraEspecialidadesGrade=""
-
     set pgrade = db.execute( sql )
+
     if not pgrade.eof then
-        Especialidades = replace(pgrade("Especialidades")&"", "|", "")
+        Especialidades = replace(pgrade("especialidades")&"", "|", "")
 
         if Especialidades<>"" then
             sqlFiltraEspecialidadesGrade= " AND esp.EspecialidadeID IN ("&Especialidades&")"

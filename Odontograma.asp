@@ -30,7 +30,7 @@
 </div>
 <script type="text/javascript">
 
-    $.get('https://components-legacy.feegow.com/index.php/odontograma/odontogramaAtendimento?P=<%=req("I")%>&U=<%=session("User")%>&L=<%session("Banco")%>',
+    $.get('https://components-legacy.feegow.com/index.php/odontograma/odontogramaAtendimento?P=<%=req("I")%>&U=<%=session("User")%>&L=<%=session("Banco")%>',
     function (data) {
         $("#odontograma-conteudo").html(data);
     });
@@ -47,7 +47,7 @@
         $conteudoParaOdontograma.html('').css('display', 'none');
         $odontogramaModal.modal('show');
 
-        $.get('https://components-legacy.feegow.com/index.php/odontograma/odontogramaAtendimento?P=<%=req("I")%>&B=2898099&O=Invoice&U=<%=session("User")%>&I=<%=InvoiceID%>&load_all=' + first +'&L=<%session("Banco")%>',
+        $.get('https://components-legacy.feegow.com/index.php/odontograma/odontogramaAtendimento?P=<%=req("I")%>&B=2898099&O=Invoice&U=<%=session("User")%>&I=<%=InvoiceID%>&load_all=' + first +'&L=<%=session("Banco")%>',
             function (data) {
                 setTimeout(function () {
                     $('#feegow-odontograma-carregando').fadeOut(function () {

@@ -410,7 +410,16 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
              </td>
              <td><a href="./?P=tissguiaconsulta&Pers=1&I=<%=guias("id")%>" class="btn btn-success"><i class="fa fa-edit"></i> Editar</a></td>
              <td><button type="button" class="btn btn-info" onclick="guiaTISS('GuiaConsulta', <%=guias("id")%>,'<%=req("ConvenioID")%>')"><i class="fa fa-print"></i></button></td>
-             <td><a href="./?P=tissbuscaguias&Pers=1&T=<%=request.QueryString("T")%>&ConvenioID=<%=request.QueryString("ConvenioID")%>&LoteID=<%=request.QueryString("LoteID")%>&NumeroGuia=<%=request.QueryString("NumeroGuia")%>&PacienteID=<%=request.QueryString("PacienteID")%>&searchPacienteID=<%=request.QueryString("searchPacienteID")%>&DataDe=<%=request.QueryString("DataDe")%>&DataAte=<%=request.QueryString("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-danger <%=bloquear%>"><i class="fa fa-remove"></i></a></td>
+
+             <td>
+                <%
+                if aut("|guiasX|")=1 then
+                %>
+                <a href="./?P=tissbuscaguias&Pers=1&T=<%=request.QueryString("T")%>&ConvenioID=<%=request.QueryString("ConvenioID")%>&LoteID=<%=request.QueryString("LoteID")%>&NumeroGuia=<%=request.QueryString("NumeroGuia")%>&PacienteID=<%=request.QueryString("PacienteID")%>&searchPacienteID=<%=request.QueryString("searchPacienteID")%>&DataDe=<%=request.QueryString("DataDe")%>&DataAte=<%=request.QueryString("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-danger <%=bloquear%>"><i class="fa fa-remove"></i></a>
+                <%  
+                end if
+                %>
+            </td>
         </tr>
 		<%
 	guias.movenext
@@ -732,7 +741,15 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
                  </td>
              <td><a href="./?P=<%=tabela %>&Pers=1&I=<%=guias("id")%>" class="btn btn-success btn-sm"><i class="fa fa-edit"></i> Editar</a></td>
              <td><button type="button" class="btn btn-info btn-sm" onclick="guiaTISS('<%=req("T")%>', <%=guias("id")%>,'<%=req("ConvenioID")%>')"><i class="fa fa-print"></i></button></td>
-             <td><a href="./?P=tissbuscaguias&Pers=1&T=<%=request.QueryString("T")%>&ConvenioID=<%=request.QueryString("ConvenioID")%>&LoteID=<%=request.QueryString("LoteID")%>&NumeroGuia=<%=request.QueryString("NumeroGuia")%>&PacienteID=<%=request.QueryString("PacienteID")%>&searchPacienteID=<%=request.QueryString("searchPacienteID")%>&DataDe=<%=request.QueryString("DataDe")%>&DataAte=<%=request.QueryString("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-sm btn-danger <%=bloquear%>"><i class="fa fa-remove"></i></a></td>
+             <td>
+                <%
+                if aut("|guiasX|")=1 then
+                %>
+                <a href="./?P=tissbuscaguias&Pers=1&T=<%=request.QueryString("T")%>&ConvenioID=<%=request.QueryString("ConvenioID")%>&LoteID=<%=request.QueryString("LoteID")%>&NumeroGuia=<%=request.QueryString("NumeroGuia")%>&PacienteID=<%=request.QueryString("PacienteID")%>&searchPacienteID=<%=request.QueryString("searchPacienteID")%>&DataDe=<%=request.QueryString("DataDe")%>&DataAte=<%=request.QueryString("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-sm btn-danger <%=bloquear%>"><i class="fa fa-remove"></i></a>
+                <%
+                end if
+                %>
+            </td>
         </tr>
 		<%
 	guias.movenext

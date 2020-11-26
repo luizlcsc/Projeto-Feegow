@@ -337,7 +337,9 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                                         " (eventos.Procedimentos LIKE '%|"&whatsAppFiltro_TipoProcedimentoID&"|%' OR eventos.Procedimentos LIKE '%|ALL|%'                          "&chr(13)&_
                                         "    OR   eventos.Procedimentos='' OR eventos.Procedimentos IS NULL)                                   "&chr(13)&_
                                         " AND eventos.`Status` LIKE '%|1|%' "&chr(13)&_
-                                        " AND (eventos.Ativo=1) GROUP BY modelo.id"
+                                        " AND (eventos.Ativo=1) GROUP BY modelo.id"&_
+                                        " UNION ALL "&_
+                                        " SELECT se.Descricao, se.TextoSMS, ''  from configeventos ce  left join sys_smsemail se on se.id = ce.ModeloMsgWhatsapp  where ce.id = 1 "
 
                         set listPhones=db.execute(listPhonesSQL)
                         while not listPhones.eof

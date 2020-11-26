@@ -47,18 +47,28 @@ if getConfig("NaoRemoverAvisos")=1 then
     hide = "false"
 end if
 
-if ProcedimentoTempoProfissional = "true" then    
-    idProcedimento = request.QueryString("idProcedimento")
-    idProfissional = request.QueryString("idProfissional")
-    
-    set ProcedimentoTempoProfissional = db.execute("SELECT * FROM procedimento_tempo_profissional where procedimentoId ="&treatvalzero(idProcedimento)&" and profissionalId = "&treatvalzero(idProfissional)&"")
-    response.ContentType = "application/json"
+function getTempoProcedimento(procedimentoId, profissionalID)
 
-    if ProcedimentoTempoProfissional.eof then
+        set ProcedimentoTempoProfissional = db.execute("SELECT coalesce(ptp.tempo, proc.ObrigarTempo) tempo "&_
+        "FROM procedimento_tempo_profissional ptp "&_
+        "INNER JOIN procedimentos proc ON proc.id=ptp.ProcedimentoID "&_
+        "where ptp.procedimentoId ="&treatvalzero(procedimentoId)&" and ptp.profissionalId = "&treatvalzero(profissionalID)&"")
+
+        if not ProcedimentoTempoProfissional.eof then
+            getTempoProcedimento = ProcedimentoTempoProfissional("tempo")
+        end if
+end function
+
+ if ProcedimentoTempoProfissional = "true" then
+    tempoPorProfissional = getTempoProcedimento(req("idProcedimento"), req("idProfissional"))
+
+    if tempoPorProfissional="" then
         response.write("{}")
         response.end
     end if
-    
+
+    response.ContentType = "application/json"
+
     response.write("{""tempo"":"&ProcedimentoTempoProfissional("tempo")&"}")   
     response.end
 end if
@@ -411,6 +421,9 @@ if left(tipo, 14)="ProcedimentoID" then
 
         ValorAgendamento = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ref("ProfissionalID"), ref("EspecialidadeID"), GrupoID)
 		if Checkin&"" <> "1" then 
+
+        
+        tempoProcedimento = getTempoProcedimento(procedimentoId, profissionalID)
         %>
 		 $("#Tempo<%= apID %>").val('<%=TempoProcedimento%>');
 		 if($("#EquipamentoID<%= apID %>").val() == "" || $("#EquipamentoID<%= apID %>").val() == "0"){

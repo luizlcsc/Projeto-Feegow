@@ -117,7 +117,7 @@ if(count=="0"){
    function selectProcedure() {
        var $procedimentos = $(".procedimento-pacote:checked");
 
-       var i =0;
+       var i = 0;
 
        $procedimentos.each(function() {
             var $procedimento = $(this);
@@ -135,15 +135,17 @@ if(count=="0"){
                 $("#searchindicacaoId").val(Solicitante);
             }
             
-            if(i > 0){
-                count = i*-1;
+            count = i*-1;
 
-                setTimeout(function(){
-                    adicionarProcedimentos();
-                }, 50 * i);
+            if(count == 0){
+                count= ''
+                procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i);
+            }else{
+                adicionarProcedimentos(count,(retorno)=>{
+                    procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i);
+                });
             }
-            
-            procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i);
+
 
             i++;
        });
@@ -152,18 +154,20 @@ if(count=="0"){
 
    function procedimentoSelect2(procedimentoId, nomeProcedimento, tempo, preco, count, i) {
 
-        setTimeout(function() {
-            $("#ProcedimentoID"+count+" option").text(nomeProcedimento);
-            $("#ProcedimentoID"+count+" option").val(procedimentoId);
-            $("#ProcedimentoID"+count).val(procedimentoId);
-            $("#Tempo"+count).val(tempo);
+     
+        $("#ProcedimentoID"+count+" option").text(nomeProcedimento);
+        $("#ProcedimentoID"+count+" option").val(procedimentoId).attr('selected');
+        $("#ProcedimentoID"+count).val(procedimentoId);
+        $("#Tempo"+count).val(tempo);
 
-                $("#Valor"+count).val(preco);
-                somarValores();
+        $("#Valor"+count).val(preco);
+        somarValores();
 
-            $("#rdValorPlanoV"+count).click();
+        $("#rdValorPlanoV"+count).click();
+        setTimeout(function() { 
             s2aj("ProcedimentoID"+count, 'procedimentos', 'NomeProcedimento', '', '','agenda');
-        },250*i);
+        },50*i+1);
+
    }
 
 </script>

@@ -1324,26 +1324,25 @@ function btnSalvarToggleLoading(state, force, waitMessage="Aguarde...") {
 
 function parametros(tipo, id){
     btnSalvarToggleLoading(false);
-
     setTimeout(function() {
         if(id == -1){
             id = $("#"+tipo).val();
         }
+
         $.ajax({
             type:"POST",
             url:"AgendaParametros.asp?tipo="+tipo+"&id="+id,
             data:$("#formAgenda").serialize(),
             success:function(data){
-
                 eval(data);
                 abasAux();
                 btnSalvarToggleLoading(true);
 
             },
             error:function(data){
-
+                // console.log(data)
                 //comentado por possivel erro para clientes: Valor divergente da tabela particular (variacao)
-                // btnSalvarToggleLoading(true);
+                btnSalvarToggleLoading(true);
             }
         });
     }, 100);
@@ -1681,8 +1680,8 @@ if req("ProcedimentoID")<>"" and isnumeric(req("ProcedimentoID")) then
 end if
 %>
 function addProcedimentos(I) {
-var pacienteId = $("#PacienteID").val();
-var professionalId = $("#ProfissionalID").val();
+    var pacienteId = $("#PacienteID").val();
+    var professionalId = $("#ProfissionalID").val();
 
         $.get("ListarProcedimentosPacote.asp", {
             contadorProcedimentos: I,
@@ -1694,9 +1693,12 @@ var professionalId = $("#ProfissionalID").val();
             }
         });
 };
-function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasConvenios,Equipamento) {
+function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasConvenios,Equipamento,count,callback=false) {
+    if(!count){
+        let linhas = $("tr[class='linha-procedimento']").length
+        count = linhas*-1
+    }
     if(A=='I'){
-
         I = parseInt($("#nProcedimentos").val())-1;
         $("#nProcedimentos").val( I );
         let formapgt = $("[name=rdValorPlano]:checked").val();
@@ -1712,14 +1714,15 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
             EquipamentoID: Equipamento,
             Forma: formapgt,
             ConvenioSelecionado: convenioID,
-            linhas: "-"+linhas.length
+            linhas: count //"-"+linhas.length
             }, function (data) {
-            addProcedimentos(I);
+            // addProcedimentos(I);
             $('#bprocs').append(data);
+            if(callback && typeof callback == 'function'){
+                callback(true)
+            }
 
         });
-
-
     }else if(A=='X'){
         $("#la"+I).remove();
         somarValores();

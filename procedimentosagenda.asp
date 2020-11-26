@@ -24,6 +24,7 @@ end if
 <script type="text/javascript">
 <!--#include file="JQueryFunctions.asp"-->
 $(function(){
+    // console.log("<%=linhas%>")
     $(".valorprocedimento, .linha-procedimento").on('change', function(){
         somarValores();
         // dispEquipamento();

@@ -4,7 +4,7 @@
 ProfissionalID = ref("ProfissionalID")
 id = req("R")'id da row
 executeLote = req("executeLote")'id da row
-
+pacoteId = req("PacoteId")
 col = 2
 if (req("C")<>"") then
     col = req("C")
@@ -49,7 +49,6 @@ else
 
     end if
 
-
     if sqlEsp<>"" then
         set QtdEspecialidadesSQL = db.execute(sqlEsp)
 
@@ -58,12 +57,14 @@ else
 
          end if 
         end if 
-         %>
-        <script type="text/javascript">
-            parametrosInvoice('<%=id%>', $('#ItemID<%= id %>').val());
-        // PRIMEIRO COLOCAR PRA PEGAR O VALOR CORRETO DESSA LINHA E DEPOIS -> calcRepasse(<%= id %>);
-        </script>
+        if pacoteId <> "" then
+        %>
+            <script type="text/javascript">
+                parametrosInvoice('<%=id%>', $('#ItemID<%= id %>').val());
+            // PRIMEIRO COLOCAR PRA PEGAR O VALOR CORRETO DESSA LINHA E DEPOIS -> calcRepasse(<%= id %>);
+            </script>
     <%
+        end if 
     end if 
     
     %>

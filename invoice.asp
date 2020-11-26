@@ -734,7 +734,6 @@ var $componentsModal = $("#feegow-components-modal"),
 var $btnMarcarTodos = $("#ExecutadoTodos");
 
 $btnMarcarTodos.click(function() {
-//    console.log("c")
 
     var $checks = $(".checkbox-primary");
     var idsProdutos = "";
@@ -853,7 +852,7 @@ var itensAlterados = false;
 function itens(T, A, II, autoPCi, cb){
     itensAlterados=true;
 
-	var inc = $('[data-val]:last').attr('data-val');
+    var inc = $('[data-val]:last').attr('data-val');
 	var centroCustoId = $("#CentroCustoBase").val();
 	var LimitarPlanoContas = $("#LimitarPlanoContas").val();
 
@@ -1029,7 +1028,6 @@ function addContrato(ModeloID, InvoiceID, ContaID){
         var ProfissionalExecutante = $(value).val();
         ProfissionalExecutante_final+= ProfissionalExecutante
     });
-    //console.log(ProfissionalExecutante_final);
 
     if($("#AccountID").val()=="" || $("#AccountID").val()=="0" || $("#AccountID").val()=="_"){
         alert("Selecione um pagador para gerar o contrato.");
@@ -1059,7 +1057,6 @@ var InvoiceAlterada = false;
         });
 
     if("<%=request.QueryString("time")%>" != ''){
-    console.log('recalc...');
         recalc();
     }
 
@@ -1157,10 +1154,13 @@ if($("#sysActive").val()==1){
 }
 
 function espProf(I,profissionaisID,executeLote){
+    let pacoteId = $("#PacoteID"+I).val()
     if(executeLote == "S"){
-        $.post("divEspecialidadeII.asp?Change=1&R="+I+"&executeLote=S", { ProfissionalID: profissionaisID }, function(data){ eval(data) });
+        $.post("divEspecialidadeII.asp?Change=1&R="+I+"&executeLote=S&PacoteId="+pacoteId, { ProfissionalID: profissionaisID }, function(data){ eval(data) });
     }else{
-        $.post("divEspecialidadeII.asp?Change=1&R="+I, { ProfissionalID: $('#ProfissionalID'+I).val() }, function(data){ $("#divEspecialidadeID"+I).html(data) });
+        $.post("divEspecialidadeII.asp?Change=1&R="+I, { ProfissionalID: $('#ProfissionalID'+I).val() }, function(data){ 
+            $("#divEspecialidadeID"+I).html(data) 
+        });
     }
 }
 

@@ -39,7 +39,7 @@
             end if
 
             %>
-            <input type="hidden" name="PacoteID<%= id %>" value="<%= PacoteID %>" />
+            <input type="hidden" id="PacoteID<%= id %>" name="PacoteID<%= id %>" value="<%= PacoteID %>" />
             <td colspan="2">
             <%
             if NaoAlterarExecutante then
@@ -102,7 +102,7 @@
             end if
             %>
             <td  nowrap>
-            <div class="col-md-4">
+            <div class="col-md-4 produtoRow">
                 <div class="radio-custom radio-primary">
                     <input type="radio" name="Executado<%=id %>" id="Executado<%=id %>C" value="C" <%if Executado="C" then %> checked <%end if %> /><label for="Executado<%=id %>C">Conjunto</label>
                 </div>

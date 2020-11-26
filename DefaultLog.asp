@@ -25,6 +25,7 @@
                             <th>Operação</th>
                             <%end if %>
                             <th>ID</th>
+                            <th>Registro</th>
                             <th>Data</th>
                             <th>Usuário</th>
                             <th>Obs.</th>
@@ -118,6 +119,7 @@ end if
 
 %>
     <th><code>#<%=plog("I") %></code></th>
+    <th><small><%=plog("PaiID") %></small></th>
     <th><%=plog("DataHora") %></th>
     <th><%=nameInTable(plog("sysUser")) %></th>
     <th><%=plog("Obs") %></th>
@@ -158,6 +160,7 @@ end if
                                             </td>
                                             <%end if %>
                                             <th><code>#<%=plog("I") %></code></th>
+                                            <th><small><%=plog("PaiID") %></small></th>
                                             <th>
 
                                                 <%=plog("DataHora") %></th>
@@ -184,7 +187,7 @@ end if
                         if c=0 then
                         %>
                         <tr>
-                            <td colspan="7">Nenhuma ação registrada.</td>
+                            <td colspan="8">Nenhuma ação registrada.</td>
                             <td></td>
                             <td></td>
                         </tr>

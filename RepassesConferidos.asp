@@ -78,6 +78,7 @@ DeSqlProf = De
 
 if De&""<>"" and TipoData="Comp" then
     DeExec = dateadd("m", -6, De)
+    ' DeExec = De
     DeSqlProf = dateadd("d", -15, De)
 else
     DeExec=De
@@ -252,7 +253,7 @@ if ExibeResultado then
                                 " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit "&_
                                 " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID "&_
                                 " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id "&_
-                                " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=t.ParcelaID "&_
+                                " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.TransactionID = fct.id "&_
                                 " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia=t.TipoGuia AND tgi.GuiaID=t.GuiaID "&_
                                 " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID "&_
                                 " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id "&_
@@ -275,7 +276,7 @@ if ExibeResultado then
                                  " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit"&_
                                  " LEFT JOIN cliniccentral.sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID"&_
                                  " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id"&_
-                                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=rrgc.ParcelaID"&_
+                                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.TransactionID = fct.id"&_
                                  " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia='GuiaConsulta' AND tgi.GuiaID=gc.id"&_
                                  " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID"&_
                                  " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id"&_
@@ -320,7 +321,7 @@ if ExibeResultado then
                                  " WHERE COALESCE(mdisc.date, mdesc.Date) BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &" and (t.ContaCredito LIKE CONCAT('%_"& ContaCredito &"') or t.ContaCredito='"& ContaCredito &"') AND t.ConvenioID IN ("& Forma &") "&sqlFormRecto&" AND t.modoCalculo='"& modoCalculo &"' "& sqlUnidades &_
                                  " GROUP BY t.id ORDER BY t.DataExecucao, pac.NomePaciente, proc.NomeProcedimento"
                 end if
-                       
+
                 if reqf("Debug")="1" then
                     response.write( session("Banco") & chr(10) & chr(13) & sqlRR )
                 end if
@@ -377,7 +378,6 @@ if ExibeResultado then
                     fLink = ""
                     Status = reqf("Status")
                     NomeTabela = rr("NomeTabela")
-
                     Exibe = 0
                     if Status="" then
                         Exibe = 1

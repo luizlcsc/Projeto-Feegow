@@ -30,9 +30,9 @@
 </div>
 <script type="text/javascript">
 
-    $.get('https://components-legacy.feegow.com/index.php/odontograma/odontogramaAtendimento?P=<%=req("I")%>&U=<%=session("User")%>',
+    $.get('https://components-legacy.feegow.com/odontograma/odontogramaAtendimento?P=<%=req("I")%>&U=<%=session("User")%>',
     function (data) {
-        $("#odontograma-contegit statusudo").html(data);
+        $("#odontograma-conteudo").html(data);
     });
 
     $('#btn-abrir-modal-odontograma').on('click', function () {

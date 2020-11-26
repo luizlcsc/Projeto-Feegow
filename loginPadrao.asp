@@ -557,6 +557,8 @@ if not tryLogin.EOF then
             else
                 if Versao=7 then
                     urlRedir = "./?P=Home&Pers=1"
+                elseif Versao=6 then
+                    urlRedir = "/v6/?P=Home&Pers=1"
                 else
                     urlRedir = "./../?P=Home&Pers=1"
                 end if

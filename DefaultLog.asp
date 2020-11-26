@@ -70,9 +70,10 @@
                             end if
 
                             if req("I")="" then
-                                set sr = db.execute("select initialOrder from cliniccentral.sys_resources where tableName='"& ref("Recurso") &"'")
+                                set sr = db.execute("select initialOrder, Pers from cliniccentral.sys_resources where tableName='"& ref("Recurso") &"'")
                                 if not sr.eof then
                                     initialOrder = sr("initialOrder")
+                                    Pers = sr("Pers")
                                     if isnull(initialOrder) then
                                         initialOrder="id"
                                     end if
@@ -88,7 +89,7 @@
 <tr>
 <%if req("I")="" then %>
     <td class="p5 mn">
-        <a href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
+        <a disabled href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
     </td>
     <td>
         <%= NomeRegistro %>
@@ -140,7 +141,14 @@ end if
 
                                                 %>
                                             <td class="p5 mn">
-                                                <a href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
+                                                <%
+                                                externalLinkDisabled = ""
+
+                                                if isnull(Pers) then
+                                                    externalLinkDisabled=" disabled "
+                                                end if
+                                                %>
+                                                <a <%=externalLinkDisabled%> href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
                                             </td>
                                             <td>
                                                 <%= NomeRegistro %>

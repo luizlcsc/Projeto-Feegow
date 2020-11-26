@@ -61,16 +61,16 @@ end if
 
 %>
 
-<form method="post" id="formProtocolos" name="formProtocolos" action="save.asp">
+<form method="post" id="formProtocolos" name="formProtocolos">
 
-    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
+    <input type="hidden" id="idProtocolo" name="I" value="<%=request.QueryString("I")%>" />
 
     <div class="tabbable panel">
         <div class="tab-content panel-body">
             <div id="divCadastroProtocolo" class="tab-pane in active">
                 <div class="col-md-12">
-                <%=quickField("text", "NomeProtocolo", "Nome <code>#"&ProtocoloID&"</code>", 3, NomeProtocolo, "", "", " required")%>
-                <%=quickfield("simpleSelect", "Procedimentos", "Procedimentos", 3, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and ativo='on' order by NomeProcedimento", "NomeProcedimento", "required") %>
+                <%=quickField("text", "NomeProtocolo", "Nome <code>#"&ProtocoloID&"</code>", 3, NomeProtocolo, "", "", "required")%>
+                <%=quickfield("simpleSelect", "Procedimentos", "Procedimentos", 3, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and ativo='on' order by NomeProcedimento", "NomeProcedimento", "empty required") %>
                 <%=quickField("simpleSelect", "GrupoID", "Grupo", 2, GrupoID, "select * from protocolosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "")%>
                     <div class="col-md-1">
                         <label>
@@ -85,16 +85,16 @@ end if
                         <button type="button" class="btn btn-warning btn-block mt20" onClick="RegraProtocolo('<%=I%>')"><i class="fa fa-lock"></i></button>
                     </div>
                     <div class="col-md-2" title="Este protocolo está em uso e não pode ser alterado" >
-                        <button id='salvar' type="button" class="btn btn-primary btn-block mt20" onClick="saveProtocolo('<%=I%>')"><i class="fa fa-save"></i> Salvar</button>
+                        <button id='salvar' type="submit" class="btn btn-primary btn-block mt20"><i class="fa fa-save"></i> Salvar</button>
                     </div>
                 </div>
                 <div class="col-md-12 mt10">
                 <%=quickField("text", "Referencia", "Ref. Bibliográfica", 2, Referencia, "", "", "")%>
-                <%=quickField("number", "NCiclos", "Nº Ciclos", 1, NCiclos, " text-right ", "", "required") %>
-                <%=quickField("text", "AUC", "AUC", 1, AUC, " input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
-                <%=quickField("number", "Marcacao", "Máx. agendam. p/ dia", 2, Marcacao, " text-right ", "", "") %>
-                <%=quickField("number", "MaxDias", "Máx. dias Ciclo", 2, MaxDias, " text-right ", "", "required") %>
-                <%=quickField("number", "Periodicidade", "Periodicidade", 2, Periodicidade, " text-right ", "", "required") %>
+                <%=quickField("number", "NCiclos", "Nº Ciclos", 1, NCiclos, "text-right", "", "min=""1"" required") %>
+                <%=quickField("text", "AUC", "AUC", 1, AUC, "input-mask-brl text-right", "", " placeholder=""0,00"" ")%>
+                <%=quickField("number", "Marcacao", "Máx. agendam. p/ dia", 2, Marcacao, "text-right ", "", "") %>
+                <%=quickField("number", "MaxDias", "Máx. dias Ciclo", 2, MaxDias, "text-right", "", "min=""1"" required") %>
+                <%=quickField("number", "Periodicidade", "Periodicidade", 2, Periodicidade, "text-right", "", "min=""1"" required") %>
                 <%=quickField("number", "Duracao", "Duração do Tratamento", 2, Duracao, " text-right ", "", "") %>
                 </div>
             </div>
@@ -184,45 +184,17 @@ end if
        getDocumentos('<%=req("I")%>')
        block()
     });
-    function saveProtocolo(ID){
 
-        var cont = validateform();
-        if(cont == 0)
-         {
-            $.post("saveProtocolo.asp?I="+ID, $("#formProtocolos").serialize(), function(data){
+    $('#formProtocolos').on('submit', function(e){
+        e.preventDefault();
+
+        var id = $('#idProtocolo').val()
+
+        $.post("saveProtocolo.asp?I=" + id, $("#formProtocolos").serialize(), function(data){
             eval(data);
-            });
-         }
-   
-    
-    };
-    function validateform() {
-        var control = 0;
-        $(document).ready(function(){
-        $("[required]").each(function(){
-            if($(this).val() == "")
-               {
-                  $(this).css({"border" : "1px solid #F00", "padding": "2px"});
-                  control++;
-               }
-            if($('#Procedimentos option:selected').val() == 0)
-               {
-                  $('#select2-Procedimentos-container').css({"border" : "1px solid #F00", "padding": "2px"});
-                  control++;
-               }
+        }); 
+    });
 
-        });
-        $(".select2-single, .input-mask-brl").each(function(){ 
-            if($(this).val() == 0)
-               {
-                  $(".select2-selection__rendered, .multiselect, .input-mask-brl").css({"border" : "1px solid #F00", "padding": "2px"});
-                  control++;
-               }
-
-        });
-        });
-        return control; 
-    }
     function RegraProtocolo(ID) {
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");
@@ -234,11 +206,9 @@ end if
 
     }
     function addMedicamentos(ID){
-        saveProtocolo(ID);
     	$.post("ProtocolosMedicamentosTabela.asp?Tipo=I&I="+ID, $("#formProtocolos").serialize(), function(data, status){$("#ProtocolosMedicamentosTabela").html(data);});
     }
     function addKits(ID){
-        saveProtocolo(ID);
     	$.post("ProtocolosKitsTabela.asp?Tipo=I&I="+ID, $("#formProtocolos").serialize(), function(data, status){$("#ProtocolosKitsTabela").html(data);});
     }
     function copiarProtocolo(ID) {

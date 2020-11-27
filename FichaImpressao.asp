@@ -18,7 +18,7 @@ if not getImpressos.EOF then
         Rodape = replaceTags(timb("Rodape"), 0, session("UserID"), session("UnidadeID"))
     end if
     if lcase(session("table"))="profissionais" then
-        set timb = db.execute("select * from papeltimbrado where sysActive=1 AND profissionais like '%|"&session("idInTable")&"|%'")
+        set timb = db.execute("select * from papeltimbrado where sysActive=1 AND profissionais like '%|"&req("ProfissionalID")&"|%'")
         if not timb.eof then
             Cabecalho = timb("Cabecalho")
             Rodape = timb("Rodape")

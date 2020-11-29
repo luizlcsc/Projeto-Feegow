@@ -71,7 +71,7 @@
  <!--  <div class="modal-dialog" role="document"> -->
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Finalizar Atendimento</h5>
         
       </div>
       <div class="modal-body">
@@ -85,18 +85,16 @@
  <!-- </div> -->    
 <!-- </div> -->
 <script>
-function finalizaratendimento(){
-setTimeout(function(){
-                $.ajax({
-                    type:"POST",
-                    url:"modalInfAtendimento.asp?AgendamentoID=<%=AgendamentoID%>&AtendimentoID=<%=AtendimentoID%>&Origem=Atendimento&PacienteID=<%=PacienteID%>&Solicitacao=<%=Solicitacao%>",
-                    success: function(data){
-                        $("#modal").html(data);
-                        setTimeout(function() {
-                            $("#modal-table").modal("show");
-                        }, 400);
-                    }
-                });
-                }, 200);
-}
+    function finalizaratendimento(){
+        $.ajax({
+            type:"POST",
+            url:"modalInfAtendimento.asp?AgendamentoID=<%=AgendamentoID%>&AtendimentoID=<%=AtendimentoID%>&Origem=Atendimento&PacienteID=<%=PacienteID%>&Solicitacao=<%=Solicitacao%>",
+            success: function(data){
+                $("#modal").html(data);
+                setTimeout(function() {
+                    $("#modal-table").modal("show");
+                }, 400);
+            }
+        });                
+    }
 </script>

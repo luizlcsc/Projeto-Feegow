@@ -301,7 +301,7 @@ if Conteudo="Play" then
 
             <% else %>
                 <div class="col-sm-6">
-                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i>pop Finalizar</button>
+                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i> Finalizar</button>
                 </div>
                 <div class="col-sm-6">
                     <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="fa fa-pause"></i> Solicitar</button>

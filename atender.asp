@@ -110,31 +110,45 @@ if Acao="PreEncerrar" then
 	end if
 	if not buscaAtendimento.eof then
 	    AtendimentoID=buscaAtendimento("id")
-''		db_execute("update atendimentos set HoraFim='"&time()&"' where id="&buscaAtendimento("id"))
-		'fecha possível lista de espera com este paciente
-''		set lista = db.execute("select * from agendamentos where PacienteID="&PacienteID&" and Data='"&mydate(date())&"' and StaID<>3 and ProfissionalID="&session("idInTable")&" order by Hora")
-''		if not lista.EOF then
-''			db_execute("update agendamentos set StaID=3 where id="&lista("id"))
-''		end if
-''		session("Atendimentos") = replace(session("Atendimentos"), "|"&buscaAtendimento("id")&"|", "")
-		%>
+	%>
 		<script language="javascript">
-//		$("#agePac<%=PacienteID%>").css("display", "none");
-		//$("#modal").html('<div ><i class="fa fa-circle-o-notch fa-spin fa-fw"></i> <span class="sr-only">Carregando...</span> Carregando...</div>');
+    <%
+        set AtendimentoSQL = db.execute("SELECT PacienteID FROM atendimentos WHERE id="&buscaAtendimento("id"))
+        set FormPreenchidoSQL = db.execute("SELECT count(id)n FROM buiformspreenchidos WHERE PacienteID="&AtendimentoSQL("PacienteID")&" AND sysUser="&session("User")&" AND sysActive=1 AND date(DataHora)="&mydatenull(date()))
+        if  FormPreenchidoSQL("n") = "0" and getConfig("QuestionarPreenchimentoDeFormulario") = "S" then
+            %>  
+                setTimeout(function(){
+                $.ajax({
+                    type:"POST",
+                    url:"modalConfirmaFinalizarAtendimento.asp?AgendamentoID=<%=req("Atender")%>&AtendimentoID=<%=buscaAtendimento("id")%>&Origem=Atendimento&PacienteID=<%=PacienteID%>&Solicitacao=<%=req("Solicitacao")%>",
+                    success: function(data){
+                        $("#modal").html(data);
+                        setTimeout(function() {
+                            $("#modal-table").modal("show");
+                        }, 400);
+                    }
+                });
+                }, 200);
+            <%  
+        else
+            %>
+                setTimeout(function(){
+                $.ajax({
+                    type:"POST",
+                    url:"modalInfAtendimento.asp?AgendamentoID=<%=req("Atender")%>&AtendimentoID=<%=buscaAtendimento("id")%>&Origem=Atendimento&PacienteID=<%=PacienteID%>&Solicitacao=<%=req("Solicitacao")%>",
+                    success: function(data){
+                        $("#modal").html(data);
+                        setTimeout(function() {
+                            $("#modal-table").modal("show");
+                        }, 400);
+                    }
+                });
+                }, 200);
+            <%  
+        end if 
+        %>
 
-
-		setTimeout(function(){
-			$.ajax({
-				type:"POST",
-				url:"modalInfAtendimento.asp?AgendamentoID=<%=req("Atender")%>&AtendimentoID=<%=buscaAtendimento("id")%>&Origem=Atendimento&PacienteID=<%=PacienteID%>&Solicitacao=<%=req("Solicitacao")%>",
-				success: function(data){
-					$("#modal").html(data);
-					setTimeout(function() {
-		                $("#modal-table").modal("show");
-					}, 400);
-				}
-			});
-		}, 200);
+		
 		</script>
 		<%
 	end if
@@ -287,7 +301,7 @@ if Conteudo="Play" then
 
             <% else %>
                 <div class="col-sm-6">
-                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i> Finalizar</button>
+                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i>pop Finalizar</button>
                 </div>
                 <div class="col-sm-6">
                     <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="fa fa-pause"></i> Solicitar</button>

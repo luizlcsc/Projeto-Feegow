@@ -17,12 +17,17 @@ if not getImpressos.EOF then
         end if
         Rodape = replaceTags(timb("Rodape"), 0, session("UserID"), session("UnidadeID"))
     end if
-    if lcase(session("table"))="profissionais" then
-        set timb = db.execute("select * from papeltimbrado where sysActive=1 AND profissionais like '%|"&session("idInTable")&"|%'")
-        if not timb.eof then
-            Cabecalho = timb("Cabecalho")
-            Rodape = timb("Rodape")
-        end if
+
+    ProfissionalID = req("ProfissionalID")
+
+    if lcase(session("table"))="profissionais" and (ProfissionalID="" or ProfissionalID="0") then
+        ProfissionalID = session("idInTable")
+    end if
+
+    set timb = db.execute("select * from papeltimbrado where sysActive=1 AND (profissionais like '%|"&ProfissionalID&"|%' or coalesce(profissionais,'')='' or profissionais like '&|ALL|&' ) ORDER BY profissionais like '%|"&ProfissionalID&"|%' desc")
+    if not timb.eof then
+        Cabecalho = timb("Cabecalho")
+        Rodape = timb("Rodape")
     end if
 end if
 

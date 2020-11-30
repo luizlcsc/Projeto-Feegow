@@ -134,7 +134,7 @@ end if
 
                             </div>
                             <div class="row">
-                                <%=quickField("multiple", "SomenteFornecedor", "Procedimentos", 6, SomenteFornecedor, "SELECT id,NomeProcedimento FROM procedimentos WHERE Ativo='on' and sysActive=1 order by NomeProcedimento", "NomeProcedimento", "")%>
+                                <%'=quickField("multiple", "SomenteFornecedor", "Procedimentos", 6, SomenteFornecedor, "SELECT id,NomeProcedimento FROM procedimentos WHERE Ativo='on' and sysActive=1 order by NomeProcedimento", "NomeProcedimento", "")%>
                             </div>
                             </div>
                         </div>

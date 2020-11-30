@@ -25,6 +25,7 @@
                             <th>Operação</th>
                             <%end if %>
                             <th>ID</th>
+                            <th>Registro</th>
                             <th>Data</th>
                             <th>Usuário</th>
                             <th>Obs.</th>
@@ -70,9 +71,10 @@
                             end if
 
                             if req("I")="" then
-                                set sr = db.execute("select initialOrder from cliniccentral.sys_resources where tableName='"& ref("Recurso") &"'")
+                                set sr = db.execute("select initialOrder, Pers from cliniccentral.sys_resources where tableName='"& ref("Recurso") &"'")
                                 if not sr.eof then
                                     initialOrder = sr("initialOrder")
+                                    Pers = sr("Pers")
                                     if isnull(initialOrder) then
                                         initialOrder="id"
                                     end if
@@ -88,7 +90,7 @@
 <tr>
 <%if req("I")="" then %>
     <td class="p5 mn">
-        <a href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
+        <a disabled href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
     </td>
     <td>
         <%= NomeRegistro %>
@@ -117,6 +119,7 @@ end if
 
 %>
     <th><code>#<%=plog("I") %></code></th>
+    <th><small><%=plog("PaiID") %></small></th>
     <th><%=plog("DataHora") %></th>
     <th><%=nameInTable(plog("sysUser")) %></th>
     <th><%=plog("Obs") %></th>
@@ -140,7 +143,14 @@ end if
 
                                                 %>
                                             <td class="p5 mn">
-                                                <a href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
+                                                <%
+                                                externalLinkDisabled = ""
+
+                                                if isnull(Pers) then
+                                                    externalLinkDisabled=" disabled "
+                                                end if
+                                                %>
+                                                <a <%=externalLinkDisabled%> href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
                                             </td>
                                             <td>
                                                 <%= NomeRegistro %>
@@ -150,6 +160,7 @@ end if
                                             </td>
                                             <%end if %>
                                             <th><code>#<%=plog("I") %></code></th>
+                                            <th><small><%=plog("PaiID") %></small></th>
                                             <th>
 
                                                 <%=plog("DataHora") %></th>
@@ -176,7 +187,7 @@ end if
                         if c=0 then
                         %>
                         <tr>
-                            <td colspan="7">Nenhuma ação registrada.</td>
+                            <td colspan="8">Nenhuma ação registrada.</td>
                             <td></td>
                             <td></td>
                         </tr>

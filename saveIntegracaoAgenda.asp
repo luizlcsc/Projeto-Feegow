@@ -28,8 +28,8 @@ if ref("Integrar")="S" then
 	while not age.eof
 	    i=i+1
 	    'fazer aq fuso horario reverso
-        FusoHorario=3
-        HorarioVerao="S"
+        'FusoHorario=3
+        'HorarioVerao="S"
 
         if isHorarioVerao() then
             if not isnull(age("LocalID")) then

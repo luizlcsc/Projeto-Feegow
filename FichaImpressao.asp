@@ -20,7 +20,7 @@ if not getImpressos.EOF then
 
     ProfissionalID = req("ProfissionalID")
 
-    if lcase(session("table"))="profissionais" and ProfissionalID="" then
+    if lcase(session("table"))="profissionais" and (ProfissionalID="" or ProfissionalID="0") then
         ProfissionalID = session("idInTable")
     end if
 

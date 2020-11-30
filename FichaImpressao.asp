@@ -24,7 +24,7 @@ if not getImpressos.EOF then
         ProfissionalID = session("idInTable")
     end if
 
-    set timb = db.execute("select * from papeltimbrado where sysActive=1 AND (profissionais like '%|"&ProfissionalID&"|%' or coalesce(profissionais,'')='' ) ORDER BY profissionais like '%|"&ProfissionalID&"|%' desc")
+    set timb = db.execute("select * from papeltimbrado where sysActive=1 AND (profissionais like '%|"&ProfissionalID&"|%' or coalesce(profissionais,'')='' or profissionais like '&|ALL|&' ) ORDER BY profissionais like '%|"&ProfissionalID&"|%' desc")
     if not timb.eof then
         Cabecalho = timb("Cabecalho")
         Rodape = timb("Rodape")

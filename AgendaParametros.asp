@@ -490,9 +490,11 @@ if left(tipo, 14)="ProcedimentoID" then
     if not isnull(ValorAgendamento) then
         if isnumeric(ValorAgendamento) then
             %>
-
-             $("#Valor<%= apID %>").val('<%=fn(ValorAgendamento)%>');
-             $("#ValorText<%= apID %>").html('<%=fn(ValorAgendamento)%>');
+             let pacote = $("#ProcedimentoID<%= apID %>").parent().parent().attr("data-pacote")
+             if (!pacote || pacote == undefined ) {
+                $("#Valor<%= apID %>").val('<%=fn(ValorAgendamento)%>');
+                $("#ValorText<%= apID %>").html('<%=fn(ValorAgendamento)%>');
+             }
              somarValores();
              dispEquipamento();
             <%

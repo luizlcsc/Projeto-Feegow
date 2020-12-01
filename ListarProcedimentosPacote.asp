@@ -121,6 +121,7 @@ if(count=="0"){
 
        $procedimentos.each(function() {
             var $procedimento = $(this);
+            var idPacote = $procedimento[0].dataset.id
             var NomeProcedimento = $procedimento.data("nome");
             
             var ProcPreco = $procedimento.data("valor");
@@ -139,10 +140,10 @@ if(count=="0"){
 
             if(count == 0){
                 count= ''
-                procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i);
+                procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i,idPacote);
             }else{
                 adicionarProcedimentos(count,(retorno)=>{
-                    procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i);
+                    procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i,idPacote);
                 });
             }
 
@@ -152,15 +153,17 @@ if(count=="0"){
        closeComponentsModal();
    }
 
-   function procedimentoSelect2(procedimentoId, nomeProcedimento, tempo, preco, count, i) {
+   function procedimentoSelect2(procedimentoId, nomeProcedimento, tempo, preco, count, i,idPacote=false) {
 
-     
+        if(idPacote){
+            $("#ProcedimentoID"+count+"").parent().parent().attr('data-pacote',idPacote)
+        }
         $("#ProcedimentoID"+count+" option").text(nomeProcedimento);
         $("#ProcedimentoID"+count+" option").val(procedimentoId).attr('selected');
         $("#ProcedimentoID"+count).val(procedimentoId);
         $("#Tempo"+count).val(tempo);
-
         $("#Valor"+count).val(preco);
+
         somarValores();
 
         $("#rdValorPlanoV"+count).click();

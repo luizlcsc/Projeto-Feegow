@@ -20,7 +20,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
     item_id   = itemArray(1)&""
     conteudo = conteudo&""
 
-    response.write("<pre>"&item_nome&": "&item_id&"</pre>")
+   ' response.write("<pre>"&item_nome&": "&item_id&"</pre>")
     
     '## Add prefixo item_ para evitar conflitos de variaveis
     select case item_nome
@@ -615,7 +615,7 @@ end function
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalID_1",""))
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalSessao_1",""))
 'response.write("<br>"&TagsConverte("[ProfissionalSolicitante.Nome]","ProfissionalSolicitanteID_200",""))
-response.write(TagsConverte("Endereço: [Unidade.EnderecoCompleto]<br> agendamento: [Agendamento.Especialidade] Hora: [Agendamento.Hora]","UnidadeID_1|AgendamentoID_1398622",""))
+'response.write(TagsConverte("Endereço: [Unidade.EnderecoCompleto]<br> agendamento: [Agendamento.Especialidade] Hora: [Agendamento.Hora]","UnidadeID_1|AgendamentoID_1398622",""))
 
 'Pegar Agendamento válido, E buscar a especialidade do mesmo.
 %>

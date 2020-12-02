@@ -20,7 +20,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
     item_id   = itemArray(1)&""
     conteudo = conteudo&""
 
-    'response.write("<pre>"&item_nome&": "&item_id&"</pre>")
+    response.write("<pre>"&item_nome&": "&item_id&"</pre>")
     
     '## Add prefixo item_ para evitar conflitos de variaveis
     select case item_nome
@@ -273,6 +273,16 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 
             conteudo = replace(conteudo, "[Unidade.NomeFantasia]", trim(UnidadeSQL("NomeFantasia")&" ") )
             'ENDERECO
+            Estado = UnidadeSQL("Estado")&""
+            Cidade = UnidadeSQL("Cidade")&""
+            Bairro = UnidadeSQL("Bairro")&""
+            Endereco = UnidadeSQL("Endereco")&""
+            Numero = UnidadeSQL("Numero")&""
+            Complemento = UnidadeSQL("Complemento")&""
+
+            EnderecoCompleto = replace(Endereco&", "&Numero&", "&Complemento&", "&Bairro&", "&Cidade&", "&Estado, ", , ", ", " )
+
+
             conteudo = replace(conteudo, "[Unidade.Cep]", trim(UnidadeSQL("CEP")&" ") )
             conteudo = replace(conteudo, "[Unidade.Estado]", trim(UnidadeSQL("Estado")&" ") )
             conteudo = replace(conteudo, "[Unidade.Cidade]", trim(UnidadeSQL("Cidade")&" ") )
@@ -280,6 +290,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             conteudo = replace(conteudo, "[Unidade.Endereco]", trim(UnidadeSQL("Endereco")&" ") )
             conteudo = replace(conteudo, "[Unidade.Numero]", trim(UnidadeSQL("Numero")&" ") )
             conteudo = replace(conteudo, "[Unidade.Complemento]", trim(UnidadeSQL("Complemento")&" ") )
+            conteudo = replace(conteudo, "[Unidade.EnderecoCompleto]", trim(EnderecoCompleto))
             'DOCUMENTOS
             conteudo = replace(conteudo, "[Unidade.CNPJ]", trim(UnidadeSQL("CNPJ")&" ") )
             'CONTATOS
@@ -423,15 +434,18 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Agendamento"
 
           if item_AgendamentoID>0 then
-            qAgendamentosSQL = "SELECT id, Data,  Hora,  TipoCompromissoID,  StaID,  ValorPlano,  rdValorPlano,  Notas,  Falado,  FormaPagto,  LocalID,  Tempo,  HoraFinal,  SubtipoProcedimentoID,  HoraSta,  ConfEmail,  ConfSMS,  Encaixe,  EquipamentoID,  NomePaciente,  Tel1,  Cel1,  Email1, Procedimentos,  EspecialidadeID,  IndicadoPor,  TabelaParticularID,  CanalID,  Retorno,  RetornoID,  Primeira,  PlanoID, PermiteRetorno "_
-            &"FROM agendamentos "_
-            &"WHERE id="&item_AgendamentoID
+            qAgendamentosSQL = "SELECT a.id, a.Data,  a.Hora,  a.TipoCompromissoID,  a.StaID,  a.ValorPlano,  a.rdValorPlano,  a.Notas,  a.Falado,  a.FormaPagto,  a.LocalID,  a.Tempo,  a.HoraFinal,  a.SubtipoProcedimentoID,  a.HoraSta,  a.ConfEmail,  a.ConfSMS,  a.Encaixe,  a.EquipamentoID,  a.NomePaciente,  a.Tel1,  a.Cel1,  a.Email1, a.Procedimentos,  a.EspecialidadeID,  a.IndicadoPor,  a.TabelaParticularID,  a.CanalID,  a.Retorno,  a.RetornoID,  a.Primeira,  a.PlanoID, a.PermiteRetorno, esp.nomeEspecialidade "_
+            &"FROM agendamentos a "_
+            &"LEFT JOIN especialidades esp ON esp.id = a.EspecialidadeID "_
+            &"WHERE a.id="&item_AgendamentoID
+
           end if
           if qAgendamentosSQL<>"" then
             SET AgendamentosSQL = db.execute(qAgendamentosSQL)
               if not AgendamentosSQL.eof then
                 
                 conteudo = replace(conteudo, "[Agendamento.Data]", AgendamentosSQL("Data")&"" )
+                conteudo =  replace(conteudo,"[Agendamento.Especialidade]", AgendamentosSQL("nomeEspecialidade")&"")
 
                 if isnull(AgendamentosSQL("Hora")) then
                     conteudo = replace(conteudo, "[Agendamento.Hora]", "" )
@@ -601,5 +615,7 @@ end function
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalID_1",""))
 'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalSessao_1",""))
 'response.write("<br>"&TagsConverte("[ProfissionalSolicitante.Nome]","ProfissionalSolicitanteID_200",""))
-'response.write(TagsConverte("Nome: [xxx.Nome] [Responsavel.Nome] [Responsavel.CPF]","PacienteID_1",""))
+response.write(TagsConverte("Endereço: [Unidade.EnderecoCompleto]<br> agendamento: [Agendamento.Especialidade] Hora: [Agendamento.Hora]","UnidadeID_1|AgendamentoID_1398622",""))
+
+'Pegar Agendamento válido, E buscar a especialidade do mesmo.
 %>

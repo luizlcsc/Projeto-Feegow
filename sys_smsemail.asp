@@ -27,6 +27,13 @@ if recursoAdicional(31) = 4 then
 else
     configWhatsApp = 0
 end if
+
+canalEnvio = "SMS"
+
+if configWhatsApp = 1 then
+    canalEnvio = "WhatsApp"
+end if
+
 %>
 <%=header(req("P"), "Configuração de E-mail"&txtZap&" e SMS", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
 <%
@@ -95,15 +102,8 @@ else
                 Custo por mensagem enviada <span class="badge badge-pink">R$ 0,12</span>
                 <label class="mn" for="AtivoSMS">
                         <input <% If reg("AtivoSMS")="on" Then %> checked="checked" <%end if%> name="AtivoSMS" id="AtivoSMS" type="checkbox" />
-                        SMS
+                        <%=canalEnvio%>
                     </label>
-                    <%if configWhatsApp=1 then%>
-
-                    <label class="mn" for="AtivoWhatsApp">
-                        <input <% If reg("AtivoWhatsApp")="on" Then %> checked="checked" <%end if%> name="AtivoWhatsApp" id="AtivoWhatsApp" type="checkbox" />
-                        WhatsApp
-                    </label>
-                    <%end if%>
             </div>
             <div class="panel-body">
 

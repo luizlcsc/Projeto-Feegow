@@ -143,7 +143,18 @@ if erro ="" then
 end if
 
 
-if rfrdValorPlano="P" then
+if rfrdValorPlano="V" then
+    set ProcedimentoConveniosSQL = db.execute("SELECT SomenteConvenios FROM procedimentos WHERE id="&treatvalzero(rfProcedimento))
+    if not ProcedimentoConveniosSQL.eof then
+        LimitarConvenios = ProcedimentoConveniosSQL("SomenteConvenios")
+
+        if LimitarConvenios&""<>"" then
+            if instr(LimitarConvenios, "|NOTPARTICULAR|")>0 then
+                erro="Este procedimento não permite particular."
+            end if
+        end if
+    end if
+elseif rfrdValorPlano="P" then
     PlanoID = ref("PlanoID")
     if PlanoID<>"" and PlanoID<>"0" then
         set PlanoSQL = db.execute("SELECT vp.NaoCobre FROM tissprocedimentosvaloresplanos vp INNER JOIN tissprocedimentosvalores v ON v.id=vp.AssociacaoID WHERE v.ConvenioID="&treatvalzero(rfValorPlano)&" AND v.ProcedimentoID="&treatvalzero(rfProcedimento)&" AND  vp.PlanoID="&treatvalzero(PlanoID))

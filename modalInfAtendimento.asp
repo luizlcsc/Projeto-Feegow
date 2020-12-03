@@ -2,7 +2,7 @@
 
 <%
     btn = "0"
-    if req("btn") <> "0" then
+    if req("btn") <> "0" and req("btn")<> ""  then
         btn = "1"
     end if
 
@@ -207,7 +207,8 @@ function saveInf(AI){
                     NomeColuna = pus("NameColumn")
                     if not isnull(pus(""&NomeColuna&"")) then
                         %>
-                        <option value="|<%=pus("id")%>|"<%if instr(UsuariosNotificar, "|"&pus("id")&"|")>0 then%> selected="selected"<%end if%>><%=pus(""&NomeColuna&"")%> &raquo; <%=pus("Table")%></option>
+                        <option value="|<%=pus("id")%>|"
+                        <%if instr(UsuariosNotificar, "|"&pus("id")&"|")>0 then%> selected="selected"<%end if%>><%=pus(""&NomeColuna&"")%> &raquo; <%=pus("Table")%></option>
                         <%
                     end if
                 pus.movenext

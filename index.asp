@@ -1311,6 +1311,13 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								end if
 								set fs=nothing
 
+                
+								IF FileName = "Home.asp" THEN
+                  if getConfig("HomeOtimizada")="1" then
+								      FileName = "HomeModoFranquia.asp"
+                  end if
+								END IF
+
 								server.Execute(FileName)
 								%>
 

@@ -312,7 +312,7 @@ if ExibeResultado then
                                  " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit "&_
                                  " LEFT JOIN cliniccentral.sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID "&_
                                  " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id "&_
-                                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=t.ParcelaID "&_
+                                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.TransactionID = fct.id"&_
                                  " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia=t.TipoGuia AND tgi.GuiaID=t.GuiaID "&_
                                  " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID "&_
                                  " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id "&_
@@ -326,6 +326,8 @@ if ExibeResultado then
                     response.write( session("Banco") & chr(10) & chr(13) & sqlRR )
                 end if
               
+                ' response.write(sqlRR)
+
                 set rr = db.execute( sqlRR )
                 if not rr.eof then
                 %>
@@ -356,6 +358,7 @@ if ExibeResultado then
                     <tbody>
                 <%
                 while not rr.eof
+
                     DataExecucao = rr("DataExecucao")
                     Descricao = rr("NomeProcedimento")
                     Pagador = rr("NomePaciente")
@@ -412,7 +415,7 @@ if ExibeResultado then
                         else
                             DataComp = rr("DataPagtoConvenio")
                         end if
-
+                       
                         DataOk = True
                         if TipoData="Comp" then
                             if DataComp&""="" then

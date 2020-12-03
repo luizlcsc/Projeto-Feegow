@@ -62,6 +62,7 @@ private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePacien
 
     valorPagoPeloConvenio = getConfig("ValorPagoPeloConvenio")
 
+
     if isnumeric(rValorRecebido) then
         if valorPagoPeloConvenio = 1 and rValorRecebido>0 then
            ValorBase = rValorRecebido
@@ -100,6 +101,7 @@ private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePacien
         if TipoValor="V" then
             Valor  = Valor * Quantidade
         end if
+
 
         if ultimoSobre<>Sobre then
             ValorBase = ValorBase - somaDesteSobre
@@ -149,13 +151,13 @@ private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePacien
         'Funções estampadas
         if fd("FM")="F" then
 
-       '' response.write(ValorBase)
             Creditado = calcCreditado(ContaCredito, ProfissionalExecutante)
             ShowValor = calcValor(Valor, TipoValor, ValorBase, "show")
 
 
 
             ValorItem = calcValor(Valor, TipoValor, ValorBase, "calc")
+    '    response.write(ValorItem)
             Associacao = 5
             if Tabela = "tissguiasadt" then
                 set ProfAssoc = db.execute("select Associacao from tissprocedimentossadt where id="&ItemGuiaID)
@@ -321,7 +323,7 @@ end if
                                  "INNER JOIN tissprocedimentoshonorarios ps on ps.GuiaID=gh.id WHERE gh.sysActive=1 AND gh.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND ps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gsContaProfissional & sqlUnidadesGH
                 if instr(reqf("AccountID"), "_") then
                     if ContaProfissionalSplt(0) = 5  then
-                        sqlII=sqlII&"UNION ALL select '' ProfissionalSolicitante, '' ProfissionalSolicitanteID, concat('5_',gc.ProfissionalID) Especialidade, gc.PacienteID, gc.ConvenioID, 'tissguiaconsulta' link, 'Consulta' Tipo, gc.id, ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID), gc.id GuiaID, gc.ProcedimentoID, gc.DataAtendimento `Data`, gc.ValorProcedimento ValorTotal, gc.UnidadeID, ifnull(gc.ValorPago, 0) ValorPago, ifnull(gc.ValorPago, 0) as ValorPagoOriginal, 1 Quantidade, gc.sysDate from tissguiaconsulta gc "&_
+                        sqlII=sqlII&"UNION ALL select '' ProfissionalSolicitante, '' ProfissionalSolicitanteID, concat('5_',gc.ProfissionalID) Especialidade, gc.PacienteID, gc.ConvenioID, 'tissguiaconsulta' link, 'Consulta' Tipo, gc.id, ifnull(gc.ProfissionalEfetivoID, gc.ProfissionalID), gc.id GuiaID, gc.ProcedimentoID, gc.DataAtendimento `Data`, gc.ValorProcedimento ValorTotal, gc.UnidadeID, ifnull(gc.ValorPago, 0) ValorPago, gc.ValorPago as ValorPagoOriginal, 1 Quantidade, gc.sysDate from tissguiaconsulta gc "&_
                                  "WHERE gc.sysActive=1 AND gc.ConvenioID IN ("& replace(reqf("Forma"), "|", "") &") AND gc.DataAtendimento BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) & gcContaProfissional & sqlUnidadesGC
                     end if                              
                 end if                              
@@ -383,7 +385,7 @@ end if
                 " SELECT CONCAT('8_', id) id, EspecialidadeID FROM profissionalexterno ) w"&_
                 " left join especialidades e on e.id = EspecialidadeID) esp on esp.id = t.Especialidade "
             end if
-            ' dd(sqlII)
+            
             if reqf("DEBUG")="1" then
                 response.write( sqlII )
             end if
@@ -414,6 +416,7 @@ end if
                 NomeConvenio = ii("NomeConvenio")
                
                 ValorPago = ii("ValorPagoOriginal")
+
 
                 ConvenioID = ii("ConvenioID")
                 btnExtra = ""
@@ -516,6 +519,7 @@ end if
                         end if
 
                         set rr = db.execute("select rr.id, GuiaConsultaID, Funcao, ItemGuiaID, ItemHonorarioID, GrupoConsolidacao, ItemContaAPagar, ItemContaAReceber, Valor, CreditoID, ContaCredito, FM, Sobre, modoCalculo from rateiorateios rr where "& sqlrr )
+
                         if not rr.eof then
                             if StatusBusca="C" then
                                 Exibir=1

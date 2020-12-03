@@ -287,6 +287,10 @@ if erro="" then
             Executado = ref("Executado"& ii)
 
             if procedimentoID<>"" and Executado="S" then
+                if ProfissionalID&""="" or ProfissionalID&""="0" then
+                    erro = "Preencha o profissional"
+                end if
+
                 if Associacao="5" or Associacao="2" or Associacao="8"  then
 
                     if validaProcedimentoProfissional(Associacao, ProfissionalID, EspecialidadeID, ProcedimentoID,0)=False then
@@ -297,19 +301,20 @@ if erro="" then
 							NomeProcedimentoErro = ProcedimentoErroSQL("NomeProcedimento")
 						end if
 
-                    %>
-                    new PNotify({
-                            title: 'ERRO AO TENTAR SALVAR!',
-                            text: 'Procedimento <%=NomeProcedimentoErro%> não permitido para este Profissional e/ou Especialidade',
-                            type: 'danger',
-                            delay: 3000
-                        });
-                        $("#btnSave").prop("disabled", false);
-                    <%
-                    Response.End
+                        erro = "Procedimento "&NomeProcedimentoErro&" não permitido para este Profissional e/ou Especialidade"
+
                     end if
                 END IF
             END IF
+
+
+            if erro<>"" then
+            %>
+            showMessageDialog('<%=erro%>');
+            $("#btnSave").prop("disabled", false);
+            <%
+            Response.End
+            end if
         next
         '---- Termina a verificação de o profissional pod executar o procedimento
 

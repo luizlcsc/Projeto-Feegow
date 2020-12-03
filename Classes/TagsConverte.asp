@@ -34,13 +34,20 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_ProfissionalExternoID          = item_id
 
       case "ProfissionalID"
-        item_ProfissionalID      = item_id
+        item_ProfissionalID                = item_id
+        item_AssociacaoProfissionalID      = 5
         'ALIAS DE TAGS RELACIONADAS AO PROFISSIONAL
         conteudo = replace(conteudo, "[NomeProfissional]", "[Profissional.Nome]" )
 
         'TRATAMENTO DA VARIÁVEL item_ProfissionalID QUANDO VAZIA - Airton 11-08-2020
         if item_ProfissionalID = "" then
           item_ProfissionalID = 0
+        end if
+
+        if instr(item_ProfissionalID,"-")>0 then
+            splitItem_ProfissionalID = split(item_ProfissionalID, "-")
+            item_ProfissionalID=splitItem_ProfissionalID(1)
+            item_AssociacaoProfissionalID=splitItem_ProfissionalID(0)
         end if
 
       case "ProfissionalLaudadorID"
@@ -374,7 +381,13 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           end if
 
           if item_ProfissionalID>0 then
-            qProfissionaisSQL=qProfissionaisContentSQL&item_ProfissionalID
+            sqlFornecedorProfissional=""
+            if item_AssociacaoProfissionalID&""="2" then
+                sqlFornecedorProfissional = " AND false or (f.id="&item_ProfissionalID&")"
+            end if
+
+
+            qProfissionaisSQL=qProfissionaisContentSQL&item_ProfissionalID & sqlFornecedorProfissional
           elseif item_ProfissionalSessao>0 AND session("Table")=lcase("profissionais") then 'EXCEÇÃO POR CONTA DO MÓDULO DE RECIBOS E OUTROS LOCAIS QUE PODEM ESTAR UTILIZANDO TAGS [Profissional.ALGUMACOISA] E REFERENCIANDO A SESSÃO DO PROFISSIONAL LOGADO
             qProfissionaisSQL = qProfissionaisContentSQL&item_ProfissionalSessao
           elseif item_ProfissionalID=0 then

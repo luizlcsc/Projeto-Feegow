@@ -791,7 +791,9 @@ if not inv.eof then
             forma.close
             set forma=nothing
 
-            Recibo = TagsConverte(Recibo,Converte_ProfissionalExecutanteExterno&"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalExecutanteID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
+
+            ProfissionalTagID = AssociacaoID&"-"&ProfissionalExecutanteID
+            Recibo = TagsConverte(Recibo,Converte_ProfissionalExecutanteExterno&"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalTagID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
             ' Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
 
             'CONVERSOR ANTIGO DE TAGS DESATIVADO

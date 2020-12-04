@@ -84,7 +84,7 @@ else
                     <% END IF %>
 		            <%
                 end if
-                if Aut("|agendaV|")=1 and (session("Banco")="clinic105" or session("Banco")="clinic5710" or session("Banco")="clinic5760") then
+                if Aut("|agendaV|")=1 and (session("Banco")="clinic105" or session("Banco")="clinic5710") then
                     if aut("agendamultfiltros")=1 then
                     %>
                     <li class="sub-menu-click-agenda-multipla-por-filtros"><a href="./?P=MultiplaFiltros2&Pers=1">Múltipla por Filtros</a></li>

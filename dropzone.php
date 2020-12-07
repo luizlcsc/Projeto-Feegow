@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <title>Drag and Drop File Uploading</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="stylesheet" href="main.css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400" />
     <script src="https://code.jquery.com/jquery-3.3.0.slim.js" integrity="sha256-7Imj0fLKtX5NFECS1umoQp7NC1lEgr4nBTasNm7gBLY=" crossorigin="anonymous"></script>
     <style>

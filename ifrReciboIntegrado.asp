@@ -277,13 +277,15 @@ if not inv.eof then
         set itensConta= db.execute("SELECT * FROM itensinvoice WHERE (AgendamentoID<>0 OR AgendamentoID IS NOT NULL) AND InvoiceID="&InvoiceID&" LIMIT 1")
         if not itensConta.eof then
             AgendamentoID = itensConta("AgendamentoID")
-            set dadosAgendamento = db.execute("SELECT a.Data, a.Hora, unit.NomeFantasia, unit.Cep, unit.Endereco, unit.Numero, unit.Complemento, unit.Bairro, unit.Cidade, unit.Estado, IFNULL(p.CPF, pacrel.CPFParente) ResponsavelCPF, IFNULL(p.NomePaciente, pacrel.Nome) ResponsavelNome "&_
+            sqlAgendamento = "SELECT a.Data, a.Hora, unit.NomeFantasia, unit.Cep, unit.Endereco, unit.Numero, unit.Complemento, unit.Bairro, unit.Cidade, unit.Estado, IFNULL(pacrel.CPFParente, p.CPF) ResponsavelCPF, IFNULL(pacrel.Nome, p.NomePaciente) ResponsavelNome "&_
                                               "FROM agendamentos a "&_
                                               "LEFT JOIN pacientesrelativos pacrel ON pacrel.PacienteID=a.PacienteID AND pacrel.Dependente='S' "&_
                                               "LEFT JOIN pacientes p ON p.id=pacrel.NomeID "&_
                                               "LEFT JOIN locais l ON l.id=a.LocalID "&_
                                               "LEFT JOIN (SELECT 0 id, NomeFantasia, Cep, Endereco, Numero, Complemento, Bairro, Cidade, Estado FROM empresa UNION ALL SELECT id, NomeFantasia, Cep, Endereco, Numero, Complemento, Bairro, Cidade, Estado FROM sys_financialcompanyunits WHERE sysActive=1) unit ON unit.id=l.UnidadeID "&_
-                                              "WHERE a.id="&AgendamentoID)
+                                              "WHERE a.id="&AgendamentoID
+
+            set dadosAgendamento = db.execute(sqlAgendamento)
             if not dadosAgendamento.eof then
                 HoraAgendamento =""
                 if dadosAgendamento("Hora")&""<>"" then
@@ -299,8 +301,8 @@ if not inv.eof then
                 Recibo = replace(Recibo, "[AgendamentoUnidade.Bairro]", dadosAgendamento("Bairro")&"")
                 Recibo = replace(Recibo, "[AgendamentoUnidade.Cidade]", dadosAgendamento("Cidade")&"")
                 Recibo = replace(Recibo, "[AgendamentoUnidade.Estado]", dadosAgendamento("Estado")&"")
-                Recibo = replace(Recibo, "[Responsavel.Nome]", dadosAgendamento("ResponsavelNome")&"")
-                Recibo = replace(Recibo, "[Responsavel.CPF]", dadosAgendamento("ResponsavelCPF")&"")
+                'Recibo = replace(Recibo, "[Responsavel.Nome]", dadosAgendamento("ResponsavelNome")&"")
+                'Recibo = replace(Recibo, "[Responsavel.CPF]", dadosAgendamento("ResponsavelCPF")&"")
             end if
 
         end if

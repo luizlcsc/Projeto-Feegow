@@ -49,11 +49,20 @@ end if
 
 function getTempoProcedimento(procedimentoId, profissionalID)
 
-        set ProcedimentoTempoProfissional = db.execute("SELECT coalesce(ptp.tempo, proc.ObrigarTempo) tempo "&_
-        "FROM procedimento_tempo_profissional ptp "&_
-        "INNER JOIN procedimentos proc ON proc.id=ptp.ProcedimentoID "&_
-        "where ptp.procedimentoId ="&treatvalzero(procedimentoId)&" and ptp.profissionalId = "&treatvalzero(profissionalID)&"")
+        
+ProcedimentoTempoProfissionalSQL =  ""&_
+" SELECT COALESCE(t.TempoProf, p.TempoProcedimento) Tempo                                                                     "&chr(13)&_
+" FROM procedimentos p                                                                                                        "&chr(13)&_
+" LEFT JOIN                                                                                                                   "&chr(13)&_
+" (                                                                                                                           "&chr(13)&_
+" SELECT ptp.tempo TempoProf, proc.id                                                                                         "&chr(13)&_
+" FROM procedimentos proc                                                                                                     "&chr(13)&_
+" INNER JOIN procedimento_tempo_profissional ptp ON proc.id=ptp.ProcedimentoID                                                "&chr(13)&_
+" WHERE proc.Id ="&treatvalzero(procedimentoId)&" AND ptp.profissionalId = "&treatvalzero(profissionalID)&") t ON t.id = p.id  "&chr(13)&_
+" WHERE p.id="&treatvalzero(procedimentoId)                                                          
 
+        set ProcedimentoTempoProfissional= db.execute(ProcedimentoTempoProfissionalSQL)
+ 
         if not ProcedimentoTempoProfissional.eof then
             getTempoProcedimento = ProcedimentoTempoProfissional("tempo")
         end if
@@ -422,8 +431,8 @@ if left(tipo, 14)="ProcedimentoID" then
         ValorAgendamento = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ref("ProfissionalID"), ref("EspecialidadeID"), GrupoID)
 		if Checkin&"" <> "1" then 
 
-        
         tempoProcedimento = getTempoProcedimento(procedimentoId, profissionalID)
+        
         %>
 		 $("#Tempo<%= apID %>").val('<%=TempoProcedimento%>');
 		 if($("#EquipamentoID<%= apID %>").val() == "" || $("#EquipamentoID<%= apID %>").val() == "0"){

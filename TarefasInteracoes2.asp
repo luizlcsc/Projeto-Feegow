@@ -66,7 +66,7 @@ else
             Foto = ints("Fotof")
         end if
         if isnull(Foto) or Foto="" then
-            Foto = "/assets/img/user.png"
+            Foto = "./assets/img/user.png"
         else
             Foto = "/uploads/"&replace(session("Banco"), "clinic", "")&"/Perfil/"&Foto
         end if

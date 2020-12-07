@@ -89,7 +89,7 @@ select case lcase(req("P"))
                 cpd = cpd+1
                 Foto = pacDia("Foto")
                 if Foto="" then
-                    Foto = "/assets/img/user.png"
+                    Foto = "./assets/img/user.png"
                 else
                     Foto = "/uploads/"& Foto
                 end if

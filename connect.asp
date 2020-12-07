@@ -2174,7 +2174,8 @@ FormaID = replace(FormaID&"", "|", "")
         EspecialidadeID = "-"& EspecialidadeIDsent
     end if
 
-    if req("debugarRepasse")="1" then
+'essa abordagem eh extremamente mais performatica pois filtra o numero de registros
+    if req("debugarRepasse")="1" or True then
 	set dom = db.execute("select * from rateiodominios WHERE "&_
 	"(IFNULL(Unidades,'')='' or Unidades LIKE '%|"&UnidadeID&"|%') "&_
 	" AND (IFNULL(Tabelas,'')='' or Tabelas LIKE '%|"&TabelaID&"|%') "&_

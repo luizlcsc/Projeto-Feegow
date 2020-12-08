@@ -871,7 +871,6 @@ function itens(T, A, II, autoPCi, cb){
 });}
 
 function formaRecto(){
-
     $.post("invoiceSelectPagto.asp?I=<%=req("I")%>&T=<%=req("T")%>&FormaID="+ $("#FormaID option:selected").attr("data-frid"), $("#formItens").serialize(), function(data, status){ $("#selectPagto").html(data) });
 }
 function planPag(I){
@@ -895,7 +894,7 @@ function recalc(input, mod){
 }
 
 function geraParcelas(Recalc){
-     var input = $("#formItens input");
+   var input = $("#formItens input");
    var elemSerialized = "";
    var dadosForm =  $("#formItens").serialize();
    $.each(input, function (key, val) {
@@ -903,8 +902,12 @@ function geraParcelas(Recalc){
            elemSerialized +=  val.name + '=' + val.value + "&";
         } 
    });
-
-	$.post("invoiceParcelas.asp?I=<%=req("I")%>&T=<%=req("T")%>&Recalc="+Recalc, $("#formItens").serialize()+elemSerialized, function(data, status){ $("#invoiceParcelas").html(data) });
+	$.post("invoiceParcelas.asp?I=<%=req("I")%>&T=<%=req("T")%>&Recalc="+Recalc, $("#formItens").serialize()+elemSerialized, function(data, status){ 
+        $("#invoiceParcelas").html(data)
+        if(Recalc == 'N'){
+            location.reload(true)
+        }
+    });
 }
 function saveInvoiceSubmit(cb){
     
@@ -1335,6 +1338,21 @@ function marcarMultiplosExecutados(){
     })
 
 };
+
+$(document).ready(function(e) {
+
+    let linhas = $("tr[id^='row']")
+    if(linhas.length>0){
+        linhas.map((key,linha)=>{
+            let localId = $(linha).attr('id')
+            let id = localId.replace("row",'')
+            if(id.includes("_")){
+                return false
+            }
+            calcRepasse(id)
+        })
+    }
+});
 
 </script>
 

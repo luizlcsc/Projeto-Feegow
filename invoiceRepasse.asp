@@ -13,32 +13,43 @@ for i = 0 to ubound(Linha)
 
 
 if IsNumeric(Row) then 
-
 FormaID = "|P"& ref("FormaID") &"|"
+
 InvoiceID = req("InvoiceID")
-'if instr(FormaID, "_")>0 then
-'	spl = split(FormaID, "_")
-'	FormaID = spl(0)
-'end if
+
 ProfissionalID = ref("ProfissionalID"&Row)
 ProcedimentoID = ref("ItemID"&Row)
 EspecialidadeID = ref("EspecialidadeID"&Row)
 TabelaID = ref("invTabelaID")
 
 
-
 db.execute("delete from itensinvoiceoutros where InvoiceID="&InvoiceID&" and ItemInvoiceID="& Row)
 
 DominioID = dominioRepasse(FormaID, ProfissionalID, ProcedimentoID, UnidadeID, TabelaID, EspecialidadeID, "", "")
-
-'    response.Write( DominioID )
-
-
-
+if ref("FormaID") = "0_0" then
+    sqltest =   " select                                                                                    "&chr(13)&_
+                " 	forma.id as forma                                                                       "&chr(13)&_
+                " from                                                                                      "&chr(13)&_
+                " 	sys_financialmovement bill                                                              "&chr(13)&_
+                " 	left join sys_financialdiscountpayments discount on discount.InstallmentID = bill.id    "&chr(13)&_
+                " 	left join sys_financialmovement pay on  pay.id = discount.MovementID                    "&chr(13)&_
+                " 	left join sys_formasrecto forma on pay.PaymentMethodID = forma.MetodoID                 "&chr(13)&_
+                " where                                                                                     "&chr(13)&_
+                " bill.InvoiceID = "&InvoiceID
+                
+    forma = db.execute(sqltest)
+    if forma("forma")&"" <> "" then
+        DominioID = forma("forma")
+    else
+        DominioID = 0
+    end if
+end if 
 set getFun = db.execute("select id from itensinvoiceoutros where InvoiceID="& InvoiceID &" and ItemInvoiceID="& Row &" and sysActive=1")
+
 if getFun.eof then
     'set fun = db.execute("SELECT * FROM rateiofuncoes WHERE DominioID="&DominioID)'dar union all nos kits
     set fun = db.execute("SELECT * FROM rateiofuncoes WHERE DominioID="&DominioID &" AND FM IN('F', 'E')")'dar union all nos kits
+
     while not fun.eof
         FM = fun("FM")
         Funcao = fun("Funcao")
@@ -128,7 +139,9 @@ if getFun.eof then
 end if
 
 set getFun = db.execute("select * from itensinvoiceoutros where InvoiceID="& InvoiceID &" and ItemInvoiceID="& Row)
+
 while not getFun.eof
+
     response.write("<div class='row'>")
 
     IF "Indicação" = getFun("Funcao") THEN

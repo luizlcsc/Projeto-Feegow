@@ -17,6 +17,14 @@ end if
 <html>
 
 <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TFRMMGS');</script>
+    <!-- End Google Tag Manager -->
+
     <meta name="robots" content="noindex">
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
@@ -410,6 +418,10 @@ end if
     </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFRMMGS"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <%
     if req("FP")<>"" and request.ServerVariables("REMOTE_ADDR")="::1" then
@@ -454,16 +466,16 @@ end if
                         if request.ServerVariables("HTTP_HOST")<>"livenote.feegow.com.br" then
                             if req("Partner")="" then
                         %>
-                                <img src="assets/img/login_logo.png" border="0" width="124" height="36">
+                                <img class="login-logo" src="assets/img/login_logo.png" border="0" width="124" height="36">
                         <%
                             else
                         %>
-                                <img src="logo/<%=req("Partner")%>.png" border="0" style="max-height: 80px; object-fit: cover">
+                                <img class="login-logo-partner" src="logo/<%=req("Partner")%>.png" border="0" style="max-height: 80px; object-fit: cover">
                         <%
                             end if
                         else 
                         %> 
-                            <img src="assets/img/180_width.png" width="138" border="0">&nbsp;&nbsp;&nbsp;<img style="margin-bottom: -7px" src="logo/livenote.png" width="130" border="0">
+                            <img class="login-logo-livenote" src="assets/img/180_width.png" width="138" border="0">&nbsp;&nbsp;&nbsp;<img style="margin-bottom: -7px" src="logo/livenote.png" width="130" border="0">
                         <% 
                         end If 
                         %>
@@ -500,7 +512,7 @@ end if
                     </ol -->
                     <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="assets/img/login_bem_vindo.png">
+                        <img class="login-bem-vindo" src="assets/img/login_bem_vindo.png">
                     </div>
                     <!--div class="carousel-item">
                         <a href="https://promo.feegowclinic.com.br/curso-de-marketing?utm_campaign=email3_curso_de_marketing_cta1&utm_medium=email&utm_source=rdstationt" target="_blank"><img src="assets/img/login_marketing_medico.png"></a>

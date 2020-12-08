@@ -459,6 +459,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 
                 conteudo = replace(conteudo, "[Agendamento.Data]", AgendamentosSQL("Data")&"" )
                 conteudo =  replace(conteudo,"[Agendamento.Especialidade]", AgendamentosSQL("nomeEspecialidade")&"")
+                conteudo =  replace(conteudo,"[Agendamento.Procedimento]", AgendamentosSQL("Procedimentos")&"")
 
                 if isnull(AgendamentosSQL("Hora")) then
                     conteudo = replace(conteudo, "[Agendamento.Hora]", "" )
@@ -620,15 +621,5 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 'response.write("<script>console.log('VALOR::: "&UnidadeID&"')</script>")
 end function
 '***** EXEMPLO DE USO DA FUNÇÃO ******
-'conteudoParaConverter = "Atesto que o paciente [Paciente.Nome]<br>"&_
-'"foi atendido as [Sistema.Hora]<br>pelo profissional [Profissional.Nome] |Nome: [Profissional.Nome] Documento: [Profissional.Documento] CRM: [Profissional.CRM] Assinatura: [Profissional.Assinatura]<br>"&_
-'"Profissional Solicitante: [ProfissionalSolicitante.Nome]"
-'itens = "PacienteID_6365|UserID_478|ProfissionalID_1|UnidadeID_8741|ProfissionalSolicitanteID_200"
-'response.write(tagsConverte(conteudoParaConverter,itens,""))
-'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalID_1",""))
-'response.write("<br>"&TagsConverte("[Profissional.Nome]","ProfissionalSessao_1",""))
-'response.write("<br>"&TagsConverte("[ProfissionalSolicitante.Nome]","ProfissionalSolicitanteID_200",""))
-'response.write(TagsConverte("Endereço: [Unidade.EnderecoCompleto]<br> agendamento: [Agendamento.Especialidade] Hora: [Agendamento.Hora]","UnidadeID_1|AgendamentoID_1398622",""))
-
-'Pegar Agendamento válido, E buscar a especialidade do mesmo.
+'response.write(TagsConverte("Endereço: [Unidade.EnderecoCompleto]<br> agendamento: [Agendamento.Procedimento] Hora: [Agendamento.Hora]","UnidadeID_1|AgendamentoID_274564",""))
 %>

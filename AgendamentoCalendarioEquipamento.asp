@@ -69,7 +69,11 @@ wend
 feriados.close
 set feriados=nothing
 %>
-
+<style>
+	#tblCalendario .badge{
+		padding:3px 4px!important
+	}
+</style>
 <table width="100%" class="panel pn bs-component table table-condensed hidden-print" id="tblCalendario">
 <thead>
       <tr class="active">

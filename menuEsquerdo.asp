@@ -1501,7 +1501,7 @@ select case lcase(req("P"))
                 <span class="fa fa-cloud-upload"></span> <span class="sidebar-title">API Pública  </span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divTriagem" onclick="ajxContent('ConfiguraTriagem', '', 1, 'divTriagem');">
+            <a data-toggle="tab" href="#divTriagem" onclick="ajxContent('ConfiguraTriagem', '', 1, 'divTriagem');"> 
             	<span class="fa fa-stethoscope"></span> <span class="sidebar-title">Triagem  <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>

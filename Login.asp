@@ -13,17 +13,21 @@ end if
 %>
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/URLDecode.asp"-->
+<!--#include file="Classes/Environment.asp"-->
+<% GTM_ID = getEnv("FC_GTM_ID", "") %>
 <!DOCTYPE html>
 <html>
 
 <head>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-TFRMMGS');</script>
-    <!-- End Google Tag Manager -->
+    <% if GTM_ID <> "" then %>
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','<%=GTM_ID%>');</script>
+        <!-- End Google Tag Manager -->
+    <% end if %>
 
     <meta name="robots" content="noindex">
     <!-- Meta, title, CSS, favicons, etc. -->
@@ -418,10 +422,12 @@ end if
     </style>
 </head>
 <body>
+<% if GTM_ID <> "" then %>
 <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFRMMGS"
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<%=GTM_ID%>"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
+<% end if %>
 
 <%
     if req("FP")<>"" and request.ServerVariables("REMOTE_ADDR")="::1" then

@@ -933,7 +933,9 @@ $("#formItens").submit(function(){
 });
 
 function calcRepasse(id){
-	$.post("invoiceRepasse.asp?Row="+id+"&InvoiceID=<%=InvoiceID%>", $("#formItens").serialize(), function(data){ $("#rat"+id).html(data) });
+	$.post("invoiceRepasse.asp?Row="+id+"&InvoiceID=<%=InvoiceID%>", $("#formItens").serialize(), function(data){ 
+        $("#rat"+id).html(data) 
+    });
 }
 
 function deleteInvoice(){

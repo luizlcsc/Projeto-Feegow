@@ -21,14 +21,20 @@ ProfissionalID = ref("ProfissionalID"&Row)
 ProcedimentoID = ref("ItemID"&Row)
 EspecialidadeID = ref("EspecialidadeID"&Row)
 TabelaID = ref("invTabelaID")
+valorAnterior = ""
+set sqlvalor = db.execute("select ValorUnitario from itensinvoiceoutros where InvoiceID="&InvoiceID&" and ItemInvoiceID="& Row)
+if not sqlvalor.eof then
+    valorAnterior = sqlvalor("ValorUnitario")&""
+end if
 
 
 db.execute("delete from itensinvoiceoutros where InvoiceID="&InvoiceID&" and ItemInvoiceID="& Row)
 
-DominioID = dominioRepasse(FormaID, ProfissionalID, ProcedimentoID, UnidadeID, TabelaID, EspecialidadeID, "", "")
+
 if ref("FormaID") = "0_0" then
     sqltest =   " select                                                                                    "&chr(13)&_
-                " 	forma.id as forma                                                                       "&chr(13)&_
+                " 	forma.id as forma,                                                                      "&chr(13)&_
+ 	            "   pay.AccountIDDebit as conta                                                             "&chr(13)&_
                 " from                                                                                      "&chr(13)&_
                 " 	sys_financialmovement bill                                                              "&chr(13)&_
                 " 	left join sys_financialdiscountpayments discount on discount.InstallmentID = bill.id    "&chr(13)&_
@@ -36,20 +42,20 @@ if ref("FormaID") = "0_0" then
                 " 	left join sys_formasrecto forma on pay.PaymentMethodID = forma.MetodoID                 "&chr(13)&_
                 " where                                                                                     "&chr(13)&_
                 " bill.InvoiceID = "&InvoiceID
-                
     forma = db.execute(sqltest)
+
     if forma("forma")&"" <> "" then
-        DominioID = forma("forma")
-    else
-        DominioID = 0
+        FormaID = "|P"&forma("forma")&"_"&forma("conta")&"|"
     end if
 end if 
+
+DominioID = dominioRepasse(FormaID, ProfissionalID, ProcedimentoID, UnidadeID, TabelaID, EspecialidadeID, "", "")
+
 set getFun = db.execute("select id from itensinvoiceoutros where InvoiceID="& InvoiceID &" and ItemInvoiceID="& Row &" and sysActive=1")
 
 if getFun.eof then
     'set fun = db.execute("SELECT * FROM rateiofuncoes WHERE DominioID="&DominioID)'dar union all nos kits
     set fun = db.execute("SELECT * FROM rateiofuncoes WHERE DominioID="&DominioID &" AND FM IN('F', 'E')")'dar union all nos kits
-
     while not fun.eof
         FM = fun("FM")
         Funcao = fun("Funcao")
@@ -58,6 +64,9 @@ if getFun.eof then
         ContaPadrao = fun("ContaPadrao")
         ProdutoID = fun("ProdutoID")
         ValorUnitario = fun("ValorUnitario")
+        if valorAnterior <> "" then
+            ValorUnitario = valorAnterior 
+        end if
         Quantidade = fun("Quantidade")
         Variavel = fun("Variavel")
         ValorVariavel = fun("ValorVariavel")
@@ -73,9 +82,6 @@ if getFun.eof then
         if FM="M" and ProdutoID=0 then
             ProdutoVariavel = "S"
         end if
-
-
-
 
 
         'isso vai pra quando tiver listando os itens gravados
@@ -168,7 +174,6 @@ while not getFun.eof
         <%
         END IF
     END IF
-
     call subitemRepasse(getFun("Tipo"), getFun("Funcao"), getFun("tipoValor"), getFun("ValorUnitario"), getFun("Conta"), getFun("ProdutoID"), getFun("ValorUnitario"), getFun("Quantidade"), getFun("Variavel"), getFun("ValorVariavel"), getFun("ContaVariavel"), getFun("ProdutoVariavel"), getFun("TabelasPermitidas"), getFun("FuncaoEquipeID"), getFun("FuncaoID"), getFun("id"))
     response.write("</div>")
 getFun.movenext

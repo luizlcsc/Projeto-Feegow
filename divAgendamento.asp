@@ -685,9 +685,6 @@ end if
 %>
 
 
-
-
-
         <% if req("Checkin")="1" then %>
             <hr class="short alt" />
             <div class="row pt20 checkin-conteudo-paciente">

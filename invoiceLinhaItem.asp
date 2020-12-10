@@ -208,7 +208,7 @@
             set existeNotaEmitida = db.execute("select id from nfse_emitidas where invoiceid ="&InvoiceID&" and Status = 3")
             if not existeNotaEmitida.eof then
                 desabilitarExclusaoItem = " disabled "
-                title = "Existe nota com status autorizada"
+                titleNotaFiscal = "Existe nota com status autorizada"
             end if
         end if
 

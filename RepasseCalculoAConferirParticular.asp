@@ -716,7 +716,7 @@ end if
 " FROM profissionalexterno) s) s ON s.id = r.ProfissionalSolicitante "
             else
 
-                sqlII = "select ii.*,s.NomeProfissional ProfissionalSolicitante, i.ProfissionalSolicitante ProfissionalSolicitanteID, t.NomeLocal CompanyUnit, esp.especialidade, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID "&_
+                sqlII = "select ii.*, i.FormaID, i.ContaRectoID,s.NomeProfissional ProfissionalSolicitante, i.ProfissionalSolicitante ProfissionalSolicitanteID, t.NomeLocal CompanyUnit, esp.especialidade, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID "&_
                         "left join especialidades esp on esp.id = ii.EspecialidadeID "&_
                         "left join ((select 0 as 'id',  NomeFantasia NomeLocal FROM empresa WHERE id=1) UNION ALL (select id,  NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia)) t on t.id = i.CompanyUnitID "&_
                         "left join (SELECT s.id, s.NomeProfissional FROM (SELECT CONCAT('0_', id) id, NomeEmpresa NomeProfissional FROM empresa "&_
@@ -743,6 +743,8 @@ end if
                 EspecialidadeID = ii("EspecialidadeID")
                 TabelaID = ii("TabelaID")
                 UnidadeID = ii("CompanyUnitID")
+                formaToDominio = ii("FormaID")
+                contaToDominio = ii("ContaRectoID")
 
                 'modificação 29102019
                 UnidadeName = ii("CompanyUnit")
@@ -917,7 +919,6 @@ desfazBtnCons = ""
                                       "INNER JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id "&_
                                       "LEFT JOIN sys_financialcreditcardtransaction trans ON trans.MovementID=disc.MovementID "&_
                                       "WHERE disc.MovementID="&pagtos("PagamentoID")&" AND (disc.DiscountedValue IS NULL OR disc.DiscountedValue > 0.1)"
-
                         
                         
                         set DadosInvoiceSQL = db.execute(sqlDiscount)
@@ -1150,10 +1151,15 @@ desfazBtnCons = ""
                         ultimoSobre = ""
                         somaDesteSobre = 0
                         ValorBase = ValorProcedimento
-                        
-                        if DominioID =  "" or isnull(DominioID) then 
-                        DominioID = dominioRepasse("|P|", ii("ProfissionalID")&"", ProcedimentoID, ii("CompanyUnitID"), ii("TabelaID"), ii("EspecialidadeID")&"", ii("DataExecucao"), ii("HoraExecucao"))
+                        if not isNull(formaToDominio) and not isnull(contaToDominio) then 
+                            inicial = "|P"&formaToDominio&"_"&contaToDominio&"|"
+                        else
+                            inicial = "|P|"
                         end if
+
+                        
+                        DominioID = dominioRepasse(inicial, ii("ProfissionalID")&"", ProcedimentoID, ii("CompanyUnitID"), ii("TabelaID"), ii("EspecialidadeID")&"", ii("DataExecucao"), ii("HoraExecucao"))
+                        
 
                         Despesas = 0
                         ItemDescontadoID = 0

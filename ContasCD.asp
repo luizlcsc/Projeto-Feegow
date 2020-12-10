@@ -55,31 +55,68 @@ else
 end if
 
 
+' configura os valores default dos filtros vindos da sessão
 De = req("De")
-Ate = req("Ate")
-
 if De="" then
     De = session("ccDe")
 end if
+
+Ate = req("Ate")
 if Ate="" then
     Ate = session("ccAte")
 end if
 
+Pagto = req("Pagto")
+if Pagto="" then
+    Pagto = session("ccPagto")
+end if
+
 CategoriaID = req("CategoriaID")
-Unidades = req("U")
-
 if CategoriaID="" then
-    CategoriaID = session("ccCategoriaID")
+    if CD = "C" then
+        CategoriaID = session("ccCategoriaID_C")
+    else
+        CategoriaID = session("ccCategoriaID_D")
+    end if
 end if
 
-if Unidades = "" then
-    Unidades = session("ccUnidades")
+UnidadeSelecionada = req("U")
+if UnidadeSelecionada = "" then
+    UnidadeSelecionada = session("ccCompanyUnitID")
+end if
+if UnidadeSelecionada = "" then
+    UnidadeSelecionada = session("ccUnidades")
+end if
+if UnidadeSelecionada="" then
+	UnidadeSelecionada = session("Unidades")
 end if
 
-if Unidades="" then
-	Unidades = session("Unidades")
+AccountID = req("AccountID")
+if AccountID = "" then
+    AccountID = session("ccAccountID")
 end if
 
+NotaFiscal = req("NotaFiscal")
+if NotaFiscal = "" then
+    NotaFiscal = session("ccNotaFiscal")
+end if
+
+AccountAssociation = req("AccountAssociation")
+if AccountAssociation = "" then
+    AccountAssociation = session("ccAccountAssociation")
+end if
+
+TabelaID = req("TabelaID")
+if TabelaID = "" then
+    TabelaID = session("ccTabelaID")
+end if
+
+NotaFiscalStatus = req("NotaFiscalStatus")
+if NotaFiscalStatus = "" then
+    NotaFiscalStatus = session("ccNotaFiscalStatus")
+end if
+
+' período default caso não tenha nenhuma data no request ou na sessão
 if De="" or Ate="" then
 	De = cdate("1/"&month(date())&"/"&year(date()))
 	Ate = dateadd("m", 1, De)
@@ -118,11 +155,21 @@ end if
                             <label>Exibir</label><br />
                             <select class="form-control" id="Pagto" name="Pagto">
                                 <option value="">Todas</option>
-                                <option value="Q" <% If ref("Pagto")="Q" or req("Pagto")="Q" or (session("ccPagto")="Q" and req("Pagto")="") Then %> selected="selected" <% End If %>>Quitadas</option>
-                                <option value="N" <% If ref("Pagto")="N" or req("Pagto")="N" or (session("ccPagto")="N" and req("Pagto")="") Then %> selected="selected" <% End If %>>N&atilde;o quitadas</option>
+                                <option value="Q" <% If Pagto = "Q" Then %> selected="selected" <% End If %>>Quitadas</option>
+                                <option value="N" <% If Pagto = "N" Then %> selected="selected" <% End If %>>N&atilde;o quitadas</option>
                             </select>
                         </div>
-                        <%=quickField("empresaMulti", "CompanyUnitID", "Unidades", 4, Unidades, "", "", "")%>
+                        <%=quickField("empresaMulti", "CompanyUnitID", "Unidades", 4, session("Unidades"), "", "", "")%>
+                        <% if UnidadeSelecionada <> "" then%>
+                            <script type="text/javascript">
+                                // a seleção de unidades default é feita por JS pq há um comportamento inesperado no default do quickField
+                                let values = '<%=UnidadeSelecionada%>';
+                                $("#CompanyUnitID option").prop("selected", false);
+                                $.each(values.split(","), function(i,e) {
+                                    $("#CompanyUnitID option[value='" + e.trim() + "']").prop("selected", true);
+                                });
+                            </script>
+                        <% end if %>
                         <div class="col-md-2">
                             <label>&nbsp;</label><br />
                             <button class="btn btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="fa fa-search bigger-110"></i> Filtrar</button>
@@ -133,12 +180,13 @@ end if
                             <label>Categoria</label><br>
 
                             <% if req("T")="C" then
-                                response.write(selectInsert("", "CategoriaID", "", TabelaCategoria, "Name", "", "", ""))
+                                response.write(quickField("simpleSelect", "CategoriaID", "", 4, CategoriaID, "SELECT id, Name FROM " & TabelaCategoria, "Name", ""))
                                 else %>
+
                                 <select name="CategoriaID" class="categoria-single">
                                     <option value="">Selecione um item</option>
                                     <% while not categoriaContasAPagar.eof  %>
-                                        <option value="<%=categoriaContasAPagar("id")%>"><%=categoriaContasAPagar("Name")%></option>
+                                        <option value="<%=categoriaContasAPagar("id")%>" <% If CategoriaID = categoriaContasAPagar("id")&"" Then %> selected="selected" <% End If %>><%=categoriaContasAPagar("Name")%></option>
                                     <% 
                                     categoriaContasAPagar.movenext
                                     wend
@@ -151,10 +199,10 @@ end if
                         </div>
                         <div class="col-md-3">
                             <label><%=tituloConta%></label><br />
-                            <%=selectInsertCA("", "AccountID", session("ccAccountID"), "5, 4, 3, 2, 6, 1, 8", "", "", "")%>
+                            <%=selectInsertCA("", "AccountID", AccountID, "5, 4, 3, 2, 6, 1, 8", "", "", "")%>
                         </div>
-                        <%=quickField("text", "NotaFiscal", "Nota Fiscal", 2, session("ccNotaFiscal"), "", "", " ")%>
-                        <%=quickField("multiple", "AccountAssociation", "Limitar Tipo de Pagador", 2, session("ccAccountAssociation"), "select * from cliniccentral.sys_financialaccountsassociation WHERE id NOT IN(1, 7)", "AssociationName", "")%>
+                        <%=quickField("text", "NotaFiscal", "Nota Fiscal", 2, NotaFiscal, "", "", " ")%>
+                        <%=quickField("multiple", "AccountAssociation", "Limitar Tipo de Pagador", 2, AccountAssociation, "select * from cliniccentral.sys_financialaccountsassociation WHERE id NOT IN(1, 7)", "AssociationName", "")%>
                         <div class="col-md-1">
                             <label>&nbsp;</label><br />
                             <button type="button" class="btn btn-block btn-info" title="Geral Impressão" onclick="print()"><i class="fa fa-print"></i></button>
@@ -181,9 +229,9 @@ end if
                                 <label for="NotaFiscalStatus">Status da NF-e</label>
                                 <select name="NotaFiscalStatus" id="NotaFiscalStatus" class="form-control">
                                     <option value="">Selecione</option>
-                                    <option value="1">Emitida</option>
-                                    <option value="3">Cancelada</option>
-                                    <option value="0">Não emitida</option>
+                                    <option value="1" <% If NotaFiscalStatus = "1" Then %> selected="selected" <% End If %>>Emitida</option>
+                                    <option value="3" <% If NotaFiscalStatus = "3" Then %> selected="selected" <% End If %>>Cancelada</option>
+                                    <option value="0" <% If NotaFiscalStatus = "0" Then %> selected="selected" <% End If %>>Não emitida</option>
                                 </select>
                             </div>
                             <%
@@ -191,7 +239,7 @@ end if
                             %>
                             <div class="col-md-2">
                                 <label>Tabela</label><br>
-                                <%=selectInsert("", "TabelaID", "", "TabelaParticular", "NomeTabela", "", "", "")%>
+                                <%=selectInsert("", "TabelaID", TabelaID, "TabelaParticular", "NomeTabela", "", "", "")%>
                             </div>
                         </div>
                         <Div class="row">

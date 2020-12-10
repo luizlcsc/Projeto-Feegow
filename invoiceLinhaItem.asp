@@ -202,9 +202,20 @@
         if not integracaofeita.eof then
             PodeExcluirItem = False
         end if
+        desabilitarExclusaoItem = ""
+        titleNotaFiscal = ""
+        if recursoAdicional(34) = 4 then
+            set existeNotaEmitida = db.execute("select id from nfse_emitidas where invoiceid ="&InvoiceID&" and Status = 3")
+            if not existeNotaEmitida.eof then
+                desabilitarExclusaoItem = " disabled "
+                title = "Existe nota com status autorizada"
+            end if
+        end if
 
         if PodeExcluirItem then %>
-            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+        <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="<%=titleNotaFiscal%>">
+            <button type="button" id="xili<%= ItemInvoiceID %>"  class="btn btn-sm btn-danger disable <%=desabilitarExclusaoItem%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+        </span>
         <%
         end if
         %>

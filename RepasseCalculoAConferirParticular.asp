@@ -729,8 +729,9 @@ end if
             end if
             set ii = db.execute( sqlII )
                 'se ii("Repassado")=0 joga pra temprepasse, else exibe o q ja foi pra rateiorateios
+                ' dd(sqlII)
             while not ii.eof
-
+ 
                 ProfissionalExecutante = ii("Associacao") &"_"& ii("ProfissionalID")
                 ItemInvoiceID = ii("id")
                 InvoiceID = ii("InvoiceID")
@@ -791,6 +792,7 @@ desfazBtnCons = ""
 '1a. situação: lista todos os descontos que foram repassados
                 GrupoConsolidacao = 0
                 set rr = db.execute("select rr.*, rf.DominioID, pm.PaymentMethod from rateiorateios rr LEFT JOIN rateiofuncoes rf ON rf.id=rr.FuncaoID LEFT JOIN itensdescontados idesc ON idesc.id=rr.ItemDescontadoID LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID LEFT JOIN cliniccentral.sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID where rr.ItemInvoiceID="& ii("id") &" and rr.ItemDescontadoID!=0 order by GrupoConsolidacao")
+               
                 while not rr.eof
 
                     numeroParcela = ""
@@ -906,6 +908,7 @@ desfazBtnCons = ""
                 if PercentualRepassado<100 then
                     sqlPagtos = "select idesc.*, m.PaymentMethodID, pm.PaymentMethod, m.id MovementPayID, idesc.Valor, m.Date, m.AccountIDDebit FROM itensdescontados idesc LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID WHERE idesc.ItemID="& ii("id")&" GROUP BY idesc.ItemID, idesc.PagamentoID, idesc.Valor"
 
+                    
                     set pagtos = db.execute(sqlPagtos)
                     while not pagtos.eof
 
@@ -915,6 +918,8 @@ desfazBtnCons = ""
                                       "LEFT JOIN sys_financialcreditcardtransaction trans ON trans.MovementID=disc.MovementID "&_
                                       "WHERE disc.MovementID="&pagtos("PagamentoID")&" AND (disc.DiscountedValue IS NULL OR disc.DiscountedValue > 0.1)"
 
+                        
+                        
                         set DadosInvoiceSQL = db.execute(sqlDiscount)
                         GrupoFormaPagamentoID=False
                         if not DadosInvoiceSQL.eof then
@@ -929,6 +934,8 @@ desfazBtnCons = ""
                                 end if
 
                                 sqlGrupoForma = "SELECT id FROM sys_formasrecto WHERE MetodoID="&treatvalzero(pagtos("PaymentMethodID"))&" AND (Contas LIKE '%|ALL|%' OR Contas LIKE '%|"&pagtos("AccountIDDebit")&"|%') AND "&Parcelas&" BETWEEN ParcelasDe AND ParcelasAte"
+
+
                                 set GrupoFormaPagamentoSQL = db.execute(sqlGrupoForma)
                                 if not GrupoFormaPagamentoSQL.eof then
                                     GrupoFormaPagamentoID = GrupoFormaPagamentoSQL("id")
@@ -967,7 +974,12 @@ desfazBtnCons = ""
 
                             if (pagtos("PaymentMethodID")=8 or pagtos("PaymentMethodID")=9) and (dividirCompensacao="S" OR ExisteParcelaCompensada=1) then
                                 cParc = 0
-                                set parcs = db.execute("select parc.id, parc.Value BrutoParcela, parc.Fee, parc.InvoiceReceiptID, parc.Parcela, t.Parcelas FROM sys_financialcreditcardreceiptinstallments parc LEFT JOIN sys_financialcreditcardtransaction t ON t.id=parc.TransactionID WHERE t.MovementID="& pagtos("PagamentoID") &" ORDER BY DateToReceive")
+
+
+                                slqParcs = "select parc.id, parc.Value BrutoParcela, parc.Fee, parc.InvoiceReceiptID, parc.Parcela, t.Parcelas FROM sys_financialcreditcardreceiptinstallments parc LEFT JOIN sys_financialcreditcardtransaction t ON t.id=parc.TransactionID WHERE t.MovementID="& pagtos("PagamentoID") &" ORDER BY DateToReceive"
+
+
+                                set parcs = db.execute()
 
                                 while not parcs.eof
 
@@ -1130,12 +1142,19 @@ desfazBtnCons = ""
 
 '4a. situacao: repasses nem recebidos do pacte nem consolidados
                            ' response.write(PercentualNaoPago)
+
+
+
                 if PercentualRepassado<98 then
                     if PercentualNaoPago>2 then
                         ultimoSobre = ""
                         somaDesteSobre = 0
                         ValorBase = ValorProcedimento
+                        
+                        if DominioID =  "" or isnull(DominioID) then 
                         DominioID = dominioRepasse("|P|", ii("ProfissionalID")&"", ProcedimentoID, ii("CompanyUnitID"), ii("TabelaID"), ii("EspecialidadeID")&"", ii("DataExecucao"), ii("HoraExecucao"))
+                        end if
+
                         Despesas = 0
                         ItemDescontadoID = 0
                         ValorNaoRecebido = ValorBase * fn((PercentualNaoPago/100))
@@ -1146,6 +1165,8 @@ desfazBtnCons = ""
                             Classe = "danger"
                             %>
                             <tr class="<%= Classe %>">
+                                
+
                                 <%= tituloTabelaRepasse(Classe, "Não recebido: "& fn(ValorNaoRecebido), ItemInvoiceID, 0, "", "", "", 0, 0, "") %>
                                 <td width="50%" class="<%= Classe %>">
                                     <table class="table table-condensed">

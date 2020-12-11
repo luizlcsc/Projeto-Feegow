@@ -903,10 +903,7 @@ function geraParcelas(Recalc){
         } 
    });
 	$.post("invoiceParcelas.asp?I=<%=req("I")%>&T=<%=req("T")%>&Recalc="+Recalc, $("#formItens").serialize()+elemSerialized, function(data, status){ 
-        $("#invoiceParcelas").html(data)
-        if(Recalc == 'N'){
-            location.reload(true)
-        }
+        $("#invoiceParcelas").html(data);
     });
 }
 function saveInvoiceSubmit(cb){

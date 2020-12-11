@@ -158,6 +158,7 @@ if Acao="" then
 			Row = 0
 			set itens=db.execute("select * from tempinvoice where InvoiceID="&InvoiceID)
 			while not itens.eof
+                response.Flush()
 				Row = Row-1
 				conta = conta+itens("Quantidade")
 				Subtotal = itens("Quantidade")*(itens("ValorUnitario")-itens("Desconto")+itens("Acrescimo"))

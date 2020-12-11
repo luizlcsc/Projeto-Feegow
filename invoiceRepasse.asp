@@ -27,14 +27,15 @@ if not sqlvalor.eof then
     valorAnterior = sqlvalor("ValorUnitario")&""
 end if
 
-
 db.execute("delete from itensinvoiceoutros where InvoiceID="&InvoiceID&" and ItemInvoiceID="& Row)
+
 
 
 if ref("FormaID") = "0_0" then
     sqltest =   " select                                                                                    "&chr(13)&_
                 " 	forma.id as forma,                                                                      "&chr(13)&_
  	            "   pay.AccountIDDebit as conta                                                             "&chr(13)&_
+
                 " from                                                                                      "&chr(13)&_
                 " 	sys_financialmovement bill                                                              "&chr(13)&_
                 " 	left join sys_financialdiscountpayments discount on discount.InstallmentID = bill.id    "&chr(13)&_
@@ -42,6 +43,7 @@ if ref("FormaID") = "0_0" then
                 " 	left join sys_formasrecto forma on pay.PaymentMethodID = forma.MetodoID                 "&chr(13)&_
                 " where                                                                                     "&chr(13)&_
                 " bill.InvoiceID = "&InvoiceID
+
     forma = db.execute(sqltest)
 
     if forma("forma")&"" <> "" then
@@ -51,11 +53,13 @@ end if
 
 DominioID = dominioRepasse(FormaID, ProfissionalID, ProcedimentoID, UnidadeID, TabelaID, EspecialidadeID, "", "")
 
+
 set getFun = db.execute("select id from itensinvoiceoutros where InvoiceID="& InvoiceID &" and ItemInvoiceID="& Row &" and sysActive=1")
 
 if getFun.eof then
     'set fun = db.execute("SELECT * FROM rateiofuncoes WHERE DominioID="&DominioID)'dar union all nos kits
     set fun = db.execute("SELECT * FROM rateiofuncoes WHERE DominioID="&DominioID &" AND FM IN('F', 'E')")'dar union all nos kits
+
     while not fun.eof
         FM = fun("FM")
         Funcao = fun("Funcao")

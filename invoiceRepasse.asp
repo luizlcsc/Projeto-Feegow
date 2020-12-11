@@ -29,9 +29,10 @@ end if
 
 db.execute("delete from itensinvoiceoutros where InvoiceID="&InvoiceID&" and ItemInvoiceID="& Row)
 
-
+temMovment = 1
 
 if ref("FormaID") = "0_0" then
+
     sqltest =   " select                                                                                    "&chr(13)&_
                 " 	forma.id as forma,                                                                      "&chr(13)&_
  	            "   pay.AccountIDDebit as conta                                                             "&chr(13)&_
@@ -43,16 +44,21 @@ if ref("FormaID") = "0_0" then
                 " 	left join sys_formasrecto forma on pay.PaymentMethodID = forma.MetodoID                 "&chr(13)&_
                 " where                                                                                     "&chr(13)&_
                 " bill.InvoiceID = "&InvoiceID
-
     forma = db.execute(sqltest)
 
     if forma("forma")&"" <> "" then
         FormaID = "|P"&forma("forma")&"_"&forma("conta")&"|"
+    else
+        valorAnterior = ""
+        temMovment = 0
     end if
 end if 
 
 DominioID = dominioRepasse(FormaID, ProfissionalID, ProcedimentoID, UnidadeID, TabelaID, EspecialidadeID, "", "")
 
+if temMovment = 0 then
+DominioID = 0
+end if
 
 set getFun = db.execute("select id from itensinvoiceoutros where InvoiceID="& InvoiceID &" and ItemInvoiceID="& Row &" and sysActive=1")
 

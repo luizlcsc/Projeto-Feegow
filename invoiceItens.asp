@@ -13,7 +13,16 @@ PacoteID = ""
 if Row<>"" then
 	Row=ccur(Row)
 end if
+desabilitarExclusaoItem = ""
 
+titleNotaFiscal = ""
+if recursoAdicional(34) = 4 then
+    set existeNotaEmitida = db.execute("select id from nfse_emitidas where invoiceid ="&InvoiceID&" and Status = 3")
+    if not existeNotaEmitida.eof then
+        desabilitarExclusaoItem = " disabled "
+        titleNotaFiscal = "Existe nota com status autorizada"
+    end if
+end if
 
 TemRegrasDeDesconto=False
 

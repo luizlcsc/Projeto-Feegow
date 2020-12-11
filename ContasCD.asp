@@ -180,7 +180,7 @@ end if
                             <label>Categoria</label><br>
 
                             <% if req("T")="C" then
-                                response.write(quickField("simpleSelect", "CategoriaID", "", 4, CategoriaID, "SELECT id, Name FROM " & TabelaCategoria, "Name", ""))
+                                response.write(selectInsert("", "CategoriaID", CategoriaID, TabelaCategoria, "Name", "", "", ""))
                                 else %>
 
                                 <select name="CategoriaID" class="categoria-single">

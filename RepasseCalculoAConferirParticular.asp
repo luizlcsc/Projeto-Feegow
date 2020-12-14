@@ -980,7 +980,7 @@ desfazBtnCons = ""
                                 slqParcs = "select parc.id, parc.Value BrutoParcela, parc.Fee, parc.InvoiceReceiptID, parc.Parcela, t.Parcelas FROM sys_financialcreditcardreceiptinstallments parc LEFT JOIN sys_financialcreditcardtransaction t ON t.id=parc.TransactionID WHERE t.MovementID="& pagtos("PagamentoID") &" ORDER BY DateToReceive"
 
 
-                                set parcs = db.execute()
+                                set parcs = db.execute(slqParcs)
 
                                 while not parcs.eof
 

@@ -603,9 +603,11 @@ $(document).ready(function() {
             </table>
             <input type="hidden" id="nProcedimentos" value="<%= nProcedimentos %>" />
             <div id="totalProcedimentos">
+            <% if aut("valordoprocedimentoV")= 1 then %>
                 <p class="text-right">
                     Valor total: <b>R$  <span id="valortotal"></span></b>
                 </p>
+            <% end if %>
             </div>
         </div>
     </div>

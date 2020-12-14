@@ -986,11 +986,6 @@ desfazBtnCons = ""
 
                                     if instr(ParcelasCartaoConsolidadas, "|"& parcs("id") &"|")=0 then
 
-
-
-
-
-
                                     'REAJUSTAR PROPORCOES
                                     'era individual ->
                                     'nos pagamentos separar antes em pagtos repassados e depois os pagtos a repassar
@@ -1151,16 +1146,14 @@ desfazBtnCons = ""
                         ultimoSobre = ""
                         somaDesteSobre = 0
                         ValorBase = ValorProcedimento
-                        if not isNull(formaToDominio) and not isnull(contaToDominio) then 
+                        if not isNull(formaToDominio) and not isnull(contaToDominio) and formaToDominio <> 0 and contaToDominio <> 0 then 
                             inicial = "|P"&formaToDominio&"_"&contaToDominio&"|"
                         else
                             inicial = "|P|"
                         end if
 
-                        
                         DominioID = dominioRepasse(inicial, ii("ProfissionalID")&"", ProcedimentoID, ii("CompanyUnitID"), ii("TabelaID"), ii("EspecialidadeID")&"", ii("DataExecucao"), ii("HoraExecucao"))
                         
-
                         Despesas = 0
                         ItemDescontadoID = 0
                         ValorNaoRecebido = ValorBase * fn((PercentualNaoPago/100))

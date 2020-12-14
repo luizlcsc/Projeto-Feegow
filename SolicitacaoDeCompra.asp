@@ -66,7 +66,7 @@ IF Request.Form("AccountID")<>"" THEN
              " WHERE id = "&CompraID
         db.execute(sql)
 
-        IF StatusID = "2" THEN
+        IF StatusID = "2" and False THEN
             sql  =" SELECT                                                                                                                                                                         "&chr(13)&_
                   "   coalesce(funcionarios.NomeFuncionario,profissionais.NomeProfissional) as Solicitante                                                                                         "&chr(13)&_
                   "  ,CONCAT('55',replace(replace(replace(replace(coalesce(funcionarios.Cel1,profissionais.Cel1),' ',''),'(',''),')',''),'-','')) as Celular                                       "&chr(13)&_

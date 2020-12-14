@@ -260,7 +260,7 @@ else
 
             if not isnull(GuiaDisponivelSQL("numero")) then
 
-                GuiaDisponivel = ccur(GuiaDisponivelSQL("numero")) + 1
+                GuiaDisponivel = formatnumber(GuiaDisponivelSQL("numero"),2) + 1
             end if
         end if
 

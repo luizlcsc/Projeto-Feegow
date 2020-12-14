@@ -110,7 +110,7 @@ else
         Nome = ints("Nome")
 
         if isnull(Foto) or Foto="" then
-            Foto = "/assets/img/user.png"
+            Foto = "./assets/img/user.png"
         else
             if req("Helpdesk")<>"" then
                 L = 5459

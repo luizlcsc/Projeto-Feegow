@@ -81,6 +81,10 @@ if getConfig("PermitirAlterarPacienteContaAReceber") = "0" then'TROCAR PARA VERI
 	end if
 end if
 
+if getConfig("profissionalsolicitanteobrigatorio") and ref("ProfissionalSolicitante")="" and CD="C" then
+	erro = "Profissional solicitante obrigatório"
+end if
+
 set pg = db.execute("select m.id from sys_financialmovement m left join sys_financialdiscountpayments d on (d.InstallmentID=m.id or d.MovementID=m.id) where m.InvoiceID="&InvoiceID&" and not isnull(d.InstallmentID) and not isnull(d.MovementID)")
 if not pg.eof then
 	existePagto = "S"

@@ -99,7 +99,7 @@ if not prof.eof then
 	Ativo = prof("Ativo")
 	NomeProfissional = prof("NomeProfissional")
 	if isnull(prof("Foto")) or prof("Foto")="" then
-		FotoProfissional = "/assets/img/user.png"
+		FotoProfissional = "./assets/img/user.png"
 	else
 		FotoProfissional = arqEx(prof("Foto"), "Perfil")
 	end if
@@ -108,7 +108,7 @@ if not prof.eof then
 	ObsAgenda = replace(replace(replace(replace(ObsAgenda, chr(10), " "), chr(13), " "), "'", ""), """", "")
 else
 	Cor = "#333"
-	FotoProfissional = "/assets/img/user.png"
+	FotoProfissional = "./assets/img/user.png"
 end if
 %>
 <script>

@@ -649,7 +649,7 @@ end if
             if reqf("InvoiceID")<>"" and 0 then
                 'sqlII = "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& reqf("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
                 sqlII = "select r.*, t.Nomelocal CompanyUnit, esp.especialidade,s.NomeProfissional ProfissionalSolicitante, r.ProfissionalSolicitante ProfissionalSolicitanteID from ( "&_
-                        "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& reqf("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
+                        "select ii.*,i.FormaID, i.ContaRectoID,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& reqf("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
                         ") r"&_
                         " LEFT JOIN especialidades esp ON esp.id = r.EspecialidadeID"&_
                         " LEFT JOIN (( SELECT 0 AS 'id', NomeFantasia NomeLocal FROM empresa WHERE id=1) UNION ALL ( SELECT id, NomeFantasia FROM sys_financialcompanyunits)) t ON t.id = r.CompanyUnitID"&_
@@ -665,7 +665,7 @@ end if
             elseif reqf("AC")="1" then
                 'sqlII = "select r.id ReconsolidacaoID, ii.*, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE NOT ISNULL(ii.InvoiceID)" & sqlUnidades
                 sqlII = "select rs.*, t.Nomelocal CompanyUnit, esp.especialidade,s.NomeProfissional ProfissionalSolicitante, rs.ProfissionalSolicitante ProfissionalSolicitanteID from ("&_
-                        "select r.id ReconsolidacaoID, ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE ii.Executado='S' AND NOT ISNULL(ii.InvoiceID)" & sqlUnidades &") rs"&_
+                        "select r.id ReconsolidacaoID, ii.*, i.FormaID, i.ContaRectoID, i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE ii.Executado='S' AND NOT ISNULL(ii.InvoiceID)" & sqlUnidades &") rs"&_
                         " LEFT JOIN especialidades esp ON esp.id = rs.EspecialidadeID"&_
                         " LEFT JOIN (( SELECT 0 AS 'id', NomeFantasia NomeLocal FROM empresa WHERE id=1) UNION ALL ( SELECT id, NomeFantasia FROM sys_financialcompanyunits)) t ON t.id = rs.CompanyUnitID"&_
                         " LEFT JOIN ("&_
@@ -682,7 +682,7 @@ end if
                 'sqlII = "select ii.*, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE ii.DataExecucao BETWEEN "& mydatenull(De) &" and "& mydatenull(Ate)&" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlProcedimento & " ORDER BY ii.DataExecucao"
                 'sqlII = "select r.id ReconsolidacaoID, ii.*, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE NOT ISNULL(ii.InvoiceID)"& sqlUnidades
                 sqlII = "select r.*, t.Nomelocal CompanyUnit, esp.especialidade,s.NomeProfissional ProfissionalSolicitante, r.ProfissionalSolicitante ProfissionalSolicitanteID from (SELECT "&_
-"ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente "&_
+"ii.*, i.FormaID, i.ContaRectoID, i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente "&_
 "FROM sys_financialmovement m "&_
 "LEFT JOIN sys_financialcreditcardreceiptinstallments ccr ON ccr.InvoiceReceiptID=m.id "&_
 "LEFT JOIN sys_financialcreditcardtransaction t ON t.id=ccr.TransactionID "&_
@@ -694,7 +694,7 @@ end if
 "WHERE m.Date BETWEEN "&_
 " "& mydatenull(De) &" AND "& mydatenull(Ate) &" AND NOT ISNULL(t.id) AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "& ContaProfissional & sqlProcedimento &_
                 " UNION ALL "&_
-"SELECT ii.*,i2.ProfissionalSolicitante, i2.CompanyUnitID, i2.AccountID, i2.AssociationAccountID, i2.TabelaID, proc2.NomeProcedimento, pac2.NomePaciente "&_
+"SELECT ii.*, i2.FormaID, i2.ContaRectoID, i2.ProfissionalSolicitante, i2.CompanyUnitID, i2.AccountID, i2.AssociationAccountID, i2.TabelaID, proc2.NomeProcedimento, pac2.NomePaciente "&_
 "FROM sys_financialmovement m2 "&_
 "LEFT JOIN itensdescontados idesc2 ON idesc2.PagamentoID=m2.id "&_
 "LEFT JOIN itensinvoice ii ON ii.id=idesc2.ItemID "&_
@@ -716,7 +716,7 @@ end if
 " FROM profissionalexterno) s) s ON s.id = r.ProfissionalSolicitante "
             else
 
-                sqlII = "select ii.*,s.NomeProfissional ProfissionalSolicitante, i.ProfissionalSolicitante ProfissionalSolicitanteID, t.NomeLocal CompanyUnit, esp.especialidade, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID "&_
+                sqlII = "select ii.*, i.FormaID, i.ContaRectoID,s.NomeProfissional ProfissionalSolicitante, i.ProfissionalSolicitante ProfissionalSolicitanteID, t.NomeLocal CompanyUnit, esp.especialidade, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID "&_
                         "left join especialidades esp on esp.id = ii.EspecialidadeID "&_
                         "left join ((select 0 as 'id',  NomeFantasia NomeLocal FROM empresa WHERE id=1) UNION ALL (select id,  NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia)) t on t.id = i.CompanyUnitID "&_
                         "left join (SELECT s.id, s.NomeProfissional FROM (SELECT CONCAT('0_', id) id, NomeEmpresa NomeProfissional FROM empresa "&_
@@ -729,8 +729,9 @@ end if
             end if
             set ii = db.execute( sqlII )
                 'se ii("Repassado")=0 joga pra temprepasse, else exibe o q ja foi pra rateiorateios
+                ' dd(sqlII)
             while not ii.eof
-
+ 
                 ProfissionalExecutante = ii("Associacao") &"_"& ii("ProfissionalID")
                 ItemInvoiceID = ii("id")
                 InvoiceID = ii("InvoiceID")
@@ -742,6 +743,8 @@ end if
                 EspecialidadeID = ii("EspecialidadeID")
                 TabelaID = ii("TabelaID")
                 UnidadeID = ii("CompanyUnitID")
+                formaToDominio = ii("FormaID")
+                contaToDominio = ii("ContaRectoID")
 
                 'modificação 29102019
                 UnidadeName = ii("CompanyUnit")
@@ -791,6 +794,7 @@ desfazBtnCons = ""
 '1a. situação: lista todos os descontos que foram repassados
                 GrupoConsolidacao = 0
                 set rr = db.execute("select rr.*, rf.DominioID, pm.PaymentMethod from rateiorateios rr LEFT JOIN rateiofuncoes rf ON rf.id=rr.FuncaoID LEFT JOIN itensdescontados idesc ON idesc.id=rr.ItemDescontadoID LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID LEFT JOIN cliniccentral.sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID where rr.ItemInvoiceID="& ii("id") &" and rr.ItemDescontadoID!=0 order by GrupoConsolidacao")
+               
                 while not rr.eof
 
                     numeroParcela = ""
@@ -906,6 +910,7 @@ desfazBtnCons = ""
                 if PercentualRepassado<100 then
                     sqlPagtos = "select idesc.*, m.PaymentMethodID, pm.PaymentMethod, m.id MovementPayID, idesc.Valor, m.Date, m.AccountIDDebit FROM itensdescontados idesc LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID WHERE idesc.ItemID="& ii("id")&" GROUP BY idesc.ItemID, idesc.PagamentoID, idesc.Valor"
 
+                    
                     set pagtos = db.execute(sqlPagtos)
                     while not pagtos.eof
 
@@ -914,7 +919,8 @@ desfazBtnCons = ""
                                       "INNER JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id "&_
                                       "LEFT JOIN sys_financialcreditcardtransaction trans ON trans.MovementID=disc.MovementID "&_
                                       "WHERE disc.MovementID="&pagtos("PagamentoID")&" AND (disc.DiscountedValue IS NULL OR disc.DiscountedValue > 0.1)"
-
+                        
+                        
                         set DadosInvoiceSQL = db.execute(sqlDiscount)
                         GrupoFormaPagamentoID=False
                         if not DadosInvoiceSQL.eof then
@@ -929,6 +935,8 @@ desfazBtnCons = ""
                                 end if
 
                                 sqlGrupoForma = "SELECT id FROM sys_formasrecto WHERE MetodoID="&treatvalzero(pagtos("PaymentMethodID"))&" AND (Contas LIKE '%|ALL|%' OR Contas LIKE '%|"&pagtos("AccountIDDebit")&"|%') AND "&Parcelas&" BETWEEN ParcelasDe AND ParcelasAte"
+
+
                                 set GrupoFormaPagamentoSQL = db.execute(sqlGrupoForma)
                                 if not GrupoFormaPagamentoSQL.eof then
                                     GrupoFormaPagamentoID = GrupoFormaPagamentoSQL("id")
@@ -967,7 +975,12 @@ desfazBtnCons = ""
 
                             if (pagtos("PaymentMethodID")=8 or pagtos("PaymentMethodID")=9) and (dividirCompensacao="S" OR ExisteParcelaCompensada=1) then
                                 cParc = 0
-                                set parcs = db.execute("select parc.id, parc.Value BrutoParcela, parc.Fee, parc.InvoiceReceiptID, parc.Parcela, t.Parcelas FROM sys_financialcreditcardreceiptinstallments parc LEFT JOIN sys_financialcreditcardtransaction t ON t.id=parc.TransactionID WHERE t.MovementID="& pagtos("PagamentoID") &" ORDER BY DateToReceive")
+
+
+                                slqParcs = "select parc.id, parc.Value BrutoParcela, parc.Fee, parc.InvoiceReceiptID, parc.Parcela, t.Parcelas FROM sys_financialcreditcardreceiptinstallments parc LEFT JOIN sys_financialcreditcardtransaction t ON t.id=parc.TransactionID WHERE t.MovementID="& pagtos("PagamentoID") &" ORDER BY DateToReceive"
+
+
+                                set parcs = db.execute()
 
                                 while not parcs.eof
 
@@ -1130,12 +1143,24 @@ desfazBtnCons = ""
 
 '4a. situacao: repasses nem recebidos do pacte nem consolidados
                            ' response.write(PercentualNaoPago)
+
+
+
                 if PercentualRepassado<98 then
                     if PercentualNaoPago>2 then
                         ultimoSobre = ""
                         somaDesteSobre = 0
                         ValorBase = ValorProcedimento
-                        DominioID = dominioRepasse("|P|", ii("ProfissionalID")&"", ProcedimentoID, ii("CompanyUnitID"), ii("TabelaID"), ii("EspecialidadeID")&"", ii("DataExecucao"), ii("HoraExecucao"))
+                        if not isNull(formaToDominio) and not isnull(contaToDominio) then 
+                            inicial = "|P"&formaToDominio&"_"&contaToDominio&"|"
+                        else
+                            inicial = "|P|"
+                        end if
+
+                        
+                        DominioID = dominioRepasse(inicial, ii("ProfissionalID")&"", ProcedimentoID, ii("CompanyUnitID"), ii("TabelaID"), ii("EspecialidadeID")&"", ii("DataExecucao"), ii("HoraExecucao"))
+                        
+
                         Despesas = 0
                         ItemDescontadoID = 0
                         ValorNaoRecebido = ValorBase * fn((PercentualNaoPago/100))
@@ -1146,6 +1171,8 @@ desfazBtnCons = ""
                             Classe = "danger"
                             %>
                             <tr class="<%= Classe %>">
+                                
+
                                 <%= tituloTabelaRepasse(Classe, "Não recebido: "& fn(ValorNaoRecebido), ItemInvoiceID, 0, "", "", "", 0, 0, "") %>
                                 <td width="50%" class="<%= Classe %>">
                                     <table class="table table-condensed">

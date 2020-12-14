@@ -408,7 +408,7 @@ if not inv.eof then
                             " p.DiasRetorno, "&_
                             " (select sum(Valor) from itensdescontados where ItemID=ii.id) ValorPago,"&_
                             " (if(ii.PacoteID is null,CONCAT(ii.ValorUnitario, ii.ItemID, ii.id),ii.PacoteID)) PACUNICO,"&_
-                            " (if(ii.PacoteID is not null,CONCAT(ii.ItemID, ii.id),CONCAT(ii.ValorUnitario, ii.acrescimo, ii.Desconto,ii.ItemID,ii.Descricao))) ITEMUNICO"&_
+                            " (if(ii.PacoteID is not null,CONCAT(ii.ItemID, ii.id),CONCAT(ii.ValorUnitario, IFNULL(ii.acrescimo,0), IFNULL(ii.Desconto,0),ii.ItemID,IFNULL(ii.Descricao,0)))) ITEMUNICO"&_
                             " "&_
                             " from itensinvoice ii "&_
                             " left join procedimentos p on p.id=ii.ItemID "&_
@@ -420,6 +420,7 @@ if not inv.eof then
                             " ) as t"&_
                             " group by "&_
                             " 	if("&SqlAgruparItem&",ITEMUNICO,id)"
+
 				set itens = db.execute(sqlItens)
 
 				TotalTotal = 0

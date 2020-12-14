@@ -794,7 +794,12 @@ if not inv.eof then
             set forma=nothing
 
 
-            ProfissionalTagID = AssociacaoID&"-"&ProfissionalExecutanteID
+            ProfissionalTagID = ""
+
+            if ProfissionalExecutanteID&""<>"" then
+                ProfissionalTagID = AssociacaoID&"-"&ProfissionalExecutanteID    
+            end if
+            
             Recibo = TagsConverte(Recibo,Converte_ProfissionalExecutanteExterno&"ProfissionalSolicitanteID_"&ProfissionalSolicitanteID&"|ProfissionalID_"&ProfissionalTagID&"|UnidadeID_"&inv("CompanyUnitID")&"|FaturaID_"&req("I"),"")
             ' Recibo = TagsConverte(Recibo,"ProfissionalSessao_X","")
 

@@ -29,7 +29,7 @@ _Partindo do pré suposto de que já exista um banco mysql funcionando e com as 
  
  _Para instalar o IIS no seu Windows comece por aceder ao Menu Iniciar – 
 Painel de Controle._ 
-_Em alternativa, pressione as teclas de atalho CTRL + SHIFT + ESC e no gestor de tarefas aceda ao menu arquivo – nova tarefa. Digite appwiz.clp e pressione a tecla “Enter”._
+_Em alternativa, pressione as teclas de atalho CTRL + SHIFT + ESC e no gestor de tarefas aceda ao menu arquivo – nova tarefa. Digite appwiz.cpl e pressione a tecla “Enter”._
 
 _Agora, clique na opção “Ativar ou desativar funcionalidades (ou recursos) do Windows”. Procure por “Serviço de Informações da Internet” e ative a caixa de verificação._
 _Se você é um desenvolvedor Web, talvez queira expandir as opções para instalar mais funcionalidades._

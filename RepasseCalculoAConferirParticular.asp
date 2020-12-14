@@ -1146,7 +1146,7 @@ desfazBtnCons = ""
                         ultimoSobre = ""
                         somaDesteSobre = 0
                         ValorBase = ValorProcedimento
-                        if not isNull(formaToDominio) and not isnull(contaToDominio) and formaToDominio <> 0 and contaToDominio <> 0 then 
+                        if not isNull(formaToDominio) and not isnull(contaToDominio) and formaToDominio&"" <> "0" and contaToDominio&"" <> "0" then 
                             inicial = "|P"&formaToDominio&"_"&contaToDominio&"|"
                         else
                             inicial = "|P|"

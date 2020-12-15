@@ -84,7 +84,7 @@ else
     PrimeiroVencto = date()
 end if
 
-LicencaFinanceiro = session("Banco")="clinic100000" or session("Banco")="clinic100003" or session("Banco")="clinic5459"
+LicencaFinanceiro =  session("Banco")="clinic100003" or session("Banco")="clinic5459"
 
 %>
 

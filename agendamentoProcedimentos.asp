@@ -15,25 +15,20 @@ function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBil
                 Rotulo = "RECEBER"
 
                 recebimentoFunc = "onclick='lanctoCheckin("""&Bloco &""", """&IDMovementBill&""")'"
-                recebimentoFuncCaixinha=""
+                
+                
+                if ObrigarFormaRecebimentoCheckin = "1" then
+                    recebimentoFunc = " onclick='lanctoCheckinNovoUpdate("""&Bloco&""")' "
+                end if
 
                 if aut("|contasareceberI|")=0 and session("CaixaID")="" and aut("|aberturacaixinhaI|") then
                     recebimentoFunc="data-toggle='tooltip' title='Você precisar abrir o caixinha'"
-                    recebimentoFuncCaixinha="data-toggle='tooltip' title='Você precisar abrir o caixinha'"
+
                     styleDisabled = "style='cursor: not-allowed; opacity:0.65'"
                 end if                
-                
-                if ObrigarFormaRecebimentoCheckin = "1" then %>
-                    <button type="button" class="ckpagar btn btn-xs btn-warning" <%=styleDisabled%> <%=recebimentoFuncCaixinha%> data-toggle="modal" onclick='lanctoCheckinNovoUpdate(<%=Bloco%>)'>
-                        <i class="fa fa-arrow-circle-up"></i> <%= Rotulo %>
-                    </button>                    
-                <% else %>
+                %>
                     <button type="button" class="ckpagar btn btn-xs btn-warning" <%=styleDisabled%> <%=recebimentoFunc%> ><i class="fa fa-arrow-circle-up"></i> <%= Rotulo %></button>
-                <% end if %>
-                <!-- Botão para acionar modal -->
-               
-                
-                <%
+                <% 
             else
                 spl = split(strTipoGuia, ", ")
                 for i=0 to ubound(spl)

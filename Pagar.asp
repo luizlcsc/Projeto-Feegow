@@ -302,7 +302,7 @@ function BuscarCreditosPaciente(ContaID) {
                                                                     " where sys_financialinvoices.id = "&InvoiceID)
 
                                     if not sysFormasRecto.eof then
-                                        if not isnull(sysFormasRecto("MetodoID")) then
+                                        if sysFormasRecto("MetodoID")=1 OR sysFormasRecto("MetodoID")=2 OR sysFormasRecto("MetodoID")=7  OR sysFormasRecto("MetodoID")=8 then
                                             MetodoIDSelect = sysFormasRecto("MetodoID")
                                         end if
                                         ContaRectoSelect = sysFormasRecto("ContaRectoID")
@@ -320,7 +320,7 @@ function BuscarCreditosPaciente(ContaID) {
                                         </div>
                                         <div class="subConta hidden" id="contas_<%=PaymentMethod("id")%>">
                                         <%
-										if session("CaixaID")="" then
+										if session("CaixaID")="" OR PaymentMethod("id")=7 OR PaymentMethod("id")=8 OR PaymentMethod("id")=9 OR PaymentMethod("id")=4 OR PaymentMethod("id")=5 OR PaymentMethod("id")=6 then
 										    sqlContasLiberadas = ""
 
 										    Contas=""

@@ -1147,7 +1147,12 @@ desfazBtnCons = ""
                         somaDesteSobre = 0
                         ValorBase = ValorProcedimento
                         if not isNull(formaToDominio) and not isnull(contaToDominio) and formaToDominio&"" <> "0" and contaToDominio&"" <> "0" then 
-                            inicial = "|P"&formaToDominio&"_"&contaToDominio&"|"
+                            if forma("MetodoID")&""= "1" OR forma("MetodoID")&""="2" OR forma("MetodoID")&""="7" then
+                                conta = "0"
+                            else
+                                conta = contaToDominio
+                            end if
+                            inicial = "|P"&formaToDominio&"_"&conta&"|"
                         else
                             inicial = "|P|"
                         end if

@@ -22,19 +22,22 @@ if session("Table")="profissionais" then
 end if
 unidadeId = session("UnidadeID")
 
-set timbrado = db.execute("select pt.* "&_
-                          "from papeltimbrado pt "&_
-                          "where pt.sysActive=1 AND (pt.profissionais like '%|ALL|%' OR pt.Profissionais LIKE '%|"&profissionalId&"|%')  AND "&_
-                          "(UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&unidadeId&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0) LIMIT 1")
-if not timbrado.eof then
-    cabecalho = timbrado("Cabecalho")
-    rodape = timbrado("Rodape")
-    mLeft = timbrado("mLeft")
-    mRight = timbrado("mRight")
-    mTop = timbrado("mTop")
-    mBottom = timbrado("mBottom")
-    fontSize = timbrado("font-size")
-    color = timbrado("color")
+
+if imprimecabecalho then
+    set timbrado = db.execute("select pt.* "&_
+                            "from papeltimbrado pt "&_
+                            "where pt.sysActive=1 AND (pt.profissionais like '%|ALL|%' OR pt.Profissionais LIKE '%|"&profissionalId&"|%')  AND "&_
+                            "(UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&unidadeId&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0) LIMIT 1")
+    if not timbrado.eof then
+        cabecalho = timbrado("Cabecalho")
+        rodape = timbrado("Rodape")
+        mLeft = timbrado("mLeft")
+        mRight = timbrado("mRight")
+        mTop = timbrado("mTop")
+        mBottom = timbrado("mBottom")
+        fontSize = timbrado("font-size")
+        color = timbrado("color")
+    end if
 end if
 db_execute("update pedidossadt set ConvenioID="& treatvalzero(req("ConvenioIDPedidoSADT")) &", ProfissionalID="&treatvalzero(req("ProfissionalID"))&", Data="&mydatenull(req("DataSolicitacao"))&", IndicacaoClinica='"& req("IndicacaoClinicaPedidoSADT") &"', Observacoes='"& req("ObservacoesPedidoSADT") &"', ProfissionalExecutante='"& req("ProfissionalExecutanteIDPedidoSADT") &"' where id="& req("PedidoSADTID"))
 set procs = db.execute("select pps.*, ps.ConvenioID, ps.Data, ps.PacienteID, ps.ProfissionalID, ps.GuiaID, ps.IndicacaoClinica, ps.Observacoes, pac.NomePaciente, pac.Matricula1, pac.Validade1 from pedidossadtprocedimentos pps LEFT JOIN pedidossadt ps ON pps.PedidoID=ps.id LEFT JOIN pacientes pac ON pac.id=ps.PacienteID where pps.PedidoID="& req("PedidoSADTID"))

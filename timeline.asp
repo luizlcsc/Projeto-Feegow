@@ -463,6 +463,30 @@ else
             %>
         </div>
         <%
+    case "|Tarefas|"
+        subTitulo = "Tarefas"
+        %>
+        <div class="panel timeline-add">
+            <div class="panel-heading">
+                <span class="panel-title"> <%=subTitulo %>
+                </span>
+            </div>
+            <%
+            if aut("atestadosI")=1 then
+            %>
+            <div class="panel-body" style="overflow: inherit!important;">
+                <div class="col-md-4">
+                    <ul class="dropdown-menu disabled" role="menu">
+                        <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="fa fa-plus"></i> Tarefas</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+            <%
+            end if
+            %>
+        </div>
+        <%
 
     case "|AsoPaciente|"
 %>

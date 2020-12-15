@@ -31,6 +31,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
         sqlAtestado = " union all (select 0, pa.id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text-o', 'success', `Data`, Atestado,s.id from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
     end if
 
+     if instr(Tipo, "|Tarefas|")>0 then
+        sqlTarefa = " union all (SELECT 0, ta.id, '', ta.sysuser, 'Tarefas' , ta.Titulo, 'check-square-o' , 'success' , ta.dtabertura  , tm.msg ,'' assinatura FROM tarefas ta "&_
+                    " INNER JOIN tarefasmsgs tm ON tm.TarefaID = ta.id "&_
+                    " WHERE ta.solicitantes LIKE ',3_"&PacienteID&"%') "
+    end if
+
     if instr(Tipo, "|Pedido|")>0 then
         sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', 'Pedido de Exame', 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive=1 AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
         sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'' from pedidossadt WHERE sysActive=1 and PacienteID="&PacienteID&") "
@@ -50,9 +56,9 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                  c=0
 
     sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado limit 0) "&_
-                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
+                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC limit "&loadMore&","&MaximoLimit
-
+     'response.write(sql)
              set ti = db.execute( sql )
              while not ti.eof
                  Ano = year(ti("DataHora"))
@@ -462,7 +468,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                         </ul>
                         <%
                         response.Write("<small>" & ti("Conteudo") & "</small>")
-                          case "Diagnostico", "Prescricao", "Atestado"
+                          case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
                           response.Write("<small>" & ti("Conteudo") & "</small>")
                     case "PedidosSADT"
                         set psadt = db.execute("select tproc.descricao from pedidossadtprocedimentos pps LEFT JOIN cliniccentral.procedimentos tproc ON tproc.tipoTabela=pps.TabelaID AND pps.CodigoProcedimento=tproc.Codigo where pps.PedidoID="& ti("id"))

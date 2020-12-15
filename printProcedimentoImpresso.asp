@@ -18,9 +18,9 @@ end if
 set ImpressosModeloSQL = db.execute(sqlImpresso)
 
 if not ImpressosModeloSQL.eof then
-    TextoImpresso  = replaceTags(ImpressosModeloSQL("Cabecalho"), PacienteID, session("User"), UnidadeID)
-
-    tags = tagsConverte(TextoImpresso,"ProfissionalID_"&ProcedimentoID&"|PacienteID_"&PacienteID&"|ProcedimentoID_"&ProcedimentoID&"|UnidadeID_"&UnidadeID&"|ProfissionalSolicitanteNome_"&Solicitante,"")
+    TextoImpresso = ImpressosModeloSQL("Cabecalho")
+    TextoImpresso = tagsConverte(TextoImpresso,"ProfissionalID_"&ProfissionalID&"|PacienteID_"&PacienteID&"|ProcedimentoID_"&ProcedimentoID&"|UnidadeID_"&UnidadeID&"|ProfissionalSolicitanteNome_"&Solicitante,"")
+    TextoImpresso  = replaceTags(TextoImpresso, PacienteID, session("User"), UnidadeID)
 
     'BLOCO DO CÓDIGO SENDO ENVIADO PARA O ARUIVO tagsConverte.asp converter as tags
 

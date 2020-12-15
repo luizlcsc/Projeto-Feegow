@@ -44,7 +44,7 @@ end if
 
 
 if erro="" then
-	sql = "update invoicesfixas set ValorMinimoPorUsuario=NULLIF("&ValorMinimoPorUsuario&",''), TipoContaFixaID="&TipoContaFixaID&", Licenca=NULLIF('"&Licenca&"',''),EmitirNotaAntecipada="&EmitirNotaAntecipada&",DiasAntes="&DiasAntes&",PaymentMethodID="&PaymentMethodID&", AccountID="&ContaID&sqlFecharAutomatico&", AssociationAccountID="&AssociacaoID&", PrimeiroVencto="&mydatenull(PrimeiroVencto)&", Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", Intervalo="&ref("Intervalo")&", TipoIntervalo='"&ref("TipoIntervalo")&"', sysActive=1, RepetirAte="& mydatenull(ref("RepetirAte")) &" where id="&InvoiceID
+	sql = "update invoicesfixas set ValorMinimoPorUsuario=NULLIF("&ValorMinimoPorUsuario&",''), TipoContaFixaID="&treatvalzero(TipoContaFixaID)&", Licenca=NULLIF('"&Licenca&"',''),EmitirNotaAntecipada="&EmitirNotaAntecipada&",DiasAntes="&DiasAntes&",PaymentMethodID="&PaymentMethodID&", AccountID="&ContaID&sqlFecharAutomatico&", AssociationAccountID="&AssociacaoID&", PrimeiroVencto="&mydatenull(PrimeiroVencto)&", Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", Intervalo="&ref("Intervalo")&", TipoIntervalo='"&ref("TipoIntervalo")&"', sysActive=1, RepetirAte="& mydatenull(ref("RepetirAte")) &" where id="&InvoiceID
 
 	db_execute( sql )
 

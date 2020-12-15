@@ -1542,7 +1542,36 @@ function repeteAgendamento(ConsultaID){
 }
 setInterval(function(){abasAux()}, 3000);
 
+function atualizaHoraAtual(){
+    var time = new Date();
+    var M = time.getMinutes();
+    var H = time.getHours();
 
+    <%
+    if HorarioVerao="" then
+    %>
+        if(H=="0"){
+            H = "23";
+        }
+        else{
+            H = H - 1;
+        }
+
+    <%
+    end if
+    %>
+    if(M <= 9){
+        M = "0"+M;
+    }
+    if(H <= 9){
+        H = "0"+H;
+    }
+
+
+    var horaAtual = H + ":" + M;
+
+    $("#Chegada").val(horaAtual);
+}
 
 $("#StaID").change(function(){
     //triagem 101
@@ -1551,34 +1580,7 @@ $("#StaID").change(function(){
 		$("#divStatus").addClass("col-md-6");
 		$("#divChegada").fadeIn("slow");
 
-		var time = new Date();
-		var M = time.getMinutes();
-		var H = time.getHours();
-
-        <%
-        if HorarioVerao="" then
-        %>
-            if(H=="0"){
-                H = "23";
-            }
-            else{
-                H = H - 1;
-            }
-
-        <%
-        end if
-        %>
-		if(M <= 9){
-		    M = "0"+M;
-		}
-		if(H <= 9){
-		    H = "0"+H;
-		}
-
-
-        var horaAtual = H + ":" + M;
-
-		$("#Chegada").val(horaAtual);
+		atualizaHoraAtual();
 	}else{
 		$("#divStatus").addClass("col-md-12");
 		$("#divStatus").removeClass("col-md-6");
@@ -1868,6 +1870,8 @@ function ObsConvenio(ConvenioID) {
     $("#modal").addClass("modal-lg");
 
 }
+
+atualizaHoraAtual();
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>

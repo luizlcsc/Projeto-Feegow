@@ -3283,11 +3283,6 @@ function db_execute(txt)
 
     db.execute(txt)
 
-
-    if session("Banco")="clinic6118" then
-        post = replace(Request.Form, "'", "\'")
-        db.execute("insert into cliniccentral.updates (codigoSQL, Banco, UserID, POST, UrlClient, ArquivoExecutado) values ('"&rep(txt)&"', '"&session("Banco")&"', "& treatvalnull(session("User")) &", '"&post&"', '"&Request.ServerVariables("SCRIPT_NAME")&"', '"&Request.ServerVariables("HTTP_REFERER")&"')")
-    end if
 end function
 
 function DiaMes(PU, Dt)

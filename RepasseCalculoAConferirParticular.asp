@@ -1146,17 +1146,11 @@ desfazBtnCons = ""
                         ultimoSobre = ""
                         somaDesteSobre = 0
                         ValorBase = ValorProcedimento
-                        inicial = "|P|"
-
                         if not isNull(formaToDominio) and not isnull(contaToDominio) and formaToDominio&"" <> "0" and contaToDominio&"" <> "0" then 
-                            if not forma.eof then
-                                if forma("MetodoID")&""= "1" OR forma("MetodoID")&""="2" OR forma("MetodoID")&""="7" then
-                                    conta = "0"
-                                else
-                                    conta = contaToDominio
-                                end if
-                                inicial = "|P"&formaToDominio&"_"&conta&"|"
-                            end if
+                            conta = contaToDominio
+                            inicial = "|P"&formaToDominio&"_"&conta&"|"
+                        else
+                            inicial = "|P|"
                         end if
 
                         DominioID = dominioRepasse(inicial, ii("ProfissionalID")&"", ProcedimentoID, ii("CompanyUnitID"), ii("TabelaID"), ii("EspecialidadeID")&"", ii("DataExecucao"), ii("HoraExecucao"))

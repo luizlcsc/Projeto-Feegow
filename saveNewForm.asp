@@ -273,7 +273,19 @@ elseif req("auto")="1" then
 <% end if
 
 if req("auto")<>"1" then
+
+    action = "novo_formulario"
+
+    if I<>"N" then
+        action = "altera_formulario"
+    end if
 %>
+
+gtag('event', '<%=action%>', {
+    'event_category': 'formulario',
+    'event_label': "Botão 'Salvar' clicado.",
+});
+
 pront('timeline.asp?PacienteID=<%=PacienteID %>&Tipo=|<%=req("t") %>|');
 <%
 end if

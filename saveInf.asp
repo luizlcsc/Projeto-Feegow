@@ -372,6 +372,12 @@ setTimeout(()=>{
 				end if
 %>
 
+
+gtag('event', 'nova_proposta', {
+	'event_category': 'atendimento',
+	'event_label': "Proposta > Salvar",
+});
+
 getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%= AgendamentoID %>",sms: <%=ativarSMS%>,email: <%=ativarEmail%>, forceEvent:false }, callbackFinaliza)
 <%
 end if

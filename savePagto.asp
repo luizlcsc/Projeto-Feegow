@@ -387,9 +387,10 @@ if T="C" and InvoiceID&"" <>"" then
 
     abrirReciboAutomatico = getConfig("ReciboAutomaticoFinanceiro")
     if abrirReciboAutomatico = 1 then
-        set iInvoices = db.execute("SELECT IFNULL(Value, 0) Value FROM sys_financialinvoices WHERE id=" & InvoiceID)
+        set iInvoices = db.execute("SELECT IFNULL(Value, 0) Value, CD FROM sys_financialinvoices WHERE id=" & InvoiceID)
         set iPagoInvoices = db.execute("SELECT IFNULL(SUM(ValorPago),0) ValorTotal FROM sys_financialmovement WHERE InvoiceID =" & InvoiceID)
         
+        CD = iInvoices("Value")
         if iInvoices("Value") = iPagoInvoices("ValorTotal")  then
         %>
         $.get("relatorio.asp?TipoRel=ifrReciboIntegrado&I=<%=InvoiceID%>",  function(data){  });
@@ -420,7 +421,21 @@ if T="C" and InvoiceID&"" <>"" then
     end if
 end if
 
+
+action = "recebimento"
+category = "conta_a_receber"
+
+if CD="D" then
+    action = "pagamento"
+    category = "conta_a_pagar"
+end if
 %>
+
+gtag('event', '<%=action%>', {
+    'event_category': '<%=category%>',
+    'event_label': "Botão 'Pagar' clicado.",
+});
+
 var MovementPayID = '<%=LastMovementID%>';
 
 if( $.isNumeric($("#PacienteID").val()) )

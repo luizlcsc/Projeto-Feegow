@@ -179,6 +179,13 @@ else
                     $.get("callAgendamentoProcedimentos.asp?Checkin=1&ConsultaID="+ $("#ConsultaID").val() +"&PacienteID="+ $("#PacienteID").val() +"&ProfissionalID="+ $("#ProfissionalID").val() +"&ProcedimentoID="+ $("#ProcedimentoID").val(), function(data){ $("#divAgendamentoCheckin").html(data) });
                 }
             }else{
+
+            
+                gtag('event', 'nova_consulta', {
+                    'event_category': 'guia_consulta',
+                    'event_label': "Guia Consulta > Salvar",
+                });
+
                 location.href='./?P=tissbuscaguias&ConvenioID=<%=guia("ConvenioID")%>&T=GuiaConsulta&LoteID=<%=guia("LoteID")%>&Pers=1';
             }
             <%

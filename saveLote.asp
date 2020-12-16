@@ -36,6 +36,13 @@ if Acao="Inserir" then
 			db_execute(loteSql)
 		next
 		%>
+
+		
+		gtag('event', 'fechamento_de_lote', {
+			'event_category': 'lote',
+			'event_label': "Tiss > Fechar lote > Salvar",
+		});
+		
         alert('O lote foi salvo com sucesso. Para gerar o arquivo XML, acesse o menu TISS -> Administrar Lotes.');
         location.href='./?P=tissfechalote&Pers=1';
 		<%

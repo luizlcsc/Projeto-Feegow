@@ -711,6 +711,10 @@ else
         }
 
         if(arg1 === true && AtendimentoSimultaneoValidado){
+             gtag('event', 'iniciar', {
+                'event_category': 'atendimento',
+                'event_label': "Sala de espera > Iniciar",
+            });
             arg2();
         }
     }

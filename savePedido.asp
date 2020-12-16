@@ -165,6 +165,13 @@ recursoPermissaoUnimed = recursoAdicional(12)
     %>
     $(".exame-procedimento-content:eq(0)").css("display", "none");
     pront('timeline.asp?PacienteID=<%=ref("PacienteID")%>&Tipo=|Pedido|');
+
+
+    gtag('event', 'novo_pedido_de_exame', {
+        'event_category': 'pedido_de_exame',
+        'event_label': "Prontuário > Pedido de Exame > Salvar",
+    });
+
     $("#PedidoExameId").val("<%=reg("id")%>");
     
     function visualizarImpressao(){

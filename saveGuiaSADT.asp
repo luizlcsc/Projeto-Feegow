@@ -237,6 +237,13 @@ else
                 $.get("callAgendamentoProcedimentos.asp?Checkin=1&ConsultaID="+ $("#ConsultaID").val() +"&PacienteID="+ $("#PacienteID").val() +"&ProfissionalID="+ $("#ProfissionalID").val() +"&ProcedimentoID="+ $("#ProcedimentoID").val(), function(data){ $("#divAgendamentoCheckin").html(data) });
             }
         }else{
+
+            
+            gtag('event', 'nova_guia_sadt', {
+                'event_category': 'guia_sadt',
+                'event_label': "Guia SP SADT > Salvar",
+            });
+
             <%if isClose = "1" then%>
             window.close();
             <%else%>

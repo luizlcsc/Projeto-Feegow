@@ -136,6 +136,13 @@ else
 
 	%>
 	<script type="text/javascript">
+
+
+    gtag('event', 'agendamento_excluido', {
+        'event_category': 'agendamento',
+        'event_label': "Agendamento > Excluir",
+    });
+
     loadAgenda('<%=Data%>', <%= redirectID %>);
 
     getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>"});

@@ -438,7 +438,7 @@ if erro="" then
         action = "edita_agendamento"
     end if
 
-    if ref("Checkin")="1"
+    if ref("Checkin")="1" then
         action = "checkin"
     end if
 

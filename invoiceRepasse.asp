@@ -41,6 +41,7 @@ if ref("FormaID") = "0_0" then
 
     sqltest =   " select                                                                                    "&chr(13)&_
                 " 	forma.id as forma,                                                                      "&chr(13)&_
+                " 	forma.MetodoID as MetodoID,                                                             "&chr(13)&_
  	            "   pay.AccountIDDebit as conta                                                             "&chr(13)&_
 
                 " from                                                                                      "&chr(13)&_
@@ -54,7 +55,14 @@ if ref("FormaID") = "0_0" then
 
     if not forma.eof then
         if forma("forma")&"" <> "" then
-            FormaID = "|P"&forma("forma")&"_"&forma("conta")&"|"
+            ' regra retirada do arquivo editDom.asp : 78
+
+            if forma("MetodoID")&""= "1" OR forma("MetodoID")&""="2" OR forma("MetodoID")&""="7" then
+                conta  = "0"
+            else
+                conta = forma("conta")
+            end if
+            FormaID = "|P"&forma("forma")&"_"&conta&"|"
         else
             valorAnterior = ""
             temMovment = 0

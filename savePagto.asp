@@ -134,8 +134,12 @@ if T="C" then
             end if
 
 			if not getAccountData.EOF then
-				
-                PercentageDeducted = getAccountData("PercentageDeducted")
+                if AccountAssociationIDDebit = 1 then
+                    PercentageDeducted = getAccountData("PercentageDeducted")
+                else
+                    PercentageDeducted = 0
+                end if
+                
                 if PercentageDeductedEspecif <> "" then 
                     PercentageDeducted = PercentageDeductedEspecif
                 end if                

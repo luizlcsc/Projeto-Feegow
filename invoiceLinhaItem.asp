@@ -11,6 +11,7 @@
     if session("Banco")="clinic6118" then
         ExecutantesTipos = "5"
     end if
+
 %>
 <tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>">
     <td>
@@ -204,7 +205,9 @@
         end if
 
         if PodeExcluirItem then %>
-            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+        <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="<%=titleNotaFiscal%>">
+            <button type="button" id="xili<%= ItemInvoiceID %>"  class="btn btn-sm btn-danger disable <%=desabilitarExclusaoItem%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+        </span>
         <%
         end if
         %>

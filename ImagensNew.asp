@@ -331,7 +331,7 @@ end if
                 }
 
                 
-                return `<div class="galery-item">
+                return `<div class="galery-item" id="item${item.id}">
                              <div class="galery-data-envio">
                                 <small class="pull-right data-envio">Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}</small><br/>
                                 <div class="config-buttons">
@@ -485,13 +485,15 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
     }
 
 function atualizaAlbum(X){
-	$.ajax({
+    var item = `item`+X;
+    $.ajax({
 		type:"POST",
 		url:"Imagens.asp?PacienteID=<%=request.QueryString("I")%>&X="+X,
 		success:function(data){
-			$("#galery").html(data);
-            $("#modal-table").modal('toggle')
+			//$("#galery").html(data);
+            $("#"+item).hide();
 		}
 	});
+    
 }
 </script>

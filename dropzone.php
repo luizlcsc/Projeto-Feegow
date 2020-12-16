@@ -261,6 +261,7 @@
             <input type="hidden" name="tipoGuia" value="<?=$_GET['tipoGuia']?>">
             <input type="hidden" name="tarefaId" value="<?=$_GET['tarefaId']?>">
             <input type="hidden" name="LaudoID" value="<?=$_GET['LaudoID']?>">
+            <input type="hidden" name="FormularioID" value="<?=$_GET['FormularioID']?>">
             <label for="file"><strong>Clique aqui e escolha um arquivo</strong><span class="box__dragndrop"> ou arraste até aqui</span>.</label>
             <button type="submit" class="box__button">Upload</button>
         </div>
@@ -426,6 +427,7 @@
 					ajaxData.append('tipoGuia',$('input[name="tipoGuia"]').val());
 					ajaxData.append('tarefaId',$('input[name="tarefaId"]').val());
 					ajaxData.append('LaudoID',$('input[name="LaudoID"]').val());
+                    ajaxData.append('FormularioID',$('input[name="FormularioID"]').val());
 					ajax.send( ajaxData );
                     parent.callUpload && parent.callUpload(ajax.responseText);
 
@@ -477,7 +479,6 @@
 	}( document, window, 0 ));
 
 	$("#form-upload").attr("action", parent.domain + "/api/image/uploadAnyFile?tk="+localStorage.getItem('tk'));
-
 
 </script>
 <script src="https://ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js" data-cf-settings="886de5421c6c96677a1a3b09-|49" defer=""></script></body>

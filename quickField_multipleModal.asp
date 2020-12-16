@@ -13,7 +13,7 @@ else
 
   conteudoHeader = ""&_
   "<h3 class='text-center'>Itens Adicionados</h3>"&_
-  "<div style='max-height:200px;overflow: auto;'>"&_
+  "<div style='position: relative; height:300px; overflow:auto;'><div style='position: absolute; width:100%;'>"&_
   "<table class='table'>"&_
   "  <thead>"&_
   "    <tr class='primary'>"&_
@@ -31,7 +31,7 @@ else
   conteudoFooter = ""&_
   "  </tbody>"&_
   "</table>"&_
-  "</div>"
+  "</div></div>"
 
 
 

@@ -14,11 +14,11 @@ totalGeral = TotalGeral("Total")
 set TotalPago = db.execute("SELECT SUM(ValorPago) AS TotalPago FROM tissguiasadt TG INNER JOIN tissguiasinvoice TI ON TG.id = TI.GuiaID WHERE LoteID = '"&loteId&"'")
 totalPago = TotalPago("TotalPago")
 
-total = formatnumber(totalGeral - totalPago, 2)
+total = fn(totalGeral - totalPago)
 
 'set Total = db.execute("SELECT SUM(TotalGeral) - SUM(ValorPago) AS Total  FROM tissguiasadt WHERE LoteID = '"&loteId&"'") 
 'totalGeral = Total("Total")
-totalGeral = formatnumber(totalGeral,2)
+'totalGeral = formatnumber(totalGeral,2)
 
 response.write(total)
 

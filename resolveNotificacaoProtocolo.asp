@@ -5,7 +5,6 @@
 
     paciente = ref("paciente")
     id = ref("id")
-    acao = ref("acao")
     tipo = ref("tipo")
     aprovacao = ref("aprovacao")
     ppm = ref("ppm")
@@ -33,7 +32,7 @@
         response.end
     end if
 
-    if aprovacao = "true" then
+    if aprovacao = "1" then
         status = 1
     else
         status = 2
@@ -42,15 +41,17 @@
     sqlPMA = "UPDATE paciente_medicamentos_aprovacao SET ObsAuditor='"&obsA&"', AuditorID="&session("User")&", statusId="&status&" WHERE id="&id
     db.execute(sqlPMA)
 
-    if tipo = "R" then
-        sqlPPM = "UPDATE pacientesprotocolosmedicamentos SET sysActive= -1 WHERE id="&ppm
-    else
-        sqlPPM = "UPDATE pacientesprotocolosmedicamentos SET DoseMedicamento="&existe("DoseMedicamento")&", Obs='"&existe("obs")&"' WHERE id="&ppm
+    if aprovacao = "1" then
+        if tipo = "R" then
+            sqlPPM = "UPDATE pacientesprotocolosmedicamentos SET sysActive= -1 WHERE id="&ppm
+        else
+            sqlPPM = "UPDATE pacientesprotocolosmedicamentos SET DoseMedicamento="&treatValZero(existe("DoseMedicamento"))&", Obs='"&existe("obs")&"' WHERE id="&ppm
+        end if
+        db.execute(sqlPPM)
     end if
 
-    db.execute(sqlPPM)
 
-    slqAuditor = "SELECT id FROM profissionais where auditor = 1 and sysActive= 1"
+    slqAuditor = "SELECT su.id FROM profissionais p LEFT JOIN sys_users su ON su.idInTable = p.id AND (su.table='profissionais' or su.table='Profissionais') where p.auditor = 'S' and p.sysActive = 1"
     set auditores = db.execute(slqAuditor)
     while not auditores.eof
 

@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 
-    notificacao=req("notificacao")
+    notificacao=req("paciente")
     sqlAlteracoes =     " select                                                                                    "&chr(13)&_
                         " 	pma.id as id,                                                                           "&chr(13)&_
                         " 	pma.pacientesProtocolosMedicamentosID as pacienteId,                                    "&chr(13)&_
@@ -32,6 +32,7 @@
 
 
     if not alteracoes.eof then
+        tipo = alteracoes("acao")
         if alteracoes("acao") = "E" then
             acao    = "Editar"
             cor     = "btn-warning"
@@ -114,8 +115,7 @@
     $(".crumb-icon a span").attr("class", "fa fa-table");
 
 function salvarNotificacao(id,aprovacao){
-    let acao = '<%=acao%>';
-    let tipo = (aprovacao==0?"R":"A");
+    let tipo = '<%=tipo%>'; //E ou R
     let ppm = '<%=alteracoes("ppmId")%>';
     let paciente = '<%=alteracoes("pacienteId")%>'
     let obsA = $('#obsA').val()
@@ -130,13 +130,12 @@ function salvarNotificacao(id,aprovacao){
     }
 
     let data = {
-        acao,
+        tipo,
+        aprovacao,
         ppm,
         paciente,
         obsA,
-        id,
-        tipo,
-        obsA
+        id
     }
 
     $.ajax({

@@ -8,7 +8,7 @@ function gerarcar(loteid,ConvenioID,tipoguiais,valortotal)
     ConvenioID = ConvenioID
     TG = tipoguiais
     incrementar = ""
-    sqlguias  = "SELECT GROUP_CONCAT(id) AS ids FROM tissguiasadt WHERE LoteID='"&loteid&"'"
+    sqlguias  = "SELECT GROUP_CONCAT(id) AS ids FROM tiss"&TG&" WHERE LoteID='"&loteid&"'"
     set resguias = db.execute(sqlguias)
     if not resguias.eof then 
         listadeguias = resguias("ids")
@@ -91,9 +91,7 @@ function gerarcar(loteid,ConvenioID,tipoguiais,valortotal)
             sqlinserttg = "insert into tissguiasinvoice (ItemInvoiceID, InvoiceID, GuiaID, TipoGuia) values ("& ItemInvoiceID &", "& InvoiceID &", "& spl(i) &", '"&TG&"')"
             db_execute(sqlinserttg)
         next
- 
-        db_execute(sqlinserttg)
-    else
+     else
         %>
         new PNotify({
             title: 'N&Atilde;O LAN&Ccedil;ADO!',

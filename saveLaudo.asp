@@ -50,6 +50,11 @@ end if
 
 %>
 
+gtag('event', 'status_alterado', {
+    'event_category': 'laudo',
+    'event_label': "Status alterado.",
+});
+
 new PNotify({
     title: 'SUCESSO!',
     text: 'Dados do laudo alterados.',

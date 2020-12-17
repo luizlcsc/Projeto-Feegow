@@ -430,6 +430,11 @@ if not getResource.EOF then
         end if
 
         %>
+        gtag('event', '<% if Novo then response.write("new_"&tableName) else response.write("edit_"&tableName) end if %>', {
+            'event_category': 'cadastros',
+            'event_label': "Botão 'Salvar' clicado.",
+        });
+
         new PNotify({
             title: 'Dados gravados com sucesso.',
             text: '',

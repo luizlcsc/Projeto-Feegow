@@ -430,7 +430,18 @@ if erro="" then
         end if
         %>
 	}
+    
     <%
+    action = "novo_agendamento"
+
+    if ConsultaID<>"0" then
+        action = "edita_agendamento"
+    end if
+
+    if ref("Checkin")="1" then
+        action = "checkin"
+    end if
+
     'call disparaEmail(rfProfissionalID, txtEmail, rfPaciente, rfProcedimento)
 'V	if rfrdValorPlano="P" then
 'E		set veSePacTemPlano=db.execute("select * from Paciente where id = '"&rfPaciente&"'")
@@ -442,6 +453,11 @@ if erro="" then
 'A	end if
 	'se deu tudo certo e salvou, faz as acoes abaixo
 	%>
+        gtag('event', '<%=action%>', {
+            'event_category': 'agendamento',
+            'event_label': "Botão salvar clicado.",
+        });
+
         new PNotify({
             title: 'Agendamento salvo!',
             text: '',

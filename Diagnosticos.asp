@@ -85,6 +85,12 @@ $("#btnDiagnostico").click(function(){
 		url:"saveDiagnostico.asp",
 		data:$("#frm").serialize(),
 		success:function(data){
+
+            gtag('event', 'novo_diagnostico', {
+                'event_category': 'diagnostico',
+                'event_label': "Prontuário > Diagnósticos > Salvar",
+            });
+
 			cid10(0);
 		}
 	});

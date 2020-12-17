@@ -21,6 +21,13 @@ if ref("Acao")="Abrir" then
 	end if
 
 	%>
+
+	gtag('event', 'caixa_aberto', {
+		'event_category': 'caixa',
+		'event_label': "Caixinhna > Abrir",
+	});
+
+
     $("#badge-caixa").html("$");
     new PNotify({
         title: 'Meu Caixa',
@@ -68,6 +75,13 @@ if ref("Acao")="Fechar" then
 	Descricao = "Caixa de "&nameUser&" ("&caixa("dtAbertura")&" a "&now()&")"
 	db_execute("update caixa set dtFechamento="&mydatetime(now)&", SaldoFinal="&treatvalzero(SaldoFinalFinal)&", Descricao='"&Descricao&"' where id="&ref("idCaixa"))
 	%>
+
+		gtag('event', 'caixa_fechado', {
+			'event_category': 'caixa',
+			'event_label': "Caixinha > Fechar",
+		});
+
+
         new PNotify({
             title: 'Meu Caixa',
             text: 'Fechado com sucesso.',

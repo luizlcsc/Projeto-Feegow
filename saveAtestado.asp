@@ -83,6 +83,11 @@ recursoPermissaoUnimed = recursoAdicional(12)
     pront('timeline.asp?PacienteID=<%=ref("PacienteID")%>&Tipo=|Atestado|');
     <%end if%>
 
+    gtag('event', 'novo_atestado', {
+        'event_category': 'atestado',
+        'event_label': "Botão 'Salvar' clicado.",
+    });
+
     $("#AtestadoID").val("<%=reg("id")%>");
 
     $("#Timbrado").on("change",()=>{

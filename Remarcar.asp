@@ -192,6 +192,14 @@ if Acao="Remarcar" then
         end if
  
         %>
+
+
+
+        gtag('event', 'agendamento_remarcado', {
+            'event_category': 'agendamento',
+            'event_label': "Agendamento > Remarcar",
+        });
+        
         //alert('<%=replace(sql, "'", "\'")%>');
         getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=AgendamentoID%>",sms: true,email:true })
         loadAgenda('<%=Data%>', <%=redirectID%>);

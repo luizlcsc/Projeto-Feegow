@@ -514,6 +514,12 @@ function ListaProFormas(Filtro, X, Aplicar){
 }
 
 function GerarContrato(){
+
+    gtag('event', 'contrato_gerado', {
+        'event_category': 'proposta',
+        'event_label': "Botão 'Gerar contrato'",
+    });
+
     propostaSave(false, function() {
         var profissional = document.getElementById("ProfissionalID");
         document.location.href = "?P=GerarContrato&Pers=1&PropostaID=<%=req("PropostaID")%>&ProfissionalSolicitante=" + profissional.options[profissional.selectedIndex].value;

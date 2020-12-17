@@ -693,7 +693,20 @@ if erro="" then
     next
 
 
+	action = "nova_conta_a_receber"
+	category = "conta_a_receber"
+
+	if CD="D" then
+		action = "nova_conta_a_pagar"
+		category = "conta_a_pagar"
+	end if
 	%>
+
+	gtag('event', '<%=action%>', {
+		'event_category': '<%=category%>',
+		'event_label': "Botão 'Salvar' clicado.",
+	});
+	
 	new PNotify({
 		title: 'Salvo com sucesso!<%=msgExtra%>',
 		text: '',

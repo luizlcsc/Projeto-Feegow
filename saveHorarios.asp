@@ -73,6 +73,14 @@ wend
 
 if algumErro="" then
 	%>
+
+
+
+		gtag('event', 'nova_grade_de_horarios', {
+			'event_category': 'grade_de_horarios',
+			'event_label': "Grade de Horários > Salvar",
+		});
+		
         $.gritter.add({
             title: '<i class="fa fa-save"></i> Horários gravados com sucesso!',
             text: '',

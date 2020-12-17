@@ -299,6 +299,11 @@ if erro="" then
 	end if
 
 	%>
+	gtag('event', 'nova_proposta', {
+		'event_category': 'proposta',
+		'event_label': "Proposta > Salvar",
+	});
+	
 	new PNotify({
 		title: 'Sucesso!',
 		text: 'Proposta salva. <%=msgExtra%>',

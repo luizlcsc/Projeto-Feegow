@@ -50,6 +50,12 @@ if request.QueryString("X")="1" then
 	end if
 	
 	%>
+
+		gtag('event', 'bloqueio_excluido', {
+			'event_category': 'bloqueio',
+			'event_label': "Bloqueio > Excluir",
+		});
+		
 		$.gritter.add({
 			title: '<i class="fa fa-trash"></i> Bloqueio exclu&iacute;do!',
 			text: '',
@@ -123,6 +129,13 @@ else
 			end if
 		end if
 		%>
+
+
+			gtag('event', 'novo_bloqueio', {
+				'event_category': 'bloqueio',
+				'event_label': "Bloqueio > Salvar",
+			});
+			
 			$.gritter.add({
 				title: '<i class="fa fa-save"></i> Bloqueio salvo!',
 				text: '',

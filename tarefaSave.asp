@@ -22,6 +22,14 @@ if erro="" and req("onlySta")="" and req("tarefasProjetos")="" and req("tarefasS
     db_execute("update tarefas set De="&session("User")&", Para='"&ref("Para")&"' "& sqlAbertura &", DtPrazo="&mydatenull(ref("DtPrazo"))&", HrPrazo="& HoraPrazo &", Solicitantes='"&req("Solicitantes")&"', Titulo='"&ref("Titulo")&"', ta='"&ref("Texto")&"', AvaliacaoNota="&treatvalzero(ref("AvaliacaoNota"))&", staDe='"&staDe&"', staPara='"&staPara&"', sysActive=1, Urgencia="&treatvalzero(ref("Urgencia"))&", CategoriaID="&treatvalzero("CategoriaID")&" , ProjetoID="&treatvalzero(ref("Projeto-ID"))&" where id="&TarefaID)
 
     %>
+
+
+
+    gtag('event', 'nova_tarefa', {
+        'event_category': 'tarefas',
+        'event_label': "Tarefas > Salvar",
+    });
+
     new PNotify({
         title: '<%=req("Val") %>',
         text: 'Tarefa salva com sucesso.',

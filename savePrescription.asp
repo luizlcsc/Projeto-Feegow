@@ -97,6 +97,12 @@ recursoPermissaoUnimed = recursoAdicional(12)
     var impressaoTermica = 0;
     var carimbo = 1;
 
+        
+    gtag('event', 'nova_prescricao', {
+        'event_category': 'prescricao',
+        'event_label': "Botão 'Salvar' clicado.",
+    });
+
     url = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
 
     console.log(url);

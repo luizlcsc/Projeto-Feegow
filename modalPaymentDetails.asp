@@ -186,15 +186,33 @@ if not getMovement.EOF then
             end if
         end if
 
+        desabilitarExclusao = ""
+        titleNotaFiscal = ""
+
+        if recursoAdicional(34) = 4 and desabilitarExclusaoPagamento = "" and getConfig("ExecutadosNFse") = 1 then
+            set existeNotaEmitida = db.execute("select nfse.id from nfse_emitidas nfse inner join sys_financialmovement mov on nfse.InvoiceID = mov.InvoiceID where mov.id ="&movementID&" and Status = 3")
+            if existeNotaEmitida.eof then
+                desabilitarExclusao = " disabled "
+                titleNotaFiscal = "Existe nota com status autorizada"
+            end if
+        end if
+
+
         if not EhStone and podeExcluir(getMovement("CaixaID"), getMovement("Type"), getMovement("CD"), getMovement("AccountAssociationIDCredit")) or AutRepasse then
+
             %>
-            <button type="button" class="btn btn-xs btn-danger pull-right" onclick="xMov(<%=getMovement("id") %>)"><i class="fa fa-trash"></i></button>
+            <span class="d-inline-block pull-right" tabindex="0" data-toggle="tooltip" title="<%=titleNotaFiscal%>">
+                <button type="button" class="btn btn-xs btn-danger pull-right <%=desabilitarExclusao%> " onclick="xMov(<%=getMovement("id") %>)"><i class="fa fa-trash"></i></button>
+            </span>
             <%
         elseif EhStone then
+
             set microtefLogs = db.execute("SELECT * FROM microtef_logs WHERE InvoiceID ="&treatvalzero(mInvoiceId))
                 if microtefLogs.eof then
                 %>
-                <button type="button" class="btn btn-xs btn-danger pull-right" onclick="xMov(<%=getMovement("id") %>)"><i class="fa fa-trash"></i></button>
+                <span class="d-inline-block pull-right" tabindex="0" data-toggle="tooltip" title="<%=titleNotaFiscal%>">
+                    <button type="button" class="btn btn-xs btn-danger pull-right <%=desabilitarExclusaoPagamento%>" onclick="xMov(<%=getMovement("id") %>)"><i class="fa fa-trash"></i></button>
+                </span>
                 <%
                 else
                 %>
@@ -202,6 +220,7 @@ if not getMovement.EOF then
                 <%
                 end if
         end if
+
         %>
     </div>
     <%

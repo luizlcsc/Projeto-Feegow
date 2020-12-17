@@ -84,7 +84,7 @@ else
                     <% END IF %>
 		            <%
                 end if
-                if Aut("|agendaV|")=1 and (session("Banco")="clinic105" or session("Banco")="clinic5710" or session("Banco")="clinic5760") then
+                if Aut("|agendaV|")=1 and (session("Banco")="clinic105" or session("Banco")="clinic5710") then
                     if aut("agendamultfiltros")=1 then
                     %>
                     <li class="sub-menu-click-agenda-multipla-por-filtros"><a href="./?P=MultiplaFiltros2&Pers=1">Múltipla por Filtros</a></li>
@@ -96,19 +96,19 @@ else
                     <%
                     end if
                 end if
-		        if Aut("|agendaA|")=1 then %>
+		        if Aut("|agendaA|")=1 or Aut("agendaaheckin")=1  or Aut("confirmaragendamentos")=1 then %>
                 <li class="divider"></li>
                 <%
-                'if Aut("agendaaheckin")=1 then
+                if Aut("agendaaheckin")=1 then
                 %>
                 <li class="sub-menu-click-agenda-checkin"><a href="./?P=Checkin&Pers=1"> Check-in</a></li>
                 <%
-                'end if
-                'if Aut("confirmaragendamentos")=1 then
+                end if
+                if Aut("confirmaragendamentos")=1 then
                 %>
                 <li  class="sub-menu-click-agenda-confirmar-agendamentos"><a href="./?P=ConfirmacaoDeAgendamentos&Pers=1"> Confirmar agendamentos</a></li>
                 <%
-                'end if
+                end if
                 if recursoAdicional(24) = 4 then
                 %>
                 <li class="sub-menu-click-agenda-consultar-valores"><a href="./?P=FilaColeta&Pers=1"> Fila de coleta <span class="label label-system label-xs fleft">Novo</span> </a></li>
@@ -148,11 +148,18 @@ else
     %>
         </ul>
     </li>
+    <%
+        if aut("salaesperaV")=1 or aut("esperaoutrosprofissionaisV")=1 then 
+    %>
     <li class="<%=classMenu %>"><a href="./?P=ListaEspera&Pers=1" class="menu-click-espera">
         <%=abreSpanTitulo %> <i class="fa fa-clock-o hidden"></i> <span class=""> Espera </span> <%= fechaSpanTitulo %>
         <small style="position:absolute; top:7px; right:0" class="badge badge-danger" id="espera"></small>
         </a>
     </li>
+
+    <%
+    end if
+    %>
     <%
     end if
     if aut("pacientesV")=1 or aut("pacientesI")=1 or aut("pacientesA")=1 then
@@ -422,6 +429,12 @@ else
             <%
             end if
 
+            if getconfig("ExibirProgramasDeSaude") = 1 then
+            %>
+            <li><a href="./?P=programasdesaude&Pers=1"  class="sub-menu-click-cadastro-profissionais" ><i class="fa fa-medkit bigger-110"></i> Programas de Saúde</a></li>
+            <%
+            end if
+
             if aut("propostasV")=1  then
             %>
             <li><a href="./?P=buscaPropostas&Pers=1"  class="sub-menu-click-cadastro-propostas" ><i class="fa fa-files-o"></i> Propostas</a></li>
@@ -468,7 +481,8 @@ else
             <li><a href="./?P=buiforms&Pers=Follow"><i class="fa fa-bar-chart"></i> Formul&aacute;rios</a></li>
             <%
 			    end if
-			    if aut("configimpressos")=1  then
+                'Foi colocado na condição a permissão aut("configimpressos")
+			    if session("Admin") = 1 or aut("configimpressos")=1  then
             %>
             <li><a href="./?P=ConfigImpressos&Pers=1"><i class="fa fa-file bigger-110"></i> Impressos</a></li>
             <%
@@ -549,7 +563,7 @@ else
             </li>
             <%
             end if
-            if session("Admin")=1 then
+            if recursoAdicional(24) = 4 and Aut("labsconfigintegracao") = 1 then
             %>
             <li>
                 <a href="?P=labsconfigintegracao"><i class="fa fa-flask"></i> Integração Laboratorial</a>

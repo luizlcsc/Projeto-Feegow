@@ -2,10 +2,10 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
 <!--#include file="Classes/ValidaProcedimentoProfissional.asp"-->
-
+<!--#include file="Classes/GradeAgendaUtil.asp"-->
 <%
 'on error resume next
-
+ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
 HLivres = 0
 HAgendados = 0
 HBloqueados = 0
@@ -27,13 +27,6 @@ ProfissionalID=req("ProfissionalID")
 DiaSemana=weekday(Data)
 mesCorrente=month(Data)
 
-if getConfig("AbrirAutomaticamenteObsProfissional")=1 then
-    %>
-    <script>
-        oa(<%=treatvalzero(ProfissionalID)%>);
-    </script>
-    <%
-end if
 
 if lcase(session("Table"))="funcionarios" then
 	session("UltimaAgenda") = ProfissionalID
@@ -43,10 +36,19 @@ LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 
 set prof = db.execute("select Cor, NomeProfissional, Foto, ObsAgenda from profissionais where id="&ProfissionalID)
 if not prof.eof then
+    ObsAgenda=prof("ObsAgenda")&""
+
+    if getConfig("AbrirAutomaticamenteObsProfissional")=1 and ObsAgenda<>"" then
+        %>
+        <script>
+            oa(<%=treatvalzero(ProfissionalID)%>);
+        </script>
+        <%
+    end if
 	Cor = prof("Cor")
 	NomeProfissional = prof("NomeProfissional")
 	if isnull(prof("Foto")) or prof("Foto")="" then
-		FotoProfissional = "/assets/img/user.png"
+		FotoProfissional = "./assets/img/user.png"
 	else
 		FotoProfissional = arqEx(prof("Foto"), "Perfil")
 	end if
@@ -55,7 +57,7 @@ if not prof.eof then
     ObsAgenda = replace(replace(replace(replace(ObsAgenda, chr(10), " "), chr(13), " "), "'", ""), """", "")
 else
 	Cor = "#333"
-	FotoProfissional = "/assets/img/user.png"
+	FotoProfissional = "./assets/img/user.png"
 end if
 %>
 <script type="text/javascript">
@@ -165,9 +167,15 @@ while diaS<n
   diaS=diaS+1
   
   escreveData = left(weekdayname(DiaSemana), 3) &", "&Data
+
+  table_striped = "table-striped"
+  if ColorirLinhaAgendamento=1 then
+    table_striped = ""
+  end if
+  
   %>
   <td width="14%" class="pn" style="vertical-align:top">
-    <table data-weekday="<%=diaS%>" class="table dia-semana-coluna table-striped table-hover table-bordered table-condensed table-agenda mn">
+    <table data-weekday="<%=diaS%>" class="table dia-semana-coluna <%=table_striped%> table_striped table-hover table-bordered table-condensed table-agenda mn">
     <thead>
         <tr>
             <th colspan="6" class="text-center<% If cdate(Data)=DataSel Then %> success<% End If %>" nowrap><%=ucase(escreveData)%></th>
@@ -176,6 +184,7 @@ while diaS<n
          <tbody>
             <tr class="hidden l<%=LocalID%>" id="<%=DiaSemana%>0000"></tr>
          <%
+            sqlUnidadesBloqueio=""
             Hora = cdate("00:00")
             set Horarios = db.execute("select ass.*, '' Cor, l.NomeLocal, '0' TipoGrade,  l.UnidadeID, '0' GradePadrao from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&sqlProcedimentoPermitido & sqlConvenioPermitido & sqlEspecialidadePermitido &" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
             if Horarios.EOF then
@@ -222,6 +231,10 @@ while diaS<n
                 </tr>
                 <%
                 if Horarios("TipoGrade")=0 then
+
+                    if UnidadeID&"" <> "" and session("Partner")="" then
+                        sqlUnidadesBloqueio = sqlUnidadesBloqueio&" OR c.Unidades LIKE '%|"&UnidadeID&"|%'"
+                    end if
                     Intervalo = Horarios("Intervalo")
                     if isnull(Intervalo) then
                         Intervalo = 30
@@ -370,7 +383,7 @@ while diaS<n
         sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
     end if
 
-    set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.PacienteID,a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, a.Primeira, p.NomePaciente, p.IdImportado, p.Tel1, p.Cel1, proc.NomeProcedimento, s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Notas, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta from agendamentos a "&_
+    set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.PacienteID,a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, a.Primeira, p.NomePaciente, p.IdImportado, p.Tel1, p.Cel1, p.CorIdentificacao, proc.NomeProcedimento,proc.Cor , s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Notas, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta from agendamentos a "&_
     "left join pacientes p on p.id=a.PacienteID "&_
     "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
     "left join staconsulta s on s.id=a.StaID "&_
@@ -383,7 +396,7 @@ while diaS<n
         ValorProcedimentosAnexos=0
         podeVerAgendamento=True
         UnidadeID=comps("UnidadeID")
-
+        CorIdentificacao = comps("CorIdentificacao")
 
         if UnidadeID&""<>"" and session("admin")=0 then
             if instr(session("Unidades"),"|"&UnidadeID&"|")=0 then
@@ -470,10 +483,16 @@ while diaS<n
             Prontuario = comps("PacienteID")
         end if
         '<--
+        CorLinha = ""
+        if ColorirLinhaAgendamento=1 then
+            if comps("Cor") <> "#fff" and not isnull(comps("Cor")) then
+                CorLinha = "style=\'background-color:"&comps("Cor")&"!important\'"
+            end if
+        end if
         LocalDiferente=""
 		titleSemanal= replace(comps("NomePaciente")&"<br>"&NomeProcedimento&"<br>Prontuário: "&Prontuario&"<br>Tel.: "&comps("Tel1")&"<br>Cel.: "&comps("Cel1")&" "&"<br> ", "'", "\'") & "Notas: "&replace(replace(replace(replace(comps("Notas")&"", chr(13), ""), chr(10), ""), "'", ""), """", "")&"<br>"
                
-        Conteudo = "<tr id="""&DiaSemana&HoraComp&""" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&titleSemanal&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"">"&_
+        Conteudo = "<tr id="""&DiaSemana&HoraComp&""""&CorLinha &" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&titleSemanal&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"">"&_
         "<td width=""1%"">"
                 if not isnull(comps("Resposta")) then
             Conteudo = Conteudo & "<i class=""fa fa-envelope pink""></i> "
@@ -485,7 +504,14 @@ while diaS<n
             Conteudo = Conteudo & " [LOCAL_DIF] "
             LocalDiferente = "<i class=""fa fa-exclamation-triangle grey"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
         end if
-        Conteudo = Conteudo & "</td><td width=""1%""><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
+        FirstTdBgColor = ""
+        if getConfig("ExibirCorPacienteAgenda")&""=1 then
+            if (ISNULL(CorIdentificacao) or CorIdentificacao="") then
+                CorIdentificacao = "transparent"
+            end if
+            FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
+        end if
+        Conteudo = Conteudo & "</td><td width=""1%"" "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
         "<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
         if comps("Encaixe")=1 then
             Conteudo = Conteudo & "<span class=""label label-alert"">enc</span>"
@@ -586,13 +612,14 @@ while diaS<n
     comps.close
     set comps = nothing
 
-    bloqueioSql = "select c.* from compromissos c where (c.ProfissionalID="&ProfissionalID&" or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"&ProfissionalID&"%|'))) AND (c.Unidades LIKE '%|"&UnidadeID&"|%' or c.Unidades='' or c.Unidades is null) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
-
+    'bloqueioSql = "select c.* from compromissos c where (c.ProfissionalID="&ProfissionalID&" or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"&ProfissionalID&"%|'))) AND (c.Unidades LIKE '%|"&UnidadeID&"|%' or c.Unidades='' or c.Unidades is null) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
+    bloqueioSql = getBloqueioSql(ProfissionalID, Data, sqlUnidadesBloqueio)
     set bloq = db.execute(bloqueioSql)
+
     while not bloq.EOF
         HoraDe = HoraToID(bloq("HoraDe"))
         HoraA = HoraToID(bloq("HoraA"))
-        Conteudo = "<tr id=""'+$(this).attr('data-hora')+'"" onClick=""abreBloqueio("&bloq("id")&", \'\', \'\');"">"&_
+        Conteudo = "<tr id=""'+$(this).attr('data-hora')+'"" onClick=""abreBloqueio("&bloq("id")&", `"&replace(mydatenull(Data)&"","'","")&"`, \'\');"">"&_
         "<td width=""1%""></td><td width=""1%""><button type=""button"" class=""btn btn-xs btn-danger"">'+$(this).attr('data-hora')+'</button></td>"&_
         "<td nowrap><img src=""assets/img/bloqueio.png""> <span class=""nomePac"">"&replace(bloq("Titulo")&" ", "'", "\'")&"</span></td>"&_
         "</tr>"

@@ -1,6 +1,42 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="extenso.asp"-->
 <!--#include file="Classes/TagsConverte.asp"-->
+<%
+'##############
+'*** PREPARA DADOS PARA CONVERTER TAGS DE PROFISSIONAL EXECUTANTE QNDO EXTERNO OU INTERNO
+'21/10/2020 NÃO EXISTE TAG QUE TRATE LISTA DE PROFISSIONAIS EXECUTANTES EX.: [ProfissionalExecutante.Lista] Caso seja criado basta ajustar o código abaixo.
+'##############
+ProfissionaisExecutante = req("ProfissionalExecutante")
+if ProfissionaisExecutante&""<>"" then
+    ProfExec__array = split(ProfissionaisExecutante, ",")
+    For ProfExecLista = 0 To ubound(ProfExec__array)
+        ProfExec = split(ProfissionaisExecutante, ",")
+        ProfissionalLinha = ProfExec(ProfExecLista)
+
+        if ProfissionalLinha<> "" then
+            ProfExecItem = split(ProfissionalLinha, "_")
+
+            If UBound(ProfExecItem) >= 1 Then
+                val__ProfissionalExecutanteTipo = ProfExecItem(0)
+                val__ProfissionalExecutanteID = ProfExecItem(1)
+            else
+                val__ProfissionalExecutanteTipo=0
+                val__ProfissionalExecutanteID=0
+            end if
+
+            if val__ProfissionalExecutanteTipo=5 then
+                ProfissionalExecutanteID = "|ProfissionalID_"&val__ProfissionalExecutanteID
+            end if
+            if val__ProfissionalExecutanteTipo=8 then
+                ProfissionalExecutanteExternoID = "|ProfissionalExecutanteExternoID_"&val__ProfissionalExecutanteID
+            end if
+            'response.write("Valor: "& ProfExec(ProfExecLista) &" :: "&ProfissionalExecutanteTipo&"<br>")
+        end if
+    next
+end if
+%>
+
+
 <div class="modal-header">
     <h3 class="blue">Contrato</h3>
 </div>
@@ -79,15 +115,18 @@ elseif ModeloID<>"" and ModeloID<>"0" then
             AgruparParcela = pmod("AgruparParcela")
         end if
 
-        if instr(ModeloContrato, "[AReceber.PrimeiroVencimento]")>0 and InvoiceID>0 then
+        ModeloContrato=replace(ModeloContrato,"AReceber","Receita")
+
+        if instr(ModeloContrato, "[Receita.PrimeiroVencimento]")>0 and InvoiceID>0 then
             set PrimeiroVencimentoSQL = db.execute("SELECT date FROM sys_financialmovement WHERE InvoiceID="&InvoiceID&" AND Type='Bill' order by Date ASC")
             if not PrimeiroVencimentoSQL.eof then
-                ModeloContrato = replace(ModeloContrato, "[AReceber.PrimeiroVencimento]", PrimeiroVencimentoSQL("date"))
+                ModeloContrato = replace(ModeloContrato, "[Receita.PrimeiroVencimento]", PrimeiroVencimentoSQL("date"))
             end if
 
         end if
+        ModeloContrato = replace(ModeloContrato, "[Procedimento.Nome]", "[Receita.ProcedimentosAgrupados]")
 
-        if instr(ModeloContrato, "[AReceber.ProcedimentosAgrupados]")>0 and InvoiceID>0 then
+        if instr(ModeloContrato, "[Receita.ProcedimentosAgrupados]")>0 and InvoiceID>0 then
             set distProcs = db.execute("select proc.NomeProcedimento, ii.Quantidade, ii.ValorUnitario, ii.Desconto, ii.Acrescimo from itensinvoice ii left join procedimentos proc on proc.id=ii.ItemID where ii.InvoiceID="& InvoiceID &" group by ItemID")
             while not distProcs.eof
                 if session("Banco")="clinic6118" or session("Banco")="clinic100000" then
@@ -108,11 +147,11 @@ elseif ModeloID<>"" and ModeloID<>"0" then
             else
                 ProcsDist = right(ProcsDist, len(ProcsDist)-2)
             end if
-            ModeloContrato = replace(ModeloContrato, "[AReceber.ProcedimentosAgrupados]", ProcsDist)
+            ModeloContrato = replace(ModeloContrato, "[Receita.ProcedimentosAgrupados]", ProcsDist)
         end if
         if InvoiceID<0 then
             PacienteContrato = replace(req("ContaID"), "3_", "")
-            ModeloContrato = replace(ModeloContrato, "[AReceber.ProcedimentosAgrupados]", "")
+            ModeloContrato = replace(ModeloContrato, "[Receita.ProcedimentosAgrupados]", "")
         end if
 
         if instr(ModeloContrato, "[ProximoAgendamento.Profissional]") then
@@ -124,7 +163,7 @@ elseif ModeloID<>"" and ModeloID<>"0" then
         end if
         'TAG ANTIGA DESATIVADA | RAFAEL MAIA 28/07/2020
         'ModeloContrato = replace(ModeloContrato, "[Contrato.Protocolo]", InvoiceID)
-        ModeloContrato = TagsConverte(ModeloContrato,"ContratoID_"&req("InvoiceID"),"") 
+        ModeloContrato = TagsConverte(ModeloContrato,"ContratoID_"&req("InvoiceID")&ProfissionalExecutanteExternoID&ProfissionalExecutanteID,"") 
 
         if instr(ModeloContrato, "[UltimoFormulario.")>0 then
             splUF = split( ModeloContrato, "[UltimoFormulario." )
@@ -152,7 +191,6 @@ elseif ModeloID<>"" and ModeloID<>"0" then
             next
         end if
 
-        
 
         if AgruparExecutante="S" then
             set exec = db.execute("select * from itensinvoice WHERE InvoiceID="&InvoiceID&" GROUP BY ProfissionalID")
@@ -198,11 +236,11 @@ elseif ModeloID<>"" and ModeloID<>"0" then
 
                 set pinv = db.execute("select i.*, (select count(id) from sys_financialmovement where InvoiceID=i.id) NumeroParcelas from sys_financialinvoices i where i.id="&InvoiceID)
                 if not pinv.eof then
-                    PreContrato = replace(PreContrato, "[AReceber.Total]", "Total")
-                    PreContrato = replace(PreContrato, "[AReceber.NumeroParcelas]", pinv("NumeroParcelas"))
-                    PreContrato = replace(PreContrato, "[AReceber.TotalExtenso]", lcase(Extenso( pinv("Value"))) )
-                    PreContrato = replace(PreContrato, "[AReceber.CodigoBarras]", "[CodigoBarras."&zeroEsq(pinv("id"), 6)&"]")
-                    PreContrato = replace(PreContrato, "[AReceber.Numero]", zeroEsq(pinv("id"), 6))
+                    PreContrato = replace(PreContrato, "[Receita.Total]", "Total")
+                    PreContrato = replace(PreContrato, "[Receita.NumeroParcelas]", pinv("NumeroParcelas"))
+                    PreContrato = replace(PreContrato, "[Receita.TotalExtenso]", lcase(Extenso( pinv("Value"))) )
+                    PreContrato = replace(PreContrato, "[Receita.CodigoBarras]", "[CodigoBarras."&zeroEsq(pinv("id"), 6)&"]")
+                    PreContrato = replace(PreContrato, "[Receita.Numero]", zeroEsq(pinv("id"), 6))
                 end if
                 if exec("ProfissionalID")<>0 and not isnull(exec("ProfissionalID")) then
 
@@ -240,11 +278,11 @@ elseif ModeloID<>"" and ModeloID<>"0" then
 
                 set pinv = db.execute("select i.*, (select count(id) from sys_financialmovement where InvoiceID=i.id) NumeroParcelas from sys_financialinvoices i where i.id="&InvoiceID)
                 if not pinv.eof then
-                    PreContrato = replace(PreContrato, "[AReceber.Total]", "Total")
-                    PreContrato = replace(PreContrato, "[AReceber.NumeroParcelas]", pinv("NumeroParcelas"))
-                    PreContrato = replace(PreContrato, "[AReceber.TotalExtenso]", lcase(Extenso( pinv("Value"))) )
-                    PreContrato = replace(PreContrato, "[AReceber.CodigoBarras]", "[CodigoBarras."&zeroEsq(pinv("id"), 6)&"]")
-                    PreContrato = replace(PreContrato, "[AReceber.Numero]", zeroEsq(pinv("id"), 6))
+                    PreContrato = replace(PreContrato, "[Receita.Total]", "Total")
+                    PreContrato = replace(PreContrato, "[Receita.NumeroParcelas]", pinv("NumeroParcelas"))
+                    PreContrato = replace(PreContrato, "[Receita.TotalExtenso]", lcase(Extenso( pinv("Value"))) )
+                    PreContrato = replace(PreContrato, "[Receita.CodigoBarras]", "[CodigoBarras."&zeroEsq(pinv("id"), 6)&"]")
+                    PreContrato = replace(PreContrato, "[Receita.Numero]", zeroEsq(pinv("id"), 6))
                 end if
                 PreContrato = replacetags(PreContrato, replace(ContaID, "3_", ""), session("User"), pinv("CompanyUnitID"))
                 PreContrato = replacePagto(PreContrato, pinv("Value"))
@@ -382,7 +420,6 @@ elseif ModeloID<>"" and ModeloID<>"0" then
             Contrato = replace(Contrato, "[Contrato.FormaPagamento]", FormaPagto)
 
 
-
             if instr(Contrato, "[Itens.Iniciar]")>0 and instr(Contrato, "[Itens.Finalizar]")>0 then
             'response.write("oi")
                 splItens = split(Contrato, "[Itens.Iniciar]")
@@ -404,16 +441,16 @@ elseif ModeloID<>"" and ModeloID<>"0" then
                 Contrato = splItens(0) & ContItens & splItens2(1)
             end if
                 if req("Tipo")="SADT" then
-                    Contrato = replace(Contrato, "[AReceber.CodigoBarras]", "[CodigoBarras."&zeroEsq(req("InvoiceID"), 8)&"]")
-                    Contrato = replace(Contrato, "[AReceber.Numero]", zeroEsq(req("InvoiceID"), 8))
+                    Contrato = replace(Contrato, "[Receita.CodigoBarras]", "[CodigoBarras."&zeroEsq(req("InvoiceID"), 8)&"]")
+                    Contrato = replace(Contrato, "[Receita.Numero]", zeroEsq(req("InvoiceID"), 8))
                 else
                     set pinv = db.execute("select i.*, (select count(id) from sys_financialmovement where InvoiceID=i.id) NumeroParcelas from sys_financialinvoices i where i.id="&InvoiceID)
                     if not pinv.eof then
-                        Contrato = replace(Contrato, "[AReceber.Total]", "Total")
-                        Contrato = replace(Contrato, "[AReceber.NumeroParcelas]", pinv("NumeroParcelas"))
-                        Contrato = replace(Contrato, "[AReceber.TotalExtenso]", lcase(Extenso( pinv("Value"))) )
-                        Contrato = replace(Contrato, "[AReceber.CodigoBarras]", "[CodigoBarras."&zeroEsq(pinv("id"), 6)&"]")
-                        Contrato = replace(Contrato, "[AReceber.Numero]", zeroEsq(pinv("id"), 6))
+                        Contrato = replace(Contrato, "[Receita.Total]", "Total")
+                        Contrato = replace(Contrato, "[Receita.NumeroParcelas]", pinv("NumeroParcelas"))
+                        Contrato = replace(Contrato, "[Receita.TotalExtenso]", lcase(Extenso( pinv("Value"))) )
+                        Contrato = replace(Contrato, "[Receita.CodigoBarras]", "[CodigoBarras."&zeroEsq(pinv("id"), 6)&"]")
+                        Contrato = replace(Contrato, "[Receita.Numero]", zeroEsq(pinv("id"), 6))
                         PacienteContrato = pinv("AccountID")
                     end if
                 end if
@@ -429,7 +466,7 @@ elseif ModeloID<>"" and ModeloID<>"0" then
                 strAntesRepeticaoNE = splModeloItensNE(0)
                 strDepoisRepeticaoNE = spl2ModeloItensNE(1)
 
-                set iiNE = db.execute("select ii.*, p.NomeProcedimento from itensinvoice ii LEFT JOIN procedimentos p on p.id=ii.ItemID where ii.Executado like '' and ii.InvoiceID="&InvoiceID )
+                set iiNE = db.execute("select ii.*, p.NomeProcedimento from itensinvoice ii LEFT JOIN procedimentos p on p.id=ii.ItemID where ii.Executado = '' and ii.InvoiceID="&InvoiceID )
                 ageIN = "0"
                 strItensNE = ""
                 while not iiNE.eof
@@ -462,6 +499,8 @@ elseif ModeloID<>"" and ModeloID<>"0" then
         
         'procedimentos
         Contrato = ModeloContrato
+        Contrato=replace(Contrato,"AReceber","Receita")
+
          if instr(Contrato, "[Procedimentos.Iniciar]")>0 and instr(Contrato, "[Procedimentos.Finalizar]")>0 then
             'response.write("oi")
                 splItens = split(Contrato, "[Procedimentos.Iniciar]")

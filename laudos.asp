@@ -45,7 +45,7 @@ end if
                     <%
                 end if
                 %>
-                <%= quickfield("simpleSelect", "ConvenioID", "Convênio", 2, "", "select id, NomeConvenio from convenios where sysActive order by NomeConvenio", "NomeConvenio", "") %>
+                <%= quickfield("simpleSelect", "ConvenioID", "Convênio", 2, "", "select id, NomeConvenio from convenios WHERE sysActive=1 AND ativo='on' order by NomeConvenio", "NomeConvenio", "") %>
                 <%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, "", "", "", "")%>
             </div>
             <div class="row mt20">
@@ -98,11 +98,17 @@ end if
         }
     });
 
-    function entrega(I) {
+    function entrega(I,tipo) {
             $("#modal-table").modal("show");
             $("#modal").html("Carregando...");
-
-            $.post("laudoEntrega.asp?L="+I, "", function (data) { $("#modal").html(data) });
+            if (tipo == 'html')
+            {
+                $.post("laudoEntrega.asp?L="+I, "", function (data) { $("#modal").html(data) });
+            } 
+            else
+            {
+                $.post("laudoEntregaPDF.asp?L="+I, "", function (data) { $("#modal").html(data) });
+            }
     }
 </script>
 

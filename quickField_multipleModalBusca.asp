@@ -8,7 +8,7 @@ checksID  = req("v")
 multipleModal_sessionSQL = Session("multipleModal_session")
 
 conteudoHeader = ""&_
-"<div style='border-bottom:1px dotted #ccc;max-height:350px;overflow: auto;'>"&_
+"<div style='position: relative; height:300px; overflow:auto;'><div style='position: absolute; top: 0; width:100%;'>"&_
 "<table class='table'>"&_
 "  <thead>"&_
 "    <tr class='primary'>"&_
@@ -26,7 +26,7 @@ conteudoHeader = ""&_
 conteudoFooter = ""&_
 "  </tbody>"&_
 "</table>"&_
-"</div>"
+"</div></div>"
 
 
   qItemBuscaWhere = " WHERE "

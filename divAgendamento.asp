@@ -226,12 +226,16 @@ else
 	Chegada = buscaAgendamentos("HoraSta")
 	hh = Right("00" & Hour(Chegada), 2)
     nn = Right("00" & Minute(Chegada), 2)
+    'Chegada = hh & ":" & nn
+    if Chegada&""<>"" then
+        Chegada = Hour(Chegada)&":"&Minute(Chegada)
+    else
+        Chegada = Hour(time)&":"&Minute(time)
+    end if
 
     if LocalID&""="" or LocalID="undefined" then
         LocalID=0
     end if
-
-	Chegada = hh & ":" & nn
 
 	ProfissionalID = buscaAgendamentos("ProfissionalID")
 
@@ -488,11 +492,11 @@ end if
 <%
 if getConfig("OcultarBotaoRetorno")&""="0" then
 %>
-            	<div class="checkbox-custom checkbox-warning    "><input type="checkbox" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>><label for="Retorno" class="checkbox"> Retorno</label></div>
+            	<div class="checkbox-custom checkbox-warning"><input type="checkbox" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>><label for="Retorno" class="checkbox"> Retorno</label></div>
 <%
 else
 %>
-<input type="hidden" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>>
+<input type="checkbox" class="hidden" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>>
 <%
 end if
 %>
@@ -649,9 +653,13 @@ end if
 
 <%
 if instr(camposPedir, "IndicadoPorSelecao")>0 then
+    ObrigarCampoIndicado = ""
+    if instr(camposObrigatorioPaciente, "IndicadoPorSelecao")>0 then
+        ObrigarCampoIndicado = " required "
+    end if
 %>
           <div class="col-md-3">
-            <%= selectInsertCA("Indicação", "indicacaoId", Pagador, "5, 8", " onclick=""autoPC($(this).attr(\'data-valor\')) "" ", " "&fieldReadonly, "") %>
+            <%= selectInsertCA("Indicação", "indicacaoId", Pagador, "5, 8", " onclick=""autoPC($(this).attr(\'data-valor\')) "" ", " "&fieldReadonly&ObrigarCampoIndicado, "") %>
           </div>
           <%
 end if
@@ -677,9 +685,6 @@ end if
 %>
 
 
-
-
-
         <% if req("Checkin")="1" then %>
             <hr class="short alt" />
             <div class="row pt20 checkin-conteudo-paciente">
@@ -702,7 +707,7 @@ end if
                         "FROM agendamentos a "&_
                         "INNER JOIN profissionais prof ON prof.id=a.ProfissionalID "&_
                         "INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID "&_
-                        "WHERE a.PacienteID="&treatvalzero(PacienteID)&" AND a.Data="&mydatenull(Data)&" AND a.Hora <> "&mytime(Hora)&" ORDER BY a.Hora")
+                        "WHERE a.PacienteID="&treatvalzero(PacienteID)&" AND a.sysActive=1 AND a.Data="&mydatenull(Data)&" AND a.Hora <> "&mytime(Hora)&" ORDER BY a.Hora")
                         if not OutrosAgendamentosSQL.eof then
                             %>
                             <h4>Este paciente possui outros agendamentos nessa data.</h4>
@@ -743,7 +748,7 @@ end if
                     <div class="col-md-8">
                         <div class="row">
                         <%
-						set s = dbc.execute("select EventoID, EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
+						set s = dbc.execute("select EventoID, EnviadoEm, WhatsApp, Resultado from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
 						set m = dbc.execute("select EventoID, EnviadoEm from cliniccentral.emailshistorico where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
 
 						set smsFila = dbc.execute("select EventoID, DataHora, EventoID, WhatsApp from cliniccentral.smsfila where AgendamentoID="&ConsultaID&" and AgendamentoID<>0 and LicencaID="&replace( session("banco"), "clinic", "" ))
@@ -781,9 +786,15 @@ end if
                                 <%
 								'response.Write("select EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and LicencaID="&replace( session("banco"), "clinic", "" ))
 								while not s.eof
-								    SmsOuWhatsApp="SMS"
+								    SmsOuWhatsApp="SMS enviado em "
+								    enviadoEm = s("EnviadoEm")
 								    if s("WhatsApp") then
-								        SmsOuWhatsApp="WhatsApp"
+								        SmsOuWhatsApp="WhatsApp enviado em "
+
+								        if s("Resultado") = "400" then
+								            enviadoEm = ""
+								            SmsOuWhatsApp = "Falha no envio - problema de conexão com o celular"
+								        end if
 								    end if
 
 								    DescricaoEvento=""
@@ -796,7 +807,7 @@ end if
                                     end if
 
 									%>
-									<br><small><em><i class="fa fa-check"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%> enviado em <strong><%=s("EnviadoEm")%></strong></em></small>
+									<br><small><em><i class="fa fa-check"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%>  <strong><%=enviadoEm%></strong></em></small>
 									<%
 								s.movenext
 								wend
@@ -1181,23 +1192,25 @@ function RegistrarMultiplasPendencias(liberar) {
 }
 
     function addRemoveRetorno(increment = true){
+        <% if getConfig("SubtrairUmMinutoAgendamentoRetorno") then %>
+            var hora = $("#Hora").val();
+            var horas = hora.split(":");
+
+            var d = new Date(0,0,0, horas[0], horas[1], 0);
+            var dVal=d.valueOf();
+            if(increment){
+                // adicionar 1 minuto
+                var newDate=new Date(dVal + 1000 * 60);
+            }else{
+                var newDate=new Date(dVal - 1000 * 60);
+            }
+            var vhora = (newDate.getHours() < 10)?"0"+newDate.getHours():newDate.getHours();
+            var vmin = (newDate.getMinutes() < 10)?"0"+newDate.getMinutes():newDate.getMinutes();
+            $("#Hora").val( vhora + ":" + vmin);
+        <% end if %>
+
         <% if getConfig("MarcarRetornosComoEncaixe") then %>
-
-        $("#Encaixe").prop("checked", increment);
-        var hora = $("#Hora").val();
-        var horas = hora.split(":");
-
-        var d = new Date(0,0,0, horas[0], horas[1], 0);
-        var dVal=d.valueOf();
-        if(increment){
-            // adicionar 1 minuto
-            var newDate=new Date(dVal + 1000 * 60);
-        }else{
-            var newDate=new Date(dVal - 1000 * 60);
-        }
-        var vhora = (newDate.getHours() < 10)?"0"+newDate.getHours():newDate.getHours();
-        var vmin = (newDate.getMinutes() < 10)?"0"+newDate.getMinutes():newDate.getMinutes();
-        $("#Hora").val( vhora + ":" + vmin);
+            $("#Encaixe").prop("checked", increment);
         <% end if %>
     }
 
@@ -1308,23 +1321,24 @@ function btnSalvarToggleLoading(state, force, waitMessage="Aguarde...") {
 
 function parametros(tipo, id){
     btnSalvarToggleLoading(false);
-
     setTimeout(function() {
         if(id == -1){
             id = $("#"+tipo).val();
         }
+
         $.ajax({
             type:"POST",
             url:"AgendaParametros.asp?tipo="+tipo+"&id="+id,
             data:$("#formAgenda").serialize(),
             success:function(data){
-
                 eval(data);
                 abasAux();
                 btnSalvarToggleLoading(true);
 
             },
             error:function(data){
+                // console.log(data)
+                //comentado por possivel erro para clientes: Valor divergente da tabela particular (variacao)
                 btnSalvarToggleLoading(true);
             }
         });
@@ -1396,7 +1410,7 @@ checkAgendasMarcadas = _ => {
 };
 
 function bootbox(){
-    $("#modal").html("<div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal'>&times;</button><h4 class='modal-title'>Atenção</h4></div><div class='modal-body'><p>Foi identificado agendamentos futuros nesse horário, deseja continuar?.</p></div><div class='modal-footer'><button type='button' onclick='submitAgendamento(false);' class='btn btn-default' data-dismiss='modal'>Sim</button><button type='button' class='btn btn-default' data-dismiss='modal'>Não</button></div></div>");
+    $("#modal").html("<div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal'>&times;</button><h4 class='modal-title'>Atenção</h4></div><div class='modal-body'><p>Foram identificados agendamentos futuros ou bloqueios nesse horário, deseja continuar?.</p></div><div class='modal-footer'><button type='button' onclick='submitAgendamento(false);' class='btn btn-default' data-dismiss='modal'>Sim</button><button type='button' class='btn btn-default' data-dismiss='modal'>Não</button></div></div>");
     $("#modal-table").modal('show');
 
 }
@@ -1663,8 +1677,8 @@ if req("ProcedimentoID")<>"" and isnumeric(req("ProcedimentoID")) then
 end if
 %>
 function addProcedimentos(I) {
-var pacienteId = $("#PacienteID").val();
-var professionalId = $("#ProfissionalID").val();
+    var pacienteId = $("#PacienteID").val();
+    var professionalId = $("#ProfissionalID").val();
 
         $.get("ListarProcedimentosPacote.asp", {
             contadorProcedimentos: I,
@@ -1676,13 +1690,17 @@ var professionalId = $("#ProfissionalID").val();
             }
         });
 };
-function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasConvenios,Equipamento) {
+function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasConvenios,Equipamento,count,callback=false) {
+    if(!count){
+        let linhas = $("tr[class='linha-procedimento']").length
+        count = linhas*-1
+    }
     if(A=='I'){
-
         I = parseInt($("#nProcedimentos").val())-1;
         $("#nProcedimentos").val( I );
         let formapgt = $("[name=rdValorPlano]:checked").val();
         let convenioID = $("#ConvenioID").val();
+        let linhas = $('select[id^="ProcedimentoID"]')
 
         $.post("procedimentosagenda.asp?EquipamentoID="+Equipamento, {
             A: A, I: I ,
@@ -1692,14 +1710,16 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
             GradeApenasConvenios: GradeApenasConvenios,
             EquipamentoID: Equipamento,
             Forma: formapgt,
-            ConvenioSelecionado: convenioID
+            ConvenioSelecionado: convenioID,
+            linhas: count //"-"+linhas.length
             }, function (data) {
-            addProcedimentos(I);
+            // addProcedimentos(I);
             $('#bprocs').append(data);
+            if(callback && typeof callback == 'function'){
+                callback(true)
+            }
 
         });
-
-
     }else if(A=='X'){
         $("#la"+I).remove();
         somarValores();
@@ -1789,7 +1809,7 @@ $(function(){
         somarValores();
     });
     VerGradeDoHorario()
-    $("#Chegada").val(new Date().toTimeString().split(' ')[0]);
+    //$("#Chegada").val(new Date().toTimeString().split(' ')[0]);
 });
 
 function logAgendamento(agendamentoId) {

@@ -18,7 +18,7 @@ var api = null;
 switch (env){
     case "local":
         domain = "http://localhost:8000/";
-        api = "/feegowclinic-v7/api/";
+        api = "./api/";
         break;
     case "production":
         domain = "https://app.feegow.com.br/";
@@ -321,7 +321,16 @@ function closeComponentsModal() {
     $modal.modal('hide');
 }
 
-function showMessageDialog(message, messageType, title, delay) {
+const notifyEvent = ({description, moduleName, criticity = 1}) => {
+    //gravar no analytics
+    try{
+        ga('send', 'event', 'UserError', moduleName, description);
+    }catch(e){
+        console.error("Erro ao registrar evento GA:"+e)
+    }
+}
+
+function showMessageDialog(message, messageType, title, delay=3000) {
     if (!messageType) {
         messageType = "danger";
     }

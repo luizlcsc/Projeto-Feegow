@@ -38,14 +38,16 @@ if temregradesconto=1 then
 	end if
 
 	if querydesconto<>"" then
-		set rsDescontoItem = db.execute("select * from regrasdescontos descontos where Recursos LIKE '%|"&querydesconto&"|%'")
+		set rsDescontoItem = db.execute("select * from regrasdescontos descontos INNER JOIN regraspermissoes rp ON rp.id=descontos.RegraID where descontos.Recursos LIKE '%|"&querydesconto&"|%'")
 		if not rsDescontoItem.eof then
 			temdescontocadastrado=1
 		end if
 
 		'Pegar todos os descontos do usuário pelo perfil dele
 		set rsDescontosUsuario = db.execute("select suser.id as idUser, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto "&_
-											" from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') "&_
+											" from regrasdescontos rd  "&_
+											" INNER JOIN regraspermissoes rp ON rp.id = rd.RegraID "&_
+											" INNER JOIN sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') "&_
 											" WHERE  rd.Recursos LIKE '%"&querydesconto&"%' AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' OR rd.Unidades IS NULL OR rd.Unidades  = '0' ) AND rd.RegraID IS NOT NULL")
 
 		'select suser.id, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') WHERE suser.id = 3531 AND rd.Recursos LIKE '%ContasAReceber%' AND (rd.Unidades LIKE '%|6|%' OR rd.Unidades = '' )
@@ -77,6 +79,10 @@ if getConfig("PermitirAlterarPacienteContaAReceber") = "0" then'TROCAR PARA VERI
 			erro = "Você não pode alterar a unidade de uma fatura já salva."
 		end if
 	end if
+end if
+
+if getConfig("profissionalsolicitanteobrigatorio") and ref("ProfissionalSolicitante")="" and CD="C" then
+	erro = "Profissional solicitante obrigatório"
 end if
 
 set pg = db.execute("select m.id from sys_financialmovement m left join sys_financialdiscountpayments d on (d.InstallmentID=m.id or d.MovementID=m.id) where m.InvoiceID="&InvoiceID&" and not isnull(d.InstallmentID) and not isnull(d.MovementID)")
@@ -253,10 +259,11 @@ if erro="" then
     end if
 
     if ccur(Valor)=0 and ref("NaoAlterarExecutante")<>"" then
+		'variavel nao sendo utilizada mais. #6765
         ZeradoComRepasse=True
     end if
 
-	if existePagto="" and not ZeradoComRepasse then
+	if existePagto="" then
 		'itens
 
 		'--- Verifica se o profissional executa o procedimento antes do delete.
@@ -284,27 +291,46 @@ if erro="" then
             Executado = ref("Executado"& ii)
 
             if procedimentoID<>"" and Executado="S" then
+                if ProfissionalID&""="" or ProfissionalID&""="0" then
+                    erro = "Preencha o profissional"
+                end if
+
                 if Associacao="5" or Associacao="2" or Associacao="8"  then
 
                     if validaProcedimentoProfissional(Associacao, ProfissionalID, EspecialidadeID, ProcedimentoID,0)=False then
-                    %>
-                    new PNotify({
-                            title: 'ERRO AO TENTAR SALVAR!',
-                            text: 'Procedimento não permitido para este Profissional e/ou Especialidade',
-                            type: 'danger',
-                            delay: 3000
-                        });
-                        $("#btnSave").prop("disabled", false);
-                    <%
-                    Response.End
+
+
+						set ProcedimentoErroSQL = db.execute("SELECT NomeProcedimento FROM procedimentos where id="&ProcedimentoID)
+						if not ProcedimentoErroSQL.eof then
+							NomeProcedimentoErro = ProcedimentoErroSQL("NomeProcedimento")
+						end if
+
+                        erro = "Procedimento "&NomeProcedimentoErro&" não permitido para este Profissional e/ou Especialidade"
+
                     end if
                 END IF
             END IF
+
+
+            if erro<>"" then
+            %>
+            showMessageDialog('<%=erro%>');
+            $("#btnSave").prop("disabled", false);
+            <%
+            Response.End
+            end if
         next
+        '---- Termina a verificação de o profissional pod executar o procedimento
+
+
+        if session("Banco")="clinic5760" then
+            db.execute("insert into itensinvoice_bck (`id`, `InvoiceID`, `Tipo`, `Quantidade`, `CategoriaID`, `ItemID`, `ValorUnitario`, `Desconto`, `Descricao`, `Executado`, `DataExecucao`, `HoraExecucao`, `GrupoID`, `AgendamentoID`, `sysUser`, `sysDate`, `ProfissionalID`, `EspecialidadeID`, `HoraFim`, `Acrescimo`, `AtendimentoID`, `Associacao`, `CentroCustoID`, `OdontogramaObj`, `PacoteID`, `DHUp`, `GeradoAutomaticamente`) select `id`, `InvoiceID`, `Tipo`, `Quantidade`, `CategoriaID`, `ItemID`, `ValorUnitario`, `Desconto`, `Descricao`, `Executado`, `DataExecucao`, `HoraExecucao`, `GrupoID`, `AgendamentoID`, `sysUser`, `sysDate`, `ProfissionalID`, `EspecialidadeID`, `HoraFim`, `Acrescimo`, `AtendimentoID`, `Associacao`, `CentroCustoID`, `OdontogramaObj`, `PacoteID`, `DHUp`, `GeradoAutomaticamente` from itensinvoice where InvoiceID="&InvoiceID)
+        end if
 
         sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
         if itensStr&""<>"" then
 		    sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID&" AND id not in ("&itensStr&")"
+			db.execute("DELETE FROM tissguiasinvoice WHERE InvoiceID="&InvoiceID&" AND ItemInvoiceID not in ("&itensStr&")")			
 		end if
 
 		call gravaLogs(sqlExecute ,"AUTO", "Item excluído manualmente","InvoiceID")
@@ -415,12 +441,18 @@ if erro="" then
 				end if
 			end if
 
+			if ref("RepasseGerado"&ii)="S" then
+			    sqlInsert = "update itensinvoice set Descricao='"&ref("Descricao"&II)&"', HoraExecucao="&mytime(ref("HoraExecucao"&ii))&", HoraFim="&mytime(ref("HoraFim"&ii))&" WHERE id="&ii
 
-			if session("Odonto")=1 then
-				sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, OdontogramaObj, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", '"&replace(request.form("OdontogramaObj"&ii), "\", "\\")&"', "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
+				call gravaLogs(sqlInsert, "AUTO", "Item com repasse alterado", "")
             else
-                sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
-            end if
+			
+				if session("Odonto")=1 then
+					sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, OdontogramaObj, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", '"&replace(request.form("OdontogramaObj"&ii), "\", "\\")&"', "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
+				else
+					sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
+				end if
+			end if
 
             'call gravaLogs(sqlInsert ,"E", "Item alterado manualmente","InvoiceID")
 
@@ -564,11 +596,11 @@ if erro="" then
             DescricaoLog=""
         end if
         if scp()=1 then
-			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe="& treatvalnull(ref("nroNFe")) &", CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 			'call gravaLog(sqlInvoice, "AUTO")
 	    	db_execute(sqlInvoice)
         else
-			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe="& treatvalnull(ref("nroNFe")) &", CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 		' 	call gravaLog(sqlInvoice, "AUTO")
 			db_execute(sqlInvoice)
         end if
@@ -608,6 +640,7 @@ if erro="" then
 			    sqlUpdate = "update itensinvoice set Descricao='"&ref("Descricao"&II)&"', Executado='"& Executado &"', DataExecucao="&mydatenull(ref("DataExecucao"&ii))&", HoraExecucao="&mytime(ref("HoraExecucao"&ii))&", AgendamentoID="&treatvalzero(ref("AgendamentoID"&ii))&", CategoriaID="&treatvalzero(ref("CategoriaID"&ii))&", CentroCustoID="&treatvalzero(ref("CentroCustoID"&ii))&", ProfissionalID="&treatvalzero(ProfissionalID)&", HoraFim="&mytime(ref("HoraFim"&ii))&", AtendimentoID="&AtendimentoID&", Associacao="&treatvalzero(Associacao)&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID"&ii)) &" WHERE id="&valID
             end if
 
+			call gravaLogs(sqlUpdate, "AUTO", "Itens alterados", "")
 			db.execute(sqlUpdate)
 			'->itens do rateio irão aqui-----
 '			if Row<0 then
@@ -634,9 +667,9 @@ if erro="" then
     end if
 
   if scp()=1 then
-    sqlUp = "update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe="& treatvalnull(ref("nroNFe")) &", dataNFe="& mydatenull(ref("dataNFe")) &", valorNFe="& treatvalzero(ref("valorNFe")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"' where id="&InvoiceID
+    sqlUp = "update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe='"& ref("nroNFe") &"', dataNFe="& mydatenull(ref("dataNFe")) &", valorNFe="& treatvalzero(ref("valorNFe")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"' where id="&InvoiceID
   else
-    sqlUp = "update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe="& treatvalnull(ref("nroNFe")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"' where id="&InvoiceID
+    sqlUp = "update sys_financialinvoices set "&sqlAtualizaTabela&" Value="&treatvalzero(ref("Valor"))&", Description='"&ref("Description")&"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysDate="&mydatenull(ref("sysDate"))&", nroNFe='"& ref("nroNFe") &"', ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"' where id="&InvoiceID
   end if
 
   call gravaLogs(sqlUp, TipoLogOp, DescricaoLog, "")

@@ -100,7 +100,9 @@ TipoGuia = reg("TipoGuia")
                         <%=quickField("simpleSelect", "GrupoID", "Grupo", 2, reg("GrupoID"), "select * from procedimentosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "")%>
                         <%=quickField("text", "Sigla", "Sigla", 1, reg("Sigla"), "", "", "")%>
                         <%=quickField("text", "Codigo", "Código TUSS", 1, reg("Codigo"), "", "", "")%>
-                        <%=quickField("number", "MaximoNoMes", "Máximo no mês", 2, reg("MaximoNoMes"), " text-right", "", "")%>
+                        <% if getConfig("procedimentosPorMes") = 1 then%>
+                            <%=quickField("number", "MaximoNoMes", "Máximo de procedimentos no mês", 2, reg("MaximoNoMes"), " text-right", "", "")%>
+                        <% end if%>
                    </div>
                     <hr class="short alt" />
                     <div class="row">
@@ -244,8 +246,6 @@ TipoGuia = reg("TipoGuia")
                     </div>
                 </div>
             </div>
-
-            <code>ID: #<%=reg("id")%></code> Cadastrado por <%=nameInTable(reg("sysUser"))%>
         </div>
         <div id="divConfirmacoes" class="tab-pane">
             <div class="row panel">
@@ -470,6 +470,18 @@ TipoGuia = reg("TipoGuia")
     </div>
   </div>
 </div>
+<!--#include file="Classes/Logs.asp"-->
+<%
+if session("Admin")=1 then
+%>
+<div class="tabbable panel">
+    <div class="tab-content panel-body">
+        <%=dadosCadastro("procedimentos" , req("I"))%>
+    </div>
+</div>
+<%
+end if
+%>
 <script>
 let jsonProfissionalJson = JSON.parse('[]');
 

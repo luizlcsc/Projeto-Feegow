@@ -20,7 +20,13 @@ RegraIDComPermissao="0"
 temRegraCadastrada=0
 temRegraCadastradaProUsuario=0
 
-set TemRegrasDescontoSQL = db.execute("SELECT id, Recursos, DescontoMaximo, RegraID FROM regrasdescontos WHERE (Recursos LIKE '%|"&TipoFuncaoDesconto&"|%' OR Recursos='' OR Recursos IS NULL) ORDER BY DescontoMaximo ASC")
+'set TemRegrasDescontoSQL = db.execute("SELECT id, Recursos, DescontoMaximo, RegraID FROM regrasdescontos WHERE (Recursos LIKE '%|"&TipoFuncaoDesconto&"|%' OR Recursos='' OR Recursos IS NULL) ORDER BY DescontoMaximo ASC")
+set TemRegrasDescontoSQL = db.execute("SELECT rd.id, rd.Recursos, rd.DescontoMaximo, rd.RegraID "&_
+" FROM regrasdescontos rd "&_
+" INNER JOIN regraspermissoes rp ON rp.id = rd.RegraID "&_
+" WHERE (rd.Recursos LIKE '%|"&TipoFuncaoDesconto&"|%' OR rd.Recursos='' OR rd.Recursos IS NULL) "&_
+" ORDER BY rd.DescontoMaximo ASC")
+
 TemDescontoParaOGrupoDoUsuario=False
 
 if not TemRegrasDescontoSQL.eof then

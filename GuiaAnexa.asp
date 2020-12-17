@@ -139,7 +139,7 @@ end if
             <td>
                 <table height="80" width="100%">
 		  			<tr>
-						<td width="1%" align="center" data-teste="<%= Foto %> <%= len(Foto) %>" style="font-size:18px; font-weight:bold"><% if len(Foto)>2 then %><img src="./../uploads/<%= replace(session("Banco"), "clinic", "") %>/Perfil/<%=Foto%>" id="logo" /><%else%><%= NomeConvenio %><%end if%></td>
+						<td width="1%" align="center" data-teste="<%= Foto %> <%= len(Foto) %>" style="font-size:18px; font-weight:bold"><% if len(Foto)>2 then %><img src="<%=arqEx(Foto, "Perfil")%>" id="logo" /><%else%><%= NomeConvenio %><%end if%></td>
 						<td style="font-size:18px; font-weight:bold" align="center">ANEXO DE OUTRAS DESPESAS<br /><span style="font-size:13px">(para Guia de SP/SADT e Resumo de Interna&ccedil;&atilde;o)</span>
                         </td>
                     </tr>
@@ -302,6 +302,8 @@ end if
 </body>
 </html>
 <script>
-print();
+  window.print();
+	window.addEventListener("afterprint", function(event) { window.close(); });
+	window.onafterprint();
 </script>
 <!--#include file="disconnect.asp"-->

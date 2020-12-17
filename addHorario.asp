@@ -151,45 +151,47 @@ end if
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <div class="panel">
-                <div class="panel-heading">
-                    <span class="panel-title">
-                    <i class="fa fa-calendar"></i>
-                        Marque para duplicar a marcação para o dia da semana escolhido
-                    </span>
-                </div>
-                <div class="panel-body p7" style="text-align: center">
-                    <div class="checkbox-primary checkbox-daysweek inlinex">
-                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="1" <% if weekdayname(Dia) ="domingo" then  response.write(" checked ") end if  %> />
-                        <small>Domingo</small></label>
+            <% if req("addGrade")&"" = "0" then %>
+                <div class="panel">
+                    <div class="panel-heading">
+                        <span class="panel-title">
+                        <i class="fa fa-calendar"></i>
+                            Marque para duplicar a marcação para o dia da semana escolhido
+                        </span>
                     </div>
-                    <div class="checkbox-primary checkbox-daysweek inlinex">
-                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="2" <% if weekdayname(Dia) ="segunda-feira" then  response.write(" checked ") end if %> />
-                        <small>Segunda-feira</small></label>
-                    </div>
-                    <div class="checkbox-primary checkbox-daysweek inlinex">
-                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="3" <% if weekdayname(Dia) ="terça-feira" then  response.write(" checked ") end if %> />
-                        <small>Terça-feira</small></label>
-                    </div>
-                    <div class="checkbox-primary checkbox-daysweek inlinex">
-                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="4" <% if weekdayname(Dia) ="quarta-feira" then  response.write(" checked ") end if %> />
-                        <small>Quarta-feira</small></label>
-                    </div>
-                    <div class="checkbox-primary checkbox-daysweek inlinex">
-                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="5" <% if weekdayname(Dia) ="quinta-feira" then  response.write(" checked ") end if %> />
-                        <small>Quinta-feira</small></label>
-                    </div>
-                    <div class="checkbox-primary checkbox-daysweek inlinex">
-                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="6" <% if weekdayname(Dia) ="sexta-feira" then  response.write(" checked ") end if %> />
-                        <small>Sexta-feira</small></label>
-                    </div>
-                    <div class="checkbox-primary checkbox-daysweek inlinex">
-                        <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="7" <% if weekdayname(Dia) ="sábado" then  response.write(" checked ") end if %> />
-                        <small>Sábado</small></label>
-                    </div>
+                    <div class="panel-body p7" style="text-align: center">
+                        <div class="checkbox-primary checkbox-daysweek inlinex">
+                            <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="1" <% if weekdayname(Dia) ="domingo" then  response.write(" checked ") end if  %> />
+                            <small>Domingo</small></label>
+                        </div>
+                        <div class="checkbox-primary checkbox-daysweek inlinex">
+                            <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="2" <% if weekdayname(Dia) ="segunda-feira" then  response.write(" checked ") end if %> />
+                            <small>Segunda-feira</small></label>
+                        </div>
+                        <div class="checkbox-primary checkbox-daysweek inlinex">
+                            <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="3" <% if weekdayname(Dia) ="terça-feira" then  response.write(" checked ") end if %> />
+                            <small>Terça-feira</small></label>
+                        </div>
+                        <div class="checkbox-primary checkbox-daysweek inlinex">
+                            <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="4" <% if weekdayname(Dia) ="quarta-feira" then  response.write(" checked ") end if %> />
+                            <small>Quarta-feira</small></label>
+                        </div>
+                        <div class="checkbox-primary checkbox-daysweek inlinex">
+                            <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="5" <% if weekdayname(Dia) ="quinta-feira" then  response.write(" checked ") end if %> />
+                            <small>Quinta-feira</small></label>
+                        </div>
+                        <div class="checkbox-primary checkbox-daysweek inlinex">
+                            <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="6" <% if weekdayname(Dia) ="sexta-feira" then  response.write(" checked ") end if %> />
+                            <small>Sexta-feira</small></label>
+                        </div>
+                        <div class="checkbox-primary checkbox-daysweek inlinex">
+                            <label ><input type="checkbox" name="diaSemanaArray[]" id="diaSemana" value="7" <% if weekdayname(Dia) ="sábado" then  response.write(" checked ") end if %> />
+                            <small>Sábado</small></label>
+                        </div>
 
+                    </div>
                 </div>
-            </div>
+            <% end if %>
         </div>
     </div>
   <div class="row">

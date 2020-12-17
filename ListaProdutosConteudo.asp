@@ -162,7 +162,7 @@
             %>
 
                 <tbody>
-                <tr>
+                <tr id="linha<%=prod("id")%>">
                     <td><%=prod("NomeProduto")%></td>
                     <td><%=prod("Codigo")%></td>
                     <td><%=prod("NomeCategoria")%></td>

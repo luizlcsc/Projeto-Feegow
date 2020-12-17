@@ -305,6 +305,8 @@ resultados.map((key) => {
            jQuery("#Planos\\[0\\]").val(key.planos.split(","));
            jQuery("#Grupos\\[0\\]").val(key.grupos.split(","));
            jQuery("#Procedimentos\\[0\\]").val(key.grupos.split(","))
+
+
            jQuery("#Contratos\\[0\\]").val(key.contratos.split(","))
            jQuery("#Escalonamentos\\[0\\]").val(key.escalonamentos.split(","))
            jQuery("#tipo\\[0\\]").val(key.tipo.split(","))

@@ -347,6 +347,38 @@ if not reg.eof then
 					    'response.Write("insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&reg("id")&", 1, 1, "&ProfissionalID&", '"&CPF&"', '"&ConselhoProfissionalSolicitanteID&"', '"&NumeroNoConselhoSolicitante&"', '"&UFConselhoSolicitante&"', '"&CodigoCBOSolicitante&"', "&session("User")&")")
 					    sqlExecute = "insert into tissprofissionaishonorarios (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&reg("id")&", 1, 12, "&ProfissionalID&", '"&CPF&"', "&treatvalnull(ConselhoProfissionalSolicitanteID)&", '"&NumeroNoConselhoSolicitante&"', '"&UFConselhoSolicitante&"', '"&CodigoCBOSolicitante&"', "&session("User")&")"
 				        db_execute(sqlExecute)
+
+				        sqlProfissionaisEquipe = (" SELECT p.id ProfissionalID, p.CPF, COALESCE(a.Funcao, 0) GrauParticipacaoID, p.DocumentoConselho, p.UFConselho, p.CBOS, p.Conselho ConselhoID FROM procedimentosequipeconvenio a"&_
+                                                  " inner JOIN profissionais p ON p.id = SUBSTRING_INDEX(a.ContaPadrao,'_' , -1) AND SUBSTRING_INDEX(a.ContaPadrao,'_' , 1) = '5'"&_
+                                                  " WHERE a.ProcedimentoID = "&ProcedimentoID&_
+                                                  " UNION ALL"&_
+                                                  " SELECT proext.id, proext.cpf, COALESCE(a.Funcao, 0), proext.DocumentoConselho, proext.UFConselho, proext.CBOS, proext.Conselho FROM procedimentosequipeconvenio a "&_
+                                                  " inner JOIN profissionalexterno proext ON proext.id = SUBSTRING_INDEX(a.ContaPadrao,'_' , -1) AND SUBSTRING_INDEX(a.ContaPadrao,'_' , 1) = '8'"&_
+                                                  " WHERE a.ProcedimentoID = "&ProcedimentoID)
+
+                        set ProfissionaisEquipe = db.execute(sqlProfissionaisEquipe)
+                        while not ProfissionaisEquipe.eof
+                            set SequencialSQL = db.execute("SELECT Sequencial From tissprofissionaissadt WHERE GuiaID="&reg("id")&" order by Sequencial desc")
+
+                            Sequencial=1
+
+                            if not SequencialSQL.eof then
+                                Sequencial = SequencialSQL("Sequencial") + 1
+                            end if
+
+                            sqlInsert = "INSERT INTO tissprofissionaishonorarios (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser)" &_
+                                                            "VALUES ("&reg("id")&", "&treatvalzero(Sequencial)&", "&ProfissionaisEquipe("GrauParticipacaoID")&", "&ProfissionaisEquipe("ProfissionalID")&", '"&ProfissionaisEquipe("CPF")&"', "&_
+                                                            treatvalzero(ProfissionaisEquipe("ConselhoID"))&", '"&ProfissionaisEquipe("DocumentoConselho")&"', '"&ProfissionaisEquipe("UFConselho")&"', "&treatvalzero(ProfissionaisEquipe("CBOS"))&", "&session("User")&")"
+
+                            db.execute(sqlInsert )
+
+                        ProfissionaisEquipe.movenext
+                        wend
+                                                ProfissionaisEquipe.close
+                                                set ProfissionaisEquipe=nothing
+
+
+
 				    end if
 				    've se é primeira consulta ou seguimento
 				    set vesecons = db.execute("select id from tissguiaconsulta where PacienteID="&PacienteID&" and sysActive=1 UNION ALL select id from tissguiahonorarios where PacienteID="&PacienteID&" and sysActive=1")

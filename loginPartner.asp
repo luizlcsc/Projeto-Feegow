@@ -5,21 +5,20 @@
                             Servidor = tryLogin("Servidor")&""
 							session("Servidor")=Servidor
 
-                            if Servidor="aws" then
-                                response.redirect("http://clinic7.feegow.com.br/v7?P=Login&Partner="&req("Partner"))
-                            end if
 
 							session("Banco")="clinic"&tryLogin("LicencaAtual")
+							session("ExibeChatAtendimento")= True
+							session("Email")= tryLogin("Email")
 							session("Admin")=tryLogin("Admin")
 							session("Logo")=req("Partner")&".png"
 							session("Status")="C"
 							session("Permissoes") = tryLogin("Permissoes")
 							session("NameUser") = tryLogin("Nome")
-							session("Photo") = "uploads/"&tryLogin("Foto")
+							session("Photo") = "assets/img/user.png"
 							session("OtherCurrencies") = ""
 							session("User")=tryLogin("id")*(-1)
 							session("idInTable")=tryLogin("id")
-							session("Table") = "licencasusuariosmulti"
+							session("Table") = "cliniccentral.licencasusuariosmulti"
 							session("Partner")=req("Partner")
 ' "clinic"&tryLogin("LicencaAtual")
                             				set dbProvi = newConnection("clinic"&tryLogin("LicencaAtual"), Servidor)

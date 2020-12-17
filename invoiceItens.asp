@@ -13,7 +13,16 @@ PacoteID = ""
 if Row<>"" then
 	Row=ccur(Row)
 end if
+desabilitarExclusaoItem = ""
 
+titleNotaFiscal = ""
+if recursoAdicional(34) = 4 then
+    set existeNotaEmitida = db.execute("select id from nfse_emitidas where invoiceid ="&InvoiceID&" and Status = 3")
+    if not existeNotaEmitida.eof then
+        desabilitarExclusaoItem = " disabled "
+        titleNotaFiscal = "Existe nota com status autorizada"
+    end if
+end if
 
 TemRegrasDeDesconto=False
 
@@ -158,6 +167,7 @@ if Acao="" then
 			Row = 0
 			set itens=db.execute("select * from tempinvoice where InvoiceID="&InvoiceID)
 			while not itens.eof
+                response.Flush()
 				Row = Row-1
 				conta = conta+itens("Quantidade")
 				Subtotal = itens("Quantidade")*(itens("ValorUnitario")-itens("Desconto")+itens("Acrescimo"))
@@ -539,6 +549,18 @@ $(document).ready(function(){
         $(input).val(descontoEmPercentual);
         $(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
     });
+	let executados = $("input[id^='Executado']")
+	executados.each((key,input)=>{
+		let id = $(input).attr('id').replace('Executado','')
+		let numOptions = $("#EspecialidadeID"+id).find("option").length ;
+
+		if(numOptions<=1){return;}
+		if($(input).prop('checked')){
+			$("#EspecialidadeID"+id).attr('required',true) 
+		}else{
+			$("#EspecialidadeID"+id).attr('required',false) 
+		}
+	})
 });
 
 $('.PercentDesconto').change(function () {

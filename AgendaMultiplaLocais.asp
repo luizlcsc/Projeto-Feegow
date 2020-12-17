@@ -167,7 +167,7 @@ while not loc.eof
                 "left join pacientes p on p.id=a.PacienteID "&_ 
                 "left join profissionais pro on pro.id=a.ProfissionalID "&_ 
                 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_ 
-                "where a.LocalID="&LocalID&" and a.Data="&mydatenull(Data)&"order by Hora")
+                "where a.LocalID="&LocalID&" and a.sysActive=1 and a.Data="&mydatenull(Data)&"order by Hora")
                 while not comps.EOF
                     HoraComp = HoraToID(comps("Hora"))
                     compsHora = comps("Hora")

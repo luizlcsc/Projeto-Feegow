@@ -293,7 +293,7 @@ function changeTexto(arg){
 
     function callForm(F, I) {
         //alert(I);
-        $.get("iPront.asp?t=L&p=<%= PacienteID %>&m="+ F +"&i="+ I +"&a=&LaudoSC=1", function (data) { $("#folha").html(data) });    
+        $.get("iPront.asp?t=L&p=<%= PacienteID %>&m="+ F +"&i="+ I +"&a=&LaudoSC=1&pl="+$("#ProfissionalID").val(), function (data) { $("#folha").html(data) });    
     }
 
     endpointSendMailToPatient = (laudoID,env) => {
@@ -368,7 +368,7 @@ function changeTexto(arg){
             $("#modal").html("Carregando...");
             $.post("laudoEntrega.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
         } else {
-            alert("Não é possível entregar o laudo pois o mesmo ainda não foi liberado.");
+            alert("Não é possível entregar o laudo pois ainda não foi liberado.");
         }
     }
 

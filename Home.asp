@@ -709,7 +709,7 @@ end if
                 </div>
                 <div class="panel-body bg-white p15" style="height:431px!important; overflow-y:auto">
                     <%
-                    set aniversariantesDeHoje = db.execute("SELECT id,NomePaciente,IF(Cel1 IS NULL,Tel1,Cel1)cel,Nascimento FROM pacientes WHERE CURDATE() LIKE CONCAT('%',substr(Nascimento,6)) AND (Cel1 IS NOT NULL OR Tel1 IS NOT NULL) LIMIT 15")
+                    set aniversariantesDeHoje = db.execute("SELECT id,NomePaciente,IF(Cel1 IS NULL,Tel1,Cel1)cel,Nascimento FROM pacientes WHERE CURDATE() LIKE CONCAT('%',substr(Nascimento,6)) AND (Cel1 IS NOT NULL OR Tel1 IS NOT NULL) AND sysActive=1 LIMIT 15")
                     if not aniversariantesDeHoje.eof then
                         %>
                         <ul class="list-group">
@@ -738,8 +738,12 @@ end if
     <%
     end if
     if aut("agendaV") then
-        'set age = db.execute("select age.*, prof.NomeProfissional from cliniccentral.agendamento_online_log age LEFT JOIN profissionais prof ON prof.id=age.ProfissionalID where age.LicencaID="& replace(session("Banco"), "clinic", "") &" order by age.DataHora desc limit 6")
-        set age = db.execute("select age.Data, age.Hora, prof.NomeProfissional,  pac.NomePaciente, lm.DataHora DataHoraFeito from agendamentos age inner join logsmarcacoes lm on age.id = lm.ConsultaID inner join profissionais prof on prof.id = age.ProfissionalID LEFT JOIN pacientes pac ON pac.id=age.PacienteID where lm.Sta = 1 and (lm.Usuario=1 or age.CanalID=1) and age.CanalID IS NOT NULL order by lm.DataHora desc limit 6")
+        sqlAgendamentoOnline = "select age.Data, age.Hora, prof.NomeProfissional,  pac.NomePaciente, null DataHoraFeito from agendamentos age "&_
+                                "inner join profissionais prof on prof.id = age.ProfissionalID "&_
+                                "LEFT JOIN pacientes pac ON pac.id=age.PacienteID "&_
+                                "where (age.CanalID=1) and age.CanalID IS NOT NULL order by age.Data desc limit 6"
+
+        set age = db.execute(sqlAgendamentoOnline)
         %>
         <div class="col-md-6 admin-grid">
             <div class="panel panel-widget">
@@ -774,7 +778,7 @@ end if
                         age.close
                         set age = nothing
                     else
-                        %><tr><td>Nenhum agendamento online encontrado.</td></tr><%
+                        %><tr><td colspan="4">Nenhum agendamento online encontrado.</td></tr><%
                     end if
                     %>
                     </table>
@@ -957,7 +961,6 @@ if session("Bloqueado")="FimTeste" or session("DiasTeste") then
 <%
 end if
 
-call odonto()
 
 if session("Admin")=1 then
 set preg = db.execute("select Endereco, Numero, Bairro, Cidade from pacientes where Endereco<>'' and Bairro<>'' and Cidade<>'' order by id desc limit 100")

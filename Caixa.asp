@@ -257,7 +257,8 @@ else
 			<%
 			end if
 			%>
-		<% if getConfig("DetalharFechamentoCaixa") = "1" then %>
+		<% 
+        if getConfig("DetalharFechamentoCaixa")="1" or getConfig("PermitirFechamentoDeCaixaValorAbaixo")<>"1" then %>
         	<button class="btn btn-success btn-sm" type="button" onclick="location.href='./?P=PreFechaCaixa&Pers=1'"><i class="fa fa-inbox"></i> Fechar Caixa</button>
         <% else %>
         	<button class="btn btn-success btn-sm"><i class="fa fa-inbox"></i> Fechar Caixa</button>

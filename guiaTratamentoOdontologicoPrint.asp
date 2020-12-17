@@ -96,7 +96,9 @@ set conf = db.execute("select * from sys_config")
 OmitirValorGuia = conf("OmitirValorGuia")
 
 guiaIdValor = "null"
-set guia = db.execute("select g.*, cons.TISS as ConselhoProfissionalSolicitanteTISS from tissguiasadt as g left join conselhosprofissionais as cons on cons.id=g.ConselhoProfissionalSolicitanteID where g.id="& treatvalzero(req("I")))
+guiaSQL = "select g.*, cons.TISS as ConselhoProfissionalSolicitanteTISS from tissguiasadt as g left join conselhosprofissionais as cons on cons.id=g.ConselhoProfissionalSolicitanteID where g.id="& treatvalzero(req("I"))
+'dd(guiaSQL)
+set guia = db.execute(guiaSQL)
 if not guia.eof then
     guiaIdValor = guia("id")
 	set conv = db.execute("select * from convenios where id="&guia("ConvenioID"))
@@ -448,11 +450,16 @@ end if
                     <td class="underline">42-Assinatura</td>
                 </tr>
                 <%     
-                    
-                set ProcedimentosSQL = db.execute("SELECT proc.NomeProcedimento, Quantidade, Data, ValorUnitario, ValorTotal, TabelaID,CodigoProcedimento FROM tissprocedimentossadt tp INNER JOIN procedimentos proc ON proc.id=tp.ProcedimentoID WHERE tp.GuiaID="&guiaIdValor)
-                    if not ProcedimentosSQL.eof then %>
+                qProcedimentosSQL = "SELECT proc.NomeProcedimento, Quantidade, Data, ValorUnitario, ValorTotal, TabelaID,CodigoProcedimento FROM tissprocedimentossadt tp INNER JOIN procedimentos proc ON proc.id=tp.ProcedimentoID WHERE tp.GuiaID="&guiaIdValor
+                'dd(qProcedimentosSQL)
+                set ProcedimentosSQL = db.execute(qProcedimentosSQL)
+                    if not ProcedimentosSQL.eof then
+                    linhaNumero = 0
+                    while not ProcedimentosSQL.eof
+                    linhaNumero = linhaNumero+1
+                    %>
                         <tr>
-                            <td> 1</td>
+                            <td> <%=linhaNumero%></td>
                             <td class="linha"><%=ProcedimentosSQL("TabelaID")%></td>
                             <td class="linha"><%=ProcedimentosSQL("CodigoProcedimento")%></td>
                             <td class="linha"><%=ProcedimentosSQL("NomeProcedimento")%></td>
@@ -467,8 +474,14 @@ end if
                             <td class="linha"><%=ProcedimentosSQL("Data")%></td>
                             <td class="linha">&nbsp;</td>
                         </tr>
-                    <% end if %>
-                    <% For i = 2 To 20 %>
+                    <%
+                    ProcedimentosSQL.movenext
+                    wend
+                    ProcedimentosSQL.close
+                    set ProcedimentosSQL = nothing 
+                    
+                    end if %>
+                    <% For i = linhaNumero To 20 %>
                         <tr>
                             <td> <%= i %></td>
                             <td class="linha">&nbsp;</td>
@@ -540,5 +553,7 @@ end if
 
 </html>
 <script type="text/javascript">
-    print()
+    window.print();
+    window.addEventListener("afterprint", function(event) { window.close(); });
+    window.onafterprint();
 </script>

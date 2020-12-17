@@ -125,8 +125,8 @@ if request.QueryString("Atender")<>"" then
 end if
 
 if lcase(session("Table"))<>"profissionais" or req("ProfissionalID")<>"" then
-	sql = "select a.*, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela, ac.NomeCanal, a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano ,proc.ProcedimentoTelemedicina from agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join profissionais p on p.id=a.ProfissionalID inner join pacientes pac ON pac.id=a.PacienteID left join locais l on l.id=a.LocalID where Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 33, 102,105,106, 101, 5) and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "&sqlProfissional&sqlEspecialidade&" order by "&Ordem
-    sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID                                                                                         where a.Data = '"&mydate(DataHoje)&"' and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID)) "&sqlProfissional&"  group by(l.UnidadeID) order by total desc limit 1 "
+	sql = "select a.*, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela, ac.NomeCanal, a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano ,proc.ProcedimentoTelemedicina from agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join profissionais p on p.id=a.ProfissionalID inner join pacientes pac ON pac.id=a.PacienteID left join locais l on l.id=a.LocalID where Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 33, 102,105,106, 101, 5) and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "&sqlProfissional&sqlEspecialidade&" and a.sysActive = 1 order by "&Ordem
+    sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID                                                                                         where a.Data = '"&mydate(DataHoje)&"' and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID)) "&sqlProfissional&"  group by(l.UnidadeID) and a.sysActive = 1 order by total desc limit 1 "
 else
     'triagem
     sqlSalaDeEspera = ""
@@ -135,8 +135,8 @@ else
     end if
 
 	'sql = "select * from Consultas where Data = "&DataHoje&" and DrId = '"&session("DoutorID")&"' and not StaID = '3' and not StaID = '1' and not StaID = '6' and not StaID = '7' order by "&Ordem
-    sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID))  group by(l.UnidadeID) order by total desc limit 1 "
-	sql = "select a.*, tp.NomeTabela, ac.NomeCanal,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano, proc.ProcedimentoTelemedicina from agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) order by "&Ordem
+    sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID))  group by(l.UnidadeID) and a.sysActive = 1 order by total desc limit 1 "
+	sql = "select a.*, tp.NomeTabela, ac.NomeCanal,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano, proc.ProcedimentoTelemedicina from agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) and a.sysActive = 1 order by "&Ordem
 
 end if
 
@@ -156,13 +156,12 @@ if lcase(session("table"))="profissionais" then
             if not ProfissionalTriagemSQL.eof then
                 if ProfissionalTriagemSQL("EspecialidadeTriagem")="1" then
                     ProfissionalTriagem="S"
-                    sql = "select age.*, profage.NomeProfissional, tp.NomeTabela, ac.NomeCanal, proc.ProcedimentoTelemedicina from agendamentos age INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID LEFT JOIN profissionais profage ON profage.id=age.ProfissionalID LEFT JOIN agendamentocanais ac ON ac.id=age.CanalID INNER JOIN pacientes pac ON pac.id=age.PacienteID LEFT JOIN locais l ON l.id=age.LocalID where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 33, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' order by "&Ordem
+                    sql = "select age.*, profage.NomeProfissional, tp.NomeTabela, ac.NomeCanal, proc.ProcedimentoTelemedicina from agendamentos age INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID LEFT JOIN profissionais profage ON profage.id=age.ProfissionalID LEFT JOIN agendamentocanais ac ON ac.id=age.CanalID INNER JOIN pacientes pac ON pac.id=age.PacienteID LEFT JOIN locais l ON l.id=age.LocalID where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 33, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' and age.sysActive = 1 order by "&Ordem
                 end if
             end if
         end if
     end if
 end if
-
 
 if req("debug")="1" then
     response.write("<pre>"&sql&"</pre>")
@@ -282,7 +281,7 @@ else
                 StaConsulta=pSta("StaConsulta")
             end if
             if veseha("rdValorPlano")="V" then
-				if aut("areceberpacienteV")=1 then
+				if aut("areceberpacienteV")=1 or aut("|valordoprocedimentoV|")=1 then
 	                Valor = veseha("ValorPlano")
 				else
 					Valor = ""
@@ -376,7 +375,13 @@ else
     isTelemedicina = veseha("ProcedimentoTelemedicina")&""="S"
 
     if not ConfigGeraisSQL.eof then
-        if ChamarAposPagamento="S" and (inStr(unidadesBloqueioAtendimento, "|"&session("UnidadeID")&"|")<>"0" or unidadesBloqueioAtendimento&""="") then
+        UnidadeBloqueiaPagamento = False
+
+        if unidadesBloqueioAtendimento&""<>"" and unidadesBloqueioAtendimento<>"0" then
+            UnidadeBloqueiaPagamento = (inStr(unidadesBloqueioAtendimento, "|"&session("UnidadeID")&"|")<>"0" or unidadesBloqueioAtendimento&""="")
+        end if
+
+        if ChamarAposPagamento="S" or UnidadeBloqueiaPagamento then
             'verifica se procedimento ja foi pago preveamente
             sqlQuitado =    "SELECT ii.id"&_
                             " FROM itensinvoice ii"&_
@@ -407,7 +412,7 @@ else
                 if Triagem="S" and ProfissionalTriagem="N" and labelDisabled = "Pendente de Triagem" then
                     'exibeLinha = "N"
                 end if
-
+                ' COMENTADA AS LINHAS ABAIXO POR QUE ESTÁ BLOQUEANDO PAGAMENTOS COM DESCONTOS
                 disabPagto = "disabled"
                 labelDisabled = "Pendente de pgto."
                 tagPaciente = "div"
@@ -419,7 +424,7 @@ else
     end if
 
     'DESATIVA BOTÕES DE CHAMAR / ATENDE::: PERMISSAO > OUTRAS CONFIGS > CAT(ATENDIMENTO) :: RAFAEL MAIA ::
-    if instr("|"&getConfig("BloquearAtendimentoMediantePagamento")&"|","|"&session("unidadeID")&"|") > 1 then
+    if instr(unidadesBloqueioAtendimento,"|"&session("unidadeID")&"|") > 1 then
         if accountBalance("3_"&veseha("PacienteID"), 0) < 0 then
             btnAtenderDisabled  = 1
             btnChamarDisabled   = 1

@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-db_execute("delete from tempinvoice where sysUser="&session("User"))
+db_execute("delete from tempinvoice where sysUser="&session("User")&";")
 
 
 'response.Write(request.Form())
@@ -16,7 +16,7 @@ if Tipo="AReceber" then
 	'Ve se tem alguma invoice CD=C com sysActive=0 no user=session, se não tiver cria e guarda o id
 	set inv = db.execute(sqlInv)
 	if inv.eof then
-		db_execute("insert into sys_financialinvoices (`Value`, Tax, Currency, Recurrence, RecurrenceType, CD, sysActive, sysUser) values (0, 1, 'BRL', 1, 'm', 'C', 0, "&session("User")&")")
+		db_execute("insert into sys_financialinvoices (`Name`,`Value`, Tax, Currency, Recurrence, RecurrenceType, CD, sysActive, sysUser) values ('Gerado a partir de agendamento {1}', 0, 1, 'BRL', 1, 'm', 'C', 0, "&session("User")&")")
 		set inv = db.execute(sqlInv)
 	end if
 	InvoiceID = inv("id")
@@ -37,13 +37,13 @@ if Tipo="AReceber" then
 		    else
 			    sqlAtendimentoID = "NULL"
 			    set aEa = db.execute("select loc.UnidadeID, ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.EspecialidadeID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, ag.TabelaParticularID TabelaID, ag.indicadopor from agendamentos as ag LEFT JOIN locais loc ON loc.id=ag.LocalID where ag.id="&idAgeAte&" UNION  "&_
-                                                                                                                                                                                                                                                                                                                                                        "SELECT loc.UnidadeID, ag.id, ag.Data, ag.Hora as HoraInicio, DATE_ADD(ag.Hora,INTERVAL agproc.Tempo MINUTE) as HoraFim, "&_
-                                                                                                                                                                                                                                                                                                                                                        " agproc.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.EspecialidadeID, ag.Notas as Obs, "&_
-                                                                                                                                                                                                                                                                                                                                                        "agproc.ValorPlano, agproc.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, ag.TabelaParticularID TabelaID, '' indicadopor   "&_
-                                                                                                                                                                                                                                                                                                                                                        "FROM agendamentosprocedimentos agproc "&_
-                                                                                                                                                                                                                                                                                                                                                        "LEFT JOIN agendamentos ag ON ag.id=agproc.AgendamentoID "&_
-                                                                                                                                                                                                                                                                                                                                                        "LEFT JOIN locais loc ON loc.id=ag.LocalID "&_
-                                                                                                                                                                                                                                                                                                                                                        "WHERE AgendamentoID="&idAgeAte)
+                "SELECT loc.UnidadeID, ag.id, ag.Data, ag.Hora as HoraInicio, DATE_ADD(ag.Hora,INTERVAL agproc.Tempo MINUTE) as HoraFim, "&_
+                " agproc.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.EspecialidadeID, ag.Notas as Obs, "&_
+                "agproc.ValorPlano, agproc.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, ag.TabelaParticularID TabelaID, '' indicadopor   "&_
+                "FROM agendamentosprocedimentos agproc "&_
+                "LEFT JOIN agendamentos ag ON ag.id=agproc.AgendamentoID "&_
+                "LEFT JOIN locais loc ON loc.id=ag.LocalID "&_
+                "WHERE AgendamentoID="&idAgeAte)
 		    end if
 
 		    'set aEa = db.execute("select * from agendamentoseatendimentos where id="&spl2(0)&" and Tipo='"&spl2(1)&"'")
@@ -83,7 +83,10 @@ if Tipo="AReceber" then
                                 while not pct.EOF
                                     ItemID = pct("ProdutoID")'id do procedimento
                                     ValorUnitario = pct("Valor")
-                                    Quantidade = pct("Quantidade")
+                                    Quantidade = pct("Quantidade")&""
+                                    if Quantidade = "" then
+                                        Quantidade = 0
+                                    end if 
                                     Subtotal = ValorUnitario * Quantidade
                                     PacoteID = II
                                     Executado="U"

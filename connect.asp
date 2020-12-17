@@ -563,8 +563,15 @@ function simpleSelectCurrentAccounts(id, associations, selectedValue, others)
 					<%
 				else
 					set Associations = db.execute("select * from cliniccentral.sys_financialaccountsAssociation where id="&splAssociations(t))
+
+
 					while not Associations.EOF
-						set AssRegs = db.execute(Associations("sql")&" limit 10000")
+                        sqlAssociation = Associations("sql")&" limit 10000"
+                        'casos de profissional excluido
+                        if selectedValue&""<>"" then
+                            sqlAssociation = replace(sqlAssociation, "where", " where (concat('"&Associations("id")&"_',ID)='"&selectedValue&"') OR ")
+                        end if
+						set AssRegs = db.execute(sqlAssociation)
 						while not AssRegs.EOF
 						%><option value="<%=Associations("id")&"_"&AssRegs("id")%>"<%if Associations("id")&"_"&AssRegs("id")=selectedValue then%> selected="selected"<%end if%>><%= AssRegs(""&Associations("column")&"") %> &raquo; <%= Associations("AssociationName") %></option>
 						<%
@@ -1013,9 +1020,10 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			<select multiple class="multisel tag-input-style" id="<%=fieldName%>" name="<%=fieldName%>"<%=additionalTags%>>
 			<%
 			set listItems = db.execute(sqlOrClass)
+            multipleValorEntrada = fieldValue
 			while not listItems.EOF
 			%>
-			<option value="|<%=listItems("id")%>|"<%if inStr(fieldValue, "|"&listItems("id")&"|")>0 then%> selected="selected"<%end if%>><%=listItems(""&columnToShow&"")%></option>
+			<option value="|<%=listItems("id")%>|"<%if inStr(multipleValorEntrada, "|"&listItems("id")&"|")>0 then%> selected="selected"<%end if%>><%=listItems(""&columnToShow&"")%></option>
 			<%
 			listItems.movenext
 			wend
@@ -2102,8 +2110,11 @@ function insertRedir(tableName, id)
 			set vie = db.execute(sqlVie)
 		end if
 		'===> Exceções
-		if request.QueryString("Lancto")<>"" then
-			strLancto = "&Lancto="&request.QueryString("Lancto")
+		if req("Lancto")<>"" then
+			strLancto = "&Lancto="&req("Lancto")
+		end if
+		if req("ApenasProcedimentosNaoFaturados")<>"" then
+			strApenasNaoFaturados = "&ApenasProcedimentosNaoFaturados="&req("ApenasProcedimentosNaoFaturados")
 		end if
         if req("Solicitantes")<>"" then
             strSolicitantes = "&Solicitantes="&req("Solicitantes")
@@ -2116,7 +2127,7 @@ function insertRedir(tableName, id)
             qsCmd = "&cmd="&req("cmd")
         end if
 
-		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&request.QueryString("Pers") &strLancto & strSolicitantes& qsCmd)
+		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&request.QueryString("Pers") &strLancto & strApenasNaoFaturados & strSolicitantes& qsCmd)
 	else
 		set data = db.execute("select * from "&tableName&" where id="&id)
 		if data.eof then
@@ -2133,7 +2144,7 @@ end function
 
 function dominioRepasse(FormaID, ProfissionalID, ProcedimentoID, UnidadeID, TabelaID, EspecialidadeID, DataExec, HoraExec)
 '        response.write(FormaID)
-FormaID = replace(FormaID, "|", "")
+FormaID = replace(FormaID&"", "|", "")
 'conferir -> FormaID pode ser |P| para todos particulares, |C| para todos convênios, |00_0| para forma predefinida de recto e > |0| para qualquer id de convênio
 	dominioRepasse = 0
 	EspecialidadeIDsent = EspecialidadeID&""
@@ -2163,7 +2174,8 @@ FormaID = replace(FormaID, "|", "")
         EspecialidadeID = "-"& EspecialidadeIDsent
     end if
 
-    if req("debugarRepasse")="1" then
+'essa abordagem eh extremamente mais performatica pois filtra o numero de registros
+    if req("debugarRepasse")="1" or True then
 	set dom = db.execute("select * from rateiodominios WHERE "&_
 	"(IFNULL(Unidades,'')='' or Unidades LIKE '%|"&UnidadeID&"|%') "&_
 	" AND (IFNULL(Tabelas,'')='' or Tabelas LIKE '%|"&TabelaID&"|%') "&_
@@ -2626,7 +2638,9 @@ function replaceTags(valor, PacienteID, UserID, UnidadeID)
 	end if
 
 	valor = replace(valor, "[Data.DDMMAAAA]", date())
-	valor = replace(valor, "[Data.Extenso]", formatdatetime(date(),1) )
+    valor = replace(valor, "[Data.Extenso]", formatdatetime(date(),1) )
+    valor = replace(valor, "[Sistema.Extenso]", formatdatetime(date(),1) )
+    valor = replace(valor, "[Sistema.Data]", date() )
 	valor = replace(valor, "[Sistema.Hora]", time())
 
 	'aqui usa as tags referentes ao agendamento do paciente - para formularios de folha de rosto por ex
@@ -3149,10 +3163,7 @@ function googleCalendarNovo(Acao, Email, AgendamentoID, ProfissionalID, NomePaci
            '     response.write("<br>")
 			HoraFinal = dateadd("n", Tempo, Hora)
 			Fim = dataGoogleNovo(Data, HoraFinal, FusoHorario)
-			'response.Write("alert('http://localhost/feegowclinic/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento&"\tempo="&Tempo&"')")
-         '   response.end
-        ' response.write("http://clinic.feegow.com.br/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento)
-			objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
+			objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
 		objWinHttp.Send
 		resposta = objWinHttp.ResponseText
 		'response.write(resposta)
@@ -3164,8 +3175,7 @@ function googleCalendarNovo(Acao, Email, AgendamentoID, ProfissionalID, NomePaci
 		if not vcaAge.EOF then
 		    GoogleID=vcaAge("GoogleID")
 			Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
-				objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/excluir_dados.php?EventoID="&GoogleID
-				'response.Write("http://localhost/feegowclinic/calendar/excluir_dados.php?EventoID="&GoogleID)
+				objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/excluir_dados.php?EventoID="&GoogleID
 			objWinHttp.Send
 			resposta = objWinHttp.ResponseText
 			db_execute("delete from googleagenda where AgendamentoID="&AgendamentoID)
@@ -3210,7 +3220,7 @@ function googleCalendar(Acao, Email, AgendamentoID, ProfissionalID, NomePaciente
 			Inicio = dataGoogle(Data, Hora)
 			HoraFinal = dateadd("n", Tempo, Hora)
 			Fim = dataGoogle(Data, HoraFinal)
-			objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
+			objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/salvar_dados.php?Email="&Email&"&AgendamentoID="&AgendamentoID&"&NomePaciente="&NomePaciente&"&Inicio="&Inicio&"&Fim="&Fim&"&NomeProcedimento="&NomeProcedimento
 		objWinHttp.Send
 		resposta = objWinHttp.ResponseText
 		db_execute("insert into googleagenda (AgendamentoID, ProfissionalID, GoogleID) values ("&AgendamentoID&", "&ProfissionalID&", '"&resposta&"')")
@@ -3220,7 +3230,7 @@ function googleCalendar(Acao, Email, AgendamentoID, ProfissionalID, NomePaciente
 		if not vcaAge.EOF then
 		    GoogleID=vcaAge("GoogleID")
 			Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
-				objWinHttp.Open "GET", "http://clinic7.feegow.com.br/calendar/excluir_dados.php?EventoID="&GoogleID
+				objWinHttp.Open "GET", "https://app.feegow.com/v7-master/calendar/excluir_dados.php?EventoID="&GoogleID
 				'response.Write("http://localhost/feegowclinic/calendar/excluir_dados.php?EventoID="&GoogleID)
 			objWinHttp.Send
 			resposta = objWinHttp.ResponseText
@@ -3367,7 +3377,7 @@ end function
 
 function limpa(limtabela, limcoluna, limid)
 	Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
-	objWinHttp.Open "GET", "http://clinic.feegow.com.br/RTFtoHTML.php?banco="&session("banco")&"&tabela="&limtabela&"&coluna="&limcoluna&"&id="&limid &"&IP="& sServidor
+	objWinHttp.Open "GET", "https://app.feegow.com/base/RTFtoHTML.php?banco="&session("banco")&"&tabela="&limtabela&"&coluna="&limcoluna&"&id="&limid &"&IP="& sServidor
 	objWinHttp.Send
 	strHTML = objWinHttp.ResponseText
 	Set objWinHttp = Nothing
@@ -3692,7 +3702,7 @@ function dispEquipamento(Data, Hora, Intervalo, EquipamentoID, AgendamentoID)
     HoraFinal = dateadd("n", Intervalo, Hora)
     if isnumeric(EquipamentoID) and EquipamentoID<>"" and not isnull(EquipamentoID) then
         if ccur(EquipamentoID)<>0 then
-            sqlDisp = "SELECT a.Hora, a.HoraFinal, p.NomeProfissional FROM agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID WHERE a.StaID not in(11) and a.Data="&mydatenull(Data)&" AND "&_
+            sqlDisp = "SELECT a.Hora, a.HoraFinal, p.NomeProfissional FROM agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID WHERE a.sysActive=1 AND a.StaID not in(11) and a.Data="&mydatenull(Data)&" AND "&_
                     "("&_
                     "("&mytime(Hora)&">=a.Hora AND "&mytime(Hora)&"< ADDTIME(a.Hora, SEC_TO_TIME(a.Tempo*59.99)))"&_
                     " OR "&_
@@ -3703,14 +3713,17 @@ function dispEquipamento(Data, Hora, Intervalo, EquipamentoID, AgendamentoID)
                     "("&mytime(Hora)&"=a.Hora)"&_
                     ") AND a.EquipamentoID="&EquipamentoID&andAgendamentoID
                     
-            'response.Write(sqlDisp) 
-            set vcaAgEq = db.execute(sqlDisp)
-            if not vcaAgEq.eof then
-                dispEquipamento = "Este equipamento já está agendado para o profissional "&vcaAgEq("NomeProfissional")&" nesta data entre as "&formatdatetime(vcaAgEq("Hora"),4)&" e "&formatdatetime(vcaAgEq("HoraFinal"),4)
+            'response.Write(sqlDisp)
+
+            if getConfig("LiberarEncaixeEquipamentos") <> "1" then
+                set vcaAgEq = db.execute(sqlDisp)
+                if not vcaAgEq.eof then
+                    dispEquipamento = "Este equipamento já está agendado para o profissional "&vcaAgEq("NomeProfissional")&" nesta data entre as "&formatdatetime(vcaAgEq("Hora"),4)&" e "&formatdatetime(vcaAgEq("HoraFinal"),4)
+                end if
             end if
         end if
     end if
-    'dispEquipamento = ""
+    ' dispEquipamento = ""
 end function
 
 function replacePagto(txt, Total)
@@ -3970,8 +3983,8 @@ private function statusPagto(AgendamentoID, PacienteID, Datas, rdValorPlano, Val
     for ida=0 to ubound(splsDatas)
         sData = splsDatas(ida)
         if isdate(sData) and not isnull(sData) and PacienteID&""<>"" and isnumeric(PacienteID&"") then
-'            sqlAgAt = "select 'agendamentos' tabela, id, rdValorPlano, ifnull(ValorPlano, 0) ValorPlano, ifnull(ProfissionalID, 0) ProfissionalID, ifnull(TipoCompromissoID, 0) TipoCompromissoID, FormaPagto from agendamentos where PacienteID="& PacienteID &" and Data="& mydatenull(sData) &" and StaID IN ("& statusEnvolvidos &")"
-            sqlAgAt = "select 'agendamentos' tabela, ag.id, ag.rdValorPlano, ifnull(ag.ValorPlano, 0) ValorPlano, ifnull(ag.ProfissionalID, 0) ProfissionalID, ifnull(ag.TipoCompromissoID, 0) TipoCompromissoID, ag.FormaPagto from agendamentos ag where ag.PacienteID="& PacienteID &" and ag.Data="& mydatenull(sData) &" and ag.StaID IN ("& statusEnvolvidos &") "&_
+'            sqlAgAt = "select 'agendamentos' tabela, id, rdValorPlano, ifnull(ValorPlano, 0) ValorPlano, ifnull(ProfissionalID, 0) ProfissionalID, ifnull(TipoCompromissoID, 0) TipoCompromissoID, FormaPagto from agendamentos where sysActive=1 AND PacienteID="& PacienteID &" and Data="& mydatenull(sData) &" and StaID IN ("& statusEnvolvidos &")"
+            sqlAgAt = "select 'agendamentos' tabela, ag.id, ag.rdValorPlano, ifnull(ag.ValorPlano, 0) ValorPlano, ifnull(ag.ProfissionalID, 0) ProfissionalID, ifnull(ag.TipoCompromissoID, 0) TipoCompromissoID, ag.FormaPagto from agendamentos ag where sysActive=1 AND ag.PacienteID="& PacienteID &" and ag.Data="& mydatenull(sData) &" and ag.StaID IN ("& statusEnvolvidos &") "&_
             " UNION ALL select 'agendamentos', agm.id, agp.rdValorPlano, ifnull(agp.ValorPlano, 0), ifnull(agm.ProfissionalID, 0), ifnull(agp.TipoCompromissoID, 0), agm.FormaPagto FROM agendamentos agm LEFT JOIN agendamentosprocedimentos agp ON agp.AgendamentoID=agm.id where agm.PacienteID="& PacienteID &" and agm.Data="& mydatenull(sData) &" and agm.StaID IN ("& statusEnvolvidos &") and not isnull(agp.id) "&_
             " UNION ALL	SELECT 'atendimentos', ate.id, atp.rdValorPlano, ifnull(atp.ValorPlano, 0), ifnull(ate.ProfissionalID, 0), ifnull(atp.ProcedimentoID, 0), 0 FROM atendimentos ate LEFT JOIN atendimentosprocedimentos atp ON ate.id=atp.AtendimentoID WHERE ate.PacienteID="& PacienteID &" AND ate.`Data`="& mydatenull(sData) &""
 
@@ -4005,11 +4018,7 @@ private function statusPagto(AgendamentoID, PacienteID, Datas, rdValorPlano, Val
                         statusPagto = -1
                     else
                     'vinicius: fiz isso pois em alguns casos quando aplicava desconto, o valor do atendimento nao tinha como mudar o valor
-                        sqlIIAG = "select ii.id from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE i.AccountID="& treatvalzero(PacienteID) &" and AssociationAccountID=3 and ii.Tipo='S' and ii.ItemID="& sProcedimentoID &" and FLOOR((ii.Quantidade * (ii.ValorUnitario+ii.Acrescimo-ii.Desconto)))>=FLOOR("& treatvalzero(sValorPlano) &") and FLOOR(ifnull((select sum(Valor) from itensdescontados where ItemID=ii.id), 0))>=FLOOR("& treatvalzero(sValorPlano) &") and ii.DataExecucao="& mydatenull(sData) &" " & sqlsProfissionalV
-                       if session("Banco")="clinic5472" then
-                        'response.write( sqlIIAG )
-                        end if
-
+                        sqlIIAG = "select ii.id from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE i.AccountID="& treatvalzero(PacienteID) &" and AssociationAccountID=3 and ii.Tipo='S' and ii.ItemID="& sProcedimentoID &" and FLOOR((ii.Quantidade * (ii.ValorUnitario+ii.Acrescimo-ii.Desconto)))>=FLOOR("& treatvalzero(sValorPlano) &"-ii.Desconto+ii.Acrescimo) and FLOOR(ifnull((select sum(Valor) from itensdescontados where ItemID=ii.id), 0))>=FLOOR("& treatvalzero(sValorPlano) &"-ii.Desconto+ii.Acrescimo) and ii.DataExecucao="& mydatenull(sData) &" " & sqlsProfissionalV
 
                         set ii = db.Execute( sqlIIAG )
                         if ii.eof then
@@ -4022,14 +4031,17 @@ private function statusPagto(AgendamentoID, PacienteID, Datas, rdValorPlano, Val
                     end if
                 elseif srdValorPlano="P" then
                     Valor = valConvenio(sValorPlano, "", PacienteID, sProcedimentoID)
-                    if Valor>0 then
-                        set gcons = db.Execute("select gc.ProcedimentoID, gc.ProfissionalID, gc.ProfissionalEfetivoID, gc.ValorProcedimento, gc.ConvenioID from tissguiaconsulta gc where gc.PacienteID="&treatvalnull(PacienteID) & sqlsProfissionalGC &" and gc.DataAtendimento="&mydatenull(sData)&_
-                        " UNION ALL "&_
-                        " select gis.ProcedimentoID, gis.ProfissionalID, NULL, gis.ValorTotal, gs.ConvenioID from tissguiasadt gs left join tissprocedimentossadt gis on gis.GuiaID=gs.id where gs.PacienteID="&treatvalnull(PacienteID) & sqlsProfissionalGS &" and gis.Data="&mydatenull(sData))
-                        if gcons.eof then
-                            statusPagto = -2
-                        else
-                            statusPagto = 1
+
+                    if isnumeric(Valor) then
+                        if Valor>0 then
+                            set gcons = db.Execute("select gc.ProcedimentoID, gc.ProfissionalID, gc.ProfissionalEfetivoID, gc.ValorProcedimento, gc.ConvenioID from tissguiaconsulta gc where gc.PacienteID="&treatvalnull(PacienteID) & sqlsProfissionalGC &" and gc.DataAtendimento="&mydatenull(sData)&_
+                            " UNION ALL "&_
+                            " select gis.ProcedimentoID, gis.ProfissionalID, NULL, gis.ValorTotal, gs.ConvenioID from tissguiasadt gs left join tissprocedimentossadt gis on gis.GuiaID=gs.id where gs.PacienteID="&treatvalnull(PacienteID) & sqlsProfissionalGS &" and gis.Data="&mydatenull(sData))
+                            if gcons.eof then
+                                statusPagto = -2
+                            else
+                                statusPagto = 1
+                            end if
                         end if
                     end if
                 end if
@@ -4126,10 +4138,32 @@ end function
 
 function odonto()
     if session("Odonto")="" then
+        sqlProfissional = ""
+
+        if session("Table")="profissionais" then
+            sqlProfissional = " AND p.id = "&session("idInTable")
+        end if
+
         EspecialidadesOdonto = "154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 238, 239, 240, 241, 242, 243, 244, 245"
-        set vcaOdonto = db.execute("select p.EspecialidadeID from profissionais p LEFT JOIN profissionaisespecialidades e on e.ProfissionalID=p.id WHERE p.EspecialidadeID IN("& EspecialidadesOdonto &") or e.EspecialidadeID IN ("& EspecialidadesOdonto &") or p.Conselho = 3")
+
+        sqlOdonto = "SELECT * FROM ( "&_
+                    "    select p.EspecialidadeID from profissionais p  "&_
+                    "    WHERE p.Ativo='on' AND p.sysActive=1  "&sqlProfissional&" "&_
+                    "    UNION ALL  "&_
+                    "    select e.EspecialidadeID from profissionais p  "&_
+                    "    LEFT JOIN profissionaisespecialidades e on e.ProfissionalID=p.id  "&_
+                    "    WHERE p.Ativo='on' AND p.sysActive=1  "&sqlProfissional&" "&_
+                    "    )t "&_
+                    "    INNER JOIN especialidades esp ON esp.id=t.EspecialidadeID "&_
+                    ""&_
+                    "    WHERE esp.especialidade LIKE '%odonto%' OR esp.especialidade LIKE '%dentista%'"
+
+        set vcaOdonto = db.execute(sqlOdonto)
+
         if NOT vcaOdonto.EOF then
             session("Odonto")=1
+        else
+            session("Odonto")=0
         end if
     end if
 end function
@@ -4148,13 +4182,13 @@ function getEspera(Profissionais)
         eProfissional = trim(splProfs(y))
         if eProfissional<>"" then
             if eProfissional<>"0" then
-                db_execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate() and StaID IN (4) and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
+                db_execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate() and StaID IN (4) and sysActive = 1 and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
             end if
         end if
     next
 
 
-    set esperaT = db.execute("select UnidadeID, count(UnidadeID) EsperaTotal from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() and StaID=4 order by l.UnidadeID) t group by UnidadeID")
+    set esperaT = db.execute("select UnidadeID, count(UnidadeID) EsperaTotal from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() AND a.sysActive=1 and StaID=4 order by l.UnidadeID) t group by UnidadeID")
     while not esperaT.eof
         esperaTotal = esperaTotal & "|"& esperaT("UnidadeID") &", "& EsperaT("EsperaTotal") &"|"
     esperaT.movenext
@@ -4162,7 +4196,7 @@ function getEspera(Profissionais)
     esperaT.close
     set esperaT=nothing
 
-    set esperaV = db.execute("select UnidadeID, count(UnidadeID) EsperaVazia from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() and StaID=4 and ProfissionalID=0 order by l.UnidadeID) t group by UnidadeID")
+    set esperaV = db.execute("select UnidadeID, count(UnidadeID) EsperaVazia from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() AND a.sysActive=1 and StaID=4 and ProfissionalID=0 order by l.UnidadeID) t group by UnidadeID")
     while not esperaV.eof
         esperaVazia = esperaVazia & "|"& esperaV("UnidadeID") &", "& EsperaV("EsperaVazia") &"|"
     esperaV.movenext
@@ -4919,7 +4953,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
                         if not ConvenioSQL.eof then
                             if PlanoID&""<>"" then
                                 set PlanoSQL = db.execute("SELECT NomePlano FROM conveniosplanos "&_
-                                                    " WHERE id="&PlanoID&" AND NomePlano!=''")
+                                                    " WHERE id="&PlanoID&" AND sysActive=1 AND NomePlano!=''")
                                 if not PlanoSQL.eof then
                                     NomePlano = "<label> - Plano:</label><span>"&PlanoSQL("NomePlano")&"</span>"
                                 end if
@@ -4962,7 +4996,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
                     else
                         if (len(Convenios)>2 or (isnumeric(Convenios) and not isnull(Convenios))) and instr(Convenios&" ", "Nenhum")=0 then
                         %>
-                        <%=quickfield("simpleSelect", "ConvenioID"&n, "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " onchange=""parametros(this.id, this.value+'_'+$('#ProcedimentoID').val());""") %>
+                        <%=quickfield("simpleSelect", "ConvenioID"&n, "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where sysActive=1 AND Ativo='ON' AND id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " onchange=""parametros(this.id, this.value+'_'+$('#ProcedimentoID').val());""") %>
                         <%
                         end if
                     end if
@@ -5032,7 +5066,22 @@ end function
 
 private function atuAge(AgendamentoID)
     'set procs = db.execute("select group_concat(concat(replace(ifnull(Cor, ''), '#', '^#'), ' ', NomeProcedimento) separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
-    set procs = db.execute("select group_concat(NomeProcedimento separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
+    'set procs = db.execute("select group_concat(NomeProcedimento separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
+        set procs = db.execute("SELECT GROUP_CONCAT(t.procedimentos SEPARATOR ', ') procedimentos FROM ( "&_
+        "SELECT GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') procedimentos "&_
+        "FROM procedimentos "&_
+        "WHERE id=( "&_
+        "SELECT TipoCompromissoID "&_
+        "FROM agendamentos "&_
+        "WHERE id="& AgendamentoID &") "&_
+        "UNION  ALL "&_
+        "SELECT GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') procedimentos "&_
+        "FROM procedimentos "&_
+        "WHERE id in( "&_
+        "SELECT TipoCompromissoID "&_
+        "FROM agendamentosprocedimentos "&_
+        "WHERE AgendamentoID="& AgendamentoID &")) AS t")
+    
     procedimentos = procs("procedimentos")
     db_execute("update agendamentos ag LEFT JOIN pacientes pac ON pac.id=ag.PacienteID set ag.NomePaciente=pac.NomePaciente, ag.Tel1=pac.Tel1, ag.Cel1=pac.Cel1, ag.Email1=pac.Email1, ag.Procedimentos='"& rep(Procedimentos) &"' where ag.id="& AgendamentoID)
 end function
@@ -5237,13 +5286,16 @@ function getNomeLocalUnidade(UnidadeID)
             UnidadeID=1
         end if
 
-        set UnidadeLocalSQL = db.execute("SELECT IFNULL(CONCAT(' - ', Sigla),'')NomeUnidade FROM "&UnidadeTabela&" WHERE id="&treatvalzero(UnidadeID))
+        set UnidadeLocalSQL = db.execute("SELECT Sigla,NomeFantasia FROM "&UnidadeTabela&" WHERE id="&treatvalzero(UnidadeID))
         if not UnidadeLocalSQL.eof then
-            getNomeLocalUnidade = UnidadeLocalSQL("NomeUnidade")
+            if UnidadeLocalSQL("Sigla")&""<>"" then
+                getNomeLocalUnidade = UnidadeLocalSQL("Sigla")
+            else
+                getNomeLocalUnidade = UnidadeLocalSQL("NomeFantasia")
+            end if
         else
             getNomeLocalUnidade=""
         end if
-
 end function
 
 function descTI(T)
@@ -5531,15 +5583,11 @@ End function
 
 function arqEx(nArquivo, nTipo)
 
-	set fs=Server.CreateObject("Scripting.FileSystemObject")
-	if fs.FileExists("E:\uploads\"& LicenseID &"\"& nTipo &"\"& nArquivo) then
-		arqEx = "/uploads/"& LicenseID &"/"& nTipo &"/"& nArquivo
-    elseif nArquivo&""="" then
+	if nArquivo&""="" then
         arqEx = ""
 	else
-		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&folder="&nTipo&"&file="&nArquivo&"&type=user"
+		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&renderMode=download&folder="&nTipo&"&file="&nArquivo
 	end if
-	set fs=nothing
 end function
 
 function getConfig(configName)

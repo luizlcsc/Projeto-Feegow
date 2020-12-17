@@ -13,32 +13,71 @@ for i = 0 to ubound(Linha)
 
 
 if IsNumeric(Row) then 
+Forma = ref("FormaID")
 
-FormaID = "|P"& ref("FormaID") &"|"
+if Forma="0_0" then
+    Forma=""
+end if
+
+FormaID = "|P"& Forma  &"|"
+
 InvoiceID = req("InvoiceID")
-'if instr(FormaID, "_")>0 then
-'	spl = split(FormaID, "_")
-'	FormaID = spl(0)
-'end if
+
 ProfissionalID = ref("ProfissionalID"&Row)
 ProcedimentoID = ref("ItemID"&Row)
 EspecialidadeID = ref("EspecialidadeID"&Row)
 TabelaID = ref("invTabelaID")
-
-
+valorAnterior = ""
+set sqlvalor = db.execute("select ValorUnitario from itensinvoiceoutros where InvoiceID="&InvoiceID&" and ItemInvoiceID="& Row)
+if not sqlvalor.eof then
+    valorAnterior = sqlvalor("ValorUnitario")&""
+end if
 
 db.execute("delete from itensinvoiceoutros where InvoiceID="&InvoiceID&" and ItemInvoiceID="& Row)
 
+temMovment = 1
+
+if ref("FormaID") = "0_0" then
+
+    sqltest =   " select                                                                                    "&chr(13)&_
+                " 	forma.id as forma,                                                                      "&chr(13)&_
+                " 	forma.MetodoID as MetodoID,                                                             "&chr(13)&_
+ 	            "   pay.AccountIDDebit as conta                                                             "&chr(13)&_
+
+                " from                                                                                      "&chr(13)&_
+                " 	sys_financialmovement bill                                                              "&chr(13)&_
+                " 	left join sys_financialdiscountpayments discount on discount.InstallmentID = bill.id    "&chr(13)&_
+                " 	left join sys_financialmovement pay on  pay.id = discount.MovementID                    "&chr(13)&_
+                " 	left join sys_formasrecto forma on pay.PaymentMethodID = forma.MetodoID                 "&chr(13)&_
+                " where                                                                                     "&chr(13)&_
+                " bill.InvoiceID = "&InvoiceID
+    set forma = db.execute(sqltest)
+
+    if not forma.eof then
+        if forma("forma")&"" <> "" then
+            ' regra retirada do arquivo editDom.asp : 78
+
+            if forma("MetodoID")&""= "1" OR forma("MetodoID")&""="2" OR forma("MetodoID")&""="7" then
+                conta  = "0"
+            else
+                conta = forma("conta")
+            end if
+            FormaID = "|P"&forma("forma")&"_"&conta&"|"
+        else
+            valorAnterior = ""
+            temMovment = 0
+        end if
+    end if
+end if 
+
 DominioID = dominioRepasse(FormaID, ProfissionalID, ProcedimentoID, UnidadeID, TabelaID, EspecialidadeID, "", "")
 
-'    response.Write( DominioID )
-
-
-
 set getFun = db.execute("select id from itensinvoiceoutros where InvoiceID="& InvoiceID &" and ItemInvoiceID="& Row &" and sysActive=1")
+
 if getFun.eof then
     'set fun = db.execute("SELECT * FROM rateiofuncoes WHERE DominioID="&DominioID)'dar union all nos kits
     set fun = db.execute("SELECT * FROM rateiofuncoes WHERE DominioID="&DominioID &" AND FM IN('F', 'E')")'dar union all nos kits
+
     while not fun.eof
         FM = fun("FM")
         Funcao = fun("Funcao")
@@ -47,6 +86,9 @@ if getFun.eof then
         ContaPadrao = fun("ContaPadrao")
         ProdutoID = fun("ProdutoID")
         ValorUnitario = fun("ValorUnitario")
+        if valorAnterior <> "" then
+            ValorUnitario = valorAnterior 
+        end if
         Quantidade = fun("Quantidade")
         Variavel = fun("Variavel")
         ValorVariavel = fun("ValorVariavel")
@@ -62,9 +104,6 @@ if getFun.eof then
         if FM="M" and ProdutoID=0 then
             ProdutoVariavel = "S"
         end if
-
-
-
 
 
         'isso vai pra quando tiver listando os itens gravados
@@ -128,7 +167,9 @@ if getFun.eof then
 end if
 
 set getFun = db.execute("select * from itensinvoiceoutros where InvoiceID="& InvoiceID &" and ItemInvoiceID="& Row)
+
 while not getFun.eof
+
     response.write("<div class='row'>")
 
     IF "Indicação" = getFun("Funcao") THEN
@@ -155,7 +196,6 @@ while not getFun.eof
         <%
         END IF
     END IF
-
     call subitemRepasse(getFun("Tipo"), getFun("Funcao"), getFun("tipoValor"), getFun("ValorUnitario"), getFun("Conta"), getFun("ProdutoID"), getFun("ValorUnitario"), getFun("Quantidade"), getFun("Variavel"), getFun("ValorVariavel"), getFun("ContaVariavel"), getFun("ProdutoVariavel"), getFun("TabelasPermitidas"), getFun("FuncaoEquipeID"), getFun("FuncaoID"), getFun("id"))
     response.write("</div>")
 getFun.movenext

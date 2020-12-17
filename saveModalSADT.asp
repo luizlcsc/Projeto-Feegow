@@ -9,6 +9,15 @@ GuiaID = request.QueryString("I")
 Tipo = request.QueryString("T")
 QuantidadeFilme = treatvalzero(ref("QuantidadeFilme"))
 ValorFilme = treatvalzero(ref("ValorFilmeADD"))
+ConvenioID=ref("gConvenioID")
+
+if ConvenioID="" then
+    %>
+    showMessageDialog("Selecione o convênio", "warning");
+    <%
+    Response.End
+end if
+
 
 Dim ProcedimentoIncluidos
 Set ProcedimentoIncluidos=Server.CreateObject("Scripting.Dictionary")
@@ -133,6 +142,8 @@ elseif Tipo="Procedimentos" then
             rfProfissionalID = splProf(1)
         end if
 
+        AssociacaoID=rfAssociacao
+
         set ConvenioConfigSQL = db.execute("SELECT AdicionarProfissionalExecutanteVinculadoAoProcedimento FROM convenios WHERE id="&treatvalzero(ref("gConvenioID")))
         if not ConvenioConfigSQL.eof then
             AdicionarProfissionalExecutanteVinculadoAoProcedimento=ConvenioConfigSQL("AdicionarProfissionalExecutanteVinculadoAoProcedimento")
@@ -145,10 +156,10 @@ elseif Tipo="Procedimentos" then
 
 			set pult = db.execute("select id from tissprocedimentossadt where GuiaID="&GuiaID&" and sysUser="&session("User")&" order by id desc")
 			EsteItem = pult("id")
-
+            ProcedimentoID = ref("gProcedimentoID")
             if AdicionarProfissionalExecutanteVinculadoAoProcedimento=1 then
                 'adiciona os profissionais executantes
-                sqlProfissional = "SELECT IFNULL(ps.CodigoNaOperadoraOuCPF,prof.CPF)CPF, IF(( ps.GrauParticipacaoID IS NULL or ps.GrauParticipacaoID = 0), prof.GrauPadrao, ps.GrauParticipacaoID) GrauParticipacaoID, IFNULL(ps.DocumentoConselho, "&_
+                sqlProfissional = "(SELECT prof.id ProfissionalID, IFNULL(ps.CodigoNaOperadoraOuCPF,prof.CPF)CPF, IF(( ps.GrauParticipacaoID IS NULL or ps.GrauParticipacaoID = 0), prof.GrauPadrao, ps.GrauParticipacaoID) GrauParticipacaoID, IFNULL(ps.DocumentoConselho, "&_
                                   "prof.DocumentoConselho)DocumentoConselho, IFNULL(ps.UFConselho, prof.UFConselho)UFConselho, IFNULL(ps.CodigoCBO, esp.codigo)CBOS,IFNULL(ps.ConselhoID, prof.Conselho )ConselhoID  "&_
                                   "FROM  profissionais prof  "&_
                                   "LEFT JOIN tissprofissionaissadt ps ON ps.ProfissionalID=prof.id "&_
@@ -157,11 +168,20 @@ elseif Tipo="Procedimentos" then
                                   "WHERE prof.id="&rfProfissionalID&" "&_
                                   "AND (tg.ConvenioID="&ref("gConvenioID")&" or tg.ConvenioID is null) "&_
                                   "ORDER BY ps.sysDate DESC "&_
-                                  "LIMIT 1"
+                                  "LIMIT 1)"&_
+                                  " UNION ALL"&_
+                                  " (SELECT p.id, p.CPF, COALESCE(a.Funcao, 0) GrauParticipacaoID, p.DocumentoConselho, p.UFConselho, p.CBOS, p.Conselho ConselhoID FROM procedimentosequipeconvenio a"&_
+                                  " inner JOIN profissionais p ON p.id = SUBSTRING_INDEX(a.ContaPadrao,'_' , -1) AND SUBSTRING_INDEX(a.ContaPadrao,'_' , 1) = '5'"&_
+                                  " WHERE a.ProcedimentoID = "&ProcedimentoID&_
+                                  ") UNION ALL"&_
+                                  " (SELECT proext.id, proext.cpf, COALESCE(a.Funcao, 0), proext.DocumentoConselho, proext.UFConselho, proext.CBOS, proext.Conselho FROM procedimentosequipeconvenio a "&_
+                                  " inner JOIN profissionalexterno proext ON proext.id = SUBSTRING_INDEX(a.ContaPadrao,'_' , -1) AND SUBSTRING_INDEX(a.ContaPadrao,'_' , 1) = '8'"&_
+                                  " WHERE a.ProcedimentoID = "&ProcedimentoID&")"
+
                 set DadosDoProfissionalParaAdicionarSQL = db.execute(sqlProfissional)
 
-                if not DadosDoProfissionalParaAdicionarSQL.eof then
-                    set SequencialSQL = db.execute("SELECT Sequencial From tissprofissionaissadt WHERE GuiaID="&GuiaID)
+                while not DadosDoProfissionalParaAdicionarSQL.eof
+                    set SequencialSQL = db.execute("SELECT Sequencial From tissprofissionaissadt WHERE GuiaID="&GuiaID&" order by Sequencial desc")
 
                     Sequencial=1
 
@@ -170,13 +190,19 @@ elseif Tipo="Procedimentos" then
                     end if
 
                     sqlInsert = "INSERT INTO tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser)" &_
-                                                    "VALUES ("&GuiaID&", "&treatvalzero(Sequencial)&", "&DadosDoProfissionalParaAdicionarSQL("GrauParticipacaoID")&", "&treatvalzero(rfProfissionalID)&", '"&DadosDoProfissionalParaAdicionarSQL("CPF")&"', "&_
+                                                    "VALUES ("&GuiaID&", "&treatvalzero(Sequencial)&", "&DadosDoProfissionalParaAdicionarSQL("GrauParticipacaoID")&", "&DadosDoProfissionalParaAdicionarSQL("ProfissionalID")&", '"&DadosDoProfissionalParaAdicionarSQL("CPF")&"', "&_
                                                     treatvalzero(DadosDoProfissionalParaAdicionarSQL("ConselhoID"))&", '"&DadosDoProfissionalParaAdicionarSQL("DocumentoConselho")&"', '"&DadosDoProfissionalParaAdicionarSQL("UFConselho")&"', "&treatvalzero(DadosDoProfissionalParaAdicionarSQL("CBOS"))&", "&session("User")&")"
 
-                    RecarregaProfissional=True
+
                     db.execute(sqlInsert )
 
-                end if
+                DadosDoProfissionalParaAdicionarSQL.movenext
+                wend
+                DadosDoProfissionalParaAdicionarSQL.close
+                set DadosDoProfissionalParaAdicionarSQL=nothing
+                RecarregaProfissional=True
+
+
             end if
 
             ObsLog = "Procedimento adicionado pelo usuário"
@@ -197,7 +223,6 @@ elseif Tipo="Procedimentos" then
             've se tem procedimento anexo
             set QuantidadeProcedimentos = db.execute("SELECT count(*) as Quantidade FROM tissprocedimentossadt WHERE GuiaID="&ref("GuiaID"))
             QuantidadeProcedimento = QuantidadeProcedimentos("Quantidade")
-            AssociacaoID = null
 
             IF getConfig("calculostabelas") THEN
                 set ValorCalculo = CalculaValorProcedimentoConvenio(null,ref("gConvenioID"),pv("ProcedimentoID"),ref("PlanoID"),ref("ContratadoSolicitanteCodigoNaOperadora"),QuantidadeProcedimento,null,null)
@@ -382,22 +407,26 @@ elseif Tipo="Procedimentos" then
                 next
             end if
         end if
-
         '-> inserindo o profissional executor nesta guia se ele nao existe
-        if rfProfissionalID&""<>"0" and rfAssociacao&""="5" then
-            set vca = db.execute("select id from tissprofissionaissadt where ProfissionalID="& treatvalzero(rfProfissionalID) &" and GuiaID="&GuiaID)
+
+        if rfProfissionalID&""<>"0" and AssociacaoID&""="5" then
+
+            sqlProfissional = "select id from tissprofissionaissadt where ProfissionalID="& treatvalzero(rfProfissionalID) &" and GuiaID="&GuiaID
+            set vca = db.execute(sqlProfissional)
+
             if vca.eof then
-               sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="& treatvalzero(rfProfissionalID) &" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
-               'response.write(sqlProf)
+               sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="& treatvalzero(rfProfissionalID) &" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho != '' and p.UFConselho != '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+
                set prof = db.execute(sqlProf)
                if not prof.eof then
                     if len(prof("CPF"))>3 then
                         CodigoNaOperadora = prof("CPF")
                     end if
-                    set vcaContrato = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado="& treatvalzero(rfProfissionalID) &" and CodigoNaOperadora not like ''")
+                    set vcaContrato = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado="& treatvalzero(rfProfissionalID) &" and CodigoNaOperadora != ''")
                     if not vcaContrato.eof then
                         CodigoNaOperadora = vcaContrato("CodigoNaOperadora")
                     end if
+
                     if CodigoNaOperadora<>"" then
                         sqlExecute = "insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO) values ("&GuiaID&", "&getSequencial(GuiaID)&", "&treatvalnull(prof("GrauPadrao"))&", "&prof("id")&", '"&rep(CodigoNaOperadora)&"', "&treatvalzero(prof("Conselho"))&", '"&rep(prof("DocumentoConselho"))&"', '"&rep(left(prof("UFConselho")&" ", 2))&"', '"&prof("codigoTISS")&"')"
                         db_execute(sqlExecute)

@@ -98,7 +98,9 @@ end if
                             %>
                             <th><%=ucase(weekdayname(Dia))%></th>
                             <th width="1%">
+                                <% if aut("horariosA") = 1 then %>
                                 <button type="button" class="btn btn-xs btn-success" onclick="addHorario(<%=Dia%>)"><i class="fa fa-plus"></i></button>
+                                <% end if %>
                             </th>
                             <%
 	              wend
@@ -115,7 +117,7 @@ end if
                             <td colspan="2">
                                 <table class="table table-striped table-condensed">
                                     <%
-                            sqlGrade = "select a.*,  substring(l.NomeLocal, 1, 10) NomeLocal, l.UnidadeID from assfixalocalxprofissional a LEFT JOIN locais l on l.id=a.LocalID where a.ProfissionalID="&ProfissionalID&" and a.DiaSemana="& Dia &" and "& mydatenull(ViewDate) &">=ifnull(InicioVigencia, '1900-01-01') and "& mydatenull(ViewDate) &"<=ifnull(FimVigencia, '3000-01-01')"
+                            sqlGrade = "select a.*,  substring(l.NomeLocal, 1, 20) NomeLocal, l.UnidadeID from assfixalocalxprofissional a LEFT JOIN locais l on l.id=a.LocalID where a.ProfissionalID="&ProfissionalID&" and a.DiaSemana="& Dia &" and "& mydatenull(ViewDate) &">=ifnull(InicioVigencia, '1900-01-01') and "& mydatenull(ViewDate) &"<=ifnull(FimVigencia, '3000-01-01')"
                             'response.write( sqlGrade )
 				            set h = db.execute( sqlGrade )
 				            'set h = db.execute("select a.*, l.NomeLocal, l.UnidadeID from assfixalocalxprofissional a LEFT JOIN locais l on l.id=a.LocalID where a.ProfissionalID="&ProfissionalID&" and a.DiaSemana="& Dia )
@@ -140,15 +142,19 @@ end if
                                                 <small><em>Das <%=ft(h("HoraDe"))%> às <%=ft(h("HoraA"))%>.
                                                     <br />
                                                     De <%=h("Intervalo")%> em <%=h("Intervalo")%> minutos.<br />
-                                                    Local: <%=h("NomeLocal")%> <%=getNomeLocalUnidade(h("UnidadeID"))%><br />
+                                                    Local: <%=h("NomeLocal")%> <%="<br>Unidade: "&left(getNomeLocalUnidade(h("UnidadeID")),20)%><br />
                                                     <% if not isnull(MaximoRetornos) then response.write("Máx. Retornos: "& MaximoRetornos &"<br>") end if %>
                                                     Início em: <%= InicioVigencia %><br />
                                                     Fim em: <%= FimVigencia %>
                                                 </em></small>
                                             </div>
                                             <div class="text-right">
+                                                <% if aut("horariosA") = 1 then%>
                                                 <button onclick="editGrade(<%=h("id")%>, <%=ProfissionalID%>);" class="btn btn-xs btn-success" type="button"><i class="fa fa-edit"></i></button>
+                                                <% end if%>
+                                                <% if aut("horariosX") = 1 then%>
                                                 <button onclick="if(confirm('Tem certeza de que deseja excluir esta programação da grade de horários?'))ajxContent('Horarios-1&T=Profissionais&X=<%=h("id")%>', <%=ProfissionalID%>, 1, 'divHorarios');" class="btn btn-xs btn-danger" type="button"><i class="fa fa-remove"></i></button>
+                                                <% end if%>
                                             </div>
                                         </td>
                                     </tr>
@@ -187,9 +193,19 @@ end if
     <div class="panel-body pn">
         <%
         ProfissionalID = ccur(req("I"))
+
+        if aut("|horariosV|") then
+
+            if aut("|horariosA|") then
         %>
         <!--#include file="formExcecoes.asp"-->
+        <%
+            end if
+        %>
         <iframe width="100%" height="300" name="assHorarios" frameborder="0" src="assHorarios.asp?ProfissionalID=<%= ProfissionalID %>"></iframe>
+        <%
+            end if
+        %>
     </div>
 </div>
 
@@ -202,7 +218,7 @@ end if
     function addHorario(Dia){
         $("#modal").html("Carregando...");
         $("#modal-table").modal("show");
-        $.post("addHorario.asp?ProfissionalID=<%=ProfissionalID%>&Dia="+Dia, '', function(data, status){
+        $.post("addHorario.asp?addGrade=0&ProfissionalID=<%=ProfissionalID%>&Dia="+Dia, '', function(data, status){
             setTimeout(function(){ $("#modal").html(data) }, 1000 );
         });
     }
@@ -210,7 +226,7 @@ end if
     function editGrade(H, ProfissionalID){
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");
-        $.get("addHorario.asp?H="+H+"&ProfissionalID="+ProfissionalID, function(data){
+        $.get("addHorario.asp?addGrade=1&H="+H+"&ProfissionalID="+ProfissionalID, function(data){
             setTimeout(function(){ $("#modal").html(data) }, 1000 );
         });
     }

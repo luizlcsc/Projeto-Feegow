@@ -25,12 +25,17 @@
 
 'ALTER TABLE `buitabelastitulos`	ADD COLUMN `tp1` VARCHAR(11) NULL DEFAULT NULL AFTER `c20`,	ADD COLUMN `tp2` VARCHAR(11) NULL DEFAULT NULL AFTER `tp1`,	ADD COLUMN `tp3` VARCHAR(11) NULL DEFAULT NULL AFTER `tp2`,	ADD COLUMN `tp4` VARCHAR(11) NULL DEFAULT NULL AFTER `tp3`,	ADD COLUMN `tp5` VARCHAR(11) NULL DEFAULT NULL AFTER `tp4`,	ADD COLUMN `tp6` VARCHAR(11) NULL DEFAULT NULL AFTER `tp5`,	ADD COLUMN `tp7` VARCHAR(11) NULL DEFAULT NULL AFTER `tp6`,	ADD COLUMN `tp8` VARCHAR(11) NULL DEFAULT NULL AFTER `tp7`,	ADD COLUMN `tp9` VARCHAR(11) NULL DEFAULT NULL AFTER `tp8`,	ADD COLUMN `tp10` VARCHAR(11) NULL DEFAULT NULL AFTER `tp9`,	ADD COLUMN `tp11` VARCHAR(11) NULL DEFAULT NULL AFTER `tp10`,	ADD COLUMN `tp12` VARCHAR(11) NULL DEFAULT NULL AFTER `tp11`,	ADD COLUMN `tp13` VARCHAR(11) NULL DEFAULT NULL AFTER `tp12`,	ADD COLUMN `tp14` VARCHAR(11) NULL DEFAULT NULL AFTER `tp13`,	ADD COLUMN `tp15` VARCHAR(11) NULL DEFAULT NULL AFTER `tp14`,	ADD COLUMN `tp16` VARCHAR(11) NULL DEFAULT NULL AFTER `tp15`,	ADD COLUMN `tp17` VARCHAR(11) NULL DEFAULT NULL AFTER `tp16`,	ADD COLUMN `tp18` VARCHAR(11) NULL DEFAULT NULL AFTER `tp17`,	ADD COLUMN `tp19` VARCHAR(11) NULL DEFAULT NULL AFTER `tp18`,	ADD COLUMN `tp20` VARCHAR(11) NULL DEFAULT NULL AFTER `tp19`
 
-
-set pCampo=db.execute("select * from buiCamposForms where id="&req("I"))
+pCampoSQL = " select buiCamFor.*,arq.sysActive,arq.id AS arquivos_id from buiCamposForms buiCamFor "&chr(13)&_
+            " LEFT JOIN arquivos arq ON arq.NomeArquivo=buiCamFor.ValorPadrao"&chr(13)&_
+            " where buiCamFor.id="&req("I")
+set pCampo=db.execute(pCampoSQL)
 ValorPadrao = pCampo("ValorPadrao")
 TipoCampoID=pCampo("TipoCampoID")
 FormID = pCampo("FormID")
 Formula = pCampo("Formula")
+sysActive = replace(treatValZero(pCampo("sysActive")&""),"'","")
+arquivos_id = pCampo("arquivos_id")
+
 InformacaoCampo = pCampo("InformacaoCampo")
 set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where id="&TipoCampoID)
 %>
@@ -431,27 +436,35 @@ end if
 </form>
 <%
 if TipoCampoID=3 then
-	if ValorPadrao="" or isnull(ValorPadrao) then
-		divDisplayUploadFoto = "block"
-		divDisplayFoto = "none"
-	else
-		divDisplayUploadFoto = "none"
-		divDisplayFoto = "block"
-	end if
-	Parametros = "P=buiCamposForms&I="&pCampo("id")&"&Col=ValorPadrao&L="&replace(session("Banco"), "clinic", "")
+	
+	'Parametros = "P=buiCamposForms&I="&pCampo("id")&"&Col=ValorPadrao&L="&replace(session("Banco"), "clinic", "")
 	%>
+    <!--#include file="./Classes/imagens.asp"-->
 	<tr>
     	<td>Imagem padr&atilde;o</td>
         <td>
-<form method="post" id="frm" name="frm">
-	<div class="col-md-6" id="divAvatar">
-            <div id="camera" class="camera"></div>  
-            <div id="divDisplayUploadFoto" style="display:<%=divDisplayUploadFoto%>">
-                <input type="file" name="Foto" id="Foto" />
-            </div>
-            <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
-	            <img id="avatarFoto" src="/uploads/<%=replace(session("Banco"), "clinic", "")%>/Perfil/<%=ValorPadrao%>" class="img-thumbnail" width="100%" />
-                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+
+	<div class="col-md-12">
+            
+    
+            <div id="divDisplayFoto">
+                <%
+                if ValorPadrao&""<>"" AND sysActive=1  then
+               'imgSRC = "/uploads/"&replace(session("Banco"), "clinic", "")&"/Perfil/"&ValorPadrao *** SRC ANTIGO
+                form_imgSRC = replace(imgSRC("FORMULARIOS",ValorPadrao),"renderMode=download","renderMode=redirect")
+                %>
+                    <img src="<%=form_imgSRC%>" height="150" class="img-thumbnail" id="assinatura-img"/>
+                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+                <%
+                else
+                dropZone_SRC = "dropzone.php?PacienteID=0&Tipo=A&FormularioID="&pCampo("id")&"&Pasta=Formularios&L="&replace(session("Banco"),"clinic","")
+                %>
+                    <iframe width="100%" height="170" frameborder="0" scrolling="no" src="<%=dropZone_SRC%>"></iframe>
+                <%
+                end if
+                %>  
+
+                
             </div>
             <div class="row"><div class="col-xs-6">
 	            <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="fa fa-check"></i></button>
@@ -459,22 +472,26 @@ if TipoCampoID=3 then
 	            <button type="button" style="display:none" id="cancelar" onclick="return cancelar();" class="btn btn-block btn-xs btn-danger"><i class="fa fa-remove"></i></button>
             </div></div>
     </div>
-</form>
 
 <script type="text/javascript">
 //js exclusivo avatar
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?')){
-		$.ajax({
+        $.ajax({
 			type:"POST",
-			url:"FotoUploadSave.asp?<%=Parametros%>&Action=Remove",
+			url:"FotoUploadSave.asp?Col=sysActive&FileName=-1&I=<%=arquivos_id%>&P=arquivos&Action=Remove",
 			success:function(data){
+                /*
 				$("#divDisplayUploadFoto").css("display", "block");
 				$("#divDisplayFoto").css("display", "none");
 				$("#avatarFoto").attr("src", "/uploads/<%=replace(session("Banco"), "clinic", "")%>/Perfil/");
-				$("#Foto").ace_file_input('reset_input');
+                $("#Foto").ace_file_input('reset_input');
+                */
+                saveEdit(<%=pCampo("id")%>, '', '', 0, 'S');
+
 			}
 		});
+        
 	}
 }
 
@@ -699,7 +716,7 @@ if TipoCampoID=9 then
 end if
 %>
 </form>
-<div class="panel-footer mt25">
+<div class="panel-footer mt25 text-right">
   <button type="button" class="btn btn-primary" onclick="saveEdit(<%=pCampo("id")%>, '<%=request.QueryString("W")%>', '<%=request.QueryString("F")%>', 0, 'S');"><i class="fa fa-save"></i>Salvar</button>
   <%
   if TipoCampoID=4 or TipoCampoID=5 or TipoCampoID=6 then

@@ -88,7 +88,7 @@ if ubound(splLinhas) > 1 then
 end if
 
 if ref("Excluir")<>"" then
-	db_execute("delete from atendimentosprocedimentos where id in("&ref("Excluir")&")")
+	db_execute("delete from atendimentosprocedimentos where id in("&req("Excluir")&")")
 end if
 
 %>
@@ -328,7 +328,51 @@ if req("Origem")="Atendimento" and req("Solicitacao")<>"S" then
 setTimeout(()=>{
 	callbackFinaliza();
 }, 3000)
-getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%= AgendamentoID %>",sms: true,email: true, forceEvent:true }, callbackFinaliza)
+<%
+	ativarSMS="true"
+	ativarEmail="true"
+    sqlAgendamentos = "select age.*, l.UnidadeID from agendamentos age left join locais l on l.id=age.localID where age.id = "&AgendamentoID
+                set resultAgendamentos = db.execute(sqlAgendamentos)
+				if not resultAgendamentos.eof then
+					ProcedimentoID = resultAgendamentos("TipoCompromissoID")
+					Status = resultAgendamentos("StaID")
+					ProfissionalID = resultAgendamentos("ProfissionalID")
+					EspecialidadeID = resultAgendamentos("EspecialidadeID")
+					UnidadeID = resultAgendamentos("UnidadeID")
+					sqlEventoSMS = " SELECT evt.*,"&_
+						"         s.TextoEmail,"&_
+						"         s.TextoSMS,"&_
+						"         s.AtivoSMS,"&_
+						"         s.AtivoEmail,"&_
+						"         s.ConfirmarPorEmail,"&_
+						"         s.ConfirmarPorSMS,"&_
+						"         s.id ModeloIDExiste,"&_
+						"         s.TituloEmail,"&_
+						"         s.InviteEmail "&_
+						"         FROM eventos_emailsms evt "&_
+						"         LEFT JOIN sys_smsemail s ON s.id = evt.ModeloID "&_
+						"   WHERE (((evt.Procedimentos LIKE '%|"&ProcedimentoID&"|%' OR evt.Procedimentos LIKE '%|ALL|%' OR evt.Procedimentos ='') "&_
+						"     AND evt.Status LIKE '%|"&Status&"|%') ) AND evt.Ativo=1 AND evt.sysActive=1  "&_
+						"     AND (evt.Profissionais like '%|"&ProfissionalID&"|%' or evt.Profissionais = '' or evt.Profissionais IS NULL) "&_
+						"     AND (evt.Especialidades like '%|"&EspecialidadeID&"|%' or evt.Especialidades = '' or evt.Especialidades IS NULL) "&_
+						"     AND (evt.Unidades like '%|"&UnidadeID&"|%' or evt.Unidades = '' or evt.Unidades IS NULL) "&_
+						"     AND (evt.TipoEventosEmailsmsID <> 2 or evt.TipoEventosEmailsmsID is null) "&_
+						" ORDER BY IF(evt.Procedimentos LIKE '%|"&ProcedimentoID&"|%',0,1) ASC limit 1"
+					set eventSMS = db.execute(sqlEventoSMS)
+					ativarSMS = "false"
+					ativarEmail= "false"
+					if not eventSMS.eof then 
+						if eventSMS("AtivoSMS")&"" = "on" then
+							ativarSMS = "true"
+						end if
+						if eventSMS("AtivoEmail")&"" = "on" then
+							ativarEmail = "true"
+						end if
+					end if
+				end if
+%>
+
+getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%= AgendamentoID %>",sms: <%=ativarSMS%>,email: <%=ativarEmail%>, forceEvent:false }, callbackFinaliza)
 <%
 end if
 %>

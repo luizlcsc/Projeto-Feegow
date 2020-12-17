@@ -9,6 +9,7 @@ if Row<>"" then
 	Row=ccur(Row)
 end if
 
+BaixaItensNaoPagosAoFinalizarAtendimento=getConfig("BaixaItensNaoPagosAoFinalizarAtendimento")
 PlanoID = null
 AtendimentoID = req("AtendimentoID")
 PermitirInformarProcedimentos = getConfig("PermitirInformarProcedimentos")
@@ -283,7 +284,7 @@ if not guia.eof then
 	<%
 end if
 
-if 1=1 and AtendimentoID<>"N" then
+if 1=1 and AtendimentoID<>"N" and GetConfig("BaixarItensContratadosAoFinalizarAtendimento")=1 then
 'aqui ira listar os itens contratados do agendamento que foi feito e iniciado
 
     sqlItens= "select proc.NomeProcedimento, proc.id ProcedimentoID "&_
@@ -319,13 +320,23 @@ if 1=1 and AtendimentoID<>"N" then
 
             ItemChecked = " checked "
 
+            if BaixaItensNaoPagosAoFinalizarAtendimento&""<>"1" then
+                sqlValorPago = " mov.ValorPago > 0 OR ii.ValorUnitario=0"
+            else
+                sqlValorPago = "true"
+            end if
+            
+
             ProcedimentoID= part("ProcedimentoID")
+
+
             sqlItens= "select ii.id, proc.NomeProcedimento, ii.ValorUnitario, ii.Quantidade, ii.ValorUnitario, ii.Desconto, ii.Acrescimo "&_
               " from itensinvoice ii "&_
               " LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID "&_
               " LEFT JOIN sys_financialmovement mov on mov.InvoiceID=ii.InvoiceID "&_
               " LEFT JOIN procedimentos proc on proc.id=ii.ItemID "&_
-              " WHERE ii.id not in ("&itensNaListagem&") and ii.ItemID="&treatvalzero(ProcedimentoID)&" AND (ISNULL(ii.Executado) OR ii.Executado='') AND (mov.ValorPago > 0 OR ii.ValorUnitario=0) AND i.CD='C' AND ii.Tipo='S' AND i.AccountID="&PacienteID&" AND i.AssociationAccountID=3 "
+              " WHERE ii.id not in ("&itensNaListagem&") and ii.ItemID="&treatvalzero(ProcedimentoID)&" AND "&_
+              "(ISNULL(ii.Executado) OR ii.Executado='') AND ("&sqlValorPago&") AND i.CD='C' AND ii.Tipo='S' AND i.AccountID="&PacienteID&" AND i.AssociationAccountID=3 "
 
             set ItemSQL = db.execute(sqlItens)
             if ExibeLinha and not ItemSQL.eof then

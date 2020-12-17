@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+
 <%
 Acao = ref("A")
 LocalID = ref("LocalID")
@@ -9,20 +10,34 @@ EquipamentoID = ref("EquipamentoID")
 rdValorPlano= ref("Forma")
 ConvenioID= ref("ConvenioSelecionado")
 PlanoID = ""
+linhas = ref("linhas")
+
+if linhas = "" then
+    linhas = ref("I")
+end if
 
 if Acao="I" then
-    n = ref("I")
-    call linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, PlanoID, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios)
+
+    call linhaAgenda(linhas, ProcedimentoID, Tempo, rdValorPlano, Valor, PlanoID, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios)
 end if
 %>
 <script type="text/javascript">
 <!--#include file="JQueryFunctions.asp"-->
-
 $(function(){
+    // console.log("<%=linhas%>")
     $(".valorprocedimento, .linha-procedimento").on('change', function(){
+        somarValores();
+        // dispEquipamento();
 
-                somarValores();
-            });
+    });
+    $("#Tempo<%=linhas%>").change(function(){
+        dispEquipamento();
+    })
+    function dispEquipamento(){
+        $.post("agendaParametros.asp?tipo=Equipamento", $("#formAgenda").serialize(), function(data){
+            eval(data);
+        });
+    }
 });
 
 $(document)

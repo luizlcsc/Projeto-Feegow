@@ -235,7 +235,7 @@ else
         cNot = 0
     
 	    if buscaAtu("TemNotificacao") then
-	        set NotificacoesSQL = db.execute("SELECT n.*, nt.TextoNotificacao, NT.Descricao DescricaoNotificacao FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1,2) AND TipoNotificacaoID != 4 AND n.UsuarioID="&buscaAtu("id"))
+	        set NotificacoesSQL = db.execute("SELECT n.*, nt.TextoNotificacao, NT.Descricao DescricaoNotificacao FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1) AND TipoNotificacaoID != 4 AND n.UsuarioID="&buscaAtu("id"))
 
 	        while not NotificacoesSQL.eof
 	            cNot=cNot+1
@@ -286,7 +286,7 @@ else
 					    set atend = db.execute("select at.*, p.NomePaciente, p.Foto from atendimentos as at left join pacientes as p on at.PacienteID=p.id where at.id="&splnotiflanctos(nl)&" and not isnull(p.NomePaciente)")
 					    if not atend.eof then
 						    if atend("Foto")<>"" and not isnull(atend("Foto")) then
-							    FotoNotif = "/uploads/"&replace(session("Banco"),"clinic","")&"/Perfil"&"/"&atend("Foto")
+							    FotoNotif = arqEx(atend("Foto"), "Perfil")
 						    else
 							    FotoNotif = "assets/img/atFim.png"
 						    end if

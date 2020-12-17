@@ -19,8 +19,8 @@ if Salvar="1" then
         type: 'success',
            delay: 5000
     });
-    reload();
     $("#divProtocolo").html();
+    location.reload();
 
    <%
 end if

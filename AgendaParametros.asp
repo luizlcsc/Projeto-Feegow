@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
 <%
 id = req("id")'variavel de acordo com o tipo
 tipo = req("tipo")
@@ -6,6 +7,36 @@ ProcedimentoID = ref("ProcedimentoID")
 ProfissionalID = ref("ProfissionalID")
 PacienteID = ref("PacienteID")
 Checkin = ref("Checkin")
+
+function somatempo()
+controle = 0
+    contador = 0
+    variavel = ""
+    tracinho = ""
+    tempoFinal = 0
+
+       
+    While controle = 0
+        if contador = 1 then
+            variavel = 1
+            tracinho= "-"
+        end if  
+        if contador > 1 then
+            variavel = variavel +1
+        end if  
+        tempoLocal =  ref("Tempo"&tracinho&variavel)
+        if tempoLocal = "" then
+            controle = 1
+        else
+            tempoLocal = cint(tempoLocal)
+            tempoFinal = tempoFinal + tempoLocal
+        end if
+        contador = contador +1
+    wend
+
+    tempoFinal = tempoFinal&""
+    somatempo = tempoFinal 
+end function 
 
 ValidarRetornos=getConfig("ValidarRetornos")
 FormaPagto = request.QueryString("FormaPagto")'Particular ou Convenio
@@ -16,18 +47,37 @@ if getConfig("NaoRemoverAvisos")=1 then
     hide = "false"
 end if
 
-if ProcedimentoTempoProfissional = "true" then    
-    idProcedimento = request.QueryString("idProcedimento")
-    idProfissional = request.QueryString("idProfissional")
-    
-    set ProcedimentoTempoProfissional = db.execute("SELECT * FROM procedimento_tempo_profissional where procedimentoId ="&treatvalzero(idProcedimento)&" and profissionalId = "&treatvalzero(idProfissional)&"")
-    response.ContentType = "application/json"
+function getTempoProcedimento(procedimentoId, profissionalID)
 
-    if ProcedimentoTempoProfissional.eof then
+        
+ProcedimentoTempoProfissionalSQL =  ""&_
+" SELECT COALESCE(t.TempoProf, p.TempoProcedimento) Tempo                                                                     "&chr(13)&_
+" FROM procedimentos p                                                                                                        "&chr(13)&_
+" LEFT JOIN                                                                                                                   "&chr(13)&_
+" (                                                                                                                           "&chr(13)&_
+" SELECT ptp.tempo TempoProf, proc.id                                                                                         "&chr(13)&_
+" FROM procedimentos proc                                                                                                     "&chr(13)&_
+" INNER JOIN procedimento_tempo_profissional ptp ON proc.id=ptp.ProcedimentoID                                                "&chr(13)&_
+" WHERE proc.Id ="&treatvalzero(procedimentoId)&" AND ptp.profissionalId = "&treatvalzero(profissionalID)&") t ON t.id = p.id  "&chr(13)&_
+" WHERE p.id="&treatvalzero(procedimentoId)                                                          
+
+        set ProcedimentoTempoProfissional= db.execute(ProcedimentoTempoProfissionalSQL)
+ 
+        if not ProcedimentoTempoProfissional.eof then
+            getTempoProcedimento = ProcedimentoTempoProfissional("tempo")
+        end if
+end function
+
+ if ProcedimentoTempoProfissional = "true" then
+    tempoPorProfissional = getTempoProcedimento(req("idProcedimento"), req("idProfissional"))
+
+    if tempoPorProfissional="" then
         response.write("{}")
         response.end
     end if
-    
+
+    response.ContentType = "application/json"
+
     response.write("{""tempo"":"&ProcedimentoTempoProfissional("tempo")&"}")   
     response.end
 end if
@@ -230,12 +280,12 @@ $(document).ready(function() {
 
         if not vcaItemInvoice.EOF then
             %>
-            $("#rdValorPlanoV").click();
             $("#ProcedimentoID option").text("<%=vcaItemInvoice("NomeProcedimento")%>");
             $("#ProcedimentoID option").val("<%=vcaItemInvoice("ItemID")%>");
             $("#ProcedimentoID").val("<%=vcaItemInvoice("ItemID")%>");
-            s2aj("ProcedimentoID", 'procedimentos', 'NomeProcedimento', '','','agenda');
             $("#Valor").val("<%=formatnumber(vcaItemInvoice("Valor"),2)%>");
+            s2aj("ProcedimentoID", 'procedimentos', 'NomeProcedimento', '','','agenda');
+            $("#rdValorPlanoV").click();
             <%
         end if
 	end if
@@ -314,7 +364,6 @@ if left(tipo, 14)="ProcedimentoID" then
     if ProcedimentoID="" then
         Response.End
     end if
-
 	set proc = db.execute("select * from procedimentos where id="&ProcedimentoID)
 	if not proc.EOF then
 		ObrigarTempo = proc("ObrigarTempo")
@@ -343,12 +392,15 @@ if left(tipo, 14)="ProcedimentoID" then
 
         if SomenteConvenios<>"" then
             if instr(SomenteConvenios,"|NONE|")>0 then
+                SomenteConvenios = replace(SomenteConvenios, "||NONE||","")
                 SomenteConvenios = replace(SomenteConvenios, "|NONE|","")
             end if
             SomenteConvenios = replace(SomenteConvenios,"|","'")
+            SomenteConvenios = replace(SomenteConvenios,"''", "'")
 
             if SomenteConvenios<>"" and SomenteConvenios<>"NONE" then
-                set ConveniosSQL = db.execute("SELECT NomeConvenio,id FROM convenios WHERE id IN("&SomenteConvenios&")")
+                SomenteConvenios = fix_array_comma(SomenteConvenios)
+                set ConveniosSQL = db.execute("SELECT NomeConvenio,id FROM convenios WHERE id IN("&SomenteConvenios&") AND sysActive=1 AND Ativo='on'")
                 %>
                 if($("#ConvenioID<%= apID %>").length > 0){
                     $("#ConvenioID<%= apID %>").select2("destroy");
@@ -378,6 +430,9 @@ if left(tipo, 14)="ProcedimentoID" then
 
         ValorAgendamento = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ref("ProfissionalID"), ref("EspecialidadeID"), GrupoID)
 		if Checkin&"" <> "1" then 
+
+        tempoProcedimento = getTempoProcedimento(procedimentoId, profissionalID)
+        
         %>
 		 $("#Tempo<%= apID %>").val('<%=TempoProcedimento%>');
 		 if($("#EquipamentoID<%= apID %>").val() == "" || $("#EquipamentoID<%= apID %>").val() == "0"){
@@ -444,19 +499,25 @@ if left(tipo, 14)="ProcedimentoID" then
     if not isnull(ValorAgendamento) then
         if isnumeric(ValorAgendamento) then
             %>
-
-             $("#Valor<%= apID %>").val('<%=fn(ValorAgendamento)%>');
-             $("#ValorText<%= apID %>").html('<%=fn(ValorAgendamento)%>');
+             let pacote = $("#ProcedimentoID<%= apID %>").parent().parent().attr("data-pacote")
+             if (!pacote || pacote == undefined ) {
+                $("#Valor<%= apID %>").val('<%=fn(ValorAgendamento)%>');
+                $("#ValorText<%= apID %>").html('<%=fn(ValorAgendamento)%>');
+             }
              somarValores();
+             dispEquipamento();
             <%
         end if
     end if
 
-    '<
+    '<br
 end if
 
 if tipo="Equipamento" then
-    msgEquip = dispEquipamento(ref("Data"), ref("Hora"), ref("Tempo"), ref("EquipamentoID"), ref("ConsultaID"))
+
+    tempoFinal = somatempo()
+
+    msgEquip = dispEquipamento(ref("Data"), ref("Hora"), tempoFinal, ref("EquipamentoID"), ref("ConsultaID"))
     if msgEquip<>"" then
         %>
         new PNotify({

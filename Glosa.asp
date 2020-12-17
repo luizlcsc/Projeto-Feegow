@@ -40,6 +40,9 @@ end if
 if ref("n")<>"" then
     GuiaID = replace(ref("n"), "ValorPago", "")
     ValorPago = ref("vp")
+
+
+    'response.write("console.log(`update tiss"&TG&" set ValorPago="&treatvalzero(ValorPago)&" WHERE id IN("&GuiaID&")`);")
     sqlup = "update tiss"&TG&" set ValorPago="&treatvalzero(ValorPago)&" WHERE id IN("&GuiaID&")"
 
 
@@ -56,7 +59,7 @@ if ref("n")<>"" then
             end if
         end if
 
-    response.write("$('.guia[value="&GuiaID&"]').click();$('.guia[value="&GuiaID&"]').click();")
+    response.write("$('.guia[value="&GuiaID&"]').click();")
 
     db.execute(sqlup)
 
@@ -65,11 +68,18 @@ if ref("n")<>"" then
     if not ValorTotalSQL.eof then
 
         if ValorTotalSQL(coluna) <= ValorTotalSQL("ValorPago") then
-            db.execute("UPDATE tiss"&TG&" SET GuiaStatus =10 WHERE id IN("&GuiaID&")")
-        elseif ValorPago="0" or ValorPago="" then
+            statusId=10
+        elseif ValorPago="0" or ValorPago="" or ValorPago="0,00" then
+            statusId=2
             'db.execute("UPDATE tiss"&TG&" SET GuiaStatus =2 WHERE id IN("&GuiaID&")")
         else
-            db.execute("UPDATE tiss"&TG&" SET GuiaStatus =11 WHERE id IN("&GuiaID&")")
+            statusId=11
+        end if
+
+        if statusId<>"" then
+            %>
+            alteraStatusGuia("<%=GuiaID%>", "<%=TG%>", "<%=statusId%>");
+            <%
         end if
     end if
 

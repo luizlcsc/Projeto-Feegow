@@ -99,7 +99,7 @@ if request.QueryString("ConvenioID")<>"" then
 	ValotTotalGuias=0
 	NumeroGuias=0
 
-    sqlLote="select * from tisslotes where ConvenioID="&request.QueryString("ConvenioID")&sqlMes&sqlAno&" and Tipo = '"&rep(request.QueryString("T"))&"' order by Lote"
+    sqlLote="select * from tisslotes where ConvenioID="&req("ConvenioID")&sqlMes&sqlAno&" and Tipo = '"&rep(request.QueryString("T"))&"' order by Lote"
 
     set objConvenio = db.execute("SELECT * FROM convenios LEFT JOIN cliniccentral.tissversao ON tissversao.id = COALESCE(NULLIF(versaoTISS,'0'),30201)  WHERE convenios.id = "&request.QueryString("ConvenioID"))
 
@@ -120,7 +120,11 @@ if request.QueryString("ConvenioID")<>"" then
 			link = "LOTE_HONORARIOS"
 		end if
 
-		set nguias = db.execute("select count(*) as total,group_concat(id,' ') AS guias from "&Tabela&" where LoteID="&lotes("id"))
+        sqlQtdGuias = "select count(ts.id) as total,group_concat(ts.id,' ') AS guias from "&Tabela&" ts "&_
+                        "INNER JOIN convenios CONV ON CONV.id=ts.ConvenioID "&_
+                        "where ts.LoteID="&lotes("id")&"  AND CONV.id="&request.QueryString("ConvenioID")
+
+		set nguias = db.execute(sqlQtdGuias)
 		set tissguiasinvoices = db.execute("SELECT count(*) > 0 hasinvoice FROM tissguiasinvoice WHERE GuiaID in (SELECT id FROM "&Tabela&" WHERE LoteID = "&lotes("id")&") AND TipoGuia = replace('"&Tabela&"','tiss','')")
 		set total = db.execute("select sum("&ColunaTotal&") as ValorTotal from "&Tabela&" where LoteID="&lotes("id"))
 		c=c+1
@@ -130,11 +134,12 @@ if request.QueryString("ConvenioID")<>"" then
 			ValorTotal=total("ValorTotal")
 		end if
 
-		ValotTotalGuias = ValotTotalGuias + ValorTotal
+		
 		NumeroGuias = NumeroGuias + cint(nguias("total"))
 		if cint(nguias("total")) > 0 then
 
-		%>
+        ValotTotalGuias = ValotTotalGuias + ValorTotal
+        %>
 		<tr dias-para-recebimento="<%=objConvenio("DiasRecebimento") %>" lote-id="<%=lotes("id")%>">
         	<td><%=lotes("Lote")%></td>
             <td>
@@ -288,8 +293,10 @@ if request.QueryString("ConvenioID")<>"" then
     %>
     <tfoot>
         <tr>
-            <td colspan="4"><strong>Quantidade: <%=NumeroGuias%> guias</strong></td>
-            <td colspan="10"><strong>Valor Total: R$ <%=formatnumber(ValotTotalGuias,2)%></strong></td>
+            <td colspan="2"><strong>Total:</strong></td>
+            <td><strong><%=NumeroGuias%></strong></td>
+            <td class="text-right"><strong>R$ <%=formatnumber(ValotTotalGuias,2)%></strong></td>
+            <td colspan="10"></td>
         </tr>
     </tfoot>
     <%

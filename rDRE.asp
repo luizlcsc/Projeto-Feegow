@@ -18,7 +18,7 @@ UnidadeID = ref("UnidadeID")
 %>
 <div class="row mb20">
     <div class="col-md-2">
-        <img width="250" src="https://clinic7.feegow.com.br/v7/assets/img/login_logo.png" />
+        <img width="250" src="https://feegow-public-cdn.s3.us-east-1.amazonaws.com/feegowclinic-v7/assets/img/login_logo.png" />
     </div>
     <h2 class="text-center col-md-10">Demonstração do Resultado do Exercício
          - <%= Exercicio %>
@@ -46,6 +46,7 @@ UnidadeID = ref("UnidadeID")
             sqlFixa = replace( sqlFixa, "[Ano]", Exercicio )
 
             'GRAVANDO AS INVOICES CONSOLIDADAS
+                    'dd("insert into cliniccentral.dre_temp (sysUser, LinhaID, Data, Conta, Valor, Link, InvoiceID) SELECT "& sqlAnalitico &" "& sqlCorpo &"")
             db.execute("insert into cliniccentral.dre_temp (sysUser, LinhaID, Data, Conta, Valor, Link, InvoiceID) SELECT "& sqlAnalitico &" "& sqlCorpo &"")
 
             'LISTANDO AS INVOICES FIXAS
@@ -55,7 +56,7 @@ UnidadeID = ref("UnidadeID")
                 while not fixa.eof
                     response.flush()
                     PrimeiroVencto = fixa("PrimeiroVencto")
-                    InvoiceID = fixa("InvoiceID")
+                    'InvoiceID = fixa("InvoiceID")
                     Valor = fixa("Valor")
                     Intervalo = fixa("Intervalo")
                     TipoIntervalo = fixa("TipoIntervalo")

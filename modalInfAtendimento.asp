@@ -1,6 +1,10 @@
 <!--#include file="connect.asp"-->
 
 <%
+    btn = "0"
+    if req("btn") <> "0" and req("btn")<> ""  then
+        btn = "1"
+    end if
 
 %>
 <style>
@@ -120,7 +124,9 @@ end if
 
 set atendimento = db.execute("select a.*, p.* from atendimentos as a left join pacientes as p on a.PacienteID=p.id where a.id="&AtendimentoID)
 set un = db.execute("select *,COALESCE((SELECT concat('|',GROUP_CONCAT(UsuarioID SEPARATOR '|, |'),'|') FROM config_usuarios_solicitacoes where UnidadeID  = "&session("UnidadeID")&"),sys_users.UsuariosNotificar) as UsuariosNotificar FROM  sys_users where id="&session("User"))
-UsuariosNotificar = un("UsuariosNotificar")&" "
+if btn = "0" then
+    UsuariosNotificar = un("UsuariosNotificar")&" "
+end if
 PacienteID = atendimento("PacienteID")
 Solicitacao = request.QueryString("Solicitacao")
 
@@ -137,7 +143,8 @@ db.execute("DELETE FROM calculos_finalizar_atendimento_log WHERE AtendimentoID =
 function saveInf(AI){
 	$("#btnSaveInf").prop("disabled", true);
 	$("#btnSaveInf").html("salvando...");
-	$.post("saveInf.asp?AgendamentoID=<%=req("AgendamentoID")%>&AtendimentoID="+AI+"&Origem=<%=req("Origem")%>&Solicitacao=<%=req("Solicitacao")%>", $("#frmFimAtendimento").serialize(), function(data, status){ eval(data) });
+    let excluir = $('#procedimentosAdicionados').attr('data-excluir')
+	$.post("saveInf.asp?AgendamentoID=<%=req("AgendamentoID")%>&AtendimentoID="+AI+"&Origem=<%=req("Origem")%>&Solicitacao=<%=req("Solicitacao")%>&excluir="+excluir, $("#frmFimAtendimento").serialize(), function(data, status){ eval(data) });
 }
 </script>
 <div class="modal-header">
@@ -200,7 +207,8 @@ function saveInf(AI){
                     NomeColuna = pus("NameColumn")
                     if not isnull(pus(""&NomeColuna&"")) then
                         %>
-                        <option value="|<%=pus("id")%>|"<%if instr(UsuariosNotificar, "|"&pus("id")&"|")>0 then%> selected="selected"<%end if%>><%=pus(""&NomeColuna&"")%> &raquo; <%=pus("Table")%></option>
+                        <option value="|<%=pus("id")%>|"
+                        <%if instr(UsuariosNotificar, "|"&pus("id")&"|")>0 then%> selected="selected"<%end if%>><%=pus(""&NomeColuna&"")%> &raquo; <%=pus("Table")%></option>
                         <%
                     end if
                 pus.movenext
@@ -263,6 +271,14 @@ function addProc(Acao, ProcedimentoID, ConvenioID, ValorBruto){
 		    $("#fimListaAP").before( data );
 		  <% END IF %>
 	  }else if(Acao=="X"){
+            let valorInicial = $('#procedimentosAdicionados').attr('data-excluir')
+            if (valorInicial == undefined){
+                valorInicial= ""
+            }else{
+                valorInicial+=","
+            }
+            let excluir =  valorInicial + ProcedimentoID
+            $('#procedimentosAdicionados').attr('data-excluir',excluir)
 	      if($("#row"+ProcedimentoID+", #row2"+ProcedimentoID).html().indexOf("Particular") != -1){
 	            $("#row"+ProcedimentoID+", #row2"+ProcedimentoID).replaceWith('');
                 $("#fimListaAP").after( "<input type='hidden' name='Excluir' value='"+ProcedimentoID+"'>" );
@@ -301,7 +317,7 @@ function expand(I){
 
 
 <%
-if getConfig("NaoExibirModalFinalizacaoAtendimento")=1 or aut("finalizaratendimentoV")=0 then
+if getConfig("BaixarItensContratadosAoFinalizarAtendimento")=0 or getConfig("NaoExibirModalFinalizacaoAtendimento")=1 or aut("finalizaratendimentoV")=0 then
     %>
     $("#btnSaveInf").click();
     <%

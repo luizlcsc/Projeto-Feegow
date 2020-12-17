@@ -182,6 +182,8 @@ while not campos.eof
 
 	  if not isnull(ValorPadrao) then
 			'CONVERSOS TAGS NOVO || 30/06/2020 - Rafael Maia ||
+			'ProfissionalLaudadorID=replace(req("pl"),"5_","")
+			
 			ValorPadrao = tagsConverte(ValorPadrao,"PacienteID_"&PacienteID&"|ProfissionalSessao_"&session("User")&"|UnidadeSessao_"&session("UnidadeID"),"")
 			'CONVERSOR TAGS ANTIGO
 			'ValorPadrao = replaceTags(ValorPadrao, PacienteID, session("UserID"), session("UnidadeID"))
@@ -193,13 +195,15 @@ campos.movenext
 wend
 campos.close
 set campos=nothing
+
+
 %>
 </ul>
 </div>
 </div>
 
 <style>
-.tableFixHead          { overflow-y: auto; height: 550px; }
+.tableFixHead          { overflow-y: auto;}
 .tableFixHead thead th { position: sticky; top: 0; z-index: 9999 }
 table  { border-collapse: collapse; width: 100%; }
 

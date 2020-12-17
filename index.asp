@@ -3,19 +3,6 @@ if request.ServerVariables("SERVER_NAME")="clinic.feegow.com.br" and session("ba
 '    response.Redirect("http://clinic4.feegow.com.br/v7/?P=Login")
 end if
 
-if request.ServerVariables("HTTPS")="off" then
-	if request.ServerVariables("REMOTE_ADDR")="::1" OR request.ServerVariables("REMOTE_ADDR")="127.0.0.1" OR left(request.ServerVariables("REMOTE_ADDR"), 7)="192.168" OR request.QueryString("Partner")<>"" OR SESSION("Partner")<>"" then
-'		response.Redirect( "https://localhost/feegowclinic/?P="&request.QueryString("P") )
-	else
-        if request.ServerVariables("SERVER_NAME")="clinic7.feegow.com.br" then
-    		response.Redirect( "https://clinic7.feegow.com.br/v7/?P="&request.QueryString("P") )
-        end if
-        if request.ServerVariables("SERVER_NAME")="clinic8.feegow.com.br" then
-    		response.Redirect( "https://clinic8.feegow.com.br/v7/?P="&request.QueryString("P") )
-        end if
-	end if
-end if
-
 if session("User")="" and request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
     QueryStringParameters = Request.QueryString
 
@@ -25,6 +12,8 @@ end if
 set shellExec = createobject("WScript.Shell")
 Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
+
+
 
 if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
 	if request.QueryString("P")<>"Home" and session("Bloqueado")<>"" then
@@ -111,8 +100,15 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
        margin-top: 33px!important;
    }
    @media print{
-       #content{
-           margin-left:-250px!important;
+       #content_wrapper{
+        position: initial!important;
+        margin-left: 0!important;
+       }
+       .navbar.navbar-fixed-top + #sidebar_left + #content_wrapper{
+         padding-top:0!important;
+       }
+       #sidebar_left{
+         display:none;
        }
    }
 
@@ -227,7 +223,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?a=51"></script>
+  <script src="js/components.js?a=46"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
     <%if aut("capptaI") then%>
@@ -251,7 +247,54 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  
 
+  <script type="text/javascript">
+        <% 
+          set licencaConsulta = db.execute("select PastaAplicacao from cliniccentral.licencas where id = "&replace(session("Banco"), "clinic", "")) 
+          licenca = licencaConsulta("PastaAplicacao")
+        %>
+
+        const redirVersao = () => {
+            try{
+              const licenca = '<%=licenca%>';
+              var PastaAplicacaoRedirect = licenca
+              var __currentPage = window.location.href;
+
+              let __force = false;
+
+              if(sessionStorage.hasOwnProperty('force')){
+                  __force = true;
+              }
+
+              if(window.location.href.includes("force")){
+                  __force = true;
+                  sessionStorage.setItem("force","1");
+              }
+
+
+              if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force && !window.location.href.includes("localhost") ){
+                  ['/base/','/main/','/v7-master/'].forEach((item) => {
+                      __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
+                  });
+
+                  if(__currentPage != window.location.href){
+                    window.location.href = (__currentPage);
+                  }
+              }
+            }catch (e) {
+
+            }
+        }
+
+        <%
+        if AppEnv="production" then
+        %>
+        redirVersao();
+        <%
+        end if
+        %>
+  </script>
 
   <!-- FooTable Addon -->
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.filter.min.js"></script>
@@ -279,8 +322,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
               "select2/compat/matcher"
             ], function (Select2, Utils, oldMatcher) {
                 var $ajax = $("#"+nome);
-                //$ajax.css("display", "none");
-                //        $.fn.select2.defaults.set("width", "100%");
+
                 function formatRepo(repo) {
                     if (repo.loading) return repo.text;
 
@@ -782,12 +824,20 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
           </a>
           <ul class="dropdown-menu list-group dropdown-persist w250" role="menu" style="overflow-y: auto; max-height: 500px">
                             <%
+                            msgDisabled = "Meu Perfil"
 							if session("Partner")="" then
+							    set franqueadaUsuario = db.execute("select * from cliniccentral.licencasusuarios where id = "&session("User")&" and LicencaID = "&LicenseID)
+							    disabled = " "
+
+							    if franqueadaUsuario.eof then
+							        disabled = " pointer-events:none; "
+							        msgDisabled = " Para acessar seu Perfil, acessar a licença principal"
+							    end if
 							%>
 								<li class="list-group-item menu-click-meu-perfil-meu-perfil">
-									<a class="animated animated-short fadeInUp" href="?P=<%=session("Table")%>&Pers=1&I=<%=session("idInTable")%>">
+									<a class="animated animated-short fadeInUp" href="?P=<%=session("Table")%>&Pers=1&I=<%=session("idInTable")%>" style="<%=disabled%>">
 										<i class="fa fa-user"></i>
-										Meu Perfil
+										<%=msgDisabled%>
 									</a>
 								</li>
                                 <%if session("banco")="clinic100000" or session("banco")="clinic5459" then %>
@@ -820,7 +870,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								   </li>
 								 <%
                                  end if
-                                 if session("Admin")=1 then
+                                 if session("ExibeFaturas") then
 
                                  IF session("QuantidadeFaturasAbertas") = "" THEN
                                     if AppEnv="production" then
@@ -1262,6 +1312,13 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 								end if
 								set fs=nothing
 
+                
+								IF FileName = "Home.asp" THEN
+                  if getConfig("HomeOtimizada")="1" then
+								      FileName = "HomeModoFranquia.asp"
+                  end if
+								END IF
+
 								server.Execute(FileName)
 								%>
 
@@ -1341,12 +1398,17 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                             <% IF session("Banco")<>"clinic7126" THEN %>
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
-                            <% IF (session("Admin")="1") and (req("P")="Home") THEN %>
+                            <% IF (session("Admin")="1") and (req("P")="Home") THEN
+                                TemRecursoWhatsApp= recursoAdicional(31)=4
+                                if TemRecursoWhatsApp then
+                            %>
                             <script>localStorage.setItem("Admin",true);</script>
                             <button class="btn btn-xs btn-success light" id="footer-whats" onclick="location.href='?P=OutrasConfiguracoes&Pers=1&whatsApp=true'"  data-rel="tooltip" data-placement="right" title="" data-original-title="" >
                                 <span class="fa fa-whatsapp"></span>
                             </button>
-                            <% END IF %>
+                            <%
+                                END IF
+                            END IF %>
                   </div>
               </div>
 
@@ -1637,6 +1699,15 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
   </div>
 
+
+<%
+if session("AlterarSenha") <> "0" then
+  %>
+  <!--#include file="AlteraSenhaForcada.asp"-->
+  <%
+end if
+%>
+
 <%if session("ChatSuporte")="S" then%>
 <script src="https://feegow.futurotec.com.br/futurofone_chat/www/core/js/embedChatJs/chat.js"></script>
 <script>
@@ -1833,6 +1904,15 @@ function openRedefinirSenha(){
 }
 
 $(document).ready(function() {
+  
+    var lenMenu = $(".sidebar-menu li").length
+    setTimeout(function() {
+        if(lenMenu === 0){
+            $("#toggle_sidemenu_l").click()
+        }
+    }, 200);
+
+
     $(".callTicketBtn").attr("disabled", false);
     $(".facialRecogButton").attr("disabled", false);
 
@@ -1852,13 +1932,6 @@ $(document).ready(function() {
         abreModalUnidade();
     }
     <% end if %>
-
-    <% if session("AlterarSenha") = 1 then %>
-    if (!ModalOpened){
-      ModalOpened = true;
-      openRedefinirSenha();
-    }
-    <% end if%>
 
 });
 
@@ -2561,7 +2634,7 @@ function chatNotificacao(titulo, mensagem) {
 </script>
 <%
 PermiteChat = True
-if session("ExibeChatAtendimento")=False or AppEnv<>"production"  or req("P")="Login" then
+if session("ExibeChatAtendimento")=False or req("P")="Login" then
     PermiteChat= False
 end if
 
@@ -2583,7 +2656,14 @@ if PermiteChat then
   function initFreshChat() {
     window.fcWidget.init({
       token: "e1b3be37-181a-4a60-b341-49f3a7577268",
-      host: "https://wchat.freshchat.com"
+      host: "https://wchat.freshchat.com",
+      config: {
+        content:{
+            headers: {
+            csat_question: 'Com relação ao atendimento do seu Analista de Sucesso, você achou bom?',
+          }
+        }
+      }
     });
 
     // To set unique user id in your system when it is available
@@ -2603,6 +2683,8 @@ if PermiteChat then
       numeroUsuarios: "<%=session("UsuariosContratadosS")%>",
       razaoSocial: "<%=session("RazaoSocial")%>",
       statusLicenca: "<%=StatusLicenca%>",
+      urlSistema: window.location.href,
+      pastaRedicionamento: '<%= session("PastaAplicacaoRedirect") %>'
     });
 
   }
@@ -2613,6 +2695,6 @@ if PermiteChat then
 <%
 end if
 %>
-<% IF (session("Admin")="1") and (req("P")="Home") THEN %>
+<% IF (session("Admin")="1") and (req("P")="Home") and TemRecursoWhatsApp THEN %>
 <script src="assets/js/whatsApp/whatsAppStatus.js"></script>
 <% END IF %>

@@ -203,6 +203,25 @@ if aut(lcase(ref("resource"))&"A")=1 then
             tableName = dadosResource("tableName")
             Pers = dadosResource("Pers")
             mainFormColumn = dadosResource("mainFormColumn")
+        
+        elseif ref("t")="locais" then
+            set dadosResource = db.execute("select * from cliniccentral.sys_resources where tableName = '"&ref("t")&"'")
+
+            Typed= ref("q")
+
+            sql = "select l.id, concat(l.NomeLocal, IFNULL(concat(' - ', COALESCE(NULLIF(e.Sigla,''),NULLIF(fcu.Sigla,''), NULLIF(e.NomeFantasia,''),NULLIF(fcu.NomeFantasia,'')) ),'')) NomeLocal "&_
+        	    "from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) "&_
+                "LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID "&_
+                "WHERE l.sysActive=1 AND l.NomeLocal LIKE '%[TYPED]%' "&_
+                "order by l.NomeLocal "
+
+            othersToAddSelectInsert = dadosResource("othersToAddSelectInsert")
+            ResourceID = dadosResource("id")
+            initialOrder = dadosResource("initialOrder")
+            tableName = dadosResource("tableName")
+            Pers = dadosResource("Pers")
+            mainFormColumn = dadosResource("mainFormColumn")
+
         elseif ref("t")="sys_financialincometype" then
             PermissaoParaAdd = 0
             set dadosResource = db.execute("select * from cliniccentral.sys_resources where tableName like '"&ref("t")&"'")
@@ -306,13 +325,6 @@ end if
         c=c+1
 
         Nascimento = ""
-        if lcase(ref("t"))="locais" then
-            NomeUnidadeLocal = ""
-            set LocalUnidadeSQL = db.execute("select l.id, CONCAT(IF(l.UnidadeID=0,concat(' - ', e.Sigla),concat(' - ', fcu.Sigla)))NomeLocal from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID where l.sysActive=1 AND l.id="&q("id")&" order by l.NomeLocal ")
-            if not LocalUnidadeSQL.eof then
-                NomeUnidadeLocal = LocalUnidadeSQL("NomeLocal")
-            end if
-        end if
 
         if lcase(ref("t"))="pacientes" then
             if q("Nascimento") <> "" then
@@ -324,7 +336,7 @@ end if
     %>
     {
       "id": <%=q("id") %>,<%=Nascimento%>
-      "full_name": "<%=fix_string_chars_full(q(ref("c"))) %><%=NomeUnidadeLocal%>"
+      "full_name": "<%=fix_string_chars_full(q(ref("c"))) %>"
     }
     <%
     q.movenext

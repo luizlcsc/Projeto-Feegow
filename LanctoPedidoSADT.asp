@@ -1,14 +1,18 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Json.asp"-->
 <!--#include file="tissFuncs.asp"-->
 
 <%
-PacienteID = req("PacienteID")
-ConvenioID = req("ConvenioIDPedidoSADT")
-IndicacaoClinica =  req("IndicacaoClinicaPedidoSADT")
-Observacoes = req("ObservacoesPedidoSADT")
-ProfissionalExecutante = req("ProfissionalExecutanteIDPedidoSADT")
-PedidoID = req("PedidoSADTID")
-DataSolicitacao = req("DataSolicitacao")
+
+call jsonHeader(1)
+
+PacienteID = ref("PacienteID")
+ConvenioID = ref("ConvenioIDPedidoSADT")
+IndicacaoClinica =  ref("IndicacaoClinicaPedidoSADT")
+Observacoes = ref("ObservacoesPedidoSADT")
+ProfissionalExecutante = ref("ProfissionalExecutanteIDPedidoSADT")
+PedidoID = ref("PedidoSADTID")
+DataSolicitacao = ref("DataSolicitacao")
 TotalProcedimentos = 0
 
 GuiaID=1
@@ -70,6 +74,32 @@ end if
 
 db_execute("update pedidossadt set ConvenioID="&treatvalzero(ConvenioID)&", ProfissionalID="&treatvalzero(session("idInTable"))&", Data="&mydatenull(DataSolicitacao)&", IndicacaoClinica='"&IndicacaoClinica&"', Observacoes='"&Observacoes&"', ProfissionalExecutante='"&ProfissionalExecutante&"', GuiaID="&GuiaID&" where id="&PedidoID)
 
+set ExamesValidarSQL = db.execute("select psp.*, proc.SolIC from pedidossadtprocedimentos psp "&_
+                                  "LEFT JOIN procedimentos proc ON proc.Codigo=psp.CodigoProcedimento "&_
+                                  "where psp.PedidoID="&PedidoID)
+
+ObrigaIndicacaoClinica = False
+while not ExamesValidarSQL.eof
+    if ExamesValidarSQL("SolIC")="S" then
+        ObrigaIndicacaoClinica = True
+    end if
+ExamesValidarSQL.movenext
+wend
+ExamesValidarSQL.close
+set ExamesValidarSQL=nothing
+
+if ObrigaIndicacaoClinica and ref("IndicacaoClinicaPedidoSADT")="" then
+    erro="Preencha a indicação clínica."
+end if
+
+if erro<>"" then
+    %>{
+      "success": false,
+      "message": "<%=erro%>"
+}<%
+    Response.End
+end if
+
 set pedproc = db.execute("select * from pedidossadtprocedimentos where PedidoID="&PedidoID)
 while not pedproc.eof
     TabelaID = pedproc("TabelaID")
@@ -113,6 +143,9 @@ db_execute("insert into tissguiasadt (id, PacienteID, CNS, NumeroCarteira, Valid
 
 
 'response.Redirect(".?P=tissguiasadt&I="&GuiaID&"&Pers=1")
-%>
-var url =".?P=tissguiasadt&I=<%=GuiaID%>&Pers=1&close=1"
-var GuiaID=<%=GuiaID%>
+
+%>{
+    "url_redirect": ".?P=tissguiasadt&I=<%=GuiaID%>&Pers=1&close=1",
+    "guia_id": <%=GuiaID%>,
+    "success": true
+}

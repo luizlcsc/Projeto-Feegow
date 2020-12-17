@@ -7,11 +7,15 @@
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
 	'on error resume next
 end if
+
+
 if ref("Chegada")<>"" and isdate(ref("Chegada")) then
 	HoraSta = formatdatetime(ref("Chegada"), 3)
 else
-	HoraSta = time()
+    hora = db.execute("select DATE_FORMAT( now() , '%T' ) as now")
+	HoraSta = hora("now")
 end if
+
 
 if ref("ProcedimentoID")="0" or ref("ProcedimentoID")="" then
 	erro = "Selecione um procedimento"
@@ -33,15 +37,7 @@ if ref("Hora")="00:00" and ref("Encaixe")="1"  then
 	erro = "Escolha um horário para o encaixe."
 end if
 
-if 0 then'if session("Banco") = "clinic4421" or session("Banco") = "clinic100000" then
-    dt = left(mydate(ref("Data")),8)&"%"
-    sql = "SELECT IF(COUNT(a.id) >= p.MaximoNoMes AND p.MaximoNoMes IS NOT NULL, 1, 0)ultimos FROM agendamentos a LEFT JOIN procedimentos p ON p.id = a.TipoCompromissoID WHERE a.Data LIKE '"&dt&"' AND a.PacienteID = "&ref("PacienteID")&" AND a.TipoCompromissoID = "&ref("ProcedimentoID")
-    '   response.write(dt   )
-    set ultimosAgendamentos = db.execute(sql)
-    if ultimosAgendamentos("ultimos") = "1" then
-        erro = "Este paciente já ultrapassou o seu limite para este procedimemto este mês."
-    end if
-end if
+
 
 if cdate(ref("Data"))< date() and aut("agendamentosantigosA")=0 then
     erro = "Não é possível alterar agendamento de datas passadas. Solicite um administrador que realize a operação."
@@ -62,7 +58,36 @@ if 0 then
 	    set p=nothing
     end if
 end if
+function somatempo()
+controle = 0
+    contador = 0
+    variavel = ""
+    tracinho = ""
+    tempoFinal = 0
+       
+    While controle = 0
+        if contador = 1 then
+            variavel = 1
+            tracinho= "-"
+        end if  
+        if contador > 1 then
+            variavel = variavel +1
+        end if  
+        tempoLocal =  ref("Tempo"&tracinho&variavel)
+        if tempoLocal = "" then
+            controle = 1
+        else
+            tempoLocal = cint(tempoLocal)
+            tempoFinal = tempoFinal + tempoLocal
+        end if
+        contador = contador +1
+    wend
 
+    tempoFinal = tempoFinal&""
+    somatempo = tempoFinal 
+end function 
+
+TempoTotal=somatempo()
 rfTempo=ref("Tempo")
 rfHora=ref("Hora")
 rfProfissionalID=ref("ProfissionalID")
@@ -94,7 +119,7 @@ if PacienteID="0" or PacienteID="" or PacienteID="-1" then
 
 else
     'verifica se eh primeira consulta do paciente
-    set PrimeiroAtendimentoSQL = db.execute("SELECT age.id FROM agendamentos age WHERE PacienteID="&treatvalzero(PacienteID)&" AND StaID IN (1,2,3,4)")
+    set PrimeiroAtendimentoSQL = db.execute("SELECT age.id FROM agendamentos age WHERE sysActive=1 AND PacienteID="&treatvalzero(PacienteID)&" AND StaID IN (1,2,3,4)")
     if PrimeiroAtendimentoSQL.eof then
         PrimeiraVez=1
     end if
@@ -392,7 +417,7 @@ if erro="" then
 
 	%>
 	if (typeof feegow_components_path !== 'undefined'<% if request.ServerVariables("REMOTE_ADDR")="::1" then response.write("  && 0 ") end if %>){
-        $.get(feegow_components_path+"/googlecalendar/save", {Acao:"<%=Action%>", Email:"vca", AgendamentoID:"<%=ConsultaID%>", ProfissionalID:"<%=rfProfissionalID%>", NomePaciente:"<%=GCNomePaciente%>", Data:"", Hora:"", Tempo:"", NomeProcedimento:"", Notas:""}, function(){})
+        $.get(feegow_components_path+"/googlecalendar/save", {Licenca: "<%=LicenseID%>" ,Acao:"<%=Action%>", Email:"vca", AgendamentoID:"<%=ConsultaID%>", ProfissionalID:"<%=rfProfissionalID%>", NomePaciente:"<%=GCNomePaciente%>", Data:"", Hora:"", Tempo:"", NomeProcedimento:"", Notas:""}, function(){})
 
         <%
         'call centralSMS(ref("ConfSMS"), rfData, rfHora, ConsultaID)

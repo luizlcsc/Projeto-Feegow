@@ -7,6 +7,18 @@
 </script>
 <%end if %>
 <style type="text/css">
+.proposta-item-procedimentos  span.select2-selection.select2-selection--single {
+    height: 30px!important;
+    font-size: 11px;
+}
+
+.PropostaDesconto{
+    border-right: 0!important;
+}
+
+.proposta-item-procedimentos > td {
+    padding: 3px!important;
+}
 .duplo>tbody>tr:nth-child(4n+1)>td,
 .duplo>tbody>tr:nth-child(4n+2)>td
 {    background-color: #f9f9f9;
@@ -298,7 +310,7 @@ end if
                                 </div>
                           </div>
                           <div class="panel-body panel-scroller scroller-md scroller-pn pn">
-                            <table class="table mbn tc-icon-1 tc-med-2">
+                            <table class="table mbn tc-icon-1 tc-med-2" >
                               <tbody id="ListaProItens">
 
                               </tbody>
@@ -433,13 +445,13 @@ $DescontoTotal.keyup(function() {
     $DescontoTipo = $(".DescontoTipo");
     $Desconto = $(".PropostaDesconto");
 
-    var Desconto = parseInt($(this).val());
+    var Desconto = parseFloat($(this).val());
     if (!Desconto){
         Desconto = 0;
     }
     clearTimeout(timeoutDesconto);
     $DescontoTipo.val("P");
-    $Desconto.val(Desconto+",00");
+    $Desconto.val(Desconto);
 
     timeoutDesconto = setTimeout(function() {
         $DescontoTipo.change();
@@ -454,13 +466,17 @@ var $DescontoInvalido = false;
 $Proposta.on("change",".DescontoTipo, .PropostaDesconto", function() {
     var $descontoLinha = $(this).parents("tr");
 
-    var Desconto = parseInt($descontoLinha.find(".PropostaDesconto").val().replace(",00","").replace(".",""));
+    var Desconto = parseFloat($descontoLinha.find(".PropostaDesconto").val().replace(",00","")/*.replace(",",".")*/);
+
     var ProcedimentoID = parseInt($descontoLinha.find("[data-resource=procedimentos]").val());
     var TipoDesconto = $descontoLinha.find(".DescontoTipo").val();
     var ValorUnitario = parseFloat($descontoLinha.find(".ValorUnitario").val().replace(",00","").replace(".",""));
+   
 
-    if(TipoDesconto!=="P"){
+
+    if(TipoDesconto !== "P"){
         Desconto = (Desconto/ValorUnitario) * 100;
+        
     }
 
     CalculaDesconto(ValorUnitario, Desconto, TipoDesconto, ProcedimentoID, "Propostas", $descontoLinha.find(".PropostaDesconto"));
@@ -541,10 +557,10 @@ function modalProFormas(tipo, id){
 	  $("#modal").html(data);
 	});
 }
-
+var propostaIDAplicar = '<%=PropostaID%>';
 function aplicarProOutros(II, A){
 	if(A=='I'){
-		$.post("propostasOutros.asp?PacienteID=<%=PacienteID%>", {II:II, A:A, minorRowOutros:$("#minorRowOutros").val()}, function(data, status){ $("#PropostasOutros").before(data) } );
+		$.post("propostasOutros.asp?PacienteID=<%=PacienteID%>", {PropostaID:propostaIDAplicar,II:II, A:A, minorRowOutros:$("#minorRowOutros").val()}, function(data, status){ $("#PropostasOutros").before(data) } );
 	}else if(A=='X'){
 		$("#rowOutros"+II).replaceWith("");
 	}

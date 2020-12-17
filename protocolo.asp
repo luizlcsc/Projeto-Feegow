@@ -197,7 +197,7 @@ while not campo.eof
                         <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
                     </div>
                     <div class="col-md-<%= cols %>">
-                        <%= quickfield("memo", "Campo"& CampoID, "", 12, Valor, " prot ", "", " rows=4 "& chamaProtSug &"") %>
+                        <%= quickfield("memo", "Campo"& CampoID, "", 12, Valor, " prot campo-memo-protocolo", "", " rows=4 "& chamaProtSug &"") %>
                     </div>
                     <%
                     if instr(Estruturacao, "|CID|")>0 OR instr(Estruturacao, "|Tags|")>0 then
@@ -783,10 +783,16 @@ end if
     }
 
     $(".prot").change(function () {
+        
         saveProt(0);
     });
 
+    CKEDITOR.on('instanceReady', function (ev) {
 
+        ev.editor.on('blur', function (e) {
+            saveProt(0);
+        });
+    });
 
     $(document).click(function () {
         $(".sug").fadeOut();
@@ -827,5 +833,7 @@ end if
         $("#PosologiaMedicamento"+CampoId).val(Dose+" "+Apresentacao+" de "+TempoTratamento+" em "+TempoTratamento+" "+TipoTratamento+" "+Frequencia+" "+Duracao);
         saveProt(0);
     }
+    $(".campo-memo-protocolo").ckeditor();
+
 <!--#include file="JQueryFunctions.asp"-->
 </script>

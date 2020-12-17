@@ -65,8 +65,8 @@ if Acao="" then
 				    <th width="1%"></th>
 				    <th width="1%"></th>
 				<% END IF %>
-				<th width="7%">Quant.</th>
-				<th colspan="2">Item</th>
+				<th width="1%">Quant.</th>
+				<th width="20%" colspan="2">Item</th>
 				<th width="20%" class="<%= hiddenValor %>">Valor Unit.</th>
 				<th width="25%" class="<%= hiddenValor %>">Desconto</th>
 				<th width="10%" class="<%= hiddenValor %>">Acr&eacute;scimo</th>

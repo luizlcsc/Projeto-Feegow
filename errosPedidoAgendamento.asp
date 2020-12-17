@@ -70,7 +70,8 @@ if aut("|agestafinA|")=0 and ref("Checkin")<>"1" then
 end if
 
 if ref("rdValorPlano")="P" then
-    set ConfigConvenio = db.execute("select id from convenios where NaoAgendaSemPlano = 1 and id="&treatvalzero(ref("ConvenioID")))
+    set ConfigConvenio = db.execute("select conv.id, (SELECT COUNT(p.id) FROM conveniosplanos p WHERE p.ConvenioID=CONV.id AND p.NomePlano!='' AND p.sysActive=1) qtdPlanos from convenios conv where conv.NaoAgendaSemPlano = 1 and CONV.id="&treatvalzero(ref("ConvenioID"))&" HAVING qtdPlanos>0")
+
     if not ConfigConvenio.EOF and ref("PlanoID") = "" then
         erro = "Erro: Selecione um Plano"
     end if
@@ -142,7 +143,18 @@ if erro ="" then
 end if
 
 
-if rfrdValorPlano="P" then
+if rfrdValorPlano="V" then
+    set ProcedimentoConveniosSQL = db.execute("SELECT SomenteConvenios FROM procedimentos WHERE id="&treatvalzero(rfProcedimento))
+    if not ProcedimentoConveniosSQL.eof then
+        LimitarConvenios = ProcedimentoConveniosSQL("SomenteConvenios")
+
+        if LimitarConvenios&""<>"" then
+            if instr(LimitarConvenios, "|NOTPARTICULAR|")>0 then
+                erro="Este procedimento não permite particular."
+            end if
+        end if
+    end if
+elseif rfrdValorPlano="P" then
     PlanoID = ref("PlanoID")
     if PlanoID<>"" and PlanoID<>"0" then
         set PlanoSQL = db.execute("SELECT vp.NaoCobre FROM tissprocedimentosvaloresplanos vp INNER JOIN tissprocedimentosvalores v ON v.id=vp.AssociacaoID WHERE v.ConvenioID="&treatvalzero(rfValorPlano)&" AND v.ProcedimentoID="&treatvalzero(rfProcedimento)&" AND  vp.PlanoID="&treatvalzero(PlanoID))
@@ -193,7 +205,12 @@ end if
 '    end if
 'end if
 
-if isNumeric(rfTempo) and not rfTempo="" then TempoSol=rfTempo else TempoSol=0 end if
+if isNumeric(TempoTotal) and not TempoTotal="" then
+    TempoSol=TempoTotal
+else
+    TempoSol=0
+end if
+
 HoraSolIni=cDate(hour(rfHora)&":"&minute(rfHora))
 HoraSolFin=dateAdd("n",TempoSol,HoraSolIni)
 HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
@@ -201,7 +218,7 @@ HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
 if ref("LocalID")&""<>"" and ConsultaID="0" then
     'set maxAgendamentoLocal = db.execute("select count(id) id from agendamentos ag where Data = "&mydatenull(ref("Data"))&" and Hora = '"&ref("Hora")&":00' and LocalID="&ref("LocalID")&" group by ag.localid having count(ag.id) >= (select lc.MaximoAgendamentos from locais lc where lc.id=ag.localID and MaximoAgendamentos!='')")
-    set maxAgendamentoLocal = db.execute("select count(id) id from agendamentos ag where Data = "&mydatenull(ref("Data"))&" and ( '"&ref("Hora")&":01' between Hora AND HoraFinal ) and LocalID="&ref("LocalID")&" group by ag.localid having count(ag.id) >= (select lc.MaximoAgendamentos from locais lc where lc.id="&ref("LocalID")&" and MaximoAgendamentos!='')")
+    set maxAgendamentoLocal = db.execute("select count(id) id from agendamentos ag where ag.sysActive=1 AND Data = "&mydatenull(ref("Data"))&" and ( '"&ref("Hora")&":01' between Hora AND HoraFinal ) and LocalID="&ref("LocalID")&" group by ag.localid having count(ag.id) >= (select lc.MaximoAgendamentos from locais lc where lc.id="&ref("LocalID")&" and MaximoAgendamentos!='')")
 
     if not maxAgendamentoLocal.eof then
         erro="Local indisponível. Máximo de pacientes neste local e horário foi alcançado."
@@ -209,7 +226,7 @@ if ref("LocalID")&""<>"" and ConsultaID="0" then
 end if
 
 if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("StaID")<>"4" then
-    set ve1=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and StaID !=11 and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora<time('"&HoraSolFin&"') and Encaixe IS NULL and sysactive=1 and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')")
+    set ve1=db.execute("select * from agendamentos where sysActive=1 AND ProfissionalID = '"&rfProfissionalID&"' and StaID !=11 and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora<time('"&HoraSolFin&"') and Encaixe IS NULL and sysactive=1 and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')")
     if not ve1.eof then
         erro="Erro: O horário solicitado não dispõe dos "&TempoSol&" minutos requeridos para o agendamento deste procedimento."
     end if
@@ -218,7 +235,7 @@ if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("Sta
         sqlProfissionalOuEquipamento = "and ProfissionalID<>0 "
         LabelErroMaximoAgendamentos="profissional"
     end if
-    set ve2=db.execute("select * from agendamentos where (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&rdEquipamentoID&"') AND StaID NOT IN (6,11,3,4, 15)  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
+    set ve2=db.execute("select * from agendamentos where sysActive=1 AND (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&rdEquipamentoID&"') AND StaID NOT IN (6,11,3,4, 15)  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
     if not ve2.EOF then
         if isnumeric(ve2("Tempo")) then
             tmp=ccur(ve2("Tempo"))
@@ -238,7 +255,7 @@ if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("Sta
         if nrComp=1 then
             erro="Erro: O horário escolhido já está preenchido para este "&LabelErroMaximoAgendamentos&" neste horário."'&request.Form()&"|"&veSeFaixas("Hora")&" e fim "&veSeFaixas("HoraFinal")
         else
-            set contaComps=db.execute("select COUNT(id) as TotalPacs from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and Hora = time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and not id = '"&ConsultaID&"'")
+            set contaComps=db.execute("select COUNT(id) as TotalPacs from agendamentos where sysActive=1 AND ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and Hora = time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and not id = '"&ConsultaID&"'")
 
             if ccur(contaComps("TotalPacs"))>=nrComp then
                 erro="Erro: O máximo de atendimentos simultâneos para este procedimento foi excedido."
@@ -276,7 +293,7 @@ end if
 'end if
 
 if ref("Encaixe")<>"1" then
-    set ve4=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and staId not in (6,11) and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and HoraFinal<time('"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"')")
+    set ve4=db.execute("select Hora, HoraFinal from agendamentos where sysActive=1 AND ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and staId not in (6,11) and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and HoraFinal<time('"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"')")
     if not ve4.eof then
         Hora=cdate( hour(ve4("Hora"))&":"&minute(ve4("HoraFinal")) )
         HoraFinal=cdate( hour(ve4("HoraFinal"))&":"&minute(ve4("HoraFinal")) )
@@ -291,10 +308,6 @@ end if
 '	erro="Erro: Já existe um procedimento agendado das "&cdate( hour(ve5("Hora"))&":"&minute(ve5("Hora")) )&" às "&cdate( hour(ve5("Hora"))&":"&minute(ve5("Hora")) )&" que impede este agendamento."&ConsultaID&" - "&ve5("id")
 'end if
 
-set ve6=db.execute("select * from agendamentos where ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and not TipoCompromissoID like '"&rfProcedimento&"'")
-if not ve6.EOF then
-	'erro="Erro: Já existe um outro procedimento agendado para este profissional às "&cdate( hour(ve6("Hora"))&":"&minute(ve6("Hora")) )&"."
-end if
 TotalEncaixeLocal = -1
 if ref("GradeID")<> "" then
     GradeID =  ref("GradeID")
@@ -320,7 +333,7 @@ if ref("GradeID")<> "" then
                         if ConsultaID<>"0" then
                             whereRetorno = " AND agendamentos.id NOT IN("&ConsultaID&")"
                         end if
-                         sqlAgendamentosRetornos = "SELECT count(agendamentos.id)NumeroRetornos FROM agendamentos INNER JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID WHERE ProfissionalID="&treatvalzero(MaximoRetornosGradeSQL("ProfissionalID"))&" AND Hora BETWEEN TIME('"&right(MaximoRetornosGradeSQL("HoraDe"),8)&"') AND TIME('"&right(MaximoRetornosGradeSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData)&" AND StaId NOT IN (6,11) AND procedimentos.TipoProcedimentoID=9"&whereRetorno
+                         sqlAgendamentosRetornos = "SELECT count(agendamentos.id)NumeroRetornos FROM agendamentos INNER JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID WHERE agendamentos.sysActive=1 AND ProfissionalID="&treatvalzero(MaximoRetornosGradeSQL("ProfissionalID"))&" AND Hora BETWEEN TIME('"&right(MaximoRetornosGradeSQL("HoraDe"),8)&"') AND TIME('"&right(MaximoRetornosGradeSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData)&" AND StaId NOT IN (6,11) AND procedimentos.TipoProcedimentoID=9"&whereRetorno
                          set AgendamentosRetornosSQL = db.execute(sqlAgendamentosRetornos)
 
                          if not AgendamentosRetornosSQL.eof then
@@ -353,7 +366,7 @@ end if
 
 
 if ref("Encaixe")="1" and erro="" and ConsultaID="0" then
-    set MaximoEncaixesSQL = db.execute("select MaximoEncaixes, MinimoDeTempoEntreEncaixes, (select count(id) from agendamentos where ProfissionalID="&rfProfissionalID&" and Encaixe=1 and Data="&mydatenull(rfData)&" and id!='"&ConsultaID&"') NumeroEncaixes from profissionais where id="&rfProfissionalID)
+    set MaximoEncaixesSQL = db.execute("select MaximoEncaixes, MinimoDeTempoEntreEncaixes, (select count(id) from agendamentos where sysActive=1 AND ProfissionalID="&rfProfissionalID&" and Encaixe=1 and Data="&mydatenull(rfData)&" and id!='"&ConsultaID&"') NumeroEncaixes from profissionais where id="&rfProfissionalID)
 
     if not MaximoEncaixesSQL.eof then
         if not isnull(MaximoEncaixesSQL("MinimoDeTempoEntreEncaixes")) then
@@ -365,7 +378,7 @@ if ref("Encaixe")="1" and erro="" and ConsultaID="0" then
                 sqlAgendamentoId= " AND id!="&treatvalzero(ConsultaID)
             end if
 
-            sqlEncaixe= "SELECT id FROM agendamentos WHERE ProfissionalID="&rfProfissionalID&" AND Data="&mydatenull(rfData)&" AND Encaixe=1 "&_
+            sqlEncaixe= "SELECT id FROM agendamentos WHERE sysActive=1 AND ProfissionalID="&rfProfissionalID&" AND Data="&mydatenull(rfData)&" AND Encaixe=1 "&_
                                      " AND Hora>'"&MinimoHora&"' AND Hora<'"&MaximoHora&"'" & sqlAgendamentoId&" LIMIT 1"
             set EncaixesProximosSQL = db.execute(sqlEncaixe)
             if not EncaixesProximosSQL.eof then
@@ -374,7 +387,7 @@ if ref("Encaixe")="1" and erro="" and ConsultaID="0" then
         end if
 
         if ref("LocalID")&"" <> "" then
-            set TotalEncaixesLocalSQL = db.execute("select count(id) total from agendamentos where (LocalID = "&treatvalzero(ref("LocalID"))&" ) AND ProfissionalID="&rfProfissionalID&" and Encaixe=1 and Data="&mydatenull(rfData)&" and id!='"&ConsultaID&"'")
+            set TotalEncaixesLocalSQL = db.execute("select count(id) total from agendamentos where sysActive=1 AND (LocalID = "&treatvalzero(ref("LocalID"))&" ) AND ProfissionalID="&rfProfissionalID&" and Encaixe=1 and Data="&mydatenull(rfData)&" and id!='"&ConsultaID&"'")
             if not TotalEncaixesLocalSQL.eof then 
                 TotalEncaixeLocal = ccur(TotalEncaixesLocalSQL("total"))
             end if
@@ -686,7 +699,7 @@ function checkQuantidadeAgendamentoHorario()
                 rptOcorrencias = rptOcorrencias+1
 
                 ReDim Preserve listDates(UBound(listDates) + 1)                
-                listDates(UBound(listDates)) = "select count(id) >= (select MaximoAgendamentos from procedimentos where id = "&rfProcedimentoId&") as BloquearAgendamento, Data from agendamentos where ProfissionalID = "&rfProfissionalID&" and Hora = '"&rfHora&"' and TipoCompromissoID = "&rfProcedimentoId&" and StaID NOT IN(11,15) and Data = "&mydatenull(rptDataLoop)&""
+                listDates(UBound(listDates)) = "select count(id) >= (select MaximoAgendamentos from procedimentos where id = "&rfProcedimentoId&") as BloquearAgendamento, Data from agendamentos where sysActive=1 AND ProfissionalID = "&rfProfissionalID&" and Hora = '"&rfHora&"' and TipoCompromissoID = "&rfProcedimentoId&" and StaID NOT IN(11,15) and Data = "&mydatenull(rptDataLoop)&""
                ' response.write(mydatenull(rptDataLoop))
             end if
         wend
@@ -739,4 +752,15 @@ function validaConvenio(convenioID, localID)
     end if
 
 end function
+
+' valida se o procedimento já ultrapasou o limite mensal
+if getConfig("procedimentosPorMes") = 1 then
+    dt = left(mydate(ref("Data")),8)&"%"
+    sql = "SELECT IF(COUNT(a.id) >= p.MaximoNoMes AND p.MaximoNoMes IS NOT NULL, 1, 0)ultimos FROM agendamentos a LEFT JOIN procedimentos p ON p.id = a.TipoCompromissoID WHERE a.Data LIKE '"&dt&"'  AND a.TipoCompromissoID = "&ref("ProcedimentoID")
+    set ultimosAgendamentos = db.execute(sql)
+    if ultimosAgendamentos("ultimos") = "1" then
+        erro = "Este procedimento já ultrapassou o seu limite para este mês."
+    end if
+end if
 %>
+

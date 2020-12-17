@@ -734,7 +734,6 @@ var $componentsModal = $("#feegow-components-modal"),
 var $btnMarcarTodos = $("#ExecutadoTodos");
 
 $btnMarcarTodos.click(function() {
-//    console.log("c")
 
     var $checks = $(".checkbox-primary");
     var idsProdutos = "";
@@ -853,7 +852,7 @@ var itensAlterados = false;
 function itens(T, A, II, autoPCi, cb){
     itensAlterados=true;
 
-	var inc = $('[data-val]:last').attr('data-val');
+    var inc = $('[data-val]:last').attr('data-val');
 	var centroCustoId = $("#CentroCustoBase").val();
 	var LimitarPlanoContas = $("#LimitarPlanoContas").val();
 
@@ -872,8 +871,6 @@ function itens(T, A, II, autoPCi, cb){
 });}
 
 function formaRecto(){
-
-    console.log("invoiceSelectPagto.asp?I=<%=req("I")%>&T=<%=req("T")%>&FormaID=");
     $.post("invoiceSelectPagto.asp?I=<%=req("I")%>&T=<%=req("T")%>&FormaID="+ $("#FormaID option:selected").attr("data-frid"), $("#formItens").serialize(), function(data, status){ $("#selectPagto").html(data) });
 }
 function planPag(I){
@@ -897,7 +894,7 @@ function recalc(input, mod){
 }
 
 function geraParcelas(Recalc){
-     var input = $("#formItens input");
+   var input = $("#formItens input");
    var elemSerialized = "";
    var dadosForm =  $("#formItens").serialize();
    $.each(input, function (key, val) {
@@ -905,8 +902,9 @@ function geraParcelas(Recalc){
            elemSerialized +=  val.name + '=' + val.value + "&";
         } 
    });
-
-	$.post("invoiceParcelas.asp?I=<%=req("I")%>&T=<%=req("T")%>&Recalc="+Recalc, $("#formItens").serialize()+elemSerialized, function(data, status){ $("#invoiceParcelas").html(data) });
+	$.post("invoiceParcelas.asp?I=<%=req("I")%>&T=<%=req("T")%>&Recalc="+Recalc, $("#formItens").serialize()+elemSerialized, function(data, status){ 
+        $("#invoiceParcelas").html(data);
+    });
 }
 function saveInvoiceSubmit(cb){
     
@@ -916,6 +914,14 @@ function saveInvoiceSubmit(cb){
             if(cb){
                 cb();
             }
+    }).error(function(err){
+        showMessageDialog("Ocorreu um erro ao tentar salvar");
+
+        //notifyEvent({
+        //    description: "Erro ao salvar conta.",
+        //    criticity: 1,
+        //    moduleName: "<%=req("P")%>" 
+        //});
     });
 }
 $("#formItens").submit(function(){
@@ -924,7 +930,9 @@ $("#formItens").submit(function(){
 });
 
 function calcRepasse(id){
-	$.post("invoiceRepasse.asp?Row="+id+"&InvoiceID=<%=InvoiceID%>", $("#formItens").serialize(), function(data){ $("#rat"+id).html(data) });
+	$.post("invoiceRepasse.asp?Row="+id+"&InvoiceID=<%=InvoiceID%>", $("#formItens").serialize(), function(data){ 
+        $("#rat"+id).html(data) 
+    });
 }
 
 function deleteInvoice(){
@@ -1013,13 +1021,23 @@ function pagar(){
 
 
 function addContrato(ModeloID, InvoiceID, ContaID){
+    var ProfissionalExecutante_final = ""
+    //PEGA O PROFISSIONAL EXECUTANTE
+    $('select[id*="ProfissionalID"]').each(function(index, value){ 
+        if(index>0){
+            ProfissionalExecutante_final+=","
+        }
+        var ProfissionalExecutante = $(value).val();
+        ProfissionalExecutante_final+= ProfissionalExecutante
+    });
+
     if($("#AccountID").val()=="" || $("#AccountID").val()=="0" || $("#AccountID").val()=="_"){
         alert("Selecione um pagador para gerar o contrato.");
         $("#searchAccountID").focus();
     }else{
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");
-        $.post("addContrato.asp?ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID="+ContaID, "", function(data){
+        $.post("addContrato.asp?ProfissionalExecutante="+ProfissionalExecutante_final+"&ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID="+ContaID, "", function(data){
             $("#modal").html(data);
         });
     }
@@ -1041,7 +1059,6 @@ var InvoiceAlterada = false;
         });
 
     if("<%=request.QueryString("time")%>" != ''){
-    console.log('recalc...');
         recalc();
     }
 
@@ -1063,7 +1080,7 @@ var InvoiceAlterada = false;
             var fn = appendComponentsModal();
             changeComponentsModalFooter('<button type="button" class="btn btn-success" id="feegow-odontograma-finalizar">Finalizar</button>');
 
-            $.get('../feegow_components/odontograma?P='+accountId+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Invoice&U=<%=session("User")%>&I=<%=InvoiceID%>',
+            $.get('https://components-legacy.feegow.com/index.php/odontograma?P='+accountId+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Invoice&U=<%=session("User")%>&I=<%=InvoiceID%>&L=<%=session("Banco")%>',
             function (data) {
                 fn(data);
             });
@@ -1139,10 +1156,13 @@ if($("#sysActive").val()==1){
 }
 
 function espProf(I,profissionaisID,executeLote){
+    let pacoteId = $("#PacoteID"+I).val()
     if(executeLote == "S"){
-        $.post("divEspecialidadeII.asp?Change=1&R="+I+"&executeLote=S", { ProfissionalID: profissionaisID }, function(data){ eval(data) });
+        $.post("divEspecialidadeII.asp?Change=1&R="+I+"&executeLote=S&PacoteId="+pacoteId, { ProfissionalID: profissionaisID }, function(data){ eval(data) });
     }else{
-        $.post("divEspecialidadeII.asp?Change=1&R="+I, { ProfissionalID: $('#ProfissionalID'+I).val() }, function(data){ $("#divEspecialidadeID"+I).html(data) });
+        $.post("divEspecialidadeII.asp?Change=1&R="+I, { ProfissionalID: $('#ProfissionalID'+I).val() }, function(data){ 
+            $("#divEspecialidadeID"+I).html(data) 
+        });
     }
 }
 
@@ -1317,6 +1337,21 @@ function marcarMultiplosExecutados(){
     })
 
 };
+
+$(document).ready(function(e) {
+
+    let linhas = $("tr[id^='row']")
+    if(linhas.length>0){
+        linhas.map((key,linha)=>{
+            let localId = $(linha).attr('id')
+            let id = localId.replace("row",'')
+            if(id.includes("_")){
+                return false
+            }
+            calcRepasse(id)
+        })
+    }
+});
 
 </script>
 

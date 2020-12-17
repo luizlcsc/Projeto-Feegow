@@ -22,7 +22,7 @@ set atenSQL = db.execute("SELECT "&_
                         " FROM atendimentos as aten"&_
                         " LEFT JOIN agendamentos as ag ON aten.AgendamentoID = ag.id"&_
                         " left join tabelaparticular as tp on tp.id = ag.TabelaParticularID"&_
-                        " WHERE aten.id="&req("AtendimentoID") )
+                        " WHERE aten.id='"&req("AtendimentoID")&"'" )
 
 if not atenSQL.eof then
     if atenSQL("NomeTabela")&"" <> "" then
@@ -80,7 +80,7 @@ while not proc.eof
     SomenteConvenios = proc("SomenteConvenios")
     ExibirLancar = 0
 
-	if Forma="P" AND (instr(SomenteConvenios, "||NOTPARTICULAR||")<1 OR SomenteConvenios&""="") then
+	if Forma="P" AND (instr(SomenteConvenios, "||NOTPARTICULAR||")<1 OR SomenteConvenios&""="") and not atenSQL.eof then
         
 
         GrupoID = proc("GrupoID")
@@ -91,7 +91,7 @@ while not proc.eof
         ProcedimentoID = proc("id")
 
         UnidadeID=0
-        set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&LocalID)
+        set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id='"&LocalID&"'")
         if not LocalSQL.eof then
             UnidadeID=LocalSQL("UnidadeID")
         end if

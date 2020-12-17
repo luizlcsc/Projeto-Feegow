@@ -1,6 +1,8 @@
 <!--#include file="Classes/Restricao.asp"-->
 <!--#include file="Classes/Json.asp"-->
 <%
+ObrigarFormaRecebimentoCheckin=getConfig("ObrigarFormaRecebimentoCheckin")
+
 function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBill)
 
 
@@ -21,7 +23,7 @@ function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBil
                     styleDisabled = "style='cursor: not-allowed; opacity:0.65'"
                 end if                
                 
-                if getConfig("ObrigarFormaRecebimentoCheckin") = "1" then %>
+                if ObrigarFormaRecebimentoCheckin = "1" then %>
                     <button type="button" class="ckpagar btn btn-xs btn-warning" <%=styleDisabled%> <%=recebimentoFuncCaixinha%> data-toggle="modal" onclick='lanctoCheckinNovoUpdate(<%=Bloco%>)'>
                         <i class="fa fa-arrow-circle-up"></i> <%= Rotulo %>
                     </button>                    
@@ -38,7 +40,7 @@ function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBil
                     TipoGuia = spl(i)
                     Rotulo = "Guia de "& TipoGuia
                     %>
-                    <button type="button" id="btnAgGuia<%=TipoGuia%>" onclick="GeraGuia('<%=TipoGuia%>')" class="btn btn-xs btn-warning"><i class="fa fa-arrow-circle-up"></i> <%= ucase(Rotulo) %></button>
+                    <button type="button" onclick="GeraGuia('<%=TipoGuia%>')" class="btn btn-xs btn-warning"><i class="fa fa-arrow-circle-up"></i> <%= ucase(Rotulo) %></button>
                     <%
                 next
             end if
@@ -59,7 +61,7 @@ if req("Checkin")="1" then
 <div id="divLanctoCheckin"><!--#include file="invoiceEstilo.asp"--></div>
     <table class="table table-condensed table-hover">
     <%
-    sql = "SELECT proc.TipoProcedimentoID, t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal, COALESCE(conv.NaoPermitirGuiaDeConsulta, 0) NaoPermitirGuiaDeConsulta FROM ("&_
+    sql = "SELECT ii.desconto, proc.TipoProcedimentoID, t.*, if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal, COALESCE(conv.NaoPermitirGuiaDeConsulta, 0) NaoPermitirGuiaDeConsulta FROM ("&_
     "SELECT '' id, a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID, a.Tempo, a.LocalID, a.EquipamentoID,a.PlanoID from agendamentos a where id="& ConsultaID &_
     " UNION ALL "&_
     " SELECT ap.id, ap.rdValorPlano, ap.ValorPlano, ap.TipoCompromissoID, ap.Tempo, ap.LocalID, ap.EquipamentoID,ap.PlanoID FROM agendamentosprocedimentos ap "&_
@@ -69,6 +71,7 @@ if req("Checkin")="1" then
     " LEFT JOIN tissprocedimentosvalores tpv ON tpv.ProcedimentoId = t.TipoCompromissoID AND (tpv.ConvenioID=t.ValorPlano AND t.rdValorPlano='P')  "&_
     " LEFT JOIN tissprocedimentosvaloresplanos tpvp ON tpvp.AssociacaoID=tpv.id AND tpvp.PlanoID=t.PlanoID  "&_
     " LEFT JOIN convenios conv ON (conv.id=t.ValorPlano AND t.rdValorPlano='P') "&_
+    " LEFT JOIN itensinvoice ii ON ii.agendamentoid = "&ConsultaID&_
     " GROUP BY t.id ORDER BY t.rdValorPlano DESC, t.ValorPlano, proc.TipoGuia"
 
     'response.write(sql)
@@ -105,8 +108,22 @@ if req("Checkin")="1" then
                 set vcaIIPaga = db.execute(sqlQuitacao)
                 if not vcaIIPaga.eof then
                     ItemInvoiceID = vcaIIPaga("InvoiceID")    
-                    FormaIDSelecionado = vcaIIPaga("FormaID")       
-                    if round(agp("ValorPlano"),2)<=round(vcaIIPaga("TotalQuitado"),2) then
+                    FormaIDSelecionado = vcaIIPaga("FormaID")
+
+                    calcValorPlano=round(agp("ValorPlano"),2)
+                    desconto = agp("desconto")
+
+                    if desconto&""="" then
+                        desconto=0
+                    end if
+
+                    if desconto>0 then
+                        if round(desconto,2) > 0 then
+                            calcValorPlano = calcValorPlano-round(desconto,2)
+                        end if
+                    end if
+
+                    if calcValorPlano <= round(vcaIIPaga("TotalQuitado"),2) then
                         staPagto = "success"
 
                     else
@@ -388,8 +405,14 @@ else
                             <button type="button" id="addProcedimentos" onclick="adicionarProcedimentos()" class="btn btn-xs btn-success"><i class="fa fa-plus"></i></button>
                         </th>
                         <script>
-                        function adicionarProcedimentos() {
-                           procs('I', 0, <%=LocalID%>, '<%=Convenios%>', '<%=GradeApenasProcedimentos%>', '<%=GradeApenasConvenios%>', '<%=EquipamentoID%>');
+                        function adicionarProcedimentos(count=false,callback=false) {
+                            if(callback && typeof callback == 'function'){
+                                procs('I', 0, <%=LocalID%>, '<%=Convenios%>', '<%=GradeApenasProcedimentos%>', '<%=GradeApenasConvenios%>', '<%=EquipamentoID%>',count, (retorno)=>{
+                                    callback(retorno)
+                                });
+                            }else{
+                                procs('I', 0, <%=LocalID%>, '<%=Convenios%>', '<%=GradeApenasProcedimentos%>', '<%=GradeApenasConvenios%>', '<%=EquipamentoID%>',count)
+                            }
                         }
 </script>
                     </tr>
@@ -491,7 +514,7 @@ $(document).ready(function() {
                         else
                             if (len(Convenios)>2 or (isnumeric(Convenios) and not isnull(Convenios))) and instr(Convenios&" ", "Nenhum")=0 then
                                 %>
-                                <%=quickfield("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where ativo='on' and id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " data-exibir="""&GradeApenasConvenios&""" onchange=""parametros(this.id, this.value);""") %>
+                                <%=quickfield("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where ativo='on' AND sysActive=1 and id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " data-exibir="""&GradeApenasConvenios&""" onchange=""parametros(this.id, this.value);""") %>
                                 <%
                             end if
                         end if
@@ -565,20 +588,26 @@ $(document).ready(function() {
 
             nProcedimentos = 0
             set ageprocs = db.execute("select * from agendamentosprocedimentos where AgendamentoID="& ConsultaID)
+            contador = 1
             while not ageprocs.eof
-                call linhaAgenda(ageprocs("id"), ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios)
+                call linhaAgenda("-"&contador, ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios)
+                contador = contador + 1
+  
             ageprocs.movenext
             wend
             ageprocs.close
+            nProcedimentos = contador
             set ageprocs=nothing
                     %>
                 </tbody>
             </table>
             <input type="hidden" id="nProcedimentos" value="<%= nProcedimentos %>" />
             <div id="totalProcedimentos">
+            <% if aut("valordoprocedimentoV")= 1 then %>
                 <p class="text-right">
                     Valor total: <b>R$  <span id="valortotal"></span></b>
                 </p>
+            <% end if %>
             </div>
         </div>
     </div>
@@ -910,17 +939,31 @@ function validaProcedimento(id,value){
 }
 
 function GeraGuia(TipoGuia) {
-    $.ajax('tissguiaconsulta.asp?P=tissguia'+TipoGuia+'&I=N&Pers=1&Lancto=<%=ConsultaID%>|agendamento', {
-        success: function(res) {
-            if (res) {
-                $("#divHistorico").html("");
-                $("#tabContentCheckin").append("<div id='dadosGuiaConsulta'></div>");
-                var divAgendamento = $("#dadosGuiaConsulta");
-                divAgendamento.html(res);
-                $("#dadosAgendamento").removeClass("active");
+    if(TipoGuia === "SADT"){
+        $.ajax('tissguiasadt.asp?P=tissguiasadt&I=N&Pers=1&ApenasProcedimentosNaoFaturados=S&Lancto=<%=ConsultaID%>|agendamento', {
+            success: function(res) {
+                if (res) {
+                    $("#tabContentCheckin").append("<div id='dadosGuiaConsulta'></div>");
+                    var divAgendamento = $("#dadosGuiaConsulta");
+                    divAgendamento.html(res);
+                    $("#dadosAgendamento").removeClass("active");
+                }
             }
-        }
-    });
+        });
+    }else{
+        $.ajax('tissguiaconsulta.asp?P=tissguia'+TipoGuia+'&I=N&Pers=1&ApenasProcedimentosNaoFaturados=S&Lancto=<%=ConsultaID%>|agendamento', {
+            success: function(res) {
+                if (res) {
+                    $("#divHistorico").html("");
+                    $("#tabContentCheckin").append("<div id='dadosGuiaConsulta'></div>");
+                    var divAgendamento = $("#dadosGuiaConsulta");
+                    divAgendamento.html(res);
+                    $("#dadosAgendamento").removeClass("active");
+                }
+            }
+        });
+    }
+
 }
 $(document).ready(function(){        
     //formaRecto(<%=FormaIDSelecionado %>);
@@ -932,18 +975,6 @@ $(document).ready(function(){
             $("#dadosAgendamento").addClass("active");
         }
     })
-    
-    $("#btnAgGuiaSADT").on('click',  function() {
-        $.ajax('tissguiasadt.asp?P=tissguiasadt&I=N&Pers=1&Lancto=<%=ConsultaID%>|agendamento', {
-            success: function(res) {
-                if (res) {
-                    $("#tabContentCheckin").append("<div id='dadosGuiaConsulta'></div>");
-                    var divAgendamento = $("#dadosGuiaConsulta");
-                    divAgendamento.html(res);
-                    $("#dadosAgendamento").removeClass("active");
-                }
-            }
-        });
-    });
+
 });
 </script>

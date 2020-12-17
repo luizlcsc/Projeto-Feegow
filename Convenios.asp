@@ -449,9 +449,10 @@ end function
                                 end if
                             end if
                             Valor = reg(Coluna)
-                            if Valor=true then
+                            if Valor=true or Valor&""="" then
                                 Valor = 1
                             end if
+
 
                             %>
                             <div class="checkbox-custom checkbox-primary">
@@ -472,39 +473,47 @@ end function
                 <br />
                 <div class="row">
                     <%=quickfield("select", "MesclagemMateriais", "Despesas anexas em guias com mais de um procedimento", 6, reg("MesclagemMateriais"), "select 'Somar' id, 'Inserir os materiais de todos os procedimentos' Valor UNION ALL select 'Maior', 'Inserir somente os materiais do primeiro procedimento'", "Valor", "") %>
-                </div>
-                <div class="row">
+                
                     <%=quickfield("simpleSelect", "SadtImpressao", "Tipo de impressão da SADT", 6, reg("SadtImpressao"), "select 'sadt' id, 'SP/SADT Padrão' Valor UNION ALL select 'sus', 'SUS' UNION ALL SELECT 'gto', 'Odontologia'", "Valor", " semVazio") %>
                     <%=quickfield("simpleSelect", "EmissaoGuiaProtocolos", "Emissão de guia para os protocolos", 6, reg("EmissaoGuiaProtocolos"), "SELECT 'dia' AS id, 'Por dia' AS Valor UNION ALL SELECT 'mensal', 'Mensal' UNION ALL SELECT 'ciclo', 'Por Ciclo'", "Valor", " semVazio") %>
                 </div>
                 <div class="row">
-                    <% camposObrigatorios = reg("camposObrigatorios") %>
                     <%
-                        sqlFields = "SELECT 'Plano' id, 'Plano' Campo UNION ALL " &_
-                                    " ( SELECT 'Data Validade da Carteira' id, 'Data Validade da Carteira' Campo ) UNION ALL "  &_
-                                    " ( SELECT 'Data da Autorização' id, 'Data da Autorização' Campo) UNION ALL " &_
-                                    " (SELECT 'Senha' id, 'Senha' Campo ) UNION ALL " &_
-                                    " (SELECT 'Validade da Senha' id, 'Validade da Senha' Campo) UNION ALL " &_
-                                    " (SELECT 'N° da Guia na Operadora' id, 'N° da Guia na Operadora' Campo) UNION ALL " &_
-                                    " (SELECT 'N° da Guia Principal' id, 'N° da Guia Principal' Campo) UNION ALL " &_
-                                    " (SELECT 'Observacoes' id, 'Observações' Campo) UNION ALL " &_
-                                    " (SELECT 'CNS' id, 'CNS' Campo) UNION ALL " &_
-                                    " (SELECT 'Identificador' id, 'Identificador' Campo) UNION ALL " &_
-                                    " (SELECT 'Código na Operadora' id, 'Código na Operadora' Campo) UNION ALL " &_
-                                    " (SELECT 'Data da Solicitação' id, 'Data da Solicitação' Campo) UNION ALL " &_
-                                    " (SELECT 'Indicação Clínica' id, 'Indicação Clínica' Campo) UNION ALL " &_
-                                    " (SELECT 'Profissional Solicitante' id, 'Profissional Solicitante' Campo) UNION ALL " &_
-                                    " (SELECT 'Código de Barras' id, 'Código de Barras' Campo) UNION ALL " &_
-                                    " (SELECT 'Via' id, 'Via' Campo) UNION ALL " &_
-                                    " (SELECT 'Grau de participação' id, 'Grau de participação' Campo) UNION ALL " &_
-                                    " (SELECT 'Nome do Contratado' id, 'Nome do Contratado' Campo) "
+                    camposObrigatorios = reg("camposObrigatorios")
+                    XMLTagsOmitir = reg("XMLTagsOmitir")
+
+                    sqlFields = "SELECT 'Plano' id, 'Plano' Campo UNION ALL " &_
+                                " ( SELECT 'Data Validade da Carteira' id, 'Data Validade da Carteira' Campo ) UNION ALL "  &_
+                                " ( SELECT 'Data da Autorização' id, 'Data da Autorização' Campo) UNION ALL " &_
+                                " (SELECT 'Senha' id, 'Senha' Campo ) UNION ALL " &_
+                                " (SELECT 'Validade da Senha' id, 'Validade da Senha' Campo) UNION ALL " &_
+                                " (SELECT 'N° da Guia na Operadora' id, 'N° da Guia na Operadora' Campo) UNION ALL " &_
+                                " (SELECT 'N° da Guia Principal' id, 'N° da Guia Principal' Campo) UNION ALL " &_
+                                " (SELECT 'Observacoes' id, 'Observações' Campo) UNION ALL " &_
+                                " (SELECT 'CNS' id, 'CNS' Campo) UNION ALL " &_
+                                " (SELECT 'Identificador' id, 'Identificador' Campo) UNION ALL " &_
+                                " (SELECT 'Código na Operadora' id, 'Código na Operadora' Campo) UNION ALL " &_
+                                " (SELECT 'Data da Solicitação' id, 'Data da Solicitação' Campo) UNION ALL " &_
+                                " (SELECT 'Indicação Clínica' id, 'Indicação Clínica' Campo) UNION ALL " &_
+                                " (SELECT 'Profissional Solicitante' id, 'Profissional Solicitante' Campo) UNION ALL " &_
+                                " (SELECT 'Código de Barras' id, 'Código de Barras' Campo) UNION ALL " &_
+                                " (SELECT 'TipoConsultaID' id, 'Tipo de Consulta' Campo) UNION ALL " &_
+                                " (SELECT 'Via' id, 'Via' Campo) UNION ALL " &_
+                                " (SELECT 'Grau de participação' id, 'Grau de participação' Campo) UNION ALL " &_
+                                " (SELECT 'Nome do Contratado' id, 'Nome do Contratado' Campo) "
 
                     %>
 
-                    <%=quickField("multiple", "camposObrigatorios", "Campos obrigatórios", 6, camposObrigatorios, sqlFields, "Campo", "")%>
-                </div>
-                <div class="row">
-                    <%= quickField("simpleSelect", "TipoAtendimentoID", "Tipo de Atendimento Padrão", 6, reg("TipoAtendimentoID"), "select * from tisstipoatendimento order by descricao", "descricao", "  ") %>
+                    <%=quickField("multiple", "camposObrigatorios", "Campos obrigatórios", 4, camposObrigatorios, sqlFields, "Campo", "")%>
+                    <%=quickField("simpleSelect", "TipoAtendimentoID", "Tipo de Atendimento Padrão", 4, reg("TipoAtendimentoID"), "select * from tisstipoatendimento order by descricao", "descricao", "  ") %>
+                    <%
+                    XMLTagsOmitirSQL = "SELECT id , Tag "&_
+                                       "FROM ( "&_
+                                       "SELECT 'procedimentosExecutados' AS id, 'procedimentosExecutados' AS Tag "&_
+                                       "UNION "&_
+                                       "SELECT 'outrasDespesas' AS id, 'outrasDespesas' AS Tag) AS t"
+                    response.write(quickField("multiple", "XMLTagsOmitir", "Omitir Tags - TISS 03.04.00", 4, XMLTagsOmitir, XMLTagsOmitirSQL, "Tag", ""))
+                    %>
                 </div>
             </form>
         </div>
@@ -729,6 +738,18 @@ $("#DiasReceb").change(function()
     </div>
   </div>
 </div>
+<!--#include file="Classes/Logs.asp"-->
+<%
+if session("Admin")=1 then
+%>
+<div class="tabbable panel">
+    <div class="tab-content panel-body">
+        <%=dadosCadastro("convenios" , req("I"))%>
+    </div>
+</div>
+<%
+end if
+%>
 <script>
 $(document).ready(function(e) {
     <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>

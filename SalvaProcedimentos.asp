@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Json.asp"-->
 <%
 procedimentosString = ref("ProcedimentoID")
 valorPagoString = ref("ValorPago")
@@ -15,6 +16,8 @@ valorPagoArray = split(valorPagoString, ", ")
 guiaIdAnexaArray = split(guiaIdAnexaString, ", ")
 valorPagoGuiaArray = split(valorPagoGuiaString, ", ")
 
+novoStatusId=Null
+
 dim somaTotalProcedimentos
 somaTotalProcedimentos = 0
 
@@ -26,6 +29,8 @@ valoPagoGuia = 0
 if(UCase(tabela) = UCase("GuiaSADT")) then
     if (procedimentosString <> "") then
         For i = 0 to Ubound(procedimentosArray)
+
+            valorPago = 0
 
             if (ref("ValorPago"&procedimentosArray(i)) <> "") then
                 valorPago = ref("ValorPago"&procedimentosArray(i))
@@ -43,14 +48,18 @@ if(UCase(tabela) = UCase("GuiaSADT")) then
 
     if (guiaIdAnexaString <> "") then
             For i = 0 to Ubound(guiaIdAnexaArray)
-                sqlExecute = "update tissguiaanexa set ValorPago="& treatvalzero(valorPagoGuiaArray(i)) & " where id ="&guiaIdAnexaArray(i)&""
+
+                valorPago = 0
+
+                if (ref("ValorPagoGuia"&guiaIdAnexaArray(i)) <> "") then
+                    valorPago = ref("ValorPagoGuia"&guiaIdAnexaArray(i))
+                end if
+
+                sqlExecute = "update tissguiaanexa set ValorPago="& treatvalzero(valorPago) & " where id ="&guiaIdAnexaArray(i)&""
                 db_execute(sqlExecute)
                 
-                if (valorPagoGuiaArray(i) <> "") then 
-                    valoPagoGuia = valorPagoGuiaArray(i)
-                end if 
 
-                somaTotalGuias = somaTotalGuias + valoPagoGuia
+                somaTotalGuias = somaTotalGuias + valorPago
             Next
     end if
 
@@ -62,12 +71,14 @@ end if
 if(UCase(tabela) = UCase("GuiaHonorarios")) then 
    if (procedimentosString <> "") then
         For i = 0 to Ubound(procedimentosArray)
-            sqlExecute = "update tissprocedimentoshonorarios set ValorPago="& treatvalzero(valorPagoArray(i)) & " where id ="&procedimentosArray(i)&""
-            db_execute(sqlExecute)
+            valorPago = 0
+            
+            if (ref("ValorPago"&procedimentosArray(i)) <> "") then
+                valorPago = ref("ValorPago"&procedimentosArray(i))
+            end if
         
-            if (valorPagoArray(i) <> "") then 
-                valorPago = valorPagoArray(i)
-            end if 
+            sqlExecute = "update tissprocedimentoshonorarios set ValorPago="& treatvalzero(valorPago) & " where id ="&procedimentosArray(i)&""
+            db_execute(sqlExecute)
 
             somaTotalProcedimentos = somaTotalProcedimentos + valorPago
         Next
@@ -78,4 +89,11 @@ if(UCase(tabela) = UCase("GuiaHonorarios")) then
     db_execute(sqlExecute)
 end if
 
+call jsonHeader("")
 %>
+{
+    "total_pago": "<%=fn(valorTotalGuiasProcedimentos)%>",
+    "status_id": "<%=novoStatusId%>",
+    "guia_id": "<%=guiaId%>",
+    "tipo_guia": "<%=tabela%>"
+}

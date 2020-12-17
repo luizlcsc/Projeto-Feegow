@@ -1,15 +1,15 @@
-<!--#include file="Classes/Connection.asp"--><!--#include file="Classes/IPUtil.asp"--><%
+<!--#include file="Classes/Connection.asp"--><!--#include file="Classes/IPUtil.asp"--><!--#include file="Classes/Environment.asp"--><%
 if IP<>"::1" then
    'on error resume next
 end if
 
-IP = getUserIp() 
+IP = getUserIp()
 
-set shellExec = createobject("WScript.Shell")
-Set objSystemVariables = shellExec.Environment("SYSTEM")
-AppEnv = objSystemVariables("FC_APP_ENV")
-MasterPwd = objSystemVariables("FC_MASTER")
+AppEnv = getEnv("FC_APP_ENV", "local")
+MasterPwd = getEnv("FC_MASTER", "----")
 
+Dominio = request.ServerVariables("SERVER_NAME")
+isHomolog = instr(Dominio, "teste")>0
 User = ref("User")
 Password = ref("Password")
 masterLogin = false
@@ -20,9 +20,16 @@ masterLoginErro = false
 <%
 
 if masterLogin then
-    sqlLogin = "SELECT u.*, l.ExibeChatAtendimento, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom "&_
+    sqlLogin = "SELECT u.*,l.ExibeChatAtendimento,l.ExibeFaturas, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, "&_
+    " l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom, "&_
+    "l.Servidor, "&_
+    " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, "&_
+    " servHomolog.DNS ServerHomolog, "&_
+    "COALESCE(serv.DNS, l.Servidor) Servidor "&_
     " FROM licencasusuarios AS u "&_
     " LEFT JOIN licencas AS l ON l.id='"&tryLoginMaster("licencaId")&"'"&_
+    " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID "&_
+    " LEFT JOIN db_servers AS servHomolog ON servHomolog.id=l.ServidorHomologacaoID "&_
     " WHERE u.id='"&userMasterID&"' "
 else
     sqlMaster="0"
@@ -30,9 +37,39 @@ else
         sqlMaster = " 1=1 and u.LicencaID<>5459 "
         permiteMasterLogin = True
     end if
-	sqlLogin = "select u.*, l.ExibeChatAtendimento, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.Servidor, l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&User&"' and (Senha=('"&ref("Password")&"') or ("&sqlMaster&")  )"
-end if
+    PasswordSalt = getEnv("FC_PWD_SALT", "SALT_")
 
+    'versao 1 = plain
+    'versao 2 = Cript + UPPER
+    'versao 3 = Cript FINAL
+
+    sqlSenha = " ((Senha='"&Password&"' AND VersaoSenha=1) "&_
+                "or ("&sqlMaster&") "&_
+                "or (SenhaCript=SHA1('"&PasswordSalt& uCase(Password) &"') AND VersaoSenha=2)"&_
+                "or (SenhaCript=SHA1('"&PasswordSalt& Password &"') AND VersaoSenha=3)"&_
+                ") "
+
+    'caso o dominio seja de homologacao, so ira encontrar licencas com homolog preenchido
+    if isHomolog then
+        sqlHomologacao = " AND ( l.DominioHomologacao='"&Dominio&"' ) "
+    else
+        sqlHomologacao = " AND ( l.DominioHomologacao IS NULL OR l.DominioHomologacao='"&Dominio&"' ) "
+    end if
+
+	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora,    "&_
+	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`,l.TipoCobranca, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,                 "&_
+	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, u.Tipo as tipoUsuario,                                                "&_
+	           "COALESCE(serv.DNS, l.Servidor) Servidor,                                                                                            "&_
+	           "servHomolog.DNS ServerHomolog,                                                                                                      "&_
+	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom                                                             "&_
+	           "from licencasusuarios as u                                                                                                          "&_
+	           "left join licencas as l on l.id=u.LicencaID                                                                                         "&_
+               " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID                                                                               "&_
+               " LEFT JOIN db_servers AS servHomolog ON servHomolog.id=l.ServidorHomologacaoID                                                      "&_
+	           "where Email='"&User&"' AND "&sqlSenha &"                                                                                            "&_
+               " " & sqlHomologacao                                                                                                                  &_
+               "ORDER BY IF(l.`Status`='C',0, 1), IF(l.DominioHomologacao='"&Dominio&"',0, 1)"
+end if
 
 set tryLogin = dbc.execute(sqlLogin)
 if not tryLogin.EOF then
@@ -42,22 +79,43 @@ if not tryLogin.EOF then
     ServidorAplicacao = tryLogin("ServidorAplicacao")
     PastaAplicacao = tryLogin("PastaAplicacao")
     PastaAplicacaoRedirect = PastaAplicacao
+    tipoUsuario =  lcase(tryLogin("tipoUsuario"))
 
     if isnull(PastaAplicacaoRedirect) then
         PastaAplicacaoRedirect="v7-master"
     end if
+    session("PastaAplicacaoRedirect") = PastaAplicacaoRedirect
 
+    ServerHomolog = tryLogin("ServerHomolog")&""
     Servidor = tryLogin("Servidor")&""
+    ServerRead = tryLogin("ServerRead")&""
+
+    if isHomolog and ServerHomolog<>"" then
+        Servidor = ServerHomolog
+        ServerRead = ServerHomolog
+    end if
+
 	TipoCobranca = tryLogin("TipoCobranca")
     Cupom = tryLogin("Cupom")
     ExibeChatAtendimento = tryLogin("ExibeChatAtendimento")
+    ExibeFaturas = tryLogin("ExibeFaturas")
 
     ClienteUnimed = instr(Cupom, "UNIMED") > 0
-    if ClienteUnimed then
-        ExibeChatAtendimento=False
+
+    if tryLogin("Admin")<>1 then
+        ExibeFaturas=0
     end if
 
+    if tryLogin("Admin")=1 then
+        ExibeChatAtendimento=True
+    end if
+
+    if ClienteUnimed or AppEnv<>"production" or tryLogin("Status")<>"C" then
+        ExibeChatAtendimento=False
+    end if
+    
     session("ExibeChatAtendimento") = ExibeChatAtendimento
+    session("ExibeFaturas") = ExibeFaturas
 
     if not isnull(ServidorAplicacao) and AppEnv="production" then
         if request.ServerVariables("SERVER_NAME")<>ServidorAplicacao then
@@ -65,13 +123,10 @@ if not tryLogin.EOF then
         end if
     end if
 
-    if Servidor="aws" then
-        response.redirect("http://clinic7.feegow.com.br/"&PastaAplicacaoRedirect)
-    end if
 
-    if Servidor="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
-        ' erro = "Prezado cliente, foi necessário reiniciar os servidores devido a uma atualização emergencial de sistema operacional. Por favor aguarde alguns minutos."
-    end if
+    'if Servidor="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" or Servidor="dbfeegow02.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
+    '     erro = "Prezado cliente, estamos passando por uma instabilidade nos serviços. Tente novamente mais tarde."
+    'end if
 
 	if erro="" then
 
@@ -82,7 +137,7 @@ if not tryLogin.EOF then
     'end if
 		'response.Write("if "&tryLogin("Cliente")&"=0 and "&formatdatetime(tryLogin("DataHora"),2)&" < "&dateadd("d", -15, date())&" then")
 	IPsAcesso = tryLogin("IPsAcesso")
-	if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 then
+	if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 and not permiteMasterLogin then
 		erro = "ACESSO NÃO AUTORIZADO: Para acessar o sistema deste local, solicite ao administrador a liberação do IP "&IP
 	end if
 	if not isnull(tryLogin("FimTeste")) then
@@ -104,6 +159,10 @@ if not tryLogin.EOF then
         deslogarUsuario = false
 
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
+        if sysUser.eof then
+            response.write("<style>.info{display: flex;justify-content: center;align-items: center;height: 100vh;}.msg {padding: 50px;opacity: 0.7;border-radius: 10px;}</style><div class='info'><div class='msg'>Entrar em contato com o adiministrador e preencha os dados de acesso. </div></div>")
+            response.end
+        end if 
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
 			TempoDist = datediff("s", sysUser("UltRef"), now())
 
@@ -111,7 +170,7 @@ if not tryLogin.EOF then
             if Session("Deslogar_user")<>"" then
                 forcar_login = Session("Deslogar_user")
             end if
-            
+
 			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login  then
                 deslogarUsuario = true
 				erro = "Este usuário já está conectado em outra máquina."
@@ -129,14 +188,23 @@ if not tryLogin.EOF then
                     else
 						sqlUsuariosProfissionais = ""
 
-						if TipoCobranca&""="0" then
+
+                        ' Caso o contrato seja por profissional e o usuario que esta se logando seja um profissional
+						if TipoCobranca&""="0" and tipoUsuario = "profissionais" then
 							sqlUsuariosProfissionais = " and `table`='profissionais' "
 						end if
 
+                        ' Contabiliza os usuarios da licença que estão logados 
                         set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &sqlUsuariosProfissionais&" and UltRef>DATE_ADD(NOW(), INTERVAL -"&TimeoutToCheckConnection&" SECOND)")
                         Conectados = ccur(contaUsers("Conectados"))
+                        
+                        'Desconsidera os usuarios logados caso o contrato seja por profissional e o usuario NÃO seja um profissional 
+                        if TipoCobranca&""="0" and tipoUsuario <> "profissionais" then
+                            Conectados = 0
+                        end if
 
-                        if Conectados>=UsuariosContratadosS then
+                        ' Trava o login do usuario caso esteja exedido o numero de usuarios
+                        if Conectados>=UsuariosContratadosS  then
                             erro = "O máximo de usuários conectados simultaneamente foi atingido para sua licença.\n Solicite o aumento da quantidade de usuários simultâneos."
                             dbc.execute("insert into logsns (UserID, LicencaID) values ("&tryLogin("id")&", "&tryLogin("LicencaID")&")")
                         end if
@@ -144,7 +212,7 @@ if not tryLogin.EOF then
                 end if
 			end if
 		end if
-		if sysUser("Table") <>"" then
+		if sysUser("Table")&"" <>"" then
             set AtivoSQL = dbProvi.execute("SELECT p.Ativo FROM `clinic"&tryLogin("LicencaID")&"`.`"&sysUser("Table")&"` p WHERE p.id='"&sysUser("idInTable")&"'")
             if not AtivoSQL.eof then
                 if AtivoSQL("Ativo")<>"on" then
@@ -166,11 +234,13 @@ if not tryLogin.EOF then
 		end if
 	end if
 
+    
+
 	if erro<>"" then
         if deslogarUsuario then
-            session("User")=tryLogin("id")
-            session("Banco")="clinic"&tryLogin("LicencaID")
-            session("Servidor") = Servidor&""
+            ' session("User")=tryLogin("id")
+            ' session("Banco")="clinic"&tryLogin("LicencaID")
+            ' session("Servidor") = Servidor&""
             %>
                 <script type="text/javascript">
                     $(window).on('load',function(){
@@ -201,7 +271,7 @@ if not tryLogin.EOF then
                     });
                 </script>
             <%
-            
+
         else
             %>
                 <script>
@@ -209,7 +279,7 @@ if not tryLogin.EOF then
                 </script>
             <%
         end if
-		
+
 	else
 		session("Banco")="clinic"&tryLogin("LicencaID")
 		session("Admin")=tryLogin("Admin")
@@ -219,6 +289,7 @@ if not tryLogin.EOF then
 		session("Status")=tryLogin("Status")
 		session("AlterarSenha")=tryLogin("AlterarSenhaAoLogin")
         session("Servidor") = Servidor&""
+        session("ServidorReadOnly") = ServerRead&""
 
         session("UsuariosContratadosS") = UsuariosContratadosS
         set ClienteSQL = dbc.execute("SELECT COALESCE(l.NomeEmpresa, l.NomeContato)RazaoSocial FROM cliniccentral.licencas l WHERE l.id="&tryLogin("LicencaID"))
@@ -270,7 +341,7 @@ if not tryLogin.EOF then
             response.Cookies("User") = ""
         end if
 
-		session("Permissoes") = sysUser("Permissoes")
+		session("Permissoes") = sysUser("Permissoes")&""
 		session("ModoFranquia") = getConfig("ModoFranquia")
 		if left(session("Permissoes"), 1)<>"|" then
 			db_execute("update sys_users set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")
@@ -362,7 +433,7 @@ if not tryLogin.EOF then
 
 			if not gradeHoje.EOF then
 				if not isnull(gradeHoje("UnidadeID")) then
-					if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then 
+					if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then
 						UnidadeID = gradeHoje("UnidadeID")
                         UnidadeMotivoDefinicao = "Unidade da Grade do profissional"
 					end if
@@ -408,13 +479,16 @@ if not tryLogin.EOF then
 		end if
 
 
-		set outrosUsers = db.execute("select * from sys_users where id<>"&tryLogin("id"))
-		while not outrosUsers.eof
-			session("UsersChat") = session("UsersChat")&"|"&outrosUsers("id")&"|"'colocando A só pra simular aberto depois tira o A
-		outrosUsers.movenext
-		wend
-		outrosUsers.close
-		set outrosUsers=nothing
+        if session("ModoFranquia")&""<>"1" then
+            set outrosUsers = db.execute("select * from sys_users where id<>"&tryLogin("id"))
+            while not outrosUsers.eof
+                session("UsersChat") = session("UsersChat")&"|"&outrosUsers("id")&"|"'colocando A só pra simular aberto depois tira o A
+            outrosUsers.movenext
+            wend
+            outrosUsers.close
+            set outrosUsers=nothing
+		end if
+
 		if not permiteMasterLogin then
 			dbc.execute("insert into licencaslogins (LicencaID, UserID, IP, Agente) values ("&tryLogin("LicencaID")&", "&tryLogin("id")&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
 		end if
@@ -430,17 +504,18 @@ if not tryLogin.EOF then
             FieldTelemedicina=" '' "
         end if
 
-        IF session("ModoFranquia") THEN
-            strOrdem = "Padrao"
-            IF lcase(session("Table"))="funcionarios" THEN
-                strOrdem = "PadraoFuncionario"
-            END IF
+        IF session("ModoFranquia") AND NOT session("Admin") = "1" THEN
+                strOrdem = "Padrao"
 
-            set ResultPermissoes = db.execute("SELECT Permissoes FROM usuarios_regras JOIN regraspermissoes ON regraspermissoes.id = usuarios_regras.regra WHERE usuario = "&sysUser("id")&" AND unidade = "&session("UnidadeID")&" or "&strOrdem&" = 1 ORDER BY "&strOrdem&" ")
+                IF lcase(session("Table"))="funcionarios" THEN
+                    strOrdem = "PadraoFuncionario"
+                END IF
 
-            IF NOT ResultPermissoes.EOF THEN
-                session("Permissoes") = ResultPermissoes("Permissoes")
-            END IF
+                set ResultPermissoes = db.execute("SELECT Permissoes FROM usuarios_regras JOIN regraspermissoes ON regraspermissoes.id = usuarios_regras.regra WHERE usuario = "&sysUser("id")&" AND unidade = "&session("UnidadeID")&" or "&strOrdem&" = 1 ORDER BY "&strOrdem&" ")
+
+                IF NOT ResultPermissoes.EOF THEN
+                    session("Permissoes") = ResultPermissoes("Permissoes")
+                END IF
         END IF
 
         set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, "&FieldTelemedicina&" ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
@@ -482,6 +557,8 @@ if not tryLogin.EOF then
             else
                 if Versao=7 then
                     urlRedir = "./?P=Home&Pers=1"
+                elseif Versao=6 then
+                    urlRedir = "/v6/?P=Home&Pers=1"
                 else
                     urlRedir = "./../?P=Home&Pers=1"
                 end if
@@ -499,21 +576,7 @@ if not tryLogin.EOF then
 			session("SelecionarLicenca") = 1
 		end if
 
-        'if device()<>"" then
-        '    urlRedir = "mobile.asp?P=Home&Pers=1"
-        'end if
-
-
-
         session("AutenticadoPHP")="false"
-
-
-	'	set vcaImport = db.execute("select group_concat(concat('|', recursoConferir, '|') SEPARATOR ', ') recursos from cliniccentral.bancosconferir where LicencaID="& replace(session("Banco"), "clinic", "") &" AND ISNULL(concluido)")
-	'	if not isNull(vcaImport("recursos")) then
-	'		session("pendImport") = vcaImport("recursos")
-			'response.write("select group_concat(concat('|', recursoConferir, '|') SEPARATOR ', ') recursos from cliniccentral.bancosconferir where LicencaID="& replace(session("Banco"), "clinic", "") &" AND ISNULL(posicaoCliente)")
-	'	end if
-
 
         if AppEnv="production" then
             set vcaTrei = dbc.execute("select id from clinic5459.treinamentos where LicencaUsuarioID="& session("User") &" and not isnull(Fim) and isnull(Nota)")
@@ -527,6 +590,8 @@ if not tryLogin.EOF then
         END IF
 
         QueryStringParameters = Request.Form("qs")
+
+        call odonto()
 
         if QueryStringParameters<>"" then
             response.Redirect("./?"&QueryStringParameters)
@@ -551,7 +616,6 @@ else
             %>
             <script >//alert("Usuário bloqueado por múltiplas tentativas inválidas de login. Favor entre em contato conosco.");</script>
             <%
-'                                end if
     else
         dbc.execute("insert into licencaslogins (Sucesso, Email, LicencaID, UserID, IP, Agente) values (0,'"&User&"',NULL, NULL, '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
     end if

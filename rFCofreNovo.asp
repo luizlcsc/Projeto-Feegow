@@ -53,7 +53,7 @@ while not unidade.eof
 	"pagto.Date dataPagto, pagto.Value valorPago, "&_
 	"pm.PaymentMethod "&_
 	"FROM sys_financialinvoices inv  "&_
-	"LEFT JOIN recibos rec ON inv.id=rec.InvoiceID "&_
+	"LEFT JOIN recibos rec ON inv.id=rec.InvoiceID AND rec.sysActive=1 "&_
 	"LEFT JOIN sys_financialmovement parc ON parc.InvoiceID=inv.id "&_
 	"LEFT JOIN sys_financialdiscountpayments dp ON dp.InstallmentID=parc.id  "&_
 	"LEFT JOIN sys_financialmovement pagto ON pagto.id=dp.MovementID  "&_
@@ -63,15 +63,10 @@ while not unidade.eof
 	"AND (pagto.CD='D' OR ISNULL(pagto.CD))  "&_
 	"AND inv.CompanyUnitID="& UnidadeID &" "&_
 	"AND (  "&_
-	"	rec.`Data` BETWEEN "& mDe &" AND "& mAte &"  "&_
-	"	OR  "&_
-	"	date(rec.`sysDate`) BETWEEN "& mDe &" AND "& mAte &"  "&_
-	"	OR  "&_
 	"	inv.sysDate BETWEEN "& mDe &" AND "& mAte &"  "&_
 	"	OR  "&_
 	"	pagto.Date BETWEEN "& mDe &" AND "& mAte &"  "&_
 	") GROUP BY inv.id ORDER BY inv.NumeroFatura, inv.id"
-    'Response.Write( sql )
 
     'sql = "select i.*, tab.NomeTabela from sys_financialinvoices i "&_
     '                        "LEFT JOIN tabelaparticular tab ON tab.id=i.TabelaID "&_
@@ -191,13 +186,26 @@ while not unidade.eof
                 InvoiceID=fat("InvoiceID")
 
                 'pegando os recebimentos desta fatura
-                set pg = db.execute("select pg.*, mPag.Date DataPagto, mPag.Value, pm.PaymentMethod, mPag.PaymentMethodID, ifnull(t.Parcelas,1) Parcelas, b.Bandeira from sys_financialdiscountpayments pg "&_
+
+                sqlPagamentos="SELECT * FROM (select pg.id, count(mPag.id) Qtd, mPag.Date DataPagto, SUM(mPag.Value) Value, pm.PaymentMethod, mPag.PaymentMethodID, ifnull(t.Parcelas, 1) Parcelas, null StatusBoleto, b.Bandeira  from sys_financialdiscountpayments pg "&_
                 " LEFT JOIN sys_financialmovement mBill ON mBill.id=pg.InstallmentID "&_
                 " LEFT JOIN sys_financialmovement mPag ON mPag.id=pg.MovementID "&_
                 " LEFT JOIN sys_financialpaymentmethod pm ON pm.id=mPag.PaymentMethodID "&_
                 " LEFT JOIN sys_financialcreditcardtransaction t ON t.MovementID=mPag.id "&_
                 " LEFT JOIN cliniccentral.bandeiras_cartao b ON b.id=t.BandeiraCartaoID "&_
-                " WHERE mBill.InvoiceID="& InvoiceID)
+                " WHERE mBill.UnidadeID="& UnidadeID &" AND mPag.Type='Pay' AND mPag.CD='D' AND mBill.InvoiceID="&InvoiceID&" GROUP BY mPag.Date, mPag.PaymentMethodID, t.Parcelas "&_
+                " UNION ALL "&_
+                " select bol.id, count(bol.id) Qtd, mBill.Date DataPagto, SUM(bol.AmountCents/ 100) Value, 'Boleto' PaymentMethod, 4 PaymentMethodID, 1 Parcelas, bolSta.NomeStatus StatusBoleto, null Bandeira " &_
+                " FROM boletos_emitidos bol " &_
+                " INNER JOIN sys_financialmovement mBill ON mBill.id=bol.MovementID " &_
+                " INNER JOIN sys_financialinvoices inv ON inv.id=bol.InvoiceID " &_
+                " INNER JOIN cliniccentral.boletos_status bolSta ON bolSta.id=bol.StatusID " &_
+                " WHERE inv.CompanyUnitID="& UnidadeID &" AND inv.sysDate BETWEEN "& mDe &" AND "& mAte &" AND inv.CD='C' " &_
+                " AND mBill.InvoiceID="&InvoiceID&" "&_
+                " AND bol.StatusID NOT IN (2,5,6,7) HAVING Value > 0 " &_                
+                ")t"
+
+                set pg = db.execute(sqlPagamentos)
 
                 if pg.eof AND Total>0 then
 
@@ -222,9 +230,21 @@ while not unidade.eof
                         <%
                     end if
                 end if
+
+                if not pg.eof then
+                    %>
+<tr class="" >
+<td colspan="2"></td>
+<td colspan="4"><b>Pagamento(s) realizado(s):</b></td>
+</tr>
+                    <%
+                end if
+
                 while not pg.eof
                     cl = cl+1
                     DataPagto = pg("DataPagto")
+                    AvisoDataDivergente = False
+
                     if DataPagto>=cdate(De) and DataPagto<=Ate then
                         classePagto = ""
                         if DataFatura<>pg("DataPagto") then
@@ -240,6 +260,7 @@ while not unidade.eof
                         end if
                     else
                         classePagto = "warning"
+                        AvisoDataDivergente = True
 '                        toData = toData + pg("Value")
 '                        qoData = qoData + 1
 '                        gtoData = gtoData + pg("Value")
@@ -248,14 +269,36 @@ while not unidade.eof
 
 
                     Descricao = pg("PaymentMethod")
+                    Subdescricao=""
+
                     Parcelas = pg("Parcelas")
-                    if pg("PaymentMethodID")=8 then
+                    if ccur(pg("PaymentMethodID"))=8 then
                         Descricao = Parcelas &"x "& Descricao &" ("& pg("Bandeira") &")"
+                    end if
+
+                    if ccur(pg("PaymentMethodID"))=4 then
+                        StatusBoleto = pg("StatusBoleto")
+                        ClasseBadgeStatusBoleto = "warning"
+
+                        if StatusBoleto="Paga" then
+                            ClasseBadgeStatusBoleto="success"
+                        end if
+
+                        Subdescricao = "<span class='label label-"&ClasseBadgeStatusBoleto&"'>"&StatusBoleto&"</span>"
+
                     end if
                     %>
                     <tr class="<%= classePagto %>">
                         <td colspan="2"></td>
-                        <td><b><em><%= DataPagto &" -> "&  Descricao %></em></b></td>
+                        <td><em><%= DataPagto &" > "&  Descricao %></em> <small><%=Subdescricao%></small>
+                        <%
+                        if AvisoDataDivergente then
+                        %> 
+                        <span class="badge badge-pill badge-warning"><i class="fa fa-info-circle"></i> Data do recebimento divergente </span>
+                        <%
+                        end if
+                        %>
+                        </td>
                         <td class="text-right"><b><em><%= "R$ "& fn(pg("Value")) %></em></b></td>
                     </tr>
                     <%
@@ -273,12 +316,21 @@ while not unidade.eof
     end if
 
     'pegando os pagtos do período
-    set pg = db.execute("select pg.*, count(mPag.id) Qtd, mPag.Date DataPagto, SUM(mPag.Value) Value, pm.PaymentMethod, mPag.PaymentMethodID, ifnull(t.Parcelas, 1) Parcelas from sys_financialdiscountpayments pg "&_
+    set pg = db.execute("SELECT * FROM (select pg.id, count(mPag.id) Qtd, mPag.Date DataPagto, SUM(mPag.Value) Value, pm.PaymentMethod, mPag.PaymentMethodID, ifnull(t.Parcelas, 1) Parcelas from sys_financialdiscountpayments pg "&_
                 " LEFT JOIN sys_financialmovement mBill ON mBill.id=pg.InstallmentID "&_
                 " LEFT JOIN sys_financialmovement mPag ON mPag.id=pg.MovementID "&_
                 " LEFT JOIN sys_financialpaymentmethod pm ON pm.id=mPag.PaymentMethodID "&_
                 " LEFT JOIN sys_financialcreditcardtransaction t ON t.MovementID=mPag.id "&_
-                " WHERE mBill.UnidadeID="& UnidadeID &" AND mPag.Date BETWEEN "& mDe &" AND "& mAte &" AND mPag.Type='Pay' AND mPag.CD='D' GROUP BY mPag.PaymentMethodID, t.Parcelas")
+                " WHERE mBill.UnidadeID="& UnidadeID &" AND mPag.Date BETWEEN "& mDe &" AND "& mAte &" AND mPag.Type='Pay' AND mPag.CD='D' GROUP BY mPag.PaymentMethodID, t.Parcelas "&_
+                " UNION ALL "&_
+                " select bol.id, count(bol.id) Qtd, mBill.Date DataPagto, SUM(bol.AmountCents/ 100) Value, 'Boleto' PaymentMethod, 4 PaymentMethodID, 1 Parcelas " &_
+                " FROM boletos_emitidos bol " &_
+                " INNER JOIN sys_financialmovement mBill ON mBill.id=bol.MovementID " &_
+                " INNER JOIN sys_financialinvoices inv ON inv.id=bol.InvoiceID " &_
+                " WHERE inv.CompanyUnitID="& UnidadeID &" AND inv.sysDate BETWEEN "& mDe &" AND "& mAte &" AND inv.CD='C' " &_
+                " AND bol.StatusID NOT IN (2,5,6,7) HAVING Value > 0" &_
+                
+                ")t")
 
     idsPagto = 0
 
@@ -299,9 +351,10 @@ while not unidade.eof
 
             Descricao = pg("PaymentMethod")
             Parcelas = pg("Parcelas")
-            if pg("PaymentMethodID")=8 then
+            if ccur(pg("PaymentMethodID"))=8 then
                 Descricao = Parcelas &"x "& Descricao
             end if
+            
             %>
             <tr>
                 <td></td>

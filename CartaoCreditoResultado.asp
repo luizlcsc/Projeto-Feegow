@@ -84,7 +84,15 @@
 																       " from sys_financialcreditcardreceiptinstallments "&_
 																	  " where TransactionID = p.TransactionID) order by acrescimoPercentual desc limit 1), bc.Bandeira) AS Bandeira "														
 
-                    sql = "select pac.NomePaciente, pac.id Prontuario, p.*, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
+					Limite = 250
+					sqlLimit = "LIMIT "&Limite&""
+
+					PaginaAtual = ccur(ref("PaginaAtual"))
+					if PaginaAtual>1 then
+						sqlLimit = "LIMIT "&((PaginaAtual-1)*Limite)&","&Limite
+					end if
+
+                    sql = "select * from (select pac.NomePaciente, pac.id Prontuario, p.id, p.DateToReceive, p.Fee,p.Value,p.TransactionID,p.InvoiceReceiptID, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
                           					" (select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID and DateToReceive<p.DateToReceive) Parcela, "&_
                           					"(select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID) NumeroParcelas "&queryBlock&" from sys_financialcreditcardreceiptinstallments p  "&_
                           					"INNER JOIN sys_financialcreditcardtransaction t on t.id=p.TransactionID  "&_
@@ -97,13 +105,34 @@
                                               "LEFT JOIN nfe_notasemitidas nfe ON nfe.InvoiceID=movrec.InvoiceID AND nfe.situacao=1 "&_
                                               "LEFT JOIN sys_financialinvoices fi ON fi.id=movrec.InvoiceID "&_
                           					"LEFT JOIN cliniccentral.bandeiras_cartao bc on bc.id=t.BandeiraCartaoID "&_
-                          					"WHERE m.AccountAssociationIDDebit=1 " & sqlConta & sqlAutorizacao & sqlTransacao & sqlData & sqlBaixados & " AND coalesce(NULLIF('"&ref("Bandeira")&"','') like CONCAT('%|',Bandeira,'|%'),true) GROUP BY p.id order by DateToReceive"
+                          					"WHERE m.AccountAssociationIDDebit=1 " & sqlConta & sqlAutorizacao & sqlTransacao & sqlData & sqlBaixados & " AND coalesce(NULLIF('"&ref("Bandeira")&"','') like CONCAT('%|',Bandeira,'|%'),true) GROUP BY p.id order by DateToReceive, m.Date, NomePaciente"&_
+											")t "&sqlLimit
+
+					sqlQtd = "SELECT COUNT(p.id) qtd "&_
+							"	FROM sys_financialcreditcardreceiptinstallments p "&_
+							"	INNER JOIN sys_financialcreditcardtransaction t ON t.id=p.TransactionID "&_
+							"	INNER JOIN sys_financialmovement m ON m.id=t.MovementID "&_
+" "&_
+"								LEFT JOIN sys_financialdiscountpayments dispay ON dispay.MovementID=t.MovementID "&_
+"								LEFT JOIN sys_financialmovement movrec ON movrec.id=dispay.InstallmentID "&_
+"								LEFT JOIN sys_financialmovement movinstal ON movinstal.id=p.InvoiceReceiptID "&_
+"								LEFT JOIN cliniccentral.bandeiras_cartao bc ON bc.id=t.BandeiraCartaoID "&_
+"WHERE m.AccountAssociationIDDebit=1 " & sqlConta & sqlAutorizacao & sqlTransacao & sqlData & sqlBaixados & " AND coalesce(NULLIF('"&ref("Bandeira")&"','') like CONCAT('%|',Bandeira,'|%'),true) "
+
+					set TotalLinhasSQL = db.execute(sqlQtd)
+
+					TotalLinhas = ccur(TotalLinhasSQL("qtd"))
+
+					TotalPaginas = TotalLinhas / Limite 
 
 					set rec = db.execute(sql)
-					
-					
-														
-					while not rec.eof						
+
+					response.Buffer = "true"
+
+					countQtd=0
+
+					while not rec.eof
+					response.flush()
 						if not isnull(rec("Value")) and not isnull(rec("Total")) and not isnull(rec("NomePaciente")) then
 						    Fee = rec("Fee")
 						    if isnull(Fee) then
@@ -148,6 +177,7 @@
                                 ValorFinalTaxado = ValorFinalTaxado + (rec("Value") - ValorRecebido)
                                 ValorLiquidoFinal = ValorLiquidoFinal + rec("Value")
 								
+								countQtd = countQtd + 1
                                 %>
                                 <tr class="<%=classe %>">
                                     <td></td>
@@ -175,6 +205,7 @@
                             else
                                 ValorFinalTaxado = ValorFinalTaxado + (rec("Value") - ValorCredito)
                                 ValorLiquidoFinal = ValorLiquidoFinal + ValorCredito
+								countQtd = countQtd+1
 
     							%>
 							    <tr>
@@ -218,7 +249,7 @@
 					set rec=nothing
 					%>
                     <tr>
-                        <th colspan="7"></th>
+                        <th colspan="7"><%=countQtd%> registro(s)</th>
                         <th colspan="2">Total de taxa: <span style="color: red;">R$<%=fn(ValorFinalTaxado)%></span></th>
                         <th colspan="6">Valor liquido: <span style="color: green;">R$<%=fn(ValorLiquidoFinal)%></span></th>
                     </tr>
@@ -226,6 +257,32 @@
 				</table>
 			</div>
 		</div>
+		<%
+		
+		if TotalPaginas>1 then
+		%>
+		<div class="row text-center">
+			<ul class="pagination">
+			<%
+			PaginaLoop=1
+			while PaginaLoop< TotalPaginas + 1
+
+				ativo = ""
+
+				if PaginaAtual&""=PaginaLoop&"" then
+					ativo = "active"
+				end if
+			%>
+			<li  class="<%=ativo%>"><a href="javascript:buscaPagina(<%=PaginaLoop%>)"><%=PaginaLoop%></a></li>
+			<%
+				PaginaLoop=PaginaLoop+1
+			wend
+			%>
+			</ul>
+		</div>
+		<%
+		end if
+		%>
         <%else%>
         <center><em>Busque acima o perfil dos recebimentos que deseja administrar.</em></center>
         <%End if%>

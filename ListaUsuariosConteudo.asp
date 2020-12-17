@@ -13,27 +13,29 @@
                 </tr>
             </thead>
             <%
-            Cupom = ref("Cupom")&""
+            Cupom   = ref("Cupom")&""
             Empresa = ref("Empresa")&""
-            Tipo = ref("Tipo")&""
-            Nome = ref("Nome")&""
+            Tipo    = ref("Tipo")&""
+            Nome    = ref("Nome")&""
+            
+            qUsuariosConteudoWhere = ""
 
-            sqlEmpresa=""
+            if session("Franquia")&""="" then
+                qUsuariosConteudoWhere = qUsuariosConteudoWhere&" AND l.id="& LicenseId &""
+            end if
+
+            if Cupom<>"" then
+                qUsuariosConteudoWhere = qUsuariosConteudoWhere&" AND Cupom LIKE '%"&Cupom&"%' "
+            end if
             if Empresa<>"" then
-                ListaEmpresas = replace(Empresa, "|", "")
-                sqlEmpresa = " AND l.id in ("&ListaEmpresas&") "
+                qUsuariosConteudoWhere = qUsuariosConteudoWhere&" AND l.id in ("&replace(Empresa, "|", "")&") "
             end if
-
-            sqlTipo=""
             if Tipo<>"" then
-                sqlTipo = " AND lu.tipo like '"&Tipo&"' "
+                qUsuariosConteudoWhere = qUsuariosConteudoWhere&" AND lu.tipo like '"&Tipo&"' "
             end if
-
-            sqlNome=""
             if Nome<>"" then
-                sqlNome = " AND lu.Nome like '%"&Nome&"%' "
+                qUsuariosConteudoWhere = qUsuariosConteudoWhere&" AND lu.Nome like '%"&Nome&"%' "
             end if
-
 
             Quantidade = 0
             QuantSA = 0
@@ -43,22 +45,26 @@
             sqlUsuariosConteudo = " SELECT l.id LicencaID, lu.Nome, lu.Tipo, lu.Email, l.NomeEmpresa, lu.Ativo, l.Servidor, lu.id, l.ServidorID"&chr(13)&_
                                     " FROM cliniccentral.licencasusuarios lu                                                "&chr(13)&_
                                     " LEFT JOIN cliniccentral.licencas l ON l.id=lu.licencaid                               "&chr(13)&_
-                                    " WHERE l.cupom LIKE 'UNIMEDLONDRINA'                                                   "&chr(13)&_
+                                    " WHERE TRUE "&qUsuariosConteudoWhere&"                                                 "&chr(13)&_
                                     " ORDER BY l.ServidorID ASC, l.NomeEmpresa ASC, lu.Nome ASC                             "&chr(13)&_
                                     "                                                                                       "
+            'response.write("<pre>"&sqlUsuariosConteudo&"</pre>")
             set usu = db.execute(sqlUsuariosConteudo)
-            
+
             while not usu.EOF
                 Quantidade = Quantidade + 1
-                inactive_user = false
                 license_user = usu("LicencaID")
                 type_user = lcase(usu("Tipo"))
                 id_user = usu("id")
                 server_user = usu("Servidor")
                 server_id_user = usu("ServidorID")
+                usuario_ativo = usu("Ativo")
+                usuario_email = usu("Email")&""
 
-                If usu("Email")&""="" then
+                If usuario_email="" or usuario_ativo=0 then
                     inactive_user = true
+                else
+                    inactive_user = false
                 End if
 
                 'Criar nova conexao quando for de outro servidor
@@ -66,9 +72,8 @@
                     set dbProvider = newConnection("clinic"&license_user, server_user)
                     lastServerID = lastServerID + 1
                 End if
-                
-                sqlVerifyActiveUser = "SELECT p.Ativo FROM profissionais p WHERE p.id="&id_user  
 
+                sqlVerifyActiveUser = "SELECT p.Ativo FROM profissionais p WHERE p.id="&id_user  
                 set AtivoSQL = dbProvider.execute(sqlVerifyActiveUser)
                 if not AtivoSQL.eof then
                     if AtivoSQL("Ativo")<>"on" then

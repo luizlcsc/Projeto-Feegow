@@ -74,6 +74,10 @@ if not pCampo.eof then
 end if
 
 function logaritmo(data)
-    logaritmo = log(replace(data, ",", "")) / log(10)
+    if data&""="0" then
+        logaritmo = 0
+    else
+        logaritmo = log(replace(data, ",", "")) / log(10)
+    end if
 end function
 %>

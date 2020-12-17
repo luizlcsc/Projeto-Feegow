@@ -13,6 +13,9 @@ if req("X")<>"" then
         'db_execute("delete from pacientesprescricoes where id="& req("X"))
         db_execute("update pacientesprescricoes set sysActive=-1 where id="& req("X"))
     end if
+    if req("Tipo")="|PedidosSADT|" then
+        db_execute("update pedidossadt set sysActive=-1 where id="& req("X"))
+    end if
     if req("Tipo")="|Atestado|" then
         'db_execute("delete from pacientesatestados where id="& req("X"))
         db_execute("update pacientesatestados set sysActive=-1 where id="& req("X"))
@@ -195,8 +198,27 @@ select case Tipo
                 </span>
             </div>
             <div class="panel-body" style="overflow: inherit!important;">
+                <%
+                if req("Tipo")="|L|" then
+                %>
                 <div class="col-md-3">
                     <%
+                    qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
+                                                " WHERE p.sysActive=1                                "&chr(13)&_
+                                                " ORDER BY p.NomeProfissional ASC                    "
+                    
+                    if session("Table")="profissionais" then
+                        valorCheck = session("idInTable")
+                    end if
+                    response.write(quickfield("select", "ProfissionalLaudadorID", "Profissional Laudador", "", valorCheck, qProfissionalLaudadorSQL, "NomeProfissional", ""))
+                    %>
+                </div>
+                <%
+                end if 
+                %>
+                <div class="col-md-3">
+                        <br>
+                        <%
                         sqlBuiforms = "select Nome,id from buiforms where sysActive=1 and "& sqlForm &" order by Nome"
                         nForms = 0
 			            set forms = db.execute(sqlBuiforms)
@@ -215,7 +237,7 @@ select case Tipo
 
                         if nForms<>1 then %>
                         <div class="btn-group btn-block">
-                            <button type="button" class="mt10 btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-plus"></i> <%=rotuloBotao %>
                                 <span class="caret ml5"></span>
                             </button>
@@ -242,6 +264,7 @@ select case Tipo
                                 %>
                             </ul>
                         </div>
+                        
                     <% else %>
                         <button type="button" class="btn btn-primary btn-block" <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%> <% if EmAtendimento=1 then%> onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, <%= idFormUnico %>, 'N', '');"<% end if %>><i class="fa fa-plus"></i> <%= nomeFormUnico %></button>
                     <% end if %>
@@ -261,7 +284,8 @@ select case Tipo
 
                 %>
                     <div class="col-md-3 col-xs-12">
-                        <a type="button" class="btn btn-block mb10 mt10 btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="fa fa-external-link"></i> Restaurar Formulário</a>
+                        <br>
+                        <a type="button" class="btn btn-block btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="fa fa-external-link"></i> Restaurar Formulário</a>
                     </div>
                 <%
                 if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) then
@@ -276,7 +300,8 @@ select case Tipo
                     De = DateAdd("d", -7, date())
                 %>
                 <div class="col-md-3">
-                    <a type="button" class="btn btn-system" href="./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1" target="_blank"><i class="fa fa-external-link"></i> Ir para Laudos</a>
+                    <br>
+                    <a type="button" class="btn btn-block btn-system" href="./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1" target="_blank"><i class="fa fa-external-link"></i> Ir para Laudos</a>
                 </div>
                  <%
                 end if
@@ -317,7 +342,7 @@ select case Tipo
                 </span>
             </div>
             <div class="panel-body">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <button type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%else %>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, 'N', '');" <%end if%>>
                         <i class="fa fa-plus"></i> Inserir Diagnóstico
                     </button>
@@ -766,7 +791,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
             function(){
                 let dataImage = imageEditor.toDataURL();
 
-                newSaveImage(dataImage);
+                newSaveImage(dataImage, id, "arquivos");
                 closeComponentsModal();
             },
             "lg",
@@ -775,15 +800,32 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
     };
 
 
+    function uploadImage(form) {
+        data = {
+           url: domain + '/api/image/uploadAnyFile?tk='+localStorage.getItem('tk'),
+            type: 'POST',
+            processData: false,
+           contentType: false,
+           data: $(form).serialize(),
+           mimeType: 'multipart/form-data',
+       }
 
-        function newSaveImage(base64,id){
-            uploadProfilePic({
-                userId: "<%=req("I")%>",
-                db: "<%= LicenseID %>",
-                table: 'pacientes',
-                content: base64,
-                contentType: "base64"
-            });
+        response = jQuery.ajax(data);
+    }
+
+
+        function newSaveImage(base64,id = 'auto', table='pacientes'){
+            if(id === 'auto'){
+                id="<%=req("I")%>";
+            }
+            let objctImg = new FormData();
+            objctImg.append('Tipo', 'I');
+            objctImg.append('L', '<%=LicenseId%>');
+            objctImg.append('userId', '<%=session("User")%>');
+            objctImg.append('files[]', content);
+            objctImg.append('Pasta', 'Imagens');
+
+            uploadImage(objctImg);
         }
 
 </script>
@@ -853,7 +895,7 @@ end select
                 <%=quickfield("simpleSelect", "Profissionais", "", 4, req("ProfessionalID"), "select '0' as id,'Todos os profissionais' as NomeProfissional, 0 as ordem union select id, NomeProfissional, 1 as ordem from profissionais where ativo='on' and sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", " semVazio onchange='professionalFilter(this.value,"""&Tipo&""","&PacienteID&");'" ) %>
             </div>
         </div>
-    </div>
+    </div>  
     <%
     end if
     ProfessionalID = req("ProfessionalID")
@@ -909,8 +951,9 @@ LocalStorageRestoreHabilitar();
             divAff = "#modal";
             scr = "iPront";
         }
+        var pl = $("#ProfissionalLaudadorID").val();
         $(divAff).html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
-        $.get(scr + ".asp?t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
+        $.get(scr + ".asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
             $(divAff).html(data);
         });
     }
@@ -943,7 +986,8 @@ LocalStorageRestoreHabilitar();
         }else{
             mfp('#modal-form');
         }
-        $.get("iPront.asp?t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
+        var pl = $("#ProfissionalLaudadorID").val();
+        $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
             $("#modal-form .panel").html(data);
         })
     }
@@ -977,7 +1021,7 @@ $("#restoreForm").click(function() {
     }
     , function (data) {
         if(data.length > 0) {
-            openModal(data, "Lita de formulário não salvos", true, false);
+            openModal(data, "Lista de formulário não salvos", true, false);
         }
     });
 });
@@ -1071,7 +1115,7 @@ function excluirSerie(id) {
         let loadMore = 0;
         let steps = parseInt('<%=MaximoLimit%>');
         let tipoarquivo = '<%=Tipo%>';
-        let ProfissionalID = '<%=req("ProfessionalID")%>';
+        let ProfissionalID = ($("#Profissionais").val()==0?'':$("#Profissionais").val());
         var Carregando = false;
         $(".load-wrapp").hide();
 
@@ -1085,7 +1129,7 @@ function excluirSerie(id) {
             if(isEnd && !Carregando){
                 $(".timeline-item").slice(loadMore,steps).fadeIn(3000);
                 newloadMore = loadMore+steps;
-                if(!final){
+                if(!final && !Carregando){
                     Carregando = true;
                     $(".load-wrapp").show();
                     $.get("timelineloadmore.asp",{

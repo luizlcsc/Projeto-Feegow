@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"--><!--#include file="validar.asp"--><!--#include file="md5.asp"--><%
 
 function getOldCBO( pCodigoCBO)
-	set cboAntigo  = db.execute("select cbosAntigo from  especialidades where codigoTiss="&pCodigoCBO)
+	set cboAntigo  = db.execute("select cbos2_2 cbosAntigo from cliniccentral.especialidades_correcao where codigoTiss="&pCodigoCBO)
 
 	if not cboAntigo.eof then
 		if cboAntigo("cbosAntigo")&""<>"" then
@@ -116,7 +116,7 @@ Hora = formatdatetime( lote("sysDate") ,3)
 					if guias("CodigoCNES")="" then CodigoCNES=CNESContratado else CodigoCNES=trim(guias("CodigoCNES")) end if
 					ConselhoProfissional = guias("ConselhoProfissionalSigla")
 					DocumentoConselho = trim(guias("DocumentoConselho"))
-					CodigoUFConselho = guias("CodigoUFConselho")
+					CodigoUFConselho = ucase(guias("CodigoUFConselho"))
 
 					CodigoCBO = TirarAcento(guias("CodigoCBO")) 'trim("2231.05")
 					CodigoCBO = getOldCBO(CodigoCBO)
@@ -128,7 +128,7 @@ Hora = formatdatetime( lote("sysDate") ,3)
 
 					CodigoTabela = getTabelaOld(CodigoTabela)
 			
-                    NomePlano = guias("NomePlano")
+                    NomePlano = TirarAcento(guias("NomePlano"))
                     ValidadeCarteira = mydatetiss(guias("ValidadeCarteira"))
 					CodigoProcedimento = trim(guias("CodigoProcedimento"))
 					ValorProcedimento = ""

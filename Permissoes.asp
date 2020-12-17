@@ -19,6 +19,7 @@ end if
 
 if request.QueryString("ExcluiRegra")<>"" then
 	db_execute("delete from RegrasPermissoes where id = '"&request.QueryString("ExcluiRegra")&"'")
+	db_execute("delete from RegrasDescontos where RegraID = '"&request.QueryString("ExcluiRegra")&"'")
 end if
 
 if request.QueryString("AplicaRegra")<>"" then

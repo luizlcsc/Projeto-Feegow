@@ -282,11 +282,34 @@ if not reg.eof then
                                 end if
                             end if
 						    've se há valor definido pra este procedimento neste convênio
+                            AgendamentoID=splAEA(0)
+
+						    ApenasProcedimentosNaoFaturados = req("ApenasProcedimentosNaoFaturados")
+
+						    IF ApenasProcedimentosNaoFaturados&""="S" THEN
+                                set ProcedimentosJaFaturadosSQL = db.execute("SELECT group_concat(t.ProcedimentoID)ids FROM "&_
+                                                                             "(SELECT tp.ProcedimentoID FROM tissprocedimentossadt tp "&_
+                                                                             "INNER JOIN tissguiasadt t ON t.id=tp.GuiaID "&_
+                                                                             "WHERE t.sysActive=1 AND tp.AgendamentoID="&AgendamentoID&" "&_
+                                                                             "UNION ALL "&_
+                                                                             "SELECT ProcedimentoID FROM tissguiaconsulta WHERE AgendamentoID="&AgendamentoID&" "&_
+                                                                             "AND sysActive=1"&_
+                                                                             ")t")
+                                if not ProcedimentosJaFaturadosSQL.eof then
+                                    procedimentosFaturados = ProcedimentosJaFaturadosSQL("ids")
+
+                                    if procedimentosFaturados&""<>"" then
+                                        sqlProcedimentosJaFaturados = " AND TipoCompromissoID NOT IN ("&procedimentosFaturados&")"
+                                    end if
+                                end if
+						    END IF
+
+
 
                             if splAEA(1)="agendamento" then
-                                set ProcedimentosSQL = db.execute("SELECT a.TipoCompromissoID from agendamentos a where a.id like '"&splAEA(0)&"' UNION ALL select ap.TipoCompromissoID from agendamentosprocedimentos ap where ap.agendamentoid like '"&splAEA(0)&"' ")
+                                set ProcedimentosSQL = db.execute("select TipoCompromissoID FROM (SELECT a.TipoCompromissoID from agendamentos a where a.id = '"&AgendamentoID&"' UNION ALL select ap.TipoCompromissoID from agendamentosprocedimentos ap where ap.agendamentoid = '"&AgendamentoID&"')t WHERE true "&sqlProcedimentosJaFaturados)
                             else
-                                set ProcedimentosSQL = db.execute("select ap.ProcedimentoID TipoCompromissoID FROM atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID where ap.id like '"&splAEA(0)&"'")
+                                set ProcedimentosSQL = db.execute("select TipoCompromissoID FROM (select ap.ProcedimentoID TipoCompromissoID FROM atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID where ap.id = '"&AgendamentoID&"')t WHERE true "&sqlProcedimentosJaFaturados)
                             end if
 
                             Dim ProcedimentoIncluidos
@@ -490,12 +513,48 @@ if not reg.eof then
 				    end if
 				    'verifica se nesta guia já consta este profissional
 				    set vcaProf = db.execute("select * from tissprofissionaissadt where GuiaID="&reg("id")&" and ProfissionalID="&ProfissionalID)
+
 				    if vcaProf.eof then
                         if ProfissionalID&"" <> "" and ProfissionalID&"" <> "0" then
 					    'response.Write("insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&reg("id")&", 1, 1, "&ProfissionalID&", '"&CPF&"', '"&ConselhoProfissionalSolicitanteID&"', '"&NumeroNoConselhoSolicitante&"', '"&UFConselhoSolicitante&"', '"&CodigoCBOSolicitante&"', "&session("User")&")")
 					    sqlExecute = "insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&reg("id")&", 1, "&GrauParticipacaoID&", "&ProfissionalID&", '"&CPF&"', "&treatvalnull(ConselhoProfissionalSolicitanteID)&", '"&NumeroNoConselhoSolicitante&"', '"&UFConselhoSolicitante&"', '"&CodigoCBOSolicitante&"', "&session("User")&")"
 				        db_execute(sqlExecute)
-                        end if 
+                        end if  
+
+                         sqlProfissionaisEquipe = (" SELECT p.id ProfissionalID, p.CPF, COALESCE(a.Funcao, 0) GrauParticipacaoID, p.DocumentoConselho, p.UFConselho, esp.codigoTISS CBOS, p.Conselho ConselhoID FROM procedimentosequipeconvenio a"&_
+                                                                " inner JOIN profissionais p ON p.id = SUBSTRING_INDEX(a.ContaPadrao,'_' , -1) AND SUBSTRING_INDEX(a.ContaPadrao,'_' , 1) = '5'"&_
+                                                                " LEFT JOIN especialidades esp ON esp.id=p.EspecialidadeID "&_
+                                                                " WHERE a.ProcedimentoID = "&ProcedimentoID&_
+                                                                " UNION ALL "&_
+                                                                " SELECT proext.id, proext.cpf, COALESCE(a.Funcao, 0), proext.DocumentoConselho, proext.UFConselho, esp.codigoTISS CBOS, proext.Conselho FROM procedimentosequipeconvenio a "&_
+                                                                " inner JOIN profissionalexterno proext ON proext.id = SUBSTRING_INDEX(a.ContaPadrao,'_' , -1) AND SUBSTRING_INDEX(a.ContaPadrao,'_' , 1) = '8'"&_
+                                                                " LEFT JOIN especialidades esp ON esp.id=proext.EspecialidadeID "&_
+                                                                " WHERE a.ProcedimentoID = "&ProcedimentoID)
+                                                                
+
+                        set ProfissionaisEquipe = db.execute(sqlProfissionaisEquipe)
+                        while not ProfissionaisEquipe.eof
+                            set SequencialSQL = db.execute("SELECT Sequencial From tissprofissionaissadt WHERE GuiaID="&reg("id")&" order by Sequencial desc")
+
+                            Sequencial=1
+
+                            if not SequencialSQL.eof then
+                                Sequencial = SequencialSQL("Sequencial") + 1
+                            end if
+
+                            sqlInsert = "INSERT INTO tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser)" &_
+                                                            "VALUES ("&reg("id")&", "&treatvalzero(Sequencial)&", "&ProfissionaisEquipe("GrauParticipacaoID")&", "&ProfissionaisEquipe("ProfissionalID")&", '"&ProfissionaisEquipe("CPF")&"', "&_
+                                                            treatvalzero(ProfissionaisEquipe("ConselhoID"))&", '"&ProfissionaisEquipe("DocumentoConselho")&"', '"&ProfissionaisEquipe("UFConselho")&"', "&treatvalzero(ProfissionaisEquipe("CBOS"))&", "&session("User")&")"
+
+
+                            db.execute(sqlInsert )
+
+                        ProfissionaisEquipe.movenext
+                        wend
+                        ProfissionaisEquipe.close
+                        set ProfissionaisEquipe=nothing
+
+
 				    end if
 				    've se é primeira consulta ou seguimento
 				    set vesecons = db.execute("select id from tissguiaconsulta where PacienteID="&PacienteID&" and sysActive=1 UNION ALL select id from tissguiasadt where PacienteID="&PacienteID&" and sysActive=1")
@@ -763,10 +822,22 @@ min-width: 150px;
             </div>
             <br />
             <div class="row">
+                <%
+                if ConvenioID&""<>"" then
+                    qPermissoesSQL = "SELECT c.CamposObrigatorios FROM convenios c WHERE c.id="&ConvenioID
+                    set PermissoesSQL = db.execute(qPermissoesSQL)
+                        if instr(PermissoesSQL("CamposObrigatorios"), "|TipoConsultaID|") then
+                            tipoConsulta_label = "*"&ConvenioID&")"
+                            tipoConsulta_required = "required='required'"
+                        end if
+                    PermissoesSQL.close
+                    set PermissoesSQL = nothing
+                end if
+                %>
                 <%= quickField("simpleSelect", "TipoAtendimentoID", "* Tipo de Atendimento", 2, TipoAtendimentoID, "select * from tisstipoatendimento order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
                 <%= quickField("simpleSelect", "AtendimentoRN", "* Atendimento RN", 2, AtendimentoRN, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
                 <%= quickField("simpleSelect", "IndicacaoAcidenteID", "* Indica&ccedil;&atilde;o de acidente", 2, IndicacaoAcidenteID, "select * from tissindicacaoacidente order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
-                <%= quickField("simpleSelect", "TipoConsultaID", "* Tipo de Consulta", 2, TipoConsultaID, "select * from tisstipoconsulta order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
+                <%= quickField("simpleSelect", "TipoConsultaID", tipoConsulta_label&" Tipo de Consulta", 2, TipoConsultaID, "select * from tisstipoconsulta order by descricao", "descricao", " empty='' "&tipoConsulta_required&" no-select2 ") %>
                 <%= quickField("simpleSelect", "CaraterAtendimentoID", "* Car&aacute;ter do Atendimento", 2, CaraterAtendimentoID, "select * from cliniccentral.tisscarateratendimento order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
                 <%= quickField("simpleSelect", "MotivoEncerramentoID", "Motivo de Encerramento", 2, MotivoEncerramentoID, "select * from tissmotivoencerramento order by descricao", "descricao", " no-select2 ") %>
             </div>
@@ -1166,6 +1237,14 @@ function itemSADT(T, I, II){
 }*/
 
 function itemSADT(T, I, II, A){
+    if(T==="Procedimentos"){
+        if($("#gConvenioID").val() == ''){
+            showMessageDialog("Selecione o convênio e plano", "warning");
+            $("#gConvenioID").focus();
+            return;
+        }
+    }
+
 //    $("[id^="+T+"]").fadeOut();
     $("[id^="+T+"]").html('');
 //    $("[id^=l"+T+"]").fadeIn();

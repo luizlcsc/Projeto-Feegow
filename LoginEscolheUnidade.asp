@@ -58,7 +58,7 @@ END IF
             if instr(selectUnidades,"|"&UnidadesSQL("id")&"|")>0 then 
             %>
             <div <% if unidadeDisabled then %> style="opacity: .4" <% end if %> class="col-md-6 pt10">
-                <a style="font-size: 11px" <% if not unidadeDisabled then %> href="?P=Home&Pers=1&MudaLocal=<%=UnidadesSQL("id")%>" <% else %> disabled onclick="alert('Você precisa fechar o caixa para alterar a unidade.')" <% end if%> class="btn
+                <a style="font-size: 11px" <% if not unidadeDisabled then %> href="?P=MudaLocal&Pers=1&MudaLocal=<%=UnidadesSQL("id")%>" <% else %> disabled onclick="alert('Você precisa fechar o caixa para alterar a unidade.')" <% end if%> class="btn
                  <%
                  if UnidadesSQL("id")&""=UnidadeID&"" then
                  %>btn-dark<%

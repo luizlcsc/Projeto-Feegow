@@ -1,0 +1,27 @@
+UPDATE relatorios SET `SQL` = 'SELECT t.LicencaID, t.AgendamentoID, t.EventoID, t.Mensagem, t.Para, DATE(t.EnviadoEm) Data, t.Tipo TipoEnvio,
+age.PacienteID, age.ProfissionalID, age.TipoCompromissoID, loc.UnidadeID, pac.NomePaciente, eve.Descricao EventoDescricao, 1 Quantidade FROM
+(
+select LicencaID, AgendamentoID, EventoID, Mensagem, Celular Para, EnviadoEm, if(WhatsApp=1,"WHATSAPP","SMS") Tipo from cliniccentral.smshistorico
+where
+(DATE(EnviadoEm) BETWEEN [DATA_INICIO] AND [DATA_FIM]) AND ((whatsapp = 1 AND Resultado = "202") OR (whatsapp = 0))
+AND
+LicencaID=[LICENCA]
+
+UNION ALL
+
+select LicencaID, AgendamentoID, EventoID, Mensagem, Email Para, EnviadoEm, "EMAIL" Tipo from cliniccentral.emailshistorico
+where
+(DATE(EnviadoEm) BETWEEN [DATA_INICIO] AND [DATA_FIM])
+AND
+LicencaID=[LICENCA]
+)t
+
+LEFT JOIN agendamentos age ON age.id=t.AgendamentoID
+LEFT JOIN locais loc ON loc.id=age.LocalID
+LEFT JOIN pacientes pac ON pac.id=age.PacienteID
+LEFT JOIN eventos_emailsms eve ON eve.id=t.EventoID
+WHERE
+(loc.UnidadeID IN ([UNIDADE_IDS])  [UNIDADE_IDS.OPCIONAL])
+AND (t.EventoID IN ([EVENTO_IDS])[EVENTO_IDS.OPCIONAL])'
+
+WHERE id = 95

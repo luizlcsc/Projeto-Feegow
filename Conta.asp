@@ -323,6 +323,7 @@ function listaRecibos(InvoiceID) {
 
     <%if (aut("areceberpacienteI")) OR (aut("contasareceberI")) OR (aut("aberturacaixinhaI") AND session("CaixaID")<>"") then%>
 $("#btnParticular").click(function () {
+    btnToggleLoading("btnParticular",false,true)
     $.post("LanctoRapido.asp?Pers=1&PacienteID=<%=PacienteID%>", $("input[name=Lancto]").serialize()+"&tt=hh&TipoBotao=AReceber", function (data) {
         $("#divHistorico").html(data);
     });
@@ -370,5 +371,19 @@ function lancar(P, T, L, V, PosicaoID, ItemInvoiceID, AtendimentoID) {
             }, 500);
         }
     });
+}
+function btnToggleLoading(target,state, force, waitMessage="Aguarde...") {
+  var $el = $('#'+target), timeout= state ?  500 : 0;
+
+
+  setTimeout(function() {
+    if($el.attr("data-force-disabled") !== 'true' || force){
+          if(state){
+              $el.attr('disabled', false).html("<i class='fa fa-save'></i> Salvar", false);
+          }else{
+              $el.attr('disabled', true).html("<i class='fa fa-spinner fa-spin'></i> "+waitMessage, true);
+          }
+      }
+  }, timeout);
 }
 </script>

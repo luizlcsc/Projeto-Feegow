@@ -1,4 +1,4 @@
-﻿<!--#include file="connect.asp"-->
+﻿<!--#include file="Classes/Connection.asp"--><!--#include file="connect.asp"-->
 
 <script type="text/javascript">
     function myFunction(i) {
@@ -106,18 +106,18 @@ if session("Partner")<>"" then
         LicencaID = l("id")
         LicencaModelo = 5459
 
-        ConnStringS = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& Servidor &";Database=clinic"& LicencaID &";uid=root;pwd=pipoca453;"
-        Set dbS = Server.CreateObject("ADODB.Connection")
-        dbS.Open ConnStringS
+        Set dbS = newConnection("clinic"& LicencaID, Servidor)
 
-        sqlProf = "select prof.id, CONCAT(IFNULL(trat.Tratamento,''),prof.NomeProfissional)NomeProfissional from clinic"& LicencaID &".profissionais prof LEFT JOIN clinic"& LicencaID &".agendamentos ag ON ag.Data="& mydatenull(Data) &" AND ag.ProfissionalID=prof.id AND ag.StaID IN ("&replace(Status,"|","")&") LEFT JOIN clinic"& LicencaID &".tratamento trat on trat.id=prof.TratamentoID where prof.sysActive=1 and prof.ativo='on'  GROUP BY prof.id HAVING count(ag.id) > 0 order by prof.NomeProfissional"
+        sqlProf = "select prof.id, CONCAT(IFNULL(concat(trat.Tratamento,' '),''),prof.NomeProfissional)NomeProfissional from clinic"& LicencaID &".profissionais prof LEFT JOIN clinic"& LicencaID &".agendamentos ag ON ag.Data="& mydatenull(Data) &" AND ag.ProfissionalID=prof.id AND ag.StaID IN ("&replace(Status,"|","")&") LEFT JOIN clinic"& LicencaID &".tratamento trat on trat.id=prof.TratamentoID where prof.sysActive=1 and prof.ativo='on'  GROUP BY prof.id HAVING count(ag.id) > 0 order by prof.NomeProfissional"
         set p = dbs.execute(sqlProf)
 
         if not p.eof then
 
+        NomeEmpresa=ucase(l("NomeEmpresa"))
+
 %>
 <div class="panel">
-    <div class="panel-heading mt10"><span class="panel-title"><code>#<%= LicencaID %></code>  <strong><%= ucase(l("NomeEmpresa")) %></strong></span></div>
+    <div class="panel-heading mt10"><span class="panel-title"><code>#<%= LicencaID %></code>  <strong><%= NomeEmpresa %></strong></span></div>
 <div class="panel-body">
 
 <%
@@ -180,7 +180,7 @@ if session("Partner")<>"" then
 <%
         while not p.eof
             response.flush()
-            set a = dbs.execute("select a.id, a.StaID, a.Data, a.Hora, a.Notas, pac.NomePaciente, pac.Tel1, pac.Tel2, pac.Cel1, pac.Cel2, proc.NomeProcedimento, s.StaConsulta from clinic"& LicencaID &".agendamentos a LEFT JOIN clinic"& LicencaID &".pacientes pac ON pac.id=a.PacienteID LEFT JOIN clinic"& LicencaID &".procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN StaConsulta s ON s.id=a.StaID where a.ProfissionalID="& p("id") &" and a.Data="& mydatenull(Data) &" and a.StaID IN ("&replace(Status,"|","")&") order by a.Hora")
+            set a = dbs.execute("select a.id, a.StaID, a.Data, a.Hora, a.Notas, pac.NomePaciente, pac.Tel1, pac.Tel2, pac.Cel1, pac.Cel2, proc.NomeProcedimento, s.StaConsulta from clinic"& LicencaID &".agendamentos a LEFT JOIN clinic"& LicencaID &".pacientes pac ON pac.id=a.PacienteID LEFT JOIN clinic"& LicencaID &".procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN StaConsulta s ON s.id=a.StaID where a.ProfissionalID="& p("id") &" and a.Data="& mydatenull(Data) &" and a.StaID IN ("&replace(Status,"|","")&") and a.sysActive=1 order by a.Hora")
             if not a.eof then
                 %>
                 <tr class="dark">
@@ -190,8 +190,11 @@ if session("Partner")<>"" then
 
                         <%
                         while not a.eof
+                            QuebraDeLinha="%0a%0a"
 
-                            Texto = "Olá,  *"& a("NomePaciente") &"*! Posso confirmar sua consulta com *"& p("NomeProfissional") &"*  no dia *"& Data &"* às *"& ft(a("Hora")) &"*?%0a%0aEste horário foi especialmente reservado para você, portanto, se não puder comparecer não deixe de nos avisar com antecedência!"
+                            QuebraDeLinha="  "
+
+                            Texto = "Olá, *"& a("NomePaciente") &"*! Posso confirmar sua consulta com *"& p("NomeProfissional") &"*  no dia *"& Data &"* às *"& ft(a("Hora")) &"*?"&QuebraDeLinha&"_Este horário foi especialmente reservado para você, portanto, se não puder comparecer não deixe de nos avisar, assim podemos liberar seu horário para outro paciente._ "&QuebraDeLinha&" _Obrigada!_"
 
                             Classe = ""
                             if a("StaID")=7 then

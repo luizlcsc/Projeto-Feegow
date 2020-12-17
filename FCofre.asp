@@ -9,7 +9,7 @@
     <div class="row">
         <%=quickfield("datepicker", "De", "De", 2, date(), "", "", "")%>
         <%=quickfield("datepicker", "Ate", "Até", 2, date(), "", "", "")%>
-        <div class="col-md-2" id="TipoData">
+        <div class="col-md-2 hidden" id="TipoData">
             <label>Tipo de Data</label><br />
             <select name="TipoData" class="form-control">
                 <option value="C">Competência</option>

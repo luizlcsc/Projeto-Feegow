@@ -10,6 +10,7 @@ end if
 %>
 		<link type="text/css" rel="stylesheet" href="assets/js/qtip/jquery.qtip.css" />
 		<link rel="shortcut icon" href="icon_clinic.png" type="image/x-icon" />
+		<link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2-bootstrap.css" rel="stylesheet" type="text/css">
 		<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
 		<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
 		<link rel="stylesheet" href="assets/css/jquery-ui-1.10.3.custom.min.css" />
@@ -22,6 +23,7 @@ end if
 		<link rel="stylesheet" href="assets/css/select2.css" />
 		<link rel="stylesheet" href="assets/css/bootstrap-editable.css" />
 	<link rel="stylesheet" href="assets/css/ace-fonts.css" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 
 		<!-- ace styles -->
 
@@ -29,7 +31,11 @@ end if
 		<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
 		<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
 
-
+<style>
+	.fa-edit{
+		pointer-events: none;
+	}
+</style>
 <div class="clearfix form-actions">
 	<div class="col-xs-6">
 		<label>Adicionar Categoria</label><br />
@@ -57,13 +63,21 @@ end if
     	<button type="button" class="btn btn-sm btn-success btn-block" onclick="arvore('<%=request.QueryString("CD")%>', '', $('#Adicionar').val(), $('#CategoriaSuperior').val());location.reload()"><i class="fa fa-plus"></i> Inserir</button>
     </div>
     <div class="col-xs-4"><label>&nbsp;</label><br />
-    	<button class="btn btn-primary btn-block btn-sm" type="submit" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar Ordem</button>
+    	<!-- <button class="btn btn-primary btn-block btn-sm" onclick="savePlanoContas()" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar Ordem</button> -->
+    	<button class="btn btn-primary btn-block btn-sm" type="submit" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar</button>
 	</div>
 </div>
 <%
 function li(id, Name, Rateio, Ordem)
 	%>
-	<li id="list_<%=id%>" class="dd-item"><div class="dd-handle"><span class="disclose"><span></span></span><%=Ordem%> - <%=Name%>
+	<li id="list_<%=id%>" data-id="<%=id%>" data-tipo="<%=request.QueryString("CD")%>" data-ordem="<%=Ordem%>" data-nome="<%=Name%>" data-rateio="<%=Rateio%>" class="dd-item">
+		<div class="dd-handle">
+			<span class="disclose">
+				<span>
+				</span>
+			</span>
+			<span class='ordem'> <%=Ordem%> </span> -
+			<span class='nome'> <%=Name%> </span>
         <div class="pull-right action-buttons">
         	<i class="fa fa-move" style="cursor:move"></i>
 
@@ -210,7 +224,7 @@ end function
 										end if
 
 									reg4cont = reg4cont+1
-									reg5cont = 1	
+									reg5cont = 1
 									reg4.movenext
 									wend
 									reg4.close
@@ -221,7 +235,7 @@ end function
 							end if
 
 
-						reg3cont = reg3cont+1	
+						reg3cont = reg3cont+1
 						reg4cont = 1
 						reg3.movenext
 						wend
@@ -231,10 +245,10 @@ end function
                     </ol>
                     <%
 				end if
-			reg2cont = reg2cont+1	
-			reg3cont = 1	
-			reg4cont = 1	
-			reg5cont = 1	
+			reg2cont = reg2cont+1
+			reg3cont = 1
+			reg4cont = 1
+			reg5cont = 1
 			reg6cont = 1
 			reg2.movenext
 			wend
@@ -246,9 +260,9 @@ end function
 		end if
 	reg1cont = reg1cont+1
 	reg2cont = 1
-	reg3cont = 1	
-	reg4cont = 1	
-	reg5cont = 1	
+	reg3cont = 1
+	reg4cont = 1
+	reg5cont = 1
 	reg6cont = 1
 	reg1.movenext
 	wend
@@ -260,7 +274,7 @@ end function
 		if instr(contidos, "|"&descategorizados("id")&"|")=0 then
             db_execute("update "&table&" set Category=0 where id="&descategorizados("id"))
 			%>
-			<%=li(descategorizados("id"), descategorizados("Name"), descategorizados("Rateio"))%>
+			<%=li(descategorizados("id"), descategorizados("Name"), descategorizados("Rateio"),descategorizados("Ordem"))%>
 			<%
 		end if
 	descategorizados.movenext
@@ -273,17 +287,13 @@ end function
 
 	<pre class="hidden" id="serializeOutput"></pre>
 
-
-
 <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.ui.touch-punch.js"></script>
 <script type="text/javascript" src="js/jquery.mjs.nestedSortable.js"></script>
 
 <script type="text/javascript">
-
 	$(document).ready(function(){
-
 		$('ol.sortable').nestedSortable({
 			forcePlaceholderSize: true,
 			handle: 'div',
@@ -309,15 +319,39 @@ end function
 
 		$('#serialize').click(function(){
 			serialized = $('ol.sortable').nestedSortable('serialize');
-			$('#serializeOutput').text(serialized+'\n\n');
+			linhas = serialized.split('&')
+			let array = []
+			array[0]= 'null'
+			linhas.filter((linha)=>{
+				let index = linha.split('=')[0].replace('list[','').replace(']','')
+				console.log(index)
+				let valor = linha.split('=')[1]
+
+				array[index] = valor
+			})
+
+			let itens = $('li[data-tipo="<%=request.QueryString("CD")%>"]')
+			let data = ''
+			itens.filter((key,ele)=>{
+				let id = $(ele).attr('data-id')
+				let nome = $(ele).attr('data-nome')
+				let posicao = $(ele).attr('data-ordem')
+				let ordem = array[id]
+				let rateio = $(ele).attr('data-rateio')
+				if(ordem == 'null'){
+					ordem = 0
+				}
+				data += '[id:'+id+',categoria:'+ordem+',nome:'+nome+',rateio:'+rateio+',posicao:'+posicao+']&'
+			})
+			console.log(data)
+
 			$.ajax({
 				type:"POST",
 				url:"savePlanoContas.asp?R=<%=table%>",
-				data:serialized,
+				data:data,
 				success:function(data){
-					chamagritter();
+ 					chamagritter();
                     $("#content").find(".col-xs-12").html(data);
-
 				}
 			});
 		});
@@ -366,13 +400,17 @@ end function
 		}
 		return dumped_text;
 	}
-
 	function editaPlanoDeContas(id, cd, value) {
         var newValue = prompt("Digite o nome do plano de contas", value);
-        $.post("EdiCat.asp", {id: id, CD: cd, value: newValue}, function() {
-            location.reload();
-        });
+       	if(newValue){
+			$('#list_'+id).attr('data-nome',newValue)
+			$('#list_'+id+' > div.dd-handle > span.nome').html(newValue)
+			// $.post("EdiCat.asp", {id: id, CD: cd, value: newValue}, function() {
+			// 	location.reload();
+			// });
+		}
 	}
+
 </script>
 
 		<script src="assets/js/jquery.gritter.min.js"></script>

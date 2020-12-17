@@ -9,14 +9,27 @@ _Partindo do pré suposto de que já exista um banco mysql funcionando e com as 
  **Instale o Mysql ODBC 8.0**
 > https://dev.mysql.com/downloads/connector/odbc/
 
-- Baixe o dump inicial https://www.dropbox.com/s/4x5lqb19kjeqsvd/BANCOS.zip?dl=0
+#### Dump inicial:
+- `cliniccentral`:  https://www.dropbox.com/s/dh5ruv84wmipa4r/BANCOS%20-%20cc_temp.zip?dl=0
+
+###### Banco de cliente:
+- Execute o `feegow-api`
+- Abra o Postman
+- Execute em POST o seguinte request: http://localhost:8000/trial/start?NomeContato=dev&Celular=-&Email=dev@feegow.com&senha1=feegow&senha2=feegow&ComoConheceu=-&Cupom=-
+
+#### Credenciais de acesso
+
+**Usuário**: teste@novobanco10.com
+
+**Senha**: 1234
+
 
 
  **Instale o IIs**
  
  _Para instalar o IIS no seu Windows comece por aceder ao Menu Iniciar – 
 Painel de Controle._ 
-_Em alternativa, pressione as teclas de atalho CTRL + SHIFT + ESC e no gestor de tarefas aceda ao menu arquivo – nova tarefa. Digite appwiz.clp e pressione a tecla “Enter”._
+_Em alternativa, pressione as teclas de atalho CTRL + SHIFT + ESC e no gestor de tarefas aceda ao menu arquivo – nova tarefa. Digite appwiz.cpl e pressione a tecla “Enter”._
 
 _Agora, clique na opção “Ativar ou desativar funcionalidades (ou recursos) do Windows”. Procure por “Serviço de Informações da Internet” e ative a caixa de verificação._
 _Se você é um desenvolvedor Web, talvez queira expandir as opções para instalar mais funcionalidades._
@@ -49,6 +62,8 @@ _Em "variaveis de sistema" insira como está a seguir_
 >**FC_MYSQL_DATABASE**=cliniccentral
 >
 >**FC_APP_ENV**=local
+>
+>**FC_PWD_SALT**=pdw_salt
 
 **Configurando o projeto no IIS**
 

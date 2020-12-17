@@ -11,6 +11,7 @@
     if session("Banco")="clinic6118" then
         ExecutantesTipos = "5"
     end if
+
 %>
 <tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>">
     <td>
@@ -38,18 +39,13 @@
                 DisabledNaoAlterarExecutante=" disabled"
             end if
 
-            if NaoAlterarExecutante then
             %>
-            <input type="hidden" name="NaoAlterarExecutante" value="S" />
-            <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
-            <%
-            end if
-            %>
-            <input type="hidden" name="PacoteID<%= id %>" value="<%= PacoteID %>" />
+            <input type="hidden" id="PacoteID<%= id %>" name="PacoteID<%= id %>" value="<%= PacoteID %>" />
             <td colspan="2">
             <%
             if NaoAlterarExecutante then
                 %>
+                <input type="hidden" name="NaoAlterarExecutante" value="S" />
                 <input type="hidden" name="RepasseGerado<%= id %>" value="S" />
                 <input type="hidden" name="ItemID<%= id %>" value="<%=ItemID%>" />
                 <%
@@ -107,7 +103,7 @@
             end if
             %>
             <td  nowrap>
-            <div class="col-md-4">
+            <div class="col-md-4 produtoRow">
                 <div class="radio-custom radio-primary">
                     <input type="radio" name="Executado<%=id %>" id="Executado<%=id %>C" value="C" <%if Executado="C" then %> checked <%end if %> /><label for="Executado<%=id %>C">Conjunto</label>
                 </div>
@@ -209,7 +205,9 @@
         end if
 
         if PodeExcluirItem then %>
-            <button type="button" id="xili<%= ItemInvoiceID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+        <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="<%=titleNotaFiscal%>">
+            <button type="button" id="xili<%= ItemInvoiceID %>"  class="btn btn-sm btn-danger disable <%=desabilitarExclusaoItem%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+        </span>
         <%
         end if
         %>
@@ -356,9 +354,9 @@ end if
     	    <div class="col-xs-3">
 			    <label>Profissional</label><br>
 			    <%
-			    if PacoteID&""="" then
+			    'if PacoteID&""="" then
 			        onchangeProfissional = " onchange=""espProf("& id &");"" "
-			    end if
+			    'end if
 
 			    if NaoAlterarExecutante then
                     %>
@@ -397,11 +395,14 @@ end if
                     <%
                 end if
 
+                if EspecialidadeID&""="" or EspecialidadeID&""="0" then
+                    camposRequired=""
+                end if
+
                 %>
-                <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" no-select2 "&camposRequired) %>
+                <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" empty no-select2 "&camposRequired) %>
                 </div>
                 <%
-
 			    if NaoAlterarExecutante then
                     %>
                     <input type="hidden" name="DataExecucao<%= id %>" value="<%=DataExecucao%>" />

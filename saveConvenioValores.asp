@@ -100,8 +100,8 @@ for i=0 to ubound(spl)
 	if spl(i)<>"" and isnumeric(spl(i)) then
 		n = ccur(spl(i))
 		'4.1. Ve se existe, cria e pega o id do tissprodutostabela
-		'response.Write("||"&n&"||select * from tissprodutostabela where TabelaID like '"&ref("TabelaProdutoID"&n)&"' and Codigo like '"&ref("CodigoProduto"&n)&"'")
-		set vcaProdutoTabela = db.execute("select * from tissprodutostabela where TabelaID like '"&ref("TabelaProdutoID"&n)&"' and Codigo like '"&ref("CodigoProduto"&n)&"'")
+
+		set vcaProdutoTabela = db.execute("select * from tissprodutostabela where TabelaID like '"&ref("TabelaProdutoID"&n)&"' and Codigo like '"&ref("CodigoProduto"&n)&"' AND ProdutoID="&ref("ProdutoID"&n)&" ")
 		if vcaProdutoTabela.eof then
 			db_execute("insert into tissprodutostabela (Codigo, ProdutoID, TabelaID, Valor, sysActive, sysUser) values ('"&ref("CodigoProduto"&n)&"', '"&ref("ProdutoID"&n)&"', '"&ref("TabelaProdutoID"&n)&"', "&treatvalzero(ref("ValorUnitario"&n))&", 1, "&session("User")&")")
 			set pult = db.execute("select id from tissprodutostabela where ProdutoID like '"&ref("ProdutoID"&n)&"' order by id desc")

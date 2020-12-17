@@ -34,7 +34,8 @@ end if
             <th>Prev. Entrega</th>
             <th>Paciente</th>
             <th>Celular</th>
-            <th>Profissional</th>
+            <th>Executante</th>
+            <th>Laudador</th>
             <th>Procedimento</th>
             <th>Convênio</th>
             <th>Status</th>
@@ -52,7 +53,7 @@ end if
     if isnull(procsLaudar) then
         %>
         <tr>
-            <td colspan="9">
+            <td colspan="10">
                 <em>Nenhum procedimento com laudo habilitado. Habilite a opção de laudo no cadastro dos procedimentos em que deseja utilizar este recurso.</em>
             </td>
         </tr>
@@ -99,7 +100,7 @@ end if
         end if
 
         if ref("ProfissionalID")<>"0" then
-            sqlProf = " AND (IFNULL(l.ProfissionalID, t.ProfissionalID)="& ref("ProfissionalID") &" "
+            sqlProf = " AND (IFNULL(t.ProfissionalID, l.ProfissionalID)="& ref("ProfissionalID") &" "
             if lcase(session("Table"))="profissionais" then
                 'sqlProf = sqlProf & " OR ISNULL(l.ProfissionalID) "
             end if
@@ -127,7 +128,7 @@ end if
             filtroGrupo = " ii.ItemID in ("&Procedimentos&") AND "
         END IF
         sqldiaslaudo  = " IF(t.ProcedimentoID =0,(SELECT le.DiasResultado + le.DiasAdicionais "&_
-                        " FROM cliniccentral.labs_exames le  "&_ 
+                        " FROM cliniccentral.labs_exames le  "&_
                         " INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id)  "&_
                         " WHERE lia.InvoiceID = t.invoiceid  order by le.DiasResultado desc limit 1) ,proc.DiasLaudo) as DiasLaudo , "&_
                         "(SELECT max(DataResultado) "&_
@@ -147,21 +148,25 @@ end if
                      "   INNER JOIN cliniccentral.labs_exames le ON (le.id = lie.labexameid) "&_
                      "   WHERE lie.invoiceid = ii.invoiceid LIMIT 1 ) AS labid "
 
-        sql = " SELECT tab.*, DataPrevisao AS DataAtualizada  FROM "&_
-            " (SELECT (SELECT count(arq.id) FROM arquivos arq WHERE arq.LaudoID=l.id )TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, "& sqldiaslaudo &" , IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional,pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID, t.labid, invoiceid, nomelab  FROM ("&_
+        sql = " SELECT tab.*, DataPrevisao AS DataAtualizada , prof_lau.NomeProfissional NomeProfissionalLaudador FROM "&_
+            " (SELECT l.Associacao AssociacaoLaudadorID, l.ProfissionalID ProfissionalLaudadorID, (SELECT count(arq.id) FROM arquivos arq WHERE arq.LaudoID=l.id )TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, "& sqldiaslaudo &" , IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional, pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID, t.labid, invoiceid, nomelab  FROM ("&_
             " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, "&sqllabid&", ii.InvoiceID invoiceid, "&sqlnomelab&" FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
             " UNION ALL "&_
-            " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, ls.labid, i.id invoiceid , '' nomelab FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE "&filtroGrupo&" ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
+            " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, ls.labid, i.id invoiceid , '' nomelab FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.Success='S' AND ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE "&filtroGrupo&" ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
             " UNION ALL "&_
             " SELECT gps.id, gps.Quantidade quantidade,  'tissprocedimentossadt', gps.Data, gps.ProcedimentoID, gs.PacienteID, gps.ProfissionalID, gps.Associacao, conv.NomeConvenio, 0 labid, 0 invoiceid, '' as nomelab FROM tissguiasadt gs LEFT JOIN tissprocedimentossadt gps ON gps.GuiaID=gs.id LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE gps.ProcedimentoID IN("& procsLaudar &") "& sqlDataGPS & sqlProcGS & sqlPacGS & sqlUnidadesG &_
             ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID INNER JOIN pacientes pac ON pac.id=t.PacienteID "&_
             " LEFT JOIN Laudos l ON (l.Tabela=t.Tabela AND l.IDTabela=t.id) "&_
             " LEFT JOIN labs_exames_procedimentos lep ON (lep.ProcedimentoID=t.ProcedimentoID) "&_
             " LEFT JOIN cliniccentral.labs_exames le ON le.id  = lep.LabExameID "&_
-            " LEFT JOIN profissionais prof ON prof.id=IFNULL(t.ProfissionalID, l.ProfissionalID ) WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " GROUP BY t.id ORDER BY pac.NomePaciente ) as tab"
-        'response.write (sql)
+            " LEFT JOIN profissionais prof ON prof.id=IFNULL(t.ProfissionalID, l.ProfissionalID ) "&_
+            "WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " "&_
+            "GROUP BY t.id ORDER BY pac.NomePaciente ) as tab"&_
+            " LEFT JOIN profissionais prof_lau ON prof_lau.id=tab.ProfissionalLaudadorID AND tab.AssociacaoLaudadorID=5 "
+
         set ii = db.execute( sql )
 
+        'dd (sql)
 
         msgPadraoTemplate = "Olá *[Paciente.Nome]*!%0a%0a O resultado do seu laudo de *[Procedimento.Nome]* se encontra *[Laudo.Status]*."
 
@@ -232,6 +237,7 @@ end if
                 end if
 
                 NomeProfissional = ii("NomeProfissional")
+                Laudador = ii("NomeProfissionalLaudador")
 
                 if ii("Associacao")<>5 then
                     NomeProfissional=accountName(ii("Associacao"), ii("ProfissionalID"))
@@ -296,7 +302,8 @@ end if
                         <td><small><a target="_blank" href="?P=pacientes&I=<%=ii("PacienteID")%>&Pers=1"><%= left(ii("NomePaciente"), 24) %></a></small></td>
                         <td class="whatsapp" msg="<%=msgPadrao%>"><small><%= ii("Cel1") %></small></td>
                         <td><small><%= left(NomeProfissional, 20) %></small></td>
-                        <td> 
+                        <td><small><%= left(Laudador, 20) %></small></td>
+                        <td>
                             <%if NomeProcedimento = "Laboratório" then %>
                                 <span class="label label-system" title="Ver Detalhes" onclick="esconder('<%=ii("Identificacao")%>',<%=ii("invoiceid")%> );"> <i class="fa fa-flask"></i> <small><%=NomeProcedimento %></small> </span>
                             <%else %>
@@ -328,18 +335,18 @@ end if
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=739&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
                              <% elseif ii("labid")="3" then %>
                                  <% if  Status="Liberado" then %>
-                                    <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>);" href="#"><i class="fa fa-file-pdf-o"></i></a>
+                                    <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>,'pdf');" href="#"><i class="fa fa-file-pdf-o"></i></a>
                                  <% end if %>
                              <% elseif ii("labid")="4" then %>
                                 <% if  Status="Liberado" then %>
-                                <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>);" href="#"><i class="fa fa-file-pdf-o"></i></a>
+                                    <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>,'pdf');" href="#"><i class="fa fa-file-pdf-o"></i></a>
                                 <% end if %>
                              <% else %> 
                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%=link%>"><i class="fa fa-edit"></i></a>
                             <% end if
                             
-                            if Status="Liberado" then
-                                response.write("<a href='javascript:entrega("&IDLaudo&")' class='btn btn-sm btn-info'><span class='fa fa-print'></span> </a>")
+                            if Status="Liberado" and ii("labid")<>"4" and ii("labid")<>"3" then
+                                response.write("<a href=""javascript:entrega("&IDLaudo&",'html')"" class='btn btn-sm btn-info'><span class='fa fa-print'></span> </a>")
                             end if
                             %>
                             <button class="btn btn-sm btn-info hidden"><i class="fa fa-print"></i></button>

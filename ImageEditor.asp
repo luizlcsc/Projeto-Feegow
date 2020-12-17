@@ -11,7 +11,7 @@ $(document).ready(function(){
 
     function loadEditor() {
         let FeegowTheme = {
-            'common.bi.image': 'https://clinic7.feegow.com.br/v7/assets/img/logo_white.png',
+            'common.bi.image': 'https://feegow-public-cdn.s3.us-east-1.amazonaws.com/feegowclinic-v7/assets/img/logo_white.png',
             'common.bisize.width': '20%',
             'common.bisize.height': '20%',
             'common.backgroundImage': 'none',

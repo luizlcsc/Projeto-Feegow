@@ -37,13 +37,13 @@ end if
             </td>
             <td><%
                 if perm("Tipo")="Paciente" then
-                    call quickfield("multiple", "Obrigar"&perm("id"), "Campos obrigatórios", 12, perm("Obrigar"), "select ColumnName id from cliniccentral.sys_resourcesfields where ResourceID=1 UNION ALL select 'Convenio' UNION ALL select 'Retornos' UNION ALL select 'Relativos' order by id", "id", "")
+                    call quickfield("multiple", "Obrigar"&perm("id"), "Campos obrigatórios", 12, perm("Obrigar"), "select label, ColumnName id from cliniccentral.sys_resourcesfields where ResourceID=1 UNION ALL select 'Convênio' label , 'Convenio' id  UNION ALL select 'Programação de Agendamentos (Retornos)' label,'Retornos' id UNION ALL select 'Pessoas Relacionadas e Parentes' label, 'Relativos' id order by id", "label", "")
                 elseif perm("Tipo")="Agendamento" then
                     camposPacienteAgenda="'Nascimento', 'CPF', 'Documento', 'IndicadoPor', 'Profissao', 'Origem', 'Email1','Sexo', 'NomeSocial', 'Pendencias', 'Matricula1'"
                     camposPacienteAgendaObrigar="'Nascimento', 'CPF', 'Documento', 'IndicadoPor', 'Profissao', 'Origem', 'Email1', 'Cel1', 'Sexo', 'NomeSocial', 'Pendencias', 'Matricula1'"
 
-                    call quickfield("multiple", "Obrigar"&perm("id"), "Campos obrigatórios", 12, perm("Obrigar"), "select ColumnName id from cliniccentral.sys_resourcesfields where resourceId=1 AND columnName IN ("&camposPacienteAgendaObrigar&") union all select 'IndicadoPorSelecao' id ", "id", "")
-                    call quickfield("multiple", "Exibir"&perm("id"), "Exibir campos adicionais", 12, perm("Exibir"), "select ColumnName id from cliniccentral.sys_resourcesfields where resourceId=1 AND columnName IN ("&camposPacienteAgenda&") union all select 'IndicadoPorSelecao' id", "id", "")
+                    call quickfield("multiple", "Obrigar"&perm("id"), "Campos obrigatórios", 12, perm("Obrigar"), "select label,ColumnName id from cliniccentral.sys_resourcesfields where resourceId=1 AND columnName IN ("&camposPacienteAgendaObrigar&") union all select 'Profissional Solicitante' label , 'IndicadoPorSelecao' id", "label", "")
+                    call quickfield("multiple", "Exibir"&perm("id"), "Exibir campos adicionais", 12, perm("Exibir"), "select label,ColumnName id from cliniccentral.sys_resourcesfields where resourceId=1 AND columnName IN ("&camposPacienteAgenda&") union all select 'Profissional Solicitante' label , 'IndicadoPorSelecao' id", "label", "")
                 end if
                 %></td>
             <td><button onClick="xPerm(<%=perm("id")%>)" type="button" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button></td>

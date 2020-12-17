@@ -39,6 +39,13 @@ if ref("Executado"&ItemInvoiceID)="S" then
     <%
     Response.End
     end if
+
+    if ref("DataExecucao"&ItemInvoiceID)="" then
+        %>
+showMessageDialog('Preencha a data da execução.');
+        <%
+        Response.End
+    end if
 end if
 
 sqlUpdate = "update itensinvoice set Executado='"&ref("Executado"&ItemInvoiceID)&"', Associacao="&Associacao&", ProfissionalID="&ProfissionalID&", EspecialidadeID="&treatvalnull(EspecialidadeID)&",DataExecucao="&mydatenull(dataExecucao)&", HoraExecucao="&mytime(horaExecucao)&", HoraFim="&mytime(horaFim)&", Descricao='"&ref("Descricao"&ItemInvoiceID)&"' where id="&ItemInvoiceID

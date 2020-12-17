@@ -1,3 +1,9 @@
+<!--#include file="connect.asp"-->
+<%
+if recursoAdicional(24) <> 4 or Aut("labsconfigintegracao") <> 1 then
+    response.status = 403
+else
+%>
 <script type="text/javascript">
     $(".crumb-active a").html("Configurações Integração Laboratorial");
     $(".crumb-link").removeClass("hidden");
@@ -15,3 +21,4 @@
         $(".app").fadeIn('slow');
     });
 </script>
+<% end if %>

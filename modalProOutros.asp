@@ -40,7 +40,7 @@ Valor = regAte("Valor")
                         <%=quickField("text", "NomeDespesa", "Nome da Despesa", 12, regAte("NomeDespesa"), "", "", " required" )%>
                     </div>
                     <div class="row">
-                        <%=quickField("memo", "Descricao", "Texto", 9, Descricao, "140", "", " rows=""6""" )%>
+                        <%=quickField("editor", "Descricao", "Texto", 9, Descricao, "140", "", " rows=""6""" )%>
                         <%=quickField("memo", "Valor", "Valor", 3, Valor, "140", "", " rows=""6""" )%>
                     </div>
                     <div class="row">

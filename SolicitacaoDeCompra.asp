@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modalcontrato.asp"-->
+<!--#include file="./Classes/ServerPath.asp"-->
 <%
 tableName = "solicitacao_compra"
 CD = req("T")
@@ -65,7 +66,7 @@ IF Request.Form("AccountID")<>"" THEN
              " WHERE id = "&CompraID
         db.execute(sql)
 
-        IF StatusID = "2" THEN
+        IF StatusID = "2" and False THEN
             sql  =" SELECT                                                                                                                                                                         "&chr(13)&_
                   "   coalesce(funcionarios.NomeFuncionario,profissionais.NomeProfissional) as Solicitante                                                                                         "&chr(13)&_
                   "  ,CONCAT('55',replace(replace(replace(replace(coalesce(funcionarios.Cel1,profissionais.Cel1),' ',''),'(',''),')',''),'-','')) as Celular                                       "&chr(13)&_
@@ -101,12 +102,12 @@ IF Request.Form("AccountID")<>"" THEN
 
                   while not EnvioSMS.eof
                         IF NOT ISNULL(EnvioSMS("Celular")) AND EnvioSMS("Celular") <> "" THEN
-                            msg = "Existem itens de compra para serem aprovados. Acesse https://clinic7.feegow.com.br/v7/?P=SolicitacaoDeCompraAprovacao&Pers=1 para visualizar os itens."
+                            msg = "Existem itens de compra para serem aprovados. Acesse "&appUrl(True)&"/?P=SolicitacaoDeCompraAprovacao&Pers=1 para visualizar os itens."
                             sqlInsert = "INSERT INTO cliniccentral.smsfila(LicencaID, DataHora, Mensagem, Celular, WhatsApp) VALUES("&replace(session("Banco"), "clinic", "")&",Now(),'"&msg&"','"&EnvioSMS("Celular")&"',false)"
                             db.execute(sqlInsert)
                         END IF
                         IF NOT ISNULL(EnvioSMS("Email")) AND EnvioSMS("Email") <> "" THEN
-                            msg = "Existem itens de compra para serem aprovados. <a href=""https://clinic7.feegow.com.br/v7/?P=SolicitacaoDeCompraAprovacao&I=N&Pers=1""> Clique aqui para visualizar os itens.</a>"
+                            msg = "Existem itens de compra para serem aprovados. <a href="""&appUrl(True)&"/?P=SolicitacaoDeCompraAprovacao&I=N&Pers=1""> Clique aqui para visualizar os itens.</a>"
                             sqlInsert = "INSERT INTO cliniccentral.emailsfila(LicencaID, DataHora, Mensagem,Titulo, Email, Remetente) VALUES("&replace(session("Banco"), "clinic", "")&",Now(),'"&msg&"','Solicitação Compra','"&EnvioSMS("Email")&"','"&EnvioSMS("Solicitante")&"')"
                             db.execute(sqlInsert)
                         END IF

@@ -11,6 +11,7 @@ end if
 
 response.Charset="utf-8"
 
+
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and req("Debug")="" then
 	on error resume next
 end if
@@ -66,8 +67,17 @@ end if
 
 
 <%=header(req("P"), "Paciente", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-
     <script type="text/javascript">
+        <%
+        if reg("sysActive")=0 then
+        %>
+            $('#lMenu .checkStatus > a').css('pointer-events','none');
+            $('li.checkStatus').css('cursor','no-drop');
+        <%
+        end if
+        %>
+       
+
         $(document).ready(function(){
             <%
             for i=0 to ubound(splBdgs)
@@ -202,9 +212,10 @@ end if
                   mask = ""
                 END IF
 
+                CorIdentificacao = reg("CorIdentificacao")
             %>
             <%=quickField("CPF", "CPF", "CPF", 3, reg("CPF"), " "&mask&" ", "", " ") %>
-            <%=quickField("simpleColor", "CorIdentificacao", "Cor de Identificação", 2, reg("CorIdentificacao"), "select * from Cores", "Cor", "")%>
+            <%=quickField("simpleColor", "CorIdentificacao", "Cor de Identificação", 2, CorIdentificacao, "select * from Cores", "Cor", "")%>
 
         </div><br />
         <div class="row">
@@ -458,12 +469,16 @@ end if
                 </div>
             </div>
             <div class="row">
-            	<div class="col-md-6<%if instr(Omitir, "|retornos|") then%> hidden<%end if%>">
+            	<div class="col-md-6<%if instr(Omitir, "|programação de agendamentos (retornos)|") then%> hidden<%end if%>">
 					<%call Subform("PacientesRetornos", "PacienteID", PacienteID,"frm")%>
                 </div>
-            	<div class="col-md-6<%if instr(Omitir, "|relativos|") then%> hidden<%end if%>">
+            	<div class="col-md-6<%if instr(Omitir, "|pessoas relacionadas e parentes|") then%> hidden<%end if%>">
 					<%call Subform("PacientesRelativos", "PacienteID", PacienteID, "frm")%>
                 </div>
+            </div>
+            <div class="row">
+                <div id="block-programas-saude" class="col-md-6"></div>
+                <div id="block-care-team" class="col-md-6"></div>
             </div>
 
             <div class="panel" id="dCad">
@@ -632,6 +647,34 @@ function mesclar(p1, p2){
 	}
 }
 
+<% if getConfig("ExibirProgramasDeSaude") = 1 and PacienteID <> "" then %>
+// Chamada Ajax Programa Saúde e Care Team
+$(document).ready(function () {
+
+    $("#block-programas-saude").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
+    function loadProgramasSaude() {
+        getUrl("health-programs/patient-view/<%=PacienteID %>", {}, function(data) {
+            $("#block-programas-saude").html(data);
+        });
+    }
+    loadProgramasSaude();
+
+    // recarrega o box de programas de saúde ao clicar no salvar
+    // para atualizar a regra de programa atrelado ao convênio do paciente
+    $('#Salvar').on('click', function() {
+        if ($("#block-programas-saude").length) {
+            loadProgramasSaude();
+        }
+    });
+
+    $("#block-care-team").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
+    getUrl("care-team/view/<%=PacienteID %>", {}, function(data) {
+        $("#block-care-team").html(data);
+    });
+
+});
+<% end if %>
+
 </script>
 <%
 if getConfig("LembreteFormulario")=1 then
@@ -664,8 +707,8 @@ if getConfig("LembreteFormulario")=1 then
                         if not ValOp.eof then
                             Valor = ValOp("Nome")
                         end if
-                    else
-                        'Valor = Registro(""&Campo("id")&"")
+                    elseif Campo("TipoCampoID")=1 or Campo("TipoCampoID")=8 then
+                        Valor = Registro(""&Campo("id")&"")
                     end if
                     %>
                     new PNotify({

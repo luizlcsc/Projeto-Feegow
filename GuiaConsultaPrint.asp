@@ -195,8 +195,10 @@ end if
 	<td width="2"></td>
 	<td class="celula_guia">
 	<table cellpadding="0" cellspacing="0" height="100%" width="520">
+	<% if getConfig("NaoExibirNomeContratado") <> 1 then %>
 	<tr><td class="campo_titulo">10-Nome do Contratado</td></tr>
 	<tr><td class="campo_texto"><%=NomeContratado%></td></tr>
+	<% end if %>
 	</table>
 	</td>
 	<td width="2"></td>
@@ -330,10 +332,7 @@ end if
 </body>
 </html>
 <script type="text/javascript">
-    setTimeout(function () {
-        print();
-    <%if req("close") = "1" then%>
-        window.close();
-    <%end if%>
-    }, 1000);
+	window.print();
+	window.addEventListener("afterprint", function(event) { window.close(); });
+	window.onafterprint();
 </script>

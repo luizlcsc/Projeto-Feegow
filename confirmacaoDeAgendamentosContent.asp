@@ -5,8 +5,8 @@
 PermitirSelecionarModeloWhatsApp=getConfig("PermitirSelecionarModeloWhatsApp")
 
 function centralWhatsApp(AgendamentoID, MensagemPadrao)
-
-        if MensagemPadrao="" then
+        Mensagem = MensagemPadrao
+        if Mensagem="" then
             sql = "select se.TextoSMS from configeventos ce "&_
                 " left join sys_smsemail se on se.id = ce.ModeloMsgWhatsapp "&_
                 " where ce.id = 1 "
@@ -21,9 +21,6 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
                     Mensagem=TextoSMS
                 end if
             end if
-
-        else
-            Mensagem = MensagemPadrao
         end if
 
 
@@ -217,7 +214,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
             LinhaProfissional = ""
 
             sqlConf = "select a.PacienteID, a.id, a.Notas, a.Data, a.id, a.ProfissionalID, a.LocalID, a.StaID, s.StaConsulta, a.Hora, pac.NomePaciente, pac.Cel1, trat.Tratamento, concat(if(isnull(pro.NomeSocial) or pro.NomeSocial='', pro.NomeProfissional, pro.NomeSocial)) NomeProfissional,"&_
-                                   "esp.Especialidade, proc.NomeProcedimento, proc.TipoProcedimentoID, l.Nomelocal, eq.NomeEquipamento, a.rdValorPlano, a.ValorPlano, conv.NomeConvenio, tab.NomeTabela "&_
+                                   "esp.Especialidade, proc.NomeProcedimento, proc.TipoProcedimentoID, a.TipoCompromissoID, l.Nomelocal, eq.NomeEquipamento, a.rdValorPlano, a.ValorPlano, conv.NomeConvenio, tab.NomeTabela "&_
                                    ", (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, (select EventoID from agendamentosrespostas where AgendamentoID=a.id limit 1) RespostaID "&_
                                    "FROM agendamentos a LEFT JOIN staconsulta s ON a.StaID=s.id LEFT JOIN pacientes pac ON pac.id=a.PacienteID "&_
                                    "LEFT JOIN profissionais pro ON pro.id=a.ProfissionalID "&_
@@ -225,7 +222,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                                    "LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID LEFT JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN locais l ON l.id=a.LocalID "&_
                                    "LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN convenios conv ON conv.id=a.ValorPlano LEFT JOIN tabelaparticular tab ON tab.id=a.TabelaParticularID "&_
                                    "WHERE "&sqlData& sqlSta & sqlProf & sqlPac & sqlTipoProc & sqlGrupoProc & sqlUnidade &" AND a.sysActive=1 ORDER BY Data, ProfissionalID, Hora"
-            'response.write sqlConf
+            'dd(sqlConf)
             set ag = db.execute(sqlConf)
             while not ag.eof
                 i = i + 1
@@ -296,7 +293,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     <td>
                     <%
                     StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'><img data-toggle='tooltip' title='"&ag("StaConsulta")&"' src='assets/img/"&ag("StaID")&".png' /></span>  <i class='fa fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
-                    set StatusSQL=db.execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (1,11,7, 116)")
+                    set StatusSQL=db.execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (1,11,7, 116, 22)")
                     while not StatusSQL.eof
                         Active=""
                         if StatusSQL("id")=ag("StaID") then
@@ -330,7 +327,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     <%
                     else
                         whatsAppFiltro_ProfissionalID = LinhaProfissional
-                        whatsAppFiltro_TipoProcedimentoID = ag("TipoProcedimentoID")
+                        whatsAppFiltro_TipoProcedimentoID = ag("TipoCompromissoID")
 
                         listPhonesSQL = " SELECT modelo.Descricao ,modelo.TextoSMS, eventos.Profissionais                                      "&chr(13)&_
                                         " FROM sys_smsemail modelo                                                                             "&chr(13)&_
@@ -340,7 +337,9 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                                         " (eventos.Procedimentos LIKE '%|"&whatsAppFiltro_TipoProcedimentoID&"|%' OR eventos.Procedimentos LIKE '%|ALL|%'                          "&chr(13)&_
                                         "    OR   eventos.Procedimentos='' OR eventos.Procedimentos IS NULL)                                   "&chr(13)&_
                                         " AND eventos.`Status` LIKE '%|1|%' "&chr(13)&_
-                                        " AND (eventos.Ativo=1) GROUP BY modelo.id"
+                                        " AND (eventos.Ativo=1) GROUP BY modelo.id"&_
+                                        " UNION ALL "&_
+                                        " SELECT se.Descricao, se.TextoSMS, ''  from configeventos ce  left join sys_smsemail se on se.id = ce.ModeloMsgWhatsapp  where ce.id = 1 "
 
                         set listPhones=db.execute(listPhonesSQL)
                         while not listPhones.eof

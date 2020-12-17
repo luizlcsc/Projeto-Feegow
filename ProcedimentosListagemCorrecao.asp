@@ -6,16 +6,32 @@ guiaId = req("guiaId")
 tabela = req("tabela")
 inputValorPago = req("valor")
 
+count = 0
+countGuias = 0
 if(UCase(tabela) = UCase("GuiaHonorarios")) then 
     set lotesEnv = db.execute("SELECT * FROM tissprocedimentoshonorarios WHERE GuiaID = "&guiaId&"")
     set tissGuia = db.execute("SELECT *, procedimentos as TotalGeral FROM tissguiahonorarios WHERE id = "&guiaId&"")
     despesas = empty
+
+    
+    set countRows = db.execute("SELECT count(*) as id FROM tissprocedimentoshonorarios WHERE GuiaID = "&guiaId&"")
+    if not countRows.eof then
+        countGuias = CInt(countRows("id"))
+    end if
 end if
 
 if(UCase(tabela) = UCase("GuiaSADT")) then
     set lotesEnv = db.execute("SELECT * FROM tissprocedimentossadt WHERE GuiaID = "&guiaId&"")
     set despesas = db.execute("SELECT * FROM tissguiaanexa WHERE GuiaID = "&guiaId&"")
     set tissGuia = db.execute("SELECT * FROM tissguiasadt WHERE id = "&guiaId&"")
+
+    
+
+    set countRows = db.execute("SELECT count(*) as id FROM tissprocedimentossadt WHERE GuiaID = "&guiaId&"")
+    if not countRows.eof then
+        countGuias = CInt(countRows("id"))
+    end if
+
 end if
 
 %>
@@ -38,13 +54,6 @@ end if
   <tbody> 
 <%
 dim count
-count = 0
-countGuias = 0
-
-set countRows = db.execute("SELECT count(*) as id FROM tissprocedimentossadt WHERE GuiaID = "&guiaId&"")
-if not countRows.eof then
-    countGuias = CInt(countRows("id"))
-end if
 
 if countGuias <= 1 then
     valorPago = inputValorPago
@@ -53,7 +62,7 @@ end if
 
 while not lotesEnv.EOF
 
-
+    valorPago = lotesEnv("ValorPago")
 %>
 
     <tr>
@@ -97,7 +106,7 @@ set lotesEnv=nothing
                         <td align="center"><%=despesas("Descricao")%></td>
                         <td align="center"><%=despesas("Quantidade")%></td> 
                         <td align="center"><%=fn(despesas("ValorTotal"))%></td> 
-                        <td align="center"><%=quickfield("currency", "ValorPagoGuia", "", 3, despesas("ValorPago"), " valor-pago-field " , "", " text-right  ") %></td>
+                        <td align="center"><%=quickfield("currency", "ValorPagoGuia"&despesas("id"), "", 3, despesas("ValorPago"), " valor-pago-field " , "", " text-right  ") %></td>
 
                     </tr>
                 <% 
@@ -178,13 +187,11 @@ set lotesEnv=nothing
                 type: "POST",
                 url: "SalvaProcedimentos.asp",
                 data:  dataString,
-                cache: false,
-                dataType: "html",
-                success: function(responseText) {
-                    showMessageDialog("Procedimentos salvo com sucesso.", "success");
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
+                success: function(data) {
+                    lancamentoValorPago(data.guia_id, data.tipo_guia, data.total_pago, statusId=data.status_id);
+
+                    closeComponentsModal();
+                    
                     
                 },
                 error: function(resposeText){    

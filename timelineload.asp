@@ -5,6 +5,8 @@
 'ALTER TABLE `buiformspreenchidos`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `sysActive`
 'ALTER TABLE `buiforms`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `Versao`
 
+SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
+
     if ProfessionalID <>"" then
         sqlProf = "left join sys_users as us on us.id = sysUser where us.idInTable = "&ProfessionalID
     end if 
@@ -50,7 +52,7 @@
     sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC limit "&loadMore&","&MaximoLimit
-             'response.write(sql)
+
              set ti = db.execute( sql )
              while not ti.eof
                  Ano = year(ti("DataHora"))
@@ -68,6 +70,8 @@
 
                 c = c + 1
                 exibe = 1
+
+
                 if ti("Tipo")="AE" or ti("Tipo")="L" then
                 	if ti("Tipo")="L" then
 		                sqlTipo = " and (buiforms.Tipo=3 or buiforms.Tipo=4 or buiforms.Tipo=0 or isnull(buiforms.Tipo))"
@@ -76,6 +80,8 @@
 	                end if
 
                     set preen = db.execute("select buiformspreenchidos.id idpreen, buiforms.Nome, buiformspreenchidos.ModeloID, buiformspreenchidos.Autorizados, buiformspreenchidos.sysUser preenchedor, buiformspreenchidos.PacienteID, buiformspreenchidos.DataHora, buiforms.* from buiformspreenchidos left join buiforms on buiformspreenchidos.ModeloID=buiforms.id where buiformspreenchidos.id="& ti("id") &" order by buiformspreenchidos.DataHora desc, id desc")
+
+
                     if not preen.eof then
 	                    if preen("preenchedor")=session("User") or preen("Autorizados")="|ALL|" or isnull(preen("Autorizados")) then
 		                    if preen("Autorizados")="|ALL|" or isnull(preen("Autorizados")) then
@@ -92,7 +98,7 @@
                         end if
                     end if
                 end if
-                if exibe=1 then
+                if true then
              %>
             <%
             PermissaoArquivo = true
@@ -144,7 +150,45 @@
             end if
 
             if cstr(session("User"))=ti("sysUser")&"" then
-            PermissaoArquivo = true
+                PermissaoArquivo = true
+            end if
+
+            if exibe=0 then
+                PermissaoArquivo=false
+            end if
+
+            if not PermissaoArquivo then
+    
+                hiddenRegistro = ""
+
+                if SinalizarFormulariosSemPermissao&""<>"1" then
+                    hiddenRegistro = " hidden "
+                end if
+            
+                %>
+            <div class="timeline-item <%=hiddenRegistro%>">
+                <div class="timeline-icon hidden-xs">
+                    <span class="fa fa-lock text-danger"></span>
+                </div>
+                <div class="panel">
+                    <div class="panel-heading">
+                        <span class="panel-title panel-warning">
+                            <span class="fa fa-align-justify"></span>
+                            <% if ti("sysUser")<>0 then response.write( nameInTable(ti("sysUser")) ) end if %>
+                            <code><%=ti("Titulo") %></code>
+                        </span>
+
+                        <div class="panel-header-menu pull-right mr10 text-muted fs12">
+<%
+                        if not isnull(ti("DataHora")) then
+                            response.write( formatdatetime( ti("DataHora"), 2) &" - "& ft( ti("DataHora")) )
+                        end if
+%>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%
             end if
 
             if PermissaoArquivo then
@@ -249,7 +293,7 @@
                             end if
                             %> </div>
                     </div>
-                    <div class="panel-body timelineApp" style=" word-break: break-all; <% if device()<>"" then %> overflow-x:scroll!important; <% end if %>" >
+                    <div class="panel-body timelineApp" style="text-align:justify; <% if device()<>"" then %> overflow-x:scroll!important; <% end if %>" >
                 <%
 '                response.Write( Rotulo & Valor  &"<br>{{"& ti("Tipo") &"}}" )
                 select case ti("Tipo")
@@ -282,8 +326,9 @@
                                 if not checktable.eof then
                                     set reg = db.execute("select * from `_"& ti("Modelo") &"` where id="& ti("id"))
                                     if not reg.eof then
+                                        sqlCampos="select * from buicamposforms where FormID="&ti("Modelo")&" and TipoCampoID NOT IN(7,10,11,12,15) ORDER BY IF(Ordem=0, 999, Ordem), pTop, pLeft"
 
-                                        set pcampos = db.execute("select * from buicamposforms where FormID="&ti("Modelo")&" and TipoCampoID NOT IN(7,10,11,12,15) ORDER BY Ordem")
+                                        set pcampos = db.execute(sqlCampos)
                                         while not pcampos.eof
                                             Rotulo = trim(pcampos("RotuloCampo")&"")
                                             if Rotulo<>"" then
@@ -450,39 +495,41 @@
                         getProtocolos.close
                         set getProtocolos = nothing
                     case "Imagens"
+                        if aut("ImagensV") = 1 then
                         %>
-                    <div class="row">
-                        <%
-                            set im = db.execute("select * from arquivos where date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='I' AND PacienteID="&PacienteID)
-                            while not im.eof
-                                permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
-                                podever = true
+                        <div class="row">
+                            <%
+                                set im = db.execute("select * from arquivos where date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='I' AND PacienteID="&PacienteID)
+                                while not im.eof
+                                    permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
+                                    podever = true
 
-                                if permissao <> "" then
-                                    permissaoSplit = split(permissao,"|")
-                                    podever = permissaoSplit(0)
-                                end if
+                                    if permissao <> "" then
+                                        permissaoSplit = split(permissao,"|")
+                                        podever = permissaoSplit(0)
+                                    end if
 
-                                if podever then
+                                    if podever then
+                                    %>
+                                        <span>
+                                        <% if ComEstilo = "S" then %>
+                                                <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
+                                        <% else %>
+                                            <a class="gallery-item" href="<%=arqEx(im("NomeArquivo"), "Imagens")%>" target="_blank">
+                                                <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
+                                            </a>
+                                        <% end if %>
+                                        </span>
+                                    <%
+                                    end if
+                                    im.movenext
+                                wend
+                                im.close
+                                set im=nothing
                                 %>
-                                    <span>
-                                    <% if ComEstilo = "S" then %>
-                                            <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
-                                    <% else %>
-                                        <a class="gallery-item" href="<%=arqEx(im("NomeArquivo"), "Imagens")%>" target="_blank">
-                                            <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
-                                        </a>
-                                    <% end if %>
-                                    </span>
-                                <%
-                                end if
-                                im.movenext
-                            wend
-                            im.close
-                            set im=nothing
-                             %>
-                    </div>
+                        </div>
                         <%
+                        end if
                     case "Arquivos"
                             %>
                        <div class="row">

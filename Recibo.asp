@@ -4,7 +4,7 @@
 response.Charset="utf-8"
 %>
 <!--#include file="connect.asp"-->
-<a style="position:fixed; background-color:#0CF; color:#FFF; right:14px; z-index:10000000; text-decoration:none; padding:5px;" href="#" class="print" rel="areaImpressao">
+<a style="position:fixed; background-color:#0CF; color:#FFF; right:14px; z-index:10000000; text-decoration:none; padding:5px;" href="#" onclick="print()" class="print" rel="areaImpressao">
 	<img src="assets/img/printer.png" border="0" alt="IMPRIMIR" title="IMPRIMIR" align="absmiddle"> <strong>IMPRIMIR</strong>
 </a>
 <div id="areaImpressao">
@@ -50,6 +50,3 @@ end if
     </tr>
 </table>
 </div>
-<script src="assets/js/jquery-1.6.2.min.js"></script>
-<script src="assets/js/jquery.PrintArea.js_4.js"></script>
-<script src="assets/js/core.js"></script>

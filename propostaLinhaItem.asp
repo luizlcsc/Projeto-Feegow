@@ -27,7 +27,7 @@ END IF
     	    <input type="hidden" name="pacoteID<%=id%>" value="<%=PacoteID%>">
     	<% END IF %>
     	<input type="hidden" class="ordem-proposta" name="ordem<%=id%>" value="<%=Ordem%>">
-		<%=quickField("text", "Quantidade"&id, "", 4, Quantidade, " text-right disable", "", desabilitarProposta&" required onkeyup=""recalc($(this).attr('id'))""")%><input type="hidden" name="inputs" value="<%= id %>"></td>
+		<%=quickField("text", "Quantidade"&id, "", 4, Quantidade, " text-right disable input-sm", "", desabilitarProposta&" required onkeyup=""recalc($(this).attr('id'))""")%><input type="hidden" name="inputs" value="<%= id %>"></td>
         <%
         if Tipo="S" or Tipo="P" then
             %>
@@ -55,14 +55,17 @@ END IF
             ValorUnitarioReadonly=" readonly"
         end if
         %>
-    <td class="<%= hiddenValor %>"><%=quickField("currency", "ValorUnitario"&id, "", 4, formatnumber(ValorUnitario,2), " text-right ValorUnitario disable", "", " required onkeyup=""recalc($(this).attr('id'))"""&ValorUnitarioReadonly&desabilitarProposta)%></td>
-        <td class="<%= hiddenValor %>"><%=quickField("text", "Desconto"&id, "", 4, formatnumber(Desconto,2), " input-mask-brl PropostaDesconto text-right disable", "", " onkeyup=""recalc($(this).attr('id'))"" style=""width:45%;float:left;margin-right:10px;min-width:10px"""&desabilitarProposta)%>
-            <select onchange="recalc($(this).attr('id'))" style="width: 35%;padding:0;min-width: 10px;" name="DescontoTipo<%=id%>" id="DescontoTipo<%=id%>" class="form-control DescontoTipo" <%=desabilitarProposta%>>
+    <td class="<%= hiddenValor %>"><%=quickField("currency", "ValorUnitario"&id, "", 4, formatnumber(ValorUnitario,2), " input-sm text-right ValorUnitario disable", "", " required onkeyup=""recalc($(this).attr('id'))"""&ValorUnitarioReadonly&desabilitarProposta)%></td>
+        <td class="<%= hiddenValor %>">
+            <div class="input-group">
+            <%=quickField("text", "Desconto"&id, "", 4, formatnumber(Desconto,2), " input-mask-brl PropostaDesconto text-right disable input-sm", "", " onkeyup=""recalc($(this).attr('id'))"" style=""width:55%;float:left;min-width:10px"""&desabilitarProposta)%>
+            <select onchange="recalc($(this).attr('id'))" style="width: 35%;padding:0;min-width: 10px;" name="DescontoTipo<%=id%>" id="DescontoTipo<%=id%>" class="form-control input-sm DescontoTipo" <%=desabilitarProposta%>>
                 <option value="V">R$</option>
                 <option <% if TipoDesconto="P" then %>selected<% end if %> value="P">%</option>
             </select>
+            </div>
         </td>
-    <td class="<%= hiddenValor %>"><%=quickField("text", "Acrescimo"&id, "", 4, formatnumber(Acrescimo,2), " input-mask-brl text-right disable ", "", " onkeyup=""recalc($(this).attr('id'))"""&desabilitarProposta)%></td>
+    <td class="<%= hiddenValor %>"><%=quickField("text", "Acrescimo"&id, "", 4, formatnumber(Acrescimo,2), " input-mask-brl text-right disable input-sm", "", " onkeyup=""recalc($(this).attr('id'))"""&desabilitarProposta)%></td>
     <td class="text-right <%=hiddenValor%>" id="sub<%=id%>" nowrap>R$ <%= formatnumber( Subtotal ,2) %></td>
     <td><button type="button" class="btn btn-xs btn-danger disable <%=escondeProposta%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove "></i></button></td>
 </tr>

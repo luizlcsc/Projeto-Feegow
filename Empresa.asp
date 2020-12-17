@@ -5,6 +5,10 @@
     $(".crumb-icon a span").attr("class", "fa fa-hospital-o");
 </script>
 <%
+if req("I") = "" then
+	userId = 1
+end if
+
 sql = "select * from empresa where id=1"
 set reg = db.execute(sql)
 if reg.eof then
@@ -208,7 +212,7 @@ function removeFoto(){
 
         		    await uploadProfilePic({
         		        $elem: $("#Foto"),
-        		        userId: "<%=req("I")%>",
+        		        userId: "<%=userId%>",
         		        db: "<%= LicenseID %>",
         		        table: 'empresa',
         		        content: file_input.data('ace_input_files')[0] ,

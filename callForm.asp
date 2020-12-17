@@ -1,4 +1,5 @@
-﻿<%
+﻿<!--#include file="./Classes/ServerPath.asp"-->
+<%
 'on error resume next
 FormID = Id
 
@@ -64,7 +65,7 @@ if not getForm.eof then
         <div class="panel-footer text-right">
             <button type="button" class="btn btn-alert btn-sm " onclick="showLog()"><i class="fa fa-history"></i> Logs</button>
 
-            <button type="button" class="btn btn-alert btn-sm hidden" onclick="window.open('https://clinic7.feegow.com.br/feegow_components/api/FormLogs?P=<%=req("p") %>')"><i class="fa fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-alert btn-sm hidden" onclick="window.open('<%=appUrl(False)%>/feegow_components/api/FormLogs?P=<%=req("p") %>')"><i class="fa fa-history"></i> Logs</button>
             <% if req("LaudoSC")="" then %>
                 <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="fa fa-print"></i> Imprimir</button>
             <% end if %>
@@ -276,6 +277,9 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         let atual = JSON.stringify( $(".campoInput, .campoCheck, .tbl").serializeFormJSON());
 
         if(atual!=ultimo){
+
+            //desabilita feature
+            return;
             $.ajax({
                 url: domain+"log/saveFormLog",
                 method: 'POST',

@@ -77,9 +77,15 @@ arrayColunas = cv("arrayColunas")
     var patientGrowth = [
   	<%
     while not vals.eof
-      Dias = datediff("d", Nascimento, vals("Data"))
+      if Intervalo = "d" then
+        tempo = datediff("d", Nascimento, vals("Data"))
+        descricaoIntervalo  = "Dias"
+      else
+        tempo = datediff("m", Nascimento, vals("Data"))
+        descricaoIntervalo = "xMeses"
+      end if 
       %>
-        [<%= Dias %>, <%= replace(vals( Coluna ), ",", ".")%>],
+        [<%= tempo %>, <%= replace(vals( Coluna ), ",", ".")%>],
       <%
     vals.movenext
     wend

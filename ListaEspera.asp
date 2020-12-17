@@ -35,9 +35,9 @@ TelemedicinaAtiva = recursoAdicional(32) = 4
                 <div class="col-xs-12 col-md-9 text-right">
                   <span class="hidden-xs va-m text-muted mr15" id="total-pacientes">
                   </span>
-<%
-if aut("|esperaoutrosprofissionaisV|")=1 then
-%>
+                  <%
+                  if aut("|esperaoutrosprofissionaisV|")=1 then
+                  %>
                   <div class="btn-group mr10">
                    <div class="btn-group ib mr10">
                        <fieldset>
@@ -55,15 +55,20 @@ if aut("|esperaoutrosprofissionaisV|")=1 then
                   <%
                   end if
                   %>
-
                 </div>
               </div>
             </div>
 
+            <%
+              if aut("salaesperaV")=1 or True then
+            %>
 	          <!-- message listings table -->
 	          <div class="table-responsive" id="listaespera">
-                    <% server.Execute("ListaEsperaCont.asp") %>
-              </div>
+              <% server.Execute("ListaEsperaCont.asp") %>
+            </div>
+            <%
+              end if
+            %>
 
 
         </div>

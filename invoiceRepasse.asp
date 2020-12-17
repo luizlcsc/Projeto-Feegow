@@ -13,13 +13,8 @@ for i = 0 to ubound(Linha)
 
 
 if IsNumeric(Row) then 
-Forma = ref("FormaID")
 
-if Forma="0_0" then
-    Forma=""
-end if
-
-FormaID = "|P"& Forma  &"|"
+FormaID = "|P"& ref("FormaID") &"|"
 
 InvoiceID = req("InvoiceID")
 
@@ -27,48 +22,8 @@ ProfissionalID = ref("ProfissionalID"&Row)
 ProcedimentoID = ref("ItemID"&Row)
 EspecialidadeID = ref("EspecialidadeID"&Row)
 TabelaID = ref("invTabelaID")
-valorAnterior = ""
-set sqlvalor = db.execute("select ValorUnitario from itensinvoiceoutros where InvoiceID="&InvoiceID&" and ItemInvoiceID="& Row)
-if not sqlvalor.eof then
-    valorAnterior = sqlvalor("ValorUnitario")&""
-end if
 
 db.execute("delete from itensinvoiceoutros where InvoiceID="&InvoiceID&" and ItemInvoiceID="& Row)
-
-temMovment = 1
-
-if ref("FormaID") = "0_0" then
-
-    sqltest =   " select                                                                                    "&chr(13)&_
-                " 	forma.id as forma,                                                                      "&chr(13)&_
-                " 	forma.MetodoID as MetodoID,                                                             "&chr(13)&_
- 	            "   pay.AccountIDDebit as conta                                                             "&chr(13)&_
-
-                " from                                                                                      "&chr(13)&_
-                " 	sys_financialmovement bill                                                              "&chr(13)&_
-                " 	left join sys_financialdiscountpayments discount on discount.InstallmentID = bill.id    "&chr(13)&_
-                " 	left join sys_financialmovement pay on  pay.id = discount.MovementID                    "&chr(13)&_
-                " 	left join sys_formasrecto forma on pay.PaymentMethodID = forma.MetodoID                 "&chr(13)&_
-                " where                                                                                     "&chr(13)&_
-                " bill.InvoiceID = "&InvoiceID
-    set forma = db.execute(sqltest)
-
-    if not forma.eof then
-        if forma("forma")&"" <> "" then
-            ' regra retirada do arquivo editDom.asp : 78
-
-            if forma("MetodoID")&""= "1" OR forma("MetodoID")&""="2" OR forma("MetodoID")&""="7" then
-                conta  = "0"
-            else
-                conta = forma("conta")
-            end if
-            FormaID = "|P"&forma("forma")&"_"&conta&"|"
-        else
-            valorAnterior = ""
-            temMovment = 0
-        end if
-    end if
-end if 
 
 DominioID = dominioRepasse(FormaID, ProfissionalID, ProcedimentoID, UnidadeID, TabelaID, EspecialidadeID, "", "")
 

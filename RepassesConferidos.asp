@@ -101,7 +101,7 @@ end if
             <div class="panel-body hidden-print">
                 <div class="row">
                     <%= quickfield("multiple", "Forma", "Convênio", 2, reqf("Forma"), "select '0' id, '     PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
-                    <%= quickfield("multiple", "FormaRecto", "Forma de recto.", 2, reqf("FormaRecto"), "select id, PaymentMethod from cliniccentral.sys_financialpaymentmethod where TextC<>'' ORDER BY PaymentMethod", "PaymentMethod", "") %>
+                    <%= quickfield("multiple", "FormaRecto", "Forma de recto.", 2, reqf("FormaRecto"), "select -1 id, ' Não pago' PaymentMethod UNION ALL select id, PaymentMethod from cliniccentral.sys_financialpaymentmethod where TextC<>'' ORDER BY PaymentMethod", "PaymentMethod", "") %>
                     <%= quickfield("multiple", "Status", "Status de recto.", 2, reqf("Status"), "select 'RC' id, 'Recebido - Compensado' descricao UNION ALL select 'RN', 'Recebido - Não compensado' UNION ALL select 'NR', 'Não Recebidos'", "descricao", "") %>
 
                     <%= quickField("datepicker", "De", "Execução", 2, De, "", "", " placeholder='De' required='required'") %>
@@ -237,7 +237,11 @@ if ExibeResultado then
 
                 FormaRecto = replace(reqf("FormaRecto"),"|","")
                 if FormaRecto<>"" then
-                    sqlFormRecto=" AND pmdesc.id IN ("&FormaRecto&") "
+                    if instr(FormaRecto, "-1")>0 then
+                        sqlFormRecto=" AND pmdesc.id IS NULL "    
+                    else
+                        sqlFormRecto=" AND pmdesc.id IN ("&FormaRecto&") "
+                    end if
                 end if
 
 'Response.End

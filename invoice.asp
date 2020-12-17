@@ -1338,21 +1338,6 @@ function marcarMultiplosExecutados(){
 
 };
 
-$(document).ready(function(e) {
-
-    let linhas = $("tr[id^='row']")
-    if(linhas.length>0){
-        linhas.map((key,linha)=>{
-            let localId = $(linha).attr('id')
-            let id = localId.replace("row",'')
-            if(id.includes("_")){
-                return false
-            }
-            calcRepasse(id)
-        })
-    }
-});
-
 </script>
 
 <!--#include file="CalculaMaximoDesconto.asp"-->

@@ -649,7 +649,7 @@ end if
             if reqf("InvoiceID")<>"" and 0 then
                 'sqlII = "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& reqf("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
                 sqlII = "select r.*, t.Nomelocal CompanyUnit, esp.especialidade,s.NomeProfissional ProfissionalSolicitante, r.ProfissionalSolicitante ProfissionalSolicitanteID from ( "&_
-                        "select ii.*,i.FormaID, i.ContaRectoID,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& reqf("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
+                        "select ii.*,i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE i.id="& reqf("InvoiceID") &" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlUnidades &" ORDER BY ii.DataExecucao"&_
                         ") r"&_
                         " LEFT JOIN especialidades esp ON esp.id = r.EspecialidadeID"&_
                         " LEFT JOIN (( SELECT 0 AS 'id', NomeFantasia NomeLocal FROM empresa WHERE id=1) UNION ALL ( SELECT id, NomeFantasia FROM sys_financialcompanyunits)) t ON t.id = r.CompanyUnitID"&_
@@ -665,7 +665,7 @@ end if
             elseif reqf("AC")="1" then
                 'sqlII = "select r.id ReconsolidacaoID, ii.*, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE NOT ISNULL(ii.InvoiceID)" & sqlUnidades
                 sqlII = "select rs.*, t.Nomelocal CompanyUnit, esp.especialidade,s.NomeProfissional ProfissionalSolicitante, rs.ProfissionalSolicitante ProfissionalSolicitanteID from ("&_
-                        "select r.id ReconsolidacaoID, ii.*, i.FormaID, i.ContaRectoID, i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE ii.Executado='S' AND ii.Associacao>0 AND NOT ISNULL(ii.InvoiceID)" & sqlUnidades &") rs"&_
+                        "select r.id ReconsolidacaoID, ii.*, i.ProfissionalSolicitante, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente FROM reconsolidar r LEFT JOIN itensinvoice ii ON (ii.InvoiceID=r.ItemID and r.tipo='invoice') LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID WHERE ii.Executado='S' AND ii.Associacao>0 AND NOT ISNULL(ii.InvoiceID)" & sqlUnidades &") rs"&_
                         " LEFT JOIN especialidades esp ON esp.id = rs.EspecialidadeID"&_
                         " LEFT JOIN (( SELECT 0 AS 'id', NomeFantasia NomeLocal FROM empresa WHERE id=1) UNION ALL ( SELECT id, NomeFantasia FROM sys_financialcompanyunits)) t ON t.id = rs.CompanyUnitID"&_
                         " LEFT JOIN ("&_
@@ -694,7 +694,7 @@ end if
 "WHERE m.Date BETWEEN "&_
 " "& mydatenull(De) &" AND "& mydatenull(Ate) &" AND NOT ISNULL(t.id) AND ii.Executado='"&ExecutadoStatus&"' AND ii.Associacao>0 AND ii.Tipo='S' and i.AssociationAccountID=3 "& ContaProfissional & sqlProcedimento &_
                 " UNION ALL "&_
-"SELECT ii.*, i2.FormaID, i2.ContaRectoID, i2.ProfissionalSolicitante, i2.CompanyUnitID, i2.AccountID, i2.AssociationAccountID, i2.TabelaID, proc2.NomeProcedimento, pac2.NomePaciente "&_
+"SELECT ii.*, i2.FormaID, i2.CompanyUnitID, i2.AccountID, i2.AssociationAccountID, i2.TabelaID, proc2.NomeProcedimento, pac2.NomePaciente "&_
 "FROM sys_financialmovement m2 "&_
 "LEFT JOIN itensdescontados idesc2 ON idesc2.PagamentoID=m2.id "&_
 "LEFT JOIN itensinvoice ii ON ii.id=idesc2.ItemID "&_
@@ -716,7 +716,7 @@ end if
 " FROM profissionalexterno) s) s ON s.id = r.ProfissionalSolicitante "
             else
 
-                sqlII = "select ii.*, i.FormaID, i.ContaRectoID,s.NomeProfissional ProfissionalSolicitante, i.ProfissionalSolicitante ProfissionalSolicitanteID, t.NomeLocal CompanyUnit, esp.especialidade, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID "&_
+                sqlII = "select ii.*, s.NomeProfissional ProfissionalSolicitante, i.ProfissionalSolicitante ProfissionalSolicitanteID, t.NomeLocal CompanyUnit, esp.especialidade, i.CompanyUnitID, i.AccountID, i.AssociationAccountID, i.TabelaID, proc.NomeProcedimento, pac.NomePaciente from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN pacientes pac ON pac.id=i.AccountID "&_
                         "left join especialidades esp on esp.id = ii.EspecialidadeID "&_
                         "left join ((select 0 as 'id',  NomeFantasia NomeLocal FROM empresa WHERE id=1) UNION ALL (select id,  NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia)) t on t.id = i.CompanyUnitID "&_
                         "left join (SELECT s.id, s.NomeProfissional FROM (SELECT CONCAT('0_', id) id, NomeEmpresa NomeProfissional FROM empresa "&_
@@ -743,9 +743,7 @@ end if
                 EspecialidadeID = ii("EspecialidadeID")
                 TabelaID = ii("TabelaID")
                 UnidadeID = ii("CompanyUnitID")
-                formaToDominio = ii("FormaID")
-                contaToDominio = ii("ContaRectoID")
-
+                
                 'modificação 29102019
                 UnidadeName = ii("CompanyUnit")
                 Solicitante = ii("ProfissionalSolicitante")
@@ -1146,9 +1144,8 @@ desfazBtnCons = ""
                         ultimoSobre = ""
                         somaDesteSobre = 0
                         ValorBase = ValorProcedimento
-                        if not isNull(formaToDominio) and not isnull(contaToDominio) and formaToDominio&"" <> "0" and contaToDominio&"" <> "0" then 
-                            conta = contaToDominio
-                            inicial = "|P"&formaToDominio&"_"&conta&"|"
+                        if not isNull(formaToDominio) and not isnull(contaToDominio) then
+                         inicial = "|P"&formaToDominio&"_"&contaToDominio&"|"
                         else
                             inicial = "|P|"
                         end if

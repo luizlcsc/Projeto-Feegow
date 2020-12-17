@@ -25,7 +25,7 @@ if masterLogin then
     "l.Servidor, "&_
     " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, "&_
     " servHomolog.DNS ServerHomolog, "&_
-    "COALESCE(serv.DNS, l.Servidor) Servidor "&_
+    "COALESCE(serv.DNS, l.Servidor) Servidor,u.Tipo as tipoUsuario "&_
     " FROM licencasusuarios AS u "&_
     " LEFT JOIN licencas AS l ON l.id='"&tryLoginMaster("licencaId")&"'"&_
     " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID "&_

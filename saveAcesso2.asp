@@ -89,6 +89,13 @@ if ref("User")<>"" then
             dbc.execute("INSERT INTO cliniccentral.licencasusuariossenhas (LicencaID,UsuarioID,Senha) VALUES ("&LicencaID&", "&UserID&", SHA1('" & PasswordSalt & Password &"'))")
 		end if
 	%>
+
+
+		gtag('event', 'acesso_concedido', {
+			'event_category': 'dados_de_acesso',
+			'event_label': "Dados de acesso > conceder e-mail e senha",
+		});
+
         new PNotify({
             title: 'Sucesso!',
             text: 'Dados de acesso alterados com sucesso.',
@@ -119,6 +126,12 @@ else
 			call ExecuteAllServers(sqlupdate)
 
 			%>
+
+				gtag('event', 'acesso_desabilitado', {
+					'event_category': 'dados_de_acesso',
+					'event_label': "Dados de acesso > remover e-mail",
+				});
+
 				new PNotify({
 					title: 'Sucesso!',
 					text: 'Acesso ao sistema desabilitado',

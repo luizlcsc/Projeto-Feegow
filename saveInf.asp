@@ -373,7 +373,7 @@ setTimeout(()=>{
 %>
 
 
-gtag('event', 'nova_proposta', {
+gtag('event', 'atendimento_finalizado', {
 	'event_category': 'atendimento',
 	'event_label': "Proposta > Salvar",
 });

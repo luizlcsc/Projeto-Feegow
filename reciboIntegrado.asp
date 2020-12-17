@@ -100,6 +100,12 @@ end if
 
 %>
 <script>
+
+        gtag('event', 'recibo_impresso', {
+            'event_category': 'recibos',
+            'event_label': "Recibos > Imprimir",
+        });
+
         function setIframeSrc() {
         var s = "relatorio.asp?TipoRel=ImprimeRecibo&Imprimiu=1&I=<%= request.QueryString("ReciboID") %>";
         var iframe1 = document.getElementById('iframe1');

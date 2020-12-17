@@ -22,7 +22,7 @@
     end if
 
     if instr(Tipo, "|Diagnostico|")>0 then
-        sqlDiagnostico = " union all (select 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, concat('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', IFNULL(d.Descricao,'')),'' FROM pacientesdiagnosticos d LEFT JOIN cliniccentral.cid10 cid on cid.id=d.CidID WHERE PacienteID="&PacienteID&") "
+        sqlDiagnostico = " union all (select 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, concat('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', CONCAT(IFNULL(d.Descricao, ''), '<br>', IFNULL(tnm.Descricao, ''))) Descricao,'' FROM pacientesdiagnosticos d LEFT JOIN cliniccentral.cid10 cid on cid.id=d.CidID LEFT JOIN pacientesdiagnosticos_tnm tnm ON d.id = tnm.PacienteDiagnosticosID WHERE d.PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Atestado|")>0 then

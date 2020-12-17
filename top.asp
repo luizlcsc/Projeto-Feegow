@@ -135,7 +135,6 @@ else
                             session("Cir")=1
                         end if
                     end if
-
                 end if
 
                 AgendaCirurgica = recursoAdicional(13)

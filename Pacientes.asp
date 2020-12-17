@@ -87,14 +87,14 @@ sqlArquivo = 	" select count(tda.id) as qtd_arquivoInvalido, group_concat(distin
 				" 	and a.id is null or a.Validade <= now()                                               												"
 
  arquivoVencido = recordToJSON(db.execute(sqlArquivo))
- 
+
 %>
 
 <!--#include file="modal.asp"-->
 <!--#include file="modalComparar.asp"-->
 <%
 isProposta = req("isProposta")
-if isProposta = "S" then 
+if isProposta = "S" then
 %>
 <script>
 $(function(){
@@ -269,7 +269,7 @@ function showMessage(text, state, title) {
 	}
 };
 /**
- * Função para Autorizar Internações  
+ * Função para Autorizar Internações
  */
 function verificaElegibilidade(N) {
 	var baseUrl = domain + "autorizador-tiss/";
@@ -290,15 +290,15 @@ function verificaElegibilidade(N) {
 				},
 		success: function (data) {
 			var message = "",
-			state = 0; 
+			state = 0;
 			//$ico.toggleClass('btn btn-xs btn-warning');
 			$ico.removeClass('fas fa-circle-notch fa-spin');
 			$btn.attr("disable", false);
 			// situações possíveis de retorno
-			//	0- Erro no envio da guia 
-			//	1- Guia Glosada 
-			//	2- Processo autorizado 
-			//	3- Retona o status da guia 
+			//	0- Erro no envio da guia
+			//	1- Guia Glosada
+			//	2- Processo autorizado
+			//	3- Retona o status da guia
 			//  4 - Plano não possui este método
 
 			switch (data.Sucesso) {
@@ -306,23 +306,23 @@ function verificaElegibilidade(N) {
 					message = data.Mensagem;
 					state = 0;
 					break;
-				case 1: 
+				case 1:
 					message  = data.Mensagem;
 					state = 1;
 					break;
-				case 2: 
+				case 2:
 					if (data.QuantidadeAutorizada > data.QuantidadeSolicitada) {
 						message = 'Todos os <B>'+ data.QuantidadeAutorizada+'</B> procedimentos Autorizados!';
 					} else {
-						// exibir mensagem informando que alguns procedimentos não foram autorizados e os motivos 
+						// exibir mensagem informando que alguns procedimentos não foram autorizados e os motivos
 						message = 'ATENÇÃO! <BR>Alguns procedimentos não foram autorizados! <BR>';
 						message += 'Código: ' + data.CodigoGlosa + ' Motivo: ' + data.Glosa;
-						state  = 1;                                
+						state  = 1;
 					}
 					message  = data.Mensagem;
 					state = 2;
 					break;
-				case 3: 
+				case 3:
 					message  = data.Mensagem;
 					state = 3;
 					break;
@@ -331,7 +331,7 @@ function verificaElegibilidade(N) {
 					state  = 1;
 			}
 			if (data.CodigoGlosa!=''){
-				message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;  
+				message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;
 			}
 			showMessage(message, state);
 		},
@@ -1131,7 +1131,7 @@ if not memed.eof then
              }, function (data) {
 				 console.log(data);
     			pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
-				 
+
              })
          });
        } , 500);

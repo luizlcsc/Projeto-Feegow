@@ -73,6 +73,7 @@ Diagn&oacute;sticos
     <div class="col-md-12">
     </div>
 </div>
+
 <script type="text/javascript">
     $(".btn-fechar-diagnostico").click("click", function () {
         $(".mfp-close").click();

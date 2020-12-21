@@ -470,11 +470,12 @@ if not inv.eof then
                             if not isnull(vcaRep("ItemGuiaID")) then
                                 TipoRegra = "Guia SP/SADT"
 
-                                qDadosRepasseSQL =  " SELECT p.NomePaciente,p.CPF,proc.NomeProcedimento, tgc.Data, tgc.ValorTotal"&chr(13)&_
-                                                    " FROM tissprocedimentossadt tgc                                             "&chr(13)&_
-                                                    " LEFT JOIN tissguiasadt tg ON tg.id = tgc.GuiaID                            "&chr(13)&_
-                                                    " LEFT JOIN pacientes p ON p.id = tg.PacienteID                              "&chr(13)&_
-                                                    " LEFT JOIN procedimentos proc ON proc.id = tgc.ProcedimentoID               "&chr(13)&_
+                                qDadosRepasseSQL =  " SELECT p.NomePaciente,p.CPF,proc.NomeProcedimento, tgc.Data, rr.Valor AS ValorTotal   "&chr(13)&_
+                                                    " FROM tissprocedimentossadt tgc                                                        "&chr(13)&_
+                                                    " LEFT JOIN tissguiasadt tg ON tg.id = tgc.GuiaID                                       "&chr(13)&_
+                                                    " LEFT JOIN pacientes p ON p.id = tg.PacienteID                                         "&chr(13)&_
+                                                    " LEFT JOIN procedimentos proc ON proc.id = tgc.ProcedimentoID                          "&chr(13)&_
+                                                    " LEFT JOIN rateiorateios rr ON rr.ItemGuiaID = tgc.id                                  "&chr(13)&_
                                                     " WHERE tgc.id="&vcaRep("ItemGuiaID")
                                 'response.write("<pre>"&qDadosRepasseSQL&"</pre>")
                                 set DadosRepasseSQL = db.execute(qDadosRepasseSQL)

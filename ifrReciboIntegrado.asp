@@ -469,14 +469,22 @@ if not inv.eof then
                         while not vcaRep.eof
                             if not isnull(vcaRep("ItemGuiaID")) then
                                 TipoRegra = "Guia SP/SADT"
-                                set DadosRepasseSQL = db.execute("SELECT p.NomePaciente,p.CPF,proc.NomeProcedimento, tgc.Data FROM tissprocedimentossadt tgc LEFT JOIN tissguiasadt tg ON tg.id = tgc.GuiaID LEFT JOIN pacientes p ON p.id = tg.PacienteID LEFT JOIN procedimentos proc ON proc.id = tgc.ProcedimentoID WHERE tgc.id="&vcaRep("ItemGuiaID"))
+
+                                qDadosRepasseSQL =  " SELECT p.NomePaciente,p.CPF,proc.NomeProcedimento, tgc.Data, tgc.ValorTotal"&chr(13)&_
+                                                    " FROM tissprocedimentossadt tgc                                             "&chr(13)&_
+                                                    " LEFT JOIN tissguiasadt tg ON tg.id = tgc.GuiaID                            "&chr(13)&_
+                                                    " LEFT JOIN pacientes p ON p.id = tg.PacienteID                              "&chr(13)&_
+                                                    " LEFT JOIN procedimentos proc ON proc.id = tgc.ProcedimentoID               "&chr(13)&_
+                                                    " WHERE tgc.id="&vcaRep("ItemGuiaID")
+                                'response.write("<pre>"&qDadosRepasseSQL&"</pre>")
+                                set DadosRepasseSQL = db.execute(qDadosRepasseSQL)
 
                                 if not DadosRepasseSQL.eof then
                                     NomeProcedimento = DadosRepasseSQL("NomeProcedimento")
                                     NomePaciente =DadosRepasseSQL("NomePaciente")
                                     CPF =DadosRepasseSQL("CPF")
                                     DataAtendimento = DadosRepasseSQL("Data")
-                                    'ValorTotal =DadosRepasseSQL("ValorTotal")
+                                    ValorTotal =DadosRepasseSQL("ValorTotal")
                                 end if
                             end if
                             if not isnull(vcaRep("GuiaConsultaID")) then
@@ -506,8 +514,15 @@ if not inv.eof then
                             end if
                             if not isnull(vcaRep("ItemInvoiceID")) then
                                 TipoRegra = "Particular"
+                                qDadosRepasseSQL =  " SELECT proc.NomeProcedimento,p.NomePaciente,p.CPF,(ii.Quantidade * (ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal,ii.ValorUnitario, ii.DataExecucao"&chr(13)&_
+                                                    " FROM itensinvoice ii                                                                                                                                        "&chr(13)&_
+                                                    " LEFT JOIN sys_financialinvoices i ON i.id = ii.InvoiceID                                                                                                    "&chr(13)&_
+                                                    " LEFT JOIN pacientes p ON p.id=i.AccountID                                                                                                                   "&chr(13)&_
+                                                    " LEFT JOIN procedimentos proc ON proc.id = ii.ItemID                                                                                                         "&chr(13)&_
+                                                    " WHERE ii.id="&vcaRep("ItemInvoiceID")
+                                'response.write("<pre>"&qDadosRepasseSQL&"</pre>")
 
-                                set DadosRepasseSQL = db.execute("SELECT proc.NomeProcedimento,p.NomePaciente,p.CPF,(ii.Quantidade * (ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal,ii.ValorUnitario, ii.DataExecucao FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id = ii.InvoiceID LEFT JOIN pacientes p ON p.id=i.AccountID LEFT JOIN procedimentos proc ON proc.id = ii.ItemID WHERE ii.id="&vcaRep("ItemInvoiceID"))
+                                set DadosRepasseSQL = db.execute(qDadosRepasseSQL)
                                 if not DadosRepasseSQL.eof then
                                     NomeProcedimento = DadosRepasseSQL("NomeProcedimento")
                                     NomePaciente =DadosRepasseSQL("NomePaciente")

@@ -286,12 +286,13 @@ while not ptip.eof
 
                 sqlII = "select ii.ProfissionalID, ii.id, ii.DataExecucao, prof.NomeProfissional, pac.NomePaciente, "&_
                         "proc.NomeProcedimento, i.nroNFe, i.dataNFe, i.valorNFe, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorServico, "&_
-                        " i.CompanyUnitID UnidadeID "&_
+                        " i.CompanyUnitID UnidadeID, SUM(idesc.Valor) ValorPago "&_
                         "FROM itensinvoice ii "&_
-                        "LEFT JOIN sys_financialinvoices i ON ii.InvoiceID=i.id "&_
+                        "INNER JOIN itensdescontados idesc ON ii.id=idesc.ItemID "&_
+                        "INNER JOIN sys_financialinvoices i ON ii.InvoiceID=i.id "&_
                         "LEFT JOIN profissionais prof ON (prof.id=ii.ProfissionalID and ii.Associacao=5) "&_
-                        "LEFT JOIN pacientes pac ON (pac.id=i.AccountID and AssociationAccountID=3) "&_
-                        "LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
+                        "INNER JOIN pacientes pac ON (pac.id=i.AccountID and AssociationAccountID=3) "&_
+                        "INNER JOIN procedimentos proc ON proc.id=ii.ItemID "&_
                         "WHERE ii.id="& dataNF("ItemInvoiceID") &" "&_
                         "AND ii.Tipo='S' "&_
                         "AND i.CompanyUnitID IN ("&Unidades&") "& whereProfissionais & whereProcedimentos  &_
@@ -304,6 +305,7 @@ while not ptip.eof
                     NomeProfissional = ii("NomeProfissional")
                     NomePaciente = ii("NomePaciente")
                     NomeProcedimento = ii("NomeProcedimento")
+                    ValorPago = fn(ii("ValorPago"))
                     ValorBruto = fn(ii("ValorServico"))
                     ValorDespesas = 0
                     NomeConvenio =  "Particular"
@@ -321,6 +323,7 @@ while not ptip.eof
                             NomeUnidade = UnidadeSQL("NomeFantasia")&" - "
                         end if
                     end if
+
                     %>
                     <tr>
                         <td></td>

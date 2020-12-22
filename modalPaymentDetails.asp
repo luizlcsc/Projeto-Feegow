@@ -191,7 +191,7 @@ if not getMovement.EOF then
 
         if recursoAdicional(34) = 4 and desabilitarExclusaoPagamento = "" and getConfig("ExecutadosNFse") = 1 then
             set existeNotaEmitida = db.execute("select nfse.id from nfse_emitidas nfse inner join sys_financialmovement mov on nfse.InvoiceID = mov.InvoiceID where mov.id ="&movementID&" and Status = 3")
-            if existeNotaEmitida.eof then
+            if not existeNotaEmitida.eof then
                 desabilitarExclusao = " disabled "
                 titleNotaFiscal = "Existe nota com status autorizada"
             end if

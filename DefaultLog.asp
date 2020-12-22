@@ -147,7 +147,7 @@ end if
                                                 externalLinkDisabled = ""
 
                                                 if isnull(Pers) then
-                                                    'externalLinkDisabled=" disabled "
+                                                    externalLinkDisabled=" disabled "
                                                 end if
                                                 %>
                                                 <a <%=externalLinkDisabled%> href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>

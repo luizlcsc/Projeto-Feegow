@@ -703,6 +703,13 @@ $(document).ready(function(){
 	$(".Locais").html('');
 	<%
 
+	set pDiasAT=db.execute("select distinct a.DiaSemana from assfixalocalxprofissional a where a.ProfissionalID = "&ProfissionalID&" and (a.fimVigencia > now() or a.fimVigencia is null)")
+	while not pDiasAT.eof
+		diasAtende = diasAtende&pDiasAT("DiaSemana")
+	pDiasAT.movenext
+	wend
+	pDiasAT.close
+	set pDiasAT=nothing
 
 	dat = 0
 	while dat<7
@@ -714,7 +721,6 @@ $(document).ready(function(){
 		end if
 	wend
 
-	if false then
 	set ocup = db.execute("select * from agendaocupacoes where ProfissionalID="&ProfissionalID&" and month(Data)="&month(Data)&" and year(Data)="&year(Data)&" order by Data")
 	while not ocup.eof
 		oHLivres = ocup("HLivres")
@@ -730,13 +736,13 @@ $(document).ready(function(){
 			percLivre = cInt( oFator* oHLivres )
 		end if
 		%>
-		$("#prog<%=replace(ocup("Data"), "/", "")%>").html('<% If percOcup>0 Then %><div class="progress-bar progress-bar-danger" style="width: <%=percOcup%>%;"></div><% End If %><%if percLivre>0 then%><div class="progress-bar progress-bar-success" style="width: <%=percLivre%>%;"></div><% End If %>');
+		$("#prog<%=replace(ocup("Data"), "/", "")%>").html('<% If percOcup>0 Then %><div class="progress-bar progress-bar-danger" style="width: 8%;"></div><% End If %><%if percLivre>0 then%><div class="progress-bar progress-bar-success" style="width: 92%;"></div><% End If %>');
 		<%
 	ocup.movenext
 	wend
 	ocup.close
 	set ocup = nothing
-	end if
+
 	%>
 // Create the tooltips only when document ready
  $(document).ready(function()

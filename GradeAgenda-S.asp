@@ -22,6 +22,7 @@ if weekday(Data)>1 then
 	Data = dateAdd("d", (weekday(Data)-1)*(-1), Data)
 end if
 
+PrimeiroDiaSemana = Data
 
 ProfissionalID=req("ProfissionalID")
 DiaSemana=weekday(Data)
@@ -721,27 +722,26 @@ $(document).ready(function(){
 		end if
 	wend
 
-	set ocup = db.execute("select * from agendaocupacoes where ProfissionalID="&ProfissionalID&" and month(Data)="&month(Data)&" and year(Data)="&year(Data)&" order by Data")
-	while not ocup.eof
-		oHLivres = ocup("HLivres")
-		oHAgendados = ocup("HAgendados")
-		oHBloqueados = ocup("HBloqueados")
-		oTotais = oHLivres+oHAgendados+oHBloqueados
-		if oTotais=0 then
-			percOcup=100
-			percLivre = 0
-		else
-			oFator = 100 / oTotais
-			percOcup = cInt( oFator* (oHAgendados+oHBloqueados) )
-			percLivre = cInt( oFator* oHLivres )
-		end if
-		%>
-		$("#prog<%=replace(ocup("Data"), "/", "")%>").html('<% If percOcup>0 Then %><div class="progress-bar progress-bar-danger" style="width: 8%;"></div><% End If %><%if percLivre>0 then%><div class="progress-bar progress-bar-success" style="width: 92%;"></div><% End If %>');
-		<%
-	ocup.movenext
-	wend
-	ocup.close
-	set ocup = nothing
+    ExcecaoMesAnoSplt = split(PrimeiroDiaSemana,"/")
+    ExcecaoMesAno = ExcecaoMesAnoSplt(2)&"-"&ExcecaoMesAnoSplt(1)
+    sExc = "select DataDe from assperiodolocalxprofissional a where a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.ProfissionalID = "&ProfissionalID
+
+	set DiasComExcecaoSQL=db.execute(sExc)
+    while not DiasComExcecaoSQL.eof
+        diasAtende = DiasComExcecaoSQL("DataDe")
+
+        DataExcecaoClasseSplt = split(diasAtende,"/")
+        DataExcecaoClasse = DataExcecaoClasseSplt(0)&"-"&DataExcecaoClasseSplt(1)&"-"&DataExcecaoClasseSplt(2)
+                    %>
+                    //cidiiddid
+    $(".dia-calendario.<%=DataExcecaoClasse%>").removeClass("danger");
+            <%
+    DiasComExcecaoSQL.movenext
+    wend
+    DiasComExcecaoSQL.close
+    set DiasComExcecaoSQL=nothing
+
+    call agendaOcupacoes(ProfissionalID, PrimeiroDiaSemana)
 
 	%>
 // Create the tooltips only when document ready

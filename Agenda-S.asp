@@ -86,6 +86,10 @@ body{
 #GradeAgenda{
     overflow:scroll;
 }
+
+.table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+	padding: 5px !important;
+}
 </style>
 <link rel="stylesheet" href="assets/css/fullcalendar.css" />
 <!--#include file="connect.asp"-->
@@ -261,12 +265,13 @@ function detalheFilaEspera(PacienteID, ProfissionalID, Acao){
 	});
 }*/
     function oa(P){
-        $("#modal").html("Carregando informações do profissional...");
+        $("#modal").html("Carregando informaï¿½ï¿½es do profissional...");
         $("#modal-table").modal("show");
         $.get("ObsAgenda.asp?ProfissionalID=" + P, function (data) {
             $("#modal").html(data);
         });
-    }
+    }
+
 
 function imprimir(){
 	$("#modal-agenda").modal("show");

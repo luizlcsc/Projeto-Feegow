@@ -355,7 +355,7 @@ if not tryLogin.EOF then
 			if pFoto("Foto") = "" or isNull(pFoto("Foto")) then
 				session("Photo") = "assets/img/user.png"
 			else
-                session("Photo") = arqEx(pFoto("Foto"), "Perfil")
+                session("Photo") = arqEx(pFoto("Foto")&"dimension=full", "Perfil")
 			end if
 		end if
     		set config = db.execute("select c.* from sys_config c")

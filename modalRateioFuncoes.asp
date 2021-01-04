@@ -24,7 +24,7 @@ else
 		DominioID = vcaInativo("id")
 	else
 		db_execute("insert into rateiodominios (Tipo, dominioSuperior, sysUser, sysActive) values ('"&Tipo&"', '"&Acao&"', '"&session("User")&"', 0)")
-		set pult = db.execute("select id from rateiodominios where sysUser="&session("User")&" and sysActive=0 order by id desc")
+		set pult = db.execute("select id from rateiodominios where sysUser="&session("User")&" and sysActive=0 order by id desc LIMIT 1")
 		
 		DominioID = pult("id")
 		'pega as funcoes do dominio superior e duplica

@@ -44,7 +44,7 @@ if T="C" then
 		end if
 		db_execute("insert into sys_financialReceivedChecks (BankID, CheckNumber, Holder, Document, CheckDate, Cashed, AccountAssociationID, AccountID, MovementID, StatusID, sysUser, Valor) values ('"&ref("BankID")&"', '"&ref("CheckNumber")&"', '"&ref("Holder")&"', '"&ref("Document")&"', '"&myDate(ref("CheckDate"))&"', "&Cashed&", "&AssociationAccountID&", "&AccountID&", "&LastMovementID&", "&StatusID&", "&session("User")&", "&treatvalzero(ValorPagto)&")")
 		'grava o primeiro status do cheque recebido
-		set getChequeID = db.execute("select id from sys_financialreceivedchecks where sysUser="&session("User")&" order by id desc")
+		set getChequeID = db.execute("select id from sys_financialreceivedchecks where sysUser="&session("User")&" order by id desc LIMIT 1")
 		ChequeID = getChequeID("id")
 		db_execute("update sys_financialmovement set ChequeID="&ChequeID&" where id="&LastMovementID)
 		db_execute("insert into chequemovimentacao (ChequeID, MovimentacaoID, Data, StatusID, sysUser) values ("&ChequeID&", "&LastMovementID&", '"&myDate(DataPagto)&"', "&StatusID&", "&session("User")&")")

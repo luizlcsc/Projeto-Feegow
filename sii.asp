@@ -25,7 +25,7 @@ if ref("v")<>"" then
     sql = "insert into "&ref("resource")&" (sysActive, sysUser, "&ref("showColumn")&Coluna&compInsert&") values (1, "&session("User")&", '"&NomeNoPadrao(ref("v"))&"'"&ValorColuna&valInsert&")"
     '    response.Write(sql)
     db_execute(sql)
-    set getLast = db.execute("select id from "&ref("resource")&" where sysUser="&session("User")&" and sysActive=1 order by id desc")
+    set getLast = db.execute("select id from "&ref("resource")&" where sysUser="&session("User")&" and sysActive=1 order by id desc LIMIT 1")
 
     InsertId = getLast("id")
 

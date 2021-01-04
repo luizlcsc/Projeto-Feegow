@@ -55,7 +55,7 @@ if vepv.eof then
 
 	db_execute(sqlInsert)
 
-	set pult = db.execute("select id from tissprocedimentosvalores where ConvenioID="&ConvenioID&" and ProcedimentoID="&ProcedimentoID&" order by id desc")
+	set pult = db.execute("select id from tissprocedimentosvalores where ConvenioID="&ConvenioID&" and ProcedimentoID="&ProcedimentoID&" order by id desc LIMIT 1")
 	AssociacaoID = pult("id")
 
 else

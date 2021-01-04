@@ -66,7 +66,7 @@ insMov = "insert into sys_financialMovement (Name, AccountAssociationIDCredit, A
 
 db.execute(insMov)
 call gravaLog(insMov, "AUTO")
-set getLastMovementID = db.execute("select id from sys_financialMovement order by id desc")
+set getLastMovementID = db.execute("select id from sys_financialMovement order by id desc LIMIT 1")
 LastMovementID = getLastMovementID("id")
 
 webhookJson = "{ ""forma_pagamento_id"": """&ref("MetodoID")&""", ""valor"": """&treatVal(ValorPagto)&""", ""data_recebimento"": """&now()&""", ""id"": "&LastMovementID&", ""unidade_id"": """&ref("UnidadeIDPagto")&""" }"
@@ -92,7 +92,7 @@ if T="C" then
   '      response.Write( sqlCheque )
 		db.execute(sqlCheque)
 		'grava o primeiro status do cheque recebido
-		set getChequeID = db.execute("select id from sys_financialreceivedchecks where sysUser="&session("User")&" order by id desc")
+		set getChequeID = db.execute("select id from sys_financialreceivedchecks where sysUser="&session("User")&" order by id desc LIMIT 1")
 		ChequeID = getChequeID("id")
 		db.execute("update sys_financialmovement set ChequeID="&ChequeID&" where id="&LastMovementID)
         sqlCheque = "insert into chequemovimentacao (ChequeID, MovimentacaoID, Data, StatusID, sysUser) values ("&ChequeID&", "&LastMovementID&", '"&myDate(DataPagto)&"', "&StatusID&", "&session("User")&")"
@@ -110,7 +110,7 @@ if T="C" then
 	    sqlCart= "insert into sys_financialCreditCardTransaction (TransactionNumber, AuthorizationNumber, BandeiraCartaoID, MovementID, Parcelas) values ('"&ref("TransactionNumber"&sufixo)&"', '"&ref("AuthorizationNumber"&sufixo)&"', "&treatvalzero(ref("BandeiraCartaoID"&sufixo))&", "&LastMovementID&","&ref("NumberOfInstallments"&sufixo)&")"
 		db.execute(sqlCart)
         call gravaLog(sqlCart, "AUTO")
-		set getTransactionID = db.execute("select * from sys_financialCreditCardTransaction order by id desc")
+		set getTransactionID = db.execute("select * from sys_financialCreditCardTransaction order by id desc LIMIT 1")
 		TransactionID = getTransactionID("id")         
 
 		'credit card account informations
@@ -195,7 +195,7 @@ else
 		end if
 	case 10
 		db.execute("insert into sys_financialCreditCardTransaction (TransactionNumber, AuthorizationNumber, BandeiraCartaoID, MovementID, Parcelas) values ('"&ref("TransactionNumber"&sufixo)&"', '"&ref("AuthorizationNumber"&sufixo)&"',"&treatvalzero(ref("BandeiraCartaoID"&sufixo))&", "&LastMovementID&", "&ref("NumberOfInstallments"&sufixo)&")")
-		set getTransactionID = db.execute("select * from sys_financialCreditCardTransaction order by id desc")
+		set getTransactionID = db.execute("select * from sys_financialCreditCardTransaction order by id desc LIMIT 1")
 		TransactionID = getTransactionID("id")
 
 		'credit card account informations

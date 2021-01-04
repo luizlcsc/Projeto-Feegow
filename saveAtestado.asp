@@ -15,7 +15,7 @@ if reg.EOF then
             'salva com id do atendimento
             db_execute("insert into PacientesAtestados (PacienteID, Titulo, Atestado, sysUser, AtendimentoID, UnidadeID) values ("&ref("PacienteID")&", '"&ref("TituloAtestado")&"', '"&ref("atestado")&"', "&session("User")&", "&atendimentoReg("id")&","&session("UnidadeID")&")")
         end if
-	    set reg = db.execute("select * from pacientesatestados where PacienteID="&ref("PacienteID")&" order by id desc")
+	    set reg = db.execute("select * from pacientesatestados where PacienteID="&ref("PacienteID")&" order by id desc LIMIT 1")
 
     else
         AtestadoId = ref("AtestadoId")

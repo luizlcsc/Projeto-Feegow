@@ -30,7 +30,7 @@ end function
         page = ccur(page)-1
     end if
     PermissaoParaAdd = aut("|"&lcase(ref("t"))&"I|")
-    set conta = db.execute("select count(id) total from "&ref("t")&" where TRIM("&ref("c")&") like '"&trim(ref("q"))&"%'")
+    set conta = db.execute("select count(id) total from "&ref("t")&" where "&ref("c")&" like '"&trim(ref("q"))&"%'")
 %>
   "total_count": <%=ccur(conta("total")) %>,
 <%
@@ -298,7 +298,6 @@ end if
             set q = db.execute(sqlAlternativo)
         END IF
     end if
-    'set q = db.execute("select id, "&ref("c")&" from "&ref("t")&" where TRIM("&ref("c")&") like '"&trim(ref("q"))&"%' order by TRIM("&ref("c")&") limit "& page*30 &", 30")
     c = 0
 
 

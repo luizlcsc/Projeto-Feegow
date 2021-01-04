@@ -59,7 +59,7 @@ if ref("User")<>"" then
 
 		if UserID="" then
 			dbc.execute("replace into licencasusuarios (Nome, Tipo, Email, Senha, LicencaID, Admin, Home) values ('"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', '"&ref("password")&"', '"&LicencaID&"', 0, '"&Home&"')")
-			set pult = dbc.execute("select * from licencasusuarios where Email = '"&ref("User")&"' order by id desc")
+			set pult = dbc.execute("select * from licencasusuarios where Email = '"&ref("User")&"' order by id desc LIMIT 1")
 			UserID = pult("id")
 
 			set getNomeColuna = db.execute("select * from cliniccentral.sys_financialaccountsassociation where `table` = '"&Table&"'")

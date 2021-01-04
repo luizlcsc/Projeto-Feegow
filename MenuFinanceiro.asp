@@ -50,6 +50,8 @@
             </li>
 			<%
 			end if
+
+            if aut("contasapagarI") = 1 then
             %>
                 <li class="">
                     <a href="./?P=SolicitacaoDeCompraLista&I=N&Pers=1">
@@ -64,6 +66,7 @@
                         Aprovação de compra <span class="label label-system label-xs fleft">Novo</span>
                     </a>
                 </li>
+            <% end if %>
         </ul>
     </li>
     <%
@@ -239,7 +242,7 @@
     end if
 
     StatusEmissaoBoleto = recursoAdicional(8)
-    if StatusEmissaoBoleto = 4 then
+    if StatusEmissaoBoleto = 4 and aut("emissaoboletosV") = 1 then
     %>
 
        <li<% If req("P")="Marketplace" OR req("P")="BoletosEmitidos" Then %> class="open"<% End If %>>
@@ -320,8 +323,9 @@
                   </li>
            </ul>
        </li>
-       <% end if %>
-
+       <% end if 
+       
+       if aut("chequesV") = 1 then %>
 	<li <% If req("P")="ChequesRecebidos" Then %> class="active"<% End If %>>
         <a href="?P=ChequesRecebidos&Pers=1">
             <span class="fa fa-list-alt"></span>
@@ -329,6 +333,8 @@
         </a>
     </li>
     <%
+    end if
+
     if aut("controlecartoes")=1 then
     %>
     <li <% If req("P")="CartaoCredito" or req("P")="FaturaCartao" Then %> class="open"<% End If %>>
@@ -390,7 +396,7 @@
 	<%
 	ConciliacaoBancariaStatus = recursoAdicional(16)
 
-    if ConciliacaoBancariaStatus=4 then
+    if ConciliacaoBancariaStatus=4 and aut("automacaoV") = 1 then
         %>
 
         <li>
@@ -484,6 +490,8 @@
     <%
         end if
     end if
+
+    if aut("auditoriaV")=1 then
     %>
     <li <% If req("P")="auditoria/auditar" Then %> class="active"<% End If %>>
         <a href="./?P=auditoria/auditar&Pers=1">
@@ -491,3 +499,4 @@
             <span class="sidebar-title"> Auditoria </span>
         </a>
     </li>
+    <% end if %>

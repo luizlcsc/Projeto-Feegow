@@ -33,7 +33,7 @@ for un=0 to ubound(splUnions)
     IF (resultado(1) = "Paciente") THEN
 	    selectUnion = selectUnion&"(select id, '"&splUnions(un)&"' associacao, '"&resultado(1)&"' recurso, "&colunaValor&" coluna from `"&resultado(0)&"` where ("&resultado(2)&" like '"&replace(ref("typed"), " ", "%")&"%' "&nomeSocial&sqlWhereOr&") "&Ativo&active&" order by "&resultado(2)&" limit 50) UNION ALL "
 	ELSE
-	    selectUnion = selectUnion&"(select id, '"&splUnions(un)&"' associacao, '"&resultado(1)&"' recurso, "&colunaValor&" coluna from `"&resultado(0)&"` where ("&resultado(2)&" like '"&replace(ref("typed"), " ", "%")&"%' "&nomeSocial&") "&Ativo&sqlWhereOr&active&" order by "&resultado(2)&" limit 50) UNION ALL "
+	    selectUnion = selectUnion&"(select id, '"&splUnions(un)&"' associacao, '"&resultado(1)&"' recurso, "&colunaValor&" coluna from `"&resultado(0)&"` where ("&resultado(2)&" like '"&replace(ref("typed"), " ", "%")&"%' "&nomeSocial&Ativo&sqlWhereOr&") "&active&" order by "&resultado(2)&" limit 50) UNION ALL "
 	END IF
 	'strInserts = strInserts&"<label><input type=""radio"" name=""radio"&ref("selectID")&""" class=""ace""><span class=""lbl""> "&resultado(1)&"</span></label>"
 
@@ -61,6 +61,7 @@ end if
 'sql = replace(sql, "[campoSuperior]", ref("campoSuperior"))
 
 'response.Write(sql)
+
 'response.Write(selectUnion)
 
 set ConfigSQL = db.execute("select ValidarCPFCNPJ, BloquearCPFCNPJDuplicado from sys_config where id=1")
@@ -70,6 +71,7 @@ if not ConfigSQL.eof then
         ValidarFornecedor=True
     end if
 end if
+
 set list = db.execute(selectUnion)
 if list.eof then
 	%>

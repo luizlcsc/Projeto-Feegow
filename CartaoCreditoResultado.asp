@@ -124,12 +124,14 @@
 					TotalLinhas = ccur(TotalLinhasSQL("qtd"))
 
 					TotalPaginas = TotalLinhas / Limite 
-
+					' dd(sql)
 					set rec = db.execute(sql)
 
 					response.Buffer = "true"
 
 					countQtd=0
+					parcela = 0
+					lastTransactionID = 0
 
 					while not rec.eof
 					response.flush()
@@ -143,7 +145,17 @@
 							Taxa = Taxa * rec("Value")
                             ValorCheio = rec("Value")
 							ValorCredito = ccur(rec("Value")) - Taxa
-							Parcela = ccur(rec("Parcela"))+1
+							set diasParaCreditosql = db.execute("select DaysForCredit from sys_financialCurrentAccounts where id = "&rec("AccountIDDebit"))
+							diasParaCredito = 30
+							if diasParaCreditosql.eof then
+								diasParaCredito = cint(diasParaCreditosql("DaysForCredit")&"")
+							end if
+							if lastTransactionID <> rec("TransactionID") then
+								lastTransactionID = rec("TransactionID")
+								parcela = 0
+							end if 
+
+							Parcela = parcela+1
 							Parcelas = rec("NumeroParcelas")
 							Bandeira = rec("Bandeira")&""														
 
@@ -151,9 +163,10 @@
 							if rec("AccountAssociationIDCredit") <> 3 then
 								nomeDoPaciente = nameInAccount(rec("AccountAssociationIDCredit") & "_" & rec("AccountIDCredit"))
 							end if
-							
+
                             if rec("InvoiceReceiptID")<>0 and not isnull(rec("InvoiceReceiptID")) then
                                 set pmov = db.execute("select Value,Date from sys_financialmovement m where id="&rec("InvoiceReceiptID"))
+
                                 if pmov.eof then
                                     classe = "danger"
                                     ValorRecebido = 0
@@ -207,6 +220,13 @@
                                 ValorLiquidoFinal = ValorLiquidoFinal + ValorCredito
 								countQtd = countQtd+1
 
+								data = rec("DateToReceive")
+								if Parcela > 1 then
+									dias = diasParaCredito * Parcela-1
+									data = dateadd("d",dias,data)
+								end if
+
+
     							%>
 							    <tr>
                                    <td>
@@ -235,7 +255,7 @@
                                     <input type="hidden" id="Taxa<%=rec("id")%>" name="Taxa<%=rec("id")%>" value="<%=Taxa%>">
                                     <input type="hidden" name="ValorCheio<%=rec("id") %>" value="<%=ValorCheio %>" />
                                   </td>
-							      <td><%= quickField("datepicker", "DateToReceive"&rec("id"), "", 1, rec("DateToReceive"), "", "", "") %></td>
+							      <td><%= quickField("datepicker", "DateToReceive"&rec("id"), "", 1, data, "", "", "") %></td>
 							      <td>
                               	    <button id="btn<%=rec("id")%>" class="btn btn-xs btn-success" type="button" onClick="baixa(<%=rec("id")%>, 'B', <%=Parcela%>, <%=Parcelas%>);"><i class="fa fa-check"></i> Baixar</button>
 								    </td>

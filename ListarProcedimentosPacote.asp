@@ -3,6 +3,7 @@
 PacienteID = req("PacienteID")
 ProfissionalID = req("ProfissionalID")
 contadorProcedimentos = req("contadorProcedimentos")
+ConvenioID = req("ConvenioID")
 
 if contadorProcedimentos<>"" then
     if isnumeric(contadorProcedimentos) then
@@ -12,6 +13,12 @@ if contadorProcedimentos<>"" then
     end if
 end if
 
+SomenteConvenios = ""
+if ConvenioID <> 0 or ConvenioID <> "" then
+    SomenteConvenios = " AND SomenteConvenios NOT LIKE '%NONE%'"
+end if
+
+
 ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
          "INNER JOIN sys_financialinvoices i ON p.id = i.AccountID and i.AssociationAccountID = 3 "&_
          "INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id "&_
@@ -19,7 +26,7 @@ ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario 
          "INNER JOIN pacotes pa ON pa.id = ii.PacoteID "&_
          "LEFT JOIN itensdescontados id ON id.ItemID = ii.id "&_
          "WHERE "&_
-         "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Executado!='C' and ii.PacoteID is not null and ii.Tipo = 'S'"
+         "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Executado!='C' and ii.PacoteID is not null and ii.Tipo = 'S' "&SomenteConvenios&""
 
 if getConfig("ProcedimentosContratadosParaSelecao") = 1 then
     ppSQL = "SELECT i.ProfissionalSolicitante, ii.id, COALESCE(tempproc.tempo, proc.TempoProcedimento) TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
@@ -30,7 +37,7 @@ if getConfig("ProcedimentosContratadosParaSelecao") = 1 then
              "LEFT JOIN pacotes pa ON pa.id = ii.PacoteID "&_
              "LEFT JOIN itensdescontados id ON id.ItemID = ii.id "&_
              "WHERE "&_
-             "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Executado!='C' and ii.Tipo = 'S'"
+             "p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Executado!='C' and ii.Tipo = 'S' "&SomenteConvenios&""
 end if
 'response.write(ppSQL)
 set PacProc = db.execute(ppSQL)

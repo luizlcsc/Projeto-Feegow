@@ -489,17 +489,17 @@ end if
                 %>
             </div>
             <div class="col-md-1"><br>
-<%
-if getConfig("OcultarBotaoRetorno")&""="0" then
-%>
-            	<div class="checkbox-custom checkbox-warning"><input type="checkbox" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>><label for="Retorno" class="checkbox"> Retorno</label></div>
-<%
-else
-%>
-<input type="checkbox" class="hidden" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>>
-<%
-end if
-%>
+                <%
+                if getConfig("OcultarBotaoRetorno")&""="0" then
+                %>
+                    <div class="checkbox-custom checkbox-warning"><input type="checkbox" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>><label for="Retorno" class="checkbox"> Retorno</label></div>
+                <%
+                else
+                %>
+                    <input type="checkbox" class="hidden" name="Retorno" id="Retorno" value="1" <%if Retorno=1 then%>checked<%end if%>>
+                <%
+                end if
+                %>
             </div>
 
 			<%if req("Tipo")="Quadro" or req("ProfissionalID")="" or req("ProfissionalID")="0" or req("ProfissionalID")="null" then%>
@@ -1681,11 +1681,13 @@ end if
 function addProcedimentos(I) {
     var pacienteId = $("#PacienteID").val();
     var professionalId = $("#ProfissionalID").val();
+    var convenioID = $("#ConvenioID").val();
 
         $.get("ListarProcedimentosPacote.asp", {
             contadorProcedimentos: I,
             PacienteID: pacienteId,
-            ProfissionalID: professionalId
+            ProfissionalID: professionalId,
+            ConvenioID: convenioID
         }, function (data) {
             if(data.length > 0) {
                 openModal(data, "Selecionar procedimento do pacote contratado", true, false);

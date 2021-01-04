@@ -9,7 +9,7 @@ if FormID="N" then
     set vca = db.execute("select id from buiformspreenchidos where ModeloID="& ModeloID &" AND PacienteID="& PacienteID &" AND sysActive=0 AND sysUser="& session("User"))
     if vca.eof then
         db.execute("insert into buiformspreenchidos set ModeloID="& ModeloID &", PacienteID="& PacienteID &", sysUser="& session("User") &", sysActive=0")
-        set vca = db.execute("select id from buiformspreenchidos where sysUser="& session("User") &" AND PacienteID="& PacienteID &" AND sysActive=0 AND ModeloID="& ModeloID &" ORDER BY id DESC")
+        set vca = db.execute("select id from buiformspreenchidos where sysUser="& session("User") &" AND PacienteID="& PacienteID &" AND sysActive=0 AND ModeloID="& ModeloID &" ORDER BY id DESC LIMIT 1")
         db.execute("INSERT INTO `_"& ModeloID &"` SET id="& vca("id") &", PacienteID="& PacienteID &", sysUser="& session("User"))
     else
         db.execute("UPDATE `buiformspreenchidos` SET DataHora=NOW() WHERE id="& vca("id"))

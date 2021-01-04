@@ -105,7 +105,7 @@ set listaTextosAtestados = nothing
 	<script type="text/javascript">
     <%
 if ref("Aplicar")="TextoAtestado-Last" then
-	set getLast = db.execute("select id, sysUser, sysActive from pacientesatestadostextos where sysUser="&session("User")&" and sysActive=1 order by id desc")
+	set getLast = db.execute("select id, sysUser, sysActive from pacientesatestadostextos where sysUser="&session("User")&" and sysActive=1 order by id desc LIMIT 1")
 	%>
 		aplicarTextoAtestado(<%=getLast("id")%>);
 	<%

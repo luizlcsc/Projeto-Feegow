@@ -19,7 +19,7 @@ if reg.EOF then
             db_execute("insert into PacientesPrescricoes (PacienteID, Prescricao, ControleEspecial, sysUser, AtendimentoID, UnidadeID) values ("&ref("PacienteID")&", '"&ref("receituario")&"', '"&ControleEspecial&"', "&session("User")&", "&atendimentoReg("id")&","&session("UnidadeID")&")")
         end if
 
-        set reg = db.execute("select * from PacientesPrescricoes where PacienteID="&ref("PacienteID")&" order by id desc")
+        set reg = db.execute("select * from PacientesPrescricoes where PacienteID="&ref("PacienteID")&" order by id desc LIMIT 1")
     else
         PrescricaoId = ref("PrescricaoId")
         set reg = db.execute("select * from PacientesPrescricoes where id="&PrescricaoId)

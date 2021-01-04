@@ -154,7 +154,7 @@ elseif Tipo="Procedimentos" then
                          "values (COALESCE(NULLIF('"&treatval(ref("CalcularEscalonamento"))&"',''),1),"&GuiaID&", "& treatvalzero(rfProfissionalID) &", "&myDateNULL(ref("Data"))&", "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', '"&ref("ViaID")&"', '"&ref("TecnicaID")&"', "&treatvalzero(ref("Fator"))&", "&treatvalzero(ref("ValorUnitario"))&", "&treatvalzero(ref("ValorTotal"))&", '"&session("User")&"', "& treatvalnull(rfAssociacao)&", "&treatvalzero(ref("TotalCH"))&", "&treatvalzero(ref("TotalValorFixo"))&", "&treatvalzero(ref("TotalUCO"))&", "&treatvalzero(ref("TotalPORTE"))&", "&treatvalzero(ref("TotalFILME"))&", "&treatvalzero(ref("xTotalGeral"))&", "&ref("gConvenioID")&", "&ref("PlanoID")&",NULLIF('"&ref("ContratadoSolicitanteCodigoNaOperadora")&"',''))"
             db_execute(sqlExecute)
 
-			set pult = db.execute("select id from tissprocedimentossadt where GuiaID="&GuiaID&" and sysUser="&session("User")&" order by id desc")
+			set pult = db.execute("select id from tissprocedimentossadt where GuiaID="&GuiaID&" and sysUser="&session("User")&" order by id desc LIMIT 1")
 			EsteItem = pult("id")
             ProcedimentoID = ref("gProcedimentoID")
             if AdicionarProfissionalExecutanteVinculadoAoProcedimento=1 then

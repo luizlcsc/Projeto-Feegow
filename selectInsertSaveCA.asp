@@ -11,7 +11,7 @@ end if
 'response.Write(sql)
 sql = "insert into "&resultado(0)&" (sysActive, sysUser, "&resultado(2)&" "&ativo&") values (1, "&session("User")&", '"&ref("typed")&"' "&ativoResult&")"
 db_execute(sql)
-set getLast = db.execute("select id from "&resultado(0)&" where sysUser="&session("User")&" and sysActive=1 order by id desc")
+set getLast = db.execute("select id from "&resultado(0)&" where sysUser="&session("User")&" and sysActive=1 order by id desc LIMIT 1")
 %>
 $("#resultSelect<%=ref("selectID")%>").css("display", "none");
 $("#<%=ref("selectID")%>").val("<%=ref("tabela")&"_"&getLast("id")%>");

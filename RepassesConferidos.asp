@@ -191,6 +191,7 @@ if ExibeResultado then
     TemRepasse=0
     AccountID = reqf("AccountID")
     if AccountID="" then
+
         set ProfissionalSQL = db.execute("SELECT DISTINCT ContaCredito AccountID FROM rateiorateios WHERE (CASE "&_
                                                                         "WHEN ItemInvoiceID is not null then (SELECT ii.DataExecucao FROM itensinvoice ii where ii.id=ItemInvoiceID LIMIT 1) "&_
                                                                          "WHEN ItemGuiaID is not null then (SELECT ps.Data FROM tissprocedimentossadt ps WHERE ps.id=ItemGuiaID LIMIT 1) "&_
@@ -204,10 +205,14 @@ if ExibeResultado then
     while not ProfissionalSQL.eof
         ContaCredito = ProfissionalSQL("AccountID")
         if ContaCredito<>"0" then
-            spltContaCredito = split(ContaCredito, "_")
-            AssociationAccountID = spltContaCredito(0)
-            AccountID = spltContaCredito(1)
-
+            if instr(ContaCredito,"_") then
+                spltContaCredito = split(ContaCredito, "_")
+                AssociationAccountID = spltContaCredito(0)
+                AccountID = spltContaCredito(1)
+            else
+                AssociationAccountID = 0
+                AccountID = 0
+            end if
         else
             AssociationAccountID = 0
             AccountID = 0

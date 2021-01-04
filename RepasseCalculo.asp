@@ -80,7 +80,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
     nLinha = 0
     while not fd.eof
         '-> Começa a coletar os dados pra temprepasses (antiga rateiorateios)
-        Funcao = fd("Funcao")
+        Funcao = replace(fd("Funcao"),"|","_") 
         TipoValor = fd("TipoValor")
         Valor = fd("Valor")
         ContaPadrao = fd("ContaPadrao")
@@ -158,7 +158,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
                         </td>
                         <td>F</td>
                         <td><%= Sobre %></td>
-                        <td><%= fd("Funcao") %></td>
+                        <td><%= Funcao %></td>
                         <td><%= accountName(NULL, Creditado) %></td>
                         <td class="text-right">1</td>
                         <td class="text-right"><%= ShowValor %></td>
@@ -174,7 +174,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
                 <%
                 nLinha = nLinha+1
                 'lrResult( lrDataExecucao, lrNomeFuncao, lrInvoiceID, lrNomeProcedimento, lrNomePaciente, lrFormaPagto, lrCreditado, lrValorProcedimento, lrValorRecebido, lrValorRepasse )
-                call lrResult( "Calculo", rDataExecucao, fd("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha )
+                call lrResult( "Calculo", rDataExecucao, Funcao, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha )
             end if
         end if
 
@@ -220,7 +220,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
         if fd("FM")="E" then
             set eq = db.execute("select * from procedimentosequipeparticular where ProcedimentoID="& ii("ItemID"))
             while not eq.eof
-                Funcao = eq("Funcao")
+                Funcao = replace(eq("Funcao"),"|","_") 
                 Valor = eq("Valor")
                 TipoValor = eq("TipoValor")
                 ShowValor = calcValor(Valor, TipoValor, ValorBase, "show")
@@ -253,7 +253,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
                             </td>
                             <td>Ei</td>
                             <td><%= Sobre %></td>
-                            <td><%= eq("Funcao") %></td>
+                            <td><%= Funcao %></td>
                             <td><%= accountName(NULL, Creditado) %></td>
                             <td class="text-right">1</td>
                             <td class="text-right"><%= ShowValor %></td>

@@ -2,14 +2,21 @@
 <!--#include file="Classes/Logs.asp"-->
 <%
 
-session("ccDe") = ref("De")
-session("ccAte") = ref("Ate")
-session("ccPagto") = ref("Pagto")
-session("ccCompanyUnitID") = ref("CompanyUnitID")
-session("ccCategoriaID") = ref("CategoriaID")
-session("ccAccountID") = ref("AccountID")
-session("ccNotaFiscal") = ref("NotaFiscal")
-session("ccAccountAssociation") = ref("AccountAssociation")
+session("ccDe") = ref("De") 'De
+session("ccAte") = ref("Ate") 'Ate
+session("ccPagto") = ref("Pagto") 'Exibir
+session("ccCompanyUnitID") = ref("CompanyUnitID") 'Unidades
+session("ccAccountID") = ref("AccountID") 'Pagar a / Receber de
+session("ccNotaFiscal") = ref("NotaFiscal") 'Nota Fiscal
+session("ccAccountAssociation") = ref("AccountAssociation") 'Limitar Tipo de Pagador
+session("ccTabelaID") = ref("TabelaID") 'Tabela
+session("ccNotaFiscalStatus") = ref("NotaFiscalStatus") 'Status da NF-e
+if req("T")="C" then
+    session("ccCategoriaID_C") = ref("CategoriaID") 'Categoria de Contas a Receber
+else
+    session("ccCategoriaID_D") = ref("CategoriaID") 'Categoria de Contas a Pagar
+end if
+
 
 geraRecorrente(0)
 

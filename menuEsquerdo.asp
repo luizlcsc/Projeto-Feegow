@@ -769,6 +769,19 @@ select case lcase(req("P"))
             </li>
 		    <%
 		    end if
+             if 1=1 then 'aut("tarefas")=1 then
+		    %>
+            <li class="checkStatus">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-tarefas" id="abaTarefas" href="#pront" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Tarefas|');">
+                    <span class="fa fa-file-text-o bigger-110"></span> 
+                    <span class="sidebar-title">Tarefas</span>
+                    <span class="sidebar-title-tray">
+                      <span class="label label-xs bg-primary" id="totaltarefas"></span>
+                    </span>
+                </a>
+            </li>
+		    <%
+		    end if
 		    if aut("pedidosexame")=1 then
 		    %>
             <li class="checkStatus">
@@ -845,7 +858,7 @@ select case lcase(req("P"))
 		    if aut("formsae")=1 then
 		    %>
 		    <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|');">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Tarefas|');">
                     <span class="fa fa-line-chart bigger-110"></span>
                     <span class="sidebar-title">Linha do tempo</span>
                     <span class="sidebar-title-tray">
@@ -1501,7 +1514,7 @@ select case lcase(req("P"))
                 <span class="fa fa-cloud-upload"></span> <span class="sidebar-title">API Pública  </span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divTriagem" onclick="ajxContent('ConfigTriagem', '', 1, 'divTriagem');">
+            <a data-toggle="tab" href="#divTriagem" onclick="ajxContent('ConfiguraTriagem', '', 1, 'divTriagem');"> 
             	<span class="fa fa-stethoscope"></span> <span class="sidebar-title">Triagem  <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>

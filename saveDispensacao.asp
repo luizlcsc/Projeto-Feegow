@@ -1,15 +1,17 @@
 <!--#include file="connect.asp"-->
 <%
-Dispensar = ref("dispensar")
-if Dispensar = "" then
+CicloID             = ref("cicloId")
+PacienteProtocoloID = ref("pacienteProtocoloId")
+Dispensar           = ref("dispensar")
+
+if CicloID = "" or PacienteProtocoloID = "" or Dispensar = "" then
     response.write("Parametros obrigatorios nao fornecidos.")
     response.status = 422
     response.end
 end if
 
-UnidadeID = ref("UnidadeID")
 
-' valida os itens enviados
+'valida os itens enviados
 ArrDispensar = Split(Dispensar, ",")
 for i=0 to UBound(ArrDispensar)
     ArrItem = Split(ArrDispensar(i), "|")
@@ -21,7 +23,17 @@ for i=0 to UBound(ArrDispensar)
     end if
 next
 
+'recupera o ciclo
+set resProtocoloCiclo = db.execute("SELECT * FROM pacientesprotocolosciclos WHERE id = '" & CicloID & "' AND StatusDispensacaoID != 11 AND StatusDispensacaoID != 10")
+if resProtocoloCiclo.eof then
+    response.write("Ciclo inválido ou não encontrado")
+    response.status = 500
+    response.end
+end if
+
+
 'processa os itens
+dispensado = false
 for i=0 to UBound(ArrDispensar)
     ArrItem = Split(ArrDispensar(i), "|")
 
@@ -35,7 +47,6 @@ for i=0 to UBound(ArrDispensar)
     'recupera a prescrição
     sqlMedicamentoPrescrito = "SELECT " &_
                               "ppcm.id, " &_
-                              "ppcm.PacienteProtocolosCicloID, " &_
                               "protmed.id AS ProtocoloMedicamentoID, " &_
                               "prod.id AS ProdutoID, prod.NomeProduto,  " &_
                               "IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose) AS Dose,  " &_
@@ -45,11 +56,10 @@ for i=0 to UBound(ArrDispensar)
                               "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
                               "INNER JOIN produtos prod ON prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento) " &_
                               "LEFT JOIN cliniccentral.unidademedida uMed ON uMed.id = prod.UnidadePrescricao " &_
-                              "WHERE ppcm.id = '" & CicloMedicamentoID & "'"
+                              "WHERE ppcm.id = '" & CicloMedicamentoID & "' AND ppcm.PacienteProtocolosCicloID = " & CicloID & " and ppcm.Dispensado = 0"
     set resMedicamentoPrescrito = db.execute(sqlMedicamentoPrescrito)
     if not resMedicamentoPrescrito.eof then
 
-        cicloId        = resMedicamentoPrescrito("PacienteProtocolosCicloID")
         quantPrescrita = resMedicamentoPrescrito("Dose")
 
         'recupera as posições em estoque
@@ -61,7 +71,7 @@ for i=0 to UBound(ArrDispensar)
                     "FROM estoqueposicao pos " &_
                     "INNER JOIN produtos prod ON pos.ProdutoID = prod.id " &_
                     "LEFT JOIN produtoslocalizacoes loc ON loc.id = pos.LocalizacaoID " &_
-                    "WHERE pos.Quantidade > 0 AND pos.ProdutoID = '" & ProdutoID & "' AND COALESCE(loc.UnidadeID, 0) = '" & UnidadeID & "'"
+                    "WHERE pos.Quantidade > 0 AND pos.ProdutoID = '" & ProdutoID & "' AND COALESCE(loc.UnidadeID, 0) = '" & session("UnidadeID") & "'"
         set resPosicoes = db.execute(sqlPosicoes)
 
         quantTotalEmEstoque = 0
@@ -78,7 +88,6 @@ for i=0 to UBound(ArrDispensar)
         while not resPosicoes.eof
             posicaoId              = resPosicoes("id")
             quantPosicao           = resPosicoes("QuantUnit")
-            produtoId              = resPosicoes("ProdutoID")
             lote                   = resPosicoes("Lote")
             tipoUnidadeOriginal    = resPosicoes("TipoUnidade")
             validade               = resPosicoes("Validade")
@@ -107,20 +116,42 @@ for i=0 to UBound(ArrDispensar)
             'response.write("<pre>quantConjuntoABaixar da pos "&posicaoId&": "&quantConjuntoABaixar&"</pre>")
             'response.write("<pre>quantUnitariaABaixar da pos "&posicaoId&": "&quantUnitariaABaixar&"</pre>")
             if quantConjuntoABaixar > 0 then
-                call LanctoEstoque(0, posicaoId, produtoId, "S", tipoUnidadeOriginal, "C", quantConjuntoABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & cicloId & " > Saída", "", "", "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
+                call LanctoEstoque(0, posicaoId, ProdutoID, "S", tipoUnidadeOriginal, "C", quantConjuntoABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Saída", "", "", "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
             end if
             if quantUnitariaABaixar > 0 then
-                call LanctoEstoque(0, posicaoId, produtoId, "S", tipoUnidadeOriginal, "U", quantUnitariaABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & cicloId & " > Saída", "", "", "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
+                call LanctoEstoque(0, posicaoId, ProdutoID, "S", tipoUnidadeOriginal, "U", quantUnitariaABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Saída", "", "", "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
             end if
 
             pos = pos + 1
             resPosicoes.movenext
         wend
 
+        db.execute("UPDATE pacientesprotocolosciclos_medicamentos SET Dispensado = 1, ProdutoDispensadoID = '" & ProdutoID & "', DispensadoEm = NOW(), DispensadoPor = '" & session("User") & "' WHERE id = '" & CicloMedicamentoID & "'")
+        dispensado = true
     end if
 next
 
-response.write("OK")
+'altera o status do ciclo
+if dispensado then
+
+    oldStatusId = resProtocoloCiclo("StatusDispensacaoID")
+    statusDispensacao = 12 'parcial
+
+    set resVerificaStatus = db.execute("SELECT COUNT(*) as count FROM pacientesprotocolosciclos_medicamentos WHERE PacienteProtocolosCicloID = '" & CicloID & "' AND Dispensado = 0")
+    if not resVerificaStatus.eof then
+        if CInt(resVerificaStatus("count")) = 0 then
+            statusDispensacao = 10 'dispensado
+        end if
+    end if
+
+    db.execute("UPDATE pacientesprotocolosciclos SET StatusDispensacaoID = " & statusDispensacao & ", StatusDispensacaoUser = '" & session("User") & "', StatusDispensacaoDate = NOW() WHERE id = '" & CicloID & "'")
+    db.execute("INSERT INTO pacientesprotocolosciclos_status_log (PacienteProtocoloID, PacienteProtocolosCiclosID, TipoStatus, OldStatusID, NewStatusID, sysUser) "&_
+               "VALUES (" & PacienteProtocoloID & ", " & CicloID & ", 'Dispensacao', " & oldStatusId & ", " & statusDispensacao & ", " & session("User") & ")")
+
+    response.write("OK")
+else
+    response.write("Não dispensado")
+end if
 
 %>
 

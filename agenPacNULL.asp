@@ -2,7 +2,7 @@
 <%
 set zero = db.execute("select NomePaciente, Tel1, Cel1 from agendamentos where (PacienteID=0 or isnull(PacienteID)) and Data>=date(now()) and NomePaciente<>'' group by NomePaciente")
 while not zero.EOF
-	set vca = db.execute("select id, trim(NomePaciente) from pacientes where trim(NomePaciente)='"&trim(zero("NomePaciente"))&"'")
+	set vca = db.execute("select id, trim(NomePaciente) from pacientes where (NomePaciente)='"&trim(zero("NomePaciente"))&"'")
 	if not vca.EOF then
 		PacienteID = vca("id")
 	else

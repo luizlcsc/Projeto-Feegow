@@ -24,7 +24,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
             DataNasc = mydatenull(req("q"))
             sql = "select id, NomePaciente, Nascimento from pacientes where Nascimento="& DataNasc &" and sysActive=1 order by NomePaciente limit "& page*30 &", 30"
         else
-    	    sql = "select id, NomePaciente, Nascimento from pacientes where TRIM(NomePaciente) like '%"&req("q")&"%' and sysActive=1  order by (case when NomePaciente like '"&req("q")&"%' then 1 else 2 end) , NomePaciente limit "& page*30 &", 30"
+    	    sql = "select id, NomePaciente, Nascimento from pacientes where (NomePaciente) like '"&req("q")&"%' and sysActive=1  order by (case when NomePaciente like '"&req("q")&"%' then 1 else 2 end) , NomePaciente limit "& page*30 &", 30"
         end if
 	    'campoSuperior???
 	    ResourceID = 1

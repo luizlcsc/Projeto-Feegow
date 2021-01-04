@@ -12,7 +12,7 @@
 <tbody>
 <%
 response.Buffer=true
-set pacs = db.execute("select id, trim(NomePaciente) NomePaciente, Nascimento from pacientes where not isnull(NomePaciente) and NomePaciente<>'' and sysActive=1 order by trim(NomePaciente),id limit 50000")
+set pacs = db.execute("select id, trim(NomePaciente) NomePaciente, Nascimento from pacientes where not isnull(NomePaciente) and NomePaciente<>'' and sysActive=1 order by (NomePaciente),id limit 50000")
 c = 0
 while not pacs.eof
 	response.Flush

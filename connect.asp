@@ -4171,18 +4171,18 @@ end function
 
 
 function getEspera(Profissionais)
+
     splProfs = split(Profissionais, ",")
     for y=0 to ubound(splProfs)
         eProfissional = trim(splProfs(y))
         if eProfissional<>"" then
             if eProfissional<>"0" then
-                db_execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate() and StaID IN (4) and sysActive = 1 and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
+                db_execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate() and StaID IN (4) and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
             end if
         end if
     next
 
-
-    set esperaT = db.execute("select UnidadeID, count(UnidadeID) EsperaTotal from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() AND a.sysActive=1 and StaID=4 order by l.UnidadeID) t group by UnidadeID")
+    set esperaT = db_execute("select UnidadeID, count(UnidadeID) EsperaTotal from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() and StaID=4 order by l.UnidadeID) t group by UnidadeID")
     while not esperaT.eof
         esperaTotal = esperaTotal & "|"& esperaT("UnidadeID") &", "& EsperaT("EsperaTotal") &"|"
     esperaT.movenext
@@ -4190,16 +4190,13 @@ function getEspera(Profissionais)
     esperaT.close
     set esperaT=nothing
 
-    set esperaV = db.execute("select UnidadeID, count(UnidadeID) EsperaVazia from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() AND a.sysActive=1 and StaID=4 and ProfissionalID=0 order by l.UnidadeID) t group by UnidadeID")
+    set esperaV = db_execute("select UnidadeID, count(UnidadeID) EsperaVazia from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() and StaID=4 and ProfissionalID=0 order by l.UnidadeID) t group by UnidadeID")
     while not esperaV.eof
         esperaVazia = esperaVazia & "|"& esperaV("UnidadeID") &", "& EsperaV("EsperaVazia") &"|"
     esperaV.movenext
     wend
     esperaV.close
     set esperaV=nothing
-
-    db_execute("update sys_users set EsperaTotal='"&EsperaTotal&"'")
-    db_execute("update sys_users set EsperaVazia='"&EsperaVazia&"'")
 
 end function
 

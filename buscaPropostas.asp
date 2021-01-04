@@ -20,7 +20,7 @@
         <div class="row">
             <%=quickfield("datepicker", "De", "De", 2, dateadd("m", -1, date()), "", "", "") %>
             <%=quickfield("datepicker", "Ate", "Até", 2, date(), "", "", "") %>
-            <%=quickfield("multiple", "Procedimentos", "Filtrar Procedimentos", 3, "", "select distinct ip.ItemID id, p.NomeProcedimento from itensproposta ip LEFT JOIN procedimentos p on p.id=ip.ItemID WHERE NOT ISNULL(p.NomeProcedimento) ORDER BY trim(p.NomeProcedimento)", "NomeProcedimento", "") %>
+            <%=quickfield("multiple", "Procedimentos", "Filtrar Procedimentos", 3, "", "select p.id, p.NomeProcedimento from procedimentos p WHERE Ativo='ON' AND sysActive=1 ORDER BY p.NomeProcedimento LIMIT 1000", "NomeProcedimento", "") %>
             <%=quickfield("multiple", "Unidades", "Filtrar Unidades", 3 , "|"&session("UnidadeID")&"|", "SELECT 0 as id,NomeEmpresa as NomeFantasia  FROM empresa UNION SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive = 1", "NomeFantasia", "") %>
             <%=quickfield("users", "EmitidaPor", "Emitida por", 2, "", "", "", "") %>
         </div>

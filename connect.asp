@@ -4171,8 +4171,6 @@ end function
 
 
 function getEspera(Profissionais)
-    response.write("Teste")
-    response.end
 
     splProfs = split(Profissionais, ",")
     for y=0 to ubound(splProfs)

@@ -141,7 +141,11 @@ if ID <> "" and OP <> "" then
 %>
 <script>
     $(function(){
+    <% if OP = 1 then %>
     showMessageDialog("Desconto autorizado com sucesso", "success")
+    <% else %>
+    showMessageDialog("Desconto reprovado com sucesso", "success")
+    <% end if %>
     });
 </script>
 <%

@@ -2004,15 +2004,16 @@ function callSta(callID, StaID){
 
 <%
 
-    if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
+'or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 
+    if session("OtherCurrencies")="phone" then
 	    %>
 	    setTimeout(function(){constante()}, 1500);
 	    setInterval(function(){constante()}, 7000);
 	    <%
     else
 	    %>
-	    setTimeout(function(){constante()}, 3000);
-	    setInterval(function(){constante()}, 18000);
+	    setTimeout(function(){constante()}, 4000);
+	    setInterval(function(){constante()}, 25000);
 	    <%
     End If
 

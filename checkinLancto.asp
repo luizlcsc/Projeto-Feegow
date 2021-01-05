@@ -89,7 +89,7 @@ end if
 <%
 valorTotalOriginal=ValorTotal
 if ref("valorTotalSomadoModificado") <> "" then
-    valorModificado = ref("valorTotalSomadoModificado")
+    valorModificado = replace(ref("valorTotalSomadoModificado"),".",",")
     valorTotal = valorModificado
 end if
 

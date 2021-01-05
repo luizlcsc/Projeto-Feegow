@@ -4862,7 +4862,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
             
             SomenteConvenios = ""
             if ConvenioID <> 0 then
-                SomenteConvenios = "NaoAceitaConvenio"
+                SomenteConvenios = "ConvenioID"
             end if
         
            call selectInsert("", "ProcedimentoID"& n, ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", "agenda", SomenteConvenios) 

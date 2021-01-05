@@ -410,7 +410,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                                 page: params.page,
                                 t: recurso,
                                 c: coluna,
-                                cs: (campoSuperior == "NaoAceitaConvenio") ? "NONE" : ($('#'+campoSuperior).is(':visible')) ? $('#'+campoSuperior).val() : "",
+                                cs: ($('#'+campoSuperior).is(':visible')) ? $('#'+campoSuperior).val() : "",
                                 exibir: $ajax.attr("data-exibir"),
                                 oti: oti,
                                 ProfissionalID: $("#ProfissionalID").val(),

@@ -129,7 +129,9 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
     }
 
    body {
+      /* ### BUG MOBILE
        margin-top:100px!important;
+      */
    }
 
    body.sb-l-m #content_wrapper {
@@ -587,8 +589,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         }
         </script>
     <% end if %>
-
-
 
     <div id="disc" class="alert alert-danger text-center hidden" style="position:absolute; z-index:9999; width:100%"></div>
 
@@ -1105,49 +1105,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
     <!-- Start: Content-Wrapper -->
     <section id="content_wrapper">
 
-      <!-- Start: Topbar-Dropdown -->
-      <div id="topbar-dropmenu" class="alt">
-        <div class="topbar-menu row">
-          <div class="col-xs-4 col-sm-2">
-            <a href="#" class="metro-tile bg-primary light">
-              <span class="glyphicon glyphicon-inbox text-muted"></span>
-              <span class="metro-title">Messages</span>
-            </a>
-          </div>
-          <div class="col-xs-4 col-sm-2">
-            <a href="#" class="metro-tile bg-info light">
-              <span class="glyphicon glyphicon-user text-muted"></span>
-              <span class="metro-title">Users</span>
-            </a>
-          </div>
-          <div class="col-xs-4 col-sm-2">
-            <a href="#" class="metro-tile bg-success light">
-              <span class="glyphicon glyphicon-headphones text-muted"></span>
-              <span class="metro-title">Support</span>
-            </a>
-          </div>
-          <div class="col-xs-4 col-sm-2">
-            <a href="#" class="metro-tile bg-system light">
-              <span class="glyphicon glyphicon-facetime-video text-muted"></span>
-              <span class="metro-title">Videos</span>
-            </a>
-          </div>
-          <div class="col-xs-4 col-sm-2">
-            <a href="#" class="metro-tile bg-warning light">
-              <span class="fa fa-gears text-muted"></span>
-              <span class="metro-title">Settings</span>
-            </a>
-          </div>
-          <div class="col-xs-4 col-sm-2">
-            <a href="#" class="metro-tile bg-alert light">
-              <span class="glyphicon glyphicon-picture text-muted"></span>
-              <span class="metro-title">Pictures</span>
-            </a>
-          </div>
-        </div>
-      </div>
-      <!-- End: Topbar-Dropdown -->
-
       <!-- Start: Topbar -->
       <header id="topbar" class="alt affix no-print">
         <div class="topbar-left">
@@ -1457,13 +1414,10 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         <div class="tab-block sidebar-block br-n" style="margin-top: 31px">
           <ul class="nav nav-tabs tabs-border nav-justified hidden">
             <li class="active">
-              <a href="#sidebar-right-tab1" data-toggle="tab">Tab 1</a>
+              <a href="#sidebar-right-tab1" data-toggle="tab">Notificações Chat</a>
             </li>
             <li>
-              <a href="#sidebar-right-tab2" data-toggle="tab">Tab 2</a>
-            </li>
-            <li>
-              <a href="#sidebar-right-tab3" data-toggle="tab">Tab 3</a>
+              <a href="#sidebar-right-tab2" data-toggle="tab">Tutorial</a>
             </li>
           </ul>
           <div class="tab-content br-n" style="padding: 0px">
@@ -1688,7 +1642,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                 end if
                 %>
             </div>
-            <div id="sidebar-right-tab3" class="tab-pane"></div>
           </div>
           <!-- end: .tab-content -->
         </div>

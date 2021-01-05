@@ -16,7 +16,7 @@ ArrDispensar = Split(Dispensar, ",")
 for i=0 to UBound(ArrDispensar)
     ArrItem = Split(ArrDispensar(i), "|")
     
-    if UBound(ArrItem) <> 1 then
+    if UBound(ArrItem) <> 2 then
         response.write("Item " & i & " invalido ")
         response.status = 500
         response.end
@@ -37,26 +37,42 @@ dispensado = false
 for i=0 to UBound(ArrDispensar)
     ArrItem = Split(ArrDispensar(i), "|")
 
-    ' Variaveis
+    ' Variaveis do Item
     CicloMedicamentoID = ArrItem(0)
-    ProdutoID          = ArrItem(1)
+    TipoItem           = ArrItem(1)
+    ProdutoID          = ArrItem(2)
 
     'response.write("<pre>Item " & i & " - CicloMedicamentoID: " & CicloMedicamentoID & "</pre>")
+    'response.write("<pre>Item " & i & " - TipoItem: " & TipoItem & "</pre>")
     'response.write("<pre>Item " & i & " - ProdutoID: " & ProdutoID & "</pre>")
 
     'recupera a prescrição
+
+    if TipoItem = "2-Diluente" then
+        sqlSelectDose   = "protmed.QtdDiluente AS Dose"
+        sqlJoinProduto  = "prod.id = protmed.DiluenteID"
+        campoDispensado = "DiluenteDispensado"
+    elseif TipoItem = "3-Reconstituinte" then
+        sqlSelectDose   = "protmed.QtdReconstituinte AS Dose"
+        sqlJoinProduto  = "prod.id = protmed.ReconstituinteID"
+        campoDispensado = "ReconstituinteDispensado"
+    else
+        sqlSelectDose   = "IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose) AS Dose"
+        sqlJoinProduto  = "prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento)"
+        campoDispensado = "MedicamentoDispensado"
+    end if
+
     sqlMedicamentoPrescrito = "SELECT " &_
                               "ppcm.id, " &_
                               "protmed.id AS ProtocoloMedicamentoID, " &_
                               "prod.id AS ProdutoID, prod.NomeProduto,  " &_
-                              "IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose) AS Dose,  " &_
-                              "uMed.Sigla " &_
+                              sqlSelectDose & " " &_
                               "FROM pacientesprotocolosciclos_medicamentos ppcm " &_
                               "INNER JOIN pacientesprotocolosmedicamentos ppm ON ppm.id = ppcm.PacienteProtocolosMedicamentosID " &_
                               "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
-                              "INNER JOIN produtos prod ON prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento) " &_
+                              "INNER JOIN produtos prod ON " & sqlJoinProduto & " " &_
                               "LEFT JOIN cliniccentral.unidademedida uMed ON uMed.id = prod.UnidadePrescricao " &_
-                              "WHERE ppcm.id = '" & CicloMedicamentoID & "' AND ppcm.PacienteProtocolosCicloID = " & CicloID & " and ppcm.Dispensado = 0"
+                              "WHERE ppcm.id = '" & CicloMedicamentoID & "' AND ppcm.PacienteProtocolosCicloID = " & CicloID & " and ppcm." & campoDispensado & "ID IS NULL"
     set resMedicamentoPrescrito = db.execute(sqlMedicamentoPrescrito)
     if not resMedicamentoPrescrito.eof then
 
@@ -126,7 +142,9 @@ for i=0 to UBound(ArrDispensar)
             resPosicoes.movenext
         wend
 
-        db.execute("UPDATE pacientesprotocolosciclos_medicamentos SET Dispensado = 1, ProdutoDispensadoID = '" & ProdutoID & "', DispensadoEm = NOW(), DispensadoPor = '" & session("User") & "' WHERE id = '" & CicloMedicamentoID & "'")
+        'atualiza o ciclo medicamento
+        db.execute("UPDATE pacientesprotocolosciclos_medicamentos SET " & campoDispensado & "ID = '" & ProdutoID & "', " & campoDispensado & "Em = NOW(), " & campoDispensado & "Por = '" & session("User") & "' WHERE id = '" & CicloMedicamentoID & "'")
+
         dispensado = true
     end if
 next
@@ -137,7 +155,16 @@ if dispensado then
     oldStatusId = resProtocoloCiclo("StatusDispensacaoID")
     statusDispensacao = 12 'parcial
 
-    set resVerificaStatus = db.execute("SELECT COUNT(*) as count FROM pacientesprotocolosciclos_medicamentos WHERE PacienteProtocolosCicloID = '" & CicloID & "' AND Dispensado = 0")
+    set resVerificaStatus = db.execute("SELECT COUNT(*) as count FROM pacientesprotocolosciclos_medicamentos ppcm " &_
+                                       "INNER JOIN pacientesprotocolosmedicamentos ppm ON ppm.id = ppcm.PacienteProtocolosMedicamentosID " &_
+                                       "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
+                                       "WHERE ppcm.PacienteProtocolosCicloID = '" & CicloID & "' " &_
+                                       "AND ( " &_
+                                       "ppcm.MedicamentoDispensadoID IS NULL " &_
+                                       "OR (ppcm.DiluenteDispensadoID IS NULL AND protmed.DiluenteID != 0 AND protmed.DiluenteID != 0 AND protmed.DiluenteID IS NOT NULL) " &_
+                                       "OR (ppcm.ReconstituinteDispensadoID IS NULL AND protmed.ReconstituinteID != 0 AND protmed.ReconstituinteID IS NOT NULL) " &_
+                                       ")")
+
     if not resVerificaStatus.eof then
         if CInt(resVerificaStatus("count")) = 0 then
             statusDispensacao = 10 'dispensado

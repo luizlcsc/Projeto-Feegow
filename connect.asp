@@ -3267,21 +3267,26 @@ function mobileDevice()
 end function
 
 function db_execute(txt)
-'	set fs=Server.CreateObject("Scripting.FileSystemObject")
-'	set f=fs.OpenTextFile("c:\inetpub\wwwroot\feegowclinic\teste.txt",8,true)
-'		f.WriteLine(txt&";")
-'	f.close
-'	set f=nothing
-'	set fs=nothing
-    '    response.write(txt)
+executeInReadOnly = False
 
+    sqlStatement = txt
 
-    tipoLog = split(txt, " ")(0)
-    tipoLog = LCase(tipoLog)
-    recursoLog = split(txt, " ")(1)
-    recursoLog = LCase(recursoLog)
+    if sqlStatement&""<>"" then
+        tipoLog = split(sqlStatement, " ")(0)
+        tipoLog = LCase(tipoLog)
+        recursoLog = split(sqlStatement, " ")(1)
+        recursoLog = LCase(recursoLog)
+    end if
 
-    db.execute(txt)
+    if tipoLog = "select" then
+        executeInReadOnly = True
+    end if
+
+    if executeInReadOnly and False then
+        set db_execute = dbReadOnly.execute(sqlStatement)
+    else
+        set db_execute = db.execute(sqlStatement)
+    end if
 
 end function
 

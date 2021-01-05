@@ -235,8 +235,9 @@ if ExibeResultado then
 
             set ProfissionalSQL = db_execute(sqlContas)
         else
-            set ProfissionalSQL = db_execute("SELECT DISTINCT rr.ContaCredito AccountID FROM rateiorateios rr "&_
-            "WHERE rr.DataServicoExecucao BETWEEN "& mydateNull(DeSqlProf) &" AND "& mydateNull(Ate) &" AND rr.ContaCredito not in ('0', '0_0', 'LAU', '')")
+            sqlRepasses = "SELECT DISTINCT rr.ContaCredito AccountID FROM rateiorateios rr "&_
+                          "WHERE rr.DataServicoExecucao BETWEEN "& mydateNull(DeSqlProf) &" AND "& mydateNull(Ate) &" AND rr.ContaCredito not in ('0', '0_0', 'LAU', '')"
+            set ProfissionalSQL = db_execute(sqlRepasses)
         end if
     else
         set ProfissionalSQL = db_execute("SELECT '"&AccountID&"' AccountID")

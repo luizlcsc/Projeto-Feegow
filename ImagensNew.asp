@@ -244,7 +244,7 @@ end if
             let formato = 'a';
             if(['png','gif','jpeg','jpg'].includes(extension)){
                 formato = 'span';
-                link = item.thumbnailLink?item.thumbnailLink:item.ArquivoLink;
+                link = item.thumbnailLink?item.thumbnailLink+'&dimension=thumb':item.ArquivoLink+'&dimension=full';
             }
 
             let baseLink = "https://cdn.feegow.com/icons/";
@@ -347,7 +347,7 @@ end if
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-expand icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}" target="_blank" title="Abrir Imagem Separadamente">
+                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}&dimension=full" target="_blank" title="Abrir Imagem em outra aba">
                                                               <i class="fa fa-external-link icon-external-link"></i>
                                     </a>
                                     <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">
@@ -365,7 +365,7 @@ end if
                                 </div>
 
                              </div>
-                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink}" target="_blank"><img src="${item.link}" data-id="${item.id}" class="${item.extension} img-responsive" title="${item.Descricao}"></a></div>
+                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink}" target="_blank"><img src="${item.link}" data-id="${item.id}&dimension=full" class="${item.extension} img-responsive" title="${item.Descricao}"></a></div>
                              <div class="config">
                                 <textarea class="galery-description text-info border-edit imgpac" name="Desc${item.id}" onchange="changeDescription(${item.id},this)" data-img-id="${item.id}">${item.NovaDescricao}</textarea>
                              </div>
@@ -389,7 +389,7 @@ end if
 Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescricao}
 </div>
           </div>
-          <div class="galery-img"><img src="${item.ArquivoLink}" width="100%" height="100%" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
+          <div class="galery-img"><img src="${item.ArquivoLink}&dimension=full" width="100%" height="100%" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
     </div>`;
 
 
@@ -458,7 +458,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
                     Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescricao}
                     </div>
                               </div>
-                              <div class="galery-img"><img src="${item.ArquivoLink}" width="100%" height="100%" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
+                              <div class="galery-img"><img src="${item.ArquivoLink}&dimension=full" width="100%" height="100%" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
                     </div>`;
         })
 

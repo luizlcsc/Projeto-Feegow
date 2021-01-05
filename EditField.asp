@@ -449,7 +449,7 @@ if TipoCampoID=3 then
                 <%
                 if ValorPadrao&""<>"" AND sysActive=1  then
                'imgSRC = "/uploads/"&replace(session("Banco"), "clinic", "")&"/Perfil/"&ValorPadrao *** SRC ANTIGO
-                form_imgSRC = replace(imgSRC("FORMULARIOS",ValorPadrao),"renderMode=download","renderMode=redirect")
+                form_imgSRC = replace(imgSRC("FORMULARIOS",ValorPadrao&"&dimension=full"),"renderMode=download","renderMode=redirect")
                 %>
                     <img src="<%=form_imgSRC%>" height="150" class="img-thumbnail" id="assinatura-img"/>
                     <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>

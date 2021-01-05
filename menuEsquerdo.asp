@@ -797,7 +797,7 @@ select case lcase(req("P"))
 		    end if
             recursoPermissaoUnimed = recursoAdicional(12)
 
-		    if recursoPermissaoUnimed=4 or session("Banco")="clinic100000" then
+		    if (recursoPermissaoUnimed=4  or session("Banco")="clinic100000") AND lcase(session("table"))="profissionais" then
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaResultadosExames" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ResultadosExames|');">

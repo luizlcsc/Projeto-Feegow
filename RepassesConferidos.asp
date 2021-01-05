@@ -354,7 +354,7 @@ if ExibeResultado then
                             <th>Forma</th>
                             <th>Parcelas</th>
                             <th>Valor Total Serv.</th>
-                            <th>Valor Parcela</th>
+                            <th>Valor Total da Conta</th>
                             <th>Repasse</th>
                             <th width="1%"><i class="fa fa-remove"></i></th>
                         </tr>

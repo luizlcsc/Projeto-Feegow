@@ -4862,7 +4862,13 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
             <%=NomeProcedimento%> 
             <%
         else
-           call selectInsert("", "ProcedimentoID"& n, ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", "agenda", "") 
+            
+            SomenteConvenios = ""
+            if ConvenioID <> 0 then
+                SomenteConvenios = "NaoAceitaConvenio"
+            end if
+        
+           call selectInsert("", "ProcedimentoID"& n, ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", "agenda", SomenteConvenios) 
         end if
         %>
         </td>
@@ -5576,7 +5582,7 @@ function arqEx(nArquivo, nTipo)
 	if nArquivo&""="" then
         arqEx = ""
 	else
-		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&renderMode=download&folder="&nTipo&"&file="&nArquivo
+		arqEx = "https://functions.feegow.com/load-image?licenseId="&LicenseID&"&folder="&nTipo&"&file="&nArquivo
 	end if
 end function
 

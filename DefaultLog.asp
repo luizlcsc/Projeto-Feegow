@@ -78,6 +78,13 @@
                                     if isnull(initialOrder) then
                                         initialOrder="id"
                                     end if
+
+                                            
+                                    externalLinkDisabled = ""
+
+                                    if isnull(Pers) then
+                                        externalLinkDisabled=" disabled "
+                                    end if      
                                     set reg = db.execute("select "& initialOrder &" from `"& ref("recurso") &"` where id="& treatvalzero(plog("I")))
                                     if not reg.eof then
                                         NomeRegistro = plog("I") &": "& reg(""&sr("initialOrder")&"")
@@ -90,7 +97,7 @@
 <tr>
 <%if req("I")="" then %>
     <td class="p5 mn">
-        <a href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
+        <a <%=externalLinkDisabled%> href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
     </td>
     <td>
         <%= NomeRegistro %>
@@ -147,7 +154,7 @@ end if
                                                 externalLinkDisabled = ""
 
                                                 if isnull(Pers) then
-                                                    'externalLinkDisabled=" disabled "
+                                                    externalLinkDisabled=" disabled "
                                                 end if
                                                 %>
                                                 <a <%=externalLinkDisabled%> href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>

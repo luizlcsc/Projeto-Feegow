@@ -414,7 +414,7 @@ end if
             end if
             %>
             
-            <% if aut("profissionalsolicitanteA")=1 then
+            <% if aut("profissionalsolicitanteA")=1 or data("sysActive")=0 then
                     if getconfig("profissionalsolicitanteobrigatorio")=1 then
                         SolicitanteRequired = " required empty "
                     end if

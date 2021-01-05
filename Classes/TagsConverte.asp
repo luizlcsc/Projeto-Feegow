@@ -343,7 +343,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 if ProfissionaisSQL("Assinatura")&"" = "" then
                   conteudo = replace(conteudo, "[ProfissionalLaudador.Assinatura]", "______________________________________________")
                 else
-                  conteudo = replace(conteudo, "[ProfissionalLaudador.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(ProfissionaisSQL("Assinatura")))&"'>" )
+                  conteudo = replace(conteudo, "[ProfissionalLaudador.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(ProfissionaisSQL("Assinatura"))&"&dimension=full")&"'>" )
                 end if
 
               end if
@@ -372,7 +372,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               if ProfissionaisSQL("Assinatura")&"" = "" then
                 conteudo = replace(conteudo, "[ProfissionalSolicitante.Assinatura]", "______________________________________________")
               else
-                conteudo = replace(conteudo, "[ProfissionalSolicitante.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(ProfissionaisSQL("Assinatura")))&"'>" )
+                conteudo = replace(conteudo, "[ProfissionalSolicitante.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(ProfissionaisSQL("Assinatura"))&"&dimension=full")&"'>" )
               end if
               
             end if
@@ -428,7 +428,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               if ProfissionaisSQL("Assinatura")&"" = "" then
                 conteudo = replace(conteudo, "[Profissional.Assinatura]", "______________________________________________")
               else
-                conteudo = replace(conteudo, "[Profissional.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(ProfissionaisSQL("Assinatura")))&"'>" )
+                conteudo = replace(conteudo, "[Profissional.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(ProfissionaisSQL("Assinatura"))&"&dimension=full")&"'>" )
               end if
 
               conteudo = replace(conteudo, "[Profissional.Tratamento]", trim(ProfissionaisSQL("Tratamento")&" ") )
@@ -621,5 +621,5 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 'response.write("<script>console.log('VALOR::: "&UnidadeID&"')</script>")
 end function
 '***** EXEMPLO DE USO DA FUNÇÃO ******
-'response.write(TagsConverte("Endereço: [Unidade.EnderecoCompleto]<br> agendamento: [Agendamento.Procedimento] Hora: [Agendamento.Hora]","UnidadeID_1|AgendamentoID_274564",""))
+'response.write(TagsConverte("Endereço: [Unidade.EnderecoCompleto]<br> agendamento: [Agendamento.Procedimento] Hora: [Agendamento.Hora] <hr>Profissional: [Profissional.Nome] <br> Assinatura<br> [Profissional.Assinatura]","UnidadeID_1|AgendamentoID_274564|ProfissionalID_16",""))
 %>

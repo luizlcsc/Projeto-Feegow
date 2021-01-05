@@ -1,4 +1,4 @@
-<!--#include file="Classes/Connection.asp"--><!--#include file="Classes/IPUtil.asp"--><!--#include file="Classes/Environment.asp"--><%
+6<!--#include file="Classes/Connection.asp"--><!--#include file="Classes/IPUtil.asp"--><!--#include file="Classes/Environment.asp"--><%
 if IP<>"::1" then
    'on error resume next
 end if
@@ -355,7 +355,7 @@ if not tryLogin.EOF then
 			if pFoto("Foto") = "" or isNull(pFoto("Foto")) then
 				session("Photo") = "assets/img/user.png"
 			else
-                session("Photo") = arqEx(pFoto("Foto"), "Perfil")
+                session("Photo") = arqEx(pFoto("Foto")&"&dimension=full", "Perfil")
 			end if
 		end if
     		set config = db.execute("select c.* from sys_config c")
@@ -548,7 +548,9 @@ if not tryLogin.EOF then
 				licencas = licencas & "|"&tryLogin("LicencaID")&"|"
                 if Versao=7 then
     				urlRedir = "./?P=Home&Pers=1"
-                else
+                elseif Versao=6 then
+		    urlRedir = "/v6/?P=Home&Pers=1"	
+		else
                     urlRedir = "./../?P=Home&Pers=1"
                 end if
                 if tryLogin("Home")&""<>"" then

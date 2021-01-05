@@ -221,7 +221,7 @@ function TISS__FormataConteudo(Conteudo)
 
     Conteudo = RemoveAcentoPalavras(Conteudo)
     Conteudo = RemoveCaracters(Conteudo,"-_./,")
-    Conteudo = AlteraCaracters(Conteudo,"º°","..")
+    Conteudo = AlteraCaracters(Conteudo,"º°&","..e")
 
     TISS__FormataConteudo = Conteudo
 End Function

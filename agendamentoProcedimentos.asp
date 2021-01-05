@@ -372,7 +372,8 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                 ContaRectoID = 0;   
             }
 
-            valorTotalSomaItems = document.getElementById('valorTotalSomaItems').value;
+            valorTotalSomaItems = normalizeMoney(document.getElementById('valorTotalSomaItems').value);
+
             var bloco = $(".Bloco" + Bloco).serialize()+"&valorTotalSomadoModificado="+valorTotalSomaItems+"&FormaID="+sysFormasrectoId+"&ContaRectoID="+ContaRectoID;
 
             $.post("checkinLancto.asp", bloco, function (v) { 
@@ -380,6 +381,17 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                 clearValue();
             });            
         }
+
+        function normalizeMoney(valor){
+            let check = valor.slice(valor.length - 3)
+            if(check[0] == '.' || check[1] == '.'){
+                valor = valor.replace(',','v')
+                valor = valor.replace('.',',')
+                valor = valor.replace('v','.')
+            }
+            return valor
+        }
+
     </script>
 
     <%

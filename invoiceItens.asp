@@ -540,29 +540,6 @@ document.onkeyup  = function(evt) {
     }
 };
 
-$(document).ready(function(){
-    inputs = $("input[name^='PercentDesconto']");
-    inputs.each(function (key, input) {
-        let valorUnitario           = $(this).closest('tr').find("input[name^='ValorUnitario']").val().replace(",",".");
-        let descontoEmReais         = $(this).closest('tr').find("input[name^='Desconto']").val().replace(",",".");
-        let descontoEmPercentual    = convertRealParaPorcentagem(descontoEmReais, valorUnitario);
-        $(input).val(descontoEmPercentual);
-        $(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
-    });
-	let executados = $("input[id^='Executado']")
-	executados.each((key,input)=>{
-		let id = $(input).attr('id').replace('Executado','')
-		let numOptions = $("#EspecialidadeID"+id).find("option").length ;
-
-		if(numOptions<=1){return;}
-		if($(input).prop('checked')){
-			$("#EspecialidadeID"+id).attr('required',true) 
-		}else{
-			$("#EspecialidadeID"+id).attr('required',false) 
-		}
-	})
-});
-
 $('.PercentDesconto').change(function () {
     $('.CampoDesconto').change();
 })
@@ -680,6 +657,35 @@ function onChangeProcedimento(linhaId, procedimentoId) {
   parametrosInvoice(linhaId, procedimentoId);
   filtraExecutantes(procedimentoId, linhaId);
 }
+
+$(document).ready(function(){
+    inputs = $("input[name^='PercentDesconto']");
+    inputs.each(function (key, input) {
+        let valorUnitario           = $(this).closest('tr').find("input[name^='ValorUnitario']").val().replace(",",".");
+        let descontoEmReais         = $(this).closest('tr').find("input[name^='Desconto']").val().replace(",",".");
+        let descontoEmPercentual    = convertRealParaPorcentagem(descontoEmReais, valorUnitario);
+        $(input).val(descontoEmPercentual);
+        $(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
+    });
+	let executados = $("input[id^='Executado']")
+	executados.each((key,input)=>{
+		let id = $(input).attr('id').replace('Executado','')
+		let numOptions = $("#EspecialidadeID"+id).find("option").length ;
+
+		if(numOptions<=1){return;}
+		if($(input).prop('checked')){
+			$("#EspecialidadeID"+id).attr('required',true) 
+		}else{
+			$("#EspecialidadeID"+id).attr('required',false) 
+		}
+	})
+	let rows = $("tr[id^='row']")
+	rows.each((key,element)=>{
+		let procedimentoId = $(element).find('select').val()
+		let linhaId = $(element).attr('id').replace('row','')
+		filtraExecutantes(procedimentoId, linhaId);
+	})
+});
 
 </script>
 <!--#include file="disconnect.asp"-->

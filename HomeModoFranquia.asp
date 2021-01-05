@@ -24,4 +24,35 @@
 if("false"!=="<%=session("AutenticadoPHP")%>"){
     authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z",  "<%=session("Partner")%>", "");
 }
+
+function getNews(onlyUnread) {
+
+    if(onlyUnread === 1){
+        getUrl("/news/get-news", {
+            offset: 0,
+            limit: 10,
+            new_to_show: 1,
+            ativo_hoje: 1
+        }, function(data) {
+            if(data === "false"){
+                return;
+            }
+            if(data === "true"){
+                openComponentsModal("/news", false, false, false, false, "lg");
+            }
+            if(!isJson(data)){
+                return;
+            }
+
+            let j = data;
+            if(j && j.length > 0 && j[0].Prioridade === 3)
+            {
+                $("#modais-new-prioridades-modal .modal-body").html(j[0].Conteudo);
+                $("#modais-new-prioridades-modal").modal();
+            }
+        })
+    }else{
+        openComponentsModal("/news", false, false, false, false, "lg");
+    }
+}
 </script>

@@ -705,9 +705,9 @@ function round(value, decimals) {
 
 
 atualizarValores = (acrescimoTotal, descontoTotal, valorTotalSomadoFormaPagamento) => {
-    document.getElementById('acrescimoForma').value = round(acrescimoTotal, 2).toLocaleString(undefined, { minimumFractionDigits: 2 }); 
-    document.getElementById('descontoForma').value = round(descontoTotal, 2).toLocaleString(undefined, { minimumFractionDigits: 2 }); 
-    document.getElementById('valorTotalSomaItems').value = round(valorTotalSomadoFormaPagamento, 2).toLocaleString(undefined, { minimumFractionDigits: 2 }); 
+    document.getElementById('acrescimoForma').value = round(acrescimoTotal, 2).toLocaleString("pt-BR", { minimumFractionDigits: 2 }); 
+    document.getElementById('descontoForma').value = round(descontoTotal, 2).toLocaleString("pt-BR", { minimumFractionDigits: 2 }); 
+    document.getElementById('valorTotalSomaItems').value = round(valorTotalSomadoFormaPagamento, 2).toLocaleString("pt-BR", { minimumFractionDigits: 2 }); 
     document.getElementById('totalvalue').value = document.getElementById('valorTotalSomaItems').value;
 }
 

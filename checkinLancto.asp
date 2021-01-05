@@ -276,7 +276,12 @@ for i= 0 to ubound(splLC)
                         end if
 
                         if saveInsys_financialmovement=0 then
-                            db.execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID, UnidadeID) values (0, 0, 3, "& PacienteID &", "& treatvalzero(ValorTotal) &", curdate(), 'C', 'Bill', 'BRL', 1, "& InvoiceID &", 1, "& session("User") &", "& treatvalnull(session("CaixaID")) &", "& UnidadeID &")")
+                        
+                            ValorTotal = replace(ValorTotal, ",", "v")
+                            ValorTotal = replace(ValorTotal, ".", ",")
+                            ValorTotal = replace(ValorTotal, "v", ".")
+
+                            db.execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID, UnidadeID) values (0, 0, 3, "& PacienteID &", "& ValorTotal &", curdate(), 'C', 'Bill', 'BRL', 1, "& InvoiceID &", 1, "& session("User") &", "& treatvalnull(session("CaixaID")) &", "& UnidadeID &")")
                             set pm = db.execute("select id from sys_financialmovement where sysUser="& session("User") &" order by id desc limit 1")
                             MovementID = pm("id")
                             saveInsys_financialmovement = 1

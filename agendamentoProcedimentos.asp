@@ -372,7 +372,7 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                 ContaRectoID = 0;   
             }
 
-            valorTotalSomaItems = document.getElementById('valorTotalSomaItems').value.replace(".",",");
+            valorTotalSomaItems = document.getElementById('valorTotalSomaItems').value;
             var bloco = $(".Bloco" + Bloco).serialize()+"&valorTotalSomadoModificado="+valorTotalSomaItems+"&FormaID="+sysFormasrectoId+"&ContaRectoID="+ContaRectoID;
 
             $.post("checkinLancto.asp", bloco, function (v) { 

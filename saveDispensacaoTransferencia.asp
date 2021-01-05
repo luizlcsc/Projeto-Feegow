@@ -12,32 +12,28 @@ if CicloMedicamentoID = "" or ProdutoID = "" or UnidadeID = ""  then
 end if
 
 if Tipo = "2-Diluente" then
-    sqlProdutoPrescrito = "SELECT " &_
-        "ppcm.id, " &_
-        "ppcm.PacienteProtocolosCicloID, " &_
-        "protmed.id AS ProtocoloMedicamentoID, " &_
-        "prod.id AS ProdutoID, prod.NomeProduto,  " &_
-        "protmed.QtdDiluente AS Dose  " &_
-        "FROM pacientesprotocolosciclos_medicamentos ppcm " &_
-        "INNER JOIN pacientesprotocolosmedicamentos ppm ON ppm.id = ppcm.PacienteProtocolosMedicamentosID " &_
-        "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
-        "INNER JOIN produtos prod ON prod.id = protmed.DiluenteID " &_
-        "LEFT JOIN cliniccentral.unidademedida uMed ON uMed.id = prod.UnidadePrescricao " &_
-        "WHERE ppcm.id = '" & CicloMedicamentoID & "'"
+    sqlSelectDose  = "protmed.QtdDiluente AS Dose"
+    sqlJoinProduto = "prod.id = protmed.DiluenteID"
+elseif Tipo = "3-Reconstituinte" then
+    sqlSelectDose  = "protmed.QtdReconstituinte AS Dose"
+    sqlJoinProduto = "prod.id = protmed.ReconstituinteID"
 else
-    sqlProdutoPrescrito = "SELECT " &_
-        "ppcm.id, " &_
-        "ppcm.PacienteProtocolosCicloID, " &_
-        "protmed.id AS ProtocoloMedicamentoID, " &_
-        "prod.id AS ProdutoID, prod.NomeProduto,  " &_
-        "IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose) AS Dose " &_
-        "FROM pacientesprotocolosciclos_medicamentos ppcm " &_
-        "INNER JOIN pacientesprotocolosmedicamentos ppm ON ppm.id = ppcm.PacienteProtocolosMedicamentosID " &_
-        "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
-        "INNER JOIN produtos prod ON prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento) " &_
-        "LEFT JOIN cliniccentral.unidademedida uMed ON uMed.id = prod.UnidadePrescricao " &_
-        "WHERE ppcm.id = '" & CicloMedicamentoID & "'"
+    sqlSelectDose  = "IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose) AS Dose"
+    sqlJoinProduto = "prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento)"
 end if
+
+sqlProdutoPrescrito = "SELECT " &_
+    "ppcm.id, " &_
+    "ppcm.PacienteProtocolosCicloID, " &_
+    "protmed.id AS ProtocoloMedicamentoID, " &_
+    "prod.id AS ProdutoID, prod.NomeProduto,  " &_
+    sqlSelectDose & " " &_
+    "FROM pacientesprotocolosciclos_medicamentos ppcm " &_
+    "INNER JOIN pacientesprotocolosmedicamentos ppm ON ppm.id = ppcm.PacienteProtocolosMedicamentosID " &_
+    "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
+    "INNER JOIN produtos prod ON " & sqlJoinProduto & " " &_
+    "LEFT JOIN cliniccentral.unidademedida uMed ON uMed.id = prod.UnidadePrescricao " &_
+    "WHERE ppcm.id = '" & CicloMedicamentoID & "'"
 set resProdutoPrescrito = db.execute(sqlProdutoPrescrito)
 
 if not resProdutoPrescrito.eof then

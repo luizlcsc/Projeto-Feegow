@@ -3,6 +3,7 @@
 CicloMedicamentoID = ref("CicloMedicamentoID")
 ProdutoID          = ref("ProdutoID")
 UnidadeID          = ref("UnidadeID")
+Tipo               = ref("Tipo")
 
 if CicloMedicamentoID = "" or ProdutoID = "" or UnidadeID = ""  then
     response.write("Parametros obrigatorios nao fornecidos.")
@@ -10,25 +11,39 @@ if CicloMedicamentoID = "" or ProdutoID = "" or UnidadeID = ""  then
     response.end
 end if
 
-sqlMedicamentoPrescrito = "SELECT " &_
-                          "ppcm.id, " &_
-                          "ppcm.PacienteProtocolosCicloID, " &_
-                          "protmed.id AS ProtocoloMedicamentoID, " &_
-                          "prod.id AS ProdutoID, prod.NomeProduto,  " &_
-                          "IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose) AS Dose,  " &_
-                          "uMed.Sigla " &_
-                          "FROM pacientesprotocolosciclos_medicamentos ppcm " &_
-                          "INNER JOIN pacientesprotocolosmedicamentos ppm ON ppm.id = ppcm.PacienteProtocolosMedicamentosID " &_
-                          "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
-                          "INNER JOIN produtos prod ON prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento) " &_
-                          "LEFT JOIN cliniccentral.unidademedida uMed ON uMed.id = prod.UnidadePrescricao " &_
-                          "WHERE ppcm.id = '" & CicloMedicamentoID & "'"
-set resMedicamentoPrescrito = db.execute(sqlMedicamentoPrescrito)
+if Tipo = "2-Diluente" then
+    sqlProdutoPrescrito = "SELECT " &_
+        "ppcm.id, " &_
+        "ppcm.PacienteProtocolosCicloID, " &_
+        "protmed.id AS ProtocoloMedicamentoID, " &_
+        "prod.id AS ProdutoID, prod.NomeProduto,  " &_
+        "protmed.QtdDiluente AS Dose  " &_
+        "FROM pacientesprotocolosciclos_medicamentos ppcm " &_
+        "INNER JOIN pacientesprotocolosmedicamentos ppm ON ppm.id = ppcm.PacienteProtocolosMedicamentosID " &_
+        "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
+        "INNER JOIN produtos prod ON prod.id = protmed.DiluenteID " &_
+        "LEFT JOIN cliniccentral.unidademedida uMed ON uMed.id = prod.UnidadePrescricao " &_
+        "WHERE ppcm.id = '" & CicloMedicamentoID & "'"
+else
+    sqlProdutoPrescrito = "SELECT " &_
+        "ppcm.id, " &_
+        "ppcm.PacienteProtocolosCicloID, " &_
+        "protmed.id AS ProtocoloMedicamentoID, " &_
+        "prod.id AS ProdutoID, prod.NomeProduto,  " &_
+        "IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose) AS Dose " &_
+        "FROM pacientesprotocolosciclos_medicamentos ppcm " &_
+        "INNER JOIN pacientesprotocolosmedicamentos ppm ON ppm.id = ppcm.PacienteProtocolosMedicamentosID " &_
+        "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
+        "INNER JOIN produtos prod ON prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento) " &_
+        "LEFT JOIN cliniccentral.unidademedida uMed ON uMed.id = prod.UnidadePrescricao " &_
+        "WHERE ppcm.id = '" & CicloMedicamentoID & "'"
+end if
+set resProdutoPrescrito = db.execute(sqlProdutoPrescrito)
 
-if not resMedicamentoPrescrito.eof then
+if not resProdutoPrescrito.eof then
 
-    cicloId        = resMedicamentoPrescrito("PacienteProtocolosCicloID")
-    quantPrescrita = resMedicamentoPrescrito("Dose")
+    cicloId        = resProdutoPrescrito("PacienteProtocolosCicloID")
+    quantPrescrita = resProdutoPrescrito("Dose")
 
     'recupara a primeira localização da unidade do usuário, ou seta a localização matriz se nenhuma for encontrada
     sqlLocalizacaoUnidade = "SELECT id, NomeLocalizacao FROM produtoslocalizacoes loc WHERE COALESCE(loc.UnidadeID, 0) = '" & session("UnidadeID") & "' AND loc.sysActive = 1"

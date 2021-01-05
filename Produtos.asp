@@ -167,10 +167,10 @@ end if
                             <%end if%>
                             <%=quickField("text", "Codigo", "C&oacute;digo", 2, reg("Codigo"), "", "", "")%>
                             <div class="col-md-2">
-                                <%= selectInsert("Categoria", "CategoriaID", reg("CategoriaID"), "produtoscategorias", "NomeCategoria", "", "", "") %>
+                                <%= selectInsert("Categoria", "CategoriaID", reg("CategoriaID"), "produtoscategorias", "NomeCategoria", "", " empty", "") %>
                             </div>
                             <div class="col-md-2">
-                                <%= selectInsert("Fabricante", "FabricanteID", reg("FabricanteID"), "produtosfabricantes", "NomeFabricante", "", "", "") %>
+                                <%= selectInsert("Fabricante", "FabricanteID", reg("FabricanteID"), "produtosfabricantes", "NomeFabricante", "", " empty", "") %>
                             </div>
                         </div>
                         <br />

@@ -769,7 +769,7 @@ select case lcase(req("P"))
             </li>
 		    <%
 		    end if
-             if 1=1 then 'aut("tarefas")=1 then
+             if aut("tarefas")=1 then
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-tarefas" id="abaTarefas" href="#pront" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Tarefas|');">

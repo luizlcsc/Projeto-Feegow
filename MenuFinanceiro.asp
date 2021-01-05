@@ -61,7 +61,7 @@
                 </li>
             <% end if %>
 
-            <% if aut("solicitacompraV") = 1 then %>
+            <% if aut("aprovacompraV") = 1 then %>
                 <li class="">
                     <a href="./?P=SolicitacaoDeCompraAprovacao&I=N&Pers=1">
                         <i class="fa fa-check"></i>

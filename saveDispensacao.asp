@@ -90,62 +90,64 @@ for i=0 to UBound(ArrDispensar)
                     "WHERE pos.Quantidade > 0 AND pos.ProdutoID = '" & ProdutoID & "' AND COALESCE(loc.UnidadeID, 0) = '" & session("UnidadeID") & "'"
         set resPosicoes = db.execute(sqlPosicoes)
 
-        quantTotalEmEstoque = 0
-        countPosicoes       = 0
-        while not resPosicoes.eof
-            quantTotalEmEstoque = quantTotalEmEstoque + resPosicoes("QuantUnit")
-            countPosicoes = countPosicoes + 1
-            resPosicoes.movenext
-        wend
+        if not resPosicoes.eof then
+            quantTotalEmEstoque = 0
+            countPosicoes       = 0
+            while not resPosicoes.eof
+                quantTotalEmEstoque = quantTotalEmEstoque + resPosicoes("QuantUnit")
+                countPosicoes = countPosicoes + 1
+                resPosicoes.movenext
+            wend
 
-        'processa cada posição
-        resPosicoes.movefirst
-        pos = 0
-        while not resPosicoes.eof
-            posicaoId              = resPosicoes("id")
-            quantPosicao           = resPosicoes("QuantUnit")
-            lote                   = resPosicoes("Lote")
-            tipoUnidadeOriginal    = resPosicoes("TipoUnidade")
-            validade               = resPosicoes("Validade")
-            responsavelOriginal    = resPosicoes("Responsavel")
-            localizacaoIdOriginal  = resPosicoes("LocalizacaoID")
-            cbid                   = resPosicoes("CBID")
-            apresentacaoQuantidade = resPosicoes("ApresentacaoQuantidade")
+            'processa cada posição
+            resPosicoes.movefirst
+            pos = 0
+            while not resPosicoes.eof
+                posicaoId              = resPosicoes("id")
+                quantPosicao           = resPosicoes("QuantUnit")
+                lote                   = resPosicoes("Lote")
+                tipoUnidadeOriginal    = resPosicoes("TipoUnidade")
+                validade               = resPosicoes("Validade")
+                responsavelOriginal    = resPosicoes("Responsavel")
+                localizacaoIdOriginal  = resPosicoes("LocalizacaoID")
+                cbid                   = resPosicoes("CBID")
+                apresentacaoQuantidade = resPosicoes("ApresentacaoQuantidade")
 
-            'calcula a quantidade a ser baixada da posição, de forma pró-rata
-            percProRata  = quantPosicao / quantTotalEmEstoque
-            quantABaixar = quantPrescrita * percProRata
-            if pos < (countPosicoes - 1) then
-                ceil = Int(quantABaixar)
-                if ceil <> quantABaixar then
-                    ceil = ceil + 1
+                'calcula a quantidade a ser baixada da posição, de forma pró-rata
+                percProRata  = quantPosicao / quantTotalEmEstoque
+                quantABaixar = quantPrescrita * percProRata
+                if pos < (countPosicoes - 1) then
+                    ceil = Int(quantABaixar)
+                    if ceil <> quantABaixar then
+                        ceil = ceil + 1
+                    end if
+                    quantABaixar = ceil
+                else
+                    quantABaixar = Int(quantABaixar)
                 end if
-                quantABaixar = ceil
-            else
-                quantABaixar = Int(quantABaixar)
-            end if
 
-            quantConjuntoABaixar = Int(quantABaixar / apresentacaoQuantidade)
-            quantUnitariaABaixar = quantABaixar mod apresentacaoQuantidade
+                quantConjuntoABaixar = Int(quantABaixar / apresentacaoQuantidade)
+                quantUnitariaABaixar = quantABaixar mod apresentacaoQuantidade
 
-            'response.write("<pre>quantABaixar da pos "&posicaoId&": "&quantABaixar&"</pre>")
-            'response.write("<pre>quantConjuntoABaixar da pos "&posicaoId&": "&quantConjuntoABaixar&"</pre>")
-            'response.write("<pre>quantUnitariaABaixar da pos "&posicaoId&": "&quantUnitariaABaixar&"</pre>")
-            if quantConjuntoABaixar > 0 then
-                call LanctoEstoque(0, posicaoId, ProdutoID, "S", tipoUnidadeOriginal, "C", quantConjuntoABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Saída", "", "", "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
-            end if
-            if quantUnitariaABaixar > 0 then
-                call LanctoEstoque(0, posicaoId, ProdutoID, "S", tipoUnidadeOriginal, "U", quantUnitariaABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Saída", "", "", "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
-            end if
+                'response.write("<pre>quantABaixar da pos "&posicaoId&": "&quantABaixar&"</pre>")
+                'response.write("<pre>quantConjuntoABaixar da pos "&posicaoId&": "&quantConjuntoABaixar&"</pre>")
+                'response.write("<pre>quantUnitariaABaixar da pos "&posicaoId&": "&quantUnitariaABaixar&"</pre>")
+                if quantConjuntoABaixar > 0 then
+                    call LanctoEstoque(0, posicaoId, ProdutoID, "S", tipoUnidadeOriginal, "C", quantConjuntoABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Saída", "", "", "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
+                end if
+                if quantUnitariaABaixar > 0 then
+                    call LanctoEstoque(0, posicaoId, ProdutoID, "S", tipoUnidadeOriginal, "U", quantUnitariaABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Saída", "", "", "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
+                end if
 
-            pos = pos + 1
-            resPosicoes.movenext
-        wend
+                pos = pos + 1
+                resPosicoes.movenext
+            wend
 
-        'atualiza o ciclo medicamento
-        db.execute("UPDATE pacientesprotocolosciclos_medicamentos SET " & campoDispensado & "ID = '" & ProdutoID & "', " & campoDispensado & "Em = NOW(), " & campoDispensado & "Por = '" & session("User") & "' WHERE id = '" & CicloMedicamentoID & "'")
+            'atualiza o ciclo medicamento
+            db.execute("UPDATE pacientesprotocolosciclos_medicamentos SET " & campoDispensado & "ID = '" & ProdutoID & "', " & campoDispensado & "Em = NOW(), " & campoDispensado & "Por = '" & session("User") & "' WHERE id = '" & CicloMedicamentoID & "'")
 
-        dispensado = true
+            dispensado = true
+        end if
     end if
 next
 

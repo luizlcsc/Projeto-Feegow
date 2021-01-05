@@ -14,7 +14,7 @@ if contadorProcedimentos<>"" then
 end if
 
 SomenteConvenios = ""
-if not isnull(ConvenioID) or ConvenioID <> "" then
+if ConvenioID&""<>"" then
     SomenteConvenios = " AND SomenteConvenios NOT LIKE '%NONE%'"
 end if
 

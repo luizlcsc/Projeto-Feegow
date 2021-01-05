@@ -51,7 +51,7 @@
 			<%
 			end if
 
-            if aut("solicitacompraV") = 1 then
+            if aut("solicitacao_compra") = 1 then
             %>
                 <li class="">
                     <a href="./?P=SolicitacaoDeCompraLista&I=N&Pers=1">

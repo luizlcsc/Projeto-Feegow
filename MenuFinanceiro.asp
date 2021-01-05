@@ -51,7 +51,7 @@
 			<%
 			end if
 
-            if aut("contasapagarI") = 1 then
+            if aut("solicitacompraV") = 1 then
             %>
                 <li class="">
                     <a href="./?P=SolicitacaoDeCompraLista&I=N&Pers=1">
@@ -59,7 +59,9 @@
                         Solicitação de compra <span class="label label-system label-xs fleft">Novo</span>
                     </a>
                 </li>
-              
+            <% end if %>
+
+            <% if aut("solicitacompraV") = 1 then %>
                 <li class="">
                     <a href="./?P=SolicitacaoDeCompraAprovacao&I=N&Pers=1">
                         <i class="fa fa-check"></i>

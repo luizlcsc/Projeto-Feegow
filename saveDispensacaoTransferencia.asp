@@ -11,15 +11,19 @@ if CicloMedicamentoID = "" or ProdutoID = "" or UnidadeID = ""  then
     response.end
 end if
 
-if Tipo = "2-Diluente" then
-    sqlSelectDose  = "protmed.QtdDiluente AS Dose"
+if Tipo = "1-Medicamento" then
+    sqlSelectDose  = "CEIL(IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose)) AS Dose"
+    sqlJoinProduto = "prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento)"
+elseif Tipo = "2-Diluente" then
+    sqlSelectDose  = "CEIL(protmed.QtdDiluente) AS Dose"
     sqlJoinProduto = "prod.id = protmed.DiluenteID"
 elseif Tipo = "3-Reconstituinte" then
-    sqlSelectDose  = "protmed.QtdReconstituinte AS Dose"
+    sqlSelectDose  = "CEIL(protmed.QtdReconstituinte) AS Dose"
     sqlJoinProduto = "prod.id = protmed.ReconstituinteID"
 else
-    sqlSelectDose  = "IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose) AS Dose"
-    sqlJoinProduto = "prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento)"
+    response.write("Tipo inválido.")
+    response.status = 422
+    response.end
 end if
 
 sqlProdutoPrescrito = "SELECT " &_

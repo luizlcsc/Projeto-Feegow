@@ -25,6 +25,13 @@ function geraPacientesProtocolosCiclos(PacienteProtocoloID)
                 "WHERE ppm.PacienteProtocoloID = '" & PacienteProtocoloID & "' AND ppm.ProtocoloID = '" & ProtocoloID & "' " & _
                 "AND ppm.sysActive = 1 AND pm.sysActive = 1")
 
+            set protocolosKits = db.execute("SELECT KitID FROM protocoloskits WHERE ProtocoloID = '" & ProtocoloID & "' AND sysActive = 1 ")
+            if not protocolosKits.eof then
+                temKits = true
+            else
+                temKits = false
+            end if
+
             if not protocolosMedicamentos.eof then
                 while not protocolosMedicamentos.eof
 
@@ -54,6 +61,15 @@ function geraPacientesProtocolosCiclos(PacienteProtocoloID)
 
                                 db.execute("INSERT INTO pacientesprotocolosciclos_medicamentos (PacienteProtocoloID, PacienteProtocolosCicloID, PacienteProtocolosMedicamentosID) " & _
                                     "VALUES ('" & PacienteProtocoloID & "', @lastid, '" & pacienteProcoloMedicamentoId & "')")
+
+                                if temKits then
+                                    protocolosKits.movefirst
+                                    while not protocolosKits.eof
+                                        db.execute("INSERT INTO pacientesprotocolosciclos_kits (PacienteProtocoloID, PacienteProtocolosCicloID, KitID) " & _
+                                        "VALUES ('" & PacienteProtocoloID & "', @lastid, '" & protocolosKits("KitID") & "')")
+                                        protocolosKits.movenext
+                                    wend
+                                end if
 
                             ' se já existi o registro do dia, insere o registro do medicamento do dia 
                             else

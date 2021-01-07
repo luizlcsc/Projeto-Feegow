@@ -232,7 +232,7 @@ if request.QueryString("ConvenioID")<>"" then
             </td>
 
 
-            <td><a href="?P=CapaLote&LoteID=<%=lotes("id")%>&Pers=1" class="btn btn-info btn-sm"><i class="fa fa-print"></i></a></td>
+            <td><a href="?P=CapaLote&PrintPage=1&LoteID=<%=lotes("id")%>&Pers=1" class="btn btn-info btn-sm"><i class="fa fa-print"></i></a></td>
             <td>
 
                 <div class="btn-group" style="display: flex;">

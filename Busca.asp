@@ -54,7 +54,7 @@ else
     if isdate(q) then
         sqlNasc = " OR Nascimento="& mydatenull(q) &" "
     end if
-	set contaPac = db.execute("select count(*) as Pacientes from pacientes where (NomePaciente) like '"&q&"%' or (NomeSocial) like '"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0)" & sqlNasc)
+	set contaPac = db.execute("select count(*) as Pacientes from pacientes where (NomePaciente) like '%"&q&"%' or (NomeSocial) like '"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0)" & sqlNasc)
 	set contaPro = db.execute("select count(*) as Profissionais from profissionais where NomeProfissional like '%"&q&"%'"& sqlNasc)
 	set contaFun = db.execute("select count(*) as Funcionarios from funcionarios where NomeFuncionario like '%"&q&"%'"& sqlNasc)
 	set contaFor = db.execute("select count(*) as Fornecedores from fornecedores where sysActive=1 and NomeFornecedor like '%"&q&"%' or replace(replace(replace(CPF,'.',''),'-',''),'/','') like replace(replace(replace('"&q&"%','.',''),'-',''),'/','') ")

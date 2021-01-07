@@ -2591,6 +2591,9 @@ if session("ExibeChatAtendimento")=False or req("P")="Login" then
     PermiteChat= False
 end if
 
+if req("PrintPage")="1" then
+    PermiteChat=False
+end if
 
 if PermiteChat then
 %>

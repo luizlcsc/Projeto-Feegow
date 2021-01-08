@@ -79,7 +79,7 @@ set campo = db.execute("select * from buicamposforms where FormID="& ModeloID &"
 set reg = db.execute("select * from `_"& ModeloID &"` WHERE id="& FormID)
 while not campo.eof
     Rotulo = campo("RotuloCampo")
-    Estruturacao = campo("Estruturacao")
+    Estruturacao = campo("Estruturacao")&""
     CampoID = campo("id")
     TipoCampoID = campo("TipoCampoID")
     Valor = ""

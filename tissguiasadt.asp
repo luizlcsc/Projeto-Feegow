@@ -283,6 +283,8 @@ if not reg.eof then
                             end if
 						    've se há valor definido pra este procedimento neste convênio
                             AgendamentoID=splAEA(0)
+                            sqlExecute = "update tissguiasadt set agendamentoid='"&AgendamentoID&"' where id="&reg("id")
+                            db_execute(sqlExecute)
 
 						    ApenasProcedimentosNaoFaturados = req("ApenasProcedimentosNaoFaturados")
 
@@ -568,7 +570,7 @@ if not reg.eof then
                 end if
 			next
 			set guia = db.execute("select * from tissguiasadt where id="&reg("id"))
-			sqlExecute = "update tissguiasadt set TotalGeral="&treatvalzero(n2z(guia("Procedimentos"))+n2z(guia("Medicamentos"))+n2z(guia("Materiais"))+n2z(guia("TaxasEAlugueis"))+n2z(guia("OPME")))&" where id="&reg("id")
+			sqlExecute = "update tissguiasadt set agendamentoid='"&AgendamentoID&"', TotalGeral="&treatvalzero(n2z(guia("Procedimentos"))+n2z(guia("Medicamentos"))+n2z(guia("Materiais"))+n2z(guia("TaxasEAlugueis"))+n2z(guia("OPME")))&" where id="&reg("id")
 			db_execute(sqlExecute)
 		end if
     else

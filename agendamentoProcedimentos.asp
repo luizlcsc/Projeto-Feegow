@@ -246,6 +246,12 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
     </table>
 
     <script type="text/javascript">
+
+        var temRegraCadastradaProUsuario = false;
+        var temAutorizacaoAberta         = false;
+        var valorTotalSelecionado        = 0;
+        var idsRegrasSuperiores          = '';
+
         $('[data-toggle="tooltip"]').tooltip();
 
         function abrirPagar(MovementID) {
@@ -262,6 +268,22 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                     $("#pagar").html(data);
                 });
 
+        }
+
+        function onKeyUpDesconto(){
+            let acrescimo = parseFloat($('#acrescimoForma').val().replace('.', '').replace(',', '.'));
+            if (isNaN(acrescimo)) {
+                acrescimo = 0;
+            }
+            let desconto  = parseFloat($('#descontoForma').val().replace('.', '').replace(',', '.'));
+            if (isNaN(desconto)) {
+                desconto = 0;
+            }
+
+            let total   = valorTotalSelecionado + acrescimo - desconto;
+            let totalBr = round(total, 2).toLocaleString(undefined, { minimumFractionDigits: 2 })
+
+            $('#valorTotalSomaItems, #totalvalue').val(totalBr);
         }
 
         function lanctoCheckin(Bloco, IDMovementBill) {
@@ -312,43 +334,229 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
             });
         }
 
+        function getProcedimentosCheckin() {
+            const procedimentos = [];
+            $(".linha-procedimento").each(function(){
+                const valor         = $(this).find(".valorprocedimento").val();
+                const procedimento  = $(this).find("input[id^=ProcedimentoID]").val();
+                const agendamentoID = $(this).find("input[name='LanctoCheckin']");
+
+                if(typeof agendamentoID !== "undefined" && agendamentoID.is(':checked')){
+                    procedimentos.push({
+                        procedimentoId: procedimento,
+                        agendamentoId: agendamentoID,
+                        valor: parseFloat(valor.replace('.', '').replace(',', '.'))
+                    });
+                }
+            });
+            return procedimentos;
+        }
 
         function lanctoCheckinNovoUpdate(Bloco) {
 
-            var valorTotal = 0;
-            valor = "";
-            procedimento = "";
-            AgendamentoID = "";
-            ProfissionalID =  $("#valuesearchindicacaoId").val();
+            let valor          = '';
+            let procedimento   = '';
+            let AgendamentoID  = '';
+            let ProfissionalID =  $("#valuesearchindicacaoId").val();
 
-            $(".linha-procedimento").each(function(index){
-                var valor1 = $(this).find(".valorprocedimento").val();
-                var procedimento1 = $(this).find("#ProcedimentoID").val();
-                var AgendamentoID1 = $(this).find("input[name='LanctoCheckin']").val();
+            const procedimentos = getProcedimentosCheckin();
 
-                if(typeof AgendamentoID1 !== "undefined"){
-                    valor += valor1 + "|";
-                    procedimento += procedimento1 + "|";
-                    AgendamentoID += AgendamentoID1 + "|";
-                }
+            if (procedimentos.length === 0) {
+                alert('Selecione os procedimentos para receber.');
+                return;
+            }
+
+            valorTotalSelecionado = 0;
+            procedimentos.map(function(p) {
+                valor         += p.valor + '|';
+                procedimento  += p.procedimentoId + '|';
+                AgendamentoID += p.agendamentoId;
+                valorTotalSelecionado += p.valor;
             });
 
             $.post('checkinLanctoUpdate.asp', {
-                    valor : valor,
-                    procedimento : procedimento,
-                    AgendamentoID : AgendamentoID,
-                    ProfissionalID : ProfissionalID
-                }, function(val1) {
-                    formaRectoCheckin(null, null);
-                    $.post("saveAgenda.asp?PreSalvarCheckin=1", $("#formAgenda").serialize(), function(data) {
+                valor : valor,
+                procedimento : procedimento,
+                AgendamentoID : AgendamentoID,
+                ProfissionalID : ProfissionalID
+            }, function(val1) {
+                // Verifica se o usuário tem permissão para dar desconto
+                // Se sim, o usuário pode imputar o desconto / acréscimo
+                $("#acrescimoForma, #descontoForma").prop('disabled', 'disabled');
+                temRegraCadastradaProUsuario = false;
 
-                    if(data.indexOf("Erro") !== -1) {
-                        eval(data);
-                        return;
-                    } else {
-                        $('#modalFormaPagamento').modal('show');
+                verificaMaximoDescontoCheckin().then(function(result) {
+                    if (result.temRegraCadastradaProUsuario) {
+                        temRegraCadastradaProUsuario = true;
                     }
-               });
+
+                    formaRectoCheckin(null, null);
+
+                     $.post("saveAgenda.asp?PreSalvarCheckin=1", $("#formAgenda").serialize(), function(data) {
+                        if(data.indexOf("Erro") !== -1) {
+                            eval(data);
+                            return;
+                        } else {
+                            const modalPagto = $('#modalFormaPagamento');
+                            modalPagto.modal('show');
+                            modalPagto.find('input,select').on('keypress', function(ev) {
+                                 if (ev.keyCode === 13) {
+                                    ev.preventDefault();
+                                }
+                            });
+                        }
+                    });
+
+                });
+
+            });
+        }
+
+        function verificaMaximoDescontoCheckin() {
+            return new Promise(function(resolve, reject) {
+                const procedimentos = getProcedimentosCheckin();
+
+                let procedimentosParam = '';
+                procedimentos.map(function(procedimento) {
+                    if (procedimentosParam.length > 0) {
+                        procedimentosParam += '|';
+                    }
+                    procedimentosParam += procedimento.procedimentoId + '_' + procedimento.valor
+                });
+
+                let valorTotalModificado = parseFloat($('#valorTotalSomaItems').val().replace('.', '').replace(',', '.'));
+
+                if (valorTotalModificado < 0) {
+                    showMessageDialog("Desconto inválido.");
+                    $('#desconfoForma').focus();
+                    reject('Desconto inválido');
+                    return;
+                }
+
+                let percDesc = null;
+                if (valorTotalModificado < valorTotalSelecionado) {
+                    percDesc = 1 - (valorTotalModificado / valorTotalSelecionado);
+                    percDesc = (Math.round(percDesc * 100000000) / 100000000) * 100; //arredondado em 6 decimais
+                }
+
+                $.when($.get('VerificaMaximoDescontoCheckin.asp', {
+                    Procedimentos: procedimentosParam,
+                    PercDesconto: percDesc
+                })).then(resolve, reject);
+            });
+        }
+
+        function validaMaximoDescontoCheckin() {
+            return new Promise(function(resolve, reject)  {
+                verificaMaximoDescontoCheckin().then(function(verificacao) {
+                    if (verificacao.valido) {
+                        resolve();
+                    } else if (verificacao.temRegraSuperior) {
+                        $.when($.get('ModalMaximoDesconto.asp', {RegraID: verificacao.regrasSuperiores}))
+                            .then(function(modalContent) {
+                                idsRegrasSuperiores = verificacao.regrasSuperiores;
+                                showBoxAutorizacaoDesconto(modalContent);
+                                reject('Autorização Necessária');
+                            }, reject);
+                    } else {
+                        showMessageDialog("Desconto inválido.");
+                        $('#desconfoForma').focus();
+                        reject('Desconto inválido');
+                    }
+                }, reject);
+            });
+        }
+
+        function validaAutorizacaoDesconto() {
+            return new Promise(function(resolve, reject) {
+
+                const boxAutorizacao = $('#box-autorizacao-desconto');
+
+                const usuario    = boxAutorizacao.find('input[name=RegraUsuario]:checked').val();
+                const inputSenha = boxAutorizacao.find("#SenhaAdministrador");
+                const senha      = inputSenha.val();
+
+                if (!usuario) {
+                    alert('Selecione um usuário');
+                    reject('Nenhum usuário selecionado.');
+                    return;
+                }
+                if (!senha || senha.trim() === '') {
+                    alert('Digite a senha.');
+                    reject('Senha não informada');
+                    return;
+                }
+
+                $.when($.post('SenhaDeAdministradorValida.asp', {U: usuario, S: senha})).then(function(res) {
+                    res = parseInt(res, 10);
+                    if (res === 1) {
+                        resolve();
+                    } else {
+                         new PNotify({
+                            title: 'ERRO',
+                            text: 'Senha inválida.',
+                            type: 'danger',
+                            delay: 3000
+                        });
+                        reject('Senha inválida');
+                    }
+                }, reject);
+
+            });
+        }
+
+        function aguardarAutorizacaoDesconto(Bloco) {
+            submitCheckinLancto(Bloco, true).then(function() {
+
+                //verifica se response veio com as variáveis MOVEMENT_ID e DESCONTOS_PENDENTES
+                if (DESCONTOS_PENDENTES && MOVEMENT_ID) {
+                    const modalPagto     = $('#modalFormaPagamento');
+                    const boxAutorizacao = $('#box-autorizacao-desconto');
+
+                    boxAutorizacao.find('.panel-body').html('<i class="fa fa-spinner fa-spin orange bigger-125"></i> ' +
+                        'Aguarde a autorização do desconto...');
+
+                    $('#btn-aguardar-autorizacao, #salvar-mudancas').hide();
+
+                    let intervalVerifica = setInterval(function() {
+                        $.get('VerificaDescontoPendenteCheckin.asp?descontos=' + DESCONTOS_PENDENTES, function(res) {
+                            if (res === '1') {
+                                clearInterval(intervalVerifica);
+
+                                // fecha o modal de recebimento
+                                showMessageDialog('Desconto aprovado.', 'success');
+                                modalPagto.modal('hide');
+
+                                // abre a modal de pagamento
+                                const divPagar = $('#pagar');
+                                divPagar.fadeIn();
+                                divPagar.draggable();
+                                divPagar.html("Carregando...");
+                                $.post("Pagar.asp?T=C", {
+                                    Parcela: '|' + MOVEMENT_ID + '|'
+                                }, function (data) {
+                                    divPagar.html(data);
+                                });
+
+                            } else if (res === '2') {
+                                clearInterval(intervalVerifica);
+                                showMessageDialog('O desconto não foi aprovado.');
+                                hideBoxAutorizacaoDesconto();
+                            }
+                        });
+                    }, 15000); // a cada 15 seg
+
+                    modalPagto.on('hidden.bs.modal', function() {
+                        clearInterval(intervalVerifica);
+                    });
+
+                } else {
+                    showMessageDialog('Erro ao processa a sua solicitação');
+                    hideBoxAutorizacaoDesconto();
+                }
+            }, function() {
+                showMessageDialog('Erro ao processa a sua solicitação');
+                hideBoxAutorizacaoDesconto();
             });
         }
 
@@ -359,27 +567,133 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
         }
 
         function saveLanctoNovo(Bloco){
-            let keyItemFormaPagamentoSelecionado = document.getElementById('FormaID').selectedIndex;
-            let elementOptionsSelecionado = document.getElementById("FormaID").options[keyItemFormaPagamentoSelecionado];    
-            let splitFormRecto = elementOptionsSelecionado.value.split('_');
-            let sysFormasrectoId = splitFormRecto[0];
-            let ContaRectoID = splitFormRecto[1];
+            const modalPagto   = $('#modalFormaPagamento');
+            const modalButtons = modalPagto.find('button, .close');
+            modalButtons.prop('disabled', 'disabled');
 
-            if(typeof sysFormasrectoId === "undefined"){
-                sysFormasrectoId = 0;
+            if (!temRegraCadastradaProUsuario) {
+                submitCheckinLancto(Bloco).then(function() {
+                    modalPagto.modal('hide');
+                    clearValue();
+                }).finally(function() {
+                    modalButtons.prop('disabled', '');
+                });
+                return;
             }
-            if(typeof ContaRectoID === "undefined"){
-                ContaRectoID = 0;   
+
+            // Validações do desconto
+            if (temAutorizacaoAberta) {
+                validaAutorizacaoDesconto().then(function() {
+                     submitCheckinLancto(Bloco).then(function() {
+                         modalPagto.modal('hide');
+                         clearValue();
+                     }).finally(function() {
+                       modalButtons.prop('disabled', '');
+                     });
+                }, function(rejectReason) {
+                    console.log(rejectReason);
+                }).finally(function() {
+                    modalButtons.prop('disabled', '');
+                });
+            } else {
+                validaMaximoDescontoCheckin().then(function() {
+                    submitCheckinLancto(Bloco).then(function() {
+                        modalPagto.modal('hide');
+                        clearValue();
+                    }).finally(function() {
+                      modalButtons.prop('disabled', '');
+                    });
+                }, function(rejectReason) {
+                    console.log(rejectReason);
+                }).finally(function() {
+                    modalButtons.prop('disabled', '');
+                });
             }
-
-            valorTotalSomaItems = document.getElementById('valorTotalSomaItems').value;
-            var bloco = $(".Bloco" + Bloco).serialize()+"&valorTotalSomadoModificado="+valorTotalSomaItems+"&FormaID="+sysFormasrectoId+"&ContaRectoID="+ContaRectoID;
-
-            $.post("checkinLancto.asp", bloco, function (v) { 
-                $('#divLanctoCheckin').html(v);
-                clearValue();
-            });            
         }
+
+        function submitCheckinLancto(Bloco, notificaDesconto) {
+            return new Promise(function(resolve, reject) {
+
+                let keyItemFormaPagamentoSelecionado = document.getElementById('FormaID').selectedIndex;
+                let elementOptionsSelecionado = document.getElementById("FormaID").options[keyItemFormaPagamentoSelecionado];
+                let splitFormRecto = elementOptionsSelecionado.value.split('_');
+                let sysFormasrectoId = splitFormRecto[0];
+                let ContaRectoID = splitFormRecto[1];
+
+                if(typeof sysFormasrectoId === "undefined"){
+                    sysFormasrectoId = 0;
+                }
+                if(typeof ContaRectoID === "undefined"){
+                    ContaRectoID = 0;
+                }
+                let valorTotalSomaItems = document.getElementById('valorTotalSomaItems').value;
+                let dados = $(".Bloco" + Bloco).serialize() + "&valorTotalSomadoModificado="+valorTotalSomaItems
+                    + "&FormaID="+sysFormasrectoId+"&ContaRectoID="+ContaRectoID;
+                    
+                if (notificaDesconto) {
+                    dados += '&NotificaDesconto=1&IdsRegrasSuperiores=' + idsRegrasSuperiores;
+                }
+
+                $.when($.post("checkinLancto.asp", dados)).then(function(lanctoResponse) {
+                    $('#divLanctoCheckin').html(lanctoResponse);
+                    resolve();
+                }, reject);
+            });
+        }
+
+        function showBoxAutorizacaoDesconto(modalContent) {
+            const modalPagto     = $('#modalFormaPagamento');
+            const boxAutorizacao = $('#box-autorizacao-desconto');
+            const btnAguardar    = $('#btn-aguardar-autorizacao');
+
+            temAutorizacaoAberta = true;
+
+            modalPagto.find('#salvar-mudancas').html('Confirmar');
+            modalPagto.find('#FormaID').prop('disabled', 'disabled');
+            modalPagto.find('#acrescimoForma').prop('disabled', 'disabled');
+            modalPagto.find('#descontoForma').prop('disabled', 'disabled');
+
+            boxAutorizacao.find('.panel-body').html(modalContent);
+            boxAutorizacao.find('input,select').on('keypress', function(ev) {
+                if (ev.keyCode === 13) {
+                    ev.preventDefault();
+                }
+            });
+            boxAutorizacao.show();
+            btnAguardar.show();
+            modalPagto.on('hidden.bs.modal', hideBoxAutorizacaoDesconto);
+        }
+
+        function hideBoxAutorizacaoDesconto() {
+            const modalPagto     = $('#modalFormaPagamento');
+            const boxAutorizacao = $('#box-autorizacao-desconto');
+            const btnAguardar    = $('#btn-aguardar-autorizacao');
+
+            boxAutorizacao.find('.panel-body').html('')
+            boxAutorizacao.hide();
+            btnAguardar.hide();
+
+            temAutorizacaoAberta = false;
+            idsRegrasSuperiores  = '';
+
+            modalPagto.find('#salvar-mudancas').html('Salvar mudanças').show();
+            modalPagto.find('#FormaID').prop('disabled', '')
+            if (temRegraCadastradaProUsuario) {
+                modalPagto.find('#acrescimoForma').prop('disabled', '');
+                modalPagto.find('#descontoForma').prop('disabled', '');
+            }
+        }
+
+        function normalizeMoney(valor){
+            let check = valor.slice(valor.length - 3)
+            if(check[0] == '.' || check[1] == '.'){
+                valor = valor.replace(',','v')
+                valor = valor.replace('.',',')
+                valor = valor.replace('v','.')
+            }
+            return valor
+        }
+
     </script>
 
     <%
@@ -615,38 +929,49 @@ end if
   <div class="modal-dialog " role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Forma de recebimento</h5>
-        <button type="button" class="close" data-dismiss="modal" onclick='clearValue()' aria-label="Fechar">
-            <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="exampleModalLabel">Forma de recebimento
+            <button type="button" class="close" data-dismiss="modal" onclick='clearValue()' aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </h5>
       </div>
-      <div class="modal-body" style="display: flow-root;">            
-                <div id="forma-carregar">x</div>
-                <div class="col-md-4 qf" id="qfnumero">  
-                <br> 
-                <label>Acrescimo</label>
-                <br>              
-                <input type="text" class="form-control input-mask-brl text-right" name="acrescimoForma" id="acrescimoForma" value="" disabled="">
+      <div class="modal-body">
+            <div id="forma-carregar" class="row">x</div>
+            <div class="row">
+                <div class="col-md-4 qf" id="qfnumero">
+                    <br>
+                    <label>Acrescimo</label>
+                    <br>
+                    <input type="text" class="form-control input-mask-brl text-right" name="acrescimoForma" id="acrescimoForma" value="" disabled="" onkeyup="onKeyUpDesconto()">
                  </div>
                 <div class="col-md-4 qf" id="qfnumero">
-                 <br>    
-                <label>Desconto</label>
-                <br>
-                <input type="text" class="form-control input-mask-brl text-right" name="descontoForma"  id="descontoForma" value="" disabled="">
+                     <br>
+                    <label>Desconto</label>
+                    <br>
+                    <input type="text" class="form-control input-mask-brl text-right" name="descontoForma"  id="descontoForma" value="" disabled=""  onkeyup="onKeyUpDesconto()">
                  </div>
                 <div class="col-md-4 qf" id="qfnumero">
-                <br>
-                <label>Total</label>
-                <br>
-                <input type="text" class="form-control input-mask-brl text-right" name="totalvalue"  id="totalvalue" value="" disabled="">
-                <input type="hidden" class="form-control input-mask-brl text-right" name="invoicenew"  id="invoicenew" value="" disabled="">
+                    <br>
+                    <label>Total</label>
+                    <br>
+                    <input type="text" class="form-control input-mask-brl text-right" name="totalvalue"  id="totalvalue" value="" disabled="">
+                    <input type="hidden" class="form-control input-mask-brl text-right" name="invoicenew"  id="invoicenew" value="" disabled="">
                 </div>
-
-                <input id="valorTotalSomaItems" name="valorTotalSomaItems" type="hidden" value="">               
+                <input id="valorTotalSomaItems" name="valorTotalSomaItems" type="hidden" value="">
+            </div>
+            <div id="box-autorizacao-desconto" class="row" style="display: none">
+                <div class="col-xs-12" style="margin-top: 25px">
+                    <div class="panel panel-warning">
+                      <div class="panel-heading">Desconto máximo ultrapassado</div>
+                      <div class="panel-body"></div>
+                    </div>
+                </div>
+            </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick='clearValue(); ' data-dismiss="modal">Fechar</button>
-        <button type="button" id="salvar-mudancas" data-dismiss="modal" onclick='saveLanctoNovo(<%=Bloco%>);' class="btn btn-primary">Salvar mudanças</button>
+        <button id="btn-aguardar-autorizacao" type="button" class="btn btn-secondary" onclick="aguardarAutorizacaoDesconto(<%=Bloco%>)" style="display: none">Aguardar Autorização</button>
+        <button type="button" id="salvar-mudancas" onclick='saveLanctoNovo(<%=Bloco%>);' class="btn btn-primary">Salvar mudanças</button>
       </div>
     </div>
   </div>
@@ -705,9 +1030,9 @@ function round(value, decimals) {
 
 
 atualizarValores = (acrescimoTotal, descontoTotal, valorTotalSomadoFormaPagamento) => {
-    document.getElementById('acrescimoForma').value = round(acrescimoTotal, 2).toLocaleString(undefined, { minimumFractionDigits: 2 }); 
-    document.getElementById('descontoForma').value = round(descontoTotal, 2).toLocaleString(undefined, { minimumFractionDigits: 2 }); 
-    document.getElementById('valorTotalSomaItems').value = round(valorTotalSomadoFormaPagamento, 2).toLocaleString(undefined, { minimumFractionDigits: 2 }); 
+    document.getElementById('acrescimoForma').value = round(acrescimoTotal, 2).toLocaleString("pt-BR", { minimumFractionDigits: 2 }); 
+    document.getElementById('descontoForma').value = round(descontoTotal, 2).toLocaleString("pt-BR", { minimumFractionDigits: 2 }); 
+    document.getElementById('valorTotalSomaItems').value = round(valorTotalSomadoFormaPagamento, 2).toLocaleString("pt-BR", { minimumFractionDigits: 2 }); 
     document.getElementById('totalvalue').value = document.getElementById('valorTotalSomaItems').value;
 }
 
@@ -736,28 +1061,19 @@ function getFormaPagamento() {
    
     fetch(`getFormaPagamento.asp?sysFormasrectoId=${sysFormasrectoId}`, header)
         .then(promiseResponse => {
-            promiseResponse.json().then(responseJson => {                                     
-                document.querySelector('#divAgendamentoCheckin').querySelectorAll('input').forEach((element, key) => {	
-                    if(!(element.className.search('valorprocedimento') > -1)) {
-                        return;
-                    }
+            promiseResponse.json().then(responseJson => {
+                const procedimentos = getProcedimentosCheckin();
+                procedimentos.map(pro => {
 
-                    let valorPagamentoFormatado = parseFloat(element.dataset.valor.replace(/[^0-9,]*/g, '').replace(',', '.'));
+                    responseFormaPagamento = fillResponseGetFormaPagamento(responseJson);
 
-                    responseFormaPagamento = fillResponseGetFormaPagamento(responseJson);                   
-
-                    acrescimo = gerarAcrescimoDesconto(valorPagamentoFormatado, responseFormaPagamento.acrescimo, responseFormaPagamento.tipoAcrescimo);
-                    desconto = gerarAcrescimoDesconto(valorPagamentoFormatado, responseFormaPagamento.desconto, responseFormaPagamento.tipoDesconto);
-
-                  //  console.log('loop')
-
-                    //console.log(acrescimo);
-                   // console.log(desconto);
+                    acrescimo = gerarAcrescimoDesconto(pro.valor, responseFormaPagamento.acrescimo, responseFormaPagamento.tipoAcrescimo);
+                    desconto = gerarAcrescimoDesconto(pro.valor, responseFormaPagamento.desconto, responseFormaPagamento.tipoDesconto);
 
                     acrescimo = (acrescimo != undefined) ? acrescimo : 0;
                     desconto = (desconto != undefined) ? desconto : 0;
                                         
-                    valorTotalSomadoFormaPagamento += ((valorPagamentoFormatado + acrescimo) - desconto);
+                    valorTotalSomadoFormaPagamento += ((pro.valor + acrescimo) - desconto);
 
                     acrescimoTotal += acrescimo;
                     descontoTotal += desconto;
@@ -769,9 +1085,14 @@ function getFormaPagamento() {
 
                 atualizarValores(acrescimoTotal, descontoTotal, valorTotalSomadoFormaPagamento);
             
-                document.getElementById("salvar-mudancas").disabled = false;
-                if(elementOptionsSelecionado.value == "") {
-                    document.getElementById("salvar-mudancas").disabled = true;
+                document.getElementById("salvar-mudancas").disabled = true;
+                $("#acrescimoForma, #descontoForma").prop('disabled', 'disabled');
+
+                if (elementOptionsSelecionado.value != "") {
+                    document.getElementById("salvar-mudancas").disabled = false;
+                    if (temRegraCadastradaProUsuario) {
+                        $("#acrescimoForma, #descontoForma").prop('disabled', '');
+                    }
                 }
             });
         });   
@@ -803,7 +1124,7 @@ function formaRectoCheckin(FormaIDSelecionado = null, ItemInvoiceID = null) {
 
     $.post("invoiceSelectPagto.asp?I="+ItemInvoiceID+"&T=C&FormaID="+ $("#FormaID option:selected").attr("value")+"&chamaParcelas=N", "FormaID="+FormaIDSelecionado, function(data, status) { 
         $("#forma-carregar").html(data);
-        
+
         document.getElementById("FormaID").addEventListener("change", _ => {
             getFormaPagamento();
         }, false); 
@@ -960,7 +1281,7 @@ function GeraGuia(TipoGuia) {
     }
 
 }
-$(document).ready(function(){        
+$(document).ready(function(){
     //formaRecto(<%=FormaIDSelecionado %>);
     allRepasses();
     

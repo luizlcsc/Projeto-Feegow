@@ -395,6 +395,12 @@ if left(tipo, 14)="ProcedimentoID" then
                 SomenteConvenios = replace(SomenteConvenios, "||NONE||","")
                 SomenteConvenios = replace(SomenteConvenios, "|NONE|","")
             end if
+            
+            if instr(SomenteConvenios,"|NOTPARTICULAR|")>0 then
+                SomenteConvenios = replace(SomenteConvenios, "||NOTPARTICULAR||","")
+                SomenteConvenios = replace(SomenteConvenios, "|NOTPARTICULAR|","")
+            end if
+
             SomenteConvenios = replace(SomenteConvenios,"|","'")
             SomenteConvenios = replace(SomenteConvenios,"''", "'")
 

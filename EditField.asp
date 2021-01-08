@@ -127,11 +127,6 @@ set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where
         <hr class="sort alt">
     <div class="row">
         <%
-        if TipoCampoID=1 then
-        %>
-        <%=quickField("text", "MaxCarac", "M&aacute;x. Caracteres", 3, pCampo("MaxCarac"), "", "", " maxlength=""3""")%>
-        <%
-        End If
 		if TipoCampoID=4 or TipoCampoID=5 then
 		%>
 			<div class="col-md-6">

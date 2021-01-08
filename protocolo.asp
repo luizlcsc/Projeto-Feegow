@@ -90,10 +90,10 @@ while not campo.eof
     end if
     cols = 12
 
-    if TipoCampoAnterior<>1 and TipoCampoID=1 then
+    if TipoCampoAnterior<>1 and TipoCampoAnterior<>2 and TipoCampoID=1 then
         response.write("<div class=""panel-body tipotexto"">")
     end if
-    if TipoCampoAnterior=1 and TipoCampoID<>1 then
+    if TipoCampoAnterior=1 and TipoCampoID<>1  and TipoCampoID<>2 then
         response.write("</div>")
     end if
 
@@ -105,6 +105,14 @@ while not campo.eof
                 <span><b><%= campo("RotuloCampo") %></b></span>
                 <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
                 <%= quickfield("text", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", "")%>
+            </div>
+        <%
+        case 2'DATA
+        %>
+            <div class="col-md-6">
+                <span><b><%= campo("RotuloCampo") %></b></span>
+                <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
+                <%= quickfield("datepicker", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", "")%>
             </div>
         <%
         case 4'CHECKBOX

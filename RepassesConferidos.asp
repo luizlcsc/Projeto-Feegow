@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+
 <!--#include file="modal.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Repasses Consolidados");
@@ -13,9 +14,9 @@
     end if
     %>
 </script>
-      
-      
-      
+
+
+
 <%
 
 Unidades = reqf("Unidades")
@@ -24,7 +25,7 @@ if Unidades="" then
 end if
 
 if reqf("X")<>"" then
-    set LinhaRepasseSQL = db.execute("SELECT ItemInvoiceID,ItemGuiaID,GuiaConsultaID,ItemHonorarioID,ItemDescontadoID FROM rateiorateios WHERE id="&reqf("X"))
+    set LinhaRepasseSQL = db_execute("SELECT ItemInvoiceID,ItemGuiaID,GuiaConsultaID,ItemHonorarioID,ItemDescontadoID FROM rateiorateios WHERE id="&reqf("X"))
     if not LinhaRepasseSQL.eof then
 	    'db_execute("delete from rateiorateios where id="&reqf("X"))
 	    ItemDescontadoID=LinhaRepasseSQL("ItemDescontadoID")
@@ -78,7 +79,6 @@ DeSqlProf = De
 
 if De&""<>"" and TipoData="Comp" then
     DeExec = dateadd("m", -6, De)
-    ' DeExec = De
     DeSqlProf = dateadd("d", -15, De)
 else
     DeExec=De
@@ -100,8 +100,13 @@ end if
         <div class="panel">
             <div class="panel-body hidden-print">
                 <div class="row">
-                    <%= quickfield("multiple", "Forma", "Convênio", 2, reqf("Forma"), "select '0' id, '     PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
-                    <%= quickfield("multiple", "FormaRecto", "Forma de recto.", 2, reqf("FormaRecto"), "select -1 id, ' Não pago' PaymentMethod UNION ALL select id, PaymentMethod from cliniccentral.sys_financialpaymentmethod where TextC<>'' ORDER BY PaymentMethod", "PaymentMethod", "") %>
+                    <%
+                    if ModoFranquia=true and session("UnidadeID")>0 then
+                        filtroUnidade = " AND c.Unidades LIKE '%|"&session("UnidadeID")&"|%' "
+                    end if
+                    %>
+                    <%= quickfield("multiple", "Forma", "Convênio", 2, reqf("Forma"), "select '0' id, '     PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 "&filtroUnidade&" order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
+                    <%= quickfield("multiple", "FormaRecto", "Forma de recto.", 2, reqf("FormaRecto"), "select id, PaymentMethod from cliniccentral.sys_financialpaymentmethod where TextC<>'' ORDER BY PaymentMethod", "PaymentMethod", "") %>
                     <%= quickfield("multiple", "Status", "Status de recto.", 2, reqf("Status"), "select 'RC' id, 'Recebido - Compensado' descricao UNION ALL select 'RN', 'Recebido - Não compensado' UNION ALL select 'NR', 'Não Recebidos'", "descricao", "") %>
 
                     <%= quickField("datepicker", "De", "Execução", 2, De, "", "", " placeholder='De' required='required'") %>
@@ -161,12 +166,17 @@ end if
 
 <div class="panel">
     <div class="panel-body">
-
+    <div style="text-align: right">
+        <button type="button" class="btn btn-default btn-xs" onclick="openSelectCols()">
+            <i class="fa fa-table"></i> Selecionar Colunas
+        </button>
+    </div>
 <div class="alert alert-danger hidden">
     <strong>Atenção! </strong> Esta página está em manutenção. Tente novamente mais tarde.
 </div>
 
     <%
+Response.Flush
 ExibeResultado=True
 if datediff("d", De, Ate)>122 then
 
@@ -190,24 +200,60 @@ end if
 if ExibeResultado then
     TemRepasse=0
     AccountID = reqf("AccountID")
+
+    db_execute("update rateiorateios set DataServicoExecucao=  "&_
+               "(CASE WHEN ItemInvoiceID IS NOT NULL THEN ( "&_
+               "SELECT ii.DataExecucao "&_
+               "FROM itensinvoice ii "&_
+               "WHERE ii.id=ItemInvoiceID "&_
+               "LIMIT 1) WHEN ItemGuiaID IS NOT NULL THEN ( "&_
+               "SELECT ps.Data "&_
+               "FROM tissprocedimentossadt ps "&_
+               "WHERE ps.id=ItemGuiaID "&_
+               "LIMIT 1) WHEN ItemGuiaID IS NOT NULL THEN ( "&_
+               "SELECT ph.Data "&_
+               "FROM tissprocedimentoshonorarios ph "&_
+               "WHERE ph.id=ItemHonorarioID "&_
+               "LIMIT 1) WHEN GuiaConsultaID IS NOT NULL THEN ( "&_
+               "SELECT gc.DataAtendimento "&_
+               "FROM tissguiaconsulta gc "&_
+               "WHERE gc.id=GuiaConsultaID "&_
+               "LIMIT 1) END) "&_
+               " "&_
+               "where DataServicoExecucao is null ")
+
     if AccountID="" then
-        set ProfissionalSQL = db.execute("SELECT DISTINCT ContaCredito AccountID FROM rateiorateios WHERE (CASE "&_
-                                                                        "WHEN ItemInvoiceID is not null then (SELECT ii.DataExecucao FROM itensinvoice ii where ii.id=ItemInvoiceID LIMIT 1) "&_
-                                                                         "WHEN ItemGuiaID is not null then (SELECT ps.Data FROM tissprocedimentossadt ps WHERE ps.id=ItemGuiaID LIMIT 1) "&_
-                                                                         "WHEN ItemGuiaID is not null then (SELECT ph.Data FROM tissprocedimentoshonorarios ph WHERE ph.id=ItemHonorarioID LIMIT 1) "&_
-                                                                         "WHEN GuiaConsultaID is not null then (SELECT gc.DataAtendimento FROM tissguiaconsulta gc WHERE gc.id=GuiaConsultaID LIMIT 1) "&_
-                                                                         "END) BETWEEN "& mydateNull(DeSqlProf) &" AND "& mydateNull(Ate) &" AND ContaCredito not in ('0', '0_0', 'LAU', '')")
+        if ModoFranquia then
+            sqlContas = "SELECT t.* FROM ("&_
+                        "SELECT DISTINCT ContaCredito AccountID, SUBSTRING_INDEX(rr.ContaCredito, '_', 1) rAssociacaoID, SUBSTRING_INDEX(rr.ContaCredito, '_', -1) rContaID "&_
+                        "FROM rateiorateios rr "&_
+                        "WHERE rr.DataServicoExecucao BETWEEN "& mydateNull(DeSqlProf) &" AND "& mydateNull(Ate) &" AND ContaCredito not in ('0', '0_0', 'LAU', '') "&_
+                         " )t "&_
+                         "LEFT JOIN profissionais prof ON t.rAssociacaoID = t.rContaID=prof.id AND t.AccountID=5 "&_
+                         "LEFT JOIN fornecedores forn ON t.rAssociacaoID = t.rContaID=forn.id AND t.AccountID=2 "&_
+                         franquia(" WHERE COALESCE(cliniccentral.overlap(COALESCE(prof.Unidades, forn.Unidades),COALESCE(NULLIF('"&Unidades&"',''),'-999')),TRUE)")
+
+            set ProfissionalSQL = db_execute(sqlContas)
+        else
+            sqlRepasses = "SELECT DISTINCT rr.ContaCredito AccountID FROM rateiorateios rr "&_
+                          "WHERE rr.DataServicoExecucao BETWEEN "& mydateNull(DeSqlProf) &" AND "& mydateNull(Ate) &" AND rr.ContaCredito not in ('0', '0_0', 'LAU', '')"
+            set ProfissionalSQL = db_execute(sqlRepasses)
+        end if
     else
-        set ProfissionalSQL = db.execute("SELECT '"&AccountID&"' AccountID")
+        set ProfissionalSQL = db_execute("SELECT '"&AccountID&"' AccountID")
     end if
 
     while not ProfissionalSQL.eof
         ContaCredito = ProfissionalSQL("AccountID")
         if ContaCredito<>"0" then
-            spltContaCredito = split(ContaCredito, "_")
-            AssociationAccountID = spltContaCredito(0)
-            AccountID = spltContaCredito(1)
-
+            if instr(ContaCredito,"_") then
+                spltContaCredito = split(ContaCredito, "_")
+                AssociationAccountID = spltContaCredito(0)
+                AccountID = spltContaCredito(1)
+            else
+                AssociationAccountID = 0
+                AccountID = 0
+            end if
         else
             AssociationAccountID = 0
             AccountID = 0
@@ -220,10 +266,11 @@ if ExibeResultado then
 
             Forma = replace(reqf("Forma"), "|", "")
 
+
             if ContaCredito<>"" and Forma<>"" then
             sql="select rr.*, ii.InvoiceID InvoiceAPagarID from rateiorateios rr LEFT JOIN itensinvoice ii ON ii.id=rr.ItemContaAPagar where rr.ContaCredito='"& ContaCredito &"'"
                     'response.write(sql)
-'                set rr = db.execute(sql)
+'                set rr = db_execute(sql)
 
                 modoCalculo = reqf("modoCalculo")
                 if modoCalculo="" then
@@ -238,7 +285,7 @@ if ExibeResultado then
                 FormaRecto = replace(reqf("FormaRecto"),"|","")
                 if FormaRecto<>"" then
                     if instr(FormaRecto, "-1")>0 then
-                        sqlFormRecto=" AND pmdesc.id IS NULL "    
+                        sqlFormRecto=" AND pmdesc.id IS NULL "
                     else
                         sqlFormRecto=" AND pmdesc.id IN ("&FormaRecto&") "
                     end if
@@ -257,7 +304,7 @@ if ExibeResultado then
                                 " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit "&_
                                 " LEFT JOIN sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID "&_
                                 " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id "&_
-                                " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.TransactionID = fct.id "&_
+                                " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=t.ParcelaID "&_
                                 " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia=t.TipoGuia AND tgi.GuiaID=t.GuiaID "&_
                                 " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID "&_
                                 " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id "&_
@@ -280,7 +327,7 @@ if ExibeResultado then
                                  " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit"&_
                                  " LEFT JOIN cliniccentral.sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID"&_
                                  " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id"&_
-                                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.TransactionID = fct.id"&_
+                                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=rrgc.ParcelaID"&_
                                  " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia='GuiaConsulta' AND tgi.GuiaID=gc.id"&_
                                  " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID"&_
                                  " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id"&_
@@ -316,7 +363,7 @@ if ExibeResultado then
                                  " LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=mdesc.AccountIDDebit "&_
                                  " LEFT JOIN cliniccentral.sys_financialpaymentmethod pmdesc ON pmdesc.id=mdesc.PaymentMethodID "&_
                                  " LEFT JOIN sys_financialcreditcardtransaction fct ON fct.MovementID=mdesc.id "&_
-                                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.TransactionID = fct.id"&_
+                                 " LEFT JOIN sys_financialcreditcardreceiptinstallments ri ON ri.id=t.ParcelaID "&_
                                  " LEFT JOIN tissguiasinvoice tgi ON tgi.TipoGuia=t.TipoGuia AND tgi.GuiaID=t.GuiaID "&_
                                  " LEFT JOIN sys_financialmovement mov ON mov.InvoiceID=tgi.InvoiceID "&_
                                  " LEFT JOIN sys_financialdiscountpayments disc ON disc.InstallmentID=mov.id "&_
@@ -329,10 +376,8 @@ if ExibeResultado then
                 if reqf("Debug")="1" then
                     response.write( session("Banco") & chr(10) & chr(13) & sqlRR )
                 end if
-              
-                ' response.write(sqlRR)
 
-                set rr = db.execute( sqlRR )
+                set rr = db_execute( sqlRR )
                 if not rr.eof then
                 %>
                 <h3><%=accountName(AssociationAccountID, AccountID)%></h3>
@@ -340,29 +385,28 @@ if ExibeResultado then
                 <table id="datatableRepasses" class="table table-striped table-bordered table-condensed table-hover">
                     <thead>
                         <tr>
-                            <th width="1%">
+                            <th width="1%" class="colContaCredito">
                                 <span class="checkbox-customX">
                                     <input type="checkbox" data-account="<%=ContaCredito%>" class="checkAll" /><label for="checkAll"></label>
                                 </span>
                             </th>
-                            <th>Data Exec.</th>
-                            <th>Data Comp.</th>
-                            <th>Paciente</th>
-                            <th>Descrição</th>
-                            <th>Função</th>
-                            <th>Convênio</th>
-                            <th>Forma</th>
-                            <th>Parcelas</th>
-                            <th>Valor Total Serv.</th>
-                            <th>Valor Total da Conta</th>
-                            <th>Repasse</th>
+                            <th class="colTh" name-col="colDataExec">Data Exec.</th>
+                            <th class="colTh" name-col="colDataComp">Data Comp.</th>
+                            <th class="colTh" name-col="colPaciente">Paciente</th>
+                            <th class="colTh" name-col="colDescricao">Descrição</th>
+                            <th class="colTh" name-col="colFuncao">Função</th>
+                            <th class="colTh" name-col="colConvenio">Convênio</th>
+                            <th class="colTh" name-col="colForma">Forma</th>
+                            <th class="colTh" name-col="colParcelas">Parcelas</th>
+                            <th class="colTh" name-col="colValorTotalServ">Valor Total Serv.</th>
+                            <th class="colTh" name-col="colValorParcela">Valor Parcela</th>
+                            <th class="colTh" name-col="colRepasse">Repasse</th>
                             <th width="1%"><i class="fa fa-remove"></i></th>
                         </tr>
                     </thead>
                     <tbody>
                 <%
                 while not rr.eof
-
                     DataExecucao = rr("DataExecucao")
                     Descricao = rr("NomeProcedimento")
                     Pagador = rr("NomePaciente")
@@ -385,6 +429,7 @@ if ExibeResultado then
                     fLink = ""
                     Status = reqf("Status")
                     NomeTabela = rr("NomeTabela")
+
                     Exibe = 0
                     if Status="" then
                         Exibe = 1
@@ -419,7 +464,7 @@ if ExibeResultado then
                         else
                             DataComp = rr("DataPagtoConvenio")
                         end if
-                       
+
                         DataOk = True
                         if TipoData="Comp" then
                             if DataComp&""="" then
@@ -447,7 +492,7 @@ if ExibeResultado then
                         end if
 
                         if rr("IntegracaoSPLIT") = "S" then
-                            set SplitStatusSQL = db.execute("SELECT SplitStatus FROM stone_splits WHERE MovementID="&treatvalzero(rr("IDMovPay")))
+                            set SplitStatusSQL = db_execute("SELECT SplitStatus FROM stone_splits WHERE MovementID="&treatvalzero(rr("IDMovPay")))
 
                             if not SplitStatusSQL.eof then
                                 if SplitStatusSQL("SplitStatus")<>"rejected" then
@@ -457,7 +502,7 @@ if ExibeResultado then
                             end if
                         end if
 
-                            
+
                         if DataOk then
                             ContaRepasses = ContaRepasses+1
                             TotalRepasse = TotalRepasse+ValorRepasse
@@ -469,7 +514,7 @@ if ExibeResultado then
                                 <% if rr("ItemContaAPagar")>0 then %>
                                     <a href="./?P=invoice&Pers=1&I=<%= rr("InvoiceAPagarID") %>" target="_blank" class="btn btn-xs btn-default" type="button"><i class="fa fa-sign-out text-alert"></i></a>
                                 <% elseif rr("ItemContaAReceber")>0 then
-                                    set InvoiceReceberSQL = db.execute("SELECT InvoiceID FROM itensinvoice WHERE id="&rr("ItemContaAReceber"))
+                                    set InvoiceReceberSQL = db_execute("SELECT InvoiceID FROM itensinvoice WHERE id="&rr("ItemContaAReceber"))
                                     if not InvoiceReceberSQL.eof then
                                         InvoiceAReceberID=InvoiceReceberSQL("InvoiceID")
                                     end if
@@ -486,17 +531,17 @@ if ExibeResultado then
                                 <% end if %>
 
                             </td>
-                            <td><%= DataExecucao %></td>
-                            <td><%= DataComp %></td>
-                            <td><%= Pagador %></td>
-                            <td><%= aLink & Descricao & fLink %></td>
-                            <td><%= rr("Funcao") %></td>
-                            <td><%= NomeTabela &" " & FormaRecto %></td>
-                            <td><%= Forma %></td>
-                            <td><%= Parcelas %></td>
-                            <td class="text-right"><%= fn(ValorProcedimento) %></td>
-                            <td class="text-right"><%= fn(ValorParcela) %></td>
-                            <td class="text-right"><%= ValorRepasse %></td>
+                            <td name-col="colDataExec"><%= DataExecucao %></td>
+                            <td name-col="colDataComp"><%= DataComp %></td>
+                            <td name-col="colPaciente"><%= Pagador %></td>
+                            <td name-col="colDescricao"><%= aLink & Descricao & fLink %></td>
+                            <td name-col="colFuncao"><%= rr("Funcao") %></td>
+                            <td name-col="colConvenio"><%= NomeTabela &" " & FormaRecto %></td>
+                            <td name-col="colForma"><%= Forma %></td>
+                            <td name-col="colParcelas"><%= Parcelas %></td>
+                            <td class="text-right" name-col="colValorTotalServ"><%= fn(ValorProcedimento) %></td>
+                            <td class="text-right" name-col="colValorParcela"><%= fn(ValorParcela) %></td>
+                            <td class="text-right" name-col="colRepasse"><%= ValorRepasse %></td>
                             <td>
                                 <% if isnull(rr("ItemContaAPagar")) and aut("|repassesX|")=1 then %>
                                     <button onclick="x(<%= rr("id") %>)" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button>
@@ -514,9 +559,9 @@ if ExibeResultado then
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="10"><%= ContaRepasses %> repasses encontrados.</td>
-                            <td class="text-right"><%= fn(TotalProcedimento) %></td>
-                            <td class="text-right"><%= fn(TotalRepasse) %></td>
+                            <td colspan="10" class="colsPan"><%= ContaRepasses %> repasses encontrados.</td>
+                            <td class="text-right"  name-col="colValorParcela" ><%= fn(TotalProcedimento) %></td>
+                            <td class="text-right"  name-col="colRepasse"><%= fn(TotalRepasse) %></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -608,6 +653,54 @@ function repassesCredito(I){
     $.get("repassesCredito.asp?I="+I, function(data){
         $("#modal").html(data);
     });
+}
+
+function openSelectCols(){
+	let cols = {};
+	$(".colTh").each((a,b) => {
+		 let nameCol = $(b).attr("name-col")
+		 let text    = $(b).text()
+		 let checked = $(b).is(':visible')
+
+		 cols[nameCol] = {nameCol,text,checked};
+	})
+
+	let html = Object.keys(cols).map((item) => {
+		return `<div class="checkbox-custom checkbox-warning">
+					<input onchange="toggleCol(this.checked,'${cols[item].nameCol}')" ${cols[item].checked?'checked':''} type="checkbox" name="${cols[item].nameCol}" id="${cols[item].nameCol}" value="I"><label for="${cols[item].nameCol}"> ${cols[item].text}</label>
+				</div>`
+	}).join("\n");
+	openModal(`<div>
+		  ${html}
+		  </div>`,"Selecione as colunas que deseja exibir:",false,true
+	);
+
+}
+
+function toggleCol(isChecked,colName){
+    if(isChecked){
+        $(`[name-col='${colName}']`).show();
+    }else{
+        $(`[name-col='${colName}']`).hide();
+    }
+
+	colSpanSum()
+}
+
+function colSpanSum(){
+
+	let total = 1;
+
+	$(".dataTables_wrapper:first .colTh:visible").each((a,b) => {
+		 let nameCol = $(b).attr("name-col")
+		 let checked = $(b).is(':visible')
+
+		 if(!(['colValorParcela','colRepasse'].includes(nameCol))){
+			total++;
+		 }
+	});
+
+	$(".colsPan").attr("colspan",total)
 }
 
 $(document).ready( function () {

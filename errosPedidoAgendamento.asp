@@ -521,11 +521,10 @@ if erro="" then
 		end if
 
         if Horarios.eof then
-            if ref("Encaixe") <> 1 and getConfig("LiberarEncaixeEquipamentos") <> "1" then
+            if ref("Encaixe")&"" <> "1" and getConfig("LiberarEncaixeEquipamentos")&"" <> "1" then
                 erro = "Não existe grade configurada para esse equipamento."
             end if
         end if
-
         if erro="" and ConsultaID="" then
             'validar se o agendamento ja existe pela ag. diaria
 

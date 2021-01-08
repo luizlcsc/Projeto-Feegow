@@ -4,7 +4,7 @@ set reg = db.execute("select * from recibos where Texto like '"&ref("TextoRecibo
 if reg.EOF then
 	'db_execute("insert into recibos (Nome, Emitente, Data, Valor, Texto, Servicos, PacienteID, sysUser, ImpressoEm) values ('"&ref("NomeRecibo")&"', '"&ref("EmitenteRecibo")&"', '"&mydate(ref("DataRecibo"))&"', '"&treatVal(ref("ValorRecibo"))&"', '"&ref("TextoRecibo")&"', '"&ref("ServicosRecibo")&"', '"&req("I")&"', "&session("User")&", now())")
 	db_execute("insert into recibos (Nome, Emitente, Data, Valor, Texto, Servicos, PacienteID, sysUser, ImpressoEm) values ('"&ref("NomeRecibo")&"', '"&ref("EmitenteRecibo")&"', '"&mydate(ref("DataRecibo"))&"', '"&treatVal(ref("ValorRecibo"))&"', '"&ref("TextoRecibo")&"', '"&ref("ServicosRecibo")&"', '"&req("I")&"', "&session("User")&", now())")
-	set reg = db.execute("select * from recibos where PacienteID="&req("I")&" order by id desc")
+	set reg = db.execute("select * from recibos where PacienteID="&req("I")&" order by id desc LIMIT 1")
 end if
 %>
 <div class="modal-body">

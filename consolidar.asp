@@ -8,7 +8,7 @@
         Vencto = req("D")
         'cria->
         db_execute("insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, sysDate, FixaID, FixaNumero) values ('"&rep(fx("Name"))&"', "&fx("AccountID")&", "&fx("AssociationAccountID")&", "&treatvalzero(fx("Value"))&", 1, 'BRL', "&treatvalzero(fx("CompanyUnitID"))&", "&fx("Intervalo")&", '"&fx("TipoIntervalo")&"', '"&fx("CD")&"', 1, "&treatvalzero(fx("sysUser"))&", "&mydatenull(Vencto)&", "&fx("id")&", "&Conta&")")
-        set pult = db.execute("select id from sys_financialinvoices where FixaID="&fx("id")&" order by id desc")
+        set pult = db.execute("select id from sys_financialinvoices where FixaID="&fx("id")&" order by id desc LIMIT 1")
         if fx("CD")="C" then
             AccountAssociationIDDebit = fx("AssociationAccountID")
             AccountIDDebit = fx("AccountID")

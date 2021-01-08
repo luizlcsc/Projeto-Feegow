@@ -13,7 +13,7 @@
   "incomplete_results": false,
   "items": [
     <%
-    set q = db.execute("select id, NomePaciente from pacientes where NomePaciente like '%"&req("q")&"%' order by trim(NomePaciente) limit "& page*30 &", 30")
+    set q = db.execute("select id, NomePaciente from pacientes where NomePaciente like '%"&req("q")&"%' order by (NomePaciente) limit "& page*30 &", 30")
     c = 0
     while not q.eof
         if c>0 then

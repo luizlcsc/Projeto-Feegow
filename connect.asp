@@ -3267,21 +3267,26 @@ function mobileDevice()
 end function
 
 function db_execute(txt)
-'	set fs=Server.CreateObject("Scripting.FileSystemObject")
-'	set f=fs.OpenTextFile("c:\inetpub\wwwroot\feegowclinic\teste.txt",8,true)
-'		f.WriteLine(txt&";")
-'	f.close
-'	set f=nothing
-'	set fs=nothing
-    '    response.write(txt)
+executeInReadOnly = False
 
+    sqlStatement = txt
 
-    tipoLog = split(txt, " ")(0)
-    tipoLog = LCase(tipoLog)
-    recursoLog = split(txt, " ")(1)
-    recursoLog = LCase(recursoLog)
+    if sqlStatement&""<>"" then
+        tipoLog = split(sqlStatement, " ")(0)
+        tipoLog = LCase(tipoLog)
+        recursoLog = split(sqlStatement, " ")(1)
+        recursoLog = LCase(recursoLog)
+    end if
 
-    db.execute(txt)
+    if tipoLog = "select" then
+        executeInReadOnly = True
+    end if
+
+    if executeInReadOnly and False then
+        set db_execute = dbReadOnly.execute(sqlStatement)
+    else
+        set db_execute = db.execute(sqlStatement)
+    end if
 
 end function
 
@@ -3767,7 +3772,7 @@ private function geraRecorrente(i)
             if instr(Geradas, "|"&Conta&"|")=0 then
                 'cria->
                 db_execute("insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, sysDate, FixaID, FixaNumero) values ('"&rep(fx("Name"))&"', "&fx("AccountID")&", "&fx("AssociationAccountID")&", "&treatvalzero(fx("Value"))&", 1, 'BRL', "&treatvalzero(fx("CompanyUnitID"))&", "&fx("Intervalo")&", '"&fx("TipoIntervalo")&"', '"&fx("CD")&"', 1, "&treatvalzero(fx("sysUser"))&", "&mydatenull(Vencto)&", "&fx("id")&", "&Conta&")")
-                set pult = db.execute("select id from sys_financialinvoices where FixaID="&fx("id")&" order by id desc")
+                set pult = db.execute("select id from sys_financialinvoices where FixaID="&fx("id")&" order by id desc LIMIT 1")
                 if fx("CD")="C" then
                     AccountAssociationIDDebit = fx("AssociationAccountID")
                     AccountIDDebit = fx("AccountID")
@@ -4171,18 +4176,18 @@ end function
 
 
 function getEspera(Profissionais)
+
     splProfs = split(Profissionais, ",")
     for y=0 to ubound(splProfs)
         eProfissional = trim(splProfs(y))
         if eProfissional<>"" then
             if eProfissional<>"0" then
-                db_execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate() and StaID IN (4) and sysActive = 1 and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
+                db.execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate() and StaID IN (4) and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
             end if
         end if
     next
 
-
-    set esperaT = db.execute("select UnidadeID, count(UnidadeID) EsperaTotal from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() AND a.sysActive=1 and StaID=4 order by l.UnidadeID) t group by UnidadeID")
+    set esperaT = db.execute("select UnidadeID, count(UnidadeID) EsperaTotal from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() and StaID=4 order by l.UnidadeID) t group by UnidadeID")
     while not esperaT.eof
         esperaTotal = esperaTotal & "|"& esperaT("UnidadeID") &", "& EsperaT("EsperaTotal") &"|"
     esperaT.movenext
@@ -4190,16 +4195,13 @@ function getEspera(Profissionais)
     esperaT.close
     set esperaT=nothing
 
-    set esperaV = db.execute("select UnidadeID, count(UnidadeID) EsperaVazia from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() AND a.sysActive=1 and StaID=4 and ProfissionalID=0 order by l.UnidadeID) t group by UnidadeID")
+    set esperaV = db.execute("select UnidadeID, count(UnidadeID) EsperaVazia from (select ifnull(l.UnidadeID, 0) UnidadeID, ifnull(a.ProfissionalID, 0) ProfissionalID from agendamentos a left join locais l on a.LocalID=l.id where Data=curdate() and StaID=4 and ProfissionalID=0 order by l.UnidadeID) t group by UnidadeID")
     while not esperaV.eof
         esperaVazia = esperaVazia & "|"& esperaV("UnidadeID") &", "& EsperaV("EsperaVazia") &"|"
     esperaV.movenext
     wend
     esperaV.close
     set esperaV=nothing
-
-    db_execute("update sys_users set EsperaTotal='"&EsperaTotal&"'")
-    db_execute("update sys_users set EsperaVazia='"&EsperaVazia&"'")
 
 end function
 
@@ -4865,7 +4867,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
             
             SomenteConvenios = ""
             if ConvenioID <> 0 then
-                SomenteConvenios = "NaoAceitaConvenio"
+                SomenteConvenios = "ConvenioID"
             end if
         
            call selectInsert("", "ProcedimentoID"& n, ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", "agenda", SomenteConvenios) 

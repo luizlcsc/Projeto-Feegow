@@ -19,7 +19,7 @@ if not dadosResource.eof then
 end if
 sql = "insert into "&ref("resource")&" (sysActive, sysUser, "&ref("showColumn")&Coluna&compInsert&") values (1, "&session("User")&", '"&ref("typed")&"'"&ValorColuna&valInsert&")"
 db_execute(sql)
-set getLast = db.execute("select id from "&ref("resource")&" where sysUser="&session("User")&" and sysActive=1 order by id desc")
+set getLast = db.execute("select id from "&ref("resource")&" where sysUser="&session("User")&" and sysActive=1 order by id desc LIMIT 1")
 %>
 $("#resultSelect<%=ref("selectID")%>").css("display", "none");
 $("#<%=ref("selectID")%>").val("<%=getLast("id")%>");

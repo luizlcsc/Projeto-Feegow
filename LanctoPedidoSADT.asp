@@ -16,7 +16,7 @@ DataSolicitacao = ref("DataSolicitacao")
 TotalProcedimentos = 0
 
 GuiaID=1
-set guia = db.execute("select id from tissguiasadt order by id desc")
+set guia = db.execute("select id from tissguiasadt order by id desc LIMIT 1")
 if not guia.eof then
     GuiaID = guia("id") + 1
 end if

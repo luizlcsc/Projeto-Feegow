@@ -248,7 +248,7 @@ end if
 					if pultPront.eof then
 						Prontuario = 1
 					else
-						Prontuario = pultPront("Prontuario")+1
+						Prontuario = clng(pultPront("Prontuario"))+1
 					end if
 				end if
 				%>

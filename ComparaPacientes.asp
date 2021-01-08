@@ -9,9 +9,10 @@ CPF = replace(CPF, ".", "")
 id = ref("I")
 Tipo = req("T")
 Sexo = ref("S")
+sqlCPF = ""
 
 if CPF<>"" then
-    sqlCPF = " AND ( REPLACE(REPLACE(CPF, '.', ''),'-','') ='"& CPF &"' OR CPF like '') "
+    sqlCPF = " OR ( REPLACE(REPLACE(CPF, '.', ''),'-','') ='"&CPF&"') "
 end if
 if Nascimento<>"" and isdate(Nascimento) then
     sqlNascimento = " AND (Nascimento="& myDateNull(Nascimento) &" OR isnull(Nascimento)) "
@@ -22,7 +23,8 @@ end if
 
 if NomePaciente<>"" or CPF<>"" then
     'sql = " from pacientes where soundex(trim(NomePaciente))=soundex('"&trim(rep(NomePaciente))&"') and sysActive=1 and id<>"& id & sqlCPF & sqlNascimento & sqlSexo &" LIMIT 50"
-    sql = " from pacientes where NomePaciente='"&trim(rep(NomePaciente))&"' and sysActive=1 and id<>"& id & sqlCPF & sqlNascimento & sqlSexo &" LIMIT 50"
+    sql = " from pacientes where sysActive=1 and id<>"&id&" AND (NomePaciente='"&trim(rep(NomePaciente))&"' "& sqlCPF &") "&sqlNascimento & sqlSexo &" LIMIT 50"
+
     'response.write("//"&sql)
     if Tipo="Conta"  then
         set vout = db.execute("select count(id) as Total "& sql )

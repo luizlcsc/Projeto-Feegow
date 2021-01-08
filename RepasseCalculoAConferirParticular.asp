@@ -77,7 +77,7 @@ private function listaRR( rDataExecucao, rInvoiceID, rItemInvoiceID, rNomeProced
     while not rr.eof
         nLinha = nLinha+1
 
-        call lrResult( "RateioRateios", rDataExecucao, rr("DominioID") &": "& rr("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rr("ContaCredito"), rValorProcedimento, rValorRecebido, rr("Valor"), nLinha, rr("FM"), rr("Sobre"), rr("modoCalculo") )
+        call lrResult( "RateioRateios", rDataExecucao, rr("DominioID") &": "& replace(rr("Funcao")&"","|","_"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rr("ContaCredito"), rValorProcedimento, rValorRecebido, rr("Valor"), nLinha, rr("FM"), rr("Sobre"), rr("modoCalculo") )
     rr.movenext
     wend
     rr.close
@@ -111,7 +111,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
     while not fd.eof
         '-> Começa a coletar os dados pra temprepasses (antiga rateiorateios)
-        Funcao = fd("Funcao")
+        Funcao = replace(fd("Funcao")&"","|","_")
         TipoValor = fd("TipoValor")
         Valor = fd("Valor")
         ContaPadrao = fd("ContaPadrao")
@@ -318,7 +318,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
                     'CONSOLIDADO LINHA
 
-                    call lrResult( "Calculo", rDataExecucao, DominioID & ": "& fd("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
+                    call lrResult( "Calculo", rDataExecucao, DominioID & ": "& Funcao, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
                 end if
             end if
         end if
@@ -375,7 +375,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
         if fd("FM")="E" then
             set eq = db.execute("select * from procedimentosequipeparticular where ProcedimentoID="& ii("ItemID"))
             while not eq.eof
-                Funcao = eq("Funcao")
+                Funcao = replace(eq("Funcao")&"","|","_")
                 Valor = eq("Valor")
                 TipoValor = eq("TipoValor")
                 ShowValor = calcValor(Valor, TipoValor, ValorBase, "show")
@@ -847,7 +847,7 @@ desfazBtnCons = ""
                     'CONSOLIDADO LINHA
                         response.write(buttonDetalharDominio(ItemInvoiceID))
 
-                        call lrResult( "RateioRateios", rDataExecucao, rr("DominioID") &": "& rr("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rr("ContaCredito"), rValorProcedimento, rValorRecebido, rr("Valor"), nLinha, rr("FM"), rr("Sobre"), rr("modoCalculo") )
+                        call lrResult( "RateioRateios", rDataExecucao, rr("DominioID") &": "& replace(rr("Funcao")&"","|","_"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rr("ContaCredito"), rValorProcedimento, rValorRecebido, rr("Valor"), nLinha, rr("FM"), rr("Sobre"), rr("modoCalculo") )
                         if not isnull(rr("ItemContaAPagar")) or not isnull(rr("ItemContaAReceber")) or not isnull(rr("CreditoID")) then
                             desfazBtnCons = desfazBtnCons & "$('#desconsolidar"& rr("ItemInvoiceID") &"_"& rr("ItemDescontadoID") &"_"& rr("GrupoConsolidacao") &", #"& idBtnDesc &"').prop('disabled', true);"
                         end if

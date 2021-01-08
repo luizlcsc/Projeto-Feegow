@@ -83,7 +83,7 @@ if cbool(save) then
             'salva com id do atendimento
             db_execute("insert into PacientesPedidos (PacienteID, PedidoExame, sysUser, AtendimentoID, UnidadeID) values ("&ref("PacienteID")&", '"&ref("pedido")&"',  "&session("User")&", "&atendimentoReg("id")&","&session("UnidadeID")&")")
         end if
-        set reg = db.execute("select * from pacientesPedidos where PacienteID="&ref("PacienteID")&" order by id desc")
+        set reg = db.execute("select * from pacientesPedidos where PacienteID="&ref("PacienteID")&" order by id desc LIMIT 1")
     end if
 
     if ref("idsExames[]")<>"" then

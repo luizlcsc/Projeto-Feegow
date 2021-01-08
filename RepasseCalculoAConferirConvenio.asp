@@ -72,7 +72,7 @@ private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePacien
 
     while not fd.eof
         '-> Começa a coletar os dados pra temprepasses (antiga rateiorateios)
-        Funcao = fd("Funcao")
+        Funcao = replace(fd("Funcao")&"","|","_")
         TipoValor = fd("TipoValor")
         Valor = fd("Valor")
         ContaPadrao = fd("ContaPadrao")
@@ -193,7 +193,7 @@ private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePacien
                 'lrResult( lrDataExecucao, lrNomeFuncao, lrInvoiceID, lrNomeProcedimento, lrNomePaciente, lrFormaPagto, lrCreditado, lrValorProcedimento, lrValorRecebido, lrValorRepasse )
 
   
-                call lrResult( "Calculo", rDataExecucao, DominioID & ": "& fd("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
+                call lrResult( "Calculo", rDataExecucao, DominioID & ": "& Funcao, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
             end if
         end if
 
@@ -558,7 +558,7 @@ end if
                                             call repasse( DataExecucao, InvoiceID, NomeProcedimento, NomePaciente, "Pendente", ValorProcedimento, ValorPago, 100, Link, Quantidade )
                                         else
                                             while not rr.eof
-                                                call lrResult( "RateioRateios", rDataExecucao, rr("Funcao"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rr("ContaCredito"), ValorProcedimento, ValorPago, rr("Valor"), nLinha, rr("FM"), rr("Sobre"), rr("modoCalculo") )
+                                                call lrResult( "RateioRateios", rDataExecucao, replace(rr("Funcao")&"","|","_"), rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, rr("ContaCredito"), ValorProcedimento, ValorPago, rr("Valor"), nLinha, rr("FM"), rr("Sobre"), rr("modoCalculo") )
                                                 Response.Flush()
                                             rr.movenext
                                             wend

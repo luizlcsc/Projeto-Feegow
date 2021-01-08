@@ -629,7 +629,7 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                 let valorTotalSomaItems = document.getElementById('valorTotalSomaItems').value;
                 let dados = $(".Bloco" + Bloco).serialize() + "&valorTotalSomadoModificado="+valorTotalSomaItems
                     + "&FormaID="+sysFormasrectoId+"&ContaRectoID="+ContaRectoID;
-
+                    
                 if (notificaDesconto) {
                     dados += '&NotificaDesconto=1&IdsRegrasSuperiores=' + idsRegrasSuperiores;
                 }
@@ -683,6 +683,17 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                 modalPagto.find('#descontoForma').prop('disabled', '');
             }
         }
+
+        function normalizeMoney(valor){
+            let check = valor.slice(valor.length - 3)
+            if(check[0] == '.' || check[1] == '.'){
+                valor = valor.replace(',','v')
+                valor = valor.replace('.',',')
+                valor = valor.replace('v','.')
+            }
+            return valor
+        }
+
     </script>
 
     <%
@@ -1019,9 +1030,9 @@ function round(value, decimals) {
 
 
 atualizarValores = (acrescimoTotal, descontoTotal, valorTotalSomadoFormaPagamento) => {
-    document.getElementById('acrescimoForma').value = round(acrescimoTotal, 2).toLocaleString(undefined, { minimumFractionDigits: 2 }); 
-    document.getElementById('descontoForma').value = round(descontoTotal, 2).toLocaleString(undefined, { minimumFractionDigits: 2 }); 
-    document.getElementById('valorTotalSomaItems').value = round(valorTotalSomadoFormaPagamento, 2).toLocaleString(undefined, { minimumFractionDigits: 2 }); 
+    document.getElementById('acrescimoForma').value = round(acrescimoTotal, 2).toLocaleString("pt-BR", { minimumFractionDigits: 2 }); 
+    document.getElementById('descontoForma').value = round(descontoTotal, 2).toLocaleString("pt-BR", { minimumFractionDigits: 2 }); 
+    document.getElementById('valorTotalSomaItems').value = round(valorTotalSomadoFormaPagamento, 2).toLocaleString("pt-BR", { minimumFractionDigits: 2 }); 
     document.getElementById('totalvalue').value = document.getElementById('valorTotalSomaItems').value;
 }
 

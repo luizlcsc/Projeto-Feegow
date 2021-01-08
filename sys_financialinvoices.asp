@@ -35,7 +35,7 @@ if request.QueryString("A")<>"" then
 		set vcaAberto = db.execute("select * from sys_financialinvoices where CD='C' and AssociationAccountID=3 and AccountID="&age("PacienteID")&" and Sta='A'")
 		if vcaAberto.eof then
 			db_execute("insert into sys_financialinvoices (`Name`,AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, Sta, sysActive, sysUser) values ('Gerado a partir de agendamento {2}',"&age("PacienteID")&", 3, '"&calculaovalorbaseadonositensadicionados&"', 1, 'BRL', 0, 1, 'm', 'C', 'A', 1, "&session("User")&")")
-			set pult = db.execute("select id from sys_financialinvoices where AccountID="&age("PacienteID")&" order by id desc")
+			set pult = db.execute("select id from sys_financialinvoices where AccountID="&age("PacienteID")&" order by id desc LIMIT 1")
 			InvoiceID = pult("id")
 		else
 			InvoiceID = vcaAberto("id")

@@ -26,7 +26,7 @@ while not rd.eof
     I = rd("id")
     %>
     <tr>
-        <td width="24%"><%= quickfield("multiple", "Recursos"&I, "Recursos aplicáveis", 12, Recursos, "select 'ContasAReceber' id, 'Contas a Receber' Descricao UNION ALL select 'ContasAPagar', 'Contas a Pagar' UNION ALL select 'Propostas', 'Propostas'", "Descricao", "") %></td>
+        <td width="24%"><%= quickfield("multiple", "Recursos"&I, "Recursos aplicáveis", 12, Recursos, "select 'ContasAReceber' id, 'Contas a Receber' Descricao UNION ALL select 'ContasAPagar', 'Contas a Pagar' UNION ALL select 'Propostas', 'Propostas' UNION ALL select 'Checkin', 'Check-in'", "Descricao", "") %></td>
         <td width="24%"><%= quickfield("empresaMultiIgnore", "Unidades"&I, "Unidades", 12, Unidades, "", "", "") %></td>
         <td width="24%"><%= quickfield("multiple", "Procedimentos"&I, "Procedimentos", 12, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and ativo='on'", "NomeProcedimento", "") %></td>
         <td width="15%">

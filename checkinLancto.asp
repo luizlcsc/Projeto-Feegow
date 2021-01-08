@@ -1,28 +1,8 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="Classes/ValidaDesconto.asp"-->
 <%
 posModalPagar = "fixed"
-%>
-
-<!--#include file="invoiceEstilo.asp"-->
-<script type="text/javascript">
-/*
-$("#pagar").fadeIn();
-
-$(function() {
-$( "#pagar" ).draggable();
-});
-*/
-/*
-$("#pagar").html("Carregando...");
-    $.post("Pagar.asp?T=C", {
-        Parcela: '|3586|'
-    }, function (data) {
-    $("#pagar").html(data);
-});
-*/
-</script>
-<%
 
 splLC = split(ref("LanctoCheckin"), ", ")
 ContaRectoID = ref("ContaRectoID")
@@ -76,21 +56,19 @@ if (tabelaId = "" or tabelaId="0") and ObrigarTabelaParticular=1 then
     response.write("<script>showMessageDialog('Erro: Preencha a tabela do paciente!');</script>")
     response.end
 end if
-%>
 
-<script type="text/javascript">
-    $("#pagar").fadeIn();
 
-    $(function() {
-    $( "#pagar" ).draggable();
-    });
-</script>
+NotificaDesconto    = ref("NotificaDesconto")
+IdsRegrasSuperiores = ref("IdsRegrasSuperiores")
 
-<%
 valorTotalOriginal=ValorTotal
+valorTotalUpdate=ValorTotal
 if ref("valorTotalSomadoModificado") <> "" then
     valorModificado = ref("valorTotalSomadoModificado")
     valorTotal = valorModificado
+    if NotificaDesconto <> "1" then
+        valorTotalUpdate = valorTotal
+    end if
 end if
 
  checkinPagar = false
@@ -100,6 +78,7 @@ InvoiceID = 0
 saveInsys_financialmovement = 0
 splLC = split(ref("LanctoCheckin"), ", ")
 ProcedimentosAdicionados = ""
+DescontosPendentes  = ""
 
 for i= 0 to ubound(splLC)
     spl2 = split(splLC(i), "_")
@@ -158,12 +137,29 @@ for i= 0 to ubound(splLC)
 
                 if rdValorPlano="V" then
 
+                    ' calcula se houve desconto ou acrescimo
+                    Acrescimo=0
+                    Desconto=0
+
+                    DiferencaPorcentagem = 0
+
+                    if valorModificado<>"" and valorTotalOriginal&""<>"0" then
+                        DiferencaPorcentagem = (valorTotalOriginal - ValorTotal) / valorTotalOriginal
+                        DiferencaValores = valorTotalOriginal - ValorTotal
+
+                        if DiferencaValores < 0 then
+                            Acrescimo = Round((DiferencaPorcentagem * Valor) * -1,2)
+                        elseif DiferencaValores > 0 then
+                            Desconto = Round(DiferencaPorcentagem * Valor, 2)
+                        end if
+                    end if
+
                     'requisitos pra usar o movement que j� existe: executado vazio ou o proprio, data exec vazia ou a propria, descontado zero do ii, soma das parcelas da invoice=1, valor igual, proc igual, else cria nova e chapa como executado
 
                     sqlBuscaInvoice = "select ii.InvoiceID, i.FormaID, ii.id, "&_
                                                           "(select id from sys_financialmovement where Type='Bill' and CD='C' and InvoiceID=i.id limit 1) MovementID FROM itensinvoice ii "&_
                                                           "LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
-                                                          "WHERE i.AccountID="& PacienteID &" AND i.Value="& treatvalnull(ValorTotal) &" AND i.AssociationAccountID=3 "& _
+                                                          "WHERE i.AccountID="& PacienteID &" AND i.Value="& treatvalnull(valorTotalUpdate) &" AND i.AssociationAccountID=3 "& _
                                                           "AND ii.ItemID="& ProcedimentoID &" AND ii.Tipo='S' AND (ii.ProfissionalID="& treatvalnull(ProfissionalID) &" OR ISNULL(ii.ProfissionalID)) "&_
                                                           "AND IFNULL((select sum(Valor) from itensdescontados where ItemID=ii.id), 0)=0 AND (ii.ValorUnitario > 0 OR (ii.ValorUnitario = 0 AND ii.DataExecucao=CURDATE())) AND "&_
                                                           "(select count(id) from sys_financialmovement where Type='Bill' and CD='C' and InvoiceID=i.id)=1"
@@ -178,6 +174,16 @@ for i= 0 to ubound(splLC)
 
                         if FormaID&"" <> "0" then
                             db.execute("UPDATE sys_financialinvoices SET FormaID="&treatvalzero(FormaID)&", ContaRectoID="&treatvalzero(ContaRectoID)&" WHERE id="&InvoiceID)
+                        end if
+
+                        ' envia notificacao de desconto pendente
+                        if NotificaDesconto = "1" and Desconto > 0  then
+                            notEnviada = notificaDescontoPendente(vcaII("id"), Desconto, session("User"), UnidadeID, IdsRegrasSuperiores)
+                            if DescontosPendentes = "" then
+                                DescontosPendentes = notEnviada 
+                            else
+                                DescontosPendentes = DescontosPendentes  & "," & notEnviada 
+                            end if
                         end if
 
 
@@ -203,7 +209,7 @@ for i= 0 to ubound(splLC)
                             wend
                             InvoicesNaoQuitadasSQL.close
                             set InvoicesNaoQuitadasSQL=nothing
-                            sql = "insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, FormaID, ContaRectoID, sysDate, CaixaID, TabelaID, ProfissionalSolicitante) VALUES ('Gerado pelo check-in', "& PacienteID &", 3, "& treatvalzero(ValorTotal) &", 1, 'BRL', "& UnidadeID &", 1, 'm', 'C', 1, "& session("User") &", "&FormaID&", "&ContaRectoID&", curdate(), "& treatvalnull(session("CaixaID")) &","&treatvalnull(TabelaID)&",'"&IndicacaoID&"')"
+                            sql = "insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, FormaID, ContaRectoID, sysDate, CaixaID, TabelaID, ProfissionalSolicitante) VALUES ('Gerado pelo check-in', "& PacienteID &", 3, "& treatvalzero(valorTotalUpdate) &", 1, 'BRL', "& UnidadeID &", 1, 'm', 'C', 1, "& session("User") &", "&FormaID&", "&ContaRectoID&", curdate(), "& treatvalnull(session("CaixaID")) &","&treatvalnull(TabelaID)&",'"&IndicacaoID&"')"
 
                             call gravaLogs(sql, "AUTO", "Criado pelo check-in", "")
                             db.execute(sql)
@@ -212,32 +218,32 @@ for i= 0 to ubound(splLC)
 
                         end if
 
-                        Acrescimo=0
-                        Desconto=0
-
-
-                        DiferencaPorcentagem = 0
-
-                        if valorModificado<>"" and valorTotalOriginal&""<>"0" then
-                            DiferencaPorcentagem = (valorTotalOriginal - ValorTotal) / valorTotalOriginal
-                            DiferencaValores = valorTotalOriginal - ValorTotal
-
-                            if DiferencaValores < 0 then
-                                Acrescimo = Round((DiferencaPorcentagem * Valor) * -1,2)
-                            elseif DiferencaValores > 0 then
-                                Desconto = Round(DiferencaPorcentagem * Valor)
-                            end if
-                        end if
-
                         ValorExecutadoCheckin = "S"
 
                         if getConfig("CheckinCriarInvoiceExecutada")="0" then
                             ValorExecutadoCheckin=""
                         end if
 
-                        db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Acrescimo, Executado, DataExecucao, GrupoID, AgendamentoID, sysUser, ProfissionalID, EspecialidadeID, Associacao) values ("& InvoiceID &", 'S', "&Quantidade&", 0, "& ProcedimentoID &", "& treatvalzero(Valor) &", "&treatvalzero(Desconto)&", "&treatvalzero(Acrescimo)&", '"&ValorExecutadoCheckin&"', curdate(), 0, "& ag("id") &", "& session("User") &", "& ag("ProfissionalID") &", "& treatvalnull(EspecialidadeID) &", 5)")
+                        DescontoUpdate = Desconto
+                        if NotificaDesconto = "1" and Desconto > 0 then
+                            DescontoUpdate = 0
+                        end if
+
+                        db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Acrescimo, Executado, DataExecucao, GrupoID, AgendamentoID, sysUser, ProfissionalID, EspecialidadeID, Associacao) values ("& InvoiceID &", 'S', "&Quantidade&", 0, "& ProcedimentoID &", "& treatvalzero(Valor) &", "&treatvalzero(DescontoUpdate)&", "&treatvalzero(Acrescimo)&", '"&ValorExecutadoCheckin&"', curdate(), 0, "& ag("id") &", "& session("User") &", "& ag("ProfissionalID") &", "& treatvalnull(EspecialidadeID) &", 5)")
                         set pult = db.execute("select id from itensinvoice where sysUser="& session("User") &" order by id desc limit 1")
                         ItemInvoiceID = pult("id")
+
+                        ' envia notificacao de desconto pendente
+                        if NotificaDesconto = "1" and Desconto > 0 then
+                            notEnviada = notificaDescontoPendente(ItemInvoiceID, Desconto, session("User"), UnidadeID, IdsRegrasSuperiores)
+                            if DescontosPendentes = "" then
+                                DescontosPendentes = notEnviada 
+                            else
+                                DescontosPendentes = DescontosPendentes  & "," & notEnviada 
+                            end if
+                        end if
+
+
 
     've se tem repasse com indicacao
                         if IndicacaoID&""<>"" and IndicacaoID<>"0" then
@@ -276,22 +282,13 @@ for i= 0 to ubound(splLC)
                         end if
 
                         if saveInsys_financialmovement=0 then
-                            db.execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID, UnidadeID) values (0, 0, 3, "& PacienteID &", "& treatvalzero(ValorTotal) &", curdate(), 'C', 'Bill', 'BRL', 1, "& InvoiceID &", 1, "& session("User") &", "& treatvalnull(session("CaixaID")) &", "& UnidadeID &")")
+                            db.execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID, UnidadeID) values (0, 0, 3, "& PacienteID &", "& treatvalzero(valorTotalUpdate) &", curdate(), 'C', 'Bill', 'BRL', 1, "& InvoiceID &", 1, "& session("User") &", "& treatvalnull(session("CaixaID")) &", "& UnidadeID &")")
                             set pm = db.execute("select id from sys_financialmovement where sysUser="& session("User") &" order by id desc limit 1")
                             MovementID = pm("id")
                             saveInsys_financialmovement = 1
                         end if
 
                     end if
-                    %>
-
-                    <input class="parcela" type="hidden" name="Parcela" value="|<%= MovementID %>|" />
-                    <script type="text/javascript">
-                        var invoiceId= '<%=InvoiceID%>';
-
-
-                    </script>
-                    <%
                     checkinPagar = true
                 end if
             end if
@@ -304,15 +301,35 @@ next
 
 <% if checkinPagar = true then %>
 
-<script type="text/javascript">
-    <!--#include file="financialCommomScripts.asp"-->
+    <!--#include file="invoiceEstilo.asp"-->
+    <input class="parcela" type="hidden" name="Parcela" value="|<%= MovementID %>|" />
+    <script type="text/javascript">
+        var invoiceId= '<%=InvoiceID%>';
 
-    $("#pagar").html("Carregando...");
-    $.post("Pagar.asp?T=C", {
-        Parcela: '|<%= MovementID %>|'
-        }, function (data) {
-            $("#pagar").html(data);
-        });
-</script>  
+        <!--#include file="financialCommomScripts.asp"-->
+    </script>
 
-<% end if %>
+    <% if DescontosPendentes = "" then %>
+        <script type="text/javascript">
+
+            $("#pagar").fadeIn();
+
+            $(function() {
+                $( "#pagar" ).draggable();
+            });
+
+            $("#pagar").html("Carregando...");
+            $.post("Pagar.asp?T=C", {
+                Parcela: '|<%= MovementID %>|'
+            }, function (data) {
+                $("#pagar").html(data);
+            });
+
+        </script>  
+    <% else %>
+        <script type="text/javascript">
+            var MOVEMENT_ID = '<%= MovementID %>';
+            var DESCONTOS_PENDENTES = '<%= DescontosPendentes %>';
+        </script>
+    <% end if%>
+<% end if%>

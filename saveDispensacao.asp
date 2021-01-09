@@ -58,15 +58,15 @@ for i=0 to UBound(ArrDispensar)
 
         'recupera a prescrição
         if TipoItem = "2-Diluente" then
-            sqlSelectDose   = "CEIL(protmed.QtdDiluente) AS Dose"
+            sqlSelectDose   = "CEIL(protmed.QtdDiluente)"
             sqlJoinProduto  = "prod.id = protmed.DiluenteID"
             campoDispensado = "DiluenteDispensado"
         elseif TipoItem = "3-Reconstituinte" then
-            sqlSelectDose   = "CEIL(protmed.QtdReconstituinte) AS Dose"
+            sqlSelectDose   = "CEIL(protmed.QtdReconstituinte)"
             sqlJoinProduto  = "prod.id = protmed.ReconstituinteID"
             campoDispensado = "ReconstituinteDispensado"
         else
-            sqlSelectDose   = "CEIL(IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose)) AS Dose"
+            sqlSelectDose   = "CEIL(IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose))"
             sqlJoinProduto  = "prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento)"
             campoDispensado = "MedicamentoDispensado"
         end if
@@ -75,7 +75,7 @@ for i=0 to UBound(ArrDispensar)
                                 "ppcm.id, " &_
                                 "protmed.id AS ProtocoloMedicamentoID, " &_
                                 "prod.id AS ProdutoID, prod.NomeProduto,  " &_
-                                sqlSelectDose & " " &_
+                                sqlSelectDose & " AS Dose " &_
                                 "FROM pacientesprotocolosciclos_medicamentos ppcm " &_
                                 "INNER JOIN pacientesprotocolosmedicamentos ppm ON ppm.id = ppcm.PacienteProtocolosMedicamentosID " &_
                                 "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
@@ -84,48 +84,33 @@ for i=0 to UBound(ArrDispensar)
                                 "WHERE ppcm.id = '" & CicloItemID & "' AND ppcm.PacienteProtocolosCicloID = " & CicloID & " and ppcm." & campoDispensado & "ID IS NULL"
         set resMedicamentoPrescrito = db.execute(sqlMedicamentoPrescrito)
         if not resMedicamentoPrescrito.eof then
-            quantPrescrita = resMedicamentoPrescrito("Dose")
-
             'lanca a dispensacao do produto
-            if LancaDispensacao(ProdutoID, session("UnidadeID"), quantPrescrita, CicloID) then
+            if LancaDispensacao(PacienteProtocoloID, CicloID, ProdutoID, resMedicamentoPrescrito("Dose")) then
                 'atualiza o ciclo medicamento
                 db.execute("UPDATE pacientesprotocolosciclos_medicamentos SET " & campoDispensado & "ID = '" & ProdutoID & "', " & campoDispensado & "Em = NOW(), " & campoDispensado & "Por = '" & session("User") & "' WHERE id = '" & CicloItemID & "'")
                 dispensado = true
             end if
 
         end if
+
     'kits
     else
 
-        'recupera os produtos do kit
-        sqlProdutosKit = "SELECT pkits.KitID, kits.NomeKit, prodkit.ProdutoID, prod.NomeProduto, " &_
-            "IFNULL(prodkit.Quantidade, 0) AS Quantidade " &_
-            "FROM pacientesprotocolosciclos_kits pkits " &_
-            "INNER JOIN produtoskits kits ON kits.id = pkits.KitID " &_
-            "INNER JOIN produtosdokit prodkit ON prodkit.KitID = kits.id " &_
+        'recupera o produto do kit
+        sqlProdutoKit = "SELECT SUM(prodkit.Quantidade) AS Quantidade " &_
+            "FROM pacientesprotocolosciclos ppc " &_
+            "INNER JOIN protocoloskits pkit ON pkit.ProtocoloID = ppc.ProtocoloID " &_
+            "INNER JOIN produtosdokit prodkit ON prodkit.KitID = pkit.KitID " &_
             "INNER JOIN produtos prod ON prod.id = prodkit.ProdutoID " &_
-            "WHERE pkits.id = '" & CicloItemID & "' AND kits.sysActive = 1 AND prodkit.sysActive = 1 AND prodkit.Quantidade > 0 " &_
-            "GROUP BY pkits.id, prodkit.id"
-        set resProdutosKit = db.execute(sqlProdutosKit)
+            "WHERE ppc.id = '" & CicloID & "' AND prod.id = '" & ProdutoID & "' " &_
+            "AND pkit.sysActive = 1 AND prodkit.sysActive = 1 AND prodkit.Quantidade > 0 AND prod.sysActive = 1"
+        set resProdutoKit = db.execute(sqlProdutoKit)
 
-        'dispensa os produtos do kit
-        countProdutos    = 0
-        countDispensados = 0
-        while not resProdutosKit.eof
-            countProdutos  = countProdutos + 1
-            quantPrescrita = resProdutosKit("Quantidade")
-            kitProdutoID   = resProdutosKit("ProdutoID")
-
-            if LancaDispensacao(kitProdutoID, session("UnidadeID"), quantPrescrita, CicloID) then
-                countDispensados = countDispensados + 1
+        'dispensa o produto do kit
+        if not resProdutoKit.eof then
+            if LancaDispensacao(PacienteProtocoloID, CicloID, ProdutoID, resProdutoKit("Quantidade")) then
+                dispensado = true
             end if
-
-            resProdutosKit.movenext
-        wend
-        if countProdutos = countDispensados then
-            dispensado = true
-            'atualiza o ciclo kit
-            db.execute("UPDATE pacientesprotocolosciclos_kits SET Dispensado = 1, DispensadoEm = NOW(), DispensadoPor = '" & session("User") & "' WHERE id = '" & CicloItemID & "'")
         end if
 
     end if
@@ -147,8 +132,13 @@ if dispensado then
                                        "OR (ppcm.ReconstituinteDispensadoID IS NULL AND protmed.ReconstituinteID != 0 AND protmed.ReconstituinteID IS NOT NULL) " &_
                                        ")")
 
-    set resVerificaStatusKit = db.execute("SELECT COUNT(*) as count FROM pacientesprotocolosciclos_kits ppck " &_
-                                          "WHERE ppck.PacienteProtocolosCicloID = '" & CicloID & "' AND ppck.Dispensado = 0")
+    set resVerificaStatusKit = db.execute("SELECT COUNT(*) AS count " &_
+            "FROM pacientesprotocolosciclos ppc " &_
+            "INNER JOIN protocoloskits pkit ON pkit.ProtocoloID = ppc.ProtocoloID " &_
+            "INNER JOIN produtosdokit prodkit ON prodkit.KitID = pkit.KitID " &_
+            "INNER JOIN produtos prod ON prod.id = prodkit.ProdutoID " &_
+            "WHERE ppc.id = '" & CicloID & "' AND pkit.sysActive = 1 AND prodkit.sysActive = 1 AND prodkit.Quantidade > 0 AND prod.sysActive = 1 " &_
+            "AND NOT EXISTS (SELECT id FROM pacientesprotocolosciclos_dispensados pd WHERE pd.PacienteProtocolosCicloID = ppc.id AND pd.ProdutoID = prod.id)")
 
     if not resVerificaStatusMed.eof and not resVerificaStatusKit.eof then
         if CInt(resVerificaStatusMed("count")) = 0 and  CInt(resVerificaStatusKit("count")) = 0 then
@@ -165,7 +155,7 @@ else
     response.write("Não dispensado")
 end if
 
-function LancaDispensacao(ProdutoID, UnidadeID, QuantPrescrita, CicloID)
+function LancaDispensacao(PacienteProtocoloID, CicloID, ProdutoID, QuantPrescrita)
     'recupera as posições em estoque do produto
     sqlPosicoes = "SELECT pos.*, " &_
                 "IF(pos.TipoUnidade = 'C', " &_ 
@@ -175,7 +165,7 @@ function LancaDispensacao(ProdutoID, UnidadeID, QuantPrescrita, CicloID)
                 "FROM estoqueposicao pos " &_
                 "INNER JOIN produtos prod ON pos.ProdutoID = prod.id " &_
                 "LEFT JOIN produtoslocalizacoes loc ON loc.id = pos.LocalizacaoID " &_
-                "WHERE pos.Quantidade > 0 AND pos.ProdutoID = '" & ProdutoID & "' AND COALESCE(loc.UnidadeID, 0) = '" & UnidadeID & "'"
+                "WHERE pos.Quantidade > 0 AND pos.ProdutoID = '" & ProdutoID & "' AND COALESCE(loc.UnidadeID, 0) = '" & session("UnidadeID") & "'"
     set resPosicoes = db.execute(sqlPosicoes)
 
     if not resPosicoes.eof then
@@ -232,6 +222,10 @@ function LancaDispensacao(ProdutoID, UnidadeID, QuantPrescrita, CicloID)
             pos = pos + 1
             resPosicoes.movenext
         wend
+
+        db.execute("INSERT INTO pacientesprotocolosciclos_dispensados (PacienteProtocoloID, PacienteProtocolosCicloID, Quantidade, ProdutoID, DispensadoPor, DispensadoEm) " &_
+            "VALUES ('" & PacienteProtocoloID & "', '" & CicloID & "', '" & QuantPrescrita & "', '" & ProdutoID & "', '" & session("User") & "', NOW())") 
+
         LancaDispensacao = true
     else
         LancaDispensacao = false

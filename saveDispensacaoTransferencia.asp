@@ -1,49 +1,71 @@
 <!--#include file="connect.asp"-->
 <%
-CicloMedicamentoID = ref("CicloMedicamentoID")
-ProdutoID          = ref("ProdutoID")
-UnidadeID          = ref("UnidadeID")
-Tipo               = ref("Tipo")
+CicloID     = ref("CicloID")
+CicloItemID = ref("CicloItemID")
+ProdutoID   = ref("ProdutoID")
+UnidadeID   = ref("UnidadeID")
+Tipo        = ref("Tipo")
 
-if CicloMedicamentoID = "" or ProdutoID = "" or UnidadeID = ""  then
+if CicloID = "" or CicloItemID = "" or ProdutoID = "" or UnidadeID = ""  then
     response.write("Parametros obrigatorios nao fornecidos.")
     response.status = 422
     response.end
 end if
 
-if Tipo = "1-Medicamento" then
-    sqlSelectDose  = "CEIL(IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose)) AS Dose"
-    sqlJoinProduto = "prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento)"
-elseif Tipo = "2-Diluente" then
-    sqlSelectDose  = "CEIL(protmed.QtdDiluente) AS Dose"
-    sqlJoinProduto = "prod.id = protmed.DiluenteID"
-elseif Tipo = "3-Reconstituinte" then
-    sqlSelectDose  = "CEIL(protmed.QtdReconstituinte) AS Dose"
-    sqlJoinProduto = "prod.id = protmed.ReconstituinteID"
+
+'medicamentos, diluentes e reconstituintes
+if Tipo <> "4-Kit" then
+    if Tipo = "1-Medicamento" then
+        sqlSelectDose  = "CEIL(IF(ppm.MedicamentoPrescritoID IS NOT NULL, ppm.DoseMedicamento, protmed.Dose)) AS Dose"
+        sqlJoinProduto = "prod.id = COALESCE(ppm.MedicamentoPrescritoID, protmed.Medicamento)"
+    elseif Tipo = "2-Diluente" then
+        sqlSelectDose  = "CEIL(protmed.QtdDiluente) AS Dose"
+        sqlJoinProduto = "prod.id = protmed.DiluenteID"
+    elseif Tipo = "3-Reconstituinte" then
+        sqlSelectDose  = "CEIL(protmed.QtdReconstituinte) AS Dose"
+        sqlJoinProduto = "prod.id = protmed.ReconstituinteID"
+    else
+        response.write("Tipo inválido.")
+        response.status = 422
+        response.end
+    end if
+
+    sqlProdutoPrescrito = "SELECT " &_
+        "ppcm.id, " &_
+        "ppcm.PacienteProtocolosCicloID, " &_
+        "protmed.id AS ProtocoloMedicamentoID, " &_
+        "prod.id AS ProdutoID, prod.NomeProduto,  " &_
+        sqlSelectDose & " " &_
+        "FROM pacientesprotocolosciclos_medicamentos ppcm " &_
+        "INNER JOIN pacientesprotocolosmedicamentos ppm ON ppm.id = ppcm.PacienteProtocolosMedicamentosID " &_
+        "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
+        "INNER JOIN produtos prod ON " & sqlJoinProduto & " " &_
+        "LEFT JOIN cliniccentral.unidademedida uMed ON uMed.id = prod.UnidadePrescricao " &_
+        "WHERE ppcm.id = '" & CicloItemID & "' AND ppcm.PacienteProtocolosCicloID = '" & CicloID & "'"
+    set resProdutoPrescrito = db.execute(sqlProdutoPrescrito)
+
+    if not resProdutoPrescrito.eof then
+        quantPrescrita = resProdutoPrescrito("Dose")
+    end if
+'kit
 else
-    response.write("Tipo inválido.")
-    response.status = 422
-    response.end
+
+    sqlProdutoKit = "SELECT SUM(prodkit.Quantidade) AS Quantidade " &_
+        "FROM pacientesprotocolosciclos ppc " &_
+        "INNER JOIN protocoloskits pkit ON pkit.ProtocoloID = ppc.ProtocoloID " &_
+        "INNER JOIN produtosdokit prodkit ON prodkit.KitID = pkit.KitID " &_
+        "INNER JOIN produtos prod ON prod.id = prodkit.ProdutoID " &_
+        "WHERE ppc.id = '" & CicloID & "' AND prod.id = '" & ProdutoID & "' " &_
+        "AND pkit.sysActive = 1 AND prodkit.sysActive = 1 AND prodkit.Quantidade > 0 AND prod.sysActive = 1"
+    set resProdutoKit = db.execute(sqlProdutoKit)
+    if not resProdutoKit.eof then
+        quantPrescrita = resProdutoKit("Quantidade")
+    end if
+
 end if
 
-sqlProdutoPrescrito = "SELECT " &_
-    "ppcm.id, " &_
-    "ppcm.PacienteProtocolosCicloID, " &_
-    "protmed.id AS ProtocoloMedicamentoID, " &_
-    "prod.id AS ProdutoID, prod.NomeProduto,  " &_
-    sqlSelectDose & " " &_
-    "FROM pacientesprotocolosciclos_medicamentos ppcm " &_
-    "INNER JOIN pacientesprotocolosmedicamentos ppm ON ppm.id = ppcm.PacienteProtocolosMedicamentosID " &_
-    "INNER JOIN protocolosmedicamentos protmed ON protmed.id = ppm.ProtocoloMedicamentoID AND protmed.ProtocoloID = ppm.ProtocoloID " &_
-    "INNER JOIN produtos prod ON " & sqlJoinProduto & " " &_
-    "LEFT JOIN cliniccentral.unidademedida uMed ON uMed.id = prod.UnidadePrescricao " &_
-    "WHERE ppcm.id = '" & CicloMedicamentoID & "'"
-set resProdutoPrescrito = db.execute(sqlProdutoPrescrito)
 
-if not resProdutoPrescrito.eof then
-
-    cicloId        = resProdutoPrescrito("PacienteProtocolosCicloID")
-    quantPrescrita = resProdutoPrescrito("Dose")
+if quantPrescrita then
 
     'recupara a primeira localização da unidade do usuário, ou seta a localização matriz se nenhuma for encontrada
     sqlLocalizacaoUnidade = "SELECT id, NomeLocalizacao FROM produtoslocalizacoes loc WHERE COALESCE(loc.UnidadeID, 0) = '" & session("UnidadeID") & "' AND loc.sysActive = 1"
@@ -138,10 +160,10 @@ if not resProdutoPrescrito.eof then
             'response.write("<pre>quantConjuntoATransferir da pos "&posicaoId&": "&quantConjuntoATransferir&"</pre>")
             'response.write("<pre>quantUnitariaATransferir da pos "&posicaoId&": "&quantUnitariaATransferir&"</pre>")
             if quantConjuntoATransferir > 0 then
-                call LanctoEstoque(0, posicaoId, produtoId, "M", tipoUnidadeOriginal, "C", quantConjuntoATransferir, date() , "", lote, validade, "", "", "", "Dispensação " & cicloId & " > Transferência", "", "", "", localizacaoIdUnidade, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
+                call LanctoEstoque(0, posicaoId, produtoId, "M", tipoUnidadeOriginal, "C", quantConjuntoATransferir, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Transferência", "", "", "", localizacaoIdUnidade, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
             end if
             if quantUnitariaATransferir > 0 then
-                call LanctoEstoque(0, posicaoId, produtoId, "M", tipoUnidadeOriginal, "U", quantUnitariaATransferir, date() , "", lote, validade, "", "", "", "Dispensação " & cicloId & " > Transferência", "", "", "", localizacaoIdUnidade, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
+                call LanctoEstoque(0, posicaoId, produtoId, "M", tipoUnidadeOriginal, "U", quantUnitariaATransferir, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Transferência", "", "", "", localizacaoIdUnidade, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
             end if
 
             pos = pos + 1

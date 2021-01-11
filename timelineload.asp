@@ -265,12 +265,28 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                            
                             <%
                             elseif recursoUnimed<>4 then
+
+                            if ti("Tipo")<>"Imagens" then
                             %>
                             <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
                                 <i class="fa fa-search-plus"></i>
                             </a>
-                                <% if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Protocolos" then %>
+                                <%
+                            end if    
+                                if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Protocolos" and ti("Tipo")<>"Imagens" then
+                                %>
                                     <a href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
+                                        <i class="fa fa-print"></i>
+                                    </a>
+                                <%
+                                elseif ti("Tipo")="Imagens" then
+
+                                set ArquivosSQL = db.execute("select GROUP_CONCAT(id) AS IDs from arquivos where date(DataHora)='"&left(ti("DataHora"),10)&"' AND Tipo='I' AND PacienteID="&PacienteID)
+                                    arquivosID = ArquivosSQL("IDs")
+                                ArquivosSQL.close
+                                set ArquivosSQL = nothing
+                                %>
+                                    <a href="./timelinePrint.asp?Tipo=I&IDs=<%=arquivosID%>" target="_blank">
                                         <i class="fa fa-print"></i>
                                     </a>
                                 <%

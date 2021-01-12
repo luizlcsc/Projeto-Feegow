@@ -170,6 +170,7 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
                         end if
                         %>
                         <th class="text-right">Valor Tabela</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -180,7 +181,7 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
                     while not t.eof
                         response.Flush()
                         c = c+1
-
+                        id = t("id")
                         ValorTabela = t("ValorTabela")
                         ValorTabela2 = ""
                         id2 = ""
@@ -206,6 +207,7 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
                             end if
                             %>
                             <td class="text-right" width="150"><%= quickfield("currency", "ValorTabela"& t("id"), "", 12, ValorTabela, "", "", "") %></td>
+                            <td class="text-center"><a class='btn btn-danger btn-xs' onclick="removeProcedimento('<%=TabelaID%>','<%=id%>')"><i class="fa fa-remove"></i></a></td>
                             
                         </tr>
                         <%
@@ -316,4 +318,11 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
         }, "Log de alterações", true);
     }
 
+    function removeProcedimento(idTabela,idProcedimento){
+        $.post("removeProcedimentoTabela.asp", {
+        idTabela,
+        idProcedimento},(data)=>{
+            $("#ValorTabela"+idProcedimento).val("")
+        });
+    }
 </script>

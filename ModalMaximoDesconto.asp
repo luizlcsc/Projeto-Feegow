@@ -7,7 +7,7 @@ set RegraSQL = db.execute("SELECT group_concat(Regra)regras FROM regraspermissoe
 
 RegraIDArray = split(RegraID, ",")
 For i = 0 to Ubound(RegraIDArray)
-    RegraIDArray(i) = " su.Permissoes LIKE '%["&Trim(RegraIDArray(i))&"]%'  "
+    RegraIDArray(i) = " su.RegraID = '"&Trim(RegraIDArray(i))&"'  "
 Next
 
 RegraLike = Join(RegraIDArray, " or ")

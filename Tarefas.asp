@@ -142,10 +142,10 @@ PermitirI = aut("tarefasgerenciarI")
 
 
 if req("Helpdesk") <> "" then
-    set dadosHelpdesk = dblicense.execute("SELECT * FROM tarefas WHERE sysUser = "&session("User")&" AND sysActive = 0 ORDER BY id DESC")
+    set dadosHelpdesk = dblicense.execute("SELECT * FROM tarefas WHERE sysUser = "&session("User")&" AND sysActive = 0 order by id desc LIMIT 1")
     if dadosHelpdesk.EOF then
         dblicense.execute("INSERT INTO tarefas (sysUser, sysActive) VALUES ("&session("User")&", 0)")
-        set dadosHelpdesk = dblicense.execute("SELECT * FROM tarefas WHERE sysUser = "&session("User")&" AND sysActive = 0 ORDER BY id DESC")
+        set dadosHelpdesk = dblicense.execute("SELECT * FROM tarefas WHERE sysUser = "&session("User")&" AND sysActive = 0 order by id desc LIMIT 1")
     end if
 
     idHelpdesk = dadosHelpdesk("id")

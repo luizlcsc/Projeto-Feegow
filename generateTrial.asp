@@ -15,7 +15,7 @@ if request.QueryString("Part")="" then'primeira parte do processo
 		$("#btnGenerate").removeAttr("disabled");		<%
 	else
 		dbc.execute("insert into licencas (NomeContato, Telefone, Celular, IP, FimTeste, Cupom, ComoConheceu, referrer, gclid) values ('"&ref("NomeContato")&"', '"&ref("Telefone")&"', '"&ref("Celular")&"', '"&request.ServerVariables("REMOTE_ADDR")&"', "&mydatenull(date()+15)&", '"&ref("Cupom")&"', '"&ref("ComoConheceu")&"', '"&ref("referrer")&"', '"&ref("gclid")&"')")
-		set pult = dbc.execute("select id from licencas order by id desc")
+		set pult = dbc.execute("select id from licencas order by id desc LIMIT 1")
 		dbc.execute("insert into licencasusuarios (Nome, Tipo, Email, Senha, LicencaID) values ('"&ref("NomeContato")&"', 'Profissionais', '"&ref("Email")&"', '"&ref("senha1")&"', '"&pult("id")&"')")
 		set pultusu = dbc.execute("select * from licencasusuarios where LicencaID="&pult("id"))
 		dbc.execute("update licencas set AdminID="&pultusu("id")&" where id="&pult("id"))

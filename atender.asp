@@ -24,7 +24,7 @@ if Acao="Iniciar" then
 	if vesehapac.eof then
 
 		sqlInsert = "insert into atendimentos (PacienteID, AgendamentoID, Data, HoraInicio, sysUser, ProfissionalID, UnidadeID) values ("&PacienteID&", "&AgendamentoID&", '"&mydate(date())&"', '"&time()&"', "&session("User")&", "&treatvalzero(session("idInTable"))&", "&treatvalzero(session("UnidadeID"))&")"
-		sqlPult = "select * from atendimentos where PacienteID="&PacienteID&" order by id desc"
+		sqlPult = "select * from atendimentos where PacienteID="&PacienteID&" order by id desc LIMIT 1"
 		db_execute(sqlInsert)
 		set pult = db.execute(sqlPult)
 		

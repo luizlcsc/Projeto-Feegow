@@ -58,7 +58,7 @@ else
 	Obs = "Contrato diretamente pelo sistema em "&date()
 	'Insere o paciente
 	db_execute("insert into bafim.paciente (`Nome`, `CorPele`, `CPF`, `Email1`, `Cep`, `Endereco`, `Numero`, `Complemento`, `Bairro`, `Cidade`, `Estado`, `telCel1`, `TelCom1`, `Documento`, Obs, Ativo, Sta) VALUES ('"&left(Nome, 150)&"', '"&ref("Responsavel")&"', '"&ref("CPF")&"', '"&ref("Email")&"', '"&ref("Cep")&"', '"&ref("Endereco")&"', '"&ref("Numero")&"', '"&ref("Complemento")&"', '"&ref("Bairro")&"', '"&ref("Cidade")&"', '"&ref("Estado")&"', '"&ref("Cel")&"', '"&ref("Tel")&"', '"&ref("CNPJ")&"', '"&Obs&"', 'S', '"&Sta&"')")
-	set pult = db.execute("select id from bafim.paciente order by id desc")
+	set pult = db.execute("select id from bafim.paciente order by id desc LIMIT 1")
 	idBafim = pult("id")
 	'Insere a conta central
 	db_execute("insert into bafim.contascentral (Tabela, ContaID, Nome) values ('Paciente', "&idBafim&", '"&Nome&"')")

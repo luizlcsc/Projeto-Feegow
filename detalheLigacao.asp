@@ -8,7 +8,7 @@ RE = req("RE")
 
 if CallID="0" then
     db_execute("insert into chamadas ( StaID, sysUserAtend, DataHoraAtend, RE, Telefone, Contato ) values ( 1, "& session("User") &", now(), "& RE &", '"& Telefone &"', '"& Contato &"' )")
-    set pult = db.execute("select id from chamadas where sysUserAtend="&session("User")&" order by id desc")
+    set pult = db.execute("select id from chamadas where sysUserAtend="&session("User")&" order by id desc LIMIT 1")
     CallID = pult("id")
 end if
 

@@ -30,7 +30,7 @@ if DominioID="" then
 		Formas = ref("Formas")
 	end if
 	db_execute("insert into rateiodominios (Tipo, Procedimentos, Profissionais, Formas, dominioSuperior, sysUser) values ('"&Tipo&"', '"&Procedimentos&"', '"&Profissionais&"', '"&Formas&"', "&Acao&", "&session("User")&")")
-	set pult = db.execute("select * from rateiodominios where sysUser="&session("User")&" order by id desc")
+	set pult = db.execute("select * from rateiodominios where sysUser="&session("User")&" order by id desc LIMIT 1")
 	DominioID = pult("id")
 	n = 0
 	while n<Quantidade

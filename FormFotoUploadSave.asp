@@ -10,7 +10,7 @@ FTipo = request.QueryString("FTipo")
 if request.QueryString("Action")<>"" then
 	if FormID="N" then
 		db_execute("insert into buiFormsPreenchidos (ModeloID, PacienteID, sysUser) values ("&ModeloID&", "&PacienteID&", "&session("User")&")")
-		set pult = db.execute("select * from buiFormsPreenchidos where ModeloID="&ModeloID&" and PacienteID="&PacienteID&" order by id desc")
+		set pult = db.execute("select * from buiFormsPreenchidos where ModeloID="&ModeloID&" and PacienteID="&PacienteID&" order by id desc LIMIT 1")
 		FormID = pult("id")
 		db_execute("insert into `_"&ModeloID&"` (id, PacienteID, sysUser) values ("&FormID&", "&PacienteID&", "&session("User")&")")
 		session("FP"&FTipo) = FormID

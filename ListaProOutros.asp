@@ -42,7 +42,7 @@ listaProOutros.close
 set listaProOutros = nothing
 
 if ref("Aplicar")="ProOutros-Last" then
-	set getLast = db.execute("select id, sysUser, sysActive from propostasoutros where sysUser="&session("User")&" and sysActive=1 order by id desc")
+	set getLast = db.execute("select id, sysUser, sysActive from propostasoutros where sysUser="&session("User")&" and sysActive=1 order by id desc LIMIT 1")
 	%>
 	<script language="javascript">
 		aplicarProOutros(<%=getLast("id")%>, 'I');

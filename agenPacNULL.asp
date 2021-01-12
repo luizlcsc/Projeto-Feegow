@@ -7,7 +7,7 @@ while not zero.EOF
 		PacienteID = vca("id")
 	else
 		db_execute("insert into pacientes (NomePaciente, Tel1, Cel1, sysUser, sysActive) values ('"&zero("NomePaciente")&"', '"&zero("Tel1")&"', '"&zero("Cel1")&"', 1, 1)")
-		set pult = db.execute("select id from pacientes order by id desc")
+		set pult = db.execute("select id from pacientes order by id desc LIMIT 1")
 		PacienteID = pult("id")
 	end if
 	db_execute("update agendamentos set PacienteID="&PacienteID&" where trim(NomePaciente)='"&trim(zero("NomePaciente"))&"'")

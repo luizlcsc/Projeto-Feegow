@@ -1328,7 +1328,13 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                       </button>
                       <%end if%>
                       <button type="button" class="btn btn-xs btn-default">
-                          Feegow Clinic : v. 7.0
+                        <%
+                        Versao = session("Versao")
+                        if Versao="" then
+                          Versao="v. 7.0"
+                        end if
+                        %>
+                          Feegow Clinic : <%=Versao%>
                       </button>
                       <%
 

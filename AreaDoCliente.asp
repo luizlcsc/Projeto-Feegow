@@ -483,10 +483,15 @@ end if
               </div>
             </div>
 
-            
+                  
 
         </div>
 
+        <div class="col-md-12"> 
+          <div class="text-center">
+            <small style="color:#929292" id="version">-</small>
+          </div>
+        </div>  
 
 <!-- Modal -->
 <div id="modal-horarios-atendimentos" class="modal fade" role="dialog">
@@ -558,4 +563,17 @@ function SubmitAvaliacao() {
 $('#stars-existing').on('starrr:change', function(e, value){
   $('#AvaliacaoNota').val(value);
 });
+
+<%
+if session("Versao")="" then
+%>
+$.get("./version-git.php",{auto:1}, function(version){
+    version = JSON.parse(version);
+
+    $("#version").html("Feegow Clinic : " + version);
+});
+<%
+end if
+%>
+
 </script>

@@ -215,6 +215,13 @@ end if
                 CorIdentificacao = reg("CorIdentificacao")
             %>
             <%=quickField("CPF", "CPF", "CPF", 3, reg("CPF"), " "&mask&" ", "", " ") %>
+
+            <% if reg("SemCPF") = "on" then %>
+                <script>$("#SemCPF-CPF").prop("checked", true).change();</script>
+            <% else %>
+                <script>$("#SemCPF-CPF").prop("checked", false).change();</script>
+            <% end if %>
+
             <%=quickField("simpleColor", "CorIdentificacao", "Cor de Identificação", 2, CorIdentificacao, "select * from Cores", "Cor", "")%>
 
         </div><br />

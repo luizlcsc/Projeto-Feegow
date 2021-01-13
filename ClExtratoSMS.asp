@@ -30,6 +30,7 @@
     	            <th>Mensagem</th>
     	            <th>Profissional Agendado</th>
     	            <th>Telefone</th>
+					<th>SMS's Enviados</th>
      	            <th></th>
                </tr>
             </thead>
@@ -43,7 +44,7 @@
                     sqlProfissional= " AND age.ProfissionalID = "&Profissionais
                 end if
 	            tot = 0
-	            set lic = db.execute("SELECT s.id, s.DataHora, s.AgendamentoID, s.Mensagem, s.Celular, prof.NomeProfissional  "&_
+	            set lic = db.execute("SELECT s.id, s.DataHora, s.AgendamentoID, s.Mensagem, s.Celular, prof.NomeProfissional,  (CEILING(LENGTH(s.Mensagem) / 160) ) AS 'TotalSMS'"&_
 	                                   "FROM cliniccentral.smshistorico s  "&_
 	                                   "LEFT JOIN agendamentos age ON age.id=s.AgendamentoID "&_
 	                                   "LEFT JOIN profissionais prof ON prof.id=Age.ProfissionalID  "&_
@@ -69,6 +70,7 @@
                         </td>
                         <td><%=lic("NomeProfissional")%></td>
 			            <td><%=lic("Celular")%></td>
+						<td><%=lic("TotalSMS") %></td>
 			            <td><a class="btn btn-xs btn-info" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=lic("AgendamentoID")%>"><i class="fa fa-eye"</a></td>
 		            </tr>
 		            <%

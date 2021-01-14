@@ -2105,7 +2105,7 @@ function insertRedir(tableName, id)
 			if SempreCriarLinhaNova then
     			'deleta os sysactive 0 de datas passadas para nao ficar muito paa nao ficar muito lixo na tabela
 			    db_execute("DELETE FROM "&tablename&" WHERE sysActive=0 AND date(sysDate) < curdate()")
-			    sqlVie = sqlVie & " ORDER BY id DESC"
+			    sqlVie = sqlVie & " order by id desc LIMIT 1"
 			end if
 			set vie = db.execute(sqlVie)
 		end if

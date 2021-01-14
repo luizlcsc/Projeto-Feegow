@@ -13,7 +13,7 @@ if ref("Acao")="Abrir" then
 	
 	db_execute("insert into caixa (sysUser, dtAbertura, SaldoInicial, ContaCorrenteID, Descricao) values ("&session("User")&", "&mydatetime(now())&", "&treatvalzero(SaldoInicial)&", "&ref("ContaCorrenteID")&", '"&Descricao&"')")
 
-	set plast = db.execute("select id from caixa where sysUser="&session("User")&" and isnull(dtFechamento) order by id desc")
+	set plast = db.execute("select id from caixa where sysUser="&session("User")&" and isnull(dtFechamento) order by id desc LIMIT 1")
 	session("CaixaID") = plast("id")
 
 	if SaldoInicial>0 then

@@ -93,7 +93,7 @@ elseif Tipo="Procedimentos" then
 
 		if ItemID="0" then
 			db_execute("insert into tissprocedimentoshonorarios (GuiaID, ProfissionalID,Associacao, Data, HoraInicio, HoraFim, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser) values ("&GuiaID&", "&rfProfissionalID&", "&rfAssociacao&",'"&myDate(ref("Data"))&"', "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', '"&ref("ViaID")&"', '"&ref("TecnicaID")&"', '"&treatval(ref("Fator"))&"', '"&treatval(ref("ValorUnitario"))&"', '"&treatval(ref("ValorTotal"))&"', '"&session("User")&"')")
-			set pult = db.execute("select id from tissprocedimentoshonorarios where GuiaID="&GuiaID&" and sysUser="&session("User")&" order by id desc")
+			set pult = db.execute("select id from tissprocedimentoshonorarios where GuiaID="&GuiaID&" and sysUser="&session("User")&" order by id desc LIMIT 1")
 			EsteItem = pult("id")
 		else
 			db_execute("update tissprocedimentoshonorarios set ProfissionalID="&rfProfissionalID&", Associacao="&rfAssociacao&", Data="&myDatenull(ref("Data"))&", HoraInicio="&myTime(ref("HoraInicio"))&", HoraFim="&myTime(ref("HoraFim"))&", ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', Descricao='"&ref("Descricao")&"', Quantidade='"&ref("Quantidade")&"', ViaID='"&ref("ViaID")&"', TecnicaID='"&ref("TecnicaID")&"', Fator='"&treatval(ref("Fator"))&"', ValorUnitario='"&treatval(ref("ValorUnitario"))&"', ValorTotal='"&treatval(ref("ValorTotal"))&"', sysUser='"&session("User")&"' where id="&ItemID)

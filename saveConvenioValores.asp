@@ -104,7 +104,7 @@ for i=0 to ubound(spl)
 		set vcaProdutoTabela = db.execute("select * from tissprodutostabela where TabelaID like '"&ref("TabelaProdutoID"&n)&"' and Codigo like '"&ref("CodigoProduto"&n)&"' AND ProdutoID="&ref("ProdutoID"&n)&" ")
 		if vcaProdutoTabela.eof then
 			db_execute("insert into tissprodutostabela (Codigo, ProdutoID, TabelaID, Valor, sysActive, sysUser) values ('"&ref("CodigoProduto"&n)&"', '"&ref("ProdutoID"&n)&"', '"&ref("TabelaProdutoID"&n)&"', "&treatvalzero(ref("ValorUnitario"&n))&", 1, "&session("User")&")")
-			set pult = db.execute("select id from tissprodutostabela where ProdutoID like '"&ref("ProdutoID"&n)&"' order by id desc")
+			set pult = db.execute("select id from tissprodutostabela where ProdutoID like '"&ref("ProdutoID"&n)&"' order by id desc LIMIT 1")
 			ProdutoTabelaID = pult("id")
 		else
           sqlUp = "update tissprodutostabela set ProdutoID='"&ref("ProdutoID"&n)&"', Valor="&treatvalzero(ref("ValorUnitario"&n))&" where id="&vcaProdutoTabela("id")

@@ -57,7 +57,7 @@ next
 
 if FormID="N" then
 	db_execute("insert into buiFormsPreenchidos (ModeloID, PacienteID, sysUser) values ("&ModeloID&", "&PacienteID&", "&session("User")&")")
-	set pult = db.execute("select * from buiFormsPreenchidos where ModeloID="&ModeloID&" and PacienteID="&PacienteID&" order by id desc")
+	set pult = db.execute("select * from buiFormsPreenchidos where ModeloID="&ModeloID&" and PacienteID="&PacienteID&" order by id desc LIMIT 1")
 	if lembrarme="S" then
 		'sqlIns = "insert into `_"&ref("ModeloID")&"` (id, PacienteID, sysUser) values ("&pult("id")&", "&ref("PacienteID")&", "&session("User")&")"
 	else

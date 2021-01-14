@@ -34,7 +34,7 @@ if Acao="B" then
 		sqlInsert = "insert into sys_financialmovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Currency, Rate, sysUser) values ('"&Nome&"', 1, "&AccountIDCredit&", 1, "&AccountIDDebit&", 3, "&treatvalzero(ValorCredito)&", "&mydatenull(DateToReceive)&", 'C', 'CCCred', 'BRL', 1, "&session("User")&")"
 
 		db_execute(sqlInsert)
-		set pult = db.execute("select id from sys_financialmovement where sysUser="&session("User")&" order by id desc")
+		set pult = db.execute("select id from sys_financialmovement where sysUser="&session("User")&" order by id desc LIMIT 1")
 		db_execute("update sys_financialcreditcardreceiptinstallments set InvoiceReceiptID="&pult("id")&" where id="&ParcelaTransacaoID)
 		'fazer insert da taxa e vinculala pra depois apagala
 		if Taxa>0 then

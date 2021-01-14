@@ -217,7 +217,7 @@ set a=nothing
 'set vca = destino.execute("select * from buiforms where Nome like '"&NomeModelo&"'")
 'if vca.eof then
 '	destino.execute("insert into buiforms (Nome, Especialidade, Tipo, sysActive, sysUser) values ('"&NomeModelo&"', '', 1, 1, 0)")
-'	set vca = destino.execute("select * from buiforms order by id desc")
+'	set vca = destino.execute("select * from buiforms order by id desc LIMIT 1")
 '	FormID = vca("id")
 '	destino.execute("insert into buicamposforms (TipoCampoID, NomeCampo, RotuloCampo, FormID, Ordem, ValorPadrao, Tamanho, Largura, MaxCarac, Checado, Obrigatorio, Texto, pTop, pLeft, Colunas, Linhas) values "&_
 '		"(8, 'anamnese', 'Anamnese', "&FormID&", 0, '', 1, '', '20', 'S', '', '', 4, 3, 0, 0), "&_
@@ -225,7 +225,7 @@ set a=nothing
 '		"(1, 'diagnóstico_2', 'Diagnóstico 2', "&FormID&", 0, '', 2, '20', '70', '', '', '', 485, 382, 0, 0)")
 'end if
 'FormID = vca("id")
-'set pult = destino.execute("select * from buicamposforms where FormID="&FormID&" order by id desc")
+'set pult = destino.execute("select * from buicamposforms where FormID="&FormID&" order by id desc LIMIT 1")
 'diag2 = pult("id")
 'diag1 = pult("id")-1
 'anamn = pult("id")-2

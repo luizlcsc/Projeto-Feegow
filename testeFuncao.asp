@@ -126,7 +126,7 @@ function FunForn(NomeForn)
 					FunForn=veseFornExi("id")
 					else
 					lojadb_execute("insert Into Ship (Nome, Usuario, Tipo, Ativo) Values ('"&trim(NomeForn)&"', '"&session("usuario")&"', 'Fornecedor', 'S')")
-					set pUltID=lojadb.execute("select id,Nome from Ship where Nome like '"&trim(NomeForn)&"' order by id desc")
+					set pUltID=lojadb.execute("select id,Nome from Ship where Nome like '"&trim(NomeForn)&"' order by id desc LIMIT 1")
 					FunForn=pUltID("id")
 					lojadb_execute("insert Into ContasCentral (Tabela, ContaID, Nome) Values ('Ship', "&Fornecedor&", '"&trim(NomeForn)&"')")
 					end if

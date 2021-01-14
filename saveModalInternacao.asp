@@ -20,7 +20,7 @@ if Tipo="Procedimentos" then
 		end if
 		if ItemID="0" then
             db_execute("insert into tissprocedimentosinternacao (GuiaID, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, QuantidadeAutorizada ,sysUser) values ("&GuiaID&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', '"&ref("QuantidadeAutorizada")&"', '"&session("User")&"')")
-			set pult = db.execute("select id from tissprocedimentosinternacao where GuiaID="&GuiaID&" and sysUser="&session("User")&" order by id desc")
+			set pult = db.execute("select id from tissprocedimentosinternacao where GuiaID="&GuiaID&" and sysUser="&session("User")&" order by id desc LIMIT 1")
 			EsteItem = pult("id")
 		else
 			db_execute("update tissprocedimentosinternacao set  ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', Descricao='"&ref("Descricao")&"', Quantidade='"&ref("Quantidade")&"', QuantidadeAutorizada='"&ref("QuantidadeAutorizada")&"', sysUser='"&session("User")&"' where id="&ItemID)

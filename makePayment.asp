@@ -48,7 +48,7 @@ if T="C" then
 
 	case 8'credit card
 		db_execute("insert into sys_financialCreditCardTransaction (TransactionNumber, AuthorizationNumber, MovementID) values ('"&ref("TransactionNumber")&"', '"&ref("AuthorizationNumber")&"', "&LastMovementID&")")
-		set getTransactionID = db.execute("select * from sys_financialCreditCardTransaction order by id desc")
+		set getTransactionID = db.execute("select * from sys_financialCreditCardTransaction order by id desc LIMIT 1")
 		TransactionID = getTransactionID("id")
 
 		'credit card account informations
@@ -92,7 +92,7 @@ else
 		end if
 	case 10
 		db_execute("insert into sys_financialCreditCardTransaction (TransactionNumber, AuthorizationNumber, MovementID) values ('"&ref("TransactionNumber")&"', '"&ref("AuthorizationNumber")&"', "&LastMovementID&")")
-		set getTransactionID = db.execute("select * from sys_financialCreditCardTransaction order by id desc")
+		set getTransactionID = db.execute("select * from sys_financialCreditCardTransaction order by id desc LIMIT 1")
 		TransactionID = getTransactionID("id")
 
 		'credit card account informations

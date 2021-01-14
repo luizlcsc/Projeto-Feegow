@@ -124,7 +124,7 @@ if request.Form("E")="E" then
 	else
 		if request.QueryString("F")="" then
 			db_execute("insert into buiForms (Nome) values ('"&NomeForm&"')")
-			set pUlt=db.execute("select * from buiForms order by id desc")
+			set pUlt=db.execute("select * from buiForms order by id desc LIMIT 1")
 			db_execute("CREATE  TABLE _"&pult("id")&" (`id` INT NOT NULL AUTO_INCREMENT , PRIMARY KEY (`id`) ) ENGINE = MyISAM DEFAULT CHARACTER SET = utf8")
 			response.Redirect("?F="&pUlt("id")&"&Open=Re")
 		else

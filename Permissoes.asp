@@ -26,7 +26,7 @@ if request.QueryString("AplicaRegra")<>"" then
 	set pr=db.execute("select * from regraspermissoes where id = '"&request.QueryString("AplicaRegra")&"'")
 	if not pr.eof then
 
-	    sqlAplicaRegra="update sys_users set Permissoes='"&pr("Permissoes")&" ["&pr("id")&"]', limitarecpag='"& pr("limitarecpag") &"' where id = '"& req("UsId") &"'"
+	    sqlAplicaRegra="update sys_users set RegraID="&pr("id")&", Permissoes='"&pr("Permissoes")&" ["&pr("id")&"]', limitarecpag='"& pr("limitarecpag") &"' where id = '"& req("UsId") &"'"
         call gravaLogs(sqlAplicaRegra, "AUTO", "Regra "&pr("Regra")&" aplicada", "")
 		db_execute(sqlAplicaRegra)
 		%>

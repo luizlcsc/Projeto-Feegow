@@ -54,7 +54,7 @@ for i=0 to ubound(spl)
 		RegraIDArray = split(RegraSQLSuperior("regras"), ",")
 		
 		For j = 0 to Ubound(RegraIDArray)
-			RegraIDArray(j) = " su.Permissoes LIKE '%["&RegraIDArray(j)&"]%'  "
+			RegraIDArray(j) = " su.RegraID = '"&RegraIDArray(j)&"'  "
 		Next
 
 		RegraLike = Join(RegraIDArray, " or ")

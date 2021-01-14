@@ -108,7 +108,10 @@ else
             <div class="panel-body">
 
                 <div class="row">
-                    <%=quickField("memo", "TextoSMS", "Texto (m&aacute;x. 155 caracteres)", 12, reg("TextoSMS"), " limited", "", " rows='8' maxlength='1000'")%>
+                    <%=quickField("memo", "TextoSMS", "Texto (m&aacute;x. 160 caracteres)", 12, reg("TextoSMS"), " limited", "", " rows='8' maxlength='1000'")%>
+                    <div class="col-md-12">
+                        <small class="text-info">Caso o texto ultrapasse o limite de <b>160 caracteres</b> será cobrado sms's adicionais.</small>
+                    </div>
                 </div>
                 <hr class="short alt">
                 <div class="row">

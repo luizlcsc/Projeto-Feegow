@@ -747,7 +747,7 @@ select case lcase(req("P"))
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-prescricoes" id="abaPrescricoes" href="#pront" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Prescricao|');">
                     <span class="fa fa-flask bigger-110"></span>
-                    <span class="sidebar-title">Prescri&ccedil;&otilde;es</span>
+                    <span class="sidebar-title">Prescrições Medicamentosas</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalprescricoes"></span>
                     </span>

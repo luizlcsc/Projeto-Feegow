@@ -97,8 +97,8 @@ MensagensPadraoSQL.movenext
 wend
 MensagensPadraoSQL.close
 set MensagensPadraoSQL = nothing
-set AgendamentosOnlineSQL = db.execute("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1, age.ProfissionalID FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID!=3 and age.sysActive=1 ORDER BY age.Hora")
-
+set AgendamentosOnlineSQL = db.execute("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1, age.ProfissionalID FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID NOT IN (3,11,6) and age.sysActive=1 ORDER BY age.Hora")
+' dd("SELECT age.id, age.StaID, age.PacienteID, age.Hora ,pac.NomePaciente, pac.Cel1, age.ProfissionalID FROM agendamentos age INNER JOIN pacientes pac ON pac.id=age.PacienteID INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID WHERE proc.ProcedimentoTelemedicina='S' AND age.ProfissionalID="&ProfissionalID&" AND age.Data = CURDATE() AND age.StaID!=3 and age.sysActive=1 ORDER BY age.Hora")
 
 set MensagemWhatsAppSQL = db.execute("SELECT coalesce(mi.Conteudo, tmi.TextoPadrao) Texto FROM cliniccentral.tiposmodelosimpressos tmi LEFT JOIN modelosimpressos mi ON mi.TiposModelosImpressosID=tmi.id WHERE tmi.id=2")
 

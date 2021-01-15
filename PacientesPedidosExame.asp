@@ -203,12 +203,14 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
                         </span>
                         <% if aut("|modelosprontuarioI|")=1 then%>
                         <div class="panel-controls">
-                            <a href="#" onclick="modalTextoPedido('', 0)" class="btn btn-xs btn-dark" data-original-title="Cadastrar modelo de pedido para futuras solicitações" data-rel="tooltip" data-placement="top" title="">
-                                <i class="fa fa-plus text-white"></i>
-                            </a>
-                                <a href="#" onclick="modalPastas('', 'Lista')" class="btn btn-xs btn-dark" data-original-title="Cadastrar modelo de pedido para futuras solicitações" data-rel="tooltip" data-placement="top" title="">
-                                <i class="fa fa-folder text-white"></i>
-                            </a>
+                                 <a href="#" onclick="modalTextoPedido('', 0)" class="btn btn-xs btn-dark" data-original-title="Cadastrar modelo de pedido para futuras solicitações" data-rel="tooltip" data-placement="top" title="">
+                                    <i class="fa fa-plus text-white"></i>
+                                </a>
+                        </div>
+                        <div class="panel-controls">
+                                 <a href="#" onclick="modalPastas('', 'Lista')" class="btn btn-xs btn-dark" data-original-title="Cadastrar modelo de pedido para futuras solicitações" data-rel="tooltip" data-placement="top" title="">
+                                    <i class="fa fa-folder text-white"></i>
+                                </a>
                         </div>
                         <%end if%>
                     </div>
@@ -424,12 +426,4 @@ $('#FiltroP').keypress(function(e){
 });
 
 ListaTextosPedidos('', '', '');
-
-$(document).click(function(event) { 
-  var $target = $(event.target);
-  if(!$target.closest('div[id^="tooltip"]').length && 
-  $('div[id^="tooltip"]').is(":visible")) {
-    $('div[id^="tooltip"]').hide();
-  }
-});
 </script>

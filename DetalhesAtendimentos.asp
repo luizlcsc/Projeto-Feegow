@@ -196,7 +196,7 @@ if request.QueryString("E")="E" then
             sqlLeftUnid = " LEFT JOIN locais loc on loc.id=a.LocalID "
             sqlUnid = " AND (loc.UnidadeID IN ("& replace(req("UnidadeID"), "|", "")&") or isnull(loc.UnidadeID))"
         end if
-		sql = "select a.*, p.NomePaciente,p.Tabela, p.Tel1, p.Tel2, p.Cel1, p.Cel2 "&sqlCampoOrigem&" from agendamentos a "&sqlLeftUser & sqlLeftUnid & " LEFT JOIN pacientes p on p.id=a.PacienteID "&sqlLeftOrigem&" where a.ProfissionalID="&pP("id")&" and a.Data>="&mydatenull(De)&" and a.Data<="&mydatenull(A) & sqlForma & sqlProc & sqlEquip & sqlSta & sqlWhereUser & sqlUnid & sqlPac & ref("Procedimentos") &" order by a.Data, a.Hora"
+		sql = "select a.*, p.NomePaciente,p.Tabela, p.Tel1, p.Tel2, p.Cel1, p.Cel2 "&sqlCampoOrigem&" from agendamentos a "&sqlLeftUser & sqlLeftUnid & " LEFT JOIN pacientes p on p.id=a.PacienteID "&sqlLeftOrigem&" where a.sysActive=1 AND a.ProfissionalID="&pP("id")&" and a.Data>="&mydatenull(De)&" and a.Data<="&mydatenull(A) & sqlForma & sqlProc & sqlEquip & sqlSta & sqlWhereUser & sqlUnid & sqlPac & ref("Procedimentos") &" order by a.Data, a.Hora"
 '		response.Write(sql)
 		set pCon=db.execute(sql)
 

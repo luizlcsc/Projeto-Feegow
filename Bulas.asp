@@ -1,6 +1,6 @@
-<!--#include file="connectCentral.asp"-->
+<!--#include file="connect.asp"-->
 <%
-response.Charset="ISO-8859-1"
+response.Charset="UTF-8"
 %>
 <form id="frmBula" method="post" action="">
     <div class="input-group">
@@ -20,7 +20,7 @@ if Med="undefined" then Med="" end if
 
 if request.QueryString("I")="" then
 	if Med<>"" then
-		set b=dbc.execute("select * from bulas where Bula like '%"&replace(replace(Med, " ", "%"), "'", "''")&"%' order by nome limit 300")
+		set b=db.execute("select * from cliniccentral.bulas where Bula like '%"&replace(replace(Med, " ", "%"), "'", "''")&"%' order by nome limit 300")
 		if b.eof then
 			%>
 			Nenhum medicamento encontrado com o termo '<%=Med%>'.
@@ -56,7 +56,7 @@ if request.QueryString("I")="" then
 		end if
 	end if
 else
-	set b=dbc.execute("select * from bulas where id="&request.QueryString("I"))
+	set b=db.execute("select * from cliniccentral.bulas where id="&request.QueryString("I"))
 	%>
 	<br>
     <button class="btn btn-warning btn-md form-control" type="button" onclick="bula('<%=Med%>', '')"><i class="fa fa-search"></i> Voltar para o resultado da busca</button>

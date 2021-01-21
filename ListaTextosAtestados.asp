@@ -61,7 +61,7 @@ while not listaTextosAtestados.EOF
             </a>
         </td>
 
-    	<td id="NomeAtestado<%=listaTextosAtestados("id")%>"> <%=listaTextosAtestados("NomeAtestado")%></td>
+    	<td id="NomeAtestado<%=listaTextosAtestados("id")%>" style="word-break: break-word;"> <%=listaTextosAtestados("NomeAtestado")%></td>
 
         <td width="1%" nowrap>
         <%if aut("atestadosA")=1 then%>

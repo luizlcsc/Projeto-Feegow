@@ -83,6 +83,7 @@ while not campo.eof
     CampoID = campo("id")
     TipoCampoID = campo("TipoCampoID")
     Valor = ""
+    Texto = campo("Texto")&""
     if campo("TipoCampoID")=1 or campo("TipoCampoID")=4 or campo("TipoCampoID")=5 or campo("TipoCampoID")=8 then
         if not reg.eof then
             Valor = reg(""& campo("id") &"")
@@ -183,8 +184,9 @@ while not campo.eof
             <%
         case 10'TITULO
             %>
-            <div class="panel-heading">
+            <div class="panel-heading" <% if Texto <> "" then %> style="height: 90px" <% End If %>>
                 <span class="panel-title"><%= Rotulo %></span>
+                <p class="panel-title" style="font-size:0.8em"><%= Texto %></p>
                 <span class="panel-controls hidden">
                     <button type="button" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-sm btn-default hidden-xs"><i class="fa fa-history"></i></button>
                 </span>

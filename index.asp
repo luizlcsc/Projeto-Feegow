@@ -1270,7 +1270,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
                 
 								IF FileName = "Home.asp" THEN
-                  if getConfig("HomeOtimizada")="1" then
+                  if getConfig("HomeOtimizada")="1" or ModoFranquia then
 								      FileName = "HomeModoFranquia.asp"
                   end if
 								END IF

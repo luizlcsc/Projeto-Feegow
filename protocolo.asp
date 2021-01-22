@@ -102,7 +102,7 @@ while not campo.eof
     select case campo("TipoCampoID")
         case 1'TEXTO SIMPLES
         %>
-            <div class="col-md-4">
+            <div class="col-md-4" style="position: relative; z-index:1" >
                 <span><b><%= campo("RotuloCampo") %></b></span>
                 <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
                 <%= quickfield("text", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", "")%>

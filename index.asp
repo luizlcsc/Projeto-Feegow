@@ -275,7 +275,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
 
               if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force && !window.location.href.includes("localhost") ){
-                  ['/base/','/main/','/v7-master/'].forEach((item) => {
+                  ['/base/','/main/','/v7-master/','/base-2/'].forEach((item) => {
                       __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
                   });
 

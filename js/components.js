@@ -12,6 +12,11 @@ if(window.location.href.indexOf('local') == 7){
 if(window.location.href.indexOf('homolog') > 0){
     env = "homolog";
 }
+
+if(window.location.href.indexOf('sandbox') > 0){
+    env = "homolog";
+}
+
 var domain = null;
 var api = null;
 

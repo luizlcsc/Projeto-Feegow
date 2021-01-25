@@ -387,7 +387,7 @@ while not campo.eof
                         <span><b><%= Rotulo %></b></span>
                         <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
                     </div>
-                        <%'= quickfield("simpleSelect", "GrupoID"MaxCharacterspoID, "Grupo", 2, "", "SELECT trim(grupo) id, trim(grupo) grupo FROM cliniccentral.tusscorrelacao WHERE grupo NOT LIKE '' GROUP BY grupo ORDER BY trim(grupo)", "grupo", " onchange='opsub($(this).val(), "& CampoID &")' ") %>
+                        <%'= quickfield("simpleSelect", "GrupoID"&CampoID, "Grupo", 2, "", "SELECT trim(grupo) id, trim(grupo) grupo FROM cliniccentral.tusscorrelacao WHERE grupo NOT LIKE '' GROUP BY grupo ORDER BY trim(grupo)", "grupo", " onchange='opsub($(this).val(), "& CampoID &")' ") %>
 
                         <%'= quickfield("simpleSelect", "SubgrupoID"&CampoID, "Subgrupo", 2, "", "SELECT trim(subgrupo) id, trim(subgrupo) subgrupo FROM cliniccentral.tusscorrelacao WHERE subgrupo NOT LIKE '' GROUP BY subgrupo ORDER BY trim(subgrupo)", "subgrupo", " onchange=""sug("& CampoID &", 'Campo', 'Pedido')"" ") %>
 

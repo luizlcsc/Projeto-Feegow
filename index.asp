@@ -1,5 +1,5 @@
 <%
-Folder = "'/base-2/'"
+Folder = "['/base/','/main/','/v7-master/','/base-2/']"
 
 if request.ServerVariables("SERVER_NAME")="clinic.feegow.com.br" and session("banco")="clinic5760" then
 '    response.Redirect("http://clinic4.feegow.com.br/v7/?P=Login")
@@ -277,7 +277,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 
 
               if(!window.location.href.includes(PastaAplicacaoRedirect) && !__force && !window.location.href.includes("localhost") ){
-                  ['/base/','/main/','/v7-master/',<%=Folder%>].forEach((item) => {
+                  <%=Folder%>.forEach((item) => {
                       __currentPage = __currentPage.replace(item,`/${PastaAplicacaoRedirect}/`)
                   });
 

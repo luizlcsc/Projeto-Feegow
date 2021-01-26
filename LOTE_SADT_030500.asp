@@ -257,24 +257,70 @@ prefixo = right(prefixo, 20)
                     <%
                     sequencialItem = 1
 
-					set procs = db.execute("select * from tissprocedimentossadt where GuiaiD="&guias("id"))
+					set procs = db.execute("select tps.*, proc.ProcedimentoSeriado from tissprocedimentossadt tps INNER JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where tps.GuiaiD="&guias("id"))
 					while not procs.eof
+						ProcedimentoSeriado=procs("ProcedimentoSeriado")
 						Data = mydatetiss(procs("Data"))
+						Quantidade = TirarAcento(procs("Quantidade"))
+						Fator = treatvaltiss(1)
+						ValorUnitario = procs("Fator")*procs("ValorUnitario")
+						ValorTotal = treatvaltiss(procs("ValorTotal"))
+
+						set SerieSQL = db.execute("SELECT "&mydatenull(procs("Data"))&" as Data")
+                        if Quantidade&"" <> "" then
+                            'response.write("("&Quantidade&")")
+                            if ProcedimentoSeriado&"" = "S" and ccur(Quantidade)>0 then
+                                sqlSerie = "SELECT DATE(DATA)DATA FROM ( "&_
+                                             "SELECT IFNULL(DataSerie01, "&mydatenull(procs("Data"))&") Data FROM tissguiasadt WHERE id="&guias("id")&" "&_
+                                             "UNION ALL  "&_
+                                             "SELECT DataSerie02 FROM tissguiasadt WHERE id="&guias("id")&" "&_
+                                             "UNION ALL  "&_
+                                             "SELECT DataSerie03 FROM tissguiasadt WHERE id="&guias("id")&" "&_
+                                             "UNION ALL  "&_
+                                             "SELECT DataSerie04 FROM tissguiasadt WHERE id="&guias("id")&" "&_
+                                             "UNION ALL  "&_
+                                             "SELECT DataSerie05 FROM tissguiasadt WHERE id="&guias("id")&" "&_
+                                             "UNION ALL  "&_
+                                             "SELECT DataSerie06 FROM tissguiasadt WHERE id="&guias("id")&" "&_
+                                             "UNION ALL  "&_
+                                             "SELECT DataSerie07 FROM tissguiasadt WHERE id="&guias("id")&" "&_
+                                             "UNION ALL  "&_
+                                             "SELECT DataSerie08 FROM tissguiasadt WHERE id="&guias("id")&" "&_
+                                             "UNION ALL  "&_
+                                             "SELECT DataSerie09 FROM tissguiasadt WHERE id="&guias("id")&" "&_
+                                             "UNION ALL  "&_
+                                             "SELECT DataSerie10 FROM tissguiasadt WHERE id="&guias("id")&" "&_
+                                             " "&_
+                                             ")t "&_
+                                             " "&_
+                                             "WHERE DATA IS NOT null"
+                                set SerieSQL = db.execute(sqlSerie)
+
+                                Quantidade=1
+                                ValorTotal=ValorUnitario
+                            end if
+                        end if
+
+						ValorUnitario = treatvaltiss(ValorUnitario)
+						ValorTotal = treatvaltiss(ValorTotal)
+
+						while not SerieSQL.eof
+						Data = mydatetiss(SerieSQL("Data"))
+
 						HoraInicio = myTimeTISS(procs("HoraInicio"))
 						HoraFim = myTimeTISS(procs("HoraFim"))
 						TabelaID = TirarAcento(procs("TabelaID"))
+
 						if TabelaID="99" OR TabelaID="0" then
 							TabelaID="00"
 						end if
+
 						CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))
 						Descricao = left(TirarAcento(procs("Descricao")),150)
-						Quantidade = TirarAcento(procs("Quantidade"))
+
 						ViaID = TirarAcento(procs("ViaID"))
 						TecnicaID = TirarAcento(procs("TecnicaID"))
-						Fator = treatvaltiss(procs("Fator"))
-						ValorUnitario = treatvaltiss( procs("ValorUnitario") )
-						ValorTotal = treatvaltiss(procs("ValorTotal"))
-						
+
 						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
 						%>
                         <ans:procedimentoExecutado>
@@ -344,10 +390,13 @@ prefixo = right(prefixo, 20)
 							wend
 							eq.close
 							set eq = nothing
+                        sequencialItem=sequencialItem+1
 							%>
                         </ans:procedimentoExecutado>
                         <%
-                        sequencialItem=sequencialItem+1
+						SerieSQL.movenext
+						wend
+						set SerieSQL=nothing
 					procs.movenext
 					wend
 					procs.close

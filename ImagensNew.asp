@@ -2,6 +2,11 @@
 <!--#include file="ProntCompartilhamento.asp"-->
 <!--#include file="Classes/Arquivo.asp"-->
 <%
+    if req("rotateAngle")&""<>"" then
+        qImagemUpdateSQL = "UPDATE arquivos SET imgRotate="&req("rotateAngle")&" WHERE id="&req("I")
+        db.execute(qImagemUpdateSQL) 
+        response.end()
+    end if
     IF ref("valor") <> "" THEN
         db.execute("UPDATE arquivos SET Descricao = '"&ref("valor")&"' WHERE id = '"&ref("id")&"' ")
 
@@ -365,7 +370,7 @@ end if
                                 </div>
 
                              </div>
-                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink}" target="_blank"><img src="${item.link}" data-id="${item.id}&dimension=full" class="${item.extension} img-responsive" title="${item.Descricao}"></a></div>
+                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink}" target="_blank"><img src="${item.link}" data-id="${item.id}" class="${item.extension} img-responsive" title="${item.Descricao}"></a></div>
                              <div class="config">
                                 <textarea class="galery-description text-info border-edit imgpac" name="Desc${item.id}" onchange="changeDescription(${item.id},this)" data-img-id="${item.id}">${item.NovaDescricao}</textarea>
                              </div>
@@ -474,14 +479,22 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
     }
 
     function r90_1(f, id){
-         let rotateAngle = $("img[data-id="+id+"]").attr("rotateAngle");
+        let rotateAngle = $("img[data-id="+id+"]").attr("rotateAngle");
 
-         if(!rotateAngle){
-             rotateAngle = 0;
-         }
-         rotateAngle = Number(rotateAngle) + 90;
-         $("img[data-id="+id+"]").css('transform','rotate(' + rotateAngle + 'deg)');
-         $("img[data-id="+id+"]").attr('rotateAngle',rotateAngle);
+        if(!rotateAngle){
+            rotateAngle = 0;
+        }
+        rotateAngle = Number(rotateAngle) + 90;
+        $("img[data-id="+id+"]").css('transform','rotate(' + rotateAngle + 'deg)');
+        $("img[data-id="+id+"]").attr('rotateAngle',rotateAngle);
+        if (rotateAngle>270) {
+            rotateAngle=0
+        }
+        $.ajax({
+            type:`GET`,
+            url:`ImagensNew.asp?rotateAngle=`+rotateAngle+`&I=`+id,
+            
+        });
     }
 
 function atualizaAlbum(X){

@@ -186,7 +186,7 @@ while not ptip.eof
                         GuiasSADT = GuiasSADT &", "& gi("GuiaID")
 
                         if profissionais&"" <> "" then 
-                           whereProfissionais  = " AND gc.ProfissionalSolicitanteID in ("&profissionais&")"
+                           whereProfissionais  = " AND gs.ProfissionalSolicitanteID in ("&profissionais&")"
                         else 
                            whereProfissionais = ""
                         end if

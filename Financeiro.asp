@@ -36,11 +36,11 @@ end if
                 <h2 id="SaldoGeral">Carregando...</h2><br>
                 <div class="row">
                 <%
-				
 				set unidadesSql = db.execute("select unidades from "&session("Table")&" where id="&session("idInTable"))
 				if not unidadesSql.EOF then
+					unidades = unidadesSql("unidades")
 					if unidadesSql("unidades")&""<>"" then
-						whereUnidades = "AND empresa in("&replace(unidadesSql("unidades"),"|","")&")"
+						whereUnidades = "AND empresa in("&replace(unidades,"|","")&")"
 					end if
 				end if
 				Data=date()

@@ -16,7 +16,7 @@ set pacs = db.execute("select id, trim(NomePaciente) NomePaciente, Nascimento fr
 c = 0
 while not pacs.eof
 	response.Flush
-	if pacs("NomePaciente")=NomePaciente and pacs("Nascimento") = Nascimento then
+	if lcase(pacs("NomePaciente"))=lcase(NomePaciente) and pacs("Nascimento") = Nascimento then
 		conta = conta+1
 	else
 		conta = 0

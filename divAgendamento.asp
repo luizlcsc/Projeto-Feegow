@@ -1546,6 +1546,23 @@ function atualizaHoraAtual(){
     var time = new Date();
     var M = time.getMinutes();
     var H = time.getHours();
+    <%
+    getTimeZoneSQL = "select FusoHorario from vw_unidades where sysActive = 1 and id = '"&session("UnidadeID")&"'"
+    set timeZoneUnidade = db.execute(getTimeZoneSQL)
+    if not timeZoneUnidade.eof then
+        timeZoneUnidadeResult = timeZoneUnidade("FusoHorario")
+    end if
+    %>
+    var timeZoneUnidadeResult = <%=timeZoneUnidadeResult%>
+
+    if (time.getTimezoneOffset() === -180){
+        var tempo = new Date().toLocaleString("pt-br", {timeZone: "America/Sao_Paulo"});
+        H = Number(tempo.split(" ")[1].split(":")[0]);
+        M = Number(tempo.split(" ")[1].split(":")[1]);
+
+        H = H + (timeZoneUnidadeResult + 3)
+
+    }
 
     <%
     if HorarioVerao="" then

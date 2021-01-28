@@ -184,7 +184,7 @@ if ProcedimentoID<>"" then
     if not EspecialidadesPermitidasNoProcedimentoSQL.eof then
         ProcedimentoSomenteEspecialidades = EspecialidadesPermitidasNoProcedimentoSQL("SomenteEspecialidades")
     end if
-    sqlProcedimentosGrade = " AND (Procedimentos LIKE '%|"&ProcedimentoID&"|%' OR Procedimentos is null or Procedimentos='') "
+    sqlProcedimentosGrade = " AND (Procedimentos LIKE '%|"&ProcedimentoID&"|%') "
     sqlProcedimentosLocal = " AND (t.Procedimentos LIKE '%|"&ProcedimentoID&"|%' OR t.Procedimentos is null or t.Procedimentos='') "
 end if
 

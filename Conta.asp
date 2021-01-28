@@ -230,7 +230,7 @@ EliminaNotificacao=0
                                                             %>
                                                             <script>
                                                                 $("#tabInformacoes").addClass("red");
-                                                                var valor = '<%=Valor%>';
+                                                                var valor = `<%=Valor%>`;
                                                                 $.gritter.add({
                                                                     title: '<i class="fa fa-exclamation-triangle"></i> <%=Titulo%>',
                                                                     text: valor,

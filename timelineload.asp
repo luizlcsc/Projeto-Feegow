@@ -1,4 +1,4 @@
-
+<!--#include file="./Classes/imagens.asp"-->
 <%
 'variaveis estão no arquivo timeline.asp
 
@@ -363,11 +363,18 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                             end if
                                             select case pcampos("TipoCampoID")
                                                 case 3
-                                                    if Valor<>"" and Valor<>"uploads/" then
+                                                    imgHTML=""
+                                                    if Valor<>"" then
+                                                    set ImagemSQL = db.execute("SELECT a.NomeArquivo,a.NomePasta FROM arquivos a WHERE a.NomeArquivo LIKE '"&Valor&"'")
+                                                        if not ImagemSQL.eof then
+                                                            imgHTML = "<img src='"&imgSRC(ImagemSQL("NomePasta"),ImagemSQL("NomeArquivo"))&"&dimension=full' class='mw140 mr25 mb20'>"
+                                                        end if
+                                                    ImagemSQL.close
+                                                    set ImagemSQL = nothing
                                                     %>
                                                     <div class="media-body">
                                                         <b><%=Rotulo %></b><br />
-                                                        <img src="uploads/<%=Valor %>" class="mw140 mr25 mb20">
+                                                        <%=imgHTML%>
                                                     </div><br />
                                                     <%
                                                     end if

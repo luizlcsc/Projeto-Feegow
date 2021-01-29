@@ -1550,10 +1550,13 @@ function atualizaHoraAtual(){
     getTimeZoneSQL = "select FusoHorario from vw_unidades where sysActive = 1 and id = '"&session("UnidadeID")&"'"
     set timeZoneUnidade = db.execute(getTimeZoneSQL)
     if not timeZoneUnidade.eof then
-        timeZoneUnidadeResult = timeZoneUnidade("FusoHorario")
+        timeZoneUnidadeResult = timeZoneUnidade("FusoHorario")&""
+            if timeZoneUnidadeResult = "" then 
+            timeZoneUnidadeResult = 0 
+            end if
     end if
     %>
-    var timeZoneUnidadeResult = <%=timeZoneUnidadeResult%>
+    var timeZoneUnidadeResult = <%=timeZoneUnidadeResult%>;
 
     if (time.getTimezoneOffset() === -180){
         var tempo = new Date().toLocaleString("pt-br", {timeZone: "America/Sao_Paulo"});

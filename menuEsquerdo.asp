@@ -1366,7 +1366,11 @@ select case lcase(req("P"))
             </li>
             <li>
                 <a data-toggle="tab" href="#divValores" onclick="ajxContent('ConveniosValoresProcedimentos&ConvenioID=<%=request.QueryString("I")%>', '', '1', 'divValores')">
-                    <span class="fa fa-usd"></span> <span class="sidebar-title">Valores por Procedimento</span></a>
+                <span class="fa fa-usd"></span> <span class="sidebar-title">Valores por Procedimento</span></a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#divValoresDespesas" onclick="ajxContent('ConveniosValoresDespesas&ConvenioID=<%=request.QueryString("I")%>', '', '1', 'divValoresDespesas')">
+                <span class="fa fa-usd"></span> <span class="sidebar-title">Valores por Despesas anexas</span></a>
             </li>
             <li>
                 <a data-toggle="tab" href="#divNumeracao" onclick="ajxContent('ConvenioSequenciaNumeracao&ConvenioID=<%=request.QueryString("I")%>', '', '1', 'divNumeracao')">

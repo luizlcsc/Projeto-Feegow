@@ -297,52 +297,53 @@ while not ptip.eof
                         "AND ii.Tipo='S' "&_
                         "AND i.CompanyUnitID IN ("&Unidades&") "& whereProfissionais & whereProcedimentos  &_
                         " ORDER BY prof.id"
-                'response.write( sqlII )
                 set ii = db.execute( sqlII )
                 while not ii.eof
-                    DataAtendimento = ii("DataExecucao")
-                    ProfissionalID = ii("ProfissionalID")
-                    NomeProfissional = ii("NomeProfissional")
-                    NomePaciente = ii("NomePaciente")
-                    NomeProcedimento = ii("NomeProcedimento")
-                    ValorPago = fn(ii("ValorPago"))
-                    ValorBruto = fn(ii("ValorServico"))
-                    ValorDespesas = 0
-                    NomeConvenio =  "Particular"
-                    ValorTotal=ValorTotal+ValorBruto
-                    set pRep = db.execute("select sum(Valor) Valor, sysDate from rateiorateios where ItemInvoiceID="& treatvalzero(ii("id")) &" AND ContaCredito='5_"& ProfissionalID &"'")
-                    if not pRep.eof then
-                        ValorRepasse = pRep("Valor")
-                        DataRepasse = pRep("sysDate")
-                    end if
-
-                    UnidadeID=ii("UnidadeID")
-                    if not isnull(UnidadeID) then
-                        set UnidadeSQL = db.execute("SELECT NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa WHERE id=1 UNION ALL SELECT id,NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE t.id="&treatvalzero(UnidadeID))
-                        if not UnidadeSQL.eof then
-                            NomeUnidade = UnidadeSQL("NomeFantasia")&" - "
+                    if ii("id")&"" <> "" then
+                        DataAtendimento = ii("DataExecucao")
+                        ProfissionalID = ii("ProfissionalID")
+                        NomeProfissional = ii("NomeProfissional")
+                        NomePaciente = ii("NomePaciente")
+                        NomeProcedimento = ii("NomeProcedimento")
+                        ValorPago = fn(ii("ValorPago"))
+                        ValorBruto = fn(ii("ValorServico"))
+                        ValorDespesas = 0
+                        NomeConvenio =  "Particular"
+                        ValorTotal=ValorTotal+ValorBruto
+                        sql = "select sum(Valor) Valor, sysDate from rateiorateios where ItemInvoiceID="& treatvalzero(ii("id")) &" AND ContaCredito='5_"& ProfissionalID &"'"
+                        set pRep = db.execute(sql)
+                        if not pRep.eof then
+                            ValorRepasse = pRep("Valor")
+                            DataRepasse = pRep("sysDate")
                         end if
-                    end if
 
-                    %>
-                    <tr>
-                        <td></td>
-                        <td><%= DataAtendimento %></td>
-                        <td><%= NomeProfissional %></td>
-                        <td><%= NomePaciente %></td>
-                        <td><%= NomeProcedimento %></td>
-                        <td><%= dataNF("nroNFe") %></td>
-                        <td><%= dataNF("dataNFe") %></td>
-                        <td class="text-right"><%= fn(dataNF("valorNFe")) %></td>
-                        <td class="text-right"><%= ValorBruto %></td>
-                        <td class="text-right"><%= fn(ValorPago) %></td>
-                        <td class="text-right"><%= fn(ValorRepasse) %></td>
-                        <td class="text-right"><%= DataRepasse %></td>
-                        <td><%= NomeConvenio %></td>
-                        <td><%= NomeUnidade %></td>
-                    </tr>
-                    <%
-                ii.movenext
+                        UnidadeID=ii("UnidadeID")
+                        if not isnull(UnidadeID) then
+                            set UnidadeSQL = db.execute("SELECT NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa WHERE id=1 UNION ALL SELECT id,NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE t.id="&treatvalzero(UnidadeID))
+                            if not UnidadeSQL.eof then
+                                NomeUnidade = UnidadeSQL("NomeFantasia")&" - "
+                            end if
+                        end if
+                        %>
+                        <tr>
+                            <td></td>
+                            <td><%= DataAtendimento %></td>
+                            <td><%= NomeProfissional %></td>
+                            <td><%= NomePaciente %></td>
+                            <td><%= NomeProcedimento %></td>
+                            <td><%= dataNF("nroNFe") %></td>
+                            <td><%= dataNF("dataNFe") %></td>
+                            <td class="text-right"><%= fn(dataNF("valorNFe")) %></td>
+                            <td class="text-right"><%= ValorBruto %></td>
+                            <td class="text-right"><%= fn(ValorPago) %></td>
+                            <td class="text-right"><%= fn(ValorRepasse) %></td>
+                            <td class="text-right"><%= DataRepasse %></td>
+                            <td><%= NomeConvenio %></td>
+                            <td><%= NomeUnidade %></td>
+                        </tr>
+                        <%
+                    end if                     
+                    ii.movenext
                 wend
                 ii.close
                 set ii = nothing

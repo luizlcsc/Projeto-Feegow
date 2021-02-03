@@ -378,8 +378,8 @@ if not tryLogin.EOF then
         'session("AutoConsolidar") = config("AutoConsolidar") &""
 
 
-		set getUnidades = db.execute("select Unidades from "&session("Table")&" where id="&session("idInTable"))
-		session("Unidades") = getUnidades("Unidades")
+		'set getUnidades = db.execute("select Unidades from "&session("Table")&" where id="&session("idInTable"))
+		'session("Unidades") = getUnidades("Unidades")
 
 		qtdUnidadesArray = split(session("Unidades"), ",")
         UnidadeID=0

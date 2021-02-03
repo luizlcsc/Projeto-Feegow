@@ -174,6 +174,10 @@ function DefaultForm(tableName, id)
             server.execute("ConvenioRapido.asp")
         end if
 
+		if lcase(tableName)="protocolos" then
+            server.execute("protocoloBuscaRapida.asp")
+        end if
+
 
         if lcase(tableName)="pacientes" and session("OtherCurrencies")="phone" then
     %>
@@ -346,6 +350,8 @@ function DefaultForm(tableName, id)
                         end if
                     elseif lcase(tableName)="profissionais" or lcase(tablename)="funcionarios" then
     					sqlReg = "select * from "&tableName&" where sysActive=1 and ("&initialOrder&" like '%"&q&"%' "& sqlNasc &") "&franquia(" AND Unidades like '%|[UnidadeID]|%' ")&" order by "&initialOrder
+						' response.write(sqlReg)
+
 					elseif lcase(tableName)="procedimentos" then
 						sqlReg = "select * from "&tableName&" where sysActive=1 and "&initialOrder&" like '%"&q&"%' OR Sigla LIKE '%"&q&"%' OR Codigo LIKE '%"&q&"%' order by "&initialOrder
 					elseif lcase(tableName)="fornecedores" then
@@ -369,7 +375,6 @@ function DefaultForm(tableName, id)
 <br />
 <div class="panel">
 <div class="panel-body <%if paginar="" and 1=2 then%> table-responsive <%end if%>">
-
     <div id="divProcedimentoRapido">
 
     </div>

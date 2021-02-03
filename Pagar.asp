@@ -13,7 +13,6 @@
 
 
 
-
 <%
 RestringirFormasDeRecebimento= getConfig("RestringirFormasDeRecebimento")
 

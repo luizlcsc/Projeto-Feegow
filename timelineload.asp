@@ -24,7 +24,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
 
     if instr(Tipo, "|Diagnostico|")>0 then
-        sqlDiagnostico = " union all (select 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, concat('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', IFNULL(d.Descricao,'')),'' FROM pacientesdiagnosticos d LEFT JOIN cliniccentral.cid10 cid on cid.id=d.CidID WHERE PacienteID="&PacienteID&") "
+        sqlDiagnostico = " union all (select 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, concat('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', CONCAT(IFNULL(d.Descricao, ''), '<br>', IFNULL(tnm.Descricao, ''))) Descricao,'' FROM pacientesdiagnosticos d LEFT JOIN cliniccentral.cid10 cid on cid.id=d.CidID LEFT JOIN pacientesdiagnosticos_tnm tnm ON d.id = tnm.PacienteDiagnosticosID WHERE d.PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Atestado|")>0 then
@@ -508,11 +508,11 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                         <em><%= ti("Conteudo") %></em>
                         <%
                     case "Protocolos"
-                        set getProtocolos = db.execute("SELECT NomeProtocolo, GROUP_CONCAT(NomeProduto SEPARATOR ', ') Produtos "&_
+                        set getProtocolos = db.execute("SELECT NomeProtocolo, GROUP_CONCAT(IFNULL(NomeProduto, '') SEPARATOR ', ') Produtos "&_
                                                        "FROM pacientesprotocolosmedicamentos ppm "&_
                                                        "LEFT JOIN protocolos prot ON prot.id=ppm.ProtocoloID "&_
                                                        "LEFT JOIN protocolosmedicamentos pm ON ppm.ProtocoloMedicamentoID=pm.id "&_
-                                                       "LEFT JOIN produtos prod ON prod.id=ppm.MedicamentoPrescritoID "&_
+                                                       "LEFT JOIN produtos prod ON prod.id=ppm.ProtocoloMedicamentoID "&_
                                                        "WHERE ppm.PacienteProtocoloID="&ti("id")&" GROUP BY ppm.ProtocoloID")
 
                         while not getProtocolos.eof

@@ -26,6 +26,8 @@ if req("Tipo")="Timbrado" then
 	sql = "Cabecalho='"&ref("Cabecalho")&"', Rodape='"&ref("Rodape")&"'"
 elseif req("Tipo")="Propostas" then
 	sql = "CabecalhoProposta='"&ref("CabecalhoProposta")&"', RodapeProposta='"&ref("RodapeProposta")&"', ItensProposta='"&ref("ItensProposta")&"'"
+elseif req("Tipo")="Protocolo" then
+	sql = "Protocolo='"&ref("Protocolo")&"'"
 else
 	sql = req("Tipo")&"='"&ref(""&req("Tipo")&"")&"'"
 end if

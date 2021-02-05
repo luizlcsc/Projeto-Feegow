@@ -4,7 +4,7 @@ var urlSplit = currentUrl.split(".br");
 var mainDomain = urlSplit[0] + ".br/";
 
 
-var env = "homolog";
+var env = "production";
 if(window.location.href.indexOf('local') == 7){
     env = "local";
 }

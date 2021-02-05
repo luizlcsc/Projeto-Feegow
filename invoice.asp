@@ -73,7 +73,7 @@ TabelaID = req("TabelaID")
 
 Rateado = 0
 
-sqlintegracao = " SELECT le.labid, lia.id FROM labs_invoices_amostras lia "&_
+sqlintegracao = " SELECT le.labid, lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
                                         " inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
                                         " INNER JOIN cliniccentral.labs_exames le ON le.id = lie.LabExameID "&_
                                         " WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "

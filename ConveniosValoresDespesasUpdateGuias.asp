@@ -12,9 +12,10 @@ if ConvenioID = "" or reqIds.Count = 0 then
 end if
 
 sqlItens = "SELECT tpt.ProdutoID, tpt.TabelaID, tpv.ConvenioID, tpt.Codigo, " &_
-           "COALESCE(tpv.Valor, tpt.Valor) as Valor, tpv.Descricao " &_
+           "COALESCE(tpv.Valor, tpt.Valor) as Valor, tpv.Descricao, tpv.FormaCobranca, p.ApresentacaoQuantidade " &_
            "FROM tissprodutosvalores tpv " &_
            "INNER JOIN tissprodutostabela tpt ON tpt.id = tpv.ProdutoTabelaID " &_
+           "INNER JOIN produtos p ON p.id = tpt.ProdutoID " &_
            "WHERE tpv.id IN (" & ref("ids") & ") AND tpv.ConvenioID = '" & ConvenioID & "'"
 
 set rsItens = db.execute(sqlItens)
@@ -43,16 +44,40 @@ while not rsItens.eof
 
         guiaId = rsGuias("id")
 
-        sqlUpdateAnexo = "UPDATE tissguiaanexa ga " &_
-                         "SET ga.CodigoProduto = '" & rep(rsItens("Codigo")) & "', " &_
-                         "ga.ValorUnitario = '" & rsItens("Valor") & "', " &_
-                         "ga.Descricao = '" & rep(rsItens("Descricao")) & "', " &_
-                         "ga.ValorTotal = ga.ValorUnitario * ga.Fator * ga.Quantidade " &_
-                         "WHERE ga.GuiaID = " & guiaId  & " " &_
-                         "AND ga.ProdutoID = " & rsItens("ProdutoID") & " " &_
-                         "AND ga.TabelaProdutoID = " & rsItens("TabelaID")
+        sqlGuiaAnexa = "SELECT id, Quantidade, Fator, ValorUnitario FROM tissguiaanexa ga " &_
+                       "WHERE ga.GuiaID = " & guiaId  & " AND ga.ProdutoID = " & rsItens("ProdutoID") & " " &_
+                       "AND ga.TabelaProdutoID = " & rsItens("TabelaID")
+        set rsGuiaAnexa = db.execute(sqlGuiaAnexa)
 
-        db.execute(sqlUpdateAnexo)
+        while not rsGuiaAnexa.eof
+
+            'conversao da forma de pagamento
+            'se o anexo tiver em conjunto e o item for unidade
+            if rsGuiaAnexa("Fator") > 1 and rsItens("FormaCobranca") = "U" then
+                NovaQuant = rsGuiaAnexa("Quantidade") * rsGuiaAnexa("Fator")
+                NovoFator = 1
+            'se o anexo tiver em unidade e o item for em conjunto
+            elseif rsGuiaAnexa("Fator") = 1 and rsItens("FormaCobranca") = "C" and rsItens("ApresentacaoQuantidade") > 0 then
+                NovoFator = rsItens("ApresentacaoQuantidade")
+                NovaQuant = rsGuiaAnexa("Quantidade") / NovoFator
+            else
+                NovaQuant = rsGuiaAnexa("Quantidade")
+                NovoFator = rsGuiaAnexa("Fator")
+            end if
+
+            sqlUpdateAnexo = "UPDATE tissguiaanexa ga " &_
+                             "SET ga.CodigoProduto = '" & rep(rsItens("Codigo")) & "', " &_
+                             "ga.ValorUnitario = '" & rsItens("Valor") & "', " &_
+                             "ga.Descricao = '" & rep(rsItens("Descricao")) & "', " &_
+                             "ga.Quantidade = '" & NovaQuant & "', " &_
+                             "ga.Fator = '" & NovoFator & "', " &_
+                             "ga.ValorTotal = ga.ValorUnitario * ga.Fator * ga.Quantidade " &_
+                             "WHERE ga.id = " & rsGuiaAnexa("id")
+
+            db.execute(sqlUpdateAnexo)
+
+            rsGuiaAnexa.movenext
+        wend
 
         db.execute("update tissguiasadt set " &_
             "GasesMedicinais=(select sum(ValorTotal) from tissguiaanexa where CD=1 and GuiaID=" & guiaId &"), " &_

@@ -71,7 +71,7 @@ sqlItens = "SELECT tpv.id, tpt.id AS ProdutoTabelaID, p.id as ProdutoID, p.NomeP
 
 set resCountItens = db.execute("SELECT COUNT(*) as count FROM (" & sqlItens & ") t")
 
-limitPerPage   = 10
+limitPerPage   = 50
 itensCount     = CInt(resCountItens("count"))
 totalPages     = itensCount / limitPerPage
 if Int(totalPages) <> totalPages then

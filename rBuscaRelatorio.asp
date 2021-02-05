@@ -40,7 +40,7 @@ if not FormConfigSQL.eof then
     end if
 
     sql = "SELECT f.*, pac.NomePaciente, conv.NomeConvenio FROM `_"&FormID&"` f INNER JOIN pacientes pac ON pac.id=f.PacienteID LEFT JOIN convenios conv ON conv.id=pac.ConvenioID1 LEFT JOIN buiformspreenchidos bfp ON bfp.id=f.id  WHERE bfp.sysActive=1 AND 1=1 "&sqlFiltroDataBfp&sqlFiltroData
-    'response.write "<pre>"&sql&"</pre>"
+   
     set FormSQL = db.execute(sql)
 
     if not FormSQL.eof then
@@ -58,20 +58,25 @@ if not FormConfigSQL.eof then
                      <%
                      campos = ""
                      set CamposHeaderSQL = db.execute("SELECT * FROM buicamposforms WHERE FormID="&FormID&" AND ID IN ("&CamposExibir&")")
-
+                     camposdebug = ""
                      while not CamposHeaderSQL.eof
-                     %>
-                        <th><%=CamposHeaderSQL("RotuloCampo")%></th>
-                  <%
+                        camposdebug = camposdebug &", "& CamposHeaderSQL("NomeCampo")
+                        %>
+                            <th><%=CamposHeaderSQL("RotuloCampo")%></th>
+                        <%
                         if campos="" then
                             campos= CamposHeaderSQL("id")
                         else
                             campos= campos&","&CamposHeaderSQL("id")
                         end if
-                     CamposHeaderSQL.movenext
+                        CamposHeaderSQL.movenext
                      wend
                      CamposHeaderSQL.close
                      set CamposHeaderSQL=nothing
+
+                     if ref("debug") = "1" then
+                        response.write("<pre>"&sql&"</pre>")
+                     end if 
                   %>
                   </tr>
                 </thead>
@@ -102,7 +107,6 @@ if not FormConfigSQL.eof then
 
                                         if TipoCampo=6 or TipoCampo=4 or TipoCampo=5 then
                                             ID=replace(ID,",00","")
-
                                             if instr(ValorCampo, "|")>0 or (ValorCampo<>"" and isnumeric(ValorCampo)) then
                                                 sql2="SELECT group_concat(Nome SEPARATOR ', ') as Nome FROM buiopcoescampos WHERE CampoID="&ID&" AND id IN("&replace(ValorCampo,"|","")&")"
                                                 set ValorOpcaoSQL = db.execute(sql2)

@@ -136,7 +136,7 @@ end if
 
     <div class="tabbable panel">
         <div class="tab-content panel-body">
-           <%  if TipoProduto = 5 then %>
+           <%  if TipoProduto&"" = "5" then %>
             <div id="divCadastroProduto" class="tab-pane in active">
                 <div class="row">
                     <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>

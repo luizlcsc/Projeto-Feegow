@@ -245,4 +245,6 @@ Texto = ""
         RemoveAcentoPalavras = Texto 
     end if 
 end function
+
+
 %>

@@ -1,7 +1,8 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
 <%
-
+HorarioAgoraSQL = db.execute("select now() as now")
+HorarioAgora = HorarioAgoraSQL("now")
 set config = db.execute("select ChamarAposPagamento from sys_config limit 1")
 HorarioVerao="N"
 
@@ -1543,30 +1544,32 @@ function repeteAgendamento(ConsultaID){
 setInterval(function(){abasAux()}, 3000);
 
 function atualizaHoraAtual(){
-    var time = new Date();
+    let time = '<%=HorarioAgora%>'
+    time = new Date(time);
     var M = time.getMinutes();
     var H = time.getHours();
     <%
     getTimeZoneSQL = "select FusoHorario from vw_unidades where sysActive = 1 and id = '"&session("UnidadeID")&"'"
     set timeZoneUnidade = db.execute(getTimeZoneSQL)
+    timeZoneUnidadeResult = ""
     if not timeZoneUnidade.eof then
         timeZoneUnidadeResult = timeZoneUnidade("FusoHorario")&""
-            if timeZoneUnidadeResult = "" then 
-            timeZoneUnidadeResult = 0 
-            end if
-    else
-            timeZoneUnidadeResult = 0 
+    end if
+    
+    if timeZoneUnidadeResult = "" then 
+        timeZoneUnidadeResult = "-3"
     end if
     %>
     var timeZoneUnidadeResult = <%=timeZoneUnidadeResult%>;
 
-    if (time.getTimezoneOffset() === -180){
+    if (timeZoneUnidadeResult !== -3){
         var tempo = new Date().toLocaleString("pt-br", {timeZone: "America/Sao_Paulo"});
         H = Number(tempo.split(" ")[1].split(":")[0]);
         M = Number(tempo.split(" ")[1].split(":")[1]);
 
-        H = H + (timeZoneUnidadeResult + 3)
+        H = H + (timeZoneUnidadeResult +3)
 
+        // console.log(H);
     }
 
     <%

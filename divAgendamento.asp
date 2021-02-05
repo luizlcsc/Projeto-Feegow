@@ -1559,6 +1559,9 @@ function atualizaHoraAtual(){
     if timeZoneUnidadeResult = "" then 
         timeZoneUnidadeResult = "-3"
     end if
+    if timeZoneUnidadeResult = "" then 
+        timeZoneUnidadeResult = "-3"
+    end if
     %>
     var timeZoneUnidadeResult = <%=timeZoneUnidadeResult%>;
 

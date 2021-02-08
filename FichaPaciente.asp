@@ -272,7 +272,6 @@ end if
                     </blockquote>
                 </div>
             </div>
-			<% server.execute("pacientesDadosComplementares.asp")%>
             <div class="row">
                 <div class="col-sm-12">
 	            	<!--#include file="PacientesConvenio.asp"-->

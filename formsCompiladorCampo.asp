@@ -104,14 +104,37 @@ End If
 				contaLargura = 0
 				while contaLargura<cint(Largura) and contaLargura<20
 					contaLargura = contaLargura+1
-					%><td><input class="campoInput form-control" name="<%=pMod("id")&"_c"&contaLargura%>" value="<%=pMod("c"&contaLargura)%>" /></td><%
+					%><td><input class="campoInput form-control" onblur="regAtualiza(`<%=pMod("id")&"_c"&contaLargura%>`,<%=CampoID%>)" name="<%=pMod("id")&"_c"&contaLargura%>" value="<%=pMod("c"&contaLargura)%>" /></td><%
 				wend
 				%><td><button type="button" class="btn btn-xs btn-danger btn-20" onClick="addRow(<%=pMod("id")%>, 0, 0)"><i class="fa fa-remove"></i></button></td></tr><%
 			pMod.movenext
 			wend
 			pMod.close
 			set pMod = nothing
-			%></tbody></table><%
+			%></tbody></table>
+			
+			<script>
+				function regAtualiza(inputNome, formID){
+					var NewForm = 1;
+					var I = <%=req("I")%>;
+					var P = `buiforms`;
+					var Nome = `<%=RotuloCampo%>`;
+					var Tipo = 0;
+					var inputConteudo = $("input[name="+inputNome+"]").val();
+					paramsAjax = {
+						NewForm: NewForm,
+						Nome: Nome,
+						InputAtualiza: inputNome,
+						I: I,
+						P: P
+					}
+					paramsAjax[inputNome] = inputConteudo;
+					$.post(`save.asp`,
+						paramsAjax
+					);
+				}
+			</script>			
+			<%
 		case 10
 			%><h2><%=RotuloCampo%></h2><%
 			if Checado="" then response.Write("<hr class=\'m5\'>") end if

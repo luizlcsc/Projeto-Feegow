@@ -40,7 +40,9 @@ else%>
                 <td><span class="label label-lg label-warning arrowed-in arrowed-right">Em <%=formatdatetime(pdiag("DataHora"),1)%>, &agrave;s <%=formatdatetime(pdiag("DataHora"),3)%></span><br><%=cid%><br>
 				<%=quickField("memo", "memo"&pdiag("id"), "", 12, pdiag("Descricao"), " memodiagnostico", "", " placeholder='Observa&ccedil;&otilde;es...'")%></td>
                 <td width="1%">
+                <% if recursoAdicional(37) = 4 then %>
                 <button style="margin-bottom: 10px" type="button" class="btn btn-xs btn-success" onclick="openCalculator(<%=pdiag("CidID")%>, <%=PacienteID%>)"><i class="fa fa-calculator"></i></button>
+                <% end if %>
                 <button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este registro?'))cid10(<%=pdiag("id")%>);"><i class="fa fa-trash"></i></button>
             </tr>
             <%

@@ -1,6 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
-
+<!--#include file="Classes/TagsConverte.asp"-->
 <%
 I = req("i")
 ModeloID = req("m")
@@ -139,13 +139,21 @@ while not pcampos.eof
                             strInLinha = strInLinha & ", `c"& coluna &"`"
                             strInValLinha = strInValLinha & ", '"& valor &"'"
                         wend
+                        convTags_itens = "UnidadeID_"&replace(session("Banco"),"clinic","")
+                        if instr(strUp,"[Paciente.")>0 then
+                            convTags_itens = convTags_itens&"|PacienteID_"&req("p")
+                        end if
+
                         if linha<0 then
+                            strInValLinha = TagsConverte(strInValLinha,convTags_itens,"")
                             sqlIn = "insert into buitabelasvalores (CampoID, FormPreenchidoID "& strInLinha &") values ("& pcampos("id") &", "& I & strInValLinha &")"
                             'response.Write( sqlIn )
                             db.execute( sqlIn )
                         else
+                            
+                            strUp = TagsConverte(strUp,convTags_itens,"")
                             sqlUpLinha = "update buitabelasvalores set FormPreenchidoID="& I & strUp &" where id="& linha
-                            'response.write(sqlUp)Linha
+                            'response.write("<pre>"&sqlUpLinha&"</pre>")
                             db.execute(sqlUpLinha)
                         end if
                         %>

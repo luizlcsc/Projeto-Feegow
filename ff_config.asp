@@ -8,7 +8,9 @@ if recursoadicional(4) = 4 then
   for each valor in valorSplit
     ff_chave = valorSplit(0)&""
     ff_host1 = valorSplit(1)&""
-    ff_host2 = valorSplit(2)&""
+    if UBound(valorSplit)>1 then
+      ff_host2 = valorSplit(2)&""
+    end if
     'CASO APRESENTE ERRO DEVIDO CONEXÃO SER LOCAL, UTILIZAR URL2
   next
 

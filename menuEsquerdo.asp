@@ -2165,9 +2165,15 @@ select case lcase(req("P"))
                 
                 <%
                 if aut("|relatoriosformulariosV|")=1 then
+                reqdebug = request.QueryString("debug")
+                if reqdebug = "1" then
+                    reqdebug = "&debug=1"
+                else   
+                    reqdebug = ""
+                end if 
                 %>
                 <li>
-                    <a href="javascript:callReport('relatorioForms');">
+                    <a href="javascript:callReport('relatorioForms','<%=reqdebug%>');">
                         <i class="fa fa-document"></i>
                         Formulários
                     </a>

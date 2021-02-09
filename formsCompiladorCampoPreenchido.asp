@@ -2,7 +2,13 @@
 Caminho = "https://clinic.feegow.com.br/uploads/"& replace(session("Banco"), "clinic", "") &"/Perfil/"
 
 if TipoCampoID=3 and ValorPadrao<>"" and not isnull(ValorPadrao) then
-    EstiloImagem = "background-image: url(../uploads/"& replace(session("Banco"), "clinic", "") &"/Perfil/"&ValorPadrao&"); background-position: center center; background-repeat: no-repeat; background-size: contain;"
+	set ImagemSQL = db.execute("SELECT a.NomeArquivo,a.NomePasta FROM arquivos a WHERE a.NomeArquivo LIKE '"&ValorPadrao&"'")
+  if not ImagemSQL.eof then
+		imgURLBG = imgSRC(ImagemSQL("NomePasta"),ImagemSQL("NomeArquivo"))&"&dimension=full"
+	end if
+	ImagemSQL.close
+	set ImagemSQL = nothing
+  EstiloImagem = "background-image: url("&imgURLBG&"); background-position: center center; background-repeat: no-repeat; background-size: contain;"
 else
     EstiloImagem = ""
 end if

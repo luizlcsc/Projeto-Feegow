@@ -772,7 +772,7 @@ if not inv.eof then
                         "INNER JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID NOT IN (2, 3, 4) "&_
                         "INNER JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
                         "WHERE debito.InvoiceID="&inv("id")
-
+            'response.write(sqlPagtos)
 			set forma = db.execute(sqlPagtos)
 
 			Parcelas = ""
@@ -848,19 +848,24 @@ if not inv.eof then
                 ValorRecibo=TotalPago
                 ValorPagoExtenso = TotalPago
             end if
-
+            
             Recibo = replace(Recibo, "[Recibo.Mes]", MonthName(month(date())))
             Recibo = replace(Recibo, "[Recibo.DataVencimento]", DataVencimento)
             Recibo = replace(Recibo, "[Recibo.DataPagamento]", DataPagamento)
             Recibo = replace(Recibo, "[Recibo.Dia]", day(date()))
             Recibo = replace(Recibo, "[Recibo.Ano]", year(date()))
 			Recibo = replace(Recibo, "[-Usuario.Nome-]", UsuarioRecebimento)
-			Recibo = replace(Recibo, "[Receita.FormaPagamento]", FormaPagto)
-			Recibo = replace(Recibo, "[Receita.MetodoRecebimento]", MetodoRecebimento)
 			Recibo = replace(Recibo, "[Receita.ValorTotal]", fn(TotalTotal) )
 			Recibo = replace(Recibo, "[Receita.TotalPago]", fn(ValorRecibo) )
 			Recibo = replace(Recibo, "[Receita.TotalPendente]", fn(TotalPendente) )
             Recibo = replace(Recibo, "[Receita.ValorPagoExtenso]", extenso(ValorPagoExtenso))
+
+            'TAGS MIGRADAS PARA A CLASSE tagsConverte 25/11/2020
+            'Recibo = replace(Recibo, "[Receita.FormaPagamento]", FormaPagto)
+			'Recibo = replace(Recibo, "[Receita.MetodoRecebimento]", MetodoRecebimento)
+
+            Recibo = TagsConverte(Recibo,"ReceitaID_"&inv("id"),"")
+
 
             NomeSolicitante = ""
 

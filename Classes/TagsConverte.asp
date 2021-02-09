@@ -1,6 +1,9 @@
 <!--#include file="./../connect.asp"-->
 <!--#include file="./imagens.asp"-->
+<!--#include file="./StringFormat.asp"-->
+
 <%
+
 function tagsConverte(conteudo,itens,moduloExcecao)
   'EXEMPLO: DE USO DESTA FUNÇÃO
   'conteudo = "Atesto que o paciente [Paciente.Nome]<br>foi atendido as [Sistema.Hora]<br>pelo profissional [Profissional.Nome]"
@@ -123,6 +126,10 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_FaturaID          = item_id
         'ALIAS DE TAGS RELACIONADAS A FATURAS / Invoices
         conteudo = replace(conteudo, "[Fatura.Protocolo]", "[Fatura.Codigo]" )
+      
+      case "ReceitaID"
+        item_ReceitaID = item_id
+
     end select
   next
   '### <FILTRA OS ITENS SEPARADOS POR PIPE/>
@@ -608,7 +615,91 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             end if
             FaturasSQL.close
             set FaturasSQL = nothing
-          end if 
+          end if
+
+        Case "Receita"
+          if item_ReceitaID>0 then
+            'QUERY DE REFERENCIA ifrReciboIntegrado.asp
+            qReceitaSQL = "SELECT cartao_credito.Parcelas Parcelas, IF(credito.`Type` = 'Transfer','Crédito', forma_pagamento.PaymentMethod) PaymentMethod, "&_
+                          "pagamento.MovementID, credito.`value` Value, credito.sysUser sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
+                          "FROM sys_financialmovement debito "&_
+                          "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
+                          "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_
+                          "LEFT JOIN sys_financialpaymentmethod forma_pagamento ON forma_pagamento.id = credito.PaymentMethodID "&_
+                          "LEFT JOIN sys_financialcreditcardtransaction cartao_credito ON cartao_credito.MovementID=credito.id "&_
+                          "WHERE debito.InvoiceID="&item_ReceitaID &" "&_
+                          "UNION ALL "&_
+                          "SELECT 1 Parcelas, 'Boleto' PaymentMethod, NULL, debito.Value VALUE, debito.sysUser  sysUser, debito.Date DataVencimento, null DataPagamento "&_
+                          "FROM sys_financialmovement debito "&_
+                          "INNER JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID IN (3, 4) "&_
+                          "INNER JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
+                          "WHERE debito.InvoiceID="&item_ReceitaID
+          
+          end if
+
+          if qReceitaSQL<>"" then
+            SET ReceitaSQL = db.execute(qReceitaSQL)
+            if not ReceitaSQL.eof then
+              while not ReceitaSQL.eof
+                PaymentMethod = ReceitaSQL("PaymentMethod")&""
+                Parcela = ReceitaSQL("Parcelas")&""
+                value = ReceitaSQL("value")&""
+                Vencimento = ReceitaSQL("DataVencimento")&""
+                Pagamento = ReceitaSQL("DataPagamento")&""
+
+                DataVencimento = DataVencimento&"<br>"&Vencimento
+                DataPagamento = DataPagamento&"<br>"&Pagamento
+
+
+                if PaymentMethod<>"" then
+
+                    if Parcela<>"" then
+                        Parcelas =  ccur(Parcela)
+                    else
+                        Parcelas = "1"
+                    end if
+                    if value<>"" then
+                        valorForma = "R$ "&formatnumber(value, 2)
+                    else
+                        valorForma = "R$ 0,00"
+                    end if
+
+                    FormaPagtoTabelaHTML = "<tr><td width='100'>"&Parcelas&"</td><td>"&PaymentMethod &"</td><td>"&valorForma&"</td></tr>"
+
+                    if tabelaConteudoHTML&""="" then
+                      tabelaConteudoHTML = FormaPagtoTabelaHTML
+                    else
+                      tabelaConteudoHTML = tabelaConteudoHTML&FormaPagtoTabelaHTML
+                    end if
+                    FormaPagtoOri = "<br>"&"("& Parcelas &"x) "&PaymentMethod &" = "&valorForma
+                    FormaPagto = FormaPagto &""& FormaPagtoOri
+                    
+                    if MetodoRecebimento&""="" then
+                      MetodoRecebimento = PaymentMethod
+                    else
+                      MetodoRecebimento = MetodoRecebimento&", "&PaymentMethod
+                    end if
+                end if
+
+              ReceitaSQL.movenext
+              wend
+            ReceitaSQL.close
+            set ReceitaSQL = nothing
+
+            tabelaInicioHTML  = "<table class='table table-striped table-condensed table-bordered table-hover'><thead><th>Parcela</th><th width='150'>Forma</th><th>Valor</th></thead><tbody>"
+            tabelaFimHTML     = "</tbody></table>"
+            
+            if FormaPagto&""<>"" and instr(conteudo,"[Receita.FormaPagamento]") then
+              conteudo = replace(conteudo, "[Receita.FormaPagamento]", tabelaInicioHTML&tabelaConteudoHTML&tabelaFimHTML)
+            end if
+
+            conteudo = replace(conteudo, "[Receita.MetodoRecebimento]", MetodoRecebimento&"" )
+            'GERADO A PARTIR DO RECIBO
+            'conteudo = replace(conteudo, "[Receita.ValorPagoExtenso]", ValorMonetarioExtenso(ValorPagoExtenso)&"" )
+          end if
+          
+
+          end if
     
       end select
     end if

@@ -72,6 +72,10 @@ while not ptip.eof
               " " & whereProfissionais &_
               "ORDER BY i.dataNFe"
         'response.write( "=--->"&sql )
+        ValorBrutoTotal = 0
+        valorPagoTotal  = 0
+        valorNfeTotal   = 0
+        valorTotalRepasse = 0 
             set dataNF = db.execute(sql)
             while not dataNF.eof
                 response.flush()
@@ -306,16 +310,24 @@ while not ptip.eof
                         NomePaciente = ii("NomePaciente")
                         NomeProcedimento = ii("NomeProcedimento")
                         ValorPago = fn(ii("ValorPago"))
+                        ValorNfe = fn(dataNF("valorNFe"))
                         ValorBruto = fn(ii("ValorServico"))
                         ValorDespesas = 0
                         NomeConvenio =  "Particular"
-                        ValorTotal=ValorTotal+ValorBruto
+
+                        ValorBrutoTotal = ValorBrutoTotal+ValorBruto
+                        valorPagoTotal  = valorPagoTotal+ ValorPago
+                        valorNfeTotal   = valorNfeTotal + ValorNfe
+
+
                         sql = "select sum(Valor) Valor, sysDate from rateiorateios where ItemInvoiceID="& treatvalzero(ii("id")) &" AND ContaCredito='5_"& ProfissionalID &"'"
                         set pRep = db.execute(sql)
                         if not pRep.eof then
                             ValorRepasse = pRep("Valor")
                             DataRepasse = pRep("sysDate")
                         end if
+                        
+                        valorTotalRepasse = valorTotalRepasse + ValorRepasse
 
                         UnidadeID=ii("UnidadeID")
                         if not isnull(UnidadeID) then
@@ -355,9 +367,20 @@ while not ptip.eof
 
             %>
             <tr>
-                <th colspan="8" class="text-right">Valor total</th>
-                <th class="text-right"><%= fn(ValorTotal) %></th>
-                <th class="text-right" colspan="5"></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th class="text-right"><%=fn(valorNfeTotal)%></th>
+                <th class="text-right"><%=fn(ValorBrutoTotal)%></th>
+                <th class="text-right"><%=fn(valorPagoTotal)%></th>
+                <th class="text-right"><%=fn(valorTotalRepasse)%></th>
+                <th></th>
+                <th></th>
+                <th></th>                
             </tr>
         </tbody>
     </table>
@@ -368,9 +391,6 @@ wend
 ptip.close
 set ptip=nothing
 %>
-
-
-
 <h4>DESPESAS ANEXAS</h4>
 <table class="table table-striped table-bordered">
     <thead>
@@ -393,6 +413,7 @@ sql  = "SELECT i.nroNFe, i.dataNFe, i.valorNFe, ii.id ItemInvoiceID "&_
        "ORDER BY i.dataNFe"
 'response.write(sql)
 set dataNF = db.execute(sql)
+
 while not dataNF.eof
     response.flush()
     set gi = db.execute("SELECT * from tissguiasinvoice gi where gi.TipoGuia='guiasadt' AND ItemInvoiceID="& treatvalzero(dataNF("ItemInvoiceID")))
@@ -424,6 +445,7 @@ while not dataNF.eof
     set gi=nothing
 dataNF.movenext
 wend
+
 dataNF.close
 set dataNF=nothing
 %>
@@ -433,9 +455,5 @@ set dataNF=nothing
             <th class="text-right"><%= fn(TotalDespesas) %></th>
         </tr>
     </tfoot>
-        </table>
+</table>
 
-
-<%'= GuiasSADT %>
-<hr />
-<%'= GuiasConsulta %>

@@ -729,8 +729,9 @@ function saveEdit(I, W, F, O, DisNo){
         alert("Informe um nome para a nova informação.");
         return;
     }
-
+    
 	$.post("formsSalvaEdicao.asp?I="+I+"&W=0&F="+F+"&O="+O, $("#frmec1, #frmec2").serialize(), function(data, status){ eval(data); });
+
 }
 function addOption(A, I){
 	$.post("ValoresCampos.asp?I="+I+"&A="+A, '', function(data, status){
@@ -738,7 +739,14 @@ function addOption(A, I){
 	});
 }
 function updateOption(A, I, CI){
-	$.post("ValoresCampos.asp?I="+I+"&CI="+CI+"&A="+A+"&Valor="+$('#ValorOpcao'+CI).val()+"&Check="+$('#CheckOpcao'+CI).prop('checked')+"&Nome="+$('#NomeOpcao'+CI).val(), function(data, status) {
+    let nomeValor = $('#NomeOpcao'+CI).val();
+    let valorValor = $('#ValorOpcao'+CI).val();
+	$.post("ValoresCampos.asp?I="+I+"&CI="+CI+"&A="+A+"&Check="+$('#CheckOpcao'+CI).prop('checked'),
+    {
+        Nome:nomeValor,
+        Valor:valorValor
+    },
+    function(data, status) {
 		if(A=="X"){
 			$('#ValoresCampos').html(data);
 		}

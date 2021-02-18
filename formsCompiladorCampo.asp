@@ -111,29 +111,7 @@ End If
 			wend
 			pMod.close
 			set pMod = nothing
-			%></tbody></table>
-			
-			<script>
-				function regAtualiza(inputNome, formID){
-					var NewForm = 1;
-					var I = <%=req("I")%>;
-					var P = `buiforms`;
-					var Nome = `<%=RotuloCampo%>`;
-					var Tipo = 0;
-					var inputConteudo = $("input[name="+inputNome+"]").val();
-					paramsAjax = {
-						NewForm: NewForm,
-						Nome: Nome,
-						InputAtualiza: inputNome,
-						I: I,
-						P: P
-					}
-					paramsAjax[inputNome] = inputConteudo;
-					$.post(`save.asp`,
-						paramsAjax
-					);
-				}
-			</script>			
+			%></tbody></table>		
 			<%
 		case 10
 			%><h2><%=RotuloCampo%></h2><%

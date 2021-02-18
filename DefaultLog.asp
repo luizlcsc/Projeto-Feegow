@@ -48,7 +48,6 @@
                                 sqlUser = " and sysUser="&ref("Usuario")
                             end if
                             sql = "select * from log where lower(recurso)=lower('"&ref("Recurso")&"') "& sqlUser &" AND Date(DataHora) BETWEEN "& mydatenull(ref("De")) &" AND "& mydatenull(ref("Ate")) &" order by DataHora desc limit 3000"
-
                             set plog = db.execute(sql)
                         end if
                         while not plog.eof

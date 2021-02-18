@@ -470,7 +470,9 @@ end if
                 </div>
             </div>
           </div>
-          <% server.execute("pacientesDadosComplementares.asp")%>
+          <div id="pacientesDadosComplementares">
+            <% server.execute("pacientesDadosComplementares.asp")%>
+          </div>
           <div class="row">
                 <div class="col-xs-12">
             	    <!--#include file="PacientesConvenio.asp"-->

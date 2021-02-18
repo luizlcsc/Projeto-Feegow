@@ -677,7 +677,7 @@ if ref("NewForm")="1" then
                     wend
                     linhas.close
                     set linhas = nothing
-                end if				
+                end if
 		end select
 	pCampos.movenext
 	wend

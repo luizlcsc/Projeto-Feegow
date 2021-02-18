@@ -268,7 +268,7 @@ end if
 	  Largura = campos("Largura")
 if GrupoID="0" then
 	%>
-    gridster[<%=GrupoID%>].add_widget('<!--#include file="formsCompiladorCampo.asp"-->', <%=Colunas%>, <%=Linhas%>);
+    gridster[<%=GrupoID%>].add_widget(`<!--#include file="formsCompiladorCampo.asp"-->`, <%=Colunas%>, <%=Linhas%>);
 	<%
 else
 	%>

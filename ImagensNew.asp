@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="ProntCompartilhamento.asp"-->
 <!--#include file="Classes/Arquivo.asp"-->
+<!--#include file="Classes/Json.asp"-->
 <%
     if req("rotateAngle")&""<>"" then
         qImagemUpdateSQL = "UPDATE arquivos SET imgRotate="&req("rotateAngle")&" WHERE id="&req("I")
@@ -22,7 +23,6 @@
 
 ArquivoImagem = req("ArquivoImagem")
 ImageRenderType = "download"
-
 PacienteID=req("PacienteID")
 
 if PacienteID<>"" and PacienteID<>"0" then
@@ -349,6 +349,9 @@ end if
                                        </div>
                                     </small>
 
+                                    <a class="btn btn-xs btn-alert" href="javascript:modalTipo(${item.id})" title="Cadastrar tipo de imagem">
+                                                              <i class="fa fa-cog"></i>
+                                    </a>
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-expand icon-external-link"></i>
                                     </a>
@@ -432,6 +435,75 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
         $(".max-width").html(html);
         $(window).scrollTop($('.max-width').offset().top - 120)
     }
+
+    function modalTipo(id){
+
+        let tipos = '<%= recordToJSON(db.execute("select * from tipos_de_arquivos where sysActive=1")) %>' ;
+        let preset = false
+        $.get(`imagemTipoAtual.asp?id=${id}` )
+            .done(  function (data) {
+                data = JSON.parse(data)
+                if(data.length > 0){
+                    preset = data[0]
+                }
+                tipos = JSON.parse(tipos)
+                console.log(preset)
+                let modal = `
+                    <div id='configTipo' class="modal fade" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Configurar tipo de arquivo</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class='row'>
+                                    <div class="form-group col-md-6">
+                                        <label for="NomeArquivo">Tipo de Arquivo</label>
+                                        <select name="tipos" class="form-control" id="tipos">
+                                            <option>Selecionar tipo</option>
+                                            ${ tipos.map(tipo=>{
+                                                return `<option ${(preset?(preset.TipoArquivoID == tipo.id?'selected':''):'')} value='${tipo.id}'>${tipo.NomeArquivo}</option>`
+                                            }).join('')}
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="validade">Validade</label>
+                                        <%=quickfield("datepicker", "validade", "", 12, "", "", "", " data-id='' ")%>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" onClick='saveTipo(${id})'><i class="fa fa-save"></i> Salvar</button>
+                            </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->`
+
+            $('.galery-item').parent().append(modal)
+            if(preset){
+                $("#validade").val(preset.validade)
+            }
+            $("#validade").mask("99/99/9999");
+            $('#configTipo').modal('toggle')
+        })
+    }
+
+    function saveTipo(id){
+        let tipo= $('#tipos').val()
+        let validade  = $('#validade').val()
+        validade = validade.split('/').reverse().join('-')
+
+        if(tipo){
+            $.get(`imagemTipoSave.asp?id=${id}&tipo=${tipo}&validade=${validade}` )
+            .done(function(data) {
+                $('#configTipo').modal('toggle')
+            })
+        }else{
+            $('#configTipo').modal('toggle')
+        }
+    }
+
 
     let ConfigPacienteID = '<%=PacienteID%>';
     let ConfigMovementID = '<%=request.QueryString("MovementID")%>';

@@ -76,13 +76,25 @@ IF req("Acao") = "CancelarTelemedicina" AND session("AtendimentoTelemedicina")&"
     response.Redirect("./?P=Pacientes&Pers=1&I="&req("I"))
     response.end
 END IF
+
+sqlArquivo = 	" select count(tda.id) as qtd_arquivoInvalido, group_concat(distinct tda.NomeArquivo ORDER BY  tda.NomeArquivo ASC SEPARATOR ', ') as descricao	"&chr(13)&_
+				" 	from pacientesprotocolos pp                                                           												"&chr(13)&_
+				" 	join pacientesprotocolosmedicamentos ppm on ppm.PacienteProtocoloID = pp.id           												"&chr(13)&_
+				" 	join protocolos_documentos pd on ppm.ProtocoloID  = pd.protocoloID                    												"&chr(13)&_
+				" 	join tipos_de_arquivos tda on tda.id = pd.tipoDocumentoID                             												"&chr(13)&_
+				" 	left join arquivos a on a.TipoArquivoID = tda.id                                      												"&chr(13)&_
+				" 	where tda.sysActive =1                                                                  												"&chr(13)&_
+				" 	and a.id is null or a.Validade <= now()                                               												"
+
+ arquivoVencido = recordToJSON(db.execute(sqlArquivo))
+
 %>
 
 <!--#include file="modal.asp"-->
 <!--#include file="modalComparar.asp"-->
 <%
 isProposta = req("isProposta")
-if isProposta = "S" then 
+if isProposta = "S" then
 %>
 <script>
 $(function(){
@@ -120,8 +132,8 @@ if lcase(session("Table"))="profissionais" then
             <%
         end if
     end if
-
 end if
+
 %>
 
 
@@ -208,7 +220,6 @@ end if
 </script>
 
 <script type="text/javascript">
-
 function showMessage(text, state, title) {
 	var states = {
 		0: {
@@ -230,9 +241,13 @@ function showMessage(text, state, title) {
 			"class": "gritter-success",
 			"type": "info",
 			"label": "Status da guia"
+		},
+		4: {
+			"class": "gritter-warning",
+			"type": "warning",
+			"label": "Arquivo(s) obrigatório(s) vencido(s)"
 		}
 	};
-	console.log(text);
 	// && !PNotify
 	if (PNotify) {
 		//    pnotify
@@ -254,7 +269,7 @@ function showMessage(text, state, title) {
 	}
 };
 /**
- * Função para Autorizar Internações  
+ * Função para Autorizar Internações
  */
 function verificaElegibilidade(N) {
 	var baseUrl = domain + "autorizador-tiss/";
@@ -275,15 +290,15 @@ function verificaElegibilidade(N) {
 				},
 		success: function (data) {
 			var message = "",
-			state = 0; 
+			state = 0;
 			//$ico.toggleClass('btn btn-xs btn-warning');
 			$ico.removeClass('fas fa-circle-notch fa-spin');
 			$btn.attr("disable", false);
 			// situações possíveis de retorno
-			//	0- Erro no envio da guia 
-			//	1- Guia Glosada 
-			//	2- Processo autorizado 
-			//	3- Retona o status da guia 
+			//	0- Erro no envio da guia
+			//	1- Guia Glosada
+			//	2- Processo autorizado
+			//	3- Retona o status da guia
 			//  4 - Plano não possui este método
 
 			switch (data.Sucesso) {
@@ -291,23 +306,23 @@ function verificaElegibilidade(N) {
 					message = data.Mensagem;
 					state = 0;
 					break;
-				case 1: 
+				case 1:
 					message  = data.Mensagem;
 					state = 1;
 					break;
-				case 2: 
+				case 2:
 					if (data.QuantidadeAutorizada > data.QuantidadeSolicitada) {
 						message = 'Todos os <B>'+ data.QuantidadeAutorizada+'</B> procedimentos Autorizados!';
 					} else {
-						// exibir mensagem informando que alguns procedimentos não foram autorizados e os motivos 
+						// exibir mensagem informando que alguns procedimentos não foram autorizados e os motivos
 						message = 'ATENÇÃO! <BR>Alguns procedimentos não foram autorizados! <BR>';
 						message += 'Código: ' + data.CodigoGlosa + ' Motivo: ' + data.Glosa;
-						state  = 1;                                
+						state  = 1;
 					}
 					message  = data.Mensagem;
 					state = 2;
 					break;
-				case 3: 
+				case 3:
 					message  = data.Mensagem;
 					state = 3;
 					break;
@@ -316,7 +331,7 @@ function verificaElegibilidade(N) {
 					state  = 1;
 			}
 			if (data.CodigoGlosa!=''){
-				message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;  
+				message += '<BR> Código Glosa: ' + data.CodigoGlosa + '<BR> Motivo Glosa: ' + data.Glosa;
 			}
 			showMessage(message, state);
 		},
@@ -386,9 +401,16 @@ function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
 
 }
 
+function verificaArquivos(){
+	let arquivoVencido = JSON.parse('<%= arquivoVencido %>')[0];
+	if(arquivoVencido.qtd_arquivoInvalido >0){
+		showMessage(`Este paciente tem ${arquivoVencido.qtd_arquivoInvalido} arquivo${arquivoVencido.qtd_arquivoInvalido>1?'s':''} vencido${arquivoVencido.qtd_arquivoInvalido>1?'s':''} ou faltantes sendo ele${arquivoVencido.qtd_arquivoInvalido>1?'s':''} : ${arquivoVencido.descricao}`,4,`Arquivo${arquivoVencido.qtd_arquivoInvalido>1?'s':''} obrigatório${arquivoVencido.qtd_arquivoInvalido>1?'s':''} vencido${arquivoVencido.qtd_arquivoInvalido>1?'s':''} ou faltantes` )
+	}
+}
+
 $(document).ready(function(e) {
     <%call formSave("frm", "save", "$(""#DadosAlterados"").attr('value', ''); callbackAgendamentoPaciente(); ")%>
-
+	verificaArquivos()
 
 function callbackAgendamentoPaciente() {
     <%
@@ -1115,7 +1137,7 @@ if not memed.eof then
              }, function (data) {
 				 console.log(data);
     			pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
-				 
+
              })
          });
        } , 500);

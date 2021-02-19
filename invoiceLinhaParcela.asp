@@ -178,17 +178,7 @@ function geraBoleto(ParcelaID) {
         end if
         %>
     </td>
-    <% set vcaGuia = db.execute("SELECT * FROM itensinvoice WHERE invoiceid ="&req("I"))
-           itenId = vcaGuia("id")
-           guias = db.execute("SELECT * from tissguiasinvoice where ItemInvoiceID ="&itenId)
-           idGuia = guias("GuiaId")
-           guiaslotes = db.execute("SELECT * FROM tissguiasadt WHERE id ="&idGuia)
-           loteid = guiaslotes("loteid")
-           lotedata = db.execute("SELECT * FROM tisslotes WHERE id ="&loteid)
-           dataprev = lotedata("dataprevisao")
-
-        %>
-    <td><%=quickField("datepicker", "Date"&ParcelaID, "", 3, dataprev, " text-right disable", "", " required"&primParc)%></td>
+    <td><%=quickField("datepicker", "Date"&ParcelaID, "", 3, ParcelaData, " text-right disable", "", " required"&primParc)%></td>
     <td><%=quickField("text", "Name"&ParcelaID, "", 3, Name, " text-right disable ", "", "  placeholder='Opcional'  "&primParc)%></td>
     <td><%=quickField("currency", "Value"&ParcelaID, "", 3, formatnumber(ParcelaValor,2), " text-right disable", "", " required")%></td>
     <td class="text-right">R$ <%=formatnumber( ValorPago ,2)%></td>

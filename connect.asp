@@ -4462,7 +4462,7 @@ private function calcValPosicao(QuantidadeAtual, ValorAtual, QuantidadeInserida,
 end function
 
 'private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID, Individualizar)
-private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOriginal, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs, InvoiceID, Motivo)
+private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOriginal, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs, InvoiceID)
     set prod = db.execute("select * from produtos where id="&P)
     ApresentacaoQuantidade = prod("ApresentacaoQuantidade")
     if isnull(ApresentacaoQuantidade) or ApresentacaoQuantidade<=0 then
@@ -4506,9 +4506,6 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
             if FornecedorID="" or FornecedorID="0" then
                 erro = "Selecione um fornecedor."
             end if
-            if Motivo="" then
-                erro = "Selecione um Motivo."
-            end if
         end if
         if Tipo="S" then
             if PacienteID="" or PacienteID="0" then
@@ -4530,8 +4527,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
 	    <%
     else
         if tipoResultado<>"ignore" then
-
-	        db_execute("insert into estoquelancamentos (ProdutoID, EntSai, Quantidade, TipoUnidadeOriginal, TipoUnidade, Data, FornecedorID, Lote, Validade, NF, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, sysUser, QuantidadeConjunto, QuantidadeTotal, LocalizacaoID, ItemInvoiceID, AtendimentoID, CBID, posicaoAnte, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs, MotivoID) values ("&P&", '"&Tipo&"', "&treatvalzero(Quantidade)&", '"& TipoUnidadeOriginal &"', '"&TipoUnidade&"', "&mydatenull(Data)&", '"& FornecedorID &"', '"&Lote&"', "&mydatenull(Validade)&", '"&NotaFiscal&"', "&treatvalzero(Valor)&", '"&UnidadePagto&"', '"&Observacoes&"', '"&Responsavel&"', "& treatvalnull(PacienteID) &", '"& Lancar &"', "&session("User")&", "&treatvalzero(QuantidadeConjunto)&", "&treatvalzero(UnidadesTentadas)&", "& treatvalzero( LocalizacaoID ) &", "& treatvalnull( ItemInvoiceID ) &", "& treatvalnull( AtendimentoID ) &", '"& CBID &"', (select group_concat( concat(id, '=', concat(Quantidade, '|', ValorPosicao)) SEPARATOR ', ') from estoqueposicao where ProdutoID="& P &" and Quantidade<>0), "& treatvalnull(ProdutoInvoiceID) &", '"& ResponsavelOriginal &"', "& treatvalzero(LocalizacaoIDOriginal) &", '"& Individualizar &"', '"& CBIDs &"',"& treatvalnull(Motivo) &")")
+	        db_execute("insert into estoquelancamentos (ProdutoID, EntSai, Quantidade, TipoUnidadeOriginal, TipoUnidade, Data, FornecedorID, Lote, Validade, NF, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, sysUser, QuantidadeConjunto, QuantidadeTotal, LocalizacaoID, ItemInvoiceID, AtendimentoID, CBID, posicaoAnte, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs) values ("&P&", '"&Tipo&"', "&treatvalzero(Quantidade)&", '"& TipoUnidadeOriginal &"', '"&TipoUnidade&"', "&mydatenull(Data)&", '"& FornecedorID &"', '"&Lote&"', "&mydatenull(Validade)&", '"&NotaFiscal&"', "&treatvalzero(Valor)&", '"&UnidadePagto&"', '"&Observacoes&"', '"&Responsavel&"', "& treatvalnull(PacienteID) &", '"& Lancar &"', "&session("User")&", "&treatvalzero(QuantidadeConjunto)&", "&treatvalzero(UnidadesTentadas)&", "& treatvalzero( LocalizacaoID ) &", "& treatvalnull( ItemInvoiceID ) &", "& treatvalnull( AtendimentoID ) &", '"& CBID &"', (select group_concat( concat(id, '=', concat(Quantidade, '|', ValorPosicao)) SEPARATOR ', ') from estoqueposicao where ProdutoID="& P &" and Quantidade<>0), "& treatvalnull(ProdutoInvoiceID) &", '"& ResponsavelOriginal &"', "& treatvalzero(LocalizacaoIDOriginal) &", '"& Individualizar &"', '"& CBIDs &"')")
             set pultLancto = db.execute("select id from estoquelancamentos order by id desc limit 1")
             LancamentoID = pultLancto("id")
         end if
@@ -5165,7 +5161,7 @@ private function refazPosicao(ProdutoID)
        '         PosicaoES = lanctos("PosicaoS")
         '    end if
             'LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID)
-            call LanctoEstoque(lanctos("id"), PosicaoES, ProdutoID, lanctos("EntSai"), lanctos("TipoUnidadeOriginal"), lanctos("TipoUnidade"), lanctos("Quantidade"), lanctos("Data"), lanctos("FornecedorID"), lanctos("Lote"), lanctos("Validade"), lanctos("NF"), lanctos("Valor"), lanctos("UnidadePagto"), lanctos("Observacoes"), lanctos("Responsavel"), lanctos("PacienteID"), lanctos("Lancar"), lanctos("LocalizacaoID"), lanctos("ItemInvoiceID"), lanctos("AtendimentoID"), "ignore", lanctos("CBID"), lanctos("ProdutoInvoiceID"), lanctos("ResponsavelOriginal"), lanctos("LocalizacaoIDOriginal"), lanctos("Individualizar"), lanctos("CBIDs"),0,0)
+            call LanctoEstoque(lanctos("id"), PosicaoES, ProdutoID, lanctos("EntSai"), lanctos("TipoUnidadeOriginal"), lanctos("TipoUnidade"), lanctos("Quantidade"), lanctos("Data"), lanctos("FornecedorID"), lanctos("Lote"), lanctos("Validade"), lanctos("NF"), lanctos("Valor"), lanctos("UnidadePagto"), lanctos("Observacoes"), lanctos("Responsavel"), lanctos("PacienteID"), lanctos("Lancar"), lanctos("LocalizacaoID"), lanctos("ItemInvoiceID"), lanctos("AtendimentoID"), "ignore", lanctos("CBID"), lanctos("ProdutoInvoiceID"), lanctos("ResponsavelOriginal"), lanctos("LocalizacaoIDOriginal"), lanctos("Individualizar"), lanctos("CBIDs"),0)
         lanctos.movenext
         wend
         lanctos.close

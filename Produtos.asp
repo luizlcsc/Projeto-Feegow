@@ -17,20 +17,22 @@ if I="N" then
 	if vie.eof then
 		db_execute("insert into "&tableName&" (sysUser, sysActive) values ("&session("User")&", 0)")
 		set vie = db.execute(sqlVie)
-		vie.close
 	end if
     response.Redirect("./?P=produtos&I="&vie("id")&"&TipoProduto="&TipoProduto&"&Pers=1")
 else
 	set data = db.execute("select * from "&tableName&" where id="&I)
 	if data.eof then
         response.Redirect("./?P=produtos&I="&req("I")&"&Pers=1")
-        data.close
 	end if
 end if
 
+
+
+
+
+
 call insertRedir(request.QueryString("P"), request.QueryString("I"))
-sqlTiposproduto  = "select * from "&request.QueryString("P")&" where id="&request.QueryString("I")
-set reg = db.execute(sqlTiposproduto)
+set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
 
 if reg("Foto")="" or isnull(reg("Foto")) then
 	divDisplayUploadFoto = "block"
@@ -131,23 +133,11 @@ end if
     <iframe align="middle" class="hidden" id="CodBarras" name="CodBarras" src="about:blank" width="100%" height="110"></iframe>
 
     <%=header(req("P"), "Estoque", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" class="idItem"/>
+    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
     <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
 
     <div class="tabbable panel">
         <div class="tab-content panel-body">
-           <%  if TipoProduto&"" = "5" then %>
-            <div id="divCadastroProduto" class="tab-pane in active">
-                <div class="row">
-                    <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
-                    <%'=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
-                    <%if TipoProdutoReadonly&""<>"" then%>
-                        <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
-                    <%end if%>
-                    <%=quickField("simpleSelect", "CD", "CD", 3, reg("CD"), "select * from cliniccentral.tisscd where id=7 order by Descricao", "Descricao", "semVazio")%>
-                </div>
-            </div>
-           <% else %>
             <div id="divCadastroProduto" class="tab-pane in active">
                 <div class="row">
                     <div class="col-md-2">
@@ -171,7 +161,7 @@ end if
                     <div class="col-md-10">
                         <div class="row">
                             <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
-                            <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos WHERE id <> 5 order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
+                            <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
                             <%if TipoProdutoReadonly&""<>"" then%>
                                 <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
                             <%end if%>
@@ -321,7 +311,6 @@ end if
                             <%
                         end if
                     end if
-                    uii.close
 				end if
 
 				%>
@@ -338,15 +327,10 @@ end if
                     </div>
                 </div>
             </div>
-            <% end if %>
-
             <div id="divLancamentos" class="tab-pane">
                 Carregando...
             </div>
             <div id="divInteracoesEstoque" class="tab-pane">
-                Carregando...
-            </div>
-            <div id="divConvenioMedicamentos" class="tab-pane">
                 Carregando...
             </div>
             <div id="divConversaoEstoque" class="tab-pane">
@@ -357,11 +341,8 @@ end if
                 </div>
                 <br>
                 <div class="col-md-offset-2 col-md-8 Modulo-Medicamento mt40">
-                <%'call Subform("produtosunidademedida", "1", req("I"), "frm")%>
+                <%call Subform("produtosunidademedida", "ProdutoID", req("I"), "frm")%>
                 </div>
-            </div>
-            <div id="divVincularMedicamento" class="tab-pane">
-                Carregando...
             </div>
         </div>
     </div>
@@ -369,12 +350,6 @@ end if
 
 <script type="text/javascript">
 
-    $(document).ready(function()
-    {
-        let TipoProduto = $("#TipoProduto").val();
-        let IdTipoProduto = $(".idItem").val();
-
-    })
 
     function printEtiqueta(ProdutoID) {
         $.post("printEtiqueta.asp?ProdutoID="+ ProdutoID, $(".eti").serialize(), function (data) {
@@ -383,28 +358,18 @@ end if
         });
     }
 
-    function showSalvar(opcao){
-        if(opcao){
-            $('#rbtns #Salvar').show()
-        }else{
-            $('#rbtns #Salvar').hide()
-        }
-    }
-    showSalvar(true)
 
-    $(document).ready(function() {
+
+    $(document).ready(function(e) {
         var TipoProduto = $("#TipoProduto").val();
-
         if (TipoProduto == 4){
             $(".Modulo-Medicamento").attr("style", "display:");
         }else{
             $(".Modulo-Medicamento").attr("style", "display:none");
-        }
+
+        };
         $("#Header-List").attr("href", "./?P=ListaProdutos&Pers=1&TipoProduto="+TipoProduto);
-
         $("#Header-New").addClass("hidden");
-
-
 
         $(".crumb-link").removeClass("hidden");
         $(".crumb-link").html($("#TipoProduto option:selected").text());
@@ -420,20 +385,20 @@ end if
             $(".crumb-link").html($("#TipoProduto option:selected").text());
         });
 
-        $("#ProdutosPosicao").on("click", ".eti",function() {
-            var temPosicaoSelecionada = $(".eti:checked").length > 0,
-                $btnAcaoEmLote = $(".btn-acao-em-lote");
+    $("#ProdutosPosicao").on("click", ".eti",function() {
+        var temPosicaoSelecionada = $(".eti:checked").length > 0,
+            $btnAcaoEmLote = $(".btn-acao-em-lote");
 
-            $btnAcaoEmLote.attr("disabled", !temPosicaoSelecionada);
-        });
+        $btnAcaoEmLote.attr("disabled", !temPosicaoSelecionada);
+    });
         <%call formSave("frm", "save", "$('.btnLancto').removeAttr('disabled');")%>
 
         <%
         if req("BaixarPosicao")<>"" then
         %>
-            setTimeout(function() {
-                    lancar('<%=req("I")%>', 'S', '', '', '<%=req("BaixarPosicao")%>', '', '', );
-                }, 700);
+setTimeout(function() {
+    lancar('<%=req("I")%>', 'S', '', '', '<%=req("BaixarPosicao")%>', '', '', );
+}, 700);
         <%
         end if
         %>
@@ -453,8 +418,7 @@ end if
             }
         });
     }
-    function dividir(P, T, L, V, PosicaoID)
-    {
+    function dividir(P, T, L, V, PosicaoID){
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");
 
@@ -487,7 +451,7 @@ end if
             success: function(data){
                 $("#ProdutosPosicao").html(data);
             }
-        });
+    });
     }
 
 
@@ -496,6 +460,19 @@ end if
         $("#CodBarras").removeClass("hidden");
         $("#CodBarras").attr("src", "CodBarras.asp?NumeroCodigo="+ $(this).val() );
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 </script>
@@ -529,7 +506,10 @@ $("#ApresentacaoNome, #ApresentacaoUnidade").on("keyup change", function(){
 lbl();
 
     //js exclusivo avatar
-<%   Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")   %>
+<%
+    Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
+
+    %>
     function removeFoto(){
         if(confirm('Tem certeza de que deseja excluir esta imagem?')){
             $.ajax({

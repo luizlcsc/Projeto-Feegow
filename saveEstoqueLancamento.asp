@@ -30,6 +30,6 @@ for i=0 to ubound(spltPosicao)
     LocalizacaoIDOriginal=ref("LocalizacaoIDOriginal"&PrefixoRef)
     CBID=ref("CBID"&PrefixoRef)
 
-    call LanctoEstoque(0, PosicaoID, req("P"), req("T"), TipoUnidadeOriginal, ref("TipoUnidade"), ref("Quantidade"), ref("Data"), FornecedorID, Lote, ref("Validade"), ref("NotaFiscal"), ref("Valor"), ref("UnidadePagto"), ref("Observacoes"), ref("Responsavel"), ref("PacienteID"), ref("Lancar"), ref("LocalizacaoID"), req("ItemInvoiceID"), req("AtendimentoID"), "eval", CBID, req("ProdutoInvoiceID"), ResponsavelOriginal, LocalizacaoIDOriginal, ref("Individualizar"), ref("CBIDs"), ref("InvoiceID"),ref("Motivo"))
+    call LanctoEstoque(0, PosicaoID, req("P"), req("T"), TipoUnidadeOriginal, ref("TipoUnidade"), ref("Quantidade"), ref("Data"), FornecedorID, Lote, ref("Validade"), ref("NotaFiscal"), ref("Valor"), ref("UnidadePagto"), ref("Observacoes"), ref("Responsavel"), ref("PacienteID"), ref("Lancar"), ref("LocalizacaoID"), req("ItemInvoiceID"), req("AtendimentoID"), "eval", CBID, req("ProdutoInvoiceID"), ResponsavelOriginal, LocalizacaoIDOriginal, ref("Individualizar"), ref("CBIDs"), ref("InvoiceID"))
 next
 %>

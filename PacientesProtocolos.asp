@@ -20,12 +20,35 @@ else
 end if
 %>
 
-<style>
-    #qftipoprotocolo label,#qftipoprotocolo br{
-        display:none
-    }
-    
-</style>
+<!-- Modal -->
+<div class="modal fade" id="modalOpcoesImpressao" tabindex="-1" role="dialog" aria-labelledby="modalOpcoesImpressaoLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalOpcoesImpressaoLabel">Impressão de Pedido Simplificado</h5>
+        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Fechar">-->
+          <!--<span aria-hidden="true">&times;</span>-->
+        <!--</button>-->
+      </div>
+      <div class="modal-body">
+        <form>
+            <div class="form-group">
+                <input type="checkbox" id="cabecalho" value="1" checked> <label for="cabecalho">Imprimir cabecalho e Rodapé </label><BR>
+            </div>
+            <div class="form-group">
+                Quantidade de Registros: <input type="text" id="quantidade" size="5" value="10" class="form-control">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" id="savePedidoExameProtocolo">Imprimir</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!----------------------------------------------------------------->
+
 
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left">
@@ -37,7 +60,7 @@ end if
 <div class="panel-body p25" id="iProntCont">
     <div class="tab-content">
       <div id="divpedido" class="tab-pane in active">
-        <input type="hidden" name="ID" id="ID" value="<%=ID%>" />
+      <input type="hidden" name="ID" id="ID" value="<%=ID%>" />
         <div class="row">
             <div class="col-xs-8">
                 <div class="row">
@@ -45,37 +68,12 @@ end if
                         <button type="button" class="btn btn-info btn-block" onClick="GerarNovo('Protocolos', '<%=PacienteID%>', '0', '', '');"><i class="fa fa-plus"></i> Novo</button>
                     </div>
                     <div class="col-md-2">
-                        <!--<button type="button" onClick="saveProtocolo('<%=ID%>')" class="btn btn-primary "><i class="fa fa-save"></i></button> -->
-                        <button type="button" class="btn btn-info" onClick="print()">
-                            <i class="fa fa-print"></i>
-                        </button>
+                        <button type="button" onClick="saveProtocolo('<%=ID%>')" class="btn btn-primary btn-block"><i class="fa fa-save"></i> Salvar</button>
                     </div>
                     <div class="col-md-4">
                         <%= simpleSelectCurrentAccounts("ProfissionalID", "5, 8", ProfissionalID, " ") %>
                     </div>
-                    <div class="btn-group text-left">
-			            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-				            Grupos
-				            <span class="fa fa-caret-down icon-on-right"></span>
-			            </button>
-
-			            <ul class="dropdown-menu dropdown-default">
-                            <%
-                            set g = db.execute("SELECT * FROM protocolosgrupos order by 2 ")
-                            while not g.eof
-                            %>
-				            <li>
-					            <a href="javascript:grupo('<%=g("id") %>')"><small> <%=g("NomeGrupo") %></small></a>
-				            </li>
-                            <%
-                            g.movenext
-                            wend
-                            g.close
-                            set g=nothing
-                            %>
-			            </ul>
-		            </div>
-                    <div class="col-md-4 hidden">
+                    <div class="col-md-4">
                         <button type="button" class="btn btn-info btn btn-xs"><i class="fa fa-credit-card"></i></button> <span>Gerar Guia de Tratamento</span>
                         <br>
                         <button type="button" class="btn btn-success btn btn-xs mt5"><i class="fa fa-files-o"></i></button> <span>Gerar Proposta</span>

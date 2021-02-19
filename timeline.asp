@@ -140,6 +140,7 @@ end if
 </style>
 
 
+
 <div class="row">
     <div class="col-xs-12">
         <%
@@ -312,30 +313,6 @@ select case Tipo
     case "|Diagnostico|"
         subTitulo = "Diagnósticos"
         %>
-        <script>
-            window.addEventListener("message", function(e) {
-                  if(e.data === "closeModal") {
-                      $("#modal-calculator").modal("hide");
-                  }
-
-                  if(e.data === "reloadPage") {
-                      window.location.reload();
-                  }
-            });
-</script>
-        <!-- Modal tnm -->
-        <div class="modal fade" id="modal-calculator" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-          <div class="modal-dialog" style="  width: 100%;
-                                             height: 100%;
-                                             padding: 0;">
-            <div class="modal-content" style="  height: 100%;
-                                                border-radius: 0;">
-              <div class="modal-body" id="modal-calculator-content" style="height: 100%;
-                                                                                                                           border-radius: 0;">
-              </div>
-            </div>
-          </div>
-        </div>
         <div class="panel timeline-add">
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %>
@@ -420,7 +397,7 @@ select case Tipo
         });
     });
 
-
+ 
 
 </script>
 <%
@@ -810,8 +787,8 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                 nomeImagem: id,
                 urlImagem: src
             },
-            false,
-            true,
+            false, 
+            true, 
             function(){
                 let dataImage = imageEditor.toDataURL();
 
@@ -859,7 +836,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 <script type="text/javascript" src="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
 <script type="text/javascript" src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
-
+      
 
         <%
     end if
@@ -895,7 +872,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
         <%
         end if
 end select
-
+    
 %>
 
 
@@ -938,9 +915,9 @@ end select
                 <div class="line"></div>
             </div>
         </div>
-    </div>
+    </div>  
 </div>
-
+ 
 
 </div>
 

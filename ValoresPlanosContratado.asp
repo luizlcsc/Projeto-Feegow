@@ -21,34 +21,7 @@ ConvenioID = req("ConvenioID")
                                   " WHERE ConvenioID = "&ConvenioID&"                                                              "
 
                   %>
-              
-                 <%= quickfield("multiple", "Calculos[0]", "Cálculos", 3, Calculo, sql, "descricao",  "onchange=""ocultar_campos($(this).data('key'))"" teste2 ")%>
-                
- 
-
-                         <div id="medic0" style="display:none;">                             
-                        
-                          
-                            <div class="col-md-3">
-                            <label for="tabela[0]">Selecione</label>
-                            <select class="form-control" id="tabela[0]" name="tabela[0]">                        
-                             <option value="">Selecione</option>
-                                   <option value="|Brasindice|">Brasindice</option>
-                                   <option value="|Simpro|">Simpro</option>
-                            </select>
-                        </div>
-
-                          <div class="col-md-3">
-                                <label for="preco[0]">Preço</label>
-                            <select class="form-control" id="preco[0]" name="preco[0]">                                      
-                            <option value="|PFB|">PFB</option>
-                            <option value="|PMC|">PMC</option>
-                                 
-                                </select>
-                            </div>
-
-       
-                 </div>
+                 <%= quickfield("multiple", "Calculos[0]", "Cálculos", 3, Calculo,sql, "descricao", "") %>
                  <%= quickfield("multiple", "Grupos[0]", "Grupos", 3, Planos,"SELECT * FROM procedimentosgrupos  WHERE sysActive = 1  ", "NomeGrupo", "") %>
                  <%= quickfield("multiple", "Procedimentos[0]", "Procedimentos", 3, Procedimentos, "SELECT id,NomeProcedimento FROM procedimentos WHERE Ativo = 'on' AND sysActive = 1", "NomeProcedimento", "") %>
                  <%= quickfield("multiple", "Planos[0]", "Planos", 3, Planos,"SELECT id, NomePlano FROM conveniosplanos WHERE ConvenioID = "&ConvenioID, "NomePlano", "") %>
@@ -57,22 +30,15 @@ ConvenioID = req("ConvenioID")
                  <%= quickfield("multiple", "Contratados[0]", "Contratados", 3, "",sqlContratado, "Contratado", "") %>
                  <%= quickfield("multiple", "Vias[0]", "Vias", 3, "","select * from tissvia order by descricao", "descricao", "") %>
                  <div class="col-md-3">
-                    <label for="Planos">Tipo</label>
+                    <label for="Planos[0]">Tipo</label>
                     <select class="form-control" id="tipo[0]" name="tipo[0]">
                         <option value="-1">Deflator (-)</option>
                         <option value="1">Inflator (+)</option>
                     </select>
-               
-               
                  </div>
-              
-                
-
-                
                   <div class="col-md-2">
                       <%=quickField("text", "valor[0]", "Valor (%)", 12, ValorCH, " sql-mask-4-digits  ", "", " ")%>
                   </div>
-                   
                 <div class="col-md-1">
                       <label>&nbsp;</label>
                       <br/>
@@ -92,15 +58,7 @@ ConvenioID = req("ConvenioID")
 </form>
 
 <script type="text/javascript">
-    
-
-
-
-
-  
-
 var countCombinacao = 0;
-var Count = 0;
 
 function removerRow(arg) {
     $(arg).parent().parent().parent().remove()
@@ -108,76 +66,41 @@ function removerRow(arg) {
 
 function addNotificados(values){
     countCombinacao++;
- 
+
 
     let calculos = $("#main-nofitificados select")[0].outerHTML;
         calculos = calculos.replace(/Calculos\[0\]/g,"Calculos["+ countCombinacao +"]");
-        calculos = calculos.replace(/qfcalculos\[0\]/g,"qfcalculos["+ countCombinacao +"] ");
-        calculos = calculos.replace("ocultar_campos(0)","ocultar_campos("+ countCombinacao +")");
-        calculos = calculos.replace("teste2","data-key=\""+countCombinacao+"\"");
-      
-      
-      let preco = $("#main-nofitificados select")[2].outerHTML;
-        preco = preco.replace(/preco\[0\]/g,"preco["+ countCombinacao +"]");
-        preco = preco.replace(/qfpreco\[0\]/g,"qfpreco["+ countCombinacao +"]");   
+        calculos = calculos.replace(/qfcalculos\[0\]/g,"qfcalculos["+ countCombinacao +"]");
 
-        let tabela = $("#main-nofitificados select")[1].outerHTML;
-        tabela = tabela.replace(/tabela\[0\]/g,"tabela["+ countCombinacao +"]");
-        tabela = tabela.replace(/qftabela\[0\]/g,"qftabela["+ countCombinacao +"]");   
-         
-     
-   
-    
-
-
-    let grupos = $("#main-nofitificados select")[3].outerHTML;
+    let grupos = $("#main-nofitificados select")[1].outerHTML;
             grupos = grupos.replace(/Grupos\[0\]/g,"Grupos["+ countCombinacao +"]");
             grupos = grupos.replace(/qfgrupos\[0\]/g,"qfgrupos["+ countCombinacao +"]");
 
-    let procedimentos = $("#main-nofitificados select")[4].outerHTML;
+    let procedimentos = $("#main-nofitificados select")[2].outerHTML;
         procedimentos = procedimentos.replace(/Procedimentos\[0\]/g,"Procedimentos["+ countCombinacao +"]");
         procedimentos = procedimentos.replace(/qfprocedimentos\[0\]/g,"qfprocedimentos["+ countCombinacao +"]");
 
-    let planos = $("#main-nofitificados select")[5].outerHTML;
+    let planos = $("#main-nofitificados select")[3].outerHTML;
         planos = planos.replace(/Planos\[0\]/g,"Planos["+ countCombinacao +"]");
         planos = planos.replace(/qfplanos\[0\]/g,"qfplanos["+ countCombinacao +"]");
 
-    let contratados = $("#main-nofitificados select")[6].outerHTML;
+    let contratados = $("#main-nofitificados select")[4].outerHTML;
         contratados = contratados.replace(/Contratados\[0\]/g,"Contratados["+ countCombinacao +"]");
         contratados = contratados.replace(/qfcontratados\[0\]/g,"qfcontratados["+ countCombinacao +"]");
 
-    let vias = $("#main-nofitificados select")[7].outerHTML;
+    let vias = $("#main-nofitificados select")[5].outerHTML;
         vias = vias.replace(/Vias\[0\]/g,"Vias["+ countCombinacao +"]");
         vias = vias.replace(/qfvias\[0\]/g,"qfvias["+ countCombinacao +"]");
-
-        
-
 
     let valorCH = $("#valor\\[0\\]")[0].outerHTML;
         valorCH = valorCH.replace(/valor\[0\]/g,"valor["+ countCombinacao +"]");
 
-    let html  = `<div class="row" style="margin: 15px; padding: 15px; border: #dfdfdf dashed 1px" >
-                     <div class="col-md-12 calculos" data-key="${countCombinacao}">
-                        <div class="col-md-3 qf" data-key="${countCombinacao}">
+    let html  = `<div class="row" style="margin: 15px; padding: 15px; border: #dfdfdf dashed 1px">
+                     <div class="col-md-12"  >
+                        <div class="col-md-3 qf">
                             <label>Cálculos</label>
                             ${calculos}
-                   
                         </div>
-                            
-                            <div id="medic${countCombinacao}" style="display:none;">
-                      
-                      
-                      
-                          <div class="col-md-3">
-                            <label>Tabela</label>
-                             ${tabela}
-                        </div>
-                     <div class="col-md-3"  >
-                            <label>Preço</label>
-                             ${preco}
-                        </div>
-                         </div>
-
                         <div class="col-md-3 qf">
                             <label>Grupos</label>
                             ${grupos}
@@ -201,8 +124,6 @@ function addNotificados(values){
                             <label>Vias</label>
                              ${vias}
                         </div>
-
-                    
                         <div class="col-md-3">
                             <label>Tipo</label>
                             <select class="form-control" id="tipo[${countCombinacao}]" name="tipo[${countCombinacao}]">
@@ -240,8 +161,7 @@ function addNotificados(values){
     let tagPlano        = $('#add-nofitificados > div').last().find("select.multisel").eq(3);
     let tagContratado   = $('#add-nofitificados > div').last().find("select.multisel").eq(4);
     let tagVias         = $('#add-nofitificados > div').last().find("select.multisel").eq(5);
-    let tagTabela         = $('#add-nofitificados > div').last().find("select.multisel").eq(7);
-    let tagPreco          = $('#add-nofitificados > div').last().find("select.multisel").eq(6);
+
 
 
     if(values){
@@ -251,8 +171,6 @@ function addNotificados(values){
         tagPlano.val(values.planos.split(","));
         tagContratado.val(values.contratados.split(","));
         tagVias.val(values.vias.split(","));
-        tagTabela.val(values.tabela);
-        tagPreco.val(values.preco);  
 
         $(`[name='tipo[${countCombinacao}]`).val(values.tipo);
         $(`[name='valor[${countCombinacao}]`).val(values.valor);
@@ -264,8 +182,6 @@ function addNotificados(values){
     tagPlano.multiselect(config);
     tagContratado.multiselect(config);
     tagVias.multiselect(config);
-    tagTabela.multiselect(config);
-    tagPreco.multiselect(config);
 
     $(".sql-mask-4-digits").maskMoney({prefix:'', thousands:'.', decimal:',', affixesStay: true, precision: 4});
 }
@@ -273,9 +189,9 @@ function addNotificados(values){
 function getValues(){
     let keys = [];
 
-    ["Contratados","Calculos","Planos","Procedimentos","Grupos","Vias","preco","tabela"].forEach((tagName) => {
+    ["Contratados","Calculos","Planos","Procedimentos","Grupos","Vias"].forEach((tagName) => {
         $("select[name^='"+tagName+"']").each((item,tag) => {
-           
+
             re = new RegExp(tagName+"\\[(.)+\\]", "g");
             let key = $(tag).attr("name").replace(re, '$1');
 
@@ -288,9 +204,8 @@ function getValues(){
 
     let result = {};
     let errors = [];
-    ["Contratados","Calculos","Planos","Procedimentos","Grupos","Vias","preco","tabela"].forEach((tagName)=>{
+    ["Contratados","Calculos","Planos","Procedimentos","Grupos","Vias"].forEach((tagName)=>{
         keys.forEach((key) => {
-           
             $("select[name='"+tagName+"["+key+"]']").each((item,tag) => {
                 if(!result[key]){
                     result[key] = {};
@@ -304,7 +219,6 @@ function getValues(){
     });
 
     keys.forEach((key) => {
-      
         let isvalid = validCampos(key,"Tipo",$(`[name='tipo[${key}]']`).val())
         if(isvalid != "")
             errors.push(isvalid)
@@ -315,10 +229,6 @@ function getValues(){
 
         result[key]["Tipo"]  = $(`[name='tipo[${key}]']`).val();
         result[key]["valor"] = $(`[name='valor[${key}]']`).val().replace(".","").replace(",",".");
-         
-       
-
-
     });
 
     if(errors.length>0)
@@ -328,7 +238,7 @@ function getValues(){
 }
 
 function validCampos(itemIndex,campo,valor){
-    let RequiredCampos = ["Calculos","valor"];
+    let RequiredCampos = ["Calculos", "Tipo","valor"];
     if(RequiredCampos.includes(campo))
     {
         if (valor=="" ||valor == null)
@@ -368,7 +278,6 @@ var salvarProcedimentos = function(){
          body:JSON.stringify({parametros:values,convenio:<%=ConvenioID%>})
       }).then(data => data.json()).then( jsonData => {
           const result = jsonData;
-         
           if(result.status === "error"){
              new PNotify({
                   title: 'Atenção!',
@@ -376,8 +285,7 @@ var salvarProcedimentos = function(){
                   type: 'warning',
                   delay: 2500
               }); 
-          }else if(result.status === "success")
-             {
+          }else{
              new PNotify({
                   title: 'Sucesso!',
                   text: 'Dados cadastrados com sucesso.',
@@ -407,92 +315,32 @@ var resultados = [];
        calculos:     '<%=objRec("calculos") %>',
        procedimentos:'<%=objRec("procedimentos") %>',
        contratados   :'<%=objRec("contratados") %>',
-       vias          :'<%=objRec("vias") %>',    
-       tabela          :'<%=objRec("tabela") %>',
-       preco          :'<%=objRec("preco") %>',
+       vias          :'<%=objRec("vias") %>'
     });
     <%
       objRec.MoveNext
     Wend
 %>
 
-
 let i = 0;
-
-count = resultados.length;
-
-resultados.map((key) => { 
-  
+resultados.map((key) => {
     if(i == 0){
-        
+        i++;
 
-       i++
-        jQuery("#Contratados\\[0\\]").val(key.contratados.split(","));
-        jQuery("#Calculos\\[0\\]").val(key.calculos.split(","));
-        jQuery("#preco\\[0\\]").val(key.preco);
-        jQuery("#tabela\\[0\\]").val(key.tabela);
-             
-        jQuery("#Planos\\[0\\]").val(key.planos.split(","));
-        jQuery("#Grupos\\[0\\]").val(key.grupos.split(","));
-        jQuery("#Procedimentos\\[0\\]").val(key.procedimentos.split(","));
-        jQuery("#tipo\\[0\\]").val(key.tipo.split(","));
-        jQuery("#valor\\[0\\]").val(key.valor.split(","));
-        jQuery("#Vias\\[0\\]").val(key.vias.split(","));
+           jQuery("#Contratados\\[0\\]").val(key.contratados.split(","));
+           jQuery("#Calculos\\[0\\]").val(key.calculos.split(","));
+           jQuery("#Planos\\[0\\]").val(key.planos.split(","));
+           jQuery("#Grupos\\[0\\]").val(key.grupos.split(","))
+           jQuery("#Procedimentos\\[0\\]").val(key.procedimentos.split(","))
+           jQuery("#tipo\\[0\\]").val(key.tipo)
+           jQuery("#valor\\[0\\]").val(key.valor);
+           jQuery("#Vias\\[0\\]").val(key.vias.split(","));
 
-        
-        return;
-    }  
-    addNotificados(key);
-});    
-         
-    
-function ocultar_campos(id){
-    var id = (id === undefined  ? '0' : id);  
-    var qf = document.querySelectorAll('INPUT'); 
-  
-    var ar = '#medic'+id+'';
-    var cr = '#Calculos\\['+id+'\\]';
-    let conteudo = $(cr).val(); 
-    
-    conteudo = (conteudo=== null  ? ' ' : conteudo);  
-    if (conteudo.includes("|Materiais|") || conteudo.includes("|Medicamentos|") === true )
-    { 
-        $('#preco\\['+id+'\\]').val("|PFB|");
-        $('#tabela\\['+id+'\\]').val("");
-        
-        $(ar).show();
-    }  else{
-        $('#preco\\['+id+'\\]').val(" ");
-        $('#tabela\\['+id+'\\]').val(" ");
-      
-         $(ar).hide();
-        
-        
-         
+           return;
     }
-}
 
- <%
-     contador  = 0
-     objRec.movefirst
-     While Not objRec.EOF 
-
-     if objRec("preco") <> "" or  objRec("preco") <> "" then      
-   
-        response.write ("$('#medic"&contador&"').show();")
- 
-     end if 
-     contador  = contador + 1
-     objRec.MoveNext
-     wend 
-  %>
-a=-1;
-resultados.map((key) => { 
-    a++;
-    console.log(a)
-jQuery("#preco\\["+a+"\\]").val(key.preco);
-jQuery("#tabela\\["+a+"\\]").val(key.tabela);
-
+    addNotificados(key);
 });
-a--;<!--#include file="JQueryFunctions.asp"-->
+
+<!--#include file="JQueryFunctions.asp"-->
 </script>

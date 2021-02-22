@@ -34,7 +34,7 @@ db.execute("delete c.* FROM conciliacao c left JOIN sys_financialmovement mov ON
 l = 0
 for i=0 to ubound(splTrans)
     Linha = splTrans(i)
-
+    linha = replace(Linha,"'","")
     if l=0 then
         Cabecalho = Linha
         BANKID = conteudoTag( Cabecalho, "BANKID" )
@@ -47,7 +47,7 @@ for i=0 to ubound(splTrans)
         TRNAMT = conteudoTag(Linha, "TRNAMT")
         FITID = conteudoTag(Linha, "FITID")
         CHECKNUM = conteudoTag(Linha, "CHECKNUM")
-        MEMO = replace(conteudoTag(Linha, "MEMO"), "'", "\'")
+        MEMO = replace(conteudoTag(Linha, "MEMO"), "'", "")
 
         Valor = replace(TRNAMT, ",", ".")
         DataO = left(DTPOSTED, 4) &"-"& mid(DTPOSTED, 5, 2) &"-"& mid(DTPOSTED, 7, 2)

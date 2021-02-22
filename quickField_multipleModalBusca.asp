@@ -1,11 +1,87 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
-<%
-refID     = "multipleModal_"&req("I")
-formBusca = ref("busca")
-checksID  = req("v")
+<!--#include file="sqls/sqlUtils.asp"-->
 
-multipleModal_sessionSQL = Session("multipleModal_session")
+<%
+checksID  = ref("v")
+refID     = "multipleModal_"&req("I")
+formBusca = req("busca")
+
+valores =  Split(refID,"_"&"") 'EX. Procedimentos_4785
+if Ubound(valores) >=1 then tipo  = valores(1) end if
+if Ubound(valores) > 2 then valor = valores(2) end if
+
+qItemBuscaWhere = " AND (id='"&formBusca&"' OR nome LIKE '%"&formBusca&"%') "
+'response.write(tipo)
+Select Case tipo
+  Case "Profissionais", "ProfissionaisLaudo"
+    multipleModal_sessionSQL = getProfissionaisSqlQuickField()
+    if checksID<>"" then
+      qItemBuscaWhere = qItemBuscaWhere&" AND (id NOT IN("&converteEncapsulamento(",'",converteEncapsulamento("|,",checksID))&")) "
+      'dd(qItemBuscaWhere)
+    end if
+  Case "TabelasParticulares"
+    multipleModal_sessionSQL = getTabelasParticularesSQLQuickField()
+    if checksID<>"" then
+      qItemBuscaWhere = qItemBuscaWhere&" AND (id NOT IN("&converteEncapsulamento("|,",checksID)&")) "
+    end if
+  Case "Unidades", "ProcedimentosGrupos", "Procedimentos", "ProfissionaisGrupos", "Profissionais"
+    multipleModal_sessionSQL = getSQLQuickField(tipo,false,false,false)
+    if checksID<>"" then
+      qItemBuscaWhere = qItemBuscaWhere&" AND (id NOT IN("&converteEncapsulamento("|,",checksID)&")) "
+    end if
+  Case "Especialidades", "EspecialidadesLaudo"
+    if tipo="EspecialidadesLaudo" then
+      tipo = "Especialidades"
+      Condicao = "id+"
+    else
+      Condicao = false
+    end if
+    multipleModal_sessionSQL = getSQLQuickField(tipo,false,false,Condicao)
+    if checksID<>"" then
+      qItemBuscaWhere = qItemBuscaWhere&" AND (id NOT IN("&converteEncapsulamento("|,",checksID)&")) "
+    end if
+  Case "SomenteProfissionais"
+    multipleModal_sessionSQL = getSQLQuickField(tipo,false,false,"sql")
+    if checksID<>"" then
+      qItemBuscaWhere = qItemBuscaWhere&" AND (id NOT IN("&converteEncapsulamento("|,",checksID)&")) "
+    end if
+  Case "SomenteEspecialidades"
+    multipleModal_sessionSQL = getSQLQuickField(tipo,false,false,"sql")
+    if checksID<>"" then
+      qItemBuscaWhere = qItemBuscaWhere&" AND (id NOT IN("&converteEncapsulamento("|,",checksID)&")) "
+    end if
+  Case "Convenios"
+    multipleModal_sessionSQL = getTabelasConveniosSQLQuickField()
+
+  Case "Usuarios","UsuariosLivres","OmitirValorGuia"
+
+    if tipo="UsuariosLivres" then
+      Condicao = "profissionais"
+    else
+      Condicao = false
+    end if
+    'Redefine outros tipos para usuários para a Query
+    tipo = "Usuarios"
+
+
+    multipleModal_sessionSQL = getSQLQuickField(tipo,false,false,Condicao)
+
+    if checksID<>"" then
+      qItemBuscaWhere = qItemBuscaWhere&" AND (id NOT IN("&converteEncapsulamento("|,",checksID)&")) "
+    end if
+
+  Case "Cid10"
+    multipleModal_sessionSQL = getSQLQuickField(tipo,false,false,"sql")
+    qItemBuscaWhere = " AND (id='"&formBusca&"' OR nome LIKE '%"&formBusca&"%' OR codigo LIKE '%"&formBusca&"%') "
+    if checksID<>"" then
+      qItemBuscaWhere = qItemBuscaWhere&" AND (id NOT IN("&converteEncapsulamento("|,",checksID)&")) "
+    end if
+
+  Case else
+    multipleModal_sessionSQL = Session("multipleModal_session")
+    qItemBuscaWhere = " WHERE id IN("&converteEncapsulamento("|,",converteEncapsulamento(",'",checksID))&")"
+End Select
 
 conteudoHeader = ""&_
 "<div style='position: relative; height:300px; overflow:auto;'><div style='position: absolute; top: 0; width:100%;'>"&_
@@ -28,16 +104,10 @@ conteudoFooter = ""&_
 "</table>"&_
 "</div></div>"
 
-
-  qItemBuscaWhere = " WHERE "
-  qItemBuscaWhere = qItemBuscaWhere&" (id='"&formBusca&"' OR NomeProcedimento LIKE '%"&formBusca&"%') "
-  if checksID<>"" then
-    qItemBuscaWhere = qItemBuscaWhere&" AND (id NOT IN("&converteEncapsulamento(",'",checksID)&")) "
-  end if
-
   'DEFINIR COLUNAS E TABELA DINAMICAMENTE...
   qItemBuscaSQL = multipleModal_sessionSQL&qItemBuscaWhere&" limit 0,100"
   'response.write("<pre>"&qItemBuscaSQL&"</pre>")
+  'dd("((( "&qItemBuscaSQL&"   )))")
   SET ItemBuscaSQL = db.execute(qItemBuscaSQL)
   if ItemBuscaSQL.eof then
     resultadoBuscaHTML = ""&_
@@ -47,10 +117,15 @@ conteudoFooter = ""&_
   else
     while not ItemBuscaSQL.eof
 
-      item_id   = cstr(ItemBuscaSQL("id"))
-      item_Nome = ItemBuscaSQL("nome")
+      item_id     = cstr(ItemBuscaSQL("id"))
+      item_Nome   = ItemBuscaSQL("nome")
+      item_Codigo = item_id
 
-      checkboxNome = "itemBusca"&item_id
+      if FieldExists(ItemBuscaSQL, "codigo") then
+        item_Codigo = ItemBuscaSQL("codigo")
+      end if
+
+      checkboxNome = "itemBuscas"&item_id
 
       'VALIDA CHECKS DO CKECKBOX
       checksID_array=Split(checksID,",")
@@ -63,7 +138,7 @@ conteudoFooter = ""&_
       
       conteudoBuscaHTML = ""&_
       "<tr>"&_
-      "  <td><code># "&item_id&"</code></td>"&_
+      "  <td><code># "&item_Codigo&"</code></td>"&_
       "  <td>"&item_Nome&"</td>"&_
       "  <td width='60'>"&_
       "    <div class='checkbox-custom checkbox-primary'>"&_

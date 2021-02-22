@@ -1034,8 +1034,12 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             <%
 
         case "multipleModal"
-            btn="<button type='button' class='btn btn-default btn-block' onclick='openComponentsModal(`quickField_multipleModal.asp?I="&fieldName&"`, {v: $(""#"&fieldName&""").val()}, `Gerenciar "&label&"`, true, function(data){closeComponentsModal(true)})'> "&_
-                    "<i class='fa fa-plus'></i> "&label&" "&_
+            'Envio de Ações Edit,Insert ao clicar no salvar do modal. Ex.: P=paginaDaAcao&acao=update&refresh=true
+            if columnToShow<>"" then
+                acaoSQL = "&"&columnToShow
+            end if
+            btn="<button type='button' id='btn_"&fieldName&"' name='btn_"&fieldName&"' class='btn btn-default btn-block' onclick='openComponentsModalPost(`quickField_multipleModal.asp?I="&fieldName&acaoSQL&"`, {v: $(""#"&fieldName&""").val()}, `Gerenciar "&label&"`, true, function(data){closeComponentsModal(true)})'> "&_
+                    "<i class='fa fa-plus'></i> "&label&" <span></span>"&_
                 "</button>" 
 
             'CONDIÇÃO PARA O USO DA VARIÁVEL fieldValue

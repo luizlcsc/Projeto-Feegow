@@ -30,7 +30,7 @@ t.close
 splTrans = split(x, "<STMTTRN>")
 tags = "TRNTYPE, DTPOSTED, TRNAMT, FITID, CHECKNUM, MEMO, BANKID, DTSERVER, TRNUID, ACCTID"
 
-
+db.execute("delete c.* FROM conciliacao c left JOIN sys_financialmovement mov ON mov.ConciliacaoID = c.id WHERE mov.id IS null")
 l = 0
 for i=0 to ubound(splTrans)
     Linha = splTrans(i)

@@ -47,7 +47,7 @@ for i=0 to ubound(splTrans)
         TRNAMT = conteudoTag(Linha, "TRNAMT")
         FITID = conteudoTag(Linha, "FITID")
         CHECKNUM = conteudoTag(Linha, "CHECKNUM")
-        MEMO = conteudoTag(Linha, "MEMO")
+        MEMO = replace(conteudoTag(Linha, "MEMO"), "'", "\'")
 
         Valor = replace(TRNAMT, ",", ".")
         DataO = left(DTPOSTED, 4) &"-"& mid(DTPOSTED, 5, 2) &"-"& mid(DTPOSTED, 7, 2)

@@ -101,7 +101,7 @@ end if
                     <div class="input-group">
                     <input id="FiltroP" class="form-control input-sm refina" autocomplete="off" placeholder="Buscar..." type="text">
                     <span class="input-group-btn">
-                    <button class="btn btn-sm btn-default" onclick="ListaProtocolos($('#FiltroP').val(), '', '')" type="button">
+                    <button class="btn btn-sm btn-default" onclick="ListaProtocolos($('#FiltroP').val(), '')" type="button">
                     <i class="fa fa-filter icon-filter bigger-110"></i>
                     Buscar
                     </button>
@@ -152,25 +152,30 @@ end if
     });
 
 
-    function ListaProtocolos(Filtro, X, Aplicar){
-    	$.post("ListaProtocolos.asp",{
-    		   Filtro:Filtro,
-    		   X: X,
-    		   Aplicar: Aplicar,
-    		   },function(data,status){
-    	  $("#ListaProtocolos").html(data);
-    	  Core.init();
-    		   });
+    function ListaProtocolos(Filtro, Grupo){
+        $.post("ListaProtocolos.asp", {
+            PacienteID: '<%=req("p")%>',
+            Filtro:Filtro,
+            Grupo: Grupo
+        }, function(data) {
+            $("#ListaProtocolos").html(data);
+            Core.init();
+        });
+    }
+
+    function grupo(idGrupo) {
+        ListaProtocolos($('#FiltroP').val(), idGrupo);
+        $('#iProntCont').click();
     }
 
     $('#FiltroP').keypress(function(e){
         if ( e.which == 13 ){
-    		ListaProtocolos($('#FiltroP').val(), '', '');
+    		ListaProtocolos($('#FiltroP').val(), '');
     		return false;
     	}
     });
 
-    ListaProtocolos('', '', '');
+    ListaProtocolos('', '');
 
     function GerarNovo(t, p, m, i, a) {
         $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");

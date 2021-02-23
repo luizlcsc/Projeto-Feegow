@@ -52,8 +52,8 @@ while not rsForms.eof
         fieldJson = fieldToJSON(rsCamposForm.Fields)
         fieldJson = Left(fieldJson, Len(fieldJson) - 1)
 
-        ' se for checkbox ou seleção, recupera as opções do campo
-        if rsCamposForm("TipoCampoID") = 4 or rsCamposForm("TipoCampoID") = 6 then
+        ' se for checkbox, seleção ou radio, recupera as opções do campo
+        if rsCamposForm("TipoCampoID") = 4 or rsCamposForm("TipoCampoID") = 5 or rsCamposForm("TipoCampoID") = 6 then
             sqlOpcoesCampo    = "SELECT id, Nome FROM buiopcoescampos bo WHERE bo.CampoID = '" & rsCamposForm("id") & "'"
             set rsOpcoesCampo = db.execute(sqlOpcoesCampo)
 
@@ -88,6 +88,12 @@ camposFormJson = camposFormJson & "}"
 %>
 
 <style>
+    #app-regras .modal-body {
+        max-height: 70vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
     #app-regras .select[tabindex="-1"], #app-regras .input-hidden {
         display: block !important;
         position: absolute;

@@ -178,15 +178,19 @@ function geraBoleto(ParcelaID) {
         end if
         %>
     </td>
-    <% set vcaGuia = db.execute("SELECT * FROM itensinvoice WHERE invoiceid ="&req("I"))
-           itenId = vcaGuia("id")
-           guias = db.execute("SELECT * from tissguiasinvoice where ItemInvoiceID ="&itenId)
-           idGuia = guias("GuiaId")
-           guiaslotes = db.execute("SELECT * FROM tissguiasadt WHERE id ="&idGuia)
-           loteid = guiaslotes("loteid")
-           lotedata = db.execute("SELECT * FROM tisslotes WHERE id ="&loteid)
-           dataprev = lotedata("dataprevisao")
+    <% 
+        sqlDataPrev = "SELECT tl.dataprevisao FROM itensinvoice ii " &_
+                      "INNER JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID = ii.id " &_
+                      "INNER JOIN tissguiasadt tgs ON tgs.id = tgi.GuiaID " &_
+                      "INNER JOIN tisslotes tl ON tl.id = tgs.LoteID " &_
+                      "WHERE ii.InvoiceID = '" & req("I") & "' LIMIT 1 "
+        set rsDataPrev = db.execute(sqlDataPrev)
 
+        if rsDataPrev.eof then
+            dataprev = ParcelaData
+        else
+            dataprev = rsDataPrev("dataprevisao")
+        end if
         %>
     <td><%=quickField("datepicker", "Date"&ParcelaID, "", 3, dataprev, " text-right disable", "", " required"&primParc)%></td>
     <td><%=quickField("text", "Name"&ParcelaID, "", 3, Name, " text-right disable ", "", "  placeholder='Opcional'  "&primParc)%></td>

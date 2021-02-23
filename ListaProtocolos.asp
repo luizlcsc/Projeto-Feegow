@@ -44,7 +44,7 @@ set listaProtocolos = nothing
 
 
     function aplicarProtocolo(ProtocoloID) {
-        $.post("PacientesProtocolosConteudo.asp?Tipo=I&ProtocoloID="+ProtocoloID +"&pacienteID="+ $("#pacienteID").val() + "&ID="+ $("#ID").val(), {
+        $.post("PacientesProtocolosConteudo.asp?Tipo=I&ProtocoloID="+ProtocoloID +"&PacienteID="+ $("#PacienteID").val() + "&ID="+ $("#ID").val(), {
             }, function (data) {
             $("#PacientesProtocolosConteudo").html(data);
         });

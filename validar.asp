@@ -223,7 +223,7 @@ function TISS__FormataConteudo(Conteudo)
     Conteudo = RemoveCaracters(Conteudo,"-_./,")
     Conteudo = AlteraCaracters(Conteudo,"º°&","..e")
 
-    TISS__FormataConteudo = Conteudo
+    TISS__FormataConteudo = trim(Conteudo)
 End Function
 
 function TISS__RemoveCaracters(Conteudo)

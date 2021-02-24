@@ -38,7 +38,7 @@ Ate = req("Ate")
                                   " ifnull((select sum(ifnull(Desconto,0)) from itensinvoice where CategoriaID in (201, 212) and InvoiceID=i.id),0) IRPJ, "&_
                                   " ifnull((select sum(ifnull(Desconto,0)) from itensinvoice where CategoriaID=197 and InvoiceID=i.id),0) Cofins, "&_
                                   " ifnull((select sum(ifnull(Desconto,0)) from itensinvoice where CategoriaID=200 and InvoiceID=i.id),0) PIS, "&_
-                                  " ifnull((select sum(ifnull(Acrescimo,0)+ValorUnitario) from itensinvoice where Descricao LIKE 'Multa por atraso' and CategoriaID IN(203,101) and InvoiceID=ii.InvoiceID),0) Multa, "&_
+                                  " ifnull((select sum(ifnull(Acrescimo,0)+ValorUnitario) from itensinvoice where (Descricao LIKE 'Multa - BOLETO' OR Descricao LIKE 'Multa por atraso') and CategoriaID IN(203,101,241) and InvoiceID=ii.InvoiceID),0) Multa, "&_
                                   " ifnull(transi.Fee,0) TaxaCartao, transi.DateToReceive, mPay.PaymentMethodID, transi.TransactionID, movCred.Date DateCartaoCredito, trans.BandeiraCartaoID, paym.PaymentMethod "&_
                                   " FROM sys_financialmovement mPay "&_
                                   " LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=mPay.id "&_

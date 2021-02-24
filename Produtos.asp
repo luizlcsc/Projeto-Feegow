@@ -343,6 +343,9 @@ end if
             <div id="divLancamentos" class="tab-pane">
                 Carregando...
             </div>
+            <div id="divFaturamento" class="tab-pane">
+                Carregando...
+            </div>
             <div id="divInteracoesEstoque" class="tab-pane">
                 Carregando...
             </div>

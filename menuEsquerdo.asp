@@ -1619,6 +1619,9 @@ select case lcase(req("P"))
             <%
             end if
             %>
+            <li>
+                <a data-toggle="tab" href="#divFaturamento" onclick="ajxContent('ProdutosFaturamento', '<%=req("I")%>', 1, 'divFaturamento');"><span class="fa fa-list-ol icon-rotate-90"></span> <span class="sidebar-title">Faturamento</span></a>
+            </li>
             <li id="InteracoesEstoque" class="Modulo-Medicamento">
                 <a data-toggle="tab" href="#divInteracoesEstoque" onclick="ajxContent('InteracoesEstoque', '<%=req("I")%>', 1, 'divInteracoesEstoque');"><span class="fa fa-folder"></span> <span class="sidebar-title">Interações</span></a>
             </li>

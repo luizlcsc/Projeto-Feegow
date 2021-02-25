@@ -82,9 +82,11 @@ if not FormConfigSQL.eof then
                 </thead>
                 <tbody>
                 <%
+    Response.Buffer
+
 
     while not FormSQL.eof
-
+	    response.Flush()
                 %>
                     <tr>
                         <td><%=FormSQL("DataHora")%></td>

@@ -1,4 +1,4 @@
-﻿<!--#include file="connect.asp"-->
+<!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
 {
 <%
@@ -47,11 +47,8 @@ if aut(lcase(ref("resource"))&"A")=1 then
         if ref("nascimento")<>"" then
             sqlNascimento = " AND Nascimento="&mydatenull(ref("nascimento"))
         end if
-
         sqlNomeDaMae = " id IN ( (select PacienteID from pacientesrelativos where ((TRIM(Nome) like '%"&ref("q")&"%' ) and sysActive=1 and parentesco = 2 ) ) )"
         sqlTelefone = " OR replace(replace(replace(replace(Tel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Tel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' "
-
-
         if isnumeric(ref("q")) and ref("q")<>"" then
             sql = "select id, NomePaciente, Nascimento from pacientes where (id like '%"&ref("q")&"' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&ref("q")&"%','.',''),'-','') and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" " & sqlTelefone &" order by NomePaciente limit "& page*30 &", 30"
         elseif isdate(ref("q")) and ref("q")<>"" then

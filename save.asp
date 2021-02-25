@@ -3,6 +3,7 @@
 <!--#include file="webhookFuncoes.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="Classes/queryActionsLogs.asp"-->
 <%
 tableName = ref("P")
 id = ref("I")
@@ -311,8 +312,8 @@ if lcase(ref("P"))="profissionais" or lcase(ref("P"))="funcionarios" then
 end if
 
 
-for i=0 to ubound(spl)
-	spl2 = split(spl(i), "=")
+for spl_i=0 to ubound(spl)
+	spl2 = split(spl(spl_i), "=")
 	inputsCompare = inputsCompare&"|"&spl2(0)&"|"
 next
 'response.Write("select * from cliniccentral.sys_resources where tableName='"&tableName&"'")
@@ -398,7 +399,7 @@ if not getResource.EOF then
 	end if
 
 	sql = "update "&tableName&" set "&sqlFields&" where id="&id
-'	response.Write(sql)
+	
 	if erro<>"" then
         %>
         new PNotify({
@@ -419,16 +420,23 @@ if not getResource.EOF then
                 end if
             end if
 
-            call gravaLogs(sql, op, "", "")
+            
+            if tableName<>"sys_smsemail" and logsJsonActive=true then 'NOVA VERSÃO DE LOGS EM JSON SOMENTE NESTE(S) ARQUIVO(S)
+                call gravaLogs(sql, op, "", "")
+            end if     
         end if
-
+        
         if req("Helpdesk") <> "" then
             set dblicense = newConnection("clinic5459", "")
             dblicense.execute(sql)
         else
-            db.execute(sql)
+            if tableName="sys_smsemail" and logsJsonActive=true then 'NOVA VERSÃO DE LOGS EM JSON SOMENTE NESTE(S) ARQUIVO(S)
+                call logsJson("SMS Email",sql,"Update","id="&id)
+            else
+                db.execute(sql)
+            end if            
         end if
-
+        
         %>
         gtag('event', '<% if Novo then response.write("new_"&tableName) else response.write("edit_"&tableName) end if %>', {
             'event_category': 'cadastros',
@@ -740,11 +748,16 @@ end if
 
 if lcase(ref("P"))="profissionais" then
     if ref("Especialidades")<>"" then
-        spl = split(ref("Especialidades"), ", ")
-        for i=0 to ubound(spl)
-            n = spl(i)
+        if inStr(ref("Especialidades"), ", ") > 0 then
+            spl = split(ref("Especialidades"), ", ")
+            for i=0 to ubound(spl)
+                n = spl(i)
+                db.execute("update profissionaisespecialidades set RQE='"&ref("RQE"&n)&"',EspecialidadeID="&treatvalnull(ref("EspecialidadeID"&n))&", Conselho='"&ref("Conselho"&n)&"', UFConselho='"&ref("UFConselho"&n)&"', DocumentoConselho='"&ref("DocumentoConselho"&n)&"' where id="&n)
+            next
+        else
+            n = ref("Especialidades")
             db.execute("update profissionaisespecialidades set RQE='"&ref("RQE"&n)&"',EspecialidadeID="&treatvalnull(ref("EspecialidadeID"&n))&", Conselho='"&ref("Conselho"&n)&"', UFConselho='"&ref("UFConselho"&n)&"', DocumentoConselho='"&ref("DocumentoConselho"&n)&"' where id="&n)
-        next
+        end if
     end if
     call odonto()
 end if

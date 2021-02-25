@@ -180,9 +180,9 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                             " LEFT JOIN convenios c1 ON c1.id=p.ConvenioID1                                                         "&chr(13)&_
                             " LEFT JOIN convenios c2 ON c2.id=p.ConvenioID2                                                         "&chr(13)&_
                             " LEFT JOIN convenios c3 ON c3.id=p.ConvenioID3                                                         "&chr(13)&_
-                            " LEFT JOIN conveniosplanos pla1 ON pla1.ConvenioID=c1.id                                               "&chr(13)&_
-                            " LEFT JOIN conveniosplanos pla2 ON pla2.ConvenioID=c2.id                                               "&chr(13)&_
-                            " LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id                                               "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla1 ON pla1.id=p.PlanoID1                                                  "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla2 ON pla2.id=p.PlanoID2                                                  "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla3 ON pla3.id=p.PlanoID3                                                  "&chr(13)&_
                             " LEFT JOIN corpele corPel ON corPel.id=p.`CorPele`                                                     "&chr(13)&_
                             " LEFT JOIN pacientesrelativos AS pacrel ON pacrel.PacienteID=p.id AND pacrel.Dependente='S'            "&chr(13)&_
                             " where p.id="&treatvalzero(item_PacienteID)                                                             &chr(13)&_
@@ -560,7 +560,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           'response.write("RECIBOID:::::: "&item_ReciboID)
           if item_ReciboID>0 then
             'QUERY DE REFERENCIA ifrReciboIntegrado.asp
-            qRecibosSQL = "SELECT COALESCE(CONCAT(debito.InvoiceID,'.',rec.id),debito.InvoiceID) AS ReciboID, IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','CrÃ©dito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "_
+            qRecibosSQL = "SELECT debito.sysDate as ReciboSysDate, COALESCE(CONCAT(debito.InvoiceID,'.',rec.id),debito.InvoiceID) AS ReciboID, IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','CrÃ©dito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "_
             &"FROM sys_financialmovement debito "_
             &"LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id "_
             &"LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "_
@@ -580,6 +580,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               conteudo = replace(conteudo, "[Recibo.Protocolo]", RecibosSQL("ReciboID")&"" )
               conteudo = replace(conteudo, "[Recibo.DataVencimento]", RecibosSQL("DataVencimento")&"" )
               conteudo = replace(conteudo, "[Recibo.DataPagamento]", RecibosSQL("DataPagamento")&"" )
+              conteudo = replace(conteudo, "[Recibo.Data]", RecibosSQL("ReciboSysDate")&"" )
+              conteudo = replace(conteudo, "[Recibo.DataExtenso]", formatdatetime(RecibosSQL("ReciboSysDate"),1)&"" )
             end if
             RecibosSQL.close
             set RecibosSQL = nothing
@@ -712,5 +714,5 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 'response.write("<script>console.log('VALOR::: "&UnidadeID&"')</script>")
 end function
 '***** EXEMPLO DE USO DA FUNÇÃO ******
-'response.write(TagsConverte("Endereço: [Unidade.EnderecoCompleto]<br> agendamento: [Agendamento.Procedimento] Hora: [Agendamento.Hora] <hr>Profissional: [Profissional.Nome] <br> Assinatura<br> [Profissional.Assinatura]","UnidadeID_1|AgendamentoID_274564|ProfissionalID_16",""))
+'response.write(TagsConverte("paciente: [Paciente.Nome]<br>Convenio: [Paciente.Convenio1]<br>Plano: [Paciente.Plano1]<br>Recibo: [Recibo.Data] ([Recibo.DataExtenso])","PacienteID_140243|AgendamentoID_274564|ProfissionalID_16|ReciboID_495278",""))
 %>

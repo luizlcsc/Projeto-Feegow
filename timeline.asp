@@ -26,7 +26,7 @@ if req("X")<>"" then
     end if
     if req("Tipo")="|Diagnostico|" then
         'db_execute("delete from pacientespedidos where id="& req("X"))
-        db_execute("update pacientesdiag set sysActive=-1 where id="& req("X"))
+        db_execute("update pacientesdiagnosticos set sysActive=-1 where id="& req("X"))
     end if
     if req("Tipo")="|Protocolos|" then
         'db_execute("update pacientesdiag set sysActive=-1 where id="& req("X"))
@@ -39,6 +39,9 @@ if req("X")<>"" then
     end if
     if req("Tipo")="|Protocolos|" then
         db_execute("update pacientesprotocolos set sysActive=-1 where id="& req("X"))
+    end if
+    if req("Tipo")="|Tarefas|" then
+        db_execute("delete from tarefasmsgs where id="& req("X"))
     end if
 end if
 

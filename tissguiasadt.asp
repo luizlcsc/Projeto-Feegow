@@ -668,7 +668,7 @@ min-width: 150px;
   </div>
 </div>
 
-<form id="GuiaSADT" action="" method="post" >
+<form id="GuiaSADT" action="" method="post" novalidate>
             <div class="row">
 	            <div class="col-md-10">
                 <%
@@ -708,7 +708,7 @@ min-width: 150px;
             </div>
 
             <div class="row">
-                <div class="col-md-3"><%= selectInsert("* Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='fa fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div>
+                <div class="col-md-3"><%= selectInsert("* Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um Paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='fa fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", " required", "") %></div>
                 <%= quickField("simpleSelect", "gConvenioID", "* Conv&ecirc;nio", 2, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
                 <div class="col-md-2" id="tissplanosguia"><!--#include file="tissplanosguia.asp"--></div>
                 <%
@@ -774,7 +774,7 @@ min-width: 150px;
                     </span>
                 </div>
                 <%= quickField("text", "ContratadoSolicitanteCodigoNaOperadora", "C&oacute;digo na Operadora", 2, ContratadoSolicitanteCodigoNaOperadora, "", "", " autocomplete='codigo-na-operadora' ") %>
-                <%= quickField("datepicker", "DataSolicitacao", "Data da Solicita&ccedil;&atilde;o", 2, DataSolicitacao, "", "", " required") %>
+                <%= quickField("datepicker", "DataSolicitacao", "Data da Solicita&ccedil;&atilde;o", 2, DataSolicitacao, "", "", "") %>
                 <%= quickField("text", "IndicacaoClinica", "Indica&ccedil;&atilde;o Cl&iacute;nica", 5, IndicacaoClinica, "", "", "") %>
             </div>
 
@@ -819,8 +819,8 @@ min-width: 150px;
             </div>
             <div class="row">
                 <div class="col-md-3" id="divContratado"><% server.Execute("listaContratado.asp") %></div>
-                <%= quickField("text", "CodigoNaOperadora", "* C&oacute;digo na Operadora", 2, CodigoNaOperadora, "", "", "") %>
-                <%= quickField("text", "CodigoCNES", "* C&oacute;digo CNES", 2, CodigoCNES, "", "", " pattern='[0-9]{7}'") %>
+                <%= quickField("text", "CodigoNaOperadora", "* C&oacute;digo na Operadora", 2, CodigoNaOperadora, "", "", " required") %>
+                <%= quickField("text", "CodigoCNES", "* C&oacute;digo CNES", 2, CodigoCNES, "", "", " pattern='[0-9]{7}' required") %>
             </div>
             <br />
             <div class="row">
@@ -1146,20 +1146,36 @@ $("#Contratado, #UnidadeID").change(function(){
 $("#ContratadoSolicitanteID").change(function(){
     tissCompletaDados("ContratadoSolicitante", $(this).val());
 });
+
 var isSolicitar = false;
 var SalvarEimprimir = false;
-$("#GuiaSADT").submit(function(){
 
+$('#GuiaSADT').on('submit', function (event) {
+  event.preventDefault();
+
+    const form = $('#GuiaSADT');
+    form.find('input[required], select[required]').each(function() {
+        let fieldRequired = $(this);  
+
+        fieldRequired.parent().removeClass('has-success');
+        fieldRequired.parent().removeClass('has-error');
+
+        if(fieldRequired.val() > 0 || fieldRequired.val() != ""){ 
+            fieldRequired.parent().addClass('has-success');
+        }else{
+            fieldRequired.parent().addClass('has-error');
+        }
+    });
+ 
     var $plano = $("#PlanoID"),
         planoId = $plano.val();
 
     if(planoId=='0' && $plano.attr("required") === "required"){
-        showMessageDialog("Preencha o plano", "danger");
+        showMessageDialog("Preencha o Plano", "danger");
         return false;
     }
 
     setTimeout(() => {
-
         let isRedirect = "";
         if(isSolicitar)
             isRedirect="S";
@@ -1173,7 +1189,6 @@ $("#GuiaSADT").submit(function(){
                 if(SalvarEimprimir){
                     imprimirGuiaSADT();
                     timeoutSave = 1000;
-
                 }
                 setTimeout(function() {
                     let result = eval(data);
@@ -1192,8 +1207,7 @@ $("#GuiaSADT").submit(function(){
         });
     }, 120);
 	return false;
-});
-
+})
 
 function AutorizarGuiaTisss()
 {

@@ -123,6 +123,13 @@ set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where
             Enviar esta informa&ccedil;&atilde;o para recepção ao finalizar atendimento</span></label>
 
         </div>
+        <% if TipoCampoID = 16 then %>
+        <div class="col-xs-12"><br>
+            <label><input type="checkbox" class="ace" name="EnviarDadosCID" value="1"<%if pCampo("EnviarDadosCID")=1 then%> checked<%end if%>/><span class="lbl">
+            Enviar o CID para a aba Diagnóstico CID-10
+
+        </div>
+        <%end if %>
     </div>
         <hr class="sort alt">
     <div class="row">
@@ -729,8 +736,9 @@ function saveEdit(I, W, F, O, DisNo){
         alert("Informe um nome para a nova informação.");
         return;
     }
-
+    
 	$.post("formsSalvaEdicao.asp?I="+I+"&W=0&F="+F+"&O="+O, $("#frmec1, #frmec2").serialize(), function(data, status){ eval(data); });
+
 }
 function addOption(A, I){
 	$.post("ValoresCampos.asp?I="+I+"&A="+A, '', function(data, status){
@@ -738,7 +746,14 @@ function addOption(A, I){
 	});
 }
 function updateOption(A, I, CI){
-	$.post("ValoresCampos.asp?I="+I+"&CI="+CI+"&A="+A+"&Valor="+$('#ValorOpcao'+CI).val()+"&Check="+$('#CheckOpcao'+CI).prop('checked')+"&Nome="+$('#NomeOpcao'+CI).val(), function(data, status) {
+    let nomeValor = $('#NomeOpcao'+CI).val();
+    let valorValor = $('#ValorOpcao'+CI).val();
+	$.post("ValoresCampos.asp?I="+I+"&CI="+CI+"&A="+A+"&Check="+$('#CheckOpcao'+CI).prop('checked'),
+    {
+        Nome:nomeValor,
+        Valor:valorValor
+    },
+    function(data, status) {
 		if(A=="X"){
 			$('#ValoresCampos').html(data);
 		}

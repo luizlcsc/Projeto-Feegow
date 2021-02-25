@@ -748,12 +748,16 @@ end if
 
 if lcase(ref("P"))="profissionais" then
     if ref("Especialidades")<>"" then
-        spl = split(ref("Especialidades")&"", ", ")
-        
-        for jj=0 to ubound(spl)
-            n=spl(jj)
+        if inStr(ref("Especialidades"), ", ") > 0 then
+            spl = split(ref("Especialidades"), ", ")
+            for i=0 to ubound(spl)
+                n = spl(i)
+                db.execute("update profissionaisespecialidades set RQE='"&ref("RQE"&n)&"',EspecialidadeID="&treatvalnull(ref("EspecialidadeID"&n))&", Conselho='"&ref("Conselho"&n)&"', UFConselho='"&ref("UFConselho"&n)&"', DocumentoConselho='"&ref("DocumentoConselho"&n)&"' where id="&n)
+            next
+        else
+            n = ref("Especialidades")
             db.execute("update profissionaisespecialidades set RQE='"&ref("RQE"&n)&"',EspecialidadeID="&treatvalnull(ref("EspecialidadeID"&n))&", Conselho='"&ref("Conselho"&n)&"', UFConselho='"&ref("UFConselho"&n)&"', DocumentoConselho='"&ref("DocumentoConselho"&n)&"' where id="&n)
-        next
+        end if
     end if
     call odonto()
 end if

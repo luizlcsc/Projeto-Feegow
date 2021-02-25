@@ -809,14 +809,27 @@ end if
                 if(!HorarioAdicionado){
                     $( classe + ", .l").each(function(){
                             var gradeId = $(this).data("grade");
+                            
+                            let ultimoHorarioGrade = '0000';
+                            ($('tbody[data-localid='+'<%=comps("LocalID")%>'+']').length == 1) ? ultimoHorarioGrade = $('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:last-child')[0].id : false;
 
-                           if ( $(this).attr("data-horaid")>'<%=HoraComp%>' )
+                           if ( $(this).attr("data-horaid")>'<%=HoraComp%>' && ('<%=HoraComp%>' <= ultimoHorarioGrade || ultimoHorarioGrade == '0000') )
                            {
                                 <%if session("FilaEspera")<>"" then %>
                                     $('[data-horaid=<%=HoraComp%>]').remove();
                                 <% end if %>
 
                                 $(this).before(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                                return false;
+                           }
+
+                           if ( '<%=HoraComp%>' > ultimoHorarioGrade && ultimoHorarioGrade != '0000' )
+                           {
+                                <%if session("FilaEspera")<>"" then %>
+                                    $('[data-horaid=<%=HoraComp%>]').remove();
+                                <% end if %>
+
+                                $($('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:last-child')[0]).after(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
                                 return false;
                            }
                     });

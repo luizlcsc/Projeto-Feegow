@@ -325,14 +325,14 @@ end if
                             'end if
 
                             boletoURL = "#"
-                            set boleto = dbc.execute("select * from clinic5459.iugu_invoices WHERE BillID ="& MovID&" ORDER BY DataHora DESC Limit 1")
+                            set boleto = dbc.execute("select * from clinic5459.iugu_invoices WHERE BillID ='"& MovID&"' ORDER BY DataHora DESC Limit 1")
                             if not boleto.eof then
                                 boletoURL = boleto("FaturaURL")
                             end if
 
                             IF boletoURL = "#" THEN
                                 'response.write("select * from clinic5459.boletos_emitidos WHERE MovementID ="& MovID&" ORDER BY DataHora DESC Limit 1")
-                                set boleto2 = dbc.execute("select * from clinic5459.boletos_emitidos WHERE MovementID ="& MovID&" ORDER BY DataHora DESC Limit 1")
+                                set boleto2 = dbc.execute("select * from clinic5459.boletos_emitidos WHERE MovementID ='"& MovID&"' ORDER BY DataHora DESC Limit 1")
                                 if not boleto2.eof then
                                     boletoURL = boleto2("InvoiceURL")
                                 end if

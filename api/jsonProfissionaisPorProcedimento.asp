@@ -12,9 +12,8 @@ function decodeArrayPipe(arrayString)
     decodeArrayPipe=resultDecodeArrayBarraEmPe
 end function
 
-procedimento_id=req("procedimento_id")
+procedimento_id=treatValZero(req("procedimento_id"))
 tipo_executantes=req("tipo_executantes")
-
 set ExecutantesDoProcedimentoSQL = db.execute("SELECT SomenteEspecialidades, OpcoesAgenda,SomenteProfissionaisExterno, SomenteFornecedor, SomenteProfissionais FROM procedimentos WHERE id="&procedimento_id)
 
 if not ExecutantesDoProcedimentoSQL.eof then

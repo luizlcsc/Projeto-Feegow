@@ -1,4 +1,4 @@
-﻿<!--#include file="connect.asp"-->
+<!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
 <!--#include file="Classes/ConnectionReadOnly.asp"-->
 {
@@ -75,7 +75,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
         end if
 
         IF ModoFranquia=false THEN
-            sqlNomeDaMae = " OR id IN ( (select PacienteID from pacientesrelativos where ((TRIM(Nome) like '%"&TermoBuscado&"%' ) and sysActive=1 and parentesco = 2 ) ) )"
+            sqlNomeDaMae = " id IN ( (select PacienteID from pacientesrelativos where ((TRIM(Nome) like '%"&TermoBuscado&"%' ) and sysActive=1 and parentesco = 2 ) ) )"
             sqlTelefone = " OR replace(replace(replace(replace(Tel1,'(',''),')',''),'-',''),' ', '') like '%"&TermoBuscado&"%' or replace(replace(replace(replace(Tel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' "
         END IF
         

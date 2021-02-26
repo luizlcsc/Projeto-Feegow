@@ -1,5 +1,5 @@
 <!--#include file="connect.asp"-->
-
+<!--#include file="./Classes/TagsConverte.asp"-->
 <%
 LaudoID = req("L")
 qLaudoSQL = "select l.*, p.NomePaciente, p.id PacienteProntuario, p.Nascimento from laudos l LEFT JOIN pacientes p ON p.id=l.PacienteID WHERE l.id="& LaudoID
@@ -63,40 +63,16 @@ else
         end if
     end if
 
-    if session("UnidadeID")=0 then
-        set getUnit = db.execute("select NomeFantasia, Tel1 from empresa")
-        if not getUnit.eof then
-          NomeEmpresa = getUnit("NomeFantasia")
-          Telefone = getUnit("Tel1")
-        end if
-    else
-        set getUnit = db.execute("select NomeFantasia,Tel1 from sys_financialcompanyunits where id="&session("UnidadeID"))
-        if not getUnit.eof then
-            NomeEmpresa = getUnit("NomeFantasia")
-            Telefone = getUnit("Tel1")
-        end if
-    end if
-
     set prot = db.execute("SELECT LaudosProtocolo FROM impressos")
     if not Prot.eof then
         ProtocoloConteudo = prot("LaudosProtocolo")&""
         if ProtocoloConteudo<>"" then
-            ProtocoloConteudo = replaceTags(ProtocoloConteudo, PacienteProntuario, session("UserID"), session("UnidadeID"))
-
-
-            ProtocoloConteudo = replace(ProtocoloConteudo, "[Usuario.Nome]", NomeUsuario)
-            ProtocoloConteudo = replace(ProtocoloConteudo, "[Sistema.Hora]", now())
+            
+            ProtocoloConteudo = (tagsConverte(ProtocoloConteudo,"PacienteID_"&PacienteProntuario&"|UnidadeID_"&session("UnidadeID")&"|ProcedimentoID_"&ProcedimentoID,""))
+            
             ProtocoloConteudo = replace(ProtocoloConteudo, "[Protocolo.ID]", right("0000000"&Id,7))
-
-
-
-
             ProtocoloConteudo = replace(ProtocoloConteudo, "[Exame.Data]", DataExecucao)
-            ProtocoloConteudo = replace(ProtocoloConteudo, "[Procedimento.Nome]", Procedimento)
-            ProtocoloConteudo = replace(ProtocoloConteudo, "[Procedimento.DiasLaudo]", DiasLaudo&"")
             ProtocoloConteudo = replace(ProtocoloConteudo, "[ProfissionalSolicitante.Nome]", ProfissionalSolicitante)
-            ProtocoloConteudo = replace(ProtocoloConteudo, "[Unidade.Nome]", NomeEmpresa&"")
-            ProtocoloConteudo = replace(ProtocoloConteudo, "[Unidade.Telefone]", Telefone&"")
         else
             ProtocoloConteudo = ""
         end if

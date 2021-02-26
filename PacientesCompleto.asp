@@ -470,9 +470,26 @@ end if
                 </div>
             </div>
           </div>
-          <div id="pacientesDadosComplementares">
-            <% server.execute("pacientesDadosComplementares.asp")%>
-          </div>
+        <%
+        set perm = db.execute("select * from buipermissoes bp JOIN buiforms bf ON bf.id=bp.FormID AND bf.Tipo=5")
+        if not perm.eof then
+            FormID = perm("FormID")
+            if autForm(FormID, "IN", "") = true then
+            %>
+                <div id="pacientesDadosComplementares">
+                    <% server.execute("pacientesDadosComplementares.asp")%>
+                </div>
+            <% 
+            end if
+        else
+            %>
+                <div id="pacientesDadosComplementares">
+                    <% server.execute("pacientesDadosComplementares.asp")%>
+                </div>
+            <%
+            perm.close
+        end if
+        %>
           <div class="row">
                 <div class="col-xs-12">
             	    <!--#include file="PacientesConvenio.asp"-->

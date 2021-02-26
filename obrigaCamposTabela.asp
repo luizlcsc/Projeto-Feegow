@@ -37,7 +37,7 @@ end if
             </td>
             <td><%
                 if perm("Tipo")="Paciente" then
-                    call quickfield("multiple", "Obrigar"&perm("id"), "Campos obrigatórios", 12, perm("Obrigar"), "select label, ColumnName id from cliniccentral.sys_resourcesfields where ResourceID=1 UNION ALL select 'Convênio' label , 'Convenio' id  UNION ALL select 'Programação de Agendamentos (Retornos)' label,'Retornos' id UNION ALL select 'Pessoas Relacionadas e Parentes' label, 'Relativos' id order by id", "label", "")
+                    call quickfield("multiple", "Obrigar"&perm("id"), "Campos obrigatórios", 12, perm("Obrigar"), "select label, ColumnName id from cliniccentral.sys_resourcesfields where ResourceID=1 UNION ALL select 'Programação de Agendamentos (Retornos)' label,'Retornos' id UNION ALL select 'Pessoas Relacionadas e Parentes' label, 'Relativos' id order by id", "label", "")
                 elseif perm("Tipo")="Agendamento" then
                     camposPacienteAgenda="'Nascimento', 'CPF', 'Documento', 'IndicadoPor', 'Profissao', 'Origem', 'Email1','Sexo', 'NomeSocial', 'Pendencias', 'Matricula1'"
                     camposPacienteAgendaObrigar="'Nascimento', 'CPF', 'Documento', 'IndicadoPor', 'Profissao', 'Origem', 'Email1', 'Cel1', 'Sexo', 'NomeSocial', 'Pendencias', 'Matricula1'"

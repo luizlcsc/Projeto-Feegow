@@ -264,7 +264,7 @@ prefixo = right(prefixo, 20)
 						Quantidade = TirarAcento(procs("Quantidade"))
 						Fator = treatvaltiss(1)
 						ValorUnitario = procs("Fator")*procs("ValorUnitario")
-						ValorTotal = treatvaltiss(procs("ValorTotal"))
+						ValorTotal = procs("ValorTotal")
 
 						set SerieSQL = db.execute("SELECT "&mydatenull(procs("Data"))&" as Data")
                         if Quantidade&"" <> "" then

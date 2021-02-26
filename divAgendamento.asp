@@ -1,7 +1,8 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
 <%
-
+HorarioAgoraSQL = db.execute("select now() as now")
+HorarioAgora = HorarioAgoraSQL("now")
 set config = db.execute("select ChamarAposPagamento from sys_config limit 1")
 HorarioVerao="N"
 
@@ -1523,7 +1524,7 @@ function excluiAgendamento(ConsultaID, Confirma){
 
 	$.ajax({
 		type:"POST",
-		url:"excluiAgendamento.asp?ConsultaID="+ConsultaID+"&Confirma="+Confirma,
+		url:"excluiAgendamento.asp?ConsultaID="+ConsultaID+"&Confirma="+Confirma+"&token=98b4d9bbfdfe2170003fcb23b8c13e6b",
 		data:$("#formExcluiAgendamento").serialize(),
 		success:function(data){
 			$("#div-agendamento").html(data);
@@ -1543,9 +1544,36 @@ function repeteAgendamento(ConsultaID){
 setInterval(function(){abasAux()}, 3000);
 
 function atualizaHoraAtual(){
-    var time = new Date();
+    let time = '<%=HorarioAgora%>'
+    time = new Date(time);
     var M = time.getMinutes();
     var H = time.getHours();
+    <%
+    getTimeZoneSQL = "select FusoHorario from vw_unidades where sysActive = 1 and id = '"&session("UnidadeID")&"'"
+    set timeZoneUnidade = db.execute(getTimeZoneSQL)
+    timeZoneUnidadeResult = ""
+    if not timeZoneUnidade.eof then
+        timeZoneUnidadeResult = timeZoneUnidade("FusoHorario")&""
+    end if
+    
+    if timeZoneUnidadeResult = "" then 
+        timeZoneUnidadeResult = "-3"
+    end if
+    if timeZoneUnidadeResult = "" then 
+        timeZoneUnidadeResult = "-3"
+    end if
+    %>
+    var timeZoneUnidadeResult = <%=timeZoneUnidadeResult%>;
+
+    if (timeZoneUnidadeResult !== -3){
+        var tempo = new Date().toLocaleString("pt-br", {timeZone: "America/Sao_Paulo"});
+        H = Number(tempo.split(" ")[1].split(":")[0]);
+        M = Number(tempo.split(" ")[1].split(":")[1]);
+
+        H = H + (timeZoneUnidadeResult +3)
+
+        // console.log(H);
+    }
 
     <%
     if HorarioVerao="" then
@@ -1705,7 +1733,7 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
         let formapgt = $("[name=rdValorPlano]:checked").val();
         let convenioID = $("#ConvenioID").val();
         let linhas = $('select[id^="ProcedimentoID"]')
-
+        let planoID = $("#PlanoID").val();
         $.post("procedimentosagenda.asp?EquipamentoID="+Equipamento, {
             A: A, I: I ,
             LocalID:LocalID,
@@ -1715,6 +1743,7 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
             EquipamentoID: Equipamento,
             Forma: formapgt,
             ConvenioSelecionado: convenioID,
+            PlanoSelecionado: planoID,
             linhas: count //"-"+linhas.length
             }, function (data) {
             // addProcedimentos(I);

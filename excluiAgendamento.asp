@@ -3,6 +3,7 @@
 <!--#include file="Classes/Logs.asp"-->
 <%
 ConsultaID = request.QueryString("ConsultaID")
+token = request.QueryString("token")
 if request.QueryString("Confirma")="0" then
 	%>
 <form method="post" action="" id="formExcluiAgendamento" name="formExcluiAgendamento">
@@ -63,7 +64,7 @@ if request.QueryString("Confirma")="0" then
         </button>
     </div>
 </div>
-
+    <input type='hidden'>
 </form>
 <script >
     $(document).ready(function() {
@@ -80,6 +81,7 @@ if request.QueryString("Confirma")="0" then
 </script>
 	<%
 else
+
     agendaEquipamento = ref("tipoequipamento")
 	set pCon=db.execute("select * from agendamentos where id="&ConsultaID)
 	ProfissionalID=pCon("ProfissionalID")
@@ -102,12 +104,13 @@ else
 	
 '	response.Write(sql)
 	
-	db_execute(sql)
-
-	sqlDel = "update agendamentos set sysActive=-1 where id="&ConsultaID
-	call gravaLogs(sqlDel, "AUTO", "Agendamento excluído", "")
-
-	db_execute(sqlDel)
+    if token = "98b4d9bbfdfe2170003fcb23b8c13e6b" then
+        sqlDel = "update agendamentos set sysActive=-1 where id="&ConsultaID
+        call gravaLogs(sqlDel, "AUTO", "Agendamento excluído", "")
+        db_execute(sqlDel)
+    else
+        dd("funcionou")
+    end if
 	'call centralSMS("", "", "", ConsultaID)
 	'call centralEmail("", "", "", ConsultaID)
 	call googleCalendar("X", "", ConsultaID, "", "", "", "", "", "", "")

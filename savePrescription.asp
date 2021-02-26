@@ -58,7 +58,7 @@ recursoPermissaoUnimed = recursoAdicional(12)
                 	<span class="lbl"> Carimbar</span>
                 </label>
 
-                <label <% if session("Banco")="clinic3882" then %>style="display: none;" <% end if %>>
+                <label>
                     <input <% if ref("ControleEspecial")<>"true" then %> checked="checked" <% end if %> type="checkbox" id="Timbrado" name="Timbrado" class="ace" />
                     <span class="lbl"> Papel Timbrado</span>
                 </label>
@@ -96,7 +96,6 @@ recursoPermissaoUnimed = recursoAdicional(12)
     var imprimeData = 1;
     var impressaoTermica = 0;
     var carimbo = 1;
-
         
     gtag('event', 'nova_prescricao', {
         'event_category': 'prescricao',

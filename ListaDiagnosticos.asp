@@ -20,7 +20,7 @@ if req("X")<>"" and req("X")<>"0" then
 	db_execute("delete from pacientesdiagnosticos where id="&req("X"))
 end if
 
-set pdiag = db.execute("select * from pacientesdiagnosticos where PacienteID="&PacienteID)
+set pdiag = db.execute("select * from pacientesdiagnosticos where sysactive=1 and PacienteID="&PacienteID)
 
 if pDiag.eof then
 	%>
@@ -31,9 +31,19 @@ else%>
       <tbody>
         <%
         while not pdiag.eof
-            set pcid = db.execute("select * from cliniccentral.cid10 where id="&pdiag("CidID"))
+            urlbmj = getConfig("urlbmj")
+            IF urlbmj <> "" THEN 
+                sqlBmj = " (SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'"" class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_ 
+                        " FROM cliniccentral.cid10_bmj bmj" &_
+                        " WHERE bmj.cid10ID = cliniccentral.cid10.id) as bmj_link "
+            ELSE
+                sqlBmj = " '' as bmj_link  "
+            END IF
+            sqlcid = "select *, "&sqlBmj&" from cliniccentral.cid10 where id="&pdiag("CidID")
+            set pcid = db.execute(sqlcid)
             if not pcid.EOF then
-                cid = pcid("Codigo")&": "&pcid("Descricao")
+                cid = pcid("Codigo")&": "&pcid("Descricao")&" "& pcid("bmj_link")
+                'response.write (cid)
             end if
             %>
             <tr>

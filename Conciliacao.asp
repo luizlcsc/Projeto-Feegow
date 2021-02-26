@@ -30,11 +30,11 @@ t.close
 splTrans = split(x, "<STMTTRN>")
 tags = "TRNTYPE, DTPOSTED, TRNAMT, FITID, CHECKNUM, MEMO, BANKID, DTSERVER, TRNUID, ACCTID"
 
-
+db.execute("delete c.* FROM conciliacao c left JOIN sys_financialmovement mov ON mov.ConciliacaoID = c.id WHERE mov.id IS null")
 l = 0
 for i=0 to ubound(splTrans)
     Linha = splTrans(i)
-
+    linha = replace(Linha,"'","")
     if l=0 then
         Cabecalho = Linha
         BANKID = conteudoTag( Cabecalho, "BANKID" )
@@ -47,7 +47,7 @@ for i=0 to ubound(splTrans)
         TRNAMT = conteudoTag(Linha, "TRNAMT")
         FITID = conteudoTag(Linha, "FITID")
         CHECKNUM = conteudoTag(Linha, "CHECKNUM")
-        MEMO = conteudoTag(Linha, "MEMO")
+        MEMO = replace(conteudoTag(Linha, "MEMO"), "'", "")
 
         Valor = replace(TRNAMT, ",", ".")
         DataO = left(DTPOSTED, 4) &"-"& mid(DTPOSTED, 5, 2) &"-"& mid(DTPOSTED, 7, 2)

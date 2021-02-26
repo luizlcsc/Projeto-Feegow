@@ -123,7 +123,7 @@ end if
             end if
         wend
 
-        if UBound(listDates) <= 0 then 
+        if UBound(listDates) < 0 then 
             Response.ContentType = "application/json"
             Response.write("{""existeAgendamentosFuturos"":  false}")     
             Response.end       
@@ -148,7 +148,7 @@ end if
             end if
         next
 
-        set existsDatesConflict = db.execute("select count(id) >= 1 as existeAgendamento from agendamentos where Data in ("&datesString&") and Hora = '"&rfHora&"'") 
+        set existsDatesConflict = db.execute("select count(id) >= 1 as existeAgendamento from agendamentos where ProfissionalID = "&rfProfissionalID&" AND Data in ("&datesString&") and Hora = '"&rfHora&"'") 
 
         if existsDatesConflict("existeAgendamento") = "1" or validaBloqueio = 1 then
             Response.ContentType = "application/json"

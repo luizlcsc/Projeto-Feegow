@@ -132,6 +132,8 @@ end if
 
                         if Profissionais<>"" then
                             Profissionais = replace(Profissionais, "ESP","")
+                            Profissionais = replace(Profissionais&"","8_" , "")
+                            
                             set sqlEsps = db.execute("select group_concat(Especialidade separator ', ') especialidades from especialidades where sysActive=1 and id*(-1) in("& Profissionais &")")
                             strEspecialidades = sqlEsps("Especialidades") '& "("& Profissionais &")"
 

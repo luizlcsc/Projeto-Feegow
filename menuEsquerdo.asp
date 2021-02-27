@@ -2458,6 +2458,7 @@ select case lcase(req("P"))
     <li>
         <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
+
     <%
         set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
         if not labAutenticacao.eof then
@@ -2468,7 +2469,10 @@ select case lcase(req("P"))
         </li>
         <li>                
         <%
-            set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs ")
+            sqllabs = "SELECT distinct l.id, l.NomeLaboratorio "&_
+                      " FROM cliniccentral.labs l "&_
+                      " INNER JOIN labs_autenticacao la ON la.LabID = l.id"
+            set dadoslab = db.execute("sqllabs")
             while not dadoslab.eof
             %>
             <li>

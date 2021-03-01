@@ -435,7 +435,7 @@ end if
 					Conteudo = Conteudo & "</td><td width=""1%""><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"">"&compsHora&"</button></td>"&_ 
 					"<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
 					if comps("Encaixe")=1 then
-						Conteudo = Conteudo & "<span class=""label label-pink label-sm arrowed-in arrowed-in-right"">encaixe</span>"
+						Conteudo = Conteudo & "<span class=""label bg-alert label-pink label-sm arrowed-in mr10 arrowed-in-right"">encaixe</span>"
 					end if
 					Conteudo = Conteudo & "<span class=""nomePac"">"&replace(comps("NomePaciente")&" ", "'", "\'")&"</span>"
 					Conteudo = Conteudo & "</td>"&_ 

@@ -5666,4 +5666,16 @@ function dd(variable)
     response.write("<pre>"&description&"</pre>")
     Response.End
 end function
+
+function hasPermissaoTela(visualizar)
+
+    IF not (aut(visualizar)=1) THEN %>
+        <h1 class="text-center">
+            Você não tem permissão a visualizar esta tela.
+        </h1>
+    <%
+    response.end
+    END IF
+end function
+
 %>

@@ -152,7 +152,14 @@ end if
                         <td><%= t("Inicio") &" a "& t("Fim") %></td>
                         <td><button type="button" class="btn btn-xs btn-info"><i class="fa fa-copy" title="Duplicar tabela" onclick="location.href='./?P=TabelasPreco&Pers=1&DT=<%= t("id") %>'"></i></button></td>
                         <% if aut("|tabelasprecosA|")=1 then %>
-                        <td><a href="./?P=ProcedimentosTabelas&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a></td>
+                        <td>
+                            <% IF getConfig("NovoPrecoCusto") THEN %>
+                                <a href="./?P=ProcedimentosTabelas2&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a>
+                            <% ELSE %>
+                                <a href="./?P=ProcedimentosTabelas&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a>
+                            <% END IF %>
+
+                        </td>
                         <% end if %>
                         <% if aut("|tabelasprecosX|")=1 then %>
                             <td><a href="javascript:if(confirm('Tem certeza de que deseja excluir esta tabela?'))location.href='./?P=TabelasPreco&I=<%= t("id") %>&Pers=1&X=<%= t("id") %>'" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></a></td>

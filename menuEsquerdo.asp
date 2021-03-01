@@ -213,7 +213,12 @@ select case lcase(req("P"))
                     %>
                     <select name="EquipamentoID" id="EquipamentoID" class="form-control select2-single">
                         <%
-                set Prof = db.execute("select id, NomeEquipamento, '#CCC' Cor, UnidadeID from equipamentos where ativo='on' and sysActive=1 order by NomeEquipamento")
+                if aut("|ageoutunidadesV|") = 1 then
+                    set Prof = db.execute("select id, NomeEquipamento, '#CCC' Cor, UnidadeID from equipamentos where ativo='on' and sysActive=1 order by NomeEquipamento")
+                else
+                    set Prof = db.execute("select id, NomeEquipamento, '#CCC' Cor, UnidadeID from equipamentos where UnidadeID = "&Session("UnidadeID")&" AND ativo='on' and sysActive=1 order by NomeEquipamento")
+                end if
+
                 while not Prof.EOF
                         %>
                         <option style="border-left: <%=Prof("Cor")%> 10px solid; background-color: #fff;" value="<%=Prof("id")%>" <%=selected%>><%=ucase(Prof("NomeEquipamento"))%> - <%=getNomeLocalUnidade(Prof("UnidadeID"))%></option>

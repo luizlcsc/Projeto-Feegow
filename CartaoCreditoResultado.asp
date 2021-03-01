@@ -220,8 +220,8 @@
                                 ValorLiquidoFinal = ValorLiquidoFinal + ValorCredito
 								countQtd = countQtd+1
 
-								data = rec("DateToReceive")
-								if Parcela > 1 then
+								data = rec("DateToReceive")&""
+								if Parcela > 1 and data = "" then
 									dias = diasParaCredito * Parcela-1
 									data = dateadd("d",dias,data)
 								end if

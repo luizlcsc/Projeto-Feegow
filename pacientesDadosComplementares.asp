@@ -26,9 +26,10 @@ end if
 
 on error resume next
 
-set formCD = db.execute("select * from buiforms where Tipo=5 and sysActive=1")
+set formCD = db.execute("select * from buipermissoes bp JOIN buiforms bf ON bf.id=bp.FormID AND bf.Tipo=5 AND SysActive=1")
 while not formCD.eof
     set reg = db.execute("select * from `_"& formCD("id") &"` where PacienteID="& req("I"))
+    if autForm(formCD("FormID"), "IN", "") = true then
     %>
     <div class="panel">
         <div class="panel-heading">
@@ -84,6 +85,7 @@ while not formCD.eof
         </div>
     </div>
     <%
+    end if
 formCD.movenext
 wend
 formCD.close

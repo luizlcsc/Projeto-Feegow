@@ -111,13 +111,17 @@ end if
         <div class="text-center visible-print" id="headerExtrato">
             <h2 mtn ptn>
                 <%
-                qPacienteSQL = "select NomePaciente from pacientes where id='"&AccountID&"'"
-                set PacienteSQL = db.execute(qPacienteSQL)
-                if not PacienteSQL.eof then
-                    response.write(PacienteSQL("NomePaciente"))
+                if AccountID=3 then
+                    qPacienteSQL = "select NomePaciente from pacientes where id='"&AccountID&"'"
+                    set PacienteSQL = db.execute(qPacienteSQL)
+                    if not PacienteSQL.eof then
+                        response.write(PacienteSQL("NomePaciente"))
+                    end if
+                    PacienteSQL.close
+                    set PacienteSQL = nothing
+                else
+                    response.write("Nome do Cliente")
                 end if
-                PacienteSQL.close
-                set PacienteSQL = nothing
                 %>
             </h2>
             <h4>01/01/2000 a 10/12/2000</h4>

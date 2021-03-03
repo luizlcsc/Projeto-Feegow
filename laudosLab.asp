@@ -59,6 +59,7 @@ sqlProfissionais = "SELECT p.id, p.NomeProfissional " &_
 
         </div>
     </div>
+    
 
 
 <div class="panel">

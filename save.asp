@@ -571,11 +571,8 @@ if not getResource.EOF then
                 if lcase(getSubforms("tableName"))="vacina_serie_dosagem" and (tableName = "Procedimentos" or tableName = "procedimentos") then
               
                     seriedosagem = split(ref("id-vacina_serie_dosagem"), ", ")
-
-                    for i=0 to ubound(seriedosagem)
-
-                        m = seriedosagem(i)
-
+                    for contserie=0 to ubound(seriedosagem)
+                        m = seriedosagem(contserie)
                         if ref("PeriodoDias-vacina_serie_dosagem-"&m) = "" then
                             PeriodoDias = "null"
                         else 
@@ -586,9 +583,9 @@ if not getResource.EOF then
                 elseif getSubforms("tableName") = "vacina_serie" and (tableName = "Procedimentos" or tableName = "procedimentos") then
                     
                     serie = split(ref("id-vacina_serie"), ", ")
-                    
-                    for i=0 to ubound(serie)
-                        n = serie(i)
+
+                    for cont=0 to ubound(serie)
+                        n = serie(cont)
                         
                         db.execute("update vacina_serie set Titulo='"&ref("Titulo-vacina_serie-"&n)&"', Descricao='"&ref("Descricao-vacina_serie-"&n)&"' where id="&n)
                     next

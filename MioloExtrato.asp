@@ -1,3 +1,4 @@
+ <!--#include file="connect.asp"-->
 <%
 if session("DateFrom")="" then
 	session("DateFrom") = dateadd("m", -1, date())
@@ -108,7 +109,21 @@ end if
     </div>
     <div class="panel">
         <div class="text-center visible-print" id="headerExtrato">
-            <h2 mtn ptn>Nome do Cliente</h2>
+            <h2 mtn ptn>
+                <%
+                if AccountID=3 then
+                    qPacienteSQL = "select NomePaciente from pacientes where id='"&AccountID&"'"
+                    set PacienteSQL = db.execute(qPacienteSQL)
+                    if not PacienteSQL.eof then
+                        response.write(PacienteSQL("NomePaciente"))
+                    end if
+                    PacienteSQL.close
+                    set PacienteSQL = nothing
+                else
+                    response.write("Nome do Cliente")
+                end if
+                %>
+            </h2>
             <h4>01/01/2000 a 10/12/2000</h4>
         </div>
         <div id="Extrato" class="panel-body">

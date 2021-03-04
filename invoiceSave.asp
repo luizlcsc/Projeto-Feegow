@@ -485,7 +485,7 @@ if erro="" then
 				    DescontoInput=0
 				end if
 
-				if temdescontocadastrado=1 and  CCUR(ValorDesconto) <> CCUR(DescontoInput)  then
+				if temdescontocadastrado=1 and CCUR(DescontoInput) > 0  then
 					msgExtra = "Alguns itens necessitam de aprovação para o desconto"
 					set DescontosSQL = db.execute("select * from descontos_pendentes where ItensInvoiceID = "&NewItemID&"")
 					if not DescontosSQL.eof then

@@ -150,6 +150,10 @@ while not campos.eof
 	  if not isnull(ValorPadrao) then
 	  	ValorPadrao = replaceTags(ValorPadrao, PacienteID, session("UserID"), session("UnidadeID"))
 	  end if
+
+		if TipoCampoID=3 then
+			form_imgSRC = arqEx(ValorPadrao,"FORMULARIOS")&"&imageFallback=FALSE&dimension=full"
+		end if
 	  %>
       <!--#include file="formsCompiladorCampoPreenchidoPrint.asp"-->
 	  <%

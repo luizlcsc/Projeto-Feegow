@@ -10,8 +10,12 @@ end if
 
 <form id="frmExtrato">
     <%
-	AccountID = ref("AccountID")
-    AssociationID = left(AccountID,1)
+    if ref("AccountID")&""<>"" then
+        AccountID = ref("AccountID")
+        AssociationID = left(AccountID,1)
+    else
+        AccountID=0
+    end if    
 	if req("T")<>"" then
 		AccountID = req("T")
     %>
@@ -120,8 +124,6 @@ end if
                     end if
                     PacienteSQL.close
                     set PacienteSQL = nothing
-                else
-                    response.write("Nome do Cliente")
                 end if
                 %>
             </h2>

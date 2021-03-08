@@ -1011,14 +1011,16 @@ select case lcase(req("P"))
             </li>
             <%
         end if
-    case "laudos" , "frases", "laudosv2" 
+    case "laudos" , "frases", "laudoslab" 
         %>
         <li>
             <a  href="?P=Laudos&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
         </li>
-        <!--<li>
-            <a  href="?P=Laudosv2&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos <span class="label label-system label-xs fleft">Novo</span></span></a>
-        </li> -->
+        <%  if recursoAdicional(24)=4 then %>
+        <li>
+            <a  href="?P=laudosLab&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) <span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li> 
+        <% end if %>
         <li>
             <a  href="?P=Frases&Pers=0"><span class="fa fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases </span></a>
         </li>
@@ -2463,6 +2465,7 @@ select case lcase(req("P"))
     <li>
         <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
+
     <%
         set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
         if not labAutenticacao.eof then
@@ -2473,7 +2476,10 @@ select case lcase(req("P"))
         </li>
         <li>                
         <%
-            set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs ")
+            sqllabs = "SELECT distinct l.id, l.NomeLaboratorio "&_
+                      " FROM cliniccentral.labs l "&_
+                      " INNER JOIN labs_autenticacao la ON la.LabID = l.id"
+            set dadoslab = db.execute(sqllabs)
             while not dadoslab.eof
             %>
             <li>

@@ -110,7 +110,7 @@ if not tryLogin.EOF then
         ExibeChatAtendimento=True
     end if
 
-    if ClienteUnimed or AppEnv<>"production" or tryLogin("Status")<>"C" then
+    if (ClienteUnimed and tryLogin("Franquia")<>"P") or AppEnv<>"production" or tryLogin("Status")<>"C" then
         ExibeChatAtendimento=False
     end if
     

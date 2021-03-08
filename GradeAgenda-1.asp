@@ -816,7 +816,12 @@ end if
                             var gradeId = $(this).data("grade");
                             
                             let ultimoHorarioGrade = '0000';
-                            ($('tbody[data-localid='+'<%=comps("LocalID")%>'+']').length == 1) ? ultimoHorarioGrade = $('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:last-child')[0].id : false;
+                            
+                            if($('tbody[data-localid='+'<%=comps("LocalID")%>'+']').length == 1){
+                                let tamanhoGrade = parseInt($('tbody[data-localid=<%=comps("LocalID")%>]').children().length)
+                                ultimoHorarioGrade = $('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:nth-child('+(tamanhoGrade-1)+')')[0].id
+                            }
+
 
                            if ( $(this).attr("data-horaid")>'<%=HoraComp%>' && ('<%=HoraComp%>' <= ultimoHorarioGrade || ultimoHorarioGrade == '0000') )
                            {

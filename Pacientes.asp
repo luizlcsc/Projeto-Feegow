@@ -558,7 +558,10 @@ $(".tab").click(function(){
 
 $(".menu-aba-pacientes-dados-principais" ).click(function() {
   	$("#pacientesDadosComplementares").show();
-});	
+});
+$("#tabExtrato").click(function() {
+  	$("#pacientesDadosComplementares").hide();
+});
 
 function pront(U){
 	$("#pacientesDadosComplementares").hide();

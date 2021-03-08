@@ -571,11 +571,8 @@ if not getResource.EOF then
                 if lcase(getSubforms("tableName"))="vacina_serie_dosagem" and (tableName = "Procedimentos" or tableName = "procedimentos") then
               
                     seriedosagem = split(ref("id-vacina_serie_dosagem"), ", ")
-
-                    for i=0 to ubound(seriedosagem)
-
-                        m = seriedosagem(i)
-
+                    for contserie=0 to ubound(seriedosagem)
+                        m = seriedosagem(contserie)
                         if ref("PeriodoDias-vacina_serie_dosagem-"&m) = "" then
                             PeriodoDias = "null"
                         else 
@@ -586,9 +583,9 @@ if not getResource.EOF then
                 elseif getSubforms("tableName") = "vacina_serie" and (tableName = "Procedimentos" or tableName = "procedimentos") then
                     
                     serie = split(ref("id-vacina_serie"), ", ")
-                    
-                    for i=0 to ubound(serie)
-                        n = serie(i)
+
+                    for cont=0 to ubound(serie)
+                        n = serie(cont)
                         
                         db.execute("update vacina_serie set Titulo='"&ref("Titulo-vacina_serie-"&n)&"', Descricao='"&ref("Descricao-vacina_serie-"&n)&"' where id="&n)
                     next
@@ -650,32 +647,42 @@ if ref("NewForm")="1" then
 				db_execute("update buiopcoescampos set Selecionado='S' where id = '"&ref("input_"&CampoID)&"'")
 			case 9'tabela
 				'atualizando o título da tabela
-				c = 0
-				strUpTit = "update buitabelastitulos set "
-				while c<20
-					c=c+1
-					strUpTit = strUpTit&"c"&c&"='"& ref(CampoID&"_t"&c) &"', "
-				wend
-				strUpTit = left(strUpTit, len(strUpTit)-2)
-				strUpTit = strUpTit&" where CampoID="&CampoID
-				db_execute(strUpTit)
-				
-				'atualizando os valores padrão da tabela
-				set linhas = db.execute("select * from buitabelasmodelos where CampoID="&CampoID)
-				while not linhas.eof
-					c = 0
-					strUpLin = "update buitabelasmodelos set "
-					while c<20
-						c=c+1
-						strUpLin = strUpLin&"c"&c&"='"& ref(linhas("id")&"_c"&c) &"', "
-					wend
-					strUpLin = left(strUpLin, len(strUpLin)-2)
-					strUpLin = strUpLin&" where id="&linhas("id")
-					db_execute(strUpLin)
-				linhas.movenext
-				wend
-				linhas.close
-				set linhas = nothing
+                if ref("InputAtualiza")&""<>"" then
+                    InputAtualizaArray = split(ref("InputAtualiza"), "_")
+                    buiTabelasModelos_id = InputAtualizaArray(0)
+                    buiTabelasModelos_c = InputAtualizaArray(1)
+                    InputAtualizaSQL = "update buitabelasmodelos set "&buiTabelasModelos_c&"='"&ref(buiTabelasModelos_id&"_"&buiTabelasModelos_c)&"' where id="&buiTabelasModelos_id
+                    'response.write(InputAtualizaSQL)
+                    db_execute(InputAtualizaSQL)
+                else
+                    'atualizando o título da tabela
+                    c = 0
+                    strUpTit = "update buitabelastitulos set "
+                    while c<20
+                        c=c+1
+                        strUpTit = strUpTit&"c"&c&"='"& ref(CampoID&"_t"&c) &"', "
+                    wend
+                    strUpTit = left(strUpTit, len(strUpTit)-2)
+                    strUpTit = strUpTit&" where CampoID="&CampoID
+                    db_execute(strUpTit)
+                    
+                    'atualizando os valores padrão da tabela
+                    set linhas = db.execute("select * from buitabelasmodelos where CampoID="&CampoID)
+                    while not linhas.eof
+                        c = 0
+                        strUpLin = "update buitabelasmodelos set "
+                        while c<20
+                            c=c+1
+                            strUpLin = strUpLin&"c"&c&"='"& ref(linhas("id")&"_c"&c) &"', "
+                        wend
+                        strUpLin = left(strUpLin, len(strUpLin)-2)
+                        strUpLin = strUpLin&" where id="&linhas("id")
+                        db_execute(strUpLin)
+                    linhas.movenext
+                    wend
+                    linhas.close
+                    set linhas = nothing
+                end if
 		end select
 	pCampos.movenext
 	wend

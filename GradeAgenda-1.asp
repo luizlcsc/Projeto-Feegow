@@ -560,7 +560,7 @@ end if
 
                 procedimentosQuery = " (select group_concat(procedimentos.NomeProcedimento) from agendamentosprocedimentos left join procedimentos on procedimentos.id = agendamentosprocedimentos.TipoCompromissoID where agendamentosprocedimentos.AgendamentoID = a.id) as procedimento1, (select group_concat(procedimentos.NomeProcedimento) from agendamentos left join  procedimentos on procedimentos.id = agendamentos.TipoCompromissoID where agendamentos.id = a.id) as procedimento2 "
 
-                compsSql = "select *, concat(procedimento1, ', ', procedimento2) as ProcedimentosList, k.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = k.id) as ValorPlano from (select a.id, "& procedimentosQuery &", a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo, a.FormaPagto, a.Notas, p.Nascimento, p.NomePaciente, p.IdImportado,a.PacienteID, p.Tel1, p.Cel1, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, proc.NomeProcedimento,proc.Cor, s.StaConsulta, a.rdValorPlano, a.ValorPlano,a.Procedimentos, a.Primeira, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, p.CorIdentificacao from agendamentos a "&_
+                compsSql = "select *, concat(procedimento1, ', ', procedimento2) as ProcedimentosList, k.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = k.id) as ValorPlano from (select a.id, "& procedimentosQuery &", a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo, a.FormaPagto, a.Notas, p.Nascimento, p.NomePaciente, p.IdImportado,a.PacienteID, p.Tel1, p.Cel1, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, proc.NomeProcedimento,proc.Cor, s.StaConsulta, a.rdValorPlano, a.ValorPlano,a.Procedimentos, a.Primeira, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, p.CorIdentificacao, a.Retorno from agendamentos a "&_
                 "left join pacientes p on p.id=a.PacienteID "&_
                 "LEFT JOIN cliniccentral.pacientesprioridades pacPri ON pacPri.id=p.Prioridade "&_
                 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
@@ -749,8 +749,13 @@ end if
                     end if
 
 
+                    iconRetorno = ""
+                    if comps("Retorno") then
+                        iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""fa fa-undo text-warning pt10""></i>"
+                    end if
+
                     Conteudo = Conteudo & "</td>"&_
-                    "<td class=""text-center hidden-xs"" "& linkAg &"><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(NomeProcedimento&" ", "'", "\'")&"</span></td>"&_
+                    "<td class=""text-center hidden-xs"" "& linkAg &"><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(NomeProcedimento&" ", "'", "\'")&"</span> "&iconRetorno&"</td>"&_
                     "<td class=""text-center hidden-xs"" "& linkAg &">"&comps("StaConsulta")&"</td>"&_
                     "<td class=""text-right nomeConv hidden-xs"" "& linkAg &"><small>"& sinalAgenda(FormaPagto) & rotulo &"</small></td>"&_
                     "</tr>"
@@ -809,14 +814,32 @@ end if
                 if(!HorarioAdicionado){
                     $( classe + ", .l").each(function(){
                             var gradeId = $(this).data("grade");
+                            
+                            let ultimoHorarioGrade = '0000';
+                            
+                            if($('tbody[data-localid='+'<%=comps("LocalID")%>'+']').length == 1){
+                                let tamanhoGrade = parseInt($('tbody[data-localid=<%=comps("LocalID")%>]').children().length)
+                                ultimoHorarioGrade = $('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:nth-child('+(tamanhoGrade-1)+')')[0].id
+                            }
 
-                           if ( $(this).attr("data-horaid")>'<%=HoraComp%>' )
+
+                           if ( $(this).attr("data-horaid")>'<%=HoraComp%>' && ('<%=HoraComp%>' <= ultimoHorarioGrade || ultimoHorarioGrade == '0000') )
                            {
                                 <%if session("FilaEspera")<>"" then %>
                                     $('[data-horaid=<%=HoraComp%>]').remove();
                                 <% end if %>
 
                                 $(this).before(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                                return false;
+                           }
+
+                           if ( '<%=HoraComp%>' > ultimoHorarioGrade && ultimoHorarioGrade != '0000' )
+                           {
+                                <%if session("FilaEspera")<>"" then %>
+                                    $('[data-horaid=<%=HoraComp%>]').remove();
+                                <% end if %>
+
+                                $($('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:last-child')[0]).after(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
                                 return false;
                            }
                     });

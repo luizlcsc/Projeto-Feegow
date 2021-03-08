@@ -241,7 +241,7 @@ end select
 
 sql = "insert into buicamposforms (TipoCampoID, NomeCampo, RotuloCampo, FormID, Ordem, ValorPadrao, pTop, pLeft, MaxCarac, Checado, Obrigatorio, Texto, Colunas, Linhas, GrupoID, Tamanho, Largura) values ("&TipoCampoID&", '"&NomeCampo&"', '"&RotuloCampo&"', "&I&", 0, '"&ValorPadrao&"', 0, 0, '"&MaxCarac&"', '"&Checado&"', '', '"&Texto&"', "&Colunas&", "&Linhas&", "&GrupoID&", "&treatvalnull(Tamanho)&", '"&Largura&"')"
 
-response.Write("//"&sql)
+'response.Write("//"&sql)
 
 db_execute(sql)
 set campos = db.execute("select c.*, f.LadoALado from buicamposforms c LEFT JOIN buiforms f on f.id=c.FormID where c.FormID="&I&" order by c.id desc limit 1")
@@ -268,7 +268,7 @@ end if
 	  Largura = campos("Largura")
 if GrupoID="0" then
 	%>
-    gridster[<%=GrupoID%>].add_widget('<!--#include file="formsCompiladorCampo.asp"-->', <%=Colunas%>, <%=Linhas%>);
+    gridster[<%=GrupoID%>].add_widget(`<!--#include file="formsCompiladorCampo.asp"-->`, <%=Colunas%>, <%=Linhas%>);
 	<%
 else
 	%>

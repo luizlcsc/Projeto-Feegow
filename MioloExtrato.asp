@@ -13,9 +13,8 @@ end if
     if ref("AccountID")&""<>"" then
         AccountID = ref("AccountID")
         AssociationID = left(AccountID,1)
-    else
-        AccountID=0
-    end if    
+    end if
+
 	if req("T")<>"" then
 		AccountID = req("T")
     %>
@@ -116,7 +115,7 @@ end if
         <div class="text-center visible-print" id="headerExtrato">
             <h2 mtn ptn>
                 <%
-                if AssociationID=3 then
+                if AssociationID="3" then
                     qPacienteSQL = "select NomePaciente from pacientes where id='"&AccountID&"'"
                     set PacienteSQL = db.execute(qPacienteSQL)
                     if not PacienteSQL.eof then

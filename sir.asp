@@ -144,7 +144,14 @@ if aut(lcase(ref("resource"))&"A")=1 then
             end if
             sqlSomenteProcedimento=""
 
-            sql = "select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"
+
+
+            sql = "SELECT * FROM ("&_
+            "select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"&_
+            ") t UNION ALL ("&_
+            "select id, concat(NomeProcedimento, ' (sinônimo)') from procedimentos where sysActive=1 and (NomeProcedimento not like '%"&ref("q")&"%' and Sinonimo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento )"
+
+
             IF ModoFranquiaUnidade THEN
                 sql = "select id, NomeProcedimento from procedimentos where id in (SELECT idOrigem FROM registros_importados_franquia WHERE tabela = 'procedimentos' AND unidade = "&session("UnidadeID")&") AND sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"
             END IF

@@ -144,9 +144,9 @@ end if
      <%
         DiaSemana = weekday(Data)
         Hora = cdate("00:00")
-		set Horarios = db.execute("select ass.*, '0' tipograde,  l.NomeLocal, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID=-"&EquipamentoID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
+		set Horarios = db.execute("select ass.*, '0' tipograde,  l.NomeLocal, '0' GradePadrao, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID=-"&EquipamentoID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
 		if Horarios.EOF then
-	        set Horarios = db.execute("select ass.*, l.NomeLocal, '' Cor from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID=-"&EquipamentoID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe")
+	        set Horarios = db.execute("select ass.*, l.NomeLocal, '1' GradePadrao, '' Cor from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID=-"&EquipamentoID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe")
 		end if
         if Horarios.eof then
             %>
@@ -167,10 +167,16 @@ end if
                 </td>
             </tr>
             <%
+			GradeID=Horarios("id")
+
 			if Horarios("tipograde")&"" ="0" then
 
 				if UnidadeID&"" <> "" and session("Partner")="" then
 					sqlUnidadesBloqueio = sqlUnidadesBloqueio&" OR c.Unidades LIKE '%|"&UnidadeID&"|%'"
+				end if
+
+				if Horarios("GradePadrao")="0" then
+					GradeID=GradeID*-1
 				end if
 
 				Intervalo = Horarios("Intervalo")
@@ -230,7 +236,7 @@ end if
 					else
 						HLivres = HLivres+1
 					%>
-					<tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=EquipamentoID%>,<%= Horarios("id") %>)" class="l vazio" data-grade='<%= Horarios("id") %>' data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
+					<tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=EquipamentoID%>,<%=GradeID%>)" class="l vazio" data-grade='<%= Horarios("id") %>' data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
 						<td width="1%"></td>
 						<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
 						<td colspan="4"><%= Tipo %></td>
@@ -287,7 +293,7 @@ end if
 								else
 									HLivres = HLivres+1
 								%>
-								<tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=EquipamentoID%>,<%= Horarios("id") %>)" class="l vazio" data-grade='<%= Horarios("id") %>' data-hora="<%=formatdatetime(HoraPers, 4)%>" id="<%=HoraID%>">
+								<tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=EquipamentoID%>,<%=GradeID%>)" class="l vazio" data-grade='<%= Horarios("id") %>' data-hora="<%=formatdatetime(HoraPers, 4)%>" id="<%=HoraID%>">
 									<td width="1%"></td>
 									<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
 									<td colspan="4"><%= Tipo %></td>

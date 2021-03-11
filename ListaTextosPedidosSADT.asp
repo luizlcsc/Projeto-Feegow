@@ -22,14 +22,14 @@ end if
 if Filtro="" and Grupo="" then
 	set listaTextosPedidos = db.execute("select * from cliniccentral.procedimentos   where 0  limit 100")
 else
-    sql = "select distinct cp.id as id, cp.descricao as descricao, cp.codigo as codigo,  p.GrupoID as GrupoID, IFNULL(TipoID, 99999999) as TipoID, 'PS' as TipoProcedimento  from cliniccentral.procedimentos cp "&_
+    sql = "select cp.id as id, cp.descricao as descricao, cp.codigo as codigo,  p.GrupoID as GrupoID, IFNULL(TipoID, 99999999) as TipoID, 'PS' as TipoProcedimento  from cliniccentral.procedimentos cp "&_
           "LEFT JOIN prontuariosfavoritos as pf on pf.TipoID = cp.id and pf.Tipo = 'PS' and pf.sysUser = "&session("User")&" "&_
           "LEFT JOIN tissprocedimentostabela t ON (t.Codigo=cp.codigo AND t.TabelaID=22 AND t.sysActive=1) LEFT JOIN tissprocedimentosvalores pv ON pv.ProcedimentoTabelaID=t.id "&_
           "LEFT JOIN procedimentos p ON p.id=pv.ProcedimentoID LEFT JOIN procedimentosgrupos pg ON pg.id=p.GrupoID where ("&sqlFiltro&" ) and cp.tipoTabela='22' "
 
     if ConvenioID > 0 then
     sql = sql & " UNION ALL " &_
-                    " SELECT DISTINCT tpv.ProcedimentoTabelaID as id, IFNULL(tpt.Descricao, proc.NomeProcedimento) as descricao, tpt.Codigo as codigo, 0 as GrupoID, IFNULL(TipoID, 99999999) as TipoID, 'PST' as TipoProcedimento "&_
+                    " SELECT tpv.ProcedimentoTabelaID as id, IFNULL(tpt.Descricao, proc.NomeProcedimento) as descricao, tpt.Codigo as codigo, 0 as GrupoID, IFNULL(TipoID, 99999999) as TipoID, 'PST' as TipoProcedimento "&_
                     " FROM tissprocedimentosvalores tpv "&_
                     " LEFT JOIN prontuariosfavoritos as pf on pf.TipoID = tpv.id and pf.Tipo = 'PST' and pf.sysUser = "&session("User")&" "&_
                     " INNER JOIN tissprocedimentostabela tpt ON (tpt.id=tpv.ProcedimentoTabelaID AND (tpt.TabelaID=22 OR tpt.TabelaID=99 OR tpt.TabelaID=101) AND tpt.sysActive=1)"&_

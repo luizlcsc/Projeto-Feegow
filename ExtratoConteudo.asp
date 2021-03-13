@@ -94,6 +94,7 @@ end if
             <th class="td-detalhada">Recibo</th>
             <th class="td-detalhada">Cheque</th>
             <th class="td-detalhada">Obs.</th>
+            <th class="td-detalhada">Transação</th>
 			<th>Valor</th>
 			<% If ScreenType="Statement" Then %>
                 <th>Saldo</th>
@@ -411,6 +412,14 @@ end if
 
             end if
 
+            TransactionNumber=""
+            if DetalharRecebimento then
+                set TransactionSQL = db.execute("SELECT TransactionNumber,Parcelas FROM sys_financialcreditcardtransaction WHERE MovementID="&treatvalzero(getMovement("id")))
+                if not TransactionSQL.eof then
+                    TransactionNumber=TransactionSQL("TransactionNumber")
+                end if
+            end if
+
 			linhas = linhas+1
 
 			'---> mostrar primeira linha de saldo
@@ -555,6 +564,7 @@ end if
                 <td class="td-detalhada"><%=Recibo%></td>
                 <td class="td-detalhada"><%=Cheque%></td>
                 <td class="td-detalhada"><%=Obs%></td>
+                <td class="td-detalhada"><%=TransactionNumber%></td>
 
 				<td class="text-right column-number" data-value="<%= formatnumber(Value,2) %>" data-formated-value="<%= formatnumber(Value,2) %>&nbsp;<%=displayCD%>" > <%= Paid %>&nbsp;<%= formatnumber(Value,2) %>&nbsp;<%=displayCD%></td>
 				<%
@@ -582,7 +592,7 @@ end if
                     <td class="text-right column-number" data-value="<%= formatnumber(Value,2) %>" data-formated-value="<%= formatnumber(Value,2) %>"><%= formatnumber(totalPago,2) %></td>
                 <%
 				End If %>
-				<td nowrap="nowrap">
+				<td width="4%">
 					<div class="action-buttons">
 						<%= linkBill %>
                         <%
@@ -627,6 +637,7 @@ end if
 
 			'---> mostrar primeira linha de saldo
 			if ExibiuPrimeiraLinha="N" and ScreenType="Statement" then
+
 				%>
 				<tr>
                 	<th colspan="6">SALDO ANTERIOR</th>
@@ -744,7 +755,7 @@ end if
         var menuEscondido = true;
         $("#toggle_sidemenu_l").click();
     }
-    $(".saldo-anterior-td").attr("colspan", 11)
+    $(".saldo-anterior-td").attr("colspan", 14)
 
     <%
     else

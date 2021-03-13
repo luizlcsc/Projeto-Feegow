@@ -119,6 +119,9 @@ TipoGuia = reg("TipoGuia")
                             <div class="checkbox-custom checkbox-primary">
                                 <input type="checkbox" name="ObrigarSolicitante" id="ObrigarSolicitante" value="S" class="ace" <% If reg("ObrigarSolicitante")="S" Then %> checked="checked" <% End If %> />
                                 <label for="ObrigarSolicitante"> Obrigar Profissional Solicitante</label></div>
+                            <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" name="PermiteReembolsoConvenio" id="PermiteReembolsoConvenio" value="S" class="ace" <% If reg("PermiteReembolsoConvenio")="S" Then %> checked="checked" <% End If %> />
+                                <label for="PermiteReembolsoConvenio">Permitir reembolso de convênio</label></div>
                             <%
                             
                             if recursoAdicional(24) = 4 then %>

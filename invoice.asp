@@ -398,10 +398,14 @@ posModalPagar = "fixed"
             <div class="col-md-2">
 <%
 if getConfig("CalculoReembolso") then
+
+    set ProcedimentoComReembolsoSQL=db.execute("SELECT ii.id FROM itensinvoice ii INNER JOIN procedimentos proc ON proc.id=ii.ItemID WHERE proc.PermiteReembolsoConvenio='S' AND ii.InvoiceID="&treatvalzero(InvoiceID))
+    if not ProcedimentoComReembolsoSQL.eof then
 %>
                 <br>
-                <button type="button" onclick="calculaReembolso()" class="btn btn-default disable">Calcular reembolso</button>
+                <button type="button" onclick="calculaReembolso()" class="btn btn-default disable"><i class="fa fa-calculator"></i> Calcular reembolso</button>
 <%
+    end if
 end if
 %>&nbsp;
             </div>

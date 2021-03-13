@@ -5678,4 +5678,19 @@ function hasPermissaoTela(visualizar)
     END IF
 end function
 
+function iconMethod(PaymentMethodID, PaymentMethod, CD ,origem)
+    if CD="" or isnull(CD) then
+        CD = "D"
+    end if
+	if not isNull(PaymentMethodID) then
+		response.Write("<img width=""18"" src=""assets/img/"&PaymentMethodID&CD&".png"" /> ")
+
+
+        if origem <> "" then
+        response.Write("<small>"& PaymentMethod &" ("&origem&") </small>")
+        else
+        response.Write("<small>"& PaymentMethod &" </small>")
+        end if
+    end if
+end function
 %>

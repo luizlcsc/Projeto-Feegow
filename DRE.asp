@@ -12,7 +12,7 @@
             <button class="btn btn-primary btn-block mt25">Gerar</button>
         </div>
     </div>
-    <% if session("Admin")=1 then %>
+    <% if aut("dre_modelosV")=1 then %>
     <hr class="short alt">
     <div class="row">
         <div class="col-md-12">

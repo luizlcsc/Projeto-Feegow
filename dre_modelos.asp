@@ -10,7 +10,7 @@ id=req("I")
         <input type="hidden" name="P" value="<%=req("P")%>" />
 		<br>
 		<div class="panel">
-			<div class="panel-body">
+			<div class="panel-body" id="dre_modelos_panel">
                 <button class="btn btn-primary btn-sm hidden" id="save"> <i class="fa fa-save"></i> Salvar </button>
 				<div class="row">
 					<%=quickField("text", "NomeModelo", "Nome do Modelo", "6", reg("NomeModelo"), "", "", "")%>
@@ -32,7 +32,18 @@ id=req("I")
 <script type="text/javascript">
 $(document).ready(function(e) {
 	<%call formSave("frm", "save", "")%>
+
+
+<%
+if aut("dre_conflinhasA")=0 then
+%>
+$("button, input, select", "#dre_modelos_panel").attr("disabled", true);
+<%
+end if
+%>
 });
+
+
 
 </script>
 <%=header(req("P"), "Gerenciar Modelo de DRE", reg("sysActive"), req("I"), req("Pers"), "Follow")%>

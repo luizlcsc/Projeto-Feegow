@@ -69,14 +69,24 @@ if ref("DetalharRecebimentos")="S" then
 end if
 %>
 <br>
+    <div style="display: flex; justify-content: flex-end; margin-right: 20px;">
+        <label class="mr10" style="display: flex; justify-content: center; align-items: flex-end;"> Recebimento
+            <input class="ml5" type="checkbox" name="recebimento" id="recebimento" value="D" onclick='filterPayment("D")' checked>
+        </label>
+        <label class="mr10" style="display: flex; justify-content: center; align-items: flex-end;"> Pagamento
+            <input class="ml5" type="checkbox" name="pagamento" id="pagamento" onclick='filterPayment("C")' checked>
+        </label>
+    </div>
 <div class="row">
   <div class="col-md-12">
 	<table class="table table-striped table-bordered table-hover table-condensed">
 	<thead>
 		<tr class="success">
         	<th></th>
+        	<th>#</th>
 			<th>Data</th>
 			<th>Conta</th>
+			<th>Forma</th>
 			<th>Descri&ccedil;&atilde;o</th>
             <th nowrap>Lançado por</th>
             <th class="td-detalhada">Plano de Contas</th>
@@ -84,6 +94,7 @@ end if
             <th class="td-detalhada">Recibo</th>
             <th class="td-detalhada">Cheque</th>
             <th class="td-detalhada">Obs.</th>
+            <th class="td-detalhada">Transação</th>
 			<th>Valor</th>
 			<% If ScreenType="Statement" Then %>
                 <th>Saldo</th>
@@ -108,9 +119,11 @@ end if
 		AccountID = splAccount(1)
 		sqlAcc = " AND ((m.AccountAssociationIDCredit="&AccountAssociationID&" and m.AccountIDCredit="&AccountID&") or (m.AccountAssociationIDDebit="&AccountAssociationID&" and m.AccountIDDebit="&AccountID&")) "
 	else
-		sqlAcc = " AND m.`Date`>="&mydatenull(session("DateFrom"))&" AND m.`Date`<="&mydatenull(session("DateTo"))&" AND m.`Type` IN('Pay') "
+		sqlAcc = " AND m.`Date`>="&mydatenull(session("DateFrom"))&" AND m.`Date`<="&mydatenull(session("DateTo"))&" AND m.`Type` IN('Pay','Tranfer') "
 	end if
-	if ref("LancadoPor")<>"" then
+
+	sqlLancadoPor = ""
+	if ref("LancadoPor")&""<>"0" and ref("LancadoPor")&""<>"" then
 		sqlLancadoPor = " AND m.sysUser="&treatvalzero(ref("LancadoPor"))&" "
 	end if
 	if ref("Unidades")<>"" then
@@ -136,14 +149,43 @@ end if
         %>
         <input type="hidden" name="MeuCaixa" id="MeuCaixa" value="S" />
         <%
-        sqlGM = "select m.*, lu.Nome FROM sys_financialmovement m LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=m.sysUser where ((m.AccountAssociationIDCredit=7 and m.AccountIDCredit="&CaixaID&") or (m.AccountAssociationIDDebit=7 and m.AccountIDDebit="&CaixaID&") or m.CaixaID="& CaixaID &") and m.Type<>'Bill' order by m.Date, m.id"
+
+        sqlGM = "select m.*, lu.Nome, fb.BankName, pm.PaymentMethod FROM sys_financialmovement m "&_
+        "LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=m.sysUser "&_
+        "left join sys_financialcurrentaccounts sf on sf.id = m.AccountIDDebit  "&_
+        "left join sys_financialpaymentmethod pm on pm.id = m.PaymentMethodID  "&_
+        "left join sys_financialbanks fb on fb.id = sf.Bank   "&_
+        "where ((m.AccountAssociationIDCredit=7 and m.AccountIDCredit="&CaixaID&") or (m.AccountAssociationIDDebit=7 and m.AccountIDDebit="&CaixaID&") or m.CaixaID="& CaixaID &") and m.Type<>'Bill' order by m.Date, m.id"
     else
-        sqlGM = "select m.*, lu.Nome from sys_financialMovement m LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=m.sysUser where 1=1 "& sqlAcc & sqlLancadoPor & sqlUnidades & sqlCD & sqlFormas &" order by m.Date, m.id"
+		sqlGM = "select m.*, lu.Nome, fb.BankName, pm.PaymentMethod from sys_financialMovement m  "&_
+		"LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=m.sysUser  "&_
+		"left join sys_financialcurrentaccounts sf on sf.id = m.AccountIDDebit  "&_
+        "left join sys_financialpaymentmethod pm on pm.id = m.PaymentMethodID  "&_
+		"left join sys_financialbanks fb on fb.id = sf.Bank where 1=1 "& sqlAcc & sqlLancadoPor & sqlUnidades & sqlCD & sqlFormas &" order by m.Date, m.id"
     end if
     set getMovement = db.execute( sqlGM )
 
+
+	entradasDinheiro = 0 '1
+	saidasDinheiro = 0 '1
+	entradasCheque = 0 '2
+	saidasCheque = 0 '2
+	entradasTransferencia = 0 '3
+	saidasTransferencia = 0 '3
+	entradasBoleto = 0 '4
+	saidasBoleto = 0 '4
+	entradasCartaoCredito = 0 '8
+	saidasCartaoCredito = 0 '8
+	entradasCartaoDebito = 0 '9
+	saidasCartaoDebito = 0 '9
+
 	while not getMovement.eof
 		Value = getMovement("Value")
+
+        IF isnull(Value) or Value = "" THEN
+            Value = 0
+        END IF
+
 		AccountAssociationIDCredit = getMovement("AccountAssociationIDCredit")
 		AccountIDCredit = getMovement("AccountIDCredit")
 		AccountAssociationIDDebit = getMovement("AccountAssociationIDDebit")
@@ -202,10 +244,27 @@ end if
 				accountReverse = accountName(AccountAssociationIDCredit, AccountIDCredit)
 			end if
 		end if
+
+		if ref("Tipo")<>"" then
+            if ref("Tipo")<>CD then
+                Omite = "S"
+            else
+                Omite = ""
+            end if
+        end if
+
 		accountReverse = left(accountReverse, 25)
 
 		if getMovement("Date")<=session("DateTo") then
 			SaldoAnteriorFim = Balance
+		end if
+		totest =  ""
+		if getMovement("Obs") <> "" then
+			totest = replace(replace(getMovement("Obs"),"{C",""),"}","")&""
+		end if
+
+		if getMovement("CD") = "" and totest <> "" then
+			Omite = "S"
 		end if
 
 
@@ -251,14 +310,7 @@ end if
 ''
 			'<-if paid
 		end if
-        if ref("Tipo")<>"" then
-            if ref("Tipo")<>CD then
-                Omite = "S"
-            else
-                Omite = ""
-            end if
-        end if
-		'-
+
 		cType = getMovement("Type")
 
 		if (screenType="Statement" or CD=ref("AccountID")) and getMovement("Date")>=session("DateFrom") and getMovement("Date")<=session("DateTo") then
@@ -360,6 +412,14 @@ end if
 
             end if
 
+            TransactionNumber=""
+            if DetalharRecebimento then
+                set TransactionSQL = db.execute("SELECT TransactionNumber,Parcelas FROM sys_financialcreditcardtransaction WHERE MovementID="&treatvalzero(getMovement("id")))
+                if not TransactionSQL.eof then
+                    TransactionNumber=TransactionSQL("TransactionNumber")
+                end if
+            end if
+
 			linhas = linhas+1
 
 			'---> mostrar primeira linha de saldo
@@ -427,23 +487,84 @@ end if
                 if getMovement("Type")="Transfer" and instr(DescPagto, "repasse invertido") then
                     DescPagto = "<a href='javascript:eri("& getMovement("id") &")'>"& DescPagto &"</a>"
                 end if
+
+				if getMovement("CD") = "D" then
+					tipoMov = "D"
+				else
+					tipoMov = "C"
+				end if
+
+					controle = displayCD
+				if req("T") = "MeuCaixa" then
+					if displayCD = "C" then
+						controle = "D"
+					elseif displayCD = "D" then
+						controle ="C"
+					end if
+				end if
+
+				Select Case PaymentMethodID
+				case 1
+					if controle="C" then
+						entradasDinheiro = entradasDinheiro+Value
+					else
+						saidasDinheiro = saidasDinheiro+Value
+					end if
+				case 2
+					if controle="C" then
+						entradasCheque = entradasCheque+Value
+					else
+						saidasCheque = saidasCheque+Value
+					end if
+				case 3,7,5,6
+					if controle="C" then
+						entradasTransferencia = entradasTransferencia+Value
+					else
+						saidasTransferencia = saidasTransferencia+Value
+					end if
+				case 4
+					if controle="C" then
+						entradasBoleto = entradasBoleto+Value
+					else
+						saidasBoleto = saidasBoleto+Value
+					end if
+				case 8 ,10
+					if controle="C" then
+						entradasCartaoCredito = entradasCartaoCredito +Value
+					else
+						saidasCartaoCredito = saidasCartaoCredito +Value
+					end if
+				case 9
+					if controle="C" then
+						entradasCartaoDebito = entradasCartaoDebito +Value
+					else
+						saidasCartaoDebito = saidasCartaoDebito +Value
+					end if
+				End Select
+				controle = ""
 			%>
-			<tr>
+			<tr data-tipo="<%=tipoMov%>">
 				<td width="1%"><label><input id="checkbox1" class="ace ace-checkbox-2 bootbox-confirm" type="checkbox" value="<%=getMovement("id")%>" name="InstallmentsToPay" onclick="checkToPay()"><span class="lbl"> </span></label></td>
+				<td width="2%" class="text-right"><code><%= getMovement("id") %></code></td>
 				<td width="8%" class="text-right"><%= getMovement("Date") %></td>
-				<td><code><%= getMovement("id") %></code> <%=iconMethod(getMovement("PaymentMethodID"), CD)%>&nbsp;<%= accountReverse %></td>
+				<%
+					origem = getMovement("BankName")&""
+				%>
+				<td><%= accountReverse %></td>
+                <td width="6%" ><%=iconMethod(getMovement("PaymentMethodID"),getMovement("PaymentMethod"), CD, origem)%></td>
 				<td><%= linkBill %>
 						<%=Descricao%>
 						<%if len(getMovement("Name"))>0 and Descricao<>"" then%> - <%end if%><%=DescPagto%>
 					<%= endlinkBill %><br /><%=getMovement("Obs")%>
                     </td>
-                <td><%=getMovement("Nome")%></td>
+                <td><small><%=getMovement("Nome")%></small></td>
 
                 <td class="td-detalhada"><%=PlanoDeContas%></td>
                 <td class="td-detalhada"><%=NFe%></td>
                 <td class="td-detalhada"><%=Recibo%></td>
                 <td class="td-detalhada"><%=Cheque%></td>
                 <td class="td-detalhada"><%=Obs%></td>
+                <td class="td-detalhada"><%=TransactionNumber%></td>
 
 				<td class="text-right column-number" data-value="<%= formatnumber(Value,2) %>" data-formated-value="<%= formatnumber(Value,2) %>&nbsp;<%=displayCD%>" > <%= Paid %>&nbsp;<%= formatnumber(Value,2) %>&nbsp;<%=displayCD%></td>
 				<%
@@ -471,7 +592,7 @@ end if
                     <td class="text-right column-number" data-value="<%= formatnumber(Value,2) %>" data-formated-value="<%= formatnumber(Value,2) %>"><%= formatnumber(totalPago,2) %></td>
                 <%
 				End If %>
-				<td nowrap="nowrap">
+				<td width="4%">
 					<div class="action-buttons">
 						<%= linkBill %>
                         <%
@@ -509,12 +630,14 @@ end if
 			end if
 		end if
 	getMovement.movenext
+	Omite=""
 	wend
 	getMovement.close
 	set getMovement = nothing
 
 			'---> mostrar primeira linha de saldo
 			if ExibiuPrimeiraLinha="N" and ScreenType="Statement" then
+
 				%>
 				<tr>
                 	<th colspan="6">SALDO ANTERIOR</th>
@@ -560,6 +683,69 @@ end if
   </div>
 </div>
 
+<div class='dFlex mt20 '>
+	<table class='tableTotal table col-md-6 table-striped table-bordered table-hover table-condensed'>
+		<tr class="success">
+			<th colspan='3'> Total de Entradas</th>
+		</tr>
+		<tr>
+			<td>Dinheiro <img width="18" src="assets/img/1C.png"> R$ <%=formatnumber(entradasDinheiro,2)%></td>
+			<td>Cartão de Débito <img width="18" src="assets/img/9D.png"> R$ <%=formatnumber(entradasCartaoDebito,2)%></td>
+			<td>Cartão de Crédito <img width="18" src="assets/img/8D.png"> R$ <%=formatnumber(entradasCartaoCredito,2)%></td>
+		</tr>
+		<tr>
+			<td>Transferência <img width="18" src="assets/img/6C.png"> R$ <%=formatnumber(entradasTransferencia,2)%></td>
+			<td>Cheque <img width="18" src="assets/img/2D.png"> R$ <%=formatnumber(entradasCheque,2)%></td>
+			<td>Boleto <img width="18" src="assets/img/4D.png"> R$ <%=formatnumber(entradasBoleto,2)%></td>
+		</tr>
+		<tr>
+		<%
+			entradas = entradasBoleto + entradasCartaoCredito + entradasCartaoDebito + entradasCheque + entradasDinheiro + entradasDOC + entradasTED + entradasTransferencia
+		%>
+		<td colspan='3'>Total: R$<%= formatnumber(entradas,2)%></td>
+		</tr>
+
+	</table>
+	<table class='tableTotal table col-md-6 table-striped table-bordered table-hover table-condensed'>
+		<tr class="danger">
+			<th colspan='3'> Total de saidas</th>
+		</tr>
+		<tr>
+			<td>Dinheiro <img width="18" src="assets/img/1C.png"> R$ <%=formatnumber(saidasDinheiro,2)%></td>
+			<td>Cartão de Débito <img width="18" src="assets/img/9D.png"> R$ <%=formatnumber(saidasCartaoDebito,2)%></td>
+			<td>Cartão de Crédito <img width="18" src="assets/img/8D.png"> R$ <%=formatnumber(saidasCartaoCredito,2)%></td>
+		</tr>
+		<tr>
+			<td>Transferência <img width="18" src="assets/img/6D.png"> R$ <%=formatnumber(saidasTransferencia,2)%></td>
+			<td>Cheque <img width="18" src="assets/img/2D.png"> R$ <%=formatnumber(saidasCheque,2)%></td>
+			<td>Boleto <img width="18" src="assets/img/4D.png"> R$ <%=formatnumber(saidasBoleto,2)%></td>
+		</tr>
+		<tr>
+		<%
+			saidas = saidasBoleto + saidasCartaoCredito + saidasCartaoDebito + saidasCheque + saidasDinheiro + saidasDOC + saidasTED + saidasTransferencia
+		%>
+		<td colspan='3'>Total: R$ <%= formatnumber(saidas,2)%></td>
+		</tr>
+
+	</table>
+</div>
+
+<style>
+    .dFlex{
+        display:flex;
+		justify-content: space-between;
+    }
+	.dFlex div {
+    	font-weight: bold;
+	}
+	.tableTotal{
+		width:48%!important;
+	}
+	.tableTotal th[colspan], .tableTotal td[colspan]{
+    	text-align: center;
+    	font-weight: bold;
+	}
+</style>
 <script type="text/javascript">
 
     <%
@@ -569,7 +755,7 @@ end if
         var menuEscondido = true;
         $("#toggle_sidemenu_l").click();
     }
-    $(".saldo-anterior-td").attr("colspan", 11)
+    $(".saldo-anterior-td").attr("colspan", 14)
 
     <%
     else
@@ -586,6 +772,18 @@ end if
         });
     }
 
+	function filterPayment(type){
+		let atual = $($('tr[data-tipo="'+type+'"]')[0]).css('display')
+		// $('tr[data-tipo]').show()
+		console.log(type)
 
+		if( atual == "none"){
+			console.log('mostra')
+			$('tr[data-tipo="'+type+'"]').show()
+		}else{
+			console.log('some')
+			$('tr[data-tipo="'+type+'"]').hide()
+		}
+	}
 <!--#include file="jQueryFunctions.asp"-->
 </script>

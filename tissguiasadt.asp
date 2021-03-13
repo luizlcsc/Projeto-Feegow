@@ -717,7 +717,14 @@ min-width: 150px;
                     pattern= "'.{"&MinimoDigitos&","&MaximoDigitos&"}'"
                 end if
                 %>
-                <%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 2, NumeroCarteira, " lt", "", " required""  autocomplete='matricula' required "&pattern&" title=""O padrão da matrícula deste convênio está configurado para 10 caracteres""") %>
+                <div class="col-md-2">
+                    <%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 12, NumeroCarteira, " lt", "", " required""  autocomplete='matricula' required "&pattern&" title=""O padrão da matrícula deste convênio está configurado para 10 caracteres""") %>
+                    <div class="form-group has-error" id="NumeroCarteiraContent" style="display: none;position: absolute;top: 65px;z-index: 9999;">
+
+                        <input id="NumeroCarteiraValidacao" class=" form-control input-sm" placeholder="Digite novamente  o  n&deg; da carteira...">
+                    </div>
+                </div>
+
                 <%= quickField("datepicker", "ValidadeCarteira", "Data Validade da Carteira", 2, ValidadeCarteira, " input-mask-date ", "", "") %>
                 <%= quickField("text", "RegistroANS", "* Reg. ANS", 1, RegistroANS, "", "", " required") %>
             </div>
@@ -1175,6 +1182,12 @@ $('#GuiaSADT').on('submit', function (event) {
         return false;
     }
 
+    if($("#NumeroCarteira").attr("data-status")==="INVALID"){
+         $("#NumeroCarteiraValidacao").focus();
+         showMessageDialog("Valide a matrícula digitada", "danger");
+         return false;
+    }
+
     setTimeout(() => {
         let isRedirect = "";
         if(isSolicitar)
@@ -1426,6 +1439,31 @@ function repasses(T, I){
         $("#modal").html(data);
     });
 }
+
+$(document).ready(function() {
+    const $numeroCarteira = $("#NumeroCarteira");
+    const $numeroCarteiraContent = $("#NumeroCarteiraContent");
+    const $numeroCarteiraValidacao = $("#NumeroCarteiraValidacao");
+
+    $numeroCarteira.change(function() {
+        $numeroCarteira.attr("data-status", "INVALID");
+
+        $numeroCarteiraContent.fadeIn(function() {
+            $numeroCarteiraValidacao.val("").focus();
+        });
+    });
+    $numeroCarteiraValidacao.keyup(function() {
+        if($(this).val() === $("#NumeroCarteira").val()){
+            $numeroCarteira.attr("data-status", "VALID");
+            $numeroCarteiraContent.fadeOut();
+
+            showMessageDialog("Matricula validada com sucesso.", "success");
+        }
+    });
+
+     const $numeroCarteiraValidacaoJs = document.getElementById('NumeroCarteiraValidacao');
+     $numeroCarteiraValidacaoJs.onpaste = e => e.preventDefault();
+});
 
 <%
 if drCD<>"" then

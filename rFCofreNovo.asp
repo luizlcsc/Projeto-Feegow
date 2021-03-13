@@ -109,7 +109,9 @@ while not unidade.eof
                         </th>
                         <th width="10%" rowspan="20"><%= "Fatura "& DataFatura &" <br> "& sigla & fat("NumeroFatura") %></th>
                         <th width="50%"><%= "Paciente <br> "& nameInAccount( fat("AssociationAccountID") &"_"& fat("AccountID")) & DescricaoExclusao %></th>
-                        <th width="20%"><%= "Tabela <br> "& fat("NomeTabela") %></th>
+                        <th width="15%"><%= "Tabela <br> "& fat("NomeTabela") %></th>
+                        <th width="10%"><%= "Desconto" %></th>
+                        <th width="10%"><%= "Valor" %></th>
                         <th width="10%" id="nf<%= fat("id") %>">
 
                             <%
@@ -121,7 +123,7 @@ while not unidade.eof
                             end if
                             %>
 
-                            <div class="mt50" style="position:absolute; background-color:#fff; width:18%;">
+                            <div class="mt50" style="position:absolute; background-color:#fff; ">
                                 <div class="panel-body p5">
                                 <%
                                 while not rec.eof
@@ -143,7 +145,7 @@ while not unidade.eof
                                 </div>
                             </div>
 
-                            <%= "Nota Fiscal <br> "& fat("NRoNFe") %>
+                            <%= "NFS-e <br> "& fat("NRoNFe") %>
                         </th>
                         <th nowrap width="10%" id="val<%= fat("InvoiceID") %>"><%= "Valor da Conta <br> R$ "& fn(fat("Value")) %></th>
                     </tr>
@@ -154,6 +156,8 @@ while not unidade.eof
                                         "LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
                                         "LEFT JOIN produtos prod ON prod.id=ii.ItemID "&_
                                         "WHERE ii.Tipo<>'K' AND ii.InvoiceID="& fat("InvoiceID")&" ORDER BY ii.id")
+
+
                 while not procDados.eof
                     Pacote = procDados("PacoteID")
                     if Pacote&""<>"" then
@@ -170,11 +174,25 @@ while not unidade.eof
                     cl = cl+1
 
                     Total=procDados("Quantidade")*(procDados("ValorUnitario")+procDados("Acrescimo")-procDados("Desconto"))
+
+                    DescontoItem=procDados("Desconto")
+                    PercentualDescontoDescricao=""
+
+                    if procDados("ValorUnitario")>0 then
+                        PercentualDescontoItem=(procDados("Desconto")/procDados("ValorUnitario"))*100
+
+                        if PercentualDescontoItem>0 then
+                            PercentualDescontoDescricao = " <i>("&fn(PercentualDescontoItem)&"%)</i> "
+                        end if
+                    end if
+
                 %>
                 <tr>
                     <td></td>
                     <td></td>
                     <td><b><%=Tipo%>:</b> <%=procDados("Quantidade")&"x "&procDados("NomeProcedimento")&" "&Pacote%></td>
+                    <td></td>
+                    <td><%= "R$ "& fn( DescontoItem )%><%=PercentualDescontoDescricao%></td>
                     <td class="text-right"><%= "R$ "& fn( Total )%></td>
                 </tr>
                 <%
@@ -299,6 +317,8 @@ while not unidade.eof
                         end if
                         %>
                         </td>
+                        <td></td>
+                        <td></td>
                         <td class="text-right"><b><em><%= "R$ "& fn(pg("Value")) %></em></b></td>
                     </tr>
                     <%

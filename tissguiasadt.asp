@@ -1440,6 +1440,9 @@ function repasses(T, I){
     });
 }
 
+<%
+if getConfig("ExigirDuplaChecagemMatriculaConvenio") then
+%>
 $(document).ready(function() {
     const $numeroCarteira = $("#NumeroCarteira");
     const $numeroCarteiraContent = $("#NumeroCarteiraContent");
@@ -1464,6 +1467,9 @@ $(document).ready(function() {
      const $numeroCarteiraValidacaoJs = document.getElementById('NumeroCarteiraValidacao');
      $numeroCarteiraValidacaoJs.onpaste = e => e.preventDefault();
 });
+<%
+end if
+%>
 
 <%
 if drCD<>"" then

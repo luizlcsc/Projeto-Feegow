@@ -165,7 +165,17 @@ end if
 												end if
 												%>
 											</td>
-											<td><i class="fa fa-remove btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta condição da linha?'))lin('C', 'X', <%= pcon("id") %>)"></i></td>
+											<td>
+											    <%
+											    if aut("dre_conflinhasX") then
+											    %>
+											    <button class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta condição da linha?'))lin('C', 'X', <%= pcon("id") %>)">
+											        <i class="fa fa-remove"></i>
+                                                </button>
+											    <%
+											    end if
+											    %>
+                                            </td>
 										</tr>
 									<%
 									pcon.movenext
@@ -202,7 +212,17 @@ end if
 										<tr>
 											<td class="text-center"><%= SoSu %></td>
 											<td><%= ptot("Descricao") %></td>
-											<td><i class="fa fa-remove btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta condição do totalizador?'))lin('T', 'XLT', <%= ptot("id") %>)"></i></td>
+											<td>
+											 <%
+                                            if aut("dre_conflinhasX") then
+                                            %>
+											    <button class=" btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta condição do totalizador?'))lin('T', 'XLT', <%= ptot("id") %>)">
+											        <i class="fa fa-remove"></i>
+                                                </button>
+                                            <%
+                                            end if
+                                            %>
+                                            </td>
 										</tr>
 										<%
 									ptot.movenext
@@ -221,7 +241,15 @@ end if
 					<hr class="short alt">
 				</td>
 				<td>
-					<i class="fa fa-remove btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta linha deste modelo de DRE?'))lin('L', 'X', <%= id %>)"></i>
+				 <%
+                if aut("dre_conflinhasX") then
+                %>
+					<button class=" btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta linha deste modelo de DRE?'))lin('L', 'X', <%= id %>)">
+					    <i class="fa fa-remove"></i>
+                    </button>
+					<%
+					end if
+					%>
 				</td>
 			</tr>
 			<%

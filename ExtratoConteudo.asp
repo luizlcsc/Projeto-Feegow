@@ -542,7 +542,7 @@ end if
 					origem = getMovement("BankName")&""
 				%>
 				<td><%= accountReverse %></td>
-                <td><%=iconMethod(getMovement("PaymentMethodID"),getMovement("PaymentMethod"), CD, origem)%></td>
+                <td width="6%" ><%=iconMethod(getMovement("PaymentMethodID"),getMovement("PaymentMethod"), CD, origem)%></td>
 				<td><%= linkBill %>
 						<%=Descricao%>
 						<%if len(getMovement("Name"))>0 and Descricao<>"" then%> - <%end if%><%=DescPagto%>

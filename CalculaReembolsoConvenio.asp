@@ -6,7 +6,7 @@ Operacao = ref("O")
 I = req("I")
 ProcedimentoID = ref("ProcedimentoID")
 ValorReembolso = ref("ValorReembolso")
-ConvenioID = ref("ConvenioID")
+ConvenioID = ref("ConvenioIDReembolso")
 PlanoID = ref("PlanoID")
 PacienteID = ref("PacienteID")
 ProcedimentoID = ref("ProcedimentoID")
@@ -56,32 +56,44 @@ select case Operacao
         while not ItensSQL.eof
             ItemID=ItensSQL("id")
             ProcedimentoID=ItensSQL("ItemID")
-            valorRecalculado = consultaValorReembolso(ProcedimentoID)
+            valorRecalculado = ValorReembolso
 
             Valor = ItensSQL("ValorUnitario")
 
             if valorRecalculado > 0 then
                 valorNoDesconto = Valor - valorRecalculado
+                valorNoAcrescimo=0
 
-                if not isnull(valorNoDesconto) then
+                if valorNoDesconto < 0 then
+                    valorNoAcrescimo = valorNoDesconto*-1
+                    valorNoDesconto=0
+                end if
+
+                if not isnull(valorNoDesconto) and not isnull(valorNoAcrescimo) then
                     ValorNoDesconto = ccur(valorNoDesconto)
+                    ValorNoAcrescimo = ccur(valorNoAcrescimo)
 
-                    if ValorNoDesconto > 0 then
-
-                        if ValorNoDesconto<0 or ValorNoDesconto > Valor then
-                            ValorNoDesconto=0
-                        end if
-
-                        set ProcedimentoSQL = db.execute("SELECT Valor FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
-
-                        if not ProcedimentoSQL.eof then
-                            db.execute("UPDATE itensinvoice SET Desconto="&treatvalzero(ValorNoDesconto)&", Acrescimo=0 WHERE id="&ItemID&" AND InvoiceID="&InvoiceID)
+                    if ValorNoDesconto > 0 or ValorNoAcrescimo > 0 then
 
 
-                            ValorTotal = ValorTotal + valorRecalculado
-                        end if
+                        db.execute("UPDATE itensinvoice SET Desconto="&treatvalzero(ValorNoDesconto)&", Acrescimo="&ValorNoAcrescimo&" WHERE id="&ItemID&" AND InvoiceID="&InvoiceID)
+
+
+                        ValorTotal = ValorTotal + valorRecalculado
+
+                        %>
+
+                       setTimeout(function() {
+                         itens();
+                         setTimeout(function() {
+                               geraParcelas();
+                         }, 100);
+                       }, 100);
+
+                       showMessageDialog("Valores dos itens recalculados com sucesso.", "success");
+                        <%
                     else
-                        db.execute("UPDATE itensinvoice SET Desconto=0 WHERE id="&ItemID&" AND InvoiceID="&InvoiceID)
+                        db.execute("UPDATE itensinvoice SET Desconto=0,Acrescimo=0 WHERE id="&ItemID&" AND InvoiceID="&InvoiceID)
                     end if
                 end if
             end if
@@ -95,7 +107,9 @@ select case Operacao
 
         db.execute("UPDATE sys_financialmovement SET Value="&treatvalzero(ValorTotal)&" WHERE InvoiceID="&InvoiceID&" AND CD='C' AND Type='Bill'")
         db.execute("UPDATE sys_financialinvoices SET Value="&treatvalzero(ValorTotal)&" WHERE id="&InvoiceID&" AND CD='C'")
-
+    %>
+    closeComponentsModal();
+    <%
     case "ConsultarValorParticular"
         set ProcedimentoSQL = db.execute("SELECT Valor FROM procedimentos WHERE id="&ProcedimentoID)
         if not ProcedimentoSQL.eof then
@@ -125,6 +139,10 @@ select case Operacao
             <%
         end if
 
+        if not isnumeric(QuantidadeCH) or QuantidadeCH&""= "" or QuantidadeCH&""="0" then
+            QuantidadeCH=100
+        end if
+
         if isnumeric(QuantidadeCH) and QuantidadeCH&""<> "" and isnumeric(ValorReembolso) and ConvenioID<>"" then
             ValorCH = replace(replace((ValorReembolso) / (QuantidadeCH), ".", ""),",",".")
 
@@ -146,7 +164,7 @@ select case Operacao
             end if
         else
             %>
-            showMessageDialog("Verifique a quantidade de CH do proceidmento selecionado.");
+            showMessageDialog("Verifique a quantidade de CH do procedimento selecionado.");
             <%
             Response.End
         end if

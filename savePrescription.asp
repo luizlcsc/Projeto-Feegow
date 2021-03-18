@@ -54,15 +54,40 @@ recursoPermissaoUnimed = recursoAdicional(12)
         %>
         </div>
         <div class="col-md-2">
-    	    	<label><input type="checkbox" id="Carimbo" name="Carimbo" class="ace" checked="checked" onclick="window.frames['ImpressaoPrescricao'].Carimbo(this.checked);" />
-                	<span class="lbl"> Carimbar</span>
-                </label>
+                    <%        
+                    set sys_user = db.execute("select idInTable  from sys_users where id="&reg("sysUser"))   
+                    if not sys_user.EOF then   
+                    carimbsql = "select carimbo from carimbo where profissional_id="&sys_user("idInTable") 
+                    set carimbo = db.execute(carimbsql)                   
+                    if not carimbo.EOF then 
+                    if carimbo("carimbo") = 1 then 
+                    carimbocheck = "checked"
+                    end if
+                %>
+            <label>
+                <input type="checkbox" id="Carimbo" name="Carimbo" class="ace"  <%= carimbocheck %> onclick="window.frames['ImpressaoPrescricao'].Carimbo(this.checked);" />
+                <span class="lbl">Carimbar </span>
+            </label>
+                <%  
+                else 
+                %>
+
+
+            <label><input type="checkbox" id="Carimbo" name="Carimbo" class="ace"  <%= carimbocheck %> onclick="window.frames['ImpressaoPrescricao'].Carimbo(this.checked);" />
+                <span class="lbl">Carimbar </span>
+            </label>
+                <%
+                end if 
+                end if
+                %>
+            <label <% if session("Banco")="clinic3882" then %>style="display: none;" <% end if %>>
 
                 <label>
+
                     <input <% if ref("ControleEspecial")<>"true" then %> checked="checked" <% end if %> type="checkbox" id="Timbrado" name="Timbrado" class="ace" />
                     <span class="lbl"> Papel Timbrado</span>
                 </label>
-        	<%
+     	<%
 			if ref("ControleEspecial")="true" then
 				%>
     	    	<label><input type="checkbox" id="Datar" name="Datar" class="ace" checked="checked" onclick="window.frames['ImpressaoPrescricao'].Datar(this.checked);" />
@@ -96,7 +121,9 @@ recursoPermissaoUnimed = recursoAdicional(12)
     var imprimeData = 1;
     var impressaoTermica = 0;
     var carimbo = 1;
-        
+<
+
+     
     gtag('event', 'nova_prescricao', {
         'event_category': 'prescricao',
         'event_label': "Botão 'Salvar' clicado.",

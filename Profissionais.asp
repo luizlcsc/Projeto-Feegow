@@ -429,8 +429,8 @@ let especialidade        = document.getElementById('ESPEC');
 let conselho             = document.getElementById('CONSELHOC');
 let RQEC                 = document.getElementById('RQEC');
 let CPFC                 = document.getElementById('CPFC');
-let  RQECValue           = (RQEC.checked == true  ?  1   :0);
-let CPFCValue            = (CPFC.checked == true  ?  1  : 0);
+let  RQECValue            = (RQEC.checked == true  ?  1   :0);
+let CPFCValue             = (CPFC.checked == true  ?  1  : 0);
 var nomevalue             = (nomeProfi.checked == true      ?  1 : 0 );
 var especialidadeValue    = (especialidade.checked == true  ?   1  : 0);
 var conselhoValue         = (conselho.checked == true       ?   1  : 0); 
@@ -441,6 +441,12 @@ var carimboValue          = (carimbo.checked == true        ?  1   :0);
    $('.carimbo').show("slow") 
  }else{
    $('.carimbo').hide("slow")
+   $('#NomePRODC').prop('checked',false);
+   $('#ESPEC').prop('checked',false);
+   $('#CONSELHOC').prop('checked',false);
+   $('#RQEC').prop('checked',false);
+   $('#CPFC').prop('checked',false);
+
  }
   
 $.post(url,{profissionalID:"<%=req("I")%>",nome:nomevalue,Especialidade:especialidadeValue , conselho:conselhoValue , rqe:RQECValue , cpf:CPFCValue,carimbo:carimboValue},function(data){

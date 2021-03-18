@@ -569,26 +569,50 @@ if not getResource.EOF then
 
                 'Salva vacina_serie_dosagem com parâmetros pré-estabelecidos = Walder Silva
                 if lcase(getSubforms("tableName"))="vacina_serie_dosagem" and (tableName = "Procedimentos" or tableName = "procedimentos") then
-              
-                    seriedosagem = split(ref("id-vacina_serie_dosagem"), ", ")
-                    for contserie=0 to ubound(seriedosagem)
-                        m = seriedosagem(contserie)
-                        if ref("PeriodoDias-vacina_serie_dosagem-"&m) = "" then
-                            PeriodoDias = "null"
-                        else 
-                            PeriodoDias = ref("PeriodoDias-vacina_serie_dosagem-"&m)
+
+                    if ref("id-vacina_serie_dosagem")&"" <> "" then
+                        if inStr(ref("id-vacina_serie_dosagem"), ", ") > 0 then
+                            seriedosagem = split(ref("id-vacina_serie_dosagem"), ", ")
+
+                            for contserie=0 to ubound(seriedosagem)
+
+                                m = seriedosagem(contserie)
+
+                                if ref("PeriodoDias-vacina_serie_dosagem-"&m) = "" then
+                                    PeriodoDias = "null"
+                                else
+                                    PeriodoDias = ref("PeriodoDias-vacina_serie_dosagem-"&m)
+                                end if
+                                db.execute("update vacina_serie_dosagem set ProdutoID="&ref("ProdutoID-vacina_serie_dosagem-"&m)&", Descricao='"&ref("Descricao-vacina_serie_dosagem-"&m)&"', PeriodoDias="&PeriodoDias&", Ordem='"&ref("Ordem-vacina_serie_dosagem-"&m)&"' where id="&m)
+                            next
+                        else
+                            m = ref("id-vacina_serie_dosagem")
+
+                            if ref("PeriodoDias-vacina_serie_dosagem-"&m) = "" then
+                                PeriodoDias = "null"
+                            else
+                                PeriodoDias = ref("PeriodoDias-vacina_serie_dosagem-"&m)
+                            end if
+
+                            db.execute("update vacina_serie_dosagem set ProdutoID="&ref("ProdutoID-vacina_serie_dosagem-"&m)&", Descricao='"&ref("Descricao-vacina_serie_dosagem-"&m)&"', PeriodoDias='"&PeriodoDias&"', Ordem='"&ref("Ordem-vacina_serie_dosagem-"&m)&"' where id="&m)
                         end if
-                        db.execute("update vacina_serie_dosagem set ProdutoID="&ref("ProdutoID-vacina_serie_dosagem-"&m)&", Descricao='"&ref("Descricao-vacina_serie_dosagem-"&m)&"', PeriodoDias="&PeriodoDias&", Ordem='"&ref("Ordem-vacina_serie_dosagem-"&m)&"' where id="&m)
-                    next
+                    end if
                 elseif getSubforms("tableName") = "vacina_serie" and (tableName = "Procedimentos" or tableName = "procedimentos") then
-                    
-                    serie = split(ref("id-vacina_serie"), ", ")
+
+                    if ref("id-vacina_serie")&"" <> "" then
+                        if inStr(ref("id-vacina_serie"), ", ") > 0 then
+                          serie = split(ref("id-vacina_serie"), ", ")
 
                     for cont=0 to ubound(serie)
                         n = serie(cont)
                         
-                        db.execute("update vacina_serie set Titulo='"&ref("Titulo-vacina_serie-"&n)&"', Descricao='"&ref("Descricao-vacina_serie-"&n)&"' where id="&n)
-                    next
+                                db.execute("update vacina_serie set Titulo='"&ref("Titulo-vacina_serie-"&n)&"', Descricao='"&ref("Descricao-vacina_serie-"&n)&"' where id="&n)
+                            next
+                        else
+                            n = ref("id-vacina_serie")
+                            db.execute("update vacina_serie set Titulo='"&ref("Titulo-vacina_serie-"&n)&"', Descricao='"&ref("Descricao-vacina_serie-"&n)&"' where id="&n)
+                        end if
+                    end if
                 else
                     codeUp = "update "&getSubforms("tableName")&" set sysActive=1"&codeUp& " where id="&regs("id")
                     db_execute(codeUp)

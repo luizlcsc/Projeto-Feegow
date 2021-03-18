@@ -231,62 +231,14 @@ body{
             </tr>
             <tr class="corpoCarimbo">
                 <td>
-            <% if session("Banco")<>"clinic3882" and session("Banco")<>"clinic105" then %>
-                <div id="Carimbo" style="text-align:center">
+<% if session("Banco")<>"clinic3882" and session("Banco")<>"clinic105" then %>
+                   <div id="Carimbo" style="text-align:center">
                     ___________________________________<br />
-                    <%
-                     set carimbo = db.execute("select * from carimbo where profissional_id="&user("idInTable"))
-                    if not carimbo.EOF then                    
-                    user  = reg("sysUser")
-            
-                    set sysUser   = db.execute("select idInTable from sys_users where id="&user)                  
-                    set profpresc = db.execute("select NomeProfissional  from profissionais  where id="&sysUser("idInTable"))
-                    
-                    if carimbo("nome") = "1" then 
-                    NomeProfi = profpresc("NomeProfissional")&"<br/>"
-                    end if
-
-
-                    if carimbo("Especialidade") = "1" then 
-                    EspecialidadeProfi = pro("EspecialidadeID")
-                    set espect = db.execute("select * from especialidades where id="&EspecialidadeProfi)                    
-                    if not espect.EOF then
-                        especialidade = espect("especialidade")&"<br/>"
-                    end if
-                    end if
-
-                    if carimbo("Conselho") = "1" then 
-                    ConselhoProfi = pro("Conselho")&"-"& pro("DocumentoCOnselho")&"/"&pro("UFConselho")&"<br/>"
-                    end if
-
-                    if carimbo("RQE") = "1" then 
-                    RQEProfi = "RQE: " &pro("RQE")&"<br/>"
-                    end if
-
-                    if carimbo("CPF") = "1" then 
-                    CPFProfi = "CPF: " &pro("CPF")&"<br/>"
-                    end if
-                %>
-                        <%= NomeProfi %>
-                        <%= especialidade %>
-                        <%= ConselhoProfi %>
-                        <%= RQEProfi %>
-                        <%= CPFProfi %>
-                        <%= DocumentoProfissional %><br/>
+                        <%= NomeProfissional %><br />
+                        <%= DocumentoProfissional %>
                     </div>
-                    <%  %>
-                    <% else  
-                         set sysUser   = db.execute("select idInTable from sys_users where id="&reg("sysUser"))   
-                         set profpresc = db.execute("select NomeProfissional  from profissionais  where id="&sysUser("idInTable"))
-                    %>
-                            <%= profpresc("NomeProfissional") %><br/>
-                            <%= "CRM:"& pro("DocumentoCOnselho") %>
-                    <%
-                
-                    end if 
-                    end if
-                    %>
-               
+<% end if %>
+                    <br /><br /><br /><br />
                 </td>
             </tr>
             <tr>

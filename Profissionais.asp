@@ -54,7 +54,7 @@ end if
 <div class="tabbable">
     <div class="tab-content">
         <div id="divCadastroProfissional" class="tab-pane<%=tabCadastro%>">
- <input type="hidden" id="CBOS" value="<%=reg("CBOS")%>">
+
 
             <form method="post" id="frm" name="frm" action="save.asp">
                 <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
@@ -120,18 +120,13 @@ end if
                             </span>
                         </div>
                         <div class="panel-body p7">
-                        	<div class="checkbox-primary checkbox-custom"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(reg("Unidades"), "|0|")>0 then%> checked="checked"<%end if%> />
-                            <label for="Unidades0"> <small>Empresa principal</small></label>
-                            </div>
+                        	<div class="checkbox-primary checkbox-custom"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(reg("Unidades"), "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
 						<%
 						set unidades = db.execute("select id, UnitName,NomeFantasia from sys_financialcompanyunits where sysActive=1 order by NomeFantasia")
 						while not unidades.eof
 							%>
 							<div class="checkbox-custom checkbox-primary">
-                                <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(reg("Unidades"), "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> />
-                                <label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label>
-                                 
-                            </div>
+                                <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(reg("Unidades"), "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label></div>
 							<%
 						unidades.movenext
 						wend
@@ -146,76 +141,15 @@ end if
                             <span class="panel-title">Assinatura</span>
                         </div>
                         <div class="panel-body" style="padding:5px !important">
-                        <iframe width="100%" height="200" id="iframeDropZone" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens&Tipo=I&Assinatura=true"></iframe>
+                         <iframe width="100%" height="200" id="iframeDropZone" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens&Tipo=I&Assinatura=true"></iframe>
                             <img src="<%=arqEx(reg("Assinatura"), "Imagens")%>" class="img-thumbnail" id="assinatura-img"/>
                             <button style="    position: absolute; bottom: 20px; right:20px;" id="buttonDeleteSignature" class="btn btn-xs btn-danger pull-right" onclick="if(confirm('Tem certeza de que deseja excluir esta assinatura?')){deleteSignature(<%= req("I") %>)};"><span class="fa fa-trash "></span></button>
+
                         </div>
                     </div>
 
                     <button type="button" onclick="VisualizarEnvioDasAgendas()" class="btn btn-default btn-sm btn-block"><i class="fa fa-envelope"></i> Visualizar envio das agendas</button>
-                    <div class="col-md-12" style="margin-top:90px;">
-                    <label>Configurações do Carimbo</label>
-                    <button type="button" class="multiselect dropdown-toggle btn btn-default teste" 
-                    data-toggle="dropdown" title="Selecione" style="width: 98%;" aria-expanded="true">Selecione <b class="caret"></b>
-                    </button>
-                    <ul class="multiselect-container dropdown-menu carimbo">
-                    <li class="multiselect-item filter" value="0">
-                    <div class="input-group">
-                    
-                    <span class="input-group-addon">
-                        <i class="glyphicon glyphicon-search"></i>
-                        </span>
-                        <input class="form-control multiselect-search" type="text" placeholder="Filtrar">
-                        <span class="input-group-btn">
-                        <button class="btn btn-default multiselect-clear-filter" type="button">
-                        <i class="glyphicon glyphicon-remove"></i>
-                        </button>
-                        </span>
-                    </div>
-                    </li>
-                    
-                    <li class="multiselect-item multiselect-all"></li>
-                    <li><a href="javascript:void(0);">
-                    <%
-                     set carimbo = db.execute("select * from carimbo where profissional_id="&req("I"))
-                    if not carimbo.EOF then
-                    Nome = carimbo("Nome")
-                    if Nome <> "0" then 
-                    NomeCheck = "checked"
-                    end if                   
-                    if carimbo("especialidade") <> "0" then 
-                    EspecCheck = "checked"
-                    end if
-                    if carimbo("Conselho")  <> "0" then 
-                    ConselhoCheck = "checked"
-                    end if
-                    if carimbo("RQE")  <> "0" then 
-                    RQECheck = "checked"
-                    end if
-                    if carimbo("CPF")  <> "0" then 
-                    CPFCheck = "checked"
-                    end if
 
-                    %>
-                    <label class="checkbox"><input type="checkbox"  <% response.write(NomeCheck)%>     id="NomePRODC" value="">Nome Profissional</label>
-                    <label class="checkbox"><input type="checkbox"  <% response.write(EspecCheck)%>    id="ESPEC"     value="">Especialidade</label>
-                    <label class="checkbox"><input type="checkbox"  <% response.write(ConselhoCheck)%> id="CONSELHOC" value="">Conselho/estado</label>
-                    <label class="checkbox"><input type="checkbox"  <% response.write(RQECheck)%>      id="RQEC"      value="">RQE</label>
-                    <label class="checkbox"><input type="checkbox"  <% response.write(CPFCheck)%>      id="CPFC"      value="">CPF</label>
-                      <% else %>
-                    <label class="checkbox"><input type="checkbox"       id="NomePRODC"  value="">Nome Profissional</label>
-                    <label class="checkbox"><input type="checkbox"        id="ESPEC"     value="">Especialidade</label>
-                    <label class="checkbox"><input type="checkbox"        id="CONSELHOC" value="">Conselho/estado</label>
-                    <label class="checkbox"><input type="checkbox"        id="RQEC"      value="">RQE</label>
-                    <label class="checkbox"><input type="checkbox"        id="CPFC"      value="">CPF</label>
-               
-
-                     <% end if %>
-                  
-                    </a>
-                    </li>
-                    </ul>
-                    </div>
 
 
                 </div>
@@ -293,6 +227,7 @@ end if
                         <hr class="short alt" />
                         <div class="row">
                             <%= quickField("memo", "Obs", "Observa&ccedil;&otilde;es", 12, reg("Obs"), "", "", "") %>
+
                         </div>
                         <div class="row">
                         <br>
@@ -302,46 +237,28 @@ end if
                         </div>
                         <br>
                         <div class="row">
+
                             <%if session("admin")=1 then
                             AgendaProfissionais = reg("AgendaProfissionais")
                             %>
                                 <%=quickField("multiple", "AgendaProfissionais", "Acesso as agendas dos profissionais", 4, AgendaProfissionais, "select id, NomeProfissional from profissionais where ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
                             <%end if%>
+
                             <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
+
                             <%'= quickField("simpleSelect", "PlanoContaID", "Plano de Contas", 3, "", "select id,Name from sys_financialexpensetype where sysActive=1 order by Name", "Name", "") %>
+
                         </div>
                         <div class="row">
                             <div class='col-md-5'>
                                 <%=quickField("simpleCheckbox", "NaoExibirAgenda", "Não exibir o profissional na agenda", 12, reg("NaoExibirAgenda"), "", "", "")%>
+
                                 <% IF session("admin")=1 THEN %>
-                                <%=quickField("simpleCheckbox", "auditor", "Este profissional é auditor", 12,reg("auditor"), "", "", "")%>
+                                  <%=quickField("simpleCheckbox", "auditor", "Este profissional é auditor", 12,reg("auditor"), "", "", "")%>
                                 <% ELSE %>
                                     <input type="hidden" value="<%=reg("auditor")%>" name="auditor">
                                 <% END IF %>
                             </div>
-                        <div class="col-md-6">
-                            <div class="checkbox-custom checkbox-primary">
-                    <%
-                     set carimbo = db.execute("select * from carimbo where profissional_id="&req("I"))
-                    if not carimbo.EOF then
-                    carimbo = carimbo("carimbo")
-                    if carimbo <> "0" then 
-                    utilizarCarimbo = "checked"
-                    end if
-                    %>
-                          
-                            <%                          
-                            end if
-                            
-                            %>
-                                 
-                             <div class="checkbox-custom checkbox-primary carimbo2">
-                                <input type="checkbox" class="ace" <%=utilizarCarimbo %> name="carimbo2" id="carimbo2" value="S"> 
-                                <label class="checkbox" for="carimbo2"> Utilizar Carimbos nos Impressos </label>
-			                </div>
-                            </div>
-                        </div>
-
                         </div>
                         <br>
                         <div class="row">
@@ -395,66 +312,6 @@ if session("Admin")=1 then
 end if
 %>
 <script type="text/javascript">
-url = 'carimbo.asp';
-$('.carimbo').click(function(){
-let nomeProfi          = document.getElementById('NomePRODC');
-let especialidade      = document.getElementById('ESPEC');
-let conselho           = document.getElementById('CONSELHOC');
-let RQEC               = document.getElementById('RQEC');
-let CPFC               = document.getElementById('CPFC');
-var RQECValue          = (RQEC.checked == true          ?  1   :0);
-var CPFCValue          = (CPFC.checked == true          ?  1  : 0);
- carimbo               = document.querySelector('#carimbo2');
-var nomevalue          = (nomeProfi.checked == true     ?  1 : 0 );
-var especialidadeValue = (especialidade.checked == true ?   1  : 0);
-var conselhoValue      = (conselho.checked == true ?   1  : 0); 
-var carimboValue       = (carimbo.checked == true         ?  1   :0);
-
-
-
-$.post(url,{profissionalID:"<%=req("I")%>",nome:nomevalue,Especialidade:especialidadeValue , conselho:conselhoValue , rqe:RQECValue , cpf:CPFCValue,carimbo:carimboValue},function(data){
-
-});
-
-
-});
-
-$('.teste').click(function(){
-   $('.carimbo').toggle("slow") 
-});
-$('.carimbo2').click(function(){
-let carimbo              = document.querySelector('#carimbo2');
-let nomeProfi            = document.getElementById('NomePRODC');
-let especialidade        = document.getElementById('ESPEC');
-let conselho             = document.getElementById('CONSELHOC');
-let RQEC                 = document.getElementById('RQEC');
-let CPFC                 = document.getElementById('CPFC');
-let  RQECValue            = (RQEC.checked == true  ?  1   :0);
-let CPFCValue             = (CPFC.checked == true  ?  1  : 0);
-var nomevalue             = (nomeProfi.checked == true      ?  1 : 0 );
-var especialidadeValue    = (especialidade.checked == true  ?   1  : 0);
-var conselhoValue         = (conselho.checked == true       ?   1  : 0); 
-var carimboValue          = (carimbo.checked == true        ?  1   :0);
-
-
- if(carimbo.checked){
-   $('.carimbo').show("slow") 
- }else{
-   $('.carimbo').hide("slow")
-   $('#NomePRODC').prop('checked',false);
-   $('#ESPEC').prop('checked',false);
-   $('#CONSELHOC').prop('checked',false);
-   $('#RQEC').prop('checked',false);
-   $('#CPFC').prop('checked',false);
-
- }
-  
-$.post(url,{profissionalID:"<%=req("I")%>",nome:nomevalue,Especialidade:especialidadeValue , conselho:conselhoValue , rqe:RQECValue , cpf:CPFCValue,carimbo:carimboValue},function(data){
-
-});
-
-});
-
 $(document).ready(function(e) {
 	<%call formSave("frm", "save", "")%>
 });

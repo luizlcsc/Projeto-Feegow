@@ -521,7 +521,10 @@ function DefaultForm(tableName, id)
 											valor = pval(""&splfieldSelectColumnToShow(i)&"")
 										end if
 									else
+										valor = ""
+										if splfieldsInList(i) <> "" then
 										valor = reg(splfieldsInList(i))
+										end if
 									end if
 									if splfieldFieldType(i)=5 then
 										if valor <>"" then

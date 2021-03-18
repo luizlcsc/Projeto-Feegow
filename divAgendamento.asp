@@ -1129,11 +1129,42 @@ end if
 
 
 
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
 
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Permissão para uso de Tabela</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-4">
+            <p>Selecione um usuário abaixo que tenha  permissão: 
+                </p>      
+              
+        </div>        
+            <div class="col-md-6">
+                <label style="" class="error_msg"></label><br>
+                <label>Senha do Usuário</label>
+                <input type="password" id="password" name="password" class="form-control">
+            </div>
 
+        <div class="col-md-12 tabelaParticular" style="color:#000;">
+        
+             
+        </div>
+        </div>
+       
+        <div class="modal-footer" style="margin-top:13em;">
+                <button type="button" class="btn btn-default fechar" data-dismiss="modal" >Fechar</button>                
+                <button type="button" class="btn btn-info confirmar"    >Confirmar</button>
+       
+         </div>
 
-
-
+  </div>
+</div>
+</div>
 
 
 
@@ -1645,6 +1676,7 @@ end if
         %>
 
 
+
 function dispEquipamento(){
         $.post("agendaParametros.asp?tipo=Equipamento", $("#formAgenda").serialize(), function(data){eval(data);});
     }
@@ -1899,10 +1931,78 @@ function ObsConvenio(ConvenioID) {
 
     });
     $("#modal").addClass("modal-lg");
+}
+atualizaHoraAtual();
 
+
+
+
+var idStr = "#ageTabela";
+$('.modal').click(function(){
+$(idStr).val("");
+
+});
+
+
+$(idStr).change(function(){
+        var id       = $(idStr).val();
+        var sysUser  = "<%=session("user") %>";
+        var regra  = "|tabelaParticular12V|";
+        $.ajax({
+        method: "POST",
+        url: "TabelaAutorization.asp",
+        data: {autorization:"buscartabela",id:id,sysUser:sysUser},
+        success:function(result){
+            if(result == "Tem regra") {
+                console.log("5")
+                $('#myModal').modal('show');
+                buscarNome(id,sysUser,regra);
+                }else{
+            }
+        }
+    });
+        $('.confirmar').click(function(){
+                var Usuario =  $('input[name="nome"]:checked').val();
+                var senha   =  $('#password').val();
+                liberar(Usuario , senha , id);
+        });
+    });
+
+
+
+function buscarNome(id ,user, regra){
+    $.ajax({
+        method: "POST",
+        ContentType:"text/html",
+        url: "TabelaAutorization.asp",
+        data: {autorization:"pegarUsuariosQueTempermissoes",id:id,LicencaID:user,regra:regra},
+        success:function(result){
+        
+            res = result.split('|');     
+                    $('.tabelaParticular').html(result);
+            }
+        });
 }
 
-atualizaHoraAtual();
+function liberar(Usuario , senha , id){
+    $.ajax({
+    method: "POST",
+    url: "SenhaDeAdministradorValida.asp",
+    data: {autorization:"liberar",id:id ,U:Usuario , S:senha},
+    success:function(result){      
+            if( result == "1" ){
+                    $('.error_msg').text("Logado Com Sucesso!").fadeIn().css({color:"green" });;
+                setTimeout(() => {
+                    $('#myModal').modal('hide');
+                    $(idStr).val(id);
+                }, 2000);
+                }else{
+                        $('.error_msg').text("Senha incorreta!").css({color:"red" }).fadeIn();
+                        $(idStr).val("");
+                }
+            }
+        });
+}
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>

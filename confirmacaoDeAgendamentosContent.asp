@@ -51,7 +51,7 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
 
         TratamentoProfissional = ""
 
-
+        ProcedimentoID = 0
         if instr(Mensagem, "[Procedimento.Tipo]") or instr(Mensagem, "[Procedimento.Nome]") then
             set proc = db.execute("select p.id,p.NomeProcedimento,t.TipoProcedimento from procedimentos p LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID where p.id="&age("TipoCompromissoID"))
             if not proc.eof then

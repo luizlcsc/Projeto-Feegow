@@ -22,8 +22,7 @@ function numeroDisponivel(ConvenioID)
 
             set GuiaDisponivelSQL = db.execute("SELECT NGuiaPrestador FROM "&maiorGuia("tipo")&" WHERE ConvenioID="&ConvenioID&" AND cast(NGuiaPrestador as signed integer)=1+"&maiorGuia("numero"))
             if not GuiaDisponivelSQL.eof then
-
-                if ccur(NGuiaPrestador)<1000000 then
+                if cdbl(NGuiaPrestador)<1000000 then
                     if isnumeric(NGuiaPrestador) then
                         NGuiaPrestador = cint(NGuiaPrestador) + 1
                     end if

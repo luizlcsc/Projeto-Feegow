@@ -1,4 +1,4 @@
-6<!--#include file="Classes/Connection.asp"--><!--#include file="Classes/IPUtil.asp"--><!--#include file="Classes/Environment.asp"--><%
+<!--#include file="Classes/Connection.asp"--><!--#include file="Classes/IPUtil.asp"--><!--#include file="Classes/Environment.asp"--><%
 if IP<>"::1" then
    'on error resume next
 end if
@@ -110,7 +110,7 @@ if not tryLogin.EOF then
         ExibeChatAtendimento=True
     end if
 
-    if ClienteUnimed or AppEnv<>"production" or tryLogin("Status")<>"C" then
+    if (ClienteUnimed and tryLogin("Franquia")<>"P") or AppEnv<>"production" or tryLogin("Status")<>"C" then
         ExibeChatAtendimento=False
     end if
     

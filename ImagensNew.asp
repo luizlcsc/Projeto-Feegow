@@ -2,6 +2,11 @@
 <!--#include file="ProntCompartilhamento.asp"-->
 <!--#include file="Classes/Arquivo.asp"-->
 <%
+    if req("rotateAngle")&""<>"" then
+        qImagemUpdateSQL = "UPDATE arquivos SET imgRotate="&req("rotateAngle")&" WHERE id="&req("I")
+        db.execute(qImagemUpdateSQL) 
+        response.end()
+    end if
     IF ref("valor") <> "" THEN
         db.execute("UPDATE arquivos SET Descricao = '"&ref("valor")&"' WHERE id = '"&ref("id")&"' ")
 
@@ -54,7 +59,7 @@ end if
     .galery-item-max .galery-img {
             max-width: 100%;
             min-width: 100%;
-            height:auto;
+            height:100vh;
     }
 
     .galery-item .galery-img{
@@ -347,10 +352,10 @@ end if
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-expand icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}&dimension=full" target="_blank" title="Abrir Imagem em outra aba">
+                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}&dimension=full&rotate=${item.imgRotate}" target="_blank" title="Abrir Imagem em outra aba">
                                                               <i class="fa fa-external-link icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}')" title="Girar 90°">
+                                    <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}', ${item.imgRotate})" title="Girar 90°">
                                             <i class="fa fa-rotate-right"></i>
                                     </a>
                                     <!--<a class="btn btn-xs btn-alert" href="javascript:MaisInfo('')" title="Mais informações">
@@ -365,7 +370,17 @@ end if
                                 </div>
 
                              </div>
-                             <div class="galery-img"><${item.formato} href="${item.ArquivoLink}" target="_blank"><img src="${item.link}" data-id="${item.id}&dimension=full" class="${item.extension} img-responsive" title="${item.Descricao}"></a></div>
+                             <div class="galery-img">
+                                <${item.formato} href="${item.ArquivoLink}" target="_blank">
+                                    <img
+                                        src="${item.link}"
+                                        data-id="${item.id}"
+                                        class="${item.extension} img-responsive"
+                                        title="${item.Descricao}"
+                                        onload="$(this).css('transform','rotate(${item.imgRotate}deg)');"
+                                    >
+                                </a>
+                             </div>
                              <div class="config">
                                 <textarea class="galery-description text-info border-edit imgpac" name="Desc${item.id}" onchange="changeDescription(${item.id},this)" data-img-id="${item.id}">${item.NovaDescricao}</textarea>
                              </div>
@@ -377,6 +392,19 @@ end if
 
     function expandItem(id){
          let item = itens.find(item => item.id == id);
+         let boxImageRotate = false;
+         
+         if (item.imgRotate>0){
+            boxImageRotate = `
+                onload="$(this)
+                    .css({
+                        'max-width' : '100vh',
+                        'max-height' : '100vw',
+                        'transform' : 'translatex(calc(50vw - 50%)) translatey(calc(50vh - 50%)) rotate(${item.imgRotate}deg)'
+                    });"         
+             `;
+         }
+
          let html = `
          <div class="galery-item-max">
             <div class="galery-data-envio">
@@ -389,7 +417,15 @@ end if
 Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescricao}
 </div>
           </div>
-          <div class="galery-img"><img src="${item.ArquivoLink}&dimension=full" width="100%" height="100%" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
+          <div class="galery-img">
+            <img
+                src="${item.ArquivoLink}&dimension=full"
+                data-id="${item.id}"
+                class="${item.extension} img-responsive"
+                title="${item.Descricao}"
+                ${boxImageRotate}
+            >
+        </div>
     </div>`;
 
 
@@ -443,10 +479,14 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
     }
 
     function comparar(){
+        
         html = "";
         let quantidade = 100/$(".comparar:checked").length;
         $(".comparar:checked").map((a,b) => {
             let item = itens.find(item => item.id == b.value);
+            let imgRotate = item.imgRotate;
+            
+            
             html += `<div class="galery-item-max" style="width: ${quantidade}%;max-width: ${quantidade}%;min-width: ${quantidade}%">
                                 <div class="galery-data-envio">
                                  <div class="data-envio">
@@ -458,7 +498,17 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
                     Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescricao}
                     </div>
                               </div>
-                              <div class="galery-img"><img src="${item.ArquivoLink}&dimension=full" width="100%" height="100%" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
+                              <div class="galery-img">
+                                <img
+                                    src="${item.ArquivoLink}&dimension=full"
+                                    width="100%"
+                                    height="100%"
+                                    data-id="${item.id}"
+                                    class="${item.extension} img-responsive"
+                                    title="lost_typewritter.jpg"
+                                    style="transform: rotate(${imgRotate}deg);"
+                                >
+                              </div>
                     </div>`;
         })
 
@@ -473,15 +523,22 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
         });
     }
 
-    function r90_1(f, id){
-         let rotateAngle = $("img[data-id="+id+"]").attr("rotateAngle");
-
-         if(!rotateAngle){
-             rotateAngle = 0;
-         }
-         rotateAngle = Number(rotateAngle) + 90;
-         $("img[data-id="+id+"]").css('transform','rotate(' + rotateAngle + 'deg)');
-         $("img[data-id="+id+"]").attr('rotateAngle',rotateAngle);
+    function r90_1(f, id, rotate){
+        let rotateAngle = $("img[data-id="+id+"]").attr("rotateAngle");
+        if(!rotateAngle){
+            rotateAngle = rotate;
+        }
+        rotateAngle = Number(rotateAngle) + 90;
+        $("img[data-id="+id+"]").css('transform','rotate(' + rotateAngle + 'deg)');
+        $("img[data-id="+id+"]").attr('rotateAngle',rotateAngle);
+        if (rotateAngle>270) {
+            rotateAngle=0
+        }
+        $.ajax({
+            type:`GET`,
+            url:`ImagensNew.asp?rotateAngle=`+rotateAngle+`&I=`+id,
+            
+        });
     }
 
 function atualizaAlbum(X){

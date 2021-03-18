@@ -555,7 +555,16 @@ $(".tab").click(function(){
 	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team, #block-programas-saude").addClass("hidden");
     //$("#save").addClass("hidden");
 });
+
+$(".menu-aba-pacientes-dados-principais" ).click(function() {
+  	$("#pacientesDadosComplementares").show();
+});
+$("#tabExtrato").click(function() {
+  	$("#pacientesDadosComplementares").hide();
+});
+
 function pront(U){
+	$("#pacientesDadosComplementares").hide();
 	$.ajax({
 		type: "POST",
 		url: U,

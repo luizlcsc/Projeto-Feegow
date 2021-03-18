@@ -12,11 +12,11 @@
 <tbody>
 <%
 response.Buffer=true
-set pacs = db.execute("select id, trim(NomePaciente) NomePaciente, Nascimento from pacientes where not isnull(NomePaciente) and NomePaciente<>'' and sysActive=1 order by (NomePaciente),id limit 50000")
+set pacs = db.execute("select id, trim(NomePaciente) NomePaciente, Nascimento from pacientes where not isnull(NomePaciente) and NomePaciente<>'' and sysActive=1 order by (NomePaciente), Nascimento,id limit 50000")
 c = 0
 while not pacs.eof
 	response.Flush
-	if pacs("NomePaciente")=NomePaciente and pacs("Nascimento") = Nascimento then
+	if lcase(pacs("NomePaciente"))=lcase(NomePaciente) and trim(pacs("Nascimento")) = trim(Nascimento) then
 		conta = conta+1
 	else
 		conta = 0
@@ -29,7 +29,7 @@ while not pacs.eof
             c=c+1
             %>
             <tr>
-                <td><%=pacs("NomePaciente")%></td>
+                <td><%=pacs("NomePaciente")%> (<%=Nascimento%>)</td>
                 <td><a class="btn btn-xs btn-info" target="_blank" href="?P=Pacientes&Pers=1&I=<%=Paciente0%>"><i class="fa fa-user"></i> Prontuário <%=Paciente0%></a></td>
                 <td><a class="btn btn-xs btn-info" target="_blank" href="?P=Pacientes&Pers=1&I=<%=Paciente1%>"><i class="fa fa-user"></i> Prontuário <%=Paciente1%></a></td>
                 <td><a class="btn btn-xs btn-success" target="_blank" href="mesclar.asp?p1=<%=Paciente0%>&p2=<%=Paciente1%>"><i class="fa fa-compress"></i> MESCLAR</a></td>
@@ -50,7 +50,7 @@ set pacs=nothing
 <tfoot>
 	<tr>
     	<td></td>
-        <td colspan="4"><button class="btn btn-warning btn-sm btn-block"><i class="fa fa-compress"></i> MESCLAR PACIENTES SELECIONADOS</button></td>
+        <td colspan="4"><button class="btn btn-warning btn-sm btn-block"><i class="fa fa-compress"></i> MESCLAR PACIENTES</button></td>
     </tr>
 </tfoot>
 </table>

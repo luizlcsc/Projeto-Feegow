@@ -72,6 +72,10 @@ while not ptip.eof
               " " & whereProfissionais &_
               "ORDER BY i.dataNFe"
         'response.write( "=--->"&sql )
+        ValorBrutoTotal = 0
+        valorPagoTotal  = 0
+        valorNfeTotal   = 0
+        valorTotalRepasse = 0 
             set dataNF = db.execute(sql)
             while not dataNF.eof
                 response.flush()
@@ -186,7 +190,7 @@ while not ptip.eof
                         GuiasSADT = GuiasSADT &", "& gi("GuiaID")
 
                         if profissionais&"" <> "" then 
-                           whereProfissionais  = " AND gc.ProfissionalSolicitanteID in ("&profissionais&")"
+                           whereProfissionais  = " AND gs.ProfissionalSolicitanteID in ("&profissionais&")"
                         else 
                            whereProfissionais = ""
                         end if
@@ -230,8 +234,6 @@ while not ptip.eof
                             end if
                             ValorTotal=ValorTotal + ValorBruto
                             TotalDespesas = TotalDespesas+ValorDespesas
-
-
 
                             UnidadeID=proc("UnidadeID")
                             if not isnull(UnidadeID) then
@@ -297,52 +299,61 @@ while not ptip.eof
                         "AND ii.Tipo='S' "&_
                         "AND i.CompanyUnitID IN ("&Unidades&") "& whereProfissionais & whereProcedimentos  &_
                         " ORDER BY prof.id"
-                'response.write( sqlII )
                 set ii = db.execute( sqlII )
                 while not ii.eof
-                    DataAtendimento = ii("DataExecucao")
-                    ProfissionalID = ii("ProfissionalID")
-                    NomeProfissional = ii("NomeProfissional")
-                    NomePaciente = ii("NomePaciente")
-                    NomeProcedimento = ii("NomeProcedimento")
-                    ValorPago = fn(ii("ValorPago"))
-                    ValorBruto = fn(ii("ValorServico"))
-                    ValorDespesas = 0
-                    NomeConvenio =  "Particular"
-                    ValorTotal=ValorTotal+ValorBruto
-                    set pRep = db.execute("select sum(Valor) Valor, sysDate from rateiorateios where ItemInvoiceID="& treatvalzero(ii("id")) &" AND ContaCredito='5_"& ProfissionalID &"'")
-                    if not pRep.eof then
-                        ValorRepasse = pRep("Valor")
-                        DataRepasse = pRep("sysDate")
-                    end if
+                    if ii("id")&"" <> "" then
+                        DataAtendimento = ii("DataExecucao")
+                        ProfissionalID = ii("ProfissionalID")
+                        NomeProfissional = ii("NomeProfissional")
+                        NomePaciente = ii("NomePaciente")
+                        NomeProcedimento = ii("NomeProcedimento")
+                        ValorPago = fn(ii("ValorPago"))
+                        ValorNfe = fn(dataNF("valorNFe"))
+                        ValorBruto = fn(ii("ValorServico"))
+                        ValorDespesas = 0
+                        NomeConvenio =  "Particular"
 
-                    UnidadeID=ii("UnidadeID")
-                    if not isnull(UnidadeID) then
-                        set UnidadeSQL = db.execute("SELECT NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa WHERE id=1 UNION ALL SELECT id,NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE t.id="&treatvalzero(UnidadeID))
-                        if not UnidadeSQL.eof then
-                            NomeUnidade = UnidadeSQL("NomeFantasia")&" - "
+                        ValorBrutoTotal = ValorBrutoTotal+ValorBruto
+                        valorPagoTotal  = valorPagoTotal+ ValorPago
+                        valorNfeTotal   = valorNfeTotal + ValorNfe
+
+
+                        sql = "select sum(Valor) Valor, sysDate from rateiorateios where ItemInvoiceID="& treatvalzero(ii("id")) &" AND ContaCredito='5_"& ProfissionalID &"'"
+                        set pRep = db.execute(sql)
+                        if not pRep.eof then
+                            ValorRepasse = pRep("Valor")
+                            DataRepasse = pRep("sysDate")
                         end if
-                    end if
+                        
+                        valorTotalRepasse = valorTotalRepasse + ValorRepasse
 
-                    %>
-                    <tr>
-                        <td></td>
-                        <td><%= DataAtendimento %></td>
-                        <td><%= NomeProfissional %></td>
-                        <td><%= NomePaciente %></td>
-                        <td><%= NomeProcedimento %></td>
-                        <td><%= dataNF("nroNFe") %></td>
-                        <td><%= dataNF("dataNFe") %></td>
-                        <td class="text-right"><%= fn(dataNF("valorNFe")) %></td>
-                        <td class="text-right"><%= ValorBruto %></td>
-                        <td class="text-right"><%= fn(ValorPago) %></td>
-                        <td class="text-right"><%= fn(ValorRepasse) %></td>
-                        <td class="text-right"><%= DataRepasse %></td>
-                        <td><%= NomeConvenio %></td>
-                        <td><%= NomeUnidade %></td>
-                    </tr>
-                    <%
-                ii.movenext
+                        UnidadeID=ii("UnidadeID")
+                        if not isnull(UnidadeID) then
+                            set UnidadeSQL = db.execute("SELECT NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa WHERE id=1 UNION ALL SELECT id,NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE t.id="&treatvalzero(UnidadeID))
+                            if not UnidadeSQL.eof then
+                                NomeUnidade = UnidadeSQL("NomeFantasia")&" - "
+                            end if
+                        end if
+                        %>
+                        <tr>
+                            <td></td>
+                            <td><%= DataAtendimento %></td>
+                            <td><%= NomeProfissional %></td>
+                            <td><%= NomePaciente %></td>
+                            <td><%= NomeProcedimento %></td>
+                            <td><%= dataNF("nroNFe") %></td>
+                            <td><%= dataNF("dataNFe") %></td>
+                            <td class="text-right"><%= fn(dataNF("valorNFe")) %></td>
+                            <td class="text-right"><%= ValorBruto %></td>
+                            <td class="text-right"><%= fn(ValorPago) %></td>
+                            <td class="text-right"><%= fn(ValorRepasse) %></td>
+                            <td class="text-right"><%= DataRepasse %></td>
+                            <td><%= NomeConvenio %></td>
+                            <td><%= NomeUnidade %></td>
+                        </tr>
+                        <%
+                    end if                     
+                    ii.movenext
                 wend
                 ii.close
                 set ii = nothing
@@ -354,9 +365,20 @@ while not ptip.eof
 
             %>
             <tr>
-                <th colspan="8" class="text-right">Valor total</th>
-                <th class="text-right"><%= fn(ValorTotal) %></th>
-                <th class="text-right" colspan="5"></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th class="text-right"><%=fn(valorNfeTotal)%></th>
+                <th class="text-right"><%=fn(ValorBrutoTotal)%></th>
+                <th class="text-right"><%=fn(valorPagoTotal)%></th>
+                <th class="text-right"><%=fn(valorTotalRepasse)%></th>
+                <th></th>
+                <th></th>
+                <th></th>                
             </tr>
         </tbody>
     </table>
@@ -367,9 +389,6 @@ wend
 ptip.close
 set ptip=nothing
 %>
-
-
-
 <h4>DESPESAS ANEXAS</h4>
 <table class="table table-striped table-bordered">
     <thead>
@@ -379,6 +398,7 @@ set ptip=nothing
             <th>Data NFe</th>
             <th>Paciente</th>
             <th>Valor NFe</th>
+            <th>Valor Pago</th>
             <th>Despesas</th>
             <th>Convênio</th>
         </tr>
@@ -390,11 +410,12 @@ sql  = "SELECT i.nroNFe, i.dataNFe, i.valorNFe, ii.id ItemInvoiceID "&_
        "LEFT JOIN itensinvoice ii ON ii.InvoiceID=i.id "&_
        "LEFT JOIN procedimentos proc ON proc.id=ii.ItemID where i.CD='C' and not isnull(i.dataNFe) AND i.dataNFe BETWEEN "& mydatenull(DataDe) &" and "& mydatenull(DataAte) & sqlNF &" "&_
        "ORDER BY i.dataNFe"
-'response.write(sql)
+
 set dataNF = db.execute(sql)
+
 while not dataNF.eof
     response.flush()
-    set gi = db.execute("SELECT * from tissguiasinvoice gi where gi.TipoGuia='guiasadt' AND ItemInvoiceID="& treatvalzero(dataNF("ItemInvoiceID")))
+    set gi = db.execute("SELECT *, (SELECT sum(tga.ValorTotal) FROM tissguiaanexa tga WHERE tga.GuiaID = gi.guiaid ) valorpago from tissguiasinvoice gi where gi.TipoGuia='guiasadt' AND ItemInvoiceID="& treatvalzero(dataNF("ItemInvoiceID")))
     while not gi.eof
         set proc = db.execute("select gs.NGuiaPrestador, pac.NomePaciente, conv.NomeConvenio, (gs.TotalGeral-gs.Procedimentos) ValorDespesas from tissguiasadt gs LEFT JOIN pacientes pac ON pac.id=gs.PacienteID LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE gs.id="& gi("GuiaID")&"")
         if not proc.eof then
@@ -404,7 +425,7 @@ while not dataNF.eof
         end if
         ValorTotal=ValorTotal + ValorBruto
         TotalDespesas = TotalDespesas+ValorDespesas
-        if ValorDespesas>0 then
+        'if ValorDespesas>0 then
             %>
             <tr>
                 <td><a href="./?P=tiss<%= gi("TipoGuia") %>&Pers=1&I=<%= gi("GuiaID") %>" target="_blank"><%= proc("NGuiaPrestador") %></a></td>
@@ -412,17 +433,19 @@ while not dataNF.eof
                 <td><%= dataNF("dataNFe") %></td>
                 <td><%= NomePaciente %></td>
                 <td class="text-right"><%= fn(dataNF("valorNFe")) %></td>
+                <td class="text-right"><%= fn(valorpago) %></td>
                 <td class="text-right"><%= fn(ValorDespesas) %></td>
                 <td><%= NomeConvenio %></td>
             </tr>
             <%
-        end if
+        'end if
     gi.movenext
     wend
     gi.close
     set gi=nothing
 dataNF.movenext
 wend
+
 dataNF.close
 set dataNF=nothing
 %>
@@ -432,9 +455,5 @@ set dataNF=nothing
             <th class="text-right"><%= fn(TotalDespesas) %></th>
         </tr>
     </tfoot>
-        </table>
+</table>
 
-
-<%'= GuiasSADT %>
-<hr />
-<%'= GuiasConsulta %>

@@ -16,13 +16,13 @@
 Contato = req("Contato")
 ContatoSemAssoc = replace(Contato, "3_", "")
 
-
-
-set calls = db.execute("select l.*, can.NomeCanal, can.Icone from chamadas l LEFT JOIN chamadascanais can on can.id=l.RE where (l.Contato='"&Contato&"' or l.Contato='"&ContatoSemAssoc&"') order by l.id desc")
+qCallsSQL = "select l.*, can.NomeCanal, can.Icone from chamadas l LEFT JOIN chamadascanais can on can.id=l.RE where (l.Contato='"&Contato&"' or l.Contato='"&ContatoSemAssoc&"') order by l.id desc"
+'response.write(qCallsSQL)
+set calls = db.execute(qCallsSQL)
 while not calls.eof
 
 	licencaDB = session("Banco")
-	if licencaDB="clinic5459" then
+	if recursoAdicional(4)=4  then
         qGravacao = " SELECT * FROM "&licencaDB&".chamadas AS cha"&chr(13)_
         & " WHERE (cha.StaID LIKE 2) AND (cha.keypabx <> '' AND cha.keypabx IS NOT NULL) AND (cha.RE = 1 OR cha.RE = 2) AND (cha.id = '"&calls("id")&"')"
         'response.write("<pre>"&qGravacao&"</pre>")

@@ -202,23 +202,28 @@ end if
 
         response.Buffer
 
-    leftFiltroNFeStatus = " LEFT JOIN nfe_notasemitidas nfe ON nfe.InvoiceID=i.id AND nfe.Situacao=1 "
+    leftFiltroNFeStatus = " LEFT JOIN nfe_notasemitidas nfe ON nfe.InvoiceID=i.id AND nfe.Situacao=1 LEFT JOIN nfse_emitidas nfse ON nfse.InvoiceID=i.id "
+    StatusEmissao = ""
 
     if ref("NotaFiscalStatus")<>"" then
         SituacaoNFe = ref("NotaFiscalStatus")
         if ref("NotaFiscalStatus")="0" then
             SituacaoNfe = " != 1 "
+        elseif ref("NotaFiscalStatus")="1" then
+            SituacaoNfe = "= "&SituacaoNFe
+            StatusEmissao = "= 3"
         else
             SituacaoNfe = "= "&SituacaoNFe
+            StatusEmissao = "= 6" 
         end if
         sqlFiltroNFeStatus = " AND (nfe.situacao "&SituacaoNFe
 
         if ref("NotaFiscalStatus")="1" then
-            sqlFiltroNFeStatus= sqlFiltroNFeStatus&" OR i.nroNFe is not null"
+            sqlFiltroNFeStatus= sqlFiltroNFeStatus&" OR i.nroNFe is not null AND nfse.status "&StatusEmissao
         end if
 
         if ref("NotaFiscalStatus")="0" then
-            sqlFiltroNFeStatus= " AND (i.nroNFe IS NULL AND (nfe.situacao IS NULL OR nfe.situacao!=1)"
+            sqlFiltroNFeStatus= " AND (i.nroNFe IS NULL AND (nfe.situacao IS NULL OR nfe.situacao!=1 OR nfse.Numero IS NULL)"
         end if
 
         sqlFiltroNFeStatus=sqlFiltroNFeStatus&")"

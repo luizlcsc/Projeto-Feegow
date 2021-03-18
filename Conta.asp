@@ -205,10 +205,14 @@ EliminaNotificacao=0
 							                    Valor = val(""&campos("id")&"")
 							                    if not isnull(Valor) and Valor<>"" then
 								                    if campos("TipoCampoID")=4 or campos("TipoCampoID")=5 or campos("TipoCampoID")=6 then
-									                    set opcoes = db.execute(" select group_concat(Nome separator '<br>') Valor from buiopcoescampos where id in("&replace(Valor, "|", "")&")")
-									                    if not opcoes.eof then
-										                    Valor = opcoes("Valor")
-									                    end if
+                                                        valorIds=replace(Valor, "|", "")
+
+                                                        if valorIds<>"nao" then
+                                                            set opcoes = db.execute(" select group_concat(Nome separator '<br>') Valor from buiopcoescampos where id in("&valorIds&")")
+                                                            if not opcoes.eof then
+                                                                Valor = opcoes("Valor")
+                                                            end if
+                                                        end if
                                                     elseif  campos("TipoCampoID")=16 then
                                                         set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&Valor&"'")
                                                         if not pcid.eof then
@@ -230,7 +234,7 @@ EliminaNotificacao=0
                                                             %>
                                                             <script>
                                                                 $("#tabInformacoes").addClass("red");
-                                                                var valor = '<%=Valor%>';
+                                                                var valor = `<%=Valor%>`;
                                                                 $.gritter.add({
                                                                     title: '<i class="fa fa-exclamation-triangle"></i> <%=Titulo%>',
                                                                     text: valor,

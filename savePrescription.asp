@@ -72,6 +72,7 @@ recursoPermissaoUnimed = recursoAdicional(12)
                 else 
                 %>
 
+
             <label><input type="checkbox" id="Carimbo" name="Carimbo" class="ace"  <%= carimbocheck %> onclick="window.frames['ImpressaoPrescricao'].Carimbo(this.checked);" />
                 <span class="lbl">Carimbar </span>
             </label>
@@ -80,6 +81,9 @@ recursoPermissaoUnimed = recursoAdicional(12)
                 end if
                 %>
             <label <% if session("Banco")="clinic3882" then %>style="display: none;" <% end if %>>
+
+                <label>
+
                     <input <% if ref("ControleEspecial")<>"true" then %> checked="checked" <% end if %> type="checkbox" id="Timbrado" name="Timbrado" class="ace" />
                     <span class="lbl"> Papel Timbrado</span>
                 </label>
@@ -117,12 +121,9 @@ recursoPermissaoUnimed = recursoAdicional(12)
     var imprimeData = 1;
     var impressaoTermica = 0;
     var carimbo = 1;
+<
 
-      if($('#Carimbo').is(':checked')){
-          console.log('true')
-      } else{
-          console.log('false')
-      } 
+     
     gtag('event', 'nova_prescricao', {
         'event_category': 'prescricao',
         'event_label': "Botão 'Salvar' clicado.",

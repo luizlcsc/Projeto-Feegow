@@ -83,6 +83,10 @@ while not campo.eof
     CampoID = campo("id")
     TipoCampoID = campo("TipoCampoID")
     Valor = ""
+    Texto = campo("Texto")&""
+    if campo("MaxCarac")&"" <> "" then
+    input_maxlength = " maxlength='"&campo("MaxCarac")&"' "
+    end if
     if campo("TipoCampoID")=1 or campo("TipoCampoID")=4 or campo("TipoCampoID")=5 or campo("TipoCampoID")=8 then
         if not reg.eof then
             Valor = reg(""& campo("id") &"")
@@ -101,10 +105,10 @@ while not campo.eof
     select case campo("TipoCampoID")
         case 1'TEXTO SIMPLES
         %>
-            <div class="col-md-4">
+            <div class="col-md-4" style="position: relative; z-index:1">
                 <span><b><%= campo("RotuloCampo") %></b></span>
                 <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
-                <%= quickfield("text", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", "")%>
+                <%= quickfield("text", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", input_maxlength)%>
             </div>
         <%
         case 2'DATA
@@ -183,8 +187,9 @@ while not campo.eof
             <%
         case 10'TITULO
             %>
-            <div class="panel-heading">
+            <div class="panel-heading" <% if Texto <> "" then %> style="height: 90px" <% End If %>>
                 <span class="panel-title"><%= Rotulo %></span>
+                <p class="panel-title" style="font-size:0.8em"><%= Texto %></p>
                 <span class="panel-controls hidden">
                     <button type="button" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-sm btn-default hidden-xs"><i class="fa fa-history"></i></button>
                 </span>

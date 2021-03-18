@@ -185,7 +185,7 @@ $("#formFila").submit(function() {
 function excluiAgendamento(ConsultaID, Confirma){
 	$.ajax({
 		type:"POST",
-		url:"excluiAgendamento.asp?ConsultaID="+ConsultaID+"&Confirma="+Confirma,
+		url:"excluiAgendamento.asp?ConsultaID="+ConsultaID+"&Confirma="+Confirma+"&token=98b4d9bbfdfe2170003fcb23b8c13e6b",
 		data:$("#formExcluiAgendamento").serialize(),
 		success:function(data){
 			$("#div-agendamento").html(data);

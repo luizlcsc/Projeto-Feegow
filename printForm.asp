@@ -44,16 +44,7 @@
 		<!--[if lt IE 9]>
 		<script src="assets/js/html5shiv.js"></script>
 		<script src="assets/js/respond.min.js"></script>
-<-->
-
-
-
-
-
-
-
-
-
+        -->
 
 <link rel="stylesheet" href="ckeditornew/contents.css" />
 <style type="text/css">

@@ -12,9 +12,8 @@ function decodeArrayPipe(arrayString)
     decodeArrayPipe=resultDecodeArrayBarraEmPe
 end function
 
-procedimento_id=req("procedimento_id")
+procedimento_id=treatValZero(req("procedimento_id"))
 tipo_executantes=req("tipo_executantes")
-
 set ExecutantesDoProcedimentoSQL = db.execute("SELECT SomenteEspecialidades, OpcoesAgenda,SomenteProfissionaisExterno, SomenteFornecedor, SomenteProfissionais FROM procedimentos WHERE id="&procedimento_id)
 
 if not ExecutantesDoProcedimentoSQL.eof then
@@ -33,7 +32,7 @@ if not ExecutantesDoProcedimentoSQL.eof then
       "SELECT NomeProfissional, '5' AssociacaoID, id ID FROM profissionais WHERE (id IN ("&SomenteProfissionais&") "&AnulaWhereSql&") AND NomeProfissional!='' AND sysActive=1  AND Ativo='on' UNION ALL "&_
 
       "SELECT prof.NomeProfissional, '5' AssociacaoID, prof.id ID FROM profissionais prof LEFT JOIN profissionaisespecialidades pe ON pe.id=prof.id "&_
-      "WHERE (pe.EspecialidadeID IN ("&SomenteEspecialidades&") OR prof.EspecialidadeID IN ("&SomenteEspecialidades&")  "&AnulaWhereSql&" ) UNION ALL "&_
+      "WHERE (pe.EspecialidadeID IN ("&SomenteEspecialidades&") OR prof.EspecialidadeID IN ("&SomenteEspecialidades&")  "&AnulaWhereSql&" ) AND NomeProfissional!='' AND sysActive=1  AND Ativo='on' UNION ALL "&_
 
       "SELECT NomeProfissional, '8' AssociacaoID, id ID FROM profissionalexterno WHERE (id IN ("&SomenteProfissionaisExterno&") "&AnulaWhereSql&") AND sysActive=1 AND Ativo='on' UNION ALL "&_
 

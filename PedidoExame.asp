@@ -378,6 +378,24 @@ response.Charset="utf-8"
         	PedidosExame = replace(PedidosExame&" ", spl(i), spl2(i))
         next
 
+            'CONVERTE/REMOVE TAGS DO CONTEÚDO INICIO.
+            qProfissionalSQL =  " SELECT                                                 "&chr(13)&_
+                                " su.idInTable                                           "&chr(13)&_
+                                " FROM pacientespedidos pp                               "&chr(13)&_
+                                " LEFT JOIN sys_users AS su ON su.id=pp.sysUser          "&chr(13)&_
+                                " WHERE pp.id="&treatValZero(req("PedidoID"))&" AND su.`Table`='Profissionais'"
+            set ProfissionalSQL = db.execute(qProfissionalSQL)
+            if not ProfissionalSQL.eof then
+                ProfissionalID=ProfissionalSQL("idInTable")
+            else
+                if session("Table")="profissionais" then
+                    ProfissionalID = session("idInTable")
+                end if
+            end if
+            ProfissionalSQL.close
+            set ProfissionalSQL = nothing
+            PedidosExame = tagsConverte(PedidosExame,"ProfissionalID_"&replace(treatValZero(ProfissionalID),"'",""),"")
+            'CONVERTE/REMOVE TAGS DO CONTEÚDO FIM.
         %>
         <style>
         #areaImpressao .corpoPedido td, #areaImpressao .corpoCarimbo td{

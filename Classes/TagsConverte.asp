@@ -1,6 +1,9 @@
 <!--#include file="./../connect.asp"-->
 <!--#include file="./imagens.asp"-->
+<!--#include file="./StringFormat.asp"-->
+
 <%
+
 function tagsConverte(conteudo,itens,moduloExcecao)
   'EXEMPLO: DE USO DESTA FUNÇÃO
   'conteudo = "Atesto que o paciente [Paciente.Nome]<br>foi atendido as [Sistema.Hora]<br>pelo profissional [Profissional.Nome]"
@@ -123,6 +126,10 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         item_FaturaID          = item_id
         'ALIAS DE TAGS RELACIONADAS A FATURAS / Invoices
         conteudo = replace(conteudo, "[Fatura.Protocolo]", "[Fatura.Codigo]" )
+      
+      case "ReceitaID"
+        item_ReceitaID = item_id
+
     end select
   next
   '### <FILTRA OS ITENS SEPARADOS POR PIPE/>
@@ -173,9 +180,9 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                             " LEFT JOIN convenios c1 ON c1.id=p.ConvenioID1                                                         "&chr(13)&_
                             " LEFT JOIN convenios c2 ON c2.id=p.ConvenioID2                                                         "&chr(13)&_
                             " LEFT JOIN convenios c3 ON c3.id=p.ConvenioID3                                                         "&chr(13)&_
-                            " LEFT JOIN conveniosplanos pla1 ON pla1.ConvenioID=c1.id                                               "&chr(13)&_
-                            " LEFT JOIN conveniosplanos pla2 ON pla2.ConvenioID=c2.id                                               "&chr(13)&_
-                            " LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id                                               "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla1 ON pla1.id=p.PlanoID1                                                  "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla2 ON pla2.id=p.PlanoID2                                                  "&chr(13)&_
+                            " LEFT JOIN conveniosplanos pla3 ON pla3.id=p.PlanoID3                                                  "&chr(13)&_
                             " LEFT JOIN corpele corPel ON corPel.id=p.`CorPele`                                                     "&chr(13)&_
                             " LEFT JOIN pacientesrelativos AS pacrel ON pacrel.PacienteID=p.id AND pacrel.Dependente='S'            "&chr(13)&_
                             " where p.id="&treatvalzero(item_PacienteID)                                                             &chr(13)&_
@@ -553,7 +560,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           'response.write("RECIBOID:::::: "&item_ReciboID)
           if item_ReciboID>0 then
             'QUERY DE REFERENCIA ifrReciboIntegrado.asp
-            qRecibosSQL = "SELECT COALESCE(CONCAT(debito.InvoiceID,'.',rec.id),debito.InvoiceID) AS ReciboID, IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','CrÃ©dito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "_
+            qRecibosSQL = "SELECT debito.sysDate as ReciboSysDate, COALESCE(CONCAT(debito.InvoiceID,'.',rec.id),debito.InvoiceID) AS ReciboID, IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','CrÃ©dito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "_
             &"FROM sys_financialmovement debito "_
             &"LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id "_
             &"LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "_
@@ -573,6 +580,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               conteudo = replace(conteudo, "[Recibo.Protocolo]", RecibosSQL("ReciboID")&"" )
               conteudo = replace(conteudo, "[Recibo.DataVencimento]", RecibosSQL("DataVencimento")&"" )
               conteudo = replace(conteudo, "[Recibo.DataPagamento]", RecibosSQL("DataPagamento")&"" )
+              conteudo = replace(conteudo, "[Recibo.Data]", RecibosSQL("ReciboSysDate")&"" )
+              conteudo = replace(conteudo, "[Recibo.DataExtenso]", formatdatetime(RecibosSQL("ReciboSysDate"),1)&"" )
             end if
             RecibosSQL.close
             set RecibosSQL = nothing
@@ -608,7 +617,91 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             end if
             FaturasSQL.close
             set FaturasSQL = nothing
-          end if 
+          end if
+
+        Case "Receita"
+          if item_ReceitaID>0 then
+            'QUERY DE REFERENCIA ifrReciboIntegrado.asp
+            qReceitaSQL = "SELECT cartao_credito.Parcelas Parcelas, IF(credito.`Type` = 'Transfer','Crédito', forma_pagamento.PaymentMethod) PaymentMethod, "&_
+                          "pagamento.MovementID, credito.`value` Value, credito.sysUser sysUser, debito.Date DataVencimento, credito.Date DataPagamento "&_
+                          "FROM sys_financialmovement debito "&_
+                          "LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id  "&_
+                          "LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "&_
+                          "LEFT JOIN sys_financialpaymentmethod forma_pagamento ON forma_pagamento.id = credito.PaymentMethodID "&_
+                          "LEFT JOIN sys_financialcreditcardtransaction cartao_credito ON cartao_credito.MovementID=credito.id "&_
+                          "WHERE debito.InvoiceID="&item_ReceitaID &" "&_
+                          "UNION ALL "&_
+                          "SELECT 1 Parcelas, 'Boleto' PaymentMethod, NULL, debito.Value VALUE, debito.sysUser  sysUser, debito.Date DataVencimento, null DataPagamento "&_
+                          "FROM sys_financialmovement debito "&_
+                          "INNER JOIN boletos_emitidos bm ON bm.MovementID=debito.id AND bm.StatusID IN (3, 4) "&_
+                          "INNER JOIN cliniccentral.boletos_status bs ON bs.id=bm.StatusID "&_
+                          "WHERE debito.InvoiceID="&item_ReceitaID
+          
+          end if
+
+          if qReceitaSQL<>"" then
+            SET ReceitaSQL = db.execute(qReceitaSQL)
+            if not ReceitaSQL.eof then
+              while not ReceitaSQL.eof
+                PaymentMethod = ReceitaSQL("PaymentMethod")&""
+                Parcela = ReceitaSQL("Parcelas")&""
+                value = ReceitaSQL("value")&""
+                Vencimento = ReceitaSQL("DataVencimento")&""
+                Pagamento = ReceitaSQL("DataPagamento")&""
+
+                DataVencimento = DataVencimento&"<br>"&Vencimento
+                DataPagamento = DataPagamento&"<br>"&Pagamento
+
+
+                if PaymentMethod<>"" then
+
+                    if Parcela<>"" then
+                        Parcelas =  ccur(Parcela)
+                    else
+                        Parcelas = "1"
+                    end if
+                    if value<>"" then
+                        valorForma = "R$ "&formatnumber(value, 2)
+                    else
+                        valorForma = "R$ 0,00"
+                    end if
+
+                    FormaPagtoTabelaHTML = "<tr><td width='100'>"&Parcelas&"</td><td>"&PaymentMethod &"</td><td>"&valorForma&"</td></tr>"
+
+                    if tabelaConteudoHTML&""="" then
+                      tabelaConteudoHTML = FormaPagtoTabelaHTML
+                    else
+                      tabelaConteudoHTML = tabelaConteudoHTML&FormaPagtoTabelaHTML
+                    end if
+                    FormaPagtoOri = "<br>"&"("& Parcelas &"x) "&PaymentMethod &" = "&valorForma
+                    FormaPagto = FormaPagto &""& FormaPagtoOri
+                    
+                    if MetodoRecebimento&""="" then
+                      MetodoRecebimento = PaymentMethod
+                    else
+                      MetodoRecebimento = MetodoRecebimento&", "&PaymentMethod
+                    end if
+                end if
+
+              ReceitaSQL.movenext
+              wend
+            ReceitaSQL.close
+            set ReceitaSQL = nothing
+
+            tabelaInicioHTML  = "<table class='table table-striped table-condensed table-bordered table-hover'><thead><th>Parcela</th><th width='150'>Forma</th><th>Valor</th></thead><tbody>"
+            tabelaFimHTML     = "</tbody></table>"
+            
+            if FormaPagto&""<>"" and instr(conteudo,"[Receita.FormaPagamento]") then
+              conteudo = replace(conteudo, "[Receita.FormaPagamento]", tabelaInicioHTML&tabelaConteudoHTML&tabelaFimHTML)
+            end if
+
+            conteudo = replace(conteudo, "[Receita.MetodoRecebimento]", MetodoRecebimento&"" )
+            'GERADO A PARTIR DO RECIBO
+            'conteudo = replace(conteudo, "[Receita.ValorPagoExtenso]", ValorMonetarioExtenso(ValorPagoExtenso)&"" )
+          end if
+          
+
+          end if
     
       end select
     end if
@@ -621,5 +714,5 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 'response.write("<script>console.log('VALOR::: "&UnidadeID&"')</script>")
 end function
 '***** EXEMPLO DE USO DA FUNÇÃO ******
-'response.write(TagsConverte("Endereço: [Unidade.EnderecoCompleto]<br> agendamento: [Agendamento.Procedimento] Hora: [Agendamento.Hora] <hr>Profissional: [Profissional.Nome] <br> Assinatura<br> [Profissional.Assinatura]","UnidadeID_1|AgendamentoID_274564|ProfissionalID_16",""))
+'response.write(TagsConverte("paciente: [Paciente.Nome]<br>Convenio: [Paciente.Convenio1]<br>Plano: [Paciente.Plano1]<br>Recibo: [Recibo.Data] ([Recibo.DataExtenso])","PacienteID_140243|AgendamentoID_274564|ProfissionalID_16|ReciboID_495278",""))
 %>

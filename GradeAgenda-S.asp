@@ -254,7 +254,7 @@ while diaS<n
                     while Hora<=HoraA
                         GradeID=Horarios("id")
                         if Horarios("GradePadrao")="0" then
-                            GradeID="0"
+                            GradeID=GradeID*-1
                         end if
                         HoraID = formatdatetime(Hora, 4)
                         HoraID = replace(HoraID, ":", "")

@@ -185,7 +185,7 @@ function gravaLogsResumeNext(query, operacaoForce, obs, ColunaPai)
 
              end if
              db.execute("insert into log (Operacao, I, recurso, colunas, valorAnterior, valorAtual, sysUser, Obs, PaiID, ColunaPai) values ('"&operacao&"', "&idLog&", '"&recurso&"', '"&colunas&"', '"&valorAnterior&"', '"&valorAtual&"', "&session("User")&", '"&obs&"', "&treatvalnull(ValorPai)&",'"&ColunaPai&"')")
-              if(operacaoForce <> "AUTO") then
+              if operacaoForce <> "AUTO" then
                  db.execute(query)
               end if
 

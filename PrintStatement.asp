@@ -74,7 +74,19 @@
                 <button type="button" onclick="downloadExcel()" class="btn btn-success hidden-print"><i class="fa fa-file-excel-o"></i></button>
                 <button type="button" onclick="print()" class="btn btn-info hidden-print"><i class="fa fa-print"></i></button>
             </div>
-	    	<% if request.QueryString("R")<> "" then server.Execute(request.QueryString("R")&".asp") else server.Execute(request.Form("R")&".asp")  end if%>
+	    	<% 
+           reqdebug = request.QueryString("debug")
+           if reqdebug = "1" then
+              reqdebug = "?debug=1"
+            else   
+              reqdebug = ""
+           end if 
+           if request.QueryString("R")<> "" then 
+              server.Execute(request.QueryString("R")&".asp"&reqdebug) 
+           else 
+              server.Execute(request.Form("R")&".asp"&reqdebug)  
+           end if
+        %>
         </div>
 <form id="formExcel" method="POST">
     <input type="hidden" name="html" id="htmlTable">

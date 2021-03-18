@@ -127,13 +127,7 @@ prefixo = right(prefixo, 20)
 					end if
 
                     tipoCodigoNaOperadoraContratadoSolicitante = "codigoPrestadorNaOperadora"
-                    set TipoContratoSQL = db.execute("SELECT IdentificadorCNPJ FROM contratosconvenio WHERE ConvenioID='"&guias("ConvenioID")&"' AND CodigoNaOperadora='"&CodigoNaOperadora&"'")
-                    if not TipoContratoSQL.eof then
-                        if TipoContratoSQL("IdentificadorCNPJ")="S" then
-                            tipoContrato = "CNPJ"
-                        end if
-                    end if
-
+                    
 					if guias("CodigoCNES")="" then CodigoCNES=TirarAcento(CNESContratado) else CodigoCNES=TirarAcento(guias("CodigoCNES")) end if
 					NomeProfissional=TirarAcento(NomeProfissional)
 
@@ -167,7 +161,7 @@ prefixo = right(prefixo, 20)
                         <ans:cnes><%=ContratadoLocalCNES%></ans:cnes>
                     </ans:localContratado>
                     <ans:dadosContratadoExecutante>
-                            <%="<ans:" &tipoContrato &">"&ContExecCodigoNaOperadora &"</ans:"&tipoContrato&">"%>
+                            <%="<ans:codigonaOperadora>"&ContExecCodigoNaOperadora &"</ans:codigonaOperadora>"%>
                             <ans:nomeContratadoExecutante><%= NomeContratado %></ans:nomeContratadoExecutante>
                              <ans:cnesContratadoExecutante><%= CodigoCNES %></ans:cnesContratadoExecutante>
                     </ans:dadosContratadoExecutante>

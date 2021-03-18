@@ -8,10 +8,12 @@ GradeApenasConvenios = ref("GradeApenasConvenios")
 GradeApenasProcedimentos = ref("GradeApenasProcedimentos")
 EquipamentoID = ref("EquipamentoID")
 rdValorPlano= ref("Forma")
-ConvenioID= ref("ConvenioSelecionado")
-PlanoID = ""
+ConvenioID= ref("ConvenioSelecionado")&""
+PlanoID = ref("PlanoSelecionado")&""
 linhas = ref("linhas")
-
+if ConvenioID = ""then
+ConvenioID = 0
+end if
 if linhas = "" then
     linhas = ref("I")
 end if

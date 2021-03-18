@@ -13,9 +13,10 @@ IF NOT ModoFranquia THEN
         Response.End
     END IF
     LicencaOrigem = FranquiaCodigoSQL("id")
-    licencaMae = "clinic"&FranquiaCodigoSQL("id")&"."
+    licencaMae = "clinic"&FranquiaCodigoSQL("id")
+    set dblicense = newConnection(licencaMae,FranquiaCodigoSQL("Servidor"))
+    licencaMae=licencaMae&"."
 END IF
-
 %>
 <script src="https://unpkg.com/react@16.7.0/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.production.min.js"></script>
@@ -40,7 +41,7 @@ END IF
        END IF
     %>
 
-    var Formularios     = <%= recordToJSON(db.execute(sql))%>;
+    var Formularios     = <%= recordToJSON(dblicense.execute(sql))%>;
     var LicencaOrigem   = <%= LicencaOrigem %>;
     var LicencaDestino  = <%=replace(session("Banco"), "clinic", "") %>;
     var UnidadeID       = <%=session("UnidadeID") %>;

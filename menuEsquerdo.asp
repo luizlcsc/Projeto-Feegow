@@ -213,7 +213,12 @@ select case lcase(req("P"))
                     %>
                     <select name="EquipamentoID" id="EquipamentoID" class="form-control select2-single">
                         <%
-                set Prof = db.execute("select id, NomeEquipamento, '#CCC' Cor, UnidadeID from equipamentos where ativo='on' and sysActive=1 order by NomeEquipamento")
+                if aut("|ageoutunidadesV|") = 1 then
+                    set Prof = db.execute("select id, NomeEquipamento, '#CCC' Cor, UnidadeID from equipamentos where ativo='on' and sysActive=1 order by NomeEquipamento")
+                else
+                    set Prof = db.execute("select id, NomeEquipamento, '#CCC' Cor, UnidadeID from equipamentos where UnidadeID = "&Session("UnidadeID")&" AND ativo='on' and sysActive=1 order by NomeEquipamento")
+                end if
+
                 while not Prof.EOF
                         %>
                         <option style="border-left: <%=Prof("Cor")%> 10px solid; background-color: #fff;" value="<%=Prof("id")%>" <%=selected%>><%=ucase(Prof("NomeEquipamento"))%> - <%=getNomeLocalUnidade(Prof("UnidadeID"))%></option>
@@ -747,7 +752,7 @@ select case lcase(req("P"))
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-prescricoes" id="abaPrescricoes" href="#pront" onclick="pront('timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Prescricao|');">
                     <span class="fa fa-flask bigger-110"></span>
-                    <span class="sidebar-title">Prescri&ccedil;&otilde;es</span>
+                    <span class="sidebar-title">Prescrições Medicamentosas</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalprescricoes"></span>
                     </span>
@@ -1006,14 +1011,16 @@ select case lcase(req("P"))
             </li>
             <%
         end if
-    case "laudos" , "frases", "laudosv2" 
+    case "laudos" , "frases", "laudoslab" 
         %>
         <li>
             <a  href="?P=Laudos&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
         </li>
-        <!--<li>
-            <a  href="?P=Laudosv2&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos <span class="label label-system label-xs fleft">Novo</span></span></a>
-        </li> -->
+        <%  if recursoAdicional(24)=4 then %>
+        <li>
+            <a  href="?P=laudosLab&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) <span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li> 
+        <% end if %>
         <li>
             <a  href="?P=Frases&Pers=0"><span class="fa fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases </span></a>
         </li>
@@ -2131,9 +2138,15 @@ select case lcase(req("P"))
                 
                 <%
                 if aut("|relatoriosformulariosV|")=1 then
+                reqdebug = request.QueryString("debug")
+                if reqdebug = "1" then
+                    reqdebug = "&debug=1"
+                else   
+                    reqdebug = ""
+                end if 
                 %>
                 <li>
-                    <a href="javascript:callReport('relatorioForms');">
+                    <a href="javascript:callReport('relatorioForms','<%=reqdebug%>');">
                         <i class="fa fa-document"></i>
                         Formulários
                     </a>
@@ -2452,6 +2465,7 @@ select case lcase(req("P"))
     <li>
         <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
+
     <%
         set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
         if not labAutenticacao.eof then
@@ -2462,7 +2476,10 @@ select case lcase(req("P"))
         </li>
         <li>                
         <%
-            set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs ")
+            sqllabs = "SELECT distinct l.id, l.NomeLaboratorio "&_
+                      " FROM cliniccentral.labs l "&_
+                      " INNER JOIN labs_autenticacao la ON la.LabID = l.id"
+            set dadoslab = db.execute(sqllabs)
             while not dadoslab.eof
             %>
             <li>

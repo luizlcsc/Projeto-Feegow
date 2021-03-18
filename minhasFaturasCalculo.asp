@@ -6,7 +6,7 @@ if not MovSQL.eof then
     Vencimento = MovSQL("Date")
 end if
 
-set pagtos = dbc.execute("select * from clinic5459.sys_financialdiscountpayments where InstallmentID="&MovID&"")
+set pagtos = dbc.execute("select * from clinic5459.sys_financialdiscountpayments where InstallmentID='"&MovID&"'")
 while not pagtos.eof
 	ValorDesc=pagtos("DiscountedValue")
 Pago = Pago+ValorDesc

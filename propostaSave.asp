@@ -212,9 +212,6 @@ if erro="" then
 				'Gravar esses dados em outra tabela
 
 				DescontoInput =  ref("Desconto"&splInv(i))
-				if desTipoInvP = "P" then
-					DescontoInput = valInv * DescontoInput / 100
-				end if
 
 				if ValorDesconto="" then
 					ValorDesconto=0
@@ -222,8 +219,13 @@ if erro="" then
 				if DescontoInput="" then
 					DescontoInput=0
 				end if
+				
+				if desTipoInvP = "P" then
+					DescontoInput = valInv * DescontoInput / 100
+				end if
 
-				if temdescontocadastrado=1 and  CCUR(ValorDesconto) <> CCUR(DescontoInput)  then
+
+				if temdescontocadastrado=1 and  CCUR(DescontoInput) > 0   then
 					msgExtra = "Alguns itens necessitam de aprovação para o desconto"
 					AguardaDesconto=True
 					set DescontosSQL = db.execute("select * from descontos_pendentes where ItensInvoiceID = "&NewItemID&"")

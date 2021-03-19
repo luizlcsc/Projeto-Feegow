@@ -31,7 +31,7 @@ ModeloID = ref("ModeloID")
         <th class="system"></th>
         <%
         db.execute("delete from cliniccentral.dre_temp where sysUser="& session("User"))
-        set pcon = db.execute("select c.*, ccond.sqlAnalitico, ccond.CD, ccond.Tipo, ccond.Grupos tabcolGrupos, ccond.Categorias tabcolCategorias from dre_modeloscondicoes c LEFT JOIN dre_modeloslinhas l ON l.id=c.LinhaID LEFT JOIN cliniccentral.dre_condicoes ccond ON ccond.id=c.CondicaoID where l.ModeloID="& ModeloID)
+        set pcon = db.execute("select c.*, ccond.sqlAnalitico, ccond.sqlAnaliticoPagto, ccond.CD, ccond.Tipo, l.Descricao, l.TipoValor, ccond.Grupos tabcolGrupos, ccond.Categorias tabcolCategorias from dre_modeloscondicoes c LEFT JOIN dre_modeloslinhas l ON l.id=c.LinhaID LEFT JOIN cliniccentral.dre_condicoes ccond ON ccond.id=c.CondicaoID where l.ModeloID="& ModeloID)
         while not pcon.eof
             SemGrupo = 0
             SemCategoria = 0
@@ -48,6 +48,7 @@ ModeloID = ref("ModeloID")
             Pessoas = replace( pcon("Pessoas")&"" , "|", "" )
             tabcolGrupos = pcon("tabcolGrupos")&""
             tabcolCategorias = pcon("tabcolCategorias")&""
+            TipoData = pcon("TipoValor")
             CD = pcon("CD")&""
             Tipo = pcon("Tipo")&""
             multiploValor = pcon("Valor")
@@ -95,8 +96,12 @@ ModeloID = ref("ModeloID")
             end if
 
 
+            if TipoData="Pagamento" then
+                sql = pcon("sqlAnaliticoPagto")&""
+            else
+                sql = pcon("sqlAnalitico")&""
+            end if
 
-            sql = pcon("sqlAnalitico")&""
             sql = replace(sql, "[sysUser]", session("User"))
             sql = replace(sql, "[LinhaID]", pcon("LinhaID"))
             sql = replace(sql, "[Ano]", Exercicio)
@@ -122,7 +127,6 @@ ModeloID = ref("ModeloID")
             sql = replace(sql, "[andPessoas]", andPessoas)
 
 
-            'response.write(sql &"<br>")
             if sql<>"" then
                 db.execute("insert into cliniccentral.dre_temp (sysUser, LinhaID, Data, Conta, Valor, Link, NF, ItemInvoiceID, Agrupamento)" & sql )
             end if

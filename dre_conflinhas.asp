@@ -80,7 +80,7 @@ end if
 						if Tipo="LINHA" then
 							call quickfield("simpleSelect", "AddCon", "Condições", 2, "", "select '' id, '+ Adicionar' Descricao UNION ALL select id, Descricao from cliniccentral.dre_condicoes", "Descricao", " semVazio  no-select2 onchange='lin(`C`, $(this).val(), "& plinhas("id") &" )' ")
 
-							call quickfield("simpleSelect", "TipoValor"& id, "Tipo de Valor", 2, TipoValor, "select 'Competencia' id, 'Competência' Descricao UNION ALL select 'Vencimento', 'Vencimento' UNION ALL select 'Pagamento', 'Pagamento'", "Descricao", " semVazio  no-select2 onchange='lin(`L`, `U`, "& plinhas("id") &" )' ")
+							call quickfield("simpleSelect", "TipoValor"& id, "Tipo de Valor", 2, TipoValor, "select 'Competencia' id, 'Competência' Descricao UNION ALL select 'Pagamento', 'Pagamento'", "Descricao", " semVazio  no-select2 onchange='lin(`L`, `U`, "& plinhas("id") &" )' ")
 						else
 							%>
 							<div class="col-md-2">

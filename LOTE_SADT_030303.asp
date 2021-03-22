@@ -100,7 +100,7 @@ prefixo = right(prefixo, 20)
                         DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
                     end if 
 
-					NumeroCarteira = TISS__FormataConteudo(guias("NumeroCarteira"))
+					NumeroCarteira = TISS__FormataConteudoCustom(guias("NumeroCarteira"), true, "", "", "", 20)
 					AtendimentoRN = TISS__FormataConteudo(guias("AtendimentoRN"))
 					NomePaciente = TISS__FormataConteudo(guias("NomePaciente"))
 					ContratadoSolicitanteID = TISS__FormataConteudo(guias("ContratadoSolicitanteID"))

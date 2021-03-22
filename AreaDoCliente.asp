@@ -4,7 +4,7 @@
 <%
 Set api = new ApiClient
 
-set dbc = newConnection("clinic5459", "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
+set dbc = newConnection("clinic5459", FC_MYSQL_HOST)
 
 LicencaID=replace(session("Banco"),"clinic","")
 'LicencaID=6118

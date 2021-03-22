@@ -432,42 +432,6 @@ end if
     </div>
 
 
-<div id="myModal" class="modal fade" role="dialog" tabindex="-1" style="display:none">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Permissão para uso de Tabela</h4>
-      </div>
-      <div class="modal-body">
-        <div class="col-md-4">
-            <p>Selecione um usuário abaixo que tenha  permissão:</p>      
-              
-        </div>        
-            <div class="col-md-6">
-                <label style="" class="error_msg"></label><br>
-                <label>Senha do Usuário</label>
-                <input type="password" id="password" name="password" class="form-control">
-            </div>
-
-        <div class="col-md-12 label" style="color:#000;">
-        
-             
-        </div>
-        </div>
-       
-        <div class="modal-footer" style="margin-top:13em;">
-                <button type="button" class="btn btn-default fechar" data-dismiss="modal" >Fechar</button>
-           
-                <button type="button" class="btn btn-info confirmar"    >Confirmar</button>
-       
-         </div>
-
-  </div>
-</div>
-</div>
 <!--#include file="CalculaMaximoDesconto.asp"-->
 
 <script type="text/javascript">
@@ -788,7 +752,7 @@ function buscarNome(id , user,regra){
         data: {autorization:"pegarUsuariosQueTempermissoes",id:id,LicencaID:user,regra:regra},
         success:function(result){
             res = result.split('|');     
-                    $('.label').html(result);
+                    $('.tabelaParticular').html(result);
             }
         });
 }

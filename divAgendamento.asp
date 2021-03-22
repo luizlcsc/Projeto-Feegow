@@ -1,7 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
 <%
-HorarioAgoraSQL = db.execute("select now() as now")
+HorarioAgoraSQL = db.execute("SELECT DATE_FORMAT(NOW(), '%Y-%m-%dT%H:%i:%s') AS now")
 HorarioAgora = HorarioAgoraSQL("now")
 set config = db.execute("select ChamarAposPagamento from sys_config limit 1")
 HorarioVerao="N"

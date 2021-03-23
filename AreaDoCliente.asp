@@ -1,10 +1,13 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Connection.asp"-->
 <!--#include file="Classes/ApiClient.asp"-->
+<!--#include file="Classes/Environment.asp"-->
 <%
 Set api = new ApiClient
 
-set dbc = newConnection("clinic5459", FC_MYSQL_HOST)
+ServerHost = getEnv("FC_MYSQL_HOST", "")
+
+set dbc = newConnection("clinic5459", ServerHost)
 
 LicencaID=replace(session("Banco"),"clinic","")
 'LicencaID=6118

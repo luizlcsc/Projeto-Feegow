@@ -729,7 +729,7 @@ $(idStr).change(function(){
         data: {autorization:"buscartabela",id:id,sysUser:sysUser},
         success:function(result){
             if(result == "Tem regra") {
-                $('#myModal').modal('show');
+                $('#permissaoTabela').modal('show');
                 buscarNome(id,sysUser,regra);
             }
         }
@@ -766,7 +766,7 @@ function liberar(Usuario , senha , id, Nometable){
             if( result == "1" ){
                     $('.error_msg').text("Logado Com Sucesso!").fadeIn().css({color:"green" });;
                 setTimeout(() => {
-                    $('#myModal').modal('hide');
+                    $('#permissaoTabela').modal('hide');
                     $('#TabelaID').val(id);
                    
                     $('#select2-TabelaID-container').text(Nometable);

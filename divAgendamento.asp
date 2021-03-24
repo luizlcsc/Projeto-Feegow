@@ -1129,7 +1129,7 @@ end if
 
 
 
-<div id="myModal" class="modal fade" role="dialog">
+<div id="permissaoTabela" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
     <!-- Modal content-->
@@ -1955,9 +1955,8 @@ $(idStr).change(function(){
         success:function(result){
             if(result == "Tem regra") {
                 console.log("5")
-                $('#myModal').modal('show');
+                $('#permissaoTabela').modal('show');
                 buscarNome(id,sysUser,regra);
-                }else{
             }
         }
     });
@@ -1993,7 +1992,7 @@ function liberar(Usuario , senha , id){
             if( result == "1" ){
                     $('.error_msg').text("Logado Com Sucesso!").fadeIn().css({color:"green" });;
                 setTimeout(() => {
-                    $('#myModal').modal('hide');
+                    $('#permissaoTabela').modal('hide');
                     $(idStr).val(id);
                 }, 2000);
                 }else{

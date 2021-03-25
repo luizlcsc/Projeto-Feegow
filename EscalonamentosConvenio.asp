@@ -346,7 +346,9 @@ function ocultar_campos(id){
 
  <%
      contador  = 0
-     objRec.movefirst
+     if not objRec.bof then
+        objRec.movefirst
+     end if
      While Not objRec.EOF 
      if objRec("preco") <> "" or  objRec("preco") <> "" then      
  

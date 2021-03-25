@@ -485,13 +485,13 @@ function ocultar_campos(id){
      end if
      While Not objRec.EOF 
 
-     if objRec("preco") <> "" or  objRec("preco") <> "" then      
-   
-        response.write ("$('#medic"&contador&"').show();")
- 
-     end if 
-     contador  = contador + 1
-     objRec.MoveNext
+        recCalculos = objRec("calculos")
+        if InStr(recCalculos, "Medicamentos") or InStr(recCalculos, "Materiais") then
+           response.write ("$('#medic"&contador&"').show();")
+        end if
+
+        contador  = contador + 1
+        objRec.MoveNext
      wend 
   %>
 a=-1;

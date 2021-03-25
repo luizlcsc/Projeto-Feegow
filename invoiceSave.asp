@@ -154,39 +154,40 @@ if existePagto="" then
                     end if
 
 					if descontoIgual = False then
-							valorItem_quantidade = replace(treatValZero(ref("Quantidade"&splInv(i))),"'","")
-							valorItem_desconto	 = replace(treatValZero(ref("Desconto"&splInv(i))),"'","")
+					    if isnumeric(ref("Quantidade"&splInv(i))) and isnumeric(ref("Desconto"&splInv(i))) then
 
-            	ValorDesconto = valorItem_quantidade * valorItem_desconto
-						if not rsDescontosUsuario.eof then
 
-							while not rsDescontosUsuario.eof
-								procedimentoText = rsDescontosUsuario("Procedimentos")
-								if  (instr(procedimentoText, "|"&ref("ItemID"&splInv(i))&"|" ) AND "S"=Tipo) OR trim(procedimentoText)="" then
-									if rsDescontosUsuario("idUser")&"" = Session("User")&"" then 	
-										VDesconto = rsDescontosUsuario("DescontoMaximo")
-										if rsDescontosUsuario("TipoDesconto")="P" then
-											VDesconto = valInv * rsDescontosUsuario("DescontoMaximo") / 100
-										end if
+                            ValorDesconto = ref("Quantidade"&splInv(i)) * ref("Desconto"&splInv(i))
+                            if not rsDescontosUsuario.eof then
 
-										if VDesconto > DescontoMaximo then DescontoMaximo = VDesconto end if
-									else
-										VDescontomaximo = rsDescontosUsuario("DescontoMaximo")
-										if rsDescontosUsuario("TipoDesconto")="P" then
-											VDescontomaximo = valInv * rsDescontosUsuario("DescontoMaximo") / 100
-										end if
+                                while not rsDescontosUsuario.eof
+                                    procedimentoText = rsDescontosUsuario("Procedimentos")
+                                    if  (instr(procedimentoText, "|"&ref("ItemID"&splInv(i))&"|" ) AND "S"=Tipo) OR trim(procedimentoText)="" then
+                                        if rsDescontosUsuario("idUser")&"" = Session("User")&"" then
+                                            VDesconto = rsDescontosUsuario("DescontoMaximo")
+                                            if rsDescontosUsuario("TipoDesconto")="P" then
+                                                VDesconto = valInv * rsDescontosUsuario("DescontoMaximo") / 100
+                                            end if
 
-										valorDescontoPermitido = valInv * 0.05
+                                            if VDesconto > DescontoMaximo then DescontoMaximo = VDesconto end if
+                                        else
+                                            VDescontomaximo = rsDescontosUsuario("DescontoMaximo")
+                                            if rsDescontosUsuario("TipoDesconto")="P" then
+                                                VDescontomaximo = valInv * rsDescontosUsuario("DescontoMaximo") / 100
+                                            end if
 
-										if ValorDescontoFinal <= VDescontomaximo and VDescontomaximo>valorDescontoPermitido then
-											idUsuariosDesconto = idUsuariosDesconto & "," & rsDescontosUsuario("idUser")
-										end if
-									end if
-								end if
-								rsDescontosUsuario.movenext
-							wend
-							rsDescontosUsuario.movefirst
-						end if
+                                            valorDescontoPermitido = valInv * 0.05
+
+                                            if ValorDescontoFinal <= VDescontomaximo and VDescontomaximo>valorDescontoPermitido then
+                                                idUsuariosDesconto = idUsuariosDesconto & "," & rsDescontosUsuario("idUser")
+                                            end if
+                                        end if
+                                    end if
+                                    rsDescontosUsuario.movenext
+                                wend
+                                rsDescontosUsuario.movefirst
+                            end if
+                        end if
 
 						if ValorDesconto = "" then
 							ValorDesconto=0

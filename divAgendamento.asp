@@ -587,7 +587,20 @@ end if
                 }
             </script>
             <div class="col-md-<%= colPac %>">
-                <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""sipac(this.value); parametros(this.id, this.value);""", "required", "") %>
+                <%
+                'ALTERAÇÃO DE PACIENTES APÓS O AGENDAMENTO NÃO É PERMITIDO | 10/03/2021
+                if agendamentoIDSelecionado&""<>0 then
+                    pacienteInputClass = "style=""display:none;"""
+                    set PacienteSQL = db.execute("select NomePaciente from pacientes where id="&pacienteId)
+                        pacienteNome = "<label>Paciente</label><br>"&PacienteSQL("NomePaciente")
+                    PacienteSQL.close
+                    set PacienteSQL = nothing
+                end if
+                %>
+                <span <%=pacienteInputClass%>>
+                    <%=selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""sipac(this.value); parametros(this.id, this.value);""", "required", "")%>
+                </span>
+                <%=pacienteNome%>
             </div>
 			<%
 			for i=0 to ubound(splCamposPedir)

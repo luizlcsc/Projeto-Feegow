@@ -104,7 +104,7 @@ function editaValores(ProcedimentoID, ConvenioID,AssociacaoID){
 }
 
 function clonarAssociacao(I){
-    if(confirm('Tem certeza de que deseja remover esta associação?')){
+    if(confirm('Tem certeza de que deseja clonar esta associação?')){
         ajxContent('ConveniosValoresProcedimentos&ConvenioID=<%=ConvenioID%>&Clonar='+I, '', '1', 'divValores');
     }
 }

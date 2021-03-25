@@ -92,7 +92,7 @@ Unidades = Session("Unidades")
 spltUnidades = split(Unidades)
 qtdUnidades = ubound(spltUnidades) + 1
 
-ExibirFiltroPorLocalizacao = qtdUnidades >= 2 and session("Banco")="clinic10901"
+ExibirFiltroPorLocalizacao = getConfig("BuscaPorGeolocalizacao")=1 and qtdUnidades >= 3
 
 
 if ExibirFiltroPorLocalizacao then

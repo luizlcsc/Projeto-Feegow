@@ -375,12 +375,14 @@ if somenteStatus&"" <> "" then
 	sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
 end if
 
-set comps=db.execute("select loc.UnidadeID, a.id, a.Data, a.Hora,coalesce(a.LocalID,0) AS LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, p.corIdentificacao, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento, a.Retorno from agendamentos a "&_
+set comps=db.execute("select assf.id garadefixa, assp.id garadeperiodo, loc.UnidadeID, a.id, a.Data, a.Hora,coalesce(a.LocalID,0) AS LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, p.corIdentificacao, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento, a.Retorno from agendamentos a "&_
 "left join pacientes p on p.id=a.PacienteID " & joinLocaisUnidades &_ 
 "left join profissionais pro on pro.id=a.ProfissionalID "&_ 
 "left join locais loc on loc.id=a.LocalID "&_
 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
-"where a.ProfissionalID="&ProfissionalID&" and a.sysActive=1 and a.Data="&mydatenull(Data) & whereLocaisUnidades & sqlSomentestatus&"order by Hora")
+"LEFT JOIN assfixalocalxprofissional assf ON assf.ProfissionalID = a.ProfissionalID AND assf.LocalID = a.LocalID "&_
+"LEFT JOIN assperiodolocalxprofissional assp ON assp.ProfissionalID = a.ProfissionalID AND assp.LocalID = a.LocalID "&_
+"where a.ProfissionalID="&ProfissionalID&" and a.sysActive=1 and a.Data="&mydatenull(Data) & whereLocaisUnidades & sqlSomentestatus&" group by a.id order by Hora")
 
 while not comps.EOF
     HoraComp = HoraToID(comps("Hora"))
@@ -450,6 +452,12 @@ while not comps.EOF
     end if
 
 	'<-hora final
+
+    if comps("garadeperiodo")&"" <> "" then
+        GradeID = comps("garadeperiodo")
+    else
+        GradeID = comps("garadefixa")
+    end if
 
     if session("HVazios")="" then
 		Conteudo = "<tr style=\'background-color:"&CorProcedimento&"!important\' data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'\',\'"&GradeID&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" "&FirstTdBgColor&" ><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "

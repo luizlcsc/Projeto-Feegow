@@ -255,8 +255,8 @@ end if
                             <br/>
                             <div class="row">
 
-                                <%=quickField("currency", "PrecoCompra", "Pre&ccedil;o Médio - Compra", 2, reg("PrecoCompra"), "", "", "")%>
-                                <div class="col-md-2">
+                                <%=quickField("currency", "PrecoCompra", "Pre&ccedil;o Médio - Compra", 4, reg("PrecoCompra"), "", "", "")%>
+                                <div class="col-md-4">
                                     <br />
                                     <div class="radio-custom radio-system">
                                         <input type="radio" name="TipoCompra" value="C" id="TipoCompraC" <% If reg("TipoCompra")="C" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoNomeC" for="TipoCompraC"> por conjunto</label></div>
@@ -264,8 +264,13 @@ end if
                                     <div class="radio-custom radio-system">
                                         <input type="radio" name="TipoCompra" value="U" id="TipoCompraU" <% If reg("TipoCompra")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeC" for="TipoCompraU"> por unidade</label></div>
                                 </div>
-                                <%=quickField("currency", "PrecoVenda", "Pre&ccedil;o Médio - Venda", 2, reg("PrecoVenda"), "", "", "")%>
-                                <div class="col-md-2">
+                                <div class="col-md-4">
+                                    <%=selectInsert("Plano de Contas - Despesa", "CategoriaDespesaID", reg("CategoriaDespesaID"), "sys_financialexpensetype", "Name", "", "", "")%>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <%=quickField("currency", "PrecoVenda", "Pre&ccedil;o Médio - Venda", 4, reg("PrecoVenda"), "", "", "")%>
+                                <div class="col-md-4">
                                     <br />
                                     <div class="radio-custom radio-alert">
                                         <input type="radio" name="TipoVenda" id="TipoVendaC" value="C" <% If reg("TipoVenda")="C" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoNomeV" for="TipoVendaC"> por conjunto</label></div>
@@ -273,14 +278,19 @@ end if
                                     <div class="radio-custom radio-alert">
                                         <input type="radio" name="TipoVenda" id="TipoVendaU" value="U" <% If reg("TipoVenda")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeV" for="TipoVendaU"> por unidade</label></div>
                                 </div>
+                                <div class="col-md-4">
+                                    <%=selectInsert("Plano de Contas - Receita", "CategoriaReceitaID", reg("CategoriaReceitaID"), "sys_financialincometype", "Name", "", "", "")%>
+                                </div>
+                            </div>
+                            <div class="row">
 
-
-
-                                <%if aut("|produtosI|")=1 OR aut("|produtosA|")=1 then%>
-                                    <div class="checkbox-custom checkbox-primary mt25">
-                                    <input type="checkbox" name="PermitirSaida" id="PermitirSaida" value="S" class="ace" <% If reg("PermitirSaida")="S" Then %> checked="checked" <% End If %> />
-                                    <label for="PermitirSaida">Permitir saída pelo cadastro</label></div>
-                                <%end if%>
+                                <div class="col-md-6">
+                                    <%if aut("|produtosI|")=1 OR aut("|produtosA|")=1 then%>
+                                        <div class="checkbox-custom checkbox-primary mt25">
+                                        <input type="checkbox" name="PermitirSaida" id="PermitirSaida" value="S" class="ace" <% If reg("PermitirSaida")="S" Then %> checked="checked" <% End If %> />
+                                        <label for="PermitirSaida">Permitir saída pelo cadastro</label></div>
+                                    <%end if%>
+                                </div>
 
                             </div>
                         </div>

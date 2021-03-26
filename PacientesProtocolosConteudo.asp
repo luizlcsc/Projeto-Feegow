@@ -16,13 +16,13 @@ if not usuario.eof then
     auditor = usuario("Auditor")
 end if 
 
+inserted = false
 if Tipo = "I" then
     ID = req("ID")
     PacienteID = req("PacienteID")
     ProtocoloID = req("ProtocoloID")
     if ID&""<>"" then
         set getPacientesProtocolos = db.execute("SELECT * FROM pacientesprotocolos WHERE id="&ID)
-        set atendimento =  db.execute("select id from atendimentos a2 where PacienteID = "&PacienteID&" and `Data` = CAST( now() AS Date )")
         if getPacientesProtocolos.eof then
             db.execute("INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&session("User")&",  "&session("UnidadeID")&", "&session("User")&", 1)")
         end if
@@ -35,6 +35,7 @@ if Tipo = "I" then
         set getMedicamentosProtocolos=nothing
 
         call geraPacientesProtocolosCiclos(ID)
+        inserted = true
     end if
 end if
 
@@ -194,17 +195,19 @@ $(function () {
 
 
 function pedirMudanca(tipo,id,medicamentoId){
-    let dose = parseFloat(($(`#DoseMedicamento_${id}`).val()).replace(',','.'))
-    let obs = $(`#Obs_${id}`).val()
-    let paciente = "<%=req("PacienteID")%>";    
-    let auditor = "<%=auditor%>"
-    let data = {
+    const dose = parseFloat(($(`#DoseMedicamento_${id}`).val()).replace(',','.'));
+    const obs = $(`#Obs_${id}`).val();
+    const paciente = "<%=req("PacienteID")%>";
+    const auditor = "<%=auditor%>";
+    const pacienteProtocoloId = "<%=ID%>";
+    const data = {
         id,
         dose,
         obs,
         medicamentoId,
         paciente,
-        tipo
+        tipo,
+        pacienteProtocoloId
     }
 
     // valida os campos
@@ -245,5 +248,9 @@ function msg(titulo,tipo){
         delay: 3000
     });
 }
+
+<% if inserted then %>
+pront('timeline.asp?PacienteID=<%=req("PacienteID")%>&Tipo=|Protocolos|');
+<% end if %>
 
 </script>

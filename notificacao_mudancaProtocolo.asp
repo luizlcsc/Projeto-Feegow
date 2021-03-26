@@ -1,5 +1,6 @@
-b<!--#include file="connect.asp"-->
+<!--#include file="connect.asp"-->
 <!--#include file="Classes/Json.asp"-->
+<!--#include file="geraPacientesProtocolosCiclos.asp"-->
 <% 
     response.Charset="utf-8" 
 
@@ -9,6 +10,7 @@ b<!--#include file="connect.asp"-->
     medicamentoId = ref("medicamentoId")
     medicamentoNome = ref("medicamentoNome")
     tipo = ref("tipo")
+    pacienteProtocoloId = ref("pacienteProtocoloId")
     toUpdate = ""
     criar = false
     count = 0
@@ -63,6 +65,13 @@ b<!--#include file="connect.asp"-->
         updateNotificacao = "UPDATE notificacoes set NotificacaoIDRelativo="&selecao2("id")&" where id in ("&toUpdate&")"
 
         db.execute(updateNotificacao)
+
+        if tipo = "R" then
+            call updatePacientesProtocolosCiclosStatus(pacienteProtocoloId, 4, "Pedido de Remoção de Protocolo")
+        else
+            call updatePacientesProtocolosCiclosStatus(pacienteProtocoloId, 4, "Pedido de Alteração de Protocolo")
+        end if
+        
 
         criar = false
     end if

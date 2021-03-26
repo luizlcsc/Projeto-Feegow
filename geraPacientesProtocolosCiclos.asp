@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
+'Gera os Ciclos de Dias de dispensação de Medicamentos do Protocolo
 function geraPacientesProtocolosCiclos(PacienteProtocoloID)
 
     set pacientesProtocolos = db.execute("SELECT * FROM pacientesprotocolos WHERE id = '" & PacienteProtocoloID & "'")
@@ -48,7 +49,7 @@ function geraPacientesProtocolosCiclos(PacienteProtocoloID)
                             '  se não existir, insere o registro do dia do ciclo e o medicamento do dia
                             if protocoloCicloDia.eof then
                                 db.execute("INSERT INTO pacientesprotocolosciclos (PacienteProtocoloID, ProtocoloID, Ciclo, Dia, DataSugerida, StatusAutorizacaoID, StatusProtocoloID, StatusDispensacaoID, sysUser) " & _
-                                    "VALUES ('" & PacienteProtocoloID & "', '" & ProtocoloID & "', '" & ciclo & "', '" & dia & "', '" & myDate(DataSugerida) & "', 1, 4, 8, '" & session("User") & "')")
+                                    "VALUES ('" & PacienteProtocoloID & "', '" & ProtocoloID & "', '" & ciclo & "', '" & dia & "', '" & myDate(DataSugerida) & "', 1, 6, 8, '" & session("User") & "')")
 
                                 db.execute("SET @lastid = LAST_INSERT_ID();")
 
@@ -89,6 +90,54 @@ function geraPacientesProtocolosCiclos(PacienteProtocoloID)
 
     pacientesProtocolos.close
     set pacientesProtocolos = nothing
+
+    geraPacientesProtocolosCiclos = true
+
+end function
+
+'Atualiza o Status do Protocolo nos Ciclos de Dias de dispensação de Medicamentos
+function updatePacientesProtocolosCiclosStatus(pacienteProtocoloId, newStatusId, motivoStatus)
+
+    'recupera todos os dias que ainda não foram dispensados nem cancelados
+    selecaoCiclos = "SELECT ppc.id, ppc.StatusProtocoloID FROM pacientesprotocolosciclos ppc " &_
+                    "WHERE ppc.PacienteProtocoloID = '" & pacienteProtocoloId & "' AND ppc.StatusDispensacaoID = 8 " &_
+                    "AND ppc.StatusProtocoloID != 7 ORDER BY Ciclo, Dia, id"
+    
+    set rsCiclos = db.execute(selecaoCiclos)
+
+    firstCiclo = null
+    if not rsCiclos.eof then
+        firstCiclo  = rsCiclos("id")
+        oldStatusId = rsCiclos("StatusProtocoloID")
+    end if
+
+    userId = session("User")
+
+    while not rsCiclos.eof
+
+        cicloId = rsCiclos("id")
+        
+        sqlUpdateCicloSta = "UPDATE pacientesprotocolosciclos ppc " &_
+                            "SET ppc.StatusProtocoloID = " & newStatusId & ", ppc.StatusProtocoloUser = " & userId &  ", " &_
+                            "ppc.StatusProtocoloDate = CURRENT_TIMESTAMP(), ppc.StatusProtocoloMotivo = '" & motivoStatus & "'" &_
+                            "WHERE ppc.id = " & cicloId
+        db.execute(sqlUpdateCicloSta)
+
+        rsCiclos.movenext
+    wend
+
+    if firstCiclo then 'so precisa logar no primeiro dia alterado pois a tela de log já exibe todo o protocolo unificado
+        sqlInsertCicloStaLog = "INSERT INTO pacientesprotocolosciclos_status_log (PacienteProtocoloID, PacienteProtocolosCiclosID, " &_
+                               "TipoStatus, OldStatusID, NewStatusID, Motivo, sysUser) VALUES (" & pacienteProtocoloId & ", " &_
+                               firstCiclo & ", " & "'Protocolo', " & oldStatusId & ", " & newStatusId & ", '" & motivoStatus & "', " & userId & ")"
+
+        db.execute(sqlInsertCicloStaLog)
+    end if
+
+    rsCiclos.close
+    set selecaoCiclos = nothing
+
+    updatePacientesProtocolosCiclosStatus = true
 
 end function
 %>

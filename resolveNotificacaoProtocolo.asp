@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Json.asp"-->
+<!--#include file="geraPacientesProtocolosCiclos.asp"-->
 <% 
     response.Charset="utf-8" 
 
@@ -27,10 +28,15 @@
 
     existe = db.execute(sqlConfereAcao)
 
-    if CInt(existe("existe")) = 0 then
+    sqlPacienteProtocolo = "SELECT PacienteProtocoloID FROM pacientesprotocolosmedicamentos WHERE id = " & ppm
+    set rsPacienteProtocolo = db.execute(sqlPacienteProtocolo)
+
+    if CInt(existe("existe")) = 0 or rsPacienteProtocolo.eof  then
         response.write(false)
         response.end
     end if
+
+    pacienteProtocoloId = rsPacienteProtocolo("PacienteProtocoloID")
 
     if aprovacao = "1" then
         status = 1
@@ -44,10 +50,15 @@
     if aprovacao = "1" then
         if tipo = "R" then
             sqlPPM = "UPDATE pacientesprotocolosmedicamentos SET sysActive= -1 WHERE id="&ppm
+            call updatePacientesProtocolosCiclosStatus(pacienteProtocoloId, 7, "Aprovado o pedido de remoção de protocolo")
         else
             sqlPPM = "UPDATE pacientesprotocolosmedicamentos SET DoseMedicamento="&treatValZero(existe("DoseMedicamento"))&", Obs='"&existe("obs")&"' WHERE id="&ppm
+            call updatePacientesProtocolosCiclosStatus(pacienteProtocoloId, 6, "Aprovado o pedido de alteração de protocolo")
         end if
         db.execute(sqlPPM)
+    else
+        'foi verificado com o Everton que em caso de reprovação da notificação, colocar o status de não autorizado
+        call updatePacientesProtocolosCiclosStatus(pacienteProtocoloId, 5, "Reprovado o pedido de alteração de protocolo")
     end if
 
 

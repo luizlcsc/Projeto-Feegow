@@ -53,8 +53,18 @@ end if
                     </span>
                 </div>
             </div>
-            <%=quickfield("number", "De", "Parcelas de", 2, De, "", "", "") %>
-            <%=quickfield("number", "Ate", "até", 2, Ate, "", "", "") %>
+            <%
+                classe = ""
+
+                if cint(MetodoID) = 1 then
+                    classe = " hidden"
+                    de = 1
+                    ate = 1
+                end if
+            %>
+
+            <%=quickfield("number", "De", "Parcelas de", 2&" "&classe, De, "", "", "") %>
+            <%=quickfield("number", "Ate", "até", 2&" "&classe, Ate, "", "", "") %>
        </div>
         <hr />
         <%
@@ -96,6 +106,15 @@ end if
 
     $("#MetodoID").change(function(){
         contas($(this).val());
+        if($("#MetodoID").val() == '1'){
+            $("#De").val(1)
+            $("#De").parent().addClass('hidden')
+            $("#Ate").val(1)
+            $("#Ate").parent().addClass('hidden')
+        }else{
+            $("#De").parent().removeClass('hidden')
+            $("#Ate").parent().removeClass('hidden')
+        }
     });
 
     $("#formDR").submit(function(){

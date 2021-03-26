@@ -92,13 +92,23 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 '    DescontoCartao = 0.05*(rValorProcedimento * coefPerc)
 '    ValorBase = ValorBase - DescontoCartao
 '        response.write(";;;;;;;;;;;;"& rContaPagtoID &";;;;;;;;;;;;;;")
+
+
     if rContaPagtoID<>"" and isnumeric(rContaPagtoID) and (rFormaPagto="Cartão de Crédito" or rFormaPagto="Cartão de Débito") then
         set vcaTaxa = db.execute("select * from repassesdescontos where Contas LIKE '%"& rContaPagtoID &"%' AND "&treatvalzero(Parcelas)&" BETWEEN De AND Ate")
-        if not vcaTaxa.eof then
-            'TEM QUE COLOCAR O COEFPERC INDIVIDUAL BASEADO NO VALOR DO PROCEDIMENTO x VALOR DO PAGTO
-            'call lrResult( "Calculo", rDataExecucao, Funcao, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, 0, rValorProcedimento, rValorRecebido, rTaxa, nLinha, "F", 0 )
-            sqlUnion = " UNION ALL SELECT '0', 'Desconto cartão', "& DominioID &", '"& vcaTaxa("tipoValor") &"', "& treatval(vcaTaxa("Desconto")) &", 0, 0, '-1', 'F', '0', '0', '0', '0', '', '', 'N' "
+    else
+        set vcaTaxa = db.execute("select * from repassesdescontos where Contas ='' AND "&treatvalzero(Parcelas)&" BETWEEN De AND Ate")
+    end if
+
+    if not vcaTaxa.eof then
+        if vcaTaxa("MetodoID") = 1 then
+            tipo = "dinheiro"
+        else
+            tipo = "cartão"
         end if
+
+        textoDeconto = "Desconto "&tipo
+        sqlUnion = " UNION ALL SELECT '0', '"&textoDeconto&"', "& DominioID &", '"& vcaTaxa("tipoValor") &"', "& treatval(vcaTaxa("Desconto")) &", 0, 0, '-1', 'F', '0', '0', '0', '0', '', '', 'N' "
     end if
 
     sqlFD = "select * from (select id, Funcao, DominioID, tipoValor, Valor, ContaPadrao, sysUser, Sobre, FM, ProdutoID, ValorUnitario, Quantidade, sysActive, Variavel, ValorVariavel, modoCalculo from rateiofuncoes where DominioID="& DominioID & sqlunion &") t order by t.Sobre, t.Valor"

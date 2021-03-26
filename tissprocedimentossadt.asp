@@ -3,16 +3,31 @@
 <!--#include file="Classes\JSON.asp"-->
 <%
 if req("X")<>"" then
-	db_execute("delete from tissprocedimentossadt where id="&req("X"))
-	db_execute("delete from rateiorateios where ItemGuiaID="&req("X"))
-    if session("Banco")<>"clinic3882" then
-        db_execute("delete from tissguiaanexa where ProcGSID="&req("X"))
-    end if
+  PermiteExclusao=True
+
+  set ExisteLaudoSQL = db.execute("SELECT id FROM laudos WHERE Tabela='tissprocedimentossadt' AND IDTabela="&treatvalzero(req("X")))
+
+  if not ExisteLaudoSQL.eof then
     %>
     <script type="text/javascript">
-        atualizaTabela('tissoutrasdespesas', 'tissoutrasdespesas.asp?I=<%=req("I")%>');
+      showMessageDialog("Já existe um laudo associado a este procedimento.", "danger", "Exclusão não permitida!");
     </script>
     <%
+    PermiteExclusao=False
+  end if
+
+  if PermiteExclusao then
+    db_execute("delete from tissprocedimentossadt where id="&req("X"))
+    db_execute("delete from rateiorateios where ItemGuiaID="&req("X"))
+      if session("Banco")<>"clinic3882" then
+          db_execute("delete from tissguiaanexa where ProcGSID="&req("X"))
+      end if
+      %>
+      <script type="text/javascript">
+          atualizaTabela('tissoutrasdespesas', 'tissoutrasdespesas.asp?I=<%=req("I")%>');
+      </script>
+      <%
+    end if
 end if
 %>
 <table width="100%" class="table table-striped table-bordered table-condensed">

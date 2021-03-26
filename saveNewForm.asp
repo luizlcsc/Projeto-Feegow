@@ -156,7 +156,19 @@ while not pcampos.eof
                             strInValLinha = TagsConverte(strInValLinha,convTags_itens,"")
                             sqlIn = "insert into buitabelasvalores (CampoID, FormPreenchidoID "& strInLinha &") values ("& pcampos("id") &", "& I & strInValLinha &")"
                             'response.Write( sqlIn )
+
                             db.execute( sqlIn )
+                            rowTableId = getLastAdded("buitabelasvalores")
+
+                            coluna=0
+                            while coluna<colunas
+                                coluna = coluna +1
+                                    
+                                %>
+                                $("#<%=pcampos("id")%>_<%=coluna%>_<%=linha%>").attr("name","<%=pcampos("id")%>_<%=coluna%>_<%=rowTableId%>");
+                                <%
+                            wend
+
                         else
                             
                             strUp = TagsConverte(strUp,convTags_itens,"")

@@ -3,6 +3,10 @@
 <%
 DT = req("DT")
 X = req("X")
+ Atuacao = request.querystring("Atuar")
+
+
+
 if DT<>"" then
     db.execute("insert into procedimentostabelas (Tipo, NomeTabela, Inicio, Fim, TabelasParticulares, Profissionais, Especialidades, Unidades, ConvenioID, sysUser, sysActive) select Tipo, concat(NomeTabela, ' (Cópia)'), Inicio, Fim, TabelasParticulares, Profissionais, Especialidades, Unidades, ConvenioID, "& session("User") &", 1 from procedimentostabelas where id="& DT)
     set pult = db.execute("select id from procedimentostabelas where sysUser="& session("User") &" order by id desc limit 1")
@@ -35,6 +39,14 @@ if ProcedimentoID&""="0" then
     ProcedimentoID=""
 end if
 
+function iif(comparacao, verdadeiro, falso)
+   if(comparacao) Then
+      iif = verdadeiro
+   else
+      iif = falso
+   end if
+end function
+
 %>
 <div class="panel mt20 mtn hidden-print">
     <div class="panel-heading">
@@ -46,12 +58,24 @@ end if
                 <input type="hidden" name="P" value="TabelasPreco">
                 <input type="hidden" name="Pers" value="1">
 
-                <%= quickfield("simpleSelect", "Tipo", "Tipo", 2, TipoTabela, "select 'C' id, 'Custo' Tipo UNION ALL select 'V', 'Venda'", "Tipo", " no-select2 empty  ") %>
+                <%= quickfield("simpleSelect", "Tipo", "Tipo", 2,TipoTabela, "select 'C' id, 'Custo' Tipo UNION ALL select 'V', 'Venda'", "Tipo", " no-select2 empty  ") %>
                 <%= quickfield("simpleSelect", "TabelasParticulares", "Tabela Particular", 2, TabelasParticulares, "select * from tabelaparticular where  sysActive=1 order by NomeTabela", "NomeTabela", " empty ") %>
                 <%= quickfield("simpleSelect", "Especialidades", "Especialidade", 2, Especialidades, "select id, especialidade from especialidades where sysActive=1 order by especialidade", "especialidade", " empty ") %>
+        
                 <div class="col-md-2">
                     <%= selectInsert("Procedimento", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " ", "", "") %>
                 </div>
+
+            <div class="col-md-2 qf" id="qftipo">
+            <label for="Atuar">Atuar</label>
+            <br>
+            <select name="Atuar" id="Atuar" class=" form-control" no-select2="" empty="">            
+            <option selected value="">Selecione</option>
+            <option value="|procedimentos|">Procedimentos</option>
+			<option value="|Materiais|">Medicacao</option>
+				
+            </select>
+            </div>
 
                 <div class="col-md-2">
                     <button type="button" class="btn btn-default mt25" onclick="LimparFiltros()"><i class="fa fa-eraser"> </i> Limpar </button>
@@ -83,17 +107,22 @@ end if
             </thead>
             <tbody>
                 <%
-
+                
+                
                 sqlFiltros = ""
 
                 if Especialidades<>"" then
                     sqlFiltros = sqlFiltros & " AND pt.Especialidades LIKE '%|"&replace(Especialidades, "|", "")&"|%'"
                 end if
                 if TipoTabela<>"" then
-                    sqlFiltros = sqlFiltros & " AND pt.Tipo= '"&TipoTabela&"'"
+                    sqlFiltros = sqlFiltros & " AND pt.Tipo= '"&replace(TipoTabela,",","")&"'"
                 end if
                 if TabelasParticulares<>"" then
-                    sqlFiltros = sqlFiltros & " AND pt.TabelasParticulares LIKE '%|"&replace(TabelasParticulares, "|", "")&"|%'"
+                    sqlFiltros = sqlFiltros & " OR pt.TabelasParticulares LIKE '%|"&replace(TabelasParticulares, "|", "")&"|%'"
+                end if
+                
+                if Atuacao<>"" then
+                    sqlFiltros = sqlFiltros & " AND pt.Atuacao LIKE '%"&Atuacao&"%'"
                 end if
 
                 if ProcedimentoID<>"" then
@@ -107,17 +136,20 @@ end if
                             TabelasComOProcedimento = TabelasComOProcedimento&","&Tabelas
                         end if
                     end if
-                    sqlFiltros = sqlFiltros & " AND pt.id IN ("&TabelasComOProcedimento&")"
+                    sqlFiltros = sqlFiltros & " OR pt.id IN ("&TabelasComOProcedimento&")"
                 end if
 
                 'set t = db.execute("select pt.* from procedimentostabelas pt where pt.sysActive=1 group by pt.Inicio, pt.Fim, pt.TabelasParticulares")
-                set t = db.execute("select pt.* from procedimentostabelas pt where pt.sysActive=1 "&sqlFiltros&" ORDER BY YEAR(pt.Fim) DESC, pt.NomeTabela")
+                        dbSql = "select pt.* from procedimentostabelas pt where pt.sysActive=1 "&sqlFiltros&" ORDER BY YEAR(pt.Fim) DESC, pt.NomeTabela"
+                        'response.write(dbSql)
+                        'response.write(TabelaBase)
+                set t = db.execute(dbSql)
 
                 if t.eof then
                     %>
-<tr>
-    <td colspan="8">Nenhuma tabela de preço encontrada</td>
-</tr>
+        <tr>
+            <td colspan="8">Nenhuma tabela de preço encontrada</td>
+        </tr>
                     <%
                 end if
 
@@ -150,16 +182,11 @@ end if
                         <td><%= TabelasParticulares %></td>
                         <td><%= t("Tipo") %></td>
                         <td><%= t("Inicio") &" a "& t("Fim") %></td>
-                        <td><button type="button" class="btn btn-xs btn-info"><i class="fa fa-copy" title="Duplicar tabela" onclick="location.href='./?P=TabelasPreco&Pers=1&DT=<%= t("id") %>'"></i></button></td>
+                        <td><button type="button" class="btn btn-xs btn-info">
+                        <i class="fa fa-copy" title="Duplicar tabela" onclick="location.href='./?P=TabelasPreco&Pers=1&DT=<%= t("id") %>'"></i>
+                        </button></td>
                         <% if aut("|tabelasprecosA|")=1 then %>
-                        <td>
-                            <% IF getConfig("NovoPrecoCusto") THEN %>
-                                <a href="./?P=ProcedimentosTabelas2&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a>
-                            <% ELSE %>
-                                <a href="./?P=ProcedimentosTabelas&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a>
-                            <% END IF %>
-
-                        </td>
+                        <td><a href="./?P=ProcedimentosTabelas&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a></td>
                         <% end if %>
                         <% if aut("|tabelasprecosX|")=1 then %>
                             <td><a href="javascript:if(confirm('Tem certeza de que deseja excluir esta tabela?'))location.href='./?P=TabelasPreco&I=<%= t("id") %>&Pers=1&X=<%= t("id") %>'" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></a></td>

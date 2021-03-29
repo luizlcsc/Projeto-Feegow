@@ -436,11 +436,14 @@ end function
                                     ValorMarcado=cint(ValorMarcado)
                                 end if
                             end if
-                            Valor = reg(Coluna)
-                            if Valor=true or Valor&""="" then
+                            Valor = reg(Coluna)&""
+                            
+                            if Valor=true or Valor="" or Valor="Verdadeiro" or Valor = "1" then
                                 Valor = 1
                             end if
-
+                            if Valor = "Falso" or Valor = false or valor = "0" then
+                                Valor = 0
+                            end if 
 
                             %>
                             <div class="checkbox-custom checkbox-primary">

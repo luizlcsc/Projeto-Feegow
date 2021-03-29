@@ -248,8 +248,8 @@ versaoTISS = "3.02.01"
 						CodigoProcedimento = TISS__FormataConteudo(procs("CodigoProcedimento"))
 						Descricao = TISS__FormataConteudo(procs("Descricao"))
 						Quantidade = procs("Quantidade")
-						ViaID = procs("ViaID")
-						TecnicaID = procs("TecnicaID")
+						ViaID = procs("ViaID")&""
+						TecnicaID = procs("TecnicaID")&""
 						Fator = treatvaltiss(procs("Fator"))
 						ValorUnitario = treatvaltiss(procs("ValorUnitario"))
 						ValorTotal = treatvaltiss(procs("ValorTotal"))
@@ -266,8 +266,14 @@ versaoTISS = "3.02.01"
                                 <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
                             </ans:procedimento>
                             <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
+														<%if ViaID<>"" then%>
                             <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
+														<%
+														end if
+														if TecnicaID<>"" then
+														%>
                             <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
+														<%end if%>
                             <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
                             <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
                             <ans:valorTotal><%= ValorTotal %></ans:valorTotal>

@@ -252,8 +252,8 @@ versaoTISS = "3.02.03"
 						CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))
 						Descricao = TirarAcento(procs("Descricao"))
 						Quantidade = TirarAcento(procs("Quantidade"))
-						ViaID = TirarAcento(procs("ViaID"))
-						TecnicaID = TirarAcento(procs("TecnicaID"))
+						ViaID = TirarAcento(procs("ViaID"))&""
+						TecnicaID = TirarAcento(procs("TecnicaID"))&""
 						Fator = treatvaltiss(1)
 						ValorUnitario = treatvaltiss( procs("Fator")*procs("ValorUnitario") )
 						ValorTotal = treatvaltiss(procs("ValorTotal"))
@@ -270,8 +270,14 @@ versaoTISS = "3.02.03"
                                 <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
                             </ans:procedimento>
                             <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
+														<%if ViaID<>"" then%>
                             <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
+														<%
+														end if
+														if TecnicaID<>"" then
+														%>
                             <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
+														<%end if%>
                             <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
                             <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
                             <ans:valorTotal><%= ValorTotal %></ans:valorTotal>

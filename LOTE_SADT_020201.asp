@@ -440,8 +440,14 @@ prefixo = right(prefixo, 20)
                             <%if HoraInicio<>"" then%><ans:horaInicio><%= HoraInicio %></ans:horaInicio><% End If %>
                             <%if HoraFim<>"" then%><ans:horaFim><%= HoraFim %></ans:horaFim><% End If %>
                             <ans:quantidadeRealizada><%= Quantidade %></ans:quantidadeRealizada>
+														<%if ViaID<>"" then%>
                             <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
+														<%
+														end if
+														if TecnicaID<>"" then
+														%>
                             <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
+														<%end if%>
                             <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
                             <ans:valor><%= ValorUnitario %></ans:valor>
                             <ans:valorTotal><%= ValorTotal %></ans:valorTotal>

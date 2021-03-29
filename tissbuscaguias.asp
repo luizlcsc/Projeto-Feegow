@@ -218,7 +218,10 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
         orderBy = "cast(g.NGuiaPrestador as signed integer) DESC"
     end if
 
-    if req("GuiaStatus")<>"" and req("GuiaStatus")<>"0" then
+    if req("GuiaStatus")<>"" then
+        if req("GuiaStatus")=null then
+            req("GuiaStatus")="0"
+        end if
         sqlGuiaStatus = " AND tgs.id = "&req("GuiaStatus")
     end if
 
@@ -278,7 +281,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
 
     ' Alterado ANDRE SOUZA EM 04/10/2019 Tarefa:1084
     sql = "select cp.NomePlano, g.*, l.Lote, tgi.ItemInvoiceID, tgi.InvoiceID, tgs.Cor, tgs.Status, tgs.Icone from tissguiaconsulta g"
-    sql = sql & " LEFT JOIN cliniccentral.tissguiastatus tgs ON tgs.id = g.GuiaStatus left join tisslotes l on l.id=g.LoteID "
+    sql = sql & " LEFT JOIN cliniccentral.tissguiastatus tgs ON tgs.id = COALESCE(g.GuiaStatus, 0) left join tisslotes l on l.id=g.LoteID "
     sql = sql & " LEFT JOIN pacientes p ON p.id = g.PacienteID "
     sql = sql & " LEFT JOIN tissguiasinvoice tgi on (tgi.GuiaID=g.id and tgi.TipoGuia='" & lcase(req("T"))&"')" 
     sql = sql & " LEFT JOIN conveniosplanos cp ON cp.ConvenioID = g.ConvenioID AND cp.id = g.PlanoID where g.sysActive=1 "
@@ -508,7 +511,10 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
         next
         sqlNumero = " and (1=0 "&sqlNumero&")"
     end if
-   if req("GuiaStatus")<>"" and req("GuiaStatus")<>"0" then
+    if req("GuiaStatus")<>"" then
+        if req("GuiaStatus")=null then
+            req("GuiaStatus")="0"
+        end if
         sqlGuiaStatus = " AND tgs.id = "&req("GuiaStatus")
     end if
 
@@ -549,7 +555,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
         c=0
         ValorTotal=0
     sql = "select cp.NomePlano, g.*, l.Lote, tgi.ItemInvoiceID, tgi.InvoiceID, tgs.Cor,tgs.Status from "&tabela&" g "
-    sql = sql & " LEFT JOIN cliniccentral.tissguiastatus tgs ON tgs.id = g.GuiaStatus left join tisslotes l on l.id=g.LoteID "
+    sql = sql & " LEFT JOIN cliniccentral.tissguiastatus tgs ON tgs.id = COALESCE(g.GuiaStatus, 0) left join tisslotes l on l.id=g.LoteID "
     sql = sql & " LEFT JOIN pacientes p ON p.id = g.PacienteID "
     sql = sql & " LEFT JOIN tissguiasinvoice tgi on (tgi.GuiaID=g.id and tgi.TipoGuia='"&lcase(req("T"))&"') "
     sql = sql & " LEFT JOIN conveniosplanos cp ON cp.ConvenioID = g.ConvenioID AND cp.id = g.PlanoID "

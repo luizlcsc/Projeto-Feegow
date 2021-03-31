@@ -35,9 +35,6 @@ end if
 	.fa-edit{
 		pointer-events: none;
 	}
-	ol {
-		list-style: none;
-	}
 </style>
 <div class="clearfix form-actions">
 	<div class="col-xs-6">
@@ -71,7 +68,7 @@ end if
 	</div>
 </div>
 <%
-function li(id, Name, Rateio, Ordem, Posicao)
+function li(id, Name, Rateio, Ordem)
 	%>
 	<li id="list_<%=id%>" data-id="<%=id%>" data-tipo="<%=request.QueryString("CD")%>" data-ordem="<%=Ordem%>" data-nome="<%=Name%>" data-rateio="<%=Rateio%>" class="dd-item">
 		<div class="dd-handle">
@@ -79,7 +76,7 @@ function li(id, Name, Rateio, Ordem, Posicao)
 				<span>
 				</span>
 			</span>
-			<span class='ordem'> <% if Posicao <> "" then response.write(Posicao) else response.write(Ordem) end if%> </span> -
+			<span class='ordem'> <%=Ordem%> </span> -
 			<span class='nome'> <%=Name%> </span>
         <div class="pull-right action-buttons">
         	<i class="fa fa-move" style="cursor:move"></i>
@@ -106,27 +103,7 @@ end function
 	<ol class="sortable dd-list">
     <%
 	if request.QueryString("I")<>"" then
-
-		categoriaSuperior = treatvalzero(request.QueryString("CategoriaSuperior"))
-		set rsCategoriaMae = db.execute("SELECT Posicao FROM " & table & " WHERE id = " & categoriaSuperior)
-		posicaoMae = ""
-		if not rsCategoriaMae.eof then
-			posicaoMae = rsCategoriaMae("Posicao")
-		end if
-
-		set rsMaxOrdem = db.execute("SELECT MAX(Ordem) as Ordem FROM sys_financialincometype sf WHERE sf.Category = " & categoriaSuperior)
-		ordem = 0
-		if not rsMaxOrdem.eof then
-			ordem = rsMaxOrdem("Ordem") + 1
-		end if
-
-		if posicaoMae <> "" then
-			posicao = posicaoMae & "." & ordem
-		else
-			posicao = ordem
-		end if
-
-		db_execute("insert into "&table&" (Name, Category, Ordem, Posicao, sysActive, sysUser) values ('"&replace(request.QueryString("I"), "'", "''")&"', "&categoriaSuperior&","&ordem&",'"&posicao&"', 1, "&session("User")&")")
+		db_execute("insert into "&table&" (Name, Category, Ordem, sysActive, sysUser) values ('"&replace(request.QueryString("I"), "'", "''")&"', "&treatvalzero(request.QueryString("CategoriaSuperior"))&",0, 1, "&session("User")&")")
 	    %>
         <script type="text/javascript">
         $(document).ready(function(e) {
@@ -174,7 +151,7 @@ end function
 	while not reg1.eof
 		contidos = contidos&"|"&reg1("id")&"|"
 		%>
-		<%=li(reg1("id"), reg1("Name"), reg1("Rateio"), reg1cont, reg1("Posicao"))%>
+		<%=li(reg1("id"), reg1("Name"), reg1("Rateio"), reg1cont)%>
 		<%
  		set reg2 = db.execute("select * from "&table&" where Category="&reg1("id")&" and sysActive=1 order by Ordem")
 		if not reg2.eof then
@@ -184,7 +161,7 @@ end function
 			while not reg2.eof
 				contidos = contidos&"|"&reg2("id")&"|"
 				%>
-                <%=li(reg2("id"), reg2("Name"), reg2("Rateio"), reg1cont&"."&reg2cont, reg2("Posicao"))%>
+                <%=li(reg2("id"), reg2("Name"), reg2("Rateio"), reg1cont&"."&reg2cont)%>
                 <%
 				set reg3 = db.execute("select * from "&table&" where Category="&reg2("id")&" and sysActive=1 order by Ordem")
 				if not reg3.eof then
@@ -193,7 +170,7 @@ end function
 						while not reg3.eof
 							contidos = contidos&"|"&reg3("id")&"|"
 							%>
-							<%=li(reg3("id"), reg3("Name"), reg3("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont, reg3("Posicao"))%>
+							<%=li(reg3("id"), reg3("Name"), reg3("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont)%>
 							<%
 
 							set reg4 = db.execute("select * from "&table&" where Category="&reg3("id")&" and sysActive=1 order by Ordem")
@@ -203,7 +180,7 @@ end function
 									while not reg4.eof
 										contidos = contidos&"|"&reg4("id")&"|"
 										%>
-										<%=li(reg4("id"), reg4("Name"), reg4("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont&"."&reg4cont, reg4("Posicao"))%>
+										<%=li(reg4("id"), reg4("Name"), reg4("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont&"."&reg4cont)%>
 										<%
 
 
@@ -214,7 +191,7 @@ end function
 												while not reg5.eof
 													contidos = contidos&"|"&reg5("id")&"|"
 													%>
-													<%=li(reg5("id"), reg5("Name"), reg5("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont&"."&reg4cont&"."&reg5cont, reg5("Posicao"))%>
+													<%=li(reg5("id"), reg5("Name"), reg5("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont&"."&reg4cont&"."&reg5cont)%>
 													<%
 
 													set reg6 = db.execute("select * from "&table&" where Category="&reg5("id")&" and sysActive=1 order by Ordem")
@@ -224,7 +201,7 @@ end function
                                                             while not reg6.eof
                                                                 contidos = contidos&"|"&reg6("id")&"|"
                                                                 %>
-                                                                <%=li(reg6("id"), reg6("Name"), reg6("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont&"."&reg4cont&"."&reg5cont&"."&reg6cont, reg6("Posicao"))%>
+                                                                <%=li(reg6("id"), reg6("Name"), reg6("Rateio"), reg1cont&"."&reg2cont&"."&reg3cont&"."&reg4cont&"."&reg5cont&"."&reg6cont)%>
                                                                 <%
 															reg6cont = reg6cont+1
                                                             reg6.movenext
@@ -316,24 +293,6 @@ end function
 <script type="text/javascript" src="js/jquery.mjs.nestedSortable.js"></script>
 
 <script type="text/javascript">
-	<%
-	set rsCategoriaMae = db.execute("select Posicao from " & table & " where id = 0")
-	codCategoriaMae = ""
-	if not rsCategoriaMae.eof then
-		codCategoriaMae = rsCategoriaMae("Posicao")
-	end if
-	%>
-
-	const CD = '<%=request.QueryString("CD")%>';
-	const inputCodigo = window.parent.document.getElementById('codigo-mae-' + CD);
-	const inputAnotherCodigo = window.parent.document.getElementById('codigo-mae-' + (CD == 'C' ? 'D' : 'C'));
-	let codCategoriaMae = '';
-	if (inputCodigo) {
-		codCategoriaMae = inputCodigo.value;
-	} else {
-		codCategoriaMae = '<%=codCategoriaMae%>';
-	}
-
 	$(document).ready(function(){
 		$('ol.sortable').nestedSortable({
 			forcePlaceholderSize: true,
@@ -350,37 +309,8 @@ end function
 
 			isTree: false,
 			expandOnHover: 700,
-			startCollapsed: false,
-			relocate: function() {
-				reordenaLista($('ol.sortable'));
-			}
+			startCollapsed: false
 		});
-
-		function reordenaLista(list, prevOrdem) {
-			$(list).find('> li.dd-item').each(function(index) {
-				const item     = $(this);
-				const curOrdem = (index + 1);
-
-				const ordem  = prevOrdem ? (prevOrdem + '.' + curOrdem) : curOrdem; 
-
-				const ordemText = codCategoriaMae != '' ? codCategoriaMae + '.' + ordem : ordem
-				item.find('.ordem').html(ordemText);
-				item.attr('data-ordem', ordem);
-
-				item.find('> ol').each(function() {
-					reordenaLista($(this), ordem);
-				});
-			});
-		}
-
-		if (inputCodigo) {
-			$(inputCodigo).on('blur', function() {
-				if ($(this).val() != '' && $(this).val() != codCategoriaMae) {
-					codCategoriaMae = $(this).val();
-					reordenaLista($('ol.sortable'));
-				}
-			});
-		}
 
 		$('.disclose').on('click', function() {
 			$(this).closest('li').toggleClass('mjs-nestedSortable-collapsed').toggleClass('mjs-nestedSortable-expanded');
@@ -394,43 +324,26 @@ end function
 			array[0]= 'null'
 			linhas.filter((linha)=>{
 				let index = linha.split('=')[0].replace('list[','').replace(']','')
+				console.log(index)
 				let valor = linha.split('=')[1]
 
 				array[index] = valor
-			});
+			})
 
-			const itens = $('li[data-tipo="<%=request.QueryString("CD")%>"]')
+			let itens = $('li[data-tipo="<%=request.QueryString("CD")%>"]')
 			let data = ''
-
-			if (inputCodigo) {
-				if (inputCodigo.value === '') {
-					alert('Informe o código da categoria de ' + (CD === 'C' ? 'Receitas' : 'Despesas'));
-					inputCodigo.focus();
-					return;
-				}
-
-				if (inputAnotherCodigo.value == inputCodigo.value) {
-					alert('O código não pode ser igual ao código da categoria de ' + (CD === 'C' ? 'Despesas' : 'Receitas'));
-					inputCodigo.focus();
-					return;
-				}
-
-				codCategoriaMae = inputCodigo.value;
-				data += '[id:0,Posicao:' + codCategoriaMae +']&'
-			}
-
-			let ordem = 0;
 			itens.filter((key,ele)=>{
 				let id = $(ele).attr('data-id')
 				let nome = $(ele).attr('data-nome')
-				let posicao = (codCategoriaMae != '' ? (codCategoriaMae + '.') : '') + $(ele).attr('data-ordem')
-				let category = array[id]
+				let posicao = $(ele).attr('data-ordem')
+				let ordem = array[id]
 				let rateio = $(ele).attr('data-rateio')
-				if(category == 'null'){
-					category = 0
+				if(ordem == 'null'){
+					ordem = 0
 				}
-				data += '[id:'+id+',Category:'+category+',Name:'+nome+',Rateio:'+rateio+',Posicao:'+posicao+']&'
-			});
+				data += '[id:'+id+',categoria:'+ordem+',nome:'+nome+',rateio:'+rateio+',posicao:'+posicao+']&'
+			})
+			console.log(data)
 
 			$.ajax({
 				type:"POST",

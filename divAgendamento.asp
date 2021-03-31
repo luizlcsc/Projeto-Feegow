@@ -294,36 +294,60 @@ else
     oti = "agenda"
 end if
 
+'Trata a formatação do valor contido na variável GradeApenasConvenios
+function trataConvenio(GradeApenasConvenios)
+    if GradeApenasConvenios <> "" then
+        GradeApenasConvenios = replace(GradeApenasConvenios, "|P|,", "")
+        GradeApenasConvenios = replace(GradeApenasConvenios, "||NONE||", "")
+        GradeApenasConvenios = replace(GradeApenasConvenios, "|", "")
+    end if
+    trataConvenio = GradeApenasConvenios
+end function
 
-if GradeID<> "" and GradeID<>"undefined" then
-    if GradeID < 0 then
-        set GradeSQL = db.execute("SELECT * FROM assperiodolocalxprofissional WHERE id="&GradeID*-1)
-        if not GradeSQL.eof then
-            GradeApenasProcedimentos = GradeSQL("Procedimentos")
+'método para verificar se a tabela está vazia
+'Se não, preenche as variáveis com os valores devidos 
+function taVazio(GradeSQL)
+    if not GradeSQL.eof and GradeID < 0  then
+        GradeApenasProcedimentos = GradeSQL("Procedimentos")
+        GradeApenasConvenios = GradeSQL("Convenios")
+        GradeApenasConvenios = trataConvenio(GradeApenasConvenios)&""
+
+        convenios = GradeApenasConvenios
+        
+        if not isnull(GradeSQL("MaximoEncaixes")) and GradeSQL("MaximoEncaixes")<>"" then
+            maximoEncaixes = GradeSQL("MaximoEncaixes")
         end if
     else
-        set GradeSQL = db.execute("SELECT * FROM assfixalocalxprofissional WHERE id="&GradeID)
-        if not GradeSQL.eof then
-            GradeApenasProcedimentos = GradeSQL("Procedimentos")
-            GradeApenasConvenios = GradeSQL("Convenios")
-            GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
+        GradeApenasProcedimentos = GradeSQL("Procedimentos")
+        GradeApenasConvenios = GradeSQL("Convenios")
+        GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
+        GradeApenasConvenios = trataConvenio(GradeApenasConvenios)&""
 
-            if GradeApenasConvenios&"" <> "" then
-                GradeApenasConvenios = GradeApenasConvenios
-				GradeApenasConvenios = replace(GradeApenasConvenios, "|P|,", "")
-				GradeApenasConvenios = replace(GradeApenasConvenios, "||NONE||", "")
-				GradeApenasConvenios = replace(GradeApenasConvenios, "|", "")
-
-				Convenios = GradeApenasConvenios
-            end if
-
-            if not isnull(GradeSQL("MaximoEncaixes")) and GradeSQL("MaximoEncaixes")<>"" then
-                MaximoEncaixes = GradeSQL("MaximoEncaixes")
-            end if
-
-            GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
+        convenios = GradeApenasConvenios
+        
+        if not isnull(GradeSQL("MaximoEncaixes")) and GradeSQL("MaximoEncaixes")<>"" then
+            maximoEncaixes = GradeSQL("MaximoEncaixes")
         end if
+
+        GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
     end if
+end function 
+
+'Metodo para seleção da tabela correta ao ID
+function selecionaTabela(GradeID)
+    if GradeID < 0 then
+        set GradeSQL = db.execute("SELECT * FROM assperiodolocalxprofissional WHERE id="&GradeID*-1)
+    else
+        set GradeSQL = db.execute("SELECT * FROM assfixalocalxprofissional WHERE id="&GradeID)
+    end if
+
+    taVazio(GradeSQL)
+end function
+
+'Atualizando valores da grade de convenios
+if GradeID<> "" and GradeID<>"undefined" then
+    selecionaTabela(GradeID)
+      
 else
     GradeID=""
 end if

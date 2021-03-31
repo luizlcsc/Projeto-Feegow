@@ -661,7 +661,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                     <%
                     if IntegracaoUnimedLondrina=4 or session("Banco")="clinic100000" then
                     %>
-                        <div class="col-md-offset-7 col-md-2">
+                        <div class="col-md-offset-6 col-md-3">
                             <button type="button" class="btn btn-system" onclick="importarDadosUnimed()">
                                 <i class="fa fa-download"></i> Importar Exames - Unimed
                             </button>

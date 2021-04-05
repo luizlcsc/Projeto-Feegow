@@ -99,7 +99,7 @@ end if
 LocalID = req("LocalID")
 
 
-agendamentoIDSelecionado = req("id")
+agendamentoIDSelecionado = req("id")&""
 
 EncaixesExibe=1
 
@@ -589,7 +589,7 @@ end if
             <div class="col-md-<%= colPac %>">
                 <%
                 'ALTERAÇÃO DE PACIENTES APÓS O AGENDAMENTO NÃO É PERMITIDO | 10/03/2021
-                if agendamentoIDSelecionado&""<>0 then
+                if agendamentoIDSelecionado<>"" and agendamentoIDSelecionado<>"0" then 
                     pacienteInputClass = "style=""display:none;"""
                     set PacienteSQL = db.execute("select NomePaciente from pacientes where id="&pacienteId)
                         pacienteNome = "<label>Paciente</label><br>"&PacienteSQL("NomePaciente")

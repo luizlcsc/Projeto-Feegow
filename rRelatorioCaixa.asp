@@ -16,25 +16,29 @@ DetalharEntradas = req("DetalharEntradas")
 MC = req("MC")
 
 
-function linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
+function linhaTotais(Dinheiro, Cheque, Credito, Debito,Boleto,Pix,Titulo, Classe)
     %>
     <table class="table table-condensed mt20">
         <thead>
             <tr class="<%= Classe %>">
-                <th class="text-center" width="20%">Total Dinheiro</th>
-                <th class="text-center" width="20%">Total Cheque</th>
-                <th class="text-center" width="20%">Total Crédito</th>
-                <th class="text-center" width="20%">Total Débito</th>
+                <th class="text-center" width="10%">Total Dinheiro</th>
+                <th class="text-center" width="10%">Total Cheque</th>
+                <th class="text-center" width="10%">Total Crédito</th>
+                <th class="text-center" width="10%">Total Débito</th>
+                <th class="text-center" width="10%">Total Boleto</th>
+                <th class="text-center" width="10%">Total Pix</th>
                 <th class="text-center" width="20%">Total <%= Titulo %></th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <th class="text-right" width="20%">R$ <%= fn(Dinheiro) %></th>
-                <th class="text-right" width="20%">R$ <%= fn(Cheque) %></th>
-                <th class="text-right" width="20%">R$ <%= fn(Credito) %></th>
-                <th class="text-right" width="20%">R$ <%= fn(Debito) %></th>
-                <th class="text-right" width="20%">R$ <%= fn(Dinheiro + Cheque + Credito + Debito) %></th>
+                <th class="text-center">R$ <%= fn(Dinheiro) %></th>
+                <th class="text-center">R$ <%= fn(Cheque) %></th>
+                <th class="text-center">R$ <%= fn(Credito) %></th>
+                <th class="text-center">R$ <%= fn(Debito) %></th>
+                <th class="text-center">R$ <%= fn(Boleto) %></th>
+                <th class="text-center">R$ <%= fn(Pix) %></th>
+                <th class="text-center">R$ <%= fn(Dinheiro + Cheque + Credito + Debito + Boleto + Pix) %></th>
             </tr>
         </tbody>
     </table>
@@ -102,6 +106,9 @@ Dinheiro = 0
 Cheque = 0
 Credito = 0
 Debito = 0
+Boleto = 0
+Pix = 0
+
 Titulo = "ENTRADAS"
 if DetalharEntradas="" then
     Titulo = Titulo & " <a class='btn btn-default btn-xs' href='./PrintStatement.asp?R=rRelatorioCaixa&Tipo="& req("Tipo") &"&Data="& req("Data") &"&UnidadeID="& req("UnidadeID") &"&DetalharEntradas=S'>DETALHAR ENTRADAS</a> "
@@ -109,18 +116,18 @@ end if
 Classe = "success"
 if MC="" then
     if DetalharEntradas="" then
-        sql = "select concat( ifnull(count(m.id), 0), ' lançamento(s)' ) Descricao, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9))) GROUP BY pm.PaymentMethod, m.CaixaID ORDER BY lu.Nome, pm.PaymentMethod"
+        sql = "select concat( ifnull(count(m.id), 0), ' lançamento(s)' ) Descricao, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15))) GROUP BY pm.PaymentMethod, m.CaixaID ORDER BY lu.Nome, pm.PaymentMethod"
         set dist = db.execute(sql)
     else
-        sql = "select m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9))) ORDER BY lu.Nome, pm.PaymentMethod"
+        sql = "select m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15))) ORDER BY lu.Nome, pm.PaymentMethod"
         set dist = db.execute(sql)
     end if
     'response.write(sql)
 else
     if DetalharEntradas="" then
-        set dist = db.execute("select concat( ifnull(count(m.id), 0), ' lançamento(s)' ) Descricao, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.CaixaID="& session("CaixaID") &" AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9))) GROUP BY pm.PaymentMethod, m.CaixaID ORDER BY lu.Nome, pm.PaymentMethod")
+        set dist = db.execute("select concat( ifnull(count(m.id), 0), ' lançamento(s)' ) Descricao, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.CaixaID="& session("CaixaID") &" AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15))) GROUP BY pm.PaymentMethod, m.CaixaID ORDER BY lu.Nome, pm.PaymentMethod")
     else
-        set dist = db.execute("select m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.CaixaID="& session("CaixaID") &" AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9))) ORDER BY lu.Nome, pm.PaymentMethod")
+        set dist = db.execute("select m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.CaixaID="& session("CaixaID") &" AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15))) ORDER BY lu.Nome, pm.PaymentMethod")
     end if
 end if
 
@@ -175,7 +182,7 @@ if not dist.eof then
                 Procedimentos = "<a style='cursor:pointer' onclick=""window.open('./?P=Invoice&Pers=1&CD=C&I="& desc("InvoiceID") &"')"" >"& Procedimentos &"</code> "
 
             else
-                set soma = db.execute("select sum(Value) Total from sys_financialmovement where CaixaID="& dist("CaixaID") &" AND PaymentMethodID='"& dist("PaymentMethodID") &"' AND Date="& mData &" AND ((AccountAssociationIDDebit=7 AND AccountIDDebit="& dist("CaixaID") &" AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9)))")
+                set soma = db.execute("select sum(Value) Total from sys_financialmovement where CaixaID="& dist("CaixaID") &" AND PaymentMethodID='"& dist("PaymentMethodID") &"' AND Date="& mData &" AND ((AccountAssociationIDDebit=7 AND AccountIDDebit="& dist("CaixaID") &" AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15)))")
                 if not soma.eof then
                     Valor = soma("Total")
                 else
@@ -196,7 +203,7 @@ if not dist.eof then
                 end if
                 Descricao = accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit")) & nroNFe
             else
-                set soma = db.execute("select sum(Value) Total from sys_financialmovement where CaixaID="& session("CaixaID") &" AND PaymentMethodID='"& dist("PaymentMethodID") &"' AND ((AccountAssociationIDDebit=7 AND AccountIDDebit="& session("CaixaID") &" AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9)))")
+                set soma = db.execute("select sum(Value) Total from sys_financialmovement where CaixaID="& session("CaixaID") &" AND PaymentMethodID='"& dist("PaymentMethodID") &"' AND ((AccountAssociationIDDebit=7 AND AccountIDDebit="& session("CaixaID") &" AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15)))")
                 if not soma.eof then
                     Valor = soma("Total")
                 else
@@ -214,6 +221,10 @@ if not dist.eof then
                 Credito = Credito+Valor
             case 9
                 Debito = Debito+Valor
+            case 4
+                Boleto = Boleto+Valor
+            case 15
+                Pix = Pix+Valor
         end select
         %>
         <tr>
@@ -242,7 +253,7 @@ if not dist.eof then
     %>
     </tbody>
 </table>
-    <% call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe) 
+    <% call linhaTotais(Dinheiro, Cheque, Credito, Debito,Boleto,Pix, Titulo, Classe)
 end if
 
 
@@ -295,6 +306,10 @@ if not dist.eof then
                 Credito = Credito+Valor
             case 9
                 Debito = Debito+Valor
+            case 4
+                Boleto = Boleto+Valor
+            case 15
+                Pix = Pix+Valor
         end select
         %>
         <tr>
@@ -367,6 +382,10 @@ if not dist.eof then
                 Credito = Credito+Valor
             case 9
                 Debito = Debito+Valor
+            case 4
+                Boleto = Boleto+Valor
+            case 15
+                Pix = Pix+Valor
         end select
         %>
         <tr>
@@ -428,6 +447,10 @@ if not dist.eof then
                 Credito = Credito+Valor
             case 9
                 Debito = Debito+Valor
+            case 4
+                Boleto = Boleto+Valor
+            case 15
+                Pix = Pix+Valor
         end select
         set cat = db.execute("select group_concat(ifnull(Descricao, '') SEPARATOR ', ') Descricao from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID WHERE idesc.PagamentoID="& dist("id"))
         Descricao = "<code>"& dist("name") &" - " & cat("Descricao") &"</code>"& Descricao 
@@ -504,6 +527,10 @@ if not dist.eof then
                 Credito = Credito+Valor
             case 9
                 Debito = Debito+Valor
+            case 4
+                Boleto = Boleto+Valor
+            case 15
+                Pix = Pix+Valor
         end select
         %>
         <tr>
@@ -522,14 +549,14 @@ if not dist.eof then
     %>
     </tbody>
 </table>
-    <% call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
+    <% call linhaTotais(Dinheiro, Cheque, Credito, Debito,Boleto,Pix, Titulo, Classe)
 end if 
 
     
 if MC="1" then %>
 
     <h5>FECHAMENTO DE CAIXA</h5>
-    <%= linhaTotais(Balanco, Cheque, Credito, Debito, "FECHAMENTO DE CAIXA", "alert") %>
+    <%= linhaTotais(Balanco, Cheque, Credito, Debito,Boleto,Pix, "FECHAMENTO DE CAIXA", "alert") %>
 
 
 
@@ -679,7 +706,7 @@ if MC="1" then %>
             </tr>
         </tfoot>
     </table>
-        <% call linhaTotais(tInformado, Cheque, Credito, Debito, Titulo, Classe)
+        <% call linhaTotais(tInformado, Cheque, Credito, Debito,Boleto,Pix, Titulo, Classe)
     end if 
 
 

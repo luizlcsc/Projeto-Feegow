@@ -553,7 +553,8 @@ if not tryLogin.EOF then
 		else
                     urlRedir = "./../?P=Home&Pers=1"
                 end if
-                if tryLogin("Home")&""<>"" then
+
+                if tryLogin("Home")&""<>"" and Versao=7 then
                     urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
                 end if
             else
@@ -565,10 +566,11 @@ if not tryLogin.EOF then
                     urlRedir = "./../?P=Home&Pers=1"
                 end if
 
-                if tryLogin("Home")&""<>"" then
+                if tryLogin("Home")&""<>"" and Versao=7 then
                     urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
                 end if
 			end if
+
 		tryLogin.movenext
 		wend
 		tryLogin.close

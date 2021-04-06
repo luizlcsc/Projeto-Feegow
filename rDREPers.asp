@@ -66,7 +66,7 @@ ModeloID = ref("ModeloID")
             if tabcolGrupos<>"" then
                 splGrupos = split(tabcolGrupos, ";")
                 tabGruposTabLeft = splGrupos(0)
-                tabGruposColLeft = splGrupos(1)
+                tabGruposColLeft = "id" 'o join eh sempre pelo ID
                 tabGruposTabLeft2 = splGrupos(2)
                 tabGruposColLeft2 = splGrupos(3)
                 leftGrupoProcedimentos = " LEFT JOIN "& tabGruposTabLeft2 &" ti ON ti.id=ii.ItemID LEFT JOIN "& tabGruposTabLeft &" tg ON tg.id=ti."& tabGruposColLeft2 &" "

@@ -118,9 +118,9 @@ end if
 		AccountAssociationID = splAccount(0)
 		AccountID = splAccount(1)
 		sqlAcc = " AND ((m.AccountAssociationIDCredit="&AccountAssociationID&" and m.AccountIDCredit="&AccountID&") or (m.AccountAssociationIDDebit="&AccountAssociationID&" and m.AccountIDDebit="&AccountID&")) "
-	'else
+	else
+		sqlAcc = " AND m.`Date`>="&mydatenull(session("DateFrom"))&" AND m.`Date`<="&mydatenull(session("DateTo"))&" AND m.`Type` IN('Pay','Tranfer') "
 	end if
-	sqlAcc = sqlAcc& " AND m.`Date`>="&mydatenull(session("DateFrom"))&" AND m.`Date`<="&mydatenull(session("DateTo"))&" AND m.`Type` IN('Pay','Tranfer') "
 
 	sqlLancadoPor = ""
 	if ref("LancadoPor")&""<>"0" and ref("LancadoPor")&""<>"" then

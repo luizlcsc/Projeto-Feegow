@@ -7,6 +7,18 @@
         color:#000;
         padding:20px;
     }
+    #dre-table .row-show-more:hover td, #dre-table .col-show-more:hover{
+        //text-decoration: underline;
+        background-color: #e4f4ff;
+        border: 1px solid #a3d8ff;
+        color: #008cde;
+    }
+    #dre-table .row-show-more, .col-show-more{
+        cursor: pointer;
+    }
+    .td-loading{
+        opacity: 0.8;
+    }
 </style>
 <%
 response.buffer
@@ -26,7 +38,7 @@ ModeloID = ref("ModeloID")
     </h2>
 </div>
 
-<table class="table table-hover">
+<table id="dre-table" class="table table-hover">
     <tr>
         <th class="system"></th>
         <%
@@ -157,8 +169,8 @@ ModeloID = ref("ModeloID")
             tag = "th"
         end if
         %>
-        <tr class="<%= Classe %>" id="prin<%= LinhaID %>">
-            <%= "<"& tag &">" & l("Descricao") & "</"& tag &">" %>
+        <tr class="<%= Classe %> row-show-more" id="prin<%= LinhaID %>">
+            <%= "<"& tag &" class='col-show-more'>" & l("Descricao") & "</"& tag &">" %>
             <%
             m = 1
             while m<=12
@@ -195,8 +207,13 @@ ModeloID = ref("ModeloID")
 </table>
 
 <script type="text/javascript">
+
+    let linhasCarregadas = [];
+     
+    const loadingHtml = `<i class="fas fa-cog fa-spin"></i>`;
     
     function det(l, m, a) {
+
         $("#modal").html("Carregando...");
         $("#modal-table").modal("show");
         $.get("rDRE_detalhes.asp?LinhaID=" + l + "&Mes=" + m +"&A="+ a, function (data) {
@@ -205,8 +222,15 @@ ModeloID = ref("ModeloID")
     }
     
 
-    $("tr[id^='prin']").click(function(){
+    $(".row-show-more").click(function(){
         i = $(this).attr('id').replace('prin', '');
+        
+        if(linhasCarregadas.includes(i) ){
+            return;
+        }
+        linhasCarregadas.push(i);
+
+
         //$('#append'+i).append('<tr><td colspan=13>Carregando...</td></tr>');
         $.get("rDreCats.asp?L="+i, function(data){
             $('.tmp'+i).remove();
@@ -214,5 +238,10 @@ ModeloID = ref("ModeloID")
         });
 
     });
+
+    function downloadExcel(tableId){
+        $("#htmlTable").val($(tableId).html());
+        $("#formExcel").attr("action", domain+"reports/download-excel?title=Extrato&tk=" + localStorage.getItem("tk")).submit();
+    }
 
 </script>

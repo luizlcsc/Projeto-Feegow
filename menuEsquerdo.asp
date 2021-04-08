@@ -125,6 +125,10 @@ select case lcase(req("P"))
             end if
         end if
     end if
+
+    ShowQualidometro=True
+
+    if ShowQualidometro then
             %>
 
                     <script type="text/javascript">
@@ -166,6 +170,7 @@ select case lcase(req("P"))
             </div>
 
 <%
+end if
     if lcase(req("P"))="home" then
 %>
             <div class="col-sm-12">

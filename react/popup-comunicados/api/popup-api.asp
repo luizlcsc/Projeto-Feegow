@@ -37,7 +37,7 @@ Select Case action
           "AND ((cs.`Status` = pop.RecursoAdicionalStatus AND cs.id IS NOT null) OR (cs.id IS NULL AND pop.RecursoAdicionalStatus IS NULL)) "&_
           "AND pop.sysActive = 1 "&_
           "GROUP BY pop.id "&_
-          "HAVING feedback_comunicado = NULL OR feedback_comunicado=1 "
+          "HAVING feedback_comunicado is NULL OR feedback_comunicado=1 "
 
     set ComunicadoSQL = db.execute( sql )
     Content = recordToJSON(ComunicadoSQL)

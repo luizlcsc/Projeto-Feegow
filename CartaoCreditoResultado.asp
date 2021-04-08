@@ -37,8 +37,10 @@
 					end if
 					if ref("Baixados")="S" and ref("Pendentes")="S" then
 						sqlBaixados = ""
-                        sqlData = " AND p.DateToReceive>="&mydatenull(ref("De"))&" AND p.DateToReceive<="&mydatenull(ref("Ate"))
+                        sqlData = " AND ((p.DateToReceive>="&mydatenull(ref("De"))&" AND p.DateToReceive<="&mydatenull(ref("Ate"))&")"&_
+						" OR  (movinstal.Date>="&mydatenull(ref("De"))&" AND movinstal.Date<="&mydatenull(ref("Ate"))&") )"
 					end if
+					
 					ValorFinalTaxado = 0
 					ValorLiquidoFinal=0
 

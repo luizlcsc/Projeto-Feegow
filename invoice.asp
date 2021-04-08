@@ -561,7 +561,8 @@ end if
                         end if
                     end if
 
-                        if session("Odonto")=1 and CD="C" then
+                        'if session("Odonto")=1 and CD="C" then
+                        if 1=1 and CD="C" then
                             %>
                         <div class="btn-group nao-mostrar-caso-pago">
                             <button type="button" class="btn btn-primary btn-sm" id="btn-abrir-modal-odontograma">
@@ -1122,7 +1123,8 @@ var InvoiceAlterada = false;
             var fn = appendComponentsModal();
             changeComponentsModalFooter('<button type="button" class="btn btn-success" id="feegow-odontograma-finalizar">Finalizar</button>');
 
-            $.get('https://components-legacy.feegow.com/index.php/odontograma?P='+accountId+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Invoice&U=<%=session("User")%>&I=<%=InvoiceID%>&L=<%=session("Banco")%>',
+           // $.get('https://components-legacy.feegow.com/index.php/odontograma?P='+accountId+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Invoice&U=<%=session("User")%>&I=<%=InvoiceID%>&L=<%=session("Banco")%>',
+            $.get('http://localhost:8080/index.php/odontograma?P='+accountId+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Invoice&U=<%=session("User")%>&I=<%=InvoiceID%>&L=<%=session("Banco")%>',
             function (data) {
                 fn(data);
             });

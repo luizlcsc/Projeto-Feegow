@@ -1206,6 +1206,9 @@ function prontPrint(tipo, id){
         case "pedido":
             url = domain+"print/exam-request/";
             break;
+        case "protocolos":
+            url = domain+"print/protocol/";
+            break;
         //case "AE","L":
             //url = domain+"print/prescription/";
         // break;

@@ -273,7 +273,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             </a>
                                 <%
                             end if    
-                                if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Protocolos" and ti("Tipo")<>"Imagens" then
+                                if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Imagens" then
                                 %>
                                     <a href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
                                         <i class="fa fa-print"></i>

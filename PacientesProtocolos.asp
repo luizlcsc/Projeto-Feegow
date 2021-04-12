@@ -46,7 +46,7 @@ end if
                     </div>
                     <div class="col-md-2">
                         <!--<button type="button" onClick="saveProtocolo('<%=ID%>')" class="btn btn-primary "><i class="fa fa-save"></i></button> -->
-                        <button type="button" class="btn btn-info" onClick="print()">
+                        <button type="button" class="btn btn-info" onClick="prontPrint('Protocolos', <%=ID%>)">
                             <i class="fa fa-print"></i>
                         </button>
                     </div>

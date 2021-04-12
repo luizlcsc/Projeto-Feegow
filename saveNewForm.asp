@@ -111,7 +111,10 @@ while not pcampos.eof
             valorCampo = ref("input_"&pcampos("id"))
             valorCampo = stripHTML(valorCampo)
 
-            if valorCampo <> "" or habilitarVazio = "1" then
+CamposForms = "SELECT COUNT(COLUMN_NAME) AS resultado FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '_"&ModeloID&"' AND  COLUMN_NAME = "& pcampos("id")
+CampoExiste = db.execute(CamposForms)
+
+            if CampoExiste("resultado") <> "0" or habilitarVazio = "1" then
                 inputValor = ref("input_"&pcampos("id"))
                 'O SEGUNDO PARAMETRO EH UM CARACTER FANTASMA . NAO REMOVER A LINHA DE BAIXO !!!!!
                 inputValor = replace(inputValor, "​", "")

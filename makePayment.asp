@@ -26,10 +26,12 @@ else
 	reverse = "C"
 end if
 
-db_execute("insert into sys_financialMovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Obs, Currency, Rate) values ('Pagamento', '"&AccountAssociationIDCredit&"', '"&AccountIDCredit&"', '"&AccountAssociationIDDebit&"', '"&AccountIDDebit&"', "&ref("PaymentMethod")&", '"&treatVal(PaymentValue)&"', '"&myDate(PaymentDate)&"', '"&reverse&"', 'Pay', '"&ref("Obs")&"', '"&ref("PaymentCurrency")&"', '"&treatVal(ref("PaymentRate"))&"')")
-set getLastMovementID = db.execute("select id from sys_financialMovement order by id desc LIMIT 1")
-LastMovementID = getLastMovementID("id")
+db.execute("insert into sys_financialMovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Obs, Currency, Rate) values ('Pagamento', '"&AccountAssociationIDCredit&"', '"&AccountIDCredit&"', '"&AccountAssociationIDDebit&"', '"&AccountIDDebit&"', "&ref("PaymentMethod")&", '"&treatVal(PaymentValue)&"', '"&myDate(PaymentDate)&"', '"&reverse&"', 'Pay', '"&ref("Obs")&"', '"&ref("PaymentCurrency")&"', '"&treatVal(ref("PaymentRate"))&"')")
+' set getLastMovementID = db.execute("select id from sys_financialMovement order by id desc LIMIT 1")
+' LastMovementID = getLastMovementID("id")
 
+LastMovementIDQ = db.execute("SELECT LAST_INSERT_ID() as Last")
+LastMovementID = LastMovementIDQ("last") 
 if T="C" then
 	select case ccur(ref("PaymentMethod"))
 	case 2'check
@@ -56,7 +58,12 @@ if T="C" then
 		if not getAssociation.eof then
 			set getAccountData = db.execute("select * from "&getAssociation("table")&" where id="&AccountID)
 			if not getAccountData.EOF then
-				PercentageDeducted = getAccountData("PercentageDeducted")
+				queryTaxa = getTaxaAtual(AccountID,LastMovementID,ref("NumberOfInstallments"))
+				set RetornoTaxaAtual2 = db.execute(queryTaxa)
+				taxaAtual= ""
+				taxaAtual = RetornoTaxaAtual2("taxaAtual")
+				PercentageDeducted = taxaAtual
+				' PercentageDeducted = getAccountData("PercentageDeducted")
 				DaysForCredit = getAccountData("DaysForCredit")
 				NumberOfInstallments = ccur(ref("NumberOfInstallments"))
 				c=0

@@ -290,7 +290,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
                     'modeloID': <%=req("m")%>,
                     'formID': FormID,
                 },
-                success: (data) => {
+                success:function(data) {
                     ultimo = atual;
                      var d = new Date();
                     $('.form-status-holder')

@@ -29,7 +29,7 @@ if session("Banco")="clinic5459" then
                 while not lics.eof
                     Servidor = lics("Servidor")
                     'if Servidor="localhost" then Servido="192.168.193.43" else Servidor="192.168.193."&Servidor end if
-                    ConnStringServ = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& Servidor &";Database=cliniccentral;uid=root;pwd=pipoca453;"
+                    ConnStringServ = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& Servidor &";Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
                     Set dbServ = Server.CreateObject("ADODB.Connection")
                     dbServ.Open ConnStringServ
 

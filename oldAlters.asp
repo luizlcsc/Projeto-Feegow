@@ -3,7 +3,7 @@
 <!--#include file="limpaMemo.asp"-->
 <%
 on error resume next
-roxostring = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic90;uid=root;pwd=pipoca453;"
+roxostring = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic90;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 Set roxo = Server.CreateObject("ADODB.Connection")
 roxo.Open roxostring
 

@@ -9,7 +9,7 @@ while not b.eof
     else
         Banco = b("Banco")
     end if
-    CliString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database="&Banco&";uid=root;pwd=pipoca453;"
+    CliString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database="&Banco&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
     Set Clidb = Server.CreateObject("ADODB.Connection")
     Clidb.Open CliString
 

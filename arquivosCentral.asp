@@ -3,7 +3,7 @@
 dim fs
 set fs=Server.CreateObject("Scripting.FileSystemObject")
 
-strPrinc = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=cliniccentral;uid=root;pwd=pipoca453;"
+strPrinc = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 Set db43 = Server.CreateObject("ADODB.Connection")
 db43.Open strPrinc
 
@@ -11,7 +11,7 @@ set lic = db43.execute("select id, Servidor from cliniccentral.licencas where Se
 while not lic.eof
     LicencaID = lic("id")
     sServidor = lic("Servidor")'depois tirar Servidor do Where acima
-    strBanco = "Driver={MySQL ODBC 5.3 ANSI Driver};Server="& sServidor &";Database=cliniccentral;uid=root;pwd=pipoca453;"
+    strBanco = "Driver={MySQL ODBC 5.3 ANSI Driver};Server="& sServidor &";Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
     Set db = Server.CreateObject("ADODB.Connection")
     db.Open strBanco
     'on error resume next

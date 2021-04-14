@@ -37,11 +37,11 @@ end if
 
 
 if session("MDatabase")<>"" and session("DDatabase")<>"" then
-	ConnModelo = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database="&session("MDatabase")&";uid=root;pwd=pipoca453;"
+	ConnModelo = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database="&session("MDatabase")&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 	Set Modelo = Server.CreateObject("ADODB.Connection")
 	Modelo.Open ConnModelo
 	
-	ConnDestino = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database="&session("DDatabase")&";uid=root;pwd=pipoca453;"
+	ConnDestino = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database="&session("DDatabase")&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 	Set Destino = Server.CreateObject("ADODB.Connection")
 	Destino.Open ConnDestino
 

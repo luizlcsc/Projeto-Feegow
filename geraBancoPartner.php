@@ -4,7 +4,7 @@
 
 
 
-$db = mysql_connect('localhost', 'root', 'pipoca453');
+$db = mysql_connect('localhost', getenv("FC_MYSQL_USER"), getenv("FC_MYSQL_PASSWORD"));
 mysql_select_db('clinic'.$_GET['BancoID']);
 
 

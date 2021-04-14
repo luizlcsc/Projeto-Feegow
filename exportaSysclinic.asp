@@ -6,15 +6,15 @@
 'server.ScriptTimeout = 100000
 
 Set origem = Server.CreateObject("ADODB.Connection")
-'origem.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=recreio_contatos;uid=root;pwd=pipoca453;"
-'origem.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=uroclin;uid=root;pwd=pipoca453;"
-origem.Open "DRIVER={SQL Server};SERVER=SILVIOPADRÃO\SQLEXPRESS;UID=sa;PWD=pipoca453;DATABASE=vertu"
+'origem.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=recreio_contatos;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
+'origem.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=uroclin;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
+origem.Open "DRIVER={SQL Server};SERVER=SILVIOPADRÃO\SQLEXPRESS;UID=sa;DATABASE=vertu;pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 
 
 
 
 Set destino = Server.CreateObject("ADODB.Connection")
-destino.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=vertu;uid=root;pwd=pipoca453;"
+destino.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=vertu;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 
 
 'set p = origem.execute("select * from sch_contact")

@@ -14,7 +14,7 @@ cl = 0
 set l = db.execute("select * from cliniccentral.licencas where Status='C'")
 
 while not l.eof
-    ConnStringCli = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& l("Servidor") &";Database=cliniccentral;uid=root;pwd=pipoca453;"
+    ConnStringCli = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& l("Servidor") &";Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
     Set dbCli = Server.CreateObject("ADODB.Connection")
     dbCli.Open ConnStringCli
 

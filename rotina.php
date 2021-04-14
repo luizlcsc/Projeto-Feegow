@@ -148,7 +148,7 @@ ini_set('display_errors', 1);
 
         private function con()
         {
-            $g_link = new mysqli('localhost', 'root', 'pipoca453', $this->banco);
+            $g_link = new mysqli('localhost', getenv("FC_MYSQL_USER"), getenv("FC_MYSQL_PASSWORD"), $this->banco);
             if ($g_link->connect_error) {
                 die('Erro de conexão (' . $g_link->connect_errno . ') '
                     . $g_link->connect_error);

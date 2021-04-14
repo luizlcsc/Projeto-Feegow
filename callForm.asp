@@ -298,7 +298,6 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
                         .css('color','black');
                 },
                 error: function (xhr, statustext, thrownError) {
-                    console.log([xhr, statustext, thrownError])
                     if(xhr.status !== 500){
                         $('.form-status-holder')
                             .html('formulario não pode ser salvo, verifique sua internet!')

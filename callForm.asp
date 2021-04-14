@@ -279,7 +279,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         if(atual!=ultimo){
 
             //desabilita feature
-            return;
+            // return;
             $.ajax({
                 url: domain+"log/saveFormLog",
                 method: 'POST',

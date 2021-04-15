@@ -828,6 +828,7 @@ select case lcase(req("P"))
             </li>
 		    <%
 		    end if
+            if aut("produtilizadosV")=1 then
             %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-produtos-utilizados" id="abaProdutdosUtilizados" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ProdutosUtilizados|');">
@@ -839,8 +840,8 @@ select case lcase(req("P"))
 
                 </a>
             </li>
-            <%
-
+            <% 
+            end if
             if recursoAdicional(20) = 4  then
 
                 set certiDidital = db.execute("SELECT * FROM cliniccentral.digitalcertificates where UsuarioID = "&session("User")&" and LicencaID = "&replace(session("Banco"), "clinic", "")&" and sysActive = 1")

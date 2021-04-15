@@ -464,7 +464,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                 case else
                                                     if Valor<>"" and Valor<>"<p><br></p>" then
                                                     if left(Valor, 5)="{\rtf" then
-                                                            call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
+                                                            'problema de conversao de RTF com problema critico
+                                                            'call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
 
                                                     end if
                                                     response.Write( Rotulo &"<br>"& Valor  &"<br>" )

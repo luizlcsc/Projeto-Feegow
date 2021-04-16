@@ -18,9 +18,11 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     if instr(Tipo, "|L|")>0 then
         sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive=1 OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
     end if
-
-	if instr(Tipo, "|Prescricao|")>0 then
-        sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', 'Prescrição', 'flask', 'warning', `Data`, Prescricao,s.id from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
+    
+    if aut("prescricoesV")>0 or session("Admin") = 1 then
+        if instr(Tipo, "|Prescricao|")>0 then
+            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', 'Prescrição', 'flask', 'warning', `Data`, Prescricao,s.id from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
+        end if
     end if
 
 
@@ -513,12 +515,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                         <%
                         response.Write("<small>" & ti("Conteudo") & "</small>")
                     case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
-                        urlbmj = getConfig("urlbmj")
-                        IF urlbmj <> "" THEN 
-                            response.Write("<small>" & replace(ti("Conteudo")&"","[linkbmj]",urlbmj) & "</small>")
-                        ELSE 
-                            response.Write("<small>" & ti("Conteudo") & "</small>")
-                        END IF
+                            urlbmj = getConfig("urlbmj")
+                            IF urlbmj <> "" THEN 
+                                response.Write("<small>" & replace(ti("Conteudo")&"","[linkbmj]",urlbmj) & "</small>")
+                            ELSE 
+                                response.Write("<small>" & ti("Conteudo") & "</small>")
+                            END IF
                     case "PedidosSADT"
                         set psadt = db.execute("select tproc.descricao from pedidossadtprocedimentos pps LEFT JOIN cliniccentral.procedimentos tproc ON tproc.tipoTabela=pps.TabelaID AND pps.CodigoProcedimento=tproc.Codigo where pps.PedidoID="& ti("id"))
                         while not psadt.eof

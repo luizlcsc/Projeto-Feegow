@@ -168,6 +168,6 @@ Hora = formatdatetime( lote("sysDate") ,3)
 	</ans:epilogo>
 </ans:mensagemTISS>
 <%
-' Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
+Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
 %>
 <!--#include file="disconnect.asp"-->

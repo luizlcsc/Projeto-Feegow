@@ -1159,7 +1159,7 @@ var SalvarEimprimir = false;
 
 $('#GuiaSADT').on('submit', function (event) {
   event.preventDefault();
-    let fieldRequireCount = 0;
+
     const form = $('#GuiaSADT');
     form.find('input[required], select[required]').each(function() {
         let fieldRequired = $(this);  
@@ -1171,9 +1171,7 @@ $('#GuiaSADT').on('submit', function (event) {
             fieldRequired.parent().addClass('has-success');
         }else{
             fieldRequired.parent().addClass('has-error');
-            fieldRequireCount = fieldRequireCount+1
         }
-        
     });
  
     var $plano = $("#PlanoID"),
@@ -1195,41 +1193,31 @@ $('#GuiaSADT').on('submit', function (event) {
         if(isSolicitar)
             isRedirect="S";
 
-        if (fieldRequireCount>0){
-            new PNotify({
-                title: ' ERRO!',
-                text: 'Preencha todos os campos obrigatórios',
-                type: 'danger',
-            });
-        }else {
-            $.ajax({
-                type:"POST",
-                url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=request.QueryString("I")%>"+"&close=<%=close%>&isRedirect="+isRedirect,
-                data:$("#GuiaSADT").serialize(),
-                success:function(data){
-                    var timeoutSave = 0;
-                    if(SalvarEimprimir){
-                        imprimirGuiaSADT();
-                        timeoutSave = 1000;
-                    }
-                    setTimeout(function() {
-                        let result = eval(data);
-
-                        if(isSolicitar && !data.includes("ERRO")){
-                            Autorizador.autorizaProcedimentos();
-                        }
-                        isSolicitar = false;
-                    }, timeoutSave);
-
-                },
-                error:function(data){
-                    showMessageDialog("Ocorreu um erro ao tentar salvar", "danger", "Erro!")
-                    //eval(data);
+        $.ajax({
+            type:"POST",
+            url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=request.QueryString("I")%>"+"&close=<%=close%>&isRedirect="+isRedirect,
+            data:$("#GuiaSADT").serialize(),
+            success:function(data){
+                var timeoutSave = 0;
+                if(SalvarEimprimir){
+                    imprimirGuiaSADT();
+                    timeoutSave = 1000;
                 }
-            });
-        }  
+                setTimeout(function() {
+                    let result = eval(data);
 
+                    if(isSolicitar && !data.includes("ERRO")){
+                        Autorizador.autorizaProcedimentos();
+                    }
+                    isSolicitar = false;
+                }, timeoutSave);
 
+            },
+            error:function(data){
+                showMessageDialog("Ocorreu um erro ao tentar salvar", "danger", "Erro!")
+                //eval(data);
+            }
+        });
     }, 120);
 	return false;
 })

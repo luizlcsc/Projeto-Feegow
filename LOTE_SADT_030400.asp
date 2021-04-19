@@ -468,9 +468,10 @@ prefixo = right(prefixo, 20)
 							CodigoNoFabricante = TirarAcento(desp("CodigoNoFabricante"))
 							AutorizacaoEmpresa = TirarAcento(desp("AutorizacaoEmpresa"))
 							
-							hash = hash & CD&Data&HoraInicio&HoraFim&TabelaProdutoID&CodigoProduto&Quantidade&UnidadeMedidaID&Fator&ValorUnitario&ValorTotal&Descricao&RegistroANVISA&CodigoNoFabricante&AutorizacaoEmpresa
+							hash = hash & sequencialItem&CD&Data&HoraInicio&HoraFim&TabelaProdutoID&CodigoProduto&Quantidade&UnidadeMedidaID&Fator&ValorUnitario&ValorTotal&Descricao&RegistroANVISA&CodigoNoFabricante&AutorizacaoEmpresa
 						%>
                         <ans:despesa>
+                            <ans:sequencialItem><%= sequencialItem %></ans:sequencialItem>
                             <ans:codigoDespesa><%= CD %></ans:codigoDespesa>
                             <ans:servicosExecutados>
                                 <%if Data<>"" then%><ans:dataExecucao><%= Data %></ans:dataExecucao><% End If %>
@@ -490,6 +491,7 @@ prefixo = right(prefixo, 20)
                             </ans:servicosExecutados>
                         </ans:despesa>
                         <%
+                        sequencialItem=sequencialItem+1
 						desp.movenext
 						wend
 						desp.close

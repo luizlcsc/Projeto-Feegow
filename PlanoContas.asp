@@ -401,13 +401,15 @@ end function
 		return dumped_text;
 	}
 	function editaPlanoDeContas(id, cd, value) {
-        var newValue = prompt("Digite o nome do plano de contas", value);
-       	if(newValue){
+		var newValue = prompt("Digite o nome do plano de contas", value);
+		if(newValue){
 			$('#list_'+id).attr('data-nome',newValue)
 			$('#list_'+id+' > div.dd-handle > span.nome').html(newValue)
-			// $.post("EdiCat.asp", {id: id, CD: cd, value: newValue}, function() {
-			// 	location.reload();
-			// });
+
+			
+			$.post("EdiCat.asp", {id: id, CD: cd, value: newValue}, function() {
+				location.reload();
+			});
 		}
 	}
 

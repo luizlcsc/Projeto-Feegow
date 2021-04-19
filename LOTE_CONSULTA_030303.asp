@@ -1,4 +1,4 @@
-<!--#include file="connect.asp"--><!--#include file="validar.asp"--><!--#include file="md5.asp"--><%
+<!--#include file="connect.asp"--><!--#include file="validar.asp"--><!--#include file="md5.asp"--><!--#include file="Classes/StringFormat.asp"--><%
 
 response.ContentType="text/XML"
 
@@ -7,7 +7,7 @@ set lote = db.execute("select * from tisslotes where id="&RLoteID)
 set guias = db.execute("select g.*, p.NomePaciente, c.TISS as ConselhoProfissional, e.codigo as CodigoUFConselho, pro.NomeProfissional, (CASE WHEN p.ConvenioID1=g.ConvenioID THEN p.Titular1 WHEN p.ConvenioID2=g.ConvenioID THEn p.Titular2 WHEN p.ConvenioID3=g.ConvenioID THEN p.Titular3 END) Titular from tissguiaconsulta as g left join pacientes as p on p.id=g.PacienteID left join conselhosprofissionais as c on c.id=g.Conselho left join estados as e on e.sigla like g.UFConselho left join profissionais as pro on pro.id=g.ProfissionalID where g.LoteID="&lote("id")&" order by NGuiaPrestador")
 if not guias.eof then
 	RegistroANS = trim(guias("RegistroANS"))
-	CodigoNaOperadora = trim(guias("CodigoNaOperadora"))
+	CodigoNaOperadora = trim(guias("CodigoNaOperadora")&"")
 end if
 NLote = lote("Lote")
 Data = mydatetiss(lote("sysDate"))
@@ -29,11 +29,11 @@ Hora = formatdatetime( lote("sysDate") ,3)
 		<ans:origem>
 			<ans:identificacaoPrestador>
 				<%
-                CodigoNaOperadora = trim(CodigoNaOperadora&" ")
-                CodigoNaOperadora = replace(replace(replace(replace(replace(CodigoNaOperadora, ".", ""), "-", ""), ",", ""), "_", ""), " ", "")
-                if CalculaCPF(CodigoNaOperadora)=true then
+				CodigoNaOperadora = RemoveCaracters(CodigoNaOperadora, ".-,_/ ")
+				CodigoOperadoraValida = CodigoNaOperadora
+                if CalculaCPF(CodigoOperadoraValida)=true then
                     tipoCodigoNaOperadora = "CPF"
-                elseif CalculaCNPJ(CodigoNaOperadora)=true then
+                elseif CalculaCNPJ(CodigoOperadoraValida)=true then
                     tipoCodigoNaOperadora = "CNPJ"
                 else
                     tipoCodigoNaOperadora = "codigoPrestadorNaOperadora"

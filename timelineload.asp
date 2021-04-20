@@ -7,10 +7,10 @@
 
 SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
-    SemLimit = "limit "&loadMore&","&MaximoLimit
+    SqlLimit = "limit "&loadMore&","&MaximoLimit
 
     if req("SemLimit") = "S" then
-        SemLimit = ""
+        SqlLimit = ""
     end if
 
     if ProfessionalID <>"" then
@@ -76,7 +76,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
     sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
-                ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SemLimit
+                ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
      'response.write(sql)
              set ti = db.execute( sql )
              while not ti.eof

@@ -7,6 +7,12 @@
 
 SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
+    SqlLimit = "limit "&loadMore&","&MaximoLimit
+
+    if req("SemLimit") = "S" then
+        SqlLimit = ""
+    end if
+
     if ProfessionalID <>"" then
         sqlProf = "left join sys_users as us on us.id = sysUser where us.idInTable = "&ProfessionalID
     end if 
@@ -66,18 +72,18 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     if instr(Tipo, "|Arquivos|")>0 then
         sqlArquivos = " union all (select 0, '0', Tipo, '0', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
-                 'c=0
+                 cont=0
 
     sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
-                ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC limit "&loadMore&","&MaximoLimit
+                ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
      'response.write(sql)
              set ti = db.execute( sql )
              while not ti.eof
                  Ano = year(ti("DataHora"))
                  if UltimoAno<>Ano then
                     abreAno = "          <div class=""timeline-divider mtn hidden-xs"">            <div class=""divider-label"">"&Ano&"</div>          </div>          <div class=""row"">          <div class=""col-sm-6 right-column"">"
-                    if c>0 then
+                    if cont>0 then
                         abreAno = "</div></div>" & abreAno
                     end if
                  else
@@ -87,7 +93,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
                 'response.write( abreAno )
 
-                'c = c + 1
+                cont = cont + 1
                 exibe = 1
 
 

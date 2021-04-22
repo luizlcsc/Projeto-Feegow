@@ -226,7 +226,7 @@ sqlConta = "select count(distinct p.id) total "&_
             "WHERE p.sysActive=1 "& sqlWhere & sqlRetorno & sqlAusencia & sqlCons & sqlEmail & sqlCadastro & sqlProcedimentos & sqlUnidade
 'response.Write(sqlAusencia)
 
-'response.write( sqlConta )
+response.write( sqlConta )
 
 set conta = db.execute(sqlConta)
 

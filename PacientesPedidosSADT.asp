@@ -383,7 +383,7 @@ function ListaTextosPedidosSADT(Filtro, X, Aplicar){
 
 $('#FiltroP').keypress(function(e){
     if ( e.which == 13 ){
-		ListaTextosPedidosSADT($('#FiltroP').val(), '', '');
+		ListaTextosPedidosSADT($('#FiltroP').html(), '', '');
 		return false;
 	}
 });

@@ -1491,7 +1491,7 @@ select case lcase(req("P"))
         <%
             end if
         end if
-    case "outrasconfiguracoes", "novasconfiguracoes", "faixaetaria"
+    case "outrasconfiguracoes", "novasconfiguracoes"
         %>
         <li class="sidebar-label pt20">Opções de Configurações</li>
         <li class="hidden">
@@ -1567,24 +1567,11 @@ select case lcase(req("P"))
             <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');" class="whats">
             <span class="fa fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
-        <% IF  aut("exames_laboratoriaisV")=1  THEN %>
+         <% IF  aut("exames_laboratoriaisV")=1  THEN %>
             <li>
               <a href="?P=CadastroExamesLab&Pers=1">
                     <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Cadastro de Exames (Lab)</span></a> 
     
-            </li>
-        <% END IF %>
-        <% IF  1=1 or aut("FaixaEtariaV")=1  THEN %>
-            <li>
-              <a href="?P=faixaetaria&Pers=1">
-                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Faixas Etárias</span></a> 
-    
-            </li>
-        <% END IF %>
-        <% IF  1=1 or aut("CadastroPontosCarteiraV")=1  THEN %>
-            <li>
-              <a href="?P=cadastropontoscarteira&Pers=1">
-                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Pontos por Carteira</span></a>     
             </li>
         <% END IF %>
 

@@ -58,9 +58,6 @@ if ConvenioID&""="0" then
 end if
 
 %>
-
-
-asdasdasd
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="confirmacao-modal">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">

@@ -34,9 +34,9 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
     if instr(Tipo, "|Diagnostico|")>0 then
         
-        sqlBmj = " (SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'""  target=""_blank""  class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_ 
+        sqlBmj = " IFNULL((SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'""  target=""_blank""  class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_ 
                  " FROM cliniccentral.cid10_bmj bmj" &_
-                 " WHERE bmj.cid10ID = cid.id) "
+                 " WHERE bmj.cid10ID = cid.id),'') "
 
         sqlDiagnostico = " union all (SELECT 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, "&_
                          "   CONCAT('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', "&sqlBmj&",''),'' "&_

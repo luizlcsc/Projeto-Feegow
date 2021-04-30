@@ -147,9 +147,9 @@ if aut(lcase(ref("resource"))&"A")=1 then
 
 
             sql = "SELECT * FROM ("&_
-            "select id, NomeProcedimento, coalesce(opcoesagenda,0) opcoesagenda from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" "&_
+            "select id, NomeProcedimento, coalesce(opcoesagenda,0) opcoesagenda from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos & sqlExibir &" "&_
             ") t UNION ALL ("&_
-            "select id, concat(NomeProcedimento, ' (sinônimo)'), coalesce(opcoesagenda,0) opcoesagenda from procedimentos where sysActive=1 and (NomeProcedimento not like '%"&ref("q")&"%' and Sinonimo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" ) order by if(OpcoesAgenda = 0, 1 , 0) desc, NomeProcedimento"
+            "select id, concat(NomeProcedimento, ' (sinônimo)'), coalesce(opcoesagenda,0) opcoesagenda from procedimentos where sysActive=1 and (NomeProcedimento not like '%"&ref("q")&"%' and Sinonimo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos & sqlExibir&" ) order by if(OpcoesAgenda = 0, 1 , 0) desc, NomeProcedimento"
 
             IF ModoFranquiaUnidade THEN
                 sql = "select id, NomeProcedimento, coalesce(opcoesagenda,0) opcoesagenda from procedimentos where id in (SELECT idOrigem FROM registros_importados_franquia WHERE tabela = 'procedimentos' AND unidade = "&session("UnidadeID")&") AND sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by if(OpcoesAgenda = 0, 1 , 0) desc, NomeProcedimento"
@@ -275,8 +275,8 @@ if aut(lcase(ref("resource"))&"A")=1 then
         sql = replace(sql, "[UNIDADES]", session("Unidades"))
         sql = replace(sql, "[TYPED]", Typed)
 
-        if sqlExibir<>"" then
-            sql = replace(sql, ") order ",sqlExibir&") order ")
+        if sqlExibir<>"" and (ProfissionalID = ""  and ProfissionalID = "0") then
+            sql = replace(sql, " order ",sqlExibir&" order ")
         end if
     end if
     if aut("|"&lcase(ref("resource"))&"I|") then

@@ -188,7 +188,7 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
                 %>
 
                 <div class="row">
-                    <div class="col-md-12 <%=hiddenTextArea%>"><br />
+                    <div class="col-md-12 sensitive-data <%=hiddenTextArea%>"><br />
                         <textarea id="pedido" name="pedido"><%=PedidoExame %></textarea>
                     </div>
                 </div>

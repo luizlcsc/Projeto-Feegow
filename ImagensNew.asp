@@ -370,7 +370,7 @@ end if
                                 </div>
 
                              </div>
-                             <div class="galery-img">
+                             <div class="galery-img sensitive-data">
                                 <${item.formato} href="${item.ArquivoLink}" target="_blank">
                                     <img
                                         src="${item.link}"

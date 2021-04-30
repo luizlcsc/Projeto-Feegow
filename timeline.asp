@@ -2,7 +2,7 @@
 <!--#include file="ProntCompartilhamento.asp"-->
 <%
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" then
-	on error resume next
+	'on error resume next
 end if
 
 OcultarBtn=req("OcultarBtn")

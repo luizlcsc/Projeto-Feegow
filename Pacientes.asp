@@ -154,6 +154,15 @@ if session("Admin")=0 then
 end if
 %>
 <style>
+<%
+if session("MasterPwd")&""="S" then
+    %>
+.sensitive-data{
+    filter: blur(6px);
+}
+    <%
+end if
+%>
 video {
 	width:100%;
 }

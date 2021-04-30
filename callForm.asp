@@ -35,7 +35,7 @@ if not getForm.eof then
         </div>
              <div class="alert alert-warning internetFail text-center" style="display:none">Sua internet está apresentando lentidão</div>
     <% end if %>
-<div class="panel-body p25" id="iProntCont">
+<div class="panel-body p25 sensitive-data" id="iProntCont">
     <span class="form-status-holder"></span>
     <br />
 

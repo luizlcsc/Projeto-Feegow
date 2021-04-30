@@ -2,7 +2,7 @@
 <!--#include file="planoLog.asp"-->
 <%
 response.Charset="utf-8"
-table = request.QueryString("R")
+table = req("R")
 itens = split(request.Form(), "&")
 Ordem = 0
 
@@ -19,7 +19,7 @@ for i=0 to ubound(itens)-1
 		spl3 = split(spl2(v),":")
 
 		campo = replace(spl3(0), "[", "")
-		valor = replace(spl3(1), "]", "")
+		valor = replace(replace(spl3(1), "]", ""),"'","\'")
 
 
 		select Case campo

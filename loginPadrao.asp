@@ -299,7 +299,7 @@ if not tryLogin.EOF then
 
         session("RazaoSocial") = RazaoSocial
 
-		if ref("password")=MasterPwd then
+		if permiteMasterLogin then
 			session("MasterPwd") = "S"
 		end if
 

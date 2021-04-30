@@ -5694,4 +5694,65 @@ function iconMethod(PaymentMethodID, PaymentMethod, CD ,origem)
         end if
     end if
 end function
+
+function verificaIntegracaoLaboratorial(tabela, id)
+    ' x -Não possui o serviço habilitado 
+    ' 0- Não disponibiliza a integração  (cinza)
+    ' 1- abre seleção de laboratórios  (vermelho)
+    ' 2- abre modal de impressão de etiquetas (verde)
+    
+    'Verifica se possui o servico adicional habilitado 
+    sql = "SELECT id FROM cliniccentral.clientes_servicosadicionais cs WHERE cs.LicencaID = '"&replace(session("Banco"),"clinic","")&"' AND  cs.ServicoID = 24 AND cs.`Status`=4"
+    set rs1 = db.execute(sql)
+    if not rs1.eof then
+        'Verifica se a Unidade Possui credencial cadastrada
+        sqlAutenticacao = "SELECT id FROM slabs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"'"
+        set rs2 = db.execute(sqlAutenticacao)
+        if not rs2.eof then
+            'Verifica se já existe integracao feita para a conta 
+            sqlTabela = "SELECT * FROM slabs_solicitacoes AS sls WHERE sls.tabelaid = '"&id&"' AND  sls.tabela ='"&tabela&"' AND sls.success = 'S' AND sls.statusid=1;"
+            set rs3 = db.execute(sqlTabela)
+            if not rs3.eof then
+                verificaIntegracaoLaboratorial = "2|"&rs3("id")
+            else
+                select case tabela
+                    ' Verifica se existem procedimentos possíveis de serem integrados na conta
+                    case "sys_financialinvoices"
+                        sqlTable = "SELECT COUNT(ii.id) "&_
+                                    " FROM itensinvoice ii "&_
+                                    " INNER JOIN labs_procedimentos_laboratorios lpl ON lpl.procedimentoID = ii.ItemID "&_
+                                    " INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_
+                                    " WHERE ii.invoiceid  = '"& id &"' "&_
+                                    " AND proc.IntegracaoPleres = 'S' "&_
+                                    " AND proc.sysActive = 1"
+                    case "tissguiasadt"
+                        sqlTable =  " SELECT  COUNT(tpg.id) qtd "&_
+                                    " FROM tissprocedimentossadt tpg "&_
+                                    " INNER JOIN labs_procedimentos_laboratorios lep ON lep.ProcedimentoID = tpg.procedimentoid "&_
+                                    " INNER JOIN procedimentos proc ON pro.id = tpg.procedimentoid "&_
+                                    " WHERE tpg.GuiaID = '"& id &"' "&_
+                                    " AND proc.IntegracaoPleres = 'S' "&_
+                                    " AND proc.sysActive = 1 " 
+                    case else
+                        sqlTable = ""
+                        exit function                
+                end select 
+                if sqlTable = "" then
+                    verificaIntegracaoLaboratorial = "0|Não foi possível determinar a tabela de origem da integração" 
+                else
+                    set rs4 = db.execute(sqlTable)
+                    if not rs4.eof then
+                        verificaIntegracaoLaboratorial = "1|0"
+                    else
+                        verificaIntegracaoLaboratorial = "0|Não existem procedimentos nesta conta habilitados para Integração laboratorial" 'Não existem procedimentos para integrar
+                    end if
+                end if
+            end if 
+        else
+            verificaIntegracaoLaboratorial = "0|Não existem credenciais cadastradas para integração Laboratorial" ' Não possui credenciais para integracao
+        end if
+    else    
+         verificaIntegracaoLaboratorial = "X|0" ' Não possui o serviço habilitado
+    end if
+end function 
 %>

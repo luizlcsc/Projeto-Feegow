@@ -398,6 +398,14 @@ function replicarRegistro(id,tabela){
     });
 }
 
+function abrirSelecaoLaboratorio(vartabela, varid){
+    openComponentsModal("labs-integration/solicitacao-lab-select", {tabela:vartabela, id: varid }, "Integração Laboratorial", false, false);
+}
+
+function abrirSolicitacao(varid){
+    openComponentsModal("labs-integration/modal-detalhes-solicitacao", {id: varid }, "Integração Laboratorial", false, false);
+}
+
 const uploadProfilePic = async ({userId, db, table, content, contentType, elem = false}) => {
     let response = false;
     let enpoint = domain + "file/perfil/uploadPerfilFile";

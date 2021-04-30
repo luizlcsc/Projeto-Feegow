@@ -206,12 +206,7 @@ function changeComponentsModalFooter(footer) {
     $componentsModalFooter.html(defaultComponentsModalFooter + footer);
 }
 
-function abrirSelecaoLaboratorio(invoiceId,itenscount){
-    openComponentsModal("labs-integration/solicitacao-lab-select", {tabela:'sys_financialinvoices', id: invoiceId }, "Integração Laboratorial", false, false)
-}
 
-function avisoLaboratoriosMultiplos(informacao) {
-    $('#modalAlertaMultiploText').html(informacao); 
-    $('#modalAlertaMultiplo').modal('toggle');
-}
+
+
 

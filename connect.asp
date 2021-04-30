@@ -3979,7 +3979,7 @@ private function statusPagto(AgendamentoID, PacienteID, Datas, rdValorPlano, Val
     '1 = ok
 
     splsDatas = split(Datas, ", ")
-    statusEnvolvidos = "2, 3, 4, 5, 12, 101, 102, 103, 104, 105, 106"
+    statusEnvolvidos = "2, 3, 4, 5, 101, 102, 103, 104, 105, 106"
     for ida=0 to ubound(splsDatas)
         sData = splsDatas(ida)
         if isdate(sData) and not isnull(sData) and PacienteID&""<>"" and isnumeric(PacienteID&"") then

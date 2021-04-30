@@ -1,11 +1,11 @@
 ﻿<!--#include file="connect.asp"-->
-
+<% IF getConfig("NovoFormatoDeTabelaDePreco") THEN %>
+    <!--#include file="TabelasPreco2.asp"-->
+<% ELSE  %>
 <%
 DT = req("DT")
 X = req("X")
- Atuacao = request.querystring("Atuar")
-
-
+Atuacao = request.querystring("Atuar")
 
 if DT<>"" then
     db.execute("insert into procedimentostabelas (Tipo, NomeTabela, Inicio, Fim, TabelasParticulares, Profissionais, Especialidades, Unidades, ConvenioID, sysUser, sysActive) select Tipo, concat(NomeTabela, ' (Cópia)'), Inicio, Fim, TabelasParticulares, Profissionais, Especialidades, Unidades, ConvenioID, "& session("User") &", 1 from procedimentostabelas where id="& DT)
@@ -227,3 +227,4 @@ end function
 
     }
 </script>
+<% END IF %>

@@ -750,6 +750,27 @@ $(document).ready(function(){
 	});
 });
 
+function validarConvenio() {
+	let convenio = $("#gConvenioID").val()
+    $.get('ValidaConvenio.asp?ConvenioID=' + convenio,
+        function(data) {
+            if (data == "1") { 
+                $("#salvar-guia").attr("disabled", true)
+            } else { 
+                $("#salvar-guia").attr("disabled", false) 
+        	}
+        }
+    );
+}
+
+$(document).ready(function() {
+	validarConvenio();
+})
+
+$("#gConvenioID").change(() => {
+    validarConvenio();
+})
+
 $("#GuiaConsulta").submit(function(){
     var $plano = $("#PlanoID"),
         planoId = $plano.val();

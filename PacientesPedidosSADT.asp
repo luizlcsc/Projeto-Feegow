@@ -206,9 +206,9 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                     </style>
                     <div class="panel-menu">
                         <div class="input-group">
-                            <input id="FiltroP" class="form-control input-sm refina" readonly onfocus="this.removeAttribute('readonly');" placeholder="Digite o código ou descrição..." type="text">
+                            <div id="FiltroP" contenteditable="true" class="form-control input-sm refina" readonly onfocus="this.removeAttribute('readonly');" placeholder="Digite o código ou descrição..." type="text"></div>
                             <span class="input-group-btn">
-                                <button class="btn btn-sm btn-default" onclick="ListaTextosPedidosSADT($('#FiltroP').val(), '', '')" type="button">
+                                <button class="btn btn-sm btn-default" onclick="ListaTextosPedidosSADT($('#FiltroP').html(), '', '')" type="button">
                                     <i class="fa fa-filter icon-filter bigger-110"></i>
                                     Buscar
                                 </button>
@@ -383,7 +383,7 @@ function ListaTextosPedidosSADT(Filtro, X, Aplicar){
 
 $('#FiltroP').keypress(function(e){
     if ( e.which == 13 ){
-		ListaTextosPedidosSADT($('#FiltroP').val(), '', '');
+		ListaTextosPedidosSADT($('#FiltroP').html(), '', '');
 		return false;
 	}
 });

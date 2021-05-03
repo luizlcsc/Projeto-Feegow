@@ -16,9 +16,7 @@ if instr(ref("Locais"), "UNIDADE_ID")>0 then
     UnidadesIN = replace(Unidades, "|", "'")
     sqlUnidadesHorarios = " AND l.UnidadeID IN("& UnidadesIN &") "
     joinLocaisUnidades = " LEFT JOIN locais l ON l.id=a.LocalID "
-else
-    sqlUnidadesHorarios = " AND l.UnidadeID IN("& session("UnidadeID") &") "
-    joinLocaisUnidades = " LEFT JOIN locais l ON l.id=a.LocalID "
+    whereLocaisUnidades = " AND l.UnidadeID IN("& UnidadesIN &") "
 end if
 '    response.write("{{"& sqlUnidadesHorarios &"}}")
 LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
@@ -83,7 +81,7 @@ end if
 
 
 Hora = cdate("00:00")
-sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentoPermitido& sqlEspecialidadePermitido & sqlConvenioPermitido&sqlUnidadesHorarios &" order by HoraDe"
+sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentoPermitido& sqlEspecialidadePermitido & sqlConvenioPermitido&" order by HoraDe"
 set Horarios = db.execute(sqlHorarios)
 if Horarios.EOF then
     sqlHorarios2 = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, Mensagem from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) "&sqlUnidadesHorarios & sqlProcedimentoPermitido& sqlEspecialidadePermitido&sqlConvenioPermitido &" order by ass.HoraDe"
@@ -384,7 +382,7 @@ set comps=db.execute("select assf.id garadefixa, assp.id garadeperiodo, loc.Unid
 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
 "LEFT JOIN assfixalocalxprofissional assf ON assf.ProfissionalID = a.ProfissionalID AND assf.LocalID = a.LocalID "&_
 "LEFT JOIN assperiodolocalxprofissional assp ON assp.ProfissionalID = a.ProfissionalID AND assp.LocalID = a.LocalID "&_
-"where a.ProfissionalID="&ProfissionalID&" and a.sysActive=1 and a.Data="&mydatenull(Data) & sqlUnidadesHorarios & sqlSomentestatus&" group by a.id order by Hora")
+"where a.ProfissionalID="&ProfissionalID&" and a.sysActive=1 and a.Data="&mydatenull(Data) & whereLocaisUnidades & sqlSomentestatus&" group by a.id order by Hora")
 
 while not comps.EOF
     HoraComp = HoraToID(comps("Hora"))

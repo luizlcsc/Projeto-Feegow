@@ -1330,13 +1330,16 @@ select case lcase(req("P"))
              <span class="fa fa-plus"></span> Agências Integradoras</a></li>
         <% end if %>
     <%
-    case "tabelasconvenios","tabelasportes"
+    case "tabelasconvenios","tabelasportes","tabelasatualizacao"
             %>
                 <li>
                     <a href="?P=tabelasconvenios&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Conv&ecirc;nio</span></a>
                 </li>
                  <li>
                     <a href="?P=tabelasportes&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
+                </li>
+                <li>
+                    <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar tabela mat / med</span></a>
                 </li>
             <%
     case "convenios"
@@ -1346,6 +1349,9 @@ select case lcase(req("P"))
                 </li>
                  <li>
                     <a href="?P=tabelasportes&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
+                </li>
+                <li>
+                    <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar tabela mat / med</span></a>
                 </li>
         <% end if
 

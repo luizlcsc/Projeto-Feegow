@@ -9,7 +9,7 @@ Ordem = 0
 
 for i=0 to ubound(itens)-1
 	Ordem = Ordem+1
-	spl2 = split(itens(i), ",")
+	spl2 = split(itens(i), ";")
 
 	Id = ""
 	Name=""

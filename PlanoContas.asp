@@ -341,7 +341,7 @@ end function
 				if(ordem == 'null'){
 					ordem = 0
 				}
-				data += '[id:'+id+',categoria:'+ordem+',nome:'+nome+',rateio:'+rateio+',posicao:'+posicao+']&'
+				data += '[id:'+id+';categoria:'+ordem+';nome:'+nome+';rateio:'+rateio+';posicao:'+posicao+']&'
 			})
 			console.log(data)
 

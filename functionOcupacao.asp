@@ -337,6 +337,9 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                 SomenteEspecialidades = SomenteEspecialidades&", "&ProcedimentoSomenteEspecialidades
                             end if
                         end if
+                        if SomenteEspecialidades="" AND refEspecialidade<>"" then
+                            SomenteEspecialidades = refEspecialidade
+                        end if
 
                         if SomenteEspecialidades<>""  then
                             spltEspecialidades = split(SomenteEspecialidades, ", ")

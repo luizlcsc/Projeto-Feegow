@@ -5637,7 +5637,21 @@ function dd(variable)
     description=""
     variableType = TypeName(variable)
 
-    if variableType="Recordset" then
+
+    if variableType="Variant()" then
+        description = description & "["
+        itemsInArray=0
+
+        for each x in variable
+            if itemsInArray>0 then
+                description = description&","
+            end if
+
+            description = description&""""&x&""""
+            itemsInArray=itemsInArray+1
+        next
+        description = description & "]"
+    elseif variableType="Recordset" then
         description = "["&chr(13)
         j = 0
         while not variable.eof

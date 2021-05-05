@@ -10,7 +10,7 @@
 call insertRedir(request.QueryString("P"), request.QueryString("I"))
 set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 close = req("close")
-
+idtissguia = req("I")
 MinimoDigitos = 0
 MaximoDigitos = 100
 
@@ -929,13 +929,46 @@ min-width: 150px;
 
 <div class="clearfix form-actions no-margin">
     <div class="btn-group">
-    <button class="btn btn-primary btn-md" id="btnSalvar" onclick="isSolicitar = false;" ><i class="fa fa-save"></i> Salvar</button>
+    <button class="btn btn-primary btn-md" id="btnSalvar" onclick="isSolicitar = false;" ><i class="fa fa-save"></i> Salvar </button>
       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
         <li><a href="javascript:SalvarEimprimir=true;$('#btnSalvar').click();"><i class="fa fa-print"></i> Salvar e imprimir</a></li>
       </ul>
+        <%
+        arrayintegracao = split(verificaIntegracaoLaboratorial("tissguiasadt", idtissguia),"|")
+        select case arrayintegracao(0)
+            case "0"
+                    %>
+                <div class="btn-group" style="margin-left:5px;">                            
+                    <button type="button" class="btn btn-secondary btn-md" id="btn-abrir-modal-lab<%=idtissguia%>" title="<%=arrayintegracao(1)%>">
+                        <i class="fa fa-flask"></i> Solicitar Exames
+                    </button>                           
+                </div>
+                <%
+            case "1"
+                %>
+                <div class="btn-group" style="margin-left:5px;">                            
+                    <button type="button" onclick="abrirSelecaoLaboratorio('tissguiasadt','<%=idtissguia%>')" class="btn btn-danger btn-md" id="btn-abrir-modal-lab<%=idtissguia%>" title="Abrir Integração Laboratorial">
+                        <i class="fa fa-flask"></i> Solicitar Exames
+                    </button>                           
+                </div>
+                <%
+            case "2"
+                %>
+                <div class="btn-group" style="margin-left:5px;">   
+                    <button type="button" onclick="abrirSolicitacao('<%=arrayintegracao(1)%>')" class="btn btn-success btn-md" id="btn-abrir-modal-lab<%=idtissguia%>" title="Ver detalhes da Integração" >
+                        <i class="fa fa-flask"></i> Solicitar Exames
+                    </button>
+                </div>
+                <%
+                case else
+                    %>
+                <div class="btn-group">   
+                </div>
+                <%
+        end select %>
     </div>
 
     <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="fa fa-history"></i></button>
@@ -1252,30 +1285,6 @@ function guiaTISSPrint() {
 function guiaPrint(){
 
 }
-/*
-	function itemSADT(T, I, II){
-	    $("#modal-table").modal('show');
-	    $.ajax({
-	        type:"POST",
-	        url:"modalSADT.asp?T="+T+"&I="+I+"&II="+II,
-	        data:$("#GuiaSADT").serialize(),
-	        success:function(data){
-	            $("#modal").html(data);
-	        }
-	    });
-	}
-
-function itemSADT(T, I, II){
-	$("#pagar").fadeIn();
-	$.ajax({
-	    type:"POST",
-	    url:"modalSADT.asp?T="+T+"&I="+I+"&II="+II,
-	    data:$("#GuiaSADT").serialize(),
-	    success:function(data){
-	        $("#pagar").html(data);
-	    }
-	});
-}*/
 
 function itemSADT(T, I, II, A){
     if(T==="Procedimentos"){

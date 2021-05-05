@@ -399,11 +399,11 @@ function replicarRegistro(id,tabela){
 }
 
 function abrirSelecaoLaboratorio(vartabela, varid){
-    openComponentsModal("labs-integration/solicitacao-lab-select", {tabela:vartabela, id: varid }, "Integração Laboratorial", false, false);
+    openComponentsModal("labs-integration/solicitacao-lab-select", {tabela:vartabela, id: varid },'',true,false,'md');
 }
 
 function abrirSolicitacao(varid){
-    openComponentsModal("labs-integration/modal-detalhes-solicitacao", {id: varid }, "Integração Laboratorial", false, false);
+    openComponentsModal("labs-integration/modal-detalhes-solicitacao", {id: varid },'',true,false,'md');
 }
 
 const uploadProfilePic = async ({userId, db, table, content, contentType, elem = false}) => {

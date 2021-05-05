@@ -251,13 +251,7 @@ end if
 
                     NomeProfissional = accountName(inv("AssocSADT"), inv("ProfissionalID"))
                     %>
-                        <tr class="ulinha lguia"<%
-                if ultimaDataFatura<>inv("DataFatura") then
-                    %> data-datafatura="<%=mydatejunto(inv("DataFatura")) %>" <%
-                    
-                end if
-
-                 %>>
+                        <tr class="ulinha lguia"<% if ultimaDataFatura<>inv("DataFatura") then %> data-datafatura="<%=mydatejunto(inv("DataFatura")) %>" <% end if %>>
 
                  <%                
                   evento = " onclick=modalSec('GuiaSPSADTPrint.asp?I="&inv("id")&"')"
@@ -275,7 +269,48 @@ end if
                             <td></td>
                             <td width="10%"><%=inv("NomeConvenio") %></td>
                             <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
-                            <td width="20%" class="text-right"><strong><% if getConfig("ExibirNumeroGuiaOperadora")  then %><strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> <% else %> <strong title="Numero da guia no PRESTADOR">Guia: </strong> <%=inv("NGuiaPrestador")&""%> <%end if%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a></td>
+                            <td width="20%" class="text-right">
+                                
+                                <%
+                                arrayintegracao = split(verificaIntegracaoLaboratorial("tissguiasadt", inv("id")),"|")
+                                select case arrayintegracao(0)
+                                    case "0"
+                                            %>
+                                        <div class="btn-group">                            
+                                            <button type="button" class="btn btn-secondary btn-xs" title="<%=arrayintegracao(1)%>">
+                                                <i class="fa fa-flask"></i>
+                                            </button>                           
+                                        </div>
+                                        <%
+                                    case "1"
+                                        %>
+                                        <div class="btn-group">                            
+                                            <button type="button" onclick="abrirSelecaoLaboratorio('tissguiasadt','<%=inv("id")%>')" class="btn btn-danger btn-xs" title="Abrir Integração Laboratorial">
+                                                <i class="fa fa-flask"></i>
+                                            </button>                           
+                                        </div>
+                                        <%
+                                    case "2"
+                                        %>
+                                        <div class="btn-group">   
+                                            <button type="button" onclick="abrirSolicitacao('<%=arrayintegracao(1)%>')" class="btn btn-success btn-xs" id="btn-abrir-modal-matrix<%=inv("id")%>" title="Ver detalhes da Integração">
+                                                <i class="fa fa-flask"></i>
+                                            </button>
+                                        </div>
+                                        <%
+                                        case else
+                                            %>
+                                        <div class="btn-group">   
+                                        </div>
+                                        <%
+                                end select  
+                                %>
+                                <% if getConfig("ExibirNumeroGuiaOperadora")  then %>
+                                    <strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> 
+                                <% else %> 
+                                    <strong title="Numero da guia no PRESTADOR">Guia: </strong> <%=inv("NGuiaPrestador")&""%> 
+                                <%end if%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a>
+                            </td>
                             <td><%= retornastatusguia(inv("GuiaStatus")) %></td>
                         </tr>
                     <%

@@ -5718,7 +5718,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
                 select case tabela
                     ' Verifica se existem procedimentos possíveis de serem integrados na conta
                     case "sys_financialinvoices"
-                        sqlTable = "SELECT COUNT(ii.id) "&_
+                        sqlTable = "SELECT ii.id "&_
                                     " FROM itensinvoice ii "&_
                                     " INNER JOIN labs_procedimentos_laboratorios lpl ON lpl.procedimentoID = ii.ItemID "&_
                                     " INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_
@@ -5726,10 +5726,10 @@ function verificaIntegracaoLaboratorial(tabela, id)
                                     " AND proc.IntegracaoPleres = 'S' "&_
                                     " AND proc.sysActive = 1"
                     case "tissguiasadt"
-                        sqlTable =  " SELECT  COUNT(tpg.id) qtd "&_
+                        sqlTable =  " SELECT tpg.id qtd "&_
                                     " FROM tissprocedimentossadt tpg "&_
                                     " INNER JOIN labs_procedimentos_laboratorios lep ON lep.ProcedimentoID = tpg.procedimentoid "&_
-                                    " INNER JOIN procedimentos proc ON pro.id = tpg.procedimentoid "&_
+                                    " INNER JOIN procedimentos proc ON proc.id = tpg.procedimentoid "&_
                                     " WHERE tpg.GuiaID = '"& id &"' "&_
                                     " AND proc.IntegracaoPleres = 'S' "&_
                                     " AND proc.sysActive = 1 " 
@@ -5741,6 +5741,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
                     verificaIntegracaoLaboratorial = "0|Não foi possível determinar a tabela de origem da integração" 
                 else
                     set rs4 = db.execute(sqlTable)
+                    'response.write (sqlTable)
                     if not rs4.eof then
                         verificaIntegracaoLaboratorial = "1|0"
                     else

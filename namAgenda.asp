@@ -16,10 +16,14 @@ if instr(ref("Locais"), "UNIDADE_ID")>0 then
     UnidadesIN = replace(Unidades, "|", "'")
     sqlUnidadesHorarios = " AND l.UnidadeID IN("& UnidadesIN &") "
     joinLocaisUnidades = " LEFT JOIN locais l ON l.id=a.LocalID "
+    
+    whereLocaisUnidades = " AND l.UnidadeID IN("& UnidadesIN &") "
+
 else
-    sqlUnidadesHorarios = " AND l.UnidadeID IN("& session("UnidadeID") &") "
-    joinLocaisUnidades = " LEFT JOIN locais l ON l.id=a.LocalID "
+    'sqlUnidadesHorarios = " AND l.UnidadeID IN("& session("UnidadeID") &") "
+    'joinLocaisUnidades = " LEFT JOIN locais l ON l.id=a.LocalID "
 end if
+
 '    response.write("{{"& sqlUnidadesHorarios &"}}")
 LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 
@@ -384,7 +388,7 @@ set comps=db.execute("select assf.id garadefixa, assp.id garadeperiodo, loc.Unid
 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
 "LEFT JOIN assfixalocalxprofissional assf ON assf.ProfissionalID = a.ProfissionalID AND assf.LocalID = a.LocalID "&_
 "LEFT JOIN assperiodolocalxprofissional assp ON assp.ProfissionalID = a.ProfissionalID AND assp.LocalID = a.LocalID "&_
-"where a.ProfissionalID="&ProfissionalID&" and a.sysActive=1 and a.Data="&mydatenull(Data) & sqlUnidadesHorarios & sqlSomentestatus&" group by a.id order by Hora")
+"where a.ProfissionalID="&ProfissionalID&" and a.sysActive=1 and a.Data="&mydatenull(Data) & whereLocaisUnidades & sqlSomentestatus&" group by a.id order by Hora")
 
 while not comps.EOF
     HoraComp = HoraToID(comps("Hora"))

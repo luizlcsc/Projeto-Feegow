@@ -493,7 +493,15 @@ end if
 
 	<tr>
     <td><table width="100%"><tr>
-	<td width="35%"><%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 12, NumeroCarteira, " lt ", "", " required") %></td>
+	<td width="35%">
+	    <%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 12, NumeroCarteira, " lt ", "", " required") %>
+	    <div class="col-md-12 pt5">
+	        <div class="form-group has-error" id="NumeroCarteiraContent" style="display: none;position:absolute;width: 80%;">
+
+	            <input id="NumeroCarteiraValidacao" class=" form-control input-sm" placeholder="Digite novamente  o  n&deg; da carteira...">
+            </div>
+        </div>
+	    </td>
 	<td width="35%">
 	<table width = "100%">
 		<tr>
@@ -742,6 +750,27 @@ $(document).ready(function(){
 	});
 });
 
+function validarConvenio() {
+	let convenio = $("#gConvenioID").val()
+    $.get('ValidaConvenio.asp?ConvenioID=' + convenio,
+        function(data) {
+            if (data == "1") { 
+                $("#salvar-guia").attr("disabled", true)
+            } else { 
+                $("#salvar-guia").attr("disabled", false) 
+        	}
+        }
+    );
+}
+
+$(document).ready(function() {
+	validarConvenio();
+})
+
+$("#gConvenioID").change(() => {
+    validarConvenio();
+})
+
 $("#GuiaConsulta").submit(function(){
     var $plano = $("#PlanoID"),
         planoId = $plano.val();
@@ -749,6 +778,12 @@ $("#GuiaConsulta").submit(function(){
     if(planoId=='0' && $plano.attr("required") === "required"){
         showMessageDialog("Preencha o plano", "danger");
         return false;
+    }
+
+    if($("#NumeroCarteira").attr("data-status")==="INVALID"){
+         $("#NumeroCarteiraValidacao").focus();
+         showMessageDialog("Valide a matrícula digitada", "danger");
+         return false;
     }
 
 	$.ajax({
@@ -879,6 +914,37 @@ function repasses(T, I){
         $("#modal").html(data);
     });
 }
+
+<%
+if getConfig("ExigirDuplaChecagemMatriculaConvenio") then
+%>
+$(document).ready(function() {
+    const $numeroCarteira = $("#NumeroCarteira");
+    const $numeroCarteiraContent = $("#NumeroCarteiraContent");
+    const $numeroCarteiraValidacao = $("#NumeroCarteiraValidacao");
+
+    $numeroCarteira.change(function() {
+        $numeroCarteira.attr("data-status", "INVALID");
+
+        $numeroCarteiraContent.fadeIn(function() {
+            $numeroCarteiraValidacao.val("").focus();
+        });
+    });
+    $numeroCarteiraValidacao.keyup(function() {
+        if($(this).val() === $("#NumeroCarteira").val()){
+            $numeroCarteira.attr("data-status", "VALID");
+            $numeroCarteiraContent.fadeOut();
+
+            showMessageDialog("Matricula validada com sucesso.", "success");
+        }
+    });
+
+     const $numeroCarteiraValidacaoJs = document.getElementById('NumeroCarteiraValidacao');
+     $numeroCarteiraValidacaoJs.onpaste = e => e.preventDefault();
+});
+<%
+end if
+%>
 
 <%
 if drCD<>"" then

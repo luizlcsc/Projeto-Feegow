@@ -88,8 +88,12 @@ if I="N" then
     'inclusão do atendimentoID se houver atendimento em curso
     'verifica se tem atendimento aberto
     set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&PacienteID&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
-    if atendimentoReg.EOF  then
-        db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", 1, "& treatvalzero(Prior) &")")
+     if atendimentoReg.EOF  then
+        if getConfig("AutoSaveForms") = 1 then 'Nao permite salvar automaticamente
+         db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &")")
+        else
+         db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", 1, "& treatvalzero(Prior) &")")
+        end if
     else
         'salva com id do atendimento
          db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior, AtendimentoID) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &", "&atendimentoReg("id")&")")
@@ -100,7 +104,7 @@ if I="N" then
     db_execute("insert into `_"&ModeloID&"` (id, PacienteID, sysUser) values ("&I&", "&PacienteID&", "&session("User")&")")
 end if
 
-set pcampos = db.execute("select id, TipoCampoID from buicamposforms where FormID="&ModeloID)
+set pcampos = db.execute("select id, TipoCampoID, enviardadoscid from buicamposforms where FormID="&ModeloID)
 while not pcampos.eof
     select case pcampos("TipoCampoID")
         case 1, 2, 4, 5, 6, 8,3,16
@@ -112,7 +116,11 @@ while not pcampos.eof
                 'O SEGUNDO PARAMETRO EH UM CARACTER FANTASMA . NAO REMOVER A LINHA DE BAIXO !!!!!
                 inputValor = replace(inputValor, "​", "")
                 sqlUp = sqlUp & ", `"& pcampos("id") &"`='"& inputValor &"'"
-
+                if pcampos("TipoCampoID")  = 16 and  pcampos("enviardadoscid") = 1 then 
+                    sqlIncluirCid = "INSERT INTO pacientesdiagnosticos ( PacienteID, CidID, Descricao, DataHora, sysUser, sysActive,  AtendimentoID) "&_
+                                    " VALUES ("&PacienteID&", "&inputValor&", '', NOW(), "&session("User")&", 1, null)"
+                    db.execute( sqlIncluirCid )
+                end if 
             end if
         case 9
             if req("auto")<>"1" then
@@ -148,7 +156,19 @@ while not pcampos.eof
                             strInValLinha = TagsConverte(strInValLinha,convTags_itens,"")
                             sqlIn = "insert into buitabelasvalores (CampoID, FormPreenchidoID "& strInLinha &") values ("& pcampos("id") &", "& I & strInValLinha &")"
                             'response.Write( sqlIn )
+
                             db.execute( sqlIn )
+                            rowTableId = getLastAdded("buitabelasvalores")
+
+                            coluna=0
+                            while coluna<colunas
+                                coluna = coluna +1
+                                    
+                                %>
+                                $("#<%=pcampos("id")%>_<%=coluna%>_<%=linha%>").attr("name","<%=pcampos("id")%>_<%=coluna%>_<%=rowTableId%>");
+                                <%
+                            wend
+
                         else
                             
                             strUp = TagsConverte(strUp,convTags_itens,"")

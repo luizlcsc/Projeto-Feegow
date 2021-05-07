@@ -26,7 +26,7 @@ if req("X")<>"" then
     end if
     if req("Tipo")="|Diagnostico|" then
         'db_execute("delete from pacientespedidos where id="& req("X"))
-        db_execute("update pacientesdiag set sysActive=-1 where id="& req("X"))
+        db_execute("update pacientesdiagnosticos set sysActive=-1 where id="& req("X"))
     end if
     if req("Tipo")="|Protocolos|" then
         'db_execute("update pacientesdiag set sysActive=-1 where id="& req("X"))
@@ -39,6 +39,9 @@ if req("X")<>"" then
     end if
     if req("Tipo")="|Protocolos|" then
         db_execute("update pacientesprotocolos set sysActive=-1 where id="& req("X"))
+    end if
+    if req("Tipo")="|Tarefas|" then
+        db_execute("delete from tarefasmsgs where id="& req("X"))
     end if
 end if
 
@@ -420,7 +423,7 @@ select case Tipo
         });
     });
 
-
+ 
 
 </script>
 <%
@@ -681,7 +684,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                     <%
                     if IntegracaoUnimedLondrina=4 or session("Banco")="clinic100000" then
                     %>
-                        <div class="col-md-offset-7 col-md-2">
+                        <div class="col-md-offset-6 col-md-3">
                             <button type="button" class="btn btn-system" onclick="importarDadosUnimed()">
                                 <i class="fa fa-download"></i> Importar Exames - Unimed
                             </button>
@@ -810,8 +813,8 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                 nomeImagem: id,
                 urlImagem: src
             },
-            false,
-            true,
+            false, 
+            true, 
             function(){
                 let dataImage = imageEditor.toDataURL();
 
@@ -859,7 +862,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 <script type="text/javascript" src="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
 <script type="text/javascript" src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
-
+      
 
         <%
     end if
@@ -895,7 +898,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
         <%
         end if
 end select
-
+    
 %>
 
 
@@ -931,16 +934,18 @@ end select
         <div id="timeline" class="timeline-single mt30 ">
             <!--#include file="timelineload.asp"-->
         </div>
-        <div class="load-wrapp col-xs-6 col-xs-offset-6 ">
-            <div class="load-3">
-                <div class="line"></div>
-                <div class="line"></div>
-                <div class="line"></div>
+        <%if req("SemLimit") <> "S" then%>
+            <div class="load-wrapp col-xs-6 col-xs-offset-6 ">
+                <div class="load-3">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
             </div>
-        </div>
-    </div>
+        <%end if%>
+    </div>  
 </div>
-
+ 
 
 </div>
 

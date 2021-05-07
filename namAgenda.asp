@@ -16,7 +16,9 @@ if instr(ref("Locais"), "UNIDADE_ID")>0 then
     UnidadesIN = replace(Unidades, "|", "'")
     sqlUnidadesHorarios = " AND l.UnidadeID IN("& UnidadesIN &") "
     joinLocaisUnidades = " LEFT JOIN locais l ON l.id=a.LocalID "
-    whereLocaisUnidades = " AND l.UnidadeID IN("& UnidadesIN &") "
+else
+    sqlUnidadesHorarios = " AND l.UnidadeID IN("& session("UnidadeID") &") "
+    joinLocaisUnidades = " LEFT JOIN locais l ON l.id=a.LocalID "
 end if
 '    response.write("{{"& sqlUnidadesHorarios &"}}")
 LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
@@ -81,7 +83,7 @@ end if
 
 
 Hora = cdate("00:00")
-sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentoPermitido& sqlEspecialidadePermitido & sqlConvenioPermitido&" order by HoraDe"
+sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentoPermitido& sqlEspecialidadePermitido & sqlConvenioPermitido&sqlUnidadesHorarios &" order by HoraDe"
 set Horarios = db.execute(sqlHorarios)
 if Horarios.EOF then
     sqlHorarios2 = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, Mensagem from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) "&sqlUnidadesHorarios & sqlProcedimentoPermitido& sqlEspecialidadePermitido&sqlConvenioPermitido &" order by ass.HoraDe"
@@ -375,12 +377,14 @@ if somenteStatus&"" <> "" then
 	sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
 end if
 
-set comps=db.execute("select loc.UnidadeID, a.id, a.Data, a.Hora,coalesce(a.LocalID,0) AS LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, p.corIdentificacao, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento from agendamentos a "&_
+set comps=db.execute("select assf.id garadefixa, assp.id garadeperiodo, loc.UnidadeID, a.id, a.Data, a.Hora,coalesce(a.LocalID,0) AS LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, p.corIdentificacao, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento, a.Retorno from agendamentos a "&_
 "left join pacientes p on p.id=a.PacienteID " & joinLocaisUnidades &_ 
 "left join profissionais pro on pro.id=a.ProfissionalID "&_ 
 "left join locais loc on loc.id=a.LocalID "&_
 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
-"where a.ProfissionalID="&ProfissionalID&" and a.sysActive=1 and a.Data="&mydatenull(Data) & whereLocaisUnidades & sqlSomentestatus&"order by Hora")
+"LEFT JOIN assfixalocalxprofissional assf ON assf.ProfissionalID = a.ProfissionalID AND assf.LocalID = a.LocalID "&_
+"LEFT JOIN assperiodolocalxprofissional assp ON assp.ProfissionalID = a.ProfissionalID AND assp.LocalID = a.LocalID "&_
+"where a.ProfissionalID="&ProfissionalID&" and a.sysActive=1 and a.Data="&mydatenull(Data) & sqlUnidadesHorarios & sqlSomentestatus&" group by a.id order by Hora")
 
 while not comps.EOF
     HoraComp = HoraToID(comps("Hora"))
@@ -451,12 +455,23 @@ while not comps.EOF
 
 	'<-hora final
 
+    if comps("garadeperiodo")&"" <> "" then
+        GradeID = comps("garadeperiodo")
+    else
+        GradeID = comps("garadefixa")
+    end if
+
     if session("HVazios")="" then
 		Conteudo = "<tr style=\'background-color:"&CorProcedimento&"!important\' data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'\',\'"&GradeID&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" "&FirstTdBgColor&" ><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
 	    if comps("Encaixe")=1 then
 		    Conteudo = Conteudo & "<span class=""label label-alert label-sm arrowed-in arrowed-in-right"">Enc</span>"
 	    end if
-    	Conteudo = Conteudo & "<span class=""nomePac"">"& fix_string_chars_full(comps("NomePaciente")) & "</span>  <span class=""pull-right"">"& sinalAgenda(FormaPagto) & "</span> </td></tr>"
+        
+        iconRetorno = ""
+        if comps("Retorno") then
+            iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""pull-right fa fa-undo text-warning pt10""></i>"
+        end if
+    	Conteudo = Conteudo & "<span class=""nomePac"">"& fix_string_chars_full(comps("NomePaciente")) & "</span>  <span class=""pull-right"">"& sinalAgenda(FormaPagto) & "</span> "&iconRetorno&" </td></tr>"
     else
         Conteudo = ""
     end if

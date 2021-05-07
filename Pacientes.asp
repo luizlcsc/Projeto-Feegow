@@ -166,6 +166,15 @@ if session("Admin")=0 then
 end if
 %>
 <style>
+<%
+if session("MasterPwd")&""="S" then
+    %>
+.sensitive-data{
+    filter: blur(6px);
+}
+    <%
+end if
+%>
 video {
 	width:100%;
 }
@@ -580,7 +589,10 @@ $(".tab").click(function(){
 
 $(".menu-aba-pacientes-dados-principais" ).click(function() {
   	$("#pacientesDadosComplementares").show();
-});	
+});
+$("#tabExtrato").click(function() {
+  	$("#pacientesDadosComplementares").hide();
+});
 
 function pront(U){
 	$("#pacientesDadosComplementares").hide();

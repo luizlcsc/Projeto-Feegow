@@ -160,7 +160,7 @@ var itensSelecionados=itensDefault;
 
 //$(buscaValor).keyup(function() {
 $(buscaValor).ready(function() {
-  
+
   if (buscaValor.val()==''){
     $.post(
       'quickField_multipleModalBusca.asp?<%="I="&req("I")&"&tipo="&tipo%>',
@@ -180,17 +180,17 @@ $(buscaValor).ready(function() {
       clearTimeout(valueClearKeyUp);
 
    valueClearKeyUp  = setTimeout(() => {
-    $.post(
+         $.post(
               'quickField_multipleModalBusca.asp?<%="I="&req("I")&"&tipo="&tipo%>&busca='+$(buscaValor).val(),
               {v:'<%=checksID%>'},
-      function(resultado){
-      $("#resultado").html(resultado);
+              function(resultado){
+                $("#resultado").html(resultado);
                 itensSelecionados.forEach((item) =>{
                     let valor = item.replace(/\|/g, '')
                     $("[name='itemBusca[]'][value='"+valor+"']").prop("checked",true);
                 })
-    }
-  );
+              }
+          );
     },1000)
 
   });
@@ -203,7 +203,7 @@ function preencheArrayItensSelecionados(checkbox) {
   var $check = $(checkbox);
   var isSelecionado = $check.prop("checked");
   var valor = $check.val();
-  
+
   $("[name='itemBusca[]'][value='"+valor+"']").prop("checked",isSelecionado);
 
   if(isSelecionado){
@@ -216,7 +216,7 @@ function preencheArrayItensSelecionados(checkbox) {
     var removeItem = "|"+valor+"|";
     itensSelecionados.splice(itensSelecionados.indexOf(removeItem),1 );
   }
-  }
+}
 
 
 //PREPARA ITENS PARA SALVAR

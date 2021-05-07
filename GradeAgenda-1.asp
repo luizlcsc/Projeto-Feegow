@@ -94,7 +94,6 @@ if not prof.eof then
         </script>
         <%
     end if
-
 	Cor = prof("Cor")
 	Ativo = prof("Ativo")
 	NomeProfissional = prof("NomeProfissional")
@@ -281,11 +280,9 @@ end if
         <% end if %>
     }
     crumbAgenda();
-
     $("#select-tipo-agenda").change(function(){
         location.href='./?P='+$(this).val()+'&Pers=1';
     });
-
 </script>
 
 <table class="table table-striped table-hover table-condensed table-agenda">
@@ -297,44 +294,34 @@ end if
             sqlAssfixaperiodo = "select ass.*, l.NomeLocal, '' Cor, '0' TipoGrade, l.UnidadeID, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' as CorOriginal from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID& sqlProcedimentoPermitido & sqlEspecialidadePermitido & sqlConvenioPermitido&"  and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe"
             'response.write sqlAssfixaperiodo&"<br>"
             set Horarios = db.execute(sqlAssfixaperiodo)
-
             if Horarios.EOF then
-
                 sqlAssfixa = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, ass.Mensagem, ass.Cor as Cor, profissionais.cor as CorOriginal from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID left join profissionais on profissionais.id = ass.ProfissionalID where ass.ProfissionalID="&ProfissionalID& sqlProcedimentoPermitido & sqlConvenioPermitido & sqlEspecialidadePermitido &" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe"
-
                 set Horarios = db.execute(sqlAssfixa)
             end if
-
             if Horarios.eof then
                 %>
                 <tr><td class="text-center" colspan="6"><small>Não há grade configurada para este dia da semana.</small></td></tr>
                 <%
             end if
             while not Horarios.EOF
-
                 MostraGrade=True
                 UnidadeID=Horarios("UnidadeID")
-
                 if UnidadeID&"" <> "" and session("admin")=0 and session("Partner")="" then
                     if NaoExibirOutrasAgendas = 1 then
                         if session("UnidadeID")<>UnidadeID then
                             MostraGrade=False
                         end if
                     end if
-
                     if instr(session("Unidades"),"|"&UnidadeID&"|")=0 then
                         MostraGrade=False
                     end if
                 end if
-
                 if Horarios("GradePadrao")=1 then
                     FrequenciaSemanas = Horarios("FrequenciaSemanas")
                     InicioVigencia = Horarios("InicioVigencia")
-
                     if FrequenciaSemanas>1 then
                         NumeroDeSemanaPassado = datediff("w",InicioVigencia,Data)
                         RestoDivisaoNumeroSemana = NumeroDeSemanaPassado mod FrequenciaSemanas
-
                         if RestoDivisaoNumeroSemana>0 then
                             MostraGrade=False
                         end if
@@ -343,7 +330,6 @@ end if
                 if MostraGrade then
                 LocalID = Horarios("LocalID")
                 Procedimentos = Horarios("Procedimentos")&""
-
                 Cor = Horarios("CorOriginal")
                 if Horarios("Cor")&""<>"" then
                     Cor = Horarios("Cor")
@@ -359,34 +345,26 @@ end if
                     </tr>
                     <%
                     GradeID=Horarios("id")
-
                     if Horarios("TipoGrade")=0 then
                         UnidadeID=Horarios("UnidadeID")
-
                         if UnidadeID&"" <> "" and session("Partner")="" then
                             sqlUnidadesBloqueio = sqlUnidadesBloqueio&" OR c.Unidades LIKE '%|"&UnidadeID&"|%'"
                         end if
-
                         if Horarios("GradePadrao")="0" then
                             GradeID=GradeID*-1
                         end if
-
                         Intervalo = Horarios("Intervalo")
                         if isnull(Intervalo) then
                             Intervalo = 30
                         end if
                         HoraDe = cdate(Horarios("HoraDe"))
-
                         horarioAFix = (formatdatetime(Horarios("HoraA"), 4))
                         ultimoValorMinuto = Mid(horarioAFix,Len(horarioAFix)-0,1)
-
                         HoraA = cdate(Horarios("HoraA"))
                         if ultimoValorMinuto <> "9" then
                             HoraA = cdate(dateAdd("n", 1, Horarios("HoraA")))
                         end if
-
                         Hora = HoraDe
-
                         Bloqueia = ""
                         if Procedimentos<>"" and session("RemSol")<>"" then
                             sqlProcedimentoBloqueado = "select TipoCompromissoID from agendamentos where id="& session("RemSol")
@@ -397,8 +375,6 @@ end if
                                 end if
                             end if
                         end if
-
-
                         while Hora<=HoraA
                             HoraID = formatdatetime(Hora, 4)
                             HoraID = replace(HoraID, ":", "")
@@ -454,7 +430,6 @@ end if
                                     nUsuAb = " outro usuário"
                                 end if
                                 txtAB = "<em>Este horário está sendo utilizado por "& nUsuAb &"."'"& nameInTable(vcaAB("id")) &".</em>"
-
                             %>
                             <tr class="alert l l<%= LocalID %> vazio" data-hora="<%=formatdatetime(Hora, 4)%>" data-horaid="<%= horaid %>" id="<%=HoraID%>">
                                 <td width="1%"></td>
@@ -522,7 +497,6 @@ end if
                                     </tr>
                                     <%
                                     else
-
                                     %>
                                     <tr onclick="abreAgenda('<%= HoraID %>', 0, '<%=Data%>', <%=LocalID%>, <%=ProfissionalID%>, '<%=GradeID%>')" data-grade="<%=GradeID%>" class="l l<%= LocalID %> vazio" data-HoraID="<%= HoraID %>" data-hora="<%=formatdatetime(HoraPers, 4)%>" id="<%=HoraID%>">
                                         <td width="1%"></td>
@@ -551,16 +525,13 @@ end if
 </table>
                 <script>
                 $("#AbrirEncaixe").attr("disabled", <% if Ativo<>"on" then %>true<%else %>false<% end if%>);
-
                 <%
                 somenteStatus = NaoExibirNaAgendaOsStatus
                 if somenteStatus&"" <> "" then
                     sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
                 end if
-
                 procedimentosQuery = " (select group_concat(procedimentos.NomeProcedimento) from agendamentosprocedimentos left join procedimentos on procedimentos.id = agendamentosprocedimentos.TipoCompromissoID where agendamentosprocedimentos.AgendamentoID = a.id) as procedimento1, (select group_concat(procedimentos.NomeProcedimento) from agendamentos left join  procedimentos on procedimentos.id = agendamentos.TipoCompromissoID where agendamentos.id = a.id) as procedimento2 "
-
-                compsSql = "select *, concat(procedimento1, ', ', procedimento2) as ProcedimentosList, k.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = k.id) as ValorPlano from (select a.id, "& procedimentosQuery &", a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo, a.FormaPagto, a.Notas, p.Nascimento, p.NomePaciente, p.IdImportado,a.PacienteID, p.Tel1, p.Cel1, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, proc.NomeProcedimento,proc.Cor, s.StaConsulta, a.rdValorPlano, a.ValorPlano,a.Procedimentos, a.Primeira, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, p.CorIdentificacao from agendamentos a "&_
+                compsSql = "select *, concat(procedimento1, ', ', procedimento2) as ProcedimentosList, k.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = k.id) as ValorPlano from (select a.id, "& procedimentosQuery &", a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo, a.FormaPagto, a.Notas, p.Nascimento, p.NomePaciente, p.IdImportado,a.PacienteID, p.Tel1, p.Cel1, p.matricula1, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, proc.NomeProcedimento,proc.Cor, s.StaConsulta, a.rdValorPlano, a.ValorPlano,a.Procedimentos, a.Primeira, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, p.CorIdentificacao, a.Retorno from agendamentos a "&_
                 "left join pacientes p on p.id=a.PacienteID "&_
                 "LEFT JOIN cliniccentral.pacientesprioridades pacPri ON pacPri.id=p.Prioridade "&_
                 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
@@ -572,35 +543,26 @@ end if
                 else
                     compsWhereSql = "where a.Data="&mydatenull(Data)&" and a.sysActive= 1 and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
                 end if
-
                 set comps=db.execute(compsSql&compsWhereSql)
   
                 while not comps.EOF
                     FormaPagto = comps("FormaPagto")
                     UnidadeID = comps("UnidadeID")
                     CorIdentificacao = comps("CorIdentificacao")
-
                     pacientePrioridadeIcone = comps("PrioridadeIcone")
-
-
                     Tempo = 0
                     ValorProcedimentosAnexos = 0
                     podeVerAgendamento=True
-
                     if UnidadeID&""<>"" and session("admin")=0 and session("Partner")="" and NaoExibirAgendamentoLocal=1 then
                         if instr(session("Unidades"),"|"&UnidadeID&"|")=0 then
                             podeVerAgendamento=False
                         end if
                     end if
-
 					NomeProcedimento = comps("NomeProcedimento")
 					VariosProcedimentos = comps("ProcedimentosList")&""
-
 					if VariosProcedimentos<>"" then
 					    NomeProcedimento = VariosProcedimentos
 					end if
-
-
                     'soma o tempo dos procedimentos anexos
                     if VariosProcedimentos<>"" and instr(VariosProcedimentos, ",") then
                         set ProcedimentosAnexosTempoSQL = db.execute("SELECT sum(Tempo)Tempo, sum(IF(rdValorPlano='V',ValorPlano,0))Valor FROM agendamentosprocedimentos WHERE Tempo IS NOT NULL AND AgendamentoID="&comps("id"))
@@ -613,7 +575,6 @@ end if
                             'end if
                         end if
                     end if
-
 					if comps("rdValorPlano")="V" then
 						if (lcase(session("table"))="profissionais" and cstr(session("idInTable"))=ProfissionalID) or (session("admin")=1) or aut("|valordoprocedimentoV|")=1 then
 							Valor = comps("ValorPlano")
@@ -642,7 +603,6 @@ end if
 					else
 						compsHora = ""
 					end if
-
 					'->hora final
 					if not isnull(comps("Tempo")) and comps("Tempo")<>"" and isnumeric(comps("Tempo")) then
 						Tempo = Tempo + ccur(comps("Tempo"))
@@ -682,8 +642,19 @@ end if
                             AlturaLinha = " style=\'height: "&Tempo&"px\' "
                         end if
                     end if
+                     if comps("matricula1") <>"" then
+					
+						matricula1 = "<br>Matrícula: "&comps("matricula1")
+						
+						if session("banco") = "clinic10402" and len(comps("matricula1")) > 21 then
+							matricula1 = "<br>Matrícula: "&mid(comps("matricula1"),8,7)
+						end if
+							
+                    else 
+                        matricula1 = "<br>Matrícula: *"
+                    end if 
                     linkAg = " onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"" "
-                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-local='"&comps("LocalID")&"' data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&fix_string_chars_full(comps("NomePaciente"))&"<br>Prontuário: "&Prontuario&"<br>"
+                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-local='"&comps("LocalID")&"' data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&fix_string_chars_full(comps("NomePaciente"))&"<br>Prontuário: "&Prontuario&matricula1&"<br>"
 
                     if session("RemSol")<>"" and session("RemSol")&"" <> comps("id")&"" then
                         remarcarlink = " onclick=""remarcar("&session("RemSol")&", \'Remarcar\', \'"&compsHora&"\', \'"&comps("LocalID")&"\')"" "
@@ -703,9 +674,7 @@ end if
                         Conteudo = Conteudo & "Notas: "&notas&"<br>"
                         'Conteudo = Conteudo & "Notas: "&replace(replace(replace(replace(comps("Notas")&"", chr(13), ""), chr(10), ""), "'", ""), """", "")&"<br>"
                     'end if
-
                     Conteudo = Conteudo & "Idade: "& IdadeAbreviada(comps("Nascimento")) &"<br>"
-
                     Conteudo = Conteudo & """ data-id="""&comps("id")&""">"&_
                     "<td width=""1%"" "& linkAg &">"
                     if not isnull(comps("Resposta")) then
@@ -717,7 +686,6 @@ end if
                     ' if comps("LocalID")<>LocalID then
                         Conteudo = Conteudo & "<i class=""fa fa-exclamation-triangle grey hide"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
                     'end if
-
                     FirstTdBgColor = ""
                     if ExibirCorPacienteAgenda=1 then
                         if (ISNULL(CorIdentificacao) or CorIdentificacao="") then
@@ -739,7 +707,6 @@ end if
                     if comps("Cor") <> "#fff" and not isnull(comps("Cor")) then
                         CorProcedimento = "<div class=""mr5 mt5"" style=""float:left;position:relative;background-color:"&comps("Cor")&";height:5px;width:5px;border-radius:50%""></div>"
                     end if
-
                     rotulo = "&nbsp;"&replace(Valor&" ", "'", "\'")
                     if (session("Banco")="clinic100000" or session("Banco")="clinic2263" or session("Banco")="clinic5856") and comps("rdValorPlano")="V" then
                     set TabelaSQL = db.execute("SELECT t.NomeTabela FROM tabelaparticular t LEFT JOIN pacientes p ON p.Tabela=t.id WHERE p.id = "&comps("PacienteID"))
@@ -747,28 +714,20 @@ end if
                             rotulo = TabelaSQL("NomeTabela")
                         end if
                     end if
-
-
+                    iconRetorno = ""
+                    if comps("Retorno") then
+                        iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""fa fa-undo text-warning pt10""></i>"
+                    end if
                     Conteudo = Conteudo & "</td>"&_
-                    "<td class=""text-center hidden-xs"" "& linkAg &"><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(NomeProcedimento&" ", "'", "\'")&"</span></td>"&_
+                    "<td class=""text-center hidden-xs"" "& linkAg &"><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(NomeProcedimento&" ", "'", "\'")&"</span> "&iconRetorno&"</td>"&_
                     "<td class=""text-center hidden-xs"" "& linkAg &">"&comps("StaConsulta")&"</td>"&_
                     "<td class=""text-right nomeConv hidden-xs"" "& linkAg &"><small>"& sinalAgenda(FormaPagto) & rotulo &"</small></td>"&_
                     "</tr>"
-
-
-
                     Conteudo = fix_string_chars(Conteudo)
                     if not podeVerAgendamento then
                         Conteudo = ""
                     end if
-
-
-
-
-
 					HAgendados = HAgendados+1
-
-
 					if comps("LocalID")<>LocalID then
 					    LocalDiferenteDaGrade=1
 					    classeL = ".l"&comps("LocalID")&", .l"
@@ -776,14 +735,11 @@ end if
                         LocalDiferenteDaGrade=0
                         classeL = ".l"&comps("LocalID")
 					end if
-
 					if LiberarHorarioRemarcado=1 then
 					    StatusRemarcado = " && Status !== '15'"
 					end if
-
                 %>
                 var classe = "<%=classeL%>";
-
                 var LocalDiferenteDaGrade = "<%=LocalDiferenteDaGrade%>";
                 if(LocalDiferenteDaGrade==="1"){
                     if( $(".l<%= comps("LocalID") %>").length>0 ){
@@ -792,11 +748,8 @@ end if
                         classe = "<%=classeL%>";
                     }
                 }
-
-
                 var HorarioAdicionado = false;
                 var Status = '<%=comps("StaID")%>';
-
                 $( classe ).each(function(){
                     if( $(this).attr("data-horaid")=='<%=HoraComp%>' && (Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
                     {
@@ -809,17 +762,24 @@ end if
                 if(!HorarioAdicionado){
                     $( classe + ", .l").each(function(){
                             var gradeId = $(this).data("grade");
-
-                           if ( $(this).attr("data-horaid")>'<%=HoraComp%>' )
-                           {
+                            let tamanhoGrade = 0;
+                            let ultimoHorarioGrade = '0000';
+                            if($('tbody[data-localid='+'<%=comps("LocalID")%>'+']').length == 1){
+                                tamanhoGrade = parseInt($('tbody[data-localid=<%=comps("LocalID")%>]').children().length)
+                                ultimoHorarioGrade = $('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:nth-child('+(tamanhoGrade)+')')[0].id
+                            }
+                           if ( $(this).attr("data-horaid")>'<%=HoraComp%>'){
                                 <%if session("FilaEspera")<>"" then %>
                                     $('[data-horaid=<%=HoraComp%>]').remove();
                                 <% end if %>
-
-                                $(this).before(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                                if('<%=HoraComp%>' > ultimoHorarioGrade && $($('#'+ultimoHorarioGrade)).attr('data-local') == '<%=comps("LocalID")%>'){
+                                    $($('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:nth-child('+(tamanhoGrade)+')')).after(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                                }else{
+                                    $(this).before(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                                }
                                 return false;
                            }
-                    });
+                    });                    
                 }
                 	<%
 					if HoraFinal<>"" then
@@ -839,8 +799,6 @@ end if
                 wend
                 comps.close
                 set comps = nothing
-
-
                 'bloqueioSql = "select c.* from compromissos c where (c.ProfissionalID="&ProfissionalID&" or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"&ProfissionalID&"%|'))) AND ((false "&sqlUnidadesBloqueio&") or c.Unidades='' OR c.Unidades IS NULL) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
 				bloqueioSql = getBloqueioSql(ProfissionalID, Data, sqlUnidadesBloqueio)
                 set bloq = db.execute(bloqueioSql)
@@ -855,7 +813,6 @@ end if
 					"<td class=""hidden-xs hidden-sm text-center""></td>"&_
 					"<td class=""hidden-xs text-right nomeConv""></td>"&_
 					"</tr>"
-
 					HBloqueados = HBloqueados+1
 					%>
 					$( ".vazio" ).each(function(){
@@ -885,7 +842,6 @@ $(".agendar").click(function(){
 	//alert(this.id);
 	abreAgenda(this.id, '', $("#Data").val(), $(this).attr("contextmenu") );
 });
-
 </script>
 
 <script>
@@ -907,15 +863,12 @@ $(document).ready(function(){
 		//show the user info on right or left depending on its position
 		$('.nomePaciente').on('mouseenter', function(){
 			var $this = $(this);
-
 			$this.find('.popover').fadeIn();
 		});
 		$('.nomePaciente').on('mouseleave', function(){
 			var $this = $(this);
-
 			$this.find('.popover').fadeOut();
 		});
-
 	<%
 	set ObsDia = db.execute("select * from agendaobservacoes where ProfissionalID="&ProfissionalID&" and Data="&mydatenull(Data)&"")
 	if not ObsDia.eof then
@@ -929,7 +882,6 @@ $(document).ready(function(){
 	end if
 	%>
 	});
-
 	$(".dia-calendario").removeClass("success green");
 	$(".<%=replace(request.QueryString("Data"),"/", "-")%>").addClass("success green");
 	$(".Locais").html('');
@@ -950,15 +902,12 @@ $(document).ready(function(){
 			<%
 		end if
 	wend
-
     ExcecaoMesAnoSplt = split(Data,"/")
     ExcecaoMesAno = ExcecaoMesAnoSplt(2)&"-"&ExcecaoMesAnoSplt(1)
     sExc = "select DataDe from assperiodolocalxprofissional a where a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.ProfissionalID = "&ProfissionalID
-
 	set DiasComExcecaoSQL=db.execute(sExc)
     while not DiasComExcecaoSQL.eof
         diasAtende = DiasComExcecaoSQL("DataDe")
-
         DataExcecaoClasseSplt = split(diasAtende,"/")
         DataExcecaoClasse = DataExcecaoClasseSplt(0)&"-"&DataExcecaoClasseSplt(1)&"-"&DataExcecaoClasseSplt(2)
                     %>
@@ -969,10 +918,7 @@ $(document).ready(function(){
     wend
     DiasComExcecaoSQL.close
     set DiasComExcecaoSQL=nothing
-
-
     call agendaOcupacoes(ProfissionalID, Data)
-
 	%>
 // Create the tooltips only when document ready
  $(document).ready(function()
@@ -992,7 +938,6 @@ $(document).ready(function(){
                         // Upon failure... set the tooltip content to error
                         api.set('content.text', status + ': ' + error);
                     });
-
                     return 'Carregando resumo do dia...'; // Set some initial text
                 }
             },
@@ -1004,10 +949,8 @@ $(document).ready(function(){
      });
     confereLocal()
  });
-
 function confereLocal(){
     let linhas = $("tr[data-local]")
-
     linhas.map((key,elem)=>{
         let idlocal = $(elem).parent().attr('data-localid')
         let idlinha = $(elem).attr('data-local')
@@ -1029,7 +972,6 @@ else
 	var LocalID = ["<%=LocalID%>"];
 	var ProfissionalID = ["<%=ProfissionalID%>"];
 	var Data = ["<%=Data%>"];
-
 	var ocupacoes = {
 	    "HLivres[]": HLivres,
 	    "HAgendados[]": HAgendados,

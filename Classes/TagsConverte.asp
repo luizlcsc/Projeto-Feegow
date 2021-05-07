@@ -560,7 +560,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           'response.write("RECIBOID:::::: "&item_ReciboID)
           if item_ReciboID>0 then
             'QUERY DE REFERENCIA ifrReciboIntegrado.asp
-            qRecibosSQL = "SELECT COALESCE(CONCAT(debito.InvoiceID,'.',rec.id),debito.InvoiceID) AS ReciboID, IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','CrÃ©dito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "_
+            qRecibosSQL = "SELECT debito.sysDate as ReciboSysDate, COALESCE(CONCAT(debito.InvoiceID,'.',rec.id),debito.InvoiceID) AS ReciboID, IF(bm.id IS NOT NULL, 1, cartao_credito.Parcelas) Parcelas, IF(bm.id IS NOT NULL, 'Boleto', IF(credito.`Type` = 'Transfer','CrÃ©dito', forma_pagamento.PaymentMethod)) PaymentMethod, pagamento.MovementID, IF(bm.id IS NOT NULL, debito.Value,credito.`value`) Value, IF(bm.id IS NOT NULL, debito.sysUser, credito.sysUser) sysUser, debito.Date DataVencimento, credito.Date DataPagamento "_
             &"FROM sys_financialmovement debito "_
             &"LEFT JOIN sys_financialdiscountpayments pagamento ON pagamento.InstallmentID = debito.id "_
             &"LEFT JOIN sys_financialmovement credito ON credito.id=pagamento.MovementID "_
@@ -580,6 +580,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
               conteudo = replace(conteudo, "[Recibo.Protocolo]", RecibosSQL("ReciboID")&"" )
               conteudo = replace(conteudo, "[Recibo.DataVencimento]", RecibosSQL("DataVencimento")&"" )
               conteudo = replace(conteudo, "[Recibo.DataPagamento]", RecibosSQL("DataPagamento")&"" )
+              conteudo = replace(conteudo, "[Recibo.Data]", RecibosSQL("ReciboSysDate")&"" )
+              conteudo = replace(conteudo, "[Recibo.DataExtenso]", formatdatetime(RecibosSQL("ReciboSysDate"),1)&"" )
             end if
             RecibosSQL.close
             set RecibosSQL = nothing
@@ -712,5 +714,5 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 'response.write("<script>console.log('VALOR::: "&UnidadeID&"')</script>")
 end function
 '***** EXEMPLO DE USO DA FUNÇÃO ******
-'response.write(TagsConverte("paciente: [Paciente.Nome]<br>Convenio: [Paciente.Convenio1]<br>Plano: [Paciente.Plano1]","PacienteID_140243|AgendamentoID_274564|ProfissionalID_16",""))
+'response.write(TagsConverte("paciente: [Paciente.Nome]<br>Convenio: [Paciente.Convenio1]<br>Plano: [Paciente.Plano1]<br>Recibo: [Recibo.Data] ([Recibo.DataExtenso])","PacienteID_140243|AgendamentoID_274564|ProfissionalID_16|ReciboID_495278",""))
 %>

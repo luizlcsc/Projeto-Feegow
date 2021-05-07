@@ -7,6 +7,18 @@
         color:#000;
         padding:20px;
     }
+    #dre-table .row-show-more:hover td, #dre-table .col-show-more:hover{
+        //text-decoration: underline;
+        background-color: #e4f4ff;
+        border: 1px solid #a3d8ff;
+        color: #008cde;
+    }
+    #dre-table .row-show-more, .col-show-more{
+        cursor: pointer;
+    }
+    .td-loading{
+        opacity: 0.8;
+    }
 </style>
 <%
 response.buffer
@@ -26,12 +38,12 @@ ModeloID = ref("ModeloID")
     </h2>
 </div>
 
-<table class="table table-hover">
+<table id="dre-table" class="table table-hover">
     <tr>
         <th class="system"></th>
         <%
         db.execute("delete from cliniccentral.dre_temp where sysUser="& session("User"))
-        set pcon = db.execute("select c.*, ccond.sqlAnalitico, ccond.CD, ccond.Tipo, ccond.Grupos tabcolGrupos, ccond.Categorias tabcolCategorias from dre_modeloscondicoes c LEFT JOIN dre_modeloslinhas l ON l.id=c.LinhaID LEFT JOIN cliniccentral.dre_condicoes ccond ON ccond.id=c.CondicaoID where l.ModeloID="& ModeloID)
+        set pcon = db.execute("select c.*, ccond.sqlAnalitico, ccond.sqlAnaliticoPagto, ccond.CD, ccond.Tipo, l.Descricao, l.TipoValor, ccond.Grupos tabcolGrupos, ccond.Categorias tabcolCategorias from dre_modeloscondicoes c LEFT JOIN dre_modeloslinhas l ON l.id=c.LinhaID LEFT JOIN cliniccentral.dre_condicoes ccond ON ccond.id=c.CondicaoID where l.ModeloID="& ModeloID)
         while not pcon.eof
             SemGrupo = 0
             SemCategoria = 0
@@ -48,6 +60,7 @@ ModeloID = ref("ModeloID")
             Pessoas = replace( pcon("Pessoas")&"" , "|", "" )
             tabcolGrupos = pcon("tabcolGrupos")&""
             tabcolCategorias = pcon("tabcolCategorias")&""
+            TipoData = pcon("TipoValor")
             CD = pcon("CD")&""
             Tipo = pcon("Tipo")&""
             multiploValor = pcon("Valor")
@@ -65,7 +78,7 @@ ModeloID = ref("ModeloID")
             if tabcolGrupos<>"" then
                 splGrupos = split(tabcolGrupos, ";")
                 tabGruposTabLeft = splGrupos(0)
-                tabGruposColLeft = splGrupos(1)
+                tabGruposColLeft = "id" 'o join eh sempre pelo ID
                 tabGruposTabLeft2 = splGrupos(2)
                 tabGruposColLeft2 = splGrupos(3)
                 leftGrupoProcedimentos = " LEFT JOIN "& tabGruposTabLeft2 &" ti ON ti.id=ii.ItemID LEFT JOIN "& tabGruposTabLeft &" tg ON tg.id=ti."& tabGruposColLeft2 &" "
@@ -95,8 +108,12 @@ ModeloID = ref("ModeloID")
             end if
 
 
+            if TipoData="Pagamento" then
+                sql = pcon("sqlAnaliticoPagto")&""
+            else
+                sql = pcon("sqlAnalitico")&""
+            end if
 
-            sql = pcon("sqlAnalitico")&""
             sql = replace(sql, "[sysUser]", session("User"))
             sql = replace(sql, "[LinhaID]", pcon("LinhaID"))
             sql = replace(sql, "[Ano]", Exercicio)
@@ -122,7 +139,6 @@ ModeloID = ref("ModeloID")
             sql = replace(sql, "[andPessoas]", andPessoas)
 
 
-            'response.write(sql &"<br>")
             if sql<>"" then
                 db.execute("insert into cliniccentral.dre_temp (sysUser, LinhaID, Data, Conta, Valor, Link, NF, ItemInvoiceID, Agrupamento)" & sql )
             end if
@@ -153,8 +169,8 @@ ModeloID = ref("ModeloID")
             tag = "th"
         end if
         %>
-        <tr class="<%= Classe %>" id="prin<%= LinhaID %>">
-            <%= "<"& tag &">" & l("Descricao") & "</"& tag &">" %>
+        <tr class="<%= Classe %> row-show-more" id="prin<%= LinhaID %>">
+            <%= "<"& tag &" class='col-show-more'>" & l("Descricao") & "</"& tag &">" %>
             <%
             m = 1
             while m<=12
@@ -191,8 +207,13 @@ ModeloID = ref("ModeloID")
 </table>
 
 <script type="text/javascript">
+
+    let linhasCarregadas = [];
+     
+    const loadingHtml = `<i class="fas fa-cog fa-spin"></i>`;
     
     function det(l, m, a) {
+
         $("#modal").html("Carregando...");
         $("#modal-table").modal("show");
         $.get("rDRE_detalhes.asp?LinhaID=" + l + "&Mes=" + m +"&A="+ a, function (data) {
@@ -201,8 +222,15 @@ ModeloID = ref("ModeloID")
     }
     
 
-    $("tr[id^='prin']").click(function(){
+    $(".row-show-more").click(function(){
         i = $(this).attr('id').replace('prin', '');
+        
+        if(linhasCarregadas.includes(i) ){
+            return;
+        }
+        linhasCarregadas.push(i);
+
+
         //$('#append'+i).append('<tr><td colspan=13>Carregando...</td></tr>');
         $.get("rDreCats.asp?L="+i, function(data){
             $('.tmp'+i).remove();
@@ -210,5 +238,10 @@ ModeloID = ref("ModeloID")
         });
 
     });
+
+    function downloadExcel(tableId){
+        $("#htmlTable").val($(tableId).html());
+        $("#formExcel").attr("action", domain+"reports/download-excel?title=Extrato&tk=" + localStorage.getItem("tk")).submit();
+    }
 
 </script>

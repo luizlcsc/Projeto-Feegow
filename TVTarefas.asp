@@ -2,7 +2,7 @@
 
 <%
 
-conexao = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=clinic105;uid=root;pwd=pipoca453;"
+conexao = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=clinic105;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 Set db = Server.CreateObject("ADODB.Connection")
 db.Open conexao
 
@@ -29,7 +29,7 @@ function accountName(AccountAssociationID, AccountID)
 	    end if
     else
         if AccountID&""="0" then
-            AccountName = "Posição"
+            AccountName = "PosiÃ§Ã£o"
         end if
     end if
 end function
@@ -42,7 +42,7 @@ end function
 <table border="1" width="100%">
     <thead>
         <tr>
-            <th>Solicitação</th>
+            <th>SolicitaÃ§Ã£o</th>
             <th>Criador</th>
             <th>Prazo</th>
         </tr>

@@ -373,7 +373,7 @@ end if
                                 </div>
 
                              </div>
-                             <div class="galery-img">
+                             <div class="galery-img sensitive-data">
                                 <${item.formato} href="${item.ArquivoLink}" target="_blank">
                                     <img
                                         src="${item.link}"
@@ -551,10 +551,14 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
     }
 
     function comparar(){
+        
         html = "";
         let quantidade = 100/$(".comparar:checked").length;
         $(".comparar:checked").map((a,b) => {
             let item = itens.find(item => item.id == b.value);
+            let imgRotate = item.imgRotate;
+            
+            
             html += `<div class="galery-item-max" style="width: ${quantidade}%;max-width: ${quantidade}%;min-width: ${quantidade}%">
                                 <div class="galery-data-envio">
                                  <div class="data-envio">
@@ -566,7 +570,17 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
                     Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescricao}
                     </div>
                               </div>
-                              <div class="galery-img"><img src="${item.ArquivoLink}&dimension=full" width="100%" height="100%" data-id="${item.id}" class="${item.extension} img-responsive" title="lost_typewritter.jpg"></div>
+                              <div class="galery-img">
+                                <img
+                                    src="${item.ArquivoLink}&dimension=full"
+                                    width="100%"
+                                    height="100%"
+                                    data-id="${item.id}"
+                                    class="${item.extension} img-responsive"
+                                    title="lost_typewritter.jpg"
+                                    style="transform: rotate(${imgRotate}deg);"
+                                >
+                              </div>
                     </div>`;
         })
 

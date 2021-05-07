@@ -223,7 +223,7 @@ function TISS__FormataConteudo(Conteudo)
     Conteudo = RemoveCaracters(Conteudo,"-_./,")
     Conteudo = AlteraCaracters(Conteudo,"º°&","..e")
 
-    TISS__FormataConteudo = Conteudo
+    TISS__FormataConteudo = trim(Conteudo)
 End Function
 
 function TISS__RemoveCaracters(Conteudo)
@@ -231,5 +231,23 @@ function TISS__RemoveCaracters(Conteudo)
     Conteudo = RemoveCaracters(Conteudo," -_./,")
 
     TISS__RemoveCaracters = Conteudo
+End Function
+
+function TISS__FormataConteudoCustom(Conteudo, RemoveAcentos, RemoveValCaracters, AlteraDe, AlteraPara, QntCaracters)
+    'SEQUENCIA || NÃO ALTERAR SEQUENCIA DOS ORDEM ||
+    if RemoveAcentos=true then
+        Conteudo = RemoveAcentoPalavras(Conteudo)
+    end if
+    if RemoveValCaracters<>"" then
+        Conteudo = RemoveCaracters(Conteudo, RemoveValCaracters)
+    end if
+    if AlteraDe<>"" then
+        Conteudo = AlteraCaracters(Conteudo, AlteraDe, AlteraPara)
+    end if
+    if QntCaracters<>"" then
+        Conteudo = left(Conteudo, cint(QntCaracters))
+    end if
+    
+    TISS__FormataConteudoCustom = trim(Conteudo)
 End Function
 %>

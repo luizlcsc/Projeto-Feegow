@@ -7,6 +7,12 @@
 
 SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
+    SqlLimit = "limit "&loadMore&","&MaximoLimit
+
+    if req("SemLimit") = "S" then
+        SqlLimit = ""
+    end if
+
     if ProfessionalID <>"" then
         sqlProf = "left join sys_users as us on us.id = sysUser where us.idInTable = "&ProfessionalID
     end if 
@@ -19,12 +25,28 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
         sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive=1 OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
     end if
 
-	if instr(Tipo, "|Prescricao|")>0 then
-        sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', 'Prescrição', 'flask', 'warning', `Data`, Prescricao,s.id from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
+    if aut("prescricoesV")>0 or session("Admin") = 1 then
+        if instr(Tipo, "|Prescricao|")>0 then
+            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', 'Prescrição', 'flask', 'warning', `Data`, Prescricao,s.id from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
+        end if
     end if
 
+
     if instr(Tipo, "|Diagnostico|")>0 then
-        sqlDiagnostico = " union all (select 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, concat('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', CONCAT(IFNULL(d.Descricao, ''), '<br>', IFNULL(tnm.Descricao, ''))) Descricao,'' FROM pacientesdiagnosticos d LEFT JOIN cliniccentral.cid10 cid on cid.id=d.CidID LEFT JOIN pacientesdiagnosticos_tnm tnm ON d.id = tnm.PacienteDiagnosticosID WHERE d.PacienteID="&PacienteID&") "
+
+        sqlBmj = " IFNULL((SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'""  target=""_blank""  class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
+                 " FROM cliniccentral.cid10_bmj bmj" &_
+                 " WHERE bmj.cid10ID = cid.id),'') "
+
+        sqlTnm = "CONCAT(IFNULL(d.Descricao, ''), '<br>', IFNULL(tnm.Descricao, ''))"
+
+        sqlDiagnostico = " union all (SELECT 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, "&_
+                         "   CONCAT('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', "&sqlBmj&",'<br>',"&sqlTnm&",''),'' "&_
+                         "   FROM pacientesdiagnosticos d "&_
+                         "   LEFT JOIN cliniccentral.cid10 cid ON cid.id=d.CidID "&_
+                         "   LEFT JOIN pacientesdiagnosticos_tnm tnm ON d.id = tnm.PacienteDiagnosticosID "&_
+                         "   WHERE PacienteID="&PacienteID&" and d.sysActive=1) "
+
     end if
 
     if instr(Tipo, "|Atestado|")>0 then
@@ -53,18 +75,18 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     if instr(Tipo, "|Arquivos|")>0 then
         sqlArquivos = " union all (select 0, '0', Tipo, '0', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
-                 c=0
+                 cont=0
 
     sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
-                ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC limit "&loadMore&","&MaximoLimit
+                ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
      'response.write(sql)
              set ti = db.execute( sql )
              while not ti.eof
                  Ano = year(ti("DataHora"))
                  if UltimoAno<>Ano then
                     abreAno = "          <div class=""timeline-divider mtn hidden-xs"">            <div class=""divider-label"">"&Ano&"</div>          </div>          <div class=""row"">          <div class=""col-sm-6 right-column"">"
-                    if c>0 then
+                    if cont>0 then
                         abreAno = "</div></div>" & abreAno
                     end if
                  else
@@ -74,7 +96,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
                 'response.write( abreAno )
 
-                c = c + 1
+                cont = cont + 1
                 exibe = 1
 
 
@@ -315,7 +337,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             end if
                             %> </div>
                     </div>
-                    <div class="panel-body timelineApp" style="text-align:justify; <% if device()<>"" then %> overflow-x:scroll!important; <% end if %>" >
+                    <div class="panel-body timelineApp sensitive-data" style="text-align:justify; <% if device()<>"" then %> overflow-x:scroll!important; <% end if %>" >
                 <%
 '                response.Write( Rotulo & Valor  &"<br>{{"& ti("Tipo") &"}}" )
                 select case ti("Tipo")
@@ -436,15 +458,25 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                     <iframe width="100%" scrolling="no" height="460" id="ifrCurva<%= ti("id") %>" frameborder="0" src="Curva.asp?CampoID=<%= pcampos("id") %>&FormPID=<%= reg("id") %>"></iframe>
                                                     <%
                                                 case 16
-                                                    set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&Valor&"'")
+                                                    urlbmj = getConfig("urlbmj")
+                                                    IF urlbmj <> "" and pcampos("enviardadoscid") = 1 THEN
+                                                        sqlBmj = " (SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'"" target=""_blank"" class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
+                                                                " FROM cliniccentral.cid10_bmj bmj" &_
+                                                                " WHERE bmj.cid10ID = cliniccentral.cid10.id)"
+                                                    ELSE
+                                                        sqlBmj = "''"
+                                                    END IF
+                                                    sqlBmj = "COALESCE("&sqlBmj&",'') as bmj_link "
+                                                    set pcid = db.execute("select *, "&sqlBmj&" from cliniccentral.cid10 where id = '"&Valor&"'")
                                                     if not pcid.eof then
-                                                        NomeCid = pcid("Codigo") &" - "& pcid("Descricao")
+                                                        NomeCid = pcid("Codigo") &" - "& pcid("Descricao") &" "& replace(pcid("bmj_link")&"","[linkbmj]",urlbmj)
                                                     end if
                                                     response.Write( Rotulo &"<br>"& NomeCid &"<br>" )
                                                 case else
                                                     if Valor<>"" and Valor<>"<p><br></p>" then
                                                     if left(Valor, 5)="{\rtf" then
-                                                            call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
+                                                            'problema de conversao de RTF com problema critico
+                                                            'call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
 
                                                     end if
                                                     response.Write( Rotulo &"<br>"& Valor  &"<br>" )
@@ -491,8 +523,13 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                         </ul>
                         <%
                         response.Write("<small>" & ti("Conteudo") & "</small>")
-                          case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
-                          response.Write("<small>" & ti("Conteudo") & "</small>")
+                    case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
+                            urlbmj = getConfig("urlbmj")
+                            IF urlbmj <> "" THEN
+                                response.Write("<small>" & replace(ti("Conteudo")&"","[linkbmj]",urlbmj) & "</small>")
+                            ELSE
+                                response.Write("<small>" & ti("Conteudo") & "</small>")
+                            END IF
                     case "PedidosSADT"
                         set psadt = db.execute("select tproc.descricao from pedidossadtprocedimentos pps LEFT JOIN cliniccentral.procedimentos tproc ON tproc.tipoTabela=pps.TabelaID AND pps.CodigoProcedimento=tproc.Codigo where pps.PedidoID="& ti("id"))
                         while not psadt.eof
@@ -618,7 +655,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
               ti.close
               set ti=nothing
 
-                  if c>0 then
+                 ' if c>0 then
                    ' response.Write("</div></div>             <div class=""timeline-divider"">            <div class=""divider-label"">"&Ano&"</div>          </div>")
-                  end if
+                 ' end if
               %>

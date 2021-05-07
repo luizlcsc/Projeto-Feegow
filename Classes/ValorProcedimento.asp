@@ -147,11 +147,11 @@ function CalculaValorProcedimentoConvenio(AssociacaoID,ConvenioID,ProcedimentoID
 
           a=Split(sql,";")
           for each x in a
-              db.execute(x)
+            sql = x&";"
+            db.execute(sql)
           next
 
           set ValorProcedimentoObj = db.execute("SELECT  *FROM temp_valores_para_calculos")
-
 
           xxxCalculaValorProcedimentoConvenioNotIsNull = false
           IF not ValorProcedimentoObj.eof THEN

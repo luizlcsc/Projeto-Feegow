@@ -1,10 +1,13 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Connection.asp"-->
 <!--#include file="Classes/ApiClient.asp"-->
+<!--#include file="Classes/Environment.asp"-->
 <%
 Set api = new ApiClient
 
-set dbc = newConnection("clinic5459", "dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com")
+ServerHost = getEnv("FC_MYSQL_HOST", "")
+
+set dbc = newConnection("clinic5459", ServerHost)
 
 LicencaID=replace(session("Banco"),"clinic","")
 'LicencaID=6118
@@ -325,14 +328,14 @@ end if
                             'end if
 
                             boletoURL = "#"
-                            set boleto = dbc.execute("select * from clinic5459.iugu_invoices WHERE BillID ="& MovID&" ORDER BY DataHora DESC Limit 1")
+                            set boleto = dbc.execute("select * from clinic5459.iugu_invoices WHERE BillID ='"& MovID&"' ORDER BY DataHora DESC Limit 1")
                             if not boleto.eof then
                                 boletoURL = boleto("FaturaURL")
                             end if
 
                             IF boletoURL = "#" THEN
                                 'response.write("select * from clinic5459.boletos_emitidos WHERE MovementID ="& MovID&" ORDER BY DataHora DESC Limit 1")
-                                set boleto2 = dbc.execute("select * from clinic5459.boletos_emitidos WHERE MovementID ="& MovID&" ORDER BY DataHora DESC Limit 1")
+                                set boleto2 = dbc.execute("select * from clinic5459.boletos_emitidos WHERE MovementID ='"& MovID&"' ORDER BY DataHora DESC Limit 1")
                                 if not boleto2.eof then
                                     boletoURL = boleto2("InvoiceURL")
                                 end if

@@ -1,3 +1,4 @@
+<!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
 <%
     response.write(session("DiasTeste"))

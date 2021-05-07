@@ -34,11 +34,11 @@ function mes(nomemes)
 end function
 
 Set origem = Server.CreateObject("ADODB.Connection")
-origem.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=heitordarros;uid=root;pwd=pipoca453;"
+origem.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=heitordarros;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 
 Set destino = Server.CreateObject("ADODB.Connection")
-destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic303;uid=root;pwd=pipoca453;"
-'destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=danielvasconcellosimportado;uid=root;pwd=pipoca453;"
+destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic303;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
+'destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=danielvasconcellosimportado;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 
 
 'set p = origem.execute("select * from sch_contact")

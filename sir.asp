@@ -51,7 +51,6 @@ if aut(lcase(ref("resource"))&"A")=1 then
         sqlNomeDaMae = " id IN ( (select PacienteID from pacientesrelativos where ((TRIM(Nome) like '%"&ref("q")&"%' ) and sysActive=1 and parentesco = 2 ) ) )"
         sqlTelefone = " OR replace(replace(replace(replace(Tel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Tel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' "
 
-
         if isnumeric(ref("q")) and ref("q")<>"" then
             sql = "select id, NomePaciente, Nascimento from pacientes where (id like '%"&ref("q")&"' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&ref("q")&"%','.',''),'-','') and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" " & sqlTelefone &" order by NomePaciente limit "& page*30 &", 30"
         elseif isdate(ref("q")) and ref("q")<>"" then
@@ -145,9 +144,15 @@ if aut(lcase(ref("resource"))&"A")=1 then
             end if
             sqlSomenteProcedimento=""
 
-            sql = "select id, NomeProcedimento from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"
+
+
+            sql = "SELECT * FROM ("&_
+            "select id, NomeProcedimento, coalesce(opcoesagenda,0) opcoesagenda from procedimentos where sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos & sqlExibir &" "&_
+            ") t UNION ALL ("&_
+            "select id, concat(NomeProcedimento, ' (sinônimo)'), coalesce(opcoesagenda,0) opcoesagenda from procedimentos where sysActive=1 and (NomeProcedimento not like '%"&ref("q")&"%' and Sinonimo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos & sqlExibir&" ) order by if(OpcoesAgenda = 0, 1 , 0) desc, NomeProcedimento"
+
             IF ModoFranquiaUnidade THEN
-                sql = "select id, NomeProcedimento from procedimentos where id in (SELECT idOrigem FROM registros_importados_franquia WHERE tabela = 'procedimentos' AND unidade = "&session("UnidadeID")&") AND sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by OpcoesAgenda desc, NomeProcedimento"
+                sql = "select id, NomeProcedimento, coalesce(opcoesagenda,0) opcoesagenda from procedimentos where id in (SELECT idOrigem FROM registros_importados_franquia WHERE tabela = 'procedimentos' AND unidade = "&session("UnidadeID")&") AND sysActive=1 and (NomeProcedimento like '%"&ref("q")&"%' or Codigo like '%"&ref("q")&"%') AND NomeProcedimento IS NOT NULL "&sqlConv&" and Ativo='on' "&sqlSomenteProcedimento&" and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") " & sqlLimitProcedimentos &" order by if(OpcoesAgenda = 0, 1 , 0) desc, NomeProcedimento"
             END IF
             initialOrder = "NomeProcedimento"
         elseif ref("t")="cliniccentral.cid10" then
@@ -270,7 +275,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
         sql = replace(sql, "[UNIDADES]", session("Unidades"))
         sql = replace(sql, "[TYPED]", Typed)
 
-        if sqlExibir<>"" then
+        if sqlExibir<>"" and (ProfissionalID = ""  and ProfissionalID = "0") then
             sql = replace(sql, " order ",sqlExibir&" order ")
         end if
     end if
@@ -288,6 +293,7 @@ else
     "ins": false,
     <%
 end if
+
 %>
   "items": [
     <%

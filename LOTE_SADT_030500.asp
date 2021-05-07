@@ -100,7 +100,7 @@ prefixo = right(prefixo, 20)
 					DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
 					Senha = TirarAcento(guias("Senha"))
 					DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
-					NumeroCarteira = TirarAcento(guias("NumeroCarteira"))
+					NumeroCarteira = TISS__FormataConteudoCustom(guias("NumeroCarteira"), true, "", "", "", 20)
 					AtendimentoRN = TirarAcento(guias("AtendimentoRN"))
 					NomePaciente = TirarAcento(guias("NomePaciente"))
 					ContratadoSolicitanteID = TirarAcento(guias("ContratadoSolicitanteID"))
@@ -318,8 +318,8 @@ prefixo = right(prefixo, 20)
 						CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))
 						Descricao = left(TirarAcento(procs("Descricao")),150)
 
-						ViaID = TirarAcento(procs("ViaID"))
-						TecnicaID = TirarAcento(procs("TecnicaID"))
+						ViaID = TirarAcento(procs("ViaID"))&""
+						TecnicaID = TirarAcento(procs("TecnicaID"))&""
 
 						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
 						%>
@@ -334,8 +334,14 @@ prefixo = right(prefixo, 20)
                                 <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
                             </ans:procedimento>
                             <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
+														<%if ViaID<>"" then%>
                             <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
+														<%
+														end if
+														if TecnicaID<>"" then
+														%>
                             <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
+														<%end if%>
                             <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
                             <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
                             <ans:valorTotal><%= ValorTotal %></ans:valorTotal>

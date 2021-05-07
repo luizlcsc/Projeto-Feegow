@@ -35,7 +35,7 @@ if not getForm.eof then
         </div>
              <div class="alert alert-warning internetFail text-center" style="display:none">Sua internet está apresentando lentidão</div>
     <% end if %>
-<div class="panel-body p25" id="iProntCont">
+<div class="panel-body p25 sensitive-data" id="iProntCont">
     <span class="form-status-holder"></span>
     <br />
 
@@ -255,7 +255,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         if (TipoForm!="L"){
             saveForm(0, 1);
         }
-        saveteste();
+        saveLog("update");
         //$.post("formsLog.asp?m=<%=req("m")%>&p=<%=req("p")%>&i="+FormID, $(".campoInput, .campoCheck, .tbl").serialize(), function(data){});
     }
 
@@ -272,39 +272,30 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
     var ultimo="";
     var timeout  = null;
-    function saveteste(){
+    function saveLog(action = "updated"){
 
-        let atual = JSON.stringify( $(".campoInput, .campoCheck, .tbl").serializeFormJSON());
+        let atual =  $(".campoInput, .campoCheck, .tbl").serializeFormJSON();
+
 
         if(atual!=ultimo){
 
             //desabilita feature
-            return;
-            $.ajax({
-                url: domain+"log/saveFormLog",
-                method: 'POST',
-                dataType: 'json',
-                data:
-                {
+            // return;
+
+            ultimo=atual;
+
+            recordLog({
+                module:"forms",
+                action: action,
+                logUrl: "<%= Request.ServerVariables("SERVER_NAME") &"/"& Request.ServerVariables("SCRIPT_NAME") %>",
+                licenseId: "<%=LicenseId%>",
+                userId: "<%=Session("User")%>",
+                oldData: {},
+                newData: {
                     'pacienteID': <%=req("p")%>,
                     'modeloID': <%=req("m")%>,
                     'formID': FormID,
-                },
-                success: (data) => {
-                    ultimo = atual;
-                     var d = new Date();
-                    $('.form-status-holder')
-                        .html('formulario salvo! Ultima atualização: ' + d.toLocaleTimeString())
-                        .css('color','black');
-                },
-                error: function (xhr, statustext, thrownError) {
-                    if(xhr.status !== 500){
-                        $('.form-status-holder')
-                            .html('formulario não pode ser salvo, verifique sua internet!')
-                            .css('color','orange');
-                        clearInterval(timeout);
-                        timeout = setTimeout(()=>saveteste(),15000);
-                    }
+                    data: atual
                 }
             });
         }
@@ -389,7 +380,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
     }
     if("<%=FormID%>" === "N"){
         saveForm(0, 1);
-        saveteste();
+        saveLog("create");
     }
 
     var timelineCarregada = false;

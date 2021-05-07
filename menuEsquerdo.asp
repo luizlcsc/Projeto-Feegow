@@ -213,7 +213,12 @@ select case lcase(req("P"))
                     %>
                     <select name="EquipamentoID" id="EquipamentoID" class="form-control select2-single">
                         <%
-                set Prof = db.execute("select id, NomeEquipamento, '#CCC' Cor, UnidadeID from equipamentos where ativo='on' and sysActive=1 order by NomeEquipamento")
+                if aut("|ageoutunidadesV|") = 1 then
+                    set Prof = db.execute("select id, NomeEquipamento, '#CCC' Cor, UnidadeID from equipamentos where ativo='on' and sysActive=1 order by NomeEquipamento")
+                else
+                    set Prof = db.execute("select id, NomeEquipamento, '#CCC' Cor, UnidadeID from equipamentos where UnidadeID = "&Session("UnidadeID")&" AND ativo='on' and sysActive=1 order by NomeEquipamento")
+                end if
+
                 while not Prof.EOF
                         %>
                         <option style="border-left: <%=Prof("Cor")%> 10px solid; background-color: #fff;" value="<%=Prof("id")%>" <%=selected%>><%=ucase(Prof("NomeEquipamento"))%> - <%=getNomeLocalUnidade(Prof("UnidadeID"))%></option>
@@ -683,7 +688,7 @@ select case lcase(req("P"))
                     </span>
                 </a>
             </li>
-            <% END IF %>            
+            <% END IF %>
 		    <%
             if aut("aso")=1 and false then
 		    %>
@@ -823,6 +828,7 @@ select case lcase(req("P"))
             </li>
 		    <%
 		    end if
+            if aut("produtilizadosV")=1 then
             %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-produtos-utilizados" id="abaProdutdosUtilizados" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ProdutosUtilizados|');">
@@ -834,7 +840,9 @@ select case lcase(req("P"))
 
                 </a>
             </li>
-            <% if recursoAdicional(37) = 4 and aut("protocolosV")=1 then%>
+            <%
+            end if
+            if recursoAdicional(37) = 4 and aut("protocolosV")=1 then %>
             <li>
                 <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
                     <span class="fa fa-file-text-o bigger-110"></span>
@@ -844,9 +852,7 @@ select case lcase(req("P"))
                     </span>
                 </a>
             </li>
-            <% end if%>
-            <%
-
+            <% end if
             if recursoAdicional(20) = 4  then
 
                 set certiDidital = db.execute("SELECT * FROM cliniccentral.digitalcertificates where UsuarioID = "&session("User")&" and LicencaID = "&replace(session("Banco"), "clinic", "")&" and sysActive = 1")
@@ -928,7 +934,7 @@ select case lcase(req("P"))
             </li>
 		    <%
 		    end if
-		    
+
 		    if aut("recibos")=1 then
 		    %>
             <li class="checkStatus">
@@ -1018,14 +1024,16 @@ select case lcase(req("P"))
             </li>
             <%
         end if
-    case "laudos" , "frases", "laudosv2" 
+    case "laudos" , "frases", "laudoslab"
         %>
         <li>
             <a  href="?P=Laudos&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
         </li>
-        <!--<li>
-            <a  href="?P=Laudosv2&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos <span class="label label-system label-xs fleft">Novo</span></span></a>
-        </li> -->
+        <%  if recursoAdicional(24)=4 then %>
+        <li>
+            <a  href="?P=laudosLab&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) <span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li>
+        <% end if %>
         <li>
             <a  href="?P=Frases&Pers=0"><span class="fa fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases </span></a>
         </li>
@@ -1348,7 +1356,7 @@ select case lcase(req("P"))
                     <a href="?P=tabelasportes&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
                 </li>
                 <li>
-                    <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar tabela mat / med</span></a>
+                    <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar Tabela MAT / MED</span></a>
                 </li>
             <%
     case "convenios"
@@ -1360,7 +1368,7 @@ select case lcase(req("P"))
                     <a href="?P=tabelasportes&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
                 </li>
                 <li>
-                    <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar tabela mat / med</span></a>
+                    <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar Tabela MAT / MED</span></a>
                 </li>
         <% end if
 
@@ -1372,7 +1380,7 @@ select case lcase(req("P"))
             </li>
             <li>
                 <a data-toggle="tab" href="#divValores" onclick="ajxContent('ConveniosValoresProcedimentos&ConvenioID=<%=request.QueryString("I")%>', '', '1', 'divValores')">
-                <span class="fa fa-usd"></span> <span class="sidebar-title">Valores por Procedimento</span></a>
+                    <span class="fa fa-usd"></span> <span class="sidebar-title">Valores por Procedimento</span></a>
             </li>
             <li>
                 <a data-toggle="tab" href="#divValoresDespesas" onclick="ajxContent('ConveniosValoresDespesas&ConvenioID=<%=request.QueryString("I")%>', '', '1', 'divValoresDespesas')">
@@ -2497,6 +2505,7 @@ select case lcase(req("P"))
     <li>
         <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
+
     <%
         set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
         if not labAutenticacao.eof then
@@ -2507,7 +2516,10 @@ select case lcase(req("P"))
         </li>
         <li>                
         <%
-            set dadoslab = db.execute("SELECT id, NomeLaboratorio FROM cliniccentral.labs ")
+            sqllabs = "SELECT distinct l.id, l.NomeLaboratorio "&_
+                      " FROM cliniccentral.labs l "&_
+                      " INNER JOIN labs_autenticacao la ON la.LabID = l.id"
+            set dadoslab = db.execute(sqllabs)
             while not dadoslab.eof
             %>
             <li>

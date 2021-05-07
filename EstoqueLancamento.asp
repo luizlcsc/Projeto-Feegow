@@ -161,8 +161,8 @@ end if
             <%
                 call quickfield("text", "CBID", "Código Individual", 3, "", "", "", "")
             %>
-            
-            
+
+
         </div>
         <div class="row">
             <%= quickfield("simpleSelect", "Motivo", "Motivo", 4, "", "SELECT * FROM cliniccentral.estoque_fluxo where tipo='entrada' and sysActive = 1 order by id ASC", "Motivo", "required onchange=""habilitapaciente();""") %>
@@ -215,8 +215,8 @@ end if
             <%
         end if
         %>
-        
-        
+
+
    <% end if %>
 
         <div class="row">
@@ -286,16 +286,17 @@ function changeLancar(value){
        	});
     }
 }
- $("#notifyy").hide();
+
+$("#notifyy").hide();
 $("#lancar").click(function(){
     if($("#validationConfig").val() == 1)
     {
         if(verificaCampoVazio() === true){
              $("#notifyy").show();
-             return false
+             return false;
         }
     }
-
+    $("#lancar").attr("disabled", true);
 
         $.ajax({
             type:"POST",
@@ -303,6 +304,7 @@ $("#lancar").click(function(){
             data:$("#EstoqueLancamento").serialize(),
             success: function(data){
                 eval(data);
+                $("#lancar").attr("disabled", false)
             }
         });
 
@@ -342,7 +344,7 @@ function habilitapaciente()
     {
         $('#comboPaciente').show();
     }
-    else 
+    else
     {
         $('#comboPaciente').hide();
     }

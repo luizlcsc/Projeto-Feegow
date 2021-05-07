@@ -125,6 +125,13 @@ set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where
             Enviar esta informa&ccedil;&atilde;o para recepção ao finalizar atendimento</span></label>
 
         </div>
+        <% if TipoCampoID = 16 then %>
+        <div class="col-xs-12"><br>
+            <label><input type="checkbox" class="ace" name="EnviarDadosCID" value="1"<%if pCampo("EnviarDadosCID")=1 then%> checked<%end if%>/><span class="lbl">
+            Enviar o CID para a aba Diagnóstico CID-10
+
+        </div>
+        <%end if %>
     </div>
         <hr class="sort alt">
     <div class="row">

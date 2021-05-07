@@ -42,7 +42,7 @@ if session("Banco")="clinic105" then
 
                     Servidor = Servidores(i)
 
-                    ConnString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193."& Servidor &";Database=clinic105;uid=root;pwd=pipoca453;"
+                    ConnString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193."& Servidor &";Database=clinic105;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
                     Set dbServ = Server.CreateObject("ADODB.Connection")
                     dbServ.Open ConnString
 

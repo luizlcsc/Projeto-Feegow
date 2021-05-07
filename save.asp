@@ -420,10 +420,11 @@ if not getResource.EOF then
                 end if
             end if
 
-            
+  
             if tableName<>"sys_smsemail" and logsJsonActive=true then 'NOVA VERSÃO DE LOGS EM JSON SOMENTE NESTE(S) ARQUIVO(S)
                 call gravaLogs(sql, op, "", "")
             end if     
+
         end if
         
         if req("Helpdesk") <> "" then
@@ -569,29 +570,50 @@ if not getResource.EOF then
 
                 'Salva vacina_serie_dosagem com parâmetros pré-estabelecidos = Walder Silva
                 if lcase(getSubforms("tableName"))="vacina_serie_dosagem" and (tableName = "Procedimentos" or tableName = "procedimentos") then
-              
-                    seriedosagem = split(ref("id-vacina_serie_dosagem"), ", ")
 
-                    for i=0 to ubound(seriedosagem)
+                    if ref("id-vacina_serie_dosagem")&"" <> "" then
+                        if inStr(ref("id-vacina_serie_dosagem"), ", ") > 0 then
+                            seriedosagem = split(ref("id-vacina_serie_dosagem"), ", ")
 
-                        m = seriedosagem(i)
+                            for contserie=0 to ubound(seriedosagem)
 
-                        if ref("PeriodoDias-vacina_serie_dosagem-"&m) = "" then
-                            PeriodoDias = "null"
-                        else 
-                            PeriodoDias = ref("PeriodoDias-vacina_serie_dosagem-"&m)
+                                m = seriedosagem(contserie)
+
+                                if ref("PeriodoDias-vacina_serie_dosagem-"&m) = "" then
+                                    PeriodoDias = "null"
+                                else
+                                    PeriodoDias = ref("PeriodoDias-vacina_serie_dosagem-"&m)
+                                end if
+                                db.execute("update vacina_serie_dosagem set ProdutoID="&ref("ProdutoID-vacina_serie_dosagem-"&m)&", Descricao='"&ref("Descricao-vacina_serie_dosagem-"&m)&"', PeriodoDias="&PeriodoDias&", Ordem='"&ref("Ordem-vacina_serie_dosagem-"&m)&"' where id="&m)
+                            next
+                        else
+                            m = ref("id-vacina_serie_dosagem")
+
+                            if ref("PeriodoDias-vacina_serie_dosagem-"&m) = "" then
+                                PeriodoDias = "null"
+                            else
+                                PeriodoDias = ref("PeriodoDias-vacina_serie_dosagem-"&m)
+                            end if
+
+                            db.execute("update vacina_serie_dosagem set ProdutoID="&ref("ProdutoID-vacina_serie_dosagem-"&m)&", Descricao='"&ref("Descricao-vacina_serie_dosagem-"&m)&"', PeriodoDias='"&PeriodoDias&"', Ordem='"&ref("Ordem-vacina_serie_dosagem-"&m)&"' where id="&m)
                         end if
-                        db.execute("update vacina_serie_dosagem set ProdutoID="&ref("ProdutoID-vacina_serie_dosagem-"&m)&", Descricao='"&ref("Descricao-vacina_serie_dosagem-"&m)&"', PeriodoDias="&PeriodoDias&", Ordem='"&ref("Ordem-vacina_serie_dosagem-"&m)&"' where id="&m)
-                    next
+                    end if
                 elseif getSubforms("tableName") = "vacina_serie" and (tableName = "Procedimentos" or tableName = "procedimentos") then
-                    
-                    serie = split(ref("id-vacina_serie"), ", ")
-                    
-                    for i=0 to ubound(serie)
-                        n = serie(i)
+
+                    if ref("id-vacina_serie")&"" <> "" then
+                        if inStr(ref("id-vacina_serie"), ", ") > 0 then
+                          serie = split(ref("id-vacina_serie"), ", ")
+
+                    for cont=0 to ubound(serie)
+                        n = serie(cont)
                         
-                        db.execute("update vacina_serie set Titulo='"&ref("Titulo-vacina_serie-"&n)&"', Descricao='"&ref("Descricao-vacina_serie-"&n)&"' where id="&n)
-                    next
+                                db.execute("update vacina_serie set Titulo='"&ref("Titulo-vacina_serie-"&n)&"', Descricao='"&ref("Descricao-vacina_serie-"&n)&"' where id="&n)
+                            next
+                        else
+                            n = ref("id-vacina_serie")
+                            db.execute("update vacina_serie set Titulo='"&ref("Titulo-vacina_serie-"&n)&"', Descricao='"&ref("Descricao-vacina_serie-"&n)&"' where id="&n)
+                        end if
+                    end if
                 else
                     codeUp = "update "&getSubforms("tableName")&" set sysActive=1"&codeUp& " where id="&regs("id")
                     db_execute(codeUp)
@@ -650,32 +672,42 @@ if ref("NewForm")="1" then
 				db_execute("update buiopcoescampos set Selecionado='S' where id = '"&ref("input_"&CampoID)&"'")
 			case 9'tabela
 				'atualizando o título da tabela
-				c = 0
-				strUpTit = "update buitabelastitulos set "
-				while c<20
-					c=c+1
-					strUpTit = strUpTit&"c"&c&"='"& ref(CampoID&"_t"&c) &"', "
-				wend
-				strUpTit = left(strUpTit, len(strUpTit)-2)
-				strUpTit = strUpTit&" where CampoID="&CampoID
-				db_execute(strUpTit)
-				
-				'atualizando os valores padrão da tabela
-				set linhas = db.execute("select * from buitabelasmodelos where CampoID="&CampoID)
-				while not linhas.eof
-					c = 0
-					strUpLin = "update buitabelasmodelos set "
-					while c<20
-						c=c+1
-						strUpLin = strUpLin&"c"&c&"='"& ref(linhas("id")&"_c"&c) &"', "
-					wend
-					strUpLin = left(strUpLin, len(strUpLin)-2)
-					strUpLin = strUpLin&" where id="&linhas("id")
-					db_execute(strUpLin)
-				linhas.movenext
-				wend
-				linhas.close
-				set linhas = nothing
+                if ref("InputAtualiza")&""<>"" then
+                    InputAtualizaArray = split(ref("InputAtualiza"), "_")
+                    buiTabelasModelos_id = InputAtualizaArray(0)
+                    buiTabelasModelos_c = InputAtualizaArray(1)
+                    InputAtualizaSQL = "update buitabelasmodelos set "&buiTabelasModelos_c&"='"&ref(buiTabelasModelos_id&"_"&buiTabelasModelos_c)&"' where id="&buiTabelasModelos_id
+                    'response.write(InputAtualizaSQL)
+                    db_execute(InputAtualizaSQL)
+                else
+                    'atualizando o título da tabela
+                    c = 0
+                    strUpTit = "update buitabelastitulos set "
+                    while c<20
+                        c=c+1
+                        strUpTit = strUpTit&"c"&c&"='"& ref(CampoID&"_t"&c) &"', "
+                    wend
+                    strUpTit = left(strUpTit, len(strUpTit)-2)
+                    strUpTit = strUpTit&" where CampoID="&CampoID
+                    db_execute(strUpTit)
+                    
+                    'atualizando os valores padrão da tabela
+                    set linhas = db.execute("select * from buitabelasmodelos where CampoID="&CampoID)
+                    while not linhas.eof
+                        c = 0
+                        strUpLin = "update buitabelasmodelos set "
+                        while c<20
+                            c=c+1
+                            strUpLin = strUpLin&"c"&c&"='"& ref(linhas("id")&"_c"&c) &"', "
+                        wend
+                        strUpLin = left(strUpLin, len(strUpLin)-2)
+                        strUpLin = strUpLin&" where id="&linhas("id")
+                        db_execute(strUpLin)
+                    linhas.movenext
+                    wend
+                    linhas.close
+                    set linhas = nothing
+                end if
 		end select
 	pCampos.movenext
 	wend
@@ -748,11 +780,17 @@ end if
 
 if lcase(ref("P"))="profissionais" then
     if ref("Especialidades")<>"" then
-        spl = split(ref("Especialidades"), ", ")
-        for i=0 to ubound(spl)
-            n = spl(i)
+        if inStr(ref("Especialidades"), ", ") > 0 then
+            spl = split(ref("Especialidades"), ", ")
+
+            for iEspecialidades=0 to ubound(spl)
+                n = spl(iEspecialidades)
+                db.execute("update profissionaisespecialidades set RQE='"&ref("RQE"&n)&"',EspecialidadeID="&treatvalnull(ref("EspecialidadeID"&n))&", Conselho='"&ref("Conselho"&n)&"', UFConselho='"&ref("UFConselho"&n)&"', DocumentoConselho='"&ref("DocumentoConselho"&n)&"' where id="&n)
+            next
+        else
+            n = ref("Especialidades")
             db.execute("update profissionaisespecialidades set RQE='"&ref("RQE"&n)&"',EspecialidadeID="&treatvalnull(ref("EspecialidadeID"&n))&", Conselho='"&ref("Conselho"&n)&"', UFConselho='"&ref("UFConselho"&n)&"', DocumentoConselho='"&ref("DocumentoConselho"&n)&"' where id="&n)
-        next
+        end if
     end if
     call odonto()
 end if
@@ -764,7 +802,7 @@ end if
 
 if sqlAtivoNome<>"" then
     on error resume next
-    ConnString1 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
+    ConnString1 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
     Set db1 = Server.CreateObject("ADODB.Connection")
     db1.Open ConnString1
     db1.execute( sqlAtivoNome )

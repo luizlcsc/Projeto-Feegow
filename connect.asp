@@ -2432,12 +2432,11 @@ function replateTagsPaciente(valor,PacienteID)
         "LEFT JOIN convenios c1 ON c1.id=p.ConvenioID1  "&_
         "LEFT JOIN convenios c2 ON c2.id=p.ConvenioID2  "&_
         "LEFT JOIN convenios c3 ON c3.id=p.ConvenioID3  "&_
-        "LEFT JOIN conveniosplanos pla1 ON pla1.ConvenioID=c1.id  "&_
-        "LEFT JOIN conveniosplanos pla2 ON pla2.ConvenioID=c2.id  "&_
-        "LEFT JOIN conveniosplanos pla3 ON pla3.ConvenioID=c3.id  "&_
+        "LEFT JOIN conveniosplanos pla1 ON pla1.id=p.PlanoID1  "&_
+        "LEFT JOIN conveniosplanos pla2 ON pla2.id=p.PlanoID2  "&_
+        "LEFT JOIN conveniosplanos pla3 ON pla3.id=p.PlanoID3  "&_
         "where p.id="&treatvalzero(PacienteID) 
         'response.write("<pre>"&replace(strPac,"  ","<br>")&"</pre>")
-        
         set pac = db.execute(strPac)
 
         if not pac.eof then
@@ -2518,6 +2517,8 @@ function replaceTags(valor, PacienteID, UserID, UnidadeID)
 		if Assoc="3" then
 		    PacienteID = Conta
 		end if
+
+
 		select case Assoc
 			case "2"
 				sql = "select *, NomeFornecedor Nome, RG Documento, CPF CPF_CNPJ from fornecedores where id="&Conta
@@ -3982,7 +3983,7 @@ private function statusPagto(AgendamentoID, PacienteID, Datas, rdValorPlano, Val
     '1 = ok
 
     splsDatas = split(Datas, ", ")
-    statusEnvolvidos = "2, 3, 4, 5, 12, 101, 102, 103, 104, 105, 106"
+    statusEnvolvidos = "2, 3, 4, 5, 101, 102, 103, 104, 105, 106"
     for ida=0 to ubound(splsDatas)
         sData = splsDatas(ida)
         if isdate(sData) and not isnull(sData) and PacienteID&""<>"" and isnumeric(PacienteID&"") then
@@ -5644,7 +5645,21 @@ function dd(variable)
     description=""
     variableType = TypeName(variable)
 
-    if variableType="Recordset" then
+
+    if variableType="Variant()" then
+        description = description & "["
+        itemsInArray=0
+
+        for each x in variable
+            if itemsInArray>0 then
+                description = description&","
+            end if
+
+            description = description&""""&x&""""
+            itemsInArray=itemsInArray+1
+        next
+        description = description & "]"
+    elseif variableType="Recordset" then
         description = "["&chr(13)
         j = 0
         while not variable.eof
@@ -5673,5 +5688,32 @@ function dd(variable)
 
     response.write("<pre>"&description&"</pre>")
     Response.End
+end function
+
+function hasPermissaoTela(visualizar)
+
+    IF not (aut(visualizar)=1) THEN %>
+        <h1 class="text-center">
+            Você não tem permissão a visualizar esta tela.
+        </h1>
+    <%
+    response.end
+    END IF
+end function
+
+function iconMethod(PaymentMethodID, PaymentMethod, CD ,origem)
+    if CD="" or isnull(CD) then
+        CD = "D"
+    end if
+	if not isNull(PaymentMethodID) then
+		response.Write("<img width=""18"" src=""assets/img/"&PaymentMethodID&CD&".png"" /> ")
+
+
+        if origem <> "" then
+        response.Write("<small>"& PaymentMethod &" ("&origem&") </small>")
+        else
+        response.Write("<small>"& PaymentMethod &" </small>")
+        end if
+    end if
 end function
 %>

@@ -33,6 +33,14 @@ Obrigatorio=ref("Obrigatorio")
 Texto=ref("Texto")
 Ordem = ref("Ordem")
 Estruturacao = ref("Estruturacao")
+
+EnviarDadosCID = ref("EnviarDadosCID")
+IF EnviarDadosCID = "" THEN
+	EnviarDadosCID = "NULL"
+ELSE
+	EnviarDadosCID = "'"&EnviarDadosCID&"'"	
+END IF
+
 if not pCampo.EOF then
 	antigoMaxCarac=pCampo("MaxCarac")
 	set pForm=db.execute("select * from buiForms where id="&pCampo("FormID"))
@@ -99,7 +107,7 @@ ELSE
 	EixoYQuery = "'"&EixoYQuery&"'"		
 END IF
 
-sql = "update buiCamposForms set NomeCampo='"&NomeCampo&"', RotuloCampo='"&RotuloCampo&"', Ordem="& treatvalzero(ref("Ordem")) &", "& alteraValorPadrao &"Tamanho='"&Tamanho&"', MaxCarac='"&MaxCarac&"', Checado='"&Checado&"', Obrigatorio='"&Obrigatorio&"', Texto='"&Texto&"', Largura='"&Largura&"', AvisoFechamento="&treatvalzero(ref("AvisoFechamento"))&", Formula='"& ref("Formula") &"', Estruturacao='"& Estruturacao &"', EixoX = " &EixoXQuery& ", EixoY = " &EixoYQuery& ", InformacaoCampo = "&InformacaoCampoQuery&" where id = '"&replace(req("I"),"'","''")&"'"
+sql = "update buiCamposForms set NomeCampo='"&NomeCampo&"', RotuloCampo='"&RotuloCampo&"', Ordem="& treatvalzero(ref("Ordem")) &", "& alteraValorPadrao &"Tamanho='"&Tamanho&"', MaxCarac='"&MaxCarac&"', Checado='"&Checado&"', Obrigatorio='"&Obrigatorio&"', Texto='"&Texto&"', Largura='"&Largura&"', AvisoFechamento="&treatvalzero(ref("AvisoFechamento"))&", Formula='"& ref("Formula") &"', Estruturacao='"& Estruturacao &"', EixoX = " &EixoXQuery& ", EixoY = " &EixoYQuery& ", InformacaoCampo = "&InformacaoCampoQuery&", enviardadoscid="&EnviarDadosCID&" where id = '"&replace(req("I"),"'","''")&"'"
 
 'response.Write("<br>// "&sql)
 db_execute(sql)

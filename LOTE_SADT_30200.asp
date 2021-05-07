@@ -86,7 +86,7 @@ response.Charset="utf-8"
 					DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
 					Senha = trim(guias("Senha"))
 					DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
-					NumeroCarteira = trim(guias("NumeroCarteira"))
+					NumeroCarteira = TISS__FormataConteudoCustom(guias("NumeroCarteira"), true, "", "", "", 20)
 					AtendimentoRN = guias("AtendimentoRN")
 					NomePaciente = TISS__FormataConteudo(guias("NomePaciente"))
 					ContratadoSolicitanteID = guias("ContratadoSolicitanteID")
@@ -293,8 +293,8 @@ response.Charset="utf-8"
                             end if
                             CodigoProcedimento = TISS__FormataConteudo(procs("CodigoProcedimento"))
                             Descricao = left(TISS__FormataConteudo(procs("Descricao")),150)
-                            ViaID = TISS__FormataConteudo(procs("ViaID"))
-                            TecnicaID = TISS__FormataConteudo(procs("TecnicaID"))
+                            ViaID = TISS__FormataConteudo(procs("ViaID"))&""
+                            TecnicaID = TISS__FormataConteudo(procs("TecnicaID"))&""
 
                             hash = hash & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
                             %>
@@ -308,8 +308,14 @@ response.Charset="utf-8"
                                     <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
                                 </ans:procedimento>
                                 <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
+								<%if ViaID<>"" then%>
                                 <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
+								<%
+								end if
+								if TecnicaID<>"" then
+								%>
                                 <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
+								<%end if%>
                                 <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
                                 <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
                                 <ans:valorTotal><%= ValorTotal %></ans:valorTotal>

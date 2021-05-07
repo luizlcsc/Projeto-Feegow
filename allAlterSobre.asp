@@ -18,7 +18,7 @@ response.Charset="utf-8"
 '1, 105, 84
 set lic = dbc.execute("select * from licencas where id="&request.QueryString("I")&" order by id")
 while not lic.eof
-	ConnString = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic"&lic("id")&";uid=root;pwd=pipoca453;"
+	ConnString = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic"&lic("id")&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 	Set db = Server.CreateObject("ADODB.Connection")
 	db.Open ConnString
 

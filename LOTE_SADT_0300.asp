@@ -267,8 +267,8 @@ prefixo = right(prefixo, 20)
 						CodigoProcedimento = TISS__FormataConteudo(procs("CodigoProcedimento"))
 						Descricao = TISS__FormataConteudo(procs("Descricao"))
 						Quantidade = TISS__FormataConteudo(procs("Quantidade"))
-						ViaID = TISS__FormataConteudo(procs("ViaID"))
-						TecnicaID = TISS__FormataConteudo(procs("TecnicaID"))
+						ViaID = TISS__FormataConteudo(procs("ViaID"))&""
+						TecnicaID = TISS__FormataConteudo(procs("TecnicaID"))&""
 						Fator = treatvaltiss(1)
 						ValorUnitario = treatvaltiss( procs("Fator")*procs("ValorUnitario") )
 						ValorTotal = treatvaltiss(procs("ValorTotal"))
@@ -285,8 +285,14 @@ prefixo = right(prefixo, 20)
                                 <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
                             </ans:procedimento>
                             <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
+														<%if ViaID<>"" then%>
                             <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
+														<%
+														end if
+														if TecnicaID<>"" then
+														%>
                             <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
+														<%end if%>
                             <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
                             <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
                             <ans:valorTotal><%= ValorTotal %></ans:valorTotal>

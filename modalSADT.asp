@@ -150,8 +150,8 @@ elseif Tipo="Procedimentos" then
         </div>
         <div class="row">
             <%= quickField("number", "Quantidade", "* Quant.", 1, Quantidade, " text-right ", "", " required='required' min='0' onchange=""tissRecalc('Quantidade');""") %>
-            <%= quickField("simpleSelect", "ViaID", "* Via", 2, ViaID, "select * from tissvia order by descricao", "descricao", "  onchange=""tissCompletaDados(4, $('#gProcedimentoID').val());"" empty='' required='required' no-select2") %>
-            <%= quickField("simpleSelect", "TecnicaID", "* T&eacute;c.", 3, TecnicaID, "select * from tisstecnica order by descricao", "descricao", " empty='' required='required' no-select2") %>
+            <%= quickField("simpleSelect", "ViaID", "Via", 2, ViaID, "select * from tissvia order by descricao", "descricao", "  onchange=""tissCompletaDados(4, $('#gProcedimentoID').val());"" empty='' required='required' no-select2") %>
+            <%= quickField("simpleSelect", "TecnicaID", "T&eacute;c.", 3, TecnicaID, "select * from tisstecnica order by descricao", "descricao", " empty='' required='required' no-select2") %>
             <%= quickField("text", "Fator", "* Fator", 2, formatnumber(Fator,2), " input-mask-brl text-right", "", " required='required' onchange=""alertCalculo(this);tissRecalc('Fator');""") %>
             <%= quickField("currency", "ValorUnitario", "* Valor Unit&aacute;rio", 2, ValorUnitario, "", "", " "&ValorRequired&" onchange=""alertCalculo(this);tissRecalc('ValorUnitario');""") %>
             <%= quickField("currency", "ValorTotal", "* Valor Total", 2, ValorTotal, "", "", " "&ValorRequired) %>
@@ -256,6 +256,28 @@ end if
 </form>
 <script language="javascript">
 <!--#include file="jQueryFunctions.asp"-->
+
+$(document).ready(function () {
+    $("select[name=gProcedimentoID]").change(function () {
+        let ProcedimentoCirurgico = false;
+        $.post("./Classes/AjaxReturn.asp",
+            {
+                itemVal: $(this).val(),
+                itemTab: "Procedimentos",
+                itemCol: "TipoProcedimentoID"
+            }, 
+            function (valor) {
+                if (valor==1){
+                    ProcedimentoCirurgico=true;
+                }
+                $('#ViaID').attr('required',ProcedimentoCirurgico);
+                $('#TecnicaID').attr('required',ProcedimentoCirurgico);
+
+            }
+        );           
+    });
+});
+
 $("#frmModal").submit(function(){
     var val = $("#select2-ProdutoID-container").text();
     $("#ProdutoDescricaoStr").val(val);

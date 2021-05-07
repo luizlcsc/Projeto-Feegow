@@ -47,7 +47,7 @@ end if
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12"><br />
+                    <div class="col-md-12 sensitive-data"><br />
                         <%=quickField("editor", "atestado", "Texto", 12, Atestado, "140", "", " id=""atestado"" rows=""6""" )%>
                     </div>
                     <hr class="short alt" />

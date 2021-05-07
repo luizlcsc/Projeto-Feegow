@@ -65,9 +65,9 @@
             
             sqlAbaixo = ""
             Ordem = ref("Ordem")
-            sqlOrdem = " pro.NomeProduto "
+            sqlOrdem = " NomeProduto "
             if Ordem = "Validade" then
-                sqlOrdem = " estpos.Validade "
+                sqlOrdem = " Validade "
             end if
 
             if ref("ProdutoID")<>0 then
@@ -105,8 +105,12 @@
                 sqlValDe = " AND (estpos.Validade>= "& mydatenull(ValidoDe) &") AND estpos.Quantidade>0 "
                 sqlCampoValDe = " AND (Validade>= "& mydatenull(ValidoDe) &") AND Quantidade>0 "
             end if
+
             if ref("praVencer") <>"" then
                 sqlsomentePraVencer = " AND Validade IS NOT NULL AND quantidade > 0 "
+                sqlHavingSomentePraVencer = " AND  datediff(curdate(), Validade) < 60"
+
+                sqlOrdem="Validade"
             end if
 
             if ref("AbaixoMinimo")="S" then
@@ -124,8 +128,12 @@
             "LEFT JOIN produtosfabricantes profab ON profab.id=pro.FabricanteID "&_
             "LEFT JOIN produtoslocalizacoes proloc ON proloc.id=pro.LocalizacaoID "&_
             "LEFT JOIN estoqueposicao estpos ON estpos.ProdutoID=pro.id "&_
-            "WHERE pro.sysActive = 1 "& sqlsomentePraVencer & sqlProd & sqlTipoProduto & sqlPrincipioAtivo & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &" GROUP BY pro.id ORDER BY "&sqlOrdem &""&_
-            ") pro")
+            "WHERE pro.sysActive = 1 "& sqlsomentePraVencer & sqlProd & sqlTipoProduto & sqlPrincipioAtivo & sqlCod & sqlCodInd & sqlCat & sqlFab & sqlLoc & sqlValDe & sqlVal & sqlAbaixo &""&_
+            " "&sqlHavingSomentePraVencer&" "&_
+            "GROUP BY pro.id "&_
+            ") pro "&_
+            "ORDER BY "&sqlOrdem)
+
 
             set prod = db.execute(sqlstring)
             while not prod.EOF

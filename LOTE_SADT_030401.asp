@@ -115,7 +115,7 @@ prefixo = right(prefixo, 20)
 					DataAutorizacao = mydatetiss(guias("DataAutorizacao"))
 					Senha = treatStrNull(TISS__FormataConteudo(guias("Senha")))
 					DataValidadeSenha = mydatetiss(guias("DataValidadeSenha"))
-					NumeroCarteira = TISS__FormataConteudo(guias("NumeroCarteira"))
+					NumeroCarteira = TISS__FormataConteudoCustom(guias("NumeroCarteira"), true, "", "", "", 20)
 					AtendimentoRN = TISS__FormataConteudo(guias("AtendimentoRN"))
 					NomePaciente = TISS__FormataConteudo(guias("NomePaciente"))
 					ContratadoSolicitanteID = TISS__FormataConteudo(guias("ContratadoSolicitanteID"))
@@ -333,8 +333,8 @@ prefixo = right(prefixo, 20)
 						CodigoProcedimento = TISS__FormataConteudo(procs("CodigoProcedimento"))
 						Descricao = left(TISS__FormataConteudo(procs("Descricao")),150)
 
-						ViaID = TISS__FormataConteudo(procs("ViaID"))
-						TecnicaID = TISS__FormataConteudo(procs("TecnicaID"))
+						ViaID = TISS__FormataConteudo(procs("ViaID"))&""
+						TecnicaID = TISS__FormataConteudo(procs("TecnicaID"))&""
 
 						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
 						%>
@@ -349,8 +349,14 @@ prefixo = right(prefixo, 20)
                                 <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
                             </ans:procedimento>
                             <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
+														<%if ViaID<>"" then%>
                             <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
+														<%
+														end if
+														if TecnicaID<>"" then
+														%>
                             <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
+														<%end if%>
                             <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
                             <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
                             <ans:valorTotal><%= ValorTotal %></ans:valorTotal>

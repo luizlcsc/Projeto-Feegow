@@ -51,7 +51,7 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao)
 
         TratamentoProfissional = ""
 
-
+        ProcedimentoID = 0
         if instr(Mensagem, "[Procedimento.Tipo]") or instr(Mensagem, "[Procedimento.Nome]") then
             set proc = db.execute("select p.id,p.NomeProcedimento,t.TipoProcedimento from procedimentos p LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID where p.id="&age("TipoCompromissoID"))
             if not proc.eof then
@@ -322,8 +322,9 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     <td>
                     <%
                     if PermitirSelecionarModeloWhatsApp = 0 then
+                    FormatTextoWhatsApp = replace(TextoWhatsApp, "'", "&apos;")
                     %>
-                    <span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline; cursor: pointer;"  onclick="AlertarWhatsapp('<%=CelularFormatadado%>', `<%=TextoWhatsApp%>`, '<%=ag("id")%>')" <% end if%> ><span style="color:#06d755" id="wpp-<%=ag("id")%>"><% if TagWhatsApp then %><i class='fa fa-whatsapp'></i><% end if %> </span> <%= Celular %></span>
+                    <span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline; cursor: pointer;"  onclick='AlertarWhatsapp(`<%=CelularFormatadado%>`, `<%=FormatTextoWhatsApp%>`, `<%=ag("id")%>`)' <% end if%> ><span style="color:#06d755" id="wpp-<%=ag("id")%>"><% if TagWhatsApp then %><i class='fa fa-whatsapp'></i><% end if %> </span> <%= Celular %></span>
                     <%
                     else
                         whatsAppFiltro_ProfissionalID = LinhaProfissional

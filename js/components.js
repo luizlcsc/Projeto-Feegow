@@ -480,6 +480,51 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
     return response;
 }
   
+const recordLog = async (
+    {
+        module,
+        licenseId,
+        userId,
+        logUrl,
+        oldData,
+        newData,
+        action
+    }) => {
+        var d = new Date();
+        var hash = d.getTime();
+
+        const dateTime = new Date();
+
+        $.ajax({
+            url: "https://galahad.feegow.com/logs",
+            method: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data:
+            JSON.stringify({
+                "licenceId": licenseId,
+                "module": module,
+                "moduleActionType": action,
+                "moduleActionURL": logUrl,
+                "moduleActionHash": hash,
+                "sysUser": userId,
+                "timestamp": dateTime,
+                "payload": {
+                    "action": "update",
+                    "value": newData,
+                    "actionDate": dateTime
+                },
+                "logType": "LOGS_EVENTS"
+            }),
+            success:function(data) {
+                
+            },
+            error: function (xhr, statustext, thrownError) {
+               
+            }
+        });
+    }
+
 const doApiRequest = async (
     {
         url,
@@ -503,3 +548,4 @@ const doApiRequest = async (
         });
     })
 };
+

@@ -110,7 +110,7 @@ if not tryLogin.EOF then
         ExibeChatAtendimento=True
     end if
 
-    if ClienteUnimed or AppEnv<>"production" or tryLogin("Status")<>"C" then
+    if (ClienteUnimed and tryLogin("Franquia")<>"P") or AppEnv<>"production" or tryLogin("Status")<>"C" then
         ExibeChatAtendimento=False
     end if
     
@@ -299,7 +299,7 @@ if not tryLogin.EOF then
 
         session("RazaoSocial") = RazaoSocial
 
-		if ref("password")=MasterPwd then
+		if permiteMasterLogin then
 			session("MasterPwd") = "S"
 		end if
 
@@ -350,13 +350,22 @@ if not tryLogin.EOF then
 		end if
 		set pFoto = db.execute("select * from "&sysUser("Table")&" where id="&sysUser("idInTable"))
 		if not pFoto.EOF then
-			session("NameUser") = pFoto(""&sysUser("NameColumn")&"")
+            nomeUser = pFoto(""&sysUser("NameColumn")&"")
 
 			if pFoto("Foto") = "" or isNull(pFoto("Foto")) then
-				session("Photo") = "assets/img/user.png"
+                Foto = "assets/img/user.png"
 			else
-                session("Photo") = arqEx(pFoto("Foto")&"&dimension=full", "Perfil")
+                Foto = arqEx(pFoto("Foto")&"&dimension=full", "Perfil")
 			end if
+
+            if session("MasterPwd")&""="S" THEN
+                nomeUser = "FEEGOW" 
+                Foto= "https://feegow-public-cdn.s3.amazonaws.com/img/icone-feegow-cinza.png"
+            END IF
+
+			session("NameUser") = nomeUser
+            session("Photo") = Foto
+
 		end if
     		set config = db.execute("select c.* from sys_config c")
             set v114 = db.execute("select i.TABLE_NAME from information_schema.`COLUMNS` i WHERE i.TABLE_SCHEMA='"& session("banco") &"' AND i.TABLE_NAME='sys_config' AND i.COLUMN_NAME='SepararPacientes'")
@@ -553,7 +562,8 @@ if not tryLogin.EOF then
 		else
                     urlRedir = "./../?P=Home&Pers=1"
                 end if
-                if tryLogin("Home")&""<>"" then
+
+                if tryLogin("Home")&""<>"" and Versao=7 then
                     urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
                 end if
             else
@@ -565,10 +575,11 @@ if not tryLogin.EOF then
                     urlRedir = "./../?P=Home&Pers=1"
                 end if
 
-                if tryLogin("Home")&""<>"" then
+                if tryLogin("Home")&""<>"" and Versao=7 then
                     urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
                 end if
 			end if
+
 		tryLogin.movenext
 		wend
 		tryLogin.close

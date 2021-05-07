@@ -1,5 +1,52 @@
 <!--#include file="connect.asp"-->
     <%
+    resourceType = lcase(req("R"))&""
+    itemID       = req("I")&""
+    'INCLUSÃO DE REGISTRO NOS LOGS PROVENIENTE DE IMPORTAÇÃO QUE NÃO TIVERAM A INCLUSÃO DOS LOGS
+    if resourceType="pacientes" and itemID<>"" then
+        qLogsCheckSQL = "SELECT id FROM log              "&chr(13)&_
+                        "WHERE Operacao='I' AND I="&itemID
+                        
+        'response.write("<pre>"&qLogsCheckSQL&"</pre>") 
+        set LogsCheckSQL = db.execute(qLogsCheckSQL)
+        if LogsCheckSQL.eof then
+            qLogsDataInsertSQL =    "SELECT DHUp,                                                                                                                                                                                               "&chr(13)&_
+                                    "'|NomePaciente|Nascimento|CPF|Cel1|Sexo|' AS 'logColumns',                                                                                                                                                 "&chr(13)&_
+                                    "CONCAT('|^', TRIM(COALESCE(`NomePaciente`,'')),'|^', TRIM(COALESCE(`Nascimento`,'')),'|^', TRIM(COALESCE(`CPF`,'')),'|^', TRIM(COALESCE(`Cel1`,'')),'|^', TRIM(COALESCE(`Sexo`,'')),'|^') AS 'logValues'   "&chr(13)&_
+                                    "FROM pacientes AS pac                                                                                                                                                                                      "&chr(13)&_
+                                    "WHERE pac.sysUser=0 AND pac.id="&itemID&"                                                                                                      "
+            'response.write(qLogsDataInsertSQL)
+            SET LogsDataInsertSQL = db.execute(qLogsDataInsertSQL)
+            if not LogsDataInsertSQL.eof then
+                log_Operacao        = "I"
+                log_I               = itemID
+                log_recurso         = lcase(resourceType)
+                log_colunas         = LogsDataInsertSQL("logColumns")
+                log_valorAnterior   = "|^|^|^|^|^|^"
+                log_valorAtual      = LogsDataInsertSQL("logValues")
+                log_Obs             = "Importação de dados"
+                log_DataHora        = mydatenull(LogsDataInsertSQL("DHUp"))
+                log_sysUser         = 0
+
+                qLogsInsertSQL = "INSERT INTO log "&chr(13)&_
+                                 "(Operacao,I,recurso,colunas,valorAnterior,valorAtual,Obs,DataHora,sysUser) "&chr(13)&_
+                                 "VALUES ([{["&log_Operacao&"]}],[{["&log_I&"]}],[{["&log_recurso&"]}],[{["&log_colunas&"]}],[{["&log_valorAnterior&"]}],[{["&log_valorAtual&"]}],[{["&log_Obs&"]}],"&log_DataHora&",[{["&log_sysUser&"]}])"
+                qLogsInsertSQL = replace(qLogsInsertSQL,"''","'")
+                qLogsInsertSQL = replace(qLogsInsertSQL,"[{[","'")
+                qLogsInsertSQL = replace(qLogsInsertSQL,"]}]","'")
+                'response.write("<pre>"&qLogsInsertSQL&"</pre>")
+
+                db.execute(qLogsInsertSQL)
+            end if
+
+            LogsDataInsertSQL.close
+            set LogsDataInsertSQL = nothing
+
+        end if
+        LogsCheckSQL.close
+        set LogsCheckSQL = nothing
+    end if
+
     if req("Impressao")="" then
     %>
     <div class="panel-heading">

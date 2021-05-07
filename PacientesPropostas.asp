@@ -323,6 +323,42 @@ end if
             </div>
 
 
+<div id="permissaoTabelaProposta" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Permissão para uso de Tabela</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-4">
+            <p>Selecione um usuário abaixo que tenha  permissão: 
+                </p>      
+              
+        </div>        
+            <div class="col-md-6">
+                <label style="" class="error_msg"></label><br>
+                <label>Senha do Usuário</label>
+                <input type="password" id="password" name="password" class="form-control">
+            </div>
+
+        <div class="col-md-12 tabelaParticular" style="color:#000;">
+        
+             
+        </div>
+        </div>
+       
+        <div class="modal-footer" style="margin-top:13em;">
+                <button type="button" class="btn btn-default fechar" data-dismiss="modal" >Fechar</button>                
+                <button type="button" class="btn btn-info confirmar"    >Confirmar</button>
+       
+         </div>
+
+  </div>
+</div>
+</div>
 
 
             <div class="panel">
@@ -430,6 +466,7 @@ end if
 <!-- Modal -->
 
     </div>
+
 
 <!--#include file="CalculaMaximoDesconto.asp"-->
 
@@ -704,6 +741,83 @@ var $conteudoParaOdontograma = $('#feegow-odontograma-conteudo'),
     <%
     end if
     %>
+
+
+
+
+var idStr = "#TabelaID";
+$('.modal').click(function(){
+    $('#select2-TabelaID-container').text("Selecione");
+    $('#TabelaID').val(0);
+    $('.error_msg').empty();
+});
+
+
+$(idStr).change(function(){    
+        var id          = $('#TabelaID').val();
+        var sysUser     = "<%=session("user") %>";
+        var Nometable   = $('#TabelaID :selected').text();
+        var regra = "|tabelaParticular12V|";
+
+        $.ajax({
+        method: "POST",
+        url: "TabelaAutorization.asp",
+        data: {autorization:"buscartabela",id:id,sysUser:sysUser},
+        success:function(result){
+            if(result == "Tem regra") {
+                $('#permissaoTabelaProposta').modal('show');
+                buscarNome(id,sysUser,regra);
+            }
+        }
+    });
+        $('.confirmar').click(function(){
+                var Usuario =  $('input[name="nome"]:checked').val();
+                var senha   =  $('#password').val();
+                liberar(Usuario , senha , id , Nometable);
+                $('.error_msg').empty(); 
+            });
+    });
+
+
+
+function buscarNome(id , user,regra){
+    $.ajax({
+        method: "POST",
+        ContentType:"text/html",
+        url: "TabelaAutorization.asp",
+        data: {autorization:"pegarUsuariosQueTempermissoes",id:id,LicencaID:user,regra:regra},
+        success:function(result){
+            res = result.split('|');     
+                    $('.tabelaParticular').html(result);
+            }
+        });
+}
+
+function liberar(Usuario , senha , id, Nometable){
+    $.ajax({
+    method: "POST",
+    url: "SenhaDeAdministradorValida.asp",
+    data: {autorization:"liberar",id:id ,U:Usuario , S:senha},
+    success:function(result){      
+            if( result == "1" ){
+                    $('.error_msg').text("Logado Com Sucesso!").fadeIn().css({color:"green" });;
+                setTimeout(() => {
+                    $('#permissaoTabelaProposta').modal('hide');
+                    $('#TabelaID').val(id);
+                   
+                    $('#select2-TabelaID-container').text(Nometable);
+
+                }, 2000);
+                }else{
+                        $('.error_msg').text("Senha incorreta!").css({color:"red" }).fadeIn();
+                        $('#select2-TabelaID-container').text("Selecione");
+                        $('#TabelaID').val(0);
+                }
+            }
+          
+        });
+       
+}
 
 </script>
 

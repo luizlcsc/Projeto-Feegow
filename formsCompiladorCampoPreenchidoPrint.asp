@@ -19,13 +19,13 @@
                 <label class="campoLabel"><%=RotuloCampo%></label><br>
                 <div class="text-center" id="fotoFoto<%=CampoID%>"><%
 				if ValorPadrao<>"" and not isnull(ValorPadrao) then
-					%>
-                    <img src="/uploads/<%=replace(session("Banco"), "clinic", "")%>/Perfil/<%=ValorPadrao%>" style="max-width:95%; max-height:90%;">
-                    <%
+				%>
+          <img src="<%=form_imgSRC%>" style="max-width:95%; max-height:90%;">
+          <%
 				else
 					%>
-                    <input type="file" class="fotoForm" name="Foto" id="id-input-file-<%=CampoID%>" />
-                    <%
+          <input type="file" class="fotoForm" name="Foto" id="id-input-file-<%=CampoID%>" />
+        <%
 				end if
 				%></div>
 

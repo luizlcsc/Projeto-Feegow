@@ -1168,7 +1168,7 @@ atualizarTempoProcedimentoProfissional = (self) => {
                            if(ResponseJson.tempo != undefined) {
 	                            self.parentElement.nextElementSibling.querySelectorAll("input")[0].value = ResponseJson.tempo;
 	                        }
-	                    }, 200);        
+	                    }, 50);        
                     }   
                 })
             }

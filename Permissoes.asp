@@ -328,4 +328,32 @@ function MostraLogsPermissoes() {
     openComponentsModal("LogPermissoes.asp", {I: '<%=UserID%>', R: 'sys_users'},"Log das permissões")
 }
 
+$('#tabelaParticular12V').click(function(){
+	if($(this).is(':checked') == false){
+   
+	var id = "<%=req("I")%>"
+			$.ajax({		
+			method: "POST",
+			url: "TabelaAutorization.asp",
+			data: {autorization: "UpdateAll",id:id},
+				function(data){
+				SysUser = data;				
+					UpdateAll(SysUser);
+                }
+			})
+		
+		}
+	});
+
+function UpdateAll(SysUser){
+ $.ajax({		
+			method: "POST",
+			url: "TabelaAutorization.asp",
+			data: {autorization:"UpdateAll",SysUser:SysUser},
+				function(data){
+					
+			}
+        })
+
+}
 </script>

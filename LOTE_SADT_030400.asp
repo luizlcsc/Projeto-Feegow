@@ -284,7 +284,7 @@ prefixo = right(prefixo, 20)
 						ProcedimentoSeriado=procs("ProcedimentoSeriado")
 						Data = mydatetiss(procs("Data"))
 						Quantidade = TirarAcento(procs("Quantidade"))
-						Fator = treatvaltiss(1)
+						Fator = treatvaltiss(procs("Fator"))
 						ValorUnitario = procs("Fator")*procs("ValorUnitario")
 						ValorTotal = procs("ValorTotal")
 
@@ -541,5 +541,5 @@ prefixo = right(prefixo, 20)
     </ans:epilogo>
 </ans:mensagemTISS>
 <%
-Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
+' Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
 %>

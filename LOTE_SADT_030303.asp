@@ -284,7 +284,7 @@ prefixo = right(prefixo, 20)
 					    ProcedimentoSeriado=procs("ProcedimentoSeriado")
 						Data = mydatetiss(procs("Data"))
                         Quantidade = TISS__FormataConteudo(procs("Quantidade"))
-                        Fator = treatvaltiss(1)
+                        Fator = treatvaltiss(procs("Fator"))
                         ValorUnitario =  procs("Fator")*procs("ValorUnitario")
                         ValorTotal = procs("ValorTotal")
 

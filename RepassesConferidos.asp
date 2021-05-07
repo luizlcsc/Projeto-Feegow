@@ -78,7 +78,7 @@ TipoData = reqf("TipoData")
 DeSqlProf = De
 
 if De&""<>"" and TipoData="Comp" then
-    DeExec = dateadd("m", -6, De)
+    DeExec = dateadd("m", -9, De)
     DeSqlProf = dateadd("d", -15, De)
 else
     DeExec=De

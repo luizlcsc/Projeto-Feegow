@@ -3,14 +3,11 @@
 </div>
 
 <!-- Production -->
-<script defer src="AGUARDANDO_URL_DO_CDN/assets/js/commons.chunk.js" crossorigin="anonymous"></script>
-<script defer src="AGUARDANDO_URL_DO_CDN/assets/js/config-page.bundle.js" crossorigin="anonymous"></script>
-<link rel="preload" as="style"  onload="this.onload=null;this.rel='stylesheet'" href="AGUARDANDO_URL_DO_CDN/assets/css/commons.css" crossorigin="anonymous">
-<link rel="preload" as="style"  onload="this.onload=null;this.rel='stylesheet'" href="AGUARDANDO_URL_DO_CDN/assets/css/config-page.css" crossorigin="anonymous">
+<script src="AGUARDANDO_URL_DO_CDN/assets/compras/js/config-page-0.1.0.bundle.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="AGUARDANDO_URL_DO_CDN/assets/compras/css/config-page-0.1.0.css" crossorigin="anonymous">
 
 <!-- Development -->
-<!--<script src="http://localhost:3000/static/js/commons.chunk.js" crossorigin="anonymous"></script>-->
-<!--<script src="http://localhost:3000/static/js/config-page.bundle.js" crossorigin="anonymous"></script>-->
+<!--<script src="http://localhost:3000/static/js/config-page-0.1.0.bundle.js" crossorigin="anonymous"></script>-->
 
 
 <script>
@@ -24,7 +21,7 @@
             document.getElementById("lMenu").prepend(menu)
             ConfigPageModule.renderNav(menu);
         } else {
-            appcontainer.innerHTML = '<div class="alert alert-danger" role="alert">Não foi possível carregar o módulo de Configuração de Compras.</div>';
+            appcontainer.innerHTML = '<p class="text-danger">Não foi possível carregar o módulo de Configuração de Compras.</p>';
         }
         window.removeEventListener('DOMContentLoaded', listener, false);
     }

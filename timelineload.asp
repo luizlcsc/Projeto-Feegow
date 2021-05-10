@@ -549,7 +549,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                        "FROM pacientesprotocolosmedicamentos ppm "&_
                                                        "LEFT JOIN protocolos prot ON prot.id=ppm.ProtocoloID "&_
                                                        "LEFT JOIN protocolosmedicamentos pm ON ppm.ProtocoloMedicamentoID=pm.id "&_
-                                                       "LEFT JOIN produtos prod ON prod.id=ppm.ProtocoloMedicamentoID "&_
+                                                       "LEFT JOIN produtos prod ON prod.id=COALESCE(pm.Medicamento, ppm.MedicamentoPrescritoID) "&_
                                                        "WHERE ppm.PacienteProtocoloID="&ti("id")&" GROUP BY ppm.ProtocoloID")
 
                         while not getProtocolos.eof

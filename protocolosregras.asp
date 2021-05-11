@@ -104,14 +104,16 @@ camposFormJson = camposFormJson & "}"
         height: 1em;
     }
     #app-regras .bloco-campos-form {
-        display: flex;
-        flex: 1;
-        flex-direction: row;
-        align-items: baseline;
+        padding: 10px 0;
+    }
+    #app-regras .bloco-campos-form > i {
+        float: left;
+        width: 7%;
+        padding-top: 13px;
     }
     #app-regras .bloco-campos-form > div {
-        flex: 1;
-        margin: 10px 0 0 10px;
+        float: left;
+        width: 93%;
     }
 
     #app-regras #table-regras thead th:nth-child(2), #app-regras #table-regras thead th:nth-child(3),
@@ -127,6 +129,7 @@ camposFormJson = camposFormJson & "}"
     #app-regras #table-regras tbody td:nth-child(1), #app-regras #table-regras tbody td:nth-child(2),
       #app-regras #table-regras tbody td:nth-child(3){
         width: 30%;
+        max-width: 280px;
     }
 
     #app-regras .btn-excluir-convenio {

@@ -27,7 +27,7 @@
         if CInt(existeNotificacao("qtd")) = 0 then
 
             ' gerar notificação para os medicos auditores
-            sqlCriarNotificacao = "INSERT INTO notificacoes (TipoNotificacaoID, UsuarioID, NotificacaoIDRelativo, CriadoPorID, Prioridade, StatusID, metadata) VALUES(13, "&auditores("id")&", "&paciente&", 1, 1, 1,'');"
+            sqlCriarNotificacao = "INSERT INTO notificacoes (TipoNotificacaoID, UsuarioID, NotificacaoIDRelativo, CriadoPorID, Prioridade, StatusID, metadata) VALUES(13, "&auditores("id")&", "&paciente&", "&session("User")&", 1, 1,'');"
 
             db.execute(sqlCriarNotificacao)
             ' dar update na query  UPDATE sys_users SET TemNotificacao=1 WHERE id=1 para os medicos auditores

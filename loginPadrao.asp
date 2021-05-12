@@ -160,7 +160,7 @@ if not tryLogin.EOF then
 
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
         if sysUser.eof then
-            response.write("<style>.info{display: flex;justify-content: center;align-items: center;height: 100vh;}.msg {padding: 50px;opacity: 0.7;border-radius: 10px;}</style><div class='info'><div class='msg'>Entrar em contato com o adiministrador e preencha os dados de acesso. </div></div>")
+            response.write("<style>.info{display: flex;justify-content: center;align-items: center;height: 100vh;}.msg {padding: 50px;opacity: 0.7;border-radius: 10px;}</style><div class='info'><div class='msg'>Entrar em contato com o administrador e preencha os dados de acesso. </div></div>")
             response.end
         end if 
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
@@ -299,7 +299,7 @@ if not tryLogin.EOF then
 
         session("RazaoSocial") = RazaoSocial
 
-		if permiteMasterLogin then
+		if ref("password")=MasterPwd then
 			session("MasterPwd") = "S"
 		end if
 
@@ -350,22 +350,13 @@ if not tryLogin.EOF then
 		end if
 		set pFoto = db.execute("select * from "&sysUser("Table")&" where id="&sysUser("idInTable"))
 		if not pFoto.EOF then
-            nomeUser = pFoto(""&sysUser("NameColumn")&"")
+			session("NameUser") = pFoto(""&sysUser("NameColumn")&"")
 
 			if pFoto("Foto") = "" or isNull(pFoto("Foto")) then
-                Foto = "assets/img/user.png"
+				session("Photo") = "assets/img/user.png"
 			else
-                Foto = arqEx(pFoto("Foto")&"&dimension=full", "Perfil")
+                session("Photo") = arqEx(pFoto("Foto")&"&dimension=full", "Perfil")
 			end if
-
-            if session("MasterPwd")&""="S" THEN
-                nomeUser = "FEEGOW" 
-                Foto= "https://feegow-public-cdn.s3.amazonaws.com/img/icone-feegow-cinza.png"
-            END IF
-
-			session("NameUser") = nomeUser
-            session("Photo") = Foto
-
 		end if
     		set config = db.execute("select c.* from sys_config c")
             set v114 = db.execute("select i.TABLE_NAME from information_schema.`COLUMNS` i WHERE i.TABLE_SCHEMA='"& session("banco") &"' AND i.TABLE_NAME='sys_config' AND i.COLUMN_NAME='SepararPacientes'")

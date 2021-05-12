@@ -10,11 +10,15 @@ set reqOperador    = request.form("Operador")
 set reqFormID      = request.form("FormID")
 set reqFormCampoID = request.form("FormCampoID")
 set reqValor       = request.form("Valor")
+set reqConvenioID  = request.form("ConvenioID")
+set reqPlanoID     = request.form("PlanoID")
 
-countRegras = reqRegra.Count
+countConvenios = reqConvenioID.Count
+countRegras    = reqRegra.Count
 
 if ProtocoloID = "" or countRegras <> reqId.Count or countRegras <> reqCampo.Count or countRegras <> reqOperador.Count _
-    or countRegras <> reqFormID.Count or countRegras <> reqFormCampoID.Count or countRegras <> reqValor.Count then
+    or countRegras <> reqFormID.Count or countRegras <> reqFormCampoID.Count or countRegras <> reqValor.Count _
+    or countConvenios <> reqPlanoID.Count then
 
     response.write("Parametros invalidos")
     response.status = 400
@@ -24,25 +28,26 @@ end if
 
 user = session("User")
 
-Convenio = ref("Convenio")&""
-Plano    = ref("Plano")&""
-if Convenio = "" then
-    Convenio = "NULL"
-else
-    Convenio = "'" & Convenio & "'"
-end if
-if Plano = "" then
-    Plano = "NULL"
-else
-    Plano = "'" & Plano & "'"
-end if
-sqlUpdate = "UPDATE protocolos SET ConvenioRegra = " & Convenio & ", ConvenioValor = " & Plano & " " &_
-            "WHERE id = '" & ProtocoloID & "'"
-db.execute(sqlUpdate)
+' exclui as regras de convenio do protocolo antes de inserir as novas regras
+sqlExclui = "DELETE FROM protocolos_convenios WHERE ProtocoloID = '" & ProtocoloID & "'"
+db.execute(sqlExclui)
+
+for idx = 1 to countConvenios
+    convenioId = reqConvenioID(idx)
+    planoId    = reqPlanoID(idx)
+
+    if planoId = "" then
+        planoId = "NULL"
+    end if
+
+    'insere a regra do convenio
+    sqlInsert = "INSERT INTO protocolos_convenios (ProtocoloID, ConvenioID, PlanoID) " &_
+                "VALUES ('" & ProtocoloID & "', '" & convenioId & "', " & planoId & ")"
+    db.execute(sqlInsert)
+next
 
 ' exclui as regras do protocolo antes de inserir as novas regras
-sqlExclui = "UPDATE protocolos_regras SET sysActive = -1, sysUser = " & user & ", sysDate = NOW() " &_
-            "WHERE ProtocoloID = '" & ProtocoloID & "' AND sysActive = 1"
+sqlExclui = "DELETE FROM protocolos_regras WHERE ProtocoloID = '" & ProtocoloID & "'"
 db.execute(sqlExclui)
 
 for idx = 1 to countRegras

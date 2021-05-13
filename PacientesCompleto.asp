@@ -852,22 +852,7 @@ $(function(){
         if(nomePais != "" && nomePais != "Brasil"){
             //$("#CPF").prop("required", false);
         }else{
-
-        <%
-            set obriga = db.execute("select * from obrigacampos where Tipo='Paciente' and Obrigar like '%|%'")
-            if not obriga.eof then
-                Obr = obriga("Obrigar")
-                splObr = split(Obr, ", ")
-                for o=0 to ubound(splObr)
-                    %>
-            if(!$("#<%=replace(splObr(o), "|", "") %>").parents(".qr").hasClass("hidden")){
-                $("#<%=replace(splObr(o), "|", "") %>").prop("required", true);
-            }
-                <%
-                next
-            end if
-        %>
-
+            toRequired()
         }
     });
 });

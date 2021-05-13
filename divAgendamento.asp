@@ -392,7 +392,7 @@ end if
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab4">
         <li id="liAgendamento" class="active abaAgendamento"><a data-toggle="tab" onclick="crumbAgenda();" href="#dadosAgendamento"><i class="fa fa-calendar"></i> <span class="hidden-xs">Agendamento</span></a></li>
-        <li id="abaFicha" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1&AgendamentoID=<%=agendamentoIDSelecionado%>', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden');" href="#divDadosPaciente"><i class="fa fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
+        <li id="abaFicha" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1&AgendamentoID=<%=agendamentoIDSelecionado%>', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden'); toRequired()" href="#divDadosPaciente"><i class="fa fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
         <li id="abaHistorico" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('HistoricoPaciente&PacienteID='+$('#PacienteID').val(), '', '1', 'divHistorico'); " href="#divHistorico"><i class="fa fa-list"></i> <span class="hidden-xs">Hist&oacute;rico</span></a></li>
         <%if Aut("contapac")=1 or aut("|areceberpaciente")=1 then%>
 	        <li id="abaConta" class="abasAux abaAgendamento hidden-xs"><a data-toggle="tab" onclick="$('#divHistorico').html('Carregando...'); ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico'); $('#alertaAguardando').removeClass('hidden'); $('#pagar').remove();" href="#divHistorico"><i class="fa fa-money"></i> <span class="hidden-xs">Conta</span></a></li>
@@ -2014,6 +2014,29 @@ function liberar(Usuario , senha , id){
                 }
             }
         });
+}
+
+function toRequired(){
+    $(document).ajaxComplete(function(){
+<%
+        set obriga = db.execute("select * from obrigacampos where Tipo='Paciente' and Obrigar like '%|%'")
+        if not obriga.eof then
+            Obr = obriga("Obrigar")
+            splObr = split(Obr, ", ")
+            for o=0 to ubound(splObr)
+                campoObrigatorio = replace(splObr(o), "|", "")
+            %>
+                var campoNaoObrigatorio = false;
+                var campoObrigatorio = '<%=campoObrigatorio%>'
+                if(!$("#<%=replace(splObr(o), "|", "") %>").parents(".qr").hasClass("hidden") && campoNaoObrigatorio == false){
+                    $("#dadosAgendamento #<%=replace(splObr(o), "|", "") %>").attr("required", "required");
+                    $("#divDadosPaciente #<%=replace(splObr(o), "|", "") %>").attr("required", "required");
+                }
+            <%
+            next
+        end if
+%>
+    });
 }
 
 <!--#include file="jQueryFunctions.asp"-->

@@ -3,6 +3,18 @@
 'on error resume next
 FormID = Id
 
+ExibeForm = true
+if getConfig("BloquearEdicaoFormulario")=1  then
+    set getFormPreenchido = db.execute("SELECT date(DataHora) dataAtendimento FROM buiformspreenchidos WHERE sysActive=1 AND id = "&FormID)
+    if not getFormPreenchido.eof then
+        dataAtendimento = getFormPreenchido("dataAtendimento")
+        if dataAtendimento <> date() then
+            ExibeForm = false
+            DisabledBotao = " style='pointer-events:none;' "
+        end if
+    end if
+end if
+
 set getForm = db.execute("select * from buiforms where id="& ModeloID )
 if not getForm.eof then
     if req("IFR")="" then
@@ -24,7 +36,11 @@ if not getForm.eof then
             <% if req("LaudoSC")="" then %>
                 <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="fa fa-print"></i> Imprimir</button>
             <% end if %>
-            <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="fa fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+
+            <% if ExibeForm <> false then %>
+                <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="fa fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+            <% end if %>
+
             <% if req("LaudoSC")="" then %>
                 <button class="btn btn-default btn-sm" type="button" onclick="fechar()"><i class="fa fa-remove"></i> Fechar </button>
             <% end if %>

@@ -489,6 +489,7 @@ end function
                                 " (SELECT 'Código de Barras' id, 'Código de Barras' Campo) UNION ALL " &_
                                 " (SELECT 'TipoConsultaID' id, 'Tipo de Consulta' Campo) UNION ALL " &_
                                 " (SELECT 'Via' id, 'Via' Campo) UNION ALL " &_
+                                " (SELECT 'Tec' id, 'Técnica' Campo) UNION ALL " &_
                                 " (SELECT 'Grau de participação' id, 'Grau de participação' Campo) UNION ALL " &_
                                 " (SELECT 'Nome do Contratado' id, 'Nome do Contratado' Campo) "
 

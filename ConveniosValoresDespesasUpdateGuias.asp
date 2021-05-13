@@ -67,7 +67,7 @@ while not rsItens.eof
 
             sqlUpdateAnexo = "UPDATE tissguiaanexa ga " &_
                              "SET ga.CodigoProduto = '" & rep(rsItens("Codigo")) & "', " &_
-                             "ga.ValorUnitario = '" & rsItens("Valor") & "', " &_
+                             "ga.ValorUnitario = " & treatvalzero(rsItens("Valor")) & ", " &_
                              "ga.Descricao = '" & rep(rsItens("Descricao")) & "', " &_
                              "ga.Quantidade = '" & NovaQuant & "', " &_
                              "ga.Fator = '" & NovoFator & "', " &_

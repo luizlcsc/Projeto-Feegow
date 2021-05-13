@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+<!--#include file="sqls/sqlUtils.asp"-->
 <!--#include file="connectCentral.asp"-->
 <%
 HorarioAgoraSQL = db.execute("SELECT DATE_FORMAT(NOW(), '%Y-%m-%dT%H:%i:%s') AS now")
@@ -294,34 +295,47 @@ else
     oti = "agenda"
 end if
 
+'Trata a formatação do valor contido na variável GradeApenasConvenios
+function trataConvenio(GradeApenasConvenios)
+    
+    GradeApenasConvenios = replace(GradeApenasConvenios, "|P|,", "")
+    GradeApenasConvenios = replace(GradeApenasConvenios, "||NONE||", "")
+    GradeApenasConvenios = replace(GradeApenasConvenios, "|", "")
 
-if GradeID<> "" and GradeID<>"undefined" then
+    trataConvenio = GradeApenasConvenios
+end function
+
+'Metodo para seleção da tabela correta ao ID
+function selecionaTabela(GradeID)
     if GradeID < 0 then
-        set GradeSQL = db.execute("SELECT * FROM assperiodolocalxprofissional WHERE id="&GradeID*-1)
-        if not GradeSQL.eof then
-            GradeApenasProcedimentos = GradeSQL("Procedimentos")
-        end if
+        QueryGradeSQL = "SELECT *,''Profissionais FROM assperiodolocalxprofissional WHERE id="&GradeID*-1
     else
-        set GradeSQL = db.execute("SELECT * FROM assfixalocalxprofissional WHERE id="&GradeID)
-        if not GradeSQL.eof then
-            GradeApenasProcedimentos = GradeSQL("Procedimentos")
-            GradeApenasConvenios = GradeSQL("Convenios")
-            GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
+        QueryGradeSQL = "SELECT * FROM assfixalocalxprofissional WHERE id="&GradeID
+    end if
 
-            if GradeApenasConvenios&"" <> "" then
-                GradeApenasConvenios = GradeApenasConvenios
-				GradeApenasConvenios = replace(GradeApenasConvenios, "|P|,", "")
-				GradeApenasConvenios = replace(GradeApenasConvenios, "||NONE||", "")
-				GradeApenasConvenios = replace(GradeApenasConvenios, "|", "")
+    selecionaTabela = QueryGradeSQL
 
-				Convenios = GradeApenasConvenios
-            end if
+end function
 
-            if not isnull(GradeSQL("MaximoEncaixes")) and GradeSQL("MaximoEncaixes")<>"" then
-                MaximoEncaixes = GradeSQL("MaximoEncaixes")
-            end if
+'Atualizando valores da grade de convenios
+if GradeID<> "" and GradeID<>"undefined" then
 
-            GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
+    GradeSelecionada= selecionaTabela(GradeID)
+
+    set GradeSQL = db.execute(GradeSelecionada)
+
+    if not GradeSQL.eof then
+        GradeApenasProcedimentos = GradeSQL("Procedimentos")
+        GradeApenasConvenios = GradeSQL("Convenios")
+        GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
+        if GradeApenasConvenios <> "" then
+            GradeApenasConvenios = trataConvenio(GradeApenasConvenios)&""
+
+            Convenios = GradeApenasConvenios
+        end if
+        
+        if not isnull(GradeSQL("MaximoEncaixes")) and GradeSQL("MaximoEncaixes")<>"" then
+            MaximoEncaixes = GradeSQL("MaximoEncaixes")
         end if
     end if
 else

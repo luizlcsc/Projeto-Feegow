@@ -114,38 +114,7 @@
             <%
                 end if
                 if tipoLinha="u" then
-                    arrayintegracao = split(verificaIntegracaoLaboratorial("sys_financialinvoices", InvoiceID),"|")
-                    select case arrayintegracao(0)
-                        case "0"
-                                %>
-                            <div class="btn-group">                            
-                                <button type="button" class="btn btn-secondary btn-xs" title="<%=arrayintegracao(1)%>">
-                                    <i class="fa fa-flask"></i>
-                                </button>                           
-                            </div>
-                            <%
-                        case "1"
-                            %>
-                            <div class="btn-group">                            
-                                <button type="button" onclick="abrirSelecaoLaboratorio('sys_financialinvoices','<%=InvoiceID%>')" class="btn btn-danger btn-xs" title="Abrir Integração Laboratorial">
-                                    <i class="fa fa-flask"></i>
-                                </button>                           
-                            </div>
-                            <%
-                        case "2"
-                            %>
-                            <div class="btn-group">   
-                                <button type="button" onclick="abrirSolicitacao('<%=arrayintegracao(1)%>')" class="btn btn-success btn-xs" id="btn-abrir-modal-matrix<%=InvoiceID%>" title="Ver detalhes da Integração">
-                                    <i class="fa fa-flask"></i>
-                                </button>
-                            </div>
-                            <%
-                            case else
-                                %>
-                            <div class="btn-group">   
-                            </div>
-                            <%
-                    end select   
+                    response.write(retornaBotaoIntegracaoLaboratorial ("sys_financialinvoices", InvoiceID))                     
                 end if
 			  	set mov = db.execute("select id, ifnull(ValorPago, 0) ValorPago, Value, Date, CD, CaixaID from sys_financialmovement where InvoiceID="&inv("id")&" AND Type='Bill' ORDER BY Date")
 				set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&inv("id")&" AND Executado!='S'")

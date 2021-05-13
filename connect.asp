@@ -5710,7 +5710,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
         set rs2 = db.execute(sqlAutenticacao)
         if not rs2.eof then
             'Verifica se já existe integracao feita para a conta 
-            sqlTabela = "SELECT * FROM slabs_solicitacoes AS sls WHERE sls.tabelaid = '"&id&"' AND  sls.tabela ='"&tabela&"' AND sls.success = 'S' AND sls.statusid=1;"
+            sqlTabela = "SELECT * FROM slabs_solicitacoes AS sls WHERE sls.tabelaid = '"&id&"' AND  sls.tabela ='"&tabela&"' AND sls.success = 'S' AND sls.statusid=1 and sls.tiposolicitacao='1';"
             set rs3 = db.execute(sqlTabela)
             if not rs3.eof then
                 verificaIntegracaoLaboratorial = "2|"&rs3("id")
@@ -5755,5 +5755,31 @@ function verificaIntegracaoLaboratorial(tabela, id)
     else    
          verificaIntegracaoLaboratorial = "X|0" ' Não possui o serviço habilitado
     end if
+end function 
+
+function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
+    arrayintegracao = split(verificaIntegracaoLaboratorial(vartabela, varid),"|")
+    if vartabela="tissguiasadt" then
+        radical = "tgs"
+    else
+        radical = "sfi"
+    end if
+    select case arrayintegracao(0)
+        case "0"       
+            retornaBotaoIntegracaoLaboratorial = "<div class=""btn-group""><button type=""button"" class=""btn btn-secondary btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title="""&arrayintegracao(1)&""">" &_ 
+                                                 "<i class=""fa fa-flask""></i> </button></div>"
+       
+        case "1"
+            retornaBotaoIntegracaoLaboratorial = "<div class=""btn-group""><button type=""button"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial""> "&_
+                                                 "<i class=""fa fa-flask""></i></button></div>"
+            
+        case "2"
+            retornaBotaoIntegracaoLaboratorial = "<div class=""btn-group""><button type=""button"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração"">"&_
+                                                 "<i class=""fa fa-flask""></i></button></div>"
+            
+        case else
+            retornaBotaoIntegracaoLaboratorial = "<div class=""btn-group""> </div>"
+    end select  
+
 end function 
 %>

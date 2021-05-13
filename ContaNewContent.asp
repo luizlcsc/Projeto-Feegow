@@ -271,40 +271,8 @@ end if
                             <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
                             <td width="20%" class="text-right">
                                 
-                                <%
-                                arrayintegracao = split(verificaIntegracaoLaboratorial("tissguiasadt", inv("id")),"|")
-                                select case arrayintegracao(0)
-                                    case "0"
-                                            %>
-                                        <div class="btn-group">                            
-                                            <button type="button" class="btn btn-secondary btn-xs" title="<%=arrayintegracao(1)%>">
-                                                <i class="fa fa-flask"></i>
-                                            </button>                           
-                                        </div>
-                                        <%
-                                    case "1"
-                                        %>
-                                        <div class="btn-group">                            
-                                            <button type="button" onclick="abrirSelecaoLaboratorio('tissguiasadt','<%=inv("id")%>')" class="btn btn-danger btn-xs" title="Abrir Integração Laboratorial">
-                                                <i class="fa fa-flask"></i>
-                                            </button>                           
-                                        </div>
-                                        <%
-                                    case "2"
-                                        %>
-                                        <div class="btn-group">   
-                                            <button type="button" onclick="abrirSolicitacao('<%=arrayintegracao(1)%>')" class="btn btn-success btn-xs" id="btn-abrir-modal-matrix<%=inv("id")%>" title="Ver detalhes da Integração">
-                                                <i class="fa fa-flask"></i>
-                                            </button>
-                                        </div>
-                                        <%
-                                        case else
-                                            %>
-                                        <div class="btn-group">   
-                                        </div>
-                                        <%
-                                end select  
-                                %>
+                                <%=retornaBotaoIntegracaoLaboratorial ("tissguiasadt", inv("id")) %>
+                                
                                 <% if getConfig("ExibirNumeroGuiaOperadora")  then %>
                                     <strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> 
                                 <% else %> 

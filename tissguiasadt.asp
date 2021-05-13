@@ -936,39 +936,8 @@ min-width: 150px;
       <ul class="dropdown-menu" role="menu">
         <li><a href="javascript:SalvarEimprimir=true;$('#btnSalvar').click();"><i class="fa fa-print"></i> Salvar e imprimir</a></li>
       </ul>
-        <%
-        arrayintegracao = split(verificaIntegracaoLaboratorial("tissguiasadt", idtissguia),"|")
-        select case arrayintegracao(0)
-            case "0"
-                    %>
-                <div class="btn-group" style="margin-left:5px;">                            
-                    <button type="button" class="btn btn-secondary btn-md" id="btn-abrir-modal-lab<%=idtissguia%>" title="<%=arrayintegracao(1)%>">
-                        <i class="fa fa-flask"></i> Solicitar Exames
-                    </button>                           
-                </div>
-                <%
-            case "1"
-                %>
-                <div class="btn-group" style="margin-left:5px;">                            
-                    <button type="button" onclick="abrirSelecaoLaboratorio('tissguiasadt','<%=idtissguia%>')" class="btn btn-danger btn-md" id="btn-abrir-modal-lab<%=idtissguia%>" title="Abrir Integração Laboratorial">
-                        <i class="fa fa-flask"></i> Solicitar Exames
-                    </button>                           
-                </div>
-                <%
-            case "2"
-                %>
-                <div class="btn-group" style="margin-left:5px;">   
-                    <button type="button" onclick="abrirSolicitacao('<%=arrayintegracao(1)%>')" class="btn btn-success btn-md" id="btn-abrir-modal-lab<%=idtissguia%>" title="Ver detalhes da Integração" >
-                        <i class="fa fa-flask"></i> Solicitar Exames
-                    </button>
-                </div>
-                <%
-                case else
-                    %>
-                <div class="btn-group">   
-                </div>
-                <%
-        end select %>
+        <%=retornaBotaoIntegracaoLaboratorial ("tissguiasadt", idtissguia) %>
+       
     </div>
 
     <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="fa fa-history"></i></button>

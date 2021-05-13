@@ -56,7 +56,7 @@ end if
 <table width="100%" class="table table-striped table-bordered table-hover">
     <thead>
         <tr class="system">
-            <th colspan="8">Posi&ccedil;&atilde;o de Estoque</th>
+            <th colspan="9">Posi&ccedil;&atilde;o de Estoque</th>
             <th class="<%=hiddenII %>">
 
                 <button disabled class="btn-xs btn btn-primary fright btn-acao-em-lote" type="button" data-toggle="tooltip" title="Imprimir etiquetas" onclick="printEtiqueta(<%=req("I") %>)"><i class="fa fa-barcode"></i> </button>
@@ -78,6 +78,7 @@ end if
             <th>Cód. Individual</th>
             <th>Localização</th>
             <th>Responsável</th>
+            <th>Paciente</th>
             <th>Quantidade</th>
             <th nowrap>Valor Médio</th>
             <th class="p5" width="75">
@@ -93,7 +94,12 @@ end if
     </thead>
     <tbody>
         <%
-        set lanc = db.execute("select ep.id PosicaoID, ep.Lote, ep.Validade, ep.Quantidade, ep.LocalizacaoID, ep.CBID, ep.Responsavel, ep.TipoUnidade, ep.ValorPosicao, pl.NomeLocalizacao from estoqueposicao ep LEFT JOIN produtoslocalizacoes pl ON pl.id=ep.LocalizacaoID WHERE ep.ProdutoID="&req("I")&sqlUnidadesUsuario &" ORDER BY ep.CBID, ep.Validade")
+        sqlLanc = "select ep.id PosicaoID, ep.Lote, ep.Validade, ep.Quantidade, ep.LocalizacaoID, ep.CBID, ep.Responsavel, ep.TipoUnidade, " &_
+                  "ep.ValorPosicao, pl.NomeLocalizacao, pa.NomePaciente FROM estoqueposicao ep " &_
+                  "LEFT JOIN produtoslocalizacoes pl ON pl.id=ep.LocalizacaoID " &_
+                  "LEFT JOIN pacientes pa ON pa.id=ep.PacienteID AND ep.PacienteID != 0 " &_
+                  "WHERE ep.ProdutoID=" & req("I") & sqlUnidadesUsuario & " ORDER BY ep.CBID, ep.Validade"
+        set lanc = db.execute(sqlLanc)
         while not lanc.eof
             Responsavel = lanc("Responsavel")&""
             if instr(Responsavel, "_")>0 then
@@ -150,6 +156,15 @@ end if
                     <td><%=lanc("CBID") %></td>
                     <td><%=lanc("NomeLocalizacao") %></td>
                     <td><%=Responsavel %></td>
+                    <td>
+                        <% 
+                        if Responsavel <> "" then
+                            response.write(" / " & lanc("NomePaciente"))
+                        else
+                            response.write(lanc("NomePaciente"))
+                        end if
+                        %>
+                    </td>
                     <td><%=descQuant(Quantidade, TipoUnidade, conjunto, unidade) %></td>
                     <td class="text-right"><%= fn(lanc("ValorPosicao")) %></td>
                     <td class="p5">

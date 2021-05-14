@@ -4525,7 +4525,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
 
     'comita a transacao
     if isnumeric(PacienteID) then
-        sqlPacienteID = CInt(PacienteID)
+        sqlPacienteID = CLng(PacienteID)
     else
         sqlPacienteID = 0
     end if

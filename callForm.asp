@@ -4,7 +4,7 @@
 FormID = Id
 
 ExibeForm = true
-if getConfig("BloquearEdicaoFormulario")=1  then
+if getConfig("BloquearEdicaoFormulario") = 1 and FormID <> "N" then
     set getFormPreenchido = db.execute("SELECT date(DataHora) dataAtendimento FROM buiformspreenchidos WHERE sysActive=1 AND id = "&FormID)
     if not getFormPreenchido.eof then
         dataAtendimento = getFormPreenchido("dataAtendimento")

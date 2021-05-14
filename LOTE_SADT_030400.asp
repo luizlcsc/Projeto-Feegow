@@ -225,6 +225,7 @@ prefixo = right(prefixo, 20)
 					MotivoEncerramentoID = TirarAcento(guias("MotivoEncerramentoID"))
 					if MotivoEncerramentoID=0 then MotivoEncerramentoID="" end if
 					TipoConsultaID = TirarAcento(guias("TipoConsultaID"))
+					if TipoConsultaID=0 then TipoConsultaID="" end if
 					'==============================================================================================================================================================================
 					if guias("CodigoCNES")="" then CodigoCNES=TirarAcento(CNESContratado) else CodigoCNES=TirarAcento(guias("CodigoCNES")) end if
 					NomeProfissional=TirarAcento(NomeProfissional)
@@ -282,7 +283,9 @@ prefixo = right(prefixo, 20)
                     <ans:dadosAtendimento>
                         <ans:tipoAtendimento><%= TipoAtendimentoID %></ans:tipoAtendimento>
                         <ans:indicacaoAcidente><%= IndicacaoAcidenteID %></ans:indicacaoAcidente>
+                        <%if TipoConsultaID<>"" then%>
                         <ans:tipoConsulta><%= TipoConsultaID %></ans:tipoConsulta>
+                        <% End If %>
                         <%if MotivoEncerramentoID<>"" then%><ans:motivoEncerramento><%= MotivoEncerramentoID %></ans:motivoEncerramento><% End If %>
                     </ans:dadosAtendimento>
 
@@ -353,7 +356,13 @@ prefixo = right(prefixo, 20)
 						Descricao = left(TirarAcento(procs("Descricao")),150)
 
 						ViaID = TirarAcento(procs("ViaID"))&""
+                        if ViaID=0 then
+                            ViaID = ""
+                        end if
 						TecnicaID = TirarAcento(procs("TecnicaID"))&""
+                        if TecnicaID=0 then
+                            TecnicaID = ""
+                        end if
 
 						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
 						%>
@@ -553,5 +562,5 @@ prefixo = right(prefixo, 20)
     </ans:epilogo>
 </ans:mensagemTISS>
 <%
-' Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
+Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
 %>

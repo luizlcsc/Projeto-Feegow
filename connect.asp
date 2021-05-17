@@ -2912,11 +2912,11 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		    rbtns = rbtns & "<button class='btn btn-info btn-sm' onclick='imprimirReciboInvoice()' type='button'><i class='fa fa-print bigger-110'></i></button>"
 		else
 			nomePerm = "contasareceber"
-		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
+		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm rgrec' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
 
             set vcaCont = db.execute("select id, NomeModelo from contratosmodelos WHERE (sysActive=1) AND (UrlContrato='' OR UrlContrato IS NULL)")
             if not vcaCont.eof then
-                rbtns = rbtns & " <div class='btn-group'><button class='btn btn-info btn-sm dropdown-toggle' data-toggle='dropdown'  title='Adicionar Contrato'><i class='fa fa-file'></i></button>"
+                rbtns = rbtns & " <div class='btn-group contratobloqueio'><button class='btn btn-info btn-sm dropdown-toggle contratobt'><i class='fa fa-file'></i></button>"
                 rbtns = rbtns & "<ul class='dropdown-menu dropdown-info pull-right' style='overflow-y: scroll; max-height: 400px;'>"
                 while not vcaCont.eof
                     rbtns = rbtns & "<li><a href='javascript:addContrato("&vcaCont("id")&", "&hid&", $(\""#AccountID\"").val())'><i class='fa fa-plus'></i> "&vcaCont("NomeModelo")&"</a></li>"
@@ -3730,7 +3730,7 @@ function replacePagto(txt, Total)
 	on error resume next
 	'response.Write(txt&"<hr>")
 	txt = trim(txt&" ")
-	'primeiro separa todas as tags que existem na expressao
+	'priameiro separa todas as tags que existem na expressao
 	spl = split(txt, "{{")
 	for i=0 to ubound(spl)
 		if instr(spl(i), "}}")>0 then
@@ -5050,7 +5050,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
             <%end if%>
 
             <div class="btn-group mt5">
-                <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print bigger-110"></i></button>
+                <button type="button" class="btn btn-info btn-xs dropdown-toggle rgrec" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print bigger-110"></i></button>
                 <ul class="dropdown-menu dropdown-info pull-right">
                     <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Protocolo')"><i class="fa fa-plus"></i> Protocolo de laudo </a></li>
                     <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Impresso')"><i class="fa fa-plus"></i> Impresso </a></li>
@@ -5708,4 +5708,26 @@ function iconMethod(PaymentMethodID, PaymentMethod, CD ,origem)
         end if
     end if
 end function
+
+
+function invoicePaga(invoiceID)
+ 
+    invoicePaga =false
+ 
+set dadosInvoice = db.execute("SELECT SUM(m.ValorPago) valorPago, i.Value "&_
+" FROM sys_financialinvoices i"&_
+" JOIN sys_financialmovement m ON m.InvoiceID = i.id "&_
+" WHERE i.id = "&invoiceID&_
+"")
+
+if not dadosInvoice.eof then
+if dadosInvoice("valorPago") => dadosInvoice("Value") then
+            invoicePaga =true
+end if
+end if
+ 
+end function
+
+
+
 %>

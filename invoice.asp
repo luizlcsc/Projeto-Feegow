@@ -1454,6 +1454,32 @@ function liberar(Usuario , senha , id, Nometable){
        
 }
 
+let BloquearRecibo    =   "<%=getConfig("bloquearemissaoderecibo")%>";
+let BloquearContrato  =   "<%=getConfig("bloquearemissaodecontrato")%>";
+let BloquearInvoice   =   "<%=invoicePaga(req("I"))%>";
+
+ if(BloquearContrato == 1 && BloquearInvoice == "False"){
+            $('.contratobt').attr("disabled", true);
+         }else{
+            $('.contratobt').attr("disabled", false)
+         } 
+
+
+
+if(BloquearRecibo == 1 && BloquearInvoice == "False"){
+       $('.rgrec').attr("disabled", true);
+    }else{
+          $('.rgrec').attr("disabled", false);
+    } 
+
+$('.contratobt').click(function(){
+   if($(".contratobloqueio").hasClass("open")){
+      $(".contratobloqueio").removeClass("open");
+   }else{
+        $(".contratobloqueio").addClass("open");
+   }
+});
+
 </script>
 
 <!--#include file="CalculaMaximoDesconto.asp"-->

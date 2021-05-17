@@ -12,6 +12,18 @@ if CicloID = "" or CicloItemID = "" or ProdutoID = "" or UnidadeID = ""  then
     response.end
 end if
 
+'recupera o ciclo
+sqlProtocoloCiclo = "SELECT ppc.*, pp.PacienteID FROM pacientesprotocolosciclos ppc " &_
+                    "INNER JOIN pacientesprotocolos pp ON pp.id = ppc.PacienteProtocoloID " &_
+                    "WHERE ppc.id = '" & CicloID & "'"
+set resProtocoloCiclo = db.execute(sqlProtocoloCiclo)
+if resProtocoloCiclo.eof then
+    response.write("Ciclo inválido ou não encontrado")
+    response.status = 500
+    response.end
+end if
+PacienteID = resProtocoloCiclo("PacienteID")
+
 
 'medicamentos, diluentes e reconstituintes
 if Tipo <> "4-Kit" then
@@ -94,6 +106,10 @@ if quantPrescrita then
         'response.write("<pre>quantTotalEmEstoque: " & quantTotalEmEstoque & "</pre>")
 
         'recupera as posições da outra unidade
+        '1º - Destinado ao paciente
+        '2º - Data de Validade
+        '3º - Lote
+        '4º - id
         sqlPosicoes = "SELECT pos.*, " &_
                     "IF(pos.TipoUnidade = 'C', " &_ 
                     "IFNULL(pos.Quantidade, 0) * IF(prod.ApresentacaoQuantidade IS NULL or prod.ApresentacaoQuantidade <= 0, 1, prod.ApresentacaoQuantidade), " &_
@@ -102,7 +118,9 @@ if quantPrescrita then
                     "FROM estoqueposicao pos " &_
                     "INNER JOIN produtos prod ON pos.ProdutoID = prod.id " &_
                     "LEFT JOIN produtoslocalizacoes loc ON loc.id = pos.LocalizacaoID " &_
-                    "WHERE pos.Quantidade > 0 AND pos.ProdutoID = '" & ProdutoID & "' AND COALESCE(loc.UnidadeID, 0) = '" & UnidadeID & "'"
+                    "WHERE pos.Quantidade > 0 AND pos.ProdutoID = '" & ProdutoID & "' AND COALESCE(loc.UnidadeID, 0) = '" & UnidadeID & "' " &_
+                    "AND COALESCE(pos.PacienteID, 0) IN (0, " & PacienteID & ") " &_
+                    "ORDER BY FIELD(pos.PacienteID, '" & PacienteID & "') DESC, pos.Validade, pos.Lote, pos.id"
         set resPosicoes = db.execute(sqlPosicoes)
 
         quantTotalOutraUnidade = 0
@@ -126,7 +144,6 @@ if quantPrescrita then
 
         'processa cada posição
         resPosicoes.movefirst
-        pos = 0
         while not resPosicoes.eof
 
             posicaoId              = resPosicoes("id")
@@ -139,34 +156,29 @@ if quantPrescrita then
             localizacaoIdOriginal  = resPosicoes("LocalizacaoID")
             cbid                   = resPosicoes("CBID")
             apresentacaoQuantidade = resPosicoes("ApresentacaoQuantidade")
+            posPacienteId          = resPosicoes("PacienteID")
 
-            'calcula a quantidade a ser transferida da posição, de forma pró-rata
-            percProRata      = quantPosicao / quantTotalOutraUnidade
-            quantATransferir = quantTotalATransferir * percProRata
-            if pos < (countPosicoes - 1) then
-                ceil = Int(quantATransferir)
-                if ceil <> quantATransferir then
-                    ceil = ceil + 1
-                end if
-                quantATransferir = ceil
-            else
-                quantATransferir = Int(quantATransferir)
+            'calcula a quantidade a ser transferida da posição
+            quantATransferir = quantTotalATransferir
+            if (quantATransferir > quantPosicao) then
+                quantATransferir = quantPosicao
             end if
 
             quantConjuntoATransferir = Int(quantATransferir / apresentacaoQuantidade)
             quantUnitariaATransferir = quantATransferir mod apresentacaoQuantidade
 
+            'response.write("<pre>quantTotalATransferir "&quantTotalATransferir&"</pre>")
             'response.write("<pre>quantATransferir da pos "&posicaoId&": "&quantATransferir&"</pre>")
             'response.write("<pre>quantConjuntoATransferir da pos "&posicaoId&": "&quantConjuntoATransferir&"</pre>")
             'response.write("<pre>quantUnitariaATransferir da pos "&posicaoId&": "&quantUnitariaATransferir&"</pre>")
             if quantConjuntoATransferir > 0 then
-                call LanctoEstoque(0, posicaoId, produtoId, "M", tipoUnidadeOriginal, "C", quantConjuntoATransferir, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Transferência", "", "", "", localizacaoIdUnidade, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
+                call LanctoEstoque(0, posicaoId, produtoId, "M", tipoUnidadeOriginal, "C", quantConjuntoATransferir, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Transferência", "", posPacienteId, "", localizacaoIdUnidade, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
             end if
             if quantUnitariaATransferir > 0 then
-                call LanctoEstoque(0, posicaoId, produtoId, "M", tipoUnidadeOriginal, "U", quantUnitariaATransferir, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Transferência", "", "", "", localizacaoIdUnidade, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
+                call LanctoEstoque(0, posicaoId, produtoId, "M", tipoUnidadeOriginal, "U", quantUnitariaATransferir, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Transferência", "", posPacienteId, "", localizacaoIdUnidade, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
             end if
 
-            pos = pos + 1
+            quantTotalATransferir = quantTotalATransferir - quantATransferir
             resPosicoes.movenext
         wend
 

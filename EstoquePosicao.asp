@@ -186,7 +186,7 @@ end if
     </tbody>
 	<tfoot>
 		<tr>
-			<th colspan="9" class="text-right">
+			<th colspan="10" class="text-right">
 				Conjunto: <%=QuantidadeTotalConjunto&" "&lcase(conjunto)%> <br>
 				Unidade: <%=QuantidadeTotalUnidade&" "&lcase(unidade)%>
 			</th>

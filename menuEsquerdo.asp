@@ -1347,13 +1347,16 @@ select case lcase(req("P"))
              <span class="fa fa-plus"></span> Agências Integradoras</a></li>
         <% end if %>
     <%
-    case "tabelasconvenios","tabelasportes","tabelasatualizacao"
+    case "tabelasconvenios","tabelasportes","tabelasatualizacao","listaprodutostaxas","produtostaxas"
             %>
                 <li>
                     <a href="?P=tabelasconvenios&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Conv&ecirc;nio</span></a>
                 </li>
-                 <li>
+                <li>
                     <a href="?P=tabelasportes&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
+                </li>
+                <li>
+                    <a href="?P=ListaProdutosTaxas&Pers=1"><span class="fa fa-money"></span> <span class="sidebar-title">Taxas</span></a>
                 </li>
                 <li>
                     <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar Tabela MAT / MED</span></a>
@@ -1366,6 +1369,9 @@ select case lcase(req("P"))
                 </li>
                  <li>
                     <a href="?P=tabelasportes&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
+                </li>
+                <li>
+                    <a href="?P=ListaProdutosTaxas&Pers=1"><span class="fa fa-money"></span> <span class="sidebar-title">Taxas</span></a>
                 </li>
                 <li>
                     <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar Tabela MAT / MED</span></a>
@@ -1671,7 +1677,7 @@ select case lcase(req("P"))
         <%
     case "listaprodutos", "convenio/medicamentos","produtoscategorias", "produtoslocalizacoes", "produtosfabricantes", "produtoskits"
         %><li class="sidebar-label pt20">Tipos de Itens</li><%
-        set getTipoProduto = db.execute("SELECT * FROM cliniccentral.produtostipos")
+        set getTipoProduto = db.execute("SELECT * FROM cliniccentral.produtostipos WHERE id != 5")
         while not getTipoProduto.eof
             TipoProduto = req("TipoProduto")&""
             if TipoProduto&""="" then

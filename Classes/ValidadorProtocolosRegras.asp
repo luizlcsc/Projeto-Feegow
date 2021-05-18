@@ -23,7 +23,8 @@ class ValidadorProtocolosRegras
             Response.end
         end if
 
-        isValid = true
+        'default inválido, até que as regras sejam validadas
+        isValid = false
 
         'recupera os dados do protocolo
         sqlProtocolo    = "SELECT * FROM protocolos WHERE id = '" & protocoloId & "'"
@@ -41,6 +42,8 @@ class ValidadorProtocolosRegras
         convenioValid = true
         while not rsProtocoloConvenios.eof
 
+            convenioValid = true 'trata cada convenio como OU
+
             convenioRegra = rsProtocoloConvenios("ConvenioID")&""
             convenioPlano = rsProtocoloConvenios("PlanoID")&""
 
@@ -52,19 +55,22 @@ class ValidadorProtocolosRegras
 
             rsProtocoloConvenios.movenext
         wend
-        isValid = convenioValid
 
         rsProtocoloConvenios.close
         set rsProtocoloConvenios = nothing
 
-        'verifica se o protocolo tem regras
-        if isValid then
+        'se validou o convênio, verifica se o protocolo tem regras
+        if convenioValid then
             sqlRegras    = "SELECT Regra, Campo, Operador, FormID, FormCampoID, Valor FROM protocolos_regras " &_
                         "WHERE ProtocoloID = '" & protocoloId & "' AND sysActive = 1 ORDER BY Regra, id"
 
             set rsRegras = db.execute(sqlRegras)
 
-            isValid   = true
+            'se tem regras configuradas, considera como válido até as condições serem validadas abaixo
+            if not rsRegras.eof then
+                isValid = true
+            end if
+
             lastRegra = null
             while not rsRegras.eof
 

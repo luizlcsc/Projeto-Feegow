@@ -20,9 +20,11 @@ set listaProtocolos = db.execute(sql)
 set validador = new ValidadorProtocolosRegras
 
 'itera os protocolos validando as regras
+temProtocolo = false
 while not listaProtocolos.eof
 
-    if validador.validaProtocolo(listaProtocolos("id"), ref("PacienteID")) then 'só exibe a regra se foi validada
+    if validador.validaProtocolo(listaProtocolos("id"), ref("PacienteID")) then 'só exibe o protocolo se foi validado
+        temProtocolo = true
 %>
 	<tr id="<%=listaProtocolos("id")%>">
         <td width="1%"><a href="javascript:aplicarProtocolo('<%=listaProtocolos("id")%>');">
@@ -38,6 +40,14 @@ wend
 
 listaProtocolos.close
 set listaProtocolos = nothing
+
+if not temProtocolo then
+%>
+<tr>
+    <td colspan="2"><small>Nenhum protocolo encontrado<br> para este paciente.</small></td>
+</tr>
+<%
+end if
 %>
 
 <script type="text/javascript">

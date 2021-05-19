@@ -649,7 +649,7 @@ function selectInsertCA(label, name, value, associations, othersToSelect, others
 	<div id="resultSelect<%=name%>" style="position:absolute; display:none; overflow:hidden; background-color:#fff; z-index:1000;" class="ResultSelectContent">
     	<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Buscando...
     </div>
-< language="javascript">
+<script language="javascript">
 function f_<%=replace(name, "-", "_")%>(){
 	$.post("selectInsertCA.asp",{
 		   selectID:'<%=name%>',
@@ -681,7 +681,7 @@ $(document).ready(function(){
 	this.select();
   });
 });
-</>
+</script>
 	<%
 end function
 
@@ -874,7 +874,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			response.Write(LabelFor)
 			%>
 			<input type="text" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=fieldValue%>" placeholder="Digite e ENTER..." />
-			< type="text/javascript">
+			<script type="text/javascript">
 			jQuery(function($) {							//we could just set the data-provide="tag" of the element inside HTML, but IE8 fails!
 				var tag_input = $('#<%=fieldName%>');
 				if(! ( /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase())) )
@@ -893,20 +893,20 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 					//$('#form-field-tags').autosize({append: "\n"});
 				}
 			});
-            </>
+            </script>
 			<%
 		case "editor"
 			response.Write(LabelFor)
 			%>
 			<textarea class="form-control" name="<%=fieldName%>" id="<%=fieldName%>"<%=additionalTags%>><%=fieldValue%></textarea>
-            <>
+            <script>
             $(function () {
                 CKEDITOR.config.shiftEnterMode= CKEDITOR.ENTER_P;
                 CKEDITOR.config.enterMode= CKEDITOR.ENTER_BR;
                 CKEDITOR.config.height = <%=sqlOrClass%>;
                 $('#<%=fieldName%>').ckeditor();
             });
-			</>
+			</script>
 			<%
 		case "currency", "float"
 			response.Write(LabelFor)
@@ -1106,7 +1106,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             listItems.close
             set listItems=nothing
 		case "cor" %>
-		    <>
+		    <script>
 		        let url = new URL(window.location.href);
                 let parametro = url.searchParams.get("P");
 
@@ -1114,7 +1114,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     document.getElementById("cor-agenda").style = "display: none;";
                     document.getElementById("cor-agenda").disabled = true;
                 }
-            </>
+            </script>
 		    <div id="cor-agenda">
 			    <% response.Write(LabelFor) %>
                 <div class="admin-form">
@@ -1123,7 +1123,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     </label>
                 </div>
             </div>
-            < type="text/javascript">
+            <script type="text/javascript">
                 $(document).ready(function(){
                     var cPicker1 = $("#<%=fieldName%>");
 
@@ -1140,7 +1140,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     $("#<%=fieldName%>").show();
                 });
 
-            </>
+            </script>
             <%
         case "simpleColor"
             response.Write(LabelFor)
@@ -1158,7 +1158,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     <input type="text" name="<%= fieldName %>" id="<%= fieldName %>" class="gui-input" placeholder="Selecione"  value="<%=fieldValue %>">
                 </label>
             </div>
-            < type="text/javascript">
+            <script type="text/javascript">
                 $(document).ready(function(){
                     var cPicker1 = $("#<%=fieldName%>");
 
@@ -1179,7 +1179,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     $("#<%=fieldName%>").show();
                 });
 
-            </>
+            </script>
         <%
 		case "datepicker"
 			response.Write(LabelFor)
@@ -2423,7 +2423,7 @@ function macro(editor)
 	macro = macro&"	</div>"
 	macro = macro&"</div>"
 	macro = macro&"</div>"
-	macro = macro&"<>function macroJS(editor, tag){ $('#'+editor).val( $('#'+editor).val()+tag ) }</>"
+	macro = macro&"<script>function macroJS(editor, tag){ $('#'+editor).val( $('#'+editor).val()+tag ) }</script>"
 end function
 
 function replateTagsPaciente(valor,PacienteID)

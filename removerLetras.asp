@@ -42,7 +42,7 @@ Disallowed = ucase("abcdefghijklmnopqrstuvwxyz")
 Response.Write RmChr(Input, Disallowed) & "<BR>"
 
 
-str = request.QueryString("Telefone")
+str = req("Telefone")
 
 Private Function telefone(str, numero, fixoOuCelular)
 	DDD = 21

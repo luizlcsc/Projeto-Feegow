@@ -89,7 +89,9 @@
     <link rel="stylesheet" type="text/css" href="site/demo.css">
     <link rel="stylesheet" type="text/css" href="buiforms.css">
     <script src="site/jquery.gridster.js" type="text/javascript" charset="utf-8"></script>
-    
+    
+
+
 <% server.execute("ipront.asp") %>
 
 
@@ -101,7 +103,8 @@
     <script src="vendor/plugins/fileupload/fileupload.js"></script>
     <script src="vendor/plugins/holder/holder.min.js"></script>
     
-  <!-- HighCharts Plugin -->
+
+  <!-- HighCharts Plugin -->
   <script src="vendor/plugins/highcharts/highcharts.js"></script>
 
   <!-- FullCalendar Plugin + moment Dependency -->
@@ -167,8 +170,10 @@
 		<script src="assets/js/x-editable/ace-editable.min.js"></script>
 
 		<!-- ace scripts -->
-
+req
 		<script src="assets/js/ace-elements.min.js"></script>
-		<script src="assets/js/ace.min.js"></script><script type="text/javascript">
+		<script src="assets/js/ace.min.js"></script>
+
+<script type="text/javascript">
     //parent.$("#ifr<%= request.querystring("i") %>").css("height",  $("#demo-0").css("height") );
 </script>

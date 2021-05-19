@@ -8,41 +8,41 @@ InvoiceID = req("I")
 
 Titulo = "Solicitação de compra"
 
-IF Request.Form("AccountID")<>"" THEN
+IF ref("AccountID")<>"" THEN
     CompraID             = InvoiceID
-    splitObj             = split(Request.form("AccountID"),"_")
+    splitObj             = split(ref("AccountID"),"_")
     AccountID            = splitObj(1)
     AssociationAccountID = splitObj(0)
-    Responsavel          = Request.form("Responsavel")
-    CompanyUnitID        = Request.form("CompanyUnitID")
-    sysDate              = mydatenull(Request.form("sysDate"))
-    Description          = Request.form("Description")
-    Justificativa        = Request.form("Justificativa")
-    StatusID             = Request.Form("StatusID")
+    Responsavel          = ref("Responsavel")
+    CompanyUnitID        = ref("CompanyUnitID")
+    sysDate              = mydatenull(ref("sysDate"))
+    Description          = ref("Description")
+    Justificativa        = ref("Justificativa")
+    StatusID             = ref("StatusID")
 
 
     sql = "DELETE FROM itenscompra WHERE CompraID = "&CompraID
-    IF Request.Form("inputs") <> "" THEN
-       sql = sql&" AND id NOT IN("&Request.Form("inputs")&")"
+    IF ref("inputs") <> "" THEN
+       sql = sql&" AND id NOT IN("&ref("inputs")&")"
     END IF
 
     db.execute(sql)
 
-    Inputs = split(Request.Form("inputs"),",")
+    Inputs = split(ref("inputs"),",")
 
 	for i=0 to ubound(Inputs)
 
             IdItem        = trim(Inputs(i))
-            Quantidade    = treatvalnull(Request.Form("Quantidade"&IdItem))
-            Descricao     = treatvalnull(Request.Form("Descricao"&IdItem))
-            CentroCustoID = treatvalnull(Request.Form("CentroCustoID"&IdItem))
-            ValorUnitario = treatvalzero(Request.Form("ValorUnitario"&IdItem))
-            Desconto      = treatvalnull(Request.Form("Desconto"&IdItem))
-            CategoriaID   = treatvalnull(Request.Form("CategoriaID"&IdItem))
-            Executado     = Request.Form("Executado"&IdItem)
-            Descricao     = Request.Form("Descricao"&IdItem)
-            Tipo          = Request.Form("Tipo"&IdItem)
-            ItemID        = Request.Form("ItemID"&IdItem)
+            Quantidade    = treatvalnull(ref("Quantidade"&IdItem))
+            Descricao     = treatvalnull(ref("Descricao"&IdItem))
+            CentroCustoID = treatvalnull(ref("CentroCustoID"&IdItem))
+            ValorUnitario = treatvalzero(ref("ValorUnitario"&IdItem))
+            Desconto      = treatvalnull(ref("Desconto"&IdItem))
+            CategoriaID   = treatvalnull(ref("CategoriaID"&IdItem))
+            Executado     = ref("Executado"&IdItem)
+            Descricao     = ref("Descricao"&IdItem)
+            Tipo          = ref("Tipo"&IdItem)
+            ItemID        = ref("ItemID"&IdItem)
 
             sql = "INSERT INTO itenscompra(Descricao,ValorUnitario,Executado,ItemID,Tipo,CompraID,Quantidade,CategoriaID,CentroCustoID,Desconto) VALUES('"&Descricao&"',"&ValorUnitario&",NULLIF('"&Executado&"',''),NULLIF('"&ItemID&"',''),NULLIF('"&Tipo&"',''),"&CompraID&","&Quantidade&","&CategoriaID&","&CentroCustoID&","&Desconto&")"
 
@@ -125,7 +125,7 @@ if InvoiceID="N" then
 		set vie = db.execute(sqlVie)
 	end if
 
-	response.Redirect("?P=SolicitacaoDeCompra&I="&vie("id")&"&A="&request.QueryString("A")&"&Pers=1&T="&CD&"&Ent="&req("Ent")& reqPacDireto)'A=AgendamentoID quando vem da agenda
+	response.Redirect("?P=SolicitacaoDeCompra&I="&vie("id")&"&A="&req("A")&"&Pers=1&T="&CD&"&Ent="&req("Ent")& reqPacDireto)'A=AgendamentoID quando vem da agenda
 else
 	set data = db.execute("select *,COALESCE(ResponsavelID,'"&session("User")&"') as ResponsavelID from "&tableName&" where id="&InvoiceID)
 	if data.eof then

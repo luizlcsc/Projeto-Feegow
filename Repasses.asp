@@ -23,12 +23,12 @@ if req("X")<>"" then
 end if
 	
 	
-ContaCredito = request.QueryString("ContaCredito")
-FormaID = request.QueryString("FormaID")
-Lancado = request.QueryString("Lancado")
-Status = request.QueryString("Status")
-De = request.QueryString("De")
-Ate = request.QueryString("Ate")
+ContaCredito = req("ContaCredito")
+FormaID = req("FormaID")
+Lancado = req("Lancado")
+Status = req("Status")
+De = req("De")
+Ate = req("Ate")
 if De="" then
 	De = date()
 end if
@@ -98,7 +98,7 @@ end if
 $(".repasse, #marcar").change(function(){
 	$.ajax({
 		type:"POST",
-		url:"calculaRepasse.asp?ContaCredito=<%=request.QueryString("ContaCredito")%>",
+		url:"calculaRepasse.asp?ContaCredito=<%=req("ContaCredito")%>",
 		data:$("#frmRepasses").serialize(),
 		success: function(data){
 			$("#calculaRepasses").html(data);
@@ -127,7 +127,7 @@ function lancaRepasses(rps, vlr, cc){
 
 function x(I){
 	if(confirm('Tem certeza de que deseja excluir este repasse?')){
-		location.href='./?<%=request.QueryString()%>&X='+I;
+		location.href='./?<%=req()%>&X='+I;
 	}
 }
 </script>

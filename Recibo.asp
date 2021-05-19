@@ -9,7 +9,7 @@ response.Charset="utf-8"
 </a>
 <div id="areaImpressao">
 <%
-set reg=db.execute("select * from recibos where id="&request.QueryString("ReciboID"))
+set reg=db.execute("select * from recibos where id="&req("ReciboID"))
 if not reg.EOF then
 	Recibo = reg("Texto")
 end if

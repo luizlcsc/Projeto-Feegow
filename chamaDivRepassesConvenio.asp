@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-id = ccur(request.QueryString("Item"))
+id = ccur(req("Item"))
 %>
 <!--#include file="RepasseLinhaFuncao.asp"-->
 <!--#include file="divRepassesConvenio.asp"-->

@@ -48,7 +48,7 @@ response.Charset="utf-8"
 
                 <div id="areaImpressao" class="quebraPagina">
                         <%
-                        set reg=db.execute("select * from pacientespedidos where id="&request.QueryString("PedidoID"))
+                        set reg=db.execute("select * from pacientespedidos where id="&req("PedidoID"))
                         if not reg.EOF then
                         	set user = db.execute("select * from sys_users where id="&session("User"))
                         	if not user.EOF then
@@ -278,7 +278,7 @@ response.Charset="utf-8"
     %>
         <div id="areaImpressao">
         <%
-        set reg=db.execute("select * from pacientespedidos where id="&request.QueryString("PedidoID"))
+        set reg=db.execute("select * from pacientespedidos where id="&req("PedidoID"))
         if not reg.EOF then
         	set user = db.execute("select * from sys_users where id="&session("User"))
         	if not user.EOF then

@@ -49,9 +49,9 @@ input {
 
 <body>
 <%
-campo = request.QueryString("field")
-ModeloID = request.QueryString("ModeloID")
-PacienteID = request.QueryString("PacienteID")
+campo = req("field")
+ModeloID = req("ModeloID")
+PacienteID = req("PacienteID")
 set modelo = db.execute("select * from buiforms where id="&ModeloID)
 if not modelo.EOF then
 	if modelo("Tipo")=4 or modelo("Tipo")=3 then
@@ -60,7 +60,7 @@ if not modelo.EOF then
 		FTipo = "AE"
 	end if
 end if
-FormID = session("FP"&FTipo)'request.QueryString("FormID")
+FormID = session("FP"&FTipo)'req("FormID")
 
 tipo_audio = ref("tipo_audio")
 if tipo_audio="" or tipo_audio="a" then

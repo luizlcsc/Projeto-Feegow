@@ -3,7 +3,7 @@
 ProcedimentoID = ref("ProcedimentoID")
 ProfissionalID = ref("ProfissionalID")
 PacienteID = ref("PacienteID")
-FormaPagto = request.QueryString("FormaPagto")'Particular ou Convenio
+FormaPagto = req("FormaPagto")'Particular ou Convenio
 TabelaID = ref("bageTabela")
 ids = ref("ids")
 splIds = split(ids, ", ")

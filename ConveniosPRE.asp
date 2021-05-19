@@ -2,8 +2,8 @@
 <!--#include file="connectCentral.asp"-->
 <!--#include file="modal.asp"-->
 <%
-call insertRedir("Convenios", request.QueryString("I"))
-set reg = db.execute("select * from convenios where id="&request.QueryString("I"))
+call insertRedir("Convenios", req("I"))
+set reg = db.execute("select * from convenios where id="&req("I"))
 
 
 %>
@@ -21,8 +21,8 @@ set reg = db.execute("select * from convenios where id="&request.QueryString("I"
             <form method="post" id="frm" name="frm" action="save.asp">
 
 
-                <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-                <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+                <input type="hidden" name="I" value="<%=req("I")%>" />
+                <input type="hidden" name="P" value="<%=req("P")%>" />
                 <div class="row">
                     <div class="col-md-2" id="divAvatar">
                         <div class="row">
@@ -120,12 +120,12 @@ set reg = db.execute("select * from convenios where id="&request.QueryString("I"
                 </div>
                 <div class="row">
                     <div class="col-md-12"><br>
-                        <%call Subform("contratosconvenio", "ConvenioID", request.QueryString("I"), "frm")%>
+                        <%call Subform("contratosconvenio", "ConvenioID", req("I"), "frm")%>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <%call Subform("ConveniosPlanos", "ConvenioID", request.QueryString("I"), "frm")%>
+                        <%call Subform("ConveniosPlanos", "ConvenioID", req("I"), "frm")%>
                     </div>
                 </div>
                 <div class="row">
@@ -312,7 +312,7 @@ set reg = db.execute("select * from convenios where id="&request.QueryString("I"
 <script type="text/javascript">
     //js exclusivo avatar
     <%
-    Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
+    Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
     %>
     function removeFoto(){
         if(confirm('Tem certeza de que deseja excluir esta imagem?')){
@@ -485,7 +485,7 @@ set reg = db.execute("select * from convenios where id="&request.QueryString("I"
 
     function tissCompletaDados(T, I, N){
         $.post("tissCompletaDados.asp?I="+I+"&T="+T,{
-            ConvenioID:"<%=request.QueryString("I")%>",
+            ConvenioID:"<%=req("I")%>",
             Numero:N,
             },function(data,status){
                 eval(data);

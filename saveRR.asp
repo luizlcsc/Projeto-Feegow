@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-splF = split( request.Form("itensF"), ", " )
+splF = split( ref("itensF"), ", " )
 for i=0 to ubound(splF)
 	splIF = split(splF(i), "_")
 	set fun = db.execute("select * from rateiofuncoes where id="&splIF(1))
@@ -15,7 +15,7 @@ for i=0 to ubound(splF)
 	end if
 next
 
-splM = split( request.Form("itensM"), ", " )
+splM = split( ref("itensM"), ", " )
 for i=0 to ubound(splM)
 	splIM = split(splM(i), "_")
 	set fun = db.execute("select * from rateiofuncoes where id="&splIM(1))

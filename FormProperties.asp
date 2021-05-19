@@ -1,4 +1,4 @@
 <!--#include file="connect.asp"-->
 <%
-db_execute("update buiForms set TipoTitulo='"&request.QueryString("TipoTitulo")&"' where id="&request.QueryString("F"))
+db_execute("update buiForms set TipoTitulo='"&req("TipoTitulo")&"' where id="&req("F"))
 %>

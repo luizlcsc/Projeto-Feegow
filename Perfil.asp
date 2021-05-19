@@ -33,7 +33,7 @@ TotalAReceberNaoPago = 0
 	next
 	%>
 </div>
-<%'=request.QueryString()%>
+<%'=req()%>
 <table class="table table-condensed table-bordered">
 <thead>
 <%
@@ -505,6 +505,6 @@ if 1=2 then
 end if
 %>
 function pag(p){
-	$.post("Relatorio.asp?<%=request.QueryString()%>", {p:p}, function(data){ $("body").html(data) });
+	$.post("Relatorio.asp?<%=req()%>", {p:p}, function(data){ $("body").html(data) });
 }
 </script>

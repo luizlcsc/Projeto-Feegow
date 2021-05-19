@@ -20,7 +20,7 @@ response.Charset="utf-8"
 
 <body class="mr10">
 <%
-'response.write(request.querystring())
+'response.write(req())
 
 
 formHTML = getForm("HTML")

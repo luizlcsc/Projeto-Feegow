@@ -58,7 +58,7 @@ if InvoiceID="N" then
     if req("PacienteID")<>"" then
         reqPacDireto = "&PacienteID="&req("PacienteID")
     end if
-	response.Redirect("?P=Recorrente&I="&vie("id")&"&A="&request.QueryString("A")&"&Pers=1&T="&CD )'A=AgendamentoID quando vem da agenda
+	response.Redirect("?P=Recorrente&I="&vie("id")&"&A="&req("A")&"&Pers=1&T="&CD )'A=AgendamentoID quando vem da agenda
 else
 	set data = db.execute("select * from "&tableName&" where id="&InvoiceID)
 	if data.eof then
@@ -432,5 +432,5 @@ recorrenteLista();
  </script>
 <input type="hidden" name="PendPagar" id="PendPagar" />
 
-<%'=request.QueryString() %>
+<%'=req() %>
 <!--#include file="disconnect.asp"-->

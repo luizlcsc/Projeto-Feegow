@@ -5,9 +5,9 @@
 }
 </style>
 <%
-TipoItem = request.QueryString("TipoItem")
-TipoAcao = request.QueryString("TipoAcao")
-I = ccur(request.QueryString("I"))
+TipoItem = req("TipoItem")
+TipoAcao = req("TipoAcao")
+I = ccur(req("I"))
 if TipoAcao = "I" then
 	NomeAcao = "Inser&ccedil;&atilde;o"
 elseif TipoAcao = "E" then
@@ -193,7 +193,7 @@ function RemoveRepasse(Item, R){
 $("#formItem").submit(function(){
 	$.ajax({
 		type:"POST",
-		url:"saveItemInvoice.asp?<%=request.QueryString()%>",
+		url:"saveItemInvoice.asp?<%=req()%>",
 		data:$("#formItem").serialize(),
 		success:function(data){
 			eval(data);

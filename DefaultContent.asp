@@ -3,6 +3,6 @@
 <form method="post" action="">
 <input type="hidden" name="E" value="E" />
 <%
-call DefaultForm(request.QueryString("P"), request.QueryString("I"))
+call DefaultForm(req("P"), req("I"))
 %>
 </form>

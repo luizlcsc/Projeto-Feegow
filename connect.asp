@@ -1,4 +1,7 @@
-﻿<!--#include file="Classes/Connection.asp"--><%
+﻿<!--#include file="functions.asp"-->
+<!--#include file="Classes/Connection.asp"-->
+
+<%
 Session.Timeout=600
 session.LCID=1046
 if session("Servidor")="" then
@@ -352,13 +355,22 @@ function rep(Val)
 	end if
 end function
 
-function ref(Val)
-	ref = replace(replace(request.Form(Val), "'", "''"), "\", "\\")
-end function
+function clearRefReq (val)
+        val = strip_tags(val)
+        val = replace(val, "'", "''")
+        val = replace(val,"\", "\\")
+        val = replace(val,"<script>", "")
+        val = replace(val,"</script>", "")
+        val = replace(val,"&amp;", "")
+        val = replace(val,"&lt;", "")
+        val = replace(val,"&gt;", "")
+        val = replace(val,"&quot;", "")
+        val = replace(val,"&#x27;", "")
+        val = replace(val,"&#x22;", "")
+        val = replace(val,"&#x27;", "")
+        clearRefReq = val
+end function 
 
-function req(Val)
-	req = replace(request.QueryString(Val), "'", "''")
-end function
 
 function reqf(P)
     if req(P)<>"" then
@@ -369,7 +381,7 @@ function reqf(P)
 end function
 
 function refNull(Val)
-	if request.Form(Val)="" then
+	if ref(Val)="" then
 		refNull = "NULL"
 	else
 		refNull = ref(Val)
@@ -637,7 +649,7 @@ function selectInsertCA(label, name, value, associations, othersToSelect, others
 	<div id="resultSelect<%=name%>" style="position:absolute; display:none; overflow:hidden; background-color:#fff; z-index:1000;" class="ResultSelectContent">
     	<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Buscando...
     </div>
-<script language="javascript">
+< language="javascript">
 function f_<%=replace(name, "-", "_")%>(){
 	$.post("selectInsertCA.asp",{
 		   selectID:'<%=name%>',
@@ -669,7 +681,7 @@ $(document).ready(function(){
 	this.select();
   });
 });
-</script>
+</>
 	<%
 end function
 
@@ -862,7 +874,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			response.Write(LabelFor)
 			%>
 			<input type="text" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=fieldValue%>" placeholder="Digite e ENTER..." />
-			<script type="text/javascript">
+			< type="text/javascript">
 			jQuery(function($) {							//we could just set the data-provide="tag" of the element inside HTML, but IE8 fails!
 				var tag_input = $('#<%=fieldName%>');
 				if(! ( /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase())) )
@@ -881,20 +893,20 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 					//$('#form-field-tags').autosize({append: "\n"});
 				}
 			});
-            </script>
+            </>
 			<%
 		case "editor"
 			response.Write(LabelFor)
 			%>
 			<textarea class="form-control" name="<%=fieldName%>" id="<%=fieldName%>"<%=additionalTags%>><%=fieldValue%></textarea>
-            <script>
+            <>
             $(function () {
                 CKEDITOR.config.shiftEnterMode= CKEDITOR.ENTER_P;
                 CKEDITOR.config.enterMode= CKEDITOR.ENTER_BR;
                 CKEDITOR.config.height = <%=sqlOrClass%>;
                 $('#<%=fieldName%>').ckeditor();
             });
-			</script>
+			</>
 			<%
 		case "currency", "float"
 			response.Write(LabelFor)
@@ -1046,7 +1058,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     itensRemove_array=Split(additionalTags_array(1),",")
                     for each itensRemove in itensRemove_array
                         fieldValue = replace(fieldValue,itensRemove,"")
-                    'response.write("<script>console.log('"&itensRemove&" XX ')</script>")
+                    'response.write("<>console.log('"&itensRemove&" XX ')</>")
                     next
                     fieldValue = replace(fieldValue,additionalTags_array(1),"")
                     if left(fieldValue,1) = "," then
@@ -1094,7 +1106,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             listItems.close
             set listItems=nothing
 		case "cor" %>
-		    <script>
+		    <>
 		        let url = new URL(window.location.href);
                 let parametro = url.searchParams.get("P");
 
@@ -1102,7 +1114,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     document.getElementById("cor-agenda").style = "display: none;";
                     document.getElementById("cor-agenda").disabled = true;
                 }
-            </script>
+            </>
 		    <div id="cor-agenda">
 			    <% response.Write(LabelFor) %>
                 <div class="admin-form">
@@ -1111,7 +1123,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     </label>
                 </div>
             </div>
-            <script type="text/javascript">
+            < type="text/javascript">
                 $(document).ready(function(){
                     var cPicker1 = $("#<%=fieldName%>");
 
@@ -1128,7 +1140,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     $("#<%=fieldName%>").show();
                 });
 
-            </script>
+            </>
             <%
         case "simpleColor"
             response.Write(LabelFor)
@@ -1146,7 +1158,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     <input type="text" name="<%= fieldName %>" id="<%= fieldName %>" class="gui-input" placeholder="Selecione"  value="<%=fieldValue %>">
                 </label>
             </div>
-            <script type="text/javascript">
+            < type="text/javascript">
                 $(document).ready(function(){
                     var cPicker1 = $("#<%=fieldName%>");
 
@@ -1167,7 +1179,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     $("#<%=fieldName%>").show();
                 });
 
-            </script>
+            </>
         <%
 		case "datepicker"
 			response.Write(LabelFor)
@@ -1660,7 +1672,7 @@ function selectInsert(label, name, value, resource, showColumn, othersToSelect, 
     </select>
 
 
-	<script type="text/javascript">
+	< type="text/javascript">
 	        s2aj("<%=name%>", '<%=resource%>', '<%=showColumn%>', '<%=campoSuperior%>', '<%=placeholder%>', "<%=othersToInput%>");
             
 	        $("#<%=name%>").change(function(){
@@ -1696,7 +1708,7 @@ function selectInsert(label, name, value, resource, showColumn, othersToSelect, 
 	    //   console.log( $(this).val() );
 
 
-    </script>
+    </>
 	<%
 end function
 
@@ -1729,7 +1741,7 @@ function selectInsertOLD(label, name, value, resource, showColumn, othersToSelec
     	buscando...
     </div>
 
-	<script language="javascript">
+	< language="javascript">
     function f_<%=replace(name, "-", "_")%>(){
         $.post("selectInsert.asp",{
                selectID:'<%=name%>',
@@ -1785,7 +1797,7 @@ function selectInsertOLD(label, name, value, resource, showColumn, othersToSelec
 //            $("#<%=name%>").val("0");
 //        }
     }
-    </script>
+    </>
 	<%
 end function
 
@@ -1817,7 +1829,7 @@ function selectProc(label, name, value, thisField, TabelaField, CodigoField, Des
 	<div id="resultSelect<%=name%>" class="ResultSearchInput">
     	<span class="m5"> <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Buscando...</span>
     </div>
-<script language="javascript">
+< language="javascript">
 function f_<%=replace(name, "-", "_")%>(){
 	$.post("<%=urlPost%>",{
 		   selectID:'<%=name%>',
@@ -1852,7 +1864,7 @@ $(document).ready(function(){
 	}
   });
 });
-</script>
+</>
 	<%
 end function
 
@@ -1879,7 +1891,7 @@ function selectList(label, name, value, resource, showColumn, othersToSelect, ot
             </div>
         </div>
     </div>
-<script type="text/javascript">
+< type="text/javascript">
 function f_<%=replace(name, "-", "_")%>(){
 	$.post("selectList.asp",{
            I:'<%=req("I")%>',
@@ -1909,7 +1921,7 @@ $(document).ready(function(){
 	}
   });
 });
-</script>
+</>
 	<%
 end function
 
@@ -2127,11 +2139,11 @@ function insertRedir(tableName, id)
             qsCmd = "&cmd="&req("cmd")
         end if
 
-		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&request.QueryString("Pers") &strLancto & strApenasNaoFaturados & strSolicitantes& qsCmd)
+		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&req("Pers") &strLancto & strApenasNaoFaturados & strSolicitantes& qsCmd)
 	else
 		set data = db.execute("select * from "&tableName&" where id="&id)
 		if data.eof then
-			response.Redirect("?P="&tableName&"&I=N&Pers="&request.QueryString("Pers"))
+			response.Redirect("?P="&tableName&"&I=N&Pers="&req("Pers"))
 		end if
 	end if
 end function
@@ -2411,7 +2423,7 @@ function macro(editor)
 	macro = macro&"	</div>"
 	macro = macro&"</div>"
 	macro = macro&"</div>"
-	macro = macro&"<script>function macroJS(editor, tag){ $('#'+editor).val( $('#'+editor).val()+tag ) }</script>"
+	macro = macro&"<>function macroJS(editor, tag){ $('#'+editor).val( $('#'+editor).val()+tag ) }</>"
 end function
 
 function replateTagsPaciente(valor,PacienteID)
@@ -2961,7 +2973,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 
 '		rbtns = rbtns & "</div></div></div></div>"
         header = header & "$(""#rbtns"").html("""& rbtns &""")"
-'        header = header & "});</script>"
+'        header = header & "});</>"
         header = header & "</script>"
 	    realSave = "<button class=""btn btn-sm btn-primary hidden"" id=""btnSave"">&nbsp;&nbsp;<i class=""fa fa-save""></i> <strong> SALVAR</strong>&nbsp;&nbsp;</button>"
 
@@ -5633,54 +5645,7 @@ function franquia(sqlfranquia)
     franquia = sqlfranquia
 end function
 
-function dd(variable)
-    description=""
-    variableType = TypeName(variable)
 
-
-    if variableType="Variant()" then
-        description = description & "["
-        itemsInArray=0
-
-        for each x in variable
-            if itemsInArray>0 then
-                description = description&","
-            end if
-
-            description = description&""""&x&""""
-            itemsInArray=itemsInArray+1
-        next
-        description = description & "]"
-    elseif variableType="Recordset" then
-        description = "["&chr(13)
-        j = 0
-        while not variable.eof
-            IF j <> 0 THEN
-                 description = description&str&","
-            END IF
-            j = j+1
-            i = 0
-            str = chr(32)&"{"
-            for each x in variable.Fields
-                i = i+1
-                str = str&chr(13)&chr(32)&chr(32)&""""&x.name&""":"""&replace(x.value&"","""","'")&""""
-                IF i < variable.Fields.Count THEN
-                    str = str&","
-                END IF
-            next
-            str = str&chr(13)&chr(32)&"}"
-        variable.movenext
-        wend
-
-        description = description&str&chr(13)&"]"
-
-    else
-        description = variable
-    end if
-
-    response.write("<pre>"&description&"</pre>")
-    Response.End
-end function
 
 function hasPermissaoTela(visualizar)
 

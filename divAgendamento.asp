@@ -129,13 +129,13 @@ else
     Convenios = "Todos"
 end if
 
-Hora = request.QueryString("horario")
+Hora = req("horario")
 Hora = left(Hora,2)&":"&mid(Hora, 3, 2)
 Data = ""
-if request.QueryString("Data")="" or not isdate(request.QueryString("Data")) then
+if req("Data")="" or not isdate(req("Data")) then
 	Data = date()
 else
-	Data = request.QueryString("Data")
+	Data = req("Data")
 end if
 if req("Horario")="00:00" then
 	Encaixe = 1
@@ -171,9 +171,9 @@ if not confEvento.EOF then
     ServicoWhatsapp = confEvento("AtivarServicoWhatsapp")
 end if
 
-if request.QueryString("id")<>"" and isNumeric(request.QueryString("id")) then
-	AgendamentoID = request.QueryString("id")
-	set buscaAgendamentos = db.execute("select * from agendamentos where id="&request.QueryString("id"))
+if req("id")<>"" and isNumeric(req("id")) then
+	AgendamentoID = req("id")
+	set buscaAgendamentos = db.execute("select * from agendamentos where id="&req("id"))
 else
 	set buscaAgendamentos = db.execute("select * from agendamentos where ProfissionalID="&ProfissionalID&" and Hora='"&Hora&"' and Data='"&mydate(Data)&"'")
 	'VERIFICAR -> esse este der mais de um registro no horaio/profissional criar consulta em grupo
@@ -196,7 +196,7 @@ else
         Hora = Hora2
     end if
 
-    if Data = "" or request.QueryString("id")<>"" then
+    if Data = "" or req("id")<>"" then
         Data = Data2
     end if
 

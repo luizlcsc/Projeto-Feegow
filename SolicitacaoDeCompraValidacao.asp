@@ -1,8 +1,8 @@
 <!--#include file="connect.asp"-->
 <%
-    IF Request.Form("AccountID")<>"" THEN
+    IF ref("AccountID")<>"" THEN
     
-        Inputs = split(Request.Form("inputs"),",")
+        Inputs = split(ref("inputs"),",")
 
         for i=0 to ubound(Inputs)
                 IdItem        = trim(Inputs(i))

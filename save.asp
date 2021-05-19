@@ -7,7 +7,7 @@
 <%
 tableName = ref("P")
 id = ref("I")
-spl = split(request.Form(), "&")
+spl = split(ref(), "&")
 Novo=False
 sysActive=0
 
@@ -79,7 +79,7 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
                 DuplicacaoID = PacienteDuplicadoSQL("id")
 
                 NaoPermitirCPFduplicado = getConfig("NaoPermitirCPFduplicado")
-                ButtonSalvarAssimMesmo = "<button href=\'#\' class=\'btn btn-sm btn-success center\' type=\'button\' onclick=""javascript:$.post(\'save.asp?ForceDuplicado=S\',\'"&request.Form()&"\' , function(data){eval(data);})""> Salvar mesmo assim.</button>"
+                ButtonSalvarAssimMesmo = "<button href=\'#\' class=\'btn btn-sm btn-success center\' type=\'button\' onclick=""javascript:$.post(\'save.asp?ForceDuplicado=S\',\'"&ref()&"\' , function(data){eval(data);})""> Salvar mesmo assim.</button>"
                 if NaoPermitirCPFduplicado = 1 then
                     ButtonSalvarAssimMesmo = ""
                 end if
@@ -798,7 +798,7 @@ end if
 
 
 'on error resume next
-	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(request.Form(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
+	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(ref(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
 
 if sqlAtivoNome<>"" then
     on error resume next

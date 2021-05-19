@@ -11,11 +11,11 @@
 
 </style>
 <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from Profissionais where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from Profissionais where id="&req("I"))
 
-IF request.QueryString("Proximo") = "1"  THEN
-    sqlProximo = "select id from Profissionais where Ativo = 'on' and id>"&request.QueryString("I")
+IF req("Proximo") = "1"  THEN
+    sqlProximo = "select id from Profissionais where Ativo = 'on' and id>"&req("I")
     set regNext = db.execute(sqlProximo)
 
     IF NOT regNext.EOF THEN
@@ -26,7 +26,7 @@ IF request.QueryString("Proximo") = "1"  THEN
 END IF
 
 
-Aba = request.QueryString("Aba")
+Aba = req("Aba")
 
 if Aba="" then
 	ativoCadastro = " class=""active"""
@@ -38,9 +38,9 @@ elseif Aba="Horarios" then
 	ativoCadastro = ""
 	ativoHorarios = " class=""active"""
 	if versaoAgenda()=1 then
-		chamaScript = "ajxContent('Horarios-1', "&request.QueryString("I")&", 1, 'divHorarios');"
+		chamaScript = "ajxContent('Horarios-1', "&req("I")&", 1, 'divHorarios');"
 	else
-		chamaScript = "ajxContent('Horarios', "&request.QueryString("I")&", 1, 'divHorarios');"
+		chamaScript = "ajxContent('Horarios', "&req("I")&", 1, 'divHorarios');"
 	end if
 	tabCadastro = ""
 	tabHorarios = " in active"
@@ -57,8 +57,8 @@ end if
 
 
             <form method="post" id="frm" name="frm" action="save.asp">
-                <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-                <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+                <input type="hidden" name="I" value="<%=req("I")%>" />
+                <input type="hidden" name="P" value="<%=req("P")%>" />
 
                 <div class="panel">
                     <div class="panel-heading">
@@ -69,7 +69,7 @@ end if
                         <%
                         if (reg("sysActive")=1 AND session("Franqueador") <> "") then
                             %>
-                            <button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=request.QueryString("P")%>')"><i class="fa fa-copy"></i> Replicar</button>
+                            <button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="fa fa-copy"></i> Replicar</button>
                             <%
                         end if
                         %>
@@ -163,7 +163,7 @@ end if
                         <%
 
                         'não permitir o usuario inativar ele mesmo
-                        if session("idInTable")&"" = request.QueryString("I")&"" and (session("Table")&"" = request.QueryString("P")&"") then
+                        if session("idInTable")&"" = req("I")&"" and (session("Table")&"" = req("P")&"") then
                             hideInactive = "hidden"
                         end if
                         %>
@@ -265,7 +265,7 @@ end if
                             <%= quickField("memo", "ObsAgenda", "Mensagem informativa na agenda", 6, reg("ObsAgenda"), "", "", "") %>
                             <br>
                             <div class="col-md-6">
-                            <%call Subform("profissionaissubespecialidades", "ProfissionalID", request.QueryString("I"), "frm")%>
+                            <%call Subform("profissionaissubespecialidades", "ProfissionalID", req("I"), "frm")%>
 
                                 <div id="block-programas-saude"></div>
                             </div>
@@ -363,7 +363,7 @@ $(document).ready(function () {
 <script type="text/javascript">
 
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto"
 %>
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?')){

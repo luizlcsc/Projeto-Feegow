@@ -186,7 +186,7 @@ video {
 
 </style>
 <%
-if request.QueryString("Agenda")="" then
+if req("Agenda")="" then
 	%><!--#include file="PacientesCompleto.asp"--><%
 else
 	%><!--#include file="PacientesCompleto.asp"--><%
@@ -450,7 +450,7 @@ function cid10(X){
 $("#tabRecibos").click(function(){
 	$.ajax({
 		type:"POST",
-		url:"Recibos.asp?PacienteID=<%=request.QueryString("I")%>",
+		url:"Recibos.asp?PacienteID=<%=req("I")%>",
 		success:function(data){
 			$("#divRecibos").html(data);
 		}
@@ -482,7 +482,7 @@ function atualizaAlbum(X){
         //apenas chamar pront
 	$.ajax({
 		type:"POST",
-		url:"Arquivos.asp?PacienteID=<%=request.QueryString("I")%>&X="+X,
+		url:"Arquivos.asp?PacienteID=<%=req("I")%>&X="+X,
 		success:function(data){
 			$("#ArquivosPaciente").html(data);
 		}
@@ -807,7 +807,7 @@ jQuery(function($) {
 
 $("#btnFicha").click(function(){
 	$.ajax({
-		url:'imprimirFicha.asp?PacienteID=<%=request.QueryString("I")%>',
+		url:'imprimirFicha.asp?PacienteID=<%=req("I")%>',
 		success:function(data){
 			$("#modal").html(data);
 		}
@@ -841,7 +841,7 @@ $("#btnLancamentoRetroativo").click(function(){
 <script type="text/javascript">
 //js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
 %>
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?')){

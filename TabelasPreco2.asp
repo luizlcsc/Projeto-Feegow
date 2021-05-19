@@ -293,7 +293,7 @@ end if
 
 <script type="text/javascript">
 <%
-buscaFiltro = replace(replace(request.querystring()&"","'","''"),"&pagNumber="&req("pagNumber"),"")
+buscaFiltro = replace(replace(req()&"","'","''"),"&pagNumber="&req("pagNumber"),"")
 %>
     function changePagination(numberPag){
         location.href = `?<%=buscaFiltro%>&pagNumber=${numberPag}`

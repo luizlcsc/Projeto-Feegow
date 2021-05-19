@@ -77,7 +77,7 @@ end if
 
 							<div class="position-relative">
 					<%
-                    if request.Form("User")<>"" then
+                    if ref("User")<>"" then
 						set tryLogin = dbc.execute("select u.*, l.Cliente, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha='"&ref("Password")&"' or '"&ref("Password")&"'='##Yogo@@Nutella.')")
                         if not tryLogin.EOF then
 							'response.Write("if "&tryLogin("Cliente")&"=0 and "&formatdatetime(tryLogin("DataHora"),2)&" < "&dateadd("d", -15, date())&" then")
@@ -199,7 +199,7 @@ end if
 												<fieldset>
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="text" value="<%=request.Form("User")%>" class="form-control" name="User" placeholder="E-mail" autofocus required />
+															<input type="text" value="<%=ref("User")%>" class="form-control" name="User" placeholder="E-mail" autofocus required />
 															<i class="fa fa-user"></i>
 														</span>
 													</label>

@@ -1,6 +1,6 @@
 ﻿<%
 'server.ScriptTimeout = 200
-d = Request.QueryString("debug")
+d = req("debug")
 if d="1" then
     d=True
 else

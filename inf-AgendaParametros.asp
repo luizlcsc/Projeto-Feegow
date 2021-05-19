@@ -1,10 +1,10 @@
 <!--#include file="connect.asp"-->
 <%
-id = request.QueryString("id")'variavel de acordo com o tipo
-tipo = request.QueryString("tipo")
+id = req("id")'variavel de acordo com o tipo
+tipo = req("tipo")
 ProcedimentoID = ref("ProcedimentoID")
 PacienteID = ref("PacienteID")
-FormaPagto = request.QueryString("FormaPagto")'Particular ou Convenio
+FormaPagto = req("FormaPagto")'Particular ou Convenio
 
 if tipo="select-ProcedimentoID" then
 	ProcedimentoID = id

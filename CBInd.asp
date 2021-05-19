@@ -17,8 +17,8 @@
 </style>
 <%
 
-'Substitua o valor do parâmetro abaixo pelo número do código de barras.
-WBarCode( request.QueryString("NumeroCodigo") )
+'Substitua o valor do parï¿½metro abaixo pelo nï¿½mero do cï¿½digo de barras.
+WBarCode( req("NumeroCodigo") )
 
 
 Sub WBarCode( Valor )

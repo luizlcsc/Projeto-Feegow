@@ -4,7 +4,7 @@ if request.ServerVariables("SERVER_NAME")="clinic.feegow.com.br" and session("ba
 end if
 
 if session("User")="" and req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
-    QueryStringParameters = req
+    QueryStringParameters = request.QueryString
 
 	response.Redirect("./?P=Login&qs="&Server.URLEncode(QueryStringParameters))
 end if

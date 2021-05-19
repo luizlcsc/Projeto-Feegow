@@ -25,7 +25,7 @@ end function
 function ref(Val)
 	' ref = replace(replace(ref(Val), "'", "''"), "\", "\\")
 
-    val = ref(Val)
+    val = request.Form(Val)
 
     ref = clear_ref_req(val)
 end function

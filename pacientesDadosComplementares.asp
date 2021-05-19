@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 
 <%
-if ref()<>"" then
+if request.form()<>"" then
 
     spl = split(req("C"), "_")
     FormID = replace(spl(0), "cd", "")

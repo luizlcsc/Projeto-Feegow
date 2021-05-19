@@ -1,3 +1,4 @@
+<!--#include file="functions.asp"-->
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Json.asp"-->
 <% IF req("ValidarCertificado") <> "" and req("AgendamentoID")<>"" THEN
@@ -839,10 +840,10 @@ $("#btnLancamentoRetroativo").click(function(){
 <%end if %>
 <script src="assets/js/ace-elements.min.js"></script>
 <script type="text/javascript">
-//js exclusivo avatar
 <%
 Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
 %>
+//js exclusivo avatar
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?')){
 		$.ajax({

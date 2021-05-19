@@ -355,23 +355,6 @@ function rep(Val)
 	end if
 end function
 
-function clearRefReq (val)
-        val = strip_tags(val)
-        val = replace(val, "'", "''")
-        val = replace(val,"\", "\\")
-        val = replace(val,"<script>", "")
-        val = replace(val,"</script>", "")
-        val = replace(val,"&amp;", "")
-        val = replace(val,"&lt;", "")
-        val = replace(val,"&gt;", "")
-        val = replace(val,"&quot;", "")
-        val = replace(val,"&#x27;", "")
-        val = replace(val,"&#x22;", "")
-        val = replace(val,"&#x27;", "")
-        clearRefReq = val
-end function 
-
-
 function reqf(P)
     if req(P)<>"" then
         reqf = req(P)
@@ -1058,7 +1041,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     itensRemove_array=Split(additionalTags_array(1),",")
                     for each itensRemove in itensRemove_array
                         fieldValue = replace(fieldValue,itensRemove,"")
-                    'response.write("<>console.log('"&itensRemove&" XX ')</>")
+                    'response.write("<script>console.log('"&itensRemove&" XX ')</script>")
                     next
                     fieldValue = replace(fieldValue,additionalTags_array(1),"")
                     if left(fieldValue,1) = "," then
@@ -2973,7 +2956,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 
 '		rbtns = rbtns & "</div></div></div></div>"
         header = header & "$(""#rbtns"").html("""& rbtns &""")"
-'        header = header & "});</>"
+'        header = header & "});</script>"
         header = header & "</script>"
 	    realSave = "<button class=""btn btn-sm btn-primary hidden"" id=""btnSave"">&nbsp;&nbsp;<i class=""fa fa-save""></i> <strong> SALVAR</strong>&nbsp;&nbsp;</button>"
 

@@ -1319,7 +1319,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                   <div class="btn-group">
 
                   <button type="button" class="btn btn-xs btn-success light" data-toggle="tooltip" data-placement="top" title="Tutoriais em vídeo"
-                  onclick='vidau(`VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString)%>`, true, `Central de Vídeos`,``,`xl`,``)'>
+                  onclick='vidau(`VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString())%>`, true, `Central de Vídeos`,``,`xl`,``)'>
                   <i class="fa fa-video-camera"></i> Vídeo-aula
                   </button>
 
@@ -1950,7 +1950,7 @@ function constante(){
             type:"POST",
             url:"constante.asp?AgAberto="+ $("#AgAberto").val() +"&P=<%= req("P") %>",
             data: {
-                qs: '<%=Server.URLEncode(req)%>'
+                qs: '<%=Server.URLEncode(Request.QueryString)%>'
             },
             success:function(data){
                 constanteRetornou = true;

@@ -38,6 +38,7 @@ elseif Aba="Horarios" then
 	ativoCadastro = ""
 	ativoHorarios = " class=""active"""
 	if versaoAgenda()=1 then
+    
 		chamaScript = "ajxContent('Horarios-1', "&req("I")&", 1, 'divHorarios');"
 	else
 		chamaScript = "ajxContent('Horarios', "&req("I")&", 1, 'divHorarios');"

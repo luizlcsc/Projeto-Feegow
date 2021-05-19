@@ -1672,7 +1672,7 @@ function selectInsert(label, name, value, resource, showColumn, othersToSelect, 
     </select>
 
 
-	< type="text/javascript">
+	<script type="text/javascript">
 	        s2aj("<%=name%>", '<%=resource%>', '<%=showColumn%>', '<%=campoSuperior%>', '<%=placeholder%>', "<%=othersToInput%>");
             
 	        $("#<%=name%>").change(function(){
@@ -1708,7 +1708,7 @@ function selectInsert(label, name, value, resource, showColumn, othersToSelect, 
 	    //   console.log( $(this).val() );
 
 
-    </>
+    </script>
 	<%
 end function
 
@@ -1741,7 +1741,7 @@ function selectInsertOLD(label, name, value, resource, showColumn, othersToSelec
     	buscando...
     </div>
 
-	< language="javascript">
+	<script language="javascript">
     function f_<%=replace(name, "-", "_")%>(){
         $.post("selectInsert.asp",{
                selectID:'<%=name%>',
@@ -1797,7 +1797,7 @@ function selectInsertOLD(label, name, value, resource, showColumn, othersToSelec
 //            $("#<%=name%>").val("0");
 //        }
     }
-    </>
+    </script>
 	<%
 end function
 
@@ -1829,7 +1829,7 @@ function selectProc(label, name, value, thisField, TabelaField, CodigoField, Des
 	<div id="resultSelect<%=name%>" class="ResultSearchInput">
     	<span class="m5"> <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Buscando...</span>
     </div>
-< language="javascript">
+<script language="javascript">
 function f_<%=replace(name, "-", "_")%>(){
 	$.post("<%=urlPost%>",{
 		   selectID:'<%=name%>',
@@ -1864,7 +1864,7 @@ $(document).ready(function(){
 	}
   });
 });
-</>
+</script>
 	<%
 end function
 
@@ -1891,7 +1891,7 @@ function selectList(label, name, value, resource, showColumn, othersToSelect, ot
             </div>
         </div>
     </div>
-< type="text/javascript">
+<script type="text/javascript">
 function f_<%=replace(name, "-", "_")%>(){
 	$.post("selectList.asp",{
            I:'<%=req("I")%>',
@@ -1921,7 +1921,7 @@ $(document).ready(function(){
 	}
   });
 });
-</>
+</script>
 	<%
 end function
 

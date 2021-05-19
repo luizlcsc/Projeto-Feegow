@@ -262,7 +262,7 @@ criaCampo(0, 0, 'V', '<%=FormID%>', 0)
 
 </form>
 </div>
-<a href="./?<%=req()%>&Convert=1" class="btn btn-xs btn-warning">Converter Formul&aacute;rio</a>
+<a href="./?<%=request.QueryString%>&Convert=1" class="btn btn-xs btn-warning">Converter Formul&aacute;rio</a>
 <div id="Salvando">
 
 </div>

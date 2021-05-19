@@ -204,7 +204,7 @@ showMessageDialog("Valor maior que o permitido", "danger");
 Response.End
 end if
 
-'response.Write(ref()&"<br>"&req())
+'response.Write(ref()&"<br>"&request.QueryString)
 %>
 <form name="formTransaction" id="formTransaction" action="" method="post">
 <input type="hidden" name="transactionID" id="transactionID" value="<%= transactionID %>">

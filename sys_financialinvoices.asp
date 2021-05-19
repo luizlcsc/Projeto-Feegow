@@ -462,7 +462,7 @@ function item(TipoItem, TipoAcao, I){
 function atualizaItens(){
 	$.ajax({
 		   type:"POST",
-		   url:"itensInvoice.asp?<%=req()%>",
+		   url:"itensInvoice.asp?<%=request.QueryString%>",
 		   data:$("#forminvoice").serialize(),
 		   success:function(data){
 			   $("#itensInvoice").html(data);

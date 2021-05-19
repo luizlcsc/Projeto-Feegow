@@ -7,7 +7,7 @@ CONFIRMA&Ccedil;&Atilde;O DE CONSULTA: </h1>
 session.LCID = 1046
 LicencaID =  replace(req("L"), "'", "")
 AgendamentoID =  replace(req("A"), "'", "")
-R =  replace(req(), "'", "")
+R =  replace(request.QueryString, "'", "")
 set lic = dbc.execute("select * from licencas where id = '"&LicencaID&"' and isnull(Excluido) limit 1")
 if not lic.eof then
 	set age = dbc.execute("select * from clinic"&LicencaID&".agendamentos where id = '"&AgendamentoID&"' limit 1")

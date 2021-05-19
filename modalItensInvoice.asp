@@ -193,7 +193,7 @@ function RemoveRepasse(Item, R){
 $("#formItem").submit(function(){
 	$.ajax({
 		type:"POST",
-		url:"saveItemInvoice.asp?<%=req()%>",
+		url:"saveItemInvoice.asp?<%=request.QueryString%>",
 		data:$("#formItem").serialize(),
 		success:function(data){
 			eval(data);

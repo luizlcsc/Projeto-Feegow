@@ -553,5 +553,5 @@ function lancar(P, T, L, V, PosicaoID, ItemInvoiceID, AtendimentoID, ProdutoInvo
 </script>
 <input type="hidden" name="PendPagar" id="PendPagar" />
 
-<%'=req() %>
+<%'=request.QueryString %>
 <!--#include file="disconnect.asp"-->

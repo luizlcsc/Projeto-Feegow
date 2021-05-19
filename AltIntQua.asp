@@ -1,5 +1,5 @@
 <!--#include file="connect.asp"--><%
-'response.Write(req())
+'response.Write(request.QueryString)
 n=0
 strUpDt=""
 while n<7

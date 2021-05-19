@@ -1486,5 +1486,5 @@ $('.contratobt').click(function(){
 
 <input type="hidden" name="PendPagar" id="PendPagar" />
 
-<%'=req() %>
+<%'=request.QueryString %>
 <!--#include file="disconnect.asp"-->

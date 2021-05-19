@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-'response.Write(req())
+'response.Write(request.QueryString)
     
 DataDe = req("DataDe")
 DataAte = req("DataAte")

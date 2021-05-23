@@ -441,7 +441,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <%
     end if
 
-    if ref("User")<>"" or ref("tokenLogin")<>"" then
+
+    if req("User")<>"" or req("tokenLogin")<>"" then
         if req("Partner")="" then
             set tryLogin = dbc.execute("select u.*, l.Cliente, l.NomeEmpresa, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status` from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha='"&ref("Password")&"' or '"&ref("Password")&"'='##Yogo@@Nutella.')")
 %>
@@ -492,16 +493,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <%
                         RedirectLogin = False
 
-                        if ref("RedirectLogin")<>"" then
+
+                        if req("RedirectLogin")<>"" then
                             RedirectLogin=True
                         end if
 
-                        if ref("Password")<>"" and RedirectLogin then
-                            PasswordValue = ref("Password")
+                        if req("Password")<>"" and RedirectLogin then
+                            PasswordValue = req("Password")
                         end if
 
-                        if ref("User")<>"" then
-                            User = ref("User")
+                        if req("User")<>"" then
+                            User = req("User")
+
                         else
                             User = request.Cookies("User")
                         end if
@@ -564,26 +567,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         var selectedCert = null;
 
         jQuery(document).ready(function () {
-
-            //$.post("LoginPrincipal.asp?User=<%=User%>",function(data){
-            //    $("#divFormLogin").html(data);
-            //});
-
-            //startPki();
             "use strict";
-            // Init Theme Core
             Core.init();
-            // Init Demo JS
-            //Demo.init();
-            // Init CanvasBG and pass target starting location
-/*            CanvasBG.init({
-                Loc: {
-                    x: window.innerWidth / 2,
-                    y: window.innerHeight / 3.3
-                },
-            });
-*/
-            // Init Ladda Plugin on buttons
             Ladda.bind('.ladda-button', {
                 timeout: 8000
             });
@@ -642,10 +627,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         function onWebPkiNotInstalled(status, message) {
             var alerta = `<span>Você precisa instalar a Extensão WebPki para usar o certificado digital.</span>
                             <a href='https://chrome.google.com/webstore/detail/web-pki/dcngeagmmhegagicpcmpinaoklddcgon'>Ir para download</a>`;
-            //$('#myAlert').html(alerta);
-            //$('#myAlert').show();
 
-            // pki.redirectToInstallPage();
         }
 
         function onWebPkiReady() {
@@ -718,22 +700,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             });
         }
 
-            function OnLoginCompleted(result) {
-                if(result.token=="")
-                {
-                    alert(result.msg);
-                    window.localStorage.removeItem('defaultcertificate');
-                    $('#certsModal').modal('hide');
+        function OnLoginCompleted(result) {
+            if(result.token=="")
+            {
+                alert(result.msg);
+                window.localStorage.removeItem('defaultcertificate');
+                $('#certsModal').modal('hide');
 
-                }else{
+            }else{
 
-                    window.localStorage.setItem('defaultcertificate',JSON.stringify(selectedCert));
-                    console.log(result);
-                    $('#tokenLogin').val(result.token);
-                    $('#regLogin').val(result.filename);
-                    $('form').submit();
-                }
+                window.localStorage.setItem('defaultcertificate',JSON.stringify(selectedCert));
+                console.log(result);
+                $('#tokenLogin').val(result.token);
+                $('#regLogin').val(result.filename);
+                $('form').submit();
             }
+        }
 
             $('form').on('submit', function(e){
 
@@ -748,10 +730,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             {
                 var result = (certificado.keyUsage.nonRepudiation && certificado.keyUsage.digitalSignature);
                 return result;
-            }
-
-            if (true) {
-              //   location.href="https://app.feegow.com/v7-master/"
             }
 
         });

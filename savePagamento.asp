@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-InvoiceID = request.QueryString("I")
+InvoiceID = req("I")
 set inv = db.execute("select i.*, fr.MetodoID from sys_financialinvoices i left join sys_formasrecto fr on fr.id=i.FormaID where i.id="&InvoiceID)
 AccountIDInvoice = inv("AccountID")
 AssociationAccountIDInvoice = inv("AssociationAccountID")
@@ -66,7 +66,11 @@ if T="C" then
 		if not getAssociation.eof then
 			set getAccountData = db.execute("select * from "&getAssociation("table")&" where id="&AccountID)
 			if not getAccountData.EOF then
-				PercentageDeducted = getAccountData("PercentageDeducted")
+				queryTaxa = getTaxaAtual(AccountID,LastMovementID,ref("NumberOfInstallments"))
+				set RetornoTaxaAtual2 = db.execute(queryTaxa)
+				taxaAtual= ""
+				taxaAtual = RetornoTaxaAtual2("taxaAtual")
+				PercentageDeducted = taxaAtual
 				DaysForCredit = getAccountData("DaysForCredit")
 				NumberOfInstallments = ccur(ref("NumberOfInstallments"))
 				c=0
@@ -84,7 +88,7 @@ if T="C" then
 							thisDateToReceive=DateToReceive
 						end if
 					end if
-					db_execute("insert into sys_financialCreditCardReceiptInstallments (DateToReceive, Fee, Value, TransactionID, InvoiceReceiptID) values ("&myDatenull(thisDateToReceive)&", "&treatvalzero(PercentageDeducted)&", "&treatValnull(cardInstallmentValue)&", "&TransactionID&", 0)")
+					db_execute("insert into sys_financialCreditCardReceiptInstallments (DateToReceive, Fee, Value, TransactionID, InvoiceReceiptID) values ("&myDatenull(thisDateToReceive)&", "&PercentageDeducted&", "&treatValnull(cardInstallmentValue)&", "&TransactionID&", 0)")
 				wend
 			end if
 		end if

@@ -2,8 +2,8 @@
 <%
 response.Charset="utf-8"
 
-DataDe = request.QueryString("De")
-DataAte = request.QueryString("Ate")
+DataDe = req("De")
+DataAte = req("Ate")
 if DataDe="" then
 	DataDe = "01/"&month(date())&"/"&year(date())
 end if

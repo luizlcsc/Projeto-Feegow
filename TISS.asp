@@ -445,9 +445,10 @@ function completaProcedimento(id, ConvenioID)
 
     viaID = ref("ViaID")
 
-    IF viaID = "" THEN
-       viaID = 1
-    END IF
+	' ViaID passou a ser campo opcional, não podendo ser atribuito a um valor automaticamente na função
+	' IF viaID = "" THEN
+	'   viaID = 1
+	'END IF
 
 	'set valproc = db.execute("select * from tissprocedimentosvalores where ProcedimentoID like '"&id&"' and ConvenioID like '"&ConvenioID&"'")
 	'response.Write("alert(""select pvp.Valor, pvp.NaoCobre from tissprocedimentosvaloresplanos as pvp LEFT JOIN tissprocedimentosvalores as pv on pv.id=pvp.AssociacaoID where pv.ProcedimentoID like '"&id&"' and PlanoID="&treatvalzero(ref("PlanoID"))&""")")

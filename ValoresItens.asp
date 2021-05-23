@@ -196,4 +196,4 @@ function addpt(){
     end if
     %>
 </script>
-<%= request.form() %>
+<%= ref() %>

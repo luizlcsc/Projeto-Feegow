@@ -3,8 +3,8 @@ if request.ServerVariables("SERVER_NAME")="clinic.feegow.com.br" and session("ba
 '    response.Redirect("http://clinic4.feegow.com.br/v7/?P=Login")
 end if
 
-if session("User")="" and request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
-    QueryStringParameters = Request.QueryString
+if session("User")="" and req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
+    QueryStringParameters = request.QueryString
 
 	response.Redirect("./?P=Login&qs="&Server.URLEncode(QueryStringParameters))
 end if
@@ -15,8 +15,8 @@ AppEnv = objSystemVariables("FC_APP_ENV")
 
 
 
-if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
-	if request.QueryString("P")<>"Home" and session("Bloqueado")<>"" then
+if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
+	if req("P")<>"Home" and session("Bloqueado")<>"" then
 		response.Redirect("./?P=Home&Pers=1")
 	end if
 %>
@@ -225,7 +225,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?a=46"></script>
+  <script src="js/components.js?a=47"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
     <%if aut("capptaI") then%>
@@ -1261,11 +1261,11 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                             %>
 								<!-- PAGE CONTENT BEGINS -->
 								<%
-								if request.QueryString("P")="" then
+								if req("P")="" then
 									response.Redirect("?P=Home&Pers=1")
 								end if
-								if request.QueryString("Pers")="1" then
-								  FileName = request.QueryString("P")&".asp"
+								if req("Pers")="1" then
+								  FileName = req("P")&".asp"
 								else
 								  FileName = "DefaultContent.asp"
 								end if
@@ -1292,7 +1292,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
       <!-- Begin: Page Footer -->
 
       <%
-      if session("AtendimentoTelemedicina")&""<>"" and Request.QueryString("P")="Pacientes"  then
+      if session("AtendimentoTelemedicina")&""<>"" and req("P")="Pacientes"  then
       %>
     <!--#include file="react/telemedicina/main.asp"-->
     <%
@@ -1915,9 +1915,9 @@ if session("Atendimentos")<>"" then
 		end if
 	next
 
-	if contaAtendimentos=1 and lcase(request.QueryString("P"))="pacientes" and request.QueryString("I")<>cstr(PacienteID) then
+	if contaAtendimentos=1 and lcase(req("P"))="pacientes" and req("I")<>cstr(PacienteID) then
 		Exibe = "S"
-	elseif contaAtendimentos=1 and lcase(request.QueryString("P"))<>"pacientes" then
+	elseif contaAtendimentos=1 and lcase(req("P"))<>"pacientes" then
 		Exibe = "S"
 	elseif contaAtendimentos>1 then
 		Exibe = "S"
@@ -2496,8 +2496,8 @@ end if
 				}
 			});
 
-			<% IF request.QueryString("limitExceeded")="1" THEN %>
-                _type = '<%=request.QueryString("P")%>';
+			<% IF req("limitExceeded")="1" THEN %>
+                _type = '<%=req("P")%>';
 			    if(!sessionStorage.getItem("limitExceeded"+_type)){sessionStorage.setItem("limitExceeded"+_type,1);}
 
                let _msgModal = {};
@@ -2546,9 +2546,9 @@ $("body").addClass("sb-l-m");
 end if
 %>
 </html>
-<% Elseif request.QueryString("P")="Trial" then%>
+<% Elseif req("P")="Trial" then%>
 	<!--#include file="Trialxxx.asp"-->
-<% Elseif request.QueryString("P")="Confirmacao" then%>
+<% Elseif req("P")="Confirmacao" then%>
 	<%=server.Execute("Confirmacao.asp")%>
 <% Else %>
 	<!--#include file="Login.asp"-->

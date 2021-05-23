@@ -1,9 +1,9 @@
 <!--#include file="connect.asp"-->
 <%
-sys_financialCurrentAccountId = Request.QueryString("sys_financialCurrentAccountId")
-minimo = Request.QueryString("minimo")
-maximo = Request.QueryString("maximo")
-percentual = Request.QueryString("percentual")
+sys_financialCurrentAccountId = req("sys_financialCurrentAccountId")
+minimo = req("minimo")
+maximo = req("maximo")
+percentual = req("percentual")
 
 if minimo = "" or maximo = "" then
     response.end

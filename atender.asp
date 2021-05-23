@@ -3,7 +3,7 @@
 <!--#include file="tissFuncs.asp"-->
 <%
 
-AgendamentoID = request.QueryString("Atender")
+AgendamentoID = req("Atender")
 PacienteID = ccur(req("I"))
 Acao = req("Acao")
 

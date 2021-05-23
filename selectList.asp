@@ -4,7 +4,7 @@
 id = ref("I")
 r = lcase(ref("resource"))
 typed = trim(ref("typed"))
-'response.Write(request.Form())
+'response.Write(ref())
 if r="pacientes" then
     if session("Logo")="UNIMEDLONDRINA.png" then
         sql = "select id, NomePaciente, CPF from pacientes where (NomePaciente) like '"& typed &"%' and id not like '"& id &"' UNION ALL SELECT 1000000000+id, concat(NomePaciente, ' (Base Unimed)'), CPF FROM "&session("Banco")&".pacientes WHERE trim(NomePaciente) like '"& typed &"%'"

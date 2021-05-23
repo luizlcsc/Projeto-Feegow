@@ -339,7 +339,7 @@ if Opts<>"" then
     var DataDe = "<%=req("DataDe")%>";
     var DataAte = "<%=req("DataAte")%>";
 
-    $.get("timeline.asp?ComEstilo=S&PacienteID=<%=req("PacienteID")%>&Tipo=<%=Opts%>&DataDe="+DataDe+"&DataAte="+DataAte, function(data) {
+    $.get("timeline.asp?ComEstilo=S&SemLimit=S&PacienteID=<%=req("PacienteID")%>&Tipo=<%=Opts%>&DataDe="+DataDe+"&DataAte="+DataAte, function(data) {
         setTimeout(function() {
           if(data.indexOf("class=\"timeline-item") > -1){
               $("#ConteudoTimeline").html(data);

@@ -1,8 +1,8 @@
 <!--#include file="connect.asp"-->
 <!--#include file="DefaultForm.asp"-->
 <%
-tableName=request.QueryString("P")
-id=request.QueryString("I")
+tableName=req("P")
+id=req("I")
 if id="" then
 	call DefaultForm(tableName, id)
 else
@@ -26,7 +26,7 @@ else
 
 	set reg = db.execute("select * from "&tableName&" where id="&id)
 	if reg.eof then
-		response.Redirect("?P="&request.QueryString("P")&"&I=N&Pers=1")
+		response.Redirect("?P="&req("P")&"&I=N&Pers=1")
 	else
 		id = reg("id")
 		AccountType = reg("AccountType")
@@ -35,9 +35,9 @@ else
 	%>
 	<%
 
-	id=request.QueryString("I")
-    call insertRedir(request.QueryString("P"), request.QueryString("I"))
-    set reg = db.execute("select * from sys_financialcurrentaccounts where id="&request.QueryString("I"))
+	id=req("I")
+    call insertRedir(req("P"), req("I"))
+    set reg = db.execute("select * from sys_financialcurrentaccounts where id="&req("I"))
 
     %>
     <%=header(req("P"), "Cadastro de Conta Corrente", reg("sysActive"), req("I"), req("Pers"), "Follow")%>

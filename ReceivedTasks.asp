@@ -1,13 +1,13 @@
 <!--#include file="connect.asp"-->
 <%
-if request.QueryString("X")<>"" then
-	set taskX = db.execute("select * from tarefas where id="&request.QueryString("X"))
+if req("X")<>"" then
+	set taskX = db.execute("select * from tarefas where id="&req("X"))
 	if not taskX.eof then
 		call altNotif(taskX("De"), taskX("id"), "", "X")
 		call altNotif(taskX("Para"), taskX("id"), "", "X")
 	end if
-	db_execute("delete from Tarefas where id="&request.QueryString("X")&"")
-	db_execute("delete from TarefasMSGs where TarefaID="&request.QueryString("X")&"")
+	db_execute("delete from Tarefas where id="&req("X")&"")
+	db_execute("delete from TarefasMSGs where TarefaID="&req("X")&"")
 end if
 %>
 <script language="javascript">

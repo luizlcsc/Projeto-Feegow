@@ -1,9 +1,9 @@
 <!--#include file="connect.asp"-->
 <%
-TipoItem = request.QueryString("TipoItem")
-TipoAcao = request.QueryString("TipoAcao")
-InvoiceID = request.QueryString("InvoiceID")
-ItemInvoiceID = ccur(request.QueryString("I"))
+TipoItem = req("TipoItem")
+TipoAcao = req("TipoAcao")
+InvoiceID = req("InvoiceID")
+ItemInvoiceID = ccur(req("I"))
 str = ref("str")
 
 if TipoItem = "S" then
@@ -93,6 +93,6 @@ elseif TipoItem = "O" then
 	end if
 end if
 %>
-//alert('<%=request.Form()%>');
+//alert('<%=ref()%>');
 atualizaItens();
 $("#modal-table").modal("hide");

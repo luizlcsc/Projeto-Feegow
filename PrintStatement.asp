@@ -75,16 +75,16 @@
                 <button type="button" onclick="print()" class="btn btn-info hidden-print"><i class="fa fa-print"></i></button>
             </div>
 	    	<% 
-           reqdebug = request.QueryString("debug")
+           reqdebug = req("debug")
            if reqdebug = "1" then
               reqdebug = "?debug=1"
             else   
               reqdebug = ""
            end if 
-           if request.QueryString("R")<> "" then 
-              server.Execute(request.QueryString("R")&".asp"&reqdebug) 
+           if req("R")<> "" then 
+              server.Execute(req("R")&".asp"&reqdebug) 
            else 
-              server.Execute(request.Form("R")&".asp"&reqdebug)  
+              server.Execute(ref("R")&".asp"&reqdebug)  
            end if
         %>
         </div>

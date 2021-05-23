@@ -41,16 +41,16 @@ Dim iDOW      ' Day Of Week that month starts on
 Dim iCurrent  ' Variable we use to hold current day of month as we write table
 Dim iPosition ' Variable we use to hold current position in table
 
-if request.QueryString("date")="" then
+if req("date")="" then
 	Data = date()
 else
-	Data = Request.QueryString("date")
+	Data = req("date")
 end if
-'	response.Redirect("NovoCalendario.asp?DRId="&request.QueryString("DRId")&"&date="&date()&"&Remarcar="&request.QueryString("Remarcar"))
-'elseif isdate(request.QueryString("date")) then
-'	response.Redirect("NovoCalendario.asp?DRId="&request.QueryString("DRId")&"&date="&request.QueryString("date")&"&Remarcar="&request.QueryString("Remarcar"))
+'	response.Redirect("NovoCalendario.asp?DRId="&req("DRId")&"&date="&date()&"&Remarcar="&req("Remarcar"))
+'elseif isdate(req("date")) then
+'	response.Redirect("NovoCalendario.asp?DRId="&req("DRId")&"&date="&req("date")&"&Remarcar="&req("Remarcar"))
 'End If
-'	dDate = Request.QueryString("date")
+'	dDate = req("date")
 
 'Data=dDate
 
@@ -71,7 +71,7 @@ DataProx=dateadd("m",1,Data)
       
       
       <tr>
-        <td class="hand" title="<%=ucase( monthname(month(DataAnte)) &" / "& year(DataAnte) ) %>" onClick="chamaCalendarioQD('<%=DataAnte%>','<%=request.QueryString("DrId")%>', '<%=req("Locales")%>');"><i class="fa fa-arrow-left"></i></td>
+        <td class="hand" title="<%=ucase( monthname(month(DataAnte)) &" / "& year(DataAnte) ) %>" onClick="chamaCalendarioQD('<%=DataAnte%>','<%=req("DrId")%>', '<%=req("Locales")%>');"><i class="fa fa-arrow-left"></i></td>
       <%
 ' Write spacer cells at beginning of first row if month doesn't start on a Sunday.
 If iDOW <> 1 Then
@@ -115,7 +115,7 @@ else
 		end if
 end if
 		DataClick=iCurrent&"/"&month(Data)&"/"&year(Data)
-		if request.QueryString("DRId")="Q" then
+		if req("DRId")="Q" then
 			Response.Write vbTab & vbTab & "<td bgcolor="""&corF&""" class=""hand "
 			if instr(SemHorario, weekday(DataClick))=0 then
 				response.Write(" danger ")
@@ -126,7 +126,7 @@ end if
 			end if
 			response.Write(""" align=""center"" onclick=""location.href='?P=QuadroDisponibilidade&Pers=1&Data="&DataClick&"';"" title="""& ucase(formatdatetime(DataClick, 1)) &""">"&strong& ucase(left(weekdayname(weekday(DataClick)),2)) &"<br>"& iCurrent &Fstrong& "</td>" & vbCrLf)
 		else
-			Response.Write vbTab & vbTab & "<td bgcolor="""&corF&""" class=""hand"" align=""right"" onclick=""chamaAgenda('"&DataClick&"','"&request.QueryString("DRId")&"');"" title="""& ucase(formatdatetime(DataClick, 1)) &""">"&strong& ucase(left(weekdayname(weekday(DataClick)),2)) &"<br>"& iCurrent &Fstrong& "</td>" & vbCrLf
+			Response.Write vbTab & vbTab & "<td bgcolor="""&corF&""" class=""hand"" align=""right"" onclick=""chamaAgenda('"&DataClick&"','"&req("DRId")&"');"" title="""& ucase(formatdatetime(DataClick, 1)) &""">"&strong& ucase(left(weekdayname(weekday(DataClick)),2)) &"<br>"& iCurrent &Fstrong& "</td>" & vbCrLf
 		end if
 	If iPosition = 7 Then
 '		Response.Write vbTab & "</tr>" & vbCrLf
@@ -146,7 +146,7 @@ If iPosition <> 1 Then
 '	Response.Write vbTab & "</tr>" & vbCrLf
 End If
 %>
-        <td align="center" colspan="2" class="hand text-right" title="<%=ucase( monthname(month(DataProx)) &" / "& year(DataProx) ) %>" onClick="chamaCalendarioQD('<%=DataProx%>','<%=request.QueryString("DrId")%>', '<%=req("Locales")%>');"><i class="fa fa-arrow-right"></i></td>
+        <td align="center" colspan="2" class="hand text-right" title="<%=ucase( monthname(month(DataProx)) &" / "& year(DataProx) ) %>" onClick="chamaCalendarioQD('<%=DataProx%>','<%=req("DrId")%>', '<%=req("Locales")%>');"><i class="fa fa-arrow-right"></i></td>
       </tr>
       <tr class="success">
       	<th colspan="33" id="ttX" class="hiddenX text-center">

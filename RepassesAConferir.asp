@@ -196,7 +196,7 @@ function lancaRepasses(rps, vlr, cc){
 
 function x(I){
 	if(confirm('Tem certeza de que deseja excluir este repasse?')){
-		location.href='./?<%=request.QueryString()%>&X='+I;
+		location.href='./?<%=request.QueryString%>&X='+I;
 	}
 }
 
@@ -261,7 +261,7 @@ if reqf("AccountID")<>"" then
         $("input[name=allSuccess], input[name=allDanger]").click();
         consolida();
     }else{
-        var url = "<%=request.querystring()%>";
+        var url = "<%=request.QueryString%>";
         url = url.replace("P=RepassesAConferir" , "?P=RepassesConferidos");
         location.href = url;
     }

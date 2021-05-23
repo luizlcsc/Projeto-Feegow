@@ -31,8 +31,8 @@ end if
 
 
 
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 
 if reg("Foto")="" or isnull(reg("Foto")) then
 	divDisplayUploadFoto = "block"
@@ -133,8 +133,8 @@ end if
     <iframe align="middle" class="hidden" id="CodBarras" name="CodBarras" src="about:blank" width="100%" height="110"></iframe>
 
     <%=header(req("P"), "Estoque", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-    <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+    <input type="hidden" name="I" value="<%=req("I")%>" />
+    <input type="hidden" name="P" value="<%=req("P")%>" />
 
     <div class="tabbable panel">
         <div class="tab-content panel-body">
@@ -255,8 +255,8 @@ end if
                             <br/>
                             <div class="row">
 
-                                <%=quickField("currency", "PrecoCompra", "Pre&ccedil;o Médio - Compra", 4, reg("PrecoCompra"), "", "", "")%>
-                                <div class="col-md-4">
+                                <%=quickField("currency", "PrecoCompra", "Pre&ccedil;o Médio - Compra", 2, reg("PrecoCompra"), "", "", "")%>
+                                <div class="col-md-2">
                                     <br />
                                     <div class="radio-custom radio-system">
                                         <input type="radio" name="TipoCompra" value="C" id="TipoCompraC" <% If reg("TipoCompra")="C" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoNomeC" for="TipoCompraC"> por conjunto</label></div>
@@ -264,13 +264,8 @@ end if
                                     <div class="radio-custom radio-system">
                                         <input type="radio" name="TipoCompra" value="U" id="TipoCompraU" <% If reg("TipoCompra")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeC" for="TipoCompraU"> por unidade</label></div>
                                 </div>
-                                <div class="col-md-4">
-                                    <%=selectInsert("Plano de Contas - Despesa", "CategoriaDespesaID", reg("CategoriaDespesaID"), "sys_financialexpensetype", "Name", "", "", "")%>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <%=quickField("currency", "PrecoVenda", "Pre&ccedil;o Médio - Venda", 4, reg("PrecoVenda"), "", "", "")%>
-                                <div class="col-md-4">
+                                <%=quickField("currency", "PrecoVenda", "Pre&ccedil;o Médio - Venda", 2, reg("PrecoVenda"), "", "", "")%>
+                                <div class="col-md-2">
                                     <br />
                                     <div class="radio-custom radio-alert">
                                         <input type="radio" name="TipoVenda" id="TipoVendaC" value="C" <% If reg("TipoVenda")="C" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoNomeV" for="TipoVendaC"> por conjunto</label></div>
@@ -278,19 +273,14 @@ end if
                                     <div class="radio-custom radio-alert">
                                         <input type="radio" name="TipoVenda" id="TipoVendaU" value="U" <% If reg("TipoVenda")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeV" for="TipoVendaU"> por unidade</label></div>
                                 </div>
-                                <div class="col-md-4">
-                                    <%=selectInsert("Plano de Contas - Receita", "CategoriaReceitaID", reg("CategoriaReceitaID"), "sys_financialincometype", "Name", "", "", "")%>
-                                </div>
-                            </div>
-                            <div class="row">
 
-                                <div class="col-md-6">
-                                    <%if aut("|produtosI|")=1 OR aut("|produtosA|")=1 then%>
-                                        <div class="checkbox-custom checkbox-primary mt25">
-                                        <input type="checkbox" name="PermitirSaida" id="PermitirSaida" value="S" class="ace" <% If reg("PermitirSaida")="S" Then %> checked="checked" <% End If %> />
-                                        <label for="PermitirSaida">Permitir saída pelo cadastro</label></div>
-                                    <%end if%>
-                                </div>
+
+
+                                <%if aut("|produtosI|")=1 OR aut("|produtosA|")=1 then%>
+                                    <div class="checkbox-custom checkbox-primary mt25">
+                                    <input type="checkbox" name="PermitirSaida" id="PermitirSaida" value="S" class="ace" <% If reg("PermitirSaida")="S" Then %> checked="checked" <% End If %> />
+                                    <label for="PermitirSaida">Permitir saída pelo cadastro</label></div>
+                                <%end if%>
 
                             </div>
                         </div>
@@ -457,7 +447,7 @@ setTimeout(function() {
     function atualizaLanctos(){
         $.ajax({
             type:"GET",
-            url:"EstoquePosicao.asp?I=<%=request.QueryString("I")%>",
+            url:"EstoquePosicao.asp?I=<%=req("I")%>",
             success: function(data){
                 $("#ProdutosPosicao").html(data);
             }
@@ -517,7 +507,7 @@ lbl();
 
     //js exclusivo avatar
 <%
-    Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
+    Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
 
     %>
     function removeFoto(){

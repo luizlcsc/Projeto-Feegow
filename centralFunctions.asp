@@ -122,11 +122,11 @@ function rep(Val)
 end function
 
 function ref(Val)
-	ref = replace(request.Form(Val), "'", "''")
+	ref = replace(ref(Val), "'", "''")
 end function
 
 function refNull(Val)
-	if request.Form(Val)="" then
+	if ref(Val)="" then
 		refNull = "NULL"
 	else
 		refNull = ref(Val)

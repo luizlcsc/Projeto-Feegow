@@ -25,12 +25,12 @@
             <%
             db_execute("delete from tempAgenda where usuarioID = "&session("User"))
             
-            if request.QueryString("Data")="" then
+            if req("Data")="" then
                 Data=date()
             else
-                Data=request.QueryString("Data")
+                Data=req("Data")
             end if
-            ProfissionalID=request.QueryString("ProfissionalID")
+            ProfissionalID=req("ProfissionalID")
             DiaSemana=weekday(Data)
             mesCorrente=month(Data)
             
@@ -209,7 +209,7 @@ while not pTemp.EOF
 		else
 			if desab="" then
 				%>
-				<tr class="Remarcar Linhas" onclick="Remarcar('<%=ConsultaRem%>', 'Confirmar', <%=Data%>, '<%=hour(pTemp("Hora"))&":"&minute(pTemp("Hora"))%>', '<%=request.QueryString("ProfissionalID")%>');"><td width="25" bgcolor="#F8F8F8"></td>
+				<tr class="Remarcar Linhas" onclick="Remarcar('<%=ConsultaRem%>', 'Confirmar', <%=Data%>, '<%=hour(pTemp("Hora"))&":"&minute(pTemp("Hora"))%>', '<%=req("ProfissionalID")%>');"><td width="25" bgcolor="#F8F8F8"></td>
 				<td width="20" bgcolor="#F8F8F8"><strong><%=formatDateTime(pTemp("Hora"),4)%></strong></td>
 				<td colspan="4" class="Linhas"><input type="button" value="Remarcar para este Hor&aacute;rio" /></td></tr>
 				<%

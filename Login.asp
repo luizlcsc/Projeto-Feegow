@@ -11,10 +11,11 @@ end if
 
 
 %>
+<!--#include file="functions.asp"-->
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/URLDecode.asp"-->
 <!--#include file="Classes/Environment.asp"-->
-<% GTM_ID = getEnv("FC_GTM_ID", "") %>
+<% GTM_ID = getEnv("FC_GTM_ID", "")%>
 <!DOCTYPE html>
 <html>
 
@@ -430,6 +431,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <% end if %>
 
 <%
+
+
     if req("FP")<>"" and request.ServerVariables("REMOTE_ADDR")="::1" then
 	
         set tryLogin = dbc.execute("select u.*, l.Cliente, l.NomeEmpresa, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status` from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where u.id="&ccur(req("FP")))
@@ -437,6 +440,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <!--#include file="loginPadrao.asp"-->
 <%
     end if
+
 
     if req("User")<>"" or req("tokenLogin")<>"" then
         if req("Partner")="" then
@@ -489,6 +493,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <%
                         RedirectLogin = False
 
+
                         if req("RedirectLogin")<>"" then
                             RedirectLogin=True
                         end if
@@ -499,12 +504,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
                         if req("User")<>"" then
                             User = req("User")
+
                         else
                             User = request.Cookies("User")
                         end if
 
-                        if request.QueryString("U")<>"" then
-                            User=request.QueryString("U")
+                        if req("U")<>"" then
+                            User=req("U")
                         end if
                         %>
                         <div id="divFormLogin">
@@ -528,7 +534,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
         </div>
         <input id="authtoken" type="hidden">
-        <input id="qs" type="hidden" name="qs" value="<%= URLDecode(Request.QueryString("qs"))%>">
+        <input id="qs" type="hidden" name="qs" value="<%= URLDecode(req("qs"))%>">
     </form>
 
     <!-- BEGIN: PAGE SCRIPTS -->

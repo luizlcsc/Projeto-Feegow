@@ -320,7 +320,7 @@ function BuscarCreditosPaciente(ContaID) {
                                         </div>
                                         <div class="subConta hidden" id="contas_<%=PaymentMethod("id")%>">
                                         <%
-										if session("CaixaID")="" OR PaymentMethod("id")=7 OR PaymentMethod("id")=8 OR PaymentMethod("id")=9 OR PaymentMethod("id")=4 OR PaymentMethod("id")=5 OR PaymentMethod("id")=6 then
+										if session("CaixaID")="" OR PaymentMethod("id")=7 OR PaymentMethod("id")=8 OR PaymentMethod("id")=9 OR PaymentMethod("id")=4 OR PaymentMethod("id")=5 OR PaymentMethod("id")=15 OR PaymentMethod("id")=6 then
 										    sqlContasLiberadas = ""
 
 										    Contas=""

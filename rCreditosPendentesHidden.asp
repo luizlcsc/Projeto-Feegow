@@ -2,8 +2,8 @@
 
 <%
 
-DataDe = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
+DataDe = req("DataDe")
+DataAte = req("DataAte")
 
 %>
 <h3 class="text-center">Créditos Pendentes</h3>

@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-DataDe = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
+DataDe = req("DataDe")
+DataAte = req("DataAte")
 
 if DataDe="" then
 	DataDe = date()
@@ -70,7 +70,7 @@ end if
 	        <label>Forma</label><br>
             <div style="height:150px; overflow:scroll; overflow-x:hidden">
 				<label><input class="ace" checked type="checkbox" name="Forma" value="V"><span class="lbl"> Particular</span></label><br>
-				<label><input class="ace" onClick="$('.convenio').prop('checked', $(this).prop('checked'))" type="checkbox" name="Checkall" value=""><span class="lbl"> Todos os convênios</span></label><br>
+				<label><input class="ace" onClick="$('.convenio').prop('checked', $(this).prop('checked'))" type="checkbox" name="Checkall" value=""><span class="lbl"> Todos os convï¿½nios</span></label><br>
 				<%
 			set conv = db.execute("select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio")
 			while not conv.eof

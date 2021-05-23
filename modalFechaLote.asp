@@ -82,7 +82,7 @@ end if
 $("#frmModal").submit(function(){
 	$.ajax({
 		   type:"POST",
-		   url:"saveLote.asp?Acao=Inserir&T=<%=request.QueryString("T")%>&ConvenioID=<%=request.QueryString("ConvenioID")%>",
+		   url:"saveLote.asp?Acao=Inserir&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>",
 		   data:$("#frmModal, #guias").serialize(),
 		   success:function(data){
 			   eval(data);

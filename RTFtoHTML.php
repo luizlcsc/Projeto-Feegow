@@ -165,7 +165,7 @@ $tabela = $_GET['tabela'];
 $id = $_GET['id'];
 $banco = $_GET['banco'];
 
-$link = mysqli_connect('localhost','root','pipoca453', $banco);
+$link = mysqli_connect('localhost',getenv("FC_MYSQL_USER"),getenv("FC_MYSQL_PASSWORD"), $banco);
 //mysql_select_db($banco, $link);
 $sql = 'SELECT `'.$coluna.'` FROM `'.$tabela.'` where id='.$id;
 $result = mysqli_query($link, $sql) or die(mysql_error());
@@ -174,7 +174,7 @@ $rtfBruto = $row[$coluna];
 echo rtf2text($rtfBruto);
 //print_r($row['texto']);
 /*
-$db = mysqli_connect('localhost', 'root', 'pipoca453', 'clinic105');
+$db = mysqli_connect('localhost', getenv("FC_MYSQL_USER"),getenv("FC_MYSQL_PASSWORD"), 'clinic105');
 
 $busca = mysqli_query($db, "SELECT * FROM agendamentos limit 1");
 if (!$result) {

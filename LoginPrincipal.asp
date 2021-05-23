@@ -7,6 +7,7 @@
             margin-left:5px !important;        
         }
 
+
     </style>
     <div style="text-align:left; margin-top:10px;">
         <span class="textoTitulo">Redefinir Senha</span>

@@ -1,8 +1,8 @@
 <!--#include file="connect.asp"-->
 <%
-DataDe  = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
-reqdebug   = request.QueryString("debug")
+DataDe  = req("DataDe")
+DataAte = req("DataAte")
+reqdebug   = req("debug")
 
 if DataDe="" then
 	DataDe = date()

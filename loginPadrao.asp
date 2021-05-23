@@ -1,4 +1,9 @@
-<!--#include file="Classes/Connection.asp"--><!--#include file="Classes/IPUtil.asp"--><!--#include file="Classes/Environment.asp"--><%
+<!--#include file="Classes/Connection.asp"-->
+<!--#include file="Classes/IPUtil.asp"-->
+<!--#include file="Classes/Environment.asp"-->
+<!--#include file="functions.asp"-->
+
+<%
 if IP<>"::1" then
    'on error resume next
 end if
@@ -11,6 +16,7 @@ MasterPwd = getEnv("FC_MASTER", "----")
 Dominio = request.ServerVariables("SERVER_NAME")
 isHomolog = instr(Dominio, "teste")>0
 User = ref("User")
+
 Password = ref("Password")
 masterLogin = false
 masterLoginErro = false
@@ -160,7 +166,7 @@ if not tryLogin.EOF then
 
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
         if sysUser.eof then
-            response.write("<style>.info{display: flex;justify-content: center;align-items: center;height: 100vh;}.msg {padding: 50px;opacity: 0.7;border-radius: 10px;}</style><div class='info'><div class='msg'>Entrar em contato com o adiministrador e preencha os dados de acesso. </div></div>")
+            response.write("<style>.info{display: flex;justify-content: center;align-items: center;height: 100vh;}.msg {padding: 50px;opacity: 0.7;border-radius: 10px;}</style><div class='info'><div class='msg'>Entrar em contato com o administrador e preencha os dados de acesso. </div></div>")
             response.end
         end if 
 		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
@@ -553,7 +559,8 @@ if not tryLogin.EOF then
 		else
                     urlRedir = "./../?P=Home&Pers=1"
                 end if
-                if tryLogin("Home")&""<>"" then
+
+                if tryLogin("Home")&""<>"" and Versao=7 then
                     urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
                 end if
             else
@@ -565,10 +572,11 @@ if not tryLogin.EOF then
                     urlRedir = "./../?P=Home&Pers=1"
                 end if
 
-                if tryLogin("Home")&""<>"" then
+                if tryLogin("Home")&""<>"" and Versao=7 then
                     urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
                 end if
 			end if
+
 		tryLogin.movenext
 		wend
 		tryLogin.close
@@ -591,7 +599,7 @@ if not tryLogin.EOF then
             urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")
         END IF
 
-        QueryStringParameters = Request.Form("qs")
+        QueryStringParameters = ref("qs")
 
         call odonto()
 

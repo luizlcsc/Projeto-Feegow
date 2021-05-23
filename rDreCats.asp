@@ -19,7 +19,7 @@ while not l.eof
 			set val = db.execute("select sum(Valor) Valor from cliniccentral.dre_temp where month(Data)="& m &" and sysUser="& session("User") &" and LinhaID="& LinhaID &" and Agrupamento "& sqlAgrupamento)
 			Valor = fn(val("Valor"))
 			%>
-			<td class="text-right" onclick="det(<%= LinhaID %>, <%=m%>, `<%= Agrupamento %>`)">
+			<td class="text-right col-show-more" onclick="det(<%= LinhaID %>, <%=m%>, `<%= Agrupamento %>`)">
 				<%= Valor %>
 			</td>
 			<%

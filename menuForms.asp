@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 if GrupoID="" then
-	GrupoID = request.QueryString("GrupoID")
+	GrupoID = req("GrupoID")
 end if
 FormularioNaTimeline = getConfig("FormularioNaTimeline")
 %>

@@ -14,7 +14,7 @@ for i=0 to ubound(Servidores)
 
     Servidor = Servidores(i)
 
-    ConnString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193."& Servidor &";Database=clinic105;uid=root;pwd=pipoca453;"
+    ConnString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193."& Servidor &";Database=clinic105;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
     Set dbServ = Server.CreateObject("ADODB.Connection")
     dbServ.Open ConnString
 
@@ -26,7 +26,7 @@ for i=0 to ubound(Servidores)
         if Banco<>gt("Banco") then
             Banco = gt("Banco")
             set f=fs.OpenTextFile("c:\inetpub\wwwroot\feegowclinic\updates\"& Banco &".sql", 8, 1)
-            ConnStringLocal = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193.34;Database="& Banco &";uid=usr2;pwd=pipoca453;"
+            ConnStringLocal = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193.34;Database="& Banco &";uid=usr2;pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
             Set dbLocal = Server.CreateObject("ADODB.Connection")
             dbLocal.Open ConnStringLocal
         end if

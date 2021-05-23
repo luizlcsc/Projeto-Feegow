@@ -3,6 +3,18 @@
 'on error resume next
 FormID = Id
 
+ExibeForm = true
+if getConfig("BloquearEdicaoFormulario") = 1 and FormID <> "N" then
+    set getFormPreenchido = db.execute("SELECT date(DataHora) dataAtendimento FROM buiformspreenchidos WHERE sysActive=1 AND id = "&FormID)
+    if not getFormPreenchido.eof then
+        dataAtendimento = getFormPreenchido("dataAtendimento")
+        if dataAtendimento <> date() then
+            ExibeForm = false
+            DisabledBotao = " style='pointer-events:none;' "
+        end if
+    end if
+end if
+
 set getForm = db.execute("select * from buiforms where id="& ModeloID )
 if not getForm.eof then
     if req("IFR")="" then
@@ -24,7 +36,11 @@ if not getForm.eof then
             <% if req("LaudoSC")="" then %>
                 <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="fa fa-print"></i> Imprimir</button>
             <% end if %>
-            <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="fa fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+
+            <% if ExibeForm <> false then %>
+                <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="fa fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+            <% end if %>
+
             <% if req("LaudoSC")="" then %>
                 <button class="btn btn-default btn-sm" type="button" onclick="fechar()"><i class="fa fa-remove"></i> Fechar </button>
             <% end if %>
@@ -35,7 +51,7 @@ if not getForm.eof then
         </div>
              <div class="alert alert-warning internetFail text-center" style="display:none">Sua internet está apresentando lentidão</div>
     <% end if %>
-<div class="panel-body p25" id="iProntCont">
+<div class="panel-body p25 sensitive-data" id="iProntCont">
     <span class="form-status-holder"></span>
     <br />
 
@@ -255,7 +271,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         if (TipoForm!="L"){
             saveForm(0, 1);
         }
-        saveteste();
+        saveLog("update");
         //$.post("formsLog.asp?m=<%=req("m")%>&p=<%=req("p")%>&i="+FormID, $(".campoInput, .campoCheck, .tbl").serialize(), function(data){});
     }
 
@@ -272,39 +288,30 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
     var ultimo="";
     var timeout  = null;
-    function saveteste(){
+    function saveLog(action = "updated"){
 
-        let atual = JSON.stringify( $(".campoInput, .campoCheck, .tbl").serializeFormJSON());
+        let atual =  $(".campoInput, .campoCheck, .tbl").serializeFormJSON();
+
 
         if(atual!=ultimo){
 
             //desabilita feature
-            return;
-            $.ajax({
-                url: domain+"log/saveFormLog",
-                method: 'POST',
-                dataType: 'json',
-                data:
-                {
+            // return;
+
+            ultimo=atual;
+
+            recordLog({
+                module:"forms",
+                action: action,
+                logUrl: "<%= Request.ServerVariables("SERVER_NAME") &"/"& Request.ServerVariables("SCRIPT_NAME") %>",
+                licenseId: "<%=LicenseId%>",
+                userId: "<%=Session("User")%>",
+                oldData: {},
+                newData: {
                     'pacienteID': <%=req("p")%>,
                     'modeloID': <%=req("m")%>,
                     'formID': FormID,
-                },
-                success: (data) => {
-                    ultimo = atual;
-                     var d = new Date();
-                    $('.form-status-holder')
-                        .html('formulario salvo! Ultima atualização: ' + d.toLocaleTimeString())
-                        .css('color','black');
-                },
-                error: function (xhr, statustext, thrownError) {
-                    if(xhr.status !== 500){
-                        $('.form-status-holder')
-                            .html('formulario não pode ser salvo, verifique sua internet!')
-                            .css('color','orange');
-                        clearInterval(timeout);
-                        timeout = setTimeout(()=>saveteste(),15000);
-                    }
+                    data: atual
                 }
             });
         }
@@ -389,7 +396,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
     }
     if("<%=FormID%>" === "N"){
         saveForm(0, 1);
-        saveteste();
+        saveLog("create");
     }
 
     var timelineCarregada = false;

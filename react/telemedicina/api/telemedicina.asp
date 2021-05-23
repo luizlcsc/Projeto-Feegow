@@ -1,5 +1,5 @@
 <%
-action=Request.QueryString("action")
+action=req("action")
 
 
 Select Case action

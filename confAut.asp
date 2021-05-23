@@ -1,3 +1,5 @@
+
+<!--#include file="functions.asp"-->
 <%
 
 Session.Contents.Remove("AutenticadoPHP")

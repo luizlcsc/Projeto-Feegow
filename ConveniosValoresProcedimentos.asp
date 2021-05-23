@@ -4,21 +4,21 @@
 ConvenioID = req("ConvenioID")
 response.buffer
 
-if request.QueryString("X")<>"" then
+if req("X")<>"" then
 	db_execute("delete from tissprocedimentosvalores where id="&req("X"))
 	db_execute("delete from tissprocedimentosvaloresplanos where AssociacaoID="&req("X"))
 	db_execute("delete from tissprocedimentosanexos where AssociacaoID="&req("X"))
 end if
 
 
-IF request.QueryString("Recalcular") <> "" THEN
+IF req("Recalcular") <> "" THEN
         db_execute("UPDATE tissprocedimentosvalores       SET ValorConsolidado=NULL WHERE ConvenioID="&ConvenioID)
     	db_execute("UPDATE tissprocedimentosvaloresplanos SET ValorConsolidado=NULL WHERE AssociacaoID IN (SELECT ID FROM tissprocedimentosvalores WHERE ConvenioID = "&ConvenioID&")")
 END IF
 
-if request.QueryString("Clonar")<>"" then
+if req("Clonar")<>"" then
 
-	sqlClone = " SELECT ProcedimentoID,ConvenioID,id INTO @ProcedimentoID,@ConvenioID,@ProcedimentosValoresID FROM tissprocedimentosvalores WHERE id ="&request.QueryString("Clonar")&";                                                                                                                                      "&chr(13)&_
+	sqlClone = " SELECT ProcedimentoID,ConvenioID,id INTO @ProcedimentoID,@ConvenioID,@ProcedimentosValoresID FROM tissprocedimentosvalores WHERE id ="&req("Clonar")&";                                                                                                                                      "&chr(13)&_
                " INSERT INTO tissprocedimentosvalores(ProcedimentoID, ConvenioID, ProcedimentoTabelaID, Valor, ValorCH, TecnicaID, NaoCobre, ModoCalculo, DHUp, QuantidadeCH, CustoOperacional, ValorFilme, QuantidadeFilme, ValorUCO, ModoDeCalculo, CoeficientePorte, Porte, Contratados)                                   "&chr(13)&_
                " SELECT ProcedimentoID, ConvenioID, ProcedimentoTabelaID, Valor, ValorCH, TecnicaID, NaoCobre, ModoCalculo, DHUp, QuantidadeCH, CustoOperacional, ValorFilme, QuantidadeFilme, ValorUCO, ModoDeCalculo, CoeficientePorte, Porte, Contratados FROM tissprocedimentosvalores WHERE id = @ProcedimentosValoresID;"&chr(13)&_
                " SET @AssociacaoID = LAST_INSERT_ID();                                                                                                                                                                                                                                                                        "&chr(13)&_

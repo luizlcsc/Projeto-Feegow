@@ -1,9 +1,9 @@
 <!--#include file="connect.asp"-->
 <!--#include file="testaCPF.asp"-->
 <%
-ItemID = request.QueryString("II")
-GuiaID = request.QueryString("I")
-Tipo = request.QueryString("T")
+ItemID = req("II")
+GuiaID = req("I")
+Tipo = req("T")
 
 if Tipo="Profissionais" then
 	if erro="" then

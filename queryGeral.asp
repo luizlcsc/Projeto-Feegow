@@ -2,7 +2,7 @@
 <%
 
     server.ScriptTimeout = 500
-    q = request.form("Q")
+    q = ref("Q")
 %>
 <div class="panel">
     <div class="panel-body">

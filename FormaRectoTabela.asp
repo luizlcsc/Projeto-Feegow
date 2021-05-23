@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
 <%
-PM = request.QueryString("PM")
+PM = req("PM")
 response.Buffer
 if PM<>"" then
 	
@@ -39,7 +39,7 @@ if PM<>"" then
 		db_execute("insert into sys_formasrecto (MetodoID, Contas, Acrescimo, tipoAcrescimo, Desconto, tipoDesconto, Procedimentos) values ("&PM&", '|ALL|', 0, 'P', 0, 'P', '|ALL|')")
 	end if
 end if
-if request.QueryString("PM")="save" then
+if req("PM")="save" then
 	%>
     <script>
     new PNotify({

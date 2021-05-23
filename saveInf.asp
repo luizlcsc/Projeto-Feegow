@@ -216,7 +216,7 @@ if req("Origem")="Atendimento" then
         <%
 		if req("Solicitacao")<>"S"  then
 			if ref("itemSADT")<>"" and EhTriagem<>"S" then
-				splItemSADT = split(request.Form("itemSADT"), ", ")
+				splItemSADT = split(ref("itemSADT"), ", ")
 				for i=0 to ubound(splItemSADT)
 					
 					set itemSADT = db.execute("select ig.ProcedimentoID, ig.Quantidade, ig.ValorUnitario, g.ConvenioID, ig.ValorTotal FROM tissprocedimentossadt ig INNER JOIN tissguiasadt g on g.id=ig.GuiaID WHERE ig.id="&splItemSADT(i))
@@ -244,7 +244,7 @@ if req("Origem")="Atendimento" then
 			
 			
 			if ref("idConsulta")<>"" and EhTriagem<>"S" then
-				splidConsulta = split(request.Form("idConsulta"), ", ")
+				splidConsulta = split(ref("idConsulta"), ", ")
 				for i=0 to ubound(splidConsulta)
 					
 					set idConsulta = db.execute("select g.ProcedimentoID, g.ConvenioID, g.ValorProcedimento FROM tissguiaconsulta g WHERE g.id="&splidConsulta(i))
@@ -262,7 +262,7 @@ if req("Origem")="Atendimento" then
 
 			
 			if ref("itemInvoice")<>"" and EhTriagem<>"S" then
-				splitemInvoice = split(request.Form("itemInvoice"), ", ")
+				splitemInvoice = split(ref("itemInvoice"), ", ")
 				for i=0 to ubound(splitemInvoice)
 					
 					set itemInvoice = db.execute("select ii.ItemID ProcedimentoID, ii.ValorUnitario, ii.Desconto, ii.Acrescimo FROM itensinvoice ii WHERE ii.id="&splitemInvoice(i))

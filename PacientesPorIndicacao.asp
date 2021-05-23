@@ -6,8 +6,8 @@ while not p.eof
 set rsConta = db.Execute("Select COUNT(id) as TOTAL from pacientes where IndicadoPor like '"&p("IndicadoPor")&"'")
 c=rsConta("TOTAL")
 %>
-  <%if request.QueryString("Lista")="" then%>
-  <button name="button" type="button" class="btn btn-primary btn-block btn-sm" onclick="location.href='./?P=<%=request.QueryString("TipoRel")%>&Pers=1&TipoRel=<%=request.QueryString("TipoRel")%>&IndicadoPor=<%=p("IndicadoPor")%>&Lista=Sim';"><i class="fa fa-list"></i> <%=p("IndicadoPor")%>: <%=c%> paciente(s) - Visualizar</button>
+  <%if req("Lista")="" then%>
+  <button name="button" type="button" class="btn btn-primary btn-block btn-sm" onclick="location.href='./?P=<%=req("TipoRel")%>&Pers=1&TipoRel=<%=req("TipoRel")%>&IndicadoPor=<%=p("IndicadoPor")%>&Lista=Sim';"><i class="fa fa-list"></i> <%=p("IndicadoPor")%>: <%=c%> paciente(s) - Visualizar</button>
   <% end if %>
 <br />
 <%
@@ -15,7 +15,7 @@ p.moveNext
 wend
 p.close
 set p=nothing
-%><%if request.QueryString("Lista")="Sim" then%>
+%><%if req("Lista")="Sim" then%>
 <table class="table table-bordered table-striped" width="100%" border="0">
   <tr>
     <th>Nome</th>
@@ -25,7 +25,7 @@ set p=nothing
   </tr>
   <%
 c=0
-set p = db.Execute("Select * from pacientes where IndicadoPor like '"&request.QueryString("IndicadoPor")&"'")
+set p = db.Execute("Select * from pacientes where IndicadoPor like '"&req("IndicadoPor")&"'")
 while  not p.eof
 	c=c+1
 %>

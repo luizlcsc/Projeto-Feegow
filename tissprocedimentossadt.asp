@@ -33,7 +33,7 @@ end if
 <table width="100%" class="table table-striped table-bordered table-condensed">
   <thead>
     <tr>
-      <th width="20" align="center" nowrap><button type="button" onclick="ExibeHistoricoSADT('<%=request.QueryString("I")%>')" title="Histórico de alterações" class="btn btn-default btn-xs"><i class="fa fa-history"></i></button></th>
+      <th width="20" align="center" nowrap><button type="button" onclick="ExibeHistoricoSADT('<%=req("I")%>')" title="Histórico de alterações" class="btn btn-default btn-xs"><i class="fa fa-history"></i></button></th>
       <th width="65" align="center" nowrap>Data</th>
       <th width="65" align="center" nowrap>In&iacute;cio</th>
       <th width="60" align="center" nowrap>Fim</th>
@@ -47,7 +47,7 @@ end if
       <th width="80" align="center" nowrap>Valor Unit.</th>
       <th width="60" align="center" nowrap>Valor Total</th>
       <th width="30" align="center" nowrap> </th>
-      <th width="30" align="center" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemSADT('Procedimentos', <%=request.QueryString("I")%>, 0);"><i class="fa fa-plus"></i></button></th>
+      <th width="30" align="center" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemSADT('Procedimentos', <%=req("I")%>, 0);"><i class="fa fa-plus"></i></button></th>
     </tr>
   </thead>
   <tbody>
@@ -79,7 +79,7 @@ end if
       <input type="hidden" name="descricaoProc<%=p("id") %>" value="<%=p("Descricao") %>" />
       <input type="hidden" name="qtdProc<%=p("id") %>" value="<%=p("Quantidade") %>" />
       <input type="hidden" name="tabelaProc<%=p("id") %>" value="<%=p("TabelaID") %>" />
-      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemSADT('Procedimentos', <%=request.QueryString("I")%>, <%=p("id")%>);"><i class="fa fa-edit"></i></button></td>
+      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemSADT('Procedimentos', <%=req("I")%>, <%=p("id")%>);"><i class="fa fa-edit"></i></button></td>
       <td align="center"><%= p("Data") %></td>
       <td align="center"><%= right(p("HoraInicio"),8) %></td>
       <td align="center"><%= right(p("HoraFim"),8) %></td>
@@ -135,7 +135,7 @@ end if
             end if
         else
             %>
-            <button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('tissprocedimentossadt', 'tissprocedimentossadt.asp?I=<%=request.QueryString("I")%>&X=<%=p("id")%>')"><i class="fa fa-remove"></i></button>
+            <button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('tissprocedimentossadt', 'tissprocedimentossadt.asp?I=<%=req("I")%>&X=<%=p("id")%>')"><i class="fa fa-remove"></i></button>
             <%
         end if
       %>

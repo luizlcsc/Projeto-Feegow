@@ -1,8 +1,8 @@
 <!--#include file="connect.asp"-->
 <%
-ProfissionalID = request.QueryString("ProfissionalID")
-PacienteID = request.QueryString("PacienteID")
-Data = request.QueryString("Data")
+ProfissionalID = req("ProfissionalID")
+PacienteID = req("PacienteID")
+Data = req("Data")
 oti = "agenda"
 
 set pac = db.execute("select * from pacientes where id like '"&PacienteID&"' and sysActive=1")

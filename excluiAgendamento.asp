@@ -2,9 +2,9 @@
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <%
-ConsultaID = request.QueryString("ConsultaID")
-token = request.QueryString("token")
-if request.QueryString("Confirma")="0" then
+ConsultaID = req("ConsultaID")
+token = req("token")
+if req("Confirma")="0" then
 	%>
 <form method="post" action="" id="formExcluiAgendamento" name="formExcluiAgendamento">
 

@@ -4,7 +4,7 @@ response.write("<script type='text/javascript'>")
 
 DataCredito = ref("DataCredito")
 spl = split(ref("parcCC"), ", ")
-'response.write( request.form() )
+'response.write( ref() )
 somaBruta = ccur(ref("Soma"))
 valorBaixar = ccur(ref("ValorBaixar"))
 coef = valorBaixar/somaBruta

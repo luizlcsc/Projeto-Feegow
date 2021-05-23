@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-I = request.QueryString("I")
-Action = request.QueryString("Action")
+I = req("I")
+Action = req("Action")
 if Action="Recalc" then
 	Procedimentos = 0
 	TaxasEAlugueis = 0

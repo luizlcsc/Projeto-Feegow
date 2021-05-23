@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-I = request.QueryString("I")
-Action = request.QueryString("Action")
+I = req("I")
+Action = req("Action")
 if Action="Recalc" then
 
     set ConvenioSQL = db.execute("SELECT ConvenioID FROM tissguiasadt where id="&I  )

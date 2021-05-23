@@ -312,7 +312,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 end if
                             end if
                             if cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0 then %>
-                                <a href="javascript:if(confirm('Tem certeza de que deseja apagar esta prescrição?'))pront('timeline.asp?PacienteID=<%= PacienteID %>&Tipo=|<%= ti("Tipo") %>|&X=<%= ti("id") %>');">
+                                <a href="javascript:if(confirm('Tem certeza de que deseja apagar esta prescrição?'));pront('timeline.asp?PacienteID=<%= PacienteID %>&Tipo=|<%= ti("Tipo") %>|&X=<%= ti("id") %>');">
                                     <i class="fa fa-remove"></i>
                                 </a>
                             <% end if %>

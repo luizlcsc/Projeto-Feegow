@@ -6,23 +6,23 @@ set rsContaf = db.Execute("Select COUNT(id) as TOTALf from pacientes where Sexo=
 Total=ccur(rsConta("TOTAL"))
 Totalf=ccur(rsContaf("TOTALf"))
 
-if request.QueryString("Lista")="" then%>
+if req("Lista")="" then%>
 <div class="clearfix form-actions">
 	<div class="col-md-6">
 	    Sexo masculino: <%=Total%> paciente(s).
-    	<input name="button" type="button" class="btn btn-success btn-sm" onclick="location.href='?P=<%=request.QueryString("TipoRel")%>&Sexo=1&Lista=Sim&Pers=1';" value="Visualizar" />
+    	<input name="button" type="button" class="btn btn-success btn-sm" onclick="location.href='?P=<%=req("TipoRel")%>&Sexo=1&Lista=Sim&Pers=1';" value="Visualizar" />
     </div>
 	<div class="col-md-6">
 		Sexo feminino: <%=Totalf%> paciente(s).
-		<input name="button" type="button" class="btn btn-success btn-sm" onclick="location.href='?P=<%=request.QueryString("TipoRel")%>&Sexo=2&Lista=Sim&Pers=1';" value="Visualizar" />
+		<input name="button" type="button" class="btn btn-success btn-sm" onclick="location.href='?P=<%=req("TipoRel")%>&Sexo=2&Lista=Sim&Pers=1';" value="Visualizar" />
     </div>
 </div><%
 else
 	%>
-	<h1>Pacientes do Sexo <%=getSexo(request.QueryString("Sexo"))%></h1>
+	<h1>Pacientes do Sexo <%=getSexo(req("Sexo"))%></h1>
 	<%
 end if%>
-<%if request.QueryString("Lista")="Sim" then%>
+<%if req("Lista")="Sim" then%>
 <table width="100%" class="table table-striped table-borderes">
 <thead>
   <tr>
@@ -36,7 +36,7 @@ end if%>
 <tbody>
   <%
 c=0
-set p = db.Execute("Select * from pacientes where Sexo like '"&request.QueryString("Sexo")&"'")
+set p = db.Execute("Select * from pacientes where Sexo like '"&req("Sexo")&"'")
 while  not p.eof
 	c=c+1
 %>

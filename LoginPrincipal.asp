@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col">
             <label class="container-checkbox">Lembrar dados de acesso
-            <input type="checkbox" name="Lembrarme" id="Lembrarme" value="S" <%if request.cookies("User")<>"" or request.form("Lembrarme")="S" then response.write(" checked ") end if %>>
+            <input type="checkbox" name="Lembrarme" id="Lembrarme" value="S" <%if request.cookies("User")<>"" or ref("Lembrarme")="S" then response.write(" checked ") end if %>>
             <span class="checkmark"></span>
             </label>
         </div>

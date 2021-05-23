@@ -449,7 +449,7 @@ function atualizaAlbum(X, LaudoID){
         //apenas chamar pront
 	$.ajax({
 		type:"POST",
-		url:"Arquivos.asp?PacienteID=<%=request.QueryString("I")%>&X="+X,
+		url:"Arquivos.asp?PacienteID=<%=req("I")%>&X="+X,
 		success:function(data){
 			$("#ArquivosPaciente").html(data);
 		}

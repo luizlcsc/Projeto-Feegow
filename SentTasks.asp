@@ -1,13 +1,13 @@
 <!--#include file="connect.asp"-->
 <%
-if request.QueryString("X")<>"" then
-	set taskX = db.execute("select * from tarefas where id="&request.QueryString("X"))
+if req("X")<>"" then
+	set taskX = db.execute("select * from tarefas where id="&req("X"))
 	if not taskX.eof then
 		call altNotif(taskX("De"), taskX("id"), "", "X")
 		call altNotif(taskX("Para"), taskX("id"), "", "X")
 	end if
-	db_execute("delete from Tarefas where id="&request.QueryString("X")&"")
-	db_execute("delete from TarefasMSGs where TarefaID="&request.QueryString("X")&"")
+	db_execute("delete from Tarefas where id="&req("X")&"")
+	db_execute("delete from TarefasMSGs where TarefaID="&req("X")&"")
 end if
 %>
 <script language="javascript">
@@ -46,7 +46,7 @@ While Not PLista.EOF
     <td><%=nameInTable(PLista("De"))%><br /><em><%=PLista("staDe")%></em></td>
     <td><%nameInTable(PLista("Para"))%><br /><em><%=PLista("staPara")%></em></td>
     <td><%=PLista("DtAbertura")%> - <%=cdate(hour(PLista("HrAbertura"))&":"&minute(PLista("HrAbertura")))%></td>
-    <td><button type="button" class="btn btn-sm btn-danger" onclick="excluiTarefa('./?P=<%=request.QueryString("P")%>&Pers=1&X=<%=PLista("id")%>');"><i class="fa fa-trash"></i></button></td>
+    <td><button type="button" class="btn btn-sm btn-danger" onclick="excluiTarefa('./?P=<%=req("P")%>&Pers=1&X=<%=PLista("id")%>');"><i class="fa fa-trash"></i></button></td>
   </tr>
   <%
 PLista.MoveNext
@@ -84,7 +84,7 @@ While Not PLista.EOF
       </td>
     <td><%=nameInTable(PLista("Para"))%><br /><em><%=PLista("staPara")%></em></td>
     <td><%=PLista("DtAbertura")%> - <%=cdate(hour(PLista("HrAbertura"))&":"&minute(PLista("HrAbertura")))%></td>
-    <td><button type="button" class="btn btn-sm btn-danger" onclick="excluiTarefa('./?P=<%=request.QueryString("P")%>&Pers=1&X=<%=PLista("id")%>');"><i class="fa fa-trash"></i></button></td>
+    <td><button type="button" class="btn btn-sm btn-danger" onclick="excluiTarefa('./?P=<%=req("P")%>&Pers=1&X=<%=PLista("id")%>');"><i class="fa fa-trash"></i></button></td>
   </tr>
   <%
 PLista.MoveNext
@@ -119,7 +119,7 @@ While Not PLista.EOF
     <td><%=nameInTable(PLista("De"))%><br /><em><%=PLista("staDe")%></em></td>
     <td><%=nameInTable(PLista("Para"))%><br /><em><%=PLista("staPara")%></em></td>
     <td><%=PLista("DtAbertura")%> - <%=cdate(hour(PLista("HrAbertura"))&":"&minute(PLista("HrAbertura")))%></td>
-    <td><button type="button" class="btn btn-sm btn-danger" onclick="excluiTarefa('./?P=<%=request.QueryString("P")%>&Pers=1&X=<%=PLista("id")%>');"><i class="fa fa-trash"></i></button></td>
+    <td><button type="button" class="btn btn-sm btn-danger" onclick="excluiTarefa('./?P=<%=req("P")%>&Pers=1&X=<%=PLista("id")%>');"><i class="fa fa-trash"></i></button></td>
   </tr>
   <%
 PLista.MoveNext
@@ -155,7 +155,7 @@ While Not PLista.EOF
     <td><%=nameInTable(PLista("De"))%><br /><em><%=PLista("staDe")%></em></td>
     <td><%=nameInTable(PLista("Para"))%><br /><em><%=PLista("staPara")%></em></td>
     <td><%=PLista("DtAbertura")%> - <%=cdate(hour(PLista("HrAbertura"))&":"&minute(PLista("HrAbertura")))%></td>
-    <td><button type="button" class="btn btn-sm btn-danger" onclick="excluiTarefa('./?P=<%=request.QueryString("P")%>&Pers=1&X=<%=PLista("id")%>');"><i class="fa fa-trash"></i></button></td>
+    <td><button type="button" class="btn btn-sm btn-danger" onclick="excluiTarefa('./?P=<%=req("P")%>&Pers=1&X=<%=PLista("id")%>');"><i class="fa fa-trash"></i></button></td>
   </tr>
   <%
 PLista.MoveNext

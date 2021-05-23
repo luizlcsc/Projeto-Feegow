@@ -26,16 +26,16 @@ Dim iDOW      ' Day Of Week that month starts on
 Dim iCurrent  ' Variable we use to hold current day of month as we write table
 Dim iPosition ' Variable we use to hold current position in table
 
-if request.QueryString("date")="" then
+if req("date")="" then
 	Data = date()
 else
-	Data = Request.QueryString("date")
+	Data = req("date")
 end if
-'	response.Redirect("NovoCalendario.asp?DRId="&request.QueryString("DRId")&"&date="&date()&"&Remarcar="&request.QueryString("Remarcar"))
-'elseif isdate(request.QueryString("date")) then
-'	response.Redirect("NovoCalendario.asp?DRId="&request.QueryString("DRId")&"&date="&request.QueryString("date")&"&Remarcar="&request.QueryString("Remarcar"))
+'	response.Redirect("NovoCalendario.asp?DRId="&req("DRId")&"&date="&date()&"&Remarcar="&req("Remarcar"))
+'elseif isdate(req("date")) then
+'	response.Redirect("NovoCalendario.asp?DRId="&req("DRId")&"&date="&req("date")&"&Remarcar="&req("Remarcar"))
 'End If
-'	dDate = Request.QueryString("date")
+'	dDate = req("date")
 
 'Data=dDate
 
@@ -52,9 +52,9 @@ DataProx=dateadd("m",1,Data)
       <table class="table table-bordered" width="100%">
 	  <thead>
       <tr>
-        <th colspan="2" class="hand" onClick="chamaCalendario('<%=DataAnte%>','<%=request.QueryString("DrId")%>');"><i class="fa fa-arrow-left"></i></th>
+        <th colspan="2" class="hand" onClick="chamaCalendario('<%=DataAnte%>','<%=req("DrId")%>');"><i class="fa fa-arrow-left"></i></th>
         <th colspan="3" class="text-center"><%= ucase(left(monthname(MesX),3)) & " - " & Year(Data) %></th>
-        <th colspan="2" class="hand" onClick="chamaCalendario('<%=DataProx%>','<%=request.QueryString("DrId")%>');" class="text-right"><i class="fa fa-arrow-right"></i></th>
+        <th colspan="2" class="hand" onClick="chamaCalendario('<%=DataProx%>','<%=req("DrId")%>');" class="text-right"><i class="fa fa-arrow-right"></i></th>
       </tr>
       <tr>
         <th>DO</th>
@@ -110,14 +110,14 @@ else
 		end if
 end if
 		DataClick=iCurrent&"/"&month(Data)&"/"&year(Data)
-		if request.QueryString("DRId")="Q" then
+		if req("DRId")="Q" then
 			Response.Write vbTab & vbTab & "<td bgcolor="""&corF&""" class=""hand"
 			if cdate(DataClick)=cdate(Data) then
 				response.Write(" success green")
 			end if
 			response.Write(""" align=""right"" onclick=""location.href='?P=NovoQuadro&Pers=1&Data="&DataClick&"';"">"&strong& iCurrent &Fstrong& "</td>" & vbCrLf)
 		else
-			Response.Write vbTab & vbTab & "<td bgcolor="""&corF&""" class=""hand"" align=""right"" onclick=""chamaAgenda('"&DataClick&"','"&request.QueryString("DRId")&"');"">"&strong& iCurrent &Fstrong& "</td>" & vbCrLf
+			Response.Write vbTab & vbTab & "<td bgcolor="""&corF&""" class=""hand"" align=""right"" onclick=""chamaAgenda('"&DataClick&"','"&req("DRId")&"');"">"&strong& iCurrent &Fstrong& "</td>" & vbCrLf
 		end if
 	If iPosition = 7 Then
 		Response.Write vbTab & "</tr>" & vbCrLf

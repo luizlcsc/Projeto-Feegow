@@ -4,7 +4,7 @@
 <%
 'on error resume next
 response.Charset="utf-8"
-set pCampo=db.execute("select * from buiCamposForms where id = '"&replace(request.QueryString("I"),"'","''")&"'")
+set pCampo=db.execute("select * from buiCamposForms where id = '"&replace(req("I"),"'","''")&"'")
 RotuloCampo=ref("RotuloCampo")
 NomeCampo=left(tratoForm(RotuloCampo),16)
 set	vcaOutro=db.execute("select * from buiCamposForms where lcase(NomeCampo) like '"&NomeCampo&"' and id<>"&pCampo("id")&" and FormID like '"&pCampo("FormID")&"'")

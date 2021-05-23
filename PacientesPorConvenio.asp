@@ -3,7 +3,7 @@
 <form id="Relatorio" name="Relatorio" method="get" action="">
 <input type="hidden" name="Pers" value="1" />
 <input type="hidden" name="P" value="Relatorio" />
-<input type="hidden" name="TipoRel" value="<%=request.QueryString("TipoRel")%>" />
+<input type="hidden" name="TipoRel" value="<%=req("TipoRel")%>" />
 <input type="hidden" name="E" value="E" />
 <div class="clearfix form-actions">
   <div class="col-md-4"><label>Conv&ecirc;nio</label><br>
@@ -13,7 +13,7 @@
     set b=db.execute("select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio")
     while not b.eof
     %>
-        <option value="<%=b("id")%>"<%if request.QueryString("ConvenioID")=cstr(b("id")) then%> selected="selected"<%end if%>><%=b("NomeConvenio")%></option>
+        <option value="<%=b("id")%>"<%if req("ConvenioID")=cstr(b("id")) then%> selected="selected"<%end if%>><%=b("NomeConvenio")%></option>
         <%
     b.movenext
     wend
@@ -30,7 +30,7 @@
 </form>
 
 <form method="post" action="Etiquetas.asp" target="_blank">
-<% if request.QueryString("E")="E" then
+<% if req("E")="E" then
  %><table width="100%" border="0" class="table table-striped table-bordered">
  <thead>
 <tr bgcolor="#CCCCCC"><th>Nome</th><th>Sexo</th><th>Nascimento</th><th>Telefone</th><th>Celular</th><th>E-mail</th></tr>
@@ -38,7 +38,7 @@
 <tbody>
 <%
 c=0
-set p = db.Execute("select pc.*, p.* from pacientesconvenios as pc inner join pacientes as p on pc.PacienteID=p.id where pc.ConvenioID="&request.QueryString("ConvenioID")&" and not isnull(pc.PacienteID) order by p.NomePaciente")
+set p = db.Execute("select pc.*, p.* from pacientesconvenios as pc inner join pacientes as p on pc.PacienteID=p.id where pc.ConvenioID="&req("ConvenioID")&" and not isnull(pc.PacienteID) order by p.NomePaciente")
 while  not p.eof
 c=c+1
 		gerEt="S"

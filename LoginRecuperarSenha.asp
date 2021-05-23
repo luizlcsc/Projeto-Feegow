@@ -6,9 +6,9 @@ set dbc = newConnection("", "")
 PasswordSalt = getEnv("FC_PWD_SALT", "SALT_")
 
 'VERIFICA SE USUÁRIO DE ACESSO EXISTE
-if request.form("opt") = "verificaUsuarioAcesso" then
+if ref("opt") = "verificaUsuarioAcesso" then
 
-    sqlUsuarioAcesso = "SELECT * FROM licencasusuarios WHERE email = '"&request.form("email")&"'"
+    sqlUsuarioAcesso = "SELECT * FROM licencasusuarios WHERE email = '"&ref("email")&"'"
 
     set verificaUsuarioAcesso = dbc.execute(sqlUsuarioAcesso)
 
@@ -25,9 +25,9 @@ if request.form("opt") = "verificaUsuarioAcesso" then
     end if
 
 'ALTERA A SENHA
-elseif request.form("opt") = "salvarNovaSenha" and request.form("email") <> "" then
-    if (request.form("password") <> "" and request.form("newpassword") <> "") and (request.form("password") = request.form("newpassword")) then
-        dbc.execute("UPDATE licencasusuarios SET Senha = '"&request.form("password")&"', SenhaCript = SHA1('"&PasswordSalt&request.form("password")&"'), VersaoSenha = 3 WHERE Email = '"&request.form("email")&"' AND MD5(id)='"&request.form("hashControl")&"'")
+elseif ref("opt") = "salvarNovaSenha" and ref("email") <> "" then
+    if (ref("password") <> "" and ref("newpassword") <> "") and (ref("password") = ref("newpassword")) then
+        dbc.execute("UPDATE licencasusuarios SET Senha = '"&ref("password")&"', SenhaCript = SHA1('"&PasswordSalt&ref("password")&"'), VersaoSenha = 3 WHERE Email = '"&ref("email")&"' AND MD5(id)='"&ref("hashControl")&"'")
 %>
         alert('Senha alterada com sucesso');
         window.location = '/';
@@ -35,9 +35,9 @@ elseif request.form("opt") = "salvarNovaSenha" and request.form("email") <> "" t
     end if
 
 'GERA CÓDIGO PARA ENVIAR PARA O E-MAIL
-elseif request.form("opt") = "regerarCodigo" or (request.form("opt") = "gerarCodigo" and request.form("email") <> "" and request.form("emailenviar") <> "") then
+elseif ref("opt") = "regerarCodigo" or (ref("opt") = "gerarCodigo" and ref("email") <> "" and ref("emailenviar") <> "") then
 
-    varEmailEnviar = split(request.form("emailenviar"),"|")
+    varEmailEnviar = split(ref("emailenviar"),"|")
 
     sqlVerificaEmail = " SELECT lu.id AS LicencaUsuarioID, "&_ 
                                       " luas.id, "&_
@@ -50,7 +50,7 @@ elseif request.form("opt") = "regerarCodigo" or (request.form("opt") = "gerarCod
                                  " FROM licencasusuarios lu "&_
                             " LEFT JOIN licencasusuariosalterarsenhas luas ON luas.LicencaUsuarioID = lu.id "&_
                             " LEFT JOIN licencas l ON l.id = lu.LicencaID "&_
-                                " WHERE email='"&request.form("email")&"' "&_
+                                " WHERE email='"&ref("email")&"' "&_
                                 "   AND MD5(lu.id) = '"&varEmailEnviar(1)&"'"
 
     set verificaEmail = dbc.execute(sqlVerificaEmail)
@@ -65,7 +65,7 @@ elseif request.form("opt") = "regerarCodigo" or (request.form("opt") = "gerarCod
 
         if varEmailEnviar(0) = "emailprincipal" then
 
-            EmailEnviar = request.form("email")
+            EmailEnviar = ref("email")
         
         else
 
@@ -92,7 +92,7 @@ elseif request.form("opt") = "regerarCodigo" or (request.form("opt") = "gerarCod
             dbc.execute("INSERT INTO licencasusuariosalterarsenhas (LicencaUsuarioID, Tentativas, AuthCode, sysActive, hashcod, EmailEnviar) VALUES ("&verificaEmail("LicencaUsuarioID")&",0,'"&authCode&"',1,'"&varhashCod("hashcod")&"','"&EmailEnviar&"')")
         end if
 %>
-        carregaFormInserirCodigo('<%=varhashCod("hashcod")%>','<%=varEmailEnviar(1)%>','<%=request.form("email")%>')
+        carregaFormInserirCodigo('<%=varhashCod("hashcod")%>','<%=varEmailEnviar(1)%>','<%=ref("email")%>')
 <% 
     else
 
@@ -100,7 +100,7 @@ elseif request.form("opt") = "regerarCodigo" or (request.form("opt") = "gerarCod
 
     end if
 'RETORNA OS E-MAILS DO USUÁRIO
-elseif request.form("opt") = "retornaEmail" and request.form("email") <> ""  then
+elseif ref("opt") = "retornaEmail" and ref("email") <> ""  then
 
     possuiRegistro = 0
 
@@ -112,7 +112,7 @@ elseif request.form("opt") = "retornaEmail" and request.form("email") <> ""  the
                           "   FROM licencasusuarios lu "&_
                           "   JOIN licencas l ON l.id = lu.LicencaID "&_
                        " LEFT JOIN clinic5459.pacientes p ON p.id = l.Cliente "&_
-                          "  WHERE lu.email = '"&request.form("email")&"'"
+                          "  WHERE lu.email = '"&ref("email")&"'"
 
     set retornaLicencaID = dbc.execute(sqlRetornaLicencaID)
 
@@ -186,7 +186,7 @@ elseif request.form("opt") = "retornaEmail" and request.form("email") <> ""  the
         response.write("<span class='textoRecuperarSenha'>Nenhum e-mail cadastrado para recebimento do código. Favor entrar em contato com a central de atendimento.</span>")
     end if
 'VERIFICA SE O CÓDIDO É VÁLIDO
-elseif request.form("opt") = "validarCodigo" and request.form("email") <> "" and request.form("authCode") <> "" then
+elseif ref("opt") = "validarCodigo" and ref("email") <> "" and ref("authCode") <> "" then
 
     sqlValidarCodigo = " SELECT luas.AuthCode, "&_
                        " luas.Tentativas, "&_
@@ -194,39 +194,39 @@ elseif request.form("opt") = "validarCodigo" and request.form("email") <> "" and
                        " (case when DataExpirar IS NULL then 'S' when DataExpirar >= CURRENT_TIMESTAMP() then 'N' when DataExpirar <= CURRENT_TIMESTAMP() then 'S' END) AS Expirado "&_
                        " FROM licencasusuariosalterarsenhas luas "&_
                        " JOIN licencasusuarios lu ON lu.id = luas.LicencaUsuarioID "&_
-                       " WHERE lu.email = '"&request.form("email")&"'"&_
-                       " AND MD5(lu.id) = '"&request.form("hashControl")&"'"
+                       " WHERE lu.email = '"&ref("email")&"'"&_
+                       " AND MD5(lu.id) = '"&ref("hashControl")&"'"
 
     set validarCodigo =  dbc.execute(sqlValidarCodigo)
 
     if not validarCodigo.EOF then
 
-        if validarCodigo("AuthCode") <> request.form("authCode") and validarCodigo("Expirado") = "N"  then
+        if validarCodigo("AuthCode") <> ref("authCode") and validarCodigo("Expirado") = "N"  then
 %>
             msgErro("Número de tentativas excedidas. Fique calmo, respire fundo e tente novamente ou ligue para o nosso suporte");
 <%
-        elseif validarCodigo("AuthCode") <> request.form("authCode") and validarCodigo("Tentativas") => 3 and validarCodigo("Expirado") = "S" then
+        elseif validarCodigo("AuthCode") <> ref("authCode") and validarCodigo("Tentativas") => 3 and validarCodigo("Expirado") = "S" then
 
             dbc.execute("UPDATE licencasusuariosalterarsenhas SET DataExpirar = DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL 2 MINUTE) WHERE id = "&validarCodigo("id"))
 
-        elseif validarCodigo("AuthCode") <> request.form("authCode") and validarCodigo("Tentativas") < 3 then
+        elseif validarCodigo("AuthCode") <> ref("authCode") and validarCodigo("Tentativas") < 3 then
 
             dbc.execute("UPDATE licencasusuariosalterarsenhas SET Tentativas = Tentativas+1 WHERE id = "&validarCodigo("id"))
 %>
             msgErro("Código inválido");
 <%
-        elseif validarCodigo("AuthCode") = request.form("authCode") then
+        elseif validarCodigo("AuthCode") = ref("authCode") then
 %>
-            carregaFormNovaSenha('<%=request.form("email")%>','<%=request.form("hashControl")%>')
+            carregaFormNovaSenha('<%=ref("email")%>','<%=ref("hashControl")%>')
 <%
         end if
 
     end if
 'FORMULÁRIO PARA CADASTRAR NOVA SENHA
-elseif request.form("opt") = "novaSenha" and request.form("email") <> "" then
+elseif ref("opt") = "novaSenha" and ref("email") <> "" then
 %>
-<input type="hidden" id="User" value="<%=request.form("email")%>">
-<input type="hidden" id="hashControl" value="<%=request.form("hashControl")%>">
+<input type="hidden" id="User" value="<%=ref("email")%>">
+<input type="hidden" id="hashControl" value="<%=ref("hashControl")%>">
 <br>
 <span class="textoTitulo">Recuperação de senha</span>
 <br>
@@ -324,10 +324,10 @@ o nome do seu animal de estimação.</span>
 
 <%
 'FORMULÁRIO PARA INSERÇÃO DO CÓDIGO
-elseif request.form("opt") = "inserirCodigo" and request.form("email") <> "" then
+elseif ref("opt") = "inserirCodigo" and ref("email") <> "" then
 %>
-<input type="hidden" id="User" value="<%=request.form("email")%>">
-<input type="hidden" id="hashControl" value="<%=request.form("hashControl")%>">
+<input type="hidden" id="User" value="<%=ref("email")%>">
+<input type="hidden" id="hashControl" value="<%=ref("hashControl")%>">
 <br>
 <span class="textoTitulo">Recuperação de senha</span>
 <br>
@@ -376,9 +376,9 @@ elseif request.form("opt") = "inserirCodigo" and request.form("email") <> "" the
 
 <%
 'FORMULÁRIO PARA SELECIONAR O E-MAIL
-elseif request.form("opt") = "selecionarEmail" and request.form("email") <> "" then
+elseif ref("opt") = "selecionarEmail" and ref("email") <> "" then
 %>
-<input type="hidden" id="User" value="<%=request.form("email")%>">
+<input type="hidden" id="User" value="<%=ref("email")%>">
 <br>
 <span class="textoTitulo">Recuperação de senha</span>
 <br>

@@ -52,7 +52,7 @@ if Retira="1" then
 	set lotesvazios=nothing
 end if
 
-if request.QueryString("X")<>"" then
+if req("X")<>"" then
 	if req("T")="GuiaSADT" or req("T")="guiasadt" then
 		tabela = "tissguiasadt"
 		sqlExecute = "delete from tissprocedimentossadt where GuiaID="&req("X")
@@ -90,32 +90,32 @@ end if
         	    <label>Tipo de Guia</label><br />
         	    <select name="T" id="T" class=" form-control" required>
             	    <option value="">Selecione</option>
-            	    <option value="GuiaConsulta"<%if request.QueryString("T")="GuiaConsulta" then%> selected="selected"<%end if%>>Guia de Consulta</option>
-                    <option value="GuiaSADT"<%if request.QueryString("T")="GuiaSADT" then%> selected="selected"<%end if%>>Guia de SP/SADT</option>
-                    <option value="GuiaHonorarios"<%if request.QueryString("T")="GuiaHonorarios" then%> selected="selected"<%end if%>>Guia de Honorários Individuais</option>
-                    <option value="GuiaInternacao"<%if request.QueryString("T")="GuiaInternacao" then%> selected="selected"<%end if%>>Guia de Solicitação de Internação</option>
+            	    <option value="GuiaConsulta"<%if req("T")="GuiaConsulta" then%> selected="selected"<%end if%>>Guia de Consulta</option>
+                    <option value="GuiaSADT"<%if req("T")="GuiaSADT" then%> selected="selected"<%end if%>>Guia de SP/SADT</option>
+                    <option value="GuiaHonorarios"<%if req("T")="GuiaHonorarios" then%> selected="selected"<%end if%>>Guia de Honorários Individuais</option>
+                    <option value="GuiaInternacao"<%if req("T")="GuiaInternacao" then%> selected="selected"<%end if%>>Guia de Solicitação de Internação</option>
                 </select>
             </div>
-            <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, request.QueryString("ConvenioID"), "select * from Convenios where Ativo='on' and sysActive=1 order by NomeConvenio", "NomeConvenio", "onchange=""tissplanosguia(this.value)"" empty="""" required=""required""") %>
+            <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, req("ConvenioID"), "select * from Convenios where Ativo='on' and sysActive=1 order by NomeConvenio", "NomeConvenio", "onchange=""tissplanosguia(this.value)"" empty="""" required=""required""") %>
             <div class="col-md-3" id="selectLote">
                <%server.Execute("tissselectlote.asp")%>
             </div>
-            <%= quickField("memo", "NumeroGuia", "N&deg; da Guia (separadas por Enter)", 3, request.QueryString("NumeroGuia"), "", "", " placeholder='opcional'") %>
+            <%= quickField("memo", "NumeroGuia", "N&deg; da Guia (separadas por Enter)", 3, req("NumeroGuia"), "", "", " placeholder='opcional'") %>
             <div class="col-md-3">
             <%
-		    if request.QueryString("PacienteID")="" then
+		    if req("PacienteID")="" then
 			    PacienteID = 0
 		    else
-			    PacienteID = request.QueryString("PacienteID")
+			    PacienteID = req("PacienteID")
 		    end if
 		    %>
 	            <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", " placeholder='opcional'", "") %>
             </div>
-            <%= quickField("datepicker", "DataDe", "Data do Atendimento", 2, request.QueryString("DataDe"), "", "", " placeholder='De'") %>
-            <%= quickField("datepicker", "DataAte", "&nbsp;", 2, request.QueryString("DataAte"), "", "", " placeholder='At&eacute;'") %>
+            <%= quickField("datepicker", "DataDe", "Data do Atendimento", 2, req("DataDe"), "", "", " placeholder='De'") %>
+            <%= quickField("datepicker", "DataAte", "&nbsp;", 2, req("DataAte"), "", "", " placeholder='At&eacute;'") %>
             
-            <%= quickField("datepicker", "DataDePreenchimento", "Data do Preenchimento", 2, request.QueryString("DataDePreenchimento"), "", "", " placeholder='De'") %>
-            <%= quickField("datepicker", "DataAtePreenchimento", "&nbsp;", 2, request.QueryString("DataAtePreenchimento"), "", "", " placeholder='At&eacute;'") %>
+            <%= quickField("datepicker", "DataDePreenchimento", "Data do Preenchimento", 2, req("DataDePreenchimento"), "", "", " placeholder='De'") %>
+            <%= quickField("datepicker", "DataAtePreenchimento", "&nbsp;", 2, req("DataAtePreenchimento"), "", "", " placeholder='At&eacute;'") %>
             <%= quickField("empresaMultiIgnore", "CompanyUnitID", "Unidades", 3, Unidades, "", "", "")%>
             <div class="col-md-2">
                 <label>Ordenar por</label><br />
@@ -229,7 +229,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
 	    if req("LoteID")="-1" then
 		    sqlLote = " and (tgi.ItemInvoiceID IS NULL OR tgi.ItemInvoiceID='')"
         else
-		    sqlLote = " and g.LoteID="&request.QueryString("LoteID")
+		    sqlLote = " and g.LoteID="&req("LoteID")
         end if
         orderBy = "(CASE l.Ordem WHEN 'Data' THEN g.sysDate WHEN 'Paciente' THEN p.NomePaciente ELSE g.NGuiaPrestador END)"
 	end if
@@ -252,23 +252,23 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
         next
         sqlNumero = " and (1=0 "&sqlNumero&")"
 	end if
-	if request.QueryString("PacienteID")<>"" and request.QueryString("PacienteID")<>"0" then
-		sqlPaciente = " and g.PacienteID="&request.QueryString("PacienteID")
+	if req("PacienteID")<>"" and req("PacienteID")<>"0" then
+		sqlPaciente = " and g.PacienteID="&req("PacienteID")
 	end if
 
 
-	if request.QueryString("DataDe")<>"" and isdate(request.QueryString("DataDe")) then
-		sqlDataDe = " and date(DataAtendimento)>='"&mydate(request.QueryString("DataDe"))&"'"
+	if req("DataDe")<>"" and isdate(req("DataDe")) then
+		sqlDataDe = " and date(DataAtendimento)>='"&mydate(req("DataDe"))&"'"
 	end if
-	if request.QueryString("DataAte")<>"" and isdate(request.QueryString("DataAte")) then
-		sqlDataAte = " and date(DataAtendimento)<='"&mydate(request.QueryString("DataAte"))&"'"
+	if req("DataAte")<>"" and isdate(req("DataAte")) then
+		sqlDataAte = " and date(DataAtendimento)<='"&mydate(req("DataAte"))&"'"
 	end if
 
-	if request.QueryString("DataDePreenchimento")<>"" and isdate(request.QueryString("DataDePreenchimento")) then
-		sqlDataDePreenchimento = " and date(g.sysDate)>='"&mydate(request.QueryString("DataDePreenchimento"))&"'"
+	if req("DataDePreenchimento")<>"" and isdate(req("DataDePreenchimento")) then
+		sqlDataDePreenchimento = " and date(g.sysDate)>='"&mydate(req("DataDePreenchimento"))&"'"
 	end if
-	if request.QueryString("DataAtePreenchimento")<>"" and isdate(request.QueryString("DataAtePreenchimento")) then
-		sqlDataAtePreenchimento = " and date(g.sysDate)<='"&mydate(request.QueryString("DataAtePreenchimento"))&"'"
+	if req("DataAtePreenchimento")<>"" and isdate(req("DataAtePreenchimento")) then
+		sqlDataAtePreenchimento = " and date(g.sysDate)<='"&mydate(req("DataAtePreenchimento"))&"'"
 	end if
 
     if Unidades<>"" then
@@ -286,7 +286,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
     sql = sql & " LEFT JOIN tissguiasinvoice tgi on (tgi.GuiaID=g.id and tgi.TipoGuia='" & lcase(req("T"))&"')" 
     sql = sql & " LEFT JOIN conveniosplanos cp ON cp.ConvenioID = g.ConvenioID AND cp.id = g.PlanoID where g.sysActive=1 "
     sql = sql & sqlLote & sqlNumero & sqlGuiaStatus & sqlPaciente & sqlDataDe & sqlDataAte & sqlDataDePreenchimento & sqlDataAtePreenchimento & sqlPlano
-    sql = sql & sqlUnidades &" and g.ConvenioID="&request.QueryString("ConvenioID")&" ORDER BY "&orderBy&" LIMIT 100"
+    sql = sql & sqlUnidades &" and g.ConvenioID="&req("ConvenioID")&" ORDER BY "&orderBy&" LIMIT 100"
     ' -------
 	set guias = db.execute(sql)
         c=0
@@ -418,7 +418,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
                 <%
                 if aut("|guiasX|")=1 then
                 %>
-                <a href="./?P=tissbuscaguias&Pers=1&T=<%=request.QueryString("T")%>&ConvenioID=<%=request.QueryString("ConvenioID")%>&LoteID=<%=request.QueryString("LoteID")%>&NumeroGuia=<%=request.QueryString("NumeroGuia")%>&PacienteID=<%=request.QueryString("PacienteID")%>&searchPacienteID=<%=request.QueryString("searchPacienteID")%>&DataDe=<%=request.QueryString("DataDe")%>&DataAte=<%=request.QueryString("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-danger <%=bloquear%>"><i class="fa fa-remove"></i></a>
+                <a href="./?P=tissbuscaguias&Pers=1&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>&LoteID=<%=req("LoteID")%>&NumeroGuia=<%=req("NumeroGuia")%>&PacienteID=<%=req("PacienteID")%>&searchPacienteID=<%=req("searchPacienteID")%>&DataDe=<%=req("DataDe")%>&DataAte=<%=req("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-danger <%=bloquear%>"><i class="fa fa-remove"></i></a>
                 <%  
                 end if
                 %>
@@ -474,7 +474,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
         if req("LoteID")="-1" then
             sqlLote = " and (tgi.ItemInvoiceID IS NULL OR tgi.ItemInvoiceID='')"
         else
-            sqlLote = " and g.LoteID="&request.QueryString("LoteID")
+            sqlLote = " and g.LoteID="&req("LoteID")
         end if
 		orderBy = "(CASE l.Ordem WHEN 'Data' THEN g.sysDate WHEN 'Paciente' THEN p.NomePaciente ELSE g.NGuiaPrestador END)"
     end if
@@ -518,31 +518,31 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
         sqlGuiaStatus = " AND tgs.id = "&req("GuiaStatus")
     end if
 
-	if req("PacienteID")<>"" and request.QueryString("PacienteID")<>"0" then
-		sqlPaciente = " and g.PacienteID="&request.QueryString("PacienteID")
+	if req("PacienteID")<>"" and req("PacienteID")<>"0" then
+		sqlPaciente = " and g.PacienteID="&req("PacienteID")
 	end if
 
 	if req("T")="GuiaSADT" or req("T")="guiasadt" or req("T")="GuiaInternacao" then
-        if request.QueryString("DataDe")<>"" and isdate(request.QueryString("DataDe")) then
-            sqlDataDe = " and date(g.DataSolicitacao)>='"&mydate(request.QueryString("DataDe"))&"'"
+        if req("DataDe")<>"" and isdate(req("DataDe")) then
+            sqlDataDe = " and date(g.DataSolicitacao)>='"&mydate(req("DataDe"))&"'"
         end if
-        if request.QueryString("DataAte")<>"" and isdate(request.QueryString("DataAte")) then
-            sqlDataAte = " and date(g.DataSolicitacao)<='"&mydate(request.QueryString("DataAte"))&"'"
+        if req("DataAte")<>"" and isdate(req("DataAte")) then
+            sqlDataAte = " and date(g.DataSolicitacao)<='"&mydate(req("DataAte"))&"'"
         end if
 	elseif req("T")="GuiaHonorarios" or req("T")="guiahonorarios" then
-	    if request.QueryString("DataDe")<>"" and isdate(request.QueryString("DataDe")) then
-            sqlDataDe = " and date(g.DataEmissao)>='"&mydate(request.QueryString("DataDe"))&"'"
+	    if req("DataDe")<>"" and isdate(req("DataDe")) then
+            sqlDataDe = " and date(g.DataEmissao)>='"&mydate(req("DataDe"))&"'"
         end if
-        if request.QueryString("DataAte")<>"" and isdate(request.QueryString("DataAte")) then
-            sqlDataAte = " and date(g.DataEmissao)<='"&mydate(request.QueryString("DataAte"))&"'"
+        if req("DataAte")<>"" and isdate(req("DataAte")) then
+            sqlDataAte = " and date(g.DataEmissao)<='"&mydate(req("DataAte"))&"'"
         end if
 	end if
 
-	if request.QueryString("DataDePreenchimento")<>"" and isdate(request.QueryString("DataDePreenchimento")) then
-		sqlDataDePreenchimento = " and date(g.sysDate)>='"&mydate(request.QueryString("DataDePreenchimento"))&"'"
+	if req("DataDePreenchimento")<>"" and isdate(req("DataDePreenchimento")) then
+		sqlDataDePreenchimento = " and date(g.sysDate)>='"&mydate(req("DataDePreenchimento"))&"'"
 	end if
-	if request.QueryString("DataAtePreenchimento")<>"" and isdate(request.QueryString("DataAtePreenchimento")) then
-		sqlDataAtePreenchimento = " and date(g.sysDate)<='"&mydate(request.QueryString("DataAtePreenchimento"))&"'"
+	if req("DataAtePreenchimento")<>"" and isdate(req("DataAtePreenchimento")) then
+		sqlDataAtePreenchimento = " and date(g.sysDate)<='"&mydate(req("DataAtePreenchimento"))&"'"
 	end if
 
     if req("PlanoID")<>"" and req("PlanoID")<>"0" then
@@ -561,7 +561,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
     sql = sql & " LEFT JOIN conveniosplanos cp ON cp.ConvenioID = g.ConvenioID AND cp.id = g.PlanoID "
     sql = sql & " WHERE g.sysActive=1" & sqlLote & sqlNumero & sqlPaciente & sqlDataDe&sqlDataAte & sqlDataDePreenchimento & sqlPlano
     sql = sql & sqlDataAtePreenchimento & sqlUnidades & sqlGuiaStatus 
-    sql = sql & " and g.ConvenioID="&request.QueryString("ConvenioID")
+    sql = sql & " and g.ConvenioID="&req("ConvenioID")
     sql = sql & " GROUP BY g.id ORDER BY "&orderBy&" LIMIT 200"
 	set guias = db.execute(sql)
     TotalPago = 0
@@ -751,7 +751,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
                 <%
                 if aut("|guiasX|")=1 then
                 %>
-                <a href="./?P=tissbuscaguias&Pers=1&T=<%=request.QueryString("T")%>&ConvenioID=<%=request.QueryString("ConvenioID")%>&LoteID=<%=request.QueryString("LoteID")%>&NumeroGuia=<%=request.QueryString("NumeroGuia")%>&PacienteID=<%=request.QueryString("PacienteID")%>&searchPacienteID=<%=request.QueryString("searchPacienteID")%>&DataDe=<%=request.QueryString("DataDe")%>&DataAte=<%=request.QueryString("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-sm btn-danger <%=bloquear%>"><i class="fa fa-remove"></i></a>
+                <a href="./?P=tissbuscaguias&Pers=1&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>&LoteID=<%=req("LoteID")%>&NumeroGuia=<%=req("NumeroGuia")%>&PacienteID=<%=req("PacienteID")%>&searchPacienteID=<%=req("searchPacienteID")%>&DataDe=<%=req("DataDe")%>&DataAte=<%=req("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-sm btn-danger <%=bloquear%>"><i class="fa fa-remove"></i></a>
                 <%
                 end if
                 %>

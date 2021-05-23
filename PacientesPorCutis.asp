@@ -6,8 +6,8 @@ while not p.eof
 set rsConta = db.Execute("Select COUNT(id) as TOTAL from pacientes where CorPele like '"&p("CorPele")&"'")
 c=rsConta("TOTAL")
 %>
-  <%if request.QueryString("Lista")="" then%>
-	<button name="button" type="button" class="btn btn-primary btn-block" onclick="location.href='./?P=<%=request.QueryString("TipoRel")%>&Pers=1&TipoRel=<%=request.QueryString("TipoRel")%>&CorPele=<%=p("CorPele")%>&Lista=Sim';"><i class="fa fa-list"></i> <%=getCorPele(p("CorPele"))%>: <%=c%> paciente(s)</button>
+  <%if req("Lista")="" then%>
+	<button name="button" type="button" class="btn btn-primary btn-block" onclick="location.href='./?P=<%=req("TipoRel")%>&Pers=1&TipoRel=<%=req("TipoRel")%>&CorPele=<%=p("CorPele")%>&Lista=Sim';"><i class="fa fa-list"></i> <%=getCorPele(p("CorPele"))%>: <%=c%> paciente(s)</button>
   <% end if %>
 <br />
 <%
@@ -16,7 +16,7 @@ wend
 p.close
 set p=nothing
 %>
-<%if request.QueryString("Lista")="Sim" then%>
+<%if req("Lista")="Sim" then%>
 <table class="table table-bordered table-striped" width="100%" border="0">
   <tr>
     <th>Nome</th>
@@ -26,7 +26,7 @@ set p=nothing
   </tr>
   <%
 c=0
-set p = db.Execute("Select * from pacientes where CorPele like '"&request.QueryString("CorPele")&"'")
+set p = db.Execute("Select * from pacientes where CorPele like '"&req("CorPele")&"'")
 while  not p.eof
 	c=c+1
 %>

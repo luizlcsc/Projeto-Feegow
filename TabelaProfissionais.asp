@@ -1,8 +1,8 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes\Json.asp"-->
 <%
-Codigo = request.QueryString("Codigo")
-Insert = request.QueryString("Insert")
+Codigo = req("Codigo")
+Insert = req("Insert")
 
 IF ref("Nome") <> "" THEN
 

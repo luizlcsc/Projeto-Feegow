@@ -20,8 +20,8 @@
 <%
 LicencaID = replace(session("Banco"), "clinic", "")
 
-if request.Form("E")="E" then
-	dbc.execute("update licencas set LocaisAcesso='"&request.Form("LocaisAcesso")&"', IPsAcesso='"&request.Form("IPsAcesso")&"' where id="&LicencaID)
+if ref("E")="E" then
+	dbc.execute("update licencas set LocaisAcesso='"&ref("LocaisAcesso")&"', IPsAcesso='"&ref("IPsAcesso")&"' where id="&LicencaID)
 end if
 
 

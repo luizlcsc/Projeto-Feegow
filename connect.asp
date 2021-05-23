@@ -1,4 +1,7 @@
-﻿<!--#include file="Classes/Connection.asp"--><%
+﻿<!--#include file="functions.asp"-->
+<!--#include file="Classes/Connection.asp"-->
+
+<%
 Session.Timeout=600
 session.LCID=1046
 if session("Servidor")="" then
@@ -352,14 +355,6 @@ function rep(Val)
 	end if
 end function
 
-function ref(Val)
-	ref = replace(replace(request.Form(Val), "'", "''"), "\", "\\")
-end function
-
-function req(Val)
-	req = replace(request.QueryString(Val), "'", "''")
-end function
-
 function reqf(P)
     if req(P)<>"" then
         reqf = req(P)
@@ -369,7 +364,7 @@ function reqf(P)
 end function
 
 function refNull(Val)
-	if request.Form(Val)="" then
+	if ref(Val)="" then
 		refNull = "NULL"
 	else
 		refNull = ref(Val)
@@ -2127,11 +2122,11 @@ function insertRedir(tableName, id)
             qsCmd = "&cmd="&req("cmd")
         end if
 
-		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&request.QueryString("Pers") &strLancto & strApenasNaoFaturados & strSolicitantes& qsCmd)
+		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&req("Pers") &strLancto & strApenasNaoFaturados & strSolicitantes& qsCmd)
 	else
 		set data = db.execute("select * from "&tableName&" where id="&id)
 		if data.eof then
-			response.Redirect("?P="&tableName&"&I=N&Pers="&request.QueryString("Pers"))
+			response.Redirect("?P="&tableName&"&I=N&Pers="&req("Pers"))
 		end if
 	end if
 end function
@@ -5633,54 +5628,7 @@ function franquia(sqlfranquia)
     franquia = sqlfranquia
 end function
 
-function dd(variable)
-    description=""
-    variableType = TypeName(variable)
 
-
-    if variableType="Variant()" then
-        description = description & "["
-        itemsInArray=0
-
-        for each x in variable
-            if itemsInArray>0 then
-                description = description&","
-            end if
-
-            description = description&""""&x&""""
-            itemsInArray=itemsInArray+1
-        next
-        description = description & "]"
-    elseif variableType="Recordset" then
-        description = "["&chr(13)
-        j = 0
-        while not variable.eof
-            IF j <> 0 THEN
-                 description = description&str&","
-            END IF
-            j = j+1
-            i = 0
-            str = chr(32)&"{"
-            for each x in variable.Fields
-                i = i+1
-                str = str&chr(13)&chr(32)&chr(32)&""""&x.name&""":"""&replace(x.value&"","""","'")&""""
-                IF i < variable.Fields.Count THEN
-                    str = str&","
-                END IF
-            next
-            str = str&chr(13)&chr(32)&"}"
-        variable.movenext
-        wend
-
-        description = description&str&chr(13)&"]"
-
-    else
-        description = variable
-    end if
-
-    response.write("<pre>"&description&"</pre>")
-    Response.End
-end function
 
 function hasPermissaoTela(visualizar)
 

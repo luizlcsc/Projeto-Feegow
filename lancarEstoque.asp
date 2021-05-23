@@ -1,12 +1,12 @@
 <!--#include file="connect.asp"-->
 <%
-muID = request.QueryString("muID")
+muID = req("muID")
 splMuID = split(muID, "_")
 ItemInvoiceID = splMuID(0)
 FuncaoRateioID = splMuID(1)
 Quantidade = ref("Quantidade"&muID)
-Lote = request.QueryString("Lote")
-Validade = request.QueryString("Validade")
+Lote = req("Lote")
+Validade = req("Validade")
 
 set fun = db.execute("select rf.*, p.ApresentacaoQuantidade from rateiofuncoes rf left join produtos p on p.id=rf.ProdutoID where rf.id="&FuncaoRateioID)
 Valor = fun("Valor")*ccur(Quantidade)

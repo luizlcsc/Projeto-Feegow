@@ -30,8 +30,8 @@ function badge(val)
 	end if
 end function
 
-PacienteID = request.QueryString("I")
-call insertRedir(request.QueryString("P"), PacienteID)
+PacienteID = req("I")
+call insertRedir(req("P"), PacienteID)
 if req("Agenda")="1" then
     set reg = db.execute("select p.*, '0' totalprescricoes, '0' totalatestados, '0' totalpedidos, '0' totaldiagnosticos, '0' totalarquivos, '0' totalimagens, '0' qtepedidos,'0' totalrecibos, '0' totalae, '0' totallf from Pacientes as p where id="&PacienteID)
 else
@@ -63,7 +63,7 @@ end if
 
 	<input type="hidden" name="I" value="<%=PacienteID%>" />
 	<input type="hidden" name="cmd" value="<%=req("cmd")%>" />
-	<input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+	<input type="hidden" name="P" value="<%=req("P")%>" />
 
 
 <%=header(req("P"), "Paciente", reg("sysActive"), req("I"), req("Pers"), "Follow")%>

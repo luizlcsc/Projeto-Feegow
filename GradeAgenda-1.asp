@@ -883,7 +883,7 @@ $(document).ready(function(){
 	%>
 	});
 	$(".dia-calendario").removeClass("success green");
-	$(".<%=replace(request.QueryString("Data"),"/", "-")%>").addClass("success green");
+	$(".<%=replace(req("Data"),"/", "-")%>").addClass("success green");
 	$(".Locais").html('');
 	<%
 	set pDiasAT=db.execute("select distinct a.DiaSemana from assfixalocalxprofissional a where a.ProfissionalID = "&ProfissionalID&" and (a.fimVigencia > now() or a.fimVigencia is null)")

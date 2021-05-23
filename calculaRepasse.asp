@@ -2,8 +2,8 @@
 <%
 response.CharSet="utf-8"
 
-rps=request.form("rps")
-vlr = request.form("vlr")
+rps=ref("rps")
+vlr = ref("vlr")
 cc = ref("AccountID")
 tipo = req("tipo")
 modoCalculo = req("modoCalculo")

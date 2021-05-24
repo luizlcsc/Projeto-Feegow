@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿<!--#include file="functions.asp"-->
+
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<link type="text/css" rel="stylesheet" href="assets/js/qtip/jquery.qtip.css" />

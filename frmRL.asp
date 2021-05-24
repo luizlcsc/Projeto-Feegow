@@ -112,10 +112,16 @@ end if
                         Formas = replace(Formas, "|", "")
                         Convenios = ""
 
+
                         if Formas<>"" then
                             if instr(Formas, "P")<=0 then
                                 Formas = replace(Formas, "C", "0")
-                                set sqlFormas = db.execute("select group_concat(trim(NomeConvenio) separator ', ') convenios from convenios where id in("& Formas &") and sysActive=1")
+                                ' if Right(Trim(Formas), 1)= "," then
+                                '     Formas = left(Trim(Formas),len(Formas)-1)
+                                ' end if 
+                                Dim strLast: strLast = Right(yourString, 4)
+                                sql= "select group_concat(trim(NomeConvenio) separator ', ') convenios from convenios where id in("& fix_array_comma(Formas) &") and sysActive=1"
+                                set sqlFormas = db.execute(sql)
                                 Convenios = sqlFormas("convenios") &""
                             else
                                 strFormas = strFormas& "PARTICULAR"

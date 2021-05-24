@@ -685,8 +685,6 @@ if erro="" then
 
   call gravaLogs(sqlUp, TipoLogOp, DescricaoLog, "")
 
-  response.write(sqlUp)
-
   db_execute(sqlUp)
 
   call reconsolidar("invoice", InvoiceID)

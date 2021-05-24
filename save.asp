@@ -10,6 +10,7 @@ id = ref("I")
 
 ' vuneravilidade
 spl = split(request.Form(), "&")
+
 Novo=False
 sysActive=0
 
@@ -800,6 +801,7 @@ end if
 
 
 'on error resume next
+
     ' vunerabilidade pior ainda
 	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(request.Form(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
 

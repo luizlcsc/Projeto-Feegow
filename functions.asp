@@ -35,6 +35,14 @@ function req(Val)
     req = clear_ref_req(request.QueryString(Val))
 end function
 
+function refNull(Val)
+	if ref(Val)="" then
+		refNull = "NULL"
+	else
+		refNull = ref(Val)
+	end if
+end function
+
 function dd(variable)
     description=""
     variableType = TypeName(variable)

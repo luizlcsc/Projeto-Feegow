@@ -363,14 +363,6 @@ function reqf(P)
     end if
 end function
 
-function refNull(Val)
-	if ref(Val)="" then
-		refNull = "NULL"
-	else
-		refNull = ref(Val)
-	end if
-end function
-
 function treatVal(Val)
 	treatVal = replace(Val, ".", "")
 	treatVal = replace(treatVal, ",", ".")
@@ -3277,7 +3269,6 @@ executeInReadOnly = False
     if tipoLog = "select" then
         executeInReadOnly = True
     end if
-
     if executeInReadOnly and False then
         set db_execute = dbReadOnly.execute(sqlStatement)
     else

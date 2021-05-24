@@ -5766,20 +5766,19 @@ function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
     end if
     select case arrayintegracao(0)
         case "0"       
-            retornaBotaoIntegracaoLaboratorial = "<div class=""btn-group""><button type=""button"" class=""btn btn-secondary btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title="""&arrayintegracao(1)&""">" &_ 
+            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""javascritpt:alert('"&arrayintegracao(1)&"');"" class=""btn btn-secondary btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title="""&arrayintegracao(1)&""">" &_ 
                                                  "<i class=""fa fa-flask""></i> </button></div>"
        
         case "1"
-            retornaBotaoIntegracaoLaboratorial = "<div class=""btn-group""><button type=""button"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial""> "&_
+            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial""> "&_
                                                  "<i class=""fa fa-flask""></i></button></div>"
             
         case "2"
-            retornaBotaoIntegracaoLaboratorial = "<div class=""btn-group""><button type=""button"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração"">"&_
+            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração"">"&_
                                                  "<i class=""fa fa-flask""></i></button></div>"
             
         case else
-            retornaBotaoIntegracaoLaboratorial = "<div class=""btn-group""> </div>"
+            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""> </div>"
     end select  
-
 end function 
 %>

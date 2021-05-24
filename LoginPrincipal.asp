@@ -8,6 +8,7 @@
         }
 
 
+
     </style>
     <div style="text-align:left; margin-top:10px;">
         <span class="textoTitulo">Redefinir Senha</span>
@@ -20,6 +21,7 @@
             <div class="d-inline"><input onkeyup="proximo(this);" tabindex="3" class="codigo" type="text" name="auth4" id="auth4" maxlength="1" value="" placeholder="I" required></div>
             <div class="d-inline"><input onkeyup="proximo(this);" tabindex="4" class="codigo" type="text" name="auth5" id="auth5" maxlength="1" value="" placeholder="G" required></div>
             <div class="d-inline"><input onkeyup="proximo(this);" tabindex="5" class="codigo" type="text" name="auth6" id="auth6" maxlength="1" value="" placeholder="O" required></div>
+
         </div>
         <div class="form-group" style="margin-top: 10px;">
             <div class="form-group">

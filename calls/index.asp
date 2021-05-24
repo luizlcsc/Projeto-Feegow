@@ -6,7 +6,7 @@ ConnString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=call
 Set db = Server.CreateObject("ADODB.Connection")
 db.Open ConnString
 
-callerID = request.QueryString("callerID")
+callerID = req("callerID")
 
 if callerID<>"" and isnumeric(callerID) then
     callerID = ccur(callerID)

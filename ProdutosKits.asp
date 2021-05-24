@@ -5,8 +5,8 @@
 <div class="panel-body">
 <form method="post" id="frm" name="frm" action="save.asp">
     <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 
     %>
     <%=header(req("P"), "Cadastro de Kit de Produto", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
@@ -15,8 +15,8 @@ set reg = db.execute("select * from "&request.QueryString("P")&" where id="&requ
 
 
 
-    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-    <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+    <input type="hidden" name="I" value="<%=req("I")%>" />
+    <input type="hidden" name="P" value="<%=req("P")%>" />
     <div class="row">
         <div class="col-md-12">
             <div class="row">

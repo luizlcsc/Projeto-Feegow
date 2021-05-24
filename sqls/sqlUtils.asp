@@ -85,6 +85,7 @@ function getSQLQuickField(Tabela,Coluna,ID,Condicoes)
 
 end function
 
+
 function getTaxaAtual (conta,mov,parcelas)
 
     sqltaxa =   " coalesce (                                                              	"&chr(13)&_
@@ -139,6 +140,7 @@ function getTaxaAtual (conta,mov,parcelas)
     sql = "select "&sqltaxa
     getTaxaAtual = sql
 end function 
+
 
 
 %>

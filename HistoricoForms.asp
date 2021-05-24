@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-PacienteID = request.QueryString("PacienteID")
-Tipo = request.QueryString("Tipo")
+PacienteID = req("PacienteID")
+Tipo = req("Tipo")
 %>
 
 <div class="btn-group pull-right">
@@ -14,7 +14,7 @@ Tipo = request.QueryString("Tipo")
 
 
 <%
-			if request.QueryString("Tipo")="L" then
+			if req("Tipo")="L" then
 				sqlTipo = " and (buiforms.Tipo=3 or buiforms.Tipo=4 or buiforms.Tipo=0 or isnull(buiforms.Tipo))"
 			else
 				sqlTipo = " and (buiforms.Tipo=1 or buiforms.Tipo=2)"

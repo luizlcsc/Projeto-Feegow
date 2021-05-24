@@ -3,8 +3,8 @@
 <!--#include file="modalTiss.asp"-->
 <!--#include file="tissFuncs.asp"-->
 <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 ClasseStatus = "primary"
 
 if not reg.eof then
@@ -93,8 +93,8 @@ if not reg.eof then
         end if
     end if
 	'Auto-preenche a guia baseado no lancto
-	if request.QueryString("Lancto")<>"" then
-		spl = split(request.QueryString("Lancto"), "|")
+	if req("Lancto")<>"" then
+		spl = split(req("Lancto"), "|")
 		if spl(1)="Paciente" then
 			PacienteID = spl(0)
 					set vpac = db.execute("select * from pacientes where id="&PacienteID)
@@ -750,6 +750,27 @@ $(document).ready(function(){
 	});
 });
 
+function validarConvenio() {
+	let convenio = $("#gConvenioID").val()
+    $.get('ValidaConvenio.asp?ConvenioID=' + convenio,
+        function(data) {
+            if (data == "1") { 
+                $("#salvar-guia").attr("disabled", true)
+            } else { 
+                $("#salvar-guia").attr("disabled", false) 
+        	}
+        }
+    );
+}
+
+$(document).ready(function() {
+	validarConvenio();
+})
+
+$("#gConvenioID").change(() => {
+    validarConvenio();
+})
+
 $("#GuiaConsulta").submit(function(){
     var $plano = $("#PlanoID"),
         planoId = $plano.val();
@@ -767,7 +788,7 @@ $("#GuiaConsulta").submit(function(){
 
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
+		url:"SaveGuia.asp?Tipo=Consulta&I=<%=req("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data,obj){
 			eval(data);
@@ -821,7 +842,7 @@ function AutorizarGuiaTisss()
 {
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
+		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=req("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data){
 			 Autorizador.autorizaProcedimentos();
@@ -836,7 +857,7 @@ function tissVerificarStatusGuia()
 {
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
+		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=req("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data){
 			Autorizador.verificarStatusGuia(2);
@@ -852,10 +873,10 @@ function imprimirGuiaConsulta(){
 
     $.ajax({
     		type:"POST",
-    		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
+    		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=req("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
     		data:$("#GuiaConsulta").serialize(),
 			success: (suc) => {
-				guiaTISS('GuiaConsulta', <%=request.QueryString("I")%> ,$("#gConvenioID").val());
+				guiaTISS('GuiaConsulta', <%=req("I")%> ,$("#gConvenioID").val());
 			},
 			error: (err) => {
 				alert("Preencher todos os campos obrigatórios");

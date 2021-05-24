@@ -1,6 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <%
-Pesq=request.QueryString("Pesq")
+Pesq=req("Pesq")
 %>
 
 <script>

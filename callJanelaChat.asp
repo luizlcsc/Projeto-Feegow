@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-chatID=request.QueryString("ChatID")
-De=request.QueryString("ChatID")
+chatID=req("ChatID")
+De=req("ChatID")
 Para=session("User")
 %>
 <!--#include file="janelaChat.asp"-->

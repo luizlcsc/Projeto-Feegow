@@ -3,10 +3,22 @@
 response.ContentType="text/XML"
 
 
-RLoteID = replace(request.QueryString("I"),".xml", "")
+RLoteID = replace(req("I"),".xml", "")
 set lote = db.execute("select * from tisslotes where id="&RLoteID)
+
+orderByVar = "order by g.NGuiaPrestador"
+
+LoteOrdem = lote("ordem")&""
+
+if LoteOrdem="Paciente" then
+    orderByVar = "order by p.NomePaciente"
+elseif LoteOrdem = "Data" then
+    orderByVar = "order by g.sysDate"
+elseif LoteOrdem = "Solicitacao" then
+    orderByVar = "order by g.DataSolicitacao"
+end if
 'set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id"))
-set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" order by g.NGuiaPrestador")
+set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" "&orderByVar)
 if not guias.eof then
 	RegistroANS = TirarAcento(guias("RegistroANS"))
 	CodigoNaOperadora = TirarAcento(guias("CodigoNaOperadora"))
@@ -213,6 +225,7 @@ prefixo = right(prefixo, 20)
 					MotivoEncerramentoID = TirarAcento(guias("MotivoEncerramentoID"))
 					if MotivoEncerramentoID=0 then MotivoEncerramentoID="" end if
 					TipoConsultaID = TirarAcento(guias("TipoConsultaID"))
+					if TipoConsultaID=0 then TipoConsultaID="" end if
 					'==============================================================================================================================================================================
 					if guias("CodigoCNES")="" then CodigoCNES=TirarAcento(CNESContratado) else CodigoCNES=TirarAcento(guias("CodigoCNES")) end if
 					NomeProfissional=TirarAcento(NomeProfissional)
@@ -270,7 +283,9 @@ prefixo = right(prefixo, 20)
                     <ans:dadosAtendimento>
                         <ans:tipoAtendimento><%= TipoAtendimentoID %></ans:tipoAtendimento>
                         <ans:indicacaoAcidente><%= IndicacaoAcidenteID %></ans:indicacaoAcidente>
+                        <%if TipoConsultaID<>"" then%>
                         <ans:tipoConsulta><%= TipoConsultaID %></ans:tipoConsulta>
+                        <% End If %>
                         <%if MotivoEncerramentoID<>"" then%><ans:motivoEncerramento><%= MotivoEncerramentoID %></ans:motivoEncerramento><% End If %>
                     </ans:dadosAtendimento>
 
@@ -284,7 +299,7 @@ prefixo = right(prefixo, 20)
 						ProcedimentoSeriado=procs("ProcedimentoSeriado")
 						Data = mydatetiss(procs("Data"))
 						Quantidade = TirarAcento(procs("Quantidade"))
-						Fator = treatvaltiss(1)
+						Fator = treatvaltiss(procs("Fator"))
 						ValorUnitario = procs("Fator")*procs("ValorUnitario")
 						ValorTotal = procs("ValorTotal")
 
@@ -341,7 +356,13 @@ prefixo = right(prefixo, 20)
 						Descricao = left(TirarAcento(procs("Descricao")),150)
 
 						ViaID = TirarAcento(procs("ViaID"))&""
+                        if ViaID=0 then
+                            ViaID = ""
+                        end if
 						TecnicaID = TirarAcento(procs("TecnicaID"))&""
+                        if TecnicaID=0 then
+                            TecnicaID = ""
+                        end if
 
 						hash = hash & sequencialItem & Data&HoraInicio&HoraFim&TabelaID&CodigoProcedimento&Descricao&Quantidade&ViaID&TecnicaID&Fator&ValorUnitario&ValorTotal
 						%>

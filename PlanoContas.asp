@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 
-if request.QueryString("CD")="D" then
+if req("CD")="D" then
     table = "sys_financialexpensetype"
 else
     table = "sys_financialincometype"
@@ -60,7 +60,7 @@ end if
         </select>
     </div>
     <div class="col-xs-4"><label>&nbsp;</label><br />
-    	<button type="button" class="btn btn-sm btn-success btn-block" onclick="arvore('<%=request.QueryString("CD")%>', '', $('#Adicionar').val(), $('#CategoriaSuperior').val());location.reload()"><i class="fa fa-plus"></i> Inserir</button>
+    	<button type="button" class="btn btn-sm btn-success btn-block" onclick="arvore('<%=req("CD")%>', '', $('#Adicionar').val(), $('#CategoriaSuperior').val());location.reload()"><i class="fa fa-plus"></i> Inserir</button>
     </div>
     <div class="col-xs-4"><label>&nbsp;</label><br />
     	<!-- <button class="btn btn-primary btn-block btn-sm" onclick="savePlanoContas()" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar Ordem</button> -->
@@ -70,7 +70,7 @@ end if
 <%
 function li(id, Name, Rateio, Ordem)
 	%>
-	<li id="list_<%=id%>" data-id="<%=id%>" data-tipo="<%=request.QueryString("CD")%>" data-ordem="<%=Ordem%>" data-nome="<%=Name%>" data-rateio="<%=Rateio%>" class="dd-item">
+	<li id="list_<%=id%>" data-id="<%=id%>" data-tipo="<%=req("CD")%>" data-ordem="<%=Ordem%>" data-nome="<%=Name%>" data-rateio="<%=Rateio%>" class="dd-item">
 		<div class="dd-handle">
 			<span class="disclose">
 				<span>
@@ -82,7 +82,7 @@ function li(id, Name, Rateio, Ordem)
         	<i class="fa fa-move" style="cursor:move"></i>
 
             <%
-            if request.QueryString("CD")="D" then
+            if req("CD")="D" then
                 if Rateio=1 then
                     chkRateio = " checked "
                 else
@@ -93,8 +93,8 @@ function li(id, Name, Rateio, Ordem)
                 <%
             end if
             %>
-			<a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))arvore('<%=request.QueryString("CD")%>', <%=id%>, '')"><i class="fa fa-trash"></i></a>
-            <a class="btn btn-xs btn-success" onclick="editaPlanoDeContas('<%=id %>', '<%= request.QueryString("CD") %>', '<%=Name%>')" href="#"><i class="fa fa-edit"></i></a>
+			<a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))arvore('<%=req("CD")%>', <%=id%>, '')"><i class="fa fa-trash"></i></a>
+            <a class="btn btn-xs btn-success" onclick="editaPlanoDeContas('<%=id %>', '<%= req("CD") %>', '<%=Name%>')" href="#"><i class="fa fa-edit"></i></a>
 		</div></div>
     <%
 end function
@@ -102,8 +102,8 @@ end function
 <div class="dd" id="nestable">
 	<ol class="sortable dd-list">
     <%
-	if request.QueryString("I")<>"" then
-		db_execute("insert into "&table&" (Name, Category, Ordem, sysActive, sysUser) values ('"&replace(request.QueryString("I"), "'", "''")&"', "&treatvalzero(request.QueryString("CategoriaSuperior"))&",0, 1, "&session("User")&")")
+	if req("I")<>"" then
+		db_execute("insert into "&table&" (Name, Category, Ordem, sysActive, sysUser) values ('"&replace(req("I"), "'", "''")&"', "&treatvalzero(req("CategoriaSuperior"))&",0, 1, "&session("User")&")")
 	    %>
         <script type="text/javascript">
         $(document).ready(function(e) {
@@ -119,8 +119,8 @@ end function
         <%
 	end if
 
-	if request.QueryString("E")<>"" then
-		db_execute("UPDATE "&table&" SET Name='"&request.QueryString("Name")&"' WHERE id="&treatvalnull(request.QueryString("E")))
+	if req("E")<>"" then
+		db_execute("UPDATE "&table&" SET Name='"&req("Name")&"' WHERE id="&treatvalnull(req("E")))
 	    %>
         <script type="text/javascript">
         $(document).ready(function(e) {
@@ -136,8 +136,8 @@ end function
         <%
 	end if
 
-	if request.QueryString("X")<>"" and isnumeric(request.QueryString("X")) then
-		db_execute("delete from "&table&" where id="&request.QueryString("X"))
+	if req("X")<>"" and isnumeric(req("X")) then
+		db_execute("delete from "&table&" where id="&req("X"))
 	end if
 
 	contidos = ""
@@ -330,7 +330,7 @@ end function
 				array[index] = valor
 			})
 
-			let itens = $('li[data-tipo="<%=request.QueryString("CD")%>"]')
+			let itens = $('li[data-tipo="<%=req("CD")%>"]')
 			let data = ''
 			itens.filter((key,ele)=>{
 				let id = $(ele).attr('data-id')
@@ -341,7 +341,7 @@ end function
 				if(ordem == 'null'){
 					ordem = 0
 				}
-				data += '[id:'+id+',categoria:'+ordem+',nome:'+nome+',rateio:'+rateio+',posicao:'+posicao+']&'
+				data += '[id:'+id+';categoria:'+ordem+';nome:'+nome+';rateio:'+rateio+';posicao:'+posicao+']&'
 			})
 			console.log(data)
 

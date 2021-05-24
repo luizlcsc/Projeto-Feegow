@@ -911,13 +911,15 @@ end select
         <div id="timeline" class="timeline-single mt30 ">
             <!--#include file="timelineload.asp"-->
         </div>
-        <div class="load-wrapp col-xs-6 col-xs-offset-6 ">
-            <div class="load-3">
-                <div class="line"></div>
-                <div class="line"></div>
-                <div class="line"></div>
+        <%if req("SemLimit") <> "S" then%>
+            <div class="load-wrapp col-xs-6 col-xs-offset-6 ">
+                <div class="load-3">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
             </div>
-        </div>
+        <%end if%>
     </div>  
 </div>
  

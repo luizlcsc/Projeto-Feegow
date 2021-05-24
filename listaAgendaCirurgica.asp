@@ -9,8 +9,9 @@
         <form id="formCirurgia">
             <%=quickField("datepicker", "DataDe", "De", 2, dateAdd("m",-1,date()), "", "", "")%>
             <%=quickField("datepicker", "DataAte", "Até", 2, dateAdd("m",1,date()), "", "", "")%>
-            <%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, "|"&session("UnidadeID")&"|", "", "", "")%>
-            <%= quickfield("simpleSelect", "ProfissionalID", "Cirurgião", 3, "", "select id, if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial) NomeProfissional from profissionais where sysActive=1 and ativo='on' order by if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial)", "NomeProfissional", "") %>
+            <%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 2, "|"&session("UnidadeID")&"|", "", "", "")%>
+            <%= quickfield("simpleSelect", "ProfissionalID", "Cirurgião", 2, "", "select id, if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial) NomeProfissional from profissionais where sysActive=1 and ativo='on' order by if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial)", "NomeProfissional", "") %>
+            <%=quickField("multiple", "Status", "Status da Agenda", 2, "|1|,|2|,|4|,|6|,|7|,|8|", "SELECT * FROM agendacirurgicastatus", "nomeStatus", "")%>
             <div class="col-md-2">
                 <BR>
                 <button class="btn btn-primary btn-block">

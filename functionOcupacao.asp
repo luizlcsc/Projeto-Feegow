@@ -1,6 +1,6 @@
 ﻿<%
 'server.ScriptTimeout = 200
-d = Request.QueryString("debug")
+d = req("debug")
 if d="1" then
     d=True
 else
@@ -83,6 +83,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         if not proc.eof then
 
             OpcoesAgenda=proc("OpcoesAgenda")
+
             if OpcoesAgenda="4" or OpcoesAgenda="5" then
                 SomenteProfissionais = proc("SomenteProfissionais")&""
                 SomenteProfissionais = replace(SomenteProfissionais, ",", "")
@@ -99,6 +100,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         SomenteProfissionais = SomenteProfissionais & "," & splSomProf(i)
                     end if
                 next
+                
                 if refEspecialidade="" and SomenteEspecialidades<>"" then
                     refEspecialidade=SomenteEspecialidades
                 end if
@@ -336,6 +338,9 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                             else
                                 SomenteEspecialidades = SomenteEspecialidades&", "&ProcedimentoSomenteEspecialidades
                             end if
+                        end if
+                        if SomenteEspecialidades="" AND refEspecialidade<>"" then
+                            SomenteEspecialidades = refEspecialidade
                         end if
 
                         if SomenteEspecialidades<>""  then

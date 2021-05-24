@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-q = request.QueryString("q")
+q = req("q")
 %>
 
 <script type="text/javascript">

@@ -14,6 +14,8 @@ $("#IndicacaoClinica").prop("required", false);
 $("#ProfissionalSolicitanteID").prop("required", false);
 $("#Contratado").prop("required", false);
 $("#Observacoes").prop("required", false);
+$("#ViaID").prop("required", false);
+$("#TecnicaID").prop("required", false);
 <%
     ConvenioID = req("ConvenioID")
     if ConvenioID = "" then
@@ -60,6 +62,14 @@ $("#Observacoes").prop("required", false);
 
             if InStr(convenios, "|CNS") then 
                 %>$("#CNS").prop("required", true);<%
+            end if
+
+            if InStr(convenios, "|Via") then 
+                %>$("#ViaID").prop("required", true);<%
+            end if
+
+            if InStr(convenios, "|Tec") then 
+                %>$("#TecnicaID").prop("required", true);<%
             end if
 
             if InStr(convenios, "|Identificador") then 

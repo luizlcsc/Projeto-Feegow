@@ -36,7 +36,7 @@ function req(Val)
 end function
 
 function refNull(Val)
-	if ref(Val)="" then
+	if ref(Val)&"" = "" then
 		refNull = "NULL"
 	else
 		refNull = ref(Val)

@@ -27,11 +27,11 @@ switch (env){
         break;
     case "production":
         domain = "https://app.feegow.com.br/";
-        api = "/v7/api/";
+        api = "/main/api/";
         break;
     case "homolog":
         domain = "https://api-homolog.feegow.com/index.php/";
-        api = "/v7/api/";
+        api = "/main/api/";
         break;
 }
 

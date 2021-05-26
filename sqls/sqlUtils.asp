@@ -105,6 +105,7 @@ function getTaxaAtual (conta,mov,parcelas)
             "                 and bandeira = ct.BandeiraCartaoID                      		"&chr(13)&_
             "                 and m.id = "&mov&"                      		                "&chr(13)&_
             "                 AND "&parcelas&" BETWEEN minimo AND maximo                    "&chr(13)&_
+            "                 LIMIT 1                                                       "&chr(13)&_
             " 	        ),''                                                           		"&chr(13)&_
             "         )                                                               		"&chr(13)&_
             " 	    ,nullif(                                                           		"&chr(13)&_
@@ -123,6 +124,7 @@ function getTaxaAtual (conta,mov,parcelas)
             "                 and m.id = "&mov&"                      		                "&chr(13)&_
             "                 and bandeira = 9                                        		"&chr(13)&_
             "                 AND "&parcelas&" BETWEEN minimo AND maximo                    "&chr(13)&_
+            "                 LIMIT 1                                                       "&chr(13)&_
             " 	        ),''                                                           		"&chr(13)&_
             "         )                                                               		"&chr(13)&_
             "         ,nullif(                                                        		"&chr(13)&_

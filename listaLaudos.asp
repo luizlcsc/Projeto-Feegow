@@ -60,7 +60,7 @@ end if
         <%
 
     else
-        if ref("ProcedimentoID")<>"0" then
+        if ref("ProcedimentoID")<>"0" and ref("ProcedimentoID")&""<>"" then
             if instr(ref("ProcedimentoID"), "G")=0 then
                 sqlProcP = " AND ii.ItemID="& ref("ProcedimentoID") &" "
                 sqlProcGS = " AND gps.ProcedimentoID="& ref("ProcedimentoID") &" "
@@ -164,9 +164,11 @@ end if
             "GROUP BY t.id ORDER BY pac.NomePaciente ) as tab"&_
             " LEFT JOIN profissionais prof_lau ON prof_lau.id=tab.ProfissionalLaudadorID AND tab.AssociacaoLaudadorID=5 "
 
+
+
+        dd (sql)
         set ii = db.execute( sql )
 
-        'dd (sql)
 
         msgPadraoTemplate = "Olá *[Paciente.Nome]*!%0a%0a O resultado do seu laudo de *[Procedimento.Nome]* se encontra *[Laudo.Status]*."
 

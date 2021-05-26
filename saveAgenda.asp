@@ -345,7 +345,7 @@ if erro="" then
 
         end if
     else
-        db.execute("update agendamentos set IndicadoPor='"&indicacaoID&"', EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& treatvalnull(ref("ageTabela")) &" where id = '"&ConsultaID&"'")
+        db_execute("update agendamentos set IndicadoPor='"&indicacaoID&"', EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& treatvalnull(ref("ageTabela")) &" where id = '"&ConsultaID&"'")
     end if
 
 	if (session("Banco")="clinic5445" or session("Banco")="clinic100000") and ref("ageCanal")<>"" then

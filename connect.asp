@@ -5723,6 +5723,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
                                     " INNER JOIN labs_procedimentos_laboratorios lpl ON lpl.procedimentoID = ii.ItemID "&_
                                     " INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_
                                     " WHERE ii.invoiceid  = '"& id &"' "&_
+                                    " AND ii.Executado = 'S' "&_
                                     " AND proc.IntegracaoPleres = 'S' "&_
                                     " AND proc.sysActive = 1"
                     case "tissguiasadt"
@@ -5745,7 +5746,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
                     if not rs4.eof then
                         verificaIntegracaoLaboratorial = "1|0"
                     else
-                        verificaIntegracaoLaboratorial = "0|Não existem procedimentos nesta conta habilitados para Integração laboratorial" 'Não existem procedimentos para integrar
+                        verificaIntegracaoLaboratorial = "0|Não existem procedimentos nesta conta habilitados para Integração laboratorial. Verifique se existem ítens executados e se estão todos vinculados a exames no laboratório." 'Não existem procedimentos para integrar
                     end if
                 end if
             end if 

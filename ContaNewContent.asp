@@ -4,6 +4,7 @@
 
 <%
 moduloLaboratorial = recursoAdicional(24)
+ultimaguia = ""
 
 if ProcedimentoAgendado<>"" then
 %>
@@ -74,7 +75,7 @@ end if
                         <th width="10%">DATA</th>
                         <th width="30%">DESCRIÇÃO</th>
                         <th width="20%">EXECUTADO</th>
-                        <th width="10%">FORMA</th>
+                        <th width="10%" style=" ">FORMA</th>
                         <th width="10%">VALOR</th>
                         <th width="20%">PENDÊNCIAS</th>
                         <th></th>
@@ -210,7 +211,7 @@ end if
 
                      %>>
                             <td width="10%" nowrap class="text-center"><button type="button" class="btn btn-xs btn-default" onclick="ajxContent('tissguiaconsulta', <%=inv("id") %>, 1, 'divHistorico')"><i class="fa fa-edit blue"></i></button> <%=inv("DataFatura") %></td>
-                            <td width="30%" id="G<%=replace(replace(replace(inc, "|", ""), ";", ""), "/", "") %>"><%=inv("NomeProcedimento") %> <%if NaoImprimirGuia=0 then%><button type="button" class="btn btn-xs btn-info btn-print" onclick="modalSec('GuiaConsultaPrint.asp?I=<%=inv("id") %>');"><i class="fa fa-print"></i></button><%end if%></td>
+                            <td width="30%" id="G<%=replace(replace(replace(inc, "|", ""), ";", ""), "/", "") %>"><%=inv("NomeProcedimento") %> <%if NaoImprimirGuia=0 then%><button type="button" class="btn btn-xs btn-info btn-print" style="margin-left: 2px; margin-right: 2px;" onclick="modalSec('GuiaConsultaPrint.asp?I=<%=inv("id") %>');"><i class="fa fa-print"></i></button><%end if%></td>
                             <td width="20%"><button type="button" disabled="disabled "class="btn btn-default btn-xs btn-block"><i class="fa fa-check green"></i> <%=left(inv("NomeProfissional")&" ", 15) & " - " & inv("DataFatura") %></button></td>
                             <td></td>
                             <td width="10%"><%=inv("NomeConvenio") %></td>
@@ -233,7 +234,7 @@ end if
 
                      %>>
                             <td width="10%" nowrap class="text-center"><button type="button" class="btn btn-xs btn-default" onclick="ajxContent('tissguiahonorarios', <%=inv("id") %>, 1, 'divHistorico')"><i class="fa fa-edit blue"></i></button> <%=inv("DataFatura") %></td>
-                            <td width="30%" id="G<%=replace(replace(replace(inc, "|", ""), ";", ""), "/", "") %>"><%=inv("NomeProcedimento") %> <%if NaoImprimirGuia=0 then%><button type="button" class="btn btn-xs btn-info btn-print" onclick="modalSec('GuiaHonorariosPrint.asp?I=<%=inv("id") %>');"><i class="fa fa-print"></i></button><%end if%></td>
+                            <td width="30%" id="G<%=replace(replace(replace(inc, "|", ""), ";", ""), "/", "") %>"><%=inv("NomeProcedimento") %> <%if NaoImprimirGuia=0 then%><button type="button" class="btn btn-xs btn-info btn-print" style="margin-left: 2px; margin-right: 2px;" onclick="modalSec('GuiaHonorariosPrint.asp?I=<%=inv("id") %>');"><i class="fa fa-print"></i></button><%end if%></td>
                             <td width="20%"><button type="button" disabled="disabled "class="btn btn-default btn-xs btn-block"><i class="fa fa-check green"></i> <%=left(inv("NomeProfissional")&" ", 15) & " - " & inv("DataFatura") %></button></td>
                             <td></td>
                             <td width="10%"><%=inv("NomeConvenio") %></td>
@@ -243,45 +244,70 @@ end if
                         </tr>
                     <%
                 elseif TipoFatura="GuiaSADT" then
-                    inc = ";" & inv("ProfissionalID") & "|" & inv("ProcedimentoID") &"|"& inv("DataFatura") &";"
-                    GuiasEmitidas = GuiasEmitidas & inc
-                    if inv("DataFatura")=date() then
-                        EliminaNotificacao=1
-                    end if
+                        inc = ";" & inv("ProfissionalID") & "|" & inv("ProcedimentoID") &"|"& inv("DataFatura") &";"
+                        GuiasEmitidas = GuiasEmitidas & inc
+                        if inv("DataFatura")=date() then
+                            EliminaNotificacao=1
+                        end if
+                                        
+                        if inv("id") <> ultimaguia then 
+                            primeitoregistro = true
+                        else
+                            primeitoregistro = false
+                        end if 
+                        ultimaguia = inv("id") 
+                        NomeProfissional = accountName(inv("AssocSADT"), inv("ProfissionalID"))
 
-                    NomeProfissional = accountName(inv("AssocSADT"), inv("ProfissionalID"))
+                        if primeitoregistro =true then 
                     %>
-                        <tr class="ulinha lguia"<% if ultimaDataFatura<>inv("DataFatura") then %> data-datafatura="<%=mydatejunto(inv("DataFatura")) %>" <% end if %>>
-
-                 <%                
-                  evento = " onclick=modalSec('GuiaSPSADTPrint.asp?I="&inv("id")&"')"
-                
-                set Impressao = db.execute("select SadtImpressao from tissguiasadt join convenios on convenios.id = tissguiasadt.ConvenioID where tissguiasadt.id ="&inv("id"))
-                if not Impressao.eof then
-                    if Impressao("SadtImpressao") = "gto" then
-                        evento = " onclick=modalSec('guiaTratamentoOdontologicoPrint.asp?I="&inv("id")&"')"
+                    <tr class="ulinha lguia"<% if ultimaDataFatura<>inv("DataFatura") then %> data-datafatura="<%=mydatejunto(inv("DataFatura")) %>" <% end if %>>
+                    <%                
+                    evento = " onclick=modalSec('GuiaSPSADTPrint.asp?I="&inv("id")&"')"                
+                    set Impressao = db.execute("select SadtImpressao from tissguiasadt join convenios on convenios.id = tissguiasadt.ConvenioID where tissguiasadt.id ="&inv("id"))
+                    if not Impressao.eof then
+                        if Impressao("SadtImpressao") = "gto" then
+                            evento = " onclick=modalSec('guiaTratamentoOdontologicoPrint.asp?I="&inv("id")&"')"
+                        end if
                     end if
-                end if
-                 %>
-                            <td width="10%" nowrap class="text-center"><button type="button" class="btn btn-xs btn-default" onclick="ajxContent('tissguiasadt', <%=inv("id") %>, 1, 'divHistorico')"><i class="fa fa-edit blue"></i></button> <%=inv("DataFatura") %></td>
-                            <td width="30%" id="G<%=replace(replace(replace(inc, "|", ""), ";", ""), "/", "") %>"><%=inv("NomeProcedimento") %> <%if NaoImprimirGuia=0 then%><button type="button" class="btn btn-xs btn-info btn-print" <%= evento %>><i class="fa fa-print"></i></button><%end if%></td>
-                            <td width="20%"><button type="button" disabled="disabled" class="btn btn-default btn-xs btn-block"><i class="fa fa-check green"></i> <%=left(NomeProfissional&" ", 15) & " - " & inv("DataFatura")  %></button></td>
-                            <td></td>
-                            <td width="10%"><%=inv("NomeConvenio") %></td>
-                            <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
-                            <td width="20%" class="text-right">
-                                
-                                <%=retornaBotaoIntegracaoLaboratorial ("tissguiasadt", inv("id")) %>
-                                
-                                <% if getConfig("ExibirNumeroGuiaOperadora")  then %>
-                                    <strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> 
-                                <% else %> 
-                                    <strong title="Numero da guia no PRESTADOR">Guia: </strong> <%=inv("NGuiaPrestador")&""%> 
-                                <%end if%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a>
-                            </td>
-                            <td><%= retornastatusguia(inv("GuiaStatus")) %></td>
-                        </tr>
-                    <%
+                    %>
+                                <td width="10%" nowrap class="text-center"><button type="button" class="btn btn-xs btn-default" onclick="ajxContent('tissguiasadt', <%=inv("id") %>, 1, 'divHistorico')"><i class="fa fa-edit blue"></i></button> <%=inv("DataFatura") %></td>
+                                <td width="30%" id="G<%=replace(replace(replace(inc, "|", ""), ";", ""), "/", "") %>"></td>
+                                <td width="20%"> </td>
+                                <td></td>
+                                <td width="10%"><span class="badge badge-primary"><%=inv("NomeConvenio") %></span></td>
+                                <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
+                                <td width="20%" class="text-right">
+                                    <%if  primeitoregistro = true then 
+                                        response.write(retornaBotaoIntegracaoLaboratorial ("tissguiasadt", inv("id")))
+                                    end if %>
+                                    
+                                    <% if getConfig("ExibirNumeroGuiaOperadora")  then %>
+                                        <strong title="Numero da Guia na OPERADORA">Guia: </strong> <%=inv("NGuiaOperadora")&""%> 
+                                    <% else %> 
+                                        <strong title="Numero da guia no PRESTADOR">Guia: </strong> <%=inv("NGuiaPrestador")&""%> 
+                                    <%end if%>&nbsp;<a class='btn btn-xs btn-system' style='float:right' href="javascript:modalInsuranceAttachments('<%=inv("id")%>','<%=TipoFatura%>');" title='Anexar um arquivo'> <i class="fa fa-paperclip bigger-140 white"></i></a>
+                                    <%if NaoImprimirGuia=0 then%><button type="button" class="btn btn-xs btn-info" <%= evento %> style="margin-left: 2px; margin-right: 2px;"><i class="fa fa-print"></i></button><%end if%>
+                                </td>
+                                <td>
+                                    
+                                </td>
+                            </tr>
+                    <%   
+                        end if
+                    %>
+                        <tr class="slinha lguia">
+                                <td width="10%" nowrap="" class="text-center"><i class="fa fa-angle-right"></i></td>
+                                <td width="30%" id="G<%=replace(replace(replace(inc, "|", ""), ";", ""), "/", "") %>"><%=inv("NomeProcedimento") %> </td>
+                                <td width="20%"><button type="button" disabled="disabled" class="btn btn-default btn-xs btn-block"><i class="fa fa-check green"></i> <%=left(NomeProfissional&" ", 15) & " - " & inv("DataFatura")  %></button></td>
+                                <td></td>
+                                <td width="10%"></td>
+                                <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
+                                <td width="20%" class="text-right">
+                                </td>
+                                <td><%= retornastatusguia(inv("GuiaStatus")) %></td>
+                            </tr>
+                        <%
+                    
                 end if
                 ultimaDataFatura = inv("DataFatura")
 		  inv.movenext

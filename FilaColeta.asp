@@ -24,7 +24,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.20.0/vuedraggable.umd.min.js"></script>
 <script type="text/javascript">
 
-    getUrl("labs-integration/matrix/work-queue", {}, function(data) {
+    getUrl("labs-integration-v2/fila-coleta", {}, function(data) {
         $(".app").hide();
         $(".app").html(data);
         $(".app").fadeIn('slow');

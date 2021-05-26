@@ -936,7 +936,7 @@ min-width: 150px;
       <ul class="dropdown-menu" role="menu">
         <li><a href="javascript:SalvarEimprimir=true;$('#btnSalvar').click();"><i class="fa fa-print"></i> Salvar e imprimir</a></li>
       </ul>
-        <%=retornaBotaoIntegracaoLaboratorial ("tissguiasadt", idtissguia) %>
+        <!-- <%=retornaBotaoIntegracaoLaboratorial ("tissguiasadt", idtissguia) %> -->
        
     </div>
 

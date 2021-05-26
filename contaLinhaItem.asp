@@ -71,7 +71,7 @@
               <%
 			  if tipoLinha="u" then
 			  	%>	
-                Particular
+                <span class="badge badge-success">  Particular </span>
                 <%
 			  end if
 			  %>

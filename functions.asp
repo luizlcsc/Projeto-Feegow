@@ -51,6 +51,16 @@ function refNull(Val)
 	end if
 end function
 
+
+function reqf(P)
+
+    if req(P)&""<>"" then
+        reqf = req(P)
+    else
+        reqf = ref(P)
+    end if
+end function
+
 function dd(variable)
     description=""
     variableType = TypeName(variable)

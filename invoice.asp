@@ -724,7 +724,7 @@ end if
             <div class="col-md-6">
                 <label style="" class="error_msg"></label><br>
                 <label>Senha do Usuário</label>
-                <input type="password" id="password" name="password" class="form-control">
+                <input type="hidden" id="tabela-password" name="tabela-password" class="form-control">
             </div>
 
         <div class="col-md-12 tabelaParticular" style="color:#000;">
@@ -1400,6 +1400,7 @@ $(idStr).change(function(){
         data: {autorization:"buscartabela",id:id,sysUser:sysUser},
         success:function(result){
             if(result == "Tem regra") {
+                $("#permissao-password").attr("type","password");
                 $('#permissaoTabela').modal('show');
                buscarNome(id,sysUser,regra);
                 }
@@ -1407,7 +1408,7 @@ $(idStr).change(function(){
     });
         $('.confirmar').click(function(){
                 var Usuario =  $('input[name="nome"]:checked').val();
-                var senha   =  $('#password').val();
+                var senha   =  $('#tabela-password').val();
                 liberar(Usuario , senha , id , Nometable);
                 $('.error_msg').empty(); 
             

@@ -30,7 +30,7 @@ end function
 
 function refHTML(Val)
     val = request.Form(Val)
-    ref = clear_ref_req(val)
+    refHTML = clear_ref_req(val)
 end function
 
 function req(Val)
@@ -40,7 +40,7 @@ function req(Val)
 end function
 
 function reqHTML(Val)
-    req = clear_ref_req(request.QueryString(Val))
+    reqHTML = clear_ref_req(request.QueryString(Val))
 end function
 
 function refNull(Val)

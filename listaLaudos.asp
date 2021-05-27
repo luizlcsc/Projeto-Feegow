@@ -166,7 +166,6 @@ end if
 
 
 
-        dd (sql)
         set ii = db.execute( sql )
 
 

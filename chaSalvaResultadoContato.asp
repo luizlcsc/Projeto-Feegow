@@ -3,7 +3,7 @@
 CallID = req("CallID")
 resClicado = ref("result")
 
-db_execute("update chamadas set Resultado="&treatvalnull(ref("result")&", Subresultado="&treatvalnull(ref("subresult"&resClicado)&", Notas='"&ref("Notas"&CallID)&"' WHERE id="&CallID)
+db_execute("update chamadas set Resultado="&treatvalnull(ref("result"))&", Subresultado="&treatvalnull(ref("subresult"&resClicado))&", Notas='"&ref("Notas"&CallID)&"' WHERE id="&CallID)
 
 if ref("result"&CallID)<>"" then
 	procSC = ref("result"&CallID)

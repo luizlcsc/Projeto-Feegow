@@ -7,7 +7,7 @@ GuiaID = req("I")
 Tipo = req("T")
 
 rfAssociacao = 5
-rfProfissionalID = treatvalnull(ref("ProfissionalID"&ItemID)
+rfProfissionalID = treatvalnull(ref("ProfissionalID"&ItemID))
 if instr(rfProfissionalID, "_")>0 then
 	splProf = split(rfProfissionalID, "_")
 	rfAssociacao = splProf(0)

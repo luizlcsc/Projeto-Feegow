@@ -8,7 +8,7 @@ if id="" then
 else
 
 	if ref("E")="E" then
-		sql = "update sys_financialCurrentAccounts set Proprietario='"&ref("Proprietario")&"', AccountName='"&ref("AccountName")&"', AccountType="&treatvalnull(ref("AccountType")&", Holder='"&ref("Holder")&"', Document='"&ref("Document")&"',UsuariosConfirmadores='"&ref("UsuariosConfirmadores")&"', Bank="&treatvalnull(ref("Bank")&", Branch='"&ref("Branch")&"', CurrentAccount='"&ref("CurrentAccount")&"', CreditAccount="&treatvalnull(ref("CreditAccount")&", DaysForCredit='"&ref("DaysForCredit")&"', BestDay='"&ref("BestDay")&"', PercentageDeducted="&treatvalzero(ref("PercentageDeducted"))&", Currency='"&ref("Currency")&"', DueDay='"&ref("DueDay")&"', BestDay='"&ref("BestDay")&"', Empresa="&treatvalzero(ref("Empresa"))&", sysActive=1 where id="&id
+		sql = "update sys_financialCurrentAccounts set Proprietario='"&ref("Proprietario")&"', AccountName='"&ref("AccountName")&"', AccountType="&treatvalnull(ref("AccountType"))&", Holder='"&ref("Holder")&"', Document='"&ref("Document")&"',UsuariosConfirmadores='"&ref("UsuariosConfirmadores")&"', Bank="&treatvalnull(ref("Bank"))&", Branch='"&ref("Branch")&"', CurrentAccount='"&ref("CurrentAccount")&"', CreditAccount="&treatvalnull(ref("CreditAccount"))&", DaysForCredit='"&ref("DaysForCredit")&"', BestDay='"&ref("BestDay")&"', PercentageDeducted="&treatvalzero(ref("PercentageDeducted"))&", Currency='"&ref("Currency")&"', DueDay='"&ref("DueDay")&"', BestDay='"&ref("BestDay")&"', Empresa="&treatvalzero(ref("Empresa"))&", sysActive=1 where id="&id
 		db_execute(sql)
 		response.Write(sql)
 		response.Redirect("?P=sys_financialCurrentAccounts&Pers=Follow")

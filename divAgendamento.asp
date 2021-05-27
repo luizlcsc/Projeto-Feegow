@@ -1981,7 +1981,7 @@ $(idStr).change(function(){
         data: {autorization:"buscartabela",id:id,sysUser:sysUser},
         success:function(result){
             if(result == "Tem regra") {
-                $("#permissao-password").attr("type","password");
+                $("#tabela-password").attr("type","password");
                 $('#permissaoTabela').modal('show');
                 buscarNome(id,sysUser,regra);
             }

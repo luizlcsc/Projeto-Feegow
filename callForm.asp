@@ -1,4 +1,5 @@
-﻿<!--#include file="./Classes/ServerPath.asp"-->
+﻿
+<!--#include file="./Classes/ServerPath.asp"-->
 <%
 'on error resume next
 FormID = Id
@@ -56,6 +57,7 @@ if not getForm.eof then
     <br />
 
     <%
+
     if getForm("Versao")=1 then
 	    %>
         <!--#include file="callOldForm.asp"-->

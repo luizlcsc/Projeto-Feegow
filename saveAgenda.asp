@@ -257,7 +257,7 @@ if erro="" then
     if req("PreSalvarCheckin")="" then
         '<--Verifica se paciente já tem esse convênio. Se não, cria esse convênio para esse paciente\\
         if ConsultaID="0" then
-            sql = "insert into agendamentos (PacienteId, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, PlanoID, rdValorPlano, Notas, FormaPagto, HoraSta, LocalID, Tempo, HoraFinal, SubtipoProcedimentoID, ConfEmail, ConfSMS, Encaixe, Retorno, EquipamentoID, EspecialidadeID, TabelaParticularID, Primeira, IndicadoPor, sysUser) values ('"&rfPaciente&"','"&rfProfissionalID&"','"&mydate(rfData)&"','"&rfHora&"','"&rfProcedimento&"','"&rfStaID&"','"&treatVal(rfValorPlano)&"', "&treatvalzero(PlanoID)&",'"&rfrdValorPlano&"','"&Notas&"','0', '"&HoraSta&"',"&treatvalzero(rfLocal)&",'"&rfTempo&"','"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', '"&rfSubtipoProcedimento&"', '"&ref("ConfEmail")&"', '"&ref("ConfSMS")&"', "&treatvalnull(ref("Encaixe"))&","&treatvalnull(ref("Retorno"))&", "&treatvalnull(ref("EquipamentoID"))&", "& treatvalnull(ref("EspecialidadeID")) &", "& refnull("ageTabela") &", "&PrimeiraVez&", '"&indicacaoID&"', "&session("User")&")"
+            sql = "insert into agendamentos (PacienteId, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, PlanoID, rdValorPlano, Notas, FormaPagto, HoraSta, LocalID, Tempo, HoraFinal, SubtipoProcedimentoID, ConfEmail, ConfSMS, Encaixe, Retorno, EquipamentoID, EspecialidadeID, TabelaParticularID, Primeira, IndicadoPor, sysUser) values ('"&rfPaciente&"','"&rfProfissionalID&"','"&mydate(rfData)&"','"&rfHora&"','"&rfProcedimento&"','"&rfStaID&"','"&treatVal(rfValorPlano)&"', "&treatvalzero(PlanoID)&",'"&rfrdValorPlano&"','"&Notas&"','0', '"&HoraSta&"',"&treatvalzero(rfLocal)&",'"&rfTempo&"','"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', '"&rfSubtipoProcedimento&"', '"&ref("ConfEmail")&"', '"&ref("ConfSMS")&"', "&treatvalnull(ref("Encaixe"))&","&treatvalnull(ref("Retorno"))&", "&treatvalnull(ref("EquipamentoID"))&", "& treatvalnull(ref("EspecialidadeID")) &", "& treatvalnull(ref("ageTabela") &", "&PrimeiraVez&", '"&indicacaoID&"', "&session("User")&")"
 
     		'response.Write(sql&vbcrlf)
 
@@ -331,7 +331,7 @@ if erro="" then
                 db.execute("insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID, UnidadeID) values ('"&rfPaciente&"', '"&rfProfissionalID&"', '"&rfProcedimento&"', '"&DataHoraFeito&"', '"&mydate(rfData)&"', '"&rfHora&"', '"&rfStaID&"', '"&session("User")&"', '0', '"&ObsR&"', 'R', '"&ConsultaID&"', "&session("UnidadeID")&")")
             end if
 
-            sqlUpdateAgendamento = "update agendamentos set IndicadoPor='"&indicacaoID&"', PacienteId='"&rfPaciente&"', ProfissionalID='"&rfProfissionalID&"', Data='"&mydate(rfData)&"', Hora='"&rfHora&"', TipoCompromissoID='"&rfProcedimento&"', StaID='"&rfStaID&"', ValorPlano='"&treatVal(rfValorPlano)&"', PlanoID="&treatvalzero(PlanoID)&", rdValorPlano='"&rfrdValorPlano&"', Notas='"&Notas&"', FormaPagto='0', HoraSta='"&HoraSta&"', LocalID='"&rfLocal&"', Tempo='"&rfTempo&"' ,HoraFinal='"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', SubtipoProcedimentoID='"&rfSubtipoProcedimento&"', ConfEmail='"&ref("ConfEmail")&"', ConfSMS='"&ref("ConfSMS")&"', Encaixe="&treatvalnull(ref("Encaixe"))&", Retorno="&treatvalnull(ref("Retorno"))&", EquipamentoID="&treatvalnull(ref("EquipamentoID"))&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& refnull("ageTabela") &" where id = '"&ConsultaID&"'"
+            sqlUpdateAgendamento = "update agendamentos set IndicadoPor='"&indicacaoID&"', PacienteId='"&rfPaciente&"', ProfissionalID='"&rfProfissionalID&"', Data='"&mydate(rfData)&"', Hora='"&rfHora&"', TipoCompromissoID='"&rfProcedimento&"', StaID='"&rfStaID&"', ValorPlano='"&treatVal(rfValorPlano)&"', PlanoID="&treatvalzero(PlanoID)&", rdValorPlano='"&rfrdValorPlano&"', Notas='"&Notas&"', FormaPagto='0', HoraSta='"&HoraSta&"', LocalID='"&rfLocal&"', Tempo='"&rfTempo&"' ,HoraFinal='"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', SubtipoProcedimentoID='"&rfSubtipoProcedimento&"', ConfEmail='"&ref("ConfEmail")&"', ConfSMS='"&ref("ConfSMS")&"', Encaixe="&treatvalnull(ref("Encaixe"))&", Retorno="&treatvalnull(ref("Retorno"))&", EquipamentoID="&treatvalnull(ref("EquipamentoID"))&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& treatvalnull(ref("ageTabela") &" where id = '"&ConsultaID&"'"
 
             if ref("Checkin")="1" then
                 DescricaoAlteracao = "Check-in"
@@ -345,7 +345,7 @@ if erro="" then
 
         end if
     else
-        db_execute("update agendamentos set IndicadoPor='"&indicacaoID&"', EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& refnull("ageTabela") &" where id = '"&ConsultaID&"'")
+        db_execute("update agendamentos set IndicadoPor='"&indicacaoID&"', EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& treatvalnull(ref("ageTabela") &" where id = '"&ConsultaID&"'")
     end if
 
 	if (session("Banco")="clinic5445" or session("Banco")="clinic100000") and ref("ageCanal")<>"" then

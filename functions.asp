@@ -7,7 +7,6 @@ Function strip_tags(text_to_strip)
 End Function
 
 function clear_ref_req (val)
-        val = strip_tags(val)
         val = replace(val, "'", "''")
         val = replace(val,"\", "\\")
         val = replace(val,"<script>", "")
@@ -23,15 +22,24 @@ function clear_ref_req (val)
 end function 
 
 function ref(Val)
-	' ref = replace(replace(ref(Val), "'", "''"), "\", "\\")
-
     val = request.Form(Val)
+    val = strip_tags(val)
 
     ref = clear_ref_req(val)
 end function
 
+function refHTML(Val)
+    val = request.Form(Val)
+    ref = clear_ref_req(val)
+end function
+
 function req(Val)
-	' req = replace(request.QueryString(Val), "'", "''")
+    val = request.QueryString(Val)
+    val = strip_tags(val)
+    req = clear_ref_req(val)
+end function
+
+function reqHTML(Val)
     req = clear_ref_req(request.QueryString(Val))
 end function
 

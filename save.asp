@@ -83,7 +83,7 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
                 DuplicacaoID = PacienteDuplicadoSQL("id")
 
                 NaoPermitirCPFduplicado = getConfig("NaoPermitirCPFduplicado")
-                ButtonSalvarAssimMesmo = "<button href=\'#\' class=\'btn btn-sm btn-success center\' type=\'button\' onclick=""javascript:$.post(\'save.asp?ForceDuplicado=S\',\'"&ref()&"\' , function(data){eval(data);})""> Salvar mesmo assim.</button>"
+                ButtonSalvarAssimMesmo = "<button href=\'#\' class=\'btn btn-sm btn-success center\' type=\'button\' onclick=""javascript:$.post(\'save.asp?ForceDuplicado=S\',\'"&request.Form()&"\' , function(data){eval(data);})""> Salvar mesmo assim.</button>"
                 if NaoPermitirCPFduplicado = 1 then
                     ButtonSalvarAssimMesmo = ""
                 end if

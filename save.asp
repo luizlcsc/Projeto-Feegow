@@ -8,6 +8,7 @@
 tableName = ref("P")
 id = ref("I")
 
+
 ' vuneravilidade
 spl = split(request.Form(), "&")
 
@@ -354,11 +355,10 @@ if not getResource.EOF then
 				end if
 			end if
 		else
-			sqlValue = "'"&ref(getFields("columnName"))&"'"
+			sqlValue = "'"&refhtml(getFields("columnName"))&"'"
 		end if
 
         IF getFields("id") = 1 or getFields("id") = 138 or getFields("id") = 250 then
-
 
             valor = ref(getFields("columnName"))
 
@@ -400,7 +400,7 @@ if not getResource.EOF then
 	    'atualiza a hora do cadastro
 	    sqlFields = sqlFields & ", sysDate=NOW()"
 	end if
-
+    dd(sqlFields)
 	sql = "update "&tableName&" set "&sqlFields&" where id="&id
 	
 	if erro<>"" then

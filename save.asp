@@ -400,7 +400,6 @@ if not getResource.EOF then
 	    'atualiza a hora do cadastro
 	    sqlFields = sqlFields & ", sysDate=NOW()"
 	end if
-    dd(sqlFields)
 	sql = "update "&tableName&" set "&sqlFields&" where id="&id
 	
 	if erro<>"" then

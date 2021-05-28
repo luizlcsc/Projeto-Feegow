@@ -21,42 +21,43 @@ function clear_ref_req (val)
         clear_ref_req = val
 end function 
 
-function ref(Val)
-    val = request.Form(Val)
+function ref(ColVal)
+    val = request.Form(ColVal)
     val = strip_tags(val)
 
     ref = clear_ref_req(val)
 end function
 
-function refHTML(Val)
-    val = request.Form(Val)
+function refHTML(ColVal)
+    val = request.Form(ColVal)
     refHTML = clear_ref_req(val)
 end function
 
-function req(Val)
-    val = request.QueryString(Val)
+function req(ColVal)
+    val = request.QueryString(ColVal)
     val = strip_tags(val)
     req = clear_ref_req(val)
 end function
 
-function reqHTML(Val)
-    reqHTML = clear_ref_req(request.QueryString(Val))
+function reqHTML(ColVal)
+    reqHTML = clear_ref_req(request.QueryString(ColVal))
 end function
 
-function refNull(Val)
-	if ref(Val)&"" = "" then
+function refNull(ColVal)
+	if ref(ColVal)&"" = "" then
 		refNull = "NULL"
 	else
-		refNull = ref(Val)
+		refNull = ref(ColVal)
 	end if
 end function
 
 
 function reqf(P)
 
-    if req(P)&""<>"" then
+    if request.QueryString(P)<>"" then
         reqf = req(P)
     else
+
         reqf = ref(P)
     end if
 end function

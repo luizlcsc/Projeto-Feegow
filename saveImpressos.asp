@@ -23,11 +23,11 @@ if req("Tipo")="RecibosIntegrados" or req("Tipo")="RecibosIntegradosAPagar" then
 end if
 
 if req("Tipo")="Timbrado" then
-	sql = "Cabecalho='"&ref("Cabecalho")&"', Rodape='"&ref("Rodape")&"'"
+	sql = "Cabecalho='"&refhtml("Cabecalho")&"', Rodape='"&refhtml("Rodape")&"'"
 elseif req("Tipo")="Propostas" then
-	sql = "CabecalhoProposta='"&ref("CabecalhoProposta")&"', RodapeProposta='"&ref("RodapeProposta")&"', ItensProposta='"&ref("ItensProposta")&"'"
+	sql = "CabecalhoProposta='"&refhtml("CabecalhoProposta")&"', RodapeProposta='"&refhtml("RodapeProposta")&"', ItensProposta='"&refhtml("ItensProposta")&"'"
 else
-	sql = req("Tipo")&"='"&ref(""&req("Tipo")&"")&"'"
+	sql = req("Tipo")&"='"&refhtml(""&req("Tipo")&"")&"'"
 end if
 
 set reg = db.execute("select * from Impressos")

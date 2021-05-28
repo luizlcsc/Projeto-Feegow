@@ -164,7 +164,7 @@ end if
             "GROUP BY t.id ORDER BY pac.NomePaciente ) as tab"&_
             " LEFT JOIN profissionais prof_lau ON prof_lau.id=tab.ProfissionalLaudadorID AND tab.AssociacaoLaudadorID=5 "
 
-
+        ' dd(sql)
 
         set ii = db.execute( sql )
 

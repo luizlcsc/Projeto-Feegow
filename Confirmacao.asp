@@ -5,9 +5,9 @@ CONFIRMA&Ccedil;&Atilde;O DE CONSULTA: </h1>
 <h3 style="color:#6E6E6E"><strong>
 <%
 session.LCID = 1046
-LicencaID =  replace(request.QueryString("L"), "'", "")
-AgendamentoID =  replace(request.QueryString("A"), "'", "")
-R =  replace(request.QueryString(), "'", "")
+LicencaID =  replace(req("L"), "'", "")
+AgendamentoID =  replace(req("A"), "'", "")
+R =  replace(request.QueryString, "'", "")
 set lic = dbc.execute("select * from licencas where id = '"&LicencaID&"' and isnull(Excluido) limit 1")
 if not lic.eof then
 	set age = dbc.execute("select * from clinic"&LicencaID&".agendamentos where id = '"&AgendamentoID&"' limit 1")

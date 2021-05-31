@@ -117,7 +117,7 @@ function gravaAgendamento(idc)
 					document.getElementById('Agendamento').style.display='none';
 					if(document.getElementById('Agenda')!=null)
 					{
-						chamaAgenda(document.getElementById('DataJ').value,'<%=request.QueryString("DrId")%>');
+						chamaAgenda(document.getElementById('DataJ').value,'<%=req("DrId")%>');
 					}
 					else
 					{
@@ -182,7 +182,7 @@ function gravaRepeticao(idc)
 				alert('Agendamento repetido com sucesso!');
 					if(document.getElementById('Agenda')!=null)
 					{
-						chamaAgenda(document.getElementById('DataJ').value,'<%=request.QueryString("DrId")%>');
+						chamaAgenda(document.getElementById('DataJ').value,'<%=req("DrId")%>');
 					}
 					else
 					{
@@ -395,13 +395,13 @@ function Remarcar(idConsulta, Acao, NovaData, NovoHorario, NovoProfissional)
 		{
 			if(Acao=="Solicitar")
 			{
-				chamaAgenda(DataRem,'<%=request.QueryString("DrId")%>');
+				chamaAgenda(DataRem,'<%=req("DrId")%>');
 				conRemarcacao(idConsulta);
 				document.getElementById('Remarcacao').style.display='block';
 			}
 			if(Acao=="Cancelar")
 			{
-				chamaAgenda(DataRem,'<%=request.QueryString("DrId")%>');
+				chamaAgenda(DataRem,'<%=req("DrId")%>');
 				document.getElementById('Remarcacao').style.display='none';
 			}
 			if(Acao=="Confirmar")
@@ -474,7 +474,7 @@ function excluiCon(idCon, tipoPedido)
 			{
 					if(document.getElementById('Agenda')!=null)
 					{
-						chamaAgenda(document.getElementById('DataJ').value,'<%=request.QueryString("DrId")%>');
+						chamaAgenda(document.getElementById('DataJ').value,'<%=req("DrId")%>');
 					}
 					else
 					{
@@ -586,7 +586,7 @@ function lancaConta(Consulta, tipo, idLancto){
 	if (tipo=="Conta")
 	{
 		if(idLancto=="")
-			{iframeDados.location="ReceitasAReceber.asp?PacienteID="+document.getElementById('Paciente').value+"&ProcedimentoID="+document.getElementById('Procedimento').value+"&ProfissionalID=<%=request.QueryString("DrId")%>&ConsultaID="+Consulta+"&DataAgendamento="+document.getElementById('DataJ').value+"&HoraAgendamento="+document.getElementById('Hora').value;}
+			{iframeDados.location="ReceitasAReceber.asp?PacienteID="+document.getElementById('Paciente').value+"&ProcedimentoID="+document.getElementById('Procedimento').value+"&ProfissionalID=<%=req("DrId")%>&ConsultaID="+Consulta+"&DataAgendamento="+document.getElementById('DataJ').value+"&HoraAgendamento="+document.getElementById('Hora').value;}
 		else
 			{iframeDados.location="EdiReceitasAReceber.asp?CId="+idLancto;}
 	}
@@ -635,8 +635,8 @@ function interQuadro(local)
 			if(Left(oHTTPRequest.responseText,4)=="Inte")
 			{
 				document.getElementById('aba'+local).style.display='none';
-				location.href='./?P=<%=req("P")%>&Pers=1&Data=<%=request.QueryString("Data")%>';
-				//chamaQuadro('<%=request.QueryString("Data")%>', local, 'N');
+				location.href='./?P=<%=req("P")%>&Pers=1&Data=<%=req("Data")%>';
+				//chamaQuadro('<%=req("Data")%>', local, 'N');
 			}
 		}
 	}

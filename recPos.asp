@@ -1,4 +1,4 @@
 <%
-session("x")=request.QueryString("x")
-session("y")=request.QueryString("y")
+session("x")=req("x")
+session("y")=req("y")
 %>

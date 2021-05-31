@@ -86,5 +86,63 @@ function getSQLQuickField(Tabela,Coluna,ID,Condicoes)
 end function
 
 
+function getTaxaAtual (conta,mov,parcelas)
+
+    sqltaxa =   " coalesce (                                                              	"&chr(13)&_
+            " 		nullif(                                                               	"&chr(13)&_
+            "             (select                                                     		"&chr(13)&_
+            "                 cap.acrescimoPercentual                                 		"&chr(13)&_
+            "             from                                                        		"&chr(13)&_
+            "                 sys_financialCurrentAccounts ca                         		"&chr(13)&_
+            "             left join sys_financial_current_accounts_percentual cap on  		"&chr(13)&_
+            "                 cap.sys_financialCurrentAccountId = ca.id               		"&chr(13)&_
+            "             inner join sys_financialmovement m on                       		"&chr(13)&_
+            "                 m.AccountIDDebit = ca.id                                		"&chr(13)&_
+            "             inner join sys_financialcreditcardtransaction ct on         		"&chr(13)&_
+            "                 ct.MovementID = m.id                                    		"&chr(13)&_
+            "             where                                                       		"&chr(13)&_
+            "                 ca.id = "&conta&"                                             "&chr(13)&_
+            "                 and bandeira = ct.BandeiraCartaoID                      		"&chr(13)&_
+            "                 and m.id = "&mov&"                      		                "&chr(13)&_
+            "                 AND "&parcelas&" BETWEEN minimo AND maximo                    "&chr(13)&_
+            "                 LIMIT 1                                                       "&chr(13)&_
+            " 	        ),''                                                           		"&chr(13)&_
+            "         )                                                               		"&chr(13)&_
+            " 	    ,nullif(                                                           		"&chr(13)&_
+            "             (select                                                     		"&chr(13)&_
+            "                 cap.acrescimoPercentual                                 		"&chr(13)&_
+            "             from                                                        		"&chr(13)&_
+            "                 sys_financialCurrentAccounts ca                         		"&chr(13)&_
+            "             left join sys_financial_current_accounts_percentual cap on  		"&chr(13)&_
+            "                 cap.sys_financialCurrentAccountId = ca.id               		"&chr(13)&_
+            "             inner join sys_financialmovement m on                       		"&chr(13)&_
+            "                 m.AccountIDDebit = ca.id                                		"&chr(13)&_
+            "             inner join sys_financialcreditcardtransaction ct on         		"&chr(13)&_
+            "                 ct.MovementID = m.id                                    		"&chr(13)&_
+            "             where                                                       		"&chr(13)&_
+            "                 ca.id = "&conta&"                                             "&chr(13)&_
+            "                 and m.id = "&mov&"                      		                "&chr(13)&_
+            "                 and bandeira = 9                                        		"&chr(13)&_
+            "                 AND "&parcelas&" BETWEEN minimo AND maximo                    "&chr(13)&_
+            "                 LIMIT 1                                                       "&chr(13)&_
+            " 	        ),''                                                           		"&chr(13)&_
+            "         )                                                               		"&chr(13)&_
+            "         ,nullif(                                                        		"&chr(13)&_
+            "             (select                                                     		"&chr(13)&_
+            "                 PercentageDeducted                                      		"&chr(13)&_
+            "             from                                                        		"&chr(13)&_
+            "                 sys_financialCurrentAccounts                            		"&chr(13)&_
+            "             where                                                       		"&chr(13)&_
+            "                 id = "&conta&"                                               	"&chr(13)&_
+            "             ),''                                                        		"&chr(13)&_
+            "         )                                                               		"&chr(13)&_
+            "         ,'0'                                                            		"&chr(13)&_
+            " )     as taxaAtual  limit 1                                                   "
+    
+    sql = "select "&sqltaxa
+    getTaxaAtual = sql
+end function 
+
+
 
 %>

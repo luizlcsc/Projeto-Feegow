@@ -7,7 +7,10 @@
 <%
 tableName = ref("P")
 id = ref("I")
+
+' vuneravilidade
 spl = split(request.Form(), "&")
+
 Novo=False
 sysActive=0
 
@@ -79,7 +82,7 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
                 DuplicacaoID = PacienteDuplicadoSQL("id")
 
                 NaoPermitirCPFduplicado = getConfig("NaoPermitirCPFduplicado")
-                ButtonSalvarAssimMesmo = "<button href=\'#\' class=\'btn btn-sm btn-success center\' type=\'button\' onclick=""javascript:$.post(\'save.asp?ForceDuplicado=S\',\'"&request.Form()&"\' , function(data){eval(data);})""> Salvar mesmo assim.</button>"
+                ButtonSalvarAssimMesmo = "<button href=\'#\' class=\'btn btn-sm btn-success center\' type=\'button\' onclick=""javascript:$.post(\'save.asp?ForceDuplicado=S\',\'"&ref()&"\' , function(data){eval(data);})""> Salvar mesmo assim.</button>"
                 if NaoPermitirCPFduplicado = 1 then
                     ButtonSalvarAssimMesmo = ""
                 end if
@@ -782,8 +785,9 @@ if lcase(ref("P"))="profissionais" then
     if ref("Especialidades")<>"" then
         if inStr(ref("Especialidades"), ", ") > 0 then
             spl = split(ref("Especialidades"), ", ")
-            for i=0 to ubound(spl)
-                n = spl(i)
+
+            for iEspecialidades=0 to ubound(spl)
+                n = spl(iEspecialidades)
                 db.execute("update profissionaisespecialidades set RQE='"&ref("RQE"&n)&"',EspecialidadeID="&treatvalnull(ref("EspecialidadeID"&n))&", Conselho='"&ref("Conselho"&n)&"', UFConselho='"&ref("UFConselho"&n)&"', DocumentoConselho='"&ref("DocumentoConselho"&n)&"' where id="&n)
             next
         else
@@ -797,11 +801,13 @@ end if
 
 
 'on error resume next
+
+    ' vunerabilidade pior ainda
 	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(request.Form(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
 
 if sqlAtivoNome<>"" then
     on error resume next
-    ConnString1 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
+    ConnString1 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
     Set db1 = Server.CreateObject("ADODB.Connection")
     db1.Open ConnString1
     db1.execute( sqlAtivoNome )

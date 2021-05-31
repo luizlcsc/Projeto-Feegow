@@ -661,7 +661,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                     <%
                     if IntegracaoUnimedLondrina=4 or session("Banco")="clinic100000" then
                     %>
-                        <div class="col-md-offset-7 col-md-2">
+                        <div class="col-md-offset-6 col-md-3">
                             <button type="button" class="btn btn-system" onclick="importarDadosUnimed()">
                                 <i class="fa fa-download"></i> Importar Exames - Unimed
                             </button>
@@ -911,13 +911,15 @@ end select
         <div id="timeline" class="timeline-single mt30 ">
             <!--#include file="timelineload.asp"-->
         </div>
-        <div class="load-wrapp col-xs-6 col-xs-offset-6 ">
-            <div class="load-3">
-                <div class="line"></div>
-                <div class="line"></div>
-                <div class="line"></div>
+        <%if req("SemLimit") <> "S" then%>
+            <div class="load-wrapp col-xs-6 col-xs-offset-6 ">
+                <div class="load-3">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
             </div>
-        </div>
+        <%end if%>
     </div>  
 </div>
  

@@ -7,7 +7,7 @@
  */
 
 function connect(){
-    $mysqli = new mysqli('localhost',"root","pipoca453","cliniccentral");
+    $mysqli = new mysqli('localhost',getenv("FC_MYSQL_USER"),getenv("FC_MYSQL_PASSWORD"),"cliniccentral");
     return $mysqli;
 }
 

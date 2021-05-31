@@ -14,8 +14,8 @@ function treatvalnullformat(Val,Number)
 	end if
 end function
 
-ConvenioID = request.QueryString("ConvenioID")
-ProcedimentoID = request.QueryString("ProcedimentoID")
+ConvenioID = req("ConvenioID")
+ProcedimentoID = req("ProcedimentoID")
 str = ref("str")
 
 set psobra = db.execute("select pp.* from tissprodutosprocedimentos as pp left join tissprocedimentosvalores as pv on pv.id=pp.AssociacaoID where pv.ProcedimentoID="&ProcedimentoID&" and ConvenioID="&ConvenioID)

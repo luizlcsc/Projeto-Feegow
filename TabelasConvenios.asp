@@ -2,12 +2,12 @@
 <!--#include file="Classes\Json.asp"-->
 
 <%
-Codigo = request.QueryString("Codigo")
-Local = request.QueryString("Local")
+Codigo = req("Codigo")
+Local = req("Local")
 
 IF Local = "Novo" THEN
-    ConvenioID     = request.QueryString("ConvenioID")
-    ProcedimentoID = request.QueryString("ProcedimentoID")
+    ConvenioID     = req("ConvenioID")
+    ProcedimentoID = req("ProcedimentoID")
 
     sql = " SELECT                                                                                                                                                                                 "&chr(13)&_
           "         78                                                                                              as id                                                                          "&chr(13)&_
@@ -97,7 +97,7 @@ if Codigo<>"" then
     response.end
 end if
 %>
-<% call insertRedir(request.QueryString("P"), request.QueryString("I"))
+<% call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from tabelasconvenios where id="& req("I"))
 %>
 <style>
@@ -119,8 +119,8 @@ set reg = db.execute("select * from tabelasconvenios where id="& req("I"))
     <div class="panel-body">
         <form method="post" id="frm" name="frm" action="save.asp">
             <%=header(req("P"), "Tabelas de Cálculo", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-            <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-            <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+            <input type="hidden" name="I" value="<%=req("I")%>" />
+            <input type="hidden" name="P" value="<%=req("P")%>" />
 
             <div class="row">
                 <%=quickField("text", "Descricao", "Descricao", 6, reg("Descricao"), "", "", " required")%>
@@ -129,7 +129,7 @@ set reg = db.execute("select * from tabelasconvenios where id="& req("I"))
             </div>
             <div class="row pt15">
                 <div class="col-md-12">
-                    <%call Subform("tabelasconveniosprocedimentos", "TabelaConvenioID", request.QueryString("I"), "frm")%>
+                    <%call Subform("tabelasconveniosprocedimentos", "TabelaConvenioID", req("I"), "frm")%>
                 </div>
             </div>
         </form>

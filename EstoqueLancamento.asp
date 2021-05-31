@@ -277,12 +277,14 @@ function changeLancar(value){
 }
 
 $("#lancar").click(function(){
+    $("#lancar").attr("disabled", true)
 	$.ajax({
 		type:"POST",
 		url:"saveEstoqueLancamento.asp?P=<%=P%>&T=<%=TipoLancto%>&PosicaoID=<%=PosicaoID%>&ItemInvoiceID=<%=ItemInvoiceID%>&ProdutoInvoiceID=<%=ProdutoInvoiceID%>&AtendimentoID=<%=AtendimentoID%>",
 		data:$("#EstoqueLancamento").serialize(),
 		success: function(data){
 			eval(data);
+            $("#lancar").attr("disabled", false)
 		}
 	});
 });

@@ -24,7 +24,7 @@ end function
 
 response.ContentType="text/XML"
 
-RLoteID = replace(request.QueryString("I"),".xml", "")
+RLoteID = replace(req("I"),".xml", "")
 set lote = db.execute("select * from tisslotes where id="&RLoteID)
 set guias = db.execute("select g.*, p.NomePaciente, c.codigo as ConselhoProfissionalSigla, pla.NomePlano, g.UFConselho as CodigoUFConselho, pro.NomeProfissional from tissguiaconsulta as g left join conveniosplanos pla on pla.id=g.PlanoID left join pacientes as p on p.id=g.PacienteID left join conselhosprofissionais as c on c.id=g.Conselho left join estados as e on e.sigla like g.UFConselho left join profissionais as pro on pro.id=g.ProfissionalID where g.LoteID="&lote("id")&" order by NGuiaPrestador")
 if not guias.eof then

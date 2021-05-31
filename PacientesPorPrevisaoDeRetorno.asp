@@ -1,22 +1,22 @@
 <!--#include file="connect.asp"-->
 <%
-if not isdate(request.QueryString("De")) or request.QueryString("De")="" then
+if not isdate(req("De")) or req("De")="" then
 	De=date()
 else
-	De=request.QueryString("De")
+	De=req("De")
 end if
 
-if not isdate(request.QueryString("A")) or request.QueryString("A")="" then
+if not isdate(req("A")) or req("A")="" then
 	A=dateAdd("m", 1, date())
 else
-	A=request.QueryString("A")
+	A=req("A")
 end if
 %>
 <h4>Pacientes por Previs&atilde;o de Retorno</h4>
 <form id="Relatorio" name="Relatorio" method="get" action="">
 <input type="hidden" name="Pers" value="1" />
 <input type="hidden" name="P" value="Relatorio" />
-<input type="hidden" name="TipoRel" value="<%=request.QueryString("TipoRel")%>" />
+<input type="hidden" name="TipoRel" value="<%=req("TipoRel")%>" />
 <input type="hidden" name="E" value="E" />
 <div class="clearfix form-actions">
 <%=quickField("datepicker", "De", "Data In&iacute;cio", 3, left(De, 10), "", "", "")%>
@@ -26,7 +26,7 @@ end if
 <br />
 <br />
 </div>
-<%if request.QueryString("E")="E" then%>
+<%if req("E")="E" then%>
 <table class="table table-bordered table-striped" width="100%" border="0">
 <tr bgcolor="#CCCCCC"><th>Nome</th><th>Sexo</th><th>Nascimento</th>
 <th>&Uacute;lt. Consulta</th><th>Previs&atilde;o de Retorno</th></tr>

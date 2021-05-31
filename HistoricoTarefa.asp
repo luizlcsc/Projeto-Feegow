@@ -1,6 +1,6 @@
 <table class="table table-striped">
 <%
-set phis = db.execute("select * from TarefasMSGs where TarefaID like '"&request.QueryString("I")&"' order by data desc, hora desc")
+set phis = db.execute("select * from TarefasMSGs where TarefaID like '"&req("I")&"' order by data desc, hora desc")
 while not phis.eof
 %>
   <tr>

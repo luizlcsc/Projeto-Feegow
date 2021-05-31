@@ -105,7 +105,7 @@ if InvoiceID="N" then
     if req("PacienteID")<>"" then
         reqPacDireto = "&PacienteID="&req("PacienteID")
     end if
-	response.Redirect("?P=invoice&I="&vie("id")&"&A="&request.QueryString("A")&"&Pers=1&T="&CD&"&Ent="&req("Ent")& reqPacDireto)'A=AgendamentoID quando vem da agenda
+	response.Redirect("?P=invoice&I="&vie("id")&"&A="&req("A")&"&Pers=1&T="&CD&"&Ent="&req("Ent")& reqPacDireto)'A=AgendamentoID quando vem da agenda
 
 else
 	set data = db.execute("select * from "&tableName&" where id="&InvoiceID)
@@ -1010,7 +1010,7 @@ var InvoiceAlterada = false;
             $("input[id^=DataExecucao]").val("02/01/2017");
         });
 
-    if("<%=request.QueryString("time")%>" != ''){
+    if("<%=req("time")%>" != ''){
         recalc();
     }
 
@@ -1364,11 +1364,37 @@ function liberar(Usuario , senha , id, Nometable){
        
 }
 
+let BloquearRecibo    =   "<%=getConfig("bloquearemissaoderecibo")%>";
+let BloquearContrato  =   "<%=getConfig("bloquearemissaodecontrato")%>";
+let BloquearInvoice   =   "<%=invoicePaga(req("I"))%>";
+
+ if(BloquearContrato == 1 && BloquearInvoice == "False"){
+            $('.contratobt').attr("disabled", true);
+         }else{
+            $('.contratobt').attr("disabled", false)
+         } 
+
+
+
+if(BloquearRecibo == 1 && BloquearInvoice == "False"){
+       $('.rgrec').attr("disabled", true);
+    }else{
+          $('.rgrec').attr("disabled", false);
+    } 
+
+$('.contratobt').click(function(){
+   if($(".contratobloqueio").hasClass("open")){
+      $(".contratobloqueio").removeClass("open");
+   }else{
+        $(".contratobloqueio").addClass("open");
+   }
+});
+
 </script>
 
 <!--#include file="CalculaMaximoDesconto.asp"-->
 
 <input type="hidden" name="PendPagar" id="PendPagar" />
 
-<%'=request.QueryString() %>
+<%'=request.QueryString %>
 <!--#include file="disconnect.asp"-->

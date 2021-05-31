@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="FuncoesAntigas.asp"-->
-//alert('<%=request.Form()%>');
+//alert('<%=ref()%>');
 <%
 if ref("Forma")="" then
 	erro = "Por favor, preencha uma forma de pagamento."
@@ -68,7 +68,7 @@ else
 
         on error resume next
         'conexao com o 45 ->
-        ConnString45 = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193.45;Database=clinic100000;uid=root;pwd=pipoca453;"
+        ConnString45 = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193.45;Database=clinic100000;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
         Set db45 = Server.CreateObject("ADODB.Connection")
         db45.Open ConnString45
 

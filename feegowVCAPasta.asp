@@ -35,7 +35,7 @@ if 1 then
     set l = db.execute("select id, Servidor, Status from cliniccentral.licencas where Status='C'")
     while not l.eof
         response.flush()
-        ConnStringBD = "Driver={MySQL ODBC 5.3 ANSI Driver};Server="& l("Servidor") &";Database=;uid=root;pwd=pipoca453;"
+        ConnStringBD = "Driver={MySQL ODBC 5.3 ANSI Driver};Server="& l("Servidor") &";Database=;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
         Set dbBD = Server.CreateObject("ADODB.Connection")
         dbBD.Open ConnStringBD
         

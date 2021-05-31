@@ -370,7 +370,7 @@ end if
                                 </div>
 
                              </div>
-                             <div class="galery-img">
+                             <div class="galery-img sensitive-data">
                                 <${item.formato} href="${item.ArquivoLink}" target="_blank">
                                     <img
                                         src="${item.link}"
@@ -434,8 +434,8 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
     }
 
     let ConfigPacienteID = '<%=PacienteID%>';
-    let ConfigMovementID = '<%=request.QueryString("MovementID")%>';
-    let ConfigLaudoID    = '<%=request.QueryString("LaudoID")%>';
+    let ConfigMovementID = '<%=req("MovementID")%>';
+    let ConfigLaudoID    = '<%=req("LaudoID")%>';
 
     let valorConsulta = null;
     let typeDoc = "all";
@@ -545,7 +545,7 @@ function atualizaAlbum(X){
     var item = `item`+X;
     $.ajax({
 		type:"POST",
-		url:"Imagens.asp?PacienteID=<%=request.QueryString("I")%>&X="+X,
+		url:"Imagens.asp?PacienteID=<%=req("I")%>&X="+X,
 		success:function(data){
 			//$("#galery").html(data);
             $("#"+item).hide();

@@ -7,7 +7,7 @@ end if
 if req("Data")&""<>"" then
     bloqueioData = "&Data="&req("Data")
 end if
-Hora = request.QueryString("Hora")
+Hora = req("Hora")
 if isdate(Hora) then
 	HoraDe = Hora
 	HoraA = dateAdd("h", 1, HoraDe)
@@ -15,9 +15,9 @@ else
 	HoraDe = "00:00:00"
 	HoraA = "23:59:59"
 end if
-DataDe = request.QueryString("Data")
+DataDe = req("Data")
 DataA = DataDe
-BloqueioID = request.QueryString("BloqueioID")
+BloqueioID = req("BloqueioID")
 DiasSemana = "1 2 3 4 5 6 7"
 Unidades = session("Unidades")
 Profissionais = ""

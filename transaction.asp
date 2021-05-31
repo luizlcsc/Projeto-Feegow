@@ -2,11 +2,11 @@
 <%
 transferenciaCaixa = ref("transferenciaCaixa")&""
 
-if request.QueryString("transactionID") = "" then
-	transactionID = request.Form("transactionID")
+if req("transactionID") = "" then
+	transactionID = ref("transactionID")
 	transactionType = ref("transactionType")
 else
-	transactionID = request.QueryString("transactionID")
+	transactionID = req("transactionID")
 	transactionType = ""
 end if
 if transactionID="1" then
@@ -15,7 +15,7 @@ else
 	title = "Detalhes do Lan&ccedil;amento"
 end if
 
-if request.QueryString("Save")="Save" then
+if req("Save")="Save" then
 
     'set ConfigSQL = db.execute("SELECT ConfirmarTransferencia FROM sys_config WHERE id=1")
     ConfirmarTransferencia=getConfig("ConfirmarTransferencia")
@@ -204,7 +204,7 @@ showMessageDialog("Valor maior que o permitido", "danger");
 Response.End
 end if
 
-'response.Write(request.Form()&"<br>"&request.QueryString())
+'response.Write(ref()&"<br>"&request.QueryString)
 %>
 <form name="formTransaction" id="formTransaction" action="" method="post">
 <input type="hidden" name="transactionID" id="transactionID" value="<%= transactionID %>">

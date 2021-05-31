@@ -1,3 +1,4 @@
+<!--#include file="functions.asp"-->
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Json.asp"-->
 <% IF req("ValidarCertificado") <> "" and req("AgendamentoID")<>"" THEN
@@ -154,6 +155,15 @@ if session("Admin")=0 then
 end if
 %>
 <style>
+<%
+if session("MasterPwd")&""="S" then
+    %>
+.sensitive-data{
+    filter: blur(6px);
+}
+    <%
+end if
+%>
 video {
 	width:100%;
 }
@@ -177,7 +187,7 @@ video {
 
 </style>
 <%
-if request.QueryString("Agenda")="" then
+if req("Agenda")="" then
 	%><!--#include file="PacientesCompleto.asp"--><%
 else
 	%><!--#include file="PacientesCompleto.asp"--><%
@@ -387,33 +397,45 @@ function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
 }
 
 $(document).ready(function(e) {
+
+	$("#save").click(function(e){
+		e.preventDefault();
+
+		$("#frm").find("select:required").css({"display": "","opacity": "0"});
+		$("#frm").find("select:required option[value='0']").val("");
+		var $dadosPacienteFicha = $("#frm");
+
+		if($dadosPacienteFicha[0].reportValidity()){
+			$("#frm").submit();
+		}else{
+			return false;
+		}
+	});
+
     <%call formSave("frm", "save", "$(""#DadosAlterados"").attr('value', ''); callbackAgendamentoPaciente(); ")%>
 
+	function callbackAgendamentoPaciente() {
+		<%
+		if req("Agenda")<>"" then
+		%>
+			var camposAAtualizar = ["Tel1", "Cel1", "Email1", "Tabela"];
 
-function callbackAgendamentoPaciente() {
-    <%
-    if req("Agenda")<>"" then
-    %>
-    var $dadosPacienteFicha = $("#frm");
+			camposAAtualizar.forEach(function(campoAAtualizar) {
+				var v =  $dadosPacienteFicha.find(" #"+campoAAtualizar ).val() ;
+				$(" #age"+campoAAtualizar ).val(v);
+			});
 
-    var camposAAtualizar = ["Tel1", "Cel1", "Email1", "Tabela"];
+			$.get("AgendamentoCheckin.asp", {id: '<%=req("AgendamentoID")%>'}, function(data) {
+				$(".checkin-conteudo-paciente").html(data);
+			});
 
-    camposAAtualizar.forEach(function(campoAAtualizar) {
-        var v =  $dadosPacienteFicha.find(" #"+campoAAtualizar ).val() ;
-        $(" #age"+campoAAtualizar ).val(v);
-    });
+			$(" #searchPacienteID" ).val( $(" #NomePaciente" ).val() );
 
-    $.get("AgendamentoCheckin.asp", {id: '<%=req("AgendamentoID")%>'}, function(data) {
-        $(".checkin-conteudo-paciente").html(data);
-    });
-
-  $(" #searchPacienteID" ).val( $(" #NomePaciente" ).val() );
-
-  $("#myTab4 a[href=#dadosAgendamento]").click();
-    <%
-    end if
-    %>
-}
+			$("#myTab4 a[href=#dadosAgendamento]").click();
+		<%
+		end if
+		%>
+	}
 });
 
 function cid10(X){
@@ -429,7 +451,7 @@ function cid10(X){
 $("#tabRecibos").click(function(){
 	$.ajax({
 		type:"POST",
-		url:"Recibos.asp?PacienteID=<%=request.QueryString("I")%>",
+		url:"Recibos.asp?PacienteID=<%=req("I")%>",
 		success:function(data){
 			$("#divRecibos").html(data);
 		}
@@ -461,7 +483,7 @@ function atualizaAlbum(X){
         //apenas chamar pront
 	$.ajax({
 		type:"POST",
-		url:"Arquivos.asp?PacienteID=<%=request.QueryString("I")%>&X="+X,
+		url:"Arquivos.asp?PacienteID=<%=req("I")%>&X="+X,
 		success:function(data){
 			$("#ArquivosPaciente").html(data);
 		}
@@ -786,7 +808,7 @@ jQuery(function($) {
 
 $("#btnFicha").click(function(){
 	$.ajax({
-		url:'imprimirFicha.asp?PacienteID=<%=request.QueryString("I")%>',
+		url:'imprimirFicha.asp?PacienteID=<%=req("I")%>',
 		success:function(data){
 			$("#modal").html(data);
 		}
@@ -818,10 +840,10 @@ $("#btnLancamentoRetroativo").click(function(){
 <%end if %>
 <script src="assets/js/ace-elements.min.js"></script>
 <script type="text/javascript">
-//js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
 %>
+//js exclusivo avatar
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?')){
 		$.ajax({

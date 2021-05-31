@@ -4,7 +4,7 @@
 <%
 tableName = ref("P")
 id = ref("I")
-spl = split(request.Form(), "&")
+spl = split(ref(), "&")
 Novo=False
 
 set ActiveSQL = db.execute("SELECT sysActive FROM "&tableName&" WHERE id="&id&" LIMIT 1")
@@ -220,5 +220,5 @@ if not getResource.EOF then
 end if
 
 'on error resume next
-	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(request.Form(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
+	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(ref(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
 %>

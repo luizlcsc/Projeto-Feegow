@@ -16,7 +16,7 @@ end if
 
 
 
-set guia = db.execute("select g.*, cons.TISS as ConselhoTISS from tissguiaconsulta as g left join conselhosprofissionais as cons on cons.id=g.Conselho where g.id="&request.QueryString("I"))
+set guia = db.execute("select g.*, cons.TISS as ConselhoTISS from tissguiaconsulta as g left join conselhosprofissionais as cons on cons.id=g.Conselho where g.id="&req("I"))
 if not guia.eof and guia("ConvenioID")&""<>"" then
 	set conv = db.execute("select * from convenios where id="&guia("ConvenioID"))
 	if not conv.EOF then

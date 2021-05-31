@@ -4,7 +4,7 @@
 tableName=req("P")
 id=req("I")
 
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
 set reg = db.execute("SELECT * FROM contasbancarias WHERE id="&id)
 
 %>

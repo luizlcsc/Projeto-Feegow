@@ -28,7 +28,7 @@ while not sms.eof
 	dbc.execute("insert into smshistorico (LicencaID, DataHora, AgendamentoID, Mensagem, Resultado, Celular) values ("&sms("LicencaID")&", "&mydatetime(sms("DataHora"))&", "&sms("AgendamentoID")&", '"&rep(sms("Mensagem"))&"', '"&resposta&"', '"&sms("Celular")&"')")
 	dbc.execute("delete from smsfila where id="&sms("id"))
 	
-	ConnStringCLIENTE = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic"&sms("LicencaID")&";uid=root;pwd=pipoca453;"
+	ConnStringCLIENTE = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic"&sms("LicencaID")&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 	Set dbCLIENTE = Server.CreateObject("ADODB.Connection")
 	dbCLIENTE.Open ConnStringCLIENTE
 	dbCLIENTE.execute("update agendamentos set ConfSMS='' where id="&sms("AgendamentoID"))
@@ -63,7 +63,7 @@ while not emails.eof
 	dbc.execute("insert into emailshistorico (LicencaID, DataHora, AgendamentoID, Mensagem, Titulo, Resultado, Email) values ("&emails("LicencaID")&", "&mydatetime(emails("DataHora"))&", "&emails("AgendamentoID")&", '"&rep(Mensagem)&"', '"&rep(emails("Titulo"))&"', '', '"&emails("Email")&"')")
 	dbc.execute("delete from emailsfila where id="&emails("id"))
 	
-	ConnStringCLIENTE = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic"&emails("LicencaID")&";uid=root;pwd=pipoca453;"
+	ConnStringCLIENTE = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic"&emails("LicencaID")&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 	Set dbCLIENTE = Server.CreateObject("ADODB.Connection")
 	dbCLIENTE.Open ConnStringCLIENTE
 	dbCLIENTE.execute("update agendamentos set ConfEmail='' where id="&emails("AgendamentoID"))

@@ -3,10 +3,22 @@
 response.ContentType="text/XML"
 
 
-RLoteID = replace(request.QueryString("I"),".xml", "")
+RLoteID = replace(req("I"),".xml", "")
 set lote = db.execute("select * from tisslotes where id="&RLoteID)
+
+orderByVar = "order by g.NGuiaPrestador"
+
+LoteOrdem = lote("ordem")&""
+
+if LoteOrdem="Paciente" then
+    orderByVar = "order by p.NomePaciente"
+elseif LoteOrdem = "Data" then
+    orderByVar = "order by g.sysDate"
+elseif LoteOrdem = "Solicitacao" then
+    orderByVar = "order by g.DataSolicitacao"
+end if
 'set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id"))
-set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" order by g.NGuiaPrestador")
+set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" "&orderByVar)
 if not guias.eof then
 	RegistroANS = TISS__FormataConteudo(guias("RegistroANS"))
 	CodigoNaOperadora = TISS__FormataConteudo(guias("CodigoNaOperadora"))
@@ -277,7 +289,7 @@ prefixo = right(prefixo, 20)
 						ProcedimentoSeriado=procs("ProcedimentoSeriado")
 						Data = mydatetiss(procs("Data"))
 						Quantidade = TISS__FormataConteudo(procs("Quantidade"))
-						Fator = treatvaltiss(1)
+						Fator = treatvaltiss(procs("Fator"))
 						ValorUnitario = procs("Fator")*procs("ValorUnitario")
 						ValorTotal = procs("ValorTotal")
 

@@ -1,8 +1,8 @@
 <!--#include file="connect.asp"-->
 <div class="col-md-12">
 <%
-T = request.Form("T")
-PaymentMethod = request.Form("PaymentMethod")
+T = ref("T")
+PaymentMethod = ref("PaymentMethod")
 
 if PaymentMethod="3" then
 	%><label for="PaymentAccount">Selecione a Pessoa</label><br /><%

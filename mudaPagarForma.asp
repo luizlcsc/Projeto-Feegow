@@ -5,7 +5,7 @@ ContaID = req("ContaID")
 MetodoID = req("MetodoID")
 UnidadeID = req("UnidadeID")
 BandeiraId = req("BandeiraId")
-disableSelectCreated = request.QueryString("disableSelectCreated")
+disableSelectCreated = req("disableSelectCreated")
 Parcelas = req("Parcelas")
 
 if ContaID<>"" then

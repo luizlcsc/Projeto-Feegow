@@ -11,8 +11,8 @@
 }
 </style>
 <%
-PacienteID = request.form("PacienteID")
-Status = request.form("Status")
+PacienteID = ref("PacienteID")
+Status = ref("Status")
 
 whereAnd = " AND vps.sysActive = 1 "
 

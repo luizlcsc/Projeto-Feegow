@@ -1,5 +1,5 @@
 ﻿<!--#include file="connectCentral.asp"-->
-<a href="?I=<%=ccur(request.querystring("I"))+1%>">PROXIMO</a>
+<a href="?I=<%=ccur(req("I"))+1%>">PROXIMO</a>
 <table width="100%" border="1">
 <tr>
 	<th>Licen&ccedil;a</th>
@@ -16,9 +16,9 @@
 response.Charset="utf-8"
 'on error resume next
 '1, 105, 84
-set lic = dbc.execute("select * from licencas where id="&request.QueryString("I")&" order by id")
+set lic = dbc.execute("select * from licencas where id="&req("I")&" order by id")
 while not lic.eof
-	ConnString = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic"&lic("id")&";uid=root;pwd=pipoca453;"
+	ConnString = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic"&lic("id")&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 	Set db = Server.CreateObject("ADODB.Connection")
 	db.Open ConnString
 
@@ -84,5 +84,5 @@ set lic=nothing
 
 %>
 <script language="javascript">
-//location.href='?I=<%=ccur(request.querystring("I"))+1%>';
+//location.href='?I=<%=ccur(req("I"))+1%>';
 </script>

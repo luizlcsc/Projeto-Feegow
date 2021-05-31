@@ -1,11 +1,11 @@
 <!--#include file="../../../connect.asp"-->
 <!--#include file="../../../Classes/Json.asp"-->
 <%
-action=Request.QueryString("action")
+action=req("action")
 UserID= session("User")
 LicencaID= replace(session("Banco"),"clinic","")
-ComunicadoID= Request.QueryString("ComunicadoID")
-Interesse= Request.QueryString("Interesse")
+ComunicadoID= req("ComunicadoID")
+Interesse= req("Interesse")
 
 Select Case action
   Case "VerificaPopupsPendentes"
@@ -20,7 +20,7 @@ Select Case action
 
   Case "GetComunicadoById"
 
-    sql = "SELECT pop.* FROM cliniccentral.popup_comunicados pop INNER JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id WHERE com.UserID="&UserID&" AND pop.id="&Request.QueryString("ComunicadoID")
+    sql = "SELECT pop.* FROM cliniccentral.popup_comunicados pop INNER JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id WHERE com.UserID="&UserID&" AND pop.id="&req("ComunicadoID")
     set ComunicadoSQL = db.execute( sql )
 
     responseJson(recordToJSON(ComunicadoSQL))

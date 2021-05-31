@@ -102,15 +102,15 @@ if isdate(rfData) then
     rfData = cdate(rfData)
 end if
 
-rfProcedimento=request.Form("ProcedimentoID")
-rfrdValorPlano=request.Form("rdValorPlano")
+rfProcedimento=ref("ProcedimentoID")
+rfrdValorPlano=ref("rdValorPlano")
 if rfrdValorPlano="V" then
-	rfValorPlano=request.Form("Valor")
+	rfValorPlano=ref("Valor")
 	if rfValorPlano="" or not isnumeric(rfValorPlano) then
 		rfValorPlano=0
 	end if
 else
-	rfValorPlano=request.Form("ConvenioID")
+	rfValorPlano=ref("ConvenioID")
 	PlanoID=ref("PlanoID")
 end if
 rfPaciente=ref("PacienteID")
@@ -128,15 +128,15 @@ else
     end if
 end if
 
-rfStaID=request.Form("StaID")
+rfStaID=ref("StaID")
 if ref("LocalID")&""="" then
 	rfLocal=0
 else
-	rfLocal=request.Form("LocalID")
+	rfLocal=ref("LocalID")
 end if
 rfNotas=ref("Notas")
-rfSubtipoProcedimento=0'request.Form("SubtipoProcedimento")'VERIFICAR
-ConsultaID=request.form("ConsultaID")
+rfSubtipoProcedimento=0'ref("SubtipoProcedimento")'VERIFICAR
+ConsultaID=ref("ConsultaID")
 
 
 
@@ -177,9 +177,9 @@ if ConsultaID<>"0" then
         end if
     end if
 end if
-%><!--#include file="errosPedidoAgendamento.asp"--><%''=request.Form()%><%
+%><!--#include file="errosPedidoAgendamento.asp"--><%''=ref()%><%
 if erro="" then
-'response.Write(request.Form())
+'response.Write(ref())
 '"Hora=&Paciente=&Procedimento=&StaID=&Local=&rdValorPlano=&ValorPlano=&ProfissionalID=&Data=&Tempo=
 	if rfStaID=5 or rfStaID="5" then
 	    set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(rfLocal))
@@ -345,7 +345,7 @@ if erro="" then
 
         end if
     else
-        db_execute("update agendamentos set IndicadoPor='"&indicacaoID&"', EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& refnull("ageTabela") &" where id = '"&ConsultaID&"'")
+        db_execute("update agendamentos set IndicadoPor='"&indicacaoID&"', EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& treatvalnull(ref("ageTabela")) &" where id = '"&ConsultaID&"'")
     end if
 
 	if (session("Banco")="clinic5445" or session("Banco")="clinic100000") and ref("ageCanal")<>"" then

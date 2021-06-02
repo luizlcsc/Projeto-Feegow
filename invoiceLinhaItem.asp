@@ -371,6 +371,13 @@ end if
                 <%
                 if ProfissionalID<> "" then
                     sqlEspecialidades = "select esp.EspecialidadeID id, e.especialidade from (select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID) union all	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp left join especialidades e ON e.id=esp.EspecialidadeID"
+                
+                    if Associacao=8 then
+                        sqlEspecialidades = "select e.id, e.especialidade FROM profissionalexterno p "&_
+                                            "INNER JOIN especialidades e ON e.id=p.EspecialidadeID "&_
+                                            "WHERE p.id="&ProfissionalID
+                    end if
+                
                 else
                     sqlEspecialidades = "select * from especialidades order by especialidade"
                 end if
@@ -383,7 +390,6 @@ end if
                     end if
                 end if
 
-
 			    if NaoAlterarExecutante then
                     %>
                     <input type="hidden" name="EspecialidadeID<%= id %>" value="<%=EspecialidadeID%>" />
@@ -393,9 +399,11 @@ end if
                 if EspecialidadeID&""="" or EspecialidadeID&""="0" then
                     camposRequired=""
                 end if
-
+                
+                if Associacao<>2 then
+                    response.write(quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" empty no-select2 "&camposRequired))
+                end if
                 %>
-                <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" empty no-select2 "&camposRequired) %>
                 </div>
                 <%
 			    if NaoAlterarExecutante then

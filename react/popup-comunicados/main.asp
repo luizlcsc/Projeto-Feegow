@@ -36,6 +36,9 @@
 
 
    let comunicadoId=7;
+    let userId = "<%=Session("User")%>";
+    let licenseId = "<%=replace(Session("Banco"),"clinic","")%>";
+
     PopupService.getComunicadoByIdUnvisualized(comunicadoId, (comunicadoObj) => {
         let component = null;
 
@@ -54,7 +57,7 @@
             }else if(comunicadoId == 6){
 
             }else if(comunicadoId == 7){
-                component = <FeegowHubPopup onClosePopup={()=>{onCloseModal()}} comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
+                component = <FeegowHubPopup userId={userId} licenseId={licenseId} onClosePopup={()=>{onCloseModal()}} comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
             }
 
             ReactDOM.render(<Popup  modalContentEndpoint={comunicadoObj[index].EndpointModal} component={component}/>,document.getElementById('react-popup-root'));

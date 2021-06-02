@@ -86,7 +86,7 @@ const FeegowHubPopup = (props) => {
                               <button id="ocultar1" type="button" class="btn btn-aceitar">
                                     <a onClick={() => {
                                                 props.onActionButton(1, props.comunicadoId, true)
-                                    }} href={"https://promo.feegowclinic.com.br/landing-page-feegow-hub?u="+props.userId+"&l="+props.licenseId+"&utm_source=internal&utm_campaign=feegow-hub"} target="blank">Tenho interesse!</a></button>
+                                    }} href={"https://promo.feegowclinic.com.br/landing-page-feegow-hub?utm-content="+props.userId+"&utm_source=software-feegow&utm_campaign=feegow-hub&utm_medium=referral"} target="blank">Tenho interesse!</a></button>
                               <button id="ocultar2" type="button" class="btn btn-recusar marginleft5"><a href="#" 
                               onClick={() => {
                                     props.onActionButton(0, props.comunicadoId, true)

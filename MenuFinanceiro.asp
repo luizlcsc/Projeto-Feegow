@@ -134,6 +134,7 @@
             <% if aut("solicitacoescompras") = 1 then %>
             <li><a href="./?P=solicitacoescompras&Pers=1#/solicitacoes"><i class="fa fa-list"></i> Solicitações</a></li>
             <li><a href="./?P=solicitacoescompras&Pers=1#/aprovacoes"><i class="fa fa-check-square-o"></i> Aprovação</a></li>
+            <li><a href="./?P=solicitacoescompras&Pers=1#/ordens"><i class="fa fa-paper-plane"></i> Ordem de Compra</a></li>
             <% end if %>
             <% if aut("configcompras") = 1 then %>
             <li><a href="./?P=configcompras&Pers=1"><i class="fa fa-cog"></i> Configurações</a></li>

@@ -1,6 +1,5 @@
 <%
 
-
 function getProfissionaisSqlQuickField()
    sqlProfissionais = " select id, NomeProfissional as nome,profissionais.Unidades                      "&chr(13)&_
                    " from profissionais                                                                 "&chr(13)&_
@@ -85,7 +84,6 @@ function getSQLQuickField(Tabela,Coluna,ID,Condicoes)
 
 end function
 
-
 function getTaxaAtual (conta,mov,parcelas)
 
     sqltaxa =   " coalesce (                                                              	"&chr(13)&_
@@ -142,7 +140,5 @@ function getTaxaAtual (conta,mov,parcelas)
     sql = "select "&sqltaxa
     getTaxaAtual = sql
 end function 
-
-
 
 %>

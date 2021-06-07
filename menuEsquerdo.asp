@@ -1244,6 +1244,11 @@ end if
             	    <span class="fa fa-share-alt"></span> <span class="sidebar-title">Compartilhamento </span><span class="label label-system label-xs fleft">Novo</span></a>
             </li>
 
+            <li class="">
+                <a class="menu-aba-meu-perfil-compartilhamento " data-toggle="tab" href="#divPermissoes" id="gtPermissoes" onclick="ajxContent('profissionalLicencasVinculadas&T=<%=request.QueryString("P")%>', '<%=request.QueryString("I")%>', 1, 'divPermissoes');">
+            	    <span class="fa fa-unlock"></span> <span class="sidebar-title">Licenças Vinculadas </span><span class="label label-system label-xs fleft">Novo</span></a>
+            </li>
+
             <%
             end if
             I = req("I")

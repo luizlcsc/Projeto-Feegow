@@ -314,10 +314,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 <%
                                 end if
                             end if
-                            set perm = db.execute("select Permissoes from buipermissoes where FormID="&ti("Modelo"))
-
-                            if cstr(session("User"))=ti("sysUser")&"" and ( aut("prescricoesX")>0 or instr(perm("Permissoes"), "XP")>0 ) then %>
-                                <a href="javascript:if(confirm('Tem certeza de que deseja apagar esta prescrição?'))pront('timeline.asp?PacienteID=<%= PacienteID %>&Tipo=|<%= ti("Tipo") %>|&X=<%= ti("id") %>');">
+                            if cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0 then %>
+                                <a href="javascript:if(confirm('Tem certeza de que deseja apagar esta prescrição?'));pront('timeline.asp?PacienteID=<%= PacienteID %>&Tipo=|<%= ti("Tipo") %>|&X=<%= ti("id") %>');">
                                     <i class="fa fa-remove"></i>
                                 </a>
                             <% end if %>

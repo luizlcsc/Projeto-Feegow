@@ -1190,34 +1190,38 @@ $('#GuiaSADT').on('submit', function (event) {
 
     setTimeout(() => {
         let isRedirect = "";
-        if(isSolicitar)
+        if(isSolicitar){
             isRedirect="S";
-
-        $.ajax({
-            type:"POST",
-            url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=request.QueryString("I")%>"+"&close=<%=close%>&isRedirect="+isRedirect,
-            data:$("#GuiaSADT").serialize(),
-            success:function(data){
-                var timeoutSave = 0;
-                if(SalvarEimprimir){
-                    imprimirGuiaSADT();
-                    timeoutSave = 1000;
-                }
-                setTimeout(function() {
-                    let result = eval(data);
-
-                    if(isSolicitar && !data.includes("ERRO")){
-                        Autorizador.autorizaProcedimentos();
+        }
+        
+        if($("#GuiaSADT")[0].reportValidity()){
+            
+            $.ajax({
+                type:"POST",
+                url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=request.QueryString("I")%>"+"&close=<%=close%>&isRedirect="+isRedirect,
+                data:$("#GuiaSADT").serialize(),
+                success:function(data){
+                    var timeoutSave = 0;
+                    if(SalvarEimprimir){
+                        imprimirGuiaSADT();
+                        timeoutSave = 1000;
                     }
-                    isSolicitar = false;
-                }, timeoutSave);
+                    setTimeout(function() {
+                        let result = eval(data);
 
-            },
-            error:function(data){
-                showMessageDialog("Ocorreu um erro ao tentar salvar", "danger", "Erro!")
-                //eval(data);
-            }
-        });
+                        if(isSolicitar && !data.includes("ERRO")){
+                            Autorizador.autorizaProcedimentos();
+                        }
+                        isSolicitar = false;
+                    }, timeoutSave);
+
+                },
+                error:function(data){
+                    showMessageDialog("Ocorreu um erro ao tentar salvar", "danger", "Erro!")
+                    //eval(data);
+                }
+            });
+        }
     }, 120);
 	return false;
 })

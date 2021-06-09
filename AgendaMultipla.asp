@@ -225,7 +225,7 @@ end if
         <form id="frmFiltros">
             <div class="row">
 
-                <%if getConfig("multiplaExibirCampoProcedimento") <> 0 then%>
+                <%if getConfig("multiplaExibirCampoProcedimento")&"" = "1" then%>
                     <div class="col-md-2">
                         <%= selectInsert("Procedimento", "filtroProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " ", "", "") %> 
                     </div>
@@ -234,7 +234,7 @@ end if
                 <%=quickField("multiple", "Profissionais", "Profissionais", 2, req("Profissionais"), "SELECT id, NomeProfissional, Ordem FROM (SELECT 0 as 'id', 'Nenhum' as 'NomeProfissional', 0 'Ordem' UNION SELECT id, IF(NomeSocial != '' and NomeSocial IS NOT NULL, NomeSocial, NomeProfissional)NomeProfissional, 1 'Ordem' FROM profissionais WHERE (NaoExibirAgenda != 'S' OR NaoExibirAgenda is null OR NaoExibirAgenda='') AND sysActive=1 and Ativo='on' "&sqlLimitarProfissionais&" ORDER BY NomeProfissional)t ORDER BY Ordem, NomeProfissional", "NomeProfissional", " empty ") %>
                 <%=quickField("multiple", "Especialidade", "Especialidades", 2, req("Especialidades"), "SELECT t.EspecialidadeID id, IFNULL(e.nomeEspecialidade, e.especialidade) especialidade FROM (	SELECT EspecialidadeID from profissionais WHERE ativo='on'	UNION ALL	select pe.EspecialidadeID from profissionaisespecialidades pe LEFT JOIN profissionais p on p.id=pe.ProfissionalID WHERE p.Ativo='on') t LEFT JOIN especialidades e ON e.id=t.EspecialidadeID WHERE NOT ISNULL(especialidade) AND e.sysActive=1 GROUP BY t.EspecialidadeID ORDER BY especialidade", "especialidade", " empty ") %>
                 
-                <%if getConfig("multiplaExibirCampoConvenios") <> 0 then%>
+                <%if getConfig("multiplaExibirCampoConvenios")&"" = "1" then%>
                     <%=quickField("multiple", "Convenio", "Convênios", 2, "", "select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio", "NomeConvenio", " empty ") %>
                 <% end if %>
 

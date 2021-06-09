@@ -45,7 +45,7 @@ if aut("lctestoqueV")=0 then
 end if
 QuantidadeTotalUnidade = 0
 QuantidadeTotalConjunto = 0
-call refazPosicao(ProdutoID)
+' call refazPosicao(ProdutoID) // erro ticket 11875
 
 DiasAvisoValidade = reg("DiasAvisoValidade")&""
 if DiasAvisoValidade="" then

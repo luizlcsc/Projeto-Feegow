@@ -1,6 +1,5 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
-
 <%
 set FranquiaCodigoSQL = db.execute("SELECT id, NomeContato, DataHora, Status, Cupom FROM cliniccentral.licencas WHERE Franquia='P' AND id="&session("Franquia"))
 
@@ -18,7 +17,7 @@ if session("Banco")="clinic100000" or recursoPermissaoUnimed=4 then
 end if
 
 
-set ListaFranquiasSQL = db.execute("SELECT lic.id,lic.NomeContato, lic.DataHora, lic.Status, s.Software FROM cliniccentral.licencas lic LEFT JOIN cliniccentral.softwares s ON s.id=lic.SoftwareAnteriorID WHERE lic.Cupom='"&FranquiaCodigo&"' AND Status<>'B' AND lic.Franquia='S'")
+set ListaFranquiasSQL = db.execute("SELECT lic.id,lic.NomeContato, lic.DataHora, lic.Status, s.Software, lic.LicencaIDMae FROM cliniccentral.licencas lic LEFT JOIN cliniccentral.softwares s ON s.id=lic.SoftwareAnteriorID WHERE lic.Cupom='"&FranquiaCodigo&"' AND Status<>'B' AND lic.Franquia='S'")
 
 if not ListaFranquiasSQL.eof then
 %>
@@ -39,6 +38,7 @@ if not ListaFranquiasSQL.eof then
                     <th class="<%=hiddenValor%>">Software anterior</th>
                     <th>Status</th>
                     <th class="<%=hiddenValor%>"></th>
+                    <th width="150">Gerenciada por</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,10 +52,15 @@ if not ListaFranquiasSQL.eof then
                 <td class="<%=hiddenValor%>">-</td>
                 <td><span class='label label-primary'>Licença Principal</span></td>
                 <td class="<%=hiddenValor%>"></td>
+                <td></td>
             </tr>
             <%
         end if
 
+        qLicencasSelectSQL =    " SELECT lic.id,lic.NomeContato as Nome "&chr(13)&_
+                                " FROM cliniccentral.licencas lic                                    "&chr(13)&_
+                                " LEFT JOIN cliniccentral.softwares s ON s.id=lic.SoftwareAnteriorID "&chr(13)&_
+                                " WHERE lic.Cupom='"&FranquiaCodigo&"' AND STATUS<>'B' AND lic.Franquia='S'         "        
         while not ListaFranquiasSQL.eof
 
             StatusBtn="<span class='label label-success'>Em produção</span>"
@@ -74,6 +79,9 @@ if not ListaFranquiasSQL.eof then
             <td class="<%=hiddenValor%>"><%=ListaFranquiasSQL("Software")%></td>
             <td><%=StatusBtn%></td>
             <td class="<%=hiddenValor%>"><button class="btn btn-xs btn-primary" type="button" onclick="EditarLicenciado('<%=ListaFranquiasSQL("id")%>')"><i class="fa fa-edit"></i></button></td>
+            <td>
+                <%=quickField("select", "licencaIDMae"&ListaFranquiasSQL("id"), "", "12", ListaFranquiasSQL("LicencaIDMae")&"", qLicencasSelectSQL&" AND lic.id<>"&ListaFranquiasSQL("id"), "Nome", " onchange='LicencaVinculada(`"&ListaFranquiasSQL("id")&"`)' ")%>
+            </td>
         </tr>
             <%
         ListaFranquiasSQL.movenext
@@ -90,6 +98,18 @@ end if
 %>
 <script >
 
+function LicencaVinculada(licencaFilhoID) {
+    var licencaMaeID = $('#licencaIDMae'+licencaFilhoID).val();
+    
+    $.post("ListaFranquiasSave.asp", {
+        licMae:     licencaMaeID,
+        licFilho:   licencaFilhoID
+        }, function(result){
+
+            eval(result);
+  });
+
+}
 
 $(document).ready( function () {
     $("#ListaFranquia").dataTable({

@@ -83,6 +83,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         if not proc.eof then
 
             OpcoesAgenda=proc("OpcoesAgenda")
+
             if OpcoesAgenda="4" or OpcoesAgenda="5" then
                 SomenteProfissionais = proc("SomenteProfissionais")&""
                 SomenteProfissionais = replace(SomenteProfissionais, ",", "")
@@ -99,6 +100,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         SomenteProfissionais = SomenteProfissionais & "," & splSomProf(i)
                     end if
                 next
+                
                 if refEspecialidade="" and SomenteEspecialidades<>"" then
                     refEspecialidade=SomenteEspecialidades
                 end if

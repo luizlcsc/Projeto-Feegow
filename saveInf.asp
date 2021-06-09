@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="AgendamentoUnificado.asp"-->
 <%
 CalculosTabela = getConfig("calculostabelas")
 AtendimentoID = req("AtendimentoID")
@@ -172,6 +173,13 @@ if req("Origem")="Atendimento" then
                         end if
                     end if
 			    end if
+
+				if StaID = 11 or StaID = 22 then ' desmarcado e cancelado
+					call agendaUnificada("delete", lista("id"), lista("ProfissionalID"))
+				else
+					call agendaUnificada("update", lista("id"), lista("ProfissionalID"))
+				end if
+
 				db_execute("update agendamentos set StaID="&StaID&" where id="&lista("id"))
 				call logAgendamento(lista("id"), "Atendimento finalizado", "R")
 			end if

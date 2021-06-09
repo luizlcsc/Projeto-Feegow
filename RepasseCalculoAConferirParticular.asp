@@ -802,14 +802,19 @@ desfazBtnCons = ""
 
 '1a. situação: lista todos os descontos que foram repassados
                 GrupoConsolidacao = 0
-                set rr = db.execute("select rr.*, rf.DominioID, pm.PaymentMethod from rateiorateios rr LEFT JOIN rateiofuncoes rf ON rf.id=rr.FuncaoID LEFT JOIN itensdescontados idesc ON idesc.id=rr.ItemDescontadoID LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID LEFT JOIN cliniccentral.sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID where rr.ItemInvoiceID="& ii("id") &" and rr.ItemDescontadoID!=0 order by GrupoConsolidacao")
-               
+                set rr = db_execute("select rr.*, rf.DominioID, pm.PaymentMethod, m.id MovementID, (SELECT split.SplitStatus FROM stone_splits split WHERE split.MovementID = m.id AND split.SplitStatus !='undone' LIMIT 1) split from rateiorateios rr LEFT JOIN rateiofuncoes rf ON rf.id=rr.FuncaoID LEFT JOIN itensdescontados idesc ON idesc.id=rr.ItemDescontadoID LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID LEFT JOIN cliniccentral.sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID where rr.ItemInvoiceID="& ii("id") &" and rr.ItemDescontadoID!=0 order by GrupoConsolidacao")
+
                 while not rr.eof
 
                     numeroParcela = ""
                     numeroParcelas = ""
                     ParcelasCartaoConsolidadas = ParcelasCartaoConsolidadas & "|"& rr("ParcelaID") &"|"
                     ItensDescontadosConsolidados = ItensDescontadosConsolidados & "|"& rr("ItemDescontadoID") &"|"
+
+                    existeSplitRealizado = "  "
+                    if rr("split")&"" = "processed" then
+                        existeSplitRealizado = " disabled "
+                    end if
 
                     if GrupoConsolidacao<>rr("GrupoConsolidacao") then
 
@@ -826,7 +831,7 @@ desfazBtnCons = ""
                         btnExtra = "<div class='checkbox-custom pull-right ptn mtn'><input type='checkbox' name='desconsAll' value='"& valBtnDesc &"' id='"& idBtnDesc &"'><label for='"& idBtnDesc &"'></label></div>"&_
 
 
-                    "<button type='button' onclick=""desconsolida('P', "& rr("ItemInvoiceID") &", "& rr("ItemDescontadoID") &", "& rr("GrupoConsolidacao") &")"" id='desconsolidar"& rr("ItemInvoiceID") &"_"& rr("ItemDescontadoID") &"_"& rr("GrupoConsolidacao") &"' class='btn mt10 btn-xs btn-danger pull-right hidden-print'>Desconsolidar</button>"
+                    "<button type='button' onclick=""desconsolida('P', "& rr("ItemInvoiceID") &", "& rr("ItemDescontadoID") &", "& rr("GrupoConsolidacao") &")"" id='desconsolidar"& rr("ItemInvoiceID") &"_"& rr("ItemDescontadoID") &"_"& rr("GrupoConsolidacao") &"' class='btn mt10 btn-xs btn-danger pull-right hidden-print'"& existeSplitRealizado &">Desconsolidar</button>"
 
                         if StatusBusca="" or StatusBusca="C" then
                             Classe = "dark"

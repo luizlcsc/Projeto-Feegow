@@ -418,33 +418,44 @@ function verificaArquivos(){
 }
 
 $(document).ready(function(e) {
+	$("#save").click(function(e){
+		e.preventDefault();
+
+		$("#frm").find("select:required").css({"display": "","opacity": "0"});
+		$("#frm").find("select:required option[value='0']").val("");
+		var $dadosPacienteFicha = $("#frm");
+
+		if($dadosPacienteFicha[0].reportValidity()){
+			$("#frm").submit();
+		}else{
+			return false;
+		}
+	});
+
     <%call formSave("frm", "save", "$(""#DadosAlterados"").attr('value', ''); callbackAgendamentoPaciente(); ")%>
-	verificaArquivos()
 
-function callbackAgendamentoPaciente() {
-    <%
-    if req("Agenda")<>"" then
-    %>
-    var $dadosPacienteFicha = $("#frm");
+	function callbackAgendamentoPaciente() {
+		<%
+		if req("Agenda")<>"" then
+		%>
+			var camposAAtualizar = ["Tel1", "Cel1", "Email1", "Tabela"];
 
-    var camposAAtualizar = ["Tel1", "Cel1", "Email1", "Tabela"];
+			camposAAtualizar.forEach(function(campoAAtualizar) {
+				var v =  $dadosPacienteFicha.find(" #"+campoAAtualizar ).val() ;
+				$(" #age"+campoAAtualizar ).val(v);
+			});
 
-    camposAAtualizar.forEach(function(campoAAtualizar) {
-        var v =  $dadosPacienteFicha.find(" #"+campoAAtualizar ).val() ;
-        $(" #age"+campoAAtualizar ).val(v);
-    });
+			$.get("AgendamentoCheckin.asp", {id: '<%=req("AgendamentoID")%>'}, function(data) {
+				$(".checkin-conteudo-paciente").html(data);
+			});
 
-    $.get("AgendamentoCheckin.asp", {id: '<%=req("AgendamentoID")%>'}, function(data) {
-        $(".checkin-conteudo-paciente").html(data);
-    });
+			$(" #searchPacienteID" ).val( $(" #NomePaciente" ).val() );
 
-  $(" #searchPacienteID" ).val( $(" #NomePaciente" ).val() );
-
-  $("#myTab4 a[href=#dadosAgendamento]").click();
-    <%
-    end if
-    %>
-}
+			$("#myTab4 a[href=#dadosAgendamento]").click();
+		<%
+		end if
+		%>
+	}
 });
 
 function cid10(X){

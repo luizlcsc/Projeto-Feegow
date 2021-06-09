@@ -46,7 +46,7 @@ end if
 <%
 
 
-qListaSQL = "select * from compromissos where (ProfissionalID="&ProfissionalID&" OR (ProfissionalID=0 AND BloqueioMulti='S')) "&qListaWhereData&" order by DataDe, HoraDe"
+qListaSQL = "select * from compromissos where (ProfissionalID="&ProfissionalID&" OR (ProfissionalID=0 AND BloqueioMulti='S')) "&qListaWhereData&" AND LicencaIDMae = 0 order by DataDe, HoraDe"
 'response.write("<pre>"&qListaSQL&"</pre>")
 set lista = db.execute(qListaSQL)
 if lista.eof then

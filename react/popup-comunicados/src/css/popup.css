@@ -11,15 +11,14 @@
 .popup-tm {
 
     display: grid;
-    grid-template-columns: 1fr 1fr;
     max-width: 560px;
-    padding: 10px 10px 10px 20px;
-    border-radius: 6px;
+    padding: 10px;
+    border-radius: 10px;
     align-items: center;
     column-gap: 20px;
-    -webkit-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.28);
-    -moz-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.28);
-    box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.28);
+    -webkit-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.16);
+    -moz-box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.16);
+    box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.16);
     position: absolute;
     right: 20px;
     bottom: 20px;

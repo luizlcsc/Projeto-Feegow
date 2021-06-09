@@ -185,7 +185,30 @@ if tipo="PacienteID" then
                               "ORDER BY Prioridade")
 
 		if not conv.EOF then
-			possuiConvenio = "S"
+			QueryGradeSQL = "SELECT Convenios FROM assperiodolocalxprofissional WHERE ProfissionalID="&ProfissionalID
+            set GradeSQL = db.execute(QueryGradeSQL)
+            conveniosGrade = ""
+            if not GradeSQL.eof then
+                conveniosGrade = GradeSQL("Convenios")
+            else
+                QueryGradeSQL = "SELECT Convenios FROM assfixalocalxprofissional WHERE ProfissionalID="&ProfissionalID
+                set GradeSQL = db.execute(QueryGradeSQL)
+                if not GradeSQL.eof then
+                    conveniosGrade = GradeSQL("Convenios")
+                end if
+            end if
+            if conveniosGrade <> "" then
+                while not GradeSQL.eof
+                    if conv("NomeConvenio") = conveniosGrade then
+                        possuiConvenio = "S"
+                    end if
+                    GradeSQL.movenext
+                wend
+                GradeSQL.close
+                set GradeSQL = nothing
+            else
+                possuiConvenio = "S"
+            end if
 
 			ObsConvenios = ""
             set ConvenioSQL = db.execute("SELECT Obs FROM convenios WHERE id="&conv("id")&"")
@@ -195,12 +218,12 @@ if tipo="PacienteID" then
 
                  if planosOptions<>"" then
                     %>
-$(document).ready(function() {
-    $("#divConvenioPlano").remove();
-    $("#divConvenio").after("<%=planosOptions%>");
+                        $(document).ready(function() {
+                            $("#divConvenioPlano").remove();
+                            $("#divConvenio").after("<%=planosOptions%>");
 
-    $("#PlanoID").select2();
-})
+                            $("#PlanoID").select2();
+                        })
                     <%
                 end if
 
@@ -220,7 +243,7 @@ $(document).ready(function() {
 /*			$("#ConvenioID").val('<%=conv("id")%>');
 			$("#searchConvenioID").val("<%=conv("NomeConvenio")%>");
 */
-
+            $("#ConvenioID").html('');
             var optionExists = ($('#ConvenioID option[value=' + <%=conv("id") %> + ']').length > 0);
 
             if(!optionExists)
@@ -267,7 +290,7 @@ $(document).ready(function() {
 
 	if possuiConvenio <> "S" then
 		%>
-            $("#divConvenio").hide();
+            $("#divConvenio, #divConvenioPlano").hide();
             $("#rdValorPlanoV").attr("checked", "checked");
             $("#divValor").show();
 			$("#ConvenioID").val('0');

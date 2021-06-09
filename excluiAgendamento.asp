@@ -1,6 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="AgendamentoUnificado.asp"-->
 <%
 ConsultaID = request.QueryString("ConsultaID")
 token = request.QueryString("token")
@@ -105,7 +106,11 @@ else
 '	response.Write(sql)
 	
     if token = "98b4d9bbfdfe2170003fcb23b8c13e6b" then
+
+        call agendaUnificada("delete", ConsultaID, ProfissionalID)
+        
         sqlDel = "update agendamentos set sysActive=-1 where id="&ConsultaID
+
         call gravaLogs(sqlDel, "AUTO", "Agendamento excluído", "")
         db_execute(sqlDel)
     else

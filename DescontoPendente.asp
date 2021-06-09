@@ -88,7 +88,7 @@ end if
                                                 " WHEN i.UnidadeID > 0 THEN (select UnitName from sys_financialcompanyunits fs where fs.id = i.UnidadeID) " &_
                                                 " END AS NomeUnidade,  " &_ 
                                                 " Nome, 3 as AssociationAccountID, PacienteID as AccountID, InvoiceID  " &_ 
-                                                " from descontos_pendentes dp inner join itensproposta ii ON CONCAT('-', ii.id) = dp.ItensInvoiceID " &_
+                                                " from descontos_pendentes dp inner join itensproposta ii ON ii.id = dp.ItensInvoiceID*-1 " &_
                                                 " inner join propostas i ON i.id = ii.PropostaID " &_
                                                 " inner join cliniccentral.licencasusuarios lu ON lu.id = dp.SysUser  " &_ 
                                                 " where 1 =  1  "
@@ -178,8 +178,8 @@ end if
                                         <%
                                             link = "./?P=DescontoPendente&I="&rsDescontoPendente("iddesconto")&"&Pers=1"
                                         %>
-                                        <a title="Aprovar" class="btn btn-xs btn-success" href="<%=link%>&OP=1" onclick="return confirm('Deseja aprovar o desconto?')"><i class="fa fa-check-square-o bigger-130"></i></a>
-                                        <a title="Não Aprovar" class="btn btn-xs btn-danger" href="<%=link%>&OP=-1" onclick="return confirm('Deseja reprovar o desconto?')"><i class="fa fa-times bigger-130"></i></a>
+                                        <a title="Aprovar" class="btn btn-xs btn-success" href="<%=link%>&OP=1" onclick="aprovarDesconto(this)"><i class="fa fa-check-square-o bigger-130"></i></a>
+                                        <a title="Não Aprovar" class="btn btn-xs btn-danger" href="<%=link%>&OP=-1" onclick="rejeitarDesconto(this)"><i class="fa fa-times bigger-130"></i></a>
                                     </div>
                                 </td>
                                 <% end if %>
@@ -200,3 +200,21 @@ end if
 
     </div>
 
+<script>
+    function aprovarDesconto($el){
+        if(confirm("Deseja aprovar o desconto?")){
+            $($el).attr("disabled", true);
+
+            return true;
+        }
+    }
+
+
+    function rejeitarDesconto($el){
+        if(confirm("Deseja reprovar o desconto?")){
+            $($el).attr("disabled", true);
+
+            return true;
+        }
+    }
+</script>

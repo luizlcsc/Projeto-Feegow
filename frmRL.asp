@@ -112,7 +112,8 @@ end if
                         Formas = replace(Formas, "|", "")
                         Convenios = ""
 
-                        if Formas<>"" then
+
+                        if Formas&""<>"" then
                             if instr(Formas, "P")<=0 then
                                 Formas = replace(Formas, "C", "0")
                                 set sqlFormas = db.execute("select group_concat(trim(NomeConvenio) separator ', ') convenios from convenios where id in("& Formas &") and sysActive=1")

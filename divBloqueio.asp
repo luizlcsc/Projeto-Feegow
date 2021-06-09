@@ -38,6 +38,7 @@ if BloqueioID<>"0" then
 		Unidades = bloqueio("Unidades")
 		DiasSemana = bloqueio("DiasSemana")
         FeriadoID = bloqueio("FeriadoID")
+        LicencaBloqueio = bloqueio("LicencaIdMae")
 	end if
 end if
 
@@ -118,14 +119,14 @@ end if
                 </div>
                 <div class="panel-footer">
                     <%
-                    if aut("bloqueioagendaA")=1 then
+                    if aut("bloqueioagendaA")=1  and LicencaBloqueio = 0 then
                     %>
                     <button class="btn btn-sm btn-primary" id="btnSalvarAgenda">
                         <i class="fa fa-save"></i> Salvar
                     </button>
                     <%
                     end if
-                    if aut("bloqueioagendaX")=1 then
+                    if aut("bloqueioagendaX")=1 and LicencaBloqueio = 0 then
                     %>
                     <button class="btn btn-sm btn-danger" id="btnSalvarAgenda" type="button" onclick="saveBloqueio(<%=BloqueioID%>, 1);">
                         <i class="fa fa-trash"></i> Excluir

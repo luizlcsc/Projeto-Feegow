@@ -1831,7 +1831,7 @@ select case lcase(req("P"))
                 <%
                 end if
                 if recursoAdicional(24)=4 then
-                    set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
+                    set labAutenticacao = db.execute("SELECT * FROM slabs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
                     if not labAutenticacao.eof then
                     %>
                 <li>
@@ -2330,25 +2330,6 @@ select case lcase(req("P"))
                 <i class="fa fa-history"></i>
                  Logs
             </button>
-            <%
-                if recursoAdicional(24)=4 and LaudoID<>"" then
-                    set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
-                    if not labAutenticacao.eof then
-                        sql = "SELECT ls.InvoiceID, ls.labid FROM labs_solicitacoes ls INNER JOIN laudos l ON ls.InvoiceID = l.IDTabela WHERE l.Tabela = 'sys_financialinvoices' and l.id ="&LaudoID
-                        set solicInfo = db.execute(sql)
-                        if not solicInfo.eof then
-                            InvoiceID = solicInfo("InvoiceID")
-                            labid = solicInfo("labid")
-            %>
-            <button type="button" id="syncInvoiceResultsButton" class="btn btn-primary btn-sm" onclick="javascript:syncLabResult([<%=InvoiceID%>],<%=labid%>)">
-                            <i class="fa fa-flask"></i>
-                             Sincronizar resultados 
-                        </button>
-            <%
-                        end if
-                    end if
-                end if
-            %>
         </li>
 
         <%
@@ -2457,10 +2438,6 @@ select case lcase(req("P"))
     <li>
         <a href="?P=labscadastrocredenciais&Pers=1"><span class="fa fa-users"></span> <span class="sidebar-title">Cadastro de Credenciais</span></a>
     </li>
-<!--    <li>-->
-<!--        <a href="#"><span class="fa fa-exchange"></span> <span class="sidebar-title">Sincronização de Resultados</span></a>-->
-<!--        -->
-<!--    </li>-->
     <li>
         <a href="?P=labsconfigintegracao&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Implantação de Laboratórios</span></a>
     </li>
@@ -2469,13 +2446,16 @@ select case lcase(req("P"))
     </li>
     <li>
         <a href="?P=labslistagemprocedimentos&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Listagem de procedimentos</span></a>
+    </li>    
+    <li>
+        <a href="?P=procedimentolaboratorio&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Procedimentos x Laboratórios</span></a>
     </li>
     <li>
         <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
 
     <%
-        set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
+        set labAutenticacao = db.execute("SELECT * FROM slabs_autenticacao WHERE sysactive=1 and UnidadeID="&treatvalzero(session("UnidadeID")))
         if not labAutenticacao.eof then
         %>
         
@@ -2486,7 +2466,7 @@ select case lcase(req("P"))
         <%
             sqllabs = "SELECT distinct l.id, l.NomeLaboratorio "&_
                       " FROM cliniccentral.labs l "&_
-                      " INNER JOIN labs_autenticacao la ON la.LabID = l.id"
+                      " INNER JOIN slabs_autenticacao la ON la.LabID = l.id and la.sysactive=1 order by l.NomeLaboratorio"
             set dadoslab = db.execute(sqllabs)
             while not dadoslab.eof
             %>

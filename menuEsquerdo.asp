@@ -1243,11 +1243,12 @@ end if
                 <a class="menu-aba-meu-perfil-compartilhamento " data-toggle="tab" href="#divPermissoes" id="gtPermissoes" onclick="ajxContent('CompartilharProntuario&T=<%=request.QueryString("P")%>', '<%=request.QueryString("I")%>', 1, 'divPermissoes');">
             	    <span class="fa fa-share-alt"></span> <span class="sidebar-title">Compartilhamento </span><span class="label label-system label-xs fleft">Novo</span></a>
             </li>
-
+            <% IF session("banco") = "clinic9021" THEN %>
             <li class="">
                 <a class="menu-aba-meu-perfil-compartilhamento " data-toggle="tab" href="#divPermissoes" id="gtPermissoes" onclick="ajxContent('profissionalLicencasVinculadas&T=<%=request.QueryString("P")%>', '<%=request.QueryString("I")%>', 1, 'divPermissoes');">
             	    <span class="fa fa-unlock"></span> <span class="sidebar-title">Licenças Vinculadas </span><span class="label label-system label-xs fleft">Novo</span></a>
             </li>
+            <% END IF %>
 
             <%
             end if

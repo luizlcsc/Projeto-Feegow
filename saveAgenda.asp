@@ -3,6 +3,7 @@
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/FuncoesRepeticaoMensalAgenda.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="AgendamentoUnificado.asp"-->
 <%
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
 	'on error resume next
@@ -264,7 +265,10 @@ if erro="" then
     		call gravaLogs(sql, "AUTO", "Agendamento criado", "")
 
             db.execute(sql)
-            set pultCon=db.execute("select id from agendamentos order by id desc limit 1")
+            set pultCon=db.execute("select id, ProfissionalID from agendamentos order by id desc limit 1")
+
+            call agendaUnificada("insert", pultCon("id"), pultCon("ProfissionalID"))
+
             DataHoraFeito = now()
             if session("FusoHorario")<>"" then
                 FusoHorario = session("FusoHorario")
@@ -329,6 +333,12 @@ if erro="" then
                     DataHoraFeito = dateadd("h", HorasDiferencaFusoHorario, DataHoraFeito)
                 end if
                 db.execute("insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID, UnidadeID) values ('"&rfPaciente&"', '"&rfProfissionalID&"', '"&rfProcedimento&"', '"&DataHoraFeito&"', '"&mydate(rfData)&"', '"&rfHora&"', '"&rfStaID&"', '"&session("User")&"', '0', '"&ObsR&"', 'R', '"&ConsultaID&"', "&session("UnidadeID")&")")
+            end if
+
+            if rfStaID = 11 or rfStaID = 22 then ' desmarcado e cancelado
+                call agendaUnificada("delete", ConsultaID, rfProfissionalID)
+            else
+                call agendaUnificada("update", ConsultaID, rfProfissionalID)
             end if
 
             sqlUpdateAgendamento = "update agendamentos set IndicadoPor='"&indicacaoID&"', PacienteId='"&rfPaciente&"', ProfissionalID='"&rfProfissionalID&"', Data='"&mydate(rfData)&"', Hora='"&rfHora&"', TipoCompromissoID='"&rfProcedimento&"', StaID='"&rfStaID&"', ValorPlano='"&treatVal(rfValorPlano)&"', PlanoID="&treatvalzero(PlanoID)&", rdValorPlano='"&rfrdValorPlano&"', Notas='"&Notas&"', FormaPagto='0', HoraSta='"&HoraSta&"', LocalID='"&rfLocal&"', Tempo='"&rfTempo&"' ,HoraFinal='"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', SubtipoProcedimentoID='"&rfSubtipoProcedimento&"', ConfEmail='"&ref("ConfEmail")&"', ConfSMS='"&ref("ConfSMS")&"', Encaixe="&treatvalnull(ref("Encaixe"))&", Retorno="&treatvalnull(ref("Retorno"))&", EquipamentoID="&treatvalnull(ref("EquipamentoID"))&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& refnull("ageTabela") &" where id = '"&ConsultaID&"'"
@@ -581,8 +591,10 @@ if erro="" then
         '		response.Write(sql&vbcrlf)
 	
 		        db.execute(sql)
-                set pult = db.execute("select id from agendamentos where PacienteID="& PacienteID &" order by id desc limit 1")
+                set pult = db.execute("select id, ProfissionalID from agendamentos where PacienteID="& PacienteID &" order by id desc limit 1")
                 AgendamentoRepetidoID = pult("id")
+
+                call agendaUnificada("insert", pult("id"), pult("ProfissionalID"))
 
                 db.execute("insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID, UnidadeID) values "&_
                 "('"&rfPaciente&"', '"&rfProfissionalID&"', '"&rfProcedimento&"', null, '"&mydate(rfData)&"', '"&rfHora&"', '"&rfStaID&"', '"&session("User")&"', '0', 'Agendamento gerado a partir de repetição', 'A', '"&AgendamentoRepetidoID&"', "&treatvalzero(session("UnidadeID"))&")")

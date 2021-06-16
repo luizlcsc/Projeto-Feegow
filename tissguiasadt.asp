@@ -10,7 +10,7 @@
 call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 close = req("close")
-idtissguia = req("I")
+idtissguia = req("I") 
 MinimoDigitos = 0
 MaximoDigitos = 100
 
@@ -1192,34 +1192,38 @@ $('#GuiaSADT').on('submit', function (event) {
 
     setTimeout(() => {
         let isRedirect = "";
-        if(isSolicitar)
+        if(isSolicitar){
             isRedirect="S";
-
-        $.ajax({
-            type:"POST",
-            url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=req("I")%>"+"&close=<%=close%>&isRedirect="+isRedirect,
-            data:$("#GuiaSADT").serialize(),
-            success:function(data){
-                var timeoutSave = 0;
-                if(SalvarEimprimir){
-                    imprimirGuiaSADT();
-                    timeoutSave = 1000;
-                }
-                setTimeout(function() {
-                    let result = eval(data);
-
-                    if(isSolicitar && !data.includes("ERRO")){
-                        Autorizador.autorizaProcedimentos();
+        }
+        
+        if($("#GuiaSADT")[0].reportValidity()){
+            
+            $.ajax({
+                type:"POST",
+                url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=request.QueryString("I")%>"+"&close=<%=close%>&isRedirect="+isRedirect,
+                data:$("#GuiaSADT").serialize(),
+                success:function(data){
+                    var timeoutSave = 0;
+                    if(SalvarEimprimir){
+                        imprimirGuiaSADT();
+                        timeoutSave = 1000;
                     }
-                    isSolicitar = false;
-                }, timeoutSave);
+                    setTimeout(function() {
+                        let result = eval(data);
 
-            },
-            error:function(data){
-                showMessageDialog("Ocorreu um erro ao tentar salvar", "danger", "Erro!")
-                //eval(data);
-            }
-        });
+                        if(isSolicitar && !data.includes("ERRO")){
+                            Autorizador.autorizaProcedimentos();
+                        }
+                        isSolicitar = false;
+                    }, timeoutSave);
+
+                },
+                error:function(data){
+                    showMessageDialog("Ocorreu um erro ao tentar salvar", "danger", "Erro!")
+                    //eval(data);
+                }
+            });
+        }
     }, 120);
 	return false;
 })
@@ -1242,6 +1246,30 @@ function guiaTISSPrint() {
 function guiaPrint(){
 
 }
+/*
+	function itemSADT(T, I, II){
+	    $("#modal-table").modal('show');
+	    $.ajax({
+	        type:"POST",
+	        url:"modalSADT.asp?T="+T+"&I="+I+"&II="+II,
+	        data:$("#GuiaSADT").serialize(),
+	        success:function(data){
+	            $("#modal").html(data);
+	        }
+	    });
+	}
+
+function itemSADT(T, I, II){
+	$("#pagar").fadeIn();
+	$.ajax({
+	    type:"POST",
+	    url:"modalSADT.asp?T="+T+"&I="+I+"&II="+II,
+	    data:$("#GuiaSADT").serialize(),
+	    success:function(data){
+	        $("#pagar").html(data);
+	    }
+	});
+}*/
 
 function itemSADT(T, I, II, A){
     if(T==="Procedimentos"){

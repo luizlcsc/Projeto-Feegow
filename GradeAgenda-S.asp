@@ -319,7 +319,7 @@ while diaS<n
                                 HoraID = horaToID(HoraPers)
                                 if session("FilaEspera")<>"" then
                                 %>
-                                <tr class="l vazio" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= HoraID %>" id="<%=HoraID%>">
+                                <tr class="l vazio<%= DiaSemana %>" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= HoraID %>" id="<%=DiaSemana&HoraID%>">
                                     <td width="1%"></td>
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                     <td colspan="4">
@@ -331,7 +331,7 @@ while diaS<n
                                 <%
                                 elseif session("RemSol")<>"" then
                                 %>
-                                <tr class="l l<%= LocalID %> vazio" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= horaid %>" id="<%=HoraID%>">
+                                <tr class="l l<%= LocalID %> vazio<%= DiaSemana %>" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= horaid %>" id="<%=DiaSemana&HoraID%>">
                                     <td width="1%"></td>
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                     <td colspan="4">
@@ -343,7 +343,7 @@ while diaS<n
                                 <%
                                 elseif session("RepSol")<>"" then
                                 %>
-                                <tr class="l l<%= LocalID %> vazio" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= horaid %>" id="<%=HoraID%>">
+                                <tr class="l l<%= LocalID %> vazio<%= DiaSemana %>" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= horaid %>" id="<%=DiaSemana&HoraID%>">
                                     <td width="1%"></td>
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                     <td colspan="4">

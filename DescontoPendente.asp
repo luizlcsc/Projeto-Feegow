@@ -88,7 +88,7 @@ end if
                                                 " WHEN i.UnidadeID > 0 THEN (select UnitName from sys_financialcompanyunits fs where fs.id = i.UnidadeID) " &_
                                                 " END AS NomeUnidade,  " &_ 
                                                 " Nome, 3 as AssociationAccountID, PacienteID as AccountID, InvoiceID  " &_ 
-                                                " from descontos_pendentes dp inner join itensproposta ii ON CONCAT('-', ii.id) = dp.ItensInvoiceID " &_
+                                                " from descontos_pendentes dp inner join itensproposta ii ON ii.id = dp.ItensInvoiceID*-1 " &_
                                                 " inner join propostas i ON i.id = ii.PropostaID " &_
                                                 " inner join cliniccentral.licencasusuarios lu ON lu.id = dp.SysUser  " &_ 
                                                 " where 1 =  1  "

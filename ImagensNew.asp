@@ -433,9 +433,10 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
         $(window).scrollTop($('.max-width').offset().top - 120)
     }
 
-    let ConfigPacienteID = '<%=PacienteID%>';
-    let ConfigMovementID = '<%=request.QueryString("MovementID")%>';
-    let ConfigLaudoID    = '<%=request.QueryString("LaudoID")%>';
+    let ConfigPacienteID      = '<%=PacienteID%>';
+    let ConfigMovementID      = '<%=request.QueryString("MovementID")%>';
+    let ConfigLaudoID         = '<%=request.QueryString("LaudoID")%>';
+    let ConfigOrdemDeCompraID = '<%=request.QueryString("OrdemDeCompraID")%>';
 
     let valorConsulta = null;
     let typeDoc = "all";
@@ -454,6 +455,11 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
     if(ConfigMovementID > 0){
         valorConsulta = ConfigMovementID;
         typeSearch = 'MovementID'
+    }
+
+    if(ConfigOrdemDeCompraID > 0){
+        valorConsulta = ConfigOrdemDeCompraID;
+        typeSearch = 'OrdemDeCompraID'
     }
 
     if(!typeSearch){

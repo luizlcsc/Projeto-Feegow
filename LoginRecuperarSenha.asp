@@ -1,5 +1,6 @@
 <!--#include file="Classes/Connection.asp"-->
 <!--#include file="Classes/Environment.asp"-->
+<!--#include file="functions.asp"-->
 <%
 set dbc = newConnection("", "")
 

@@ -1127,8 +1127,8 @@ end if
             <li class="active">
                 <a data-toggle="tab" href="#divCadastroPrincipal"><span class="fa fa-user-md bigger-110"></span> <span class="sidebar-title">Cadastro Principal</span></a>
             </li>
-            <li class="hidden">
-                <a data-toggle="tab" href="#divContratos" onclick="ajxContent('ContratosAnexos&T=<%=request.QueryString("P")%>', '<%=req("I")%>', 1, 'divContratos')"><span class="fa fa-file"></span><span class="sidebar-title"></span>Contratos</a>
+            <li>
+                <a data-toggle="tab" href="#divContratos" onclick="ajxContent('FornecedoresContratos&T=<%=request.QueryString("P")%>', '<%=req("I")%>', 1, 'divContratos')"><span class="fa fa-file"></span><span class="sidebar-title">Contratos</span></a>
             </li>
             <%
             SplitStoneStatus = recursoAdicional(15)

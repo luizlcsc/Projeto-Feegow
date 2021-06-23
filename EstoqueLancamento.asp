@@ -5,6 +5,7 @@ TipoLancto = req("T")
 ItemInvoiceID = req("ItemInvoiceID")
 ProdutoInvoiceID = req("ProdutoInvoiceID")
 AtendimentoID = req("AtendimentoID")
+Motivo = req("Motivo")
 Quantidade = 1
 if ItemInvoiceID="undefined" then
     ItemInvoiceID = ""
@@ -77,12 +78,16 @@ if LocaisEntradas&""<>"" then
     sqlLocalizacoes = " AND id IN ("&replace(LocaisEntradas, "|", "")&") "
 end if
 %>
+<input type="hidden" id="validationConfig" value="<%=getConfig("Motivo")%>">
 <div class="modal-header">
     <button class="bootbox-close-button close" type="button" data-dismiss="modal">×</button>
     <h4 class="modal-title"><i class="<%=icone%>"></i> Lan&ccedil;amento de <%=tipo%> &raquo; <small><%=prod("NomeProduto")&NomeLocalizacao%></small></h4>
 </div>
 <div class="modal-body">
 <form id="EstoqueLancamento" name="EstoqueLancamento" method="post">
+<div class="alert alert-danger" id="notifyy" role="alert">
+
+</div>
 <%
 'if ItemInvoiceID<>"" then
  '    set ii = db.execute("select ValorUnitario, Quantidade, Executado, Desconto, Acrescimo from itensinvoice where id="& ItemInvoiceID)
@@ -117,12 +122,8 @@ end if
             <label><input class="ace" type="radio" name="UnidadePagto" value="C" required<%if UnidadePagto="C" then%> checked<%end if%>><span class="lbl"> Por <%=lcase(ApresentacaoNome)%> com <%=formatnumber(ApresentacaoQuantidade,2)%>&nbsp;<%=lcase(NomeUnidade)%></span></label><br>
             <label><input class="ace" type="radio" name="UnidadePagto" value="U" required<%if UnidadePagto="U" then%> checked<%end if%>><span class="lbl"> Por <%=lcase(QuantidadeNoConjunto)%> <%=NomeUnidade%></span></label>
         </div>
+
     </div>
-
-
-
-
-
     <div class="row">
         <%=quickField("datepicker", "Data", "Data", 3, date(), "", "", "")%>
         <%
@@ -160,6 +161,14 @@ end if
             <%
                 call quickfield("text", "CBID", "Código Individual", 3, "", "", "", "")
             %>
+
+
+        </div>
+        <div class="row">
+            <%= quickfield("simpleSelect", "Motivo", "Motivo", 4, "", "SELECT * FROM cliniccentral.estoque_fluxo where tipo='entrada' and sysActive = 1 order by id ASC", "Motivo", "required onchange=""habilitapaciente();""") %>
+            <div class="col-md-6" id="comboPaciente">
+                <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
+            </div>
         </div>
 		<%
     else
@@ -192,21 +201,23 @@ end if
                 pedePac = 1
             end if
         end if
+        combomotivo =  quickfield("simpleSelect", "Motivo", "Motivo", 4, "", "SELECT * FROM cliniccentral.estoque_fluxo WHERE tipo='saida' AND sysActive=1 ORDER BY id ASC", "Motivo", "required onchange=""habilitapaciente();""")
+        response.write (combomotivo)
         if pedePac=0 then
             %>
-            <input type="hidden" name="PacienteID" value="<%= PacienteID %>" />
+               <input type="hidden" name="PacienteID" value="<%= PacienteID %>" />
             <%
         else
             %>
-            <div class="row">
-                <div class="col-md-3">
-                    <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
-                </div>
+            <div class="col-md-3" id="comboPaciente">
+                <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
             </div>
             <%
         end if
-    end if
-    %>
+        %>
+
+
+   <% end if %>
 
         <div class="row">
 			<%=quickField("memo", "Observacoes", "Observa&ccedil;&otilde;es", 12, "", "", "", "")%>
@@ -276,19 +287,68 @@ function changeLancar(value){
     }
 }
 
+$("#notifyy").hide();
 $("#lancar").click(function(){
-    $("#lancar").attr("disabled", true)
-	$.ajax({
-		type:"POST",
-		url:"saveEstoqueLancamento.asp?P=<%=P%>&T=<%=TipoLancto%>&PosicaoID=<%=PosicaoID%>&ItemInvoiceID=<%=ItemInvoiceID%>&ProdutoInvoiceID=<%=ProdutoInvoiceID%>&AtendimentoID=<%=AtendimentoID%>",
-		data:$("#EstoqueLancamento").serialize(),
-		success: function(data){
-			eval(data);
-            $("#lancar").attr("disabled", false)
-		}
-	});
-});
+    if($("#validationConfig").val() == 1)
+    {
+        if(verificaCampoVazio() === true){
+             $("#notifyy").show();
+             return false;
+        }
+    }
+    $("#lancar").attr("disabled", true);
 
+        $.ajax({
+            type:"POST",
+            url:"saveEstoqueLancamento.asp?P=<%=P%>&T=<%=TipoLancto%>&PosicaoID=<%=PosicaoID%>&ItemInvoiceID=<%=ItemInvoiceID%>&ProdutoInvoiceID=<%=ProdutoInvoiceID%>&AtendimentoID=<%=AtendimentoID%>&Motivo=<%=Motivo%>",
+            data:$("#EstoqueLancamento").serialize(),
+            success: function(data){
+                eval(data);
+                $("#lancar").attr("disabled", false)
+            }
+        });
+
+});
+function verificaCampoVazio()
+{
+        $("#notifyy").html();
+        let erro = false;
+        let motivo = $("#EstoqueLancamento #Motivo").val();
+        let FornecedorID = $("#FornecedorID").val();
+        let Responsavel = $("#Responsavel").val();
+        if(motivo == 0)
+        {
+            erro = true;
+            $("#notifyy").append("<p>Preencha o campo <b>Motivo</b></p>")
+        }
+        // if(FornecedorID == 0 || FornecedorID == "")
+        // {
+        //     erro = true;
+        //         //$("#notifyy").show();
+        //         $("#notifyy").append("<p>Preencha o campo <b>Fornecedor</b></p>")
+        //         //return false
+        // }
+        // if(Responsavel == 0 || Responsavel == "")
+        // {
+        //     erro = true;
+        //         //$("#notifyy").show();
+        //         $("#notifyy").append("<p>Preencha o campo <b>Reponsavel</b></p>")
+        //         //return false
+        // }
+       return erro;
+}
+$('#comboPaciente').hide();
+function habilitapaciente()
+{
+    if ($( "#Motivo option:selected" ).val() =='8' || $( "#Motivo option:selected" ).val() =='9')
+    {
+        $('#comboPaciente').show();
+    }
+    else
+    {
+        $('#comboPaciente').hide();
+    }
+}
 <%
 if AtendimentoID<>"" or ItemInvoiceID<>"" or ProdutoInvoiceID<>"" then
     %>

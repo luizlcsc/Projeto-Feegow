@@ -180,6 +180,7 @@ end if
 </table>
 
 <script>
+    showSalvar(true)
     function lancar(P, T, L, V, PosicaoID, ItemInvoiceID, AtendimentoID) {
     $("#modal-table").modal("show");
     $("#modal").html("Carregando...");
@@ -203,6 +204,8 @@ end if
 if atualizaLanctos="S" then
     %>
     <script type="text/javascript">
+        
+
         atualizaLanctos();
     </script>
     <%

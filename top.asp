@@ -126,26 +126,31 @@ else
                 <li class="sub-menu-click-agenda-mapa-de-agenda"><a href="./?P=Ocupacao&Pers=1">Mapa de agenda <span class="label label-system label-xs fleft">Novo</span> </a></li>
 		    <% end if
 
-                if aut("agendaV")=1 then
-                    if session("Cir")="" then
-                        set vcaCir = db.execute("select id from procedimentos where sysActive=1 and ativo='on' and TipoProcedimentoID=1 limit 1")
-                        if vcaCir.eof then
-                            session("Cir")=0
-                        else
-                            session("Cir")=1
-                        end if
+            if aut("agendaV")=1 then
+                if session("Cir")="" then
+                    set vcaCir = db.execute("select id from procedimentos where sysActive=1 and ativo='on' and TipoProcedimentoID=1 limit 1")
+                    if vcaCir.eof then
+                        session("Cir")=0
+                    else
+                        session("Cir")=1
                     end if
-
                 end if
+            end if
 
-                AgendaCirurgica = recursoAdicional(13)
+            AgendaCirurgica = recursoAdicional(13)
 
-                if session("Cir")=1 and AgendaCirurgica=4 then
-                    %>
-                    <li class="sub-menu-click-agenda-agenda-de-cirurgias"><a href="./?P=listaAgendaCirurgica&Pers=1">Agenda de Cirurgias</a></li>
-                    <%
-                end if
+            if session("Cir")=1 and AgendaCirurgica=4 then
+                %>
+                <li class="sub-menu-click-agenda-agenda-de-cirurgias"><a href="./?P=listaAgendaCirurgica&Pers=1">Agenda de Cirurgias</a></li>
+                <%
+            end if
 
+            if recursoAdicional(37) = 4 and aut("gestaoprotocolosV") = 1 then
+            %>
+            <li class="divider"></li>
+            <li class="sub-menu-click-pacientes-gestaoprotocolos"><a href="./?P=gestaoprotocolos&Pers=1">Gestão de Protocolos <span class="label label-system label-xs fleft">Novo</span></a></li>
+            <%
+            end if
     %>
         </ul>
     </li>

@@ -284,6 +284,39 @@ function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, m
 	});
 }
 
+function openComponentsModalPost(url, params, title, closeBtn, saveBtn, modalSize, modalWidth) {
+    if (!modalSize) {
+        modalSize = "lg";
+    }
+
+    var $modal = getModal(true, modalSize, modalWidth);
+    $modal.modal("show");
+
+    if (url.indexOf(".asp") === -1) {
+        url = domain + url;
+    }
+
+    var token="";
+    if(localStorage.getItem("tk")){
+        token= localStorage.getItem("tk")
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: params,
+        headers: {
+            "x-access-token":token
+        }
+    }).done(function(data) {
+        var $modal = setModalContent(data, title, closeBtn, saveBtn, params);
+
+        setTimeout(function () {
+            setListeners($modal)
+        }, modalTimeout);
+    });
+}
+
 function setListeners($modal) {
     $(".components-modal-submit-btn", $modal).click(function () {
         var $btn = $(this);

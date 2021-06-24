@@ -337,10 +337,11 @@ function verificaCampoVazio()
         // }
        return erro;
 }
-$('#comboPaciente').hide();
+// $('#comboPaciente').hide();
 function habilitapaciente()
 {
-    if ($( "#Motivo option:selected" ).val() =='8' || $( "#Motivo option:selected" ).val() =='9')
+    
+    if ($( "#Motivo option:selected" ).val() =='8' || $( "#Motivo option:selected" ).val() =='9' || $('#Lancar').is(":checked"))
     {
         $('#comboPaciente').show();
     }
@@ -349,6 +350,9 @@ function habilitapaciente()
         $('#comboPaciente').hide();
     }
 }
+
+
+
 <%
 if AtendimentoID<>"" or ItemInvoiceID<>"" or ProdutoInvoiceID<>"" then
     %>

@@ -1,10 +1,10 @@
 <!--#include file="connect.asp"-->
 <%
 'cada via tem 484
-campo = request.QueryString("campo")
-ModeloID = request.QueryString("ModeloID")
-FormID = request.QueryString("FormID")
-PacienteID = request.QueryString("PacienteID")
+campo = req("campo")
+ModeloID = req("ModeloID")
+FormID = req("FormID")
+PacienteID = req("PacienteID")
 tipo_audio = ref("tipo_audioT")
 set modelo = db.execute("select * from buiforms where id="&ModeloID)
 if not modelo.EOF then

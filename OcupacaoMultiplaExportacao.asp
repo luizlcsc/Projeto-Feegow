@@ -1,7 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="functionOcupacao.asp"-->
 
-<%'= request.form() %>
+<%'= ref() %>
 
 <style type="text/css">
     td, th {

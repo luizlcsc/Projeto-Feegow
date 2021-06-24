@@ -5,7 +5,7 @@ if ref("ControleEspecial")="true" then
 end if
 
 save = ref("save")
-set reg = db.execute("select * from PacientesPrescricoes where Prescricao like '"&ref("receituario")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
+set reg = db.execute("select * from PacientesPrescricoes where Prescricao like '"&refhtml("receituario")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
 
 if reg.EOF then
     if cbool(save) then
@@ -13,10 +13,10 @@ if reg.EOF then
         'verifica se tem atendimento aberto
         set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&ref("PacienteID")&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
         if(atendimentoReg.EOF) then
-            db_execute("insert into PacientesPrescricoes (PacienteID, Prescricao, ControleEspecial, sysUser, UnidadeID) values ("&ref("PacienteID")&", '"&ref("receituario")&"', '"&ControleEspecial&"', "&session("User")&","&session("UnidadeID")&")")
+            db_execute("insert into PacientesPrescricoes (PacienteID, Prescricao, ControleEspecial, sysUser, UnidadeID) values ("&ref("PacienteID")&", '"&refhtml("receituario")&"', '"&ControleEspecial&"', "&session("User")&","&session("UnidadeID")&")")
         else
             'salva preccricao com id do atendimento
-            db_execute("insert into PacientesPrescricoes (PacienteID, Prescricao, ControleEspecial, sysUser, AtendimentoID, UnidadeID) values ("&ref("PacienteID")&", '"&ref("receituario")&"', '"&ControleEspecial&"', "&session("User")&", "&atendimentoReg("id")&","&session("UnidadeID")&")")
+            db_execute("insert into PacientesPrescricoes (PacienteID, Prescricao, ControleEspecial, sysUser, AtendimentoID, UnidadeID) values ("&ref("PacienteID")&", '"&refhtml("receituario")&"', '"&ControleEspecial&"', "&session("User")&", "&atendimentoReg("id")&","&session("UnidadeID")&")")
         end if
 
         set reg = db.execute("select * from PacientesPrescricoes where PacienteID="&ref("PacienteID")&" order by id desc LIMIT 1")

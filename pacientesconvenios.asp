@@ -1,10 +1,10 @@
 <%
-if request.QueryString("act")<>"" then'ou seja, quando a chamada vem pelo javascript (no caso dos itens, ou do subform sendo chamado pelo ajax)
+if req("act")<>"" then'ou seja, quando a chamada vem pelo javascript (no caso dos itens, ou do subform sendo chamado pelo ajax)
 	abreDivMaster = ""
 	fechaDivMaster = ""
-	Acao = request.QueryString("act")
-	idNaColuna = request.QueryString("idc")
-	Registro = request.QueryString("reg")
+	Acao = req("act")
+	idNaColuna = req("idc")
+	Registro = req("reg")
 else
 	abreDivMaster = "<div id=""divpacientesconvenios"">"
 	fechaDivMaster = "</div>"

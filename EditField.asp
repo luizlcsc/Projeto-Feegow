@@ -719,7 +719,7 @@ end if
 %>
 </form>
 <div class="panel-footer mt25 text-right">
-  <button type="button" class="btn btn-primary" onclick="saveEdit(<%=pCampo("id")%>, '<%=request.QueryString("W")%>', '<%=request.QueryString("F")%>', 0, 'S');"><i class="fa fa-save"></i>Salvar</button>
+  <button type="button" class="btn btn-primary" onclick="saveEdit(<%=pCampo("id")%>, '<%=req("W")%>', '<%=req("F")%>', 0, 'S');"><i class="fa fa-save"></i>Salvar</button>
   <%
   if TipoCampoID=4 or TipoCampoID=5 or TipoCampoID=6 then
   	%><button type="button" class="btn btn-success" onclick="addOption('A', <%=req("I")%>);"><i class="fa fa-plus"></i> Adicionar Op&ccedil;&atilde;o</button><%

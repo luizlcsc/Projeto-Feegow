@@ -20,12 +20,12 @@
         	<label>Tipo de Guia</label><br />
         	<select name="T" id="T" class="form-control" required>
             	<option value="">Selecione</option>
-            	<option value="GuiaConsulta"<%if request.QueryString("T")="GuiaConsulta" then%> selected="selected"<%end if%>>Guia de Consulta</option>
-                <option value="GuiaSADT"<%if request.QueryString("T")="GuiaSADT" then%> selected="selected"<%end if%>>Guia de SP/SADT</option>
-                <option value="GuiaHonorarios"<%if request.QueryString("T")="GuiaHonorarios" then%> selected="selected"<%end if%>>Guia de Honorários</option>
+            	<option value="GuiaConsulta"<%if req("T")="GuiaConsulta" then%> selected="selected"<%end if%>>Guia de Consulta</option>
+                <option value="GuiaSADT"<%if req("T")="GuiaSADT" then%> selected="selected"<%end if%>>Guia de SP/SADT</option>
+                <option value="GuiaHonorarios"<%if req("T")="GuiaHonorarios" then%> selected="selected"<%end if%>>Guia de Honorários</option>
             </select>
         </div>
-        <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, request.QueryString("ConvenioID"), "select * from Convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
+        <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, req("ConvenioID"), "select * from Convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
         <div class="col-md-2">
             <label>Refer&ecirc;ncia</label><br />
             <select class="form-control" name="Mes">
@@ -34,7 +34,7 @@
                 c=0
                 while c<12
                     c=c+1
-                    %><option value="<%=c%>"<%if (c=month(date()) and request.QueryString("Mes")="") or (cstr(c)=request.QueryString("Mes")) then%> selected="selected"<%end if%>><%=monthname(c)%></option><%
+                    %><option value="<%=c%>"<%if (c=month(date()) and req("Mes")="") or (cstr(c)=req("Mes")) then%> selected="selected"<%end if%>><%=monthname(c)%></option><%
                 wend
                 %>
             </select>
@@ -46,7 +46,7 @@
                 <%
                 c=year(date())-1
                 while c<year(date())+2
-                    %><option value="<%=c%>"<%if (cstr(c)=request.QueryString("Ano")) or (c=year(date()) and request.QueryString("Ano")="") then%> selected="selected"<%end if%>><%=c%></option><%
+                    %><option value="<%=c%>"<%if (cstr(c)=req("Ano")) or (c=year(date()) and req("Ano")="") then%> selected="selected"<%end if%>><%=c%></option><%
                     c=c+1
                 wend
                 %>
@@ -65,7 +65,7 @@
         <div class="panel-body">
 <%
 c=0
-if request.QueryString("ConvenioID")<>"" then
+if req("ConvenioID")<>"" then
 	%>
 	<div class="table-responsive" style="overflow-y: auto; height: 600px;">
     <table  class="table table-bordered table-striped table-responsive">
@@ -90,18 +90,18 @@ if request.QueryString("ConvenioID")<>"" then
     </thead>
     <tbody>
 	<%
-	if request.QueryString("Mes")<>"" and req("Mes")<>"0" then
-		sqlMes = " and Mes="&request.QueryString("Mes")
+	if req("Mes")<>"" and req("Mes")<>"0" then
+		sqlMes = " and Mes="&req("Mes")
 	end if
-	if request.QueryString("Ano")<>"" then
-		sqlAno = " and Ano="&request.QueryString("Ano")
+	if req("Ano")<>"" then
+		sqlAno = " and Ano="&req("Ano")
 	end if
 	ValotTotalGuias=0
 	NumeroGuias=0
 
-    sqlLote="select * from tisslotes where ConvenioID="&req("ConvenioID")&sqlMes&sqlAno&" and Tipo = '"&rep(request.QueryString("T"))&"' order by Lote"
+    sqlLote="select * from tisslotes where ConvenioID="&req("ConvenioID")&sqlMes&sqlAno&" and Tipo = '"&rep(req("T"))&"' order by Lote"
 
-    set objConvenio = db.execute("SELECT * FROM convenios LEFT JOIN cliniccentral.tissversao ON tissversao.id = COALESCE(NULLIF(versaoTISS,'0'),30201)  WHERE convenios.id = "&request.QueryString("ConvenioID"))
+    set objConvenio = db.execute("SELECT * FROM convenios LEFT JOIN cliniccentral.tissversao ON tissversao.id = COALESCE(NULLIF(versaoTISS,'0'),30201)  WHERE convenios.id = "&req("ConvenioID"))
 
 	set lotes = db.execute(sqlLote)
 
@@ -122,7 +122,7 @@ if request.QueryString("ConvenioID")<>"" then
 
         sqlQtdGuias = "select count(ts.id) as total,group_concat(ts.id,' ') AS guias from "&Tabela&" ts "&_
                         "INNER JOIN convenios CONV ON CONV.id=ts.ConvenioID "&_
-                        "where ts.LoteID="&lotes("id")&"  AND CONV.id="&request.QueryString("ConvenioID")
+                        "where ts.LoteID="&lotes("id")&"  AND CONV.id="&req("ConvenioID")
 
 		set nguias = db.execute(sqlQtdGuias)
 		set tissguiasinvoices = db.execute("SELECT count(*) > 0 hasinvoice FROM tissguiasinvoice WHERE GuiaID in (SELECT id FROM "&Tabela&" WHERE LoteID = "&lotes("id")&") AND TipoGuia = replace('"&Tabela&"','tiss','')")
@@ -264,7 +264,7 @@ if request.QueryString("ConvenioID")<>"" then
             <%
             if aut("loteA")=1 then
             %>
-              <button onclick="location.href='./?P=tissbuscaguias&Pers=1&T=<%=request.QueryString("T")%>&ConvenioID=<%=request.QueryString("ConvenioID")%>&LoteID=<%=lotes("id")%>&NumeroGuia=&PacienteID=&searchPacienteID=&DataDe=&DataAte=';"
+              <button onclick="location.href='./?P=tissbuscaguias&Pers=1&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>&LoteID=<%=lotes("id")%>&NumeroGuia=&PacienteID=&searchPacienteID=&DataDe=&DataAte=';"
                       type="button" class="btn btn-success btn-sm">
                 <i class="fa fa-edit"></i>
               </button>
@@ -331,7 +331,7 @@ $("#marca").click(function(){
 });
 
 function gerarConta(arg,lote,Nguias){
-    $.post("lanctoGuias.asp?T=<%=request.QueryString("T")%>", {Guia: arg,JSON:true},
+    $.post("lanctoGuias.asp?T=<%=req("T")%>", {Guia: arg,JSON:true},
     function(data){
       let Total = 0;
       if(data){
@@ -407,7 +407,7 @@ function fechalote(){
 	}else{
 		$.ajax({
 			type:"POST",
-			url:"modalFechaLote.asp?T=<%=request.QueryString("T")%>",
+			url:"modalFechaLote.asp?T=<%=req("T")%>",
 			success: function(data){
 				$("#modal-table").modal("show");
 				$("#modal").html(data);

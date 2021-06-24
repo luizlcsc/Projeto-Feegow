@@ -28,8 +28,8 @@ else
 	end if
 end if
 
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-sqlTiposproduto  = "select * from "&request.QueryString("P")&" where id="&request.QueryString("I")
+call insertRedir(req("P"), req("I"))
+sqlTiposproduto  = "select * from "&req("P")&" where id="&req("I")
 set reg = db.execute(sqlTiposproduto)
 
 if reg("Foto")="" or isnull(reg("Foto")) then
@@ -131,7 +131,7 @@ end if
     <iframe align="middle" class="hidden" id="CodBarras" name="CodBarras" src="about:blank" width="100%" height="110"></iframe>
 
     <%=header(req("P"), "Estoque", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" class="idItem"/>
+    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
     <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
 
     <div class="tabbable panel">
@@ -496,7 +496,7 @@ end if
     function atualizaLanctos(){
         $.ajax({
             type:"GET",
-            url:"EstoquePosicao.asp?I=<%=request.QueryString("I")%>",
+            url:"EstoquePosicao.asp?I=<%=req("I")%>",
             success: function(data){
                 $("#ProdutosPosicao").html(data);
             }
@@ -542,7 +542,10 @@ $("#ApresentacaoNome, #ApresentacaoUnidade").on("keyup change", function(){
 lbl();
 
     //js exclusivo avatar
-<%   Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")   %>
+<%
+    Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
+
+    %>
     function removeFoto(){
         if(confirm('Tem certeza de que deseja excluir esta imagem?')){
             $.ajax({

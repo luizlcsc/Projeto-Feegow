@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="FuncoesAntigas.asp"-->
-//alert('<%=request.Form()%>');
+//alert('<%=ref()%>');
 <%
 if ref("Forma")="" then
 	erro = "Por favor, preencha uma forma de pagamento."

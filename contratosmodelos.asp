@@ -1,6 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <%
-call insertRedir(request.QueryString("P"), req("I"))
+call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 %>
 <br>

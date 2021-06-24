@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-if request.QueryString("T")="Form" then
-	db_execute("update buiformspreenchidos set Autorizados='"&request.QueryString("S")&"' where id="&request.QueryString("I"))
+if req("T")="Form" then
+	db_execute("update buiformspreenchidos set Autorizados='"&req("S")&"' where id="&req("I"))
 end if
 %>

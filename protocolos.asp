@@ -63,7 +63,7 @@ end if
 
 <form method="post" id="formProtocolos" name="formProtocolos">
 
-    <input type="hidden" id="idProtocolo" name="I" value="<%=request.QueryString("I")%>" />
+    <input type="hidden" id="idProtocolo" name="I" value="<%=req("I")%>" />
 
     <div class="tabbable panel">
         <div class="tab-content panel-body">

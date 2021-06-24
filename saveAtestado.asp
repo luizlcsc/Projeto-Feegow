@@ -10,10 +10,10 @@ if reg.EOF then
         'verifica se tem atendimento aberto
         set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&ref("PacienteID")&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
         if(atendimentoReg.EOF) then
-            db_execute("insert into PacientesAtestados (PacienteID, Titulo, Atestado, sysUser, UnidadeID) values ("&ref("PacienteID")&", '"&ref("TituloAtestado")&"', '"&ref("atestado")&"', "&session("User")&","&session("UnidadeID")&")")
+            db_execute("insert into PacientesAtestados (PacienteID, Titulo, Atestado, sysUser, UnidadeID) values ("&ref("PacienteID")&", '"&ref("TituloAtestado")&"', '"&refhtml("atestado")&"', "&session("User")&","&session("UnidadeID")&")")
         else
             'salva com id do atendimento
-            db_execute("insert into PacientesAtestados (PacienteID, Titulo, Atestado, sysUser, AtendimentoID, UnidadeID) values ("&ref("PacienteID")&", '"&ref("TituloAtestado")&"', '"&ref("atestado")&"', "&session("User")&", "&atendimentoReg("id")&","&session("UnidadeID")&")")
+            db_execute("insert into PacientesAtestados (PacienteID, Titulo, Atestado, sysUser, AtendimentoID, UnidadeID) values ("&ref("PacienteID")&", '"&ref("TituloAtestado")&"', '"&refhtml("atestado")&"', "&session("User")&", "&atendimentoReg("id")&","&session("UnidadeID")&")")
         end if
 	    set reg = db.execute("select * from pacientesatestados where PacienteID="&ref("PacienteID")&" order by id desc LIMIT 1")
 

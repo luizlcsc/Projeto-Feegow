@@ -4,7 +4,7 @@ ConvenioID = req("ConvenioID")
 
 IF req("Acao") = "Update" THEN
 
-    sql = "UPDATE convenios SET ISS="&treatvalzero(ref("ISS"))&",PIS="&treatvalzero(ref("PIS"))&",CSSL="&treatvalzero(ref("CSSL"))&",IR="&treatvalzero(ref("IR"))&",COFINS="&treatvalzero(ref("COFINS"))&" WHERE id = "&request.QueryString("ConvenioID")
+    sql = "UPDATE convenios SET ISS="&treatvalzero(ref("ISS"))&",PIS="&treatvalzero(ref("PIS"))&",CSSL="&treatvalzero(ref("CSSL"))&",IR="&treatvalzero(ref("IR"))&",COFINS="&treatvalzero(ref("COFINS"))&" WHERE id = "&req("ConvenioID")
 
     db.execute(sql)
     %>

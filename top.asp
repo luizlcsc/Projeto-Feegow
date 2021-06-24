@@ -23,7 +23,7 @@ else
             permissaoAPagina = false
 
             FOR ival=0 to ubound(paginasPermitidasObj)
-                IF paginasPermitidasObj(ival) = request.QueryString("P") THEN
+                IF paginasPermitidasObj(ival) = req("P") THEN
                     permissaoAPagina = TRUE
                 END IF
             NEXT

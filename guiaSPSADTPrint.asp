@@ -70,7 +70,7 @@ if TipoExibicao="Pedido" then
         end if
     end if
 else
-    set procs = db.execute("select * from tissprocedimentossadt where GuiaID="&request.QueryString("I")&" order by id")
+    set procs = db.execute("select * from tissprocedimentossadt where GuiaID="&req("I")&" order by id")
 end if
 'on error resume next
 set conf = db.execute("select * from sys_config")

@@ -1,10 +1,10 @@
 ﻿<!--#include file="connect.asp"-->
 <%
-pacienteId = Request.QueryString("PacienteId")
+pacienteId = req("PacienteId")
 
-procedimentoId = Request.Form("procedimentoId")
-tempo = Request.Form("tempo")
-ProfissionalID = Request.Form("ProfissionalID")
+procedimentoId = ref("procedimentoId")
+tempo = ref("tempo")
+ProfissionalID = ref("ProfissionalID")
 
 ProfissionalIDArray = split(ProfissionalID, ",")
 tempoArray = split(tempo, ",")

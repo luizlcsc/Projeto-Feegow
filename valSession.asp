@@ -1,4 +1,4 @@
 ﻿<%
     session("Banco")="Vinicius"
     
-    response.Write(request.QueryString("N")) %>
+    response.Write(req("N")) %>

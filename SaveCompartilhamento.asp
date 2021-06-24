@@ -36,10 +36,10 @@ else ' prontuario completo
     while not tipoProntuario.eof
         set result =  db.execute("select * from prontuariocompartilhamento where ProfissionalID="&ProfissionalID&" and CategoriaID ="&tipoProntuario("id")&" ")
         
-        tipo= request.Form("RegraCompartilhamento"&tipoProntuario("id"))
+        tipo= ref("RegraCompartilhamento"&tipoProntuario("id"))
         profissionais = ""
         if tipo = 3 then
-            profissionais = request.Form("Profissionais"&tipoProntuario("id"))
+            profissionais = ref("Profissionais"&tipoProntuario("id"))
         end if
 
         if not result.eof then

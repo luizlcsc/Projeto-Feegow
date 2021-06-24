@@ -10,7 +10,7 @@
 
 <ul class="select-insert">
 <%
-'response.Write(request.Form())
+'response.Write(ref())
 if lcase(ref("resource"))="pacientes" then
 	sql = "select id, NomePaciente, Nascimento from pacientes where NomePaciente like '"&ref("typed")&"%' and sysActive=1 order by NomePaciente"
 	'campoSuperior???
@@ -73,7 +73,7 @@ else
 	<%
 	while not list.eof
 		%>
-		<li class="select-insert-item" value="<%=list("id")%>"<% If ref("resource")="pacientes" Then %> data-nascimento="<%=list("Nascimento")%>"<% End If %> <%= replace(replace(request.Form("othersToSelect"), "onchange", "onclick"), "this.id", "'select-"&ref("selectID")&"'") %>><%=list(""&initialOrder&"")%></li>
+		<li class="select-insert-item" value="<%=list("id")%>"<% If ref("resource")="pacientes" Then %> data-nascimento="<%=list("Nascimento")%>"<% End If %> <%= replace(replace(ref("othersToSelect"), "onchange", "onclick"), "this.id", "'select-"&ref("selectID")&"'") %>><%=list(""&initialOrder&"")%></li>
 		<%
 	list.movenext
 	wend

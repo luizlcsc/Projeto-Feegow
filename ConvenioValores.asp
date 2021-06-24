@@ -40,6 +40,7 @@ if not proc.eof then
 	NaoCobre         = proc("NaoCobre")
 	AssociacaoID     = proc("AssociacaoID")
 	CoeficientePorte = proc("CoeficientePorte")
+    profissionalExecutanteGuia = proc("profissionalExecutanteGuia")
 else
     Novo             = "true"
     Codigo           = p("Codigo")
@@ -274,11 +275,26 @@ CoeficientePorte = coalesce(CoeficientePorte,1,null)
         </div>
     </div>
 
+    <hr class="short alt" />
+    <div class="row">
+        <div class="col-md-12 panel">
+            <div class="panel-heading">
+                <span class="panel-title">Profissional Executante Padrão</span>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                <!-- Verifica se o profissional está habilitado pela string concatenada no select -->
+                    <%= quickField("simpleSelect", "profissionalExecutanteGuia", "Nome do Profissional", 6, profissionalExecutanteGuia, "SELECT p.id, p.especialidadeID, esp.codigoTISS, CONCAT( p.NomeProfissional, if((p.Conselho IS NULL or p.Conselho='') OR (p.UFConselho IS NULL OR p.UFConselho='') OR (p.CPF IS NULL OR p.CPF='') OR (esp.codigoTISS IS NULL OR esp.codigoTISS=''), ' [incompleto]','')) NomeProfissional from profissionais p left JOIN especialidades esp ON esp.id = p.EspecialidadeID WHERE p.sysActive=1 AND p.Ativo='on' order by NomeProfissional DESC", "NomeProfissional", " no-select2" ) %>
+                    <!--<br><br><p style="margin-left:30px;color:red;">Documentos necessários: CPF, CBO, Nº do conselho e UF! </p>-->
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 </div>
 <div class="modal-footer no-margin-top">
-	<button class="btn btn-sm btn-primary pull-right"><i class="fa fa-save"></i> Salvar</button>
+	<button id="salvar" class="btn btn-sm btn-primary pull-right"><i class="fa fa-save"></i> Salvar</button>
 </div>
 
 </form>
@@ -302,6 +318,20 @@ function addProc(){
         $("#ConvenioMateriaisProcedimentos").html(data);
     });
 }
+
+$("#profissionalExecutanteGuia").change(function(){
+    let str = $('#profissionalExecutanteGuia :selected').text();
+    if (str.includes('[incompleto]') == true){
+        $("#salvar").prop("disabled", true)
+        new PNotify({
+            title: 'Necessário completar os dados necessários no cadastro deste profissional! (CPF, Nº do conselho, UF e Especialidade com CBOS)',
+            type: 'danger',
+            delay: 4000
+            });
+    } else {
+        $("#salvar").prop("disabled", false)
+    }
+});
 
 $("#frmConvenioValores").submit(function(){
 	$.ajax({

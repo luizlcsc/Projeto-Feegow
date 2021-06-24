@@ -511,8 +511,8 @@ end function
 
                     %>
 
-                    <%=quickField("multiple", "camposObrigatorios", "Campos obrigatórios", 4, camposObrigatorios, sqlFields, "Campo", "")%>
                     <%=quickField("simpleSelect", "TipoAtendimentoID", "Tipo de Atendimento Padrão", 4, reg("TipoAtendimentoID"), "select * from tisstipoatendimento order by descricao", "descricao", "  ") %>
+                    <%=quickField("multiple", "camposObrigatorios", "Campos obrigatórios", 4, camposObrigatorios, sqlFields, "Campo", "")%>
                     <%
                     XMLTagsOmitirSQL = "SELECT id , Tag "&_
                                        "FROM ( "&_
@@ -521,6 +521,9 @@ end function
                                        "SELECT 'outrasDespesas' AS id, 'outrasDespesas' AS Tag) AS t"
                     response.write(quickField("multiple", "XMLTagsOmitir", "Omitir Tags - TISS 03.04.00", 4, XMLTagsOmitir, XMLTagsOmitirSQL, "Tag", ""))
                     %>
+                </div>
+                <div class="row">
+                    <%= quickField("simpleSelect", "IndicacaoAcidenteID", "Indica&ccedil;&atilde;o de acidente Padrão", 4, reg("IndicacaoAcidenteID"), "select * from tissindicacaoacidente order by descricao", "descricao", "semVazio ") %>
                 </div>
             </form>
         </div>

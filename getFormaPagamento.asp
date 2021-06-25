@@ -1,13 +1,13 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/JSON.asp"-->
 <%
-parcelas = Request.QueryString("parcelas")
-bandeira = Request.QueryString("bandeira")
-formaPagamento = Request.QueryString("formaPagamento")
-contaCorrente = Request.QueryString("contaCorrente")
-unidade = Request.QueryString("unidade")
+parcelas = req("parcelas")
+bandeira = req("bandeira")
+formaPagamento = req("formaPagamento")
+contaCorrente = req("contaCorrente")
+unidade = req("unidade")
 
-sysFormasrectoId = Request.QueryString("sysFormasrectoId")
+sysFormasrectoId = req("sysFormasrectoId")
 
 
 db.execute("SET SESSION group_concat_max_len = 1000000; ")

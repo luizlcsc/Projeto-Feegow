@@ -132,7 +132,7 @@
                         </div>
                         <form method="post" autocomplete="off" id="trial" action="">
                             <div class="panel-body bg-light p30">
-                                <% IF request.QueryString("T") = "FULL" THEN %>
+                                <% IF req("T") = "FULL" THEN %>
                                     <input type="hidden" name="Teste" value="FULL">
                                 <% ELSE %>
                                     <input type="hidden" name="Teste" value="FREE">
@@ -186,7 +186,7 @@
                                                     <div class="row mt20">
                                                         <div class="col-md-6">
                                                             <label for="Cupom" class="field prepend-icon">
-                                                                <input type="text" name="Cupom" id="Cupom" class="gui-input" placeholder="Cupom desconto, caso possua..." value="<%=request.QueryString("Cupom")%>">
+                                                                <input type="text" name="Cupom" id="Cupom" class="gui-input" placeholder="Cupom desconto, caso possua..." value="<%=req("Cupom")%>">
                                                                 <label for="Cupom" class="field-icon">
                                                                 <i class="fa fa-ticket"></i>
                                                                 </label>

@@ -1,8 +1,8 @@
 <!--#include file="connect.asp"-->
 <!--#include file="TISS.asp"-->
 <%
-tipo = request.QueryString("T")
-id = request.QueryString("I")
+tipo = req("T")
+id = req("I")
 
 if tipo="Profissional" then
 	call completaProfissional(id)

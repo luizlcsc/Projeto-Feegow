@@ -3,7 +3,7 @@
 <%
 response.Charset="utf-8"
 table = req("R")
-itens = split(request.Form(), "&")
+itens = split(ref(), "&")
 Ordem = 0
 
 

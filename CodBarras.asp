@@ -1,3 +1,4 @@
+<!--#include file="functions.asp"-->
   <link rel="stylesheet" type="text/css" href="assets/fonts/icomoon/icomoon.css">
   <link rel="stylesheet" type="text/css" href="vendor/plugins/magnific/magnific-popup.css">
   <link rel="stylesheet" type="text/css" href="vendor/plugins/footable/css/footable.core.min.css">
@@ -17,8 +18,8 @@
 </style>
 <%
 
-'Substitua o valor do parâmetro abaixo pelo número do código de barras.
-WBarCode( request.QueryString("NumeroCodigo") )
+'Substitua o valor do parï¿½metro abaixo pelo nï¿½mero do cï¿½digo de barras.
+WBarCode( req("NumeroCodigo") )
 
 
 Sub WBarCode( Valor )
@@ -64,7 +65,7 @@ body {
 }
 -->
 </style>
-<% if request.QueryString("BPrint")<>"hdn" then %>
+<% if req("BPrint")<>"hdn" then %>
     <button style="position:absolute" onclick="print()" class="btn btn-primary hidden-print"><i class="fa fa-print"></i></button>
 <% end if %>
 <div align="center"><img src=p.gif width=<%=fino%> height=<%=altura%> border=0><img 

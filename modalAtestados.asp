@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <% 
-if request.QueryString("id")="0" then
+if req("id")="0" then
 	sqlTextoAtestado = "select * from PacientesAtestadosTextos where sysActive=0 and sysUser="&session("User")
 	set regAte = db.execute(sqlTextoAtestado)
 	if regAte.eof then
@@ -10,8 +10,8 @@ if request.QueryString("id")="0" then
 	TextoAtestadoID = regAte("id")
 	TextoAtestadoLast = "TextoAtestado-Last"
 else
-		TextoAtestadoID = request.QueryString("id")
-		set regAte = db.execute("select * from PacientesAtestadosTextos where id="&request.QueryString("id"))
+		TextoAtestadoID = req("id")
+		set regAte = db.execute("select * from PacientesAtestadosTextos where id="&req("id"))
 end if
 %>
 <div class="modal-header">

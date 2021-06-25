@@ -1,11 +1,11 @@
 <%
 response.Charset="utf-8"
-if request.QueryString("Part")="" then'primeira parte do processo
+if req("Part")="" then'primeira parte do processo
 	%>
 	<!--#include file="connectCentral.asp"-->
 	<%
 	function ref(Val)
-		ref = replace(request.Form(Val), "'", "''")
+		ref = replace(ref(Val), "'", "''")
 	end function
 	
 	set verify = dbc.execute("select * from licencasusuarios where Email like '"&ref("Email")&"'")

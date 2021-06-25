@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-ElementoID = request.QueryString("ElementoID")
-ProcedimentoID = request.QueryString("id")
+ElementoID = req("ElementoID")
+ProcedimentoID = req("id")
 set proc = db.execute("select * from procedimentos where id="&ProcedimentoID)
 if not proc.EOF then
 	Valor = formatnumber(proc("Valor"),2)

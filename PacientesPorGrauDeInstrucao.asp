@@ -3,7 +3,7 @@
 <form id="Relatorio" name="Relatorio" method="get" action="">
 <input type="hidden" name="Pers" value="1" />
 <input type="hidden" name="P" value="Relatorio" />
-<input type="hidden" name="TipoRel" value="<%=request.QueryString("TipoRel")%>" />
+<input type="hidden" name="TipoRel" value="<%=req("TipoRel")%>" />
 <input type="hidden" name="E" value="E" />
 <div class="clearfix form-actions">
 	<div class="col-md-4">Grau de Instru&ccedil;&atilde;o<br />
@@ -13,7 +13,7 @@
           set b=db.execute("select * from grauinstrucao")
           while not b.eof
           %>
-              <option value="<%=b("id")%>"<%if request.QueryString("grauinstrucao")=cStr(b("id")) then%> selected="selected"<%end if%>><%=b("grauinstrucao")%></option>
+              <option value="<%=b("id")%>"<%if req("grauinstrucao")=cStr(b("id")) then%> selected="selected"<%end if%>><%=b("grauinstrucao")%></option>
               <%
           b.movenext
           wend
@@ -27,8 +27,8 @@
     </div>
 </div>
 <%
-if request.QueryString("E")="E" then
-	if request.QueryString("grauinstrucao")="0" then grauinstrucao="%" else grauinstrucao=request.QueryString("grauinstrucao") end if
+if req("E")="E" then
+	if req("grauinstrucao")="0" then grauinstrucao="%" else grauinstrucao=req("grauinstrucao") end if
 set esc=db.execute("select distinct grauinstrucao from pacientes where not grauinstrucao like '' and grauinstrucao like '"&grauinstrucao&"' order by grauinstrucao")
 while not esc.eof
 set pesc=db.execute("select * from grauinstrucao where id = '"&esc("grauinstrucao")&"'")

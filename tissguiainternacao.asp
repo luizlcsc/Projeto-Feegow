@@ -4,7 +4,7 @@
 <%posModalPagar="fixed" %>
 <!--#include file="invoiceEstilo.asp"-->
 <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 
 recursoUnimed = recursoAdicional(12)
@@ -562,7 +562,7 @@ $(document).ready(function() {
 function autorizadorguiainternacao(){
 	$.ajax({
         type:"POST",
-		url:"saveGuiaInternacao.asp?Tipo=Internacao&I=<%=request.QueryString("I")%>",
+		url:"saveGuiaInternacao.asp?Tipo=Internacao&I=<%=req("I")%>",
 		data:$("#GuiaInternacao").serialize(),
 		success:function(data){
             Autorizador.autorizaInternacoes();
@@ -601,7 +601,7 @@ function tissCompletaDados(T, I){
 $("#GuiaInternacao").submit(function(){
 	$.ajax({
 		type:"POST",
-		url:"saveGuiaInternacao.asp?Tipo=Internacao&I=<%=request.QueryString("I")%>",
+		url:"saveGuiaInternacao.asp?Tipo=Internacao&I=<%=req("I")%>",
 		data:$("#GuiaInternacao").serialize(),
 		success:function(data){
 			eval(data);

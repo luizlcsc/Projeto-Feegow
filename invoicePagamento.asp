@@ -20,12 +20,12 @@ end if
 
 set inv = db.execute("select i.*, fr.MetodoID from sys_financialinvoices i left join sys_formasrecto fr on fr.id=i.FormaID where i.id="&InvoiceID)
 CD = inv("CD")
-if request.QueryString("MetodoID")<>"" then
-	MetodoID = ccur(request.QueryString("MetodoID"))
+if req("MetodoID")<>"" then
+	MetodoID = ccur(req("MetodoID"))
 else
 	MetodoID = inv("MetodoID")
 end if
-'ContaID = request.QueryString("ContaID")
+'ContaID = req("ContaID")
 
 '------> pegando os creditos
 AssociationAccountID = inv("AssociationAccountID")
@@ -309,7 +309,7 @@ function applyCredit(){
 
 function excluiMov(I){
 	if(confirm('Tem certeza de que deseja excluir este crédito?')){
-		$.post("invoicePagamento.asp?I=<%=request.QueryString("I")%>&XMov="+I, '', function(data, status){ $("#modal").html(data) } );
+		$.post("invoicePagamento.asp?I=<%=req("I")%>&XMov="+I, '', function(data, status){ $("#modal").html(data) } );
 	}
 }
 <!--#include file="jQueryFunctions.asp"-->

@@ -128,7 +128,7 @@ if btn = "0" then
     UsuariosNotificar = un("UsuariosNotificar")&" "
 end if
 PacienteID = atendimento("PacienteID")
-Solicitacao = request.QueryString("Solicitacao")
+Solicitacao = req("Solicitacao")
 
 if Solicitacao="S" then
 	Titulo = "Solicitar Pagamento ou Emiss&atilde;o/Autoriza&ccedil;&atilde;o de Guia"

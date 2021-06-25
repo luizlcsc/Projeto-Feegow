@@ -71,30 +71,30 @@ function abreAgenda(horario, id, data, LocalID, ProfissionalID){
 
 <%
 DataHoje=date()
-if request.QueryString("Data")<>"" then
-	Data=cdate(request.QueryString("Data"))
+if req("Data")<>"" then
+	Data=cdate(req("Data"))
 else
 	Data=DataHoje
 end if
 
 
-if request.Form("E")="E" then
-	if not isDate(request.Form("QuaDisDe")) or request.Form("QuaDisDe")="" or not isDate(request.Form("QuaDisA")) or request.Form("QuaDisA")="" then
+if ref("E")="E" then
+	if not isDate(ref("QuaDisDe")) or ref("QuaDisDe")="" or not isDate(ref("QuaDisA")) or ref("QuaDisA")="" then
 	erro="Preencha hor�rios v�lidos para exibi��o do quadro de disponibilidade."
 	else
-		if cdate(request.Form("QuaDisDe"))>= cdate(request.Form("QuaDisA")) then
+		if cdate(ref("QuaDisDe"))>= cdate(ref("QuaDisA")) then
 		erro="O hor�rio final deve ser maior que o hor�rio inicial."
 		end if
 	end if
-	if not isNumeric(request.Form("Intervalo")) or request.Form("Intervalo")="" then
+	if not isNumeric(ref("Intervalo")) or ref("Intervalo")="" then
 	erro="Preencha quantos minutos de intervalo entre cada hor�rio do quadro (somente n�meros)."
 	else
-		if cint(request.Form("Intervalo"))<1 then
+		if cint(ref("Intervalo"))<1 then
 		erro="Preencha quantos minutos de intervalo entre cada hor�rio com no m�nimo 1 minuto."
 		end if
 	end if
 	if erro="" then
-		db_execute("update quadro set HoraDe='"&request.Form("QuaDisDe")&"',HoraAte='"&request.Form("QuaDisA")&"',Intervalo='"&cint(request.Form("Intervalo"))&"'")
+		db_execute("update quadro set HoraDe='"&ref("QuaDisDe")&"',HoraAte='"&ref("QuaDisA")&"',Intervalo='"&cint(ref("Intervalo"))&"'")
 	else
 %>
 <script language="javascript">alert('<%=erro%>');</script>
@@ -103,8 +103,8 @@ if request.Form("E")="E" then
 end if
 
 
-if request.QueryString("AdicionarGrupo")<>"" then
-	set g = db.execute("select * from locaisgrupos where id="&rep(request.QueryString("AdicionarGrupo")))
+if req("AdicionarGrupo")<>"" then
+	set g = db.execute("select * from locaisgrupos where id="&rep(req("AdicionarGrupo")))
 	QuadrosAbertos = ""
 	if not g.eof then
 		locais = split(g("Locais"), "|")
@@ -129,11 +129,11 @@ for i = 0 to uBound(valor)
 set VeSeExiste=db.execute("select * from Locais where id = '"&valor(i)&"'")
 if Not VeSeExiste.EOF then
 
-	if cstr(valor(i))=request.QueryString("AdicionarLocal") then
+	if cstr(valor(i))=req("AdicionarLocal") then
 	jaInserido="S"
 	end if
 
-	if request.QueryString("Rx")<>cstr(valor(i)) then
+	if req("Rx")<>cstr(valor(i)) then
 		if novaString="" then
 		novaString=valor(i)
 		else
@@ -143,11 +143,11 @@ if Not VeSeExiste.EOF then
 
 end if
 next
-if request.QueryString("AdicionarLocal")<>"" and jaInserido="N" then
+if req("AdicionarLocal")<>"" and jaInserido="N" then
 	if novaString="" then
-	novaString=request.QueryString("AdicionarLocal")
+	novaString=req("AdicionarLocal")
 	else
-	novaString=novaString&", "&request.QueryString("AdicionarLocal")
+	novaString=novaString&", "&req("AdicionarLocal")
 	end if
 end if
 if varCheck<>novaString then
@@ -475,7 +475,7 @@ if session("y")="" then ctop="120px" else ctop=session("y")&"px" end if
 </div>
 <!--#include file="funcoesAgendamento.asp"-->
 <%'=chamaQuadros%>
-chamaCalendario('<%=request.QueryString("Data")%>','Q');
+chamaCalendario('<%=req("Data")%>','Q');
 
 
 function loadAgenda(Data, ProfissionalID){

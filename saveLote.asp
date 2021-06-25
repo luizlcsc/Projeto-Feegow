@@ -1,7 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <%
-Acao = request.QueryString("Acao")
-Tipo = request.QueryString("T")
+Acao = req("Acao")
+Tipo = req("T")
 
 function gerarcar(loteid,ConvenioID,tipoguiais,valortotal)
     Lotes = loteid
@@ -123,7 +123,7 @@ if Acao="Inserir" then
         });
 		<%
 	else
-		db_execute("insert into tisslotes (Lote, ConvenioID, Mes, Ano, Ordem, Tipo, sysUser,Observacoes,DataPrevisao) values ("&ref("Lote")&", "&request.QueryString("ConvenioID")&", "&ref("Mes")&", "&ref("Ano")&", '"&ref("Ordem")&"', '"&Tipo&"', "&session("User")&", '"&ref("Obs")&"',"&mydatenull(ref("PrevisaoRecebimento"))&")")
+		db_execute("insert into tisslotes (Lote, ConvenioID, Mes, Ano, Ordem, Tipo, sysUser,Observacoes,DataPrevisao) values ("&ref("Lote")&", "&req("ConvenioID")&", "&ref("Mes")&", "&ref("Ano")&", '"&ref("Ordem")&"', '"&Tipo&"', "&session("User")&", '"&ref("Obs")&"',"&mydatenull(ref("PrevisaoRecebimento"))&")")
 		set pult = db.execute("select id from tisslotes where sysUser="&session("User")&" order by id desc limit 1")
 		spl = split(ref("guia"), ", ")
 		if Tipo="GuiaConsulta" then

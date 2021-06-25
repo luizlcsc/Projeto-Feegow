@@ -39,8 +39,8 @@ controle = 0
 end function 
 
 ValidarRetornos=getConfig("ValidarRetornos")
-FormaPagto = request.QueryString("FormaPagto")'Particular ou Convenio
-ProcedimentoTempoProfissional = request.QueryString("ProcedimentoTempoProfissional")
+FormaPagto = req("FormaPagto")'Particular ou Convenio
+ProcedimentoTempoProfissional = req("ProcedimentoTempoProfissional")
 
 hide = "true"
 if getConfig("NaoRemoverAvisos")=1 then

@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-ProfissionalID = request.QueryString("ProfissionalID")
-Data = mydatenull(request.QueryString("Data"))
+ProfissionalID = req("ProfissionalID")
+Data = mydatenull(req("Data"))
 Observacoes = ref("Observacoes")
 if ProfissionalID = "undefined" then
     ProfissionalID = "0"

@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
+<!--#include file="functions.asp"-->
 <style>
 .listaUnidades{
 	list-style-type:none;
@@ -294,12 +295,8 @@ end if
                     <div class="row">
                         <%= quickField("memo", "ObsAgenda", "Mensagem informativa na agenda", 6, reg("ObsAgenda"), "", "", "") %>
                         <br>
-                        <div class="row">
-                            <%= quickField("memo", "ObsAgenda", "Mensagem informativa na agenda", 6, reg("ObsAgenda"), "", "", "") %>
-                            <br>
-                            <div class="col-md-6">
+                        <div class="col-md-6">
                             <%call Subform("profissionaissubespecialidades", "ProfissionalID", req("I"), "frm")%>
-
                             <div id="block-programas-saude"></div>
                         </div>
                     </div>

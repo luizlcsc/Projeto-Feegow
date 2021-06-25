@@ -1220,21 +1220,8 @@ $('#GuiaSADT').on('submit', function (event) {
                     showMessageDialog("Ocorreu um erro ao tentar salvar", "danger", "Erro!")
                     //eval(data);
                 }
-            setTimeout(function() {
-                    let result = eval(data);
-
-                    if(isSolicitar && !data.includes("ERRO")){
-                        Autorizador.autorizaProcedimentos();
-                    }
-                    isSolicitar = false;
-                }, timeoutSave);
-
-            },
-            error:function(data){
-                showMessageDialog("Ocorreu um erro ao tentar salvar", "danger", "Erro!")
-                //eval(data);
-            }
-        });
+            });
+        }
     }, 120);
 	return false;
 })

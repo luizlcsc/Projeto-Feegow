@@ -57,6 +57,17 @@ if session("RepSol")<>"" then
 	</div>
 	<%
 end if
+
+Data = ref("hData")
+
+if Data = "" then
+    Data = date()
+end if
+
+DiaSemana = weekday(Data)
+Mes = month(Data)
+Especialidades = ref("Especialidade")
+ProcedimentoID = ref("filtroProcedimentoID")
 %>
 
 <script type="text/javascript">
@@ -65,7 +76,7 @@ end if
         $(".crumb-icon a span").attr("class", "fa fa-calendar");
         $(".crumb-link").replaceWith("");
         $(".crumb-trail").removeClass("hidden");
-        $(".crumb-trail").html("<%=(formatdatetime(ref("hData"),1))%>");
+        $(".crumb-trail").html("<%=(formatdatetime(Data,1))%>");
         $("#rbtns").html("");
     }
     crumbAgenda();
@@ -75,12 +86,6 @@ end if
     <tr>
 
 <%
-Data = ref("hData")
-DiaSemana = weekday(Data)
-Mes = month(Data)
-Especialidades = ref("Especialidade")
-ProcedimentoID = ref("filtroProcedimentoID")
-
 
 RemarcacaoID= session("RemSol")
 
@@ -309,6 +314,13 @@ else
             end if
          end if
     end if
+
+    set sysConf = db.execute("select * from sys_config")
+    
+    if sysConf("ConfigGeolocalizacaoProfissional")="S" and recursoAdicional(39)=4 and sqlProfissionais&"" = "" and req("R") = "0" then
+        sqlProfissionais = " AND p.id IN (0)"
+    end if
+
 end if
 
 if ref("Convenio")<>"" then

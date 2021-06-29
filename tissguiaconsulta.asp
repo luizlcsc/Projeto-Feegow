@@ -279,6 +279,11 @@ if not reg.eof then
 								$("#ContratadoID").attr("disabled",false);
 							<% end if %>
 
+							<% if SemprePrimeiraConsulta=1 then  %>
+								$("#TipoConsultaID").val("1").attr("readonly","true");
+								$("#TipoConsultaID option:not(:selected)").prop('disabled', true);
+							<% end if %>
+
 						});
 
 						</script>
@@ -752,15 +757,19 @@ $(document).ready(function(){
 
 function validarConvenio() {
 	let convenio = $("#gConvenioID").val()
-    $.get('ValidaConvenio.asp?ConvenioID=' + convenio,
-        function(data) {
-            if (data == "1") { 
-                $("#salvar-guia").attr("disabled", true)
-            } else { 
-                $("#salvar-guia").attr("disabled", false) 
-        	}
-        }
-    );
+	if(convenio != ''){
+		$.get('ValidaConvenio.asp?ConvenioID=' + convenio,
+			function(data) {
+				if (data == "1") { 
+					$("#salvar-guia").attr("disabled", true)
+				} else { 
+					$("#salvar-guia").attr("disabled", false) 
+				}
+			}
+		);
+	}else{
+		$("#salvar-guia").attr("disabled", false) 
+	}
 }
 
 $(document).ready(function() {

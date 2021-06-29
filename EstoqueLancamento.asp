@@ -61,6 +61,7 @@ else
         end if
         LocalizacaoIDOriginal = pos("LocalizacaoID")
         CBID = pos("CBID")
+        PacienteID = pos("PacienteID")
     end if
 end if
 UnidadePagto = prod("Tipo"&tipoValor)

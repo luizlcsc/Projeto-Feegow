@@ -31,13 +31,16 @@ for i=0 to UBound(ArrDispensar)
 next
 
 'recupera o ciclo
-set resProtocoloCiclo = db.execute("SELECT * FROM pacientesprotocolosciclos WHERE id = '" & CicloID & "' AND StatusDispensacaoID != 11 AND StatusDispensacaoID != 10")
+sqlProtocoloCiclo = "SELECT ppc.*, pp.PacienteID FROM pacientesprotocolosciclos ppc " &_
+                    "INNER JOIN pacientesprotocolos pp ON pp.id = ppc.PacienteProtocoloID " &_
+                    "WHERE ppc.id = '" & CicloID & "' AND ppc.StatusDispensacaoID != 11 AND ppc.StatusDispensacaoID != 10"
+set resProtocoloCiclo = db.execute(sqlProtocoloCiclo)
 if resProtocoloCiclo.eof then
     response.write("Ciclo inválido ou não encontrado")
     response.status = 500
     response.end
 end if
-
+PacienteID = resProtocoloCiclo("PacienteID")
 
 'processa os itens
 dispensado = false
@@ -85,7 +88,7 @@ for i=0 to UBound(ArrDispensar)
         set resMedicamentoPrescrito = db.execute(sqlMedicamentoPrescrito)
         if not resMedicamentoPrescrito.eof then
             'lanca a dispensacao do produto
-            if LancaDispensacao(PacienteProtocoloID, CicloID, ProdutoID, resMedicamentoPrescrito("Dose")) then
+            if LancaDispensacao(PacienteProtocoloID, PacienteID, CicloID, ProdutoID, resMedicamentoPrescrito("Dose")) then
                 'atualiza o ciclo medicamento
                 db.execute("UPDATE pacientesprotocolosciclos_medicamentos SET " & campoDispensado & "ID = '" & ProdutoID & "', " & campoDispensado & "Em = NOW(), " & campoDispensado & "Por = '" & session("User") & "' WHERE id = '" & CicloItemID & "'")
                 dispensado = true
@@ -108,7 +111,7 @@ for i=0 to UBound(ArrDispensar)
 
         'dispensa o produto do kit
         if not resProdutoKit.eof then
-            if LancaDispensacao(PacienteProtocoloID, CicloID, ProdutoID, resProdutoKit("Quantidade")) then
+            if LancaDispensacao(PacienteProtocoloID, PacienteID, CicloID, ProdutoID, resProdutoKit("Quantidade")) then
                 dispensado = true
             end if
         end if
@@ -155,8 +158,12 @@ else
     response.write("Não dispensado")
 end if
 
-function LancaDispensacao(PacienteProtocoloID, CicloID, ProdutoID, QuantPrescrita)
-    'recupera as posições em estoque do produto
+function LancaDispensacao(PacienteProtocoloID, PacienteID, CicloID, ProdutoID, QuantPrescrita)
+    'recupera as posições em estoque do produto que serão baixados na seguinte ordem
+    '1º - Destinado ao paciente
+    '2º - Data de Validade
+    '3º - Lote
+    '4º - id
     sqlPosicoes = "SELECT pos.*, " &_
                 "IF(pos.TipoUnidade = 'C', " &_ 
                 "IFNULL(pos.Quantidade, 0) * IF(prod.ApresentacaoQuantidade IS NULL or prod.ApresentacaoQuantidade <= 0, 1, prod.ApresentacaoQuantidade), " &_
@@ -165,23 +172,15 @@ function LancaDispensacao(PacienteProtocoloID, CicloID, ProdutoID, QuantPrescrit
                 "FROM estoqueposicao pos " &_
                 "INNER JOIN produtos prod ON pos.ProdutoID = prod.id " &_
                 "LEFT JOIN produtoslocalizacoes loc ON loc.id = pos.LocalizacaoID " &_
-                "WHERE pos.Quantidade > 0 AND pos.ProdutoID = '" & ProdutoID & "' AND COALESCE(loc.UnidadeID, 0) = '" & session("UnidadeID") & "'"
+                "WHERE pos.Quantidade > 0 AND pos.ProdutoID = '" & ProdutoID & "' AND COALESCE(loc.UnidadeID, 0) = '" & session("UnidadeID") & "' " &_
+                "AND COALESCE(pos.PacienteID, 0) IN (0, " & PacienteID & ") " &_
+                "ORDER BY FIELD(pos.PacienteID, '" & PacienteID & "') DESC, pos.Validade, pos.Lote, pos.id"
     set resPosicoes = db.execute(sqlPosicoes)
 
     if not resPosicoes.eof then
 
-        'calcula o total das posições
-        quantTotalEmEstoque = 0
-        countPosicoes       = 0
-        while not resPosicoes.eof
-            quantTotalEmEstoque = quantTotalEmEstoque + resPosicoes("QuantUnit")
-            countPosicoes = countPosicoes + 1
-            resPosicoes.movenext
-        wend
-
         'processa cada posição
-        resPosicoes.movefirst
-        pos = 0
+        quantTotalABaixar = QuantPrescrita
         while not resPosicoes.eof
             posicaoId              = resPosicoes("id")
             quantPosicao           = resPosicoes("QuantUnit")
@@ -192,34 +191,29 @@ function LancaDispensacao(PacienteProtocoloID, CicloID, ProdutoID, QuantPrescrit
             localizacaoIdOriginal  = resPosicoes("LocalizacaoID")
             cbid                   = resPosicoes("CBID")
             apresentacaoQuantidade = resPosicoes("ApresentacaoQuantidade")
+            posPacienteId          = resPosicoes("PacienteID")
 
-            'calcula a quantidade a ser baixada da posição, de forma pró-rata
-            percProRata  = quantPosicao / quantTotalEmEstoque
-            quantABaixar = QuantPrescrita * percProRata
-            if pos < (countPosicoes - 1) then
-                ceil = Int(quantABaixar)
-                if ceil <> quantABaixar then
-                    ceil = ceil + 1
-                end if
-                quantABaixar = ceil
-            else
-                quantABaixar = Int(quantABaixar)
+            'calcula a quantidade a ser baixada da posição
+            quantABaixar = quantTotalABaixar
+            if (quantABaixar > quantPosicao) then
+                quantABaixar = quantPosicao
             end if
 
             quantConjuntoABaixar = Int(quantABaixar / apresentacaoQuantidade)
             quantUnitariaABaixar = quantABaixar mod apresentacaoQuantidade
 
+            'response.write("<pre>quantTotalBaixar "&quantTotalABaixar&"</pre>")
             'response.write("<pre>quantABaixar da pos "&posicaoId&": "&quantABaixar&"</pre>")
             'response.write("<pre>quantConjuntoABaixar da pos "&posicaoId&": "&quantConjuntoABaixar&"</pre>")
             'response.write("<pre>quantUnitariaABaixar da pos "&posicaoId&": "&quantUnitariaABaixar&"</pre>")
             if quantConjuntoABaixar > 0 then
-                call LanctoEstoque(0, posicaoId, ProdutoID, "S", tipoUnidadeOriginal, "C", quantConjuntoABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Saída", "", "", "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
+                call LanctoEstoque(0, posicaoId, ProdutoID, "S", tipoUnidadeOriginal, "C", quantConjuntoABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Saída", "", posPacienteId, "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
             end if
             if quantUnitariaABaixar > 0 then
-                call LanctoEstoque(0, posicaoId, ProdutoID, "S", tipoUnidadeOriginal, "U", quantUnitariaABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Saída", "", "", "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
+                call LanctoEstoque(0, posicaoId, ProdutoID, "S", tipoUnidadeOriginal, "U", quantUnitariaABaixar, date() , "", lote, validade, "", "", "", "Dispensação " & CicloID & " > Saída", "", posPacienteId, "", localizacaoIdOriginal, "", "", "dispensacao", cbid, "", responsavelOriginal, localizacaoIdOriginal, "", "", "", "")
             end if
 
-            pos = pos + 1
+            quantTotalABaixar = quantTotalABaixar - quantABaixar
             resPosicoes.movenext
         wend
 

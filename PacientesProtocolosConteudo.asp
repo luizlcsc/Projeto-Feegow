@@ -105,14 +105,17 @@ end if
                     if isnumeric(PlanoID) then
                         sqlRegraPlan = " AND (medconv.planoID LIKE '%|"&PlanoID&"|%' OR medconv.planoID IS NULL OR medconv.planoID='')"
                     end if
-                    set getRegraMedicamento = db.execute("SELECT prod.id MedicamentoID, prod.NomeProduto "&_
-                                                        "FROM medicamentos_convenio medconv "&_
-                                                        "LEFT JOIN produtos prod ON prod.id=medconv.produtoReferencia "&_
-                                                        "WHERE medconv.produtoReferencia!=0 AND medconv.sysActive=1 "&sqlRegraConv & sqlRegraPlan&" LIMIT 1")
 
-                    if not getRegraMedicamento.eof then
-                        Medicamento = getRegraMedicamento("NomeProduto")
-                        MedicamentoID = getRegraMedicamento("MedicamentoID")
+                    if sqlRegraConv <> "" or sqlRegraPlan <> "" then
+                        set getRegraMedicamento = db.execute("SELECT prod.id MedicamentoID, prod.NomeProduto "&_
+                                                            "FROM medicamentos_convenio medconv "&_
+                                                            "LEFT JOIN produtos prod ON prod.id=medconv.produtoReferencia "&_
+                                                            "WHERE medconv.produtoReferencia!=0 AND medconv.sysActive=1 "&sqlRegraConv & sqlRegraPlan&" LIMIT 1")
+
+                        if not getRegraMedicamento.eof then
+                            Medicamento = getRegraMedicamento("NomeProduto")
+                            MedicamentoID = getRegraMedicamento("MedicamentoID")
+                        end if
                     end if
 
                 end if

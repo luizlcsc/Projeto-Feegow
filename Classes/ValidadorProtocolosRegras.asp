@@ -25,26 +25,37 @@ class ValidadorProtocolosRegras
 
         isValid = true
 
-        'verifica se o protocolo tem regra de convênio
-        sqlProtocolo    = "SELECT ConvenioRegra, ConvenioValor FROM protocolos WHERE id = '" & protocoloId & "'"
+        'recupera os dados do protocolo
+        sqlProtocolo    = "SELECT * FROM protocolos WHERE id = '" & protocoloId & "'"
         set rsProtocolo = db.execute(sqlProtocolo)
         if rsProtocolo.eof then
             Response.write("Nao foi possivel encontrar os dados do protocolo " & protocoloId)
             Response.end
         end if
-
-        convenioRegra = rsProtocolo("ConvenioRegra")&""
-        convenioPlano = rsProtocolo("ConvenioValor")&""
-        if convenioRegra <> "" then
-            if not ((dadosPaciente("ConvenioID1")&"" = convenioRegra and (dadosPaciente("PlanoID1")&"" = convenioPlano or convenioPlano = "")) or _
-               (dadosPaciente("ConvenioID2")&"" = convenioRegra and (dadosPaciente("PlanoID2")&"" = convenioPlano or convenioPlano = "")) or _
-               (dadosPaciente("ConvenioID3")&"" = convenioRegra and (dadosPaciente("PlanoID3")&"" = convenioPlano or convenioPlano = ""))) then
-                isValid = false
-            end if
-        end if
-
         rsProtocolo.close
         set rsProtocolo = nothing
+
+        'verifica se o protocolo tem regra de convênio
+        sqlProtocoloConvenios = "SELECT ConvenioID, PlanoID FROM protocolos_convenios WHERE ProtocoloID = '" & protocoloId & "'"
+        set rsProtocoloConvenios = db.execute(sqlProtocoloConvenios)
+        convenioValid = true
+        while not rsProtocoloConvenios.eof
+
+            convenioRegra = rsProtocoloConvenios("ConvenioID")&""
+            convenioPlano = rsProtocoloConvenios("PlanoID")&""
+
+            if not ((dadosPaciente("ConvenioID1")&"" = convenioRegra and (dadosPaciente("PlanoID1")&"" = convenioPlano or convenioPlano = "")) or _
+            (dadosPaciente("ConvenioID2")&"" = convenioRegra and (dadosPaciente("PlanoID2")&"" = convenioPlano or convenioPlano = "")) or _
+            (dadosPaciente("ConvenioID3")&"" = convenioRegra and (dadosPaciente("PlanoID3")&"" = convenioPlano or convenioPlano = ""))) then
+                convenioValid = false
+            end if
+
+            rsProtocoloConvenios.movenext
+        wend
+        isValid = convenioValid
+
+        rsProtocoloConvenios.close
+        set rsProtocoloConvenios = nothing
 
         'verifica se o protocolo tem regras
         if isValid then

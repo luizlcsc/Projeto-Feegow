@@ -174,7 +174,7 @@ end if
      <tbody>
 <%
 
-I = ccur(req("I"))'I é item de invoice, que puxa seu grupo
+I = req("I")'I é item de invoice, que puxa seu grupo
 Add = req("Add")
 Remove = req("Remove")
 Numera = 0

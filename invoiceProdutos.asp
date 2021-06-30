@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-ElementoID = request.QueryString("ElementoID")
-ProdutoID = request.QueryString("id")
+ElementoID = req("ElementoID")
+ProdutoID = req("id")
 CD = ref("T")
 set proc = db.execute("select p.*, u.Descricao NomeUnidade from produtos p LEFT JOIN cliniccentral.tissunidademedida u ON u.id=p.ApresentacaoUnidade where p.id="&ProdutoID)
 if not proc.EOF then

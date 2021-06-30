@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-set rec = db.execute("select * from recibos where id="&request.QueryString("ReciboID"))
+set rec = db.execute("select * from recibos where id="&req("ReciboID"))
 if not rec.eof then
 	%>
     <textarea class="hidden" id="txtProviRecibo"><%=rec("Texto")%></textarea>

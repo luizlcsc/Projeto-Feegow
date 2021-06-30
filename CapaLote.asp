@@ -30,7 +30,7 @@
     <br>
 <div id="capa-lote">
 <%
-LoteID = request.QueryString("LoteID")
+LoteID = req("LoteID")
 set capa = db.execute("select l.*, c.RazaoSocial as Operadora, (select count(*) from tissguiasadt where LoteID=l.id) as QuantidadeSADT, (select count(*) from tissguiaconsulta where LoteID=l.id) as QuantidadeConsulta, (select sum(TotalGeral) from tissguiasadt where LoteID=l.id) as ValorLoteSADT, (select count(*) from tissguiahonorarios where LoteID=l.id) as QuantidadeHonorarios, (select count(*) from tissguiaconsulta where LoteID=l.id) as QuantidadeConsulta, (select sum(TotalGeral) from tissguiasadt where LoteID=l.id) as ValorLoteSADT, (select sum(Procedimentos) from tissguiahonorarios where LoteID=l.id) as ValorLoteHonorarios, (select sum(ValorProcedimento) from tissguiaconsulta where LoteID=l.id) as ValorLoteConsulta from tisslotes as l LEFT JOIN convenios as c on c.id=l.ConvenioID where l.id="&LoteID)
 if capa("Tipo")="GuiaConsulta" then
 	TipoGuia="CONSULTA"

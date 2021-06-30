@@ -174,9 +174,9 @@ end if
      <tbody>
 <%
 
-I = ccur(request.QueryString("I"))'I é item de invoice, que puxa seu grupo
-Add = request.QueryString("Add")
-Remove = request.QueryString("Remove")
+I = req("I")'I é item de invoice, que puxa seu grupo
+Add = req("Add")
+Remove = req("Remove")
 Numera = 0
 
 'function linhaMaterial(id, ValorUnitario, Executado, DataExecucao, HoraExecucao, HoraFim, ProfissionalID, Desconto, Numera)
@@ -243,7 +243,7 @@ end if
 contaParalela = 0
 if str="db" then
     if 0 then
-	    set pitem = db.execute("select * from tissprocedimentosvalores where ConvenioID="&request.QueryString("ConvenioID")&" and ProcedimentoID="&request.QueryString("ProcedimentoID"))
+	    set pitem = db.execute("select * from tissprocedimentosvalores where ConvenioID="&req("ConvenioID")&" and ProcedimentoID="&req("ProcedimentoID"))
 	    if not pitem.EOF then
 		    AssociacaoID = pitem("id")
 		    set itens = db.execute("select pp.id as ppid, pp.*, pv.*, pt.*, p.CD, p.RegistroANVISA, p.AutorizacaoEmpresa, p.ApresentacaoUnidade, p.Codigo as CodigoNoFabricante from tissprodutosprocedimentos as pp left join tissprodutosvalores as pv on pv.id=pp.ProdutoValorID left join tissprodutostabela as pt on pt.id=pv.ProdutoTabelaID left join produtos as p on p.id=pt.ProdutoID where pp.AssociacaoID="&AssociacaoID)

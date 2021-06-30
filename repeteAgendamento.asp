@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-ConsultaID = request.QueryString("ConsultaID")
+ConsultaID = req("ConsultaID")
 	%>
 <form method="post" action="" id="formRepeteAgendamento" name="formRepeteAgendamento">
 <div class="modal-header">

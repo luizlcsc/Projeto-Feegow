@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-InvoiceID = request.QueryString("I")
+InvoiceID = req("I")
 set inv = db.execute("select i.*, fr.MetodoID from sys_financialinvoices i left join sys_formasrecto fr on fr.id=i.FormaID where i.id="&InvoiceID)
 AccountIDInvoice = inv("AccountID")
 AssociationAccountIDInvoice = inv("AssociationAccountID")

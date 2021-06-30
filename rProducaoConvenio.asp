@@ -2,8 +2,8 @@
 
 
 <%
-DataDe = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
+DataDe = req("DataDe")
+DataAte = req("DataAte")
 
 %>
 <h2 class="text-center">Produção por Convênio</h2>

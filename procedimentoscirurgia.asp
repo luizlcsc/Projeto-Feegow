@@ -27,7 +27,7 @@ end if
       <th width="80" align="center" nowrap>Valor Unit.</th>
       <th width="60" align="center" nowrap>Valor Total</th>
       <th width="30" align="center" nowrap> </th>
-      <th width="30" align="center" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemCirurgia('Procedimentos', <%=request.QueryString("I")%>, 0);"><i class="fa fa-plus"></i></button></th>
+      <th width="30" align="center" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemCirurgia('Procedimentos', <%=req("I")%>, 0);"><i class="fa fa-plus"></i></button></th>
     </tr>
   </thead>
   <tbody>
@@ -50,7 +50,7 @@ end if
       <input type="hidden" name="descricaoProc<%=p("id") %>" value="<%=p("Descricao") %>" />
       <input type="hidden" name="qtdProc<%=p("id") %>" value="<%=p("Quantidade") %>" />
       <input type="hidden" name="tabelaProc<%=p("id") %>" value="<%=p("TabelaID") %>" />
-      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemCirurgia('Procedimentos', <%=request.QueryString("I")%>, <%=p("id")%>);"><i class="fa fa-edit"></i></button></td>
+      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemCirurgia('Procedimentos', <%=req("I")%>, <%=p("id")%>);"><i class="fa fa-edit"></i></button></td>
       <td align="center"><%= p("Data") %></td>
       <td align="center"><%= right(p("HoraInicio"),8) %></td>
       <td align="center"><%= right(p("HoraFim"),8) %></td>
@@ -93,7 +93,7 @@ end if
               end if
               %>
       </td>
-      <td align="center"><button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('procedimentoscirurgia', 'procedimentoscirurgia.asp?I=<%=request.QueryString("I")%>&X=<%=p("id")%>')"><i class="fa fa-remove"></i></button></td>
+      <td align="center"><button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('procedimentoscirurgia', 'procedimentoscirurgia.asp?I=<%=req("I")%>&X=<%=p("id")%>')"><i class="fa fa-remove"></i></button></td>
     </tr>
     <tr>
         <td colspan="15" class="hidden" id="Procedimentos<%=p("id") %>"></td>

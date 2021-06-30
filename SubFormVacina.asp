@@ -1,9 +1,9 @@
 <!--#include file="connect.asp"-->
 <%
-Acao = request.querystring("opt")
-VacinaID = request.querystring("VacinaID")
-SerieID = request.querystring("SerieID")
-DosagemID = request.querystring("DosagemID")
+Acao = req("opt")
+VacinaID = req("VacinaID")
+SerieID = req("SerieID")
+DosagemID = req("DosagemID")
 
 'Exclui todas as séries de dosagens e séries
 if Acao="Del" then
@@ -81,8 +81,8 @@ set dosagem=nothing
                 valorSerieTitulo = ser("Titulo")
                 valorSerieDescricao = ser("Descricao")
             else
-                valorSerieTitulo = request.Form("Titulo-vacina_serie-"&ser("id"))
-                valorSerieDescricao = request.Form("Descricao-vacina_serie-"&ser("id"))
+                valorSerieTitulo = ref("Titulo-vacina_serie-"&ser("id"))
+                valorSerieDescricao = ref("Descricao-vacina_serie-"&ser("id"))
             end if
       
 %>
@@ -152,10 +152,10 @@ set dosagem=nothing
                         valorDosagem = dos("ProdutoID")
                         valorPeriodoDias = dos("PeriodoDias")
                     else
-                        valorOrdem = request.Form("Ordem-vacina_serie_dosagem-"&dos("id"))
-                        valorDescricao = request.Form("Descricao-vacina_serie_dosagem-"&dos("id"))
-                        valorDosagem = request.Form("ProdutoID-vacina_serie_dosagem-"&dos("id"))
-                        valorPeriodoDias = request.Form("PeriodoDias-vacina_serie_dosagem-"&dos("id"))
+                        valorOrdem = ref("Ordem-vacina_serie_dosagem-"&dos("id"))
+                        valorDescricao = ref("Descricao-vacina_serie_dosagem-"&dos("id"))
+                        valorDosagem = ref("ProdutoID-vacina_serie_dosagem-"&dos("id"))
+                        valorPeriodoDias = ref("PeriodoDias-vacina_serie_dosagem-"&dos("id"))
                     end if
                     %>
                         <table width="100%" class="table table-condensed">

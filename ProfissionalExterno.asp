@@ -11,8 +11,8 @@ set reg = db.execute("select * from ProfissionalExterno where id="&req("I"))
 <div class="panel">
 <div class="panel-body">
 <div class="">
-                <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-                <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+                <input type="hidden" name="I" value="<%=req("I")%>" />
+                <input type="hidden" name="P" value="<%=req("P")%>" />
 <br>
             <div class="row">
                 <div class="col-md-2" id="divAvatar">
@@ -553,7 +553,7 @@ jQuery(function($) {
 <script type="text/javascript">
 //js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto"
 %>
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?')){

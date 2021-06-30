@@ -6,8 +6,8 @@ pageURL = req("refURL")
 videoID = req("v")
 avaliacao = req("avaliacao")
 
-form_comentario = request.form("comentario")
-form_videoAtual = request.form("refURLAtual")
+form_comentario = ref("comentario")
+form_videoAtual = ref("refURLAtual")
 
 'For Each item in Session.Contents
   'Response.Write "<pre>"&item & " = " & Session.Contents(item) & "</pre>"

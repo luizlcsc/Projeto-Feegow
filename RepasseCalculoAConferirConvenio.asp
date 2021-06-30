@@ -150,7 +150,6 @@ private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePacien
 
         'Funções estampadas
         if fd("FM")="F" then
-
             Creditado = calcCreditado(ContaCredito, ProfissionalExecutante)
             ShowValor = calcValor(Valor, TipoValor, ValorBase, "show")
 
@@ -191,9 +190,9 @@ private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePacien
                 nLinha = nLinha+1
 
                 'lrResult( lrDataExecucao, lrNomeFuncao, lrInvoiceID, lrNomeProcedimento, lrNomePaciente, lrFormaPagto, lrCreditado, lrValorProcedimento, lrValorRecebido, lrValorRepasse )
-
-  
-                call lrResult( "Calculo", rDataExecucao, DominioID & ": "& Funcao, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
+                if Creditado = reqf("AccountID") then
+                    call lrResult( "Calculo", rDataExecucao, DominioID & ": "& Funcao, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
+                end if
             end if
         end if
 

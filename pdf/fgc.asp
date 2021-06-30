@@ -1,1 +1,1 @@
-﻿Exibindo <%=request.form("var1") %>
+﻿Exibindo <%=ref("var1") %>

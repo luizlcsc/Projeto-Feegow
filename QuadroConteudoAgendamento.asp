@@ -66,7 +66,7 @@ if not pcondia.eof then
 					nrPacsMT=nrPacsMT+1
 				next
 				if ccur(strSMz(3))>ccur(nrPacsMT) then
-				'	btnAdicionarPaciente="<input type=""button"" value=""adicionar paciente &gt;"" onclick=""parent.ConsultaAgendamento.location='ConsultaAgendamento.asp?DrId="&request.QueryString("DrId")&"&Hora="&formatdatetime(HorarioExibido,4)&"&Data="&Data&"&PacienteID=0&ProcedimentoFixo="&strSMz(0)&"';"" />"
+				'	btnAdicionarPaciente="<input type=""button"" value=""adicionar paciente &gt;"" onclick=""parent.ConsultaAgendamento.location='ConsultaAgendamento.asp?DrId="&req("DrId")&"&Hora="&formatdatetime(HorarioExibido,4)&"&Data="&Data&"&PacienteID=0&ProcedimentoFixo="&strSMz(0)&"';"" />"
 					 btnAdicionarPaciente="<input type=""button"" value=""+"" style=""width:20px;"" onclick=""chamaAgendamento(0,'"&strSMz(0)&"','"&strSMz(2)&"','"&DrAdicionar&"','"&Data&"','"&formatDateTime(pTemp("Hora"),3)&"','"&Data&"','Q',0,0,0,'"&LocalID&"');"" />"
 				else
 					btnAdicionarPaciente=""

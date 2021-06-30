@@ -3,12 +3,12 @@
 response.Charset="utf-8"
 
 'on error resume next
-if request.QueryString("De")="" then
+if req("De")="" then
 	De=dateAdd("m",-1,date())
 	StaConsulta="3"
 else
-	De=request.QueryString("De")
-	StaConsulta=request.QueryString("StaConsulta")
+	De=req("De")
+	StaConsulta=req("StaConsulta")
 end if
 
 if req("Ate")="" then
@@ -34,13 +34,13 @@ if req("De")="" then
                 <label>Forma</label><br />
                 <select name="Forma" class="form-control">
                     <option value="">Todas</option>
-                    <option value="0" <%if request.QueryString("Forma")="0" then%> selected="selected" <%end if%>>Particular</option>
-                    <option value="-1" <%if request.QueryString("Forma")="-1" then%> selected="selected" <%end if%>>Todos os Conv&ecirc;nios</option>
+                    <option value="0" <%if req("Forma")="0" then%> selected="selected" <%end if%>>Particular</option>
+                    <option value="-1" <%if req("Forma")="-1" then%> selected="selected" <%end if%>>Todos os Conv&ecirc;nios</option>
                     <%
           set p=db.execute("select * from convenios where sysActive=1 order by NomeConvenio")
           while not p.EOF
                     %>
-                    <option value="<%=p("id")%>" <%if cStr(p("id"))=request.QueryString("Forma") then%> selected="selected" <%end if%>><%=p("NomeConvenio")%></option>
+                    <option value="<%=p("id")%>" <%if cStr(p("id"))=req("Forma") then%> selected="selected" <%end if%>><%=p("NomeConvenio")%></option>
                     <%
           p.moveNext
           wend
@@ -86,7 +86,7 @@ if req("De")="" then
               while not p.EOF
 			  	if aut("|agendaV|")=1 or (lcase(session("Table"))="profissionais" and session("idInTable")=p("id")) then
                     %>
-                    <option value="<%=p("id")%>" <%if cStr(p("id"))=request.QueryString("Profissional") then%> selected="selected" <%end if%>><%=p("NomeProfissional")%></option>
+                    <option value="<%=p("id")%>" <%if cStr(p("id"))=req("Profissional") then%> selected="selected" <%end if%>><%=p("NomeProfissional")%></option>
                     <%
 				end if
               p.moveNext
@@ -151,23 +151,23 @@ table.dataTable td.dataTables_empty{
 end if
 
 
-if request.QueryString("E")="E" then
-	if request.QueryString("Profissional")="" then
+if req("E")="E" then
+	if req("Profissional")="" then
 		sqlProfissional=""
 	else
-		sqlProfissional=" and id = '"&request.QueryString("Profissional")&"'"
+		sqlProfissional=" and id = '"&req("Profissional")&"'"
 	end if
 	qtdTotal = 0
 	set pP=db.execute("select * from profissionais where sysActive=1"&sqlProfissional&" and ativo='on' order by NomeProfissional")
 	while not pP.EOF
-		if request.QueryString("Forma")="" then
+		if req("Forma")="" then
 			sqlForma=""
-		elseif request.QueryString("Forma")="0" then
+		elseif req("Forma")="0" then
 			sqlForma=" and a.rdValorPlano='V'"
-		elseif request.QueryString("Forma")="-1" then
+		elseif req("Forma")="-1" then
 			sqlForma=" and a.rdValorPlano='P'"
 		else
-			sqlForma=" and a.rdValorPlano='P' and a.ValorPlano="&request.QueryString("Forma")
+			sqlForma=" and a.rdValorPlano='P' and a.ValorPlano="&req("Forma")
 		end if
 		if req("Procedimentos")<>"" then
 			sqlProc = " AND a.TipoCompromissoID IN ("& replace(req("Procedimentos"), "|", "") &")"

@@ -1,8 +1,8 @@
 <!--#include file="connect.asp"-->
 <%
-ConvenioID = request.QueryString("ConvenioID")
-ProcedimentoID = request.QueryString("ProcedimentoID")
-AssociacaoID = request.QueryString("AssociacaoID")
+ConvenioID = req("ConvenioID")
+ProcedimentoID = req("ProcedimentoID")
+AssociacaoID = req("AssociacaoID")
 
 set c = db.execute("select * from convenios where id="&ConvenioID)
 set p = db.execute("select id, NomeProcedimento,Codigo, TecnicaID, CH, UCO as CustoOperacional,Valor,Filme as  QuantidadeFilme from procedimentos where id="&ProcedimentoID)

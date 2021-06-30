@@ -50,10 +50,12 @@ set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where
 	<div class="row">
     	<%=quickField("text", "RotuloCampo", "T&iacute;tulo", 6, pCampo("RotuloCampo"), "", "", "")%>
     	<%=quickField("text", "Ordem", "Ordem", 2, pCampo("Ordem"), "", "", "")%>
-        <div class="col-md-4 hidden"><label>&nbsp;</label><br>
-        	<label><input type="checkbox" class="ace" name="Obrigatorio" value="S"<%if pCampo("Obrigatorio")="S" then%> checked<%end if%>/><span class="lbl">
-            Adicionar checkbox no t&iacute;tulo</span></label>
+    	<%if TipoCampoID=1 or TipoCampoID=2 or TipoCampoID=4 or TipoCampoID=5 or TipoCampoID=6 or TipoCampoID=8 or TipoCampoID=16 then%>
+        <div class="col-md-4"><label>&nbsp;</label><br>
+        	<label><input type="checkbox" class="ace" name="Obrigatorio" value="S"<%if pCampo("Obrigatorio")="S" then%> checked<%end if%>/><span class="lbl mb20">
+            Campo obrigatório</span></label>
         </div>
+        <%end if%>
     </div>
     <% IF TipoCampoID = 1 OR TipoCampoID = 2 OR TipoCampoID = 8 THEN
         IF TipoCampoID = 1 THEN
@@ -717,7 +719,7 @@ end if
 %>
 </form>
 <div class="panel-footer mt25 text-right">
-  <button type="button" class="btn btn-primary" onclick="saveEdit(<%=pCampo("id")%>, '<%=request.QueryString("W")%>', '<%=request.QueryString("F")%>', 0, 'S');"><i class="fa fa-save"></i>Salvar</button>
+  <button type="button" class="btn btn-primary" onclick="saveEdit(<%=pCampo("id")%>, '<%=req("W")%>', '<%=req("F")%>', 0, 'S');"><i class="fa fa-save"></i>Salvar</button>
   <%
   if TipoCampoID=4 or TipoCampoID=5 or TipoCampoID=6 then
   	%><button type="button" class="btn btn-success" onclick="addOption('A', <%=req("I")%>);"><i class="fa fa-plus"></i> Adicionar Op&ccedil;&atilde;o</button><%

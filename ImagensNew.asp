@@ -1,7 +1,35 @@
 <!--#include file="connect.asp"-->
 <!--#include file="ProntCompartilhamento.asp"-->
 <!--#include file="Classes/Arquivo.asp"-->
+
+<%if 1=2 then%>
+<!-- The text field -->
+<input type="text" value="Hello World" id="myInput">
+
+<!-- The button used to copy the text -->
+<button onclick="CopyToClipboard()">Copy text</button>
+
+<script>
+function CopyToClipboard() {
+  /* Get the text field */
+  var copyText = document.getElementById("myInput");
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+  alert("Copied the text: " + copyText.value);
+}
+
+</script>
 <%
+end if
+
+
     if req("rotateAngle")&""<>"" then
         qImagemUpdateSQL = "UPDATE arquivos SET imgRotate="&req("rotateAngle")&" WHERE id="&req("I")
         db.execute(qImagemUpdateSQL) 
@@ -335,7 +363,6 @@ end if
                     // item.ArquivoLink = item.ArquivoLink.replace('redirect','download')
                 }
 
-                
                 return `<div class="galery-item" id="item${item.id}">
                              <div class="galery-data-envio">
                                 <small class="pull-right data-envio">Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}</small><br/>
@@ -348,7 +375,9 @@ end if
                                          </div>
                                        </div>
                                     </small>
-
+                                    <button class="btn btn-xs btn-alert" title="Copiar link" onclick="CopyToClipboard('${item.ArquivoLink}')">
+                                        <i class="fa fa-copy"></i>
+                                    </button>
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="fa fa-expand icon-external-link"></i>
                                     </a>
@@ -389,6 +418,8 @@ end if
 
              document.getElementById("galery").innerHTML =b.join("");
     }
+
+
 
     function expandItem(id){
          let item = itens.find(item => item.id == id);
@@ -553,4 +584,16 @@ function atualizaAlbum(X){
 	});
     
 }
+
+function CopyToClipboard(value) {
+  var tempInput = document.createElement("input");
+  tempInput.value = value;
+  document.body.appendChild(tempInput);
+  tempInput.select();
+  document.execCommand("copy");
+  document.body.removeChild(tempInput);
+
+  showMessageDialog("para a área de transferência.", "success", "Link copiado!", 5000);
+}
+
 </script>

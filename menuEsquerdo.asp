@@ -313,7 +313,10 @@ end if
         <li class="row sidebar-stat">
             <div class="fs11 col-sm-12">
                 <div class="input-group">
-                    <span class="input-group-addon img-thumbnail" id="FotoProfissional" style="background-image: url(assets/img/user.png); background-size: 100%"></span>
+                    <span
+                        class="input-group-addon img-thumbnail"
+                        id="FotoProfissional"
+                        style="background-image: url(assets/img/user.png); background-size: 100%; background-repeat: no-repeat; background-position-y: center;"></span>
                     <%
             if aut("|agendaV|")=1 then
                     %>

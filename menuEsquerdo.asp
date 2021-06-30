@@ -316,7 +316,8 @@ end if
                     <span
                         class="input-group-addon img-thumbnail"
                         id="FotoProfissional"
-                        style="background-image: url(assets/img/user.png); background-size: 100%; background-repeat: no-repeat; background-position-y: center;"></span>
+                        style="background-image: url(assets/img/user.png); background-size: 100%; background-repeat: no-repeat; background-position-y: center;">
+                    </span>
                     <%
             if aut("|agendaV|")=1 then
                     %>

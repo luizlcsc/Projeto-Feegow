@@ -5728,6 +5728,41 @@ end if
  
 end function
 
+'Verifica se tem permissão pelo Care Team do Paciente.
+'O usuário logado e o usuário especificado nos parâmetros
+'devem pertencer ao CareTeam do paciente.
+
+'   Parâmetros: 
+'      SysUserID  - Id do profissional na tabela sys_user
+'      PacienteID - Id do paciente
+function autCareTeam(SysUserID, PacienteID)
+    autCareTeam = false
+
+    if lcase(session("table"))="profissionais"  then
+
+        set rsUser = db.execute("SELECT idInTable FROM sys_users WHERE id = '" & SysUserID & "' AND `Table` = 'profissionais' LIMIT 1")
+        if not rsUser.eof then
+
+            sqlCareTeam = "SELECT COUNT(*) AS cnt FROM pacientesprofissionais " &_
+                          "WHERE ProfissionalID IN ('" & session("idInTable")  & "', '" & rsUser("idInTable") & "') " &_
+                          "AND PacienteID = '" & PacienteID & "' AND sysActive = 1"
+
+            set rsCareTeam = db.execute(sqlCareTeam)
+            if not rsCareTeam.eof then
+                if cint(rsCareTeam("cnt")) = 2 then
+                    autCareTeam = true
+                end if
+            end if
+
+            rsCareTeam.close
+            set rsCareTeam=nothing
+        end if
+        rsUser.close
+        set rsUser=nothing
+
+    end if
+
+end function
 
 
 %>

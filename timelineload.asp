@@ -182,6 +182,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                 PermissaoArquivo=false
             end if
 
+            ' Verifica se o registro foi feito por um profissional
+            ' que pertence ao Care Team do paciente, permitindo a exibição
+            if (autCareTeam(ti("sysUser"), PacienteID)) then
+                PermissaoArquivo=true
+            end if
+
             if not PermissaoArquivo then
     
                 hiddenRegistro = ""
@@ -311,9 +317,13 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 <%
                                 end if
                             end if
-                            set perm = db.execute("select Permissoes from buipermissoes where FormID="&ti("Modelo"))
-
-                            if cstr(session("User"))=ti("sysUser")&"" and ( aut("prescricoesX")>0 or instr(perm("Permissoes"), "XP")>0 ) then %>
+                            set perm = db.execute("select Permissoes from buipermissoes where FormID='"&ti("Modelo")&"'")
+                            if not perm.eof then
+                                temPermX = instr(perm("Permissoes"), "XP")>0 
+                            else
+                                temPermX = false
+                            end if
+                            if cstr(session("User"))=ti("sysUser")&"" and ( aut("prescricoesX")>0 or temPermX ) then %>
                                 <a href="javascript:if(confirm('Tem certeza de que deseja apagar esta prescrição?'))pront('timeline.asp?PacienteID=<%= PacienteID %>&Tipo=|<%= ti("Tipo") %>|&X=<%= ti("id") %>');">
                                     <i class="fa fa-remove"></i>
                                 </a>
@@ -498,7 +508,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             end if
                             response.Write(iniLau &"<em>Laudo em confecção.</em>"& fimLau)
                         end if
-                        case "Pedido"
+                    case "Pedido"
                         set ProcedimentosPedidoSQL = db.execute("SELECT pe.*,proc.NomeProcedimento FROM pedidoexameprocedimentos pe INNER JOIN procedimentos proc ON proc.id=pe.ProcedimentoID WHERE pe.PedidoExameID="&ti("id"))
                         %>
                         <ul>
@@ -566,12 +576,14 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             <%
                                 set im = db.execute("select * from arquivos where date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='I' AND PacienteID="&PacienteID)
                                 while not im.eof
-                                    permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
+                                    'default pode ver, porém se não pertence ao CareTeam irá verificar a permissão da imagem
                                     podever = true
-
-                                    if permissao <> "" then
-                                        permissaoSplit = split(permissao,"|")
-                                        podever = permissaoSplit(0)
+                                    if not autCareTeam(im("sysUser"), PacienteID) then
+                                        permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
+                                        if permissao <> "" then
+                                            permissaoSplit = split(permissao,"|")
+                                            podever = permissaoSplit(0)
+                                        end if
                                     end if
 
                                     if podever then
@@ -601,12 +613,14 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                          <%
                             set im = db.execute("select * from arquivos where date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='A' AND PacienteID="&PacienteID)
                             while not im.eof
-                                permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
                                 podever = true
-
-                                if permissao <> "" then
-                                    permissaoSplit = split(permissao,"|")
-                                    podever = permissaoSplit(0)
+                                'default pode ver, porém se não pertence ao CareTeam irá verificar a permissão do arquivo
+                                if not autCareTeam(im("sysUser"), PacienteID) then
+                                    permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
+                                    if permissao <> "" then
+                                        permissaoSplit = split(permissao,"|")
+                                        podever = permissaoSplit(0)
+                                    end if
                                 end if
 
                                 if podever then

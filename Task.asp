@@ -1,19 +1,19 @@
 <!--#include file="connect.asp"-->
 <%
 DataHoje=date()
-Set PLid = db.Execute("Select * From Tarefas Where id = '"&Request.QueryString("I")&"'")
+Set PLid = db.Execute("Select * From Tarefas Where id = '"&req("I")&"'")
 
 
-If Request.Form("ENVIADO") = "ENVIADO" Then
-	if request.Form("Finalizada")="" then
+If ref("ENVIADO") = "ENVIADO" Then
+	if ref("Finalizada")="" then
 	erro="Responda se esta resposta conclui esta tarefa."
 	end if
-	if request.Form("resposta")="" then
+	if ref("resposta")="" then
 	erro="Escreva a resposta desta tarefa."
 	end if
 	if erro<>"" then
 	else
-		sql = "insert into TarefasMSGs (TarefaID,data,hora,desession,para,msg) values ('"&request.QueryString("I")&"','"&mydate(DataHoje)&"', date_format(now(), '%T'),'"&Session("User")&"','"&PLid("De")&"','"&ref("resposta")&"')"
+		sql = "insert into TarefasMSGs (TarefaID,data,hora,desession,para,msg) values ('"&req("I")&"','"&mydate(DataHoje)&"', date_format(now(), '%T'),'"&Session("User")&"','"&PLid("De")&"','"&ref("resposta")&"')"
 		'response.write sql & "</br>"
 		db_execute(sql)
 
@@ -53,7 +53,7 @@ If Request.Form("ENVIADO") = "ENVIADO" Then
 			end if
 		end if
 		
-		db_execute("UpDate Tarefas Set staDe='"&staDe&"', staPara='"&staPara&"' Where id = '"&Request.QueryString("I")&"'")
+		db_execute("UpDate Tarefas Set staDe='"&staDe&"', staPara='"&staPara&"' Where id = '"&req("I")&"'")
 		ApareceForm = "Nao"
 	end if
 End If
@@ -100,17 +100,17 @@ If Not ApareceForm = "Nao" Then
           <tr>
             <td width="20%"><div align="left">Resposta</div></td>
             <td width="80%">
-              <textarea name="resposta" rows="3" id="resposta" class="form-control" required><%=request.Form("resposta")%></textarea>
+              <textarea name="resposta" rows="3" id="resposta" class="form-control" required><%=ref("resposta")%></textarea>
             </td>
           </tr>
           <tr>
             <td height="22"><div align="left">Esta resposta conclui esta tarefa? </div></td>
             <td><div align="left">
               <label>
-              <input name="Finalizada" type="radio" value="S"<%if request.Form("staPara")="Finalizada" then%> checked="checked"<% End If %> required />
+              <input name="Finalizada" type="radio" value="S"<%if ref("staPara")="Finalizada" then%> checked="checked"<% End If %> required />
               Sim              </label>
               <label>
-              <input name="Finalizada" type="radio" value="N"<%if request.Form("staPara")="Respondida" then%> checked="checked"<% End If %> required />
+              <input name="Finalizada" type="radio" value="N"<%if ref("staPara")="Respondida" then%> checked="checked"<% End If %> required />
               N&atilde;o              </label>
               <input type="hidden" name="ENVIADO" value="ENVIADO" />
             </div></td>

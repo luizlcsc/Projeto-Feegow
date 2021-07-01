@@ -2,7 +2,7 @@
 <!--#include file="connectCentral.asp"-->
 <%
     response.write(session("DiasTeste"))
-    IF request.QueryString("Action") = "ToFree" THEN
+    IF req("Action") = "ToFree" THEN
         dbc.execute("UPDATE cliniccentral.licencas SET FimTeste=FimTeste+ INTERVAL 1 YEAR,Status = 'F' WHERE id = "&replace(session("Banco"), "clinic", ""))
         session("Status")       = "F"
         session("Bloqueado")    = ""

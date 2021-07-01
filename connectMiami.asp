@@ -265,15 +265,15 @@ function rep(Val)
 end function
 
 function ref(Val)
-	ref = replace(request.Form(Val), "'", "''")
+	ref = replace(ref(Val), "'", "''")
 end function
 
 function req(Val)
-	req = replace(request.QueryString(Val), "'", "''")
+	req = replace(req(Val), "'", "''")
 end function
 
 function refNull(Val)
-	if request.Form(Val)="" then
+	if ref(Val)="" then
 		refNull = "NULL"
 	else
 		refNull = ref(Val)
@@ -1164,14 +1164,14 @@ function insertRedir(tableName, id)
 			set vie = db.execute(sqlVie)
 		end if
 		'===> Exceções
-		if request.QueryString("Lancto")<>"" then
-			strLancto = "&Lancto="&request.QueryString("Lancto")
+		if req("Lancto")<>"" then
+			strLancto = "&Lancto="&req("Lancto")
 		end if
-		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&request.QueryString("Pers") &strLancto)
+		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&req("Pers") &strLancto)
 	else
 		set data = db.execute("select * from "&tableName&" where id="&id)
 		if data.eof then
-			response.Redirect("?P="&tableName&"&I=N&Pers="&request.QueryString("Pers"))
+			response.Redirect("?P="&tableName&"&I=N&Pers="&req("Pers"))
 		end if
 	end if
 end function

@@ -17,13 +17,13 @@ end if
 
 
 
-if request.QueryString("ExcluiRegra")<>"" then
-	db_execute("delete from RegrasPermissoes where id = '"&request.QueryString("ExcluiRegra")&"'")
-	db_execute("delete from RegrasDescontos where RegraID = '"&request.QueryString("ExcluiRegra")&"'")
+if req("ExcluiRegra")<>"" then
+	db_execute("delete from RegrasPermissoes where id = '"&req("ExcluiRegra")&"'")
+	db_execute("delete from RegrasDescontos where RegraID = '"&req("ExcluiRegra")&"'")
 end if
 
-if request.QueryString("AplicaRegra")<>"" then
-	set pr=db.execute("select * from regraspermissoes where id = '"&request.QueryString("AplicaRegra")&"'")
+if req("AplicaRegra")<>"" then
+	set pr=db.execute("select * from regraspermissoes where id = '"&req("AplicaRegra")&"'")
 	if not pr.eof then
 
 	    sqlAplicaRegra="update sys_users set RegraID="&pr("id")&", Permissoes='"&pr("Permissoes")&" ["&pr("id")&"]', limitarecpag='"& pr("limitarecpag") &"' where id = '"& req("UsId") &"'"
@@ -42,11 +42,11 @@ if request.QueryString("AplicaRegra")<>"" then
 	end if
 end if
 
-if request.Form("e")<>"" then
-	if request.Form("Regra")<>"" then
-		set veseha=db.execute("select * from RegrasPermissoes where Regra like '"&trim(replace(request.Form("Regra")&" ","'","''"))&"'")
+if ref("e")<>"" then
+	if ref("Regra")<>"" then
+		set veseha=db.execute("select * from RegrasPermissoes where Regra like '"&trim(replace(ref("Regra")&" ","'","''"))&"'")
 		if veseha.eof then
-		    sqlRegra = "insert into RegrasPermissoes (Regra,Permissoes) values ('"&trim(replace(request.Form("Regra")&" ","'","''"))&"','"&request.Form("Permissoes")&"')"
+		    sqlRegra = "insert into RegrasPermissoes (Regra,Permissoes) values ('"&trim(replace(ref("Regra")&" ","'","''"))&"','"&ref("Permissoes")&"')"
 		    call gravaLogs(sqlRegra, "AUTO", "Regra criada", "")
 			db_execute(sqlRegra)
 			set veseha = db.execute("select * from RegrasPermissoes order by id desc limit 1")
@@ -61,7 +61,7 @@ if request.Form("e")<>"" then
 			db_execute(updateUsers)
 		end if
 	else
-	    sqlUpdatePermissoes = "update sys_users set Permissoes='"&request.Form("Permissoes")&"', limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' where id="&ref("e")
+	    sqlUpdatePermissoes = "update sys_users set Permissoes='"&ref("Permissoes")&"', limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' where id="&ref("e")
 	    call gravaLogs(sqlUpdatePermissoes, "AUTO", "Permissões alteradas", "")
 
 		db_execute(sqlUpdatePermissoes)
@@ -80,7 +80,7 @@ if request.Form("e")<>"" then
 end if
 
 
-set dadosUser = db.execute("select * from sys_users where `Table` like '"&request.QueryString("T")&"' and idInTable="&request.QueryString("I"))
+set dadosUser = db.execute("select * from sys_users where `Table` like '"&req("T")&"' and idInTable="&req("I"))
 if dadosUser.EOF then
 	comAcesso = "N"
 	nuncaAcessou = "S"
@@ -272,9 +272,9 @@ else
 	    <tr>
         <td width="1%"><%if instr(PermissoesUsuario, "["&pr("id")&"]")>0 then%><i class="fa fa-check green"></i><%end if%></td>
 	    <td width="92%"><%=pr("Regra")%></td>
-	    <td width="4%"><button type="button" class="btn btn-sm btn-info" onclick="ajxContent('Permissoes&T=<%=request.QueryString("T")%>&AplicaRegra=<%=pr("id")%>&UsId=<%=UserID%>', <%=request.QueryString("I")%>, 1, 'divPermissoes');"><i class="fa fa-check"></i> Aplicar</button></td>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-info" onclick="ajxContent('Permissoes&T=<%=req("T")%>&AplicaRegra=<%=pr("id")%>&UsId=<%=UserID%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="fa fa-check"></i> Aplicar</button></td>
 	    <td width="4%"><button type="button" class="btn btn-sm btn-success" onclick="editaRegra(<%=pr("id")%>)"><i class="fa fa-edit"></i> Editar</button></td>
-	    <td width="4%"><button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta regra de permissionamento?'))ajxContent('Permissoes&T=<%=request.QueryString("T")%>&ExcluiRegra=<%=pr("id")%>', <%=request.QueryString("I")%>, 1, 'divPermissoes');"><i class="fa fa-remove"></i> Excluir</button></td></tr>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta regra de permissionamento?'))ajxContent('Permissoes&T=<%=req("T")%>&ExcluiRegra=<%=pr("id")%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="fa fa-remove"></i> Excluir</button></td></tr>
 	    <%
 	    pr.movenext
 	    wend
@@ -295,7 +295,7 @@ $(document).ready(function(e) {
 	$("#frmPermissoes").submit(function(){
 		$.ajax({
 			type:"POST",
-			url:"Permissoes.asp?T=<%=request.QueryString("T")%>&I=<%=request.QueryString("I")%>",
+			url:"Permissoes.asp?T=<%=req("T")%>&I=<%=req("I")%>",
 			data:$("#frmPermissoes").serialize(),
 			success:function(data){
 				$("#divPermissoes").html(data);

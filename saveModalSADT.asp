@@ -4,9 +4,9 @@
 <!--#include file="Classes\Json.asp"-->
 
 <%
-ItemID = request.QueryString("II")
-GuiaID = request.QueryString("I")
-Tipo = request.QueryString("T")
+ItemID = req("II")
+GuiaID = req("I")
+Tipo = req("T")
 QuantidadeFilme = treatvalzero(ref("QuantidadeFilme"))
 ValorFilme = treatvalzero(ref("ValorFilmeADD"))
 ConvenioID=ref("gConvenioID")

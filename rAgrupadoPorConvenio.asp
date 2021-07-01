@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-DataDe = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
+DataDe = req("DataDe")
+DataAte = req("DataAte")
 %>
 <h3 class="text-center">Produ&ccedil;&atilde;o M&eacute;dica - Agrupado por Conv&ecirc;nio</h3>
 <h4 class="text-center">Per&iacute;odo - <%=DataDe%> at&eacute; <%=DataAte%></h4>

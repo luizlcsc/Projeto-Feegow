@@ -1,8 +1,8 @@
 <%
-firstDueDate = request.Form("firstDueDate")
-Recurrence = ccur(request.Form("Recurrence"))
-RecurrenceType = request.Form("RecurrenceType")
-Installments = ccur(request.Form("Installments"))
+firstDueDate = ref("firstDueDate")
+Recurrence = ccur(ref("Recurrence"))
+RecurrenceType = ref("RecurrenceType")
+Installments = ccur(ref("Installments"))
 DueDate = firstDueDate
 
 if Installments>1 then

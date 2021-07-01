@@ -4,7 +4,7 @@
 
 <!--#include file="connect.asp"-->
 
-<%server.Execute(request.QueryString("SP")&".asp") %>
+<%server.Execute(req("SP")&".asp") %>
 
 <script type="text/javascript">
     function constante(){

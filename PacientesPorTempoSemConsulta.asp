@@ -1,22 +1,22 @@
 <!--#include file="connect.asp"-->
 <%
-if request.QueryString("De")="" then
+if req("De")="" then
 	De=dateadd("m", -1, date())
 else
-	De=request.QueryString("De")
+	De=req("De")
 end if
 
-if request.QueryString("A")="" then
+if req("A")="" then
 	A=date()
 else
-	A=request.QueryString("A")
+	A=req("A")
 end if
 %>
 <h4>Pacientes por Tempo de Aus&ecirc;ncia</h4>
 <form id="Relatorio" name="Relatorio" method="get" action="">
 <input type="hidden" name="Pers" value="1" />
 <input type="hidden" name="P" value="Relatorio" />
-<input type="hidden" name="TipoRel" value="<%=request.QueryString("TipoRel")%>" />
+<input type="hidden" name="TipoRel" value="<%=req("TipoRel")%>" />
 <div class="clearfix form-actions">
 <%=quickField("datepicker", "De", "Data In&iacute;cio", 3, left(De, 10), "", "", "")%>
 <%=quickField("datepicker", "A", "Data Fim", 3, left(A, 10), "", "", "")%>

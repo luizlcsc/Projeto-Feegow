@@ -3,10 +3,10 @@
 <form method="post" action="" name="frmModal" id="frmModal">
 <input type="hidden" name="E" id="E" value="E" />
 <%
-ItemID = request.QueryString("II")
-GuiaID = request.QueryString("I")
-Tipo = request.QueryString("T")
-AtualizarProdutos = request.QueryString("AtualizarProdutos")
+ItemID = req("II")
+GuiaID = req("I")
+Tipo = req("T")
+AtualizarProdutos = req("AtualizarProdutos")
 
 TotalCH = 0
 TotalValorFixo = 0
@@ -284,7 +284,7 @@ $("#frmModal").submit(function(){
 
 	$.ajax({
        type:"POST",
-       url:"saveModalSADT.asp?I=<%=request.QueryString("I")%>&II=<%=request.QueryString("II")%>&T=<%=request.QueryString("T")%>",
+       url:"saveModalSADT.asp?I=<%=req("I")%>&II=<%=req("II")%>&T=<%=req("T")%>",
        data:$("#frmModal, #GuiaSADT").serialize(),
        success:function(data){
            eval(data);

@@ -143,7 +143,6 @@ end if
 </style>
 
 
-
 <div class="row">
     <div class="col-xs-12">
         <%
@@ -316,6 +315,30 @@ select case Tipo
     case "|Diagnostico|"
         subTitulo = "Diagnósticos"
         %>
+        <script>
+            window.addEventListener("message", function(e) {
+                  if(e.data === "closeModal") {
+                      $("#modal-calculator").modal("hide");
+                  }
+
+                  if(e.data === "reloadPage") {
+                      window.location.reload();
+                  }
+            });
+</script>
+        <!-- Modal tnm -->
+        <div class="modal fade" id="modal-calculator" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog" style="  width: 100%;
+                                             height: 100%;
+                                             padding: 0;">
+            <div class="modal-content" style="  height: 100%;
+                                                border-radius: 0;">
+              <div class="modal-body" id="modal-calculator-content" style="height: 100%;
+                                                                                                                           border-radius: 0;">
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="panel timeline-add">
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %>
@@ -1187,6 +1210,9 @@ function prontPrint(tipo, id){
             break;
         case "pedido":
             url = domain+"print/exam-request/";
+            break;
+        case "protocolos":
+            url = domain+"print/protocol/";
             break;
         //case "AE","L":
             //url = domain+"print/prescription/";

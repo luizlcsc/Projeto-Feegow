@@ -9,7 +9,7 @@ if not resource.EOF then
 	end if
 	'exception to Invoices
 	if resource("tablename")="sys_financialinvoices" then
-		if request.QueryString("T")="C" then
+		if req("T")="C" then
 			resourceName = "Receita"
 			resourceDescription = "<small><i class=""fa fa-double-angle-right""></i> edi&ccedil;&atilde;o de conta a receber</small>"
 		else
@@ -261,7 +261,7 @@ end if
 						<div class="nav-search" id="nav-search">
 							<form class="form-search" method="get" action="">
 								<span class="input-icon">
-									<input type="text" placeholder="Busca r&aacute;pida..." name="q" value="<%=request.QueryString("q")%>" class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<input type="text" placeholder="Busca r&aacute;pida..." name="q" value="<%=req("q")%>" class="nav-search-input" id="nav-search-input" autocomplete="off" />
                                     <input type="hidden" name="P" value="Busca" />
                                     <input type="hidden" name="Pers" value="1" />
 									<i class="fa fa-search nav-search-icon"></i>
@@ -275,8 +275,8 @@ end if
 							<h1>
 								<%=resourceName%>
 								<%=resourceDescription%>
-                                <%if request.QueryString("I")="" and not request.QueryString("P")="Home" then%>
-									<a href="?P=<%=request.QueryString("P")%>&I=N"><button class="btn btn-primary"><i class="fa fa-edit"></i> Inserir</button></a>
+                                <%if req("I")="" and not req("P")="Home" then%>
+									<a href="?P=<%=req("P")%>&I=N"><button class="btn btn-primary"><i class="fa fa-edit"></i> Inserir</button></a>
 								<%end if%>
 							</h1>
 						</div><!-- /.page-header -->

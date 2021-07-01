@@ -328,7 +328,7 @@ if not dist.eof then
     %>
     </tbody>
 </table>
-    <%= linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe) %>
+    <%= linhaTotais(Dinheiro, Cheque, Credito, Debito, Boleto, Pix, Titulo, Classe) %>
 <%
 end if
 
@@ -402,7 +402,7 @@ if not dist.eof then
     %>
     </tbody>
 </table>
-    <%= linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe) %>
+    <%= linhaTotais(Dinheiro, Cheque, Credito, Debito, Boleto, Pix, Titulo, Classe) %>
 <%
 end if
 
@@ -471,7 +471,7 @@ if not dist.eof then
     %>
     </tbody>
 </table>
-    <%= linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe) %>
+    <%= linhaTotais(Dinheiro, Cheque, Credito, Debito, Boleto, Pix, Titulo, Classe) %>
 <%
 end if
 

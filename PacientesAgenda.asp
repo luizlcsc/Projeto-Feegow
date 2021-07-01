@@ -1,10 +1,10 @@
 <%
-set reg = db.execute("select * from Pacientes where id="&request.QueryString("I"))
+set reg = db.execute("select * from Pacientes where id="&req("I"))
 %>
 <input type="hidden" name="DadosAlterados" id="DadosAlterados" value="" />
 <form method="post" id="frm" name="frm" action="save.asp">
-	<input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-	<input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+	<input type="hidden" name="I" value="<%=req("I")%>" />
+	<input type="hidden" name="P" value="<%=req("P")%>" />
     <div class="row">
         <div class="col-md-8">
            <a href="./?P=Pacientes&I=<%=req("I")%>&Pers=1" class="btn"><i class="fa fa-external-link"></i> Ir para ficha completa</a>
@@ -147,10 +147,10 @@ end if
             </div>
             <div class="row">
             	<div class="col-md-6">
-					<%call Subform("PacientesRetornos", "PacienteID", request.QueryString("I"),"frm")%>
+					<%call Subform("PacientesRetornos", "PacienteID", req("I"),"frm")%>
                 </div>
             	<div class="col-md-6">
-					<%call Subform("PacientesRelativos", "PacienteID", request.QueryString("I"), "frm")%>
+					<%call Subform("PacientesRelativos", "PacienteID", req("I"), "frm")%>
                 </div>
             </div>
             <hr>

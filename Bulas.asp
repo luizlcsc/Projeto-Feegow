@@ -15,10 +15,10 @@ response.Charset="UTF-8"
 </form>
 
 <%
-Med = request.QueryString("M")
+Med = req("M")
 if Med="undefined" then Med="" end if
 
-if request.QueryString("I")="" then
+if req("I")="" then
 	if Med<>"" then
 		set b=db.execute("select * from cliniccentral.bulas where Bula like '%"&replace(replace(Med, " ", "%"), "'", "''")&"%' order by nome limit 300")
 		if b.eof then
@@ -56,7 +56,7 @@ if request.QueryString("I")="" then
 		end if
 	end if
 else
-	set b=db.execute("select * from cliniccentral.bulas where id="&request.QueryString("I"))
+	set b=db.execute("select * from cliniccentral.bulas where id="&req("I"))
 	%>
 	<br>
     <button class="btn btn-warning btn-md form-control" type="button" onclick="bula('<%=Med%>', '')"><i class="fa fa-search"></i> Voltar para o resultado da busca</button>

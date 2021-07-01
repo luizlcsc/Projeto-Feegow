@@ -108,11 +108,11 @@ set pcampos = db.execute("select id, TipoCampoID, enviardadoscid from buicamposf
 while not pcampos.eof
     select case pcampos("TipoCampoID")
         case 1, 2, 4, 5, 6, 8,3,16
-            valorCampo = ref("input_"&pcampos("id"))
+            valorCampo = refHTML("input_"&pcampos("id"))
             valorCampo = stripHTML(valorCampo)
 
             if valorCampo <> "" or habilitarVazio = "1" then
-                inputValor = ref("input_"&pcampos("id"))
+                inputValor = refHTML("input_"&pcampos("id"))
                 'O SEGUNDO PARAMETRO EH UM CARACTER FANTASMA . NAO REMOVER A LINHA DE BAIXO !!!!!
                 inputValor = replace(inputValor, "​", "")
                 sqlUp = sqlUp & ", `"& pcampos("id") &"`='"& inputValor &"'"
@@ -241,7 +241,8 @@ if Tipo="L" then
 end if
 
 if ref("LaudoID")<>"" then
-    db_execute("update laudos set FormID="& ModeloID &", FormPID="& treatvalnull(I) &" WHERE id="& refnull("LaudoID"))
+    sql = "update laudos set FormID="& ModeloID &", FormPID="& treatvalnull(I) &" WHERE id="& ref("LaudoID")
+    db_execute(sql)
     %>
     showMessageDialog("Laudo salvo com sucesso.", "success");
     <%

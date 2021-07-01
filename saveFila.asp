@@ -1,26 +1,26 @@
 <!--#include file="connect.asp"--><!--#include file="connectCentral.asp"--><%
-rfTempo=request.Form("Tempo")
-rfProfissionalID=request.Form("ProfissionalID")
-rfData=request.Form("Data")
-rfProcedimento=request.Form("ProcedimentoID")
-rfrdValorPlano=request.Form("rdValorPlano")
+rfTempo=ref("Tempo")
+rfProfissionalID=ref("ProfissionalID")
+rfData=ref("Data")
+rfProcedimento=ref("ProcedimentoID")
+rfrdValorPlano=ref("rdValorPlano")
 if rfrdValorPlano="V" then
-	rfValorPlano=request.Form("Valor")
+	rfValorPlano=ref("Valor")
 	if rfValorPlano="" or not isnumeric(rfValorPlano) then
 		rfValorPlano=0
 	end if
 else
-	rfValorPlano=request.Form("ConvenioID")
+	rfValorPlano=ref("ConvenioID")
 end if
-rfPaciente=request.Form("PacienteID")
-rfStaID=request.Form("StaID")
+rfPaciente=ref("PacienteID")
+rfStaID=ref("StaID")
 if ref("LocalID")="" then
 	rfLocal=0
 else
-	rfLocal=request.Form("LocalID")
+	rfLocal=ref("LocalID")
 end if
 rfNotas=ref("Notas")
-rfSubtipoProcedimento=0'request.Form("SubtipoProcedimento")'VERIFICAR
+rfSubtipoProcedimento=0'ref("SubtipoProcedimento")'VERIFICAR
 
 if ref("ProcedimentoID")="0" or ref("ProcedimentoID")="" then
 	erro = "Selecione um procedimento"

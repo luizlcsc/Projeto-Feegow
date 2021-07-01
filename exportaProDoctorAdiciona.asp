@@ -2,7 +2,7 @@
 <%
 'on error resume next
 
-dbOrigem = request.QueryString("Origem")
+dbOrigem = req("Origem")
 
 ''Set origem = Server.CreateObject("ADODB.Connection")
 ''origem.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=barra_12102015;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"

@@ -37,7 +37,7 @@ end if
 			if LadoALado="S" then
 				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text"></td></tr></table><%
 			else
-				%><label class="campoLabel"><%=RotuloCampo%></label><input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" class="campoInput form-control" type="text"><%
+				%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%><input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" class="campoInput form-control" type="text"><%
 			end if
 
 			IF TipoCampoInfo = 30 THEN
@@ -59,6 +59,7 @@ end if
                     <tr>
                         <td width="1%" class="cel_label" nowrap>
                             <label class="campoLabel"><%=RotuloCampo%></label>
+                            <%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%>
                         </td>
                         <td width="99%" class="cel_input">
                             <input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text">
@@ -68,6 +69,7 @@ end if
 			else
 				%>
                 <label class="campoLabel"><%=RotuloCampo%></label>
+                <%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%>
                 <select id="input_<%=CampoID %>" name="input_<%=CampoID %>" class="form-control campoInput">
                     <option value="<%=ValorPadrao %>"><%=NomeCid %></option>
                 </select>
@@ -285,7 +287,7 @@ $(function() {
 			else
 				Separador = "&nbsp;&nbsp;"
 			end if
-			%><label class="campoLabel"><%=RotuloCampo%></label><br /><%
+			%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%><br /><%
 				set checks = db.execute("select * from buiopcoescampos where CampoID="&CampoID)
 				while not checks.eof
 					%><span class="checkbox-custom"><input class="campoCheck postvalue" id="input_<%=CampoID%>_<%=checks("id") %>" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>"<%if (checks("Selecionado")="S" and FormID="N") or (instr(ValorPadrao, "|"&checks("id")&"|")>0 and FormID<>"N") then%> checked<%end if%> value="|<%=checks("id")%>|" type="checkbox" /><label for="input_<%=CampoID%>_<%=checks("id") %>"><%=checks("Nome")%></label></span> <%=Separador%><%
@@ -299,7 +301,7 @@ $(function() {
 			else
 				Separador = "&nbsp;&nbsp;"
 			end if
-			%><label class="campoLabel"><%=RotuloCampo%></label><br /><%
+			%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%><br /><%
 				set checks = db.execute("select * from buiopcoescampos where CampoID="&CampoID)
 				while not checks.eof
 					%><span class="radio-custom"><input class="campoInput postvalue" name="input_<%=CampoID%>" id="<%=CampoID%>_<%=checks("id") %>" data-campoid="<%=CampoID%>"<%if (checks("Selecionado")="S" and FormID="N") or (ValorPadrao=cstr(checks("id")) and FormID<>"N") then%> checked<%end if%> type="radio" value="<%=checks("id")%>" /><label for="<%=CampoID%>_<%=checks("id") %>"><%=checks("Nome")%></label></span> <%=Separador%><%
@@ -313,7 +315,7 @@ $(function() {
 			else
 				Separador = "&nbsp;&nbsp;"
 			end if
-			%><label class="campoLabel"><%=RotuloCampo%></label>
+			%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%>
             	<br />
                 <select class="campoInput form-control postvalue" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>"><%
 				set checks = db.execute("select * from buiopcoescampos where CampoID="&CampoID)
@@ -326,7 +328,7 @@ $(function() {
 				%></select><%
 	  	case 8'textarea
                 ckrender = ckrender & "altura = $('#"& CampoID &"').innerHeight()-22 + 'px'; $('#input_"& CampoID &"mem').css('height', altura );"
-			%><div style="padding-bottom:4px" class="qf"><label class="campoLabel"><%=RotuloCampo%></label>
+			%><div style="padding-bottom:4px" class="qf"><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%>
 
             <textarea class="hidden campoInput" id="input_<%=CampoID %>" name="input_<%=CampoID %>"><%=ValorPadrao %></textarea>
 

@@ -3,11 +3,11 @@
 <form id="Relatorio" name="Relatorio" method="get" action="">
 <input type="hidden" name="Pers" value="1" />
 <input type="hidden" name="P" value="Relatorio" />
-<input type="hidden" name="TipoRel" value="<%=request.QueryString("TipoRel")%>" />
+<input type="hidden" name="TipoRel" value="<%=req("TipoRel")%>" />
 <input type="hidden" name="E" value="E" />
 <div class="clearfix form-actions">
   <div class="col-md-4"><label>Endere&ccedil;o</label><br>
-  	<input type="text" class="form-control" size="50" maxlength="20" value="<%=request.QueryString("Endereco")%>" name="Endereco" />
+  	<input type="text" class="form-control" size="50" maxlength="20" value="<%=req("Endereco")%>" name="Endereco" />
   </div>
   <div class="col-md-3"><label>Bairro</label><br>
     <select name="Bairro" class="form-control">
@@ -16,7 +16,7 @@
     set b=db.execute("select distinct Bairro from pacientes where Bairro<>'' order by Bairro")
     while not b.eof
     %>
-        <option value="<%=b("Bairro")%>"<%if request.QueryString("Bairro")=b("Bairro") then%> selected="selected"<%end if%>><%=b("Bairro")%></option>
+        <option value="<%=b("Bairro")%>"<%if req("Bairro")=b("Bairro") then%> selected="selected"<%end if%>><%=b("Bairro")%></option>
         <%
     b.movenext
     wend
@@ -32,7 +32,7 @@
 	  set b=db.execute("select distinct Cidade from pacientes where Cidade<>'' order by Cidade")
 	  while not b.eof
 	  %>
-          <option value="<%=b("Cidade")%>"<%if request.QueryString("Cidade")=b("Cidade") then%> selected="selected"<%end if%>><%=b("Cidade")%></option>
+          <option value="<%=b("Cidade")%>"<%if req("Cidade")=b("Cidade") then%> selected="selected"<%end if%>><%=b("Cidade")%></option>
           <%
 	  b.movenext
 	  wend
@@ -49,7 +49,7 @@
 </form>
 
 <form method="post" action="Etiquetas.asp" target="_blank">
-<% if request.QueryString("E")="E" then
+<% if req("E")="E" then
  %><table width="100%" border="0" class="table table-striped table-bordered">
  <thead>
 <tr bgcolor="#CCCCCC"><th>Nome</th><th>Sexo</th><th>Endere&ccedil;o</th><th>Bairro</th><th>Cidade</th></tr>
@@ -57,7 +57,7 @@
 <tbody>
 <%
 c=0
-set p = db.Execute("Select * from pacientes where sysActive=1 and Endereco like '%"&request.QueryString("Endereco")&"%' and Bairro like '%"&request.QueryString("Bairro")&"%' and Cidade like '%"&request.QueryString("Cidade")&"%' order by NomePaciente")
+set p = db.Execute("Select * from pacientes where sysActive=1 and Endereco like '%"&req("Endereco")&"%' and Bairro like '%"&req("Bairro")&"%' and Cidade like '%"&req("Cidade")&"%' order by NomePaciente")
 while  not p.eof
 c=c+1
 		gerEt="S"

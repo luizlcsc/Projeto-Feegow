@@ -2,7 +2,7 @@
 dim oFs, oTx, s
 
 ' Abre o arquivo NomeArq:
-arquivo = request.QueryString("Arquivo")
+arquivo = req("Arquivo")
 set oFs = Server.CreateObject("Scripting.FileSystemObject")
 set oTx = oFs.OpenTextFile(server.MapPath(arquivo))
 

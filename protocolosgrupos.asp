@@ -8,8 +8,8 @@ set reg = db.execute("select g.*, (select group_concat('|', id, '|') from protoc
 
 <form method="post" id="frm" name="frm" action="save.asp">
     <%=header(req("P"), "Cadastro de Grupo de Protocolos", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-    <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+    <input type="hidden" name="I" value="<%=req("I")%>" />
+    <input type="hidden" name="P" value="<%=req("P")%>" />
 
     <br />
     <div class="panel">

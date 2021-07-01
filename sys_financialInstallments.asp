@@ -13,7 +13,7 @@
                     </thead>
                     <tbody>
 <%
-InvoiceID=request.QueryString("I")
+InvoiceID=req("I")
 sqlInvoice = "select * from sys_financialInvoices where id="&InvoiceID
 'Response.Write(sqlInvoice)
 set getInvoice = db.execute(sqlInvoice)
@@ -22,25 +22,25 @@ sysActive = getInvoice("sysActive")
 
 simpleCountInstallments = 0
 if sysActive=0 then
-	Recurrence = ccur(request.Form("Recurrence"))
-	RecurrenceType = request.Form("RecurrenceType")
-	Installments = request.Form("Installments")
+	Recurrence = ccur(ref("Recurrence"))
+	RecurrenceType = ref("RecurrenceType")
+	Installments = ref("Installments")
 	if isNumeric(Installments) and Installments<>"" then
 		Installments = ccur(Installments)
 	else
 		Installments = 1've no banco
 	end if
 	
-	firstDueDate = request.Form("firstDueDate")
+	firstDueDate = ref("firstDueDate")
 	if not isDate(firstDueDate) or firstDueDate="" then
 		firstDueDate = date()
 	end if
 	DueDate = firstDueDate
 	
-	if request.Form("Value")="" or not isNumeric(request.Form("Value")) then
+	if ref("Value")="" or not isNumeric(ref("Value")) then
 		refValue = 0
 	else
-		refValue = ccur(request.Form("Value"))
+		refValue = ccur(ref("Value"))
 	end if
 	
 	if refValue>0 then

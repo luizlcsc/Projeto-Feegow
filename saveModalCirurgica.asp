@@ -1,9 +1,9 @@
 <!--#include file="connect.asp"-->
 <!--#include file="testaCPF.asp"-->
 <%
-ItemID = request.QueryString("II")
-GuiaID = request.QueryString("I")
-Tipo = request.QueryString("T")
+ItemID = req("II")
+GuiaID = req("I")
+Tipo = req("T")
 
 if Tipo="Profissionais" then
 	if erro="" then
@@ -95,11 +95,11 @@ elseif Tipo="Procedimentos" then
 
 
 		if ItemID="0" then
-			db_execute("insert into procedimentoscirurgia (GuiaID, ProfissionalID, Data, HoraInicio, HoraFim, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser) values ("&GuiaID&", "&refnull("ProfissionalID"&ItemID)&", '"&myDate(ref("Data"))&"', "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', '"&ref("ViaID")&"', '"&ref("TecnicaID")&"', '"&treatval(ref("Fator"))&"', '"&treatval(ref("ValorUnitario"))&"', '"&treatval(ref("ValorTotal"))&"', '"&session("User")&"')")
+			db_execute("insert into procedimentoscirurgia (GuiaID, ProfissionalID, Data, HoraInicio, HoraFim, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser) values ("&GuiaID&", "&treatvalnull(ref("ProfissionalID"&ItemID))&", '"&myDate(ref("Data"))&"', "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', '"&ref("ViaID")&"', '"&ref("TecnicaID")&"', '"&treatval(ref("Fator"))&"', '"&treatval(ref("ValorUnitario"))&"', '"&treatval(ref("ValorTotal"))&"', '"&session("User")&"')")
 			set pult = db.execute("select id from procedimentoscirurgia where GuiaID="&GuiaID&" and sysUser="&session("User")&" order by id desc LIMIT 1")
 			EsteItem = pult("id")
 		else
-			db_execute("update procedimentoscirurgia set ProfissionalID="&refnull("ProfissionalID"&ItemID)&", Data="&myDatenull(ref("Data"))&", HoraInicio="&myTime(ref("HoraInicio"))&", HoraFim="&myTime(ref("HoraFim"))&", ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', Descricao='"&ref("Descricao")&"', Quantidade='"&ref("Quantidade")&"', ViaID='"&ref("ViaID")&"', TecnicaID='"&ref("TecnicaID")&"', Fator='"&treatval(ref("Fator"))&"', ValorUnitario='"&treatval(ref("ValorUnitario"))&"', ValorTotal='"&treatval(ref("ValorTotal"))&"', sysUser='"&session("User")&"' where id="&ItemID)
+			db_execute("update procedimentoscirurgia set ProfissionalID="&treatvalnull(ref("ProfissionalID"&ItemID)&", Data="&myDatenull(ref("Data"))&", HoraInicio="&myTime(ref("HoraInicio"))&", HoraFim="&myTime(ref("HoraFim"))&", ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', Descricao='"&ref("Descricao")&"', Quantidade='"&ref("Quantidade")&"', ViaID='"&ref("ViaID")&"', TecnicaID='"&ref("TecnicaID")&"', Fator='"&treatval(ref("Fator"))&"', ValorUnitario='"&treatval(ref("ValorUnitario"))&"', ValorTotal='"&treatval(ref("ValorTotal"))&"', sysUser='"&session("User")&"' where id="&ItemID)
 			EsteItem = ItemID
 		end if
 		'verifica se na regra deste procedimento para este convenio existem despesas adicionais e insere (EsteItem é o id IDProcedimentohonorarios)
@@ -192,9 +192,9 @@ elseif Tipo="Procedimentos" then
 elseif Tipo="Despesas" then
     Qtd = treatvalzero(replace(ref("Quantidade"),".",","))
 	if ItemID="0" then
-		db.execute("insert into cirurgiaanexos (GuiaID, CD, Data, HoraInicio, HoraFim, ProdutoID, TabelaProdutoID, CodigoProduto, Quantidade, UnidadeMedidaID, Fator, ValorUnitario, ValorTotal, RegistroANVISA, CodigoNoFabricante, AutorizacaoEmpresa, Descricao) values ("&GuiaID&", '"&ref("CD")&"', "&myDateNULL(ref("Data"))&", "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("ProdutoID")&"', "&refnull("TabelaProdutoID")&", '"&ref("CodigoProduto")&"', "&Qtd&", '"&ref("UnidadeMedidaID")&"', "&treatvalzero(ref("Fator"))&", "&treatvalzero(ref("ValorUnitario"))&", "&treatvalzero(ref("ValorTotal"))&", '"&ref("RegistroANVISA")&"', '"&ref("CodigoNoFabricante")&"', '"&ref("AutorizacaoEmpresa")&"', '"&ref("Descricao")&"')")
+		db.execute("insert into cirurgiaanexos (GuiaID, CD, Data, HoraInicio, HoraFim, ProdutoID, TabelaProdutoID, CodigoProduto, Quantidade, UnidadeMedidaID, Fator, ValorUnitario, ValorTotal, RegistroANVISA, CodigoNoFabricante, AutorizacaoEmpresa, Descricao) values ("&GuiaID&", '"&ref("CD")&"', "&myDateNULL(ref("Data"))&", "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("ProdutoID")&"', "&treatvalnull(ref("TabelaProdutoID"))&", '"&ref("CodigoProduto")&"', "&Qtd&", '"&ref("UnidadeMedidaID")&"', "&treatvalzero(ref("Fator"))&", "&treatvalzero(ref("ValorUnitario"))&", "&treatvalzero(ref("ValorTotal"))&", '"&ref("RegistroANVISA")&"', '"&ref("CodigoNoFabricante")&"', '"&ref("AutorizacaoEmpresa")&"', '"&ref("Descricao")&"')")
 	else
-		db.execute("update cirurgiaanexos set GuiaID="&GuiaID&", CD='"&ref("CD")&"', Data="&myDateNULL(ref("Data"))&", HoraInicio="&myTime(ref("HoraInicio"))&", HoraFim="&myTime(ref("HoraFim"))&", ProdutoID='"&ref("ProdutoID")&"', TabelaProdutoID="&refnull("TabelaProdutoID")&", CodigoProduto='"&ref("CodigoProduto")&"', Quantidade="&Qtd&", UnidadeMedidaID='"&ref("UnidadeMedidaID")&"', Fator="&treatvalzero(ref("Fator"))&", ValorUnitario="&treatvalzero(ref("ValorUnitario"))&", ValorTotal="&treatvalzero(ref("ValorTotal"))&", RegistroANVISA='"&ref("RegistroANVISA")&"', CodigoNoFabricante='"&ref("CodigoNoFabricante")&"', AutorizacaoEmpresa='"&ref("AutorizacaoEmpresa")&"', Descricao='"&ref("Descricao")&"' where id="&ItemID)
+		db.execute("update cirurgiaanexos set GuiaID="&GuiaID&", CD='"&ref("CD")&"', Data="&myDateNULL(ref("Data"))&", HoraInicio="&myTime(ref("HoraInicio"))&", HoraFim="&myTime(ref("HoraFim"))&", ProdutoID='"&ref("ProdutoID")&"', TabelaProdutoID="&treatvalnull(ref("TabelaProdutoID"))&", CodigoProduto='"&ref("CodigoProduto")&"', Quantidade="&Qtd&", UnidadeMedidaID='"&ref("UnidadeMedidaID")&"', Fator="&treatvalzero(ref("Fator"))&", ValorUnitario="&treatvalzero(ref("ValorUnitario"))&", ValorTotal="&treatvalzero(ref("ValorTotal"))&", RegistroANVISA='"&ref("RegistroANVISA")&"', CodigoNoFabricante='"&ref("CodigoNoFabricante")&"', AutorizacaoEmpresa='"&ref("AutorizacaoEmpresa")&"', Descricao='"&ref("Descricao")&"' where id="&ItemID)
 	end if
 		%>
 		$("#modal-table").modal("hide");

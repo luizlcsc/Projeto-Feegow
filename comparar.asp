@@ -2,14 +2,14 @@
 
 <div class="modal-body">
 <%
-if request.Form("comparar")="" then
+if ref("comparar")="" then
 	%>Voc&ecirc; n&atilde;o marcou nenhuma imagem para comparar<%
 else
 %>
 <table width="100%">
   <tr style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-evenly; align-items: center; align-content: space-around;">
 	<%
-	spl = split(request.Form("comparar"), "|, |")
+	spl = split(ref("comparar"), "|, |")
 	for i=0 to ubound(spl)
         fullFile = replace(spl(i), "|", "")
 		%>

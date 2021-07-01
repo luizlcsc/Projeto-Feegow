@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title><%=request.querystring("FALAR")%></title>
+<title><%=req("FALAR")%></title>
 </head>
 
 <body>
@@ -10,8 +10,8 @@
 <script language="JavaScript" type="text/javascript">
 function vh_sceneLoaded(){
       //the scene begins playing, add actions here
-	sayText('<%=request.querystring("FALAR")%>',5,6,2);
-//	sayText('Silvio Maia, favor comparecer a recepção.',1,6,2);
+	sayText('<%=req("FALAR")%>',5,6,2);
+//	sayText('Silvio Maia, favor comparecer a recepï¿½ï¿½o.',1,6,2);
 
 }
 </script>
@@ -21,7 +21,7 @@ function vh_sceneLoaded(){
 IP=request.ServerVariables("REMOTE_ADDR")
 DataHora=now()
 Referencia=request.ServerVariables("HTTP_REFERER")
-Texto=request.QueryString("FALAR")
+Texto=req("FALAR")
 
 'lojadb_execute("insert into Acessos (IP,DataHora,Referencia,Texto) values ('"&IP&"','"&DataHora&"','"&Referencia&"','"&Texto&"')")
 %>

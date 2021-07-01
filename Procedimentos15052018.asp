@@ -14,8 +14,8 @@
 <%
 
 
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from procedimentos where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from procedimentos where id="&req("I"))
 if isnull(reg("Valor")) or not isnumeric(reg("Valor")) then
 	Valor=0
 else
@@ -33,8 +33,8 @@ SomenteEspecialidades = reg("SomenteEspecialidades")
 
 <form method="post" id="frm" name="frm" action="save.asp">
     <%=header(req("P"), "Cadastro de Procedimento", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-    <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+    <input type="hidden" name="I" value="<%=req("I")%>" />
+    <input type="hidden" name="P" value="<%=req("P")%>" />
 
 
     <br />

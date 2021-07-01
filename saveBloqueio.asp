@@ -40,8 +40,8 @@ if Unidades<>"" then
 end if
 
 
-if request.QueryString("X")="1" then
-	db_execute("delete from compromissos where id="&request.QueryString("BloqueioID"))
+if req("X")="1" then
+	db_execute("delete from compromissos where id="&req("BloqueioID"))
 
 	if isnumeric(ProfissionalID) then
 		if ccur(ProfissionalID) < 0 then

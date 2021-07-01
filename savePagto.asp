@@ -120,7 +120,7 @@ if T="C" then
 		if not getAssociation.eof then
 			set getAccountData = db.execute("select * from "&getAssociation("table")&" where id="&AccountIDDebit)
 
-            requestBandeiraCartaoSelecionado = request.form("BandeiraCartaoID"&sufixo)
+            requestBandeiraCartaoSelecionado = ref("BandeiraCartaoID"&sufixo)
             requestNumeroParcelas = ref("NumberOfInstallments"&sufixo)
 
             queryTaxa = getTaxaAtual(DestinoID,LastMovementID,requestNumeroParcelas)

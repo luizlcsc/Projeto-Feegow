@@ -1,13 +1,13 @@
 <%
-if request.QueryString("act")<>"" then'ou seja, quando a chamada vem pelo javascript (no caso dos itens, ou do subform sendo chamado pelo ajax)
+if req("act")<>"" then'ou seja, quando a chamada vem pelo javascript (no caso dos itens, ou do subform sendo chamado pelo ajax)
 	abreDivMaster = ""
 	fechaDivMaster = ""
-	NomeTabela = request.QueryString("tbn")
-	Coluna = request.QueryString("cln")
-	idNaColuna = request.QueryString("idc")
-	Acao = request.QueryString("act")
-	Registro = request.QueryString("reg")
-	NomeForm = request.QueryString("frm")
+	NomeTabela = req("tbn")
+	Coluna = req("cln")
+	idNaColuna = req("idc")
+	Acao = req("act")
+	Registro = req("reg")
+	NomeForm = req("frm")
 else
 	abreDivMaster = "<div id=""div"&NomeTabela&""">"
 	fechaDivMaster = "</div>"
@@ -128,7 +128,7 @@ response.Write(abreDivMaster)
 								if Acao="" then
 									Valor = regs(""&splCampos(i)&"")
 								else
-									Valor = request.Form(splCampos(i)&"-"& getResource("tableName") &"-"&regs("id"))
+									Valor = ref(splCampos(i)&"-"& getResource("tableName") &"-"&regs("id"))
 								end if
 								%>
 								<td>

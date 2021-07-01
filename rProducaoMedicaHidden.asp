@@ -11,8 +11,8 @@ body, tr, td, th {
 db_execute("CREATE TABLE IF NOT EXISTS `tempfaturamento` (  `sysUser` int(11) DEFAULT NULL,  `ProcedimentoID` int(11) DEFAULT NULL,  `ProfissionalID` int(11) DEFAULT NULL,  `ConvenioID` int(11) DEFAULT NULL,   `Valor` float NULL DEFAULT NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8")
 db_execute("delete from tempfaturamento where sysUser="&session("User"))
 
-DataDe = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
+DataDe = req("DataDe")
+DataAte = req("DataAte")
 'ProfissionalID = req("ProfissionalID")
 'if ProfissionalID="0" then
 '	sqlProf = ""

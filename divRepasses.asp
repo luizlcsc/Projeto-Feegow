@@ -1,7 +1,7 @@
 <%
-AddRepasse = request.QueryString("Add")
-FM = request.QueryString("FM")
-RemoveRepasse = request.QueryString("Remove")
+AddRepasse = req("Add")
+FM = req("FM")
+RemoveRepasse = req("Remove")
 NumeraRepasse = 0
 contaParalelaRepasse = 0
 'id = itemInvoiceID ao qual estes repasses pertencem
@@ -47,7 +47,7 @@ set dom = nothing
 newstrRep = ""
 
 %>
-<%'=request.Form()%>
+<%'=ref()%>
 <table width="100%" class="table table-striped table-bordered">
 <thead>
 	<tr>
@@ -81,7 +81,7 @@ newstrRep = ""
 if ref("E")="" then
 	strRep = "db"
 else
-	if request.QueryString("Change")="Profissional" then
+	if req("Change")="Profissional" then
 		'strRep = "|-1|" => vai popular baseado na regra que se aplica a ref(Prof) e ref(Proc), com forma 0
 		set fun = db.execute("select * from rateiofuncoes where DominioID="&dominiomaior)
 		while not fun.eof

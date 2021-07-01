@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-Unidades=Request.QueryString("Unidades")
+Unidades=req("Unidades")
 %>
 <br>
 <div class="panel">
@@ -10,8 +10,8 @@ Unidades=Request.QueryString("Unidades")
                 <input type="hidden" name="P" value="ConferenciaValorProcedimento">
                 <input type="hidden" name="Pers" value="1">
                 <%=quickfield("empresa", "UnidadeID", "Unidades", 2, Unidades, "", "", "")%>
-                <%=quickField("simpleSelect", "GrupoID", "Grupo", 2, Request.QueryString("GrupoID"), "select * from procedimentosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "  required ")%>
-                <%=quickField("simpleSelect", "TabelaID", "Tabela", 2, Request.QueryString("TabelaID"), "select * from tabelaparticular where sysActive=1 order by NomeTabela", "NomeTabela", " required  ")%>
+                <%=quickField("simpleSelect", "GrupoID", "Grupo", 2, req("GrupoID"), "select * from procedimentosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "  required ")%>
+                <%=quickField("simpleSelect", "TabelaID", "Tabela", 2, req("TabelaID"), "select * from tabelaparticular where sysActive=1 order by NomeTabela", "NomeTabela", " required  ")%>
                 <div class="col-md-3">
                 <br><button class="btn btn-primary">
                     Consultar valores
@@ -45,8 +45,8 @@ Unidades=Request.QueryString("Unidades")
             getDiferencaCor = "<span style='color:"&Cor&"'>"&fn(valor)&"</span>"
         end function
 
-        GrupoID=Request.QueryString("GrupoID")
-        TabelaID=Request.QueryString("TabelaID")
+        GrupoID=req("GrupoID")
+        TabelaID=req("TabelaID")
 
         if GrupoID<>"" then
 

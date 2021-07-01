@@ -55,6 +55,7 @@ if not reg.EOF then
 	CabecalhoProposta = reg("CabecalhoProposta")
 	RodapeProposta = reg("RodapeProposta")
 '	ItensProposta = reg("ItensProposta")
+    Protocolo = reg("Protocolo")
     LaudosProtocolo = reg("LaudosProtocolo")
     EtiquetaAgendamento = reg("EtiquetaAgendamento")
     TermoCancelamento = reg("TermoCancelamento")
@@ -114,6 +115,21 @@ end if
                     RecursoTag = "PedidosExame"
                     %>
 					<!--#include file="Tags.asp"-->
+                </div>
+            </div>
+
+            <div id="divProtocolo" class="tab-pane">
+                    <div class="clearfix form-actions">
+                        <div class="col-md-3">
+                            <button id="btn-Protocolo" onClick="saveImpressos('Protocolo');" type="button" class="btn btn-success">Salvar</button>
+                        </div>
+                    </div>
+                <div class="row">
+					<%
+                    call quickField("editor", "Protocolo", "Layout dos Protocolos", 9, Protocolo, "400", "", "")
+                    RecursoTag = "paciente"
+                    %>
+                    <!--#include file="Tags.asp"-->
                 </div>
             </div>
 
@@ -486,6 +502,7 @@ function saveImpressos(tipo){
 		   ItensProposta: $("#ItensProposta").val(),
 		   RodapeProposta: $("#RodapeProposta").val(),
 		   LaudosProtocolo: $("#LaudosProtocolo").val(),
+		   Protocolo: $("#Protocolo").val(),
            EtiquetaAgendamento: $("#EtiquetaAgendamento").val(),
            TermoCancelamento:$("#TermoCancelamento").val(),
            ReciboHonorarioMedico:$("#ReciboHonorarioMedico").val(),

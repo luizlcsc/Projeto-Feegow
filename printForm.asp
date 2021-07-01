@@ -108,10 +108,10 @@
 </a>
 <%
 on error resume next
-FormID = request.QueryString("FormID")
-PacienteID = request.QueryString("PacienteID")
-ModeloID = request.QueryString("ModeloID")
-set getForm = db.execute("select * from buiforms where id="&request.QueryString("ModeloID"))
+FormID = req("FormID")
+PacienteID = req("PacienteID")
+ModeloID = req("ModeloID")
+set getForm = db.execute("select * from buiforms where id="&req("ModeloID"))
 
 
 if getForm("Tipo")=4 then   '---Verifica se é tipo laudo para pegar o modelo

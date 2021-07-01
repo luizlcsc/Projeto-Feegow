@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-set ProdutoSQL = db.execute("SELECT Codigo,CD,CD,ApresentacaoUnidade FROM produtos WHERE id="&req("ProdutoID"))
+produtoId = req("ProdutoID")
+set ProdutoSQL = db.execute("SELECT Codigo,CD,CD,ApresentacaoUnidade FROM produtos WHERE id = '" & produtoId & "'")
 
 if not ProdutoSQL.eof then
 %>

@@ -57,7 +57,7 @@ if req("De")="" then
               while not p.EOF
 			  	if aut("|agendaV|")=1 or (lcase(session("Table"))="profissionais" and session("idInTable")=p("id")) then
                     %>
-                    <option value="<%=p("id")%>" <%if cStr(p("id"))=request.QueryString("Profissional") then%> selected="selected" <%end if%>><%=p("NomeProfissional")%></option>
+                    <option value="<%=p("id")%>" <%if cStr(p("id"))=req("Profissional") then%> selected="selected" <%end if%>><%=p("NomeProfissional")%></option>
                     <%
 				end if
               p.moveNext
@@ -82,11 +82,11 @@ else
 end if
 
 
-if request.QueryString("E")="E" then
-	if request.QueryString("Profissional")="" then
+if req("E")="E" then
+	if req("Profissional")="" then
 		sqlProfissional=""
 	else
-		sqlProfissional=" and id = '"&request.QueryString("Profissional")&"'"
+		sqlProfissional=" and id = '"&req("Profissional")&"'"
 	end if
 	qtdTotal = 0
 	set pP=db.execute("select * from profissionais where sysActive=1"&sqlProfissional&" and ativo='on' order by NomeProfissional")

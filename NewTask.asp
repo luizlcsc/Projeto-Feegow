@@ -2,9 +2,9 @@
 <%
 DataHoje=date()
 
-If Request.Form("ENVIADO") = "ENVIADO" Then
-		If Request.Form("Para")="" Or Request.Form("Titulo")="" Then
-			Response.Write("Os campos com * são de preenchimento obrigatório.")
+If ref("ENVIADO") = "ENVIADO" Then
+		If ref("Para")="" Or ref("Titulo")="" Then
+			Response.Write("Os campos com * sï¿½o de preenchimento obrigatï¿½rio.")
 		Else
 			db_execute("Insert Into Tarefas (De, Para, DtAbertura, HrAbertura, DtPrazo, HrPrazo, Titulo, ta, staDe, staPara, Solicitantes) Values ('"&session("User")&"', '"&ref("Para")&"', '"&mydate(DataHoje)&"', "&mytime(time())&", "&mydatenull(ref("DtPrazo"))&", "&mytime(ref("HrPrazo"))&", '"&ref("Titulo")&"', '"&ref("Texto")&"', 'Enviada', 'Pendente', '"&ref("Solicitantes")&"') ")
 			set pult = db.execute("select * from tarefas where De="&session("User")&" order by id desc")

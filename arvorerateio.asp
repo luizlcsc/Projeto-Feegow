@@ -108,7 +108,7 @@ if not isnull(Equipe) then Equipe=" <i class='fa fa-users'></i>" end if
 %>
 <div id="tree2" class="tree tree-selectable">
     <div class="tree-folder">
-        <div class="tree-folder-header"><i class="fa fa-circle"></i><div class="tree-folder-name btn-group"><a href="javascript:fRateio('', 0, 'E');">0. Regra Geral de Repasse  <%=kit & equipe %></></a><%= btnsRateio(0, "", "", "") %></div></div>
+        <div class="tree-folder-header"><i class="fa fa-circle"></i><div class="tree-folder-name btn-group"><a href="javascript:fRateio('', 0, 'E');">0. Regra Geral de Repasse  <%=kit & equipe %></script></a><%= btnsRateio(0, "", "", "") %></div></div>
         <div class="tree-folder-content">
 			<%
 			iProfissional = "<i class=""fa fa-user-md""></i>"
@@ -125,7 +125,7 @@ if not isnull(Equipe) then Equipe=" <i class='fa fa-users'></i>" end if
                 Dominios = Dominios & d1("id") &", "
 			%>
             <div class="tree-folder">
-                <div class="tree-folder-header"><%=eval("i"&d1("Tipo"))%><div class="tree-folder-name btn-group"><a href="javascript:fRateio('<%=d1("Tipo")%>', <%=d1("id")%>, 'E');"><%= d1("id")&". "& d1("Tipo")%> <%=kit & equipe %></></a> &raquo; <%=detRat(d1("id"))%><%= btnsRateio(d1("id"), d1("Procedimentos"), d1("Profissionais"), d1("Formas")) %></div></div>
+                <div class="tree-folder-header"><%=eval("i"&d1("Tipo"))%><div class="tree-folder-name btn-group"><a href="javascript:fRateio('<%=d1("Tipo")%>', <%=d1("id")%>, 'E');"><%= d1("id")&". "& d1("Tipo")%> <%=kit & equipe %></script></a> &raquo; <%=detRat(d1("id"))%><%= btnsRateio(d1("id"), d1("Procedimentos"), d1("Profissionais"), d1("Formas")) %></div></div>
                 <div class="tree-folder-content">
                 <%
                     set d2 = db.execute("select d.*, (select id from rateiofuncoes where DominioID=d.id and FM='K' limit 1) Kit, (select id from rateiofuncoes where DominioID=d.id and FM='E' limit 1) Equipe from rateiodominios d where d.sysActive=1 and d.dominioSuperior="&d1("id"))

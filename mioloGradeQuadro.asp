@@ -90,7 +90,7 @@ while not pTemp.EOF
 		else
 			if desab="" then
 				%>
-				<tr class="Remarcar Linhas" onclick="Remarcar('<%=ConsultaRem%>', 'Confirmar', <%=Data%>, '<%=pTemp("Hora")%>', '<%=request.QueryString("DrId")%>');"><td width="25"></td>
+				<tr class="Remarcar Linhas" onclick="Remarcar('<%=ConsultaRem%>', 'Confirmar', <%=Data%>, '<%=pTemp("Hora")%>', '<%=req("DrId")%>');"><td width="25"></td>
 				<td width="20"><strong><%=formatDateTime(hour(pTemp("Hora"))&":"&minute(pTemp("Hora")),4)%></strong></td>
 				<td colspan="4" class="Linhas"><input type="button" value="Remarcar para este Hor&aacute;rio" /></td></tr>
 				<%

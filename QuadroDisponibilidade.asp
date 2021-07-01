@@ -324,11 +324,11 @@ if Not VeSeExiste.EOF then
 
 end if
 next
-if request.QueryString("AdicionarLocal")<>"" and jaInserido="N" then
+if req("AdicionarLocal")<>"" and jaInserido="N" then
 	if novaString="" then
-	novaString=request.QueryString("AdicionarLocal")
+	novaString=req("AdicionarLocal")
 	else
-	novaString=novaString&", "&request.QueryString("AdicionarLocal")
+	novaString=novaString&", "&req("AdicionarLocal")
 	end if
 end if
 if varCheck<>novaString then

@@ -1,13 +1,13 @@
 <!--#include file="connect.asp"--><%
-FormID = request.QueryString("FormID")
-ModeloID = request.QueryString("ModeloID")
-Col = request.QueryString("Col")
-Action = request.QueryString("Action")
-FileName = request.QueryString("FileName")
-PacienteID = request.QueryString("PacienteID")
-FTipo = request.QueryString("FTipo")
+FormID = req("FormID")
+ModeloID = req("ModeloID")
+Col = req("Col")
+Action = req("Action")
+FileName = req("FileName")
+PacienteID = req("PacienteID")
+FTipo = req("FTipo")
 
-if request.QueryString("Action")<>"" then
+if req("Action")<>"" then
 	if FormID="N" then
 		db_execute("insert into buiFormsPreenchidos (ModeloID, PacienteID, sysUser) values ("&ModeloID&", "&PacienteID&", "&session("User")&")")
 		set pult = db.execute("select * from buiFormsPreenchidos where ModeloID="&ModeloID&" and PacienteID="&PacienteID&" order by id desc LIMIT 1")

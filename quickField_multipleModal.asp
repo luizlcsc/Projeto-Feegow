@@ -51,8 +51,9 @@ Select Case tipo
     multipleModal_sessionSQL = getSQLQuickField(tipo,false,false,false)
     qItemWhere = " AND id IN("&converteEncapsulamento("|,",checksID)&")"
 
-
-
+  Case "Cid10"
+    multipleModal_sessionSQL = getSQLQuickField(tipo,false,false,"sql")
+    qItemWhere = " AND id IN("&converteEncapsulamento("|,",checksID)&")"
 
   Case else
     multipleModal_sessionSQL = Session("multipleModal_session")
@@ -98,13 +99,18 @@ else
   if not ItemSQL.eof then
     while not ItemSQL.eof
 
-      item_id   = ItemSQL("id")
-      item_Nome = ItemSQL("nome")
+      item_id      = ItemSQL("id")
+      item_Nome    = ItemSQL("nome")
+      item_Codigo  = item_id
       checkboxNome = "itemBusca"&item_id
+
+      if FieldExists(ItemBuscaSQL, "codigo") then
+        item_Codigo = ItemBuscaSQL("codigo")
+      end if
 
       conteudoHTML = ""&_
       "<tr>"&_
-      "  <td><code># "&item_id&"</code></td>"&_
+      "  <td><code># "&item_Codigo&"</code></td>"&_
       "  <td>"&item_Nome&"</td>"&_
       "  <td width='60'>"&_
       "    <div class='checkbox-custom checkbox-success'>"&_
@@ -215,7 +221,7 @@ function preencheArrayItensSelecionados(checkbox) {
 
 //PREPARA ITENS PARA SALVAR
 $(".components-modal-submit-btn").click(function(){
-  $('#<%=refID%>').val(itensSelecionados);
+  $('#<%=refID%>').val(itensSelecionados).trigger('change');
 
   <%
   if req("acao")<>"" then

@@ -269,22 +269,24 @@ end if
         %>
         <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 12, Convenios, sqlConvenios, "NomeConvenio", "")%>
 
-        <div class="col-md-12">
-            <label for="Programas">Limitar os programas de saúde aceitos neste período</label><br>
-            <select multiple class="multisel tag-input-style" id="Programas" name="Programas" style="display: none;">
-                <%
-                set rsProgramas = db.execute("SELECT p.id, p.NomePrograma, p.ConvenioID FROM programas p INNER JOIN profissionaisprogramas pp ON p.id = pp.ProgramaID WHERE pp.ProfissionalID = '"&req("ProfissionalID")&"'")
-                while not rsProgramas.eof
-                %>
-                <option value="|<%=rsProgramas("id")%>|" data-convenio="<%=rsProgramas("ConvenioID")%>" <%if inStr(Programas, "|"&rsProgramas("id")&"|")>0 then%> selected="selected" <%end if%>><%=rsProgramas("NomePrograma")%></option>
-                <% 
-                rsProgramas.movenext
-                wend
-                rsProgramas.close
-                set rsProgramas=nothing
-                %>
-            </select>
-        </div>
+        <% if getConfig("ExibirProgramasDeSaude") = 1 then %>
+            <div class="col-md-12">
+                <label for="Programas">Limitar os programas de saúde aceitos neste período</label><br>
+                <select multiple class="multisel tag-input-style" id="Programas" name="Programas" style="display: none;">
+                    <%
+                    set rsProgramas = db.execute("SELECT p.id, p.NomePrograma, p.ConvenioID FROM programas p INNER JOIN profissionaisprogramas pp ON p.id = pp.ProgramaID WHERE pp.ProfissionalID = '"&req("ProfissionalID")&"'")
+                    while not rsProgramas.eof
+                    %>
+                    <option value="|<%=rsProgramas("id")%>|" data-convenio="<%=rsProgramas("ConvenioID")%>" <%if inStr(Programas, "|"&rsProgramas("id")&"|")>0 then%> selected="selected" <%end if%>><%=rsProgramas("NomePrograma")%></option>
+                    <% 
+                    rsProgramas.movenext
+                    wend
+                    rsProgramas.close
+                    set rsProgramas=nothing
+                    %>
+                </select>
+            </div>
+        <% end if %>
       </div>
       <hr class="short alt" />
       <div class="row mo">

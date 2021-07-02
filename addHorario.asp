@@ -19,6 +19,7 @@ if HorarioID<>"" then
         Especialidades = gh("Especialidades")
         Procedimentos = gh("Procedimentos")
         Convenios = gh("Convenios")
+        Programas = gh("Programas")
         Profissionais = gh("Profissionais")
         Compartilhada = gh("Compartilhada")
         TipoGrade = gh("TipoGrade")
@@ -115,12 +116,12 @@ if ref("HoraDe")<>"" and ref("HoraA")<>"" and ref("Intervalo")<>"" then
         diaSemanaArray = split(ref("diaSemanaArray[]"),",")
         numberArray = UBound(diaSemanaArray)
             For i = 0 To numberArray
-              sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios,Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor) values ("&diaSemanaArray(i)&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"','"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"')"
+               sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios,Programas,Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor) values ("&diaSemanaArray(i)&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"', '"&ref("Programas")&"', '"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"')"
                call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
                db_execute(sqlGrade)
             Next
         else
-            sqlGrade = "update assfixalocalxprofissional set HoraDe="&mytime(ref("HoraDe"))&", HoraA="&mytime(ref("HoraA"))&", LocalID="&treatvalzero(ref("LocalID"))&", Intervalo="&treatvalnull(ref("Intervalo"))&", Compartilhada='"&ref("Compartilhada")&"', Especialidades='"&ref("Especialidades")&"', Procedimentos='"&ref("Procedimentos")&"', Convenios='"&ref("Convenios")&"', Profissionais='"&ref("Profissionais")&"', TipoGrade="& treatvalzero(ref("TipoGrade")) &", Horarios='"& ref("Horarios") &"', MaximoRetornos="& treatvalnull(ref("MaximoRetornos")) &", MaximoEncaixes="& treatvalnull(ref("MaximoEncaixes")) &", InicioVigencia="& mydatenull(ref("InicioVigencia")) &", FimVigencia="& mydatenull(ref("FimVigencia")) &", FrequenciaSemanas="&treatvalzero(ref("FrequenciaSemanas"))&", Mensagem='"& ref("Mensagem") &"', Cor='"& ref("Cor") &"' WHERE id="&req("H")
+            sqlGrade = "update assfixalocalxprofissional set HoraDe="&mytime(ref("HoraDe"))&", HoraA="&mytime(ref("HoraA"))&", LocalID="&treatvalzero(ref("LocalID"))&", Intervalo="&treatvalnull(ref("Intervalo"))&", Compartilhada='"&ref("Compartilhada")&"', Especialidades='"&ref("Especialidades")&"', Procedimentos='"&ref("Procedimentos")&"', Convenios='"&ref("Convenios")&"', Programas ='"&ref("Programas")&"', Profissionais='"&ref("Profissionais")&"', TipoGrade="& treatvalzero(ref("TipoGrade")) &", Horarios='"& ref("Horarios") &"', MaximoRetornos="& treatvalnull(ref("MaximoRetornos")) &", MaximoEncaixes="& treatvalnull(ref("MaximoEncaixes")) &", InicioVigencia="& mydatenull(ref("InicioVigencia")) &", FimVigencia="& mydatenull(ref("FimVigencia")) &", FrequenciaSemanas="&treatvalzero(ref("FrequenciaSemanas"))&", Mensagem='"& ref("Mensagem") &"', Cor='"& ref("Cor") &"' WHERE id="&req("H")
             call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
             db_execute(sqlGrade)
         end if
@@ -267,6 +268,23 @@ end if
         sqlConvenios = "select 'P' id, ' PARTICULAR' NomeConvenio UNION ALL select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' AND COALESCE((SELECT CASE WHEN SomenteConvenios LIKE '%|NONE|%' THEN FALSE ELSE NULLIF(SomenteConvenios,'') END FROM profissionais  WHERE id = "&treatvalzero(ProfissionalID)&") LIKE CONCAT('%|',id,'|%'),TRUE) "&franquia("AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")&" order by NomeConvenio"
         %>
         <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 12, Convenios, sqlConvenios, "NomeConvenio", "")%>
+
+        <div class="col-md-12">
+            <label for="Programas">Limitar os programas de saúde aceitos neste período</label><br>
+            <select multiple class="multisel tag-input-style" id="Programas" name="Programas" style="display: none;">
+                <%
+                set rsProgramas = db.execute("SELECT p.id, p.NomePrograma, p.ConvenioID FROM programas p INNER JOIN profissionaisprogramas pp ON p.id = pp.ProgramaID WHERE pp.ProfissionalID = '"&req("ProfissionalID")&"'")
+                while not rsProgramas.eof
+                %>
+                <option value="|<%=rsProgramas("id")%>|" data-convenio="<%=rsProgramas("ConvenioID")%>" <%if inStr(Programas, "|"&rsProgramas("id")&"|")>0 then%> selected="selected" <%end if%>><%=rsProgramas("NomePrograma")%></option>
+                <% 
+                rsProgramas.movenext
+                wend
+                rsProgramas.close
+                set rsProgramas=nothing
+                %>
+            </select>
+        </div>
       </div>
       <hr class="short alt" />
       <div class="row mo">
@@ -295,7 +313,7 @@ end if
       <div class="row mo">
         <%if ProfissionalID>0 then %>
         <div class="col-md-12">
-            <label><input type="checkbox" class="ace" name="Compartilhada" value="S"<%if Compartilhada="S" then response.write(" checked ") end if %> /><span class="lbl"> Compartilhar esta grade para agendamentos externos</span></label>
+            <label><input type="checkbox" class="ace" name="Compartilhada" value="S" <%if Compartilhada="S" then response.write(" checked ") end if %> /><span class="lbl"> Compartilhar esta grade para agendamentos externos</span></label>
         </div>
         <%end if %>
       </div>
@@ -313,6 +331,29 @@ $("#formAddHorario").submit(function(){
 	return false;
 });
 
+function trataProgramasDoConvenio() {
+    const convenios = ($("#Convenios").val() || []).map(conv => conv.replaceAll('|', ''));
+    console.log(convenios);
+
+    const programasOptions = $('#Programas option');
+    programasOptions.each(function() {
+        const option = $(this);
+        const conv   = option.data('convenio').toString();
+        if (conv === '' || convenios.length === 0 || convenios.includes(conv)) {
+            option.prop('disabled', '');
+        } else {
+            option.prop('disabled', 'disabled');
+            option.prop('selected', '');
+        }
+    });
+    $('#Programas').multiselect("destroy").multiselect({
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        numberDisplayed: 1
+    });
+}
+$("#Convenios").on('change', trataProgramasDoConvenio);
+trataProgramasDoConvenio();
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>

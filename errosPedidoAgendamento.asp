@@ -584,7 +584,20 @@ function validarEquipamento(equipamentoId, dataAgendamento, hora)
                validarEquipamento = 0
            end if
        else
-           validarEquipamento = 1
+            diaDaSemana=weekday(dataAgendamento)
+            if ref("Tempo")&"" <> "" then
+                hora = formatdatetime(dateadd("n", ref("Tempo"), hora),4)
+            end if
+            sqlCompromisso = ("select count(*) as total from Compromissos where ProfissionalID = -" & equipamentoId & " and DataDe<=" & mydatenull(dataAgendamento) & " and DataA>=" & mydatenull(dataAgendamento) & " and DiasSemana like '%"&diaDaSemana&"%' and HoraDe<=time('" & hora & "') and HoraA>time('" & hora & "')")
+
+            set compromisso = db.execute(sqlCompromisso)
+            if cint(compromisso("total")) > 0 then
+                validarEquipamento = 0
+            else
+                'Equipamento disponivel
+                validarEquipamento = 1
+            end if
+
        end if
    end if
    end if

@@ -39,6 +39,7 @@ NaoExibirAgendamentoLocal = getConfig("NaoExibirAgendamentoLocal")
 NaoExibirOutrasAgendas = getConfig("NaoExibirOutrasAgendas")
 AumentarAlturaLinhaAgendamento = getConfig("AumentarAlturaLinhaAgendamento")
 ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
+OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
 
 'verifica se há agendamento aberto e bloqueia o id concatenado
 set vcaAB = db.execute("select id, AgAberto, UltRef from sys_users where AgAberto like '%_%' and id<>"& session("User"))
@@ -699,7 +700,7 @@ end if
                     end if
                     Conteudo = Conteudo & "</td>"&_
                     "<td  nowrap "& linkAg &">"&pacientePrioridadeIcone&" <img src=""assets/img/"&comps("StaID")&".png""> "
-                    if comps("Encaixe")=1 then
+                    if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
                         Conteudo = Conteudo & "&nbsp;<span class=""label bg-alert label-sm arrowed-in mr10 arrowed-in-right"">Encaixe</span>"
                     end if
                     Conteudo = Conteudo & "<span class=""nomePac"">"& fix_string_chars_full(comps("NomePaciente")) &"</span>"

@@ -5675,6 +5675,14 @@ end if
  
 end function
 
-
+function getConfAO(NomeConfig)
+    sqlVCA = "select * from aoconfig where NomeConfig='"& NomeConfig &"'"
+    set vca = db.execute(sqlVCA)
+    if vca.eof then
+        db.execute("insert into aoconfig set NomeConfig='"& NomeConfig &"'")
+        set vca = db.execute(sqlVCA)
+    end if
+    getConfAO = vca("Val")
+end function
 
 %>

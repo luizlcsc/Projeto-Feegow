@@ -1104,8 +1104,8 @@ $(".form-control").change(function(){
                 if(!$("#<%=replace(splObr(o), "|", "") %>").parents(".qf").hasClass("hidden")){
                     $("#<%=replace(splObr(o), "|", "") %>").prop("required", true);
                 }
+					$("label[for='<%=replace(splObr(o), "|", "") %>']").append(' *');
             }, 500);
-
 			<%
         next
       end if

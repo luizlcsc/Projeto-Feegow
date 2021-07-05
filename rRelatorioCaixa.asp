@@ -253,7 +253,8 @@ if not dist.eof then
     %>
     </tbody>
 </table>
-    <% call linhaTotais(Dinheiro, Cheque, Credito, Debito,Boleto,Pix, Titulo, Classe)
+    <% call linhaTotais(Dinheiro, Cheque, Credito, Debito, Boleto, Pix, Titulo, Classe) %>
+<%
 end if
 
 
@@ -549,14 +550,14 @@ if not dist.eof then
     %>
     </tbody>
 </table>
-    <% call linhaTotais(Dinheiro, Cheque, Credito, Debito,Boleto,Pix, Titulo, Classe)
+    <% call linhaTotais(Dinheiro, Cheque, Credito, Debito, Boleto, Pix, Titulo, Classe)
 end if 
 
     
 if MC="1" then %>
 
     <h5>FECHAMENTO DE CAIXA</h5>
-    <%= linhaTotais(Balanco, Cheque, Credito, Debito,Boleto,Pix, "FECHAMENTO DE CAIXA", "alert") %>
+    <%= linhaTotais(Balanco, Cheque, Credito, Debito, Boleto, Pix, "FECHAMENTO DE CAIXA", "alert") %>
 
 
 
@@ -706,7 +707,7 @@ if MC="1" then %>
             </tr>
         </tfoot>
     </table>
-        <% call linhaTotais(tInformado, Cheque, Credito, Debito,Boleto,Pix, Titulo, Classe)
+        <% call linhaTotais(tInformado, Cheque, Credito, Debito, Boleto, Pix, Titulo, Classe)
     end if 
 
 

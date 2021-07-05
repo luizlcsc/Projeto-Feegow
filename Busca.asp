@@ -11,12 +11,15 @@ q = req("q")
         $("#sidebar-search").val("<%=q%>");
 </script>
 <%
-if isnumeric(q) and len(q)=6 then
-    set inv = db.execute("select id, CD from sys_financialinvoices where CD='C' and id="&q)
-    if not inv.eof then
-        response.redirect("./?P=invoice&I="&inv("id")&"&T=C&Pers=1&Scan=1")
-    end if
-elseif isnumeric(q) and len(q)=10 and left(q, 1)="2" then
+'if isnumeric(q) and len(q)=6 then
+'    set inv = db.execute("select id, CD from sys_financialinvoices where CD='C' and id="&q)
+'    if not inv.eof then
+'        response.redirect("./?P=invoice&I="&inv("id")&"&T=C&Pers=1&Scan=1")
+'    end if
+'elseif isnumeric(q) and len(q)=10 and left(q, 1)="2" then
+' comentado para atender ao tk 13358
+
+if isnumeric(q) and len(q)=10 and left(q, 1)="2" then
     'response.write(len(q))
     gsid = ccur(q)-2222222222
     set gs = db.execute("select id from tissguiasadt where id="& gsid)

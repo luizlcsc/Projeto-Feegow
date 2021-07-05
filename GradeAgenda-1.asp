@@ -769,7 +769,7 @@ end if
                                 ultimoHorarioGrade = $('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:nth-child('+(tamanhoGrade)+')')[0].id
                             }
                            if ( $(this).attr("data-horaid")>'<%=HoraComp%>'){
-                                <%if session("FilaEspera")<>"" then %>
+                                <%if session("FilaEspera")<>"" and comps("StaID") <> "11" then %>
                                     $('[data-horaid=<%=HoraComp%>]').remove();
                                 <% end if %>
                                 if('<%=HoraComp%>' > ultimoHorarioGrade && $($('#'+ultimoHorarioGrade)).attr('data-local') == '<%=comps("LocalID")%>'){

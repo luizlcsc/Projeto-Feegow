@@ -190,7 +190,11 @@ private function repasse( rDataExecucao, rGuiaID, rNomeProcedimento, rNomePacien
                 nLinha = nLinha+1
 
                 'lrResult( lrDataExecucao, lrNomeFuncao, lrInvoiceID, lrNomeProcedimento, lrNomePaciente, lrFormaPagto, lrCreditado, lrValorProcedimento, lrValorRecebido, lrValorRepasse )
-                if Creditado = reqf("AccountID") then
+                if reqf("AccountID")&""<> "" then
+                    if Creditado = reqf("AccountID") then
+                        call lrResult( "Calculo", rDataExecucao, DominioID & ": "& Funcao, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
+                    end if
+                else
                     call lrResult( "Calculo", rDataExecucao, DominioID & ": "& Funcao, rInvoiceID, rNomeProcedimento, rNomePaciente, rFormaPagto, Creditado, rValorProcedimento, rValorRecebido, (ValorItem * coefPerc), nLinha, fd("FM"), fd("Sobre"), fd("modoCalculo") )
                 end if
             end if

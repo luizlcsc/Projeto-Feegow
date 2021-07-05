@@ -80,7 +80,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
-     'response.write(sql)
+    'response.write(sql)
              set ti = db.execute( sql )
              while not ti.eof
                  Ano = year(ti("DataHora"))
@@ -314,8 +314,15 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 <%
                                 end if
                             end if
-                            if cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0 then %>
-                                <a href="javascript:if(confirm('Tem certeza de que deseja apagar esta prescrição?'));pront('timeline.asp?PacienteID=<%= PacienteID %>&Tipo=|<%= ti("Tipo") %>|&X=<%= ti("id") %>');">
+                            set perm = db.execute("select Permissoes from buipermissoes where FormID='"&ti("Modelo")&"'")
+                            if not perm.eof then 
+                                var_permissoes  = perm("Permissoes")
+                            else
+                                var_permissoes = ""
+                            end if 
+                            if cstr(session("User"))=ti("sysUser")&"" and ( aut("prescricoesX")>0 or instr(var_permissoes, "XP")>0 ) then %>
+                                <a href="javascript:if(confirm('Tem certeza de que deseja apagar esta prescrição?'))pront('timeline.asp?PacienteID=<%= PacienteID %>&Tipo=|<%= ti("Tipo") %>|&X=<%= ti("id") %>');">
+
                                     <i class="fa fa-remove"></i>
                                 </a>
                             <% end if %>

@@ -1211,6 +1211,9 @@ function prontPrint(tipo, id){
         case "pedido":
             url = domain+"print/exam-request/";
             break;
+        case "diagnostico":
+            url = domain+"print/diagnostico/";
+            break;
         case "protocolos":
             url = domain+"print/protocol/";
             break;
@@ -1218,6 +1221,7 @@ function prontPrint(tipo, id){
             //url = domain+"print/prescription/";
         // break;
     }
+    
     let src = `${url+id}?showPapelTimbrado=1&showCarimbo=1&assinaturaDigital=1&tk=${localStorage.getItem("tk")}`;
     openModal(`
         <iframe width="100%" height="800px" src="${src}" frameborder="0"></iframe>`,

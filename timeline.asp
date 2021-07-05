@@ -207,7 +207,7 @@ select case Tipo
                 <div class="col-md-3">
                     <%
                     qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
-                                                " WHERE p.sysActive=1                                "&chr(13)&_
+                                                " WHERE p.sysActive=1 AND Ativo= 'on'                "&chr(13)&_
                                                 " ORDER BY p.NomeProfissional ASC                    "
                     
                     if session("Table")="profissionais" then

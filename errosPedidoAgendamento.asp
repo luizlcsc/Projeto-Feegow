@@ -475,6 +475,57 @@ if erro = "" and ref("LocalID")<>"" and ref("LocalID")<>"0"  then
     end if
 end if
 
+'INÍCIO Validacoes de Programas de Saúde ================================
+if erro="" and getConfig("ExibirProgramasDeSaude") = 1 then
+    ProgramaID = ref("ProgramaID")
+
+    'verifica se a grade possui limitação de programas de saúde
+    if ref("GradeID")<> "" then
+        GradeID = ref("GradeID")
+
+        set rsProgramasGrades = db.execute("SELECT Programas FROM assfixalocalxprofissional WHERE id="&treatvalzero(GradeID)&"")
+        if not rsProgramasGrades.eof then
+            programasGrade = rsProgramasGrades("Programas")&""
+            if programasGrade <> "" then
+                if ProgramaID = "" then
+                    erro="A grade deste horário é restrita a programas de saúde."
+                elseif not instr(programasGrade, "|" & ProgramaID & "|") > 0 then
+                    erro="A grade deste horário não permite o programa de saúde escolhido."
+                end if
+            end if
+        end if
+    end if
+
+    'verifica se programa de saúde escolhido pode ser usado pelo profissional
+    if erro = "" and ProgramaID <> "" then
+        set rsProgramaProfissional = db.execute("SELECT id FROM profissionaisprogramas WHERE ProgramaID = '" & ProgramaID & "' AND ProfissionalID = '" & rfProfissionalID & "'")
+        if rsProgramaProfissional.eof then
+            erro="O Profissional não participa do programa de saúde escolhido."
+        end if
+    end if
+
+    'verifica se programa de saúde escolhido pode ser usado pelo Paciente
+    if erro = "" and ProgramaID <> "" then
+        sqlProgramaPaciente = "SELECT pp.id, p.ConvenioID, p.sysActive FROM pacientesprogramas pp " &_
+                              "INNER JOIN programas p ON p.id = pp.ProgramaID " &_
+                              "WHERE pp.PacienteID = '" & rfPaciente & "' AND pp.ProgramaID = '" & ProgramaID & "' AND pp.sysActive = 1 LIMIT 1"
+        set rsProgramaPaciente = db.execute(sqlProgramaPaciente)
+        if rsProgramaPaciente.eof then
+            erro="O Paciente não participa do programa de saúde escolhido."
+        else
+            convenioPrograma = rsProgramaPaciente("ConvenioID")&""
+            convenioAgenda   = ref("ConvenioID")&""
+            if rsProgramaPaciente("sysActive")<> 1 then
+                erro="O programa de saúde escolhido está inativo."
+            elseif convenioPrograma<>"" and convenioPrograma <> convenioAgenda then
+                erro="O programa de saúde escolhido é de outro convênio."
+            end if
+        end if
+    end if
+
+end if
+'FIM Validacoes de Programas de Saúde ================================
+
 if erro="" and rdEquipamentoID <> "" then
 
     'Validar se o equipamento tem possibilidade

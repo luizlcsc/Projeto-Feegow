@@ -138,7 +138,7 @@ end if
 rfNotas=ref("Notas")
 rfSubtipoProcedimento=0'ref("SubtipoProcedimento")'VERIFICAR
 ConsultaID=ref("ConsultaID")
-
+rfProgramaID=ref("ProgramaID")
 
 
 if ConsultaID<>"0" then
@@ -258,7 +258,7 @@ if erro="" then
     if req("PreSalvarCheckin")="" then
         '<--Verifica se paciente já tem esse convênio. Se não, cria esse convênio para esse paciente\\
         if ConsultaID="0" then
-            sql = "insert into agendamentos (PacienteId, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, PlanoID, rdValorPlano, Notas, FormaPagto, HoraSta, LocalID, Tempo, HoraFinal, SubtipoProcedimentoID, ConfEmail, ConfSMS, Encaixe, Retorno, EquipamentoID, EspecialidadeID, TabelaParticularID, Primeira, IndicadoPor, sysUser) values ('"&rfPaciente&"','"&rfProfissionalID&"','"&mydate(rfData)&"','"&rfHora&"','"&rfProcedimento&"','"&rfStaID&"','"&treatVal(rfValorPlano)&"', "&treatvalzero(PlanoID)&",'"&rfrdValorPlano&"','"&Notas&"','0', '"&HoraSta&"',"&treatvalzero(rfLocal)&",'"&rfTempo&"','"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', '"&rfSubtipoProcedimento&"', '"&ref("ConfEmail")&"', '"&ref("ConfSMS")&"', "&treatvalnull(ref("Encaixe"))&","&treatvalnull(ref("Retorno"))&", "&treatvalnull(ref("EquipamentoID"))&", "& treatvalnull(ref("EspecialidadeID")) &", "& treatvalnull(ref("ageTabela")) &", "&PrimeiraVez&", '"&indicacaoID&"', "&session("User")&")"
+            sql = "insert into agendamentos (PacienteId, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, PlanoID, rdValorPlano, Notas, FormaPagto, HoraSta, LocalID, Tempo, HoraFinal, SubtipoProcedimentoID, ConfEmail, ConfSMS, Encaixe, Retorno, EquipamentoID, EspecialidadeID, TabelaParticularID, Primeira, IndicadoPor, sysUser, ProgramaID) values ('"&rfPaciente&"','"&rfProfissionalID&"','"&mydate(rfData)&"','"&rfHora&"','"&rfProcedimento&"','"&rfStaID&"','"&treatVal(rfValorPlano)&"', "&treatvalzero(PlanoID)&",'"&rfrdValorPlano&"','"&Notas&"','0', '"&HoraSta&"',"&treatvalzero(rfLocal)&",'"&rfTempo&"','"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', '"&rfSubtipoProcedimento&"', '"&ref("ConfEmail")&"', '"&ref("ConfSMS")&"', "&treatvalnull(ref("Encaixe"))&","&treatvalnull(ref("Retorno"))&", "&treatvalnull(ref("EquipamentoID"))&", "& treatvalnull(ref("EspecialidadeID")) &", "& treatvalnull(ref("ageTabela")) &", "&PrimeiraVez&", '"&indicacaoID&"', "&session("User")&", " & treatvalnull(rfProgramaID) & ")"
 
     		'response.Write(sql&vbcrlf)
 
@@ -341,7 +341,7 @@ if erro="" then
                 call agendaUnificada("update", ConsultaID, rfProfissionalID)
             end if
 
-            sqlUpdateAgendamento = "update agendamentos set IndicadoPor='"&indicacaoID&"', PacienteId='"&rfPaciente&"', ProfissionalID='"&rfProfissionalID&"', Data='"&mydate(rfData)&"', Hora='"&rfHora&"', TipoCompromissoID='"&rfProcedimento&"', StaID='"&rfStaID&"', ValorPlano='"&treatVal(rfValorPlano)&"', PlanoID="&treatvalzero(PlanoID)&", rdValorPlano='"&rfrdValorPlano&"', Notas='"&Notas&"', FormaPagto='0', HoraSta='"&HoraSta&"', LocalID='"&rfLocal&"', Tempo='"&rfTempo&"' ,HoraFinal='"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', SubtipoProcedimentoID='"&rfSubtipoProcedimento&"', ConfEmail='"&ref("ConfEmail")&"', ConfSMS='"&ref("ConfSMS")&"', Encaixe="&treatvalnull(ref("Encaixe"))&", Retorno="&treatvalnull(ref("Retorno"))&", EquipamentoID="&treatvalnull(ref("EquipamentoID"))&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& refnull("ageTabela") &" where id = '"&ConsultaID&"'"
+            sqlUpdateAgendamento = "update agendamentos set IndicadoPor='"&indicacaoID&"', PacienteId='"&rfPaciente&"', ProfissionalID='"&rfProfissionalID&"', Data='"&mydate(rfData)&"', Hora='"&rfHora&"', TipoCompromissoID='"&rfProcedimento&"', StaID='"&rfStaID&"', ValorPlano='"&treatVal(rfValorPlano)&"', PlanoID="&treatvalzero(PlanoID)&", rdValorPlano='"&rfrdValorPlano&"', Notas='"&Notas&"', FormaPagto='0', HoraSta='"&HoraSta&"', LocalID='"&rfLocal&"', Tempo='"&rfTempo&"' ,HoraFinal='"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', SubtipoProcedimentoID='"&rfSubtipoProcedimento&"', ConfEmail='"&ref("ConfEmail")&"', ConfSMS='"&ref("ConfSMS")&"', Encaixe="&treatvalnull(ref("Encaixe"))&", Retorno="&treatvalnull(ref("Retorno"))&", EquipamentoID="&treatvalnull(ref("EquipamentoID"))&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& refnull("ageTabela") &", ProgramaID=" & treatvalnull(rfProgramaID) & " where id = '"&ConsultaID&"'"
 
             if ref("Checkin")="1" then
                 DescricaoAlteracao = "Check-in"

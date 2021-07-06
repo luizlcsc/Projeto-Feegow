@@ -2,7 +2,7 @@
 <%
 tableName = ref("P")
 id = ref("I")
-spl = split(ref(), "&")
+spl = split(request.form(), "&")
 
 if lcase(ref("P"))="profissionais" or lcase(ref("P"))="funcionarios" then
 	set vcIns = db.execute("select sysActive from "&tableName&" where id="&id)
@@ -242,5 +242,5 @@ if lcase(tableName)="pacientes" then
 end if
 
 'on error resume next
-	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(ref(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
+	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(request.form(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
 %>

@@ -1,6 +1,5 @@
 <!--#include file="connect.asp"-->
 <%
-'response.Write(ref())
 
 
 T=ref("T")

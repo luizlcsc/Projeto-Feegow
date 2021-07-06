@@ -253,7 +253,7 @@ if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("Sta
             nrComp=1
         end if
         if nrComp=1 then
-            erro="Erro: O horário escolhido já está preenchido para este "&LabelErroMaximoAgendamentos&" neste horário."'&ref()&"|"&veSeFaixas("Hora")&" e fim "&veSeFaixas("HoraFinal")
+            erro="Erro: O horário escolhido já está preenchido para este "&LabelErroMaximoAgendamentos&" neste horário."'"&veSeFaixas("Hora")&" e fim "&veSeFaixas("HoraFinal")
         else
             set contaComps=db.execute("select COUNT(id) as TotalPacs from agendamentos where sysActive=1 AND ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and Hora = time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and not id = '"&ConsultaID&"'")
 

@@ -1,2 +1,2 @@
 <!--#include file="connect.asp"-->
-alert('ref()');
+alert('request.form()');

@@ -10,7 +10,7 @@
 
 <ul class="select-insert">
 <%
-'response.Write(ref())
+
 if lcase(ref("resource"))="pacientes" then
 	sql = "select id, NomePaciente, Nascimento from pacientes where NomePaciente like '"&ref("typed")&"%' and sysActive=1 order by NomePaciente"
 	'campoSuperior???

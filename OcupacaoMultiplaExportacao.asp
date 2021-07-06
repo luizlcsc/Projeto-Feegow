@@ -1,7 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="functionOcupacao.asp"-->
 
-<%'= ref() %>
 
 <style type="text/css">
     td, th {

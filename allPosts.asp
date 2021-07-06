@@ -3,5 +3,5 @@ ConnString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database="&se
 Set db = Server.CreateObject("ADODB.Connection")
 db.Open ConnString
 
-db_execute("insert into cliniccentral.allposts(Post) values ('"&ref()&"')")
+db_execute("insert into cliniccentral.allposts(Post) values ('"&request.form()&"')")
 %>

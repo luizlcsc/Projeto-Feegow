@@ -27,11 +27,11 @@ switch (env){
         break;
     case "production":
         domain = "https://app.feegow.com.br/";
-        api = "/v7/api/";
+        api = "/main/api/";
         break;
     case "homolog":
         domain = "https://api-homolog.feegow.com/index.php/";
-        api = "/v7/api/";
+        api = "/main/api/";
         break;
 }
 
@@ -282,6 +282,39 @@ function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, m
             setListeners($modal)
         }, modalTimeout);
 	});
+}
+
+function openComponentsModalPost(url, params, title, closeBtn, saveBtn, modalSize, modalWidth) {
+    if (!modalSize) {
+        modalSize = "lg";
+    }
+
+    var $modal = getModal(true, modalSize, modalWidth);
+    $modal.modal("show");
+
+    if (url.indexOf(".asp") === -1) {
+        url = domain + url;
+    }
+
+    var token="";
+    if(localStorage.getItem("tk")){
+        token= localStorage.getItem("tk")
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: params,
+        headers: {
+            "x-access-token":token
+        }
+    }).done(function(data) {
+        var $modal = setModalContent(data, title, closeBtn, saveBtn, params);
+
+        setTimeout(function () {
+            setListeners($modal)
+        }, modalTimeout);
+    });
 }
 
 function setListeners($modal) {

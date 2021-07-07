@@ -20,7 +20,7 @@ response.Buffer
 </thead>
 <tbody>
 <%
-if request.QueryString("C")="S" then
+if req("C")="S" then
 '	set l = dbc.execute("select licencas.*, (select count(id) from licencaslogins where LicencaID=licencas.id) as total, (select DataHora from licencaslogins where LicencaID=licencas.id order by id desc limit 1) as UltimoAcesso, licencasusuarios.* from licencas join licencasusuarios on licencasusuarios.`LicencaID`=licencas.`id` and isnull(Excluido) and Cliente<>0 order by licencas.DataHora desc")
 	set l = dbc.execute("select licencas.*, '0' as total, (select DataHora from licencaslogins where LicencaID=licencas.id order by id desc limit 1) as UltimoAcesso, licencasusuarios.* from licencas join licencasusuarios on licencasusuarios.`LicencaID`=licencas.`id` and isnull(Excluido) and Cliente<>0 order by licencas.DataHora desc")
 else

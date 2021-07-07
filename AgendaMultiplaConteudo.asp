@@ -1,5 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
-<%'=request.form() %>
+
 
 <script type="text/javascript">
     $("#LocalPre").val("");

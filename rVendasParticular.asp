@@ -23,8 +23,8 @@ TotalGeral = 0
 TotalRec = 0
 db_execute("delete from tempfaturamento where sysUser="&session("User"))
 
-DataDe = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
+DataDe = req("DataDe")
+DataAte = req("DataAte")
 
 response.Buffer
 %>

@@ -4,7 +4,7 @@
 <%posModalPagar="fixed" %>
 <!--#include file="invoiceEstilo.asp"-->
 <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 
 if not reg.eof then
@@ -232,7 +232,7 @@ function tissCompletaDados(T, I){
 $("#AgendaCirurgica").submit(function(){
 	$.ajax({
 		type:"POST",
-		url:"SaveAgendaCirurgica.asp?Tipo=Honorarios&I=<%=request.QueryString("I")%>",
+		url:"SaveAgendaCirurgica.asp?Tipo=Honorarios&I=<%=req("I")%>",
 		data:$("#AgendaCirurgica").serialize(),
 		success:function(data){
 			eval(data);
@@ -311,7 +311,7 @@ function tissplanosguia(ConvenioID){
 function tissRecalcAgendaCirurgica(Action){
 	$.ajax({
 		type:"POST",
-		url:"tissRecalcAgendaCirurgica.asp?I=<%=request.QueryString("I")%>&Action="+Action,
+		url:"tissRecalcAgendaCirurgica.asp?I=<%=req("I")%>&Action="+Action,
 		data:$("#AgendaCirurgica").serialize(),
 		success: function(data){
 		    $("#divTotais").html(data);

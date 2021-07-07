@@ -3,17 +3,17 @@
 <!--#include file="../functionOcupacao.asp"-->
 <%
 
-license_id = Request.QueryString("license")
-data_fim = Request.QueryString("data_fim")
-data_inicio = Request.QueryString("data_inicio")
-unidades = Request.QueryString("unidades")
-especialidades = Request.QueryString("especialidades")
-profissionais1 = Request.QueryString("profissionais")
-convenioId = Request.QueryString("convenioId")
-procedimentoId = Request.QueryString("procedimentos")
+license_id = req("license")
+data_fim = req("data_fim")
+data_inicio = req("data_inicio")
+unidades = req("unidades")
+especialidades = req("especialidades")
+profissionais1 = req("profissionais")
+convenioId = req("convenioId")
+procedimentoId = req("procedimentos")
 
 
-get_payload = Request.QueryString("get_payload")
+get_payload = req("get_payload")
 
 Response.ContentType = "application/json"
 

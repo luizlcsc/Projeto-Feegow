@@ -1,9 +1,9 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <%
-DominioID = request.QueryString("I")
-Tipo = request.QueryString("T")
-Acao = request.QueryString("A")
+DominioID = req("I")
+Tipo = req("T")
+Acao = req("A")
 
 if Tipo = "" then
 	Titulo = "Regra Geral de repasse"

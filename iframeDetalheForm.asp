@@ -110,8 +110,8 @@ body {
 <body>
 <%
 response.Charset="utf-8"
-NomeForm=replace(request.Form("NomeForm"),"'","")
-if request.Form("E")="E" then
+NomeForm=replace(ref("NomeForm"),"'","")
+if ref("E")="E" then
 	if NomeForm="" then
 		erro="Preencha o nome do formul&aacute;rio."
 	end if
@@ -122,21 +122,21 @@ if request.Form("E")="E" then
 	if erro<>"" then
 		response.Write("<strong style=""color:#ff0000"">"&erro&"</strong>")
 	else
-		if request.QueryString("F")="" then
+		if req("F")="" then
 			db_execute("insert into buiForms (Nome) values ('"&NomeForm&"')")
 			set pUlt=db.execute("select * from buiForms order by id desc LIMIT 1")
 			db_execute("CREATE  TABLE _"&pult("id")&" (`id` INT NOT NULL AUTO_INCREMENT , PRIMARY KEY (`id`) ) ENGINE = MyISAM DEFAULT CHARACTER SET = utf8")
 			response.Redirect("?F="&pUlt("id")&"&Open=Re")
 		else
-			set pF=db.execute("select * from buiForms where id = '"&replace(request.QueryString("F"),"'","''")&"'")
-			''db_execute("alter TABLE `"&W&"_"&pF("Nome")&"` RENAME TO  `"&W&"_"&replace(request.Form("NomeForm"),"'","")&"`")
-			''db_execute("update buiForms set Nome='"&replace(request.Form("NomeForm"),"'","''")&"' where id = '"&replace(request.QueryString("F"),"'","''")&"'")
+			set pF=db.execute("select * from buiForms where id = '"&replace(req("F"),"'","''")&"'")
+			''db_execute("alter TABLE `"&W&"_"&pF("Nome")&"` RENAME TO  `"&W&"_"&replace(ref("NomeForm"),"'","")&"`")
+			''db_execute("update buiForms set Nome='"&replace(ref("NomeForm"),"'","''")&"' where id = '"&replace(req("F"),"'","''")&"'")
 			%><script language="javascript">alert('N�o sei o que deveria acontecer aqui (DefaultForm.asp, Linha 51)');</script><%
 		end if
 	end if
 end if
-if request.QueryString("F")<>"" then
-	set pF=db.execute("select * from buiForms where id = '"&replace(request.QueryString("F"),"'","''")&"'")
+if req("F")<>"" then
+	set pF=db.execute("select * from buiForms where id = '"&replace(req("F"),"'","''")&"'")
 	if not pF.EOF then
 		NomeForm=pF("Nome")
 		TipoTitulo=pF("TipoTitulo")
@@ -159,7 +159,7 @@ end if
     <%
 	set pesps=db.execute("select * from especialidades where not especialidade like '' order by especialidade")
 	while not pesps.eof
-	%><tr><td><input type="checkbox" id="esp<%=pesps("id")%>" onClick="especialidades(<%=request.QueryString("F")%>, <%=pesps("id")%>)"<%if inStr(Especialidade,"|"&pesps("id")&"|")>0 then%> checked="checked"<%end if%> /></td><td><%=pesps("especialidade")%></td></tr>
+	%><tr><td><input type="checkbox" id="esp<%=pesps("id")%>" onClick="especialidades(<%=req("F")%>, <%=pesps("id")%>)"<%if inStr(Especialidade,"|"&pesps("id")&"|")>0 then%> checked="checked"<%end if%> /></td><td><%=pesps("especialidade")%></td></tr>
     <%
 	pesps.movenext
 	wend
@@ -171,13 +171,13 @@ end if
   </li>
 	
 	
-		<li><label><input type="checkbox" id="TipoTitulo" value="S" onChange="propForm(<%=request.QueryString("F")%>);"<%if TipoTitulo="L" then%> checked="checked"<%end if%>> 
+		<li><label><input type="checkbox" id="TipoTitulo" value="S" onChange="propForm(<%=req("F")%>);"<%if TipoTitulo="L" then%> checked="checked"<%end if%>> 
 		T&iacute;tulos ao lado </label>
 		</li>
 	<%
 	set pFields=db.execute("select * from cliniccentral.buiTiposCamposForms where id<>3 and id<>7 order by id")
 	while not pFields.EOF
-		%><li onClick="criaCampo(<%=pFields("id")%>, 0, 'A', '<%=request.QueryString("F")%>');"><img align="absmiddle" src="./images/campo<%=pFields("id")%>.jpg"> <%=pFields("TipoCampo")%></li><%
+		%><li onClick="criaCampo(<%=pFields("id")%>, 0, 'A', '<%=req("F")%>');"><img align="absmiddle" src="./images/campo<%=pFields("id")%>.jpg"> <%=pFields("TipoCampo")%></li><%
 	pFields.moveNext
 	wend
 	pFields.close
@@ -185,7 +185,7 @@ end if
 	%>
 </ul><%
 
-if request.QueryString("F")<>"" then
+if req("F")<>"" then
 	%>
 
   <div id="EditaCampo" class="EditaCampo"></div>
@@ -194,7 +194,7 @@ if request.QueryString("F")<>"" then
 </div>
 
 <script language="javascript">
-criaCampo(0, 0, 'V', '<%=request.QueryString("F")%>')
+criaCampo(0, 0, 'V', '<%=req("F")%>')
 
 /*
 var i=0;

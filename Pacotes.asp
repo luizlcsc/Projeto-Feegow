@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from pacotes where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from pacotes where id="&req("I"))
 %>
 
 <br>
@@ -11,8 +11,8 @@ set reg = db.execute("select * from pacotes where id="&request.QueryString("I"))
 
             <form method="post" id="frm" name="frm" action="save.asp">
 	<%=header(req("P"), "Cadastro de Pacote", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-                <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-                <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+                <input type="hidden" name="I" value="<%=req("I")%>" />
+                <input type="hidden" name="P" value="<%=req("P")%>" />
 
                 <div class="row">
                     <%=quickField("text", "NomePacote", "Nome do Pacote", 6, reg("NomePacote"), "", "", " required")%>
@@ -34,7 +34,7 @@ set reg = db.execute("select * from pacotes where id="&request.QueryString("I"))
                 <br>
                 <div class="row">
                     <div class="col-md-offset-2 col-md-8">
-                        <%call Subform("pacotesitens", "PacoteID", request.QueryString("I"), "frm")%>
+                        <%call Subform("pacotesitens", "PacoteID", req("I"), "frm")%>
                     </div>
                 </div>
             </form>
@@ -50,12 +50,12 @@ $(document).ready(function(e) {
 <script type="text/javascript">
 //js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto"
 %>
 
 function tissCompletaDados(T, I, N){
 	$.post("tissCompletaDados.asp?I="+I+"&T="+T,{
-		   ConvenioID:"<%=request.QueryString("I")%>",
+		   ConvenioID:"<%=req("I")%>",
 		   Numero:N,
 		   },function(data,status){
 	  eval(data);

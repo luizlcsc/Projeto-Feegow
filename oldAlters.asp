@@ -1,4 +1,4 @@
-<a href="?I=<%=ccur(request.querystring("I"))+1%>">&gt;&gt;&gt;</a><br />
+<a href="?I=<%=ccur(req("I"))+1%>">&gt;&gt;&gt;</a><br />
 
 <!--#include file="limpaMemo.asp"-->
 <%
@@ -41,7 +41,7 @@ set t=nothing
 tfile.close
 set tfile=nothing
 set fs=nothing
-'set t = roxo.execute("select * from textoscomplementares where TexC_ln_Counter="&request.QueryString("I"))
+'set t = roxo.execute("select * from textoscomplementares where TexC_ln_Counter="&req("I"))
 'while not t.eof
 '	response.Write( t("TexC_tx_NomeTextoComplementar") &"<hr>")
 '	response.Write( limpaMemo(t("TexC_me_TextoComplementar")) )
@@ -50,7 +50,7 @@ set fs=nothing
 't.close
 'set t=nothing
 
-'set t = roxo.execute("select * from textos where Text_ln_Counter="&request.QueryString("I"))
+'set t = roxo.execute("select * from textos where Text_ln_Counter="&req("I"))
 'while not t.eof
 '	response.Write( limpaMemo(t("Text_me_Texto")) )
 't.movenext

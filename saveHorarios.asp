@@ -4,56 +4,56 @@ Dia=0
 while Dia < 7
 	Dia=Dia+1
 
-	set VeDia=db.execute("select * from Horarios where ProfissionalID like '"&request.QueryString("ProfissionalID")&"' and Dia like '"&Dia&"'")
-	Atende=request.Form("Atende"&Dia)
-	HoraDe=request.Form("HoraDe"&Dia)
-	HoraAs=request.Form("HoraAs"&Dia)
-	Pausa=request.Form("Pausa"&Dia)
-	PausaDe=request.Form("PausaDe"&Dia)
-	PausaAs=request.Form("PausaAs"&Dia)
-	Intervalos=request.Form("Intervalos"&Dia)
+	set VeDia=db.execute("select * from Horarios where ProfissionalID like '"&req("ProfissionalID")&"' and Dia like '"&Dia&"'")
+	Atende=ref("Atende"&Dia)
+	HoraDe=ref("HoraDe"&Dia)
+	HoraAs=ref("HoraAs"&Dia)
+	Pausa=ref("Pausa"&Dia)
+	PausaDe=ref("PausaDe"&Dia)
+	PausaAs=ref("PausaAs"&Dia)
+	Intervalos=ref("Intervalos"&Dia)
 	
 	'definicao dos erros
 	erro1=""
 	erro2=""
 	erro3=""
 	if Atende="S" then
-		if not isdate(request.Form("HoraDe"&Dia)) then
+		if not isdate(ref("HoraDe"&Dia)) then
 			erro1="&raquo; Horário de início de atendimento inválido."
 		end if
-		if not isdate(request.Form("HoraAs"&Dia)) then
+		if not isdate(ref("HoraAs"&Dia)) then
 			erro1="&raquo; Horário de fim de atendimento inválido."
 		end if
-		if isdate(request.Form("HoraDe"&Dia)) and isdate(request.Form("HoraAs"&Dia)) then
-			if cdate(request.Form("HoraDe"&Dia))>=cdate(request.Form("HoraAs"&Dia)) then
+		if isdate(ref("HoraDe"&Dia)) and isdate(ref("HoraAs"&Dia)) then
+			if cdate(ref("HoraDe"&Dia))>=cdate(ref("HoraAs"&Dia)) then
 				erro1="&raquo; Horário de fim de atendimento deve ser maior que o horário de início de atendimento."
 			end if
 		end if
-		if not isdate(request.Form("Intervalos"&Dia)) then
-			erro3="&raquo; Intervalo de "&weekdayname(Dia)&" inválido."&request.Form("Intervalos"&Dia)
+		if not isdate(ref("Intervalos"&Dia)) then
+			erro3="&raquo; Intervalo de "&weekdayname(Dia)&" inválido."&ref("Intervalos"&Dia)
 		else
-			if cdate(request.Form("Intervalos"&Dia))=cdate("00:00") then
+			if cdate(ref("Intervalos"&Dia))=cdate("00:00") then
 				erro3="&raquo; Informe o intervalo entre os atendimentos.<br>"
 			end if
 		end if
 	end if
 
 	if Pausa="S" then
-		if not isdate(request.Form("PausaDe"&Dia)) then
+		if not isdate(ref("PausaDe"&Dia)) then
 			erro2="&raquo; Horário de início de pausa inválido."
 		end if
-		if not isdate(request.Form("PausaAs"&Dia)) then
+		if not isdate(ref("PausaAs"&Dia)) then
 			erro2="&raquo; Horário de fim de pausa inválido."
 		end if
-		if isdate(request.Form("PausaDe"&Dia)) and isdate(request.Form("PausaAs"&Dia)) then
-			if cdate(request.Form("PausaDe"&Dia))>=cdate(request.Form("PausaAs"&Dia)) then
+		if isdate(ref("PausaDe"&Dia)) and isdate(ref("PausaAs"&Dia)) then
+			if cdate(ref("PausaDe"&Dia))>=cdate(ref("PausaAs"&Dia)) then
 				erro2="&raquo; Horário de fim de pausa deve ser maior que o horário de início da pausa."
 			end if
 		end if
 	end if
 	if erro1="" and erro2="" and erro3="" and isdate(HoraDe) and isdate(HoraAs) and isdate(PausaDe) and isdate(PausaAs) and isdate(Intervalos) then
 		if VeDia.EOF then
-			db_execute("insert into Horarios (ProfissionalID,Atende,Dia,HoraDe,HoraAs,Pausa,PausaDe,PausaAs,Intervalos) values ('"&request.QueryString("ProfissionalID")&"','"&Atende&"','"&Dia&"','"&HoraDe&"','"&HoraAs&"','"&Pausa&"','"&PausaDe&"','"&PausaAs&"','"&Intervalos&"')")
+			db_execute("insert into Horarios (ProfissionalID,Atende,Dia,HoraDe,HoraAs,Pausa,PausaDe,PausaAs,Intervalos) values ('"&req("ProfissionalID")&"','"&Atende&"','"&Dia&"','"&HoraDe&"','"&HoraAs&"','"&Pausa&"','"&PausaDe&"','"&PausaAs&"','"&Intervalos&"')")
 		else
 			db_execute("update Horarios set Atende='"&Atende&"',HoraDe='"&HoraDe&"',HoraAs='"&HoraAs&"',Pausa='"&Pausa&"',PausaDe='"&PausaDe&"',PausaAs='"&PausaAs&"',Intervalos='"&Intervalos&"' where id = '"&VeDia("id")&"'")
 		end if

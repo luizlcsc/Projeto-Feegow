@@ -4,10 +4,10 @@ $("#divUsers, #divMedkit").removeClass("hidden");
 </script>
 
 <%
-DominioID = request.QueryString("I")
-Tipo = request.QueryString("T")
-Acao = request.QueryString("A")
-Q = request.QueryString("Q")
+DominioID = req("I")
+Tipo = req("T")
+Acao = req("A")
+Q = req("Q")
 
 if isnumeric(Q) and Q<>"" then
 	Q = ccur(Q)

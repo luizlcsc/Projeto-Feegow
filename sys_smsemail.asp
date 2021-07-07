@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
 
 sql = "select * from sys_smsemail WHERE id="&req("I")
 set reg = db.execute(sql)

@@ -13,7 +13,7 @@
 call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 
-Aba = request.QueryString("Aba")
+Aba = req("Aba")
 
 if Aba="" then
 	ativoCadastro = " class=""active"""
@@ -119,7 +119,7 @@ $(document).ready(function(e) {
 <script type="text/javascript">
 //js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
 %>
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?')){

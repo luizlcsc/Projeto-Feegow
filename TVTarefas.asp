@@ -6,7 +6,7 @@ conexao = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=clinic1
 Set db = Server.CreateObject("ADODB.Connection")
 db.Open conexao
 
-CentroCustoID = request.querystring("CC")
+CentroCustoID = req("CC")
 
 set cc = db.execute("select NomeCentroCusto from centrocusto where id="& CentroCustoID)
 NomeCentroCusto = cc("NomeCentroCusto")

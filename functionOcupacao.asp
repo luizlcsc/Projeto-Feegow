@@ -1,6 +1,6 @@
 ﻿<%
 'server.ScriptTimeout = 200
-d = Request.QueryString("debug")
+d = req("debug")
 if d="1" then
     d=True
 else
@@ -339,7 +339,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                 SomenteEspecialidades = SomenteEspecialidades&", "&ProcedimentoSomenteEspecialidades
                             end if
                         end if
-                        if SomenteEspecialidades="" AND refEspecialidade<>"" and instr(refEspecialidade, ",")==0 then
+                        if SomenteEspecialidades="" AND refEspecialidade<>"" and instr(refEspecialidade, ",")=0 then
                             SomenteEspecialidades = refEspecialidade
                         end if
 

@@ -293,7 +293,7 @@ function changeTexto(arg){
 
     function callForm(F, I) {
         //alert(I);
-        $.get("iPront.asp?t=L&p=<%= PacienteID %>&m="+ F +"&i="+ I +"&a=&LaudoSC=1&pl="+$("#ProfissionalID").val(), function (data) { $("#folha").html(data) });    
+        $.get("iPront.asp?t=L&p=<%= PacienteID %>&m="+ F +"&i="+ I +"&a=&LaudoSC=1&pl="+$("#ProfissionalID").val(), function (data) { console.log(data);$("#folha").html(data) });    
     }
 
     endpointSendMailToPatient = (laudoID,env) => {
@@ -449,7 +449,7 @@ function atualizaAlbum(X, LaudoID){
         //apenas chamar pront
 	$.ajax({
 		type:"POST",
-		url:"Arquivos.asp?PacienteID=<%=request.QueryString("I")%>&X="+X,
+		url:"Arquivos.asp?PacienteID=<%=req("I")%>&X="+X,
 		success:function(data){
 			$("#ArquivosPaciente").html(data);
 		}

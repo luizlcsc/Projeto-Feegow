@@ -8,8 +8,8 @@ body, tr, td, th {
 </style>
 
 <%
-DataDe = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
+DataDe = req("DataDe")
+DataAte = req("DataAte")
 %>
 <h3 class="text-center">Produ&ccedil;&atilde;o M&eacute;dica</h3>
 <h4 class="text-center">Per&iacute;odo - <%=DataDe%> at&eacute; <%=DataAte%></h4>

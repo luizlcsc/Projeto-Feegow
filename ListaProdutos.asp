@@ -39,22 +39,31 @@
     </script>
     <%
     end if
-%>
+
+    %>
+
 <form id="frmListaProdutos">
     <div class="panel">
         <div class="panel-body mt20 hidden-print">
             <div class="row">
                 <input type="hidden" name="praVencer" id="praVencer" value="<%=praVencer%>">
-                <%=quickfield("simpleSelect", "ProdutoID", "Produto", 2, ProdutoID, "select id, NomeProduto from produtos where sysActive=1 order by NomeProduto", "NomeProduto", "") %>
-                <%=quickfield("simpleSelect", "TipoProduto", "Tipo Produto", 2, TipoProduto, "select id, TipoProduto from cliniccentral.produtostipos order by id", "TipoProduto", " semVazio no-select2 ") %>
+
+                <% if TipoProduto = 1 then %>
+                    <%=quickfield("simpleSelect", "ProdutoID", "Produto", 2, ProdutoID, "select id, NomeProduto from produtos where sysActive=1 order by NomeProduto", "NomeProduto", "") %>
+                    <%=quickfield("simpleSelect", "TipoProduto", "Tipo Produto", 2, TipoProduto, "select id, TipoProduto from cliniccentral.produtostipos WHERE id <> 5 order by id", "TipoProduto", " semVazio no-select2 ") %>
+                <% else %>
+                    <%=quickfield("simpleSelect", "ProdutoID", "Taxas", 2, ProdutoID, "select id, NomeProduto from produtos where TipoProduto = '"&TipoProduto&"' and sysActive=1 order by NomeProduto", "NomeProduto", "") %>
+                    <%=quickfield("simpleSelect", "TipoProduto", "Tipo Produto", 2, TipoProduto, "select id, TipoProduto from cliniccentral.produtostipos order by id", "TipoProduto", " semVazio no-select2 ") %>
+                <% end if %>
                 <%if TipoProduto<>1 then%>
                     <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
                 <%end if%>
+
                 <%=quickField("text", "Codigo", "Código", 2, Codigo, "", "", "")%>
                 <%=quickfield("simpleSelect", "CategoriaID", "Categoria", 2, CategoriaID, "select id, NomeCategoria from produtoscategorias where sysActive=1 order by NomeCategoria", "NomeCategoria", "") %>
                 <%=quickfield("simpleSelect", "FabricanteID", "Fabricante", 2, FabricanteID, "select id, NomeFabricante from produtosfabricantes where sysActive=1 order by NomeFabricante", "NomeFabricante", "") %>
                 <%=quickfield("simpleSelect", "LocalizacaoID", "Localização", 2, LocalizacaoID, "select id, NomeLocalizacao from produtoslocalizacoes where sysActive=1 order by NomeLocalizacao", "NomeLocalizacao", "") %>
-                
+
             </div>
             <div class="row mt20">
             <%=quickField("text", "CodigoIndividual", "Código Individual", 2, CodigoIndividual, "", "", "")%>
@@ -67,7 +76,6 @@
                     <button class="btn btn-sm btn-info mt20" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
                     <button class="btn btn-sm btn-success mt20" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i></button>
                 </div>
-
 
             </div>
             <div class="row mt20">
@@ -122,7 +130,14 @@ $("#frmListaProdutos").submit(function () {
     if($("#TipoProduto").val() != 1){$("#TipoProduto").attr("disabled", true);};
     if($("#TipoProduto").val() != 4){
         $(".Modulo-Medicamento").addClass("hidden");
-    };
+    }
+
+    if($("#TipoProduto").val() == 5){
+        $("#frmListaProdutos").addClass("hidden");
+    }
+
+
+
 
     $("#TipoProduto").on("click", function (){
         var TipoProduto = $("#TipoProduto").val();

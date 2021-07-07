@@ -2,7 +2,7 @@
 <%
 ActiveMedicamento = " class=""active"""
 
-if request.QueryString("id")="0" then
+if req("id")="0" then
 	sqlMedicamento = "select * from PacientesMedicamentos where sysActive=0 and sysUser="&session("User")
 	set regMed = db.execute(sqlMedicamento)
 	if regMed.eof then
@@ -29,11 +29,11 @@ else
         Tipo="Bula"
 	end if
 	if Tipo="Medicamento" then
-		MedicamentoID = request.QueryString("id")
-		set regMed = db.execute("select * from PacientesMedicamentos where id="&request.QueryString("id"))
+		MedicamentoID = req("id")
+		set regMed = db.execute("select * from PacientesMedicamentos where id="&req("id"))
 	elseif Tipo="Formula" then
-		set regFor = db.execute("select * from PacientesFormulas where id="&request.QueryString("id"))
-		FormulaID = request.QueryString("id")
+		set regFor = db.execute("select * from PacientesFormulas where id="&req("id"))
+		FormulaID = req("id")
 		ActiveMedicamento = ""
 		ActiveFormula = " class=""active"""
 	end if

@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 response.Charset="utf-8"
-R = request.QueryString("R")
+R = req("R")
 set resource = db.execute("select * from cliniccentral.sys_resources where tableName='"&R&"'")
 if not resource.eof then
 	sql = "CREATE TABLE `"&R&"` (`id` INT(11) NOT NULL AUTO_INCREMENT,"

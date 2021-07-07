@@ -3,7 +3,7 @@
 
 <input type="hidden" name="FormID" id="FormID" value="<%=formID%>" />
 <%
-'response.write(request.querystring())
+'response.write(request.QueryString)
 if req("i")<>"" and isnumeric(req("i")) then
 	response.write("<script type='text/javascript'>")
     if req("IFR")="S" then

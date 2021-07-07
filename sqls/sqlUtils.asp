@@ -77,7 +77,8 @@ function getSQLQuickField(Tabela,Coluna,ID,Condicoes)
                     " ORDER BY Nome                                                                        "
 
             end if
-                    
+        Case "Cid10"
+            sql = "SELECT id, Codigo AS codigo, Descricao AS nome FROM cliniccentral.cid10"
     End Select
     
     getSQLQuickField = "SELECT * FROM ("&sql&") AS t WHERE true"
@@ -136,9 +137,17 @@ function getTaxaAtual (conta,mov,parcelas)
             "         )                                                               		"&chr(13)&_
             "         ,'0'                                                            		"&chr(13)&_
             " )     as taxaAtual  limit 1                                                   "
-    
+
     sql = "select "&sqltaxa
     getTaxaAtual = sql
-end function 
+end function
+
+function FieldExists(ByVal rs, ByVal fieldName)
+    On Error Resume Next
+    FieldExists = rs.Fields(fieldName).name <> ""
+    If Err <> 0 Then FieldExists = False
+    Err.Clear
+end function
+
 
 %>

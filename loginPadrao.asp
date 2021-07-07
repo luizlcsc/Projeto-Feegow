@@ -1,4 +1,9 @@
-<!--#include file="Classes/Connection.asp"--><!--#include file="Classes/IPUtil.asp"--><!--#include file="Classes/Environment.asp"--><%
+<!--#include file="Classes/Connection.asp"-->
+<!--#include file="Classes/IPUtil.asp"-->
+<!--#include file="Classes/Environment.asp"-->
+<!--#include file="functions.asp"-->
+
+<%
 if IP<>"::1" then
    'on error resume next
 end if
@@ -11,6 +16,7 @@ MasterPwd = getEnv("FC_MASTER", "----")
 Dominio = request.ServerVariables("SERVER_NAME")
 isHomolog = instr(Dominio, "teste")>0
 User = ref("User")
+
 Password = ref("Password")
 masterLogin = false
 masterLoginErro = false
@@ -601,7 +607,7 @@ if not tryLogin.EOF then
             urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")
         END IF
 
-        QueryStringParameters = Request.Form("qs")
+        QueryStringParameters = ref("qs")
 
         call odonto()
 

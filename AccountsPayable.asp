@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
 <%
-if request.QueryString("T")="C" then
+if req("T")="C" then
 	titulo = "CONTAS A RECEBER"
 else
 	titulo = "CONTAS A PAGAR"
@@ -31,7 +31,7 @@ end if
 </div>
 <script language="javascript">
 
-getStatement('<%=request.QueryString("T")%>', '', '', '', '<%=session("Unidades")%>');
+getStatement('<%=req("T")%>', '', '', '', '<%=session("Unidades")%>');
 
 function atualizaPagtos(){
 	$("#Filtrate").click();

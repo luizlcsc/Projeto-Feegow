@@ -491,7 +491,7 @@ function completaProcedimento(id, ConvenioID)
 	set valproc = db.execute("select pv.id AS 'ProcedimentoValorID', pv.ModoCalculo, pv.TecnicaID, pv.QuantidadeCH, pv.CustoOperacional, pv.ValorFilme, pv.QuantidadeFilme, pv.ValorUCO, pvp.Valor, pvp.ValorCH, pvp.NaoCobre, pt.TabelaID, pt.Descricao, pt.Codigo from tissprocedimentosvaloresplanos as pvp LEFT JOIN tissprocedimentosvalores as pv on pv.id=pvp.AssociacaoID LEFT JOIN tissprocedimentostabela as pt on pt.id=pv.ProcedimentoTabelaID where pv.ProcedimentoID like '"&id&"' and PlanoID="&treatvalnull(ref("PlanoID")))
 	if valproc.eof then
 	    if not isnull(ConvenioID) and ConvenioID<>"" then
-            sqlValProc = "select pv.Valor, pv.ModoCalculo, pv.ValorCH, pv.NaoCobre, pv.TecnicaID, pv.QuantidadeCH, pv.CustoOperacional, pv.ValorFilme, pv.QuantidadeFilme, pv.ValorUCO, pt.TabelaID, pt.Descricao, pt.Codigo, pv.id AS 'ProcedimentoValorID' from tissprocedimentosvalores as pv LEFT JOIN tissprocedimentostabela as pt on pt.id=pv.ProcedimentoTabelaID where pv.ProcedimentoID like '"&id&"' and ConvenioID="&ConvenioID
+            sqlValProc = "select pv.Valor, pv.ModoCalculo, pv.ValorCH, pv.NaoCobre, pv.TecnicaID, pv.QuantidadeCH, pv.CustoOperacional, pv.ValorFilme, pv.QuantidadeFilme, pv.ValorUCO, pt.TabelaID, pt.Descricao, tc.CodigoTabela, pt.Codigo, pv.id AS 'ProcedimentoValorID' from tissprocedimentosvalores as pv LEFT JOIN tissprocedimentostabela as pt on pt.id=pv.ProcedimentoTabelaID LEFT JOIN tabelasconvenios AS tc ON (IF(pt.TabelaID < 0, (pt.TabelaID)*-1 = tc.id, pt.TabelaID = tc.id)) where pv.ProcedimentoID like '"&id&"' and ConvenioID="&ConvenioID
             'response.Write(sqlValProc)
             set valproc = db.execute(sqlValproc)
         end if
@@ -499,6 +499,9 @@ function completaProcedimento(id, ConvenioID)
 	TecnicaID=1
 	if not valproc.eof then
 		TabelaID = valproc("TabelaID")
+		if valproc("TabelaID") < 0 then
+			TabelaID = valproc("CodigoTabela")
+		end if
 		CodigoProcedimento = valproc("Codigo")
 		ModoCalculo = valproc("ModoCalculo")
 

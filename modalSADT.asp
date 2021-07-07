@@ -137,7 +137,7 @@ elseif Tipo="Procedimentos" then
             <div class="col-md-3">
 	            <%= selectInsert("* Procedimento", "gProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""tissCompletaDados(4, this.value);""", "required guia-tiss", "gConvenioID") %>
             </div>
-            <%= quickField("simpleSelect", "TabelaID", "* Tabela", 3, TabelaID, "select * from tisstabelas order by descricao", "descricao", " empty='' required='required' no-select2") %>
+            <%= quickField("simpleSelect", "TabelaID", "* Tabela", 3, TabelaID, "select tt.id, tt.descricao from tisstabelas tt UNION ALL SELECT tc.CodigoTabela, tc.Descricao FROM tabelasconvenios tc order by descricao", "descricao", " empty='' required='required' no-select2") %>
             <div class="col-md-2">
                 <%=selectProc("* Código proced.", "CodigoProcedimento", CodigoProcedimento, "codigo", "TabelaID", "CodigoProcedimento", "Descricao", " required='required' ", "","","") %>
             </div>

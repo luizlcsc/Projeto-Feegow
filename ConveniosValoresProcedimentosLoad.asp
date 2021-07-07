@@ -85,9 +85,8 @@ while not proc.eof
         END IF
     END IF
 
-    IF proc("TabelaID") > 0 then
-        codigoTabela = proc("TabelaID")
-    ELSE
+    codigoTabela = proc("TabelaID")
+    IF proc("TabelaID") < 0 then
         codigoTabela = proc("CodigoTabela")
     END IF
 

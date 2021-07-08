@@ -1,6 +1,6 @@
 <%
 'if session("Banco")="" then
-'	session("Banco")="clinic"&request.QueryString("I")
+'	session("Banco")="clinic"&req("I")
 'end if
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

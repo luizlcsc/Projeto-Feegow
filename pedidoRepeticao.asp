@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="AgendamentoUnificado.asp"-->
 <%
-set DadosConsulta=db.execute("select * from agendamentos where id="&request.QueryString("ConsultaID"))
+set DadosConsulta=db.execute("select * from agendamentos where id="&req("ConsultaID"))
 rfTempo=DadosConsulta("Tempo")
 rfHora=ref("Hora")
 rfProfissionalID=DadosConsulta("ProfissionalID")
@@ -16,7 +16,6 @@ rfNotas=ref("Notas")
 ConsultaID="0"
 %><!--#include file="errosPedidoAgendamento.asp"--><%
 if erro="" then
-'response.Write(request.Form())
 '"Hora=&Paciente=&Procedimento=&StaConsulta=&Local=&rdValorPlano=&ValorPlano=&DrId=&Data=&Tempo=
 		db_execute("insert into agendamentos (PacienteID, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, Notas, FormaPagto, LocalID, Tempo, HoraFinal, sysUser) values ('"&rfPaciente&"','"&rfProfissionalID&"','"&mydate(rfData)&"','"&rfHora&"','"&rfProcedimento&"','"&rfStaID&"',"&treatvalzero(rfValorPlano)&",'"&rfrdValorPlano&"','"&rfNotas&"','0', '"&rfLocal&"','"&rfTempo&"','"&HoraSolFin&"', "&session("User")&")")
 		set pultCon=db.execute("select id from agendamentos order by id desc LIMIT 1")

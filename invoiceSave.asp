@@ -452,7 +452,7 @@ if erro="" then
             else
 			
 				if session("Odonto")=1 then
-					sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, OdontogramaObj, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", '"&replace(request.form("OdontogramaObj"&ii), "\", "\\")&"', "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
+					sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, OdontogramaObj, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", '"&replace(ref("OdontogramaObj"&ii), "\", "\\")&"', "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
 				else
 					sqlInsert = "REPLACE into itensinvoice ("&camID&" InvoiceID, Tipo, Quantidade, CategoriaID, CentroCustoID, ItemID, ValorUnitario, Desconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, Associacao, PacoteID, EspecialidadeID) values ("&valID&" "&InvoiceID&", '"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", "&treatvalzero(ref("CentroCustoID"&ii))&", "&treatvalzero(ref("ItemID"&ii))&", "&treatvalzero(ref("ValorUnitario"&ii))&", "&treatvalzero(ValorDesconto)&", '"&ref("Descricao"&ii)&"', '"& Executado &"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", "&Associacao&", "& treatvalnull(ref("PacoteID"&ii)) &", "& treatvalnull(ref("EspecialidadeID"&ii)) &")"
 				end if
@@ -600,12 +600,13 @@ if erro="" then
             DescricaoLog=""
         end if
         if scp()=1 then
-			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& treatvalnull(ref("invTabelaID")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 			'call gravaLog(sqlInvoice, "AUTO")
 	    	db_execute(sqlInvoice)
         else
-			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& refnull("invTabelaID") &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& treatvalnull(ref("invTabelaID")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 		' 	call gravaLog(sqlInvoice, "AUTO")
+
 			db_execute(sqlInvoice)
         end if
 	else
@@ -667,7 +668,7 @@ if erro="" then
 
     sqlAtualizaTabela = ""
     if existePagto="" or aut("|tabelacontapagaA|")=1 then
-        sqlAtualizaTabela=" TabelaID="& refnull("invTabelaID") &", "
+        sqlAtualizaTabela=" TabelaID="& treatvalnull(ref("invTabelaID")) &", "
     end if
 
   if scp()=1 then
@@ -677,6 +678,7 @@ if erro="" then
   end if
 
   call gravaLogs(sqlUp, TipoLogOp, DescricaoLog, "")
+
   db_execute(sqlUp)
 
   call reconsolidar("invoice", InvoiceID)

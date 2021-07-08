@@ -71,9 +71,16 @@ Select Case tipo
       qItemBuscaWhere = qItemBuscaWhere&" AND (id NOT IN("&converteEncapsulamento("|,",checksID)&")) "
     end if
 
+  Case "Cid10"
+    multipleModal_sessionSQL = getSQLQuickField(tipo,false,false,"sql")
+    qItemBuscaWhere = " AND (id='"&formBusca&"' OR nome LIKE '%"&formBusca&"%' OR codigo LIKE '%"&formBusca&"%') "
+    if checksID<>"" then
+      qItemBuscaWhere = qItemBuscaWhere&" AND (id NOT IN("&converteEncapsulamento("|,",checksID)&")) "
+    end if
+
   Case else
     multipleModal_sessionSQL = Session("multipleModal_session")
-    qItemWhere = " WHERE id IN("&converteEncapsulamento("|,",converteEncapsulamento(",'",checksID))&")"
+    qItemBuscaWhere = " WHERE id IN("&converteEncapsulamento("|,",converteEncapsulamento(",'",checksID))&")"
 End Select
 
 conteudoHeader = ""&_
@@ -110,8 +117,13 @@ conteudoFooter = ""&_
   else
     while not ItemBuscaSQL.eof
 
-      item_id   = cstr(ItemBuscaSQL("id"))
-      item_Nome = ItemBuscaSQL("nome")
+      item_id     = cstr(ItemBuscaSQL("id"))
+      item_Nome   = ItemBuscaSQL("nome")
+      item_Codigo = item_id
+
+      if FieldExists(ItemBuscaSQL, "codigo") then
+        item_Codigo = ItemBuscaSQL("codigo")
+      end if
 
       checkboxNome = "itemBuscas"&item_id
 
@@ -126,7 +138,7 @@ conteudoFooter = ""&_
       
       conteudoBuscaHTML = ""&_
       "<tr>"&_
-      "  <td><code># "&item_id&"</code></td>"&_
+      "  <td><code># "&item_Codigo&"</code></td>"&_
       "  <td>"&item_Nome&"</td>"&_
       "  <td width='60'>"&_
       "    <div class='checkbox-custom checkbox-primary'>"&_

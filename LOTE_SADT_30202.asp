@@ -3,7 +3,7 @@
 response.ContentType="text/XML"
 
 
-RLoteID = replace(request.QueryString("I"),".xml", "")
+RLoteID = replace(req("I"),".xml", "")
 set lote = db.execute("select * from tisslotes where id="&RLoteID)
 
 orderByVar = "order by g.NGuiaPrestador"

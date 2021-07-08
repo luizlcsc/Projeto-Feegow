@@ -27,7 +27,6 @@ sqlProcedimentos = "select p.id as ProcID, p.NomeProcedimento, v.*, v.id as PvId
                     "left join tissprocedimentostabela as pt on (v.ProcedimentoTabelaID=pt.id)"&_
                     "where (p.NomeProcedimento like '%"&txt&"%' or p.Codigo = '"&txt&"' ) and p.sysActive=1 and Ativo='on' and (v.ConvenioID="&ConvenioID&" or v.ConvenioID is null) and (isnull(SomenteConvenios) or SomenteConvenios like '%|"&ConvenioID&"|%' or SomenteConvenios like '') and (SomenteConvenios not like '%|NONE|%' or isnull(SomenteConvenios)) order by (IF(v.id IS NOT NULL, 0,1)) , NomeProcedimento "&limit
 
-
     set proc = db.execute(sqlProcedimentos)
 if not proc.eof then
 %>

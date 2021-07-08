@@ -103,15 +103,15 @@ if isdate(rfData) then
     rfData = cdate(rfData)
 end if
 
-rfProcedimento=request.Form("ProcedimentoID")
-rfrdValorPlano=request.Form("rdValorPlano")
+rfProcedimento=ref("ProcedimentoID")
+rfrdValorPlano=ref("rdValorPlano")
 if rfrdValorPlano="V" then
-	rfValorPlano=request.Form("Valor")
+	rfValorPlano=ref("Valor")
 	if rfValorPlano="" or not isnumeric(rfValorPlano) then
 		rfValorPlano=0
 	end if
 else
-	rfValorPlano=request.Form("ConvenioID")
+	rfValorPlano=ref("ConvenioID")
 	PlanoID=ref("PlanoID")
 end if
 rfPaciente=ref("PacienteID")
@@ -129,15 +129,15 @@ else
     end if
 end if
 
-rfStaID=request.Form("StaID")
+rfStaID=ref("StaID")
 if ref("LocalID")&""="" then
 	rfLocal=0
 else
-	rfLocal=request.Form("LocalID")
+	rfLocal=ref("LocalID")
 end if
 rfNotas=ref("Notas")
-rfSubtipoProcedimento=0'request.Form("SubtipoProcedimento")'VERIFICAR
-ConsultaID=request.form("ConsultaID")
+rfSubtipoProcedimento=0'ref("SubtipoProcedimento")'VERIFICAR
+ConsultaID=ref("ConsultaID")
 
 
 
@@ -178,9 +178,10 @@ if ConsultaID<>"0" then
         end if
     end if
 end if
-%><!--#include file="errosPedidoAgendamento.asp"--><%''=request.Form()%><%
+%>
+<!--#include file="errosPedidoAgendamento.asp"-->
+<%
 if erro="" then
-'response.Write(request.Form())
 '"Hora=&Paciente=&Procedimento=&StaID=&Local=&rdValorPlano=&ValorPlano=&ProfissionalID=&Data=&Tempo=
 	if rfStaID=5 or rfStaID="5" then
 	    set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(rfLocal))
@@ -258,7 +259,7 @@ if erro="" then
     if req("PreSalvarCheckin")="" then
         '<--Verifica se paciente já tem esse convênio. Se não, cria esse convênio para esse paciente\\
         if ConsultaID="0" then
-            sql = "insert into agendamentos (PacienteId, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, PlanoID, rdValorPlano, Notas, FormaPagto, HoraSta, LocalID, Tempo, HoraFinal, SubtipoProcedimentoID, ConfEmail, ConfSMS, Encaixe, Retorno, EquipamentoID, EspecialidadeID, TabelaParticularID, Primeira, IndicadoPor, sysUser) values ('"&rfPaciente&"','"&rfProfissionalID&"','"&mydate(rfData)&"','"&rfHora&"','"&rfProcedimento&"','"&rfStaID&"','"&treatVal(rfValorPlano)&"', "&treatvalzero(PlanoID)&",'"&rfrdValorPlano&"','"&Notas&"','0', '"&HoraSta&"',"&treatvalzero(rfLocal)&",'"&rfTempo&"','"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', '"&rfSubtipoProcedimento&"', '"&ref("ConfEmail")&"', '"&ref("ConfSMS")&"', "&treatvalnull(ref("Encaixe"))&","&treatvalnull(ref("Retorno"))&", "&treatvalnull(ref("EquipamentoID"))&", "& treatvalnull(ref("EspecialidadeID")) &", "& refnull("ageTabela") &", "&PrimeiraVez&", '"&indicacaoID&"', "&session("User")&")"
+            sql = "insert into agendamentos (PacienteId, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, PlanoID, rdValorPlano, Notas, FormaPagto, HoraSta, LocalID, Tempo, HoraFinal, SubtipoProcedimentoID, ConfEmail, ConfSMS, Encaixe, Retorno, EquipamentoID, EspecialidadeID, TabelaParticularID, Primeira, IndicadoPor, sysUser) values ('"&rfPaciente&"','"&rfProfissionalID&"','"&mydate(rfData)&"','"&rfHora&"','"&rfProcedimento&"','"&rfStaID&"','"&treatVal(rfValorPlano)&"', "&treatvalzero(PlanoID)&",'"&rfrdValorPlano&"','"&Notas&"','0', '"&HoraSta&"',"&treatvalzero(rfLocal)&",'"&rfTempo&"','"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', '"&rfSubtipoProcedimento&"', '"&ref("ConfEmail")&"', '"&ref("ConfSMS")&"', "&treatvalnull(ref("Encaixe"))&","&treatvalnull(ref("Retorno"))&", "&treatvalnull(ref("EquipamentoID"))&", "& treatvalnull(ref("EspecialidadeID")) &", "& treatvalnull(ref("ageTabela")) &", "&PrimeiraVez&", '"&indicacaoID&"', "&session("User")&")"
 
     		'response.Write(sql&vbcrlf)
 

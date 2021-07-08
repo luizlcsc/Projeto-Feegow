@@ -1,5 +1,5 @@
 <%
-if request.QueryString("RefazSistema")="S" then
+if req("RefazSistema")="S" then
 	on error resume next
 	set t=Modelo.execute("select table_comment, table_name from information_schema.tables where TABLE_SCHEMA='"&session("MDatabase")&"' and table_comment='sistema'")
 	while not t.eof

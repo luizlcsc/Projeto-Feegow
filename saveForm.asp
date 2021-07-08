@@ -4,9 +4,9 @@
 if instr(ref("field"), "campo_")>0 then
 	campo = replace(ref("field"), "campo_", "")
 	if trim(ref("checkbox"))<>"" then
-		valor = trim(cstr(ref("checkbox")))
+		valor = trim(cstr(refhtml("checkbox")))
 	else
-		valor = ref("value")
+		valor = refhtml("value")
 	end if
 else
 	lembrarme = "S"

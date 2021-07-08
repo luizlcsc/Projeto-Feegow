@@ -1,5 +1,5 @@
 <%
-if request.querystring("debug")="" then
+if req("debug")="" then
 ''    response.end
 end if
 %>

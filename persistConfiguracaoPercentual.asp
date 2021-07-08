@@ -1,11 +1,11 @@
 <!--#include file="connect.asp"-->
 <%
-minimoString = Request.Form("minimo")
-maximoString = Request.Form("maximo")
-percentualString = Request.Form("percentual")
-bandeiraString = Request.Form("bandeira")
-tipopagamentoString = Request.Form("tipo_pagamento")
-id = Request.QueryString("id")
+minimoString = ref("minimo")
+maximoString = ref("maximo")
+percentualString = ref("percentual")
+bandeiraString = ref("bandeira")
+tipopagamentoString = ref("tipo_pagamento")
+id = req("id")
 
 minimoArray = split(minimoString, "||")
 maximoArray = split(maximoString, "||")

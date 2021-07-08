@@ -10,8 +10,8 @@ Atenciosamente,<br>
 Equipe Feegow Clinic
     </div>
 <%
-DataDe = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
+DataDe = req("DataDe")
+DataAte = req("DataAte")
 
 if DataDe="" then
 	DataDe = date()

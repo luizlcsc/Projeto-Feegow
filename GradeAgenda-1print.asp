@@ -492,7 +492,7 @@ $(".agendar").click(function(){
 	});
 	
 	$(".dia-calendario").removeClass("success green");
-	$(".<%=replace(request.QueryString("Data"),"/", "-")%>").addClass("success green");
+	$(".<%=replace(req("Data"),"/", "-")%>").addClass("success green");
 	$(".Locais").html('');
 	<%
 	set pDiasAT=db.execute("select distinct a.DiaSemana, l.NomeLocal from assfixalocalxprofissional a LEFT JOIN locais l on l.id=a.LocalID where a.ProfissionalID = "&ProfissionalID)

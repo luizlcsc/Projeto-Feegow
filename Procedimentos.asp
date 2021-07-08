@@ -27,8 +27,8 @@
 </style>
 <%
 
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from procedimentos where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from procedimentos where id="&req("I"))
 if isnull(reg("Valor")) or not isnumeric(reg("Valor")) then
 	Valor=0
 else
@@ -56,8 +56,8 @@ TipoGuia = reg("TipoGuia")
 
 <form method="post" id="frm" name="frm" action="save.asp">
     <%=header(req("P"), "Cadastro de Procedimento", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-    <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+    <input type="hidden" name="I" value="<%=req("I")%>" />
+    <input type="hidden" name="P" value="<%=req("P")%>" />
     <br />
 
 <div class="tabbable panel">
@@ -238,13 +238,13 @@ TipoGuia = reg("TipoGuia")
                     <hr class="short alt" />
                     <div class="row">
                         <div class="col-md-8">
-                            <%call Subform("equipamentoprocedimentos", "ProcedimentoID", request.QueryString("I"), "frm")%>
+                            <%call Subform("equipamentoprocedimentos", "ProcedimentoID", req("I"), "frm")%>
                         </div>
                         <div class="col-md-4">
-                            <%call Subform("procedimentoscomplementos", "ProcedimentoID", request.QueryString("I"), "frm")%>
+                            <%call Subform("procedimentoscomplementos", "ProcedimentoID", req("I"), "frm")%>
                         </div>
                         <div class="col-md-12">
-                            <%'call Subform("88", "ProcedimentoID", request.QueryString("I"), "frm")%>
+                            <%'call Subform("88", "ProcedimentoID", req("I"), "frm")%>
                         </div>
                     </div>
                 </div>
@@ -430,7 +430,7 @@ TipoGuia = reg("TipoGuia")
                 Adicionar</label>
             </div>
 
-            <% set CollectionProcedimentoTempoProfissional = db.execute("SELECT * FROM procedimento_tempo_profissional WHERE procedimentoId ="&request.QueryString("I")&" and sysActive = 1") %>                
+            <% set CollectionProcedimentoTempoProfissional = db.execute("SELECT * FROM procedimento_tempo_profissional WHERE procedimentoId ="&req("I")&" and sysActive = 1") %>                
             <div style="display:flex" class="form-row">                    
                 <div class="form-group col-md-4">   
                     <label for="tempo">Tempo</label>                                   
@@ -442,10 +442,10 @@ TipoGuia = reg("TipoGuia")
                     <label for="tempo">Excluir</label>                                
                 </div>                 
             </div>
-            <input type="hidden" name="procedimentoId" class="form-control" id="procedimentoId" value="<%=request.QueryString("I")%>">
+            <input type="hidden" name="procedimentoId" class="form-control" id="procedimentoId" value="<%=req("I")%>">
             <% while not CollectionProcedimentoTempoProfissional.eof %>
                 <div style="display:flex" class="form-row" name="procedimentoTempo" id="duplicater0">    
-                    <input type="hidden" name="idProcedimentoTempoProfissional" class="form-control" id="idProcedimentoTempoProfissional" value="<%=request.QueryString("I")%>">
+                    <input type="hidden" name="idProcedimentoTempoProfissional" class="form-control" id="idProcedimentoTempoProfissional" value="<%=req("I")%>">
                     <div class="form-group col-md-4">
                         <input type="number" name="tempo" class="form-control" id="tempo" placeholder="em minutos" required value="<%=CollectionProcedimentoTempoProfissional("tempo")%>">
                     </div>
@@ -715,7 +715,7 @@ $(function() {
 
 $(document).ready(function(e) {
     <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>
-          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=request.QueryString("P")%>')"><i class="fa fa-copy"></i> Replicar</button>`)
+          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="fa fa-copy"></i> Replicar</button>`)
     <% end if %>
 
 	<%call formSave("frm", "save", "")%>

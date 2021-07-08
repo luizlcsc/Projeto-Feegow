@@ -44,7 +44,7 @@ function getNomeConvenios(stringIDs)
 end function
 
 
-if request.QueryString("X")<>"" then
+if req("X")<>"" then
     sqlDel = "delete from assPeriodoLocalXProfissional where id = '"&req("X")&"'"
     call gravaLogs(sqlDel, "AUTO", "", "ProfissionalID")
 	db_execute(sqlDel)
@@ -171,7 +171,7 @@ if ref("h")="h" then
 	end if
 end if
 %>
-                    <%'=request.form() %>
+                    
 <center><font color="#FF0000"><strong><%=erro%></strong></font></center>
 
     
@@ -365,7 +365,7 @@ function itemSubform(tbn, act, reg, cln, idc, frm){
 function ajxContent(P, I, Pers, Div){
 	$.ajax({
 		type: "POST",
-		url: "ajxContent.asp?P="+P+"&I="+I+"&Pers="+Pers+"&q=<%=request.QueryString("q")%>&Div="+Div,
+		url: "ajxContent.asp?P="+P+"&I="+I+"&Pers="+Pers+"&q=<%=req("q")%>&Div="+Div,
 		success: function( data )
 		{
 			//alert(data);
@@ -391,9 +391,9 @@ if session("Atendimentos")<>"" then
 		end if
 	next
 	
-	if contaAtendimentos=1 and lcase(request.QueryString("P"))="pacientes" and request.QueryString("I")<>cstr(PacienteID) then
+	if contaAtendimentos=1 and lcase(req("P"))="pacientes" and req("I")<>cstr(PacienteID) then
 		Exibe = "S"
-	elseif contaAtendimentos=1 and lcase(request.QueryString("P"))<>"pacientes" then
+	elseif contaAtendimentos=1 and lcase(req("P"))<>"pacientes" then
 		Exibe = "S"
 	elseif contaAtendimentos>1 then
 		Exibe = "S"

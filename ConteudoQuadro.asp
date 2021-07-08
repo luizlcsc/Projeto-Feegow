@@ -19,7 +19,7 @@
 				wend
 				existemQuadros="S"
 				locUlt="U"&pLoc("id")
-				chamaQuadros=chamaQuadros&"chamaQuadro('"&request.QueryString("Data")&"', '"&pLoc("id")&"', '"&locUlt&"');"
+				chamaQuadros=chamaQuadros&"chamaQuadro('"&req("Data")&"', '"&pLoc("id")&"', '"&locUlt&"');"
 				%>
                 <td valign="top">
                     <div class="row">
@@ -30,7 +30,7 @@
 		                        </div>
                             </div>
                             <div class="col-xs-11"><%=uCase(pLoc("NomeLocal"))%>
-                                <button type="button" value="FECHAR" onClick="location.href='?P=NovoQuadro&Pers=1&Rx=<%=pLoc("id")%>&Data=<%=request.QueryString("Data")%>';" class="btn btn-xs btn-white">
+                                <button type="button" value="FECHAR" onClick="location.href='?P=NovoQuadro&Pers=1&Rx=<%=pLoc("id")%>&Data=<%=req("Data")%>';" class="btn btn-xs btn-white">
                                 <i class="fa fa-remove"></i>
                                 </button>
                             </div>

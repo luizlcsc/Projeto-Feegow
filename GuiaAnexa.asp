@@ -17,7 +17,7 @@
 <link rel="stylesheet" type="text/css" media="all" href="assets/css/tiss.css" />
 </head>
 <%
-GuiaID = request.QueryString("I")
+GuiaID = req("I")
 set guia = db.execute("select g.*, cons.TISS as ConselhoProfissionalSolicitanteTISS from tissguiasadt as g left join conselhosprofissionais as cons on cons.id=g.ConselhoProfissionalSolicitanteID where g.id="&GuiaID)
 if not guia.eof then
 	set conv = db.execute("select * from convenios where id="&guia("ConvenioID"))

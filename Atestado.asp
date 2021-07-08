@@ -30,7 +30,7 @@ response.Charset="utf-8"
         </div>
 <div id="areaImpressao">
 <%
-set reg=db.execute("select * from pacientesatestados where id="&request.QueryString("AtestadoID"))
+set reg=db.execute("select * from pacientesatestados where id="&req("AtestadoID"))
 if not reg.EOF then
 	set user = db.execute("select * from sys_users where id="&session("User"))
 	if not user.EOF then

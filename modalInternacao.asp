@@ -2,9 +2,9 @@
 <form method="post" action="" name="frmModal" id="frmModal">
 <input type="hidden" name="E" id="E" value="E" />
 <%
-ItemID = request.QueryString("II")
-GuiaID = request.QueryString("I")
-Tipo = request.QueryString("T")
+ItemID = req("II")
+GuiaID = req("I")
+Tipo = req("T")
 
 if Tipo="Procedimentos" then
 	if ItemID<>"0" then
@@ -58,7 +58,7 @@ $("#frmModal").submit(function(){
 
 	$.ajax({
        type:"POST",
-       url:"saveModalInternacao.asp?I=<%=request.QueryString("I")%>&II=<%=request.QueryString("II")%>&T=<%=request.QueryString("T")%>",
+       url:"saveModalInternacao.asp?I=<%=req("I")%>&II=<%=req("II")%>&T=<%=req("T")%>",
        data:$("#frmModal, #GuiaInternacao").serialize(),
        success:function(data){
            eval(data);

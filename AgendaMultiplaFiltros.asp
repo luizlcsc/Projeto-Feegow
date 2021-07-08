@@ -157,6 +157,17 @@ end if
         <%=quickField("multiple", "Equipamentos", "Equipamentos", 2, "", "SELECT e.id, e.NomeEquipamento FROM equipamentos e LEFT JOIN profissionais p ON p.Unidades LIKE CONCAT('%|',e.UnidadeID,'|%') WHERE e.sysActive=1 and e.Ativo='on' "&sqlLimitarProfissionais&franquia("AND COALESCE(cliniccentral.overlap(CONCAT('|',UnidadeID,'|'), COALESCE(NULLIF('|0|', ''), '-999')),true)")&" GROUP BY e.id ORDER BY NomeEquipamento", "NomeEquipamento", "empty") %>
     <% end if %>
     <input type="hidden" id="hData" name="hData" value="<%= hData %>" />
+
+    <%
+    if getConfig("ExibirProgramasDeSaude") = 1 then
+        sqlProgramasSaude = "SELECT prog.id, prog.NomePrograma FROM programas prog " &_
+                            "LEFT JOIN profissionaisprogramas pp ON pp.ProgramaID = prog.id " &_
+                            "LEFT JOIN profissionais p ON pp.ProfissionalID = p.id " &_
+                            "WHERE prog.sysActive = 1 " & sqlLimitarProfissionais & " " &_
+                            "GROUP BY prog.id ORDER BY prog.NomePrograma"
+        response.write quickField("multiple", "Programas", "Programas de Saúde", 2, req("Programas"), sqlProgramasSaude, "NomePrograma", " empty ")
+    end if
+    %>
 </div>
 <div class="row">
     <div class="col-md-12 text-center">

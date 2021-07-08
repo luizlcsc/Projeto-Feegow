@@ -333,17 +333,36 @@ if ref("Convenio")<>"" then
     sqlConveniosGrade = " AND (ISNULL(Convenios) OR Convenios LIKE '' "& loopConveniosGrade &") "
 end if
 
+sqlProgramas      = ""
+sqlProgramasGrade = ""
+leftProgramas     = ""
+if ref("Programas")<>"" then
+    splProgs      = split(ref("Programas"), ", ")
+    strProgProf   = ""
+    strProgGrade  = ""
+    leftProgramas = " LEFT JOIN profissionaisprogramas profp ON p.id = profp.ProfissionalID "
+    for i=0 to ubound(splProgs)
+        strProgProf = strProgProf & "'"& replace(splProgs(i)&"", "|", "") &"'"
+        if i < ubound(splProgs) then
+            strProgProf = strProgProf & ", "
+        end if
+        strProgGrade = strProgGrade & " OR Programas LIKE '%"& splProgs(i) &"%'"
+    next
+    sqlProgramas      = " AND profp.ProgramaID IN(" & strProgProf & ") "
+    sqlProgramasGrade = " AND (ISNULL(Programas) OR Programas = '' "& strProgGrade &") "
+end if
+
 sql = ""
 
 sqlOrder = " ORDER BY NomeProfissional"
 if session("Banco") = "clinic935" then
     sqlOrder = " ORDER BY OrdemAgenda DESC"
 end if
-sql = "select t.ProfissionalID, p.EspecialidadeID, t.LocalID, IF (p.NomeSocial IS NULL OR p.NomeSocial='', p.NomeProfissional, p.NomeSocial) NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, ProfissionalID, LocalID from assfixalocalxprofissional WHERE HoraDe !='00:00:00' AND DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&") "&sqlProcedimentosGrade&sqlEspecialidadesGrade&sqlConveniosGrade&") UNION ALL select '', ProfissionalID, LocalID from assperiodolocalxprofissional WHERE DataDe<="& mydatenull(Data) &" and DataA>="& mydatenull(Data) &sqlEspecialidadesGrade&sqlConveniosGrade&") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda))  "& sqlEspecialidadesSel & sqlProfissionais & sqlConvenios & sqlProfesp & sqlGradeEspecialidade & sqlUnidades &" GROUP BY t.ProfissionalID"&sqlOrder
+sql = "select t.ProfissionalID, p.EspecialidadeID, t.LocalID, IF (p.NomeSocial IS NULL OR p.NomeSocial='', p.NomeProfissional, p.NomeSocial) NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, ProfissionalID, LocalID from assfixalocalxprofissional WHERE HoraDe !='00:00:00' AND DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&") "&sqlProcedimentosGrade&sqlEspecialidadesGrade&sqlConveniosGrade&sqlProgramasGrade&") UNION ALL select '', ProfissionalID, LocalID from assperiodolocalxprofissional WHERE DataDe<="& mydatenull(Data) &" and DataA>="& mydatenull(Data) &sqlEspecialidadesGrade&sqlConveniosGrade&") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp & leftProgramas &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda))  "& sqlEspecialidadesSel & sqlProfissionais & sqlConvenios & sqlProgramas & sqlProfesp & sqlGradeEspecialidade & sqlUnidades &" GROUP BY t.ProfissionalID"&sqlOrder
 
-sqlVerme = "select t.FrequenciaSemanas, t.InicioVigencia, t.FimVigencia, t.ProfissionalID, p.EspecialidadeID, t.LocalID, p.NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, FrequenciaSemanas, InicioVigencia, FimVigencia, ProfissionalID, LocalID, Procedimentos from assfixalocalxprofissional WHERE DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR (DATE_FORMAT(InicioVigencia ,'%Y-%m-01') <= "&mydatenull(Data)&")) AND (FimVigencia IS NULL OR (DATE_FORMAT(FimVigencia ,'%Y-%m-30') >= "&mydatenull(Data)&" )))) t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda)) "&sqlProcedimentosLocal&sqlEspecialidadesSel & sqlConvenios & sqlProfissionais & sqlGradeEspecialidade &sqlProfesp & sqlUnidades &" "
+sqlVerme = "select t.FrequenciaSemanas, t.InicioVigencia, t.FimVigencia, t.ProfissionalID, p.EspecialidadeID, t.LocalID, p.NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, FrequenciaSemanas, InicioVigencia, FimVigencia, ProfissionalID, LocalID, Procedimentos from assfixalocalxprofissional WHERE DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR (DATE_FORMAT(InicioVigencia ,'%Y-%m-01') <= "&mydatenull(Data)&")) AND (FimVigencia IS NULL OR (DATE_FORMAT(FimVigencia ,'%Y-%m-30') >= "&mydatenull(Data)&" )))) t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp & leftProgramas &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda)) "&sqlProcedimentosLocal&sqlEspecialidadesSel & sqlConvenios & sqlProgramas & sqlProfissionais & sqlGradeEspecialidade &sqlProfesp & sqlUnidades &" "
 
-sqlVermePer = "select t.DataDe, t.DataA, t.ProfissionalID, p.EspecialidadeID, t.LocalID, p.SomenteConvenios, t.procedimentos "& fieldEsp &" from (select ProfissionalID, LocalID, DataDe, DataA, procedimentos from assperiodolocalxprofissional WHERE DataDe>="& mydatenull( DiaMes("P", Data ) )&" AND DataA<="& mydatenull( DiaMes("U", Data) ) &") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda)) "& sqlProcedimentosLocal & sqlEspecialidadesSel & sqlConvenios & sqlProfissionais & sqlProfesp & sqlUnidades
+sqlVermePer = "select t.DataDe, t.DataA, t.ProfissionalID, p.EspecialidadeID, t.LocalID, p.SomenteConvenios, t.procedimentos "& fieldEsp &" from (select ProfissionalID, LocalID, DataDe, DataA, procedimentos from assperiodolocalxprofissional WHERE DataDe>="& mydatenull( DiaMes("P", Data ) )&" AND DataA<="& mydatenull( DiaMes("U", Data) ) &") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp & leftProgramas &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda)) "& sqlProcedimentosLocal & sqlEspecialidadesSel & sqlConvenios & sqlProgramas & sqlProfissionais & sqlProfesp & sqlUnidades
 
 sql = replace(sql, "[DiaSemana]", DiaSemana)
 if session("Banco")="clinic5760" then
@@ -434,7 +453,7 @@ set comGrade=nothing
 	    'repete o sql de cima
 
         set vcaGrade = db.execute( replace(sqlVerme, "[DiaSemana]", cDiaSemana) )
-        response.write("//"&sqlVerme)
+        'response.write("//"&sqlVerme)
 	    while not vcaGrade.eof
 	            FrequenciaSemanas= vcaGrade("FrequenciaSemanas")
        	        InicioVigencia = vcaGrade("InicioVIgencia")&""

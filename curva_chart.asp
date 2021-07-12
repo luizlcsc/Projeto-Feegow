@@ -173,10 +173,10 @@ end if
             <li class="per-2"><a href="javascript:abreGrafico(2, 2)">0 a 5 anos</a></li>
         </ul>
         <ul class="intervalo-nav-3 nav nav-pills nav-pills2 mb20" style="display: none">
-            <li class="per-0"><a href="javascript:abreGrafico(1, 1)">0 a 2 anos</a></li>
-            <li class="per-2"><a href="javascript:abreGrafico(1, 2)">0 a 5 anos</a></li>
-            <li class="per-1"><a href="javascript:abreGrafico(1, 3)">2 a 5 anos</a></li>
-            <li class="per-3"><a href="javascript:abreGrafico(1, 4)">5 a 19 anos</a></li>
+            <li class="per-0"><a href="javascript:abreGrafico(3, 0)">0 a 2 anos</a></li>
+            <li class="per-1"><a href="javascript:abreGrafico(3, 1)">0 a 5 anos</a></li>
+            <li class="per-2"><a href="javascript:abreGrafico(3, 2)">2 a 5 anos</a></li>
+            <li class="per-3"><a href="javascript:abreGrafico(3, 3)">5 a 19 anos</a></li>
         </ul>
     </div>
 
@@ -202,7 +202,7 @@ end if
     <script>
 
         const rawData = <%=dadosCurva%>;
-        const USAR_DADOS_ALINHAMENTO = true; //Indica se é para usar os dados fakes para alinhamento da configuração
+        const USAR_DADOS_ALINHAMENTO = false; //Indica se é para usar os dados fakes para alinhamento da configuração
 
         /**
         * Dados do Paciente
@@ -210,7 +210,7 @@ end if
         */
         const Paciente = {
             dataNascimento: moment('<%=Nascimento%>', 'DD/MM/YYYY'),
-            sexo: 2
+            sexo: <%=Sexo%>
         }
 
         /**
@@ -223,6 +223,7 @@ end if
             peso = null;
             altura = null;
             perimetroCefalico = null;
+            imc = null;
             idades = {
                 semanas: null,
                 meses: null,
@@ -239,6 +240,7 @@ end if
                 this.peso = PacienteValor.converteParaNumber(peso);
                 this.altura = PacienteValor.converteParaNumber(altura);
                 this.perimetroCefalico = PacienteValor.converteParaNumber(perimetroCefalico);
+                this.imc = this.altura > 0 ? Math.round((this.peso / Math.pow(this.altura, 2)) * 100 ) / 100 : null;
                 this.idades = {
                     dias: this.data.diff(Paciente.dataNascimento, 'days'),
                     semanas: this.data.diff(Paciente.dataNascimento, 'weeks'),
@@ -446,7 +448,7 @@ end if
 
         google.charts.load('current', {packages: ['corechart']});
         google.charts.setOnLoadCallback(function() {
-            abreGrafico(2, 2);
+            abreGrafico(0, 0);
         });
 
         /** Configurações dos modelos gráficos
@@ -1483,6 +1485,293 @@ end if
                           ]
                         },
                 }
+            ],
+            // imc
+            [
+                // 0 a 2 anos
+                {
+                    1: {
+                        titulo: 'IMC para Idade MENINOS',
+                        subtitulo: 'Do nascimento aos 2 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/imc-0-2anos-meninos.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 0,
+                          fim: 24,
+                          campo: 'imc',
+                          rotuloCampo: 'IMC',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 837,
+                              height: 515,
+                              left: 55,
+                              top: 26
+                            },
+                            escala: {
+                              vertical: {min: 9.2, max: 22.8},
+                              horizontal: {min: 0, max: 25}
+                            }
+                        },
+                        dadosAlinhamento: [
+                            9.2, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5,
+                            17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.8
+                        ]
+                      },
+                    2: {
+                      titulo: 'IMC para Idade MENINAS',
+                      subtitulo: 'Do nascimento aos 2 anos (escores-z)',
+                      gridUrl: 'assets/img/puriecultura/imc-0-2anos-meninas.png',
+                      intervalos: {
+                        tipo: 'meses',
+                        inicio: 0,
+                        fim: 24,
+                        campo: 'imc',
+                        rotuloCampo: 'IMC',
+                      },
+                      grafico: {
+                          chartArea: {
+                            width: 840,
+                            height: 515,
+                            left: 55,
+                            top: 26
+                          },
+                          escala: {
+                            vertical: {min: 9.2, max: 22.8},
+                            horizontal: {min: 0, max: 25}
+                          }
+                      },
+                      dadosAlinhamento: [
+                          9.2, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5,
+                          17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.8
+                      ]
+                    },
+                },
+                // 0 a 5 anos
+                {
+                    1: {
+                          titulo: 'IMC para Idade MENINOS',
+                          subtitulo: 'Do nascimento aos 5 anos (escores-z)',
+                          gridUrl: 'assets/img/puriecultura/imc-0-5anos-meninos.png',
+                          intervalos: {
+                            tipo: 'meses',
+                            inicio: 0,
+                            fim: 60,
+                            campo: 'imc',
+                            rotuloCampo: 'IMC',
+                          },
+                          grafico: {
+                              chartArea: {
+                                width: 820,
+                                height: 515,
+                                left: 65,
+                                top: 26
+                              },
+                              escala: {
+                                vertical: {min: 9.2, max: 22.8},
+                                horizontal: {min: 0, max: 61}
+                              }
+                          },
+                          dadosAlinhamento: [
+                              9.2, null, 9.4, null, 9.6, null, 10, null, 10.4, null, 11, null, 11.4, null, 12, null, 12.4, null,
+                              13, null, 13.4, null, 14, null, 14.4, null, 15, null, 15.4, null, 16, null,
+                              16.4, null, 17, null, 17.4, null, 18, null, 18.4, null, 19, null, 19.4, null,
+                              20, null, 20.4, null, 21, null, 21.4, null, 22, null, 22.4, null, 22.6, null, 22.8
+                          ]
+                        },
+                    2: {
+                          titulo: 'IMC para Idade MENINAS',
+                          subtitulo: 'Do nascimento aos 5 anos (escores-z)',
+                          gridUrl: 'assets/img/puriecultura/imc-0-5anos-meninas.png',
+                          intervalos: {
+                            tipo: 'meses',
+                            inicio: 0,
+                            fim: 60,
+                            campo: 'imc',
+                            rotuloCampo: 'IMC',
+                          },
+                          grafico: {
+                              chartArea: {
+                                width: 820,
+                                height: 515,
+                                left: 65,
+                                top: 26
+                              },
+                              escala: {
+                                vertical: {min: 9.2, max: 22.8},
+                                horizontal: {min: 0, max: 61}
+                              }
+                          },
+                          dadosAlinhamento: [
+                              9.2, null, 9.4, null, 9.6, null, 10, null, 10.4, null, 11, null, 11.4, null, 12, null, 12.4, null,
+                              13, null, 13.4, null, 14, null, 14.4, null, 15, null, 15.4, null, 16, null,
+                              16.4, null, 17, null, 17.4, null, 18, null, 18.4, null, 19, null, 19.4, null,
+                              20, null, 20.4, null, 21, null, 21.4, null, 22, null, 22.4, null, 22.6, null, 22.8
+                          ]
+                        },
+                },
+                // 2 a 5 anos
+                {
+                    1: {
+                        titulo: 'IMC para Idade MENINOS',
+                        subtitulo: 'De 2 a 5 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/imc-2-5anos-meninos.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 24,
+                          fim: 60,
+                          campo: 'imc',
+                          rotuloCampo: 'IMC',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 830,
+                              height: 515,
+                              left: 59,
+                              top: 26
+                            },
+                            escala: {
+                              vertical: {min: 11.6, max: 21},
+                              horizontal: {min: 0, max: 37}
+                            }
+                        },
+                        dadosAlinhamento: [
+                            // 24 primeiros meses sem dados
+                            null, null, null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null, null, null, null,
+                            11.6, null, 12, null, 12.5, null, 13, null, 13.5, null, 14, null, 14.5, null,
+                            15.5, null, 16, null, 16.5, null, 17, null, 17.5, null, 18, null, 18.5, null,
+                            19, null, 19.5, null, 20, null, 20.5, null, 21
+                        ]
+                      },
+                    2: {
+                          titulo: 'IMC para Idade MENINAS',
+                          subtitulo: 'De 2 a 5 anos (escores-z)',
+                          gridUrl: 'assets/img/puriecultura/imc-2-5anos-meninas.png',
+                          intervalos: {
+                            tipo: 'meses',
+                            inicio: 24,
+                            fim: 60,
+                            campo: 'imc',
+                            rotuloCampo: 'IMC',
+                          },
+                          grafico: {
+                              chartArea: {
+                                width: 830,
+                                height: 515,
+                                left: 59,
+                                top: 26
+                              },
+                              escala: {
+                                vertical: {min: 11.3, max: 21.4},
+                                horizontal: {min: 0, max: 37}
+                              }
+                          },
+                          dadosAlinhamento: [
+                              // 24 primeiros meses sem dados
+                              null, null, null, null, null, null, null, null, null, null, null, null,
+                              null, null, null, null, null, null, null, null, null, null, null, null,
+                              11.3, null, 12, null, 12.5, null, 13, null, 13.5, null, 14, null, 14.5, null,
+                              15.5, null, 16, null, 16.5, null, 17, null, 17.5, null, 18, null, 18.5, null,
+                              19, null, 19.5, null, 20, null, 20.5, null, 21.4
+                          ]
+                        },
+                },
+                // 5 a 19 anos,
+                {
+                    1: {
+                          titulo: 'IMC para Idade MENINOS',
+                          subtitulo: 'De 5 a 19 anos (escores-z)',
+                          gridUrl: 'assets/img/puriecultura/imc-5-19anos-meninos.png',
+                          intervalos: {
+                            tipo: 'meses',
+                            inicio: 60,
+                            fim: 228,
+                            incremento: 3,
+                            campo: 'imc',
+                            rotuloCampo: 'IMC',
+                          },
+                          grafico: {
+                              chartArea: {
+                                width: 787,
+                                height: 497,
+                                left: 93,
+                                top: 33
+                              },
+                              escala: {
+                                vertical: {min: 11.5, max: 36},
+                                horizontal: {min: 0, max: 59}
+                              }
+                          },
+                          dadosAlinhamento: [
+                              // 59 primeiros meses sem dados
+                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                              11.5, null, null, 12, null, null, 12.5, null, null, 13, null, null, 13.5, null, null,
+                              14, null, null, 14.5, null, null, 15, null, null, 15.5,
+                              null, null, null, null, null, null, null, null, null, null, null, 16,
+                              null, null, null, null, null, null, null, null, null, null, null, 18,
+                              null, null, null, null, null, null, null, null, null, null, null, 20,
+                              null, null, null, null, null, null, null, null, null, null, null, 22,
+                              null, null, null, null, null, null, null, null, null, null, null, 24,
+                              null, null, null, null, null, null, null, null, null, null, null, 26,
+                              null, null, null, null, null, null, null, null, null, null, null, 28,
+                              null, null, null, null, null, null, null, null, null, null, null, 30,
+                              null, null, null, null, null, null, null, null, null, null, null, 32,
+                              null, null, null, null, null, null, null, null, null, null, null, 34,
+                              null, null, null, null, null, null, null, null, null, null, null, 35,
+                              null, null, null, null, null, null, null, null, null, null, null, 36,
+                          ]
+                        },
+                    2: {
+                          titulo: 'IMC para Idade MENINAS',
+                          subtitulo: 'De 5 a 19 anos (escores-z)',
+                          gridUrl: 'assets/img/puriecultura/imc-5-19anos-meninas.png',
+                          intervalos: {
+                            tipo: 'meses',
+                            inicio: 60,
+                            fim: 228,
+                            incremento: 3,
+                            campo: 'imc',
+                            rotuloCampo: 'IMC',
+                          },
+                          grafico: {
+                              chartArea: {
+                                width: 787,
+                                height: 497,
+                                left: 93,
+                                top: 33
+                              },
+                              escala: {
+                                vertical: {min: 11, max: 37},
+                                horizontal: {min: 0, max: 59}
+                              }
+                          },
+                          dadosAlinhamento: [
+                              // 59 primeiros meses sem dados
+                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                              11, null, null, 11.5, null, null, 12, null, null, 12.5, null, null, 13, null, null,
+                              13.5, null, null, 14, null, null, 14.5, null, null, 15,
+                              null, null, null, null, null, null, null, null, null, null, null, 17,
+                              null, null, null, null, null, null, null, null, null, null, null, 19,
+                              null, null, null, null, null, null, null, null, null, null, null, 21,
+                              null, null, null, null, null, null, null, null, null, null, null, 23,
+                              null, null, null, null, null, null, null, null, null, null, null, 25,
+                              null, null, null, null, null, null, null, null, null, null, null, 27,
+                              null, null, null, null, null, null, null, null, null, null, null, 29,
+                              null, null, null, null, null, null, null, null, null, null, null, 31,
+                              null, null, null, null, null, null, null, null, null, null, null, 33,
+                              null, null, null, null, null, null, null, null, null, null, null, 35,
+                              null, null, null, null, null, null, null, null, null, null, null, 36,
+                              null, null, null, null, null, null, null, null, null, null, null, 37,
+                          ]
+                        },
+                }
             ]
         ];
 
@@ -1550,7 +1839,7 @@ end if
         * @returns {PacienteValor | undefined}
         */
         function getDadosPacientePelaIdade(idade, tipoIdade) {
-            if (tipoIdade !== 'semanas' && tipoIdade !== 'meses' && tipoIdade !== 'anos') {
+            if (tipoIdade !== 'dias' && tipoIdade !== 'semanas' && tipoIdade !== 'meses' && tipoIdade !== 'anos') {
                 throw new Error('Tipo de idade inválido');
             }
             const dados = allData.filter(patientData => {
@@ -1566,7 +1855,7 @@ end if
         * Retorna os dados do paciente após uma determinada idade
         */
         function getDadosPacienteAposIdade(idade, tipoIdade) {
-            if (tipoIdade !== 'semanas' && tipoIdade !== 'meses' && tipoIdade !== 'anos') {
+            if (tipoIdade !== 'dias' && tipoIdade !== 'semanas' && tipoIdade !== 'meses' && tipoIdade !== 'anos') {
                 throw new Error('Tipo de idade inválido');
             }
             return allData.find(patientData => patientData.idades[tipoIdade] > idade);
@@ -1576,7 +1865,7 @@ end if
         * Retorna os dados do paciente antes de determinada idade
         */
         function getDadosPacienteAntesIdade(idade, tipoIdade) {
-            if (tipoIdade !== 'semanas' && tipoIdade !== 'meses' && tipoIdade !== 'anos') {
+            if (tipoIdade !== 'dias' && tipoIdade !== 'semanas' && tipoIdade !== 'meses' && tipoIdade !== 'anos') {
                 throw new Error('Tipo de idade inválido');
             }
             return allData.slice().reverse().find(patientData => patientData.idades[tipoIdade] < idade);

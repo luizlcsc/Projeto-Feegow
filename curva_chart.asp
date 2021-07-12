@@ -130,18 +130,18 @@ end if
     <body>
 
     <div class="chart-nav">
-        <ul class="nav nav-pills mb20">
-            <li class="active">
-                <a href="#">Crescimento</a>
+        <ul class="tipo-nav nav nav-pills mb20">
+            <li class="tipo-0 active">
+                <a href="javascript:abreGrafico(0)">Crescimento</a>
             </li>
-            <li class="disabled">
-                <a href="#">Peso</a>
+            <li class="tipo-1">
+                <a href="javascript:abreGrafico(1)">Peso</a>
             </li>
-            <li class="disabled">
-                <a href="#">Perímetro Cefálico</a>
+            <li class="tipo-2">
+                <a href="javascript:abreGrafico(2)">Perímetro Cefálico</a>
             </li>
-            <li class="disabled">
-                <a href="#">IMC</a>
+            <li class="tipo-3">
+                <a href="javascript:abreGrafico(3)">IMC</a>
             </li>
         </ul>
         <div class="right-buttons">
@@ -150,13 +150,33 @@ end if
         </div>
     </div>
 
-    <div class="chart-nav tipo-nav tipo-nav-0">
-        <ul class="nav nav-pills nav-pills2 mb20">
+    <div class="chart-nav intervalo-nav">
+        <ul class="intervalo-nav-0 nav nav-pills nav-pills2 mb20">
             <li class="per-0"><a href="javascript:abreGrafico(0, 0)">0 a 6 meses</a></li>
             <li class="per-1"><a href="javascript:abreGrafico(0, 1)">0 a 2 anos</a></li>
-            <li class="per-2"><a href="javascript:abreGrafico(0, 2)">6 meses a 2 anos</a></li>
-            <li class="per-3"><a href="javascript:abreGrafico(0, 3)">2 a 5 anos</a></li>
-            <li class="per-4"><a href="javascript:abreGrafico(0, 4)">5 a 19 anos</a></li>
+            <li class="per-2"><a href="javascript:abreGrafico(0, 2)">0 a 5 anos</a></li>
+            <li class="per-3"><a href="javascript:abreGrafico(0, 3)">6 meses a 2 anos</a></li>
+            <li class="per-4"><a href="javascript:abreGrafico(0, 4)">2 a 5 anos</a></li>
+            <li class="per-5"><a href="javascript:abreGrafico(0, 5)">5 a 19 anos</a></li>
+        </ul>
+        <ul class="intervalo-nav-1 nav nav-pills nav-pills2 mb20" style="display: none">
+            <li class="per-0"><a href="javascript:abreGrafico(1, 0)">0 a 6 meses</a></li>
+            <li class="per-1"><a href="javascript:abreGrafico(1, 1)">0 a 2 anos</a></li>
+            <li class="per-2"><a href="javascript:abreGrafico(1, 2)">0 a 5 anos</a></li>
+            <li class="per-3"><a href="javascript:abreGrafico(1, 3)">6 meses a 2 anos</a></li>
+            <li class="per-4"><a href="javascript:abreGrafico(1, 4)">2 a 5 anos</a></li>
+            <li class="per-5"><a href="javascript:abreGrafico(1, 5)">5 a 10 anos</a></li>
+        </ul>
+        <ul class="intervalo-nav-2 nav nav-pills nav-pills2 mb20" style="display: none">
+            <li class="per-0"><a href="javascript:abreGrafico(1, 0)">0 a 13 semanas</a></li>
+            <li class="per-1"><a href="javascript:abreGrafico(1, 1)">0 a 2 anos</a></li>
+            <li class="per-3"><a href="javascript:abreGrafico(1, 2)">0 a 5 anos</a></li>
+        </ul>
+        <ul class="intervalo-nav-3 nav nav-pills nav-pills2 mb20" style="display: none">
+            <li class="per-0"><a href="javascript:abreGrafico(1, 1)">0 a 2 anos</a></li>
+            <li class="per-2"><a href="javascript:abreGrafico(1, 2)">0 a 5 anos</a></li>
+            <li class="per-1"><a href="javascript:abreGrafico(1, 3)">2 a 5 anos</a></li>
+            <li class="per-3"><a href="javascript:abreGrafico(1, 4)">5 a 19 anos</a></li>
         </ul>
     </div>
 
@@ -414,7 +434,7 @@ end if
 
         google.charts.load('current', {packages: ['corechart']});
         google.charts.setOnLoadCallback(function() {
-            abreGrafico(0, 0);
+            abreGrafico(0, 2);
         });
 
         /** Configurações dos modelos gráficos
@@ -549,6 +569,75 @@ end if
                         dadosAlinhamento: [42, 45, 47, 50, 52, 55, 57, 60, 62, 65, 67, 70, 72, 75, 77, 80, 82, 85, 87, 90,
                         92, 95, 97, 99, 99]
                       },
+                },
+                // 0 a 5 anos
+                {
+                    1: {
+                        titulo: 'Estatura para Idade MENINOS',
+                        subtitulo: 'De 0 a 5 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/crescimento-0-5anos-meninos.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 0,
+                          fim: 60,
+                          campo: 'altura',
+                          rotuloCampo: 'Comprimento (cm)',
+                          unidade: 'cm',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 818,
+                              height: 513,
+                              left: 66,
+                              top: 27
+                            },
+                            escala: {
+                              vertical: {min: 40, max: 125},
+                              horizontal: {min: 0, max: 61}
+                            },
+                        },
+                        dadosAlinhamento: [
+                            40,
+                            null, null, null, null, null, 50, null, null, null, null, null, 60,
+                            null, null, null, null, null, 65, null, null, null, null, null, 75,
+                            null, null, null, null, null, 80, null, null, null, null, null, 90,
+                            null, null, null, null, null, 95, null, null, null, null, null, 105,
+                            null, null, null, null, null, 110, null, null, null, null, null, 125
+                      ]
+                    },
+                    2: {
+                        titulo: 'Estatura para Idade MENINAS',
+                        subtitulo: 'De 0 a 5 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/crescimento-0-5anos-meninas.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 0,
+                          fim: 60,
+                          campo: 'altura',
+                          rotuloCampo: 'Comprimento (cm)',
+                          unidade: 'cm',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 818,
+                              height: 513,
+                              left: 66,
+                              top: 27
+                            },
+                            escala: {
+                              vertical: {min: 40, max: 125},
+                              horizontal: {min: 0, max: 61}
+                            },
+                        },
+                        dadosAlinhamento: [
+                            40,
+                            null, null, null, null, null, 50, null, null, null, null, null, 60,
+                            null, null, null, null, null, 65, null, null, null, null, null, 75,
+                            null, null, null, null, null, 80, null, null, null, null, null, 90,
+                            null, null, null, null, null, 95, null, null, null, null, null, 105,
+                            null, null, null, null, null, 110, null, null, null, null, null, 125
+                      ]
+                    },
                 },
                 // 6 meses a 2 anos
                 {
@@ -786,6 +875,409 @@ end if
                     },
                 }
             ],
+            // peso
+            [
+                // 0 a 6 meses
+                {
+                    // meninos
+                    1: {
+                        titulo: 'Peso para Idade MENINOS',
+                        subtitulo: 'Do nascimento aos 6 meses (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-0-6meses-meninos.png',
+                        intervalos: {
+                          tipo: 'semanas',
+                          inicio: 0,
+                          fim: 27,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 850,
+                              height: 513,
+                              left: 57,
+                              top: 25
+                            },
+                            escala: {
+                              vertical: {min: 1.7, max: 11.3},
+                              horizontal: {min: 0, max: 27.6}
+                            },
+                        },
+                        dadosAlinhamento: [
+                          1.7, 1.8, 1.9, 2, 2.2, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 4,
+                          5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.3
+                      ]
+                    },
+                    // meninas
+                    2: {
+                        titulo: 'Peso para Idade MENINAS',
+                        subtitulo: 'Do nascimento aos 6 meses (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-0-6meses-meninas.png',
+                        intervalos: {
+                          tipo: 'semanas',
+                          inicio: 0,
+                          fim: 27,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 850,
+                              height: 513,
+                              left: 57,
+                              top: 27
+                            },
+                            escala: {
+                              vertical: {min: 1.7, max: 10.9},
+                              horizontal: {min: 0, max: 27.6}
+                            },
+                        },
+                        dadosAlinhamento: [
+                          1.7, 1.8, 1.9, 2, 2.2, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 4,
+                          5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 10.9
+                      ]
+                    },
+                },
+                // 0 a 2 anos
+                {
+                    1: {
+                        titulo: 'Peso para Idade MENINOS',
+                        subtitulo: 'Do nascimento aos 2 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-0-2anos-meninos.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 0,
+                          fim: 24,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 838,
+                              height: 515,
+                              left: 55,
+                              top: 26
+                            },
+                            escala: {
+                              vertical: {min: 1.4, max: 17.8},
+                              horizontal: {min: 0, max: 25}
+                            },
+                        },
+                        dadosAlinhamento: [
+                          1.4, 2, 4, null, null, null, null, 7, null, null, null, null, 10,
+                          null, null, null, null, 13, null, null, null, null, 16,
+                          null, 17.8
+                      ]
+                    },
+                    2: {
+                        titulo: 'Peso para Idade MENINAS',
+                        subtitulo: 'Do nascimento aos 2 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-0-2anos-meninas.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 0,
+                          fim: 24,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 835,
+                              height: 515,
+                              left: 57,
+                              top: 26
+                            },
+                            escala: {
+                              vertical: {min: 1.4, max: 17.8},
+                              horizontal: {min: 0, max: 25}
+                            },
+                        },
+                        dadosAlinhamento: [
+                          1.4, 2, 4, null, null, null, null, 7, null, null, null, null, 10,
+                          null, null, null, null, 13, null, null, null, null, 16,
+                          null, 17.8
+                      ]
+                    },
+                },
+                // 0 a 5 anos
+                {
+                    1: {
+                        titulo: 'Peso para Idade MENINOS',
+                        subtitulo: 'De 0 a 5 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-0-5anos-meninos.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 0,
+                          fim: 60,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 818,
+                              height: 513,
+                              left: 66,
+                              top: 27
+                            },
+                            escala: {
+                              vertical: {min: 1, max: 29},
+                              horizontal: {min: 0, max: 61}
+                            },
+                        },
+                        dadosAlinhamento: [
+                            1, null, 1, null, 2, null, 3, null, 4, null, 5, null, 6, null,
+                            7, null, 8, null, 9, null, 10, null, 11, null, 12, null,
+                            13, null, 14, null, 15, null, 16, null, 17, null, 18, null,
+                            19, null, 20, null, 21, null, 22, null, 23, null, 24, null,
+                            25, null, 26, null, 27, null, 28, null, 29, null, 29
+                      ]
+                    },
+                    2: {
+                        titulo: 'Peso para Idade MENINAS',
+                        subtitulo: 'De 0 a 5 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-0-5anos-meninas.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 0,
+                          fim: 60,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 818,
+                              height: 513,
+                              left: 66,
+                              top: 27
+                            },
+                            escala: {
+                              vertical: {min: 1, max: 31},
+                              horizontal: {min: 0, max: 61}
+                            },
+                        },
+                        dadosAlinhamento: [
+                            1, null, 2, null, 3, null, 4, null, 5, null, 6, null, 7, null,
+                            8, null, 9, null, 10, null, 11, null, 12, null, 13, null,
+                            14, null, 15, null, 16, null, 17, null, 18, null, 19, null,
+                            20, null, 21, null, 22, null, 23, null, 24, null, 25, null,
+                            26, null, 27, null, 28, null, 29, null, 30, null, 31
+                      ]
+                    },
+                },
+                // 6 meses a 2 anos
+                {
+                    1: {
+                        titulo: 'Peso para Idade MENINOS',
+                        subtitulo: 'De 6 meses a 2 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-6meses-2anos-meninos.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 6,
+                          fim: 24,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 850,
+                              height: 515,
+                              left: 50,
+                              top: 26
+                            },
+                            escala: {
+                              vertical: {min: 5.2, max: 17.6},
+                              horizontal: {min: 0, max: 19}
+                            },
+                        },
+                        dadosAlinhamento: [
+                            null, null, null, null, null, null, //primeiros 6 meses nulos
+                            5.2, 6, 7, 8, 9, 10, 11,
+                            12, null, 13, null, 14, null, 15, null, 16, null, 17, 17.6
+                      ]
+                    },
+                    2: {
+                        titulo: 'Peso para Idade MENINAS',
+                        subtitulo: 'De 6 meses a 2 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-6meses-2anos-meninas.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 6,
+                          fim: 24,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 850,
+                              height: 515,
+                              left: 50,
+                              top: 26
+                            },
+                            escala: {
+                              vertical: {min: 5, max: 17.5},
+                              horizontal: {min: 0, max: 19}
+                            },
+                        },
+                        dadosAlinhamento: [
+                            null, null, null, null, null, null, //primeiros 6 meses nulos
+                            5, 6, 7, 8, 9, 10, 11,
+                            12, null, 13, null, 14, null, 15, null, 16, null, 17, 17.5
+                      ]
+                    },
+                },
+                // 2 a 5 anos
+                {
+                    1: {
+                        titulo: 'Peso para Idade MENINOS',
+                        subtitulo: 'De 2 a 5 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-2-5anos-meninos.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 24,
+                          fim: 60,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 827,
+                              height: 513,
+                              left: 61,
+                              top: 26
+                            },
+                            escala: {
+                              vertical: {min: 8, max: 28},
+                              horizontal: {min: 0, max: 37}
+                            },
+                        },
+                        dadosAlinhamento: [
+                        // 24 primeiros meses sem dados
+                            null, null, null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null, null, null, null,
+                            8, null, 8.4, null, 9, null, 10, null, 11, null, 12, null, 13, null,
+                            15, null, 17, null, 18, null, 19, null, 20, null, 21, null,
+                            23, null, 24, null, 25, null, 26, null, 27, null, 28
+                      ]
+                    },
+                    2: {
+                        titulo: 'Peso para Idade MENINAS',
+                        subtitulo: 'De 2 a 5 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-2-5anos-meninas.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 24,
+                          fim: 60,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 825,
+                              height: 512,
+                              left: 61,
+                              top: 27
+                            },
+                            escala: {
+                              vertical: {min: 7, max: 30},
+                              horizontal: {min: 0, max: 37}
+                            },
+                        },
+                        dadosAlinhamento: [
+                        // 24 primeiros meses sem dados
+                            null, null, null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null, null, null, null,
+                            7, null, 7.4, null, 8, null, 9, null, 10, null, 11, null, 12, null,
+                            14, null, 16, null, 18, null, 20, null, 22, null, 24, null,
+                            25, null, 26, null, 27, null, 28, null, 29, null, 30
+                      ]
+                    },
+                },
+                // 5 a 10 anos
+                {
+                    1: {
+                        titulo: 'Peso para Idade MENINOS',
+                        subtitulo: 'De 5 a 10 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-5-10anos-meninos.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 60,
+                          fim: 120,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 757,
+                              height: 493,
+                              left: 95,
+                              top: 35
+                            },
+                            escala: {
+                              vertical: {min: 11, max: 58},
+                              horizontal: {min: 0, max: 61}
+                            },
+                        },
+                        dadosAlinhamento: [
+                            // 59 primeiros meses sem dados
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            11, null, null, 12.5, null, null, 15, null, null, 17.5, null, null, 20, null, null,
+                            22.5, null, null, 25, null, null, 27.5, null, null, 30, null, null, 32.5, null, null,
+                            35, null, null, 37.5, null, null, 40, null, null, 42.5, null, null, 45, null, null,
+                            47.5, null, null, 50, null, null, 52.5, null, null, 55, null, null, 57, null, null, 58
+                      ]
+                    },
+                    2: {
+                        titulo: 'Peso para Idade MENINAS',
+                        subtitulo: 'De 5 a 10 anos (escores-z)',
+                        gridUrl: 'assets/img/puriecultura/peso-5-10anos-meninas.png',
+                        intervalos: {
+                          tipo: 'meses',
+                          inicio: 60,
+                          fim: 120,
+                          campo: 'peso',
+                          rotuloCampo: 'Peso (kg)',
+                          unidade: 'kg',
+                        },
+                        grafico: {
+                            chartArea: {
+                              width: 757,
+                              height: 493,
+                              left: 95,
+                              top: 35
+                            },
+                            escala: {
+                              vertical: {min: 10, max: 60},
+                              horizontal: {min: 0, max: 61}
+                            },
+                        },
+                        dadosAlinhamento: [
+                            // 59 primeiros meses sem dados
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                            10, null, null, 12.5, null, null, 15, null, null, 17.5, null, null, 20, null, null,
+                            22.5, null, null, 25, null, null, 27.5, null, null, 30, null, null, 32.5, null, null,
+                            35, null, null, 37.5, null, null, 40, null, null, 42.5, null, null, 45, null, null,
+                            47.5, null, null, 50, null, null, 52.5, null, null, 55, null, null, 57.5, null, null, 60
+                      ]
+                    },
+                }
+            ]
         ];
 
         /**
@@ -795,17 +1287,34 @@ end if
         * @returns void
         */
         function atualizaNav(tipo, intervalo) {
-            const itensNav = document.querySelectorAll(`.tipo-nav ul li`);
-            itensNav.forEach(item => {
-                item.classList.remove('active');
-            });
-            const nav = document.querySelector(`.tipo-nav-${tipo}`);
-            if (nav) {
-                const navItem = nav.querySelector(`.per-${intervalo}`);
-                if (navItem) {
-                    navItem.classList.add('active');
+
+            // tipo
+            const tiposNav = document.querySelectorAll(`.tipo-nav li`);
+            tiposNav.forEach(item => {
+                if (item.classList.contains(`tipo-${tipo}`)) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
                 }
-            }
+            });
+
+            // intervalo
+            const intervalosNav= document.querySelectorAll(`.intervalo-nav ul`);
+            intervalosNav.forEach(intervaloNav => {
+                if (intervaloNav.classList.contains(`intervalo-nav-${tipo}`)) {
+                    intervaloNav.style.display = '';
+                    const itensNav = intervaloNav.querySelectorAll(`li`);
+                    itensNav.forEach(item => {
+                        if (item.classList.contains(`per-${intervalo}`)) {
+                            item.classList.add('active');
+                        } else {
+                            item.classList.remove('active');
+                        }
+                    });
+                } else {
+                    intervaloNav.style.display = 'none';
+                }
+            });
         }
 
         /**
@@ -914,8 +1423,6 @@ end if
                 }
             }
 
-            console.log(dados);
-
             return dados;
         }
 
@@ -963,13 +1470,21 @@ end if
         * @param intervalo (int) Intervalo do gráfico
         */
         function abreGrafico(tipo, intervalo) {
-            const config = new Configuracao(configs[tipo][intervalo][Paciente.sexo]);
 
-            const dados  = getDadosGrafico(config);
+            if (intervalo === undefined) {
+                intervalo = 0;
+            }
 
-            atualizaNav(tipo, intervalo);
-            atualizaTitulo(config);
-            renderizaGrafico(config, dados);
+            if (configs[tipo] && configs[tipo][intervalo] && configs[tipo][intervalo][Paciente.sexo]) {
+                const config = new Configuracao(configs[tipo][intervalo][Paciente.sexo]);
+                const dados  = getDadosGrafico(config);
+
+                atualizaNav(tipo, intervalo);
+                atualizaTitulo(config);
+                renderizaGrafico(config, dados);
+            } else {
+                throw new Error(`Configuração ${tipo}-${intervalo}-${Paciente.sexo} não encontrada`);
+            }
         }
 
         function saveImage() {

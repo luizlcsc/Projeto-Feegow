@@ -168,9 +168,9 @@ end if
             <li class="per-5"><a href="javascript:abreGrafico(1, 5)">5 a 10 anos</a></li>
         </ul>
         <ul class="intervalo-nav-2 nav nav-pills nav-pills2 mb20" style="display: none">
-            <li class="per-0"><a href="javascript:abreGrafico(1, 0)">0 a 13 semanas</a></li>
-            <li class="per-1"><a href="javascript:abreGrafico(1, 1)">0 a 2 anos</a></li>
-            <li class="per-3"><a href="javascript:abreGrafico(1, 2)">0 a 5 anos</a></li>
+            <li class="per-0"><a href="javascript:abreGrafico(2, 0)">0 a 13 semanas</a></li>
+            <li class="per-1"><a href="javascript:abreGrafico(2, 1)">0 a 2 anos</a></li>
+            <li class="per-2"><a href="javascript:abreGrafico(2, 2)">0 a 5 anos</a></li>
         </ul>
         <ul class="intervalo-nav-3 nav nav-pills nav-pills2 mb20" style="display: none">
             <li class="per-0"><a href="javascript:abreGrafico(1, 1)">0 a 2 anos</a></li>
@@ -202,7 +202,7 @@ end if
     <script>
 
         const rawData = <%=dadosCurva%>;
-        const USAR_DADOS_EXEMPLO = false; //Indica se é para retornar os dados de exemplo para alinhamento da configuração
+        const USAR_DADOS_ALINHAMENTO = true; //Indica se é para usar os dados fakes para alinhamento da configuração
 
         /**
         * Dados do Paciente
@@ -210,7 +210,7 @@ end if
         */
         const Paciente = {
             dataNascimento: moment('<%=Nascimento%>', 'DD/MM/YYYY'),
-            sexo: <%=Sexo%>
+            sexo: 2
         }
 
         /**
@@ -240,6 +240,7 @@ end if
                 this.altura = PacienteValor.converteParaNumber(altura);
                 this.perimetroCefalico = PacienteValor.converteParaNumber(perimetroCefalico);
                 this.idades = {
+                    dias: this.data.diff(Paciente.dataNascimento, 'days'),
                     semanas: this.data.diff(Paciente.dataNascimento, 'weeks'),
                     meses: this.data.diff(Paciente.dataNascimento, 'months'),
                     anos: this.data.diff(Paciente.dataNascimento, 'years')
@@ -270,7 +271,7 @@ end if
                 let valor = null;
                 if (this.hasOwnProperty(campo) && this[campo]) {
                     switch (unidade) {
-                        case 'cm':
+                        case 'cm': //converte mt para cm
                             valor = this[campo] * 100;
                             break;
                         default:
@@ -388,11 +389,24 @@ end if
             * @returns {string}
             */
             getRotuloIntervalo(intervalo) {
+                if (intervalo === 0) {
+                    return 'Nascimento';
+                }
                 switch (this.intervalos.tipo) {
+                    case 'dias':
+                        const semanas = Math.trunc(intervalo / 7);
+                        const dias    = intervalo - semanas * 7;
+                        let rotuloDias    = `${dias} ${dias > 1 ? 'dias' : 'dia'}`;
+                        let rotuloSemanas = `${semanas} ${semanas > 1 ? 'semanas' : 'semana'}`;
+                        if (semanas > 0) {
+                            if (dias > 0) {
+                                return `${rotuloSemanas} e ${rotuloDias}`;
+                            }
+                            return rotuloSemanas;
+                        }
+                        return rotuloDias;
                     case 'meses':
-                        if (intervalo === 0) {
-                            return 'Nascimento';
-                        } else if (intervalo < 12) {
+                        if (intervalo < 12) {
                             return `${intervalo} ${intervalo > 1 ? 'meses' : 'mes'}`;
                         } else {
                             let anos  = Math.trunc(intervalo / 12);
@@ -404,9 +418,7 @@ end if
                             return rotulo;
                         }
                     case 'semanas':
-                        if (intervalo === 0) {
-                            return 'Nascimento';
-                        } else if (intervalo === 1) {
+                        if (intervalo === 1) {
                             return '1 semana';
                         } else if (intervalo <= 13) {
                             return `${intervalo} semanas`
@@ -434,7 +446,7 @@ end if
 
         google.charts.load('current', {packages: ['corechart']});
         google.charts.setOnLoadCallback(function() {
-            abreGrafico(0, 2);
+            abreGrafico(2, 2);
         });
 
         /** Configurações dos modelos gráficos
@@ -1277,6 +1289,200 @@ end if
                       ]
                     },
                 }
+            ],
+            // perímetro cefálico
+            [
+                // 0 a 13 semanas
+                {
+                    1: {
+                      titulo: 'Perímetro Cefálico para Idade MENINOS',
+                      subtitulo: 'Do nascimento a 13 semanas (escores-z)',
+                      gridUrl: 'assets/img/puriecultura/pc-0-13semanas-meninos.png',
+                      intervalos: {
+                        tipo: 'dias',
+                        inicio: 0,
+                        fim: 91,
+                        campo: 'perimetroCefalico',
+                        rotuloCampo: 'Perímetro Cefálico (cm)',
+                      },
+                      grafico: {
+                          chartArea: {
+                            width: 758,
+                            height: 495,
+                            left: 96,
+                            top: 35
+                          },
+                          escala: {
+                            vertical: {min: 30, max: 44.5},
+                            horizontal: {min: 0, max: 92}
+                          },
+                      },
+                      dadosAlinhamento: [
+                          30, 30.5, 31, null, null, null, null, 31, 31.5, 32, null, null, null, null,
+                          33, null, null, null, null, null, null, 34, null, null, null, null, null, null,
+                          35, null, null, null, null, null, null, 36, null, null, null, null, null, null,
+                          37, null, null, null, null, null, null, 38, null, null, null, null, null, null,
+                          39, null, null, null, null, null, null, 40, null, null, null, null, null, null,
+                          41, null, null, null, null, null, null, 42, null, null, null, null, null, null,
+                          43, null, null, null, null, null, null, 44.5
+                      ]
+                    },
+                    2: {
+                      titulo: 'Perímetro Cefálico para Idade MENINAS',
+                      subtitulo: 'Do nascimento a 13 semanas (escores-z)',
+                      gridUrl: 'assets/img/puriecultura/pc-0-13semanas-meninas.png',
+                      intervalos: {
+                        tipo: 'dias',
+                        inicio: 0,
+                        fim: 91,
+                        campo: 'perimetroCefalico',
+                        rotuloCampo: 'Perímetro Cefálico (cm)',
+                      },
+                      grafico: {
+                          chartArea: {
+                            width: 758,
+                            height: 495,
+                            left: 96,
+                            top: 35
+                          },
+                          escala: {
+                            vertical: {min: 30, max: 43.5},
+                            horizontal: {min: 0, max: 92}
+                          },
+                      },
+                      dadosAlinhamento: [
+                          30, 30.5, 31, null, null, null, null, 31, 31.5, 32, null, null, null, null,
+                          33, null, null, null, null, null, null, 34, null, null, null, null, null, null,
+                          35, null, null, null, null, null, null, 36, null, null, null, null, null, null,
+                          37, null, null, null, null, null, null, 38, null, null, null, null, null, null,
+                          39, null, null, null, null, null, null, 40, null, null, null, null, null, null,
+                          41, null, null, null, null, null, null, 42, null, null, null, null, null, null,
+                          43, null, null, null, null, null, null, 43.5
+                      ]
+                    },
+                },
+                // 0 a 2 anos
+                {
+                    1: {
+                          titulo: 'Perímetro Cefálico para Idade MENINOS',
+                          subtitulo: 'Do nascimento a 2 anos (escores-z)',
+                          gridUrl: 'assets/img/puriecultura/pc-0-2anos-meninos.png',
+                          intervalos: {
+                            tipo: 'meses',
+                            inicio: 0,
+                            fim: 24,
+                            campo: 'perimetroCefalico',
+                            rotuloCampo: 'Perímetro Cefálico (cm)',
+                          },
+                          grafico: {
+                              chartArea: {
+                                width: 780,
+                                height: 495,
+                                left: 87,
+                                top: 35
+                              },
+                              escala: {
+                                vertical: {min: 29, max: 53},
+                                horizontal: {min: 0, max: 25}
+                              },
+                          },
+                          dadosAlinhamento: [
+                              29, null, 32, null, 34, null, 36, null, 38, null, 40, null, 42, null, 44, null,
+                              46, null, 48, null, 50, null, 52, null, 53
+                          ]
+                        },
+                    2: {
+                          titulo: 'Perímetro Cefálico para Idade MENINAS',
+                          subtitulo: 'Do nascimento a 2 anos (escores-z)',
+                          gridUrl: 'assets/img/puriecultura/pc-0-2anos-meninas.png',
+                          intervalos: {
+                            tipo: 'meses',
+                            inicio: 0,
+                            fim: 24,
+                            campo: 'perimetroCefalico',
+                            rotuloCampo: 'Perímetro Cefálico (cm)',
+                          },
+                          grafico: {
+                              chartArea: {
+                                width: 780,
+                                height: 495,
+                                left: 87,
+                                top: 35
+                              },
+                              escala: {
+                                vertical: {min: 29, max: 52},
+                                horizontal: {min: 0, max: 25}
+                              },
+                          },
+                          dadosAlinhamento: [
+                              29, null, 30, null, 32, null, 34, null, 36, null, 38, null, 40, null, 42, null, 44, null,
+                              46, null, 48, null, 50, null, 52
+                          ]
+                        },
+                },
+                // 0 a 5 anos
+                {
+                    1: {
+                      titulo: 'Perímetro Cefálico para Idade MENINOS',
+                      subtitulo: 'Do nascimento a 5 anos (escores-z)',
+                      gridUrl: 'assets/img/puriecultura/pc-0-5anos-meninos.png',
+                      intervalos: {
+                        tipo: 'meses',
+                        inicio: 0,
+                        fim: 60,
+                        campo: 'perimetroCefalico',
+                        rotuloCampo: 'Perímetro Cefálico (cm)',
+                      },
+                      grafico: {
+                          chartArea: {
+                            width: 760,
+                            height: 495,
+                            left: 93,
+                            top: 35
+                          },
+                          escala: {
+                            vertical: {min: 30, max: 56},
+                            horizontal: {min: 0, max: 61}
+                          },
+                      },
+                      dadosAlinhamento: [
+                          30, null, 30, null, 30, null, 31, null, 32, null, 33, null, 34, null, 35, null, 36, null,
+                          37, null, 38, null, 39, null, 40, null, 41, null, 42, null, 43, null,
+                          44, null, 45, null, 46, null, 47, null, 48, null, 49, null, 50, null,
+                          51, null, 52, null, 53, null, 54, null, 55, null, 56, null, 56, null, 56
+                      ]
+                    },
+                    2: {
+                          titulo: 'Perímetro Cefálico para Idade MENINAS',
+                          subtitulo: 'Do nascimento a 5 anos (escores-z)',
+                          gridUrl: 'assets/img/puriecultura/pc-0-5anos-meninas.png',
+                          intervalos: {
+                            tipo: 'meses',
+                            inicio: 0,
+                            fim: 60,
+                            campo: 'perimetroCefalico',
+                            rotuloCampo: 'Perímetro Cefálico (cm)',
+                          },
+                          grafico: {
+                              chartArea: {
+                                width: 760,
+                                height: 495,
+                                left: 93,
+                                top: 35
+                              },
+                              escala: {
+                                vertical: {min: 30, max: 55},
+                                horizontal: {min: 0, max: 61}
+                              },
+                          },
+                          dadosAlinhamento: [
+                              30, null, 30, null, 30, null, 30, null, 31, null, 32, null, 33, null, 34, null, 35, null,
+                              36, null, 37, null, 38, null, 39, null, 40, null, 41, null, 42, null, 43, null,
+                              44, null, 45, null, 46, null, 47, null, 48, null, 49, null, 50, null,
+                              51, null, 52, null, 53, null, 54, null, 55, null, 55, null, 55
+                          ]
+                        },
+                }
             ]
         ];
 
@@ -1389,7 +1595,7 @@ end if
             for (let x = 0, i = intervalos.inicio; i <= intervalos.fim; i = i + intervalos.incremento, x++) {
                 const rotulo = config.getRotuloIntervalo(i);
                 let valor;
-                if (USAR_DADOS_EXEMPLO) {
+                if (USAR_DADOS_ALINHAMENTO) {
                     valor = config.dadosAlinhamento[i] || null;
                 } else {
                     const dadoPaciente = getDadosPacientePelaIdade(i, intervalos.tipo);
@@ -1403,7 +1609,7 @@ end if
             }
 
             // Trata os extremos do array de dados
-            if (!USAR_DADOS_EXEMPLO) {
+            if (!USAR_DADOS_ALINHAMENTO) {
                 if (intervalos.inicio > 0 && dados.length > 1 && dados[1][1] <= 0) {
                     const dadoAntes = getDadosPacienteAntesIdade(intervalos.inicio, intervalos.tipo);
                     if (dadoAntes) {

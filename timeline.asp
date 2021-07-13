@@ -294,7 +294,10 @@ select case Tipo
                 if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) then
                     if datediff("yyyy", Nascimento, date())<=19 and Sexo<>0 then
                     %>
-                    <a class="btn btn-info mt10" href="javascript:curva(<%= PacienteID %>)"><i class="fa fa-bar-chart"></i> Curvas de Evolução</a>
+                    <div class="col-md-3">
+                        <br>
+                        <a class="btn btn-info" href="javascript:curva(<%= PacienteID %>)"><i class="fa fa-bar-chart"></i> Curvas de Evolução</a>
+                    </div>
                     <%
                     end if
                 end if

@@ -207,7 +207,7 @@ select case Tipo
                 <div class="col-md-3">
                     <%
                     qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
-                                                " WHERE p.sysActive=1                                "&chr(13)&_
+                                                " WHERE p.sysActive=1 AND Ativo= 'on'                "&chr(13)&_
                                                 " ORDER BY p.NomeProfissional ASC                    "
                     
                     if session("Table")="profissionais" then
@@ -1211,6 +1211,9 @@ function prontPrint(tipo, id){
         case "pedido":
             url = domain+"print/exam-request/";
             break;
+        case "diagnostico":
+            url = domain+"print/diagnostico/";
+            break;
         case "protocolos":
             url = domain+"print/protocol/";
             break;
@@ -1218,6 +1221,7 @@ function prontPrint(tipo, id){
             //url = domain+"print/prescription/";
         // break;
     }
+    
     let src = `${url+id}?showPapelTimbrado=1&showCarimbo=1&assinaturaDigital=1&tk=${localStorage.getItem("tk")}`;
     openModal(`
         <iframe width="100%" height="800px" src="${src}" frameborder="0"></iframe>`,

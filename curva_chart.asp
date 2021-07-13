@@ -1,23 +1,17 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Json.asp"-->
 <%
-idCurva    = req("T")
 PacienteID = req("P")
-intervalo  = req("I")
 
 set rsDadosCurva = db.execute("SELECT Data, Peso, Altura, PerimetroCefalico FROM pacientescurva pc WHERE pc.PacienteID = '" & PacienteID & "' AND sysActive = 1 ORDER BY pc.data")
 dadosCurva = recordToJSON(rsDadosCurva)
 
-set dadosPaciente  = db.execute("SELECT pc.*, TIMESTAMPDIFF(MONTH,p.Nascimento, pc.data) meses FROM pacientescurva pc INNER JOIN pacientes p ON p.id = pc.pacienteid order by pc.data asc")
-set pac = db.execute("select id, Sexo, Nascimento, NomePaciente, NomeSocial from pacientes where id="& PacienteID)
+set pac = db.execute("select id, Sexo, Nascimento FROM pacientes where id='"& PacienteID & "'")
+Sexo = 0
+Nascimento = ""
 if not pac.eof then
   Sexo = pac("Sexo")
   Nascimento = pac("Nascimento")
-  NomePaciente = pac("NomePaciente")
-  NomeSocial = pac("NomeSocial")&""
-  if NomeSocial<>"" then
-      NomePaciente = NomeSocial
-  end if
 end if
 %>
 <!DOCTYPE html>
@@ -65,6 +59,9 @@ end if
                 padding: 15px;
                 margin: 0 auto;
                 background-color: #fff;
+            }
+            #chart-area:fullscreen {
+                overflow: auto;
             }
 
             #chart-area-titulo {
@@ -121,7 +118,21 @@ end if
                 margin: 0 auto;
                 padding: 15px 0;
                 font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+                display: flex;
+            }
+
+            #chart-area-rodape > div {
+                flex: 1;
+            }
+            #chart-area-rodape > div:first-child {
+                font-weight: 600;
+            }
+            #chart-area-rodape > div:last-child ul {
+                list-style: none;
                 text-align: right;
+            }
+
+            #chart-area-rodape > div:last-child ul li span {
                 font-weight: 600;
             }
 
@@ -151,7 +162,7 @@ end if
     </div>
 
     <div class="chart-nav intervalo-nav">
-        <ul class="intervalo-nav-0 nav nav-pills nav-pills2 mb20">
+        <ul class="intervalo-nav-0 nav nav-pills nav-pills2 mb20" style="display: none">
             <li class="per-0"><a href="javascript:abreGrafico(0, 0)">0 a 6 meses</a></li>
             <li class="per-1"><a href="javascript:abreGrafico(0, 1)">0 a 2 anos</a></li>
             <li class="per-2"><a href="javascript:abreGrafico(0, 2)">0 a 5 anos</a></li>
@@ -190,7 +201,36 @@ end if
         </div>
 
         <div id="chart-area-grafico"></div>
-        <div id="chart-area-rodape">Fonte: WHO Child Growth Standards</div>
+        <div id="chart-area-rodape">
+            <div>Fonte: WHO Child Growth Standards</div>
+            <div id="chart-area-referencias">
+                <ul class="ref-tipo-0" style="display: none">
+                    <li><span>> +2 escores-z:</span> comprimento elevado para idade.</li>
+                    <li><span>&#8805; -2 e &#8804; +2 escores-z:</span> comprimento adequado para idade.</li>
+                    <li><span>&#8805; -3 e < -2 escores-z:</span> comprimento baixo para idade.</li>
+                    <li><span>< -3 escores-z:</span>  comprimento muito baixo para idade.</li>
+                </ul>
+                <ul class="ref-tipo-1" style="display: none">
+                    <li><span>> +2 escores-z:</span> peso elevado para idade.</li>
+                    <li><span>&#8805; -2 e &#8804; +2 escores-z:</span> peso adequado para idade.</li>
+                    <li><span>&#8805; -3 e < -2 escores-z:</span> peso baixo para idade.</li>
+                    <li><span>< -3 escores-z:</span>  peso muito baixo para idade.</li>
+                </ul>
+                <ul class="ref-tipo-2" style="display: none">
+                    <li><span>> +2 escores-z:</span> PC acima do esperado para idade.</li>
+                    <li><span>&#8804; +2 escores-z e &#8805; -2 escores-z:</span> PC adequado para idade.</li>
+                    <li><span>< -2 escores-z:</span> PC abaixo do esperado para idade.</li>
+                </ul>
+                <ul class="ref-tipo-3" style="display: none">
+                    <li><span>> +3 escores-z:</span> obesidade.</li>
+                    <li><span>&#8804; +3 e &#8805; +2 escores-z:</span> sobrepeso.</li>
+                    <li><span>&#8804; +2 e > +1 escores-z:</span> risco de sobrepeso.</li>
+                    <li><span>&#8804; +1 e &#8805; -2 escores-z:</span> IMC adequado.</li>
+                    <li><span>< -2 e &#8805; -3 escores-z:</span> magreza.</li>
+                    <li><span>< -3 escores-z:</span> magreza acentuada.</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
 
@@ -448,7 +488,7 @@ end if
 
         google.charts.load('current', {packages: ['corechart']});
         google.charts.setOnLoadCallback(function() {
-            abreGrafico(0, 0);
+            abreGrafico(0);
         });
 
         /** Configurações dos modelos gráficos
@@ -1790,6 +1830,14 @@ end if
                     item.classList.add('active');
                 } else {
                     item.classList.remove('active');
+                }
+            });
+            const legenda = document.querySelectorAll(`#chart-area-referencias ul`);
+            legenda.forEach(item => {
+                if (item.classList.contains(`ref-tipo-${tipo}`)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
                 }
             });
 

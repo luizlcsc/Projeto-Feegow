@@ -15,7 +15,7 @@ PacienteID = req("P")
         </span>
     </div>
     <div class="panel-body">
-        <iframe id="frmAltura" src="curva_chart.asp?P=<%= PacienteID %>&T=1&I=4" scrolling="no" width="100%" frameborder=0  height="900"></iframe>
+        <iframe id="frmAltura" src="curva_chart.asp?P=<%= PacienteID %>" scrolling="no" width="100%" frameborder=0  height="1000"></iframe>
     </div>
 </div>
 <script type="text/javascript">

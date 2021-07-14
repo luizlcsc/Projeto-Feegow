@@ -1,9 +1,9 @@
 <!--#include file="connect.asp"-->
 <%
-if request.QueryString("currentYear")="" then
+if req("currentYear")="" then
 	currentYear = year(date())
 else
-	currentYear = request.QueryString("currentYear")
+	currentYear = req("currentYear")
 end if
 %>
 <div class="page-header">
@@ -19,11 +19,11 @@ end if
     <label>Unidade</label><br>
     <select name="CompanyUnitID">
     	<option value="">Todas</option>
-        <option value="0"<% If request.QueryString("CompanyUnitID")="0" Then %> selected<% End If %>>Geral</option>
+        <option value="0"<% If req("CompanyUnitID")="0" Then %> selected<% End If %>>Geral</option>
         <%
 		set getUnits = db.execute("select * from sys_financialCompanyUnits where sysActive=1 and UnitName<>'' order by UnitName")
 		while not getUnits.EOF
-			%><option value="<%=getUnits("id")%>"<% If request.QueryString("CompanyUnitID")=cstr(getUnits("id")) Then %> selected<% End If %>><%=getUnits("UnitName")%></option>
+			%><option value="<%=getUnits("id")%>"<% If req("CompanyUnitID")=cstr(getUnits("id")) Then %> selected<% End If %>><%=getUnits("UnitName")%></option>
             <%
 		getUnits.movenext
 		wend
@@ -95,8 +95,8 @@ end if
 			while not getMovementBill.eof
 				set getInstallment = db.execute("select * from sys_financialInstallments where MovementID="&getMovementBill("id"))
 				if not getInstallment.EOF then
-					if request.QueryString("CompanyUnitID")<>"" then
-						strUnit = " and CompanyUnitID="&request.QueryString("CompanyUnitID")
+					if req("CompanyUnitID")<>"" then
+						strUnit = " and CompanyUnitID="&req("CompanyUnitID")
 					end if
 					set getInvoice = db.execute("select * from sys_financialInvoices where id="&getInstallment("InvoiceID")&strUnit)
 					if not getInvoice.EOF then
@@ -217,8 +217,8 @@ end if
 			while not getMovementBill.eof
 				set getInstallment = db.execute("select * from sys_financialInstallments where MovementID="&getMovementBill("id"))
 				if not getInstallment.EOF then
-					if request.QueryString("CompanyUnitID")<>"" then
-						strUnit = " and CompanyUnitID="&request.QueryString("CompanyUnitID")
+					if req("CompanyUnitID")<>"" then
+						strUnit = " and CompanyUnitID="&req("CompanyUnitID")
 					end if
 					set getInvoice = db.execute("select * from sys_financialInvoices where id="&getInstallment("InvoiceID")&strUnit)
 					if not getInvoice.EOF then

@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-AtendimentoID = request.QueryString("AtendimentoID")
+AtendimentoID = req("AtendimentoID")
 set atendimento = db.execute("select a.*, p.* from atendimentos as a left join pacientes as p on a.PacienteID=p.id where a.id="&AtendimentoID)
 set un = db.execute("select * from sys_users where id="&session("User"))
 UsuariosNotificar = un("UsuariosNotificar")&" "

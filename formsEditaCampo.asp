@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--#include file="connect.asp"-->
 <%
-set pCampo=db.execute("select * from buiCamposForms where id = '"&request.QueryString("I")&"'")
+set pCampo=db.execute("select * from buiCamposForms where id = '"&req("I")&"'")
 TipoCampoID=pCampo("TipoCampoID")
 set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where id="&TipoCampoID)
 %>
@@ -213,8 +213,8 @@ end if
 if TipoCampoID=9 then
 	InformaAjaxTabela="<!--[ChamaTabela]-->"
 %>
-<tr><td>N&deg; de Colunas</td><td><input name="Colunas" type="text" class="form-control" id="Colunas" onkeyup="chamaTabela(<%=request.QueryString("I")%>);" value="<%=pCampo("Colunas")%>" size="2" maxlength="2" /></td></tr>
-<tr><td>N&deg; de Linhas</td><td><input name="Linhas" type="text" class="form-control" id="Linhas" onkeyup="chamaTabela(<%=request.QueryString("I")%>);" value="<%=pCampo("Linhas")%>" size="2" maxlength="2" /></td></tr>
+<tr><td>N&deg; de Colunas</td><td><input name="Colunas" type="text" class="form-control" id="Colunas" onkeyup="chamaTabela(<%=req("I")%>);" value="<%=pCampo("Colunas")%>" size="2" maxlength="2" /></td></tr>
+<tr><td>N&deg; de Linhas</td><td><input name="Linhas" type="text" class="form-control" id="Linhas" onkeyup="chamaTabela(<%=req("I")%>);" value="<%=pCampo("Linhas")%>" size="2" maxlength="2" /></td></tr>
 <tr>
   <td colspan="2"><div id="FormTabelaArray" style="height:190px; overflow:scroll"></div></td>
 </tr>
@@ -224,10 +224,10 @@ end if
 </table>
 </form>
 <div class="clearfix form-actions">
-  <button type="button" class="btn btn-primary" onclick="salvaEdicao(<%=pCampo("id")%>, '<%=request.QueryString("W")%>', '<%=request.QueryString("F")%>', 0, 'S');"><i class="fa fa-save"></i>Salvar</button>
+  <button type="button" class="btn btn-primary" onclick="salvaEdicao(<%=pCampo("id")%>, '<%=req("W")%>', '<%=req("F")%>', 0, 'S');"><i class="fa fa-save"></i>Salvar</button>
   <%
   if TipoCampoID=4 or TipoCampoID=5 or TipoCampoID=6 then
-  	%><input type="button" class="btn btn-success" value="Adicionar Op&ccedil;&atilde;o" onclick="adicionaOpcao('A', <%=request.QueryString("I")%>);" /><%
+  	%><input type="button" class="btn btn-success" value="Adicionar Op&ccedil;&atilde;o" onclick="adicionaOpcao('A', <%=req("I")%>);" /><%
   end if
   %>
 </div>

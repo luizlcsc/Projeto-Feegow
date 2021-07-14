@@ -1,14 +1,15 @@
 <!--#include file="connect.asp"-->
+<!--#include file="AgendamentoUnificado.asp"-->
 <%
-ProfissionalID = request.QueryString("ProfissionalID")
-Data = request.QueryString("Data")
-LocalID = request.QueryString("LocalID")
+ProfissionalID = req("ProfissionalID")
+Data = req("Data")
+LocalID = req("LocalID")
 
-if instr(request.QueryString("A"), "X_")>0 then
-	db_execute("delete from filaespera where id="&replace(request.QueryString("A"), "X_", ""))
+if instr(req("A"), "X_")>0 then
+	db_execute("delete from filaespera where id="&replace(req("A"), "X_", ""))
 end if
-if instr(request.QueryString("A"), "F_")>0 then
-	session("FilaEspera")=replace(request.QueryString("A"), "F_", "")
+if instr(req("A"), "F_")>0 then
+	session("FilaEspera")=replace(req("A"), "F_", "")
 	if ProfissionalID <> 0 then
 	%>
     <script>
@@ -23,14 +24,19 @@ if instr(request.QueryString("A"), "F_")>0 then
 	<%
 	end if
 end if
-if instr(request.QueryString("A"), "U_")>0 then
-	spl = split(request.QueryString("A"), "_")
+if instr(req("A"), "U_")>0 then
+	spl = split(req("A"), "_")
 	FilaID = spl(1)
 	Hora = spl(2)
 	set pfila = db.execute("select * from filaespera where id="&FilaID)
 	if not pfila.eof then
 		Notas = pfila("Notas")
 		db_execute("insert into agendamentos (PacienteId, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, Notas, FormaPagto, HoraSta, LocalID, Tempo, HoraFinal, SubtipoProcedimentoID, ConfEmail, ConfSMS, sysUser) values ('"&pfila("PacienteID")&"','"&ProfissionalID&"','"&mydate(Data)&"','"&Hora&"','"&pfila("TipoCompromissoID")&"','7', "&treatValzero(pfila("ValorPlano"))&",'"&pfila("rdValorPlano")&"','"&rep(Notas)&"','0', NULL, "&treatvalzero(LocalID)&", '"&pfila("Tempo")&"', NULL, "&treatvalzero(pfila("SubtipoProcedimentoID"))&", NULL, NULL, "&session("User")&")")
+	
+		set pult = db.execute("select id, ProfissionalID from agendamentos where PacienteID="& pfila("PacienteID") &" order by id desc limit 1")
+		
+		call agendaUnificada("insert", pult("id"), pult("ProfissionalID"))
+	
 	end if
 	db_execute("delete from filaespera where id="&FilaID)
 	session("FilaEspera")=""
@@ -41,7 +47,7 @@ if instr(request.QueryString("A"), "U_")>0 then
 	<%
 end if
 
-if instr(request.QueryString("A"), "cancelar")>0 then
+if instr(req("A"), "cancelar")>0 then
 	session("FilaEspera")=""
 	%>
     <script>

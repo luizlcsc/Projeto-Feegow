@@ -6,12 +6,12 @@ on error resume next
 server.ScriptTimeout = 100000
 
 Set origem = Server.CreateObject("ADODB.Connection")
-'origem.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=recreio_contatos;uid=root;pwd=pipoca453;"
-origem.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=uroclin;uid=root;pwd=pipoca453;"
+'origem.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=recreio_contatos;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
+origem.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=uroclin;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 
 Set destino = Server.CreateObject("ADODB.Connection")
-'destino.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=clinic1739;uid=root;pwd=pipoca453;"
-destino.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=clinic1739;uid=root;pwd=pipoca453;"
+'destino.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=clinic1739;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
+destino.Open "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database=clinic1739;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 
 
 'set p = origem.execute("select * from sch_contact")

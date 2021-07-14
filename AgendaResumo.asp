@@ -1,8 +1,8 @@
 <!--#include file="connect.asp"-->
 <%
-dia = request.QueryString("D")
+dia = req("D")
 diaSemana = weekday(dia)
-ProfissionalID = request.QueryString("ProfissionalID")
+ProfissionalID = req("ProfissionalID")
 
 set feriados = db.execute("select * from feriados where Data="&mydatenull(dia)&"")
 while not feriados.eof

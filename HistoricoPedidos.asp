@@ -4,7 +4,7 @@ if ref("X")<>"" then
 	db_execute("delete from pacientespedidos where id="&ref("X"))
 end if
 
-set pres = db.execute("select * from pacientespedidos where PacienteID="&request.QueryString("PacienteID")&" order by Data desc")
+set pres = db.execute("select * from pacientespedidos where PacienteID="&req("PacienteID")&" order by Data desc")
 if not pres.eof then
 	%>
 	<span class="green middle bolder">Pedidos anteriores: </span>

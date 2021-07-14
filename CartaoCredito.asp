@@ -25,7 +25,7 @@ end if
     <div class="panel hidden-print">
         <div class="panel-body">
             <div class="row">
-                <%= quickfield("multiple", "Conta", "Selecione o cartão", 4, req("Conta"), "select id, CONCAT(AccountName, ' ', IFNULL(IF(Empresa = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = Empresa)), '') ) NomeConta from sys_financialcurrentaccounts where AccountType in(3, 4) AND sysActive=1", "NomeConta", "") %>
+                <%= quickfield("multiple", "Conta", "Selecione o cartão", 4, req("Conta"), "select id, CONCAT(AccountName, ' ', IFNULL(IF(Empresa = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = Empresa)), '') ) NomeConta from sys_financialcurrentaccounts where AccountType in(3, 4) AND sysActive=1", "NomeConta", " required") %>
 
                 <div class="col-md-2">
                     <div class="checkbox-custom checkbox-success">
@@ -127,15 +127,7 @@ $("#resultado").on("keyup", "input[id^='Fee']", function () {
 });
 
 
-/*$("input[id^='Fee']").keyup(function(){
-    var idParc = $(this).attr("data-id");
-    var perc = parseFloat( treatval( $(this).val() ) );
-    var valParc = parseFloat( treatval( $("#parc"+idParc).val() ) );
-    var juros = (valParc*perc)*0.01;
-    var valFinal = (valParc-juros).toFixed(2).toString().replace('.', ',');
-
-    $("#ValorCredito"+ idParc ).val( valFinal );
-});*/
+// $("#resultado").on("keyup", "input[id^='Fee']",function () {atualizaValor(this)});
 
 $("#resultado").on("keyup", "input[id^='ValorCredito']", function () {
     var idParc = $(this).attr("data-id");
@@ -146,23 +138,8 @@ $("#resultado").on("keyup", "input[id^='ValorCredito']", function () {
 
     $("#Fee" + idParc).val((100 - taxa).toFixed(2).toString().replace('.', ','));
 });
-    /*
-$("input[id^='ValorCredito']").keyup(function () {
-    var idParc = $(this).attr("data-id");
-    var valParc = parseFloat( treatval( $("#parc"+idParc).val() ) );
-    var valFinal = parseFloat( treatval( $(this).val() ) );
-    var fator = 100/valParc;
-    var taxa = fator*valFinal;
-    
-    $("#Fee"+ idParc ).val( (100-taxa).toFixed(2).toString().replace('.', ',') );
-});*/
+
 
 <!--#include file="jQueryFunctions.asp"-->
-
-// $(document).ready(function() {
-//   setTimeout(function() {
-//     $("#toggle_sidemenu_l").click()
-//   }, 500);
-// })
 
 </script>

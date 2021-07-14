@@ -34,8 +34,8 @@ if req("NewID") <> "" and req("OldID") <> "" then
     response.end
 end if
 
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Cadastro de Unidade / Filial");
@@ -73,8 +73,8 @@ set reg = db.execute("select * from "&request.QueryString("P")&" where id="&requ
 <div class="panel">
 <div class="panel-body">
             <form method="post" id="frm" name="frm" action="save.asp">
-                <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-                <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+                <input type="hidden" name="I" value="<%=req("I")%>" />
+                <input type="hidden" name="P" value="<%=req("P")%>" />
                 <div class="row">
                     <div class="col-md-10">
                     </div>
@@ -85,7 +85,7 @@ set reg = db.execute("select * from "&request.QueryString("P")&" where id="&requ
               </a>
         <% END IF %>
         <%
-		if (reg("sysActive")=1 and aut(lcase(request.QueryString("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(request.QueryString("P"))&"I")=1) then
+		if (reg("sysActive")=1 and aut(lcase(req("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(req("P"))&"I")=1) then
 		%>
                         <button class="btn  btn-primary" id="save">
                             <i class="fa fa-save"></i> Salvar
@@ -180,7 +180,7 @@ set reg = db.execute("select * from "&request.QueryString("P")&" where id="&requ
 <script type="text/javascript">
 //js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&req("I")&"&Col=Foto"
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto"
 %>
 $(document).ready(function(e) {
 	<%call formSave("frm", "save", "")%>

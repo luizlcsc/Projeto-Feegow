@@ -1,8 +1,9 @@
+<!--#include file="functions.asp"-->
 <%
-Quantidade = replace(request.Form("Quantidade"),".",",")
-Fator = request.Form("Fator")
-ValorUnitario = request.Form("ValorUnitario")
-Pressed = request.QueryString("Pressed")
+Quantidade = replace(ref("Quantidade"),".",",")
+Fator = ref("Fator")
+ValorUnitario = ref("ValorUnitario")
+Pressed = req("Pressed")
 
 if ValorUnitario="" then
     ValorUnitario=0

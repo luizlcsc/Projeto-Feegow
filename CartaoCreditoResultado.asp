@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+<!--#include file="sqls/sqlUtils.asp"-->
 
         <%
 		if ref("De")<>"" and ref("Ate")<>""  then
@@ -17,11 +18,11 @@
                             <th>NF</th>
 							<th nowrap width="8%">Parcela</th>
 							<th nowrap>Bandeira</th>
-							<th nowrap >Taxa atualmente</th>
+							<th nowrap width="60" >Taxa atual.</th>
 							<th nowrap width="10%">Valor compra</th>
-							<th nowrap width="10%">Taxa %</th>
+							<th nowrap width="10%">Taxa % <i class="fa fa-info-circle" style="margin-left: 10px;" data-toggle="tooltip" data-placement="bottom" title="Taxa vigente na taxa na data da compra"></i></th>
 							<th nowrap width="10%">Valor créd.</th>
-							<th nowrap width="200">Data créd.</th>
+							<th nowrap width="140">Data créd.</th>
 							<th nowrap width="1%">Status</th>
 						</tr>
 					</thead>
@@ -37,8 +38,10 @@
 					end if
 					if ref("Baixados")="S" and ref("Pendentes")="S" then
 						sqlBaixados = ""
-                        sqlData = " AND p.DateToReceive>="&mydatenull(ref("De"))&" AND p.DateToReceive<="&mydatenull(ref("Ate"))
+                        sqlData = " AND ((p.DateToReceive>="&mydatenull(ref("De"))&" AND p.DateToReceive<="&mydatenull(ref("Ate"))&")"&_
+						" OR  (movinstal.Date>="&mydatenull(ref("De"))&" AND movinstal.Date<="&mydatenull(ref("Ate"))&") )"
 					end if
+					
 					ValorFinalTaxado = 0
 					ValorLiquidoFinal=0
 
@@ -92,7 +95,9 @@
 						sqlLimit = "LIMIT "&((PaginaAtual-1)*Limite)&","&Limite
 					end if
 
-                    sql = "select * from (select pac.NomePaciente, pac.id Prontuario, p.id, p.DateToReceive, p.Fee,p.Value,p.TransactionID,p.InvoiceReceiptID, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
+					
+
+                    sql = "select * from (select pac.NomePaciente, pac.id Prontuario, p.id, p.DateToReceive, p.Fee,p.Value,p.TransactionID,p.InvoiceReceiptID, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.id movId, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
                           					" (select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID and DateToReceive<p.DateToReceive) Parcela, "&_
                           					"(select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID) NumeroParcelas "&queryBlock&" from sys_financialcreditcardreceiptinstallments p  "&_
                           					"INNER JOIN sys_financialcreditcardtransaction t on t.id=p.TransactionID  "&_
@@ -124,8 +129,7 @@
 					TotalLinhas = ccur(TotalLinhasSQL("qtd"))
 
 					TotalPaginas = TotalLinhas / Limite 
-					' dd(sql)
-					set rec = db.execute(sql)
+					set rec = db.execute(sql) 
 
 					response.Buffer = "true"
 
@@ -135,12 +139,17 @@
 
 					while not rec.eof
 					response.flush()
+						queryTaxa = ""
+						queryTaxa = getTaxaAtual(rec("AccountIDDebit"),rec("movId"),rec("NumeroParcelas"))
+						set RetornoTaxaAtual2 = db.execute(queryTaxa)
+						taxaAtual= ""
+						taxaAtual = RetornoTaxaAtual2("taxaAtual")
+						RetornoTaxaAtual2 = ""
 						if not isnull(rec("Value")) and not isnull(rec("Total")) and not isnull(rec("NomePaciente")) then
 						    Fee = rec("Fee")
 						    if isnull(Fee) then
 						        Fee=0
 						    end if
-
 							Taxa = ccur(Fee) / 100
 							Taxa = Taxa * rec("Value")
                             ValorCheio = rec("Value")
@@ -176,17 +185,12 @@
                                     ValorRecebido = pmov("Value")
                                     Data = pmov("Date")
                                 end if
-                                set pTaxa = db.execute("select value Taxa from sys_financialmovement where MovementAssociatedID="&rec("InvoiceReceiptID")&" LIMIT 1")
-                                if pTaxa.eof then
-                                    Taxa = 0
-                                else
-                                    if rec("Value")<>0 then
-                                    fator = 100 / rec("Value")
-                                    Taxa = fator * pTaxa("Taxa")
-                                    else
-                                        Taxa = 0
-                                    end if
-                                end if
+								if rec("Value")<>0 then
+									fator = 100 / rec("Value")
+									Taxa = fator * fee
+								else
+									Taxa = 0
+								end if
                                 ValorFinalTaxado = ValorFinalTaxado + (rec("Value") - ValorRecebido)
                                 ValorLiquidoFinal = ValorLiquidoFinal + rec("Value")
 								
@@ -202,12 +206,12 @@
                                     <td><%=rec("NumeroNFe")%></td>
 							        <td nowrap><%= Parcela %> / <%= Parcelas %></td>
 							        <td nowrap><%= Bandeira %></td>
-							        <td></td>
+							        <td nowrap align="right"><%= taxaAtual %>%</td>
 							        <td nowrap align="right">
                                       R$ <%= fn(rec("Total")) %>
                                       <input type="hidden" id="parc<%=rec("id") %>" value="<%=fn(rec("Value")) %>" />
 							        </td>
-							        <td class="text-right"><%= fn(Taxa)%>%</td>
+							        <td class="text-right"><%= fn(fee)%>%</td>
                                     <td class="text-right"><%=fn(ValorRecebido) %></td>
                                     <td class="text-center"><%=Data %></td>
                                     <td>
@@ -240,7 +244,7 @@
                                   <td><%=rec("NumeroNFe")%></td>
 							      <td nowrap><%= Parcela %> / <%= Parcelas %></td>
 							      <td nowrap><%= Bandeira %></td>
-								  <td nowrap align="right"><%= fn(rec("taxa_atualmente")) %>%</td>
+								  <td nowrap align="right"><%= taxaAtual %>%</td>
 							      <td nowrap align="right">
                                       R$ <%= fn(rec("Total")) %>
                                       <input type="hidden" id="parc<%=rec("id") %>" value="<%=fn(rec("Value")) %>" />
@@ -314,6 +318,8 @@
             $("#divCartaoLote .panel-body").html(data);
         });
     });
-
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
     <!--#include file="JQueryFunctions.asp"-->
 </script>

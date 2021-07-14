@@ -7,7 +7,7 @@
 <%posModalPagar="fixed" %>
 <!--#include file="invoiceEstilo.asp"-->
 <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 close = req("close")
 
@@ -1159,7 +1159,7 @@ var SalvarEimprimir = false;
 
 $('#GuiaSADT').on('submit', function (event) {
   event.preventDefault();
-    let fieldRequireCount = 0;
+
     const form = $('#GuiaSADT');
     form.find('input[required], select[required]').each(function() {
         let fieldRequired = $(this);  
@@ -1171,9 +1171,7 @@ $('#GuiaSADT').on('submit', function (event) {
             fieldRequired.parent().addClass('has-success');
         }else{
             fieldRequired.parent().addClass('has-error');
-            fieldRequireCount = fieldRequireCount+1
         }
-        
     });
  
     var $plano = $("#PlanoID"),
@@ -1192,19 +1190,15 @@ $('#GuiaSADT').on('submit', function (event) {
 
     setTimeout(() => {
         let isRedirect = "";
-        if(isSolicitar)
+        if(isSolicitar){
             isRedirect="S";
-
-        if (fieldRequireCount>0){
-            new PNotify({
-                title: ' ERRO!',
-                text: 'Preencha todos os campos obrigatórios',
-                type: 'danger',
-            });
-        }else {
+        }
+        
+        if($("#GuiaSADT")[0].reportValidity()){
+            
             $.ajax({
                 type:"POST",
-                url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=request.QueryString("I")%>"+"&close=<%=close%>&isRedirect="+isRedirect,
+                url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=req("I")%>"+"&close=<%=close%>&isRedirect="+isRedirect,
                 data:$("#GuiaSADT").serialize(),
                 success:function(data){
                     var timeoutSave = 0;
@@ -1227,9 +1221,7 @@ $('#GuiaSADT').on('submit', function (event) {
                     //eval(data);
                 }
             });
-        }  
-
-
+        }
     }, 120);
 	return false;
 })
@@ -1336,7 +1328,7 @@ function tissplanosguia(ConvenioID){
 function tissRecalcGuiaSADT(Action){
 	$.ajax({
 		type:"POST",
-		url:"tissRecalcGuiaSADT.asp?I=<%=request.QueryString("I")%>&Action="+Action,
+		url:"tissRecalcGuiaSADT.asp?I=<%=req("I")%>&Action="+Action,
 		data:$("#GuiaSADT").serialize(),
 		success: function(data){
 			$("#divTotais").html(data);
@@ -1411,10 +1403,10 @@ function imprimirGuiaSADT(){
 
     $.ajax({
     		type:"POST",
-    		url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=request.QueryString("I")%>"+"&close=<%=close%>&isRedirect=S",
+    		url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=req("I")%>"+"&close=<%=close%>&isRedirect=S",
     		data:$("#GuiaSADT").serialize(),
     		success:function(data){
-    			guiaTISS('GuiaSADT', <%=request.QueryString("I")%> , $("#gConvenioID").val())
+    			guiaTISS('GuiaSADT', <%=req("I")%> , $("#gConvenioID").val())
     		},
     		error:function(data){
                 alert("Preencha todos os campos obrigatórios")

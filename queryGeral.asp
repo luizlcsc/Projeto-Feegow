@@ -2,7 +2,7 @@
 <%
 
     server.ScriptTimeout = 500
-    q = request.form("Q")
+    q = ref("Q")
 %>
 <div class="panel">
     <div class="panel-body">
@@ -33,7 +33,7 @@
 
                 if q<>"" then
                     response.Buffer
-                    ConnStringC = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
+                    ConnStringC = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
                     Set dbC = Server.CreateObject("ADODB.Connection")
                     dbC.Open ConnStringC
                     set l = dbC.execute("select id, Servidor from cliniccentral.licencas where Servidor like '%amazonaws%' and id not in(446, 449, 475, 485, 499, 528, 542, 565, 605, 1449, 6539, 6540, 6548) and Status='C'")
@@ -41,7 +41,7 @@
                         LicencaID = l("id")
                         strServidor = l("Servidor")
 
-                        ConnStringL = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& strServidor &";Database=clinic"& l("id") &";uid=root;pwd=pipoca453;"
+                        ConnStringL = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& strServidor &";Database=clinic"& l("id") &";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
                         Set dbL = Server.CreateObject("ADODB.Connection")
                         dbL.Open ConnStringL
 

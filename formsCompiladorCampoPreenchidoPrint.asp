@@ -305,5 +305,37 @@ $(function() {
 			%><div style="position:absolute; bottom:0; right:0"></div><iframe id="frm<%=CampoID%>" name="frm<%=CampoID%>" frameborder="0" scrolling="no" src="Curva.asp?CampoID=<%=CampoID%>&FormPID=<%=FormID%>" style="width:100%;height:100%"></iframe><%
 		case 15
 			%><iframe id="frm<%=CampoID%>" name="frm<%=CampoID%>" frameborder="0" scrolling="no" src="CodBarras.asp?NumeroCodigo=<%=ValorPadrao%>" style="width:100%;height:100%"></iframe><%
+		case 16'CID-10 - usar a lógica do campo que auto-sugere
+			'response.Write("["&LadoALado&"]")
+            NomeCid = ""
+            if ValorPadrao<>"" and isnumeric(ValorPadrao) and not isnull(ValorPadrao) then
+                set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&ValorPadrao&"'")
+                if not pcid.eof then
+                    NomeCid = pcid("Codigo") &" - "& pcid("Descricao")
+                end if
+            end if
+			if LadoALado="S" then
+				%><table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td width="1%" class="cel_label" nowrap>
+                            <label class="campoLabel"><%=RotuloCampo%></label>
+                        </td>
+                        <td width="99%" class="cel_input">
+                            <input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text">
+                        </td>
+                    </tr>
+				  </table><%
+			else
+				%>
+                <label class="campoLabel"><%=RotuloCampo%></label>
+                <select id="input_<%=CampoID %>" name="input_<%=CampoID %>" class="form-control campoInput">
+                    <option value="<%=ValorPadrao %>"><%=NomeCid %></option>
+                </select>
+    		<script type="text/javascript">
+				s2aj('input_<%=CampoID%>', 'cliniccentral.cid10', 'Descricao', '','')
+			</script>
+
+			<%
+			end if
 	  end select
 	  %></li>

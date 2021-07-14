@@ -11,10 +11,11 @@ end if
 
 
 %>
+<!--#include file="functions.asp"-->
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/URLDecode.asp"-->
 <!--#include file="Classes/Environment.asp"-->
-<% GTM_ID = getEnv("FC_GTM_ID", "") %>
+<% GTM_ID = getEnv("FC_GTM_ID", "")%>
 <!DOCTYPE html>
 <html>
 
@@ -430,6 +431,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <% end if %>
 
 <%
+
+
     if req("FP")<>"" and request.ServerVariables("REMOTE_ADDR")="::1" then
 	
         set tryLogin = dbc.execute("select u.*, l.Cliente, l.NomeEmpresa, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status` from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where u.id="&ccur(req("FP")))
@@ -438,7 +441,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <%
     end if
 
-    if request.Form("User")<>"" or request.Form("tokenLogin")<>"" then
+
+
+    if ref("User")<>"" or ref("tokenLogin")<>"" then
+
         if req("Partner")="" then
             set tryLogin = dbc.execute("select u.*, l.Cliente, l.NomeEmpresa, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status` from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha='"&ref("Password")&"' or '"&ref("Password")&"'='##Yogo@@Nutella.')")
 %>
@@ -489,22 +495,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <%
                         RedirectLogin = False
 
-                        if request.form("RedirectLogin")<>"" then
+
+                        if ref("RedirectLogin")<>"" then
                             RedirectLogin=True
                         end if
 
-                        if request.form("Password")<>"" and RedirectLogin then
-                            PasswordValue = request.form("Password")
+                        if ref("Password")<>"" and RedirectLogin then
+                            PasswordValue = req("Password")
                         end if
 
-                        if request.form("User")<>"" then
-                            User = request.form("User")
+                        if ref("User")<>"" then
+                            User = req("User")
                         else
                             User = request.Cookies("User")
                         end if
 
-                        if request.QueryString("U")<>"" then
-                            User=request.QueryString("U")
+                        if req("U")<>"" then
+                            User=req("U")
                         end if
                         %>
                         <div id="divFormLogin">
@@ -528,7 +535,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
         </div>
         <input id="authtoken" type="hidden">
-        <input id="qs" type="hidden" name="qs" value="<%= URLDecode(Request.QueryString("qs"))%>">
+        <input id="qs" type="hidden" name="qs" value="<%= URLDecode(req("qs"))%>">
     </form>
 
     <!-- BEGIN: PAGE SCRIPTS -->
@@ -538,7 +545,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <script src="vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
 
     <!-- pki lacuna software -->
-    <script type="text/javascript" src="https://get.webpkiplugin.com/Scripts/LacunaWebPKI/lacuna-web-pki-2.12.0.min.js"
+    <script type="text/javascript" src="https://get.webpkiplugin.com/Scripts/LacunaWebPKI/lacuna-web-pki-2.12.0.js"
                 integrity="sha256-jDF8LDaAvViVZ7JJAdzDVGgY2BhjOUQ9py+av84PVFA="
                 crossorigin="anonymous"></script>
 
@@ -561,26 +568,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         var selectedCert = null;
 
         jQuery(document).ready(function () {
-
-            //$.post("LoginPrincipal.asp?User=<%=User%>",function(data){
-            //    $("#divFormLogin").html(data);
-            //});
-
-            //startPki();
             "use strict";
-            // Init Theme Core
             Core.init();
-            // Init Demo JS
-            //Demo.init();
-            // Init CanvasBG and pass target starting location
-/*            CanvasBG.init({
-                Loc: {
-                    x: window.innerWidth / 2,
-                    y: window.innerHeight / 3.3
-                },
-            });
-*/
-            // Init Ladda Plugin on buttons
             Ladda.bind('.ladda-button', {
                 timeout: 8000
             });
@@ -639,10 +628,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         function onWebPkiNotInstalled(status, message) {
             var alerta = `<span>Você precisa instalar a Extensão WebPki para usar o certificado digital.</span>
                             <a href='https://chrome.google.com/webstore/detail/web-pki/dcngeagmmhegagicpcmpinaoklddcgon'>Ir para download</a>`;
-            //$('#myAlert').html(alerta);
-            //$('#myAlert').show();
 
-            // pki.redirectToInstallPage();
         }
 
         function onWebPkiReady() {
@@ -715,22 +701,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             });
         }
 
-            function OnLoginCompleted(result) {
-                if(result.token=="")
-                {
-                    alert(result.msg);
-                    window.localStorage.removeItem('defaultcertificate');
-                    $('#certsModal').modal('hide');
+        function OnLoginCompleted(result) {
+            if(result.token=="")
+            {
+                alert(result.msg);
+                window.localStorage.removeItem('defaultcertificate');
+                $('#certsModal').modal('hide');
 
-                }else{
+            }else{
 
-                    window.localStorage.setItem('defaultcertificate',JSON.stringify(selectedCert));
-                    console.log(result);
-                    $('#tokenLogin').val(result.token);
-                    $('#regLogin').val(result.filename);
-                    $('form').submit();
-                }
+                window.localStorage.setItem('defaultcertificate',JSON.stringify(selectedCert));
+                console.log(result);
+                $('#tokenLogin').val(result.token);
+                $('#regLogin').val(result.filename);
+                $('form').submit();
             }
+        }
 
             $('form').on('submit', function(e){
 
@@ -745,10 +731,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             {
                 var result = (certificado.keyUsage.nonRepudiation && certificado.keyUsage.digitalSignature);
                 return result;
-            }
-
-            if (true) {
-              //   location.href="https://app.feegow.com/v7-master/"
             }
 
         });

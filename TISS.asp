@@ -68,6 +68,7 @@ function completaConvenio(ConvenioID, PacienteID)
     MinimoDigitos = 0
     MaximoDigitos = 100
     TipoAtendimentoID = null
+    IndicacaoAcidenteID = null
 
 	set conv = db.execute("select *,coalesce(MinimoDigitos,0) as _MinimoDigitos,coalesce(NULLIF(MaximoDigitos,0),100) as _MaximoDigitos from convenios where id="&ConvenioID)
 	if not conv.eof then
@@ -75,6 +76,7 @@ function completaConvenio(ConvenioID, PacienteID)
         MinimoDigitos = conv("_MinimoDigitos")
         MaximoDigitos = conv("_MaximoDigitos")
         TipoAtendimentoID = conv("TipoAtendimentoID")
+		IndicacaoAcidenteID = conv("IndicacaoAcidenteID")
 
 
 	    if ref("tipo")="GuiaConsulta" and conv("NaoPermitirGuiaDeConsulta")=1 then
@@ -99,10 +101,15 @@ function completaConvenio(ConvenioID, PacienteID)
         end if
 
         if conv("SemprePrimeiraConsulta")=1 then
-        %>
-        $("#TipoConsultaID").val("1").attr("readonly","true");
-        $("#TipoConsultaID option:not(:selected)").prop('disabled', true);
-        <%
+			%>
+			$("#TipoConsultaID").val("1").attr("readonly","true");
+			$("#TipoConsultaID option:not(:selected)").prop('disabled', true);
+			<%
+		else
+			%>
+			$("#TipoConsultaID").val("").removeAttr('readonly');
+			$("#TipoConsultaID option:not(:selected)").prop('disabled', false);
+			<%
         end if
 
         if conv("BloquearAlteracoes")=1 then
@@ -162,6 +169,7 @@ function completaConvenio(ConvenioID, PacienteID)
 	$("#ValidadeCarteira").val("<%=Validade%>");
 	$("#Contratado").val("<%=Contratado%>");
 	$("#TipoAtendimentoID").val("<%=TipoAtendimentoID%>");
+	$("#IndicacaoAcidenteID").val("<%=IndicacaoAcidenteID%>");
 	$("#RegistroANS").val("<%=RegistroANS%>");
 
 	<%
@@ -445,9 +453,10 @@ function completaProcedimento(id, ConvenioID)
 
     viaID = ref("ViaID")
 
-    IF viaID = "" THEN
-       viaID = 1
-    END IF
+	' ViaID passou a ser campo opcional, não podendo ser atribuito a um valor automaticamente na função
+	' IF viaID = "" THEN
+	'   viaID = 1
+	'END IF
 
 	'set valproc = db.execute("select * from tissprocedimentosvalores where ProcedimentoID like '"&id&"' and ConvenioID like '"&ConvenioID&"'")
 	'response.Write("alert(""select pvp.Valor, pvp.NaoCobre from tissprocedimentosvaloresplanos as pvp LEFT JOIN tissprocedimentosvalores as pv on pv.id=pvp.AssociacaoID where pv.ProcedimentoID like '"&id&"' and PlanoID="&treatvalzero(ref("PlanoID"))&""")")

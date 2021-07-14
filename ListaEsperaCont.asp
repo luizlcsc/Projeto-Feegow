@@ -13,6 +13,7 @@ OrdensNome="Hor&aacute;rio Agendado, Hor&aacute;rio de Chegada, Idade do Pacient
 Ordens="HoraSta, Hora, pac.Nascimento ASC"
 splOrdensNome=split(OrdensNome, ", ")
 unidadesBloqueioAtendimento = getConfig("BloquearAtendimentoMediantePagamento")
+OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
 
 Ordem="Hora"
 StatusExibir=req("StatusExibir")
@@ -77,7 +78,7 @@ if not ConfigGeraisSQL.eof then
     ChamarAposPagamento=ConfigGeraisSQL("ChamarAposPagamento")
 end if
 
-if request.QueryString("Chamar")<>"" then
+if req("Chamar")<>"" then
 
     StaChamando = 5
     'triagem
@@ -97,7 +98,7 @@ if request.QueryString("Chamar")<>"" then
     end if
 
 	db_execute("update agendamentos set StaID='"&StaChamando&"' "& sqlProfissional &" where id = '"&req("Chamar")&"'")
-	set dadosAgendamento = db.execute("select PacienteID, ProfissionalID from agendamentos where id = '"&request.QueryString("Chamar")&"'")
+	set dadosAgendamento = db.execute("select PacienteID, ProfissionalID from agendamentos where id = '"&req("Chamar")&"'")
 	if not dadosAgendamento.eof then
 		call gravaChamada(dadosAgendamento("ProfissionalID"), dadosAgendamento("PacienteID"), session("UnidadeID"))
 	end if
@@ -110,8 +111,8 @@ if request.QueryString("Chamar")<>"" then
 end if
 
 'da redirect ao atender
-if request.QueryString("Atender")<>"" then
-    AgendamentoIDAtender = request.QueryString("Atender")
+if req("Atender")<>"" then
+    AgendamentoIDAtender = req("Atender")
 	'db_execute("update agendamentos set StaID='3' where StaID = '2' and ProfissionalID = '"&ProfissionalID&"'") -  não muda mais automaticamente para atendido, apenas quando encerra o contador
 	db_execute("update agendamentos set StaID='2', ProfissionalID="&ProfissionalID&" where id = '"&AgendamentoIDAtender&"' AND ProfissionalID = 0")
     getEspera(ProfissionalID)
@@ -459,7 +460,7 @@ else
         'if not veSePre.EOF then
 			'<img src="checked.jpg" />
 		'end if%>
-		<%if veseha("Encaixe")=1 then%><span class="label label-alert ml5">Encaixe </span><%end if%>
+		<%if veseha("Encaixe")=1 and OmitirEncaixeGrade=0 then%><span class="label label-alert ml5">Encaixe </span><%end if%>
 		<%if veseha("Primeira")=1 then%><span class="label label-info ml5">Primeira vez</span><%end if%>
 		<<%=tagPaciente%> href="./?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>" <%=cssAdicionl%>><%=Nome%></<%=tagPaciente%>><br />
 		<small><%=Notas%></small></td>

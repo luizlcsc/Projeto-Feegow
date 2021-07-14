@@ -1,5 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
-
+<!--#include file="AgendamentoUnificado.asp"-->
 <%
 ProfissionalID = ref("ProfissionalID")
 Data = ref("Data")
@@ -133,7 +133,15 @@ if Data<>"" then
     <%
 else
     if ref("agMassa")<>"" then
+
+        set profissionalAntigoSQL = db.execute("SELECT ProfissionalID FROM agendamentos WHERE id in("& ref("agMassa") &")")
+        if not profissionalAntigoSQL.eof then
+            ProfissionalIDAntigo=profissionalAntigoSQL("ProfissionalID")
+        end if
+
         db.execute("update agendamentos set Data="& mydatenull(ref("NovaData")) &", ProfissionalID="& ref("NovoProfissionalID") &" where id in("& ref("agMassa") &")")
+
+        call agendaUnificada("update", ref("agMassa"), ProfissionalIDAntigo)
     end if
 
 end if

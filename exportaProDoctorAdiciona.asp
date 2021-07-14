@@ -2,15 +2,15 @@
 <%
 'on error resume next
 
-dbOrigem = request.QueryString("Origem")
+dbOrigem = req("Origem")
 
 ''Set origem = Server.CreateObject("ADODB.Connection")
-''origem.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=barra_12102015;uid=root;pwd=pipoca453;"
-'origem.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=danielvasconcellos;uid=root;pwd=pipoca453;"
+''origem.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=barra_12102015;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
+'origem.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=danielvasconcellos;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 
 Set destino = Server.CreateObject("ADODB.Connection")
-destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic522;uid=root;pwd=pipoca453;"
-'destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=danielvasconcellosimportado;uid=root;pwd=pipoca453;"
+destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic522;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
+'destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=danielvasconcellosimportado;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 
 
 function tratamento(val)

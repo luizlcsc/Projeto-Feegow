@@ -20,7 +20,7 @@ if req("X")<>"" then
         next
     end if
     'voltar a posição anterior
-	db_execute("delete from estoquelancamentos where id="&request.QueryString("X"))
+	db_execute("delete from estoquelancamentos where id="&req("X"))
 end if
 
 if ItemInvoiceID<>"" and ItemInvoiceID<>"undefined" then

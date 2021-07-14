@@ -21,8 +21,8 @@ body, tr, td, th {
 
 TotalGeral = 0
 
-DataDe = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
+DataDe = req("DataDe")
+DataAte = req("DataAte")
 
 response.Buffer
 %>

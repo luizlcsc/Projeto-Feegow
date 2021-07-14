@@ -1,6 +1,5 @@
 <%
 
-
 function getProfissionaisSqlQuickField()
    sqlProfissionais = " select id, NomeProfissional as nome,profissionais.Unidades                      "&chr(13)&_
                    " from profissionais                                                                 "&chr(13)&_
@@ -78,13 +77,77 @@ function getSQLQuickField(Tabela,Coluna,ID,Condicoes)
                     " ORDER BY Nome                                                                        "
 
             end if
-                    
+        Case "Cid10"
+            sql = "SELECT id, Codigo AS codigo, Descricao AS nome FROM cliniccentral.cid10"
     End Select
     
     getSQLQuickField = "SELECT * FROM ("&sql&") AS t WHERE true"
 
 end function
 
+function getTaxaAtual (conta,mov,parcelas)
+
+    sqltaxa =   " coalesce (                                                              	"&chr(13)&_
+            " 		nullif(                                                               	"&chr(13)&_
+            "             (select                                                     		"&chr(13)&_
+            "                 cap.acrescimoPercentual                                 		"&chr(13)&_
+            "             from                                                        		"&chr(13)&_
+            "                 sys_financialCurrentAccounts ca                         		"&chr(13)&_
+            "             left join sys_financial_current_accounts_percentual cap on  		"&chr(13)&_
+            "                 cap.sys_financialCurrentAccountId = ca.id               		"&chr(13)&_
+            "             inner join sys_financialmovement m on                       		"&chr(13)&_
+            "                 m.AccountIDDebit = ca.id                                		"&chr(13)&_
+            "             inner join sys_financialcreditcardtransaction ct on         		"&chr(13)&_
+            "                 ct.MovementID = m.id                                    		"&chr(13)&_
+            "             where                                                       		"&chr(13)&_
+            "                 ca.id = "&conta&"                                             "&chr(13)&_
+            "                 and bandeira = ct.BandeiraCartaoID                      		"&chr(13)&_
+            "                 and m.id = "&mov&"                      		                "&chr(13)&_
+            "                 AND "&parcelas&" BETWEEN minimo AND maximo                    "&chr(13)&_
+            "                 LIMIT 1                                                       "&chr(13)&_
+            " 	        ),''                                                           		"&chr(13)&_
+            "         )                                                               		"&chr(13)&_
+            " 	    ,nullif(                                                           		"&chr(13)&_
+            "             (select                                                     		"&chr(13)&_
+            "                 cap.acrescimoPercentual                                 		"&chr(13)&_
+            "             from                                                        		"&chr(13)&_
+            "                 sys_financialCurrentAccounts ca                         		"&chr(13)&_
+            "             left join sys_financial_current_accounts_percentual cap on  		"&chr(13)&_
+            "                 cap.sys_financialCurrentAccountId = ca.id               		"&chr(13)&_
+            "             inner join sys_financialmovement m on                       		"&chr(13)&_
+            "                 m.AccountIDDebit = ca.id                                		"&chr(13)&_
+            "             inner join sys_financialcreditcardtransaction ct on         		"&chr(13)&_
+            "                 ct.MovementID = m.id                                    		"&chr(13)&_
+            "             where                                                       		"&chr(13)&_
+            "                 ca.id = "&conta&"                                             "&chr(13)&_
+            "                 and m.id = "&mov&"                      		                "&chr(13)&_
+            "                 and bandeira = 9                                        		"&chr(13)&_
+            "                 AND "&parcelas&" BETWEEN minimo AND maximo                    "&chr(13)&_
+            "                 LIMIT 1                                                       "&chr(13)&_
+            " 	        ),''                                                           		"&chr(13)&_
+            "         )                                                               		"&chr(13)&_
+            "         ,nullif(                                                        		"&chr(13)&_
+            "             (select                                                     		"&chr(13)&_
+            "                 PercentageDeducted                                      		"&chr(13)&_
+            "             from                                                        		"&chr(13)&_
+            "                 sys_financialCurrentAccounts                            		"&chr(13)&_
+            "             where                                                       		"&chr(13)&_
+            "                 id = "&conta&"                                               	"&chr(13)&_
+            "             ),''                                                        		"&chr(13)&_
+            "         )                                                               		"&chr(13)&_
+            "         ,'0'                                                            		"&chr(13)&_
+            " )     as taxaAtual  limit 1                                                   "
+
+    sql = "select "&sqltaxa
+    getTaxaAtual = sql
+end function
+
+function FieldExists(ByVal rs, ByVal fieldName)
+    On Error Resume Next
+    FieldExists = rs.Fields(fieldName).name <> ""
+    If Err <> 0 Then FieldExists = False
+    Err.Clear
+end function
 
 
 %>

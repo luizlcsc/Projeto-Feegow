@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->	
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/AgendamentoValidacoes.asp"-->
-
+<!--#include file="AgendamentoUnificado.asp"-->
 <%
 
 if request.ServerVariables("REMOTE_ADDR")<>"::1" then
@@ -170,9 +170,18 @@ if Acao="Remarcar" then
     end if
 
     if erro="" then
-        sql = "update agendamentos set EquipamentoID="&treatvalnull(EquipamentoID)&", Data="&mydatenull(Data)&", Hora="&mytime(Hora)&", ProfissionalID="&treatvalzero(ProfissionalID)&", LocalID="&treatvalzero(LocalID)&", Encaixe="&Encaixe&" where id="&session("RemSol")
 
+        
+        set profissionalAntigoSQL = db.execute("SELECT ProfissionalID FROM agendamentos WHERE id="&session("RemSol"))
+        if not profissionalAntigoSQL.eof then
+            ProfissionalIDAntigo=profissionalAntigoSQL("ProfissionalID")
+        end if
+
+        sql = "update agendamentos set EquipamentoID="&treatvalnull(EquipamentoID)&", Data="&mydatenull(Data)&", Hora="&mytime(Hora)&", ProfissionalID="&treatvalzero(ProfissionalID)&", LocalID="&treatvalzero(LocalID)&", Encaixe="&Encaixe&" where id="&session("RemSol")
         db_execute(sql)
+        
+        call agendaUnificada("update", session("RemSol"), ProfissionalIDAntigo)
+
     '	response.Write("select ConfSMS, ConfEmail from agendamentos where id="&session("RemSol"))
 
         set age = db.execute("select ConfSMS, ConfEmail,PacienteID,TipoCompromissoID from agendamentos where id="&session("RemSol"))

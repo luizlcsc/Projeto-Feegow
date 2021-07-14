@@ -122,7 +122,7 @@
     </li>
     <%
 	end if
-    if recursoAdicional(39) and (aut("solicitacoescompras") = 1 or aut("configcompras") = 1)  then
+    if recursoAdicional(40) and (aut("solicitacoescompras") = 1 or aut("configcompras") = 1)  then
     %>
     <li>
         <a href="#" class="accordion-toggle">

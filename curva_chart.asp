@@ -285,6 +285,7 @@ end if
                     dias: this.data.diff(Paciente.dataNascimento, 'days'),
                     semanas: this.data.diff(Paciente.dataNascimento, 'weeks'),
                     meses: this.data.diff(Paciente.dataNascimento, 'months'),
+                    trimestres: Math.trunc(this.data.diff(Paciente.dataNascimento, 'months') / 3),
                     anos: this.data.diff(Paciente.dataNascimento, 'years')
                 }
             }
@@ -333,7 +334,6 @@ end if
         * @property {string} intervalos.tipo Tipo de Intervalo (semanas, meses, anos)
         * @property {number} intervalos.inicio Início do Intervalo
         * @property {number} intervalos.fim Fim do Intervalo
-        * @property {number} [intervalos.incremento] Incremento do Intervalo
         * @property {string} intervalos.campo Campo do intervalo
         * @property {string} intervalos.rotuloCampo Rótulo do campo
         * @property {string} intervalos.unidade Unidade do campo
@@ -359,7 +359,6 @@ end if
                 tipo: "",
                 inicio: 0,
                 fim: 0,
-                incremento: 1,
                 campo: "",
                 rotuloCampo: "",
                 unidade: ""
@@ -386,7 +385,6 @@ end if
             * @param {string} params.intervalos.tipo Tipo de Intervalo (semanas, meses, anos)
             * @param {number} params.intervalos.inicio Início do Intervalo
             * @param {number} params.intervalos.fim Início do Intervalo
-            * @param {number} params.intervalos.incremento Incremento do Intervalo
             * @param {string} params.intervalos.campo Campo do intervalo
             * @param {string} params.intervalos.rotuloCampo Rótulo do campo
             * @param {string} params.intervalos.unidade Unidade do campo
@@ -453,6 +451,19 @@ end if
                         } else {
                             let anos  = Math.trunc(intervalo / 12);
                             let meses = intervalo - (anos * 12);
+                            let rotulo = `${anos} ${anos > 1 ? 'anos' : 'ano'}`;
+                            if (meses > 0) {
+                                rotulo += ` e ${meses} ${meses > 1 ? 'meses' : 'mês'}`;
+                            }
+                            return rotulo;
+                        }
+                    case 'trimestres':
+                        if (intervalo < 4) {
+                            const meses = intervalo * 3;
+                            return `${meses} ${meses > 1 ? 'meses' : 'mes'}`;
+                        } else {
+                            const anos  = Math.trunc(intervalo / 4);
+                            const meses = (intervalo * 3) - (anos * 12);
                             let rotulo = `${anos} ${anos > 1 ? 'anos' : 'ano'}`;
                             if (meses > 0) {
                                 rotulo += ` e ${meses} ${meses > 1 ? 'meses' : 'mês'}`;
@@ -837,10 +848,9 @@ end if
                           subtitulo: 'De 5 a 19 anos (escores-z)',
                           gridUrl: 'assets/img/puriecultura/crescimento-5-19anos-meninos.png',
                           intervalos: {
-                            tipo: 'meses',
-                            inicio: 60,
-                            fim: 228,
-                            incremento: 3,
+                            tipo: 'trimestres',
+                            inicio: 20,
+                            fim: 76,
                             campo: 'altura',
                             rotuloCampo: 'Altura (cm)',
                             unidade: 'cm',
@@ -858,25 +868,13 @@ end if
                               }
                           },
                           dadosAlinhamento: [
-                              // 59 primeiros meses sem dados
+                              // 20 primeiros trimestres sem dados
                               null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              90, null, null, 95, null, null, 100, null, null, 105, null, null, 110,
-                              null, null, null, null, null, null, null, null, null, null, null, 120,
-                              null, null, null, null, null, null, null, null, null, null, null, 130,
-                              null, null, null, null, null, null, null, null, null, null, null, 140,
-                              null, null, null, null, null, null, null, null, null, null, null, 150,
-                              null, null, null, null, null, null, null, null, null, null, null, 160,
-                              null, null, null, null, null, null, null, null, null, null, null, 165,
-                              null, null, null, null, null, null, null, null, null, null, null, 170,
-                              null, null, null, null, null, null, null, null, null, null, null, 175,
-                              null, null, null, null, null, null, null, null, null, null, null, 180,
-                              null, null, null, null, null, null, null, null, null, null, null, 185,
-                              null, null, null, null, null, null, null, null, null, null, null, 190,
-                              null, null, null, null, null, null, null, null, null, null, null, 195,
-                              null, null, null, null, null, null, null, null, null, null, null, 200,
+                              null, null, null, null, null,
+                              90, null, 95, null, 100, null, null, null, 105 ,null, null, null, 110, null, null, null,
+                              115, null, null, null, 120, null, null, null, 125, null, null, null, 130, null, null, null,
+                              135, null, null, null, 140, null, null, null, 150, null, null, null, 160, null, null, null,
+                              170, null, null, null, 180, null, null, null, 190
                           ]
                         },
                     // meninas
@@ -885,10 +883,9 @@ end if
                       subtitulo: 'De 5 a 19 anos (escores-z)',
                       gridUrl: 'assets/img/puriecultura/crescimento-5-19anos-meninas.png',
                       intervalos: {
-                        tipo: 'meses',
-                        inicio: 60,
-                        fim: 228,
-                        incremento: 3,
+                        tipo: 'trimestres',
+                        inicio: 20,
+                        fim: 76,
                         campo: 'altura',
                         rotuloCampo: 'Altura (cm)',
                         unidade: 'cm',
@@ -906,25 +903,13 @@ end if
                           }
                       },
                       dadosAlinhamento: [
-                          // 59 primeiros meses sem dados
+                          // 20 primeiros trimestres sem dados
                           null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                          null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                          null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                          null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                          90, null, null, 95, null, null, 100, null, null, 105, null, null, 110,
-                          null, null, null, null, null, null, null, null, null, null, null, 120,
-                          null, null, null, null, null, null, null, null, null, null, null, 130,
-                          null, null, null, null, null, null, null, null, null, null, null, 135,
-                          null, null, null, null, null, null, null, null, null, null, null, 140,
-                          null, null, null, null, null, null, null, null, null, null, null, 145,
-                          null, null, null, null, null, null, null, null, null, null, null, 150,
-                          null, null, null, null, null, null, null, null, null, null, null, 155,
-                          null, null, null, null, null, null, null, null, null, null, null, 160,
-                          null, null, null, null, null, null, null, null, null, null, null, 165,
-                          null, null, null, null, null, null, null, null, null, null, null, 170,
-                          null, null, null, null, null, null, null, null, null, null, null, 175,
-                          null, null, null, null, null, null, null, null, null, null, null, 180,
-                          null, null, null, null, null, null, null, null, null, null, null, 185,
+                          null, null, null, null, null,
+                          90, null, 95, null, 100, null, null, null, 105 ,null, null, null, 110, null, null, null,
+                          115, null, null, null, 120, null, null, null, 125, null, null, null, 130, null, null, null,
+                          135, null, null, null, 140, null, null, null, 150, null, null, null, 160, null, null, null,
+                          170, null, null, null, 180, null, 183, 184, 185
                       ]
                     },
                 }
@@ -1724,10 +1709,9 @@ end if
                           subtitulo: 'De 5 a 19 anos (escores-z)',
                           gridUrl: 'assets/img/puriecultura/imc-5-19anos-meninos.png',
                           intervalos: {
-                            tipo: 'meses',
-                            inicio: 60,
-                            fim: 228,
-                            incremento: 3,
+                            tipo: 'trimestres',
+                            inicio: 20,
+                            fim: 76,
                             campo: 'imc',
                             rotuloCampo: 'IMC',
                           },
@@ -1744,36 +1728,23 @@ end if
                               }
                           },
                           dadosAlinhamento: [
-                              // 59 primeiros meses sem dados
-                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              11.5, null, null, 12, null, null, 12.5, null, null, 13, null, null, 13.5, null, null,
-                              14, null, null, 14.5, null, null, 15, null, null, 15.5,
-                              null, null, null, null, null, null, null, null, null, null, null, 16,
-                              null, null, null, null, null, null, null, null, null, null, null, 18,
-                              null, null, null, null, null, null, null, null, null, null, null, 20,
-                              null, null, null, null, null, null, null, null, null, null, null, 22,
-                              null, null, null, null, null, null, null, null, null, null, null, 24,
-                              null, null, null, null, null, null, null, null, null, null, null, 26,
-                              null, null, null, null, null, null, null, null, null, null, null, 28,
-                              null, null, null, null, null, null, null, null, null, null, null, 30,
-                              null, null, null, null, null, null, null, null, null, null, null, 32,
-                              null, null, null, null, null, null, null, null, null, null, null, 34,
-                              null, null, null, null, null, null, null, null, null, null, null, 35,
-                              null, null, null, null, null, null, null, null, null, null, null, 36,
-                          ]
+                                // 20 primeiros trimestres sem dados
+                                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                                null, null, null, null, null,
+                                11.5, null, 13, null, 14, null, null, null, 15 ,null, null, null, 16, null, null, null,
+                                17, null, null, null, 18, null, null, null, 19, null, null, null, 20, null, null, null,
+                                22, null, null, null, 24, null, null, null, 26, null, null, null, 28, null, null, null,
+                                30, null, null, null, 32, 32.5, 33, 33.5, 34
+                            ]
                         },
                     2: {
                           titulo: 'IMC para Idade MENINAS',
                           subtitulo: 'De 5 a 19 anos (escores-z)',
                           gridUrl: 'assets/img/puriecultura/imc-5-19anos-meninas.png',
                           intervalos: {
-                            tipo: 'meses',
-                            inicio: 60,
-                            fim: 228,
-                            incremento: 3,
+                            tipo: 'trimestres',
+                            inicio: 20,
+                            fim: 76,
                             campo: 'imc',
                             rotuloCampo: 'IMC',
                           },
@@ -1790,25 +1761,13 @@ end if
                               }
                           },
                           dadosAlinhamento: [
-                              // 59 primeiros meses sem dados
+                              // 20 primeiros trimestres sem dados
                               null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-                              11, null, null, 11.5, null, null, 12, null, null, 12.5, null, null, 13, null, null,
-                              13.5, null, null, 14, null, null, 14.5, null, null, 15,
-                              null, null, null, null, null, null, null, null, null, null, null, 17,
-                              null, null, null, null, null, null, null, null, null, null, null, 19,
-                              null, null, null, null, null, null, null, null, null, null, null, 21,
-                              null, null, null, null, null, null, null, null, null, null, null, 23,
-                              null, null, null, null, null, null, null, null, null, null, null, 25,
-                              null, null, null, null, null, null, null, null, null, null, null, 27,
-                              null, null, null, null, null, null, null, null, null, null, null, 29,
-                              null, null, null, null, null, null, null, null, null, null, null, 31,
-                              null, null, null, null, null, null, null, null, null, null, null, 33,
-                              null, null, null, null, null, null, null, null, null, null, null, 35,
-                              null, null, null, null, null, null, null, null, null, null, null, 36,
-                              null, null, null, null, null, null, null, null, null, null, null, 37,
+                              null, null, null, null, null,
+                              11.5, null, 13, null, 14, null, null, null, 15 ,null, null, null, 16, null, null, null,
+                              17, null, null, null, 18, null, null, null, 19, null, null, null, 20, null, null, null,
+                              22, null, null, null, 24, null, null, null, 26, null, null, null, 28, null, null, null,
+                              30, null, null, null, 32, 32.5, 33, 33.5, 34
                           ]
                         },
                 }
@@ -1883,15 +1842,15 @@ end if
         * Filtra o array de valores (allData) procurando as datas correspondentes a idade solicitada,
         * retornando o último registro encontrado. (Obs.: Os dados devem estar ordenados por data)
         * @param {int} idade Idade desejada
-        * @param {string} tipoIdade Tipo de idade (dias, semanas, meses, anos)
+        * @param {string} tipoPeriodo Tipo de idade (dias, semanas, meses, trimestres, anos)
         * @returns {PacienteValor | undefined}
         */
-        function getDadosPacientePelaIdade(idade, tipoIdade) {
-            if (tipoIdade !== 'dias' && tipoIdade !== 'semanas' && tipoIdade !== 'meses' && tipoIdade !== 'anos') {
-                throw new Error('Tipo de idade inválido');
+        function getDadosPacientePelaIdade(idade, tipoPeriodo) {
+            if (!['dias', 'semanas', 'meses', 'trimestres', 'anos'].includes(tipoPeriodo)) {
+                throw new Error('Tipo de período inválido');
             }
             const dados = allData.filter(patientData => {
-                return  patientData.idades[tipoIdade] === idade;
+                return  patientData.idades[tipoPeriodo] === idade;
             });
             if (idade === 0) {
                 return dados.shift(); //returna o primeiro registro quando for nascimento
@@ -1901,22 +1860,28 @@ end if
 
         /**
         * Retorna os dados do paciente após uma determinada idade
+        * @param {int} idade Idade desejada
+        * @param {string} tipoPeriodo Tipo de idade (dias, semanas, meses, trimestres, anos)
+        * @returns {PacienteValor | undefined}
         */
-        function getDadosPacienteAposIdade(idade, tipoIdade) {
-            if (tipoIdade !== 'dias' && tipoIdade !== 'semanas' && tipoIdade !== 'meses' && tipoIdade !== 'anos') {
-                throw new Error('Tipo de idade inválido');
+        function getDadosPacienteAposIdade(idade, tipoPeriodo) {
+            if (!['dias', 'semanas', 'meses', 'trimestres', 'anos'].includes(tipoPeriodo)) {
+                throw new Error('Tipo de período inválido');
             }
-            return allData.find(patientData => patientData.idades[tipoIdade] > idade);
+            return allData.find(patientData => patientData.idades[tipoPeriodo] > idade);
         }
 
         /**
         * Retorna os dados do paciente antes de determinada idade
+        * @param {int} idade Idade desejada
+        * @param {string} tipoPeriodo Tipo de idade (dias, semanas, meses, trimestres, anos)
+        * @returns {PacienteValor | undefined}
         */
-        function getDadosPacienteAntesIdade(idade, tipoIdade) {
-            if (tipoIdade !== 'dias' && tipoIdade !== 'semanas' && tipoIdade !== 'meses' && tipoIdade !== 'anos') {
+        function getDadosPacienteAntesIdade(idade, tipoPeriodo) {
+            if (!['dias', 'semanas', 'meses', 'trimestres', 'anos'].includes(tipoPeriodo)) {
                 throw new Error('Tipo de idade inválido');
             }
-            return allData.slice().reverse().find(patientData => patientData.idades[tipoIdade] < idade);
+            return allData.slice().reverse().find(patientData => patientData.idades[tipoPeriodo] < idade);
         }
 
         /**
@@ -1926,10 +1891,10 @@ end if
         */
         function getDadosGrafico(config) {
             const intervalos = config.intervalos;
-            const dados = [['Período', intervalos.rotuloCampo]];
 
-            // Monta o array de dados
-            for (let x = 0, i = intervalos.inicio; i <= intervalos.fim; i = i + intervalos.incremento, x++) {
+            // Monta o array de dados do paciente
+            let dadosPaciente = [];
+            for (let x = 0, i = intervalos.inicio; i <= intervalos.fim; i++, x++) {
                 const rotulo = config.getRotuloIntervalo(i);
                 let valor;
                 if (USAR_DADOS_ALINHAMENTO) {
@@ -1939,32 +1904,36 @@ end if
 
                     valor = dadoPaciente ? dadoPaciente.getValorCampo(intervalos.campo, intervalos.unidade) : null;
                 }
-                if (dados.length === 1 && valor === null) {
-                    valor = -1; //tem que ter pelo menos 1 valor numérico na primeira posição
-                }
-                dados.push([`${rotulo}`, valor]);
+                dadosPaciente.push([`${rotulo}`, valor]);
             }
 
             // Trata os extremos do array de dados
             if (!USAR_DADOS_ALINHAMENTO) {
-                if (intervalos.inicio > 0 && dados.length > 1 && dados[1][1] <= 0) {
+                //antes do período
+                if (intervalos.inicio > 0 && dadosPaciente.length > 0 && dadosPaciente[0][1] <= 0) {
                     const dadoAntes = getDadosPacienteAntesIdade(intervalos.inicio, intervalos.tipo);
                     if (dadoAntes) {
                         config.grafico.escala.horizontal.min = 1;
                         config.grafico.escala.horizontal.max++;
-                        if (dados[1][1] === -1) {
-                            dados[1][1] = null;
-                        }
-                        dados.splice(1, 0, ['antes', dadoAntes.getValorCampo(intervalos.campo, intervalos.unidade)]);
+                        dadosPaciente.splice(0, 0, ['antes', dadoAntes.getValorCampo(intervalos.campo, intervalos.unidade)]);
                     }
                 }
-                if (dados.length > 1 && !dados[dados.length - 1][1]) {
+                //depois
+                if (dadosPaciente.length > 0 && !dadosPaciente[dadosPaciente.length - 1][1]) {
                     const dadoApos = getDadosPacienteAposIdade(intervalos.fim, intervalos.tipo);
                     if (dadoApos) {
-                        dados.push(['apos', dadoApos.getValorCampo(intervalos.campo, intervalos.unidade)]);
+                        dadosPaciente.push(['apos', dadoApos.getValorCampo(intervalos.campo, intervalos.unidade)]);
                     }
                 }
             }
+
+            //tem que ter pelo menos 1 valor numérico nos dados do paciente, se não tem nenhum, insere
+            if (dadosPaciente.every(v => v[1] === null)) {
+                dadosPaciente = [['pog', -1]];
+            }
+
+            let dados = [['Período', intervalos.rotuloCampo]];
+            dados = dados.concat(dadosPaciente);
 
             return dados;
         }

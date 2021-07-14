@@ -4,21 +4,21 @@
 id = req("I")
 
 'recupera os dados do protocolo
-sqlProtocolo = "SELECT p.id, ConvenioRegra, ConvenioValor, NomeConvenio, NomePlano  FROM protocolos p " &_
-               "LEFT JOIN convenios ON convenios.id = p.ConvenioRegra " &_
-               "LEFT JOIN conveniosplanos ON conveniosplanos.id = p.ConvenioValor " &_
-               "WHERE p.id = '" & id & "'"
+sqlProtocolo = "SELECT p.id FROM protocolos p WHERE p.id = '" & id & "'"
 set rsProtocolo = db.execute(sqlProtocolo)
 if rsProtocolo.eof then
     response.write("Protocolo não encontrado")
     response.status = 422
     response.end
-else
-    convenioId   = rsProtocolo("ConvenioRegra")
-    convenioNome = rsProtocolo("NomeConvenio")
-    planoId      = rsProtocolo("ConvenioValor")
-    planoNome    = rsProtocolo("NomePlano")
 end if
+
+'recupera os convenios deste protocolo
+sqlConvenios = "SELECT pc.ConvenioID, pc.PlanoID, NomeConvenio, NomePlano FROM protocolos_convenios pc " &_
+               "LEFT JOIN convenios ON convenios.id = pc.ConvenioID " &_
+               "LEFT JOIN conveniosplanos ON conveniosplanos.id = pc.PlanoID " &_
+               "WHERE pc.ProtocoloID = '" & id & "'"
+set rsConvenios = db.execute(sqlConvenios)
+conveniosJson = recordToJSON(rsConvenios)
 
 'recupera as regras existentes deste protocolo
 sqlRegras = "SELECT r.*, p.NomePaciente AS _NomePaciente FROM protocolos_regras r " &_
@@ -132,7 +132,7 @@ camposFormJson = camposFormJson & "}"
         max-width: 280px;
     }
 
-    #app-regras .btn-excluir-convenio {
+    #app-regras .btn-convenio {
         margin-top: 30px;
     }
 </style>
@@ -140,11 +140,10 @@ camposFormJson = camposFormJson & "}"
 <script src="assets/js/vue-2.5.17.min.js"></script>
 
 <script>
-    const protocoloId = <%=id%>;
-    const regrasJson = <%=regrasJson%>;
-    const camposForm = <%=camposFormJson%>;
-    const convenio = '<%=convenioId%>';
-    const plano = '<%=planoId%>';
+    const protocoloId   = <%=id%>;
+    const conveniosJson = <%=conveniosJson%>;
+    const regrasJson    = <%=regrasJson%>;
+    const camposForm    = <%=camposFormJson%>;
 
     // agrupa os registros das regras
     let regras = {};
@@ -155,6 +154,15 @@ camposFormJson = camposFormJson & "}"
         regras[item.Regra].push(item);
     });
     regras = Object.values(regras);
+
+    let convenios = [];
+    if (conveniosJson.length > 0) {
+        conveniosJson.map(conv => {
+            convenios.push({ConvenioID: conv.ConvenioID, PlanoID: conv.PlanoID});
+        });
+    } else {
+        convenios = [{ConvenioID: null, PlanoID: null}];
+    }
 
     Vue.component("app-select2", {
         props: ["value", "options"],
@@ -313,8 +321,7 @@ camposFormJson = camposFormJson & "}"
     var app = new Vue({
     el: '#app-regras',
     data: {
-        convenio: convenio,
-        plano: plano,
+        convenios: convenios,
         regras: regras,
         camposForm: camposForm
     },
@@ -499,23 +506,30 @@ camposFormJson = camposFormJson & "}"
             this.$forceUpdate();
         },
 
-        onChangeConvenio: function() {
-            this.plano = '';
+        onChangeConvenio: function(index) {
+            this.convenios[index].PlanoID = '';
         },
 
-        clearConvenio: function () {
-            this.convenio = '';
-            this.plano = '';
+        excluirConvenio: function (index) {
+            if (this.convenios.length > 1) {
+                this.convenios.splice(index, 1);
+            } else {
+                this.convenios = [{ConvenioID: null, PlanoID: null}];
+            }
+        },
+
+        addConvenio: function() {
+            this.convenios.push({ConvenioID: null, PlanoID: null});
         },
 
         save: function(event) {
             event.preventDefault();
 
-            const regrasPlain = JSON.parse(JSON.stringify(this.regras));
-            const formData = new URLSearchParams();
+            const conveniosFiltered = this.convenios.filter(c => c.ConvenioID);
 
-            formData.append('Convenio', this.convenio);
-            formData.append('Plano', this.plano);
+            const regrasPlain    = JSON.parse(JSON.stringify(this.regras));
+            const conveniosPlain = JSON.parse(JSON.stringify(conveniosFiltered));
+            const formData       = new URLSearchParams();
 
             regrasPlain.map((regra, index) => {
                 regra.map(condicao => {
@@ -542,6 +556,16 @@ camposFormJson = camposFormJson & "}"
                             formData.append(key, val);
                         }
                     });
+                });
+            });
+
+            conveniosPlain.map(conv => {
+                Object.keys(conv).forEach(key => {
+                    let val = conv[key];
+                    if (typeof val === 'undefined' || val === null) { //trava vazios
+                        val = '';
+                    }
+                    formData.append(key, val);
                 });
             });
 
@@ -588,22 +612,45 @@ camposFormJson = camposFormJson & "}"
                 <h4>Regra de Sugestão do Convênio</h4>
             </div>
         </div>
-        <div class="row">
+        <div class="row" v-for="(convenio, index) in convenios">
             <div class="col-md-4">
-                <label for="input-convenio">Convênio</label>
-                <app-s2aj id="input-convenio" class="form-control" v-model="convenio" recurso="convenios" coluna="NomeConvenio" v-on:input="onChangeConvenio">
-                    <option value="<%=convenioId%>"><%=convenioNome%></option>
+                <label>Convênio</label>
+                <app-s2aj :id="'input-convenio-'+index" class="form-control" v-model="convenio.ConvenioID" recurso="convenios" coluna="NomeConvenio" v-on:input="onChangeConvenio(index)">
+                    <%
+                        if not rsConvenios.bof then
+                            rsConvenios.movefirst
+                        end if
+                        while not rsConvenios.eof
+                    %>
+                        <option value="<%=rsConvenios("ConvenioID")%>"><%=rsConvenios("NomeConvenio")%></option>
+                    <%
+                            rsConvenios.movenext
+                        wend
+                    %>
                 </app-s2aj>
             </div>
             <div class="col-md-3">
-                <label for="input-plano">Plano</label>
-                <app-s2aj id="input-plano" class="form-control" v-model="plano" recurso="conveniosplanos" coluna="NomePlano" camposuperior="input-convenio">
-                    <option value="<%=planoId%>"><%=planoNome%></option>
+                <label>Plano</label>
+                <app-s2aj :id="'input-plano-'+index" class="form-control" v-model="convenio.PlanoID" recurso="conveniosplanos" coluna="NomePlano" :camposuperior="'input-convenio-'+index">
+                    <%
+                        if not rsConvenios.bof then
+                            rsConvenios.movefirst
+                        end if
+                        while not rsConvenios.eof
+                    %>
+                        <option value="<%=rsConvenios("PlanoID")%>"><%=rsConvenios("NomePlano")%></option>
+                    <%
+                            rsConvenios.movenext
+                        wend
+                    %>
                 </app-s2aj>
             </div>
-            <div class="col-md-1">
-                <button type="button" class="btn btn-xs btn-excluir-convenio" v-on:click="clearConvenio" title="Excluir regra de Convênio">
+            <div class="col-md-2">
+                <button type="button" class="btn btn-xs btn-convenio btn-danger" v-on:click="excluirConvenio(index)" title="Excluir regra de Convênio">
                     <i class="fa fa-trash"></i>
+                </button>
+                <button type="button" class="btn btn-xs btn-convenio btn-success" v-on:click="addConvenio" title="Adicionar regra de Convênio">
+                    <i class="fa fa-plus"></i>
                 </button>
             </div>
         </div>

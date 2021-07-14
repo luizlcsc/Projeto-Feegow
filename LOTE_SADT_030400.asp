@@ -18,10 +18,11 @@ elseif LoteOrdem = "Solicitacao" then
     orderByVar = "order by g.DataSolicitacao"
 end if
 'set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id"))
-set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" "&orderByVar)
+set guias = db.execute("select g.*, p.NomePaciente,c.XMLTagsOmitir from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID LEFT JOIN convenios AS c ON c.id=g.ConvenioID where g.LoteID="&lote("id")&" "&orderByVar)
 if not guias.eof then
-	RegistroANS = TirarAcento(guias("RegistroANS"))
-	CodigoNaOperadora = TirarAcento(guias("CodigoNaOperadora"))
+	RegistroANS = TirarAcento(guias("RegistroANS"))&""
+	CodigoNaOperadora = TirarAcento(guias("CodigoNaOperadora"))&""
+    XMLTagsOmitir = guias("XMLTagsOmitir")&""
 end if
 NLote = TirarAcento(lote("Lote"))
 Data = mydatetiss(lote("sysDate"))
@@ -464,6 +465,7 @@ prefixo = right(prefixo, 20)
 
 					set desp = db.execute("select * from tissguiaanexa where GuiaID="&guias("id"))
 					if not desp.eof then
+                        if InStr(XMLTagsOmitir,"|procedimentosExecutados|")=0 then
 					%>
                     <ans:outrasDespesas>
                     	<%
@@ -520,6 +522,7 @@ prefixo = right(prefixo, 20)
 						%>
                     </ans:outrasDespesas>
                     <%
+                        end if 'NÃO IMPRIME OUTRAS DESPESAS
 					end if
 					
 					Observacoes = guias("Observacoes")

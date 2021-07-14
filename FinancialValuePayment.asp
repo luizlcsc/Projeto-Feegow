@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-'response.Write(ref())
+
 if session("OtherCurrencies")<>"" then
 	Rate = getRate()
 end if

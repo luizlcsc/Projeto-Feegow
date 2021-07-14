@@ -171,7 +171,7 @@ if ref("h")="h" then
 	end if
 end if
 %>
-                    <%'=ref() %>
+                    
 <center><font color="#FF0000"><strong><%=erro%></strong></font></center>
 
     

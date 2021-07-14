@@ -2053,5 +2053,19 @@ function toRequired(){
     });
 }
 
+$( document ).ready(function() {
+    let selects =  $('input')
+    selects.map((key,ele)=>{
+        if($(ele).attr('id') !== "sidebar-search"){
+            $(ele).keypress(function(event){
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode == '13'){
+                    event.preventDefault(); 
+                }
+            });
+        }
+    })
+});
+
 <!--#include file="jQueryFunctions.asp"-->
 </script>

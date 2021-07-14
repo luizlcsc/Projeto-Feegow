@@ -419,14 +419,15 @@ function verificaArquivos(){
 }
 
 $(document).ready(function(e) {
+	var dadosPacienteFicha=null
 	$("#save").click(function(e){
 		e.preventDefault();
 
 		$("#frm").find("select:required").css({"display": "","opacity": "0"});
 		$("#frm").find("select:required option[value='0']").val("");
-		var $dadosPacienteFicha = $("#frm");
+		dadosPacienteFicha= $("#frm");
 
-		if($dadosPacienteFicha[0].reportValidity()){
+		if(dadosPacienteFicha[0].reportValidity()){
 			$("#frm").submit();
 		}else{
 			return false;
@@ -436,13 +437,14 @@ $(document).ready(function(e) {
     <%call formSave("frm", "save", "$(""#DadosAlterados"").attr('value', ''); callbackAgendamentoPaciente(); ")%>
 
 	function callbackAgendamentoPaciente() {
+		console.log(dadosPacienteFicha)
 		<%
 		if req("Agenda")<>"" then
 		%>
 			var camposAAtualizar = ["Tel1", "Cel1", "Email1", "Tabela"];
 
 			camposAAtualizar.forEach(function(campoAAtualizar) {
-				var v =  $dadosPacienteFicha.find(" #"+campoAAtualizar ).val() ;
+				var v =  dadosPacienteFicha.find("#"+campoAAtualizar ).val() ;
 				$(" #age"+campoAAtualizar ).val(v);
 			});
 
@@ -1102,8 +1104,8 @@ $(".form-control").change(function(){
                 if(!$("#<%=replace(splObr(o), "|", "") %>").parents(".qf").hasClass("hidden")){
                     $("#<%=replace(splObr(o), "|", "") %>").prop("required", true);
                 }
+					$("label[for='<%=replace(splObr(o), "|", "") %>']").append(' *');
             }, 500);
-
 			<%
         next
       end if

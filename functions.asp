@@ -7,17 +7,32 @@ Function strip_tags(text_to_strip)
 End Function
 
 function clear_ref_req (val)
+        tentativa = false
+    
         val = replace(val, "'", "''")
         val = replace(val,"\", "\\")
         val = replace(val,"<script>", "")
         val = replace(val,"</script>", "")
-        val = replace(val,"&amp;", "")
         val = replace(val,"&lt;", "")
         val = replace(val,"&gt;", "")
         val = replace(val,"&quot;", "")
         val = replace(val,"&#x27;", "")
         val = replace(val,"&#x22;", "")
-        val = replace(val,"&#x27;", "")
+        val = replace(val,"&#x7c;", "")
+        
+        if instr(UCase(val)," AND ") OR instr(UCase(val)," OR ") OR instr(UCase(val)," SELECT ") OR instr(UCase(val)," FROM ") OR instr(UCase(val)," GROUP BY ") OR instr(UCase(val)," CONCATE ") OR instr(UCase(val)," CONCATE_WS")then
+            val = replace(val," AND ", "")
+            val = replace(val," OR ", "")
+            val = replace(val," SELECT ", "")
+            val = replace(val," GROUP BY ", "")
+            val = replace(val," CONCATE ", "")
+            val = replace(val," CONCATE_WS ", "")
+            tentativa = true
+        end if 
+        
+        if tentativa then 
+            injection()
+        end if
         clear_ref_req = val
 end function 
 
@@ -110,5 +125,22 @@ function dd(variable)
     response.write("<pre>"&description&"</pre>")
     Response.End
 end function
+
+
+function injection()
+%>
+<script>
+new PNotify({
+    title: 'Ocorreu um erro!',
+    text:'Operação não permitida',
+    type: 'danger',
+    delay: 10000
+});
+</script>
+
+<%
+    Response.End
+end function
+
 
 %>

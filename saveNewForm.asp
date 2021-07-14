@@ -242,7 +242,6 @@ end if
 
 if ref("LaudoID")<>"" then
     sql = "update laudos set FormID="& ModeloID &", FormPID="& treatvalnull(I) &" WHERE id="& ref("LaudoID")
-    dd(sql)
     db_execute(sql)
     %>
     showMessageDialog("Laudo salvo com sucesso.", "success");

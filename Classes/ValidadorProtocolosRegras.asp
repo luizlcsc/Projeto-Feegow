@@ -23,37 +23,54 @@ class ValidadorProtocolosRegras
             Response.end
         end if
 
-        isValid = true
+        'default inválido, até que as regras sejam validadas
+        isValid = false
 
-        'verifica se o protocolo tem regra de convênio
-        sqlProtocolo    = "SELECT ConvenioRegra, ConvenioValor FROM protocolos WHERE id = '" & protocoloId & "'"
+        'recupera os dados do protocolo
+        sqlProtocolo    = "SELECT * FROM protocolos WHERE id = '" & protocoloId & "'"
         set rsProtocolo = db.execute(sqlProtocolo)
         if rsProtocolo.eof then
             Response.write("Nao foi possivel encontrar os dados do protocolo " & protocoloId)
             Response.end
         end if
-
-        convenioRegra = rsProtocolo("ConvenioRegra")&""
-        convenioPlano = rsProtocolo("ConvenioValor")&""
-        if convenioRegra <> "" then
-            if not ((dadosPaciente("ConvenioID1")&"" = convenioRegra and (dadosPaciente("PlanoID1")&"" = convenioPlano or convenioPlano = "")) or _
-               (dadosPaciente("ConvenioID2")&"" = convenioRegra and (dadosPaciente("PlanoID2")&"" = convenioPlano or convenioPlano = "")) or _
-               (dadosPaciente("ConvenioID3")&"" = convenioRegra and (dadosPaciente("PlanoID3")&"" = convenioPlano or convenioPlano = ""))) then
-                isValid = false
-            end if
-        end if
-
         rsProtocolo.close
         set rsProtocolo = nothing
 
-        'verifica se o protocolo tem regras
-        if isValid then
+        'verifica se o protocolo tem regra de convênio
+        sqlProtocoloConvenios = "SELECT ConvenioID, PlanoID FROM protocolos_convenios WHERE ProtocoloID = '" & protocoloId & "'"
+        set rsProtocoloConvenios = db.execute(sqlProtocoloConvenios)
+        convenioValid = true
+        while not rsProtocoloConvenios.eof
+
+            convenioValid = true 'trata cada convenio como OU
+
+            convenioRegra = rsProtocoloConvenios("ConvenioID")&""
+            convenioPlano = rsProtocoloConvenios("PlanoID")&""
+
+            if not ((dadosPaciente("ConvenioID1")&"" = convenioRegra and (dadosPaciente("PlanoID1")&"" = convenioPlano or convenioPlano = "")) or _
+            (dadosPaciente("ConvenioID2")&"" = convenioRegra and (dadosPaciente("PlanoID2")&"" = convenioPlano or convenioPlano = "")) or _
+            (dadosPaciente("ConvenioID3")&"" = convenioRegra and (dadosPaciente("PlanoID3")&"" = convenioPlano or convenioPlano = ""))) then
+                convenioValid = false
+            end if
+
+            rsProtocoloConvenios.movenext
+        wend
+
+        rsProtocoloConvenios.close
+        set rsProtocoloConvenios = nothing
+
+        'se validou o convênio, verifica se o protocolo tem regras
+        if convenioValid then
             sqlRegras    = "SELECT Regra, Campo, Operador, FormID, FormCampoID, Valor FROM protocolos_regras " &_
                         "WHERE ProtocoloID = '" & protocoloId & "' AND sysActive = 1 ORDER BY Regra, id"
 
             set rsRegras = db.execute(sqlRegras)
 
-            isValid   = true
+            'se tem regras configuradas, considera como válido até as condições serem validadas abaixo
+            if not rsRegras.eof then
+                isValid = true
+            end if
+
             lastRegra = null
             while not rsRegras.eof
 

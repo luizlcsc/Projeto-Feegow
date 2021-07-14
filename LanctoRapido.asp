@@ -3,7 +3,6 @@
 db_execute("delete from tempinvoice where sysUser="&session("User")&";")
 
 
-'response.Write(ref())
 
 Tipo = ref("TipoBotao")
 if Tipo="" then

@@ -13,6 +13,7 @@ OrdensNome="Hor&aacute;rio Agendado, Hor&aacute;rio de Chegada, Idade do Pacient
 Ordens="HoraSta, Hora, pac.Nascimento ASC"
 splOrdensNome=split(OrdensNome, ", ")
 unidadesBloqueioAtendimento = getConfig("BloquearAtendimentoMediantePagamento")
+OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
 
 Ordem="Hora"
 StatusExibir=req("StatusExibir")
@@ -459,7 +460,7 @@ else
         'if not veSePre.EOF then
 			'<img src="checked.jpg" />
 		'end if%>
-		<%if veseha("Encaixe")=1 then%><span class="label label-alert ml5">Encaixe </span><%end if%>
+		<%if veseha("Encaixe")=1 and OmitirEncaixeGrade=0 then%><span class="label label-alert ml5">Encaixe </span><%end if%>
 		<%if veseha("Primeira")=1 then%><span class="label label-info ml5">Primeira vez</span><%end if%>
 		<<%=tagPaciente%> href="./?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>" <%=cssAdicionl%>><%=Nome%></<%=tagPaciente%>><br />
 		<small><%=Notas%></small></td>

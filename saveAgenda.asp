@@ -178,9 +178,10 @@ if ConsultaID<>"0" then
         end if
     end if
 end if
-%><!--#include file="errosPedidoAgendamento.asp"--><%''=ref()%><%
+%>
+<!--#include file="errosPedidoAgendamento.asp"-->
+<%
 if erro="" then
-'response.Write(ref())
 '"Hora=&Paciente=&Procedimento=&StaID=&Local=&rdValorPlano=&ValorPlano=&ProfissionalID=&Data=&Tempo=
 	if rfStaID=5 or rfStaID="5" then
 	    set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(rfLocal))

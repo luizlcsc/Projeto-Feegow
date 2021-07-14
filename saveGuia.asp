@@ -1,8 +1,8 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <%
-I = rep(request.QueryString("I"))
-GuiaStatus = rep(request.QueryString("GuiaStatus"))
+I = rep(req("I"))
+GuiaStatus = rep(req("GuiaStatus"))
 redirecionar = false
 ProcedimentoID=ref("gProcedimentoID")
 ConvenioID = ref("gConvenioID")
@@ -66,7 +66,7 @@ else
     sqlGuia = "SELECT numero, id, Tipo FROM  ((SELECT cast(gc.NGuiaPrestador as signed integer) numero, id, 'Consulta' as Tipo FROM tissguiaconsulta gc WHERE gc.ConvenioID = '"&ConvenioID&"' AND gc.NGuiaPrestador='"&NGuiaPrestador&"') UNION ALL (SELECT cast(gs.NGuiaPrestador as signed integer) numero, id, 'SADT' as Tipo FROM tissguiasadt gs WHERE gs.ConvenioID = '"&ConvenioID&"' AND gs.NGuiaPrestador='"&NGuiaPrestador&"') UNION ALL (SELECT cast(gh.NGuiaPrestador as signed integer) numero, id, 'Honorário' as Tipo FROM tissguiahonorarios gh WHERE gh.ConvenioID = '"&ConvenioID&"' AND gh.NGuiaPrestador='"&NGuiaPrestador&"')) as numero WHERE id != "&I&" AND numero = '"&NGuiaPrestador&"'"
     set guiaExiste = db.execute(sqlGuia)
 
-    forcarSalvar = request.QueryString("Forcar")
+    forcarSalvar = req("Forcar")
 
     if guiaExiste.eof or ForcarSalvar = "1" then
 

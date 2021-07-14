@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="AgendamentoUnificado.asp"-->
 <%
 AgendamentoID=ref("A")
 AgendamentosID=ref("AgendamentosID[]")
@@ -33,6 +34,12 @@ if cint(AgendamentosNoMesmoDiaSQL("Qtd"))>1 and Forcar=False then
     });
     <%
 else
+
+    if StatusID = 11 or StatusID = 22 then ' desmarcado e cancelado
+        call agendaUnificada("delete", AgendamentosID, AgendamentoSQL("ProfissionalID"))
+    else
+        call agendaUnificada("update", AgendamentosID, AgendamentoSQL("ProfissionalID"))
+    end if
 
     db.execute("UPDATE agendamentos SET StaID="&treatvalzero(StatusID)&" WHERE id in ("&AgendamentosID&")")
     db.execute("insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID)  "&_

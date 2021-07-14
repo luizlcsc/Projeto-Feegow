@@ -55,7 +55,7 @@
 	          ultimoHorario=cdate("00:00:00")
 	          HoraFinal=cdate("23:59:00")
 	  	        while Finalizado<1
-  		        set v=db.execute("select * from assFixaLocalXProfissional where LocalID like '"&request.QueryString("LId")&"' and diaSemana like '"&diaSemana&"' and HoraDe>=time('"&hour(ultimoHorario)&":"&minute(ultimoHorario)&"') order by HoraDe")
+  		        set v=db.execute("select * from assFixaLocalXProfissional where LocalID like '"&req("LId")&"' and diaSemana like '"&diaSemana&"' and HoraDe>=time('"&hour(ultimoHorario)&":"&minute(ultimoHorario)&"') order by HoraDe")
 		        if not v.eof then
 		        Encontrou=1
 			        if Primeiro=0 and cdate( hour(v("HoraDe"))&":"&minute(v("HoraDe")) )>cdate("00:00:00") then
@@ -82,10 +82,10 @@
 				        HoraDe=horaHoraDe&":"&minutoHoraDe
 				        HoraA=horaHoraA&":"&minutoHoraA
 				
-			        %><input type="button" style="width:<%=cint(tamanho/2)%>px; border-width:1px; color:#FFFFFF; font-size:9px; text-align:left; cursor:default; background-color:<%=corProfissional%>; height:18px" value="De <%=HoraDe%> &agrave;s <%=HoraA%> - <%=NomeProfissional%>" alt="De <%=HoraDe%> &agrave;s <%=HoraA%> - <%=NomeProfissional%>" title="De <%=HoraDe%> &agrave;s <%=HoraA%> - <%=NomeProfissional%>" onClick="frameAE.location.href='EdiHorarioQuadroProfissional.asp?LocalID=<%=request.QueryString("Lid")%>&Intervalo=<%=v("Intervalo")%>&diaSemana=<%=diaSemana%>&assId=<%=v("id")%>&ProfissionalID=<%=idProfissional%>&HoraDe=<%=HoraDe%>&HoraA=<%=HoraA%>'; getElementById('frameAE').style.display='block';" /><%
+			        %><input type="button" style="width:<%=cint(tamanho/2)%>px; border-width:1px; color:#FFFFFF; font-size:9px; text-align:left; cursor:default; background-color:<%=corProfissional%>; height:18px" value="De <%=HoraDe%> &agrave;s <%=HoraA%> - <%=NomeProfissional%>" alt="De <%=HoraDe%> &agrave;s <%=HoraA%> - <%=NomeProfissional%>" title="De <%=HoraDe%> &agrave;s <%=HoraA%> - <%=NomeProfissional%>" onClick="frameAE.location.href='EdiHorarioQuadroProfissional.asp?LocalID=<%=req("Lid")%>&Intervalo=<%=v("Intervalo")%>&diaSemana=<%=diaSemana%>&assId=<%=v("id")%>&ProfissionalID=<%=idProfissional%>&HoraDe=<%=HoraDe%>&HoraA=<%=HoraA%>'; getElementById('frameAE').style.display='block';" /><%
 		        ultimoHorario=v("HoraA")
 		        Finalizado=0
-			        set v2=db.execute("select * from assFixaLocalXProfissional where LocalID like '"&request.QueryString("LId")&"' and diaSemana like '"&diaSemana&"' and HoraDe>=time('"&hour(ultimoHorario)&":"&minute(ultimoHorario)&"') order by HoraDe")
+			        set v2=db.execute("select * from assFixaLocalXProfissional where LocalID like '"&req("LId")&"' and diaSemana like '"&diaSemana&"' and HoraDe>=time('"&hour(ultimoHorario)&":"&minute(ultimoHorario)&"') order by HoraDe")
 				        if not v2.EOF then
 					        tamanho=dateDiff("n",cdate( hour(v("HoraA"))&":"&minute(v("HoraA")) ),cdate( hour(v2("HoraDe"))&":"&minute(v2("HoraDe")) ))
 				        else
@@ -100,7 +100,7 @@
 			        tamanho=1439
 			        %><input type="text" readonly style="width:<%=cint(tamanho/2)%>px; border:none; cursor:default; height:18px" disabled="disabled" /><%
 		        end if
-	        wend%><input type="button" value="Adicionar" class="btn btn-xs btn-success" onClick="frameAE.location.href='EdiHorarioQuadroProfissional.asp?LocalID=<%=request.QueryString("Lid")%>&diaSemana=<%=diaSemana%>'; getElementById('frameAE').style.display='block';" /></td>
+	        wend%><input type="button" value="Adicionar" class="btn btn-xs btn-success" onClick="frameAE.location.href='EdiHorarioQuadroProfissional.asp?LocalID=<%=req("Lid")%>&diaSemana=<%=diaSemana%>'; getElementById('frameAE').style.display='block';" /></td>
           </tr>
           </table>
         <%
@@ -128,5 +128,5 @@
 <input type="button" value="VOLTAR AO QUADRO DE DISPONIBILIDADE" class="btn btn-sm btn-info" onClick="location.href='./?P=<% 
 			if versaoAgenda()=1 then
 
- %>QuadroDisponibilidade<% Else %>NovoQuadro<% End If %>&Pers=1&Data=<%=request.QueryString("Data")%>';" /></div>
+ %>QuadroDisponibilidade<% Else %>NovoQuadro<% End If %>&Pers=1&Data=<%=req("Data")%>';" /></div>
 <!--#include file = "disconnect.asp"-->

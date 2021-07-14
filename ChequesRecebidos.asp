@@ -11,7 +11,7 @@
 <div class="panel hidden-print">
     <div class="panel-body">
         <form action="" method="get">
-            <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+            <input type="hidden" name="P" value="<%=req("P")%>" />
             <input type="hidden" name="Pers" value="1" />
             <div class="clearfix form-actions">
                 <div class="row">

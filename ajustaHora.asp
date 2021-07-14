@@ -1,5 +1,5 @@
 <%
-LocalTime = request.QueryString("LocalTime")
+LocalTime = req("LocalTime")
 if session("DifTempo")="" and LocalTime="" then
 	%>
 	<script language="javascript">

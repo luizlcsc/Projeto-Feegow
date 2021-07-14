@@ -2,12 +2,12 @@
 <!--#include file="testaCPF.asp"-->
 <%
 
-ItemID = request.QueryString("II")
-GuiaID = request.QueryString("I")
-Tipo = request.QueryString("T")
+ItemID = req("II")
+GuiaID = req("I")
+Tipo = req("T")
 
 rfAssociacao = 5
-rfProfissionalID = refnull("ProfissionalID"&ItemID)
+rfProfissionalID = ref("ProfissionalID"&ItemID)
 if instr(rfProfissionalID, "_")>0 then
 	splProf = split(rfProfissionalID, "_")
 	rfAssociacao = splProf(0)

@@ -5,7 +5,7 @@ response.Charset="utf-8"
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/TagsConverte.asp"-->
 <%
-set reg=db.execute("select * from PacientesPrescricoes where id="&request.QueryString("PrescricaoID"))
+set reg=db.execute("select * from PacientesPrescricoes where id="&req("PrescricaoID"))
 
 %>
 		<link type="text/css" rel="stylesheet" href="assets/js/qtip/jquery.qtip.css" />
@@ -90,6 +90,9 @@ set reg=db.execute("select * from PacientesPrescricoes where id="&request.QueryS
     <%= fontColor %>
     <%= lineHeight %>
 }
+.corpoPrescricao table td{
+    border: 1px solid black;
+}
 </style>
 <%
         if MarcaDagua <> "" then
@@ -119,6 +122,7 @@ body, td, th{
 body{
     padding: 0;
 }
+
 
 /*2250*/
 /*150*/

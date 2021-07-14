@@ -3,8 +3,8 @@
 <h4>Pacientes por Previs&atilde;o de Retorno</h4>
 <form id="Relatorio" name="Relatorio" method="get" action="">
 <input type="hidden" name="Pers" value="1" />
-<input type="hidden" name="P" value="<%=request.QueryString("TipoRel")%>" />
-<input type="hidden" name="TipoRel" value="<%=request.QueryString("TipoRel")%>" />
+<input type="hidden" name="P" value="<%=req("TipoRel")%>" />
+<input type="hidden" name="TipoRel" value="<%=req("TipoRel")%>" />
 <input type="hidden" name="E" value="E" />
 <div class="clearfix form-actions">
   <table class="table table-bordered table-striped" width="100%" border="0">
@@ -17,7 +17,7 @@
 	  set b=db.execute("select distinct Profissao from pacientes where Profissao<>'' order by Profissao")
 	  while not b.eof
 	  %>
-          <option value="<%=b("Profissao")%>"<%if request.QueryString("Profissao")=b("Profissao") then%> selected="selected"<%end if%>><%=b("Profissao")%></option>
+          <option value="<%=b("Profissao")%>"<%if req("Profissao")=b("Profissao") then%> selected="selected"<%end if%>><%=b("Profissao")%></option>
           <%
 	  b.movenext
 	  wend
@@ -40,12 +40,12 @@
 </form>
 
 <form method="post" action="Etiquetas.asp" target="_blank">
-<% if request.QueryString("E")="E" then
+<% if req("E")="E" then
  %><table class="table table-bordered table-striped" width="100%" border="0">
 <tr><th>Nome</th><th>Sexo</th><th>Profiss&atilde;o</th><th>Bairro</th><th>Cidade</th></tr>
 <%
 c=0
-set p = db.Execute("Select id, NomePaciente, Sexo, Profissao, Bairro, Cidade, sysActive from pacientes where sysActive=1 and Profissao like '"&request.QueryString("Profissao")&"' order by NomePaciente")
+set p = db.Execute("Select id, NomePaciente, Sexo, Profissao, Bairro, Cidade, sysActive from pacientes where sysActive=1 and Profissao like '"&req("Profissao")&"' order by NomePaciente")
 while  not p.eof
 c=c+1
 		gerEt="S"

@@ -323,6 +323,42 @@ end if
             </div>
 
 
+<div id="permissaoTabelaProposta" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Permissão para uso de Tabela</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-4">
+            <p>Selecione um usuário abaixo que tenha  permissão: 
+                </p>      
+              
+        </div>        
+            <div class="col-md-6">
+                <label style="" class="error_msg"></label><br>
+                <label>Senha do Usuário</label>
+                <input type="hidden" autocomplete="off"  id="desconto-password" name="desconto-password" class="form-control">
+            </div>
+
+        <div class="col-md-12 tabelaParticular" style="color:#000;">
+        
+             
+        </div>
+        </div>
+       
+        <div class="modal-footer" style="margin-top:13em;">
+                <button type="button" class="btn btn-default fechar" data-dismiss="modal" >Fechar</button>                
+                <button type="button" class="btn btn-info confirmar"    >Confirmar</button>
+       
+         </div>
+
+  </div>
+</div>
+</div>
 
 
             <div class="panel">
@@ -729,14 +765,15 @@ $(idStr).change(function(){
         data: {autorization:"buscartabela",id:id,sysUser:sysUser},
         success:function(result){
             if(result == "Tem regra") {
-                $('#permissaoTabela').modal('show');
+                $("#desconto-password").attr("type","password");
+                $('#permissaoTabelaProposta').modal('show');
                 buscarNome(id,sysUser,regra);
             }
         }
     });
         $('.confirmar').click(function(){
                 var Usuario =  $('input[name="nome"]:checked').val();
-                var senha   =  $('#password').val();
+                var senha   =  $('#desconto-password').val();
                 liberar(Usuario , senha , id , Nometable);
                 $('.error_msg').empty(); 
             });
@@ -766,7 +803,7 @@ function liberar(Usuario , senha , id, Nometable){
             if( result == "1" ){
                     $('.error_msg').text("Logado Com Sucesso!").fadeIn().css({color:"green" });;
                 setTimeout(() => {
-                    $('#permissaoTabela').modal('hide');
+                    $('#permissaoTabelaProposta').modal('hide');
                     $('#TabelaID').val(id);
                    
                     $('#select2-TabelaID-container').text(Nometable);

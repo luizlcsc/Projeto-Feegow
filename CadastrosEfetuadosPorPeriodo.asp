@@ -34,8 +34,8 @@ set rsConta = db.Execute("Select COUNT(id) as TOTAL from pacientes where sysDate
 Total=rsConta("TOTAL")
 %><tr>
 <td><p>&nbsp;</p>
-  <p align="center">Cadastros no per&iacute;odo: <%=Total%> paciente(s).<%if request.QueryString("Lista")="" then%> <a class="btn btn-info" type="button" href="?P=Relatorio&TipoRel=<%=request.QueryString("TipoRel")%>&De=<%=request.QueryString("De")%>&A=<%=request.QueryString("A")%>&Lista=Sim&Pers=1"><i class="fa fa-zoom-in"></i> Detalhar</a><% end if %></p>
-  <%'if request.QueryString("Lista")="Sim" then%>
+  <p align="center">Cadastros no per&iacute;odo: <%=Total%> paciente(s).<%if req("Lista")="" then%> <a class="btn btn-info" type="button" href="?P=Relatorio&TipoRel=<%=req("TipoRel")%>&De=<%=req("De")%>&A=<%=req("A")%>&Lista=Sim&Pers=1"><i class="fa fa-zoom-in"></i> Detalhar</a><% end if %></p>
+  <%'if req("Lista")="Sim" then%>
   <table width="100%" class="table table-striped table-bordered">
   <thead>
     <tr>

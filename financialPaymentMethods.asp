@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-splPaymentAccount = split(request.Form("PaymentAccount"),"_")
+splPaymentAccount = split(ref("PaymentAccount"),"_")
 AccountAssociationID = splPaymentAccount(0)
 PaymentAccount = splPaymentAccount(1)
 

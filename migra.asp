@@ -2,10 +2,10 @@
 'on error resume next
 Session.Timeout=600
 session.LCID=1046
-ConnStringo = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=migracao;uid=root;pwd=pipoca453;"
+ConnStringo = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=migracao;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 Set dbo = Server.CreateObject("ADODB.Connection")
 dbo.Open ConnStringo
-ConnStringd = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic90;uid=root;pwd=pipoca453;"
+ConnStringd = "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=clinic90;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 Set dbd = Server.CreateObject("ADODB.Connection")
 dbd.Open ConnStringd
 

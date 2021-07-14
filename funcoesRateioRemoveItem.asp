@@ -1,10 +1,10 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <%
-DominioID = request.QueryString("DominioID")
-Tipo = request.QueryString("Tipo")
-ItemID = request.QueryString("ItemID")
-FM = request.QueryString("FM")
+DominioID = req("DominioID")
+Tipo = req("Tipo")
+ItemID = req("ItemID")
+FM = req("FM")
 if Tipo="Item" then
     sqlDel = "delete from rateiofuncoes where id="&ItemID
 

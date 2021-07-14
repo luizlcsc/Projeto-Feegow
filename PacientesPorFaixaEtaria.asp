@@ -1,11 +1,11 @@
 <%
-if isnumeric(request.QueryString("De")) and not request.QueryString("De")="" then
-	De=request.QueryString("De")
+if isnumeric(req("De")) and not req("De")="" then
+	De=req("De")
 else
 	De=1
 end if
-if isnumeric(request.QueryString("A")) and not request.QueryString("A")="" then
-	A=request.QueryString("A")
+if isnumeric(req("A")) and not req("A")="" then
+	A=req("A")
 else
 	A=30
 end if
@@ -15,7 +15,7 @@ end if
 <form id="Relatorio" name="Relatorio" method="get" action="">
 <input type="hidden" name="Pers" value="1" />
 <input type="hidden" name="P" value="Relatorio" />
-<input type="hidden" name="TipoRel" value="<%=request.QueryString("TipoRel")%>" />
+<input type="hidden" name="TipoRel" value="<%=req("TipoRel")%>" />
 <input type="hidden" name="E" value="E" />
 <div class="clearfix form-actions">
         <div class="col-md-2">De<br />
@@ -24,9 +24,9 @@ end if
           <div class="col-md-2">
           &nbsp;<br />
             <select name="tipoDe" class="form-control">
-              <option value="yyyy"<%if request.QueryString("tipoDe")="yyyy" then%> selected="selected"<%end if%>>Anos</option>
-              <option value="m"<%if request.QueryString("tipoDe")="m" then%> selected="selected"<%end if%>>Meses</option>
-              <option value="d"<%if request.QueryString("tipoDe")="d" then%> selected="selected"<%end if%>>Dias</option>
+              <option value="yyyy"<%if req("tipoDe")="yyyy" then%> selected="selected"<%end if%>>Anos</option>
+              <option value="m"<%if req("tipoDe")="m" then%> selected="selected"<%end if%>>Meses</option>
+              <option value="d"<%if req("tipoDe")="d" then%> selected="selected"<%end if%>>Dias</option>
             </select>
           </div>
           <div class="col-md-1">
@@ -36,9 +36,9 @@ end if
            </div>
            <div class="col-md-2">&nbsp;<br />
               <select name="tipoA" id="tipoA" class="form-control">
-                <option value="yyyy"<%if request.QueryString("tipoA")="yyyy" then%> selected="selected"<%end if%>>Anos</option>
-                <option value="m"<%if request.QueryString("tipoA")="m" then%> selected="selected"<%end if%>>Meses</option>
-                <option value="d"<%if request.QueryString("tipoA")="d" then%> selected="selected"<%end if%>>Dias</option>
+                <option value="yyyy"<%if req("tipoA")="yyyy" then%> selected="selected"<%end if%>>Anos</option>
+                <option value="m"<%if req("tipoA")="m" then%> selected="selected"<%end if%>>Meses</option>
+                <option value="d"<%if req("tipoA")="d" then%> selected="selected"<%end if%>>Dias</option>
               </select>
            </div>
            <div class="col-md-2">&nbsp;<br />
@@ -49,10 +49,10 @@ end if
     </div>
 </div>
 <%
-if request.QueryString("E")="E" then
-	diasDe=dateAdd(request.QueryString("tipoDe"),-De,date())
+if req("E")="E" then
+	diasDe=dateAdd(req("tipoDe"),-De,date())
 	diasDe=dateDiff("d",diasDe,date())
-	diasA=dateAdd(request.QueryString("tipoA"),-A,date())
+	diasA=dateAdd(req("tipoA"),-A,date())
 	diasA=dateDiff("d",diasA,date())
 %>
 <table width="100%" class="table table-striped table-bordered">

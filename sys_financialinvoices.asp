@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
 <%
-if request.QueryString("T")="C" then
+if req("T")="C" then
 	titulo = "Conta a Receber"
 	subtitulo = "administra&ccedil;&atilde;o de receita"
 else
@@ -10,9 +10,9 @@ else
 end if
 %>
 <%
-tableName=request.QueryString("P")
-T=request.QueryString("T")
-id=request.QueryString("I")
+tableName=req("P")
+T=req("T")
+id=req("I")
 
 if id="N" then
 	sqlVie = "select id, sysUser, sysActive from "&tableName&" where sysUser="&session("User")&" and sysActive=0 and CD='"&T&"'"
@@ -21,7 +21,7 @@ if id="N" then
 		db_execute("insert into "&tableName&" (sysUser, sysActive, CD, Recurrence, RecurrenceType, Value) values ("&session("User")&", 0, '"&T&"', 1, 'm', 0)")
 		set vie = db.execute(sqlVie)
 	end if
-	response.Redirect("?P="&tableName&"&I="&vie("id")&"&A="&request.QueryString("A")&"&Pers=1&T="&T)'A=AgendamentoID quando vem da agenda
+	response.Redirect("?P="&tableName&"&I="&vie("id")&"&A="&req("A")&"&Pers=1&T="&T)'A=AgendamentoID quando vem da agenda
 else
 	set data = db.execute("select * from "&tableName&" where id="&id)
 	if data.eof then
@@ -29,8 +29,8 @@ else
 	end if
 end if
 
-if request.QueryString("A")<>"" then
-	set age = db.execute("select * from agendamentos where id="&request.QueryString("A"))
+if req("A")<>"" then
+	set age = db.execute("select * from agendamentos where id="&req("A"))
 	if not age.eof then
 		set vcaAberto = db.execute("select * from sys_financialinvoices where CD='C' and AssociationAccountID=3 and AccountID="&age("PacienteID")&" and Sta='A'")
 		if vcaAberto.eof then
@@ -46,7 +46,7 @@ end if
 
 set reg = db.execute("select * from sys_financialInvoices where id="&id)
 if reg.eof then
-	response.Redirect("?P="&request.QueryString("P")&"&T="&request.QueryString("T")&"&I=N&Pers=1")
+	response.Redirect("?P="&req("P")&"&T="&req("T")&"&I=N&Pers=1")
 else
 	Name = reg("Name")
 	AccountID = reg("AccountID")
@@ -61,12 +61,12 @@ else
 	RecurrenceType = reg("RecurrenceType")
 	sysActive = reg("sysActive")
 	if T<>reg("CD") then
-		response.Redirect("?P="&request.QueryString("P")&"&I="&reg("id")&"&Pers=1&T="&reg("CD"))
+		response.Redirect("?P="&req("P")&"&I="&reg("id")&"&Pers=1&T="&reg("CD"))
 	end if
 end if
 
-if request.QueryString("PacienteID")<>"" then
-	AccountID = request.QueryString("PacienteID")
+if req("PacienteID")<>"" then
+	AccountID = req("PacienteID")
 	AssociationAccountID = 3
 end if
 
@@ -85,10 +85,10 @@ else
 	Installments = ccur(countInstallments("TOTAL"))
 end if	
 
-if 1=2 and request.Form("E")="E" then
+if 1=2 and ref("E")="E" then
 	refName = ref("Name")
 	refValue = ref("Value")
-	splAccount = split(request.Form("Account"), "_")
+	splAccount = split(ref("Account"), "_")
 	Acccount = splAccount(0)
 	AssociationAccount = splAccount(1)
 	Tax = 1
@@ -308,9 +308,9 @@ function discountOverbalance(){
                         <div class="col-md-2 pull-right">
                         	<label>&nbsp;</label> <br />
                             <button type="button" id="btnSave" class="btn btn-primary btn-block" onclick="saveInvoice();"><i class="fa fa-save bigger-110"></i> SALVAR</button>
-                            <input type="hidden" name="InvoiceID" id="InvoiceID" value="<%=request.QueryString("I")%>" />
-                            <input type="hidden" name="CompID" id="CompID" value="<%=request.QueryString("CompID")%>" />
-                            <input type="hidden" name="T" id="T" value="<%=request.QueryString("T")%>" />
+                            <input type="hidden" name="InvoiceID" id="InvoiceID" value="<%=req("I")%>" />
+                            <input type="hidden" name="CompID" id="CompID" value="<%=req("CompID")%>" />
+                            <input type="hidden" name="T" id="T" value="<%=req("T")%>" />
                             <input type="hidden" name="sysActive" id="sysActive" value="<%= sysActive %>" />
                             <input type="hidden" name="TriedCheckbox" id="TriedCheckbox" value="" />
                             <input type="hidden" name="Currency" id="Currency" value="BRL" />
@@ -462,7 +462,7 @@ function item(TipoItem, TipoAcao, I){
 function atualizaItens(){
 	$.ajax({
 		   type:"POST",
-		   url:"itensInvoice.asp?<%=request.QueryString()%>",
+		   url:"itensInvoice.asp?<%=request.QueryString%>",
 		   data:$("#forminvoice").serialize(),
 		   success:function(data){
 			   $("#itensInvoice").html(data);

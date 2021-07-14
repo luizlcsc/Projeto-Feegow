@@ -13,6 +13,12 @@ body{
 <%
 sqlLimitarProfissionais =""
 tipoUsuario =""
+
+limpaFiltro = "1"
+if req("R")<>"1" then
+    limpaFiltro = "0"
+end if
+
 if lcase(session("table"))="funcionarios" then
      tipoUsuario ="funcionarios"
      set FuncProf = db.execute("SELECT Profissionais FROM funcionarios WHERE id="&session("idInTable"))
@@ -34,21 +40,21 @@ elseif lcase(session("table"))="profissionais" then
         end if
      end if
 end if
-if aut("ageoutunidadesV")=0 then
+
+
+if aut("ageoutunidadesV")=0 AND NOT ModoFranquiaUnidade then
+    'response.write "SELECT Unidades FROM "&tipoUsuario&" WHERE id="&session("idInTable")
     set uniProf = db.execute("SELECT Unidades FROM "&tipoUsuario&" WHERE id="&session("idInTable"))
-    spuni = ""
-    contador = 0
     if not uniProf.eof then
-        if Len(uniProf("unidades"))>0 then
-            if contador > 0 then
-                spuni=spuni&","
-            end if
-            contador=cotador+1
-            spuni = spuni&replace(uniProf("unidades"),"|","")
+        uniWhere = " where id is null"
+        UnidadesProfissionais = uniProf("unidades")
+
+        if Len(UnidadesProfissionais)>0 then
+            spuni = replace(UnidadesProfissionais,"|","")
+            uniWhere = " where id in("&spuni&")"
          end if
+        sqlAM = "SELECT CONCAT('UNIDADE_ID',id) as 'id', CONCAT('Unidade: ', NomeFantasia)NomeLocal, CONCAT('|',0,'|') as Unidades FROM (SELECT 0 id, NomeFantasia, CONCAT('|',id,'|') FROM empresa UNION ALL SELECT id, NomeFantasia, CONCAT('|',id,'|') as Unidades FROM sys_financialcompanyunits WHERE sysActive=1 order by NomeFantasia )t "&uniWhere&" ORDER BY t.NomeFantasia"
     end if
-    spuni = replace(uniProf("unidades"),"|","")
-    uniWhere = " AND u.id in("&spuni&")"
 end if
 if getConfig("ExibirApenasUnidadesNoFiltroDeLocais") then
     sqlAM = "(select CONCAT('UNIDADE_ID',0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal FROM empresa AS u WHERE id=1 "&uniWhere&") UNION ALL (select CONCAT('UNIDADE_ID',id), CONCAT('Unidade: ', NomeFantasia) FROM sys_financialcompanyunits AS u WHERE sysActive=1 "&uniWhere&" order by NomeFantasia)"
@@ -63,8 +69,8 @@ else
             " WHERE sysActive=1 "&uniWhere&"                                                   "&chr(13)&_
             " ORDER BY NomeFantasia) UNION ALL (                                               "&chr(13)&_
             " SELECT CONCAT('G', id) id, CONCAT('Grupo: ', NomeGrupo) NomeLocal                "&chr(13)&_
-            " FROM locaisgrupos                                                                "&chr(13)&_
-            " WHERE sysActive=1                                                                "&chr(13)&_
+            " FROM locaisgrupos AS u                                                           "&chr(13)&_
+            " WHERE sysActive=1 "&uniWhere&"                                                   "&chr(13)&_
             " ORDER BY NomeGrupo) UNION ALL (                                                  "&chr(13)&_
             " SELECT l.id, CONCAT(l.NomeLocal, IFNULL(CONCAT(' - ', u.Sigla), ''))NomeLocal    "&chr(13)&_
             " FROM locais l                                                                    "&chr(13)&_
@@ -74,16 +80,11 @@ else
             " ORDER BY l.NomeLocal)                                                            "
 end if
 
-if req("Data")<>"" then
-    hData = req("Data")
-else
-    hData = date()
-end if
 
-ProcedimentoID = req("ProcedimentoID")
 PacienteID = req("PacienteID")
 SolicitanteID = req("SolicitanteID")
 
+sqlAM = "SELECT * FROM ("&sqlAM&") as T "&franquia(" WHERE COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")
 %>
 <br>
 <%
@@ -92,8 +93,12 @@ Unidades = Session("Unidades")
 spltUnidades = split(Unidades)
 qtdUnidades = ubound(spltUnidades) + 1
 
-ExibirFiltroPorLocalizacao = getConfig("BuscaPorGeolocalizacao")=1 and qtdUnidades >= 3
+ExibirFiltroPorLocalizacao = False
+set sysConf = db.execute("select * from sys_config")
 
+if sysConf("ConfigGeolocalizacaoProfissional")="S" and recursoAdicional(39)=4 then
+    ExibirFiltroPorLocalizacao=True
+end if
 
 if ExibirFiltroPorLocalizacao then
 %>
@@ -108,40 +113,116 @@ if ExibirFiltroPorLocalizacao then
             </div>
            <div class="col-md-2">
                <div class="input-group">
-                  <input type="number" placeholder="Digite..." class="form-control" id="raio-busca" name="raio-busca" step="1" value="15" autocomplete="off" required="" min="5" max="100">
+                  <input type="text" placeholder="Máx. 10km" class="form-control" id="raio-busca" name="raio-busca" step="1" value="10" maxlength="2" autocomplete="off" required min="5" max="100">
                   <span for="raio-busca" class="input-group-addon">
                      km
                  </span>
               </div>
+            </div>
+            <div class="col-md-2 text-center">
+                <button type="button" onclick="location.href='?P=AgendaMultipla&Pers=1&R=1&Data=<%=date()%>&Unidades=&Profissionais=&ProcedimentoID=';" class="btn bg-primary text-white"><i class="fa fa-filter text-white"></i> Limpar Filtros</button>
             </div>
         </div>
     </div>
 </div>
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&key=AIzaSyCz2FUHAQGogZ13ajRNE3UQBCfdo-igcDc"></script>
 
-<script >
+<script>
 
 var parametrosBuscaEndereco = {};
 
-function filtraUnidadesEndereco() {
+function handleFiltro(unidades, profissionais) {
+    return new Promise(function (resolve, reject) {
+        $.get("AgendaMultiplaFiltros.asp?R=<%=limpaFiltro%>", { unidades, profissionais }, function(data) {
+            resolve(data);
+        });
+    });
+}
 
+function handleProfessionals() {
+    return new Promise(function (resolve, reject) {
+        $.get("api/jsonBuscaProfissionais.asp", parametrosBuscaEndereco, function(data) {
+            var newData = {};
+
+            newData.data = data;
+            newData.ids = [];
+
+            for (let profissional of data) {
+                newData.ids.push(profissional.id);
+            }
+
+            newData.ids = newData.ids.join(',');
+
+            resolve(newData);
+        });
+    });
+}
+
+function handleProfissionaisId(profissionais) {
+    const profissionaisId = [];
+
+    for (var profissional of profissionais) {
+        profissionaisId.push(profissional.id);
+    }
+
+    return profissionaisId;
+}
+
+function handleCheckProfissionais(profissionais) {
+    const ids = profissionais.split(',');
+
+    for (let id of ids) {
+        $(`input[value="|${id}|"]`).prop('checked', true);
+        $(`#Profissionais option[value="|${id}|"]`).prop('selected', true);
+    }
+}
+
+async function filtraUnidadesEndereco() {
     const setUnidadeIds = function(unidades){
-        var $unidadesIpt = $("#Locais"),
-            ids = [];
+        var ids = [];
 
-        for(let i=0;i<unidades.length;i++){
-            ids.push(`|UNIDADE_ID${unidades[i].id}|`);
+        for (let i=0;i<unidades.length;i++) {
+            ids.push(unidades[i].id);
         }
 
-        $unidadesIpt.val("");
-        $unidadesIpt.multiselect("select", ids);
-        $unidadesIpt.multiselect("refresh");
-        $unidadesIpt.change();
+        return ids.join(",");
     };
 
-      $.get("api/jsonBuscaUnidades.asp", parametrosBuscaEndereco, function(data) {
-            setUnidadeIds(data);
-      });
+    $("#frmFiltros").html(`
+        <center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>
+    `);
+
+    $(".multipla-step-2").fadeIn();
+
+    const { ids } = await handleProfessionals();
+
+    $.get("api/jsonBuscaProfissionais.asp", parametrosBuscaEndereco, function(data) {
+        var newData = {};
+        newData.data = data;
+        newData.ids = [];
+        for (let profissional of data) {
+            newData.ids.push(profissional.id);
+        }
+        newData.ids = newData.ids.join(',');
+
+        handleFiltro(unidades='', newData.ids).then(function (response) {
+            $("#frmFiltros").html(response);
+            handleCheckProfissionais(newData.ids);
+
+            loadAgenda();
+        });
+    });
+    // Geologalização por unidade que deverá entrar em outra split
+    //     $.get("api/jsonBuscaUnidades.asp", parametrosBuscaEndereco, function(data) {
+    //         const unidades = setUnidadeIds(data);
+
+    //         handleFiltro(unidades, ids).then(function (response) {
+    //             $("#frmFiltros").html(response);
+    //             handleCheckProfissionais(ids);
+
+    //             loadAgenda();
+    //         });
+    //     });
 }
 
 function initialize() {
@@ -150,10 +231,10 @@ function initialize() {
 
     // Set initial restrict to the greater list of countries.
     autocomplete.setComponentRestrictions({
-    country: ["br"]
+        country: ["br"]
     });
 
-      autocomplete.addListener("place_changed", () => {
+    autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
 
         //1) extrai variaveis de endereco: bairro / cep etc.
@@ -196,20 +277,21 @@ function initialize() {
         parametrosBuscaEndereco =  {
             lat: lat,
             lng: lng,
-            raioBusca: $("#raio-busca").val()
+            raioBusca: $("#raio-busca").val(),
         };
 
         filtraUnidadesEndereco();
-        });
+    });
 
 }
 
 $(document).ready(function() {
   $("#raio-busca").change(function() {
 
-      parametrosBuscaEndereco.raioBusca = $("#raio-busca").val();
+    parametrosBuscaEndereco.raioBusca = $("#raio-busca").val();
+    (parametrosBuscaEndereco.raioBusca > 10 || parametrosBuscaEndereco.raioBusca==0 || parametrosBuscaEndereco.raioBusca == '') ? $("#raio-busca").val('10') : false;
+    ($('#searchTextField').val() != "") ? filtraUnidadesEndereco() : false;
 
-      filtraUnidadesEndereco();
   });
 })
 
@@ -220,30 +302,12 @@ google.maps.event.addDomListener(window, 'load', initialize);
 end if
 %>
 
-<div class="panel">
+<div class="panel multipla-step-2">
     <div class="panel-body">
         <form id="frmFiltros">
-            <div class="row">
-                <div class="col-md-2">
-                    <%= selectInsert("Procedimento", "filtroProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " ", "", "") %>
-                </div>
-                <%=quickField("multiple", "Profissionais", "Profissionais", 2, req("Profissionais"), "SELECT id, NomeProfissional, Ordem FROM (SELECT 0 as 'id', 'Nenhum' as 'NomeProfissional', 0 'Ordem' UNION SELECT id, IF(NomeSocial != '' and NomeSocial IS NOT NULL, NomeSocial, NomeProfissional)NomeProfissional, 1 'Ordem' FROM profissionais WHERE (NaoExibirAgenda != 'S' OR NaoExibirAgenda is null OR NaoExibirAgenda='') AND sysActive=1 and Ativo='on' "&sqlLimitarProfissionais&" ORDER BY NomeProfissional)t ORDER BY Ordem, NomeProfissional", "NomeProfissional", " empty ") %>
-                <%=quickField("multiple", "Especialidade", "Especialidades", 2, req("Especialidades"), "SELECT t.EspecialidadeID id, IFNULL(e.nomeEspecialidade, e.especialidade) especialidade FROM (	SELECT EspecialidadeID from profissionais WHERE ativo='on'	UNION ALL	select pe.EspecialidadeID from profissionaisespecialidades pe LEFT JOIN profissionais p on p.id=pe.ProfissionalID WHERE p.Ativo='on') t LEFT JOIN especialidades e ON e.id=t.EspecialidadeID WHERE NOT ISNULL(especialidade) AND e.sysActive=1 GROUP BY t.EspecialidadeID ORDER BY especialidade", "especialidade", " empty ") %>
-                <%=quickField("multiple", "Convenio", "Convênios", 2, "", "select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio", "NomeConvenio", " empty ") %>
-                <%'=quickField("empresaMultiIgnore", "Unidades", "Unidades", 2, "", "", "", "") %>
-                <%=quickField("multiple", "Locais", "Locais", 2, sUnidadeID, sqlAM, "NomeLocal", " empty ")%>
-                
-                <% if getConfig("multiplaExibirCampoEquipamentos") = 1 then %>
-                    <%=quickField("multiple", "Equipamentos", "Equipamentos", 2, "", "SELECT id, NomeEquipamento FROM equipamentos WHERE sysActive=1 and Ativo='on' ORDER BY NomeEquipamento", "NomeEquipamento", "empty") %>
-                <% end if %>
-                
-                <input type="hidden" id="hData" name="hData" value="<%= hData %>" />
-            </div>
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <button id="buscar" class="btn btn-primary hidden mt10 btn-block" onclick="$(this).addClass('hidden')"><i class="fa fa-search"></i> BUSCAR</button>
-                </div>
-            </div>
+        <%
+            server.Execute("AgendaMultiplaFiltros.asp")
+        %>
         </form>
     </div>
 </div>
@@ -260,7 +324,7 @@ $(document).ready(function () {
 <input type="hidden" id="LocalPre" name="LocalPre" value="" />
 <input type="hidden" id="ProfissionalPre" name="ProfissionalPre" value="" />
 
-    <div class="panel-body bg-light pn">
+    <div class="panel-body bg-light pn multipla-step-2">
        <div class="row col-xs-12" id="div-agendamento"></div>
        <div class="row col-sm-12 " id="GradeAgenda">
            <div class="col-md-12" id="contQuadro" style=" overflow: scroll; height: 914px;">
@@ -277,10 +341,6 @@ $(document).ready(function () {
     $(".crumb-trail").removeClass("hidden");
     $("#rbtns").html("");
 
-    $("#frmFiltros select").change(function () {
-        //loadAgenda();
-        $("#buscar").removeClass("hidden");
-    });
 
     $("#frmFiltros").submit(function(){
         loadAgenda();
@@ -288,6 +348,15 @@ $(document).ready(function () {
     });
 
     var multiUnidades = "<%= ExibirFiltroPorLocalizacao %>"==="True";
+    alturaQuadro = 300;
+
+    if(multiUnidades){
+        alturaQuadro += 150;
+    }
+
+    if(multiUnidades){
+        $(".multipla-step-2").css("display", "none");
+    }
 
     function setLoading() {
       $("#contQuadro").html(`<div class="p10">
@@ -302,21 +371,16 @@ $(document).ready(function () {
 
         const unidades = $("#Locais").val();
 
-        if(multiUnidades && !unidades){
-            $("#contQuadro").html("<center> Selecione uma unidade...</center>");
-            return;
-        }
-
-        $.post("AgendaMultiplaConteudo.asp", $("#frmFiltros, #HVazios").serialize(), function (data) {
+        $.post("AgendaMultiplaConteudo.asp?R=<%=limpaFiltro%>", $("#frmFiltros, #HVazios").serialize(), function (data) {
             $("#contQuadro").html(data);
         });
         $("#buscar").addClass("hidden");
     }
 
-    $("#contQuadro").innerHeight(window.innerHeight - 300);
+    $("#contQuadro").innerHeight(window.innerHeight - alturaQuadro);
 
     $(window).resize(function () {
-        $("#contQuadro").innerHeight(window.innerHeight - 300);
+        $("#contQuadro").innerHeight(window.innerHeight - alturaQuadro);
     });
 
     <!--#include file="funcoesAgenda1.asp"-->
@@ -402,6 +466,9 @@ $(document).ready(function () {
                 UnidadeID = UnidadeID.replace("UNIDADE_ID", "");
             }
         }
+        if((typeof TabelaParticularID == 'undefined')){
+            TabelaParticularID = '';
+        }
 
         $.ajax({
             type: "GET",
@@ -411,6 +478,7 @@ $(document).ready(function () {
                 id: id,
                 data: data,
                 profissionalID: ProfissionalID,
+                TabelaParticularID: TabelaParticularID,
                 LocalID: LocalID,
                 EquipamentoID: EquipamentoID,
                 ProcedimentoID: ProcedimentoID,
@@ -437,8 +505,6 @@ $(document).ready(function () {
     <% else %>
         if(!multiUnidades){
             loadAgenda();
-        }else{
-            $("#contQuadro").html(`<div class="m10 alert alert-default">Selecione uma unidade</div>`);
         }
     <% end if%>
 
@@ -451,6 +517,9 @@ $(document).ready(function () {
     }
 
     <% if req("Data") <>"" then %>
+            <% if req("R") = "1" then %>
+                $(".multipla-step-2").fadeIn();
+            <% end if %>
         loadAgenda();
     <% end if %>
 

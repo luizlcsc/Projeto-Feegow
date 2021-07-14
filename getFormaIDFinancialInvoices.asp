@@ -1,12 +1,12 @@
 <!--#include file="connect.asp"-->
 <%
-PacienteID = Request.QueryString("PacienteID")
-ProfissionalID = Request.QueryString("ProfissionalID")
-TipoCompromissoID = Request.QueryString("TipoCompromissoID")
-'contaCorrente = Request.QueryString("contaCorrente")
-'unidade = Request.QueryString("unidade")
+PacienteID = req("PacienteID")
+ProfissionalID = req("ProfissionalID")
+TipoCompromissoID = req("TipoCompromissoID")
+'contaCorrente = req("contaCorrente")
+'unidade = req("unidade")
 
-'sysFormasrectoId = Request.QueryString("sysFormasrectoId")
+'sysFormasrectoId = req("sysFormasrectoId")
 
 db.execute("SET SESSION group_concat_max_len = 1000000; ")
 

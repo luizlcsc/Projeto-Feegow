@@ -1,10 +1,10 @@
 <!--#include file="connect.asp"--><%
-CampoID=request.QueryString("I")
+CampoID=req("I")
 set pTexto=db.execute("select * from buiCamposForms where id="&CampoID)
 Texto=pTexto("Texto")
-if isNumeric(request.QueryString("L")) and isNumeric(request.QueryString("C")) then
-	l=ccur(request.QueryString("L"))
-	c=ccur(request.QueryString("C"))
+if isNumeric(req("L")) and isNumeric(req("C")) then
+	l=ccur(req("L"))
+	c=ccur(req("C"))
 else
 	l=0
 	c=0

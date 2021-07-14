@@ -9,6 +9,7 @@ Unidades = ref("Unidades")
 DataDe = ref("DataDe")
 DataAte = ref("DataAte")
 ProfissionalID = ref("ProfissionalID")
+StatusAgenda = ref("Status")
 
 if ProfissionalID<>"" and ProfissionalID<>"0" then
     sqlProfissionais = " AND (SELECT prof.id FROM profissionaiscirurgia pc INNER JOIN profissionais prof ON prof.id=pc.ProfissionalID WHERE pc.GuiaID=ac.id AND pc.GrauParticipacaoID=100 LIMIT 1) = "&ProfissionalID
@@ -20,6 +21,17 @@ end if
 
 if Unidades<>"" then
     sqlUnidades = " AND ac.UnidadeID IN ("&replace(Unidades, "|", "")&")"
+end if
+
+if StatusAgenda<>"" then
+    StatusAgenda = " AND s.id IN("&replace(StatusAgenda, "|", "")&")"
+else
+    StatusAgenda = " AND s.id IN(1,2,4,6,7,8) "
+end if
+
+cancelarId = req("x")
+if cancelarId&"" <> "" then
+    db.execute("update agendacirurgica set StatusID=3 where id="& cancelarId)
 end if
 
 Faturar = req("Faturar")
@@ -82,7 +94,7 @@ end if
             sqlCirurgia = "select s.NomeStatus, ac.StatusID, ac.rdValorPlano, ac.IDFaturamento, ac.Tabela, ac.id, ac.DataEmissao, ac.Hora, pac.NomePaciente, c.NomeConvenio, ac.ContratadoLocalNome, if(ac.rdValorPlano='V', 'Particular', c.NomeConvenio) NomeConvenio, ac.PacienteID, pac.Cel1 "&_
                                       " ,(SELECT NomeProfissional FROM profissionaiscirurgia pc INNER JOIN profissionais prof ON prof.id=pc.ProfissionalID WHERE pc.GuiaID=ac.id AND pc.GrauParticipacaoID=100 LIMIT 1) Cirurgiao "&_
                                       "from agendacirurgica ac LeFT JOIN agendacirurgicastatus s ON s.id=ac.StatusID LEFT JOIN pacientes pac ON pac.id=ac.PacienteID LEFT JOIN convenios c ON c.id=ac.ConvenioID "&_
-                                      "where ac.sysActive=1 "&sqlProfissionais&" "&sqlData&" "&sqlUnidades&" order by ac.DataEmissao desc, Hora desc"
+                                      "where ac.sysActive=1 "&sqlProfissionais&" "&sqlData&" "&sqlUnidades&" "&StatusAgenda&" order by ac.DataEmissao desc, Hora desc"
 
             set ac = db.execute(sqlCirurgia)
             while not ac.eof

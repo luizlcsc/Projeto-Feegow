@@ -49,11 +49,11 @@ I = req("I")
             "`DHUp` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "&_
 			"PRIMARY KEY (`id`)) COLLATE='utf8_general_ci' ENGINE=MyISAM ROW_FORMAT=COMPACT;")
 		end if
-		response.Redirect("?P=newform&I="&vie("id")&"&Pers="&request.QueryString("Pers"))
+		response.Redirect("?P=newform&I="&vie("id")&"&Pers="&req("Pers"))
 	else
 		set data = db.execute("select * from "&tableName&" where id="&I)
 		if data.eof then
-			response.Redirect("?P=newform&I=N&Pers="&request.QueryString("Pers"))
+			response.Redirect("?P=newform&I=N&Pers="&req("Pers"))
 		end if
 	end if
 

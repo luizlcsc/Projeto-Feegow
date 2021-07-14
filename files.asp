@@ -31,7 +31,7 @@ function atualizaArquivos(X){
 function atualizaAlbum(X){
 	$.ajax({
 		type:"POST",
-		url:"Imagens.asp?PacienteID=<%=request.QueryString("I")%>&X="+X,
+		url:"Imagens.asp?PacienteID=<%=req("I")%>&X="+X,
 		success:function(data){
 			$("#albumImagens").html(data);
 		}

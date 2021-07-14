@@ -105,7 +105,7 @@ if InvoiceID="N" then
     if req("PacienteID")<>"" then
         reqPacDireto = "&PacienteID="&req("PacienteID")
     end if
-	response.Redirect("?P=invoice&I="&vie("id")&"&A="&request.QueryString("A")&"&Pers=1&T="&CD&"&Ent="&req("Ent")& reqPacDireto)'A=AgendamentoID quando vem da agenda
+	response.Redirect("?P=invoice&I="&vie("id")&"&A="&req("A")&"&Pers=1&T="&CD&"&Ent="&req("Ent")& reqPacDireto)'A=AgendamentoID quando vem da agenda
 
 else
 	set data = db.execute("select * from "&tableName&" where id="&InvoiceID)
@@ -724,7 +724,7 @@ end if
             <div class="col-md-6">
                 <label style="" class="error_msg"></label><br>
                 <label>Senha do Usuário</label>
-                <input type="password" id="password" name="password" class="form-control">
+                <input type="hidden" id="tabela-password" name="tabela-password" class="form-control">
             </div>
 
         <div class="col-md-12 tabelaParticular" style="color:#000;">
@@ -1100,7 +1100,7 @@ var InvoiceAlterada = false;
             $("input[id^=DataExecucao]").val("02/01/2017");
         });
 
-    if("<%=request.QueryString("time")%>" != ''){
+    if("<%=req("time")%>" != ''){
         recalc();
     }
 
@@ -1400,6 +1400,7 @@ $(idStr).change(function(){
         data: {autorization:"buscartabela",id:id,sysUser:sysUser},
         success:function(result){
             if(result == "Tem regra") {
+                $("#tabela-password").attr("type","password");
                 $('#permissaoTabela').modal('show');
                buscarNome(id,sysUser,regra);
                 }
@@ -1407,7 +1408,7 @@ $(idStr).change(function(){
     });
         $('.confirmar').click(function(){
                 var Usuario =  $('input[name="nome"]:checked').val();
-                var senha   =  $('#password').val();
+                var senha   =  $('#tabela-password').val();
                 liberar(Usuario , senha , id , Nometable);
                 $('.error_msg').empty(); 
             
@@ -1454,11 +1455,59 @@ function liberar(Usuario , senha , id, Nometable){
        
 }
 
+let BloquearRecibo    =   "<%=getConfig("bloquearemissaoderecibo")%>";
+let BloquearContrato  =   "<%=getConfig("bloquearemissaodecontrato")%>";
+let BloquearInvoice   =   "<%=invoicePaga(req("I"))%>";
+
+ if(BloquearContrato == 1 && BloquearInvoice == "False"){
+            $('.contratobt').attr("disabled", true);
+         }else{
+            $('.contratobt').attr("disabled", false)
+         } 
+
+
+
+if(BloquearRecibo == 1 && BloquearInvoice == "False"){
+       $('.rgrec').attr("disabled", true);
+    }else{
+          $('.rgrec').attr("disabled", false);
+    } 
+
+$('.contratobt').click(function(){
+   if($(".contratobloqueio").hasClass("open")){
+      $(".contratobloqueio").removeClass("open");
+   }else{
+        $(".contratobloqueio").addClass("open");
+   }
+});
+
 </script>
+
+<%
+' LINK PARA ORDEM DE COMPRA
+' Verifica se a invoice foi gerada pela Ordem de Compra
+' para inserir o botão com link para a ordem de compra.
+' Foi feito desta forma para não precisar alterar a estrutura da tabela de invoice.
+geracao = data("Name")
+if InStr(geracao, "ordem de compra") > 0 then
+    set ordemDeCompra = db.execute("SELECT id FROM compras_ordem WHERE invoiceId = "&InvoiceID& " AND deletedAt IS NULL LIMIT 1")
+    if not ordemDeCompra.eof then
+        ordemId = ordemDeCompra("id")
+%>
+        <script>
+        // insere o botão para ir para a Ordem de Compra
+        $(document).ready(function() {
+            $('#rbtns .btn-group').after(' <a class="btn btn-warning btn-sm" href="?P=solicitacoescompras&Pers=1#/ordens/edit/<%=ordemId%>" title="Ir para  ordem de compra"><i class="fa fa-shopping-cart bigger-110"></i></a>');
+        });
+        </script>
+<%
+    end if
+end if
+%>
 
 <!--#include file="CalculaMaximoDesconto.asp"-->
 
 <input type="hidden" name="PendPagar" id="PendPagar" />
 
-<%'=request.QueryString() %>
+<%'=request.QueryString %>
 <!--#include file="disconnect.asp"-->

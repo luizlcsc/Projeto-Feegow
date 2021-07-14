@@ -1,20 +1,20 @@
 <!--#include file="connect.asp"-->
 
 <%
-inputStringList = request.form("inputs")
+inputStringList = ref("inputs")
 inputList = split(inputStringList, ", ")
 
 listProfissionalId = array()
 listExecutadoProcedimento = array()
 for each key in inputList
 	ReDim Preserve listProfissionalId(UBound(listProfissionalId) + 1)
-	listProfissionalId(UBound(listProfissionalId)) = request.form("ProfissionalID"&key)
+	listProfissionalId(UBound(listProfissionalId)) = ref("ProfissionalID"&key)
 
 	ReDim Preserve listExecutadoProcedimento(UBound(listExecutadoProcedimento) + 1)
 
 	executado = "N"
-	if request.form("Executado"&key) <> "" Then
-		executado = request.form("Executado"&key)
+	if ref("Executado"&key) <> "" Then
+		executado = ref("Executado"&key)
 	end If
 
 	listExecutadoProcedimento(UBound(listExecutadoProcedimento)) = executado
@@ -32,8 +32,8 @@ Next
 %>
 
 <%
-if request.QueryString("ReciboID") <> "" then
-ReciboID =request.QueryString("ReciboID")
+if req("ReciboID") <> "" then
+ReciboID =req("ReciboID")
 
 sqlrepasse = "select "&_
             " r.NumeroRPS,"&_
@@ -107,7 +107,7 @@ end if
         });
 
         function setIframeSrc() {
-        var s = "relatorio.asp?TipoRel=ImprimeRecibo&Imprimiu=1&I=<%= request.QueryString("ReciboID") %>";
+        var s = "relatorio.asp?TipoRel=ImprimeRecibo&Imprimiu=1&I=<%= req("ReciboID") %>";
         var iframe1 = document.getElementById('iframe1');
         iframe1.src = s;
         // if (window.stop) {
@@ -121,7 +121,7 @@ end if
 	<iframe id="iframe1" width="100%" height="500"  frameborder="0"></iframe>
 	<% response.end %>
 <% elseif (myDict.Count <= 1) or (myDict.Count <= 1 and achouProcedimento = "0") then %>
-	<iframe width="100%" height="500" src="relatorio.asp?Imprimiu=1&TipoRel=ifrReciboIntegrado&I=<%= request.QueryString("I") %>" frameborder="0"></iframe>
+	<iframe width="100%" height="500" src="relatorio.asp?Imprimiu=1&TipoRel=ifrReciboIntegrado&I=<%= req("I") %>" frameborder="0"></iframe>
 	<% response.end %>
 <% end if %>
 
@@ -284,10 +284,10 @@ relatorio = (self) => {
         procedimentosStr = procedimentos.join(",");
     }
 
-    var url = `relatorio.asp?TipoRel=ifrReciboIntegrado&Imprimiu=1&I=<%=request.QueryString("I")%>&tipoProfissionalSelecionado=${tipoProfissionalSelecionado}&profissionalSelecionado=${profissionalSelecionado}&executouProcedimento=${pro}&procedimentos=${procedimentosStr}&profissionalParaNaoProcessado=${profissionalParaNaoProcessado}`;
+    var url = `relatorio.asp?TipoRel=ifrReciboIntegrado&Imprimiu=1&I=<%=req("I")%>&tipoProfissionalSelecionado=${tipoProfissionalSelecionado}&profissionalSelecionado=${profissionalSelecionado}&executouProcedimento=${pro}&procedimentos=${procedimentosStr}&profissionalParaNaoProcessado=${profissionalParaNaoProcessado}`;
 
 	if(profissionalSelecionado=="0"){
-        url = `relatorio.asp?TipoRel=ifrReciboIntegrado&Imprimiu=1&I=<%=request.QueryString("I")%>`;
+        url = `relatorio.asp?TipoRel=ifrReciboIntegrado&Imprimiu=1&I=<%=req("I")%>`;
 	}
 
 	fetch(url,

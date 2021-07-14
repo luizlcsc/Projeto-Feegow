@@ -7,7 +7,7 @@ IF True THEN
             %>
       <div class="galery-ajax"></div>
       <script>
-              fetch("ImagensNew.asp?ArquivoImagem=Arquivo&PacienteID=<%=req("PacienteID")%>&MovementID=<%=req("MovementID")%>")
+              fetch("ImagensNew.asp?ArquivoImagem=Arquivo&PacienteID=<%=req("PacienteID")%>&MovementID=<%=req("MovementID")%>&OrdemDeCompraID=<%=req("OrdemDeCompraID")%>")
               .then(data => data.text())
               .then(data => {
                  $(".galery-ajax").html(data);
@@ -37,7 +37,7 @@ END IF
         </thead>
         <tbody>
 	        <%
-	        if isnumeric(request.QueryString("X")) and request.QueryString("X")<>"" and request.QueryString("X")<>"0" then
+	        if isnumeric(req("X")) and req("X")<>"" and req("X")<>"0" then
 		        db_execute("delete from arquivos where id="&req("X"))
 	        end if
 	        if req("MovementID")<>"" then
@@ -51,8 +51,11 @@ END IF
 	        if req("ExameID")<>"" then
                 sqlExame = " AND ExameID="&req("ExameID")
 	        end if
+            if req("OrdemDeCompraID")<>"" then
+                sqlOrdemDeCompra = " AND OrdemDeCompraID="&req("OrdemDeCompraID")
+	        end if
 	        ' (provider <> 'S3' or provider is null) and
-	        set arquivos = db.execute("select * from arquivos where Tipo='A' and PacienteID="&req("PacienteID")& sqlMov & sqlGuia & sqlExame )
+	        set arquivos = db.execute("select * from arquivos where Tipo='A' and PacienteID="&req("PacienteID")& sqlMov & sqlGuia & sqlExame & sqlOrdemDeCompra )
 	        c=0
 	        Caminho = "https://clinic7.feegow.com.br/uploads/"& replace(session("Banco"), "clinic", "") &"/Arquivos/"
 	        while not arquivos.EOF

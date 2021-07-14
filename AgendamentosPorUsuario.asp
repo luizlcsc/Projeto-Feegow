@@ -64,11 +64,11 @@ else
 end if
 
 
-if request.QueryString("E")="E" then
-	if request.QueryString("Profissional")="" then
+if req("E")="E" then
+	if req("Profissional")="" then
 		sqlProfissional=""
 	else
-		sqlProfissional=" and id like '"&request.QueryString("Profissional")&"'"
+		sqlProfissional=" and id like '"&req("Profissional")&"'"
 	end if
 	De = req("De")
 	Ate = req("Ate")

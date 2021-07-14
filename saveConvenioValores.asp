@@ -14,8 +14,8 @@ function treatvalnullformat(Val,Number)
 	end if
 end function
 
-ConvenioID = request.QueryString("ConvenioID")
-ProcedimentoID = request.QueryString("ProcedimentoID")
+ConvenioID = req("ConvenioID")
+ProcedimentoID = req("ProcedimentoID")
 str = ref("str")
 
 set psobra = db.execute("select pp.* from tissprodutosprocedimentos as pp left join tissprocedimentosvalores as pv on pv.id=pp.AssociacaoID where pv.ProcedimentoID="&ProcedimentoID&" and ConvenioID="&ConvenioID)
@@ -50,8 +50,8 @@ ProcedimentoTabelaID = vept("id")
 set vepv = db.execute("select * from tissprocedimentosvalores where COALESCE(ID=NULLIF('"&req("AssociacaoID")&"',''), ConvenioID="&ConvenioID&" and ProcedimentoID="&ProcedimentoID&")")
 if vepv.eof then
 
-    sqlInsert = "insert into  tissprocedimentosvalores (Contratados, CoeficientePorte,Porte,QuantidadeCH,CustoOperacional,ValorFilme,QuantidadeFilme,ValorUCO,ProcedimentoID, ConvenioID, ProcedimentoTabelaID, Valor, ValorCH, TecnicaID, NaoCobre, ModoDeCalculo) values "&_
-              	    "(NULLIF('"&ref("Contratados")&"',''),"&CoeficientePorte&",'"&Porte&"',"&QuantidadeCH&", "&CustoOperacional&", "&ValorFilme&", "&QuantidadeFilme&", "&ValorUCO&","&ProcedimentoID&", "&ConvenioID&", "&ProcedimentoTabelaID&", "&treatvalnullformat(ref("ValorUnitario"),4)&",  "&treatvalnullformat(ref("ValorCH"),4)&", "&ref("TecnicaID")&", '"&ref("NaoCobre")&"', '"&ref("ModoDeCalculo")&"')"
+    sqlInsert = "insert into  tissprocedimentosvalores (Contratados, CoeficientePorte,Porte,QuantidadeCH,CustoOperacional,ValorFilme,QuantidadeFilme,ValorUCO,ProcedimentoID, ConvenioID, ProcedimentoTabelaID, Valor, ValorCH, TecnicaID, NaoCobre, ModoDeCalculo, profissionalExecutanteGuia) values "&_
+    			"(NULLIF('"&ref("Contratados")&"',''),"&CoeficientePorte&",'"&Porte&"',"&QuantidadeCH&", "&CustoOperacional&", "&ValorFilme&", "&QuantidadeFilme&", "&ValorUCO&","&ProcedimentoID&", "&ConvenioID&", "&ProcedimentoTabelaID&", "&treatvalnullformat(ref("ValorUnitario"),4)&",  "&treatvalnullformat(ref("ValorCH"),4)&", "&ref("TecnicaID")&", '"&ref("NaoCobre")&"', '"&ref("ModoDeCalculo")&"', '"&ref("profissionalExecutanteGuia")&"')"
 
 	db_execute(sqlInsert)
 
@@ -61,7 +61,7 @@ if vepv.eof then
 else
 
 	db_execute("update tissprocedimentosvalores set Contratados=NULLIF('"&ref("Contratados")&"',''), CoeficientePorte = "&CoeficientePorte&", ProcedimentoTabelaID="&ProcedimentoTabelaID&", Porte = '"&Porte&"',QuantidadeCH = "&QuantidadeCH&",CustoOperacional = "&CustoOperacional&",ValorFilme = "&ValorFilme&",QuantidadeFilme = "&QuantidadeFilme&",ValorUCO = "&ValorUCO&_
-	",Valor="&treatvalnullformat(ref("ValorUnitario"),4)&",ValorCH="&treatvalnullformat(ref("ValorCH"),4)&", NaoCobre='"&ref("NaoCobre")&"', TecnicaID="&treatvalnull(ref("TecnicaID"))&", ModoDeCalculo='"&ref("ModoDeCalculo")&"' where id="&vepv("id"))
+	",Valor="&treatvalnullformat(ref("ValorUnitario"),4)&",ValorCH="&treatvalnullformat(ref("ValorCH"),4)&", NaoCobre='"&ref("NaoCobre")&"', TecnicaID="&treatvalnull(ref("TecnicaID"))&", ModoDeCalculo='"&ref("ModoDeCalculo")&"', profissionalExecutanteGuia='"&ref("profissionalExecutanteGuia")&"' where id="&vepv("id"))
 	AssociacaoID = vepv("id")
 
 end if

@@ -40,7 +40,7 @@ end if
                     </span>
                     <span class="panel-controls">
                     <%
-                    if (reg("sysActive")=1 and aut(lcase(request.QueryString("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(request.QueryString("P"))&"I")=1) then
+                    if (reg("sysActive")=1 and aut(lcase(req("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(req("P"))&"I")=1) then
                         %>
                         <button class="btn btn-primary btn-sm" id="save"> <i class="fa fa-save"></i> Salvar </button>
                         <%

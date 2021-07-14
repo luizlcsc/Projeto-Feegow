@@ -122,7 +122,7 @@
     </li>
     <%
 	end if
-    if recursoAdicional(39) and (aut("solicitacoescompras") = 1 or aut("configcompras") = 1)  then
+    if recursoAdicional(40) and (aut("solicitacoescompras") = 1 or aut("configcompras") = 1)  then
     %>
     <li>
         <a href="#" class="accordion-toggle">
@@ -134,6 +134,7 @@
             <% if aut("solicitacoescompras") = 1 then %>
             <li><a href="./?P=solicitacoescompras&Pers=1#/solicitacoes"><i class="fa fa-list"></i> Solicitações</a></li>
             <li><a href="./?P=solicitacoescompras&Pers=1#/aprovacoes"><i class="fa fa-check-square-o"></i> Aprovação</a></li>
+            <li><a href="./?P=solicitacoescompras&Pers=1#/ordens"><i class="fa fa-paper-plane"></i> Ordem de Compra</a></li>
             <% end if %>
             <% if aut("configcompras") = 1 then %>
             <li><a href="./?P=configcompras&Pers=1"><i class="fa fa-cog"></i> Configurações</a></li>
@@ -513,12 +514,5 @@
         end if
     end if
 
-    if aut("auditoriaV")=1 then
+
     %>
-    <li <% If req("P")="auditoria/auditar" Then %> class="active"<% End If %>>
-        <a href="./?P=auditoria/auditar&Pers=1">
-            <span class="fa fa-eye"></span>
-            <span class="sidebar-title"> Auditoria </span>
-        </a>
-    </li>
-    <% end if %>

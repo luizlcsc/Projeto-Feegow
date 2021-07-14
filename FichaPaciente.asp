@@ -4,13 +4,13 @@
 <%
 
 
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from Pacientes where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from Pacientes where id="&req("I"))
 %>
 <input type="hidden" name="DadosAlterados" id="DadosAlterados" value="" />
 <form method="post" id="frm" name="frm" action="save.asp">
-	<input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-	<input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+	<input type="hidden" name="I" value="<%=req("I")%>" />
+	<input type="hidden" name="P" value="<%=req("P")%>" />
     <div class="row">
         <div class="col-md-8">
             <ul class="breadcrumb">
@@ -177,7 +177,7 @@ end if
 		if aut("agenda")=1 then
 		%>
         <li>
-            <a data-toggle="tab" class="tab" href="#HistoricoPaciente" onclick="agendamentos(<%=request.QueryString("I")%>);">
+            <a data-toggle="tab" class="tab" href="#HistoricoPaciente" onclick="agendamentos(<%=req("I")%>);">
                 <i class="fa fa-calendar bigger-110"></i>
                 <span class="hidden-480">Agendamentos</span>
             </a>
@@ -279,10 +279,10 @@ end if
             </div>
             <div class="row">
             	<div class="col-md-6">
-					<%call Subform("PacientesRetornos", "PacienteID", request.QueryString("I"),"frm")%>
+					<%call Subform("PacientesRetornos", "PacienteID", req("I"),"frm")%>
                 </div>
             	<div class="col-md-6">
-					<%call Subform("PacientesRelativos", "PacienteID", request.QueryString("I"), "frm")%>
+					<%call Subform("PacientesRelativos", "PacienteID", req("I"), "frm")%>
                 </div>
             </div>
         </div>
@@ -312,13 +312,13 @@ end if
 			Carregando...
         </div>
         <div id="divImagens" class="tab-pane min-tabs">
-            <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?PacienteID=<%=request.QueryString("I")%>&Tipo=I"></iframe>
+            <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?PacienteID=<%=req("I")%>&Tipo=I"></iframe>
 			<div id="albumImagens">
 				Carregando...
             </div>
         </div>
         <div id="divArquivos" class="tab-pane min-tabs">
-            <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?PacienteID=<%=request.QueryString("I")%>&Tipo=A"></iframe>
+            <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?PacienteID=<%=req("I")%>&Tipo=A"></iframe>
 			<div id="albumArquivos">
 				Carregando...
             </div>
@@ -350,7 +350,7 @@ $("#tabDiagnosticos").click(function(){
 function cid10(X){
 	$.ajax({
 		type:"POST",
-		url:"Diagnosticos.asp?PacienteID=<%=request.QueryString("I")%>&X="+X,
+		url:"Diagnosticos.asp?PacienteID=<%=req("I")%>&X="+X,
 		success:function(data){
 			$("#divDiagnosticos").html(data);
 		}
@@ -360,7 +360,7 @@ function cid10(X){
 $("#tabRecibos").click(function(){
 	$.ajax({
 		type:"POST",
-		url:"Recibos.asp?PacienteID=<%=request.QueryString("I")%>",
+		url:"Recibos.asp?PacienteID=<%=req("I")%>",
 		success:function(data){
 			$("#divRecibos").html(data);
 		}
@@ -380,7 +380,7 @@ function duplicate(file){
 function atualizaAlbum(X){
 	$.ajax({
 		type:"POST",
-		url:"Imagens.asp?PacienteID=<%=request.QueryString("I")%>&X="+X,
+		url:"Imagens.asp?PacienteID=<%=req("I")%>&X="+X,
 		success:function(data){
 			$("#albumImagens").html(data);
 		}
@@ -390,7 +390,7 @@ function atualizaAlbum(X){
 function atualizaArquivos(X){
 	$.ajax({
 		type:"POST",
-		url:"Arquivos.asp?PacienteID=<%=request.QueryString("I")%>&X="+X,
+		url:"Arquivos.asp?PacienteID=<%=req("I")%>&X="+X,
 		success:function(data){
 			$("#albumArquivos").html(data);
 		}
@@ -408,7 +408,7 @@ $("#tabArquivos").click(function(){
 $("#tabExtrato").click(function(){
 	$.ajax({
 		type:"POST",
-		url:"Statement.asp?T=3_<%=request.QueryString("I")%>",
+		url:"Statement.asp?T=3_<%=req("I")%>",
 		success:function(data){
 			$("#divExtrato").html(data);
 		}
@@ -482,7 +482,7 @@ $(".tab").click(function(){
 function PacientesForms(Tipo){
 	$.ajax({
 		type: "POST",
-		url: "PacientesForms.asp?PacienteID=<%=request.QueryString("I")%>&Tipo="+Tipo,
+		url: "PacientesForms.asp?PacienteID=<%=req("I")%>&Tipo="+Tipo,
 		success:function(data){
 			$("#forms").html(data);
 		}
@@ -701,7 +701,7 @@ jQuery(function($) {
 
 $("#btnFicha").click(function(){
 	$.ajax({
-		url:'imprimirFicha.asp?PacienteID=<%=request.QueryString("I")%>',
+		url:'imprimirFicha.asp?PacienteID=<%=req("I")%>',
 		success:function(data){
 			$("#modal").html(data);
 		}
@@ -714,7 +714,7 @@ $("#btnFicha").click(function(){
 <script type="text/javascript">
 //js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto"
 %>
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?')){
@@ -886,7 +886,7 @@ function removeFoto(){
 	});
 
 <%
-set lembrarme = db.execute("select * from buiformslembrarme where PacienteID="&request.QueryString("I"))
+set lembrarme = db.execute("select * from buiformslembrarme where PacienteID="&req("I"))
 if not lembrarme.EOF then
 	%>
 	$( document ).ready(function() {

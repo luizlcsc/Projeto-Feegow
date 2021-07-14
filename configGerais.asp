@@ -5,7 +5,7 @@
     if ref("E")="E" then
 
         set confOLD = db.execute("select * from sys_config")
-        db_execute("update sys_config set FormatoDeNome='"&ref("FormatoDeNome")&"', BaixaAuto='"&ref("BaixaAuto")&"', OmitirValorGuia='"& ref("OmitirValorGuia") &"', ObrigarPreenchimentoDeFormulario='"& ref("ObrigarPreenchimentoDeFormulario") &"', SenhaStatusAgenda='"& ref("SenhaStatusAgenda") &"', BloquearValorInvoice='"& ref("BloquearValorInvoice") &"', AutoConsolidar='"&ref("AutoConsolidar")&"', SepararPacientes="& treatvalzero(ref("SepararPacientes")) &", NomeEmpresa='"&ref("NomeEmpresa")&"',BloquearEncaixeEmHorarioBloqueado='"&ref("BloquearEncaixeEmHorarioBloqueado")&"', ValidarCPFCNPJ='"&ref("ValidarCPFCNPJ")&"', BloquearCPFCNPJDuplicado='"&ref("BloquearCPFCNPJDuplicado")&"', SplitNF="& treatvalzero(ref("SplitNF")) &", MaximoDescontoProposta="& treatvalzero(ref("MaximoDescontoProposta")) &", DiasVencimentoProduto="& treatvalzero(ref("DiasVencimentoProduto")) &", Logo='"&ref("Logo")&"'")
+        db_execute("update sys_config set ConfigGeolocalizacaoProfissional='"&ref("ConfigGeolocalizacaoProfissional")&"', FormatoDeNome='"&ref("FormatoDeNome")&"', BaixaAuto='"&ref("BaixaAuto")&"', OmitirValorGuia='"& ref("OmitirValorGuia") &"', ObrigarPreenchimentoDeFormulario='"& ref("ObrigarPreenchimentoDeFormulario") &"', SenhaStatusAgenda='"& ref("SenhaStatusAgenda") &"', BloquearValorInvoice='"& ref("BloquearValorInvoice") &"', AutoConsolidar='"&ref("AutoConsolidar")&"', SepararPacientes="& treatvalzero(ref("SepararPacientes")) &", NomeEmpresa='"&ref("NomeEmpresa")&"',BloquearEncaixeEmHorarioBloqueado='"&ref("BloquearEncaixeEmHorarioBloqueado")&"', ValidarCPFCNPJ='"&ref("ValidarCPFCNPJ")&"', BloquearCPFCNPJDuplicado='"&ref("BloquearCPFCNPJDuplicado")&"', SplitNF="& treatvalzero(ref("SplitNF")) &", MaximoDescontoProposta="& treatvalzero(ref("MaximoDescontoProposta")) &", DiasVencimentoProduto="& treatvalzero(ref("DiasVencimentoProduto")) &", Logo='"&ref("Logo")&"'")
 
         IF confOLD("FormatoDeNome") <> ref("FormatoDeNome") THEN
 
@@ -59,6 +59,7 @@
     'ConfirmarTransferencia = conf("ConfirmarTransferencia")
     BloquearCPFCNPJDuplicado = conf("BloquearCPFCNPJDuplicado")
     ValidarCPFCNPJ = conf("ValidarCPFCNPJ")
+    ConfigGeolocalizacaoProfissional = conf("ConfigGeolocalizacaoProfissional")
 
     MaximoDescontoProposta = conf("MaximoDescontoProposta")
     DiasVencimentoProduto = conf("DiasVencimentoProduto")
@@ -127,12 +128,16 @@
             <input type="checkbox" name="BloquearEncaixeEmHorarioBloqueado" id="BloquearEncaixeEmHorarioBloqueado" value="S"<%if BloquearEncaixeEmHorarioBloqueado="S" then response.write(" checked ") end if %> />
             <label for="BloquearEncaixeEmHorarioBloqueado">Bloquear encaixes em horario bloqueado</label>
         </div>
-
+        <%if recursoAdicional(39)=4 then%>
+            <div class="checkbox-custom checkbox-primary">
+                <input type="checkbox" name="ConfigGeolocalizacaoProfissional" id="ConfigGeolocalizacaoProfissional" value="S"<%if ConfigGeolocalizacaoProfissional="S" then response.write(" checked ") end if %> />
+                <label for="ConfigGeolocalizacaoProfissional">Busca Geolocalização por profissional</label>
+            </div>
+        <%end if%>
         <div class="checkbox-custom checkbox-primary">
             <input type="checkbox" name="ExibirProntuarioAgendamento" id="ExibirProntuarioAgendamento" value="S"<%if ExibirProntuarioAgendamento="S" then response.write(" checked ") end if %> />
             <label for="ExibirProntuarioAgendamento">Exibir prontuário nos agendamentos</label>
         </div>
-
 
         <h2 class="mb20 mt30">Pacientes</h2>
         <div class="checkbox-custom checkbox-primary">

@@ -13,7 +13,7 @@ error_reporting(E_ALL);
 ini_set("display_errors", "1");
 
 function retira_acentos($texto){
- return strtr($texto, "áàãâéêíóôõúüçÁÀÃÂÉÊÍÓÔÕÚÜÇ", "aaaaeeiooouucAAAAEEIOOOUUC");
+ return strtr($texto, "Ã¡Ã Ã£Ã¢Ã©ÃªÃ­Ã³Ã´ÃµÃºÃ¼Ã§ÃÃ€ÃƒÃ‚Ã‰ÃŠÃÃ“Ã”Ã•ÃšÃœÃ‡", "aaaaeeiooouucAAAAEEIOOOUUC");
 }
 
 
@@ -25,7 +25,7 @@ $Respostas = $DOM->getElementsByTagName('SMSMO');
 ?>
 <ul>
 <?php
-$dbc = mysqli_connect("localhost", "root", "pipoca453", "cliniccentral") or die("Erro de conexao");
+$dbc = mysqli_connect("localhost", getenv("FC_MYSQL_USER"), getenv("FC_MYSQL_PASSWORD"), "cliniccentral") or die("Erro de conexao");
 $query = "";
 
 foreach($Respostas as $Resposta) {

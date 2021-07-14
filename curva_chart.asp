@@ -142,7 +142,7 @@ end if
 
     <div class="chart-nav">
         <ul class="tipo-nav nav nav-pills mb20">
-            <li class="tipo-0 active">
+            <li class="tipo-0">
                 <a href="javascript:abreGrafico(0)">Crescimento</a>
             </li>
             <li class="tipo-1">
@@ -280,7 +280,7 @@ end if
                 this.peso = PacienteValor.converteParaNumber(peso);
                 this.altura = PacienteValor.converteParaNumber(altura);
                 this.perimetroCefalico = PacienteValor.converteParaNumber(perimetroCefalico);
-                this.imc = this.altura > 0 ? Math.round((this.peso / Math.pow(this.altura, 2)) * 100 ) / 100 : null;
+                this.imc = this.altura > 0 ? Math.round((this.peso / Math.pow(this.altura / 100, 2)) * 100 ) / 100 : null;
                 this.idades = {
                     dias: this.data.diff(Paciente.dataNascimento, 'days'),
                     semanas: this.data.diff(Paciente.dataNascimento, 'weeks'),
@@ -499,7 +499,7 @@ end if
 
         google.charts.load('current', {packages: ['corechart']});
         google.charts.setOnLoadCallback(function() {
-            abreGrafico(0);
+            abreGrafico();
         });
 
         /** Configurações dos modelos gráficos
@@ -520,7 +520,6 @@ end if
                         fim: 27,
                         campo: 'altura',
                         rotuloCampo: 'Comprimento (cm)',
-                        unidade: 'cm',
                       },
                       grafico: {
                           chartArea: {
@@ -553,7 +552,6 @@ end if
                         fim: 27,
                         campo: 'altura',
                         rotuloCampo: 'Comprimento (cm)',
-                        unidade: 'cm',
                       },
                       grafico: {
                           chartArea: {
@@ -589,7 +587,6 @@ end if
                           fim: 24,
                           campo: 'altura',
                           rotuloCampo: 'Comprimento (cm)',
-                          unidade: 'cm',
                         },
                         grafico: {
                             chartArea: {
@@ -617,7 +614,6 @@ end if
                           fim: 24,
                           campo: 'altura',
                           rotuloCampo: 'Comprimento (cm)',
-                          unidade: 'cm',
                         },
                         grafico: {
                             chartArea: {
@@ -647,7 +643,6 @@ end if
                           fim: 60,
                           campo: 'altura',
                           rotuloCampo: 'Comprimento (cm)',
-                          unidade: 'cm',
                         },
                         grafico: {
                             chartArea: {
@@ -680,7 +675,6 @@ end if
                           fim: 60,
                           campo: 'altura',
                           rotuloCampo: 'Comprimento (cm)',
-                          unidade: 'cm',
                         },
                         grafico: {
                             chartArea: {
@@ -717,7 +711,6 @@ end if
                           fim: 24,
                           campo: 'altura',
                           rotuloCampo: 'Comprimento (cm)',
-                          unidade: 'cm',
                         },
                         grafico: {
                             chartArea: {
@@ -748,7 +741,6 @@ end if
                           fim: 24,
                           campo: 'altura',
                           rotuloCampo: 'Comprimento (cm)',
-                          unidade: 'cm',
                         },
                         grafico: {
                             chartArea: {
@@ -782,7 +774,6 @@ end if
                             fim: 60,
                             campo: 'altura',
                             rotuloCampo: 'Altura (cm)',
-                            unidade: 'cm',
                           },
                           grafico: {
                               chartArea: {
@@ -816,7 +807,6 @@ end if
                             fim: 60,
                             campo: 'altura',
                             rotuloCampo: 'Altura (cm)',
-                            unidade: 'cm',
                           },
                           grafico: {
                               chartArea: {
@@ -853,7 +843,6 @@ end if
                             fim: 76,
                             campo: 'altura',
                             rotuloCampo: 'Altura (cm)',
-                            unidade: 'cm',
                           },
                           grafico: {
                               chartArea: {
@@ -888,7 +877,6 @@ end if
                         fim: 76,
                         campo: 'altura',
                         rotuloCampo: 'Altura (cm)',
-                        unidade: 'cm',
                       },
                       grafico: {
                           chartArea: {
@@ -929,7 +917,6 @@ end if
                           fim: 27,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -959,7 +946,6 @@ end if
                           fim: 27,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -991,7 +977,6 @@ end if
                           fim: 24,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -1021,7 +1006,6 @@ end if
                           fim: 24,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -1054,7 +1038,6 @@ end if
                           fim: 60,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -1086,7 +1069,6 @@ end if
                           fim: 60,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -1121,7 +1103,6 @@ end if
                           fim: 24,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -1151,7 +1132,6 @@ end if
                           fim: 24,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -1184,7 +1164,6 @@ end if
                           fim: 60,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -1217,7 +1196,6 @@ end if
                           fim: 60,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -1253,7 +1231,6 @@ end if
                           fim: 120,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -1289,7 +1266,6 @@ end if
                           fim: 120,
                           campo: 'peso',
                           rotuloCampo: 'Peso (kg)',
-                          unidade: 'kg',
                         },
                         grafico: {
                             chartArea: {
@@ -1983,8 +1959,11 @@ end if
         */
         function abreGrafico(tipo, intervalo) {
 
+            if (tipo === undefined) {
+                tipo = window.sessionStorage.getItem('curva-tipo') || 0;
+            }
             if (intervalo === undefined) {
-                intervalo = 0;
+                intervalo = window.sessionStorage.getItem(`curva-intervalo-${tipo}`) || 0;
             }
 
             if (configs[tipo] && configs[tipo][intervalo] && configs[tipo][intervalo][Paciente.sexo]) {
@@ -1994,6 +1973,9 @@ end if
                 atualizaNav(tipo, intervalo);
                 atualizaTitulo(config);
                 renderizaGrafico(config, dados);
+
+                window.sessionStorage.setItem('curva-tipo', tipo);
+                window.sessionStorage.setItem(`curva-intervalo-${tipo}`, intervalo);
             } else {
                 throw new Error(`Configuração ${tipo}-${intervalo}-${Paciente.sexo} não encontrada`);
             }

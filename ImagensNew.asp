@@ -503,11 +503,10 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
             $('#configTipo').modal('toggle')
         }
     }
-
-
-    let ConfigPacienteID = '<%=PacienteID%>';
-    let ConfigMovementID = '<%=req("MovementID")%>';
-    let ConfigLaudoID    = '<%=req("LaudoID")%>';
+    let ConfigPacienteID      = '<%=PacienteID%>';
+    let ConfigMovementID      = '<%=request.QueryString("MovementID")%>';
+    let ConfigLaudoID         = '<%=request.QueryString("LaudoID")%>';
+    let ConfigOrdemDeCompraID = '<%=request.QueryString("OrdemDeCompraID")%>';
 
     let valorConsulta = null;
     let typeDoc = "all";
@@ -526,6 +525,11 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
     if(ConfigMovementID > 0){
         valorConsulta = ConfigMovementID;
         typeSearch = 'MovementID'
+    }
+
+    if(ConfigOrdemDeCompraID > 0){
+        valorConsulta = ConfigOrdemDeCompraID;
+        typeSearch = 'OrdemDeCompraID'
     }
 
     if(!typeSearch){

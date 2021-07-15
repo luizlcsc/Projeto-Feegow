@@ -10,7 +10,7 @@ PacienteID = req("P")
         </span>
         <span class="panel-controls">
             <button type="button" class="btn btn-sm btn-success" onclick="curvaValores()"><i class="fa fa-plus"></i> Valores </button>
-            <div id="divCurvaValores" class="panel" style="width:580px; border:1px solid #ccc; position:absolute; margin-left:-512px; background-color:#fff; z-index:1000; cursor:default; display:none">
+            <div id="divCurvaValores" class="panel" style="width:620px; border:1px solid #ccc; position:absolute; margin-left:-552px; background-color:#fff; z-index:1000; cursor:default; display:none">
             </div>
         </span>
     </div>

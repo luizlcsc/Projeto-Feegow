@@ -254,7 +254,7 @@ else
 		    set n2 = db.execute("SELECT * FROM sys_financialexpensetype WHERE Category="&n1("id")&" ORDER BY Ordem")
 		    while not n2.EOF
 				idn2 = n2("id")
-			    set val = db.execute("select sum(Valor) Total from cliniccentral.rel_analise where UsuarioID="&session("User")&" and CategoriaID="&idn2)
+			    set valTotal = db.execute("select COALESCE(sum(COALESCE(Valor, 0)),0) Total from cliniccentral.rel_analise where UsuarioID="&session("User")&" and CategoriaID="&idn2)
 			    c2 = c2+1
 			
 			    sqlv = ""
@@ -272,7 +272,6 @@ else
 			    if not isnull(grupos("g4")) then
 				    sqlv = sqlv & " OR CategoriaID in ("&grupos("g4")&") /*g4*/ "
 			    end if
-				
 			    sqlVal = "select sum(Valor) cTotal from cliniccentral.rel_analise where UsuarioID="&session("User")&" and (CategoriaID="&n2("id")
 				sqlRateio = "select count(*) as total from cliniccentral.rel_analise where Rateado = 1 AND UsuarioID = "&session("User")&" and (CategoriaID="&n2("id")
 
@@ -285,15 +284,17 @@ else
 				
 			
 			    set valRecursivo = db.execute(sqlVal)
+				cTotal = valRecursivo("cTotal")
 
 				temRateio2 = db.execute(sqlRateio)
 			    subtitChart = subtitChart & "'"& replace(n2("Name")&" ", "'", "") &"'" & ", "
-			    subvalChart = subvalChart & replace(replace(formatnumber(0&valRecursivo("cTotal"),2), ".", ""), ",", ".") & ", "
+			    subvalChart = subvalChart & replace(replace(fn(0&cTotal), ".", ""), ",", ".") & ", "
 			    %>
-			    <tr<%if (valRecursivo("cTotal")=0 or isnull(valRecursivo("cTotal"))) AND req("Ocultar")="S" then%> class="hidden"<%end if%> onClick="cd(<%=n2("id")%>)">
+			    <tr<%if (cTotal=0 or isnull(cTotal)) AND req("Ocultar")="S" then%> class="hidden"<%end if%> onClick="cd(<%=n2("id")%>)">
 				    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=c0 &"."& c1 &"."& c2%>. <%=n2("Name")%></td>
-				    <td class="text-right hidden"><%=formatnumber(0&val("Total"),2)%></td>
-				    <td class="text-right"><% if ccur(temRateio2("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="fa fa-share-alt"></i></span> <% end if %> <%=formatnumber(0&valRecursivo("cTotal"),2)%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					
+				    <td class="text-right hidden"><%=fn(valTotal("Total"))%></td>
+				    <td class="text-right"><% if ccur(temRateio2("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="fa fa-share-alt"></i></span> <% end if %> <%=fn(0&cTotal)%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			    </tr>
 			    <%
 			    c3 = 0

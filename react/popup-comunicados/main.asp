@@ -12,23 +12,33 @@
 <script crossorigin type="text/babel" src="react/popup-comunicados/components/Popup.js"></script>
 <script crossorigin type="text/babel" src="react/popup-comunicados/components/ModalPopup.js"></script>
 <script crossorigin type="text/babel" src="react/popup-comunicados/components/NFSePopup.js"></script>
+<script crossorigin type="text/babel" src="react/popup-comunicados/components/FeegowHubPopup.js"></script>
+
 <script src="https://unpkg.com/vue-select@3.0.0"></script>
 <link rel="stylesheet" href="https://unpkg.com/vue-select@3.0.0/dist/vue-select.css">
 
 <link type="text/css" rel="stylesheet" href="react/popup-comunicados/src/css/popup.css" />
 
+
 <script type="text/babel">
-    const onActionButton = (action, comunicadoId) => {
+    const onActionButton = (action, comunicadoId, close = false) => {
         PopupService.base("PopupVisualizado", "ComunicadoID="+comunicadoId+"&Interesse="+action);
         $('#popup-comunicado').fadeOut();
 
-        if(action === 1){
+        if(action === 1 && !close){
             $('#popup-modal').modal("show");
         }
     };
 
+    const onCloseModal = () => {
+        $("#react-popup-root").fadeOut();
+    }
 
-   let comunicadoId=4;
+
+   let comunicadoId=7;
+    let userId = "<%=Session("User")%>";
+    let licenseId = "<%=replace(Session("Banco"),"clinic","")%>";
+
     PopupService.getComunicadoByIdUnvisualized(comunicadoId, (comunicadoObj) => {
         let component = null;
 
@@ -44,9 +54,13 @@
                 component = <NFSePopup comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
             }else if(comunicadoId == 5){
                 component = <NFSePopup comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
+            }else if(comunicadoId == 6){
+
+            }else if(comunicadoId == 7){
+                component = <FeegowHubPopup userId={userId} licenseId={licenseId} onClosePopup={()=>{onCloseModal()}} comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
             }
 
-            ReactDOM.render(<Popup modalContentEndpoint={comunicadoObj[index].EndpointModal} component={component}/>,document.getElementById('react-popup-root'));
+            ReactDOM.render(<Popup  modalContentEndpoint={comunicadoObj[index].EndpointModal} component={component}/>,document.getElementById('react-popup-root'));
        } }
 
     });

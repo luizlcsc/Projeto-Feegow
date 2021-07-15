@@ -64,7 +64,10 @@ elseif req("Tipo")="M" then
 elseif req("Tipo")="A" then
 	set listaAtestado = db.execute("select * from pacientesatestadostextos where id="&ref("id"))
 	if not listaAtestado.eof then
-		Atestado = "<p><strong>"&listaAtestado("TituloAtestado")&"</strong><br /><br />"
+		TituloAtestado = listaAtestado("TituloAtestado")
+		if TituloAtestado <> "" then
+			Atestado = "<p><strong>"&TituloAtestado&"</strong><br /><br />"
+		end if
 		Atestado = Atestado &listaAtestado("TextoAtestado")&"</p>"
 		TextoFinal = Atestado
 
@@ -96,7 +99,6 @@ elseif req("Tipo")="E" then
      else
         set listaPedido = db.execute("select * from pacientespedidostextos where id="&ref("id"))
         if not listaPedido.eof then
-
             Pedido = "<p><strong>"&listaPedido("TituloPedido")&"</strong>"
             Pedido = Pedido &listaPedido("TextoPedido")&"</p>"
             TextoFinal = Pedido

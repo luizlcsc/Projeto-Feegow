@@ -1,5 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/ApiClient.asp"-->
+<!--#include file="sqls/sqlUtils.asp"-->
+
 <%
 T = req("T")
 ValorPagto = ccur(ref("ValorPagto"))
@@ -65,9 +67,9 @@ insMov = "insert into sys_financialMovement (Name, AccountAssociationIDCredit, A
 'response.Write(insMov)
 
 db.execute(insMov)
+LastMovementIDQ = db.execute("SELECT LAST_INSERT_ID() as Last")
+LastMovementID = LastMovementIDQ("last") 
 call gravaLog(insMov, "AUTO")
-set getLastMovementID = db.execute("select id from sys_financialMovement order by id desc LIMIT 1")
-LastMovementID = getLastMovementID("id")
 
 webhookJson = "{ ""forma_pagamento_id"": """&ref("MetodoID")&""", ""valor"": """&treatVal(ValorPagto)&""", ""data_recebimento"": """&now()&""", ""id"": "&LastMovementID&", ""unidade_id"": """&ref("UnidadeIDPagto")&""" }"
 
@@ -118,31 +120,20 @@ if T="C" then
 		if not getAssociation.eof then
 			set getAccountData = db.execute("select * from "&getAssociation("table")&" where id="&AccountIDDebit)
 
-            requestBandeiraCartaoSelecionado = request.form("BandeiraCartaoID"&sufixo)
+            requestBandeiraCartaoSelecionado = ref("BandeiraCartaoID"&sufixo)
             requestNumeroParcelas = ref("NumberOfInstallments"&sufixo)
 
-            set getAccountPercentual = db.execute("SELECT acrescimoPercentual "&_
-                                                   " FROM sys_financial_current_accounts_percentual "&_
-                                                  " WHERE sys_financialCurrentAccountId = "&DestinoID&" "&_
-                                                    " AND bandeira = "&requestBandeiraCartaoSelecionado&_
-                                                    " AND tipoFormaPagamento = "&ref("MetodoID")&" "&_
-                                                    " AND "&requestNumeroParcelas&" BETWEEN minimo AND maximo;")
-
-            PercentageDeductedEspecif = ""
-            if not getAccountPercentual.EOF then
-                PercentageDeductedEspecif = getAccountPercentual("acrescimoPercentual")&""
-            end if
+            queryTaxa = getTaxaAtual(DestinoID,LastMovementID,requestNumeroParcelas)
+            set RetornoTaxaAtual2 = db.execute(queryTaxa)
+            taxaAtual= ""
+            taxaAtual = RetornoTaxaAtual2("taxaAtual")
 
 			if not getAccountData.EOF then
                 if AccountAssociationIDDebit = 1 then
-                    PercentageDeducted = getAccountData("PercentageDeducted")
+                    PercentageDeducted = taxaAtual
                 else
                     PercentageDeducted = 0
-                end if
-                
-                if PercentageDeductedEspecif <> "" then 
-                    PercentageDeducted = PercentageDeductedEspecif
-                end if                
+                end if             
 
 				DaysForCredit = getAccountData("DaysForCredit")
 				NumberOfInstallments = ccur(ref("NumberOfInstallments"&sufixo))
@@ -166,7 +157,7 @@ if T="C" then
 							thisDateToReceive=DateToReceive
 						end if
 					end if
-					db.execute("insert into sys_financialCreditCardReceiptInstallments (DateToReceive, Fee, Value, TransactionID, InvoiceReceiptID, Parcela) values ("&myDatenull(thisDateToReceive)&", "&treatvalzero(PercentageDeducted)&", "&treatValnull(cardInstallmentValue)&", "&TransactionID&", 0, "&c&")")
+					db.execute("insert into sys_financialCreditCardReceiptInstallments (DateToReceive, Fee, Value, TransactionID, InvoiceReceiptID, Parcela) values ("&myDatenull(thisDateToReceive)&", "&PercentageDeducted&", "&treatValnull(cardInstallmentValue)&", "&TransactionID&", 0, "&c&")")
 				wend
 			end if
 		end if

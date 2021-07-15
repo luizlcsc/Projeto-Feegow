@@ -37,7 +37,7 @@
 	if($extensao==".png" || $extensao==".jpg" || $extensao==".bmp" || $extensao==".gif" || $extensao=="jpeg"){
 		file_put_contents("E:\\uploads\\{$licenseId}\\Imagens\\".$fileName, $image_data);
 
-		$db = mysqli_connect($_GET['IP'], 'root', 'pipoca453', $_GET['B']);
+		$db = mysqli_connect($_GET['IP'], getenv("FC_MYSQL_USER"), getenv("FC_MYSQL_PASSWORD"), $_GET['B']);
 		$sql = "insert into arquivos (NomeArquivo, Tipo, PacienteID) values ('".$fileName."', 'I', ".$_GET['PacienteID'].")";
 		$consulta = mysqli_query($db, $sql);
 		mysqli_close($db);

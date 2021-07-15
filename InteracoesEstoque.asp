@@ -45,17 +45,20 @@ if not getInteracoes.eof then
     AlimentosRestricaoParcial = getInteracoes("AlimentosRestricaoParcial")
 end if
 %>
-<div class="panel-heading mb20">
-    <span class="panel-title">
-        Interações do Medicamento
-    </span>
-</div>
+<style>
+    #formInteracoes .panel-heading{
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
 <form action="" method="post" id="formInteracoes">
-<div class="clearfix form-actions">
-    <div class="col-xs-2 pull-right">
-        <button class="btn btn-sm btn-success btn-block"><i class="fa fa-save"></i> Salvar</button>
+    <div class='panel-heading'>
+        <span>Interações do Medicamento</span>
+        <div class='actionArea'>
+            <button class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
+        </div>
     </div>
-</div>
+
 <div class="row mt30">
     <div class="col-md-12" id="InteracoesEstoqueTabela">
         <table id="InteracoesMedicamento"  class="table table-striped table-bordered table-condensed table-hover">
@@ -142,7 +145,7 @@ $("#formInteracoes").submit(function(){
 	$.post("InteracoesEstoque.asp?Acao=I&I=<%=I%>", $("#formInteracoes").serialize(), function(data, status){ eval(data) } );
 	return false;
 })
-
+showSalvar(false)
 <!--#include file="jQueryFunctions.asp"-->
 
 </script>

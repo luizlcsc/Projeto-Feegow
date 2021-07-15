@@ -7,7 +7,11 @@
 <%
 tableName = ref("P")
 id = ref("I")
+
+
+' vuneravilidade
 spl = split(request.Form(), "&")
+
 Novo=False
 sysActive=0
 
@@ -351,13 +355,12 @@ if not getResource.EOF then
 				end if
 			end if
 		else
-			sqlValue = "'"&ref(getFields("columnName"))&"'"
+			sqlValue = "'"&refhtml(getFields("columnName"))&"'"
 		end if
 
         IF getFields("id") = 1 or getFields("id") = 138 or getFields("id") = 250 then
 
-
-            valor = ref(getFields("columnName"))
+            valor = refhtml(getFields("columnName"))
 
             if instr(getFields("columnName"), "Nome")>0 then
                 valor = NomeNoPadrao(valor)
@@ -397,7 +400,6 @@ if not getResource.EOF then
 	    'atualiza a hora do cadastro
 	    sqlFields = sqlFields & ", sysDate=NOW()"
 	end if
-
 	sql = "update "&tableName&" set "&sqlFields&" where id="&id
 	
 	if erro<>"" then
@@ -782,8 +784,9 @@ if lcase(ref("P"))="profissionais" then
     if ref("Especialidades")<>"" then
         if inStr(ref("Especialidades"), ", ") > 0 then
             spl = split(ref("Especialidades"), ", ")
-            for i=0 to ubound(spl)
-                n = spl(i)
+
+            for iEspecialidades=0 to ubound(spl)
+                n = spl(iEspecialidades)
                 db.execute("update profissionaisespecialidades set RQE='"&ref("RQE"&n)&"',EspecialidadeID="&treatvalnull(ref("EspecialidadeID"&n))&", Conselho='"&ref("Conselho"&n)&"', UFConselho='"&ref("UFConselho"&n)&"', DocumentoConselho='"&ref("DocumentoConselho"&n)&"' where id="&n)
             next
         else
@@ -797,11 +800,13 @@ end if
 
 
 'on error resume next
+
+    ' vunerabilidade pior ainda
 	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(request.Form(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
 
 if sqlAtivoNome<>"" then
     on error resume next
-    ConnString1 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
+    ConnString1 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
     Set db1 = Server.CreateObject("ADODB.Connection")
     db1.Open ConnString1
     db1.execute( sqlAtivoNome )

@@ -4,6 +4,8 @@
 <thead>
 	<tr>
     	<th>Nome</th>
+        <th>Nascimento</th>
+        <th>CPF</th>
     	<th colspan="2" class="text-center"><i class="fa fa-eye "></i>Compare</th>
     	<th><i class="fa fa-compress"></i> Mesclar</th>
         <th width="1"><label><input class="ace hidden" onclick="$('input[type=checkbox]').prop('checked', $(this).prop('checked') )" checked type="checkbox"><span class="lbl"></span></label></th>
@@ -12,7 +14,8 @@
 <tbody>
 <%
 response.Buffer=true
-set pacs = db.execute("select id, trim(NomePaciente) NomePaciente, Nascimento from pacientes where not isnull(NomePaciente) and NomePaciente<>'' and sysActive=1 order by (NomePaciente), Nascimento,id limit 50000")
+set pacs = db.execute("select id, trim(NomePaciente) NomePaciente, Nascimento, CPF from pacientes "&_
+" where not isnull(NomePaciente) and NomePaciente<>'' and sysActive=1 order by (NomePaciente), Nascimento,id limit 50000")
 c = 0
 while not pacs.eof
 	response.Flush
@@ -29,7 +32,9 @@ while not pacs.eof
             c=c+1
             %>
             <tr>
-                <td><%=pacs("NomePaciente")%> (<%=Nascimento%>)</td>
+                <td><%=pacs("NomePaciente")%></td>
+                <td><%=Nascimento%></td>
+                <td><%=pacs("CPF")%></td>
                 <td><a class="btn btn-xs btn-info" target="_blank" href="?P=Pacientes&Pers=1&I=<%=Paciente0%>"><i class="fa fa-user"></i> Prontuário <%=Paciente0%></a></td>
                 <td><a class="btn btn-xs btn-info" target="_blank" href="?P=Pacientes&Pers=1&I=<%=Paciente1%>"><i class="fa fa-user"></i> Prontuário <%=Paciente1%></a></td>
                 <td><a class="btn btn-xs btn-success" target="_blank" href="mesclar.asp?p1=<%=Paciente0%>&p2=<%=Paciente1%>"><i class="fa fa-compress"></i> MESCLAR</a></td>

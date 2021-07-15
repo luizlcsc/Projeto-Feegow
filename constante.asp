@@ -1,7 +1,7 @@
 ﻿<%
 if session("User")="" then
     %>
-    $("#disc").html('<i class="fa fa-plug"></i> VOC&Ecirc; EST&Aacute; DESCONECTADO. <a class="btn btn-default" href="./?P=Login&qs=<%=Request.Form("qs")%>">VOLTAR AO LOGIN</a>');
+    $("#disc").html('<i class="fa fa-plug"></i> VOC&Ecirc; EST&Aacute; DESCONECTADO. <a class="btn btn-default" href="./?P=Login&qs=<%=ref("qs")%>">VOLTAR AO LOGIN</a>');
     $("#disc").removeClass('hidden');
     <%
 else
@@ -86,7 +86,7 @@ else
 
 		    session.Abandon()
 		    %>
-		    location.href='./?P=Login&qs=<%=Request.Form("qs")%>';
+		    location.href='./?P=Login&qs=<%=ref("qs")%>';
 		    <%
 	    end if
 	    'CHAMADA DE VOZ

@@ -1,14 +1,14 @@
 <!--#include file="connect.asp"-->
 <!--#include file="DefaultForm.asp"-->
 <%
-tableName=request.QueryString("P")
-id=request.QueryString("I")
+tableName=req("P")
+id=req("I")
 if id="" then
 	call DefaultForm(tableName, id)
 else
 
 	if ref("E")="E" then
-		sql = "update sys_financialCurrentAccounts set Proprietario='"&ref("Proprietario")&"', AccountName='"&ref("AccountName")&"', AccountType="&refNull("AccountType")&", Holder='"&ref("Holder")&"', Document='"&ref("Document")&"',UsuariosConfirmadores='"&ref("UsuariosConfirmadores")&"', Bank="&refNull("Bank")&", Branch='"&ref("Branch")&"', CurrentAccount='"&ref("CurrentAccount")&"', CreditAccount="&refNull("CreditAccount")&", DaysForCredit='"&ref("DaysForCredit")&"', BestDay='"&ref("BestDay")&"', PercentageDeducted="&treatvalzero(ref("PercentageDeducted"))&", Currency='"&ref("Currency")&"', DueDay='"&ref("DueDay")&"', BestDay='"&ref("BestDay")&"', Empresa="&treatvalzero(ref("Empresa"))&", sysActive=1 where id="&id
+		sql = "update sys_financialCurrentAccounts set Proprietario='"&ref("Proprietario")&"', AccountName='"&ref("AccountName")&"', AccountType="&treatvalnull(ref("AccountType"))&", Holder='"&ref("Holder")&"', Document='"&ref("Document")&"',UsuariosConfirmadores='"&ref("UsuariosConfirmadores")&"', Bank="&treatvalnull(ref("Bank"))&", Branch='"&ref("Branch")&"', CurrentAccount='"&ref("CurrentAccount")&"', CreditAccount="&treatvalnull(ref("CreditAccount"))&", DaysForCredit='"&ref("DaysForCredit")&"', BestDay='"&ref("BestDay")&"', PercentageDeducted="&treatvalzero(ref("PercentageDeducted"))&", Currency='"&ref("Currency")&"', DueDay='"&ref("DueDay")&"', BestDay='"&ref("BestDay")&"', Empresa="&treatvalzero(ref("Empresa"))&", sysActive=1 where id="&id
 		db_execute(sql)
 		response.Write(sql)
 		response.Redirect("?P=sys_financialCurrentAccounts&Pers=Follow")
@@ -26,7 +26,7 @@ else
 
 	set reg = db.execute("select * from "&tableName&" where id="&id)
 	if reg.eof then
-		response.Redirect("?P="&request.QueryString("P")&"&I=N&Pers=1")
+		response.Redirect("?P="&req("P")&"&I=N&Pers=1")
 	else
 		id = reg("id")
 		AccountType = reg("AccountType")
@@ -35,9 +35,9 @@ else
 	%>
 	<%
 
-	id=request.QueryString("I")
-    call insertRedir(request.QueryString("P"), request.QueryString("I"))
-    set reg = db.execute("select * from sys_financialcurrentaccounts where id="&request.QueryString("I"))
+	id=req("I")
+    call insertRedir(req("P"), req("I"))
+    set reg = db.execute("select * from sys_financialcurrentaccounts where id="&req("I"))
 
     %>
     <%=header(req("P"), "Cadastro de Conta Corrente", reg("sysActive"), req("I"), req("Pers"), "Follow")%>

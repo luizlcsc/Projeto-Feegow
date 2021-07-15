@@ -1,5 +1,5 @@
 <%
-if request.QueryString("E")="E" then
+if req("E")="E" then
 %>
 <div class="clearfix form-actions">
 	<div class="col-md-8">

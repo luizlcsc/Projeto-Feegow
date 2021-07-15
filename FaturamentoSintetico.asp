@@ -58,7 +58,7 @@ else
 	while not units.eof
 		UnidadeID = units("id")
 		'response.Write(session("Unidades"))
-		if (instr(session("Unidades"), "|"&UnidadeID&"|")>0 or session("Admin")=1) and (instr(request.QueryString("Unidades"), "|"&UnidadeID&"|") or request.QueryString("Unidades")="") then
+		if (instr(session("Unidades"), "|"&UnidadeID&"|")>0 or session("Admin")=1) and (instr(req("Unidades"), "|"&UnidadeID&"|") or req("Unidades")="") then
 			%>
     	    <!--#include file="FaturamentoSinteticoConteudo.asp"-->
         	<%

@@ -21,7 +21,7 @@ response.Buffer
 </thead>
 <tbody>
 <%
-if request.QueryString("C")="S" then
+if req("C")="S" then
 else
 	set l = dbc.execute("select licencas.*, (select DataHora from licencaslogins where LicencaID=licencas.id order by id desc limit 1) as UltimoAcesso, licencasusuarios.* from licencas join licencasusuarios on licencasusuarios.`LicencaID`=licencas.`id` and isnull(Excluido) and Cliente=0 and (Telefone like '(1%' or Celular like '(1%') order by licencas.DataHora desc")
 end if

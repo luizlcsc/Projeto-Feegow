@@ -30,8 +30,8 @@ function badge(val)
 	end if
 end function
 
-PacienteID = request.QueryString("I")
-call insertRedir(request.QueryString("P"), PacienteID)
+PacienteID = req("I")
+call insertRedir(req("P"), PacienteID)
 if req("Agenda")="1" then
     set reg = db.execute("select p.*, '0' totalprescricoes, '0' totalatestados, '0' totalpedidos, '0' totaldiagnosticos, '0' totalarquivos, '0' totalimagens, '0' qtepedidos,'0' totalrecibos, '0' totalae, '0' totallf from Pacientes as p where id="&PacienteID)
 else
@@ -63,7 +63,7 @@ end if
 
 	<input type="hidden" name="I" value="<%=PacienteID%>" />
 	<input type="hidden" name="cmd" value="<%=req("cmd")%>" />
-	<input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+	<input type="hidden" name="P" value="<%=req("P")%>" />
 
 
 <%=header(req("P"), "Paciente", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
@@ -577,7 +577,7 @@ end if
             <div class="col-md-6">
                 <label style="" class="error_msg"></label><br>
                 <label>Senha do Usuário</label>
-                <input type="password" id="password" name="password" class="form-control">
+                <input type="hidden" id="tabela-password" name="tabela-password" class="form-control">
             </div>
 
         <div class="col-md-12 tabelaParticular" style="color:#000;">
@@ -852,22 +852,7 @@ $(function(){
         if(nomePais != "" && nomePais != "Brasil"){
             //$("#CPF").prop("required", false);
         }else{
-
-        <%
-            set obriga = db.execute("select * from obrigacampos where Tipo='Paciente' and Obrigar like '%|%'")
-            if not obriga.eof then
-                Obr = obriga("Obrigar")
-                splObr = split(Obr, ", ")
-                for o=0 to ubound(splObr)
-                    %>
-            if(!$("#<%=replace(splObr(o), "|", "") %>").parents(".qr").hasClass("hidden")){
-                $("#<%=replace(splObr(o), "|", "") %>").prop("required", true);
-            }
-                <%
-                next
-            end if
-        %>
-
+            toRequired()
         }
     });
 });
@@ -904,6 +889,7 @@ $(idStr).change(function(){
         data: {autorization:"buscartabela",id:id,sysUser:sysUser},
         success:function(result){
             if(result == "Tem regra"){
+                $("#permissao-password").attr("type","password");
                 $('#permissaoTabela').modal('show');
                 buscarNome(id,sysUser,regra);
                 }
@@ -911,7 +897,7 @@ $(idStr).change(function(){
 });
     $('.confirmar').click(function(){
             var Usuario =  $('input[name="nome"]:checked').val();
-            var senha   =  $('#password').val();
+            var senha   =  $('#permissao-password').val();
             liberar(Usuario , senha , id , Nometable);
             $('.error_msg').empty(); 
         });

@@ -514,12 +514,5 @@
         end if
     end if
 
-    if aut("auditoriaV")=1 then
+
     %>
-    <li <% If req("P")="auditoria/auditar" Then %> class="active"<% End If %>>
-        <a href="./?P=auditoria/auditar&Pers=1">
-            <span class="fa fa-eye"></span>
-            <span class="sidebar-title"> Auditoria </span>
-        </a>
-    </li>
-    <% end if %>

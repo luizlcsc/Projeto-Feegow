@@ -61,25 +61,55 @@ if ref("HoraDe")<>"" and ref("HoraA")<>"" and ref("Intervalo")<>"" then
     end if
 
     if erro<>"" then
-        PermiteSalvar = False
+        PermiteSalvar = false
     end if
 
+    exibirPainelDiasSemana = false
+
     if ref("LocalID")<>"0" then
+
+        if ref("InicioVigencia")&"" = "" then
+            InicioGrade = mydatenull(date())
+        else
+            InicioGrade = mydatenull(ref("InicioVigencia"))
+        end if
+
+        if ref("FimVigencia")&"" = "" then
+            FimGrade = mydatenull("2999-01-01")
+        else
+            FimGrade = mydatenull(ref("FimVigencia"))
+        end if
+
         'verifica se esse horario ja esta preenchido por outro profissional no mesmo LOCAL
         sqlHorarioPreenchido = "SELECT a.id,p.NomeProfissional FROM assfixalocalxprofissional a INNER JOIN profissionais p ON p.id=a.ProfissionalID WHERE a.DiaSemana = "& req("Dia") &_
-                                   " AND ((a.HoraDe <= '"&ref("HoraDe")&"' AND a.HoraA > '"&ref("HoraA")&"') OR " &_
-                                   " (a.HoraDe >= '"&ref("HoraDe")&"' AND a.HoraDe <= '"&ref("HoraDe")&"'))"&_
-                                   " AND ((a.InicioVigencia >= "&mydatenull(ref("InicioVigencia"))&" OR a.InicioVigencia IS NULL) AND (a.FimVigencia <= "&mydatenull(ref("FimVigencia"))&" OR a.FimVigencia IS NULL)) AND "&_
-                                   "a.ProfissionalID!="&treatvalzero(req("ProfissionalID"))&" AND p.Ativo='on' AND p.sysActive=1 AND a.LocalID="&treatvalzero(ref("LocalID"))
+                                " AND ((a.HoraDe <= '"&ref("HoraDe")&"' AND a.HoraA >= '"&ref("HoraA")&"') " &_
+                                " OR (a.HoraDe >= '"&ref("HoraDe")&"' AND a.HoraA <= '"&ref("HoraA")&"') "&_
+                                " OR (a.HoraDe < '"&ref("HoraA")&"' AND a.HoraA > '"&ref("HoraDe")&"')) "&_
+                                " AND( "&_
+                                "		( ((a.InicioVigencia <= "&InicioGrade&" AND a.InicioVigencia <= "&FimGrade&") OR a.InicioVigencia IS NULL) AND (a.FimVigencia >= "&FimGrade&" OR a.FimVigencia IS NULL)) "&_
+                                "		OR "&_
+                                "		( ((a.InicioVigencia <= "&InicioGrade&" AND a.FimVigencia >= "&InicioGrade&") OR a.InicioVigencia IS NULL) AND ((a.FimVigencia >= "&FimGrade&") OR a.FimVigencia IS NULL)) "&_
+                                "		OR "&_
+                                "		((a.InicioVigencia >= "&InicioGrade&" AND a.InicioVigencia <= "&FimGrade&") OR a.InicioVigencia IS NULL) "&_
+                                "		OR "&_
+                                "		((a.InicioVigencia <= "&FimGrade&" OR a.InicioVigencia IS NULL) AND (a.FimVigencia >= "&InicioGrade&" OR a.FimVigencia IS NULL)) "&_
+                                "		OR "&_
+                                "		((a.InicioVigencia >= "&InicioGrade&" OR a.InicioVigencia IS NULL) AND a.FimVigencia IS NULL) "&_
+                                "    ) "&_
+                                " AND p.Ativo='on' AND p.sysActive=1 AND a.LocalID="&treatvalzero(ref("LocalID"))
 
         set HorarioPreenchidoSQL = db.execute(sqlHorarioPreenchido)
 
         if not HorarioPreenchidoSQL.eof then
             erro = "Este horário já está preenchido pelo(a) profissional "&HorarioPreenchidoSQL("NomeProfissional")
         end if
+    else
+        erro = "O local de atendimento é obrigatório!"
+        PermiteSalvar = false
+        exibirPainelDiasSemana = true
     end if
 
-    if PermiteSalvar then
+    if PermiteSalvar <> false then
 
         if req("H")="" then
         diaSemanaArray = split(ref("diaSemanaArray[]"),",")
@@ -151,7 +181,7 @@ end if
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <% if req("addGrade")&"" = "0" then %>
+            <% if req("addGrade")&"" = "0" or exibirPainelDiasSemana <> fasle then %>
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">
@@ -201,7 +231,7 @@ end if
     <%
         'if ProfissionalID>0 then
 
-            response.write(quickField("simpleSelect", "LocalID", "Local", 6, LocalID, "select l.*, CONCAT(l.NomeLocal, IF(l.UnidadeID=0,IFNULL(concat(' - ', e.Sigla), ''),IFNULL(concat(' - ', fcu.Sigla), '')))NomeLocal from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID where "&franquia(" COALESCE(cliniccentral.overlap(CONCAT('|',l.UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND")&"  l.sysActive=1 "&sqlUnidades&" order by l.NomeLocal", "NomeLocal", ""))
+            response.write(quickField("simpleSelect", "LocalID", "Local", 6, LocalID, "select l.*, CONCAT(l.NomeLocal, IF(l.UnidadeID=0,IFNULL(concat(' - ', e.Sigla), ''),IFNULL(concat(' - ', fcu.Sigla), '')))NomeLocal from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID where "&franquia(" COALESCE(cliniccentral.overlap(CONCAT('|',l.UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND")&"  l.sysActive=1 "&sqlUnidades&" order by l.NomeLocal", "NomeLocal", "required"))
         'end if
     %>
   </div>

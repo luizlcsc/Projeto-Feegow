@@ -2,7 +2,7 @@
 <%
 set lic = db.execute("select id, ultimoBackup, nomeContato, NomeEmpresa, Servidor from cliniccentral.licencas where date(ultimoBackup)<>curdate() and Status<>'T' and Servidor='192.168.193.45' order by id limit 1")
 if not lic.eof then
-    ConnStringDB = "Driver={MySQL ODBC 5.3 ANSI Driver};Server="& lic("Servidor") &";Database=clinic"&lic("id")&";uid=root;pwd=pipoca453;"
+    ConnStringDB = "Driver={MySQL ODBC 5.3 ANSI Driver};Server="& lic("Servidor") &";Database=clinic"&lic("id")&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
     Set dbDB = Server.CreateObject("ADODB.Connection")
     dbDB.Open ConnStringDB
     %>

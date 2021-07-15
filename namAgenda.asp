@@ -6,7 +6,7 @@ DiaSemana = weekday(Data)
 NomeProfissional = ref("NomeProfissional")
 CorPadrao = ref("Cor")
 Cor = CorPadrao
-ProcedimentoID = request.form("ProcedimentoID")
+ProcedimentoID = ref("ProcedimentoID")
 HVazios = ref("HVazios")
 strAB = ref("strAB")
 Especialidades = ref("Especialidades")
@@ -16,8 +16,14 @@ if instr(ref("Locais"), "UNIDADE_ID")>0 then
     UnidadesIN = replace(Unidades, "|", "'")
     sqlUnidadesHorarios = " AND l.UnidadeID IN("& UnidadesIN &") "
     joinLocaisUnidades = " LEFT JOIN locais l ON l.id=a.LocalID "
+    
     whereLocaisUnidades = " AND l.UnidadeID IN("& UnidadesIN &") "
+
+else
+    'sqlUnidadesHorarios = " AND l.UnidadeID IN("& session("UnidadeID") &") "
+    'joinLocaisUnidades = " LEFT JOIN locais l ON l.id=a.LocalID "
 end if
+
 '    response.write("{{"& sqlUnidadesHorarios &"}}")
 LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 
@@ -81,7 +87,7 @@ end if
 
 
 Hora = cdate("00:00")
-sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentoPermitido& sqlEspecialidadePermitido & sqlConvenioPermitido&" order by HoraDe"
+sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentoPermitido& sqlEspecialidadePermitido & sqlConvenioPermitido&sqlUnidadesHorarios &" order by HoraDe"
 set Horarios = db.execute(sqlHorarios)
 if Horarios.EOF then
     sqlHorarios2 = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, Mensagem from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) "&sqlUnidadesHorarios & sqlProcedimentoPermitido& sqlEspecialidadePermitido&sqlConvenioPermitido &" order by ass.HoraDe"
@@ -461,7 +467,7 @@ while not comps.EOF
 
     if session("HVazios")="" then
 		Conteudo = "<tr style=\'background-color:"&CorProcedimento&"!important\' data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'\',\'"&GradeID&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" "&FirstTdBgColor&" ><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
-	    if comps("Encaixe")=1 then
+	    if comps("Encaixe")=1 and getConfig("OmitirEncaixeGrade")=0 then
 		    Conteudo = Conteudo & "<span class=""label label-alert label-sm arrowed-in arrowed-in-right"">Enc</span>"
 	    end if
         

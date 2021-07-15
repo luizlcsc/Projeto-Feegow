@@ -4,7 +4,7 @@
 <%
 'on error resume next
 response.Charset="utf-8"
-set pCampo=db.execute("select * from buiCamposForms where id = '"&replace(request.QueryString("I"),"'","''")&"'")
+set pCampo=db.execute("select * from buiCamposForms where id = '"&replace(req("I"),"'","''")&"'")
 RotuloCampo=ref("RotuloCampo")
 NomeCampo=left(tratoForm(RotuloCampo),16)
 set	vcaOutro=db.execute("select * from buiCamposForms where lcase(NomeCampo) like '"&NomeCampo&"' and id<>"&pCampo("id")&" and FormID like '"&pCampo("FormID")&"'")
@@ -23,13 +23,13 @@ end if
 vcaOutro.close
 set vcaOutro=nothing
 ValorPadrao=ref("ValorPadrao")
-Tamanho=request.Form("Tamanho")
-Linhas=request.Form("Linhas")
-Colunas=request.Form("Colunas")
-Largura=request.Form("Largura")
-MaxCarac=request.Form("MaxCarac")
-Checado=request.Form("Checado")
-Obrigatorio=request.Form("Obrigatorio")
+Tamanho=ref("Tamanho")
+Linhas=ref("Linhas")
+Colunas=ref("Colunas")
+Largura=ref("Largura")
+MaxCarac=ref("MaxCarac")
+Checado=ref("Checado")
+Obrigatorio=ref("Obrigatorio")
 Texto=ref("Texto")
 if not pCampo.EOF then
 	antigoMaxCarac=pCampo("MaxCarac")
@@ -69,7 +69,7 @@ if pCampo("TipoCampoID")<>3 then
 	alteraValorPadrao = "ValorPadrao='"&ValorPadrao&"', "
 end if
 
-sql = "update buiCamposForms set NomeCampo='"&NomeCampo&"', RotuloCampo='"&RotuloCampo&"', "& alteraValorPadrao &"Tamanho='"&Tamanho&"', Linhas='"&Linhas&"', Colunas='"&Colunas&"', Largura='"&Largura&"', MaxCarac='"&MaxCarac&"', Checado='"&Checado&"', Obrigatorio='"&Obrigatorio&"', Texto='"&Texto&"', Ordem='"&request.QueryString("O")&"' where id = '"&replace(request.QueryString("I"),"'","''")&"'"
+sql = "update buiCamposForms set NomeCampo='"&NomeCampo&"', RotuloCampo='"&RotuloCampo&"', "& alteraValorPadrao &"Tamanho='"&Tamanho&"', Linhas='"&Linhas&"', Colunas='"&Colunas&"', Largura='"&Largura&"', MaxCarac='"&MaxCarac&"', Checado='"&Checado&"', Obrigatorio='"&Obrigatorio&"', Texto='"&Texto&"', Ordem='"&req("O")&"' where id = '"&replace(req("I"),"'","''")&"'"
 
 'response.Write(sql)
 db_execute(sql)

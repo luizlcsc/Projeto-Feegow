@@ -1,2 +1,2 @@
 <!--#include file="connect.asp"-->
-<%=request.QueryString("PM")%>
+<%=req("PM")%>

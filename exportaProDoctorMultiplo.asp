@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="limpaMemo.asp"-->
 <%
-idInicial = request.QueryString("idInicial")
+idInicial = req("idInicial")
 if idInicial="" then
 	idInicial=0
 end if
@@ -14,15 +14,15 @@ response.Charset="utf-8"
 
 'server.ScriptTimeout = 100000
 
-dbOrigem = request.QueryString("Origem")
+dbOrigem = req("Origem")
 
 Set origem = Server.CreateObject("ADODB.Connection")
-origem.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database="&dbOrigem&";uid=root;pwd=pipoca453;"
-'origem.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=danielvasconcellos;uid=root;pwd=pipoca453;"
+origem.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database="&dbOrigem&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
+'origem.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=danielvasconcellos;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 
 Set destino = Server.CreateObject("ADODB.Connection")
-destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database="&request.QueryString("Destino")&";uid=root;pwd=pipoca453;"
-'destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=danielvasconcellosimportado;uid=root;pwd=pipoca453;"
+destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database="&req("Destino")&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
+'destino.Open "Driver={MySQL ODBC 5.2 ANSI Driver};Server=localhost;Database=danielvasconcellosimportado;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 
 
 'set p = origem.execute("select * from sch_contact")
@@ -362,7 +362,7 @@ end if
 if achou="S" then
 %>
 <script>
-location.href='exportaprodoctorMultiplo.asp?Origem=<%=request.QueryString("Origem")%>&Destino=<%=request.QueryString("Destino")%>&idInicial=<%=idFinal%>';
+location.href='exportaprodoctorMultiplo.asp?Origem=<%=req("Origem")%>&Destino=<%=req("Destino")%>&idInicial=<%=idFinal%>';
 </script>
 <%
 end if

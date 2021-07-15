@@ -5,7 +5,7 @@ for i=0 to ubound(Servidores)
 
     Servidor = Servidores(i)
 
-    ConnString = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow0"& Servidores(i) &".cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
+    ConnString = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow0"& Servidores(i) &".cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
     Set dbServ = Server.CreateObject("ADODB.Connection")
     dbServ.Open ConnString
 

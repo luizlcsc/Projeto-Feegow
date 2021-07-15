@@ -3,7 +3,7 @@
 response.ContentType="text/XML"
 
 
-RLoteID = replace(request.QueryString("I"),".xml", "")
+RLoteID = replace(req("I"),".xml", "")
 set lote = db.execute("select * from tisslotes where id="&RLoteID)
 'set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id"))
 set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" order by g.NGuiaPrestador")
@@ -280,8 +280,8 @@ prefixo = right(prefixo, 20)
 						CodigoProcedimento = TirarAcento(procs("CodigoProcedimento"))
 						Descricao = TirarAcento(procs("Descricao"))
 						Quantidade = TirarAcento(procs("Quantidade"))
-						ViaID = TirarAcento(procs("ViaID"))
-						TecnicaID = TirarAcento(procs("TecnicaID"))
+						ViaID = TirarAcento(procs("ViaID"))&""
+						TecnicaID = TirarAcento(procs("TecnicaID"))&""
 						Fator = treatvaltiss(1)
 						ValorUnitario = treatvaltiss( procs("Fator")*procs("ValorUnitario") )
 						ValorTotal = treatvaltiss(procs("ValorTotal"))
@@ -298,8 +298,14 @@ prefixo = right(prefixo, 20)
                                 <ans:descricaoProcedimento><%= Descricao %></ans:descricaoProcedimento>
                             </ans:procedimento>
                             <ans:quantidadeExecutada><%= Quantidade %></ans:quantidadeExecutada>
+														<%if ViaID<>"" then%>
                             <ans:viaAcesso><%= ViaID %></ans:viaAcesso>
+														<%
+														end if
+														if TecnicaID<>"" then
+														%>
                             <ans:tecnicaUtilizada><%= TecnicaID %></ans:tecnicaUtilizada>
+														<%end if%>
                             <ans:reducaoAcrescimo><%= Fator %></ans:reducaoAcrescimo>
                             <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
                             <ans:valorTotal><%= ValorTotal %></ans:valorTotal>

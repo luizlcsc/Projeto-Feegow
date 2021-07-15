@@ -12,6 +12,10 @@ subTitulo = "Produtos Utilizados"
 
     <div class="panel">
         <div class="panel-body">
+            <div class="col-md-1 col-md-offset-11">
+                <button title="Lançamentos de estoque" onclick="modalEstoque(0, 0, 0)"  type="button" class="btn btn-alert btn-block btn-sm"><i class="fa fa-medkit"></i></button>
+            </div>
+            <br>
             <%
 
             set produt = db.execute("SELECT el.*, p.NomeProduto, pc.NomeCategoria, p.ApresentacaoNome, SUBSTRING(uni.Descricao, 6) DescricaoUnidade  "&_

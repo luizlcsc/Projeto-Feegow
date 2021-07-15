@@ -29,10 +29,10 @@ Dim iCurrent  ' Variable we use to hold current day of month as we write table
 Dim iPosition ' Variable we use to hold current position in table
 
 dDate = date()
-if request.QueryString("Data")="" then
+if req("Data")="" then
 	Data = date()
 else
-	Data = request.QueryString("Data")
+	Data = req("Data")
 end if
 
 iDIM = GetDaysInMonth(Month(Data), Year(Data))
@@ -149,6 +149,9 @@ end if
 		if cdate(DataClick)=date() then
             response.write(" info ")
         end if
+		if aBadge <> "" then
+			response.write(" feriado ")
+		end if
         response.Write """ id="""&DataClick&""">" & strong & aBadge& iCurrent & fBadge 
 		
 		IF getConfig("ExibirProgressoAgendamentosAgendas") THEN		

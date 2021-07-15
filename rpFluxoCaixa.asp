@@ -19,7 +19,7 @@ end if
 DeMax = cdate(dateadd("m", 12, DeMax))
 %>
 <form method="get" action="./PrintStatement.asp" target="_blank">
-	<input type="hidden" name="R" value="FluxoCaixa2">
+	<input type="hidden" name="R" value="fc">
     <div class="page-header">
         <h3 class="text-center">
             Fluxo de Caixa
@@ -31,10 +31,13 @@ DeMax = cdate(dateadd("m", 12, DeMax))
             <div class="radio-custom radio-primary"><input type="radio" name="Tipo" value="Diario" id="AgruparCategoria" checked /><label for="AgruparCategoria">Categoria</label></div>
             <div class="radio-custom radio-primary"><input type="radio" name="Tipo" value="Mensal" id="AgruparCentroCusto" /><label for="AgruparCentroCusto">Centro de Custo</label></div>
         </div>
-        <%= quickfield("simpleSelect", "TipoFC", "Tipo", 2, "D", "select 'D' id, 'Diário' Descricao /*UNION select 'S', 'Semanal'*/ UNION select 'M', 'Mensal'", "Descricao", " no-select2 semVazio ") %>
+        <%= quickfield("simpleSelect", "TipoFC", "Tipo", 2, "M", "select 'D' id, 'Diário' Descricao /*UNION select 'S', 'Semanal'*/ UNION select 'M', 'Mensal'", "Descricao", " no-select2 semVazio ") %>
         <%=quickfield("datepicker", "De", "De", 2, De, "", "", "")%>
         <%=quickfield("datepicker", "Ate", "Até", 2, Ate, "", "", "")%>
-        <div class="col-md-2 hidden" id="qfdem">
+        <div class="col-md-2 pt25">
+            <input type="checkbox" name="Previsto" value="S" checked> Mostrar previstos
+        </div>
+        <div class="col-md-2" id="qfdem">
             <label>De</label><br />
             <select name="DeM" class="form-control">
                 <%
@@ -48,7 +51,7 @@ DeMax = cdate(dateadd("m", 12, DeMax))
                 %>
             </select>
         </div>
-        <div class="col-md-2 hidden" id="qfatem">
+        <div class="col-md-2" id="qfatem">
             <label>Até</label><br />
             <select name="AteM" class="form-control">
                 <%
@@ -62,7 +65,7 @@ DeMax = cdate(dateadd("m", 12, DeMax))
                 %>
             </select>
         </div>
-        <%=quickfield("empresaMulti", "UnidadeID", "Unidades", 4, session("Unidades"), "", "", "")%>
+        <%=quickfield("empresa", "UnidadeID", "Unidade", 4, session("UnidadeID"), "", "", "")%>
         <div class="col-md-2">
             <label>&nbsp;</label>
             <br>
@@ -80,6 +83,9 @@ DeMax = cdate(dateadd("m", 12, DeMax))
             $("#qfdem, #qfatem").removeClass("hidden");
         }
     });
+            $("#qfde, #qfate").addClass("hidden");
+            $("#qfdem, #qfatem").removeClass("hidden");
+
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>

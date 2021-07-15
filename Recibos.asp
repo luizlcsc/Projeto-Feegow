@@ -7,7 +7,7 @@ if req("X")<>"" then
 else
 
 
-PacienteID = request.QueryString("PacienteID")
+PacienteID = req("PacienteID")
 set pac = db.execute("select * from pacientes where id="&PacienteID)
 if not pac.eof then
 	Nome = pac("NomePaciente")

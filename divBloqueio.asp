@@ -7,7 +7,7 @@ end if
 if req("Data")&""<>"" then
     bloqueioData = "&Data="&req("Data")
 end if
-Hora = request.QueryString("Hora")
+Hora = req("Hora")
 if isdate(Hora) then
 	HoraDe = Hora
 	HoraA = dateAdd("h", 1, HoraDe)
@@ -15,9 +15,9 @@ else
 	HoraDe = "00:00:00"
 	HoraA = "23:59:59"
 end if
-DataDe = request.QueryString("Data")
+DataDe = req("Data")
 DataA = DataDe
-BloqueioID = request.QueryString("BloqueioID")
+BloqueioID = req("BloqueioID")
 DiasSemana = "1 2 3 4 5 6 7"
 Unidades = session("Unidades")
 Profissionais = ""
@@ -38,6 +38,7 @@ if BloqueioID<>"0" then
 		Unidades = bloqueio("Unidades")
 		DiasSemana = bloqueio("DiasSemana")
         FeriadoID = bloqueio("FeriadoID")
+        LicencaBloqueio = bloqueio("LicencaIdMae")
 	end if
 end if
 
@@ -118,14 +119,14 @@ end if
                 </div>
                 <div class="panel-footer">
                     <%
-                    if aut("bloqueioagendaA")=1 then
+                    if aut("bloqueioagendaA")=1  and LicencaBloqueio = 0 then
                     %>
                     <button class="btn btn-sm btn-primary" id="btnSalvarAgenda">
                         <i class="fa fa-save"></i> Salvar
                     </button>
                     <%
                     end if
-                    if aut("bloqueioagendaX")=1 then
+                    if aut("bloqueioagendaX")=1 and LicencaBloqueio = 0 then
                     %>
                     <button class="btn btn-sm btn-danger" id="btnSalvarAgenda" type="button" onclick="saveBloqueio(<%=BloqueioID%>, 1);">
                         <i class="fa fa-trash"></i> Excluir

@@ -37,7 +37,7 @@ END IF
         </thead>
         <tbody>
 	        <%
-	        if isnumeric(request.QueryString("X")) and request.QueryString("X")<>"" and request.QueryString("X")<>"0" then
+	        if isnumeric(req("X")) and req("X")<>"" and req("X")<>"0" then
 		        db_execute("delete from arquivos where id="&req("X"))
 	        end if
 	        if req("MovementID")<>"" then

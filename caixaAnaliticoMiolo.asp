@@ -161,6 +161,8 @@
                         Credito = Credito + Valor
                     elseif PMID=9 then
                         Debito = Debito + Valor
+                    elseif PMID=15 then
+                        Pix = Pix + Valor
                     end if
 
                 end if

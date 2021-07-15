@@ -1,12 +1,12 @@
 <!--#include file="connect.asp"-->
 <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from Contatos where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from Contatos where id="&req("I"))
 %>
 <form method="post" id="frm" name="frm" action="save.asp">
 	<%=header(req("P"), "CONTATO", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-	<input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-	<input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+	<input type="hidden" name="I" value="<%=req("I")%>" />
+	<input type="hidden" name="P" value="<%=req("P")%>" />
 <div class="row">
 	<%=quickField("text", "NomeContato", "Nome", 4, reg("NomeContato"), "", "", " required")%>
     <%=quickField("simpleSelect", "Sexo", "Sexo", 1, reg("Sexo"), "select * from Sexo where sysActive=1", "NomeSexo", "")%>

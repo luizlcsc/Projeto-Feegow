@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-if request.form("opt") = "AtualizaLote" then
+if ref("opt") = "AtualizaLote" then
 %>
         <select id="SelectPosicao" name="SelectPosicao" class="select-lote">
             
@@ -14,9 +14,9 @@ if request.form("opt") = "AtualizaLote" then
                                         " JOIN produtos p ON p.id = vsd.ProdutoID "&_
                                         " JOIN estoqueposicao e ON e.ProdutoID = p.id "&_
                                         " LEFT JOIN produtoslocalizacoes pl ON pl.id = e.LocalizacaoID "&_
-                                        " WHERE va.id = "&request.form("AplicacaoID")&_
-                                        " AND (pl.UnidadeID = "&request.form("UnidadeID")&" or pl.UnidadeID IS NULL)"&_
-                                        " AND (CASE WHEN Responsavel IS NOT NULL AND TRIM(Responsavel) <> '' AND TRIM(Responsavel) <> '0' THEN (CASE WHEN Responsavel REGEXP '^3_' THEN Responsavel END) = CONCAT('3_',"&request.form("PacienteID")&") ELSE 1 = 1 END)")
+                                        " WHERE va.id = "&ref("AplicacaoID")&_
+                                        " AND (pl.UnidadeID = "&ref("UnidadeID")&" or pl.UnidadeID IS NULL)"&_
+                                        " AND (CASE WHEN Responsavel IS NOT NULL AND TRIM(Responsavel) <> '' AND TRIM(Responsavel) <> '0' THEN (CASE WHEN Responsavel REGEXP '^3_' THEN Responsavel END) = CONCAT('3_',"&ref("PacienteID")&") ELSE 1 = 1 END)")
             if not produtos.EOF then
                 %> <option value="0">Selecione <%
             else 

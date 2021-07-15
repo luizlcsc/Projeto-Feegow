@@ -1,5 +1,5 @@
 <%
-Leitor = request.Form("Leitor")
+Leitor = ref("Leitor")
 
 'GOLDEN CROSS
 '%cristiane maia ferreira cruz?
@@ -22,7 +22,7 @@ if Leitor<>"" then
 	Nome = spl(0)
 	Carteira = mid(spl(1), 15, 10)
 	
-	Validade = request.Form("Validade")
+	Validade = ref("Validade")
 	Validade = right(Validade, 4)&"-"&mid(Validade, 4, 2)&"-"&left(Validade, 2)
 	response.Redirect("index.php?Nome="&Nome&"&Carteira="&Carteira&"&Validade="&Validade)
 end if
@@ -41,7 +41,7 @@ Validade: <%=Validade%><br>
 Passar carteirinha
 <form method="post" action="" id="frmLeitor">
 Validade<br />
-<input type="date" required="required" name="Validade" id="Validade" value="<%=request.Form("Validade")%>" />
+<input type="date" required="required" name="Validade" id="Validade" value="<%=ref("Validade")%>" />
 <br />
 <br />
 
@@ -51,7 +51,7 @@ Validade<br />
 <input type="submit" style="display:none" value="Passar">
 </form>
 <%
-if request.Form("Leitor")<>"" then
+if ref("Leitor")<>"" then
 	
 end if
 %>

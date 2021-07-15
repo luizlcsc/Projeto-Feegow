@@ -316,14 +316,19 @@ if req("T")="C" then
         <%
         while not vcaGuia.eof
             TipoGuia = vcaGuia("TipoGuia")
+            idGuia = vcaGuia("id")
             set g = db.execute("select g.*, pac.NomePaciente from tiss"&TipoGuia&" g LEFT JOIN pacientes pac ON pac.id=g.PacienteID where g.id="&vcaGuia("GuiaID"))
             if not g.eof then
             %>
-            <tr>
+            <tr class="js-del-linha" id="<%= idGuia %>">
                 <td colspan="2">Guia <%=g("NGuiaPrestador") %></td>
                 <td colspan="4">Paciente: <%=g("NomePaciente") %></td>
                 <td class="text-right" colspan="2">R$ <%=fn(g("ValorPago")) %></td>
-                <td class="text-right" colspan="2"></td>
+                <td class="text-right" colspan="2">
+                    <button type="button" class="btn btn-sm btn-danger deletaGuia" data-id="<%= idGuia %>">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </td>
             </tr>
             <%
             end if
@@ -371,6 +376,13 @@ end if
                 <%
                 if ProfissionalID<> "" then
                     sqlEspecialidades = "select esp.EspecialidadeID id, e.especialidade from (select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID) union all	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp left join especialidades e ON e.id=esp.EspecialidadeID"
+                
+                    if Associacao=8 then
+                        sqlEspecialidades = "select e.id, e.especialidade FROM profissionalexterno p "&_
+                                            "INNER JOIN especialidades e ON e.id=p.EspecialidadeID "&_
+                                            "WHERE p.id="&ProfissionalID
+                    end if
+                
                 else
                     sqlEspecialidades = "select * from especialidades order by especialidade"
                 end if
@@ -383,7 +395,6 @@ end if
                     end if
                 end if
 
-
 			    if NaoAlterarExecutante then
                     %>
                     <input type="hidden" name="EspecialidadeID<%= id %>" value="<%=EspecialidadeID%>" />
@@ -393,9 +404,11 @@ end if
                 if EspecialidadeID&""="" or EspecialidadeID&""="0" then
                     camposRequired=""
                 end if
-
+                
+                if Associacao<>2 then
+                    response.write(quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" empty no-select2 "&camposRequired))
+                end if
                 %>
-                <%= quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" empty no-select2 "&camposRequired) %>
                 </div>
                 <%
 			    if NaoAlterarExecutante then
@@ -468,7 +481,7 @@ while not vcaRep.eof
             NomeProcedimento = DadosRepasseSQL("NomeProcedimento")
             NomePaciente =DadosRepasseSQL("NomePaciente")
             DataAtendimento = DadosRepasseSQL("Data")
-            'ValorTotal =DadosRepasseSQL("ValorTotal")
+            'ValorTotal = DadosRepasseSQL("ValorTotal")
         end if
     end if
     if not isnull(vcaRep("GuiaConsultaID")) then
@@ -558,5 +571,20 @@ if TemRepasse and aut("|repassesA|")=0 then
 end if
 %>
 <script>
+
+$('.deletaGuia').on('click', function(){
+    var itemGuiaId = $(this).data('id');
+    var linhaItem = $('.js-del-linha[id="' + itemGuiaId + '"]'); 
+
+    if(confirm("Tem Certeza Que Deseja Deletar a Guia?")){
+        $.post("deletaItemGuia.asp", { itemGuiaId: itemGuiaId }, function(data) {
+            if(data){
+                linhaItem.fadeOut('fast', function (){
+                    $('#totalGeral').html(data);
+                });              
+            }
+        }) 
+    };
+}) 
 
 </script>

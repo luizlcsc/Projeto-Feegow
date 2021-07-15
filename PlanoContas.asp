@@ -399,7 +399,7 @@ end function
 				array[index] = valor
 			});
 
-			let itens = $('li[data-tipo="<%=request.QueryString("CD")%>"]')
+			let itens = $('li[data-tipo="<%=req("CD")%>"]')
 			let data = ''
 
 			if (inputCodigo) {

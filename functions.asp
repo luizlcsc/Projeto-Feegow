@@ -8,7 +8,7 @@ End Function
 
 function clear_ref_req (val)
         tentativa = false
-        if instr(UCase(val)," AND ") OR instr(UCase(val)," OR ") OR instr(UCase(val)," SELECT ") OR instr(UCase(val)," FROM ") OR instr(UCase(val)," GROUP BY ") OR instr(UCase(val)," CONCAT ") OR instr(UCase(val)," CONCAT_WS") OR instr(UCase(val)," DELETE ") OR instr(UCase(val)," UNION ") OR instr(UCase(val)," JOIN ") OR instr(UCase(val),"CONCAT") OR instr(UCase(val),"UPDATEXML") OR instr(UCase(val),"'") OR instr(UCase(val),"\") OR instr(UCase(val),"<script>") OR instr(UCase(val),"</script>") OR instr(UCase(val),"&lt;") OR instr(UCase(val),"&gt;") OR instr(UCase(val),"&quot;") OR instr(UCase(val),"&#x27;") OR instr(UCase(val),"&#x22;") OR instr(UCase(val),"&#x7c;") OR instr(UCase(val),"(ELT") OR instr(UCase(val),";") OR instr(UCase(val),"drop") OR instr(UCase(val),"table") OR instr(UCase(val),"--") OR instr(UCase(val),"%") OR instr(UCase(val),"EXECUTE") OR instr(UCase(val),"EXEC") OR instr(UCase(val),"EVAL")then
+        if instr(UCase(val)," AND ") OR instr(UCase(val)," OR ") OR instr(UCase(val)," SELECT ") OR instr(UCase(val)," FROM ") OR instr(UCase(val)," GROUP BY ") OR instr(UCase(val)," CONCAT ") OR instr(UCase(val)," CONCAT_WS") OR instr(UCase(val)," DELETE ") OR instr(UCase(val)," UNION ") OR instr(UCase(val)," JOIN ") OR instr(UCase(val),"CONCAT") OR instr(UCase(val),"UPDATEXML") OR instr(UCase(val),"'") OR instr(UCase(val),"\") OR instr(UCase(val),"<script>") OR instr(UCase(val),"</script>") OR instr(UCase(val),"&lt;") OR instr(UCase(val),"&gt;") OR instr(UCase(val),"&quot;") OR instr(UCase(val),"&#x27;") OR instr(UCase(val),"&#x22;") OR instr(UCase(val),"&#x7c;") OR instr(UCase(val),"(ELT") OR instr(UCase(val),";") OR instr(UCase(val),"drop") OR instr(UCase(val),"table") OR instr(UCase(val),"--") OR instr(UCase(val),"%") OR instr(UCase(val),"EXECUTE") OR instr(UCase(val),"EXEC") OR instr(UCase(val),"EVAL") OR instr(UCase(val),"WHERE") OR instr(UCase(val),"SP_EXECUTESQL") OR instr(UCase(val),"UPDATE")then
             val = replace(val, "'", "''")
             val = replace(val,"\", "\\")
             val = replace(val,"<script>", "")
@@ -38,6 +38,9 @@ function clear_ref_req (val)
             val = replace(val,"EXECUTE", "")
             val = replace(val,"EXEC", "")
             val = replace(val,"EVAL", "")
+            val = replace(val,"WHERE", "")
+            val = replace(val,"SP_EXECUTESQL", "")
+            val = replace(val,"UPDATE", "")
             tentativa = true
         end if 
         

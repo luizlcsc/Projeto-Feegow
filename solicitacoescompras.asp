@@ -3,8 +3,8 @@
 </div>
 
 <!-- Production -->
-<script src="AGUARDANDO_URL_DO_CDN/assets/js/solicitacoes-page-0.1.0.bundle.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="AGUARDANDO_URL_DO_CDN/assets/css/solicitacoes-page-0.1.0.css" crossorigin="anonymous">
+<script src="https://purchasing-frontend.feegow.com/static/js/solicitacoes-0.1.0.bundle.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://purchasing-frontend.feegow.com/static/css/solicitacoes-0.1.0.css" crossorigin="anonymous">
 
 <!-- Development -->
 <!--<script src="http://localhost:3000/static/js/solicitacoes-page-0.1.0.bundle.js" crossorigin="anonymous"></script>-->

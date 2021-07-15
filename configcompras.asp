@@ -3,8 +3,8 @@
 </div>
 
 <!-- Production -->
-<script src="AGUARDANDO_URL_DO_CDN/assets/compras/js/config-page-0.1.0.bundle.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="AGUARDANDO_URL_DO_CDN/assets/compras/css/config-page-0.1.0.css" crossorigin="anonymous">
+<script src="https://purchasing-frontend.feegow.com/static/js/config-page-0.1.0.bundle.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://purchasing-frontend.feegow.com/static/css/config-page-0.1.0.css" crossorigin="anonymous">
 
 <!-- Development -->
 <!--<script src="http://localhost:3000/static/js/config-page-0.1.0.bundle.js" crossorigin="anonymous"></script>-->

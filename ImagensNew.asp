@@ -504,10 +504,9 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
         }
     }
     let ConfigPacienteID      = '<%=PacienteID%>';
-    let ConfigMovementID      = '<%=request.QueryString("MovementID")%>';
-    let ConfigLaudoID         = '<%=request.QueryString("LaudoID")%>';
-    let ConfigOrdemDeCompraID = '<%=request.QueryString("OrdemDeCompraID")%>';
-
+    let ConfigMovementID      = '<%=req("MovementID")%>';
+    let ConfigLaudoID         = '<%=req("LaudoID")%>';
+    let ConfigOrdemDeCompraID = '<%=req("OrdemDeCompraID")%>';
     let valorConsulta = null;
     let typeDoc = "all";
     let typeSearch = null;

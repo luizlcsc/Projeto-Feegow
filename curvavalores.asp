@@ -4,10 +4,8 @@ PacienteID = req("PacienteID")
 Acao = req("A")
 ID = req("I")
 
-if Acao="I" then
-    db.execute("insert into pacientescurva set PacienteID="& PacienteID &", Data=curdate(), sysUser="& session("User"))
-elseif Acao="A" then
-    set reg = db.execute("select id from pacientescurva where PacienteID="& PacienteID &" ORDER BY Data")
+if Acao="A" or Acao="I" then
+    set reg = db.execute("select id from pacientescurva where PacienteID="& PacienteID &" ORDER BY Data, id")
     while not reg.eof
         ID = reg("id")
         db.execute("update pacientescurva set Peso="& treatvalnull(ref("Peso"& ID)) &", Altura="& treatvalnull(ref("Altura"& ID)) &", PerimetroCefalico="& treatvalnull(ref("PerimetroCefalico"& ID)) &", Data="& mydatenull(ref("Data"& ID)) &" where id="& ID)
@@ -15,11 +13,15 @@ elseif Acao="A" then
     wend
     reg.close
     set reg = nothing
+    if Acao="I" then
+        db.execute("insert into pacientescurva set PacienteID="& PacienteID &", Data=curdate(), sysUser="& session("User"))
+    else
     %>
     <script>
     curva(<%= PacienteID %>);
     </script>
     <%
+    end if
 elseif Acao="X" then
     db.execute("delete from pacientescurva where id="& ID)
 end if
@@ -39,21 +41,21 @@ end if
                         <tr>
                             <th>Data</th>
                             <th>Peso (kg)</th>
-                            <th>Altura (m)</th>
+                            <th>Altura (cm)</th>
                             <th>Per. Cefálico (cm)</th>
                             <th width="1%"></th>
                         </tr>
                     </thead>
                     <tbody>
                     <%
-                    set reg = db.execute("select * from pacientescurva where PacienteID="& PacienteID &" ORDER BY Data")
+                    set reg = db.execute("select * from pacientescurva where PacienteID="& PacienteID &" ORDER BY Data, id")
                     while not reg.eof
                         %>
                         <tr>
                             <td><%= quickfield("datepicker", "Data"&reg("id"), "", 12, reg("Data"), "", "", "") %></td>
                             <td><%= quickfield("text", "Peso"&reg("id"), "", 12, fn(reg("Peso")), " input-mask-brl text-right ", "", "") %></td>
-                            <td><%= quickfield("text", "Altura"&reg("id"), "", 12, reg("Altura"), " text-right ", "", "") %></td>
-                            <td><%= quickfield("text", "PerimetroCefalico"&reg("id"), "", 12, fn(reg("PerimetroCefalico")), " input-mask-brl text-right ", "", "") %></td>
+                            <td><%= quickfield("number", "Altura"&reg("id"), "", 12, reg("Altura"), " text-right ", "", "") %></td>
+                            <td><%= quickfield("number", "PerimetroCefalico"&reg("id"), "", 12, reg("PerimetroCefalico"), " text-right ", "", "") %></td>
                             <td>
                                 <button class="btn btn-danger btn-xs" type="button" onclick="curvaValores('X', <%= reg("id") %>)"><i class="fa fa-remove"></i></button>
                             </td>

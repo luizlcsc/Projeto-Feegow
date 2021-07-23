@@ -1,4 +1,5 @@
 <%
+hiddenValor = ""
 if (session("Banco")="clinic4456" and lcase(session("Table"))="profissionais" and not session("Admin")=1) or aut("valordoprocedimentoV")<>1 then
     hiddenValor = " hidden "
 end if
@@ -55,19 +56,24 @@ END IF
             ValorUnitarioReadonly=" readonly"
         end if
         %>
-    <td class="<%= hiddenValor %>"><%=quickField("currency", "ValorUnitario"&id, "", 4, formatnumber(ValorUnitario,2), " input-sm text-right ValorUnitario disable", "", " required onkeyup=""recalc($(this).attr('id'))"""&ValorUnitarioReadonly&desabilitarProposta)%></td>
-        <td class="<%= hiddenValor %>">
-            <div class="input-group">
-            <%=quickField("text", "Desconto"&id, "", 4, formatnumber(Desconto,2), " input-mask-brl PropostaDesconto text-right disable input-sm", "", " onkeyup=""recalc($(this).attr('id'))"" style=""width:55%;float:left;min-width:10px"""&desabilitarProposta)%>
-            <select onchange="recalc($(this).attr('id'))" style="width: 35%;padding:0;min-width: 10px;" name="DescontoTipo<%=id%>" id="DescontoTipo<%=id%>" class="form-control input-sm DescontoTipo" <%=desabilitarProposta%>>
-                <option value="V">R$</option>
-                <option <% if TipoDesconto="P" then %>selected<% end if %> value="P">%</option>
-            </select>
+        <td><div class="<%=hiddenValor%>"><%=quickField("currency", "ValorUnitario"&id, "", 4, formatnumber(ValorUnitario,2), " input-sm text-right ValorUnitario disable", "", " required onkeyup=""recalc($(this).attr('id'))"""&ValorUnitarioReadonly&desabilitarProposta)%></div></td>
+        <td>
+            <div class="input-group <%=hiddenValor%>">
+                <%=quickField("text", "Desconto"&id, "", 4, formatnumber(Desconto,2), " input-mask-brl PropostaDesconto text-right disable input-sm", "", " onkeyup=""recalc($(this).attr('id'))"" style=""width:55%;float:left;min-width:10px"""&desabilitarProposta)%>
+                <select onchange="recalc($(this).attr('id'))" style="width: 35%;padding:0;min-width: 10px;" name="DescontoTipo<%=id%>" id="DescontoTipo<%=id%>" class="form-control input-sm DescontoTipo" <%=desabilitarProposta%>>
+                    <option value="V">R$</option>
+                    <option <% if TipoDesconto="P" then %>selected<% end if %> value="P">%</option>
+                </select>
             </div>
         </td>
-    <td class="<%= hiddenValor %>"><%=quickField("text", "Acrescimo"&id, "", 4, formatnumber(Acrescimo,2), " input-mask-brl text-right disable input-sm", "", " onkeyup=""recalc($(this).attr('id'))"""&desabilitarProposta)%></td>
-    <td class="text-right <%=hiddenValor%>" id="sub<%=id%>" nowrap>R$ <%= formatnumber( Subtotal ,2) %></td>
-    <td><button type="button" class="btn btn-xs btn-danger disable <%=escondeProposta%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove "></i></button></td>
+        <td>
+            <div class="<%=hiddenValor%>"><%=quickField("text", "Acrescimo"&id, "", 4, formatnumber(Acrescimo,2), " input-mask-brl text-right disable input-sm", "", " onkeyup=""recalc($(this).attr('id'))"""&desabilitarProposta)%></div>
+        </td>
+        <td>
+            <div class="text-right <%=hiddenValor%>" id="sub<%=id%>" nowrap>R$ <%= formatnumber( Subtotal ,2) %></div>
+        </td>
+        <td><button type="button" class="btn btn-xs btn-danger disable <%=escondeProposta%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove "></i></button></td>
+    </td>
 </tr>
 <%
 if AvisoAgenda&""<>"" then

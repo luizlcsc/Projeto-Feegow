@@ -84,7 +84,7 @@ end if
 				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control date-picker input-mask-date" data-date-format="dd/mm/yyyy" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div></td></tr></table><%
 			else
 				disabled = ""
-                if getConfig("BloquearEdicaoFormulario")=1  then
+                if getConfig("BloquearEdicaoFormulario")=1 and FormID <> "N" then
 					set getFormPreenchido = db.execute("SELECT date(DataHora) dataAtendimento FROM buiformspreenchidos WHERE sysActive=1 AND id = "&FormID)
 					if not getFormPreenchido.eof then
 						dataAtendimento = getFormPreenchido("dataAtendimento")

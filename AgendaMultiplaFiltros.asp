@@ -54,7 +54,6 @@ if getConfig("ExibirApenasUnidadesNoFiltroDeLocais") then
     else
         sqlAM = " (select CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa          "&chr(13)&_
             " WHERE id = 1                                                                                                                                  "&chr(13)&_
-            "  AND id in ("&replace(Unidades, "|","")&")                                                                                                    "&chr(13)&_
             " GROUP BY NomeLocal                                                                                                                            "&chr(13)&_
             " ) UNION ALL                                                                                                                                   "&chr(13)&_
             " (select CONCAT('UNIDADE_ID', id), CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',id,'|') as Unidades                                 "&chr(13)&_

@@ -67,10 +67,10 @@ if Acao="" then
 				<% END IF %>
 				<th width="1%">Quant.</th>
 				<th width="20%" colspan="2">Item</th>
-				<th width="20%" class="<%= hiddenValor %>">Valor Unit.</th>
-				<th width="25%" class="<%= hiddenValor %>">Desconto</th>
-				<th width="10%" class="<%= hiddenValor %>">Acr&eacute;scimo</th>
-				<th width="10%" class="<%= hiddenValor %>">Total</th>
+				<th width="20%">Valor Unit.</th>
+				<th width="25%">Desconto</th>
+				<th width="10%">Acr&eacute;scimo</th>
+				<th width="10%">Total</th>
 				<th width="1%"></th>
 			</tr>
 		</thead>
@@ -209,14 +209,16 @@ if Acao="" then
 			<tr>
 				<th colspan="5">
 				    <td class="<%=hiddenValor%>">
-
-				    <label for="DescontoTotal">Desconto total (%)</label>
-				    <input type="number" class="form-control" id="DescontoTotal" name="DescontoTotal" max="100" min="0" value="<%=PropostaSQL("Desconto")%>" <%=desabilitarProposta%>>
-
-				    </td>
+				    	<label for="DescontoTotal">Desconto total (%)</label>
+				    	<input type="number" class="form-control" id="DescontoTotal" name="DescontoTotal" max="100" min="0" value="<%=PropostaSQL("Desconto")%>" <%=desabilitarProposta%>>
+					</td>
 				</th>
-				<th id="total" class="text-right <%=hiddenValor%>" <%=desabilitarProposta%> nowrap>R$ <%=formatnumber(Total,2)%></th>
-				<th><input type="hidden" class="dadoProposta <%=hiddenValor%>" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
+				<th>
+					<td id="total" class="text-right <%=hiddenValor%>" <%=desabilitarProposta%> nowrap>R$ <%=formatnumber(Total,2)%></td>
+				</th>
+				<th>
+					<td><input type="hidden" class="dadoProposta <%=hiddenValor%>" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></td>
+				</th>
 			</tr>
 		</tfoot>
 	</table>

@@ -114,10 +114,12 @@ end function
 			posicaoMae = rsCategoriaMae("Posicao")
 		end if
 
-		set rsMaxOrdem = db.execute("SELECT MAX(Ordem) as Ordem FROM sys_financialincometype sf WHERE sf.Category = " & categoriaSuperior)
+		set rsMaxOrdem = db.execute("SELECT MAX(Ordem) as Ordem FROM " & table & " sf WHERE sf.Category = " & categoriaSuperior)
 		ordem = 0
 		if not rsMaxOrdem.eof then
-			ordem = rsMaxOrdem("Ordem") + 1
+			if rsMaxOrdem("Ordem")&"" <> "" then
+				ordem = rsMaxOrdem("Ordem") + 1
+			end if
 		end if
 
 		if posicaoMae <> "" then

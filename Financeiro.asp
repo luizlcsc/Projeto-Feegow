@@ -9,6 +9,8 @@
 </script>
 
 <%
+response.buffer
+
 if aut("contasareceber")=1 and aut("contasapagar")=1 and aut("movement")=1 then
 
 
@@ -49,6 +51,7 @@ end if
 				
 				set contas = db.execute("select * from sys_financialcurrentaccounts where AccountType in(1, 2) and sysActive=1 "&whereUnidades)
 				while not contas.EOF
+					response.flush()
 					Saldo = accountBalancePerDate("1_"&contas("id"), 0, DataReferencia)
 					SaldoGeral = SaldoGeral+Saldo
 					%>

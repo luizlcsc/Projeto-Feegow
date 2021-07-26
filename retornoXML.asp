@@ -335,9 +335,37 @@ end function
                                     valorLiberado = proc.getElementsByTagName("ansTISS:valorLiberado")(0).text
                                     descricao = proc.getElementsByTagName("ansTISS:descricao")(0).text
                                     grauParticipacao = proc.getElementsByTagName("ansTISS:grauParticipacao")(0).text
+                                    DataRealizacao = guia.getElementsByTagName("ansTISS:dataRealizacao")(0).text
 
 
                                     IF NOT pguias.eof THEN
+                                        'atualizar tabela tissguiaanexas
+                                        'caso nao possua codigo = nao houve glosa
+                                        IF codigo = "" then
+                                            set despesas = db.execute("SELECT * FROM tissguiaanexa WHERE GuiaID = "&pguias("id")&"")
+                                            while not despesas.eof
+                                                valorTotal = replace(despesas("ValorTotal"),",",".")
+
+                                                SqlSemGlosa = "UPDATE tissguiaanexa SET ValorPago=NULLIF('"&valorTotal&"','') WHERE id ="&despesas("id")
+
+                                                set UpdateSemGlosa = db.execute(SqlSemGlosa)
+                                            despesas.movenext
+                                            wend
+                                            despesas.close
+                                            set despesas = nothing
+                                        Else
+                                            'PRESUME-SE QUE SE HÁ CÓDIGO HOUVE GLOSA
+                                            sqlAnexa = "SELECT * FROM tissguiaanexa ta WHERE ta.GuiaID= "&pguias("id")&" AND ta.`Data`= '"&DataRealizacao&"' AND ta.CodigoProduto="&codigo
+
+                                            set updateAnexa = db.execute(sqlAnexa)
+
+                                            if not updateAnexa.eof then
+                                                SqlComGlosa = "UPDATE tissguiaanexa SET ValorPago=NULLIF('"&valorLiberado&"',''), motivoGlosa="&GlosaID&" WHERE id="&updateAnexa("id")
+
+                                                set UpdateComGLosa = db.execute(SqlComGlosa)
+                                            end if
+                                        end if
+                                        'atualiza tabela tissguiasadt
                                         IF pguias("Tabela") = "tissguiasadt" THEN
                                             ' busca o motivo da glosa
                                              set codigoGlosaTag = proc.selectSingleNode("ansTISS:codigoGlosa")

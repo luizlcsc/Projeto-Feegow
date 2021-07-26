@@ -4,7 +4,7 @@
 <%
 'on error resume next
 response.Charset="utf-8"
-set pCampo=db.execute("select * from buiCamposForms where id = '"&replace(request.QueryString("I"),"'","''")&"'")
+set pCampo=db.execute("select * from buiCamposForms where id = '"&replace(req("I"),"'","''")&"'")
 RotuloCampo=ref("RotuloCampo")
 NomeCampo=left(tratoForm(RotuloCampo),16)
 set	vcaOutro=db.execute("select * from buiCamposForms where lcase(NomeCampo) like '"&NomeCampo&"' and id<>"&pCampo("id")&" and FormID like '"&pCampo("FormID")&"'")
@@ -22,7 +22,7 @@ if not vcaOutro.EOF then
 end if
 vcaOutro.close
 set vcaOutro=nothing
-ValorPadrao=ref("ValorPadrao")
+ValorPadrao=refhtml("ValorPadrao")
 Tamanho=ref("Tamanho")
 Linhas=ref("Linhas")
 Colunas=ref("Colunas")
@@ -30,7 +30,7 @@ Largura=ref("Largura")
 MaxCarac=ref("MaxCarac")
 Checado=ref("Checado")
 Obrigatorio=ref("Obrigatorio")
-Texto=ref("Texto")
+Texto=refhtml("Texto")
 Ordem = ref("Ordem")
 Estruturacao = ref("Estruturacao")
 
@@ -109,7 +109,7 @@ END IF
 
 sql = "update buiCamposForms set NomeCampo='"&NomeCampo&"', RotuloCampo='"&RotuloCampo&"', Ordem="& treatvalzero(ref("Ordem")) &", "& alteraValorPadrao &"Tamanho='"&Tamanho&"', MaxCarac='"&MaxCarac&"', Checado='"&Checado&"', Obrigatorio='"&Obrigatorio&"', Texto='"&Texto&"', Largura='"&Largura&"', AvisoFechamento="&treatvalzero(ref("AvisoFechamento"))&", Formula='"& ref("Formula") &"', Estruturacao='"& Estruturacao &"', EixoX = " &EixoXQuery& ", EixoY = " &EixoYQuery& ", InformacaoCampo = "&InformacaoCampoQuery&", enviardadoscid="&EnviarDadosCID&" where id = '"&replace(req("I"),"'","''")&"'"
 
-'response.Write("<br>// "&sql)
+' response.Write("<br>// "&sql)
 db_execute(sql)
 
 if pCampo("TipoCampoID")=9 then

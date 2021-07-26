@@ -7,7 +7,7 @@ Set db = Server.CreateObject("ADODB.Connection")
 db.Open ConnString
 
 function req(Val)
-	req = replace(request.QueryString(Val), "'", "''")
+	req = replace(req(Val), "'", "''")
 end function
 
 %>

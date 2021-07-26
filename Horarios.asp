@@ -8,7 +8,7 @@
             <small>
                 <i class="fa fa-double-angle-right"></i>
                 <%
-                id=request.QueryString("I")
+                id=req("I")
                 set pdr=db.execute("select * from profissionais where id="&id)
                 response.Write(pdr("NomeProfissional"))
                 %>
@@ -41,7 +41,7 @@
     </thead>
     <tbody>
 	<%
-	ProfissionalID = request.QueryString("I")
+	ProfissionalID = req("I")
     Dia=0
     while Dia < 7
     Dia=Dia+1

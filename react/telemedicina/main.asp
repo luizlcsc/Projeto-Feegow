@@ -1,7 +1,7 @@
 <!--#include file="../../connect.asp"-->
 <%
 profissionalId = session("idInTable")
-pacienteId= Request.QueryString("I")
+pacienteId= req("I")
 licencaId= replace(session("Banco"),"clinic","")
 
 

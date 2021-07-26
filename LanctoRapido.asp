@@ -3,13 +3,12 @@
 db_execute("delete from tempinvoice where sysUser="&session("User")&";")
 
 
-'response.Write(request.Form())
 
 Tipo = ref("TipoBotao")
 if Tipo="" then
     Tipo = req("TipoBotao")
 end if
-PacienteID = request.QueryString("PacienteID")
+PacienteID = req("PacienteID")
 
 if Tipo="AReceber" then
 	sqlInv = "select * from sys_financialinvoices where sysActive=0 and sysUser="&session("User")&" and CD='C'"

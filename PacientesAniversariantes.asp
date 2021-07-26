@@ -1,15 +1,15 @@
 <!--#include file="connect.asp"-->
 <%
-if not isdate(request.QueryString("De")) or request.QueryString("De")="" then
+if not isdate(req("De")) or req("De")="" then
 	De=date()
 else
-	De=cdate(request.QueryString("De"))
+	De=cdate(req("De"))
 end if
 
-if not isdate(request.QueryString("A")) or request.QueryString("A")="" then
+if not isdate(req("A")) or req("A")="" then
 	A=dateAdd("m", 1, date())
 else
-	A=cdate(request.QueryString("A"))
+	A=cdate(req("A"))
 end if
 
 if A<De then
@@ -26,7 +26,7 @@ end if
 <input type="hidden" name="Pers" value="1" />
 <input type="hidden" name="E" value="E" />
 <input type="hidden" name="P" value="Relatorio" />
-<input type="hidden" name="TipoRel" value="<%=request.QueryString("TipoRel")%>" />
+<input type="hidden" name="TipoRel" value="<%=req("TipoRel")%>" />
 <div class="clearfix form-actions">
 <%=quickField("datepicker", "De", "Data In&iacute;cio", 3, left(De, 10), "", "", "")%>
 <%=quickField("datepicker", "A", "Data Fim", 3, left(A, 10), "", "", "")%>
@@ -38,7 +38,7 @@ end if
 </form>
 
 <form method="post" action="Etiquetas.asp" target="_blank">
-<%if request.QueryString("E")="E" then%>
+<%if req("E")="E" then%>
 <table class="table table-bordered table-striped" width="100%" border="0">
 <tr><th width="1%"><label><input type="checkbox" class="ace" checked="checked" /><span class="lbl"></span></label></th><th>Nome</th><th>Sexo</th><th>Nascimento</th><th>Pr&oacute;x. Anivers&aacute;rio</th><th>&Uacute;lt. Consulta</th></tr>
 <%

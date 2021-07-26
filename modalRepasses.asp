@@ -6,7 +6,7 @@
 <div class="modal-body">
     <div class="row"><div class="col-md-12">
     <%
-	I=request.QueryString("I")
+	I=req("I")
 	set inv = db.execute("select * from sys_financialinvoices where id="&I)
 	if not inv.eof then
 		if inv("FormaID")=0 or isnull(inv("FormaID")) then
@@ -15,7 +15,7 @@
 			FormaID = "P"&inv("FormaID")&"_"&inv("ContaRectoID")
 		end if
 	end if
-    if request.QueryString("F")="S" then
+    if req("F")="S" then
         %>
         <h5>Profissionais participantes</h5>
         <table class="table table-striped table-bordered">
@@ -65,7 +65,7 @@
     end if
 
 
-    if request.QueryString("M")="S" then
+    if req("M")="S" then
         %>
         <h5>Materiais utilizados</h5>
         <table class="table table-striped table-bordered">
@@ -79,7 +79,7 @@
             </tr>
         </thead>
         <%
-        I=request.QueryString("I")
+        I=req("I")
         'Lista os itens para lançar os rateios que estiverem pendentes
         set itensF = db.execute("select ii.*, p.NomeProcedimento from itensinvoice ii left join procedimentos p on p.id=ii.ItemID where ii.Tipo='S' and ii.Executado='S' and ii.InvoiceID="&I)
         while not itensF.eof

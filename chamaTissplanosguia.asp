@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-ConvenioID = request.QueryString("ConvenioID")
-PlanoID = request.QueryString("PlanoID")
+ConvenioID = req("ConvenioID")
+PlanoID = req("PlanoID")
 
 if ref("gPacienteID")<>"" then
 	set paccon = db.execute("select * from pacientes where id like '"&ref("gPacienteID")&"' and ConvenioID1 like '"&ConvenioID&"'")

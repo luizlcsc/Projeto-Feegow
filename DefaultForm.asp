@@ -44,7 +44,7 @@ function DefaultForm(tableName, id)
 		set res = db.execute("select * from cliniccentral.sys_resources where tableName='"&tableName&"'")
 		if not res.eof then
 			initialOrder = res("initialOrder")
-			if request.QueryString("Pers")="Follow" then
+			if req("Pers")="Follow" then
 				Pers = 1
 				if res("Pers")="0" then
 				    Pers=0
@@ -92,7 +92,7 @@ function DefaultForm(tableName, id)
 									"label" : "<i class='icon-ok'></i> ACEITAR",
 									"className" : "btn-sm btn-success",
 									"callback": function() {
-										location.href='?P=<%=request.QueryString("P")%>&I=N&Pers=<%=Pers%>';
+										location.href='?P=<%=req("P")%>&I=N&Pers=<%=Pers%>';
 									}
 								},
 								"danger" :
@@ -139,12 +139,12 @@ function DefaultForm(tableName, id)
                 </script>
                 <%
                 elseif (lcase(tableName)="buiforms") and (ModoFranquiaUnidade or getConfig("ReplicarFormulario")) then
-                    btnInserir = ("<a class=""btn btn-sm btn-dark"" href=""?P=buiforms-duplicar&I=N&Pers="&Pers&"""><i class=""fa fa-copy""></i> Duplicar da Central</a>")&"&nbsp;<a class=""btn btn-sm btn-success"" href=""?P="& request.QueryString("P")&"&I=N&Pers="&Pers&"""><i class=""fa fa-plus""></i> INSERIR</a>"
+                    btnInserir = ("<a class=""btn btn-sm btn-dark"" href=""?P=buiforms-duplicar&I=N&Pers="&Pers&"""><i class=""fa fa-copy""></i> Duplicar da Central</a>")&"&nbsp;<a class=""btn btn-sm btn-success"" href=""?P="& req("P")&"&I=N&Pers="&Pers&"""><i class=""fa fa-plus""></i> INSERIR</a>"
 				else
                     %>
                     <br />
                     <%
-                    btnInserir = "<a class=""btn btn-sm btn-success"" href=""?P="& request.QueryString("P")&"&I=N&Pers="&Pers&"""><i class=""fa fa-plus""></i> INSERIR</a>"
+                    btnInserir = "<a class=""btn btn-sm btn-success"" href=""?P="& req("P")&"&I=N&Pers="&Pers&"""><i class=""fa fa-plus""></i> INSERIR</a>"
 				end if
 							end if
 
@@ -172,6 +172,10 @@ function DefaultForm(tableName, id)
 
 		if lcase(tableName)="convenios" then
             server.execute("ConvenioRapido.asp")
+        end if
+
+		if lcase(tableName)="protocolos" then
+            server.execute("protocoloBuscaRapida.asp")
         end if
 
 
@@ -248,7 +252,7 @@ function DefaultForm(tableName, id)
 						if lcase(tableName)="feriados" then
 							call desfazBloqueioFeriado(req("X"))
 						end if
-						response.Redirect("?P="&request.QueryString("P")&"&Pers="&request.QueryString("Pers"))
+						response.Redirect("?P="&req("P")&"&Pers="&req("Pers"))
 					end if
 				end if
 				q = trim(replace(replace(TirarAcento(req("q")), "'", "")," ", "%"))
@@ -271,8 +275,8 @@ function DefaultForm(tableName, id)
 %>
 <div class="row text-center hidden-xs">
     <ul class="pagination pagination-sm">
-        <li<%if request.QueryString("Initial")="" then%> class="active" <%end if%>>
-                                    <a href="./?P=<%=request.QueryString("P")%>&Pers=<%=request.QueryString("Pers")%>">
+        <li<%if req("Initial")="" then%> class="active" <%end if%>>
+                                    <a href="./?P=<%=req("P")%>&Pers=<%=req("Pers")%>">
                                         TODOS
                                     </a>
                                 </li>
@@ -288,8 +292,8 @@ function DefaultForm(tableName, id)
                                     nchr=nchr+1
                                     vchr=chr(nchr)
                                     %>
-                                    <li<%if request.QueryString("Initial")=vchr then%> class="active"<%end if%>>
-                                        <a href="./?P=<%=request.QueryString("P")%>&Pers=<%=request.QueryString("Pers")%><%=sysActive%>&Initial=<%=vchr%>"><%=vchr%></a>
+                                    <li<%if req("Initial")=vchr then%> class="active"<%end if%>>
+                                        <a href="./?P=<%=req("P")%>&Pers=<%=req("Pers")%><%=sysActive%>&Initial=<%=vchr%>"><%=vchr%></a>
                                     </li>
                                     <%
                                 wend
@@ -297,7 +301,7 @@ function DefaultForm(tableName, id)
                                 if req("P")="Procedimentos" or req("P")="Pacotes" then
                                 %>
                                 <li>
-                                    <a href="./?P=<%=request.QueryString("P")%>&Pers=<%=request.QueryString("Pers")%>&Print=1"><i class="fa fa-print"></i></a>
+                                    <a href="./?P=<%=req("P")%>&Pers=<%=req("Pers")%>&Print=1"><i class="fa fa-print"></i></a>
                                 </li>
                                 <%
                                 end if
@@ -305,11 +309,11 @@ function DefaultForm(tableName, id)
     </ul>
 </div>
 <%
-						Initial = request.QueryString("Initial")
+						Initial = req("Initial")
 						if Initial<>"" then
 							sqlInitial = "and "&initialOrder&" like '"&Initial&"%'"
 						end if
-						Pag = request.QueryString("Pag")
+						Pag = req("Pag")
 						if isnumeric(Pag) and Pag<>"" then
 							partirde = limite*(Pag-1)&", "
 						end if
@@ -346,6 +350,8 @@ function DefaultForm(tableName, id)
                         end if
                     elseif lcase(tableName)="profissionais" or lcase(tablename)="funcionarios" then
     					sqlReg = "select * from "&tableName&" where sysActive=1 and ("&initialOrder&" like '%"&q&"%' "& sqlNasc &") "&franquia(" AND Unidades like '%|[UnidadeID]|%' ")&" order by "&initialOrder
+						' response.write(sqlReg)
+
 					elseif lcase(tableName)="procedimentos" then
 						sqlReg = "select * from "&tableName&" where sysActive=1 and "&initialOrder&" like '%"&q&"%' OR Sigla LIKE '%"&q&"%' OR Codigo LIKE '%"&q&"%' order by "&initialOrder
 					elseif lcase(tableName)="fornecedores" then
@@ -369,7 +375,6 @@ function DefaultForm(tableName, id)
 <br />
 <div class="panel">
 <div class="panel-body <%if paginar="" and 1=2 then%> table-responsive <%end if%>">
-
     <div id="divProcedimentoRapido">
 
     </div>
@@ -706,7 +711,7 @@ function DefaultForm(tableName, id)
 									end if
 									if aut(lcase(tableName)&"X")=1 and NaoExcluir="" and lcase(tableName)<>"profissionais" and lcase(tableName)<>"funcionarios" then
 									%>
-									<a class="btn btn-xs btn-danger tooltip-danger" title="Excluir" data-rel="tooltip" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))location.href='?P=<%=request.QueryString("P")%>&X=<%=reg("id")%>&Pers=<%=request.QueryString("Pers")%>';">
+									<a class="btn btn-xs btn-danger tooltip-danger" title="Excluir" data-rel="tooltip" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))location.href='?P=<%=req("P")%>&X=<%=reg("id")%>&Pers=<%=req("Pers")%>';">
 										<i class="fa fa-remove bigger-130"></i>
 									</a>
                                     <%
@@ -808,8 +813,8 @@ function DefaultForm(tableName, id)
 						'response.Write(nPagina &">="& LimiteAnt &" and "& nPagina &"<="& LimitePos &"<br>")
 						if nPagina >= LimiteAnt and nPagina <= LimitePos then
 						%>
-                        <li<%if (request.QueryString("Pag")="" and nPagina=1) or request.QueryString("Pag")=cstr(nPagina) then%> class="active"<%end if%>>
-                            <a href="./?P=<%=request.QueryString("P")%>&Pers=<%=request.QueryString("Pers")%><%=sysActive%>&Initial=<%=request.QueryString("Initial")%>&Pag=<%=nPagina%>"><%=nPagina%></a>
+                        <li<%if (req("Pag")="" and nPagina=1) or req("Pag")=cstr(nPagina) then%> class="active"<%end if%>>
+                            <a href="./?P=<%=req("P")%>&Pers=<%=req("Pers")%><%=sysActive%>&Initial=<%=req("Initial")%>&Pag=<%=nPagina%>"><%=nPagina%></a>
                         </li>
 						<%
 						end if
@@ -892,7 +897,7 @@ function DefaultForm(tableName, id)
 		set res = db.execute("select * from cliniccentral.sys_resources where tableName='"&tableName&"'")
 		if not res.eof then
 	
-			if request.Form("E")="E" then
+			if ref("E")="E" then
 	
 				set fieldsToUpdate = db.execute("select * from cliniccentral.sys_resourcesFields where resourceID="&res("id"))
 				while not fieldsToUpdate.eof

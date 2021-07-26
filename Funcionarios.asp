@@ -10,8 +10,8 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
 <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 Profissionais = reg("Profissionais")
 %>
 	<%=header(req("P"), "Cadastro de Funcionário", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
@@ -27,7 +27,7 @@ Profissionais = reg("Profissionais")
                     </span>
                     <span class="panel-controls">
                         <%
-		                if (reg("sysActive")=1 and aut(lcase(request.QueryString("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(request.QueryString("P"))&"I")=1) then
+		                if (reg("sysActive")=1 and aut(lcase(req("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(req("P"))&"I")=1) then
 		                    %>
                             <button class="btn btn-primary btn-sm" id="save"> <i class="fa fa-save"></i> Salvar </button>
 		                    <%
@@ -36,8 +36,8 @@ Profissionais = reg("Profissionais")
                     </span>
                 </div>
                 <div class="panel-body">
-                    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-                    <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+                    <input type="hidden" name="I" value="<%=req("I")%>" />
+                    <input type="hidden" name="P" value="<%=req("P")%>" />
                     <div class="row">
                         <div class="col-md-10">
                         </div>
@@ -97,7 +97,7 @@ Profissionais = reg("Profissionais")
                             <%=quickField("datepicker", "Nascimento", "Nascimento", 3, reg("Nascimento"), "input-mask-date", "", "")%>
                            	<%
 							'não permitir o usuario inativar ele mesmo
-                            if session("idInTable")&"" = request.QueryString("I")&"" and (session("Table")&"" = request.QueryString("P")&"") then
+                            if session("idInTable")&"" = req("I")&"" and (session("Table")&"" = req("P")&"") then
 								hideInactive = "hidden"
 							end if
 							%>
@@ -215,7 +215,7 @@ function getEndereco() {
 <script type="text/javascript">
 //js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto"
 %>
 
 function removeFoto(){

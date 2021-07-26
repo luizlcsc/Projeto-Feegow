@@ -126,7 +126,7 @@
                                                                 <div class="col-md-6">
                                                                     <label>Cupom desconto</label><br>
                                                                     <span class="block input-icon input-icon-right">
-                                                                        <input type="text" class="form-control" name="Cupom" id="Cupom" value="<%=request.QueryString("Cupom")%>" placeholder="Código do cupom, caso possua" />
+                                                                        <input type="text" class="form-control" name="Cupom" id="Cupom" value="<%=req("Cupom")%>" placeholder="Código do cupom, caso possua" />
                                                                         <i class="fa fa-ticket"></i>
                                                                     </span>
                                                                 </div>

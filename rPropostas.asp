@@ -1,8 +1,8 @@
 <!--#include file="connect.asp"-->
 
 <%
-DataDe = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
+DataDe = req("DataDe")
+DataAte = req("DataAte")
 
 %>
 <h3 class="text-center">Propostas Emitidas</h3>

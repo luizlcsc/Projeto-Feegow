@@ -39,6 +39,7 @@ NaoExibirAgendamentoLocal = getConfig("NaoExibirAgendamentoLocal")
 NaoExibirOutrasAgendas = getConfig("NaoExibirOutrasAgendas")
 AumentarAlturaLinhaAgendamento = getConfig("AumentarAlturaLinhaAgendamento")
 ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
+OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
 
 'verifica se há agendamento aberto e bloqueia o id concatenado
 set vcaAB = db.execute("select id, AgAberto, UltRef from sys_users where AgAberto like '%_%' and id<>"& session("User"))
@@ -699,7 +700,7 @@ end if
                     end if
                     Conteudo = Conteudo & "</td>"&_
                     "<td  nowrap "& linkAg &">"&pacientePrioridadeIcone&" <img src=""assets/img/"&comps("StaID")&".png""> "
-                    if comps("Encaixe")=1 then
+                    if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
                         Conteudo = Conteudo & "&nbsp;<span class=""label bg-alert label-sm arrowed-in mr10 arrowed-in-right"">Encaixe</span>"
                     end if
                     Conteudo = Conteudo & "<span class=""nomePac"">"& fix_string_chars_full(comps("NomePaciente")) &"</span>"
@@ -751,7 +752,7 @@ end if
                 var HorarioAdicionado = false;
                 var Status = '<%=comps("StaID")%>';
                 $( classe ).each(function(){
-                    if( $(this).attr("data-horaid")=='<%=HoraComp%>' && (Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
+                    if( $(this).attr("data-horaid")=='<%=HoraComp%>' && (Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
                     {
                         var gradeId = $(this).data("grade");
                         HorarioAdicionado=true;
@@ -769,7 +770,7 @@ end if
                                 ultimoHorarioGrade = $('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:nth-child('+(tamanhoGrade)+')')[0].id
                             }
                            if ( $(this).attr("data-horaid")>'<%=HoraComp%>'){
-                                <%if session("FilaEspera")<>"" then %>
+                                <%if session("FilaEspera")<>"" and comps("StaID") <> "11" then %>
                                     $('[data-horaid=<%=HoraComp%>]').remove();
                                 <% end if %>
                                 if('<%=HoraComp%>' > ultimoHorarioGrade && $($('#'+ultimoHorarioGrade)).attr('data-local') == '<%=comps("LocalID")%>'){
@@ -883,7 +884,7 @@ $(document).ready(function(){
 	%>
 	});
 	$(".dia-calendario").removeClass("success green");
-	$(".<%=replace(request.QueryString("Data"),"/", "-")%>").addClass("success green");
+	$(".<%=replace(req("Data"),"/", "-")%>").addClass("success green");
 	$(".Locais").html('');
 	<%
 	set pDiasAT=db.execute("select distinct a.DiaSemana from assfixalocalxprofissional a where a.ProfissionalID = "&ProfissionalID&" and (a.fimVigencia > now() or a.fimVigencia is null)")

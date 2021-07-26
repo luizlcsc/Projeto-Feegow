@@ -14,14 +14,14 @@
     </div><!-- /.modal-dialog -->
 </div>
 <%
-id = request.QueryString("I")
+id = req("I")
 
 if req("Convert")="1" then
 	db_execute("update buiforms set Versao=2 where id="&id)
 	db_execute("update buicamposforms set pleft=4, ptop=2, colunas=7, linhas=3 where FormID="&id)
 end if
 
-tableName = request.QueryString("P")
+tableName = req("P")
 	if id="N" then
 		sqlVie = "select id, sysUser, sysActive, Versao from "&tableName&" where sysUser="&session("User")&" and sysActive=0"
 		set vie = db.execute(sqlVie)
@@ -41,9 +41,9 @@ tableName = request.QueryString("P")
 			end if
 		end if
 		if vie("Versao")=1 then
-			response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&request.QueryString("Pers"))
+			response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&req("Pers"))
 		elseif vie("Versao")=2 then
-			response.Redirect("?P=newform&I="&vie("id")&"&Pers="&request.QueryString("Pers"))
+			response.Redirect("?P=newform&I="&vie("id")&"&Pers="&req("Pers"))
 		end if
 	else
 		set data = db.execute("select * from "&tableName&" where id="&id)
@@ -58,8 +58,8 @@ end if
 %>
 <input type="hidden" name="DadosAlterados" id="DadosAlterados" value="" />
 <form method="post" id="frmForm" name="frmForm" action="save.asp">
-	<input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-	<input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+	<input type="hidden" name="I" value="<%=req("I")%>" />
+	<input type="hidden" name="P" value="<%=req("P")%>" />
     <div class="row">
         <div class="col-md-10">
             <ul class="breadcrumb">
@@ -70,7 +70,7 @@ end if
         </div>
         <div class="col-md-2">
         <%
-		if (reg("sysActive")=1 and aut(lcase(request.QueryString("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(request.QueryString("P"))&"I")=1) then
+		if (reg("sysActive")=1 and aut(lcase(req("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(req("P"))&"I")=1) then
 		%>
             <button class="btn btn-block btn-primary" id="save">
                 <i class="icon-save"></i> Salvar
@@ -195,9 +195,9 @@ end if
 
 <%
 response.Charset="utf-8"
-FormID = request.QueryString("I")
-NomeForm=replace(request.Form("NomeForm"),"'","")
-if request.Form("E")="E" then
+FormID = req("I")
+NomeForm=replace(ref("NomeForm"),"'","")
+if ref("E")="E" then
 	if NomeForm="" then
 		erro="Preencha o nome do formul&aacute;rio."
 	end if
@@ -215,8 +215,8 @@ if request.Form("E")="E" then
 			response.Redirect("?F="&pUlt("id")&"&Open=Re")
 		else
 			set pF=db.execute("select * from buiForms where id = '"&replace(FormID,"'","''")&"'")
-			''db_execute("ALTER TABLE `"&W&"_"&pF("Nome")&"` RENAME TO  `"&W&"_"&replace(request.Form("NomeForm"),"'","")&"`")
-			''db_execute("update buiForms set Nome='"&replace(request.Form("NomeForm"),"'","''")&"' where id = '"&replace(FormID,"'","''")&"'")
+			''db_execute("ALTER TABLE `"&W&"_"&pF("Nome")&"` RENAME TO  `"&W&"_"&replace(ref("NomeForm"),"'","")&"`")
+			''db_execute("update buiForms set Nome='"&replace(ref("NomeForm"),"'","''")&"' where id = '"&replace(FormID,"'","''")&"'")
 			%><script language="javascript">alert('N�o sei o que deveria acontecer aqui (DefaultForm.asp, Linha 51)');</script><%
 		end if
 	end if
@@ -262,7 +262,7 @@ criaCampo(0, 0, 'V', '<%=FormID%>', 0)
 
 </form>
 </div>
-<a href="./?<%=request.QueryString()%>&Convert=1" class="btn btn-xs btn-warning">Converter Formul&aacute;rio</a>
+<a href="./?<%=request.QueryString%>&Convert=1" class="btn btn-xs btn-warning">Converter Formul&aacute;rio</a>
 <div id="Salvando">
 
 </div>

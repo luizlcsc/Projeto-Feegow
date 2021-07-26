@@ -8,7 +8,7 @@
             </button>
             <ul class="dropdown-menu dropdown-info">
             <%
-			if request.QueryString("Tipo")="L" then
+			if req("Tipo")="L" then
 				sqlTipo = " and (Tipo=3 or Tipo=4 or Tipo='')"
 			else
 				sqlTipo = " and (Tipo=1 or Tipo=2)"
@@ -17,7 +17,7 @@
 			while not forms.eof
 				if autForm(forms("id"), "IN", "") then
 				%>
-                <li><a href="javascript:callForm(<%=request.QueryString("PacienteID")%>, <%=forms("id")%>, 'N');"><i class="fa fa-plus"></i> <%=forms("Nome")%></a></li>
+                <li><a href="javascript:callForm(<%=req("PacienteID")%>, <%=forms("id")%>, 'N');"><i class="fa fa-plus"></i> <%=forms("Nome")%></a></li>
 				<%
 				end if
 			forms.movenext
@@ -64,38 +64,38 @@ function callForm(PacienteID, ModeloID, FormID){
 	});
 }
 <%
-session("FP"&request.QueryString("Tipo"))=""
+session("FP"&req("Tipo"))=""
 
-			if request.QueryString("Tipo")="L" then
+			if req("Tipo")="L" then
 				sqlTipo = " and (buiforms.Tipo=3 or buiforms.Tipo=4)"
 			else
 				sqlTipo = " and (buiforms.Tipo=1 or buiforms.Tipo=2)"
 			end if
-if session("FP"&request.QueryString("Tipo"))="" or session("FP"&request.QueryString("Tipo"))="N" then
-	set vcaPreenchido = db.execute("select buiformspreenchidos.id idpreen, buiformspreenchidos.ModeloID, buiforms.Tipo from buiformspreenchidos left join buiforms on buiformspreenchidos.ModeloID=buiforms.id where PacienteID="& request.QueryString("PacienteID") &" and buiformspreenchidos.sysUser="&session("User")&sqlTipo&" order by DataHora desc")
+if session("FP"&req("Tipo"))="" or session("FP"&req("Tipo"))="N" then
+	set vcaPreenchido = db.execute("select buiformspreenchidos.id idpreen, buiformspreenchidos.ModeloID, buiforms.Tipo from buiformspreenchidos left join buiforms on buiformspreenchidos.ModeloID=buiforms.id where PacienteID="& req("PacienteID") &" and buiformspreenchidos.sysUser="&session("User")&sqlTipo&" order by DataHora desc")
 	if vcaPreenchido.EOF then
 		set modelo = db.execute("select * from buiforms where sysActive=1"&sqlTipo)
 		if not modelo.eof then
 			if session("banco")<>"clinic811" then
 				%>
-				callForm(<%= request.QueryString("PacienteID") %>, <%=modelo("id")%>, 'N');
+				callForm(<%= req("PacienteID") %>, <%=modelo("id")%>, 'N');
 				<%
-				session("FP"&request.QueryString("Tipo")) = "N"
+				session("FP"&req("Tipo")) = "N"
 			end if
 		end if
 	else
-		session("FP"&request.QueryString("Tipo")) = vcaPreenchido("idpreen")
+		session("FP"&req("Tipo")) = vcaPreenchido("idpreen")
 		%>
-		callForm(<%= request.QueryString("PacienteID") %>, <%=vcaPreenchido("ModeloID")%>, <%=vcaPreenchido("idpreen")%>);
+		callForm(<%= req("PacienteID") %>, <%=vcaPreenchido("ModeloID")%>, <%=vcaPreenchido("idpreen")%>);
 		<%
 	end if
 else'acho q daqui pra baixo nao tem mais funcao, ja q eu to zerando a sessao ali em cima
-'	response.Write("("&session("FP"&request.QueryString("Tipo"))&")")
-'	response.Write("select * from buiformspreenchidos where id="&session("FP"&request.QueryString("Tipo")))
-	set getPreenchido = db.execute("select * from buiformspreenchidos where id="&session("FP"&request.QueryString("Tipo")))
+'	response.Write("("&session("FP"&req("Tipo"))&")")
+'	response.Write("select * from buiformspreenchidos where id="&session("FP"&req("Tipo")))
+	set getPreenchido = db.execute("select * from buiformspreenchidos where id="&session("FP"&req("Tipo")))
 	if not getPreenchido.EOF then
 		%>
-		callForm(<%= request.QueryString("PacienteID") %>, <%=getPreenchido("ModeloID")%>, <%=session("FP"&request.QueryString("Tipo"))%>);
+		callForm(<%= req("PacienteID") %>, <%=getPreenchido("ModeloID")%>, <%=session("FP"&req("Tipo"))%>);
 		<%
 	end if
 end if
@@ -103,7 +103,7 @@ end if
 //!!!!IPRESSAOP DO FORM
 function printForm(){
 	$.ajax({
-		url:'imprimirForm.asp?PacienteID=<%=request.QueryString("PacienteID")%>&FormID='+$("#FormID").val()+'&ModeloID='+$("#ModeloID").val(),
+		url:'imprimirForm.asp?PacienteID=<%=req("PacienteID")%>&FormID='+$("#FormID").val()+'&ModeloID='+$("#ModeloID").val(),
 		success:function(data){
 			$("#modal").html(data);
 		}
@@ -113,7 +113,7 @@ function printForm(){
 function atualizaHistorico(){
 	$.ajax({
 		type:"GET",
-		url:"HistoricoForms.asp?Tipo=<%=request.QueryString("Tipo")%>&PacienteID=<%=request.QueryString("PacienteID")%>",
+		url:"HistoricoForms.asp?Tipo=<%=req("Tipo")%>&PacienteID=<%=req("PacienteID")%>",
 		success:function(data){
 			$("#HistoricoForms").html(data);
 		}

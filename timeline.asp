@@ -143,7 +143,6 @@ end if
 </style>
 
 
-
 <div class="row">
     <div class="col-xs-12">
         <%
@@ -208,7 +207,7 @@ select case Tipo
                 <div class="col-md-3">
                     <%
                     qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
-                                                " WHERE p.sysActive=1                                "&chr(13)&_
+                                                " WHERE p.sysActive=1 AND Ativo= 'on'                "&chr(13)&_
                                                 " ORDER BY p.NomeProfissional ASC                    "
                     
                     if session("Table")="profissionais" then
@@ -292,12 +291,13 @@ select case Tipo
                         <a type="button" class="btn btn-block btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="fa fa-external-link"></i> Restaurar Formulário</a>
                     </div>
                 <%
-                if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) then
-                    if datediff("yyyy", Nascimento, date())<15 and Sexo<>0 then
-                    %>
-                    <a class="btn btn-info mt10" href="javascript:curva(<%= PacienteID %>)"><i class="fa fa-bar-chart"></i> Curvas de Evolução</a>
-                    <%
-                    end if
+                if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) and (Sexo=1 or Sexo=2) then
+                %>
+                    <div class="col-md-3">
+                        <br>
+                        <a class="btn btn-info" href="javascript:curva(<%= PacienteID %>)"><i class="fa fa-bar-chart"></i> Curvas de Evolução</a>
+                    </div>
+                <%
                 end if
 
                 if Tipo = "|L|" then
@@ -316,6 +316,30 @@ select case Tipo
     case "|Diagnostico|"
         subTitulo = "Diagnósticos"
         %>
+        <script>
+            window.addEventListener("message", function(e) {
+                  if(e.data === "closeModal") {
+                      $("#modal-calculator").modal("hide");
+                  }
+
+                  if(e.data === "reloadPage") {
+                      window.location.reload();
+                  }
+            });
+</script>
+        <!-- Modal tnm -->
+        <div class="modal fade" id="modal-calculator" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog" style="  width: 100%;
+                                             height: 100%;
+                                             padding: 0;">
+            <div class="modal-content" style="  height: 100%;
+                                                border-radius: 0;">
+              <div class="modal-body" id="modal-calculator-content" style="height: 100%;
+                                                                                                                           border-radius: 0;">
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="panel timeline-add">
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %>
@@ -1188,10 +1212,17 @@ function prontPrint(tipo, id){
         case "pedido":
             url = domain+"print/exam-request/";
             break;
+        case "diagnostico":
+            url = domain+"print/diagnostico/";
+            break;
+        case "protocolos":
+            url = domain+"print/protocol/";
+            break;
         //case "AE","L":
             //url = domain+"print/prescription/";
         // break;
     }
+    
     let src = `${url+id}?showPapelTimbrado=1&showCarimbo=1&assinaturaDigital=1&tk=${localStorage.getItem("tk")}`;
     openModal(`
         <iframe width="100%" height="800px" src="${src}" frameborder="0"></iframe>`,

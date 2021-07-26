@@ -117,7 +117,7 @@ end if
 <script type="text/javascript">
 //js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I=1&Col=Foto"
+Parametros = "P="&req("P")&"&I=1&Col=Foto"
 %>
 $(document).ready(function(e) {
 	<%call formSave("frmEmpresa", "save", "")%>

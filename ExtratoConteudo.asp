@@ -178,6 +178,8 @@ end if
 	saidasCartaoCredito = 0 '8
 	entradasCartaoDebito = 0 '9
 	saidasCartaoDebito = 0 '9
+	EntradasPix = 0 '15
+	saidasPix = 0 '15
 
 	while not getMovement.eof
 		Value = getMovement("Value")
@@ -540,6 +542,12 @@ end if
 					else
 						saidasCartaoDebito = saidasCartaoDebito +Value
 					end if
+				case 15
+					if controle="C" then
+						entradasPix = entradasPix +Value
+					else
+						saidasPix = saidasPix +Value
+					end if
 				End Select
 				controle = ""
 			%>
@@ -699,8 +707,11 @@ end if
 			<td>Boleto <img width="18" src="assets/img/4D.png"> R$ <%=formatnumber(entradasBoleto,2)%></td>
 		</tr>
 		<tr>
+			<td>Pix <img width="18" src="assets/img/6C.png"> R$ <%=formatnumber(entradasPix,2)%></td>
+		</tr>
+		<tr>
 		<%
-			entradas = entradasBoleto + entradasCartaoCredito + entradasCartaoDebito + entradasCheque + entradasDinheiro + entradasDOC + entradasTED + entradasTransferencia
+			entradas = entradasBoleto + entradasPix + entradasCartaoCredito + entradasCartaoDebito + entradasCheque + entradasDinheiro + entradasDOC + entradasTED + entradasTransferencia
 		%>
 		<td colspan='3'>Total: R$<%= formatnumber(entradas,2)%></td>
 		</tr>
@@ -721,8 +732,11 @@ end if
 			<td>Boleto <img width="18" src="assets/img/4D.png"> R$ <%=formatnumber(saidasBoleto,2)%></td>
 		</tr>
 		<tr>
+			<td>Pix <img width="18" src="assets/img/6D.png"> R$ <%=formatnumber(saidasPix,2)%></td>
+		</tr>
+		<tr>
 		<%
-			saidas = saidasBoleto + saidasCartaoCredito + saidasCartaoDebito + saidasCheque + saidasDinheiro + saidasDOC + saidasTED + saidasTransferencia
+			saidas = saidasBoleto + saidasPix + saidasCartaoCredito + saidasCartaoDebito + saidasCheque + saidasDinheiro + saidasDOC + saidasTED + saidasTransferencia
 		%>
 		<td colspan='3'>Total: R$ <%= formatnumber(saidas,2)%></td>
 		</tr>

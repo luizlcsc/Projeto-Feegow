@@ -2,26 +2,26 @@
 <%
 Nome  = replace(ref("Nome"),"'","''")
 Valor = replace(ref("Valor"),"'","''")
-I=replace(request.QueryString("I"),"'","''")
-CI=replace(request.QueryString("CI"),"'","''")
-if request.QueryString("A")="X" then
+I=replace(req("I"),"'","''")
+CI=replace(req("CI"),"'","''")
+if req("A")="X" then
 	db_execute("delete from buiOpcoesCampos where id = '"&CI&"'")
-elseif request.QueryString("A")="V" then
+elseif req("A")="V" then
 	db_execute("update buiOpcoesCampos set Valor='"&Valor&"' where id = '"&CI&"'")
-elseif request.QueryString("A")="C" then
+elseif req("A")="C" then
 	set pTipoCampo=db.execute("select * from buiCamposForms where id="&I)
 	if pTipoCampo("TipoCampoID")=5 or pTipoCampo("TipoCampoID")=6 then
 		db_execute("update buiOpcoesCampos set Selecionado='' where CampoID="&I)
 	end if
-	if request.QueryString("Check")="true" then
+	if req("Check")="true" then
 		Selecionado="S"
 	else
 		Selecionado=""
 	end if
 	db_execute("update buiOpcoesCampos set Selecionado='"&Selecionado&"' where id = '"&CI&"'")
-elseif request.QueryString("A")="N" then
+elseif req("A")="N" then
 	db_execute("update buiOpcoesCampos set Nome='"&Nome&"' where id = '"&CI&"'")
-elseif request.QueryString("A")="A" then
+elseif req("A")="A" then
 	db_execute("insert into buiOpcoesCampos (CampoID, Nome, Valor, Selecionado) values ('"&I&"', '', '', '')")
 end if
 %>

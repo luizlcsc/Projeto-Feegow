@@ -3,7 +3,7 @@
 response.ContentType="text/XML"
 
 
-RLoteID = replace(request.QueryString("I"),".xml", "")
+RLoteID = replace(req("I"),".xml", "")
 set lote = db.execute("select * from tisslotes where id="&RLoteID)
 'set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id"))
 set guias = db.execute("select g.*, p.NomePaciente from tissguiasadt as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" order by g.NGuiaPrestador")
@@ -39,9 +39,10 @@ prefixo = right(prefixo, 20)
 				<%
                 CodigoNaOperadora = trim(CodigoNaOperadora&" ")
                 CodigoNaOperadora = TISS__FormataConteudo(TISS__RemoveCaracters(CodigoNaOperadora))
-                if CalculaCPF(CodigoNaOperadora)=true then
+				CodigoNaOperadoraValida = CodigoNaOperadora
+                if CalculaCPF(CodigoNaOperadoraValida)=true then
                     tipoCodigoNaOperadora = "CPF"
-                elseif CalculaCNPJ(CodigoNaOperadora)=true then
+                elseif CalculaCNPJ(CodigoNaOperadoraValida)=true then
                     tipoCodigoNaOperadora = "CNPJ"
                 else
                     tipoCodigoNaOperadora = "codigoPrestadorNaOperadora"

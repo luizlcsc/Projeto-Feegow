@@ -22,11 +22,11 @@ END IF
 
 txt = replace(req("txt"), " ", "%")
 
-sqlProcedimentos = "select p.id as ProcID, p.NomeProcedimento, v.*, v.id as PvId, pt.*, (SELECT group_concat(DISTINCT CodigoNaOperadora) FROM contratosconvenio cc WHERE v.Contratados like CONCAT('%|',cc.id,'|%') AND CodigoNaOperadora <> '' ) as CodigoNaOperadora  from procedimentos as p "&_
+sqlProcedimentos = "select p.id as ProcID, p.NomeProcedimento, v.*, v.id as PvId, pt.*, tc.CodigoTabela, (SELECT group_concat(DISTINCT CodigoNaOperadora) FROM contratosconvenio cc WHERE v.Contratados like CONCAT('%|',cc.id,'|%') AND CodigoNaOperadora <> '' ) as CodigoNaOperadora  from procedimentos as p "&_
                     "left join tissprocedimentosvalores as v on (v.ProcedimentoID=p.id and v.ConvenioID="&ConvenioID&") "&_
                     "left join tissprocedimentostabela as pt on (v.ProcedimentoTabelaID=pt.id)"&_
+                    "left join tabelasconvenios as tc on (IF(pt.TabelaID < 0, (pt.TabelaID)*-1 = tc.id, pt.TabelaID = tc.id))"&_
                     "where (p.NomeProcedimento like '%"&txt&"%' or p.Codigo = '"&txt&"' ) and p.sysActive=1 and Ativo='on' and (v.ConvenioID="&ConvenioID&" or v.ConvenioID is null) and (isnull(SomenteConvenios) or SomenteConvenios like '%|"&ConvenioID&"|%' or SomenteConvenios like '') and (SomenteConvenios not like '%|NONE|%' or isnull(SomenteConvenios)) order by (IF(v.id IS NOT NULL, 0,1)) , NomeProcedimento "&limit
-
 
     set proc = db.execute(sqlProcedimentos)
 if not proc.eof then
@@ -85,12 +85,17 @@ while not proc.eof
         END IF
     END IF
 
+    codigoTabela = proc("TabelaID")
+    IF proc("TabelaID") < 0 then
+        codigoTabela = proc("CodigoTabela")
+    END IF
+
     response.flush()
 
     %><tr id="<%=proc("ProcID")%>">
         <td><% if aut("|conveniosA|")= 1 then %><button type="button" onclick="editaValores(<%=proc("ProcID")%>, <%=ConvenioID%>,<%=proc("PvId")%>);" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></button><% end if %></td>
         <td><%=proc("NomeProcedimento")%></td>
-        <td class="text-right"><%=proc("TabelaID")%></td>
+        <td class="text-right"><%=codigoTabela%></td>
         <td class="text-right"><%=proc("Codigo")%></td>
         <td class="text-right"><%=proc("CodigoNaOperadora")%></td>
         <td><%=proc("Descricao")%></td>

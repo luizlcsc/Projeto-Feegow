@@ -1,34 +1,34 @@
 <!--#include file="connect.asp"--><%
 response.Charset="utf-8"
 'on error resume next
-TipoCampoID=request.QueryString("I")
-set pForm=db.execute("select * from buiForms where id = '"&request.QueryString("F")&"'")
+TipoCampoID=req("I")
+set pForm=db.execute("select * from buiForms where id = '"&req("F")&"'")
 if not pForm.EOF then
 	NomeTabela="_"&pForm("id")
 	TipoTitulo=pForm("TipoTitulo")
 end if
-if request.QueryString("A")="X" then
-	set pNomeX=db.execute("select * from buiCamposForms where id = '"&request.QueryString("I")&"'")
+if req("A")="X" then
+	set pNomeX=db.execute("select * from buiCamposForms where id = '"&req("I")&"'")
 	if not pNomeX.EOF then
 		if pNomeX("TipoCampoID")=1 or pNomeX("TipoCampoID")=2 or pNomeX("TipoCampoID")=3 or pNomeX("TipoCampoID")=4 or pNomeX("TipoCampoID")=5 or pNomeX("TipoCampoID")=6 or pNomeX("TipoCampoID")=8 or pNomeX("TipoCampoID")=9 then
 			db_execute("ALTER TABLE `"&NomeTabela&"` DROP COLUMN `"&pNomeX("id")&"`")
 		end if
 	end if
-	db_execute("delete from buiCamposForms where id="&request.QueryString("I"))
-	db_execute("delete from buiOpcoesCampos where CampoID="&request.QueryString("I"))
+	db_execute("delete from buiCamposForms where id="&req("I"))
+	db_execute("delete from buiOpcoesCampos where CampoID="&req("I"))
 end if
-if request.QueryString("A")="A" then
+if req("A")="A" then
 	numeroNovoCampo=0
 	while numeroNovoCampo<>"Feito"
 		numeroNovoCampo=numeroNovoCampo+1
-		set vca=db.execute("select * from buiCamposForms where NomeCampo like 'Campo_"&numeroNovoCampo&"' and FormID like '"&request.QueryString("F")&"'")
+		set vca=db.execute("select * from buiCamposForms where NomeCampo like 'Campo_"&numeroNovoCampo&"' and FormID like '"&req("F")&"'")
 		if vca.EOF then
 			NomeCampo="Campo_"&numeroNovoCampo
 			numeroNovoCampo="Feito"
 		end if
 	wend
 
-	set pultim=db.execute("select * from buiCamposForms where FormID like '"&request.QueryString("F")&"' order by Ordem desc")
+	set pultim=db.execute("select * from buiCamposForms where FormID like '"&req("F")&"' order by Ordem desc")
 	if pultim.eof then
 		UltOrdem=1
 		Tamanho=1
@@ -36,8 +36,8 @@ if request.QueryString("A")="A" then
 		UltOrdem=pultim("Ordem")+1
 		Tamanho=pultim("Tamanho")
 	end if
-	db_execute("insert into buiCamposForms (TipoCampoID, NomeCampo, RotuloCampo, FormID, Ordem, Tamanho, Largura, MaxCarac, pTop, pLeft) values ('"&request.QueryString("I")&"', '"&NomeCampo&"', 'Texto', '"&request.QueryString("F")&"', '"&UltOrdem&"', '"&Tamanho&"', 20, '"&insertMaxCarac&"', '"&request.QueryString("pTop")&"', 55)")
-	set pult=db.execute("select * from buiCamposForms where FormID like '"&request.QueryString("F")&"' order by Ordem desc")
+	db_execute("insert into buiCamposForms (TipoCampoID, NomeCampo, RotuloCampo, FormID, Ordem, Tamanho, Largura, MaxCarac, pTop, pLeft) values ('"&req("I")&"', '"&NomeCampo&"', 'Texto', '"&req("F")&"', '"&UltOrdem&"', '"&Tamanho&"', 20, '"&insertMaxCarac&"', '"&req("pTop")&"', 55)")
+	set pult=db.execute("select * from buiCamposForms where FormID like '"&req("F")&"' order by Ordem desc")
 	informaID=pult("id")
 
 	if TipoCampoID="1" then
@@ -73,7 +73,7 @@ if request.QueryString("A")="A" then
 end if
 %><div id="folha" class="demo">
 <%
-set pFor=db.execute("select * from buiCamposForms where FormID like '"&request.QueryString("F")&"' order by Ordem, id")
+set pFor=db.execute("select * from buiCamposForms where FormID like '"&req("F")&"' order by Ordem, id")
 while not pFor.EOF
 	Tamanho = pFor("Tamanho")
 	AlturaLi=60
@@ -109,8 +109,8 @@ if pFor("TipoCampoID")=11 then
 	end if
 end if%>">
   <span style="position:absolute; right:0; top:0;">
-	<img src="newImages/formEdit.png" width="20" height="20" onclick="editaCampo(<%=pFor("id")%>, 0, '<%=request.QueryString("F")%>');" style="cursor:pointer" />
-  	<img src="newImages/formDelete.png" width="20" height="20" onclick="if(confirm('Tem certeza de que deseja excluir este campo e todos os seus registros?')){criaCampo(<%=pFor("id")%>, 0, 'X', '<%=request.QueryString("F")%>')}" style="cursor:pointer" />
+	<img src="newImages/formEdit.png" width="20" height="20" onclick="editaCampo(<%=pFor("id")%>, 0, '<%=req("F")%>');" style="cursor:pointer" />
+  	<img src="newImages/formDelete.png" width="20" height="20" onclick="if(confirm('Tem certeza de que deseja excluir este campo e todos os seus registros?')){criaCampo(<%=pFor("id")%>, 0, 'X', '<%=req("F")%>')}" style="cursor:pointer" />
   </span>
 	<%
 	if TipoTitulo="B" or isNull(TipoTitulo) then
@@ -303,7 +303,7 @@ pFor.close
 set pFor=nothing
 %>
 </div><%
-if request.QueryString("A")="A" then
+if req("A")="A" then
 	%><--<%=ccur(informaID)+1000000000%>--><%
 end if
 %>

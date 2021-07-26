@@ -6,6 +6,7 @@
 <%
 'on error resume next
 ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
+OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
 HLivres = 0
 HAgendados = 0
 HBloqueados = 0
@@ -514,7 +515,7 @@ while diaS<n
         end if
         Conteudo = Conteudo & "</td><td width=""1%"" "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
         "<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
-        if comps("Encaixe")=1 then
+        if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
             Conteudo = Conteudo & "<span class=""label label-alert"">enc</span>"
         end if
         Conteudo = Conteudo & "<span class=""nomePac"">"&fix_string_chars_full(comps("NomePaciente"))&"</span>  <span class=""pull-right"">"& sinalAgenda(FormaPagto) &"</span>"
@@ -555,7 +556,7 @@ while diaS<n
         var Status = '<%=comps("StaID")%>';
 
         $( classe ).each(function(){
-            if( $(this).attr("id")=='<%=DiaSemana&HoraComp%>' && (Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
+            if( $(this).attr("id")=='<%=DiaSemana&HoraComp%>' && (Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
             {
                 var gradeId = $(this).data("grade");
 
@@ -700,7 +701,7 @@ $(document).ready(function(){
 	});
 	
 	$(".dia-calendario").removeClass("success green");
-	$(".<%=replace(request.QueryString("Data"),"/", "-")%>").addClass("success green");
+	$(".<%=replace(req("Data"),"/", "-")%>").addClass("success green");
 	$(".Locais").html('');
 	<%
 

@@ -43,6 +43,7 @@ else
         LocalizacaoID = pos("LocalizacaoID")
         LocalizacaoIDOriginal = pos("LocalizacaoID")
         CBID = pos("CBID")
+        PacienteID = pos("PacienteID")
     end if
 end if
 Quantidade=1
@@ -153,6 +154,7 @@ end if
     response.write("<input type='hidden' name='LocalizacaoIDOriginal' value='"& LocalizacaoIDOriginal &"'>")
     response.write("<input type='hidden' name='CBID' value='"& CBID &"'>")
     response.write("<input type='hidden' name='TipoUnidadeOriginal' value='"& TipoUnidadeOriginal &"'>")
+    response.write("<input type='hidden' name='PacienteID' value='"& PacienteID &"'>")
     
     
 %>

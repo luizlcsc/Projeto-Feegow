@@ -3,10 +3,10 @@
 <form method="post" action="" name="frmModal" id="frmModal">
 <input type="hidden" name="E" id="E" value="E" />
 <%
-ItemID = request.QueryString("II")
-GuiaID = request.QueryString("I")
-Tipo = request.QueryString("T")
-AtualizarProdutos = request.QueryString("AtualizarProdutos")
+ItemID = req("II")
+GuiaID = req("I")
+Tipo = req("T")
+AtualizarProdutos = req("AtualizarProdutos")
 
 TotalCH = 0
 TotalValorFixo = 0
@@ -137,7 +137,7 @@ elseif Tipo="Procedimentos" then
             <div class="col-md-3">
 	            <%= selectInsert("* Procedimento", "gProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""tissCompletaDados(4, this.value);""", "required guia-tiss", "gConvenioID") %>
             </div>
-            <%= quickField("simpleSelect", "TabelaID", "* Tabela", 3, TabelaID, "select * from tisstabelas order by descricao", "descricao", " empty='' required='required' no-select2") %>
+            <%= quickField("simpleSelect", "TabelaID", "* Tabela", 3, TabelaID, "select tt.id, tt.descricao from tisstabelas tt UNION ALL SELECT tc.CodigoTabela, tc.Descricao FROM tabelasconvenios tc WHERE tc.sysActive = 1 order by descricao", "descricao", " empty='' required='required' no-select2") %>
             <div class="col-md-2">
                 <%=selectProc("* Código proced.", "CodigoProcedimento", CodigoProcedimento, "codigo", "TabelaID", "CodigoProcedimento", "Descricao", " required='required' ", "","","") %>
             </div>
@@ -284,7 +284,7 @@ $("#frmModal").submit(function(){
 
 	$.ajax({
        type:"POST",
-       url:"saveModalSADT.asp?I=<%=request.QueryString("I")%>&II=<%=request.QueryString("II")%>&T=<%=request.QueryString("T")%>",
+       url:"saveModalSADT.asp?I=<%=req("I")%>&II=<%=req("II")%>&T=<%=req("T")%>",
        data:$("#frmModal, #GuiaSADT").serialize(),
        success:function(data){
            eval(data);

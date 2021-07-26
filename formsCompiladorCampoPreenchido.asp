@@ -19,6 +19,22 @@ end if
     table  { border-collapse: collapse; width: 100%; }
 </style>
 
+<%
+
+disabled = ""
+
+if getConfig("BloquearEdicaoFormulario")=1 and FormID <> "N" then
+	set getFormPreenchido = db.execute("SELECT date(DataHora) dataAtendimento FROM buiformspreenchidos WHERE sysActive=1 AND id = "&FormID)
+	if not getFormPreenchido.eof then
+		dataAtendimento = getFormPreenchido("dataAtendimento")
+		if dataAtendimento <> date() then
+			disabled = "disabled"
+		end if
+	end if
+end if
+
+%>
+
 <li id="<%=CampoID%>" class="<%if TipoCampoID=13 then response.Write("caixaGrupo campo") else response.Write("campo") end if%>" data-row="<%=pTop%>" style="text-align:left; <%=EstiloImagem%>" data-col="<%=pLeft%>" data-sizex="<%=Colunas%>" data-sizey="<%=Linhas%>">
 	<%if TipoCampoID<>3 and TipoCampoID<>12 and getConfig("LembreteFormulario")=1 then%><span class="badge badge-info lembrar hidden-print checkbox-custom checkbox-danger"><i class="fa fa-flag red"></i> <input class="postvalue lembrarme tbl" type="checkbox" data-campoid="<%=CampoID%>" id="lembrarme_<%=CampoID%>" value="<%=CampoID %>" name="lembrarme" <%if instr(LembrarmeS, "|"&CampoID&"|") then response.Write("checked") end if %> /><label for="lembrarme_<%=CampoID%>"> Lembrar-me disso</label></span><%end if%>
 	<%
@@ -83,16 +99,7 @@ end if
 			if LadoALado="S" then
 				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control date-picker input-mask-date" data-date-format="dd/mm/yyyy" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div></td></tr></table><%
 			else
-				disabled = ""
-                if getConfig("BloquearEdicaoFormulario")=1 and FormID <> "N" then
-					set getFormPreenchido = db.execute("SELECT date(DataHora) dataAtendimento FROM buiformspreenchidos WHERE sysActive=1 AND id = "&FormID)
-					if not getFormPreenchido.eof then
-						dataAtendimento = getFormPreenchido("dataAtendimento")
-						if dataAtendimento <> date() then
-							disabled = "disabled"
-						end if
-					end if
-				end if
+				
 				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input <%=disabled%> tabindex="<%=Ordem%>" class="campoInput form-control date-picker input-mask-date" data-date-format="dd/mm/yyyy" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div><%
 			end if
 	  	case 3'imagem
@@ -332,7 +339,7 @@ $(function() {
 
             <textarea class="hidden campoInput" id="input_<%=CampoID %>" name="input_<%=CampoID %>"><%=ValorPadrao %></textarea>
 
-            <div id="input_<%=CampoID%>mem" style="overflow:auto" <%if negadoX<>"S" then%> contenteditable="true"<% End If %> class="campoInput memorando postvalue form-control" <%if negadoX<>"S" then%> onblur="alt(); $('#input_<%=CampoID %>').html( $(this).html() )"<% End If %>  data-campoid="<%=CampoID%>" name="input_<%=CampoID%>mem" tabindex="<%=Ordem%>"><%=ValorPadrao%></div>
+            <div id="input_<%=CampoID%>mem" style="overflow:auto" <%if negadoX<>"S" AND disabled&"" = "" then%> contenteditable="true" <% End If %> class="campoInput memorando postvalue form-control" <%if negadoX<>"S" then%> onblur="alt(); $('#input_<%=CampoID %>').html( $(this).html() )"<% End If %>  data-campoid="<%=CampoID%>" name="input_<%=CampoID%>mem" tabindex="<%=Ordem%>"><%=ValorPadrao%></div>
 
 
 			<script type="text/javascript">

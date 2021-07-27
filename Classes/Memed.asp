@@ -1,14 +1,16 @@
 <%
 dominioMemed = "sandbox.memed.com.br"
+dominioApiMemed = "sandbox.api.memed.com.br"
 %>
 <script>
     var memedLoading       = false;
     var memedInitialized   = false;
-    var memedOpenAfterInit = false;
+    var memedOpenAfterInit = null;
+    var memedToken         = null;
 
     function openMemed () {
         if (!memedInitialized) {
-            initMemed(true);
+            initMemed(prescricaoMemed);
             return;
         }
         prescricaoMemed();
@@ -27,7 +29,6 @@ dominioMemed = "sandbox.memed.com.br"
                 if (response.success !== true) {
                     memedLoading = false;
                     if (memedOpenAfterInit) {
-                        console.error('[INTEGRACAO MEMED] Erro ao inicializar memed.');
                         if (response.status === 401) {
                             new PNotify({
                                 title: 'Acesso negado',
@@ -51,6 +52,7 @@ dominioMemed = "sandbox.memed.com.br"
             }
         );
     }
+    initMemed();
 
     function initScriptMemed(token) {
         memedLoading = true;
@@ -63,6 +65,7 @@ dominioMemed = "sandbox.memed.com.br"
         script.onload = function() {
             initEventsMemed();
         };
+        memedToken = token;
         document.body.appendChild(script);
         console.info('[INTEGRACAO MEMED] Script injetado com sucesso.');
     }
@@ -72,53 +75,83 @@ dominioMemed = "sandbox.memed.com.br"
             if (module.name === 'plataforma.prescricao') {
                 memedLoading     = false;
                 memedInitialized = true;
+
+                MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {
+                    removePatient: false,
+                    deletePatient: false,
+                    editPatient: false,
+                    removePrescription: false,
+                    historyPrescription: false,
+                    copyMedicalRecords: false,
+                });
+
+                MdHub.event.add('prescricaoSalva', onPrescricaoMemedSalva);
+
                 console.info('[INTEGRACAO MEMED] Inicializada com sucesso.');
-                if (memedOpenAfterInit) {
-                    prescricaoMemed();
+                if (memedOpenAfterInit && typeof memedOpenAfterInit === 'function') {
+                    memedOpenAfterInit();
                 }
             }
         });
     }
 
     function prescricaoMemed () {
-        var endereco = $("#Endereco").val();
-        var numero = $("#Numero").val() ? " "+$("#Numero").val() : "";
+        const nome = $("#NomePaciente").val();
+        const endereco = $("#Endereco").val();
+        const numero = $("#Numero").val() ? " "+$("#Numero").val() : "";
+        const estado = $("#Estado").val() ? " "+$("#Estado").val() : "";
+        const cidade = $("#Cidade").val()+estado;
+        const telefone = $("#Cel1").val().replace("-","").replace("(","").replace(")","").replace(" ","");
+        const fullEndereco = endereco+numero;
 
-        var estado = $("#Estado").val() ? " "+$("#Estado").val() : "";
-
-        var fullEndereco = endereco+numero;
-
-
-        MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {
-          removePatient: false,
-          deletePatient: false,
-          removePrescription: false,
-          historyPrescription: false
+        MdHub.command.send('plataforma.prescricao', 'setPaciente', {
+            nome: nome,
+            telefone: telefone,
+            endereco: fullEndereco,
+            cidade: cidade,
+            idExterno:'<%=session("Banco")%>' +  '-' + '<%=req("I")%>'
+        }).then(function() {
+            MdHub.module.show('plataforma.prescricao');
+            MdHub.command.send('plataforma.prescricao', 'newPrescription');
         });
-
-
-       MdHub.command.send('plataforma.prescricao', 'setPaciente', {
-         nome: $("#NomePaciente").val(),
-         telefone: $("#Cel1").val().replace("-","").replace("(","").replace(")","").replace(" ",""),
-         endereco: fullEndereco,
-         cidade: $("#Cidade").val()+estado,
-         idExterno:'<%=session("Banco")%>' +  '-' + '<%=req("I")%>'
-       });
-
-       setTimeout(function() {
-         MdHub.module.show('plataforma.prescricao');
-         MdHub.event.add('prescricaoSalva', function prescricaoSalvaCallback(idPrescricao) {
-             console.log(idPrescricao);
-             // postUrl('prescription/memed/save-prescription', {
-             //     prescriptionId: idPrescricao,
-             //     patientId: '<%=req("I")%>'
-             // }, function (data) {
-				//  console.log(data);
-    			// pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
-             //
-             // });
-         });
-       } , 500);
     }
-    initMemed();
+
+    function onPrescricaoMemedSalva(idPrescricao) {
+        postUrl('prescription/memed/save-prescription', {
+             prescriptionId: idPrescricao,
+             patientId: '<%=req("I")%>'
+         }, function (data) {
+            pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
+         });
+    }
+
+    function viewPrescricaoMemed(id) {
+        if (memedLoading) {
+            new PNotify({
+                title: 'Aguarde...',
+                text: 'O serviço Memed está sendo inicializado.',
+                type: 'warning',
+                delay: 250
+            });
+            return;
+        }
+        if (!memedInitialized) {
+            initMemed(function () {
+                viewPrescricaoMemed(id);
+            });
+            return;
+        }
+
+        MdHub.command.send('plataforma.prescricao', 'viewPrescription', id);
+    }
+
+    function deletePrescricaoMemed(id) {
+        if(confirm('Tem certeza de que deseja apagar esta prescrição?')) {
+            postUrl('prescription/memed/delete-prescription', {prescriptionId: id}, function (data) {
+                console.log(data);
+                pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
+            });
+        }
+    }
+    
 </script>

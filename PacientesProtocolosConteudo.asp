@@ -1,6 +1,22 @@
 <!--#include file="connect.asp"-->
+<!--#include file="geraPacientesProtocolosCiclos.asp"-->
 <%
+if ID&"" = "" then
+    ID = req("i")
+end if
+
 Tipo = req("Tipo")
+readOnly = false
+if req("readonly") = "1" then
+    readOnly = true
+end if
+
+set usuario = db.execute("SELECT Auditor FROM profissionais where id = "&session("User")&" and sysActive= 1")
+if not usuario.eof then
+    auditor = usuario("Auditor")
+end if 
+
+inserted = false
 if Tipo = "I" then
     ID = req("ID")
     PacienteID = req("PacienteID")
@@ -8,7 +24,7 @@ if Tipo = "I" then
     if ID&""<>"" then
         set getPacientesProtocolos = db.execute("SELECT * FROM pacientesprotocolos WHERE id="&ID)
         if getPacientesProtocolos.eof then
-            db.execute("INSERT INTO pacientesprotocolos (id, sysUser, sysActive, PacienteID) VALUES ("&ID&", "&session("User")&", 1, "&PacienteID&")")
+            db.execute("INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&session("User")&",  "&session("UnidadeID")&", "&session("User")&", 1)")
         end if
         set getMedicamentosProtocolos = db.execute("SELECT * FROM protocolosmedicamentos WHERE ProtocoloID="&ProtocoloID)
         while not getMedicamentosProtocolos.eof
@@ -17,6 +33,9 @@ if Tipo = "I" then
         wend
         getMedicamentosProtocolos.close
         set getMedicamentosProtocolos=nothing
+
+        call geraPacientesProtocolosCiclos(ID)
+        inserted = true
     end if
 end if
 
@@ -26,11 +45,19 @@ end if
 'end if
 %>
 
+<style type="text/css">
+    #table-protocolo .form-control[readonly] {
+        cursor: default;
+    }
+</style>
+
 <div class="row">
+    <% if not readOnly then %>
     <hr class="short alt">
+    <%end if %>
     <div class="col-md-12 protocolo-content" id="ProtocoloLista" ><br>
         <input type="hidden" name="ProtocoloListaID" id="ProtocoloListaID" value="100">
-        <table class="table" width="100%" style="padding: 4px;!important;">
+        <table id="table-protocolo" class="table" width="100%" style="padding: 4px;!important;">
             <%
             sql = "SELECT promed.*, promed.id ProtocoloMedicamentoID, promed.MedicamentoPrescritoID MedicamentoPrescritoID, prodMedPres.NomeProduto NomeMedicamentoPrescrito, protmed.Medicamento MedicamentoID, prot.NomeProtocolo, prodMed.NomeProduto NomeMedicamento, proDil.NomeProduto Diluente, unMed.Sigla SiglaMed, unDil.Sigla SiglaDil, protmed.Dose, protmed.QtdDiluente, protmed.Obs ObservacaoMedicamento, pac.ConvenioID1 ConvenioID, pac.PlanoID1 PlanoID "&_
                   "FROM pacientesprotocolosmedicamentos promed "&_
@@ -43,7 +70,8 @@ end if
                   "LEFT JOIN cliniccentral.unidademedida unMed ON prodMed.UnidadePrescricao=unMed.id "&_
                   "LEFT JOIN produtos proDil ON proDil.id=protmed.DiluenteID "&_
                   "LEFT JOIN cliniccentral.unidademedida unDil ON proDil.UnidadePrescricao=unDil.id "&_
-                  "WHERE pacpro.id="&ID&" ORDER BY promed.id"
+                  "WHERE pacpro.id="&ID&" and promed.sysActive =1 ORDER BY promed.id"
+
             set getProtocolo = db.execute(sql)
             while not getProtocolo.eof
                 ProtocoloID = getProtocolo("ProtocoloID")
@@ -72,19 +100,22 @@ end if
                     MedicamentoID = getProtocolo("MedicamentoID")
 
                     if isnumeric(ConvenioID) then
-                        sqlRegraConv = " AND (medconv.Convenios LIKE '%|"&ConvenioID&"|%' OR medconv.Convenios IS NULL OR medconv.Convenios='')"
+                        sqlRegraConv = " AND (medconv.convenioID LIKE '%|"&ConvenioID&"|%' OR medconv.convenioID IS NULL OR medconv.convenioID='')"
                     end if
                     if isnumeric(PlanoID) then
-                        sqlRegraPlan = " AND (medconv.Planos LIKE '%|"&PlanoID&"|%' OR medconv.Planos IS NULL OR medconv.Planos='')"
+                        sqlRegraPlan = " AND (medconv.planoID LIKE '%|"&PlanoID&"|%' OR medconv.planoID IS NULL OR medconv.planoID='')"
                     end if
-                    set getRegraMedicamento = db.execute("SELECT prod.id MedicamentoID, prod.NomeProduto "&_
-                                                        "FROM medicamentosconvenios medconv "&_
-                                                        "LEFT JOIN produtos prod ON prod.id=medconv.MedicamentoSubstitutoID "&_
-                                                        "WHERE medconv.MedicamentoSubstitutoID!=0 AND medconv.sysActive=1 "&sqlRegraConv & sqlRegraPlan&" LIMIT 1")
 
-                    if not getRegraMedicamento.eof then
-                        Medicamento = getRegraMedicamento("NomeProduto")
-                        MedicamentoID = getRegraMedicamento("MedicamentoID")
+                    if sqlRegraConv <> "" or sqlRegraPlan <> "" then
+                        set getRegraMedicamento = db.execute("SELECT prod.id MedicamentoID, prod.NomeProduto "&_
+                                                            "FROM medicamentos_convenio medconv "&_
+                                                            "LEFT JOIN produtos prod ON prod.id=medconv.produtoReferencia "&_
+                                                            "WHERE medconv.produtoReferencia!=0 AND medconv.sysActive=1 "&sqlRegraConv & sqlRegraPlan&" LIMIT 1")
+
+                        if not getRegraMedicamento.eof then
+                            Medicamento = getRegraMedicamento("NomeProduto")
+                            MedicamentoID = getRegraMedicamento("MedicamentoID")
+                        end if
                     end if
 
                 end if
@@ -111,13 +142,18 @@ end if
                     </td>
                     <td width="10%">
                         <div class="input-group">
-                            <input id="DoseMedicamento_<%=ProtocoloMedicamentoID%>" class="form-control input-mask-brl text-right" placeholder="0,00" type="text" style="text-align:right" name="DoseMedicamento_<%=ProtocoloMedicamentoID%>" value="<%=fn(DoseMedicamento)%>">
+                            <input id="DoseMedicamento_<%=ProtocoloMedicamentoID%>" class="form-control input-mask-brl text-right" placeholder="0,00" type="text" style="text-align:right" name="DoseMedicamento_<%=ProtocoloMedicamentoID%>" value="<%=fn(DoseMedicamento)%>" <% if readOnly then%> readonly <%end if%>>
                             <span class="input-group-addon">
                                 <strong><%=SiglaMed%></strong>
                             </span>
                         </div>
                     </td>
-                    <td width="1%"><i class='ml20 mt5 btn-xs btn btn-danger fa fa-remove' disabled="disabled"> </i></td>
+                    <td class='row' width="9%">
+                        <% if not readonly then %>
+                        <i class='ml5 col-md-5 btn-xs btn btn-warning fa fa-pencil' onclick="pedirMudanca('E','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')"  data-toggle="tooltip" data-placement="top" title="Pedir edição de protocolo"> </i>
+                        <i class='ml5 col-md-5 btn-xs btn btn-danger fa fa-remove' onclick="pedirMudanca('R','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')" data-toggle="tooltip" data-placement="top" title="Pedir remoção de protocolo"> </i>
+                        <% end if %>
+                    </td>
                 </tr>
                 <%
                 end if
@@ -127,9 +163,9 @@ end if
                     <td class="text-right"><i class="fa fa-chevron-right"></i></td>
                     <td ><b>Diluente:</b> <%=Diluente%>
                     <b>
-                    <%if DoseDiluente&""<>"" then%>
-                    <%=DoseDiluente&" "&SiglaDil%>
-                    <%end if%>
+                        <%if DoseDiluente&""<>"" then%>
+                        <%=DoseDiluente&" "&SiglaDil%>
+                        <%end if%>
                     </b>
                     </td>
                     <td></td>
@@ -140,7 +176,7 @@ end if
                 if Medicamento&""<>"" then
                 %>
                 <tr>
-                    <td colspan="2"><textarea id="Obs_<%=ProtocoloMedicamentoID%>" name="Obs_<%=ProtocoloMedicamentoID%>" style='float:left;<%=styleText%>' class='obs-exame form-control' placeholder='Observações'><%=Obs %></textarea></td>
+                    <td colspan="2"><textarea id="Obs_<%=ProtocoloMedicamentoID%>" name="Obs_<%=ProtocoloMedicamentoID%>" style='float:left;<%=styleText%>' class='obs-exame form-control' placeholder='Observações'  <% if readOnly then%> readonly <%end if%>><%=Obs %></textarea></td>
                     <td colspan="2"><%if ObservacaoMedicamento&""<>"" then%><b><i class="fa fa-exclamation-circle"></i> Obs.: </b><%end if%><%=ObservacaoMedicamento%></td>
                 </tr>
                 <%
@@ -154,7 +190,70 @@ end if
         </table>
     </div>
 </div>
-
 <script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+
+
+function pedirMudanca(tipo,id,medicamentoId){
+    const dose = parseFloat(($(`#DoseMedicamento_${id}`).val()).replace(',','.'));
+    const obs = $(`#Obs_${id}`).val();
+    const paciente = "<%=req("PacienteID")%>";
+    const auditor = "<%=auditor%>";
+    const pacienteProtocoloId = "<%=ID%>";
+    const data = {
+        id,
+        dose,
+        obs,
+        medicamentoId,
+        paciente,
+        tipo,
+        pacienteProtocoloId
+    }
+
+    // valida os campos
+    if(dose.length==0 || obs.length ==0){
+        msg('Os campos de dose e observação devem estar preenchidos','warning')
+        return false
+    }
+
+    if (auditor==1){
+        $.ajax({
+        type: "POST",
+        url: "PacientesProtocolosConteudoSave.asp",
+        data: data,
+        contentType:"application/x-www-form-urlencoded"
+        })
+        .done((data)=>{
+            msg('Atualização feita com sucesso', "success")
+            $('.mfp-close').click()
+        })
+    }else{
+        $.ajax({
+        type: "POST",
+        url: "notificacao_mudancaProtocolo.asp",
+        data: data,
+        contentType:"application/x-www-form-urlencoded"
+        })
+        .done((data)=>{
+            msg('Sua solicitação foi enviada ao Auditor', "success")
+        })
+    }
+
+}
+
+function msg(titulo,tipo){
+    new PNotify({
+        title: titulo,
+        type: tipo,
+        delay: 3000
+    });
+}
+
+<% if inserted then %>
+pront('timeline.asp?PacienteID=<%=req("PacienteID")%>&Tipo=|Protocolos|');
+<% end if %>
 
 </script>

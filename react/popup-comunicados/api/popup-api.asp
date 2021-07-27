@@ -22,8 +22,8 @@ Select Case action
 
   Case "GetComunicadoById"
 
-    sql = "SELECT pop.* FROM cliniccentral.popup_comunicados pop INNER JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id WHERE com.UserID="&UserID&" AND pop.id="&Request.QueryString("ComunicadoID")
-    set ComunicadoSQL = dbc.execute( sql )
+    sql = "SELECT pop.* FROM cliniccentral.popup_comunicados pop INNER JOIN cliniccentral.comunicados com ON com.ComunicadoID=pop.id WHERE com.UserID="&UserID&" AND pop.id="&req("ComunicadoID")
+    set ComunicadoSQL = db.execute( sql )
 
     responseJson(recordToJSON(ComunicadoSQL))
 

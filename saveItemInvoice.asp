@@ -93,6 +93,5 @@ elseif TipoItem = "O" then
 	end if
 end if
 %>
-//alert('<%=ref()%>');
 atualizaItens();
 $("#modal-table").modal("hide");

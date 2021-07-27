@@ -339,7 +339,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                 SomenteEspecialidades = SomenteEspecialidades&", "&ProcedimentoSomenteEspecialidades
                             end if
                         end if
-                        if SomenteEspecialidades="" AND refEspecialidade<>"" then
+                        if SomenteEspecialidades="" AND refEspecialidade<>"" and instr(refEspecialidade, ",")=0 then
                             SomenteEspecialidades = refEspecialidade
                         end if
 

@@ -23,7 +23,16 @@
             </span>
         </div>
         <div class="panel-body">
-            <%= quickfield("simpleSelect", "fcd", "Filtrar por CD", 3, "", "select id, descricao from cliniccentral.tisscd", "descricao", " no-select2 onchange=""filtro('CD', $(this).val())"" empty ") %>
+            <%= quickfield("simpleSelect", "fcd", "Filtrar por CD", 2, "", "select id, descricao from cliniccentral.tisscd", "descricao", " no-select2 onchange=""filterAll()"" empty ") %>
+            <div class="col-md-3">
+                <%= selectInsert("Item", "fitem", "", "produtos", "NomeProduto", " onchange=""filterAll()""", "", "") %>
+            </div>
+            <%= quickfield("simpleSelect", "ftabela", "Tabela", 2, "", "select id, concat(descricao,' (',codigo,')')descricao from cliniccentral.tabelasprocedimentos where (Despesa=1 or Despesa is null) and Ativo='S'", "descricao", " no-select2 onchange=""filterAll()"" empty ") %>
+            <%= quickfield("simpleSelect", "fconvenio", "Convênio", 2, "", "select id, NomeConvenio from convenios where sysActive = 1 order by NomeConvenio", "NomeConvenio", " no-select2 onchange=""filterAll()"" empty ") %>
+            <div class="col-md-2" style="padding-top: 27px">
+                <button type="button" class="btn btn-sm btn-primary" onclick="filterAll()">Filtrar</button>
+                <button type="button" class="btn btn-sm btn-default" onclick="clearFilters()">Limpar</button>
+            </div>
         </div>
         <div class="panel-body">
             <table class="table table-bordered table-condensed table-striped table-hover">
@@ -37,7 +46,7 @@
                         <th width="15%">Tabela</th>
                         <th width="25%">Item</th>
                         <th width="15%">Código</th>
-                        <th width="15%">CD</t>
+                        <th width="15%">CD</th>
                         <th width="15%">Un. Medida</th>
                         <th width="15%">Valor Unitário</th>
                     </tr>
@@ -82,7 +91,7 @@
                         <td class="vt" width="15%"><%= quickfield("currency", "Valor"& pt("id"), "", 12, pt("Valor"), "", "", " onKeyup=""altG('Valor', $(this).val())"" ") %>
 
                             <%= replace(btnAddVP, "[PTID]", pt("id")) %>
-
+                            <div class="produtos-valores">
                         <%
                         sqlDel = "delete from tissprodutosvalores where ProdutoTabelaID="& pt("id") &" and Valor like "& treatvalzero(pt("Valor"))
                         
@@ -103,7 +112,7 @@
 
                                     btnx = " <button type='button' class='btn btn-xs btn-danger' onclick='xpv("& pv("id") &")'><i class='fa fa-remove'></i></button>"
 
-                                    call quickfield("currency", "pv"&pv("id"), pv("NomeConvenio") & btnx, 12, fn(pv("Valor")), "", "", "")
+                                    call quickfield("currency", "pv"&pv("id"), pv("NomeConvenio") & btnx, 12, fn(pv("Valor")), "", "", " data-convenio=""" & pv("ConvenioID") & """ ")
                                 pv.movenext
                                 wend
                                 pv.close
@@ -112,6 +121,7 @@
                             <%
                         end if
                         %>
+                        </div>
                         </td>
                     </tr>
                     <%
@@ -166,18 +176,47 @@ function apv(PT, C){
     });
 }
 
-function filtro(Campo, Valor){
-    $(".litem").removeClass("hidden");
-    if(Valor!=""){
-        $("select[name^="+Campo+"]").each(function(){
-           if($(this).val()!=Valor){ 
-		        $(this).closest('tr').addClass('hidden');
-           }
-        });
+function filterAll() {
+    $(".litem, .litem .qf").removeClass("hidden");
+
+    const filterCD       = $('#fcd').val();
+    const filterItem     = $('#fitem').val();
+    const filterTabela   = $('#ftabela').val();
+    const filterConvenio = $('#fconvenio').val();
+
+    filtro('CD', filterCD);
+    filtro('ProdutoID', filterItem);
+    filtro('TabelaID', filterTabela);
+    filtro('Convenio', filterConvenio);
+}
+
+function clearFilters() {
+    $('#fcd, #fitem, #ftabela, #fconvenio').val('').trigger('change');
+}
+
+function filtro(Campo, Valor) {
+    if (Valor != "") {
+        if (Campo === 'Convenio') {
+            $("input[name^=pv]").each(function() {
+                if ($(this).data('convenio') != Valor) {
+                    $(this).closest('.qf').addClass('hidden');
+
+                    if ($(this).closest('.produtos-valores').find('.qf:not(.hidden)').length === 0) {
+                        $(this).closest('tr').addClass('hidden');
+                    }
+                }
+            });
+        } else {
+            $("select[name^="+Campo+"]").each(function() {
+                if ($(this).val() != Valor) {
+                    $(this).closest('tr').addClass('hidden');
+                }
+            });
+        }
     }
 }
 
-$("#frmVI").on("change","[data-resource='produtos']",function() {
+$("#frmVI").on("change","[data-resource='produtos']:not('#fitem')",function() {
     var r = $(this).parents("tr").find("[name='pt']").val();
     $.get("CarregaValorPadraoItem.asp?I="+r+"&ProdutoID="+$(this).val(), function(data) {
         eval(data);

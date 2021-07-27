@@ -8,6 +8,7 @@
 tableName = ref("P")
 id = ref("I")
 
+
 ' vuneravilidade
 spl = split(request.Form(), "&")
 
@@ -82,7 +83,7 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
                 DuplicacaoID = PacienteDuplicadoSQL("id")
 
                 NaoPermitirCPFduplicado = getConfig("NaoPermitirCPFduplicado")
-                ButtonSalvarAssimMesmo = "<button href=\'#\' class=\'btn btn-sm btn-success center\' type=\'button\' onclick=""javascript:$.post(\'save.asp?ForceDuplicado=S\',\'"&ref()&"\' , function(data){eval(data);})""> Salvar mesmo assim.</button>"
+                ButtonSalvarAssimMesmo = "<button href=\'#\' class=\'btn btn-sm btn-success center\' type=\'button\' onclick=""javascript:$.post(\'save.asp?ForceDuplicado=S\',\'"&request.Form()&"\' , function(data){eval(data);})""> Salvar mesmo assim.</button>"
                 if NaoPermitirCPFduplicado = 1 then
                     ButtonSalvarAssimMesmo = ""
                 end if
@@ -354,13 +355,12 @@ if not getResource.EOF then
 				end if
 			end if
 		else
-			sqlValue = "'"&ref(getFields("columnName"))&"'"
+			sqlValue = "'"&refhtml(getFields("columnName"))&"'"
 		end if
 
         IF getFields("id") = 1 or getFields("id") = 138 or getFields("id") = 250 then
 
-
-            valor = ref(getFields("columnName"))
+            valor = refhtml(getFields("columnName"))
 
             if instr(getFields("columnName"), "Nome")>0 then
                 valor = NomeNoPadrao(valor)
@@ -400,7 +400,6 @@ if not getResource.EOF then
 	    'atualiza a hora do cadastro
 	    sqlFields = sqlFields & ", sysDate=NOW()"
 	end if
-
 	sql = "update "&tableName&" set "&sqlFields&" where id="&id
 	
 	if erro<>"" then

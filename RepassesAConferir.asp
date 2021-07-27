@@ -39,6 +39,7 @@ end if
 
 dividirCompensacao = reqf("dividirCompensacao")
 ExibirNaoExecutado = reqf("ExibirNaoExecutado")
+
 if De="" then
 	De = date()
 end if
@@ -159,6 +160,7 @@ end if
         <!--#include file="RepasseCalculoAConferir.asp"-->
     <%
     end if
+
 %>
 
 
@@ -249,9 +251,12 @@ $(document).ready(function() {
         $(".botoes-painel").remove();
          $(".checkbox-custom, .btn", "#content").not(".btn-buscar").remove();
 });
+
 <%
+
 end if
 'roda esse bloco caso ja esteja com resultados na tela
+
 if reqf("AccountID")<>"" then
     if reqf("AutoConsolidarRepasse")="S" then
     %>
@@ -261,7 +266,7 @@ if reqf("AccountID")<>"" then
         $("input[name=allSuccess], input[name=allDanger]").click();
         consolida();
     }else{
-        var url = "<%=request.QueryString%>";
+        var url = "<%=request.QueryString()%>";
         url = url.replace("P=RepassesAConferir" , "?P=RepassesConferidos");
         location.href = url;
     }

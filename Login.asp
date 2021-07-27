@@ -441,10 +441,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <%
     end if
 
-
-
     if ref("User")<>"" or ref("tokenLogin")<>"" then
-
         if req("Partner")="" then
             set tryLogin = dbc.execute("select u.*, l.Cliente, l.NomeEmpresa, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status` from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha='"&ref("Password")&"' or '"&ref("Password")&"'='##Yogo@@Nutella.')")
 %>
@@ -510,7 +507,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             User = request.Cookies("User")
                         end if
 
-                        if req("U")<>"" then
+                        if ref("U")<>"" then
                             User=req("U")
                         end if
                         %>
@@ -545,7 +542,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <script src="vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
 
     <!-- pki lacuna software -->
-    <script type="text/javascript" src="https://get.webpkiplugin.com/Scripts/LacunaWebPKI/lacuna-web-pki-2.12.0.min.js"
+    <script type="text/javascript" src="https://get.webpkiplugin.com/Scripts/LacunaWebPKI/lacuna-web-pki-2.12.0.js"
                 integrity="sha256-jDF8LDaAvViVZ7JJAdzDVGgY2BhjOUQ9py+av84PVFA="
                 crossorigin="anonymous"></script>
 

@@ -7,40 +7,77 @@ Function strip_tags(text_to_strip)
 End Function
 
 function clear_ref_req (val)
-        val = strip_tags(val)
+        tentativa = false
+    
         val = replace(val, "'", "''")
         val = replace(val,"\", "\\")
         val = replace(val,"<script>", "")
         val = replace(val,"</script>", "")
-        val = replace(val,"&amp;", "")
         val = replace(val,"&lt;", "")
         val = replace(val,"&gt;", "")
         val = replace(val,"&quot;", "")
         val = replace(val,"&#x27;", "")
         val = replace(val,"&#x22;", "")
-        val = replace(val,"&#x27;", "")
+        val = replace(val,"&#x7c;", "")
+        
+        if instr(UCase(val)," AND ") OR instr(UCase(val)," OR ") OR instr(UCase(val)," SELECT ") OR instr(UCase(val)," FROM ") OR instr(UCase(val)," GROUP BY ") OR instr(UCase(val)," CONCAT ") OR instr(UCase(val)," CONCAT_WS") OR instr(UCase(val)," DELETE ") OR instr(UCase(val)," UNION ") OR instr(UCase(val)," JOIN ")then
+            val = replace(val," AND ", "")
+            val = replace(val," OR ", "")
+            val = replace(val," SELECT ", "")
+            val = replace(val," GROUP BY ", "")
+            val = replace(val," CONCAT ", "")
+            val = replace(val," CONCAT_WS ", "")
+            val = replace(val," DELETE ", "")
+            val = replace(val," UNION ", "")
+            val = replace(val," JOIN ", "")
+            tentativa = true
+        end if 
+        
+        if tentativa then 
+            injection()
+        end if
         clear_ref_req = val
 end function 
 
-function ref(Val)
-	' ref = replace(replace(ref(Val), "'", "''"), "\", "\\")
-
-    val = request.Form(Val)
+function ref(ColVal)
+    val = request.Form(ColVal)
+    val = strip_tags(val)
 
     ref = clear_ref_req(val)
 end function
 
-function req(Val)
-	' req = replace(request.QueryString(Val), "'", "''")
-    req = clear_ref_req(request.QueryString(Val))
+function refHTML(ColVal)
+    val = request.Form(ColVal)
+    refHTML = clear_ref_req(val)
 end function
 
-function refNull(Val)
-	if ref(Val)&"" = "" then
+function req(ColVal)
+    val = request.QueryString(ColVal)
+    val = strip_tags(val)
+    req = clear_ref_req(val)
+end function
+
+function reqHTML(ColVal)
+    reqHTML = clear_ref_req(request.QueryString(ColVal))
+end function
+
+function refNull(ColVal)
+	if ref(ColVal)&"" = "" then
 		refNull = "NULL"
 	else
-		refNull = ref(Val)
+		refNull = ref(ColVal)
 	end if
+end function
+
+
+function reqf(P)
+
+    if request.QueryString(P)<>"" then
+        reqf = req(P)
+    else
+
+        reqf = ref(P)
+    end if
 end function
 
 function dd(variable)
@@ -91,5 +128,22 @@ function dd(variable)
     response.write("<pre>"&description&"</pre>")
     Response.End
 end function
+
+
+function injection()
+%>
+<script>
+new PNotify({
+    title: 'Ocorreu um erro!',
+    text:'Operação não permitida',
+    type: 'danger',
+    delay: 10000
+});
+</script>
+
+<%
+    Response.End
+end function
+
 
 %>

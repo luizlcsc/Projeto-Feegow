@@ -62,6 +62,7 @@ if nada = "" then
 
 		$("#resultSelect<%=ref("selectID")%>").css("display", "none");
 
+		<% if ref("naoSeleciona")&"" = "" then %>
 		$.post("selecionaProduto.asp", {
             id: $(this).attr("data-id"),
             codigo: $(this).attr("data-codigo"),
@@ -74,8 +75,9 @@ if nada = "" then
            AdicionarValor:'<%=ref("AdicionarValor")%>'
 		},function (data){
 		    eval(data);
-		})
-        });
+		});
+		<% end if %>
+	});
     <%
 else
 	%>

@@ -846,8 +846,19 @@ end if
 
                 </a>
             </li>
-            <% 
+            <%
             end if
+            if recursoAdicional(37) = 4 and aut("protocolosV")=1 then %>
+            <li>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
+                    <span class="fa fa-file-text-o bigger-110"></span>
+                    <span class="sidebar-title">Protocolos</span>
+                    <span class="sidebar-title-tray">
+                        <span class="label label-xs bg-primary" id="totalprotocolos"></span>
+                    </span>
+                </a>
+            </li>
+            <% end if
             if recursoAdicional(20) = 4  then
 
                 set certiDidital = db.execute("SELECT * FROM cliniccentral.digitalcertificates where UsuarioID = "&session("User")&" and LicencaID = "&replace(session("Banco"), "clinic", "")&" and sysActive = 1")
@@ -929,6 +940,7 @@ end if
             </li>
 		    <%
 		    end if
+
 		    if aut("recibos")=1 then
 		    %>
             <li class="checkStatus">
@@ -1018,7 +1030,7 @@ end if
             </li>
             <%
         end if
-    case "laudos" , "frases", "laudoslab" 
+    case "laudos" , "frases", "laudoslab"
         %>
         <li>
             <a  href="?P=Laudos&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
@@ -1026,7 +1038,7 @@ end if
         <%  if recursoAdicional(24)=4 then %>
         <li>
             <a  href="?P=laudosLab&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) <span class="label label-system label-xs fleft">Novo</span></span></a>
-        </li> 
+        </li>
         <% end if %>
         <li>
             <a  href="?P=Frases&Pers=0"><span class="fa fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases </span></a>
@@ -1106,18 +1118,23 @@ end if
                 <%
             end if
             %>
+            <% if recursoAdicional(37) = 4 and aut("protocolosV")=1 then%>
             <li>
                 <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-th-list"></span> <span class="sidebar-title">Protocolos</span></a>
             </li>
+            <% end if%>
             <%
         end if
-    case "protocolos", "protocolosgrupos"
+    case "protocolos", "protocolosgrupos", "tipos_de_arquivos"
         %>
         <li <%if req("P")="Protocolos" then%>class="active"<%end if%>>
             <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-file-text-o"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
         </li>
         <li <%if req("P")="ProtocolosGrupos" then%>class="active"<%end if%>>
             <a href="./?P=ProtocolosGrupos&Pers=Follow"><span class="fa fa-files-o"></span> <span class="sidebar-title">Grupo de Protocolos</span></a>
+        </li>
+        <li <%if req("P")="tipos_de_arquivos" then%>class="active"<%end if%>>
+            <a href="./?P=tipos_de_arquivos&Pers=Follow"><span class="fa fa-file-o"></span> <span class="sidebar-title">Tipo de arquivos</span></a>
         </li>
         <%
     case "fornecedores"
@@ -1342,13 +1359,16 @@ end if
              <span class="fa fa-plus"></span> Agências Integradoras</a></li>
         <% end if %>
     <%
-    case "tabelasconvenios","tabelasportes","tabelasatualizacao"
+    case "tabelasconvenios","tabelasportes","tabelasatualizacao","listaprodutostaxas","produtostaxas"
             %>
                 <li>
                     <a href="?P=tabelasconvenios&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Conv&ecirc;nio</span></a>
                 </li>
-                 <li>
+                <li>
                     <a href="?P=tabelasportes&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
+                </li>
+                <li>
+                    <a href="?P=ListaProdutosTaxas&Pers=1"><span class="fa fa-money"></span> <span class="sidebar-title">Taxas</span></a>
                 </li>
                 <li>
                     <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar Tabela MAT / MED</span></a>
@@ -1361,6 +1381,9 @@ end if
                 </li>
                  <li>
                     <a href="?P=tabelasportes&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
+                </li>
+                <li>
+                    <a href="?P=ListaProdutosTaxas&Pers=1"><span class="fa fa-money"></span> <span class="sidebar-title">Taxas</span></a>
                 </li>
                 <li>
                     <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar Tabela MAT / MED</span></a>
@@ -1378,7 +1401,11 @@ end if
                     <span class="fa fa-usd"></span> <span class="sidebar-title">Valores por Procedimento</span></a>
             </li>
             <li>
-                <a data-toggle="tab" href="#divNumeracao" onclick="ajxContent('ConvenioSequenciaNumeracao&ConvenioID=<%=req("I")%>', '', '1', 'divNumeracao')">
+                <a data-toggle="tab" href="#divValoresDespesas" onclick="ajxContent('ConveniosValoresDespesas&ConvenioID=<%=request.QueryString("I")%>', '', '1', 'divValoresDespesas')">
+                <span class="fa fa-usd"></span> <span class="sidebar-title">Valores por Despesas anexas</span></a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#divNumeracao" onclick="ajxContent('ConvenioSequenciaNumeracao&ConvenioID=<%=request.QueryString("I")%>', '', '1', 'divNumeracao')">
                     <span class="fa fa-sort-numeric-asc"></span> <span class="sidebar-title">Numeração das guias</span></a>
             </li>
             <li><a data-toggle="tab" href="#divRegras" onclick="setTimeout(function(){$('.select2-single').select2()}, 1000)"><span class="fa fa-cogs"></span> <span class="sidebar-title">Regras</span></a></li>
@@ -1468,8 +1495,10 @@ end if
         <li>
             <a data-toggle="tab" href="#divAgendamentos"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Agendamentos</a>
         </li>
+        <li>
+            <a data-toggle="tab" href="#divProtocolo"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Protocolos</a>
+        </li>
         <li><a data-toggle="tab" href="#divPropostas"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Propostas</a></li>
-
         <li>
             <a data-toggle="tab" href="#divLaudosProtocolo"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Protocolo dos Laudos</a>
         </li>
@@ -1509,7 +1538,7 @@ end if
         <%
             end if
         end if
-    case "outrasconfiguracoes", "novasconfiguracoes"
+    case "outrasconfiguracoes", "novasconfiguracoes", "faixaetaria"
         %>
         <li class="sidebar-label pt20">Opções de Configurações</li>
         <li class="hidden">
@@ -1585,11 +1614,24 @@ end if
             <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');" class="whats">
             <span class="fa fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
-         <% IF  aut("exames_laboratoriaisV")=1  THEN %>
+        <% IF  aut("exames_laboratoriaisV")=1  THEN %>
             <li>
               <a href="?P=CadastroExamesLab&Pers=1">
                     <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Cadastro de Exames (Lab)</span></a> 
     
+            </li>
+        <% END IF %>
+        <% IF  1=1 or aut("FaixaEtariaV")=1  THEN %>
+            <li>
+              <a href="?P=faixaetaria&Pers=1">
+                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Faixas Etárias</span></a> 
+    
+            </li>
+        <% END IF %>
+        <% IF  1=1 or aut("CadastroPontosCarteiraV")=1  THEN %>
+            <li>
+              <a href="?P=cadastropontoscarteira&Pers=1">
+                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Pontos por Carteira</span></a>     
             </li>
         <% END IF %>
 
@@ -1622,12 +1664,19 @@ end if
             <%
             end if
             %>
+            <li>
+                <a data-toggle="tab" href="#divFaturamento" onclick="ajxContent('ProdutosFaturamento', '<%=req("I")%>', 1, 'divFaturamento');"><span class="fa fa-list-ol icon-rotate-90"></span> <span class="sidebar-title">Faturamento</span></a>
+            </li>
             <li id="InteracoesEstoque" class="Modulo-Medicamento">
                 <a data-toggle="tab" href="#divInteracoesEstoque" onclick="ajxContent('InteracoesEstoque', '<%=req("I")%>', 1, 'divInteracoesEstoque');"><span class="fa fa-folder"></span> <span class="sidebar-title">Interações</span></a>
             </li>
 
             <li id="ConversaoEstoque" class="Modulo-Medicamento">
                 <a data-toggle="tab" href="#divConversaoEstoque"><span class="fa fa-retweet"></span> <span class="sidebar-title">Conversão</span></a>
+            </li>
+
+            <li id="vincularMedicamento" class="Modulo-Medicamento">
+                <a data-toggle="tab" href="#divVincularMedicamento" onclick="ajxContent('produto/vincularMedicamento', '<%=req("I") %>', 1, 'divVincularMedicamento')"><span class="fa fa-link"></span> <span class="sidebar-title">Vincular medicamento</span></a>
             </li>
             <%
         end if
@@ -1651,9 +1700,9 @@ end if
         %>
         <!--#include file="MenuEstoque.asp"-->
         <%
-    case "listaprodutos", "produtoscategorias", "produtoslocalizacoes", "produtosfabricantes", "produtoskits"
+    case "listaprodutos", "convenio/medicamentos","produtoscategorias", "produtoslocalizacoes", "produtosfabricantes", "produtoskits"
         %><li class="sidebar-label pt20">Tipos de Itens</li><%
-        set getTipoProduto = db.execute("SELECT * FROM cliniccentral.produtostipos")
+        set getTipoProduto = db.execute("SELECT * FROM cliniccentral.produtostipos WHERE id != 5")
         while not getTipoProduto.eof
             TipoProduto = req("TipoProduto")&""
             if TipoProduto&""="" then
@@ -1671,6 +1720,9 @@ end if
         %>
         <hr style="margin:10px !important;">
         <li class="sidebar-label pt20">Configurações</li>
+        <li <%if req("P")="MedicamentoPorConvenio" then%>class="active"<%end if%>>
+            <a href="./?P=convenio/medicamentos&Pers=1"><span class="fa fa-heartbeat"></span> <span class="sidebar-title"> Medicamento Por Convenio</span></a>
+        </li>
         <li <%if req("P")="ProdutosCategorias" then%>class="active"<%end if%>>
             <a href="./?P=ProdutosCategorias&Pers=0"><span class="fa fa-puzzle-piece"></span> <span class="sidebar-title"> Categorias</span></a>
         </li>

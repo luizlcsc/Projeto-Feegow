@@ -64,7 +64,7 @@ select case ref("Tipo")
                 ProdutoID = pos("ProdutoID")
                 Quantidade = 1
 
-                call LanctoEstoque(0, PosicaoID, ProdutoID, "S", TipoUnidadeOriginal, TipoUnidade, Quantidade, ref("DataAplicacao"), "", Lote, Validade, "", "0.00", UnidadePagto, "Aplicação de vacina", Responsavel, ref("PacienteID"), "", LocalizacaoID, "", "", "eval", CBID, "", Responsavel, LocalizacaoIDOriginal, "", "", "")
+                call LanctoEstoque(0, PosicaoID, ProdutoID, "S", TipoUnidadeOriginal, TipoUnidade, Quantidade, ref("DataAplicacao"), "", Lote, Validade, "", "0.00", UnidadePagto, "Aplicação de vacina", Responsavel, ref("PacienteID"), "", LocalizacaoID, "", "", "eval", CBID, "", Responsavel, LocalizacaoIDOriginal, "", "", "","")
 
                 db_execute("UPDATE vacina_aplicacao SET StatusID = '3', ViaAplicacaoID = '"&ref("ViaAplicacaoID")&"', LadoAplicacao = '"&ref("LadoAplicacao")&"', UnidadeID = '"&ref("UnidadeID")&"', DataAplicacao = '"&ref("DataAplicacao")&"', Observacao = '"&ref("Observacao")&"', UsuarioIDAplicacao = "&session("User")&" WHERE id = "&ref("AplicacaoID"))
 

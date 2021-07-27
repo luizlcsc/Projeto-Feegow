@@ -1200,7 +1200,7 @@ $('#GuiaSADT').on('submit', function (event) {
             
             $.ajax({
                 type:"POST",
-                url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=request.QueryString("I")%>"+"&close=<%=close%>&isRedirect="+isRedirect,
+                url:"SaveGuiaSADT.asp?Tipo=SADT&I=<%=req("I")%>"+"&close=<%=close%>&isRedirect="+isRedirect,
                 data:$("#GuiaSADT").serialize(),
                 success:function(data){
                     var timeoutSave = 0;

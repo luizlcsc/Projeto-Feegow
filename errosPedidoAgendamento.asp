@@ -253,7 +253,7 @@ if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("Sta
             nrComp=1
         end if
         if nrComp=1 then
-            erro="Erro: O horário escolhido já está preenchido para este "&LabelErroMaximoAgendamentos&" neste horário."'&ref()&"|"&veSeFaixas("Hora")&" e fim "&veSeFaixas("HoraFinal")
+            erro="Erro: O horário escolhido já está preenchido para este "&LabelErroMaximoAgendamentos&" neste horário."'"&veSeFaixas("Hora")&" e fim "&veSeFaixas("HoraFinal")
         else
             set contaComps=db.execute("select COUNT(id) as TotalPacs from agendamentos where sysActive=1 AND ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and Hora = time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and not id = '"&ConsultaID&"'")
 
@@ -325,7 +325,7 @@ if ref("GradeID")<> "" then
 
     if rfProcedimento&""<>"" then
          set TipoProcedimentoSQL = db.execute("SELECT TipoProcedimentoID FROM procedimentos WHERE TipoProcedimentoID=9 AND id="&rfProcedimento)
-         if not TipoProcedimentoSQL.eof then
+         if ref("Retorno") = "1" or not TipoProcedimentoSQL.eof then
              set MaximoRetornosGradeSQL = db.execute("SELECT MaximoRetornos, ProfissionalID, HoraDe, HoraA FROM assfixalocalxprofissional WHERE id="&treatvalzero(GradeID))
              if not MaximoRetornosGradeSQL.eof then
                  if MaximoRetornosGradeSQL("MaximoRetornos")&"" <> "" then
@@ -333,7 +333,10 @@ if ref("GradeID")<> "" then
                         if ConsultaID<>"0" then
                             whereRetorno = " AND agendamentos.id NOT IN("&ConsultaID&")"
                         end if
-                         sqlAgendamentosRetornos = "SELECT count(agendamentos.id)NumeroRetornos FROM agendamentos INNER JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID WHERE agendamentos.sysActive=1 AND ProfissionalID="&treatvalzero(MaximoRetornosGradeSQL("ProfissionalID"))&" AND Hora BETWEEN TIME('"&right(MaximoRetornosGradeSQL("HoraDe"),8)&"') AND TIME('"&right(MaximoRetornosGradeSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData)&" AND StaId NOT IN (6,11) AND procedimentos.TipoProcedimentoID=9"&whereRetorno
+                         sqlAgendamentosRetornos = "SELECT count(agendamentos.id)NumeroRetornos FROM agendamentos INNER JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID " &_
+                                                   " WHERE agendamentos.sysActive=1 AND ProfissionalID="&treatvalzero(MaximoRetornosGradeSQL("ProfissionalID")) &_
+                                                   " AND Hora BETWEEN TIME('"&right(MaximoRetornosGradeSQL("HoraDe"),8)&"') AND TIME('"&right(MaximoRetornosGradeSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData) &_
+                                                   " AND StaId NOT IN (6,11) AND (procedimentos.TipoProcedimentoID=9 OR agendamentos.Retorno = 1) "&whereRetorno
                          set AgendamentosRetornosSQL = db.execute(sqlAgendamentosRetornos)
 
                          if not AgendamentosRetornosSQL.eof then
@@ -581,7 +584,20 @@ function validarEquipamento(equipamentoId, dataAgendamento, hora)
                validarEquipamento = 0
            end if
        else
-           validarEquipamento = 1
+            diaDaSemana=weekday(dataAgendamento)
+            if ref("Tempo")&"" <> "" then
+                hora = formatdatetime(dateadd("n", ref("Tempo"), hora),4)
+            end if
+            sqlCompromisso = ("select count(*) as total from Compromissos where ProfissionalID = -" & equipamentoId & " and DataDe<=" & mydatenull(dataAgendamento) & " and DataA>=" & mydatenull(dataAgendamento) & " and DiasSemana like '%"&diaDaSemana&"%' and HoraDe<=time('" & hora & "') and HoraA>time('" & hora & "')")
+
+            set compromisso = db.execute(sqlCompromisso)
+            if cint(compromisso("total")) > 0 then
+                validarEquipamento = 0
+            else
+                'Equipamento disponivel
+                validarEquipamento = 1
+            end if
+
        end if
    end if
    end if

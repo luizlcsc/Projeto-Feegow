@@ -24,7 +24,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     if instr(Tipo, "|L|")>0 then
         sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive=1 OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
     end if
-    
+
     if aut("prescricoesV")>0 or session("Admin") = 1 then
         if instr(Tipo, "|Prescricao|")>0 then
             sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', 'Prescrição', 'flask', 'warning', `Data`, Prescricao,s.id from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
@@ -33,15 +33,18 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
 
     if instr(Tipo, "|Diagnostico|")>0 then
-        
-        sqlBmj = " IFNULL((SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'""  target=""_blank""  class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_ 
+
+        sqlBmj = " IFNULL((SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'""  target=""_blank""  class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
                  " FROM cliniccentral.cid10_bmj bmj" &_
                  " WHERE bmj.cid10ID = cid.id),'') "
 
+        sqlTnm = "CONCAT(IFNULL(d.Descricao, ''), '<br>', IFNULL(tnm.Descricao, ''))"
+
         sqlDiagnostico = " union all (SELECT 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, "&_
-                         "   CONCAT('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', "&sqlBmj&",''),'' "&_
+                         "   CONCAT('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', "&sqlBmj&",'<br>',"&sqlTnm&",''),'' "&_
                          "   FROM pacientesdiagnosticos d "&_
                          "   LEFT JOIN cliniccentral.cid10 cid ON cid.id=d.CidID "&_
+                         "   LEFT JOIN pacientesdiagnosticos_tnm tnm ON d.id = tnm.PacienteDiagnosticosID "&_
                          "   WHERE PacienteID="&PacienteID&" and d.sysActive=1) "
 
     end if
@@ -77,7 +80,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
-     'response.write(sql)
+    'response.write(sql)
              set ti = db.execute( sql )
              while not ti.eof
                  Ano = year(ti("DataHora"))
@@ -292,7 +295,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             </a>
                                 <%
                             end if    
-                                if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Protocolos" and ti("Tipo")<>"Imagens" then
+                                if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Imagens" then
                                 %>
                                     <a href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
                                         <i class="fa fa-print"></i>
@@ -311,10 +314,15 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 <%
                                 end if
                             end if
-                            set perm = db.execute("select Permissoes from buipermissoes where FormID="&ti("Modelo"))
-
-                            if cstr(session("User"))=ti("sysUser")&"" and ( aut("prescricoesX")>0 or instr(perm("Permissoes"), "XP")>0 ) then %>
+                            set perm = db.execute("select Permissoes from buipermissoes where FormID='"&ti("Modelo")&"'")
+                            if not perm.eof then 
+                                var_permissoes  = perm("Permissoes")
+                            else
+                                var_permissoes = ""
+                            end if 
+                            if cstr(session("User"))=ti("sysUser")&"" and ( aut("prescricoesX")>0 or instr(var_permissoes, "XP")>0 ) then %>
                                 <a href="javascript:if(confirm('Tem certeza de que deseja apagar esta prescrição?'))pront('timeline.asp?PacienteID=<%= PacienteID %>&Tipo=|<%= ti("Tipo") %>|&X=<%= ti("id") %>');">
+
                                     <i class="fa fa-remove"></i>
                                 </a>
                             <% end if %>
@@ -458,8 +466,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                     <%
                                                 case 16
                                                     urlbmj = getConfig("urlbmj")
-                                                    IF urlbmj <> "" and pcampos("enviardadoscid") = 1 THEN 
-                                                        sqlBmj = " (SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'"" target=""_blank"" class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_ 
+                                                    IF urlbmj <> "" and pcampos("enviardadoscid") = 1 THEN
+                                                        sqlBmj = " (SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'"" target=""_blank"" class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
                                                                 " FROM cliniccentral.cid10_bmj bmj" &_
                                                                 " WHERE bmj.cid10ID = cliniccentral.cid10.id)"
                                                     ELSE
@@ -524,9 +532,9 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                         response.Write("<small>" & ti("Conteudo") & "</small>")
                     case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
                             urlbmj = getConfig("urlbmj")
-                            IF urlbmj <> "" THEN 
+                            IF urlbmj <> "" THEN
                                 response.Write("<small>" & replace(ti("Conteudo")&"","[linkbmj]",urlbmj) & "</small>")
-                            ELSE 
+                            ELSE
                                 response.Write("<small>" & ti("Conteudo") & "</small>")
                             END IF
                     case "PedidosSADT"
@@ -544,11 +552,11 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                         <em><%= ti("Conteudo") %></em>
                         <%
                     case "Protocolos"
-                        set getProtocolos = db.execute("SELECT NomeProtocolo, GROUP_CONCAT(NomeProduto SEPARATOR ', ') Produtos "&_
+                        set getProtocolos = db.execute("SELECT NomeProtocolo, GROUP_CONCAT(IFNULL(NomeProduto, '') SEPARATOR ', ') Produtos "&_
                                                        "FROM pacientesprotocolosmedicamentos ppm "&_
                                                        "LEFT JOIN protocolos prot ON prot.id=ppm.ProtocoloID "&_
                                                        "LEFT JOIN protocolosmedicamentos pm ON ppm.ProtocoloMedicamentoID=pm.id "&_
-                                                       "LEFT JOIN produtos prod ON prod.id=ppm.MedicamentoPrescritoID "&_
+                                                       "LEFT JOIN produtos prod ON prod.id=COALESCE(pm.Medicamento, ppm.MedicamentoPrescritoID) "&_
                                                        "WHERE ppm.PacienteProtocoloID="&ti("id")&" GROUP BY ppm.ProtocoloID")
 
                         while not getProtocolos.eof

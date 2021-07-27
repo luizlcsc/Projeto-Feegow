@@ -149,6 +149,9 @@ end if
 		if cdate(DataClick)=date() then
             response.write(" info ")
         end if
+		if aBadge <> "" then
+			response.write(" feriado ")
+		end if
         response.Write """ id="""&DataClick&""">" & strong & aBadge& iCurrent & fBadge 
 		
 		IF getConfig("ExibirProgressoAgendamentosAgendas") THEN		

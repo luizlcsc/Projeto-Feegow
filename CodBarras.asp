@@ -1,3 +1,4 @@
+<!--#include file="functions.asp"-->
   <link rel="stylesheet" type="text/css" href="assets/fonts/icomoon/icomoon.css">
   <link rel="stylesheet" type="text/css" href="vendor/plugins/magnific/magnific-popup.css">
   <link rel="stylesheet" type="text/css" href="vendor/plugins/footable/css/footable.core.min.css">

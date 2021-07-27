@@ -17,23 +17,23 @@ if I="N" then
 	if vie.eof then
 		db_execute("insert into "&tableName&" (sysUser, sysActive) values ("&session("User")&", 0)")
 		set vie = db.execute(sqlVie)
+		vie.close
 	end if
     response.Redirect("./?P=produtos&I="&vie("id")&"&TipoProduto="&TipoProduto&"&Pers=1")
 else
 	set data = db.execute("select * from "&tableName&" where id="&I)
 	if data.eof then
         response.Redirect("./?P=produtos&I="&req("I")&"&Pers=1")
+        data.close
 	end if
 end if
 
-
-
-
-
+call insertRedir(req("P"), req("I"))
+sqlTiposproduto  = "select * from "&req("P")&" where id="&req("I")
+set reg = db.execute(sqlTiposproduto)
 
 call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
-
 if reg("Foto")="" or isnull(reg("Foto")) then
 	divDisplayUploadFoto = "block"
 	divDisplayFoto = "none"
@@ -138,6 +138,18 @@ end if
 
     <div class="tabbable panel">
         <div class="tab-content panel-body">
+           <%  if TipoProduto&"" = "5" then %>
+            <div id="divCadastroProduto" class="tab-pane in active">
+                <div class="row">
+                    <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
+                    <%'=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
+                    <%if TipoProdutoReadonly&""<>"" then%>
+                        <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
+                    <%end if%>
+                    <%=quickField("simpleSelect", "CD", "CD", 3, reg("CD"), "select * from cliniccentral.tisscd where id=7 order by Descricao", "Descricao", "semVazio")%>
+                </div>
+            </div>
+           <% else %>
             <div id="divCadastroProduto" class="tab-pane in active">
                 <div class="row">
                     <div class="col-md-2">
@@ -161,7 +173,7 @@ end if
                     <div class="col-md-10">
                         <div class="row">
                             <%=quickField("text", "NomeProduto", "Nome <code>#"& reg("id") &"</code>", 4, reg("NomeProduto"), "", "", " required")%>
-                            <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
+                            <%=quickField("simpleSelect", "TipoProduto", "Tipo", 2, TipoProduto, "select * from cliniccentral.produtostipos WHERE id <> 5 order by id", "TipoProduto", " required no-select2 semVazio "& TipoProdutoReadonly)%>
                             <%if TipoProdutoReadonly&""<>"" then%>
                                 <input type="hidden" name="TipoProduto" id="TipoProduto" value="<%=TipoProduto%>">
                             <%end if%>
@@ -255,8 +267,8 @@ end if
                             <br/>
                             <div class="row">
 
-                                <%=quickField("currency", "PrecoCompra", "Pre&ccedil;o Médio - Compra", 2, reg("PrecoCompra"), "", "", "")%>
-                                <div class="col-md-2">
+                                <%=quickField("currency", "PrecoCompra", "Pre&ccedil;o Médio - Compra", 4, reg("PrecoCompra"), "", "", "")%>
+                                <div class="col-md-4">
                                     <br />
                                     <div class="radio-custom radio-system">
                                         <input type="radio" name="TipoCompra" value="C" id="TipoCompraC" <% If reg("TipoCompra")="C" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoNomeC" for="TipoCompraC"> por conjunto</label></div>
@@ -264,8 +276,13 @@ end if
                                     <div class="radio-custom radio-system">
                                         <input type="radio" name="TipoCompra" value="U" id="TipoCompraU" <% If reg("TipoCompra")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeC" for="TipoCompraU"> por unidade</label></div>
                                 </div>
-                                <%=quickField("currency", "PrecoVenda", "Pre&ccedil;o Médio - Venda", 2, reg("PrecoVenda"), "", "", "")%>
-                                <div class="col-md-2">
+                                <div class="col-md-4">
+                                    <%=selectInsert("Plano de Contas - Despesa", "CategoriaDespesaID", reg("CategoriaDespesaID"), "sys_financialexpensetype", "Name", "", "", "")%>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <%=quickField("currency", "PrecoVenda", "Pre&ccedil;o Médio - Venda", 4, reg("PrecoVenda"), "", "", "")%>
+                                <div class="col-md-4">
                                     <br />
                                     <div class="radio-custom radio-alert">
                                         <input type="radio" name="TipoVenda" id="TipoVendaC" value="C" <% If reg("TipoVenda")="C" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoNomeV" for="TipoVendaC"> por conjunto</label></div>
@@ -273,14 +290,19 @@ end if
                                     <div class="radio-custom radio-alert">
                                         <input type="radio" name="TipoVenda" id="TipoVendaU" value="U" <% If reg("TipoVenda")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeV" for="TipoVendaU"> por unidade</label></div>
                                 </div>
+                                <div class="col-md-4">
+                                    <%=selectInsert("Plano de Contas - Receita", "CategoriaReceitaID", reg("CategoriaReceitaID"), "sys_financialincometype", "Name", "", "", "")%>
+                                </div>
+                            </div>
+                            <div class="row">
 
-
-
-                                <%if aut("|produtosI|")=1 OR aut("|produtosA|")=1 then%>
-                                    <div class="checkbox-custom checkbox-primary mt25">
-                                    <input type="checkbox" name="PermitirSaida" id="PermitirSaida" value="S" class="ace" <% If reg("PermitirSaida")="S" Then %> checked="checked" <% End If %> />
-                                    <label for="PermitirSaida">Permitir saída pelo cadastro</label></div>
-                                <%end if%>
+                                <div class="col-md-6">
+                                    <%if aut("|produtosI|")=1 OR aut("|produtosA|")=1 then%>
+                                        <div class="checkbox-custom checkbox-primary mt25">
+                                        <input type="checkbox" name="PermitirSaida" id="PermitirSaida" value="S" class="ace" <% If reg("PermitirSaida")="S" Then %> checked="checked" <% End If %> />
+                                        <label for="PermitirSaida">Permitir saída pelo cadastro</label></div>
+                                    <%end if%>
+                                </div>
 
                             </div>
                         </div>
@@ -311,6 +333,7 @@ end if
                             <%
                         end if
                     end if
+                    uii.close
 				end if
 
 				%>
@@ -327,10 +350,18 @@ end if
                     </div>
                 </div>
             </div>
+            <% end if %>
+
             <div id="divLancamentos" class="tab-pane">
                 Carregando...
             </div>
+            <div id="divFaturamento" class="tab-pane">
+                Carregando...
+            </div>
             <div id="divInteracoesEstoque" class="tab-pane">
+                Carregando...
+            </div>
+            <div id="divConvenioMedicamentos" class="tab-pane">
                 Carregando...
             </div>
             <div id="divConversaoEstoque" class="tab-pane">
@@ -341,8 +372,11 @@ end if
                 </div>
                 <br>
                 <div class="col-md-offset-2 col-md-8 Modulo-Medicamento mt40">
-                <%call Subform("produtosunidademedida", "ProdutoID", req("I"), "frm")%>
+                <%'call Subform("produtosunidademedida", "1", req("I"), "frm")%>
                 </div>
+            </div>
+            <div id="divVincularMedicamento" class="tab-pane">
+                Carregando...
             </div>
         </div>
     </div>
@@ -350,6 +384,12 @@ end if
 
 <script type="text/javascript">
 
+    $(document).ready(function()
+    {
+        let TipoProduto = $("#TipoProduto").val();
+        let IdTipoProduto = $(".idItem").val();
+
+    })
 
     function printEtiqueta(ProdutoID) {
         $.post("printEtiqueta.asp?ProdutoID="+ ProdutoID, $(".eti").serialize(), function (data) {
@@ -358,18 +398,28 @@ end if
         });
     }
 
+    function showSalvar(opcao){
+        if(opcao){
+            $('#rbtns #Salvar').show()
+        }else{
+            $('#rbtns #Salvar').hide()
+        }
+    }
+    showSalvar(true)
 
-
-    $(document).ready(function(e) {
+    $(document).ready(function() {
         var TipoProduto = $("#TipoProduto").val();
+
         if (TipoProduto == 4){
             $(".Modulo-Medicamento").attr("style", "display:");
         }else{
             $(".Modulo-Medicamento").attr("style", "display:none");
-
-        };
+        }
         $("#Header-List").attr("href", "./?P=ListaProdutos&Pers=1&TipoProduto="+TipoProduto);
+
         $("#Header-New").addClass("hidden");
+
+
 
         $(".crumb-link").removeClass("hidden");
         $(".crumb-link").html($("#TipoProduto option:selected").text());
@@ -385,20 +435,20 @@ end if
             $(".crumb-link").html($("#TipoProduto option:selected").text());
         });
 
-    $("#ProdutosPosicao").on("click", ".eti",function() {
-        var temPosicaoSelecionada = $(".eti:checked").length > 0,
-            $btnAcaoEmLote = $(".btn-acao-em-lote");
+        $("#ProdutosPosicao").on("click", ".eti",function() {
+            var temPosicaoSelecionada = $(".eti:checked").length > 0,
+                $btnAcaoEmLote = $(".btn-acao-em-lote");
 
-        $btnAcaoEmLote.attr("disabled", !temPosicaoSelecionada);
-    });
+            $btnAcaoEmLote.attr("disabled", !temPosicaoSelecionada);
+        });
         <%call formSave("frm", "save", "$('.btnLancto').removeAttr('disabled');")%>
 
         <%
         if req("BaixarPosicao")<>"" then
         %>
-setTimeout(function() {
-    lancar('<%=req("I")%>', 'S', '', '', '<%=req("BaixarPosicao")%>', '', '', );
-}, 700);
+            setTimeout(function() {
+                    lancar('<%=req("I")%>', 'S', '', '', '<%=req("BaixarPosicao")%>', '', '', );
+                }, 700);
         <%
         end if
         %>
@@ -418,7 +468,8 @@ setTimeout(function() {
             }
         });
     }
-    function dividir(P, T, L, V, PosicaoID){
+    function dividir(P, T, L, V, PosicaoID)
+    {
         $("#modal-table").modal("show");
         $("#modal").html("Carregando...");
 
@@ -451,7 +502,7 @@ setTimeout(function() {
             success: function(data){
                 $("#ProdutosPosicao").html(data);
             }
-    });
+        });
     }
 
 
@@ -460,19 +511,6 @@ setTimeout(function() {
         $("#CodBarras").removeClass("hidden");
         $("#CodBarras").attr("src", "CodBarras.asp?NumeroCodigo="+ $(this).val() );
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </script>

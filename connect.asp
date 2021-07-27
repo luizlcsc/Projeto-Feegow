@@ -355,13 +355,7 @@ function rep(Val)
 	end if
 end function
 
-function reqf(P)
-    if req(P)<>"" then
-        reqf = req(P)
-    else
-        reqf = ref(P)
-    end if
-end function
+
 
 function treatVal(Val)
 	treatVal = replace(Val, ".", "")
@@ -1021,8 +1015,12 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             <%
 
         case "multipleModal"
-            btn="<button type='button' class='btn btn-default btn-block' onclick='openComponentsModal(`quickField_multipleModal.asp?I="&fieldName&"`, {v: $(""#"&fieldName&""").val()}, `Gerenciar "&label&"`, true, function(data){closeComponentsModal(true)})'> "&_
-                    "<i class='fa fa-plus'></i> "&label&" "&_
+            'Envio de Ações Edit,Insert ao clicar no salvar do modal. Ex.: P=paginaDaAcao&acao=update&refresh=true
+            if columnToShow<>"" then
+                acaoSQL = "&"&columnToShow
+            end if
+            btn="<button type='button' id='btn_"&fieldName&"' name='btn_"&fieldName&"' class='btn btn-default btn-block' onclick='openComponentsModalPost(`quickField_multipleModal.asp?I="&fieldName&acaoSQL&"`, {v: $(""#"&fieldName&""").val()}, `Gerenciar "&label&"`, true, function(data){closeComponentsModal(true)})'> "&_
+                    "<i class='fa fa-plus'></i> "&label&" <span></span>"&_
                 "</button>" 
 
             'CONDIÇÃO PARA O USO DA VARIÁVEL fieldValue
@@ -4449,7 +4447,7 @@ private function calcValPosicao(QuantidadeAtual, ValorAtual, QuantidadeInserida,
 end function
 
 'private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID, Individualizar)
-private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOriginal, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs, InvoiceID)
+private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOriginal, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs, InvoiceID, Motivo)
     set prod = db.execute("select * from produtos where id="&P)
     ApresentacaoQuantidade = prod("ApresentacaoQuantidade")
     if isnull(ApresentacaoQuantidade) or ApresentacaoQuantidade<=0 then
@@ -4493,6 +4491,9 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
             if FornecedorID="" or FornecedorID="0" then
                 erro = "Selecione um fornecedor."
             end if
+            if Motivo="" then
+                erro = "Selecione um Motivo."
+            end if
         end if
         if Tipo="S" then
             if PacienteID="" or PacienteID="0" then
@@ -4503,6 +4504,12 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
 
 
     'comita a transacao
+    if isnumeric(PacienteID) then
+        sqlPacienteID = CLng(PacienteID)
+    else
+        sqlPacienteID = 0
+    end if
+
     if erro<>"" and tipoResultado<>"ignore" then
 	    %>
         new PNotify({
@@ -4514,7 +4521,8 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
 	    <%
     else
         if tipoResultado<>"ignore" then
-	        db_execute("insert into estoquelancamentos (ProdutoID, EntSai, Quantidade, TipoUnidadeOriginal, TipoUnidade, Data, FornecedorID, Lote, Validade, NF, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, sysUser, QuantidadeConjunto, QuantidadeTotal, LocalizacaoID, ItemInvoiceID, AtendimentoID, CBID, posicaoAnte, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs) values ("&P&", '"&Tipo&"', "&treatvalzero(Quantidade)&", '"& TipoUnidadeOriginal &"', '"&TipoUnidade&"', "&mydatenull(Data)&", '"& FornecedorID &"', '"&Lote&"', "&mydatenull(Validade)&", '"&NotaFiscal&"', "&treatvalzero(Valor)&", '"&UnidadePagto&"', '"&Observacoes&"', '"&Responsavel&"', "& treatvalnull(PacienteID) &", '"& Lancar &"', "&session("User")&", "&treatvalzero(QuantidadeConjunto)&", "&treatvalzero(UnidadesTentadas)&", "& treatvalzero( LocalizacaoID ) &", "& treatvalnull( ItemInvoiceID ) &", "& treatvalnull( AtendimentoID ) &", '"& CBID &"', (select group_concat( concat(id, '=', concat(Quantidade, '|', ValorPosicao)) SEPARATOR ', ') from estoqueposicao where ProdutoID="& P &" and Quantidade<>0), "& treatvalnull(ProdutoInvoiceID) &", '"& ResponsavelOriginal &"', "& treatvalzero(LocalizacaoIDOriginal) &", '"& Individualizar &"', '"& CBIDs &"')")
+
+	        db_execute("insert into estoquelancamentos (ProdutoID, EntSai, Quantidade, TipoUnidadeOriginal, TipoUnidade, Data, FornecedorID, Lote, Validade, NF, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, sysUser, QuantidadeConjunto, QuantidadeTotal, LocalizacaoID, ItemInvoiceID, AtendimentoID, CBID, posicaoAnte, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs, MotivoID) values ("&P&", '"&Tipo&"', "&treatvalzero(Quantidade)&", '"& TipoUnidadeOriginal &"', '"&TipoUnidade&"', "&mydatenull(Data)&", '"& FornecedorID &"', '"&Lote&"', "&mydatenull(Validade)&", '"&NotaFiscal&"', "&treatvalzero(Valor)&", '"&UnidadePagto&"', '"&Observacoes&"', '"&Responsavel&"', "& treatvalnull(PacienteID) &", '"& Lancar &"', "&session("User")&", "&treatvalzero(QuantidadeConjunto)&", "&treatvalzero(UnidadesTentadas)&", "& treatvalzero( LocalizacaoID ) &", "& treatvalnull( ItemInvoiceID ) &", "& treatvalnull( AtendimentoID ) &", '"& CBID &"', (select group_concat( concat(id, '=', concat(Quantidade, '|', ValorPosicao)) SEPARATOR ', ') from estoqueposicao where ProdutoID="& P &" and Quantidade<>0), "& treatvalnull(ProdutoInvoiceID) &", '"& ResponsavelOriginal &"', "& treatvalzero(LocalizacaoIDOriginal) &", '"& Individualizar &"', '"& CBIDs &"',"& treatvalnull(Motivo) &")")
             set pultLancto = db.execute("select id from estoquelancamentos order by id desc limit 1")
             LancamentoID = pultLancto("id")
         end if
@@ -4541,7 +4549,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                 else
                     ValorCalcular = Valor
                 end if
-                sqlVCA = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)= "& treatvalzero(LocalizacaoID) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"&Responsavel&"'"& sqlValidade
+                sqlVCA = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)= "& treatvalzero(LocalizacaoID) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"&Responsavel&"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
                 set vca = db.execute( sqlVCA )
                 if not vca.eof then
                     ValorPosicao = calcValPosicao(vca("Quantidade"), vca("ValorPosicao"), Quantidade, ValorCalcular)
@@ -4549,7 +4557,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                     PosicaoID = vca("id")
                 else
                     ValorPosicao = calcValPosicao(0, 0, Quantidade, ValorCalcular)
-                    db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao) VALUES ("&P&", "& treatvalzero(Quantidade) &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CBID &"', "& treatvalzero( LocalizacaoID ) &", '"& Lote &"', "& mydatenull(Validade) &", "& treatvalzero(ValorPosicao) &")")
+                    db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao, PacienteID) VALUES ("&P&", "& treatvalzero(Quantidade) &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CBID &"', "& treatvalzero( LocalizacaoID ) &", '"& Lote &"', "& mydatenull(Validade) &", "& treatvalzero(ValorPosicao) &", "& sqlPacienteID & ")")
                     set pult = db.execute("select id from estoqueposicao order by id desc limit 1")
                     PosicaoID = pult("id")
                 end if
@@ -4557,7 +4565,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
             PosicaoE = PosicaoID
             PosicaoS = 0
         elseif Tipo="S" or Tipo="M" then
-            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"'"& sqlValidade
+            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
             set posSaida = db.execute(sqlPosSaida)
             'jamais dar saida de uma posicao que nao foi criada previamente
             if not posSaida.eof then
@@ -4577,11 +4585,11 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                     end if
                     Sobra = ccur((ConjuntosRetirados*ApresentacaoQuantidade)-Quantidade)
                     if Sobra>0 then
-                        sqlPosSobra = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='U' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"'"& sqlValidade
+                        sqlPosSobra = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='U' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
                         set posSobra = db.execute( sqlPosSobra )
                         if posSobra.eof then
                             ValorPosicao = calcValPosicao(0, 0, Sobra, ValorUnidade)
-                            db_execute("insert into estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao) select ProdutoID, "& treatvalzero(Sobra) &", 'U', Responsavel, '"& CBID &"', LocalizacaoID, Lote, Validade, "& treatvalzero(ValorPosicao) &" FROM estoqueposicao WHERE id="& posSaida("id"))
+                            db_execute("insert into estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao, PacienteID) select ProdutoID, "& treatvalzero(Sobra) &", 'U', Responsavel, '"& CBID &"', LocalizacaoID, Lote, Validade, "& treatvalzero(ValorPosicao) &", PacienteID FROM estoqueposicao WHERE id="& posSaida("id"))
                         else
                             ValorPosicao = calcValPosicao(posSobra("Quantidade"), posSobra("ValorPosicao"), Sobra, ValorUnidade)
                             db_execute("update estoqueposicao set Quantidade=(Quantidade+"& treatvalzero(Sobra) &"), ValorPosicao="& treatvalzero(ValorPosicao) &" where id="& posSobra("id"))
@@ -4598,7 +4606,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                         ValorNovo = ValorUnidade
                     end if
                     if Individualizar="" then 'somente movimentou sem individualizar
-                        sqlVCAmov = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&posSaida("Lote")&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoID) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& Responsavel &"' "& sqlValidade
+                        sqlVCAmov = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&posSaida("Lote")&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoID) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& Responsavel &"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
                         'call alertar(0, sqlVCAmov)
                         set vca = db.execute( sqlVCAmov )
                         if not vca.eof then
@@ -4606,7 +4614,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                             db_execute("update estoqueposicao set Quantidade=(Quantidade+"&treatvalzero(Quantidade)&") where id="&vca("id"))
                             PosicaoE = vca("id")
                         else
-                            db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao) VALUES ("&P&", "& treatvalzero(Quantidade) &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CBID &"', "& treatvalzero( LocalizacaoID ) &", '"& posSaida("Lote") &"', "& mydatenull(posSaida("Validade")) &", "& treatvalzero( ValorNovo ) &")")
+                            db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao, PacienteID) VALUES ("&P&", "& treatvalzero(Quantidade) &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CBID &"', "& treatvalzero( LocalizacaoID ) &", '"& posSaida("Lote") &"', "& mydatenull(posSaida("Validade")) &", "& treatvalzero( ValorNovo ) &", " & sqlPacienteID & ")")
                         end if
                     else'Individualizou
                         tInd = ccur(Quantidade)
@@ -4614,11 +4622,11 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                         splCBIDs = split(CBIDs, ", ")
                         for icb=0 to ubound(splCBIDs)
                             CodigoIndividual = splCBIDs(icb)
-                            sqlVCAInd = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&posSaida("Lote")&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoID)&" AND CBID LIKE '"& CodigoIndividual &"' AND Responsavel like '"& Responsavel &"' "& sqlValidade
+                            sqlVCAInd = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&posSaida("Lote")&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoID)&" AND CBID LIKE '"& CodigoIndividual &"' AND Responsavel like '"& Responsavel &"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
                             'response.write("//"& sqlVCAInd )
                             set vcaInd = db.execute( sqlVCAInd )
                             if vcaInd.eof then
-                                db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao) VALUES ("&P&", "& 1 &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CodigoIndividual &"', "& treatvalzero( LocalizacaoID ) &", '"& posSaida("Lote") &"', "& mydatenull( posSaida("Validade") ) &", "& treatvalzero( ValorNovo ) &")")
+                                db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao, PacienteID) VALUES ("&P&", "& 1 &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CodigoIndividual &"', "& treatvalzero( LocalizacaoID ) &", '"& posSaida("Lote") &"', "& mydatenull( posSaida("Validade") ) &", "& treatvalzero( ValorNovo ) &", " & sqlPacienteID & ")")
                             else
                                 db_execute("update estoqueposicao SET Quantidade=Quantidade+1 WHERE id="& vcaInd("id"))
                             end if
@@ -5148,7 +5156,7 @@ private function refazPosicao(ProdutoID)
        '         PosicaoES = lanctos("PosicaoS")
         '    end if
             'LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID)
-            call LanctoEstoque(lanctos("id"), PosicaoES, ProdutoID, lanctos("EntSai"), lanctos("TipoUnidadeOriginal"), lanctos("TipoUnidade"), lanctos("Quantidade"), lanctos("Data"), lanctos("FornecedorID"), lanctos("Lote"), lanctos("Validade"), lanctos("NF"), lanctos("Valor"), lanctos("UnidadePagto"), lanctos("Observacoes"), lanctos("Responsavel"), lanctos("PacienteID"), lanctos("Lancar"), lanctos("LocalizacaoID"), lanctos("ItemInvoiceID"), lanctos("AtendimentoID"), "ignore", lanctos("CBID"), lanctos("ProdutoInvoiceID"), lanctos("ResponsavelOriginal"), lanctos("LocalizacaoIDOriginal"), lanctos("Individualizar"), lanctos("CBIDs"),0)
+            call LanctoEstoque(lanctos("id"), PosicaoES, ProdutoID, lanctos("EntSai"), lanctos("TipoUnidadeOriginal"), lanctos("TipoUnidade"), lanctos("Quantidade"), lanctos("Data"), lanctos("FornecedorID"), lanctos("Lote"), lanctos("Validade"), lanctos("NF"), lanctos("Valor"), lanctos("UnidadePagto"), lanctos("Observacoes"), lanctos("Responsavel"), lanctos("PacienteID"), lanctos("Lancar"), lanctos("LocalizacaoID"), lanctos("ItemInvoiceID"), lanctos("AtendimentoID"), "ignore", lanctos("CBID"), lanctos("ProdutoInvoiceID"), lanctos("ResponsavelOriginal"), lanctos("LocalizacaoIDOriginal"), lanctos("Individualizar"), lanctos("CBIDs"),0,0)
         lanctos.movenext
         wend
         lanctos.close
@@ -5756,7 +5764,15 @@ end if
  
 end function
 
-
+function getConfAO(NomeConfig)
+    sqlVCA = "select * from aoconfig where NomeConfig='"& NomeConfig &"'"
+    set vca = db.execute(sqlVCA)
+    if vca.eof then
+        db.execute("insert into aoconfig set NomeConfig='"& NomeConfig &"'")
+        set vca = db.execute(sqlVCA)
+    end if
+    getConfAO = vca("Val")
+end function
 
 %>
 

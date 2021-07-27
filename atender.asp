@@ -78,6 +78,8 @@ function incluirGuiaSADT(atendimentoid, agendamentoid)
                 if not conv.eof then
                     RegistroANS = conv("RegistroANS")
                     RepetirNumeroOperadora = conv("RepetirNumeroOperadora")
+                    TipoAtendimentoID = conv("TipoAtendimentoID")
+                    IndicacaoAcidenteID = conv("IndicacaoAcidenteID")
                     set contratoExecutante = db.execute("select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 and (ExecutanteOuSolicitante like '%|E|%' or  ExecutanteOuSolicitante='') and not isnull(Contratado)")
                     if not contratoExecutante.eof then
                         Contratado = contratoExecutante("Contratado")
@@ -280,12 +282,20 @@ function incluirGuiaSADT(atendimentoid, agendamentoid)
             end if
         end if
         AtendimentoRN = "N"
-        IndicacaoAcidenteID = 9
         GrauParticipacaoID = 12
         'dados do profissional
         ProfissionalSolicitanteID = aEa("ProfissionalID")
-        set prof = db.execute("select p.*, e.* from profissionais as p left join especialidades as e on p.EspecialidadeID=e.id where p.id="&ProfissionalID)
+
+        'verifica se possui profissional especificado para o procedimento 
+        'se houver, usa as informações dele na guia de executantes
+        sqlExecutante = "select * from tissprocedimentosvalores where ProcedimentoID="&ProcedimentoID&" and ConvenioID="&ConvenioID&" limit 1"
+        sqlE = db.execute(sqlExecutante)
+        if sqlE("profissionalExecutanteGuia") <> "" then
+            ProfissionalSolicitanteID = sqlE("profissionalExecutanteGuia")
+        end if
+        set prof = db.execute("select p.*, e.* from profissionais as p left join especialidades as e on p.EspecialidadeID=e.id where p.id="&ProfissionalSolicitanteID)
         if not prof.eof then
+            EspecialidadeProfissionalGuia = prof("EspecialidadeID")
             ConselhoProfissionalSolicitanteID = prof("Conselho")
             NumeroNoConselhoSolicitante = prof("DocumentoConselho")
             UFConselhoSolicitante = prof("UFConselho")
@@ -293,13 +303,13 @@ function incluirGuiaSADT(atendimentoid, agendamentoid)
             CPF = trim( replace(replace(prof("CPF")&" ", ".", ""), "-","") )
             GrauParticipacaoID = prof("GrauPadrao")
         end if
-        if EspecialidadeID&""<>"" AND EspecialidadeID<>0  then
+        if EspecialidadeProfissionalGuia&""<>"" AND EspecialidadeProfissionalGuia<>0  then
             set profEsp = db.execute("SELECT profEsp.ProfissionalID, profEsp.EspecialidadeID, profEsp.RQE, profEsp.Conselho, profEsp.UFConselho, profEsp.DocumentoConselho, esp.codigoTISS FROM profissionais p "&_
                                         "LEFT JOIN (SELECT ProfissionalID, EspecialidadeID, RQE, Conselho, UFConselho, DocumentoConselho FROM profissionaisespecialidades "&_
                                         "UNION ALL  "&_
                                         "SELECT  id ProfissionalID, EspecialidadeID, RQE, Conselho, UFConselho, DocumentoConselho FROM profissionais) profEsp ON profEsp.ProfissionalID=p.id "&_
                                         "LEFT JOIN especialidades esp ON esp.id=profEsp.EspecialidadeID "&_
-                                        "WHERE p.id="&ProfissionalSolicitanteID&" AND profEsp.EspecialidadeID="&EspecialidadeID)
+                                        "WHERE p.id="&ProfissionalSolicitanteID&" AND profEsp.EspecialidadeID="&EspecialidadeProfissionalGuia)
             if not profEsp.eof then
                 ConselhoProfissionalSolicitanteID =profEsp("Conselho")
                 NumeroNoConselhoSolicitante = profEsp("DocumentoConselho")
@@ -311,11 +321,11 @@ function incluirGuiaSADT(atendimentoid, agendamentoid)
             GrauParticipacaoID = 12
         end if
         'verifica se nesta guia já consta este profissional
-        set vcaProf = db.execute("select * from tissprofissionaissadt where GuiaID="&reg("id")&" and ProfissionalID="&ProfissionalID)
+        set vcaProf = db.execute("select * from tissprofissionaissadt where GuiaID="&reg("id")&" and ProfissionalID="&ProfissionalSolicitanteID)
 
         if vcaProf.eof then
-            if ProfissionalID&"" <> "" and ProfissionalID&"" <> "0" then
-            sqlExecute = "insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&reg("id")&", 1, "&GrauParticipacaoID&", "&ProfissionalID&", '"&CPF&"', "&treatvalnull(ConselhoProfissionalSolicitanteID)&", '"&NumeroNoConselhoSolicitante&"', '"&UFConselhoSolicitante&"', '"&CodigoCBOSolicitante&"', "&session("User")&")"
+            if ProfissionalSolicitanteID&"" <> "" and ProfissionalSolicitanteID&"" <> "0" then
+            sqlExecute = "insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&reg("id")&", 1, "&GrauParticipacaoID&", "&ProfissionalSolicitanteID&", '"&CPF&"', "&treatvalnull(ConselhoProfissionalSolicitanteID)&", '"&NumeroNoConselhoSolicitante&"', '"&UFConselhoSolicitante&"', '"&CodigoCBOSolicitante&"', "&session("User")&")"
             db_execute(sqlExecute)
             end if  
 
@@ -376,7 +386,7 @@ function incluirGuiaSADT(atendimentoid, agendamentoid)
                     "    Contratado=0, "&_
                     "    CodigoNaOperadora='"&CodigoNaOperadora&"', "&_
                     "    CodigoCNES='"&CodigoCNES&"', "&_
-                    "    IndicacaoAcidenteID=0, "&_
+                    "    IndicacaoAcidenteID="&IndicacaoAcidenteID&", "&_
                     "    TipoConsultaID='"&TipoConsultaID&"', "&_
                     "    Observacoes='"&ObsIndicacaoClinica&"', "&_
                     "    DataAutorizacao=NOW(), "&_
@@ -390,7 +400,7 @@ function incluirGuiaSADT(atendimentoid, agendamentoid)
                     "    CaraterAtendimentoID="&CaraterAtendimentoID&", "&_
                     "    DataSolicitacao=NOW(), "&_
                     "    IndicacaoClinica='', "&_
-                    "    TipoAtendimentoID=0, "&_
+                    "    TipoAtendimentoID="&TipoAtendimentoID&", "&_
                     "    IdentificadorBeneficiario='', "&_
                     "    Procedimentos=0, "&_                       
                     "    sysActive=1, "&_

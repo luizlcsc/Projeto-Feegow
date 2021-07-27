@@ -1,3 +1,4 @@
+<!--#include file="functions.asp"-->
 <%
 Quantidade = replace(ref("Quantidade"),".",",")
 Fator = ref("Fator")

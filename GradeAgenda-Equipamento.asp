@@ -127,6 +127,8 @@ if session("RepSol")<>"" then
 	<%
 end if
 %>
+
+<% if req("crumb")&"" <> "N" then %>
 <script type="text/javascript">
     function crumbAgenda(){
         $(".crumb-active").html("<a href='./?P=EquipamentosAlocados&Pers=1'>Agenda de Equipamentos</a>");
@@ -137,6 +139,7 @@ end if
     }
     crumbAgenda();
 </script>
+<% end if%>
 
 <table class="table table-striped table-hover table-condensed table-agenda">
      <tbody>

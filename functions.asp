@@ -19,23 +19,6 @@ function clear_ref_req (val)
         val = replace(val,"&#x27;", "")
         val = replace(val,"&#x22;", "")
         val = replace(val,"&#x7c;", "")
-        
-        if instr(UCase(val)," AND ") OR instr(UCase(val)," OR ") OR instr(UCase(val)," SELECT ") OR instr(UCase(val)," FROM ") OR instr(UCase(val)," GROUP BY ") OR instr(UCase(val)," CONCAT ") OR instr(UCase(val)," CONCAT_WS") OR instr(UCase(val)," DELETE ") OR instr(UCase(val)," UNION ") OR instr(UCase(val)," JOIN ")then
-            val = replace(val," AND ", "")
-            val = replace(val," OR ", "")
-            val = replace(val," SELECT ", "")
-            val = replace(val," GROUP BY ", "")
-            val = replace(val," CONCAT ", "")
-            val = replace(val," CONCAT_WS ", "")
-            val = replace(val," DELETE ", "")
-            val = replace(val," UNION ", "")
-            val = replace(val," JOIN ", "")
-            tentativa = true
-        end if 
-        
-        if tentativa then 
-            injection()
-        end if
         clear_ref_req = val
 end function 
 

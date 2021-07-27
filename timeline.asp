@@ -291,12 +291,13 @@ select case Tipo
                         <a type="button" class="btn btn-block btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="fa fa-external-link"></i> Restaurar Formulário</a>
                     </div>
                 <%
-                if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) then
-                    if datediff("yyyy", Nascimento, date())<15 and Sexo<>0 then
-                    %>
-                    <a class="btn btn-info mt10" href="javascript:curva(<%= PacienteID %>)"><i class="fa fa-bar-chart"></i> Curvas de Evolução</a>
-                    <%
-                    end if
+                if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) and (Sexo=1 or Sexo=2) then
+                %>
+                    <div class="col-md-3">
+                        <br>
+                        <a class="btn btn-info" href="javascript:curva(<%= PacienteID %>)"><i class="fa fa-bar-chart"></i> Curvas de Evolução</a>
+                    </div>
+                <%
                 end if
 
                 if Tipo = "|L|" then

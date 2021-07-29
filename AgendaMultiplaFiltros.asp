@@ -52,8 +52,8 @@ if getConfig("ExibirApenasUnidadesNoFiltroDeLocais") then
                 " GROUP BY NomeLocal                                                                                                                            "&chr(13)&_
                 "  order by fcu.NomeFantasia) "
     else
-        sqlAM = " (select CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa          "&chr(13)&_
-            " WHERE id = 1                                                                                                                                  "&chr(13)&_
+        sqlAM = " (select CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa WHERE id = 1 "&chr(13)&_
+            " AND 0 in ("&replace(Unidades, "|","")&")                                                                                                     "&chr(13)&_
             " GROUP BY NomeLocal                                                                                                                            "&chr(13)&_
             " ) UNION ALL                                                                                                                                   "&chr(13)&_
             " (select CONCAT('UNIDADE_ID', id), CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',id,'|') as Unidades                                 "&chr(13)&_
@@ -94,7 +94,7 @@ else
             "  order by l.NomeLocal) "
     else
         sqlAM = " (select CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa WHERE id = 1                  "&chr(13)&_
-                "  AND 0 in ("&replace(Unidades, "|","")&")                                                                                                                      "&chr(13)&_
+                " AND 0 in ("&replace(Unidades, "|","")&")                                                                                                                      "&chr(13)&_
                 " GROUP BY NomeLocal                                                                                                                                             "&chr(13)&_
                 " ) UNION ALL                                                                                                                                                    "&chr(13)&_
                 " (select CONCAT('UNIDADE_ID', id), CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',id,'|') as Unidades                                                  "&chr(13)&_

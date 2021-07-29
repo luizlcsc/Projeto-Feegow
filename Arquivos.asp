@@ -4,10 +4,16 @@
 ' getConfig("NovaGaleria") = "1"
 
 IF True THEN
+    if req("guiaID")&""<>"" then
+        guiaID = "&guiaID="&req("guiaID")
+    end if
+    if req("tipoGuia")&""<>"" then
+        tipoGuia = "&tipoGuia="&req("tipoGuia")
+    end if
             %>
       <div class="galery-ajax"></div>
       <script>
-              fetch("ImagensNew.asp?ArquivoImagem=Arquivo&PacienteID=<%=req("PacienteID")%>&MovementID=<%=req("MovementID")%>")
+              fetch("ImagensNew.asp?ArquivoImagem=Arquivo&PacienteID=<%=req("PacienteID")%>&MovementID=<%=req("MovementID")&guiaID&tipoGuia%>")
               .then(data => data.text())
               .then(data => {
                  $(".galery-ajax").html(data);

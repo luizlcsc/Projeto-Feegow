@@ -352,7 +352,8 @@ if($("#searchPacienteID").val()!=undefined){
 function modalInsuranceAttachments(guiaID, tipoGuia){
     $.post("modalInsuranceAttachments.asp",{
 		   guiaID:guiaID,
-		   tipoGuia:tipoGuia
+		   tipoGuia:tipoGuia,
+           PacienteID:<%=PacienteID%>,
 		   },function(data){
         $("#modal").html(data);
         $("#modal-table").modal("show");

@@ -4,16 +4,19 @@ PacienteID = ref("PacienteID")
 if PacienteID&"" = "" then
     PacienteID = 0
 end if
-
+if ref("guiaID")&""<>"" then
+    guiaID = "&guiaID="&ref("guiaID")
+end if
+if ref("tipoGuia")&""<>"" then
+    tipoGuia = "&tipoGuia="&ref("tipoGuia")
+end if
 %>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
     <h4 class="modal-title">Anexos da guia</h4>
 </div>
 <div class="modal-body">
-    <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?PacienteID=<%=PacienteID%>&tipoGuia=<%=ref("tipoGuia")%>&L=<%=replace(session("Banco"),"clinic","")%>&guiaID=<%=ref("guiaID")%>&Pasta=Arquivos&Tipo=A&ExameID=<%=ref("ExameID")%>"></iframe>
-
-
+    <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?PacienteID=<%=PacienteID&tipoGuia&guiaID%>&L=<%=replace(session("Banco"),"clinic","")%>&Pasta=Arquivos&Tipo=A&ExameID=<%=ref("ExameID")&MovementID%>"></iframe>
 
     <div id="albumArquivos">
         Carregando...
@@ -29,7 +32,7 @@ function atualizaArquivos(X) {
 
     $.ajax({
         type:"POST",
-        url:"Arquivos.asp?PacienteID=<%=PacienteID%>&tipoGuia=<%=ref("tipoGuia")%>&guiaID=<%=ref("guiaID")%>&ExameID=<%=ref("ExameID")%>&X="+X,
+        url:"Arquivos.asp?PacienteID=<%=PacienteID&tipoGuia&guiaID%>&ExameID=<%=ref("ExameID")%>&X="+X,
         success:function(data){
             $("#albumArquivos").html(data);
         }

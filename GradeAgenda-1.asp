@@ -752,7 +752,7 @@ end if
                 var HorarioAdicionado = false;
                 var Status = '<%=comps("StaID")%>';
                 $( classe ).each(function(){
-                    if( $(this).attr("data-horaid")=='<%=HoraComp%>' && (Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
+                    if( $(this).attr("data-horaid")=='<%=HoraComp%>' && (Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
                     {
                         var gradeId = $(this).data("grade");
                         HorarioAdicionado=true;

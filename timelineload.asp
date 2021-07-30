@@ -281,10 +281,27 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
                             ' Botões Prescrição Memed
                             if ti("Tipo")="Prescricao" and ti("MemedID")<>"" then
+                                sqlMemed = "SELECT * FROM memedv2_prescricoes WHERE memed_id = '" & ti("MemedID") & "'"
+                                set rsMemed = db.execute(sqlMemed)
                             %>
-                                <a href="javascript:viewPrescricaoMemed(<%=ti("MemedID")%>)">
-                                    <i class="fa fa-search-plus"></i>
+                                <% if cstr(session("User"))=ti("sysUser")&"" then %>
+                                    <a href="javascript:viewPrescricaoMemed(<%=ti("MemedID")%>)">
+                                        <i class="fa fa-search-plus"></i>
+                                    </a>
+                                <% end if %>
+                                <% 
+                                if not rsMemed.eof then 
+                                    if rsMemed("link_pdf_completo") <> "" then
+                                %>
+                                <a href="<%=rsMemed("link_pdf_completo")%>" target="_blank">
+                                    <i class="fa fa-print"></i>
                                 </a>
+                                <%
+                                    end if 
+                                end if
+                                rsMemed.close
+                                set rsMemed = nothing
+                                %>
                                 <% if cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0  then %>
                                     <a href="javascript:deletePrescricaoMemed(<%=ti("id") %>)">
                                         <i class="fa fa-remove"></i>
@@ -547,12 +564,68 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                         <%
                         response.Write("<small>" & ti("Conteudo") & "</small>")
                     case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
-                            urlbmj = getConfig("urlbmj")
-                            IF urlbmj <> "" THEN
-                                response.Write("<small>" & replace(ti("Conteudo")&"","[linkbmj]",urlbmj) & "</small>")
-                            ELSE
-                                response.Write("<small>" & ti("Conteudo") & "</small>")
-                            END IF
+                            if ti("MemedID")<>"" then
+                                sqlPrescricaoMemed = "SELECT pm.tipo, pm.nome, pm.descricao, pm.posologia, pm.quantidade, pm.unit, pm.composicao " &_
+                                                     "FROM memedv2_prescricoes p " &_
+                                                     "INNER JOIN memedv2_prescricoes_medicamentos pm ON pm.prescricao_id = p.id " &_
+                                                     "WHERE p.memed_id = '" & ti("MemedID") & "'"
+                                set rsPrescricaoMemed = db.execute(sqlPrescricaoMemed)
+                                memedCount = 1
+                                %>
+                                <ul class="memed-items">
+                                    <% 
+                                        while not rsPrescricaoMemed.eof 
+                                            memedTipo       = rsPrescricaoMemed("tipo")
+                                            memedNome       = rsPrescricaoMemed("nome")
+                                            memedComposicao = rsPrescricaoMemed("composicao")
+                                            memedDescricao  = rsPrescricaoMemed("descricao")
+                                            memedPosologia  = rsPrescricaoMemed("posologia")
+                                    %>
+                                        <li class="item" data-tipo="<%=memedTipo%>">
+                                            <p class="nome">
+                                                <strong>
+                                                    <%=memedCount%>.
+                                                    <% if memedTipo = "manipulado" then
+                                                        response.write("Fórmula")
+                                                    else
+                                                        response.write(memedNome)
+                                                    end if
+                                                    %>
+                                                </strong> 
+                                                <span class="quantidade">
+                                                    <% if rsPrescricaoMemed("quantidade") <> 0 then response.write(rsPrescricaoMemed("quantidade")) end if%>
+                                                    <%=" " & rsPrescricaoMemed("unit")%></span>
+                                            </p>
+                                            <% if memedTipo <> "homeopático" then %>
+                                            <div class="composicao">
+                                                <%
+                                                if memedComposicao <> "" then
+                                                    response.write(memedComposicao)
+                                                else
+                                                    response.write(memedDescricao)
+                                                end if
+                                                %>
+                                            </div>
+                                            <% end if %>
+                                            <div class="posologia"><%=memedPosologia%></div>
+                                        </li>
+                                    <% 
+                                        rsPrescricaoMemed.movenext
+                                        memedCount = memedCount + 1
+                                    wend 
+                                    rsPrescricaoMemed.close
+                                    set rsPrescricaoMemed = nothing
+                                    %>
+                                </ul>
+                                <%
+                            else
+                                urlbmj = getConfig("urlbmj")
+                                IF urlbmj <> "" THEN
+                                    response.Write("<small>" & replace(ti("Conteudo")&"","[linkbmj]",urlbmj) & "</small>")
+                                ELSE
+                                    response.Write("<small>" & ti("Conteudo") & "</small>")
+                                END IF
+                            end if
                     case "PedidosSADT"
                         set psadt = db.execute("select tproc.descricao from pedidossadtprocedimentos pps LEFT JOIN cliniccentral.procedimentos tproc ON tproc.tipoTabela=pps.TabelaID AND pps.CodigoProcedimento=tproc.Codigo where pps.PedidoID="& ti("id"))
                         while not psadt.eof

@@ -1,6 +1,12 @@
+<!--#include file="Environment.asp"-->
 <%
-dominioMemed = "sandbox.memed.com.br"
-dominioApiMemed = "sandbox.api.memed.com.br"
+if getEnv("FC_APP_ENV","local")="production" then
+    dominioMemed = "memed.com.br"
+    dominioApiMemed = "api.memed.com.br"
+else
+    dominioMemed = "sandbox.memed.com.br"
+    dominioApiMemed = "sandbox.api.memed.com.br"
+end if
 %>
 <script>
     var memedLoading       = false;
@@ -85,7 +91,14 @@ dominioApiMemed = "sandbox.api.memed.com.br"
                     copyMedicalRecords: false,
                 });
 
-                MdHub.event.add('prescricaoSalva', onPrescricaoMemedSalva);
+                MdHub.event.add('prescricaoSalva', function(id) {
+                    savePrescricaoMemed(id);
+                });
+                MdHub.event.add('prescricaoImpressa', function(data) {
+                    setTimeout(function() {
+                        savePrescricaoMemed(data.prescricao.id);
+                    }, 500);
+                });
 
                 console.info('[INTEGRACAO MEMED] Inicializada com sucesso.');
                 if (memedOpenAfterInit && typeof memedOpenAfterInit === 'function') {
@@ -95,7 +108,7 @@ dominioApiMemed = "sandbox.api.memed.com.br"
         });
     }
 
-    function prescricaoMemed () {
+    function setPacienteMemed() {
         const nome = $("#NomePaciente").val();
         const endereco = $("#Endereco").val();
         const numero = $("#Numero").val() ? " "+$("#Numero").val() : "";
@@ -110,18 +123,31 @@ dominioApiMemed = "sandbox.api.memed.com.br"
             endereco: fullEndereco,
             cidade: cidade,
             idExterno:'<%=session("Banco")%>' +  '-' + '<%=req("I")%>'
-        }).then(function() {
-            MdHub.module.show('plataforma.prescricao');
-            MdHub.command.send('plataforma.prescricao', 'newPrescription');
         });
     }
 
-    function onPrescricaoMemedSalva(idPrescricao) {
+    function prescricaoMemed () {
+        setPacienteMemed();
+        setTimeout(function() {
+            MdHub.module.show('plataforma.prescricao');
+            MdHub.command.send('plataforma.prescricao', 'newPrescription');
+        }, 500);
+    }
+
+    function savePrescricaoMemed(id) {
         postUrl('prescription/memed/save-prescription', {
-             prescriptionId: idPrescricao,
+             prescriptionId: id,
              patientId: '<%=req("I")%>'
          }, function (data) {
-            pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
+            if (data.success) {
+                pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
+            } else {
+                new PNotify({
+                    title: 'Erro ao gravar a prescrição.',
+                    text: 'Não foi possível gravar a prescrição',
+                    type: 'danger'
+                });
+            }
          });
     }
 
@@ -142,7 +168,10 @@ dominioApiMemed = "sandbox.api.memed.com.br"
             return;
         }
 
-        MdHub.command.send('plataforma.prescricao', 'viewPrescription', id);
+        setPacienteMemed();
+        setTimeout(function() {
+            MdHub.command.send('plataforma.prescricao', 'viewPrescription', id);
+        }, 500);
     }
 
     function deletePrescricaoMemed(id) {
@@ -155,3 +184,89 @@ dominioApiMemed = "sandbox.api.memed.com.br"
     }
     
 </script>
+<style>
+    @font-face {
+        font-family: 'Infra';
+        src: url('assets/fonts/infra/infra-light.woff') format('woff');
+        font-weight: 200;
+        font-style: normal
+    }
+
+    @font-face {
+        font-family: 'Infra';
+        src: url('assets/fonts/infra/infra-regular.woff') format('woff');
+        font-weight: 400;
+        font-style: normal
+    }
+    @font-face {
+        font-family: 'Infra';
+        src: url('assets/fonts/infra/infra-medium.woff') format('woff');
+        font-weight: 500;
+        font-style: normal
+    }
+    @font-face {
+        font-family: 'Infra';
+        src: url('assets/fonts/infra/infra-semiBold.woff') format('woff');
+        font-weight: 600;
+        font-style: normal
+    }
+    .memed-items {
+        font-family: 'Infra';
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        margin: 0 0 80px;
+        max-width: 800px;
+    }
+    .memed-items > li {
+        border-bottom: 1px solid;
+        border-top: 1px solid;
+        border-color: transparent;
+        font-size: 16px;
+        padding: 14px 20px 19px;
+        position: relative;
+    }
+    .memed-items > li p {
+        font-weight: normal;
+        margin-bottom: 5px;
+    }
+    .memed-items > li ul {
+        margin-top: 10px;
+    }
+    .memed-items > li .nome {
+        cursor: default;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        text-decoration: none;
+    }
+    .memed-items > li .quantidade {
+        float: right;
+    }
+    .memed-items > li .descricao {
+        cursor: default;
+        font-size: 16px;
+        margin-left: 17px
+    }
+    .memed-items > li[data-tipo="alopático"] .composicao {
+        color: rgb(130, 130, 130);
+        font-size: 12px;
+        padding-left: 16px;
+    }
+
+    .memed-items > li .posologia {
+        background-color: transparent;
+        border: none;
+        font-size: 16px;
+        font-weight: normal;
+        line-height: 1.2;
+        min-height: 30px;
+        overflow: hidden;
+        resize: none;
+        width: 85%;
+    }
+    .memed-items > li .posologia:disabled {
+        background: transparent;
+    }
+
+</style>

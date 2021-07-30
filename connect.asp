@@ -877,9 +877,9 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             });
 			</script>
 			<%
-		case "currency", "float"
+		case "currency", "float","currencyTratada"
 			response.Write(LabelFor)
-			if not isnull(fieldValue) and not fieldValue="" and isnumeric(fieldValue) then
+			if not isnull(fieldValue) and not fieldValue="" and isnumeric(fieldValue) and not fieldType = "currencyTratada" then
 			    if instr(sqlOrClass, "sql-mask-4-digits") or fieldType="float" then
                     fieldValue = formatnumber(fieldValue,4)
                 else
@@ -887,7 +887,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			    end if
 			end if
 			%>
-			 <% if fieldType = "currency" then %>
+			 <% if fieldType = "currency" or fieldType = "currencyTratada" then %>
             <div class="input-group">
 
                 <span class="input-group-addon">
@@ -895,7 +895,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             <% end if %>
             </span>
             <input id="<%=fieldName%>" class="form-control input-mask-brl <%=sqlOrClass%>" type="text" style="text-align:right" name="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%>>
-             <% if fieldType = "currency" then %>
+             <% if fieldType = "currency" or fieldType = "currencyTratada" then %>
             </div>
             <% end if %>
 			<%

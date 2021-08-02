@@ -8,6 +8,7 @@ end if
 OcultarBtn=req("OcultarBtn")
 FormularioNaTimeline=getConfig("FormularioNaTimeline")
 
+
 if req("X")<>"" then
     if req("Tipo")="|Prescricao|" then
         'db_execute("delete from pacientesprescricoes where id="& req("X"))
@@ -991,39 +992,41 @@ LocalStorageRestoreHabilitar();
     <%
     ELSE
     %>
-    function iPront(t, p, m, i, a) {
-        $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
-        if(t=='AE'||t=='L'){
-            try{
-                $.magnificPopup.open({
-                        removalDelay: 500,
-                        closeOnBgClick:false,
-                        modal: true,
-                        items: {
-                            src: '#modal-form'
-                        },
-                        // overflowY: 'hidden', //
-                        callbacks: {
-                            beforeOpen: function(e) {
-                                this.st.mainClass = "mfp-zoomIn";
+        function iPront(t, p, m, i, a) {
+            $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+            if(t=='AE'||t=='L'){
+                try{
+                    $.magnificPopup.open({
+                            removalDelay: 500,
+                            closeOnBgClick:false,
+                            modal: true,
+                            items: {
+                                src: '#modal-form'
+                            },
+                            // overflowY: 'hidden', //
+                            callbacks: {
+                                beforeOpen: function(e) {
+                                    this.st.mainClass = "mfp-zoomIn";
+                                }
                             }
-                        }
-                    });
-            }catch (e) {
-              alert(e)
+                        });
+                }catch (e) {
+                    alert(e)
 
+                }
+            }else{
+                mfp('#modal-form');
             }
-        }else{
-            mfp('#modal-form');
+            var pl = $("#ProfissionalLaudadorID").val();
+            $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
+                $("#modal-form .panel").html(data);
+            })
         }
-        var pl = $("#ProfissionalLaudadorID").val();
-        $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
-            $("#modal-form .panel").html(data);
-        })
-    }
     <%
     END IF
     %>
+
+
 
 function sendWorklist(ProcedimentoID, FormID){
     $.get("../feegow_components/diagnext/newworklist", {

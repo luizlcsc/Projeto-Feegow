@@ -4634,6 +4634,14 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                     end if
                 end if
             else
+
+                id = req("PosicaoID")
+                if id&"" <> "" then
+                    'Dando baixa no estoque quando é colocado um paciente na saida
+                    set EstoquePosicaoSQL = db_execute("SELECT Quantidade FROM estoqueposicao WHERE id="&req("PosicaoID"))
+                    db_execute("update estoqueposicao set Quantidade=(Quantidade-"&treatvalzero(Quantidade)&") where id="&req("PosicaoID"))
+
+                end if
                 'mas ele tem que achar essa posicao de saida pq tem que ter saido de algum lugar... caso contrario eh sql errado
             '   call alertar(0, "nao achou essa posicao de saida")
              '  call alertar(0, sqlPosSaida)

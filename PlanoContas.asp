@@ -126,7 +126,9 @@ end function
 			posicao = ordem
 		end if
 
-		db_execute("insert into "&table&" (Name, Category, Ordem, Posicao, sysActive, sysUser) values ('"&replace(request.QueryString("I"), "'", "''")&"', "&categoriaSuperior&","&ordem&",'"&posicao&"', 1, "&session("User")&")")
+		sql = "insert into "&table&" (Name, Category, Ordem, Posicao, sysActive, sysUser) values ('"&replace(request.QueryString("I"), "'", "''")&"', "&categoriaSuperior&","&ordem&",'"&posicao&"', 1, "&session("User")&")"
+		db_execute(sql)
+		
 	    %>
         <script type="text/javascript">
         $(document).ready(function(e) {
@@ -416,7 +418,10 @@ end function
 				}
 
 				codCategoriaMae = inputCodigo.value;
-				data += '[id:0,Posicao:' + codCategoriaMae +']&'
+				
+
+				data += '[id:0, Posicao:' + codCategoriaMae +']&'
+				console.log(data);
 			}
 
 			let ordem = 0;

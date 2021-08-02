@@ -556,7 +556,7 @@ while diaS<n
         var Status = '<%=comps("StaID")%>';
 
         $( classe ).each(function(){
-            if( $(this).attr("id")=='<%=DiaSemana&HoraComp%>' && (Status !== "11" && Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
+            if( $(this).attr("id")=='<%=DiaSemana&HoraComp%>' && (Status !== "22" && Status !== "33" <%=StatusRemarcado%>))
             {
                 var gradeId = $(this).data("grade");
 

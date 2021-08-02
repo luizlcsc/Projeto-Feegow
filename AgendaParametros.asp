@@ -665,7 +665,7 @@ if left(tipo, 10)="ConvenioID" then
 end if
 
 if tipo="ProgramaID" then
-    sqlPrograma = "SELECT ConvenioID FROM programas WHERE id = '" & ProgramaID & "'"
+    sqlPrograma = "SELECT ConvenioID FROM programas WHERE id = '" & ProgramaID & "' AND ConvenioID IS NOT NULL"
     set rsPrograma = db.execute(sqlPrograma)
     if not rsPrograma.eof then
 %>

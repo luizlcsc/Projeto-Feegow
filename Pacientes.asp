@@ -1170,9 +1170,17 @@ if not memed.eof then
     }
 
 
- 	<%
-	FormularioNaTimeline=getConfig("FormularioNaTimeline")
+ 	
 
+</script>
+<% end if %>
+<script>
+	<%
+	FormularioNaTimeline = getConfig("FormularioNaTimeline")
+
+	if FormularioNaTimeline then
+		InserirDinamico = "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|"
+	end if
 	
     IF FormularioNaTimeline THEN
     %>
@@ -1234,10 +1242,8 @@ if not memed.eof then
     <%
     END IF
     %>
-
-
 </script>
-<% end if %>
+
 <script src="src/imageUtil.js"></script>
 <script>
 <% IF req("ToArea")<>"" THEN %>

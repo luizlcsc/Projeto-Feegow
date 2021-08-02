@@ -199,7 +199,7 @@ if tipo="PacienteID" then
             end if
             if conveniosGrade <> "" then
                 while not GradeSQL.eof
-                    if conv("NomeConvenio") = conveniosGrade then
+                    if instr(conveniosGrade, conv("id")) > 0 then
                         possuiConvenio = "S"
                     end if
                     GradeSQL.movenext

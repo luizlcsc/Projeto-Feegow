@@ -7,6 +7,9 @@ UnidadesSelecionadas = ""
 ExibeBotaoBusca = False
 
 if Profissionais&"" <> "" then
+    if instr(Profissionais, "|")>0 then
+        Profissionais = replace(Profissionais,"|","")
+    end if
     sqlLimitarProfissionais = " AND p.id in ("&Profissionais&") "
 end if
 

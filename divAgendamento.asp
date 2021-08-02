@@ -697,7 +697,7 @@ end if
                 sqlSelectProgramas = "SELECT p.id, p.NomePrograma FROM programas p " &_
                                      "INNER JOIN profissionaisprogramas pp ON p.id = pp.ProgramaID " &_
                                      "LEFT JOIN pacientesprogramas pap ON pap.ProgramaID = p.id " &_
-                                     "WHERE pp.ProfissionalID = '" & ProfissionalID &"' "
+                                     "WHERE pp.ProfissionalID = '" & ProfissionalID &"' AND pp.sysActive = 1 "
                 if PacienteID <> "" then
                     sqlSelectProgramas = sqlSelectProgramas & " AND pap.PacienteID = '" & PacienteID & "' AND pap.sysActive = 1 "
                 end if

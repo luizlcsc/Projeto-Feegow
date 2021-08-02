@@ -536,7 +536,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
         typeDoc="license_upload";
     }
 
-    fetch(domain+'file/arquivos/'+typeSearch+'/'+valorConsulta+'/'+typeDoc+'/list?tk='+localStorage.getItem("tk"))
+    fetch(domain+'file/arquivos/'+typeSearch+'/'+valorConsulta+'/'+typeDoc+'/list?tk='+localStorage.getItem("tk")+'&guiaID=<%=req("guiaID")&"&tipoGuia="&req("tipoGuia")%>')
     .then((a) => a.json())
     .then( a =>{
             itens = a;

@@ -1,12 +1,12 @@
 <!--#include file="Environment.asp"-->
 <%
-if getEnv("FC_APP_ENV","local")="production" then
-    dominioMemed = "memed.com.br"
-    dominioApiMemed = "api.memed.com.br"
-else
+'if getEnv("FC_APP_ENV","local")="production" then
+'    dominioMemed = "memed.com.br"
+'    dominioApiMemed = "api.memed.com.br"
+'else
     dominioMemed = "sandbox.memed.com.br"
     dominioApiMemed = "sandbox.api.memed.com.br"
-end if
+'end if
 %>
 <script>
     var memedLoading       = false;

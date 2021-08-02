@@ -383,6 +383,7 @@ if tipo="PacienteID" then
     if getConfig("ExibirProgramasDeSaude") = 1 then 
     %> 
     $("#ProgramaID").html(`<%=getProgramasOptions(ProfissionalID, PacienteID, ConvenioID, ProgramaID)%>`);
+    $("#ProgramaID").val('').trigger('change');
     <% end if
 
 end if
@@ -660,6 +661,16 @@ if left(tipo, 10)="ConvenioID" then
                 $(".aviso-planos").remove();
             <%
         end if
+    end if
+end if
+
+if tipo="ProgramaID" then
+    sqlPrograma = "SELECT ConvenioID FROM programas WHERE id = '" & ProgramaID & "'"
+    set rsPrograma = db.execute(sqlPrograma)
+    if not rsPrograma.eof then
+%>
+        $("#ConvenioID").val("<%=rsPrograma("ConvenioID")%>").select2();
+<%
     end if
 end if
 

@@ -701,11 +701,11 @@ end if
                 if PacienteID <> "" then
                     sqlSelectProgramas = sqlSelectProgramas & " AND pap.PacienteID = '" & PacienteID & "' AND pap.sysActive = 1 "
                 end if
-                if ConvenioID <> "" then
+                if ConvenioID <> "" and ConvenioID <> 0 then
                     sqlSelectProgramas = sqlSelectProgramas & " AND (p.ConvenioID IS NULL OR p.ConvenioID = '" & ConvenioID & "') "
                 end if
                 sqlSelectProgramas = sqlSelectProgramas & " GROUP BY p.id ORDER BY p.NomePrograma"
-                call quickField("simpleSelect", "ProgramaID", "Programa de Saúde", 3, ProgramaID, sqlSelectProgramas, "NomePrograma", " no-select2 empty")
+                call quickField("simpleSelect", "ProgramaID", "Programa de Saúde", 3, ProgramaID, sqlSelectProgramas, "NomePrograma", " no-select2 empty onchange=""parametros(this.id, this.value)""")
             end if
              %>
         </div>

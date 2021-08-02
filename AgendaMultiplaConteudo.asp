@@ -233,7 +233,7 @@ if instr(refLocais, "UNIDADE_ID")>0 then
             end if
             UnidadesIDs= UnidadesIDs& replace(replace(spltLocais(i),"UNIDADE_ID",""),"|","")
         else
-            if i>0 then
+            if i>0 and refLocais <> "" then
                 refLocais = refLocais&","
             end if
             refLocais = refLocais&spltLocais(i)
@@ -398,7 +398,15 @@ while not comGrade.eof
                     Locais: "<%= ref("Locais") %>",
                     ObsAgenda: "<%= ObsAgenda %>",
                     strAB: '<%= strAB %>'
-                }, function (data) { $('#pf<%= comGrade("ProfissionalID") %>').html(data) });
+                }, function (data) {
+                        $('#pf<%= comGrade("ProfissionalID") %>').html(data)
+
+                        let conteudo = $($('#contQuadro  table  table  tr')[0]).text();
+                        conteudo = conteudo.trim();
+                        if(conteudo === ""){
+                            $('#contQuadro').html(`<div class="alert alert-warning text-center mt20"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>`)
+                        }
+                });
             </script>
 
 

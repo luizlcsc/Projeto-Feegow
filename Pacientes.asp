@@ -1168,8 +1168,82 @@ if not memed.eof then
          });
        } , 500);
     }
+
+
+ 	
+
 </script>
 <% end if %>
+<script>
+	<%
+	FormularioNaTimeline = getConfig("FormularioNaTimeline")
+
+	if FormularioNaTimeline then
+		InserirDinamico = "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|"
+	end if
+	
+    IF FormularioNaTimeline THEN
+    %>
+    function iPront(t, p, m, i, a, FormID, CampoID) {
+        if (t == 'AE' || t == 'PrescricaoAELDiagnosticoAtestadoImagensArquivosPedido') {
+            $(".timeline-add").slideUp();
+            divAff = "#divProtocolo";
+            scr = "protocolo";
+        } else if (t == 'L') {
+            mfpform('#modal-form');
+            divAff = "#modal-form .panel";
+            scr = "iPront";
+        }else{
+            //mfp('#modal-form');
+            $("#modal-table").modal("show");
+            divAff = "#modal";
+            scr = "iPront";
+        }
+        var pl = $("#ProfissionalLaudadorID").val();
+        $(divAff).html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+        $.get(scr + ".asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
+            $(divAff).html(data);
+        });
+    }
+
+    <%
+    ELSE
+    %>
+        function iPront(t, p, m, i, a) {
+            $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+            if(t=='AE'||t=='L'){
+                try{
+                    $.magnificPopup.open({
+                            removalDelay: 500,
+                            closeOnBgClick:false,
+                            modal: true,
+                            items: {
+                                src: '#modal-form'
+                            },
+                            // overflowY: 'hidden', //
+                            callbacks: {
+                                beforeOpen: function(e) {
+                                    this.st.mainClass = "mfp-zoomIn";
+                                }
+                            }
+                        });
+                }catch (e) {
+                    alert(e)
+
+                }
+            }else{
+                mfp('#modal-form');
+            }
+            var pl = $("#ProfissionalLaudadorID").val();
+            $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
+                $("#modal-form .panel").html(data);
+            })
+        }
+    <%
+    END IF
+    %>
+</script>
+
 <script src="src/imageUtil.js"></script>
 <script>
 <% IF req("ToArea")<>"" THEN %>

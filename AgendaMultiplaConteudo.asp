@@ -340,7 +340,7 @@ if ref("Programas")<>"" then
     splProgs      = split(ref("Programas"), ", ")
     strProgProf   = ""
     strProgGrade  = ""
-    leftProgramas = " LEFT JOIN profissionaisprogramas profp ON p.id = profp.ProfissionalID "
+    leftProgramas = " LEFT JOIN profissionaisprogramas profp ON p.id = profp.ProfissionalID and profp.sysActive = 1  "
     for i=0 to ubound(splProgs)
         strProgProf = strProgProf & "'"& replace(splProgs(i)&"", "|", "") &"'"
         if i < ubound(splProgs) then

@@ -573,8 +573,8 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
         end if
         
         TotalPago = TotalPago+guia_valorPago
-        
-        Total = guias(ColunaTotal)
+
+        Total = ccur(guias(ColunaTotal))
         ItemInvoiceID = guias("ItemInvoiceID")
 		set pac = db.execute("select NomePaciente from pacientes where id="&guias("PacienteID"))
 		if pac.eof then
@@ -690,7 +690,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 				<%if req("T")<>"GuiaInternacao" then%>
                 <div class="col-md-3">Valor: R$ <%=fn(Total)%></div>
                 <%end if%>
-                <input class="valor-total-guia" value="<%=fn(Total) %>" type="hidden">
+                <input class="valor-total-guia" value="<%=Total %>" type="hidden">
                 <div class="col-md-3"><strong>Cód. na Operadora: </strong><%= guias("CodigoNaOperadora") %></div>
                 
                 <%if req("T")="GuiaSADT" or req("T")="guiasadt" then%>

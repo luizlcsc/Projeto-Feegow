@@ -8,6 +8,7 @@ ProfissionalID = ref("ProfissionalID")
 PacienteID = ref("PacienteID")
 Checkin = ref("Checkin")
 ProgramaID = ref("ProgramaID")
+ConvenioID = ref("ConvenioID")
 
 function somatempo()
 controle = 0
@@ -255,7 +256,7 @@ if tipo="PacienteID" then
             //to ajax select2
             //$("#ConvenioID option").val("<%=conv("id") %>");
             //$("#ConvenioID option").text("<%=conv("NomeConvenio") %>");
-            $("#ConvenioID").val("<%=conv("id") %>").select2();
+            $("#ConvenioID").val("<%=conv("id") %>").trigger('change').select2();
 
             if($("#ConvenioID").length > 0){
                 $("#ConvenioID").select2("destroy");
@@ -383,7 +384,6 @@ if tipo="PacienteID" then
     if getConfig("ExibirProgramasDeSaude") = 1 then 
     %> 
     $("#ProgramaID").html(`<%=getProgramasOptions(ProfissionalID, PacienteID, ConvenioID, ProgramaID)%>`);
-    $("#ProgramaID").val('').trigger('change');
     <% end if
 
 end if

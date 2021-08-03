@@ -732,7 +732,11 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
                                 disabledEdicaoProcedimento=""
                             end if
 
-                            if(valorPagoCheck <> valorTotalCheck) then  %>
+                            if valorPagoCheck&"" = ""  then
+                                valorPagoCheck = 0
+                            end if
+
+                            if(ccur(valorPagoCheck) <> ccur(valorTotalCheck)) then  %>
                                  <button id="procedimentos_button_<%= guiaIdCheck %>" style="text-align: center;display: flex; margin: 0px auto;" type="button" <%=disabledEdicaoProcedimento%> class="btn btn-success btn-sm " onclick="correcaoValoresProcedimentos(self, '<%= guiaIdCheck %>', '<%= valorTotalCheck %>', '<%= qualtabela %>')"><i class="fa fa-edit"> Procedimentos</i></button>
                             <% else %>
                                 <button id="procedimentos_button_<%= guiaIdCheck %>" style="text-align: center;display: flex; margin: 0px auto; display:none" type="button" <%=disabledEdicaoProcedimento%> class="btn btn-success btn-sm " onclick="correcaoValoresProcedimentos(self, '<%= guiaIdCheck %>', '<%= valorTotalCheck %>', '<%= qualtabela %>')"><i class="fa fa-edit"> Procedimentos</i></button>
@@ -741,7 +745,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 
                      end if
                  end if
-                 ValorTotal = ValorTotal + Total
+                 ValorTotal = ccur(ValorTotal) + ccur(Total)
                  %>
                  
                  </td>

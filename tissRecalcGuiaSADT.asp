@@ -38,12 +38,12 @@ if Action="Recalc" then
 	TotalGeral = Procedimentos+TaxasEAlugueis+Materiais+OPME+Medicamentos+GasesMedicinais
 '	db_execute("update tissguiasadt set Procedimentos="&treatvalzero(Procedimentos)&", "&_ 
 	db_execute("update tissguiasadt set "&_ 
-	"Procedimentos=(select  coalesce(sum(ValorTotal),0.0) from tissprocedimentossadt where GuiaID="&I&"),"&_ 
-	"GasesMedicinais=(select  coalesce(sum(ValorTotal),0.0) from tissguiaanexa where CD=1 and GuiaID="&I&"), "&_
-	"Medicamentos=(select coalesce(sum(ValorTotal),0.0) from tissguiaanexa where CD=2 and GuiaID="&I&"), "&_ 
-	"Materiais=(select  coalesce(sum(ValorTotal),0.0) from tissguiaanexa where CD=3 and GuiaID="&I&"), "&_ 
-	"TaxasEAlugueis=(select  coalesce(sum(ValorTotal),0.0) from tissguiaanexa where CD=7 and GuiaID="&I&"), "&_ 
-	"OPME=(select  coalesce(sum(ValorTotal),0.0) from tissguiaanexa where CD=8 and GuiaID="&I&") "&_ 
+	"Procedimentos=(select  coalesce(sum(ValorTotal),0) from tissprocedimentossadt where GuiaID="&I&"),"&_ 
+	"GasesMedicinais=(select  coalesce(sum(ValorTotal),0) from tissguiaanexa where CD=1 and GuiaID="&I&"), "&_
+	"Medicamentos=(select coalesce(sum(ValorTotal),0) from tissguiaanexa where CD=2 and GuiaID="&I&"), "&_ 
+	"Materiais=(select  coalesce(sum(ValorTotal),0) from tissguiaanexa where CD=3 and GuiaID="&I&"), "&_ 
+	"TaxasEAlugueis=(select  coalesce(sum(ValorTotal),0) from tissguiaanexa where CD=7 and GuiaID="&I&"), "&_ 
+	"OPME=(select  coalesce(sum(ValorTotal),0) from tissguiaanexa where CD=8 and GuiaID="&I&") "&_ 
 	"where id="&I)
 	set guia = db.execute("select * from tissguiasadt where id="&I)
 

@@ -138,7 +138,12 @@ if req("ConvenioID")<>"" then
 		NumeroGuias = NumeroGuias + cint(nguias("total"))
 		if cint(nguias("total")) > 0 then
 
-        ValotTotalGuias = ValotTotalGuias + replace(ValorTotal, ",", ".")
+
+        ' ValotTotalGuias = ValotTotalGuias + replace(ValorTotal, ",", ".")
+        ValotTotalGuias = ValotTotalGuias + ValorTotal 
+
+
+
         %>
 		<tr dias-para-recebimento="<%=objConvenio("DiasRecebimento") %>" lote-id="<%=lotes("id")%>">
         	<td><%=lotes("Lote")%></td>

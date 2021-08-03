@@ -2,8 +2,6 @@
 <%
 I = req("I")
 Action = req("Action")
-' Action = "Recalc"
-
 if Action="Recalc" then
 
     set ConvenioSQL = db.execute("SELECT ConvenioID FROM tissguiasadt where id="&I  )
@@ -38,31 +36,27 @@ if Action="Recalc" then
 	TotalGeral = Procedimentos+TaxasEAlugueis+Materiais+OPME+Medicamentos+GasesMedicinais
 '	db_execute("update tissguiasadt set Procedimentos="&treatvalzero(Procedimentos)&", "&_ 
 	db_execute("update tissguiasadt set "&_ 
-	"Procedimentos=(select  coalesce(sum(ValorTotal),0) from tissprocedimentossadt where GuiaID="&I&"),"&_ 
-	"GasesMedicinais=(select  coalesce(sum(ValorTotal),0) from tissguiaanexa where CD=1 and GuiaID="&I&"), "&_
-	"Medicamentos=(select coalesce(sum(ValorTotal),0) from tissguiaanexa where CD=2 and GuiaID="&I&"), "&_ 
-	"Materiais=(select  coalesce(sum(ValorTotal),0) from tissguiaanexa where CD=3 and GuiaID="&I&"), "&_ 
-	"TaxasEAlugueis=(select  coalesce(sum(ValorTotal),0) from tissguiaanexa where CD=7 and GuiaID="&I&"), "&_ 
-	"OPME=(select  coalesce(sum(ValorTotal),0) from tissguiaanexa where CD=8 and GuiaID="&I&") "&_ 
+	"Procedimentos=(select sum(ValorTotal) from tissprocedimentossadt where GuiaID="&I&"),"&_ 
+	"GasesMedicinais=(select sum(ValorTotal) from tissguiaanexa where CD=1 and GuiaID="&I&"), "&_
+	"Medicamentos=(select sum(ValorTotal) from tissguiaanexa where CD=2 and GuiaID="&I&"), "&_ 
+	"Materiais=(select sum(ValorTotal) from tissguiaanexa where CD=3 and GuiaID="&I&"), "&_ 
+	"TaxasEAlugueis=(select sum(ValorTotal) from tissguiaanexa where CD=7 and GuiaID="&I&"), "&_ 
+	"OPME=(select sum(ValorTotal) from tissguiaanexa where CD=8 and GuiaID="&I&") "&_ 
 	"where id="&I)
 	set guia = db.execute("select * from tissguiasadt where id="&I)
-
 '	response.Write("update tissguiasadt set TotalGeral="&treatvalzero(n2z(guia("Procedimentos"))+n2z(guia("Medicamentos"))+n2z(guia("Materiais"))+n2z(guia("TaxasEAlugueis"))+n2z(guia("OPME")))&" where id="&I)
-
-	sqltiss = "update tissguiasadt set TotalGeral="&treatValTISS(ccur(guia("Procedimentos"))+ccur(guia("Medicamentos"))+ccur(guia("Materiais"))+ccur(guia("TaxasEAlugueis"))+ccur(guia("OPME")))&" where id="&I
-	' dd(sqltiss)
-	db_execute(sqltiss)
+	db_execute("update tissguiasadt set TotalGeral="&treatvalzero(n2z(guia("Procedimentos"))+n2z(guia("Medicamentos"))+n2z(guia("Materiais"))+n2z(guia("TaxasEAlugueis"))+n2z(guia("OPME")))&" where id="&I)
 end if
 
 set reg = db.execute("select * from tissguiasadt where id="&I)
 if not reg.eof then
-	Procedimentos = treatValTISS(ccur(reg("Procedimentos")))
-	TaxasEAlugueis = treatValTISS(ccur(reg("TaxasEAlugueis")))
-	Materiais = treatValTISS(ccur(reg("Materiais")))
-	OPME = treatValTISS(ccur(reg("OPME")))
-	Medicamentos = treatValTISS(ccur(reg("Medicamentos")))
-	GasesMedicinais = treatValTISS(ccur(reg("GasesMedicinais")))
-	TotalGeral = treatValTISS(ccur(reg("TotalGeral")))
+	Procedimentos = reg("Procedimentos")
+	TaxasEAlugueis = reg("TaxasEAlugueis")
+	Materiais = reg("Materiais")
+	OPME = reg("OPME")
+	Medicamentos = reg("Medicamentos")
+	GasesMedicinais = reg("GasesMedicinais")
+	TotalGeral = reg("TotalGeral")
 
 	hiddenValores = ""
 
@@ -72,16 +66,16 @@ if not reg.eof then
 	%>
 	<table class="table table-striped <%=hiddenValores%>">
 		<tr>
-			<td width="25%"><%= quickField("currencyTratada", "Procedimentos", "Procedimentos", 12, Procedimentos, "", "", " readonly") %></td>
-			<td width="25%"><%= quickField("currencyTratada", "TaxasEAlugueis", "Taxas e Alugu&eacute;is", 12, TaxasEAlugueis, "", "", " readonly") %></td>
-			<td width="25%"><%= quickField("currencyTratada", "Materiais", "Materiais", 12, Materiais, "", "", " readonly") %></td>
-			<td width="25%"><%= quickField("currencyTratada", "OPME", "OPME", 12, OPME, "", "", " readonly") %></td>
+			<td width="25%"><%= quickField("currency", "Procedimentos", "Procedimentos", 12, Procedimentos, "", "", " readonly") %></td>
+			<td width="25%"><%= quickField("currency", "TaxasEAlugueis", "Taxas e Alugu&eacute;is", 12, TaxasEAlugueis, "", "", " readonly") %></td>
+			<td width="25%"><%= quickField("currency", "Materiais", "Materiais", 12, Materiais, "", "", " readonly") %></td>
+			<td width="25%"><%= quickField("currency", "OPME", "OPME", 12, OPME, "", "", " readonly") %></td>
 		</tr>
 		<tr>
-			<td width="25%"><%= quickField("currencyTratada", "Medicamentos", "Medicamentos", 12, Medicamentos, "", "", " readonly") %></td>
-			<td width="25%"><%= quickField("currencyTratada", "GasesMedicinais", "Gases Medicinais", 12, GasesMedicinais, "", "", " readonly") %></td>
+			<td width="25%"><%= quickField("currency", "Medicamentos", "Medicamentos", 12, Medicamentos, "", "", " readonly") %></td>
+			<td width="25%"><%= quickField("currency", "GasesMedicinais", "Gases Medicinais", 12, GasesMedicinais, "", "", " readonly") %></td>
 			<td width="25%"><%= quickField("currency", "ValorFilme", "Valor Filme", 12, ValorFilme, "", "", " readonly") %></td>
-			<td width="25%"><%= quickField("currencyTratada", "TotalGeral", "Total Geral", 12, TotalGeral, "", "", " readonly") %></td>
+			<td width="25%"><%= quickField("currency", "TotalGeral", "Total Geral", 12, TotalGeral, "", "", " readonly") %></td>
 		</tr>
 	</table>
 	<%

@@ -8,8 +8,7 @@
 <!--#include file="invoiceEstilo.asp"-->
 <%
 call insertRedir(req("P"), req("I"))
-sqlreg = "select * from "&req("P")&" where id="&req("I")
-set reg = db.execute(sqlreg)
+set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 close = req("close")
 
 MinimoDigitos = 0

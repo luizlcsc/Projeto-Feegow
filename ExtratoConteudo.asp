@@ -797,13 +797,13 @@ end if
 	function filterPayment(type){
 		let atual = $($('tr[data-tipo="'+type+'"]')[0]).css('display')
 		// $('tr[data-tipo]').show()
-		console.log(type)
+		// console.log(type)
 
 		if( atual == "none"){
-			console.log('mostra')
+			// console.log('mostra')
 			$('tr[data-tipo="'+type+'"]').show()
 		}else{
-			console.log('some')
+			// console.log('some')
 			$('tr[data-tipo="'+type+'"]').hide()
 		}
 	}

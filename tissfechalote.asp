@@ -612,7 +612,7 @@ function changeContratos(convenio){
     let options = "";
 
         Contratados.forEach((contrato) => {
-        options+=`<option value="'${contrato.CodigoNaOperadora}'">${contrato.CodigoNaOperadora}</option>`
+        options+=`<option value="${contrato.CodigoNaOperadora}">${contrato.CodigoNaOperadora}</option>`
     });
 
     $("#tag-contratados").html(`<label>Contratados</label><br /><select id="Contratados" name="Contratados" multiple="multiple">${options}</select>`);

@@ -14,6 +14,8 @@
 			sql = "select distinct g.LoteID, l.Lote from tissguiahonorarios g left join tisslotes l on l.id=g.LoteID where g.ConvenioID="&req("ConvenioID")&" and g.LoteID<>0 and g.sysActive=1 order by l.Lote desc"
 		elseif req("T")="GuiaInternacao" or req("T")="guiainternacao" then
             sql = "select distinct g.LoteID, l.Lote from tissguiainternacao g left join tisslotes l on l.id=g.LoteID where g.ConvenioID="&req("ConvenioID")&" and g.LoteID<>0 and g.sysActive=1 order by l.Lote desc"
+        elseif req("T")="GuiaQuimioterapia" or req("T")="guiaquimioterapia" then
+            sql = "select distinct g.LoteID, l.Lote from tissguiainternacao g left join tisslotes l on l.id=g.LoteID where g.ConvenioID="&req("ConvenioID")&" and g.LoteID<>0 and g.sysActive=1 order by l.Lote desc"
         end if
 
 		set lotes = db.execute(sql)

@@ -202,10 +202,11 @@ end if
 
         response.Buffer
 
-    leftFiltroNFeStatus = " LEFT JOIN nfe_notasemitidas nfe ON nfe.InvoiceID=i.id AND nfe.Situacao=1 LEFT JOIN nfse_emitidas nfse ON nfse.InvoiceID=i.id "
+    leftFiltroNFeStatus = " LEFT JOIN nfe_notasemitidas nfe ON nfe.InvoiceID=i.id AND nfe.Situacao=1"
     StatusEmissao = ""
 
     if ref("NotaFiscalStatus")<>"" then
+        leftFiltroNFeStatus = " LEFT JOIN nfe_notasemitidas nfe ON nfe.InvoiceID=i.id AND nfe.Situacao=1 LEFT JOIN nfse_emitidas nfse ON nfse.InvoiceID=i.id "
         SituacaoNFe = ref("NotaFiscalStatus")
         if ref("NotaFiscalStatus")="0" then
             SituacaoNfe = " != 1 "

@@ -756,7 +756,8 @@ end if
                     {
                         var gradeId = $(this).data("grade");
                         HorarioAdicionado=true;
-                        $(this).replaceWith(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                        let conteudo = `<%= replace(conteudo,"`","") %>`
+                        $(this).replaceWith(conteudo.replace(new RegExp("GRADE_ID",'g'), gradeId));
                         return false;
                     }
                 });
@@ -774,9 +775,9 @@ end if
                                     $('[data-horaid=<%=HoraComp%>]').remove();
                                 <% end if %>
                                 if('<%=HoraComp%>' > ultimoHorarioGrade && $($('#'+ultimoHorarioGrade)).attr('data-local') == '<%=comps("LocalID")%>'){
-                                    $($('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:nth-child('+(tamanhoGrade)+')')).after(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                                    $($('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:nth-child('+(tamanhoGrade)+')')).after(`<%= replace(conteudo,"`","") %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
                                 }else{
-                                    $(this).before(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                                    $(this).before(`<%= replace(conteudo,"`","") %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
                                 }
                                 return false;
                            }
@@ -807,7 +808,7 @@ end if
                 while not bloq.EOF
                     HoraDe = HoraToID(bloq("HoraDe"))
 					HoraA = HoraToID(bloq("HoraA"))
-                    Conteudo = "<tr id=""'+$(this).attr('data-hora')+'"" onClick=""abreBloqueio("&bloq("id")&", `"&replace(mydatenull(Data)&"","'","")&"`, \'\');"">"&_
+                    Conteudo = "<tr id=""'+$(this).attr('data-hora')+'"" onClick=""abreBloqueio("&bloq("id")&", '"&replace(mydatenull(Data)&"","'","")&"', \'\');"">"&_
 					"<td width=""1%""></td><td width=""1%""><button type=""button"" class=""btn btn-xs btn-danger"">'+$(this).attr('data-hora')+'</button></td>"&_
 					"<td nowrap><img src=""assets/img/bloqueio.png""> <span class=""nomePac"">"&replace(bloq("Titulo")&" ", "'", "\'")&"</span></td>"&_
 					"<td class=""hidden-xs text-center""></td>"&_

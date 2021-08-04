@@ -233,7 +233,7 @@ if instr(refLocais, "UNIDADE_ID")>0 then
             end if
             UnidadesIDs= UnidadesIDs& replace(replace(spltLocais(i),"UNIDADE_ID",""),"|","")
         else
-            if i>0 and refLocais <> "" then
+            if i>0 then
                 refLocais = refLocais&","
             end if
             refLocais = refLocais&spltLocais(i)

@@ -13,7 +13,7 @@
         $(".app").hide();
         $(".app").html(data);
         $(".app").fadeIn('slow');
-        console.log(domain);
+        // console.log(domain);
     });
 
     

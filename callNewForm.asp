@@ -274,7 +274,7 @@ var gridster1 = null;
 			draggable: {
 				items: ".items<%=splGrupos(ig)%>",
 				start: function () {
-					console.log('draggable start')
+					// console.log('draggable start')
 					setTimeout(function () {
 					}, 1000)
 				}

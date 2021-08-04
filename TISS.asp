@@ -36,6 +36,10 @@ function completaProfissionalSolicitante(id)
 		$("#NumeroNoConselhoSolicitante").val("<%=prof("DocumentoConselho")%>");
 		$("#UFConselhoSolicitante").val("<%=prof("UFConselho")%>");
         $("#CodigoCBOSolicitante").val("<%=CodigoTISS%>");
+		if($("#Cel1, #Email")){
+			$('#Cel1').val("<%=prof("Cel1")%>");
+			$('#Email').val("<%=prof("Email1")%>");
+		}
 		<%
 	end if
 end function
@@ -301,7 +305,7 @@ function completaContratadoSolicitante(id, ConvenioID)
 			CodigoCNES = "9999999"
 			%>
             $("#tipoProfissionalSolicitanteI").prop("checked", true);
-			$("#ProfissionalSolicitanteID").val("<%=id%>");
+			$("#ProfissionalSolicitanteID").val("<%=id%>").trigger('change');
             $("#spanProfissionalSolicitanteI").css("display", "block");
             $("#spanProfissionalSolicitanteE").css("display", "none");
 			<%
@@ -364,6 +368,47 @@ function completaPaciente(id)
 			PlanoID = pac("PlanoID"&Numero)
 			call completaConvenio(pac("ConvenioID"&Numero), id)
 		end if
+		Nascimento = myDate(pac("Nascimento"))
+		%>
+			if($('#Peso', '#Altura', '#Idade', '#Sexo','#ValidadeCarteira')){
+				$('#Peso').val('<%=pac("Peso")%>');
+				$('#Altura').val('<%=pac("Altura")%>');
+
+				let Sexo = '<%=pac("Sexo")%>';
+				if(Sexo == '1'){
+					TextoSexo = 'Masculino';
+				}else if(Sexo == '2'){
+					TextoSexo = 'Feminino';
+				}else if(Sexo == '3'){
+					TextoSexo = 'Indefinido';
+				}else{
+					Sexo = ''
+					TextoSexo = 'Selecione'
+				}
+				$('#select2-Sexo-container').prop('title',TextoSexo);
+				$('#select2-Sexo-container').text(TextoSexo)
+				if(Sexo != ''){
+					$('#Sexo option[value='+Sexo+']').attr('selected', 'selected');
+				}else{
+					$('#Sexo option[value=""]').attr('selected', 'selected');
+				}
+				let nascimento = '<%=Nascimento%>';
+				if(nascimento != ''){
+					let dataNascimento = new Date(nascimento);
+					let hoje = new Date();
+					let anoAtual = hoje.getFullYear();
+					let anoNascimento = dataNascimento.getFullYear();
+					let idade = anoAtual - anoNascimento;
+					if(new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate()) < new Date(hoje.getFullYear(), dataNascimento.getMonth(), dataNascimento.getDate())){
+						idade--;
+					}
+					$('#Idade').val(idade);
+				}else{
+					$('#Idade').val('');
+				}
+				$('#ValidadeCarteira').val('<%=Validade%>')
+			}
+		<%
 	end if
 	%>
     $("#AtendimentoRN").val("<%=RecemNascido%>");

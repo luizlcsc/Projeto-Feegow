@@ -9,7 +9,7 @@
 <%
 Unidades = req("CompanyUnitID")
 Planos = req("Planos")
-Contratados = req("Contratados")
+Contratados = replace(req("Contratados"),"''","'")
 Procedimentos =  req("Procedimentos")
 Executantes =  req("Executantes")
 
@@ -612,7 +612,7 @@ function changeContratos(convenio){
     let options = "";
 
         Contratados.forEach((contrato) => {
-        options+=`<option value="${contrato.CodigoNaOperadora}">${contrato.CodigoNaOperadora}</option>`
+        options+=`<option value="'${contrato.CodigoNaOperadora}'">${contrato.CodigoNaOperadora}</option>`
     });
 
     $("#tag-contratados").html(`<label>Contratados</label><br /><select id="Contratados" name="Contratados" multiple="multiple">${options}</select>`);

@@ -602,10 +602,15 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                             %>
                         </ul>
                     </div>
+                    <div class="col-md-3">
+                        <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed(true)" <%end if%>>
+                            <i class="fa fa-plus"></i> Exame MEMED
+                        </button>
+                    </div>
                     <%
                     if IntegracaoUnimedLondrina=4 or session("Banco")="clinic100000" then
                     %>
-                        <div class="col-md-offset-6 col-md-3">
+                        <div class="col-md-offset-3 col-md-3">
                             <button type="button" class="btn btn-system" onclick="importarDadosUnimed()">
                                 <i class="fa fa-download"></i> Importar Exames - Unimed
                             </button>

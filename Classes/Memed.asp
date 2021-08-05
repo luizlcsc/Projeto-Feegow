@@ -13,13 +13,15 @@
     var memedInitialized   = false;
     var memedOpenAfterInit = null;
     var memedToken         = null;
+    var memedTipo          = null;
 
-    function openMemed () {
+    function openMemed (exame) {
+        const fnOpen = exame ? exameMemed : prescricaoMemed;
         if (!memedInitialized) {
-            initMemed(prescricaoMemed);
+            initMemed(fnOpen);
             return;
         }
-        prescricaoMemed();
+        fnOpen();
     }
 
     function initMemed(openAfterInit) {
@@ -38,7 +40,7 @@
                         if (response.status === 401) {
                             new PNotify({
                                 title: 'Acesso negado',
-                                text: 'Você não tem permissão para Prescrição MEMED. Apenas usuários do tipo `profissionais` podem efetuar a prescrição.',
+                                text: 'Você não tem permissão para MEMED. Apenas usuários do tipo `profissionais` podem acessar.',
                                 type: 'danger'
                             });
                         } else if (response.status === 403) {
@@ -82,15 +84,6 @@
                 memedLoading     = false;
                 memedInitialized = true;
 
-                MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {
-                    removePatient: false,
-                    deletePatient: false,
-                    editPatient: false,
-                    removePrescription: false,
-                    historyPrescription: false,
-                    copyMedicalRecords: false,
-                });
-
                 MdHub.event.add('prescricaoSalva', function(id) {
                     savePrescricaoMemed(id);
                 });
@@ -108,6 +101,43 @@
         });
     }
 
+    function setFeaturesMedmed(exame) {
+        const features = exame ?
+            {
+                autocompleteIndustrialized: false,
+                autocompleteManipulated: false,
+                autocompleteCompositions: false,
+                autocompletePeripherals: false,
+                autocompleteExams: true
+            } :
+            {
+                autocompleteIndustrialized: true,
+                autocompleteManipulated: true,
+                autocompleteCompositions: true,
+                autocompletePeripherals: true,
+                autocompleteExams: false
+            };
+
+        memedTipo = exame ? 'exame' : 'prescricao';
+
+        return Promise.all([
+            MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {...features, ...{
+                removePatient: false,
+                deletePatient: false,
+                editPatient: false,
+                removePrescription: false,
+                historyPrescription: false,
+                copyMedicalRecords: false,
+                showProtocol: false,
+            }}),
+            MdHub.command.send('plataforma.prescricao', 'setAdditionalData', {
+                licenseId: <%=replace(session("Banco"), "clinic","")%>,
+                numeroProntuario: '<%=session("Banco")%>' +  '-' + '<%=req("I")%>',
+                tipo: memedTipo,
+            })
+        ]);
+    }
+
     function setPacienteMemed() {
         const nome = $("#NomePaciente").val();
         const endereco = $("#Endereco").val();
@@ -117,7 +147,7 @@
         const telefone = $("#Cel1").val().replace("-","").replace("(","").replace(")","").replace(" ","");
         const fullEndereco = endereco+numero;
 
-        MdHub.command.send('plataforma.prescricao', 'setPaciente', {
+        return MdHub.command.send('plataforma.prescricao', 'setPaciente', {
             nome: nome,
             telefone: telefone,
             endereco: fullEndereco,
@@ -126,12 +156,22 @@
         });
     }
 
-    function prescricaoMemed () {
-        setPacienteMemed();
-        setTimeout(function() {
-            MdHub.module.show('plataforma.prescricao');
-            MdHub.command.send('plataforma.prescricao', 'newPrescription');
-        }, 500);
+    function prescricaoMemed() {
+        Promise.all([setFeaturesMedmed(false), setPacienteMemed()]).then(function() {
+            setTimeout(function() {
+                MdHub.module.show('plataforma.prescricao');
+                MdHub.command.send('plataforma.prescricao', 'newPrescription');
+            }, 500);
+        });
+    }
+
+    function exameMemed() {
+        Promise.all([setFeaturesMedmed(true), setPacienteMemed()]).then(function() {
+            setTimeout(function() {
+                MdHub.module.show('plataforma.prescricao');
+                MdHub.command.send('plataforma.prescricao', 'newPrescription');
+            }, 500);
+        });
     }
 
     function savePrescricaoMemed(id) {
@@ -139,8 +179,9 @@
              prescriptionId: id,
              patientId: '<%=req("I")%>'
          }, function (data) {
+            const tipo = memedTipo === 'exame' ? 'Pedido' : 'Prescricao';
             if (data.success) {
-                pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
+                pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|${tipo}|`);
             } else {
                 new PNotify({
                     title: 'Erro ao gravar a prescrição.',
@@ -151,7 +192,7 @@
          });
     }
 
-    function viewPrescricaoMemed(id) {
+    function viewPrescricaoMemed(id, tipo) {
         if (memedLoading) {
             new PNotify({
                 title: 'Aguarde...',
@@ -163,22 +204,29 @@
         }
         if (!memedInitialized) {
             initMemed(function () {
-                viewPrescricaoMemed(id);
+                viewPrescricaoMemed(id, tipo);
             });
             return;
         }
 
-        setPacienteMemed();
-        setTimeout(function() {
-            MdHub.command.send('plataforma.prescricao', 'viewPrescription', id);
-        }, 500);
+        Promise.all([
+            setFeaturesMedmed(tipo === 'exame'),
+            setPacienteMemed(),
+        ]).then(function() {
+            setTimeout(function() {
+                MdHub.command.send('plataforma.prescricao', 'viewPrescription', id);
+            }, 500);
+        });
     }
 
-    function deletePrescricaoMemed(id) {
-        if(confirm('Tem certeza de que deseja apagar esta prescrição?')) {
-            postUrl('prescription/memed/delete-prescription', {prescriptionId: id}, function (data) {
-                console.log(data);
-                pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
+    function deletePrescricaoMemed(id, tipo) {
+        if (confirm(`Tem certeza de que deseja apagar ${tipo === 'exame' ? 'este pedido de exame' : 'esta prescrição'}?`)) {
+            postUrl('prescription/memed/delete-prescription', {prescriptionId: id}, function () {
+                if (tipo === 'exame') {
+                    pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Pedido|');
+                } else {
+                    pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
+                }
             });
         }
     }

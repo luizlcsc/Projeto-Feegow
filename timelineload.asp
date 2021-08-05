@@ -60,7 +60,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
 
     if instr(Tipo, "|Pedido|")>0 then
-        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', 'Pedido de Exame', 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, '' from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive=1 AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
+        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive=1 AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
         sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', '' from pedidossadt WHERE sysActive=1 and PacienteID="&PacienteID&") "
     end if
 
@@ -280,12 +280,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             end if
 
                             ' Botões Prescrição Memed
-                            if ti("Tipo")="Prescricao" and ti("MemedID")<>"" then
+                            if ti("MemedID")<>"" and (ti("Tipo")="Prescricao" or ti("Tipo")="Pedido") then
                                 sqlMemed = "SELECT * FROM memedv2_prescricoes WHERE memed_id = '" & ti("MemedID") & "'"
                                 set rsMemed = db.execute(sqlMemed)
                             %>
                                 <% if cstr(session("User"))=ti("sysUser")&"" then %>
-                                    <a href="javascript:viewPrescricaoMemed(<%=ti("MemedID")%>)">
+                                    <a href="javascript:viewPrescricaoMemed(<%=ti("MemedID")%>, '<%=rsMemed("tipo")%>')">
                                         <i class="fa fa-search-plus"></i>
                                     </a>
                                 <% end if %>
@@ -293,20 +293,21 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 if not rsMemed.eof then 
                                     if rsMemed("link_pdf_completo") <> "" then
                                 %>
-                                <a href="<%=rsMemed("link_pdf_completo")%>" target="_blank">
-                                    <i class="fa fa-print"></i>
-                                </a>
+                                    <a href="<%=rsMemed("link_pdf_completo")%>" target="_blank">
+                                        <i class="fa fa-print"></i>
+                                    </a>
+                                    <% 
+                                    end if
+                                    if cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0  then %>
+                                        <a href="javascript:deletePrescricaoMemed(<%=ti("id") %>, '<%=rsMemed("tipo")%>')">
+                                            <i class="fa fa-remove"></i>
+                                        </a>
                                 <%
                                     end if 
                                 end if
                                 rsMemed.close
                                 set rsMemed = nothing
                                 %>
-                                <% if cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0  then %>
-                                    <a href="javascript:deletePrescricaoMemed(<%=ti("id") %>)">
-                                        <i class="fa fa-remove"></i>
-                                    </a>
-                                <% end if %>
                             <%
                             else
 
@@ -539,36 +540,80 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             end if
                             response.Write(iniLau &"<em>Laudo em confecção.</em>"& fimLau)
                         end if
-                        case "Pedido"
-                        set ProcedimentosPedidoSQL = db.execute("SELECT pe.*,proc.NomeProcedimento FROM pedidoexameprocedimentos pe INNER JOIN procedimentos proc ON proc.id=pe.ProcedimentoID WHERE pe.PedidoExameID="&ti("id"))
-                        %>
-                        <ul>
-                          <%
-                                              while not ProcedimentosPedidoSQL.eof
-                          Obs = ProcedimentosPedidoSQL("Observacoes")
+                    case "Pedido"
+                        if ti("MemedID")<>"" then
+                            sqlPrescricaoMemed    = "SELECT pm.tipo, pm.nome, pm.posologia, pm.tipo_exame_selecionado, pm.exames_sus_codigo, pm.exames_tuss_codigo " &_
+                                                    "FROM memedv2_prescricoes p " &_
+                                                    "INNER JOIN memedv2_prescricoes_medicamentos pm ON pm.prescricao_id = p.id " &_
+                                                    "WHERE p.memed_id = '" & ti("MemedID") & "' AND p.tipo = 'exame'"
+                            set rsPrescricaoMemed = db.execute(sqlPrescricaoMemed)
+                            memedCount = 1
+                            %>
+                            <ul class="memed-items">
+                                <% 
+                                    while not rsPrescricaoMemed.eof 
+                                        memedTipo       = rsPrescricaoMemed("tipo")
+                                        memedNome       = rsPrescricaoMemed("nome")
+                                        memedPosologia  = rsPrescricaoMemed("posologia")
+                                        memedTipoExame  = rsPrescricaoMemed("tipo_exame_selecionado")
+                                        memedTuss       = rsPrescricaoMemed("exames_tuss_codigo")
+                                        memedSus        = rsPrescricaoMemed("exames_sus_codigo")
+                                %>
+                                    <li class="item" data-tipo="<%=memedTipo%>">
+                                        <p class="nome">
+                                            <strong>
+                                                <%=memedCount%>. <%=memedNome%>
+                                            </strong> 
+                                            <span class="quantidade">
+                                                <% if memedTipoExame = "tuss" and memedTuss <> "" then %>
+                                                TUSS: <%=memedTuss%>
+                                                <% end if %>
+                                                <% if memedTipoExame = "sus" and memedSus <> "" then %>
+                                                SUS: <%=memedSus%>
+                                                <% end if %>
+                                        </p>
+                                        <div class="posologia"><%=memedPosologia%></div>
+                                    </li>
+                                <% 
+                                    rsPrescricaoMemed.movenext
+                                    memedCount = memedCount + 1
+                                wend 
+                                rsPrescricaoMemed.close
+                                set rsPrescricaoMemed = nothing
+                                %>
+                            </ul>
+                            <%
+                        else
+                            set ProcedimentosPedidoSQL = db.execute("SELECT pe.*,proc.NomeProcedimento FROM pedidoexameprocedimentos pe INNER JOIN procedimentos proc ON proc.id=pe.ProcedimentoID WHERE pe.PedidoExameID="&ti("id"))
+                            %>
+                            <ul>
+                            <%
+                                                while not ProcedimentosPedidoSQL.eof
+                            Obs = ProcedimentosPedidoSQL("Observacoes")
 
-                          if Obs<>""  then
-                          Obs = " - "& Obs
-                          end if
-                          %>
-                          <li>
-                            <%=ProcedimentosPedidoSQL("NomeProcedimento")%><%=Obs%>
-                          </li>
-                          <%
-                                              ProcedimentosPedidoSQL.movenext
-                          wend
-                          ProcedimentosPedidoSQL.close
-                          set ProcedimentosPedidoSQL = nothing
-                          %>
-                        </ul>
-                        <%
-                        response.Write("<small>" & ti("Conteudo") & "</small>")
+                            if Obs<>""  then
+                            Obs = " - "& Obs
+                            end if
+                            %>
+                            <li>
+                                <%=ProcedimentosPedidoSQL("NomeProcedimento")%><%=Obs%>
+                            </li>
+                            <%
+                                                ProcedimentosPedidoSQL.movenext
+                            wend
+                            ProcedimentosPedidoSQL.close
+                            set ProcedimentosPedidoSQL = nothing
+                            %>
+                            </ul>
+                            <%
+                            response.Write("<small>" & ti("Conteudo") & "</small>")
+                        end if
                     case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
                             if ti("MemedID")<>"" then
                                 sqlPrescricaoMemed = "SELECT pm.tipo, pm.nome, pm.descricao, pm.posologia, pm.quantidade, pm.unit, pm.composicao " &_
                                                      "FROM memedv2_prescricoes p " &_
                                                      "INNER JOIN memedv2_prescricoes_medicamentos pm ON pm.prescricao_id = p.id " &_
-                                                     "WHERE p.memed_id = '" & ti("MemedID") & "'"
+                                                     "WHERE p.memed_id = '" & ti("MemedID") & "' AND p.tipo = 'prescricao'"
                                 set rsPrescricaoMemed = db.execute(sqlPrescricaoMemed)
                                 memedCount = 1
                                 %>
@@ -580,6 +625,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                             memedComposicao = rsPrescricaoMemed("composicao")
                                             memedDescricao  = rsPrescricaoMemed("descricao")
                                             memedPosologia  = rsPrescricaoMemed("posologia")
+                                            memedQuantidade = rsPrescricaoMemed("quantidade")
+                                            memedUnit       = rsPrescricaoMemed("unit")
                                     %>
                                         <li class="item" data-tipo="<%=memedTipo%>">
                                             <p class="nome">
@@ -593,8 +640,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                     %>
                                                 </strong> 
                                                 <span class="quantidade">
-                                                    <% if rsPrescricaoMemed("quantidade") <> 0 then response.write(rsPrescricaoMemed("quantidade")) end if%>
-                                                    <%=" " & rsPrescricaoMemed("unit")%></span>
+                                                    <% if memedQuantidade <> 0 then response.write(memedQuantidade) end if%>
+                                                    <%=" " & memedUnit%></span>
                                             </p>
                                             <% if memedTipo <> "homeopático" then %>
                                             <div class="composicao">

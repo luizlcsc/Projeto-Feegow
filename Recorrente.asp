@@ -432,5 +432,27 @@ recorrenteLista();
  </script>
 <input type="hidden" name="PendPagar" id="PendPagar" />
 
+<%
+' LINK PARA ORDEM DE COMPRA
+' Verifica se a invoice foi gerada pela Ordem de Compra
+' para inserir o botão com link para a ordem de compra.
+' Foi feito desta forma para não precisar alterar a estrutura da tabela de invoice.
+geracao = data("Name")
+if InStr(geracao, "ordem de compra") > 0 then
+    set ordemDeCompra = db.execute("SELECT id FROM compras_ordem WHERE invoiceFixaId = "&InvoiceID& " AND deletedAt IS NULL LIMIT 1")
+    if not ordemDeCompra.eof then
+        ordemId = ordemDeCompra("id")
+%>
+        <script>
+        // insere o botão para ir para a Ordem de Compra
+        $(document).ready(function() {
+            $('#topbar .topbar-right button').after(' <a class="btn btn-warning btn-sm" href="?P=solicitacoescompras&Pers=1#/ordens/edit/<%=ordemId%>" title="Ir para  ordem de compra"><i class="fa fa-shopping-cart bigger-110"></i></a>');
+        });
+        </script>
+<%
+    end if
+end if
+%>
+
 <%'=request.QueryString %>
 <!--#include file="disconnect.asp"-->

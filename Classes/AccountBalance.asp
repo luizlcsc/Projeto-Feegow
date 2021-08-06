@@ -6,8 +6,14 @@ function accountBalancePerDate(AccountID, Flag, Date)
 	AccountAssociationID = splAccountInQuestion(0)
 	AccountID = splAccountInQuestion(1)
 
+    SaldoAnterior = 0
+
+    if ref("Unidades")<>"" then
+        sqlUnidades = " AND UnidadeID IN ("& replace(ref("Unidades"), "|", "") &") "
+    end if
+
 	accountBalancePerDate = 0
-	set getMovement = db.execute("select * from sys_financialMovement where ((AccountAssociationIDCredit="&AccountAssociationID&" and AccountIDCredit="&AccountID&") or (AccountAssociationIDDebit="&AccountAssociationID&" and AccountIDDebit="&AccountID&")) and Date<='"&myDate(Date)&"' order by Date")
+	set getMovement = db.execute("select * from sys_financialMovement where ((AccountAssociationIDCredit="&AccountAssociationID&" and AccountIDCredit="&AccountID&") or (AccountAssociationIDDebit="&AccountAssociationID&" and AccountIDDebit="&AccountID&")) and Date<='"&myDate(Date)&"' and (UnidadeID<>-1 or ISNULL(UnidadeID)) "& sqlUnidades &" order by Date, id")
 
 	if not getMovement.eof then
         while not getMovement.eof
@@ -25,16 +31,21 @@ function accountBalancePerDate(AccountID, Flag, Date)
                 'if getMovement("Currency")<>session("DefaultCurrency") then
                 '	Value = Value / Rate
                 'end if
+				Balance = Balance+Value
                 accountBalancePerDate = accountBalancePerDate+Value
             else
                 'if getMovement("Currency")<>session("DefaultCurrency") then
                 '	Value = Value / Rate
                 'end if
                 CD = "D"
+				Balance = Balance-Value
                 accountBalancePerDate = accountBalancePerDate-Value
             end if
             '-
             cType = getMovement("Type")
+
+            'response.write(getMovement("id") &" : "& getMovement("Date") &" >> "&AccountAssociationIDCredit&":"&AccountAssociationIDDebit&" >> "& Value &" >> "& CD &" Saldo Ant: "& Balance &"  >> Saldo:"& accountBalancePerDate &"<br>" )
+
         getMovement.movenext
         wend
         getMovement.close
@@ -42,7 +53,8 @@ function accountBalancePerDate(AccountID, Flag, Date)
 
     end if
 
-	if AccountAssociationID=1 or AccountAssociationID=7 then
+
+	if (AccountAssociationID=1 or AccountAssociationID=7) and Balance<>0 then
 		accountBalancePerDate = accountBalancePerDate*(-1)
 	end if
 

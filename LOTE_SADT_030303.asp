@@ -51,9 +51,10 @@ prefixo = right(prefixo, 20)
 				<%
                 CodigoNaOperadora = trim(CodigoNaOperadora&" ")
                 CodigoNaOperadora = TISS__FormataConteudo(TISS__RemoveCaracters(CodigoNaOperadora))
-                if CalculaCPF(CodigoNaOperadora)=true then
+                CodigoNaOperadoraValida = CodigoNaOperadora
+                if CalculaCPF(CodigoNaOperadoraValida)=true then
                     tipoCodigoNaOperadora = "CPF"
-                elseif CalculaCNPJ(CodigoNaOperadora)=true then
+                elseif CalculaCNPJ(CodigoNaOperadoraValida)=true then
                     tipoCodigoNaOperadora = "CNPJ"
                 else
                     tipoCodigoNaOperadora = "codigoPrestadorNaOperadora"
@@ -540,5 +541,5 @@ prefixo = right(prefixo, 20)
     </ans:epilogo>
 </ans:mensagemTISS>
 <%
-Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
+    Response.AddHeader "Content-Disposition", "attachment; filename=" & prefixo & "_" & md5(hash)&".xml"
 %>

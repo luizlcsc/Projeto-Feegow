@@ -241,8 +241,17 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             end if
                             %>
                             <span class="fa fa-align-justify"></span>
-                            <% if ti("sysUser")<>0 then response.write( nameInTable(ti("sysUser")) ) end if %>
-                            <code><%=ti("Titulo") %></code>
+                            <%
+                            if ti("sysUser")<>0 then
+                                response.write( nameInTable(ti("sysUser")) )
+                            end if
+                            titulo = ti("Titulo")
+                            if len(titulo)>30 then
+                                titulo = left(titulo, 40)&"..."
+                            end if
+
+                            response.write("<code>"&titulo&"</code>")
+                            %>
                         </span>
                         <%
                         if OcultarBtn<>"1" then

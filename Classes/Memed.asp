@@ -31,7 +31,7 @@
         }
         memedLoading = true;
 
-        getUrl('prescription/memed/init', {},
+        getUrl('prescription/memedv2/init', {},
             function (response) {
 
                 if (response.success !== true) {
@@ -44,7 +44,7 @@
                                 type: 'danger'
                             });
                         } else if (response.status === 403) {
-                            openComponentsModal("prescription/memed/professional-index", { professionalId: <%=session("idInTable")%>, modal: true}, "Cadastro Memed", false);
+                            openComponentsModal("prescription/memedv2/register", { professionalId: <%=session("idInTable")%>, modal: true}, "Cadastro Memed", false);
                         } else {
                             new PNotify({
                                 title: 'Serviço indisponível.',
@@ -101,7 +101,7 @@
         });
     }
 
-    function setFeaturesMedmed(exame) {
+    function setFeaturesMemed(exame) {
         const features = exame ?
             {
                 autocompleteIndustrialized: false,
@@ -157,7 +157,7 @@
     }
 
     function prescricaoMemed() {
-        Promise.all([setFeaturesMedmed(false), setPacienteMemed()]).then(function() {
+        Promise.all([setFeaturesMemed(false), setPacienteMemed()]).then(function() {
             setTimeout(function() {
                 MdHub.module.show('plataforma.prescricao');
                 MdHub.command.send('plataforma.prescricao', 'newPrescription');
@@ -166,7 +166,7 @@
     }
 
     function exameMemed() {
-        Promise.all([setFeaturesMedmed(true), setPacienteMemed()]).then(function() {
+        Promise.all([setFeaturesMemed(true), setPacienteMemed()]).then(function() {
             setTimeout(function() {
                 MdHub.module.show('plataforma.prescricao');
                 MdHub.command.send('plataforma.prescricao', 'newPrescription');
@@ -175,7 +175,7 @@
     }
 
     function savePrescricaoMemed(id) {
-        postUrl('prescription/memed/save-prescription', {
+        postUrl('prescription/memedv2/save-prescription', {
              prescriptionId: id,
              patientId: '<%=req("I")%>'
          }, function (data) {
@@ -210,7 +210,7 @@
         }
 
         Promise.all([
-            setFeaturesMedmed(tipo === 'exame'),
+            setFeaturesMemed(tipo === 'exame'),
             setPacienteMemed(),
         ]).then(function() {
             setTimeout(function() {
@@ -221,7 +221,7 @@
 
     function deletePrescricaoMemed(id, tipo) {
         if (confirm(`Tem certeza de que deseja apagar ${tipo === 'exame' ? 'este pedido de exame' : 'esta prescrição'}?`)) {
-            postUrl('prescription/memed/delete-prescription', {prescriptionId: id, tipo: tipo}, function () {
+            postUrl('prescription/memedv2/delete-prescription', {prescriptionId: id, tipo: tipo}, function () {
                 if (tipo === 'exame') {
                     pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Pedido|');
                 } else {

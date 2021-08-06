@@ -221,7 +221,7 @@
 
     function deletePrescricaoMemed(id, tipo) {
         if (confirm(`Tem certeza de que deseja apagar ${tipo === 'exame' ? 'este pedido de exame' : 'esta prescrição'}?`)) {
-            postUrl('prescription/memed/delete-prescription', {prescriptionId: id}, function () {
+            postUrl('prescription/memed/delete-prescription', {prescriptionId: id, tipo: tipo}, function () {
                 if (tipo === 'exame') {
                     pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Pedido|');
                 } else {

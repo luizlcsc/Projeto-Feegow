@@ -390,6 +390,7 @@ if not tryLogin.EOF then
         session("SepararPacientes") = config("SepararPacientes")
         session("Email") = tryLogin("Email")
         'session("AutoConsolidar") = config("AutoConsolidar") &""
+        session("DataCadastro") = tryLogin("DataHora") 
 
 
 		set getUnidades = db.execute("select Unidades from "&session("Table")&" where id="&session("idInTable"))
@@ -596,12 +597,12 @@ if not tryLogin.EOF then
 
         session("AutenticadoPHP")="false"
 
-        if AppEnv="production" then
-            set vcaTrei = dbc.execute("select id from clinic5459.treinamentos where LicencaUsuarioID="& session("User") &" and not isnull(Fim) and isnull(Nota)")
-            if not vcaTrei.eof then
-                urlRedir = "./?P=AreaDoCliente&Pers=1"
-            end if
-        end if
+        'if AppEnv="production" then
+            'set vcaTrei = dbc.execute("select id from clinic5459.treinamentos where LicencaUsuarioID="& session("User") &" and not isnull(Fim) and isnull(Nota)")
+            'if not vcaTrei.eof then
+                'urlRedir = "./?P=AreaDoCliente&Pers=1"
+            'end if
+        'end if
 
         IF PastaAplicacao <> "" and Versao&""="7" and AppEnv="production" THEN
             urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")

@@ -253,10 +253,10 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <script type="text/javascript">
     let dataCadastro = +new Date("<%=session("DataCadastro")%>".split("/").reverse().join("-"));
 
+    let dataSegundos = dataCadastro/1000;
+
     if (dataCadastro == null) {
       console.error("A variável DataCadastro está vazia!");
-    } else {
-      console.log("Data válida");
     }
 
     // window.wootric_survey_immediately = true; // Shows survey immediately for testing purposes. TODO: Comment out for production.
@@ -273,8 +273,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       pastaRedicionamento: '<%= session("PastaAplicacaoRedirect") %>',
 
       email: '<%=session("Email")%>', // TODO: Required to uniquely identify a user. Email is recommended but this can be any unique identifier.
-      // external_id: 'abc123', // TODO: Reference field for external integrations only. Send it along with email. OPTIONAL
-      created_at: dataCadastro/1000, // TODO: The current logged in user's sign-up date as a 10 digit Unix timestamp in seconds. OPTIONAL
+      external_id: "<%=session("User")%>", // TODO: Reference field for external integrations only. Send it along with email. OPTIONAL
+      created_at: dataSegundos, // TODO: The current logged in user's sign-up date as a 10 digit Unix timestamp in seconds. OPTIONAL
       account_token: 'NPS-06aa5f7d' // This is your unique account token.
     };
   </script>

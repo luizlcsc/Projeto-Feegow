@@ -168,7 +168,7 @@ end if
 		"LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=m.sysUser  "&_
 		"left join sys_financialcurrentaccounts sf on sf.id = m.AccountIDDebit  "&_
         "left join sys_financialpaymentmethod pm on pm.id = m.PaymentMethodID  "&_
-		"left join sys_financialbanks fb on fb.id = sf.Bank where 1=1 "& sqlAcc & sqlLancadoPor & sqlUnidades & sqlCD & sqlFormas & sqlDataPraFrente &" order by m.Date, m.id"
+		"left join sys_financialbanks fb on fb.id = sf.Bank where 1=1 "& sqlAcc & sqlLancadoPor & sqlUnidades & sqlCD & sqlFormas &" order by m.Date, m.id"
     end if
     set getMovement = db.execute( sqlGM )
 

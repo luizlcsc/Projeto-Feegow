@@ -252,8 +252,10 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <!-- begin Wootric code -->
   <script type="text/javascript">
     let dataCadastro = +new Date("<%=session("DataCadastro")%>".split("/").reverse().join("-"));
+    console.log(dataCadastro);
 
     let dataSegundos = dataCadastro/1000;
+    console.log(dataSegundos);
 
     if (dataCadastro == null) {
       console.error("A variável DataCadastro está vazia!");

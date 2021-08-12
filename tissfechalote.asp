@@ -9,7 +9,7 @@
 <%
 Unidades = req("CompanyUnitID")
 Planos = req("Planos")
-Contratados = req("Contratados")
+Contratados = replace(req("Contratados"),"''","'")
 Procedimentos =  req("Procedimentos")
 Executantes =  req("Executantes")
 

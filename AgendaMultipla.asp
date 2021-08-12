@@ -371,9 +371,17 @@ $(document).ready(function () {
 
         const unidades = $("#Locais").val();
 
-        $.post("AgendaMultiplaConteudo.asp?R=<%=limpaFiltro%>", $("#frmFiltros, #HVazios").serialize(), function (data) {
+        window.requestsAgenda = window.requestsAgenda || [];
+        if (window.requestsAgenda.length > 0) {
+            window.requestsAgenda.map(req=> {
+                req.abort();
+            });
+            window.requestsAgenda = [];
+        }
+
+        window.requestsAgenda.push($.post("AgendaMultiplaConteudo.asp?R=<%=limpaFiltro%>", $("#frmFiltros, #HVazios").serialize(), function (data) {
             $("#contQuadro").html(data);
-        });
+        }));
         $("#buscar").addClass("hidden");
     }
 

@@ -250,14 +250,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
   
   <!-- begin Wootric code -->
-  <script type="text/javascript">
-    let dataCadastro = +new Date("<%=session("DataCadastro")%>".split("/").reverse().join("-"));
-
-    let dataSegundos = dataCadastro/1000;
-
-    if (dataCadastro == null) {
-      console.error("A variável DataCadastro está vazia!");
-    }
+  <script type="text/javascript">   
+    let dataCadastro = <% if session("DataCadastro")<>"" then response.write(session("DataCadastro")) else response.write("null") end if %>; 
 
     // window.wootric_survey_immediately = true; // Shows survey immediately for testing purposes. TODO: Comment out for production.
 
@@ -271,10 +265,9 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       statusLicenca: "<%=StatusLicenca%>",
       urlSistema: window.location.href,
       pastaRedicionamento: '<%= session("PastaAplicacaoRedirect") %>',
-
       email: '<%=session("Email")%>', // TODO: Required to uniquely identify a user. Email is recommended but this can be any unique identifier.
       external_id: "<%=session("User")%>", // TODO: Reference field for external integrations only. Send it along with email. OPTIONAL
-      created_at: dataSegundos, // TODO: The current logged in user's sign-up date as a 10 digit Unix timestamp in seconds. OPTIONAL
+      created_at: dataCadastro, // TODO: The current logged in user's sign-up date as a 10 digit Unix timestamp in seconds. OPTIONAL
       account_token: 'NPS-06aa5f7d' // This is your unique account token.
     };
   </script>

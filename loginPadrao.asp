@@ -31,7 +31,7 @@ if masterLogin then
     "l.Servidor, "&_
     " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, "&_
     " servHomolog.DNS ServerHomolog, "&_
-    "COALESCE(serv.DNS, l.Servidor) Servidor,u.Tipo as tipoUsuario "&_
+    "COALESCE(serv.DNS, l.Servidor) Servidor,u.Tipo as tipoUsuario, UNIX_TIMESTAMP(u.DataHora) as DataCadastro "&_
     " FROM licencasusuarios AS u "&_
     " LEFT JOIN licencas AS l ON l.id='"&tryLoginMaster("licencaId")&"'"&_
     " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID "&_
@@ -67,7 +67,7 @@ else
 	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, u.Tipo as tipoUsuario,                                                "&_
 	           "COALESCE(serv.DNS, l.Servidor) Servidor,                                                                                            "&_
 	           "servHomolog.DNS ServerHomolog,                                                                                                      "&_
-	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom                                                             "&_
+	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom, UNIX_TIMESTAMP(u.DataHora) as DataCadastro                 "&_
 	           "from licencasusuarios as u                                                                                                          "&_
 	           "left join licencas as l on l.id=u.LicencaID                                                                                         "&_
                " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID                                                                               "&_
@@ -390,7 +390,7 @@ if not tryLogin.EOF then
         session("SepararPacientes") = config("SepararPacientes")
         session("Email") = tryLogin("Email")
         'session("AutoConsolidar") = config("AutoConsolidar") &""
-        session("DataCadastro") = tryLogin("DataHora") 
+        session("DataCadastro") = tryLogin("DataCadastro") 
 
 
 		set getUnidades = db.execute("select Unidades from "&session("Table")&" where id="&session("idInTable"))

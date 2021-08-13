@@ -7,6 +7,8 @@ Function strip_tags(text_to_strip)
 End Function
 
 function clear_ref_req (val)
+        tentativa = false
+    
         val = replace(val, "'", "''")
         val = replace(val,"\", "\\")
         val = replace(val,"<script>", "")
@@ -16,7 +18,8 @@ function clear_ref_req (val)
         val = replace(val,"&quot;", "")
         val = replace(val,"&#x27;", "")
         val = replace(val,"&#x22;", "")
-        val = replace(val,"&#x27;", "")
+        val = replace(val,"&#x7c;", "")
+        
         clear_ref_req = val
 end function 
 
@@ -109,5 +112,22 @@ function dd(variable)
     response.write("<pre>"&description&"</pre>")
     Response.End
 end function
+
+
+function injection()
+%>
+<script>
+new PNotify({
+    title: 'Ocorreu um erro!',
+    text:'Operação não permitida',
+    type: 'danger',
+    delay: 10000
+});
+</script>
+
+<%
+    Response.End
+end function
+
 
 %>

@@ -38,9 +38,9 @@ end if
 <br />
 <div class="panel">
     <div class="panel-body" id="relConteudo">
-        <div class="alert alert-system">
+        <div class="alert alert-system bg-primary dark" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
             <h3>
-                Nova central de relatórios disponível (beta). <a href="#" onclick="openReport()" id="CentralRelatorios" class="btn btn-danger btn-sm"><i class="fa fa-external-link"></i> Clique aqui para acessar</a>
+                Nova central de relatórios disponível.<br><br><a href="#" onclick="openReport()" id="CentralRelatorios" class="btn btn-danger btn-sm"><i class="fa fa-external-link"></i> Acessar versão BETA</a>
             </h3>
         </div>
     </div>

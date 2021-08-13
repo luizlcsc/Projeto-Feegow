@@ -15,12 +15,13 @@ Parcelas = ref("Pars")
 if Acao="B" then
 	'Dá baixa no recebimento da parcela
 
-	sql = "select Transacao.TransactionNumber, mov.AccountIDDebit, cc.CreditAccount,cc.CategoriadTaxaID from sys_financialcreditcardreceiptinstallments rectoParcela LEFT JOIN sys_financialcreditcardtransaction Transacao on Transacao.id=rectoParcela.TransactionID LEFT JOIN sys_financialmovement mov on mov.id=Transacao.MovementID LEFT JOIN sys_financialcurrentaccounts cc on cc.id=mov.AccountIDDebit where rectoParcela.id="&ParcelaTransacaoID
+	sql = "select cc.Empresa UnidadeID, Transacao.TransactionNumber, mov.AccountIDDebit, cc.CreditAccount,cc.CategoriadTaxaID from sys_financialcreditcardreceiptinstallments rectoParcela LEFT JOIN sys_financialcreditcardtransaction Transacao on Transacao.id=rectoParcela.TransactionID LEFT JOIN sys_financialmovement mov on mov.id=Transacao.MovementID LEFT JOIN sys_financialcurrentaccounts cc on cc.id=mov.AccountIDDebit where rectoParcela.id="&ParcelaTransacaoID
 	set rectoParcela = db.execute(sql)
 	if not rectoParcela.EOF then
 		Nome = "Transação "&left(rectoParcela("TransactionNumber")&" ", 30)&" - "&Parcela&"/"&Parcelas
 		NomeFee = "Desc. trans. "&rectoParcela("TransactionNumber")&" - "&Parcela&"/"&Parcelas
 		AccountIDCredit = rectoParcela("AccountIDDebit")
+		UnidadeID = rectoParcela("UnidadeID")
 		AccountIDDebit = rectoParcela("CreditAccount")
 		CategoriadTaxaID = rectoParcela("CategoriadTaxaID")
 		if AccountIDDebit=0 or isnull(AccountIDDebit) then
@@ -31,7 +32,7 @@ if Acao="B" then
 	end if
 
 	if Erro="" then
-		sqlInsert = "insert into sys_financialmovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Currency, Rate, sysUser) values ('"&Nome&"', 1, "&AccountIDCredit&", 1, "&AccountIDDebit&", 3, "&treatvalzero(ValorCredito)&", "&mydatenull(DateToReceive)&", 'C', 'CCCred', 'BRL', 1, "&session("User")&")"
+		sqlInsert = "insert into sys_financialmovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Currency, Rate, sysUser, UnidadeID) values ('"&Nome&"', 1, "&AccountIDCredit&", 1, "&AccountIDDebit&", 3, "&treatvalzero(ValorCredito)&", "&mydatenull(DateToReceive)&", 'C', 'CCCred', 'BRL', 1, "&session("User")&", "&treatvalnull(UnidadeID)&")"
 
 		db_execute(sqlInsert)
 		set pult = db.execute("select id from sys_financialmovement where sysUser="&session("User")&" order by id desc LIMIT 1")

@@ -21,6 +21,8 @@ elseif req("T")="GuiaHonorarios" then
 	src = "guiaHonorariosPrint"
 elseif req("T")="GuiaInternacao" then
 	src = "guiaInternacaoPrint"
+elseif request.QueryString("T")="GuiaQuimioterapia" then
+	src = "guiaQuimioterapiaPrint"
 end if
 %>
 <div class="modal-header">

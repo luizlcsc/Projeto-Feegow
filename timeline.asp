@@ -8,6 +8,7 @@ end if
 OcultarBtn=req("OcultarBtn")
 FormularioNaTimeline=getConfig("FormularioNaTimeline")
 
+
 if req("X")<>"" then
     if req("Tipo")="|Prescricao|" then
         'db_execute("delete from pacientesprescricoes where id="& req("X"))
@@ -207,7 +208,7 @@ select case Tipo
                 <div class="col-md-3">
                     <%
                     qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
-                                                " WHERE p.sysActive=1                                "&chr(13)&_
+                                                " WHERE p.sysActive=1 AND Ativo= 'on'                "&chr(13)&_
                                                 " ORDER BY p.NomeProfissional ASC                    "
                     
                     if session("Table")="profissionais" then
@@ -291,12 +292,13 @@ select case Tipo
                         <a type="button" class="btn btn-block btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="fa fa-external-link"></i> Restaurar Formulário</a>
                     </div>
                 <%
-                if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) then
-                    if datediff("yyyy", Nascimento, date())<15 and Sexo<>0 then
-                    %>
-                    <a class="btn btn-info mt10" href="javascript:curva(<%= PacienteID %>)"><i class="fa fa-bar-chart"></i> Curvas de Evolução</a>
-                    <%
-                    end if
+                if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) and (Sexo=1 or Sexo=2) then
+                %>
+                    <div class="col-md-3">
+                        <br>
+                        <a class="btn btn-info" href="javascript:curva(<%= PacienteID %>)"><i class="fa fa-bar-chart"></i> Curvas de Evolução</a>
+                    </div>
+                <%
                 end if
 
                 if Tipo = "|L|" then
@@ -990,39 +992,41 @@ LocalStorageRestoreHabilitar();
     <%
     ELSE
     %>
-    function iPront(t, p, m, i, a) {
-        $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
-        if(t=='AE'||t=='L'){
-            try{
-                $.magnificPopup.open({
-                        removalDelay: 500,
-                        closeOnBgClick:false,
-                        modal: true,
-                        items: {
-                            src: '#modal-form'
-                        },
-                        // overflowY: 'hidden', //
-                        callbacks: {
-                            beforeOpen: function(e) {
-                                this.st.mainClass = "mfp-zoomIn";
+        function iPront(t, p, m, i, a) {
+            $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+            if(t=='AE'||t=='L'){
+                try{
+                    $.magnificPopup.open({
+                            removalDelay: 500,
+                            closeOnBgClick:false,
+                            modal: true,
+                            items: {
+                                src: '#modal-form'
+                            },
+                            // overflowY: 'hidden', //
+                            callbacks: {
+                                beforeOpen: function(e) {
+                                    this.st.mainClass = "mfp-zoomIn";
+                                }
                             }
-                        }
-                    });
-            }catch (e) {
-              alert(e)
+                        });
+                }catch (e) {
+                    alert(e)
 
+                }
+            }else{
+                mfp('#modal-form');
             }
-        }else{
-            mfp('#modal-form');
+            var pl = $("#ProfissionalLaudadorID").val();
+            $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
+                $("#modal-form .panel").html(data);
+            })
         }
-        var pl = $("#ProfissionalLaudadorID").val();
-        $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
-            $("#modal-form .panel").html(data);
-        })
-    }
     <%
     END IF
     %>
+
+
 
 function sendWorklist(ProcedimentoID, FormID){
     $.get("../feegow_components/diagnext/newworklist", {
@@ -1211,6 +1215,9 @@ function prontPrint(tipo, id){
         case "pedido":
             url = domain+"print/exam-request/";
             break;
+        case "diagnostico":
+            url = domain+"print/diagnostico/";
+            break;
         case "protocolos":
             url = domain+"print/protocol/";
             break;
@@ -1218,6 +1225,7 @@ function prontPrint(tipo, id){
             //url = domain+"print/prescription/";
         // break;
     }
+    
     let src = `${url+id}?showPapelTimbrado=1&showCarimbo=1&assinaturaDigital=1&tk=${localStorage.getItem("tk")}`;
     openModal(`
         <iframe width="100%" height="800px" src="${src}" frameborder="0"></iframe>`,

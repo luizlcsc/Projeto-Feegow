@@ -40,6 +40,7 @@ else
     Credito = 0
     Debito = 0
     Transferencia = 0
+    Pix = 0
     sqlPaymentMethod = ""
     if req("FormaRecto")<>"" then
         sqlPaymentMethod = " AND m.PaymentMethodID="&req("FormaRecto")
@@ -63,7 +64,8 @@ else
                     <th width="16%" class="text-right">Débito: R$ <%=fn(Debito) %></th>
                     <th width="16%" class="text-right">Crédito: R$ <%=fn(Credito) %></th>
                     <th width="16%" class="text-right">Transferência: R$ <%=fn(Transferencia) %></th>
-                    <th width="16%" class="text-right">Total: R$ <%=fn( Dinheiro + Cheque + Debito + Credito + Transferencia ) %></th>
+                    <th width="16%" class="text-right">Pix: R$ <%=fn(Pix) %></th>
+                    <th width="16%" class="text-right">Total: R$ <%=fn( Dinheiro + Cheque + Debito + Credito + Transferencia + Pix) %></th>
                 </tr>
             </thead>
         </table>

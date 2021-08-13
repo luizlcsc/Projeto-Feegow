@@ -325,7 +325,7 @@ if ref("GradeID")<> "" then
 
     if rfProcedimento&""<>"" then
          set TipoProcedimentoSQL = db.execute("SELECT TipoProcedimentoID FROM procedimentos WHERE TipoProcedimentoID=9 AND id="&rfProcedimento)
-         if not TipoProcedimentoSQL.eof then
+         if ref("Retorno") = "1" or not TipoProcedimentoSQL.eof then
              set MaximoRetornosGradeSQL = db.execute("SELECT MaximoRetornos, ProfissionalID, HoraDe, HoraA FROM assfixalocalxprofissional WHERE id="&treatvalzero(GradeID))
              if not MaximoRetornosGradeSQL.eof then
                  if MaximoRetornosGradeSQL("MaximoRetornos")&"" <> "" then
@@ -333,7 +333,10 @@ if ref("GradeID")<> "" then
                         if ConsultaID<>"0" then
                             whereRetorno = " AND agendamentos.id NOT IN("&ConsultaID&")"
                         end if
-                         sqlAgendamentosRetornos = "SELECT count(agendamentos.id)NumeroRetornos FROM agendamentos INNER JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID WHERE agendamentos.sysActive=1 AND ProfissionalID="&treatvalzero(MaximoRetornosGradeSQL("ProfissionalID"))&" AND Hora BETWEEN TIME('"&right(MaximoRetornosGradeSQL("HoraDe"),8)&"') AND TIME('"&right(MaximoRetornosGradeSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData)&" AND StaId NOT IN (6,11) AND procedimentos.TipoProcedimentoID=9"&whereRetorno
+                         sqlAgendamentosRetornos = "SELECT count(agendamentos.id)NumeroRetornos FROM agendamentos INNER JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID " &_
+                                                   " WHERE agendamentos.sysActive=1 AND ProfissionalID="&treatvalzero(MaximoRetornosGradeSQL("ProfissionalID")) &_
+                                                   " AND Hora BETWEEN TIME('"&right(MaximoRetornosGradeSQL("HoraDe"),8)&"') AND TIME('"&right(MaximoRetornosGradeSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData) &_
+                                                   " AND StaId NOT IN (6,11) AND (procedimentos.TipoProcedimentoID=9 OR agendamentos.Retorno = 1) "&whereRetorno
                          set AgendamentosRetornosSQL = db.execute(sqlAgendamentosRetornos)
 
                          if not AgendamentosRetornosSQL.eof then
@@ -475,6 +478,57 @@ if erro = "" and ref("LocalID")<>"" and ref("LocalID")<>"0"  then
     end if
 end if
 
+'INÍCIO Validacoes de Programas de Saúde ================================
+if erro="" and getConfig("ExibirProgramasDeSaude") = 1 then
+    ProgramaID = ref("ProgramaID")
+
+    'verifica se a grade possui limitação de programas de saúde
+    if ref("GradeID")<> "" then
+        GradeID = ref("GradeID")
+
+        set rsProgramasGrades = db.execute("SELECT Programas FROM assfixalocalxprofissional WHERE id="&treatvalzero(GradeID)&"")
+        if not rsProgramasGrades.eof then
+            programasGrade = rsProgramasGrades("Programas")&""
+            if programasGrade <> "" then
+                if ProgramaID = "" then
+                    erro="A grade deste horário é restrita a programas de saúde."
+                elseif not instr(programasGrade, "|" & ProgramaID & "|") > 0 then
+                    erro="A grade deste horário não permite o programa de saúde escolhido."
+                end if
+            end if
+        end if
+    end if
+
+    'verifica se programa de saúde escolhido pode ser usado pelo profissional
+    if erro = "" and ProgramaID <> "" then
+        set rsProgramaProfissional = db.execute("SELECT id FROM profissionaisprogramas WHERE ProgramaID = '" & ProgramaID & "' AND ProfissionalID = '" & rfProfissionalID & "'")
+        if rsProgramaProfissional.eof then
+            erro="O Profissional não participa do programa de saúde escolhido."
+        end if
+    end if
+
+    'verifica se programa de saúde escolhido pode ser usado pelo Paciente
+    if erro = "" and ProgramaID <> "" then
+        sqlProgramaPaciente = "SELECT pp.id, p.ConvenioID, p.sysActive FROM pacientesprogramas pp " &_
+                              "INNER JOIN programas p ON p.id = pp.ProgramaID " &_
+                              "WHERE pp.PacienteID = '" & rfPaciente & "' AND pp.ProgramaID = '" & ProgramaID & "' AND pp.sysActive = 1 LIMIT 1"
+        set rsProgramaPaciente = db.execute(sqlProgramaPaciente)
+        if rsProgramaPaciente.eof then
+            erro="O Paciente não participa do programa de saúde escolhido."
+        else
+            convenioPrograma = rsProgramaPaciente("ConvenioID")&""
+            convenioAgenda   = ref("ConvenioID")&""
+            if rsProgramaPaciente("sysActive")<> 1 then
+                erro="O programa de saúde escolhido está inativo."
+            elseif convenioPrograma<>"" and convenioPrograma <> convenioAgenda then
+                erro="O programa de saúde escolhido é de outro convênio."
+            end if
+        end if
+    end if
+
+end if
+'FIM Validacoes de Programas de Saúde ================================
+
 if erro="" and rdEquipamentoID <> "" then
 
     'Validar se o equipamento tem possibilidade
@@ -581,7 +635,20 @@ function validarEquipamento(equipamentoId, dataAgendamento, hora)
                validarEquipamento = 0
            end if
        else
-           validarEquipamento = 1
+            diaDaSemana=weekday(dataAgendamento)
+            if ref("Tempo")&"" <> "" then
+                hora = formatdatetime(dateadd("n", ref("Tempo"), hora),4)
+            end if
+            sqlCompromisso = ("select count(*) as total from Compromissos where ProfissionalID = -" & equipamentoId & " and DataDe<=" & mydatenull(dataAgendamento) & " and DataA>=" & mydatenull(dataAgendamento) & " and DiasSemana like '%"&diaDaSemana&"%' and HoraDe<=time('" & hora & "') and HoraA>time('" & hora & "')")
+
+            set compromisso = db.execute(sqlCompromisso)
+            if cint(compromisso("total")) > 0 then
+                validarEquipamento = 0
+            else
+                'Equipamento disponivel
+                validarEquipamento = 1
+            end if
+
        end if
    end if
    end if
@@ -757,7 +824,7 @@ end function
 ' valida se o procedimento já ultrapasou o limite mensal
 if getConfig("procedimentosPorMes") = 1 then
     dt = left(mydate(ref("Data")),8)&"%"
-    sql = "SELECT IF(COUNT(a.id) >= p.MaximoNoMes AND p.MaximoNoMes IS NOT NULL, 1, 0)ultimos FROM agendamentos a LEFT JOIN procedimentos p ON p.id = a.TipoCompromissoID WHERE a.Data LIKE '"&dt&"'  AND a.TipoCompromissoID = "&ref("ProcedimentoID")
+    sql = "SELECT IF(COUNT(a.id) >= p.MaximoNoMes AND p.MaximoNoMes IS NOT NULL, 1, 0)ultimos FROM agendamentos a LEFT JOIN procedimentos p ON p.id = a.TipoCompromissoID WHERE a.Data LIKE '"&dt&"'  AND a.TipoCompromissoID = '"&ref("ProcedimentoID")&"'"
     set ultimosAgendamentos = db.execute(sql)
     if ultimosAgendamentos("ultimos") = "1" then
         erro = "Este procedimento já ultrapassou o seu limite para este mês."

@@ -122,6 +122,27 @@
     </li>
     <%
 	end if
+    if recursoAdicional(40) and (aut("solicitacoescompras") = 1 or aut("configcompras") = 1)  then
+    %>
+    <li>
+        <a href="#" class="accordion-toggle">
+            <span class="fa fa-shopping-cart"></span>
+            <span class="sidebar-title"> Compras </span>
+            <span class="caret"></span>
+        </a>
+        <ul class="nav sub-nav">
+            <% if aut("solicitacoescompras") = 1 then %>
+            <li><a href="./?P=solicitacoescompras&Pers=1#/solicitacoes"><i class="fa fa-list"></i> Solicitações</a></li>
+            <li><a href="./?P=solicitacoescompras&Pers=1#/aprovacoes"><i class="fa fa-check-square-o"></i> Aprovação</a></li>
+            <li><a href="./?P=solicitacoescompras&Pers=1#/ordens"><i class="fa fa-paper-plane"></i> Ordem de Compra</a></li>
+            <% end if %>
+            <% if aut("configcompras") = 1 then %>
+            <li><a href="./?P=configcompras&Pers=1"><i class="fa fa-cog"></i> Configurações</a></li>
+            <% end if %>
+        </ul>
+    </li>
+    <%
+    end if
 	if aut("|contasareceber") or aut("caixasusu") then
 	    %>
 	<li <% If req("P")="Caixas" Then %> class="active"<% End If %>>

@@ -362,7 +362,7 @@ function ocultar_campos(id){
 
   a=-1;
 resultados.map((key) => { 
-    console.log(key);
+    // console.log(key);
     a++;
     console.log(a)
 jQuery("#preco\\["+a+"\\]").val(key.preco);

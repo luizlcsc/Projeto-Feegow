@@ -693,30 +693,38 @@ function mesclar(p1, p2){
 	}
 }
 
-<% if getConfig("ExibirProgramasDeSaude") = 1 and PacienteID <> "" then %>
+<% if PacienteID <> "" and (getConfig("ExibirProgramasDeSaude") = 1 or getConfig("ExibirCareTeam") = 1) then %>
 // Chamada Ajax Programa Saúde e Care Team
 $(document).ready(function () {
 
-    $("#block-programas-saude").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
-    function loadProgramasSaude() {
-        getUrl("health-programs/patient-view/<%=PacienteID %>", {}, function(data) {
-            $("#block-programas-saude").html(data);
-        });
-    }
-    loadProgramasSaude();
-
-    // recarrega o box de programas de saúde ao clicar no salvar
-    // para atualizar a regra de programa atrelado ao convênio do paciente
-    $('#Salvar').on('click', function() {
-        if ($("#block-programas-saude").length) {
-            loadProgramasSaude();
+    <% if getConfig("ExibirProgramasDeSaude") = 1 then %>
+        $("#block-programas-saude").show().html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
+        function loadProgramasSaude() {
+            getUrl("health-programs/patient-view/<%=PacienteID %>", {}, function(data) {
+                $("#block-programas-saude").html(data);
+            });
         }
-    });
+        loadProgramasSaude();
 
-    $("#block-care-team").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
-    getUrl("care-team/view/<%=PacienteID %>", {}, function(data) {
-        $("#block-care-team").html(data);
-    });
+        // recarrega o box de programas de saúde ao clicar no salvar
+        // para atualizar a regra de programa atrelado ao convênio do paciente
+        $('#Salvar').on('click', function() {
+            if ($("#block-programas-saude").length) {
+                loadProgramasSaude();
+            }
+        });
+    <% else %>
+        $("#block-programas-saude").hide();
+    <% end if %>
+
+    <% if getConfig("ExibirCareTeam") = 1 then %>
+        $("#block-care-team").show().html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
+        getUrl("care-team/view/<%=PacienteID %>", {}, function(data) {
+            $("#block-care-team").html(data);
+        });
+    <% else %>
+        $("#block-care-team").hide();
+    <% end if %>
 
 });
 <% end if %>

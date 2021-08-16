@@ -1320,7 +1320,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
                 
 								IF FileName = "Home.asp" THEN
-                  if getConfig("HomeOtimizada")="1" or ModoFranquia then
+                  if getConfig("HomeOtimizada")="1" or PorteClinica > 3 then
 								      FileName = "HomeModoFranquia.asp"
                   end if
 								END IF

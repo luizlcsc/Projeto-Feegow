@@ -227,8 +227,12 @@ end function
             '   1. ans / ansTISS
             '   2. Não possui numeroGuiaOperadora
 
+            versaoPadraoEncontrada = false
+            ' versaoPadraoEncontrada se não encontrar nenhuma versão sera usada a versão 3.03.03
+
             c = 0
             if versaoPadrao="2.01.03" then 'mediservice.xml
+                versaoPadraoEncontrada= true
                 for each conta in contas
                     c = c+1
                     'Response.Write conta.xml & "<br />" & vbCrLf
@@ -285,6 +289,7 @@ end function
 
             c = 0
             if versaoPadrao="2.02.03" then 'master1518432620286.xml
+                versaoPadraoEncontrada= true
 
                 for each conta in contas
                     c = c+1
@@ -405,6 +410,7 @@ end function
   
             c = 0
             if versaoPadrao="3.02.00" then '31552269.xml - guias de consulta, 31552272 - guias de sadt
+                versaoPadraoEncontrada= true
                 Set contas = objXML.getElementsByTagName("ans:demonstrativoAnaliseConta")
                 for each conta in contas
                     c = c+1
@@ -464,6 +470,7 @@ end function
 
             c = 0
             if versaoPadrao="3.02.01" then '31552269.xml - guias de consulta, 31552272 - guias de sadt
+                versaoPadraoEncontrada= true
                 Set contas = objXML.getElementsByTagName("ans:demonstrativoAnaliseConta")
                 for each conta in contas
                     c = c+1
@@ -519,7 +526,57 @@ end function
             end if
 
             c = 0
-            if versaoPadrao="3.03.02" or versaoPadrao="3.03.03" then '36048832 - guia do novo pasta
+            if versaoPadrao="3.03.01" then '36048832 - guia do novo pasta
+                versaoPadraoEncontrada= true
+                Set contas = objXML.getElementsByTagName("ans:demonstrativoAnaliseConta")
+                for each conta in contas
+                    c = c+1
+                    Response.Write conta.xml & "<br />" & vbCrLf
+                    '***Add the following:
+                    Set lotes = conta.getElementsByTagName("ans:dadosProtocolo")
+                    For Each lote in lotes
+                        numeroLote = lote.getElementsByTagName("ans:numeroLotePrestador")(0).text
+
+
+                        'response.write("numeroLote: "& numeroLote &"<br>")
+                        Set guias = lote.getElementsByTagName("ans:relacaoGuias")
+                        For Each guia in guias
+                            numeroGuiaPrestador = guia.getElementsByTagName("ans:numeroGuiaPrestador")(0).text
+                            numeroCarteira = guia.getElementsByTagName("ans:numeroCarteira")(0).text
+                            valorInformadoGuia = guia.getElementsByTagName("ans:valorInformadoGuia")(0).text
+                            valorLiberadoGuia = guia.getElementsByTagName("ans:valorLiberadoGuia")(0).text
+                            'valorGlosaGuia = guia.getElementsByTagName("ans:valorGlosaGuia")(0).text
+
+                            response.Write( strGuia(ConvenioID, numeroCarteira, valorInformadoGuia, valorLiberadoGuia, valorGlosaGuia, numeroGuiaPrestador) )
+                            'response.Write("---> numeroCarteira: "& numeroCarteira &"<br>")
+                            'response.Write("---> valorProcessadoGuia: "& valorProcessadoGuia &"<br>")
+                            'response.Write("---> valorLiberadoGuia: "& valorLiberadoGuia &"<br>")
+                            'response.Write("---> valorGlosaGuia: "& valorGlosaGuia &"<br>")
+
+                            sql = "select * from (select id, 'tissguiaconsulta' Tabela, ifnull(ValorPago, 0) ValorPago from tissguiaconsulta where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
+                                  " UNION ALL select id, 'tissguiasadt', ifnull(ValorPago, 0) from tissguiasadt where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
+                                  " UNION ALL select id, 'tissguiahonorarios', ifnull(ValorPago, 0) from tissguiahonorarios where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
+                                  " ) t"
+
+                            set pguias = db.execute( sql )
+
+                            set procs = guia.getElementsByTagName("ans:detalhesGuia")
+                            for each proc in procs
+                                codigo = proc.getElementsByTagName("ans:codigoProcedimento")(0).text
+                                tipoTabela = proc.getElementsByTagName("ans:codigoTabela")(0).text
+                                valorProcessado = proc.getElementsByTagName("ans:valorProcessado")(0).text
+                                valorLiberado = proc.getElementsByTagName("ans:valorLiberado")(0).text
+                                'grauParticipacao = proc.getElementsByTagName("ans:grauParticipacao")(0).text
+                                'response.write("------> Código: "& codigo &" - Tabela: "& tipoTabela & " - Val. Proc.: " & valorProcessado & " - Val. Lib.: " & valorLiberado & " - Grau Part.:" & grauParticipacao &"<br>")
+                            next
+                        Next
+                    Next
+                next
+            end if
+            c = 0
+
+            if versaoPadrao="3.03.02" or versaoPadrao="3.03.03"  or versaoPadraoEncontrada= false then '36048832 - guia do novo pasta 
+                versaoPadraoEncontrada= true
                 Set contas = objXML.getElementsByTagName("ans:demonstrativoAnaliseConta")
                 for each conta in contas
                     c = c+1
@@ -566,55 +623,6 @@ end function
                                     END IF
 
                                 END IF
-                            next
-                        Next
-                    Next
-                next
-            end if
-
-
-            c = 0
-            if versaoPadrao="3.03.01" then '36048832 - guia do novo pasta
-                Set contas = objXML.getElementsByTagName("ans:demonstrativoAnaliseConta")
-                for each conta in contas
-                    c = c+1
-                    Response.Write conta.xml & "<br />" & vbCrLf
-                    '***Add the following:
-                    Set lotes = conta.getElementsByTagName("ans:dadosProtocolo")
-                    For Each lote in lotes
-                        numeroLote = lote.getElementsByTagName("ans:numeroLotePrestador")(0).text
-
-
-                        'response.write("numeroLote: "& numeroLote &"<br>")
-                        Set guias = lote.getElementsByTagName("ans:relacaoGuias")
-                        For Each guia in guias
-                            numeroGuiaPrestador = guia.getElementsByTagName("ans:numeroGuiaPrestador")(0).text
-                            numeroCarteira = guia.getElementsByTagName("ans:numeroCarteira")(0).text
-                            valorInformadoGuia = guia.getElementsByTagName("ans:valorInformadoGuia")(0).text
-                            valorLiberadoGuia = guia.getElementsByTagName("ans:valorLiberadoGuia")(0).text
-                            'valorGlosaGuia = guia.getElementsByTagName("ans:valorGlosaGuia")(0).text
-
-                            response.Write( strGuia(ConvenioID, numeroCarteira, valorInformadoGuia, valorLiberadoGuia, valorGlosaGuia, numeroGuiaPrestador) )
-                            'response.Write("---> numeroCarteira: "& numeroCarteira &"<br>")
-                            'response.Write("---> valorProcessadoGuia: "& valorProcessadoGuia &"<br>")
-                            'response.Write("---> valorLiberadoGuia: "& valorLiberadoGuia &"<br>")
-                            'response.Write("---> valorGlosaGuia: "& valorGlosaGuia &"<br>")
-
-                            sql = "select * from (select id, 'tissguiaconsulta' Tabela, ifnull(ValorPago, 0) ValorPago from tissguiaconsulta where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
-                                  " UNION ALL select id, 'tissguiasadt', ifnull(ValorPago, 0) from tissguiasadt where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
-                                  " UNION ALL select id, 'tissguiahonorarios', ifnull(ValorPago, 0) from tissguiahonorarios where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
-                                  " ) t"
-
-                            set pguias = db.execute( sql )
-
-                            set procs = guia.getElementsByTagName("ans:detalhesGuia")
-                            for each proc in procs
-                                codigo = proc.getElementsByTagName("ans:codigoProcedimento")(0).text
-                                tipoTabela = proc.getElementsByTagName("ans:codigoTabela")(0).text
-                                valorProcessado = proc.getElementsByTagName("ans:valorProcessado")(0).text
-                                valorLiberado = proc.getElementsByTagName("ans:valorLiberado")(0).text
-                                'grauParticipacao = proc.getElementsByTagName("ans:grauParticipacao")(0).text
-                                'response.write("------> Código: "& codigo &" - Tabela: "& tipoTabela & " - Val. Proc.: " & valorProcessado & " - Val. Lib.: " & valorLiberado & " - Grau Part.:" & grauParticipacao &"<br>")
                             next
                         Next
                     Next

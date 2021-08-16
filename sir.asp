@@ -85,7 +85,6 @@ if aut(lcase(ref("resource"))&"A")=1 then
     	    'sql = "select id, NomePaciente, Nascimento from pacientes where (((NomePaciente) like '"&ref("q")&"%' ) and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" order by (case when NomePaciente like '"&ref("q")&"%' then 1 else 2 end) , NomePaciente limit "& page*30 &", 30"
     	    sqlAlternativo = "select id, NomePaciente, Nascimento from pacientes where ((SOUNDEX(LEFT(NomePaciente, LENGTH('"&ref("q")&"'))) = SOUNDEX('"&ref("q")&"') ) and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" order by (case when NomePaciente like '"&ref("q")&"%' then 1 else 2 end) , NomePaciente limit "& page*30 &", 30"
         end if
-        dd(sql)
 	    'campoSuperior???
 	    ResourceID = 1
 	    initialOrder = "NomePaciente"
@@ -316,7 +315,7 @@ end if
     set q = db.execute(sql)
 
     if q.eof and sqlAlternativo<>"" then
-        IF not ModoFranquia then
+        IF PorteClinica <= 3 then
             set q = db.execute(sqlAlternativo)
         END IF
     end if

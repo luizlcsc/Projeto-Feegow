@@ -20,8 +20,10 @@ while not rec.eof
             while not rr.eof
                 set vca = db.execute("select ItemInvoiceID, ItemDescontadoID from rateiorateios where ItemInvoiceID="& rr("ItemInvoiceID") &" and ItemDescontadoID="& rr("ItemDescontadoID") &" and ( not isnull(ItemContaAPagar) or not isnull(ItemContaAReceber) or not isnull(CreditoID) )")
                 if vca.eof then
-                    db_execute("delete r from recibos r  inner join rateiorateios rat on r.RepasseIDS LIKE CONCAT('%|',rat.id,'|%') where ItemInvoiceID="& rr("ItemInvoiceID") &" and ItemDescontadoID="& rr("ItemDescontadoID"))
-                    db_execute("delete from recibos WHERE InvoiceID="&ItemID&" AND RepasseIDS=''")
+                    if False then
+                        db_execute("delete r from recibos r  inner join rateiorateios rat on r.RepasseIDS LIKE CONCAT('%|',rat.id,'|%') where ItemInvoiceID="& rr("ItemInvoiceID") &" and ItemDescontadoID="& rr("ItemDescontadoID"))
+                        db_execute("delete from recibos WHERE InvoiceID="&ItemID&" AND RepasseIDS=''")
+                    end if
 
                     db_execute("delete from rateiorateios where ItemInvoiceID="& rr("ItemInvoiceID") &" and ItemDescontadoID="& rr("ItemDescontadoID"))
                 end if

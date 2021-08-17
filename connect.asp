@@ -14,8 +14,13 @@ set db = newConnection(session("Banco"), sServidor)
 LicenseID=replace(session("Banco"), "clinic", "")
 PorteClinica = session("PorteClinica") 
 
-if not isnumeric(PorteClinica) then
-    PorteClinica = 0
+if PorteClinica="" then
+    set LicencaSQL = db.execute("select COALESCE(PorteClinica,-1) PorteClinica FROM cliniccentral.licencas WHERE id="&treatvalzero(LicenseId))
+    if not LicencaSQL.eof then
+        PorteClinica = LicencaSQL("PorteClinica")
+        session("PorteClinica")=PorteClinica
+        PorteClinica = PorteClinica
+    end if
 end if
 
 function permissoesPadrao()

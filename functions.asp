@@ -8,50 +8,22 @@ End Function
 
 function clear_ref_req (val)
         tentativa = false
-        if instr(UCase(val)," AND ") OR instr(UCase(val)," OR ") OR instr(UCase(val)," SELECT ") OR instr(UCase(val)," FROM ") OR instr(UCase(val)," GROUP BY ") OR instr(UCase(val)," CONCAT ") OR instr(UCase(val)," CONCAT_WS") OR instr(UCase(val)," DELETE ") OR instr(UCase(val)," UNION ") OR instr(UCase(val)," JOIN ") OR instr(UCase(val),"CONCAT") OR instr(UCase(val),"UPDATEXML") OR instr(UCase(val),"'") OR instr(UCase(val),"\") OR instr(UCase(val),"<script>") OR instr(UCase(val),"</script>") OR instr(UCase(val),"&lt;") OR instr(UCase(val),"&gt;") OR instr(UCase(val),"&quot;") OR instr(UCase(val),"&#x27;") OR instr(UCase(val),"&#x22;") OR instr(UCase(val),"&#x7c;") OR instr(UCase(val),"(ELT") OR instr(UCase(val),";") OR instr(UCase(val),"drop") OR instr(UCase(val),"table") OR instr(UCase(val),"--") OR instr(UCase(val),"%") OR instr(UCase(val),"EXECUTE") OR instr(UCase(val),"EXEC") OR instr(UCase(val),"EVAL") OR instr(UCase(val),"WHERE") OR instr(UCase(val),"SP_EXECUTESQL") OR instr(UCase(val),"UPDATE")then
-            val = replace(val, "'", "''")
-            val = replace(val,"\", "\\")
-            val = replace(val,"<script>", "")
-            val = replace(val,"</script>", "")
-            val = replace(val,"&lt;", "")
-            val = replace(val,"&gt;", "")
-            val = replace(val,"&quot;", "")
-            val = replace(val,"&#x27;", "")
-            val = replace(val,"&#x22;", "")
-            val = replace(val,"&#x7c;", "")
-            val = replace(val," AND ", "")
-            val = replace(val," OR ", "")
-            val = replace(val,"GROUP BY", "")
-            val = replace(val,"CONCAT", "")
-            val = replace(val,"CONCAT_WS", "")
-            val = replace(val,"DELETE", "")
-            val = replace(val," UNION ", "")
-            val = replace(val,"JOIN", "")
-            val = replace(val,"SELECT", "")
-            val = replace(val,"CONCAT", "")
-            val = replace(val,"UPDATEXML", "")
-            val = replace(val,";", "")
-            val = replace(val,"DROP", "")
-            val = replace(val,"TABLE", "")
-            val = replace(val,"--", "")
-            val = replace(val,"%", "")
-            val = replace(val,"EXECUTE", "")
-            val = replace(val,"EXEC", "")
-            val = replace(val,"EVAL", "")
-            val = replace(val,"WHERE", "")
-            val = replace(val,"SP_EXECUTESQL", "")
-            val = replace(val,"UPDATE", "")
-            tentativa = true
-        end if 
+    
+        val = replace(val, "'", "''")
+        val = replace(val,"\", "\\")
+        val = replace(val,"<script>", "")
+        val = replace(val,"</script>", "")
+        val = replace(val,"&lt;", "")
+        val = replace(val,"&gt;", "")
+        val = replace(val,"&quot;", "")
+        val = replace(val,"&#x27;", "")
+        val = replace(val,"&#x22;", "")
+        val = replace(val,"&#x7c;", "")
         
-        if tentativa then 
-            injection()
-        end if
         clear_ref_req = val
 end function 
 
 function ref(ColVal)
-
     val = request.Form(ColVal)
     val = strip_tags(val)
 

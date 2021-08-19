@@ -12,6 +12,7 @@ end if
 set shellExec = createobject("WScript.Shell")
 Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
+WootricToken = objSystemVariables("FC_WOOTRIC_TOKEN")
 
 
 
@@ -268,7 +269,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       email: '<%=session("Email")%>', // TODO: Required to uniquely identify a user. Email is recommended but this can be any unique identifier.
       external_id: "<%=session("User")%>", // TODO: Reference field for external integrations only. Send it along with email. OPTIONAL
       created_at: dataCadastro, // TODO: The current logged in user's sign-up date as a 10 digit Unix timestamp in seconds. OPTIONAL
-      account_token: 'NPS-06aa5f7d' // This is your unique account token.
+      account_token: WootricToken // This is your unique account token.
     };
   </script>
 

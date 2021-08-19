@@ -710,7 +710,7 @@ function getProgramasOptions(ProfissionalID, PacienteID, ConvenioID, ProgramaID)
         sqlProgramas = sqlProgramas & " AND pap.PacienteID = '" & PacienteID & "' AND pap.sysActive = 1 "
     end if
 
-    if ConvenioID <> "" and ConvenioID <> 0 then
+    if ConvenioID&"" <> "" and ConvenioID&"" <> "0" then
         sqlProgramas = sqlProgramas & " AND (p.ConvenioID IS NULL OR p.ConvenioID = '" & ConvenioID & "') "
     end if
 

@@ -461,7 +461,7 @@ end if
                     {
                         var gradeId = $(this).data("grade");
 
-                        $(this).replaceWith('<%= conteudo %>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                        $(this).replaceWith(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
                         return false;
                     }
                     else if ( $(this).attr("id")>'<%=HoraComp%>' )

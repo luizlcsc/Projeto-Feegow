@@ -249,10 +249,17 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.all.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script type="text/javascript" src="https://cdn.wootric.com/wootric-sdk.js"></script>
   
   <!-- begin Wootric code -->
   <script type="text/javascript">   
-    let dataCadastro = <% if session("DataCadastro")<>"" then response.write(session("DataCadastro")) else response.write("null") end if %>; 
+    let dataCadastro = <% if session("DataCadastro")<>"" then response.write(session("DataCadastro")) else response.write("null") end if %>;
+    
+    const token = "<%=WootricToken%>";
+
+    if (token == null) {
+      console.error("account_token está vazio!");
+    }
 
     // window.wootric_survey_immediately = true; // Shows survey immediately for testing purposes. TODO: Comment out for production.
 
@@ -269,13 +276,9 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       email: '<%=session("Email")%>', // TODO: Required to uniquely identify a user. Email is recommended but this can be any unique identifier.
       external_id: "<%=session("User")%>", // TODO: Reference field for external integrations only. Send it along with email. OPTIONAL
       created_at: dataCadastro, // TODO: The current logged in user's sign-up date as a 10 digit Unix timestamp in seconds. OPTIONAL
-      account_token: WootricToken // This is your unique account token.
+      account_token: token // This is your unique account token.
     };
-  </script>
 
-  <script type="text/javascript" src="https://cdn.wootric.com/wootric-sdk.js"></script>
-  <script type="text/javascript">
-    // This loads the Wootric survey
     window.wootric('run');
   </script>
   <!-- end Wootric code -->

@@ -2,6 +2,7 @@
 <%
 Acao = req("Acao")
 Tipo = req("T")
+CriaInvoice = req("CriaInvoice")
 
 function gerarcar(loteid,ConvenioID,tipoguiais,valortotal)
     Lotes = loteid
@@ -137,7 +138,7 @@ if Acao="Inserir" then
 		    loteSql = "update "&tabela&" set LoteID="&pult("id")&" where id="&spl(i)
 			db_execute(loteSql)
 		next
-		if getConfig("FechamentoLoteCR") = "1" then
+		if CriaInvoice = "1" then
             if Tipo="GuiaConsulta" then
                 set valorProc = db.execute("select sum(ValorProcedimento) Valor, ProcedimentoID  from tissguiaconsulta t where LoteID = "&pult("id")&"")
             elseif Tipo="GuiaSADT" then
@@ -156,7 +157,7 @@ if Acao="Inserir" then
                 end if
         end if
 
-        if getconfig("FechamentoLoteCR") = 1 then
+        if CriaInvoice = "1" then
             call gerarcar(pult("id"),request.QueryString("ConvenioID"),lcase(Tipo),valorProc("Valor"))
         end if 
 

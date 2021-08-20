@@ -96,7 +96,15 @@ end if
         </div>
     </div>
 <div class="modal-footer">
-	<button class="btn btn-success btn-sm"><i class="fa fa-save"></i> Fechar este Lote de Guias</button>
+	<div class="btn-group">
+		<button class="btn btn-success btn-sm"><i class="fa fa-save"></i> Fechar este Lote de Guias</button>
+		<button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" role="menu">
+			<li><a href="#" onclick="" id="LancaConta"><i class="fa fa-plus"></i>Fechar Lote e Lançar no Contas a Receber</a></li>
+		</ul>
+	</div>
     <button class="btn btn-sm btn-default" data-dismiss="modal">
     	<i class="fa fa-remove"></i> Cancelar</button>
     </button>
@@ -108,6 +116,18 @@ $("#frmModal").submit(function(){
 	$.ajax({
 		   type:"POST",
 		   url:"saveLote.asp?Acao=Inserir&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>",
+		   data:$("#frmModal, #guias").serialize(),
+		   success:function(data){
+			   eval(data);
+		   }
+		   });
+	return false;
+});
+
+$("#LancaConta").click(function(){
+	$.ajax({
+		   type:"POST",
+		   url:"saveLote.asp?Acao=Inserir&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>&CriaInvoice=1",
 		   data:$("#frmModal, #guias").serialize(),
 		   success:function(data){
 			   eval(data);

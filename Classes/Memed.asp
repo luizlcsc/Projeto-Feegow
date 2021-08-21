@@ -85,12 +85,18 @@
                 memedInitialized = true;
 
                 MdHub.event.add('prescricaoSalva', function(id) {
+                    console.info('[INTEGRACAO MEMED] Evento: prescricaoSalva', id);
                     savePrescricaoMemed(id);
                 });
                 MdHub.event.add('prescricaoImpressa', function(data) {
+                    console.info('[INTEGRACAO MEMED] Evento: prescricaoImpressa', data);
                     setTimeout(function() {
                         savePrescricaoMemed(data.prescricao.id);
                     }, 500);
+                });
+                MdHub.event.add('prescricaoExcluida', function(idPrescricao) {
+                    console.info('[INTEGRACAO MEMED] Evento: prescricaoExcluida', idPrescricao);
+                    deletePrescricaoMemedExcluida(idPrescricao);
                 });
 
                 console.info('[INTEGRACAO MEMED] Inicializada com sucesso.');
@@ -98,6 +104,10 @@
                     memedOpenAfterInit();
                 }
             }
+        });
+
+        window.addEventListener("beforeunload", function (event) {
+            MdHub.command.send('plataforma.sdk', 'logout');
         });
     }
 
@@ -216,6 +226,13 @@
             setTimeout(function() {
                 MdHub.command.send('plataforma.prescricao', 'viewPrescription', id);
             }, 500);
+        });
+    }
+
+    function deletePrescricaoMemedExcluida(id) {
+        const tipo = memedTipo === 'exame' ? 'Pedido' : 'Prescricao';
+        postUrl('prescription/memedv2/delete-prescription', {deletedMemedId: id}, function () {
+            pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|${tipo}|`);
         });
     }
 

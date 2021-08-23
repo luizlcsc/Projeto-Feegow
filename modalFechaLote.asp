@@ -95,6 +95,7 @@ end if
 
         </div>
     </div>
+
 <div class="modal-footer">
 	<div class="btn-group">
 		<button class="btn btn-success btn-sm"><i class="fa fa-save"></i> Fechar este Lote de Guias</button>
@@ -103,7 +104,28 @@ end if
 		</button>
 		<ul class="dropdown-menu" role="menu">
 			<li><a href="#" onclick="" id="LancaConta"><i class="fa fa-plus"></i>Fechar Lote e Lançar no Contas a Receber</a></li>
+			<%
+			set g = db.execute("select count(id) Qtd, sum(TotalGeral) Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
+
+			if not g.eof then
+				sqlcontas = " SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total "&_
+										" FROM sys_financialinvoices conta "&_
+										" LEFT JOIN itensinvoice ON itensinvoice.InvoiceID = conta.id "&_
+										" WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 180 DAY)"
+				' response.write(sqlcontas)
+				set ContasSQL = db.execute(sqlcontas)
+			end if
+			while not ContasSQL.eof
+			%>
+					<li><a href="#" onclick="javascript:geraInvoice('<%=req("T")%>', '<%=fn(g("Total"))%>', '<%=ContasSQL("id")%>')"><i class="fa fa-plus"></i> Adicionar a conta: <%=ContasSQL("Descricao")%></a></li>
+			<%
+				ContasSQL.movenext
+				wend
+				ContasSQL.close
+				set ContasSQL=nothing
+			%>
 		</ul>
+	
 	</div>
     <button class="btn btn-sm btn-default" data-dismiss="modal">
     	<i class="fa fa-remove"></i> Cancelar</button>

@@ -1618,60 +1618,7 @@ function repeteAgendamento(ConsultaID){
 setInterval(function(){abasAux()}, 3000);
 
 function atualizaHoraAtual(){
-    let time = '<%=HorarioAgora%>'
-    time = new Date(time);
-    var M = time.getMinutes();
-    var H = time.getHours();
-    <%
-    getTimeZoneSQL = "select FusoHorario from vw_unidades where sysActive = 1 and id = '"&session("UnidadeID")&"'"
-    set timeZoneUnidade = db.execute(getTimeZoneSQL)
-    timeZoneUnidadeResult = ""
-    if not timeZoneUnidade.eof then
-        timeZoneUnidadeResult = timeZoneUnidade("FusoHorario")&""
-    end if
-    
-    if timeZoneUnidadeResult = "" then 
-        timeZoneUnidadeResult = "-3"
-    end if
-    if timeZoneUnidadeResult = "" then 
-        timeZoneUnidadeResult = "-3"
-    end if
-    %>
-    var timeZoneUnidadeResult = <%=timeZoneUnidadeResult%>;
-
-    if (timeZoneUnidadeResult !== -3){
-        var tempo = new Date().toLocaleString("pt-br", {timeZone: "America/Sao_Paulo"});
-        H = Number(tempo.split(" ")[1].split(":")[0]);
-        M = Number(tempo.split(" ")[1].split(":")[1]);
-
-        H = H + (timeZoneUnidadeResult +3)
-
-        // console.log(H);
-    }
-
-    <%
-    if HorarioVerao="" then
-    %>
-        if(H=="0"){
-            H = "23";
-        }
-        else{
-            H = H - 1;
-        }
-
-    <%
-    end if
-    %>
-    if(M <= 9){
-        M = "0"+M;
-    }
-    if(H <= 9){
-        H = "0"+H;
-    }
-
-
-    var horaAtual = H + ":" + M;
-
+    let horaAtual = '<%=formatdatetime(getClientDataHora(UnidadeID),4)%>';
     $("#Chegada").val(horaAtual);
 }
 

@@ -2,7 +2,6 @@
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/SendApiRest.asp"-->
 <%
-
 function addToQueue(eventId, body, EndPoint)
     LicencaID=replace(session("Banco"), "clinic","")
     set EndpointSQL = dbc.execute("SELECT e.id FROM cliniccentral.webhook_eventos ev INNER JOIN cliniccentral.webhook_endpoints e ON e.EventoID=ev.id WHERE ev.Ativo='S' AND ev.id="&eventId&" AND e.LicencaID="&LicencaID)
@@ -20,7 +19,8 @@ function addToQueue(eventId, body, EndPoint)
                 body = "{ ""id"": "&body&" }"
                 data = "{""event_id"": "&eventId&", ""webhook_body"": "&body&" }"
             end if
-            CALL sendWebAPI(EndPoint, data, "POST", false, Token) 
+            
+            CALL sendWebAPI(EndPoint, data, "POST", true, Token) 
 
             '*** <MÉTODO ANTIGO> ***'
 
@@ -33,7 +33,6 @@ function addToQueue(eventId, body, EndPoint)
             'postResponse = httpRequest.ResponseText
 
             '*** </MÉTODO ANTIGO> ***'
-
 
         end if
     end if

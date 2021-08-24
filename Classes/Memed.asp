@@ -1,13 +1,5 @@
 <!--#include file="Environment.asp"-->
-<%
-'if getEnv("FC_APP_ENV","local")="production" then
-'    dominioMemed = "memed.com.br"
-'    dominioApiMemed = "api.memed.com.br"
-'else
-    dominioMemed = "sandbox.memed.com.br"
-    dominioApiMemed = "sandbox.api.memed.com.br"
-'end if
-%>
+
 <script>
     var memedLoading       = false;
     var memedInitialized   = false;
@@ -46,7 +38,12 @@
                                 type: 'danger'
                             });
                         } else if (response.status === 403) {
-                            openComponentsModal("prescription/memedv2/register", { professionalId: <%=session("idInTable")%>, modal: true}, "Cadastro Memed", false);
+                            openComponentsModal("prescription/memedv2/register", {
+                                professionalId: "<%=session("idInTable")%>",
+                                unidadeId: "<%=session("UnidadeID")%>",
+                                modal: true,
+
+                            }, "Cadastro Memed", false);
                         } else {
                             new PNotify({
                                 title: 'Serviço indisponível.',
@@ -65,13 +62,17 @@
     initMemed();
 
     function initScriptMemed(data) {
+        if (!data || !data.token || !data.domain) {
+            return;
+        }
+
         memedLoading = true;
         const script = document.createElement('script');
         script.setAttribute('id', 'script-memed');
         script.setAttribute('type', 'text/javascript');
         script.setAttribute('data-color', '#217dbb');
         script.setAttribute('data-token', data.token);
-        script.src = 'https://<%=dominioMemed%>/modulos/plataforma.sinapse-prescricao/build/sinapse-prescricao.min.js';
+        script.src = `https://${data.domain}/modulos/plataforma.sinapse-prescricao/build/sinapse-prescricao.min.js`;
         script.onload = function() {
             initEventsMemed(data.workplace);
         };
@@ -140,10 +141,8 @@
             MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {...features, ...{
                 removePatient: false,
                 deletePatient: false,
-                editPatient: false,
                 removePrescription: false,
                 historyPrescription: false,
-                copyMedicalRecords: false,
                 showProtocol: false,
             }}),
             MdHub.command.send('plataforma.prescricao', 'setAdditionalData', {
@@ -158,21 +157,28 @@
     }
 
     function setPacienteMemed() {
-        const nome = $("#NomePaciente").val();
-        const endereco = $("#Endereco").val();
-        const numero = $("#Numero").val() ? " "+$("#Numero").val() : "";
-        const estado = $("#Estado").val() ? " "+$("#Estado").val() : "";
-        const cidade = $("#Cidade").val()+estado;
-        const telefone = $("#Cel1").val().replace("-","").replace("(","").replace(")","").replace(" ","");
+        const nome         = $("#NomePaciente").val();
+        const endereco     = $("#Endereco").val();
+        const numero       = $("#Numero").val() ? " "+$("#Numero").val() : "";
+        const estado       = $("#Estado").val() ? " "+$("#Estado").val() : "";
+        const cidade       = $("#Cidade").val()+estado;
+        const telefone     = $("#Cel1").val() ? $("#Cel1").val().replace(/\D/g,'') : ($("#Cel2").val() ? $("#Cel2").val().replace(/\D/g,'') : null);
         const fullEndereco = endereco+numero;
+        const nomeSocial   = $('#NomeSocial').val() || null;
+        const peso         = $('#Peso').val()   ? parseFloat($('#Peso').val().replace('.', '').replace(',', '.')) : null;
+        const altura       = $('#Altura').val() ? parseFloat($('#Altura').val().replace('.', '').replace(',', '.')) : null;
 
-        return MdHub.command.send('plataforma.prescricao', 'setPaciente', {
+        const dadosPaciente = {
             nome: nome,
+            nome_social: nomeSocial,
             telefone: telefone,
             endereco: fullEndereco,
             cidade: cidade,
+            peso: peso,
+            altura: altura,
             idExterno:'<%=session("Banco")%>' +  '-' + '<%=req("I")%>'
-        });
+        };
+        return MdHub.command.send('plataforma.prescricao', 'setPaciente', dadosPaciente);
     }
 
     function prescricaoMemed() {

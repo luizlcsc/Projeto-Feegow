@@ -31,7 +31,9 @@
         }
         memedLoading = true;
 
-        getUrl('prescription/memedv2/init', {},
+        getUrl('prescription/memedv2/init', {
+            unidadeId: "<%=session("UnidadeID")%>"
+        },
             function (response) {
 
                 if (response.success !== true) {
@@ -56,33 +58,37 @@
                     return;
                 }
 
-                initScriptMemed(response.token);
+                initScriptMemed(response.data);
             }
         );
     }
     initMemed();
 
-    function initScriptMemed(token) {
+    function initScriptMemed(data) {
         memedLoading = true;
         const script = document.createElement('script');
         script.setAttribute('id', 'script-memed');
         script.setAttribute('type', 'text/javascript');
         script.setAttribute('data-color', '#217dbb');
-        script.setAttribute('data-token', token);
+        script.setAttribute('data-token', data.token);
         script.src = 'https://<%=dominioMemed%>/modulos/plataforma.sinapse-prescricao/build/sinapse-prescricao.min.js';
         script.onload = function() {
-            initEventsMemed();
+            initEventsMemed(data.workplace);
         };
-        memedToken = token;
+        memedToken = data.token;
         document.body.appendChild(script);
         console.info('[INTEGRACAO MEMED] Script injetado com sucesso.');
     }
 
-    function initEventsMemed() {
+    function initEventsMemed(workplace) {
         MdSinapsePrescricao.event.add('core:moduleInit', function moduleInitHandler(module) {
             if (module.name === 'plataforma.prescricao') {
                 memedLoading     = false;
                 memedInitialized = true;
+
+                if (workplace) {
+                    MdHub.command.send('plataforma.prescricao', 'setWorkplace', workplace);
+                }
 
                 MdHub.event.add('prescricaoSalva', function(id) {
                     console.info('[INTEGRACAO MEMED] Evento: prescricaoSalva', id);
@@ -144,6 +150,9 @@
                 licenseId: <%=replace(session("Banco"), "clinic","")%>,
                 numeroProntuario: '<%=session("Banco")%>' +  '-' + '<%=req("I")%>',
                 tipo: memedTipo,
+            }),
+            MdHub.command.send('plataforma.sdk', 'find', {
+              resource: 'opcoes-receituario/ativar/1' ,
             })
         ]);
     }

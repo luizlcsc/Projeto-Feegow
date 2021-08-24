@@ -418,6 +418,8 @@ if not getResource.EOF then
         <%
         Response.End
     else
+        logsJsonActive = True
+        
         if TypeName(valorAntigo)<>"Empty" then
             if not valorAntigo.eof then
                 if valorAntigo("sysActive")=0 then

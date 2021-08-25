@@ -29,8 +29,9 @@ if session("banco")<>"" then
 		session("Banco")="clinic"&req("LicID")
 
 
-		set LicencaSQL = db.execute("SELECT Servidor FROM cliniccentral.licencas WHERE id = "&req("LicID"))
+		set LicencaSQL = db.execute("SELECT Servidor, PorteClinica FROM cliniccentral.licencas WHERE id = "&req("LicID"))
 		if not LicencaSQL.eof then
+		    session("PorteClinica")= LicencaSQL("PorteClinica")
 		    session("Servidor")= LicencaSQL("Servidor")
 		end if
 'response.write( LicencaSQL("Servidor") )

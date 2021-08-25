@@ -379,7 +379,12 @@ if not getResource.EOF then
 	    end if
 
 		if getFields("fieldTypeID")<>17 then
-			sqlFields = sqlFields&", `"&getFields("columnName")&"`="&sqlValue
+            'TRATA UPDATE NO CPF
+            if getFields("columnName")="CPF" or getFields("columnName")="CNPJ" then
+                sqlFields = sqlFields&", `"&getFields("columnName")&"`="&RemoveCaracters(sqlValue,".-/ ")
+            else
+                sqlFields = sqlFields&", `"&getFields("columnName")&"`="&sqlValue
+            end if
 			columnsCompare = columnsCompare&"|"&getFields("columnName")&"|"
 		end if
 		if instr(inputsCompare, "|"&getFields("columnName")&"|")=0 then

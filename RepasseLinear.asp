@@ -37,7 +37,7 @@ end if
         <span class="panel-title"><i class="fa fa-filter"></i> Filtrar Funil de Regra</span>
         <span class="panel-controls">
             <button type="button" onclick="HistoricoAlteracoes()" class="btn btn-default btn-sm" title="Histórico de alterações"><i class="fa fa-history"></i> </button>
-            <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filtrar</button>
+            <!-- <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filtrar</button> -->
         </span>
     </div>
     <div class="panel-body">
@@ -72,7 +72,7 @@ end if
 
                 <%= quickfield("simpleSelect", "Procedimentos", "Procedimento", 2, "", "select id, NomeProcedimento from procedimentos where sysActive=1 and ativo='on' order by NomeProcedimento", "NomeProcedimento", " empty ") %>
 
-                <%= quickfield("simpleSelect", "Unidades", "Unidade", 2, "", "select id, NomeFantasia from empresa UNION ALL select id, NomeFantasia from sys_financialcompanyunits where sysActive=1", "NomeFantasia", " empty ") %>
+                <%= quickfield("simpleSelect", "Unidades", "Unidade", 2, "", "select '0' id, NomeFantasia from empresa UNION ALL select id, NomeFantasia from sys_financialcompanyunits where sysActive=1", "NomeFantasia", " empty ") %>
 
             </div>
         </form>
@@ -180,6 +180,8 @@ function removeDominio(I){
 }
 
     $("#filtroRepasse").change(function () {
+        $("#divFRMrl").html("<i class='fa fa-spinner fa-spin orange bigger-125'></i> Carregando")
+        
         $.post("frmRL.asp", $(this).serialize(), function (data) {
             $("#divFRMrl").html(data)
         });

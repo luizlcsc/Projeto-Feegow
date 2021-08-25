@@ -5697,7 +5697,6 @@ function getConfAO(NomeConfig)
     getConfAO = vca("Val")
 end function
 
-
 function getClientDataHora(UnidadeID)
             
     HorarioVerao = ""
@@ -5716,6 +5715,16 @@ function getClientDataHora(UnidadeID)
     end if
 
     getClientDataHora = dateadd("h",FusoHorario + 3, now())
+end function
 
+function convertSimbolosHexadecimal(Texto)
+    Texto = replace(Texto, "►", "&#9658;")
+    Texto = replace(Texto, "→", "&#x279e;")
+    Texto = replace(Texto, "⇒", "&#8658;")
+    Texto = replace(Texto, "⇔", "&#8660;")
+    Texto = replace(Texto, "♦", "&#x2b27;")
+    Texto = replace(Texto, "≈", "&#8776;")
+
+    convertSimbolosHexadecimal = Texto
 end function
 %>

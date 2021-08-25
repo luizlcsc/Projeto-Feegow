@@ -70,9 +70,9 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
         id2 = id
 
         if Novo then
-            call addToQueue(116, id2)
+            call addToQueue(116, id2, "")
         else
-            call addToQueue(117, id2)
+            call addToQueue(117, id2, "")
         end if
 
         '--->Verificar CPF duplicado
@@ -138,26 +138,32 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
             end if
         end if
 
-        '--->campos obrigatorios
+        
 
-        'set CamposObrigatoriosSQL = db.execute("SELECT Obrigar FROM obrigacampos WHERE Recurso='pacientes'")
-        'if not CamposObrigatoriosSQL.eof then
-        '    while not CamposObrigatoriosSQL.eof
-        '        CamposObrigatorios = split(CamposObrigatoriosSQL("Obrigar"),", ")
-        '        for ico=0 to ubound(CamposObrigatorios)
-        '            CampoObrigatorio = replace(CamposObrigatorios(ico),"|","")
-        '            if ref(CampoObrigatorio)="" or ref(CampoObrigatorio)="0" then
-        '                erro="Campo <strong>"&CampoObrigatorio&"</strong> obrigatório."
-        '
+        '<Aciona webhook de sincronização com SalesForce>
+        if recursoAdicional(45) = 4 then
+            'ID padrão no cliniccentral / webhook_eventos / id
+            salesForce_eventoID = 118
+            checkEndPointSQL =  " SELECT webEnd.URL, webEve.id evento_id, webEve.ModeloJSON FROM `cliniccentral`.`webhook_eventos` webEve                      "&chr(13)&_
+                                " LEFT JOIN `cliniccentral`.`webhook_endpoints` webEnd ON webEnd.EventoID = webEve.id  "&chr(13)&_
+                                " WHERE webEnd.LicencaID="&replace(session("Banco"),"clinic","")&" AND webEve.id="&salesForce_eventoID&"  AND webEve.Ativo='S'"
+            
+            SET  checkEndPoint = db.execute(checkEndPointSQL)
+            if not checkEndPoint.eof then
 
-        '                Response.End
-        '            end if
-        '        next
-        '    CamposObrigatoriosSQL.movenext
-        '    wend
-        '    CamposObrigatoriosSQL.close
-        '    set CamposObrigatoriosSQL = nothing
-        'end if
+                webhook_eventID  = checkEndPoint("evento_id")
+                webhook_endpoint = checkEndPoint("URL")
+                webhook_body     = checkEndPoint("ModeloJSON")
+                webhook_body     = replace(replace(webhook_body,"[WebhookEventoID]", webhook_eventID), "[PacienteID]", ref("I"))
+
+                CALL addToQueue(webhook_eventID, webhook_body, webhook_endpoint)
+
+            end if
+            checkEndPoint.close
+            set checkEndPoint = nothing
+        end if
+        '</Aciona webhook de sincronização com SalesForce>
+
     end if
 
     if lcase(tableName)="empresa" or lcase(tableName)="sys_financialcompanyunits" then
@@ -166,7 +172,6 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
             idUnit=0
         end if
         'if ref("TipoPessoa")="PJ" then
-
 
             '--->Verificar CNPJ duplicado
             if BloquearCPFCNPJDuplicado="S" then
@@ -418,6 +423,8 @@ if not getResource.EOF then
         <%
         Response.End
     else
+        logsJsonActive = True
+        
         if TypeName(valorAntigo)<>"Empty" then
             if not valorAntigo.eof then
                 if valorAntigo("sysActive")=0 then

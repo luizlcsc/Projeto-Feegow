@@ -585,7 +585,13 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
         
         TotalPago = TotalPago+guia_valorPago
 
-        Total = ccur(guias(ColunaTotal))
+        Total = guias(ColunaTotal)
+
+        if not isnumeric(Total) then
+            Total=0
+        end if
+
+        Total = ccur(Total)
         ItemInvoiceID = guias("ItemInvoiceID")
 		set pac = db.execute("select NomePaciente from pacientes where id="&guias("PacienteID"))
 		if pac.eof then
@@ -745,6 +751,10 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 
                             if valorPagoCheck&"" = ""  then
                                 valorPagoCheck = 0
+                            end if
+
+                            if valorTotalCheck&"" = ""  then
+                                valorTotalCheck = 0
                             end if
 
                             if(ccur(valorPagoCheck) <> ccur(valorTotalCheck)) then  %>

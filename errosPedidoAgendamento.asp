@@ -63,7 +63,24 @@ end if
 '    erro = "Erro: Selecione a origem."
 'end if
 
+if ConsultaID<>"0" then
+    set AgendamentoSQL = db.execute("SELECT StaID FROM agendamentos WHERE id="&treatvalzero(ConsultaID))
+    StatusAtualID = AgendamentoSQL("StaID")&""
+end if
+
+if ref("Checkin")="1" and ConsultaID<>"0" then
+    if StatusAtualID="3" or StatusAtualID="6" or StatusAtualID="2" then
+        erro = "Status do agendamento não permitido para check-in."
+    end if
+end if
+
 if aut("|agestafinA|")=0 and ref("Checkin")<>"1" then
+    if ConsultaID<>"0" then
+        if StatusAtualID="3" or StatusAtualID="4" or StatusAtualID="6" or StatusAtualID="2" then
+            erro = "Você não possui permissão para alterar o status deste agendamento."
+        end if    
+    end if
+
     if rfStaID="3" or rfStaID="4" or rfStaID="6" or rfStaID="2" then
         erro = "Você não possui permissão para alterar para este status."
     end if

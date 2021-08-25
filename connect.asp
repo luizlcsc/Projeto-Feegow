@@ -5687,10 +5687,43 @@ function getConfAO(NomeConfig)
     getConfAO = vca("Val")
 end function
 
+
+
+function getClientDataHora(UnidadeID)
+
+    HorarioVerao = ""
+    if UnidadeID=0 then
+        set getNome = db.execute("select FusoHorario, HorarioVerao from empresa")
+        if not getNome.eof then
+            FusoHorario = getNome("FusoHorario")
+            HorarioVerao = getNome("HorarioVerao")
+        end if
+    elseif UnidadeID>0 then
+        set getNome = db.execute("select FusoHorario, HorarioVerao from sys_financialcompanyunits where id="&session("UnidadeID"))
+        if not getNome.eof then
+            FusoHorario = getNome("FusoHorario")
+            HorarioVerao = getNome("HorarioVerao")
+        end if
+    end if
+
+    getClientDataHora = dateadd("h",FusoHorario + 3, now())
+end function
+
+function convertSimbolosHexadecimal(Texto)
+    Texto = replace(Texto, "►", "&#9658;")
+    Texto = replace(Texto, "→", "&#x279e;")
+    Texto = replace(Texto, "⇒", "&#8658;")
+    Texto = replace(Texto, "⇔", "&#8660;")
+    Texto = replace(Texto, "♦", "&#x2b27;")
+    Texto = replace(Texto, "≈", "&#8776;")
+
+    convertSimbolosHexadecimal = Texto
+
+end function
+
 'Verifica se tem permissão pelo Care Team do Paciente.
 'O usuário logado e o usuário especificado nos parâmetros
 'devem pertencer ao CareTeam do paciente.
-
 '   Parâmetros:
 '      SysUserID  - Id do profissional na tabela sys_user
 '      PacienteID - Id do paciente

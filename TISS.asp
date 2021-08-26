@@ -761,7 +761,7 @@ function completaProdutoTabela(ProdutoETabela, Nada)
 end function
 
 function completaLocalExterno(id, convenioId)
-	conditionConvenio = ""
+	conditionConvenio = " AND 1=0 "
 	if convenioId <> "" then
 		conditionConvenio = " AND cle.convenioid = '" & convenioId & "' "
 	end if

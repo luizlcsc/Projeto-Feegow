@@ -75,8 +75,8 @@ end if
 		    end if
             disabledAbrir = " " 
 
-if pCons("sysActive")=-1 then
-            disabledAbrir = " disabled " 
+            if pCons("sysActive")&""="-1" then
+                disabledAbrir = " disabled " 
             end if
 
 
@@ -104,7 +104,7 @@ if pCons("sysActive")=-1 then
             staconsulta = pCons("StaConsulta")
 
 
-            if pCons("sysActive")=-1 then
+            if pCons("sysActive")&""= "-1" then
                 staconsulta = "Excluído"
                 classe = "danger"
             end if

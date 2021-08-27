@@ -4,6 +4,7 @@
 <!--#include file="Classes/FuncoesRepeticaoMensalAgenda.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <!--#include file="AgendamentoUnificado.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
 <%
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
 	'on error resume next
@@ -228,6 +229,29 @@ if erro="" then
 	        valpac = "'"&valp&"'"
 	    end if
 
+        
+	    IF "age"&splCamposPedir(z)&"" = "ageCPF" THEN
+            valpac = RemoveCaracters(valpac,"-./")
+            valp = RemoveCaracters(valp,"-./")
+            hasCpf = true
+
+            IF getConfig("NaoPermitirCPFduplicado") THEN
+                set PacienteDuplicadoSQL = db.execute("SELECT cpf,id, NomePaciente FROM pacientes WHERE ((cpf='"&valp&"' OR cpf='"&valp&"') and sysActive=1 and '"&valp&"'!='' and id!="&rfPaciente&") ")
+                IF not PacienteDuplicadoSQL.eof THEN
+                        %>
+                        new PNotify({
+                            title: 'N&Atilde;O AGENDADO!',
+                            text: 'CPF duplicado. Paciente <%= PacienteDuplicadoSQL("NomePaciente") %>',
+                            type: 'danger',
+                            delay: 3000
+                        });
+                        <%
+                    response.end
+                END IF
+            END IF
+
+        END IF
+
         existeTabela = db.execute("select count(id) = 1 as existeTabela from pacientes where Tabela is not null and id="&rfPaciente)
         if  splCamposPedir(z) = "Tabela" and existeTabela("existeTabela") = "1" then
             upPac = upPac&""
@@ -240,9 +264,9 @@ if erro="" then
 	next
 
     if ref("Checkin")="1" then
-        
-        'db.execute("update pacientes set NomePaciente='"& ref("NomePaciente") &"', Nascimento="& mydatenull(ref("Nascimento")) &", CPF='"& ref("CPF") &"', Sexo="& treatvalzero(ref("Sexo")) &", Cep='"& ref("Cep") &"', Endereco='"& ref("Endereco") &"', Numero='"& ref("Numero") &"', Complemento='"& ref("Complemento") &"', Bairro='"& ref("Bairro") &"', Cidade='"& ref("Cidade") &"', Estado='"& ref("Estado") &"', Pais="& treatvalzero(ref("Pais")) &", Tel2='"& ref("Tel2") &"', Cel2='"& ref("Cel2") &"', Email2='"& ref("Email2") &"', Observacoes='"& ref("Observacoes") &"', Pendencias='"& ref("Pendencias") &"', Profissao='"& ref("Profissao") &"', GrauInstrucao="& treatvalzero(ref("GrauInstrucao")) &", Documento='"& ref("Documento") &"', Naturalidade='"& ref("Naturalidade") &"', EstadoCivil="& treatvalzero(ref("EstadoCivil")) &", Origem="& treatvalzero(ref("Origem")) &", IndicadoPor='"& ref("IndicadoPor") &"', Religiao='"& ref("Religiao") &"', CNS='"& ref("CNS") &"', CorPele="& treatvalzero(ref("CorPele")) &", lembrarPendencias='"& ref("lembrarPendencias") &"' where id="& rfPaciente )
-        db.execute("update pacientes set NomePaciente='"& ref("NomePaciente") &"', Nascimento="& mydatenull(ref("Nascimento")) &", CPF='"& ref("CPF") &"', Sexo="& treatvalzero(ref("Sexo")) &", Cep='"& ref("Cep") &"', Endereco='"& ref("Endereco") &"', Numero='"& ref("Numero") &"', Complemento='"& ref("Complemento") &"', Bairro='"& ref("Bairro") &"', Cidade='"& ref("Cidade") &"', Estado='"& ref("Estado") &"', Pais="& treatvalzero(ref("Pais")) &", Tel2='"& ref("Tel2") &"', Cel2='"& ref("Cel2") &"', Email2='"& ref("Email2") &"', Observacoes='"& ref("Observacoes") &"', Pendencias='"& ref("Pendencias") &"', Profissao='"& ref("Profissao") &"', GrauInstrucao="& treatvalzero(ref("GrauInstrucao")) &", Documento='"& ref("Documento") &"', Naturalidade='"& ref("Naturalidade") &"', EstadoCivil="& treatvalzero(ref("EstadoCivil")) &", Origem="& treatvalzero(ref("Origem")) &", IndicadoPor='"& nomeindicado &"', Religiao='"& ref("Religiao") &"', CNS='"& ref("CNS") &"', CorPele="& treatvalzero(ref("CorPele")) &", lembrarPendencias='"& ref("lembrarPendencias") &"' where id="& rfPaciente )
+        CPF = RemoveCaracters(ref("CPF")&"",".-/ ")
+        'db.execute("update pacientes set NomePaciente='"& ref("NomePaciente") &"', Nascimento="& mydatenull(ref("Nascimento")) &", CPF='"& CPF &"', Sexo="& treatvalzero(ref("Sexo")) &", Cep='"& ref("Cep") &"', Endereco='"& ref("Endereco") &"', Numero='"& ref("Numero") &"', Complemento='"& ref("Complemento") &"', Bairro='"& ref("Bairro") &"', Cidade='"& ref("Cidade") &"', Estado='"& ref("Estado") &"', Pais="& treatvalzero(ref("Pais")) &", Tel2='"& ref("Tel2") &"', Cel2='"& ref("Cel2") &"', Email2='"& ref("Email2") &"', Observacoes='"& ref("Observacoes") &"', Pendencias='"& ref("Pendencias") &"', Profissao='"& ref("Profissao") &"', GrauInstrucao="& treatvalzero(ref("GrauInstrucao")) &", Documento='"& ref("Documento") &"', Naturalidade='"& ref("Naturalidade") &"', EstadoCivil="& treatvalzero(ref("EstadoCivil")) &", Origem="& treatvalzero(ref("Origem")) &", IndicadoPor='"& ref("IndicadoPor") &"', Religiao='"& ref("Religiao") &"', CNS='"& ref("CNS") &"', CorPele="& treatvalzero(ref("CorPele")) &", lembrarPendencias='"& ref("lembrarPendencias") &"' where id="& rfPaciente )
+        db.execute("update pacientes set NomePaciente='"& ref("NomePaciente") &"', Nascimento="& mydatenull(ref("Nascimento")) &", CPF='"& CPF &"', Sexo="& treatvalzero(ref("Sexo")) &", Cep='"& ref("Cep") &"', Endereco='"& ref("Endereco") &"', Numero='"& ref("Numero") &"', Complemento='"& ref("Complemento") &"', Bairro='"& ref("Bairro") &"', Cidade='"& ref("Cidade") &"', Estado='"& ref("Estado") &"', Pais="& treatvalzero(ref("Pais")) &", Tel2='"& ref("Tel2") &"', Cel2='"& ref("Cel2") &"', Email2='"& ref("Email2") &"', Observacoes='"& ref("Observacoes") &"', Pendencias='"& ref("Pendencias") &"', Profissao='"& ref("Profissao") &"', GrauInstrucao="& treatvalzero(ref("GrauInstrucao")) &", Documento='"& ref("Documento") &"', Naturalidade='"& ref("Naturalidade") &"', EstadoCivil="& treatvalzero(ref("EstadoCivil")) &", Origem="& treatvalzero(ref("Origem")) &", IndicadoPor='"& nomeindicado &"', Religiao='"& ref("Religiao") &"', CNS='"& ref("CNS") &"', CorPele="& treatvalzero(ref("CorPele")) &", lembrarPendencias='"& ref("lembrarPendencias") &"' where id="& rfPaciente )
     end if
 
 	db.execute("update pacientes set "& upPac &" sysActive=1 where id="&rfPaciente)

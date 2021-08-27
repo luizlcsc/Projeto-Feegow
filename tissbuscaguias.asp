@@ -585,7 +585,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
         
         TotalPago = TotalPago+guia_valorPago
 
-        Total = ccur(guias(ColunaTotal))
+        Total = guias(ColunaTotal)
         ItemInvoiceID = guias("ItemInvoiceID")
 		set pac = db.execute("select NomePaciente from pacientes where id="&guias("PacienteID"))
 		if pac.eof then

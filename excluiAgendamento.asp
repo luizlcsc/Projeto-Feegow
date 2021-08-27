@@ -82,9 +82,27 @@ if req("Confirma")="0" then
 </script>
 	<%
 else
+    set pCon=db.execute("select * from agendamentos where id="&ConsultaID)
+    StatusAtualID = pCon("StaID")&""
+
+    if aut("agendaX")=0 then
+        erro = "Não foi possível excluir o agendamento."
+    end if
+
+    if aut("|agestafinX|")=0 and (StatusAtualID="3" or StatusAtualID="4" or StatusAtualID="6" or StatusAtualID="2")  then
+        erro = "Você não possui permissão para excluir esse agendamento."
+    end if
+
+    if erro<>"" then
+        %>
+        <script>
+            showMessageDialog("<%=erro%>", 'danger');
+        </script>
+        <%
+        Response.End
+    end if
 
     agendaEquipamento = ref("tipoequipamento")
-	set pCon=db.execute("select * from agendamentos where id="&ConsultaID)
 	ProfissionalID=pCon("ProfissionalID")
 	PacienteID=pCon("PacienteID")
 	ProcedimentoID=pCon("TipoCompromissoID")
@@ -109,8 +127,7 @@ else
 
         call agendaUnificada("delete", ConsultaID, ProfissionalID)
         
-        sqlDel = "update agendamentos set sysActive=-1 where id="&ConsultaID
-
+        sqlDel = "update agendamentos set sysActive='-1' where id="&ConsultaID
         call gravaLogs(sqlDel, "AUTO", "Agendamento excluído", "")
         db_execute(sqlDel)
     else

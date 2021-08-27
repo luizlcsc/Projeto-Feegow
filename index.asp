@@ -251,6 +251,9 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
   <script type="text/javascript" src="https://cdn.wootric.com/wootric-sdk.js"></script>
   
+  <%
+    if session("MasterPwd") <> "S" then
+  %>
   <!-- begin Wootric code -->
   <script type="text/javascript">   
     let dataCadastro = <% if session("DataCadastro")<>"" then response.write(session("DataCadastro")) else response.write("null") end if %>;
@@ -282,6 +285,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     window.wootric('run');
   </script>
   <!-- end Wootric code -->
+  <% end if %>
 
   <script type="text/javascript">
 

@@ -13,6 +13,7 @@
 call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 Profissionais = reg("Profissionais")
+regUnidades = reg("Unidades")
 %>
 	<%=header(req("P"), "Cadastro de Funcionário", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
 
@@ -74,13 +75,13 @@ Profissionais = reg("Profissionais")
                                 </span>
                             </div>
                             <div class="panel-body p7">
-                        	    <div class="checkbox-primary checkbox-custom"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(reg("Unidades"), "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
+                        	    <div class="checkbox-primary checkbox-custom"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|" <%if instr(regUnidades, "|0|")>0 then %> checked="checked" <%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
 						    <%
 						    set unidades = db.execute("select id, NomeFantasia from sys_financialcompanyunits where sysActive=1 order by NomeFantasia")
 						    while not unidades.eof
 							    %>
 							    <div class="checkbox-custom checkbox-primary">
-                                    <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(reg("Unidades"), "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label></div>
+                                    <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|" <%if instr(regUnidades, "|"&unidades("id")&"|")>0 then%> checked="checked" <%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label></div>
 							    <%
 						    unidades.movenext
 						    wend

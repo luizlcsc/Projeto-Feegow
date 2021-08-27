@@ -13,7 +13,11 @@
 </style>
 <%
 call insertRedir(req("P"), req("I"))
-set reg = db.execute("select * from Profissionais where id="&req("I"))
+
+sqlReg = "select * from Profissionais where id="&req("I")
+
+set reg = db.execute(sqlReg)
+RegUnidades = reg("Unidades")
 
 IF req("Proximo") = "1"  THEN
     sqlProximo = "select id from Profissionais where Ativo = 'on' and id>"&req("I")
@@ -122,13 +126,14 @@ end if
                             </span>
                         </div>
                         <div class="panel-body p7">
-                        	<div class="checkbox-primary checkbox-custom"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(reg("Unidades"), "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
+                        	<div class="checkbox-primary checkbox-custom"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|" <%if instr(reg("Unidades"), "|0|")>0 then%> checked="checked" <%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
 						<%
 						set unidades = db.execute("select id, UnitName,NomeFantasia from sys_financialcompanyunits where sysActive=1 order by NomeFantasia")
 						while not unidades.eof
+
 							%>
 							<div class="checkbox-custom checkbox-primary">
-                                <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(reg("Unidades"), "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label></div>
+                                <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value='|<%=unidades("id")%>|' <%if instr(RegUnidades, "|"&unidades("id")&"|")>0 then%> checked="checked" <%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label></div>
 							<%
 						unidades.movenext
 						wend

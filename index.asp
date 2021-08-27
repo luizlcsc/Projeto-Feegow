@@ -264,7 +264,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       console.error("account_token está vazio!");
     }
 
-    window.wootric_survey_immediately = true; // Shows survey immediately for testing purposes. TODO: Comment out for production.
+    // window.wootric_survey_immediately = true; // Shows survey immediately for testing purposes. TODO: Comment out for production.
 
     window.wootricSettings = {
       admin: "<% if session("Admin")=1 then response.write("Sim") else response.write("Não") end if %>",

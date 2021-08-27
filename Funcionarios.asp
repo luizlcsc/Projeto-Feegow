@@ -14,6 +14,10 @@ call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 Profissionais = reg("Profissionais")
 regUnidades = reg("unidades")
+
+if regUnidades&"" = "" then
+    regUnidades = "|0|"
+end if
 %>
 	<%=header(req("P"), "Cadastro de Funcionário", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
 
@@ -108,6 +112,7 @@ regUnidades = reg("unidades")
                                 <% END IF
     
                                 unidadesFuncionario = regUnidades
+
                                 %>
                                 <div class="checkbox-primary checkbox-custom" data-name="Empresa Principal"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(unidadesFuncionario, "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
                             <%

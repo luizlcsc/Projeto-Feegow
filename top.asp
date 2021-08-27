@@ -183,7 +183,7 @@ else
                   <a class="sub-menu-click-paciente-incluir" href="./?P=Pacientes&I=N&Pers=1"><i class="fa fa-plus"></i> Inserir</a>
                   </li>
             <%end if
-			      if (aut("pacientesV")=1 or aut("pacientesA")=1) and PorteClinica <= 3 then%>
+			      if aut("pacientesV")=1 or aut("pacientesA")=1 then%>
                   <li>
                   <a class="sub-menu-click-paciente-listar" href="?P=Pacientes&Pers=Follow"><i class="fa fa-list"></i> Listar</a>
                   </li>

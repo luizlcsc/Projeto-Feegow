@@ -79,6 +79,8 @@
         memedToken = data.token;
         document.body.appendChild(script);
         console.info('[INTEGRACAO MEMED] Script injetado com sucesso.');
+
+        updateMemedPrintTemplate();
     }
 
     function initEventsMemed(workplace) {
@@ -118,6 +120,24 @@
         });
     }
 
+    function updateMemedPrintTemplate() {
+        <%
+        ' POG para reenviar o papel timbrado apenas quando o profissional logar ou trocar de unidade
+        if session("MemedPapelTimbrado")&"" <> session("UnidadeID")&"" then
+        %>
+            console.info('[INTEGRACAO MEMED] Enviando Papel timbrado...');
+            postUrl('prescription/memedv2/update-print-template', {
+                professionalId: "<%=session("idInTable")%>",
+                unidadeId: "<%=session("UnidadeID")%>",
+            }, function() {
+                console.info('[INTEGRACAO MEMED] Papel timbrado enviado com sucesso.');
+            });
+        <%
+            session("MemedPapelTimbrado") = session("UnidadeID")&""
+        end if
+        %>
+    }
+
     function setFeaturesMemed(exame) {
         const features = exame ?
             {
@@ -141,6 +161,8 @@
             MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {...features, ...{
                 removePatient: false,
                 deletePatient: false,
+                editPatient: false,
+                optionsPrescription: false,
                 removePrescription: false,
                 historyPrescription: false,
                 showProtocol: false,
@@ -149,9 +171,6 @@
                 licenseId: <%=replace(session("Banco"), "clinic","")%>,
                 numeroProntuario: '<%=session("Banco")%>' +  '-' + '<%=req("I")%>',
                 tipo: memedTipo,
-            }),
-            MdHub.command.send('plataforma.sdk', 'find', {
-              resource: 'opcoes-receituario/ativar/1' ,
             })
         ]);
     }

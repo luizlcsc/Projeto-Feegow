@@ -760,7 +760,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 
                      end if
                  end if
-                 ValorTotal = ccur(ValorTotal) + ccur(Total)
+                 ValorTotal = ValorTotal + Total
                  %>
                  
                  </td>

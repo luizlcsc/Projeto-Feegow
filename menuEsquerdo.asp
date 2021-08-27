@@ -142,7 +142,7 @@ select case lcase(req("P"))
 
 <hr class="short alt hidden-xs" />
         <li class="row sidebar-stat hidden-xs">
-            <div class="col-sm-12">
+            <div class="col-sm-12" style="display:none">
               <div class="panel">
                 <div class="panel-heading text-center br-a br-grey">
                     <span class="panel-title">QUALIDÔMETRO</span>

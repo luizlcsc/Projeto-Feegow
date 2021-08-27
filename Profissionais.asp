@@ -158,7 +158,7 @@ end if
                                 <hr style="margin: 10px 0" />
                             <% END IF
 
-                            unidadesFuncionario = reg("Unidades")
+                            unidadesFuncionario = RegUnidades
                             %>
                         	<div class="checkbox-primary checkbox-custom" data-name="Empresa Principal"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(unidadesFuncionario, "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
 						<%

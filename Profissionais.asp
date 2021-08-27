@@ -13,7 +13,11 @@
 </style>
 <%
 call insertRedir(req("P"), req("I"))
-set reg = db.execute("select * from Profissionais where id="&req("I"))
+
+sqlReg = "select * from Profissionais where id="&req("I")
+
+set reg = db.execute(sqlReg)
+RegUnidades = reg("Unidades")
 
 IF req("Proximo") = "1"  THEN
     sqlProximo = "select id from Profissionais where Ativo = 'on' and id>"&req("I")

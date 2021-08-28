@@ -18,7 +18,6 @@
                             <th>NF</th>
 							<th nowrap width="8%">Parcela</th>
 							<th nowrap>Bandeira</th>
-							<th nowrap width="60" >Taxa atual.</th>
 							<th nowrap width="10%">Valor compra</th>
 							<th nowrap width="10%">Taxa % <i class="fa fa-info-circle" style="margin-left: 10px;" data-toggle="tooltip" data-placement="bottom" title="Taxa vigente na taxa na data da compra"></i></th>
 							<th nowrap width="10%">Valor créd.</th>
@@ -139,12 +138,12 @@
 
 					while not rec.eof
 					response.flush()
-						queryTaxa = ""
-						queryTaxa = getTaxaAtual(rec("AccountIDDebit"),rec("movId"),rec("NumeroParcelas"))
-						set RetornoTaxaAtual2 = db.execute(queryTaxa)
-						taxaAtual= ""
-						taxaAtual = RetornoTaxaAtual2("taxaAtual")
-						RetornoTaxaAtual2 = ""
+						'queryTaxa = ""
+						'queryTaxa = getTaxaAtual(rec("AccountIDDebit"),rec("movId"),rec("NumeroParcelas"))
+						'set RetornoTaxaAtual2 = db.execute(queryTaxa)
+						'taxaAtual= ""
+						'taxaAtual = RetornoTaxaAtual2("taxaAtual")
+						'RetornoTaxaAtual2 = ""
 						if not isnull(rec("Value")) and not isnull(rec("Total")) and not isnull(rec("NomePaciente")) then
 						    Fee = rec("Fee")
 						    if isnull(Fee) then
@@ -206,7 +205,6 @@
                                     <td><%=rec("NumeroNFe")%></td>
 							        <td nowrap><%= Parcela %> / <%= Parcelas %></td>
 							        <td nowrap><%= Bandeira %></td>
-							        <td nowrap align="right"><%= taxaAtual %>%</td>
 							        <td nowrap align="right">
                                       R$ <%= fn(rec("Total")) %>
                                       <input type="hidden" id="parc<%=rec("id") %>" value="<%=fn(rec("Value")) %>" />
@@ -244,7 +242,6 @@
                                   <td><%=rec("NumeroNFe")%></td>
 							      <td nowrap><%= Parcela %> / <%= Parcelas %></td>
 							      <td nowrap><%= Bandeira %></td>
-								  <td nowrap align="right"><%= taxaAtual %>%</td>
 							      <td nowrap align="right">
                                       R$ <%= fn(rec("Total")) %>
                                       <input type="hidden" id="parc<%=rec("id") %>" value="<%=fn(rec("Value")) %>" />

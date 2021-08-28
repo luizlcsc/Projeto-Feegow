@@ -2,6 +2,9 @@
 <!--#include file="Classes/StringFormat.asp"-->
 <!--#include file="Classes/TagsConverte.asp"-->
 <%
+response.Charset = "utf-8" 
+response.ContentType = "text/html"
+
 I = req("i")
 ModeloID = req("m")
 PacienteID = req("p")
@@ -200,10 +203,8 @@ pcampos.close
 
 if sqlUp<>"" then
     sqlUpFinal = "update `_"&ModeloID&"` set PacienteID="&PacienteID & sqlUp &" WHERE id="&I
-
+    sqlUpFinal = convertSimbolosHexadecimal(sqlUpFinal)
     'response.write("<br>update modelo: "&sqlUpFinal&"<br>")
-
-
     db_execute(sqlUpFinal)
     if req("auto")<>"1" then
         db.execute("update buiformspreenchidos set sysActive=1 where id="& I)

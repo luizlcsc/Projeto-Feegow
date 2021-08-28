@@ -62,7 +62,7 @@ min-width:200px;
                     data: base64
                 }, 
                 function(data){
-                    console.log(data);
+                    // console.log(data);
                     //atualizaAlbum(0);
             });
     }

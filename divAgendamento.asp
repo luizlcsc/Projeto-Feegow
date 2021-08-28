@@ -182,7 +182,7 @@ end if
 if buscaAgendamentos.EOF then
 	ConsultaID = 0
 	StaID = 1
-
+    ProgramaID = ""
 else
     'Validar a permissão
     if aut("alterarcheckinpagoA") = 1 then
@@ -242,6 +242,7 @@ else
 	ProfissionalID = buscaAgendamentos("ProfissionalID")
 
     indicadoId = buscaAgendamentos("IndicadoPor")
+    ProgramaID = buscaAgendamentos("ProgramaID")
 end if
 
 if PacienteID<>"" then
@@ -677,21 +678,36 @@ end if
                     call quickField("simpleSelect", "ageCanal", "Canal", 2, ageCanal, "select id, NomeCanal from agendamentocanais where sysActive=1 AND ExibirNaAgenda='S' order by NomeCanal", "NomeCanal", " no-select2 "&canalRequired&" empty")
                 end if
             end if
-			%>
+            %>
 
-<%
-if instr(camposPedir, "IndicadoPorSelecao")>0 then
-    ObrigarCampoIndicado = ""
-    if instr(camposObrigatorioPaciente, "IndicadoPorSelecao")>0 then
-        ObrigarCampoIndicado = " required "
-    end if
-%>
-          <div class="col-md-3">
-            <%= selectInsertCA("Indicação", "indicacaoId", Pagador, "5, 8", " onclick=""autoPC($(this).attr(\'data-valor\')) "" ", " "&fieldReadonly&ObrigarCampoIndicado, "") %>
-          </div>
-          <%
-end if
-          %>
+            <% if instr(camposPedir, "IndicadoPorSelecao")>0 then
+                ObrigarCampoIndicado = ""
+                if instr(camposObrigatorioPaciente, "IndicadoPorSelecao")>0 then
+                    ObrigarCampoIndicado = " required "
+                end if
+            %>
+                <div class="col-md-3">
+                    <%= selectInsertCA("Indicação", "indicacaoId", Pagador, "5, 8", " onclick=""autoPC($(this).attr(\'data-valor\')) "" ", " "&fieldReadonly&ObrigarCampoIndicado, "") %>
+                </div>
+            <% end if %>
+
+            <%
+            ' Select de Programas de Saúde 
+            if getConfig("ExibirProgramasDeSaude") = 1 then
+                sqlSelectProgramas = "SELECT p.id, p.NomePrograma FROM programas p " &_
+                                     "INNER JOIN profissionaisprogramas pp ON p.id = pp.ProgramaID " &_
+                                     "LEFT JOIN pacientesprogramas pap ON pap.ProgramaID = p.id " &_
+                                     "WHERE pp.ProfissionalID = '" & ProfissionalID &"' AND pp.sysActive = 1 "
+                if PacienteID <> "" then
+                    sqlSelectProgramas = sqlSelectProgramas & " AND pap.PacienteID = '" & PacienteID & "' AND pap.sysActive = 1 "
+                end if
+                if ConvenioID <> "" and ConvenioID <> 0 then
+                    sqlSelectProgramas = sqlSelectProgramas & " AND (p.ConvenioID IS NULL OR p.ConvenioID = '" & ConvenioID & "') "
+                end if
+                sqlSelectProgramas = sqlSelectProgramas & " GROUP BY p.id ORDER BY p.NomePrograma"
+                call quickField("simpleSelect", "ProgramaID", "Programa de Saúde", 3, ProgramaID, sqlSelectProgramas, "NomePrograma", " no-select2 empty onchange=""parametros(this.id, this.value)""")
+            end if
+             %>
         </div>
 
 
@@ -1602,60 +1618,7 @@ function repeteAgendamento(ConsultaID){
 setInterval(function(){abasAux()}, 3000);
 
 function atualizaHoraAtual(){
-    let time = '<%=HorarioAgora%>'
-    time = new Date(time);
-    var M = time.getMinutes();
-    var H = time.getHours();
-    <%
-    getTimeZoneSQL = "select FusoHorario from vw_unidades where sysActive = 1 and id = '"&session("UnidadeID")&"'"
-    set timeZoneUnidade = db.execute(getTimeZoneSQL)
-    timeZoneUnidadeResult = ""
-    if not timeZoneUnidade.eof then
-        timeZoneUnidadeResult = timeZoneUnidade("FusoHorario")&""
-    end if
-    
-    if timeZoneUnidadeResult = "" then 
-        timeZoneUnidadeResult = "-3"
-    end if
-    if timeZoneUnidadeResult = "" then 
-        timeZoneUnidadeResult = "-3"
-    end if
-    %>
-    var timeZoneUnidadeResult = <%=timeZoneUnidadeResult%>;
-
-    if (timeZoneUnidadeResult !== -3){
-        var tempo = new Date().toLocaleString("pt-br", {timeZone: "America/Sao_Paulo"});
-        H = Number(tempo.split(" ")[1].split(":")[0]);
-        M = Number(tempo.split(" ")[1].split(":")[1]);
-
-        H = H + (timeZoneUnidadeResult +3)
-
-        // console.log(H);
-    }
-
-    <%
-    if HorarioVerao="" then
-    %>
-        if(H=="0"){
-            H = "23";
-        }
-        else{
-            H = H - 1;
-        }
-
-    <%
-    end if
-    %>
-    if(M <= 9){
-        M = "0"+M;
-    }
-    if(H <= 9){
-        H = "0"+H;
-    }
-
-
-    var horaAtual = H + ":" + M;
-
+    let horaAtual = '<%=formatdatetime(getClientDataHora(UnidadeID),4)%>';
     $("#Chegada").val(horaAtual);
 }
 

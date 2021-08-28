@@ -560,7 +560,7 @@ while diaS<n
             {
                 var gradeId = $(this).data("grade");
 
-                var conteudo ='<%= conteudo %>';
+                var conteudo =`<%= conteudo %>`;
                 HorarioAdicionado=true;
 
                 if (!$(this).hasClass("l<%=comps("LocalID")%>")){

@@ -335,7 +335,6 @@ end if
                     // item.ArquivoLink = item.ArquivoLink.replace('redirect','download')
                 }
 
-                
                 return `<div class="galery-item" id="item${item.id}">
                              <div class="galery-data-envio">
                                 <small class="pull-right data-envio">Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}</small><br/>
@@ -349,6 +348,9 @@ end if
                                        </div>
                                     </small>
 
+                                    <button class="btn btn-xs btn-alert" title="Copiar link" onclick="CopyToClipboard('${item.ArquivoLink}')">
+                                        <i class="fa fa-copy"></i>
+                                    </button>
                                     <a class="btn btn-xs btn-alert" href="javascript:modalTipo(${item.id})" title="Cadastrar tipo de imagem">
                                                               <i class="fa fa-cog"></i>
                                     </a>
@@ -392,6 +394,8 @@ end if
 
              document.getElementById("galery").innerHTML =b.join("");
     }
+
+
 
     function expandItem(id){
          let item = itens.find(item => item.id == id);
@@ -628,4 +632,16 @@ function atualizaAlbum(X){
 	});
     
 }
+
+function CopyToClipboard(value) {
+  var tempInput = document.createElement("input");
+  tempInput.value = value;
+  document.body.appendChild(tempInput);
+  tempInput.select();
+  document.execCommand("copy");
+  document.body.removeChild(tempInput);
+
+  showMessageDialog("para a área de transferência.", "success", "Link copiado!", 5000);
+}
+
 </script>

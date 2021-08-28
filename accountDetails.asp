@@ -267,7 +267,7 @@ end if
         newCellAcrescimoPercentual.appendChild(gerarInputButtonsToTableh.inputNumberPercentual);
 		
 
-		console.log(gerarInputButtonsToTableh.selectListTipoPagamento);
+		// console.log(gerarInputButtonsToTableh.selectListTipoPagamento);
 		newCellTipoPagamento.appendChild(gerarInputButtonsToTableh.selectListTipoPagamento);
 
 		if($("#AccountType").select2('val') == '3'){

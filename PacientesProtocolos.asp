@@ -15,8 +15,10 @@ end if
 set getProtocolo = db.execute("SELECT * FROM pacientesprotocolos WHERE id="&ID)
 if not getProtocolo.eof then
     ProfissionalID = getProtocolo("ProfissionalID")
+    novo = ""
 else
     ProfissionalID = "5_"&session("idInTable")
+    novo = "disabled"
 end if
 %>
 
@@ -33,11 +35,11 @@ end if
 	</ul>
 </div>
 <form method="post" id="formProtocolos" name="formProtocolos" action="save.asp">
-
 <div class="panel-body p25" id="iProntCont">
     <div class="tab-content">
       <div id="divpedido" class="tab-pane in active">
         <input type="hidden" name="ID" id="ID" value="<%=ID%>" />
+        <input type="hidden" name="tipoPrescricao" id="tipoPrescricao" value="<%=ID%>" />
         <div class="row">
             <div class="col-xs-8">
                 <div class="row">
@@ -50,10 +52,15 @@ end if
                             <i class="fa fa-print"></i>
                         </button>
                     </div>
-                    <div class="col-md-4">
-                        <%= simpleSelectCurrentAccounts("ProfissionalID", "5, 8", ProfissionalID, " ") %>
+                    <div class='col-md-3'>
+                        <input name="type" id="prescricao" type="radio" value="P" checked="checked" /> &nbsp; Prescrição
+                        </br>
+                        <input name="type" id="transcricao" type="radio" value="T" /> &nbsp; Transcrição
                     </div>
-                    <div class="btn-group text-left">
+                    <div class="col-md-4 ">
+                        <%= simpleSelectCurrentAccounts("ProfissionalID", "5, 8", ProfissionalID, " "&novo,"Selecione um profissional") %>
+                    </div>
+                    <div class="btn-group text-left hidden">
 			            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
 				            Grupos
 				            <span class="fa fa-caret-down icon-on-right"></span>
@@ -188,4 +195,10 @@ end if
             eval(data);
         });
     };
+    $("#transcricao").change(ev=>{
+        $("#ProfissionalID").attr("disabled",false)
+    })
+    $("#prescricao").change(ev=>{
+        $("#ProfissionalID").attr("disabled",true)
+    })
 </script>

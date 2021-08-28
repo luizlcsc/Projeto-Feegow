@@ -8,7 +8,7 @@ function linhaFuncao(FuncaoID, Funcao, Valor, TipoValor, Sobre, Conta, NumeraRep
 		%>
         <td colspan="5"><div class="row">
             <div class="col-xs-3"><%=selectInsert("Produto", "ProdutoID"&ItemInvoiceID&"-"&FuncaoID, ProdutoID, "produtos", "NomeProduto", "", "", "")%></div>
-            <div class="col-xs-3"><label>Conta</label><br /><%call simpleSelectCurrentAccounts("ContaCredito"&ItemInvoiceID&"-"&FuncaoID, "00, 5, 4, 2, 1", Conta, "")%></div>
+            <div class="col-xs-3"><label>Conta</label><br /><%call simpleSelectCurrentAccounts("ContaCredito"&ItemInvoiceID&"-"&FuncaoID, "00, 5, 4, 2, 1", Conta, "","")%></div>
             <div class="col-xs-2"><label>Valor Unit.</label><br /><%call quickField("text", "ValorUnitario"&ItemInvoiceID&"-"&FuncaoID, "", 12, formatnumber(ValorUnitario,2), " input-sm input-mask-brl text-right", "", "")%></div>
             <div class="col-xs-2"><label>Quantidade</label><br /><%call quickField("text", "Quantidade"&ItemInvoiceID&"-"&FuncaoID, "", 12, formatnumber(Quantidade,2), " input-sm input-mask-brl text-right", "", "")%></div>
             <div class="col-xs-2"><label>Total</label><br /><%call quickField("text", "Valor"&ItemInvoiceID&"-"&FuncaoID, "", 12, formatnumber(Valor,2), " input-sm input-mask-brl text-right", "", "")%></div>

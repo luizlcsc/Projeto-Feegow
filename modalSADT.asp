@@ -172,7 +172,7 @@ elseif Tipo="Procedimentos" then
             <%'=quickField("simpleSelect", "ProfissionalID"&id, "* Profissional", 3, ProfissionalID, "select id, NomeProfissional from profissionais where ativo='on' and sysActive=1 order by NomeProfissional", "NomeProfissional", " onchange='repasses("&id&")' onchange='abreRateio("&n&")'  no-select2 ")%>
             <div class="col-md-3">
                 <label>Executante</label><br />
-                <%= simpleSelectCurrentAccounts("ProfissionalID"& id, "5, 8", Executante, " "&ProfissionalRequired) %>
+                <%= simpleSelectCurrentAccounts("ProfissionalID"& id, "5, 8", Executante, " "&ProfissionalRequired,"") %>
             </div>
             <%= quickField("datepicker", "Data", "* Data", 3, Data, "", "", " required") %>
             <%= quickField("text", "HoraInicio", "Hora In&iacute;cio", 2, HoraInicio, " input-mask-l-time", "", "") %>

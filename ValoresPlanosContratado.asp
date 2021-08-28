@@ -45,7 +45,7 @@ ConvenioID = req("ConvenioID")
                         </select>
                     </div>
 
-                    <%= quickfield("multiple", "Produtos[0]", "Materiais e Medicamentos", 3, Produtos, "SELECT id, NomeProduto FROM produtos WHERE CD IN (3, 4) ORDER BY NomeProduto", "NomeProduto", "") %>
+                    <%= quickfield("multiple", "Produtos[0]", "Materiais e Medicamentos", 3, Produtos, "SELECT id, if(tipoproduto=3,concat('Material - ',NomeProduto),concat('Medicamento - ',NomeProduto)) NomeProduto FROM produtos WHERE TipoProduto IN (3, 4) ORDER BY NomeProduto", "NomeProduto", "") %>
                  </div>
 
                  <%= quickfield("multiple", "Grupos[0]", "Grupos", 3, Planos,"SELECT * FROM procedimentosgrupos  WHERE sysActive = 1  ", "NomeGrupo", "") %>
@@ -461,7 +461,7 @@ function ocultar_campos(id){
     let conteudo = $(cr).val(); 
     
     conteudo = (conteudo=== null  ? ' ' : conteudo);  
-    if (conteudo.includes("|Materiais|") || conteudo.includes("|Medicamentos|") === true )
+    if (conteudo.includes("|Materiais|") || conteudo.includes("|Medicamentos|"))
     { 
         $('#preco\\['+id+'\\]').val("|PFB|");
         $('#tabela\\['+id+'\\]').val("");

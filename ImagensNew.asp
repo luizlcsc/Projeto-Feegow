@@ -507,13 +507,10 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
             $('#configTipo').modal('toggle')
         }
     }
-
-
     let ConfigPacienteID      = '<%=PacienteID%>';
     let ConfigMovementID      = '<%=req("MovementID")%>';
     let ConfigLaudoID         = '<%=req("LaudoID")%>';
     let ConfigOrdemDeCompraID = '<%=req("OrdemDeCompraID")%>';
-
     let valorConsulta = null;
     let typeDoc = "all";
     let typeSearch = null;

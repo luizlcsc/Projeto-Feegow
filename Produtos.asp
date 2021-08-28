@@ -32,6 +32,8 @@ call insertRedir(req("P"), req("I"))
 sqlTiposproduto  = "select * from "&req("P")&" where id="&req("I")
 set reg = db.execute(sqlTiposproduto)
 
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 if reg("Foto")="" or isnull(reg("Foto")) then
 	divDisplayUploadFoto = "block"
 	divDisplayFoto = "none"
@@ -131,8 +133,8 @@ end if
     <iframe align="middle" class="hidden" id="CodBarras" name="CodBarras" src="about:blank" width="100%" height="110"></iframe>
 
     <%=header(req("P"), "Estoque", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
-    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-    <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+    <input type="hidden" name="I" value="<%=req("I")%>" />
+    <input type="hidden" name="P" value="<%=req("P")%>" />
 
     <div class="tabbable panel">
         <div class="tab-content panel-body">
@@ -543,7 +545,7 @@ lbl();
 
     //js exclusivo avatar
 <%
-    Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
+    Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
 
     %>
     function removeFoto(){

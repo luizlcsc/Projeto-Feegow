@@ -45,7 +45,10 @@ ConvenioID = req("ConvenioID")
                         </select>
                     </div>
 
-                    <%= quickfield("multiple", "Produtos[0]", "Materiais e Medicamentos", 3, Produtos, "SELECT id, if(tipoproduto=3,concat('Material - ',NomeProduto),concat('Medicamento - ',NomeProduto)) NomeProduto FROM produtos WHERE TipoProduto IN (3, 4) ORDER BY NomeProduto", "NomeProduto", "") %>
+                    <%= produtos %>
+                    <div id="produtoWarper" class="col-md-3">
+                    
+                    </div>
                  </div>
 
                  <%= quickfield("multiple", "Grupos[0]", "Grupos", 3, Planos,"SELECT * FROM procedimentosgrupos  WHERE sysActive = 1  ", "NomeGrupo", "") %>
@@ -461,8 +464,12 @@ function ocultar_campos(id){
     let conteudo = $(cr).val(); 
     
     conteudo = (conteudo=== null  ? ' ' : conteudo);  
+
     if (conteudo.includes("|Materiais|") || conteudo.includes("|Medicamentos|"))
     { 
+        let tipo = getSelectedCalculo(conteudo)
+        getSelect(tipo)
+
         $('#preco\\['+id+'\\]').val("|PFB|");
         $('#tabela\\['+id+'\\]').val("");
         
@@ -472,11 +479,36 @@ function ocultar_campos(id){
         $('#tabela\\['+id+'\\]').val(" ");
       
          $(ar).hide();
-        
-        
-         
     }
 }
+
+function getSelect(id){
+    $.get("ValoresPlanosContratadoGetProduto.asp?tipo=" + id, function (data) {
+        console.log(data)
+            $("#produtoWarper").html(data);
+    });
+}
+
+function getSelectedCalculo(conteudo){
+    tipo = false
+    if(conteudo.includes("|Materiais|") && !conteudo.includes("|Medicamentos|")){
+            tipo = 3
+    }else if (conteudo.includes("|Medicamentos|") && !conteudo.includes("|Materiais|")){
+            tipo = 4
+    }else if (conteudo.includes("|Medicamentos|") && conteudo.includes("|Materiais|")){
+            tipo = 0 
+    }
+    return tipo
+}
+
+$(document).ready(()=>{
+    let conteudo = $("select[id^='Calculos']").val()
+    conteudo = (conteudo=== null  ? ' ' : conteudo);
+    let selecionado = getSelectedCalculo(conteudo)
+    if(selecionado){
+        getSelect(selecionado)
+    }
+})
 
  <%
      contador  = 0
@@ -502,5 +534,7 @@ jQuery("#preco\\["+a+"\\]").val(key.preco);
 jQuery("#tabela\\["+a+"\\]").val(key.tabela);
 
 });
-a--;<!--#include file="JQueryFunctions.asp"-->
+a--;
+
+<!--#include file="JQueryFunctions.asp"-->
 </script>

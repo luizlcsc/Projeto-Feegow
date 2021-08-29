@@ -197,8 +197,13 @@ end if
     };
     $("#transcricao").change(ev=>{
         $("#ProfissionalID").attr("disabled",false)
+        $("#select2-ProfissionalID-container").html('Selecione um profissional  ')
+        $("#ProfissionalID").val('')
     })
     $("#prescricao").change(ev=>{
         $("#ProfissionalID").attr("disabled",true)
+        let name = $("#ProfissionalID option[value='<%=ProfissionalID%>']").html()
+        $("#select2-ProfissionalID-container").html(name)
+        $("#ProfissionalID").val('<%=ProfissionalID%>')
     })
 </script>

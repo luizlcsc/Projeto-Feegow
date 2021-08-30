@@ -31,7 +31,36 @@
                 padding-top: 10px;
                 padding-bottom: 10px;
             }
-  
+            @media print 
+            {
+                @page {
+                size: A4; /* DIN A4 standard, Europe */
+                margin:0;
+                }
+                html, body {
+                    width: 210mm;
+                    /* height: 297mm; */
+                    height: 282mm;
+                    font-size: 11px;
+                    background: #FFF;
+                    overflow:visible;
+                }
+                table{
+                    max-width:90% !important;
+                    margin-left:150px;
+                    border:none!important;
+                    border-color:transparent
+
+                }
+                body {
+                    padding-top:15mm;
+                }
+                .modal-content{
+                    margin-left: -130px;
+                    border: none;
+                    box-shadow: none;
+                }
+            }
         </style>
     </head> 
     <%
@@ -66,7 +95,7 @@
     hoje  = formatdatetime(date(),2)
     if not dados.eof then
 %>
-    <body >
+    <body>
         <table id="areaImpressao">
             <tr class="inferior">
                 <td colspan='5'><img style="width: 100%;"src="https://functions.feegow.com/load-image?licenseId=8437&folder=Arquivos&file=f3dbf652fb224b4c6f70be3a447945a6.PNG&renderMode=redirect&cache-prevent=1630253583&dimension=full"/></td>

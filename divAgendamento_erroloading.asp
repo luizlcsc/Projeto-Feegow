@@ -237,7 +237,7 @@ end if
                 </div>
 
         <%
-		set msgs = db.execute("select * from agendamentosrespostas where AgendamentoID = '"&AgendamentoID&"'")
+		set msgs = db.execute("select * from agendamentosrespostas where AgendamentoID like '"&AgendamentoID&"'")
 		while not msgs.eof
 			%>
 			<span class="label label-alert">Paciente respondeu em <%=msgs("DataHora")%>: <em><%=msgs("Resposta")%></em></span>

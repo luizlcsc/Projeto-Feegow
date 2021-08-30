@@ -79,6 +79,7 @@ end if
                                 </span>
                             </div>
                             <div class="panel-body p7">
+
                                 <% 
                                 QtdUnidades = ubound(split(session("Unidades"), ","))
     
@@ -353,11 +354,6 @@ if req("GT")="Permissoes" then
 	<%
 end if
 %>
-
-function selecionarTodasUnidades(cel){
- $("[name='Unidades']").prop('checked', cel)
-}
-
 </script>
 
 <!--#include file="disconnect.asp"-->

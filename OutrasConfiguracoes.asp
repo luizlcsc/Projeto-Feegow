@@ -122,6 +122,9 @@ if session("Admin")=1 then
          <div class="tab-pane" id="divWhatsapp">
             Carregando...
         </div>
+        <div class="tab-pane" id="divAutorizador">
+            Carregando...
+        </div>
     </div>
 </div>
 <%

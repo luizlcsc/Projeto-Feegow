@@ -1625,6 +1625,12 @@ end if
     
             </li>
         <% END IF %>
+
+        <li>
+            <a data-toggle="tab" href="#divAutorizador" onclick="ajxContent('IntegracaoAutorizador', '', 1, 'divAutorizador');">
+            <span class="fa fa-exchange"></span> <span class="sidebar-title">Autorizador Online<span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li>
+
         <% IF  1=1 or aut("FaixaEtariaV")=1  THEN %>
             <li>
               <a href="?P=faixaetaria&Pers=1">

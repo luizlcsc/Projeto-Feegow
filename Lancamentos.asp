@@ -184,7 +184,7 @@ if not lanc.eof or (ItemInvoiceID="" and AtendimentoID="" and ProdutoInvoiceID="
                                     elseif EntSai="S" then
                                         btn = "<button onclick='lancarConta("& lanc("id") &")' type='button' data-rel='tooltip' data-placement='bottom' original-title='Lançar na conta do paciente' title='Lançar na conta do paciente' class='btn btn-xs btn-block btn-default'>Lançar Receita</button>"
                                     else
-                                        btn = "<button onclick='printRecibo("& lanc("id") &")' type='button' data-rel='tooltip' data-placement='bottom' original-title='recibo da movimentação' title='recibo da movimentação' class='btn btn-xs btn-block btn-primary'><i class='fa fa-print'></i> &nbsp; Recibo da movimentação</button>"
+                                        btn = "<button onclick='printRecibo("& lanc("id") &")' type='button' data-rel='tooltip' data-placement='bottom' original-title='Nota da movimentação' title='Nota da movimentação' class='btn btn-xs btn-block btn-primary'><i class='fa fa-print'></i> &nbsp; Nota da movimentação</button>"
                                     end if
                                 else
                                     if EntSai="E" and InvoiceID<>"" then

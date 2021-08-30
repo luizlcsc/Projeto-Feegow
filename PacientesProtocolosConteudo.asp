@@ -28,7 +28,7 @@ if Tipo = "I" then
         set getPacientesProtocolos = db.execute("SELECT * FROM pacientesprotocolos WHERE id="&ID)
         if getPacientesProtocolos.eof then
             if tipoprescricao&"" <> "" then
-                sqlInsertProtocolo ="INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive,tipoprescricao ) VALUES ("&ID&","&PacienteID&","&profissional&",  "&session("UnidadeID")&", "&session("User")&", 1,"&tipoprescricao&")"
+                sqlInsertProtocolo ="INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive,tipoprescricao ) VALUES ("&ID&","&PacienteID&","&profissional&",  "&session("UnidadeID")&", "&session("User")&", 1,'"&tipoprescricao&"')"
             else
                 sqlInsertProtocolo ="INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&profissional&",  "&session("UnidadeID")&", "&session("User")&", 1)"
             end if 

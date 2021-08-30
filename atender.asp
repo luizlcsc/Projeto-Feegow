@@ -434,6 +434,7 @@ function incluirGuiaSADT(atendimentoid, agendamentoid)
         "where id="&reg("id"))
         set guia = db.execute("select * from tissguiasadt where id="&reg("id"))
         db_execute("update tissguiasadt set TotalGeral="&treatvalzero(n2z(guia("Procedimentos"))+n2z(guia("Medicamentos"))+n2z(guia("Materiais"))+n2z(guia("TaxasEAlugueis"))+n2z(guia("OPME")))&" where id="&reg("id"))
+
     else 
         'Caso já exista a guia gerada atualizar o status da guia para 15 (aprovado e atendido)
         sqlupdate = "UPDATE tissguiasadt SET  GuiaStatus=15  WHERE id='"&rs_guia("id")&"'" 

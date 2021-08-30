@@ -57,9 +57,10 @@ end if
         if (tipoprescricao === "T"){
             let profissionalA = $("#ProfissionalID").val().split("_")
             profissional = profissionalA[1]
+            assoc = profissionalA[0]
         }
 
-        $.post("PacientesProtocolosConteudo.asp?profissional="+profissional+"&tipoprescricao="+tipoprescricao+"&Tipo=I&ProtocoloID="+ProtocoloID +"&PacienteID="+ $("#PacienteID").val() + "&ID="+ $("#ID").val(), {
+        $.post("PacientesProtocolosConteudo.asp?assoc="+assoc+"&profissional="+profissional+"&tipoprescricao="+tipoprescricao+"&Tipo=I&ProtocoloID="+ProtocoloID +"&PacienteID="+ $("#PacienteID").val() + "&ID="+ $("#ID").val(), {
             }, function (data) {
             $("#PacientesProtocolosConteudo").html(data);
         });

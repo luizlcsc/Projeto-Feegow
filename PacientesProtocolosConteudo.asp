@@ -7,6 +7,7 @@ end if
 
 tipoprescricao = req("tipoprescricao")
 profissional = req("profissional")
+assoc = req("assoc")
 
 Tipo = req("Tipo")
 readOnly = false
@@ -28,7 +29,7 @@ if Tipo = "I" then
         set getPacientesProtocolos = db.execute("SELECT * FROM pacientesprotocolos WHERE id="&ID)
         if getPacientesProtocolos.eof then
             if tipoprescricao&"" <> "" then
-                sqlInsertProtocolo ="INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive,tipoprescricao ) VALUES ("&ID&","&PacienteID&","&profissional&",  "&session("UnidadeID")&", "&session("User")&", 1,'"&tipoprescricao&"')"
+                sqlInsertProtocolo ="INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive,tipoprescricao, AccountAssociationID) VALUES ("&ID&","&PacienteID&","&profissional&",  "&session("UnidadeID")&", "&session("User")&", 1,'"&tipoprescricao&"',"&assoc&")"
             else
                 sqlInsertProtocolo ="INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&profissional&",  "&session("UnidadeID")&", "&session("User")&", 1)"
             end if 

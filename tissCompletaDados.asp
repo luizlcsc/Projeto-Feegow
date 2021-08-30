@@ -38,6 +38,7 @@ elseif tipo="6" then'Codigo de produto na tabela
 	call completaProdutoTabela(id, ref("ProdutoID"))
 elseif tipo="Convenio" then
 	call completaConvenio(id, ref("gPacienteID"))
+    call completaLocalExterno(ref("LocalExternoID"), id)
 elseif tipo="Plano" then
 	call completaPlano(id, ref("gProcedimentoID"))
 elseif tipo="Contratado" then
@@ -48,5 +49,7 @@ elseif tipo="7" then
 	call completaContratadoExterno(id, ref("gConvenioID"))
 elseif tipo="8" then
 	call completaProfissionalExterno(id, ref("gConvenioID"))
+elseif tipo="LocalExterno" then
+	call completaLocalExterno(id, ref("gConvenioID"))
 end if
 %>

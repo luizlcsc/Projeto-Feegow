@@ -102,7 +102,7 @@ elseif Tipo="Procedimentos" then
         <div class="row">
             <div class="col-md-3 qf">
 				<label>Profissional</label>
-				<%= simpleSelectCurrentAccounts("ProfissionalID"&id, "5, 8", Executante, " ") %>
+				<%= simpleSelectCurrentAccounts("ProfissionalID"&id, "5, 8", Executante, " ","") %>
 			</div>
             <!--
 			<%=quickField("simpleSelect", "ProfissionalID"&id, "Profissional", 3, ProfissionalID, "select id, NomeProfissional from profissionais where sysActive=1", "NomeProfissional", " onchange='repasses("&id&")' onchange='abreRateio("&n&")'")%>

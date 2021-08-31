@@ -193,7 +193,7 @@ end if
         </div>
 </div>
 <div class="modal-footer no-margin-top">
-	<button class="btn btn-sm btn-success pull-right" id="lancar"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-sm btn-success " id="lancar"><i class="fa fa-save"></i> Salvar</button>
 </div>
 </form>
 <script type="text/javascript">

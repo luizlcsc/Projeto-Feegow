@@ -40,13 +40,12 @@ if Action="Recalc" then
 	"Procedimentos=(select  coalesce(round(sum(ValorTotal),2),0) from tissprocedimentossadt where GuiaID="&I&"),"&_ 
 	"GasesMedicinais=(select  coalesce(round(sum(ValorTotal),2),0) from tissguiaanexa where CD=1 and GuiaID="&I&"), "&_
 	"Medicamentos=(select coalesce(round(sum(ValorTotal),2),0) from tissguiaanexa where CD=2 and GuiaID="&I&"), "&_ 
-	"Materiais=(select  coalesce(round(sum(ValorTotal),2),0) from tissguiaanexa where CD=3 and GuiaID="&I&"), "&_ 
+	"Materiais=(select  coalesce(round(sum(ValorTotal),2),0) from tissguiaanexa where CD in (3,9) and GuiaID="&I&"), "&_ 
 	"TaxasEAlugueis=(select  coalesce(round(sum(ValorTotal),2),0) from tissguiaanexa where CD=7 and GuiaID="&I&"), "&_ 
 	"OPME=(select  coalesce(round(sum(ValorTotal),2),0) from tissguiaanexa where CD=8 and GuiaID="&I&") "&_ 
 	"where id="&I)
 	set guia = db.execute("select * from tissguiasadt where id="&I)
-
-	valorFinal = treatvalzero(n2z(guia("Procedimentos")) + n2z(guia("Medicamentos")) + n2z(guia("Materiais")) + n2z(guia("TaxasEAlugueis")) + n2z(guia("OPME")))
+	valorFinal = treatvalzero(n2z(guia("Procedimentos")) + n2z(guia("GasesMedicinais")) + n2z(guia("Medicamentos")) + n2z(guia("Materiais")) + n2z(guia("TaxasEAlugueis")) + n2z(guia("OPME")))
 
 	sqltiss = "update tissguiasadt set TotalGeral="&valorFinal&" where id="&I
 

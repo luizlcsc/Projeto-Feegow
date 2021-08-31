@@ -40,9 +40,16 @@
     margin-bottom:5px;
     border: solid 1px #000;
 }
+.titulo-cd{
+    width: 100%;
+    padding-left:5px;
+    padding-top:2px;
+    padding-bottom:2px;
+    color: rgba(79, 79, 79, 0.7);
+}
 @media print {
     .bloco {
-        page-break-inside: avoid;
+        /* page-break-inside: avoid; */
     }
 }
 </style>
@@ -151,7 +158,7 @@ end if
 %>
 <body>
     <table>
-        <thead>
+       <thead>
           <tr>
              <th>
                 <div class="cabecalho">
@@ -265,18 +272,20 @@ end if
 
                         if ExibeGases <> false then%>
                             <div class="bloco">
-                                <table padding-left="2px"  width="100%" border="0" cellpadding="0" cellspacing="0">
-                                    <caption class="bg-secondary" style="padding-left:10px; padding-top:1px; padding-bottom:2px;"><strong>Gases Medicinais</strong></caption>
-                                    <tr class="bg-secondary">
-                                        <th class="text-left pl10" width="5%">Seq.</th>
-                                        <th class="text-left" width="10%">Código</th>
-                                        <th class="text-left" width="35%">Descrição Gases Medicinais</th>
-                                        <th class="text-left" width="10%">Data</th>
-                                        <th class="text-left" width="10%">Unid.</th>
-                                        <th class="text-right" width="10%">Qtde</th>
-                                        <th class="text-right" width="10%">Vl Unit.</th>
-                                        <th class="text-right pr10" width="10%">Vl Total</th>
-                                    </tr>
+                                <table padding-left="2px"  width="100%" tborder="0" cellpadding="0" cellspacing="0" style="-fs-table-paginate:paginate;">
+                                    <thead style="display:table-header-group">
+                                        <div class="bg-secondary titulo-cd"><strong>Gases Medicinais</strong></div>
+                                        <tr class="bg-secondary">
+                                            <th class="text-left pl10" width="5%">Seq.</th>
+                                            <th class="text-left" width="10%">Código</th>
+                                            <th class="text-left" width="35%">Descrição Gases Medicinais</th>
+                                            <th class="text-left" width="10%">Data</th>
+                                            <th class="text-left" width="10%">Unid.</th>
+                                            <th class="text-right" width="10%">Qtde</th>
+                                            <th class="text-right" width="10%">Vl Unit.</th>
+                                            <th class="text-right pr10" width="10%">Vl Total</th>
+                                        </tr>
+                                    </thead>
                                     <%
                                     set CD1SQL = db.execute("SELECT ga.CD, ga.CodigoProduto, ga.Descricao, ga.`Data`, ga.Quantidade, ga.ValorUnitario, ga.ValorTotal, gs.GasesMedicinais TotalGasesMedicinais, "&_
                                                             " um.Descricao UnidadeDescricao "&_
@@ -304,16 +313,18 @@ end if
                                         ValorUnitario = CD1SQL("ValorUnitario")&""
                                         ValorTotal = CD1SQL("ValorTotal")&""
                                     %>
-                                        <tr class="border-bottom">
-                                            <td class="text-left pl10" width="5%"><%=Seq%></td>
-                                            <td class="text-left" width="10%"><%=CodigoProduto%></td>
-                                            <td class="text-left" width="35%"><%=Descricao%></td>
-                                            <td class="text-left" width="10%"><%=Data%></td>
-                                            <td class="text-left" width="10%"><%=UnidadeDescricao%></td>
-                                            <td class="text-right" width="10%"><%=formatnumber(Quantidade,2)%></td>
-                                            <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
-                                            <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
-                                        </tr>
+                                        <tbody>
+                                            <tr class="border-bottom">
+                                                <td class="text-left pl10" width="5%"><%=Seq%></td>
+                                                <td class="text-left" width="10%"><%=CodigoProduto%></td>
+                                                <td class="text-left" width="35%"><%=Descricao%></td>
+                                                <td class="text-left" width="10%"><%=Data%></td>
+                                                <td class="text-left" width="10%"><%=UnidadeDescricao%></td>
+                                                <td class="text-right" width="10%"><%=formatnumber(Quantidade,2)%></td>
+                                                <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
+                                                <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
+                                            </tr>
+                                        <tbody>
                                     <%
                                     TotalQuantidade = TotalQuantidade + Quantidade
                                     Seq = Seq + 1
@@ -322,12 +333,14 @@ end if
                                     CD1SQL.close
                                     set CD1SQL=nothing
                                     %>
-                                    <tr>
-                                        <td class="text-center" colspan="5" width="70%"><strong>Total de Gases</strong></td>
-                                        <td class="text-right" width="10%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
-                                        <td width="10%"></td>
-                                        <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalGasesMedicinais, 2)%></strong></td>
-                                    </tr>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="text-center" colspan="5" width="70%"><strong>Total de Gases</strong></td>
+                                            <td class="text-right" width="10%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
+                                            <td width="10%"></td>
+                                            <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalGasesMedicinais, 2)%></strong></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         <%
@@ -335,18 +348,20 @@ end if
 
                         if ExibeMateriais <> false then%>
                             <div class="bloco">
-                                <table padding-left="2px"  width="100%" border="0" cellpadding="0" cellspacing="0">
-                                    <caption class="bg-secondary" style="padding-left:10px; padding-top:1px; padding-bottom:2px;"><strong>Materiais</strong></caption>
-                                    <tr class="bg-secondary">
-                                        <th class="text-left pl10" width="5%">Seq.</th>
-                                        <th class="text-left" width="10%">Código</th>
-                                        <th class="text-left" width="35%">Descrição Material</th>
-                                        <th class="text-left" width="10%">Data</th>
-                                        <th class="text-left" width="10%">Unid.</th>
-                                        <th class="text-right" width="10%">Qtde</th>
-                                        <th class="text-right" width="10%">Vl Unit.</th>
-                                        <th class="text-right pr10" width="10%">Vl Total</th>
-                                    </tr>
+                                <table padding-left="2px"  width="100%" tborder="0" cellpadding="0" cellspacing="0" style="-fs-table-paginate:paginate;">
+                                    <thead style="display:table-header-group">
+                                        <div class="bg-secondary titulo-cd"><strong>Materiais</strong></div>
+                                        <tr class="bg-secondary">
+                                            <th class="text-left pl10" width="5%">Seq.</th>
+                                            <th class="text-left" width="10%">Código</th>
+                                            <th class="text-left" width="35%">Descrição Material</th>
+                                            <th class="text-left" width="10%">Data</th>
+                                            <th class="text-left" width="10%">Unid.</th>
+                                            <th class="text-right" width="10%">Qtde</th>
+                                            <th class="text-right" width="10%">Vl Unit.</th>
+                                            <th class="text-right pr10" width="10%">Vl Total</th>
+                                        </tr>
+                                    </thead>
                                     <%
                                     set CD3SQL = db.execute("SELECT ga.CD, ga.CodigoProduto, ga.Descricao, ga.`Data`, ga.Quantidade, ga.ValorUnitario, ga.ValorTotal, gs.Materiais TotalMateriais, "&_
                                                 " um.Descricao UnidadeDescricao "&_
@@ -374,16 +389,18 @@ end if
                                         ValorUnitario = CD3SQL("ValorUnitario")&""
                                         ValorTotal = CD3SQL("ValorTotal")&""
                                     %>
-                                        <tr class="border-bottom">
-                                            <td class="text-left pl10" width="5%"><%=Seq%></td>
-                                            <td class="text-left" width="10%"><%=CodigoProduto%></td>
-                                            <td class="text-left" width="35%"><%=Descricao%></td>
-                                            <td class="text-left" width="10%"><%=Data%></td>
-                                            <td class="text-left" width="10%"><%=UnidadeDescricao%></td>
-                                            <td class="text-right" width="10%"><%=formatnumber(Quantidade,2)%></td>
-                                            <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
-                                            <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
-                                        </tr>
+                                        <tbody>
+                                            <tr class="border-bottom">
+                                                <td class="text-left pl10" width="5%"><%=Seq%></td>
+                                                <td class="text-left" width="10%"><%=CodigoProduto%></td>
+                                                <td class="text-left" width="35%"><%=Descricao%></td>
+                                                <td class="text-left" width="10%"><%=Data%></td>
+                                                <td class="text-left" width="10%"><%=UnidadeDescricao%></td>
+                                                <td class="text-right" width="10%"><%=formatnumber(Quantidade,2)%></td>
+                                                <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
+                                                <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
+                                            </tr>
+                                        </tbody>
                                     <%
                                     TotalQuantidade = TotalQuantidade + Quantidade
                                     Seq = Seq + 1                     
@@ -392,12 +409,14 @@ end if
                                     CD3SQL.close
                                     set CD3SQL=nothing
                                     %>
-                                    <tr>
-                                        <td class="text-center" colspan="5" width="70%"><strong>Total de Materiais</strong></td>
-                                        <td class="text-right" width="10%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
-                                        <td width="10%"></td>
-                                        <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalMateriais, 2)%></strong></td>
-                                    </tr>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="text-center" colspan="5" width="70%"><strong>Total de Materiais</strong></td>
+                                            <td class="text-right" width="10%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
+                                            <td width="10%"></td>
+                                            <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalMateriais, 2)%></strong></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         <%
@@ -406,18 +425,20 @@ end if
                         if ExibeOPME <> false then
                         %>
                             <div class="bloco">
-                                <table padding-left="2px"  width="100%" border="0" cellpadding="0" cellspacing="0">
-                                    <caption class="bg-secondary" style="padding-left:10px; padding-top:1px; padding-bottom:2px;"><strong>OPME</strong></caption>
-                                    <tr class="bg-secondary">
-                                        <th class="text-left pl10" width="5%">Seq.</th>
-                                        <th class="text-left" width="10%">Código</th>
-                                        <th class="text-left" width="35%">Descrição OPME</th>
-                                        <th class="text-left" width="10%">Data</th>
-                                        <th class="text-left" width="10%">Unid.</th>
-                                        <th class="text-right" width="10%">Qtde</th>
-                                        <th class="text-right" width="10%">Vl Unit.</th>
-                                        <th class="text-right pr10" width="10%">Vl Total</th>
-                                    </tr>
+                                <table padding-left="2px"  width="100%" tborder="0" cellpadding="0" cellspacing="0" style="-fs-table-paginate:paginate;">
+                                    <thead style="display:table-header-group">
+                                        <div class="bg-secondary titulo-cd"><strong>OPME</strong></div>
+                                        <tr class="bg-secondary">
+                                            <th class="text-left pl10" width="5%">Seq.</th>
+                                            <th class="text-left" width="10%">Código</th>
+                                            <th class="text-left" width="35%">Descrição OPME</th>
+                                            <th class="text-left" width="10%">Data</th>
+                                            <th class="text-left" width="10%">Unid.</th>
+                                            <th class="text-right" width="10%">Qtde</th>
+                                            <th class="text-right" width="10%">Vl Unit.</th>
+                                            <th class="text-right pr10" width="10%">Vl Total</th>
+                                        </tr>
+                                    </thead>
                                     <%                        
                                     set CD8SQL = db.execute("SELECT ga.CD, ga.CodigoProduto, ga.Descricao, ga.`Data`, ga.Quantidade, ga.ValorUnitario, ga.ValorTotal, gs.OPME TotalOPME, "&_
                                                 " um.Descricao UnidadeDescricao "&_
@@ -445,16 +466,18 @@ end if
                                         ValorUnitario = CD8SQL("ValorUnitario")&""
                                         ValorTotal = CD8SQL("ValorTotal")&""
                                     %>
-                                        <tr class="border-bottom">
-                                            <td class="text-left pl10" width="5%"><%=Seq%></td>
-                                            <td class="text-left" width="10%"><%=CodigoProduto%></td>
-                                            <td class="text-left" width="35%"><%=Descricao%></td>
-                                            <td class="text-left" width="10%"><%=Data%></td>
-                                            <td class="text-left" width="10%"><%=UnidadeDescricao%></td>
-                                            <td class="text-right" width="10%"><%=formatnumber(Quantidade,2)%></td>
-                                            <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
-                                            <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
-                                        </tr>
+                                        <tbody>
+                                            <tr class="border-bottom">
+                                                <td class="text-left pl10" width="5%"><%=Seq%></td>
+                                                <td class="text-left" width="10%"><%=CodigoProduto%></td>
+                                                <td class="text-left" width="35%"><%=Descricao%></td>
+                                                <td class="text-left" width="10%"><%=Data%></td>
+                                                <td class="text-left" width="10%"><%=UnidadeDescricao%></td>
+                                                <td class="text-right" width="10%"><%=formatnumber(Quantidade,2)%></td>
+                                                <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
+                                                <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
+                                            </tr>
+                                        <tbody>
                                     <%
                                     TotalQuantidade = TotalQuantidade + Quantidade
                                     Seq = Seq + 1
@@ -463,12 +486,14 @@ end if
                                     CD8SQL.close
                                     set CD8SQL=nothing
                                     %>
-                                    <tr>
-                                        <td class="text-center" colspan="5" width="70%"><strong>Total de OPME</strong></td>
-                                        <td class="text-right" width="10%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
-                                        <td width="10%"></td>
-                                        <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalOPME, 2)%></strong></td>
-                                    </tr>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="text-center" colspan="5" width="70%"><strong>Total de OPME</strong></td>
+                                            <td class="text-right" width="10%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
+                                            <td width="10%"></td>
+                                            <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalOPME, 2)%></strong></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         <%
@@ -477,19 +502,20 @@ end if
                         if ExibeMedicamentos <> false then
                         %>
                             <div class="bloco">
-                                <table padding-left="2px"  width="100%" border="0" cellpadding="0" cellspacing="0">
-                                    <caption class="bg-secondary" style="padding-left:10px; padding-top:1px; padding-bottom:2px;"><strong>Medicamentos</strong></caption>
-                                    <tr class="bg-secondary">
-                                        <th class="text-left pl10" width="5%">Seq.</th>
-                                        <th class="text-left" width="10%">Código</th>
-                                        <th class="text-left" width="35%">Descrição Medicamentos</th>
-                                        <th class="text-left" width="10%">Data</th>
-                                        <th class="text-left" width="10%">Unid.</th>
-                                        <th class="text-right" width="10%">Qtde</th>
-                                        <th class="text-right" width="10%">Vl Unit.</th>
-                                        <th class="text-right pr10" width="10%">Vl Total</th>
-                                    </tr>
-                                    
+                                <table padding-left="2px"  width="100%" tborder="0" cellpadding="0" style="-fs-table-paginate:paginate;">
+                                    <thead style="display:table-header-group">
+                                        <div class="bg-secondary titulo-cd"><strong>Medicamentos</strong></div>
+                                        <tr class="bg-secondary">
+                                            <th class="text-left pl10" width="5%">Seq.</th>
+                                            <th class="text-left" width="10%">Código</th>
+                                            <th class="text-left" width="35%">Descrição Medicamentos</th>
+                                            <th class="text-left" width="10%">Data</th>
+                                            <th class="text-left" width="10%">Unid.</th>
+                                            <th class="text-right" width="10%">Qtde</th>
+                                            <th class="text-right" width="10%">Vl Unit.</th>
+                                            <th class="text-right pr10" width="10%">Vl Total</th>
+                                        </tr>
+                                    </thead>                                    
                                     <%
                                     set CD2SQL = db.execute("SELECT ga.CD, ga.CodigoProduto, ga.Descricao, ga.`Data`, ga.Quantidade, ga.ValorUnitario, ga.ValorTotal, gs.Medicamentos TotalMedicamentos, "&_
                                                 " um.Descricao UnidadeDescricao "&_
@@ -517,16 +543,18 @@ end if
                                         ValorUnitario = CD2SQL("ValorUnitario")&""
                                         ValorTotal = CD2SQL("ValorTotal")&""
                                     %>
-                                        <tr class="border-bottom">
-                                            <td class="text-left pl10" width="5%"><%=Seq%></td>
-                                            <td class="text-left" width="10%"><%=CodigoProduto%></td>
-                                            <td class="text-left" width="35%"><%=Descricao%></td>
-                                            <td class="text-left" width="10%"><%=Data%></td>
-                                            <td class="text-left" width="10%"><%=UnidadeDescricao%></td>
-                                            <td class="text-right" width="10%"><%=formatnumber(Quantidade,2)%></td>
-                                            <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
-                                            <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
-                                        </tr>
+                                        <tbody>
+                                            <tr class="border-bottom">
+                                                <td class="text-left pl10" width="5%"><%=Seq%></td>
+                                                <td class="text-left" width="10%"><%=CodigoProduto%></td>
+                                                <td class="text-left" width="35%"><%=Descricao%></td>
+                                                <td class="text-left" width="10%"><%=Data%></td>
+                                                <td class="text-left" width="10%"><%=UnidadeDescricao%></td>
+                                                <td class="text-right" width="10%"><%=formatnumber(Quantidade,2)%></td>
+                                                <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
+                                                <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
+                                            </tr>
+                                        </tbody>
                                     <%
                                     TotalQuantidade = TotalQuantidade + Quantidade
                                     Seq = Seq + 1
@@ -535,12 +563,14 @@ end if
                                     CD2SQL.close
                                     set CD2SQL=nothing
                                     %> 
-                                    <tr>
-                                        <td class="text-center" colspan="5" width="70%"><strong>Total de Medicamentos</strong></td>
-                                        <td class="text-right" width="10%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
-                                        <td width="10%"></td>
-                                        <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalMedicamentos, 2)%></strong></td>
-                                    </tr>
+                                    <tfoot>
+                                        <tr>
+                                            <td class="text-center" colspan="5" width="70%"><strong>Total de Medicamentos</strong></td>
+                                            <td class="text-right" width="10%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
+                                            <td width="10%"></td>
+                                            <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalMedicamentos, 2)%></strong></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         <%
@@ -549,18 +579,20 @@ end if
                         if ExibeTaxas <> false then
                         %>
                             <div class="bloco">
-                                <table padding-left="2px"  width="100%" border="0" cellpadding="0" cellspacing="0">
-                                    <caption class="bg-secondary" style="padding-left:10px; padding-top:1px; padding-bottom:2px;"><strong>Taxas e Aluguel</strong></caption>
-                                    <tr class="bg-secondary">
-                                        <th class="text-left pl10" width="5%">Seq.</th>
-                                        <th class="text-left" width="10%">Código</th>
-                                        <th class="text-left" width="35%">Descrição de Taxa e Aluguel</th>
-                                        <th class="text-left" width="10%">Data</th>
-                                        <th width="10%"></th>
-                                        <th class="text-right" width="10%">Qtde</th>
-                                        <th class="text-right" width="10%">Vl Unit.</th>
-                                        <th class="text-right pr10" width="10%">Vl Total</th>
-                                    </tr>
+                                <table padding-left="2px"  width="100%" tborder="0" cellpadding="0" cellspacing="0" style="-fs-table-paginate:paginate;">
+                                    <thead style="display:table-header-group">
+                                        <div class="bg-secondary titulo-cd"><strong>Taxas e Aluguel</strong></div>
+                                        <tr class="bg-secondary">
+                                            <th class="text-left pl10" width="5%">Seq.</th>
+                                            <th class="text-left" width="10%">Código</th>
+                                            <th class="text-left" width="35%">Descrição de Taxa e Aluguel</th>
+                                            <th class="text-left" width="10%">Data</th>
+                                            <th width="10%"></th>
+                                            <th class="text-right" width="10%">Qtde</th>
+                                            <th class="text-right" width="10%">Vl Unit.</th>
+                                            <th class="text-right pr10" width="10%">Vl Total</th>
+                                        </tr>
+                                    </thead>
                                     <%
                                     set CD7SQL = db.execute("SELECT ga.CD, ga.CodigoProduto, ga.Descricao, ga.`Data`, ga.Quantidade, ga.ValorUnitario, ga.ValorTotal, gs.TaxasEAlugueis TotalTaxasEAlugueis, "&_
                                                 " um.Descricao UnidadeDescricao "&_
@@ -588,16 +620,18 @@ end if
                                         ValorUnitario = CD7SQL("ValorUnitario")&""
                                         ValorTotal = CD7SQL("ValorTotal")&""
                                     %>
+                                    <tbody>
                                         <tr class="border-bottom">
-                                        <td class="text-left pl10" width="5%"><%=Seq%></td>
-                                        <td class="text-left" width="10%"><%=CodigoProduto%></td>
-                                        <td class="text-left" width="35%"><%=Descricao%></td>
-                                        <td class="text-left" width="10%"><%=Data%></td>
-                                        <td class="text-left" width="10%"><%=UnidadeDescricao%></td>
-                                        <td class="text-right" width="10%"><%=formatnumber(Quantidade,2)%></td>
-                                        <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
-                                        <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
-                                    </tr>
+                                            <td class="text-left pl10" width="5%"><%=Seq%></td>
+                                            <td class="text-left" width="10%"><%=CodigoProduto%></td>
+                                            <td class="text-left" width="35%"><%=Descricao%></td>
+                                            <td class="text-left" width="10%"><%=Data%></td>
+                                            <td class="text-left" width="10%"><%=UnidadeDescricao%></td>
+                                            <td class="text-right" width="10%"><%=formatnumber(Quantidade,2)%></td>
+                                            <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
+                                            <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
+                                        </tr>
+                                    </tbody>
                                     <%
                                     TotalQuantidade = TotalQuantidade + Quantidade
                                     Seq = Seq + 1
@@ -605,31 +639,35 @@ end if
                                     wend
                                     CD7SQL.close
                                     set CD7SQL=nothing
-                                    %>           
-                                    <tr>
-                                        <td class="text-center" colspan="5" width="70%"><strong>Total de Taxas</strong></td>
-                                        <td class="text-right" width="10%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
-                                        <td width="10%"></td>
-                                        <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalTaxasEAlugueis, 2)%></strong></td>
-                                    </tr>
+                                    %>
+                                    <tfoot>         
+                                        <tr>
+                                            <td class="text-center" colspan="5" width="70%"><strong>Total de Taxas</strong></td>
+                                            <td class="text-right" width="10%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
+                                            <td width="10%"></td>
+                                            <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalTaxasEAlugueis, 2)%></strong></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         <%
                         end if
                         %>
                         <div class="bloco">
-                            <table padding-left="2px"  width="100%" border="0" cellpadding="0" cellspacing="0">
-                                <caption class="bg-secondary" style="padding-left:10px; padding-top:1px; padding-bottom:2px;"><strong>Procedimentos</strong></caption>
-                                <tr class="bg-secondary">
-                                    <th class="text-left pl10" width="5%">Seq.</th>
-                                    <th class="text-left" width="10%">Código</th>
-                                    <th class="text-left" width="35%">Descrição</th>
-                                    <th class="text-left" width="20%">Médico</th>
-                                    <th class="text-left" width="5%">Data</th>
-                                    <th class="text-right" width="5%">Qtd</th>
-                                    <th class="text-right" width="10%">Vl Unit.</th>
-                                    <th class="text-right pr10" width="10%">Vl Total</th>
-                                </tr>
+                            <table padding-left="2px"  width="100%" tborder="0" cellpadding="0" cellspacing="0" style="-fs-table-paginate:paginate;">
+                                <thead style="display:table-header-group">
+                                    <div class="bg-secondary titulo-cd"><strong>Procedimentos</strong></div>
+                                    <tr class="bg-secondary">
+                                        <th class="text-left pl10" width="5%">Seq.</th>
+                                        <th class="text-left" width="10%">Código</th>
+                                        <th class="text-left" width="35%">Descrição</th>
+                                        <th class="text-left" width="20%">Médico</th>
+                                        <th class="text-left" width="5%">Data</th>
+                                        <th class="text-right" width="5%">Qtd</th>
+                                        <th class="text-right" width="10%">Vl Unit.</th>
+                                        <th class="text-right pr10" width="10%">Vl Total</th>
+                                    </tr>
+                                </thead>
                                 <%
                                 set ProcSQL = db.execute("SELECT ps.codigoProcedimento Codigo, ps.Descricao, ps.`Data`, ps.Quantidade, ps.ValorUnitario, ps.ValorTotal, gs.Procedimentos TotalProcedimentos, gs.TotalGeral, p.NomeProfissional Medico "&_
                                                         " FROM tissprocedimentossadt ps "&_
@@ -659,16 +697,18 @@ end if
                                     ValorUnitario = ProcSQL("ValorUnitario")
                                     ValorTotal = ProcSQL("ValorTotal")
                                 %>
-                                    <tr class="border-bottom">
-                                        <td class="text-left pl10" width="5%"><%=Seq%></td>
-                                        <td class="text-left" width="10%"><%=Codigo%></td>
-                                        <td class="text-left" width="35%"><%=Descricao%></td>
-                                        <td class="text-left" width="20%"><%=Medico%></td>
-                                        <td class="text-left" width="5%"><%=Data%></td>
-                                        <td class="text-right" width="5%"><%=formatnumber(Quantidade,2)%></td>
-                                        <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
-                                        <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
-                                    </tr>
+                                    <tbody>
+                                        <tr class="border-bottom">
+                                            <td class="text-left pl10" width="5%"><%=Seq%></td>
+                                            <td class="text-left" width="10%"><%=Codigo%></td>
+                                            <td class="text-left" width="35%"><%=Descricao%></td>
+                                            <td class="text-left" width="20%"><%=Medico%></td>
+                                            <td class="text-left" width="5%"><%=Data%></td>
+                                            <td class="text-right" width="5%"><%=formatnumber(Quantidade,2)%></td>
+                                            <td class="text-right" width="10%"><%=formatnumber(ValorUnitario,2)%></td>
+                                            <td class="text-right pr10" width="10%"><%=formatnumber(ValorTotal,2)%></td>
+                                        </tr>
+                                    </tbody>
                                 <%
                                 TotalQuantidade = TotalQuantidade + Quantidade
                                 Seq = Seq + 1
@@ -676,22 +716,26 @@ end if
                                 wend
                                 ProcSQL.close
                                 set ProcSQL=nothing
-                                %>            
-                                <tr>
-                                    <td class="text-center" colspan="5" width="75%"><strong>Total de Procedimentos</strong></td>
-                                    <td class="text-right" width="5%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
-                                    <td width="10%"></td>
-                                    <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalProcedimentos, 2)%></strong></td>
-                                </tr>
+                                %> 
+                                <tfoot>
+                                    <tr>
+                                        <td class="text-center" colspan="5" width="75%"><strong>Total de Procedimentos</strong></td>
+                                        <td class="text-right" width="5%"><strong><%=formatnumber(TotalQuantidade,2)%></strong></td>
+                                        <td width="10%"></td>
+                                        <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalProcedimentos, 2)%></strong></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
 
                         <div class="bloco">
-                            <table padding-left="2px"  width="100%" border="0" cellpadding="0" cellspacing="0">
-                                <tr class="bg-secondary">
-                                    <td class="text-right pr10" colspan="7" width="90%"><strong>Total Geral:</strong></td>
-                                    <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalGeral,2)%></strong></td>
-                                </tr>
+                            <table padding-left="2px"  width="100%" tborder="0" cellpadding="0" cellspacing="0" style="-fs-table-paginate:paginate;">
+                                <tbody>
+                                    <tr class="bg-secondary">
+                                        <td class="text-right pr10" colspan="7" width="90%"><strong>Total Geral:</strong></td>
+                                        <td class="text-right pr10" width="10%"><strong><%=formatnumber(TotalGeral,2)%></strong></td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>                

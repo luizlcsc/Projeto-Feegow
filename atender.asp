@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <!--#include file="tissFuncs.asp"-->
+<!--#include file="Classes/ValorProcedimento.asp"-->
 <%
 
 AgendamentoID = req("Atender")
@@ -411,13 +412,28 @@ function incluirGuiaSADT(atendimentoid, agendamentoid)
                     "    tipoContratadoSolicitante='I', "&_
                     "    tipoProfissionalSolicitante='I', "&_
                     "    UnidadeID='"&session("UnidadeID")&"', "&_
-                    "    ValorPago='"&TotalProcedimentos&"', "&_
+                    "    ValorPago='0', "&_
                     "    GuiaStatus=15 "&_
                     "    WHERE id='"&reg("id")&"'"  
         db_execute (sqlupdate) 
         updateAgendamento = "UPDATE agendamentos SET formapagto = 1 WHERE id = '"&AgendamentoID&"'"
         db_execute (updateAgendamento)
-                        
+
+        Procedimentos = 0
+        TaxasEAlugueis = 0
+        Materiais = 0
+        OPME = 0
+        Medicamentos = 0
+        GasesMedicinais = 0
+        TotalGeral = 0
+
+        db_execute("update tissguiasadt set TotalGeral=0 where id="&reg("id"))
+        TotalGeral = Procedimentos+TaxasEAlugueis+Materiais+OPME+Medicamentos+GasesMedicinais
+        db_execute("update tissguiasadt set "&_ 
+        "Procedimentos=(select sum(ValorTotal) from tissprocedimentossadt where GuiaID="&reg("id")&")"&_ 
+        "where id="&reg("id"))
+        set guia = db.execute("select * from tissguiasadt where id="&reg("id"))
+        db_execute("update tissguiasadt set TotalGeral="&treatvalzero(n2z(guia("Procedimentos"))+n2z(guia("Medicamentos"))+n2z(guia("Materiais"))+n2z(guia("TaxasEAlugueis"))+n2z(guia("OPME")))&" where id="&reg("id"))
     else 
         'Caso já exista a guia gerada atualizar o status da guia para 15 (aprovado e atendido)
         sqlupdate = "UPDATE tissguiasadt SET  GuiaStatus=15  WHERE id='"&rs_guia("id")&"'" 

@@ -104,13 +104,20 @@ if Acao="Remarcar" then
     HoraSolFin=dateAdd("n",TempoSol,HoraSolIni)
     HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
-    sql = "SELECT total_agendamentos >= max_agendamentos AS nao_pode_agendar FROM (SELECT COUNT(*) AS total_agendamentos, IF(procedimentos.MaximoAgendamentos='' or procedimentos.MaximoAgendamentos Is null, 1, procedimentos.MaximoAgendamentos) AS max_agendamentos from agendamentos LEFT JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID where agendamentos.sysActive=1 AND StaID not in (11,15) AND ProfissionalID = "&treatvalzero(ProfissionalID)&" and ProfissionalID<>0 and Data = "&mydatenull(Data)&" and ((Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora < time('"&HoraSolFin&"') and Encaixe IS NULL and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')) or Hora="&mytime(HoraSolIni)&")   GROUP BY 2) AS t HAVING nao_pode_agendar = 1"
+    sql = ("select * from agendamentos where sysActive=1 AND ProfissionalID = "&treatvalzero(ProfissionalID)&" and StaID !=11 and ProfissionalID<>0 and Data = '"&mydate(Data)&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora<time('"&HoraSolFin&"') and Encaixe IS NULL and sysactive=1 and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')")
 
     set ve1=db.execute(sql)
     if not ve1.eof then
-        check = ve1("nao_pode_agendar")
+        erro="Erro: O horário solicitado não dispõe dos "&TempoSol&" minutos requeridos para o agendamento deste procedimento."
+    end if
+
+    sql = "SELECT total_agendamentos >= max_agendamentos AS nao_pode_agendar FROM (SELECT COUNT(*) AS total_agendamentos, IF(procedimentos.MaximoAgendamentos='' or procedimentos.MaximoAgendamentos Is null, 1, procedimentos.MaximoAgendamentos) AS max_agendamentos from agendamentos LEFT JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID where agendamentos.sysActive=1 AND StaID not in (11,15) AND ProfissionalID = "&treatvalzero(ProfissionalID)&" and ProfissionalID<>0 and Data = "&mydatenull(Data)&" and ((Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora < time('"&HoraSolFin&"') and Encaixe IS NULL and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')) or Hora="&mytime(HoraSolIni)&")   GROUP BY 2) AS t HAVING nao_pode_agendar = 1"
+
+    set ve2=db.execute(sql)
+    if not ve2.eof then
+        check = ve2("nao_pode_agendar")
         if check = "1" then
-            erro="Erro: O horário solicitado não dispõe do tempo requerido (entre "&HoraSolIni&" e "&HoraSolFin&") para o agendamento deste procedimento."
+            erro="Erro: Número de atendimentos para este procedimento excedido (entre "&HoraSolIni&" e "&HoraSolFin&") para o agendamento deste procedimento."
         end if
     end if
 

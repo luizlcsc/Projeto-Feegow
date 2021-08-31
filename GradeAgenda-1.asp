@@ -720,7 +720,7 @@ end if
                         iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""fa fa-undo text-warning pt10""></i>"
                     end if
                     Conteudo = Conteudo & "</td>"&_
-                    "<td class=""text-center hidden-xs"" "& linkAg &"><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(NomeProcedimento&" ", "'", "\'")&"</span> "&iconRetorno&"</td>"&_
+                    "<td class=""text-center hidden-xs"" "& linkAg &"><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(replace(NomeProcedimento&" ", "'", "\'"),"\","\\")&"</span> "&iconRetorno&"</td>"&_
                     "<td class=""text-center hidden-xs"" "& linkAg &">"&comps("StaConsulta")&"</td>"&_
                     "<td class=""text-right nomeConv hidden-xs"" "& linkAg &"><small>"& sinalAgenda(FormaPagto) & rotulo &"</small></td>"&_
                     "</tr>"

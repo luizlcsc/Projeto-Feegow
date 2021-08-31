@@ -85,16 +85,18 @@ END IF
                     icone = "assets/img/"&extensao&".png"
                 end if
 
-                '02/09/2019 Sanderson
                 'verifica permissao de compartilhamento do arquivo
-                permissao = VerificaProntuarioCompartilhamento(arquivos("sysUser"),"Arquivos", arquivos("id"))
+                'default pode ver, porém se não pertence ao CareTeam irá verificar a permissão do arquivo
                 podever = true
-                tipoCompartilhamento =1
+                tipoCompartilhamento = 1
+                if not autCareTeam(arquivos("sysUser"), req("PacienteID")) then
+                    permissao = VerificaProntuarioCompartilhamento(arquivos("sysUser"),"Arquivos", arquivos("id"))
 
-                if permissao <> "" then
-                    permissaoSplit = split(permissao,"|")
-                    podever = permissaoSplit(0)
-                    tipoCompartilhamento = permissaoSplit(1)
+                    if permissao <> "" then
+                        permissaoSplit = split(permissao,"|")
+                        podever = permissaoSplit(0)
+                        tipoCompartilhamento = permissaoSplit(1)
+                    end if
                 end if
 
 				if podever or ( cstr(session("User"))=arquivos("sysUser")&"") then

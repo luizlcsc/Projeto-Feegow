@@ -453,6 +453,7 @@ end if
 					"<td class=""text-right nomeConv"">"&replace(Valor&" ", "'", "\'")&"</td>"&_
 					"</tr>"
 					HAgendados = HAgendados+1
+
                 %>
                 var Status = '<%=comps("StaID")%>';
 
@@ -461,7 +462,7 @@ end if
                     {
                         var gradeId = $(this).data("grade");
 
-                        $(this).replaceWith(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                        $(this).replaceWith('<%=conteudo %>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
                         return false;
                     }
                     else if ( $(this).attr("id")>'<%=HoraComp%>' )

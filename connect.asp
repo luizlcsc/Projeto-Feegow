@@ -3784,20 +3784,47 @@ private function geraRecorrente(i)
 end function
 
 function statusTarefas(De, Para)
-'    response.write("select id from sys_users where id="&De&" or id in("&replace(Para, "|", "")&")")
-    set puser = db.execute("select id from sys_users where id="&De&" or id in("&replace(Para, "|", "")&")")
+    if instr(Para, "-") > 0 then
+
+        UserIdSpl = split(replace(Para, "|", ""), ",")
+
+        for j=0 to ubound(UserIdSpl)
+            itemSPL = UserIdSpl(j)
+
+            if instr(itemSPL, "-") > 0 then
+                itemSPL = replace(itemSPL,"-", "")
+                UsuariosIdSQL = "SELECT GROUP_CONCAT('|',Usuarios,'|') Usuarios FROM( "&_
+                                "    SELECT up.id Usuarios "&_
+                                "    FROM profissionais p "&_
+                                "    LEFT JOIN sys_users up ON up.idInTable=p.id "&_
+                                "    WHERE p.CentroCustoID = "&itemSPL&_
+                                "    UNION ALL "&_
+                                "    SELECT uf.id  "&_
+                                "    FROM funcionarios f "&_
+                                "    LEFT JOIN sys_users uf ON uf.idInTable=f.id "&_
+                                "    WHERE f.CentroCustoID = "&itemSPL&_
+                                " ) AS t"
+
+                set UsuariosID = db.execute(UsuariosIdSQL)
+                if j = 0 then
+                    itemID = UsuariosID("Usuarios")
+                else
+                    itemID = itemID&","&UsuariosID("Usuarios")
+                end if
+            else
+                itemID = itemID&",|"&trim(itemSPL)&"|"
+            end if
+        next
+    else
+        itemID = Para
+    end if
+'   Retirando valores de grupo e colocando id da tabela sys_User no campo Para da tabela tarefas
+    db.execute("update tarefas set Para='"&itemID&"' where id="&req("I"))
+'    response.write("select id from sys_users where id="&De&" or id in("&replace(itemID, "|", "")&")")
+    set puser = db.execute("select id from sys_users where id="&De&" or id in("&replace(itemID, "|", "")&")")
     while not puser.eof
         notifTarefas = ""
- '       response.write("select id, staPara from tarefas where De="&puser("id")&" and staPara in('Respondida')")
-        'set tarDe = db.execute("select id, staPara from tarefas where De="&puser("id")&" and staPara in('Respondida')")
-       ' while not tarDe.eof
-        '    notifTarefas = notifTarefas & "|"& tarDe("id") & "," & tarDe("staPara")
-        'tarDe.movenext
-        'wend
-        'tarDe.close
-        'set tarDe = nothing
-
-        'set tarPara = db.Execute("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' and staDe in('Pendente', 'Enviada')")
+ '       response.write("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' AND staPara <> 'Finalizada' ")
         set tarPara = db.Execute("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' AND staPara <> 'Finalizada' ")
         while not tarPara.eof
             notifTarefas = notifTarefas & "|" & tarPara("id") & "," & tarPara("DtPrazo") & " " & ft(tarPara("HrPrazo"))
@@ -3806,7 +3833,7 @@ function statusTarefas(De, Para)
         tarPara.close
         set tarPara = nothing
 
-'        response.write("update sys_users set notifTarefas='"&notifTarefas&"' where id="&puser("id"))
+    '    response.write("update sys_users set notifTarefas='"&notifTarefas&"' where id="&puser("id"))
         db_execute("update sys_users set notifTarefas='"&notifTarefas&"' where id="&puser("id"))
     puser.movenext
     wend
@@ -5690,7 +5717,7 @@ end function
 
 
 function getClientDataHora(UnidadeID)
-            
+
     HorarioVerao = ""
     if UnidadeID=0 then
         set getNome = db.execute("select FusoHorario, HorarioVerao from empresa")
@@ -5720,4 +5747,41 @@ function convertSimbolosHexadecimal(Texto)
     convertSimbolosHexadecimal = Texto
 
 end function
+
+'Verifica se tem permissão pelo Care Team do Paciente.
+'O usuário logado e o usuário especificado nos parâmetros
+'devem pertencer ao CareTeam do paciente.
+'   Parâmetros:
+'      SysUserID  - Id do profissional na tabela sys_user
+'      PacienteID - Id do paciente
+function autCareTeam(SysUserID, PacienteID)
+    autCareTeam = false
+
+    if lcase(session("table"))="profissionais"  then
+
+        set rsUser = db.execute("SELECT idInTable FROM sys_users WHERE id = '" & SysUserID & "' AND `Table` = 'profissionais' LIMIT 1")
+        if not rsUser.eof then
+
+            sqlCareTeam = "SELECT COUNT(*) AS cnt FROM pacientesprofissionais " &_
+                          "WHERE ProfissionalID IN ('" & session("idInTable")  & "', '" & rsUser("idInTable") & "') " &_
+                          "AND PacienteID = '" & PacienteID & "' AND sysActive = 1"
+
+            set rsCareTeam = db.execute(sqlCareTeam)
+            if not rsCareTeam.eof then
+                if cint(rsCareTeam("cnt")) = 2 then
+                    autCareTeam = true
+                end if
+            end if
+
+            rsCareTeam.close
+            set rsCareTeam=nothing
+        end if
+        rsUser.close
+        set rsUser=nothing
+
+    end if
+
+end function
+
+
 %>

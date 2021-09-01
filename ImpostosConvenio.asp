@@ -83,6 +83,17 @@ envio = (data) =>{
     return false; 
 }
 
+load = () =>{
+ $.ajax({
+        type:"get",
+        url:"loadImpostosAssociacao.asp?convenio=<%=ConvenioID%>",
+        success:function(data){
+            console.log(data)
+        }
+    });
+    return false; 
+}
 
+load()
 <!--#include file="JQueryFunctions.asp"-->
 </script>

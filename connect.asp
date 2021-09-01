@@ -894,10 +894,24 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                 <strong>R$</strong>
             <% end if %>
             </span>
-            <input id="<%=fieldName%>" class="form-control input-mask-brl <%=sqlOrClass%>" type="text" style="text-align:right" name="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%>>
+            <input id="<%=fieldName%>" class="form-control input-mask-brl  <%=sqlOrClass%>" type="text" style="text-align:right" name="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%>>
              <% if fieldType = "currency" then %>
             </div>
             <% end if %>
+			<%
+		case "porcentagem"
+			response.Write(LabelFor)
+            if fieldValue&"" ="" then
+                fieldValue = 0
+            end if
+            fieldValue = formatnumber(fieldValue,2)
+			%>
+            <div class="input-group">
+            <input id="<%=fieldName%>" class="form-control input-mask-brl sql-mask-2-digits" type="text" style="text-align:right" name="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%>>
+                <span class="input-group-addon">
+                    <strong>%</strong>
+                </span>
+            </div>
 			<%
 		case "select"
 			response.Write(LabelFor)

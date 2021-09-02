@@ -48,7 +48,7 @@ sqlPlanoDeContas = "select * from sys_financialexpensetype sf2 where sysActive =
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" onClick="sendToSave()">Save changes</button>
+            <button type="button" class="btn btn-primary" onClick="sendToSave()">Salvar</button>
         </div>
     </div>
   </div>
@@ -56,7 +56,7 @@ sqlPlanoDeContas = "select * from sys_financialexpensetype sf2 where sysActive =
 
 <hr>
 
-<div class="mt50">
+<div id="conteudo" class="mt50">
     <i class="fa fa-spinner fa-spin orange bigger-125"></i> Carregando...
 <div>
 
@@ -77,21 +77,76 @@ envio = (data) =>{
         url:"saveImpostosAssociacao.asp?acao=N&convenio=<%=ConvenioID%>",
         data:data,
         success:function(data){
-            $("#GradeAgenda").html(data);
+            load()
+            $("#modalImposto").modal("hide")
         }
     });
     return false; 
 }
 
 load = () =>{
- $.ajax({
-        type:"get",
-        url:"loadImpostosAssociacao.asp?convenio=<%=ConvenioID%>",
-        success:function(data){
-            console.log(data)
+    $.get( "loadImpostosAssociacao.asp?convenio=<%=ConvenioID%>", function( data ) {
+        if(!data){
+            $("#conteudo").html("<p><i class='fa fa-exclamation-triangle'></i> Sem Regras cadastradas</p>")
+        }else{
+            formatRule(JSON.parse(data))
         }
     });
     return false; 
+}
+
+formatMoney = (val)=>{
+    if (val.indexOf(",") < 0){
+        return val+",00"
+    }
+    return val
+}
+
+apagarRegra = (id) =>{
+}
+var html= ""
+formatRule = (dados) =>{
+    $('#conteudo').html("")
+        html=`
+        <table id="percentual-conta" class="table table-bordered table-striped">
+            <tr class="primary">						
+                <th width="12%">Imposto</th>
+                <th width="12%">Contratos</th>
+                <th width="16%">Plano de Contas</th>
+                <th width="16%">Centro de Custo</th>
+                <th width="12%">valor</th>
+                <th width="12%">De</th>
+                <th width="12%">Ate</th>
+                <th width="2%">Ação</th>
+            </tr>
+            <tbody>`
+        dados.map((dado)=>{
+        html +=`<tr>
+                    <td>`+dado.imposto+`</td>
+                    <td>`
+                    for (let index = 0; index < dado.contratos.length; index++) {
+                        const contrato = dado.contratos[index];
+                            if (index>0){
+                                html+=","
+                            }
+                            html += "<span>"+contrato.contrato_nome+"</span>"
+                    }
+        html +=    `</td>
+                    <td>`+dado.planoContas+`</td>
+                    <td>`+dado.CentroCusto+`</td>
+                    <td>`+dado.valor+`%</td>
+                    <td>R$ `+formatMoney(dado.de)+`</td>
+                    <td>R$ `+formatMoney(dado.ate)+`</td>
+                    <td><button type="button" class="btn btn-sm btn-danger pull-right" title="Excluir" onclick="if(confirm('Tem certeza de que deseja excluir essa regra?'))apagarRegra(`+dado.id+`);">
+                            <i class="fa fa-trash icon-trash"></i>
+                        </button></td>
+                </tr>`
+        })
+        html+=`</tbody>
+        </table>
+            `
+
+    $('#conteudo').append(html)
 }
 
 load()

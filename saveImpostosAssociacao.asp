@@ -1,8 +1,10 @@
 <!--#include file="connect.asp"-->
 <%
+response.Charset="utf-8"
+
 convenio    = req("convenio")
 acao        = req("acao")
-id          = ref("id")
+id          = ref("id")&""
 Imposto     = ref("Imposto")
 Contratos   = ref("Contratos")
 planoConta  = ref("planoConta")
@@ -23,7 +25,7 @@ contratosSpl  =  split(contratos,",")
 
 
 function eNull(val)
-    if not isnumeric(Val) then
+    if not isnumeric(Val) or val&"" = "" then
         eNull = "null"
     end if
     eNull = val
@@ -57,7 +59,7 @@ Select Case acao
             db.execute(sqlContratoInsert)
         next
     case "X"
-        trowError(id,"Regra não selecionada")
+        call trowError(id,"Regra nao selecionada")
         sqlDelete = "DELETE FROM impostos_associacao WHERE id="&id
         sqlDeleteContrato = "DELETE FROM impostos_contratos_convenio WHERE impostos_associacao_id="&id
         db.execute(sqlDelete)

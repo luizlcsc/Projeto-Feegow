@@ -23,14 +23,17 @@ var api = null;
 switch (env){
     case "local":
         domain = "http://localhost:8000/";
+        labServiceURL = "http://localhost:8001/api/"
         api = "./api/";
         break;
     case "production":
         domain = "https://app.feegow.com.br/";
+        labServiceURL = "https://labservice.feegow.com/api/"
         api = "/main/api/";
         break;
     case "homolog":
         domain = "https://api-homolog.feegow.com/index.php/";
+        labServiceURL = "https://labservice.feegow.com/api/"
         api = "/main/api/";
         break;
 }
@@ -255,7 +258,14 @@ function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, m
     $modal.modal("show");
 
     if (url.indexOf(".asp") === -1) {
-        url = domain + url;
+        if (params.microservico === 'integracaolaboratorial')
+        {
+            url = labServiceURL + url;
+        }
+        else
+        {
+            url = domain + url;
+        }
     }
 
 	var token="";
@@ -432,11 +442,11 @@ function replicarRegistro(id,tabela){
 }
 
 function abrirSelecaoLaboratorio(vartabela, varid){
-    openComponentsModal("labs-integration-v2/modal-lab-select", {tabela:vartabela, id: varid },'',false,false,'md');
+    openComponentsModal("labs-integration/modal-lab-select", {microservico:'integracaolaboratorial', tabela:vartabela, id: varid },'',false,false,'md');
 }
 
 function abrirSolicitacao(varid){
-    openComponentsModal("labs-integration-v2/modal-detalhes-solicitacao", {id: varid },'',false,false,'md');
+    openComponentsModal("labs-integration/modal-detalhes-solicitacao", {microservico:'integracaolaboratorial', id: varid },'',false,false,'md');
 }
 
 const uploadProfilePic = async ({userId, db, table, content, contentType, elem = false}) => {

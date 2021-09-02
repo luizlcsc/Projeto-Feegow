@@ -60,7 +60,7 @@ end if
         <div class="row">
         	<div class="col-md-6" style="background-color:#fff">
         	    <label for="Conta">Conta crédito</label>
-                <%= simpleSelectCurrentAccounts("AccountID", "00, 5, 8, 4, 2, 1", req("AccountID"), " required") %>
+                <%= simpleSelectCurrentAccounts("AccountID", "00, 5, 8, 4, 2, 1", req("AccountID"), " required","") %>
 
         </div>
         	<div class="col-md-6" style="background-color:#fff">

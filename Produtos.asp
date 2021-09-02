@@ -135,8 +135,14 @@ end if
     <%=header(req("P"), "Estoque", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
     <input type="hidden" name="I" value="<%=req("I")%>" />
     <input type="hidden" name="P" value="<%=req("P")%>" />
-
-    <div class="tabbable panel">
+    <div id="modal-recibo" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modal-content" style="width:860px; margin-left:-130px;">
+                <div ><i class="fa fa-circle-o-notch fa-spin fa-fw"></i> <span class="sr-only">Carregando...</span> Carregando...</div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div class="tabbable panel no-print">
         <div class="tab-content panel-body">
            <%  if TipoProduto&"" = "5" then %>
             <div id="divCadastroProduto" class="tab-pane in active">

@@ -305,11 +305,11 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
     <script type="text/javascript">
         var ModalOpened = false;
 
-        var feegow_components_path = "/feegow_components/";
+        var feegow_components_path = "<%=componentslegacyurl%>";
         <%
         if request.ServerVariables("REMOTE_ADDR")="::1" OR request.ServerVariables("REMOTE_ADDR")="127.0.0.1" OR instr(request.ServerVariables("REMOTE_ADDR"), "192.168.0.") then
         %>
-        feegow_components_path="/feegow_components/index.php/";
+        feegow_components_path="<%=componentslegacyurl%>index.php/";
         <%
         end if
         %>

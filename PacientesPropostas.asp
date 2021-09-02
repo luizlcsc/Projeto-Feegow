@@ -42,7 +42,7 @@
 }
 </style>
 <% IF req("PacienteID")="" THEN %>
-<script src="../feegow_components/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
+<script src="<%=componentslegacyurl%>/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 <% END IF %>
 <%
 tableName = "propostas"
@@ -164,9 +164,9 @@ end if
                         <span class="panel-controls" id="btnsProposta">
                             <%call odonto()%>
 <!--<a title="Histórico de Alterações" href="javascript:log()" class="btn btn-sm btn-default hidden-xs"><i class="fa fa-history"></i></a>-->
-                            <% if session("Odonto")=1 then %>
+                            <%' if session("Odonto")=1 then %>
                                 <button type="button" class="btn btn-system btn-sm" id="btn-abrir-modal-odontograma" <%=desabilitarProposta%>> <span class="imoon imoon-grin2"></span> Odontograma </button>
-                            <% end if %>
+                            <%' end if %>
                             <button type="button" class="btn btn-sm " id="ListaProposta" onclick="<%=linkLista %>" title="Listas Propostas"><i class="fa fa-list"></i></button>
                             <button type="button" class="btn btn-sm" title="Duplicar Proposta" onclick="window.location.href = '?P=DuplicarPacientesPropostas&Pers=1&PropostaID=<%=req("PropostaID")%>'"><i class="fa fa-copy"></i> Duplicar Proposta</button>
                             <button type="button" class="btn btn-sm" onclick="log()" title="Histórico de Alterações"><i class="fa fa-history"></i></button>
@@ -663,6 +663,7 @@ var $conteudoParaOdontograma = $('#feegow-odontograma-conteudo'),
             $("#modal").html('');
             $("#modal-table").modal('show');
 
+            //$.get(feegow_components_path+'odontograma?P='+PacienteID+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Proposta&U=<%=session("User")%>&I=<%=PropostaID%>&L=<%=replace(session("Banco"), "clinic", "") %>',
             $.get(feegow_components_path+'odontograma?P='+PacienteID+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Proposta&U=<%=session("User")%>&I=<%=PropostaID%>&L=<%=replace(session("Banco"), "clinic", "") %>',
             function (data) {
                 setTimeout(function () {

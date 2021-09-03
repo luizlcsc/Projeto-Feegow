@@ -105,7 +105,14 @@ end if
 		<ul class="dropdown-menu" role="menu">
 			<li><a href="#" onclick="" id="LancaConta"><i class="fa fa-plus"></i> Fechar Lote e Lançar no Contas a Receber</a></li>
 			<%
-			set g = db.execute("select count(id) Qtd, sum(ValorProcedimento) Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
+
+			if req("T") = "GuiaConsulta" then
+				coluna = "ValorProcedimento"
+			else
+				coluna = "TotalGeral"
+			end if
+
+			set g = db.execute("select count(id) Qtd, sum(<%=coluna%>) Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
 
 			if not g.eof then
 				sqlcontas = " SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total "&_

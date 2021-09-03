@@ -167,7 +167,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                     <div class="row">
                         <div class="col-md-4">
                             <label>Executante</label><br>
-                            <%=simpleSelectCurrentAccounts("ProfissionalExecutanteIDPedidoSADT", "5, 8", Executante, "")%>
+                            <%=simpleSelectCurrentAccounts("ProfissionalExecutanteIDPedidoSADT", "5, 8", Executante, "","")%>
                         </div>
                         <%=quickfield("datepicker", "DataSolicitacao", "Data Solicitação", 3, DataSolicitacao, "", "", "")%>
                         <%=quickField("memo", "ObservacoesPedidoSADT", "Observações", 4, Observacoes, "", "", "")%>

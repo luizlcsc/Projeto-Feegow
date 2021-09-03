@@ -35,7 +35,7 @@ end if
     </div>
     <div class="row">
         <div class="col-md-4">
-            <%'= simpleSelectCurrentAccounts("Conta", "4, 5", Conta, " required") %>
+            <%'= simpleSelectCurrentAccounts("Conta", "4, 5", Conta, " required","") %>
             <h5>CAIXA: <%=session("NameUser")%></h5>
         </div>
 		<div class="col-md-5" id="listaCaixas">

@@ -5,6 +5,10 @@ if ID&"" = "" then
     ID = req("i")
 end if
 
+tipoprescricao = req("tipoprescricao")
+profissional = req("profissional")
+assoc = req("assoc")
+
 Tipo = req("Tipo")
 readOnly = false
 if req("readonly") = "1" then
@@ -24,7 +28,12 @@ if Tipo = "I" then
     if ID&""<>"" then
         set getPacientesProtocolos = db.execute("SELECT * FROM pacientesprotocolos WHERE id="&ID)
         if getPacientesProtocolos.eof then
-            db.execute("INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&session("User")&",  "&session("UnidadeID")&", "&session("User")&", 1)")
+            if tipoprescricao&"" <> "" then
+                sqlInsertProtocolo ="INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive,tipoprescricao, AccountAssociationID) VALUES ("&ID&","&PacienteID&","&profissional&",  "&session("UnidadeID")&", "&session("User")&", 1,'"&tipoprescricao&"',"&assoc&")"
+            else
+                sqlInsertProtocolo ="INSERT INTO pacientesprotocolos (id,PacienteID,ProfissionalID, UnidadeID, sysUser, sysActive ) VALUES ("&ID&","&PacienteID&","&profissional&",  "&session("UnidadeID")&", "&session("User")&", 1)"
+            end if 
+            db.execute(sqlInsertProtocolo)
         end if
         set getMedicamentosProtocolos = db.execute("SELECT * FROM protocolosmedicamentos WHERE ProtocoloID="&ProtocoloID)
         while not getMedicamentosProtocolos.eof

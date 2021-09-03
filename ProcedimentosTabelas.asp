@@ -96,7 +96,9 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
                 <%= quickfield("datepicker", "Inicio", "Vigência de", 2, reg("Inicio"), "", "", " required ") %>
                 <%= quickfield("datepicker", "Fim", "até", 2, reg("Fim"), "", "", " required ") %>
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-default mt25" onclick="$('#filtros').slideToggle()">Parâmetros adicionais <i class="fa fa-chevron-down"> </i></button>
+                    <button type="button" class="btn btn-default btn-sm btn-block " onclick="$('#filtros').slideToggle()">Parâmetros adicionais <i class="fa fa-chevron-down"> </i></button>
+                    <button type="button" class="btn btn-default btn-sm btn-block " onclick="$('#inflatorDeflatorContent').slideToggle()">Inflator/Deflator <i class="fa fa-chevron-down"> </i></button>
+                    <button type="button" class="btn btn-default btn-sm btn-block " onclick="$('#atuacaoContent').slideToggle()">Atuação <i class="fa fa-chevron-down"> </i></button>
                 </div>
             </div>
             <div class="row mt15" id="filtros" style="display:none;<%=franquia("display:block")%>">
@@ -106,66 +108,57 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
                 <%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, Unidades, "", "", "")%>
                 <%=quickField("simpleCheckbox", "ExibirApenasPreco", "Exibir procedimentos com preço", "5", exibirpreco, " exibirpreco", "  ", "")%>
             </div>
-             <div class="col-md-6  mt15">
-                <div class="col-md-4 mt15" id="filtros" >
-                
-                            <div class="btn-group open" style="width: 98%;">
-                             <label for="Atuacao">Atuação</label>  
-                             <select name="Atuacao" id="Atuacao" class=" form-control">
+            <div class="row mt15" id="atuacaoContent" style="display:none;" >
+                <div class="col-md-2  ">
+                    <div class="btn-group open" style="width: 98%;">
+                            <label for="Atuacao">Atuação</label>  
+                            <select name="Atuacao" id="Atuacao" class=" form-control">
                             <option value="|procedimentos|" selected>Procedimentos</option>
-                            <option value="|Materiais|">Materiais ou Medicamentos</option>
-             
-                </select>
-                            
-                            </div>
-                </div>
-                
-                <script>
-            
-                </script>
-
-            <div class="col-md-3 mt15" id="tabelas" style="display:none;" >
-                <div class="btn-group open" style="width: 98%;">
-                <label for="NomeTabela">Tabela Base</label> 
-                <select name="TabelaBase" id="TabelaBase" class="form-control ClassTabelaBase">
-            
-                </select>
- 
-                </div>
-                
-                </div>  
-                <div class="col-md-2 mt15" style="width:9.5em;">
-                <div class="form-control btn-info" style="margin-top:25px; cursor:pointer;" id="atualizar"><b>Atualizar</b> <i class="fa fa-refresh spin-update" aria-hidden="true"></i></div>
-                </div>
-                </div>
-            
-    <div class="col-md-6  mt14" style="margin-top:30px;">
-        <div class="col-md-4" id="filtros">
-         <label for="Tipo">Tipo de variação</label>  
-        <div class="btn-group" style="width: 98%;">
-         <select name="TipoDeVariacao" id="TipoDeVariacao" class=" form-control">
-                <option  value="+">Inflator(+)</option>
-				<option  value="-">Deflator(-)</option>
-				
-            </select>                            
+                            <option value="|Materiais|">Materiais ou Medicamentos</option>        
+                        </select>
+                        
+                    </div>
                     
-              
-        </div>
-        </div>
+                <div class="col-md-2 " id="tabelas" style="display:none;" >
+                    <div class="btn-group open" style="width: 98%;">
+                        <label for="NomeTabela">Tabela Base</label> 
+                        <select name="TabelaBase" id="TabelaBase" class="form-control ClassTabelaBase">
+                    
+                        </select>
+     
+                    </div>
+                    
+                </div>  
+                <div class="col-md-2 " style="width:9.5em;">
+                    <div class="form-control btn-info" style="margin-top:25px; cursor:pointer;" id="atualizar"><b>Atualizar</b> <i class="fa fa-refresh spin-update" aria-hidden="true"></i></div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div id="inflatorDeflatorContent" class="row mt15 " style="display:none;" >
+                <div class="col-md-2" >
+                    <label for="Tipo">Tipo de variação</label>  
+                    <div class="btn-group" style="width: 98%;">
+                        <select name="TipoDeVariacao" id="TipoDeVariacao" class=" form-control">
+                                <option  value="+">Inflator(+)</option>
+                                <option  value="-">Deflator(-)</option>
+                                
+                        </select>                            
+                            
+                    
+                    </div>
+                </div>
 
-                <div class="col-md-3">       
-                <label for="Valor">Valor (%)</label>        
-               <input type="text" class="form-control " name="Valor" id="Valor" value="20">
-        </div>
+                <div class="col-md-2">       
+                    <label for="Valor">Valor (%)</label>        
+                    <input type="text" class="form-control " name="Valor" id="Valor" value="20">
+                </div>
 
-          <div class="col-md-2 mt15" style="width:9.8em;">       
-                
-            <div type="submit" class="form-control btn-success"  id="AplicarRegra" value="Aplicar Agora" style="margin-top:10px; cursor: pointer;" >Aplicar Regra</div>
-        </div>
-
-
-    </div>
-
+                <div class="col-md-2 mt15" style="width:9.8em;">       
+                    <div type="submit" class="form-control btn-success"  id="AplicarRegra" value="Aplicar Agora" style="margin-top:10px; cursor: pointer;" >Aplicar Regra</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -247,7 +240,7 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
                     <%
                     produtoCount = 0
                     response.write("<input type='hidden' name='idoutratabela' value='" & idOutraTabela& "' />")
-                        while not t.eof
+                    while not t.eof
                         response.Flush()
                         c = c+1
 
@@ -274,7 +267,7 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
                             <%
                             end if
                             %>
-                            <td class="text-right" width="150"><%= quickfield("currency", "ValorTabela"& t("id"), "", 12, "", "", "", "") %></td>
+                            <td class="text-right" width="150"><%= quickfield("currency", "ValorTabela"& t("id"), "", 12, ValorTabela, "", "", "") %></td>
                             
                         </tr>
                         <%

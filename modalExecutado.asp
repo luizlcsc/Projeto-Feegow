@@ -116,7 +116,7 @@ end if
         <div class="row">
             <div class="col-md-6">
                 <label>Executante</label><br />
-                <%=simpleSelectCurrentAccounts("ProfissionalID"&II, "5, 8, 2", Associacao&"_"&ProfissionalID, " onchange=""espProfChange("& II &");"" "&disabledExecutado)%>
+                <%=simpleSelectCurrentAccounts("ProfissionalID"&II, "5, 8, 2", Associacao&"_"&ProfissionalID, " onchange=""espProfChange("& II &");"" "&disabledExecutado,"")%>
 
             </div>
             <div id="divEspecialidadeID<%= II %>">

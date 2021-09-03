@@ -105,7 +105,6 @@ end if
 		<ul class="dropdown-menu" role="menu">
 			<li><a href="#" onclick="" id="LancaConta"><i class="fa fa-plus"></i> Fechar Lote e Lançar no Contas a Receber</a></li>
 			<%
-			dd("select count(id) Qtd, sum(ValorProcedimento) Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
 			set g = db.execute("select count(id) Qtd, sum(ValorProcedimento) Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
 
 			if not g.eof then

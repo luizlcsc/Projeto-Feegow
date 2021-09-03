@@ -112,7 +112,7 @@ end if
 				coluna = "TotalGeral"
 			end if
 
-			set g = db.execute("select count(id) Qtd, sum(<%=coluna%>) Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
+			set g = db.execute("select count(id) Qtd, sum("&coluna&") Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
 
 			if not g.eof then
 				sqlcontas = " SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total "&_

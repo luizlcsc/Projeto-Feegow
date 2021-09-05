@@ -1,5 +1,9 @@
  <!--#include file="connect.asp"-->
 <%
+if req("Data")<>"" then
+    session("DateFrom") = req("Data")
+    session("DateTo") = req("Data")
+end if
 if session("DateFrom")="" then
 	session("DateFrom") = dateadd("m", -1, date())
 end if

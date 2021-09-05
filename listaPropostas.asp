@@ -8,9 +8,6 @@ if Origem="Agenda" then
     end if
 end if
 
-%>
-<!--#include file="modal.asp"-->
-<%
 
 if req("Acao")="Agendamento" then
     response.redirect("./?P=AgendaMultipla&Pers=1&PacienteID="& req("PacienteID") &"&ItemPropostaID="& req("ItemPropostaID") &"&ProcedimentoID="& req("ProcedimentoID"))

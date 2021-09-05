@@ -23,12 +23,63 @@
     margin-top: 15px;
     margin-left: 5px;
 }
+/* #invoiceItens .input-group{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */
+.infoValor{
+    display: none;
+    position: absolute;
+    bottom: 130%;
+    left: 70%;
+    background-color: white;
+    border: 1px solid #217dbb;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 7px;
+    width: auto;
+    min-width: 100%;
+    z-index: 10;
+}
+.infoValor:after {
+    content: "";
+    height: 5px;
+    width: 5px;
+    position: absolute;
+    bottom: -11px;
+    left: 17%;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #217dbb;
+    border-bottom: 5px solid transparent;
+}
+.hover{
+    display:flex!important
+}
+i.infoBtnValor {
+    color: #217dbb;
+}
+.select2-dropdown--below , .select2-dropdown--above{
+    min-width: 400px !important;
+}
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
 <script src="assets/js/cmc7.js"></script>
 
 <script type="text/javascript">
+
+
+
+
+	function moneyString (valor){
+		if(valor.indexOf(",") < 0){
+			return (valor.toString())+",00"
+		}else{
+			return valor
+		}
+	}
     function addHiddenFormaId(addRemove){
         var $formaIdHidden = $(".forma-id-hidden");
 
@@ -46,6 +97,7 @@
 
         $(".disable, #searchAccountID, input[id^='searchItemID']").prop("disabled", val);
         $(".nao-mostrar-caso-pago").css("display", val ? "none" : "");
+
         <%
         if aut("tabelacontapagaA")=0 then
             %>
@@ -57,9 +109,12 @@
         if(val==true){
             $("#btn-abrir-modal-cancelamento").prop("disabled", false);
             $("#alert-disable").removeClass("hidden");
+            $('.contratobt').attr("disabled", false)
+            $('.rgrec').attr("disabled", false)
         }else{
             $("#btn-abrir-modal-cancelamento").prop("disabled", true);
             $("#alert-disable").addClass("hidden");
+
         }
             // $("#btn_NFe").attr("disabled", !val);
     }
@@ -78,7 +133,7 @@ sqlintegracao = " SELECT le.labid, lia.id, lie.StatusID FROM labs_invoices_amost
                                         " INNER JOIN cliniccentral.labs_exames le ON le.id = lie.LabExameID "&_
                                         " WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
                        
-set integracao = db.execute(sqlintegracao)
+set integracao = db_execute(sqlintegracao)
 
 if CD="C" then
 	Titulo = "Contas a Receber"
@@ -96,8 +151,8 @@ else
 end if
 
 if InvoiceID="N" then
-	sqlVie = "select id, sysUser, sysActive from "&tableName&" where sysUser="&session("User")&" and sysActive=0 and CD='"&CD&"' and CompanyUnitID IS NULL"
-	set vie = db.execute(sqlVie)
+	sqlVie = "select id, sysUser, sysActive from "&tableName&" where sysUser="&session("User")&" and sysActive=0 and CD='"&CD&"' and CompanyUnitID IS NULL AND ISNULL(DataCancelamento)"
+	set vie = db_execute(sqlVie)
 	if vie.eof then
 		db_execute("insert into "&tableName&" (sysUser, sysActive, CD, Recurrence, RecurrenceType, Value) values ("&session("User")&", 0, '"&CD&"', 1, 'm', 0)")
 		set vie = db.execute(sqlVie)
@@ -108,7 +163,7 @@ if InvoiceID="N" then
 	response.Redirect("?P=invoice&I="&vie("id")&"&A="&req("A")&"&Pers=1&T="&CD&"&Ent="&req("Ent")& reqPacDireto)'A=AgendamentoID quando vem da agenda
 
 else
-	set data = db.execute("select * from "&tableName&" where id="&InvoiceID)
+	set data = db_execute("select * from "&tableName&" where id="&InvoiceID)
 	if data.eof then
 		response.Redirect("?P=invoice&I=N&Pers=1&T="&CD)
     else
@@ -126,7 +181,7 @@ if Retencoes="1" then
     COFINS = 0
     CSLL = 0
     IR = 0
-    set vcaRet = db.execute("select id from itensinvoice WHERE InvoiceID="& InvoiceID &" AND CategoriaID IN(201, 212, 197, 200, 198)")
+    set vcaRet = db_execute("select id from itensinvoice WHERE InvoiceID="& InvoiceID &" AND CategoriaID IN(201, 212, 197, 200, 198)")
     if not vcaRet.eof then
         %>
         <script>
@@ -134,7 +189,7 @@ if Retencoes="1" then
         </script>
         <%
     else
-        set pValInv = db.execute("select sum(Value) ValorTotal from sys_financialmovement where InvoiceID="& InvoiceID)
+        set pValInv = db_execute("select sum(Value) ValorTotal from sys_financialmovement where InvoiceID="& InvoiceID)
         rValorTotalInvoice = ccur(pValInv("ValorTotal"))
         if RetencaoPFPJ="PJ" then
             if RetencaoSimples<>"SIMPLES" then'NAO OPTANTE
@@ -143,17 +198,17 @@ if Retencoes="1" then
                     PIS = rValorTotalInvoice * 0.0065
                     COFINS = rValorTotalInvoice * 0.03
                     CSLL = rValorTotalInvoice * 0.01
-                    db.execute("insert into itensinvoice set InvoiceID="& InvoiceID &", Tipo='O', Quantidade=1, ItemID=0, ValorUnitario=0, Executado='', CategoriaID=200, Desconto="& treatvalzero(PIS) &", Descricao='Retenção - PIS', sysUser="& session("User"))
-                    db.execute("insert into itensinvoice set InvoiceID="& InvoiceID &", Tipo='O', Quantidade=1, ItemID=0, ValorUnitario=0, Executado='', CategoriaID=197, Desconto="& treatvalzero(COFINS) &", Descricao='Retenção - COFINS', sysUser="& session("User"))
-                    db.execute("insert into itensinvoice set InvoiceID="& InvoiceID &", Tipo='O', Quantidade=1, ItemID=0, ValorUnitario=0, Executado='', CategoriaID=198, Desconto="& treatvalzero(CSLL) &", Descricao='Retenção - CSLL', sysUser="& session("User"))
+                    db_execute("insert into itensinvoice set InvoiceID="& InvoiceID &", Tipo='O', Quantidade=1, ItemID=0, ValorUnitario=0, Executado='', CategoriaID=200, Desconto="& treatvalzero(PIS) &", Descricao='Retenção - PIS', sysUser="& session("User"))
+                    db_execute("insert into itensinvoice set InvoiceID="& InvoiceID &", Tipo='O', Quantidade=1, ItemID=0, ValorUnitario=0, Executado='', CategoriaID=197, Desconto="& treatvalzero(COFINS) &", Descricao='Retenção - COFINS', sysUser="& session("User"))
+                    db_execute("insert into itensinvoice set InvoiceID="& InvoiceID &", Tipo='O', Quantidade=1, ItemID=0, ValorUnitario=0, Executado='', CategoriaID=198, Desconto="& treatvalzero(CSLL) &", Descricao='Retenção - CSLL', sysUser="& session("User"))
                 end if
             end if
             if rValorTotalInvoice>666.7 then
                 'reter 201 1,5
                 IR = rValorTotalInvoice * 0.015
-                db.execute("insert into itensinvoice set InvoiceID="& InvoiceID &", Tipo='O', Quantidade=1, ItemID=0, ValorUnitario=0, Executado='', CategoriaID=201, Desconto="& treatvalzero(IR) &", Descricao='Retenção - IR', sysUser="& session("User"))
+                db_execute("insert into itensinvoice set InvoiceID="& InvoiceID &", Tipo='O', Quantidade=1, ItemID=0, ValorUnitario=0, Executado='', CategoriaID=201, Desconto="& treatvalzero(IR) &", Descricao='Retenção - IR', sysUser="& session("User"))
             end if
-            db.execute("update sys_financialmovement set Value="& treatvalzero(rValorTotalInvoice-PIS-COFINS-CSLL-IR) &" WHERE InvoiceID="& InvoiceID)
+            db_execute("update sys_financialmovement set Value="& treatvalzero(rValorTotalInvoice-PIS-COFINS-CSLL-IR) &" WHERE InvoiceID="& InvoiceID)
         end if
     end if
 end if
@@ -169,6 +224,7 @@ if req("Lancto")<>"" and req("Lancto")="Dir" then
                parametrosInvoice($(this).attr('data-row'), $(this).val());
            })
            */
+
         }, 1000);
     });
     </script>
@@ -208,9 +264,6 @@ posModalPagar = "fixed"
 %>
 <!--#include file="invoiceEstilo.asp"-->
 
-
-
-
     <form id="formItens" action="" method="post">
     <input type="hidden" id="temregradesconto" name="temregradesconto" value="0">
     <input id="Lancto" type="hidden" name="Lancto" value="<%=req("Lancto")%>">
@@ -229,6 +282,25 @@ posModalPagar = "fixed"
     <input type="hidden" id="sysActive" name="sysActive" value="<%=data("sysActive")%>" />
     <div class="panel">
         <div class="panel-body">
+
+<%
+if not isnull(data("DataCancelamento")) then
+    %>
+    <div class="alert alert-danger">
+        <i class="fa fa-minus-circle"></i> FATURA CANCELADA EM <%= data("DataCancelamento") &" POR "& ucase(nameInTable(data("sysUserCancelamento"))&"") %>.
+        <br>
+        MOTIVO: <%= data("MotivoCancelamento") %>
+    </div>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $(".btn").remove();
+    });
+    </script>
+    <%
+end if
+%>
+
+
         <div class="row">
         <div class="col-md-3">
             <%
@@ -251,10 +323,20 @@ posModalPagar = "fixed"
                 UnidadeID=data("CompanyUnitID")
             end if
 			sysDate = date()
+
+            IF getConfig("ContaComDataDeAberturaDoCaixaAberto") = "1" THEN
+                set caixa = db_execute("select * from caixa where sysUser="&session("User")&" and isnull(dtFechamento)")
+                IF NOT caixa.EOF THEN
+                    sysDate = caixa("dtAbertura")
+                END IF
+            END IF
         else
             UnidadeID = data("CompanyUnitID")
 			sysDate = data("sysDate")
         end if
+
+
+
         showColumn = ""
 
         'if CD="D" then showColumn = "rateio" end if
@@ -293,7 +375,7 @@ posModalPagar = "fixed"
         <%
         if getConfig("financeiroGuiaManual") = 1 then
             sqlRecibo = "select NumeroRPS from recibos where InvoiceID = " &InvoiceID& " AND Nome = 'Recibo GUIA MANUAL' AND sysActive = 1 limit 1"
-            set recibos = db.execute(sqlRecibo)
+            set recibos = db_execute(sqlRecibo)
             guiaManual = ""
             readonlyRecibo = ""
             if not recibos.eof then 
@@ -310,7 +392,7 @@ posModalPagar = "fixed"
             if CD="C" AND Pagador&""<>"" then
                 Cliente = split(Pagador, "_")
                 if Cliente(0)=3 then
-                    set ClienteStatus = db.execute("SELECT Status FROM cliniccentral.licencas WHERE Cliente="&Cliente(1)&" ORDER BY id LIMIT 1")
+                    set ClienteStatus = db_execute("SELECT Status FROM cliniccentral.licencas WHERE Cliente="&Cliente(1)&" ORDER BY id LIMIT 1")
                     if not ClienteStatus.eof then
                         Status = ClienteStatus("Status")
                         if Status="C" then
@@ -326,7 +408,7 @@ posModalPagar = "fixed"
                             %><span class="label bg-primary">Implementação</span><%
                         end if
                     end if
-                    set ClienteCPF = db.execute("SELECT CPF FROM pacientes WHERE id="&treatvalzero(Cliente(1)))
+                    set ClienteCPF = db_execute("SELECT CPF FROM pacientes WHERE id="&treatvalzero(Cliente(1)))
                     if not ClienteCPF.EOF then
                         %><span class="label bg-info">CPF / CNPJ: <%=ClienteCPF("CPF")%></span><%
                     end if
@@ -378,7 +460,7 @@ posModalPagar = "fixed"
                                           " WHERE TRUE                                                                                                                                       "&chr(13)&_
                                           "   AND invoicesfixas.FecharAutomatico = 'N'                                                                                                       "&chr(13)&_
                                           "   AND sys_financialinvoices.id = "&InvoiceID&";                                                                                                            "
-                       set sqlProcessamento = db.execute(sqlProcessamentoFixa)
+                       set sqlProcessamento = db_execute(sqlProcessamentoFixa)
 
                    IF NOT sqlProcessamento.EOF THEN
 
@@ -418,11 +500,29 @@ end if
             end if
             %>
             
-            <% if aut("profissionalsolicitanteA")=1 or data("sysActive")=0 then
+            <% if aut("profissionalsolicitanteA")=1 then
                     if getconfig("profissionalsolicitanteobrigatorio")=1 then
                         SolicitanteRequired = " required empty "
                     end if
-                    response.write (quickfield("simpleSelect", "ProfissionalSolicitante", "Profissional Solicitante", 3, ProfissionalSolicitante, "select concat('0_',id) id, NomeEmpresa NomeProfissional, 0 ordem from empresa union all select concat('5_',id) id, NomeProfissional, 1 ordem from profissionais where sysActive=1 and ativo='on' union all select concat('8_',id) id, NomeProfissional, 2 ordem from profissionalexterno where sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", SolicitanteRequired ))
+                    qInputProfissionais = " SELECT CONCAT('0_',id) id, NomeEmpresa NomeProfissional, 0 ordem, '|0|' Unidades"&chr(13)&_
+                        " FROM empresa UNION ALL                                                          "&chr(13)&_
+                        " SELECT CONCAT('5_',id) id, NomeProfissional, 1 ordem, Unidades                  "&chr(13)&_
+                        " FROM profissionais                                                              "&chr(13)&_
+                        " WHERE sysActive=1 AND ativo='on' and (id in ( select ProfissionalID from profissionais_unidades where UnidadeID in ('"&session("UnidadeID")&"'))or nullif(Unidades, '') is null)UNION ALL "&chr(13)&_
+                        " SELECT CONCAT('8_',id) id, NomeProfissional, 2 ordem, ''                        "&chr(13)&_
+                        " FROM profissionalexterno                                                        "&chr(13)&_
+                        " WHERE sysActive=1                                                               "&chr(13)&_
+                        "                                                                                 "&chr(13)&_
+                        " ORDER BY ordem, NomeProfissional                                                "
+
+
+
+                    ' antiga
+                    qInputProfissionais = "SELECT * FROM ("&qInputProfissionais&") AS t "&franquia(" WHERE COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")
+
+
+
+                    response.write (quickfield("simpleSelect", "ProfissionalSolicitante", "Profissional Solicitante", 3, ProfissionalSolicitante, qInputProfissionais, "NomeProfissional", SolicitanteRequired ))
 
               else %>
             <div class="col-md-3 qf" id="qfprofissionalsolicitante"><label for="ProfissionalSolicitante">Profissional Solicitante</label><br>
@@ -436,7 +536,27 @@ end if
                 %>
             </div>
             <% end if %>
-            <%= quickfield("simpleSelect", "invTabelaID", "Tabela", 3, TabelaID, "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' order by NomeTabela", "NomeTabela", " no-select2 mn  onchange=""tabelaChange()"" data-row='no-server' "& camposRequired) %>
+            <%
+                sqlTabela = "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' "&franquiaUnidade(" AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),true) ")&" order by NomeTabela"
+
+                set ValorPagoSQL = db_execute("SELECT ii.*, left(md5(ii.id), 7) as senha, SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement sf LEFT JOIN itensinvoice ii ON ii.InvoiceID = sf.InvoiceID WHERE sf.InvoiceID="&InvoiceID)
+
+                if not ValorPagoSQL.eof then
+                    Executado = ValorPagoSQL("Executado")
+                    camposBloqueados = ""
+                    if ValorPagoSQL("ValorPago")>0 and Executado = "S" then
+                        camposBloqueados = "disabled"
+                    end if
+                end if
+            %>
+            <%= quickfield("simpleSelect", "invTabelaID", "Tabela / Parceria", 3, TabelaID, sqlTabela , "NomeTabela", " no-select2 mn  onchange=""tabelaChange()"" data-row='no-server' "& camposRequired&camposBloqueados) %>
+            <%
+            if camposBloqueados<>"" then
+                %>
+                <input type="hidden" name="invTabelaID" value="<%=TabelaID%>">
+                <%
+            end if
+            %>
         </div>
         <%
     end if
@@ -450,7 +570,7 @@ end if
                 if (session("Banco")="clinic5459" or session("Banco")="clinic105") AND AssID=3 then
 
                     if ContaID&""<> "" then
-                        set pNat = db.execute("select Naturalidade, Documento FROM pacientes WHERE id="& ContaID)
+                        set pNat = db_execute("select Naturalidade, Documento FROM pacientes WHERE id="& ContaID)
                         if not pNat.eof then
                             Nat = ucase(pNat("Naturalidade")&"")
                             CNPJ = trim(pNat("Documento")&"")
@@ -479,20 +599,20 @@ end if
                 <%
 
                     if recursoAdicional(24)=4 then
-                        set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(UnidadeID))
+                        set labAutenticacao = db_execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(UnidadeID))
                         if not labAutenticacao.eof then
 
                         matrixColor = "warning"
                         sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
                                         " inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
                                         " WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
-                        set soliSQL = db.execute(sqlintegracao)
+                        set soliSQL = db_execute(sqlintegracao)
                         if not soliSQL.eof then
                             matrixColor = "success"
                         end if
 
-                        set executados = db.execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&InvoiceID&" AND Executado!='S'")
-                        set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&InvoiceID&" and p.IntegracaoPleres = 'S'")
+                        set executados = db_execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&InvoiceID&" AND Executado!='S'")
+                        set temintegracao = db_execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&InvoiceID&" and p.IntegracaoPleres = 'S'")
                          
                          sqllaboratorios = "SELECT lab.id labID, lab.NomeLaboratorio, count(*) total "&_
                                             " FROM cliniccentral.labs AS lab "&_
@@ -501,7 +621,7 @@ end if
                                             " INNER JOIN itensinvoice ii ON (ii.ItemID = proc.id) "&_
                                             " WHERE proc.TipoProcedimentoID = 3 AND ii.InvoiceID ="&treatvalzero(InvoiceID)&""&_
                                             "  GROUP BY 1,2 "
-                        set laboratorios = db.execute(sqllaboratorios)
+                        set laboratorios = db_execute(sqllaboratorios)
 
                         
 
@@ -560,7 +680,6 @@ end if
                             end if
                         end if
                     end if
-
                         if session("Odonto")=1 and CD="C" then
                             %>
                         <div class="btn-group nao-mostrar-caso-pago">
@@ -626,7 +745,7 @@ end if
                         </button>
                         <ul class="dropdown-menu dropdown-success pull-right" style="overflow-y: scroll; max-height: 400px;">
                           <%
-                            set pac = db.execute("select * from pacotes where sysActive=1 and Ativo='on' ORDER BY NomePacote")
+                            set pac = db_execute("select * from pacotes where "&franquia(" COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND ")&" sysActive=1 and Ativo='on' ORDER BY NomePacote")
                             while not pac.eof
                             %>
                             <li>
@@ -683,6 +802,62 @@ end if
     </div>
 
     </form>
+
+<%
+set vcaCanc = db.execute("select l.*, pm.PaymentMethod Forma, m.Value from xmovement_log l LEFT JOIN sys_financialmovement_removidos m ON m.id=l.MovimentacaoID LEFT JOIN cliniccentral.sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID where Invoices LIKE '%|"& InvoiceID &"|%'")
+if not vcaCanc.eof then
+    %>
+    <hr class="short alt">
+
+    <div class="panel">
+        <div class="panel-heading bg-warning">
+            <span class="panel-title"><i class="fa fa-ban"></i> Pagamentos cancelados desta fatura</span>
+        </div>
+        <div class="panel-body">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Usuário</th>
+                        <th>Autorizador</th>
+                        <th>Forma</th>
+                        <th>Valor</th>
+                        <th>Justificativa</th>
+                        <th class="hidden">Detalhes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%
+                    while not vcaCanc.eof
+                        %>
+                        <tr>
+                            <td><%= vcaCanc("sysDate") %></td>
+                            <td><%= nameInTable(vcaCanc("sysUser")) %></td>
+                            <td><%= nameInTable(vcaCanc("AutorizadoPor")) %></td>
+                            <td><%= vcaCanc("Forma") %></td>
+                            <td>R$ <%= fn(vcaCanc("Value")) %></td>
+                            <td><%= vcaCanc("Descricao") %></td>
+                            <td class="hidden"><button class="btn btn-default btn-xs">Ver detalhes</button></td>
+                        </tr>
+                        <%
+                    vcaCanc.movenext
+                    wend
+                    vcaCanc.close
+                    set vcaCanc = nothing
+                    %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <%
+end if
+%>
+
+
+
+
+
+
 
 <div id="feegow-components-modal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
@@ -813,7 +988,7 @@ $btnMarcarTodos.click(function() {
 });
 
 
-function parametrosInvoice(ElementoID, id, lote){
+function parametrosInvoice(ElementoID, id, lote,start=false){
     <%
     LanctoAgenda = ""
 
@@ -823,7 +998,7 @@ function parametrosInvoice(ElementoID, id, lote){
     %>
 	$.ajax({
 		type:"POST",
-		url:"invoiceParametros.asp?ElementoID="+ElementoID+"&id="+id+"&LanctoAgenda=<%=LanctoAgenda%>&lote="+lote,
+		url:"invoiceParametros.asp?ElementoID="+ElementoID+"&id="+id+"&LanctoAgenda=<%=LanctoAgenda%>&lote="+lote+"&start="+start,
 		data:$("#formItens").serialize(),
 		success:function(data){
 			eval(data);
@@ -893,8 +1068,7 @@ var itensAlterados = false;
 
 function itens(T, A, II, autoPCi, cb){
     itensAlterados=true;
-
-    var inc = $('[data-val]:last').attr('data-val');
+	var inc = $('[data-val]:last').attr('data-val');
 	var centroCustoId = $("#CentroCustoBase").val();
 	var LimitarPlanoContas = $("#LimitarPlanoContas").val();
 
@@ -919,24 +1093,28 @@ function planPag(I){
     $.post("invoiceParcelas.asp?PlanoPagto="+ I +"&I=<%=req("I")%>&T=<%=req("T")%>", $("#formItens").serialize(), function(data, status){ $("#invoiceParcelas").html(data) });
 }
 
+var clearInput = null;
 function recalc(input, mod){
     if(mod == undefined){
         mod = 0;
     }
-	var input = $("#formItens input");
+	var _input = $("#formItens input");
     var elemSerialized = "";
     var dadosForm =  $("#formItens").serialize();
-    $.each(input, function (key, val) {
+    $.each(_input, function (key, val) {
         if(dadosForm.indexOf(val.name) == -1){
             elemSerialized +=  val.name + '=' + val.value + "&";
         } 
     });
 
-	$.post("recalc.asp?InvoiceID=<%=InvoiceID%>&input="+input+"&mod="+mod, $("#formItens").serialize()+"&"+elemSerialized, function(data, status){ eval(data);  });
+    clearTimeout(clearInput);
+    clearInput = setTimeout(() =>{
+        $.post("recalc.asp?InvoiceID=<%=InvoiceID%>&input="+input+"&mod="+mod, $("#formItens").serialize()+"&"+elemSerialized, function(data, status){ eval(data);  });
+    },500)
 }
 
-function geraParcelas(Recalc){
-   var input = $("#formItens input");
+function geraParcelas(Recalc,call = null){
+     var input = $("#formItens input");
    var elemSerialized = "";
    var dadosForm =  $("#formItens").serialize();
    $.each(input, function (key, val) {
@@ -944,9 +1122,11 @@ function geraParcelas(Recalc){
            elemSerialized +=  val.name + '=' + val.value + "&";
         } 
    });
-	$.post("invoiceParcelas.asp?I=<%=req("I")%>&T=<%=req("T")%>&Recalc="+Recalc, $("#formItens").serialize()+elemSerialized, function(data, status){ 
-        $("#invoiceParcelas").html(data);
-    });
+
+	$.post("invoiceParcelas.asp?I=<%=req("I")%>&T=<%=req("T")%>&Recalc="+Recalc, $("#formItens").serialize()+elemSerialized, function(data, status){
+	    $("#invoiceParcelas").html(data);
+	    call && call()
+	});
 }
 function saveInvoiceSubmit(cb){
     
@@ -972,15 +1152,19 @@ $("#formItens").submit(function(){
 });
 
 function calcRepasse(id){
-	$.post("invoiceRepasse.asp?Row="+id+"&InvoiceID=<%=InvoiceID%>", $("#formItens").serialize(), function(data){ 
-        $("#rat"+id).html(data) 
-    });
+	$.post("invoiceRepasse.asp?Row="+id+"&InvoiceID=<%=InvoiceID%>", $("#formItens").serialize(), function(data){ $("#rat"+id).html(data) });
 }
 
 function deleteInvoice(){
-	if(confirm('Tem certeza de que deseja excluir esta conta?')){
+	/*
+    if(confirm('Tem certeza de que deseja excluir esta conta?')){
 		location.href='./?P=ContasCD&T=<%=req("T")%>&Pers=1&X=<%=req("I")%>';
 	}
+    */
+   $.get("faturaCancela.asp?T=<%= req("T") %>&I=<%= InvoiceID %>", function(data){
+       $("#modal").html(data);
+       $("#modal-table").modal("show");
+    });
 }
 
 $(function() {
@@ -1041,6 +1225,7 @@ function pagar(){
         var submitPagar = function(){
             $("#pagar").fadeIn(function(){
                 $.post("pagar.asp?T=<%=CD%>&InvoiceID=<%=InvoiceID%>", $(".parcela").serialize(), function(data){ $("#pagar").html(data) });
+
             });
         };
 
@@ -1279,6 +1464,19 @@ $("#TipoValor").on('change', function(){
     }
 });
 
+    let selects = $('#invoiceItens select[id^="ItemID"]')
+
+    if(selects.length>0){
+        selects.map(function (key,select){
+            // $(select).change()
+
+            let id = $(select).attr('data-row')
+            let val = $(select).val()
+
+            parametrosInvoice(id,val,'S',true)
+        })
+    }
+
 function tabelaChange(){
     this.InvoiceAlterada = true;
     $(".topbar-right .btn-primary").attr("disabled", true);
@@ -1292,6 +1490,7 @@ function tabelaChange(){
     
     ids += '0';
     rows += '0'; 
+
     parametrosInvoice(ids,rows,'S');
 }
 
@@ -1375,11 +1574,59 @@ function marcarMultiplosExecutados(){
     }
 
     saveInvoiceSubmit(function() {
-    proceed();
+      proceed();
     })
 
 };
+</script>
 
+
+<input type="hidden" name="PendPagar" id="PendPagar" />
+
+
+<div class="modal fade" id="configGuia" tabindex="-1" role="dialog">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Guia de Encaminhamento</h4>
+    </div>
+    <form target="_blank">
+        <input type="hidden" name="invoiceID"  value="<%=req("I")%>">
+        <input type="hidden" name="P"  value="guiaDeEncaminhamento">
+        <input type="hidden" name="Pers"  value="1">
+        <div class="modal-body">
+            <p>Mostrar colunas:</p>
+            <p><input type="checkbox" name="valor" checked value="1"> Valor Original</p>
+            <p><input type="checkbox" name="valorFinal" checked value="1"> Valor Total</p>
+            <p><input type="checkbox" name="desconto" checked value="1"> Desconto</p>
+            <p><input type="checkbox" name="repasse" checked value="1"> Repasse</p>
+            <p><input type="checkbox" name="valorreceber" checked value="1"> Valor a Receber</p>
+            <p><input type="checkbox" name="quebrarlinha" checked value="1"> Quebra em Páginas</p>
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" >Save changes</button>
+        </div>
+    </form>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div id='toPrint' style='display:none'></div>
+<script>
+    $('#configModal').click(()=>{
+        $('#configGuia').modal('toggle')
+    })
+    function gerarImpressao(){
+        let valor = ($("#valor").prop('checked')?1:0)
+        let repasse = ($("#repasse").prop('checked')?1:0)
+
+        window.open("./?P=guiaDeEncaminhamento&Pers=1&invoiceID=<%=req("I")%>&valor="+valor+"&repasse="+repasse)
+        // $.get("./guiaDeEncaminhamento.asp?Pers=1&invoiceID=<%=req("I")%>&valor="+valor+"&repasse="+repasse, function (data) {
+        //     // $('#toPrint').html(data)
+        //     // $('#toPrint').print("#toPrint");
+        // });
+    }
 
 var idStr = "#invTabelaID";
 $('.modal').click(function(){
@@ -1455,6 +1702,7 @@ function liberar(Usuario , senha , id, Nometable){
        
 }
 
+
 let BloquearRecibo    =   "<%=getConfig("bloquearemissaoderecibo")%>";
 let BloquearContrato  =   "<%=getConfig("bloquearemissaodecontrato")%>";
 let BloquearInvoice   =   "<%=invoicePaga(req("I"))%>";
@@ -1473,6 +1721,7 @@ if(BloquearRecibo == 1 && BloquearInvoice == "False"){
           $('.rgrec').attr("disabled", false);
     } 
 
+
 $('.contratobt').click(function(){
    if($(".contratobloqueio").hasClass("open")){
       $(".contratobloqueio").removeClass("open");
@@ -1481,7 +1730,56 @@ $('.contratobt').click(function(){
    }
 });
 
+
+
+    function saveExecutados(){
+        arrayExecutados = [];
+        $(".checkbox-executado:checked").each((i,item) => {
+           let id                    = $(item).parents("tr").attr("data-id");
+           let ProfissionalID        = $("[id=ProfissionalID"+id+"]").val();
+           let ArrayData             = ProfissionalID.split("_");
+           let Account               = ArrayData[1];
+           let AssociationAccount    = ArrayData[0];
+           let DataExecucao          = $("[id=DataExecucao"+id+"]").val();
+
+           arrayExecutados.push({id,Account,AssociationAccount,DataExecucao})
+        });
+
+        proms = []
+        arrayExecutados.forEach((item) => {
+            proms.push($.post("SaveExecutadosItensInvoice.asp",item, function(data) {}));
+        })
+
+        if (proms.length > 0 ){
+                Promise.all(proms).then(() => {
+                         new PNotify({
+                            title: 'Sucesso',
+                            text: 'Item Executado com sucesso',
+                            type: 'success'
+                        });
+                });
+        }
+
+    }
+
+    function itensFatura(){
+        $.get("itensFatura.asp?tipoTela=invoice&InvoiceID=<%= InvoiceID %>", function(data){
+            $("#modal").html(data);
+            $("#modal-table").modal("show");
+        });
+    }
+
+    <%
+if not isnull(data("DataCancelamento")) then
+    %>
+    $(".btn").remove();
+    <%
+end if
+%>
+
 </script>
+
+
 
 <%
 ' LINK PARA ORDEM DE COMPRA
@@ -1504,10 +1802,10 @@ if InStr(geracao, "ordem de compra") > 0 then
     end if
 end if
 %>
-
 <!--#include file="CalculaMaximoDesconto.asp"-->
 
 <input type="hidden" name="PendPagar" id="PendPagar" />
 
-<%'=request.QueryString %>
+
+<%'=request.QueryString() %>
 <!--#include file="disconnect.asp"-->

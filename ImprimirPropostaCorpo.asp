@@ -83,24 +83,38 @@ if not getImpressos.EOF then
     
 end if
 
-itensSql = "SELECT T.*,Quantidade*ValorUnitario+(Quantidade*Acrescimo)-(Quantidade*Desconto) as total FROM ("&_
-            "SELECT "&_
-            "         MAX(ii.Prioridade)    AS Prioridade"&_
-            "        ,proc.NomeProcedimento AS NomeProcedimento"&_
-            "        ,ii.ValorUnitario      AS ValorUnitario"&_
-            "        ,SUM(ii.Quantidade)    AS Quantidade"&_
-            "        ,ii.Acrescimo          AS Acrescimo"&_
-            "        ,ii.Desconto           AS Desconto"&_
-            "        ,ii.TipoDesconto       AS TipoDesconto"&_
-            "        ,proc.DiasLaudo        AS DiasLaudo"&_
-            "        ,prop.TabelaID         AS Tabela"&_
-            "      FROM itensproposta ii"&_
-            " LEFT JOIN procedimentos proc  on proc.id=ii.ItemID "&_
-            " LEFT JOIN propostas prop       on prop.id=ii.PropostaID "&_
-            " WHERE ii.PropostaID="&PropostaID&" "&_
-            " GROUP BY proc.NomeProcedimento, ValorUnitario, proc.NomeProcedimento,Acrescimo,Desconto "&_
-            " ORDER BY Prioridade DESC, ii.id ASC "&_
-            ") AS T"
+if req("Agrupada")="1" then
+    itensSql = "SELECT T.*, Quantidade*ValorUnitario+(Quantidade*Acrescimo)-(Quantidade*Desconto) AS total "&_
+        " FROM ( "&_
+        " SELECT MAX(ii.Prioridade) AS Prioridade, group_concat(proc.NomeProcedimento SEPARATOR ', ') AS NomeProcedimento, sum(ii.ValorUnitario) AS ValorUnitario, 1 AS Quantidade, sum(ii.Acrescimo) AS Acrescimo, sum(ii.Desconto) AS Desconto,ii.TipoDesconto AS TipoDesconto,proc.DiasLaudo AS DiasLaudo,prop.TabelaID AS Tabela "&_
+        " FROM itensproposta ii "&_
+        " LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
+        " LEFT JOIN propostas prop ON prop.id=ii.PropostaID "&_
+        " WHERE ii.PropostaID="& PropostaID &_
+        " GROUP BY proc.GrupoID "&_
+        " ORDER BY Prioridade DESC, ii.id ASC) AS T"
+else
+    itensSql = "SELECT T.*,Quantidade*ValorUnitario+(Quantidade*Acrescimo)-(Quantidade*Desconto) as total FROM ("&_
+        "SELECT "&_
+        "         MAX(ii.Prioridade)    AS Prioridade"&_
+        "        ,proc.NomeProcedimento AS NomeProcedimento"&_
+        "        ,ii.ValorUnitario      AS ValorUnitario"&_
+        "        ,SUM(ii.Quantidade)    AS Quantidade"&_
+        "        ,ii.Acrescimo          AS Acrescimo"&_
+        "        ,ii.Desconto           AS Desconto"&_
+        "        ,ii.TipoDesconto       AS TipoDesconto"&_
+        "        ,proc.DiasLaudo        AS DiasLaudo"&_
+        "        ,prop.TabelaID         AS Tabela"&_
+        "      FROM itensproposta ii"&_
+        " LEFT JOIN procedimentos proc  on proc.id=ii.ItemID "&_
+        " LEFT JOIN propostas prop       on prop.id=ii.PropostaID "&_
+        " WHERE ii.PropostaID="&PropostaID&" "&_
+        " GROUP BY proc.NomeProcedimento, ValorUnitario, proc.NomeProcedimento,Acrescimo,Desconto "&_
+        " ORDER BY Prioridade DESC, ii.id ASC "&_
+        ") AS T"
+end if
+
+'rw(itensSql)
 
 set ItensResumoSQL = db.execute(itensSql)
 

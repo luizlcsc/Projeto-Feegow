@@ -31,6 +31,7 @@ if HorarioID<>"" then
         FimVigencia = gh("FimVigencia")
         Mensagem = gh("Mensagem")
         Cor = gh("Cor")
+        ValorHonorario = gh("ValorHonorario")
     end if
 end if
 
@@ -116,12 +117,12 @@ if ref("HoraDe")<>"" and ref("HoraA")<>"" and ref("Intervalo")<>"" then
         diaSemanaArray = split(ref("diaSemanaArray[]"),",")
         numberArray = UBound(diaSemanaArray)
             For i = 0 To numberArray
-               sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios,Programas,Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor) values ("&diaSemanaArray(i)&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"', '"&ref("Programas")&"', '"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"')"
+               sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios,Programas,Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor, ValorHonorario) values ("&diaSemanaArray(i)&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"', '"&ref("Programas")&"', '"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"', "& treatvalnull(ref("ValorHonorario")) &")"
                call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
                db_execute(sqlGrade)
             Next
         else
-            sqlGrade = "update assfixalocalxprofissional set HoraDe="&mytime(ref("HoraDe"))&", HoraA="&mytime(ref("HoraA"))&", LocalID="&treatvalzero(ref("LocalID"))&", Intervalo="&treatvalnull(ref("Intervalo"))&", Compartilhada='"&ref("Compartilhada")&"', Especialidades='"&ref("Especialidades")&"', Procedimentos='"&ref("Procedimentos")&"', Convenios='"&ref("Convenios")&"', Programas ='"&ref("Programas")&"', Profissionais='"&ref("Profissionais")&"', TipoGrade="& treatvalzero(ref("TipoGrade")) &", Horarios='"& ref("Horarios") &"', MaximoRetornos="& treatvalnull(ref("MaximoRetornos")) &", MaximoEncaixes="& treatvalnull(ref("MaximoEncaixes")) &", InicioVigencia="& mydatenull(ref("InicioVigencia")) &", FimVigencia="& mydatenull(ref("FimVigencia")) &", FrequenciaSemanas="&treatvalzero(ref("FrequenciaSemanas"))&", Mensagem='"& ref("Mensagem") &"', Cor='"& ref("Cor") &"' WHERE id="&req("H")
+            sqlGrade = "update assfixalocalxprofissional set HoraDe="&mytime(ref("HoraDe"))&", HoraA="&mytime(ref("HoraA"))&", LocalID="&treatvalzero(ref("LocalID"))&", Intervalo="&treatvalnull(ref("Intervalo"))&", Compartilhada='"&ref("Compartilhada")&"', Especialidades='"&ref("Especialidades")&"', Procedimentos='"&ref("Procedimentos")&"', Convenios='"&ref("Convenios")&"', Programas ='"&ref("Programas")&"', Profissionais='"&ref("Profissionais")&"', TipoGrade="& treatvalzero(ref("TipoGrade")) &", Horarios='"& ref("Horarios") &"', MaximoRetornos="& treatvalnull(ref("MaximoRetornos")) &", MaximoEncaixes="& treatvalnull(ref("MaximoEncaixes")) &", InicioVigencia="& mydatenull(ref("InicioVigencia")) &", FimVigencia="& mydatenull(ref("FimVigencia")) &", FrequenciaSemanas="&treatvalzero(ref("FrequenciaSemanas"))&", Mensagem='"& ref("Mensagem") &"', Cor='"& ref("Cor") &"', ValorHonorario="& treatvalnull(ref("ValorHonorario")) &" WHERE id="&req("H")
             call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
             db_execute(sqlGrade)
         end if
@@ -298,7 +299,7 @@ end if
           %>
           <%if ProfissionalID>0 then %>
           <%= quickfield("text", "Mensagem", "Mensagem de título", 4, Mensagem, "2", "", "") %>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="FrequenciaSemanas">Frequência</label>
             <select name="FrequenciaSemanas" id="FrequenciaSemanas" class="form-control">
                 <option value="1" <% if FrequenciaSemanas=1 then %> selected <% end if %>>Semanal</option>
@@ -306,9 +307,10 @@ end if
             </select>
         </div>
         <% end if %>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <%=quickField("cor", "Cor", "Cor na agenda", 12, Cor, "select * from Cores", "Cor", "")%>
         </div>
+        <%=quickField("currency", "ValorHonorario", "Valor Hora", 2, ValorHonorario, "", "", "")%>
             <%=quickField("memo", "Horarios", tituloHorarios, 12, Horarios, "", "", " placeholder='Ex.: 08:00, 08:35, 09:00'")%>
       </div>
         <br />

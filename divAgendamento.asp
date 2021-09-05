@@ -599,6 +599,12 @@ end if
                     if(Ipac>1000000000){
                         $.get("baseExt.asp?OP=insert&I="+Ipac, function(data){ eval(data) });
                     }
+                    $.get("ListaPropostas.asp?Origem=Agenda&PacienteID="+ Ipac, function(data){
+                        if(data.length>5){
+                            $("#modal-table").modal("show");
+                            $("#modal").html(data);
+                        }
+                     });
                 }
             </script>
             <div class="col-md-<%= colPac %>">
@@ -2028,6 +2034,15 @@ $( document ).ready(function() {
             });
         }
     })
+});
+
+$("select[name^=ConvenioID]").change(function(){
+    $.get("ObsConvenioAgenda.asp?ConvenioID="+$(this).val(), function(data){
+        if(data!=""){
+            $("#modal-table").modal("show");
+            $("#modal").html(data);
+        }
+    });
 });
 
 <!--#include file="jQueryFunctions.asp"-->

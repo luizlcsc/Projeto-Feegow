@@ -785,7 +785,7 @@ if getConfig("LembreteFormulario")=1 then
         <%
     end if
 end if
-if getConfig("AvisosPendenciasProntuario")=1 then
+if getConfig("AvisosPendenciasProntuario")=1 and instr(Omitir, "|pendencias|")=0 then
     if reg("lembrarPendencias")="S" then
     %>
     <script type="text/javascript">

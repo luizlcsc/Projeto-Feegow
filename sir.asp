@@ -317,7 +317,7 @@ end if
     set q = db.execute(sql)
 
     if q.eof and sqlAlternativo<>"" then
-        IF not ModoFranquia then
+        IF PorteClinica < 3 then
             set q = db.execute(sqlAlternativo)
         END IF
     end if

@@ -33,7 +33,7 @@ Ate = req("Ate")
             SomaValorRectoVisa=0
 
 
-            sql = "SELECT mPay.AccountAssociationIDCredit, mPay.AccountIDCredit,  i.NroNFe, i.DataNFe, ii.InvoiceID, COALESCE(i.ValorNFe) ValorNFe, IFNULL(movCred.Date, mPay.Date) DataRecto, COALESCE(i.Value) ValorBruto, "&_
+            sql = "SELECT mPay.AccountAssociationIDCredit, mPay.AccountIDCredit,  i.NroNFe, i.DataNFe, ii.InvoiceID, COALESCE(i.ValorNFe,0) ValorNFe, IFNULL(movCred.Date, mPay.Date) DataRecto, COALESCE(i.Value,0) ValorBruto, "&_
                                   " ifnull((select sum(ifnull(Desconto,0)) from itensinvoice where CategoriaID=198 and InvoiceID=i.id),0) CSLL, "&_
                                   " ifnull((select sum(ifnull(Desconto,0)) from itensinvoice where CategoriaID in (201, 212) and InvoiceID=i.id),0) IRPJ, "&_
                                   " ifnull((select sum(ifnull(Desconto,0)) from itensinvoice where CategoriaID=197 and InvoiceID=i.id),0) Cofins, "&_

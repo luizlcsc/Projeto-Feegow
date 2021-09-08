@@ -373,7 +373,7 @@ function treatValZero(Val)
 end function
 
 function treatValTISS(Val)
-	if isnumeric(Val) and Val<>"" then
+	if isnumeric(Val) and Val&""<>"" then
 		Val = formatnumber(Val,2)
 		Val = replace(Val, ".", "")
 		treatValTISS = replace(Val, ",", ".")
@@ -5798,4 +5798,63 @@ function autCareTeam(SysUserID, PacienteID)
 end function
 
 
+function lancarImposto(invoice,valor,convenio)
+    if valor&"" = "" then
+        valor = 0
+    end if  
+
+    sqlImpostos =   " select                                                            "&chr(13)&_
+                    " 	ia.id,                                                          "&chr(13)&_
+                    " 	i.nome,                                                         "&chr(13)&_
+                    " 	fe.name planoContas_nome,                                       "&chr(13)&_
+                    " 	fe.id planoContas_id,                                           "&chr(13)&_
+                    " 	cc.NomeCentroCusto CentroCusto_nome,                            "&chr(13)&_
+                    " 	cc.id CentroCusto_id,                                           "&chr(13)&_
+                    " 	ia.valor,                                                       "&chr(13)&_
+                    " 	ia.de,                                                          "&chr(13)&_
+                    " 	ia.ate                                                          "&chr(13)&_
+                    " from                                                              "&chr(13)&_
+                    " 	impostos_associacao ia                                          "&chr(13)&_
+                    " 	left join sys_financialexpensetype fe on ia.planoContas = fe.id "&chr(13)&_
+                    " 	left join centrocusto cc on ia.CentroCusto = cc.id              "&chr(13)&_
+                    " 	left join impostos i on ia.imposto = i.id                       "&chr(13)&_
+                    " where                                                             "&chr(13)&_
+                    " 	ia.convenio = "&convenio
+
+    set impostos = db.execute(sqlImpostos)
+
+    while not impostos.eof
+            imposto = impostos("valor")
+            if imposto&"" = "" then
+                imposto = 0
+            end if 
+
+            de = impostos("de")
+            ate = impostos("ate")
+            dentroDaRegra = 0
+            if valor >= de and valor <= ate then
+                dentroDaRegra = 1
+            end if
+            if dentroDaRegra = 1 then
+            
+                valorImposto = formatnumber(((imposto/100) * valor),2)
+
+                sqlinsertiii = "insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, Executado, sysUser, ProfissionalID, Associacao, CentroCustoID,imposto) values ("& invoice &", 'O', 1, "&impostos("planoContas_id")&", 0, 0 , "&treatvalzero(valorImposto)&", 'Imposto:"&impostos("nome")&"', '', "&session("User")&", 0, 0,"&impostos("CentroCusto_id")&" ,1)"
+                
+                db_execute(sqlinsertiii)
+
+                sqlgetValueMov = "SELECT Value FROM sys_financialmovement WHERE invoiceid="&invoice
+                set sqlValor =  db_execute(sqlgetValueMov)
+
+                if not sqlValor.eof then
+                    valorAtual = sqlValor("Value")
+                    valorAtual =  valorAtual - valorImposto
+                    sqlupdadeMov = "UPDATE sys_financialmovement SET Value="&valorAtual&" WHERE invoiceid="&invoice
+                    db.execute(sqlupdadeMov)
+                end if 
+            end if 
+        impostos.movenext
+    wend 
+
+end function
 %>

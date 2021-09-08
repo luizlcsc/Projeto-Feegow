@@ -132,6 +132,13 @@ if Acao="" then
                 DataExecucao = itens("DataExecucao")
                 HoraExecucao = itens("HoraExecucao")
                 PacoteID = itens("PacoteID")
+				imposto = itens("imposto")
+
+				' if imposto = 1 then
+				' 	Desconto =  valorUnitario
+				' 	valorUnitario = 0
+				' end if 
+
                 if session("Odonto")=1 then
                     OdontogramaObj = itens("OdontogramaObj")
                 end if

@@ -12,12 +12,19 @@
         ExecutantesTipos = "5"
     end if
 
+    
+    disabled = ""
+
+    if imposto = 1 then 
+        disabled = " disabled "
+    end if
+
 %>
-<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>">
+<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>" data-imposto="<%=imposto%>">
     <td>
     	<input type="hidden" name="AtendimentoID<%=id%>" id="AtendimentoID<%=id%>" value="<%=AtendimentoID%>">
     	<input type="hidden" name="AgendamentoID<%=id%>" id="AgendamentoID<%=id%>" value="<%=AgendamentoID%>">
-		<%=quickField("text", "Quantidade"&id, "", 4, Quantidade, " text-right disable", "", " required onkeyup=""recalc($(this).attr('id'))""")%><input type="hidden" name="inputs" value="<%= id %>">
+		<%=quickField("text", "Quantidade"&id, "", 4, Quantidade, " text-right disable", "", " required onkeyup=""recalc($(this).attr('id'))"""&disabled)%><input type="hidden" name="inputs" value="<%= id %>">
         <input type="hidden" name="Tipo<%=id %>" value="<%=Tipo %>" />
     </td>
         <%
@@ -111,17 +118,17 @@
                     <input type="radio" name="Executado<%=id %>" id="Executado<%=id %>U" value="U" <%if Executado="U" then %> checked <%end if %> /><label for="Executado<%=id %>U">Unidade</label>
                 </div>
             </div>
-<div class="col-md-8 mt5"><%= selectInsert("", "ItemID"&id, ItemID, "produtos", "NomeProduto", " onchange=""parametrosProduto("&id&", this.value);""", " required", "") %></div></td>
-<td colspan="2">
-                                        <%'= quickfield("simpleSelect", "CategoriaID"&id, "", 5, CategoriaID, "SELECT t1.id, concat( ifnull(t2.name, ''), ' -> ', t1.name) Categoria FROM sys_financialexpensetype AS t1 LEFT JOIN sys_financialexpensetype AS t2 ON t2.id = t1.category LEFT JOIN sys_financialexpensetype AS t3 ON t3.id = t2.category LEFT JOIN sys_financialexpensetype AS t4 ON t4.id = t3.category where t1.Nivel=(select max(Nivel) from sys_financialexpensetype) order by t2.name, t1.name", "Categoria", "") %>
-                                        <%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%> </td>
+    <div class="col-md-8 mt5"><%= selectInsert("", "ItemID"&id, ItemID, "produtos", "NomeProduto", " onchange=""parametrosProduto("&id&", this.value);""", " required", "") %></div></td>
+    <td colspan="2">
+
+            <%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%> </td>
 
             <%
         elseif Tipo="O" then
             ItemInvoiceID = id
             ProdutoInvoiceID = ""
 			if not InvoiceSQL.eof then
-				if InvoiceSQL("CD")="C" then
+				if InvoiceSQL("CD")="C" and imposto = 0 then
 					TabelaCategoria = "sys_financialincometype"
 					LimitarPlanoContas=""
 				else
@@ -131,16 +138,18 @@
 				end if
 			end if
             %>
-            <td><%=quickField("text", "Descricao"&id, "", 4, Descricao, " ", "", " placeholder='Descri&ccedil;&atilde;o...' required maxlength='50'")%></td>
-            <td >
-                <%'= quickfield("simpleSelect", "CategoriaID"&id, "", 5, CategoriaID, "SELECT t1.id, concat( ifnull(t2.name, ''), ' -> ', t1.name) Categoria FROM sys_financialexpensetype AS t1 LEFT JOIN sys_financialexpensetype AS t2 ON t2.id = t1.category LEFT JOIN sys_financialexpensetype AS t3 ON t3.id = t2.category LEFT JOIN sys_financialexpensetype AS t4 ON t4.id = t3.category where t1.Nivel=(select max(Nivel) from sys_financialexpensetype) order by t2.name, t1.name", "Categoria", "") %>
-                <%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%></td>
-            <td>
-                <%=selectInsert("", "CentroCustoID"&id, CentroCustoID, "CentroCusto", "NomeCentroCusto", "", "", "")%></td>
-            <script>
-                $("#hCentroCusto").html("Centro de Custo");
-                $("#hPlanoContas").html("Plano de Contas");
-            </script>
+            <td><%=quickField("text", "Descricao"&id, "", 4, Descricao, " ", "", " placeholder='Descri&ccedil;&atilde;o...' required maxlength='50' "&disabled)%></td>
+                <% if imposto = 0 then%>
+                    <td><%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%></td>
+                    <td><%=selectInsert("", "CentroCustoID"&id, CentroCustoID, "CentroCusto", "NomeCentroCusto", "", "", "")%></td>
+                    <script>
+                        $("#hCentroCusto").html("Centro de Custo");
+                        $("#hPlanoContas").html("Plano de Contas");
+                    </script>
+                <% else%>
+                    <td><%=quickField("select", "CategoriaID"&id, "", 12, CategoriaID, TabelaCategoria, "Name", ""&disabled)%></td>
+                    <td><%=quickField("select", "CentroCustoID"&id, "", 12, CentroCustoID, "centrocusto" , "NomeCentroCusto", ""&disabled)%></td>
+                <% end if%>
             <%
         end if
 
@@ -233,6 +242,17 @@
     $("[name^=CategoriaID]").attr("required","required")
 </script>
 <% END IF %>
+<script>
+ setTimeout(function() {
+        let trs = $("#invoiceItens tr[data-imposto=1]")
+        trs.map((key,tr)=>{
+            let inputs = $(tr).find("input")
+            inputs.map((keyi,input)=>{
+                $(input).attr("disabled",true)
+            })
+        })
+    } ,600)
+</script>
 <%
 if req("T")="D" then
     'aqui lista os itens caso seja a fatura do cartao
@@ -295,7 +315,6 @@ if req("T")="D" then
         var $linhaFatura = $("#invoiceItens").find("[id^='row']").eq("0");
         $linhaFatura.find("input").attr("readonly",true);
         $linhaFatura.find("[name^='Desconto'], [name^='Acrescimo']").attr("readonly",false);
-
         $linhaFatura.find(".btn-danger, .btn-alert").attr("disabled",true);
     }, 250);
 </script>
@@ -586,5 +605,6 @@ $('.deletaGuia').on('click', function(){
         }) 
     };
 }) 
+
 
 </script>

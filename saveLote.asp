@@ -86,6 +86,11 @@ function gerarcar(loteid,ConvenioID,tipoguiais,valortotal)
         db_execute(sqlinsertii)
         set pultInvItem = db.execute("select id from itensinvoice where InvoiceID="&InvoiceID&" order by id desc limit 1")
         ItemInvoiceID = pultInvItem("id")
+        
+        if CriaInvoice = 1 then
+            call lancarImposto(InvoiceID,valortotal,ConvenioID)
+        end if 
+
         spl = split(listadeguias, ",")
         
         for i=0 to ubound(spl)

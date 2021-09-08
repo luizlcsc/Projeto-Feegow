@@ -993,7 +993,7 @@ function geraInvoice(T, V, Incrementar){
         strIncrementar="&Incrementar="+Incrementar;
     }
 
-    $.post("LoteAReceber.asp?T="+T+"&V="+V+"&ConvenioID=<%=req("ConvenioID")%>&Lotes="+getLotesSelecionados()+strIncrementar, $(".guia").serialize(), function(data){
+    $.post("LoteAReceber.asp?T="+T+"&V="+V+"&CriaInvoice=1&ConvenioID=<%=req("ConvenioID")%>&Lotes="+getLotesSelecionados()+strIncrementar, $(".guia").serialize(), function(data){
         eval(data);
 
         setTimeout(function(){

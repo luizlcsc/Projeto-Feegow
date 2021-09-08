@@ -97,7 +97,7 @@
 					
 
                     sql = "select * from (select pac.NomePaciente, pac.id Prontuario, p.id, p.DateToReceive, p.Fee,p.Value,p.TransactionID,p.InvoiceReceiptID, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.id movId, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
-                          					" (select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID and DateToReceive<p.DateToReceive) Parcela, "&_
+                          					" (select parcela from sys_financialcreditcardreceiptinstallments sf where sf.TransactionID = p.TransactionID and sf.DateToReceive <= p.DateToReceive order by id desc limit 1) Parcela, "&_
                           					"(select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID) NumeroParcelas "&queryBlock&" from sys_financialcreditcardreceiptinstallments p  "&_
                           					"INNER JOIN sys_financialcreditcardtransaction t on t.id=p.TransactionID  "&_
                           					"INNER JOIN sys_financialmovement m on m.id=t.MovementID "&_
@@ -128,6 +128,8 @@
 					TotalLinhas = ccur(TotalLinhasSQL("qtd"))
 
 					TotalPaginas = TotalLinhas / Limite 
+
+
 					set rec = db.execute(sql) 
 
 					response.Buffer = "true"
@@ -161,9 +163,13 @@
 							if lastTransactionID <> rec("TransactionID") then
 								lastTransactionID = rec("TransactionID")
 								parcela = 0
-							end if 
+							end if
+							parcela = rec("parcela")&""
 
-							Parcela = parcela+1
+							if parcela = "" then
+								Parcela = parcela+1
+							end if
+							
 							Parcelas = rec("NumeroParcelas")
 							Bandeira = rec("Bandeira")&""														
 

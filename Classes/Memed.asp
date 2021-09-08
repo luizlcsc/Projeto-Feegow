@@ -162,10 +162,9 @@
                 removePatient: false,
                 deletePatient: false,
                 editPatient: false,
-                optionsPrescription: false,
-                removePrescription: false,
-                historyPrescription: false,
-                showProtocol: false,
+                optionsPrescription: <% if getConfig("MemedExibirOpcoesReceituario")=1 then response.write("true") else response.write("false") end if %>,
+                historyPrescription: <% if getConfig("MemedExibirHistorico")=1 then response.write("true") else response.write("false") end if %>,
+                showProtocol: <% if getConfig("MemedExibirProtocolos")=1 then response.write("true") else response.write("false") end if %>,
             }}),
             MdHub.command.send('plataforma.prescricao', 'setAdditionalData', {
                 licenseId: <%=replace(session("Banco"), "clinic","")%>,

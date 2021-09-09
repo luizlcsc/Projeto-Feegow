@@ -5823,6 +5823,8 @@ function lancarImposto(invoice,valor,convenio)
 
     set impostos = db.execute(sqlImpostos)
 
+    descontoTotal = 0
+
     while not impostos.eof
             imposto = impostos("valor")
             if imposto&"" = "" then
@@ -5832,15 +5834,18 @@ function lancarImposto(invoice,valor,convenio)
             de = impostos("de")
             ate = impostos("ate")
             dentroDaRegra = 0
-            if valor >= de and valor <= ate then
+            if cdbl(valor) >= cdbl(de) and cdbl(valor) <= cdbl(ate) then
+
+
                 dentroDaRegra = 1
             end if
             if dentroDaRegra = 1 then
             
                 valorImposto = formatnumber(((imposto/100) * valor),2)
-
                 sqlinsertiii = "insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, Executado, sysUser, ProfissionalID, Associacao, CentroCustoID,imposto) values ("& invoice &", 'O', 1, "&impostos("planoContas_id")&", 0, 0 , "&treatvalzero(valorImposto)&", 'Imposto:"&impostos("nome")&"', '', "&session("User")&", 0, 0,"&impostos("CentroCusto_id")&" ,1)"
                 
+                descontoTotal =  descontoTotal + valorImposto
+
                 db_execute(sqlinsertiii)
 
                 sqlgetValueMov = "SELECT Value FROM sys_financialmovement WHERE invoiceid="&invoice
@@ -5855,6 +5860,7 @@ function lancarImposto(invoice,valor,convenio)
             end if 
         impostos.movenext
     wend 
-
+    sqlupdadeInv = "UPDATE sys_financialinvoices SET Value="&descontoTotal&" WHERE id="&invoice
+    db.execute(sqlupdadeInv)
 end function
 %>

@@ -12,14 +12,18 @@
         ExecutantesTipos = "5"
     end if
 
-    
-    disabled = ""
-
-    if imposto = 1 then 
-        disabled = " disabled "
-    end if
-
 %>
+<style>
+.fake{
+    height: 39px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #dddddd;
+    border-radius: 0 4px 4px 0;
+}
+</style>
 <tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>" data-imposto="<%=imposto%>">
     <td>
     	<input type="hidden" name="AtendimentoID<%=id%>" id="AtendimentoID<%=id%>" value="<%=AtendimentoID%>">
@@ -147,8 +151,10 @@
                         $("#hPlanoContas").html("Plano de Contas");
                     </script>
                 <% else%>
-                    <td><%=quickField("select", "CategoriaID"&id, "", 12, CategoriaID, TabelaCategoria, "Name", ""&disabled)%></td>
-                    <td><%=quickField("select", "CentroCustoID"&id, "", 12, CentroCustoID, "centrocusto" , "NomeCentroCusto", ""&disabled)%></td>
+                    <td hidden ><%=quickField("select", "CategoriaID"&id, "", 12, CategoriaID, TabelaCategoria, "Name", "")%></td>
+                    <td><%=quickField("select", "CategoriaIDS"&id, "", 12, CategoriaID, TabelaCategoria, "Name", " disabled  ")%></td>
+                    <td hidden ><%=quickField("select", "CentroCustoID"&id, "", 12, CentroCustoID, "centrocusto" , "NomeCentroCusto", " ")%></td>
+                    <td><%=quickField("select", "CentroCustoIDS"&id, "", 12, CentroCustoID, "centrocusto" , "NomeCentroCusto", " disabled ")%></td>
                 <% end if%>
             <%
         end if
@@ -163,12 +169,39 @@
             notEdit = " notedit "
         end if
 
-        if aut("valordoprocedimentoA")=0 and Tipo="S" then
+        if (aut("valordoprocedimentoA")=0 and Tipo="S")then
             ValorUnitarioReadonly=" readonly"
             notEdit = " notedit "
         end if
+    if imposto = 1 then 
         %>
-    <td><%=quickField("currency", "ValorUnitario"&id, "", 4, fn(ValorUnitario), " " & notEdit & " CampoValorUnitario text-right disable", "", " onkeyup=""syncValuePercentReais($(this))""" & ValorUnitarioReadonly)%></td>
+    <td>
+        <div class="input-group">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default btn-descontox" data-toggle="dropdown" aria-expanded="false"
+                    style="width: 41px !important;">R$</button>
+            </div>
+            <div hidden>
+                <%=quickField("currency", "ValorUnitario"&id, "", 4, fn(ValorUnitario), " " & notEdit & " CampoValorUnitario text-right", "", " onkeyup=""syncValuePercentReais($(this))""" & ValorUnitarioReadonly)%>
+            </div>
+            <div class="fake col-md-4 CampoDesconto input-mask-brl text-right disabled"><%=fn(ValorUnitario)%></div>
+        </div>
+    </td>
+    <% else %>
+        <td><%=quickField("currency", "ValorUnitario"&id, "", 4, fn(ValorUnitario), " " & notEdit & " CampoValorUnitario text-right", "", " onkeyup=""syncValuePercentReais($(this))""" & ValorUnitarioReadonly)%></td>
+    <% end if %>
+    <% if imposto = 1 then %>
+    <td>
+        <div class="input-group">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default btn-descontox" data-toggle="dropdown" aria-expanded="false"
+                    style="width: 41px !important;">R$</button>
+            </div>
+            <%=quickField("text", "Desconto"&id, "", 4, fn(Desconto), " CampoDesconto input-mask-brl text-right hidden", "", " data-desconto='"&fn(Desconto)&"'hidden onkeyup=""setInputDescontoEmPorcentagem(this)""")%>
+            <div class="fake col-md-4 CampoDesconto input-mask-brl text-right disabled"><%=fn(Desconto)%></div>
+        </div>
+    </td>
+    <% else %>
     <td>
         <div class="input-group">
             <div class="input-group-btn">
@@ -182,7 +215,27 @@
             <%=quickField("text", "PercentDesconto"&id, "", 4, "0.00", " PercentDesconto input-mask-brl text-right disable", "", "style='display:none' data-desconto='0.00' onkeyup=""setInputDescontoEmReais(this)""")%>
         </div>
     </td>
-    <td><%=quickField("text", "Acrescimo"&id, "", 4, fn(Acrescimo), " input-mask-brl text-right disable", "", " data-acrescimo='"&fn(Acrescimo)&"' onkeyup=""recalc($(this).attr('id'))""")%></td>
+    <% end if %>
+    <% if imposto = 1 then %>
+    <td>
+        <div class="input-group">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default btn-descontox" data-toggle="dropdown" aria-expanded="false"
+                    style="width: 41px !important;">R$</button>
+            </div>
+            <div hidden>
+                <%=quickField("text", "Acrescimo"&id, "", 4, fn(Acrescimo), " input-mask-brl text-right", "", " data-acrescimo='"&fn(Acrescimo)&"' onkeyup=""recalc($(this).attr('id'))""")%>
+            </div>
+            <div class="fake col-md-4 CampoDesconto input-mask-brl text-right disabled"><%=fn(Acrescimo)%></div>
+        </div>
+    </td>
+    <% else %>
+        <td><%=quickField("text", "Acrescimo"&id, "", 4, fn(Acrescimo), " input-mask-brl text-right disable", "", " data-acrescimo='"&fn(Acrescimo)&"' onkeyup=""recalc($(this).attr('id'))""")%></td>
+    <% end if %>
+
+
+
+
     <td class="text-right" data-valor="<%= fn( Subtotal) %>" id="sub<%=id%>" nowrap>R$ <%= fn( Subtotal) %></td>
     <td><button
     <% if id<0 then %>
@@ -242,17 +295,6 @@
     $("[name^=CategoriaID]").attr("required","required")
 </script>
 <% END IF %>
-<script>
- setTimeout(function() {
-        let trs = $("#invoiceItens tr[data-imposto=1]")
-        trs.map((key,tr)=>{
-            let inputs = $(tr).find("input")
-            inputs.map((keyi,input)=>{
-                $(input).attr("disabled",true)
-            })
-        })
-    } ,600)
-</script>
 <%
 if req("T")="D" then
     'aqui lista os itens caso seja a fatura do cartao

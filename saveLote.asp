@@ -152,9 +152,7 @@ if Acao="Inserir" then
                 set valorProc = db.execute("select sum(ValorPago) Valor from tissguiahonorarios t where LoteID = "&pult("id")&"")
             end if
 
-            if CriaInvoice = "1" then
-                call gerarcar(pult("id"),request.QueryString("ConvenioID"),lcase(Tipo),valorProc("Valor"))
-            end if
+            call gerarcar(pult("id"),req("ConvenioID"),lcase(Tipo),valorProc("Valor"))
 
         end if
 		%>

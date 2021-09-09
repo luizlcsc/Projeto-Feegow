@@ -122,7 +122,7 @@ if req("X")<>"" then
 
         'db.execute("INSERT INTO sys_financialinvoices_removidos (id, Name, AccountID, AssociationAccountID, Value, Tax, Currency, Description, AccountPlanID, CompanyUnitID, Recurrence, RecurrenceType, CD, Sta, sysActive, sysUser, FormaID, ContaRectoID, sysDate, CaixaID, FixaID, TabelaID, NumeroFatura, ProfissionalSolicitante, ) SELECT *,now() FROM sys_financialinvoices WHERE id = "&req("X"))
         'db_execute("delete from sys_financialinvoices where id="&req("X"))
-        db.execute("UPDATE sys_financialinvoices SET MotivoCancelamento='"& left(ref("MotivoCancelamento"), 149) &"', sysUserCancelamento="& session("User") &", DataCancelamento=NOW() WHERE id="& req("X"))
+        db.execute("UPDATE sys_financialinvoices SET sysActive=-1, MotivoCancelamento='"& left(ref("MotivoCancelamento"), 149) &"', sysUserCancelamento="& session("User") &", DataCancelamento=NOW() WHERE id="& req("X"))
         set vcaII = db_execute("select id from itensinvoice WHERE InvoiceID="& req("X"))
         while not vcaII.eof
             db_execute("update rateiorateios set ItemContaAPagar=NULL WHERE ItemContaAPagar="& vcaII("id"))

@@ -229,7 +229,7 @@ end if
                 <td>
                     <div class="conteudo">
                         <div style="float:left; width:100%; margin-top:5px; margin-bottom:5px; padding-left:2px; border: solid 1px #000;">
-                            <div><span style="background-color: #ccc;">Prontiário:</span> &nbsp;&nbsp;<%=Prontuario%></div>
+                            <div><span style="background-color: #ccc;">Prontuário:</span> &nbsp;&nbsp;<%=Prontuario%></div>
                             <div>
                                 <div style="float:left; width:70%; padding-left:100px;"><span style="background-color: #ccc;">Médico:</span>&nbsp;<%=NomeProfissional%></div>
                                 <div style="float:left; width:30%; padding-left:20px;">

@@ -190,7 +190,7 @@ response.Write(abreDivMaster)
                                     else
                                     %>
                                         <a  href="javascript:modalPacienteRelativo(<%=regs("id")%>, '<%=regs("Nome")%>')">
-                                            <button type="button" class="btn btn-sm btn-default"><i class="fa fa-expand" title="<%=regs("Nome")%>"></i></button>
+                                            <button type="button" class="btn btn-sm btn-default" data-rel="tooltip" data-placement="bottom" data-original-title="Mais informações"><i class="fa fa-expand" title="<%=regs("Nome")%>"></i></button>
                                         </a>
                                     <%
                                     end if

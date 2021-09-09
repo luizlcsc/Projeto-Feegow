@@ -2961,23 +2961,23 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 
             if recurso="pacientes" then
 '                rbtns = rbtns & "<div class='switch switch-info switch-inline'>  <input id='exampleCheckboxSwitch1' type='checkbox' checked=''>  <label for='exampleCheckboxSwitch1'></label></div>"
-                rbtns = rbtns & "<div title='Ativar / Inativar paciente' class='mn hidden-xs' style='float:left'><div class='switch switch-info switch-inline'><input checked name='Ativo' id='Ativo' type='checkbox' /><label style='height:30px' class='mn' for='Ativo'></label></div></div> &nbsp; "
+                rbtns = rbtns & "<div title='Ativar / Inativar paciente' data-rel='tooltip' data-placement='bottom' data-original-title='Ativar / Inativar paciente' class='mn hidden-xs' style='float:left'><div class='switch switch-info switch-inline'><input checked name='Ativo' id='Ativo' type='checkbox' /><label style='height:30px' class='mn' for='Ativo'></label></div></div> &nbsp; "
             end if
 
             if aut("|profissionaisV|")=1 then
-                rbtns = rbtns & "<a title='Anterior' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Previous&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
-                rbtns = rbtns & "<a id='Header-List' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
-                rbtns = rbtns & "<a title='Próximo' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Next&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
+                rbtns = rbtns & "<a title='Anterior' data-rel='tooltip' data-placement='bottom' data-original-title='Anterior' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Previous&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
+                rbtns = rbtns & "<a id='Header-List' data-rel='tooltip' data-placement='bottom' data-original-title='Lista' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
+                rbtns = rbtns & "<a title='Próximo' data-rel='tooltip' data-placement='bottom' data-original-title='Próximo' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Next&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
             end if
 		end if
 		if aut(recurso&"I")=1 and recurso<>"profissionais" and recurso<>"funcionarios" then
-			rbtns = rbtns & "<a id='Header-New' title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
+			rbtns = rbtns & "<a id='Header-New' title='Novo' data-rel='tooltip' data-placement='bottom' data-original-title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
 		end if
 		if recurso="pacientes" then
-			rbtns = rbtns & "<button title='Imprimir Ficha' type='button' id='btnFicha' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-print'></i></button> "
-			rbtns = rbtns & "<button title='Compartilhar Dados' type='button' id='btnCompartilhar' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-share-alt'></i></button> "
+			rbtns = rbtns & "<button title='Imprimir Ficha' data-rel='tooltip' data-placement='bottom' data-original-title='Imprimir Ficha' type='button' id='btnFicha' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-print'></i></button> "
+			rbtns = rbtns & "<button title='Compartilhar Dados' data-rel='tooltip' data-placement='bottom' data-original-title='Compartilhar Dados' type='button' id='btnCompartilhar' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-share-alt'></i></button> "
 		end if
-		rbtns = rbtns & "<a title='Histórico de Alterações' href='javascript:log()' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-history'></i></a> "
+		rbtns = rbtns & "<a title='Histórico de Alterações' data-rel='tooltip' data-placement='bottom' data-original-title='Histórico de Alterações' href='javascript:log()' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-history'></i></a> "
 		'rbtns = rbtns & "<script>function log(){$('#modal-table').modal('show');$.get('DefaultLog.asp?R="&recurso&"&I="&hid&"', function(data){$('#modal').html(data);})}</script>"
 		if recurso<>"profissionais" and recurso<>"funcionarios" and recurso<>"fornecedores" then
 			if (hsysActive=1 and aut(recurso&"A")=1) or (hsysActive=0 and aut(recurso&"I")=1) then

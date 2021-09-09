@@ -169,7 +169,7 @@ var SayCheese = (function() {
   };
 
   SayCheese.prototype.stop = function stop() {
-    this.stream.stop();
+    this.stream.getTracks()[0].stop(); // fix stop is not a function
 
     if (window.URL && window.URL.revokeObjectURL) {
       window.URL.revokeObjectURL(this.video.src);

@@ -149,10 +149,8 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
     }
 */
     <%
-    if getConfig("GerarNovoFormulario")=1 then
         'config para DUPLICAR o form inves de editar
         FormID="N"
-    end if
     %>
 
     var FormID = "<%=FormID%>";

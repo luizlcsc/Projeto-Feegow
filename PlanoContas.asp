@@ -39,7 +39,11 @@ end if
 		list-style: none;
 	}
 </style>
-<div class="clearfix form-actions">
+
+<div class="clearfix form-actions" style="margin-top: 40px">
+	<div class="col-xs-12 text-right" style="position: absolute; margin-top: -60px;">
+		<button class="btn btn-primary btn-sm" type="submit" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar Ordem</button>
+	</div>
 	<div class="col-xs-6">
 		<label>Adicionar Categoria</label><br />
 		<input type="text" name="Adicionar" id="Adicionar" class="form-control input-sm" />
@@ -65,10 +69,6 @@ end if
     <div class="col-xs-4"><label>&nbsp;</label><br />
     	<button type="button" class="btn btn-sm btn-success btn-block" onclick="arvore('<%=req("CD")%>', '', $('#Adicionar').val(), $('#CategoriaSuperior').val());location.reload()"><i class="fa fa-plus"></i> Inserir</button>
     </div>
-    <div class="col-xs-4"><label>&nbsp;</label><br />
-    	<!-- <button class="btn btn-primary btn-block btn-sm" onclick="savePlanoContas()" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar Ordem</button> -->
-    	<button class="btn btn-primary btn-block btn-sm" type="submit" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar</button>
-	</div>
 </div>
 <%
 function li(id, Name, Rateio, Ordem, Posicao)

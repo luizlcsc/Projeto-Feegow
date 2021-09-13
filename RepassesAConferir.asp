@@ -198,7 +198,7 @@ function lancaRepasses(rps, vlr, cc){
 
 function x(I){
 	if(confirm('Tem certeza de que deseja excluir este repasse?')){
-		location.href='./?<%=request.QueryString%>&X='+I;
+		location.href='./?<%=request.QueryString()%>&X='+I;
 	}
 }
 

@@ -44,7 +44,7 @@ end if
             <div class="panel-body hidden-print">
                 <div class="col-md-3" id="selectLote">
                     <label>Conta Cr&eacute;dito</label><br />
-                    <%= simpleSelectCurrentAccounts("ContaCredito", "00, 5, 8, 4, 2, 1", ContaCredito, " required") %>
+                    <%= simpleSelectCurrentAccounts("ContaCredito", "00, 5, 8, 4, 2, 1", ContaCredito, " required","") %>
                 </div>
                 <div class="col-md-3">
                     <label>Forma de Recebimento</label><br />
@@ -127,7 +127,7 @@ function lancaRepasses(rps, vlr, cc){
 
 function x(I){
 	if(confirm('Tem certeza de que deseja excluir este repasse?')){
-		location.href='./?<%=request.QueryString%>&X='+I;
+		location.href='./?<%=request.QueryString()%>&X='+I;
 	}
 }
 </script>

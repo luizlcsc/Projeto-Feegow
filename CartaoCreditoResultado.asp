@@ -18,7 +18,6 @@
                             <th>NF</th>
 							<th nowrap width="8%">Parcela</th>
 							<th nowrap>Bandeira</th>
-							<th nowrap width="60" >Taxa atual.</th>
 							<th nowrap width="10%">Valor compra</th>
 							<th nowrap width="10%">Taxa % <i class="fa fa-info-circle" style="margin-left: 10px;" data-toggle="tooltip" data-placement="bottom" title="Taxa vigente na taxa na data da compra"></i></th>
 							<th nowrap width="10%">Valor créd.</th>
@@ -98,7 +97,7 @@
 					
 
                     sql = "select * from (select pac.NomePaciente, pac.id Prontuario, p.id, p.DateToReceive, p.Fee,p.Value,p.TransactionID,p.InvoiceReceiptID, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.id movId, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
-                          					" (select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID and DateToReceive<p.DateToReceive) Parcela, "&_
+                          					" (select parcela from sys_financialcreditcardreceiptinstallments sf where sf.TransactionID = p.TransactionID and sf.DateToReceive <= p.DateToReceive order by id desc limit 1) Parcela, "&_
                           					"(select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID) NumeroParcelas "&queryBlock&" from sys_financialcreditcardreceiptinstallments p  "&_
                           					"INNER JOIN sys_financialcreditcardtransaction t on t.id=p.TransactionID  "&_
                           					"INNER JOIN sys_financialmovement m on m.id=t.MovementID "&_
@@ -129,6 +128,8 @@
 					TotalLinhas = ccur(TotalLinhasSQL("qtd"))
 
 					TotalPaginas = TotalLinhas / Limite 
+
+
 					set rec = db.execute(sql) 
 
 					response.Buffer = "true"
@@ -139,12 +140,12 @@
 
 					while not rec.eof
 					response.flush()
-						queryTaxa = ""
-						queryTaxa = getTaxaAtual(rec("AccountIDDebit"),rec("movId"),rec("NumeroParcelas"))
-						set RetornoTaxaAtual2 = db.execute(queryTaxa)
-						taxaAtual= ""
-						taxaAtual = RetornoTaxaAtual2("taxaAtual")
-						RetornoTaxaAtual2 = ""
+						'queryTaxa = ""
+						'queryTaxa = getTaxaAtual(rec("AccountIDDebit"),rec("movId"),rec("NumeroParcelas"))
+						'set RetornoTaxaAtual2 = db.execute(queryTaxa)
+						'taxaAtual= ""
+						'taxaAtual = RetornoTaxaAtual2("taxaAtual")
+						'RetornoTaxaAtual2 = ""
 						if not isnull(rec("Value")) and not isnull(rec("Total")) and not isnull(rec("NomePaciente")) then
 						    Fee = rec("Fee")
 						    if isnull(Fee) then
@@ -162,9 +163,13 @@
 							if lastTransactionID <> rec("TransactionID") then
 								lastTransactionID = rec("TransactionID")
 								parcela = 0
-							end if 
+							end if
+							parcela = rec("parcela")&""
 
-							Parcela = parcela+1
+							if parcela = "" then
+								Parcela = parcela+1
+							end if
+							
 							Parcelas = rec("NumeroParcelas")
 							Bandeira = rec("Bandeira")&""														
 
@@ -206,7 +211,6 @@
                                     <td><%=rec("NumeroNFe")%></td>
 							        <td nowrap><%= Parcela %> / <%= Parcelas %></td>
 							        <td nowrap><%= Bandeira %></td>
-							        <td nowrap align="right"><%= taxaAtual %>%</td>
 							        <td nowrap align="right">
                                       R$ <%= fn(rec("Total")) %>
                                       <input type="hidden" id="parc<%=rec("id") %>" value="<%=fn(rec("Value")) %>" />
@@ -244,7 +248,6 @@
                                   <td><%=rec("NumeroNFe")%></td>
 							      <td nowrap><%= Parcela %> / <%= Parcelas %></td>
 							      <td nowrap><%= Bandeira %></td>
-								  <td nowrap align="right"><%= taxaAtual %>%</td>
 							      <td nowrap align="right">
                                       R$ <%= fn(rec("Total")) %>
                                       <input type="hidden" id="parc<%=rec("id") %>" value="<%=fn(rec("Value")) %>" />

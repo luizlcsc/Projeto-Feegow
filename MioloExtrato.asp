@@ -72,7 +72,7 @@ end if
     if session("Unidades")<>"|0|" then
             %>
             <div class="row">
-                <%=quickField("empresaMulti", "Unidades", "Unidades", 10, session("Unidades"), "", "", "")%>
+                <%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 10, "", "", "", "")%>
             </div>
             <%
 	else

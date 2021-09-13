@@ -51,10 +51,11 @@ prefixo = right(prefixo, 20)
             <ans:identificacaoPrestador>
 				<%
                 CodigoNaOperadora = trim(CodigoNaOperadora&" ")
-                CodigoNaOperadora = TirarAcento(replace(replace(replace(replace(replace(CodigoNaOperadora, ".", ""), "-", ""), ",", ""), "_", ""), " ", ""))
-                if CalculaCPF(CodigoNaOperadora)=true then
+                CodigoNaOperadora = TISS__FormataConteudo(TISS__RemoveCaracters(CodigoNaOperadora))
+                CodigoNaOperadoraValida = CodigoNaOperadora
+                if CalculaCPF(CodigoNaOperadoraValida)=true then
                     tipoCodigoNaOperadora = "CPF"
-                elseif CalculaCNPJ(CodigoNaOperadora)=true then
+                elseif CalculaCNPJ(CodigoNaOperadoraValida)=true then
                     tipoCodigoNaOperadora = "CNPJ"
                 else
                     tipoCodigoNaOperadora = "codigoPrestadorNaOperadora"
@@ -465,7 +466,7 @@ prefixo = right(prefixo, 20)
 
 					set desp = db.execute("select * from tissguiaanexa where GuiaID="&guias("id"))
 					if not desp.eof then
-                        if InStr(XMLTagsOmitir,"|procedimentosExecutados|")=0 then
+                        if InStr(XMLTagsOmitir,"|outrasDespesas|")=0 then
 					%>
                     <ans:outrasDespesas>
                     	<%

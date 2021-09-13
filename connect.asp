@@ -526,11 +526,11 @@ function selectCurrentAccounts(id, associations, selectedValue, others)
 	<%
 end function
 
-function simpleSelectCurrentAccounts(id, associations, selectedValue, others)
+function simpleSelectCurrentAccounts(id, associations, selectedValue, others, selectText)
 	splAssociations = split(associations,", ")
 	%>
 		<select class="form-control select2-single" id="<%= id %>" name="<%= id %>"<%= others %>>
-			<option value="">&nbsp;</option>
+			<option value=""><%=selectText%> &nbsp;</option>
 			<%
 			for t=0 to uBound(splAssociations)
 				if splAssociations(t)="0" then
@@ -3784,20 +3784,47 @@ private function geraRecorrente(i)
 end function
 
 function statusTarefas(De, Para)
-'    response.write("select id from sys_users where id="&De&" or id in("&replace(Para, "|", "")&")")
-    set puser = db.execute("select id from sys_users where id="&De&" or id in("&replace(Para, "|", "")&")")
+    if instr(Para, "-") > 0 then
+
+        UserIdSpl = split(replace(Para, "|", ""), ",")
+
+        for j=0 to ubound(UserIdSpl)
+            itemSPL = UserIdSpl(j)
+
+            if instr(itemSPL, "-") > 0 then
+                itemSPL = replace(itemSPL,"-", "")
+                UsuariosIdSQL = "SELECT GROUP_CONCAT('|',Usuarios,'|') Usuarios FROM( "&_
+                                "    SELECT up.id Usuarios "&_
+                                "    FROM profissionais p "&_
+                                "    LEFT JOIN sys_users up ON up.idInTable=p.id "&_
+                                "    WHERE p.CentroCustoID = "&itemSPL&_
+                                "    UNION ALL "&_
+                                "    SELECT uf.id  "&_
+                                "    FROM funcionarios f "&_
+                                "    LEFT JOIN sys_users uf ON uf.idInTable=f.id "&_
+                                "    WHERE f.CentroCustoID = "&itemSPL&_
+                                " ) AS t"
+
+                set UsuariosID = db.execute(UsuariosIdSQL)
+                if j = 0 then
+                    itemID = UsuariosID("Usuarios")
+                else
+                    itemID = itemID&","&UsuariosID("Usuarios")
+                end if
+            else
+                itemID = itemID&",|"&trim(itemSPL)&"|"
+            end if
+        next
+    else
+        itemID = Para
+    end if
+'   Retirando valores de grupo e colocando id da tabela sys_User no campo Para da tabela tarefas
+    db.execute("update tarefas set Para='"&itemID&"' where id="&req("I"))
+'    response.write("select id from sys_users where id="&De&" or id in("&replace(itemID, "|", "")&")")
+    set puser = db.execute("select id from sys_users where id="&De&" or id in("&replace(itemID, "|", "")&")")
     while not puser.eof
         notifTarefas = ""
- '       response.write("select id, staPara from tarefas where De="&puser("id")&" and staPara in('Respondida')")
-        'set tarDe = db.execute("select id, staPara from tarefas where De="&puser("id")&" and staPara in('Respondida')")
-       ' while not tarDe.eof
-        '    notifTarefas = notifTarefas & "|"& tarDe("id") & "," & tarDe("staPara")
-        'tarDe.movenext
-        'wend
-        'tarDe.close
-        'set tarDe = nothing
-
-        'set tarPara = db.Execute("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' and staDe in('Pendente', 'Enviada')")
+ '       response.write("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' AND staPara <> 'Finalizada' ")
         set tarPara = db.Execute("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' AND staPara <> 'Finalizada' ")
         while not tarPara.eof
             notifTarefas = notifTarefas & "|" & tarPara("id") & "," & tarPara("DtPrazo") & " " & ft(tarPara("HrPrazo"))
@@ -3806,7 +3833,7 @@ function statusTarefas(De, Para)
         tarPara.close
         set tarPara = nothing
 
-'        response.write("update sys_users set notifTarefas='"&notifTarefas&"' where id="&puser("id"))
+    '    response.write("update sys_users set notifTarefas='"&notifTarefas&"' where id="&puser("id"))
         db_execute("update sys_users set notifTarefas='"&notifTarefas&"' where id="&puser("id"))
     puser.movenext
     wend
@@ -4504,12 +4531,6 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
 
 
     'comita a transacao
-    if isnumeric(PacienteID) then
-        sqlPacienteID = CLng(PacienteID)
-    else
-        sqlPacienteID = 0
-    end if
-
     if erro<>"" and tipoResultado<>"ignore" then
 	    %>
         new PNotify({
@@ -4549,7 +4570,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                 else
                     ValorCalcular = Valor
                 end if
-                sqlVCA = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)= "& treatvalzero(LocalizacaoID) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"&Responsavel&"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
+                sqlVCA = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)= "& treatvalzero(LocalizacaoID) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"&Responsavel&"'"& sqlValidade
                 set vca = db.execute( sqlVCA )
                 if not vca.eof then
                     ValorPosicao = calcValPosicao(vca("Quantidade"), vca("ValorPosicao"), Quantidade, ValorCalcular)
@@ -4557,7 +4578,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                     PosicaoID = vca("id")
                 else
                     ValorPosicao = calcValPosicao(0, 0, Quantidade, ValorCalcular)
-                    db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao, PacienteID) VALUES ("&P&", "& treatvalzero(Quantidade) &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CBID &"', "& treatvalzero( LocalizacaoID ) &", '"& Lote &"', "& mydatenull(Validade) &", "& treatvalzero(ValorPosicao) &", "& sqlPacienteID & ")")
+                    db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao) VALUES ("&P&", "& treatvalzero(Quantidade) &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CBID &"', "& treatvalzero( LocalizacaoID ) &", '"& Lote &"', "& mydatenull(Validade) &", "& treatvalzero(ValorPosicao) &")")
                     set pult = db.execute("select id from estoqueposicao order by id desc limit 1")
                     PosicaoID = pult("id")
                 end if
@@ -4565,7 +4586,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
             PosicaoE = PosicaoID
             PosicaoS = 0
         elseif Tipo="S" or Tipo="M" then
-            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
+            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"'"& sqlValidade
             set posSaida = db.execute(sqlPosSaida)
             'jamais dar saida de uma posicao que nao foi criada previamente
             if not posSaida.eof then
@@ -4585,11 +4606,11 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                     end if
                     Sobra = ccur((ConjuntosRetirados*ApresentacaoQuantidade)-Quantidade)
                     if Sobra>0 then
-                        sqlPosSobra = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='U' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
+                        sqlPosSobra = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='U' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"'"& sqlValidade
                         set posSobra = db.execute( sqlPosSobra )
                         if posSobra.eof then
                             ValorPosicao = calcValPosicao(0, 0, Sobra, ValorUnidade)
-                            db_execute("insert into estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao, PacienteID) select ProdutoID, "& treatvalzero(Sobra) &", 'U', Responsavel, '"& CBID &"', LocalizacaoID, Lote, Validade, "& treatvalzero(ValorPosicao) &", PacienteID FROM estoqueposicao WHERE id="& posSaida("id"))
+                            db_execute("insert into estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao) select ProdutoID, "& treatvalzero(Sobra) &", 'U', Responsavel, '"& CBID &"', LocalizacaoID, Lote, Validade, "& treatvalzero(ValorPosicao) &" FROM estoqueposicao WHERE id="& posSaida("id"))
                         else
                             ValorPosicao = calcValPosicao(posSobra("Quantidade"), posSobra("ValorPosicao"), Sobra, ValorUnidade)
                             db_execute("update estoqueposicao set Quantidade=(Quantidade+"& treatvalzero(Sobra) &"), ValorPosicao="& treatvalzero(ValorPosicao) &" where id="& posSobra("id"))
@@ -4606,7 +4627,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                         ValorNovo = ValorUnidade
                     end if
                     if Individualizar="" then 'somente movimentou sem individualizar
-                        sqlVCAmov = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&posSaida("Lote")&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoID) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& Responsavel &"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
+                        sqlVCAmov = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&posSaida("Lote")&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoID) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& Responsavel &"' "& sqlValidade
                         'call alertar(0, sqlVCAmov)
                         set vca = db.execute( sqlVCAmov )
                         if not vca.eof then
@@ -4614,7 +4635,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                             db_execute("update estoqueposicao set Quantidade=(Quantidade+"&treatvalzero(Quantidade)&") where id="&vca("id"))
                             PosicaoE = vca("id")
                         else
-                            db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao, PacienteID) VALUES ("&P&", "& treatvalzero(Quantidade) &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CBID &"', "& treatvalzero( LocalizacaoID ) &", '"& posSaida("Lote") &"', "& mydatenull(posSaida("Validade")) &", "& treatvalzero( ValorNovo ) &", " & sqlPacienteID & ")")
+                            db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao) VALUES ("&P&", "& treatvalzero(Quantidade) &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CBID &"', "& treatvalzero( LocalizacaoID ) &", '"& posSaida("Lote") &"', "& mydatenull(posSaida("Validade")) &", "& treatvalzero( ValorNovo ) &")")
                         end if
                     else'Individualizou
                         tInd = ccur(Quantidade)
@@ -4622,11 +4643,11 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                         splCBIDs = split(CBIDs, ", ")
                         for icb=0 to ubound(splCBIDs)
                             CodigoIndividual = splCBIDs(icb)
-                            sqlVCAInd = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&posSaida("Lote")&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoID)&" AND CBID LIKE '"& CodigoIndividual &"' AND Responsavel like '"& Responsavel &"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
+                            sqlVCAInd = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"&TipoUnidade&"' AND Lote like '"&posSaida("Lote")&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoID)&" AND CBID LIKE '"& CodigoIndividual &"' AND Responsavel like '"& Responsavel &"' "& sqlValidade
                             'response.write("//"& sqlVCAInd )
                             set vcaInd = db.execute( sqlVCAInd )
                             if vcaInd.eof then
-                                db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao, PacienteID) VALUES ("&P&", "& 1 &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CodigoIndividual &"', "& treatvalzero( LocalizacaoID ) &", '"& posSaida("Lote") &"', "& mydatenull( posSaida("Validade") ) &", "& treatvalzero( ValorNovo ) &", " & sqlPacienteID & ")")
+                                db_execute("insert INTO estoqueposicao (ProdutoID, Quantidade, TipoUnidade, Responsavel, CBID, LocalizacaoID, Lote, Validade, ValorPosicao) VALUES ("&P&", "& 1 &", '"& TipoUnidade &"', '"& Responsavel &"', '"& CodigoIndividual &"', "& treatvalzero( LocalizacaoID ) &", '"& posSaida("Lote") &"', "& mydatenull( posSaida("Validade") ) &", "& treatvalzero( ValorNovo ) &")")
                             else
                                 db_execute("update estoqueposicao SET Quantidade=Quantidade+1 WHERE id="& vcaInd("id"))
                             end if
@@ -4634,6 +4655,14 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                     end if
                 end if
             else
+
+                id = req("PosicaoID")
+                if id&"" <> "" then
+                    'Dando baixa no estoque quando é colocado um paciente na saida
+                    set EstoquePosicaoSQL = db_execute("SELECT Quantidade FROM estoqueposicao WHERE id="&req("PosicaoID"))
+                    db_execute("update estoqueposicao set Quantidade=(Quantidade-"&treatvalzero(Quantidade)&") where id="&req("PosicaoID"))
+
+                end if
                 'mas ele tem que achar essa posicao de saida pq tem que ter saido de algum lugar... caso contrario eh sql errado
             '   call alertar(0, "nao achou essa posicao de saida")
              '  call alertar(0, sqlPosSaida)
@@ -5774,5 +5803,74 @@ function getConfAO(NomeConfig)
     getConfAO = vca("Val")
 end function
 
-%>
 
+
+function getClientDataHora(UnidadeID)
+
+    HorarioVerao = ""
+    if UnidadeID=0 then
+        set getNome = db.execute("select FusoHorario, HorarioVerao from empresa")
+        if not getNome.eof then
+            FusoHorario = getNome("FusoHorario")
+            HorarioVerao = getNome("HorarioVerao")
+        end if
+    elseif UnidadeID>0 then
+        set getNome = db.execute("select FusoHorario, HorarioVerao from sys_financialcompanyunits where id="&session("UnidadeID"))
+        if not getNome.eof then
+            FusoHorario = getNome("FusoHorario")
+            HorarioVerao = getNome("HorarioVerao")
+        end if
+    end if
+
+    getClientDataHora = dateadd("h",FusoHorario + 3, now())
+end function
+
+function convertSimbolosHexadecimal(Texto)
+    Texto = replace(Texto, "►", "&#9658;")
+    Texto = replace(Texto, "→", "&#x279e;")
+    Texto = replace(Texto, "⇒", "&#8658;")
+    Texto = replace(Texto, "⇔", "&#8660;")
+    Texto = replace(Texto, "♦", "&#x2b27;")
+    Texto = replace(Texto, "≈", "&#8776;")
+
+    convertSimbolosHexadecimal = Texto
+
+end function
+
+'Verifica se tem permissão pelo Care Team do Paciente.
+'O usuário logado e o usuário especificado nos parâmetros
+'devem pertencer ao CareTeam do paciente.
+'   Parâmetros:
+'      SysUserID  - Id do profissional na tabela sys_user
+'      PacienteID - Id do paciente
+function autCareTeam(SysUserID, PacienteID)
+    autCareTeam = false
+
+    if lcase(session("table"))="profissionais"  then
+
+        set rsUser = db.execute("SELECT idInTable FROM sys_users WHERE id = '" & SysUserID & "' AND `Table` = 'profissionais' LIMIT 1")
+        if not rsUser.eof then
+
+            sqlCareTeam = "SELECT COUNT(*) AS cnt FROM pacientesprofissionais " &_
+                          "WHERE ProfissionalID IN ('" & session("idInTable")  & "', '" & rsUser("idInTable") & "') " &_
+                          "AND PacienteID = '" & PacienteID & "' AND sysActive = 1"
+
+            set rsCareTeam = db.execute(sqlCareTeam)
+            if not rsCareTeam.eof then
+                if cint(rsCareTeam("cnt")) = 2 then
+                    autCareTeam = true
+                end if
+            end if
+
+            rsCareTeam.close
+            set rsCareTeam=nothing
+        end if
+        rsUser.close
+        set rsUser=nothing
+
+    end if
+
+end function
+
+
+%>

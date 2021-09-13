@@ -294,6 +294,10 @@ else
             <li>
                 <a href="?P=tissguiainternacao&I=N&Pers=1"><i class="fa fa-plus"></i> Inserir Guia de Sol. Internação </a>
             </li>
+            
+            <li>
+                <a href="?P=tissguiaquimioterapia&I=N&Pers=1"><i class="fa fa-plus"></i> Inserir Guia de Sol. Quimioterapia </a>
+            </li>
             <%
 			    end if
             %>

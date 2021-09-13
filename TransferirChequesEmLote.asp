@@ -29,7 +29,7 @@
     <input type="hidden" name="cheques" value="<%=cheques%>">
     <div class="col-md-6">
         <label for="ContaCorrente">Localiza&ccedil;&atilde;o</label><br>
-        <%=simpleSelectCurrentAccounts("ContaCorrente", "1, 7, 2, 4, 5, 6, 3", "", "")%>
+        <%=simpleSelectCurrentAccounts("ContaCorrente", "1, 7, 2, 4, 5, 6, 3", "", "","")%>
     </div>
     <div class="col-md-3" id="divDataMovimentacao">
         <label for="DataMovimentacao">Data da Movimenta&ccedil;&atilde;o</label><br />

@@ -43,7 +43,6 @@ else
         LocalizacaoID = pos("LocalizacaoID")
         LocalizacaoIDOriginal = pos("LocalizacaoID")
         CBID = pos("CBID")
-        PacienteID = pos("PacienteID")
     end if
 end if
 Quantidade=1
@@ -154,7 +153,6 @@ end if
     response.write("<input type='hidden' name='LocalizacaoIDOriginal' value='"& LocalizacaoIDOriginal &"'>")
     response.write("<input type='hidden' name='CBID' value='"& CBID &"'>")
     response.write("<input type='hidden' name='TipoUnidadeOriginal' value='"& TipoUnidadeOriginal &"'>")
-    response.write("<input type='hidden' name='PacienteID' value='"& PacienteID &"'>")
     
     
 %>
@@ -195,7 +193,7 @@ end if
         </div>
 </div>
 <div class="modal-footer no-margin-top">
-	<button class="btn btn-sm btn-success pull-right" id="lancar"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-sm btn-success " id="lancar"><i class="fa fa-save"></i> Salvar</button>
 </div>
 </form>
 <script type="text/javascript">

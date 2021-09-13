@@ -43,7 +43,7 @@ end if
 				Valor = formatnumber(itens("Valor"),2)
 			end if
 
-            if ref()="" then
+            if request.form()="" then
                 Funcao = itens("Funcao")
                 ContaPadrao = itens("ContaPadrao")
                 tipoValor = itens("tipoValor")

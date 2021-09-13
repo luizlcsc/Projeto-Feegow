@@ -95,7 +95,7 @@ end if
                             <div class="col-sm-4" id="dadosContato">
                                 <div class="col-md-8">
                                     <label>Contato</label><br />
-                                    <%=selectInsertCA("", "ContatoID"&CallID, Contato, "3", " onchange=""contatoParametros( $(this).attr(\'data-valor\') );""", " required", "")%>
+                                    <%=selectInsertCA("", "ContatoID"&CallID, Contato, "3", " onchange=""contatoParametros( $(this).attr(`data-valor`) );""", " required", "")%>
                                 </div>
                                 <%= quickField("simpleSelect", "ConstatusID_"&CallID, "<i class='fa fa-exclamation-triangle orange'></i> Status", 4, ConstatusID, "select * from chamadasconstatus", "NomeStatus", " no-select2 ") %>
                                 <div class="col-md-12">

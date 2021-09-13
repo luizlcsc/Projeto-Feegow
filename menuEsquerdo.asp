@@ -142,7 +142,7 @@ select case lcase(req("P"))
 
 <hr class="short alt hidden-xs" />
         <li class="row sidebar-stat hidden-xs">
-            <div class="col-sm-12">
+            <div class="col-sm-12" style="display:none">
               <div class="panel">
                 <div class="panel-heading text-center br-a br-grey">
                     <span class="panel-title">QUALIDÔMETRO</span>
@@ -314,7 +314,11 @@ end if
         <li class="row sidebar-stat">
             <div class="fs11 col-sm-12">
                 <div class="input-group">
-                    <span class="input-group-addon img-thumbnail" id="FotoProfissional" style="background-image: url(assets/img/user.png); background-size: 100%"></span>
+                    <span
+                        class="input-group-addon img-thumbnail"
+                        id="FotoProfissional"
+                        style="background-image: url(assets/img/user.png); background-size: 100%; background-repeat: no-repeat; background-position-y: center;">
+                    </span>
                     <%
             if aut("|agendaV|")=1 then
                     %>
@@ -1145,8 +1149,8 @@ end if
             <li class="active">
                 <a data-toggle="tab" href="#divCadastroPrincipal"><span class="fa fa-user-md bigger-110"></span> <span class="sidebar-title">Cadastro Principal</span></a>
             </li>
-            <li class="hidden">
-                <a data-toggle="tab" href="#divContratos" onclick="ajxContent('ContratosAnexos&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divContratos')"><span class="fa fa-file"></span><span class="sidebar-title"></span>Contratos</a>
+            <li>
+                <a data-toggle="tab" href="#divContratos" onclick="ajxContent('FornecedoresContratos&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divContratos')"><span class="fa fa-file"></span><span class="sidebar-title">Contratos</span></a>
             </li>
             <%
             SplitStoneStatus = recursoAdicional(15)
@@ -1624,14 +1628,14 @@ end if
         <% IF  1=1 or aut("FaixaEtariaV")=1  THEN %>
             <li>
               <a href="?P=faixaetaria&Pers=1">
-                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Faixas Etárias</span></a> 
-    
+                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Faixas Etárias</span></a>
+
             </li>
         <% END IF %>
         <% IF  1=1 or aut("CadastroPontosCarteiraV")=1  THEN %>
             <li>
               <a href="?P=cadastropontoscarteira&Pers=1">
-                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Pontos por Carteira</span></a>     
+                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Pontos por Carteira</span></a>
             </li>
         <% END IF %>
 

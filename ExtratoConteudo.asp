@@ -1,5 +1,8 @@
  <!--#include file="connect.asp"-->
+<!--#include file="Classes/AccountBalance.asp"-->
 <%
+Response.Buffer
+
 c=0
 Total=0
 
@@ -157,11 +160,15 @@ end if
         "left join sys_financialbanks fb on fb.id = sf.Bank   "&_
         "where ((m.AccountAssociationIDCredit=7 and m.AccountIDCredit="&CaixaID&") or (m.AccountAssociationIDDebit=7 and m.AccountIDDebit="&CaixaID&") or m.CaixaID="& CaixaID &") and m.Type<>'Bill' order by m.Date, m.id"
     else
+		if ref("AccountID")<>"" and ref("AccountID")<>"0" then
+			sqlDataPraFrente = " AND m.`Date`>="& mydatenull(ref("DateFrom")) &" "
+			SaldoAnterior = accountBalancePerDate(ref("AccountID"), 0, dateadd("d", -1, ref("DateFrom")))
+		end if
 		sqlGM = "select m.*, lu.Nome, fb.BankName, pm.PaymentMethod from sys_financialMovement m  "&_
 		"LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=m.sysUser  "&_
 		"left join sys_financialcurrentaccounts sf on sf.id = m.AccountIDDebit  "&_
         "left join sys_financialpaymentmethod pm on pm.id = m.PaymentMethodID  "&_
-		"left join sys_financialbanks fb on fb.id = sf.Bank where 1=1 "& sqlAcc & sqlLancadoPor & sqlUnidades & sqlCD & sqlFormas &" order by m.Date, m.id"
+		"left join sys_financialbanks fb on fb.id = sf.Bank where 1=1 "& sqlAcc & sqlLancadoPor & sqlUnidades & sqlCD & sqlFormas & sqlDataPraFrente &" order by m.Date, m.id"
     end if
     set getMovement = db.execute( sqlGM )
 
@@ -182,6 +189,7 @@ end if
 	saidasPix = 0 '15
 
 	while not getMovement.eof
+		response.flush()
 		Value = getMovement("Value")
 
         IF isnull(Value) or Value = "" THEN
@@ -789,13 +797,13 @@ end if
 	function filterPayment(type){
 		let atual = $($('tr[data-tipo="'+type+'"]')[0]).css('display')
 		// $('tr[data-tipo]').show()
-		console.log(type)
+		// console.log(type)
 
 		if( atual == "none"){
-			console.log('mostra')
+			// console.log('mostra')
 			$('tr[data-tipo="'+type+'"]').show()
 		}else{
-			console.log('some')
+			// console.log('some')
 			$('tr[data-tipo="'+type+'"]').hide()
 		}
 	}

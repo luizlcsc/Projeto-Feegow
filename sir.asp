@@ -48,8 +48,16 @@ if aut(lcase(ref("resource"))&"A")=1 then
             sqlNascimento = " AND Nascimento="&mydatenull(ref("nascimento"))
         end if
 
-        sqlNomeDaMae = " id IN ( (select PacienteID from pacientesrelativos where ((TRIM(Nome) like '%"&ref("q")&"%' ) and sysActive=1 and parentesco = 2 ) ) )"
-        sqlTelefone = " OR replace(replace(replace(replace(Tel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Tel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' "
+
+        if PorteClinica <= 3 then
+            'sqlNomeDaMae = " id IN ( (select PacienteID from pacientesrelativos where ((TRIM(Nome) like '%"&ref("q")&"%' ) and sysActive=1 and parentesco = 2 ) ) )"
+            sqlTelefone = " OR replace(replace(replace(replace(Tel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Tel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' "
+        end if
+        
+        if not isnumeric(TermoBuscado) then
+            sqlTelefone=""
+        end if
+
 
         if isnumeric(ref("q")) and ref("q")<>"" then
             sql = "select id, NomePaciente, Nascimento from pacientes where (id like '%"&ref("q")&"' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&ref("q")&"%','.',''),'-','') and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" " & sqlTelefone &" order by NomePaciente limit "& page*30 &", 30"
@@ -62,10 +70,19 @@ if aut(lcase(ref("resource"))&"A")=1 then
             else
                 'sql = "select id, IF( ( " & sqlNomeDaMae & ") , CONCAT('<b>Mae: ',NomePaciente,'</b>'), NomePaciente) NomePaciente, Nascimento from pacientes where ((TRIM(NomePaciente) like '%"&ref("q")&"%' ) and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" OR  "&sqlNomeDaMae&" order by (case when NomePaciente like '"&ref("q")&"%' then 1 else 2 end) , NomePaciente limit "& page*30 &", 30"
                 sqlparentesco = "NomePaciente, "
-                if getConfig("ExibirParentescoPacienteAgendar")=1 then
-                    sqlparentesco = "IF( ( " & sqlNomeDaMae & ") , CONCAT('<b>Mae: ',NomePaciente,'</b>'), NomePaciente) NomePaciente,"
-                end if 
-                sql = "select id,"&sqlparentesco&"  Nascimento from pacientes where (((NomePaciente) like '"&ref("q")&"%' ) and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" OR  "&sqlNomeDaMae&" " &sqlTelefone&" limit "& page*30 &", 30"
+
+                
+                'if PorteClinica > 3 then
+                '    sqlNomeDaMae=""
+                'end if
+                sqlNascimento = ""
+
+                'if getConfig("ExibirParentescoPacienteAgendar")=1 then
+                '    sqlparentesco = "IF( ( " & sqlNomeDaMae & ") , CONCAT('<b>Mae: ',NomePaciente,'</b>'), NomePaciente) NomePaciente,"
+                'end if 
+                
+                sql = "select id,"&sqlparentesco&"  Nascimento from pacientes where (((NomePaciente) like '"&ref("q")&"%'  " &sqlTelefone&" ) and sysActive=1 "&sqlProfissionalPaciente&")  "&sqlNascimento&" limit "& page*30 &", 30"
+
             end if
     	    'sql = "select id, NomePaciente, Nascimento from pacientes where (((NomePaciente) like '"&ref("q")&"%' ) and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" order by (case when NomePaciente like '"&ref("q")&"%' then 1 else 2 end) , NomePaciente limit "& page*30 &", 30"
     	    sqlAlternativo = "select id, NomePaciente, Nascimento from pacientes where ((SOUNDEX(LEFT(NomePaciente, LENGTH('"&ref("q")&"'))) = SOUNDEX('"&ref("q")&"') ) and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" order by (case when NomePaciente like '"&ref("q")&"%' then 1 else 2 end) , NomePaciente limit "& page*30 &", 30"
@@ -300,7 +317,7 @@ end if
     set q = db.execute(sql)
 
     if q.eof and sqlAlternativo<>"" then
-        IF not ModoFranquia then
+        IF PorteClinica < 3 then
             set q = db.execute(sqlAlternativo)
         END IF
     end if

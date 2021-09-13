@@ -503,6 +503,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
                         if ref("User")<>"" then
                             User = req("User")
+
                         else
                             User = request.Cookies("User")
                         end if

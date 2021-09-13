@@ -81,17 +81,18 @@
         end if
 
 
-        '02/09/2019 Sanderson
         'verifica permissao de compartilhamento do arquivo
-        permissao = VerificaProntuarioCompartilhamento(imagens("sysUser"),"Imagens", imagens("id"))
+        'default pode ver, porém se não pertence ao CareTeam irá verificar a permissão do arquivo
         podever = true
-        tipoCompartilhamento =1
-
-        if permissao <> "" then
-            permissaoSplit = split(permissao,"|")
-            podever = permissaoSplit(0)
-            tipoCompartilhamento = permissaoSplit(1)
-        end if 
+        tipoCompartilhamento = 1
+        if not autCareTeam(imagens("sysUser"), req("PacienteID")) then
+            permissao = VerificaProntuarioCompartilhamento(imagens("sysUser"),"Imagens", imagens("id"))
+            if permissao <> "" then
+                permissaoSplit = split(permissao,"|")
+                podever = permissaoSplit(0)
+                tipoCompartilhamento = permissaoSplit(1)
+            end if
+        end if
 
         if podever or (cstr(session("User"))=imagens("sysUser")&"") then
 

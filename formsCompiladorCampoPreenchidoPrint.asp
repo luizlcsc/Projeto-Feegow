@@ -12,7 +12,17 @@
 			if LadoALado="S" then
 				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control date-picker" data-date-format="dd/mm/yyyy" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div></td></tr></table><%
 			else
-				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input tabindex="<%=Ordem%>" class="campoInput form-control date-picker" data-date-format="dd/mm/yyyy" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div><%
+				disabled = ""
+                if getConfig("BloquearEdicaoFormulario")=1  then
+					set getFormPreenchido = db.execute("SELECT date(DataHora) dataAtendimento FROM buiformspreenchidos WHERE sysActive=1 AND id = "&FormID)
+					if not getFormPreenchido.eof then
+						dataAtendimento = getFormPreenchido("dataAtendimento")
+						if dataAtendimento <> date() then
+							disabled = "disabled"
+						end if
+					end if
+				end if
+				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input <%=disabled%> tabindex="<%=Ordem%>" class="campoInput form-control date-picker" data-date-format="dd/mm/yyyy" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div><%
 			end if
 	  	case 3'imagem
 				%>

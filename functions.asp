@@ -19,6 +19,7 @@ function clear_ref_req (val)
         val = replace(val,"&#x27;", "")
         val = replace(val,"&#x22;", "")
         val = replace(val,"&#x7c;", "")
+        
         clear_ref_req = val
 end function 
 

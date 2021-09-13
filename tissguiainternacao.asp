@@ -524,7 +524,16 @@ width: 100%!important;
     </div>
 
 <div class="clearfix form-actions no-margin">
-    <button class="btn btn-primary btn-md"><i class="fa fa-save"></i> Salvar</button>
+    <div class="btn-group">
+        <button class="btn btn-primary btn-md" onclick="isPrint(0)"><i class="fa fa-save"></i> Salvar</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu text-center" role="menu">
+            <input type="hidden" id="print" value="0">
+            <li><button type="submit" class="btn" style="border:none; background-color:#fff!important;" id="GuiaInternacaoPrint" onclick="isPrint(1)"><i class="fa fa-print"></i> Salvar e imprimir</button></li>
+        </ul>
+    </div>
     <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaInternacao', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
     <% if AutorizadorTiss then %>
         <!--<button type="button" onclick="Autorizador.autorizaInternacoes();" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>-->
@@ -574,7 +583,6 @@ function autorizadorguiainternacao(){
     return false;
 }
 
-
 function tissCompletaDados(T, I){
 	$.ajax({
 		type:"POST",
@@ -585,23 +593,28 @@ function tissCompletaDados(T, I){
 		}
 	});
 }
-    $("#gConvenioID, #UnidadeID").change(function(){
-        tissCompletaDados("Convenio", $("#gConvenioID").val());
-    });
 
-    $("#Contratado, #UnidadeID").change(function(){
-        tissCompletaDados("Contratado", $(this).val());
-    });
+$("#gConvenioID, #UnidadeID").change(function(){
+    tissCompletaDados("Convenio", $("#gConvenioID").val());
+});
 
-    $("#ContratadoSolicitanteID").change(function(){
-        tissCompletaDados("ContratadoSolicitante", $(this).val());
-    });
+$("#Contratado, #UnidadeID").change(function(){
+    tissCompletaDados("Contratado", $(this).val());
+});
 
+$("#ContratadoSolicitanteID").change(function(){
+    tissCompletaDados("ContratadoSolicitante", $(this).val());
+});
+
+function isPrint(value){
+    $('#print').val(value);
+}
 
 $("#GuiaInternacao").submit(function(){
+    let print = $('#print').val();
 	$.ajax({
 		type:"POST",
-		url:"saveGuiaInternacao.asp?Tipo=Internacao&I=<%=req("I")%>",
+		url:"saveGuiaInternacao.asp?Tipo=Internacao&Print="+print+"&I=<%=req("I")%>",
 		data:$("#GuiaInternacao").serialize(),
 		success:function(data){
 			eval(data);

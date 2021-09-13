@@ -9,7 +9,7 @@
 <%
 Unidades = req("CompanyUnitID")
 Planos = req("Planos")
-Contratados = req("Contratados")
+Contratados = replace(req("Contratados"),"''","'")
 Procedimentos =  req("Procedimentos")
 Executantes =  req("Executantes")
 
@@ -539,6 +539,7 @@ $("#marca").click(function(){
 });
 
 function fechalote(){
+    var G = $("#frmModal, #guias").serialize()
 	var checados = $("input.guia:checked").length;
 	if(checados==0){
 		$.gritter.add({
@@ -549,7 +550,7 @@ function fechalote(){
 	}else{
 		$.ajax({
 			type:"POST",
-			url:"modalFechaLote.asp?T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>",
+			url:"modalFechaLote.asp?T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>&"+G,
 			success: function(data){
 				$("#modal-table").modal("show");
 				$("#modal").html(data);
@@ -636,6 +637,36 @@ function changeConvenio(convenio){
     $("#tag-planos").html(`<label>Planos</label><br /><select id="Planos" name="Planos" multiple="multiple">${options}</select>`);
 
     $('#Planos').val([<%=req("Planos")%>]).multiselect({});
+}
+
+function geraInvoice(T, V, Incrementar){
+// Fecha o lote
+    $.ajax({
+		   type:"POST",
+		   url:"saveLote.asp?Acao=Inserir&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>",
+		   data:$("#frmModal, #guias").serialize(),
+		   success:function(data){
+			   eval(data);
+		   }
+		   });
+
+// Adiciona a invoice
+    var Lote = $("#Lote").val();
+    $("#lanctoGuias").find("button").attr("disabled", true);
+    var strIncrementar = "";
+    if(Incrementar){
+        strIncrementar="&Incrementar="+Incrementar;
+    }
+
+    $.post("LoteAReceber.asp?T="+T+"&V="+V+"&ConvenioID=<%=req("ConvenioID")%>&Lotes="+Lote+strIncrementar, $(".guia").serialize(), function(data){
+        eval(data);
+
+        setTimeout(function(){
+            $("#lanctoGuias").find("button").attr("disabled", false);
+        }, 1000);
+    });
+
+	return false;
 }
 
 jQuery(function() {

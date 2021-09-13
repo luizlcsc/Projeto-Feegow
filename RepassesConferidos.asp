@@ -131,7 +131,7 @@ end if
                     </div>
                     <div class="col-md-2">
                         <label>Conta Cr&eacute;dito</label><br />
-                        <%= simpleSelectCurrentAccounts("AccountID", "00, 5, 8, 4, 2, 1", reqf("AccountID"), " ") %>
+                        <%= simpleSelectCurrentAccounts("AccountID", "00, 5, 8, 4, 2, 1", reqf("AccountID"), " ","") %>
                         <%'=selectInsertCA("Profissional", "AccountID", reqf("AccountID"), "5, 8, 2, 6", "", " required ", "")%>
                     </div>
                     <div class="col-md-1">
@@ -638,7 +638,7 @@ function lancaRepasses(rps, vlr, cc, tipo){
 
 function x(I){
 	if(confirm('Tem certeza de que deseja excluir este repasse?')){
-		location.href='./?<%=request.QueryString%>&X='+I;
+		location.href='./?<%=request.QueryString()%>&X='+I;
 	}
 }
 

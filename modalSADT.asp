@@ -137,7 +137,7 @@ elseif Tipo="Procedimentos" then
             <div class="col-md-3">
 	            <%= selectInsert("* Procedimento", "gProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""tissCompletaDados(4, this.value);""", "required guia-tiss", "gConvenioID") %>
             </div>
-            <%= quickField("simpleSelect", "TabelaID", "* Tabela", 3, TabelaID, "select * from tisstabelas order by descricao", "descricao", " empty='' required='required' no-select2") %>
+            <%= quickField("simpleSelect", "TabelaID", "* Tabela", 3, TabelaID, "select tt.id, tt.descricao from tisstabelas tt UNION ALL SELECT tc.CodigoTabela, tc.Descricao FROM tabelasconvenios tc WHERE tc.sysActive = 1 order by descricao", "descricao", " empty='' required='required' no-select2") %>
             <div class="col-md-2">
                 <%=selectProc("* Código proced.", "CodigoProcedimento", CodigoProcedimento, "codigo", "TabelaID", "CodigoProcedimento", "Descricao", " required='required' ", "","","") %>
             </div>
@@ -172,7 +172,7 @@ elseif Tipo="Procedimentos" then
             <%'=quickField("simpleSelect", "ProfissionalID"&id, "* Profissional", 3, ProfissionalID, "select id, NomeProfissional from profissionais where ativo='on' and sysActive=1 order by NomeProfissional", "NomeProfissional", " onchange='repasses("&id&")' onchange='abreRateio("&n&")'  no-select2 ")%>
             <div class="col-md-3">
                 <label>Executante</label><br />
-                <%= simpleSelectCurrentAccounts("ProfissionalID"& id, "5, 8", Executante, " "&ProfissionalRequired) %>
+                <%= simpleSelectCurrentAccounts("ProfissionalID"& id, "5, 8", Executante, " "&ProfissionalRequired,"") %>
             </div>
             <%= quickField("datepicker", "Data", "* Data", 3, Data, "", "", " required") %>
             <%= quickField("text", "HoraInicio", "Hora In&iacute;cio", 2, HoraInicio, " input-mask-l-time", "", "") %>

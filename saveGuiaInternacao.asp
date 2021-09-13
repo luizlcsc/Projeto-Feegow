@@ -143,13 +143,43 @@ else
 
 	set guia = db.execute("select * from tissguiainternacao where id="&I)
 	%>
-    if( $.isNumeric($("#PacienteID").val()) )
+    if( $.isNumeric($("#gPacienteID").val()) )
     {
-        ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico');
-        loadAgenda($("#Data").val(), $("#ProfissionalID").val());
+		redirect()
+
     }else{
         location.href='./?P=tissbuscaguias&ConvenioID=<%=guia("ConvenioID")%>&T=GuiaInternacao&LoteID=<%=guia("LoteID")%>&Pers=1';
     }
+
+	function redirect(){
+		modalPrint((valor)=>{
+			if(valor = "true"){
+				ajxContent('Conta', $('#gPacienteID').val(), '1', 'divHistorico');
+				if(typeof loadAgenda === "function"){
+					loadAgenda($("#Data").val(), $("#gProfissionalID").val());
+				}else{
+					location.href='./?P=tissbuscaguias&ConvenioID=<%=guia("ConvenioID")%>&T=GuiaInternacao&LoteID=<%=guia("LoteID")%>&Pers=1';
+				}				
+			}
+		})
+	}
+
+	function modalPrint(callback=false){
+		let print = <%=req("Print")%>
+		let convenioId = '<%=guia("ConvenioID")%>'
+
+		if(print == 1 && convenioId != ''){
+			guiaTISS('GuiaInternacao', <%=guia("id")%>, convenioId, (valor)=>{
+				if(typeof callback === "function"){
+					window.onafterprint =callback("true")
+					return true
+				}
+			});
+		}else{
+			location.href='./?P=tissbuscaguias&ConvenioID=<%=guia("ConvenioID")%>&T=GuiaInternacao&LoteID=<%=guia("LoteID")%>&Pers=1';
+		}		
+		return false
+	}
     <%
 end if
 %>

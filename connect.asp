@@ -663,7 +663,7 @@ function simpleSelectCurrentAccounts(id, associations, selectedValue, others)
 	splAssociations = split(associations,", ")
 	%>
 		<select class="form-control select2-single" id="<%= id %>" name="<%= id %>"<%= others %>>
-			<option value="">&nbsp;</option>
+			<option value=""><%=selectText%> &nbsp;</option>
 			<%
 			for t=0 to uBound(splAssociations)
 				if splAssociations(t)="0" then

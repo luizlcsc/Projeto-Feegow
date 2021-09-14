@@ -98,6 +98,7 @@
 					if PaginaAtual>1 then
 						sqlLimit = "LIMIT "&((PaginaAtual-1)*Limite)&","&Limite
 					end if
+
                     sql = "select * from (select pac.NomePaciente,reci.UnidadeID, pac.id Prontuario, p.id,p.Value,p.TransactionID,p.DateToReceive,p.InvoiceReceiptID,p.Fee,p.DHUp, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
                           					"  Parcela, "&_
                           					" Parcelas NumeroParcelas "&queryBlock&" from sys_financialcreditcardreceiptinstallments p  "&_
@@ -130,6 +131,8 @@
 					TotalLinhas = ccur(TotalLinhasSQL("qtd"))
 
 					TotalPaginas = TotalLinhas / Limite 
+
+
 					set rec = db.execute(sql) 
 
 					response.Buffer = "true"
@@ -160,6 +163,7 @@
 
 							if lastTransactionID <> rec("TransactionID") then
 								lastTransactionID = rec("TransactionID")
+
 							end if 
 
 							Parcelas = rec("NumeroParcelas")

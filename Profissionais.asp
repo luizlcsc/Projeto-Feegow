@@ -18,6 +18,7 @@ sqlReg = "select * from Profissionais where id="&req("I")
 
 set reg = db.execute(sqlReg)
 RegUnidades = reg("Unidades")
+
 if regUnidades&"" = "" then
     regUnidades = "|0|"
 end if
@@ -161,7 +162,6 @@ end if
                                 </div>
                                 <hr style="margin: 10px 0" />
                             <% END IF
-
                             unidadesFuncionario = RegUnidades
                             %>
                         	<div class="checkbox-primary checkbox-custom" data-name="Empresa Principal"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(unidadesFuncionario, "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
@@ -170,7 +170,7 @@ end if
 						while not unidades.eof
 							%>
 							<div class="checkbox-custom checkbox-primary">
-                                <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(reg("Unidades"), "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label></div>
+                                <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(unidadesFuncionario, "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label></div>
 							<%
 						unidades.movenext
 						wend

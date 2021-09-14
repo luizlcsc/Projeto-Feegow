@@ -2,6 +2,7 @@
 <%
 Acao = req("Acao")
 Tipo = req("T")
+CriaInvoice = req("CriaInvoice")
 
 function gerarcar(loteid,ConvenioID,tipoguiais,valortotal)
     Lotes = loteid
@@ -34,7 +35,7 @@ function gerarcar(loteid,ConvenioID,tipoguiais,valortotal)
     set plote = db.execute( sql )
     if not plote.eof then
         if incrementar="" then
-            db_execute("insert into sys_financialinvoices (AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser,sysDate, FormaID, ContaRectoID) values ("&ConvenioID&", 6, "&treatvalzero(valortotal)&", 1, 'BRL', "&treatvalzero(plote("UnidadeID"))&", 1, 'm', 'C', 1, "&session("User")&",CURDATE(), 0, 0)")
+            db_execute("insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser,sysDate, FormaID, ContaRectoID) values ('Fechamento de Lotes', "&ConvenioID&", 6, "&treatvalzero(valortotal)&", 1, 'BRL', "&treatvalzero(plote("UnidadeID"))&", 1, 'm', 'C', 1, "&session("User")&",CURDATE(), 0, 0)")
             set pultInv = db.execute("select id from sys_financialinvoices where sysUser="&session("User")&" order by id desc limit 1")
             InvoiceID = pultInv("id")
             db_execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, UnidadeID) values (0, 0, 6, "&ConvenioID&", "&treatvalzero(valortotal)&", CURDATE(), 'C', 'Bill', 'BRL', 1, "&InvoiceID&", 1, "&session("User")&", "&treatvalzero(plote("UnidadeID"))&")")
@@ -137,7 +138,7 @@ if Acao="Inserir" then
 		    loteSql = "update "&tabela&" set LoteID="&pult("id")&" where id="&spl(i)
 			db_execute(loteSql)
 		next
-		if getConfig("FechamentoLoteCR") = "1" then
+		if CriaInvoice = "1" then
             if Tipo="GuiaConsulta" then
                 set valorProc = db.execute("select sum(ValorProcedimento) Valor, ProcedimentoID  from tissguiaconsulta t where LoteID = "&pult("id")&"")
             elseif Tipo="GuiaSADT" then
@@ -145,21 +146,12 @@ if Acao="Inserir" then
             elseif Tipo="GuiaHonorarios" then
                 set valorProc = db.execute("select sum(ValorPago) Valor from tissguiahonorarios t where LoteID = "&pult("id")&"")
             end if
-                db.execute("insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser,sysDate, FormaID, ContaRectoID) values ('Fechamento de Lotes', "&request.QueryString("ConvenioID")&", 6, "&treatvalzero(valorProc("Valor"))&", 1, 'BRL', "&session("UnidadeID")&", 1, 'm', 'C', 1, "&session("User")&",CURDATE(), 0, 0)")
-                set pultInv = db.execute("select id from sys_financialinvoices where sysUser="&session("User")&" order by id desc limit 1")
-                InvoiceID = pultInv("id")
-                db.execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, UnidadeID) values (0, 0, 6, "&request.QueryString("ConvenioID")&", "&treatvalzero(valorProc("Valor"))&", CURDATE(), 'C', 'Bill', 'BRL', 1, "&InvoiceID&", 1, "&session("User")&", "&session("UnidadeID")&")")
-                if Tipo="GuiaConsulta" then
-                    db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, sysUser, Executado) values ("&InvoiceID&", 'S', 1, 0, "&valorProc("ProcedimentoID")&", "&treatvalzero(valorProc("Valor"))&", 0, 'fechamento de lote', "&session("User")&", '')")
-                else
-                    db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, sysUser, Executado) values ("&InvoiceID&", '0', 1, 0, 0, "&treatvalzero(valorProc("Valor"))&", 0, 'fechamento de lote', "&session("User")&", '')")
-                end if
+
+            if CriaInvoice = "1" then
+                call gerarcar(pult("id"),request.QueryString("ConvenioID"),lcase(Tipo),valorProc("Valor"))
+            end if
+
         end if
-
-        if getconfig("FechamentoLoteCR") = 1 then
-            call gerarcar(pult("id"),request.QueryString("ConvenioID"),lcase(Tipo),valorProc("Valor"))
-        end if 
-
 		%>
 
 		

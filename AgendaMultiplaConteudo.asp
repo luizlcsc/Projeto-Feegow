@@ -243,19 +243,12 @@ if instr(refLocais, "UNIDADE_ID")>0 then
 end if
 
 if aut("ageoutunidadesV")=0 and ref("Locais")="" then
-    tipoUsuario = "profissionais"
-    if lcase(session("table"))="funcionarios" then
-        tipoUsuario = "funcionarios"
-    end IF
-
-    set uniProf = db.execute("SELECT Unidades FROM "&tipoUsuario&" WHERE id="&session("idInTable"))
-    if not uniProf.eof then
-        uniWhere = "null"
-        if Len(uniProf("unidades"))>0 then
-            uniWhere = replace(uniProf("unidades"),"|","")
-         end if
+    uniWhere = "null"
+    unidadesUsuario = session("Unidades")
+    if Len(unidadesUsuario)>0 then
+        uniWhere = replace(unidadesUsuario,"|","")
+     end if
     sqlUnidades = " AND t.LocalID IN (select concat(l.id) from locais l where l.UnidadeID IN ("& uniWhere &")) "
-    end if
 end if
 
 

@@ -1,11 +1,11 @@
 ﻿<!--#include file="connect.asp"-->
-<div class="panel-heading">
+<div class="panel-heading no-print">
     <span class="panel-title">Posição de Estoque</span>
     <span class="panel-controls">
         <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Fechar</button>
     </span>
 </div>
-<div class="panel-body">
+<div class="panel-body no-print">
     <div class="row">
         <div class="col-md-12">
         <%
@@ -23,5 +23,5 @@
     </div>
 </div>
 
-<div class="panel-footer">
+<div class="panel-footer no-print">
 </div>

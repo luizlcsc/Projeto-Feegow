@@ -587,11 +587,13 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 
         Total = guias(ColunaTotal)
 
+
         if not isnumeric(Total) then
             Total=0
         end if
 
         Total = ccur(Total)
+
         ItemInvoiceID = guias("ItemInvoiceID")
 		set pac = db.execute("select NomePaciente from pacientes where id="&guias("PacienteID"))
 		if pac.eof then
@@ -711,7 +713,12 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
                 <div class="col-md-3"><strong>Cód. na Operadora: </strong><%= guias("CodigoNaOperadora") %></div>
                 
                 <%if req("T")="GuiaSADT" or req("T")="guiasadt" then%>
-            		<div class="col-md-3"><strong>Cód. Solicitante: </strong><%= guias("ContratadoSolicitanteCodigoNaOperadora") %></div>
+            		<div class="col-md-3">
+                        <div class="row"><strong>Cód. Solicitante: </strong><%= guias("ContratadoSolicitanteCodigoNaOperadora") %></div>
+                        <div class="row">
+                            <button type="button" class="btn btn-info btn-sm " onclick="guiaTISS('EspelhoConta', <%=guias("id")%>,'<%=req("ConvenioID")%>')"><i class="fa fa-print"> Espelho da Conta</i></button>
+                        </div>
+                    </div>                    
                 <%end if %>
                 <% if guias("NomePlano") <> "" then %>
                 <div class="col-md-3"><strong>Plano: </strong><%= guias("NomePlano") %></div>
@@ -766,7 +773,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 
                      end if
                  end if
-                 ValorTotal = ccur(ValorTotal) + ccur(Total)
+                 ValorTotal = ValorTotal + Total
                  %>
                  
                  </td>
@@ -819,7 +826,6 @@ end if
 
 
 <script type="text/javascript">
-
 
 function correcaoValoresProcedimentos(self, guiaId, valorTotalCheck, tabela) {
     var valorDigitado = document.getElementById('ValorPago'+guiaId).value;

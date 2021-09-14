@@ -51,10 +51,16 @@ end if
 %>
 
 <script type="text/javascript">
-
-
     function aplicarProtocolo(ProtocoloID) {
-        $.post("PacientesProtocolosConteudo.asp?Tipo=I&ProtocoloID="+ProtocoloID +"&PacienteID="+ $("#PacienteID").val() + "&ID="+ $("#ID").val(), {
+        let tipoprescricao = $('input[name="type"]:checked').val()
+        let profissional = '<%=session("User")%>'
+        if (tipoprescricao === "T"){
+            let profissionalA = $("#ProfissionalID").val().split("_")
+            profissional = profissionalA[1]
+            assoc = profissionalA[0]
+        }
+
+        $.post("PacientesProtocolosConteudo.asp?assoc="+assoc+"&profissional="+profissional+"&tipoprescricao="+tipoprescricao+"&Tipo=I&ProtocoloID="+ProtocoloID +"&PacienteID="+ $("#PacienteID").val() + "&ID="+ $("#ID").val(), {
             }, function (data) {
             $("#PacientesProtocolosConteudo").html(data);
         });

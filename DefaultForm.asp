@@ -155,6 +155,10 @@ function DefaultForm(tableName, id)
         $(".crumb-icon a span").attr("class", "fa fa-<%=dIcone(lcase(tableName))%>");
         $(".topbar-right").html('<%=btnInserir%>');
     });
+	function viewProp(P){
+		$("#modal-table").modal("show");
+		$.get("ListaPropostas.asp?PacienteID="+P, function(data){ $("#modal").html(data) });
+	}
 </script>
 
     <%
@@ -438,6 +442,7 @@ function DefaultForm(tableName, id)
 							if lcase(tableName)="pacientes" and aut("agendaV")=1 then
 								ordersNull = ordersNull&"{ ""bSortable"": false },{ ""bSortable"": false },"
 								%>
+								<th width="100">Propostas</th>
 								<th width="100" class="hidden-xs" nowrap>&Uacute;lt. Agend.</th>
 								<th width="100" class="hidden-xs" nowrap>Pr&oacute;x. Agend.</th>
 								<%
@@ -641,6 +646,7 @@ function DefaultForm(tableName, id)
 							if lcase(tableName)="pacientes" and aut("agendaV")=1 then
 								calendars = calendars & reg("id") & ", "
 								%>
+								<td class="pn hidden-xs" id="proposta<%= reg("id") %>"></td>
 								<td class="pn hidden-xs" id="calendarH<%=reg("id")%>"></td>
 								<td class="pn hidden-xs" id="calendar<%=reg("id")%>"></td>
 								<%
@@ -736,6 +742,18 @@ function DefaultForm(tableName, id)
 					calendars = left(calendars, len(calendars)-2 )
 					'response.Write(calendars)
 					response.Write("<script>")
+
+					set prop = db.execute("select PacienteID from propostas where PacienteID IN("& calendars &") and sysActive=1 and DataProposta>=CURDATE()-30")
+					while not prop.eof
+						btnProp = "<button class='btn btn-xs btn-alert' type='button' onclick='viewProp("& prop("PacienteID") &")'>Ver Propostas</button>"
+						%>
+						$("#proposta<%= prop("PacienteID") %>").html("<%=btnProp%>");
+						<%
+					prop.movenext
+					wend
+					prop.close
+					set prop = nothing
+
 					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data>=date(now()) and not isnull(Hora) and a.sysActive = 1 group by a.PacienteID order by a.Data, a.Hora")
 					while not age.eof
 						Hora = age("Hora")

@@ -1,4 +1,18 @@
 <!--#include file="connect.asp"-->
+<%
+Origem = req("Origem")
+if Origem="Agenda" then
+    set vcaEmAberto = db.execute("select id from propostas where PacienteID="& req("PacienteID") &" AND StaID IN (1,2,4) limit 1")
+    if vcaEmAberto.eof then
+        response.end
+    end if
+end if
+
+
+if req("Acao")="Agendamento" then
+    response.redirect("./?P=AgendaMultipla&Pers=1&PacienteID="& req("PacienteID") &"&ItemPropostaID="& req("ItemPropostaID") &"&ProcedimentoID="& req("ProcedimentoID"))
+end if
+%>
 <!--#include file="Classes/WhatsApp.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
         <div class="panel">
@@ -47,7 +61,7 @@
             <tbody>
     	        <%
 		        if req("PacienteID")<>"" then
-			        set p = db.execute("select p.id, p.InvoiceID, p.PacienteID,s.NomeStatus, p.DataProposta, p.Valor, (select group_concat(proc.NomeProcedimento SEPARATOR ', ') from itensproposta ip left join procedimentos proc on proc.id=ip.ItemID where ip.PropostaID=p.id) procedimentos from propostas p LEFT JOIN propostasstatus s on s.id=p.StaID where p.sysActive=1 AND PacienteID='"&req("PacienteID")&"' group by p.id order by p.DataProposta desc")
+			        set p = db.execute("select p.id, p.InvoiceID, p.PacienteID,s.NomeStatus, p.DataProposta, p.Valor, (select group_concat( concat('<a class=""btn btn-xs btn-success"" href=""./?P=ListaPropostas&Pers=1&Acao=Agendamento&ProcedimentoID=', ip.ItemID, '&PacienteID=', p.PacienteID, '&ItemPropostaID=', ip.id, '"" target=""_blank""><i class=""fa fa-calendar""></i></a> ', proc.NomeProcedimento ) SEPARATOR '<br> ') from itensproposta ip left join procedimentos proc on proc.id=ip.ItemID where ip.PropostaID=p.id) procedimentos from propostas p LEFT JOIN propostasstatus s on s.id=p.StaID where p.sysActive=1 AND PacienteID='"&req("PacienteID")&"' group by p.id order by p.DataProposta desc")
 		        else
                     if ref("Procedimentos")<>"" then
                         leftProc = " LEFT JOIN itensproposta itens ON itens.PropostaID=p.id "
@@ -60,7 +74,7 @@
                         sqlUser = " AND p.sysUser="& ref("EmitidaPor") &" "
                     end if
                     sqlp = "select p.id, p.PacienteID, p.InvoiceID, s.NomeStatus, p.DataProposta, pac.Tel1, pac.Tel2, pac.Cel1, pac.Cel2, p.Valor, pac.NomePaciente, (select group_concat(' ', proc.NomeProcedimento) from itensproposta ip left join procedimentos proc on proc.id=ip.ItemID where ip.PropostaID=p.id) procedimentos from propostas p LEFT JOIN propostasstatus s on s.id=p.StaID LEFT JOIN pacientes pac on pac.id=p.PacienteID "&leftProc&" WHERE p.sysActive=1 and p.StaID IN("&replace(ref("Status"), "|", "")&") AND p.DataProposta BETWEEN "&mydatenull(ref("De"))&" AND "&mydatenull(ref("Ate"))&" "& sqlProc & sqlUser & whereUnidade &" group by p.id order by p.DataProposta desc"
-                    set p = db.execute(sqlp)
+			        set p = db.execute(sqlp)
 		        end if
 
 		        set ConfigSQL = db.execute("SELECT NomeEmpresa FROM sys_config ")

@@ -1374,10 +1374,10 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                         <%
                         Versao = session("Versao")
                         if Versao="" then
-                          Versao="v. 7.0"
+                          Versao=" 8"
                         end if
                         %>
-                          Feegow Clinic : <%=Versao%>
+                          Feegow  <%=Versao%>
                       </button>
                       <%
 

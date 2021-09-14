@@ -20,6 +20,9 @@ select case lcase(req("P"))
                         <div class="row">
                             <%= quickfield("multiple", "fStaID", "Status", 12, StaChk, "select id, StaConsulta from staconsulta", "StaConsulta", "") %>
                             <%= quickfield("text", "fNomePaciente", "Paciente", 12, "", "", "", "") %>
+
+                            <%= quickfield("simpleSelect", "fEspecialidadeID", "Especialidade", 12, "", "select esp.* from agendamentos a inner join especialidades esp on esp.id=a.EspecialidadeID where esp.sysActive=1 group by esp.id order by esp.NomeEspecialidade", "Especialidade", " empty ") %>
+
                             <%= quickfield("simpleSelect", "fProfissionalID", "Profissional", 12, "", "select id, if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial) NomeProfissional from profissionais where sysActive=1 and ativo='on' order by if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial)", "NomeProfissional", "") %>
                         </div>
                     </div>

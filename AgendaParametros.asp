@@ -91,6 +91,21 @@ if tipo="PacienteID" then
 	    Response.End
 	end if
 
+    QuantidadeFaltasPagtoPrevio = getConfig("QuantidadeFaltasPagtoPrevio")&""
+    if isnumeric(QuantidadeFaltasPagtoPrevio) then
+        QuantidadeFaltasPagtoPrevio = ccur(QuantidadeFaltasPagtoPrevio)
+        if QuantidadeFaltasPagtoPrevio>0 then
+            set contaFaltas = db.execute("select IFNULL(count(*),0) Faltas from agendamentos where PacienteID="& PacienteID &" And StaID=6")
+            Faltas = ccur(contaFaltas("Faltas"))
+            if Faltas>=QuantidadeFaltasPagtoPrevio then
+                %>
+                alert("ATENÇÃO: ESTE PACIENTE NÃO COMPARECEU <%= Faltas%> VEZES. SOLICITA-SE O PAGAMENTO ANTECIPADO.");
+                <%
+            end if
+        end if
+    end if
+
+
 	set pac = db.execute("select * from pacientes where id="&PacienteID&" limit 1")
 	if not pac.eof then
         LembrarPendencias = pac("lembrarPendencias")
@@ -466,7 +481,7 @@ if left(tipo, 14)="ProcedimentoID" then
             UnidadeID=LocalSQL("UnidadeID")
         end if
 
-        ValorAgendamento = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ref("ProfissionalID"), ref("EspecialidadeID"), GrupoID)
+        ValorAgendamento = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ref("ProfissionalID"), ref("EspecialidadeID"), GrupoID, 0)
 		if Checkin&"" <> "1" then 
 
         tempoProcedimento = getTempoProcedimento(procedimentoId, profissionalID)

@@ -293,36 +293,14 @@
 
     <%
     end if
-    if aut("|notafiscalV|") then
-        if recursoAdicional(7)=4 and session("Banco")<>"clinic6102" then
-            if session("Banco")="clinic6118" or session("Banco")="clinic5760" or session("Banco")="clinic8676" then
-            %>
-            <li <% If req("P")="NotaFiscal" Then %> class="active"<% End If %>>
-                <a href="?P=NotaFiscal&Pers=1">
-                    <span class="fa fa-file-text"></span>
-                    <span class="sidebar-title"> Nota Fiscal </span>
-                </a>
-            </li>
-            <%
-            else
-            %>
-            <li <% If req("P")="NotaFiscal" Then %> class="active"<% End If %>>
-                <a href="?P=NotaFiscalNew&Pers=1">
-                    <span class="fa fa-file-text"></span>
-                    <span class="sidebar-title"> Nota Fiscal </span>
-                </a>
-            </li>
-            <%
-            end if
-        end if
-	end if
+
 	%>
 
 	<% if aut("|notafiscalV|") and recursoAdicional(34)=4 then %>
        <li<% If req("P")="ListarEmpresasNFse" OR req("P")="BoletosEmitidos" OR req("P")="CriarEmpresaNFse" Then %> class="open"<% End If %>>
            <a href="#" class="accordion-toggle">
                <span class="fa fa-file-text"></span>
-               <span class="sidebar-title"> Nota Fiscal <span class="label label-primary">Beta</span></span>
+               <span class="sidebar-title"> Nota Fiscal</span>
                <span class="caret"></span>
            </a>
            <ul class="nav sub-nav">
@@ -387,8 +365,8 @@
             end if
             if recursoAdicional(25)=4 then
             %>
-            <li <% If req("P")="ImportarConciCartao" Then %> class="active"<% End If %>>
-                <a href="?P=ImportarConciCartao&Pers=1">
+            <li <% If req("P")="CartaoConcilia" Then %> class="active"<% End If %>>
+                <a href="?P=CartaoConcilia&Pers=1">
                     <span class="fa fa-upload"></span>
                     <span class="sidebar-title"> Importação CSV </span>
                 </a>
@@ -508,6 +486,16 @@
         <a href="./?P=DescontoPendente&Pers=1">
             <span class="fa fa-money"></span>
             <span class="sidebar-title"> Descontos Pendentes </span>
+        </a>
+    </li>
+    <%
+        end if
+        if aut("|honorarios|")=1 then
+    %>
+    <li <% If req("P")="Honorarios" Then %> class="active"<% End If %>>
+        <a href="./?P=Honorarios&Pers=1">
+            <span class="fa fa-calendar"></span>
+            <span class="sidebar-title"> Honorários </span>
         </a>
     </li>
     <%

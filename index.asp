@@ -210,7 +210,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/assets/skin/default_skin/css/fgw.css">
+  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/assets/admin-tools/admin-forms/css/admin-forms.css">
   <link rel="shortcut icon" href="https://cdn.feegow.com/feegowclinic-v7/assets/img/feegowclinic.ico" type="image/x-icon" />
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">

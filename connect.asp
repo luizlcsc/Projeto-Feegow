@@ -3061,14 +3061,16 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
         set RecursosAdicionaisSQL = db.execute("SELECT SplitNF FROM sys_config WHERE id=1")
 
         if not RecursosAdicionaisSQL.eof then
-            if recursoAdicional(7)=4 then
-                'if session("Banco") = "clinic2496" OR session("Banco") = "clinic100000" OR session("Banco") = "clinic4285" OR session("Banco") = "clinic984" OR session("Banco") = "clinic2263" Then
-                if RecursosAdicionaisSQL("SplitNF")<>1 then
-                    rbtns = rbtns & "&nbsp; <button id='btn_NFe' title='Nota Fiscal' class='btn btn-warning btn-sm' onclick='modalNFE()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
-                end if
-	        End if
+            if False then
+                if recursoAdicional(7)=4 then
+                    'if session("Banco") = "clinic2496" OR session("Banco") = "clinic100000" OR session("Banco") = "clinic4285" OR session("Banco") = "clinic984" OR session("Banco") = "clinic2263" Then
+                    if RecursosAdicionaisSQL("SplitNF")<>1 then
+                        rbtns = rbtns & "&nbsp; <button id='btn_NFe' title='Nota Fiscal' class='btn btn-warning btn-sm' onclick='modalNFE()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
+                    end if
+                End if
+            end if
 	        if recursoAdicional(34)=4 then
-                rbtns = rbtns & "&nbsp; <button id='btn_NFeBeta' title='Nota Fiscal Beta' class='btn btn-danger btn-sm' onclick='modalNFEBeta()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
+                rbtns = rbtns & "&nbsp; <button id='btn_NFeBeta' title='Nota Fiscal' class='btn btn-danger btn-sm' onclick='modalNFEBeta()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
             end if
 	    End if
 		if aut(nomePerm&"X") or data("CaixaID")=session("CaixaID") then

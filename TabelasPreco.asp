@@ -167,12 +167,14 @@ end function
                     if isNull (dataFimTabela) then 
                         dataFimTabela = date()
                     end if
-                    if cdate(t("Fim")) < date() then
-                        LabelTabela = "<span class='label label-danger'><i class='fa fa-exclamation-circle'></i> Expirada</span>"
-                    end if
+                    if not isnull(t("Fim")) then
+                        if cdate(t("Fim")) < date() then
+                            LabelTabela = "<span class='label label-danger'><i class='fa fa-exclamation-circle'></i> Expirada</span>"
+                        end if
 
-                    if cdate(t("Fim")) >= date() and cdate(t("Inicio")) <= date() then
-                        LabelTabela = "<span class='label label-success'><i class='fa fa-check-circle'></i> Vigente</span>"
+                        if cdate(t("Fim")) >= date() and cdate(t("Inicio")) <= date() then
+                            LabelTabela = "<span class='label label-success'><i class='fa fa-check-circle'></i> Vigente</span>"
+                        end if
                     end if
 
                     %>

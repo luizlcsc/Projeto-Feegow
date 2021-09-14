@@ -3104,7 +3104,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 
             if recurso="pacientes" then
 '                rbtns = rbtns & "<div class='switch switch-info switch-inline'>  <input id='exampleCheckboxSwitch1' type='checkbox' checked=''>  <label for='exampleCheckboxSwitch1'></label></div>"
-                rbtns = rbtns & "<div title='Ativar / Inativar paciente' class='mn hidden-xs' style='float:left'><div class='switch switch-info switch-inline'><input checked name='Ativo' id='Ativo' type='checkbox' /><label style='height:30px' class='mn' for='Ativo'></label></div></div> &nbsp; "
+                rbtns = rbtns & "<div title='Ativar / Inativar paciente' class='mn hidden-xs' style='float:left'><div class='switch switch-info switch-inline'><input checked name='Ativo' id='Ativo' type='checkbox' /><label style='height:28px' class='mn' for='Ativo'></label></div></div> &nbsp; "
             end if
 
             if aut("|profissionaisV|")=1 then
@@ -3563,9 +3563,9 @@ function btnParcela(MovimentacaoID, ValorPago, Valor, Vencimento, CD, CaixaID)
         btnTef=""
     end if
 
-	btnParcela = "<div class='btn-group'><span "& spanVenc &" class='btn btn-xs btn-"&classe&" text-right'>"&txt &"</span></div>"&zoom
+	btnParcela = "<div class='btn-group'><span "& spanVenc &" class='btn btn-xs btn-"&classe&" text-right'>"&txt &"</span>"&zoom& btnAnexo &"</div>"
 
-	btnParcela = btnParcela&btnAnexo
+	btnParcela = btnParcela
 end function
 
 function inputsRepasse(ItemID, FormaID, ProfissionalID, ProcedimentoID, UnidadeID)

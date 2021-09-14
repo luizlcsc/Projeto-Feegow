@@ -6,6 +6,7 @@
 <%
 'on error resume next
 ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
+OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
 HLivres = 0
 HAgendados = 0
 HBloqueados = 0
@@ -319,7 +320,7 @@ while diaS<n
                                 HoraID = horaToID(HoraPers)
                                 if session("FilaEspera")<>"" then
                                 %>
-                                <tr class="l vazio" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= HoraID %>" id="<%=HoraID%>">
+                                <tr class="l vazio<%= DiaSemana %>" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= HoraID %>" id="<%=DiaSemana&HoraID%>">
                                     <td width="1%"></td>
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                     <td colspan="4">
@@ -331,7 +332,7 @@ while diaS<n
                                 <%
                                 elseif session("RemSol")<>"" then
                                 %>
-                                <tr class="l l<%= LocalID %> vazio" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= horaid %>" id="<%=HoraID%>">
+                                <tr class="l l<%= LocalID %> vazio<%= DiaSemana %>" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= horaid %>" id="<%=DiaSemana&HoraID%>">
                                     <td width="1%"></td>
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                     <td colspan="4">
@@ -343,7 +344,7 @@ while diaS<n
                                 <%
                                 elseif session("RepSol")<>"" then
                                 %>
-                                <tr class="l l<%= LocalID %> vazio" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= horaid %>" id="<%=HoraID%>">
+                                <tr class="l l<%= LocalID %> vazio<%= DiaSemana %>" data-hora="<%=formatdatetime(HoraPers, 4)%>" data-horaid="<%= horaid %>" id="<%=DiaSemana&HoraID%>">
                                     <td width="1%"></td>
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                     <td colspan="4">
@@ -491,7 +492,9 @@ while diaS<n
             end if
         end if
         LocalDiferente=""
-		titleSemanal= replace(comps("NomePaciente")&"<br>"&NomeProcedimento&"<br>Prontuário: "&Prontuario&"<br>Tel.: "&comps("Tel1")&"<br>Cel.: "&comps("Cel1")&" "&"<br> ", "'", "\'") & "Notas: "&replace(replace(replace(replace(comps("Notas")&"", chr(13), ""), chr(10), ""), "'", ""), """", "")&"<br>"
+        notas = comps("Notas")
+        notas = fix_string_chars_full(notas)
+		titleSemanal= replace(comps("NomePaciente")&"<br>"&NomeProcedimento&"<br>Prontuário: "&Prontuario&"<br>Tel.: "&comps("Tel1")&"<br>Cel.: "&comps("Cel1")&" "&"<br> ", "'", "\'") & "Notas: "&notas&"<br>"
                
         Conteudo = "<tr id="""&DiaSemana&HoraComp&""""&CorLinha &" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&titleSemanal&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"">"&_
         "<td width=""1%"">"
@@ -514,7 +517,7 @@ while diaS<n
         end if
         Conteudo = Conteudo & "</td><td width=""1%"" "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
         "<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
-        if comps("Encaixe")=1 then
+        if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
             Conteudo = Conteudo & "<span class=""label label-alert"">enc</span>"
         end if
         Conteudo = Conteudo & "<span class=""nomePac"">"&fix_string_chars_full(comps("NomePaciente"))&"</span>  <span class=""pull-right"">"& sinalAgenda(FormaPagto) &"</span>"
@@ -559,7 +562,7 @@ while diaS<n
             {
                 var gradeId = $(this).data("grade");
 
-                var conteudo ='<%= conteudo %>';
+                var conteudo =`<%= conteudo %>`;
                 HorarioAdicionado=true;
 
                 if (!$(this).hasClass("l<%=comps("LocalID")%>")){
@@ -700,7 +703,7 @@ $(document).ready(function(){
 	});
 	
 	$(".dia-calendario").removeClass("success green");
-	$(".<%=replace(request.QueryString("Data"),"/", "-")%>").addClass("success green");
+	$(".<%=replace(req("Data"),"/", "-")%>").addClass("success green");
 	$(".Locais").html('');
 	<%
 

@@ -1,16 +1,15 @@
 <!--#include file="connect.asp"-->
 <%
-'response.Write(request.Form())
 
 
-T=request.Form("T")
+T=ref("T")
 splInstallmentsToPay = split(ref("InstallmentsToPay"),", ")
 checkedVal = 0
 for i=0 to ubound(splInstallmentsToPay)
 	if ref("difference"&splInstallmentsToPay(i))<>"" then
-		checkedVal = checkedVal+request.Form("difference"&splInstallmentsToPay(i))
+		checkedVal = checkedVal+ref("difference"&splInstallmentsToPay(i))
 	else
-		checkedVal = checkedVal+request.Form("ValueInstallment"&splInstallmentsToPay(i))
+		checkedVal = checkedVal+ref("ValueInstallment"&splInstallmentsToPay(i))
 	end if
 next
 %>

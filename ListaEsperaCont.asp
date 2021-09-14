@@ -13,6 +13,7 @@ OrdensNome="Hor&aacute;rio Agendado, Hor&aacute;rio de Chegada, Idade do Pacient
 Ordens="HoraSta, Hora, pac.Nascimento ASC"
 splOrdensNome=split(OrdensNome, ", ")
 unidadesBloqueioAtendimento = getConfig("BloquearAtendimentoMediantePagamento")
+OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
 
 Ordem="Hora"
 StatusExibir=req("StatusExibir")
@@ -22,20 +23,8 @@ if StatusExibir="" then
     StatusExibir="4"
 end if
 
-HorarioVerao = ""
-if session("UnidadeID")=0 then
-    set getNome = db.execute("select * from empresa")
-    if not getNome.eof then
-        FusoHorario = getNome("FusoHorario")
-        HorarioVerao = getNome("HorarioVerao")
-    end if
-elseif session("UnidadeID")>0 then
-    set getNome = db.execute("select * from sys_financialcompanyunits where id="&session("UnidadeID"))
-    if not getNome.eof then
-        FusoHorario = getNome("FusoHorario")
-        HorarioVerao = getNome("HorarioVerao")
-    end if
-end if
+
+dataHoraCliente = getClientDataHora(session("UnidadeID"))
 
 if req("ProfissionalID")<>"" and req("ProfissionalID")<>"ALL"  then
     ProfissionalID = req("ProfissionalID")
@@ -77,7 +66,7 @@ if not ConfigGeraisSQL.eof then
     ChamarAposPagamento=ConfigGeraisSQL("ChamarAposPagamento")
 end if
 
-if request.QueryString("Chamar")<>"" then
+if req("Chamar")<>"" then
 
     StaChamando = 5
     'triagem
@@ -97,7 +86,7 @@ if request.QueryString("Chamar")<>"" then
     end if
 
 	db_execute("update agendamentos set StaID='"&StaChamando&"' "& sqlProfissional &" where id = '"&req("Chamar")&"'")
-	set dadosAgendamento = db.execute("select PacienteID, ProfissionalID from agendamentos where id = '"&request.QueryString("Chamar")&"'")
+	set dadosAgendamento = db.execute("select PacienteID, ProfissionalID from agendamentos where id = '"&req("Chamar")&"'")
 	if not dadosAgendamento.eof then
 		call gravaChamada(dadosAgendamento("ProfissionalID"), dadosAgendamento("PacienteID"), session("UnidadeID"))
 	end if
@@ -110,8 +99,8 @@ if request.QueryString("Chamar")<>"" then
 end if
 
 'da redirect ao atender
-if request.QueryString("Atender")<>"" then
-    AgendamentoIDAtender = request.QueryString("Atender")
+if req("Atender")<>"" then
+    AgendamentoIDAtender = req("Atender")
 	'db_execute("update agendamentos set StaID='3' where StaID = '2' and ProfissionalID = '"&ProfissionalID&"'") -  não muda mais automaticamente para atendido, apenas quando encerra o contador
 	db_execute("update agendamentos set StaID='2', ProfissionalID="&ProfissionalID&" where id = '"&AgendamentoIDAtender&"' AND ProfissionalID = 0")
     getEspera(ProfissionalID)
@@ -125,7 +114,7 @@ if request.QueryString("Atender")<>"" then
 end if
 
 if lcase(session("Table"))<>"profissionais" or req("ProfissionalID")<>"" then
-	sql = "select a.*,TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(NOW(), CONCAT(a.`Data`,' ',a.HoraSta)),'%H:%i'))/60 AS tempoEspera, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela, ac.NomeCanal, a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano ,proc.ProcedimentoTelemedicina from agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join profissionais p on p.id=a.ProfissionalID inner join pacientes pac ON pac.id=a.PacienteID left join locais l on l.id=a.LocalID where Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 33, 102,105,106, 101, 5) and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "&sqlProfissional&sqlEspecialidade&" and a.sysActive = 1 order by "&Ordem
+	sql = "select a.*,TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(time("&mytime(dataHoraCliente)&"), a.HoraSta),'%H:%i'))/60 AS tempoEspera, p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela, ac.NomeCanal, a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano ,proc.ProcedimentoTelemedicina from agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join profissionais p on p.id=a.ProfissionalID inner join pacientes pac ON pac.id=a.PacienteID left join locais l on l.id=a.LocalID where Data = '"&mydate(DataHoje)&"' and StaID in(2, 5, "&StatusExibir&", 33, 102,105,106, 101, 5) and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) "&sqlProfissional&sqlEspecialidade&" and a.sysActive = 1 order by "&Ordem
     sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID                                                                                         where a.Data = '"&mydate(DataHoje)&"' and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID)) "&sqlProfissional&"  group by(l.UnidadeID) and a.sysActive = 1 order by total desc limit 1 "
 else
     'triagem
@@ -136,7 +125,7 @@ else
 
 	'sql = "select * from Consultas where Data = "&DataHoje&" and DrId = '"&session("DoutorID")&"' and not StaID = '3' and not StaID = '1' and not StaID = '6' and not StaID = '7' order by "&Ordem
     sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID))  group by(l.UnidadeID) and a.sysActive = 1 order by total desc limit 1 "
-	sql = "select a.*,TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(NOW(), CONCAT(a.`Data`,' ',a.HoraSta)),'%H:%i'))/60 AS tempoEspera, tp.NomeTabela, ac.NomeCanal,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano, proc.ProcedimentoTelemedicina from agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) and a.sysActive = 1 order by "&Ordem
+	sql = "select a.*,TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(time("&mytime(dataHoraCliente)&"), a.HoraSta),'%H:%i'))/60 AS tempoEspera, tp.NomeTabela, ac.NomeCanal,  a.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = a.id) as ValorPlano, proc.ProcedimentoTelemedicina from agendamentos a INNER JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN agendamentocanais ac ON ac.id=a.CanalID INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where "&sqlSalaDeEspera&" a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID="&treatvalzero(session("UnidadeID"))&" or isnull(l.UnidadeID)) and a.sysActive = 1 order by "&Ordem
 
 end if
 
@@ -156,7 +145,7 @@ if lcase(session("table"))="profissionais" then
             if not ProfissionalTriagemSQL.eof then
                 if ProfissionalTriagemSQL("EspecialidadeTriagem")="1" then
                     ProfissionalTriagem="S"
-                    sql = "select age.*, TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(NOW(), CONCAT(age.`Data`,' ',age.HoraSta)),'%H:%i'))/60 AS tempoEspera , profage.NomeProfissional, tp.NomeTabela, ac.NomeCanal, proc.ProcedimentoTelemedicina from agendamentos age INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID LEFT JOIN profissionais profage ON profage.id=age.ProfissionalID LEFT JOIN agendamentocanais ac ON ac.id=age.CanalID INNER JOIN pacientes pac ON pac.id=age.PacienteID LEFT JOIN locais l ON l.id=age.LocalID where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 33, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' and age.sysActive = 1 order by "&Ordem
+                    sql = "select age.*, TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(time("&mytime(dataHoraCliente)&"),age.HoraSta),'%H:%i'))/60 AS tempoEspera , profage.NomeProfissional, tp.NomeTabela, ac.NomeCanal, proc.ProcedimentoTelemedicina from agendamentos age INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID LEFT JOIN profissionais profage ON profage.id=age.ProfissionalID LEFT JOIN agendamentocanais ac ON ac.id=age.CanalID INNER JOIN pacientes pac ON pac.id=age.PacienteID LEFT JOIN locais l ON l.id=age.LocalID where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 33, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' and age.sysActive = 1 order by "&Ordem
                 end if
             end if
         end if
@@ -167,7 +156,6 @@ if req("debug")="1" then
     response.write("<pre>"&sql&"</pre>")
 end if
 set veseha=db.execute(sql)'Hora
-
 if session("Table")="profissionais" then
     set vtotal=db.execute(sqlTotal)'Hora
     if not vtotal.eof then
@@ -459,7 +447,7 @@ else
         'if not veSePre.EOF then
 			'<img src="checked.jpg" />
 		'end if%>
-		<%if veseha("Encaixe")=1 then%><span class="label label-alert ml5">Encaixe </span><%end if%>
+		<%if veseha("Encaixe")=1 and OmitirEncaixeGrade=0 then%><span class="label label-alert ml5">Encaixe </span><%end if%>
 		<%if veseha("Primeira")=1 then%><span class="label label-info ml5">Primeira vez</span><%end if%>
 		<<%=tagPaciente%> href="./?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>" <%=cssAdicionl%>><%=Nome%></<%=tagPaciente%>><br />
 		<small><%=Notas%></small></td>

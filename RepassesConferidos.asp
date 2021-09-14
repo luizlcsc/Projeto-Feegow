@@ -78,7 +78,7 @@ TipoData = reqf("TipoData")
 DeSqlProf = De
 
 if De&""<>"" and TipoData="Comp" then
-    DeExec = dateadd("m", -6, De)
+    DeExec = dateadd("m", -9, De)
     DeSqlProf = dateadd("d", -15, De)
 else
     DeExec=De
@@ -131,7 +131,7 @@ end if
                     </div>
                     <div class="col-md-2">
                         <label>Conta Cr&eacute;dito</label><br />
-                        <%= simpleSelectCurrentAccounts("AccountID", "00, 5, 8, 4, 2, 1", reqf("AccountID"), " ") %>
+                        <%= simpleSelectCurrentAccounts("AccountID", "00, 5, 8, 4, 2, 1", reqf("AccountID"), " ","") %>
                         <%'=selectInsertCA("Profissional", "AccountID", reqf("AccountID"), "5, 8, 2, 6", "", " required ", "")%>
                     </div>
                     <div class="col-md-1">
@@ -356,7 +356,7 @@ if ExibeResultado then
                                  " LEFT JOIN sys_financialreceivedchecks cheque ON cheque.MovementID=mdesc.id"&_
                                  " where mdisc.date BETWEEN "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &_
                                  " UNION ALL "&_
-                                 " SELECT gps.id GuiaID, 'GuiaHonorarios' TipoGuia, gh.UnidadeID, '', NULL, 'ItemHonorarioID', gps.Data, gh.ConvenioID, gps.ProcedimentoID, gh.PacienteID, gh.Procedimentos ValorTotal, rrgps.*, '' Executado FROM tissprocedimentoshonorarios gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemHonorarioID=gps.id	INNER JOIN tissguiahonorarios gh ON gps.GuiaID=gh.id WHERE gps.`Data` BETWEEN  "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"	) t "&_
+                                 " SELECT gh.id GuiaID, 'GuiaHonorarios' TipoGuia, gh.UnidadeID, '', NULL, 'ItemHonorarioID', gps.Data, gh.ConvenioID, gps.ProcedimentoID, gh.PacienteID, gh.Procedimentos ValorTotal, rrgps.*, '' Executado FROM tissprocedimentoshonorarios gps 	INNER JOIN rateiorateios rrgps ON rrgps.ItemHonorarioID=gps.id	INNER JOIN tissguiahonorarios gh ON gps.GuiaID=gh.id WHERE gps.`Data` BETWEEN  "& mydateNull(DeExec) &" AND "& mydateNull(Ate) &"	) t "&_
                                  " LEFT JOIN itensinvoice iip ON (iip.id=t.ItemContaAPagar) LEFT JOIN pacientes pac ON pac.id=t.PacienteID LEFT JOIN convenios c ON c.id=t.ConvenioID LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID "&_
                                  " LEFT JOIN itensdescontados idesc ON idesc.id=t.ItemDescontadoID "&_
                                  " LEFT JOIN sys_financialmovement mdesc ON mdesc.id=idesc.PagamentoID "&_

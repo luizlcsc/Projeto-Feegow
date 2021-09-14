@@ -7,7 +7,11 @@
 <%
 tableName = ref("P")
 id = ref("I")
+
+
+' vuneravilidade
 spl = split(request.Form(), "&")
+
 Novo=False
 sysActive=0
 
@@ -66,9 +70,9 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
         id2 = id
 
         if Novo then
-            call addToQueue(116, id2)
+            call addToQueue(116, id2, "")
         else
-            call addToQueue(117, id2)
+            call addToQueue(117, id2, "")
         end if
 
         '--->Verificar CPF duplicado
@@ -134,26 +138,32 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
             end if
         end if
 
-        '--->campos obrigatorios
+        
 
-        'set CamposObrigatoriosSQL = db.execute("SELECT Obrigar FROM obrigacampos WHERE Recurso='pacientes'")
-        'if not CamposObrigatoriosSQL.eof then
-        '    while not CamposObrigatoriosSQL.eof
-        '        CamposObrigatorios = split(CamposObrigatoriosSQL("Obrigar"),", ")
-        '        for ico=0 to ubound(CamposObrigatorios)
-        '            CampoObrigatorio = replace(CamposObrigatorios(ico),"|","")
-        '            if ref(CampoObrigatorio)="" or ref(CampoObrigatorio)="0" then
-        '                erro="Campo <strong>"&CampoObrigatorio&"</strong> obrigatório."
-        '
+        '<Aciona webhook de sincronização com SalesForce>
+        if recursoAdicional(45) = 4 then
+            'ID padrão no cliniccentral / webhook_eventos / id
+            salesForce_eventoID = 118
+            checkEndPointSQL =  " SELECT webEnd.URL, webEve.id evento_id, webEve.ModeloJSON FROM `cliniccentral`.`webhook_eventos` webEve                      "&chr(13)&_
+                                " LEFT JOIN `cliniccentral`.`webhook_endpoints` webEnd ON webEnd.EventoID = webEve.id  "&chr(13)&_
+                                " WHERE webEnd.LicencaID="&replace(session("Banco"),"clinic","")&" AND webEve.id="&salesForce_eventoID&"  AND webEve.Ativo='S'"
+            
+            SET  checkEndPoint = db.execute(checkEndPointSQL)
+            if not checkEndPoint.eof then
 
-        '                Response.End
-        '            end if
-        '        next
-        '    CamposObrigatoriosSQL.movenext
-        '    wend
-        '    CamposObrigatoriosSQL.close
-        '    set CamposObrigatoriosSQL = nothing
-        'end if
+                webhook_eventID  = checkEndPoint("evento_id")
+                webhook_endpoint = checkEndPoint("URL")
+                webhook_body     = checkEndPoint("ModeloJSON")
+                webhook_body     = replace(replace(webhook_body,"[WebhookEventoID]", webhook_eventID), "[PacienteID]", ref("I"))
+
+                CALL addToQueue(webhook_eventID, webhook_body, webhook_endpoint)
+
+            end if
+            checkEndPoint.close
+            set checkEndPoint = nothing
+        end if
+        '</Aciona webhook de sincronização com SalesForce>
+
     end if
 
     if lcase(tableName)="empresa" or lcase(tableName)="sys_financialcompanyunits" then
@@ -162,7 +172,6 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
             idUnit=0
         end if
         'if ref("TipoPessoa")="PJ" then
-
 
             '--->Verificar CNPJ duplicado
             if BloquearCPFCNPJDuplicado="S" then
@@ -351,13 +360,12 @@ if not getResource.EOF then
 				end if
 			end if
 		else
-			sqlValue = "'"&ref(getFields("columnName"))&"'"
+			sqlValue = "'"&refhtml(getFields("columnName"))&"'"
 		end if
 
         IF getFields("id") = 1 or getFields("id") = 138 or getFields("id") = 250 then
 
-
-            valor = ref(getFields("columnName"))
+            valor = refhtml(getFields("columnName"))
 
             if instr(getFields("columnName"), "Nome")>0 then
                 valor = NomeNoPadrao(valor)
@@ -397,7 +405,6 @@ if not getResource.EOF then
 	    'atualiza a hora do cadastro
 	    sqlFields = sqlFields & ", sysDate=NOW()"
 	end if
-
 	sql = "update "&tableName&" set "&sqlFields&" where id="&id
 	
 	if erro<>"" then
@@ -782,8 +789,9 @@ if lcase(ref("P"))="profissionais" then
     if ref("Especialidades")<>"" then
         if inStr(ref("Especialidades"), ", ") > 0 then
             spl = split(ref("Especialidades"), ", ")
-            for i=0 to ubound(spl)
-                n = spl(i)
+
+            for iEspecialidades=0 to ubound(spl)
+                n = spl(iEspecialidades)
                 db.execute("update profissionaisespecialidades set RQE='"&ref("RQE"&n)&"',EspecialidadeID="&treatvalnull(ref("EspecialidadeID"&n))&", Conselho='"&ref("Conselho"&n)&"', UFConselho='"&ref("UFConselho"&n)&"', DocumentoConselho='"&ref("DocumentoConselho"&n)&"' where id="&n)
             next
         else
@@ -797,11 +805,13 @@ end if
 
 
 'on error resume next
+
+    ' vunerabilidade pior ainda
 	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(request.Form(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
 
 if sqlAtivoNome<>"" then
     on error resume next
-    ConnString1 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid=root;pwd=pipoca453;"
+    ConnString1 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
     Set db1 = Server.CreateObject("ADODB.Connection")
     db1.Open ConnString1
     db1.execute( sqlAtivoNome )

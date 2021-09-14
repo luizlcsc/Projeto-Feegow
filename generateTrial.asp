@@ -1,11 +1,11 @@
 <%
 response.Charset="utf-8"
-if request.QueryString("Part")="" then'primeira parte do processo
+if req("Part")="" then'primeira parte do processo
 	%>
 	<!--#include file="connectCentral.asp"-->
 	<%
 	function ref(Val)
-		ref = replace(request.Form(Val), "'", "''")
+		ref = replace(ref(Val), "'", "''")
 	end function
 	
 	set verify = dbc.execute("select * from licencasusuarios where Email like '"&ref("Email")&"'")
@@ -30,7 +30,7 @@ if request.QueryString("Part")="" then'primeira parte do processo
 
         on error resume next
         'conexao com o 45 ->
-        ConnString45 = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193.45;Database=clinic100000;uid=root;pwd=pipoca453;"
+        ConnString45 = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193.45;Database=clinic100000;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
         Set db45 = Server.CreateObject("ADODB.Connection")
         db45.Open ConnString45
 

@@ -503,7 +503,7 @@ if not inv.eof then
                             if not isnull(vcaRep("ItemHonorarioID")) then
 
                                 TipoRegra = "Guia de Honorário"
-                                set DadosHonorarioSQL = db.execute("SELECT proc.NomeProcedimento, p.NomePaciente, p.CPF, tph.ValorTotal, tph.Data as DataHonorario FROM tissguiahonorarios tgh INNER JOIN tissprocedimentoshonorarios tph LEFT JOIN procedimentos proc ON proc.id = tph.ProcedimentoID LEFT JOIN  pacientes p ON p.id=tgh.PacienteID WHERE tph.id=" & vcaRep("ItemHonorarioID"))
+                                set DadosHonorarioSQL = db.execute("SELECT proc.NomeProcedimento, p.NomePaciente, p.CPF, tph.ValorTotal, tph.Data as DataHonorario FROM tissguiahonorarios tgh INNER JOIN tissprocedimentoshonorarios tph ON tph.Guiaid = tgh.id LEFT JOIN procedimentos proc ON proc.id = tph.ProcedimentoID LEFT JOIN  pacientes p ON p.id=tgh.PacienteID WHERE tph.id=" & vcaRep("ItemHonorarioID"))
                                 if not DadosHonorarioSQL.eof then
                                     NomeProcedimento = DadosHonorarioSQL("NomeProcedimento")
                                     NomePaciente =DadosHonorarioSQL("NomePaciente")

@@ -3,8 +3,8 @@ if request.ServerVariables("SERVER_NAME")="clinic.feegow.com.br" and session("ba
 '    response.Redirect("http://clinic4.feegow.com.br/v7/?P=Login")
 end if
 
-if session("User")="" and request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
-    QueryStringParameters = Request.QueryString
+if session("User")="" and req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
+    QueryStringParameters = request.QueryString
 
 	response.Redirect("./?P=Login&qs="&Server.URLEncode(QueryStringParameters))
 end if
@@ -12,11 +12,12 @@ end if
 set shellExec = createobject("WScript.Shell")
 Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
+WootricToken = objSystemVariables("FC_WOOTRIC_TOKEN")
 
 
 
-if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and request.QueryString("P")<>"Confirmacao" then
-	if request.QueryString("P")<>"Home" and session("Bloqueado")<>"" then
+if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
+	if req("P")<>"Home" and session("Bloqueado")<>"" then
 		response.Redirect("./?P=Home&Pers=1")
 	end if
 %>
@@ -25,18 +26,18 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
 <html>
 
 <head>
-    <meta name="robots" content="noindex">
+  <meta name="robots" content="noindex">
   <style type="text/css">
-  	.tooltip{
+    .tooltip{
           z-index:99999999; overflow: visible !important;overflow: visible !important;
-       }
-       @media print
-       {
-           .no-print, .no-print *
-           {
-               display: none !important;
-           }
-       }
+      }
+      @media print
+      {
+          .no-print, .no-print *
+          {
+              display: none !important;
+          }
+      }
 
       .form-control {
           min-width:80px;
@@ -61,87 +62,87 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
       .qf:hover > .btn-spee{
           display:block!important;
       }
-	.select-insert li {
-		margin:0;
-		padding:0;
-	}
-	#footer-whats{
-	    background-color: red;
-	}
+      .select-insert li {
+        margin:0;
+        padding:0;
+      }
+      #footer-whats{
+          background-color: red;
+      }
 
-	.select-insert li {
-		cursor:pointer;
-		list-style-type:none;
-		margin:0;
-		padding:3px;
-		font-size:14px;
-		color:#000;
-		background-color:#FFF;
-	}
-	.select-insert li:hover {
-		background-color:#999;
-	}
-   a[href]:after {
-     content: ""!important;
-   }
-   .rt{
-       position:relative!important;
-       top:0!important;
-   }
-   #calls{
-       max-height:400px;
-       overflow-y:auto;
-   }
-   textarea::placeholder{
-       font-style:italic;
-       color:#CCC;
-   }
-   .ui-pnotify {
-       margin-top: 33px!important;
-   }
-   @media print{
-       #content_wrapper{
-        position: initial!important;
+      .select-insert li {
+        cursor:pointer;
+        list-style-type:none;
+        margin:0;
+        padding:3px;
+        font-size:14px;
+        color:#000;
+        background-color:#FFF;
+      }
+      .select-insert li:hover {
+        background-color:#999;
+      }
+      a[href]:after {
+        content: ""!important;
+      }
+      .rt{
+          position:relative!important;
+          top:0!important;
+      }
+      #calls{
+          max-height:400px;
+          overflow-y:auto;
+      }
+      textarea::placeholder{
+          font-style:italic;
+          color:#CCC;
+      }
+      .ui-pnotify {
+          margin-top: 33px!important;
+      }
+      @media print{
+          #content_wrapper{
+            position: initial!important;
+            margin-left: 0!important;
+          }
+          .navbar.navbar-fixed-top + #sidebar_left + #content_wrapper{
+            padding-top:0!important;
+          }
+          #sidebar_left{
+            display:none;
+          }
+      }
+
+      <% if device()<>"" then %>
+
+        @media (max-width: 815px){
+          .timeline-item .panel .panel-body {
+              width:100%!important;
+              overflow-x:scroll!important;
+              padding:15px!important;
+          }
+          .timeline-item code {
+              display:block!important;
+              line-height:20px!important;
+              #border:1px #999 solid!important;
+              margin-top:5px!important;
+          }
+        }
+
+      body {
+          /* ### BUG MOBILE
+          margin-top:100px!important;
+          */
+      }
+
+      body.sb-l-m #content_wrapper {
         margin-left: 0!important;
-       }
-       .navbar.navbar-fixed-top + #sidebar_left + #content_wrapper{
-         padding-top:0!important;
-       }
-       #sidebar_left{
-         display:none;
-       }
-   }
+        }
 
-   <% if device()<>"" then %>
-
-    @media (max-width: 815px){
-      .timeline-item .panel .panel-body {
-          width:100%!important;
-          overflow-x:scroll!important;
-          padding:15px!important;
-      }
-      .timeline-item code {
-          display:block!important;
-          line-height:20px!important;
-          #border:1px #999 solid!important;
-          margin-top:5px!important;
-      }
-    }
-
-   body {
-      /* ### BUG MOBILE
-       margin-top:100px!important;
-      */
-   }
-
-   body.sb-l-m #content_wrapper {
-    margin-left: 0!important;
-    }
-
-   body.sb-l-m #topbar.affix {
-    width: auto;
-    margin-left: 0!important;
-    }
+      body.sb-l-m #topbar.affix {
+        width: auto;
+        margin-left: 0!important;
+        }
       body.sb-l-m #topbar.affix {
           top: 0 !important;
       }
@@ -150,16 +151,16 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
           padding:0!important;
       }
       #topbar .breadcrumb .crumb-active {
-    display:block!important;
-    font-size:unset!important;
-}
-    #topbar .breadcrumb .crumb-active > a {
-        font-size: unset !important;
-    }
+      display:block!important;
+      font-size:unset!important;
+      }
+      #topbar .breadcrumb .crumb-active > a {
+          font-size: unset !important;
+      }
 
-    #topbar {
-        padding-top:70px!important;
-    }
+      #topbar {
+          padding-top:70px!important;
+      }
 
       .sidebar-light {
           color: #777;
@@ -177,17 +178,17 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
           padding:0!important;
       }
 
-    <% end if %>
+      <% end if %>
 
 
-  .blinking{
-      animation:blinkingText 1.2s infinite;
-  }
-  @keyframes blinkingText{
-      0%{     color: #FFF;    }
-      60%{    color: transparent; }
-      100%{   color: #FFF;    }
-  }
+      .blinking{
+        animation:blinkingText 1.2s infinite;
+      }
+      @keyframes blinkingText{
+          0%{     color: #FFF;    }
+          60%{    color: transparent; }
+          100%{   color: #FFF;    }
+      }
   </style>
 
   <link type="text/css" rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.css" />
@@ -221,11 +222,11 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <!--[if lt IE 9]>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/html5shiv.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/respond.min.js"></script>
-<![endif]-->
+  <![endif]-->
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?a=46"></script>
+  <script src="js/components.js?a=47"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
     <%if aut("capptaI") then%>
@@ -248,7 +249,47 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.all.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script type="text/javascript" src="https://cdn.wootric.com/wootric-sdk.js"></script>
   
+
+  <%
+    if session("MasterPwd") <> "S" then
+  %>
+
+  <!-- begin Wootric code -->
+  <script type="text/javascript">   
+    let dataCadastro = <% if session("DataCadastro")<>"" then response.write(session("DataCadastro")) else response.write("null") end if %>;
+    
+    const token = "<%=WootricToken%>";
+
+    if (token == null) {
+      console.error("account_token está vazio!");
+    }
+
+    // window.wootric_survey_immediately = true; // Shows survey immediately for testing purposes. TODO: Comment out for production.
+
+    window.wootricSettings = {
+      admin: "<% if session("Admin")=1 then response.write("Sim") else response.write("Não") end if %>",
+      nomeUnidade: "<%=session("NomeEmpresa")%>",
+      tipoUsuario: "<%=lcase(Session("Table"))%>",
+      licencaID: "<%=LicenseID%>",
+      numeroUsuarios: "<%=session("UsuariosContratadosS")%>",
+      razaoSocial: "<%=session("RazaoSocial")%>",
+      statusLicenca: "<%=StatusLicenca%>",
+      urlSistema: window.location.href,
+      pastaRedicionamento: '<%= session("PastaAplicacaoRedirect") %>',
+      email: '<%=session("Email")%>', // TODO: Required to uniquely identify a user. Email is recommended but this can be any unique identifier.
+      external_id: "<%=session("User")%>", // TODO: Reference field for external integrations only. Send it along with email. OPTIONAL
+      created_at: dataCadastro, // TODO: The current logged in user's sign-up date as a 10 digit Unix timestamp in seconds. OPTIONAL
+      account_token: token // This is your unique account token.
+    };
+
+    window.wootric('run');
+  </script>
+  <!-- end Wootric code -->
+
+  <% end if %>
+
 
   <script type="text/javascript">
 
@@ -456,7 +497,6 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
         }
     </script>
       <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/bstour/bootstrap-tour.css">
-
 </head>
 
 <body>
@@ -1261,11 +1301,11 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
                             %>
 								<!-- PAGE CONTENT BEGINS -->
 								<%
-								if request.QueryString("P")="" then
+								if req("P")="" then
 									response.Redirect("?P=Home&Pers=1")
 								end if
-								if request.QueryString("Pers")="1" then
-								  FileName = request.QueryString("P")&".asp"
+								if req("Pers")="1" then
+								  FileName = req("P")&".asp"
 								else
 								  FileName = "DefaultContent.asp"
 								end if
@@ -1292,7 +1332,7 @@ if request.QueryString("P")<>"Login" and request.QueryString("P")<>"Trial" and r
       <!-- Begin: Page Footer -->
 
       <%
-      if session("AtendimentoTelemedicina")&""<>"" and Request.QueryString("P")="Pacientes"  then
+      if session("AtendimentoTelemedicina")&""<>"" and req("P")="Pacientes"  then
       %>
     <!--#include file="react/telemedicina/main.asp"-->
     <%
@@ -1915,9 +1955,9 @@ if session("Atendimentos")<>"" then
 		end if
 	next
 
-	if contaAtendimentos=1 and lcase(request.QueryString("P"))="pacientes" and request.QueryString("I")<>cstr(PacienteID) then
+	if contaAtendimentos=1 and lcase(req("P"))="pacientes" and req("I")<>cstr(PacienteID) then
 		Exibe = "S"
-	elseif contaAtendimentos=1 and lcase(request.QueryString("P"))<>"pacientes" then
+	elseif contaAtendimentos=1 and lcase(req("P"))<>"pacientes" then
 		Exibe = "S"
 	elseif contaAtendimentos>1 then
 		Exibe = "S"
@@ -2496,8 +2536,8 @@ end if
 				}
 			});
 
-			<% IF request.QueryString("limitExceeded")="1" THEN %>
-                _type = '<%=request.QueryString("P")%>';
+			<% IF req("limitExceeded")="1" THEN %>
+                _type = '<%=req("P")%>';
 			    if(!sessionStorage.getItem("limitExceeded"+_type)){sessionStorage.setItem("limitExceeded"+_type,1);}
 
                let _msgModal = {};
@@ -2546,9 +2586,9 @@ $("body").addClass("sb-l-m");
 end if
 %>
 </html>
-<% Elseif request.QueryString("P")="Trial" then%>
+<% Elseif req("P")="Trial" then%>
 	<!--#include file="Trialxxx.asp"-->
-<% Elseif request.QueryString("P")="Confirmacao" then%>
+<% Elseif req("P")="Confirmacao" then%>
 	<%=server.Execute("Confirmacao.asp")%>
 <% Else %>
 	<!--#include file="Login.asp"-->

@@ -34,7 +34,7 @@ Campos = "|id|NomePaciente|Nascimento|Bairro|Tel1|Cel1|ConvenioID1|"
                   while not p.EOF
     			  	if aut("|agendaV|")=1 or (lcase(session("Table"))="profissionais" and session("idInTable")=p("id")) then
                         %>
-                        <option value="<%=p("id")%>" <%if cStr(p("id"))=request.QueryString("Profissional") then%> selected="selected" <%end if%>><%=p("NomeProfissional")%></option>
+                        <option value="<%=p("id")%>" <%if cStr(p("id"))=req("Profissional") then%> selected="selected" <%end if%>><%=p("NomeProfissional")%></option>
                         <%
     				end if
                   p.moveNext

@@ -114,7 +114,7 @@ for i=0 to ubound(ViasSplit)
     <div class="col-md-<%=colMd%>">
 <div class="customPrint areaImpressao">
 <%
-set reg=db.execute("select * from PacientesPrescricoes where id="&request.QueryString("PrescricaoID"))
+set reg=db.execute("select * from PacientesPrescricoes where id="&req("PrescricaoID"))
 if not reg.EOF then
 	set user = db.execute("select * from sys_users where id="&session("User"))
 	if not user.EOF then

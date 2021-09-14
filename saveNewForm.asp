@@ -2,6 +2,9 @@
 <!--#include file="Classes/StringFormat.asp"-->
 <!--#include file="Classes/TagsConverte.asp"-->
 <%
+response.Charset = "utf-8" 
+response.ContentType = "text/html"
+
 I = req("i")
 ModeloID = req("m")
 PacienteID = req("p")
@@ -108,11 +111,11 @@ set pcampos = db.execute("select id, TipoCampoID, enviardadoscid from buicamposf
 while not pcampos.eof
     select case pcampos("TipoCampoID")
         case 1, 2, 4, 5, 6, 8,3,16
-            valorCampo = ref("input_"&pcampos("id"))
+            valorCampo = refHTML("input_"&pcampos("id"))
             valorCampo = stripHTML(valorCampo)
 
             if valorCampo <> "" or habilitarVazio = "1" then
-                inputValor = ref("input_"&pcampos("id"))
+                inputValor = refHTML("input_"&pcampos("id"))
                 'O SEGUNDO PARAMETRO EH UM CARACTER FANTASMA . NAO REMOVER A LINHA DE BAIXO !!!!!
                 inputValor = replace(inputValor, "​", "")
                 sqlUp = sqlUp & ", `"& pcampos("id") &"`='"& inputValor &"'"
@@ -200,10 +203,8 @@ pcampos.close
 
 if sqlUp<>"" then
     sqlUpFinal = "update `_"&ModeloID&"` set PacienteID="&PacienteID & sqlUp &" WHERE id="&I
-
+    sqlUpFinal = convertSimbolosHexadecimal(sqlUpFinal)
     'response.write("<br>update modelo: "&sqlUpFinal&"<br>")
-
-
     db_execute(sqlUpFinal)
     if req("auto")<>"1" then
         db.execute("update buiformspreenchidos set sysActive=1 where id="& I)
@@ -241,7 +242,8 @@ if Tipo="L" then
 end if
 
 if ref("LaudoID")<>"" then
-    db_execute("update laudos set FormID="& ModeloID &", FormPID="& treatvalnull(I) &" WHERE id="& refnull("LaudoID"))
+    sql = "update laudos set FormID="& ModeloID &", FormPID="& treatvalnull(I) &" WHERE id="& ref("LaudoID")
+    db_execute(sql)
     %>
     showMessageDialog("Laudo salvo com sucesso.", "success");
     <%

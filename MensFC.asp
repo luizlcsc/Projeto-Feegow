@@ -48,7 +48,7 @@ if Cliente("Servidor")<>"localhost" then
 end if
 TipoCobrancaID= Cliente("TipoCobranca")
 
-ConnString = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& sServidor &";Database="&session("Banco")&";uid=root;pwd=pipoca453;"
+ConnString = "Driver={MySQL ODBC 8.0 ANSI Driver};Server="& sServidor &";Database="&session("Banco")&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 Set dbReal = Server.CreateObject("ADODB.Connection")
 dbReal.Open ConnString
 

@@ -127,6 +127,8 @@ if session("RepSol")<>"" then
 	<%
 end if
 %>
+
+<% if req("crumb")&"" <> "N" then %>
 <script type="text/javascript">
     function crumbAgenda(){
         $(".crumb-active").html("<a href='./?P=EquipamentosAlocados&Pers=1'>Agenda de Equipamentos</a>");
@@ -137,6 +139,7 @@ end if
     }
     crumbAgenda();
 </script>
+<% end if%>
 
 <table class="table table-striped table-hover table-condensed table-agenda">
      <tbody>
@@ -236,7 +239,7 @@ end if
 					else
 						HLivres = HLivres+1
 					%>
-					<tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=EquipamentoID%>,<%=GradeID%>)" class="l vazio" data-grade='<%= Horarios("id") %>' data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
+					<tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=EquipamentoID%>,<%=GradeID%>)" class="l vazio" data-local='<%=LocalID%>' data-grade='<%= Horarios("id") %>' data-hora="<%=formatdatetime(Hora, 4)%>" id="<%=HoraID%>">
 						<td width="1%"></td>
 						<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
 						<td colspan="4"><%= Tipo %></td>
@@ -293,7 +296,7 @@ end if
 								else
 									HLivres = HLivres+1
 								%>
-								<tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=EquipamentoID%>,<%=GradeID%>)" class="l vazio" data-grade='<%= Horarios("id") %>' data-hora="<%=formatdatetime(HoraPers, 4)%>" id="<%=HoraID%>">
+								<tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=EquipamentoID%>,<%=GradeID%>)" class="l vazio" data-local="<%=LocalID%>" data-grade='<%= Horarios("id") %>' data-hora="<%=formatdatetime(HoraPers, 4)%>" id="<%=HoraID%>">
 									<td width="1%"></td>
 									<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
 									<td colspan="4"><%= Tipo %></td>
@@ -450,6 +453,7 @@ end if
 					"<td class=""text-right nomeConv"">"&replace(Valor&" ", "'", "\'")&"</td>"&_
 					"</tr>"
 					HAgendados = HAgendados+1
+
                 %>
                 var Status = '<%=comps("StaID")%>';
 
@@ -458,7 +462,7 @@ end if
                     {
                         var gradeId = $(this).data("grade");
 
-                        $(this).replaceWith('<%= conteudo %>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                        $(this).replaceWith('<%=conteudo %>'.replace(new RegExp("GRADE_ID",'g'), gradeId));
                         return false;
                     }
                     else if ( $(this).attr("id")>'<%=HoraComp%>' )
@@ -569,7 +573,7 @@ $(document).ready(function(){
 	});
 	
 	$(".dia-calendario").removeClass("success green");
-	$(".<%=replace(request.QueryString("Data"),"/", "-")%>").addClass("success green");
+	$(".<%=replace(req("Data"),"/", "-")%>").addClass("success green");
 	$(".Locais").html('');
 	<%
 	

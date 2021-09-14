@@ -574,5 +574,5 @@
     loadDados();
 
 </script>
-<%'=request.QueryString() %>
+<%'=request.QueryString %>
 <!--#include file="disconnect.asp"-->

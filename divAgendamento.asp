@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+<!--#include file="sqls/sqlUtils.asp"-->
 <!--#include file="connectCentral.asp"-->
 <%
 HorarioAgoraSQL = db.execute("SELECT DATE_FORMAT(NOW(), '%Y-%m-%dT%H:%i:%s') AS now")
@@ -99,7 +100,7 @@ end if
 LocalID = req("LocalID")
 
 
-agendamentoIDSelecionado = req("id")
+agendamentoIDSelecionado = req("id")&""
 
 EncaixesExibe=1
 
@@ -128,13 +129,13 @@ else
     Convenios = "Todos"
 end if
 
-Hora = request.QueryString("horario")
+Hora = req("horario")
 Hora = left(Hora,2)&":"&mid(Hora, 3, 2)
 Data = ""
-if request.QueryString("Data")="" or not isdate(request.QueryString("Data")) then
+if req("Data")="" or not isdate(req("Data")) then
 	Data = date()
 else
-	Data = request.QueryString("Data")
+	Data = req("Data")
 end if
 if req("Horario")="00:00" then
 	Encaixe = 1
@@ -170,9 +171,9 @@ if not confEvento.EOF then
     ServicoWhatsapp = confEvento("AtivarServicoWhatsapp")
 end if
 
-if request.QueryString("id")<>"" and isNumeric(request.QueryString("id")) then
-	AgendamentoID = request.QueryString("id")
-	set buscaAgendamentos = db.execute("select * from agendamentos where id="&request.QueryString("id"))
+if req("id")<>"" and isNumeric(req("id")) then
+	AgendamentoID = req("id")
+	set buscaAgendamentos = db.execute("select * from agendamentos where id="&req("id"))
 else
 	set buscaAgendamentos = db.execute("select * from agendamentos where ProfissionalID="&ProfissionalID&" and Hora='"&Hora&"' and Data='"&mydate(Data)&"'")
 	'VERIFICAR -> esse este der mais de um registro no horaio/profissional criar consulta em grupo
@@ -181,7 +182,7 @@ end if
 if buscaAgendamentos.EOF then
 	ConsultaID = 0
 	StaID = 1
-
+    ProgramaID = ""
 else
     'Validar a permissão
     if aut("alterarcheckinpagoA") = 1 then
@@ -195,7 +196,7 @@ else
         Hora = Hora2
     end if
 
-    if Data = "" or request.QueryString("id")<>"" then
+    if Data = "" or req("id")<>"" then
         Data = Data2
     end if
 
@@ -241,6 +242,7 @@ else
 	ProfissionalID = buscaAgendamentos("ProfissionalID")
 
     indicadoId = buscaAgendamentos("IndicadoPor")
+    ProgramaID = buscaAgendamentos("ProgramaID")
 end if
 
 if PacienteID<>"" then
@@ -294,34 +296,47 @@ else
     oti = "agenda"
 end if
 
+'Trata a formatação do valor contido na variável GradeApenasConvenios
+function trataConvenio(GradeApenasConvenios)
+    
+    GradeApenasConvenios = replace(GradeApenasConvenios, "|P|,", "")
+    GradeApenasConvenios = replace(GradeApenasConvenios, "||NONE||", "")
+    GradeApenasConvenios = replace(GradeApenasConvenios, "|", "")
 
-if GradeID<> "" and GradeID<>"undefined" then
+    trataConvenio = GradeApenasConvenios
+end function
+
+'Metodo para seleção da tabela correta ao ID
+function selecionaTabela(GradeID)
     if GradeID < 0 then
-        set GradeSQL = db.execute("SELECT * FROM assperiodolocalxprofissional WHERE id="&GradeID*-1)
-        if not GradeSQL.eof then
-            GradeApenasProcedimentos = GradeSQL("Procedimentos")
-        end if
+        QueryGradeSQL = "SELECT *,''Profissionais FROM assperiodolocalxprofissional WHERE id="&GradeID*-1
     else
-        set GradeSQL = db.execute("SELECT * FROM assfixalocalxprofissional WHERE id="&GradeID)
-        if not GradeSQL.eof then
-            GradeApenasProcedimentos = GradeSQL("Procedimentos")
-            GradeApenasConvenios = GradeSQL("Convenios")
-            GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
+        QueryGradeSQL = "SELECT * FROM assfixalocalxprofissional WHERE id="&GradeID
+    end if
 
-            if GradeApenasConvenios&"" <> "" then
-                GradeApenasConvenios = GradeApenasConvenios
-				GradeApenasConvenios = replace(GradeApenasConvenios, "|P|,", "")
-				GradeApenasConvenios = replace(GradeApenasConvenios, "||NONE||", "")
-				GradeApenasConvenios = replace(GradeApenasConvenios, "|", "")
+    selecionaTabela = QueryGradeSQL
 
-				Convenios = GradeApenasConvenios
-            end if
+end function
 
-            if not isnull(GradeSQL("MaximoEncaixes")) and GradeSQL("MaximoEncaixes")<>"" then
-                MaximoEncaixes = GradeSQL("MaximoEncaixes")
-            end if
+'Atualizando valores da grade de convenios
+if GradeID<> "" and GradeID<>"undefined" then
 
-            GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
+    GradeSelecionada= selecionaTabela(GradeID)
+
+    set GradeSQL = db.execute(GradeSelecionada)
+
+    if not GradeSQL.eof then
+        GradeApenasProcedimentos = GradeSQL("Procedimentos")
+        GradeApenasConvenios = GradeSQL("Convenios")
+        GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
+        if GradeApenasConvenios <> "" then
+            GradeApenasConvenios = trataConvenio(GradeApenasConvenios)&""
+
+            Convenios = GradeApenasConvenios
+        end if
+        
+        if not isnull(GradeSQL("MaximoEncaixes")) and GradeSQL("MaximoEncaixes")<>"" then
+            MaximoEncaixes = GradeSQL("MaximoEncaixes")
         end if
     end if
 else
@@ -392,7 +407,7 @@ end if
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab4">
         <li id="liAgendamento" class="active abaAgendamento"><a data-toggle="tab" onclick="crumbAgenda();" href="#dadosAgendamento"><i class="fa fa-calendar"></i> <span class="hidden-xs">Agendamento</span></a></li>
-        <li id="abaFicha" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1&AgendamentoID=<%=agendamentoIDSelecionado%>', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden');" href="#divDadosPaciente"><i class="fa fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
+        <li id="abaFicha" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1&AgendamentoID=<%=agendamentoIDSelecionado%>', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden'); toRequired()" href="#divDadosPaciente"><i class="fa fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
         <li id="abaHistorico" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('HistoricoPaciente&PacienteID='+$('#PacienteID').val(), '', '1', 'divHistorico'); " href="#divHistorico"><i class="fa fa-list"></i> <span class="hidden-xs">Hist&oacute;rico</span></a></li>
         <%if Aut("contapac")=1 or aut("|areceberpaciente")=1 then%>
 	        <li id="abaConta" class="abasAux abaAgendamento hidden-xs"><a data-toggle="tab" onclick="$('#divHistorico').html('Carregando...'); ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico'); $('#alertaAguardando').removeClass('hidden'); $('#pagar').remove();" href="#divHistorico"><i class="fa fa-money"></i> <span class="hidden-xs">Conta</span></a></li>
@@ -448,7 +463,7 @@ end if
                 </div>
 
         <%
-		set msgs = db.execute("select DataHora,Resposta from agendamentosrespostas where AgendamentoID like '"&AgendamentoID&"' and AgendamentoID<>0")
+		set msgs = db.execute("select DataHora,Resposta from agendamentosrespostas where AgendamentoID = '"&AgendamentoID&"' and AgendamentoID<>0")
 		while not msgs.eof
 			%>
 			<span class="label label-alert">Paciente respondeu em <%=msgs("DataHora")%>: <em><%=msgs("Resposta")%></em></span>
@@ -589,7 +604,7 @@ end if
             <div class="col-md-<%= colPac %>">
                 <%
                 'ALTERAÇÃO DE PACIENTES APÓS O AGENDAMENTO NÃO É PERMITIDO | 10/03/2021
-                if agendamentoIDSelecionado&""<>0 then
+                if agendamentoIDSelecionado<>"" and agendamentoIDSelecionado<>"0" then 
                     pacienteInputClass = "style=""display:none;"""
                     set PacienteSQL = db.execute("select NomePaciente from pacientes where id="&pacienteId)
                         pacienteNome = "<label>Paciente</label><br>"&PacienteSQL("NomePaciente")
@@ -663,21 +678,36 @@ end if
                     call quickField("simpleSelect", "ageCanal", "Canal", 2, ageCanal, "select id, NomeCanal from agendamentocanais where sysActive=1 AND ExibirNaAgenda='S' order by NomeCanal", "NomeCanal", " no-select2 "&canalRequired&" empty")
                 end if
             end if
-			%>
+            %>
 
-<%
-if instr(camposPedir, "IndicadoPorSelecao")>0 then
-    ObrigarCampoIndicado = ""
-    if instr(camposObrigatorioPaciente, "IndicadoPorSelecao")>0 then
-        ObrigarCampoIndicado = " required "
-    end if
-%>
-          <div class="col-md-3">
-            <%= selectInsertCA("Indicação", "indicacaoId", Pagador, "5, 8", " onclick=""autoPC($(this).attr(\'data-valor\')) "" ", " "&fieldReadonly&ObrigarCampoIndicado, "") %>
-          </div>
-          <%
-end if
-          %>
+            <% if instr(camposPedir, "IndicadoPorSelecao")>0 then
+                ObrigarCampoIndicado = ""
+                if instr(camposObrigatorioPaciente, "IndicadoPorSelecao")>0 then
+                    ObrigarCampoIndicado = " required "
+                end if
+            %>
+                <div class="col-md-3">
+                    <%= selectInsertCA("Indicação", "indicacaoId", Pagador, "5, 8", " onclick=""autoPC($(this).attr(\'data-valor\')) "" ", " "&fieldReadonly&ObrigarCampoIndicado, "") %>
+                </div>
+            <% end if %>
+
+            <%
+            ' Select de Programas de Saúde 
+            if getConfig("ExibirProgramasDeSaude") = 1 then
+                sqlSelectProgramas = "SELECT p.id, p.NomePrograma FROM programas p " &_
+                                     "INNER JOIN profissionaisprogramas pp ON p.id = pp.ProgramaID " &_
+                                     "LEFT JOIN pacientesprogramas pap ON pap.ProgramaID = p.id " &_
+                                     "WHERE pp.ProfissionalID = '" & ProfissionalID &"' AND pp.sysActive = 1 "
+                if PacienteID <> "" then
+                    sqlSelectProgramas = sqlSelectProgramas & " AND pap.PacienteID = '" & PacienteID & "' AND pap.sysActive = 1 "
+                end if
+                if ConvenioID <> "" and ConvenioID <> 0 then
+                    sqlSelectProgramas = sqlSelectProgramas & " AND (p.ConvenioID IS NULL OR p.ConvenioID = '" & ConvenioID & "') "
+                end if
+                sqlSelectProgramas = sqlSelectProgramas & " GROUP BY p.id ORDER BY p.NomePrograma"
+                call quickField("simpleSelect", "ProgramaID", "Programa de Saúde", 3, ProgramaID, sqlSelectProgramas, "NomePrograma", " no-select2 empty onchange=""parametros(this.id, this.value)""")
+            end if
+             %>
         </div>
 
 
@@ -1160,7 +1190,7 @@ end if
             <div class="col-md-6">
                 <label style="" class="error_msg"></label><br>
                 <label>Senha do Usuário</label>
-                <input type="password" id="password" name="password" class="form-control">
+                <input type="hidden" id="tabela-password" name="tabela-password" class="form-control">
             </div>
 
         <div class="col-md-12 tabelaParticular" style="color:#000;">
@@ -1588,60 +1618,7 @@ function repeteAgendamento(ConsultaID){
 setInterval(function(){abasAux()}, 3000);
 
 function atualizaHoraAtual(){
-    let time = '<%=HorarioAgora%>'
-    time = new Date(time);
-    var M = time.getMinutes();
-    var H = time.getHours();
-    <%
-    getTimeZoneSQL = "select FusoHorario from vw_unidades where sysActive = 1 and id = '"&session("UnidadeID")&"'"
-    set timeZoneUnidade = db.execute(getTimeZoneSQL)
-    timeZoneUnidadeResult = ""
-    if not timeZoneUnidade.eof then
-        timeZoneUnidadeResult = timeZoneUnidade("FusoHorario")&""
-    end if
-    
-    if timeZoneUnidadeResult = "" then 
-        timeZoneUnidadeResult = "-3"
-    end if
-    if timeZoneUnidadeResult = "" then 
-        timeZoneUnidadeResult = "-3"
-    end if
-    %>
-    var timeZoneUnidadeResult = <%=timeZoneUnidadeResult%>;
-
-    if (timeZoneUnidadeResult !== -3){
-        var tempo = new Date().toLocaleString("pt-br", {timeZone: "America/Sao_Paulo"});
-        H = Number(tempo.split(" ")[1].split(":")[0]);
-        M = Number(tempo.split(" ")[1].split(":")[1]);
-
-        H = H + (timeZoneUnidadeResult +3)
-
-        // console.log(H);
-    }
-
-    <%
-    if HorarioVerao="" then
-    %>
-        if(H=="0"){
-            H = "23";
-        }
-        else{
-            H = H - 1;
-        }
-
-    <%
-    end if
-    %>
-    if(M <= 9){
-        M = "0"+M;
-    }
-    if(H <= 9){
-        H = "0"+H;
-    }
-
-
-    var horaAtual = H + ":" + M;
-
+    let horaAtual = '<%=formatdatetime(getClientDataHora(UnidadeID),4)%>';
     $("#Chegada").val(horaAtual);
 }
 
@@ -1967,7 +1944,7 @@ $(idStr).change(function(){
         data: {autorization:"buscartabela",id:id,sysUser:sysUser},
         success:function(result){
             if(result == "Tem regra") {
-                console.log("5")
+                $("#tabela-password").attr("type","password");
                 $('#permissaoTabela').modal('show');
                 buscarNome(id,sysUser,regra);
             }
@@ -1975,7 +1952,7 @@ $(idStr).change(function(){
     });
         $('.confirmar').click(function(){
                 var Usuario =  $('input[name="nome"]:checked').val();
-                var senha   =  $('#password').val();
+                var senha   =  $('#tabela-password').val();
                 liberar(Usuario , senha , id);
         });
     });
@@ -2015,6 +1992,43 @@ function liberar(Usuario , senha , id){
             }
         });
 }
+
+function toRequired(){
+    $(document).ajaxComplete(function(){
+<%
+        set obriga = db.execute("select * from obrigacampos where Tipo='Paciente' and Obrigar like '%|%'")
+        if not obriga.eof then
+            Obr = obriga("Obrigar")
+            splObr = split(Obr, ", ")
+            for o=0 to ubound(splObr)
+                campoObrigatorio = replace(splObr(o), "|", "")
+            %>
+                var campoNaoObrigatorio = false;
+                var campoObrigatorio = '<%=campoObrigatorio%>'
+                if(!$("#<%=replace(splObr(o), "|", "") %>").parents(".qr").hasClass("hidden") && campoNaoObrigatorio == false){
+                    $("#dadosAgendamento #<%=replace(splObr(o), "|", "") %>").attr("required", "required");
+                    $("#divDadosPaciente #<%=replace(splObr(o), "|", "") %>").attr("required", "required");
+                }
+            <%
+            next
+        end if
+%>
+    });
+}
+
+$( document ).ready(function() {
+    let selects =  $('input')
+    selects.map((key,ele)=>{
+        if($(ele).attr('id') !== "sidebar-search"){
+            $(ele).keypress(function(event){
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode == '13'){
+                    event.preventDefault(); 
+                }
+            });
+        }
+    })
+});
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>

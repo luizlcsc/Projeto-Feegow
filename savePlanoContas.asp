@@ -2,8 +2,8 @@
 <!--#include file="planoLog.asp"-->
 <%
 response.Charset="utf-8"
-table = request.QueryString("R")
-itens = split(request.Form(), "&")
+table = req("R")
+itens = split(request.form(), "&")
 Ordem = 0
 
 
@@ -22,26 +22,31 @@ end if
 
 for i=0 to ubound(itens)-1
 	Ordem = Ordem+1
-	spl2 = split(itens(i), ",")
+	spl2 = split(itens(i), ";")
 
 	Id           = ""
 	sqlUpdateSet = "Ordem=" & Ordem
 
-	for v=0 to ubound(spl2)
-		spl3 = split(spl2(v),":")
+	for c=0 to ubound(spl2)
+		nitens = split(spl2(c),",")
+			for v=0 to ubound(nitens)
 
-		campo = replace(spl3(0), "[", "")
-		valor = replace(spl3(1), "]", "")
+			spl3 = split(nitens(v),":")
 
-		if campo = "id" then
-			Id = valor
-		elseif campo = "Name" or campo = "Category" or campo = "Ordem" or campo = "Posicao" then
+			campo = replace(spl3(0), "[", "")
+			valor = replace(replace(spl3(1), "]", ""),"'","\'")
+			response.write("valor: "&valor)
 
-			if sqlUpdateSet <> "" then
-				sqlUpdateSet = sqlUpdateSet & ", "
+			if campo = "id" then
+				Id = valor
+			elseif campo = "Name" or campo = "Category" or campo = "Ordem" or campo = "Posicao" then
+
+				if sqlUpdateSet <> "" then
+					sqlUpdateSet = sqlUpdateSet & ", "
+				end if
+				sqlUpdateSet = sqlUpdateSet & campo & " = '" & valor & "'"
 			end if
-			sqlUpdateSet = sqlUpdateSet & campo & " = '" & valor & "'"
-		end if
+		next
 	next
 
 	if sqlUpdateSet <> "" and Id <> "" then

@@ -45,7 +45,7 @@ if aut("lctestoqueV")=0 then
 end if
 QuantidadeTotalUnidade = 0
 QuantidadeTotalConjunto = 0
-call refazPosicao(ProdutoID)
+' call refazPosicao(ProdutoID) // erro ticket 11875
 
 DiasAvisoValidade = reg("DiasAvisoValidade")&""
 if DiasAvisoValidade="" then
@@ -178,31 +178,41 @@ end if
 		</tr>
 	</tfoot>
 </table>
-
+<div id="modal-print-recibo" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modal" style="width:860px; margin-left:-130px;">
+            <div ><i class="fa fa-circle-o-notch fa-spin fa-fw"></i> <span class="sr-only">Carregando...</span> Carregando...</div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
 <script>
+    showSalvar(true)
+
     function lancar(P, T, L, V, PosicaoID, ItemInvoiceID, AtendimentoID) {
-    $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
-    $.ajax({
-        type:"POST",
-        url:"EstoqueLancamento.asp?P="+P+"&T="+T+"&L="+L+"&V="+V+"&PosicaoID="+PosicaoID +"&ItemInvoiceID=" + ItemInvoiceID + "&AtendimentoID="+ AtendimentoID,
-        success: function(data){
-            setTimeout(function(){
-                if ($("div-secundario").length == 0 ){
-                    $("#modal").html(data);
-                } else {
-                    $("div-secundario").html(data);
-                }
-            }, 500);
-        }
-    });
-}
+        $("#modal-table").modal("show");
+        $("#modal").html("Carregando...");
+        $.ajax({
+            type:"POST",
+            url:"EstoqueLancamento.asp?P="+P+"&T="+T+"&L="+L+"&V="+V+"&PosicaoID="+PosicaoID +"&ItemInvoiceID=" + ItemInvoiceID + "&AtendimentoID="+ AtendimentoID,
+            success: function(data){
+                setTimeout(function(){
+                    if ($("div-secundario").length == 0 ){
+                        $("#modal").html(data);
+                    } else {
+                        $("div-secundario").html(data);
+                    }
+                }, 500);
+            }
+        });
+    }
 
 </script>
 <%
 if atualizaLanctos="S" then
     %>
     <script type="text/javascript">
+        
+
         atualizaLanctos();
     </script>
     <%

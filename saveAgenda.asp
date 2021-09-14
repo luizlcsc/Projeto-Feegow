@@ -3,22 +3,18 @@
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/FuncoesRepeticaoMensalAgenda.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="AgendamentoUnificado.asp"-->
 <%
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
 	'on error resume next
 end if
 
 
-' if ref("Chegada")<>"" and isdate(ref("Chegada")) then
-' 	HoraSta = formatdatetime(ref("Chegada"), 3)
-' else
-'     hora = db.execute("select DATE_FORMAT( now() , '%T' ) as now")
-' 	HoraSta = hora("now")
-' end if
-
-hora = db.execute("select DATE_FORMAT( now() , '%T' ) as now")
-HoraSta = hora("now")
-
+if ref("Chegada")<>"" and isdate(ref("Chegada")) then
+	HoraSta = formatdatetime(ref("Chegada"), 3)
+else
+	HoraSta = time()
+end if
 
 if ref("ProcedimentoID")="0" or ref("ProcedimentoID")="" then
 	erro = "Selecione um procedimento"
@@ -102,15 +98,15 @@ if isdate(rfData) then
     rfData = cdate(rfData)
 end if
 
-rfProcedimento=request.Form("ProcedimentoID")
-rfrdValorPlano=request.Form("rdValorPlano")
+rfProcedimento=ref("ProcedimentoID")
+rfrdValorPlano=ref("rdValorPlano")
 if rfrdValorPlano="V" then
-	rfValorPlano=request.Form("Valor")
+	rfValorPlano=ref("Valor")
 	if rfValorPlano="" or not isnumeric(rfValorPlano) then
 		rfValorPlano=0
 	end if
 else
-	rfValorPlano=request.Form("ConvenioID")
+	rfValorPlano=ref("ConvenioID")
 	PlanoID=ref("PlanoID")
 end if
 rfPaciente=ref("PacienteID")
@@ -128,16 +124,16 @@ else
     end if
 end if
 
-rfStaID=request.Form("StaID")
+rfStaID=ref("StaID")
 if ref("LocalID")&""="" then
 	rfLocal=0
 else
-	rfLocal=request.Form("LocalID")
+	rfLocal=ref("LocalID")
 end if
 rfNotas=ref("Notas")
-rfSubtipoProcedimento=0'request.Form("SubtipoProcedimento")'VERIFICAR
-ConsultaID=request.form("ConsultaID")
-
+rfSubtipoProcedimento=0'ref("SubtipoProcedimento")'VERIFICAR
+ConsultaID=ref("ConsultaID")
+rfProgramaID=ref("ProgramaID")
 
 
 if ConsultaID<>"0" then
@@ -177,9 +173,10 @@ if ConsultaID<>"0" then
         end if
     end if
 end if
-%><!--#include file="errosPedidoAgendamento.asp"--><%''=request.Form()%><%
+%>
+<!--#include file="errosPedidoAgendamento.asp"-->
+<%
 if erro="" then
-'response.Write(request.Form())
 '"Hora=&Paciente=&Procedimento=&StaID=&Local=&rdValorPlano=&ValorPlano=&ProfissionalID=&Data=&Tempo=
 	if rfStaID=5 or rfStaID="5" then
 	    set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(rfLocal))
@@ -257,14 +254,17 @@ if erro="" then
     if req("PreSalvarCheckin")="" then
         '<--Verifica se paciente já tem esse convênio. Se não, cria esse convênio para esse paciente\\
         if ConsultaID="0" then
-            sql = "insert into agendamentos (PacienteId, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, PlanoID, rdValorPlano, Notas, FormaPagto, HoraSta, LocalID, Tempo, HoraFinal, SubtipoProcedimentoID, ConfEmail, ConfSMS, Encaixe, Retorno, EquipamentoID, EspecialidadeID, TabelaParticularID, Primeira, IndicadoPor, sysUser) values ('"&rfPaciente&"','"&rfProfissionalID&"','"&mydate(rfData)&"','"&rfHora&"','"&rfProcedimento&"','"&rfStaID&"','"&treatVal(rfValorPlano)&"', "&treatvalzero(PlanoID)&",'"&rfrdValorPlano&"','"&Notas&"','0', '"&HoraSta&"',"&treatvalzero(rfLocal)&",'"&rfTempo&"','"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', '"&rfSubtipoProcedimento&"', '"&ref("ConfEmail")&"', '"&ref("ConfSMS")&"', "&treatvalnull(ref("Encaixe"))&","&treatvalnull(ref("Retorno"))&", "&treatvalnull(ref("EquipamentoID"))&", "& treatvalnull(ref("EspecialidadeID")) &", "& refnull("ageTabela") &", "&PrimeiraVez&", '"&indicacaoID&"', "&session("User")&")"
+            sql = "insert into agendamentos (PacienteId, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, PlanoID, rdValorPlano, Notas, FormaPagto, HoraSta, LocalID, Tempo, HoraFinal, SubtipoProcedimentoID, ConfEmail, ConfSMS, Encaixe, Retorno, EquipamentoID, EspecialidadeID, TabelaParticularID, Primeira, IndicadoPor, sysUser, ProgramaID) values ('"&rfPaciente&"','"&rfProfissionalID&"','"&mydate(rfData)&"','"&rfHora&"','"&rfProcedimento&"','"&rfStaID&"','"&treatVal(rfValorPlano)&"', "&treatvalzero(PlanoID)&",'"&rfrdValorPlano&"','"&Notas&"','0', '"&HoraSta&"',"&treatvalzero(rfLocal)&",'"&rfTempo&"','"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', '"&rfSubtipoProcedimento&"', '"&ref("ConfEmail")&"', '"&ref("ConfSMS")&"', "&treatvalnull(ref("Encaixe"))&","&treatvalnull(ref("Retorno"))&", "&treatvalnull(ref("EquipamentoID"))&", "& treatvalnull(ref("EspecialidadeID")) &", "& treatvalnull(ref("ageTabela")) &", "&PrimeiraVez&", '"&indicacaoID&"', "&session("User")&", " & treatvalnull(rfProgramaID) & ")"
 
     		'response.Write(sql&vbcrlf)
 
     		call gravaLogs(sql, "AUTO", "Agendamento criado", "")
 
             db.execute(sql)
-            set pultCon=db.execute("select id from agendamentos order by id desc limit 1")
+            set pultCon=db.execute("select id, ProfissionalID from agendamentos order by id desc limit 1")
+
+            call agendaUnificada("insert", pultCon("id"), pultCon("ProfissionalID"))
+
             DataHoraFeito = now()
             if session("FusoHorario")<>"" then
                 FusoHorario = session("FusoHorario")
@@ -331,7 +331,13 @@ if erro="" then
                 db.execute("insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID, UnidadeID) values ('"&rfPaciente&"', '"&rfProfissionalID&"', '"&rfProcedimento&"', '"&DataHoraFeito&"', '"&mydate(rfData)&"', '"&rfHora&"', '"&rfStaID&"', '"&session("User")&"', '0', '"&ObsR&"', 'R', '"&ConsultaID&"', "&session("UnidadeID")&")")
             end if
 
-            sqlUpdateAgendamento = "update agendamentos set IndicadoPor='"&indicacaoID&"', PacienteId='"&rfPaciente&"', ProfissionalID='"&rfProfissionalID&"', Data='"&mydate(rfData)&"', Hora='"&rfHora&"', TipoCompromissoID='"&rfProcedimento&"', StaID='"&rfStaID&"', ValorPlano='"&treatVal(rfValorPlano)&"', PlanoID="&treatvalzero(PlanoID)&", rdValorPlano='"&rfrdValorPlano&"', Notas='"&Notas&"', FormaPagto='0', HoraSta='"&HoraSta&"', LocalID='"&rfLocal&"', Tempo='"&rfTempo&"' ,HoraFinal='"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', SubtipoProcedimentoID='"&rfSubtipoProcedimento&"', ConfEmail='"&ref("ConfEmail")&"', ConfSMS='"&ref("ConfSMS")&"', Encaixe="&treatvalnull(ref("Encaixe"))&", Retorno="&treatvalnull(ref("Retorno"))&", EquipamentoID="&treatvalnull(ref("EquipamentoID"))&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& refnull("ageTabela") &" where id = '"&ConsultaID&"'"
+            if rfStaID = 11 or rfStaID = 22 then ' desmarcado e cancelado
+                call agendaUnificada("delete", ConsultaID, rfProfissionalID)
+            else
+                call agendaUnificada("update", ConsultaID, rfProfissionalID)
+            end if
+
+            sqlUpdateAgendamento = "update agendamentos set IndicadoPor='"&indicacaoID&"', PacienteId='"&rfPaciente&"', ProfissionalID='"&rfProfissionalID&"', Data='"&mydate(rfData)&"', Hora='"&rfHora&"', TipoCompromissoID='"&rfProcedimento&"', StaID='"&rfStaID&"', ValorPlano='"&treatVal(rfValorPlano)&"', PlanoID="&treatvalzero(PlanoID)&", rdValorPlano='"&rfrdValorPlano&"', Notas='"&Notas&"', FormaPagto='0', HoraSta='"&HoraSta&"', LocalID='"&rfLocal&"', Tempo='"&rfTempo&"' ,HoraFinal='"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"', SubtipoProcedimentoID='"&rfSubtipoProcedimento&"', ConfEmail='"&ref("ConfEmail")&"', ConfSMS='"&ref("ConfSMS")&"', Encaixe="&treatvalnull(ref("Encaixe"))&", Retorno="&treatvalnull(ref("Retorno"))&", EquipamentoID="&treatvalnull(ref("EquipamentoID"))&", EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& refnull("ageTabela") &", ProgramaID=" & treatvalnull(rfProgramaID) & " where id = '"&ConsultaID&"'"
 
             if ref("Checkin")="1" then
                 DescricaoAlteracao = "Check-in"
@@ -345,7 +351,7 @@ if erro="" then
 
         end if
     else
-        db_execute("update agendamentos set IndicadoPor='"&indicacaoID&"', EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& refnull("ageTabela") &" where id = '"&ConsultaID&"'")
+        db_execute("update agendamentos set IndicadoPor='"&indicacaoID&"', EspecialidadeID="& treatvalnull(ref("EspecialidadeID")) &", TabelaParticularID="& treatvalnull(ref("ageTabela")) &" where id = '"&ConsultaID&"'")
     end if
 
 	if (session("Banco")="clinic5445" or session("Banco")="clinic100000") and ref("ageCanal")<>"" then
@@ -581,8 +587,10 @@ if erro="" then
         '		response.Write(sql&vbcrlf)
 	
 		        db.execute(sql)
-                set pult = db.execute("select id from agendamentos where PacienteID="& PacienteID &" order by id desc limit 1")
+                set pult = db.execute("select id, ProfissionalID from agendamentos where PacienteID="& PacienteID &" order by id desc limit 1")
                 AgendamentoRepetidoID = pult("id")
+
+                call agendaUnificada("insert", pult("id"), pult("ProfissionalID"))
 
                 db.execute("insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID, UnidadeID) values "&_
                 "('"&rfPaciente&"', '"&rfProfissionalID&"', '"&rfProcedimento&"', null, '"&mydate(rfData)&"', '"&rfHora&"', '"&rfStaID&"', '"&session("User")&"', '0', 'Agendamento gerado a partir de repetição', 'A', '"&AgendamentoRepetidoID&"', "&treatvalzero(session("UnidadeID"))&")")

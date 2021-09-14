@@ -1,22 +1,31 @@
 <!--#include file="connect.asp"-->
 <%
-ProfissionalID = request.QueryString("ProfissionalID")
-PacienteID = request.QueryString("PacienteID")
-Data = request.QueryString("Data")
+ProfissionalID = req("ProfissionalID")
+PacienteID = req("PacienteID")
+Data = req("Data")
 oti = "agenda"
-
+ConvenioID = ""
 set pac = db.execute("select * from pacientes where id like '"&PacienteID&"' and sysActive=1")
 if not pac.EOF then
 	Tel1 = pac("Tel1")
 	Cel1 = pac("Cel1")
 	Email1 = pac("Email1")
+    ConvenioID = pac("ConvenioID1")
+    if isnull(ConvenioID) or ConvenioID=0 then
+        ConvenioID = pac("ConvenioID2")
+    end if
+    if isnull(ConvenioID) or ConvenioID=0 then
+        ConvenioID = pac("ConvenioID3")
+    end if
+    if isnull(ConvenioID) or ConvenioID=0 then
+        ConvenioID = ""
+    end if
 end if
 
 set pfila = db.execute("select * from filaespera where PacienteID like '"&PacienteID&"' and ProfissionalID="&ProfissionalID)
 if not pfila.eof then
 	rdValorPlano = pFila("rdValorPlano")
 	Valor = pFila("ValorPlano")
-	ConvenioID = pFila("ValorPlano")
 	Tempo = pFila("Tempo")
 	ProcedimentoID = pFila("TipoCompromissoID")
 	Notas = pFila("Notas")

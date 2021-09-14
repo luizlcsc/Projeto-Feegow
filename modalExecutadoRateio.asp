@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-AutoID = request.QueryString("AutoID")
+AutoID = req("AutoID")
 set ai = db.execute("select ti.*, ti.ItemID, i.FormaID, p.NomeProcedimento, i.ContaRectoID from tempinvoice ti left join sys_financialinvoices i on ti.InvoiceID=i.id left join procedimentos p on p.id=ti.ItemID where ti.autoid="&AutoID)
 if not ai.eof then
 	if not isnull(ai("FormaID")) and not isnull(ai("ContaRectoID")) then
@@ -44,7 +44,7 @@ if not ai.eof then
 						<%=ai("NomeProcedimento")%>
                     </td>
                     <td><%=fun("Funcao")%></td>
-                    <td><%call simpleSelectCurrentAccounts("ContaCredito"&muid, "5, 4, 2", ContaCredito, "")%></td>
+                    <td><%call simpleSelectCurrentAccounts("ContaCredito"&muid, "5, 4, 2", ContaCredito, "","")%></td>
                 </tr>
                 <%
             fun.movenext
@@ -130,7 +130,7 @@ if not ai.eof then
 			end if
 			%>
 			</td>
-			<td><%call simpleSelectCurrentAccounts("ContaCredito"&muid, "00, 5, 4, 2, 1", ContaCredito, "")%></td>
+			<td><%call simpleSelectCurrentAccounts("ContaCredito"&muid, "00, 5, 4, 2, 1", ContaCredito, "","")%></td>
 			</tr>
 		<%
 	fun.movenext

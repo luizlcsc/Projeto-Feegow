@@ -19,6 +19,22 @@ end if
     table  { border-collapse: collapse; width: 100%; }
 </style>
 
+<%
+
+disabled = ""
+
+if getConfig("BloquearEdicaoFormulario")=1 and FormID <> "N" then
+	set getFormPreenchido = db.execute("SELECT date(DataHora) dataAtendimento FROM buiformspreenchidos WHERE sysActive=1 AND id = "&FormID)
+	if not getFormPreenchido.eof then
+		dataAtendimento = getFormPreenchido("dataAtendimento")
+		if dataAtendimento <> date() then
+			disabled = "disabled"
+		end if
+	end if
+end if
+
+%>
+
 <li id="<%=CampoID%>" class="<%if TipoCampoID=13 then response.Write("caixaGrupo campo") else response.Write("campo") end if%>" data-row="<%=pTop%>" style="text-align:left; <%=EstiloImagem%>" data-col="<%=pLeft%>" data-sizex="<%=Colunas%>" data-sizey="<%=Linhas%>">
 	<%if TipoCampoID<>3 and TipoCampoID<>12 and getConfig("LembreteFormulario")=1 then%><span class="badge badge-info lembrar hidden-print checkbox-custom checkbox-danger"><i class="fa fa-flag red"></i> <input class="postvalue lembrarme tbl" type="checkbox" data-campoid="<%=CampoID%>" id="lembrarme_<%=CampoID%>" value="<%=CampoID %>" name="lembrarme" <%if instr(LembrarmeS, "|"&CampoID&"|") then response.Write("checked") end if %> /><label for="lembrarme_<%=CampoID%>"> Lembrar-me disso</label></span><%end if%>
 	<%
@@ -37,7 +53,7 @@ end if
 			if LadoALado="S" then
 				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text"></td></tr></table><%
 			else
-				%><label class="campoLabel"><%=RotuloCampo%></label><input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" class="campoInput form-control" type="text"><%
+				%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%><input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" class="campoInput form-control" type="text"><%
 			end if
 
 			IF TipoCampoInfo = 30 THEN
@@ -59,6 +75,7 @@ end if
                     <tr>
                         <td width="1%" class="cel_label" nowrap>
                             <label class="campoLabel"><%=RotuloCampo%></label>
+                            <%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%>
                         </td>
                         <td width="99%" class="cel_input">
                             <input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text">
@@ -68,6 +85,7 @@ end if
 			else
 				%>
                 <label class="campoLabel"><%=RotuloCampo%></label>
+                <%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%>
                 <select id="input_<%=CampoID %>" name="input_<%=CampoID %>" class="form-control campoInput">
                     <option value="<%=ValorPadrao %>"><%=NomeCid %></option>
                 </select>
@@ -81,7 +99,8 @@ end if
 			if LadoALado="S" then
 				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control date-picker input-mask-date" data-date-format="dd/mm/yyyy" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div></td></tr></table><%
 			else
-				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input tabindex="<%=Ordem%>" class="campoInput form-control date-picker input-mask-date" data-date-format="dd/mm/yyyy" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div><%
+				
+				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input <%=disabled%> tabindex="<%=Ordem%>" class="campoInput form-control date-picker input-mask-date" data-date-format="dd/mm/yyyy" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div><%
 			end if
 	  	case 3'imagem
 				%>
@@ -275,7 +294,7 @@ $(function() {
 			else
 				Separador = "&nbsp;&nbsp;"
 			end if
-			%><label class="campoLabel"><%=RotuloCampo%></label><br /><%
+			%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%><br /><%
 				set checks = db.execute("select * from buiopcoescampos where CampoID="&CampoID)
 				while not checks.eof
 					%><span class="checkbox-custom"><input class="campoCheck postvalue" id="input_<%=CampoID%>_<%=checks("id") %>" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>"<%if (checks("Selecionado")="S" and FormID="N") or (instr(ValorPadrao, "|"&checks("id")&"|")>0 and FormID<>"N") then%> checked<%end if%> value="|<%=checks("id")%>|" type="checkbox" /><label for="input_<%=CampoID%>_<%=checks("id") %>"><%=checks("Nome")%></label></span> <%=Separador%><%
@@ -289,7 +308,7 @@ $(function() {
 			else
 				Separador = "&nbsp;&nbsp;"
 			end if
-			%><label class="campoLabel"><%=RotuloCampo%></label><br /><%
+			%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%><br /><%
 				set checks = db.execute("select * from buiopcoescampos where CampoID="&CampoID)
 				while not checks.eof
 					%><span class="radio-custom"><input class="campoInput postvalue" name="input_<%=CampoID%>" id="<%=CampoID%>_<%=checks("id") %>" data-campoid="<%=CampoID%>"<%if (checks("Selecionado")="S" and FormID="N") or (ValorPadrao=cstr(checks("id")) and FormID<>"N") then%> checked<%end if%> type="radio" value="<%=checks("id")%>" /><label for="<%=CampoID%>_<%=checks("id") %>"><%=checks("Nome")%></label></span> <%=Separador%><%
@@ -303,7 +322,7 @@ $(function() {
 			else
 				Separador = "&nbsp;&nbsp;"
 			end if
-			%><label class="campoLabel"><%=RotuloCampo%></label>
+			%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%>
             	<br />
                 <select class="campoInput form-control postvalue" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>"><%
 				set checks = db.execute("select * from buiopcoescampos where CampoID="&CampoID)
@@ -316,11 +335,11 @@ $(function() {
 				%></select><%
 	  	case 8'textarea
                 ckrender = ckrender & "altura = $('#"& CampoID &"').innerHeight()-22 + 'px'; $('#input_"& CampoID &"mem').css('height', altura );"
-			%><div style="padding-bottom:4px" class="qf"><label class="campoLabel"><%=RotuloCampo%></label>
+			%><div style="padding-bottom:4px" class="qf"><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="fa fa-asterisk" title="Campo obrigatório"></i><%end if%>
 
             <textarea class="hidden campoInput" id="input_<%=CampoID %>" name="input_<%=CampoID %>"><%=ValorPadrao %></textarea>
 
-            <div id="input_<%=CampoID%>mem" style="overflow:auto" <%if negadoX<>"S" then%> contenteditable="true"<% End If %> class="campoInput memorando postvalue form-control" <%if negadoX<>"S" then%> onblur="alt(); $('#input_<%=CampoID %>').html( $(this).html() )"<% End If %>  data-campoid="<%=CampoID%>" name="input_<%=CampoID%>mem" tabindex="<%=Ordem%>"><%=ValorPadrao%></div>
+            <div id="input_<%=CampoID%>mem" style="overflow:auto" <%if negadoX<>"S" AND disabled&"" = "" then%> contenteditable="true" <% End If %> class="campoInput memorando postvalue form-control" <%if negadoX<>"S" then%> onblur="alt(); $('#input_<%=CampoID %>').html( $(this).html() )"<% End If %>  data-campoid="<%=CampoID%>" name="input_<%=CampoID%>mem" tabindex="<%=Ordem%>"><%=ValorPadrao%></div>
 
 
 			<script type="text/javascript">

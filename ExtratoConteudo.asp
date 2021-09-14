@@ -1,5 +1,8 @@
  <!--#include file="connect.asp"-->
+<!--#include file="Classes/AccountBalance.asp"-->
 <%
+Response.Buffer
+
 c=0
 Total=0
 
@@ -157,11 +160,15 @@ end if
         "left join sys_financialbanks fb on fb.id = sf.Bank   "&_
         "where ((m.AccountAssociationIDCredit=7 and m.AccountIDCredit="&CaixaID&") or (m.AccountAssociationIDDebit=7 and m.AccountIDDebit="&CaixaID&") or m.CaixaID="& CaixaID &") and m.Type<>'Bill' order by m.Date, m.id"
     else
+		if ref("AccountID")<>"" and ref("AccountID")<>"0" then
+			sqlDataPraFrente = " AND m.`Date`>="& mydatenull(ref("DateFrom")) &" "
+			SaldoAnterior = accountBalancePerDate(ref("AccountID"), 0, dateadd("d", -1, ref("DateFrom")))
+		end if
 		sqlGM = "select m.*, lu.Nome, fb.BankName, pm.PaymentMethod from sys_financialMovement m  "&_
 		"LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=m.sysUser  "&_
 		"left join sys_financialcurrentaccounts sf on sf.id = m.AccountIDDebit  "&_
         "left join sys_financialpaymentmethod pm on pm.id = m.PaymentMethodID  "&_
-		"left join sys_financialbanks fb on fb.id = sf.Bank where 1=1 "& sqlAcc & sqlLancadoPor & sqlUnidades & sqlCD & sqlFormas &" order by m.Date, m.id"
+		"left join sys_financialbanks fb on fb.id = sf.Bank where 1=1 "& sqlAcc & sqlLancadoPor & sqlUnidades & sqlCD & sqlFormas & sqlDataPraFrente &" order by m.Date, m.id"
     end if
     set getMovement = db.execute( sqlGM )
 
@@ -178,8 +185,11 @@ end if
 	saidasCartaoCredito = 0 '8
 	entradasCartaoDebito = 0 '9
 	saidasCartaoDebito = 0 '9
+	EntradasPix = 0 '15
+	saidasPix = 0 '15
 
 	while not getMovement.eof
+		response.flush()
 		Value = getMovement("Value")
 
         IF isnull(Value) or Value = "" THEN
@@ -540,6 +550,12 @@ end if
 					else
 						saidasCartaoDebito = saidasCartaoDebito +Value
 					end if
+				case 15
+					if controle="C" then
+						entradasPix = entradasPix +Value
+					else
+						saidasPix = saidasPix +Value
+					end if
 				End Select
 				controle = ""
 			%>
@@ -699,8 +715,11 @@ end if
 			<td>Boleto <img width="18" src="assets/img/4D.png"> R$ <%=formatnumber(entradasBoleto,2)%></td>
 		</tr>
 		<tr>
+			<td>Pix <img width="18" src="assets/img/6C.png"> R$ <%=formatnumber(entradasPix,2)%></td>
+		</tr>
+		<tr>
 		<%
-			entradas = entradasBoleto + entradasCartaoCredito + entradasCartaoDebito + entradasCheque + entradasDinheiro + entradasDOC + entradasTED + entradasTransferencia
+			entradas = entradasBoleto + entradasPix + entradasCartaoCredito + entradasCartaoDebito + entradasCheque + entradasDinheiro + entradasDOC + entradasTED + entradasTransferencia
 		%>
 		<td colspan='3'>Total: R$<%= formatnumber(entradas,2)%></td>
 		</tr>
@@ -721,8 +740,11 @@ end if
 			<td>Boleto <img width="18" src="assets/img/4D.png"> R$ <%=formatnumber(saidasBoleto,2)%></td>
 		</tr>
 		<tr>
+			<td>Pix <img width="18" src="assets/img/6D.png"> R$ <%=formatnumber(saidasPix,2)%></td>
+		</tr>
+		<tr>
 		<%
-			saidas = saidasBoleto + saidasCartaoCredito + saidasCartaoDebito + saidasCheque + saidasDinheiro + saidasDOC + saidasTED + saidasTransferencia
+			saidas = saidasBoleto + saidasPix + saidasCartaoCredito + saidasCartaoDebito + saidasCheque + saidasDinheiro + saidasDOC + saidasTED + saidasTransferencia
 		%>
 		<td colspan='3'>Total: R$ <%= formatnumber(saidas,2)%></td>
 		</tr>
@@ -775,13 +797,13 @@ end if
 	function filterPayment(type){
 		let atual = $($('tr[data-tipo="'+type+'"]')[0]).css('display')
 		// $('tr[data-tipo]').show()
-		console.log(type)
+		// console.log(type)
 
 		if( atual == "none"){
-			console.log('mostra')
+			// console.log('mostra')
 			$('tr[data-tipo="'+type+'"]').show()
 		}else{
-			console.log('some')
+			// console.log('some')
 			$('tr[data-tipo="'+type+'"]').hide()
 		}
 	}

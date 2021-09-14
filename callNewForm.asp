@@ -154,6 +154,7 @@ while not campos.eof
 	  Colunas = campos("Colunas")
 	  Linhas = campos("Linhas")
 	  LadoALado = campos("LadoALado")
+	  Obrigatorio = campos("Obrigatorio")
 	  Ordem = campos("Ordem")
 	  if UsarPreenchido="S" and TipoCampoID<>9 and TipoCampoID<>13 and TipoCampoID<>10 and TipoCampoID<>15 and TipoCampoID<>11 then
 	      ValorPadrao = f(""&campos("id")&"")
@@ -273,7 +274,7 @@ var gridster1 = null;
 			draggable: {
 				items: ".items<%=splGrupos(ig)%>",
 				start: function () {
-					console.log('draggable start')
+					// console.log('draggable start')
 					setTimeout(function () {
 					}, 1000)
 				}

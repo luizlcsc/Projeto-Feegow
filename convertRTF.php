@@ -166,7 +166,7 @@ $tabela = $_GET['tabela'];
 $id = $_GET['id'];
 $banco = $_GET['banco'];
 
-$link = mysqli_connect('localhost','root','pipoca453', $banco);
+$link = mysqli_connect('localhost',getenv("FC_MYSQL_USER"),getenv("FC_MYSQL_PASSWORD"), $banco);
 //mysql_select_db($banco, $link);
 $sql = 'SELECT `'.$coluna.'` FROM `'.$tabela.'` where id='.$id;
 $result = mysqli_query($link, $sql) or die(mysqli_error());
@@ -177,18 +177,4 @@ $resultado = rtf2text($rtfBruto);
 
 echo $resultado;
 
-//$feito = mysqli_query($link, "update `_214` set `1418`='oi' where id=205400") or die(mysqli_error());
-/*
-$db = mysqli_connect('localhost', 'root', 'pipoca453', 'clinic105');
-
-$busca = mysqli_query($db, "SELECT * FROM agendamentos limit 1");
-if (!$result) {
-    echo 'Não foi possível executar a consulta: ' . mysqli_error();
-    exit;
-}
-$row = mysqli_fetch_row($result);
-
-echo $row[0]; // 42
-echo $row[1]; // o valor do email
-*/
 ?>

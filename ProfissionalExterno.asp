@@ -11,8 +11,8 @@ set reg = db.execute("select * from ProfissionalExterno where id="&req("I"))
 <div class="panel">
 <div class="panel-body">
 <div class="">
-                <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-                <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+                <input type="hidden" name="I" value="<%=req("I")%>" />
+                <input type="hidden" name="P" value="<%=req("P")%>" />
 <br>
             <div class="row">
                 <div class="col-md-2" id="divAvatar">
@@ -74,8 +74,9 @@ set reg = db.execute("select * from ProfissionalExterno where id="&req("I"))
                             <%= quickField("text", "Complemento", "Compl.", 2, reg("complemento"), "", "", "") %>
                         </div>
                         <div class="row">
-                            <%= quickField("text", "Bairro", "Bairro", 4, reg("bairro"), "", "", "") %>
-                            <%= quickField("text", "Cidade", "Cidade", 4, reg("cidade"), "", "", "") %>
+                            <%= quickField("text", "Bairro", "Bairro", 3, reg("bairro"), "", "", "") %>
+                            <%= quickField("text", "Cidade", "Cidade", 3, reg("cidade"), "", "", "") %>
+			    <%= quickField("text", "ZonaAtendimento", "Região / Zona", 2, reg("ZonaAtendimento"), "", "", "") %>
                             <%= quickField("text", "Estado", "Estado", 2, reg("estado"), "", "", "") %>
                             <%= quickField("simpleSelect", "Pais", "Pa&iacute;s", 2, reg("Pais"), "select * from Paises where sysActive=1 order by NomePais", "NomePais", "") %>
                         </div>
@@ -87,11 +88,16 @@ set reg = db.execute("select * from ProfissionalExterno where id="&req("I"))
                             <%= quickField("mobile", "Cel2", "&nbsp;", 4, reg("cel2"), "", "", "") %>
                             <%= quickField("email", "Email2", "&nbsp;", 4, reg("email2"), "", "", "") %>
                         </div>
+			<div class="row">
+			    <%= quickField("simpleSelect", "AssociacaoResponsavel", "Responsável de contato", 2, reg("AssociacaoID")&"_"&reg("ResponsavelContato"), "SELECT * FROM (SELECT CONCAT('5_',id) id,NomeProfissional responsavelContato FROM profissionais WHERE sysActive=1 AND Ativo = 'on' AND NomeProfissional IS NOT NULL AND NomeProfissional <> '' UNION ALL SELECT CONCAT('4_',id) id,NomeFuncionario responsavelContato FROM funcionarios WHERE sysActive=1 AND Ativo = 'on' AND NomeFuncionario IS NOT NULL AND NomeFuncionario <> '') t ORDER BY responsavelContato", "responsavelContato", "") %>
+			    <input type="hidden" name="AssociacaoID" id="AssociacaoID" value="<%=reg("AssociacaoID")%>" />
+			    <input type="hidden" name="ResponsavelContato" id="ResponsavelContato" value="<%=reg("ResponsavelContato")%>" />
+			</div>
                         <div class="row">
                             <%= quickField("memo", "Obs", "Observa&ccedil;&otilde;es", 6, reg("Obs"), "", "", " rows=4") %>
                             <div class="col-md-6">
                             	<div class="row clearfix form-actions">
-									<%= quickField("text", "Login", "Login", 6, reg("Login"), "", "", "") %>
+				    <%= quickField("text", "Login", "Login", 6, reg("Login"), "", "", "") %>
                                     <%= quickField("text", "Senha", "Senha", 6, reg("Senha"), "", "", "") %>
                                 </div>
                             </div>
@@ -104,6 +110,14 @@ set reg = db.execute("select * from ProfissionalExterno where id="&req("I"))
 </form>
 <script type="text/javascript">
 $(document).ready(function(e) {
+	$('#AssociacaoResponsavel').change(function(){
+		associacaoResponsavel = $('#AssociacaoResponsavel').val();
+		let arrayResponsavel = associacaoResponsavel.split('_');
+		let associacaoId = arrayResponsavel[0];
+		let responsavelContato = arrayResponsavel[1];
+		$('#AssociacaoID').val(associacaoId);
+		$('#ResponsavelContato').val(responsavelContato);
+	});
 	<%call formSave("frm", "save", "")%>
 });
 
@@ -553,7 +567,7 @@ jQuery(function($) {
 <script type="text/javascript">
 //js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto"
 %>
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?')){

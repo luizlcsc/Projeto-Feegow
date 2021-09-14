@@ -3,7 +3,7 @@
 <%
 set dadosUser = db.execute("select su.*, lu.AlterarSenhaAoLogin from sys_users su "&_
                            "LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id = su.id "&_
-                           "where su.`Table` like '"&request.QueryString("T")&"' and su.idInTable="&request.QueryString("I"))
+                           "where su.`Table` like '"&req("T")&"' and su.idInTable="&req("I"))
 alterarSenha = ""
 if dadosUser.EOF then
 	comAcesso = "N"
@@ -60,8 +60,8 @@ end if
 
 %>
 <form method="post" id="frmAcesso" name="frmAcesso" action="">
-<input type="hidden" name="I" id="I" value="<%=request.QueryString("I")%>">
-<input type="hidden" name="T" id="T" value="<%=request.QueryString("T")%>">
+<input type="hidden" name="I" id="I" value="<%=req("I")%>">
+<input type="hidden" name="T" id="T" value="<%=req("T")%>">
     <div class="panel">
         <div class="panel-heading">
             <span class="panel-title">

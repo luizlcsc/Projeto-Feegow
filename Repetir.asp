@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
-<!--#include file="connectCentral.asp"-->	
+<!--#include file="connectCentral.asp"-->
+<!--#include file="AgendamentoUnificado.asp"-->
 <%
 on error resume next
 
@@ -93,8 +94,10 @@ set DadosConsulta=db.execute("select * from agendamentos where id="&session("Rep
 
 	ConsultaID="0"
 	db_execute("insert into agendamentos (PacienteID, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, Notas, FormaPagto, LocalID, Tempo, HoraFinal,Procedimentos, EquipamentoID, sysUser) values ('"&rfPaciente&"', "&treatvalzero(rfProfissionalID)&", "&mydatenull(Data)&", "&mytime(Hora)&", '"&rfProcedimento&"', '"&rfStaID&"', "&treatvalzero(rfValorPlano)&", '"&rfrdValorPlano&"', '"&rfNotas&"', '0', "&treatvalzero(LocalID)&", '"&rfTempo&"', '"&HoraSolFin&"','"&DadosConsulta("Procedimentos")&"','"&EquipamentoID&"', "&session("User")&")")
-	set pultCon=db.execute("select id, ConfSMS, ConfEmail from agendamentos where ProfissionalID="&treatvalzero(rfProfissionalID)&" and Data="&mydatenull(Data)&" and Hora="&mytime(Hora)&" order by id desc limit 1")
+	set pultCon=db.execute("select id, ProfissionalID, ConfSMS, ConfEmail from agendamentos where ProfissionalID="&treatvalzero(rfProfissionalID)&" and Data="&mydatenull(Data)&" and Hora="&mytime(Hora)&" order by id desc limit 1")
 	'procedimentos
+	
+	call agendaUnificada("insert", pultCon("id"), pultCon("ProfissionalID"))
 
 	set ap = db.execute("SELECT * FROM agendamentosprocedimentos WHERE AgendamentoID = "&session("RepSol"))
 

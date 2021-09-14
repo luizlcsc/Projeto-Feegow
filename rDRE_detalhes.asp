@@ -20,7 +20,15 @@ end if
         <span class="panel-controls"></span>
     </div>
     <div class="panel-body">
-        <table class="table table-hover">
+        <form id="formExcel" method="POST">
+            <input type="hidden" name="html" id="htmlTable">
+        </form>
+
+        <div class="col-md-offset-11 col-md-1 mb10">
+            <button class="btn btn-success" type="button" onClick="downloadExcel('#dre-table-analitico')"><i class="fa fa-file-excel-o"></i></button>
+        </div>
+
+        <table class="table table-hover" id="dre-table-analitico">
             <thead>
                 <tr class="primary">
                     <th>Data</th>
@@ -55,9 +63,10 @@ end if
                 %>
             </tbody>
             <tfoot>
-                <tr>
-                    <th colspan="2"><%= c &" item(s)" %></th>
+                <tr class="dark">
+                    <th colspan="3"><%= c &" item(s)" %></th>
                     <th class="text-right"><%= fn(Total) %></th>
+                    <th colspan="2"></th>
                 </tr>
             </tfoot>
         </table>

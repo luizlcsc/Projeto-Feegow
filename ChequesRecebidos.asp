@@ -11,7 +11,7 @@
 <div class="panel hidden-print">
     <div class="panel-body">
         <form action="" method="get">
-            <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+            <input type="hidden" name="P" value="<%=req("P")%>" />
             <input type="hidden" name="Pers" value="1" />
             <div class="clearfix form-actions">
                 <div class="row">
@@ -19,7 +19,7 @@
                     <%=quickField("text", "Titular", "Titular", 2, req("Titular"), "", "", " placeholder='Digite parte do nome ou CPF'")%>
                     <div class="col-md-2">
                         <label>Localiza&ccedil;&atilde;o atual</label><br />
-                        <%=simpleSelectCurrentAccounts("ContaCorrente", "1, 7, 2, 4, 5, 6, 3", req("ContaCorrente"), "")%>
+                        <%=simpleSelectCurrentAccounts("ContaCorrente", "1, 7, 2, 4, 5, 6, 3", req("ContaCorrente"), "","")%>
                     </div>
                     <%=quickfield("simpleSelect", "StatusID", "Status", 2, req("StatusID"), "select * from cliniccentral.chequestatus", "Descricao", "")%>
                     <%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 2, req("Unidades"), "", "", "")%>

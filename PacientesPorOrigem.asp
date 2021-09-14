@@ -11,7 +11,7 @@ while not por.EOF
 	else
 		Origem=pNomOr("Origem")
 	end if
-%><tr><td><%=Origem%></td><td><a href="./?P=<%=request.QueryString("TipoRel")%>&TipoRel=<%=request.QueryString("TipoRel")%>&Pers=1&OrigemID=<%=por("Origem")%>&Origem=<%=Origem%>"><%=pconta("Total")%></a></td></tr>
+%><tr><td><%=Origem%></td><td><a href="./?P=<%=req("TipoRel")%>&TipoRel=<%=req("TipoRel")%>&Pers=1&OrigemID=<%=por("Origem")%>&Origem=<%=Origem%>"><%=pconta("Total")%></a></td></tr>
 <%
 por.movenext
 wend
@@ -20,8 +20,8 @@ set por=nothing
 %></table>
 
 
-<%if request.QueryString("OrigemID")<>"" then%>
-<h4>Pacientes Encontrados por Origem - <%=request.QueryString("Origem")%></h4>
+<%if req("OrigemID")<>"" then%>
+<h4>Pacientes Encontrados por Origem - <%=req("Origem")%></h4>
 <table class="table table-bordered table-striped" width="100%" border="0">
   <tr>
     <th>Nome</th>
@@ -30,7 +30,7 @@ set por=nothing
   </tr>
   <%
 c=0
-set p = db.Execute("Select * from pacientes where Origem="&request.QueryString("OrigemID"))
+set p = db.Execute("Select * from pacientes where Origem="&req("OrigemID"))
 while  not p.eof
 	c=c+1
 %>

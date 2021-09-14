@@ -10,9 +10,14 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
 <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from "&request.QueryString("P")&" where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 Profissionais = reg("Profissionais")
+regUnidades = reg("unidades")
+
+if regUnidades&"" = "" then
+    regUnidades = "|0|"
+end if
 %>
 	<%=header(req("P"), "Cadastro de Funcionário", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
 
@@ -27,7 +32,7 @@ Profissionais = reg("Profissionais")
                     </span>
                     <span class="panel-controls">
                         <%
-		                if (reg("sysActive")=1 and aut(lcase(request.QueryString("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(request.QueryString("P"))&"I")=1) then
+		                if (reg("sysActive")=1 and aut(lcase(req("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(req("P"))&"I")=1) then
 		                    %>
                             <button class="btn btn-primary btn-sm" id="save"> <i class="fa fa-save"></i> Salvar </button>
 		                    <%
@@ -36,8 +41,8 @@ Profissionais = reg("Profissionais")
                     </span>
                 </div>
                 <div class="panel-body">
-                    <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-                    <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+                    <input type="hidden" name="I" value="<%=req("I")%>" />
+                    <input type="hidden" name="P" value="<%=req("P")%>" />
                     <div class="row">
                         <div class="col-md-10">
                         </div>
@@ -74,19 +79,56 @@ Profissionais = reg("Profissionais")
                                 </span>
                             </div>
                             <div class="panel-body p7">
-                        	    <div class="checkbox-primary checkbox-custom"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(reg("Unidades"), "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
-						    <%
-						    set unidades = db.execute("select id, NomeFantasia from sys_financialcompanyunits where sysActive=1 order by NomeFantasia")
-						    while not unidades.eof
-							    %>
-							    <div class="checkbox-custom checkbox-primary">
-                                    <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(reg("Unidades"), "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label></div>
-							    <%
-						    unidades.movenext
-						    wend
-						    unidades.close
-						    set unidades=nothing
-						    %>
+
+                                <% 
+                                QtdUnidades = ubound(split(session("Unidades"), ","))
+    
+    
+                                IF QtdUnidades > 3 THEN %>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="checkbox-primary checkbox-custom allU">
+                                                 <input id="allcheck" onchange="selecionarTodasUnidades(this.checked)" type="checkbox" >
+                                                <label for="allcheck"> <small></small></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-9" style="margin-left: 5px; margin-top: 5px">
+                                            <input type="text" class="form-control input-sm" onkeyup="filterUnidades(this.value)">
+                                            <script>
+                                            function filterUnidades(arg){
+                                                    arg = arg.toUpperCase();
+                                                    $("[data-name],.allU").show();
+                                                    $("[data-name]").each((k,item) =>{
+                                                        $(item).attr("data-name",$(item).attr("data-name").toUpperCase())
+                                                    })
+    
+                                                    if(arg){
+                                                        $("[data-name]:not([data-name*='"+arg+"']),.allU").hide();
+                                                    }
+                                            }
+                                            </script>
+                                        </div>
+                                    </div>
+                                    <hr style="margin: 10px 0" />
+                                <% END IF
+    
+                                unidadesFuncionario = regUnidades
+
+                                %>
+                                <div class="checkbox-primary checkbox-custom" data-name="Empresa Principal"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(unidadesFuncionario, "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
+                            <%
+                            set unidades = db.execute("select id, UnitName,NomeFantasia from sys_financialcompanyunits where sysActive=1 order by NomeFantasia")
+                            while not unidades.eof
+                                nomeUnidade = unidades("NomeFantasia")
+                                %>
+                                <div class="checkbox-custom checkbox-primary" data-name="<%=nomeUnidade%>">
+                                    <input type="checkbox" <% IF ModoFranquiaUnidade THEN %>onclick="return false;"<% END IF %> name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(unidadesFuncionario, "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=nomeUnidade%> </small></label></div>
+                                <%
+                            unidades.movenext
+                            wend
+                            unidades.close
+                            set unidades=nothing
+                            %>
                             </div>
                         </div>
                     </div>
@@ -97,7 +139,7 @@ Profissionais = reg("Profissionais")
                             <%=quickField("datepicker", "Nascimento", "Nascimento", 3, reg("Nascimento"), "input-mask-date", "", "")%>
                            	<%
 							'não permitir o usuario inativar ele mesmo
-                            if session("idInTable")&"" = request.QueryString("I")&"" and (session("Table")&"" = request.QueryString("P")&"") then
+                            if session("idInTable")&"" = req("I")&"" and (session("Table")&"" = req("P")&"") then
 								hideInactive = "hidden"
 							end if
 							%>
@@ -215,7 +257,7 @@ function getEndereco() {
 <script type="text/javascript">
 //js exclusivo avatar
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto"
 %>
 
 function removeFoto(){

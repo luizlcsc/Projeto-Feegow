@@ -390,7 +390,7 @@ ptip.close
 set ptip=nothing
 %>
 <h4>DESPESAS ANEXAS</h4>
-<table class="table table-striped table-bordered">
+<table class="table table-striped table-bordered table-hover">
     <thead>
         <tr>
             <th width="1%"></th>
@@ -415,34 +415,50 @@ set dataNF = db.execute(sql)
 
 while not dataNF.eof
     response.flush()
-    set gi = db.execute("SELECT *, (SELECT sum(tga.ValorTotal) FROM tissguiaanexa tga WHERE tga.GuiaID = gi.guiaid ) valorpago from tissguiasinvoice gi where gi.TipoGuia='guiasadt' AND ItemInvoiceID="& treatvalzero(dataNF("ItemInvoiceID")))
-    while not gi.eof
-        set proc = db.execute("select gs.NGuiaPrestador, pac.NomePaciente, conv.NomeConvenio, (gs.TotalGeral-gs.Procedimentos) ValorDespesas from tissguiasadt gs LEFT JOIN pacientes pac ON pac.id=gs.PacienteID LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE gs.id="& gi("GuiaID")&"")
-        if not proc.eof then
-            NomePaciente = proc("NomePaciente")
-            NomeConvenio = proc("NomeConvenio")
-            ValorDespesas = proc("ValorDespesas")
-        end if
+    sqlRegistros = "SELECT gi.*, SUM(COALESCE(tga.ValorPago,tga.ValorTotal)) valorpagoAnexo, "&_
+    " "&_
+    " gs.NGuiaPrestador, pac.NomePaciente, conv.NomeConvenio, (gs.TotalGeral-gs.Procedimentos) ValorDespesas "&_
+    "  "&_
+    " FROM tissguiasinvoice gi "&_
+    " LEFT JOIN tissguiaanexa tga ON tga.GuiaID = gi.guiaid "&_
+    " INNER JOIN tissguiasadt gs ON gs.id=gi.GuiaID "&_
+    " LEFT JOIN pacientes pac ON pac.id=gs.PacienteID "&_
+    " LEFT JOIN convenios CONV ON conv.id=gs.ConvenioID "&_
+    " "&_
+    " WHERE gi.TipoGuia='guiasadt' AND ItemInvoiceID="&treatvalzero(dataNF("ItemInvoiceID"))&" "&_
+    " GROUP BY gi.id " &_
+    " HAVING ValorDespesas > 0 " 
+
+    if dataNF("nroNFe")=24594 then
+        ' dd(sqlRegistros)
+    end if
+
+    set GuiaInvoiceSQL = db.execute(sqlRegistros)
+    while not GuiaInvoiceSQL.eof
+        NomePaciente = GuiaInvoiceSQL("NomePaciente")
+        NomeConvenio = GuiaInvoiceSQL("NomeConvenio")
+        valorpagoAnexo = GuiaInvoiceSQL("valorpagoAnexo")
+        ValorDespesas = GuiaInvoiceSQL("ValorDespesas")
         ValorTotal=ValorTotal + ValorBruto
         TotalDespesas = TotalDespesas+ValorDespesas
         'if ValorDespesas>0 then
             %>
             <tr>
-                <td><a href="./?P=tiss<%= gi("TipoGuia") %>&Pers=1&I=<%= gi("GuiaID") %>" target="_blank"><%= proc("NGuiaPrestador") %></a></td>
+                <td><a href="./?P=tiss<%= GuiaInvoiceSQL("TipoGuia") %>&Pers=1&I=<%= GuiaInvoiceSQL("GuiaID") %>" target="_blank"><%= GuiaInvoiceSQL("NGuiaPrestador") %></a></td>
                 <td><%= dataNF("nroNFe") %></td>
                 <td><%= dataNF("dataNFe") %></td>
                 <td><%= NomePaciente %></td>
                 <td class="text-right"><%= fn(dataNF("valorNFe")) %></td>
-                <td class="text-right"><%= fn(valorpago) %></td>
+                <td class="text-right"><%= fn(valorpagoAnexo) %></td>
                 <td class="text-right"><%= fn(ValorDespesas) %></td>
                 <td><%= NomeConvenio %></td>
             </tr>
             <%
         'end if
-    gi.movenext
+    GuiaInvoiceSQL.movenext
     wend
-    gi.close
-    set gi=nothing
+    GuiaInvoiceSQL.close
+    set GuiaInvoiceSQL=nothing
 dataNF.movenext
 wend
 

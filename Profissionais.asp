@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
+<!--#include file="functions.asp"-->
 <style>
 .listaUnidades{
 	list-style-type:none;
@@ -11,11 +12,19 @@
 
 </style>
 <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from Profissionais where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
 
-IF request.QueryString("Proximo") = "1"  THEN
-    sqlProximo = "select id from Profissionais where Ativo = 'on' and id>"&request.QueryString("I")
+sqlReg = "select * from Profissionais where id="&req("I")
+
+set reg = db.execute(sqlReg)
+RegUnidades = reg("Unidades")
+
+if regUnidades&"" = "" then
+    regUnidades = "|0|"
+end if
+
+IF req("Proximo") = "1"  THEN
+    sqlProximo = "select id from Profissionais where Ativo = 'on' and id>"&req("I")
     set regNext = db.execute(sqlProximo)
 
     IF NOT regNext.EOF THEN
@@ -26,7 +35,7 @@ IF request.QueryString("Proximo") = "1"  THEN
 END IF
 
 
-Aba = request.QueryString("Aba")
+Aba = req("Aba")
 
 if Aba="" then
 	ativoCadastro = " class=""active"""
@@ -38,9 +47,10 @@ elseif Aba="Horarios" then
 	ativoCadastro = ""
 	ativoHorarios = " class=""active"""
 	if versaoAgenda()=1 then
-		chamaScript = "ajxContent('Horarios-1', "&request.QueryString("I")&", 1, 'divHorarios');"
+    
+		chamaScript = "ajxContent('Horarios-1', "&req("I")&", 1, 'divHorarios');"
 	else
-		chamaScript = "ajxContent('Horarios', "&request.QueryString("I")&", 1, 'divHorarios');"
+		chamaScript = "ajxContent('Horarios', "&req("I")&", 1, 'divHorarios');"
 	end if
 	tabCadastro = ""
 	tabHorarios = " in active"
@@ -57,8 +67,8 @@ end if
 
 
             <form method="post" id="frm" name="frm" action="save.asp">
-                <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-                <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+                <input type="hidden" name="I" value="<%=req("I")%>" />
+                <input type="hidden" name="P" value="<%=req("P")%>" />
 
                 <div class="panel">
                     <div class="panel-heading">
@@ -69,7 +79,7 @@ end if
                         <%
                         if (reg("sysActive")=1 AND session("Franqueador") <> "") then
                             %>
-                            <button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=request.QueryString("P")%>')"><i class="fa fa-copy"></i> Replicar</button>
+                            <button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="fa fa-copy"></i> Replicar</button>
                             <%
                         end if
                         %>
@@ -120,13 +130,47 @@ end if
                             </span>
                         </div>
                         <div class="panel-body p7">
-                        	<div class="checkbox-primary checkbox-custom"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(reg("Unidades"), "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
+
+                            <% 
+                            QtdUnidades = ubound(split(session("Unidades"), ","))
+
+
+                            IF QtdUnidades > 3 THEN %>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="checkbox-primary checkbox-custom allU">
+                                             <input id="allcheck" onchange="selecionarTodasUnidades(this.checked)" type="checkbox" >
+                                            <label for="allcheck"> <small></small></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9" style="margin-left: 5px; margin-top: 5px">
+                                        <input type="text" class="form-control input-sm" onkeyup="filterUnidades(this.value)">
+                                        <script>
+                                        function filterUnidades(arg){
+                                                arg = arg.toUpperCase();
+                                                $("[data-name],.allU").show();
+                                                $("[data-name]").each((k,item) =>{
+                                                    $(item).attr("data-name",$(item).attr("data-name").toUpperCase())
+                                                })
+
+                                                if(arg){
+                                                    $("[data-name]:not([data-name*='"+arg+"']),.allU").hide();
+                                                }
+                                        }
+                                        </script>
+                                    </div>
+                                </div>
+                                <hr style="margin: 10px 0" />
+                            <% END IF
+                            unidadesFuncionario = RegUnidades
+                            %>
+                        	<div class="checkbox-primary checkbox-custom" data-name="Empresa Principal"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(unidadesFuncionario, "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
 						<%
 						set unidades = db.execute("select id, UnitName,NomeFantasia from sys_financialcompanyunits where sysActive=1 order by NomeFantasia")
 						while not unidades.eof
 							%>
 							<div class="checkbox-custom checkbox-primary">
-                                <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(reg("Unidades"), "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label></div>
+                                <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(unidadesFuncionario, "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label></div>
 							<%
 						unidades.movenext
 						wend
@@ -163,7 +207,7 @@ end if
                         <%
 
                         'não permitir o usuario inativar ele mesmo
-                        if session("idInTable")&"" = request.QueryString("I")&"" and (session("Table")&"" = request.QueryString("P")&"") then
+                        if session("idInTable")&"" = req("I")&"" and (session("Table")&"" = req("P")&"") then
                             hideInactive = "hidden"
                         end if
                         %>
@@ -206,7 +250,36 @@ end if
                         <%= quickField("text", "Estado", "Estado", 2, reg("estado"), "", "", "") %>
                         <%= quickField("simpleSelect", "Pais", "Pa&iacute;s", 2, reg("Pais"), "select * from Paises where sysActive=1 order by NomePais", "NomePais", "") %>
                     </div>
+                    <%
+                    set sysConf = db.execute("select * from sys_config")
+
+                    if sysConf("ConfigGeolocalizacaoProfissional")="S" and recursoAdicional(39)=4 then
+                    %>
+                        <hr class="short alt" />
                         <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="Coordenadas">Coordenadas (latitude,longitude)</label>
+                                    <input class="form-control" type="text" name="Coordenadas" id="Coordenadas" value="<%=reg("Coordenadas")%>">
+                                    <small class="text-muted">
+                                        <b>Ex:</b> -23.00215774882604,-43.35115106562211
+                                    </small>
+                                    <br>
+                                    <small class="text-muted">
+                                        <a target="_blank" href="https://support.google.com/maps/answer/18539?co=GENIE.Platform%3DDesktop&hl=pt&oco=0">
+                                            <b>clique aqui</b>
+                                        </a> 
+                                        para obter ajuda de como obter as coordenadas.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="coords-map" class="col-md-12"></div>
+                        </div>
+                    <%end if%>
+                    <hr class="short alt" />
+                        <div class="row mt-1">
                             <%= quickField("phone", "Tel1", "Telefone", 4, reg("tel1"), "", "", "") %>
                             <%= quickField("mobile", "Cel1", "Celular", 4, reg("cel1"), "", "", "") %>
                             <%= quickField("email", "Email1", "E-mail", 4, reg("email1"), "", "", "") %>
@@ -224,56 +297,55 @@ end if
                                 <%=selectInsert("Grupo", "GrupoID", reg("GrupoID"), "profissionaisgrupos", "NomeGrupo", "", "", "") %>
                             </div>
                         </div>
-                        <hr class="short alt" />
-                        <div class="row">
-                            <%= quickField("memo", "Obs", "Observa&ccedil;&otilde;es", 12, reg("Obs"), "", "", "") %>
+                    
+                    <hr class="short alt" />
+                    <div class="row">
+                        <%= quickField("memo", "Obs", "Observa&ccedil;&otilde;es", 12, reg("Obs"), "", "", "") %>
+                    </div>
+                    <div class="row">
+                    <br>
+                        <%=quickfield("simpleSelect", "FornecedorID", "Empresa", 3, reg("FornecedorID"), "select id,NomeFornecedor from fornecedores where sysActive=1 order by NomeFornecedor", "NomeFornecedor", "") %>
+                        <%= quickField("text", "NomeSocial", "Nome Social", 6, reg("NomeSocial"), "", "", "") %>
+                        <%= quickfield("simpleSelect", "AbaProntuario", "Aba do Prontuário", 3, reg("AbaProntuario"), "select '' id, 'Dados Principais' Descricao UNION ALL select 'abaForms', 'Anamneses e Evoluções' UNION ALL select 'abaTimeline', 'Linha do Tempo'", "Descricao", "semVazio") %>
+                    </div>
+                    <br>
+                    <div class="row">
 
+                        <%if session("admin")=1 then
+                        AgendaProfissionais = reg("AgendaProfissionais")
+                        %>
+                            <%=quickField("multiple", "AgendaProfissionais", "Acesso as agendas dos profissionais", 4, AgendaProfissionais, "select id, NomeProfissional from profissionais where ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
+                        <%end if%>
+
+                        <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
+
+                        <%'= quickField("simpleSelect", "PlanoContaID", "Plano de Contas", 3, "", "select id,Name from sys_financialexpensetype where sysActive=1 order by Name", "Name", "") %>
+
+                    </div>
+                    <div class="row">
+                        <div class='col-md-5'>
+                            <%=quickField("simpleCheckbox", "NaoExibirAgenda", "Não exibir o profissional na agenda", 12, reg("NaoExibirAgenda"), "", "", "")%>
+
+                            <% IF session("admin")=1 THEN %>
+                                <%=quickField("simpleCheckbox", "auditor", "Este profissional é auditor", 12,reg("auditor"), "", "", "")%>
+                            <% ELSE %>
+                                <input type="hidden" value="<%=reg("auditor")%>" name="auditor">
+                            <% END IF %>
                         </div>
-                        <div class="row">
+                    </div>
+                    <br>
+                    <div class="row">
+                        <%= quickField("memo", "ObsAgenda", "Mensagem informativa na agenda", 6, reg("ObsAgenda"), "", "", "") %>
                         <br>
-                            <%=quickfield("simpleSelect", "FornecedorID", "Empresa", 3, reg("FornecedorID"), "select id,NomeFornecedor from fornecedores where sysActive=1 order by NomeFornecedor", "NomeFornecedor", "") %>
-                            <%= quickField("text", "NomeSocial", "Nome Social", 6, reg("NomeSocial"), "", "", "") %>
-                            <%= quickfield("simpleSelect", "AbaProntuario", "Aba do Prontuário", 3, reg("AbaProntuario"), "select '' id, 'Dados Principais' Descricao UNION ALL select 'abaForms', 'Anamneses e Evoluções' UNION ALL select 'abaTimeline', 'Linha do Tempo'", "Descricao", "semVazio") %>
-                        </div>
-                        <br>
-                        <div class="row">
-
-                            <%if session("admin")=1 then
-                            AgendaProfissionais = reg("AgendaProfissionais")
-                            %>
-                                <%=quickField("multiple", "AgendaProfissionais", "Acesso as agendas dos profissionais", 4, AgendaProfissionais, "select id, NomeProfissional from profissionais where ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
-                            <%end if%>
-
-                            <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
-
-                            <%'= quickField("simpleSelect", "PlanoContaID", "Plano de Contas", 3, "", "select id,Name from sys_financialexpensetype where sysActive=1 order by Name", "Name", "") %>
-
-                        </div>
-                        <div class="row">
-                            <div class='col-md-5'>
-                                <%=quickField("simpleCheckbox", "NaoExibirAgenda", "Não exibir o profissional na agenda", 12, reg("NaoExibirAgenda"), "", "", "")%>
-
-                                <% IF session("admin")=1 THEN %>
-                                  <%=quickField("simpleCheckbox", "auditor", "Este profissional é auditor", 12,reg("auditor"), "", "", "")%>
-                                <% ELSE %>
-                                    <input type="hidden" value="<%=reg("auditor")%>" name="auditor">
-                                <% END IF %>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <%= quickField("memo", "ObsAgenda", "Mensagem informativa na agenda", 6, reg("ObsAgenda"), "", "", "") %>
-                            <br>
-                            <div class="col-md-6">
-                            <%call Subform("profissionaissubespecialidades", "ProfissionalID", request.QueryString("I"), "frm")%>
-
-                                <div id="block-programas-saude"></div>
-                            </div>
+                        <div class="col-md-6">
+                            <%call Subform("profissionaissubespecialidades", "ProfissionalID", req("I"), "frm")%>
+                            <div id="block-programas-saude"></div>
                         </div>
                     </div>
                 </div>
-                    </div>
+            </div>
                 </div>
+            </div>
 
             
             </form>
@@ -314,13 +386,62 @@ end if
 <script type="text/javascript">
 $(document).ready(function(e) {
 	<%call formSave("frm", "save", "")%>
-});
 
+    const $coordsInput = $('#Coordenadas');
+
+    var coords = $coordsInput.val();
+    var isSelected = false;
+    var tried = 0;
+
+    if (coords) {
+        const [latitude, longitude] = coords.split(',');
+        pullMap({ latitude, longitude });
+    }
+
+    $coordsInput.on('keyup', function () {
+        const changedCoords = $coordsInput.val();
+        const coordsArray = changedCoords.split(',');
+
+        $coordsInput.val(changedCoords.replace(' ', ''));
+
+        if (coordsArray.length === 2) {
+            const [latitude, longitude] = coordsArray;
+            pullMap({ latitude, longitude });
+        } else {
+            $('#coords-iframe').remove();
+        }
+    });
+
+    $coordsInput.on('focus', function () {
+        if (tried < 2 && !isSelected) {
+            getCoords()
+                .then(coords => {
+                    const { latitude, longitude } = coords;
+                    pullMap({ latitude, longitude });
+                    isSelected = true;
+                })
+                .catch(error => {
+                    console.error(error);
+
+                    new PNotify({
+                        title: 'Erro de Geolocalização',
+                        text: error,
+                        type: 'danger',
+                        delay: 6000
+                    });
+
+                    tried++;
+                });
+        }
+    });
+});
 
 $("#Cep").keyup(function(){
 	getEndereco();
 });
+
 var resultadoCEP
+
 function getEndereco() {
 //alert()
 //	alert(($("#Cep").val() *= '_'));
@@ -338,6 +459,46 @@ function getEndereco() {
 			}
 		});				
 	}			
+}
+
+function pullMap(position) {
+    const $coordsMap = $('#coords-map');
+    const { latitude, longitude } = position;
+    const googleKey = 'AIzaSyCz2FUHAQGogZ13ajRNE3UQBCfdo-igcDc';
+
+    $('#coords-iframe').remove();
+
+    $coordsMap.html(`
+        <iframe 
+            id="coords-iframe"
+            src="https://www.google.com/maps/embed/v1/place?key=${googleKey}&q=${latitude},${longitude}"  
+            style="border:0; height: 450; width: 100%;" 
+            allowfullscreen="" 
+            loading="lazy"
+        >
+        </iframe>
+    `);
+}
+
+function getCoords() {
+    return new Promise(function (resolve, reject) {
+        if ('geolocation' in navigator) {
+            // get current geolocation position
+            navigator.geolocation.getCurrentPosition(
+                // when allowed
+                function (position) {
+                    const { latitude, longitude } = position.coords;
+                    resolve({ latitude, longitude });
+                },
+                // when not allowed
+                function () {
+                    reject('Você não permitiu o navegador acessar sua geolocalização.');
+                }
+            );
+        } else {
+            reject('Seu navegador não tem suporte para geolocalização.')
+        }
+    });
 }
 
 function esps(A, E){
@@ -363,7 +524,7 @@ $(document).ready(function () {
 <script type="text/javascript">
 
 <%
-Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto"
+Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto"
 %>
 function removeFoto(){
 	if(confirm('Tem certeza de que deseja excluir esta imagem?')){

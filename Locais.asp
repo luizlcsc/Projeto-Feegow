@@ -1,15 +1,15 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
 <%
-call insertRedir(request.QueryString("P"), request.QueryString("I"))
-set reg = db.execute("select * from "&req("P")&" where id="&request.QueryString("I"))
+call insertRedir(req("P"), req("I"))
+set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 %>
 <br />
 <div class="panel">
     <div class="panel-body">
         <form method="post" id="frm" name="frm" action="save.asp">
-            <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
-            <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+            <input type="hidden" name="I" value="<%=req("I")%>" />
+            <input type="hidden" name="P" value="<%=req("P")%>" />
             <%=header(req("P"), "Cadastro de Local de Atendimento", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
             <div class="row">
                 <%=quickField("text", "NomeLocal", "Nome do Local", 4, reg("NomeLocal"), "", "", " required")%>

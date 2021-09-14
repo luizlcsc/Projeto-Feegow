@@ -1,5 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
-<%'=request.form() %>
+
 
 <script type="text/javascript">
     $("#LocalPre").val("");
@@ -57,6 +57,17 @@ if session("RepSol")<>"" then
 	</div>
 	<%
 end if
+
+Data = ref("hData")
+
+if Data = "" then
+    Data = date()
+end if
+
+DiaSemana = weekday(Data)
+Mes = month(Data)
+Especialidades = ref("Especialidade")
+ProcedimentoID = ref("filtroProcedimentoID")
 %>
 
 <script type="text/javascript">
@@ -65,7 +76,7 @@ end if
         $(".crumb-icon a span").attr("class", "fa fa-calendar");
         $(".crumb-link").replaceWith("");
         $(".crumb-trail").removeClass("hidden");
-        $(".crumb-trail").html("<%=(formatdatetime(ref("hData"),1))%>");
+        $(".crumb-trail").html("<%=(formatdatetime(Data,1))%>");
         $("#rbtns").html("");
     }
     crumbAgenda();
@@ -75,12 +86,6 @@ end if
     <tr>
 
 <%
-Data = ref("hData")
-DiaSemana = weekday(Data)
-Mes = month(Data)
-Especialidades = ref("Especialidade")
-ProcedimentoID = ref("filtroProcedimentoID")
-
 
 RemarcacaoID= session("RemSol")
 
@@ -238,19 +243,12 @@ if instr(refLocais, "UNIDADE_ID")>0 then
 end if
 
 if aut("ageoutunidadesV")=0 and ref("Locais")="" then
-    tipoUsuario = "profissionais"
-    if lcase(session("table"))="funcionarios" then
-        tipoUsuario = "funcionarios"
-    end IF
-
-    set uniProf = db.execute("SELECT Unidades FROM "&tipoUsuario&" WHERE id="&session("idInTable"))
-    if not uniProf.eof then
-        uniWhere = "null"
-        if Len(uniProf("unidades"))>0 then
-            uniWhere = replace(uniProf("unidades"),"|","")
-         end if
+    uniWhere = "null"
+    unidadesUsuario = session("Unidades")
+    if Len(unidadesUsuario)>0 then
+        uniWhere = replace(unidadesUsuario,"|","")
+     end if
     sqlUnidades = " AND t.LocalID IN (select concat(l.id) from locais l where l.UnidadeID IN ("& uniWhere &")) "
-    end if
 end if
 
 
@@ -309,6 +307,13 @@ else
             end if
          end if
     end if
+
+    set sysConf = db.execute("select * from sys_config")
+    
+    if sysConf("ConfigGeolocalizacaoProfissional")="S" and recursoAdicional(39)=4 and sqlProfissionais&"" = "" and req("R") = "0" then
+        sqlProfissionais = " AND p.id IN (0)"
+    end if
+
 end if
 
 if ref("Convenio")<>"" then
@@ -321,17 +326,36 @@ if ref("Convenio")<>"" then
     sqlConveniosGrade = " AND (ISNULL(Convenios) OR Convenios LIKE '' "& loopConveniosGrade &") "
 end if
 
+sqlProgramas      = ""
+sqlProgramasGrade = ""
+leftProgramas     = ""
+if ref("Programas")<>"" then
+    splProgs      = split(ref("Programas"), ", ")
+    strProgProf   = ""
+    strProgGrade  = ""
+    leftProgramas = " LEFT JOIN profissionaisprogramas profp ON p.id = profp.ProfissionalID and profp.sysActive = 1  "
+    for i=0 to ubound(splProgs)
+        strProgProf = strProgProf & "'"& replace(splProgs(i)&"", "|", "") &"'"
+        if i < ubound(splProgs) then
+            strProgProf = strProgProf & ", "
+        end if
+        strProgGrade = strProgGrade & " OR Programas LIKE '%"& splProgs(i) &"%'"
+    next
+    sqlProgramas      = " AND profp.ProgramaID IN(" & strProgProf & ") "
+    sqlProgramasGrade = " AND (ISNULL(Programas) OR Programas = '' "& strProgGrade &") "
+end if
+
 sql = ""
 
 sqlOrder = " ORDER BY NomeProfissional"
 if session("Banco") = "clinic935" then
     sqlOrder = " ORDER BY OrdemAgenda DESC"
 end if
-sql = "select t.ProfissionalID, p.EspecialidadeID, t.LocalID, IF (p.NomeSocial IS NULL OR p.NomeSocial='', p.NomeProfissional, p.NomeSocial) NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, ProfissionalID, LocalID from assfixalocalxprofissional WHERE HoraDe !='00:00:00' AND DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&") "&sqlProcedimentosGrade&sqlEspecialidadesGrade&sqlConveniosGrade&") UNION ALL select '', ProfissionalID, LocalID from assperiodolocalxprofissional WHERE DataDe<="& mydatenull(Data) &" and DataA>="& mydatenull(Data) &sqlEspecialidadesGrade&sqlConveniosGrade&") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda))  "& sqlEspecialidadesSel & sqlProfissionais & sqlConvenios & sqlProfesp & sqlGradeEspecialidade & sqlUnidades &" GROUP BY t.ProfissionalID"&sqlOrder
+sql = "select t.ProfissionalID, p.EspecialidadeID, t.LocalID, IF (p.NomeSocial IS NULL OR p.NomeSocial='', p.NomeProfissional, p.NomeSocial) NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, ProfissionalID, LocalID from assfixalocalxprofissional WHERE HoraDe !='00:00:00' AND DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&") "&sqlProcedimentosGrade&sqlEspecialidadesGrade&sqlConveniosGrade&sqlProgramasGrade&") UNION ALL select '', ProfissionalID, LocalID from assperiodolocalxprofissional WHERE DataDe<="& mydatenull(Data) &" and DataA>="& mydatenull(Data) &sqlEspecialidadesGrade&sqlConveniosGrade&") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp & leftProgramas &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda))  "& sqlEspecialidadesSel & sqlProfissionais & sqlConvenios & sqlProgramas & sqlProfesp & sqlGradeEspecialidade & sqlUnidades &" GROUP BY t.ProfissionalID"&sqlOrder
 
-sqlVerme = "select t.FrequenciaSemanas, t.InicioVigencia, t.FimVigencia, t.ProfissionalID, p.EspecialidadeID, t.LocalID, p.NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, FrequenciaSemanas, InicioVigencia, FimVigencia, ProfissionalID, LocalID, Procedimentos from assfixalocalxprofissional WHERE DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR (DATE_FORMAT(InicioVigencia ,'%Y-%m-01') <= "&mydatenull(Data)&")) AND (FimVigencia IS NULL OR (DATE_FORMAT(FimVigencia ,'%Y-%m-30') >= "&mydatenull(Data)&" )))) t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda)) "&sqlProcedimentosLocal&sqlEspecialidadesSel & sqlConvenios & sqlProfissionais & sqlGradeEspecialidade &sqlProfesp & sqlUnidades &" "
+sqlVerme = "select t.FrequenciaSemanas, t.InicioVigencia, t.FimVigencia, t.ProfissionalID, p.EspecialidadeID, t.LocalID, p.NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, FrequenciaSemanas, InicioVigencia, FimVigencia, ProfissionalID, LocalID, Procedimentos from assfixalocalxprofissional WHERE DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR (DATE_FORMAT(InicioVigencia ,'%Y-%m-01') <= "&mydatenull(Data)&")) AND (FimVigencia IS NULL OR (DATE_FORMAT(FimVigencia ,'%Y-%m-30') >= "&mydatenull(Data)&" )))) t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp & leftProgramas &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda)) "&sqlProcedimentosLocal&sqlEspecialidadesSel & sqlConvenios & sqlProgramas & sqlProfissionais & sqlGradeEspecialidade &sqlProfesp & sqlUnidades &" "
 
-sqlVermePer = "select t.DataDe, t.DataA, t.ProfissionalID, p.EspecialidadeID, t.LocalID, p.SomenteConvenios, t.procedimentos "& fieldEsp &" from (select ProfissionalID, LocalID, DataDe, DataA, procedimentos from assperiodolocalxprofissional WHERE DataDe>="& mydatenull( DiaMes("P", Data ) )&" AND DataA<="& mydatenull( DiaMes("U", Data) ) &") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda)) "& sqlProcedimentosLocal & sqlEspecialidadesSel & sqlConvenios & sqlProfissionais & sqlProfesp & sqlUnidades
+sqlVermePer = "select t.DataDe, t.DataA, t.ProfissionalID, p.EspecialidadeID, t.LocalID, p.SomenteConvenios, t.procedimentos "& fieldEsp &" from (select ProfissionalID, LocalID, DataDe, DataA, procedimentos from assperiodolocalxprofissional WHERE DataDe>="& mydatenull( DiaMes("P", Data ) )&" AND DataA<="& mydatenull( DiaMes("U", Data) ) &") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp & leftProgramas &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda)) "& sqlProcedimentosLocal & sqlEspecialidadesSel & sqlConvenios & sqlProgramas & sqlProfissionais & sqlProfesp & sqlUnidades
 
 sql = replace(sql, "[DiaSemana]", DiaSemana)
 if session("Banco")="clinic5760" then
@@ -344,7 +368,6 @@ if comGrade.eof then
     <div class="alert alert-warning text-center mt20"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>
     <%
 end if
-
 cProf = 0
 while not comGrade.eof
     set pesp = db.execute("select esp.especialidade from especialidades esp where esp.id="& treatvalnull(comGrade("EspecialidadeID"))&" or esp.id in(select group_concat(pe.EspecialidadeID) from profissionaisespecialidades pe where ProfissionalID in ("&treatvalzero(comGrade("ProfissionalID"))&"))")
@@ -375,7 +398,9 @@ while not comGrade.eof
              <td valign="top" align="center" id="pf<%= comGrade("ProfissionalID") %>"><i class="fa fa-circle-o-notch fa-spin"></i></td>
 
             <script type="text/javascript">
-                $.post("namAgenda.asp", {
+                window.requestsAgenda = window.requestsAgenda || [];
+                
+                window.requestsAgenda.push($.post("namAgenda.asp", {
                     Especialidades: '<%= Especialidades %>',
                     ProfissionalID: '<%= comGrade("ProfissionalID") %>',
                     Data: '<%= Data %>',
@@ -386,7 +411,15 @@ while not comGrade.eof
                     Locais: "<%= ref("Locais") %>",
                     ObsAgenda: "<%= ObsAgenda %>",
                     strAB: '<%= strAB %>'
-                }, function (data) { $('#pf<%= comGrade("ProfissionalID") %>').html(data) });
+                }, function (data) {
+                        $('#pf<%= comGrade("ProfissionalID") %>').html(data)
+
+                        let conteudo = $($('#contQuadro  table  table  tr')[0]).text();
+                        conteudo = conteudo.trim();
+                        if(conteudo === ""){
+                            $('#contQuadro').html(`<div class="alert alert-warning text-center mt20"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>`)
+                        }
+                }));
             </script>
 
 
@@ -422,7 +455,7 @@ set comGrade=nothing
 	    'repete o sql de cima
 
         set vcaGrade = db.execute( replace(sqlVerme, "[DiaSemana]", cDiaSemana) )
-        response.write("//"&sqlVerme)
+        'response.write("//"&sqlVerme)
 	    while not vcaGrade.eof
 	            FrequenciaSemanas= vcaGrade("FrequenciaSemanas")
        	        InicioVigencia = vcaGrade("InicioVIgencia")&""

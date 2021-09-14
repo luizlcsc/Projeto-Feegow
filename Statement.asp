@@ -15,7 +15,7 @@
 
 <script language="javascript">
 
-//getStatement('<%=request.QueryString("T")%>', '', '', '');
+//getStatement('<%=req("T")%>', '', '', '');
 
 <!--#include file="financialCommomScripts.asp"-->
 

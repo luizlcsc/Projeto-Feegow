@@ -591,7 +591,7 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                        modalButtons.prop('disabled', '');
                      });
                 }, function(rejectReason) {
-                    console.log(rejectReason);
+                    // console.log(rejectReason);
                 }).finally(function() {
                     modalButtons.prop('disabled', '');
                 });
@@ -604,7 +604,7 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                       modalButtons.prop('disabled', '');
                     });
                 }, function(rejectReason) {
-                    console.log(rejectReason);
+                    // console.log(rejectReason);
                 }).finally(function() {
                     modalButtons.prop('disabled', '');
                 });
@@ -1251,7 +1251,7 @@ function validaProcedimento(id,value){
             }
         }
     });
-    console.log(id,value);
+    // console.log(id,value);
 }
 
 function GeraGuia(TipoGuia) {

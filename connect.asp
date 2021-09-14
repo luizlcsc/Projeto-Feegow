@@ -1,4 +1,7 @@
-﻿<!--#include file="Classes/Connection.asp"--><%
+﻿<!--#include file="functions.asp"-->
+<!--#include file="Classes/Connection.asp"-->
+
+<%
 Session.Timeout=600
 session.LCID=1046
 if session("Servidor")="" then
@@ -353,29 +356,7 @@ function rep(Val)
 	end if
 end function
 
-function ref(Val)
-	ref = replace(replace(request.Form(Val), "'", "''"), "\", "\\")
-end function
 
-function req(Val)
-	req = replace(request.QueryString(Val), "'", "''")
-end function
-
-function reqf(P)
-    if req(P)<>"" then
-        reqf = req(P)
-    else
-        reqf = ref(P)
-    end if
-end function
-
-function refNull(Val)
-	if request.Form(Val)="" then
-		refNull = "NULL"
-	else
-		refNull = ref(Val)
-	end if
-end function
 
 function treatVal(Val)
 	treatVal = replace(Val, ".", "")
@@ -546,11 +527,11 @@ function selectCurrentAccounts(id, associations, selectedValue, others)
 	<%
 end function
 
-function simpleSelectCurrentAccounts(id, associations, selectedValue, others)
+function simpleSelectCurrentAccounts(id, associations, selectedValue, others, selectText)
 	splAssociations = split(associations,", ")
 	%>
 		<select class="form-control select2-single" id="<%= id %>" name="<%= id %>"<%= others %>>
-			<option value="">&nbsp;</option>
+			<option value=""><%=selectText%> &nbsp;</option>
 			<%
 			for t=0 to uBound(splAssociations)
 				if splAssociations(t)="0" then
@@ -1035,8 +1016,12 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             <%
 
         case "multipleModal"
-            btn="<button type='button' class='btn btn-default btn-block' onclick='openComponentsModal(`quickField_multipleModal.asp?I="&fieldName&"`, {v: $(""#"&fieldName&""").val()}, `Gerenciar "&label&"`, true, function(data){closeComponentsModal(true)})'> "&_
-                    "<i class='fa fa-plus'></i> "&label&" "&_
+            'Envio de Ações Edit,Insert ao clicar no salvar do modal. Ex.: P=paginaDaAcao&acao=update&refresh=true
+            if columnToShow<>"" then
+                acaoSQL = "&"&columnToShow
+            end if
+            btn="<button type='button' id='btn_"&fieldName&"' name='btn_"&fieldName&"' class='btn btn-default btn-block' onclick='openComponentsModalPost(`quickField_multipleModal.asp?I="&fieldName&acaoSQL&"`, {v: $(""#"&fieldName&""").val()}, `Gerenciar "&label&"`, true, function(data){closeComponentsModal(true)})'> "&_
+                    "<i class='fa fa-plus'></i> "&label&" <span></span>"&_
                 "</button>" 
 
             'CONDIÇÃO PARA O USO DA VARIÁVEL fieldValue
@@ -2128,11 +2113,11 @@ function insertRedir(tableName, id)
             qsCmd = "&cmd="&req("cmd")
         end if
 
-		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&request.QueryString("Pers") &strLancto & strApenasNaoFaturados & strSolicitantes& qsCmd)
+		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&req("Pers") &strLancto & strApenasNaoFaturados & strSolicitantes& qsCmd)
 	else
 		set data = db.execute("select * from "&tableName&" where id="&id)
 		if data.eof then
-			response.Redirect("?P="&tableName&"&I=N&Pers="&request.QueryString("Pers"))
+			response.Redirect("?P="&tableName&"&I=N&Pers="&req("Pers"))
 		end if
 	end if
 end function
@@ -2913,11 +2898,11 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		    rbtns = rbtns & "<button class='btn btn-info btn-sm' onclick='imprimirReciboInvoice()' type='button'><i class='fa fa-print bigger-110'></i></button>"
 		else
 			nomePerm = "contasareceber"
-		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
+		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm rgrec' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
 
             set vcaCont = db.execute("select id, NomeModelo from contratosmodelos WHERE (sysActive=1) AND (UrlContrato='' OR UrlContrato IS NULL)")
             if not vcaCont.eof then
-                rbtns = rbtns & " <div class='btn-group'><button class='btn btn-info btn-sm dropdown-toggle' data-toggle='dropdown'  title='Adicionar Contrato'><i class='fa fa-file'></i></button>"
+                rbtns = rbtns & " <div class='btn-group contratobloqueio'><button class='btn btn-info btn-sm dropdown-toggle contratobt'><i class='fa fa-file'></i></button>"
                 rbtns = rbtns & "<ul class='dropdown-menu dropdown-info pull-right' style='overflow-y: scroll; max-height: 400px;'>"
                 while not vcaCont.eof
                     rbtns = rbtns & "<li><a href='javascript:addContrato("&vcaCont("id")&", "&hid&", $(\""#AccountID\"").val())'><i class='fa fa-plus'></i> "&vcaCont("NomeModelo")&"</a></li>"
@@ -3283,7 +3268,6 @@ executeInReadOnly = False
     if tipoLog = "select" then
         executeInReadOnly = True
     end if
-
     if executeInReadOnly and False then
         set db_execute = dbReadOnly.execute(sqlStatement)
     else
@@ -3731,7 +3715,7 @@ function replacePagto(txt, Total)
 	on error resume next
 	'response.Write(txt&"<hr>")
 	txt = trim(txt&" ")
-	'primeiro separa todas as tags que existem na expressao
+	'priameiro separa todas as tags que existem na expressao
 	spl = split(txt, "{{")
 	for i=0 to ubound(spl)
 		if instr(spl(i), "}}")>0 then
@@ -3801,20 +3785,47 @@ private function geraRecorrente(i)
 end function
 
 function statusTarefas(De, Para)
-'    response.write("select id from sys_users where id="&De&" or id in("&replace(Para, "|", "")&")")
-    set puser = db.execute("select id from sys_users where id="&De&" or id in("&replace(Para, "|", "")&")")
+    if instr(Para, "-") > 0 then
+
+        UserIdSpl = split(replace(Para, "|", ""), ",")
+
+        for j=0 to ubound(UserIdSpl)
+            itemSPL = UserIdSpl(j)
+
+            if instr(itemSPL, "-") > 0 then
+                itemSPL = replace(itemSPL,"-", "")
+                UsuariosIdSQL = "SELECT GROUP_CONCAT('|',Usuarios,'|') Usuarios FROM( "&_
+                                "    SELECT up.id Usuarios "&_
+                                "    FROM profissionais p "&_
+                                "    LEFT JOIN sys_users up ON up.idInTable=p.id "&_
+                                "    WHERE p.CentroCustoID = "&itemSPL&_
+                                "    UNION ALL "&_
+                                "    SELECT uf.id  "&_
+                                "    FROM funcionarios f "&_
+                                "    LEFT JOIN sys_users uf ON uf.idInTable=f.id "&_
+                                "    WHERE f.CentroCustoID = "&itemSPL&_
+                                " ) AS t"
+
+                set UsuariosID = db.execute(UsuariosIdSQL)
+                if j = 0 then
+                    itemID = UsuariosID("Usuarios")
+                else
+                    itemID = itemID&","&UsuariosID("Usuarios")
+                end if
+            else
+                itemID = itemID&",|"&trim(itemSPL)&"|"
+            end if
+        next
+    else
+        itemID = Para
+    end if
+'   Retirando valores de grupo e colocando id da tabela sys_User no campo Para da tabela tarefas
+    db.execute("update tarefas set Para='"&itemID&"' where id="&req("I"))
+'    response.write("select id from sys_users where id="&De&" or id in("&replace(itemID, "|", "")&")")
+    set puser = db.execute("select id from sys_users where id="&De&" or id in("&replace(itemID, "|", "")&")")
     while not puser.eof
         notifTarefas = ""
- '       response.write("select id, staPara from tarefas where De="&puser("id")&" and staPara in('Respondida')")
-        'set tarDe = db.execute("select id, staPara from tarefas where De="&puser("id")&" and staPara in('Respondida')")
-       ' while not tarDe.eof
-        '    notifTarefas = notifTarefas & "|"& tarDe("id") & "," & tarDe("staPara")
-        'tarDe.movenext
-        'wend
-        'tarDe.close
-        'set tarDe = nothing
-
-        'set tarPara = db.Execute("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' and staDe in('Pendente', 'Enviada')")
+ '       response.write("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' AND staPara <> 'Finalizada' ")
         set tarPara = db.Execute("select id, DtPrazo, HrPrazo from tarefas where Para like '%|"& puser("id") &"|%' AND staPara <> 'Finalizada' ")
         while not tarPara.eof
             notifTarefas = notifTarefas & "|" & tarPara("id") & "," & tarPara("DtPrazo") & " " & ft(tarPara("HrPrazo"))
@@ -3823,7 +3834,7 @@ function statusTarefas(De, Para)
         tarPara.close
         set tarPara = nothing
 
-'        response.write("update sys_users set notifTarefas='"&notifTarefas&"' where id="&puser("id"))
+    '    response.write("update sys_users set notifTarefas='"&notifTarefas&"' where id="&puser("id"))
         db_execute("update sys_users set notifTarefas='"&notifTarefas&"' where id="&puser("id"))
     puser.movenext
     wend
@@ -3980,7 +3991,7 @@ private function statusPagto(AgendamentoID, PacienteID, Datas, rdValorPlano, Val
     '1 = ok
 
     splsDatas = split(Datas, ", ")
-    statusEnvolvidos = "2, 3, 4, 5, 12, 101, 102, 103, 104, 105, 106"
+    statusEnvolvidos = "2, 3, 4, 5, 101, 102, 103, 104, 105, 106"
     for ida=0 to ubound(splsDatas)
         sData = splsDatas(ida)
         if isdate(sData) and not isnull(sData) and PacienteID&""<>"" and isnumeric(PacienteID&"") then
@@ -4184,7 +4195,7 @@ function getEspera(Profissionais)
         eProfissional = trim(splProfs(y))
         if eProfissional<>"" then
             if eProfissional<>"0" then
-                db.execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate() and StaID IN (4) and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
+                db.execute("update sys_users set Espera = (select count(id) total from agendamentos where Data=curdate()  and sysActive=1 and StaID IN (4) and ProfissionalID="& eProfissional &") where `Table`='profissionais' and `idInTable`="& eProfissional )
             end if
         end if
     next
@@ -4464,7 +4475,7 @@ private function calcValPosicao(QuantidadeAtual, ValorAtual, QuantidadeInserida,
 end function
 
 'private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID, Individualizar)
-private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOriginal, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs, InvoiceID)
+private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOriginal, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs, InvoiceID, Motivo)
     set prod = db.execute("select * from produtos where id="&P)
     ApresentacaoQuantidade = prod("ApresentacaoQuantidade")
     if isnull(ApresentacaoQuantidade) or ApresentacaoQuantidade<=0 then
@@ -4508,6 +4519,9 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
             if FornecedorID="" or FornecedorID="0" then
                 erro = "Selecione um fornecedor."
             end if
+            if Motivo="" then
+                erro = "Selecione um Motivo."
+            end if
         end if
         if Tipo="S" then
             if PacienteID="" or PacienteID="0" then
@@ -4529,7 +4543,8 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
 	    <%
     else
         if tipoResultado<>"ignore" then
-	        db_execute("insert into estoquelancamentos (ProdutoID, EntSai, Quantidade, TipoUnidadeOriginal, TipoUnidade, Data, FornecedorID, Lote, Validade, NF, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, sysUser, QuantidadeConjunto, QuantidadeTotal, LocalizacaoID, ItemInvoiceID, AtendimentoID, CBID, posicaoAnte, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs) values ("&P&", '"&Tipo&"', "&treatvalzero(Quantidade)&", '"& TipoUnidadeOriginal &"', '"&TipoUnidade&"', "&mydatenull(Data)&", '"& FornecedorID &"', '"&Lote&"', "&mydatenull(Validade)&", '"&NotaFiscal&"', "&treatvalzero(Valor)&", '"&UnidadePagto&"', '"&Observacoes&"', '"&Responsavel&"', "& treatvalnull(PacienteID) &", '"& Lancar &"', "&session("User")&", "&treatvalzero(QuantidadeConjunto)&", "&treatvalzero(UnidadesTentadas)&", "& treatvalzero( LocalizacaoID ) &", "& treatvalnull( ItemInvoiceID ) &", "& treatvalnull( AtendimentoID ) &", '"& CBID &"', (select group_concat( concat(id, '=', concat(Quantidade, '|', ValorPosicao)) SEPARATOR ', ') from estoqueposicao where ProdutoID="& P &" and Quantidade<>0), "& treatvalnull(ProdutoInvoiceID) &", '"& ResponsavelOriginal &"', "& treatvalzero(LocalizacaoIDOriginal) &", '"& Individualizar &"', '"& CBIDs &"')")
+
+	        db_execute("insert into estoquelancamentos (ProdutoID, EntSai, Quantidade, TipoUnidadeOriginal, TipoUnidade, Data, FornecedorID, Lote, Validade, NF, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, sysUser, QuantidadeConjunto, QuantidadeTotal, LocalizacaoID, ItemInvoiceID, AtendimentoID, CBID, posicaoAnte, ProdutoInvoiceID, ResponsavelOriginal, LocalizacaoIDOriginal, Individualizar, CBIDs, MotivoID) values ("&P&", '"&Tipo&"', "&treatvalzero(Quantidade)&", '"& TipoUnidadeOriginal &"', '"&TipoUnidade&"', "&mydatenull(Data)&", '"& FornecedorID &"', '"&Lote&"', "&mydatenull(Validade)&", '"&NotaFiscal&"', "&treatvalzero(Valor)&", '"&UnidadePagto&"', '"&Observacoes&"', '"&Responsavel&"', "& treatvalnull(PacienteID) &", '"& Lancar &"', "&session("User")&", "&treatvalzero(QuantidadeConjunto)&", "&treatvalzero(UnidadesTentadas)&", "& treatvalzero( LocalizacaoID ) &", "& treatvalnull( ItemInvoiceID ) &", "& treatvalnull( AtendimentoID ) &", '"& CBID &"', (select group_concat( concat(id, '=', concat(Quantidade, '|', ValorPosicao)) SEPARATOR ', ') from estoqueposicao where ProdutoID="& P &" and Quantidade<>0), "& treatvalnull(ProdutoInvoiceID) &", '"& ResponsavelOriginal &"', "& treatvalzero(LocalizacaoIDOriginal) &", '"& Individualizar &"', '"& CBIDs &"',"& treatvalnull(Motivo) &")")
             set pultLancto = db.execute("select id from estoquelancamentos order by id desc limit 1")
             LancamentoID = pultLancto("id")
         end if
@@ -4641,6 +4656,14 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
                     end if
                 end if
             else
+
+                id = req("PosicaoID")
+                if id&"" <> "" then
+                    'Dando baixa no estoque quando é colocado um paciente na saida
+                    set EstoquePosicaoSQL = db_execute("SELECT Quantidade FROM estoqueposicao WHERE id="&req("PosicaoID"))
+                    db_execute("update estoqueposicao set Quantidade=(Quantidade-"&treatvalzero(Quantidade)&") where id="&req("PosicaoID"))
+
+                end if
                 'mas ele tem que achar essa posicao de saida pq tem que ter saido de algum lugar... caso contrario eh sql errado
             '   call alertar(0, "nao achou essa posicao de saida")
              '  call alertar(0, sqlPosSaida)
@@ -5051,7 +5074,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
             <%end if%>
 
             <div class="btn-group mt5">
-                <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print bigger-110"></i></button>
+                <button type="button" class="btn btn-info btn-xs dropdown-toggle rgrec" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print bigger-110"></i></button>
                 <ul class="dropdown-menu dropdown-info pull-right">
                     <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Protocolo')"><i class="fa fa-plus"></i> Protocolo de laudo </a></li>
                     <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Impresso')"><i class="fa fa-plus"></i> Impresso </a></li>
@@ -5163,7 +5186,7 @@ private function refazPosicao(ProdutoID)
        '         PosicaoES = lanctos("PosicaoS")
         '    end if
             'LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidade, Quantidade, Data, FornecedorID, Lote, Validade, NotaFiscal, Valor, UnidadePagto, Observacoes, Responsavel, PacienteID, Lancar, LocalizacaoID, ItemInvoiceID, AtendimentoID, tipoResultado, CBID, ProdutoInvoiceID)
-            call LanctoEstoque(lanctos("id"), PosicaoES, ProdutoID, lanctos("EntSai"), lanctos("TipoUnidadeOriginal"), lanctos("TipoUnidade"), lanctos("Quantidade"), lanctos("Data"), lanctos("FornecedorID"), lanctos("Lote"), lanctos("Validade"), lanctos("NF"), lanctos("Valor"), lanctos("UnidadePagto"), lanctos("Observacoes"), lanctos("Responsavel"), lanctos("PacienteID"), lanctos("Lancar"), lanctos("LocalizacaoID"), lanctos("ItemInvoiceID"), lanctos("AtendimentoID"), "ignore", lanctos("CBID"), lanctos("ProdutoInvoiceID"), lanctos("ResponsavelOriginal"), lanctos("LocalizacaoIDOriginal"), lanctos("Individualizar"), lanctos("CBIDs"),0)
+            call LanctoEstoque(lanctos("id"), PosicaoES, ProdutoID, lanctos("EntSai"), lanctos("TipoUnidadeOriginal"), lanctos("TipoUnidade"), lanctos("Quantidade"), lanctos("Data"), lanctos("FornecedorID"), lanctos("Lote"), lanctos("Validade"), lanctos("NF"), lanctos("Valor"), lanctos("UnidadePagto"), lanctos("Observacoes"), lanctos("Responsavel"), lanctos("PacienteID"), lanctos("Lancar"), lanctos("LocalizacaoID"), lanctos("ItemInvoiceID"), lanctos("AtendimentoID"), "ignore", lanctos("CBID"), lanctos("ProdutoInvoiceID"), lanctos("ResponsavelOriginal"), lanctos("LocalizacaoIDOriginal"), lanctos("Individualizar"), lanctos("CBIDs"),0,0)
         lanctos.movenext
         wend
         lanctos.close
@@ -5634,40 +5657,7 @@ function franquia(sqlfranquia)
     franquia = sqlfranquia
 end function
 
-function dd(variable)
-    description=""
-    variableType = TypeName(variable)
 
-    if variableType="Recordset" then
-        description = "["&chr(13)
-        j = 0
-        while not variable.eof
-            IF j <> 0 THEN
-                 description = description&str&","
-            END IF
-            j = j+1
-            i = 0
-            str = chr(32)&"{"
-            for each x in variable.Fields
-                i = i+1
-                str = str&chr(13)&chr(32)&chr(32)&""""&x.name&""":"""&replace(x.value&"","""","'")&""""
-                IF i < variable.Fields.Count THEN
-                    str = str&","
-                END IF
-            next
-            str = str&chr(13)&chr(32)&"}"
-        variable.movenext
-        wend
-
-        description = description&str&chr(13)&"]"
-
-    else
-        description = variable
-    end if
-
-    response.write("<pre>"&description&"</pre>")
-    Response.End
-end function
 
 function hasPermissaoTela(visualizar)
 
@@ -5695,4 +5685,104 @@ function iconMethod(PaymentMethodID, PaymentMethod, CD ,origem)
         end if
     end if
 end function
+
+
+function invoicePaga(invoiceID)
+ 
+    invoicePaga =false
+ 
+set dadosInvoice = db.execute("SELECT SUM(m.ValorPago) valorPago, i.Value "&_
+" FROM sys_financialinvoices i"&_
+" JOIN sys_financialmovement m ON m.InvoiceID = i.id "&_
+" WHERE i.id = "&invoiceID&_
+"")
+
+if not dadosInvoice.eof then
+if dadosInvoice("valorPago") => dadosInvoice("Value") then
+            invoicePaga =true
+end if
+end if
+ 
+end function
+
+function getConfAO(NomeConfig)
+    sqlVCA = "select * from aoconfig where NomeConfig='"& NomeConfig &"'"
+    set vca = db.execute(sqlVCA)
+    if vca.eof then
+        db.execute("insert into aoconfig set NomeConfig='"& NomeConfig &"'")
+        set vca = db.execute(sqlVCA)
+    end if
+    getConfAO = vca("Val")
+end function
+
+
+
+function getClientDataHora(UnidadeID)
+
+    HorarioVerao = ""
+    if UnidadeID=0 then
+        set getNome = db.execute("select FusoHorario, HorarioVerao from empresa")
+        if not getNome.eof then
+            FusoHorario = getNome("FusoHorario")
+            HorarioVerao = getNome("HorarioVerao")
+        end if
+    elseif UnidadeID>0 then
+        set getNome = db.execute("select FusoHorario, HorarioVerao from sys_financialcompanyunits where id="&session("UnidadeID"))
+        if not getNome.eof then
+            FusoHorario = getNome("FusoHorario")
+            HorarioVerao = getNome("HorarioVerao")
+        end if
+    end if
+
+    getClientDataHora = dateadd("h",FusoHorario + 3, now())
+end function
+
+function convertSimbolosHexadecimal(Texto)
+    Texto = replace(Texto, "►", "&#9658;")
+    Texto = replace(Texto, "→", "&#x279e;")
+    Texto = replace(Texto, "⇒", "&#8658;")
+    Texto = replace(Texto, "⇔", "&#8660;")
+    Texto = replace(Texto, "♦", "&#x2b27;")
+    Texto = replace(Texto, "≈", "&#8776;")
+
+    convertSimbolosHexadecimal = Texto
+
+end function
+
+'Verifica se tem permissão pelo Care Team do Paciente.
+'O usuário logado e o usuário especificado nos parâmetros
+'devem pertencer ao CareTeam do paciente.
+'   Parâmetros:
+'      SysUserID  - Id do profissional na tabela sys_user
+'      PacienteID - Id do paciente
+function autCareTeam(SysUserID, PacienteID)
+    autCareTeam = false
+
+    if lcase(session("table"))="profissionais"  then
+
+        set rsUser = db.execute("SELECT idInTable FROM sys_users WHERE id = '" & SysUserID & "' AND `Table` = 'profissionais' LIMIT 1")
+        if not rsUser.eof then
+
+            sqlCareTeam = "SELECT COUNT(*) AS cnt FROM pacientesprofissionais " &_
+                          "WHERE ProfissionalID IN ('" & session("idInTable")  & "', '" & rsUser("idInTable") & "') " &_
+                          "AND PacienteID = '" & PacienteID & "' AND sysActive = 1"
+
+            set rsCareTeam = db.execute(sqlCareTeam)
+            if not rsCareTeam.eof then
+                if cint(rsCareTeam("cnt")) = 2 then
+                    autCareTeam = true
+                end if
+            end if
+
+            rsCareTeam.close
+            set rsCareTeam=nothing
+        end if
+        rsUser.close
+        set rsUser=nothing
+
+    end if
+
+end function
+
+
 %>

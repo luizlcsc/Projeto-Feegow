@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
-DataDe = request.QueryString("DataDe")
-DataAte = request.QueryString("DataAte")
+DataDe = req("DataDe")
+DataAte = req("DataAte")
 
 if DataDe="" then
 	DataDe = formatdatetime( 1&"/"&month(date())&"/"&year(date()), 2)

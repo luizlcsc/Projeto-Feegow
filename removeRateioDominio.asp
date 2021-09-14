@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
-DominioID = request.QueryString("I")
+DominioID = req("I")
 
 set subs = db.execute("select * from rateiodominios where dominioSuperior="&DominioID)
 while not subs.eof

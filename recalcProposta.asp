@@ -29,9 +29,9 @@ for i=0 to ubound(spl)
 	end if
 	Quantidade = ccur(Quantidade)
 	ValorUnitario = ccur(ValorUnitario)
-	if instr(Desconto, ".") then 
+	if instr(Desconto, ".") and TipoDesconto <> "V" then 
 	
-	Desconto = ccur(Desconto)/10
+		Desconto = ccur(Desconto)/10
 
 	end if
 

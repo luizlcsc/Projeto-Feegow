@@ -21,7 +21,7 @@ function rep(Val)
 end function
 
 
-ConnString43 = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193.43;Database=cliniccentral;uid=root;pwd=pipoca453;"
+ConnString43 = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193.43;Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 Set db43 = Server.CreateObject("ADODB.Connection")
 db43.Open ConnString43
 
@@ -52,7 +52,7 @@ c = 0
 set l = db43.execute("select * from licencas")
 while not l.eof
     response.Flush()
-    ConnString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server="& l("Servidor") &";Database=cliniccentral;uid=root;pwd=pipoca453;"
+    ConnString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server="& l("Servidor") &";Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
     Set db = Server.CreateObject("ADODB.Connection")
     db.Open ConnString
 

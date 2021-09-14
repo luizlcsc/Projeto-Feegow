@@ -21,27 +21,27 @@ end function
 '2. recria as tabelas com comentário sistema e insere os dados
 '3. mostra o comparativo só das que não são sistema, para não conferir a toa
 '4. gera o arquivo de update e passa em todas as bases, ou de uma em uma
-if request.Form("MDatabase")<>"" then
-	session("MDatabase") = request.Form("MDatabase")
-	session("MServer") = request.Form("MServer")
-	session("MUser") = request.Form("MUser")
-	session("MPass") = request.Form("MPass")
-	session("Sistema")=request.Form("Sistema")
+if ref("MDatabase")<>"" then
+	session("MDatabase") = ref("MDatabase")
+	session("MServer") = ref("MServer")
+	session("MUser") = ref("MUser")
+	session("MPass") = ref("MPass")
+	session("Sistema")=ref("Sistema")
 end if
-if request.Form("DDatabase")<>"" then
-	session("DDatabase") = request.Form("DDatabase")
-	session("DServer") = request.Form("DServer")
-	session("DUser") = request.Form("DUser")
-	session("DPass") = request.Form("DPass")
+if ref("DDatabase")<>"" then
+	session("DDatabase") = ref("DDatabase")
+	session("DServer") = ref("DServer")
+	session("DUser") = ref("DUser")
+	session("DPass") = ref("DPass")
 end if
 
 
 if session("MDatabase")<>"" and session("DDatabase")<>"" then
-	ConnModelo = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database="&session("MDatabase")&";uid=root;pwd=pipoca453;"
+	ConnModelo = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database="&session("MDatabase")&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 	Set Modelo = Server.CreateObject("ADODB.Connection")
 	Modelo.Open ConnModelo
 	
-	ConnDestino = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database="&session("DDatabase")&";uid=root;pwd=pipoca453;"
+	ConnDestino = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=localhost;Database="&session("DDatabase")&";uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 	Set Destino = Server.CreateObject("ADODB.Connection")
 	Destino.Open ConnDestino
 

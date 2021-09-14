@@ -4,7 +4,7 @@
 
 
 
-$db = mysqli_connect('localhost', 'root', 'pipoca453', 'clinic'.$_GET['BancoID']);
+$db = mysqli_connect('localhost', getenv("FC_MYSQL_USER"), getenv("FC_MYSQL_PASSWORD"), 'clinic'.$_GET['BancoID']);
 
 
 

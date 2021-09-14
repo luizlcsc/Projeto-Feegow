@@ -36,6 +36,10 @@ function completaProfissionalSolicitante(id)
 		$("#NumeroNoConselhoSolicitante").val("<%=prof("DocumentoConselho")%>");
 		$("#UFConselhoSolicitante").val("<%=prof("UFConselho")%>");
         $("#CodigoCBOSolicitante").val("<%=CodigoTISS%>");
+		if($("#Cel1, #Email")){
+			$('#Cel1').val("<%=prof("Cel1")%>");
+			$('#Email').val("<%=prof("Email1")%>");
+		}
 		<%
 	end if
 end function
@@ -68,6 +72,7 @@ function completaConvenio(ConvenioID, PacienteID)
     MinimoDigitos = 0
     MaximoDigitos = 100
     TipoAtendimentoID = null
+    IndicacaoAcidenteID = null
 
 	set conv = db.execute("select *,coalesce(MinimoDigitos,0) as _MinimoDigitos,coalesce(NULLIF(MaximoDigitos,0),100) as _MaximoDigitos from convenios where id="&ConvenioID)
 	if not conv.eof then
@@ -75,6 +80,7 @@ function completaConvenio(ConvenioID, PacienteID)
         MinimoDigitos = conv("_MinimoDigitos")
         MaximoDigitos = conv("_MaximoDigitos")
         TipoAtendimentoID = conv("TipoAtendimentoID")
+		IndicacaoAcidenteID = conv("IndicacaoAcidenteID")
 
 
 	    if ref("tipo")="GuiaConsulta" and conv("NaoPermitirGuiaDeConsulta")=1 then
@@ -99,10 +105,15 @@ function completaConvenio(ConvenioID, PacienteID)
         end if
 
         if conv("SemprePrimeiraConsulta")=1 then
-        %>
-        $("#TipoConsultaID").val("1").attr("readonly","true");
-        $("#TipoConsultaID option:not(:selected)").prop('disabled', true);
-        <%
+			%>
+			$("#TipoConsultaID").val("1").attr("readonly","true");
+			$("#TipoConsultaID option:not(:selected)").prop('disabled', true);
+			<%
+		else
+			%>
+			$("#TipoConsultaID").val("").removeAttr('readonly');
+			$("#TipoConsultaID option:not(:selected)").prop('disabled', false);
+			<%
         end if
 
         if conv("BloquearAlteracoes")=1 then
@@ -162,6 +173,7 @@ function completaConvenio(ConvenioID, PacienteID)
 	$("#ValidadeCarteira").val("<%=Validade%>");
 	$("#Contratado").val("<%=Contratado%>");
 	$("#TipoAtendimentoID").val("<%=TipoAtendimentoID%>");
+	$("#IndicacaoAcidenteID").val("<%=IndicacaoAcidenteID%>");
 	$("#RegistroANS").val("<%=RegistroANS%>");
 
 	<%
@@ -293,7 +305,7 @@ function completaContratadoSolicitante(id, ConvenioID)
 			CodigoCNES = "9999999"
 			%>
             $("#tipoProfissionalSolicitanteI").prop("checked", true);
-			$("#ProfissionalSolicitanteID").val("<%=id%>");
+			$("#ProfissionalSolicitanteID").val("<%=id%>").trigger('change');
             $("#spanProfissionalSolicitanteI").css("display", "block");
             $("#spanProfissionalSolicitanteE").css("display", "none");
 			<%
@@ -356,6 +368,47 @@ function completaPaciente(id)
 			PlanoID = pac("PlanoID"&Numero)
 			call completaConvenio(pac("ConvenioID"&Numero), id)
 		end if
+		Nascimento = myDate(pac("Nascimento"))
+		%>
+			if($('#Peso', '#Altura', '#Idade', '#Sexo','#ValidadeCarteira')){
+				$('#Peso').val('<%=pac("Peso")%>');
+				$('#Altura').val('<%=pac("Altura")%>');
+
+				let Sexo = '<%=pac("Sexo")%>';
+				if(Sexo == '1'){
+					TextoSexo = 'Masculino';
+				}else if(Sexo == '2'){
+					TextoSexo = 'Feminino';
+				}else if(Sexo == '3'){
+					TextoSexo = 'Indefinido';
+				}else{
+					Sexo = ''
+					TextoSexo = 'Selecione'
+				}
+				$('#select2-Sexo-container').prop('title',TextoSexo);
+				$('#select2-Sexo-container').text(TextoSexo)
+				if(Sexo != ''){
+					$('#Sexo option[value='+Sexo+']').attr('selected', 'selected');
+				}else{
+					$('#Sexo option[value=""]').attr('selected', 'selected');
+				}
+				let nascimento = '<%=Nascimento%>';
+				if(nascimento != ''){
+					let dataNascimento = new Date(nascimento);
+					let hoje = new Date();
+					let anoAtual = hoje.getFullYear();
+					let anoNascimento = dataNascimento.getFullYear();
+					let idade = anoAtual - anoNascimento;
+					if(new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate()) < new Date(hoje.getFullYear(), dataNascimento.getMonth(), dataNascimento.getDate())){
+						idade--;
+					}
+					$('#Idade').val(idade);
+				}else{
+					$('#Idade').val('');
+				}
+				$('#ValidadeCarteira').val('<%=Validade%>')
+			}
+		<%
 	end if
 	%>
     $("#AtendimentoRN").val("<%=RecemNascido%>");
@@ -445,9 +498,10 @@ function completaProcedimento(id, ConvenioID)
 
     viaID = ref("ViaID")
 
-    IF viaID = "" THEN
-       viaID = 1
-    END IF
+	' ViaID passou a ser campo opcional, não podendo ser atribuito a um valor automaticamente na função
+	' IF viaID = "" THEN
+	'   viaID = 1
+	'END IF
 
 	'set valproc = db.execute("select * from tissprocedimentosvalores where ProcedimentoID like '"&id&"' and ConvenioID like '"&ConvenioID&"'")
 	'response.Write("alert(""select pvp.Valor, pvp.NaoCobre from tissprocedimentosvaloresplanos as pvp LEFT JOIN tissprocedimentosvalores as pv on pv.id=pvp.AssociacaoID where pv.ProcedimentoID like '"&id&"' and PlanoID="&treatvalzero(ref("PlanoID"))&""")")
@@ -482,7 +536,7 @@ function completaProcedimento(id, ConvenioID)
 	set valproc = db.execute("select pv.id AS 'ProcedimentoValorID', pv.ModoCalculo, pv.TecnicaID, pv.QuantidadeCH, pv.CustoOperacional, pv.ValorFilme, pv.QuantidadeFilme, pv.ValorUCO, pvp.Valor, pvp.ValorCH, pvp.NaoCobre, pt.TabelaID, pt.Descricao, pt.Codigo from tissprocedimentosvaloresplanos as pvp LEFT JOIN tissprocedimentosvalores as pv on pv.id=pvp.AssociacaoID LEFT JOIN tissprocedimentostabela as pt on pt.id=pv.ProcedimentoTabelaID where pv.ProcedimentoID like '"&id&"' and PlanoID="&treatvalnull(ref("PlanoID")))
 	if valproc.eof then
 	    if not isnull(ConvenioID) and ConvenioID<>"" then
-            sqlValProc = "select pv.Valor, pv.ModoCalculo, pv.ValorCH, pv.NaoCobre, pv.TecnicaID, pv.QuantidadeCH, pv.CustoOperacional, pv.ValorFilme, pv.QuantidadeFilme, pv.ValorUCO, pt.TabelaID, pt.Descricao, pt.Codigo, pv.id AS 'ProcedimentoValorID' from tissprocedimentosvalores as pv LEFT JOIN tissprocedimentostabela as pt on pt.id=pv.ProcedimentoTabelaID where pv.ProcedimentoID like '"&id&"' and ConvenioID="&ConvenioID
+            sqlValProc = "select pv.Valor, pv.ModoCalculo, pv.ValorCH, pv.NaoCobre, pv.TecnicaID, pv.QuantidadeCH, pv.CustoOperacional, pv.ValorFilme, pv.QuantidadeFilme, pv.ValorUCO, pt.TabelaID, pt.Descricao, tc.CodigoTabela, pt.Codigo, pv.id AS 'ProcedimentoValorID' from tissprocedimentosvalores as pv LEFT JOIN tissprocedimentostabela as pt on pt.id=pv.ProcedimentoTabelaID LEFT JOIN tabelasconvenios AS tc ON (IF(pt.TabelaID < 0, (pt.TabelaID)*-1 = tc.id, pt.TabelaID = tc.id)) where pv.ProcedimentoID like '"&id&"' and ConvenioID="&ConvenioID
             'response.Write(sqlValProc)
             set valproc = db.execute(sqlValproc)
         end if
@@ -490,6 +544,9 @@ function completaProcedimento(id, ConvenioID)
 	TecnicaID=1
 	if not valproc.eof then
 		TabelaID = valproc("TabelaID")
+		if valproc("TabelaID") < 0 then
+			TabelaID = valproc("CodigoTabela")
+		end if
 		CodigoProcedimento = valproc("Codigo")
 		ModoCalculo = valproc("ModoCalculo")
 

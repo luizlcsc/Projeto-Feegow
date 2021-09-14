@@ -60,7 +60,7 @@
                         sqlUser = " AND p.sysUser="& ref("EmitidaPor") &" "
                     end if
                     sqlp = "select p.id, p.PacienteID, p.InvoiceID, s.NomeStatus, p.DataProposta, pac.Tel1, pac.Tel2, pac.Cel1, pac.Cel2, p.Valor, pac.NomePaciente, (select group_concat(' ', proc.NomeProcedimento) from itensproposta ip left join procedimentos proc on proc.id=ip.ItemID where ip.PropostaID=p.id) procedimentos from propostas p LEFT JOIN propostasstatus s on s.id=p.StaID LEFT JOIN pacientes pac on pac.id=p.PacienteID "&leftProc&" WHERE p.sysActive=1 and p.StaID IN("&replace(ref("Status"), "|", "")&") AND p.DataProposta BETWEEN "&mydatenull(ref("De"))&" AND "&mydatenull(ref("Ate"))&" "& sqlProc & sqlUser & whereUnidade &" group by p.id order by p.DataProposta desc"
-			        set p = db.execute(sqlp)
+                    set p = db.execute(sqlp)
 		        end if
 
 		        set ConfigSQL = db.execute("SELECT NomeEmpresa FROM sys_config ")

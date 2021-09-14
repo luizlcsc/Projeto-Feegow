@@ -4,8 +4,8 @@
 'Colocar pra fazer uma lista de guias e receitas desvinculadas de agendamentos e atendimentos.<br>
 'Voltar das guias e do a receber para a conta do paciente.
 
-AtendimentoID = request.QueryString("A")
-PacienteID=request.QueryString("I")
+AtendimentoID = req("A")
+PacienteID=req("I")
 set pac = db.execute("select * from pacientes where id="&PacienteID)
 if isnumeric(AtendimentoID) or AtendimentoID<>"" then
 	db_execute("update sys_users set notiflanctos=replace(notiflanctos, '|"&AtendimentoID&"|', '')")

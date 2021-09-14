@@ -7,6 +7,8 @@ ProcedimentoID = ref("ProcedimentoID")
 ProfissionalID = ref("ProfissionalID")
 PacienteID = ref("PacienteID")
 Checkin = ref("Checkin")
+ProgramaID = ref("ProgramaID")
+ConvenioID = ref("ConvenioID")
 
 function somatempo()
 controle = 0
@@ -39,8 +41,8 @@ controle = 0
 end function 
 
 ValidarRetornos=getConfig("ValidarRetornos")
-FormaPagto = request.QueryString("FormaPagto")'Particular ou Convenio
-ProcedimentoTempoProfissional = request.QueryString("ProcedimentoTempoProfissional")
+FormaPagto = req("FormaPagto")'Particular ou Convenio
+ProcedimentoTempoProfissional = req("ProcedimentoTempoProfissional")
 
 hide = "true"
 if getConfig("NaoRemoverAvisos")=1 then
@@ -185,7 +187,30 @@ if tipo="PacienteID" then
                               "ORDER BY Prioridade")
 
 		if not conv.EOF then
-			possuiConvenio = "S"
+			QueryGradeSQL = "SELECT Convenios FROM assperiodolocalxprofissional WHERE ProfissionalID="&ProfissionalID
+            set GradeSQL = db.execute(QueryGradeSQL)
+            conveniosGrade = ""
+            if not GradeSQL.eof then
+                conveniosGrade = GradeSQL("Convenios")
+            else
+                QueryGradeSQL = "SELECT Convenios FROM assfixalocalxprofissional WHERE ProfissionalID="&ProfissionalID
+                set GradeSQL = db.execute(QueryGradeSQL)
+                if not GradeSQL.eof then
+                    conveniosGrade = GradeSQL("Convenios")
+                end if
+            end if
+            if conveniosGrade <> "" then
+                while not GradeSQL.eof
+                    if instr(conveniosGrade, conv("id")) > 0 then
+                        possuiConvenio = "S"
+                    end if
+                    GradeSQL.movenext
+                wend
+                GradeSQL.close
+                set GradeSQL = nothing
+            else
+                possuiConvenio = "S"
+            end if
 
 			ObsConvenios = ""
             set ConvenioSQL = db.execute("SELECT Obs FROM convenios WHERE id="&conv("id")&"")
@@ -195,12 +220,12 @@ if tipo="PacienteID" then
 
                  if planosOptions<>"" then
                     %>
-$(document).ready(function() {
-    $("#divConvenioPlano").remove();
-    $("#divConvenio").after("<%=planosOptions%>");
+                        $(document).ready(function() {
+                            $("#divConvenioPlano").remove();
+                            $("#divConvenio").after("<%=planosOptions%>");
 
-    $("#PlanoID").select2();
-})
+                            $("#PlanoID").select2();
+                        })
                     <%
                 end if
 
@@ -220,7 +245,7 @@ $(document).ready(function() {
 /*			$("#ConvenioID").val('<%=conv("id")%>');
 			$("#searchConvenioID").val("<%=conv("NomeConvenio")%>");
 */
-
+            $("#ConvenioID").html('');
             var optionExists = ($('#ConvenioID option[value=' + <%=conv("id") %> + ']').length > 0);
 
             if(!optionExists)
@@ -231,7 +256,7 @@ $(document).ready(function() {
             //to ajax select2
             //$("#ConvenioID option").val("<%=conv("id") %>");
             //$("#ConvenioID option").text("<%=conv("NomeConvenio") %>");
-            $("#ConvenioID").val("<%=conv("id") %>").select2();
+            $("#ConvenioID").val("<%=conv("id") %>").trigger('change').select2();
 
             if($("#ConvenioID").length > 0){
                 $("#ConvenioID").select2("destroy");
@@ -267,7 +292,7 @@ $(document).ready(function() {
 
 	if possuiConvenio <> "S" then
 		%>
-            $("#divConvenio").hide();
+            $("#divConvenio, #divConvenioPlano").hide();
             $("#rdValorPlanoV").attr("checked", "checked");
             $("#divValor").show();
 			$("#ConvenioID").val('0');
@@ -354,6 +379,13 @@ $(document).ready(function() {
             end if
         end if
     end if
+
+    ' altera as opções do select de Programas de Saúde
+    if getConfig("ExibirProgramasDeSaude") = 1 then 
+    %> 
+    $("#ProgramaID").html(`<%=getProgramasOptions(ProfissionalID, PacienteID, ConvenioID, ProgramaID)%>`);
+    <% end if
+
 end if
 if left(tipo, 14)="ProcedimentoID" then
     apID = replace(tipo, "ProcedimentoID", "")
@@ -516,7 +548,11 @@ if left(tipo, 14)="ProcedimentoID" then
         end if
     end if
 
-    '<br
+    ' altera as opções do select de Programas de Saúde
+    if getConfig("ExibirProgramasDeSaude") = 1 then 
+    %> 
+    $("#ProgramaID").html(`<%=getProgramasOptions(ProfissionalID, PacienteID, ConvenioID, ProgramaID)%>`);
+    <% end if
 end if
 
 if tipo="Equipamento" then
@@ -584,6 +620,12 @@ if left(tipo, 10)="ConvenioID" then
         <%
     end if
 
+    ' altera as opções do select de Programas de Saúde
+    if getConfig("ExibirProgramasDeSaude") = 1 then 
+    %> 
+    $("#ProgramaID").html(`<%=getProgramasOptions(ProfissionalID, PacienteID, ConvenioID, ProgramaID)%>`);
+    <% end if
+
 
     if session("Banco")="clinic100000" or session("Banco")="clinic5304" then
         set PlanosQueCobreSQL = db.execute("SELECT cp.NomePlano, IF(pvp.NaoCobre is null or pvp.NaoCobre = '', 1,0)Cobre FROM conveniosplanos cp LEFT JOIN tissprocedimentosvalores pv ON pv.ConvenioID = cp.id LEFT JOIN tissprocedimentosvaloresplanos pvp ON pvp.AssociacaoID = pv.id WHERE cp.ConvenioID = "&ConvenioID&" GROUP BY cp.id")
@@ -622,6 +664,16 @@ if left(tipo, 10)="ConvenioID" then
     end if
 end if
 
+if tipo="ProgramaID" then
+    sqlPrograma = "SELECT ConvenioID FROM programas WHERE id = '" & ProgramaID & "' AND ConvenioID IS NOT NULL"
+    set rsPrograma = db.execute(sqlPrograma)
+    if not rsPrograma.eof then
+%>
+        $("#ConvenioID").val("<%=rsPrograma("ConvenioID")%>").select2();
+<%
+    end if
+end if
+
 
 
 function getPlanosOption(ConvenioID, PlanoID, CampoID)
@@ -646,6 +698,42 @@ function getPlanosOption(ConvenioID, PlanoID, CampoID)
     else
         getPlanosOption=""
     end if
+end function
+
+function getProgramasOptions(ProfissionalID, PacienteID, ConvenioID, ProgramaID)
+    sqlProgramas = "SELECT p.id, p.NomePrograma FROM programas p " &_
+                   "INNER JOIN profissionaisprogramas pop ON pop.ProgramaID = p.id " &_
+                   "LEFT JOIN pacientesprogramas pap ON pap.ProgramaID = p.id " &_
+                   "WHERE p.sysActive = 1 AND pop.ProfissionalID = '" & ProfissionalID & "' AND pop.sysActive = 1 "
+
+    if PacienteID <> "" then
+        sqlProgramas = sqlProgramas & " AND pap.PacienteID = '" & PacienteID & "' AND pap.sysActive = 1 "
+    end if
+
+    if ConvenioID&"" <> "" and ConvenioID&"" <> "0" then
+        sqlProgramas = sqlProgramas & " AND (p.ConvenioID IS NULL OR p.ConvenioID = '" & ConvenioID & "') "
+    end if
+
+    sqlProgramas = sqlProgramas & " GROUP BY p.id"
+
+    set rsProgramasOptions = db.execute(sqlProgramas)
+    if  rsProgramasOptions.eof then
+        getProgramasOptions = ""
+    else
+        programsOptions = "<option value=''>Selecione</option>"
+        while not rsProgramasOptions.eof
+            progSelected = ""
+            if ProgramaID=rsProgramasOptions("id")&"" then
+                progSelected = " selected "
+            end if
+            programsOptions = programsOptions & "<option" & progSelected & " value='" & rsProgramasOptions("id") & "'>" & rsProgramasOptions("NomePrograma") & "</option>"
+            rsProgramasOptions.movenext
+        wend
+        getProgramasOptions=programsOptions
+    end if
+    rsProgramasOptions.close
+    set rsProgramasOptions=nothing
+
 end function
 
 %>

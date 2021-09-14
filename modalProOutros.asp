@@ -11,7 +11,7 @@ if req("id")="0" then
 	TextoAtestadoID = regAte("id")
 	TextoAtestadoLast = "ProOutros-Last"
 else
-		TextoAtestadoID = request.QueryString("id")
+		TextoAtestadoID = req("id")
 		set regAte = db.execute("select * from propostasoutros where id="&req("id"))
 end if
 Descricao = regAte("Descricao")

@@ -2,8 +2,8 @@
 <!--#include file="ProntCompartilhamento.asp"-->
 <!--#include file="Classes/Arquivo.asp"-->
 <%
-	if isnumeric(request.QueryString("X")) and request.QueryString("X")<>"" and request.QueryString("X")<>"0" then
-		db_execute("delete from arquivos where id="&request.QueryString("X"))
+	if isnumeric(req("X")) and req("X")<>"" and req("X")<>"0" then
+		db_execute("delete from arquivos where id="&req("X"))
 	end if
 	'getConfig("NovaGaleria")
 	IF true THEN
@@ -49,7 +49,7 @@
 <br>
     <ul class="ace-thumbnails pn mn" id="mix-container">
 	<%
-	set imagens = db.execute("select * from arquivos where Tipo='I' and PacienteID="&request.QueryString("PacienteID")&" ORDER BY DataHora DESC")
+	set imagens = db.execute("select * from arquivos where Tipo='I' and PacienteID="&req("PacienteID")&" ORDER BY DataHora DESC")
 	c=0
 
 	while not imagens.EOF
@@ -81,17 +81,18 @@
         end if
 
 
-        '02/09/2019 Sanderson
         'verifica permissao de compartilhamento do arquivo
-        permissao = VerificaProntuarioCompartilhamento(imagens("sysUser"),"Imagens", imagens("id"))
+        'default pode ver, porém se não pertence ao CareTeam irá verificar a permissão do arquivo
         podever = true
-        tipoCompartilhamento =1
-
-        if permissao <> "" then
-            permissaoSplit = split(permissao,"|")
-            podever = permissaoSplit(0)
-            tipoCompartilhamento = permissaoSplit(1)
-        end if 
+        tipoCompartilhamento = 1
+        if not autCareTeam(imagens("sysUser"), req("PacienteID")) then
+            permissao = VerificaProntuarioCompartilhamento(imagens("sysUser"),"Imagens", imagens("id"))
+            if permissao <> "" then
+                permissaoSplit = split(permissao,"|")
+                podever = permissaoSplit(0)
+                tipoCompartilhamento = permissaoSplit(1)
+            end if
+        end if
 
         if podever or (cstr(session("User"))=imagens("sysUser")&"") then
 

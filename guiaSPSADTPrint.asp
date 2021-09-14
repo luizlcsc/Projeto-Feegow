@@ -1,10 +1,10 @@
-﻿<!--#include file="connect.asp"-->
+<!--#include file="connect.asp"-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <link rel="stylesheet" type="text/css" media="all" href="assets/css/tiss.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Guia de SP/SADT</title>
+<title><% if session("banco") = "clinic10402" then %>Solicitação<% else %>Guia<% end if %> de SP/SADT</title>
 </head>
 <style type="text/css">
 body{
@@ -26,7 +26,6 @@ body{
     border-radius:2px;
     margin-top:22px;
 }
-
 @media print {
     .imprimirGuia{
         display:none;
@@ -39,9 +38,15 @@ body{
 TipoExibicao = req("TipoExibicao")
 if TipoExibicao="Pedido" then
     db_execute("update pedidossadt set ConvenioID="& treatvalzero(req("ConvenioIDPedidoSADT")) &", ProfissionalID="&treatvalzero(req("ProfissionalID"))&", Data="&mydatenull(req("DataSolicitacao"))&", IndicacaoClinica='"& req("IndicacaoClinicaPedidoSADT") &"', Observacoes='"& req("ObservacoesPedidoSADT") &"', ProfissionalExecutante='"& req("ProfissionalExecutanteIDPedidoSADT") &"' where id="& req("PedidoSADTID"))
-    set procs = db.execute("select pps.*, ps.ConvenioID, ps.PacienteID, ps.ProfissionalID, ps.IndicacaoClinica, ps.Observacoes, pac.NomePaciente, pac.Matricula1, pac.Validade1, ps.`Data` from pedidossadtprocedimentos pps LEFT JOIN pedidossadt ps ON pps.PedidoID=ps.id LEFT JOIN pacientes pac ON pac.id=ps.PacienteID where pps.PedidoID="& req("PedidoSADTID"))
-
+    set procs = db.execute("select pps.*, ps.ConvenioID, pac.ConvenioID1, pac.ConvenioID2, pac.ConvenioID3, ps.PacienteID, ps.ProfissionalID, ps.IndicacaoClinica, ps.Observacoes, pac.NomePaciente, pac.Matricula1, pac.Matricula2, pac.Matricula3, pac.Validade1, ps.`Data` from pedidossadtprocedimentos pps LEFT JOIN pedidossadt ps ON pps.PedidoID=ps.id LEFT JOIN pacientes pac ON pac.id=ps.PacienteID where pps.PedidoID="& req("PedidoSADTID"))
     if not procs.EOF then
+      if procs("ConvenioID") = procs("ConvenioID1") then
+        NumeroCarteira = procs("Matricula1")
+      elseif procs("ConvenioID") = procs("ConvenioID2") then
+        NumeroCarteira = procs("Matricula2")
+      elseif procs("ConvenioID") = procs("ConvenioID3") then
+        NumeroCarteira = procs("Matricula3")
+      end if
         set conv = db.execute("select * from convenios where id='"& procs("ConvenioID")&"'")
         if not conv.EOF then
             ConvenioID = conv("id")
@@ -51,7 +56,6 @@ if TipoExibicao="Pedido" then
         end if
         PacienteID = procs("PacienteID")
         NomePaciente = procs("NomePaciente")
-        NumeroCarteira = procs("Matricula1")
         ValidadeCarteira = procs("Validade1")
         IndicacaoClinica = procs("IndicacaoClinica")
         Observacoes = procs("Observacoes")
@@ -66,11 +70,9 @@ if TipoExibicao="Pedido" then
         end if
     end if
 else
-    set procs = db.execute("select * from tissprocedimentossadt where GuiaID="&request.QueryString("I")&" order by id")
+    set procs = db.execute("select * from tissprocedimentossadt where GuiaID="&req("I")&" order by id")
 end if
-
 'on error resume next
-
 set conf = db.execute("select * from sys_config")
 OmitirValorGuiaConfig = conf("OmitirValorGuia")
 OmitirValorGuia = ""
@@ -78,9 +80,7 @@ if OmitirValorGuiaConfig&""<>"" then
     if instr(OmitirValorGuiaConfig, "|"&session("User")&"|")>0 then
         OmitirValorGuia = "1"
     end if
-
 end if
-
 set guia = db.execute("select g.*, cons.TISS as ConselhoProfissionalSolicitanteTISS from tissguiasadt as g left join conselhosprofissionais as cons on cons.id=g.ConselhoProfissionalSolicitanteID where g.id="& treatvalzero(req("I")))
 if not guia.eof then
 	set conv = db.execute("select * from convenios where id="&guia("ConvenioID"))
@@ -150,7 +150,6 @@ if not guia.eof then
 	if not ProfissionalSolicitante.eof then
 		NomeProfissionalSolicitante = ProfissionalSolicitante("NomeProfissional")
 	end if
-
 	NGuiaPrestador=guia("NGuiaPrestador")
 	RegistroANS=guia("RegistroANS")
 	NGuiaPrincipal=guia("NGuiaPrincipal")
@@ -194,7 +193,6 @@ if not guia.eof then
 	if Contratado=0 AND recursoAdicional(12)=4 then
 	    NomeContratadoExecutante = ""
 	end if
-
 	CodigoCNESExecutante=guia("CodigoCNES")
 	TipoAtendimentoID=guia("TipoAtendimentoID")
 	IndicacaoAcidenteID=guia("IndicacaoAcidenteID")
@@ -225,7 +223,6 @@ if not guia.eof then
 	if isnull(GasesMedicinais) then GasesMedicinais=0 end if
 	TotalGeral=guia("TotalGeral")
 	if isnull(TotalGeral) then TotalGeral=0 end if
-
 	set vcaAnexa = db.execute("select * from tissguiaanexa where GuiaID="&guia("id"))
 	if not vcaAnexa.EOF then
 		%>
@@ -251,7 +248,7 @@ end if
           <tbody>
               <tr>
                 <td width="23%" height="40"><strong><%if len(Foto)>2 then%><img src="<%=arqEx(Foto, "Perfil")%>" id="logo" /><%else%><%= NomeConvenio %><%end if%></strong></td>
-                <td width="48%" nowrap="nowrap"><h2>GUIA  DE SERVIÇO PROFISSIONAL / SERVIÇO AUXILIAR DE<br />
+                <td width="48%" nowrap="nowrap"><h2><% if session("banco") = "clinic10402" then %>SOLICITAÇÃO<% else %>GUIA<% end if %> DE SERVIÇO PROFISSIONAL / SERVIÇO AUXILIAR DE<br />
                  DIAGNÓSTICO E TERAPIA - SP/SADT </h2></td>
                 <td align="center" nowrap="nowrap" class="numcard">
                     <% if isnumeric(req("I")) and req("I")<>"" then
@@ -367,10 +364,8 @@ end if
           <tbody>
               <tr class="fourth-line info">
 <%
-
 if session("Banco")="clinic5856" or session("Banco")="clinic100000"  then
     set UFSQL = db.execute("SELECT codigo FROM estados WHERE sigla='"&UFConselhoSolicitante&"'")
-
     if not UFSQL.eof then
         UFConselhoSolicitante = UFSQL("codigo")
     end if
@@ -688,17 +683,13 @@ end if
 			'if GrauParticipacao=100 then
 			'    GrauParticipacao="00"
 			'end if
-
 			UFConselho = profs("UFConselho")
             ConselhoTISS = profs("ConselhoTISS")
-
             if session("Banco")="clinic5856" or session("Banco")="clinic100000"  then
                 set UFSQL = db.execute("SELECT codigo FROM estados WHERE sigla='"&UFConselho&"'")
-
                 if not UFSQL.eof then
                     UFConselho = UFSQL("codigo")
                 end if
-
                 ConselhoTISS = zeroEsq(ConselhoTISS, 2)
             end if
 			%>

@@ -2,7 +2,7 @@
 <%
 
 spl = split(ref("parcCC"), ", ")
-'response.write( request.form() )
+
 soma = 0
 for i=0 to ubound(spl)
     valorCheio = ccur(ref("ValorCheio" & spl(i)))

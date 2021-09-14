@@ -1,6 +1,6 @@
 ﻿$("#calls").html("");
 <%
-ConnString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193.43;Database=calls;uid=root;pwd=pipoca453;"
+ConnString = "Driver={MySQL ODBC 5.3 ANSI Driver};Server=192.168.193.43;Database=calls;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
 Set dbCall = Server.CreateObject("ADODB.Connection")
 dbCall.Open ConnString
 

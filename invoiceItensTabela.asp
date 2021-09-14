@@ -19,11 +19,11 @@
      <tbody>
 <%
 
-I = ccur(request.QueryString("I"))'I é item de invoice, que puxa seu grupo
-Add = request.QueryString("Add")
-Remove = request.QueryString("Remove")
+I = ccur(req("I"))'I é item de invoice, que puxa seu grupo
+Add = req("Add")
+Remove = req("Remove")
 Numera = 0
-InvoiceID = request.QueryString("InvoiceID")
+InvoiceID = req("InvoiceID")
 
 function linhaItem(id, ValorUnitario, Executado, DataExecucao, HoraExecucao, HoraFim, ProfissionalID, Desconto, Numera)
 	if ValorUnitario<>"" and isnumeric(ValorUnitario) then ValorUnitario=formatnumber(ValorUnitario,2) end if

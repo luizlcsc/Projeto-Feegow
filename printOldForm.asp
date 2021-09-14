@@ -10,7 +10,7 @@ if FormID<>"N" then
 end if
 
 set pac = db.execute("select p.*, ec.EstadoCivil, s.NomeSexo as Sexo, g.GrauInstrucao, o.Origem from pacientes as p left join estadocivil as ec on ec.id=p.EstadoCivil left join sexo as s on s.id=p.Sexo left join grauinstrucao as g on g.id=p.GrauInstrucao left join origens as o on o.id=p.Origem where p.id="&PacienteID)
-set pFor=db.execute("select * from buiCamposForms where FormID like '"&request.QueryString("ModeloID")&"' order by Ordem, id")
+set pFor=db.execute("select * from buiCamposForms where FormID like '"&req("ModeloID")&"' order by Ordem, id")
 while not pFor.EOF
 	if preenchido="S" then
 		valor = preen(""&pFor("id")&"")

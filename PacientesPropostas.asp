@@ -480,7 +480,7 @@ end if
 
             <div class="panel">
                 <div class="panel-editbox" style="display:block">
-                    <input class="form-control dadoProposta" name="TituloItens" id="TituloItens" value="<%=TituloItens%>" style="color: #4383b4;" <%=desabilitarProposta%>>
+                    <input class="form-control dadoProposta" name="TituloItens" id="TituloItens" value="<%=TituloItens%>" style="color: #45AAF2;" <%=desabilitarProposta%>>
                 </div>
                 <div class="panel-body">
                     <div class="row">
@@ -505,7 +505,7 @@ end if
 
             <div class="panel">
                 <div class="panel-editbox" style="display:block">
-                    <input class="form-control dadoProposta" name="TituloPagamento" id="TituloPagamento" value="<%=TituloPagamento%>" style="color: #4383b4;" <%=desabilitarProposta%>>
+                    <input class="form-control dadoProposta" name="TituloPagamento" id="TituloPagamento" value="<%=TituloPagamento%>" style="color: #45AAF2;" <%=desabilitarProposta%>>
                 </div>
                 <div class="panel-body">
                     <div class="col-xs-9 PropostaItensConteudo">
@@ -545,7 +545,7 @@ end if
 
             <div class="panel">
                 <div class="panel-editbox" style="display:block">
-                    <input class="form-control dadoProposta" name="TituloOutros" id="TituloOutros" value="<%=TituloOutros%>" style="color:#4383b4;" <%=desabilitarProposta%>>
+                    <input class="form-control dadoProposta" name="TituloOutros" id="TituloOutros" value="<%=TituloOutros%>" style="color:#45AAF2;" <%=desabilitarProposta%>>
                 </div>
                 <div class="panel-body">
                     <div class="col-xs-9">

@@ -349,7 +349,7 @@ end if
 %>
 <tr id="row2_<%=id%>"<%if Executado<>"S" then%> class="hidden div-execucao"<%else %> class="div-execucao"<%end if%> data-id="<%=id%>">
 	<td></td>
-    <td colspan="9">
+    <td colspan="10">
         <div class="row">
     	    <div class="col-xs-3">
 			    <label>Profissional</label><br>

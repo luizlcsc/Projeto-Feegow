@@ -418,6 +418,7 @@ end if
                 </div>
                 <input type="hidden" name="Data" id="Data" value="<%= iniData %>" />
             </div>
+                <br />
                 <hr class="hidden-xs" />
                 <br class="visible-xs" />
         </li>

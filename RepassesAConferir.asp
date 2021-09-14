@@ -61,7 +61,7 @@ end if
         <div class="panel">
             <div class="panel-body hidden-print">
                 <div class="row">
-                    <%= quickfield("multiple", "Forma", "Convênio", 2, reqf("Forma"), "select '0' id, '   PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 and Ativo='on' order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
+                    <%= quickfield("multiple", "Forma", "Convênio", 2, reqf("Forma"), "select '0' id, '   PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 and c.NomeConvenio!='' and Ativo='on' order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
                     <%= quickfield("multiple", "TipoRecebedor", "Tipo do recebedor", 2, reqf("TipoRecebedor"), "select id, AssociationName from sys_financialaccountsassociation where id in (2,4,5,8) ORDER BY AssociationName", "AssociationName", "") %>
                     <div class="col-md-2">
                         <label for="Status">Status de Recto</label><br />

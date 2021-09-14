@@ -13519,7 +13519,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 
 .input-group-addon,
 .input-group-btn {
-    width: 1%;
+    width: 1%;la
     white-space: nowrap;
     vertical-align: middle;
 }
@@ -16827,8 +16827,8 @@ div.switch.round label:after {
     position: absolute;
     top: 0;
     left: 0;
-    width: 22px;
-    height: 21px;
+    width: 18px;
+    height: 18px;
     background-color: #FFF;
     border: 1px solid #666;
     border-width: 2px;
@@ -16843,7 +16843,7 @@ div.switch.round label:after {
     content: "\f00c";
     font-size: 12px;
     top: 4px;
-    left: 4px;
+    left: 2px;
     width: 0;
     height: 0;
     transform: rotate(-13deg);
@@ -22541,6 +22541,8 @@ body.sb-top #toggle_sidemenu_t {
     vertical-align: top;
     padding: 0;
 }
+
+
 
 #content.table-layout > aside {
     vertical-align: top;
@@ -28408,8 +28410,8 @@ div.switch.switch-dark input:checked + label {
 .table > thead > tr.danger > th,
 .table > tbody > tr.danger > th,
 .table > tfoot > tr.danger > th {
-    color: #ac311d;
-    border-color: #eea79c;
+    color: #EE5253;
+    border-color: #F8C9CA;
     background-color: #f7d6d0;
 }
 
@@ -30211,12 +30213,12 @@ body.timeline-page .panel-clone {
 }
 
 select[tabindex="-1"], .multisel {
-    display: block !important;
+    /*display: block !important;*/
     opacity: 0;
     position: absolute;
     width: 1px;
     /*max-width:100%;*/
-    height: 1px;
+    height: 0;
     z-index: 0 !important;
 }
 
@@ -30236,6 +30238,12 @@ select[tabindex="-1"], .multisel {
 
 .multiselect.btn-default {
     background-color: #fff;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
 }
 
 /*search ipt*/
@@ -30317,9 +30325,18 @@ select[tabindex="-1"], .multisel {
 
 }
 
+.input-group > .select2-container--default .select2-selection--single{
+    border-radius: 0 !important;
+}
+
 .select2-container--default .select2-selection--single{
     padding: 6px;
     border-radius: 6px !important;
+}
+
+
+.input-group > .select2-container .select2-selection--single{
+    font-size: 10px !important;
 }
 
 .select2-container .select2-selection--single{

@@ -349,7 +349,7 @@ end if
 %>
 <tr id="row2_<%=id%>"<%if Executado<>"S" then%> class="hidden div-execucao"<%else %> class="div-execucao"<%end if%> data-id="<%=id%>">
 	<td></td>
-    <td colspan="9">
+    <td colspan="10">
         <div class="row">
     	    <div class="col-xs-3">
 			    <label>Profissional</label><br>
@@ -442,36 +442,38 @@ end if
 </tr>
 <%
 else
-    set vcaHono = db.execute("select * from iihonorarios where ItemInvoiceID="& treatvalzero(id))
-    if not vcaHono.eof then
-        %>
-        <tr>
-            <td></td>
-            <td colspan="4">
-                <table class="table table-condensed">
-                    <tr class="success">
-                        <th>Data</th>
-                        <th>Tempo</th>
-                        <th>Valor</th>
-                    </tr>
-                    <%
-                    while not vcaHono.eof
-                        %>
-                        <tr>
-                            <td><a href="./?P=agenda-1&Pers=1&ProfissionalID=<%= vcaHono("ProfissionalID") &"&Data="& vcaHono("Data") %>" target="_blank"> <%= vcaHono("Data") %></a></td>
-                            <td>Tempo: <%= dateAdd("n", vcaHono("Minutos"), "00:00") %></td>
-                            <td>Valor: <%= fn(vcaHono("Valor")) %></td>
+    if False then
+        set vcaHono = db.execute("select * from iihonorarios where ItemInvoiceID="& treatvalzero(id))
+        if not vcaHono.eof then
+            %>
+            <tr>
+                <td></td>
+                <td colspan="4">
+                    <table class="table table-condensed">
+                        <tr class="success">
+                            <th>Data</th>
+                            <th>Tempo</th>
+                            <th>Valor</th>
                         </tr>
                         <%
-                    vcaHono.movenext
-                    wend
-                    vcaHono.close
-                    set vcaHono=nothing
-                    %>
-                </table>
-            </td>
-        </tr>
-        <%
+                        while not vcaHono.eof
+                            %>
+                            <tr>
+                                <td><a href="./?P=agenda-1&Pers=1&ProfissionalID=<%= vcaHono("ProfissionalID") &"&Data="& vcaHono("Data") %>" target="_blank"> <%= vcaHono("Data") %></a></td>
+                                <td>Tempo: <%= dateAdd("n", vcaHono("Minutos"), "00:00") %></td>
+                                <td>Valor: <%= fn(vcaHono("Valor")) %></td>
+                            </tr>
+                            <%
+                        vcaHono.movenext
+                        wend
+                        vcaHono.close
+                        set vcaHono=nothing
+                        %>
+                    </table>
+                </td>
+            </tr>
+            <%
+        end if
     end if
 end if
 

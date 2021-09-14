@@ -654,7 +654,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         <a class="navbar-brand" href="./?P=Home&Pers=1">
                     <%
 					if session("Logo")="" then
-						Logo = "https://cdn.feegow.com/feegowclinic-v7/assets/img/logo_white.png"
+						Logo = "assets/img/login_logo.png"
 					else
 						Logo = "https://cdn.feegow.com/logos/"&session("Logo")
 					end if

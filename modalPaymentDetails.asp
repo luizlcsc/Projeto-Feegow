@@ -120,7 +120,7 @@ if not getMovement.EOF then
                     <div class="row">
                         <div class="col-md-6">
                             <label for="ContaCorrente">Localiza&ccedil;&atilde;o</label><br>
-                            <%=simpleSelectCurrentAccounts("ContaCorrente", "1, 7, 2, 4, 5, 6, 3", cheque("AccountAssociationID")&"_"&cheque("AccountID"), " disabled ")%>
+                            <%=simpleSelectCurrentAccounts("ContaCorrente", "1, 7, 2, 4, 5, 6, 3", cheque("AccountAssociationID")&"_"&cheque("AccountID"), " disabled ","")%>
                         </div>
                         <%=quickfield("simpleSelect", "StatusID", "Status", 3, cheque("StatusID"), "select * from cliniccentral.chequestatus", "Descricao", " disabled ")%>
                     </div>

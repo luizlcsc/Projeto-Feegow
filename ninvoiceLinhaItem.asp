@@ -41,7 +41,7 @@ if req("T")<>"D" then
     <td colspan="8">
     	<div class="col-xs-4">
 			<label>Profissional</label><br>
-            <%=simpleSelectCurrentAccounts("ProfissionalID"&id, "5, 8, 2", Associacao&"_"&ProfissionalID, " onchange=""calcRepasse("& id &")""")%>
+            <%=simpleSelectCurrentAccounts("ProfissionalID"&id, "5, 8, 2", Associacao&"_"&ProfissionalID, " onchange=""calcRepasse("& id &")""","")%>
 			<%'=selectInsertCA("", "ProfissionalID"&id, Associacao&"_"&ProfissionalID, "5, 8, 2", " onchange=""setTimeout(function()calcRepasse("& id &"), 500)""", "", "")%>
         </div>
         <%= quickField("datepicker", "DataExecucao"&id, "Data da Execu&ccedil;&atilde;o", 2, DataExecucao, "", "", "") %>

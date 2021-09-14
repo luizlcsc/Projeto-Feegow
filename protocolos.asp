@@ -82,7 +82,7 @@ end if
                         </label>
                     </div>
                     <div class="col-md-1">
-                        <button type="button" class="btn btn-warning btn-block mt20" onClick="RegraProtocolo('<%=I%>')"><i class="fa fa-lock"></i></button>
+                        <button type="button" id="travar" class="btn btn-warning btn-block mt20" onClick="RegraProtocolo('<%=I%>')"><i class="fa fa-lock"></i></button>
                     </div>
                     <div class="col-md-2" title="Este protocolo está em uso e não pode ser alterado" >
                         <button id='salvar' type="submit" class="btn btn-primary btn-block mt20"><i class="fa fa-save"></i> Salvar</button>
@@ -228,7 +228,7 @@ end if
             $('#formProtocolos #salvar').parent().attr('data-placement',"top")
             $('[data-toggle="tooltip"]').tooltip()
             $('#formProtocolos input').attr('disabled',true)
-            $('#formProtocolos button').attr('disabled',true)
+            $('#formProtocolos button[id!="travar"]').attr('disabled',true)
             $('#Ativo').attr('disabled',false)
             setTimeout(() => {
                 $('#formProtocolos .select2').css('pointer-events',"none")

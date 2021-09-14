@@ -45,11 +45,11 @@ sqlLanc = "select el.Responsavel,el.FornecedorID,el.PacienteID, el.id, Quantidad
 set lanc = db.execute( sqlLanc )
 if not lanc.eof or (ItemInvoiceID="" and AtendimentoID="" and ProdutoInvoiceID="") then
     %>
-
+<div class="no-print">
     <div class="panel-heading">
 	    <span class="panel-title">Movimenta&ccedil;&atilde;o</span>
     </div>
-    <div class="row">
+    <div class="row ">
 	    <div class="col-md-12">
     	    <table class="table table-striped table-bordered table-hover">
         	    <thead>
@@ -184,7 +184,7 @@ if not lanc.eof or (ItemInvoiceID="" and AtendimentoID="" and ProdutoInvoiceID="
                                     elseif EntSai="S" then
                                         btn = "<button onclick='lancarConta("& lanc("id") &")' type='button' data-rel='tooltip' data-placement='bottom' original-title='Lançar na conta do paciente' title='Lançar na conta do paciente' class='btn btn-xs btn-block btn-default'>Lançar Receita</button>"
                                     else
-                                        btn = ""
+                                        btn = "<button onclick='printRecibo("& lanc("id") &")' type='button' data-rel='tooltip' data-placement='bottom' original-title='Nota da movimentação' title='Nota da movimentação' class='btn btn-xs btn-block btn-primary'><i class='fa fa-print'></i> &nbsp; Nota da movimentação</button>"
                                     end if
                                 else
                                     if EntSai="E" and InvoiceID<>"" then
@@ -213,6 +213,8 @@ if not lanc.eof or (ItemInvoiceID="" and AtendimentoID="" and ProdutoInvoiceID="
             </table>
         </div>
     </div>
+</div>
+   
     <%
 end if
 %>
@@ -220,6 +222,12 @@ end if
 function lancarConta(LancamentoID){
     $.post("estoqueLC.asp?LancamentoID="+LancamentoID, "", function(data){
         eval(data);
+    });
+}
+function printRecibo(id){
+     $.get("printRecibo.asp?movId="+id, "", function(data){
+        $("#modal-content").html(data)
+        $("#modal-recibo").modal("show")
     });
 }
 <!--#include file="JQueryFunctions.asp"-->

@@ -466,7 +466,7 @@ prefixo = right(prefixo, 20)
 
 					set desp = db.execute("select * from tissguiaanexa where GuiaID="&guias("id"))
 					if not desp.eof then
-                        if InStr(XMLTagsOmitir,"|procedimentosExecutados|")=0 then
+                        if InStr(XMLTagsOmitir,"|outrasDespesas|")=0 then
 					%>
                     <ans:outrasDespesas>
                     	<%

@@ -26,12 +26,12 @@ masterLoginErro = false
 <%
 
 if masterLogin then
-    sqlLogin = "SELECT u.*,l.ExibeChatAtendimento,l.PorteClinica, l.ExibeFaturas, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, "&_
+    sqlLogin = "SELECT u.*,l.ExibeChatAtendimento,l.ExibeFaturas, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, "&_
     " l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom, "&_
     "l.Servidor, "&_
     " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, "&_
     " servHomolog.DNS ServerHomolog, "&_
-    "COALESCE(serv.DNS, l.Servidor) Servidor,u.Tipo as tipoUsuario "&_
+    "COALESCE(serv.DNS, l.Servidor) Servidor,u.Tipo as tipoUsuario, UNIX_TIMESTAMP(u.DataHora) as DataCadastro "&_
     " FROM licencasusuarios AS u "&_
     " LEFT JOIN licencas AS l ON l.id='"&tryLoginMaster("licencaId")&"'"&_
     " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID "&_
@@ -62,12 +62,12 @@ else
         sqlHomologacao = " AND ( l.DominioHomologacao IS NULL OR l.DominioHomologacao='"&Dominio&"' ) "
     end if
 
-	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.PorteClinica, l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora,    "&_
+	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora,    "&_
 	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`,l.TipoCobranca, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,                 "&_
 	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, u.Tipo as tipoUsuario,                                                "&_
 	           "COALESCE(serv.DNS, l.Servidor) Servidor,                                                                                            "&_
 	           "servHomolog.DNS ServerHomolog,                                                                                                      "&_
-	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom                                                             "&_
+	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom, UNIX_TIMESTAMP(u.DataHora) as DataCadastro                 "&_
 	           "from licencasusuarios as u                                                                                                          "&_
 	           "left join licencas as l on l.id=u.LicencaID                                                                                         "&_
                " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID                                                                               "&_
@@ -304,7 +304,6 @@ if not tryLogin.EOF then
         end if
 
         session("RazaoSocial") = RazaoSocial
-        session("PorteClinica") = tryLogin("PorteClinica")
 
 		if permiteMasterLogin then
 			session("MasterPwd") = "S"
@@ -391,6 +390,7 @@ if not tryLogin.EOF then
         session("SepararPacientes") = config("SepararPacientes")
         session("Email") = tryLogin("Email")
         'session("AutoConsolidar") = config("AutoConsolidar") &""
+        session("DataCadastro") = tryLogin("DataCadastro") 
 
 
 		set getUnidades = db.execute("select Unidades from "&session("Table")&" where id="&session("idInTable"))
@@ -597,12 +597,12 @@ if not tryLogin.EOF then
 
         session("AutenticadoPHP")="false"
 
-        if AppEnv="production" then
-            set vcaTrei = dbc.execute("select id from clinic5459.treinamentos where LicencaUsuarioID="& session("User") &" and not isnull(Fim) and isnull(Nota)")
-            if not vcaTrei.eof then
-                urlRedir = "./?P=AreaDoCliente&Pers=1"
-            end if
-        end if
+        'if AppEnv="production" then
+            'set vcaTrei = dbc.execute("select id from clinic5459.treinamentos where LicencaUsuarioID="& session("User") &" and not isnull(Fim) and isnull(Nota)")
+            'if not vcaTrei.eof then
+                'urlRedir = "./?P=AreaDoCliente&Pers=1"
+            'end if
+        'end if
 
         IF PastaAplicacao <> "" and Versao&""="7" and AppEnv="production" THEN
             urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")

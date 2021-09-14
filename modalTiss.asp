@@ -1,5 +1,5 @@
 <script language="javascript">
-function guiaTISS(T, I, ConvenioID){
+function guiaTISS(T, I, ConvenioID, callback=false){
     if(T == 'GuiaHonorarios'){
         window.open("guiaHonorariosPrint.asp?I="+I, '_blank');
         return ;
@@ -11,6 +11,11 @@ function guiaTISS(T, I, ConvenioID){
 	   success: (suc) => {
 		$("#modal").html(suc);
 		$("#modal-table").modal("show");
+		if(typeof callback === "function"){
+			$('#modal-table').on('hidden.bs.modal', function (e) {
+				callback("true")
+			})			
+		}
 	   }
 	   ,error: (err) => {
         alert("Preencha todos os campos obrigatórios")

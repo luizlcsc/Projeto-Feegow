@@ -13,7 +13,7 @@ end if
     <div class="panel-body">
         <div class="col-md-4">
             <label>Selecione o usuário</label><br>
-            <%'= simpleSelectCurrentAccounts("Conta", "4, 5", Conta, " required") %>
+            <%'= simpleSelectCurrentAccounts("Conta", "4, 5", Conta, " required","") %>
             <%= quickfield("simpleSelect", "Conta", "", 12, "", "select distinct concat(aa.id, '_', su.idInTable) id, lu.nome from caixa cx LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser LEFT JOIN sys_users su ON su.id=lu.id LEFT JOIN cliniccentral.sys_financialaccountsassociation aa ON aa.table=su.table WHERE NOT lu.nome like '' ORDER BY lu.Nome", "nome", "") %>
         </div>
 		<div class="col-md-5" id="listaCaixas">

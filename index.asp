@@ -12,6 +12,7 @@ end if
 set shellExec = createobject("WScript.Shell")
 Set objSystemVariables = shellExec.Environment("SYSTEM")
 AppEnv = objSystemVariables("FC_APP_ENV")
+WootricToken = objSystemVariables("FC_WOOTRIC_TOKEN")
 
 
 
@@ -25,18 +26,18 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 <html>
 
 <head>
-    <meta name="robots" content="noindex">
+  <meta name="robots" content="noindex">
   <style type="text/css">
-  	.tooltip{
+    .tooltip{
           z-index:99999999; overflow: visible !important;overflow: visible !important;
-       }
-       @media print
-       {
-           .no-print, .no-print *
-           {
-               display: none !important;
-           }
-       }
+      }
+      @media print
+      {
+          .no-print, .no-print *
+          {
+              display: none !important;
+          }
+      }
 
       .form-control {
           min-width:80px;
@@ -61,87 +62,87 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       .qf:hover > .btn-spee{
           display:block!important;
       }
-	.select-insert li {
-		margin:0;
-		padding:0;
-	}
-	#footer-whats{
-	    background-color: red;
-	}
+      .select-insert li {
+        margin:0;
+        padding:0;
+      }
+      #footer-whats{
+          background-color: red;
+      }
 
-	.select-insert li {
-		cursor:pointer;
-		list-style-type:none;
-		margin:0;
-		padding:3px;
-		font-size:14px;
-		color:#000;
-		background-color:#FFF;
-	}
-	.select-insert li:hover {
-		background-color:#999;
-	}
-   a[href]:after {
-     content: ""!important;
-   }
-   .rt{
-       position:relative!important;
-       top:0!important;
-   }
-   #calls{
-       max-height:400px;
-       overflow-y:auto;
-   }
-   textarea::placeholder{
-       font-style:italic;
-       color:#CCC;
-   }
-   .ui-pnotify {
-       margin-top: 33px!important;
-   }
-   @media print{
-       #content_wrapper{
-        position: initial!important;
+      .select-insert li {
+        cursor:pointer;
+        list-style-type:none;
+        margin:0;
+        padding:3px;
+        font-size:14px;
+        color:#000;
+        background-color:#FFF;
+      }
+      .select-insert li:hover {
+        background-color:#999;
+      }
+      a[href]:after {
+        content: ""!important;
+      }
+      .rt{
+          position:relative!important;
+          top:0!important;
+      }
+      #calls{
+          max-height:400px;
+          overflow-y:auto;
+      }
+      textarea::placeholder{
+          font-style:italic;
+          color:#CCC;
+      }
+      .ui-pnotify {
+          margin-top: 33px!important;
+      }
+      @media print{
+          #content_wrapper{
+            position: initial!important;
+            margin-left: 0!important;
+          }
+          .navbar.navbar-fixed-top + #sidebar_left + #content_wrapper{
+            padding-top:0!important;
+          }
+          #sidebar_left{
+            display:none;
+          }
+      }
+
+      <% if device()<>"" then %>
+
+        @media (max-width: 815px){
+          .timeline-item .panel .panel-body {
+              width:100%!important;
+              overflow-x:scroll!important;
+              padding:15px!important;
+          }
+          .timeline-item code {
+              display:block!important;
+              line-height:20px!important;
+              #border:1px #999 solid!important;
+              margin-top:5px!important;
+          }
+        }
+
+      body {
+          /* ### BUG MOBILE
+          margin-top:100px!important;
+          */
+      }
+
+      body.sb-l-m #content_wrapper {
         margin-left: 0!important;
-       }
-       .navbar.navbar-fixed-top + #sidebar_left + #content_wrapper{
-         padding-top:0!important;
-       }
-       #sidebar_left{
-         display:none;
-       }
-   }
+        }
 
-   <% if device()<>"" then %>
-
-    @media (max-width: 815px){
-      .timeline-item .panel .panel-body {
-          width:100%!important;
-          overflow-x:scroll!important;
-          padding:15px!important;
-      }
-      .timeline-item code {
-          display:block!important;
-          line-height:20px!important;
-          #border:1px #999 solid!important;
-          margin-top:5px!important;
-      }
-    }
-
-   body {
-      /* ### BUG MOBILE
-       margin-top:100px!important;
-      */
-   }
-
-   body.sb-l-m #content_wrapper {
-    margin-left: 0!important;
-    }
-
-   body.sb-l-m #topbar.affix {
-    width: auto;
-    margin-left: 0!important;
-    }
+      body.sb-l-m #topbar.affix {
+        width: auto;
+        margin-left: 0!important;
+        }
       body.sb-l-m #topbar.affix {
           top: 0 !important;
       }
@@ -150,16 +151,16 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
           padding:0!important;
       }
       #topbar .breadcrumb .crumb-active {
-    display:block!important;
-    font-size:unset!important;
-}
-    #topbar .breadcrumb .crumb-active > a {
-        font-size: unset !important;
-    }
+      display:block!important;
+      font-size:unset!important;
+      }
+      #topbar .breadcrumb .crumb-active > a {
+          font-size: unset !important;
+      }
 
-    #topbar {
-        padding-top:70px!important;
-    }
+      #topbar {
+          padding-top:70px!important;
+      }
 
       .sidebar-light {
           color: #777;
@@ -177,17 +178,17 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
           padding:0!important;
       }
 
-    <% end if %>
+      <% end if %>
 
 
-  .blinking{
-      animation:blinkingText 1.2s infinite;
-  }
-  @keyframes blinkingText{
-      0%{     color: #FFF;    }
-      60%{    color: transparent; }
-      100%{   color: #FFF;    }
-  }
+      .blinking{
+        animation:blinkingText 1.2s infinite;
+      }
+      @keyframes blinkingText{
+          0%{     color: #FFF;    }
+          60%{    color: transparent; }
+          100%{   color: #FFF;    }
+      }
   </style>
 
   <link type="text/css" rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.css" />
@@ -221,7 +222,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <!--[if lt IE 9]>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/html5shiv.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/respond.min.js"></script>
-<![endif]-->
+  <![endif]-->
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
@@ -248,7 +249,47 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.all.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script type="text/javascript" src="https://cdn.wootric.com/wootric-sdk.js"></script>
   
+
+  <%
+    if session("MasterPwd") <> "S" then
+  %>
+
+  <!-- begin Wootric code -->
+  <script type="text/javascript">   
+    let dataCadastro = <% if session("DataCadastro")<>"" then response.write(session("DataCadastro")) else response.write("null") end if %>;
+    
+    const token = "<%=WootricToken%>";
+
+    if (token == null) {
+      console.error("account_token está vazio!");
+    }
+
+    // window.wootric_survey_immediately = true; // Shows survey immediately for testing purposes. TODO: Comment out for production.
+
+    window.wootricSettings = {
+      admin: "<% if session("Admin")=1 then response.write("Sim") else response.write("Não") end if %>",
+      nomeUnidade: "<%=session("NomeEmpresa")%>",
+      tipoUsuario: "<%=lcase(Session("Table"))%>",
+      licencaID: "<%=LicenseID%>",
+      numeroUsuarios: "<%=session("UsuariosContratadosS")%>",
+      razaoSocial: "<%=session("RazaoSocial")%>",
+      statusLicenca: "<%=StatusLicenca%>",
+      urlSistema: window.location.href,
+      pastaRedicionamento: '<%= session("PastaAplicacaoRedirect") %>',
+      email: '<%=session("Email")%>', // TODO: Required to uniquely identify a user. Email is recommended but this can be any unique identifier.
+      external_id: "<%=session("User")%>", // TODO: Reference field for external integrations only. Send it along with email. OPTIONAL
+      created_at: dataCadastro, // TODO: The current logged in user's sign-up date as a 10 digit Unix timestamp in seconds. OPTIONAL
+      account_token: token // This is your unique account token.
+    };
+
+    window.wootric('run');
+  </script>
+  <!-- end Wootric code -->
+
+  <% end if %>
+
 
   <script type="text/javascript">
 
@@ -456,7 +497,6 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         }
     </script>
       <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/bstour/bootstrap-tour.css">
-
 </head>
 
 <body>
@@ -1273,7 +1313,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
                 
 								IF FileName = "Home.asp" THEN
-                  if getConfig("HomeOtimizada")="1" or PorteClinica > 3 then
+                  if getConfig("HomeOtimizada")="1" or ModoFranquia then
 								      FileName = "HomeModoFranquia.asp"
                   end if
 								END IF

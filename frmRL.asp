@@ -112,7 +112,6 @@ end if
                         Formas = replace(Formas, "|", "")
                         Convenios = ""
 
-
                         if Formas&""<>"" then
                             if instr(Formas, "P")<=0 then
                                 Formas = replace(Formas, "C", "0")

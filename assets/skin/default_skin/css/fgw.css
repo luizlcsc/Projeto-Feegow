@@ -30238,6 +30238,12 @@ select[tabindex="-1"], .multisel {
 
 .multiselect.btn-default {
     background-color: #fff;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
 }
 
 /*search ipt*/

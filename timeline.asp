@@ -55,6 +55,29 @@ end if
 #timeline.timeline-single .timeline-icon {
     left: -19px !important;
 }
+.timeline-item-inativo *{
+    color: #fff!important;
+}
+.timeline-item-inativo code{
+    color: #c7254e!important;
+}
+.inativo-marca{
+    width: 100%;
+    height: 80%;
+    background-color: rgba(173,173,173,0.57);
+    position:absolute;
+    z-index: 999;
+    margin-bottom: 30px;
+    font-size: 55px;
+    font-weight: 700;
+    text-align: center;
+}
+.timeline-item-inativo .panel-body{
+    background-color:#c5c5c5 ;
+}
+.timeline-item-inativo .panel-heading{
+    background-color:#9a9a9a
+}
 #folha{
 		font-family: Arial, sans-serif;
 		list-style-type: none;
@@ -946,6 +969,32 @@ end select
             </div>
         <%end if%>
     </div>  
+
+    <div id="ModalInativarCampoJustificativa" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="InativarRegistroTimelineForm">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"><span class="btn-inativar-ativar"></span> registro</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                        <div class="col-md-12">
+                            <label for="Justificativa">Justificativa</label>
+                            <textarea required name="Justificativa" id="Justificativa" cols="30" rows="10" class="form-control"></textarea>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                        <button class="btn btn-primary btn-inativar-ativar">Inativar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
  
 
@@ -1026,6 +1075,51 @@ LocalStorageRestoreHabilitar();
     END IF
     %>
 
+var $modalInativar = $("#ModalInativarCampoJustificativa");
+
+var ativo;
+var $item;
+var RecursoID;
+var Recurso;
+
+function toogleInativarRegistroTimeline(el) {
+    console.log('aqui', el);
+    ativo = $(el).is(":checked");
+    $item = $(el).parents(".timeline-item");
+    RecursoID = $(el).data("recurso-id");
+    Recurso = $(el).data("recurso");
+    var $submit = $(".btn-inativar-ativar");
+
+    if(ativo){
+        $submit.html("Ativar");
+    }else{
+        $submit.html("Inativar");
+    }
+
+    $modalInativar.modal("show");
+}
+
+$("#InativarRegistroTimelineForm").submit(function() {
+    var $body = $item.find(".panel-body");
+
+    var Justificativa = $("#Justificativa").val();
+    if(ativo){
+        $item.removeClass("timeline-item-inativo");
+        $item.find(".inativo-marca").remove();
+    }else{
+        $body.before("<div class='inativo-marca'>INATIVO!</div>");
+        $item.addClass("timeline-item-inativo")
+    }
+
+    $.post("InativaRegistroTimeline.asp", {Motivo:Justificativa,PacienteID:'<%=PacienteID%>',RecursoID:RecursoID,Recurso:Recurso,Valor:(ativo?1:-1)},function(data) {
+        setTimeout(function() {
+            eval(data);
+        }, 200);
+    });
+    $modalInativar.modal("hide");
+    $("#Justificativa").val("");
+    return false;
+});
 
 
 function sendWorklist(ProcedimentoID, FormID){

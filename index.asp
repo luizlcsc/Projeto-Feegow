@@ -740,7 +740,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 		%>
         <li id="licaixa" title="Abrir/Fechar caixa" class="dropdown menu-merge hidden-sm hidden-xs menu-right-caixa">
           <div class="navbar-btn btn-group">
-            <button class="btn btn-sm" type="button" onclick="Caixa();" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Meu Caixa">
+            <button class="btn btn-sm btn-menu-left" type="button" onclick="Caixa();" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Meu Caixa">
               <span class="far fa-inbox fs14 va-m"></span>
 
                   <span class="badge badge-success" id="badge-caixa"><%if session("CaixaID")<>"" then%>$<%end if%></span>
@@ -758,7 +758,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
         <li id="liTarefasX" class="dropdown menu-merge menu-right-tarefas">
           <div class="navbar-btn btn-group">
-            <button id="notifTarefas" data-toggle="dropdown" class="btn btn-sm dropdown-toggle" onclick="notifTarefas();" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Tarefas">
+            <button id="notifTarefas" data-toggle="dropdown" class="btn btn-sm dropdown-toggle btn-menu-left" onclick="notifTarefas();" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Tarefas">
               <span class="far fa-tasks fs14 va-m"></span>
             </button>
             <div class="dropdown-menu dropdown-persist w350 animated animated-shorter fadeIn" role="menu">
@@ -778,13 +778,13 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                     </div>
                   </div>
                   <div class="panel-footer text-center p7">
-                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1'">
+                    <button type="button" class="btn btn-default btn-sm btn-menu-left" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1'">
                     <i class="far fa-list"></i> Listar tarefas
                     </button>
                     <%
                     if session("Banco")="clinic5459" then
                     %>
-                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1&MeusTickets=1'">
+                    <button type="button" class="btn btn-default btn-sm btn-menu-left" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1&MeusTickets=1'">
                     <i class="far fa-list"></i> Meus Tickets
                     </button>
                     <%
@@ -800,7 +800,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
         <li class="dropdown menu-merge menu-right-notificacoes" id="box-bell">
           <div class="navbar-btn btn-group">
-            <button data-toggle="dropdown" class="btn btn-sm dropdown-toggle" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Notificações">
+            <button data-toggle="dropdown" class="btn btn-sm dropdown-toggle btn-menu-left" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Notificações">
               <span id="bell" class="far fa-bell<%=animadoGerais%> fs14 va-m"></span>
               <span class="badge badge-danger" id="badge-bell"></span>
             </button>
@@ -828,7 +828,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         </li>
 		<li class="dropdown menu-merge menu-right-chat">
 					<div class="navbar-btn btn-group">
-	          <button id="toggle_sidemenu_r" class="btn btn-sm" onclick="chatUsers()" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Conversa">
+	          <button id="toggle_sidemenu_r" class="btn btn-sm btn-menu-left" onclick="chatUsers()" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Conversa">
 		          <span class="far fa-comments"></span>
               <span class="badge badge-danger" id="badge-chat"></span>
 		          <!-- <span class="caret"></span> -->

@@ -27,7 +27,7 @@ select case lcase(req("P"))
                         </div>
                     </div>
                     <div class="panel-footer">
-                        <button class="btn btn-sm btn-primary">FILTRAR</button>
+                        <button class="btn btn-sm btn-primary"><i class="far fa-search"></i> FILTRAR</button>
                     </div>
                 </form>
             </div>

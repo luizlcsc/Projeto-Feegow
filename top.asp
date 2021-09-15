@@ -101,12 +101,12 @@ else
                 <%
                 if Aut("agendaaheckin")=1 then
                 %>
-                <li class="sub-menu-click-agenda-checkin"><a href="./?P=Checkin&Pers=1"><i class="far fa-check"></i> Check-in</a></li>
+                <li class="sub-menu-click-agenda-checkin"><a href="./?P=Checkin&Pers=1"><i class="far fa-calendar-check"></i> Check-in</a></li>
                 <%
                 end if
                 if Aut("confirmaragendamentos")=1 then
                 %>
-                <li  class="sub-menu-click-agenda-confirmar-agendamentos"><a href="./?P=ConfirmacaoDeAgendamentos&Pers=1"><i class="far fa-exclamation"></i> Confirmar agendamentos</a></li>
+                <li  class="sub-menu-click-agenda-confirmar-agendamentos"><a href="./?P=ConfirmacaoDeAgendamentos&Pers=1"><i class="far fa-calendar-exclamation"></i> Confirmar agendamentos</a></li>
                 <%
                 end if
                 if recursoAdicional(24) = 4 then

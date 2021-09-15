@@ -27,10 +27,10 @@ end if
         <input type="hidden" name="Unidades" value="0">
         <%end if%>
             <div class="col-md-2"><label>&nbsp;</label><br />
-                <button class="btn btn-sm btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="fa fa-search bigger-110"></i> Gerar</button>
+                <button class="btn btn-sm btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="far fa-search bigger-110"></i> Gerar</button>
             </div>
             <div class="col-md-1"><label>&nbsp;</label><br />
-                <button class="btn btn-sm btn-info btn-block" type="button" onclick="print()"><i class="fa fa-print bigger-110"></i></button>
+                <button class="btn btn-sm btn-info btn-block" type="button" onclick="print()"><i class="far fa-print bigger-110"></i></button>
             </div>
         </div>
     </div>

@@ -6,7 +6,7 @@
     $(".crumb-active a").html("Assinatura digital");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Assinatura digital");
-    $(".crumb-icon a span").attr("class", "fa fa-user");
+    $(".crumb-icon a span").attr("class", "far fa-user");
     var PacienteId = "<%=req("I")%>";
 
     getUrl("/digital-certification/assinar-lote",{PacienteId: PacienteId} ,function(data) {
@@ -21,6 +21,6 @@
 </script>
 
 <div class="app" style="padding-top: 11px;" id="divAssinatura">
-    <i style="text-align: center; margin: 30px;" class="fa fa-spin fa-spinner"></i>
+    <i style="text-align: center; margin: 30px;" class="far fa-spin fa-spinner"></i>
 </div>
 

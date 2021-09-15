@@ -66,7 +66,7 @@ END IF
                  %>btn-default<%
                  end if
                  %>
-                 btn-block" ><i class="fa fa-building"></i> <%=UnidadesSQL("NomeFantasia")%></a>
+                 btn-block" ><i class="far fa-building"></i> <%=UnidadesSQL("NomeFantasia")%></a>
             </div>
             <%
             end if 

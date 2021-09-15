@@ -32,7 +32,7 @@ if g("Total") > 0 then
 
 %>
 <div class="btn-group">
-    <button onclick="geraInvoice('<%=req("T")%>', '<%=fn(g("Total"))%>',false)" class="btn btn-sm btn-system"><%=Qtd%> guia<%=s%> <i class="fa fa-chevron-circle-right"></i> R$ <%=fn(g("Total"))%> - Lançar no Contas a Receber</button>
+    <button onclick="geraInvoice('<%=req("T")%>', '<%=fn(g("Total"))%>',false)" class="btn btn-sm btn-system"><%=Qtd%> guia<%=s%> <i class="far fa-chevron-circle-right"></i> R$ <%=fn(g("Total"))%> - Lançar no Contas a Receber</button>
     <%
     if not ContasSQL.eof then
     %>
@@ -45,7 +45,7 @@ if g("Total") > 0 then
     <%
         while not ContasSQL.eof
     %>
-            <li><a href="#" onclick="javascript:geraInvoice('<%=req("T")%>', '<%=fn(g("Total"))%>', '<%=ContasSQL("id")%>')"><i class="fa fa-plus"></i> Adicionar a conta: <%=ContasSQL("Descricao")%></a></li>
+            <li><a href="#" onclick="javascript:geraInvoice('<%=req("T")%>', '<%=fn(g("Total"))%>', '<%=ContasSQL("id")%>')"><i class="far fa-plus"></i> Adicionar a conta: <%=ContasSQL("Descricao")%></a></li>
     <%
         ContasSQL.movenext
         wend

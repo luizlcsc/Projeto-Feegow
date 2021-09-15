@@ -9,7 +9,7 @@ end if
 %>
 
 <li id="<%=CampoID%>" class="<%if TipoCampoID=13 then response.Write("caixaGrupo campo") else response.Write("campo") end if%>" data-row="<%=pTop%>" style="text-align:left; <%=EstiloImagem%>" data-col="<%=pLeft%>" data-sizex="<%=Colunas%>" data-sizey="<%=Linhas%>">
-	<%if TipoCampoID<>3 and TipoCampoID<>12 and getConfig("LembreteFormulario")=1 then%><span class="badge badge-info lembrar hidden-print checkbox-custom checkbox-danger"><i class="fa fa-flag red"></i> <input class="postvalue lembrarme tbl" type="checkbox" data-campoid="<%=CampoID%>" id="lembrarme_<%=CampoID%>" value="<%=CampoID %>" name="lembrarme" <%if instr(LembrarmeS, "|"&CampoID&"|") then response.Write("checked") end if %> /><label for="lembrarme_<%=CampoID%>"> Lembrar-me disso</label></span><%end if%>
+	<%if TipoCampoID<>3 and TipoCampoID<>12 and getConfig("LembreteFormulario")=1 then%><span class="badge badge-info lembrar hidden-print checkbox-custom checkbox-danger"><i class="far fa-flag red"></i> <input class="postvalue lembrarme tbl" type="checkbox" data-campoid="<%=CampoID%>" id="lembrarme_<%=CampoID%>" value="<%=CampoID %>" name="lembrarme" <%if instr(LembrarmeS, "|"&CampoID&"|") then response.Write("checked") end if %> /><label for="lembrarme_<%=CampoID%>"> Lembrar-me disso</label></span><%end if%>
 	<%
 	  select case TipoCampoID
 	  	case 1'Texto
@@ -28,9 +28,9 @@ end if
 			end if
 	  	case 2'Data
 			if LadoALado="S" then
-				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control date-picker input-mask-date" data-date-format="dd/mm/yyyy" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div></td></tr></table><%
+				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control date-picker input-mask-date" data-date-format="dd/mm/yyyy" type="text"><span class="input-group-addon"><i class="far fa-calendar bigger-110"></i></span></div></td></tr></table><%
 			else
-				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input tabindex="<%=Ordem%>" class="campoInput form-control date-picker input-mask-date" data-date-format="dd/mm/yyyy" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div><%
+				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input tabindex="<%=Ordem%>" class="campoInput form-control date-picker input-mask-date" data-date-format="dd/mm/yyyy" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="far fa-calendar bigger-110"></i></span></div><%
 			end if
 	  	case 3'imagem
 				%>
@@ -38,7 +38,7 @@ end if
                 <%
 				if ValorPadrao<>"" and not isnull(ValorPadrao) then
 					%>
-                    <button onclick="return launchEditor('image<%=CampoID%>', '<%=Caminho & ValorPadrao %>');" type="button" class="btn btn-xs btn-default"><i class="fa fa-edit"></i></button>
+                    <button onclick="return launchEditor('image<%=CampoID%>', '<%=Caminho & ValorPadrao %>');" type="button" class="btn btn-xs btn-default"><i class="far fa-edit"></i></button>
                     <%
 				else
 					%>
@@ -335,7 +335,7 @@ $(function() {
 				%><th><%=pTit("c"&contaLargura)%></th><%
 			wend
 
-			%><th class="hidden-print" width="1%"><button type="button" onClick="fRow(<%=CampoID%>, 0, 'I'); alt();" class="btn btn-xs btn-primary btn-20 postvalue"><i class="fa fa-plus"></i></button></th></thead><tbody id="tb_<%=CampoID%>"><%
+			%><th class="hidden-print" width="1%"><button type="button" onClick="fRow(<%=CampoID%>, 0, 'I'); alt();" class="btn btn-xs btn-primary btn-20 postvalue"><i class="far fa-plus"></i></button></th></thead><tbody id="tb_<%=CampoID%>"><%
 			if FormID="N" then
 				set pMod = db.execute("select * from buitabelasmodelos where CampoID="&CampoID)
 			else
@@ -356,7 +356,7 @@ $(function() {
                 %>
                     <td class="hidden-print">
                         <input type="hidden" class="tbl tblH<%=CampoID %>" name="tblH<%=CampoID %>" id="tblH<%=CampoID &"_RPL" %>" value="RPL" />
-                        <button type="button" class="btn btn-xs btn-danger btn-20 postvalue" onClick="fRow(<%=CampoID%>, 'RPL' , 'X')"><i class="fa fa-remove"></i></button>
+                        <button type="button" class="btn btn-xs btn-danger btn-20 postvalue" onClick="fRow(<%=CampoID%>, 'RPL' , 'X')"><i class="far fa-remove"></i></button>
 				    </td>
                 </tr>
 
@@ -371,7 +371,7 @@ $(function() {
 				wend
 				%><td class="hidden-print">
                     <input type="hidden" class="tbl tblH<%=CampoID %>" name="tblH<%=CampoID %>" id="tblH<%=CampoID &"_"& pmod("id") %>" value="<%=pMod("id") %>" />
-                    <button type="button" class="btn btn-xs btn-danger btn-20 postvalue" onClick="fRow(<%=CampoID%>, <%=pMod("id") %>, 'X')"><i class="fa fa-remove"></i></button>
+                    <button type="button" class="btn btn-xs btn-danger btn-20 postvalue" onClick="fRow(<%=CampoID%>, <%=pMod("id") %>, 'X')"><i class="far fa-remove"></i></button>
 				  </td></tr><%
 			pMod.movenext
 			wend
@@ -394,7 +394,7 @@ $(function() {
 				%><iframe id="frm<%=CampoID%>" name="frm<%=CampoID%>" frameborder="0" scrolling="no" src="subGrid.asp?GrupoID=<%=CampoID%>&FormID=<%=I%>" style="width:100%;height:100%"></iframe><%
 			end if
 		case 14
-			%><div style="position:absolute; bottom:0; right:0"><button type="button" class="btn btn-sm btn-primary hidden-print" onClick="editCurva(<%= CampoID %>, '<%= FormID %>')"><i class="fa fa-edit"></i> EDITAR DADOS</button></div><iframe id="frm<%=CampoID%>" name="frm<%=CampoID%>" frameborder="0" scrolling="no" src="Curva.asp?CampoID=<%=CampoID%>&FormPID=<%=FormID%>" style="width:100%;height:100%"></iframe><%
+			%><div style="position:absolute; bottom:0; right:0"><button type="button" class="btn btn-sm btn-primary hidden-print" onClick="editCurva(<%= CampoID %>, '<%= FormID %>')"><i class="far fa-edit"></i> EDITAR DADOS</button></div><iframe id="frm<%=CampoID%>" name="frm<%=CampoID%>" frameborder="0" scrolling="no" src="Curva.asp?CampoID=<%=CampoID%>&FormPID=<%=FormID%>" style="width:100%;height:100%"></iframe><%
 		case 15
 '			if isnumeric(ValorPadrao) then
 '				set pcvp = db.execute("select * from buicamposforms where id="&ValorPadrao)

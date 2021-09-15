@@ -13,7 +13,7 @@ else
     id = dadosUser("id")
     if dadosUser("AlterarSenhaAoLogin") = "1" then
         alterarSenha = " disabled "
-        alterarSenhaIcon = " fa fa-check-circle "
+        alterarSenhaIcon = " far fa-check-circle "
     end if
 	set dadosAcesso = dbc.execute("select * from licencasusuarios where id="&dadosUser("id")&" and LicencaID="&replace(session("Banco"), "clinic", ""))
 	if dadosAcesso.eof then
@@ -68,7 +68,7 @@ end if
                 Dados de Acesso de <%=Nome%>
             </span>
             <span class="panel-controls">
-                <button type="submit" class="btn btn-sm btn-primary"> <i class="fa fa-key"></i> Salvar </button>
+                <button type="submit" class="btn btn-sm btn-primary"> <i class="far fa-key"></i> Salvar </button>
             </span>
         </div>
         <div class="panel-body">
@@ -81,7 +81,7 @@ end if
                     <label for="User" class="field prepend-icon">
                         <input type="email" class="form-control" name="User" placeholder="E-mail" value="<%= EmailAcesso %>" autofocus />
                         <label for="username" class="field-icon">
-                        <i class="fa fa-user"></i>
+                        <i class="far fa-user"></i>
                         </label>
                     </label>
                 </div>
@@ -90,7 +90,7 @@ end if
                     <label for="password" class="field prepend-icon">
                         <input type="password" class="form-control" name="password" id="senha-acesso" placeholder="Senha" autocomplete="new-password" />
                         <label for="password" class="field-icon">
-                        <i class="fa fa-lock"></i>
+                        <i class="far fa-lock"></i>
                         </label>
                     </label>
                     <span id="erro-senha" style="color: #cf0100;font-size: 12px;display: none;">A senha deve possuir mais de 8 caracteres. Ao menos um número e uma letra.</span>
@@ -100,7 +100,7 @@ end if
                     <label for="password2" class="field prepend-icon">
                         <input type="password" class="form-control" autocomplete="new-password" name="password2" id="senha-confirmacao-acesso" placeholder="Senha" />
                         <label for="password2" class="field-icon">
-                        <i class="fa fa-lock"></i>
+                        <i class="far fa-lock"></i>
                         </label>
                     </label>
                 </div>

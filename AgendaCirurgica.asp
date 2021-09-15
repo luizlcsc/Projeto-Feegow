@@ -101,7 +101,7 @@ end if
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Agenda Cirúrgica");
-    $(".crumb-icon a span").attr("class", "fa fa-medkit");
+    $(".crumb-icon a span").attr("class", "far fa-medkit");
 </script>
 
 <form id="AgendaCirurgica" action="" method="post">
@@ -197,7 +197,7 @@ end if
 
             <br />
             <div class="clearfix form-actions no-margin">
-                <button class="btn btn-primary btn-md"><i class="fa fa-save"></i>Salvar</button>
+                <button class="btn btn-primary btn-md"><i class="far fa-save"></i>Salvar</button>
             </div>
         </div>
     </div>

@@ -46,7 +46,7 @@ end if
                     call quickfield("multiple", "Exibir"&perm("id"), "Exibir campos adicionais", 12, perm("Exibir"), "select label,ColumnName id from cliniccentral.sys_resourcesfields where resourceId=1 AND columnName IN ("&camposPacienteAgenda&") union all select 'Profissional Solicitante' label , 'IndicadoPorSelecao' id", "label", "")
                 end if
                 %></td>
-            <td><button onClick="xPerm(<%=perm("id")%>)" type="button" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button></td>
+            <td><button onClick="xPerm(<%=perm("id")%>)" type="button" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button></td>
           </tr>
           <%
 		perm.movenext

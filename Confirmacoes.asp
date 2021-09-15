@@ -4,7 +4,7 @@
     $(".crumb-active a").html("Confirmações de Agendamentos");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("via e-mail e SMS");
-    $(".crumb-icon a span").attr("class", "fa fa-envelope");
+    $(".crumb-icon a span").attr("class", "far fa-envelope");
 </script>
 
 <br />
@@ -49,7 +49,7 @@
                             <td><i>Paciante Excluído</i></td>
                         <%end if%>
                         <td><em><%=conf("Resposta")%></em></td>
-                        <td width="1%"><a href="./?P=Agenda<%if versaoAgenda()=1 then%>-1<%end if%>&Pers=1&Conf=<%=conf("id")%>" class="btn btn-xs btn-white"><i class="fa fa-search-plus"></i></a></td>
+                        <td width="1%"><a href="./?P=Agenda<%if versaoAgenda()=1 then%>-1<%end if%>&Pers=1&Conf=<%=conf("id")%>" class="btn btn-xs btn-white"><i class="far fa-search-plus"></i></a></td>
                     </tr>
                     <%
                     end if

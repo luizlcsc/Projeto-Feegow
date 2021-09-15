@@ -41,7 +41,7 @@ set reg = db.execute("select * from convenios where id="&req("I"))
                                 </div>
                                 <div id="divDisplayFoto" style="display: <%= divDisplayFoto %>">
                                     <img id="avatarFoto" src="<%=arqEx(reg("Foto"), "Perfil")%>" class="img-thumbnail" width="100%" />
-                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position: absolute; left: 18px; bottom: 6px;"><i class="fa fa-trash"></i></button>
+                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position: absolute; left: 18px; bottom: 6px;"><i class="far fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>

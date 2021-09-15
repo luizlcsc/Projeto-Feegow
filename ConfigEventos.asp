@@ -89,7 +89,7 @@ if session("admin")=1 then
                                 Configurações dos Eventos
                             </span>
                             <span class="panel-controls">
-                                <button class="btn btn-primary btn-sm" id="save"> <i class="fa fa-save"></i> Salvar </button>
+                                <button class="btn btn-primary btn-sm" id="save"> <i class="far fa-save"></i> Salvar </button>
                             </span>
                         </div>
                         <div class="panel-body">
@@ -182,14 +182,14 @@ if session("admin")=1 then
                             <hr class="short alt" />
                             <div class="row">
                                  <div class="col-md-2">
-                                    <button type="button" onclick="ExcluirFila('email')" data-group="AtivarEmail" data-type="Email" class="btn btn-sm btn-danger excluir-fila" disabled><i class="fa fa-exclamation-triangle"></i>  Excluir E-mail da Fila  </button>
+                                    <button type="button" onclick="ExcluirFila('email')" data-group="AtivarEmail" data-type="Email" class="btn btn-sm btn-danger excluir-fila" disabled><i class="far fa-exclamation-triangle"></i>  Excluir E-mail da Fila  </button>
 
                                  </div>
                                  <div class="col-md-2">
-                                    <button type="button" onclick="ExcluirFila('sms')" data-group="AtivarSMS" data-type="SMS" class="btn btn-sm btn-danger excluir-fila" disabled><i class="fa fa-exclamation-triangle"></i>  Excluir <%=LabelSmsZap%> da Fila  </button>
+                                    <button type="button" onclick="ExcluirFila('sms')" data-group="AtivarSMS" data-type="SMS" class="btn btn-sm btn-danger excluir-fila" disabled><i class="far fa-exclamation-triangle"></i>  Excluir <%=LabelSmsZap%> da Fila  </button>
                                  </div>
                                  <div class="col-md-2 hidden">
-                                    <button disabled type="button" onclick="ExcluirFila('whatsapp')" data-group="AtivarWhatsApp" data-type="WhatsApp" class="btn btn-sm btn-danger excluir-fila" disabled><i class="fa fa-exclamation-triangle"></i>  Excluir WhatsApp da Fila  </button>
+                                    <button disabled type="button" onclick="ExcluirFila('whatsapp')" data-group="AtivarWhatsApp" data-type="WhatsApp" class="btn btn-sm btn-danger excluir-fila" disabled><i class="far fa-exclamation-triangle"></i>  Excluir WhatsApp da Fila  </button>
                                  </div>
                             </div>
 

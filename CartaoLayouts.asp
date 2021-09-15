@@ -26,7 +26,7 @@ set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Edição de Layout de Conciliação de Cartão");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 
 <form method="post" id="frm" name="frm" action="save.asp">
@@ -41,7 +41,7 @@ set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
                 if session("Admin")=1 then
                     %>
                     <button class="btn  btn-primary" id="save">
-                        <i class="fa fa-save"></i> Salvar
+                        <i class="far fa-save"></i> Salvar
                     </button>
                     <%
                 end if

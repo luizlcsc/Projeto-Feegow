@@ -102,7 +102,7 @@ end if
 
 <div class="panel mt20 mtn hidden-print">
     <div class="panel-heading">
-        <span class="panel-title"><i class="fa fa-filter"></i> Filtrar</span>
+        <span class="panel-title"><i class="far fa-filter"></i> Filtrar</span>
     </div>
     <div class="panel-body">
         <form action="" id="form-filtro-tabela-de-preco" method="get">
@@ -132,8 +132,8 @@ end if
                         <%= selectInsert("Procedimento", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " ", "", "") %>
                     </div>
                     <div class="col-md-3 text-right">
-                        <button type="button" class="btn btn-default mt25" onclick="LimparFiltros()"><i class="fa fa-eraser"> </i> Limpar </button>
-                        <button class="btn btn-primary mt25" ><i class="fa fa-search"> </i> Buscar </button>
+                        <button type="button" class="btn btn-default mt25" onclick="LimparFiltros()"><i class="far fa-eraser"> </i> Limpar </button>
+                        <button class="btn btn-primary mt25" ><i class="far fa-search"> </i> Buscar </button>
                     </div>
                 </div>
 
@@ -238,11 +238,11 @@ end if
 
                     IF not isnull(t("Fim")) and not isnull(t("Inicio")) THEN
                         if cdate(t("Fim")) < date() then
-                            LabelTabela = "<span class='label label-danger'><i class='fa fa-exclamation-circle'></i> Expirada</span>"
+                            LabelTabela = "<span class='label label-danger'><i class='far fa-exclamation-circle'></i> Expirada</span>"
                         end if
 
                         if cdate(t("Fim")) >= date() and cdate(t("Inicio")) <= date() then
-                            LabelTabela = "<span class='label label-success'><i class='fa fa-check-circle'></i> Vigente</span>"
+                            LabelTabela = "<span class='label label-success'><i class='far fa-check-circle'></i> Vigente</span>"
                         end if
                     END IF
                     %>
@@ -254,21 +254,21 @@ end if
                         <td><%= t("Inicio") &" a "& t("Fim") %></td>
                         <td style="width: 30%"><%= t("Unidades") %></td>
                         <td>
-                            <button type="button" class="btn btn-xs btn-info"><i class="fa fa-copy" title="Duplicar tabela" onclick="if(confirm('Tem certeza de que deseja duplicar esta tabela? \nIMPORTANTE: Cuidado para não gerar conflito entre tabelas similares.'))location.href='./?P=TabelasPreco&Pers=1&DT=<%= t("id") %>'"></i></button>
+                            <button type="button" class="btn btn-xs btn-info"><i class="far fa-copy" title="Duplicar tabela" onclick="if(confirm('Tem certeza de que deseja duplicar esta tabela? \nIMPORTANTE: Cuidado para não gerar conflito entre tabelas similares.'))location.href='./?P=TabelasPreco&Pers=1&DT=<%= t("id") %>'"></i></button>
                         </td>
                         <% if aut("|tabelasprecosA|")=1 then %>
-                        <td><a href="./?P=ProcedimentosTabelas2&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a></td>
+                        <td><a href="./?P=ProcedimentosTabelas2&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="far fa-edit"></i></a></td>
                         <% end if %>
                         <% if aut("|tabelasprecosX|")=1 then
                         %>
                             <td>
-                                    <a href="javascript:if(confirm(`Tem certeza de que deseja excluir esta tabela?`))location.href=`./<%="?P=TabelasPreco&I="&t("id")&"&Pers=1&X="&t("id")&"&Tipo="&req("Tipo")&"&TabelasParticulares="&req("TabelasParticulares")&"&Especialidades="&req("Especialidades")&"&ProcedimentoID="&req("ProcedimentoID")%>`" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></a>
+                                    <a href="javascript:if(confirm(`Tem certeza de que deseja excluir esta tabela?`))location.href=`./<%="?P=TabelasPreco&I="&t("id")&"&Pers=1&X="&t("id")&"&Tipo="&req("Tipo")&"&TabelasParticulares="&req("TabelasParticulares")&"&Especialidades="&req("Especialidades")&"&ProcedimentoID="&req("ProcedimentoID")%>`" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></a>
                             </td>
                         <% end if %>
                         <%
                             if aut("snapshottabelasprecosA")=1 and aut("snapshottabelasprecosE")=1 then
                         %>
-                             <td><a href="#" class="btn btn-xs btn-waring" onclick="carregaSnapshots('tabela','<%=t("id") %>')"><i class="fa fa-history"></i></a></td>
+                             <td><a href="#" class="btn btn-xs btn-waring" onclick="carregaSnapshots('tabela','<%=t("id") %>')"><i class="far fa-history"></i></a></td>
                         <% end if %>
                     </tr>
                     <%
@@ -327,16 +327,16 @@ buscaFiltro = replace(replace(request.QueryString&"","'","''"),"&pagNumber="&req
     $(".crumb-active a").html("Preços de Custo e Venda");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("cadastro de preços de custo e venda por vigência");
-    $(".crumb-icon a span").attr("class", "fa fa-table");
+    $(".crumb-icon a span").attr("class", "far fa-table");
     <%
     if aut("snapshottabelasprecosA")=1 and aut("snapshottabelasprecosE")=1 then
     %>
-        $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=ProcedimentosTabelas2&Pers=1&I=N"><i class="fa fa-plus"></i><span class="menu-text"> INSERIR </span></a>&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="carregaSnapshots(\'geral\',\'0\')"> Histórico </button>');
+        $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=ProcedimentosTabelas2&Pers=1&I=N"><i class="far fa-plus"></i><span class="menu-text"> INSERIR </span></a>&nbsp;&nbsp;<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="carregaSnapshots(\'geral\',\'0\')"> Histórico </button>');
     <%
     else
         if aut("tabelasprecosA")=1 then
         %>
-            $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=ProcedimentosTabelas2&Pers=1&I=N"><i class="fa fa-plus"></i><span class="menu-text"> INSERIR </span></a>&nbsp;&nbsp;');
+            $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=ProcedimentosTabelas2&Pers=1&I=N"><i class="far fa-plus"></i><span class="menu-text"> INSERIR </span></a>&nbsp;&nbsp;');
         <%
         end if
     end if
@@ -379,7 +379,7 @@ buscaFiltro = replace(replace(request.QueryString&"","'","''"),"&pagNumber="&req
 
     function restaurarSnapShot(tipo, snapshotid, tabelaid)
     {
-        var gravando = '<h3 style="text-align: center;"><i class="fa fa-spinner fa-spin"></i> <BR> Restaurando... </h3>';
+        var gravando = '<h3 style="text-align: center;"><i class="far fa-spinner fa-spin"></i> <BR> Restaurando... </h3>';
         $('#btn-criar').attr("disabled", true);
         $('#modalbody').html(gravando);            
         $.get("operacaoSnapShot.asp", {
@@ -397,7 +397,7 @@ buscaFiltro = replace(replace(request.QueryString&"","'","''"),"&pagNumber="&req
 
     function criarsnapshot()
     {
-        var gravando = '<h3 style="text-align: center;"><i class="fa fa-spinner fa-spin"></i> <BR> Gerando Ponto de Restauração... </h3>';
+        var gravando = '<h3 style="text-align: center;"><i class="far fa-spinner fa-spin"></i> <BR> Gerando Ponto de Restauração... </h3>';
         $('#btn-criar').attr("disabled", true);
         $('#modalbody').html(gravando);
 

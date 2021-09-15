@@ -127,7 +127,7 @@
                                 </div>
                             </div>
 
-<!--                            <span class="text-primary"><i class="fa fa-stethoscope"></i>-->
+<!--                            <span class="text-primary"><i class="far fa-stethoscope"></i>-->
 <!--                                                        Teste agora o Feegow Clinic!</span>-->
                         </div>
                         <form method="post" autocomplete="off" id="trial" action="">
@@ -149,7 +149,7 @@
                                                             <label for="NomeContato" class="field prepend-icon">
                                                               <input type="text" name="NomeContato" id="NomeContato" class="gui-input" placeholder="Nome completo..." required autofocus>
                                                               <label for="NomeContato" class="field-icon">
-                                                                <i class="fa fa-user"></i>
+                                                                <i class="far fa-user"></i>
                                                               </label>
                                                             </label>
                                                         </div>
@@ -159,7 +159,7 @@
                                                             <label for="Telefone" class="field prepend-icon">
                                                                 <input type="text" name="Telefone" id="Telefone" class="gui-input input-mask-phone" placeholder="Telefone...">
                                                                 <label for="Telefone" class="field-icon">
-                                                                <i class="fa fa-phone"></i>
+                                                                <i class="far fa-phone"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -167,7 +167,7 @@
                                                             <label for="Celular" class="field prepend-icon">
                                                                 <input type="text" name="Celular" id="Celular" class="gui-input input-mask-phone" placeholder="Celular..." required>
                                                                 <label for="Celular" class="field-icon">
-                                                                <i class="fa fa-mobile-phone"></i>
+                                                                <i class="far fa-mobile-phone"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -177,7 +177,7 @@
                                                                     <label for="Email" class="field prepend-icon">
                                                                       <input type="text" name="Email" id="Email" class="gui-input" placeholder="E-mail..." required>
                                                                       <label for="Email" class="field-icon">
-                                                                        <i class="fa fa-envelope"></i>
+                                                                        <i class="far fa-envelope"></i>
                                                                       </label>
                                                                     </label>
                                                         </div>
@@ -188,7 +188,7 @@
                                                             <label for="Cupom" class="field prepend-icon">
                                                                 <input type="text" name="Cupom" id="Cupom" class="gui-input" placeholder="Cupom desconto, caso possua..." value="<%=req("Cupom")%>">
                                                                 <label for="Cupom" class="field-icon">
-                                                                <i class="fa fa-ticket"></i>
+                                                                <i class="far fa-ticket"></i>
                                                                 </label>
                                                             </label>
 
@@ -210,7 +210,7 @@
                                                             <label for="NomeEmpresa" class="field prepend-icon">
                                                                 <input type="text" required name="NomeEmpresa" id="NomeEmpresa" class="gui-input" placeholder="Nome da Clínica" >
                                                                 <label for="NomeEmpresa" class="field-icon">
-                                                                <i class="fa fa fa-hospital-o"></i>
+                                                                <i class="fa far fa-hospital-o"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -218,7 +218,7 @@
                                                             <label for="UsuariosPretendidos" class="field prepend-icon">
                                                                 <input type="text" required name="UsuariosPretendidos" id="UsuariosPretendidos" class="gui-input" placeholder="Quantidade de Profissionais da Clínica" >
                                                                 <label for="UsuariosPretendidos" class="field-icon">
-                                                                <i class="fa fa-group"></i>
+                                                                <i class="far fa-group"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -228,7 +228,7 @@
                                                             <label for="Cargo" class="field prepend-icon">
                                                                 <input type="text" required name="Cargo" id="Cargo" class="gui-input" placeholder="Cargo" >
                                                                 <label for="Cargo" class="field-icon">
-                                                                <i class="fa fa-suitcase"></i>
+                                                                <i class="far fa-suitcase"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -236,7 +236,7 @@
                                                             <label for="CRMResponsavel" class="field prepend-icon">
                                                                 <input type="text" name="CRMResponsavel" id="CRMResponsavel" class="gui-input" placeholder="CRM do Responsavel" >
                                                                 <label for="CRMResponsavel" class="field-icon">
-                                                                <i class="fa fa-user-md"></i>
+                                                                <i class="far fa-user-md"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -246,7 +246,7 @@
                                                             <label for="senha1" class="field prepend-icon">
                                                                 <input type="password" name="senha1" id="senha1" class="gui-input" placeholder="Defina uma Senha..." required>
                                                                 <label for="senha1" class="field-icon">
-                                                                <i class="fa fa-lock"></i>
+                                                                <i class="far fa-lock"></i>
                                                                 </label>
                                                             </label>
 
@@ -256,7 +256,7 @@
                                                             <label for="senha2" class="field prepend-icon">
                                                                 <input type="password" name="senha2" id="senha2" class="gui-input" placeholder="Confirme sua senha..." required>
                                                                 <label for="senha2" class="field-icon">
-                                                                <i class="fa fa-lock"></i>
+                                                                <i class="far fa-lock"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -309,7 +309,7 @@
                             </div>
                             <!-- end .form-body section -->
                             <div class="panel-footer clearfix p10 ph15">
-                                    <button class="btn btn-primary" id="btnGenerate"><i class="fa fa-ok"></i>INICIAR TESTE</button>
+                                    <button class="btn btn-primary" id="btnGenerate"><i class="far fa-ok"></i>INICIAR TESTE</button>
                             </div>
                             <!-- end .form-footer section -->
                         </form>

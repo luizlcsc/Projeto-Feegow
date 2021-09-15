@@ -52,7 +52,7 @@
                 %>
         <tr>
             <td>
-                <a target="_blank" href="./relatorio.asp?TipoRel=Incomming&L=<%=cli("id") %>" class="btn btn-sm btn-success"><i class="fa fa-search"></i></a>
+                <a target="_blank" href="./relatorio.asp?TipoRel=Incomming&L=<%=cli("id") %>" class="btn btn-sm btn-success"><i class="far fa-search"></i></a>
                 <%=cli("NomeContato") %> - <%=cli("NomeEmpresa") %> <br /> <%=cli("Nome") %> <span class="badge"><%=cli("Cupom") %></span></td>
             <td class="text-right"><%=dateadd("m", 1, cli("DataHora")) %></td>
             <td class="text-right"><%=UsuariosContratados %></td>

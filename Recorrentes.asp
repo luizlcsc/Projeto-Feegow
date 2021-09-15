@@ -21,11 +21,11 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $(".crumb-active a").html("<%=Titulo%>");
-        $(".crumb-icon a span").attr("class", "fa fa-refresh");
+        $(".crumb-icon a span").attr("class", "far fa-refresh");
         <%
         if (aut("contasapagarI") and CD="D") OR (aut("contasareceberI") and CD="C") then
             %>
-            $(".topbar-right").html('<a href="./?P=Recorrente&Pers=1&I=N&T=<%=req("T") %>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Inserir</a>');
+            $(".topbar-right").html('<a href="./?P=Recorrente&Pers=1&I=N&T=<%=req("T") %>" class="btn btn-sm btn-primary"><i class="far fa-plus"></i> Inserir</a>');
             <%
         end if
         %>
@@ -84,7 +84,7 @@
                         <%
                         if (CD="D" and aut("despesafixaA")=1) or (CD="C" and aut("receitafixaA")=1) then
                         %>
-                        <a href="./?P=Recorrente&I=<%=fixa("id") %>&T=<%=fixa("CD") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a>
+                        <a href="./?P=Recorrente&I=<%=fixa("id") %>&T=<%=fixa("CD") %>&Pers=1" class="btn btn-xs btn-success"><i class="far fa-edit"></i></a>
                         <%
                         end if
                         %>
@@ -93,7 +93,7 @@
                         <%
                         if (CD="D" and aut("despesafixaX")=1) or (CD="C" and aut("receitafixaX")=1) then
                         %>
-                        <a href="javascript:if(confirm('Tem certeza de que deseja excluir esta conta fixa?\n\n Obs: As contas já consolidadas não serão excluídas.'))location.href='./?P=Recorrentes&T=<%=req("T") %>&Pers=1&List=1&X=<%=fixa("id") %>';" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></a>
+                        <a href="javascript:if(confirm('Tem certeza de que deseja excluir esta conta fixa?\n\n Obs: As contas já consolidadas não serão excluídas.'))location.href='./?P=Recorrentes&T=<%=req("T") %>&Pers=1&List=1&X=<%=fixa("id") %>';" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></a>
                         <%
                         end if
                         %>

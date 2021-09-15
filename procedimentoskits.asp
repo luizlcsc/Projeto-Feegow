@@ -40,7 +40,7 @@ if Acao<>"A" then 'se nao está alterando dados, exibe conteúdo
                 <div class="col-md-1" style="line-height: 50px;">
                 <span class="panel-controls" style="display: inline-block;">
                     <button class="btn btn-sm btn-danger"  type="button" onclick="if(confirm('Tem certeza'))kit('X', 0, <%=pk("id") %>)">
-                        <i class="fa fa-remove red"></i>
+                        <i class="far fa-remove red"></i>
                     </button>
                 </span>
                 </div>

@@ -54,7 +54,7 @@ end if
             <td><label><input class="ace" name="Permissoes<%=perm("id")%>"<% If instr(perm("Permissoes"), "AO")>0 Then %> checked="checked"<% End If %> value="AO" type="checkbox" /><span class="lbl"></span></label></td>
             <td><label><input class="ace" name="Permissoes<%=perm("id")%>"<% If instr(perm("Permissoes"), "XP")>0 Then %> checked="checked"<% End If %> value="XP" type="checkbox" /><span class="lbl"></span></label></td>
             <!--<td><label><input class="ace" name="Permissoes" checked="checked" value="XO" type="checkbox" /><span class="lbl"></span></label></td>-->
-            <td><button onClick="xPerm(<%=perm("id")%>)" type="button" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button></td>
+            <td><button onClick="xPerm(<%=perm("id")%>)" type="button" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button></td>
           </tr>
           <%
 		perm.movenext

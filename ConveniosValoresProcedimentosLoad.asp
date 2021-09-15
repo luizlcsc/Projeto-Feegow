@@ -93,7 +93,7 @@ while not proc.eof
     response.flush()
 
     %><tr id="<%=proc("ProcID")%>">
-        <td><% if aut("|conveniosA|")= 1 then %><button type="button" onclick="editaValores(<%=proc("ProcID")%>, <%=ConvenioID%>,<%=proc("PvId")%>);" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></button><% end if %></td>
+        <td><% if aut("|conveniosA|")= 1 then %><button type="button" onclick="editaValores(<%=proc("ProcID")%>, <%=ConvenioID%>,<%=proc("PvId")%>);" class="btn btn-xs btn-success"><i class="far fa-edit"></i></button><% end if %></td>
         <td><%=proc("NomeProcedimento")%></td>
         <td class="text-right"><%=codigoTabela%></td>
         <td class="text-right"><%=proc("Codigo")%></td>
@@ -110,7 +110,7 @@ while not proc.eof
                     set valPlan = db.execute("select * from tissprocedimentosvaloresplanos where PlanoID="&splPlanoID(j)&" and AssociacaoID like '"&proc("PvId")&"'")
                     if not valPlan.EOF then
                         if valPlan("NaoCobre")="S" then
-                            ValorPlano = "<i class=""fa fa-ban-circle""></i>"
+                            ValorPlano = "<i class=""far fa-ban-circle""></i>"
                         else
                             ValorPlano = formatnumber(valPlan("Valor"),2)
                         end if
@@ -126,8 +126,8 @@ while not proc.eof
             <%
             if proc("id") > 0 then
                 %>
-                <a  class="btn btn-primary btn-xs" onclick="clonarAssociacao(<%=proc("PvId")%>);"><i class="fa fa-copy bigger-130"></i></a>
-                <a  class="btn btn-danger btn-xs" onclick="removeAssociacao(<%=proc("PvId")%>);" ><i class="fa fa-remove bigger-130"></i></a>
+                <a  class="btn btn-primary btn-xs" onclick="clonarAssociacao(<%=proc("PvId")%>);"><i class="far fa-copy bigger-130"></i></a>
+                <a  class="btn btn-danger btn-xs" onclick="removeAssociacao(<%=proc("PvId")%>);" ><i class="far fa-remove bigger-130"></i></a>
                 <%
             end if
             %>

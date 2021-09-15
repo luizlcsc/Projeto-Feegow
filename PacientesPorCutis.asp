@@ -7,7 +7,7 @@ set rsConta = db.Execute("Select COUNT(id) as TOTAL from pacientes where CorPele
 c=rsConta("TOTAL")
 %>
   <%if req("Lista")="" then%>
-	<button name="button" type="button" class="btn btn-primary btn-block" onclick="location.href='./?P=<%=req("TipoRel")%>&Pers=1&TipoRel=<%=req("TipoRel")%>&CorPele=<%=p("CorPele")%>&Lista=Sim';"><i class="fa fa-list"></i> <%=getCorPele(p("CorPele"))%>: <%=c%> paciente(s)</button>
+	<button name="button" type="button" class="btn btn-primary btn-block" onclick="location.href='./?P=<%=req("TipoRel")%>&Pers=1&TipoRel=<%=req("TipoRel")%>&CorPele=<%=p("CorPele")%>&Lista=Sim';"><i class="far fa-list"></i> <%=getCorPele(p("CorPele"))%>: <%=c%> paciente(s)</button>
   <% end if %>
 <br />
 <%

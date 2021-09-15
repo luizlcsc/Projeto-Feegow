@@ -33,7 +33,7 @@ end if
 <table width="100%" class="table table-striped table-bordered table-condensed">
   <thead>
     <tr>
-      <th width="20" align="center" nowrap><button type="button" onclick="ExibeHistoricoSADT('<%=req("I")%>')" title="Histórico de alterações" class="btn btn-default btn-xs"><i class="fa fa-history"></i></button></th>
+      <th width="20" align="center" nowrap><button type="button" onclick="ExibeHistoricoSADT('<%=req("I")%>')" title="Histórico de alterações" class="btn btn-default btn-xs"><i class="far fa-history"></i></button></th>
       <th width="65" align="center" nowrap>Data</th>
       <th width="65" align="center" nowrap>In&iacute;cio</th>
       <th width="60" align="center" nowrap>Fim</th>
@@ -47,7 +47,7 @@ end if
       <th width="80" align="center" nowrap>Valor Unit.</th>
       <th width="60" align="center" nowrap>Valor Total</th>
       <th width="30" align="center" nowrap> </th>
-      <th width="30" align="center" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemSADT('Procedimentos', <%=req("I")%>, 0);"><i class="fa fa-plus"></i></button></th>
+      <th width="30" align="center" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemSADT('Procedimentos', <%=req("I")%>, 0);"><i class="far fa-plus"></i></button></th>
     </tr>
   </thead>
   <tbody>
@@ -79,7 +79,7 @@ end if
       <input type="hidden" name="descricaoProc<%=p("id") %>" value="<%=p("Descricao") %>" />
       <input type="hidden" name="qtdProc<%=p("id") %>" value="<%=p("Quantidade") %>" />
       <input type="hidden" name="tabelaProc<%=p("id") %>" value="<%=p("TabelaID") %>" />
-      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemSADT('Procedimentos', <%=req("I")%>, <%=p("id")%>);"><i class="fa fa-edit"></i></button></td>
+      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemSADT('Procedimentos', <%=req("I")%>, <%=p("id")%>);"><i class="far fa-edit"></i></button></td>
       <td align="center"><%= p("Data") %></td>
       <td align="center"><%= right(p("HoraInicio"),8) %></td>
       <td align="center"><%= right(p("HoraFim"),8) %></td>
@@ -101,11 +101,11 @@ end if
                   <%
               elseif sta=1 then
                   %>
-                  <button type="button" class="btn btn-xs btn-default" onClick="alert('Aguardando resultado da solicitacao.')"><i class="fa fa-clock-o"></i></button>
+                  <button type="button" class="btn btn-xs btn-default" onClick="alert('Aguardando resultado da solicitacao.')"><i class="far fa-clock-o"></i></button>
                   <%
               elseif sta=2 then
                   %>
-                  <button type="button" class="btn btn-xs btn-success" onClick="alert('AUTORIZADO\n\nQuantidade autorizada: 1')"><i class="fa fa-check"></i></button>
+                  <button type="button" class="btn btn-xs btn-success" onClick="alert('AUTORIZADO\n\nQuantidade autorizada: 1')"><i class="far fa-check"></i></button>
                   <%
               elseif sta=3 then
                 set neg = db.execute("select * from cliniccentral.tissmotivoglosa where Codigo like '"&p("motivoNegativa")&"'")
@@ -117,7 +117,7 @@ end if
                         descricaoNegativa = neg("Descricao")
                       end if
                   %>
-                  <button type="button" class="btn btn-xs btn-danger" onClick="alert('NEGADO - <%=CodigoNegativa %>\n\n<%=descricaoNegativa %>')"><i class="fa fa-ban"></i></button>
+                  <button type="button" class="btn btn-xs btn-danger" onClick="alert('NEGADO - <%=CodigoNegativa %>\n\n<%=descricaoNegativa %>')"><i class="far fa-ban"></i></button>
                   <%
               end if
               %>
@@ -129,13 +129,13 @@ end if
             if aut("repassesV")=1 then
             %>
             <a title="Repasses Gerados" href="javascript:repasses('ItemGuiaID', <%= p("id") %>)" type="button" class="btn btn-xs btn-dark">
-                <i class="fa fa-puzzle-piece"></i>
+                <i class="far fa-puzzle-piece"></i>
             </a>
             <%
             end if
         else
             %>
-            <button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('tissprocedimentossadt', 'tissprocedimentossadt.asp?I=<%=req("I")%>&X=<%=p("id")%>')"><i class="fa fa-remove"></i></button>
+            <button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('tissprocedimentossadt', 'tissprocedimentossadt.asp?I=<%=req("I")%>&X=<%=p("id")%>')"><i class="far fa-remove"></i></button>
             <%
         end if
       %>

@@ -1,6 +1,6 @@
 <!--#include file="connect.asp"-->
 <div class="panel-heading">
-    <span class="panel-title"><i class="fa fa-puzzle-piece"></i> Repasses Gerados</span>
+    <span class="panel-title"><i class="far fa-puzzle-piece"></i> Repasses Gerados</span>
 </div>
 <div class="panel-body">
     <%
@@ -43,7 +43,7 @@
                         <td>
                             <% if not isnull( rr("ItemContaAPagar") ) then %>
                                 <a href="./?P=Invoice&CD=D&Pers=1&I=<%= rr("InvoiceAPagarID") %>" target="_blank" class="btn btn-xs btn-info">
-                                    <i class="fa fa-external-link"></i>
+                                    <i class="far fa-external-link"></i>
                                 </a>
                             <% end if %>
                         </td>

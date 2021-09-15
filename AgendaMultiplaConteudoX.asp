@@ -30,7 +30,7 @@ end if
 <script type="text/javascript">
     function crumbAgenda(){
         $(".crumb-active").html("<a href='./?P=AgendaMultipla&Pers=1'>Agenda</a>");
-        $(".crumb-icon a span").attr("class", "fa fa-calendar");
+        $(".crumb-icon a span").attr("class", "far fa-calendar");
         $(".crumb-link").replaceWith("");
         $(".crumb-trail").removeClass("hidden");
         $(".crumb-trail").html("<%=(formatdatetime(ref("hData"),1))%>");
@@ -194,7 +194,7 @@ end if
 set comGrade = db.execute( sql )
 if comGrade.eof then
     %>
-    <div class="alert alert-warning text-center"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>
+    <div class="alert alert-warning text-center"><i class="far fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>
     <%
 end if
 
@@ -292,7 +292,7 @@ while not comGrade.eof
                                 <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                                 <td colspan="4">
                                     <button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(Hora,4)%>')" class="btn btn-xs btn-primary">
-                                        <i class="fa fa-chevron-left"></i> Agendar Aqui
+                                        <i class="far fa-chevron-left"></i> Agendar Aqui
                                     </button>
                                 </td>
                             </tr>
@@ -304,7 +304,7 @@ while not comGrade.eof
                                 <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                                 <td colspan="4">
                                     <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>', '<%=ProfissionalID%>')" class="btn btn-xs btn-warning">
-                                        <i class="fa fa-chevron-left"></i> Agendar Aqui
+                                        <i class="far fa-chevron-left"></i> Agendar Aqui
                                     </button>
                                 </td>
                             </tr>
@@ -316,7 +316,7 @@ while not comGrade.eof
                                 <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                                 <td colspan="4">
                                     <button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>', '<%=ProfissionalID%>')" class="btn btn-xs btn-warning">
-                                        <i class="fa fa-chevron-left"></i> Repetir Aqui
+                                        <i class="far fa-chevron-left"></i> Repetir Aqui
                                     </button>
                                 </td>
                             </tr>
@@ -488,7 +488,7 @@ while not comGrade.eof
                     {
                         $(this).removeClass("btn-default");
                         $(this).addClass("btn-danger");
-                        $(this).html( $(this).html() + ' <i class="fa fa-lock"></i>' );
+                        $(this).html( $(this).html() + ' <i class="far fa-lock"></i>' );
                     }
                 });
                 <%

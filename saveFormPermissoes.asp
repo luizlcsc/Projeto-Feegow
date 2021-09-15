@@ -16,7 +16,7 @@ permform.close
 set permform=nothing
 %>
 $.gritter.add({
-    title: '<i class="fa fa-save"></i> Permiss&otilde;es salvas!',
+    title: '<i class="far fa-save"></i> Permiss&otilde;es salvas!',
     text: '',
     class_name: 'gritter-success gritter-light'
 });

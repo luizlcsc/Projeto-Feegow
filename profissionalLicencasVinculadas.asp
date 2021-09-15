@@ -104,7 +104,7 @@ end if
     <div class="panel">
             <div class="panel-heading">
                 <span class="panel-title">
-                    <i class="fa fa-unlock"></i>Licenças Vinculadas
+                    <i class="far fa-unlock"></i>Licenças Vinculadas
                 </span>
             </div>
         <div class="panel-body">

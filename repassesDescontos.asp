@@ -54,8 +54,8 @@ else
                             end if
                         %>
                     </td>
-                    <td><button type="button" onclick="repasseDesconto(<%=dr("id") %>)" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></button></td>
-                    <td><button type="button" onclick="if(confirm('Tem certeza de que deseja apagar este desconto de repasse?'))ajxContent('repassesDescontos&X=<%=dr("id") %>', '', 1, 'repassesDescontos')" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button></td>
+                    <td><button type="button" onclick="repasseDesconto(<%=dr("id") %>)" class="btn btn-xs btn-success"><i class="far fa-edit"></i></button></td>
+                    <td><button type="button" onclick="if(confirm('Tem certeza de que deseja apagar este desconto de repasse?'))ajxContent('repassesDescontos&X=<%=dr("id") %>', '', 1, 'repassesDescontos')" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button></td>
                 </tr>
                 <%
             dr.movenext

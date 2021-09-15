@@ -5,10 +5,10 @@ PacienteID = req("p")
 %>
 <div class="panel-heading">
 <span class="panel-title">
-<i class="fa fa-stethoscope"></i>
+<i class="far fa-stethoscope"></i>
 Diagn&oacute;sticos
 <small>
-<i class="fa fa-double-angle-right"></i>
+<i class="far fa-double-angle-right"></i>
 - hist&oacute;rico
 </small>
 </span>
@@ -22,7 +22,7 @@ Diagn&oacute;sticos
         <div class="panel">
             <div class="panel-heading">
               <span class="panel-title">
-                    <i class="fa fa-stethoscope"></i> Busca na CID-10
+                    <i class="far fa-stethoscope"></i> Busca na CID-10
               </span>
 
             </div>
@@ -36,7 +36,7 @@ Diagn&oacute;sticos
                         <input id="FiltroCID" class="form-control input-sm refina" autocomplete="off" placeholder="Filtrar doen&ccedil;a..." type="text">
                         <span class="input-group-btn">
                         <button id="btnMF" class="btn btn-sm btn-default" onclick="ListaCID($('#FiltroCID').val(), '')" type="button">
-                        <i class="fa fa-filter icon-filter bigger-110"></i>
+                        <i class="far fa-filter icon-filter bigger-110"></i>
                         Buscar
                         </button>
                         </span>
@@ -66,7 +66,7 @@ Diagn&oacute;sticos
     </div>
 </div>
 <div class="panel-footer text-right">
-        <button class="btn btn-primary btn-fechar-diagnostico" type="button"><i class="fa fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+        <button class="btn btn-primary btn-fechar-diagnostico" type="button"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
 </div>
 
 <div class="row">

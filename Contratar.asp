@@ -88,13 +88,13 @@ padding:20px 0; text-align:center; margin-bottom:15px;
                     <tr>
                         <td colspan="2">
                           <div class="col-md-4">
-                            <i class="fa fa-credit-card blue"></i> Forma de pagto
+                            <i class="far fa-credit-card blue"></i> Forma de pagto
                           </div>
                           <div class="col-md-4 btn btn-default">
-                            <label><input type="radio" name="Forma" value="C" class="ace"><span class="lbl"> CARTÃO DE CRÉDITO</button><br><small class="green"><i class="fa fa-credit-card"></i> Liberação imediata</small></span></label>
+                            <label><input type="radio" name="Forma" value="C" class="ace"><span class="lbl"> CARTÃO DE CRÉDITO</button><br><small class="green"><i class="far fa-credit-card"></i> Liberação imediata</small></span></label>
                           </div>
                           <div class="col-md-4 btn btn-default">
-                            <label><input type="radio" name="Forma" value="B" class="ace"><span class="lbl"> BOLETO BANCÁRIO</button><br><small class="green"><i class="fa fa-barcode"></i> Liberação na compensação</small></span></label>
+                            <label><input type="radio" name="Forma" value="B" class="ace"><span class="lbl"> BOLETO BANCÁRIO</button><br><small class="green"><i class="far fa-barcode"></i> Liberação na compensação</small></span></label>
                           </div>
                         </td>
                     </tr>
@@ -161,7 +161,7 @@ padding:20px 0; text-align:center; margin-bottom:15px;
             <label><input type="checkbox" name="Aceito" value="S" required class="ace"><span class="lbl"> Declaro que li e aceito os termos de contratação do Feegow Clinic  &raquo; <button type="button" onClick="$('#Aceite').slideUp('fast');" class="btn btn-xs btn-default blue">Ler o contrato</button>.</span></label>
         </div>
         <div class="col-sm-3">
-    		<button id="contratar" class="btn btn-block btn-primary"><i class="fa fa-chevron-right"></i> CONTRATAR</button>
+    		<button id="contratar" class="btn btn-block btn-primary"><i class="far fa-chevron-right"></i> CONTRATAR</button>
         </div>
     </div>
 </form>

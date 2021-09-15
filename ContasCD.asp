@@ -136,7 +136,7 @@ end if
 <script type="text/javascript">
     $(document).ready(function(){
         $(".crumb-active a").html("<%=Titulo%>");
-        $(".crumb-icon a span").attr("class", "fa fa-<%=icone%>");
+        $(".crumb-icon a span").attr("class", "far fa-<%=icone%>");
     });
 </script>
 
@@ -174,7 +174,7 @@ end if
                         <% end if %>
                         <div class="col-md-2">
                             <label>&nbsp;</label><br />
-                            <button class="btn btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="fa fa-search bigger-110"></i> Filtrar</button>
+                            <button class="btn btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="far fa-search bigger-110"></i> Filtrar</button>
                         </div>
                     </div>
                     <div class="row">
@@ -207,11 +207,11 @@ end if
                         <%=quickField("multiple", "AccountAssociation", "Limitar Tipo de Pagador", 2, AccountAssociation, "select * from cliniccentral.sys_financialaccountsassociation WHERE id NOT IN(1, 7)", "AssociationName", "")%>
                         <div class="col-md-1">
                             <label>&nbsp;</label><br />
-                            <button type="button" class="btn btn-block btn-info" title="Geral Impressão" onclick="print()"><i class="fa fa-print"></i></button>
+                            <button type="button" class="btn btn-block btn-info" title="Geral Impressão" onclick="print()"><i class="far fa-print"></i></button>
                         </div>
                         <div class="col-md-1">
                             <label>&nbsp;</label><br />
-                            <button type="button" class="btn btn-block btn-success" title="Gerar Excel" onclick="downloadExcel()"><i class="fa fa-table"></i></button>
+                            <button type="button" class="btn btn-block btn-success" title="Gerar Excel" onclick="downloadExcel()"><i class="far fa-table"></i></button>
                         </div>
                     </div>
                     <%

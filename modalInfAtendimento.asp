@@ -226,7 +226,7 @@ function saveInf(AI){
     </div>
 </form>
 <div class="modal-footer no-margin-top">
-	<button class="btn btn-sm btn-primary pull-right" type="button" onClick="saveInf(<%= atendimentoID %>)" id="btnSaveInf"><i class="fa fa-save"></i>
+	<button class="btn btn-sm btn-primary pull-right" type="button" onClick="saveInf(<%= atendimentoID %>)" id="btnSaveInf"><i class="far fa-save"></i>
 	<%
     if req("Origem")="Atendimento" then
 		if req("Solicitacao")="S" then
@@ -308,10 +308,10 @@ function addProc(Acao, ProcedimentoID, ConvenioID, ValorBruto){
 function expand(I){
 	if($("#div"+I).css("display")=="none"){
 		$("#div"+I).slideDown(500);
-		$("#chevron"+I).attr("class", "fa fa-chevron-up");
+		$("#chevron"+I).attr("class", "far fa-chevron-up");
 	}else{
 		$("#div"+I).slideUp(500);
-		$("#chevron"+I).attr("class", "fa fa-chevron-down");
+		$("#chevron"+I).attr("class", "far fa-chevron-down");
 	}
 }
 

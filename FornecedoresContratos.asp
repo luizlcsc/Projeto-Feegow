@@ -57,7 +57,7 @@ end if
                         Contratos
                     </span>
                     <span class="panel-controls">
-                        <button class="btn btn-primary btn-sm" id="saveContratos" type="button"> <i class="fa fa-save"></i> Salvar </button>
+                        <button class="btn btn-primary btn-sm" id="saveContratos" type="button"> <i class="far fa-save"></i> Salvar </button>
                     </span>
                 </div>
 

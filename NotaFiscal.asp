@@ -11,7 +11,7 @@ end if
     $(".crumb-active a").html("Nota fiscal");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("administração de notas fiscais");
-    $(".crumb-icon a span").attr("class", "fa fa-file-text");
+    $(".crumb-icon a span").attr("class", "far fa-file-text");
 </script>
     <br>
     <div class="panel">
@@ -26,7 +26,7 @@ end if
             <%= quickField("text", "Numero", "Número", 2, "", "", "", "") %>
             <div class="col-md-2">
                 <label>&nbsp;</label><br>
-                <button id="btnBuscar" class="btn btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+                <button id="btnBuscar" class="btn btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
             </div>
             <div class="col-md-2">
                     <label for="NotaFiscalStatus">Status da NF-e</label>
@@ -42,7 +42,7 @@ end if
 
             <div class="col-md-2">
                 <button class="btn btn-success" type="button" id="btnExportar" onclick="exportarExcel()">
-                    <i class="fa fa-download"></i> Exportar
+                    <i class="far fa-download"></i> Exportar
                 </button>
             
             <%
@@ -54,7 +54,7 @@ end if
             
 
             <button class="btn btn-warning" type="button" id="ReceberRetornoBtn" onclick="NFeBaixarRetorno()">
-                <i class="fa fa-download"></i> Receber retorno
+                <i class="far fa-download"></i> Receber retorno
             </button>
             
             <%
@@ -101,7 +101,7 @@ end if
                 <div class="row">
                     <div class="col-md-6">
                         <input required type="file" name="arquivo">
-                        <button type="submit" class="btn btn-primary btn-xs mt15" name="submit"><i class="fa fa-save"></i> Salvar</button>
+                        <button type="submit" class="btn btn-primary btn-xs mt15" name="submit"><i class="far fa-save"></i> Salvar</button>
                     </div>
                 </div>
             </form>

@@ -17,10 +17,10 @@ new PNotify({
     $(".crumb-active a").html("Taxas");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Lista");
-    $(".crumb-icon a span").attr("class", "fa fa-money");
+    $(".crumb-icon a span").attr("class", "far fa-money");
 
     <% if aut("|produtosI|")=1 then %>
-        $("#rbtns").html('<a id="InserirProduto" class="btn btn-sm btn-success" href="?P=ProdutosTaxas&Pers=1&I=N"><i class="fa fa-plus"></i> INSERIR</a>');
+        $("#rbtns").html('<a id="InserirProduto" class="btn btn-sm btn-success" href="?P=ProdutosTaxas&Pers=1&I=N"><i class="far fa-plus"></i> INSERIR</a>');
     <%end if%>
 
     function removeItem(ID){
@@ -55,11 +55,11 @@ new PNotify({
                             <tr id="linha<%=prod("id")%>">
                                 <td><a href="./?P=ProdutosTaxas&Pers=1&I=<%=prod("id")%>"><%=prod("NomeProduto")%></a></td>
                                 <td class="hidden-print" title="<%=title%>">
-                                    <a class="btn btn-xs btn-primary" href="./?P=ProdutosTaxas&Pers=1&I=<%=prod("id")%>"><i class="fa fa-edit"></i></a>
+                                    <a class="btn btn-xs btn-primary" href="./?P=ProdutosTaxas&Pers=1&I=<%=prod("id")%>"><i class="far fa-edit"></i></a>
                                     <%
                                     if aut("|produtosX|")=1 then
                                     %>
-                                    <button class="btn btn-xs btn-danger <%=disabled%>" type="button" onClick="removeItem(<%=prod("id")%>)"><i class="fa fa-remove"></i></button>
+                                    <button class="btn btn-xs btn-danger <%=disabled%>" type="button" onClick="removeItem(<%=prod("id")%>)"><i class="far fa-remove"></i></button>
                                     <%
                                     end if
                                     %>

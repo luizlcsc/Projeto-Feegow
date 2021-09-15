@@ -110,13 +110,13 @@
 					set vcBaixado = db.execute("select id from estoquelancamentos where ItemInvoiceID="&itensF("id")&" and FuncaoRateioID="&fun("id"))
 					if not vcBaixado.eof then
 						%>
-                        <button type="button" class="btn btn-xs btn-success"><i class="fa fa-upload"></i> Baixado</button>
+                        <button type="button" class="btn btn-xs btn-success"><i class="far fa-upload"></i> Baixado</button>
                         <%
 					else
 						%>
                         <div class="btn-group">
                         <button class="btn btn-danger btn-xs dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-download"></i> Baixar <span class="fa fa-caret-down icon-on-right"></span>
+                        <i class="far fa-download"></i> Baixar <span class="far fa-caret-down icon-on-right"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-danger">
                         <%
@@ -158,7 +158,7 @@
     </div></div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-success"><i class="fa fa-check"></i> Confirmar</button>
+	<button class="btn btn-success"><i class="far fa-check"></i> Confirmar</button>
 </div>
 </form>
 <script>

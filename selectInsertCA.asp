@@ -80,7 +80,7 @@ if list.eof then
         <%
         if strInserts<>"" then
         %>
-        Cadastrar &raquo; <select style="width: 70%;float:left" id="tabela<%=ref("selectID")%>" class="form-control input-sm select-sm"><%=strInserts%></select><button style="width: 25%;float: left;" type="button" class="btn btn-sm btn-primary ml10" id="button-insert-<%=ref("selectID")%>"><i class="fa fa-plus"></i> Inserir</button></small>
+        Cadastrar &raquo; <select style="width: 70%;float:left" id="tabela<%=ref("selectID")%>" class="form-control input-sm select-sm"><%=strInserts%></select><button style="width: 25%;float: left;" type="button" class="btn btn-sm btn-primary ml10" id="button-insert-<%=ref("selectID")%>"><i class="far fa-plus"></i> Inserir</button></small>
         </li>
     </ul>
 	<%

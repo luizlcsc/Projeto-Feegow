@@ -165,7 +165,7 @@ sqlConsulta = " SELECT                                                          
 <script type="text/javascript">
     $(document).ready(function(){
         $(".crumb-active a").html("Compras / Aprovação de Compras");
-        $(".crumb-icon a span").attr("class", "fa fa-shopping-cart");
+        $(".crumb-icon a span").attr("class", "far fa-shopping-cart");
     });
 </script>
 <div class="panel">
@@ -181,7 +181,7 @@ sqlConsulta = " SELECT                                                          
                         </div>
                         <div class="col-xs-2">
                             <label>&nbsp;</label><br>
-                            <button type="submit" class="btn btn-sm btn-primary btn-block" style="height: 39px"><i class="fa fa-search"> </i> &nbsp;Buscar</button>
+                            <button type="submit" class="btn btn-sm btn-primary btn-block" style="height: 39px"><i class="far fa-search"> </i> &nbsp;Buscar</button>
                         </div>
                     </div>
                 </form>

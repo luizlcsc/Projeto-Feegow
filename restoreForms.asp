@@ -42,8 +42,8 @@ function constroiLogForLocalStorage()
                         <div class="pull-right"> ${element.dataHora} </div>
                     </div>
                     <div class="panel-body">
-                        <button type="button" onclick="DescartarLog('${element.formID}')" class="btn btn-danger pull-right"  data-toggle="tooltip" data-placement="bottom" title="Descartar"><i class="fa fa-trash"></i></button>
-                        <button type="button" onclick="RestoreLog('${element.formID}')" class="btn btn-primary pull-right mr5" data-toggle="tooltip" data-placement="bottom" title="Restaurar"><i class="fa fa-external-link"></i></button>
+                        <button type="button" onclick="DescartarLog('${element.formID}')" class="btn btn-danger pull-right"  data-toggle="tooltip" data-placement="bottom" title="Descartar"><i class="far fa-trash"></i></button>
+                        <button type="button" onclick="RestoreLog('${element.formID}')" class="btn btn-primary pull-right mr5" data-toggle="tooltip" data-placement="bottom" title="Restaurar"><i class="far fa-external-link"></i></button>
                     ${conteudo}
                     </div>
                 </div>
@@ -133,7 +133,7 @@ if not restForm.eof then
                     <div class="pull-right"><%=restForm("DataHora")%></div>
                 </div>
                 <div class="panel-body">
-                    <button type="button" onclick="restoreform('<%=restForm("id") %>')" class="btn btn-primary pull-right" data-toggle="tooltip" data-placement="bottom" title="Restaurar"><i class="fa fa-external-link"></i></button>
+                    <button type="button" onclick="restoreform('<%=restForm("id") %>')" class="btn btn-primary pull-right" data-toggle="tooltip" data-placement="bottom" title="Restaurar"><i class="far fa-external-link"></i></button>
                 <%
                     response.Write("<small>")
                         sqltest ="SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='_"& restForm("ModeloID") &"'"

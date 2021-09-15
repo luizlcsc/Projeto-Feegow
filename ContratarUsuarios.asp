@@ -53,10 +53,10 @@ SubtotalP = Valor * p
             <table class="table">
                 <thead>
                     <tr>
-                        <th width="73%"> &nbsp;&nbsp; <i class="fa fa-user-md blue"></i> Profissionais de saúde<br>
+                        <th width="73%"> &nbsp;&nbsp; <i class="far fa-user-md blue"></i> Profissionais de saúde<br>
 <small class="grey lighter">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &raquo; Ex.: médicos, dentistas, psicólogos, etc.</small></th>
                         <th colspan="2" width="27%" class="text-center" nowrap>
-                        	<button type="button" class="btn btn-sm btn-primary btn-block" onClick="inserir('P')"><i class="fa fa-plus"></i> Inserir</button>
+                        	<button type="button" class="btn btn-sm btn-primary btn-block" onClick="inserir('P')"><i class="far fa-plus"></i> Inserir</button>
                         </th>
                     </tr>
                 </thead>
@@ -68,7 +68,7 @@ SubtotalP = Valor * p
                     <tr>
                         <td><%= u("NomeProfissional")&u("Admin") %></td>
                         <td nowrap class="text-right">R$ <%=formatnumber(Valor ,2)%></td>
-                        <td><button title="Excluir" onClick="conf(<%=u("id")%>, 'P')" type="button"<% If u("Admin")=1 Then %> disabled<% End If %> class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button></td>
+                        <td><button title="Excluir" onClick="conf(<%=u("id")%>, 'P')" type="button"<% If u("Admin")=1 Then %> disabled<% End If %> class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button></td>
                     </tr>
                     <%
 				u.movenext
@@ -89,10 +89,10 @@ SubtotalP = Valor * p
             <table class="table">
                 <thead>
                     <tr>
-                        <th width="73%"> &nbsp;&nbsp; <i class="fa fa-user blue"></i> Funcionários<br>
+                        <th width="73%"> &nbsp;&nbsp; <i class="far fa-user blue"></i> Funcionários<br>
 <small class="grey lighter">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &raquo; Ex.: secretárias, recepcionistas, faturistas, etc.</small></th>
                         <th colspan="2" width="27%" class="text-center" nowrap>
-                        	<button type="button" class="btn btn-sm btn-primary btn-block" onClick="inserir('F')"><i class="fa fa-plus"></i> Inserir</button>
+                        	<button type="button" class="btn btn-sm btn-primary btn-block" onClick="inserir('F')"><i class="far fa-plus"></i> Inserir</button>
                         </th>
                     </tr>
                 </thead>
@@ -103,7 +103,7 @@ SubtotalP = Valor * p
 					%>
                     <tr>
                         <td><%= u("NomeFuncionario")&u("Admin") %></td>
-                        <td><button title="Excluir" onClick="conf(<%=u("id")%>, 'F')" type="button"<% If u("Admin")=1 Then %> disabled<% End If %> class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button></td>
+                        <td><button title="Excluir" onClick="conf(<%=u("id")%>, 'F')" type="button"<% If u("Admin")=1 Then %> disabled<% End If %> class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button></td>
                     </tr>
                     <%
 				u.movenext
@@ -128,7 +128,7 @@ SubtotalP = Valor * p
 <script>
 function conf(X, T){
 	bootbox.dialog({
-		message: "<strong class='red'><i class='fa fa-warning'></i> Tem certeza de que deseja excluir este usu&aacute;rio?</strong>",
+		message: "<strong class='red'><i class='far fa-warning'></i> Tem certeza de que deseja excluir este usu&aacute;rio?</strong>",
 		buttons: 			
 		{
 			"success" :

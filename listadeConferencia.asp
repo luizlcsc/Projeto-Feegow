@@ -3,7 +3,7 @@
     $(".crumb-active a").html("Coleta");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("lista de Conferência");
-    $(".crumb-icon a span").attr("class", "fa fa-file-text");
+    $(".crumb-icon a span").attr("class", "far fa-file-text");
 </script>
 
 <%
@@ -41,7 +41,7 @@ end if
                 <%= quickfield("simpleSelect", "TipoData", "Tipo", 2, "1", "select '1' id, 'Data de criação' TipoData UNION SELECT '2' id, 'Previsão de entrega' TipoData", "TipoData", "empty") %>
                 <%= quickfield("multiple", "Status", "Status", 2, "", "select id, Status FROM laudostatus ", "Status", "") %>
                 <div class="col-md-2">
-                    <button class="btn btn-primary btn-block mt20"><i class="fa fa-search bigger-110"></i> Buscar</button>
+                    <button class="btn btn-primary btn-block mt20"><i class="far fa-search bigger-110"></i> Buscar</button>
                 </div>
             </div>
 

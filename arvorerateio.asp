@@ -3,29 +3,29 @@
 
 <!--#include file="connect.asp"-->
 <!--inicio treeview
-                    <a href="" class="pull-right"> &nbsp;<i class="fa fa-stethoscope green"></i> </a>
-                    <a href="" class="pull-right"> &nbsp;<i class="fa fa-money green"></i> </a>
-                    <a href="" class="pull-right"> &nbsp;<i class="fa fa-user-md green"></i> </a>
+                    <a href="" class="pull-right"> &nbsp;<i class="far fa-stethoscope green"></i> </a>
+                    <a href="" class="pull-right"> &nbsp;<i class="far fa-money green"></i> </a>
+                    <a href="" class="pull-right"> &nbsp;<i class="far fa-user-md green"></i> </a>
 
 <div id="tree2" class="tree tree-selectable">
     <div class="tree-folder">
-        <div class="tree-folder-header"><i class="fa fa-circle"></i><div class="tree-folder-name">Rateio Geral</div></div>
+        <div class="tree-folder-header"><i class="far fa-circle"></i><div class="tree-folder-name">Rateio Geral</div></div>
         <div class="tree-folder-content">
             <div class="tree-folder">
-                <div class="tree-folder-header"><i class="fa fa-user-md"></i><div class="tree-folder-name">Profissional - Gra&ccedil;a Tavares</div></div>
+                <div class="tree-folder-header"><i class="far fa-user-md"></i><div class="tree-folder-name">Profissional - Gra&ccedil;a Tavares</div></div>
                 <div class="tree-folder-content">
-                    <div class="tree-item"><div class="tree-item-name"><i class="fa fa-money"></i>Forma - Particular</div></div>
-                    <div class="tree-item"><div class="tree-item-name"><i class="fa fa-money"></i> Forma - Unimed</div></div>
+                    <div class="tree-item"><div class="tree-item-name"><i class="far fa-money"></i>Forma - Particular</div></div>
+                    <div class="tree-item"><div class="tree-item-name"><i class="far fa-money"></i> Forma - Unimed</div></div>
                 </div>
             </div>
         </div>
 	</div>
     <div class="tree-item">
-        <div class="tree-item-name"><i class="fa fa-stethoscope"></i> Procedimento - Consulta</div>
+        <div class="tree-item-name"><i class="far fa-stethoscope"></i> Procedimento - Consulta</div>
     </div>
 
     <div class="tree-item">
-        <div class="tree-item-name"><i class="fa fa-stethoscope"></i> Procedimento - Cirurgia</div>
+        <div class="tree-item-name"><i class="far fa-stethoscope"></i> Procedimento - Cirurgia</div>
     </div>
 </div>
 -->
@@ -34,16 +34,16 @@
 function btnsRateio(DominioID, Procedimentos, Profissionais, Formas)
 	btnsRateio = ""
 	if DominioID<>0 then
-	    btnsRateio = btnsRateio&" <button type=""button"" onclick=""removeDominio("&DominioID&");"" class=""pull-right btn btn-xs btn-danger""> &nbsp;<i class=""fa fa-remove""></i> </button> "
+	    btnsRateio = btnsRateio&" <button type=""button"" onclick=""removeDominio("&DominioID&");"" class=""pull-right btn btn-xs btn-danger""> &nbsp;<i class=""far fa-remove""></i> </button> "
 	end if
     if isnull(Procedimentos) or Procedimentos="" then
-        btnsRateio = btnsRateio&" <button type=""button"" onclick=""fRateio('Procedimento', '', "&DominioID&");"" class=""pull-right btn btn-xs btn-primary""> &nbsp;+ <i class=""fa fa-stethoscope""></i> </button>"
+        btnsRateio = btnsRateio&" <button type=""button"" onclick=""fRateio('Procedimento', '', "&DominioID&");"" class=""pull-right btn btn-xs btn-primary""> &nbsp;+ <i class=""far fa-stethoscope""></i> </button>"
 	end if
     if isnull(Profissionais) or Profissionais="" then
-        btnsRateio = btnsRateio&" <button type=""button"" onclick=""fRateio('Profissional', '', "&DominioID&");"" class=""pull-right btn btn-xs btn-primary""> &nbsp;+ <i class=""fa fa-user-md""></i> </button> "
+        btnsRateio = btnsRateio&" <button type=""button"" onclick=""fRateio('Profissional', '', "&DominioID&");"" class=""pull-right btn btn-xs btn-primary""> &nbsp;+ <i class=""far fa-user-md""></i> </button> "
 	end if
     if isnull(Formas) or Formas="" then
-        btnsRateio = btnsRateio&" <button type=""button"" onclick=""fRateio('Forma', '', "&DominioID&");"" class=""pull-right btn btn-xs btn-primary""> &nbsp;+ <i class=""fa fa-money""></i> </button> "
+        btnsRateio = btnsRateio&" <button type=""button"" onclick=""fRateio('Forma', '', "&DominioID&");"" class=""pull-right btn btn-xs btn-primary""> &nbsp;+ <i class=""far fa-money""></i> </button> "
     end if
 end function
 
@@ -103,24 +103,24 @@ end function
 set d0 = db.execute("select 1, (select id from rateiofuncoes where DominioID=0 and FM='K' limit 1) Kit, (select id from rateiofuncoes where DominioID=0 and FM='E' limit 1) Equipe")
 Kit = d0("Kit")
 Equipe = d0("Equipe")
-if not isnull(Kit) then Kit=" <i class='fa fa-medkit'></i>" end if
-if not isnull(Equipe) then Equipe=" <i class='fa fa-users'></i>" end if
+if not isnull(Kit) then Kit=" <i class='far fa-medkit'></i>" end if
+if not isnull(Equipe) then Equipe=" <i class='far fa-users'></i>" end if
 %>
 <div id="tree2" class="tree tree-selectable">
     <div class="tree-folder">
-        <div class="tree-folder-header"><i class="fa fa-circle"></i><div class="tree-folder-name btn-group"><a href="javascript:fRateio('', 0, 'E');">0. Regra Geral de Repasse  <%=kit & equipe %></script></a><%= btnsRateio(0, "", "", "") %></div></div>
+        <div class="tree-folder-header"><i class="far fa-circle"></i><div class="tree-folder-name btn-group"><a href="javascript:fRateio('', 0, 'E');">0. Regra Geral de Repasse  <%=kit & equipe %></script></a><%= btnsRateio(0, "", "", "") %></div></div>
         <div class="tree-folder-content">
 			<%
-			iProfissional = "<i class=""fa fa-user-md""></i>"
-			iProcedimento = "<i class=""fa fa-stethoscope""></i>"
-			iForma = "<i class=""fa fa-money""></i>"
+			iProfissional = "<i class=""far fa-user-md""></i>"
+			iProcedimento = "<i class=""far fa-stethoscope""></i>"
+			iForma = "<i class=""far fa-money""></i>"
 			
 			set d1 = db.execute("select d.*, (select id from rateiofuncoes where DominioID=d.id and FM='K' limit 1) Kit, (select id from rateiofuncoes where DominioID=d.id and FM='E' limit 1) Equipe from rateiodominios d where d.sysActive=1 and d.dominioSuperior=0")
 			while not d1.eof
                 Kit = d1("Kit")
                 Equipe = d1("Equipe")
-                if not isnull(Kit) then Kit=" <i class='fa fa-medkit'></i>" end if
-                if not isnull(Equipe) then Equipe=" <i class='fa fa-users'></i>" end if
+                if not isnull(Kit) then Kit=" <i class='far fa-medkit'></i>" end if
+                if not isnull(Equipe) then Equipe=" <i class='far fa-users'></i>" end if
 
                 Dominios = Dominios & d1("id") &", "
 			%>
@@ -132,8 +132,8 @@ if not isnull(Equipe) then Equipe=" <i class='fa fa-users'></i>" end if
                     while not d2.eof
                         Kit = d2("Kit")
                         Equipe = d2("Equipe")
-                        if not isnull(Kit) then Kit=" <i class='fa fa-medkit'></i>" end if
-                        if not isnull(Equipe) then Equipe=" <i class='fa fa-users'></i>" end if
+                        if not isnull(Kit) then Kit=" <i class='far fa-medkit'></i>" end if
+                        if not isnull(Equipe) then Equipe=" <i class='far fa-users'></i>" end if
 
                         Dominios = Dominios & d2("id") &", "
 						%>
@@ -145,8 +145,8 @@ if not isnull(Equipe) then Equipe=" <i class='fa fa-users'></i>" end if
                                 while not d3.eof
                                     Kit = d3("Kit")
                                     Equipe = d3("Equipe")
-                                    if not isnull(Kit) then Kit=" <i class='fa fa-medkit'></i>" end if
-                                    if not isnull(Equipe) then Equipe=" <i class='fa fa-users'></i>" end if
+                                    if not isnull(Kit) then Kit=" <i class='far fa-medkit'></i>" end if
+                                    if not isnull(Equipe) then Equipe=" <i class='far fa-users'></i>" end if
 
                                     Dominios = Dominios & d3("id") &", "
                                     %>

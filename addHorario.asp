@@ -187,7 +187,7 @@ end if
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">
-                        <i class="fa fa-calendar"></i>
+                        <i class="far fa-calendar"></i>
                             Marque para duplicar a marcação para o dia da semana escolhido
                         </span>
                     </div>
@@ -244,7 +244,7 @@ end if
       <%= quickfield("datepicker", "InicioVigencia", "Vigente desde", 3, InicioVigencia, "", "", " placeholder='Sempre' ") %>
       <%= quickfield("datepicker", "FimVigencia", "até", 3, FimVigencia, "", "", " placeholder='Sempre' ") %>
       <div class="col-md-2">
-          <button type="button" data-toggle="collapse" data-target="#collapse-horarios" class="btn mt25 pull-right"> Mais opções <i class="fa fa-chevron-down"></i></button>
+          <button type="button" data-toggle="collapse" data-target="#collapse-horarios" class="btn mt25 pull-right"> Mais opções <i class="far fa-chevron-down"></i></button>
       </div>
  </div>
 
@@ -326,7 +326,7 @@ end if
 
 </div>
 <div class="modal-footer">
-	<button class="btn btn-success btn-sm"><i class="fa fa-save"></i> SALVAR</button>
+	<button class="btn btn-success btn-sm"><i class="far fa-save"></i> SALVAR</button>
 </div>
 </form>
 <script>

@@ -22,11 +22,11 @@ Tipo="Requisicao"
     function log(){$('#modal-table').modal('show');$.get('DefaultLog.asp?R=tarefas&I=<%= req("I")%>', function(data){$('#modal').html(data);})}
 
     $(".crumb-active a").html("Requisição de estoque");
-    $(".crumb-icon a span").attr("class", "fa fa-tasks");
+    $(".crumb-icon a span").attr("class", "far fa-tasks");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("<%=subtitulo%>");
 
-    $("#rbtns").html('<a title="Lista" href="?P=ListaRequisicaoEstoque&Pers=1" class="btn btn-sm btn-default"><i class="fa fa-list"></i></a> <a title="Novo" href="?P=ListaRequisicaoEstoque&Pers=1&I=N" class="btn btn-sm btn-default"><i class="fa fa-plus"></i></a> ');
+    $("#rbtns").html('<a title="Lista" href="?P=ListaRequisicaoEstoque&Pers=1" class="btn btn-sm btn-default"><i class="far fa-list"></i></a> <a title="Novo" href="?P=ListaRequisicaoEstoque&Pers=1&I=N" class="btn btn-sm btn-default"><i class="far fa-plus"></i></a> ');
 
 
 </script>
@@ -50,7 +50,7 @@ Tipo="Requisicao"
                 %>
                     <span class="panel-title"> Requisição  #<%=req("I")%></span>
                     <span class="panel-controls">
-                        <button class="btn btn-sm btn-primary" id="save">&nbsp;&nbsp;<i class="fa fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>
+                        <button class="btn btn-sm btn-primary" id="save">&nbsp;&nbsp;<i class="far fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>
                     </span>
                 </div>
                 <div class="panel-body">
@@ -74,7 +74,7 @@ Tipo="Requisicao"
                 <div class="panel-heading">
                     <span class="panel-title">Produtos</span>
                     <span class="panel-controls">
-                        <button type="button" class="btn btn-xs btn-success mn" onclick="tsol('I');"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-xs btn-success mn" onclick="tsol('I');"><i class="far fa-plus"></i></button>
                     </span>
                 </div>
                 <div class="panel-body">
@@ -89,7 +89,7 @@ Tipo="Requisicao"
         <div class="col-md-5">
     	    <div class="panel mn">
 			    <div class="panel-heading">
-				    <span class="panel-title"><i class="fa fa-comment blue"></i> Interações</span>
+				    <span class="panel-title"><i class="far fa-comment blue"></i> Interações</span>
 			    </div>
 
 
@@ -111,7 +111,7 @@ Tipo="Requisicao"
 						    <div class="input-group">
 							    <textarea placeholder="Digite sua mensagem para interação no chamado..." type="text" class="form-control" name="msgInteracao" id="msgInteracao"></textarea>
 								<span class="input-group-addon btn btn-primary" style="background-color:#428bca;" type="button" id="btnInteracao">
-									<i class="fa fa-send"></i> Enviar</span>
+									<i class="far fa-send"></i> Enviar</span>
 						    </div>
 					    </div>
 
@@ -132,10 +132,10 @@ Tipo="Requisicao"
     $("#btnInteracao").click(function () {
         var frm = $("#frm").serialize();
         $("#msgInteracao").val('');
-        $("#btnInteracao").html("<center><i class='fa fa-circle-o-notch fa-spin'></i></center>");
+        $("#btnInteracao").html("<center><i class='far fa-circle-o-notch fa-spin'></i></center>");
         $.post("RequisicaoEstoqueInteracoes.asp?I=<%=req("I")%>&Tipo=<%=Tipo%>", frm, function(data){
             $("#interacoes").html(data);
-            $("#btnInteracao").html("<i class='fa fa-send'></i> Enviar");
+            $("#btnInteracao").html("<i class='far fa-send'></i> Enviar");
         });
     });
 

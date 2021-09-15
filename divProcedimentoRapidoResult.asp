@@ -41,8 +41,8 @@ if not procs.eof then
                 <td><%= procs("Valor") %></td>
                 <td><%= procs("TempoProcedimento") %></td>
                 <td nowrap>
-                    <% if aut("|procedimentosA|")=1 then %><a href="./?P=Procedimentos&I=<%=procs("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-edit"></i></a><%end if %>
-                    <% if aut("|procedimentosX|")=1 then %><a class="btn btn-xs btn-danger tooltip-danger" title="" data-rel="tooltip" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))location.href='?P=Procedimentos&X=<%= procs("id") %>&Pers=Follow';"><i class="fa fa-remove bigger-130"></i></a><% end if %>
+                    <% if aut("|procedimentosA|")=1 then %><a href="./?P=Procedimentos&I=<%=procs("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="far fa-edit"></i></a><%end if %>
+                    <% if aut("|procedimentosX|")=1 then %><a class="btn btn-xs btn-danger tooltip-danger" title="" data-rel="tooltip" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))location.href='?P=Procedimentos&X=<%= procs("id") %>&Pers=Follow';"><i class="far fa-remove bigger-130"></i></a><% end if %>
                 </td>
             </tr>
             <%
@@ -64,7 +64,7 @@ if len(txt)>2 then
     set vcaTC = db.execute("select * from cliniccentral.tabelascompletas where TUSS like '%"& txt &"%' or Descricao like '%"& txt &"%' or AMB92 like '%"& txt &"%' or CBHPM like '%"& txt &"%' limit 100")
     if not vcaTC.eof then
         %>
-        <h4><i class="fa fa-star"></i> Ativação Rápida de Procedimento</h4>
+        <h4><i class="far fa-star"></i> Ativação Rápida de Procedimento</h4>
 
         <table class="table table-striped table-bordered table-condensed">
             <thead>
@@ -85,7 +85,7 @@ if len(txt)>2 then
                         <td><%= vcaTC("TUSS") %></td>
                         <td><%= vcaTC("AMB92") %></td>
                         <td><%= vcaTC("CBHPM") %></td>
-                        <td><a href="#" class="btn btn-sm btn-warning" type="button" onclick="ajxContent('divProcedimentoRapidoResult&txt=<%= txt %>&InsRap=<%= vcaTC("id") %>', '', 1, 'divProcedimentoRapido')"><i class="fa fa-star"></i> ATIVAR</i></a></td>
+                        <td><a href="#" class="btn btn-sm btn-warning" type="button" onclick="ajxContent('divProcedimentoRapidoResult&txt=<%= txt %>&InsRap=<%= vcaTC("id") %>', '', 1, 'divProcedimentoRapido')"><i class="far fa-star"></i> ATIVAR</i></a></td>
                     </tr>
                     <%
                 vcaTC.movenext

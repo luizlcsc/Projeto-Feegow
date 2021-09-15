@@ -67,7 +67,7 @@ function DefaultForm(tableName, id)
 					else
 						nomeColuna = "profissional"
 					end if
-                    btnInserir = "<button type=""button"" class=""btn btn-sm btn-success btn-inserir-funcionario"" onclick=""conf()""><i class=""fa fa-plus""></i> INSERIR</button>"
+                    btnInserir = "<button type=""button"" class=""btn btn-sm btn-success btn-inserir-funcionario"" onclick=""conf()""><i class=""far fa-plus""></i> INSERIR</button>"
                 %>
                 
                 <script type="text/javascript">
@@ -79,8 +79,8 @@ function DefaultForm(tableName, id)
                         ValorAtual = 0'ccur(contaUsu("total")) * ccur(valorUsu("valorUsuario"))
 						NovoValor = 0'ValorAtual+ccur(valorUsu("valorUsuario"))
 						
-'						message = "<strong class='red'><i class='fa fa-warning'></i> ATEN&Ccedil;&Atilde;O!</strong><br><br><br>Ao cadastrar um novo "&nomeColuna&", sua fatura aumentar&aacute; de <strong>R$ "&formatnumber(ValorAtual, 2)&"</strong> para <strong>R$ "&formatnumber(NovoValor, 2)&"</strong>.<br>Tem certeza de que deseja cadastrar mais um usu&aacute;rio?<br><br><small class='grey'>Obs.: Caso tenha d&uacute;vidas quanto a esta cobran&ccedil;a, entre em contato conosco.</small>"
-						message = "<strong class='red'><i class='fa fa-warning'></i> ATEN&Ccedil;&Atilde;O!</strong><br><br><br>Ao cadastrar um novo "&nomeColuna&", sua fatura pr&oacute;xima ser&aacute; acrescida deste usu&aacute;rio</strong>.<br>Tem certeza de que deseja cadastrar mais um usu&aacute;rio?<br><br><small class='grey'>Obs.: Caso tenha d&uacute;vidas quanto a esta cobran&ccedil;a, entre em contato conosco.</small>"
+'						message = "<strong class='red'><i class='far fa-warning'></i> ATEN&Ccedil;&Atilde;O!</strong><br><br><br>Ao cadastrar um novo "&nomeColuna&", sua fatura aumentar&aacute; de <strong>R$ "&formatnumber(ValorAtual, 2)&"</strong> para <strong>R$ "&formatnumber(NovoValor, 2)&"</strong>.<br>Tem certeza de que deseja cadastrar mais um usu&aacute;rio?<br><br><small class='grey'>Obs.: Caso tenha d&uacute;vidas quanto a esta cobran&ccedil;a, entre em contato conosco.</small>"
+						message = "<strong class='red'><i class='far fa-warning'></i> ATEN&Ccedil;&Atilde;O!</strong><br><br><br>Ao cadastrar um novo "&nomeColuna&", sua fatura pr&oacute;xima ser&aacute; acrescida deste usu&aacute;rio</strong>.<br>Tem certeza de que deseja cadastrar mais um usu&aacute;rio?<br><br><small class='grey'>Obs.: Caso tenha d&uacute;vidas quanto a esta cobran&ccedil;a, entre em contato conosco.</small>"
 						%>
 					function conf(){
 						bootbox.dialog({
@@ -111,7 +111,7 @@ function DefaultForm(tableName, id)
 					    %>
 					    function conf(){
 						    bootbox.dialog({
-							message: "<strong class='red'><i class='fa fa-warning'></i> ATEN&Ccedil;&Atilde;O!</strong><br><br><br>O cadastro de novos funcion&aacute;rios e profissionais &eacute; permitido somente ao usu&aacute;rio administrador do sistema.<br><br><small>Usu&aacute;rio(s) com permiss&atilde;o para isso:<br><%
+							message: "<strong class='red'><i class='far fa-warning'></i> ATEN&Ccedil;&Atilde;O!</strong><br><br><br>O cadastro de novos funcion&aacute;rios e profissionais &eacute; permitido somente ao usu&aacute;rio administrador do sistema.<br><br><small>Usu&aacute;rio(s) com permiss&atilde;o para isso:<br><%
 							set master = db.execute("select id from cliniccentral.licencasusuarios where LicencaID="&replace(session("banco"), "clinic", "")&" and admin=1")
 							while not master.eof
 								%>&raquo; <%=nameInTable(master("id"))%><br><%
@@ -139,12 +139,12 @@ function DefaultForm(tableName, id)
                 </script>
                 <%
                 elseif (lcase(tableName)="buiforms") and (ModoFranquiaUnidade or getConfig("ReplicarFormulario")) then
-                    btnInserir = ("<a class=""btn btn-sm btn-dark"" href=""?P=buiforms-duplicar&I=N&Pers="&Pers&"""><i class=""fa fa-copy""></i> Duplicar da Central</a>")&"&nbsp;<a class=""btn btn-sm btn-success"" href=""?P="& req("P")&"&I=N&Pers="&Pers&"""><i class=""fa fa-plus""></i> INSERIR</a>"
+                    btnInserir = ("<a class=""btn btn-sm btn-dark"" href=""?P=buiforms-duplicar&I=N&Pers="&Pers&"""><i class=""far fa-copy""></i> Duplicar da Central</a>")&"&nbsp;<a class=""btn btn-sm btn-success"" href=""?P="& req("P")&"&I=N&Pers="&Pers&"""><i class=""far fa-plus""></i> INSERIR</a>"
 				else
                     %>
                     <br />
                     <%
-                    btnInserir = "<a class=""btn btn-sm btn-success"" href=""?P="& req("P")&"&I=N&Pers="&Pers&"""><i class=""fa fa-plus""></i> INSERIR</a>"
+                    btnInserir = "<a class=""btn btn-sm btn-success"" href=""?P="& req("P")&"&I=N&Pers="&Pers&"""><i class=""far fa-plus""></i> INSERIR</a>"
 				end if
 							end if
 
@@ -152,7 +152,7 @@ function DefaultForm(tableName, id)
 <script type="text/javascript">
     $(document).ready(function(){
         $(".crumb-active a").html("<%=res("Name")%>");
-        $(".crumb-icon a span").attr("class", "fa fa-<%=dIcone(lcase(tableName))%>");
+        $(".crumb-icon a span").attr("class", "far fa-<%=dIcone(lcase(tableName))%>");
         $(".topbar-right").html('<%=btnInserir%>');
     });
 	function viewProp(P){
@@ -200,7 +200,7 @@ function DefaultForm(tableName, id)
                 sta.close
                 set sta=nothing
                 %>
-                <button class="btn btnxs btn-primary"><i class="fa fa-filter"></i>Filtrar</button>
+                <button class="btn btnxs btn-primary"><i class="far fa-filter"></i>Filtrar</button>
             </div>
         </div>
     </form>
@@ -305,7 +305,7 @@ function DefaultForm(tableName, id)
                                 if req("P")="Procedimentos" or req("P")="Pacotes" then
                                 %>
                                 <li>
-                                    <a href="./?P=<%=req("P")%>&Pers=<%=req("Pers")%>&Print=1"><i class="fa fa-print"></i></a>
+                                    <a href="./?P=<%=req("P")%>&Pers=<%=req("Pers")%>&Print=1"><i class="far fa-print"></i></a>
                                 </li>
                                 <%
                                 end if
@@ -436,7 +436,7 @@ function DefaultForm(tableName, id)
 							if session("Admin")=1 and lcase(tableName)="profissionais" or lcase(tableName)="funcionarios" then
 								ordersNull = ordersNull&"null,"
 								%>
-    	                        <th><i class="fa fa-lock"></i> Perfil</th>
+    	                        <th><i class="far fa-lock"></i> Perfil</th>
                                 <%
 							end if
 							if lcase(tableName)="pacientes" and aut("agendaV")=1 then
@@ -616,13 +616,13 @@ function DefaultForm(tableName, id)
 							if session("Admin")=1 and lcase(tableName)="profissionais" or lcase(tableName)="funcionarios" then
 								set perf = db.execute("select * from sys_users where `Table`='"&tableName&"' and idInTable="&reg("id"))
 								Permissoes = ""
-								Perfil = "<i class=""fa fa-exclamation-triangle red""></i> Nenhum"
+								Perfil = "<i class=""far fa-exclamation-triangle red""></i> Nenhum"
 								if not perf.eof then
                                     set lu = db.execute("select * from cliniccentral.licencasusuarios where id="&perf("id")&" and Email<>'' and (Senha<>'' or SenhaCript<>'')")
                                     if lu.eof then
                                         Key = ""
                                     else
-                                        Key = "<i class='fa fa-key text-warning' title='"&lu("Email")&"'></i>&nbsp;"
+                                        Key = "<i class='far fa-key text-warning' title='"&lu("Email")&"'></i>&nbsp;"
                                     end if
 									Permissoes = perf("Permissoes")
 									if instr(Permissoes, "[") then
@@ -635,7 +635,7 @@ function DefaultForm(tableName, id)
 										if not regra.eof then
 											Perfil = regra("regra")
 										else
-											Perfil = "<i class=""fa fa-exclamation-triangle red""></i> Nenhum"
+											Perfil = "<i class=""far fa-exclamation-triangle red""></i> Nenhum"
 										end if
 									end if
 								end if
@@ -690,13 +690,13 @@ function DefaultForm(tableName, id)
                                     %>
 
 									<a class="btn btn-xs btn-info tooltip-info" data-rel="tooltip" title="Editar" href="?P=<%=tableName%>&I=<%=reg("id")%>&Pers=<%=Pers%>">
-										<i class="fa fa-edit bigger-130"></i>
+										<i class="far fa-edit bigger-130"></i>
 									</a>
                                     <%
                                     end if
                                     If session("Admin")=1 and (lcase(tableName)="profissionais" or lcase(tableName)="funcionarios") Then %>
 									<a class="btn btn-xs btn-warning tooltip-warning" title="Permiss&otilde;es" data-rel="tooltip" href="?P=<%=tableName%>&I=<%=reg("id")%>&Pers=<%=Pers%>&GT=Permissoes">
-										<i class="fa fa-lock bigger-130"></i>
+										<i class="far fa-lock bigger-130"></i>
 									</a>
 									<%
 									end if
@@ -704,13 +704,13 @@ function DefaultForm(tableName, id)
 										if lcase(tableName)="pacientes" then
 											%>
 											<a class="btn btn-xs btn-success tooltip-success" title="Conta e Extrato" data-rel="tooltip" href="?P=Pacientes&Pers=1&I=<%=reg("id")%>&Ct=1">
-												<i class="fa fa-money bigger-130"></i>
+												<i class="far fa-money bigger-130"></i>
 											</a>
 											<%
 										else
 											%>
 											<a class="btn btn-xs btn-success tooltip-success" title="Extrato" data-rel="tooltip" href="?P=Extrato&Pers=1&T=<%=associacao%>_<%=reg("id")%>">
-												<i class="fa fa-money bigger-130"></i>
+												<i class="far fa-money bigger-130"></i>
 											</a>
 											<%
 										end if
@@ -718,7 +718,7 @@ function DefaultForm(tableName, id)
 									if aut(lcase(tableName)&"X")=1 and NaoExcluir="" and lcase(tableName)<>"profissionais" and lcase(tableName)<>"funcionarios" then
 									%>
 									<a class="btn btn-xs btn-danger tooltip-danger" title="Excluir" data-rel="tooltip" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))location.href='?P=<%=req("P")%>&X=<%=reg("id")%>&Pers=<%=req("Pers")%>';">
-										<i class="fa fa-remove bigger-130"></i>
+										<i class="far fa-remove bigger-130"></i>
 									</a>
                                     <%
 									end if
@@ -761,7 +761,7 @@ function DefaultForm(tableName, id)
 							Hora = formatdatetime(age("Hora"),4)
 						end if
 						%>
-						$("#calendar<%=age("PacienteID")%>").html( $("#calendar<%=age("PacienteID")%>").html() + '<button data-rel="tooltip" type="button" onClick="location.href=\'./?P=Agenda-1&Pers=1&AgendamentoID=<%=age("id")%>\';" class="btn btn-xs btn-success btn-alt btn-gradient item-active mn tooltip-success" data-original-title="Profissional &raquo; <%=age("NomeProfissional")%>"><i class="fa fa-calendar"></i> <%=left(age("Data"),5)%> - <%=Hora%></button>');
+						$("#calendar<%=age("PacienteID")%>").html( $("#calendar<%=age("PacienteID")%>").html() + '<button data-rel="tooltip" type="button" onClick="location.href=\'./?P=Agenda-1&Pers=1&AgendamentoID=<%=age("id")%>\';" class="btn btn-xs btn-success btn-alt btn-gradient item-active mn tooltip-success" data-original-title="Profissional &raquo; <%=age("NomeProfissional")%>"><i class="far fa-calendar"></i> <%=left(age("Data"),5)%> - <%=Hora%></button>');
 						<%
 					age.movenext
 					wend
@@ -773,7 +773,7 @@ function DefaultForm(tableName, id)
 					while not age.eof
 						if UltPac<>age("PacienteID") then
 						%>
-						$("#calendarH<%=age("PacienteID")%>").html( $("#calendarH<%=age("PacienteID")%>").html() + '<button data-rel="tooltip" type="button" onClick="location.href=\'./?P=Agenda-1&Pers=1&AgendamentoID=<%=age("id")%>\';" class="btn btn-xs btn-alert btn-alt btn-gradient item-active mn tooltip-info" data-original-title="Profissional &raquo; <%=age("NomeProfissional")%>"><i class="fa fa-calendar"></i> <%=age("Data")%> - <%=formatdatetime(age("Hora"),4)%></button>');
+						$("#calendarH<%=age("PacienteID")%>").html( $("#calendarH<%=age("PacienteID")%>").html() + '<button data-rel="tooltip" type="button" onClick="location.href=\'./?P=Agenda-1&Pers=1&AgendamentoID=<%=age("id")%>\';" class="btn btn-xs btn-alert btn-alt btn-gradient item-active mn tooltip-info" data-original-title="Profissional &raquo; <%=age("NomeProfissional")%>"><i class="far fa-calendar"></i> <%=age("Data")%> - <%=formatdatetime(age("Hora"),4)%></button>');
 						<%
 						end if
 						UltPac = age("PacienteID")
@@ -1182,7 +1182,7 @@ function DefaultForm(tableName, id)
 						<div class="input-group">
 						<input class="form-control date-picker" value="<%=fieldValue%>" id="<%=pFields("ColumnName")%>" name="<%=pFields("ColumnName")%>" placeholder="<%=pfields("Placeholder")%>" type="text" data-date-format="dd/mm/yyyy" />
 						<span class="input-group-addon">
-						<i class="fa fa-calendar bigger-110"></i>
+						<i class="far fa-calendar bigger-110"></i>
 						</span>
 						</div>
 						</div>
@@ -1196,7 +1196,7 @@ function DefaultForm(tableName, id)
 						<div class="input-group bootstrap-timepicker">
 						<input value="<%=fieldValue%>" id="timepicker1" name="<%=pFields("ColumnName")%>" type="text" class="form-control" />
 						<span class="input-group-addon">
-						<i class="fa fa-time bigger-110"></i>
+						<i class="far fa-time bigger-110"></i>
 						</span>
 						</div>
 						</div>
@@ -1210,7 +1210,7 @@ function DefaultForm(tableName, id)
 						<div id="D<%=pFields("ColumnName")%>" class="input-group">
 							<input class="form-control" value="<%=fieldValue%>" name="<%=pFields("ColumnName")%>" placeholder="<%=pfields("Placeholder")%>" id="<%=pFields("ColumnName")%>" data-format="dd/MM/yyyy hh:mm:ss" type="text"></input>
 							<span class="add-on input-group-addon">
-							<i data-time-icon="fa fa-time" data-date-icon="fa fa-calendar bigger-110">
+							<i data-time-icon="far fa-time" data-date-icon="far fa-calendar bigger-110">
 							</i>
 							</span>
 						  </div>
@@ -1233,7 +1233,7 @@ function DefaultForm(tableName, id)
 						<div class="input-group">
 						<input id="<%=pFields("ColumnName")%>" name="<%=pFields("ColumnName")%>" value="<%=fieldValue%>" placeholder="<%=pfields("Placeholder")%>" class="form-control input-mask-date" type="text">
 						<span class="input-group-addon">
-						<i class="fa fa-calendar bigger-110"></i>
+						<i class="far fa-calendar bigger-110"></i>
 						</span>
 						</div>
 						</div>
@@ -1247,7 +1247,7 @@ function DefaultForm(tableName, id)
 						
 						<div class="input-group">
 						<span class="input-group-addon">
-						<i class="fa fa-phone"></i>
+						<i class="far fa-phone"></i>
 						</span>
 						<input class="form-control input-mask-phone" placeholder="<%=pfields("Placeholder")%>" type="text" value="<%=fieldValue%>" id="<%=pFields("ColumnName")%>" name="<%=pFields("ColumnName")%>" />
 						</div>
@@ -1262,7 +1262,7 @@ function DefaultForm(tableName, id)
 						
 						<div class="input-group">
 						<span class="input-group-addon">
-						<i class="fa fa-phone"></i>
+						<i class="far fa-phone"></i>
 						</span>
 						
 						<input class="form-control input-mask-celphone" type="text" placeholder="<%=pfields("Placeholder")%>" value="<%=fieldValue%>" id="<%=pFields("ColumnName")%>" name="<%=pFields("ColumnName")%>" />
@@ -1341,7 +1341,7 @@ function DefaultForm(tableName, id)
 			<% end if %>
             <script type="text/javascript">
                 $(".crumb-active a").html("<%=res("name")%>");
-                $(".crumb-icon a span").attr("class", "fa fa-<%=dIcone(res("tableName"))%>");
+                $(".crumb-icon a span").attr("class", "far fa-<%=dIcone(res("tableName"))%>");
             </script>
 
             <div class="clearfix form-actions">

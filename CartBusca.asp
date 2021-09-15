@@ -191,7 +191,7 @@ while not ac.eof
 
 
 
-                     <td valign="top" align="center" id="pf<%= ac("id") &"_"& diaN &"_"& comGrade("ProfissionalID") %>"><i class="fa fa-circle-o-notch fa-spin"></i></td>
+                     <td valign="top" align="center" id="pf<%= ac("id") &"_"& diaN &"_"& comGrade("ProfissionalID") %>"><i class="far fa-circle-o-notch fa-spin"></i></td>
 
                     <script type="text/javascript">
                         $.post("namAgendaFiltros.asp", {
@@ -231,7 +231,7 @@ set ac = nothing
 <% if ocor = 0 then %>
     <div style='text-align:center'>Nenhum horário disponível para a busca</div>
 <% else %>
-    <div style='text-align:center'><i class='fa fa-circle-o-notch fa-spin'></i> Carregando...</div>
+    <div style='text-align:center'><i class='far fa-circle-o-notch fa-spin'></i> Carregando...</div>
 <% end if %>
 
 <script type="text/javascript">

@@ -392,7 +392,7 @@ elseif isnumeric(req("E")) then
                     <label><input type="checkbox" class="selectAll" onclick="$('input[type=checkbox]').prop('checked', $(this).prop('checked') )"> Selecionar tudo</label>
                 </div>
                 <div class="col-md-3">
-                    <button onclick="conciliarTudo(); $('.selectAll').prop('checked', false)" type="button" class="btn btn-sm btn-success btn-block btn-sm"><i class="fa fa-check"></i> Conciliar <span class="qtdChecado">0</span> selecionados</button>
+                    <button onclick="conciliarTudo(); $('.selectAll').prop('checked', false)" type="button" class="btn btn-sm btn-success btn-block btn-sm"><i class="far fa-check"></i> Conciliar <span class="qtdChecado">0</span> selecionados</button>
                 </div>
             </div>
             <hr class="short alt">
@@ -400,7 +400,7 @@ elseif isnumeric(req("E")) then
             if c>limite and 0 then
                 %>
                 <div class="alert alert-warning">
-                    <i class="fa fa-exclamation-triangle"></i> Exibindo os primeros <%= limite %> registros. Após conciliar, clique em recarregar para conciliar o restante. <a href="javascript:location.reload()" class="btn btn-sm btn-danger">Recarregar</a>
+                    <i class="far fa-exclamation-triangle"></i> Exibindo os primeros <%= limite %> registros. Após conciliar, clique em recarregar para conciliar o restante. <a href="javascript:location.reload()" class="btn btn-sm btn-danger">Recarregar</a>
                 </div>
                 <%
             end if
@@ -423,7 +423,7 @@ end if
     $(".crumb-active a").html("Conciliação de Cartões");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("upload de arquivo CSV");
-    $(".crumb-icon a span").attr("class", "fa fa-file");
+    $(".crumb-icon a span").attr("class", "far fa-file");
 
     function conciliar(ConciliacaoID) {
         $.post("CartaoConcilia.asp?ConciliacaoID="+ ConciliacaoID, {

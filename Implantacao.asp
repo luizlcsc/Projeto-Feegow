@@ -15,12 +15,12 @@
     $(".crumb-active a").html("Implantação");
     // $(".crumb-link").removeClass("hidden");
     // $(".crumb-link").html("");
-    $(".crumb-icon a span").attr("class", "fa fa-question-circle");
+    $(".crumb-icon a span").attr("class", "far fa-question-circle");
 </script>
 
 <div class="panel mt15">
     <div class="panel-heading">
-        <span class="panel-title"><i class="fa fa-filter"></i> Filtrar</span>
+        <span class="panel-title"><i class="far fa-filter"></i> Filtrar</span>
     </div>
     <div class="panel-body">
           <form id="filtroVendas" action="?P=Implantacao&Pers=1" method="post">
@@ -70,11 +70,11 @@ function etapaIcon(valorBool, descricao)
     <%
 
     if valorBool=1 then
-        %> <i class="fa fa-check-circle" style="color: green"></i> <%
+        %> <i class="far fa-check-circle" style="color: green"></i> <%
     elseif valorBool=0 then
-        %> <i class="fa fa-times-circle" style="color: red"></i> <%
+        %> <i class="far fa-times-circle" style="color: red"></i> <%
     elseif valorBool=-1 then
-        %> <i class="fa fa-minus-circle" style="color: orange"></i> <%
+        %> <i class="far fa-minus-circle" style="color: orange"></i> <%
     end if
     %>
     </span>
@@ -211,7 +211,7 @@ end if
                 <%
                 if Etapa0OK = 0 then
                     %>
-                    <a target="_blank" href="https://api.feegow.com.br/patient-interface/80jG/patient-form/48/<%=impo("PacienteID")%>" class="btn btn-xs btn-primary"><i class="fa fa-birthday-cake"></i></a>
+                    <a target="_blank" href="https://api.feegow.com.br/patient-interface/80jG/patient-form/48/<%=impo("PacienteID")%>" class="btn btn-xs btn-primary"><i class="far fa-birthday-cake"></i></a>
                     <%
                 else
                     %>
@@ -225,7 +225,7 @@ end if
             <td><%=etapaIcon(Etapa3OK, Etapa3Descricao)%></td>
             <td><%=etapaIcon(Etapa5OK, Etapa5Descricao)%></td>
             <td><small><span class="label label-<%=classeUltimoAcesso%>"><%=UltimoAcessoDescricao%></span></small></td>
-            <td><button class="btn btn-xs btn-primary" type="button" onclick="ed(<%= impo("AccountID") %>)"><i class="fa fa-external-link"></i></button></td>
+            <td><button class="btn btn-xs btn-primary" type="button" onclick="ed(<%= impo("AccountID") %>)"><i class="far fa-external-link"></i></button></td>
        </tr>
         <%
     impo.movenext

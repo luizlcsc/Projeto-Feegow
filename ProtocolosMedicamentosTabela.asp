@@ -103,12 +103,12 @@ end if
                 <%=quickField("text", "Obs_"&id, "Obs.", 12, Obs, "", "", "")%>
             </td>
             <td width="1%">
-                <button type="button" class="btn btn-danger btn-xs" onClick="removeMedicamento('<%=ProtocoloID%>', '<%=id%>');"><i class="fa fa-remove"></i></button>
+                <button type="button" class="btn btn-danger btn-xs" onClick="removeMedicamento('<%=ProtocoloID%>', '<%=id%>');"><i class="far fa-remove"></i></button>
             </td>
         </tr>
         <tr>
             <td class="text-right">
-                <i class="fa fa-chevron-right"></i>
+                <i class="far fa-chevron-right"></i>
             </td>
             <td>
                 <%=quickField("simpleSelect", "DiluenteID_"&id, "Diluente", 12, DiluenteID, "select id, NomeProduto from produtos where sysActive=1 and TipoProduto=4", "NomeProduto", " onchange=""unidadeMedida('D', "&id&", this.value)"" ")%>

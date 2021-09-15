@@ -73,29 +73,29 @@ ItensCredito = ccur(itensNE("total"))
 
 <form method="post" id="FormConta" action="./?P=LanctoRapido&Pers=1&PacienteID=<%=PacienteID%>">
     <div class="page-header">
-        <h1>Conta do Paciente <small>&raquo; <a href="./?P=Pacientes&I=<%=PacienteID%>&Pers=1"><i class="fa fa-external-link"></i> <%=pac("NomePaciente")%> </a> &raquo; <%= accountBalance("3_"&PacienteID, 1) %></small></h1>
+        <h1>Conta do Paciente <small>&raquo; <a href="./?P=Pacientes&I=<%=PacienteID%>&Pers=1"><i class="far fa-external-link"></i> <%=pac("NomePaciente")%> </a> &raquo; <%= accountBalance("3_"&PacienteID, 1) %></small></h1>
     </div>
     <div class="clearfix form-actions">
       <div class="col-xs-12">
 	    <%
         if aut("|guiasI|") then
         %>
-            <button class="btn btn-primary btn-sm" name="TipoBotao" value="GuiaConsulta"><i class="fa fa-plus"></i> Gerar Guia de Consulta</button>
-            <button class="btn btn-primary btn-sm" name="TipoBotao" value="GuiaSADT"><i class="fa fa-plus"></i> Gerar Guia de SP/SADT</button>
+            <button class="btn btn-primary btn-sm" name="TipoBotao" value="GuiaConsulta"><i class="far fa-plus"></i> Gerar Guia de Consulta</button>
+            <button class="btn btn-primary btn-sm" name="TipoBotao" value="GuiaSADT"><i class="far fa-plus"></i> Gerar Guia de SP/SADT</button>
         <%
 		end if
 		if (aut("areceberpacienteI")) OR (aut("contasareceberI")) OR (aut("aberturacaixinhaI") AND session("CaixaID")<>"") then
 			%>
-        	<button class="btn btn-primary btn-sm" name="TipoBotao" value="AReceber"><i class="fa fa-plus"></i> Gerar Particular</button>
+        	<button class="btn btn-primary btn-sm" name="TipoBotao" value="AReceber"><i class="far fa-plus"></i> Gerar Particular</button>
             <%
 		elseif aut("aberturacaixinhaI") AND session("CaixaID")="" then
 			%>
-			<button type="button" onClick="alert('Seu caixa está fechado. \n\nAbra seu caixa para realizar lançamentos.')" class="btn btn-primary btn-sm" name="TipoBotao" value="AReceber"><i class="fa fa-plus"></i> Gerar Particular</button>
+			<button type="button" onClick="alert('Seu caixa está fechado. \n\nAbra seu caixa para realizar lançamentos.')" class="btn btn-primary btn-sm" name="TipoBotao" value="AReceber"><i class="far fa-plus"></i> Gerar Particular</button>
 			<%
 		end if
 		%>
-        <button type="button" class="btn btn-warning btn-sm hidden" onClick="infProc('<%=Data%>');"><i class="fa fa-plus"></i> Informar Procedimento Realizado</button>
-        <button type="button" class="btn btn-warning btn-sm" onClick="infAten('N');"><i class="fa fa-plus"></i> Informar Procedimento Realizado</button>
+        <button type="button" class="btn btn-warning btn-sm hidden" onClick="infProc('<%=Data%>');"><i class="far fa-plus"></i> Informar Procedimento Realizado</button>
+        <button type="button" class="btn btn-warning btn-sm" onClick="infAten('N');"><i class="far fa-plus"></i> Informar Procedimento Realizado</button>
       </div>
         <br><br>
     </div>
@@ -103,12 +103,12 @@ ItensCredito = ccur(itensNE("total"))
     <div class="col-xs-12">
         <div class="widget-box">
             <div class="widget-header">
-                <h5><i class="fa fa-calendar" id="icon-Agendamentos"></i> Agendamentos</h5>
+                <h5><i class="far fa-calendar" id="icon-Agendamentos"></i> Agendamentos</h5>
     
                 <div class="widget-toolbar">
     
                     <a href="javascript:colapse('Agendamentos')">
-                        <i class="fa fa-chevron-down"></i>
+                        <i class="far fa-chevron-down"></i>
                     </a>
     
                 </div>
@@ -201,12 +201,12 @@ ItensCredito = ccur(itensNE("total"))
 
         <div class="widget-box">
             <div class="widget-header">
-                <h5><i class="fa fa-ticket" id="icon-Lancamentos"></i> Lançamentos Financeiros sem Atendimento Vinculado</h5>
+                <h5><i class="far fa-ticket" id="icon-Lancamentos"></i> Lançamentos Financeiros sem Atendimento Vinculado</h5>
     
                 <div class="widget-toolbar">
     
                     <a href="javascript:colapse('Lancamentos')">
-                        <i class="fa fa-chevron-down"></i>
+                        <i class="far fa-chevron-down"></i>
                     </a>
     
                 </div>
@@ -263,7 +263,7 @@ ItensCredito = ccur(itensNE("total"))
                 
                 
                 <tr>
-                    <td width="1%"><button type="button" onclick="window.open('<%=link%>', 'EditaConta','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=1050,height=700,left=50,top=20')" class="btn btn-primary btn-xs" target="_blank"><i class="fa fa-external-link"></i></button></td>
+                    <td width="1%"><button type="button" onclick="window.open('<%=link%>', 'EditaConta','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=1050,height=700,left=50,top=20')" class="btn btn-primary btn-xs" target="_blank"><i class="far fa-external-link"></i></button></td>
                     <td width="20%"><%= ii("Tipo") %></td>
                     <td width="30%"><%=ii("NomeProcedimento")%></td>
                     <td width="30%"><%=ii("NomeProfissional")%></td>
@@ -271,7 +271,7 @@ ItensCredito = ccur(itensNE("total"))
                     <td width="15%" class="text-right"><%="<span class=""label label-sm label-"&classeII&" arrowed-in"">"&staII&" </span></strong></em></div>"%> R$ <%= formatnumber(ii("ValorUnitario")-ii("Desconto")+ii("Acrescimo"),2) %></td>
                     <td>
                       <div>
-                          <div class="text-center badge badge-light"><i class="fa fa-arrows"></i> Arraste sobre o atendimento</div>
+                          <div class="text-center badge badge-light"><i class="far fa-arrows"></i> Arraste sobre o atendimento</div>
                       </div>
                     </td>
                 </tr>
@@ -323,12 +323,12 @@ if not atprocs.eof then
 %>
         <div class="widget-box">
             <div class="widget-header">
-                <h5><i class="fa fa-ticket" id="icon-Atendimentos"></i> Atendimentos Informados</h5>
+                <h5><i class="far fa-ticket" id="icon-Atendimentos"></i> Atendimentos Informados</h5>
     
                 <div class="widget-toolbar">
     
                     <a href="javascript:colapse('Atendimentos')">
-                        <i class="fa fa-chevron-down"></i>
+                        <i class="far fa-chevron-down"></i>
                     </a>
     
                 </div>
@@ -380,30 +380,30 @@ if not atprocs.eof then
 						staII = "QUITADO"
 						classeII = "success"
 					end if
-					linhaLancto = "<div class=""class-lancado""><i class=""fa fa-money""></i> <em><strong>Lançamento particular no valor de R$ "&ValorII&" lançado em "&DataII&". <span class=""label label-lg label-"&classeII&" arrowed-in"">"&staII&" </span></strong></em><a href=""javascript:ajxContent('conteudoConta&unlink=itensinvoice-"&verifica("id")&"', "&PacienteID&", '1', 'Conta');"" class=""btn btn-default btn-xs pull-right""><i class=""fa fa-unlink""></i></a></div>"
+					linhaLancto = "<div class=""class-lancado""><i class=""far fa-money""></i> <em><strong>Lançamento particular no valor de R$ "&ValorII&" lançado em "&DataII&". <span class=""label label-lg label-"&classeII&" arrowed-in"">"&staII&" </span></strong></em><a href=""javascript:ajxContent('conteudoConta&unlink=itensinvoice-"&verifica("id")&"', "&PacienteID&", '1', 'Conta');"" class=""btn btn-default btn-xs pull-right""><i class=""far fa-unlink""></i></a></div>"
 					link = "./?P=invoice&I="&verifica("InvoiceID")&"&A=&Pers=1&T=C&Ent=Conta"
 					'Guia de SP/SADT Bradesco número 12542, lançada em 25/09/2015.
 				else
 					set verificaGC = db.execute("select gc.*, c.NomeConvenio from tissguiaconsulta gc LEFT JOIN convenios c on c.id=gc.ConvenioID where gc.AtendimentoID="&atprocs("id")&" and gc.sysActive=1")
 					if not verificaGC.EOF then
-						linhaLancto = "<div class=""class-lancado""><i class=""fa fa-credit-card""></i> <em><strong>Guia de consulta emitida em "&verificaGC("sysDate")&". <span class=""badge badge-sm"">"&verificaGC("NomeConvenio")&"</span></strong></em><a href=""javascript:ajxContent('conteudoConta&unlink=tissguiaconsulta-"&verificaGC("id")&"', "&PacienteID&", '1', 'Conta');"" class=""btn btn-default btn-xs pull-right""><i class=""fa fa-unlink""></i></a></div>"
+						linhaLancto = "<div class=""class-lancado""><i class=""far fa-credit-card""></i> <em><strong>Guia de consulta emitida em "&verificaGC("sysDate")&". <span class=""badge badge-sm"">"&verificaGC("NomeConvenio")&"</span></strong></em><a href=""javascript:ajxContent('conteudoConta&unlink=tissguiaconsulta-"&verificaGC("id")&"', "&PacienteID&", '1', 'Conta');"" class=""btn btn-default btn-xs pull-right""><i class=""far fa-unlink""></i></a></div>"
 						link = "./?P=tissguiaconsulta&I="&verificaGC("id")&"&Pers=1"
 					else
 						'inicio sadt
 						set verificaSA = db.execute("select tps.*, date(gs.sysDate) DataGuia, c.NomeConvenio from tissprocedimentossadt tps LEFT JOIN tissguiasadt gs on gs.id=tps.GuiaID LEFT JOIN convenios c on c.id=gs.ConvenioID where tps.AtendimentoID="&atprocs("id")&" and gs.sysActive=1")
 						if not verificaSA.EOF then
-							linhaLancto = "<div class=""class-lancado""><i class=""fa fa-credit-card""></i> <em><strong>Procedimento de guia de SP/SADT emitida em "&verificaSA("DataGuia")&". <span class=""badge badge-sm"">"&verificaSA("NomeConvenio")&"</span></strong></em><a href=""javascript:ajxContent('conteudoConta&unlink=tissprocedimentossadt-"&verificaSA("id")&"', "&PacienteID&", '1', 'Conta');"" class=""btn btn-default btn-xs pull-right""><i class=""fa fa-unlink""></i></a></div>"
+							linhaLancto = "<div class=""class-lancado""><i class=""far fa-credit-card""></i> <em><strong>Procedimento de guia de SP/SADT emitida em "&verificaSA("DataGuia")&". <span class=""badge badge-sm"">"&verificaSA("NomeConvenio")&"</span></strong></em><a href=""javascript:ajxContent('conteudoConta&unlink=tissprocedimentossadt-"&verificaSA("id")&"', "&PacienteID&", '1', 'Conta');"" class=""btn btn-default btn-xs pull-right""><i class=""far fa-unlink""></i></a></div>"
 							link = "./?P=tissguiasadt&I="&verificaSA("GuiaID")&"&Pers=1"
 						end if
 						'fim sadt
 					end if
 				end if
 				if linhaLancto="" then
-					linhaLancto = "<div class=""class-droppable"" id="""& atprocs("id") &"""><em><i class=""fa fa-exclamation-circle""></i> <strong>Nenhuma cobrança ou guia associada a este atendimento.</strong></em></div>"
+					linhaLancto = "<div class=""class-droppable"" id="""& atprocs("id") &"""><em><i class=""far fa-exclamation-circle""></i> <strong>Nenhuma cobrança ou guia associada a este atendimento.</strong></em></div>"
 					checkOuLink = "<span class=""tooltip-success"" data-placement=""right"" data-rel=""tooltip"" data-original-title=""Selecione os procedimentos desejados e defina a ação nos botões acima."">"&_ 
 					"<label><input type=""checkbox"" name=""Lancto"" value="""&atprocs("id")&"|executado"" class=""ace""><span class=""lbl""></span></label></span>"
 				else
-					checkOuLink = "<br><button type=""button"" onclick=""window.open('"&link&"', 'EditaConta','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=1050,height=700,left=50,top=20')"" class=""btn btn-primary btn-xs""><i class=""fa fa-external-link""></i></button>"
+					checkOuLink = "<br><button type=""button"" onclick=""window.open('"&link&"', 'EditaConta','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=1050,height=700,left=50,top=20')"" class=""btn btn-primary btn-xs""><i class=""far fa-external-link""></i></button>"
 				end if
 				if AtendimentoID<>atprocs("AtendimentoID") then
 				%>
@@ -417,7 +417,7 @@ if not atprocs.eof then
                     <%if not isnull(atprocs("NomeUnidade")) then%>&raquo; <%end if%><%=left(atprocs("NomeUnidade"), 26)%></small>
                     </th>
                     <th width="49%"><small><%=ObsAtend%></small></th>
-                    <th width="1%"><button class="btn btn-primary btn-xs" type="button" onClick="infAten(<%=atprocs("AtendimentoID")%>);"><i class="fa fa-edit"></i></button></th>
+                    <th width="1%"><button class="btn btn-primary btn-xs" type="button" onClick="infAten(<%=atprocs("AtendimentoID")%>);"><i class="far fa-edit"></i></button></th>
                 </tr>
                 </tr>
             </thead>
@@ -432,7 +432,7 @@ if not atprocs.eof then
                   <td><small><%= atprocs("NomeProcedimento") %></small></td>
                   <td><small><%= Obs %></small></td>
                   <td width="1%"><%if session("Admin")=1 then%>
-                  <button class="btn btn-danger btn-xs" type="button" onClick="if(confirm('Atenção: você está prestes a apagar um procedimento informado no atendimento! Tem certeza de que deseja continuar?'))ajxContent('conteudoConta&X=<%=atprocs("id")%>', <%=PacienteID%>, '1', 'Conta');"><i class="fa fa-remove"></i></button><%end if%></td>
+                  <button class="btn btn-danger btn-xs" type="button" onClick="if(confirm('Atenção: você está prestes a apagar um procedimento informado no atendimento! Tem certeza de que deseja continuar?'))ajxContent('conteudoConta&X=<%=atprocs("id")%>', <%=PacienteID%>, '1', 'Conta');"><i class="far fa-remove"></i></button><%end if%></td>
 			    </tr>
                 <tr>
                   <td colspan="5">

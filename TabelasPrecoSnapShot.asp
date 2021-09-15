@@ -75,9 +75,9 @@
                         <td style="text-align: right;">
                         <% IF registros("tiporegistroid") = 1 THEN  %> 
                             <% if tipo = "geral" then %>
-                            <button type="button" class="btn btn-success" onclick="confirmaRestaurarSnapShot('<%=registros("id") %>', '<%=registros("DataHora") %>')"><i class="fa fa-history"></i> Restaurar </button> 
+                            <button type="button" class="btn btn-success" onclick="confirmaRestaurarSnapShot('<%=registros("id") %>', '<%=registros("DataHora") %>')"><i class="far fa-history"></i> Restaurar </button>
                             <% else %> 
-                            <button type="button" class="btn btn-success" onclick="confirmaRestaurarSnapShotTabela('<%=registros("id") %>', '<%=tabelaid %>', '<%=registros("nometabela") %>', '<%=registros("DataHora") %>')"><i class="fa fa-history"></i> Restaurar </button> 
+                            <button type="button" class="btn btn-success" onclick="confirmaRestaurarSnapShotTabela('<%=registros("id") %>', '<%=tabelaid %>', '<%=registros("nometabela") %>', '<%=registros("DataHora") %>')"><i class="far fa-history"></i> Restaurar </button>
                             <% end if %>
                         <% END IF %>   
                         </td>

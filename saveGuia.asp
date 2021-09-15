@@ -236,7 +236,7 @@ else
                 confirm: true,
                 buttons: [{
                     text: 'Utilizar o número <%=GuiaDisponivel%>',
-                    icon: 'fa fa-exclamation-circle',
+                    icon: 'far fa-exclamation-circle',
                     addClass: 'btn-primary',
                     click: function(notice) {
                         $("#NGuiaPrestador").val("<%=GuiaDisponivel%>");

@@ -1,5 +1,5 @@
 <div id="purchasing-config-app" style="padding-top: 11px">
-    <i class="fa fa-spin fa-spinner"></i>
+    <i class="far fa-spin fa-spinner"></i>
 </div>
 
 <!-- Production -->

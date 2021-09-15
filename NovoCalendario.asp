@@ -52,9 +52,9 @@ DataProx=dateadd("m",1,Data)
       <table class="table table-bordered" width="100%">
 	  <thead>
       <tr>
-        <th colspan="2" class="hand" onClick="chamaCalendario('<%=DataAnte%>','<%=req("DrId")%>');"><i class="fa fa-arrow-left"></i></th>
+        <th colspan="2" class="hand" onClick="chamaCalendario('<%=DataAnte%>','<%=req("DrId")%>');"><i class="far fa-arrow-left"></i></th>
         <th colspan="3" class="text-center"><%= ucase(left(monthname(MesX),3)) & " - " & Year(Data) %></th>
-        <th colspan="2" class="hand" onClick="chamaCalendario('<%=DataProx%>','<%=req("DrId")%>');" class="text-right"><i class="fa fa-arrow-right"></i></th>
+        <th colspan="2" class="hand" onClick="chamaCalendario('<%=DataProx%>','<%=req("DrId")%>');" class="text-right"><i class="far fa-arrow-right"></i></th>
       </tr>
       <tr>
         <th>DO</th>

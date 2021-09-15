@@ -19,7 +19,7 @@ end if
                 <%=quickfield("datepicker", "DataParaFechar", "Data", 4, date(), "", "", "")%>
                 <div class="col-md-2">
                     <button onclick="insertFechamentoData()" class="btn btn-primary mt25">
-                        <i class="fa fa-search"></i> Visualizar data
+                        <i class="far fa-search"></i> Visualizar data
                     </button>
                 </div>
 
@@ -50,7 +50,7 @@ end if
                                 <%=nameInTable(FechamentoDataSQL("sysUser"))%>
                             </td>
                             <td>
-                                <button <% if i>0 then %>disabled <% else %> onclick="deletaFechamentoData('<%= FechamentoDataSQL("id")%>')" <% end if %> class="btn btn-danger btn-xs" type="button"><i class="fa fa-trash"></i></button>
+                                <button <% if i>0 then %>disabled <% else %> onclick="deletaFechamentoData('<%= FechamentoDataSQL("id")%>')" <% end if %> class="btn btn-danger btn-xs" type="button"><i class="far fa-trash"></i></button>
                             </td>
                         </tr>
                         <%
@@ -69,7 +69,7 @@ end if
 </div>
 <script type="text/javascript">
     $(".crumb-active a").html("Fechamento de Data");
-    $(".crumb-icon a span").attr("class", "fa fa-calendar");
+    $(".crumb-icon a span").attr("class", "far fa-calendar");
 
     function deletaFechamentoData(id) {
         if(confirm("Tem certeza que deseja excluir este registro?")){

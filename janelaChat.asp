@@ -10,7 +10,7 @@
                         <input placeholder="digite a mensagem aqui..." autocomplete="off" type="text" class="form-control input-sm cx-mensagem" name="mensagem" />
                         <span class="input-group-btn">
                             <button class="btn btn-sm btn-info no-radius">
-                                <i class="fa fa-send"></i>
+                                <i class="far fa-send"></i>
                             </button>
                         </span>
                     </div>

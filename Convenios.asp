@@ -37,7 +37,7 @@
                             <div class="input-group">
                                 <input id="NewVigenciaInicio${num}" autocomplete="off" class="form-control input-mask-date date-picker" type="text" value="" name="NewVigenciaInicio${num}" data-date-format="dd/mm/yyyy" />
                                 <span class="input-group-addon">
-                                <i class="fa fa-calendar bigger-110"></i>
+                                <i class="far fa-calendar bigger-110"></i>
                                 </span>
                             </div>
                         </td>
@@ -45,7 +45,7 @@
                             <div class="input-group">
                                 <input id="NewVigenciaFim${num}" autocomplete="off" class="form-control input-mask-date date-picker" type="text" value="" name="NewVigenciaFim${num}" data-date-format="dd/mm/yyyy" />
                                 <span class="input-group-addon">
-                                <i class="fa fa-calendar bigger-110"></i>
+                                <i class="far fa-calendar bigger-110"></i>
                                 </span>
                             </div>
                         </td>
@@ -246,7 +246,7 @@ end function
                                 </div>
                                 <div id="divDisplayFoto" style="display: <%= divDisplayFoto %>">
                                     <img id="avatarFoto" src="<%=arqEx(reg("Foto"), "Perfil")%>" class="img-thumbnail" width="100%" />
-                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position: absolute; left: 18px; bottom: 6px;"><i class="fa fa-trash"></i></button>
+                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position: absolute; left: 18px; bottom: 6px;"><i class="far fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -355,11 +355,11 @@ end function
                     </script>
                 </div>
 <!--                <div class="row">-->
-                    <%'= quickField("memo", "Obs", "Observa&ccedil;&otilde;es "&"&nbsp;&nbsp;<button type=""button"" onclick="""" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""fa fa-plus""></i></button>", 11, "", "", "", "") %>
+                    <%'= quickField("memo", "Obs", "Observa&ccedil;&otilde;es "&"&nbsp;&nbsp;<button type=""button"" onclick="""" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""far fa-plus""></i></button>", 11, "", "", "", "") %>
 <!--                </div>-->
                 <div class="row">
-<!--                <button type="button" onclick="" class="btn btn-xs btn-success" data-toggle="modal" data-target="#modalConveniosObs"><i class="fa fa-plus"></i></button>-->
-                    <%= quickField("editor", "Obs", "Observações "&"&nbsp;&nbsp;<button type=""button"" onclick=""abrirModalObs()"" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""fa fa-plus""></i></button>", 12, reg("Obs"), "50", "", "")%>
+<!--                <button type="button" onclick="" class="btn btn-xs btn-success" data-toggle="modal" data-target="#modalConveniosObs"><i class="far fa-plus"></i></button>-->
+                    <%= quickField("editor", "Obs", "Observações "&"&nbsp;&nbsp;<button type=""button"" onclick=""abrirModalObs()"" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""far fa-plus""></i></button>", 12, reg("Obs"), "50", "", "")%>
                 </div>
               <button class="hidden" id="save" type="button"></button>
 
@@ -734,7 +734,7 @@ $("#DiasReceb").change(function()
                     <th style="width: 10%" class="text-center">Início da Vigência</th>
                     <th style="width: 10%" class="text-center">Fim da Vigência</th>
                     <th class="text-center">Observações</th>
-                    <th style="width: 5%" class="text-center"><button type="button" class="btn btn-xs btn-success mn" onclick="addRow();"><i class="fa fa-plus"></i></button></th>
+                    <th style="width: 5%" class="text-center"><button type="button" class="btn btn-xs btn-success mn" onclick="addRow();"><i class="far fa-plus"></i></button></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -763,7 +763,7 @@ end if
 <script>
 $(document).ready(function(e) {
     <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>
-          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="fa fa-copy"></i> Replicar</button>`)
+          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="far fa-copy"></i> Replicar</button>`)
     <% end if %>
 });
 </script>

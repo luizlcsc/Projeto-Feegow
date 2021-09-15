@@ -39,7 +39,7 @@ set getConvenios = db.execute("SELECT con.id ConvenioID, med.Planos, con.NomeCon
 
     </div>
      <div class="modal-footer no-margin-top">
-        <button class="btn btn-sm btn-primary pull-right" onclick="saveRegra(<%=MedicamentosConveniosID%>)"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-sm btn-primary pull-right" onclick="saveRegra(<%=MedicamentosConveniosID%>)"><i class="far fa-save"></i> Salvar</button>
     </div>
 </form>
 

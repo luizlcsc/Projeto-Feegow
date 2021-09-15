@@ -2,7 +2,7 @@
 <!--#include file="connectCentral.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Empresa Principal");
-    $(".crumb-icon a span").attr("class", "fa fa-hospital-o");
+    $(".crumb-icon a span").attr("class", "far fa-hospital-o");
 </script>
 <%
 if req("I") = "" then
@@ -33,10 +33,10 @@ end if
 		if aut("sys_financialcompanyunitsA")=1 then
             %>
             <script type="text/javascript">
-                $("#rbtns").html('<button type="button" onclick="$(\'#save\').click()" class="btn btn-sm btn-primary"><i class="fa fa-save"></i><span class="menu-text"> Salvar</span></button>');
+                $("#rbtns").html('<button type="button" onclick="$(\'#save\').click()" class="btn btn-sm btn-primary"><i class="far fa-save"></i><span class="menu-text"> Salvar</span></button>');
             </script>
             <button class="btn btn-primary hidden" id="save">
-                <i class="fa fa-save"></i>Salvar
+                <i class="far fa-save"></i>Salvar
             </button>
             <%
 		end if
@@ -59,7 +59,7 @@ end if
                             </div>
                             <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
                                 <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail" width="100%" />
-                                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+                                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
                             </div>
                         </div>
                     </div>

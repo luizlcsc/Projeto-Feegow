@@ -32,7 +32,7 @@ if NomePaciente<>"" or CPF<>"" then
         if Total>0 then
             %>
             $("#divComparaPacientes").removeClass("hidden");
-            $("#divComparaPacientes").html("ATENÇÃO: Há <%= Total %> paciente(s) com o nome similar a este. <button type='button' class='btn btn-sm btn-warning' onclick='comparaPaciente(\"Lista\")'> <i class='fa fa-eye'></i> VER</button>");
+            $("#divComparaPacientes").html("ATENÇÃO: Há <%= Total %> paciente(s) com o nome similar a este. <button type='button' class='btn btn-sm btn-warning' onclick='comparaPaciente(\"Lista\")'> <i class='far fa-eye'></i> VER</button>");
             <%
         else
             %>
@@ -65,7 +65,7 @@ if NomePaciente<>"" or CPF<>"" then
                             <td><%= vout("NomePaciente") %></td>
                             <td><%= vout("Nascimento") %></td>
                             <td><%= vout("CPF") %></td>
-                            <td><a class="btn btn-xs btn-info" target="_blank" href="./?P=Pacientes&I=<%=vout("id")%>&Pers=1"><i class="fa fa-eye"></i> Visualizar</a></td>
+                            <td><a class="btn btn-xs btn-info" target="_blank" href="./?P=Pacientes&I=<%=vout("id")%>&Pers=1"><i class="far fa-eye"></i> Visualizar</a></td>
                             <td><%if aut("|mesclarpacientesA|")=1 then%>
                                 <a class="btn btn-xs btn-success" href="javascript:mesclar(<%= id %>, <%=vout("id")%>)">Mesclar cadastros</a>
                             <%end if%></td>

@@ -22,15 +22,15 @@ q = replace(q,"\","")
             <input type="hidden" name="Pers" value="1">
             <%=quickfield("text", "q", "Termo", 3, q, "", "", "")%>
             <div class="col-md-3">
-            <button class="btn btn-default btn-xs ResetaPacienteID" type="button"><i class="fa fa-times"></i></button>
+            <button class="btn btn-default btn-xs ResetaPacienteID" type="button"><i class="far fa-times"></i></button>
             <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
             </div>
             <%=quickfield("datepicker", "De", "De", 2, De, " input-mask-date", "", "")%>
             <%=quickfield("datepicker", "Ate", "At&eacute;", 2, Ate, " input-mask-date", "", "")%>
             <div class="col-md-2">
             <br>
-            <button class="btn btn-primary m5"><i class="fa fa-search bigger-110"></i> Buscar</button>
-            <button class="btn btn-success " name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i> Excel</button>
+            <button class="btn btn-primary m5"><i class="far fa-search bigger-110"></i> Buscar</button>
+            <button class="btn btn-success " name="Filtrate" onclick="downloadExcel()" type="button"><i class="far fa-table bigger-110"></i> Excel</button>
 
             </div>
             <div class="col-md-12 mt15">
@@ -547,6 +547,6 @@ function downloadExcel(){
 $(".crumb-active a").html("Resultados da Busca");
 $(".crumb-link").removeClass("hidden");
 $(".crumb-link").html("termo buscado: <em><%=q%></em>");
-$(".crumb-icon").html("<i class='fa fa-search'></i>");
+$(".crumb-icon").html("<i class='far fa-search'></i>");
 $("#sidebar-search").val("<%=q%>");
 </script>

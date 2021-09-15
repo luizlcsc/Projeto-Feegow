@@ -30,8 +30,8 @@ response.Buffer
                     <button class="btn btn-primary btn-block">Buscar</button>
                 </div>
                 <div class="col-md-2 pt25">
-                        <button type="button" class="btn btn-success" title="Gerar Excel" onclick="downloadExcel()"><i class="fa fa-table"></i></button>
-                        <button type="button" class="btn btn-warning" title="Gerar Zip " onclick="downloadPDF()"><i class="fa fa-archive"></i></button>
+                        <button type="button" class="btn btn-success" title="Gerar Excel" onclick="downloadExcel()"><i class="far fa-table"></i></button>
+                        <button type="button" class="btn btn-warning" title="Gerar Zip " onclick="downloadPDF()"><i class="far fa-archive"></i></button>
                 </div>
                 
             </div>

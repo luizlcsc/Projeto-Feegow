@@ -44,7 +44,7 @@ If Not ApareceForm = "Nao" Then
     </div>
 </div>
 <div class="clearfix form-actions">
-	<button class="btn btn-primary"><i class="fa fa-save"></i> Enviar</button>
+	<button class="btn btn-primary"><i class="far fa-save"></i> Enviar</button>
 </div>
   <input type="hidden" name="ENVIADO" value="ENVIADO" />
   </form>

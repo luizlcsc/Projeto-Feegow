@@ -77,7 +77,7 @@ end if
                     <td><%= pprocs("Descricao") %></td>
                     <td><%= quickfield("number", "Quantidade_"&pprocs("id"), "", 1, pprocs("Quantidade"), " quantidade", "", "") %></td>
                     <td>
-                        <button onclick="xPedidoSADT(<%= pprocs("id") %>)" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button>
+                        <button onclick="xPedidoSADT(<%= pprocs("id") %>)" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button>
                     </td>
                 </tr>
                 <%

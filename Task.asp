@@ -117,7 +117,7 @@ If Not ApareceForm = "Nao" Then
           </tr>
           <tr>
           	<td></td>
-          	<td><button class="btn btn-primary"><i class="fa fa-save"></i> Reponder</button></td>
+          	<td><button class="btn btn-primary"><i class="far fa-save"></i> Reponder</button></td>
           </tr>
          </tbody>
         </table>

@@ -16645,7 +16645,7 @@ div.switch label:after {
 }
 
 div.switch input:checked + label {
-    background: #2ba6cb;
+    background: #45AAF2;
 }
 
 div.switch input:checked + label:after {
@@ -16676,7 +16676,7 @@ div.switch label:after {
 }
 
 div.switch input:checked + label {
-    background: #2ba6cb;
+    background: #45AAF2;
 }
 
 /* Switch Sizes */
@@ -30392,4 +30392,14 @@ select[tabindex="-1"], .multisel {
     padding: 6px !important;
     border-radius: 6px !important;
 
+}
+
+.dropdown li i , .dropdown-menu li i{
+    color: #45AAF2;
+    margin-right: 10px;
+}
+
+.btn-logoff{
+    color: #ff7272 !important;
+    background-color: #fff6f6 !important;;
 }

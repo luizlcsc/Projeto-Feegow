@@ -7,7 +7,7 @@ q = req("q")
         $(".crumb-active a").html("Resultados da Busca");
         $(".crumb-link").removeClass("hidden");
         $(".crumb-link").html("termo buscado: <em><%=q%></em>");
-        $(".crumb-icon").html("<i class='fa fa-search'></i>");
+        $(".crumb-icon").html("<i class='far fa-search'></i>");
         $("#sidebar-search").val("<%=q%>");
 </script>
 <%
@@ -91,7 +91,7 @@ else
 					end if
 					%>
                 <script type="text/javascript">
-                    $(".sidebar-label").after("<li<%=classActive%>><a data-toggle='tab' class='tab' id='tabExtrato' href='#divHistorico' onclick=\"ajxContent('<%=spl2(2)%>', '', 'Follow', 'divContent')\"><span class='fa fa-<%=spl2(3)%>'></span><span class='sidebar-title'><%=spl2(0)%></span><span class='sidebar-title-tray'><span class='label label-xs bg-primary'><%= spl2(1) %></span></span></a></li>");
+                    $(".sidebar-label").after("<li<%=classActive%>><a data-toggle='tab' class='tab' id='tabExtrato' href='#divHistorico' onclick=\"ajxContent('<%=spl2(2)%>', '', 'Follow', 'divContent')\"><span class='far fa-<%=spl2(3)%>'></span><span class='sidebar-title'><%=spl2(0)%></span><span class='sidebar-title-tray'><span class='label label-xs bg-primary'><%= spl2(1) %></span></span></a></li>");
                     </script>
 					<%
 				end if
@@ -125,7 +125,7 @@ end if
 if erro<>"" then
 %>
 <br>
-<div class="alert alert-warning"><strong><i class="fa fa-remove"></i> </strong> <strong><%=erro%></strong><br></div>
+<div class="alert alert-warning"><strong><i class="far fa-remove"></i> </strong> <strong><%=erro%></strong><br></div>
 <%
 else
 %>

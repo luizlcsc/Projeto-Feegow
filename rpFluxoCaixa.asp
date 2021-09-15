@@ -69,7 +69,7 @@ DeMax = cdate(dateadd("m", 12, DeMax))
         <div class="col-md-2">
             <label>&nbsp;</label>
             <br>
-            <button class="btn btn-primary btn-block"><i class="fa fa-chart"></i> Gerar</button>
+            <button class="btn btn-primary btn-block"><i class="far fa-chart"></i> Gerar</button>
         </div>
     </div>
 </form>

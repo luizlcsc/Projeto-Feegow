@@ -48,11 +48,11 @@ end if
 
             if ($("#msgInteracao").val('') !== "") {
                 $("#msgInteracao").val('');
-                $("#btnInteracao").html("<center><i class='fa fa-circle-o-notch fa-spin'></i></center>");
+                $("#btnInteracao").html("<center><i class='far fa-circle-o-notch fa-spin'></i></center>");
 
                 $.post("TarefasInteracoes.asp?I=<%=req("I")%><% if req("Helpdesk") <> "" then response.write("&Helpdesk=1") end if%>", frm, function(data){
                     $("#interacoes").html(data);
-                    $("#btnInteracao").html("<i class='fa fa-send'></i> Enviar");
+                    $("#btnInteracao").html("<i class='far fa-send'></i> Enviar");
                 })
             }
 
@@ -162,22 +162,22 @@ end if
 function log(){$('#modal-table').modal('show');$.get('DefaultLog.asp?R=tarefas&I=<%= req("I")%>', function(data){$('#modal').html(data);})}
 
 $(".crumb-active a").html("Controle de Tarefas");
-$(".crumb-icon a span").attr("class", "fa fa-tasks");
+$(".crumb-icon a span").attr("class", "far fa-tasks");
 $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
 <%
     btnIncluir = ""
     if PermitirI = 1 then
         if req("Helpdesk") <> "" then
-            btnIncluir = " <a title='Novo' href='?P=tarefas&Pers=1&I="&idHelpdesk&"&Helpdesk=1' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
+            btnIncluir = " <a title='Novo' href='?P=tarefas&Pers=1&I="&idHelpdesk&"&Helpdesk=1' class='btn btn-sm btn-default'><i class='far fa-plus'></i></a> "
         else
-            btnIncluir = " <a title='Novo' href='?P=tarefas&Pers=1&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
+            btnIncluir = " <a title='Novo' href='?P=tarefas&Pers=1&I=N' class='btn btn-sm btn-default'><i class='far fa-plus'></i></a> "
         end if
     end if
 %>
 <% if req("Helpdesk") <> "" then %>
-    $("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1&Helpdesk=1\" class=\"btn btn-sm btn-default\"><i class=\"fa fa-list\"></i></a> <%=btnIncluir%>");
+    $("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1&Helpdesk=1\" class=\"btn btn-sm btn-default\"><i class=\"far fa-list\"></i></a> <%=btnIncluir%>");
 <% else %>
-    $("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1\" class=\"btn btn-sm btn-default\"><i class=\"fa fa-list\"></i></a> <a title=\"Histórico de Alterações\" href=\"javascript:log()\" class=\"btn btn-sm btn-default hidden-xs\"><i class=\"fa fa-history\"></i></a><%=btnIncluir%>");
+    $("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1\" class=\"btn btn-sm btn-default\"><i class=\"far fa-list\"></i></a> <a title=\"Histórico de Alterações\" href=\"javascript:log()\" class=\"btn btn-sm btn-default hidden-xs\"><i class=\"far fa-history\"></i></a><%=btnIncluir%>");
 <% end if %>
 </script>
 
@@ -220,7 +220,7 @@ $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
                         <%if De=session("User") or reg("sysUser")=session("User") or PermitirA=1 then %>
 
                                 <button class="btn btn-sm btn-primary" id="save" type="button" onclick="saveTarefa()" <% if req("Helpdesk") <> "" AND reg("sysActive") = 1 then response.write("style='display:none'") end if %>>
-                                    <i class="fa fa-save"></i> <strong>SALVAR</strong>
+                                    <i class="far fa-save"></i> <strong>SALVAR</strong>
                                 </button>
                         <%end if %>
                     </span>
@@ -348,9 +348,9 @@ else
         'response.write("<pre>"&vUsuarioNomeSQL&"</pre>")
         set vUsuarioNome = db.execute(vUsuarioNomeSQL)
         if vUsuarioNome.eof then
-            responsavelNome = "<i class='fa fa-user' style='font-size:20px' data-original-title='Indefinido' data-toggle='tooltip' data-placement='top'></i> "
+            responsavelNome = "<i class='far fa-user' style='font-size:20px' data-original-title='Indefinido' data-toggle='tooltip' data-placement='top'></i> "
         else
-            responsavelNome = "<i class='fa fa-user' style='font-size:20px' data-original-title='"&vUsuarioNome("Nome")&"' data-toggle='tooltip' data-placement='top'></i> "
+            responsavelNome = "<i class='far fa-user' style='font-size:20px' data-original-title='"&vUsuarioNome("Nome")&"' data-toggle='tooltip' data-placement='top'></i> "
         end if
 
         vUsuarioNome.close
@@ -373,14 +373,14 @@ else
         tarEsp_especialidade = qTarefasDependencias("dependencia")
     end if
     if tarEsp_finalizada="" then
-        icoFinalizado = "<i class='fa fa-times' style='color:#ff500069'></i>"
+        icoFinalizado = "<i class='far fa-times' style='color:#ff500069'></i>"
     else
-        icoFinalizado = "<i class='fa fa-check' style='color:#379c0087'></i>"
+        icoFinalizado = "<i class='far fa-check' style='color:#379c0087'></i>"
     end if
 
     dependenciasLista = "<tr>"_
     &"  <td width='20'>"&icoFinalizado&"</td>"_
-    &"  <td><input type='checkbox' name='dep' class='input_depRemove' value='"&tarEsp_id&"'> <a href='#' class='dependencia' id='"&tarEsp_id&"' onclick='openComponentsModal(`tarefasDependencias.asp?depId=${this.id}`, true, `Editar dependência`, true, depAcaoEdit);'><i class='fa fa-edit'></i> "&tarEsp_especialidade&"</a></td>"_
+    &"  <td><input type='checkbox' name='dep' class='input_depRemove' value='"&tarEsp_id&"'> <a href='#' class='dependencia' id='"&tarEsp_id&"' onclick='openComponentsModal(`tarefasDependencias.asp?depId=${this.id}`, true, `Editar dependência`, true, depAcaoEdit);'><i class='far fa-edit'></i> "&tarEsp_especialidade&"</a></td>"_
     &"  <td width='150'>"&responsavelNomeHTML&"</td>"_
     &"  <td width='70'>"&tarEsp_prazo&"</td>"_
     &"</tr>"
@@ -409,7 +409,7 @@ end if
                                 <span class="panel-title">Dependências</span>
                                 <span class="panel-controls">
                                     <button class="btn btn-sm btn-success" type="button" onclick="openComponentsModal('tarefasDependencias.asp', true, 'Adicionar dependência', true, depAcaoNew)">
-                                        <i class="fa fa-plus"></i>
+                                        <i class="far fa-plus"></i>
                                     </button>
                             
                                 </span>
@@ -429,7 +429,7 @@ end if
                                         <tr>
                                             <td></td>
                                             <td colspan="3">
-                                                <button type="button" class="depRemove btn btn-xs btn-danger"><i class='fa fa-times'></i> Remover itens</button>
+                                                <button type="button" class="depRemove btn btn-xs btn-danger"><i class='far fa-times'></i> Remover itens</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -458,7 +458,7 @@ end if
 
                                     tarefasFilhos = "<tr>"_
                                     &"    <td><input type='checkbox' name='record' class='tarefasFilhoRemove' value='"&tarefaFilho_id&"'></td>"_
-                                    &"    <td><a class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I="&tarefaFilho_id&"' target='_blank'><i class='fa fa-edit'> </i> #"&tarefaFilho_id&"</a></td>"_
+                                    &"    <td><a class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I="&tarefaFilho_id&"' target='_blank'><i class='far fa-edit'> </i> #"&tarefaFilho_id&"</a></td>"_
                                     &"    <td>"&tarefaFilho_titulo&"</td>"_
                                     &"</tr>"
 
@@ -481,7 +481,7 @@ end if
                                 </div>
                                 <div class="col-md-1 text-right">
                                     <br>
-                                    <button type="button" class="btn btn-sm btn-success" id="tarefaFilhoAdd"><i class="fa fa-plus"></i></button>
+                                    <button type="button" class="btn btn-sm btn-success" id="tarefaFilhoAdd"><i class="far fa-plus"></i></button>
                                 </div>
 
                                 <div class="col-md-12" style="max-height:300px; overflow:auto;">
@@ -497,7 +497,7 @@ end if
                                         <%=tarefasFilhosHTML%>
                                     </tbody>
                                 </table>
-                                <button type="button" class="tarefaFilhoRemove btn btn-xs btn-danger"><i class='fa fa-times'></i> Remover itens</button>
+                                <button type="button" class="tarefaFilhoRemove btn btn-xs btn-danger"><i class='far fa-times'></i> Remover itens</button>
                                 </div>
                             </div>
                         </div>
@@ -513,7 +513,7 @@ end if
                     <div class="panel-heading">
                         <span class="panel-title">Solicitantes</span>
                         <span class="panel-controls">
-                            <button type="button" class="btn btn-xs btn-success mn" onclick="tsol('I');"><i class="fa fa-plus"></i></button>
+                            <button type="button" class="btn btn-xs btn-success mn" onclick="tsol('I');"><i class="far fa-plus"></i></button>
                         </span>
                     </div>
                     <div class="panel-body">
@@ -536,7 +536,7 @@ end if
                 <br>
                 <div class="panel">
                     <div class="panel-heading">
-                        <span class="panel-title"><i class="fa fa-star-o blue"></i> Status desta Tarefa</span>
+                        <span class="panel-title"><i class="far fa-star-o blue"></i> Status desta Tarefa</span>
                     </div>
 
                     <div class="panel-body">
@@ -644,7 +644,7 @@ end if
                     </div>
                     <div class="col-md-10"></div>
                     <div class="col-md-1" style="margin-top: 20px; right: 1%;">
-                        <button type="button" id="btnInteracao" class="btn btn-sm btn-success" onclick="saveTarefa()"><i class="fa fa-send"></i> Enviar</button>
+                        <button type="button" id="btnInteracao" class="btn btn-sm btn-success" onclick="saveTarefa()"><i class="far fa-send"></i> Enviar</button>
                     </div>
                 </div>
                 <div class="row" style="margin: 10px;" >
@@ -746,7 +746,7 @@ $(document).ready(function(){
         //var titulo    = $("#tarefaFilhoBusca").select2('data');
         var titulo    = $("#tarefaFilhoBusca").select2('data')[0]['full_name'];
 
-        var markup = "<tr><td><input type='checkbox' name='record' class='tarefasFilhoRemove' value='"+protocolo+"'></td><td><a  class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I='><i class='fa fa-edit'> </i> #" + protocolo + "</a></td><td> "+ titulo +" </td></tr>";
+        var markup = "<tr><td><input type='checkbox' name='record' class='tarefasFilhoRemove' value='"+protocolo+"'></td><td><a  class='btn btn-xs btn-primary' href='./?P=tarefas&Pers=1&I='><i class='far fa-edit'> </i> #" + protocolo + "</a></td><td> "+ titulo +" </td></tr>";
         $("table tbody").append(markup);
         //console.log(protocolo);
         data : $.post( "TarefasSave.asp?acao=a&ref=<%=req("I")%>&v="+protocolo);

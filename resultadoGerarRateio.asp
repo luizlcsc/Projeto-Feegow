@@ -130,7 +130,7 @@ for i=0 to ubound(splEmpresas)
                 <td><%=desp("Categoria") %></td>
                 <td class="text-right"><%=fn(ValorTotal) %></td>
                 <td class="text-right"><%=fn(ValorRatear) %></td>
-                <td><button type="button" class="btn btn-xs btn-default"><i class="fa fa-search-plus"></i></button></td>
+                <td><button type="button" class="btn btn-xs btn-default"><i class="far fa-search-plus"></i></button></td>
             </tr>
             <%
         desp.movenext
@@ -153,5 +153,5 @@ next
 %>
 
 <div class="clearfix form-actions text-center">
-    <button type="button" class="btn btn-success" onclick="alert('Erro: incompatibilidade de tabelas');"><i class="fa fa-th"></i> GERAR RATEIO SOBRE AS CONTAS SELECIONADAS</button>
+    <button type="button" class="btn btn-success" onclick="alert('Erro: incompatibilidade de tabelas');"><i class="far fa-th"></i> GERAR RATEIO SOBRE AS CONTAS SELECIONADAS</button>
 </div>

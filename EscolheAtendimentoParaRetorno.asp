@@ -99,7 +99,7 @@ end if
                                 set pRet = db.execute("select StaID from agendamentos where id="& TemRetorno &" and StaID=6")
                                 if not pRet.eof then
                                     %>
-                                    <span class="label label-danger"><i class="fa fa-exclamation-triangle"></i> PACIENTE FALTOU AO RETORNO.</span>
+                                    <span class="label label-danger"><i class="far fa-exclamation-triangle"></i> PACIENTE FALTOU AO RETORNO.</span>
                                     <%
                                 end if
                             end if
@@ -122,7 +122,7 @@ end if
 
         </div>
         <div class="col-md-3">
-            <button type="button" class="btn btn-primary mt20" onclick="SelecionarAtendimento()"><i class="fa fa-check"></i> Selecionar atendimento</button>
+            <button type="button" class="btn btn-primary mt20" onclick="SelecionarAtendimento()"><i class="far fa-check"></i> Selecionar atendimento</button>
         </div>
 
     <%

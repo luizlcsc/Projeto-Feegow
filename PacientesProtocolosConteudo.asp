@@ -159,8 +159,8 @@ end if
                     </td>
                     <td class='row' width="9%">
                         <% if not readonly then %>
-                        <i class='ml5 col-md-5 btn-xs btn btn-warning fa fa-pencil' onclick="pedirMudanca('E','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')"  data-toggle="tooltip" data-placement="top" title="Pedir edição de protocolo"> </i>
-                        <i class='ml5 col-md-5 btn-xs btn btn-danger fa fa-remove' onclick="pedirMudanca('R','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')" data-toggle="tooltip" data-placement="top" title="Pedir remoção de protocolo"> </i>
+                        <i class='ml5 col-md-5 btn-xs btn btn-warning far fa-pencil' onclick="pedirMudanca('E','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')"  data-toggle="tooltip" data-placement="top" title="Pedir edição de protocolo"> </i>
+                        <i class='ml5 col-md-5 btn-xs btn btn-danger far fa-remove' onclick="pedirMudanca('R','<%=ProtocoloMedicamentoID%>','<%=MedicamentoID%>')" data-toggle="tooltip" data-placement="top" title="Pedir remoção de protocolo"> </i>
                         <% end if %>
                     </td>
                 </tr>
@@ -169,7 +169,7 @@ end if
                 if Diluente&""<>"" then
                 %>
                 <tr>
-                    <td class="text-right"><i class="fa fa-chevron-right"></i></td>
+                    <td class="text-right"><i class="far fa-chevron-right"></i></td>
                     <td ><b>Diluente:</b> <%=Diluente%>
                     <b>
                         <%if DoseDiluente&""<>"" then%>
@@ -186,7 +186,7 @@ end if
                 %>
                 <tr>
                     <td colspan="2"><textarea id="Obs_<%=ProtocoloMedicamentoID%>" name="Obs_<%=ProtocoloMedicamentoID%>" style='float:left;<%=styleText%>' class='obs-exame form-control' placeholder='Observações'  <% if readOnly then%> readonly <%end if%>><%=Obs %></textarea></td>
-                    <td colspan="2"><%if ObservacaoMedicamento&""<>"" then%><b><i class="fa fa-exclamation-circle"></i> Obs.: </b><%end if%><%=ObservacaoMedicamento%></td>
+                    <td colspan="2"><%if ObservacaoMedicamento&""<>"" then%><b><i class="far fa-exclamation-circle"></i> Obs.: </b><%end if%><%=ObservacaoMedicamento%></td>
                 </tr>
                 <%
                 end if

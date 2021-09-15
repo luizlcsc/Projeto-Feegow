@@ -105,10 +105,10 @@ END IF
 <form id="frmPT">
     <div class="panel mt20 mtn hidden-print">
         <div class="panel-heading">
-            <span class="panel-title"><i class="fa fa-info-circle"></i> Filtros</span>
+            <span class="panel-title"><i class="far fa-info-circle"></i> Filtros</span>
             <span class="panel-controls">
-                <button type="button" onclick="HistoricoAlteracoes()" class="btn btn-default btn-sm" title="Histórico de alterações"><i class="fa fa-history"></i> </button>
-                <button class="btn btn-info btn-sm" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
+                <button type="button" onclick="HistoricoAlteracoes()" class="btn btn-default btn-sm" title="Histórico de alterações"><i class="far fa-history"></i> </button>
+                <button class="btn btn-info btn-sm" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i></button>
             </span>
         </div>
         <div class="panel-body">
@@ -118,7 +118,7 @@ END IF
                 <%= quickfield("datepicker", "Inicio", "Vigência de", 2, reg("Inicio"), "", "", " required ") %>
                 <%= quickfield("datepicker", "Fim", "até", 2, reg("Fim"), "", "", " required ") %>
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-default mt25" onclick="openSlide()">Parâmetros adicionais <i class="fa fa-chevron-down"> </i></button>
+                    <button type="button" class="btn btn-default mt25" onclick="openSlide()">Parâmetros adicionais <i class="far fa-chevron-down"> </i></button>
                 </div>
             </div>
             <div class="row mt15" id="filtros" style="display:none;<%=franquia("display:block")%>">
@@ -140,19 +140,19 @@ END IF
     <div class="panel">
         <div class="panel-heading">
             <div class='painel-header-flex'>
-                <span class="panel-title"><i class="fa fa-list"></i> Procedimentos</span>
-                <!--<button class='btn btn-success text-right'><i class="fa fa-plus"></i></button>-->
+                <span class="panel-title"><i class="far fa-list"></i> Procedimentos</span>
+                <!--<button class='btn btn-success text-right'><i class="far fa-plus"></i></button>-->
             </div>
         </div>
         <div class="panel-body">
                 <div class="pull-right" style="position: absolute; right: 25px; margin-right: 15px;z-index: 2">
                     <a id="seach-tipo" class="btn btn-success btn-xs" href="javascript:void(0)" onclick="toogleBtns('seach-tipo')">
-                        <i class="fa fa-search" aria-hidden="true"></i>
+                        <i class="far fa-search" aria-hidden="true"></i>
                     </a>
                 </div>
                 <div class="pull-right" style="position: absolute; right: 0%; margin-right: 15px;z-index: 2">
                     <a id="add-procedimento" class="btn btn-success btn-xs" href="javascript:void(0)" onclick="toogleBtns('add-procedimento')">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        <i class="far fa-plus" aria-hidden="true"></i>
                     </a>
                 </div>
                 <div id='actions'>
@@ -261,11 +261,11 @@ END IF
     $(".crumb-active a").html("Preços de Custo e Venda");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("edição de tabela de preço");
-    $(".crumb-icon a span").attr("class", "fa fa-table");
+    $(".crumb-icon a span").attr("class", "far fa-table");
     <%
     if aut("tabelasprecosA")=1 then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-default" href="./?P=TabelasPreco&Pers=1"><i class="fa fa-list"></i></a> <button onclick="$(\'#Salvar\').click()" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> SALVAR</button>');
+    $("#rbtns").html('<a class="btn btn-sm btn-default" href="./?P=TabelasPreco&Pers=1"><i class="far fa-list"></i></a> <button onclick="$(\'#Salvar\').click()" class="btn btn-sm btn-primary"><i class="far fa-save"></i> SALVAR</button>');
     <%
         end if
     %>

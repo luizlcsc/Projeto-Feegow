@@ -130,7 +130,7 @@ end if
 		</style>
 <div id="ImpressaoConteudo" style="page-break-after: always;">
 <div class="hidden-print" style="position:fixed; color:#FFF; right:14px; z-index:10000000; text-decoration:none; padding:5px;">
-    <button type="button" class="btn btn-primary" onClick="PrintFicha()"><i class="fa fa-print" style="color:#fff"></i> IMPRIMIR</button>
+    <button type="button" class="btn btn-primary" onClick="PrintFicha()"><i class="far fa-print" style="color:#fff"></i> IMPRIMIR</button>
 </div>
 
 <table width="100%" height="100%">

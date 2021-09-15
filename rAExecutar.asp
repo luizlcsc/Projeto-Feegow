@@ -45,7 +45,7 @@ for i=0 to ubound(splU)
 			Subtotal = Subtotal+ g("Valor")
 			%>
             <tr>
-                <td width="1%"><a href="./?P=Invoice&Pers=1&I=<%= G("InvoiceID") %>" target="_blank" class="btn btn-xs btn-primary hidden-print"><i class="fa fa-external-link"></i></a> </td>
+                <td width="1%"><a href="./?P=Invoice&Pers=1&I=<%= G("InvoiceID") %>" target="_blank" class="btn btn-xs btn-primary hidden-print"><i class="far fa-external-link"></i></a> </td>
                 <td><a href="./?P=Pacientes&Pers=1&I=<%= G("PacienteID") %>" target="_blank"><%= G("NomePaciente") %></a></td>
                 <td><%= G("NomeProcedimento") %></td>
                 <td class="text-right"><%= fn(G("Valor")) %></td>

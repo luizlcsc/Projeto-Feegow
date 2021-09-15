@@ -182,7 +182,7 @@ set comentariosSQL = nothing
   <div class="panel-heading">
     <span class="panel-title" id="titulo"><%=vt_video%></span>
     <span class="panel-controls" onclick="javascript:$('#videoaula').css('display', 'none')">
-        <i class="fa fa-remove"></i> Fechar
+        <i class="far fa-remove"></i> Fechar
     </span>
   </div>
 </div>
@@ -214,8 +214,8 @@ set comentariosSQL = nothing
             refURLAtual = req("refURL")
             %>
             <div class="avaliacoes">
-              <a id="avaliacaoBom" data-toggle="tooltip" data-placement="top" data-original-title="Gostei do vídeo! ;-)"><i class="fa fa-thumbs-o-up vt_avaliacao <%=avaliacaoBom%>"></i></a>
-              <a id="avaliacaoRuim" data-toggle="tooltip" data-placement="top" data-original-title="Não gostei do vídeo! :-("><i class="fa fa-thumbs-o-down vt_avaliacao <%=avaliacaoRuim%>"></i></a>
+              <a id="avaliacaoBom" data-toggle="tooltip" data-placement="top" data-original-title="Gostei do vídeo! ;-)"><i class="far fa-thumbs-o-up vt_avaliacao <%=avaliacaoBom%>"></i></a>
+              <a id="avaliacaoRuim" data-toggle="tooltip" data-placement="top" data-original-title="Não gostei do vídeo! :-("><i class="far fa-thumbs-o-down vt_avaliacao <%=avaliacaoRuim%>"></i></a>
             </div> 
           </div>
           <div class="col-md-12">
@@ -223,7 +223,7 @@ set comentariosSQL = nothing
             <br>
             <textarea class="form-control" name="comentario" id="comentario" maxlength="200" minlength="10"></textarea>
             <button type="button" class="btn btn-sm btn-block btn-success" id="btnSalvarComentario">
-                 Enviar comentário <i class="fa fa-send"></i>
+                 Enviar comentário <i class="far fa-send"></i>
             </button>
           </div>
           

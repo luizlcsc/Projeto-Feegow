@@ -276,7 +276,7 @@ posModalPagar = "fixed"
         <br />
 
     <div class="alert alert-danger text-center no-margin no-padding hidden" id="alert-disable">
-        <small><i class="fa fa-exclamation-circle"></i> Você não pode alterar os dados desta conta, pois existem pagamentos realizados.</small>
+        <small><i class="far fa-exclamation-circle"></i> Você não pode alterar os dados desta conta, pois existem pagamentos realizados.</small>
     </div>
 
     <input type="hidden" id="sysActive" name="sysActive" value="<%=data("sysActive")%>" />
@@ -287,7 +287,7 @@ posModalPagar = "fixed"
 if not isnull(data("DataCancelamento")) then
     %>
     <div class="alert alert-danger">
-        <i class="fa fa-minus-circle"></i> FATURA CANCELADA EM <%= data("DataCancelamento") &" POR "& ucase(nameInTable(data("sysUserCancelamento"))&"") %>.
+        <i class="far fa-minus-circle"></i> FATURA CANCELADA EM <%= data("DataCancelamento") &" POR "& ucase(nameInTable(data("sysUserCancelamento"))&"") %>.
         <br>
         MOTIVO: <%= data("MotivoCancelamento") %>
     </div>
@@ -441,7 +441,7 @@ end if
         <div class="panel-body mb15">
             <div class="col-md-2 pt10">
                 <button type="button" onclick="marcarMultiplosExecutados()" class="btn btn-default btn-sm">
-                    <i class="fa fa-check-circle"></i> Marcar itens como executado
+                    <i class="far fa-check-circle"></i> Marcar itens como executado
                 </button>
             </div>
             <div class="col-md-2"><br/>
@@ -485,7 +485,7 @@ if getConfig("CalculoReembolso") then
     if not ProcedimentoComReembolsoSQL.eof then
 %>
                 <br>
-                <button type="button" onclick="calculaReembolso()" class="btn btn-default disable"><i class="fa fa-calculator"></i> Calcular reembolso</button>
+                <button type="button" onclick="calculaReembolso()" class="btn btn-default disable"><i class="far fa-calculator"></i> Calcular reembolso</button>
 <%
     end if
 end if
@@ -581,7 +581,7 @@ end if
                             end if
                             if tipoPessoa="PJ" then
                                 %>
-                                <button onclick="location.href='./?P=invoice&I=<%= InvoiceID %>&Pers=1&T=<%= CD %>&Retencoes=1&RetencaoPFPJ=<%= tipoPessoa %>&RetencaoSimples=<%= Nat %>'" type="button" class="btn btn-sm btn-alert"><i class="fa fa-check-circle"></i> APLICAR RETENÇÕES - <%= Nat &" - "& tipoPessoa %></button>
+                                <button onclick="location.href='./?P=invoice&I=<%= InvoiceID %>&Pers=1&T=<%= CD %>&Retencoes=1&RetencaoPFPJ=<%= tipoPessoa %>&RetencaoSimples=<%= Nat %>'" type="button" class="btn btn-sm btn-alert"><i class="far fa-check-circle"></i> APLICAR RETENÇÕES - <%= Nat &" - "& tipoPessoa %></button>
                                 <%
                             end if
                         end if
@@ -664,14 +664,14 @@ end if
                                 <div class="btn-group">
                                     <% if multiploslabs = 1 then %> 
                                         <!-- <button type="button" onclick="avisoLaboratoriosMultiplos('<%=informacao%>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
-                                            <i class="fa fa-flask"></i>
+                                            <i class="far fa-flask"></i>
                                         </button> -->
                                         <button type="button" onclick="abrirSelecaoLaboratorio('<%=InvoiceID%>','<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
-                                            <i class="fa fa-flask"></i>
+                                            <i class="far fa-flask"></i>
                                         </button>
                                     <% else %> 
                                         <button type="button" onclick="abrirIntegracao('<%=InvoiceID%>','<%=laboratorioid%>', '<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=InvoiceID%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
-                                            <i class="fa fa-flask"></i>
+                                            <i class="far fa-flask"></i>
                                         </button>
                                     <% end if %>
 
@@ -694,21 +694,21 @@ end if
                         <% if CD="C" and Aut("cancelamentocontareceberI") = 1 and contintegracao = 0 then %>
                         <div class="btn-group ">
                             <button type="button" class="btn btn-danger btn-sm" id="btn-abrir-modal-cancelamento">
-                                Cancelamento
+                                <i class="far fa-times"></i> Cancelamento
                             </button>
                         </div>
                         <% end if %>
 
                     <div class="btn-group hidden">
                         <button type="button" onclick="abrirMatrix('<%=InvoiceID%>')" class="btn btn-<%=corBtnPleres%> btn-sm" id="btn-abrir-modal-pleres" title="<%=titleBtnPleres%>">
-                            <i class="fa fa-flask"></i>
+                            <i class="far fa-flask"></i>
                         </button>
                     </div>
                     <% if contintegracao = 0 then %>
                     <div class="btn-group">
                         <button class="btn btn-success btn-sm dropdown-toggle disable" data-toggle="dropdown">
-                        <i class="fa fa-plus"></i> Adicionar Item
-                        <span class="fa fa-caret-down icon-on-right"></span>
+                        <i class="far fa-plus"></i> Adicionar Item
+                        <span class="far fa-caret-down icon-on-right"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-success pull-right">
                       <%
@@ -740,8 +740,8 @@ end if
 
                     <div class="btn-group">
                         <button class="btn btn-success btn-sm dropdown-toggle disable<% If CD="D" Then %> hidden<% End If %>" data-toggle="dropdown">
-                        <i class="fa fa-plus"></i> Adicionar Pacote
-                        <span class="fa fa-caret-down icon-on-right"></span>
+                        <i class="far fa-plus"></i> Adicionar Pacote
+                        <span class="far fa-caret-down icon-on-right"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-success pull-right" style="overflow-y: scroll; max-height: 400px;">
                           <%
@@ -798,7 +798,7 @@ end if
             <%
         end if
         %>
-        <button type='button' class='btn btn-default btn-sm ml5' title='Histórico de alterações' onClick='historicoInvoice()'><i class='fa fa-history bigger-110'></i></button>
+        <button type='button' class='btn btn-default btn-sm ml5' title='Histórico de alterações' onClick='historicoInvoice()'><i class='far fa-history bigger-110'></i></button>
     </div>
 
     </form>
@@ -811,7 +811,7 @@ if not vcaCanc.eof then
 
     <div class="panel">
         <div class="panel-heading bg-warning">
-            <span class="panel-title"><i class="fa fa-ban"></i> Pagamentos cancelados desta fatura</span>
+            <span class="panel-title"><i class="far fa-ban"></i> Pagamentos cancelados desta fatura</span>
         </div>
         <div class="panel-body">
             <table class="table table-condensed">
@@ -870,7 +870,7 @@ end if
             </div>
             <div class="modal-body">
                 <div class="modal-loading">
-                <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+                <i class="far fa-circle-o-notch fa-spin fa-fw"></i>
                 <span class="sr-only">...</span>
                 Carregando...
                 </div>
@@ -1795,7 +1795,7 @@ if InStr(geracao, "ordem de compra") > 0 then
         <script>
         // insere o botão para ir para a Ordem de Compra
         $(document).ready(function() {
-            $('#rbtns .btn-group').after(' <a class="btn btn-warning btn-sm" href="?P=solicitacoescompras&Pers=1#/ordens/edit/<%=ordemId%>" title="Ir para  ordem de compra"><i class="fa fa-shopping-cart bigger-110"></i></a>');
+            $('#rbtns .btn-group').after(' <a class="btn btn-warning btn-sm" href="?P=solicitacoescompras&Pers=1#/ordens/edit/<%=ordemId%>" title="Ir para  ordem de compra"><i class="far fa-shopping-cart bigger-110"></i></a>');
         });
         </script>
 <%

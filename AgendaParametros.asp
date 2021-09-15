@@ -131,7 +131,7 @@ if tipo="PacienteID" then
 			if splCamposPedir(i)="Tel1" then
 				if pac("Tel1")<>"" and not isnull(pac("Tel1")) then
 					%>
-					$('#qfagetel1').html('<label for="ageTel1">Telefone</label><br><div class="input-group"><span class="input-group-addon"><i class="fa fa-phone bigger-110"></i></span><input id="ageTel1" class="form-control" type="text" maxlength="150" name="ageTel1" value="<%= pac("Tel1") %>" placeholder=""></div></div>');
+					$('#qfagetel1').html('<label for="ageTel1">Telefone</label><br><div class="input-group"><span class="input-group-addon"><i class="far fa-phone bigger-110"></i></span><input id="ageTel1" class="form-control" type="text" maxlength="150" name="ageTel1" value="<%= pac("Tel1") %>" placeholder=""></div></div>');
 					<%
 				else
 					%>
@@ -142,7 +142,7 @@ if tipo="PacienteID" then
 				if pac("Cel1")<>"" and not isnull(pac("Cel1")) then
 					%>
 					if($('#qfagecel1').length > 0){
-					    $('#qfagecel1').html('<label for="ageCel1">Celular</label><br><div class="input-group"><span class="input-group-addon"><i class="fa fa-mobile-phone bigger-110"></i></span><input id="ageCel1" class="form-control" type="text" maxlength="150" name="ageCel1" value="<%= pac("Cel1") %>" placeholder=""></div></div>');
+					    $('#qfagecel1').html('<label for="ageCel1">Celular</label><br><div class="input-group"><span class="input-group-addon"><i class="far fa-mobile-phone bigger-110"></i></span><input id="ageCel1" class="form-control" type="text" maxlength="150" name="ageCel1" value="<%= pac("Cel1") %>" placeholder=""></div></div>');
 					}else{
 					    $("#ageCel1").val("<%=pac("Cel1")%>");
 					}
@@ -248,7 +248,7 @@ if tipo="PacienteID" then
 
                 if ObsConvenio&""<>"" then
                 %>
-                var btnObs = '<button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=conv("id")%>)"><i class="fa fa-align-justify"></i></button>';
+                var btnObs = '<button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=conv("id")%>)"><i class="far fa-align-justify"></i></button>';
                 $("#ConvenioID").before(btnObs);
                 <%
                 end if
@@ -582,7 +582,7 @@ if tipo="Equipamento" then
             text: '<%=msgEquip %>',
             type: 'danger',
             delay: 3000,
-            icon: 'fa fa-times'
+            icon: 'far fa-times'
         });
         $("#btnSalvarAgenda").attr("disabled", true);
         <%
@@ -621,7 +621,7 @@ if left(tipo, 10)="ConvenioID" then
 
         if ObsConvenio&""<>"" then
             %>
-            var btnObs = '<button title="Observações do convênio" id="ObsConvenios<%=apID%>" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=ConvenioID%>)"><i class="fa fa-align-justify"></i></button>';
+            var btnObs = '<button title="Observações do convênio" id="ObsConvenios<%=apID%>" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=ConvenioID%>)"><i class="far fa-align-justify"></i></button>';
             $("#ConvenioID<%=apID%>").before(btnObs);
             <%
         else

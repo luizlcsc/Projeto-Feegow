@@ -79,7 +79,7 @@ if ref("De")="" then
             </div>
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <button id="buscar" class="btn btn-primary hidden mt10 btn-block" onclick="$(this).addClass('hidden')"><i class="fa fa-search"></i> BUSCAR</button>
+                    <button id="buscar" class="btn btn-primary hidden mt10 btn-block" onclick="$(this).addClass('hidden')"><i class="far fa-search"></i> BUSCAR</button>
                 </div>
             </div>
         </form>

@@ -22,7 +22,7 @@ end if
 <%=quickField("datepicker", "De", "Data In&iacute;cio", 3, left(De, 10), "", "", "")%>
 <%=quickField("datepicker", "A", "Data Fim", 3, left(A, 10), "", "", "")%>
 <label>&nbsp;</label><br />
-<button class="btn btn-success" name="Gerar"><i class="fa fa-list"></i> Gerar</button>
+<button class="btn btn-success" name="Gerar"><i class="far fa-list"></i> Gerar</button>
 <br />
 <br />
 </div>

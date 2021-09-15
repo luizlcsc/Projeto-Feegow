@@ -33,7 +33,7 @@ end if
 
 if TipoLancto="E" then
 	tipo = "Entrada"
-	icone = "fa fa-level-down"
+	icone = "far fa-level-down"
 	tipoValor = "Compra"
 	if not isnull(prod("PrecoCompra")) then
 		valor = formatnumber(prod("PrecoCompra"),2)
@@ -41,7 +41,7 @@ if TipoLancto="E" then
     LocalizacaoPadrao = prod("LocalizacaoID")
 else
 	tipo = "Sa&iacute;da"
-	icone = "fa fa-level-up"
+	icone = "far fa-level-up"
 	tipoValor = "Venda"
 	if not isnull(prod("PrecoVenda")) then
 		valor = formatnumber(prod("PrecoVenda"),2)
@@ -249,11 +249,11 @@ end if
     <%
     if ItemInvoiceID<>"" or ProdutoInvoiceID<>"" then
         %>
-        <button type="button" onclick="modalEstoque('<%= ItemInvoiceID %>', <%= req("P") %>, '<%= ProdutoInvoiceID %>')" class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i> Voltar</button>
+        <button type="button" onclick="modalEstoque('<%= ItemInvoiceID %>', <%= req("P") %>, '<%= ProdutoInvoiceID %>')" class="btn btn-default btn-sm"><i class="far fa-chevron-left"></i> Voltar</button>
         <%
     end if
     %>
-	<button class="btn btn-sm btn-success pull-right" type="button" id="lancar"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-sm btn-success pull-right" type="button" id="lancar"><i class="far fa-save"></i> Salvar</button>
 </div>
 <script type="text/javascript">
 <!--#include file="jQueryFunctions.asp"-->

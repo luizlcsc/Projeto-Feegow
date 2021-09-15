@@ -13,11 +13,11 @@ if not pres.eof then
 		%>
         <span class="label label arrowed-in arrowed-right"> 
         	<a class="white" href="javascript:HistoricoPedidos(<%=pres("id")%>, '')">
-	            <i class="fa fa-zoom-in"></i> <%=left(pres("Data"),10)&" por "&nameInTable(pres("sysUser"))%>
+	            <i class="far fa-zoom-in"></i> <%=left(pres("Data"),10)&" por "&nameInTable(pres("sysUser"))%>
             </a>
                 
             <a class="red" href="javascript:HistoricoPedidos('', <%=pres("id")%>)">
-                <i class="fa fa-remove"></i>
+                <i class="far fa-remove"></i>
             </a>
         </span>
 		<%

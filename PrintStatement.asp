@@ -73,8 +73,8 @@
     <body style="overflow-x:scroll">
     	<div class="container-fluid">
             <div style="position:fixed; top:10px; right:10px">
-                <button type="button" onclick="downloadExcel()" class="btn btn-success hidden-print"><i class="fa fa-file-excel-o"></i></button>
-                <button type="button" onclick="print()" class="btn btn-info hidden-print"><i class="fa fa-print"></i></button>
+                <button type="button" onclick="downloadExcel()" class="btn btn-success hidden-print"><i class="far fa-file-excel-o"></i></button>
+                <button type="button" onclick="print()" class="btn btn-info hidden-print"><i class="far fa-print"></i></button>
             </div>
 	    	<% 
            reqdebug = req("debug")

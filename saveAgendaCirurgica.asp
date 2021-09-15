@@ -35,7 +35,7 @@ end if
 if erro<>"" then
 	%>
     new PNotify({
-        title: '<i class="fa fa-thumbs-down"></i> ERRO!',
+        title: '<i class="far fa-thumbs-down"></i> ERRO!',
         text: '<%=erro%>',
         type: 'danger'
     });

@@ -20,7 +20,7 @@ end if
         <%=quickField("datepicker", "DataAte", "At&eacute;", 3, DataAte, "", "", "")%>
         <div class="col-md-3">
             <label>&nbsp;</label><br>
-            <button type="submit" class="btn btn-success"><i class="fa fa-search"></i> Buscar</button>
+            <button type="submit" class="btn btn-success"><i class="far fa-search"></i> Buscar</button>
         </div>
     </div>
 </form>

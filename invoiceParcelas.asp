@@ -7,7 +7,7 @@ Parcela = ref("Parcela")
 <table width="100%" class="table table-striped table-condensed">
 	<thead>
     	<tr class="info">
-            <th width="1%"><button type="button" class="btn btn-xs" style="visibility:hidden"><i class="fa fa-chevron-down"></i></button></th>
+            <th width="1%"><button type="button" class="btn btn-xs" style="visibility:hidden"><i class="far fa-chevron-down"></i></button></th>
         	<th width="18%">Vencimento</th>
         	<th width="18%">Obs.</th>
         	<th width="18%">Valor</th>
@@ -78,7 +78,7 @@ Parcela = ref("Parcela")
         </script>
         <%
 	else
-		tagPagto = "<button class=""btn btn-block btn-xs btn-danger"" type=""button"" onclick=""pagamento(0);""><i class=""fa fa-check""></i> Lan&ccedil;ar Pagamento</button>"
+		tagPagto = "<button class=""btn btn-block btn-xs btn-danger"" type=""button"" onclick=""pagamento(0);""><i class=""far fa-check""></i> Lan&ccedil;ar Pagamento</button>"
 		NumeroParcelas = ref("NumeroParcelas")
 		if not isnumeric(NumeroParcelas) then
 			NumeroParcelas=1

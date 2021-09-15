@@ -225,7 +225,7 @@ dragresize.apply(document);
 
 
 function abreAgenda(horario, id, data, LocalID, ProfissionalID){
-	$("#div-agendamento").html('<i class="fa fa-spinner fa-spin orange bigger-125"></i> Carregando...');
+	$("#div-agendamento").html('<i class="far fa-spinner fa-spin orange bigger-125"></i> Carregando...');
 	$("#modal-agenda").modal('show');
 	$.ajax({
 		type:"POST",
@@ -408,7 +408,7 @@ end if
                 </select>
                 <span class="input-group-btn">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-edit"></i> EDITAR <i class="fa fa-caret-down"></i></button>
+                        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"><i class="far fa-edit"></i> EDITAR <i class="far fa-caret-down"></i></button>
                         <ul class="dropdown-menu dropdown-info">
                             <li><a href="./?P=Locais&Pers=Follow">Editar locais</a></li>
                             <li><a href="./?P=LocaisGrupos">Editar grupos</a></li>
@@ -425,7 +425,7 @@ end if
             %>
 <script type="text/javascript">
     $(".crumb-active").html("<a>Agenda por Locais</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-calendar");
+    $(".crumb-icon a span").attr("class", "far fa-calendar");
     $(".crumb-link").replaceWith("");
     $(".crumb-trail").removeClass("hidden");
     $(".crumb-trail").html("<%=(formatdatetime(Data,1))%>");

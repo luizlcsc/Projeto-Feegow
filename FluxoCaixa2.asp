@@ -34,7 +34,7 @@ if erro<>"" then
     %>
     <div class="alert alert-warning m25">
             <button class="pull-right btn-xs btn btn-default" type="button" onclick="window.close()">
-                <i class="fa fa-remove"></i> FECHAR
+                <i class="far fa-remove"></i> FECHAR
             </button>
 
         <%= erro %></div>

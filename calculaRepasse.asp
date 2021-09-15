@@ -147,17 +147,17 @@ else
 
                 <div class="btn-group btn-sm btn-block">
                     <button type="button" class="btn btn-sm btn-success btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-money"></i> Lan&ccedil;ar...
+                        <i class="far fa-money"></i> Lan&ccedil;ar...
                         <span class="caret ml5"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
                         <% if modoCalculo="N" then %>
-                        <li><a href="javascript:void(0);" onclick="lancaRepasses('<%=strChecados%>', '<%=formatnumber(repasse, 2)%>', '<%=req("ContaCredito")%>', 'ContaAPagar');"><i class="fa fa-plus"></i> Como conta a pagar</a></li>
+                        <li><a href="javascript:void(0);" onclick="lancaRepasses('<%=strChecados%>', '<%=formatnumber(repasse, 2)%>', '<%=req("ContaCredito")%>', 'ContaAPagar');"><i class="far fa-plus"></i> Como conta a pagar</a></li>
                         <%
                         else
                         %>
-                        <li><a href="javascript:void(0);" onclick="lancaRepasses('<%=strChecados%>', '<%=formatnumber(repasse, 2)%>', '<%=req("ContaCredito")%>', 'Credito');"><i class="fa fa-plus"></i> Como crédito (invertido)</a></li>
-                        <li><a href="javascript:void(0);" onclick="lancaRepasses('<%=strChecados%>', '<%=formatnumber(repasse, 2)%>', '<%=req("ContaCredito")%>', 'ContaAReceber');"><i class="fa fa-plus"></i> Como conta a receber (invertido)</a></li>
+                        <li><a href="javascript:void(0);" onclick="lancaRepasses('<%=strChecados%>', '<%=formatnumber(repasse, 2)%>', '<%=req("ContaCredito")%>', 'Credito');"><i class="far fa-plus"></i> Como crédito (invertido)</a></li>
+                        <li><a href="javascript:void(0);" onclick="lancaRepasses('<%=strChecados%>', '<%=formatnumber(repasse, 2)%>', '<%=req("ContaCredito")%>', 'ContaAReceber');"><i class="far fa-plus"></i> Como conta a receber (invertido)</a></li>
                         <% end if %>
                     </ul>
                 </div>

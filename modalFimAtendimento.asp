@@ -41,7 +41,7 @@ end if
         	<table id="tabela" class="table table-striped table-hover">
             <thead>
               <tr>
-            	<th colspan="2"><span class="input-icon input-icon-right width-100"><input id="pesquisar" class="form-control" type="text" autocomplete="off" value="" name="perquisar" placeholder="Filtrar..."><i class="fa fa-search"></i></span></th>
+            	<th colspan="2"><span class="input-icon input-icon-right width-100"><input id="pesquisar" class="form-control" type="text" autocomplete="off" value="" name="perquisar" placeholder="Filtrar..."><i class="far fa-search"></i></span></th>
               </tr>
             </thead>
 			<%
@@ -50,7 +50,7 @@ end if
                 %>
                 <tr>
 					<td><%=left(proc("NomeProcedimento"),35)%></td>
-                    <td width="1%"><button type="button" onclick="addProc('AddProc', <%=proc("id")%>)" class="btn btn-success btn-xs"><i class="fa fa-chevron-right"></i></button></td>
+                    <td width="1%"><button type="button" onclick="addProc('AddProc', <%=proc("id")%>)" class="btn btn-success btn-xs"><i class="far fa-chevron-right"></i></button></td>
                 </tr>
                 <%
             proc.movenext
@@ -106,11 +106,11 @@ end if
 	<%
 	if Solicitacao="S" then
 		%>
-        <button class="btn btn-sm btn-danger pull-right" type="button" onClick="atender(0, <%= atendimento("PacienteID") %>, 'Solicitar')"><i class="fa fa-pause"></i> Solicitar Autoriza&ccedil;&atilde;o/Cobran&ccedil;a</button>
+        <button class="btn btn-sm btn-danger pull-right" type="button" onClick="atender(0, <%= atendimento("PacienteID") %>, 'Solicitar')"><i class="far fa-pause"></i> Solicitar Autoriza&ccedil;&atilde;o/Cobran&ccedil;a</button>
         <%
 	else
 		%>
-		<button class="btn btn-sm btn-warning pull-right" type="button" onClick="atender(0, <%= atendimento("PacienteID") %>, 'Encerrar')"><i class="fa fa-stop"></i> Finalizar</button>
+		<button class="btn btn-sm btn-warning pull-right" type="button" onClick="atender(0, <%= atendimento("PacienteID") %>, 'Encerrar')"><i class="far fa-stop"></i> Finalizar</button>
         <%
 	end if
 	%>
@@ -131,10 +131,10 @@ function addProc(T, I, S){
 function expand(I){
 	if($("#div"+I).css("display")=="none"){
 		$("#div"+I).slideDown(500);
-		$("#chevron"+I).attr("class", "fa fa-chevron-up");
+		$("#chevron"+I).attr("class", "far fa-chevron-up");
 	}else{
 		$("#div"+I).slideUp(500);
-		$("#chevron"+I).attr("class", "fa fa-chevron-down");
+		$("#chevron"+I).attr("class", "far fa-chevron-down");
 	}
 }
 

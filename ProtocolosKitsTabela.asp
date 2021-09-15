@@ -27,7 +27,7 @@ end if
                 </td>
                 <td width="1%">
                     <label>&nbsp;</label><br>
-                    <button type="button" class="btn btn-danger btn-xs" onClick="removeKit('<%=ProtocoloID%>', '<%=id%>');"><i class="fa fa-remove"></i></button>
+                    <button type="button" class="btn btn-danger btn-xs" onClick="removeKit('<%=ProtocoloID%>', '<%=id%>');"><i class="far fa-remove"></i></button>
                 </td>
             </tr>
             <%
@@ -36,7 +36,7 @@ end if
             %>
             <tr>
                 <td class="text-right">
-                    <i class="fa fa-chevron-right"></i>
+                    <i class="far fa-chevron-right"></i>
                 </td>
                 <td><b>Quantidade</b></td>
                 <td width="80%"><b>Produto</b></td>

@@ -13,7 +13,7 @@ end if
       <th width="40%" align="center" nowrap>Descrição</th>
       <th width="10%" align="center" nowrap>Qtde Solic</th>
       <th width="10%" align="center" nowrap>Qtde Aut</th>
-      <th width="3%" align="right" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemInternacao('Procedimentos', <%=req("I")%>, 0);"><i class="fa fa-plus"></i></button></th>
+      <th width="3%" align="right" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemInternacao('Procedimentos', <%=req("I")%>, 0);"><i class="far fa-plus"></i></button></th>
     </tr>
   </thead>
   <tbody>
@@ -28,13 +28,13 @@ end if
       <input type="hidden" name="qtdProc<%=p("id") %>" value="<%=p("Quantidade") %>" />
       <input type="hidden" name="qtdProcAut<%=p("id") %>" value="<%=p("QuantidadeAutorizada") %>" />
       <input type="hidden" name="tabelaProc<%=p("id") %>" value="<%=p("TabelaID") %>" />
-      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemInternacao('Procedimentos', <%=req("I")%>, <%=p("id")%>);"><i class="fa fa-edit"></i></button></td>
+      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemInternacao('Procedimentos', <%=req("I")%>, <%=p("id")%>);"><i class="far fa-edit"></i></button></td>
       <td align="center"><%= p("TabelaID") %></td>
       <td align="center"><%= p("CodigoProcedimento") %></td>
       <td align="left"><%= p("Descricao") %></td>
       <td align="center"><%= p("Quantidade") %></td>
       <td align="center"><%= p("QuantidadeAutorizada") %></td>
-      <td align="center"><button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('tissprocedimentosinternacao', 'tissprocedimentosinternacao.asp?I=<%=req("I")%>&X=<%=p("id")%>')"><i class="fa fa-remove"></i></button></td>
+      <td align="center"><button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('tissprocedimentosinternacao', 'tissprocedimentosinternacao.asp?I=<%=req("I")%>&X=<%=p("id")%>')"><i class="far fa-remove"></i></button></td>
     </tr>
     <tr>
         <td colspan="15" class="hidden" id="Procedimentos<%=p("id") %>"></td>

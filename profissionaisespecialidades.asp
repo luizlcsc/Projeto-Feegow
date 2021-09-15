@@ -20,7 +20,7 @@ while not esp.eof
     call quickField("simpleSelect", "Conselho"&esp("id"), "Conselho", 2, esp("Conselho"), "select * from conselhosprofissionais order by codigo", "codigo", "")
     call quickField("text", "DocumentoConselho"&esp("id"), "Registro", 2, esp("DocumentoConselho"), "", "", "")
     call quickField("text", "UFConselho"&esp("id"), "UF", 2, esp("UFConselho"), "", "", " maxlength=2")
-    response.Write("<div class='col-xs-1'><label>&nbsp;</label><br /><button onclick=""esps('X', "&esp("id")&")"" class=""btn btn-sm btn-default"" type=""button""><i class='fa fa-minus'></i></button></div>")
+    response.Write("<div class='col-xs-1'><label>&nbsp;</label><br /><button onclick=""esps('X', "&esp("id")&")"" class=""btn btn-sm btn-default"" type=""button""><i class='far fa-minus'></i></button></div>")
     response.Write("<input type='hidden' name='Especialidades' value='"&esp("id")&"'>")
     response.Write("</div>")
 esp.movenext

@@ -6,7 +6,7 @@
   <div class="col-xs-10">
     <div class="widget-box transparent">
         <div class="widget-header widget-header-flat">
-            <h4><i class="fa fa-money blue"></i> EXTRATO <small>&raquo; hist&oacute;rico financeiro</small></h4>
+            <h4><i class="far fa-money blue"></i> EXTRATO <small>&raquo; hist&oacute;rico financeiro</small></h4>
         </div>
     </div>
     <%server.Execute("Extrato.asp")%>

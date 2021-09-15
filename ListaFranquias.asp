@@ -78,7 +78,7 @@ if not ListaFranquiasSQL.eof then
             <td><a href="?P=ChangeCp&LicID=<%=ListaFranquiasSQL("id")%>&Pers=1" class="btn btn-xs btn-primary" <%=disabledAcessar%>>Acessar</a></td>
             <td class="<%=hiddenValor%>"><%=ListaFranquiasSQL("Software")%></td>
             <td><%=StatusBtn%></td>
-            <td class="<%=hiddenValor%>"><button class="btn btn-xs btn-primary" type="button" onclick="EditarLicenciado('<%=ListaFranquiasSQL("id")%>')"><i class="fa fa-edit"></i></button></td>
+            <td class="<%=hiddenValor%>"><button class="btn btn-xs btn-primary" type="button" onclick="EditarLicenciado('<%=ListaFranquiasSQL("id")%>')"><i class="far fa-edit"></i></button></td>
             <td>
                 <%=quickField("select", "licencaIDMae"&ListaFranquiasSQL("id"), "", "12", ListaFranquiasSQL("LicencaIDMae")&"", qLicencasSelectSQL&" AND lic.id<>"&ListaFranquiasSQL("id"), "Nome", " onchange='LicencaVinculada(`"&ListaFranquiasSQL("id")&"`)' ")%>
             </td>

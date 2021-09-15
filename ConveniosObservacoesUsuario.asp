@@ -61,7 +61,7 @@ else
                     <%=quickField("editor", "Obs"&convenioObservacaoUsuario("id"), "", 12, Obs, "50", "", " "&disabled&" ")%>
                 </td>
                 <td class="text-center">
-                    <button type="button" onclick="excluir('<%=convenioObservacaoUsuario("id")%>')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                    <button type="button" onclick="excluir('<%=convenioObservacaoUsuario("id")%>')" class="btn btn-xs btn-danger"><i class="far fa-trash"></i></button>
                 </td>
             </tr>
         <%

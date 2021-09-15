@@ -65,7 +65,7 @@ set mov = db.execute(sqlMovCred)
                                                 <td class="text-right"><%=formatnumber(valor,2)%></td>
                                                 <td class="text-right"><%=formatnumber(soma,2)%></td>
                                                 <td class="text-right"><%=formatnumber(credito,2)%></td>
-                                                <td><button type="button" class="btn btn-xs btn-danger" onclick="excluiMov(<%=mov("id")%>);"<% If soma>0 Then %> disabled="disabled"<% End If %>><i class="fa fa-remove"></i></button></td>
+                                                <td><button type="button" class="btn btn-xs btn-danger" onclick="excluiMov(<%=mov("id")%>);"<% If soma>0 Then %> disabled="disabled"<% End If %>><i class="far fa-remove"></i></button></td>
                                             </tr>
                     <%
                 end if

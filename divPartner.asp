@@ -3,7 +3,7 @@ box-shadow: 0px 1px 10px 3px rgba(0,0,0,0.15);">
 <!--div style="background-color:#4E8CCC; width:280px; height:100%; position:fixed; left:0; top:0; padding:100px 0 0 10px"-->
     <div onclick="toggleSidebar()" style="background-color: #fff; width: 23px; height: 40px; position:absolute; right: -22px;top: 80px;border-right: 1px #d6d6d6 solid;border-top: 1px #d6d6d6 solid;border-bottom: 1px #d6d6d6 solid;border-radius: 3px;z-index: 9; cursor: pointer;">
         <div class="text-center" style="margin-top: 10px;margin-left:3px">
-            <i class="icon-expand-partner fa fa-chevron-right"></i>
+            <i class="icon-expand-partner far fa-chevron-right"></i>
         </div>
     </div>
     <div style="height: 100%; background-color: #fff;">
@@ -30,7 +30,7 @@ box-shadow: 0px 1px 10px 3px rgba(0,0,0,0.15);">
         %>
 
         <div id="sidebar-collapse" class="sidebar-collapse">
-            <i class="fa fa-double-angle-left" data-icon2="fa fa-double-angle-right" data-icon1="fa fa-double-angle-left"></i>
+            <i class="far fa-double-angle-left" data-icon2="far fa-double-angle-right" data-icon1="far fa-double-angle-left"></i>
         </div>
     </div>
 </div>

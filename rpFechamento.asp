@@ -34,7 +34,7 @@ if De="" or Ate="" then
             </select>
         </div>
         <div class="col-md-2"><label>&nbsp;</label><br>
-        <button class="btn btn-sm btn-success"><i class="fa fa-list"></i> Gerar</button>
+        <button class="btn btn-sm btn-success"><i class="far fa-list"></i> Gerar</button>
       	</div>
       </div>
     </div>

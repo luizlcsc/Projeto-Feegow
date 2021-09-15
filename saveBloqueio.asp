@@ -57,7 +57,7 @@ if req("X")="1" then
 		});
 		
 		$.gritter.add({
-			title: '<i class="fa fa-trash"></i> Bloqueio exclu&iacute;do!',
+			title: '<i class="far fa-trash"></i> Bloqueio exclu&iacute;do!',
 			text: '',
 			class_name: 'gritter-warning gritter-light'
 		});
@@ -137,7 +137,7 @@ else
 			});
 			
 			$.gritter.add({
-				title: '<i class="fa fa-save"></i> Bloqueio salvo!',
+				title: '<i class="far fa-save"></i> Bloqueio salvo!',
 				text: '',
 				class_name: 'gritter-success gritter-light'
 			});
@@ -147,7 +147,7 @@ else
 	else
 		%>
 		$.gritter.add({
-			title: '<i class="fa fa-thumbs-down"></i> ERRO AO INSERIR BLOQUEIO!',
+			title: '<i class="far fa-thumbs-down"></i> ERRO AO INSERIR BLOQUEIO!',
 			text: '<%=erro%>',
 			class_name: 'gritter-error gritter-light'
 		});

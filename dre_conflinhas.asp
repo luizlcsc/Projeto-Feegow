@@ -170,7 +170,7 @@ end if
 											    if aut("dre_conflinhasX") then
 											    %>
 											    <button class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta condição da linha?'))lin('C', 'X', <%= pcon("id") %>)">
-											        <i class="fa fa-remove"></i>
+											        <i class="far fa-remove"></i>
                                                 </button>
 											    <%
 											    end if
@@ -217,7 +217,7 @@ end if
                                             if aut("dre_conflinhasX") then
                                             %>
 											    <button class=" btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta condição do totalizador?'))lin('T', 'XLT', <%= ptot("id") %>)">
-											        <i class="fa fa-remove"></i>
+											        <i class="far fa-remove"></i>
                                                 </button>
                                             <%
                                             end if
@@ -245,7 +245,7 @@ end if
                 if aut("dre_conflinhasX") then
                 %>
 					<button class=" btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta linha deste modelo de DRE?'))lin('L', 'X', <%= id %>)">
-					    <i class="fa fa-remove"></i>
+					    <i class="far fa-remove"></i>
                     </button>
 					<%
 					end if

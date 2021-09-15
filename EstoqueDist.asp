@@ -18,7 +18,7 @@ if len(prod("Descricao"))>6 then
 end if
 if TipoLancto="E" then
 	tipo = "Entrada"
-	icone = "fa fa-level-down"
+	icone = "far fa-level-down"
 	tipoValor = "Compra"
 	if not isnull(prod("PrecoCompra")) then
 		valor = formatnumber(prod("PrecoCompra"),2)
@@ -26,7 +26,7 @@ if TipoLancto="E" then
     LocalizacaoPadrao = prod("LocalizacaoID")
 else
 	tipo = "Sa&iacute;da"
-	icone = "fa fa-level-up"
+	icone = "far fa-level-up"
 	tipoValor = "Venda"
 	if not isnull(prod("PrecoVenda")) then
 		valor = formatnumber(prod("PrecoVenda"),2)
@@ -71,7 +71,7 @@ end if
 %>
 <div class="modal-header">
     <button class="bootbox-close-button close" type="button" data-dismiss="modal">×</button>
-    <h4 class="modal-title"><i class="fa fa-retweet"></i> Movimentação de Produto &raquo; <small><%=prod("NomeProduto")%></small></h4>
+    <h4 class="modal-title"><i class="far fa-retweet"></i> Movimentação de Produto &raquo; <small><%=prod("NomeProduto")%></small></h4>
 </div>
 <form id="EstoqueMovimentacao" name="EstoqueMovimentacao" method="post">
 <div class="modal-body">
@@ -193,7 +193,7 @@ end if
         </div>
 </div>
 <div class="modal-footer no-margin-top">
-	<button class="btn btn-sm btn-success " id="lancar"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-sm btn-success " id="lancar"><i class="far fa-save"></i> Salvar</button>
 </div>
 </form>
 <script type="text/javascript">

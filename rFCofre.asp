@@ -69,7 +69,7 @@ while not unidade.eof
     %>
     <table width="100%" class="table " id="tabelaFechamentoCofre">
         <thead >
-            <th style="width:1%" class="<%=classeLinha%> hidden-print"><a class="btn btn-primary btn-xs" href="./?P=invoice&I=<%=invDados("id")%>&A=&Pers=1&T=C" target="_blank" title="Ir para conta"><i class="fa fa-external-link"></i></a></th>
+            <th style="width:1%" class="<%=classeLinha%> hidden-print"><a class="btn btn-primary btn-xs" href="./?P=invoice&I=<%=invDados("id")%>&A=&Pers=1&T=C" target="_blank" title="Ir para conta"><i class="far fa-external-link"></i></a></th>
             <th style="width:10%" class="<%=classeLinha%>">Recibo<br><%=invDados("SiglaUnidade")&NumeroSequencial%></th>
             <th style="width:50%" class="<%=classeLinha%>">Paciente<br><%=invDados("NomePaciente")%></th>
             <th style="width:20%" class="<%=classeLinha%>">Tabela<br><%=invDados("NomeTabela")%></th>
@@ -232,7 +232,7 @@ while not unidade.eof
     <h4 class="text-left">Recibos Cancelados - <%=NomeFantasia%></h4>
     <table width="100%" class="table " id="tabelaRecibosCancelados">
         <thead>
-            <th style="width:1%" class="danger hidden-print"><a class="btn-danger btn-xs"><i class="fa fa-exclamation-circle"></i></a></th>
+            <th style="width:1%" class="danger hidden-print"><a class="btn-danger btn-xs"><i class="far fa-exclamation-circle"></i></a></th>
             <th style="width:10%" class="danger">Recibo</th>
             <th style="width:30%" class="danger">Paciente</th>
             <th style="width:30%" class="danger">Serviços</th>
@@ -287,7 +287,7 @@ while not unidade.eof
     <h4 class="text-left">Total Pagamento - <%=NomeFantasia%></h4>
     <table width="100%" class="table " id="tabelaRecibosCancelados">
         <thead>
-            <th style="width:1%" class="success hidden-print"><a class="btn-success btn-xs"><i class="fa fa-check-circle"></i></a></th>
+            <th style="width:1%" class="success hidden-print"><a class="btn-success btn-xs"><i class="far fa-check-circle"></i></a></th>
             <th style="width:10%" class="success">Quantidade</th>
             <th style="width:50%" class="success">Forma de pagamento</th>
             <th style="width:10%" class="success">Valor</th>

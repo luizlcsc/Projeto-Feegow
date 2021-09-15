@@ -64,11 +64,11 @@ while not datas.eof
         <div class="widget-header header-color-green">
             <h5>Bottom Toolbox (Footer)</h5>
             <div class="widget-toolbar">
-                <a data-action="collapse" href="#"><i class="1 fa fa-chevron-up bigger-125"></i></a>
+                <a data-action="collapse" href="#"><i class="1 far fa-chevron-up bigger-125"></i></a>
             </div>
             <div class="widget-toolbar no-border">
-                <button class="btn btn-xs btn-light bigger"><i class="fa fa-arrow-left"></i>Prev</button>
-                <button class="btn btn-xs bigger btn-yellow dropdown-toggle" data-toggle="dropdown">Next <i class="fa fa-chevron-down icon-on-right"></i></button>
+                <button class="btn btn-xs btn-light bigger"><i class="far fa-arrow-left"></i>Prev</button>
+                <button class="btn btn-xs bigger btn-yellow dropdown-toggle" data-toggle="dropdown">Next <i class="far fa-chevron-down icon-on-right"></i></button>
                 <ul class="dropdown-menu dropdown-yellow pull-right dropdown-caret dropdown-close">
                     <li>
                         <a href="#">Action</a>

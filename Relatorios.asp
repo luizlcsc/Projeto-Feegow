@@ -8,7 +8,7 @@
 
 <script type="text/javascript">
     $(".crumb-active a").html("Relatórios");
-    $(".crumb-icon a span").attr("class", "fa fa-list");
+    $(".crumb-icon a span").attr("class", "far fa-list");
 </script>
 
 <%
@@ -40,7 +40,7 @@ end if
     <div class="panel-body" id="relConteudo">
         <div class="alert alert-system bg-primary dark" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
             <h3>
-                Nova central de relatórios disponível.<br><br><a href="#" onclick="openReport()" id="CentralRelatorios" class="btn btn-danger btn-sm"><i class="fa fa-external-link"></i> Acessar versão BETA</a>
+                Nova central de relatórios disponível.<br><br><a href="#" onclick="openReport()" id="CentralRelatorios" class="btn btn-danger btn-sm"><i class="far fa-external-link"></i> Acessar versão BETA</a>
             </h3>
         </div>
     </div>
@@ -48,7 +48,7 @@ end if
 
 <script type="text/javascript">
 function callReport(F, Pars){
-    $("#relConteudo").html("<center><i class=\"fa fa-spinner fa-spin green bigger-125\"></i> Carregando...</center>");
+    $("#relConteudo").html("<center><i class=\"far fa-spinner fa-spin green bigger-125\"></i> Carregando...</center>");
     $.post(F+".asp?Pars="+Pars, '', function(data, status){ $("#relConteudo").html(data) });
 }
 
@@ -133,7 +133,7 @@ function openReport() {
 <!--aqui comeca o antigo
                 <div class="widget-box">
                     <div class="widget-header header-color-green2">
-                        <h4 class="lighter smaller"> <i class="fa fa-arrow-left"></i> Recolher</h4>
+                        <h4 class="lighter smaller"> <i class="far fa-arrow-left"></i> Recolher</h4>
                     </div>
 
                     <div class="widget-body">
@@ -166,7 +166,7 @@ end if
 $('#tree1').ace_tree({
 	dataSource: treeDataSource ,
 	multiSelect:true,
-	loadingHTML:'<div class="tree-loading"><i class="fa fa-refresh icon-spin blue"></i></div>',
+	loadingHTML:'<div class="tree-loading"><i class="far fa-refresh icon-spin blue"></i></div>',
 	'open-icon' : 'icon-minus',
 	'close-icon' : 'icon-plus',
 	'selectable' : true,
@@ -177,7 +177,7 @@ $('#tree1').ace_tree({
 try {
 $('#tree2').ace_tree({
 	dataSource: treeDataSource2 ,
-	loadingHTML:'<div class="tree-loading"><i class="fa fa-refresh fa-spin blue"></i></div>',
+	loadingHTML:'<div class="tree-loading"><i class="far fa-refresh fa-spin blue"></i></div>',
 	'open-icon' : String('fa-folder-open'),
 	'close-icon' : String('fa-folder-close'),
 	'selectable' : false,
@@ -207,7 +207,7 @@ $('#tree1').on('selected', function (evt, data) {
 
 
 function report(R){
-	$("#divRelatorio").html("<center><i class=\"fa fa-spinner fa-spin orange bigger-125\"></i> Carregando...</center>");
+	$("#divRelatorio").html("<center><i class=\"far fa-spinner fa-spin orange bigger-125\"></i> Carregando...</center>");
 	$.ajax({
 		type:"GET",
 		url:R+".asp?TipoRel="+R,

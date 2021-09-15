@@ -78,11 +78,11 @@ end if
     <div class="btn-toolbar btn-block hidden">
     <div class="btn-group pull-right">
         <button class="btn btn-xs btn-danger btn-block dropdown-toggle" data-toggle="dropdown">
-        <i class="fa fa-dollar"> <%=ValorPlano%></i>
-        <span class="fa fa-caret-down icon-on-right"></span>
+        <i class="far fa-dollar"> <%=ValorPlano%></i>
+        <span class="far fa-caret-down icon-on-right"></span>
         </button>
         <ul class="dropdown-menu dropdown-success">
-        <li class="red btn-xs text-center"><i class="fa fa-info-sign"></i> Receita n&atilde;o lan&ccedil;ada</li>
+        <li class="red btn-xs text-center"><i class="far fa-info-sign"></i> Receita n&atilde;o lan&ccedil;ada</li>
         <li class="divider"></li>
         <li>
         <a href="./?P=sys_financialinvoices&I=N&A=<%=cons("id")%>&T=C&Pers=1">Lan&ccedil;ar A Receber</a>
@@ -100,7 +100,7 @@ end if
   
   <td>
   
-  <%if ccur(contaagendamentos)<ccur(MaximoAgendamentos) then%><button type="button" onclick="abreAgenda('<%=replace(left(cdate( hour(cons("Hora"))&":"&minute(cons("Hora")) ),5), ":", "")%>', 0, '<%=cons("Data")%>', '<%=cons("LocalID")%>')" class="btn btn-success btn-xs"><i class="fa fa-plus"></i></button><%end if%>
+  <%if ccur(contaagendamentos)<ccur(MaximoAgendamentos) then%><button type="button" onclick="abreAgenda('<%=replace(left(cdate( hour(cons("Hora"))&":"&minute(cons("Hora")) ),5), ":", "")%>', 0, '<%=cons("Data")%>', '<%=cons("LocalID")%>')" class="btn btn-success btn-xs"><i class="far fa-plus"></i></button><%end if%>
   </td>
   
 </tr>

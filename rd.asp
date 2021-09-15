@@ -34,7 +34,7 @@ while not rd.eof
         </td>
         <td width="10%"><%= quickfield("simpleSelect", "TipoDesconto"&I, "Tipo", 12, TipoDesconto, "select 'P' id, '%' Tipo UNION ALL select 'V', 'R$'", "Tipo", " no-select2 semVazio ") %></td>
         <td width="1%">
-            <button class="btn btn-sm btn-danger" type="button" onclick="if(confirm('Tem certeza de que deseja excluir esta regra de desconto?'))rd('X', '<%= I %>')"><i class="fa fa-remove"></i></button>
+            <button class="btn btn-sm btn-danger" type="button" onclick="if(confirm('Tem certeza de que deseja excluir esta regra de desconto?'))rd('X', '<%= I %>')"><i class="far fa-remove"></i></button>
         </td>
     </tr>
     <%

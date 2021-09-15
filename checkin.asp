@@ -17,7 +17,7 @@
     $(".crumb-active a").html("Checkin");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("<%= date() %>");
-    $(".crumb-icon a span").attr("class", "fa fa-check");
+    $(".crumb-icon a span").attr("class", "far fa-check");
 
 
     $("#frm-filtros").submit(function(){
@@ -52,7 +52,7 @@
 
     function abreAgenda(horario, id, data, LocalID, ProfissionalID, EquipamentoID) {
 
-        $("#div-agendamento").html('<i class="fa fa-spinner fa-spin orange bigger-125"></i> Carregando...');
+        $("#div-agendamento").html('<i class="far fa-spinner fa-spin orange bigger-125"></i> Carregando...');
         af('a');
         $.ajax({
             type: "POST",

@@ -6,7 +6,7 @@
             <h3 class="lighter blue">Ficha do Paciente</h3>
         </div>
         <div class="col-md-4" style="margin-top: 10px">
-            <a href="./?P=Pacientes&I=<%=req("I")%>&Pers=1" class="btn btn-sm btn-dark pull-right" target="_blank"><i class="fa fa-external-link"> Ir para ficha completa</i></a>
+            <a href="./?P=Pacientes&I=<%=req("I")%>&Pers=1" class="btn btn-sm btn-dark pull-right" target="_blank"><i class="far fa-external-link"> Ir para ficha completa</i></a>
         </div>
     </div>
 

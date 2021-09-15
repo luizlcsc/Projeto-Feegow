@@ -13,7 +13,7 @@ end if
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Detalhamento da Fatura do Cartão de Crédito");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 
 <form id="frmCC" method="get">
@@ -25,7 +25,7 @@ end if
             <%= quickField("simpleSelect", "Fatura", "Selecione a fatura", 4, req("Fatura"), "select Concat(ca.AccountName,' | ',i.Name) as 'Fatura', i.id from sys_financialinvoices i LEFT JOIN sys_financialcurrentaccounts ca ON ca.id = i.AccountID where i.Name like 'Fatura do cartão %' AND i.AssociationAccountID=1", "Fatura", " required") %>
             <div class="col-md-2">
                 <label>&nbsp;</label><br>
-                <button id="btnBuscar" class="btn btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+                <button id="btnBuscar" class="btn btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
             </div>
         </div>
     </div>

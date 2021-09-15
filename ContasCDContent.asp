@@ -377,11 +377,11 @@ end if
 		Boleto = ""
 
 		IF (mov("boletos_abertos") > "0") THEN
-           Boleto = " <i class='fa fa-barcode text-primary'></i> "
+           Boleto = " <i class='far fa-barcode text-primary'></i> "
 		END IF
 
 		IF (mov("boletos_vencidos") > "0") THEN
-           Boleto = " <i class='fa fa-barcode text-danger'></i> "
+           Boleto = " <i class='far fa-barcode text-danger'></i> "
         END IF
 
         if isnull(ValorPago) then
@@ -391,7 +391,7 @@ end if
 
 		if formatnumber(Valor,2)=formatnumber(ValorPago,2) or ValorPago+0.02 > Valor then
 		    PagoSta = "S"
-			Paid = "<i class='fa fa-check text-success' title='Quitado'></i>"
+			Paid = "<i class='far fa-check text-success' title='Quitado'></i>"
         elseif Valor > ValorPago and ValorPago>0 then
             PagoSta="N"
             Paid = "<i class='glyphicon glyphicon-warning-sign text-warning' title='Pago parcialmente'></i>"
@@ -401,7 +401,7 @@ end if
                 TotalAVencer = TotalAVencer + (Valor-ValorPago)
             else
                 PagoSta="N"
-                Paid = "<i class='fa fa-exclamation-circle text-danger' title='Vencido'></i>"
+                Paid = "<i class='far fa-exclamation-circle text-danger' title='Vencido'></i>"
                 TotalVencido = TotalVencido + (Valor-ValorPago)
             end if
 		end if
@@ -466,7 +466,7 @@ end if
         Anexos = ccur(mov("Anexos"))
         IconeAnexos = ""
         if Anexos>0 then
-            IconeAnexos = "<span class='badge badge-system'><i class='fa fa-paperclip bigger-140'></i> "& Anexos &"</span>"
+            IconeAnexos = "<span class='badge badge-system'><i class='far fa-paperclip bigger-140'></i> "& Anexos &"</span>"
         end if
 
 		if Mostra then
@@ -496,7 +496,7 @@ end if
             if not isnull(mov("ContaID")) then
                 set PacienteSQL = db_execute("SELECT Religiao FROM pacientes WHERE Religiao='cc' AND id="&mov("ContaID"))
                 if not PacienteSQL.eof then
-                    cc = "<i class='fa fa-credit-card'></i>"
+                    cc = "<i class='far fa-credit-card'></i>"
                 end if
             end if
 
@@ -547,7 +547,7 @@ end if
                                             <% END IF %><br /><%=mov("Obs")%>
                     <%
                     if not isnull(mov("DataCancelamento")) then
-                        response.write("<span class='label label-danger'><i class='fa fa-circle-minus'></i> FATURA CANCELADA EM "& mov("DataCancelamento") &"</span>")
+                        response.write("<span class='label label-danger'><i class='far fa-circle-minus'></i> FATURA CANCELADA EM "& mov("DataCancelamento") &"</span>")
                     end if
                     %>
 				</td>
@@ -557,14 +557,14 @@ end if
 
 
                 <% if mov("Rateado") = True then %>
-                    <span title="Despesa Rateada" class="label label-warning"><i  class=" fa fa-share-alt"></i></span>
+                    <span title="Despesa Rateada" class="label label-warning"><i  class=" far fa-share-alt"></i></span>
                 <% end if %>
             </td>
 			<td nowrap="nowrap">
 				<div class="action-buttons">
-					<a title="Editar" class="btn btn-xs btn-success" href="<%=linkBill%>"><i class="fa fa-edit bigger-130"></i></a>
+					<a title="Editar" class="btn btn-xs btn-success" href="<%=linkBill%>"><i class="far fa-edit bigger-130"></i></a>
 					<a title="Detalhes" class="btn btn-xs btn-info" href="javascript:modalPaymentDetails('<%=mov("id")%>')">
-                       <i class="fa fa-search-plus bigger-130"></i></a>
+                       <i class="far fa-search-plus bigger-130"></i></a>
 				</div>
 			</td>
 		</tr>
@@ -658,7 +658,7 @@ if (aut("|contasapagarV|") and CD ="D") or (aut("|contasareceberV|") and CD ="C"
                         <td class="text-right">0,00</td>
                         <td>
                             <div class="action-buttons">
-                                <a class="btn btn-xs" href="javascript:if(confirm('Esta conta fixa está prevista. Ao editá-la a mesma será consolidada. Deseja prosseguir?'))consolidar(<%=fixa("id")%>, <%=cFix %>, '<%=Vencto %>')"><i class="fa fa-edit grey bigger-130"></i></a>
+                                <a class="btn btn-xs" href="javascript:if(confirm('Esta conta fixa está prevista. Ao editá-la a mesma será consolidada. Deseja prosseguir?'))consolidar(<%=fixa("id")%>, <%=cFix %>, '<%=Vencto %>')"><i class="far fa-edit grey bigger-130"></i></a>
                             </div>
                         </td>
                     </tr>

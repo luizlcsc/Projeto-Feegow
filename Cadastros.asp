@@ -18,7 +18,7 @@ response.charset="utf-8"
 </div>
 
 <script type="text/javascript">
-    $(".crumb-icon a").html("<i class='fa fa-database'></i> CADASTROS");
+    $(".crumb-icon a").html("<i class='far fa-database'></i> CADASTROS");
     $(".crumb-icon a").css("max-width", "unset");
     $(".crumb-icon a").removeClass("btn");
 </script>

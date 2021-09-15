@@ -25,7 +25,7 @@ if erro="" then
         db_execute("insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID, UnidadeID) values ('"&rfPaciente&"', '"&rfProfissionalID&"', '"&rfProcedimento&"', '"&now()&"', '"&mydate(rfData)&"', '"&rfHora&"', '"&rfStaID&"', '"&session("User")&"', '0', '"&rfNotas&"', 'A', '"&pultCon("id")&"'), "&treatvalzero(session("UnidadeID"))&")
 		%>
         $.gritter.add({
-            title: '<i class="fa fa-save"></i> Repetido com sucesso!',
+            title: '<i class="far fa-save"></i> Repetido com sucesso!',
             text: 'Para <%=rfData%> &agrave;s <%=rfHora%>.',
             class_name: 'gritter-success gritter-light'
         });
@@ -34,7 +34,7 @@ if erro="" then
 else
 	%>
     $.gritter.add({
-        title: '<i class="fa fa-thumbs-down"></i> N&Atilde;O REPETIDO!',
+        title: '<i class="far fa-thumbs-down"></i> N&Atilde;O REPETIDO!',
         text: '<%=erro%>',
         class_name: 'gritter-error gritter-light'
     });

@@ -40,7 +40,7 @@ if not GradeSQL.eof then
     </div>
 
     <div class="col-md-1 col-md-offset-11 mb20">
-        <button type="button" class="btn btn-sm  btn-success" title="Gerar Excel" onclick="downloadExcel()"><i class="fa fa-table"></i></button>
+        <button type="button" class="btn btn-sm  btn-success" title="Gerar Excel" onclick="downloadExcel()"><i class="far fa-table"></i></button>
     </div>
 
     <div id="table-agendamentos-sem-grade">
@@ -80,7 +80,7 @@ if not GradeSQL.eof then
                          <td><%=AgendamentosNoPeriodoSQL("NomeProcedimento")%></td>
                          <td><a href="?P=Pacientes&Pers=1&I=<%=AgendamentosNoPeriodoSQL("PacienteID")%>"><%=NomePaciente%></a></td>
                          <td><a target="_blank" href="https://api.whatsapp.com/send?phone=<%=CelWhatsApp%>&text=<%=TextoWhatsApp%>"><%=AgendamentosNoPeriodoSQL("Cel1")%></a> </td>
-                         <td><a target="_blank" href="?P=Agenda-1&Pers=1&AgendamentoID=<%=AgendamentosNoPeriodoSQL("id")%>" class="btn btn-primary btn-xs"><i class="fa fa-external-link"></i></a></td>
+                         <td><a target="_blank" href="?P=Agenda-1&Pers=1&AgendamentoID=<%=AgendamentosNoPeriodoSQL("id")%>" class="btn btn-primary btn-xs"><i class="far fa-external-link"></i></a></td>
                      </tr>
                 <%
             AgendamentosNoPeriodoSQL.movenext
@@ -98,7 +98,7 @@ if not GradeSQL.eof then
 </form>
 
 <div class="col-md-3 col-md-offset-9">
-    <button class="btn btn-danger mt20" onclick="ForceDeleteGrade()" type="button"><i class="fa fa-trash"></i> Deletar grade mesmo assim</button>
+    <button class="btn btn-danger mt20" onclick="ForceDeleteGrade()" type="button"><i class="far fa-trash"></i> Deletar grade mesmo assim</button>
 </div>
         <%
     end if

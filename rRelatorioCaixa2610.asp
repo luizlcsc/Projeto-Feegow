@@ -432,6 +432,6 @@ Classe = "warning"
 
 <% if Balanco>0 then %>
 <div class="alert alert-danger hidden">
-    <i class="fa fa-exclamation-circle"></i> R$ <%= fn(Balanco) %> pendentes de destinação.
+    <i class="far fa-exclamation-circle"></i> R$ <%= fn(Balanco) %> pendentes de destinação.
 </div>
 <% end if %>

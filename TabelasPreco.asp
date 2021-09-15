@@ -50,7 +50,7 @@ end function
 %>
 <div class="panel mt20 mtn hidden-print">
     <div class="panel-heading">
-        <span class="panel-title"><i class="fa fa-filter"></i> Filtrar</span>
+        <span class="panel-title"><i class="far fa-filter"></i> Filtrar</span>
     </div>
     <div class="panel-body">
         <form action="" id="form-filtro-tabela-de-preco" method="get">
@@ -78,8 +78,8 @@ end function
             </div>
 
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-default mt25" onclick="LimparFiltros()"><i class="fa fa-eraser"> </i> Limpar </button>
-                    <button class="btn btn-primary mt25" ><i class="fa fa-search"> </i> Buscar </button>
+                    <button type="button" class="btn btn-default mt25" onclick="LimparFiltros()"><i class="far fa-eraser"> </i> Limpar </button>
+                    <button class="btn btn-primary mt25" ><i class="far fa-search"> </i> Buscar </button>
                 </div>
             </div>
         </form>
@@ -169,11 +169,11 @@ end function
                     end if
                     if not isnull(t("Fim")) then
                         if cdate(t("Fim")) < date() then
-                            LabelTabela = "<span class='label label-danger'><i class='fa fa-exclamation-circle'></i> Expirada</span>"
+                            LabelTabela = "<span class='label label-danger'><i class='far fa-exclamation-circle'></i> Expirada</span>"
                         end if
 
                         if cdate(t("Fim")) >= date() and cdate(t("Inicio")) <= date() then
-                            LabelTabela = "<span class='label label-success'><i class='fa fa-check-circle'></i> Vigente</span>"
+                            LabelTabela = "<span class='label label-success'><i class='far fa-check-circle'></i> Vigente</span>"
                         end if
                     end if
 
@@ -185,13 +185,13 @@ end function
                         <td><%= t("Tipo") %></td>
                         <td><%= t("Inicio") &" a "& t("Fim") %></td>
                         <td><button type="button" class="btn btn-xs btn-info">
-                        <i class="fa fa-copy" title="Duplicar tabela" onclick="location.href='./?P=TabelasPreco&Pers=1&DT=<%= t("id") %>'"></i>
+                        <i class="far fa-copy" title="Duplicar tabela" onclick="location.href='./?P=TabelasPreco&Pers=1&DT=<%= t("id") %>'"></i>
                         </button></td>
                         <% if aut("|tabelasprecosA|")=1 then %>
-                        <td><a href="./?P=ProcedimentosTabelas&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a></td>
+                        <td><a href="./?P=ProcedimentosTabelas&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="far fa-edit"></i></a></td>
                         <% end if %>
                         <% if aut("|tabelasprecosX|")=1 then %>
-                            <td><a href="javascript:if(confirm('Tem certeza de que deseja excluir esta tabela?'))location.href='./?P=TabelasPreco&I=<%= t("id") %>&Pers=1&X=<%= t("id") %>'" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></a></td>
+                            <td><a href="javascript:if(confirm('Tem certeza de que deseja excluir esta tabela?'))location.href='./?P=TabelasPreco&I=<%= t("id") %>&Pers=1&X=<%= t("id") %>'" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></a></td>
                         <% end if %>
                     </tr>
                     <%
@@ -215,11 +215,11 @@ end function
     $(".crumb-active a").html("Tabelas de Preço");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("cadastro de tabelas de preço por vigência");
-    $(".crumb-icon a span").attr("class", "fa fa-table");
+    $(".crumb-icon a span").attr("class", "far fa-table");
     <%
     if aut("procedimentosA")=1 then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=ProcedimentosTabelas&Pers=1&I=N"><i class="fa fa-plus"></i><span class="menu-text"> INSERIR</span></a>');
+    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=ProcedimentosTabelas&Pers=1&I=N"><i class="far fa-plus"></i><span class="menu-text"> INSERIR</span></a>');
     <%
     end if
     %>

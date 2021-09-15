@@ -136,5 +136,5 @@ end if
     $(".crumb-active a").html("Honorários");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("cálculo de honorários médicos");
-    $(".crumb-icon a span").attr("class", "fa fa-calculator");
+    $(".crumb-icon a span").attr("class", "far fa-calculator");
 </script>

@@ -19,14 +19,14 @@ end if
 <form id="FormEditaPermissoes">
 <div class="modal-header">
     <button class="bootbox-close-button close" type="button" data-dismiss="modal">×</button>
-    <h4 class="modal-title"><i class="fa fa-lock"></i> Edição de Permissionamento</h4>
+    <h4 class="modal-title"><i class="far fa-lock"></i> Edição de Permissionamento</h4>
 </div>
 <div class="modal-body">
     <div class="row">
         <%=quickField("text", "Regra", "Nome da Regra", 6, Regra, "", "", " required")%>
         <div class="col-md-6">
         	<label>&nbsp;</label><br>
-        	<button class="btn btn-primary pull-right btn-sm"><i class="fa fa-save"></i> Salvar</button>
+        	<button class="btn btn-primary pull-right btn-sm"><i class="far fa-save"></i> Salvar</button>
         </div>
     </div>
     <hr>
@@ -114,7 +114,7 @@ end if
                   end if
                   %>
                   <th colspan="4" class="pn">
-                      <button type="button" class="btn btn-sm btn-block btn-success"<%=disabled%> onclick="rd('I', 0)"><i class="fa fa-plus"></i> Adicionar</button>
+                      <button type="button" class="btn btn-sm btn-block btn-success"<%=disabled%> onclick="rd('I', 0)"><i class="far fa-plus"></i> Adicionar</button>
                   
                   </th>
               </tr>
@@ -138,7 +138,7 @@ end if
     </div>
 </div>
 <div class="modal-footer no-margin-top">
-	<button class="btn btn-primary pull-right btn-sm"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-primary pull-right btn-sm"><i class="far fa-save"></i> Salvar</button>
 </div>
 </form>
 

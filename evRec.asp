@@ -73,9 +73,9 @@
 
                         Crescimento = ((valorFinal-valorInicial)/valorInicial)*100
                         if Crescimento>0 then
-                            Crescimento = "<span class='label label-success'><i class='fa fa-arrow-up'></i> "& fn(Crescimento) &"%</span>"
+                            Crescimento = "<span class='label label-success'><i class='far fa-arrow-up'></i> "& fn(Crescimento) &"%</span>"
                         elseif Crescimento<0 then
-                            Crescimento = "<span class='label label-danger'><i class='fa fa-arrow-down'></i> "& fn(Crescimento) &"%</span>"
+                            Crescimento = "<span class='label label-danger'><i class='far fa-arrow-down'></i> "& fn(Crescimento) &"%</span>"
                         else
                             Crescimento = ""
                         end if

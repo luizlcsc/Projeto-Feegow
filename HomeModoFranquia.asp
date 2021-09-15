@@ -3,7 +3,7 @@
     $(".crumb-active a").html("Bem-vindo ao Feegow Clinic");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("resumo da semana");
-    $(".crumb-icon a span").attr("class", "fa fa-dashboard");
+    $(".crumb-icon a span").attr("class", "far fa-dashboard");
     $("#modal-descontos-pendentes").css("z-index", 9999999999999999999999999);
 </script>
 <div style="margin-top: 10px">

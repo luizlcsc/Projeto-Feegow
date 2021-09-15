@@ -192,7 +192,7 @@ if TipoCampoID=3 then
                     </div>
                     <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
                         <img id="avatarFoto" src="uploads/<%=pCampo("ValorPadrao")%>" class="img-thumbnail" width="100%" />
-                        <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; margin-left:-27px; margin-top:8px;"><i class="fa fa-trash"></i></button>
+                        <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; margin-left:-27px; margin-top:8px;"><i class="far fa-trash"></i></button>
                     </div>
             </div>
 		</form>
@@ -226,7 +226,7 @@ end if
 </table>
 </form>
 <div class="clearfix form-actions">
-  <button type="button" class="btn btn-primary" onclick="salvaEdicao(<%=pCampo("id")%>, '<%=req("W")%>', '<%=req("F")%>', 0, 'S');"><i class="fa fa-save"></i>Salvar</button>
+  <button type="button" class="btn btn-primary" onclick="salvaEdicao(<%=pCampo("id")%>, '<%=req("W")%>', '<%=req("F")%>', 0, 'S');"><i class="far fa-save"></i>Salvar</button>
   <%
   if TipoCampoID=4 or TipoCampoID=5 or TipoCampoID=6 then
   	%><input type="button" class="btn btn-success" value="Adicionar Op&ccedil;&atilde;o" onclick="adicionaOpcao('A', <%=req("I")%>);" /><%

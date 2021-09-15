@@ -15,7 +15,7 @@ end if
     $(".crumb-active a").html("Cartões de Crédito e Débito");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("administração de recebimento de cartões");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 
 <form id="frmCC" method="get">
@@ -48,15 +48,15 @@ end if
                 <%= quickfield("multiple", "Bandeira", "Selecione a bandeira", 3, req("Bandeira"), "SELECT Bandeira,Bandeira as id FROM cliniccentral.bandeiras_cartao", "Bandeira", "") %>
                 <div class="col-md-2">
                     <label>&nbsp;</label>
-                    <button id="btnBuscar" class="btn btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+                    <button id="btnBuscar" class="btn btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
                 </div>
                 <div class="col-md-offset-6 col-md-1">
                     <label>&nbsp;</label><br />
-                    <button class="btn btn-sm btn-info" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i> Imprimir</button>
+                    <button class="btn btn-sm btn-info" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i> Imprimir</button>
                 </div>
                 <div class="col-md-1">
                     <label>&nbsp;</label><br />
-                    <button class="btn btn-sm btn-success" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i> Excel</button>
+                    <button class="btn btn-sm btn-success" name="Filtrate" onclick="downloadExcel()" type="button"><i class="far fa-table bigger-110"></i> Excel</button>
                 </div>
             </div>
         </div>

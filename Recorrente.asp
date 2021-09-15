@@ -91,11 +91,11 @@ LicencaFinanceiro =  session("Banco")="clinic100003" or session("Banco")="clinic
 <script type="text/javascript">
     $(document).ready(function(){
         $(".crumb-active a").html("<%=Titulo%>");
-        $(".crumb-icon a span").attr("class", "fa fa-refresh");
+        $(".crumb-icon a span").attr("class", "far fa-refresh");
         <%
         if (aut("contasapagarI") and CD="D") OR (aut("contasareceberI") and CD="C") then
             %>
-            $(".topbar-right").html('<button class="btn btn-sm btn-primary" onclick="$(\'#save\').click()"><i class="fa fa-save"></i> Salvar</button>');
+            $(".topbar-right").html('<button class="btn btn-sm btn-primary" onclick="$(\'#save\').click()"><i class="far fa-save"></i> Salvar</button>');
             <%
         end if
         %>
@@ -197,8 +197,8 @@ posModalPagar = "fixed"
                 	    <%if CD="C" then%>
                         <div class="btn-group">
                             <button class="btn btn-success btn-sm dropdown-toggle disable" data-toggle="dropdown">
-                            <i class="fa fa-plus"> Adicionar Item</i>
-                            <span class="fa fa-caret-down icon-on-right"></span>
+                            <i class="far fa-plus"> Adicionar Item</i>
+                            <span class="far fa-caret-down icon-on-right"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-success">
                                 <li>
@@ -213,15 +213,15 @@ posModalPagar = "fixed"
                             </ul>
                         </div>
                         <% Else %>
-                            <button onClick="itens('O', 'I', 0)" type="button" class="btn btn-success btn-sm disable"><i class="fa fa-plus"> Adicionar Item</i></button>
+                            <button onClick="itens('O', 'I', 0)" type="button" class="btn btn-success btn-sm disable"><i class="far fa-plus"> Adicionar Item</i></button>
                         <% End If %>
 
     
     
                         <div class="btn-group">
                             <button class="btn btn-success btn-sm dropdown-toggle disable<% If CD="D" Then %> hidden<% End If %>" data-toggle="dropdown">
-                            <i class="fa fa-plus"> Adicionar Pacote</i>
-                            <span class="fa fa-caret-down icon-on-right"></span>
+                            <i class="far fa-plus"> Adicionar Pacote</i>
+                            <span class="far fa-caret-down icon-on-right"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-success">
                               <%
@@ -255,7 +255,7 @@ posModalPagar = "fixed"
         <div class="panel">
             <div class="panel-heading">
                 <span class="panel-title">
-                    <i class="fa fa- blue"></i>
+                    <i class="far fa- blue"></i>
                     CONTAS GERADAS
                 </span>
             </div>
@@ -446,7 +446,7 @@ if InStr(geracao, "ordem de compra") > 0 then
         <script>
         // insere o botão para ir para a Ordem de Compra
         $(document).ready(function() {
-            $('#topbar .topbar-right button').after(' <a class="btn btn-warning btn-sm" href="?P=solicitacoescompras&Pers=1#/ordens/edit/<%=ordemId%>" title="Ir para  ordem de compra"><i class="fa fa-shopping-cart bigger-110"></i></a>');
+            $('#topbar .topbar-right button').after(' <a class="btn btn-warning btn-sm" href="?P=solicitacoescompras&Pers=1#/ordens/edit/<%=ordemId%>" title="Ir para  ordem de compra"><i class="far fa-shopping-cart bigger-110"></i></a>');
         });
         </script>
 <%

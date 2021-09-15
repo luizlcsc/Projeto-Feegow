@@ -14,11 +14,11 @@ if not pres.eof then
 		%>
         <span class="label label arrowed-in arrowed-right"> 
         	<a class="white" href="javascript:HistoricoAtestados(<%=pres("id")%>, '')">
-	            <i class="fa fa-zoom-in"></i><%if len(pres("Titulo"))>1 then response.Write(pres("Titulo")&" - ")%> <%=left(pres("Data"),10)&" por "&nameInTable(pres("sysUser"))%>
+	            <i class="far fa-zoom-in"></i><%if len(pres("Titulo"))>1 then response.Write(pres("Titulo")&" - ")%> <%=left(pres("Data"),10)&" por "&nameInTable(pres("sysUser"))%>
             </a>
                 
             <a class="red" href="javascript:HistoricoAtestados('', <%=pres("id")%>)">
-                <i class="fa fa-trash"></i>
+                <i class="far fa-trash"></i>
             </a>
         </span>
 		<%

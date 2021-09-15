@@ -59,13 +59,13 @@ end if
             <th colspan="8">Posi&ccedil;&atilde;o de Estoque</th>
             <th class="<%=hiddenII %>">
 
-                <button disabled class="btn-xs btn btn-primary fright btn-acao-em-lote" type="button" data-toggle="tooltip" title="Imprimir etiquetas" onclick="printEtiqueta(<%=req("I") %>)"><i class="fa fa-barcode"></i> </button>
+                <button disabled class="btn-xs btn btn-primary fright btn-acao-em-lote" type="button" data-toggle="tooltip" title="Imprimir etiquetas" onclick="printEtiqueta(<%=req("I") %>)"><i class="far fa-barcode"></i> </button>
 <%
 if exibirBotaoMovimentacao then
 %>
                 <button  disabled style="float: right;" class="btn-xs btn btn-warning btn-acao-em-lote" data-toggle="tooltip" title="Mover em lote" type="button"
                 onclick="dividir('<%=req("I") %>', 'S', '<%=req("LocalizacaoID")%>', '', 'LOTE', '<%=req("Quantidade")%>');"
-                ><i class="fa fa-retweet"></i></button>
+                ><i class="far fa-retweet"></i></button>
                 <%
 end if
                 %>
@@ -84,7 +84,7 @@ end if
                 <%
                 if aut("estoqueentradaI")=1 then
                 %>
-                <button class="btn btn-system mn btn-block btn-sm btnLancto <%= hiddenE %>" type="button"<%=disabled%> onclick="$('#save').click(); lancar(<%=req("I")%>, 'E', '', '', '', '<%= ItemInvoiceID %>', '', <%= ProdutoInvoiceID %>);"><i class="fa fa-level-down"></i> Entrada</button>
+                <button class="btn btn-system mn btn-block btn-sm btnLancto <%= hiddenE %>" type="button"<%=disabled%> onclick="$('#save').click(); lancar(<%=req("I")%>, 'E', '', '', '', '<%= ItemInvoiceID %>', '', <%= ProdutoInvoiceID %>);"><i class="far fa-level-down"></i> Entrada</button>
                 <%
                 end if
                 %>
@@ -131,13 +131,13 @@ end if
                         Validade = Validade
                         addClass = "label label-warning"
                         trAddClass = "warning"
-                        addIco = "fa fa-exclamation"
+                        addIco = "far fa-exclamation"
                         addTooltip = "Vencendo em "&DateDiff("d",date(), Validade)&" dias"
 
                         if Validade=<date() then
                             addClass = "label label-danger"
                             trAddClass = "danger"
-                            addIco = "fa fa-exclamation-triangle"
+                            addIco = "far fa-exclamation-triangle"
                             addTooltip = "Vencido há "&DateDiff("d",Validade,date())&" dias"
                         end if
                     end if
@@ -154,10 +154,10 @@ end if
                     <td class="text-right"><%= fn(lanc("ValorPosicao")) %></td>
                     <td class="p5">
                         <%if exibirBotaoSaida then%>
-                        <button class="btn btn-alert mn btn-block btn-xs btnLancto <%= hiddenS %>" type="button"<%=disabled%> onclick="lancar(<%=req("I") %>, 'S', '<%=req("LocalizacaoID")%>', '', <%=lanc("PosicaoID") %>, '<%=ItemInvoiceID %>', '<%= AtendimentoID %>', <%= ProdutoInvoiceID %>);"><i class="fa fa-level-up"></i> Sa&iacute;da</button>
+                        <button class="btn btn-alert mn btn-block btn-xs btnLancto <%= hiddenS %>" type="button"<%=disabled%> onclick="lancar(<%=req("I") %>, 'S', '<%=req("LocalizacaoID")%>', '', <%=lanc("PosicaoID") %>, '<%=ItemInvoiceID %>', '<%= AtendimentoID %>', <%= ProdutoInvoiceID %>);"><i class="far fa-level-up"></i> Sa&iacute;da</button>
                         <%end if%>
                         <%if exibirBotaoMovimentacao then%>
-                        <button class="mt10 btn btn-info mn btn-block btn-xs <%=hiddenII %>" type="button"<%=disabled%> onclick="dividir(<%=req("I") %>, 'S', '<%=req("LocalizacaoID")%>', '', <%=lanc("PosicaoID") %>, '<%=req("Quantidade")%>');"><i class="fa fa-retweet"></i> Mover</button>
+                        <button class="mt10 btn btn-info mn btn-block btn-xs <%=hiddenII %>" type="button"<%=disabled%> onclick="dividir(<%=req("I") %>, 'S', '<%=req("LocalizacaoID")%>', '', <%=lanc("PosicaoID") %>, '<%=req("Quantidade")%>');"><i class="far fa-retweet"></i> Mover</button>
                         <%end if%>
                     </td>
                 </tr>
@@ -181,7 +181,7 @@ end if
 <div id="modal-print-recibo" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content" id="modal" style="width:860px; margin-left:-130px;">
-            <div ><i class="fa fa-circle-o-notch fa-spin fa-fw"></i> <span class="sr-only">Carregando...</span> Carregando...</div>
+            <div ><i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span class="sr-only">Carregando...</span> Carregando...</div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>

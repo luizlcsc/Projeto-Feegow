@@ -54,7 +54,7 @@ if Acao="B" then
 		end if
 		
 		%>
-	//	$("#btn<%=ParcelaTransacaoID%>").replaceWith('<button id="btn<%=ParcelaTransacaoID%>" class="btn btn-sm btn-white" type="button" onClick="baixa(<%=ParcelaTransacaoID%>, \'C\', <%=Parcela%>, <%=Parcelas%>, <%=UnidadeID %> );">Baixado <i class="fa fa-trash red"></i></button>');
+	//	$("#btn<%=ParcelaTransacaoID%>").replaceWith('<button id="btn<%=ParcelaTransacaoID%>" class="btn btn-sm btn-white" type="button" onClick="baixa(<%=ParcelaTransacaoID%>, \'C\', <%=Parcela%>, <%=Parcelas%>, <%=UnidadeID %> );">Baixado <i class="far fa-trash red"></i></button>');
 
         $("#btn<%=ParcelaTransacaoID%>").prop("disabled", true);
         $("#btn<%=ParcelaTransacaoID%>").html("Baixando...");
@@ -82,7 +82,7 @@ if Acao="C" then
 		'3. Desvincula da tabela cartaoconciliacao
 		db_execute("update cartaoconciliacao set conciliado=0, ParcelaID=0 where Conciliado=1 and ParcelaID="& treatvalzero(ref("I")) )
 		%>
-	//	$("#btn<%=ParcelaTransacaoID%>").replaceWith('<button id="btn<%=ParcelaTransacaoID%>" class="btn btn-sm btn-success" type="button" onClick="baixa(<%=ParcelaTransacaoID%>, \'B\', <%=Parcela%>, <%=Parcelas%>);"><i class="fa fa-check"></i> Baixar</button>');
+	//	$("#btn<%=ParcelaTransacaoID%>").replaceWith('<button id="btn<%=ParcelaTransacaoID%>" class="btn btn-sm btn-success" type="button" onClick="baixa(<%=ParcelaTransacaoID%>, \'B\', <%=Parcela%>, <%=Parcelas%>);"><i class="far fa-check"></i> Baixar</button>');
         $("#btn<%=ParcelaTransacaoID%>").prop("disabled", true);
         $("#btn<%=ParcelaTransacaoID%>").html("Cancelando...");
         $("#btnBuscar").click();

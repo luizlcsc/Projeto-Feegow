@@ -25,7 +25,7 @@ end if
         </form>
 
         <div class="col-md-offset-11 col-md-1 mb10">
-            <button class="btn btn-success" type="button" onClick="downloadExcel('#dre-table-analitico')"><i class="fa fa-file-excel-o"></i></button>
+            <button class="btn btn-success" type="button" onClick="downloadExcel('#dre-table-analitico')"><i class="far fa-file-excel-o"></i></button>
         </div>
 
         <table class="table table-hover" id="dre-table-analitico">
@@ -53,7 +53,7 @@ end if
                         <td><%= reg("Categoria") %></td>
                         <td class="text-right"><%= fn(reg("Valor")) %></td>
                         <td class=""><%= nroNFe %></td>
-                        <td><a href="<%= reg("Link") %>" target="_blank" class="btn btn-xs btn-info"><i class="fa fa-external-link"></i></a></td>
+                        <td><a href="<%= reg("Link") %>" target="_blank" class="btn btn-xs btn-info"><i class="far fa-external-link"></i></a></td>
                     </tr>
                     <%
                 reg.movenext

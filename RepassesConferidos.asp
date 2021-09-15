@@ -3,13 +3,13 @@
 <!--#include file="modal.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Repasses Consolidados");
-    $(".crumb-icon a span").attr("class", "fa fa-puzzle-piece");
+    $(".crumb-icon a span").attr("class", "far fa-puzzle-piece");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("repasses previamente conferidos e consolidados");
     <%
     if aut("configrateio")=1 and false then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=Rateio&Pers=1"><i class="fa fa-puzzle-piece"></i><span class="menu-text"> Configurar Regras de Repasse</span></a>');
+    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=Rateio&Pers=1"><i class="far fa-puzzle-piece"></i><span class="menu-text"> Configurar Regras de Repasse</span></a>');
     <%
     end if
     %>
@@ -136,12 +136,12 @@ end if
                     </div>
                     <div class="col-md-1">
                         <label>&nbsp;</label><br />
-                        <button class="btn btn-ms btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                        <button class="btn btn-ms btn-primary"><i class="far fa-search"></i> Buscar</button>
                     </div>
                      <div class="col-md-1">
                          <label>&nbsp;</label><br />
-                         <button type="button" class="btn  btn-info" onclick="print()"><i class="fa fa-print"></i></button>
-                        <!-- <button type="button" class="btn  btn-info"  onclick="printInvoices()"><i class="fa fa-usd"></i></button> -->
+                         <button type="button" class="btn  btn-info" onclick="print()"><i class="far fa-print"></i></button>
+                        <!-- <button type="button" class="btn  btn-info"  onclick="printInvoices()"><i class="far fa-usd"></i></button> -->
                      </div>
 
                 </div>
@@ -168,7 +168,7 @@ end if
     <div class="panel-body">
     <div style="text-align: right">
         <button type="button" class="btn btn-default btn-xs" onclick="openSelectCols()">
-            <i class="fa fa-table"></i> Selecionar Colunas
+            <i class="far fa-table"></i> Selecionar Colunas
         </button>
     </div>
 <div class="alert alert-danger hidden">
@@ -401,7 +401,7 @@ if ExibeResultado then
                             <th class="colTh" name-col="colValorTotalServ">Valor Total Serv.</th>
                             <th class="colTh" name-col="colValorParcela">Valor Parcela</th>
                             <th class="colTh" name-col="colRepasse">Repasse</th>
-                            <th width="1%"><i class="fa fa-remove"></i></th>
+                            <th width="1%"><i class="far fa-remove"></i></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -480,7 +480,7 @@ if ExibeResultado then
 
 
                         if NomeTabela<>"" then
-                            NomeTabela = "<i class='fa fa-table' title='"& NomeTabela &"'></i>"
+                            NomeTabela = "<i class='far fa-table' title='"& NomeTabela &"'></i>"
                         end if
 
                         ExibeCheckbox = False
@@ -512,16 +512,16 @@ if ExibeResultado then
                             <td>
                                 <code style="display:none;">#<%= rr("IDMovPay") %></code>
                                 <% if rr("ItemContaAPagar")>0 then %>
-                                    <a href="./?P=invoice&Pers=1&I=<%= rr("InvoiceAPagarID") %>" target="_blank" class="btn btn-xs btn-default" type="button"><i class="fa fa-sign-out text-alert"></i></a>
+                                    <a href="./?P=invoice&Pers=1&I=<%= rr("InvoiceAPagarID") %>" target="_blank" class="btn btn-xs btn-default" type="button"><i class="far fa-sign-out text-alert"></i></a>
                                 <% elseif rr("ItemContaAReceber")>0 then
                                     set InvoiceReceberSQL = db_execute("SELECT InvoiceID FROM itensinvoice WHERE id="&rr("ItemContaAReceber"))
                                     if not InvoiceReceberSQL.eof then
                                         InvoiceAReceberID=InvoiceReceberSQL("InvoiceID")
                                     end if
                                 %>
-                                    <a href="./?P=invoice&Pers=1&I=<%= InvoiceAReceberID %>" target="_blank" class="btn btn-xs btn-default" type="button"><i class="fa fa-sign-in text-system"></i></a>
+                                    <a href="./?P=invoice&Pers=1&I=<%= InvoiceAReceberID %>" target="_blank" class="btn btn-xs btn-default" type="button"><i class="far fa-sign-in text-system"></i></a>
                                 <% elseif rr("CreditoID")>0 then %>
-                                <a href="javascript:repassesCredito(<%= rr("CreditoID") %>)" class="btn btn-xs btn-default"><i class="fa fa-search text-system"></i></a>
+                                <a href="javascript:repassesCredito(<%= rr("CreditoID") %>)" class="btn btn-xs btn-default"><i class="far fa-search text-system"></i></a>
                                 <% else %>
                                     <% if ExibeCheckbox then %>
                                         <input type="checkbox" data-account="<%=ContaCredito%>" name="Repasses" value="<%= rr("id") &"|"& ValorRepasse %>" />
@@ -544,7 +544,7 @@ if ExibeResultado then
                             <td class="text-right" name-col="colRepasse"><%= ValorRepasse %></td>
                             <td>
                                 <% if isnull(rr("ItemContaAPagar")) and aut("|repassesX|")=1 then %>
-                                    <button onclick="x(<%= rr("id") %>)" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button>
+                                    <button onclick="x(<%= rr("id") %>)" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button>
                                 <% end if %>
                             </td>
                         </tr>

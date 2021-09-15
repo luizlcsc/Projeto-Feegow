@@ -445,7 +445,7 @@ end if
 
 <script type="text/javascript">
     $(".crumb-active a").html("Guia de Consulta");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 
 
@@ -473,7 +473,7 @@ end if
         <span> Dados do Benefici&aacute;rio </span>
     </div>
 	<tr><td><table cellpadding="0" cellspacing="0" width="100%"><tr>
-	<td width="60%"><div class="col-md-12"><%= selectInsert("* Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='fa fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div></td>
+	<td width="60%"><div class="col-md-12"><%= selectInsert("* Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='far fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div></td>
 	<td width="40%"><%= quickField("text", "CNS", "Cart&atilde;o Nacional de Sa&uacute;de", 12, CNS, "", "", "") %></td>
 	</tr></table></td></tr>
 
@@ -514,7 +514,7 @@ end if
 				<%= quickField("text", "IdentificadorBeneficiario", "Identificador - Código de barras da carteira", 12, IdentificadorBeneficiario, "", "", " readonly") %>
 			</td>
 			<td>
-				<button type="button" class="btn btn-xs btn-warning fa fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
+				<button type="button" class="btn btn-xs btn-warning far fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
 				</button>
 			</td>
 		</tr>
@@ -644,26 +644,26 @@ end if
     end if
 
     %>
-        <button class="btn btn-primary btn-md" id="salvar-guia"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-primary btn-md" id="salvar-guia"><i class="far fa-save"></i> Salvar</button>
         <%
         if aut("repassesV")=1 then
             set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.GuiaConsultaID="& req("I") &" AND NOT ISNULL(rr.ItemContaAPagar)")
             if not vcaRep.eof then
-                btnrepasse = "<button title='Repasses Gerados' onclick='repasses(`GuiaConsultaID`, "& req("I") &")' type='button' class='btn ml5 btn-dark pull-right'> <i class='fa fa-puzzle-piece'></i>  </button>"
+                btnrepasse = "<button title='Repasses Gerados' onclick='repasses(`GuiaConsultaID`, "& req("I") &")' type='button' class='btn ml5 btn-dark pull-right'> <i class='far fa-puzzle-piece'></i>  </button>"
                 response.write( btnRepasse )
             end if
         end if
         %>
         <%if AutorizadorTiss then %>
-        <button type="button" onclick="AutorizarGuiaTisss()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>
-        <button type="button" onclick="Autorizador.cancelarGuia(2)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="fa fa-times"></i> Cancelar guia</button>
-        <button type="button" onclick="tissVerificarStatusGuia()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="fa fa-search"></i> Verificar status</button>
+        <button type="button" onclick="AutorizarGuiaTisss()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="far fa-expand"></i> Solicitar</button>
+        <button type="button" onclick="Autorizador.cancelarGuia(2)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="far fa-times"></i> Cancelar guia</button>
+        <button type="button" onclick="tissVerificarStatusGuia()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="far fa-search"></i> Verificar status</button>
         <%end if %>
-        <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="fa fa-history"></i></button>
+        <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="far fa-history"></i></button>
 
 
-        <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaConsulta', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
-        <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaConsulta()"><i class="fa fa-file"></i> Imprimir Guia</button>
+        <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaConsulta', 0)"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
+        <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaConsulta()"><i class="far fa-file"></i> Imprimir Guia</button>
     </div>
     <input type="hidden" name="AtendimentoID" id="AtendimentoID" value="<%=AtendimentoID%>" />
     <input type="hidden" name="AgendamentoID" id="AgendamentoID" value="<%=AgendamentoID%>" />

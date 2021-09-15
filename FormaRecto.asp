@@ -3,7 +3,7 @@
     $(".crumb-active a").html("Formas de Recebimento");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("edição das formas predefinidas de recebimento");
-    $(".crumb-icon a span").attr("class", "fa fa-usd");
+    $(".crumb-icon a span").attr("class", "far fa-usd");
 </script>
 
 <style type="text/css">
@@ -27,7 +27,7 @@
         <div class="panel-heading">
             <div class="col-md-2">
                 <div class="btn-group">
-                    <button type="button" data-toggle="dropdown" class="btn btn-success btn-sm dropdown-toggle"><i class="fa fa-plus"></i> <strong>ADICIONAR</strong></button>
+                    <button type="button" data-toggle="dropdown" class="btn btn-success btn-sm dropdown-toggle"><i class="far fa-plus"></i> <strong>ADICIONAR</strong></button>
                     <ul class="dropdown-menu dropdown-info">
                     <%
                     set pm = db.execute("select * from sys_financialpaymentmethod where AccountTypesC!='' order by PaymentMethod")
@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div class="col-md-2 col-md-offset-8 text-right">
-                <button type="button" onclick="addForma('save')" class="btn btn-sm btn-primary">&nbsp;&nbsp;<i class="fa fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>
+                <button type="button" onclick="addForma('save')" class="btn btn-sm btn-primary">&nbsp;&nbsp;<i class="far fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>
             </div>
         </div>
 

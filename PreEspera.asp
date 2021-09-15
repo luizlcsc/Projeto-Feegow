@@ -14,7 +14,7 @@ session("Guiche") = request.Cookies("Guiche")
                 <%=quickfield("text", "Guiche", "Nome do seu guichê", 4, request.Cookies("Guiche"), "", "", " required") %>
                 <div class="col-xs-2">
                     <label>&nbsp;</label><br />
-                    <button type="button" onclick="saveGuiche('Guiche', 0, $('#Guiche').val())" class="btn btn-sm btn-primary btn-block"><i class="fa fa-save"> Salvar</i></button>
+                    <button type="button" onclick="saveGuiche('Guiche', 0, $('#Guiche').val())" class="btn btn-sm btn-primary btn-block"><i class="far fa-save"> Salvar</i></button>
                 </div>
             </div>
         </div>

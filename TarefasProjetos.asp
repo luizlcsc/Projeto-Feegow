@@ -56,7 +56,7 @@
                             <th style="width: 5%">Ordem</th>
                             <th style="width: 70%">Título</th>
                             <th>Tempo Estimado</th>
-                            <th class="text-center"><button type="button" class="btn btn-xs btn-success mn" onclick="addRow();"><i class="fa fa-plus"></i></button></th>
+                            <th class="text-center"><button type="button" class="btn btn-xs btn-success mn" onclick="addRow();"><i class="far fa-plus"></i></button></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -65,7 +65,7 @@
                                 <td class="text-center"><%=projetos("Ordem")%></td>
                                 <td class="text-center"><%=projetos("Titulo")%></td>
                                 <td class="text-center"><%=projetos("Tempo")%></td>
-                                <td class="text-center"><a href="./?P=Tarefas&I=<%=projetos("id")%>&Pers=1" target="_blank"><button type="button" class="btn btn-xs btn-primary mn"><i class="fa fa-external-link"></i></button></a></td>
+                                <td class="text-center"><a href="./?P=Tarefas&I=<%=projetos("id")%>&Pers=1" target="_blank"><button type="button" class="btn btn-xs btn-primary mn"><i class="far fa-external-link"></i></button></a></td>
                             </tr>
                         <%
                            projetos.movenext

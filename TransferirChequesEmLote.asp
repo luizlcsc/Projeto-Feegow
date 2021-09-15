@@ -40,7 +40,7 @@
 
 </div>
 <div class="modal-footer">
-	<button class="btn btn-primary pull-right"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-primary pull-right"><i class="far fa-save"></i> Salvar</button>
 </div>
 </form>
 <script>

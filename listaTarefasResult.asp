@@ -225,7 +225,7 @@ end if
                     end if
                 %>
 
-                <td><a href="./?P=tarefas&Pers=1&I=<%=lista("id") %><%=LinkHelpdesk%>" class="btn btn-success btn-xs hidden-print"><i class="fa fa-edit"></i></a> </td>
+                <td><a href="./?P=tarefas&Pers=1&I=<%=lista("id") %><%=LinkHelpdesk%>" class="btn btn-success btn-xs hidden-print"><i class="far fa-edit"></i></a> </td>
             </tr>
             <%
         lista.movenext

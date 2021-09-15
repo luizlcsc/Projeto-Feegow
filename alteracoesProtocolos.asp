@@ -101,8 +101,8 @@
         </div>
         <div class="form-group col-md-12">
             <div class='fright'>
-                <button class='btn btn-danger' onclick='salvarNotificacao("<%=alteracoes("id")%>",0)' ><i class='fa fa-times'  ></i> Reprovar</button>
-                <button class='btn btn-success' onclick='salvarNotificacao("<%=alteracoes("id")%>",1)' ><i class='fa fa-check'></i> Aprovar</button>
+                <button class='btn btn-danger' onclick='salvarNotificacao("<%=alteracoes("id")%>",0)' ><i class='far fa-times'  ></i> Reprovar</button>
+                <button class='btn btn-success' onclick='salvarNotificacao("<%=alteracoes("id")%>",1)' ><i class='far fa-check'></i> Aprovar</button>
             </div>
         </div>
     </div>
@@ -113,7 +113,7 @@
     $(".crumb-active a").html("Aprovações de alteração de protocolos");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Aprovações de alteração de protocolos");
-    $(".crumb-icon a span").attr("class", "fa fa-table");
+    $(".crumb-icon a span").attr("class", "far fa-table");
 
 function salvarNotificacao(id,aprovacao){
     let tipo = '<%=tipo%>'; //E ou R

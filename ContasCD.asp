@@ -145,7 +145,7 @@ end if
     <div class="col-xs-12">
 
         <form id="frmCD">
-            <div class="panel hidden-print">
+            <div class="panel mt10 hidden-print">
             <input type="hidden" name="MotivoCancelamento" value="<%=ref("MotivoCancelamento")%>">
 
             <div class="panel-body">

@@ -18,13 +18,12 @@ end if
             <div class="panel-body">
                 <%=quickfield("datepicker", "DataParaFechar", "Data", 4, date(), "", "", "")%>
                 <div class="col-md-2">
-                    <br>
-                    <button onclick="insertFechamentoData()" class="btn btn-primary">
-                        <i class="fa fa-save"></i> Fechar data
+                    <button onclick="insertFechamentoData()" class="btn btn-primary mt25">
+                        <i class="fa fa-search"></i> Visualizar data
                     </button>
                 </div>
 
-                <table class="table">
+                <table class="table mt10">
                     <thead>
                         <tr>
                             <th>Data de referência</th>

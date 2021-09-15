@@ -408,7 +408,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                 }
                 function showCog(redirectTo) {
                     "use strict";
-                    var cog = '<span class="feegow-selectinsert-config"><a href="' + redirectTo + '" class="btn btn-xs btn-primary" style="float: right;margin: 10px;"><i class="fa fa-cog"></i></a></span>',
+                    var cog = '<span class="feegow-selectinsert-config"><a href="' + redirectTo + '" class="btn btn-xs btn-primary" style="float: right;margin: 5px;"><i class="fa fa-cog"></i></a></span>',
                         configSelector = ".feegow-selectinsert-config",
                         $dropdown = $(".select2-dropdown");
 

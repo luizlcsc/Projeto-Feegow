@@ -5297,7 +5297,7 @@ td.legendColorBox {
     cursor: pointer;
     background-image: none;
     border: 1px solid transparent;
-    border-color: rgba(0, 0, 0, 0.07) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.18);
+    border-color: rgba(0, 0, 0, 0.07) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.9);
     white-space: nowrap;
     padding: 9px 12px;
     font-size: 13px;
@@ -5935,6 +5935,8 @@ previous button's border...
     padding: 0;
     margin: 0;
     margin-top: 4px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .multiselect-container.dropdown-menu .input-group {
@@ -5967,6 +5969,8 @@ previous button's border...
 
 .multiselect-container.dropdown-menu > li > a {
     padding: 0;
+    border-radius: 6px;
+    margin-top: 2px;
 }
 
 .multiselect-container.dropdown-menu > li > a > label {
@@ -11868,7 +11872,7 @@ th {
 
 .table-striped > tbody > tr:nth-child(odd) > td,
 .table-striped > tbody > tr:nth-child(odd) > th {
-    background-color: #f9f9f9;
+    border: none;
 }
 
 .table-hover > tbody > tr:hover > td,
@@ -12001,7 +12005,6 @@ legend {
 label {
     display: inline-block;
     max-width: 100%;
-    margin-top: 5px;
     margin-bottom: 3px;
     font-size: 12px;
     font-weight: 600;
@@ -12863,7 +12866,7 @@ fieldset[disabled] .btn-link:focus {
     padding: 1px 5px;
     font-size: 12px;
     line-height: 1.5;
-    border-radius: 2px;
+    border-radius: 4px;
 }
 
 .btn-block {
@@ -13083,11 +13086,11 @@ tbody.collapse.in {
     font-size: 13px;
     text-align: left;
     background-color: #ffffff;
-    border: 1px solid #cccccc;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    /*border: 1px solid #cccccc;*/
+    /*border: 1px solid rgba(0, 0, 0, 0.15);*/
     border-radius: 4px;
-    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    -webkit-box-shadow: 0 3px 18px rgb(0 0 0 / 0.1);
+    box-shadow: 0 3px 18px rgb(0 0 0 / 0.1);
     background-clip: padding-box;
 }
 
@@ -13105,7 +13108,9 @@ tbody.collapse.in {
 
 .dropdown-menu > li > a {
     display: block;
-    padding: 5px 15px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 6px 14px;
     clear: both;
     color: #666666;
     font-weight: normal;
@@ -13118,6 +13123,7 @@ tbody.collapse.in {
     text-decoration: none;
     color: #595959;
     background-color: #f5f5f5;
+    border-radius: 6px;
 }
 
 .dropdown-menu > .active > a,
@@ -13163,7 +13169,7 @@ tbody.collapse.in {
 }
 
 .dropdown-header {
-    display: block;
+    display: none;
     padding: 3px 20px;
     font-size: 12px;
     line-height: 1.49;
@@ -13540,7 +13546,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .input-group-addon.input-sm {
     padding: 5px 10px;
     font-size: 12px;
-    border-radius: 2px;
+    border-radius: 6px;
 }
 
 .input-group-addon.input-lg {
@@ -15297,7 +15303,6 @@ a.thumbnail.active {
     padding: 10px 15px;
     margin-bottom: -1px;
     background-color: #ffffff;
-    border: 1px solid #e7e7e7;
 }
 
 .list-group-item:first-child {
@@ -16842,7 +16847,7 @@ div.switch.round label:after {
     font-family: "FontAwesome";
     content: "\f00c";
     font-size: 12px;
-    top: 4px;
+    top: 2px;
     left: 2px;
     width: 0;
     height: 0;
@@ -21103,7 +21108,7 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
-    background: #eeeeee;
+    background: #F0F2F5;
 }
 
 #content_wrapper {
@@ -21320,9 +21325,11 @@ body.sidebar-collapsed #sidebar:before {
 
 .navbar .nav > li.dropdown.open .dropdown-menu {
     padding: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
     margin-top: 10px;
-    border-radius: 2px;
-    border-top: 3px solid transparent;
+    border-radius: 8px;
+    /*border-top: 3px solid transparent;*/
     /* Dropdown Links */
     /* Dropdown Top Arrow */
 }
@@ -21341,7 +21348,7 @@ body.sidebar-collapsed #sidebar:before {
     left: 11px;
     bottom: 100%;
     border-width: 0 10px 10px;
-    border-bottom-color: #4a89dc;
+    /*border-bottom-color: #4a89dc;*/
 }
 
 .navbar .nav .menu-divider {
@@ -21463,7 +21470,7 @@ body.sidebar-collapsed #sidebar:before {
 
 .navbar .navbar-btn.btn-group > .btn {
     color: rgb(58, 87, 100);
-    background-color: rgba(227, 227, 227, 0.75);
+    background-color: #F0F2F5;
     border-color: transparent;
     border-radius: 6px;
 }
@@ -21547,12 +21554,12 @@ modal-content    color: #3A5764;
 /* Modify for style when in contextual navbars (bg-primary, etc) */
 .navbar[class*='bg-'] .nav > li.dropdown.menu-merge.open .dropdown-menu,
 .navbar[class*='bg-'] .nav > li.dropdown.menu-merge > .navbar-btn.open .dropdown-menu {
-    border-top: 0;
+    /*border-top: 0;*/
 }
 
 .navbar[class*='bg-'] .nav > li.dropdown.menu-merge.open .dropdown-menu:after,
 .navbar[class*='bg-'] .nav > li.dropdown.menu-merge > .navbar-btn.open .dropdown-menu:after {
-    border-bottom-color: #fafafa;
+    border-bottom-color: #fff;
 }
 
 /* Disable Arrow Setting */
@@ -21629,10 +21636,10 @@ modal-content    color: #3A5764;
 .navbar .dropdown-menu > li.dropdown-footer a {
     text-align: center;
     padding: 8px 10px 9px;
-    border-top: 1px solid #e5e5e5;
     background-color: #fafafa;
     -webkit-transition: background-color 0.4s ease;
     transition: background-color 0.4s ease;
+    border-radius: 8px;
 }
 
 .navbar .dropdown-menu > li.dropdown-footer a:hover {
@@ -21669,7 +21676,6 @@ modal-content    color: #3A5764;
     height: 57px;
     margin-right: 10px;
     background-color: transparent;
-    border-right: solid 1px #ddd;
     border-bottom: solid 1px #ddd;
     /* Logo */
 }
@@ -21873,12 +21879,12 @@ body.sb-top #toggle_sidemenu_t {
 =========================================================== */
 .navbar .nav > li.dropdown.open .dropdown-menu,
 .navbar .nav > li.dropdown .open .dropdown-menu {
-    border-top-color: #45AAF2;
+    /*border-top-color: #45AAF2;*/
 }
 
 .navbar .nav > li.dropdown.open .dropdown-menu:after,
 .navbar .nav > li.dropdown .open .dropdown-menu:after {
-    border-bottom-color: #45AAF2;
+    /*border-bottom-color: #45AAF2;*/
 }
 
 .navbar .nav > li .dropdown-toggle + .dropdown-menu > .active > a,
@@ -21904,17 +21910,17 @@ body.sb-top #toggle_sidemenu_t {
 .navbar.bg-primary .nav > li > a:hover,
 .navbar.bg-primary .nav > li > a:focus {
     color: #3A5764;
-    background-color: #E6E6E6;
+    background-color: #F0F2F5;
 }
 
 .navbar.bg-primary .nav > li.dropdown.open .dropdown-menu,
 .navbar.bg-primary .nav > li.dropdown .open .dropdown-menu {
-    border-top-color: #45AAF2;
+    /*border-top-color: #45AAF2;*/
 }
 
 .navbar.bg-primary .nav > li.dropdown.open .dropdown-menu:after,
 .navbar.bg-primary .nav > li.dropdown .open .dropdown-menu:after {
-    border-bottom-color: #45AAF2;
+    /*border-bottom-color: #45AAF2;*/
 }
 
 .navbar.bg-primary .nav > li.dropdown.open .dropdown-menu:after,
@@ -24289,8 +24295,8 @@ body.sb-l-m .sidebar-menu > li.active > a > span:nth-child(1) {
 }
 
 #sidebar_left.sidebar-light .sidebar-widget.search-widget {
-    background-color: #FFFFFF;
-    border: 1px solid #BABABA;
+    background-color: #F0F2F5;
+    border: none;
     padding: 5px !important;
     height: 38px !important;
     margin: 8px!important;
@@ -24722,7 +24728,7 @@ body.sb-r-o #toggle_sidemenu_r span.glyphicons {
 #topbar.alt {
     /*  min-height: 70px;
   padding: 20px 22px;*/
-    background: #e7e7e7;
+    background: #F0F2F5;
     border-bottom: 1px solid #ddd;
     border-top: 1px solid #ddd;
 }
@@ -25849,7 +25855,7 @@ body.profile-page #content .tab-block .nav-tabs > li > a {
   L. Error Pages - 404, 500 (plus alt pages)
 ================================================= */
 body.error-page #main:before {
-    background: #F5F5F5;
+    background: #F0F2F5;
 }
 
 body.error-page #return-arrow {
@@ -26091,11 +26097,11 @@ a.bg-primary:hover {
 }
 
 .bg-primary.dark {
-    background-color: #F1F1F1 !important;
+    background-color: #fff !important;
 }
 
 .bg-primary.darker {
-    background-color: #F1F1F1 !important;
+    background-color: #fff !important;
     border-top: 4px solid transparent;
     border-bottom: 0 !important;
     border-radius: 5px;
@@ -30285,12 +30291,14 @@ select[tabindex="-1"], .multisel {
 
 .ResultSelectContent .select-insert-item{
     cursor: pointer;
-    padding:10px;
+    padding: 5px;
     background-color: #fff;
-    border-top: 1px solid #eeeeee;
+    margin-top: 5px;
 }
 .ResultSelectContent .select-insert-item:hover, .ResultSelectContent .li:hover{
-    background-color: #fdfdfd !important;
+    background-color: #45AAF2 !important;
+    color: #fff;
+    border-radius: 6px;
 }
 
 .ResultSelectContent table{
@@ -30299,9 +30307,11 @@ select[tabindex="-1"], .multisel {
 
 .ResultSelectContent .SelectMultipleTitle{
     width:300px;
-    padding: 10px;
+    padding: 5px;
     font-weight: 600;
+    margin: 2px;
     background-color: #D9EDF7;
+    border-radius: 6px;
 }
 .ResultSelectContent td{
     padding: 0!important;
@@ -30315,7 +30325,11 @@ select[tabindex="-1"], .multisel {
     min-height: 30px;
     margin-top: 5px;
     min-width:300px;
-    border: 1px solid #eeeeee;
+    padding: 6px;
+    border-radius: 6px;
+    /*border: 1px solid #eeeeee;*/
+
+    box-shadow: 0 3px 18px rgba(0, 0, 0, 0.1);
 }
 
 /*chat por cima do modal*/
@@ -30353,5 +30367,29 @@ select[tabindex="-1"], .multisel {
 }
 
 .select2-container--focus .select2-selection--single{
-    border: 1px solid #45AAF2;
+    border: 1px solid #45AAF2 !important;
+}
+
+.select2-results__option{
+    padding: 3px !important;
+}
+
+.select2-dropdown{
+    border-radius: 6px !important;
+    border: none !important;
+    box-shadow: 0 3px 18px rgba(0, 0, 0, 0.1);
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field{
+    border-radius: 6px !important;
+}
+
+.select2-results__options{
+    margin: 5px !important;
+}
+
+.select2-results__option[aria-selected]{
+    padding: 6px !important;
+    border-radius: 6px !important;
+
 }

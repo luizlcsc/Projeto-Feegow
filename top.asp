@@ -405,9 +405,7 @@ else
                 <a href="?P=Laudos&Pers=1" class="sub-menu-click-cadastro-laudos"><i class="fa fa-file-text"></i> Laudos</a>
               </li>
               <%  if recursoAdicional(24)=4 then %>
-              <li class="dropdown">
-                <a href="?P=laudosLab&Pers=1" class="sub-menu-click-cadastro-laudos"><i class="fa fa-file-text"></i> Laudos Laboratoriais (Integração)</a>
-              </li>
+
               <% end if %>
             <%
             end if

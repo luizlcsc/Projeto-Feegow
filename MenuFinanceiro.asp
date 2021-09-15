@@ -383,9 +383,9 @@
     if session("Admin")=1 and (session("Banco")="clinic5760" or session("Banco")="clinic100000") then
     %>
 
-	<li <% If req("P")="FechamentoDeData" Then %> class="active"<% End If %>>
-        <a href="./?P=FechamentoDeData&Pers=1">
-            <span class="fa fa-calendar"></span>
+	<li <% If req("P")="FechamentoData" Then %> class="active"<% End If %>>
+        <a href="./?P=FechamentoData&Pers=1">
+            <span class="fa fa-lock"></span>
             <span class="sidebar-title"> Fechamento de Data </span>
         </a>
     </li>

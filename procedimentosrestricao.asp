@@ -17,7 +17,7 @@ end if
                 <%= selectInsertCA("Prestador", "Prestador", "", "5, 2", "", "", "") %>
         </div>
         <div class="col-md-3">
-            <button type="button" class="btn btn-success mt25 btn-block" onclick="ajxContent('procedimentosrestricao&A=Ex&Conta='+ $('#Prestador').val(), <%= ProcedimentoID %>, 1, 'divEquipe')"><i class="fa fa-plus"></i> Adicionar</button>
+            <button type="button" class="btn btn-success mt25 btn-block" onclick="ajxContent('procedimentosrestricao&A=Ex&Conta='+ $('#Prestador').val(), <%= ProcedimentoID %>, 1, 'divEquipe')"><i class="far fa-plus"></i> Adicionar</button>
         </div>
     </div>
     <hr class="short alt" />
@@ -41,7 +41,7 @@ end if
                         <tr class="linhaCX" onclick="$('.linhaCX').removeClass('system'); $(this).closest('tr').addClass('system')" style="cursor:pointer">
                             <td onclick="ajxContent('procedimentosrestricaoexcecao&ProcedimentoID=<%= ProcedimentoID %>', <%= prepEx("id") %>, 1, 'restricaoexcecoes');"><%= accountName(NULL, prepEx("Conta")) %></td>
                             <td>
-                                <button type="button" class="btn btn-danger btn-xs" onclick="if(confirm('Tem certeza de que deseja apagar esta exceção e todos as restrições relacionados a elas?')) ajxContent('procedimentosrestricao&A=XEx&Conta=<%= prepEx("Conta") %>', <%= ProcedimentoID %>, 1, 'divEquipe')"><i class="fa fa-remove"></i></button>
+                                <button type="button" class="btn btn-danger btn-xs" onclick="if(confirm('Tem certeza de que deseja apagar esta exceção e todos as restrições relacionados a elas?')) ajxContent('procedimentosrestricao&A=XEx&Conta=<%= prepEx("Conta") %>', <%= ProcedimentoID %>, 1, 'divEquipe')"><i class="far fa-remove"></i></button>
                             </td>
                         </tr>
                         <%

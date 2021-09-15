@@ -25,7 +25,7 @@ else
 		%>
 		<tr id="Codigo<%=listaCID("id")%>">
             <td width="1%"><a style="cursor:pointer;" onClick="ajxContent('ListaDiagnosticos&PacienteID=<%=PacienteID%>&CID=<%=listaCID("id")%>', '', '1', 'ListaDiagnosticos');">
-                <i class="fa fa-hand-o-left"></i>
+                <i class="far fa-hand-o-left"></i>
                 </a>
             </td>
 

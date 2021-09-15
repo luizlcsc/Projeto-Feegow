@@ -31,10 +31,10 @@ end if
         if req("I")="" then
 	        %>
             <div class="panel-heading">
-                    <span class="panel-title"><i class="fa fa-files-o blue"></i> Propostas Geradas </span>
+                    <span class="panel-title"><i class="far fa-files-o blue"></i> Propostas Geradas </span>
                     <%if req("PacienteID")<>"" then %>
                     <span class="panel-controls">
-                        <button class="btn btn-sm btn-success" onclick="ajxContent('PacientesPropostas&CallID=<%=CallID%>&PropostaID=N&PacienteID=<%=req("PacienteID")%>', '', '1', 'pront<%=CallID %>')"><i class="fa fa-plus"></i> INSERIR</button>
+                        <button class="btn btn-sm btn-success" onclick="ajxContent('PacientesPropostas&CallID=<%=CallID%>&PropostaID=N&PacienteID=<%=req("PacienteID")%>', '', '1', 'pront<%=CallID %>')"><i class="far fa-plus"></i> INSERIR</button>
                     </span>
                     <%end if %>
             </div>
@@ -61,7 +61,7 @@ end if
             <tbody>
     	        <%
 		        if req("PacienteID")<>"" then
-			        set p = db.execute("select p.id, p.InvoiceID, p.PacienteID,s.NomeStatus, p.DataProposta, p.Valor, (select group_concat( concat('<a class=""btn btn-xs btn-success"" href=""./?P=ListaPropostas&Pers=1&Acao=Agendamento&ProcedimentoID=', ip.ItemID, '&PacienteID=', p.PacienteID, '&ItemPropostaID=', ip.id, '"" target=""_blank""><i class=""fa fa-calendar""></i></a> ', proc.NomeProcedimento ) SEPARATOR '<br> ') from itensproposta ip left join procedimentos proc on proc.id=ip.ItemID where ip.PropostaID=p.id) procedimentos from propostas p LEFT JOIN propostasstatus s on s.id=p.StaID where p.sysActive=1 AND PacienteID='"&req("PacienteID")&"' group by p.id order by p.DataProposta desc")
+			        set p = db.execute("select p.id, p.InvoiceID, p.PacienteID,s.NomeStatus, p.DataProposta, p.Valor, (select group_concat( concat('<a class=""btn btn-xs btn-success"" href=""./?P=ListaPropostas&Pers=1&Acao=Agendamento&ProcedimentoID=', ip.ItemID, '&PacienteID=', p.PacienteID, '&ItemPropostaID=', ip.id, '"" target=""_blank""><i class=""far fa-calendar""></i></a> ', proc.NomeProcedimento ) SEPARATOR '<br> ') from itensproposta ip left join procedimentos proc on proc.id=ip.ItemID where ip.PropostaID=p.id) procedimentos from propostas p LEFT JOIN propostasstatus s on s.id=p.StaID where p.sysActive=1 AND PacienteID='"&req("PacienteID")&"' group by p.id order by p.DataProposta desc")
 		        else
                     if ref("Procedimentos")<>"" then
                         leftProc = " LEFT JOIN itensproposta itens ON itens.PropostaID=p.id "
@@ -141,15 +141,15 @@ end if
                             <%if session("OtherCurrencies")="phone" then %>
                             <a class="btn btn-xs btn-info" title="Enviar por E-mail"
                                 onclick="enviarPorEmail(<%=p("id")%>)"
-                                ><i class="fa fa-paper-plane"></i></a>
+                                ><i class="far fa-paper-plane"></i></a>
                             <%end if %>
                 	        <a class="btn btn-xs btn-success" href="<%if req("PacienteID")="" then%>./?P=PacientesPropostas&Pers=1&I=<%=req("I")%>&PropostaID=<%=p("id")%><%
                                 else
-                                %>javascript:ajxContent('PacientesPropostas&CallID=<%=CallID %>&PacienteID=<%=req("PacienteID")%>&PropostaID=<%=p("id")%>', '', '1', 'pront<%=CallID %>')<%end if%>" title="Editar Proposta"><i class="fa fa-edit"></i></a>
+                                %>javascript:ajxContent('PacientesPropostas&CallID=<%=CallID %>&PacienteID=<%=req("PacienteID")%>&PropostaID=<%=p("id")%>', '', '1', 'pront<%=CallID %>')<%end if%>" title="Editar Proposta"><i class="far fa-edit"></i></a>
                 	        <%
                 	        if aut("|propostasX|")=1 and PropostaNaoExecutada then
                 	        %>
-                	        <button type="button" class="btn btn-xs btn-danger" onClick="x(<%=p("id")%>)" title="Excluir Proposta"><i class="fa fa-remove"></i></button>
+                	        <button type="button" class="btn btn-xs btn-danger" onClick="x(<%=p("id")%>)" title="Excluir Proposta"><i class="far fa-remove"></i></button>
                 	        <%
                 	        end if
                 	        %>
@@ -181,7 +181,7 @@ function enviarPorEmail(id) {
 function x(i) {
     if (confirm('Tem certeza de que deseja excluir esta proposta?')) {
         d = $("#resPropostas, #pront");
-        d.html('<center><i class="fa fa-circle-o-notch fa-spin"></i> Buscando...</center>')
+        d.html('<center><i class="far fa-circle-o-notch fa-spin"></i> Buscando...</center>')
         $.post("listaPropostas.asp?CallID=<%=CallID %>&I=<%=req("I")%>&PacienteID=<%=req("PacienteID")%>&X=" + i, $("#frmProposta").serialize(), function (data) {
             d.html(data);
         });

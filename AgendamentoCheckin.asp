@@ -82,7 +82,7 @@ end if
                 <div class="row">
                     <%= quickField("memo", "Observacoes", "Observa&ccedil;&otilde;es", 6, reg("Observacoes"), "", "", "") %>
                     <div class="col-md-6">
-                        <div class="checkbox-custom checkbox-warning"><input data-rel="tooltip" title="" data-original-title="Marque para acionar lembrete" type="checkbox" class="tooltip-danger" name="lembrarPendencias" id="lembrarPendencias" value="S"<%if reg("lembrarPendencias")="S" then%> checked="checked"<%end if%> /><label for="lembrarPendencias"> Avisos e Pend&ecirc;ncias</label> <i class="fa fa-flag red pull-right"></i></div>
+                        <div class="checkbox-custom checkbox-warning"><input data-rel="tooltip" title="" data-original-title="Marque para acionar lembrete" type="checkbox" class="tooltip-danger" name="lembrarPendencias" id="lembrarPendencias" value="S"<%if reg("lembrarPendencias")="S" then%> checked="checked"<%end if%> /><label for="lembrarPendencias"> Avisos e Pend&ecirc;ncias</label> <i class="far fa-flag red pull-right"></i></div>
                         <textarea class="form-control" name="Pendencias" id="Pendencias"><%=reg("Pendencias")%></textarea>
                     </div>
                 </div>
@@ -184,7 +184,7 @@ if not isnull(reg("Nascimento")) and isdate(reg("Nascimento")) then
 <script type="text/javascript">
 $( document ).ready(function() {
 new PNotify({
-	    icon: 'fa fa-birthday-cake',
+	    icon: 'far fa-birthday-cake',
 	    title: 'ANIVERS&Aacute;RIO DO PACIENTE',
 	    text: '<%=txt%>',
 	    type: 'info',

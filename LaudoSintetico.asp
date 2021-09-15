@@ -34,7 +34,7 @@ ProfissionalID = req("ProfissionalID")
                 	<td><%= lau("Nome") %></td>
                 	<td><%= lau("NomePaciente") %></td>
                 	<td><%= lau("DataHora") %></td>
-                	<td><a class="btn btn-xs btn-warning hidden-print" href="./?P=Pacientes&Pers=1&I=<%= lau("PacienteID") %>"><i class="fa fa-view"></i> Visualizar</a></td>
+                	<td><a class="btn btn-xs btn-warning hidden-print" href="./?P=Pacientes&Pers=1&I=<%= lau("PacienteID") %>"><i class="far fa-view"></i> Visualizar</a></td>
                 </tr>
 				<%
 			lau.movenext

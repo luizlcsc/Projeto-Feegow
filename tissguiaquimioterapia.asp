@@ -5,7 +5,7 @@
 <!--#include file="invoiceEstilo.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Anexo de Solicitação de Quimioterapia");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 <style>
 .select2-container{
@@ -116,7 +116,7 @@ end if
                     <span> Dados do Beneficiário </span>
                 </div>
                 <div class="row">
-                    <div class="col-md-3"><%= selectInsert("* Paciente  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um Paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='fa fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", " required", "") %></div>
+                    <div class="col-md-3"><%= selectInsert("* Paciente  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um Paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='far fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", " required", "") %></div>
                     <%= quickField("simpleSelect", "gConvenioID", "* Conv&ecirc;nio", 2, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
                     <div class="col-md-2" id="tissplanosguia"><!--#include file="tissplanosguia.asp"--></div>
                     <script> 
@@ -247,8 +247,8 @@ end if
             </div>
         </div>
         <div class="clearfix form-actions no-margin">
-            <button class="btn btn-primary btn-md"><i class="fa fa-save"></i> Salvar</button>
-            <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaQuimioterapia', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
+            <button class="btn btn-primary btn-md"><i class="far fa-save"></i> Salvar</button>
+            <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaQuimioterapia', 0)"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
         </div>
     </div>
 </form>

@@ -5,7 +5,7 @@
     $(".crumb-active a").html("Helpdesk Feegow");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("canal de relacionamento com o cliente");
-    $(".crumb-icon a span").attr("class", "fa fa-comments-o");
+    $(".crumb-icon a span").attr("class", "far fa-comments-o");
 <%
 if ref("Chamado")<>"" then
     dbc.execute("insert into cliniccentral.pesquisa (LicencaID, UserID, Texto,tipoChamadoID,deptoChamadoID,prioridadeChamadoID) values ("& replace(session("Banco"), "clinic", "") &", "& session("User") &", '"& ref("Chamado") &"',"&treatvalnull(ref("tipoChamado"))&","&treatvalnull(ref("deptoChamado"))&","&treatvalnull(ref("prioridadeChamado"))&")")
@@ -22,7 +22,7 @@ end if
     <div class="panel-heading">
         <span class="panel-title">CHAMADOS PENDENTES</span>
         <span class="panel-controls">
-            <button onclick="$('.alertChamado').removeClass('hidden'); $(this).addClass('hidden');" class="btn btn-sm btn-warning"><i class="fa fa-plus"></i> NOVO CHAMADO</button>
+            <button onclick="$('.alertChamado').removeClass('hidden'); $(this).addClass('hidden');" class="btn btn-sm btn-warning"><i class="far fa-plus"></i> NOVO CHAMADO</button>
         </span>
     </div>
     <div class="panel-body">

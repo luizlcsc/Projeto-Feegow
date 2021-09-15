@@ -4,7 +4,7 @@
     $(".crumb-active a").html("Certificado digital");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Assinatura digital");
-    $(".crumb-icon a span").attr("class", "fa fa-th");
+    $(".crumb-icon a span").attr("class", "far fa-th");
 </script>
 
 <script type="text/javascript" src="https://get.webpkiplugin.com/Scripts/LacunaWebPKI/lacuna-web-pki-2.12.0.js"
@@ -12,7 +12,7 @@
                 crossorigin="anonymous"></script>
 
 <div class="app" style="padding-top: 11px;">
-<i style="text-align: center; margin: 30px;" class="fa fa-spin fa-spinner"></i>
+<i style="text-align: center; margin: 30px;" class="far fa-spin fa-spinner"></i>
 </div>
 
 <script type="text/javascript">

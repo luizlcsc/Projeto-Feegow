@@ -37,7 +37,7 @@ EspecialidadeID = req("EspecialidadeID")
                 </thead>
                 <tbody>
                     <%
-                    set ass = db.execute("select a.*, u.NomeFantasia, if(FrequenciaSemanas=1, '', '<i class=""fa fa-check text-success""></i>') Quinzenal from assfixalocalxprofissional a LEFT JOIN locais l ON l.id=a.LocalID LEFT JOIN sys_financialcompanyunits u ON u.id=l.UnidadeID where a.ProfissionalID="& prof("id") &" and (isnull(InicioVigencia) or isnull(FimVigencia) or (curdate() between InicioVigencia and FimVigencia)) order by DiaSemana, HoraDe")
+                    set ass = db.execute("select a.*, u.NomeFantasia, if(FrequenciaSemanas=1, '', '<i class=""far fa-check text-success""></i>') Quinzenal from assfixalocalxprofissional a LEFT JOIN locais l ON l.id=a.LocalID LEFT JOIN sys_financialcompanyunits u ON u.id=l.UnidadeID where a.ProfissionalID="& prof("id") &" and (isnull(InicioVigencia) or isnull(FimVigencia) or (curdate() between InicioVigencia and FimVigencia)) order by DiaSemana, HoraDe")
                     while not ass.eof
                         Procedimentos = ass("Procedimentos")&""
                         if Procedimentos<>"" then

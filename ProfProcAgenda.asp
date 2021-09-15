@@ -3,7 +3,7 @@
     <div class="panel-heading">
         <span class="panel-title">Procedimentos habilitados na agenda (Obs.: quando restrito a agendas específicas)</span>
         <span class="panel-controls">
-            <button class="btn btn-sm btn-primary" type="button" id="btnProcsProf"><i class="fa fa-save"></i> Salvar</button>
+            <button class="btn btn-sm btn-primary" type="button" id="btnProcsProf"><i class="far fa-save"></i> Salvar</button>
         </span>
     </div>
     <div class="panel-body">

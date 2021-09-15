@@ -37,15 +37,15 @@ end if
                 <td><%= conv("TipoAtendimentoID") %></td>
                 <td nowrap>
                     <% if aut("|conveniosA|")=1 then %>
-                        <a href="./?P=Convenios&I=<%=conv("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-edit"></i></a>
+                        <a href="./?P=Convenios&I=<%=conv("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="far fa-edit"></i></a>
                     <%end if %>
 
                     <%if associacao<>"" then%>
-                        <a class="btn btn-xs btn-success tooltip-success" title="Extrato" data-rel="tooltip" href="?P=Extrato&Pers=1&T=<%=associacao%>_<%=conv("id")%>"><i class="fa fa-money bigger-130"></i></a>
+                        <a class="btn btn-xs btn-success tooltip-success" title="Extrato" data-rel="tooltip" href="?P=Extrato&Pers=1&T=<%=associacao%>_<%=conv("id")%>"><i class="far fa-money bigger-130"></i></a>
                     <%end if %>
                     
                     <% if aut("|conveniosX|")=1 then %>
-                        <a class="btn btn-xs btn-danger tooltip-danger" title="" data-rel="tooltip" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))location.href='?P=Convenios&X=<%= conv("id") %>&Pers=Follow';"><i class="fa fa-remove bigger-130"></i></a>
+                        <a class="btn btn-xs btn-danger tooltip-danger" title="" data-rel="tooltip" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))location.href='?P=Convenios&X=<%= conv("id") %>&Pers=Follow';"><i class="far fa-remove bigger-130"></i></a>
                     <% end if %>
 
                 </td>

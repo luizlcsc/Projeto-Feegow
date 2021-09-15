@@ -38,7 +38,7 @@
                                 </button>
                                 <div class="btn btn-success" style="width: 48%;background-color: #00bad7;border-radius: 10px;cursor: default" type="button">
                                     Contratar Um Plano <br/>
-                                    <span style="color: #000000"><i class="fa fa-phone"></i> 0800 591 3035</span>
+                                    <span style="color: #000000"><i class="far fa-phone"></i> 0800 591 3035</span>
                                 </div>
                             </div>
                         </div>

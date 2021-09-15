@@ -586,7 +586,7 @@ if MC="1" then %>
     $(".crumb-active a").html("Fechamento de Caixa");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("");
-    $(".crumb-icon a span").attr("class", "fa fa-inbox");
+    $(".crumb-icon a span").attr("class", "far fa-inbox");
 
     $("#frmCx").submit(function(){
         $.post("fechaCaixa.asp", $(this).serialize(), function(data){ eval(data) });

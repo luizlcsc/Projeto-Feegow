@@ -174,7 +174,7 @@ end if
 						</td>
             <td width="10">
             	<label>&nbsp;</label><br>
-            	<button type="button" class="btn btn-danger btn-xs" onClick="addForma('X<%=formas("id")%>');"><i class="fa fa-remove"></i></button>
+            	<button type="button" class="btn btn-danger btn-xs" onClick="addForma('X<%=formas("id")%>');"><i class="far fa-remove"></i></button>
             </td>
         </tr>
         <%

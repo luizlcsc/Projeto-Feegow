@@ -6,11 +6,11 @@
 
                 <div class="widget-toolbar no-border">
                     <a href="#" onclick="itemSubform('PacientesRelativos', 'Add', 0, 'PacienteID', 2585, 'frm')" data-action="settings">
-                        <i class="fa fa-plus"></i>
+                        <i class="far fa-plus"></i>
                     </a>
 
                     <a href="#" data-action="collapse">
-                        <i class="fa fa-chevron-up"></i>
+                        <i class="far fa-chevron-up"></i>
                     </a>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                                 </td>
 
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="itemSubform('PacientesRelativos', 'Del', 337, 'PacienteID', 2585, 'frm')"><i class="fa fa-trash"></i></button>
+                                    <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="itemSubform('PacientesRelativos', 'Del', 337, 'PacienteID', 2585, 'frm')"><i class="far fa-trash"></i></button>
                                 </td>
 
                             </tr>

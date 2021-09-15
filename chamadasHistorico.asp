@@ -35,14 +35,14 @@ while not calls.eof
         '	response.write(keypabx)
             gravacaoPlayer = ""_
             &"<a class='btn btn-xs btn-primary' href='#' data-toggle='tooltip' title='Ouvir gravação' onclick=""openComponentsModal('ff_futuroFone.asp?uniqueid="&keypabx&"&ff_metodo=GetAudioPlayer', true, 'Gravação do atendimento', true, '')"">"_
-            &"	<i class='fa fa-volume-up' aria-hidden='true'></i>"_
+            &"	<i class='far fa-volume-up' aria-hidden='true'></i>"_
             &"</a>"
         end if
 	end if
 	%>
 	<tr>
         <td>
-					<i class="fa fa-<%=calls("Icone")%>" title="<%=calls("NomeCanal")%>"></i>
+					<i class="far fa-<%=calls("Icone")%>" title="<%=calls("NomeCanal")%>"></i>
 					<%=gravacaoPlayer%>
 				</td>
     	<td><%=calls("DataHora")%></td>
@@ -65,7 +65,7 @@ while not calls.eof
     	<td><%
 		set age = db.execute("select a.Data, a.Hora, a.id from chamadasagendamentos ca LEFT JOIN agendamentos a on a.id=ca.AgendamentoID where ChamadaID="&calls("id"))
 		while not age.eof
-			%><button onClick="location.href='./?P=Agenda-1&Pers=1&AgendamentoID=<%=age("id")%>';" class="btn btn-xs btn-success" type="button"><i class="fa fa-calendar"></i> <%=age("Data")%> - <%if not isnull(age("Hora")) then response.write(formatdatetime(age("Hora"),4)) end if%></button><%
+			%><button onClick="location.href='./?P=Agenda-1&Pers=1&AgendamentoID=<%=age("id")%>';" class="btn btn-xs btn-success" type="button"><i class="far fa-calendar"></i> <%=age("Data")%> - <%if not isnull(age("Hora")) then response.write(formatdatetime(age("Hora"),4)) end if%></button><%
 		age.movenext
 		wend
 		age.close
@@ -75,7 +75,7 @@ while not calls.eof
             set vcaAnexo = db.execute("select * from propostasanexas where EmailID="&calls("id"))
             while not vcaAnexo.eof
                 %>
-                <a href="pdf/<%=vcaAnexo("Arquivo") %>" target="_blank" class="btn btn-xs btn-info btn-block"><i class="fa fa-paperclip"></i> <%=left(vcaAnexo("Arquivo")&"..........", 14) %></a>
+                <a href="pdf/<%=vcaAnexo("Arquivo") %>" target="_blank" class="btn btn-xs btn-info btn-block"><i class="far fa-paperclip"></i> <%=left(vcaAnexo("Arquivo")&"..........", 14) %></a>
                 <%
             vcaAnexo.movenext
             wend

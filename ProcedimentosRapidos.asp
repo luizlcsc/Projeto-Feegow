@@ -13,7 +13,7 @@ if A<>"" then
         response.write("<div class='col-md-6'>")
         call selectInsert("Inserir procedimento", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", "", oti, "")
         response.write("</div>")
-        response.write("</div></div><div class='panel-footer text-right'><button class='btn btn-primary' type='button' onclick='proc( $(`#Agrupamento`).val(), `S`, "& ref("I") &", $(`#ProcedimentoID`).val(), false )'><i class='fa fa-save'></i> SALVAR</button></div>")
+        response.write("</div></div><div class='panel-footer text-right'><button class='btn btn-primary' type='button' onclick='proc( $(`#Agrupamento`).val(), `S`, "& ref("I") &", $(`#ProcedimentoID`).val(), false )'><i class='far fa-save'></i> SALVAR</button></div>")
     elseif A="S" then
         if II<>"" and II<>"0" then
             if I="0" then
@@ -42,13 +42,13 @@ end if
 
         <% if aut("pacotesI")=1 and req("P")="ProcedimentosRapidos" then %>
             <span class="panel-controls">
-                <button class="btn btn-sm btn-success" type="button" onclick="proc('', 'I', 0, 0, true)"><i class="fa fa-plus"></i> Adicionar</button>
+                <button class="btn btn-sm btn-success" type="button" onclick="proc('', 'I', 0, 0, true)"><i class="far fa-plus"></i> Adicionar</button>
             </span>
         <% else
         if session("Admin")=1 then
         %>
         <span class="panel-controls">
-            <button onclick="javascript:location.href='./?P=ProcedimentosRapidos&Pers=1'" class="btn btn-sm btn-primary" type="button"><i class="fa fa-cog"></i> Configurar procedimentos</button>
+            <button onclick="javascript:location.href='./?P=ProcedimentosRapidos&Pers=1'" class="btn btn-sm btn-primary" type="button"><i class="far fa-cog"></i> Configurar procedimentos</button>
         </span>
         <%
         end if
@@ -79,7 +79,7 @@ end if
                         if aut("pacotesI")=1 and req("P")="ProcedimentosRapidos" then
                             %>
                             <span class="panel-controls">
-                                <button class="btn btn-sm btn-success" type="button" onclick="proc(`<%= grupo("Agrupamento") %>`, 'I', 0, 0, true)"><i class="fa fa-plus"></i> Adicionar</button>
+                                <button class="btn btn-sm btn-success" type="button" onclick="proc(`<%= grupo("Agrupamento") %>`, 'I', 0, 0, true)"><i class="far fa-plus"></i> Adicionar</button>
                             </span>
                             <%
                         end if
@@ -92,7 +92,7 @@ end if
                             <div class="col-md-4">
                                 <% if aut("pacotesX")=1 and req("P")="ProcedimentosRapidos" then
                                     %>
-                                    <button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este procedimento da lista de procedimentos rápidos?')) proc('', 'X', <%= procs("id") %>, 0, false)"><i class="fa fa-remove"></i></button>
+                                    <button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este procedimento da lista de procedimentos rápidos?')) proc('', 'X', <%= procs("id") %>, 0, false)"><i class="far fa-remove"></i></button>
                                     <%
                                 end if %>
                                 <label>
@@ -134,7 +134,7 @@ end if
     $(".crumb-active a").html("Procedimento Rápido");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("procedimentos em checkbox para rápida seleção");
-    $(".crumb-icon a span").attr("class", "fa fa-reorder");
+    $(".crumb-icon a span").attr("class", "far fa-reorder");
 
     <!--#include file="JQueryFunctions.asp"-->
 </script>

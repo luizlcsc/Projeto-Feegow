@@ -29,8 +29,8 @@ if not protocolos.eof then
             <tr>
                 <td><%= protocolos("NomeProtocolo") %></td>
                 <td nowrap>
-                    <a href="./?P=Protocolos&I=<%=protocolos("id") %>&Pers=1" class="btn-info tooltip-info btn btn-xs"><i class="fa fa-edit"></i></a>
-                    <a class="btn btn-xs btn-danger tooltip-danger" title="" data-rel="tooltip" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))location.href='?P=Protocolos&X=<%= protocolos("id") %>&Pers=Follow';"><i class="fa fa-remove bigger-130"></i></a>
+                    <a href="./?P=Protocolos&I=<%=protocolos("id") %>&Pers=1" class="btn-info tooltip-info btn btn-xs"><i class="far fa-edit"></i></a>
+                    <a class="btn btn-xs btn-danger tooltip-danger" title="" data-rel="tooltip" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))location.href='?P=Protocolos&X=<%= protocolos("id") %>&Pers=Follow';"><i class="far fa-remove bigger-130"></i></a>
                 </td>
             </tr>
             <%

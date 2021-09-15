@@ -52,9 +52,9 @@ end if
 		<div class="row hidden-print">
 			<%=quickField("datepicker", "De", "De", 2, De, "", "", "")%>
 			<%=quickField("datepicker", "Ate", "Até", 2, Ate, "", "", "")%>
-			<div class="col-md-1 pt25"><a class="btn btn-block btn-default" href="#" onClick="$('#filtros').toggleClass('hidden')"><i class="fa fa-filter"></i></a></div>
-			<div class="col-md-1 pt25"><button type="button" class="btn btn-block btn-info pull-right" onclick="print()"><i class="fa fa-print"></i></button></div>
-			<div class="col-md-2 pt25"><button id="btnFiltrar" class="btn btn-block btn-primary"><i class="fa fa-search"></i> Gerar</button></div>
+			<div class="col-md-1 pt25"><a class="btn btn-block btn-default" href="#" onClick="$('#filtros').toggleClass('hidden')"><i class="far fa-filter"></i></a></div>
+			<div class="col-md-1 pt25"><button type="button" class="btn btn-block btn-info pull-right" onclick="print()"><i class="far fa-print"></i></button></div>
+			<div class="col-md-2 pt25"><button id="btnFiltrar" class="btn btn-block btn-primary"><i class="far fa-search"></i> Gerar</button></div>
 		</div>
 		<hr class="hidden-print short alt" />
 		<div class="row visible-print">

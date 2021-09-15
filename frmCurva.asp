@@ -6,10 +6,10 @@ PacienteID = req("P")
 <div class="panel">
     <div class="panel-heading">
         <span class="panel-title">
-            <span class="fa fa-bar-chart"></span>Curvas de Evolução
+            <span class="far fa-bar-chart"></span>Curvas de Evolução
         </span>
         <span class="panel-controls">
-            <button type="button" class="btn btn-sm btn-success" onclick="curvaValores()"><i class="fa fa-plus"></i> Valores </button>
+            <button type="button" class="btn btn-sm btn-success" onclick="curvaValores()"><i class="far fa-plus"></i> Valores </button>
             <div id="divCurvaValores" class="panel" style="width:620px; border:1px solid #ccc; position:absolute; margin-left:-552px; background-color:#fff; z-index:1000; cursor:default; display:none">
             </div>
         </span>

@@ -261,7 +261,7 @@ if not tryLogin.EOF then
 
                             if($("#password").val() !== ""){
                                 $("#Deslogar").attr("style", "opacity: 0.5");
-                                $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
+                                $("#Deslogar").html("<i class='far fa-circle-o-notch fa-spin'></i> Deslogando");
                                 $.post('DeslogarUsuario.asp');
                                 $("#password").hide();
                                 $(".textoTituloInput").hide();
@@ -642,15 +642,15 @@ else
 	If masterLoginErro Then
 	%>
     <div id="divError" class="step-pane active m10 pt10">
-        <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
-            <i class="fa fa-remove"></i>
+        <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
+            <i class="far fa-remove"></i>
             <strong>Senha expirada</strong>
         </div>
     </div>
     <% else %>
     <div id="divError" class="step-pane active m10 pt10">
-        <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
-            <i class="fa fa-remove"></i>
+        <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
+            <i class="far fa-remove"></i>
             <strong>E-mail de acesso ou senha não confere.</strong>
         </div>
     </div>

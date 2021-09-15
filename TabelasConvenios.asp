@@ -121,7 +121,7 @@ set reg = db.execute("select * from tabelasconvenios where id="& req("I"))
                     </div>
                     <div class="col-md-3">
                         <button type="button" id="upload" class="btn btn-sm btn-primary">Importar CSV</button>
-                        <a title="Dica" onclick="abrirDica()" class="btn btn-sm btn-default" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-question"></i></a>
+                        <a title="Dica" onclick="abrirDica()" class="btn btn-sm btn-default" data-toggle="modal" data-target="#exampleModal"><i class="far fa-question"></i></a>
                     </div>
                 </div>
             </div>
@@ -448,7 +448,7 @@ $(function() {
                                     <td>${j.Procedimento}</td>
                                     <td>${j.Descricao}</td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-success" onclick="addItemTabela('${componentCodigo.attr("id")}',${j.id})"><i class="fa fa-plus"></i></button>
+                                        <button type="button" class="btn btn-sm btn-success" onclick="addItemTabela('${componentCodigo.attr("id")}',${j.id})"><i class="far fa-plus"></i></button>
                                     </td>
                                </tr>`
                    });

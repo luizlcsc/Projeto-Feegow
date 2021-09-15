@@ -107,7 +107,7 @@ end if
             	<tr>
                 	<td><%=prod("NomeProduto")%></td>
                 	<td><%=prod("Codigo")%></td>
-                    <td width="1%"><button onclick="Posicao('<%=CD %>', <%= prod("id") %>)" class="btn btn-alert btn-sm"><i class="fa fa-exchange"></i></button></td>
+                    <td width="1%"><button onclick="Posicao('<%=CD %>', <%= prod("id") %>)" class="btn btn-alert btn-sm"><i class="far fa-exchange"></i></button></td>
                 </tr>
                 <%
 				c=c+1

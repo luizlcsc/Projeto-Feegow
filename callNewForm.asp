@@ -116,7 +116,7 @@ if FormID<>"N" then
 		end if
 		%>
         <script type="text/javascript">
-            $("#nomeProfissionalPreen").html("<i class='fa fa-user-md'></i> <%=NomeProfissional & DataHora%>")
+            $("#nomeProfissionalPreen").html("<i class='far fa-user-md'></i> <%=NomeProfissional & DataHora%>")
         </script>
 		<%
 	end if

@@ -10,16 +10,16 @@
     $(".crumb-active a").html("Valores de Itens");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("valores padrão dos itens na tabela");
-    $(".crumb-icon a span").attr("class", "fa fa-usd");
+    $(".crumb-icon a span").attr("class", "far fa-usd");
 </script>
 <form id="frmVI" method="post">
     <input type="hidden" name="E" value="E" />
     <div class="panel mt15">
         <div class="panel-heading">
             <span class="panel-controls hidden pnsub">
-                <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> Salvar</button>
-                <button type="button" class="btn btn-sm btn-success" onclick="ipt()" ><i class="fa fa-plus"></i> Adicionar</button>
-                <button type="button" class="btn btn-sm btn-danger" onclick="xpt()"><i class="fa fa-times"></i> Excluir</button>
+                <button type="submit" class="btn btn-sm btn-primary"><i class="far fa-save"></i> Salvar</button>
+                <button type="button" class="btn btn-sm btn-success" onclick="ipt()" ><i class="far fa-plus"></i> Adicionar</button>
+                <button type="button" class="btn btn-sm btn-danger" onclick="xpt()"><i class="far fa-times"></i> Excluir</button>
             </span>
         </div>
         <div class="panel-body">
@@ -64,7 +64,7 @@
 
                     if ref("E")="E" then
                     else
-                        btnAddVP = "<div id='btn[PTID]' class='btn-group'><button type='button' class='btn btn-xs btn-default dropdown-toggle mt10 mb10' data-toggle='dropdown' aria-expanded='false'><i class='fa fa-plus'></i> Exceção por convênio<span class='caret ml5'></span></button><ul class='dropdown-menu' role='menu'>"
+                        btnAddVP = "<div id='btn[PTID]' class='btn-group'><button type='button' class='btn btn-xs btn-default dropdown-toggle mt10 mb10' data-toggle='dropdown' aria-expanded='false'><i class='far fa-plus'></i> Exceção por convênio<span class='caret ml5'></span></button><ul class='dropdown-menu' role='menu'>"
                         set convs = db.execute("select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio")
                         while not convs.eof
                             btnAddVP = btnAddVP & "<li><a href='javascript:apv([PTID], "& convs("id") &")'>"& convs("NomeConvenio") &"</a></li>"
@@ -110,7 +110,7 @@
                                     end if
                                     ultimoPTConvenio = pv("ProdutoTabelaID") &"_"& pv("ConvenioID")
 
-                                    btnx = " <button type='button' class='btn btn-xs btn-danger' onclick='xpv("& pv("id") &")'><i class='fa fa-remove'></i></button>"
+                                    btnx = " <button type='button' class='btn btn-xs btn-danger' onclick='xpv("& pv("id") &")'><i class='far fa-remove'></i></button>"
 
                                     call quickfield("currency", "pv"&pv("id"), pv("NomeConvenio") & btnx, 12, fn(pv("Valor")), "", "", " data-convenio=""" & pv("ConvenioID") & """ ")
                                 pv.movenext

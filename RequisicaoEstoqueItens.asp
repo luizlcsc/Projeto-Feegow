@@ -49,11 +49,11 @@ while not RequisicaoItensSQL.eof
     <div class="row">
         <div class="col-md-6">
             <br>
-            <button class="btn btn-sm btn-alert" type="button" onclick="modalEstoque('<%=RequisicaoItensSQL("ProdutoID")%>', '<%=RequisicaoItensSQL("id")%>')"><i class="fa fa-medkit"></i></button>
+            <button class="btn btn-sm btn-alert" type="button" onclick="modalEstoque('<%=RequisicaoItensSQL("ProdutoID")%>', '<%=RequisicaoItensSQL("id")%>')"><i class="far fa-medkit"></i></button>
         </div>
         <div class="col-md-6">
             <br>
-            <button class="btn btn-sm btn-danger" type="button" onclick="delItem('<%=RequisicaoItensSQL("id")%>')"><i class="fa fa-trash"></i></button>
+            <button class="btn btn-sm btn-danger" type="button" onclick="delItem('<%=RequisicaoItensSQL("id")%>')"><i class="far fa-trash"></i></button>
         </div>
     </div>
 </div>

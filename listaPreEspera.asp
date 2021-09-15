@@ -16,7 +16,7 @@ while not gui.eof
                 btnChamarPos = "<button type=""button"" onclick=""saveGuiche('Sta', "&gui("id") &", 'Chamando pós')"" class=""btn btn-xs btn-success"">CHAMAR</button> "
                 btnAtender = "<button type=""button"" onclick=""saveGuiche('Sta', "&gui("id") &", 'Atendimento')"" class=""btn btn-xs btn-primary"">ATENDER!</button> "
                 btnAtenderPos = "<button type=""button"" onclick=""saveGuiche('Sta', "&gui("id") &", 'Atendimento pós')"" class=""btn btn-xs btn-primary"">ATENDER!</button> "
-                btnCancelar = "<button type=""button"" onclick=""saveGuiche('Sta', "&gui("id") &", 'Cancelado')"" class=""btn btn-xs btn-danger""><i class='fa fa-remove'></i></button> "
+                btnCancelar = "<button type=""button"" onclick=""saveGuiche('Sta', "&gui("id") &", 'Cancelado')"" class=""btn btn-xs btn-danger""><i class='far fa-remove'></i></button> "
                 btnFinalizar = "<button type=""button"" onclick=""saveGuiche('Sta', "&gui("id") &", 'Atendido')"" class=""btn btn-xs btn-info"">FINALIZAR</button> "
 
                 select case gui("Sta")
@@ -102,7 +102,7 @@ while not gui.eof
                                 <%= selectInsert("", "PacienteID"&gui("id"), gui("PacienteID"), "pacientes", "NomePaciente", " onchange=""atualizaPacienteGuiche(this.id, this.value, '"&gui("id")&"');""", "required", "") %>
                             </div>
                             <div class="col-md-2">
-                                <br><a href="<%=LinkPaciente%>" class="btn btn-system btn-xs btn-paciente-pre-espera" target="_blank"><i class="fa fa-external-link"></i></a>
+                                <br><a href="<%=LinkPaciente%>" class="btn btn-system btn-xs btn-paciente-pre-espera" target="_blank"><i class="far fa-external-link"></i></a>
                             </div>
                             <div class="col-md-4">
                                 <br>

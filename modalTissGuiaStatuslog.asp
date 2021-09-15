@@ -37,7 +37,7 @@ while not statuslog.EOF
 %>
     <table  width="100%" class="table table-bordered">
         <tr>
-            <td style="padding: 5px" class="bg-<%=statuslog("Cor")%>" width="1%"><i class="fa fa-chevron-right"></i></td>
+            <td style="padding: 5px" class="bg-<%=statuslog("Cor")%>" width="1%"><i class="far fa-chevron-right"></i></td>
             <td style="padding: 5px" width="20%"><strong>Data: </strong><%=formatdatetime(statuslog("sysDate"),2)%></td>
             <td style="padding: 5px" width="20%"><strong>Status: </strong><%=statuslog("Status")%></td>
             <td style="padding: 5px" width="60%"><strong>Usu&aacute;rio: </strong><%=nameInTable(statuslog("sysUser"))%></td>
@@ -83,7 +83,7 @@ set statuslog=nothing
         <br>
     </div>
     <div class="modal-footer no-margin-top">
-        <button class="btn btn-sm btn-primary pull-right"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-sm btn-primary pull-right"><i class="far fa-save"></i> Salvar</button>
     </div>
 </form>
 <%

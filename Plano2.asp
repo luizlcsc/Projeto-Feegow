@@ -44,12 +44,12 @@ Ate = DiaMes("U", Data)
     
         <div class="col-xs-4">
             <ul class="pagination pagination-md pull-right">
-                <li class="hidden"><a href="javascript:callReport('Plano', '<%=tipo%>&Data=<%=dateadd("m", -1, Data)%>');"><i class="fa fa-chevron-left"></i></a></li>
-                <li><button class="btn btn-default" onClick="$('#Data').val('<%=dateadd("m", -1, Data)%>')"><i class="fa fa-chevron-left"></i></button></li>
+                <li class="hidden"><a href="javascript:callReport('Plano', '<%=tipo%>&Data=<%=dateadd("m", -1, Data)%>');"><i class="far fa-chevron-left"></i></a></li>
+                <li><button class="btn btn-default" onClick="$('#Data').val('<%=dateadd("m", -1, Data)%>')"><i class="far fa-chevron-left"></i></button></li>
                 <li><a href="#"><%=ucase(monthname(Mes)) &" - "& Ano%></a></li>
-                <li><button class="btn btn-default" onClick="$('#Data').val('<%=dateadd("m", 1, Data)%>')"><i class="fa fa-chevron-right"></i></button></li>
-                <li><button class="btn btn-default" type="button" onClick="excel()"><i class="fa fa-file-excel-o"></i></button></li>
-                <li class="hidden"><a href="javascript:callReport('Plano', '<%=tipo%>&Data=<%=dateadd("m", 1, Data)%>');"><i class="fa fa-chevron-right"></i></a></li>
+                <li><button class="btn btn-default" onClick="$('#Data').val('<%=dateadd("m", 1, Data)%>')"><i class="far fa-chevron-right"></i></button></li>
+                <li><button class="btn btn-default" type="button" onClick="excel()"><i class="far fa-file-excel-o"></i></button></li>
+                <li class="hidden"><a href="javascript:callReport('Plano', '<%=tipo%>&Data=<%=dateadd("m", 1, Data)%>');"><i class="far fa-chevron-right"></i></a></li>
             </ul>
         </div>
     </div>

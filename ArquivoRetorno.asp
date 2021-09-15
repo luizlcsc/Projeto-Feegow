@@ -4,7 +4,7 @@
     $(".crumb-active a").html("Retorno bancário");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Conciliar arquivo de retorno bancário");
-    $(".crumb-icon a span").attr("class", "fa fa-download");
+    $(".crumb-icon a span").attr("class", "far fa-download");
 </script>
 
 <br>

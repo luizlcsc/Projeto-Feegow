@@ -47,7 +47,7 @@ end if
                         Contratos
                     </span>
                     <span class="panel-controls">
-                        <button class="btn btn-primary btn-sm" id="saveContratos"> <i class="fa fa-save"></i> Salvar </button>
+                        <button class="btn btn-primary btn-sm" id="saveContratos"> <i class="far fa-save"></i> Salvar </button>
                     </span>
                 </div>
 
@@ -60,7 +60,7 @@ end if
                             <label for="Contrato">Link do Contrato</label>
                             <div class="input-group">
                             <span class="input-group-addon">
-                                <i class="fa fa-paperclip bigger-110"></i>
+                                <i class="far fa-paperclip bigger-110"></i>
                             </span>
                                 <input type="text" class="form-control" required="required" name="Contrato" id="Contrato" value="<%=Contrato%>" />
 

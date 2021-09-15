@@ -30,10 +30,10 @@
                 <%=quickField("simpleSelect", "DetalharRecebimentos", "Conteúdo", 2, req("DetalharRecebimentos"), "select '' id, 'Resumido' DetalharRecebimentos UNION ALL select 'S' id, 'Detalhado' DetalharRecebimentos ", "DetalharRecebimentos", " no-select2  empty  ") %>
 
                 <div class="col-md-offset-1 col-md-1">
-                    <button class="btn btn-primary mt25"><i class="fa fa fa-search"></i>Buscar</button>
+                    <button class="btn btn-primary mt25"><i class="fa far fa-search"></i>Buscar</button>
                 </div>
                 <div class="col-md-1">
-                    <button class="btn btn-info mt25" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i> Imprimir</button>
+                    <button class="btn btn-info mt25" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i> Imprimir</button>
                 </div>
             </form>
         </div>
@@ -125,7 +125,7 @@ function FecharCaixaPleres(UnidadeID) {
     $(".crumb-active a").html("Caixas de Usuário");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("movimentação por usuário");
-    $(".crumb-icon a span").attr("class", "fa fa-inbox");
+    $(".crumb-icon a span").attr("class", "far fa-inbox");
 
     function dcx(Conta, AccountID, DateFrom, DateTo, Unidades){
         $.post("ExtratoConteudo.asp?T=MeuCaixa", {

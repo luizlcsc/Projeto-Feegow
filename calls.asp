@@ -18,7 +18,7 @@ else
 	<%
 end if
 while not calls.eof
-	%>$("#calls").html( $("#calls").html() + "<div>Novo Paciente - <%=calls("Numero")%> - <button type='button' class='btn btn-sm btn-success'><i class='fa fa-phone-square'></i> Atender</button></div><br>");<%
+	%>$("#calls").html( $("#calls").html() + "<div>Novo Paciente - <%=calls("Numero")%> - <button type='button' class='btn btn-sm btn-success'><i class='far fa-phone-square'></i> Atender</button></div><br>");<%
 calls.movenext
 wend
 calls.close

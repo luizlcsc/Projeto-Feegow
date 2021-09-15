@@ -7,8 +7,8 @@ if D<>"" then
 	db_execute("update sys_users set notiftarefas='"&puserD("notiftarefas")&"|DISCONNECT|', UltRef="&mydatetime( dateadd("s", -70, puserD("UltRef") ) )&" where id="&D)
 	%>
 	<div class="alert alert-danger">
-        <button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
-        <strong><i class="fa fa-power-off"></i> Usu&aacute;rio desconectado com sucesso!<br></strong>
+        <button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
+        <strong><i class="far fa-power-off"></i> Usu&aacute;rio desconectado com sucesso!<br></strong>
     </div>
     <%
 end if
@@ -55,7 +55,7 @@ end if
             <td class="text-center"><span class="badge <%=badge%>"><%= Status %></span></td>
             <td class="text-center"><%= UltimoLogin %></td>
             <td class="text-center"><%= IP %></td>
-            <td><button onClick="disconnect(<%=puser("id")%>)" class="btn btn-xs btn-danger <%=Classe%>" type="button"><i class="fa fa-power-off"></i> Desconectar</button></td>
+            <td><button onClick="disconnect(<%=puser("id")%>)" class="btn btn-xs btn-danger <%=Classe%>" type="button"><i class="far fa-power-off"></i> Desconectar</button></td>
         </tr>
 		<%
 	puser.movenext

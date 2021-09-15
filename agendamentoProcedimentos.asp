@@ -27,7 +27,7 @@ function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBil
                     styleDisabled = "style='cursor: not-allowed; opacity:0.65'"
                 end if                
                 %>
-                    <button type="button" class="ckpagar btn btn-xs btn-warning" <%=styleDisabled%> <%=recebimentoFunc%> ><i class="fa fa-arrow-circle-up"></i> <%= Rotulo %></button>
+                    <button type="button" class="ckpagar btn btn-xs btn-warning" <%=styleDisabled%> <%=recebimentoFunc%> ><i class="far fa-arrow-circle-up"></i> <%= Rotulo %></button>
                 <% 
             else
                 spl = split(strTipoGuia, ", ")
@@ -35,7 +35,7 @@ function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBil
                     TipoGuia = spl(i)
                     Rotulo = "Guia de "& TipoGuia
                     %>
-                    <button type="button" onclick="GeraGuia('<%=TipoGuia%>')" class="btn btn-xs btn-warning"><i class="fa fa-arrow-circle-up"></i> <%= ucase(Rotulo) %></button>
+                    <button type="button" onclick="GeraGuia('<%=TipoGuia%>')" class="btn btn-xs btn-warning"><i class="far fa-arrow-circle-up"></i> <%= ucase(Rotulo) %></button>
                     <%
                 next
             end if
@@ -225,7 +225,7 @@ if req("Checkin")="1" then
         %>
         <tr class="danger">
             <td class="default" colspan="10" style="border-top:none">
-                <i class="fa fa-exclamation-circle"></i> Não possui valor cadastrado no convênio
+                <i class="far fa-exclamation-circle"></i> Não possui valor cadastrado no convênio
             </td>
         </tr>
         <%
@@ -513,7 +513,7 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                     const modalPagto     = $('#modalFormaPagamento');
                     const boxAutorizacao = $('#box-autorizacao-desconto');
 
-                    boxAutorizacao.find('.panel-body').html('<i class="fa fa-spinner fa-spin orange bigger-125"></i> ' +
+                    boxAutorizacao.find('.panel-body').html('<i class="far fa-spinner fa-spin orange bigger-125"></i> ' +
                         'Aguarde a autorização do desconto...');
 
                     $('#btn-aguardar-autorizacao, #salvar-mudancas').hide();
@@ -711,7 +711,7 @@ else
                         <th width="15%">Local</th>
                         <th width="15%">Equipamento</th>
                         <th width="1%">
-                            <button type="button" id="addProcedimentos" onclick="adicionarProcedimentos()" class="btn btn-xs btn-success"><i class="fa fa-plus"></i></button>
+                            <button type="button" id="addProcedimentos" onclick="adicionarProcedimentos()" class="btn btn-xs btn-success"><i class="far fa-plus"></i></button>
                         </th>
                         <script>
                         function adicionarProcedimentos(count=false,callback=false) {
@@ -731,8 +731,8 @@ else
                         <td><%= selectInsert("", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""validaProcedimento(this.id, this.value);parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", oti, "ConvenioID") %>
                         <% if not isnull(PacienteID) and false then %>
                             <br>
-                            <button class="btn btn-warning btn-xs" type="button" onclick="openComponentsModal('procedimentosListagem.asp?ProcedimentoId=<%=ProcedimentoID%>&PacientedId=<%=PacienteID%>', true, 'Restrições', true, '')"><i class="fa fa-caret-square-o-left"></i></button>
-                            <button class="btn btn-success btn-xs" type="button" onclick="openComponentsModal('procedimentosModalPreparo.asp?ProcedimentoId=<%=ProcedimentoID%>&PacientedId=<%=PacienteID%>', true, 'Preparo', true, '')"><i class="fa fa-lock"></i></button>
+                            <button class="btn btn-warning btn-xs" type="button" onclick="openComponentsModal('procedimentosListagem.asp?ProcedimentoId=<%=ProcedimentoID%>&PacientedId=<%=PacienteID%>', true, 'Restrições', true, '')"><i class="far fa-caret-square-o-left"></i></button>
+                            <button class="btn btn-success btn-xs" type="button" onclick="openComponentsModal('procedimentosModalPreparo.asp?ProcedimentoId=<%=ProcedimentoID%>&PacientedId=<%=PacienteID%>', true, 'Preparo', true, '')"><i class="far fa-lock"></i></button>
                         <% end if %>
                         </td>
                         
@@ -809,7 +809,7 @@ $(document).ready(function() {
 
                                 if ObsConvenio&""<>"" then
                                 %>
-                                <button title="Observações do convênio" id="ObsConvenios" style="z-index: 99; position: absolute; left: -16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=ConvenioID%>)"><i class="fa fa-align-justify"></i></button>
+                                <button title="Observações do convênio" id="ObsConvenios" style="z-index: 99; position: absolute; left: -16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=ConvenioID%>)"><i class="far fa-align-justify"></i></button>
                                 <%
                                 end if
                             end if
@@ -866,12 +866,12 @@ $(document).ready(function() {
                         </td>
                         <td>
                             <div class="btn-group mt5">
-                                <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print bigger-110"></i></button>
+                                <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="far fa-print bigger-110"></i></button>
                                 <ul class="dropdown-menu dropdown-info pull-right">
-                                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Protocolo')"><i class="fa fa-plus"></i> Protocolo de laudo </a></li>
-                                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Impresso')"><i class="fa fa-plus"></i> Impresso </a></li>
-                                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Etiqueta')"><i class="fa fa-plus"></i> Etiqueta </a></li>
-                                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Preparos')"><i class="fa fa-plus"></i> Preparos </a></li>
+                                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Protocolo')"><i class="far fa-plus"></i> Protocolo de laudo </a></li>
+                                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Impresso')"><i class="far fa-plus"></i> Impresso </a></li>
+                                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Etiqueta')"><i class="far fa-plus"></i> Etiqueta </a></li>
+                                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Preparos')"><i class="far fa-plus"></i> Preparos </a></li>
                                 </ul>
                             </div>
                         </td>

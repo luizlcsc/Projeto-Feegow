@@ -42,7 +42,7 @@ else
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <b>Razão Social:</b><br /> <%= Nome %> <a target="_blank" href="./?P=Pacientes&Pers=1&I=<%= pac("id") %>" class="btn btn-xs btn-primary"><i class="fa fa-edit"></i></a>
+                            <b>Razão Social:</b><br /> <%= Nome %> <a target="_blank" href="./?P=Pacientes&Pers=1&I=<%= pac("id") %>" class="btn btn-xs btn-primary"><i class="far fa-edit"></i></a>
                         </div>
                         <div class="col-md-6">
                             <b>Nome Fantasia:</b><br /> <%= Fantasia %>

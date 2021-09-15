@@ -71,7 +71,7 @@ DataProx=dateadd("m",1,Data)
       
       
       <tr>
-        <td class="hand" title="<%=ucase( monthname(month(DataAnte)) &" / "& year(DataAnte) ) %>" onClick="chamaCalendarioQD('<%=DataAnte%>','<%=req("DrId")%>', '<%=req("Locales")%>');"><i class="fa fa-arrow-left"></i></td>
+        <td class="hand" title="<%=ucase( monthname(month(DataAnte)) &" / "& year(DataAnte) ) %>" onClick="chamaCalendarioQD('<%=DataAnte%>','<%=req("DrId")%>', '<%=req("Locales")%>');"><i class="far fa-arrow-left"></i></td>
       <%
 ' Write spacer cells at beginning of first row if month doesn't start on a Sunday.
 If iDOW <> 1 Then
@@ -146,7 +146,7 @@ If iPosition <> 1 Then
 '	Response.Write vbTab & "</tr>" & vbCrLf
 End If
 %>
-        <td align="center" colspan="2" class="hand text-right" title="<%=ucase( monthname(month(DataProx)) &" / "& year(DataProx) ) %>" onClick="chamaCalendarioQD('<%=DataProx%>','<%=req("DrId")%>', '<%=req("Locales")%>');"><i class="fa fa-arrow-right"></i></td>
+        <td align="center" colspan="2" class="hand text-right" title="<%=ucase( monthname(month(DataProx)) &" / "& year(DataProx) ) %>" onClick="chamaCalendarioQD('<%=DataProx%>','<%=req("DrId")%>', '<%=req("Locales")%>');"><i class="far fa-arrow-right"></i></td>
       </tr>
       <tr class="success">
       	<th colspan="33" id="ttX" class="hiddenX text-center">

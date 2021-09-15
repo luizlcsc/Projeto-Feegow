@@ -479,7 +479,7 @@ StatusBusca = req("Status")
             <tr class="panel<%= idPanel %>">
                 <td rowspan="2" valign="top" style="vertical-align:top">
                     <a target="_blank" class="btn btn-xs text-dark mn" href="./?P=Invoice&Pers=1&CD=C&I=<%= InvoiceID %>">
-                        <i class="fa fa-chevron-right"></i>
+                        <i class="far fa-chevron-right"></i>
                     </a>
                 </td>
                 <td> <%= DataExecucao %></td>

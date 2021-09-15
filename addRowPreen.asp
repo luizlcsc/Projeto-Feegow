@@ -36,7 +36,7 @@ while not pMod.EOF
 		contaLargura = contaLargura+1
 		%><td><input class="campoInput form-control trow" onchange="saveTabVal('t_<%=pMod("id")&"_"&contaLargura%>', $(this).val())" data-campoid="<%=CampoID%>" name="t_<%=pMod("id")&"_"&contaLargura%>" value="<%=pMod("c"&contaLargura)%>" /></td><%
 	wend
-	%><td><button type="button" class="btn btn-xs btn-danger btn-20" onClick="addRowPreen(<%=CampoID%>, 0, <%=pMod("id")%>)"><i class="fa fa-remove"></i></button></td></tr><%
+	%><td><button type="button" class="btn btn-xs btn-danger btn-20" onClick="addRowPreen(<%=CampoID%>, 0, <%=pMod("id")%>)"><i class="far fa-remove"></i></button></td></tr><%
 pMod.movenext
 wend
 pMod.close

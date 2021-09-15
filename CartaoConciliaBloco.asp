@@ -37,7 +37,7 @@
                     <%
                     if ContaBancaria>0 then
                         %>
-                        <a target="_blank" class="btn btn-xs btn-success" href="./?P=Extrato&Pers=1&T=1_<%= ContaBancaria %>&Data=<%= DataPagto %>"><i class="fa fa-money"></i></a>
+                        <a target="_blank" class="btn btn-xs btn-success" href="./?P=Extrato&Pers=1&T=1_<%= ContaBancaria %>&Data=<%= DataPagto %>"><i class="far fa-money"></i></a>
                         <%
                     end if
                     %>
@@ -107,7 +107,7 @@
                         %>
                         Paciente: 
                             <a href="./?P=Pacientes&I=<%= PacienteID %>&Pers=1" target="_blank">
-                                <i class="fa fa-user"></i> <%= NomePaciente %>
+                                <i class="far fa-user"></i> <%= NomePaciente %>
                             </a><br>
                         Transação: <%= Transacao %><br>
                         Autorização: <%=  Autorizacao %><br>
@@ -121,7 +121,7 @@
                         if l("Conciliado")=1 then
                             %>
                             <span class="text-success">
-                                <i class="fa fa-check-circle"></i> Conciliado
+                                <i class="far fa-check-circle"></i> Conciliado
                             </span>
                             <script type="text/javascript">
                                 contaSel();
@@ -152,7 +152,7 @@
                     else
                         db.execute("update cartaoconciliacao set Conciliado=2 where id="& ConciliacaoID)
                         %>
-                        <i class="fa fa-exclamation-triangle text-danger"></i> LANÇAMENTO NÃO ENCONTRADO.
+                        <i class="far fa-exclamation-triangle text-danger"></i> LANÇAMENTO NÃO ENCONTRADO.
                         <%
                     end if
                     %>

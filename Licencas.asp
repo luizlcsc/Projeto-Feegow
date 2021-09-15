@@ -3,9 +3,9 @@
 
 <div class="widget-box transparent">
     <div class="widget-header widget-header-flat">
-        <h4><i class="fa fa-hospital-o blue"></i> LICENÇAS ATIVAS</h4>
+        <h4><i class="far fa-hospital-o blue"></i> LICENÇAS ATIVAS</h4>
         <div class="widget-toolbar">
-            <div><a class="btn btn-sm btn-success" href="?P=Licenca&I=N&Pers=1"><i class="fa fa-plus"></i> INSERIR</a></div>
+            <div><a class="btn btn-sm btn-success" href="?P=Licenca&I=N&Pers=1"><i class="far fa-plus"></i> INSERIR</a></div>
         </div>
     </div>
 </div>

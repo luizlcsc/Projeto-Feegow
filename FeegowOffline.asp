@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Feegow Offline");
-    $(".crumb-icon a span").attr("class", "fa fa-table");
+    $(".crumb-icon a span").attr("class", "far fa-table");
 </script>
 
 <br>
@@ -17,7 +17,7 @@ AgendaAte = dateadd("d",7,AgendaDe)
                     <%= quickField("datepicker", "DataDe", "Agendamentos de", 2, AgendaDe, "", "", " placeholder='De'") %>
                     <%= quickField("datepicker", "DataAte", "Agendamentos até", 2, AgendaAte, "", "", " placeholder='At&eacute;'") %>
                     <br>
-                    <button class="btn btn-primary"><i class="fa fa-download"></i> Baixar agenda</button>
+                    <button class="btn btn-primary"><i class="far fa-download"></i> Baixar agenda</button>
                 </form>
             </div>
         </div>

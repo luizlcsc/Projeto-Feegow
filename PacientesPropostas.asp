@@ -3,7 +3,7 @@
 <!--#include file="modal.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Edição de Proposta");
-    $(".crumb-icon a span").attr("class", "fa fa-files-o");
+    $(".crumb-icon a span").attr("class", "far fa-files-o");
 </script>
 <%end if %>
 <style type="text/css">
@@ -206,32 +206,32 @@ end if
 
                         end if %> ">
                         <span class="panel-title">
-                            <i class="fa fa-files-o"></i> Edição de Proposta
+                            <i class="far fa-files-o"></i> Edição de Proposta
                         </span>
                         <span class="panel-controls" id="btnsProposta">
                             <%call odonto()%>
-<!--<a title="Histórico de Alterações" href="javascript:log()" class="btn btn-sm btn-default hidden-xs"><i class="fa fa-history"></i></a>-->
+<!--<a title="Histórico de Alterações" href="javascript:log()" class="btn btn-sm btn-default hidden-xs"><i class="far fa-history"></i></a>-->
                             <% if session("Odonto")=1 then %>
                                 <button type="button" class="btn btn-system btn-sm" id="btn-abrir-modal-odontograma" <%=desabilitarProposta%>> <span class="imoon imoon-grin2"></span> Odontograma </button>
                             <% end if %>
-                            <button type="button" class="btn btn-sm " id="ListaProposta" onclick="<%=linkLista %>" title="Listas Propostas"><i class="fa fa-list"></i></button>
-                            <button type="button" class="btn btn-sm" title="Duplicar Proposta" onclick="window.location.href = '?P=DuplicarPacientesPropostas&Pers=1&PropostaID=<%=req("PropostaID")%>'"><i class="fa fa-copy"></i> Duplicar Proposta</button>
-                            <button type="button" class="btn btn-sm" onclick="log()" title="Histórico de Alterações"><i class="fa fa-history"></i></button>
+                            <button type="button" class="btn btn-sm " id="ListaProposta" onclick="<%=linkLista %>" title="Listas Propostas"><i class="far fa-list"></i></button>
+                            <button type="button" class="btn btn-sm" title="Duplicar Proposta" onclick="window.location.href = '?P=DuplicarPacientesPropostas&Pers=1&PropostaID=<%=req("PropostaID")%>'"><i class="far fa-copy"></i> Duplicar Proposta</button>
+                            <button type="button" class="btn btn-sm" onclick="log()" title="Histórico de Alterações"><i class="far fa-history"></i></button>
 
                             <div class="btn-group">
-                                <a href="javascript:imprimirProposta(0)" class="btn btn-sm btn-info"><i class="fa fa-print"></i></a>
+                                <a href="javascript:imprimirProposta(0)" class="btn btn-sm btn-info"><i class="far fa-print"></i></a>
                                 <button class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i
-                                        class="fa fa-angle-down icon-only"></i></button>
+                                        class="far fa-angle-down icon-only"></i></button>
                                 <ul class="dropdown-menu dropdown-info">
                                     <li>
-                                        <a href="javascript:imprimirProposta(0)"><i class="fa fa-print"></i> IMPRESSÃO PADRÃO</a>
-                                        <a href="javascript:imprimirProposta(1)"><i class="fa fa-print"></i> IMPRESSÃO AGRUPADA</a>
+                                        <a href="javascript:imprimirProposta(0)"><i class="far fa-print"></i> IMPRESSÃO PADRÃO</a>
+                                        <a href="javascript:imprimirProposta(1)"><i class="far fa-print"></i> IMPRESSÃO AGRUPADA</a>
                                     </li>
                                 </ul>
                             </div>
 
 
-                            <button onclick="propostaSave(<%=reload%>)" type="button" class="btn btn-primary btn-sm "><i class="fa fa-save"></i> SALVAR</button>
+                            <button onclick="propostaSave(<%=reload%>)" type="button" class="btn btn-primary btn-sm "><i class="far fa-save"></i> SALVAR</button>
                         </span>
                         <%if req("PacienteID")="" then %>
                         <script type="text/javascript">
@@ -280,7 +280,7 @@ end if
 
                             <div class="pull-right">
                                 <a id="openConsulta" href="javascript:openConsultaCartaoDeTodos()">
-                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                    <i class="far fa-search" aria-hidden="true"></i>
                                 </a>
                             </div>
                             <label for="matricula">Matrícula</label><br>
@@ -334,7 +334,7 @@ end if
                                                       <div class="col-md-3">
                                                           <label>Profissional Executante</label>
                                                           <button type="button" onclick="executadosPacientesPropostas()" class="btn btn-default btn-block">
-                                                              <i class="fa fa-check-circle"></i> Marcar itens como executado
+                                                              <i class="far fa-check-circle"></i> Marcar itens como executado
                                                           </button>
                                                       </div>
                                                       <script>
@@ -458,7 +458,7 @@ end if
                                                         <%
                                                     else
                                                         %>
-                                                        <a target="_blank" href="?P=invoice&I=<%=data("InvoiceID")%>&A=&Pers=1&T=C&Ent=" id="btn-gerar-contrato" class="btn btn-default" type="button"> <i class="fa fa-external-link"></i> Abrir conta</a>
+                                                        <a target="_blank" href="?P=invoice&I=<%=data("InvoiceID")%>&A=&Pers=1&T=C&Ent=" id="btn-gerar-contrato" class="btn btn-default" type="button"> <i class="far fa-external-link"></i> Abrir conta</a>
                                                         <%
                                                     end if
                                                     %>
@@ -488,7 +488,7 @@ end if
                             <%= selectInsert("Inserir procedimento", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""itens(`S`, 'I', $(this).val()); $(this).val(''); $('#select2-ProcedimentoID-container').html('')"" ", oti, "ConvenioID") %>
                         </div>
                         <div class="col-md-3">
-                            <button type="button" onclick="selRap()" class="mt25 btn btn-alert btn-block"><i class="fa fa-check"></i> Seleção Rápida</button>
+                            <button type="button" onclick="selRap()" class="mt25 btn btn-alert btn-block"><i class="far fa-check"></i> Seleção Rápida</button>
                         </div>
                     </div>
                     <hr class="short alt">
@@ -518,13 +518,13 @@ end if
                                     <input id="FiltroProFormas" class="form-control input-sm refina" autocomplete="off" placeholder="Filtrar forma..." type="text">
                                     <span class="input-group-btn">
                                         <button class="btn btn-sm btn-default" onclick="ListaProFormas($('#FiltroProFormas').val(), '', '')" type="button">
-                                            <i class="fa fa-filter icon-filter bigger-110"></i>
+                                            <i class="far fa-filter icon-filter bigger-110"></i>
                                             Buscar
                                         </button>
                                     </span>
                                     <%if aut("formapagamentopropostaI")=1 then%>
                                     <span class="input-group-btn">
-                                        <a class="btn btn-sm btn-dark tooltip-info" href="#modal-table" role="button" data-toggle="modal" data-original-title="Cadastrar formas de pagamento para futuras propostas" data-rel="tooltip" data-placement="top" title="" onclick="modalProFormas('', 0)"><i class="fa fa-plus"></i></a>
+                                        <a class="btn btn-sm btn-dark tooltip-info" href="#modal-table" role="button" data-toggle="modal" data-original-title="Cadastrar formas de pagamento para futuras propostas" data-rel="tooltip" data-placement="top" title="" onclick="modalProFormas('', 0)"><i class="far fa-plus"></i></a>
                                     </span>
                                     <%end if%>
                                 </div>
@@ -558,13 +558,13 @@ end if
                                         <input id="FiltroProOutros" class="form-control input-sm refina" autocomplete="off" placeholder="Filtrar despesa..." type="text">
                                         <span class="input-group-btn">
                                             <button class="btn btn-sm btn-default" onclick="ListaProItens($('#FiltroProOutros').val(), '', '')" type="button">
-                                                <i class="fa fa-filter icon-filter bigger-110"></i>
+                                                <i class="far fa-filter icon-filter bigger-110"></i>
                                                 Buscar
                                             </button>
                                         </span>
                                         <span class="input-group-btn">
                                             <a class="btn btn-sm btn-dark tooltip-info" href="#modal-table" role="button" data-toggle="modal" data-original-title="Cadastrar outras despesas para futuras propostas" data-rel="tooltip" data-placement="top" title="" onclick="modalProOutros('', 0)">
-                                                <i class="fa fa-plus icon-plus blue"></i>
+                                                <i class="far fa-plus icon-plus blue"></i>
                                             </a>
                                         </span>
                                     </div>

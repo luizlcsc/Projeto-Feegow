@@ -59,9 +59,9 @@ GrupoID = req("G")
                     TotalRepasse = TotalRepasse+rr("Valor")
                     BalancoPagto = rr("ValorItemAPagar") - rr("ValorPagoItemP")
                     if BalancoPagto=0 then
-                        SituacaoRepasse = "<i class='fa fa-check text-success'></i> Quitado"
+                        SituacaoRepasse = "<i class='far fa-check text-success'></i> Quitado"
                     else
-                        SituacaoRepasse = "<i class='fa fa-exclamation-circle text-danger'></i> Pendente"
+                        SituacaoRepasse = "<i class='far fa-exclamation-circle text-danger'></i> Pendente"
                     end if
                 rr.movenext
                 wend
@@ -75,7 +75,7 @@ GrupoID = req("G")
                 tValorLiquido = tValorLiquido + ValorLiquido
                 %>
                 <tr>
-                    <td><a class="btn btn-xs btn-primary" target="_blank" href="./?P=Invoice&Pers=1&I=<%= ii("InvoiceID") %>"><i class="fa fa-external-link"></i></a>
+                    <td><a class="btn btn-xs btn-primary" target="_blank" href="./?P=Invoice&Pers=1&I=<%= ii("InvoiceID") %>"><i class="far fa-external-link"></i></a>
                         <%'= ii("PaymentMethodID") %>
 
                     </td>

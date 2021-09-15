@@ -105,10 +105,10 @@ end if
 
                         <div class="panel-footer row mt5">
                             <div class="col-md-2 col-md-offset-8">
-                                <button type="button" class="btn btn-default pull-right btn-block" onclick="$('#btnprescricao').click();"><i class="fa fa-arrow-left"></i> Voltar</button>
+                                <button type="button" class="btn btn-default pull-right btn-block" onclick="$('#btnprescricao').click();"><i class="far fa-arrow-left"></i> Voltar</button>
                             </div>
                             <div class="col-md-2">
-                                <button class="btn btn-success btn-block" id="saveMedicamento"><i class="fa fa-save"></i> Salvar</button>
+                                <button class="btn btn-success btn-block" id="saveMedicamento"><i class="far fa-save"></i> Salvar</button>
                             </div>
                         </div>
 
@@ -152,10 +152,10 @@ end if
 
 						<div class="panel-footer row mt5">
                             <div class="col-md-2 col-md-offset-8">
-                                <button type="button" class="btn btn-default pull-right btn-block" onclick="$('#btnprescricao').click();"><i class="fa fa-arrow-left"></i> Voltar</button>
+                                <button type="button" class="btn btn-default pull-right btn-block" onclick="$('#btnprescricao').click();"><i class="far fa-arrow-left"></i> Voltar</button>
                             </div>
                             <div class="col-md-2">
-                                <button class="btn btn-success btn-block" id="saveFormula"><i class="fa fa-save"></i> Salvar</button>
+                                <button class="btn btn-success btn-block" id="saveFormula"><i class="far fa-save"></i> Salvar</button>
                             </div>
                         </div>
 

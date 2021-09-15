@@ -2,7 +2,7 @@
 <br />
 <script type="text/javascript">
      $(".crumb-active a").html("Mapa de Locais");
-     $(".crumb-icon a span").attr("class", "fa fa-street-view");
+     $(".crumb-icon a span").attr("class", "far fa-street-view");
 </script>
 <div class="panel">
   <div class="panel-heading">

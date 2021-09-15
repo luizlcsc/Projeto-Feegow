@@ -55,32 +55,32 @@ filtros = getConfAO("filtros")
         <div class="panel-heading">
             <ul id="tabs" class="nav panel-tabs-border panel-tabs panel-tabs-left">
                 <li class="active">
-                    <a href="#layout" data-toggle="tab"><i class="green fa fa-list bigger-110"></i> Layout</a>
+                    <a href="#layout" data-toggle="tab"><i class="green far fa-list bigger-110"></i> Layout</a>
                 </li>
                 <li>
-                    <a href="#procedimentos" data-toggle="tab" onclick="ajxContent('agendamentoonlineprocedimentos', '', 1, 'procedimentos');"><i class="green fa fa-list bigger-110"></i> Procedimentos</a>
+                    <a href="#procedimentos" data-toggle="tab" onclick="ajxContent('agendamentoonlineprocedimentos', '', 1, 'procedimentos');"><i class="green far fa-list bigger-110"></i> Procedimentos</a>
                 </li>
                 <li>
-                    <a href="#convenios" data-toggle="tab" onclick="ajxContent('agendamentoonlineconvenios', '', 1, 'convenios');"><i class="green fa fa-list bigger-110"></i> Convênios</a>
+                    <a href="#convenios" data-toggle="tab" onclick="ajxContent('agendamentoonlineconvenios', '', 1, 'convenios');"><i class="green far fa-list bigger-110"></i> Convênios</a>
                 </li>
                 <li>
-                    <a href="#grades" data-toggle="tab" onclick="ajxContent('agendamentoOnlineGrades', '', 1, 'grades')"><i class="fa fa-list bigger-110"></i> Grades</a>
+                    <a href="#grades" data-toggle="tab" onclick="ajxContent('agendamentoOnlineGrades', '', 1, 'grades')"><i class="far fa-list bigger-110"></i> Grades</a>
                 </li>
                 <li>
-                    <a href="#configs" data-toggle="tab"><i class="green fa fa-list bigger-110"></i> Outras Configurações</a>
+                    <a href="#configs" data-toggle="tab"><i class="green far fa-list bigger-110"></i> Outras Configurações</a>
                 </li>
                 <%
                 if session("Banco")="clinic9021" then
                 %>
                 <li>
-                    <a href="#whitelabel" onclick="ajxContent('agWhiteLabel', '', 1, 'whitelabel');" data-toggle="tab"><i class="green fa fa-tag bigger-110"></i> White Label</a>
+                    <a href="#whitelabel" onclick="ajxContent('agWhiteLabel', '', 1, 'whitelabel');" data-toggle="tab"><i class="green far fa-tag bigger-110"></i> White Label</a>
                 </li>
                 <%
                 end if
                 %>
             </ul>
             <div class="panel-controls">
-                <button class="btn btn-primary" name="SALVAR" value="SALVAR"><i class="fa fa-save"></i> SALVAR</button>
+                <button class="btn btn-primary" name="SALVAR" value="SALVAR"><i class="far fa-save"></i> SALVAR</button>
             </div>
         </div>
         <div class="panel-body">
@@ -193,5 +193,5 @@ filtros = getConfAO("filtros")
     $(".crumb-active a").html("Agendamento Online");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("configurações");
-    $(".crumb-icon a span").attr("class", "fa fa-stethoscope");
+    $(".crumb-icon a span").attr("class", "far fa-stethoscope");
 </script>

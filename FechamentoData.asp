@@ -491,7 +491,7 @@ end if
 
 <script type="text/javascript">
     $(".crumb-active").html("<a href='#'>Fechamento de Caixa Geral</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-money");
+    $(".crumb-icon a span").attr("class", "far fa-money");
     $(".crumb-trail").removeClass("hidden");
     $(".crumb-trail").html("painel principal");
 </script>
@@ -500,9 +500,9 @@ end if
 <div class="panel mt25">
     <div class="panel-heading">
         <span class="panel-controls hidden">
-            <button type="button" class="btn btn-xs btn-danger"><i class="fa fa-lock"></i> Fechar Data</button>
-            <button type="button" class="btn btn-xs btn-success"><i class="fa fa-check"></i> Aprovar Data</button>
-            <button type="button" class="btn btn-xs btn-warning"><i class="fa fa-unlock"></i> Reabrir Data</button>
+            <button type="button" class="btn btn-xs btn-danger"><i class="far fa-lock"></i> Fechar Data</button>
+            <button type="button" class="btn btn-xs btn-success"><i class="far fa-check"></i> Aprovar Data</button>
+            <button type="button" class="btn btn-xs btn-warning"><i class="far fa-unlock"></i> Reabrir Data</button>
         </span>
     </div>
     <div class="panel-body">
@@ -588,7 +588,7 @@ end if
                             btnFDisabled = " disabled "
                         end if
 
-                        btnF = "<i "&btnFDisabled&" class='btn btn-warning btn-xs fa fa-unlock' onclick='if(confirm(`Tem certeza de que deseja fechar esta data e as anteriores?`))aa(`fec`, `f`, `"& Data &"`)'></i>"
+                        btnF = "<i "&btnFDisabled&" class='btn btn-warning btn-xs far fa-unlock' onclick='if(confirm(`Tem certeza de que deseja fechar esta data e as anteriores?`))aa(`fec`, `f`, `"& Data &"`)'></i>"
 
                         botaoFecharExibido = True
                     else
@@ -598,14 +598,14 @@ end if
                             disabledReaberturaDeCaixa = " disabled "
                         end if
 
-                        btnF = "<i class='btn btn-success btn-xs fa fa-lock'"&disabledReaberturaDeCaixa&"onclick='if(confirm(`Tem certeza de que deseja reabrir esta data?`))aa(`fec`, `a`, `"& Data &"`)'></i>"
+                        btnF = "<i class='btn btn-success btn-xs far fa-lock'"&disabledReaberturaDeCaixa&"onclick='if(confirm(`Tem certeza de que deseja reabrir esta data?`))aa(`fec`, `a`, `"& Data &"`)'></i>"
                     end if
 
                     if aut("aprovarfinanciallock") and not isnull(sysUserBloqueio) then
                         if isnull(sysUserConfirmacao) then 'calcula os saldos manualmente
-                            btnA = "<i class='btn btn-default btn-xs fa fa-check' onclick='if(confirm(`Tem certeza de que deseja aprovar esta data e as anteriores?`)) aa(`apr`, `a`, `"& Data &"`)'></i>"
+                            btnA = "<i class='btn btn-default btn-xs far fa-check' onclick='if(confirm(`Tem certeza de que deseja aprovar esta data e as anteriores?`)) aa(`apr`, `a`, `"& Data &"`)'></i>"
                         else
-                            btnA = "<i class='btn btn-success btn-xs fa fa-check' onclick='if(confirm(`Tem certeza de que deseja retirar a aprovação desta data e das anteriores?`)) aa(`apr`, `r`, `"& Data &"`)'></i>"
+                            btnA = "<i class='btn btn-success btn-xs far fa-check' onclick='if(confirm(`Tem certeza de que deseja retirar a aprovação desta data e das anteriores?`)) aa(`apr`, `r`, `"& Data &"`)'></i>"
                         end if
                     else
                         btnA = ""
@@ -629,7 +629,7 @@ end if
 
                         if PrimeiraDaLista>(UltimaAberta+1) then
                             bloqFec = cdate(UltimaAberta)+15
-                            btnF = "<i class='fa fa-exclamation-circle text-danger' title='A data de "& UltimaAberta &" precisa ser fechada para que você possa fechar as seguintes.'></i>"
+                            btnF = "<i class='far fa-exclamation-circle text-danger' title='A data de "& UltimaAberta &" precisa ser fechada para que você possa fechar as seguintes.'></i>"
                         end if
                     end if
                     %>
@@ -648,9 +648,9 @@ end if
                         end if
                         %>
                         <td class="text-right"> <input type="hidden" name="<%= "SaldoData"&DataID %>" value="<%= fn(SaldoData) %>"> <%= fn(SaldoData) %></td>
-                        <td class="text-center"><a href="./PrintStatement.asp?R=FechamentoData&t=Saldos&d=<%= Data %>" target="_blank"><i class="fa fa-search" ></i> </a></td>
-                        <td class="text-center"><a href="./PrintStatement.asp?R=FechamentoData&t=Sintetico&d=<%= Data %>" target="_blank"><i class="fa fa-search"></i></a> </td>
-                        <td class="text-center"><a href="./PrintStatement.asp?R=FechamentoData&t=Analitico&d=<%= Data %>" target="_blank"> <i class="fa fa-search"></i> </a></td>
+                        <td class="text-center"><a href="./PrintStatement.asp?R=FechamentoData&t=Saldos&d=<%= Data %>" target="_blank"><i class="far fa-search" ></i> </a></td>
+                        <td class="text-center"><a href="./PrintStatement.asp?R=FechamentoData&t=Sintetico&d=<%= Data %>" target="_blank"><i class="far fa-search"></i></a> </td>
+                        <td class="text-center"><a href="./PrintStatement.asp?R=FechamentoData&t=Analitico&d=<%= Data %>" target="_blank"> <i class="far fa-search"></i> </a></td>
                         <td class="text-center"><%= btnF %></td>
                         <td class="text-center"><%= btnA %></td>
                     </tr>
@@ -669,7 +669,7 @@ end if
 </div>
 
 <% if bloqFec<>"" then %>
-    <a href="./?P=FechamentoData&Pers=1&Data=<%= bloqFec %>" class="btn btn-default"><i class="fa fa-arrow-left"></i> Ir para primeira data aberta</a>
+    <a href="./?P=FechamentoData&Pers=1&Data=<%= bloqFec %>" class="btn btn-default"><i class="far fa-arrow-left"></i> Ir para primeira data aberta</a>
 <% end if %>
 
 <%

@@ -78,7 +78,7 @@ end if
 
     <div id="root" class="container-popup" >
         <div style="font-size: 50px;text-align: center; padding: 40px">
-            <i class="fa fa-spin fa-circle-o-notch"></i>
+            <i class="far fa-spin fa-circle-o-notch"></i>
         </div>
     </div>
     <script >

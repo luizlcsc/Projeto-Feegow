@@ -2,7 +2,7 @@
 <div class="page-header">
 	<h4 class="lighter blue">Pagamento
 		<div class="widget-toolbar no-border">
-			<button class="bootbox-close-button close" type="button"><i class="fa fa-remove"></i></button>
+			<button class="bootbox-close-button close" type="button"><i class="far fa-remove"></i></button>
 		</div>
     </h4>
 </div>
@@ -68,7 +68,7 @@ set mov = db.execute("select m.*, (select sum(DiscountedValue) from sys_financia
 					<td class="text-right"><%=formatnumber(valor,2)%></td>
 					<td class="text-right"><%=formatnumber(soma,2)%></td>
 					<td class="text-right"><%=formatnumber(credito,2)%></td>
-                    <td><button type="button" class="btn btn-xs btn-danger" onclick="excluiMov(<%=mov("id")%>);"<% If soma>0 Then %> disabled="disabled"<% End If %>><i class="fa fa-remove"></i></button></td>
+                    <td><button type="button" class="btn btn-xs btn-danger" onclick="excluiMov(<%=mov("id")%>);"<% If soma>0 Then %> disabled="disabled"<% End If %>><i class="far fa-remove"></i></button></td>
 				</tr>
 				<%
 			end if
@@ -284,7 +284,7 @@ set mov = db.execute("select m.*, (select sum(DiscountedValue) from sys_financia
 
 </div>
     <div class="modal-footer">
-    	<button class="btn btn-success btn-sm"><i class="fa fa-save"></i> Pagar</button>
+    	<button class="btn btn-success btn-sm"><i class="far fa-save"></i> Pagar</button>
     </div>
     <input type="hidden" name="CaixaID" value="<%=CaixaID%>" />
 </form>

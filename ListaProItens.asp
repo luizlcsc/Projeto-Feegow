@@ -16,7 +16,7 @@ if not listaFormulas.eof then
             <tr>
               <td>
                 <button style="border:none;color:#3498db;background-color:white" onclick='itens("S", "I", "<%= listaFormulas("id") %>")' id="botao-aplicar-proposta-<%=listaFormulas("id")%>">
-                    <i class="fa fa-hand-o-left icon-hand-left bigger-125"></i></button>
+                    <i class="far fa-hand-o-left icon-hand-left bigger-125"></i></button>
               </td>
               <td><code>Procedimento</code> <%=listaFormulas("NomeProcedimento")%></td>
             </tr>
@@ -36,7 +36,7 @@ if not PacotesSQL.eof then
             <tr>
               <td>
                 <a href="javascript:itens('P', 'I', '<%=PacotesSQL("id")%>')" class="blue" id="<%=PacotesSQL("id")%>" title="" data-placement="top" data-rel="tooltip" data-original-title="Aplicar">
-                    <i class="fa fa-hand-o-left icon-hand-left bigger-125"></i>
+                    <i class="far fa-hand-o-left icon-hand-left bigger-125"></i>
                 </a>
               </td>
               <td><code>Pacote</code> <%=PacotesSQL("NomePacote")%></td>
@@ -65,7 +65,7 @@ $("#ulItens li").hover(function(){
     <div class="tools action-buttons">
       <span class="tooltip-info" title="" data-placement="top" data-rel="tooltip" data-original-title="Inserir na Proposta">
         <a href="#" data-toggle="modal" class="blue" onClick="itens(\'S\', \'I\', '+ $(this).attr('id') +')">
-          <i class="fa fa-hand-o-left icon-hand-left bigger-125"></i>
+          <i class="far fa-hand-o-left icon-hand-left bigger-125"></i>
         </a>
       </span>
     </div>`

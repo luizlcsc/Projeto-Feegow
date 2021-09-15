@@ -15,7 +15,7 @@ end if
     $(".crumb-active a").html("Faturas do Cartão de Crédito");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("administração das faturas de cartões");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 
 <form id="frmCC" method="get">
@@ -29,7 +29,7 @@ end if
             <%= quickField("datepicker", "Ate", "Até", 2, Ate, "", "", "") %>
             <div class="col-md-2">
                 <label>&nbsp;</label><br>
-                <button id="btnBuscar" class="btn btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+                <button id="btnBuscar" class="btn btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
             </div>
         </div>
     </div>

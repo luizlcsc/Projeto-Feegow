@@ -35,7 +35,7 @@
                 Act = "CONF"
                 %>
                 <div class="col-md-6">
-                    <button type="submit" class="btn btn-danger mt25"><i class="fa fa-ban"></i> CONFIRMAR CANCELAMENTO</button>
+                    <button type="submit" class="btn btn-danger mt25"><i class="far fa-ban"></i> CONFIRMAR CANCELAMENTO</button>
                 </div>
                 <%
 
@@ -43,7 +43,7 @@
                 Act = "POST"
                 %>
                 <div class="col-md-6">
-                    <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> Usuário sem acesso a cancelamento de pagamento.</div>
+                    <div class="alert alert-warning"><i class="far fa-exclamation-triangle"></i> Usuário sem acesso a cancelamento de pagamento.</div>
                     <%= quickfield("text", "EmailAutorizador", "E-mail de acesso do autorizador", "12", "", "", "", " autocomplete='false' required ") %>
                     <%= quickfield("password", "SenhaAutorizador", "Senha", "12", "", "", "", " autocomplete='false' required ") %>
                     <div class="col-md-12 pt10">
@@ -60,7 +60,7 @@
         else
             %>
             <div class="alert alert-danger">
-                <i class="fa fa-exclamation-circle"></i> <%= erro %>
+                <i class="far fa-exclamation-circle"></i> <%= erro %>
             </div>
             <%
         end if

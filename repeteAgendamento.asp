@@ -25,7 +25,7 @@ ConsultaID = req("ConsultaID")
 </div>
 <div class="modal-footer">
     <button class="btn btn-sm btn-success" type="button" data-bb-handler="danger" onclick="pedidoRepeticao(<%=ConsultaID%>);">
-    	<i class="fa fa-copy"></i> Confirmar Repeti&ccedil;&atilde;o
+    	<i class="far fa-copy"></i> Confirmar Repeti&ccedil;&atilde;o
     </button>
 </div>
 </form>

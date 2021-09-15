@@ -79,14 +79,14 @@ end if
                         <%
                         if (reg("sysActive")=1 AND session("Franqueador") <> "") then
                             %>
-                            <button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="fa fa-copy"></i> Replicar</button>
+                            <button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="far fa-copy"></i> Replicar</button>
                             <%
                         end if
                         %>
                         <%
 		                if (reg("sysActive")=1 and aut("|profissionaisA|")=1) or (reg("sysActive")=0 and aut("|profissionaisI|")=1) then
 		                    %>
-                            <button class="btn btn-primary btn-sm" id="save"> <i class="fa fa-save"></i> Salvar </button>
+                            <button class="btn btn-primary btn-sm" id="save"> <i class="far fa-save"></i> Salvar </button>
 		                    <%
 		                end if
 		                %>
@@ -111,7 +111,7 @@ end if
                             </div>
                             <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
                                 <img id="avatarFoto" src="<%=arqEx(reg("Foto"), "Perfil")%>" class="img-thumbnail" width="100%" />
-                                <button  type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+                                <button  type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
                             </div>
                         </div>
                     </div>
@@ -126,7 +126,7 @@ end if
                     <div class="panel">
                         <div class="panel-heading">
                             <span class="panel-title">
-                                <i class="fa fa-hospital-o"></i> Unidades
+                                <i class="far fa-hospital-o"></i> Unidades
                             </span>
                         </div>
                         <div class="panel-body p7">
@@ -187,12 +187,12 @@ end if
                         <div class="panel-body" style="padding:5px !important">
                          <iframe width="100%" height="200" id="iframeDropZone" frameborder="0" scrolling="no" src="dropzone.php?ProfissionalID=<%= req("I") %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens&Tipo=I&Assinatura=true"></iframe>
                             <img src="<%=arqEx(reg("Assinatura"), "Imagens")%>" class="img-thumbnail" id="assinatura-img"/>
-                            <button style="    position: absolute; bottom: 20px; right:20px;" id="buttonDeleteSignature" class="btn btn-xs btn-danger pull-right" onclick="if(confirm('Tem certeza de que deseja excluir esta assinatura?')){deleteSignature(<%= req("I") %>)};"><span class="fa fa-trash "></span></button>
+                            <button style="    position: absolute; bottom: 20px; right:20px;" id="buttonDeleteSignature" class="btn btn-xs btn-danger pull-right" onclick="if(confirm('Tem certeza de que deseja excluir esta assinatura?')){deleteSignature(<%= req("I") %>)};"><span class="far fa-trash "></span></button>
 
                         </div>
                     </div>
 
-                    <button type="button" onclick="VisualizarEnvioDasAgendas()" class="btn btn-default btn-sm btn-block"><i class="fa fa-envelope"></i> Visualizar envio das agendas</button>
+                    <button type="button" onclick="VisualizarEnvioDasAgendas()" class="btn btn-default btn-sm btn-block"><i class="far fa-envelope"></i> Visualizar envio das agendas</button>
 
 
 
@@ -231,7 +231,7 @@ end if
                         <%= quickField("text", "UFConselho", "UF", 2, reg("UFConselho"), "", "", " maxlength=2") %>
                         <div class="col-xs-1">
                             <label>&nbsp;</label><br />
-                            <button onclick="esps('I', 0)" class="btn btn-sm btn-default" type="button"><i class='fa fa-plus'></i></button>
+                            <button onclick="esps('I', 0)" class="btn btn-sm btn-default" type="button"><i class='far fa-plus'></i></button>
                         </div>
                     </div>
                     <div class="row" id="esps">
@@ -511,7 +511,7 @@ function esps(A, E){
 // Chamada Ajax Programa Saúde
 $(document).ready(function () {
 
-    $("#block-programas-saude").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
+    $("#block-programas-saude").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="far fa-spin fa-spinner"></i></div>');
     getUrl("health-programs/professional-view/<%=req("I") %>", {}, function(data) {
         $("#block-programas-saude").html(data);
     });

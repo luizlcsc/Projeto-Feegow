@@ -81,7 +81,7 @@ function getLogTableHtml(LogsSQL)
                 if i = 1 then
                 %>
                 <th><code>#<%=LogsSQL("id")%></code></th>
-                <th><span class="label label-<%=operacaoClass%>"><i class="fa fa-<%=OperacaoIcon%>"></i> <%=operacaoStr%></span></th>
+                <th><span class="label label-<%=operacaoClass%>"><i class="far fa-<%=OperacaoIcon%>"></i> <%=operacaoStr%></span></th>
                 <th><%=LogsSQL("DataHora")%></th>
                 <th><%=nameInTable(LogsSQL("sysUser"))%></th>
                 <th><%=LogsSQL("Obs")%></th>
@@ -113,7 +113,7 @@ function renderLogsTable(logTable, logId, paiId)
 
     if not LogsSQL.eof then
     %>
-<button type="button" data-toggle="collapse" data-target="#<%=logTable&logId%>" class="btn btn-default btn-sm"><i class="fa fa-history"></i> Ver logs</button>
+<button type="button" data-toggle="collapse" data-target="#<%=logTable&logId%>" class="btn btn-default btn-sm"><i class="far fa-history"></i> Ver logs</button>
 
 <div id="<%=logTable&logId%>" class="collapse">
 <%

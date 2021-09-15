@@ -3,11 +3,11 @@
     $(".crumb-active a").html("Propostas");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("gerenciar propostas e orçamentos");
-    $(".crumb-icon a span").attr("class", "fa fa-files-o");
+    $(".crumb-icon a span").attr("class", "far fa-files-o");
     <%
     if aut("propostasI")=1 then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-success" href="?P=PacientesPropostas&PropostaID=N&Pers=1"><i class="fa fa-plus"></i> INSERIR</a>');
+    $("#rbtns").html('<a class="btn btn-sm btn-success" href="?P=PacientesPropostas&PropostaID=N&Pers=1"><i class="far fa-plus"></i> INSERIR</a>');
     <%
     end if
     %>
@@ -28,7 +28,7 @@
         <div class="row mt10">
 
             <div class="col-md-2 col-md-offset-7 mt20">
-                <button class="btn btn-block btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                <button class="btn btn-block btn-primary"><i class="far fa-search"></i> Buscar</button>
             </div>
         </div>
     </div>
@@ -41,7 +41,7 @@
 <script type="text/javascript">
     $("#frmProposta").submit(function () {
         d = $("#resPropostas");
-        d.html('<center><i class="fa fa-circle-o-notch fa-spin"></i> Buscando...</center>')
+        d.html('<center><i class="far fa-circle-o-notch fa-spin"></i> Buscando...</center>')
        $.post("listaPropostas.asp", $(this).serialize(), function (data) {
             d.html(data);
         });
@@ -64,7 +64,7 @@
             "warning", "Instalar o WhatsApp", 60 * 1000);
         }
         var url = "whatsapp://send?phone="+Celular+"&text="+Texto;
-        $("#wpp-"+id).html("<i class='success fa fa-check-circle'></i>");
+        $("#wpp-"+id).html("<i class='success far fa-check-circle'></i>");
         openTab(url);
     }
 </script>

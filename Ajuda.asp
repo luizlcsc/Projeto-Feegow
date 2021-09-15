@@ -2,7 +2,7 @@
     $(".crumb-active a").html("Central de Suporte");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("estamos prontos para lhe ajudar");
-    $(".crumb-icon a span").attr("class", "fa fa-question-circle");
+    $(".crumb-icon a span").attr("class", "far fa-question-circle");
 </script>
 
 <br />

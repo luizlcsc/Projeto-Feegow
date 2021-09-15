@@ -7,7 +7,7 @@ end if
 if erro<>"" then
 %>
     $.gritter.add({
-        title: '<i class="fa fa-thumbs-down"></i> ERRO',
+        title: '<i class="far fa-thumbs-down"></i> ERRO',
         text: '<%=erro%>',
         class_name: 'gritter-error gritter-light'
     });
@@ -27,7 +27,7 @@ if erro<>"" then
 
     %>
     $.gritter.add({
-        title: '<i class="fa fa-save"></i> SALVANDO...',
+        title: '<i class="far fa-save"></i> SALVANDO...',
         text: '<%=erro%>',
         class_name: 'gritter-success gritter-light'
     });

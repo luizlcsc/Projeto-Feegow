@@ -45,7 +45,7 @@ if not rel.eof then
         </div>
     </div>
     <div class="modal-footer no-margin-top">
-        <button class="btn btn-sm btn-primary pull-right"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-sm btn-primary pull-right"><i class="far fa-save"></i> Salvar</button>
     </div>
 </form>
 <%

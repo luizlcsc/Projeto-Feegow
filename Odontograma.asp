@@ -13,7 +13,7 @@
                     <div class="btn-group btn-block">
                         <button type="button" class="btn btn-primary btn-block dropdown-toggle" style="display:none" data-toggle="dropdown"
                                 aria-expanded="false">
-                            <i class="fa fa-plus"></i> Odontograma
+                            <i class="far fa-plus"></i> Odontograma
                         </button>
                     </div>
                 </div>

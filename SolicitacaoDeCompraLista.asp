@@ -40,12 +40,12 @@
 
 %>
 <script>
-    $("#rbtns").html('<a class="btn btn-sm btn-success" href="?P=SolicitacaoDeCompra&I=N&Pers=1"><i class="fa fa-plus"></i> INSERIR</a>');
+    $("#rbtns").html('<a class="btn btn-sm btn-success" href="?P=SolicitacaoDeCompra&I=N&Pers=1"><i class="far fa-plus"></i> INSERIR</a>');
 
     setTimeout(()=>{
         $(document).ready(function(){
             $(".crumb-active a").html("Compras / Solicitação de Compras");
-            $(".crumb-icon a span").attr("class", "fa fa-shopping-cart");
+            $(".crumb-icon a span").attr("class", "far fa-shopping-cart");
         });
     })
 
@@ -82,9 +82,9 @@
 					  <td><%=ListagemCompra("Status")%></td>
 					  <td nowrap="nowrap">
 							<div class="action-buttons">
-								<a title="Editar" class="btn btn-xs btn-success" href="./?P=SolicitacaoDeCompra&I=<%=ListagemCompra("CompraID")%>&A=&Pers=1"><i class="fa fa-edit bigger-130"></i></a>
+								<a title="Editar" class="btn btn-xs btn-success" href="./?P=SolicitacaoDeCompra&I=<%=ListagemCompra("CompraID")%>&A=&Pers=1"><i class="far fa-edit bigger-130"></i></a>
 								<a title="Detalhes" class="btn btn-xs btn-danger" href="javascript:void(0)" onclick="removerCompra(<%=ListagemCompra("CompraID")%>)">
-								   <i class="fa fa-trash bigger-130"></i>
+								   <i class="far fa-trash bigger-130"></i>
 								</a>
 							</div>
 					   </td>

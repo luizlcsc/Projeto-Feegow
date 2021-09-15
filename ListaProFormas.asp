@@ -21,7 +21,7 @@ while not listaProFormas.EOF
 			<span id="NomeAtestado<%=listaProFormas("id")%>"><%=listaProFormas("NomeForma")%></span>
 			<span id="TituloAtestado<%=listaProFormas("id")%>" class="hidden"></span>
 			<div class="time hidden">
-				<i class="fa fa-list bigger-110"></i>
+				<i class="far fa-list bigger-110"></i>
 				<span id="TextoAtestado<%=listaProFormas("id")%>"><%=TextoAtestado%></span>
 			</div>
 		</div>
@@ -35,7 +35,7 @@ while not listaProFormas.EOF
                         <tr>
                           <td>
 			                <a href="#" data-toggle="modal" class="blue" onClick="aplicarProFormas(<%=listaProFormas("id")%>, 'I')" title="" data-placement="top" data-rel="tooltip" data-original-title="Aplicar">
-				                <i class="fa fa-hand-o-left icon-hand-left bigger-125"></i>
+				                <i class="far fa-hand-o-left icon-hand-left bigger-125"></i>
 			                </a>
                           </td>
                           <td><%=listaProFormas("NomeForma")%></td>
@@ -45,7 +45,7 @@ while not listaProFormas.EOF
 
                           %>
 			              <a class="btn btn-xs btn-success tooltip-info" href="#modal-table" role="button" data-toggle="modal" data-original-title="Editar" data-rel="tooltip" data-placement="top" title="" onclick="modalProFormas('ProFormas', <%=listaProFormas("id")%>)">
-				              <i class="fa fa-edit icon-edit bigger-125"></i>
+				              <i class="far fa-edit icon-edit bigger-125"></i>
 			              </a>
 			              <%
 			              end if
@@ -54,7 +54,7 @@ while not listaProFormas.EOF
                           %>
 
                            <a href="javascript:if(confirm('Tem certeza de que deseja excluir este modelo?'))ListaProFormas('ProFormas', <%=listaProFormas("id")%>)" class="btn btn-xs btn-danger tooltip-info" title="" data-placement="top" data-rel="tooltip" data-original-title="Excluir">
-                               <i class="fa fa-remove icon-remove bigger-125"></i>
+                               <i class="far fa-remove icon-remove bigger-125"></i>
                            </a>
                           <%
                           end if

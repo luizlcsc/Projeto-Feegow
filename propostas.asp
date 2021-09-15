@@ -103,7 +103,7 @@ end if
                         <div class="btn-group">
                             <button class="btn btn-success btn-sm dropdown-toggle disable" data-toggle="dropdown">
                             Selecione
-                            <span class="fa fa-caret-down icon-on-right"></span>
+                            <span class="far fa-caret-down icon-on-right"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-success">
                                 <li>
@@ -111,7 +111,7 @@ end if
                                 </li>
                                 <li class="divider"></li>
                                 <li>
-                                <a href="javascript:cadastrarOutro()"><i class="fa fa-plus"></i> Cadastrar item</a>
+                                <a href="javascript:cadastrarOutro()"><i class="far fa-plus"></i> Cadastrar item</a>
                                 </li>
                             </ul>
                         </div>

@@ -86,7 +86,7 @@ set mov = db.execute("select * from sys_financialmovement where id="& MovementID
                         <td class="text-right"><%= ValorRepasse %></td>
                         <td>
                             <% if isnull(rr("ItemContaAPagar")) then %>
-                                <button onclick="x(<%= rr("id") %>)" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button>
+                                <button onclick="x(<%= rr("id") %>)" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button>
                             <% end if %>
                         </td>
                     </tr>

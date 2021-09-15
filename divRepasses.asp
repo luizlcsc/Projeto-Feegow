@@ -65,14 +65,14 @@ newstrRep = ""
         <td>Posi&ccedil;&atilde;o</td>
         <td colspan="2"><%=quickField("text", "Mat1", "", 5, "1,00", " input-mask-brl text-right input-sm", "", "")%> </td>
         <td>Total</td>
-        <td colspan="2" class="text-center"><button type="button" class="btn btn-xs btn-warning"><i class="fa fa-external-link"></i> Retirar</button>
+        <td colspan="2" class="text-center"><button type="button" class="btn btn-xs btn-warning"><i class="far fa-external-link"></i> Retirar</button>
     </tr>
     <tr>
         <td>Toxina (ML)</td>
         <td>Posi&ccedil;&atilde;o</td>
         <td colspan="2"><%=quickField("text", "Mat2", "", 5, "2,00", " input-mask-brl text-right input-sm", "", "")%> </td>
         <td>Total</td>
-        <td colspan="2" class="text-center"><button type="button" class="btn btn-xs btn-warning"><i class="fa fa-external-link"></i> Retirar</button>
+        <td colspan="2" class="text-center"><button type="button" class="btn btn-xs btn-warning"><i class="far fa-external-link"></i> Retirar</button>
     </tr>
 
 

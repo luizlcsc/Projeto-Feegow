@@ -8,7 +8,7 @@
     $(".crumb-active a").html("Agendamentos Online");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("realizados via website");
-    $(".crumb-icon a span").attr("class", "fa fa-calendar");
+    $(".crumb-icon a span").attr("class", "far fa-calendar");
 </script>
 <% if aut("agendaV") then
     sqlAgendamentoOnline = "select age.*, pac.NomePaciente, age.sysDate DataHora, prof.NomeProfissional, proc.NomeProcedimento, conv.NomeConvenio, age.ValorPlano Valor, loc.NomeLocal, pac.CPF, pac.Cel1 Celular, pac.Email1 Email, age.Notas Obs "&_

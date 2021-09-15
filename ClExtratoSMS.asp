@@ -2,7 +2,7 @@
 <!--#include file="connect.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Extrato de SMS");
-    $(".crumb-icon a span").attr("class", "fa fa-barcode");
+    $(".crumb-icon a span").attr("class", "far fa-barcode");
 </script>
 
 <form method="get" action="">
@@ -16,7 +16,7 @@
             <%=quickfield("simpleSelect", "Profissionais", "Profissional Agendado", 4, req("Profissionais"), "select '0' as id,'Todos os profissionais' as NomeProfissional, 0 as ordem union select id, NomeProfissional, 1 as ordem from profissionais where ativo='on' and sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", " semVazio " ) %>
             <div class="col-md-2">
         	    <label>&nbsp;</label><br>
-        	    <button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Buscar</button>
+        	    <button class="btn btn-primary btn-sm"><i class="far fa-search"></i> Buscar</button>
             </div>
         </div>
     </div>
@@ -71,7 +71,7 @@
                         <td><%=lic("NomeProfissional")%></td>
 			            <td><%=lic("Celular")%></td>
 						<td><%=lic("TotalSMS") %></td>
-			            <td><a class="btn btn-xs btn-info" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=lic("AgendamentoID")%>"><i class="fa fa-eye"</a></td>
+			            <td><a class="btn btn-xs btn-info" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=lic("AgendamentoID")%>"><i class="far fa-eye"</a></td>
 		            </tr>
 		            <%
 	            lic.movenext

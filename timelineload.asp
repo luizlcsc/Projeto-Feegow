@@ -202,12 +202,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                 %>
             <div class="timeline-item <%=hiddenRegistro%>">
                 <div class="timeline-icon hidden-xs">
-                    <span class="fa fa-lock text-danger"></span>
+                    <span class="far fa-lock text-danger"></span>
                 </div>
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title panel-warning">
-                            <span class="fa fa-align-justify"></span>
+                            <span class="far fa-align-justify"></span>
                             <% if ti("sysUser")<>0 then response.write( nameInTable(ti("sysUser")) ) end if %>
                             <code><%=ti("Titulo") %></code>
                         </span>
@@ -239,7 +239,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             %>
             <div class="timeline-item <%=ItemInativo%>">
                 <div class="timeline-icon hidden-xs">
-                    <span class="fa fa-<%=ti("icone") %> text-<%=ti("cor") %>"></span>
+                    <span class="far fa-<%=ti("icone") %> text-<%=ti("cor") %>"></span>
                 </div>
                 <div class="panel">
                     <div class="panel-heading">
@@ -248,14 +248,14 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             if ti("Tipo")="AE" or ti("Tipo")="L" then
                                 if ccur(ti("Prior"))="1" then
                                     %>
-                                    <i style="cursor:default" title="Desmarcar como favorito" class="fa fa-star text-warning"></i>
+                                    <i style="cursor:default" title="Desmarcar como favorito" class="far fa-star text-warning"></i>
                                     <%
                                 else
 
                                 end if
                             end if
                             %>
-                            <span class="fa fa-align-justify"></span>
+                            <span class="far fa-align-justify"></span>
                             <%
                             if ti("sysUser")<>0 then
                                 response.write( nameInTable(ti("sysUser")) )
@@ -277,21 +277,21 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             %>
                             <div class=" dropdown panel-controls" >
                                 <a data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-share-alt "></i>
+                                    <i class="far fa-share-alt "></i>
                                 </a>
                                 <ul class="dropdown-menu pull-right" role="menu" >
                                     <li>
-                                        <a <% if tipoCompartilhamento = 1  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(1,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" > <i class="fa fa-users"></i> Publico </a>
+                                        <a <% if tipoCompartilhamento = 1  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(1,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" > <i class="far fa-users"></i> Publico </a>
                                     </li>
                                     <li>
-                                        <a <% if tipoCompartilhamento = 2  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(2,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" ><i class="fa fa-lock"></i> Privado</a>
+                                        <a <% if tipoCompartilhamento = 2  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(2,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" ><i class="far fa-lock"></i> Privado</a>
                                     </li>
                                     <li>
-                                        <a <% if tipoCompartilhamento = 3  then %> class="compartilhamentoSelect" <% end if %> href="javascript:compartilhamentoRestrito('<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" ><i class="fa fa-eye-slash"></i> Restrito</a>
+                                        <a <% if tipoCompartilhamento = 3  then %> class="compartilhamentoSelect" <% end if %> href="javascript:compartilhamentoRestrito('<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" ><i class="far fa-eye-slash"></i> Restrito</a>
                                     </li>
                                         <li class="divider"></li>
                                     <li>
-                                        <a href="javascript:saveCompartilhamento(0,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" > <i class="fa fa-asterisk"></i> Padrão </a>
+                                        <a href="javascript:saveCompartilhamento(0,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" > <i class="far fa-asterisk"></i> Padrão </a>
                                     </li>
                                 </ul>
                             </div>
@@ -306,7 +306,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             if (ti("sysUser")<2 or cstr(session("User"))=ti("sysUser")&"" or lcase(session("Table"))="funcionarios") and recursoUnimed=4 then
                             %>
                             <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
-                                <i class="fa fa-search-plus"></i>
+                                <i class="far fa-search-plus"></i>
                             </a>
                            
                             <%
@@ -315,14 +315,14 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             if ti("Tipo")<>"Imagens" then
                             %>
                             <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
-                                <i class="fa fa-search-plus"></i>
+                                <i class="far fa-search-plus"></i>
                             </a>
                                 <%
                             end if    
                                 if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Imagens" then
                                 %>
                                     <a href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
-                                        <i class="fa fa-print"></i>
+                                        <i class="far fa-print"></i>
                                     </a>
                                 <%
                                 elseif ti("Tipo")="Imagens" then
@@ -333,7 +333,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 set ArquivosSQL = nothing
                                 %>
                                     <a href="./timelinePrint.asp?Tipo=I&IDs=<%=arquivosID%>" target="_blank">
-                                        <i class="fa fa-print"></i>
+                                        <i class="far fa-print"></i>
                                     </a>
                                 <%
                                 end if
@@ -357,11 +357,11 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             elseif cstr(session("User"))=ti("sysUser")&"" and ( aut("prescricoesX")>0 or instr(var_permissoes, "XP")>0 ) then %>
                                 <a href="javascript:if(confirm('Tem certeza de que deseja apagar esta prescrição?'))pront('timeline.asp?PacienteID=<%= PacienteID %>&Tipo=|<%= ti("Tipo") %>|&X=<%= ti("id") %>');">
 
-                                    <i class="fa fa-remove"></i>
+                                    <i class="far fa-remove"></i>
                                 </a>
                             <% end if %>
                             <% if ti("Tipo") = "PedidosSADT" or ti("Tipo") = "Pedido" then %>
-                                <a class='' href="javascript:modalInsuranceAttachments(<%=PacienteID%>, <%=ti("id")%>);" title='Anexar um arquivo'><i class="fa fa-paperclip"></i></a>
+                                <a class='' href="javascript:modalInsuranceAttachments(<%=PacienteID%>, <%=ti("id")%>);" title='Anexar um arquivo'><i class="far fa-paperclip"></i></a>
                             <% end if %>
                         </span>
                         <%
@@ -370,7 +370,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
                         <div class="panel-header-menu pull-right mr10 text-muted fs12">
                         <% if Assinado <> "" then %>
-                            <i class="fa fa-shield" style=" color:orange;"></i>
+                            <i class="far fa-shield" style=" color:orange;"></i>
                         <%end if%>
                         <%
                             if not isnull(ti("DataHora")) then
@@ -662,10 +662,10 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                         <div class="panel-tile text-center br-a br-light" >
                                             <div class="panel-body bg-light dark">
                                             <% if ComEstilo = "S" then %>
-                                                    <h1 class="fs35 mbn"><i class="fa fa-file-text"></i></h1>
+                                                    <h1 class="fs35 mbn"><i class="far fa-file-text"></i></h1>
                                             <% else %>
                                                 <a href="<%=arqEx(im("NomeArquivo"), "Arquivos")%>" target="_blank">
-                                                    <h1 class="fs35 mbn"><i class="fa fa-file-text"></i></h1>
+                                                    <h1 class="fs35 mbn"><i class="far fa-file-text"></i></h1>
                                                 </a>
                                             <% end if %>
 

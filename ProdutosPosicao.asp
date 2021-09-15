@@ -14,7 +14,7 @@ end if
             <th>Lote</th>
             <th>Validade</th>
             <th>Quantidade</th>
-            <th class="no-padding" width="75"><button class="btn btn-info btn-block btn-sm btnLancto" type="button"<%=disabled%> onclick="lancar(<%=req("I")%>, 'E', '', '');"><i class="fa fa-level-down"></i> Entrada</button></th>
+            <th class="no-padding" width="75"><button class="btn btn-info btn-block btn-sm btnLancto" type="button"<%=disabled%> onclick="lancar(<%=req("I")%>, 'E', '', '');"><i class="far fa-level-down"></i> Entrada</button></th>
         </tr>
     </thead>
     <tbody>
@@ -28,7 +28,7 @@ end if
                     <td><%=lanc("Lote")%></td>
                     <td><%=lanc("Validade")%></td>
                     <td><%=Quantidade &" "& lcase(unidade)%></td>
-                    <td class="pn"><button class="btn btn-danger mn btn-block btn-sm btnLancto" type="button"<%=disabled%> onclick="lancar(<%=req("I")%>, 'S', '<%=lanc("Lote")%>', '<%=lanc("Validade")%>');"><i class="fa fa-level-up"></i> Sa&iacute;da</button></td>
+                    <td class="pn"><button class="btn btn-danger mn btn-block btn-sm btnLancto" type="button"<%=disabled%> onclick="lancar(<%=req("I")%>, 'S', '<%=lanc("Lote")%>', '<%=lanc("Validade")%>');"><i class="far fa-level-up"></i> Sa&iacute;da</button></td>
                 </tr>
                 <%
             end if

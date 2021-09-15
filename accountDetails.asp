@@ -108,7 +108,7 @@ end select
 							
 							<th style="text-align: center;">
 								<button type="button" onclick="gerarLinhaTabelaPercentualConfiguracao()" class="btn btn-xs btn-success">
-									<i class="fa fa-plus"></i>
+									<i class="far fa-plus"></i>
 								</button>
 							</th>
 						</tr>
@@ -187,7 +187,7 @@ end select
 									</select>
 								</td>
 								<% end if %>
-								<td width="18%" ><button type="button" onclick="excluirItemPercentualConfiguracao(this)" class="btn btn-danger btn-xs fa fa-trash"></button></td>
+								<td width="18%" ><button type="button" onclick="excluirItemPercentualConfiguracao(this)" class="btn btn-danger btn-xs far fa-trash"></button></td>
 							</tr>
 						<%
 						list.movenext
@@ -614,7 +614,7 @@ end if
 	criarButtonExcluir = _ => {
 		let buttonExcluir = document.createElement("button");
 		buttonExcluir.setAttribute("type", "button");
-		buttonExcluir.setAttribute("class", "btn btn-danger btn-xs fa fa-trash");
+		buttonExcluir.setAttribute("class", "btn btn-danger btn-xs far fa-trash");
 		buttonExcluir.setAttribute("onclick", "excluirItemPercentualConfiguracao(this)");
 
 		return buttonExcluir;

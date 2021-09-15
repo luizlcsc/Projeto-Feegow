@@ -9,10 +9,10 @@ set pro = db.execute("select * from profissionais where id="&req("I"))
 <div class="panel">
     <div class="panel-heading">
         <span class="panel-title">
-            <i class="fa fa-calendar"></i> Integração da Agenda de <%=Nome%> com o Google Calendar
+            <i class="far fa-calendar"></i> Integração da Agenda de <%=Nome%> com o Google Calendar
         </span>
         <span class="panel-controls">
-            <button id="btnSalvarIntegracao" type="submit" class="btn btn-sm btn-primary"> <i class="fa fa-key"></i> Salvar </button>
+            <button id="btnSalvarIntegracao" type="submit" class="btn btn-sm btn-primary"> <i class="far fa-key"></i> Salvar </button>
         </span>
     </div>
     <div id="login-box" class="panel-body">
@@ -28,7 +28,7 @@ set pro = db.execute("select * from profissionais where id="&req("I"))
                             <label class="field prepend-icon">
                                 <input type="email" class="form-control" name="GoogleCalendar" id="GoogleCalendar" required placeholder="E-mail do Google Calendar" value="<%= pro("GoogleCalendar") %>" autofocus />
                                 <label for="GoogleCalendar" class="field-icon">
-                                    <i class="fa fa-user"></i>
+                                    <i class="far fa-user"></i>
                                 </label>
                             </label>
                         <div class="space"></div>

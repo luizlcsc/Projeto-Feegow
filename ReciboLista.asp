@@ -24,9 +24,9 @@ end if
                 	<td class="text-right"><%=rec("sysDate")%></td>
                 	<td class="text-right">R$ <%=formatnumber(rec("Valor"),2)%></td>
                 	<td nowrap>
-                        <a href="javascript:getRecibo(<%=rec("id")%>);" class="btn btn-xs btn-primary"><i class="fa fa-search-plus"></i></a>
+                        <a href="javascript:getRecibo(<%=rec("id")%>);" class="btn btn-xs btn-primary"><i class="far fa-search-plus"></i></a>
                         <%if aut("recibosX")=1 then %>
-                        <a href="javascript:deleteRecibo(<%=rec("id")%>);" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
+                        <a href="javascript:deleteRecibo(<%=rec("id")%>);" class="btn btn-xs btn-danger"><i class="far fa-trash"></i></a>
                         <%end if %>
                 	</td>
                 </tr>

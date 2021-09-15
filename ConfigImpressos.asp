@@ -16,7 +16,7 @@
 
 <div class="widget-box transparent">
   <div class="widget-header widget-header-flat">
-          <h4><i class="fa fa-<%=dIcone(lcase(req("P")))%> blue"></i> CONFIGURAÇÃO DE IMPRESSOS</h4>
+          <h4><i class="far fa-<%=dIcone(lcase(req("P")))%> blue"></i> CONFIGURAÇÃO DE IMPRESSOS</h4>
   </div>
 </div>
 
@@ -186,7 +186,7 @@ end if
                                         <input type="hidden" value="<%=ordem%>" id="ordem<%=CamposRecibo("campoId")%>" class="sortable-number">
                                         <div class="row">
                                             <div class="col-md-1">
-                                                <span class="fa fa-sort"></span>
+                                                <span class="far fa-sort"></span>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="checkbox-primary checkbox-custom">
@@ -251,7 +251,7 @@ end if
                                         <input type="hidden" value="<%=ordem%>" id="ordemP<%=CamposReciboApagar("campoId")%>" class="sortable-number">
                                         <div class="row">
                                             <div class="col-md-1">
-                                                <span class="fa fa-sort"></span>
+                                                <span class="far fa-sort"></span>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="checkbox-primary checkbox-custom">
@@ -512,7 +512,7 @@ function saveImpressos(tipo){
            Visiveis : visiveis,
 
 		   },function(data,status){
-			  $("#btn-"+tipo).html('<i class="fa fa-save"></i> Salvar');
+			  $("#btn-"+tipo).html('<i class="far fa-save"></i> Salvar');
 			  $("#btn-"+tipo).removeAttr('disabled');
 			  eval(data);
     });

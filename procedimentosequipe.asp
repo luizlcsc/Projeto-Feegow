@@ -28,7 +28,7 @@ end if
 <div class="panel-heading">
     <span class="panel-title">Equipe para Repasse <small>&raquo; particular</small></span>
     <span class="panel-controls">
-        <button type="button" class="btn btn-sm btn-info" onclick="pep('I', 0, 0)"><i class="fa fa-plus"></i> Adicionar</button>
+        <button type="button" class="btn btn-sm btn-info" onclick="pep('I', 0, 0)"><i class="far fa-plus"></i> Adicionar</button>
     </span>
 </div>
 
@@ -69,7 +69,7 @@ end if
                     </td>
                     <td><%call selectCurrentAccounts("ContaPadraoP"&eq("id"), "0, 5, 4, 2, 8", eq("ContaPadrao"), "")%></td>
                     <td><%=quickField("multiple", "TabelasPermitidasP"&eq("id"), "", 12, eq("TabelasPermitidas"), "select id, `table` Tabela from cliniccentral.sys_financialaccountsassociation where id in (2,3,4,5,8)", "Tabela", "")%></td>
-                    <td><button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este item?'))pep('X', 0, <%=eq("id") %>)"><i class="fa fa-remove"></i></button></td>
+                    <td><button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este item?'))pep('X', 0, <%=eq("id") %>)"><i class="far fa-remove"></i></button></td>
                 </tr>
                 <%
             eq.movenext
@@ -88,7 +88,7 @@ end if
 <div class="widget-header">
     <h4>Equipe para Faturamento e Repasse <small>&raquo; conv&ecirc;nio</small></h4>
     <div class="widget-toolbar">
-        <button type="button" class="pull-right btn btn-xs btn-info" onclick="pec('I', 0, 0)"><i class="fa fa-plus"></i> Adicionar</button>
+        <button type="button" class="pull-right btn btn-xs btn-info" onclick="pec('I', 0, 0)"><i class="far fa-plus"></i> Adicionar</button>
     </div>
 </div>
 
@@ -125,7 +125,7 @@ end if
                         </div>
                     </td>
                     <td><%call selectCurrentAccounts("ContaPadraoC"&eq("id"), "0, 5, 4, 2, 8", eq("ContaPadrao"), "")%></td>
-                    <td><button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este item?'))pec('X', 0, <%=eq("id") %>)"><i class="fa fa-remove"></i></button></td>
+                    <td><button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este item?'))pec('X', 0, <%=eq("id") %>)"><i class="far fa-remove"></i></button></td>
                 </tr>
                 <%
             eq.movenext

@@ -70,8 +70,8 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
 
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left">
-        <li class="active"><a data-toggle="tab" href="#divpedido" id="btnpedido"><i class="fa fa-file-text"></i> Guia de Solicitação</a></li>
-        <li><a data-toggle="tab" class="hidden" id="btnpedidosmodelos" href="#pedidosmodelos"><i class="fa fa-list"></i> <span class="hidden-480">Modelos</span></a></li>
+        <li class="active"><a data-toggle="tab" href="#divpedido" id="btnpedido"><i class="far fa-file-text"></i> Guia de Solicitação</a></li>
+        <li><a data-toggle="tab" class="hidden" id="btnpedidosmodelos" href="#pedidosmodelos"><i class="far fa-list"></i> <span class="hidden-480">Modelos</span></a></li>
 	</ul>
 </div>
 <div class="panel-body p25" id="iProntCont">
@@ -81,17 +81,17 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
             <div class="col-xs-8">
                 <div class="row">
                     <div class="col-md-1">
-                        <button type="button" class="btn btn-info btn-block" onClick="GerarNovo('PedidosSADT', '<%=PacienteID%>', '0', '', '');"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-info btn-block" onClick="GerarNovo('PedidosSADT', '<%=PacienteID%>', '0', '', '');"><i class="far fa-plus"></i></button>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" onclick="saveConteudoPedidoSADT('E')" class="btn btn-primary btn-block"><i class="fa fa-save"></i> Salvar</button>
+                        <button type="button" onclick="saveConteudoPedidoSADT('E')" class="btn btn-primary btn-block"><i class="far fa-save"></i> Salvar</button>
                     </div>
                     <div class="col-md-3">
                         <form method="post">
                             <div class="btn-group btn-block">
 
                                 <button type="button" class="btn btn-info btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-print"></i> Imprimir
+                                    <i class="far fa-print"></i> Imprimir
                                     <span class="caret ml5"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
@@ -118,7 +118,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                           <div class="btn-group text-left">
                               <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
                                   Grupos
-                                  <span class="fa fa-caret-down icon-on-right"></span>
+                                  <span class="far fa-caret-down icon-on-right"></span>
                               </button>
 
                               <ul class="dropdown-menu dropdown-default">
@@ -180,8 +180,8 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
 
                     <%
                     if lcase(session("Table"))="profissionais" then %>
-                      <button type="button" onclick="GerarGuiaSADT()" id="GerarGuiaSADT" class="btn btn-primary btn-md"><i class="fa fa-external-link"></i> Gerar Guia</button>
-                      <a class="btn btn-success btn-md" target="_blank" href="?P=tissguiasadt&I=<%=GuiaID%>&Pers=1" id="AbrirGuiaSADT" ><i class="fa fa-expand"></i> Guia <%=GuiaID%></a>
+                      <button type="button" onclick="GerarGuiaSADT()" id="GerarGuiaSADT" class="btn btn-primary btn-md"><i class="far fa-external-link"></i> Gerar Guia</button>
+                      <a class="btn btn-success btn-md" target="_blank" href="?P=tissguiasadt&I=<%=GuiaID%>&Pers=1" id="AbrirGuiaSADT" ><i class="far fa-expand"></i> Guia <%=GuiaID%></a>
                     <%end if %>
                 </div>
             </div>
@@ -189,12 +189,12 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">
-                            <i class="fa fa-file-text-o"></i>
+                            <i class="far fa-file-text-o"></i>
                             Busca de procedimentos - TUSS
                         </span>
                         <div class="panel-controls">
                                  <a href="#" onclick="modalPastas('', 'Lista')" class="btn btn-xs btn-dark" data-placement="top" title="">
-                                    <i class="fa fa-folder text-white"></i>
+                                    <i class="far fa-folder text-white"></i>
                                 </a>
                         </div>
                     </div>
@@ -209,7 +209,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                             <div id="FiltroP" contenteditable="true" class="form-control input-sm refina" readonly onfocus="this.removeAttribute('readonly');" placeholder="Digite o código ou descrição..." type="text"></div>
                             <span class="input-group-btn">
                                 <button class="btn btn-sm btn-default" onclick="ListaTextosPedidosSADT($('#FiltroP').html(), '', '')" type="button">
-                                    <i class="fa fa-filter icon-filter bigger-110"></i>
+                                    <i class="far fa-filter icon-filter bigger-110"></i>
                                     Buscar
                                 </button>
                             </span>
@@ -352,7 +352,7 @@ function GerarGuiaSADT(){
                 $("#AbrirGuiaSADT").removeClass("hidden");
                 $("#AbrirGuiaSADT").show();
                 $("#AbrirGuiaSADT").attr('href', '?P=tissguiasadt&I=' + GuiaID + '&Pers=1');
-                $("#AbrirGuiaSADT").html('<i class="fa fa-expand"></i> Guia ' + GuiaID);
+                $("#AbrirGuiaSADT").html('<i class="far fa-expand"></i> Guia ' + GuiaID);
 
                 $("#ConvenioIDPedidoSADT, #IndicacaoClinicaPedidoSADT, #ProfissionalExecutanteIDPedidoSADT, #ObservacoesPedidoSADT, #DataSolicitacao").attr("disabled", true);
                 $("#savePedidoSADT").html(" Guia SP/SADT");
@@ -414,7 +414,7 @@ function saveConteudoPedidoSADT(E){
 }
 
 function GerarNovo(t, p, m, i, a) {
-    $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+    $("#modal-form .panel").html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
     $.get("iPront.asp?t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
         $("#modal-form .panel").html(data);
     })

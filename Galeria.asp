@@ -25,19 +25,19 @@
 
 											<div class="tools">
 												<a href="#">
-													<i class="fa fa-link"></i>
+													<i class="far fa-link"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-paper-clip"></i>
+													<i class="far fa-paper-clip"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-pencil"></i>
+													<i class="far fa-pencil"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-remove red"></i>
+													<i class="far fa-remove red"></i>
 												</a>
 											</div>
 										</li>
@@ -61,19 +61,19 @@
 
 											<div class="tools tools-bottom">
 												<a href="#">
-													<i class="fa fa-link"></i>
+													<i class="far fa-link"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-paper-clip"></i>
+													<i class="far fa-paper-clip"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-pencil"></i>
+													<i class="far fa-pencil"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-remove red"></i>
+													<i class="far fa-remove red"></i>
 												</a>
 											</div>
 										</li>
@@ -94,19 +94,19 @@
 
 											<div class="tools tools-top">
 												<a href="#">
-													<i class="fa fa-link"></i>
+													<i class="far fa-link"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-paper-clip"></i>
+													<i class="far fa-paper-clip"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-pencil"></i>
+													<i class="far fa-pencil"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-remove red"></i>
+													<i class="far fa-remove red"></i>
 												</a>
 											</div>
 										</li>
@@ -120,15 +120,15 @@
 
 														<br />
 														<a href="assets/images/gallery/image-5.jpg" data-rel="colorbox">
-															<i class="fa fa-zoom-in"></i>
+															<i class="far fa-zoom-in"></i>
 														</a>
 
 														<a href="#">
-															<i class="fa fa-user"></i>
+															<i class="far fa-user"></i>
 														</a>
 
 														<a href="#">
-															<i class="fa fa-share-alt"></i>
+															<i class="far fa-share-alt"></i>
 														</a>
 													</div>
 												</div>
@@ -142,19 +142,19 @@
 
 											<div class="tools tools-right">
 												<a href="#">
-													<i class="fa fa-link"></i>
+													<i class="far fa-link"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-paper-clip"></i>
+													<i class="far fa-paper-clip"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-pencil"></i>
+													<i class="far fa-pencil"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-remove red"></i>
+													<i class="far fa-remove red"></i>
 												</a>
 											</div>
 										</li>
@@ -166,19 +166,19 @@
 
 											<div class="tools">
 												<a href="#">
-													<i class="fa fa-link"></i>
+													<i class="far fa-link"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-paper-clip"></i>
+													<i class="far fa-paper-clip"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-pencil"></i>
+													<i class="far fa-pencil"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-remove red"></i>
+													<i class="far fa-remove red"></i>
 												</a>
 											</div>
 										</li>
@@ -190,19 +190,19 @@
 
 											<div class="tools tools-top">
 												<a href="#">
-													<i class="fa fa-link"></i>
+													<i class="far fa-link"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-paper-clip"></i>
+													<i class="far fa-paper-clip"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-pencil"></i>
+													<i class="far fa-pencil"></i>
 												</a>
 
 												<a href="#">
-													<i class="fa fa-remove red"></i>
+													<i class="far fa-remove red"></i>
 												</a>
 											</div>
 										</li>
@@ -215,8 +215,8 @@
 		reposition:true,
 		scalePhotos:true,
 		scrolling:false,
-		previous:'<i class="fa fa-arrow-left"></i>',
-		next:'<i class="fa fa-arrow-right"></i>',
+		previous:'<i class="far fa-arrow-left"></i>',
+		next:'<i class="far fa-arrow-right"></i>',
 		close:'&times;',
 		current:'{current} of {total}',
 		maxWidth:'100%',

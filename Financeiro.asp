@@ -3,7 +3,7 @@
 
 <script type="text/javascript">
     $(".crumb-active").html("<a href='#'>Financeiro</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-money");
+    $(".crumb-icon a span").attr("class", "far fa-money");
     $(".crumb-trail").removeClass("hidden");
     $(".crumb-trail").html("painel principal");
 </script>

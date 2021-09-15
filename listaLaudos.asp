@@ -305,51 +305,51 @@ end if
                         <td><small><%= left(Laudador, 20) %></small></td>
                         <td>
                             <%if NomeProcedimento = "Laboratório" then %>
-                                <span class="label label-system" title="Ver Detalhes" onclick="esconder('<%=ii("Identificacao")%>',<%=ii("invoiceid")%> );"> <i class="fa fa-flask"></i> <small><%=NomeProcedimento %></small> </span>
+                                <span class="label label-system" title="Ver Detalhes" onclick="esconder('<%=ii("Identificacao")%>',<%=ii("invoiceid")%> );"> <i class="far fa-flask"></i> <small><%=NomeProcedimento %></small> </span>
                             <%else %>
                                 <small><%=NomeProcedimento %></small>
                             <%end if%>
                         </td>
                         <td><%= ii("NomeConvenio") %></td>
                         <td id="status<%=ii("invoiceid") %>"><span  class="label label-rounded label-<%=StatusClasse%>"><%= Status %></span></td>
-                        <td><% if cint(ii("TemArquivos")) > 0 then %><span data-toggle="tooltip" title="<%=ii("TemArquivos")%> arquivo(s) anexo(s)" class="label label-rounded label-info"><i class="fa fa-paperclip"></i></span><% end if %></td>
+                        <td><% if cint(ii("TemArquivos")) > 0 then %><span data-toggle="tooltip" title="<%=ii("TemArquivos")%> arquivo(s) anexo(s)" class="label label-rounded label-info"><i class="far fa-paperclip"></i></span><% end if %></td>
                         <td>
                             <div class="btn-group" style="float: right">
                             <% if Status = "Pendente" or Status="Parcial" then %>
                                 <% if ii("labid")="1" then %>
-                                    <a id="a<%=ii("invoiceid") %>"  class="btn btn-sm btn-alert" <%=disabledEdit%> href="javascript:syncLabResult(['<%=ii("invoiceid") %>'],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado São Marcos"><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                    <a id="a<%=ii("invoiceid") %>"  class="btn btn-sm btn-alert" <%=disabledEdit%> href="javascript:syncLabResult(['<%=ii("invoiceid") %>'],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado São Marcos"><i id="<%=ii("invoiceid") %>" class="far fa-flask"></i></a>
                                 <% end if %>
                                 <% if ii("labid")="2" then %>
-                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Diagnósticos do Brasil" ><i id="<%=ii("invoiceid") %>" class="far fa-flask"></i></a>
                                 <% end if %>
                                 <% if ii("labid")="3" then %>
-                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Álvaro" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Álvaro" ><i id="<%=ii("invoiceid") %>" class="far fa-flask"></i></a>
                                 <% end if %>
                                 <% if ii("labid")="4" then %>
-                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Hermes Pardini" ><i id="<%=ii("invoiceid") %>" class="fa fa-flask"></i></a>
+                                    <a id="a<%=ii("invoiceid") %>" class="btn btn-sm btn-" <%=disabledEdit%> href="javascript:syncLabResult([<%=ii("invoiceid") %>],'<%=ii("labid") %>'); $('#<%=ii("invoiceid") %>').toggleClass('fa-flask fa-spinner fa-spin');" title="Solicitar Resultado Hermes Pardini" ><i id="<%=ii("invoiceid") %>" class="far fa-flask"></i></a>
                                 <% end if %>
                             <% end if %>
                              <% if ii("labid")="1" then %>
-                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=648&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
+                                 <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=648&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="far fa-edit"></i></a>
                              <% elseif ii("labid")="2" then %>
-                                <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=739&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="fa fa-edit"></i></a>
+                                <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&formid=739&Pac=<%=PacienteID%>&invoiceid=<%=ii("invoiceid") %>"><i class="far fa-edit"></i></a>
                              <% elseif ii("labid")="3" then %>
                                  <% if  Status="Liberado" then %>
-                                    <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>,'pdf');" href="#"><i class="fa fa-file-pdf-o"></i></a>
+                                    <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>,'pdf');" href="#"><i class="far fa-file-pdf-o"></i></a>
                                  <% end if %>
                              <% elseif ii("labid")="4" then %>
                                 <% if  Status="Liberado" then %>
-                                    <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>,'pdf');" href="#"><i class="fa fa-file-pdf-o"></i></a>
+                                    <a class="btn btn-sm btn-default" <%=disabledEdit%> onclick="entrega(<%=IDLaudo %>,'pdf');" href="#"><i class="far fa-file-pdf-o"></i></a>
                                 <% end if %>
                              <% else %> 
-                                <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%=link%>"><i class="fa fa-edit"></i></a>
+                                <a class="btn btn-sm btn-default" <%=disabledEdit%> target="_blank" href="./?P=Laudo&Pers=1&<%=link%>"><i class="far fa-edit"></i></a>
                             <% end if
                             
                             if Status="Liberado" and ii("labid")<>"4" and ii("labid")<>"3" then
-                                response.write("<a href=""javascript:entrega("&IDLaudo&",'html')"" class='btn btn-sm btn-info'><span class='fa fa-print'></span> </a>")
+                                response.write("<a href=""javascript:entrega("&IDLaudo&",'html')"" class='btn btn-sm btn-info'><span class='far fa-print'></span> </a>")
                             end if
                             %>
-                            <button class="btn btn-sm btn-info hidden"><i class="fa fa-print"></i></button>
+                            <button class="btn btn-sm btn-info hidden"><i class="far fa-print"></i></button>
 
                             </div>
                         </td>
@@ -431,7 +431,7 @@ $(document).ready(function(){
 
              if(msg){
                    var url = "whatsapp://send?phone="+telefone+"&text="+msg;
-                   $(arg1).append("<i class='success fa fa-check-circle'></i>");
+                   $(arg1).append("<i class='success far fa-check-circle'></i>");
                    const link = document.createElement('a');
                    link.href = url;
                    link.target = '_blank';
@@ -517,7 +517,7 @@ function AlertarWhatsapp(Celular, Texto, id) {
         "warning", "Instalar o WhatsApp", 60 * 1000);
     }
     var url = "whatsapp://send?phone="+Celular+"&text="+Texto;
-    $("#wpp-"+id).html("<i class='success fa fa-check-circle'></i>");
+    $("#wpp-"+id).html("<i class='success far fa-check-circle'></i>");
     openTab(url);
 }
 

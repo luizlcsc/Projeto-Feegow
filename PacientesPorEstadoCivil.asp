@@ -15,7 +15,7 @@ bec="0"
 end if
 %>
   <%if req("Lista")="" then%>
-  <button name="button" class="btn btn-primary btn-block" type="button" onclick="location.href='./?P=<%=req("TipoRel")%>&Pers=1&TipoRel=<%=req("TipoRel")%>&EstadoCivil=<%=bec%>&Lista=Sim';"><i class="fa fa-list"></i> <%=(ec)%>: <%=c%> paciente(s) - Listar</button>
+  <button name="button" class="btn btn-primary btn-block" type="button" onclick="location.href='./?P=<%=req("TipoRel")%>&Pers=1&TipoRel=<%=req("TipoRel")%>&EstadoCivil=<%=bec%>&Lista=Sim';"><i class="far fa-list"></i> <%=(ec)%>: <%=c%> paciente(s) - Listar</button>
   <% end if %>
 
 <br />

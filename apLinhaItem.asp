@@ -13,7 +13,7 @@ end if
         <input type="hidden" name="TipoProcedimentoID<%=id%>" value="<%=TipoProcedimentoID%>">
         <input type="hidden" name="ProcedimentoID<%=id%>" value="<%=ProcedimentoID%>">
         <input type="hidden" name="Fator<%=id%>" value="<%=Fator%>">
-    	<i class="fa fa-<%= Icone %>"></i>
+    	<i class="far fa-<%= Icone %>"></i>
     </td>
     <td><%=NomeForma%></td>
     <td><%=NomeProcedimento%></td>
@@ -46,10 +46,10 @@ end if
 	<%else%>
     <input type="hidden" name="<%="ValorFinal"&id%>" value="<%=ValorFinal%>">
 	<%end if%>
-    <td><button class="btn btn-info btn-xs" type="button" onClick="$('#row2<%=id%>').fadeToggle(200);"><i class="fa fa-align-left"></i></button></td>
+    <td><button class="btn btn-info btn-xs" type="button" onClick="$('#row2<%=id%>').fadeToggle(200);"><i class="far fa-align-left"></i></button></td>
     <td>
     <%if aut("finalizaratendimentoX")=1 then%>
-        <button class="btn btn-danger btn-xs" type="button" onClick="addProc('X', <%=id%>);"><i class="fa fa-remove"></i></button>
+        <button class="btn btn-danger btn-xs" type="button" onClick="addProc('X', <%=id%>);"><i class="far fa-remove"></i></button>
 	<%end if%>
     </td>
 </tr>

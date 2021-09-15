@@ -136,7 +136,7 @@ end if
 //alert("Termo completo: '<%=termoCompleto %>' \n A palavra chave é '<%=PalavraChave %>' \n O comando utilizado foi '<%=comando%>' \n O conteúdo é '<%=Conteudo %>' \n Você está na página <%=Pagina %> ");
 
 $.gritter.add({
-    title: '<i class="fa fa-microphone"></i> <%=Comando %>',
+    title: '<i class="far fa-microphone"></i> <%=Comando %>',
     text: '<%=Conteudo%>',
     class_name: 'gritter-success'
 });

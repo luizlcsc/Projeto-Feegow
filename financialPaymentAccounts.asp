@@ -173,7 +173,7 @@ jQuery(function($) {
 		var no_icon
 		if(this.checked) {
 			btn_choose = "Anexar imagem";
-			no_icon = "fa fa-picture";
+			no_icon = "far fa-picture";
 			before_change = function(files, dropped) {
 				var allowed_files = [];
 				for(var i = 0 ; i < files.length; i++) {
@@ -198,7 +198,7 @@ jQuery(function($) {
 		}
 		else {
 			btn_choose = "Drop files here or click to choose";
-			no_icon = "fa fa-cloud-upload";
+			no_icon = "far fa-cloud-upload";
 			before_change = function(files, dropped) {
 				return files;
 			}

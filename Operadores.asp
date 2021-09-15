@@ -2,9 +2,9 @@
 
 <div class="widget-box transparent">
     <div class="widget-header widget-header-flat">
-        <h4><i class="fa fa-user blue"></i> OPERADORES ATIVOS</h4>
+        <h4><i class="far fa-user blue"></i> OPERADORES ATIVOS</h4>
         <div class="widget-toolbar">
-            <div><a class="btn btn-sm btn-success" href="?P=Operador&I=N&Pers=1"><i class="fa fa-plus"></i> INSERIR</a></div>
+            <div><a class="btn btn-sm btn-success" href="?P=Operador&I=N&Pers=1"><i class="far fa-plus"></i> INSERIR</a></div>
         </div>
     </div>
 </div>
@@ -32,11 +32,11 @@
                 	<td><a href="<%=link%>"><%=ops("Nome")%></a></td>
                 	<td><%=ops("Email")%></td>
                 	<td nowrap width="1%">
-                    	<a class="btn btn-xs btn-success" href="<%=link%>"><i class="fa fa-edit"></i></a>
+                    	<a class="btn btn-xs btn-success" href="<%=link%>"><i class="far fa-edit"></i></a>
                     	<%
 						if ops("Admin")=0 then
 						%>
-                        	<a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir este operador?'))location.href='./?P=Operadores&Pers=1&X=<%=ops("id")%>'"><i class="fa fa-remove"></i></a>
+                        	<a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir este operador?'))location.href='./?P=Operadores&Pers=1&X=<%=ops("id")%>'"><i class="far fa-remove"></i></a>
                         <%
 						end if
 						%>

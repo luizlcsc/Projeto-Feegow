@@ -16,7 +16,7 @@
     <div class='panel-heading'>
         <span>Tipos de documentos</span>
         <div class='actionArea'>
-            <button class="btn btn-success" onclick="documentosSalvar()"><i class="fa fa-plus"></i> Salvar documentos</button>
+            <button class="btn btn-success" onclick="documentosSalvar()"><i class="far fa-plus"></i> Salvar documentos</button>
         </div>
     </div>
     <div id='documentosWarper' class="panel-body">
@@ -65,7 +65,7 @@
                 </select>
             </div>
             <div class='col-md-2'>
-                <button class='btn btn-danger btn-xs'><i class="fa fa-trash"></i></button>
+                <button class='btn btn-danger btn-xs'><i class="far fa-trash"></i></button>
             </div>
         </div>`
         $('#documentosWarper').append(html)

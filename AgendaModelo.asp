@@ -19,37 +19,37 @@
 				<div class="widget-main no-padding">
 					<div id="external-events">
 						<div class="external-event label-grey" data-class="label-grey">
-							<i class="fa fa-move"></i>
+							<i class="far fa-move"></i>
 							My Event 1
 						</div>
 
 						<div class="external-event label-success" data-class="label-success">
-							<i class="fa fa-move"></i>
+							<i class="far fa-move"></i>
 							My Event 2
 						</div>
 
 						<div class="external-event label-danger" data-class="label-danger">
-							<i class="fa fa-move"></i>
+							<i class="far fa-move"></i>
 							My Event 3
 						</div>
 
 						<div class="external-event label-purple" data-class="label-purple">
-							<i class="fa fa-move"></i>
+							<i class="far fa-move"></i>
 							My Event 4
 						</div>
 
 						<div class="external-event label-yellow" data-class="label-yellow">
-							<i class="fa fa-move"></i>
+							<i class="far fa-move"></i>
 							My Event 5
 						</div>
 
 						<div class="external-event label-pink" data-class="label-pink">
-							<i class="fa fa-move"></i>
+							<i class="far fa-move"></i>
 							My Event 6
 						</div>
 
 						<div class="external-event label-info" data-class="label-info">
-							<i class="fa fa-move"></i>
+							<i class="far fa-move"></i>
 							My Event 7
 						</div>
 
@@ -107,8 +107,8 @@
 	
 	var calendar = $('#calendar').fullCalendar({
 		 buttonText: {
-			prev: '<i class="fa fa-chevron-left"></i>',
-			next: '<i class="fa fa-chevron-right"></i>'
+			prev: '<i class="far fa-chevron-left"></i>',
+			next: '<i class="far fa-chevron-right"></i>'
 		},
 	
 		header: {

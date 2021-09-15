@@ -66,7 +66,7 @@ end if
                 <td><%=nameInTable(lista("SolicitanteID")) %></td>
                 <td><%= Produtos %></td>
                 <td><%=lista("NomeLocalizacao") %> </td>
-                <td><a href="./?P=Estoque_requisicao&Pers=1&I=<%=lista("id") %>" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a> </td>
+                <td><a href="./?P=Estoque_requisicao&Pers=1&I=<%=lista("id") %>" class="btn btn-success btn-xs"><i class="far fa-edit"></i></a> </td>
             </tr>
             <%
         lista.movenext

@@ -75,7 +75,7 @@ end if
                    	response.Write(quickField("text", "Quantidade", "Quantidade", 1, Quantidade, "", "", " readonly='readonly' autocomplete='off'"))
 					%>
 					<div class="col-md-1"><label>&nbsp;</label><br />
-                    	<button onclick="Add(1);" class="btn btn-success btn-block" type="button"><i class="fa fa-plus"></i></button>
+                    	<button onclick="Add(1);" class="btn btn-success btn-block" type="button"><i class="far fa-plus"></i></button>
                     </div>
 					<%
 					response.Write(quickField("currency", "Valor", "Valor Unit&aacute;rio", 3, Valor, "", "", " required"))
@@ -110,7 +110,7 @@ end if
 					response.Write(quickField("currency", "Desconto", "Desconto Unit&aacute;rio", 3, Desconto, "", "", ""&disableable))
 					if classBtnHide="" and 1=2 then%>
                         <div class="col-md-4"><label>&nbsp;</label><br />
-                            <button type="button" class="btn btn-block btn-primary"><i class="fa fa-puzzle-piece"></i> Ver Repasses Inclusos</button>
+                            <button type="button" class="btn btn-block btn-primary"><i class="far fa-puzzle-piece"></i> Ver Repasses Inclusos</button>
                         </div>
                         <div class="col-md-12">
                         <hr />
@@ -129,7 +129,7 @@ end if
     </div>
 </div>
 <div class="modal-footer no-margin-top">
-	<button class="btn btn-primary"><i class="fa fa-save"></i> Salvar Itens</button>
+	<button class="btn btn-primary"><i class="far fa-save"></i> Salvar Itens</button>
 </div>
 </form>
 

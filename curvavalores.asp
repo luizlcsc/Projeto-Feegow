@@ -57,7 +57,7 @@ end if
                             <td><%= quickfield("number", "Altura"&reg("id"), "", 12, reg("Altura"), " text-right ", "", "") %></td>
                             <td><%= quickfield("number", "PerimetroCefalico"&reg("id"), "", 12, reg("PerimetroCefalico"), " text-right ", "", "") %></td>
                             <td>
-                                <button class="btn btn-danger btn-xs" type="button" onclick="curvaValores('X', <%= reg("id") %>)"><i class="fa fa-remove"></i></button>
+                                <button class="btn btn-danger btn-xs" type="button" onclick="curvaValores('X', <%= reg("id") %>)"><i class="far fa-remove"></i></button>
                             </td>
                         </tr>
                         <%
@@ -73,8 +73,8 @@ end if
     </form>
     <div class="row">
         <div class="col-xs-12 text-center">
-            <button type="button" class="btn btn-xs btn-success" onclick="curvaValores('I', 0)"><i class="fa fa-plus"></i> INSERIR</button>
-            <button type="button" class="btn btn-xs btn-primary" onclick="curvaValores('A', 0)"><i class="fa fa-save"></i> SALVAR</button>
+            <button type="button" class="btn btn-xs btn-success" onclick="curvaValores('I', 0)"><i class="far fa-plus"></i> INSERIR</button>
+            <button type="button" class="btn btn-xs btn-primary" onclick="curvaValores('A', 0)"><i class="far fa-save"></i> SALVAR</button>
         </div>
     </div>
 </div>

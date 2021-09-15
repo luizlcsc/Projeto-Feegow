@@ -265,7 +265,7 @@ select case Tipo
                         if nForms<>1 then %>
                         <div class="btn-group btn-block">
                             <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-plus"></i> <%=rotuloBotao %>
+                                <i class="far fa-plus"></i> <%=rotuloBotao %>
                                 <span class="caret ml5"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
@@ -275,7 +275,7 @@ select case Tipo
 				                if autForm(forms("id"), "IN", "") then
                                 %>
                                 <li  <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%>><a  <% if EmAtendimento=1 then%>
-                                href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', '<%=PacienteID%>', '<%=forms("id")%>', 'N', '');" <% end if %>><i class="fa fa-plus"></i> <%=forms("Nome")%></a></li>
+                                href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', '<%=PacienteID%>', '<%=forms("id")%>', 'N', '');" <% end if %>><i class="far fa-plus"></i> <%=forms("Nome")%></a></li>
                                 <%
 				                end if
 			                forms.movenext
@@ -285,7 +285,7 @@ select case Tipo
 			                if aut("buiformsI") and session("Banco")<>"clinic522" then
                                 %>
                                 <li class="divider"></li>
-                                <li><a href="./?P=buiforms&Pers=Follow"><i class="fa fa-cog"></i> Gerenciar modelos de <%=lcase(subTitulo) %></a></li>
+                                <li><a href="./?P=buiforms&Pers=Follow"><i class="far fa-cog"></i> Gerenciar modelos de <%=lcase(subTitulo) %></a></li>
                                 <%
 			                end if
                                 %>
@@ -293,7 +293,7 @@ select case Tipo
                         </div>
                         
                     <% else %>
-                        <button type="button" class="btn btn-primary btn-block" <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%> <% if EmAtendimento=1 then%> onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, <%= idFormUnico %>, 'N', '');"<% end if %>><i class="fa fa-plus"></i> <%= nomeFormUnico %></button>
+                        <button type="button" class="btn btn-primary btn-block" <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%> <% if EmAtendimento=1 then%> onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, <%= idFormUnico %>, 'N', '');"<% end if %>><i class="far fa-plus"></i> <%= nomeFormUnico %></button>
                     <% end if %>
                 </div>
                 <%
@@ -312,14 +312,14 @@ select case Tipo
                 %>
                     <div class="col-md-3 col-xs-12">
                         <br>
-                        <a type="button" class="btn btn-block btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="fa fa-external-link"></i> Restaurar Formulário</a>
+                        <a type="button" class="btn btn-block btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="far fa-external-link"></i> Restaurar Formulário</a>
                     </div>
                 <%
                 if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) and (Sexo=1 or Sexo=2) then
                 %>
                     <div class="col-md-3">
                         <br>
-                        <a class="btn btn-info" href="javascript:curva(<%= PacienteID %>)"><i class="fa fa-bar-chart"></i> Curvas de Evolução</a>
+                        <a class="btn btn-info" href="javascript:curva(<%= PacienteID %>)"><i class="far fa-bar-chart"></i> Curvas de Evolução</a>
                     </div>
                 <%
                 end if
@@ -329,7 +329,7 @@ select case Tipo
                 %>
                 <div class="col-md-3">
                     <br>
-                    <a type="button" class="btn btn-block btn-system" href="./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1" target="_blank"><i class="fa fa-external-link"></i> Ir para Laudos</a>
+                    <a type="button" class="btn btn-block btn-system" href="./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1" target="_blank"><i class="far fa-external-link"></i> Ir para Laudos</a>
                 </div>
                  <%
                 end if
@@ -372,7 +372,7 @@ select case Tipo
             <div class="panel-body">
                 <div class="col-md-4">
                     <button type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%else %>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, 'N', '');" <%end if%>>
-                        <i class="fa fa-plus"></i> Inserir Diagnóstico
+                        <i class="far fa-plus"></i> Inserir Diagnóstico
                     </button>
                 </div>
             </div>
@@ -398,7 +398,7 @@ select case Tipo
                 %>
                 <div class="col-md-8">
                                 <button id="AbrirMemed" disabled type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%else%>" onclick="openMemed()"<%end if%>>
-                                    <i class="fa fa-plus"></i> Inserir Prescrição
+                                    <i class="far fa-plus"></i> Inserir Prescrição
                                 </button>
                 </div>
                                 <div class="col-md-4">
@@ -409,7 +409,7 @@ select case Tipo
                 %>
                 <div class="col-md-8">
                 <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
-                    <i class="fa fa-plus"></i> Inserir Prescrição
+                    <i class="far fa-plus"></i> Inserir Prescrição
                 </button>
                 </div>
                 <div class="col-md-4">
@@ -457,7 +457,7 @@ else
 
                 <div class="col-md-8">
                 <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
-                    <i class="fa fa-plus"></i> Inserir Prescrição
+                    <i class="far fa-plus"></i> Inserir Prescrição
                 </button>
                 </div>
                 <% end if %>
@@ -496,16 +496,16 @@ else
             <div class="panel-body" style="overflow: inherit!important;">
                 <div class="col-md-4">
                     <!--button type="button" class="btn btn-primary dropdown-toggle<% if EmAtendimento=0 then %> disabled" data-toggle="dropdown" title="Inicie um atendimento." aria-expanded="false" data-placement="right" <% else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
-                        <i class="fa fa-plus"></i> Inserir Texto / Atestado
+                        <i class="far fa-plus"></i> Inserir Texto / Atestado
                     </button-->
 
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-plus"></i> Inserir
+                        <i class="far fa-plus"></i> Inserir
                         <span class="caret ml5"></span>
                     </button>
                     <ul class="dropdown-menu disabled" role="menu">
-                        <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="fa fa-plus"></i> Texto / Atestado</a></li>
-                        <li><a class="disabled hidden"><i class="fa fa-plus"></i> ASO</a></li>
+                        <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Texto / Atestado</a></li>
+                        <li><a class="disabled hidden"><i class="far fa-plus"></i> ASO</a></li>
                     </ul>
                 </div>
             </div>
@@ -528,7 +528,7 @@ else
             <div class="panel-body" style="overflow: inherit!important;">
                 <div class="col-md-4">
                     <ul class="dropdown-menu disabled" role="menu">
-                        <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="fa fa-plus"></i> Tarefas</a></li>
+                        <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Tarefas</a></li>
                         
                     </ul>
                 </div>
@@ -579,19 +579,19 @@ else
                     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab">
                         <li class="active">
                             <a data-toggle="tab" href="#Pendentes">
-                                <i class="fa fa-exclamation-circle bigger-110"></i>
+                                <i class="far fa-exclamation-circle bigger-110"></i>
                                 Pendentes
                             </a>
                         </li>
                         <li>
                             <a data-toggle="tab" href="#Aplicadas">
-                                <i class="fa fa-check bigger-110"></i>
+                                <i class="far fa-check bigger-110"></i>
                                 Finalizadas
                             </a>
                         </li>
                         <li>
                             <a data-toggle="tab" href="#Canceladas">
-                                <i class="fa fa-user-times bigger-110"></i>
+                                <i class="far fa-user-times bigger-110"></i>
                                 Canceladas
                             </a>
                         </li>
@@ -601,7 +601,7 @@ else
 %>
 
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-plus"></i> Inserir
+                                    <i class="far fa-plus"></i> Inserir
                                     <span class="caret ml5"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
@@ -610,7 +610,7 @@ else
 
                                     while not tiposVacina.EOF
 %>
-                                        <li <% if EmAtendimento=0 then %>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%end if%>><a <% if EmAtendimento=1 then %>href="javascript:modalVacinaPaciente('VacinaPaciente.asp', <%=PacienteID%>, '<%= tiposVacina("id")%>', '', '');"<%end if%>><i class="fa fa-plus"></i> <%= tiposVacina("descricao")%></a></li>
+                                        <li <% if EmAtendimento=0 then %>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%end if%>><a <% if EmAtendimento=1 then %>href="javascript:modalVacinaPaciente('VacinaPaciente.asp', <%=PacienteID%>, '<%= tiposVacina("id")%>', '', '');"<%end if%>><i class="far fa-plus"></i> <%= tiposVacina("descricao")%></a></li>
 <%
                                         tiposVacina.movenext
                                     wend
@@ -689,18 +689,18 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                 <div class="col-md-12">
                     <div class="btn-group col-md-3">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-plus"></i> Inserir Pedido de Exame
+                            <i class="far fa-plus"></i> Inserir Pedido de Exame
                             <span class="caret ml5"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
                             <%if IntegracaoUnimedLondrina<>4 then%>
-                            <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="fa fa-plus"></i> Pedido Padrão</a></li>
+                            <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido Padrão</a></li>
                             <%
                             end if
                             set AtendeConvenioSQL = db.execute("SELECT COUNT(id)n FROM convenios WHERE sysActive=1 HAVING n>=1")
                             if not AtendeConvenioSQL.eof then
                                 %>
-                                <li ><a href="javascript:iPront('<%=replace("PedidosSADT", "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="fa fa-plus"></i> Pedido em Guia de SP/SADT</a></li>
+                                <li ><a href="javascript:iPront('<%=replace("PedidosSADT", "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido em Guia de SP/SADT</a></li>
                                 <%
                             end if
                             %>
@@ -711,7 +711,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                     %>
                         <div class="col-md-offset-6 col-md-3">
                             <button type="button" class="btn btn-system" onclick="importarDadosUnimed()">
-                                <i class="fa fa-download"></i> Importar Exames - Unimed
+                                <i class="far fa-download"></i> Importar Exames - Unimed
                             </button>
                         </div>
                         <script >
@@ -745,7 +745,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                 <div class="col-md-12">
                     <div class="btn-group col-md-3">
                         <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
-                            <i class="fa fa-plus"></i> Inserir Protocolo
+                            <i class="far fa-plus"></i> Inserir Protocolo
                         </button>
                     </div>
                 </div>
@@ -763,7 +763,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 
 <div class="panel">
     <div class="panel-heading">
-        <span class="panel-title"><i class="fa fa-camera"></i> Imagens do Paciente</span>
+        <span class="panel-title"><i class="far fa-camera"></i> Imagens do Paciente</span>
     </div>
     <div id="divImagens" class="panel-body pn">
         <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?PacienteID=<%=PacienteID %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens&Tipo=I"></iframe>
@@ -897,7 +897,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 
         <div class="panel">
             <div class="panel-heading">
-                <span class="panel-title"><i class="fa fa-file"></i> Arquivos do Paciente</span>
+                <span class="panel-title"><i class="far fa-file"></i> Arquivos do Paciente</span>
             </div>
             <div class="panel-body pn">
                 <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?PacienteID=<%=PacienteID %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Arquivos&Tipo=A"></iframe>
@@ -1032,7 +1032,7 @@ LocalStorageRestoreHabilitar();
             scr = "iPront";
         }
         var pl = $("#ProfissionalLaudadorID").val();
-        $(divAff).html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+        $(divAff).html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
         $.get(scr + ".asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
             $(divAff).html(data);
         });
@@ -1042,7 +1042,7 @@ LocalStorageRestoreHabilitar();
     ELSE
     %>
         function iPront(t, p, m, i, a) {
-            $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+            $("#modal-form .panel").html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
             if(t=='AE'||t=='L'){
                 try{
                     $.magnificPopup.open({

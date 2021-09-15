@@ -23,9 +23,9 @@ end if
     $(".crumb-active a").html("Taxas");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html('Taxa');
-    $(".crumb-icon a span").attr("class", "fa fa-money");
+    $(".crumb-icon a span").attr("class", "far fa-money");
 
-    $("#rbtns").html('<button class="btn btn-sm btn-primary" type="button" id="Salvar" onclick="taxaSubmit()"><i class="fa fa-save"></i> <strong>SALVAR</strong></button>');
+    $("#rbtns").html('<button class="btn btn-sm btn-primary" type="button" id="Salvar" onclick="taxaSubmit()"><i class="far fa-save"></i> <strong>SALVAR</strong></button>');
 </script>
 
 <form method="post" id="frm" name="frm" action="save.asp">

@@ -102,7 +102,7 @@ elseif Tipo="Procedimentos" then
             <%= quickField("text", "HoraFim", "Hora Fim", 2, HoraFim, " input-mask-l-time", "", "") %>
             <div class="col-md-2"><label>&nbsp;</label><br />
                 <div class="btn-group pull-right">
-                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i> Adicionar <i class="fa fa-chevron-down"></i></button>
+                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="far fa-plus"></i> Adicionar <i class="far fa-chevron-down"></i></button>
                     <ul class="dropdown-menu dropdown-primary">
                         <li><a href="javascript:AddRepasse('<%=id%>', 1, 'F');">Fun&ccedil;&atilde;o ou repasse</a></li>
                         <li><a href="javascript:AddRepasse('<%=id%>', 1, 'M');">Material ou medicamento</a></li>
@@ -160,9 +160,9 @@ elseif Tipo="Despesas" then
 end if
 %>
 <div class="modal-footer">
-	<button class="btn btn-success btn-sm"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-success btn-sm"><i class="far fa-save"></i> Salvar</button>
     <button class="btn btn-sm btn-default" type="button" onclick="itemCirurgia('<%=Tipo %>', 0, <%=ItemID %>, 'Cancela');">
-    	<i class="fa fa-remove"></i> Cancelar
+    	<i class="far fa-remove"></i> Cancelar
     </button>
 </div>
 </form>

@@ -17,7 +17,7 @@ set reg = db.execute("SELECT * FROM procedimentoslembrete WHERE ProcedimentoID="
     <div class="row">
         <div class="col-md-12">
             <h3>Regras de lembretes
-            <button class="btn btn-success add-lembrete-pre-pos fright" type="button"><i class="fa fa-plus"></i></button>
+            <button class="btn btn-success add-lembrete-pre-pos fright" type="button"><i class="far fa-plus"></i></button>
             </h3>
         </div>
     </div>
@@ -45,7 +45,7 @@ set reg = db.execute("SELECT * FROM procedimentoslembrete WHERE ProcedimentoID="
                         <label for="LembreteQuandoTempo<%=reg("id")%>" class="labelLembreteQuandoTempo">Quanto tempo? (em dias)</label>
                         <input type="number" name="Tempo" id="LembreteQuandoTempo-<%=reg("id")%>" class="form-control lembrete-campo" min="0" value="<%=reg("Tempo")%>">
                     </div>
-                    <button class="btn btn-danger btn-xs fright lembrete-remover" type="button"><i class="fa fa-times"></i></button>
+                    <button class="btn btn-danger btn-xs fright lembrete-remover" type="button"><i class="far fa-times"></i></button>
                 </div><br><br>
                 <hr />
                 <div class="row">

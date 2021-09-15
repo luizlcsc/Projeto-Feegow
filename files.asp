@@ -15,7 +15,7 @@ PacienteID = 0
 
 <script>
 $(".crumb-active a").html("Gerenciador de Arquivos");
-$(".crumb-icon a span").attr("class", "fa fa-file");
+$(".crumb-icon a span").attr("class", "far fa-file");
 
 
 function atualizaArquivos(X){

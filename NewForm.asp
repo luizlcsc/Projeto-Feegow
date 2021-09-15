@@ -82,7 +82,7 @@ set reg = db.execute("select * from buiforms where id="&I)
 
                 if (recursoPermissaoUnimed=4 and aut("permissoesformulariosI")=1) or recursoPermissaoUnimed<>4 then
                 %>
-        	    <label>&nbsp;</label><br /><button type="button" class="btn btn-warning btn-block" onclick="permissoes()"><i class="fa fa-lock"></i> Permiss&otilde;es</button>
+        	    <label>&nbsp;</label><br /><button type="button" class="btn btn-warning btn-block" onclick="permissoes()"><i class="far fa-lock"></i> Permiss&otilde;es</button>
         	    <%end if%>
             </div>
         </div>

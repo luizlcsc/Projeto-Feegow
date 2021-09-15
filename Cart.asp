@@ -21,7 +21,7 @@ end if
 <table class="table table-condensed table-bordered table-hover">
     <thead>
         <tr class="system">
-            <th colspan="10"><i class="fa fa-calendar"></i> 0 procedimentos selecionados</th>
+            <th colspan="10"><i class="far fa-calendar"></i> 0 procedimentos selecionados</th>
         </tr>
         <%
         set cart = db.execute("select ac.AgendamentoID,ac.id, proc.NomeProcedimento, comp.NomeComplemento, prof.NomeProfissional, ac.Zona, a.Data, a.Hora FROM agendacarrinho ac LEFT JOIN procedimentos proc ON proc.id=ac.ProcedimentoID LEFT JOIN complementos comp ON comp.id=ac.ComplementoID LEFT JOIN profissionais prof ON prof.id=ac.ProfissionalID LEFT JOIN agendamentos a ON a.id=ac.AgendamentoID WHERE ac.sysUser="& session("User") &" and isnull(ac.Arquivado)")
@@ -59,7 +59,7 @@ end if
                     <td><%= AVista %></td>
                     <td><%'= cart("") %></td>
                     <td><%'= cart("") %></td>
-                    <td><button class="btn btn-xs btn-danger" onclick="cart('X', <%= cart("id") %>)" type="button"><i class="fa fa-remove"></i></button></td>
+                    <td><button class="btn btn-xs btn-danger" onclick="cart('X', <%= cart("id") %>)" type="button"><i class="far fa-remove"></i></button></td>
                 </tr>
                 <%
             cart.movenext

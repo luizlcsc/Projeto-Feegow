@@ -47,7 +47,7 @@
 });*/
 
 function abreAgenda(horario, id, data, LocalID,ProfissionalID,GradeID){
-	$("#div-agendamento").html('<div class="panel"><div class="panel-body"><i class="fa fa-spinner fa-spin orange bigger-125"></i> Carregando...</div></div>');
+	$("#div-agendamento").html('<div class="panel"><div class="panel-body"><i class="far fa-spinner fa-spin orange bigger-125"></i> Carregando...</div></div>');
 //	$("#modal-agenda").modal({
 //        backdrop: 'static',
 //        keyboard: false

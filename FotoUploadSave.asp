@@ -18,7 +18,7 @@ elseif Action="InsertCamera" then
 	%>
 	$("#divAvatar, #divDisplayFoto").css("display", "block");
 	$("#take-photo, #cancelar").css("display", "none");
-	$("#divDisplayFoto").html('<img id="avatarFoto" class="img-thumbnail" width="100%" src="/uploads/<%= replace(session("Banco"), "clinic", "") %>/Perfil/<%=FileName%>"><button class="btn btn-xs btn-danger" style="position:absolute; left:18px; bottom:6px;" onclick="removeFoto();" type="button"><i class="fa fa-trash"></i></button>');
+	$("#divDisplayFoto").html('<img id="avatarFoto" class="img-thumbnail" width="100%" src="/uploads/<%= replace(session("Banco"), "clinic", "") %>/Perfil/<%=FileName%>"><button class="btn btn-xs btn-danger" style="position:absolute; left:18px; bottom:6px;" onclick="removeFoto();" type="button"><i class="far fa-trash"></i></button>');
     $("#photo-data").val("");
     cancelar();
 	<%

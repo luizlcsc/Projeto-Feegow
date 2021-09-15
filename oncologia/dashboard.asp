@@ -2,7 +2,7 @@
 <!--
 <div class="app" style="padding-top: 11px;">
 
-<i style="text-align: center; margin: 30px;" class="fa fa-spin fa-spinner"></i>
+<i style="text-align: center; margin: 30px;" class="far fa-spin fa-spinner"></i>
 </div>
 -->
 <style>
@@ -25,7 +25,7 @@
     <div id="filtros" class='col-md-12'></div>
     <div id="tabela" class='panel col-md-12 mt10'>
         <div class="panel-heading tableActionBtns">
-            <button class='btn btn-xs btn-primary' id='max'><i class="fa fa-arrows" aria-hidden="true" style="transform: rotate(45deg);"></i></button>
+            <button class='btn btn-xs btn-primary' id='max'><i class="far fa-arrows" aria-hidden="true" style="transform: rotate(45deg);"></i></button>
         </div>
     </div>
 

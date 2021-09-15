@@ -85,7 +85,7 @@ end if
     <div class="modal-header">
         <h4 class="lighter blue">Dados da Execu&ccedil;&atilde;o
             <div class="widget-toolbar no-border">
-                <button class="bootbox-close-button close" id="FecharExecutado" type="button"><i class="fa fa-remove"></i></button>
+                <button class="bootbox-close-button close" id="FecharExecutado" type="button"><i class="far fa-remove"></i></button>
             </div>
         </h4>
     </div>
@@ -165,8 +165,8 @@ end if
         <%
         end if
         %>
-            <%= quickField("text", "HoraExecucao"&II, "<i class='fa fa-clock-o'></i> In&iacute;cio", 3, HoraExecucao, " input-mask-l-time", "", "") %>
-            <%= quickField("text", "HoraFim"&II, "<i class='fa fa-clock-o'></i> Fim", 3, HoraFim, " input-mask-l-time", "", "") %>
+            <%= quickField("text", "HoraExecucao"&II, "<i class='far fa-clock-o'></i> In&iacute;cio", 3, HoraExecucao, " input-mask-l-time", "", "") %>
+            <%= quickField("text", "HoraFim"&II, "<i class='far fa-clock-o'></i> Fim", 3, HoraFim, " input-mask-l-time", "", "") %>
 
         </div>
         <div class="row">
@@ -221,7 +221,7 @@ end if
         </div>
     </div>
     <div class="modal-footer">
-        <button id="btn-save-executado" class="btn btn-success btn-sm"><i class="fa fa-save"></i> Salvar</button>
+        <button id="btn-save-executado" class="btn btn-success btn-sm"><i class="far fa-save"></i> Salvar</button>
     </div>
 </form>
 

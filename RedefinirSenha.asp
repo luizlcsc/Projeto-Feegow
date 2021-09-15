@@ -39,7 +39,7 @@ Home = dadosAcesso("Home")
                     <label for="password" class="field prepend-icon">
                         <input type="password" class="form-control" autocomplete="off" name="password" id="senha-acesso" placeholder="Senha" autofocus/>
                         <label for="password" class="field-icon">
-                        <i class="fa fa-lock"></i>
+                        <i class="far fa-lock"></i>
                         </label>
                     </label>
                     <span id="erro-senha" style="color: #cf0100;font-size: 12px;display: none;">A senha deve possuir mais de 8 caracteres. Ao menos um número e uma letra.</span>
@@ -51,7 +51,7 @@ Home = dadosAcesso("Home")
                     <label for="password2" class="field prepend-icon">
                         <input type="password" class="form-control" autocomplete="off" name="password2" id="senha-confirmacao-acesso" placeholder="Senha" />
                         <label for="password2" class="field-icon">
-                        <i class="fa fa-lock"></i>
+                        <i class="far fa-lock"></i>
                         </label>
                     </label>
                 </div>

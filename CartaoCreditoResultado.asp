@@ -219,7 +219,7 @@
                                     <td class="text-right"><%=fn(ValorRecebido) %></td>
                                     <td class="text-center"><%=Data %></td>
                                     <td>
-                                        <button id="btn<%=rec("id")%>" class="btn btn-sm btn-default btn-block" type="button" onClick="baixa(<%=rec("id")%>, 'C', <%=Parcela%>, <%=Parcelas%>);">Baixado <i class="fa fa-trash red"></i></button>
+                                        <button id="btn<%=rec("id")%>" class="btn btn-sm btn-default btn-block" type="button" onClick="baixa(<%=rec("id")%>, 'C', <%=Parcela%>, <%=Parcelas%>);">Baixado <i class="far fa-trash red"></i></button>
                                     </td>
                                 </tr>
                                 <%
@@ -273,7 +273,7 @@
                                   </td>
 							      <td><%= quickField("datepicker", "DateToReceive"& rec("id"), "", 1, data, "", "", "") %></td>
 							      <td>
-                              	    <button id="btn<%=rec("id")%>" class="btn btn-xs btn-success" type="button" onClick="baixa(<%=rec("id")%>, 'B', <%=Parcela%>, <%=Parcelas%>);"><i class="fa fa-check"></i> Baixar</button>
+                              	    <button id="btn<%=rec("id")%>" class="btn btn-xs btn-success" type="button" onClick="baixa(<%=rec("id")%>, 'B', <%=Parcela%>, <%=Parcelas%>);"><i class="far fa-check"></i> Baixar</button>
 								    </td>
 						      </tr>
 						    <%

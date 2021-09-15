@@ -4,7 +4,7 @@
     $(".crumb-active a").html("Plano de Contas");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("arraste os itens para reordenar");
-    $(".crumb-icon a span").attr("class", "fa fa-outdent");
+    $(".crumb-icon a span").attr("class", "far fa-outdent");
 </script>
 
 <br />

@@ -743,13 +743,13 @@ function selectInsertCA(label, name, value, associations, othersToSelect, others
 <input type="hidden" name="<%=name%>" id="<%=name%>" value="<%=value%>" />
 <div class="input-group">
     <span for="search<%=name%>" class="input-group-addon">
-        <i class="fa fa-search"></i>
+        <i class="far fa-search"></i>
     </span>
     <input type="text" placeholder="Digite..." class="form-control" id="search<%=name%>" name="search<%=name%>" value="<%=textValue%>" autocomplete="off" <%= othersToInput %>>
 </div>
 	</span>
 	<div id="resultSelect<%=name%>" style="position:absolute; display:none; overflow:hidden; background-color:#fff; z-index:1000;" class="ResultSelectContent">
-    	<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Buscando...
+    	<i class="far fa-circle-o-notch fa-spin fa-fw"></i> Buscando...
     </div>
 <script language="javascript">
 function f_<%=replace(name, "-", "_")%>(){
@@ -769,7 +769,7 @@ $(document).ready(function(){
   $("#search<%=name%>").keyup(function(){
 	if($("#search<%=name%>").val().length>0){
 		$("#resultSelect<%=name%>").css("display", "block");
-		$("#resultSelect<%=name%>").html("<i class='fa fa-circle-o-notch fa-spin fa-fw'></i> Buscando...");
+		$("#resultSelect<%=name%>").html("<i class='far fa-circle-o-notch fa-spin fa-fw'></i> Buscando...");
 		clearTimeout(typingTimer<%=replace(name, "-", "_")%>);
 		if ($("#search<%=name%>").val) {
 			typingTimer<%=replace(name, "-", "_")%> = setTimeout(f_<%=replace(name, "-", "_")%>, 400);
@@ -878,7 +878,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 	response.Write(abreDivBoot)
         if (fieldType="memo" or fieldType="editor") and instr(lcase(request.ServerVariables("HTTP_USER_AGENT")), "chrome")>0 then
 %>
-            <button type="button" onclick="mdSpee('<%=fieldName %>')" id="spee<%=fieldName %>" class="btn btn-sm btn-alert pull-right btn-spee"><i class="fa fa-microphone"></i></button>
+            <button type="button" onclick="mdSpee('<%=fieldName %>')" id="spee<%=fieldName %>" class="btn btn-sm btn-alert pull-right btn-spee"><i class="far fa-microphone"></i></button>
 
 <%
     end if
@@ -956,11 +956,11 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                     <%
 					if session("OtherCurrencies")="phone" then
 						%>
-                        <a href="callto:0<%=fieldValue%>"><i class="fa fa-<%= icone %> bigger-110"></i></a>
+                        <a href="callto:0<%=fieldValue%>"><i class="far fa-<%= icone %> bigger-110"></i></a>
                         <%
 					else
 						%>
- 	                   <i class="fa fa-<%= icone %> bigger-110"></i>
+ 	                   <i class="far fa-<%= icone %> bigger-110"></i>
 						<%
 					end if
 					%>
@@ -1158,7 +1158,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                 acaoSQL = "&"&columnToShow
             end if
             btn="<button type='button' id='btn_"&fieldName&"' name='btn_"&fieldName&"' class='btn btn-default btn-block' onclick='openComponentsModalPost(`quickField_multipleModal.asp?I="&fieldName&acaoSQL&"`, {v: $(""#"&fieldName&""").val()}, `Gerenciar "&label&"`, true, function(data){closeComponentsModal(true)})'> "&_
-                    "<i class='fa fa-plus'></i> "&label&" <span></span>"&_
+                    "<i class='far fa-plus'></i> "&label&" <span></span>"&_
                 "</button>" 
 
             'CONDIÇÃO PARA O USO DA VARIÁVEL fieldValue
@@ -1312,7 +1312,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                 <input id="<%= fieldName %>" class="form-control <%=sqlOrClass%>" type="date" value="<%= mydate(fieldValue) %>" name="<%= fieldName %>" data-date-format="dd/MM/yyyy"<%=additionalTags%>>
             <%end if %>
             <span class="input-group-addon<%if instr(sqlOrClass, "input-sm")>0 then%> input-sm<%end if%>">
-            <i class="fa fa-calendar bigger-110"></i>
+            <i class="far fa-calendar bigger-110"></i>
             </span>
             </div>
 			<%
@@ -1334,7 +1334,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             <%end if %>
 
                 <span class="input-group-addon">
-                    <i class="fa fa-clock-o bigger-110"></i>
+                    <i class="far fa-clock-o bigger-110"></i>
                 </span>
             </div>
 			<%
@@ -1851,7 +1851,7 @@ function selectInsertOLD(label, name, value, resource, showColumn, othersToSelec
 	<input type="hidden" name="<%=name%>" id="<%=name%>" value="<%=value%>" />
     <span class="input-icon input-icon-right width-100">
 		<input onClick="si<%=replace(name, "-", "_")%>()" type="text" <%=ph %> class="form-control" id="search<%=name%>" name="search<%=name%>" value="<%=textValue%>" autocomplete="off" <%= othersToInput %>>
-		<i class="fa fa-search" id="spin<%=name%>"></i>
+		<i class="far fa-search" id="spin<%=name%>"></i>
 	</span>
 	<div id="resultSelect<%=name%>" style="position:absolute; display:none; overflow:hidden; background-color:#f3f3f3; width:400px; z-index:1000;">
     	buscando...
@@ -1940,10 +1940,10 @@ function selectProc(label, name, value, thisField, TabelaField, CodigoField, Des
 	%><%if label<>"" then%><label><%=label%></label><br /><%end if%>
     <span class="input-icon input-icon-right width-100">
 		<input type="text" class="form-control" id="<%=name%>" name="<%=name%>" value="<%=value%>" autocomplete="off" <%= othersToInput %>>
-		<i class="fa fa-search"></i>
+		<i class="far fa-search"></i>
 	</span>
 	<div id="resultSelect<%=name%>" class="ResultSearchInput">
-    	<span class="m5"> <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Buscando...</span>
+    	<span class="m5"> <i class="far fa-circle-o-notch fa-spin fa-fw"></i> Buscando...</span>
     </div>
 <script language="javascript">
 function f_<%=replace(name, "-", "_")%>(){
@@ -1970,7 +1970,7 @@ $(document).ready(function(){
   $("#<%=name%>").keyup(function(){
 	if($("#<%=name%>").val().length>0){
 		$("#resultSelect<%=name%>").css("display", "block");
-		$("#resultSelect<%=name%>").html("<span class='m5'> <i class='fa fa-circle-o-notch fa-spin fa-fw'></i> Buscando...</span>");
+		$("#resultSelect<%=name%>").html("<span class='m5'> <i class='far fa-circle-o-notch fa-spin fa-fw'></i> Buscando...</span>");
 		clearTimeout(typingTimer<%=replace(name, "-", "_")%>);
 		if ($("#<%=name%>").val) {
 			typingTimer<%=replace(name, "-", "_")%> = setTimeout(f_<%=replace(name, "-", "_")%>, 400);
@@ -1993,7 +1993,7 @@ function selectList(label, name, value, resource, showColumn, othersToSelect, ot
 	%><%if label<>"" then%><label><%=label%></label><br /><%end if%>
     <div class="input-group">
         <span for="firstname" class="input-group-addon">
-    		<i class="fa fa-search"></i>
+    		<i class="far fa-search"></i>
         </span>
 		<input type="text" class="form-control" id="<%=name%>" name="<%=name%>" value="<%=value%>" autocomplete="off" <%= othersToInput %>>
 	</div>
@@ -2184,7 +2184,7 @@ function formSave(FormID, btnSaveID, AcaoSeguinte)
 		$("#<%=btnSaveID%>").attr('disabled', 'disabled');
         $.post("save.asp", $("#<%=FormID%>").serialize())
         .done(function(data) {
-          $("#<%=btnSaveID%>").html('<i class="fa fa-save"></i> Salvar');
+          $("#<%=btnSaveID%>").html('<i class="far fa-save"></i> Salvar');
 		  $("#<%=btnSaveID%>").removeAttr('disabled');
           eval(data);
 
@@ -2996,13 +2996,13 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 '    header = "<script type=""text/javascript"">$(document).ready(function(){ $("".crumb-active a"").html("""&titulo&""");"
     header = "<script type=""text/javascript""> $("".crumb-active a"").html("""&titulo&""");"
     if device()="" then
-        header = header & "$("".crumb-icon a"").html(""<span class='fa fa-"&dIcone(recurso)&"'></span>"");"
+        header = header & "$("".crumb-icon a"").html(""<span class='far fa-"&dIcone(recurso)&"'></span>"");"
     else
-        header = header & "$("".crumb-icon a"").html(""<span class='fa fa-"&dIcone(recurso)&"'></span> "& ucase(titulo) &""");"
+        header = header & "$("".crumb-icon a"").html(""<span class='far fa-"&dIcone(recurso)&"'></span> "& ucase(titulo) &""");"
     end if
 
 '	header = header & "<div class=""widget-box transparent""><div class=""widget-header widget-header-flat"">"
-'    header = header & "    <h4><i class=""fa fa-"&dIcone(recurso)&" blue""></i> "&titulo&"</h4>"
+'    header = header & "    <h4><i class=""far fa-"&dIcone(recurso)&" blue""></i> "&titulo&"</h4>"
 '    header = header & "        <div class=""widget-toolbar""><div>"
 	if recurso="sys_financialinvoices" then
 		if req("T")="C" then
@@ -3015,39 +3015,39 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 			set lista = db.execute("select (select id from "&recurso&" where "&OrdemInicial&"<r."&OrdemInicial&" and sysActive=1 and CD='"&req("T")&"' order by "&OrdemInicial&" desc limit 1) anterior, (select id from "&recurso&" where "&OrdemInicial&">r."&OrdemInicial&" and sysActive=1 and CD='"&req("T")&"' order by "&OrdemInicial&" limit 1) proximo from "&recurso&" r where id="&hid)
 			if not lista.EOF then
 				if not isnull(lista("anterior")) and aut(recursoPerm&"V") then
-					rbtns = rbtns & "<a title='Anterior' href='?P=invoice&T="&req("T")&"&Pers="&hPers&"&I="&lista("anterior")&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
+					rbtns = rbtns & "<a title='Anterior' href='?P=invoice&T="&req("T")&"&Pers="&hPers&"&I="&lista("anterior")&"' class='btn btn-sm btn-default hidden-xs'><i class='far fa-chevron-left'></i></a> "
 				end if
 				if aut(recursoPerm&"V") then
-				    rbtns = rbtns & "<a title='Lista' href='?P=ContasCD&Buscar=1&T="&req("T")&"&Pers=1' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
+				    rbtns = rbtns & "<a title='Lista' href='?P=ContasCD&Buscar=1&T="&req("T")&"&Pers=1' class='btn btn-sm btn-default'><i class='far fa-list'></i></a> "
 				end if
 				if not isnull(lista("proximo")) and aut(recursoPerm&"V") then
-					rbtns = rbtns & "<a title='Próximo' href='?P=invoice&T="&req("T")&"&Pers="&hPers&"&I="&lista("proximo")&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
+					rbtns = rbtns & "<a title='Próximo' href='?P=invoice&T="&req("T")&"&Pers="&hPers&"&I="&lista("proximo")&"' class='btn btn-sm btn-default hidden-xs'><i class='far fa-chevron-right'></i></a> "
 				end if
 			end if
 		end if
 		if aut(recursoPerm&"I")=1 then
-			rbtns = rbtns & "<a title='Nova' href='?P=invoice&Pers="&hPers&"&I=N&T="&req("T")&"' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
+			rbtns = rbtns & "<a title='Nova' href='?P=invoice&Pers="&hPers&"&I=N&T="&req("T")&"' class='btn btn-sm btn-default'><i class='far fa-plus'></i></a> "
 		end if
         'response.Write(recursoPerm)
 		if (hsysActive=1 and aut(recursoPerm&"A")=1) or (hsysActive=0 and aut(recursoPerm&"I")=1) or (aut("aberturacaixinhaI") and session("CaixaID")<>"" and hsysActive=0) or (hsysActive=1 and data("CaixaID")=session("CaixaID") and aut("aberturacaixinhaA")) or (aut("contasareceberI")=0 and aut("areceberpacienteI")) then
-				rbtns = rbtns & "<button class='btn btn-sm btn-primary' type='button' onclick='$(\""#btnSave\"").click()'>&nbsp;&nbsp;<i class='fa fa-save'></i> <strong> SALVAR</strong>&nbsp;&nbsp;</button> "
+				rbtns = rbtns & "<button class='btn btn-sm btn-primary' type='button' onclick='$(\""#btnSave\"").click()'>&nbsp;&nbsp;<i class='far fa-save'></i> <strong> SALVAR</strong>&nbsp;&nbsp;</button> "
 
 		end if
 
 		if req("T")="D" then
 			nomePerm = "contasapagar"
-			rbtns = rbtns & "&nbsp <div class='btn-group'>     <button type='button' class='btn-sm btn btn-success dropdown-toggle' data-toggle='dropdown'><span class='fa fa-upload'></span></button> <ul class='dropdown-menu' role='menu'>    <li><a onclick='addBoleto("&hid&")' href='#'>Boleto</a></li>      <li><a onclick='addXmlNFe("&hid&")' href='#'>NF-e</a></li>  <li><a onclick='cnabBeta("&hid&")' href='#'>Cnab <label class='label label-primary'>Beta</label></a></li>   </ul>  </div> &nbsp"
-		    rbtns = rbtns & "<button class='btn btn-info btn-sm' onclick='imprimirReciboInvoice()' type='button'><i class='fa fa-print bigger-110'></i></button>"
+			rbtns = rbtns & "&nbsp <div class='btn-group'>     <button type='button' class='btn-sm btn btn-success dropdown-toggle' data-toggle='dropdown'><span class='far fa-upload'></span></button> <ul class='dropdown-menu' role='menu'>    <li><a onclick='addBoleto("&hid&")' href='#'>Boleto</a></li>      <li><a onclick='addXmlNFe("&hid&")' href='#'>NF-e</a></li>  <li><a onclick='cnabBeta("&hid&")' href='#'>Cnab <label class='label label-primary'>Beta</label></a></li>   </ul>  </div> &nbsp"
+		    rbtns = rbtns & "<button class='btn btn-info btn-sm' onclick='imprimirReciboInvoice()' type='button'><i class='far fa-print bigger-110'></i></button>"
 		else
 			nomePerm = "contasareceber"
-		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm rgrec' title='Gerar recibo' onClick='listaRecibos()'><i class='fa fa-print bigger-110'></i></button>"
+		    rbtns = rbtns & "<button type='button' class='btn btn-info btn-sm rgrec' title='Gerar recibo' onClick='listaRecibos()'><i class='far fa-print bigger-110'></i></button>"
 
             set vcaCont = db.execute("select id, NomeModelo from contratosmodelos WHERE (sysActive=1) AND (UrlContrato='' OR UrlContrato IS NULL)")
             if not vcaCont.eof then
-                rbtns = rbtns & " <div class='btn-group contratobloqueio'><button class='btn btn-info btn-sm dropdown-toggle contratobt'><i class='fa fa-file'></i></button>"
+                rbtns = rbtns & " <div class='btn-group contratobloqueio'><button class='btn btn-info btn-sm dropdown-toggle contratobt'><i class='far fa-file'></i></button>"
                 rbtns = rbtns & "<ul class='dropdown-menu dropdown-info pull-right' style='overflow-y: scroll; max-height: 400px;'>"
                 while not vcaCont.eof
-                    rbtns = rbtns & "<li><a href='javascript:addContrato("&vcaCont("id")&", "&hid&", $(\""#AccountID\"").val())'><i class='fa fa-plus'></i> "&vcaCont("NomeModelo")&"</a></li>"
+                    rbtns = rbtns & "<li><a href='javascript:addContrato("&vcaCont("id")&", "&hid&", $(\""#AccountID\"").val())'><i class='far fa-plus'></i> "&vcaCont("NomeModelo")&"</a></li>"
                 vcaCont.movenext
                 wend
                 vcaCont.close
@@ -3065,12 +3065,12 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
                 if recursoAdicional(7)=4 then
                     'if session("Banco") = "clinic2496" OR session("Banco") = "clinic100000" OR session("Banco") = "clinic4285" OR session("Banco") = "clinic984" OR session("Banco") = "clinic2263" Then
                     if RecursosAdicionaisSQL("SplitNF")<>1 then
-                        rbtns = rbtns & "&nbsp; <button id='btn_NFe' title='Nota Fiscal' class='btn btn-warning btn-sm' onclick='modalNFE()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
+                        rbtns = rbtns & "&nbsp; <button id='btn_NFe' title='Nota Fiscal' class='btn btn-warning btn-sm' onclick='modalNFE()' type='button'><i class='far fa-file-text bigger-110'></i></button>"
                     end if
                 End if
             end if
 	        if recursoAdicional(34)=4 then
-                rbtns = rbtns & "&nbsp; <button id='btn_NFeBeta' title='Nota Fiscal' class='btn btn-danger btn-sm' onclick='modalNFEBeta()' type='button'><i class='fa fa-file-text bigger-110'></i></button>"
+                rbtns = rbtns & "&nbsp; <button id='btn_NFeBeta' title='Nota Fiscal' class='btn btn-warning btn-sm' onclick='modalNFEBeta()' type='button'><i class='far fa-file-text bigger-110'></i></button>"
             end if
 	    End if
 		if aut(nomePerm&"X") or data("CaixaID")=session("CaixaID") then
@@ -3086,14 +3086,14 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		end if
 
 		if PermissaoExclusao then
-            rbtns = rbtns & "&nbsp; <button class='btn btn-danger btn-sm disable' onclick='deleteInvoice()' type='button'><i class='fa fa-trash bigger-110'></i></button>"
+            rbtns = rbtns & "&nbsp; <button class='btn btn-danger btn-sm disable' onclick='deleteInvoice()' type='button'><i class='far fa-trash bigger-110'></i></button>"
 		end if
 
 '		rbtns = rbtns & "</div></div></div></div>"
         header = header & "$(""#rbtns"").html("""& rbtns &""")"
 '        header = header & "});</script>"
         header = header & "</script>"
-	    realSave = "<button class=""btn btn-sm btn-primary hidden"" id=""btnSave"">&nbsp;&nbsp;<i class=""fa fa-save""></i> <strong> SALVAR</strong>&nbsp;&nbsp;</button>"
+	    realSave = "<button class=""btn btn-sm btn-primary hidden"" id=""btnSave"">&nbsp;&nbsp;<i class=""far fa-save""></i> <strong> SALVAR</strong>&nbsp;&nbsp;</button>"
 
 
 
@@ -3110,23 +3110,23 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
             end if
 
             if aut("|profissionaisV|")=1 then
-                rbtns = rbtns & "<a title='Anterior' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Previous&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-left'></i></a> "
-                rbtns = rbtns & "<a id='Header-List' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='fa fa-list'></i></a> "
-                rbtns = rbtns & "<a title='Próximo' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Next&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-chevron-right'></i></a> "
+                rbtns = rbtns & "<a title='Anterior' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Previous&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='far fa-chevron-left'></i></a> "
+                rbtns = rbtns & "<a id='Header-List' title='Lista' href='?P="&recurso&"&Pers="&hPersList&"' class='btn btn-sm btn-default'><i class='far fa-list'></i></a> "
+                rbtns = rbtns & "<a title='Próximo' href='ListagemPaginacao.asp?P="&recurso&"&Identifier="&nomeColuna("initialOrder")&"&Pers="&hPers&"&Operation=Next&I="&hid&"' class='btn btn-sm btn-default hidden-xs'><i class='far fa-chevron-right'></i></a> "
             end if
 		end if
 		if aut(recurso&"I")=1 and recurso<>"profissionais" and recurso<>"funcionarios" then
-			rbtns = rbtns & "<a id='Header-New' title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
+			rbtns = rbtns & "<a id='Header-New' title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='far fa-plus'></i></a> "
 		end if
 		if recurso="pacientes" then
-			rbtns = rbtns & "<button title='Imprimir Ficha' type='button' id='btnFicha' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-print'></i></button> "
-			rbtns = rbtns & "<button title='Compartilhar Dados' type='button' id='btnCompartilhar' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-share-alt'></i></button> "
+			rbtns = rbtns & "<button title='Imprimir Ficha' type='button' id='btnFicha' class='btn btn-sm btn-default hidden-xs'><i class='far fa-print'></i></button> "
+			rbtns = rbtns & "<button title='Compartilhar Dados' type='button' id='btnCompartilhar' class='btn btn-sm btn-default hidden-xs'><i class='far fa-share-alt'></i></button> "
 		end if
-		rbtns = rbtns & "<a title='Histórico de Alterações' href='javascript:log()' class='btn btn-sm btn-default hidden-xs'><i class='fa fa-history'></i></a> "
+		rbtns = rbtns & "<a title='Histórico de Alterações' href='javascript:log()' class='btn btn-sm btn-default hidden-xs'><i class='far fa-history'></i></a> "
 		'rbtns = rbtns & "<script>function log(){$('#modal-table').modal('show');$.get('DefaultLog.asp?R="&recurso&"&I="&hid&"', function(data){$('#modal').html(data);})}</script>"
 		if recurso<>"profissionais" and recurso<>"funcionarios" and recurso<>"fornecedores" then
 			if (hsysActive=1 and aut(recurso&"A")=1) or (hsysActive=0 and aut(recurso&"I")=1) then
-					rbtns = rbtns & "<button class='btn btn-sm btn-primary' type='button' id='Salvar' onclick='$(\""#save\"").click()'>&nbsp;&nbsp;<i class='fa fa-save'></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button> "
+					rbtns = rbtns & "<button class='btn btn-sm btn-primary' type='button' id='Salvar' onclick='$(\""#save\"").click()'>&nbsp;&nbsp;<i class='far fa-save'></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button> "
             else
                     %>
                     </form>
@@ -3158,7 +3158,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 '        header = header & "});</script>"
         header = header & "</script>"
 		header = header & "<script>function log(){openComponentsModal('DefaultLog.asp?Impressao=1&R="&recurso&"&I="&hid&"', {},'Log de alterações', true)}</script>"
-	    realSave = "<button class=""btn btn-sm btn-primary hidden"" id=""save"">&nbsp;&nbsp;<i class=""fa fa-save""></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>"
+	    realSave = "<button class=""btn btn-sm btn-primary hidden"" id=""save"">&nbsp;&nbsp;<i class=""far fa-save""></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>"
 
 
 	end if
@@ -3549,7 +3549,7 @@ function btnParcela(MovimentacaoID, ValorPago, Valor, Vencimento, CD, CaixaID)
 		txt = input & "<span id='pend"&MovimentacaoID&"'>" &  fn( Valor-ValorPago ) &" de " &  fn( Valor ) &"</span>"
 	else
 		classe = "success parte-paga"
-		txt = "<i class=""fa fa-check""></i> R$ <span id='pend"&MovimentacaoID&"'>" &  fn( Valor ) &"</span>"
+		txt = "<i class=""far fa-check""></i> R$ <span id='pend"&MovimentacaoID&"'>" &  fn( Valor ) &"</span>"
 	end if
     if Vencimento<>"" then
         spanVenc = " title=""Vencimento: "&Vencimento&""" "
@@ -3557,8 +3557,8 @@ function btnParcela(MovimentacaoID, ValorPago, Valor, Vencimento, CD, CaixaID)
         spanVenc = ""
     end if
     if MovimentacaoID>0 then
-        zoom = "<a class='btn btn-xs btn-default' href=""javascript:modalPaymentDetails('"&MovimentacaoID&"');""> <i class=""fa fa-search-plus bigger-140 white""></i></a>"
-        btnAnexo = "<a class='btn btn-xs btn-system' style='float:right' href=""javascript:modalPaymentAttachments('"&MovimentacaoID&"');"" title='Anexar um arquivo'> <i class=""fa fa-paperclip bigger-140 white""></i></a>"
+        zoom = "<a class='btn btn-xs btn-default' href=""javascript:modalPaymentDetails('"&MovimentacaoID&"');""> <i class=""far fa-search-plus bigger-140 white""></i></a>"
+        btnAnexo = "<a class='btn btn-xs btn-system' style='float:right' href=""javascript:modalPaymentAttachments('"&MovimentacaoID&"');"" title='Anexar um arquivo'> <i class=""far fa-paperclip bigger-140 white""></i></a>"
     else
         zoom = ""
         btnAnexo= ""
@@ -4226,9 +4226,9 @@ function sinalAgenda(val)
         val = ccur(val)
         select case val
             case -2
-                sinalAgenda = "<i class=""fa fa-exclamation-circle text-danger""></i>"
+                sinalAgenda = "<i class=""far fa-exclamation-circle text-danger""></i>"
             case 1
-                sinalAgenda = "<i class=""fa fa-check-circle-o text-success""></i>"
+                sinalAgenda = "<i class=""far fa-check-circle-o text-success""></i>"
         end select
     end if
 end function
@@ -4325,9 +4325,9 @@ function odonto()
 end function
 
 function btnSalvar(id)
-    btnSalvar = "<button class='btn btn-block btn-primary hidden' id='save'><i class='fa fa-save'></i>Salvar</button>"&_
+    btnSalvar = "<button class='btn btn-block btn-primary hidden' id='save'><i class='far fa-save'></i>Salvar</button>"&_
     "<script type='text/javascript'>"&_
-        "$('#rbtns').html('<a onclick=""$(\'#"&id&"\').click()"" class=""btn btn-sm btn-success"" type=""button""><i class=""fa fa-save""></i> Salvar</a>');"&_
+        "$('#rbtns').html('<a onclick=""$(\'#"&id&"\').click()"" class=""btn btn-sm btn-success"" type=""button""><i class=""far fa-save""></i> Salvar</a>');"&_
     "</script>"
 end function
 
@@ -4963,7 +4963,7 @@ function prebtb(Contato, Numero, Campo)
 
                     %>
                     <li>
-                        <a <% if cc("id")=8 then %>href="https://web.whatsapp.com/send?phone=55<%= replace(replace(replace(replace(Numero,"-",""),"(",""), ")" ,"")," ","") %>" target="_blank"<% else %>href=""#"<% end if%> onclick="btb(<%=cc("id") %>, '<%= Numero %>', '<%=Contato %>')"><i class="fa fa-<%=cc("Icone") %>"></i> <%=cc("NomeCanal") %></a>
+                        <a <% if cc("id")=8 then %>href="https://web.whatsapp.com/send?phone=55<%= replace(replace(replace(replace(Numero,"-",""),"(",""), ")" ,"")," ","") %>" target="_blank"<% else %>href=""#"<% end if%> onclick="btb(<%=cc("id") %>, '<%= Numero %>', '<%=Contato %>')"><i class="far fa-<%=cc("Icone") %>"></i> <%=cc("NomeCanal") %></a>
                     </li>
                     <%
                 cc.movenext
@@ -5022,7 +5022,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
         <% if ischeckin then %>
             <td class="<%= staPagto %>" style="border:none">
                 <% if staPagto="success" then %>
-                    <i class=" fa fa-check-circle text-success"></i>
+                    <i class=" far fa-check-circle text-success"></i>
                 <% else %>
                     <input type="checkbox" checked="checked" name="LanctoCheckin" class="ckpagar Bloco<%= Bloco %>" value="<%= ConsultaID &"_"& n %>" /></td>
                 <% end if %>
@@ -5158,7 +5158,7 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
                         if not ConvenioSQL.eof then
                             ObsConvenio = replace(ConvenioSQL("Obs"),"""","\'")
                             %>
-                            <button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=ConvenioID%>)"><i class="fa fa-align-justify"></i></button>
+                            <button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=ConvenioID%>)"><i class="far fa-align-justify"></i></button>
                             <%
                         end if
                     end if
@@ -5220,15 +5220,15 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
         <td>
             <input type="hidden" name="ProcedimentosAgendamento" value="<%=n %>" />
             <%if not ischeckin then%>
-                <button onclick="procs('X', <%=n %>)" class="btn btn-xs btn-danger " type="button"><i class="fa fa-remove"></i></button>
+                <button onclick="procs('X', <%=n %>)" class="btn btn-xs btn-danger " type="button"><i class="far fa-remove"></i></button>
             <%end if%>
 
             <div class="btn-group mt5">
-                <button type="button" class="btn btn-info btn-xs dropdown-toggle rgrec" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print bigger-110"></i></button>
+                <button type="button" class="btn btn-info btn-xs dropdown-toggle rgrec" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="far fa-print bigger-110"></i></button>
                 <ul class="dropdown-menu dropdown-info pull-right">
-                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Protocolo')"><i class="fa fa-plus"></i> Protocolo de laudo </a></li>
-                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Impresso')"><i class="fa fa-plus"></i> Impresso </a></li>
-                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Etiqueta')"><i class="fa fa-plus"></i> Etiqueta </a></li>
+                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Protocolo')"><i class="far fa-plus"></i> Protocolo de laudo </a></li>
+                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Impresso')"><i class="far fa-plus"></i> Impresso </a></li>
+                    <li><a href="javascript:printProcedimento($('#ProcedimentoID<%=n %>').val(),$('#PacienteID').val(), $('#ProfissionalID').val(),'Etiqueta')"><i class="far fa-plus"></i> Etiqueta </a></li>
                 </ul>
             </div>
         </td>
@@ -5431,7 +5431,7 @@ private function lrResult( lrStatus, lrDataExecucao, lrNomeFuncao, lrInvoiceID, 
                 wSobre = 0
                 while wSobre<lrSobre
                     %>
-                    <i class="fa fa-long-arrow-right"></i>
+                    <i class="far fa-long-arrow-right"></i>
                     <%
                     wSobre = wSobre+1
                 wend
@@ -5439,7 +5439,7 @@ private function lrResult( lrStatus, lrDataExecucao, lrNomeFuncao, lrInvoiceID, 
 
             &nbsp; <span data-rel="tooltip" data-placement="right" title="" data-original-title="<%= titDescricao %>"><%= lrNomeFuncao %></span></td>
         <td><%= accountName(NULL, lrCreditado) %></td>
-        <td class="text-right"> <% if modoCalculo="I" then response.Write(" <i class='fa fa-info-circle text-warning' title='Cálculo invertido - Profissional paga à clínica'></i> ") end if %> <%= fn(lrValorRepasse) %></td>
+        <td class="text-right"> <% if modoCalculo="I" then response.Write(" <i class='far fa-info-circle text-warning' title='Cálculo invertido - Profissional paga à clínica'></i> ") end if %> <%= fn(lrValorRepasse) %></td>
     </tr>
     <%
 

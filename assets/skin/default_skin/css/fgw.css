@@ -13279,7 +13279,7 @@ tbody.collapse.in {
     margin-left: 0;
 }
 
-.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle):not(.btn-menu-left) {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
     border-bottom-left-radius: 4px;
@@ -16645,7 +16645,7 @@ div.switch label:after {
 }
 
 div.switch input:checked + label {
-    background: #2ba6cb;
+    background: #45AAF2;
 }
 
 div.switch input:checked + label:after {
@@ -16676,7 +16676,7 @@ div.switch label:after {
 }
 
 div.switch input:checked + label {
-    background: #2ba6cb;
+    background: #45AAF2;
 }
 
 /* Switch Sizes */
@@ -21475,9 +21475,15 @@ body.sidebar-collapsed #sidebar:before {
     border-radius: 6px;
 }
 
-.navbar .navbar-btn.btn-group > .btn:hover {
+.navbar .navbar-btn.btn-group > .btn:hover :not(.btn-menu-left){
     color: #333;
     border-color: rgba(0, 0, 0, 0.2);
+}
+
+
+
+.navbar .navbar-btn.btn-group > .btn.btn-menu-left:hover {
+    border-color: #ebebeb;
 }
 
 .navbar .navbar-btn.btn-group.open > .btn,
@@ -21890,7 +21896,7 @@ body.sb-top #toggle_sidemenu_t {
 .navbar .nav > li .dropdown-toggle + .dropdown-menu > .active > a,
 .navbar .nav > li .dropdown-toggle + .dropdown-menu > .active > a:hover,
 .navbar .nav > li .dropdown-toggle + .dropdown-menu > .active > a:focus {
-    color: #ffffff;
+    color: #ffffff !important;
     background-color: #45AAF2;
 }
 
@@ -30392,4 +30398,14 @@ select[tabindex="-1"], .multisel {
     padding: 6px !important;
     border-radius: 6px !important;
 
+}
+
+.dropdown li i , .dropdown-menu li i{
+    color: #45AAF2;
+    margin-right: 10px;
+}
+
+.btn-logoff{
+    color: #ff7272 !important;
+    background-color: #fff6f6 !important;;
 }

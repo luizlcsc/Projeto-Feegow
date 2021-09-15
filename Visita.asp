@@ -74,7 +74,7 @@ if ref("Contato")<>"" then
     <script type="text/javascript">
         $(document).ready(function(){
             $.gritter.add({
-                title: '<i class="fa fa-save"></i> Contato salvo!',
+                title: '<i class="far fa-save"></i> Contato salvo!',
                 text: '',
                 class_name: 'gritter-success gritter-light'
             });
@@ -87,7 +87,7 @@ end if
     <div class="clearfix form-actions">
         <div class="row">
             <div class="col-xs-12">
-                <button type="button" class="btn btn-info btn-block" onclick="getLocation()"><i class="fa fa-map-marker"></i> DEFINIR LOCALIZAÇÃO</button>
+                <button type="button" class="btn btn-info btn-block" onclick="getLocation()"><i class="far fa-map-marker"></i> DEFINIR LOCALIZAÇÃO</button>
             </div>
         </div>
         <div class="row">
@@ -127,7 +127,7 @@ end if
         <%=quickfield("memo", "Obs", "Observações", 6, "", "", "", " rows=4") %>
     </div>
     <br />
-    <button class="btn btn-lg btn-primary btn-block" id="btnSave" disabled><i class="fa fa-save"></i> SALVAR</button>
+    <button class="btn btn-lg btn-primary btn-block" id="btnSave" disabled><i class="far fa-save"></i> SALVAR</button>
 
 </form>
     <script type="text/javascript">

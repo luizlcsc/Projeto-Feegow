@@ -55,7 +55,7 @@ function openModalCobranca(){
                 </tr>`;
     });
 
-    var msg = `<div class="text-center" style="background-color: #F9F8F8; padding: 20px; margin-left: 5%; margin-right: 5%;"><i class="fa fa-exclamation-triangle text-danger" style="font-size: 30px"></i><br/>
+    var msg = `<div class="text-center" style="background-color: #F9F8F8; padding: 20px; margin-left: 5%; margin-right: 5%;"><i class="far fa-exclamation-triangle text-danger" style="font-size: 30px"></i><br/>
      <span class="text-danger"><b>Nosso sistema detectou que sua fatura encontra-se em aberto.</b></span><br/>
      Caso o pagamento tenha sido efetuado por favor desconsidere este aviso
      e nos envie o comprovante por e-mail: <i><b>financeiro@feegow.com.br</b></i></div><br/><br/>

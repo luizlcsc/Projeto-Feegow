@@ -25,7 +25,7 @@ set l = db.execute("select * from laudoslog ll where  ll.LaudoID="& LaudoID&" or
 
 %>
 <div class="panel-heading">
-    <span class="panel-title"><i class="fa fa-history"></i> Log de modificações nos laudos</small></span>
+    <span class="panel-title"><i class="far fa-history"></i> Log de modificações nos laudos</small></span>
 </div>
 <div class="panel-body">
     <table class="table footable table-hover table-striped">

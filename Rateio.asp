@@ -20,7 +20,7 @@
     $(".crumb-active a").html("Regras de Repasse");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("configuração das regras que serão aplicadas para repasses de recebimentos");
-    $(".crumb-icon a span").attr("class", "fa fa-puzzle-piece");
+    $(".crumb-icon a span").attr("class", "far fa-puzzle-piece");
 </script>
 
 <br />
@@ -56,7 +56,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <button type="button" onclick="repasseDesconto(0)" class="btn-xs btn btn-primary pull-right">
-                                        <i class="fa fa-plus"></i> Adicionar
+                                        <i class="far fa-plus"></i> Adicionar
                                     </button>
                                 </div>
                             </div>

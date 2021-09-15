@@ -87,8 +87,8 @@ if ModeloID="0" or ModeloID="X" then
             <td><%=conts("DataHora") %></td>
             <td><%=nameInTable(conts("sysUser")) %></td>
             <td><%=conts("NomeModelo") %></td>
-            <td><button class="btn btn-xs btn-success" onclick="openContrato(<%=conts("id") %>)"><i class="fa fa-edit"></i></button></td>
-            <td><button class="btn btn-xs btn-danger" onclick="javascript:if(confirm('Tem certeza de que deseja apagar este contrato?'))addContrato('X', <%=conts("id") %>, '<%=ContaID %>')"><i class="fa fa-remove"></i></button></td>
+            <td><button class="btn btn-xs btn-success" onclick="openContrato(<%=conts("id") %>)"><i class="far fa-edit"></i></button></td>
+            <td><button class="btn btn-xs btn-danger" onclick="javascript:if(confirm('Tem certeza de que deseja apagar este contrato?'))addContrato('X', <%=conts("id") %>, '<%=ContaID %>')"><i class="far fa-remove"></i></button></td>
         </tr>
         <%
     conts.movenext
@@ -567,7 +567,7 @@ end if
 </div>
 <div class="modal-footer">
     <%if exibeCont=1 then %>
-    <button class="btn btn-primary" onclick="saveContrato()"><i class="fa fa-save"></i> Salvar e Imprimir</button>
+    <button class="btn btn-primary" onclick="saveContrato()"><i class="far fa-save"></i> Salvar e Imprimir</button>
     <%end if %>
 </div>
 

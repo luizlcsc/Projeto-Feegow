@@ -93,8 +93,8 @@ jQuery(function($) {
 	//editables on first profile page
 	$.fn.editable.defaults.mode = 'inline';
 	$.fn.editableform.loading = "<div class='editableform-loading'><i class='light-blue icon-2x icon-spinner icon-spin'></i></div>";
-	$.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="fa fa-ok icon-white"></i></button>'+
-								'<button type="button" class="btn editable-cancel"><i class="fa fa-remove"></i></button>';    
+	$.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="far fa-ok icon-white"></i></button>'+
+								'<button type="button" class="btn editable-cancel"><i class="far fa-remove"></i></button>';
 	
 	//editables 
 	$('#username').editable({
@@ -325,8 +325,8 @@ jQuery(function($) {
 			</div>\
 			\
 			<div class="modal-footer center">\
-				<button type="submit" class="btn btn-small btn-success"><i class="fa fa-ok"></i> Submit</button>\
-				<button type="button" class="btn btn-small" data-dismiss="modal"><i class="fa fa-remove"></i> Cancel</button>\
+				<button type="submit" class="btn btn-small btn-success"><i class="far fa-ok"></i> Submit</button>\
+				<button type="button" class="btn btn-small" data-dismiss="modal"><i class="far fa-remove"></i> Cancel</button>\
 			</div>\
 			</form>\
 		</div>';

@@ -139,7 +139,7 @@ end if
 
 
 <div class="alert alert-warning hidden">
-    <i class="fa fa-exclamation-triangle red"></i> ATENÇÃO: Usuário também está acessando os dados deste paciente. Tenha cuidado para que os dados não sejam sobrescritos.
+    <i class="far fa-exclamation-triangle red"></i> ATENÇÃO: Usuário também está acessando os dados deste paciente. Tenha cuidado para que os dados não sejam sobrescritos.
 </div>
 <%
 omitir = ""
@@ -395,7 +395,7 @@ function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
             success:function(data){
                 if (data === 'false'){
                     new PNotify({
-                            title: '<i class="fa fa-warning"></i> Certificado Digital',
+                            title: '<i class="far fa-warning"></i> Certificado Digital',
                             text: `Para finalizar o atendimento,o usuário deverá certificar os documentos.`,
                             type: 'danger'
                         });
@@ -632,8 +632,8 @@ jQuery(function($) {
 	//editables on first profile page
 	$.fn.editable.defaults.mode = 'inline';
 	$.fn.editableform.loading = "<div class='editableform-loading'><i class='light-blue icon-2x icon-spinner icon-spin'></i></div>";
-	$.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="fa fa-ok icon-white"></i></button>'+
-								'<button type="button" class="btn editable-cancel"><i class="fa fa-remove"></i></button>';
+	$.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="far fa-ok icon-white"></i></button>'+
+								'<button type="button" class="btn editable-cancel"><i class="far fa-remove"></i></button>';
 
 
 
@@ -656,8 +656,8 @@ jQuery(function($) {
 			</div>\
 			\
 			<div class="modal-footer center">\
-				<button type="submit" class="btn btn-small btn-success"><i class="fa fa-ok"></i> Submit</button>\
-				<button type="button" class="btn btn-small" data-dismiss="modal"><i class="fa fa-remove"></i> Cancel</button>\
+				<button type="submit" class="btn btn-small btn-success"><i class="far fa-ok"></i> Submit</button>\
+				<button type="button" class="btn btn-small" data-dismiss="modal"><i class="far fa-remove"></i> Cancel</button>\
 			</div>\
 			</form>\
 		</div>';
@@ -1200,7 +1200,7 @@ if not memed.eof then
             scr = "iPront";
         }
         var pl = $("#ProfissionalLaudadorID").val();
-        $(divAff).html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+        $(divAff).html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
         $.get(scr + ".asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
             $(divAff).html(data);
         });
@@ -1210,7 +1210,7 @@ if not memed.eof then
     ELSE
     %>
         function iPront(t, p, m, i, a) {
-            $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+            $("#modal-form .panel").html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
             if(t=='AE'||t=='L'){
                 try{
                     $.magnificPopup.open({

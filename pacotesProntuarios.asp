@@ -27,7 +27,7 @@ if PacoteID="Lista" then
                 <th>Profissionais</th>
                 <th>Especialidades</th>
                 <th width="1%"></th>
-                <th width="1%"><button type="button" class="btn btn-xs btn-success" onclick="modalPastas('', 0)"><i class="fa fa-plus"></i></button></th>
+                <th width="1%"><button type="button" class="btn btn-xs btn-success" onclick="modalPastas('', 0)"><i class="far fa-plus"></i></button></th>
             </tr>
         </thead>
         <tbody>
@@ -67,8 +67,8 @@ if PacoteID="Lista" then
                     <td><%= listaEspecialidade %></td>
 
                     <%if (pp("sysUser")=session("User") and aut("modelosprontuarioA")=1) or session("Admin")=1 then%>
-                        <td><button type="button" onclick="modalPastas('', <%= pp("id") %>)" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></button></td>
-                        <td><button onclick="ppi('XP', <%= pp("id") %>)" type="button" class="btn btn-danger btn-xs"><i class="fa fa-remove"></i></button></td>
+                        <td><button type="button" onclick="modalPastas('', <%= pp("id") %>)" class="btn btn-success btn-xs"><i class="far fa-edit"></i></button></td>
+                        <td><button onclick="ppi('XP', <%= pp("id") %>)" type="button" class="btn btn-danger btn-xs"><i class="far fa-remove"></i></button></td>
                     <%else%>
                         <td></td>
                         <td></td>
@@ -144,13 +144,13 @@ else
             <%= quickfield("multiple", "ProfissionaisPPI", "Profissionais", 3, Profissionais, "select id, NomeProfissional from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", "") %>
             <%= quickfield("multiple", "EspecialidadesPPI", "Especialidades", 3, Especialidades, "select id, especialidade from especialidades where sysActive=1 order by especialidade", "especialidade", "") %>
             <div class="col-md-2">
-                <button class="btn btn-primary mt25" onclick="ppi('S', <%= PacoteID %>)"><i class="fa fa-save"></i> SALVAR</button>
+                <button class="btn btn-primary mt25" onclick="ppi('S', <%= PacoteID %>)"><i class="far fa-save"></i> SALVAR</button>
             </div>
     </div>
     <div class="row">
         <%= quickfield("simpleSelect", "ProcSADTAdd", "Procedimentos", 4, "", sqlConteudo, "Descricao", "") %>
         <div class="col-md-2 pt25">
-            <button type="button" class="btn btn-success" onclick="ppi('I', $('#ProcSADTAdd').val())"><i class="fa fa-plus"></i> Adicionar</button>
+            <button type="button" class="btn btn-success" onclick="ppi('I', $('#ProcSADTAdd').val())"><i class="far fa-plus"></i> Adicionar</button>
         </div>
     </div>
     <hr class="short alt" />
@@ -164,7 +164,7 @@ else
                     <tr>
                         <td><%= ppi("descricao") %></td>
                         <td width="1%">
-                            <button onclick="ppi('X', <%= ppi("id") %>)" type="button" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button>
+                            <button onclick="ppi('X', <%= ppi("id") %>)" type="button" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button>
                         </td>
                     </tr>
                     <%

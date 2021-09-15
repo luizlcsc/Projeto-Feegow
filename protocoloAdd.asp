@@ -121,7 +121,7 @@ elseif Tipo = "ciapList" then
                 while not pc.eof
                     %>
                     <tr>
-                        <td><% if pc("CID10_Cd1")="Tag" then response.Write("<i style='cursor:pointer' class='fa fa-star'></i> ") end if %> <%= pc("CID10_Cd1") %></td>
+                        <td><% if pc("CID10_Cd1")="Tag" then response.Write("<i style='cursor:pointer' class='far fa-star'></i> ") end if %> <%= pc("CID10_Cd1") %></td>
                         <td><%= pc("Termo") %></td>
 
                         <%
@@ -144,7 +144,7 @@ elseif Tipo = "ciapList" then
                         set adds = nothing
                             %>
                         <td width="150" class="info hidden"><%= quickfield("simpleSelect", "sta"&pc("id"), "", 12, pc("StatusID"), "select * from cliniccentral.cidstatus", "Descricao", " no-select2 semVazio onchange=""protList('ciapList', "& FormID &", "& CampoID &", 'U"& pc("id") &"_'+$(this).val())"" ") %></td>
-                        <td width="1%"><button type="button" class="btn btn-danger mt25" onclick="if(confirm('Tem certeza de que deseja excluir?')) protList('ciapList', <%= FormID %>, <%= CampoID %>, 'X<%= pc("id") %>')"><i class="fa fa-remove"></i></button></td>
+                        <td width="1%"><button type="button" class="btn btn-danger mt25" onclick="if(confirm('Tem certeza de que deseja excluir?')) protList('ciapList', <%= FormID %>, <%= CampoID %>, 'X<%= pc("id") %>')"><i class="far fa-remove"></i></button></td>
                     </tr>
                     <%
                 pc.movenext
@@ -206,7 +206,7 @@ elseif Tipo="prescList" then
 
 
                         <td width="1" class="pt25 hidden"><%= quickfield("simpleSelect", "sta"&pc("id"), "", 12, pc("StatusID"), "select * from cliniccentral.prescricaostatus", "Descricao", " no-select2 semVazio onchange=""protList('prescList', "& FormID &", "& CampoID &", 'U"& pc("id") &"_'+$(this).val())"" ") %></td>
-                        <td width="1%" class="pt25"><button type="button" class="btn btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir?')) protList('prescList', <%= FormID %>, <%= CampoID %>, 'X<%= pc("id") %>')"><i class="fa fa-remove"></i></button></td>
+                        <td width="1%" class="pt25"><button type="button" class="btn btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir?')) protList('prescList', <%= FormID %>, <%= CampoID %>, 'X<%= pc("id") %>')"><i class="far fa-remove"></i></button></td>
                     </tr>
                     <%
                 pc.movenext
@@ -266,8 +266,8 @@ elseif Tipo="encList" then
                         <td width="200" class="pt25"></td>
                         <td width="200" class="pt25"></td>
                         <%end if%>
-                        <td width="1%" class="pt25"><button type="button" class="btn btn-info" onClick="printCampo('encaminhamento', '<%= CampoID %>', <%=pc("id")%>)"><i class="fa fa-print"></i></button></td>
-                        <td width="1%" class="pt25"><button type="button" class="btn btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir?')) protList('encList', <%= FormID %>, <%= CampoID %>, 'X<%= pc("id") %>')"><i class="fa fa-remove"></i></button></td>
+                        <td width="1%" class="pt25"><button type="button" class="btn btn-info" onClick="printCampo('encaminhamento', '<%= CampoID %>', <%=pc("id")%>)"><i class="far fa-print"></i></button></td>
+                        <td width="1%" class="pt25"><button type="button" class="btn btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir?')) protList('encList', <%= FormID %>, <%= CampoID %>, 'X<%= pc("id") %>')"><i class="far fa-remove"></i></button></td>
                     </tr>
                     <tr id="result<%= CampoID &"_"& pc("id") %>">
                         <td colspan="6">
@@ -307,21 +307,21 @@ elseif Tipo="pedList" then
                     <tr>
                         <%if pc("GuiaID")&""<>"" then%>
                             <td width="1%">
-                                <a href="./?P=tissguiasadt&Pers=1&I=<%=pc("GuiaID")%>" target="_blank" title="Abrir guia SADT" class="btn btn-default btn-xs m2"><i class="fa fa-link"></i></a>
-                                <button type="button" onClick="guiaTISS('GuiaSADT',<%=pc("GuiaID")%>)" title="Imprimir guia SADT" class="btn btn-info btn-xs m2"><i class="fa fa-print"></i></button>
+                                <a href="./?P=tissguiasadt&Pers=1&I=<%=pc("GuiaID")%>" target="_blank" title="Abrir guia SADT" class="btn btn-default btn-xs m2"><i class="far fa-link"></i></a>
+                                <button type="button" onClick="guiaTISS('GuiaSADT',<%=pc("GuiaID")%>)" title="Imprimir guia SADT" class="btn btn-info btn-xs m2"><i class="far fa-print"></i></button>
                             </td>
                         <%else%>
                             <td width="1%">
-                                <a target="_blank" class="btn btn-default btn-xs m2 hidden" id="Guia<%= CampoID %>-<%= pc("id") %>"><i class="fa fa-link"></i></a>
-                                <button type="button" class="btn btn-info btn-xs m2 hidden" id="Print<%= CampoID %>-<%= pc("id") %>"><i class="fa fa-print"></i></button>
+                                <a target="_blank" class="btn btn-default btn-xs m2 hidden" id="Guia<%= CampoID %>-<%= pc("id") %>"><i class="far fa-link"></i></a>
+                                <button type="button" class="btn btn-info btn-xs m2 hidden" id="Print<%= CampoID %>-<%= pc("id") %>"><i class="far fa-print"></i></button>
                                 <input class="check-pedido" type="checkbox" name="Chk<%= CampoID %>" id="Chk<%= CampoID %>-<%= pc("id") %>" value="<%= pc("id") %>" />
                             </td>
                         <%end if%>
                         <td><label for="Chk<%= CampoID %>-<%= pc("id") %>"><%= pc("descricao") %></label></td>
                         <td width="150" class="pt25"><%= quickfield("simpleSelect", "sta"&pc("id"), "", 12, pc("StatusID"), "select * from cliniccentral.pedidosstatus", "Descricao", " no-select2 semVazio onchange=""protList('pedList', "& FormID &", "& CampoID &", 'U"& pc("id") &"_'+$(this).val())"" ") %></td>
-                        <td width="1%" class="pt25"><button type="button" class="btn btn-info"  title="Resultado" onclick="$(this).fadeOut(); $('#result<%= CampoID &"_"& pc("id") %>').fadeIn()"><i class="fa fa-list"></i></button></td>
-                        <td width="1%" class="pt25 hidden"><button type="button" class="btn btn-info" onclick=""><i class="fa fa-paperclip"></i></button></td>
-                        <td width="1%" class="pt25"><button type="button" id="Delete<%= CampoID %>-<%= pc("id") %>" <%if pc("GuiaID")&""<>"" then%> disabled <%end if%> class="btn btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir?')) protList('pedList', <%= FormID %>, <%= CampoID %>, 'X<%= pc("id") %>')"><i class="fa fa-remove"></i></button></td>
+                        <td width="1%" class="pt25"><button type="button" class="btn btn-info"  title="Resultado" onclick="$(this).fadeOut(); $('#result<%= CampoID &"_"& pc("id") %>').fadeIn()"><i class="far fa-list"></i></button></td>
+                        <td width="1%" class="pt25 hidden"><button type="button" class="btn btn-info" onclick=""><i class="far fa-paperclip"></i></button></td>
+                        <td width="1%" class="pt25"><button type="button" id="Delete<%= CampoID %>-<%= pc("id") %>" <%if pc("GuiaID")&""<>"" then%> disabled <%end if%> class="btn btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir?')) protList('pedList', <%= FormID %>, <%= CampoID %>, 'X<%= pc("id") %>')"><i class="far fa-remove"></i></button></td>
                     </tr>
                     <tr <% if Resultado="" then response.write(" style=""display:none"" ") end if %> id="result<%= CampoID &"_"& pc("id") %>">
                         <td colspan="6">
@@ -357,9 +357,9 @@ elseif Tipo="atesList" then
                         <td width="1%">
                         </td>
                         <td><label><%= pa("NomeAtestado") %></label></td>
-                        <td width="1%" class="pt25"><button type="button" class="btn btn-success" onclick="editPront('atestado', <%=pa("id")%>, <%=PacienteID%>)"><i class="fa fa-edit"></i></button></td>
-                        <td width="1%" class="pt25"><button type="button" class="btn btn-info" id="Print<%= CampoID %>-<%= pa("id") %>" onclick="printCampo('atestado', <%= CampoID %>, <%=pa("id")%>)"><i class="fa fa-print"></i></button></td>
-                        <td width="1%" class="pt25"><button type="button" class="btn btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir?')) protList('atesList', <%= FormID %>, <%= CampoID %>, 'X<%= pa("id") %>')"><i class="fa fa-remove"></i></button></td>
+                        <td width="1%" class="pt25"><button type="button" class="btn btn-success" onclick="editPront('atestado', <%=pa("id")%>, <%=PacienteID%>)"><i class="far fa-edit"></i></button></td>
+                        <td width="1%" class="pt25"><button type="button" class="btn btn-info" id="Print<%= CampoID %>-<%= pa("id") %>" onclick="printCampo('atestado', <%= CampoID %>, <%=pa("id")%>)"><i class="far fa-print"></i></button></td>
+                        <td width="1%" class="pt25"><button type="button" class="btn btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir?')) protList('atesList', <%= FormID %>, <%= CampoID %>, 'X<%= pa("id") %>')"><i class="far fa-remove"></i></button></td>
                     </tr>
 
                     <%

@@ -4,7 +4,7 @@
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Validar Lotes");
-    $(".crumb-icon a span").attr("class", "fa fa-check-square");
+    $(".crumb-icon a span").attr("class", "far fa-check-square");
 </script>
 
 <br>

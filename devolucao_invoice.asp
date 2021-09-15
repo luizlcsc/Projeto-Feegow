@@ -68,7 +68,7 @@ if not rsDevolucao.eof then
     <% if rsDevolucao("tipoOperacao") = "1" and not isnull(rsDevolucao("invoiceAPagarID")) then %>
     <a href="?P=invoice&I=<%=rsDevolucao("invoiceAPagarID")%>&A=&Pers=1&T=D" target="_blank" class="btn btn-sm  btn-primary">Ver Contas a Pagar</a>
     <% end if %>
-    <a href="#" class="btn btn-danger btn-sm recibocancelamento"><i class="fa fa-print"></i> Gerar Recibo de Cancelamento</a>
+    <a href="#" class="btn btn-danger btn-sm recibocancelamento"><i class="far fa-print"></i> Gerar Recibo de Cancelamento</a>
   </div>
 
 <%

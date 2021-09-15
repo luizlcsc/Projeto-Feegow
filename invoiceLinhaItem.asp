@@ -181,7 +181,7 @@
     <%else %>
     title="Lançamentos de estoque"
     <% end if %>
-    onclick="modalEstoque('<%=ItemInvoiceID %>', '<%=ItemID %>', '<%= ProdutoInvoiceID %>')" id="btn<%= ProdutoInvoiceID %>" type="button" class="btn btn-alert btn-block btn-sm"><i class="fa fa-medkit"></i></button></td>
+    onclick="modalEstoque('<%=ItemInvoiceID %>', '<%=ItemID %>', '<%= ProdutoInvoiceID %>')" id="btn<%= ProdutoInvoiceID %>" type="button" class="btn btn-alert btn-block btn-sm"><i class="far fa-medkit"></i></button></td>
     <td>
         <%
         PodeExcluirItem = True
@@ -193,7 +193,7 @@
                 if aut("repassesV")=1 then
                 %>
                 <button title="Repasses Gerados" onclick="repasses('ItemInvoiceID', <%= ItemInvoiceID %>)" type="button" class="btn btn-sm btn-dark">
-                    <i class="fa fa-puzzle-piece"></i>
+                    <i class="far fa-puzzle-piece"></i>
                 </button>
                 <%
                 end if
@@ -206,7 +206,7 @@
 
         if PodeExcluirItem then %>
         <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="<%=titleNotaFiscal%>">
-            <button type="button" id="xili<%= ItemInvoiceID %>"  class="btn btn-sm btn-danger disable <%=desabilitarExclusaoItem%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+            <button type="button" id="xili<%= ItemInvoiceID %>"  class="btn btn-sm btn-danger disable <%=desabilitarExclusaoItem%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="far fa-remove"></i></button>
         </span>
         <%
         end if
@@ -217,12 +217,12 @@
 
     %>
         <div class="btn-group">
-            <button type="button" class="btn btn-info btn-sm  dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print"></i></button>
+            <button type="button" class="btn btn-info btn-sm  dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="far fa-print"></i></button>
             <ul class="dropdown-menu dropdown-info pull-right">
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Protocolo')"><i class="fa fa-plus"></i> Protocolo de laudo </a></li>
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Impresso')"><i class="fa fa-plus"></i> Impresso </a></li>
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Etiqueta')"><i class="fa fa-plus"></i> Etiqueta </a></li>
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Preparos')"><i class="fa fa-plus"></i> Preparos </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Protocolo')"><i class="far fa-plus"></i> Protocolo de laudo </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Impresso')"><i class="far fa-plus"></i> Impresso </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Etiqueta')"><i class="far fa-plus"></i> Etiqueta </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Preparos')"><i class="far fa-plus"></i> Preparos </a></li>
             </ul>
         </div>
     <%end if%>
@@ -326,7 +326,7 @@ if req("T")="C" then
                 <td class="text-right" colspan="2">R$ <%=fn(g("ValorPago")) %></td>
                 <td class="text-right" colspan="2">
                     <button type="button" class="btn btn-sm btn-danger deletaGuia" data-id="<%= idGuia %>">
-                        <i class="fa fa-remove"></i>
+                        <i class="far fa-remove"></i>
                     </button>
                 </td>
             </tr>

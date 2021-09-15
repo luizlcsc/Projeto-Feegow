@@ -65,7 +65,7 @@ percentual = CalculaMinAprovacao(id)
           <div class="progress-bar progress-bar-primary progress-bar-striped" style="width: <%=percentual%>%;;"></div>
           <div class="progress-bar progress-bar-default progress-bar" style="width: <%=100-percentual%>%;"></div>
         </div></td>
-    <td><button type="button" id="xili<%= ItemCompraID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button></td>
+    <td><button type="button" id="xili<%= ItemCompraID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="far fa-remove"></i></button></td>
 </tr>
 <script>
 function recalcular(arg){

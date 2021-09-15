@@ -57,7 +57,7 @@ if instr(req("A"), "cancelar")>0 then
 end if
 %>
 
-<button onClick="detalheFilaEspera(0, <%=ProfissionalID%>, 'I')" class="btn btn-block btn-xs btn-info"><i class="fa fa-plus"></i> Adicionar Paciente</button>
+<button onClick="detalheFilaEspera(0, <%=ProfissionalID%>, 'I')" class="btn btn-block btn-xs btn-info"><i class="far fa-plus"></i> Adicionar Paciente</button>
 <div class="row">
 	<div class="col-md-12" style="height:300px; overflow-y:scroll">
     <table class="table table-hover table-striped no-padding no-margin">
@@ -81,11 +81,11 @@ end if
 		%>
         <tr>
             <td width="1%" nowrap>
-            <button type="button" onClick="filaEspera('F_<%=fila("id")%>',<%=ProfissionalID%>);" class="btn btn-xs btn-primary"><i class="fa fa-chevron-right"></i></button>
-            <button type="button" onClick="detalheFilaEspera(<%=fila("PacienteID")%>, <%=fila("ProfissionalID")%>, 'E')" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></button>
-            <button type="button" onClick="if(confirm('Tem certeza de que deseja excluir este paciente da fila de espera?'))filaEspera('X_<%=fila("id")%>');" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button>
+            <button type="button" onClick="filaEspera('F_<%=fila("id")%>',<%=ProfissionalID%>);" class="btn btn-xs btn-primary"><i class="far fa-chevron-right"></i></button>
+            <button type="button" onClick="detalheFilaEspera(<%=fila("PacienteID")%>, <%=fila("ProfissionalID")%>, 'E')" class="btn btn-xs btn-success"><i class="far fa-edit"></i></button>
+            <button type="button" onClick="if(confirm('Tem certeza de que deseja excluir este paciente da fila de espera?'))filaEspera('X_<%=fila("id")%>');" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button>
             </td>
-            <td width="1%"><i class="fa fa-<%=icone%>"></i></td><td><%=fila("NomePaciente")%></td>
+            <td width="1%"><i class="far fa-<%=icone%>"></i></td><td><%=fila("NomePaciente")%></td>
         </tr>
         <%
 	fila.movenext

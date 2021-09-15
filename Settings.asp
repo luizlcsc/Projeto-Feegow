@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <div class="widget-box transparent">
     <div class="widget-header widget-header-flat">
-        <h4 class=""><i class="fa fa-<%=dIcone("settings")%> blue"></i> 
+        <h4 class=""><i class="far fa-<%=dIcone("settings")%> blue"></i>
 			EMPRESA E FILIAIS
         </h4>
     </div>

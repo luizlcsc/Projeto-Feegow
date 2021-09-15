@@ -23,10 +23,10 @@ end if
             <div class="panel">
                 <div class="panel-heading">
                     <span class="panel-title">
-                        <i class="fa fa-group"></i>Escolha os profissionais que podem ver este arquivo
+                        <i class="far fa-group"></i>Escolha os profissionais que podem ver este arquivo
                     </span>
                     <span class="panel-controls">
-                        <button id="btnSalvarCompartilharPront" type="submit" class="btn btn-sm btn-primary"> <i class="fa fa-save"></i> Salvar </button>
+                        <button id="btnSalvarCompartilharPront" type="submit" class="btn btn-sm btn-primary"> <i class="far fa-save"></i> Salvar </button>
                     </span>
                 </div>
                 <div class="panel-body">

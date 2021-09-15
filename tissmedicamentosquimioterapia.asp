@@ -15,7 +15,7 @@ end if
       <th width="10%" align="center" nowrap>Doses</th>
       <th width="10%" align="center" nowrap>Via Adm</th>
       <th width="10%" align="center" nowrap>Frequência</th>
-      <th width="3%" align="right" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemQuimioterapia('Produto', <%=request.QueryString("I")%>, 0);"><i class="fa fa-plus"></i></button></th>
+      <th width="3%" align="right" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemQuimioterapia('Produto', <%=request.QueryString("I")%>, 0);"><i class="far fa-plus"></i></button></th>
     </tr>
   </thead>
   <tbody>
@@ -33,7 +33,7 @@ end if
       <input type="hidden" name="viaADMMedic<%=p("id") %>" value="<%=p("ViaADM") %>"/>
       <input type="hidden" name="frequenciaMMedic<%=p("id") %>" value="<%=p("Frequencia") %>"/>
       
-      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemQuimioterapia('Produto', <%=request.QueryString("I")%>, <%=p("id")%>);"><i class="fa fa-edit"></i></button></td>
+      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemQuimioterapia('Produto', <%=request.QueryString("I")%>, <%=p("id")%>);"><i class="far fa-edit"></i></button></td>
       <td align="center"><%= p("DataAdministracao") %></td>
       <td align="center"><%= p("TabelaID") %></td>
       <td align="center"><%= p("CodigoMedicamento") %></td>
@@ -41,7 +41,7 @@ end if
       <td align="center"><%= p("DosagemMedicamento") %></td>
       <td align="center"><%= p("ViaADM") %></td>
       <td align="center"><%= p("Frequencia") %></td>
-      <td align="center"><button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('tissmedicamentosquimioterapia', 'tissmedicamentosquimioterapia.asp?I=<%=request.QueryString("I")%>&X=<%=p("id")%>')"><i class="fa fa-remove"></i></button></td>
+      <td align="center"><button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('tissmedicamentosquimioterapia', 'tissmedicamentosquimioterapia.asp?I=<%=request.QueryString("I")%>&X=<%=p("id")%>')"><i class="far fa-remove"></i></button></td>
     </tr>
     <tr>
         <td colspan="15" class="hidden" id="Produto<%=p("id") %>"></td>

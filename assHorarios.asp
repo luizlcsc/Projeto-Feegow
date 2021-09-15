@@ -201,7 +201,7 @@ while not pass.EOF
 	    <%
 	    if aut("|horariosX|") then
 	    %>
-	    <button type="button" value="Excluir" onClick="location.href='?X=<%=pass("id")%>&ProfissionalID=<%=req("ProfissionalID")%>&LocalID=<%=req("LocalID")%>';" style="font-size:10px" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i> </button>
+	    <button type="button" value="Excluir" onClick="location.href='?X=<%=pass("id")%>&ProfissionalID=<%=req("ProfissionalID")%>&LocalID=<%=req("LocalID")%>';" style="font-size:10px" class="btn btn-sm btn-danger"><i class="far fa-remove"></i> </button>
 	    <%
 	    end if
 	    %>

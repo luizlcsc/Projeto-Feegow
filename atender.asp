@@ -684,7 +684,7 @@ end if
 if Conteudo="Play" then
         if getConfig("ExibirIniciarAtendimento") then
             %>
-                    <button <%=iniciarDisabled%> type="button" class="btn btn-success btn-gradient btn-alt btn-block" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'Iniciar', '')"><i class="fa fa-play"></i> Iniciar Atendimento </button>
+                    <button <%=iniciarDisabled%> type="button" class="btn btn-success btn-gradient btn-alt btn-block" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'Iniciar', '')"><i class="far fa-play"></i> Iniciar Atendimento </button>
             <%
             else
             %>
@@ -700,19 +700,19 @@ if Conteudo="Play" then
         end if
       else
         %>
-        <h3 class="text-center light"><i class="fa fa-clock-o"></i> <span id="counter"><%=Tempo%></span></h3>
+        <h3 class="text-center light"><i class="far fa-clock-o"></i> <span id="counter"><%=Tempo%></span></h3>
           <div class="row">
             <% if getConfig("SolicitacaoDeProcedimentosEspera")="1" then %>
 
                 <div class="col-sm-6">
-                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i> Finalizar</button>
+                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="far fa-stop"></i> Finalizar</button>
                 </div>
                 <div class="col-sm-6">
-                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atEspera()"><i class="fa fa-pause"></i> Espera</button>
+                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atEspera()"><i class="far fa-pause"></i> Espera</button>
                 </div>
                 <% IF session("AtendimentoTelemedicina")&""<>"" THEN %>
                 <div class="col-sm-12">
-                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="cancelarAtendimento()"><i class="fa fa-times"></i> Cancelar Atendimento</button>
+                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="cancelarAtendimento()"><i class="far fa-times"></i> Cancelar Atendimento</button>
                 </div>
                 <% END IF %>
 
@@ -742,10 +742,10 @@ if Conteudo="Play" then
 
             <% else %>
                 <div class="col-sm-6">
-                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i> Finalizar</button>
+                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="far fa-stop"></i> Finalizar</button>
                 </div>
                 <div class="col-sm-6">
-                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="fa fa-pause"></i> Solicitar</button>
+                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="far fa-pause"></i> Solicitar</button>
                 </div>
             <% end if %>
           </div>

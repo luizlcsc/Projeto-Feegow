@@ -81,8 +81,8 @@ end if
                     <table class="table">
                         <thead class="thead-light">
                             <tr class="table=active">
-                                <th>Vacina: <%=series("NomeProcedimento")%> <button class="btn btn-info btn-xs" type="button" data-toggle="collapse" data-target="#detalheVacina-<%=series("VacinaPacienteID")%>">Detalhes</button> / Série: <%=series("titulo")%> <% if Observacao <> "" then response.write(" <a href='#'> <span class='observacao fa fa-info-circle bigger-110' data-toggle='tooltip' data-original-title='"&Observacao&"'></span></a>") end if %></th>
-                                <th width="10%" style="text-align:right"><% if permiteExcluir("total") = "0" and aut("vacinapacienteX") then %><button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="javascript:if(confirm('Tem certeza de que deseja excluir este pedido de vacina?'))excluirSerie(<%=series("VacinaPacienteID")%>)"><i class="fa fa-trash"></i></button> <% end if %></th>
+                                <th>Vacina: <%=series("NomeProcedimento")%> <button class="btn btn-info btn-xs" type="button" data-toggle="collapse" data-target="#detalheVacina-<%=series("VacinaPacienteID")%>">Detalhes</button> / Série: <%=series("titulo")%> <% if Observacao <> "" then response.write(" <a href='#'> <span class='observacao far fa-info-circle bigger-110' data-toggle='tooltip' data-original-title='"&Observacao&"'></span></a>") end if %></th>
+                                <th width="10%" style="text-align:right"><% if permiteExcluir("total") = "0" and aut("vacinapacienteX") then %><button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="javascript:if(confirm('Tem certeza de que deseja excluir este pedido de vacina?'))excluirSerie(<%=series("VacinaPacienteID")%>)"><i class="far fa-trash"></i></button> <% end if %></th>
                             </tr>
                         </thead>
                     </table>
@@ -199,7 +199,7 @@ end if
                         <td><span class="badge <%=spanClass%>"><%=dosagens("NomeStatus")%></span></td>
                         <td style="text-align: center"><%=dosagens("DataPrevista")%> <p></td>
                         <td style="text-align: center"><%=dosagens("Ordem")%></td>
-                        <td><%=dosagens("Dosagem")%><% if aplicacaoObservacao <> "" then response.write(" <a href='#'> <span class='observacao fa fa-info-circle bigger-110' data-toggle='tooltip' data-original-title='"&aplicacaoObservacao&"'></span></a>") end if %></td>
+                        <td><%=dosagens("Dosagem")%><% if aplicacaoObservacao <> "" then response.write(" <a href='#'> <span class='observacao far fa-info-circle bigger-110' data-toggle='tooltip' data-original-title='"&aplicacaoObservacao&"'></span></a>") end if %></td>
                         <td style="text-align: center"><%=dosagens("SiglaViaAplicacao")%></td>
                         <td><%=dosagens("LadoAplicacao")%></td>
                         <td><%=dosagens("NomeFantasia")%></td>
@@ -211,7 +211,7 @@ end if
                             if (dosagens("StatusID") = 1 or dosagens("StatusID") = 2) then
 %>
                             <button type="button" class="btn btn-xs btn-success" onclick="modalVacinaPaciente('VacinaPacienteAplicacao.asp', <%= PacienteID%>, <%= dosagens("id")%>, '', '');"><li class="glyphicon glyphicon-pushpin"></li></button>
-                            <button type="button" class="btn btn-xs btn-info" onclick="modalVacinaPaciente('VacinaPacienteAlteracao.asp', <%= PacienteID%>, <%= dosagens("id")%>, <%= dosagens("VacinaPacienteSerieID")%>, <%= dosagens("Ordem")%>);"><i class="fa fa-edit icon-edit bigger-125"></i></button>
+                            <button type="button" class="btn btn-xs btn-info" onclick="modalVacinaPaciente('VacinaPacienteAlteracao.asp', <%= PacienteID%>, <%= dosagens("id")%>, <%= dosagens("VacinaPacienteSerieID")%>, <%= dosagens("Ordem")%>);"><i class="far fa-edit icon-edit bigger-125"></i></button>
 <%
                             end if
 %>

@@ -16,7 +16,7 @@ end if
       <th width="95" align="center" nowrap>Nº no Conselho</th>
       <th width="30" align="center" nowrap>UF</th>
       <th width="75" align="center" nowrap>Código CBO</th>
-      <th width="30" align="center" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemCirurgia('Profissionais', <%=req("I")%>, 0);"><i class="fa fa-plus"></i></button></th>
+      <th width="30" align="center" nowrap><button type="button" class="btn btn-info btn-xs" onClick="itemCirurgia('Profissionais', <%=req("I")%>, 0);"><i class="far fa-plus"></i></button></th>
     </tr>
   </thead>
   <tbody>
@@ -33,7 +33,7 @@ end if
 	end if
   %>
     <tr id="lProfissionais<%=p("id") %>">
-      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemCirurgia('Profissionais', <%=req("I")%>, <%=p("id")%>);"><i class="fa fa-edit"></i></button></td>
+      <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemCirurgia('Profissionais', <%=req("I")%>, <%=p("id")%>);"><i class="far fa-edit"></i></button></td>
       <td align="center"><%=p("Sequencial")%></td>
       <td align="center"><%=right(p("GrauParticipacaoID"),2)%></td>
       <td align="left"><%=NomeProfissional%></td>
@@ -42,7 +42,7 @@ end if
       <td align="center"><%=p("DocumentoConselho")%></td>
       <td align="center"><%=p("UFConselho")%></td>
       <td align="center"><%=p("CodigoCBO")%></td>
-      <td align="center"><button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('profissionaiscirurgia', 'profissionaiscirurgia.asp?I=<%=req("I")%>&X=<%=p("id")%>')"><i class="fa fa-remove"></i></button></td>
+      <td align="center"><button type="button" class="btn btn-xs btn-danger" onClick="atualizaTabela('profissionaiscirurgia', 'profissionaiscirurgia.asp?I=<%=req("I")%>&X=<%=p("id")%>')"><i class="far fa-remove"></i></button></td>
     </tr>
     <tr>
         <td colspan="10" class="hidden" id="Profissionais<%=p("id") %>"></td>

@@ -4,7 +4,7 @@
     $(".crumb-active a").html("Laudos");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Lista de Laudos Laboratoriais (via integração)");
-    $(".crumb-icon a span").attr("class", "fa fa-file-text");
+    $(".crumb-icon a span").attr("class", "far fa-file-text");
 </script>
 
 <%
@@ -53,7 +53,7 @@ sqlProfissionais = "SELECT p.id, p.NomeProfissional " &_
                 <%= quickfield("simpleSelect", "TipoData", "Tipo", 2, "1", "select '1' id, 'Data de criação' TipoData UNION SELECT '2' id, 'Previsão de entrega' TipoData", "TipoData", "empty") %>
                 <%= quickfield("multiple", "Status", "Status", 2, "", "select id, Status FROM laudostatus ", "Status", "") %>
                 <div class="col-md-2">
-                    <button class="btn btn-primary btn-block mt20" onclick="buscalaudos()"><i class="fa fa-search bigger-110"></i> Buscar</button>
+                    <button class="btn btn-primary btn-block mt20" onclick="buscalaudos()"><i class="far fa-search bigger-110"></i> Buscar</button>
                 </div>
             </div>
 
@@ -65,7 +65,7 @@ sqlProfissionais = "SELECT p.id, p.NomeProfissional " &_
 <div class="panel">
     <div class="panel-heading">
       <span class="panel-title">
-        <span class="fa fa-table"></span>Lista de Laudos Laboratoriais</span>
+        <span class="far fa-table"></span>Lista de Laudos Laboratoriais</span>
       <div class="pull-right">
 
       </div>
@@ -77,7 +77,7 @@ sqlProfissionais = "SELECT p.id, p.NomeProfissional " &_
 <script type="text/javascript">
     function buscalaudos()
     {
-        $("#divListaLaudos").html('<table width="100%"><tbody><TR><TD style="text-align: center;"><i style="text-align: center; margin: 30px;" class="fa fa-spin fa-spinner"></i></TD></TR></tbody></table>');
+        $("#divListaLaudos").html('<table width="100%"><tbody><TR><TD style="text-align: center;"><i style="text-align: center; margin: 30px;" class="far fa-spin fa-spinner"></i></TD></TR></tbody></table>');
         var id  = $("#id").val();
         var datade = $("#De").val();
         var dataate = $("#Ate").val();

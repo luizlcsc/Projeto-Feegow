@@ -36,26 +36,26 @@ EliminaNotificacao=0
                     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab">
                         <li class="active">
                             <a data-toggle="tab" href="#Conta" onclick="$('#ExtratoDireto').html('')">
-                                <i class="fa fa-money bigger-110"></i>
+                                <i class="far fa-money bigger-110"></i>
                                 Faturados 
                             </a>
                         </li>
 
                         <li>
                             <a data-toggle="tab" href="#NaoFaturados" id="tabNaoFaturados">
-                                <i class="fa fa-exclamation-circle bigger-110"></i>
+                                <i class="far fa-exclamation-circle bigger-110"></i>
                                 Não faturados
                             </a>
                         </li>
                         <li>
                             <a data-toggle="tab" href="#ExtratoDireto" id="StatementTab" onclick="extratoDireto('3_<%=PacienteID%>', '<%=dateadd("m", -1, date())%>', '<%=date()%>', '')">
-                                <i class="fa fa-exchange bigger-110"></i>
+                                <i class="far fa-exchange bigger-110"></i>
                                 Extrato
                             </a>
                         </li>
                         <li>
                             <a data-toggle="tab" href="#Informacoes" class="hidden" id="tabInformacoes">
-                                <i class="fa fa-exclamation-triangle bigger-110"></i>
+                                <i class="far fa-exclamation-triangle bigger-110"></i>
                                 Info.
                             </a>
                         </li>
@@ -115,34 +115,34 @@ EliminaNotificacao=0
                    '         <a class="btn btn-default btn-sm" id="btnParticular" href="javascript:ajxContent('Invoice', 'N&T=C&Ent=Conta&PacienteID='+$('#PacienteID').val(), '1', 'divHistorico')">
 			                %>
                             <button type="button" id="btnParticular" class="btn btn-default btn-sm" name="TipoBotao" value="AReceber">
-                                <i class="fa fa-money"></i> Particular
+                                <i class="far fa-money"></i> Particular
                             </button>
                             <%
 		                elseif aut("aberturacaixinhaI") AND session("CaixaID")="" then
 			                %>
-			                <button type="button" id="btnParticular" onClick="alert('Seu caixa está fechado. \n\nAbra seu caixa para realizar lançamentos.')" class="btn btn-default btn-sm" name="TipoBotao" value="AReceber"><i class="fa fa-money"></i> Particular</button>
+			                <button type="button" id="btnParticular" onClick="alert('Seu caixa está fechado. \n\nAbra seu caixa para realizar lançamentos.')" class="btn btn-default btn-sm" name="TipoBotao" value="AReceber"><i class="far fa-money"></i> Particular</button>
 			                <%
 		                end if
                         if aut("|guiasI|") then
                         %>
 
                             <button name="TipoBotao" type="button" id="btnGuiaConsulta" class="btn btn-default btn-sm btn-guia" data-value="GuiaConsulta">
-                                <i class="fa fa-credit-card"></i> Guia Consulta
+                                <i class="far fa-credit-card"></i> Guia Consulta
                             </button>
                             <button class="btn btn-default btn-sm btn-guia" type="button" id="btnGuiaSADT" name="TipoBotao" data-value="GuiaSADT">
-                                <i class="fa fa-credit-card"></i> Guia SP/SADT
+                                <i class="far fa-credit-card"></i> Guia SP/SADT
                             </button>
                             <!--<button class="btn btn-default btn-sm btn-guia" type="button" id="btnGuiaHonorarios" name="TipoBotao" value="GuiaHonorarios">-->
-                                <!--<i class="fa fa-credit-card"></i> Guia Honorários-->
+                                <!--<i class="far fa-credit-card"></i> Guia Honorários-->
                             <!--</button>-->
 
                             <div class="btn-group">
-                                        <button id="outrasGuias" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> Outras Guias  <i class="fa fa-angle-down icon-on-right"></i></button>
+                                        <button id="outrasGuias" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="far fa-plus"></i> Outras Guias  <i class="far fa-angle-down icon-on-right"></i></button>
                                         <ul class="dropdown-menu dropdown-danger">
-                                        <!--<li><a href="#" id="btnGuiaConsulta" data-value="GuiaConsulta" class="btn-guia"><i class="fa fa-plus btn-guia"></i> Consulta</a></li>-->
-                                        <!--<li><a href="#" id="btnGuiaSADT" data-value="GuiaSADT" class="btn-guia"><i class="fa fa-plus"></i> SP/SADT</a></li>-->
-                                        <li><a href="#" id="btnGuiaHonorarios" data-value="GuiaHonorarios" class="btn-guia"><i class="fa fa-plus"></i> Honorários</a></li>
-                                        <li><a href="#" id="btnGuiaInternacao" data-value="GuiaInternacao" class="btn-guia"><i class="fa fa-plus"></i> Sol. Internação</a></li>
+                                        <!--<li><a href="#" id="btnGuiaConsulta" data-value="GuiaConsulta" class="btn-guia"><i class="far fa-plus btn-guia"></i> Consulta</a></li>-->
+                                        <!--<li><a href="#" id="btnGuiaSADT" data-value="GuiaSADT" class="btn-guia"><i class="far fa-plus"></i> SP/SADT</a></li>-->
+                                        <li><a href="#" id="btnGuiaHonorarios" data-value="GuiaHonorarios" class="btn-guia"><i class="far fa-plus"></i> Honorários</a></li>
+                                        <li><a href="#" id="btnGuiaInternacao" data-value="GuiaInternacao" class="btn-guia"><i class="far fa-plus"></i> Sol. Internação</a></li>
                                         </ul>
                                     </div>
                         <%
@@ -150,7 +150,7 @@ EliminaNotificacao=0
 
                         if getConfig("PermitirAtendimentoAvulso")=1 then
                         %>
-                        <button type="button" class="btn btn-sm btn-default" onClick="infAten('N');"><i class="fa fa-stethoscope"></i> Atendimento</button>
+                        <button type="button" class="btn btn-sm btn-default" onClick="infAten('N');"><i class="far fa-stethoscope"></i> Atendimento</button>
                         <%
                         end if
                         %>
@@ -236,7 +236,7 @@ EliminaNotificacao=0
                                                                 $("#tabInformacoes").addClass("red");
                                                                 var valor = `<%=Valor%>`;
                                                                 $.gritter.add({
-                                                                    title: '<i class="fa fa-exclamation-triangle"></i> <%=Titulo%>',
+                                                                    title: '<i class="far fa-exclamation-triangle"></i> <%=Titulo%>',
                                                                     text: valor,
                                                                     time: 50000,
                                                                     class_name: 'gritter-error gritter-light'
@@ -383,9 +383,9 @@ function btnToggleLoading(target,state, force, waitMessage="Aguarde...") {
   setTimeout(function() {
     if($el.attr("data-force-disabled") !== 'true' || force){
           if(state){
-              $el.attr('disabled', false).html("<i class='fa fa-save'></i> Salvar", false);
+              $el.attr('disabled', false).html("<i class='far fa-save'></i> Salvar", false);
           }else{
-              $el.attr('disabled', true).html("<i class='fa fa-spinner fa-spin'></i> "+waitMessage, true);
+              $el.attr('disabled', true).html("<i class='far fa-spinner fa-spin'></i> "+waitMessage, true);
           }
       }
   }, timeout);

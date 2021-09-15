@@ -36,7 +36,7 @@ end if
         <%= quickField("datepicker", "DataInicioBloqueio", "Data Início", 3, DataInicio, "", "", " placeholder='Data Início'") %>
         <%'= quickField("datepicker", "DataFimBloqueio", "Data Fim", 3, DataFim, "", "", " placeholder='Data Fim'") %>
 
-        <button class="btn btn-success mt25" type="button" onclick="listaBloqueios()"><i class="fa fa-search"></i> Buscar bloqueios</button>
+        <button class="btn btn-success mt25" type="button" onclick="listaBloqueios()"><i class="far fa-search"></i> Buscar bloqueios</button>
 
         <div class="col-md-12">
             <hr>
@@ -113,7 +113,7 @@ while not lista.eof
 	    end if
 	end if
 	IF lista("feriadoID")&"" <>"" then
-		iconferiado = "<i class='fa fa-road' title='Feriado'></i> "
+		iconferiado = "<i class='far fa-road' title='Feriado'></i> "
 	end if 		
 	%>
 	<tr>
@@ -126,7 +126,7 @@ while not lista.eof
     	<td><small><%= Unidades %></small></td>
     	<td><small><%= formatdatetime(lista("Data"), 2) &" - "& formatdatetime(lista("Data"), 4) %></small></td>
         <%if aut("bloqueioagendaX") then%>
-    	<td><button class="btn btn-xs btn-danger" type="button" onClick="if(confirm('Tem certeza de que deseja excluir este bloqueio?'))ajxContent('listaBloqueios&X=<%=lista("id")%>', <%=ProfissionalID%>, '1', 'listaBloqueios')"><i class="fa fa-remove"></i></button></td>
+    	<td><button class="btn btn-xs btn-danger" type="button" onClick="if(confirm('Tem certeza de que deseja excluir este bloqueio?'))ajxContent('listaBloqueios&X=<%=lista("id")%>', <%=ProfissionalID%>, '1', 'listaBloqueios')"><i class="far fa-remove"></i></button></td>
         <% End If %>
     </tr>
 	<%

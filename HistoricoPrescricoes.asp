@@ -9,8 +9,8 @@ end if
 %>
 <div class="btn-group btn-block">
     <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-        <i class="fa fa-history"></i> Hist&oacute;rico de Prescri&ccedil;&otilde;es - <%=Total%>
-        <span class="fa fa-caret-down icon-on-right"></span>
+        <i class="far fa-history"></i> Hist&oacute;rico de Prescri&ccedil;&otilde;es - <%=Total%>
+        <span class="far fa-caret-down icon-on-right"></span>
     </button>
     <ul class="dropdown-menu dropdown-warning">
 
@@ -26,8 +26,8 @@ if not pres.eof then
 		%>
         <li>
         	<a href="javascript:void(0)">
-            	<span onclick="HistoricoPrescricoes(<%=pres("id")%>, '');"><i class="fa fa-search-plus"></i> <%=left(pres("Data"),10)&" por "&nameInTable(pres("sysUser"))%></span>&nbsp;&nbsp;
-            	<span class="red" onclick="if(confirm('Tem certeza de que deseja excluir esta prescrição?'))HistoricoPrescricoes('', <%=pres("id")%>)"><i class="fa fa-trash"></i></span>
+            	<span onclick="HistoricoPrescricoes(<%=pres("id")%>, '');"><i class="far fa-search-plus"></i> <%=left(pres("Data"),10)&" por "&nameInTable(pres("sysUser"))%></span>&nbsp;&nbsp;
+            	<span class="red" onclick="if(confirm('Tem certeza de que deseja excluir esta prescrição?'))HistoricoPrescricoes('', <%=pres("id")%>)"><i class="far fa-trash"></i></span>
             </a> 
         	
         </li>

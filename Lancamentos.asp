@@ -83,20 +83,20 @@ if not lanc.eof or (ItemInvoiceID="" and AtendimentoID="" and ProdutoInvoiceID="
                     NF = lanc("nroNFe")
 					Responsavel = accountName(NULL, lanc("Responsavel"))
 				    if c=0 and aut("estoquemovimentacaoX")=1 then
-					    btnX = "<button class=""btn btn-danger btn-xs"" type=""button"" onclick=""if(confirm('Tem certeza de que deseja excluir este lançamento?'))ajxContent('Lancamentos&X="&lanc("id")&"', "&req("I")&", 1, 'divLancamentos');""><i class=""fa fa-remove""></i></button>"
+					    btnX = "<button class=""btn btn-danger btn-xs"" type=""button"" onclick=""if(confirm('Tem certeza de que deseja excluir este lançamento?'))ajxContent('Lancamentos&X="&lanc("id")&"', "&req("I")&", 1, 'divLancamentos');""><i class=""far fa-remove""></i></button>"
 				    else
 					    btnX = ""
 				    end if
 				    if EntSai="E" then
-					    Icone = "<i class='fa fa-level-down text-system'></i>"
+					    Icone = "<i class='far fa-level-down text-system'></i>"
 					    Sinal = "+"
 					    QuantidadeAtual = QuantidadeAtual+lanc("QuantidadeTotal")
 				    elseif EntSai="S" then
-					    Icone = "<i class='fa fa-level-up text-alert'></i>"
+					    Icone = "<i class='far fa-level-up text-alert'></i>"
 					    Sinal = "-"
 					    QuantidadeAtual = QuantidadeAtual-lanc("QuantidadeTotal")
 				    elseif EntSai="M" then
-					    Icone = "<i class='fa fa-exchange text-info'></i>"
+					    Icone = "<i class='far fa-exchange text-info'></i>"
 					    Sinal = ""
 					    QuantidadeAtual = QuantidadeAtual-lanc("QuantidadeTotal")
 				    end if
@@ -184,7 +184,7 @@ if not lanc.eof or (ItemInvoiceID="" and AtendimentoID="" and ProdutoInvoiceID="
                                     elseif EntSai="S" then
                                         btn = "<button onclick='lancarConta("& lanc("id") &")' type='button' data-rel='tooltip' data-placement='bottom' original-title='Lançar na conta do paciente' title='Lançar na conta do paciente' class='btn btn-xs btn-block btn-default'>Lançar Receita</button>"
                                     else
-                                        btn = "<button onclick='printRecibo("& lanc("id") &")' type='button' data-rel='tooltip' data-placement='bottom' original-title='Nota da movimentação' title='Nota da movimentação' class='btn btn-xs btn-block btn-primary'><i class='fa fa-print'></i> &nbsp; Nota da movimentação</button>"
+                                        btn = "<button onclick='printRecibo("& lanc("id") &")' type='button' data-rel='tooltip' data-placement='bottom' original-title='Nota da movimentação' title='Nota da movimentação' class='btn btn-xs btn-block btn-primary'><i class='far fa-print'></i> &nbsp; Nota da movimentação</button>"
                                     end if
                                 else
                                     if EntSai="E" and InvoiceID<>"" then

@@ -17,7 +17,7 @@ Ate = req("Ate")
         <%=quickfield("datepicker", "Ate", "&nbsp;", 3, Ate, "", "", " placeholder='At&eacute;'")%>
         <%=quickfield("multiple", "Unidades", "Unidades", 4, "", "select * from sys_financialcompanyunits where sysActive", "UnitName", "")%>
         <div class="col-md-2"><label>&nbsp;</label><br>
-        <button class="btn btn-sm btn-success"><i class="fa fa-list"></i> Gerar</button>
+        <button class="btn btn-sm btn-success"><i class="far fa-list"></i> Gerar</button>
       	</div>
       </div>
     </div>

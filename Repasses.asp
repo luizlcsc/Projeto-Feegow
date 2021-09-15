@@ -2,13 +2,13 @@
 <!--#include file="modal.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Repasses");
-    $(".crumb-icon a span").attr("class", "fa fa-puzzle-piece");
+    $(".crumb-icon a span").attr("class", "far fa-puzzle-piece");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("administrar repasses gerados");
     <%
     if aut("configrateio")=1 then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=Rateio&Pers=1"><i class="fa fa-puzzle-piece"></i><span class="menu-text"> Configurar Regras de Repasse</span></a>');
+    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=Rateio&Pers=1"><i class="far fa-puzzle-piece"></i><span class="menu-text"> Configurar Regras de Repasse</span></a>');
     <%
     end if
     %>
@@ -84,7 +84,7 @@ end if
                 <%= quickField("datepicker", "Ate", "&nbsp;", 2, Ate, "", "", " placeholder='At&eacute;' required='required'") %>
                 <div class="col-md-2">
                     <label>&nbsp;</label><br />
-                    <button class="btn btn-primary btn-block"><i class="fa fa-search"></i>Buscar</button>
+                    <button class="btn btn-primary btn-block"><i class="far fa-search"></i>Buscar</button>
                 </div>
                 <div class="col-md-6" id="calculaRepasses">
                     <%server.Execute("calculaRepasse.asp")%>

@@ -87,11 +87,11 @@ end if
                     $(".crumb-active a").html("<%= Nome %>");
                     $(".crumb-link").removeClass("hidden");
                     $(".crumb-link").html("<%= Empresa %>");
-                    $(".crumb-icon a span").attr("class", "fa fa-reorder");
+                    $(".crumb-icon a span").attr("class", "far fa-reorder");
                     <%
                     if aut("lancamentosI")=1 then
                     %>
-                    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" target="_blank" href="./?P=Treinamento&Pers=0&I=<%= req("T") %>"><i class="fa fa-exchange"></i><span class="menu-text"> Editar</span></a>');
+                    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" target="_blank" href="./?P=Treinamento&Pers=0&I=<%= req("T") %>"><i class="far fa-exchange"></i><span class="menu-text"> Editar</span></a>');
                     <%
                     end if
                     %>

@@ -7,7 +7,7 @@
             <%=quickField("text", "NF", "Número da Nota", 3, NF, "", "", " required ")%>
             <div class="col-md-2">
                 <label>&nbsp;</label><br>
-                <button type="submit" class="btn btn-success btn-block"><i class="fa fa-search"></i> Gerar</button>
+                <button type="submit" class="btn btn-success btn-block"><i class="far fa-search"></i> Gerar</button>
             </div>
         </div>
 

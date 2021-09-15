@@ -80,7 +80,7 @@ end if
                                     <td><%= vca("NomeProcedimento") %></td>
                                     <td><%= quickfield("text", "ObsEsp"& vca("id"), "", 12, vca("Obs"), "", "", " onchange=""acEspera('A',"& vca("id") &", $(this).val())""") %></td>
                                     <td>
-                                        <i class="btn btn-danger btn-xs fa fa-remove" onclick="acEspera('X', <%= vca("id") %>)"></i>
+                                        <i class="btn btn-danger btn-xs far fa-remove" onclick="acEspera('X', <%= vca("id") %>)"></i>
                                     </td>
                                 </tr>
                                 <%
@@ -101,7 +101,7 @@ end if
         <div class="row">
             <%= quickfield("text", "TempoAlerta", "Alertar em", 2, UltimoAlertarEm, "", "", " placeholder='minutos' ") %>
             <div class="col-md-10">
-                <button class="btn btn-primary mt25 pull-right" onclick="acEspera('S', '', $('#TempoAlerta').val())"><i class=" fa fa-pause"></i> Colocar em espera</button>
+                <button class="btn btn-primary mt25 pull-right" onclick="acEspera('S', '', $('#TempoAlerta').val())"><i class=" far fa-pause"></i> Colocar em espera</button>
             </div>
         </div>
     </div>

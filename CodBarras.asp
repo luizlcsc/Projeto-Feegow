@@ -66,7 +66,7 @@ body {
 -->
 </style>
 <% if req("BPrint")<>"hdn" then %>
-    <button style="position:absolute" onclick="print()" class="btn btn-primary hidden-print"><i class="fa fa-print"></i></button>
+    <button style="position:absolute" onclick="print()" class="btn btn-primary hidden-print"><i class="far fa-print"></i></button>
 <% end if %>
 <div align="center"><img src=p.gif width=<%=fino%> height=<%=altura%> border=0><img 
 src=b.gif width=<%=fino%> height=<%=altura%> border=0><img 

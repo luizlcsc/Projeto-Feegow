@@ -24,7 +24,7 @@ if req("Part")="" then'primeira parte do processo
 		session("Banco")="clinic"&pult("id")
 		%>
 		<!--#include file="connect.asp"-->
-   		$("#btnGenerate").html('<i class="fa fa-refresh"></i> GERANDO, AGUARDE...');
+   		$("#btnGenerate").html('<i class="far fa-refresh"></i> GERANDO, AGUARDE...');
 		<%
 
 

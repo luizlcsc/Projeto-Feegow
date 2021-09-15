@@ -307,7 +307,7 @@ function discountOverbalance(){
                         </div>
                         <div class="col-md-2 pull-right">
                         	<label>&nbsp;</label> <br />
-                            <button type="button" id="btnSave" class="btn btn-primary btn-block" onclick="saveInvoice();"><i class="fa fa-save bigger-110"></i> SALVAR</button>
+                            <button type="button" id="btnSave" class="btn btn-primary btn-block" onclick="saveInvoice();"><i class="far fa-save bigger-110"></i> SALVAR</button>
                             <input type="hidden" name="InvoiceID" id="InvoiceID" value="<%=req("I")%>" />
                             <input type="hidden" name="CompID" id="CompID" value="<%=req("CompID")%>" />
                             <input type="hidden" name="T" id="T" value="<%=req("T")%>" />
@@ -332,10 +332,10 @@ function discountOverbalance(){
 							<%if 1=2 then%>
                             <div class="alert well-sm alert-warning">
                             <button class="close" data-dismiss="alert" type="button">
-                            <i class="fa fa-remove"></i>
+                            <i class="far fa-remove"></i>
                             </button>
                             <strong>
-                            <i class="fa fa-exclamation"></i>
+                            <i class="far fa-exclamation"></i>
                             </strong>
                             Pagamentos vencidos.
                             <button class="btn btn-warning btn-sm">Visualizar</button>
@@ -347,7 +347,7 @@ function discountOverbalance(){
                                 <div class="row">
                                     <div class="widget-box transparent">
                                     	<div class="widget-header">
-                                            <h4 class="lighter">Pagamento <small><i class="fa fa-double-angle-right"></i> Selecione abaixo a forma de pagamento</small></h4>
+                                            <h4 class="lighter">Pagamento <small><i class="far fa-double-angle-right"></i> Selecione abaixo a forma de pagamento</small></h4>
                                         </div>
                                         <div class="widget-body">
  											<div class="widget-main padding-6 no-padding-left no-padding-right">
@@ -411,7 +411,7 @@ function discountOverbalance(){
     </div><!-- /span -->
     <div class="col-xs-3"><!-- payment column begins -->
         <div class="row">
-            <h3 class="header smaller lighter blue">Pagamento<small> <i class="fa fa-double-angle-right"> </i> Selecione para pagar</small></h3>
+            <h3 class="header smaller lighter blue">Pagamento<small> <i class="far fa-double-angle-right"> </i> Selecione para pagar</small></h3>
         </div>
         
         <div id="divPayment">

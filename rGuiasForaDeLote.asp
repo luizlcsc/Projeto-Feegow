@@ -65,7 +65,7 @@ end if
                 <td><%= dist("DataAtendimento") %></td>
                 <td><%= dist("NomeConvenio") %></td>
                 <td>
-                    <a target="_blank" class="btn btn-success btn-xs link" href="./?P=tiss<%= dist("Tabela") %>&Pers=1&I=<%= dist("id") %>"><i class="fa fa-external-link"></i></a>
+                    <a target="_blank" class="btn btn-success btn-xs link" href="./?P=tiss<%= dist("Tabela") %>&Pers=1&I=<%= dist("id") %>"><i class="far fa-external-link"></i></a>
                     <%= dist("NGuiaPrestador") %></td>
                 <td><%= dist("NomePaciente") %></td>
                 <td><%= dist("NomeProfissional") %></td>

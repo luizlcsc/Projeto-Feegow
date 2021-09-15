@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
     $(".crumb-active").html("<a href='#'>Financeiro</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-money");
+    $(".crumb-icon a span").attr("class", "far fa-money");
     $(".crumb-trail").removeClass("hidden");
     $(".crumb-trail").html("descontos pendentes");
 </script>
@@ -29,7 +29,7 @@ end if
 
                     <div class="col-xs-2">
                     <label>&nbsp;</label><br />
-                        <button type="submit" class="btn btn-sm btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+                        <button type="submit" class="btn btn-sm btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
                     </div>
                 </form>
             </div>
@@ -178,8 +178,8 @@ end if
                                         <%
                                             link = "./?P=DescontoPendente&I="&rsDescontoPendente("iddesconto")&"&Pers=1"
                                         %>
-                                        <a title="Aprovar" class="btn btn-xs btn-success" href="<%=link%>&OP=1" onclick="aprovarDesconto(this)"><i class="fa fa-check-square-o bigger-130"></i></a>
-                                        <a title="Não Aprovar" class="btn btn-xs btn-danger" href="<%=link%>&OP=-1" onclick="rejeitarDesconto(this)"><i class="fa fa-times bigger-130"></i></a>
+                                        <a title="Aprovar" class="btn btn-xs btn-success" href="<%=link%>&OP=1" onclick="aprovarDesconto(this)"><i class="far fa-check-square-o bigger-130"></i></a>
+                                        <a title="Não Aprovar" class="btn btn-xs btn-danger" href="<%=link%>&OP=-1" onclick="rejeitarDesconto(this)"><i class="far fa-times bigger-130"></i></a>
                                     </div>
                                 </td>
                                 <% end if %>

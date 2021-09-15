@@ -7,6 +7,6 @@
         <%= quickfield("memo", "MotivoCancelamento", "Informe o motivo do cancelamento da conta", 12, "", "", "", " required ") %>
     </div>
     <div class="panel-footer text-right">
-        <button class="btn btn-danger"><i class="fa fa-ban"></i> CONFIRMAR CANCELAMENTO</button>
+        <button class="btn btn-danger"><i class="far fa-ban"></i> CONFIRMAR CANCELAMENTO</button>
     </div>
 </form>

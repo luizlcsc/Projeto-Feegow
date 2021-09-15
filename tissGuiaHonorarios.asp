@@ -402,7 +402,7 @@ end if
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Guia de Honorários Individuais");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 <form id="GuiaHonorarios" action="" method="post">
 		<div class="row">
@@ -491,8 +491,8 @@ end if
 				</div>
 			<br />
 				<div class="clearfix form-actions no-margin">
-					<button class="btn btn-primary btn-md"><i class="fa fa-save"></i> Salvar</button>
-					<button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaHonorarios', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
+					<button class="btn btn-primary btn-md"><i class="far fa-save"></i> Salvar</button>
+					<button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaHonorarios', 0)"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
 				</div>
 			</div>
 		</div>

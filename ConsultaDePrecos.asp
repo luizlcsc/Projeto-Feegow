@@ -97,7 +97,7 @@ if not InvoiceSQL.eof then
            var PlanoPacienteID;
 
            $(".crumb-active a").html("Consultar valores");
-           $(".crumb-icon a span").attr("class", "fa fa-search");
+           $(".crumb-icon a span").attr("class", "far fa-search");
 
            $(".crumb-trail").removeClass("hidden");
            $(".crumb-trail").html("Particular / Reembolso do Convênio");

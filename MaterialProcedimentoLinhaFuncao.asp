@@ -15,6 +15,6 @@ function linhaFuncao(FuncaoID, Funcao, Valor, TipoValor, Sobre, Conta, NumeraRep
             <input type="hidden" name="Sobre<%=ItemInvoiceID&"-"&FuncaoID%>" value="0" />
         </div></td>
 		<%
-	%><td><input type="hidden" name="FM<%=ItemInvoiceID%>-<%=FuncaoID%>" value="<%=FM%>" /><button type="button" class="btn btn-danger btn-sm" onClick="RemoveRepasse(<%=ItemInvoiceID%>, <%=FuncaoID%>);"><i class="fa fa-remove"></i></button></td></tr><%
+	%><td><input type="hidden" name="FM<%=ItemInvoiceID%>-<%=FuncaoID%>" value="<%=FM%>" /><button type="button" class="btn btn-danger btn-sm" onClick="RemoveRepasse(<%=ItemInvoiceID%>, <%=FuncaoID%>);"><i class="far fa-remove"></i></button></td></tr><%
 end function
 %>

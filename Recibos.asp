@@ -46,11 +46,11 @@ end if
     <%=quickField("text", "ServicosRecibo", "Servi&ccedil;os", 5, Servicos, "", "", " required")%>
     <div class="col-md-2">
     <label>&nbsp;</label><br>
-        <button class="btn btn-sm btn-warning btn-block" id="GerarRecibo"><i class="fa fa-search-plus"></i> Gerar</button>
+        <button class="btn btn-sm btn-warning btn-block" id="GerarRecibo"><i class="far fa-search-plus"></i> Gerar</button>
     </div>
     <div class="col-md-2">
     <label>&nbsp;</label><br>
-        <button type="button" class="btn btn-sm btn-info btn-block" id="saveRecibo"><i class="fa fa-print"></i> Imprimir</button>
+        <button type="button" class="btn btn-sm btn-info btn-block" id="saveRecibo"><i class="far fa-print"></i> Imprimir</button>
     </div>
 </div>
 <hr>

@@ -9,7 +9,7 @@ Data = date()
 <div class="clearfix form-actions">
 	<%=quickField("datepicker", "Data", "Data", 3, Data, "input-mask-date input-sm", "", "")%>
     <div class="col-md-2"><label>&nbsp;</label><br />
-    	<button type="button" class="btn btn-sm btn-block btn-primary"><i class="fa fa-lock"></i> FECHAR CAIXA</button>
+    	<button type="button" class="btn btn-sm btn-block btn-primary"><i class="far fa-lock"></i> FECHAR CAIXA</button>
     </div>
 </div>
 

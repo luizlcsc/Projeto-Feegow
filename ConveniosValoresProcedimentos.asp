@@ -44,7 +44,7 @@ end if
         <div class="col-md-2">
             <label>&nbsp;</label><br />
             <a id="filtrarprocedimento" class="btn btn-primary btn-block">
-                <i class="fa fa-search bigger-110"></i> Filtrar
+                <i class="far fa-search bigger-110"></i> Filtrar
             </a> 
         </div>
     </div>

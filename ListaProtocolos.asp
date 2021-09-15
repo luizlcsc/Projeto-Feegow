@@ -28,7 +28,7 @@ while not listaProtocolos.eof
 %>
 	<tr id="<%=listaProtocolos("id")%>">
         <td width="1%"><a href="javascript:aplicarProtocolo('<%=listaProtocolos("id")%>');">
-            <i class="fa fa-hand-o-left"></i>
+            <i class="far fa-hand-o-left"></i>
             </a>
         </td>
     	<td class="text-left"> <b><%=listaProtocolos("NomeProtocolo")%></b></td>

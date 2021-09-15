@@ -14,12 +14,12 @@ discountedTotal = 0
             <input class="form-control date-picker<%
             if cInstallments=1 and sysActive=0 then%> firstDueDate<%end if
             %>" type="text" data-date-format="dd/mm/yyyy" placeholder="" name="DueDateInstallment<%=cInstallments%>" id="DueDateInstallment<%=cInstallments%>" value="<%=DueDate%>">
-            <span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span>
+            <span class="input-group-addon"><i class="far fa-calendar bigger-110"></i></span>
         </div>
     </td>
     <td>
         <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-money bigger-110"></i></span>
+            <span class="input-group-addon"><i class="far fa-money bigger-110"></i></span>
             <input class="form-control input-mask-brl InstallmentValues" placeholder="" type="text" value="<%=formatNumber(installmentValue,2)%>" name="ValueInstallment<%=cInstallments%>" id="ValueInstallment<%=cInstallments%>" style="text-align:right" />
         </div>
     </td>
@@ -93,7 +93,7 @@ discountedTotal = 0
     <td class="text-right"><%=formatnumber(difference,2)%></td>
     <td>
     <% If sysActive=1 Then %>
-    <a href="#modal-table" class="btn btn-xs btn-info" data-toggle="modal" onclick="modalPaymentDetails(<%= cInstallments %>);"><i class="fa fa-zoom-in"></i></a>
+    <a href="#modal-table" class="btn btn-xs btn-info" data-toggle="modal" onclick="modalPaymentDetails(<%= cInstallments %>);"><i class="far fa-zoom-in"></i></a>
 	<% End If %>
     </td>
 </tr>

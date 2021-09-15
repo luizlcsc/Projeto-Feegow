@@ -10,7 +10,7 @@
 			end if
 	  	case 2'Data
 			if LadoALado="S" then
-				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control date-picker" data-date-format="dd/mm/yyyy" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div></td></tr></table><%
+				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control date-picker" data-date-format="dd/mm/yyyy" type="text"><span class="input-group-addon"><i class="far fa-calendar bigger-110"></i></span></div></td></tr></table><%
 			else
 				disabled = ""
                 if getConfig("BloquearEdicaoFormulario")=1  then
@@ -22,7 +22,7 @@
 						end if
 					end if
 				end if
-				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input <%=disabled%> tabindex="<%=Ordem%>" class="campoInput form-control date-picker" data-date-format="dd/mm/yyyy" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div><%
+				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input <%=disabled%> tabindex="<%=Ordem%>" class="campoInput form-control date-picker" data-date-format="dd/mm/yyyy" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="far fa-calendar bigger-110"></i></span></div><%
 			end if
 	  	case 3'imagem
 				%>
@@ -270,7 +270,7 @@ $(function() {
 				%><th><%=pTit("c"&contaLargura)%></th><%
 			wend
 
-			%><th class="hidden-print" width="1%"><button type="button" onClick="addRowPreen(<%=CampoID%>, 1)" class="btn btn-xs btn-primary btn-20 postvalue"><i class="fa fa-plus"></i></button></th></thead><tbody id="tb_<%=CampoID%>"><%
+			%><th class="hidden-print" width="1%"><button type="button" onClick="addRowPreen(<%=CampoID%>, 1)" class="btn btn-xs btn-primary btn-20 postvalue"><i class="far fa-plus"></i></button></th></thead><tbody id="tb_<%=CampoID%>"><%
 			if FormID="N" then
 				set pMod = db.execute("select * from buitabelasmodelos where CampoID="&CampoID)
 			else
@@ -283,7 +283,7 @@ $(function() {
 					contaLargura = contaLargura+1
 					%><td><input class="campoInput form-control postvalue" data-campoid="<%=CampoID%>" onchange="saveTabVal('t_<%=pMod("id")&"_"&contaLargura%>', $(this).val())" name="t_<%=pMod("id")&"_"&contaLargura%>" value="<%=pMod("c"&contaLargura)%>" /></td><%
 				wend
-				%><td class="hidden-print"><button type="button" class="btn btn-xs btn-danger btn-20 postvalue" onClick="addRowPreen(<%=CampoID%>, 0, <%=pMod("id")%>)"><i class="fa fa-remove"></i></button></td></tr><%
+				%><td class="hidden-print"><button type="button" class="btn btn-xs btn-danger btn-20 postvalue" onClick="addRowPreen(<%=CampoID%>, 0, <%=pMod("id")%>)"><i class="far fa-remove"></i></button></td></tr><%
 			pMod.movenext
 			wend
 			pMod.close

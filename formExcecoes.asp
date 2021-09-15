@@ -76,7 +76,7 @@
                             <input type="checkbox" class="ace" name="Compartilhada" value="S" style="margin-left:5px" checked="">
                         </th>
                         <th valign="bottom"  style="vertical-align:top;">
-                            <button type="submit" name="Cadastrar" style="margin-top:8px" class="btn btn-block btn-alert" value="Cadastrar"><i class="fa fa-plus"></i></button>
+                            <button type="submit" name="Cadastrar" style="margin-top:8px" class="btn btn-block btn-alert" value="Cadastrar"><i class="far fa-plus"></i></button>
                         </th>
                     </tr>
                 </thead>

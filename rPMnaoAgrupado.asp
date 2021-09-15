@@ -178,7 +178,7 @@
 				            <td style="display: none">orderData</td>
 					        <td><%=Prontuario%> </td>
 					        <td id="<%= idColuna %>">
-                                <a class="btn btn-xs btn-primary btnPac hidden-print" href="./?P=Pacientes&Pers=1&I=<%=PacienteID %>&Ct=1" target="_blank"><i class="fa fa-external-link"></i></a>
+                                <a class="btn btn-xs btn-primary btnPac hidden-print" href="./?P=Pacientes&Pers=1&I=<%=PacienteID %>&Ct=1" target="_blank"><i class="far fa-external-link"></i></a>
                                 <%=left(NomePaciente&" ", 24)%>
                         
                                 <%'="<br /> ;"& ProcedimentoID &"|"&  PacienteID &"|"& Data &"|"& rdValorPlano &";" %>

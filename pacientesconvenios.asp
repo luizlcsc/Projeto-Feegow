@@ -26,11 +26,11 @@ response.Write(abreDivMaster)
 
         <div class="widget-toolbar no-border">
             <a href="#" onclick="itemPacientesConvenios('pacientesconvenios', 'Add', 0, 'PacienteID', <%=idNaColuna%>, 'frm')" data-action="settings">
-                <i class="fa fa-plus"></i>
+                <i class="far fa-plus"></i>
             </a>
 
             <a href="#" data-action="collapse">
-                <i class="fa fa-chevron-up"></i>
+                <i class="far fa-chevron-up"></i>
             </a>
         </div>
     </div>
@@ -70,7 +70,7 @@ response.Write(abreDivMaster)
                         <td><%=quickField("text", "Matricula-PacientesConvenios-"&regs("id"), "", 12, regs("Matricula"), "", "", "")%></td>
                         <td><%=quickField("datepicker", "Validade-PacientesConvenios-"&regs("id"), "", 12, regs("Validade"), "", "", "")%></td>
                         <td><%=quickField("text", "Titular-PacientesConvenios-"&regs("id"), "", 12, regs("Titular"), "", "", "")%></td>
-                        <td><button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="itemPacientesConvenios('pacientesconvenios', 'Del', <%=regs("id")%>, '', <%=idNaColuna%>, '<%=NomeForm%>')"><i class="fa fa-trash"></i></button></td>
+                        <td><button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="itemPacientesConvenios('pacientesconvenios', 'Del', <%=regs("id")%>, '', <%=idNaColuna%>, '<%=NomeForm%>')"><i class="far fa-trash"></i></button></td>
                     </tr>
                     <%
                 regs.movenext

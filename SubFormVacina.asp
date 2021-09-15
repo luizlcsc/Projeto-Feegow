@@ -55,7 +55,7 @@ set dosagem=nothing
         <span class="panel-title">Série de Vacina </span>
         <span class="panel-controls">
             <a class="panel-control-collapse hidden" href="#"></a>
-            <a class="panel-control" onclick="atualizarForm('Add','<%=VacinaID%>','','')" href="javascript:void(0)"><i class="fa fa-plus"></i></a>
+            <a class="panel-control" onclick="atualizarForm('Add','<%=VacinaID%>','','')" href="javascript:void(0)"><i class="far fa-plus"></i></a>
         </span>
     </div>
     <div class="panel-body pn" <% if device()<>"" then %> style="overflow-x:scroll!important" <% end if %> >
@@ -114,14 +114,14 @@ set dosagem=nothing
                         <input type="text" name="Descricao-vacina_serie-<%=ser("id")%>" id="Descricao-<%=ser("id")%>" class="form-control" value="<%=valorSerieDescricao%>" >
                     </td>
                     <td width="1%">
-                        <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="javascript:if(confirm('Tem certeza de que deseja excluir esta série?'))atualizarForm('Del','<%=VacinaID%>','<%=ser("id")%>','')"><i class="fa fa-trash"></i></button>
+                        <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="javascript:if(confirm('Tem certeza de que deseja excluir esta série?'))atualizarForm('Del','<%=VacinaID%>','<%=ser("id")%>','')"><i class="far fa-trash"></i></button>
                     </td>
                 <tr>
                     <td colspan="90%">
                         <h5>Dosagem da série</h5>
                     </td>
                     <td colspan="10%">
-                        <button type="button" class="btn btn-sm btn-success remove-item-subform" onclick="atualizarForm('AddDosagem','<%=VacinaID%>','<%=ser("id")%>','')"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-sm btn-success remove-item-subform" onclick="atualizarForm('AddDosagem','<%=VacinaID%>','<%=ser("id")%>','')"><i class="far fa-plus"></i></button>
                     </td>
                 </tr>
                 </tr>
@@ -201,7 +201,7 @@ set dosagem=nothing
                                     </td>
                                     </td>
                                         <td style="align: right">
-                                        <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="javascript:if(confirm('Tem certeza de que deseja excluir esta dosagem?'))atualizarForm('DelDosagem','<%=VacinaID%>','','<%=dos("id")%>')"><i class="fa fa-trash"></i></button>
+                                        <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="javascript:if(confirm('Tem certeza de que deseja excluir esta dosagem?'))atualizarForm('DelDosagem','<%=VacinaID%>','','<%=dos("id")%>')"><i class="far fa-trash"></i></button>
                                     </td>
                                 </tr>
                             </tbody>

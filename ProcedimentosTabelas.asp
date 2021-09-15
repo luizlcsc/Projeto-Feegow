@@ -83,10 +83,10 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
 <form id="frmPT">
     <div class="panel mt20 mtn hidden-print">
         <div class="panel-heading">
-            <span class="panel-title"><i class="fa fa-info-circle"></i> Detalhes da tabela de preço</span>
+            <span class="panel-title"><i class="far fa-info-circle"></i> Detalhes da tabela de preço</span>
             <span class="panel-controls">
-                <button type="button" onclick="HistoricoAlteracoes()" class="btn btn-default btn-sm" title="Histórico de alterações"><i class="fa fa-history"></i> </button>
-                <button class="btn btn-info btn-sm" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
+                <button type="button" onclick="HistoricoAlteracoes()" class="btn btn-default btn-sm" title="Histórico de alterações"><i class="far fa-history"></i> </button>
+                <button class="btn btn-info btn-sm" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i></button>
             </span>
         </div>
         <div class="panel-body">
@@ -96,9 +96,9 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
                 <%= quickfield("datepicker", "Inicio", "Vigência de", 2, reg("Inicio"), "", "", " required ") %>
                 <%= quickfield("datepicker", "Fim", "até", 2, reg("Fim"), "", "", " required ") %>
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-default btn-sm btn-block " onclick="$('#filtros').slideToggle()">Parâmetros adicionais <i class="fa fa-chevron-down"> </i></button>
-                    <button type="button" class="btn btn-default btn-sm btn-block " onclick="$('#inflatorDeflatorContent').slideToggle()">Inflator/Deflator <i class="fa fa-chevron-down"> </i></button>
-                    <button type="button" class="btn btn-default btn-sm btn-block " onclick="$('#atuacaoContent').slideToggle()">Atuação <i class="fa fa-chevron-down"> </i></button>
+                    <button type="button" class="btn btn-default btn-sm btn-block " onclick="$('#filtros').slideToggle()">Parâmetros adicionais <i class="far fa-chevron-down"> </i></button>
+                    <button type="button" class="btn btn-default btn-sm btn-block " onclick="$('#inflatorDeflatorContent').slideToggle()">Inflator/Deflator <i class="far fa-chevron-down"> </i></button>
+                    <button type="button" class="btn btn-default btn-sm btn-block " onclick="$('#atuacaoContent').slideToggle()">Atuação <i class="far fa-chevron-down"> </i></button>
                 </div>
             </div>
             <div class="row mt15" id="filtros" style="display:none;<%=franquia("display:block")%>">
@@ -130,7 +130,7 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
                     
                 </div>  
                 <div class="col-md-2 " style="width:9.5em;">
-                    <div class="form-control btn-info" style="margin-top:25px; cursor:pointer;" id="atualizar"><b>Atualizar</b> <i class="fa fa-refresh spin-update" aria-hidden="true"></i></div>
+                    <div class="form-control btn-info" style="margin-top:25px; cursor:pointer;" id="atualizar"><b>Atualizar</b> <i class="far fa-refresh spin-update" aria-hidden="true"></i></div>
                     </div>
                 </div>
             </div>
@@ -166,13 +166,13 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
 
         <div class="panel-heading">
             <span class="panel-title">
-            <i class="fa fa-list">
+            <i class="far fa-list">
             </i> Procedimentos da tabela
             </span>
         </div>
         
         <div class="panel-body">
-            <div class="pull-right" style="position: absolute; right: 0%; margin-right: 15px;z-index: 2"><a id="openConsulta" class="btn btn-dark btn-xs" href="javascript:void(0)" onclick="$('.seach-tipo').toggle()"><i class="fa fa-search" aria-hidden="true"></i></a></div>
+            <div class="pull-right" style="position: absolute; right: 0%; margin-right: 15px;z-index: 2"><a id="openConsulta" class="btn btn-dark btn-xs" href="javascript:void(0)" onclick="$('.seach-tipo').toggle()"><i class="far fa-search" aria-hidden="true"></i></a></div>
             <div class="seach-tipo" style="display: none;">
                 <div class="row">
                     <div class="col-md-6"></div>
@@ -284,7 +284,7 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
                <div class="configdiv">
                </div>
                </div>
-                    <i class='fa fa-spin fa-spinner center spinner'></i>
+                    <i class='far fa-spin fa-spinner center spinner'></i>
                     <div class="col-md-6">
                         <div class="configdiv">
                             ...
@@ -340,11 +340,11 @@ sqlProfissionais = "SELECT * FROM ("&sqlProfissionais&") AS t "&franquia(" WHERE
     $(".crumb-active a").html("Tabelas de Preço");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("edição de tabela de preço");
-    $(".crumb-icon a span").attr("class", "fa fa-table");
+    $(".crumb-icon a span").attr("class", "far fa-table");
     <%
     if aut("tabelasprecosA")=1 then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-default" href="./?P=TabelasPreco&Pers=1"><i class="fa fa-list"></i></a><button onclick="" class="btn btn-sm btn-primary Salvar"><i class="fa fa-save"></i> SALVAR</button>');
+    $("#rbtns").html('<a class="btn btn-sm btn-default" href="./?P=TabelasPreco&Pers=1"><i class="far fa-list"></i></a><button onclick="" class="btn btn-sm btn-primary Salvar"><i class="far fa-save"></i> SALVAR</button>');
     <%
         end if
     %>

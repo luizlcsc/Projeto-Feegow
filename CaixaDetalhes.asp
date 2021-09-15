@@ -42,7 +42,7 @@ while not mov.eof
 		<td class="text-right">
 <em>			<%=formatnumber(mov("Valor"), 2)%>
 </em>            <a class="blue hidden-print" onclick="modalPaymentDetails(<%=mov("MovimentoID")%>);" data-toggle="modal" role="button" href="#modal-table">
-                <i class="fa fa-search-plus"></i>
+                <i class="far fa-search-plus"></i>
             </a>
         </td>
     </tr>

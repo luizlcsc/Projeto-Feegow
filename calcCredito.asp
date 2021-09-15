@@ -18,7 +18,7 @@ else
     <%=quickField("currency", "valCredito", "Valor a Utilizar", 4, formatnumber(valCredito,2) , "", "", " onkeyup=""apaDistCred();""")%>
     <div class="col-md-4">
     	<label>&nbsp;</label><br />
-    	<button type="button" onclick="applyCredit();" class="btn btn-sm btn-success"><i class="fa fa-download"></i> Utilizar Cr&eacute;dito</button>
+    	<button type="button" onclick="applyCredit();" class="btn btn-sm btn-success"><i class="far fa-download"></i> Utilizar Cr&eacute;dito</button>
     </div>
 </div>
 <script>

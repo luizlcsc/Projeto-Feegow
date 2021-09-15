@@ -28,6 +28,12 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 <head>
   <meta name="robots" content="noindex">
   <style type="text/css">
+
+    @font-face {
+         font-family: "Open Sans";
+         src: url('https://cdn.feegow.com/feegowclinic-v7/assets/fonts/open-sans/OpenSans-Regular.ttf');
+    }
+
     .tooltip{
           z-index:99999999; overflow: visible !important;overflow: visible !important;
       }

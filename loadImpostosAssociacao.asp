@@ -65,7 +65,7 @@ while not impostos.eof
         %>
             {
                 "contrato_id":    <%=contratos("contratosConvenio_id")%>,
-                "contrato_nome":  <%=contratos("CodigoNaOperadora")%>
+                "contrato_nome":  "<%=contratos("CodigoNaOperadora")%>"
             }
 
         <%

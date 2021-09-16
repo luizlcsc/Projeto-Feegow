@@ -8510,9 +8510,6 @@ perspective effects (not including the modals and the overlay).
     transform: scale(1);
 }
 
-.mfp-zoomIn.mfp-ready.mfp-bg {
-    opacity: 0.8;
-}
 
 .mfp-zoomIn.mfp-removing .mfp-with-anim {
     transform: scale(0.8);
@@ -17915,11 +17912,11 @@ ol.timeline-list li.timeline-item .timeline-date {
 .modal-content {
     position: relative;
     background-color: #ffffff;
-    border: 1px solid #999999;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 6px;
-    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    /*border: 1px solid #999999;*/
+    /*border: 1px solid rgba(0, 0, 0, 0.2);*/
+    border-radius: 12px;
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.15);
     background-clip: padding-box;
     outline: 0;
 }
@@ -17931,22 +17928,22 @@ ol.timeline-list li.timeline-item .timeline-date {
     bottom: 0;
     left: 0;
     z-index: 1040;
-    background-color: #000000;
+    background-color: rgba(128, 128, 128, 0.85);
 }
 
 .modal-backdrop.fade {
-    opacity: 0;
+    opacity: 1;
     filter: alpha(opacity=0);
 }
 
-.modal-backdrop.in {
-    opacity: 0.5;
+.modal-content {
+    opacity: 1;
     filter: alpha(opacity=50);
 }
 
 .modal-header {
-    padding: 15px;
-    border-bottom: 1px solid #e5e5e5;
+    padding: 12px;
+    /*border-bottom: 1px solid #e5e5e5;*/
     min-height: 16.49px;
 }
 
@@ -17967,10 +17964,10 @@ ol.timeline-list li.timeline-item .timeline-date {
 .modal-footer {
     padding: 10px;
     text-align: right;
-    border-top: 1px solid #e5e5e5;
-    background: #f2f2f2;
-    border-bottom-right-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-top: 1px solid #ebebeb;
+    background: #f9f9f9;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
 }
 
 .modal-footer .btn + .btn {
@@ -18001,8 +17998,8 @@ ol.timeline-list li.timeline-item .timeline-date {
     }
 
     .modal-content {
-        -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     }
 
     .modal-sm {
@@ -30411,4 +30408,13 @@ select[tabindex="-1"], .multisel {
 .btn-logoff{
     color: #ff7272 !important;
     background-color: #fff6f6 !important;;
+}
+
+.mfp-zoomIn.mfp-ready.mfp-bg {
+    opacity: 1;
+    background: rgba(128, 128, 128, 0.85);
+}
+
+.mfp-bg{
+    background: rgba(128, 128, 128, 0.85) !important;
 }

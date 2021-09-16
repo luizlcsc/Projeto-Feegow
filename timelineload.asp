@@ -18,16 +18,16 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if 
 
     if instr(Tipo, "|AE|")>0 then
-    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', '', fp.sysActive from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive=1 OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
+    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', fp.sysActive from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive IN(1,-1) OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|L|")>0 then
-        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', '', fp.sysActive from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive=1 OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
+        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', fp.sysActive from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive IN(1,-1) OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
     end if
 
     if aut("prescricoesV")>0 or session("Admin") = 1 then
         if instr(Tipo, "|Prescricao|")>0 then
-            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', IF(pp.MemedID IS NULL, 'Prescrição', 'Prescrição Memed'), 'flask', 'warning', `Data`, Prescricao,s.id, pp.MemedID, pp.sysActive from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
+            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', 'Prescrição', 'flask', 'warning', `Data`, Prescricao,s.id, pp.sysActive from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
         end if
     end if
 
@@ -41,7 +41,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
         sqlTnm = "CONCAT(IFNULL(d.Descricao, ''), '<br>', IFNULL(tnm.Descricao, ''))"
 
         sqlDiagnostico = " union all (SELECT 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, "&_
-                         "   CONCAT('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', "&sqlBmj&",'<br>',"&sqlTnm&",''),'', '', d.sysActive "&_
+                         "   CONCAT('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', "&sqlBmj&",'<br>',"&sqlTnm&",''),'', d.sysActive "&_
                          "   FROM pacientesdiagnosticos d "&_
                          "   LEFT JOIN cliniccentral.cid10 cid ON cid.id=d.CidID "&_
                          "   LEFT JOIN pacientesdiagnosticos_tnm tnm ON d.id = tnm.PacienteDiagnosticosID "&_
@@ -50,35 +50,34 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
 
     if instr(Tipo, "|Atestado|")>0 then
-        sqlAtestado = " union all (select 0, pa.id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text-o', 'success', `Data`, Atestado,s.id, '', pa.sysActive from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
+        sqlAtestado = " union all (select 0, pa.id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text-o', 'success', `Data`, Atestado,s.id, pa.sysActive from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
     end if
 
      if instr(Tipo, "|Tarefas|")>0 then
-        sqlTarefa = " union all (SELECT 0, ta.id, '', ta.sysuser, 'Tarefas' , ta.Titulo, 'check-square-o' , 'success' , ta.dtabertura  , tm.msg ,'' assinatura, '', ta.sysActive FROM tarefas ta "&_
-
+        sqlTarefa = " union all (SELECT 0, ta.id, '', ta.sysuser, 'Tarefas' , ta.Titulo, 'check-square-o' , 'success' , ta.dtabertura  , tm.msg ,'' assinatura, ta.sysActive FROM tarefas ta "&_
                     " INNER JOIN tarefasmsgs tm ON tm.TarefaID = ta.id "&_
                     " WHERE ta.solicitantes LIKE ',3_"&PacienteID&"%') "
     end if
 
     if instr(Tipo, "|Pedido|")>0 then
-        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.MemedID, ppd.sysActive from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive=1 AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
-        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', '', sysActive from pedidossadt WHERE sysActive=1 and PacienteID="&PacienteID&") "
+        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', 'Pedido de Exame', 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive=1 AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
+        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive from pedidossadt WHERE sysActive=1 and PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Protocolos|")>0 then
-        sqlProtocolos = " union all (select 0, po.id, '', sysUser, 'Protocolos', 'Protocolos', 'file-text-o', 'success', `Data`, '', '', '', po.sysActive  from pacientesprotocolos po WHERE po.sysActive=1 AND po.PacienteID="&PacienteID&") "
+        sqlProtocolos = " union all (select 0, po.id, '', sysUser, 'Protocolos', 'Protocolos', 'file-text-o', 'success', `Data`, '', '', po.sysActive from pacientesprotocolos po WHERE po.sysActive=1 AND po.PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Imagens|")>0 then
-        sqlImagens = " union all (select 0, '0', Tipo, '0', 'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','', '', arquivos.sysActive from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
+        sqlImagens = " union all (select 0, '0', Tipo, '0', 'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','', arquivos.sysActive from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
 
     if instr(Tipo, "|Arquivos|")>0 then
-        sqlArquivos = " union all (select 0, '0', Tipo, '0', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', '', arquivos.sysActive from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
+        sqlArquivos = " union all (select 0, '0', Tipo, '0', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', arquivos.sysActive from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
                  cont=0
 
-    sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' MemedID, '' sysActive limit 0) "&_
+    sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
     'response.write(sql)
@@ -304,85 +303,47 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 Assinado = "assinado"
                             end if
 
-                            ' Botões Prescrição Memed
-                            if ti("MemedID")<>"" and (ti("Tipo")="Prescricao" or ti("Tipo")="Pedido") then
-                                sqlMemed = "SELECT * FROM memedv2_prescricoes WHERE memed_id = '" & ti("MemedID") & "'"
-                                set rsMemed = db.execute(sqlMemed)
+                            if (ti("sysUser")<2 or cstr(session("User"))=ti("sysUser")&"" or lcase(session("Table"))="funcionarios") and recursoUnimed=4 then
                             %>
-                                <% if cstr(session("User"))=ti("sysUser")&"" then %>
-                                    <a href="javascript:viewPrescricaoMemed(<%=ti("MemedID")%>, '<%=rsMemed("tipo")%>')">
-                                        <i class="fa fa-search-plus"></i>
-                                    </a>
-                                <% end if %>
-
-                                <%
-                                if not rsMemed.eof then
-                                    if rsMemed("link_pdf_completo") <> "" then
-                                %>
-                                    <a href="<%=rsMemed("link_pdf_completo")%>" target="_blank">
-                                        <i class="fa fa-print"></i>
-
-                                    </a>
-                                    <%
-                                    end if
-                                    if cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0  then %>
-                                        <a href="javascript:deletePrescricaoMemed(<%=ti("id") %>, '<%=rsMemed("tipo")%>')">
-                                            <i class="fa fa-remove"></i>
-                                        </a>
-                                <%
-                                    end if
-                                end if
-                                rsMemed.close
-                                set rsMemed = nothing
-                                %>
+                            <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
+                                <i class="far fa-search-plus"></i>
+                            </a>
+                           
                             <%
-                            else
+                            elseif recursoUnimed<>4 then
 
-                                if (ti("sysUser")<2 or cstr(session("User"))=ti("sysUser")&"" or lcase(session("Table"))="funcionarios") and recursoUnimed=4 then
-                                %>
-                                <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
-                                    <i class="fa fa-search-plus"></i>
-                                </a>
-
-
+                            if ti("Tipo")<>"Imagens" then
+                            %>
+                            <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
+                                <i class="far fa-search-plus"></i>
+                            </a>
                                 <%
-                                elseif recursoUnimed<>4 then
-
-                                    if ti("Tipo")<>"Imagens" then
-                                    %>
-                                    <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
-                                        <i class="fa fa-search-plus"></i>
+                            end if    
+                                if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Imagens" then
+                                %>
+                                    <a href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
+                                        <i class="far fa-print"></i>
                                     </a>
-                                        <%
-                                    end if
-                                    if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Imagens" then
-                                    %>
-                                        <a href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
-                                            <i class="fa fa-print"></i>
-                                        </a>
-                                    <%
-                                    elseif ti("Tipo")="Imagens" then
+                                <%
+                                elseif ti("Tipo")="Imagens" then
 
-                                        set ArquivosSQL = db.execute("select GROUP_CONCAT(id) AS IDs from arquivos where date(DataHora)='"&left(ti("DataHora"),10)&"' AND Tipo='I' AND PacienteID="&PacienteID)
-                                            arquivosID = ArquivosSQL("IDs")
-                                        ArquivosSQL.close
-                                        set ArquivosSQL = nothing
-                                        %>
-                                            <a href="./timelinePrint.asp?Tipo=I&IDs=<%=arquivosID%>" target="_blank">
-                                                <i class="fa fa-print"></i>
-                                            </a>
-                                    <%
-                                    end if
+                                set ArquivosSQL = db.execute("select GROUP_CONCAT(id) AS IDs from arquivos where date(DataHora)='"&left(ti("DataHora"),10)&"' AND Tipo='I' AND PacienteID="&PacienteID)
+                                    arquivosID = ArquivosSQL("IDs")
+                                ArquivosSQL.close
+                                set ArquivosSQL = nothing
+                                %>
+                                    <a href="./timelinePrint.asp?Tipo=I&IDs=<%=arquivosID%>" target="_blank">
+                                        <i class="far fa-print"></i>
+                                    </a>
+                                <%
                                 end if
                             end if
-
                             set perm = db.execute("select Permissoes from buipermissoes where FormID='"&ti("Modelo")&"'")
                             if not perm.eof then 
                                 var_permissoes  = perm("Permissoes")
                             else
                                 var_permissoes = ""
                             end if 
-
 
                             if ti("Tipo") = "AE" or ti("Tipo") = "L" then
                                 if CheckInativo<>"" then
@@ -581,138 +542,36 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             response.Write(iniLau &"<em>Laudo em confecção.</em>"& fimLau)
                         end if
                     case "Pedido"
-                        if ti("MemedID")<>"" then
-                            sqlPrescricaoMemed    = "SELECT pm.tipo, pm.nome, pm.posologia, pm.tipo_exame_selecionado, pm.exames_sus_codigo, pm.exames_tuss_codigo " &_
-                                                    "FROM memedv2_prescricoes p " &_
-                                                    "INNER JOIN memedv2_prescricoes_medicamentos pm ON pm.prescricao_id = p.id " &_
-                                                    "WHERE p.memed_id = '" & ti("MemedID") & "' AND p.tipo = 'exame'"
-                            set rsPrescricaoMemed = db.execute(sqlPrescricaoMemed)
-                            memedCount = 1
-                            %>
-                            <ul class="memed-items">
-                                <%
-                                    while not rsPrescricaoMemed.eof
-                                        memedTipo       = rsPrescricaoMemed("tipo")
-                                        memedNome       = rsPrescricaoMemed("nome")
-                                        memedPosologia  = rsPrescricaoMemed("posologia")
-                                        memedTipoExame  = rsPrescricaoMemed("tipo_exame_selecionado")
-                                        memedTuss       = rsPrescricaoMemed("exames_tuss_codigo")
-                                        memedSus        = rsPrescricaoMemed("exames_sus_codigo")
-                                %>
-                                    <li class="item" data-tipo="<%=memedTipo%>">
-                                        <p class="nome">
-                                            <strong>
-                                                <%=memedCount%>. <%=memedNome%>
-                                            </strong>
-                                            <span class="quantidade">
-                                                <% if memedTipoExame = "tuss" and memedTuss <> "" then %>
-                                                TUSS: <%=memedTuss%>
-                                                <% end if %>
-                                                <% if memedTipoExame = "sus" and memedSus <> "" then %>
-                                                SUS: <%=memedSus%>
-                                                <% end if %>
-                                        </p>
-                                        <div class="posologia"><%=memedPosologia%></div>
-                                    </li>
-                                <%
-                                    rsPrescricaoMemed.movenext
-                                    memedCount = memedCount + 1
-                                wend
-                                rsPrescricaoMemed.close
-                                set rsPrescricaoMemed = nothing
-                                %>
-                            </ul>
-                            <%
-                        else
-                            set ProcedimentosPedidoSQL = db.execute("SELECT pe.*,proc.NomeProcedimento FROM pedidoexameprocedimentos pe INNER JOIN procedimentos proc ON proc.id=pe.ProcedimentoID WHERE pe.PedidoExameID="&ti("id"))
-                            %>
-                            <ul>
-                            <%
-                                                while not ProcedimentosPedidoSQL.eof
-                            Obs = ProcedimentosPedidoSQL("Observacoes")
+                        set ProcedimentosPedidoSQL = db.execute("SELECT pe.*,proc.NomeProcedimento FROM pedidoexameprocedimentos pe INNER JOIN procedimentos proc ON proc.id=pe.ProcedimentoID WHERE pe.PedidoExameID="&ti("id"))
+                        %>
+                        <ul>
+                          <%
+                                              while not ProcedimentosPedidoSQL.eof
+                          Obs = ProcedimentosPedidoSQL("Observacoes")
 
-                            if Obs<>""  then
-                            Obs = " - "& Obs
-                            end if
-                            %>
-                            <li>
-                                <%=ProcedimentosPedidoSQL("NomeProcedimento")%><%=Obs%>
-                            </li>
-                            <%
-                                                ProcedimentosPedidoSQL.movenext
-                            wend
-                            ProcedimentosPedidoSQL.close
-                            set ProcedimentosPedidoSQL = nothing
-                            %>
-                            </ul>
-                            <%
-                            response.Write("<small>" & ti("Conteudo") & "</small>")
-                        end if
+                          if Obs<>""  then
+                          Obs = " - "& Obs
+                          end if
+                          %>
+                          <li>
+                            <%=ProcedimentosPedidoSQL("NomeProcedimento")%><%=Obs%>
+                          </li>
+                          <%
+                                              ProcedimentosPedidoSQL.movenext
+                          wend
+                          ProcedimentosPedidoSQL.close
+                          set ProcedimentosPedidoSQL = nothing
+                          %>
+                        </ul>
+                        <%
+                        response.Write("<small>" & ti("Conteudo") & "</small>")
                     case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
-                            if ti("MemedID")<>"" then
-                                sqlPrescricaoMemed = "SELECT pm.tipo, pm.nome, pm.descricao, pm.posologia, pm.quantidade, pm.unit, pm.composicao " &_
-                                                     "FROM memedv2_prescricoes p " &_
-                                                     "INNER JOIN memedv2_prescricoes_medicamentos pm ON pm.prescricao_id = p.id " &_
-                                                     "WHERE p.memed_id = '" & ti("MemedID") & "' AND p.tipo = 'prescricao'"
-                                set rsPrescricaoMemed = db.execute(sqlPrescricaoMemed)
-                                memedCount = 1
-                                %>
-                                <ul class="memed-items">
-                                    <%
-                                        while not rsPrescricaoMemed.eof
-                                            memedTipo       = rsPrescricaoMemed("tipo")
-                                            memedNome       = rsPrescricaoMemed("nome")
-                                            memedComposicao = rsPrescricaoMemed("composicao")
-                                            memedDescricao  = rsPrescricaoMemed("descricao")
-                                            memedPosologia  = rsPrescricaoMemed("posologia")
-                                            memedQuantidade = rsPrescricaoMemed("quantidade")
-                                            memedUnit       = rsPrescricaoMemed("unit")
-                                    %>
-                                        <li class="item" data-tipo="<%=memedTipo%>">
-                                            <p class="nome">
-                                                <strong>
-                                                    <%=memedCount%>.
-                                                    <% if memedTipo = "manipulado" then
-                                                        response.write("Fórmula")
-                                                    else
-                                                        response.write(memedNome)
-                                                    end if
-                                                    %>
-                                                </strong>
-                                                <span class="quantidade">
-                                                    <% if memedQuantidade <> 0 then response.write(memedQuantidade) end if%>
-                                                    <%=" " & memedUnit%></span>
-                                            </p>
-                                            <% if memedTipo <> "homeopático" then %>
-                                            <div class="composicao">
-                                                <%
-                                                if memedComposicao <> "" then
-                                                    response.write(memedComposicao)
-                                                else
-                                                    response.write(memedDescricao)
-                                                end if
-                                                %>
-                                            </div>
-                                            <% end if %>
-                                            <div class="posologia"><%=memedPosologia%></div>
-                                        </li>
-                                    <%
-                                        rsPrescricaoMemed.movenext
-                                        memedCount = memedCount + 1
-                                    wend
-                                    rsPrescricaoMemed.close
-                                    set rsPrescricaoMemed = nothing
-                                    %>
-                                </ul>
-                                <%
-                            else
-                                urlbmj = getConfig("urlbmj")
-                                IF urlbmj <> "" THEN
-                                    response.Write("<small>" & replace(ti("Conteudo")&"","[linkbmj]",urlbmj) & "</small>")
-                                ELSE
-                                    response.Write("<small>" & ti("Conteudo") & "</small>")
-                                END IF
-                            end if
+                            urlbmj = getConfig("urlbmj")
+                            IF urlbmj <> "" THEN
+                                response.Write("<small>" & replace(ti("Conteudo")&"","[linkbmj]",urlbmj) & "</small>")
+                            ELSE
+                                response.Write("<small>" & ti("Conteudo") & "</small>")
+                            END IF
                     case "PedidosSADT"
                         set psadt = db.execute("select tproc.descricao from pedidossadtprocedimentos pps LEFT JOIN cliniccentral.procedimentos tproc ON tproc.tipoTabela=pps.TabelaID AND pps.CodigoProcedimento=tproc.Codigo where pps.PedidoID="& ti("id"))
                         while not psadt.eof

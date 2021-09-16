@@ -769,7 +769,7 @@ if getConfig("LembreteFormulario")=1 then
                     %>
                     new PNotify({
                             title: "<%=Campo("RotuloCampo")%>",
-                            text: `<%=Valor%>`,
+                            text: "<%=Valor%>",
                             sticky: true,
                             type: 'alert',
                             delay: 5000

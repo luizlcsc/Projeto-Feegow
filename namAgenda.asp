@@ -95,64 +95,43 @@ if Horarios.EOF then
 end if
 'response.write sqlHorarios&"<br>"&sqlHorarios2
 if not Horarios.eof then
-    MostraGrade=True
-    if Horarios("GradePadrao")=1 then
-        FrequenciaSemanas = Horarios("FrequenciaSemanas")
-        InicioVigencia = Horarios("InicioVigencia")
-        if FrequenciaSemanas>1 then
-            NumeroDeSemanaPassado = datediff("w",InicioVigencia,Data)
-            RestoDivisaoNumeroSemana = NumeroDeSemanaPassado mod FrequenciaSemanas
-            if RestoDivisaoNumeroSemana>0 then
-                MostraGrade=False
-            end if
-        end if
-    end if
-    if instr(Unidades, Horarios("UnidadeID"))<=0 and Unidades <> "" then
-            MostraGrade=False
-    end if
 %>
 
 <table class="table table-condensed table-hover" width="100%"><thead><tr><th colspan="3" style="min-width:200px" class="text-center pn">
 
-    <%if MostraGrade then%>
-        <div class="panel-heading p5 mn" style="line-height:14px!important; color:#777; font-size:11px; font-weight:bold">
-            <span class="panel-title">
-                <%=left(ucase(NomeProfissional),20)%> <br /><small><%= NomeEspecialidade %></small>
-            </span>
-                <div style="position:absolute; top:0; right:0; width:22px">
-
+    <div class="panel-heading p5 mn" style="line-height:14px!important; color:#777; font-size:11px; font-weight:bold">
+        <span class="panel-title">
+            <%=left(ucase(NomeProfissional),20)%> <br /><small><%= NomeEspecialidade %></small>
+        </span>
+            <div style="position:absolute; top:0; right:0; width:22px">
+                <%
+                if aut("horarios")=1 then
+                    %>
+                    <a class="btn btn-xs btn-block mtn" title="Grade" target="_blank" href="./?P=Profissionais&I=<%= ProfissionalID %>&Pers=1&Aba=Horarios">
+                        <span class="far fa-cog"></span>
+                    </a>
                     <%
-                    if aut("horarios")=1 then
-                        %>
-                        <a class="btn btn-xs btn-block mtn" title="Grade" target="_blank" href="./?P=Profissionais&I=<%= ProfissionalID %>&Pers=1&Aba=Horarios">
-                            <span class="fa fa-cog"></span>
+                end if
+                if ref("ObsAgenda")="1" then
+                    %>
+                    <a type="button" class="btn btn-xs btn-block mtn ObsAgenda" href="javascript:oa(<%= ProfissionalID %>)"><i class="far fa-info-circle"></i></a>
+                    <%
+                end if
+                if aut("|agendaI|")=1 then
+                    GradePadraoID=""
+                    if Horarios("GradePadrao")="1" then
+                        GradePadraoID=Horarios("id")
+                    end if
+                %>
+                    <a class="btn btn-default btn-xs" id="AbrirEncaixe" href="javascript:abreAgenda('00:00', '', '<%= Data %>', '', '<%= ProfissionalID %>', '', '<%= GradePadraoID %>');">
+                            <span class="far fa-external-link"></span>
                         </a>
-                        <%
-                    end if
-                    if ref("ObsAgenda")="1" then
-                        %>
-                        <a type="button" class="btn btn-xs btn-block mtn ObsAgenda" href="javascript:oa(<%= ProfissionalID %>)"><i class="fa fa-info-circle"></i></a>
-                        <%
-                    end if
-                    if aut("|agendaI|")=1 then
-                        GradePadraoID=""
-                        if Horarios("GradePadrao")="1" then
-                            GradePadraoID=Horarios("id")
-                        end if
-                    %>
-                        <a class="btn btn-default btn-xs" id="AbrirEncaixe" href="javascript:abreAgenda('00:00', '', '<%= Data %>', '', '<%= ProfissionalID %>', '', '<%= GradePadraoID %>');">
-                                <span class="fa fa-external-link"></span>
-                            </a>
-
-                    <%
-                    end if
-                    %>
-                </div>
-        </div>
-        </th></tr></thead><tbody><tr class="hidden l<%=LocalID%>" id="0000"></tr>
-    <%
-    end if
-
+		        <%
+                end if
+                %>
+            </div>
+    </div>
+    </th></tr></thead><tbody><tr class="hidden l<%=LocalID%>" id="0000"></tr><%
     sqlUnidadesBloqueio= ""
 
     while not Horarios.EOF

@@ -183,7 +183,10 @@ function completaConvenio(ConvenioID, PacienteID)
         $("#NumeroCarteira").attr("title","O padrão da matrícula deste convênio está configurado para o de minimo de <%=MinimoDigitos%> e o maximo de <%=MaximoDigitos%> caracteres");
     <%
     end if
+    %>
 
+    tissplanosguia(<%=ConvenioID%>);
+    <%
     NGuiaPrestador = numeroDisponivel(ConvenioID)
 	%>
 	    $("#NGuiaPrestador").val("<%=NGuiaPrestador%>");

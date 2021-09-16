@@ -210,7 +210,7 @@ function updateAgendaUnificada(licencaOrigem, queryLicencas, queryAgendamento)
             ' DADOS DE AGENDAMENTOS
             while not queryAgendamento.EOF
 
-                if queryAgendamento("Tempo")&"" = "" then
+                if queryAgendamento("Tempo") = "" then
                     calcTempo = 1
                     horaAte = DateAdd("n",calcTempo,queryAgendamento("HoraDe"))
                 else

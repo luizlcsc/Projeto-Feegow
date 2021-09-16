@@ -108,8 +108,6 @@ end if
 
 			if req("T") = "GuiaConsulta" then
 				coluna = "ValorProcedimento"
-			elseif req("T") = "GuiaHonorarios" then
-				coluna = "Procedimentos"
 			else
 				coluna = "TotalGeral"
 			end if

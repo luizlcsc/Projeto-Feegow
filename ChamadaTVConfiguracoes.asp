@@ -8,20 +8,7 @@
 
 <script type="text/javascript">
 
-    <% 
-    versao = "settings"
-    licencaID = replace(session("Banco"),"clinic","")
-    validaVersaoSQL = "SELECT ctvt.versao FROM cliniccentral.chamadas_tv ctv LEFT JOIN cliniccentral.chamadas_tv_templates ctvt ON ctvt.id=ctv.TemplateID WHERE ctv.LicencaID="&licencaID
-
-    set validaVersao = db.execute(validaVersaoSQL)
-    if not validaVersao.eof then 
-        if validaVersao("versao") = 2 then
-            versao = "settingsV2"
-        end if
-    end if
-    %>
-
-    getUrl("tvcall/<%=versao%>", {}, function(data) {
+    getUrl("tvcall/settings", {}, function(data) {
         $(".app").hide();
         $(".app").html(data);
         $(".app").fadeIn('slow');

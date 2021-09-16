@@ -5,7 +5,7 @@
 <%
 function updateTabelaProcedimentos(tabelaGuia, tabelaId, codigo, valor, GuiaId, motivoGlosa, codigoGlosa)
     if codigo&"" <> "" then
-        sqlUpdateTabela = "UPDATE `"&tabelaGuia&"` SET ValorPago= COALESCE(ValorPago,IFNULL('"&valor&"' * IFNULL(CAST(Quantidade AS UNSIGNED),1),0)), "&_
+        sqlUpdateTabela = "UPDATE `"&tabelaGuia&"` SET ValorPago=COALESCE(ValorPago,NULLIF(CAST('"&valor&"' AS UNSIGNED) * IFNULL(CAST(Quantidade AS UNSIGNED),1),'')), "&_
                             "motivoGlosa='"&motivoGlosa&"', CodigoGlosa="&treatvalnull(codigoGlosa)&" "&_
                             "WHERE  CodigoProcedimento = '"&codigo&"' and Quantidade=1 AND GuiaID = "&GuiaID
 

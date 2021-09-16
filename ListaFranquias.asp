@@ -115,10 +115,8 @@ $(document).ready( function () {
     $("#ListaFranquia").dataTable({
         bPaginate: false,
         blengthMenu: [[10, 50, 100, -1], [10, 50, 100, "Todos"]],
-        "oLanguage": {"sSearch": "Buscar: "},
-        "aoColumnDefs": [
-            { "bSearchable": false, "aTargets": [ 7 ] }
-        ] 
+        "oLanguage": {"sSearch": "Buscar: "}
+
     });
 } );
 

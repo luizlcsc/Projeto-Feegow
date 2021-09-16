@@ -39,11 +39,7 @@ end if
 		list-style: none;
 	}
 </style>
-
-<div class="clearfix form-actions" style="margin-top: 40px">
-	<div class="col-xs-12 text-right" style="position: absolute; margin-top: -60px;">
-		<button class="btn btn-primary btn-sm" type="submit" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar Ordem</button>
-	</div>
+<div class="clearfix form-actions">
 	<div class="col-xs-6">
 		<label>Adicionar Categoria</label><br />
 		<input type="text" name="Adicionar" id="Adicionar" class="form-control input-sm" />

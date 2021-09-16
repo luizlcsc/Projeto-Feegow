@@ -929,7 +929,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 				subType = "text"
 				mask = " input-mask-celphone"
 			elseif fieldType="email" then
-				icone = "envelope-o"
+				icone = "envelope"
 				subType = "email"
 				mask = ""
 			end if

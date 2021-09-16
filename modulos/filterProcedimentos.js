@@ -16,7 +16,9 @@ var filterProcedimentos = function(){
         'franquia'          :   '',
         'place'             :   'Busque procedimento pelo nome',
         'data'              :   [],
-        'fns'               :   null
+        'fns'               :   null,
+        'allowChange'       :   1,
+        'allowRequestChange':   0
 	};
 
     function init(opts,fns){
@@ -48,7 +50,7 @@ var filterProcedimentos = function(){
         $(`#${$opts.name}`).keyup((event)=>{
             let valor = $(event.target).val()
             if(valor.length >= $opts.filterOn){
-                let parametros = `nome=${valor}&tabelaId=${$opts.tabelaId}`
+                let parametros = `nome=${valor}&tabelaId=${$opts.tabelaId}&tipo=${$opts.tipo}`
                 $opts.fns.request($opts.requestTo,parametros,populate)
             }
         })
@@ -102,12 +104,48 @@ var filterProcedimentos = function(){
 
 
     function addRow(linha, focus=true){
+        let $input = `<div class="input-group">
+                        <span class="input-group-addon">
+                            <strong>R$</strong>
+                        </span>
+                        <input id="ValorTabela${linha.id}" class="form-control input-mask-brl " type="text" style="text-align:right" name="ValorTabela${linha.id}" value="${fixMoney(linha.ValorTabela)}" onchange="changeValorTabela(this,'${linha.id}','${linha.TabelaID}','Valor')">
+                    </div>`;
+        let classeTr = "";
+        let ValorBase = fixMoney(linha.Valor);
+
+        if(linha.PermiteAlteracao == 0){
+            ValorBase = "";
+            linha.titulo = "Alteração de valor não permitida pela unidade";
+            classeTr = "tr-disabled";
+            $input = `<i>Padrão</i> 
+            <input id="ValorTabela${linha.id}" type="hidden" style="text-align:right" name="ValorTabela${linha.id}" value="${fixMoney(linha.ValorTabela)}" >
+            `;
+        }
+
+        if($opts.allowChange == 0){
+            $input = `<i>${linha.ValorTabela}</i> 
+            <input class="linha-valor-tabela" id="ValorTabela${linha.id}" type="hidden" style="text-align:right" name="ValorTabela${linha.id}" value="${fixMoney(linha.ValorTabela)}" >
+            `;
+        }
+
+        let tdRequestChange = ``;
+
+        if($opts.allowRequestChange == 1){
+            tdRequestChange = `<td class="text-right">
+                <input style="display: none;" class="solicitar-alteracao-ipt text-right form-control input-sm" placeholder="Digite..." value="${fixMoney(linha.ValorTabela)}"/>
+
+                <button onclick="proporValorProcedimento('${linha.id}')" class="solicitar-alteracao-btn btn btn-xs btn-default" type="button" title="Solicitar alteração de valor">
+                    <i class="fa fa-edit"></i>
+                </button>
+            </td>`;
+        }
+
         let base = `
-            <tr data-id="${linha.id}" data-name="${linha.NomeProcedimento.toUpperCase()}">
+            <tr title="${linha.titulo}" data-id="${linha.id}" data-name="${linha.NomeProcedimento.toUpperCase()}" class="${classeTr} linha-procedimento">
                 <td class="hidden hidden-print"><input type="checkbox" class="chk" name="chk${linha.id}" /></td>
-                <td>${linha.NomeProcedimento}</td>
+                <td><span class="linha-nome-procedimento">${linha.NomeProcedimento}</span></td>
                 <td class="text-right">${linha.TipoProcedimento}</td>
-                <td class="text-right"  width="100">${fixMoney(linha.Valor)}</td>
+                <td class="text-right"  width="100">${ValorBase}</td>
                 <td class="text-right hidden" width="150">
                     <div class="input-group">
                         <span class="input-group-addon">
@@ -117,13 +155,9 @@ var filterProcedimentos = function(){
                     </div>
                 </td>
                 <td class="text-right" width="150">
-                    <div class="input-group">
-                        <span class="input-group-addon">
-                            <strong>R$</strong>
-                        </span>
-                        <input id="ValorTabela${linha.id}" class="form-control input-mask-brl " type="text" style="text-align:right" name="ValorTabela${linha.id}" value="${fixMoney(linha.ValorTabela)}" onchange="changeValorTabela(this,'${linha.id}','${linha.TabelaID}','Valor')">
-                    </div>
+                    ${$input}
                 </td>
+                ${tdRequestChange}
             </tr>
         `
         $(`#${$opts.result}`).prepend(base)

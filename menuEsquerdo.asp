@@ -1160,6 +1160,19 @@ end if
             end if
             %>
     <%
+    case "tabelaspreco", "autorizacaotabelapreco"
+            %>
+            <li>
+                <a href="?P=TabelasPreco&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Preços de custo e venda</span></a>
+            </li>
+            <%
+            if aut("|aprovacaotabelaprecoV|")=1 and ModoFranquia then
+            %>
+            <li>
+                <a href="?P=AutorizacaoTabelaPreco&Pers=1"><span class="fa fa-check"></span> <span class="sidebar-title">Solicitações de preço</span></a>
+            </li>
+            <%
+            end if
     case "fornecedores"
         if isnumeric(req("I")) and req("I")<>"" then
             %>

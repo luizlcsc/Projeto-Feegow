@@ -1407,7 +1407,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                             <%
                             end if
                             %>
-                            <% IF session("Banco")<>"clinic7126" THEN %>
+                            <% IF False THEN %>
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
                             <% IF (session("Admin")="1") and (req("P")="Home") THEN

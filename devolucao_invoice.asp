@@ -98,15 +98,15 @@ end if
  %>
 <form id="formdevolucao">
 <div class="row">
-    <%=quickField("selectRadio", "TipoOperacao", "Tipo de operação", 3, "", sqlTipoOperacao, "descricao", " required ")%>
+    <%=quickField("selectRadio", "TipoOperacao", "Tipo de operação", 4, "", sqlTipoOperacao, "descricao", " required ")%>
     
     <% if aut("movementI") = 1 and Session("CaixaID")&"" = "" then %>
     <div id="contasaida" style="display: none">
-        <%=quickField("selectRadio", "ContaID", "Conta de Saida", 3, "", "SELECT id, AccountName FROM sys_financialcurrentaccounts WHERE (AccountType = 1 or AccountType = 2) AND sysActive = 1 AND Ativo = 'on' and Empresa = " & Session("UnidadeID"), "AccountName", " required ")%>
+        <%=quickField("selectRadio", "ContaID", "Conta de Saida", 4, "", "SELECT id, AccountName FROM sys_financialcurrentaccounts WHERE (AccountType = 1 or AccountType = 2) AND sysActive = 1 AND Ativo = 'on' and Empresa = " & Session("UnidadeID"), "AccountName", " required ")%>
     </div> 
     <% end if %>
 
-    <%=quickField("selectRadio", "MotivoDevolucao", "Motivo da devolução<br>", 6, "", "select * from motivo_devolucao where sysActive = 1 order by id", "Motivo", " required ")%>
+    <%=quickField("selectRadio", "MotivoDevolucao", "Motivo da devolução<br>", 4, "", "select * from motivo_devolucao where sysActive = 1 order by id", "Motivo", " required ")%>
     <%=quickField("memo", "Observacao", "Observação", 12, "", "", "", "") %>
 </div>
 <%
@@ -117,38 +117,48 @@ set queryInvoice = db.execute(sql)
 
 if not queryInvoice.eof then
 %>
-<table class="table table-condensed">
-    <tr>
-        <th></th>
-        <th>Item</th>
-        <th>Valor do item</th>
-        <th>Valor pago</th>
-        <th>Desconto</th>
-        <th>Acréscimo</th>
-    </tr>
-<%
-    while not queryInvoice.eof  
-%>
-    <tr>
-        <td><input type="checkbox" name="iteninvoice" class="iteninvoice" value="<%=queryInvoice("iditensinvoice")%>"></td>
-        <td><%=queryInvoice("NomeProcedimento") %></td>
-        <td><%=fn(queryInvoice("ValorUnitario")) %></td>
-        <td><%=fn(queryInvoice("ValorDescontado")) %></td>
-        <td><%=fn(queryInvoice("Desconto")) %></td>
-        <td><%=fn(queryInvoice("Acrescimo")) %></td>
-    </tr>
-<%
-        queryInvoice.movenext
-    wend
-%>
-</table>
 <div class="row">
     <div class="col-md-12">
-        <div class="pull-right">
-            <input type="button" value="Gerar Devolução" class="btn btn-info devolucao">
+        <hr class="short alt" />
+    </div>
+
+    <div class="col-md-12">
+    <table class="table table-condensed ">
+        <tr class="primary">
+            <th></th>
+            <th>Item</th>
+            <th>Valor do item</th>
+            <th>Valor pago</th>
+            <th>Desconto</th>
+            <th>Acréscimo</th>
+        </tr>
+    <%
+        while not queryInvoice.eof
+    %>
+        <tr>
+            <td><input type="checkbox" name="iteninvoice" class="iteninvoice" value="<%=queryInvoice("iditensinvoice")%>"></td>
+            <td><%=queryInvoice("NomeProcedimento") %></td>
+            <td><%=fn(queryInvoice("ValorUnitario")) %></td>
+            <td><%=fn(queryInvoice("ValorDescontado")) %></td>
+            <td><%=fn(queryInvoice("Desconto")) %></td>
+            <td><%=fn(queryInvoice("Acrescimo")) %></td>
+        </tr>
+    <%
+            queryInvoice.movenext
+        wend
+    %>
+    </table>
+    </div>
+
+    </div>
+
+    <div class="row mt15">
+        <div class="col-md-12">
+            <div class="pull-right">
+                <button type="button" class="btn btn-danger devolucao"><i class="far fa-times"></i> Gerar Devolução</button>
+            </div>
         </div>
     </div>
-</div>
 </form>
 <%
 end if

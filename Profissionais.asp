@@ -130,7 +130,6 @@ end if
                             </span>
                         </div>
                         <div class="panel-body p7">
-
                             <% 
                             QtdUnidades = ubound(split(session("Unidades"), ","))
 
@@ -162,15 +161,17 @@ end if
                                 </div>
                                 <hr style="margin: 10px 0" />
                             <% END IF
-                            unidadesFuncionario = RegUnidades
+
+                            unidadesFuncionario = regUnidades
                             %>
                         	<div class="checkbox-primary checkbox-custom" data-name="Empresa Principal"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(unidadesFuncionario, "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
 						<%
 						set unidades = db.execute("select id, UnitName,NomeFantasia from sys_financialcompanyunits where sysActive=1 order by NomeFantasia")
 						while not unidades.eof
+						    nomeUnidade = unidades("NomeFantasia")
 							%>
-							<div class="checkbox-custom checkbox-primary">
-                                <input type="checkbox" name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(unidadesFuncionario, "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=unidades("NomeFantasia")%> </small></label></div>
+							<div class="checkbox-custom checkbox-primary" data-name="<%=nomeUnidade%>">
+                                <input type="checkbox" <% IF ModoFranquiaUnidade THEN %>onclick="return false;"<% END IF %> name="Unidades" id="Unidades<%=unidades("id")%>" value="|<%=unidades("id")%>|"<%if instr(unidadesFuncionario, "|"&unidades("id")&"|")>0 then%> checked="checked"<%end if%> /><label for="Unidades<%=unidades("id")%>"><small> <%=nomeUnidade%> </small></label></div>
 							<%
 						unidades.movenext
 						wend
@@ -625,6 +626,10 @@ if req("GT")="Permissoes" then
 end if
 %>
 $("#ObsAgenda").ckeditor();
+
+function selecionarTodasUnidades(cel){
+ $("[name='Unidades']").prop('checked', cel)
+}
 
 function VisualizarEnvioDasAgendas() {
     openComponentsModal("ProfissionalEnvioAgenda.asp", {ProfissionalID:"<%=req("I")%>"}, "Envio das agendas", true)

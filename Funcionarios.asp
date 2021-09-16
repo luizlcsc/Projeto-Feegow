@@ -79,7 +79,6 @@ end if
                                 </span>
                             </div>
                             <div class="panel-body p7">
-
                                 <% 
                                 QtdUnidades = ubound(split(session("Unidades"), ","))
     
@@ -113,7 +112,6 @@ end if
                                 <% END IF
     
                                 unidadesFuncionario = regUnidades
-
                                 %>
                                 <div class="checkbox-primary checkbox-custom" data-name="Empresa Principal"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(unidadesFuncionario, "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
                             <%
@@ -129,6 +127,7 @@ end if
                             unidades.close
                             set unidades=nothing
                             %>
+                                unidadesFuncionario = regUnidades
                             </div>
                         </div>
                     </div>
@@ -354,6 +353,11 @@ if req("GT")="Permissoes" then
 	<%
 end if
 %>
+
+function selecionarTodasUnidades(cel){
+ $("[name='Unidades']").prop('checked', cel)
+}
+
 </script>
 
 <!--#include file="disconnect.asp"-->

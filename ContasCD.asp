@@ -161,7 +161,7 @@ end if
                                 <option value="N" <% If Pagto = "N" Then %> selected="selected" <% End If %>>N&atilde;o quitadas</option>
                             </select>
                         </div>
-                        <%=quickField("empresaMulti", "CompanyUnitID", "Unidades", 4, session("Unidades"), "", "", "")%>
+                        <%=quickField("empresaMulti", "CompanyUnitID", "Unidades", 2, session("Unidades"), "", "", "")%>
                         <% if UnidadeSelecionada <> "" then%>
                             <script type="text/javascript">
                                 // a seleção de unidades default é feita por JS pq há um comportamento inesperado no default do quickField
@@ -173,11 +173,19 @@ end if
                             </script>
                         <% end if %>
                         <div class="col-md-2">
+                            <label>Tabela</label><br>
+                            <%=selectInsert("", "TabelaID", TabelaID, "TabelaParticular", "NomeTabela", "", "", "")%>
+                        </div>
+                        <div class="col-md-2">
                             <label>&nbsp;</label><br />
                             <button class="btn btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="far fa-search bigger-110"></i> Filtrar</button>
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-3">
+                            <label><%=tituloConta%></label><br />
+                            <%=selectInsertCA("", "AccountID", AccountID, "5, 4, 3, 2, 6, 1, 8", "", "", "")%>
+                        </div>
                         <div class="col-md-3">
                             <label>Categoria</label><br>
 
@@ -199,10 +207,7 @@ end if
                             <% end if %>
                         
                         </div>
-                        <div class="col-md-3">
-                            <label><%=tituloConta%></label><br />
-                            <%=selectInsertCA("", "AccountID", AccountID, "5, 4, 3, 2, 6, 1, 8", "", "", "")%>
-                        </div>
+
                         <%=quickField("text", "NotaFiscal", "Nota Fiscal", 2, NotaFiscal, "", "", " ")%>
                         <%=quickField("multiple", "AccountAssociation", "Limitar Tipo de Pagador", 2, AccountAssociation, "select * from cliniccentral.sys_financialaccountsassociation WHERE id NOT IN(1, 7)", "AssociationName", "")%>
                         <div class="col-md-1">
@@ -239,10 +244,7 @@ end if
                             <%
                             end if
                             %>
-                            <div class="col-md-2">
-                                <label>Tabela</label><br>
-                                <%=selectInsert("", "TabelaID", TabelaID, "TabelaParticular", "NomeTabela", "", "", "")%>
-                            </div>
+
                         </div>
                         <Div class="row">
                             <Div class="col-md-12 mt5">

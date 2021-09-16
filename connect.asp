@@ -12,6 +12,11 @@ end if
 set db = newConnection(session("Banco"), sServidor)
 'db.Open ConnString
 LicenseID=replace(session("Banco"), "clinic", "")
+PorteClinica = session("PorteClinica") 
+
+if not isnumeric(PorteClinica) then
+    PorteClinica = 0
+end if
 
 function permissoesPadrao()
 '	permissoesPadrao = "chatI, contatosV, contatosI, contatosA, contatosX, sys_financialcurrentaccountsV, sys_financialcurrentaccountsI, sys_financialcurrentaccountsA, sys_financialcurrentaccountsX, formasrectoV, formasrectoI, formasrectoA, formasrectoX, origensV, origensI, origensA, origensX, contasapagarV, contasapagarI, contasapagarA, contasapagarX, contasareceberV, contasareceberI, contasareceberA, contasareceberX, contratadoexternoV, contratadoexternoI, contratadoexternoA, contratadoexternoX, fornecedoresV, fornecedoresI, fornecedoresA, fornecedoresX, funcionariosV, funcionariosI, funcionariosA, funcionariosX, locaisgruposV, locaisgruposI, locaisgruposA, locaisgruposX, lancamentosV, lancamentosI, lancamentosA, lancamentosX, locaisV, locaisI, locaisA, locaisX, movementV, movementI, movementA, movementX, orcamentosV, orcamentosI, orcamentosA, orcamentosX, pacotesV, pacotesI, pacotesA, pacotesX, procedimentosV, procedimentosI, procedimentosA, procedimentosX, profissionalexternoV, profissionalexternoI, profissionalexternoA, profissionalexternoX, tabelasV, tabelasI, tabelasA, tabelasX, sys_financialexpensetypeV, sys_financialexpensetypeI, sys_financialexpensetypeA, sys_financialexpensetypeX, sys_financialincometypeV, sys_financialincometypeI, sys_financialincometypeA, sys_financialincometypeX, sys_financialcompanyunitsV, sys_financialcompanyunitsI, sys_financialcompanyunitsA, sys_financialcompanyunitsX, buiformsV, buiformsI, buiformsA, buiformsX, chamadaporvozA, configconfirmacaoA, configrateioV, configrateioI, configrateioA, configrateioX, emailsV, emailsI, emailsA, emailsX, configimpressosV, configimpressosA, produtoscategoriasV, produtoscategoriasI, produtoscategoriasA, produtoscategoriasX, produtosfabricantesV, produtosfabricantesI, produtosfabricantesA, produtosfabricantesX, lctestoqueV, lctestoqueI, lctestoqueA, lctestoqueX, produtoslocalizacoesV, produtoslocalizacoesI, produtoslocalizacoesA, produtoslocalizacoesX, produtosV, produtosI, produtosA, produtosX, conveniosV, conveniosI, conveniosA, conveniosX, faturasV, guiasV, guiasI, guiasA, guiasX, conveniosplanosV, conveniosplanosI, conveniosplanosA, conveniosplanosX, repassesV, repassesI, repassesA, repassesX, formsaeV, formsaeI, formsaeA, arquivosV, arquivosI, arquivosA, arquivosX, atestadosV, atestadosI, atestadosA, atestadosX, pacientesV, pacientesI, pacientesA, pacientesX, historicopacienteV, contapacV, contapacI, contapacX, areceberpacienteV, areceberpacienteI, areceberpacienteA, areceberpacienteX, diagnosticosV, diagnosticosI, diagnosticosA, diagnosticosX, envioemailsI, imagensV, imagensI, imagensA, imagensX, formslV, formslI, formslA, pedidosexamesV, pedidosexamesI, pedidosexamesX, prescricoesV, prescricoesI, prescricoesA, prescricoesX, recibosV, recibosI, recibosA, recibosX, agendaV, agendaI, agendaA, agendaX, horariosV, horariosA, contaprofV, contaprofI, contaprofX, profissionaisV, profissionaisI, profissionaisA, profissionaisX, relatoriosestoqueV, relatoriosfinanceiroV, relatoriospacienteV, chamadatxtV, chamadavozV, senhapA, usuariosI, usuariosA, usuariosX, bloqueioagendaV, bloqueioagendaA, bloqueioagendaI, bloqueioagendaX, ageoutunidadesV, ageoutunidadesA, ageoutunidadesI, ageoutunidadesX, relatoriosfaturamentoV, relatoriosfaturamentoV, relatoriosagendaV"
@@ -6149,14 +6154,8 @@ function getConfAO(NomeConfig)
 end function
 
 
-function rw(txt)
-    rw = response.write(txt &"<br>")
-end function
-
-
-
 function getClientDataHora(UnidadeID)
-
+            
     HorarioVerao = ""
     if UnidadeID=0 then
         set getNome = db.execute("select FusoHorario, HorarioVerao from empresa")
@@ -6173,8 +6172,12 @@ function getClientDataHora(UnidadeID)
     end if
 
     getClientDataHora = dateadd("h",FusoHorario + 3, now())
+
 end function
 
+function rw(txt)
+    rw = response.write(txt &"<br>")
+end function
 
 function convertSimbolosHexadecimal(Texto)
     Texto = replace(Texto, "►", "&#9658;")
@@ -6274,6 +6277,4 @@ function autCareTeam(SysUserID, PacienteID)
     end if
 
 end function
-
-
 %>

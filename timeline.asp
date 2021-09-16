@@ -385,6 +385,19 @@ select case Tipo
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %> </span>
             </div>
+            <% if aut("prescricoesI") then %>
+                <div class="panel-body" style="overflow: inherit!important;">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
+                                <i class="fa fa-plus"></i> Inserir Prescrição
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed()" <%end if%>>
+                                <i class="fa fa-plus"></i> Prescrição MEMED
+                            </button>
+                        </div>
             <%
             if aut("prescricoesI") then
             %>
@@ -446,40 +459,8 @@ select case Tipo
               toogleDisabledBtn($btnAbrirMemed);
             }, 500);
         });
-    });
-
- 
-
-</script>
-<%
-else
-%>
-
-                <div class="col-md-8">
-                <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
-                    <i class="far fa-plus"></i> Inserir Prescrição
-                </button>
                 </div>
-                <% end if %>
-                </div>
-
-                <%
-                if memed.eof and session("Table")="profissionais" then
-                %>
-
-                <div class="col-md-9 mt10">
-                    <div class="alert alert-default">
-                        <strong >Novidade!</strong>  Agora está disponível a prescrição Memed. <a target="_blank" href="?P=profissionais&I=<%=session("idInTable")%>&Pers=1">Vá no seu perfil</a> e clique na aba <i>Integração Memed</i>.
-                    </div>
-                </div>
-
-                <%
-                end if
-                %>
-            </div>
-            <%
-            end if
-            %>
+            <% end if %>
         </div>
         <%
     case "|Atestado|"
@@ -706,10 +687,15 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                             %>
                         </ul>
                     </div>
+                    <div class="col-md-3">
+                        <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed(true)" <%end if%>>
+                            <i class="fa fa-plus"></i> Exame MEMED
+                        </button>
+                    </div>
                     <%
                     if IntegracaoUnimedLondrina=4 or session("Banco")="clinic100000" then
                     %>
-                        <div class="col-md-offset-6 col-md-3">
+                        <div class="col-md-offset-3 col-md-3">
                             <button type="button" class="btn btn-system" onclick="importarDadosUnimed()">
                                 <i class="far fa-download"></i> Importar Exames - Unimed
                             </button>

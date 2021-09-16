@@ -2,7 +2,13 @@
 <%
 txt = replace(req("txt"), " ", "%")
 
-set conv = db.execute("select id, NomeConvenio, RazaoSocial, Unidades, CamposObrigatorios, TipoAtendimentoID from convenios where sysActive=1 and Ativo='on' and (NomeConvenio like '%"& txt &"%' or id like '%"& txt &"%')")
+IF ModoFranquia THEN
+    sqlAM = "select id, NomeConvenio, RazaoSocial, Unidades, CamposObrigatorios, TipoAtendimentoID, registroans from convenios where sysActive=1 and Ativo='on' and (NomeConvenio like '%"& txt &"%' or id like '%"& txt &"%')"
+    sqlAM = "SELECT * FROM ("&sqlAM&") as T "&franquia(" WHERE COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")
+    set conv = db.execute(sqlAM)
+ELSE
+    set conv = db.execute("select id, NomeConvenio, RazaoSocial, Unidades, CamposObrigatorios, TipoAtendimentoID from convenios where sysActive=1 and Ativo='on' and (NomeConvenio like '%"& txt &"%' or id like '%"& txt &"%')")
+END IF
 if not conv.eof then
 
 '---> Rotina pra mostrar ou não o link de extrato
@@ -28,20 +34,29 @@ end if
     <tbody>
         <%
         while not conv.eof
+            if conv("registroans") = "simplificado" then
+                tipodeconvenio =  "&nbsp;&nbsp;&nbsp;<span class='badge badge-info'>Simplificado</span>"
+            else
+                tipodeconvenio = ""
+            end if
             %>
             <tr>
-                <td><a href="./?P=Convenios&I=<%=conv("id") %>&Pers=1"> <%= conv("NomeConvenio") %></a></td>
+                <td><a href="./?P=Convenios&I=<%=conv("id") %>&Pers=1"> <%= conv("NomeConvenio") %></a> <%= tipodeconvenio %></td>
                 <td><%= conv("RazaoSocial") %></td>
                 <td><%= conv("Unidades") %></td>
                 <td><%= conv("CamposObrigatorios") %></td>
                 <td><%= conv("TipoAtendimentoID") %></td>
                 <td nowrap>
                     <% if aut("|conveniosA|")=1 then %>
-                        <a href="./?P=Convenios&I=<%=conv("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="far fa-edit"></i></a>
+                        <% if conv("registroans") = "simplificado" then %>
+                            <a href="./?P=ConveniosSimplificado&I=<%=conv("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-edit"></i></a>
+                        <%else%>
+                            <a href="./?P=Convenios&I=<%=conv("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-edit"></i></a>
+                        <%end if%>
                     <%end if %>
 
                     <%if associacao<>"" then%>
-                        <a class="btn btn-xs btn-success tooltip-success" title="Extrato" data-rel="tooltip" href="?P=Extrato&Pers=1&T=<%=associacao%>_<%=conv("id")%>"><i class="far fa-money bigger-130"></i></a>
+                        <a class="btn btn-xs btn-success tooltip-success" title="Extrato" data-rel="tooltip" href="?P=Extrato&Pers=1&T=<%=associacao%>_<%=conv("id")%>"><i class="fa fa-money bigger-130"></i></a>
                     <%end if %>
                     
                     <% if aut("|conveniosX|")=1 then %>

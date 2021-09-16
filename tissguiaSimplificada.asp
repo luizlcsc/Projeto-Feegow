@@ -3,8 +3,8 @@
 <!--#include file="modalTiss.asp"-->
 <!--#include file="tissFuncs.asp"-->
 <%
-call insertRedir(req("P"), req("I"))
-set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
+call insertRedir("tissguiaconsulta", request.QueryString("I"))
+set reg = db.execute("select * from tissguiaconsulta where id="&request.QueryString("I"))
 ClasseStatus = "primary"
 
 if not reg.eof then
@@ -67,8 +67,7 @@ if not reg.eof then
 				%>
 				<script type="text/javascript">
 					$(document).ready(function(){
-						$("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento").prop("readonly", true);
-					
+						$("#RegistroANS, #CodigoNaOperadora, #CodigoCNES, #Conselho, #DocumentoConselho, #UFConselho, #CodigoCBO, #CodigoProcedimento, #ValorProcedimento").prop("readonly", true);					
 					});
 				</script>
 				<%
@@ -93,8 +92,8 @@ if not reg.eof then
         end if
     end if
 	'Auto-preenche a guia baseado no lancto
-	if req("Lancto")<>"" then
-		spl = split(req("Lancto"), "|")
+	if request.QueryString("Lancto")<>"" then
+		spl = split(request.QueryString("Lancto"), "|")
 		if spl(1)="Paciente" then
 			PacienteID = spl(0)
 					set vpac = db.execute("select * from pacientes where id="&PacienteID)
@@ -118,7 +117,7 @@ if not reg.eof then
                     end if
 		else
 			if spl(1)="agendamento" then
-			    sqlaEa = "select ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, l.UnidadeID, ag.EspecialidadeID, ag.PlanoID from agendamentos as ag left join locais l on l.id=ag.LocalID where ag.id like '"&spl(0)&"' order by ag.Data desc, ag.Hora desc, ag.HoraFinal desc"
+			    sqlaEa = "select ag.id, ag.Data, ag.Hora as HoraInicio, ag.HoraFinal as HoraFim, ag.TipoCompromissoID as ProcedimentoID, ag.ProfissionalID, ag.Notas as Obs, ag.ValorPlano, ag.rdValorPlano, ag.PacienteID, ag.StaID as Icone, 'agendamento' as Tipo, ag.id as AgendamentoID, l.UnidadeID, ag.EspecialidadeID, ag.PlanoID from agendamentos as ag left join locais l on l.id=ag.LocalID where ag.id = '"&spl(0)&"' order by ag.Data desc, ag.Hora desc, ag.HoraFinal desc"
 			else
 			    sqlaEa =("select ap.id, at.Data, at.HoraInicio, at.HoraFim, ap.ProcedimentoID, at.ProfissionalID, ap.Obs, ap.ValorPlano, ap.rdValorPlano, at.PacienteID, 'executado' Tipo, 'executado' Icone, at.AgendamentoID, at.UnidadeID, ag.EspecialidadeID, ag.PlanoID  FROM  atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID LEFT JOIN agendamentos ag ON ag.id=at.AgendamentoID where ap.id like '"&spl(0)&"' order by at.Data desc, at.HoraInicio desc, at.HoraFim desc")
 			end if
@@ -179,42 +178,14 @@ if not reg.eof then
                         else
                             UnidadeID=session("UnidadeID")
                         end if
-                        'response.write(SQLUnidadeIDContratado)
-                        'response.write(UnidadeID)
-
-                        'select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 and length(CodigoNaOperadora)>1 and not isnull(Contratado) "&SQLUnidadeIDContratado&" ORDER BY IF(Contratado*-1 = "&treatvalnull(UnidadeID)&",0,1)
 
 						set contrato = db.execute("SELECT * FROM contratosconvenio WHERE sysActive=1 and ConvenioID = "&conv("id")&" ORDER BY (Contratado = "&session("idInTable")&") DESC, coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) DESC ")
 
-'						while not contrato.eof
- '                           if session("UnidadeID")=contrato("Contratado")*(-1) then
-  '                              mesmaUnidade = "S"
-	'						    Contratado = contrato("Contratado")
-	'						    ContratadoSolicitanteID = contrato("Contratado")
-	'						    CodigoNaOperadora = contrato("CodigoNaOperadora")
-	'						    ContratadoSolicitanteCodigoNaOperadora = contrato("CodigoNaOperadora")
-     '                       elseif mesmaUnidade="" and contrato("Contratado")<=0 then
-      '                          outraUnidade = "S"
-		'					    Contratado = contrato("Contratado")
-		'					    ContratadoSolicitanteID = contrato("Contratado")
-		'					    CodigoNaOperadora = contrato("CodigoNaOperadora")
-		'					    ContratadoSolicitanteCodigoNaOperadora = contrato("CodigoNaOperadora")
-         '                   else
-			'				    Contratado = contrato("Contratado")
-			'				    ContratadoSolicitanteID = contrato("Contratado")
-			'				    CodigoNaOperadora = contrato("CodigoNaOperadora")
-			'				    ContratadoSolicitanteCodigoNaOperadora = contrato("CodigoNaOperadora")                                
-             '               end if
-'						contrato.movenext
- '                       wend
-  '                      contrato.close
-   '                     set contrato = nothing
 						if not contrato.eof then
 							Contratado = contrato("Contratado")
 							ContratadoSolicitanteID = contrato("Contratado")
 							CodigoNaOperadora = contrato("CodigoNaOperadora") 'conv("NumeroContrato")
 							ContratadoSolicitanteCodigoNaOperadora = contrato("CodigoNaOperadora") ' conv("NumeroContrato")
-
 						end if
 
                         if UnidadeID&""<>"" then
@@ -277,11 +248,6 @@ if not reg.eof then
 		                    	$("#CodigoNaOperadora, #CodigoCNES").prop("readonly", true);							
 								$("#Contratado").attr("disabled",true);
 								$("#ContratadoID").attr("disabled",false);
-							<% end if %>
-
-							<% if SemprePrimeiraConsulta=1 then  %>
-								$("#TipoConsultaID").val("1").attr("readonly","true");
-								$("#TipoConsultaID option:not(:selected)").prop('disabled', true);
 							<% end if %>
 
 						});
@@ -427,9 +393,6 @@ end if
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Leitura de Cartão de Beneficiários</h5>
-        <!--<button type="button" class="close" data-dismiss="modal" aria-label="Fechar">-->
-          <!--<span aria-hidden="true">&times;</span>-->
-        <!--</button>-->
       </div>
       <div class="modal-body">
 	  		<textarea class="form-control" id="campodeleitura" placeholder="Aproxime ou passe o cartão na leitora" required></textarea>
@@ -445,7 +408,7 @@ end if
 
 <script type="text/javascript">
     $(".crumb-active a").html("Guia de Consulta");
-    $(".crumb-icon a span").attr("class", "far fa-credit-card");
+    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
 </script>
 
 
@@ -465,25 +428,8 @@ end if
 <div class="admin-form theme-primary">
    <div class="panel heading-border panel-<%=ClasseStatus%>">
         <div class="panel-body">
-            <% if True then %>
-                <% if reg("GuiaSimplificada") = 1 then%>
-                    <script>
-                        $(document).ready(function(){
-                            guiaSimplificada();
-                        });
-                    </script>
-                <% end if %>
-                <div class="row">
-                    <div class="text-right">
-                        <label for="check-guia-simplificada">
-                            <input id="check-guia-simplificada" name="GuiaSimplificada" class="form-control" type="checkbox" value="1" style="height: 25px" <% if reg("GuiaSimplificada") = 1 then%>checked="checked"<% end if %>/> Convênio Simplificado
-                        </label>
-                    </div>
-                </div>
-            <% else %>
-                <input id="check-guia-simplificada" name="GuiaSimplificada" type="hidden" value="0" />
-            <% end if %>
 
+                <input id="check-guia-simplificada" name="GuiaSimplificada" type="hidden" value="1" />
             <div class="row">
     <div class="col-md-12">
 	<table width="100%" cellspacing="0" class="table" cellpading="0">
@@ -492,7 +438,7 @@ end if
         <span> Dados do Benefici&aacute;rio </span>
     </div>
 	<tr><td><table cellpadding="0" cellspacing="0" width="100%"><tr>
-	<td width="60%"><div class="col-md-12"><%= selectInsert("* Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='far fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div></td>
+	<td width="60%"><div class="col-md-12"><%= selectInsert("* Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='fa fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " required onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div></td>
 	<td width="40%"><%= quickField("text", "CNS", "Cart&atilde;o Nacional de Sa&uacute;de", 12, CNS, "", "", "") %></td>
 	</tr></table></td></tr>
 
@@ -515,17 +461,9 @@ end if
 	<td width="20%"><%= quickField("text", "NGuiaOperadora", "N&deg; da Guia na Operadora", 12, NGuiaOperadora, "", "", fcnRepetirNumeroOperadora) %></td>
 	</tr></table></td></tr>
 
-	<tr>
+	<tr id="tr-carteira">
     <td><table width="100%"><tr>
-	<td width="35%">
-	    <%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 12, NumeroCarteira, " lt ", "", " required") %>
-	    <div class="col-md-12 pt5">
-	        <div class="form-group has-error" id="NumeroCarteiraContent" style="display: none;position:absolute;width: 80%;">
-
-	            <input id="NumeroCarteiraValidacao" class=" form-control input-sm" placeholder="Digite novamente  o  n&deg; da carteira...">
-            </div>
-        </div>
-	    </td>
+	<td width="35%"><%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 12, NumeroCarteira, " lt ", "", " required") %></td>
 	<td width="35%">
 	<table width = "100%">
 		<tr>
@@ -533,7 +471,7 @@ end if
 				<%= quickField("text", "IdentificadorBeneficiario", "Identificador - Código de barras da carteira", 12, IdentificadorBeneficiario, "", "", " readonly") %>
 			</td>
 			<td>
-				<button type="button" class="btn btn-xs btn-warning far fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
+				<button id="btn-leitura-cartao" type="button" class="btn btn-xs btn-warning fa fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
 				</button>
 			</td>
 		</tr>
@@ -614,9 +552,9 @@ end if
 	</tr></table></td></tr>
 	
 	<tr><td><table cellpadding="0" cellspacing="0"><tr>
-	<td nowrap="nowrap" width="30%"><div class="col-md-12"><%= selectInsert("* Procedimento", "gProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""tissCompletaDados(4, this.value);""", "required", "") %></div></td>
+	<td nowrap="nowrap" width="30%"><div class="col-md-12"><%= selectInsert("* Procedimento", "gProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " required onchange=""tissCompletaDados(4, this.value);""", "required", "") %></div></td>
 	<td width="25%"><%= quickField("simpleSelect", "TabelaID", "* Tabela", 12, TabelaID, "select id, concat(id, ' - ', descricao) descricao from tisstabelas order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
-	<td nowrap="nowrap" width="30%">
+	<td id="td-codprocedimento" nowrap="nowrap" width="30%">
 <br>
         <%=selectProc("* Código do Procedimento", "CodigoProcedimento", CodigoProcedimento, "codigo", "TabelaID", "CodigoProcedimento", "", " required='required' ", "", "", "") %>
         <%'= quickField("text", "CodigoProcedimento", "C&oacute;digo do procedimento", 12, CodigoProcedimento, "", "", " required='required'") %></td>
@@ -663,26 +601,26 @@ end if
     end if
 
     %>
-        <button class="btn btn-primary btn-md" id="salvar-guia"><i class="far fa-save"></i> Salvar</button>
+        <button class="btn btn-primary btn-md" id="salvar-guia"><i class="fa fa-save"></i> Salvar</button>
         <%
         if aut("repassesV")=1 then
             set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.GuiaConsultaID="& req("I") &" AND NOT ISNULL(rr.ItemContaAPagar)")
             if not vcaRep.eof then
-                btnrepasse = "<button title='Repasses Gerados' onclick='repasses(`GuiaConsultaID`, "& req("I") &")' type='button' class='btn ml5 btn-dark pull-right'> <i class='far fa-puzzle-piece'></i>  </button>"
+                btnrepasse = "<button title='Repasses Gerados' onclick='repasses(`GuiaConsultaID`, "& req("I") &")' type='button' class='btn ml5 btn-dark pull-right'> <i class='fa fa-puzzle-piece'></i>  </button>"
                 response.write( btnRepasse )
             end if
         end if
         %>
         <%if AutorizadorTiss then %>
-        <button type="button" onclick="AutorizarGuiaTisss()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="far fa-expand"></i> Solicitar</button>
-        <button type="button" onclick="Autorizador.cancelarGuia(2)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="far fa-times"></i> Cancelar guia</button>
-        <button type="button" onclick="tissVerificarStatusGuia()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="far fa-search"></i> Verificar status</button>
+        <button type="button" onclick="AutorizarGuiaTisss()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>
+        <button type="button" onclick="Autorizador.cancelarGuia(2)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="fa fa-times"></i> Cancelar guia</button>
+        <button type="button" onclick="tissVerificarStatusGuia()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="fa fa-search"></i> Verificar status</button>
         <%end if %>
-        <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="far fa-history"></i></button>
+        <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="fa fa-history"></i></button>
 
 
-        <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaConsulta', 0)"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
-        <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaConsulta()"><i class="far fa-file"></i> Imprimir Guia</button>
+        <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaConsulta', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
+        <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaConsulta()"><i class="fa fa-file"></i> Imprimir Guia</button>
     </div>
     <input type="hidden" name="AtendimentoID" id="AtendimentoID" value="<%=AtendimentoID%>" />
     <input type="hidden" name="AgendamentoID" id="AgendamentoID" value="<%=AgendamentoID%>" />
@@ -706,7 +644,7 @@ if(typeof AutorizadorTiss === "function"){
 }
 <%end if %>
 
-function tissCompletaDados(T, I){
+function tissCompletaDados(T, I) {
 	$.ajax({
 		type:"POST",
 		url:"tissCompletaDados.asp?I="+I+"&T="+T,
@@ -770,51 +708,29 @@ function guiaSimplificada(restore)
     const elConselho          = $('#qfconselho').parent();
     const elNConselho         = $('#qfdocumentoconselho').parent();
     const elUFConselho        = $('#qfufconselho').parent();
-
-    if (isSimplificada && !restore) {
-        simplificaElemento(elRegistroAns);
-        simplificaElemento(elNGuiaOperadora);
-        simplificaElemento(elTrCarteira);
-        simplificaElemento(elCodigoNaOperadora);
-        simplificaElemento(elCodigoCnes);
-        simplificaElemento(elCodigoCBO);
-        simplificaElemento(elIndicacaoAcidente);
-        simplificaElemento(elTipoConsulta);
-        simplificaElemento(elTabela);
-        simplificaElemento(elCodProcedimento);
-        simplificaElemento(elConselho);
-        simplificaElemento(elNConselho);
-        simplificaElemento(elUFConselho);
-    } else {
-        restauraElemento(elRegistroAns);
-        restauraElemento(elNGuiaOperadora);
-        restauraElemento(elTrCarteira);
-        restauraElemento(elCodigoNaOperadora);
-        restauraElemento(elCodigoCnes);
-        restauraElemento(elCodigoCBO);
-        restauraElemento(elIndicacaoAcidente);
-        restauraElemento(elTipoConsulta);
-        restauraElemento(elTabela);
-        restauraElemento(elCodProcedimento);
-        restauraElemento(elConselho);
-        restauraElemento(elNConselho);
-        restauraElemento(elUFConselho);
-    }
+    
+    simplificaElemento(elRegistroAns);
+    simplificaElemento(elNGuiaOperadora);
+    simplificaElemento(elTrCarteira);
+    simplificaElemento(elCodigoNaOperadora);
+    simplificaElemento(elCodigoCnes);
+    simplificaElemento(elCodigoCBO);
+    simplificaElemento(elIndicacaoAcidente);
+    simplificaElemento(elTipoConsulta);
+    simplificaElemento(elTabela);
+    simplificaElemento(elCodProcedimento);
+    simplificaElemento(elConselho);
+    simplificaElemento(elNConselho);
+    simplificaElemento(elUFConselho);
 
 }
 
 $(document).ready(function(){
-    <%if AutorizadorTiss then %>
-	Autorizador.bloqueiaBotoes(2);
-    <%
-    end if
-    if aut("|guiasA|")<>1 then
+    guiaSimplificada();
+   <% if aut("|guiasA|")<>1 then
         readOnly = " disabled "
-
     end if
-
     set GuiaStatusSQL = db.execute("SELECT * FROM cliniccentral.tissguiastatus order by id")
-
     Status = "<select id='GuiaStatus' name='GuiaStatus' class='form-control input-sm' "&readOnly&" >"
     while not GuiaStatusSQL.eof
         CheckedStatus = ""
@@ -828,60 +744,25 @@ $(document).ready(function(){
     set GuiaStatusSQL = nothing
     Status = Status&"</select>"
 
-
-
     %>
-        $("#rbtns").html("<%=Status %>");
 
-        $("select[name='GuiaStatus']").change(function(data) {
-            $.get("AlteraStatusGuia.asp", {GuiaID:"<%=req("I")%>", TipoGuia:$("input[name='tipo']").val(), Status: $(this).val()}, function() {
+    $("#rbtns").html("<%=Status %>");
 
-            })
-        });
+    $("select[name='GuiaStatus']").change(function(data) {
+        $.get("AlteraStatusGuia.asp", {GuiaID:"<%=req("I")%>", TipoGuia:$("input[name='tipo']").val(), Status: $(this).val()}, function() {
 
-
-
+        })
+    });
 
 	$("#gConvenioID, #UnidadeID").change(function(){
 		tissCompletaDados("Convenio", $("#gConvenioID").val());
-
 	});
 
 	$("#Contratado, #UnidadeID").change(function(){
-//	    alert(1);
 		tissCompletaDados("Contratado", $(this).val());
 	});
-
-
-	$('#check-guia-simplificada').on('change', function() {
-	    guiaSimplificada();
-	});
+	
 });
-
-function validarConvenio() {
-	let convenio = $("#gConvenioID").val()
-	if(convenio != ''){
-		$.get('ValidaConvenio.asp?ConvenioID=' + convenio,
-			function(data) {
-				if (data == "1") { 
-					$("#salvar-guia").attr("disabled", true)
-				} else { 
-					$("#salvar-guia").attr("disabled", false) 
-				}
-			}
-		);
-	}else{
-		$("#salvar-guia").attr("disabled", false) 
-	}
-}
-
-$(document).ready(function() {
-	validarConvenio();
-})
-
-$("#gConvenioID").change(() => {
-    validarConvenio();
-})
 
 $("#GuiaConsulta").submit(function(){
     var $plano = $("#PlanoID"),
@@ -892,15 +773,9 @@ $("#GuiaConsulta").submit(function(){
         return false;
     }
 
-    if($("#NumeroCarteira").attr("data-status")==="INVALID"){
-         $("#NumeroCarteiraValidacao").focus();
-         showMessageDialog("Valide a matrícula digitada", "danger");
-         return false;
-    }
-
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?Tipo=Consulta&I=<%=req("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
+		url:"SaveGuia.asp?Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data,obj){
 			eval(data);
@@ -927,14 +802,10 @@ $(".btn-efetivo").click(function(){
     $("#divPE").removeClass("hidden");
 });
 
-<%if trocaConvenioID<>"" then%>
-    //$("#gConvenioID").val("<%=trocaConvenioID%>");
-    //tissCompletaDados("Convenio", $("#gConvenioID").val());
-<%end if%>
 
-    $("#gConvenioID, #UnidadeID").change(function(){
-		tissCompletaDados("Convenio", $("#gConvenioID").val());			
-    });
+$("#gConvenioID, #UnidadeID").change(function(){
+    tissCompletaDados("Convenio", $("#gConvenioID").val());			
+});
 
 
 
@@ -954,7 +825,7 @@ function AutorizarGuiaTisss()
 {
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=req("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
+		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data){
 			 Autorizador.autorizaProcedimentos();
@@ -969,7 +840,7 @@ function tissVerificarStatusGuia()
 {
 	$.ajax({
 		type:"POST",
-		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=req("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
+		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data){
 			Autorizador.verificarStatusGuia(2);
@@ -985,10 +856,10 @@ function imprimirGuiaConsulta(){
 
     $.ajax({
     		type:"POST",
-    		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=req("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
+    		url:"SaveGuia.asp?isRedirect=S&Tipo=Consulta&I=<%=request.QueryString("I")%>&GuiaStatus="+ $("#GuiaStatus").val(),
     		data:$("#GuiaConsulta").serialize(),
 			success: (suc) => {
-				guiaTISS('GuiaConsulta', <%=req("I")%> ,$("#gConvenioID").val());
+				guiaTISS('GuiaConsulta', <%=request.QueryString("I")%> ,$("#gConvenioID").val());
 			},
 			error: (err) => {
 				alert("Preencher todos os campos obrigatórios");
@@ -1026,37 +897,6 @@ function repasses(T, I){
         $("#modal").html(data);
     });
 }
-
-<%
-if getConfig("ExigirDuplaChecagemMatriculaConvenio") then
-%>
-$(document).ready(function() {
-    const $numeroCarteira = $("#NumeroCarteira");
-    const $numeroCarteiraContent = $("#NumeroCarteiraContent");
-    const $numeroCarteiraValidacao = $("#NumeroCarteiraValidacao");
-
-    $numeroCarteira.change(function() {
-        $numeroCarteira.attr("data-status", "INVALID");
-
-        $numeroCarteiraContent.fadeIn(function() {
-            $numeroCarteiraValidacao.val("").focus();
-        });
-    });
-    $numeroCarteiraValidacao.keyup(function() {
-        if($(this).val() === $("#NumeroCarteira").val()){
-            $numeroCarteira.attr("data-status", "VALID");
-            $numeroCarteiraContent.fadeOut();
-
-            showMessageDialog("Matricula validada com sucesso.", "success");
-        }
-    });
-
-     const $numeroCarteiraValidacaoJs = document.getElementById('NumeroCarteiraValidacao');
-     $numeroCarteiraValidacaoJs.onpaste = e => e.preventDefault();
-});
-<%
-end if
-%>
 
 <%
 if drCD<>"" then

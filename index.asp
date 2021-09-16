@@ -1956,7 +1956,7 @@ if session("Atendimentos")<>"" then
 				set pac = db.execute("select NomePaciente from pacientes where id="&PacienteID)
 				if not pac.eof then
 					contaAtendimentos = contaAtendimentos+1
-					strAtendimentos = strAtendimentos&"<a id=""agePac"&PacienteID&""" class=""btn btn-warning btn-xs btn-block"" href=""?P=Pacientes&Pers=1&I="&PacienteID&""">Voltar para: "&pac("NomePaciente")&"</a>"
+					strAtendimentos = strAtendimentos&"<a id=""agePac"&PacienteID&""" class=""btn btn-default btn-xs"" style='floar:right' href=""?P=Pacientes&Pers=1&I="&PacienteID&""">Voltar para: "&pac("NomePaciente")&"</a>"
 				end if
 			end if
 		end if

@@ -273,7 +273,7 @@ else
 		    if aut("guias")=1 or aut("faturas")=1 then
     %>
     <li class="<%=classMenu %>"><a href="#" class="dropdown-toggle menu-click-tiss" data-toggle="dropdown">
-        <%=abreSpanTitulo %> <i class="far fa-credit-card hidden"></i> <span class=""> TISS</span> <%= fechaSpanTitulo %>
+        <%=abreSpanTitulo %> <i class="far fa-credit-card hidden"></i> <span class=""> Faturamento</span> <%= fechaSpanTitulo %>
                                               </a>
         <ul class="dropdown-menu">
             <%

@@ -4,7 +4,7 @@
 
 <script type="text/javascript">
     $(".crumb-active a").html("Outras Configurações");
-    $(".crumb-icon a span").attr("class", "fa fa-cogs");
+    $(".crumb-icon a span").attr("class", "far fa-cogs");
 
 </script>
 
@@ -36,7 +36,7 @@ if session("Admin")=1 then
             <form method="post" action="">
                 <input type="hidden" name="E" value="E">
                 <div class="clearfix form-actions">
-                    <button class="btn btn-primary pull-right"><i class="fa fa-save"></i> SALVAR</button>
+                    <button class="btn btn-primary pull-right"><i class="far fa-save"></i> SALVAR</button>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -63,7 +63,7 @@ if session("Admin")=1 then
             <form method="post" action="">
             <input type="hidden" name="E" value="E">
             <div class="clearfix form-actions">
-                <button class="btn btn-primary pull-right"><i class="fa fa-save"></i> Salvar</button>
+                <button class="btn btn-primary pull-right"><i class="far fa-save"></i> Salvar</button>
             </div>
             <div class="row">
                 <div class="col-md-6">
@@ -81,7 +81,7 @@ if session("Admin")=1 then
                         Banco = replace(session("banco"), "clinic", "")
                         Banco = 5533356-ccur(Banco)
                         %>
-                        <a class="btn btn-default" href="https://components-legacy.feegow.com/index.php/agendamento-online/client/<%=Banco%>-AAAW" target="_blank"><i class="fa fa-external-link"></i> Iframe para agendamento online</a>
+                        <a class="btn btn-default" href="https://components-legacy.feegow.com/index.php/agendamento-online/client/<%=Banco%>-AAAW" target="_blank"><i class="far fa-external-link"></i> Iframe para agendamento online</a>
                     </div>
                 </div>
             </form>

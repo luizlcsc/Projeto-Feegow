@@ -46,10 +46,8 @@ session("FP"&FTipo) = FormID
 
 buiFormID = FormID
 
-if getConfig("GerarNovoFormulario")=1 then
     'config para DUPLICAR o form inves de editar
     buiFormID="N"
-end if
 %>
 <input type="hidden" name="FormID" id="FormID" value="<%=buiFormID%>" />
 <input type="hidden" name="ModeloID" id="ModeloID" value="<%=ModeloID%>" />
@@ -118,7 +116,7 @@ if FormID<>"N" then
 		end if
 		%>
         <script type="text/javascript">
-            $("#nomeProfissionalPreen").html("<i class='fa fa-user-md'></i> <%=NomeProfissional & DataHora%>")
+            $("#nomeProfissionalPreen").html("<i class='far fa-user-md'></i> <%=NomeProfissional & DataHora%>")
         </script>
 		<%
 	end if

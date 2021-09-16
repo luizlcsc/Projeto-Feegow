@@ -53,7 +53,7 @@ END IF
             .then(j => j.text())
             .then((json) => {
                 $.gritter.add({
-                    title: '<i class="fa fa-download"></i>',
+                    title: '<i class="far fa-download"></i>',
                     text:  'Formulario Importado',
                     class_name: 'gritter-success gritter-light'
                 });
@@ -87,7 +87,7 @@ END IF
                                             <td>{item.Tipo}</td>
                                             <td>
                                                 <button type="button" onClick={() => duplicarFunction(item)} className="btn btn-dark btn-sm">
-                                                    <i className="fa fa-copy"></i> Importar
+                                                    <i className="far fa-copy"></i> Importar
                                                 </button>
                                             </td>
                                         </tr>
@@ -104,7 +104,7 @@ END IF
     $(document).ready(function(){
         $(".crumb-active a").html("Formulários");
         $(".crumb-icon a").html("");
-        $(".crumb-icon a span").attr("class", "fa fa-bar-chart");
+        $(".crumb-icon a span").attr("class", "far fa-bar-chart");
     });
 </script>
 <style>
@@ -113,7 +113,7 @@ END IF
 <div style="padding: 20px;">
     <div id="root">
         <div style="font-size: 50px;text-align: center; padding: 40px">
-            <i class="fa fa-spin fa-circle-o-notch"></i>
+            <i class="far fa-spin fa-circle-o-notch"></i>
         </div>
     </div>
 </div>

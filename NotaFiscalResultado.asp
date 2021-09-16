@@ -282,7 +282,7 @@ if not NotasFiscaisSQL.eof then
         %>
         <tr class="linha-nf-<%=NotaFiscalID%> <%=classeLinha%> <%=classExecutado%> <%=classNotaAguardando%>" data-notainvoiceID="<%=notaInvoiceID%>" data-notaToken="<%=NotaFiscalToken%>" data-origemCNPJ="<%=origemCNPJ%>">
             <td>
-                <a href="?P=invoice&I=<%=NotasFiscaisSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" class="btn btn-link btn-xs" target="_blank"><i class="fa fa-external-link"></i></a>
+                <a href="?P=invoice&I=<%=NotasFiscaisSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" class="btn btn-link btn-xs" target="_blank"><i class="far fa-external-link"></i></a>
 
             </td>
             <td>
@@ -327,7 +327,7 @@ if not NotasFiscaisSQL.eof then
             </td>
             <td><%=dataReferencia%></td>
             <td><%=NotasFiscaisSQL("dataemissao")%></td>
-            <td><% if aut("|notafiscalX|")=1 then %> <button <% if not MostraCheckbox then %> disabled <% end if %> onclick="xNf('<%=NotasFiscaisSQL("id")%>')" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button> <% end if %></td>
+            <td><% if aut("|notafiscalX|")=1 then %> <button <% if not MostraCheckbox then %> disabled <% end if %> onclick="xNf('<%=NotasFiscaisSQL("id")%>')" class="btn btn-danger btn-xs"><i class="far fa-trash"></i></button> <% end if %></td>
         </tr>
         <%
         end if

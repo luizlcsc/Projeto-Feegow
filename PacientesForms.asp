@@ -3,8 +3,8 @@
     <div class="col-md-4">
 		<div class="btn-group">
             <button class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-plus"></i> Inserir Formul&aacute;rio
-                <span class="fa fa-caret-down icon-on-right"></span>
+                <i class="far fa-plus"></i> Inserir Formul&aacute;rio
+                <span class="far fa-caret-down icon-on-right"></span>
             </button>
             <ul class="dropdown-menu dropdown-info">
             <%
@@ -17,7 +17,7 @@
 			while not forms.eof
 				if autForm(forms("id"), "IN", "") then
 				%>
-                <li><a href="javascript:callForm(<%=req("PacienteID")%>, <%=forms("id")%>, 'N');"><i class="fa fa-plus"></i> <%=forms("Nome")%></a></li>
+                <li><a href="javascript:callForm(<%=req("PacienteID")%>, <%=forms("id")%>, 'N');"><i class="far fa-plus"></i> <%=forms("Nome")%></a></li>
 				<%
 				end if
 			forms.movenext
@@ -27,14 +27,14 @@
 			if aut("buiformsI") and session("Banco")<>"clinic522" then
 			%>
                 <li class="divider"></li>
-                <li><a href="./?P=buiforms&Pers=Follow"><i class="fa fa-cog"></i> Gerenciar modelos de formul&aacute;rios</a></li>
+                <li><a href="./?P=buiforms&Pers=Follow"><i class="far fa-cog"></i> Gerenciar modelos de formul&aacute;rios</a></li>
             <%
 			end if
 			%>
             </ul>
         </div>
         <button type="button" onclick="printForm();" class="btn btn-sm btn-info">
-            <i class="fa fa-print"></i> Imprimir
+            <i class="far fa-print"></i> Imprimir
 		</button>
 	</div>
 	<div class="col-md-8" id="HistoricoForms">
@@ -48,8 +48,8 @@
 </div>
 
 <div class="alert alert-block alert-info hidden">
-	<button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button> 
-    <a href="./?P=buiforms&Pers=Follow"><i class="fa fa-cog"></i> Configurar modelos de anamnese, evolu&ccedil;&otilde;es, laudos e formul&aacute;rios.</a>
+	<button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
+    <a href="./?P=buiforms&Pers=Follow"><i class="far fa-cog"></i> Configurar modelos de anamnese, evolu&ccedil;&otilde;es, laudos e formul&aacute;rios.</a>
 </div>
 
 <script language="javascript">

@@ -33,11 +33,11 @@
     $(".crumb-active a").html("Agenda de Cirurgias");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("");
-    $(".crumb-icon a span").attr("class", "fa fa-medkit");
+    $(".crumb-icon a span").attr("class", "far fa-medkit");
     <%
     if aut("agendaI")=1 then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" data-toggle="modal" href="./?P=AgendaCirurgica&Pers=1&I=N"><i class="fa fa-plus"></i><span class="menu-text"> Inserir</span></a>');
+    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" data-toggle="modal" href="./?P=AgendaCirurgica&Pers=1&I=N"><i class="far fa-plus"></i><span class="menu-text"> Inserir</span></a>');
     <%
     end if
     %>

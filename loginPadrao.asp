@@ -26,7 +26,7 @@ masterLoginErro = false
 <%
 
 if masterLogin then
-    sqlLogin = "SELECT u.*,l.ExibeChatAtendimento,l.ExibeFaturas, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, "&_
+    sqlLogin = "SELECT u.*,l.ExibeChatAtendimento,l.PorteClinica, l.ExibeFaturas, l.id LicencaID, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, "&_
     " l.Logo, l.`Status`, l.`UsuariosContratados`, l.`UsuariosContratadosNS`, l.ServidorAplicacao,l.PastaAplicacao, u.Home, l.ultimoBackup, l.Cupom, "&_
     "l.Servidor, "&_
     " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, "&_
@@ -62,7 +62,7 @@ else
         sqlHomologacao = " AND ( l.DominioHomologacao IS NULL OR l.DominioHomologacao='"&Dominio&"' ) "
     end if
 
-	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora,    "&_
+	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.PorteClinica, l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora,    "&_
 	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`,l.TipoCobranca, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,                 "&_
 	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, u.Tipo as tipoUsuario,                                                "&_
 	           "COALESCE(serv.DNS, l.Servidor) Servidor,                                                                                            "&_
@@ -261,7 +261,7 @@ if not tryLogin.EOF then
 
                             if($("#password").val() !== ""){
                                 $("#Deslogar").attr("style", "opacity: 0.5");
-                                $("#Deslogar").html("<i class='fa fa-circle-o-notch fa-spin'></i> Deslogando");
+                                $("#Deslogar").html("<i class='far fa-circle-o-notch fa-spin'></i> Deslogando");
                                 $.post('DeslogarUsuario.asp');
                                 $("#password").hide();
                                 $(".textoTituloInput").hide();
@@ -304,6 +304,7 @@ if not tryLogin.EOF then
         end if
 
         session("RazaoSocial") = RazaoSocial
+        session("PorteClinica") = tryLogin("PorteClinica")
 
 		if permiteMasterLogin then
 			session("MasterPwd") = "S"
@@ -642,15 +643,15 @@ else
 	If masterLoginErro Then
 	%>
     <div id="divError" class="step-pane active m10 pt10">
-        <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
-            <i class="fa fa-remove"></i>
+        <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
+            <i class="far fa-remove"></i>
             <strong>Senha expirada</strong>
         </div>
     </div>
     <% else %>
     <div id="divError" class="step-pane active m10 pt10">
-        <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
-            <i class="fa fa-remove"></i>
+        <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
+            <i class="far fa-remove"></i>
             <strong>E-mail de acesso ou senha não confere.</strong>
         </div>
     </div>

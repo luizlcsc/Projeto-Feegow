@@ -46,7 +46,7 @@ set reg = db.execute("select * from "& req("P") &" where id="&req("I"))
 $(document).ready(function(e) {
     //$('#Salvar').attr("onclick","salvartabela()")
     <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>
-            $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="fa fa-copy"></i> Replicar</button>`)
+            $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="far fa-copy"></i> Replicar</button>`)
             <% end if %>
 	        <%call formSave("frm", "save", "")%>
 });

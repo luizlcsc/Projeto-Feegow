@@ -104,7 +104,7 @@ while not unidade.eof
                     <tr class="<%= classeFat %>">
                         <th width="1%">
                             <a class="btn btn-<%= classeFat %> btn-xs" href="./?P=invoice&Pers=1&CD=C&I=<%= fat("InvoiceID") %>" target="_blank">
-                                <i class="fa fa-external-link"></i>
+                                <i class="far fa-external-link"></i>
                             </a>
                         </th>
                         <th width="10%" rowspan="20"><%= "Fatura "& DataFatura &" <br> "& sigla & fat("NumeroFatura") %></th>
@@ -312,7 +312,7 @@ while not unidade.eof
                         <%
                         if AvisoDataDivergente then
                         %> 
-                        <span class="badge badge-pill badge-warning"><i class="fa fa-info-circle"></i> Data do recebimento divergente </span>
+                        <span class="badge badge-pill badge-warning"><i class="far fa-info-circle"></i> Data do recebimento divergente </span>
                         <%
                         end if
                         %>
@@ -359,7 +359,7 @@ while not unidade.eof
         <table class="table">
             <thead>
                 <tr class="success">
-                    <th width="1%"><a class="btn-success btn-xs"><i class="fa fa-check-circle"></i></a></th>
+                    <th width="1%"><a class="btn-success btn-xs"><i class="far fa-check-circle"></i></a></th>
                     <th>Quantidade</th>
                     <th>Forma de pagamento</th>
                     <th>Valor</th>

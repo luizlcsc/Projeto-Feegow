@@ -29,21 +29,21 @@ if not getForm.eof then
 <body>
     <div class="panel-heading">
         <span class="panel-title">
-        <i class="fa fa-bar-chart"></i> <%=getForm("Nome") %>
+        <i class="far fa-bar-chart"></i> <%=getForm("Nome") %>
             <code id="nomeProfissionalPreen"></code>
         </span>
         <span class="panel-controls">
-            <button type="button" class="btn btn-alert btn-sm" onclick="showLog()"><i class="fa fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-alert btn-sm" onclick="showLog()"><i class="far fa-history"></i> Logs</button>
             <% if req("LaudoSC")="" then %>
-                <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="fa fa-print"></i> Imprimir</button>
+                <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
             <% end if %>
 
             <% if ExibeForm <> false then %>
-                <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="fa fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+                <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
             <% end if %>
 
             <% if req("LaudoSC")="" then %>
-                <button class="btn btn-default btn-sm" type="button" onclick="fechar()"><i class="fa fa-remove"></i> Fechar </button>
+                <button class="btn btn-default btn-sm" type="button" onclick="fechar()"><i class="far fa-remove"></i> Fechar </button>
             <% end if %>
         </span>
     </div>
@@ -81,15 +81,15 @@ if not getForm.eof then
 </div>
     <% if req("IFR")="" then %>
         <div class="panel-footer text-right">
-            <button type="button" class="btn btn-alert btn-sm " onclick="showLog()"><i class="fa fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-alert btn-sm " onclick="showLog()"><i class="far fa-history"></i> Logs</button>
 
-            <button type="button" class="btn btn-alert btn-sm hidden" onclick="window.open('<%=appUrl(False)%>/feegow_components/api/FormLogs?P=<%=req("p") %>')"><i class="fa fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-alert btn-sm hidden" onclick="window.open('<%=appUrl(False)%>/feegow_components/api/FormLogs?P=<%=req("p") %>')"><i class="far fa-history"></i> Logs</button>
             <% if req("LaudoSC")="" then %>
-                <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="fa fa-print"></i> Imprimir</button>
+                <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
             <% end if %>
             
             <% if ExibeForm <> false then %>
-                <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="fa fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+                <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
             <% end if %>
         </div>
     <% end if %>
@@ -149,10 +149,8 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
     }
 */
     <%
-    if getConfig("GerarNovoFormulario")=1 then
         'config para DUPLICAR o form inves de editar
         FormID="N"
-    end if
     %>
 
     var FormID = "<%=FormID%>";

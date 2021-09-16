@@ -99,7 +99,7 @@ else
             EspecialidadeID = 0
         end if
         if BloquearAlteracoes=0 and false then
-            db_execute("update profissionais set Conselho='"&ref("Conselho")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"' where id="&ref("gProfissionalID"))
+            db_execute("update profissionais set Conselho="&treatvalnull(ref("Conselho"))&", DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"' where id="&ref("gProfissionalID"))
 
             db_execute("update convenios set RegistroANS='"&ref("RegistroANS")&"' where id="&ref("gConvenioID"))
             set vcaConvenioContratado = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado="&ref("Contratado"))
@@ -158,8 +158,13 @@ else
         '//-> fim do atualiza os dados do paciente, profissional, convenio, contratado e procedimento
             if GuiaStatus <> "" then 
                 GuiaStatus = "guiastatus="&GuiaStatus&" , "
-            end if 
-            sql = "update tissguiaconsulta set "&GuiaStatus&"  UnidadeID='"&ref("UnidadeID")&"', PacienteID='"&ref("gPacienteID")&"', CNS='"&ref("CNS")&"', NumeroCarteira='"&ref("NumeroCarteira")&"', ValidadeCarteira="&ValidadeCarteira&", AtendimentoRN='"&ref("AtendimentoRN")&"', ConvenioID='"&ref("gConvenioID")&"', PlanoID='"&ref("PlanoID")&"', RegistroANS='"&ref("RegistroANS")&"', NGuiaPrestador='"&NGuiaPrestador&"', NGuiaOperadora='"&ref("NGuiaOperadora")&"', Contratado='"&ref("Contratado")&"', CodigoNaOperadora='"&ref("CodigoNaOperadora")&"', CodigoCNES='"&ref("CodigoCNES")&"', ProfissionalID='"&ref("gProfissionalID")&"', Conselho='"&ref("Conselho")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', CodigoCBO='"&ref("CodigoCBO")&"', IndicacaoAcidenteID='"&ref("IndicacaoAcidenteID")&"', DataAtendimento='"&mydate(ref("DataAtendimento"))&"', TipoConsultaID='"&ref("TipoConsultaID")&"', ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', ValorProcedimento='"&treatval(ref("ValorProcedimento"))&"', Observacoes='"&ref("Observacoes")&"', sysActive=1, AtendimentoID="&treatvalzero(ref("AtendimentoID"))&", AgendamentoID="&treatvalzero(ref("AgendamentoID"))&", ProfissionalEfetivoID="&treatvalnull(ref("ProfissionalEfetivoID"))&", identificadorBeneficiario='"&ref("IdentificadorBeneficiario")&"' where id="&I
+            end if
+            if ref("GuiaSimplificada") = 1 then
+                GuiaSimplificada = 1
+            else
+                GuiaSimplificada = 0
+            end if
+            sql = "update tissguiaconsulta set "&GuiaStatus&"  UnidadeID='"&ref("UnidadeID")&"', PacienteID='"&ref("gPacienteID")&"', CNS='"&ref("CNS")&"', NumeroCarteira='"&ref("NumeroCarteira")&"', ValidadeCarteira="&ValidadeCarteira&", AtendimentoRN='"&ref("AtendimentoRN")&"', ConvenioID='"&ref("gConvenioID")&"', PlanoID='"&ref("PlanoID")&"', RegistroANS='"&ref("RegistroANS")&"', NGuiaPrestador='"&NGuiaPrestador&"', NGuiaOperadora='"&ref("NGuiaOperadora")&"', Contratado='"&ref("Contratado")&"', CodigoNaOperadora='"&ref("CodigoNaOperadora")&"', CodigoCNES='"&ref("CodigoCNES")&"', ProfissionalID='"&ref("gProfissionalID")&"', Conselho="&treatvalnull(ref("Conselho"))&", DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', CodigoCBO='"&ref("CodigoCBO")&"', IndicacaoAcidenteID='"&ref("IndicacaoAcidenteID")&"', DataAtendimento='"&mydate(ref("DataAtendimento"))&"', TipoConsultaID='"&ref("TipoConsultaID")&"', ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', ValorProcedimento='"&treatval(ref("ValorProcedimento"))&"', Observacoes='"&ref("Observacoes")&"', sysActive=1, AtendimentoID="&treatvalzero(ref("AtendimentoID"))&", AgendamentoID="&treatvalzero(ref("AgendamentoID"))&", ProfissionalEfetivoID="&treatvalnull(ref("ProfissionalEfetivoID"))&", identificadorBeneficiario='"&ref("IdentificadorBeneficiario")&"', GuiaSimplificada='"&GuiaSimplificada&"' where id="&I
 
             call gravaLogs(sql ,"AUTO", "Guia alterada manualmente","")
             db_execute(sql)
@@ -236,7 +241,7 @@ else
                 confirm: true,
                 buttons: [{
                     text: 'Utilizar o número <%=GuiaDisponivel%>',
-                    icon: 'fa fa-exclamation-circle',
+                    icon: 'far fa-exclamation-circle',
                     addClass: 'btn-primary',
                     click: function(notice) {
                         $("#NGuiaPrestador").val("<%=GuiaDisponivel%>");

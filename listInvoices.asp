@@ -81,7 +81,7 @@ end if
             <%=quickField("datepicker", "DateTo", "At&eacute;", 2, session("DateTo"), " input-sm", "", " required")%>
             <div class="col-md-2"><label>&nbsp;</label><br />
                 <button class="btn btn-sm btn-primary btn-block" id="Filtrate" name="Filtrate" type="button">
-                    <i class="fa fa-search bigger-110"></i>
+                    <i class="far fa-search bigger-110"></i>
                     Filtrar
                 </button>
             </div>
@@ -108,9 +108,9 @@ end if
 
     </div>
     <div class="col-xs-2 hidden-xs">
-		<button class="btn btn-info btn-xs btn-block" type="button" onclick="print();"><i class="fa fa-print"></i> Imprimir</button>
+		<button class="btn btn-info btn-xs btn-block" type="button" onclick="print();"><i class="far fa-print"></i> Imprimir</button>
 		<div class="btn-group btn-block">
-        <button class="btn btn-xs btn-success dropdown-toggle btn-block" data-toggle="dropdown">Adicionar <i class="fa fa-angle-down icon-on-right"></i></button>
+        <button class="btn btn-xs btn-success dropdown-toggle btn-block" data-toggle="dropdown">Adicionar <i class="far fa-angle-down icon-on-right"></i></button>
         <ul class="dropdown-menu">
           <%
           if aut("contasapagarI")=1 then
@@ -326,13 +326,13 @@ end if
 				<td nowrap="nowrap">
 					<div class="action-buttons">
 						<%= linkBill %>
-							<i class="fa fa-edit green bigger-130"></i>
+							<i class="far fa-edit green bigger-130"></i>
 						<%= endlinkBill %>
 						<a class="blue" onclick="modalPaymentDetails(<%=getMovement("id")%>);" data-toggle="modal" role="button" href="#modal-table">
-							<i class="fa fa-search-plus bigger-130"></i>
+							<i class="far fa-search-plus bigger-130"></i>
 						</a>
 						<a class="red" onclick="if(confirm('Tem certeza de que deseja excluir?'))getStatement('<%=ref("AccountID")%>', '', '', '<%= getMovement("id") %>');" role="button" href="#">
-							<i class="fa fa-trash bigger-130"></i>
+							<i class="far fa-trash bigger-130"></i>
 						</a>
 					</div>
 				</td>

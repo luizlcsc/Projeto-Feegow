@@ -99,7 +99,7 @@ if not playlistsSQL.eof then
     if IsNull(vt_logs_id) then
       classCheck = ""
     else
-      classCheck = "<i class='fa fa-check-circle text-success'></i>"
+      classCheck = "<i class='far fa-check-circle text-success'></i>"
     end if
 
     videoURL = "https://www.youtube.com/embed/"&vt_servidores_url&"?rel=0&amp;showinfo=1&amp;autoplay=0&amp;enablejsapi=1&amp;widgetid=2"

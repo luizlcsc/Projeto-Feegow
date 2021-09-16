@@ -83,7 +83,7 @@ if session("Banco")="clinic105" then
                                         opinioes = opinioes+1
 
                                         if usus("Admin")=1 then
-                                            exclamacao = "<span class='fa fa-exclamation-circle'></span>"
+                                            exclamacao = "<span class='far fa-exclamation-circle'></span>"
                                         else
                                             exclamacao = ""
                                         end if

@@ -137,7 +137,7 @@ end if
                                     set parcs = db.execute("select * from sys_financialcreditcardtransaction where MovementID="& valPago("id"))
                                     titulo = "Individualizar parcelas ("& parcs("Parcelas") &")"
                                 end if
-                                descrPagtos = descrPagtos & "<button type='button' title='"&titulo&"' class='btn btn-xs' onclick='alert(""database error"")'><i class='fa fa-chain-broken'></i></button>"
+                                descrPagtos = descrPagtos & "<button type='button' title='"&titulo&"' class='btn btn-xs' onclick='alert(""database error"")'><i class='far fa-chain-broken'></i></button>"
                             end if
                         valPago.movenext
                         wend
@@ -149,7 +149,7 @@ end if
 		            <tr>
         	            <td nowrap>
                             <a title="Valor recebido: R$ <%= fn(valorPago) %>" href="./?P=invoice&I=<%=reps("InvoiceID") %>&Pers=1&T=C" target="_blank" class="btn btn-xs btn-<%=classPago %>">
-                                <i class="fa fa-money"></i>
+                                <i class="far fa-money"></i>
                             </a>
                             <%=descrPagtos %>
         	            </td>
@@ -168,7 +168,7 @@ end if
                         <td class="text-right" nowrap="nowrap"><input class="form-control text-right" type="text" value="<%=formatnumber(Subtotal,2)%>" /></td>
                         <td>
                         <%if reps("ItemContaAPagar")=0 or isnull(reps("ItemContaAPagar")) then%>
-	                        <button type="button" class="btn btn-xs btn-danger" onClick="x(<%=reps("idrateio")%>);"><i class="fa fa-remove"></i></button>
+	                        <button type="button" class="btn btn-xs btn-danger" onClick="x(<%=reps("idrateio")%>);"><i class="far fa-remove"></i></button>
                         <%end if%>
                         </td>
                     </tr>
@@ -198,7 +198,7 @@ end if
 		            end if
 		            %>
 		            <tr>
-        	            <td><a href="./?P=tissguiasadt&Pers=1&I=<%=repsConv("GuiaID") %>" class="btn btn-xs btn-default" target="_blank"><i class="fa fa-credit-card"></i></a></td>
+        	            <td><a href="./?P=tissguiasadt&Pers=1&I=<%=repsConv("GuiaID") %>" class="btn btn-xs btn-default" target="_blank"><i class="far fa-credit-card"></i></a></td>
         	            <td>
                         <%if repsConv("ItemContaAPagar")=0 or isnull(repsConv("ItemContaAPagar")) then%>
 	                        <label><input type="checkbox" class="ace repasse" id="<%=repsConv("idrateio")%>" name="Repasses" value="<%=repsConv("idrateio")&"|"&Subtotal%>" /><span class="lbl"></span></label>
@@ -214,7 +214,7 @@ end if
                         <td class="text-right" nowrap="nowrap">R$ <%=formatnumber(Subtotal,2)%></td>
                         <td>
                         <%if repsConv("ItemContaAPagar")=0 or isnull(repsConv("ItemContaAPagar")) then%>
-	                        <button type="button" class="btn btn-xs btn-danger" onClick="x(<%=repsConv("idrateio")%>);"><i class="fa fa-remove"></i></button>
+	                        <button type="button" class="btn btn-xs btn-danger" onClick="x(<%=repsConv("idrateio")%>);"><i class="far fa-remove"></i></button>
                         <%end if%>
                         </td>
                     </tr>

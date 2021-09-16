@@ -30,8 +30,8 @@
     <td><%=quickField("text", "Desconto"&id, "", 4, formatnumber(Desconto,2), " input-mask-brl text-right disable", "", " onkeyup=""recalc($(this).attr('id'))""")%></td>
     <td><%=quickField("text", "Acrescimo"&id, "", 4, formatnumber(Acrescimo,2), " input-mask-brl text-right disable", "", " onkeyup=""recalc($(this).attr('id'))""")%></td>
     <td class="text-right" id="sub<%=id%>" nowrap>R$ <%= formatnumber( Subtotal ,2) %></td>
-    <td><button type="button" class="btn btn-xs btn-info" onClick="executado(<%=id%>, 1)"><i class="fa fa-search-plus"></i></button></td>
-    <td><button type="button" class="btn btn-xs btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button></td>
+    <td><button type="button" class="btn btn-xs btn-info" onClick="executado(<%=id%>, 1)"><i class="far fa-search-plus"></i></button></td>
+    <td><button type="button" class="btn btn-xs btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="far fa-remove"></i></button></td>
 </tr>
 <script>
 <!--#include file="jqueryfunctions.asp"-->

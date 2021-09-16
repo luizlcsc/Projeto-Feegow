@@ -3,7 +3,7 @@
 
 <script type="text/javascript">
     $(".crumb-active a").html("Regerar Repasses");
-    $(".crumb-icon a span").attr("class", "fa fa-calculator");
+    $(".crumb-icon a span").attr("class", "far fa-calculator");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("recalcular repasses gerados");
 </script>
@@ -34,13 +34,13 @@
                   <%= quickField("datepicker", "Ate", "&nbsp;", 2, Ate, "", "", " placeholder='At&eacute;' required='required'") %>
                   <div class="col-md-2">
                       <label>&nbsp;</label><br />
-                      <button class="btn btn-danger btn-block"><i class="fa fa-calculator"></i>Regerar</button>
+                      <button class="btn btn-danger btn-block"><i class="far fa-calculator"></i>Regerar</button>
                   </div>
                   <div class="col-md-12">
                       <br>
                       <div class="alert alert-danger no-margin text-center">
                           <strong>
-                              <i class="fa fa-exclamation-triangle"></i> ATENÇÃO: </strong> Esta função irá recalcular todos os repasses de itens executados baseada nos cálculos vigentes das regras de repasse.
+                              <i class="far fa-exclamation-triangle"></i> ATENÇÃO: </strong> Esta função irá recalcular todos os repasses de itens executados baseada nos cálculos vigentes das regras de repasse.
                     
                       </div>
                   </div>

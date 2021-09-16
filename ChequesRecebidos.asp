@@ -2,7 +2,7 @@
 <!--#include file="modal.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Cheques Recebidos");
-    $(".crumb-icon a span").attr("class", "fa fa-list-alt");
+    $(".crumb-icon a span").attr("class", "far fa-list-alt");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("administração cheques recebidos");
 </script>
@@ -25,10 +25,10 @@
                     <%=quickField("empresaMultiIgnore", "Unidades", "Unidades", 2, req("Unidades"), "", "", "")%>
                     <div class="col-md-1">
                         <label>&nbsp;</label><br />
-                        <button class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                        <button class="btn btn-primary"><i class="far fa-search"></i> Buscar</button>
                     </div>
                     <div class="col-md-1">
-                        <button class="btn btn-info mt25" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i> Imprimir</button>
+                        <button class="btn btn-info mt25" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i> Imprimir</button>
                     </div>
                 </div>
                 <br />
@@ -41,7 +41,7 @@
                     <%=quickField("datepicker", "CompensadoAte", "&nbsp;", 2, req("CompensadoAte"), "", "", " placeholder='At&eacute;'")%>
                     <div class="col-md-2">
                         <label>&nbsp;</label><br />
-                        <button class="btn btn-success btnTransferirLote" style="display: none;" type="button"><i class="fa fa-arrow-right"></i> Transferir lote </button>
+                        <button class="btn btn-success btnTransferirLote" style="display: none;" type="button"><i class="far fa-arrow-right"></i> Transferir lote </button>
                     </div>
                 </div>
             </div>
@@ -165,10 +165,10 @@
                                 <td class="text-right"><%= cheque("BorderoID") %></td>
                                 <td class="text-right"><%if not isnull(cheque("Valor")) then%><%= formatnumber(cheque("Valor"),2) %><%end if%></td>
                                 <td>
-                                    <button type="button" class="btn btn-xs btn-primary" onclick="editCheck(<%= cheque("id") %>)"><i class="fa fa-edit"></i></button>
+                                    <button type="button" class="btn btn-xs btn-primary" onclick="editCheck(<%= cheque("id") %>)"><i class="far fa-edit"></i></button>
                                 </td>
                                 <td>
-                                    <button type="button" class="hidden btn btn-xs btn-danger" onclick="removeCheck(<%= cheque("id") %>)"><i class="fa fa-remove"></i></button>
+                                    <button type="button" class="hidden btn btn-xs btn-danger" onclick="removeCheck(<%= cheque("id") %>)"><i class="far fa-remove"></i></button>
                                 </td>
                             </tr>
                             <%

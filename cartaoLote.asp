@@ -22,7 +22,7 @@ next
 <%=quickfield("datepicker", "DataCredito", "Data do crédito", 2, date(), " text-right", "", "") %>
 <div class="col-md-1">
     <label>&nbsp;</label><br />
-    <button type="button" class="btn btn-md btn-success"><i class="fa fa-check"></i> Baixar</button>
+    <button type="button" class="btn btn-md btn-success"><i class="far fa-check"></i> Baixar</button>
 </div>
 <div class="col-md-4" id="lalala">
 

@@ -19,9 +19,9 @@
 							<th nowrap width="8%">Parcela</th>
 							<th nowrap>Bandeira</th>
 							<th nowrap width="10%">Valor compra</th>
-							<th nowrap width="10%">Taxa % <i class="fa fa-info-circle" style="margin-left: 10px;" data-toggle="tooltip" data-placement="bottom" title="Taxa vigente na taxa na data da compra"></i></th>
+							<th nowrap width="10%">Taxa %</th>
 							<th nowrap width="10%">Valor créd.</th>
-							<th nowrap width="140">Data créd.</th>
+							<th nowrap width="200">Data créd.</th>
 							<th nowrap width="1%">Status</th>
 						</tr>
 					</thead>
@@ -29,18 +29,23 @@
 					<%
 					if ref("Baixados")="S" then
 						sqlBaixados = " AND p.InvoiceReceiptID<>0 "
-                        sqlData = " AND movinstal.Date>="&mydatenull(ref("De"))&" AND movinstal.Date<="&mydatenull(ref("Ate"))
+						sqlData = " AND movinstal.Date>="&mydatenull(ref("De"))&" AND movinstal.Date<="&mydatenull(ref("Ate"))
 					end if
+
 					if ref("Pendentes")="S" then
 						sqlBaixados = " AND p.InvoiceReceiptID=0 "
 						sqlData = " AND p.DateToReceive>="&mydatenull(ref("De"))&" AND p.DateToReceive<="&mydatenull(ref("Ate"))
 					end if
+
 					if ref("Baixados")="S" and ref("Pendentes")="S" then
 						sqlBaixados = ""
-                        sqlData = " AND ((p.DateToReceive>="&mydatenull(ref("De"))&" AND p.DateToReceive<="&mydatenull(ref("Ate"))&")"&_
-						" OR  (movinstal.Date>="&mydatenull(ref("De"))&" AND movinstal.Date<="&mydatenull(ref("Ate"))&") )"
+						sqlData = " AND IF(InvoiceReceiptID<>0, movinstal.Date>="&mydatenull(ref("De"))&" AND movinstal.Date<="&mydatenull(ref("Ate"))&" AND InvoiceReceiptID<>0, p.DateToReceive>="&mydatenull(ref("De"))&" AND p.DateToReceive<="&mydatenull(ref("Ate"))&" AND InvoiceReceiptID=0) "
 					end if
-					
+
+					if ref("dataBusca") = "Date" then
+						sqlData = " AND m.Date>="&mydatenull(ref("De"))&" AND m.Date<="&mydatenull(ref("Ate"))
+					end if
+
 					ValorFinalTaxado = 0
 					ValorLiquidoFinal=0
 
@@ -94,11 +99,9 @@
 						sqlLimit = "LIMIT "&((PaginaAtual-1)*Limite)&","&Limite
 					end if
 
-					
-
-                    sql = "select * from (select pac.NomePaciente, pac.id Prontuario, p.id, p.DateToReceive, p.Fee,p.Value,p.TransactionID,p.InvoiceReceiptID, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.id movId, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
-                          					" (select parcela from sys_financialcreditcardreceiptinstallments sf where sf.TransactionID = p.TransactionID and sf.DateToReceive <= p.DateToReceive order by id desc limit 1) Parcela, "&_
-                          					"(select count(id) from sys_financialcreditcardreceiptinstallments where TransactionID=p.TransactionID) NumeroParcelas "&queryBlock&" from sys_financialcreditcardreceiptinstallments p  "&_
+                    sql = "select * from (select pac.NomePaciente,reci.UnidadeID, pac.id Prontuario, p.id,p.Value,p.TransactionID,p.DateToReceive,p.InvoiceReceiptID,p.Fee,p.DHUp, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
+                          					"  Parcela, "&_
+                          					" Parcelas NumeroParcelas "&queryBlock&" from sys_financialcreditcardreceiptinstallments p  "&_
                           					"INNER JOIN sys_financialcreditcardtransaction t on t.id=p.TransactionID  "&_
                           					"INNER JOIN sys_financialmovement m on m.id=t.MovementID "&_
                           					"INNER JOIN pacientes pac on pac.id=m.AccountIDCredit "&_
@@ -139,37 +142,30 @@
 					lastTransactionID = 0
 
 					while not rec.eof
-					response.flush()
-						'queryTaxa = ""
-						'queryTaxa = getTaxaAtual(rec("AccountIDDebit"),rec("movId"),rec("NumeroParcelas"))
-						'set RetornoTaxaAtual2 = db.execute(queryTaxa)
-						'taxaAtual= ""
-						'taxaAtual = RetornoTaxaAtual2("taxaAtual")
-						'RetornoTaxaAtual2 = ""
+                        response.flush()
 						if not isnull(rec("Value")) and not isnull(rec("Total")) and not isnull(rec("NomePaciente")) then
-						    Fee = rec("Fee")
+						    Fee = rec("taxa_atualmente")
 						    if isnull(Fee) then
 						        Fee=0
 						    end if
+
 							Taxa = ccur(Fee) / 100
 							Taxa = Taxa * rec("Value")
                             ValorCheio = rec("Value")
 							ValorCredito = ccur(rec("Value")) - Taxa
-							set diasParaCreditosql = db.execute("select DaysForCredit from sys_financialCurrentAccounts where id = "&rec("AccountIDDebit"))
+							Parcela = rec("Parcela")
+
+							set diasParaCreditosql = db_execute("select DaysForCredit from sys_financialCurrentAccounts where id = "&rec("AccountIDDebit"))
 							diasParaCredito = 30
-							if diasParaCreditosql.eof then
+							if not diasParaCreditosql.eof and IsNumeric(diasParaCreditosql("DaysForCredit")&"") then
 								diasParaCredito = cint(diasParaCreditosql("DaysForCredit")&"")
 							end if
+
 							if lastTransactionID <> rec("TransactionID") then
 								lastTransactionID = rec("TransactionID")
-								parcela = 0
-							end if
-							parcela = rec("parcela")&""
 
-							if parcela = "" then
-								Parcela = parcela+1
-							end if
-							
+							end if 
+
 							Parcelas = rec("NumeroParcelas")
 							Bandeira = rec("Bandeira")&""														
 
@@ -179,8 +175,7 @@
 							end if
 
                             if rec("InvoiceReceiptID")<>0 and not isnull(rec("InvoiceReceiptID")) then
-                                set pmov = db.execute("select Value,Date from sys_financialmovement m where id="&rec("InvoiceReceiptID"))
-
+                                set pmov = db_execute("select Value,Date from sys_financialmovement m where id="&rec("InvoiceReceiptID"))
                                 if pmov.eof then
                                     classe = "danger"
                                     ValorRecebido = 0
@@ -190,12 +185,17 @@
                                     ValorRecebido = pmov("Value")
                                     Data = pmov("Date")
                                 end if
-								if rec("Value")<>0 then
-									fator = 100 / rec("Value")
-									Taxa = fator * fee
-								else
-									Taxa = 0
-								end if
+                                set pTaxa = db_execute("select value Taxa from sys_financialmovement where MovementAssociatedID="&rec("InvoiceReceiptID")&" LIMIT 1")
+                                if pTaxa.eof then
+                                    Taxa = 0
+                                else
+                                    if rec("Value")<>0 then
+                                    fator = 100 / rec("Value")
+                                    Taxa = fator * pTaxa("Taxa")
+                                    else
+                                        Taxa = 0
+                                    end if
+                                end if
                                 ValorFinalTaxado = ValorFinalTaxado + (rec("Value") - ValorRecebido)
                                 ValorLiquidoFinal = ValorLiquidoFinal + rec("Value")
 								
@@ -215,26 +215,39 @@
                                       R$ <%= fn(rec("Total")) %>
                                       <input type="hidden" id="parc<%=rec("id") %>" value="<%=fn(rec("Value")) %>" />
 							        </td>
-							        <td class="text-right"><%= fn(fee)%>%</td>
+							        <td class="text-right"><%= fn(Taxa)%>%</td>
                                     <td class="text-right"><%=fn(ValorRecebido) %></td>
                                     <td class="text-center"><%=Data %></td>
                                     <td>
-                                        <button id="btn<%=rec("id")%>" class="btn btn-sm btn-default btn-block" type="button" onClick="baixa(<%=rec("id")%>, 'C', <%=Parcela%>, <%=Parcelas%>);">Baixado <i class="fa fa-trash red"></i></button>
+                                        <button id="btn<%=rec("id")%>" class="btn btn-sm btn-default btn-block" type="button" onClick="baixa(<%=rec("id")%>, 'C', <%=Parcela%>, <%=Parcelas%>);">Baixado <i class="far fa-trash red"></i></button>
                                     </td>
                                 </tr>
                                 <%
                             else
                                 ValorFinalTaxado = ValorFinalTaxado + (rec("Value") - ValorCredito)
                                 ValorLiquidoFinal = ValorLiquidoFinal + ValorCredito
+
 								countQtd = countQtd+1
 
-								data = rec("DateToReceive")&""
+								'data = rec("DateToReceive")
+								dataPagamento = rec("Date")
+								dataPagamento = dateadd("d", diasParaCredito*Parcela, dataPagamento)
+								data = dataPagamento
+								if weekday(data)=7 then
+									data = data+2
+								elseif weekday(data)=1 then
+									data = data+1
+								end if
 
+								'if Parcela > 1 then
+									'dias = diasParaCredito * Parcela
+									'data = dateadd("d",dias,data)
+								'end if
 
     							%>
-							    <tr>
+							    <tr class="lista-tr">
                                    <td>
-                                       <input type="checkbox" name="parcCC" value="<%=rec("id") %>" class="chk" />
+                                       <input type="checkbox" name="parcCC" value="<%=rec("id") %>" parcela="<%=Parcela%>" parcelas="<%=Parcelas%>" class="chk" />
                                    </td>
 							      <td nowrap>
 								   
@@ -252,15 +265,15 @@
                                       R$ <%= fn(rec("Total")) %>
                                       <input type="hidden" id="parc<%=rec("id") %>" value="<%=fn(rec("Value")) %>" />
 							      </td>
-							      <td><%= quickField("text", "Fee"&rec("id"), "", 2, fn(rec("Fee")), "input-mask-brl text-right", "", " data-id='"&rec("id")&"' ") %></td>
+							      <td><%= quickField("text", "Fee"&rec("id"), "", 2, fn(rec("taxa_atualmente")), "input-mask-brl text-right", "", " data-id='"&rec("id")&"' ") %></td>
 							      <td>
 							  	    <%= quickField("text", "ValorCredito"&rec("id"), "", 2, fn(ValorCredito), "input-mask-brl text-right", "", " data-id='"&rec("id")&"' ") %>
                                     <input type="hidden" id="Taxa<%=rec("id")%>" name="Taxa<%=rec("id")%>" value="<%=Taxa%>">
                                     <input type="hidden" name="ValorCheio<%=rec("id") %>" value="<%=ValorCheio %>" />
                                   </td>
-							      <td><%= quickField("datepicker", "DateToReceive"&rec("id"), "", 1, data, "", "", "") %></td>
+							      <td><%= quickField("datepicker", "DateToReceive"& rec("id"), "", 1, data, "", "", "") %></td>
 							      <td>
-                              	    <button id="btn<%=rec("id")%>" class="btn btn-xs btn-success" type="button" onClick="baixa(<%=rec("id")%>, 'B', <%=Parcela%>, <%=Parcelas%>);"><i class="fa fa-check"></i> Baixar</button>
+                              	    <button id="btn<%=rec("id")%>" class="btn btn-xs btn-success" type="button" onClick="baixa(<%=rec("id")%>, 'B', <%=Parcela%>, <%=Parcelas%>);"><i class="far fa-check"></i> Baixar</button>
 								    </td>
 						      </tr>
 						    <%
@@ -274,7 +287,12 @@
                     <tr>
                         <th colspan="7"><%=countQtd%> registro(s)</th>
                         <th colspan="2">Total de taxa: <span style="color: red;">R$<%=fn(ValorFinalTaxado)%></span></th>
-                        <th colspan="6">Valor liquido: <span style="color: green;">R$<%=fn(ValorLiquidoFinal)%></span></th>
+                        <% if ref("Pendentes")="S" then %>
+                            <th colspan="6">Valor Bruto: <span style="color: green;">R$<%=fn(ValorLiquidoFinal)%></span></th>
+                        <% else %>
+                            <th colspan="3">Valor Bruto: <span style="color: green;">R$<%=fn(ValorLiquidoFinal)%></span></th>
+                            <th colspan="3">Valor Recebido: <span style="color: green;">R$<%=fn(ValorLiquidoFinal-ValorFinalTaxado)%></span></th>
+                        <% end if %>
                     </tr>
 					</tbody>
 				</table>
@@ -306,6 +324,9 @@
 		<%
 		end if
 		%>
+		<div id="divCartaoLote">
+		    <div class="panel-body"></div>
+        </div>
         <%else%>
         <center><em>Busque acima o perfil dos recebimentos que deseja administrar.</em></center>
         <%End if%>

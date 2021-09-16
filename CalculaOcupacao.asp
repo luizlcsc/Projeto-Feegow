@@ -191,17 +191,17 @@ set Horarios=nothing
 				Conteudo = Conteudo & """ data-id="""&comps("id")&""">"&_
 				"<td width=""1%"" "& linkAg &">"
 				if not isnull(comps("Resposta")) then
-					Conteudo = Conteudo & "<i class=""fa fa-envelope pink""></i> "
+					Conteudo = Conteudo & "<i class=""far fa-envelope pink""></i> "
 				end if
 				if comps("Primeira")=1 then
-                    Conteudo = Conteudo & "<i class=""fa fa-flag blue"" title=""Primeira vez""></i>"
+                    Conteudo = Conteudo & "<i class=""far fa-flag blue"" title=""Primeira vez""></i>"
                 end if
 				if comps("LocalID")<>LocalID then
-					Conteudo = Conteudo & "<i class=""fa fa-exclamation-triangle grey"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
+					Conteudo = Conteudo & "<i class=""far fa-exclamation-triangle grey"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
 				end if
 				Conteudo = Conteudo & "</td><td width=""1%"" nowrap><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"" "& linkAg &">"&compsHora&"</button>"
                 if session("Banco")="clinic4134" then
-                    Conteudo = Conteudo & "<button type=""button"" onclick=""abreAgenda(\'"&HoraComp&"\', 0, \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')"" class=""btn btn-xs btn-system ml5""><i class=""fa fa-plus""></i></button>"
+                    Conteudo = Conteudo & "<button type=""button"" onclick=""abreAgenda(\'"&HoraComp&"\', 0, \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')"" class=""btn btn-xs btn-system ml5""><i class=""far fa-plus""></i></button>"
                 end if
                 Conteudo = Conteudo & "</td>"&_
 				"<td nowrap "& linkAg &"><img src=""assets/img/"&comps("StaID")&".png""> "
@@ -317,7 +317,7 @@ set Horarios=nothing
 					{
 						$(this).removeClass("btn-default");
 						$(this).addClass("btn-danger");
-						$(this).html( $(this).html() + ' <i class="fa fa-lock"></i>' );
+						$(this).html( $(this).html() + ' <i class="far fa-lock"></i>' );
 					}
 				});
 				<%

@@ -131,11 +131,11 @@ if SplitNF=1 then
     <%
     if ReciboID=0 and ValorRepassado > 0 then
         %>
-        <button <%=DisabledEmitir%> type="button" onclick="EmitirRecibo('<%=ContaCredito%>', '<%=ValorRepassado%>', '<%=InvoiceID%>', '<%=Procedimentos%>', '<%=RepasseIDS%>'); $(this).attr('disabled', true)" class=" btn btn-<%=CorBtn%> btn-xs"><i class="fa fa-print"></i> Emitir Recibo</button>
+        <button <%=DisabledEmitir%> type="button" onclick="EmitirRecibo('<%=ContaCredito%>', '<%=ValorRepassado%>', '<%=InvoiceID%>', '<%=Procedimentos%>', '<%=RepasseIDS%>'); $(this).attr('disabled', true)" class=" btn btn-<%=CorBtn%> btn-xs"><i class="far fa-print"></i> Emitir Recibo</button>
         <%
     elseif ReciboID <> 0 then
         %>
-        <span class="label label-success"><i class="fa fa-check"></i> Recibo Emitido</span>
+        <span class="label label-success"><i class="far fa-check"></i> Recibo Emitido</span>
         <%
     end if
     %>
@@ -172,7 +172,7 @@ end if
 set recibosGerados = db.execute("SELECT * FROM recibos WHERE sysActive=1 AND InvoiceID="&InvoiceID)
 if not recibosGerados.eof then
     desabilitarReemitirRecibo = " disabled "
-    textButtom = "Gerar novamente o recibo"
+    textButtom = "Gerar novo recibo"
     classButtom = "warning"
     if aut("recibosA") = 1 or session("Admin") = 1 then
         desabilitarReemitirRecibo = " "
@@ -189,7 +189,7 @@ end if
 <h4>Recibos emitidos</h4>
 </div>
 <div class="col-md-2 col-md-offset-7 mt25">
-<button type='button' class='btn btn-<%=classButtom%> <%=desabilitarReemitirRecibo%> btn-sm' <%=desabilita%> onClick='imprimirReciboInvoice()'><i class='fa fa-plus'></i> <%=textButtom%></button>
+<button type='button' class='btn btn-<%=classButtom%> <%=desabilitarReemitirRecibo%> btn-sm' <%=desabilita%> onClick='imprimirReciboInvoice()'><i class='far fa-plus'></i> <%=textButtom%></button>
 </div>
 
 
@@ -211,7 +211,7 @@ end if
                     <th>CPF</th>
                     <th>Imprimir</th>
                     <th>NFS-e</th>
-                    <th><i class="fa fa-trash"></i></th>
+                    <th><i class="far fa-trash"></i></th>
                 </tr>
             </thead>
             <tbody>
@@ -278,7 +278,7 @@ end if
                     <td><%=conts("Sequencial")&""%></td>
                     <td><%=conts("cpf") %></td>
                     <td>
-                        <button class="btn btn-xs btn-<%=stacor%> " <%=disabled%> onclick="imprimeRecibo('<%=conts("id")%>')" type="button"><i class="fa fa-print"></i></button>
+                        <button class="btn btn-xs btn-<%=stacor%> " <%=disabled%> onclick="imprimeRecibo('<%=conts("id")%>')" type="button"><i class="far fa-print"></i></button>
 
                     </td>
                     <td>
@@ -311,9 +311,9 @@ end if
                         if conts("sysActive")=1  then
                             if recursoAdicional(34) = 4 then
                            %>
-                           <button id='btn_NFeBeta' title='Nota Fiscal Beta' class='btn btn-danger btn-sm' onclick='modalNFEBeta()' type='button'><i class='fa fa-file-text bigger-110'></i></button>
+                           <button id='btn_NFeBeta' title='Nota Fiscal Beta' class='btn btn-danger btn-sm' onclick='modalNFEBeta()' type='button'><i class='far fa-file-text bigger-110'></i></button>
                            <%else%>
-                           <button class="btn btn-xs btn-warning "  <%=buttontext%> onclick="geraNFSe('<%=conts("id")%>')"  type="button"><i class="fa fa-file-text"></i></button>
+                           <button class="btn btn-xs btn-warning "  <%=buttontext%> onclick="geraNFSe('<%=conts("id")%>')"  type="button"><i class="far fa-file-text"></i></button>
                            <%
                            end if
                         end if
@@ -324,7 +324,7 @@ end if
                         <%
                         if permiteExcluir then
                         %>
-                        <button class="btn btn-xs btn-danger " <%=desabilitaExclusao%> onclick="deletaRecibo('<%=conts("id")%>')" type="button"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-xs btn-danger " <%=desabilitaExclusao%> onclick="deletaRecibo('<%=conts("id")%>')" type="button"><i class="far fa-trash"></i></button>
                         <%
                         end if
                         %>

@@ -6,7 +6,7 @@
   <div class="col-xs-10">
     <div class="widget-box transparent">
         <div class="widget-header widget-header-flat">
-            <h4 class=""><i class="fa fa-file-text-o blue"></i> CONTRATOS</h4>
+            <h4 class=""><i class="far fa-file-text-o blue"></i> CONTRATOS</h4>
         </div>
     </div>
 

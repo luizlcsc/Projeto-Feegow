@@ -51,13 +51,13 @@ end if
 <div class="panel">
     <div class="panel-heading">
         <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab4">
-            <li class="active"><a data-toggle="tab" href="#dadosAgendamento"><i class="fa fa-lock"></i> <span class="hidden-480">Bloqueio / Compromisso</span></a></li>
-            <li id="abaLista" class="abasAux"><a data-toggle="tab" onclick="ajxContent('listaBloqueios', <%=ProfissionalID%>, '1', 'listaBloqueios', '<%=bloqueioData%>')" href="#listaBloqueios"><i class="fa fa-user"></i> <span class="hidden-480">Listar Bloqueios</span></a></li>
+            <li class="active"><a data-toggle="tab" href="#dadosAgendamento"><i class="far fa-lock"></i> <span class="hidden-480">Bloqueio / Compromisso</span></a></li>
+            <li id="abaLista" class="abasAux"><a data-toggle="tab" onclick="ajxContent('listaBloqueios', <%=ProfissionalID%>, '1', 'listaBloqueios', '<%=bloqueioData%>')" href="#listaBloqueios"><i class="far fa-user"></i> <span class="hidden-480">Listar Bloqueios</span></a></li>
 	    </ul>
 
 
     <span class="panel-controls">
-        <button class="btn btn-default btn-sm" type="button" onclick="af('f');"><i class="fa fa-arrow-left"></i></button>
+        <button class="btn btn-default btn-sm" type="button" onclick="af('f');"><i class="far fa-arrow-left"></i></button>
     </span>
 
 
@@ -122,14 +122,14 @@ end if
                     if aut("bloqueioagendaA")=1  and LicencaBloqueio = 0 then
                     %>
                     <button class="btn btn-sm btn-primary" id="btnSalvarAgenda">
-                        <i class="fa fa-save"></i> Salvar
+                        <i class="far fa-save"></i> Salvar
                     </button>
                     <%
                     end if
                     if aut("bloqueioagendaX")=1 and LicencaBloqueio = 0 then
                     %>
                     <button class="btn btn-sm btn-danger" id="btnSalvarAgenda" type="button" onclick="saveBloqueio(<%=BloqueioID%>, 1);">
-                        <i class="fa fa-trash"></i> Excluir
+                        <i class="far fa-trash"></i> Excluir
                     </button>
                     <%
                     end if

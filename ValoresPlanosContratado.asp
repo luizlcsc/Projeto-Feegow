@@ -78,7 +78,7 @@ ConvenioID = req("ConvenioID")
                 <div class="col-md-1">
                       <label>&nbsp;</label>
                       <br/>
-                     <button type="button" class="btn btn-block btn-success" onclick="addNotificados(null,null)"> <i class="fa fa-plus"></i></button>
+                     <button type="button" class="btn btn-block btn-success" onclick="addNotificados(null,null)"> <i class="far fa-plus"></i></button>
                 </div>
 
             </div>
@@ -223,7 +223,7 @@ function addNotificados(values){
                         <div  class="col-md-1">
                             <label>&nbsp;</label>
 
-                            <button type="submit" class="btn btn-block btn-danger" onclick="removerRow(this)"> <i class="fa fa-times"></i></button>
+                            <button type="submit" class="btn btn-block btn-danger" onclick="removerRow(this)"> <i class="far fa-times"></i></button>
                         </div>
                      </div>
                   </div>`;

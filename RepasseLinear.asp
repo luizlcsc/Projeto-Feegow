@@ -22,22 +22,22 @@ end if
     $(".crumb-active a").html("Repasse");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("edição simplificada");
-    $(".crumb-icon a span").attr("class", "fa fa-puzzle");
+    $(".crumb-icon a span").attr("class", "far fa-puzzle");
     <%
     if aut("repassesI")=1 then
     %>
-    $("#rbtns").html('<a onclick="location.href=\'./?P=RepasseLinear&Pers=1&Add=1\'" class="btn btn-sm btn-success pull-right"><i class="fa fa-plus"></i><span class="menu-text"> ADICIONAR</span></a>');
+    $("#rbtns").html('<button type="button" onclick="print()" class="btn btn-info btn-sm mr10"><i class="far fa-print"></i> IMPRIMIR</button> <a onclick="location.href=\'./?P=RepasseLinear&Pers=1&Add=1\'" class="btn btn-sm btn-success pull-right"><i class="far fa-plus"></i><span class="menu-text"> ADICIONAR</span></a>');
     <%
     end if
     %>
 </script>
 
-<div class="panel mt20">
+<div class="panel mt20 hidden-print">
     <div class="panel-heading">
-        <span class="panel-title"><i class="fa fa-filter"></i> Filtrar Funil de Regra</span>
+        <span class="panel-title"><i class="far fa-filter"></i> Filtrar Funil de Regra</span>
         <span class="panel-controls">
-            <button type="button" onclick="HistoricoAlteracoes()" class="btn btn-default btn-sm" title="Histórico de alterações"><i class="fa fa-history"></i> </button>
-            <!-- <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-filter"></i> Filtrar</button> -->
+            <button type="button" onclick="HistoricoAlteracoes()" class="btn btn-default btn-sm" title="Histórico de alterações"><i class="far fa-history"></i> </button>
+            <!-- <button type="button" class="btn btn-primary btn-sm"><i class="far fa-filter"></i> Filtrar</button> -->
         </span>
     </div>
     <div class="panel-body">
@@ -80,7 +80,7 @@ end if
 </div>
 
 <div id="divFRMrl">
-    <% server.execute("frmRL.asp") %>
+    <% server.execute("frmRL2.asp") %>
 </div>
 
 <script type="text/javascript">
@@ -180,9 +180,9 @@ function removeDominio(I){
 }
 
     $("#filtroRepasse").change(function () {
-        $("#divFRMrl").html("<i class='fa fa-spinner fa-spin orange bigger-125'></i> Carregando")
+        $("#divFRMrl").html("<i class='far fa-spinner fa-spin orange bigger-125'></i> Carregando...")
         
-        $.post("frmRL.asp", $(this).serialize(), function (data) {
+        $.post("frmRL2.asp", $(this).serialize(), function (data) {
             $("#divFRMrl").html(data)
         });
     });

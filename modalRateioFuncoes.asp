@@ -125,13 +125,13 @@ end if
 		<div class="col-md-2">
 
             <div class="btn-group">
-            <button class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i> Adicionar <i class="fa fa-angle-down icon-on-right"></i></button>
+            <button class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown"><i class="far fa-plus"></i> Adicionar <i class="far fa-angle-down icon-on-right"></i></button>
             <ul class="dropdown-menu dropdown-danger">
             <li><a href="javascript:adicionaItem('Adicionar', 0, 'F')">Fun&ccedil;&atilde;o ou regra</a></li>
             <li><a href="javascript:adicionaItem('Adicionar', 0, 'M')">Material ou medicamento</a></li>
-            <li id="divMedkit"><a href="javascript:adicionaItem('Adicionar', 0, 'K')"><i class="fa fa-medkit"></i> Materiais vinculados ao procedimento, caso haja</a></li>
-            <li id="divEstoque"><a href="javascript:adicionaItem('Adicionar', 0, 'Q')"><i class="fa fa-medkit"></i> Materiais baixados no estoque</a></li>
-            <li id="divUsers"><a href="javascript:adicionaItem('Adicionar', 0, 'E')"><i class="fa fa-users"></i> Equipe vinculada ao procedimento, caso haja</a></li>
+            <li id="divMedkit"><a href="javascript:adicionaItem('Adicionar', 0, 'K')"><i class="far fa-medkit"></i> Materiais vinculados ao procedimento, caso haja</a></li>
+            <li id="divEstoque"><a href="javascript:adicionaItem('Adicionar', 0, 'Q')"><i class="far fa-medkit"></i> Materiais baixados no estoque</a></li>
+            <li id="divUsers"><a href="javascript:adicionaItem('Adicionar', 0, 'E')"><i class="far fa-users"></i> Equipe vinculada ao procedimento, caso haja</a></li>
             </ul>
             </div>
 
@@ -155,9 +155,9 @@ end if
     </div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-success btn-sm"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-success btn-sm"><i class="far fa-save"></i> Salvar</button>
     <button class="btn btn-sm btn-default" data-dismiss="modal">
-    	<i class="fa fa-remove"></i> Fechar</button>
+    	<i class="far fa-remove"></i> Fechar</button>
     </button>
 </div>
 </form>

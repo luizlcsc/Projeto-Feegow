@@ -181,7 +181,7 @@
     <%else %>
     title="Lançamentos de estoque"
     <% end if %>
-    onclick="modalEstoque('<%=ItemInvoiceID %>', '<%=ItemID %>', '<%= ProdutoInvoiceID %>')" id="btn<%= ProdutoInvoiceID %>" type="button" class="btn btn-alert btn-block btn-sm"><i class="fa fa-medkit"></i></button></td>
+    onclick="modalEstoque('<%=ItemInvoiceID %>', '<%=ItemID %>', '<%= ProdutoInvoiceID %>')" id="btn<%= ProdutoInvoiceID %>" type="button" class="btn btn-alert btn-block btn-sm"><i class="far fa-medkit"></i></button></td>
     <td>
         <%
         PodeExcluirItem = True
@@ -193,7 +193,7 @@
                 if aut("repassesV")=1 then
                 %>
                 <button title="Repasses Gerados" onclick="repasses('ItemInvoiceID', <%= ItemInvoiceID %>)" type="button" class="btn btn-sm btn-dark">
-                    <i class="fa fa-puzzle-piece"></i>
+                    <i class="far fa-puzzle-piece"></i>
                 </button>
                 <%
                 end if
@@ -206,7 +206,7 @@
 
         if PodeExcluirItem then %>
         <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="<%=titleNotaFiscal%>">
-            <button type="button" id="xili<%= ItemInvoiceID %>"  class="btn btn-sm btn-danger disable <%=desabilitarExclusaoItem%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button>
+            <button type="button" id="xili<%= ItemInvoiceID %>"  class="btn btn-sm btn-danger disable <%=desabilitarExclusaoItem%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="far fa-remove"></i></button>
         </span>
         <%
         end if
@@ -217,12 +217,12 @@
 
     %>
         <div class="btn-group">
-            <button type="button" class="btn btn-info btn-sm  dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print"></i></button>
+            <button type="button" class="btn btn-info btn-sm  dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="far fa-print"></i></button>
             <ul class="dropdown-menu dropdown-info pull-right">
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Protocolo')"><i class="fa fa-plus"></i> Protocolo de laudo </a></li>
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Impresso')"><i class="fa fa-plus"></i> Impresso </a></li>
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Etiqueta')"><i class="fa fa-plus"></i> Etiqueta </a></li>
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Preparos')"><i class="fa fa-plus"></i> Preparos </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Protocolo')"><i class="far fa-plus"></i> Protocolo de laudo </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Impresso')"><i class="far fa-plus"></i> Impresso </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Etiqueta')"><i class="far fa-plus"></i> Etiqueta </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Preparos')"><i class="far fa-plus"></i> Preparos </a></li>
             </ul>
         </div>
     <%end if%>
@@ -326,7 +326,7 @@ if req("T")="C" then
                 <td class="text-right" colspan="2">R$ <%=fn(g("ValorPago")) %></td>
                 <td class="text-right" colspan="2">
                     <button type="button" class="btn btn-sm btn-danger deletaGuia" data-id="<%= idGuia %>">
-                        <i class="fa fa-remove"></i>
+                        <i class="far fa-remove"></i>
                     </button>
                 </td>
             </tr>
@@ -349,7 +349,7 @@ end if
 %>
 <tr id="row2_<%=id%>"<%if Executado<>"S" then%> class="hidden div-execucao"<%else %> class="div-execucao"<%end if%> data-id="<%=id%>">
 	<td></td>
-    <td colspan="9">
+    <td colspan="10">
         <div class="row">
     	    <div class="col-xs-3">
 			    <label>Profissional</label><br>
@@ -364,7 +364,7 @@ end if
                     <%
                 end if
 			    %>
-                <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutantesTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional&DisabledNaoAlterarExecutante,"")%>
+                <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutantesTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional&DisabledNaoAlterarExecutante)%>
 			    <%'=selectInsertCA("", "ProfissionalID"&id, Associacao&"_"&ProfissionalID, "5, 8, 2", " onchange=""setTimeout(function()calcRepasse("& id &"), 500)""", "", "")%>
             </div>
             <%if Tipo="S" then
@@ -441,6 +441,40 @@ end if
     </td>
 </tr>
 <%
+else
+    if False then
+        set vcaHono = db.execute("select * from iihonorarios where ItemInvoiceID="& treatvalzero(id))
+        if not vcaHono.eof then
+            %>
+            <tr>
+                <td></td>
+                <td colspan="4">
+                    <table class="table table-condensed">
+                        <tr class="success">
+                            <th>Data</th>
+                            <th>Tempo</th>
+                            <th>Valor</th>
+                        </tr>
+                        <%
+                        while not vcaHono.eof
+                            %>
+                            <tr>
+                                <td><a href="./?P=agenda-1&Pers=1&ProfissionalID=<%= vcaHono("ProfissionalID") &"&Data="& vcaHono("Data") %>" target="_blank"> <%= vcaHono("Data") %></a></td>
+                                <td>Tempo: <%= dateAdd("n", vcaHono("Minutos"), "00:00") %></td>
+                                <td>Valor: <%= fn(vcaHono("Valor")) %></td>
+                            </tr>
+                            <%
+                        vcaHono.movenext
+                        wend
+                        vcaHono.close
+                        set vcaHono=nothing
+                        %>
+                    </table>
+                </td>
+            </tr>
+            <%
+        end if
+    end if
 end if
 
 

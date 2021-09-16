@@ -47,7 +47,7 @@ response.Write(abreDivMaster)
             <%
             if MostarBotaoInserir=1 then
             %>
-            <a class="panel-control" onclick="itemSubform('<%=NomeTabela%>', 'Add', 0, '<%=Coluna%>', <%=idNaColuna%>, '<%=NomeForm%>')" href="javascript:void(0)"><i class="fa fa-plus"></i></a>
+            <a class="panel-control" onclick="itemSubform('<%=NomeTabela%>', 'Add', 0, '<%=Coluna%>', <%=idNaColuna%>, '<%=NomeForm%>')" href="javascript:void(0)"><i class="far fa-plus"></i></a>
             <%
             end if
             %>
@@ -170,7 +170,7 @@ response.Write(abreDivMaster)
 								    <%
 								    if MostarBotaoApagar=1 then
                                         %>
-                                        <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="itemSubform('<%=NomeTabela%>', 'Del', <%=regs("id")%>, '<%=Coluna%>', <%=idNaColuna%>, '<%=NomeForm%>')"><i class="fa fa-trash"></i></button>
+                                        <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="itemSubform('<%=NomeTabela%>', 'Del', <%=regs("id")%>, '<%=Coluna%>', <%=idNaColuna%>, '<%=NomeForm%>')"><i class="far fa-trash"></i></button>
                                         <%
 								    end if
 								    %>
@@ -184,13 +184,13 @@ response.Write(abreDivMaster)
                                     if regs("NomeID")&""<>"" then
                                     %>
                                         <a  href="javascript:modalPaciente(<%=regs("NomeID")%>)">
-                                            <button type="button" class="btn btn-sm btn-info"><i class="fa fa-expand" title="<%=regs("Nome")%>"></i>  Paciente</button>
+                                            <button type="button" class="btn btn-sm btn-info"><i class="far fa-expand" title="<%=regs("Nome")%>"></i>  Paciente</button>
                                         </a>
                                     <%
                                     else
                                     %>
                                         <a  href="javascript:modalPacienteRelativo(<%=regs("id")%>, '<%=regs("Nome")%>')">
-                                            <button type="button" class="btn btn-sm btn-default"><i class="fa fa-expand" title="<%=regs("Nome")%>"></i></button>
+                                            <button type="button" class="btn btn-sm btn-default"><i class="far fa-expand" title="<%=regs("Nome")%>"></i></button>
                                         </a>
                                     <%
                                     end if

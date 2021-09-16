@@ -14,5 +14,5 @@ set ii = db.execute("select ii.*, i.AccountID from itensinvoice ii left join sys
 
 db_execute("insert into estoquelancamentos (ProdutoID, EntSai, Quantidade, TipoUnidade, Data, Lote, Validade, Valor, UnidadePagto, Responsavel, PacienteID, sysUser, QuantidadeConjunto, QuantidadeTotal, ItemInvoiceID, FuncaoRateioID) values ("&fun("ProdutoID")&", 'S', "&treatvalzero(Quantidade)&", 'U', "&mydatenull(Date())&", '"&Lote&"', "&mydatenull(Validade)&", "&treatvalzero(Valor)&", 'U', '3_"&ii("ProfissionalID")&"', "&ii("AccountID")&", "&session("User")&", "&treatvalnull(fun("ApresentacaoQuantidade"))&", "&treatvalzero(Quantidade)&", "&ItemInvoiceID&", "&FuncaoRateioID&")")
 %>
-$("#muid<%=muID%>").html('<button type="button" class="btn btn-xs btn-success"><i class="fa fa-upload"></i> Baixado</button>');
+$("#muid<%=muID%>").html('<button type="button" class="btn btn-xs btn-success"><i class="far fa-upload"></i> Baixado</button>');
 <!--#include file="disconnect.asp"-->

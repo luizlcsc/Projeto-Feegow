@@ -13,8 +13,8 @@ END IF
 <tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> Ordem="<%=Ordem%>" class="proposta-item-procedimentos">
     <% IF getConfig("ExibirPrioridadeDePropostas") = "1" THEN %>
     <td>
-        <a href="javascript:void(0)" onclick="movTr('down',this)"><i class="fa fa-caret-up" aria-hidden="true"></i></a>
-        <a href="javascript:void(0)" onclick="movTr('up',this)"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+        <a href="javascript:void(0)" onclick="movTr('down',this)"><i class="far fa-caret-up" aria-hidden="true"></i></a>
+        <a href="javascript:void(0)" onclick="movTr('up',this)"><i class="far fa-caret-down" aria-hidden="true"></i></a>
     </td>
     <td class="td-prioridades">
         <button type="button" class="btn btn-default" onclick="changePrioridade(this)" <%=desabilitarProposta%>>
@@ -72,7 +72,7 @@ END IF
         <td>
             <div class="text-right <%=hiddenValor%>" id="sub<%=id%>" nowrap>R$ <%= formatnumber( Subtotal ,2) %></div>
         </td>
-        <td><button type="button" class="btn btn-xs btn-danger disable <%=escondeProposta%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove "></i></button></td>
+        <td><button type="button" class="btn btn-xs btn-danger disable <%=escondeProposta%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="far fa-remove "></i></button></td>
     </td>
 </tr>
 <%

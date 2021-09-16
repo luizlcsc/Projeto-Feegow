@@ -12,7 +12,7 @@ end if
         set ultQuali = db.execute("select NotaNova from cliniccentral.pesquisa_satisfacao where UsuarioID="& session("User") &" order by DataHora desc")
         Nota = 0
         corNota = ""
-        txtNota = "<i class='fa fa-chevron-up'></i><br /> QUEREMOS LHE ATENDER MELHOR"
+        txtNota = "<i class='far fa-chevron-up'></i><br /> QUEREMOS LHE ATENDER MELHOR"
         if not ultQuali.eof then
             Nota = ultQuali("NotaNova")
         end if

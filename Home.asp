@@ -12,7 +12,7 @@ end if
 
 if (session("Banco")="clinic5760"  or session("Banco")="clinic6118") and false then %>
 <div class="alert alert-alert text-center mt15">
-    <h4><i class="fa fa-cog fa-spin"></i> Sua licença do Feegow está recebendo atualizações e melhorias. <br />Enquanto isso você pode continuar utilizando o sistema normalmente, porém alguns relatórios podem não funcionar neste momento.
+    <h4><i class="far fa-cog fa-spin"></i> Sua licença do Feegow está recebendo atualizações e melhorias. <br />Enquanto isso você pode continuar utilizando o sistema normalmente, porém alguns relatórios podem não funcionar neste momento.
         <br /><br />
         Esta atualização será finalizada dentro de algumas horas.</h4>
 </div>
@@ -43,7 +43,7 @@ end if
     $(".crumb-active a").html("Bem-vindo ao Feegow Clinic");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("resumo da semana");
-    $(".crumb-icon a span").attr("class", "fa fa-dashboard");
+    $(".crumb-icon a span").attr("class", "far fa-dashboard");
 
     $("#modal-descontos-pendentes").css("z-index", 9999999999999999999999999);
 </script>
@@ -71,9 +71,9 @@ if session("Status")="C" and 1=2 then
 %>
 <div class="alert alert-danger text-center">
     <button class="close" data-dismiss="alert" type="button">
-        <i class="fa fa-remove"></i>
+        <i class="far fa-remove"></i>
     </button>
-    <strong><i class="fa fa-upload"></i>AVISO IMPORTANTE<br />Devido ao grande número de melhorias ocorridas no sistema, tivemos um pequeno atraso na liberação de nossa última atualização, a qual será liberada impreterivelmente ainda na data de hoje.</strong>
+    <strong><i class="far fa-upload"></i>AVISO IMPORTANTE<br />Devido ao grande número de melhorias ocorridas no sistema, tivemos um pequeno atraso na liberação de nossa última atualização, a qual será liberada impreterivelmente ainda na data de hoje.</strong>
 </div>
 <%
 end if
@@ -84,7 +84,7 @@ if 0 and session("Status")="C" and date()>cdate("01/05/2017") then
         if len(msgMan)>3 then
             %>
             <div class="alert alert-warning">
-                <h1 class="mn pn"><i class="fa fa-cog fa-spin"></i> <%=msgMan %></h1>
+                <h1 class="mn pn"><i class="far fa-cog fa-spin"></i> <%=msgMan %></h1>
             </div>
             <%
         end if
@@ -134,15 +134,15 @@ if 0 and session("Status")="C" and date()>cdate("01/05/2017") then
 <div class="panel">
     <div class="col-md-12 alert alert-dark text-center">
         <button class="close" data-dismiss="alert" type="button">
-            <i class="fa fa-remove"></i>
+            <i class="far fa-remove"></i>
         </button>
-        <strong><i class="fa fa-warning"></i> ATEN&Ccedil;&Atilde;O: </strong>
+        <strong><i class="far fa-warning"></i> ATEN&Ccedil;&Atilde;O: </strong>
             <%
 		    if session("Admin")=1 then
             %>
 			    Existem faturas em aberto do seu sistema. Evite a suspensão parcial dos serviços quitando os débitos.<br /><br />
         <a href="?P=AreaDoCliente&Pers=1" class="btn btn-danger">
-            <i class="fa fa-barcode"></i> Clique aqui para gerenciar suas faturas.
+            <i class="far fa-barcode"></i> Clique aqui para gerenciar suas faturas.
         </a>
         <%
 		    else
@@ -243,9 +243,9 @@ if session("Banco")="clinic5351XXXXXX" then
 %>
 <div class="alert alert-danger">
     <button class="close" data-dismiss="alert" type="button">
-        <i class="fa fa-remove"></i>
+        <i class="far fa-remove"></i>
     </button>
-    <strong><i class="fa fa-warning-sign"></i> AVISO DE ATUALIZAÇÃO</strong>
+    <strong><i class="far fa-warning-sign"></i> AVISO DE ATUALIZAÇÃO</strong>
     Prezado cliente, informamos que sua licença está passando por atualização nos seguintes módulos:<br />
     - Repasses<br />
     - Relatórios<br />
@@ -282,7 +282,7 @@ if lcase(session("Table"))="profissionais" then
             <td><%= lau("Nome") %></td>
             <td><%= lau("NomePaciente") %></td>
             <td><%= lau("DataHora") %></td>
-            <td><a class="btn btn-xs btn-warning" href="./?P=Pacientes&Pers=1&I=<%= lau("PacienteID") %>"><i class="fa fa-edit"></i>Laudar</a></td>
+            <td><a class="btn btn-xs btn-warning" href="./?P=Pacientes&Pers=1&I=<%= lau("PacienteID") %>"><i class="far fa-edit"></i>Laudar</a></td>
         </tr>
         <%
 			lau.movenext
@@ -310,7 +310,7 @@ if 1=1 then
                     Bem-vindo à nova versão do Feegow Clinic!
                 </span>
                 <span class="panel-controls">
-                    <button type="button" onclick="location.href='./?P=Home&Pers=1&changeVersion=6'" class="btn btn-sm btn-alert"><i class="fa fa-history"></i> Voltar para versão anterior</button>
+                    <button type="button" onclick="location.href='./?P=Home&Pers=1&changeVersion=6'" class="btn btn-sm btn-alert"><i class="far fa-history"></i> Voltar para versão anterior</button>
                 </span>
 
             </div>
@@ -347,14 +347,14 @@ if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
     malSucedidoText = "<br>"
 
     if not ultimoAcessoBemSucedido.eof then
-        bemSucedidoText = "<i style='color:green' class='fa fa-check-circle-o'></i> Últ. acesso: <strong>"&ultimoAcessoBemSucedido("DataHora")&"</strong>"
+        bemSucedidoText = "<i style='color:green' class='far fa-check-circle-o'></i> Últ. acesso: <strong>"&ultimoAcessoBemSucedido("DataHora")&"</strong>"
     end if
     if not ultimoAcessoMalSucedido.eof then
         mais = ""
         if ultimoAcessoMalSucedido("n") <> "0" then
             mais = "(<a target='_blank' href='PrintStatement.asp?R=LogLoginsResultado&Usuario="&session("User")&"&Sucesso=0' >+"&ultimoAcessoMalSucedido("n")&"</a>)"
         end if
-        malSucedidoText = "<i style='color:orange' class='fa fa-exclamation-circle'></i> Últ. acesso mal sucedido: <strong>"&ultimoAcessoMalSucedido("DataHora")&" "&mais&"</strong>"
+        malSucedidoText = "<i style='color:orange' class='far fa-exclamation-circle'></i> Últ. acesso mal sucedido: <strong>"&ultimoAcessoMalSucedido("DataHora")&" "&mais&"</strong>"
     end if
 
 
@@ -375,7 +375,7 @@ if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
                         <small style="float: left"><%=bemSucedidoText%></small><br> <small style="float: left"><%=malSucedidoText%></small>
                     </div>
                     <div style="float: right;" class="col-md-2">
-                        <a data-toggle="tooltip" title="Gerenciar acessos" href="?P=LogLogins&Pers=1" class="btn btn-xs btn-system"><i class="fa fa-cog"></i></a>
+                        <a data-toggle="tooltip" title="Gerenciar acessos" href="?P=LogLogins&Pers=1" class="btn btn-xs btn-system"><i class="far fa-cog"></i></a>
                     </div>
                 </div>
             </span>
@@ -388,18 +388,18 @@ if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
     <div class="col-sm-3 col-xl-3">
         <div class="panel panel-tile text-center br-a br-grey">
         <div class="panel-body">
-            <h1 class="fs30 mt5 mbn" id="prodVencer"><i class="fa fa-spinner fa-spin"></i></h1>
+            <h1 class="fs30 mt5 mbn" id="prodVencer"><i class="far fa-spinner fa-spin"></i></h1>
             <h6 class="text-success">PRODUTOS PRÓXIMO A VENCER</h6>
         </div>
         <div class="panel-footer br-t p6">
             <span class="fs11">
                 <div class="row">
                     <div class="col-md-10">
-                    <i class="fa fa-exclamation-circle pr5"></i> VER OS 
+                    <i class="far fa-exclamation-circle pr5"></i> VER OS
                     <b>PRODUTOS</b>
                 </div>
                 <div class="col-md-2">
-                    <a data-toggle="tooltip" title="Visualizar produtos a vencer" href="?P=ListaProdutos&Pers=1&praVencer=1" class="btn btn-xs btn-system"><i class="fa fa-search"></i></a>
+                    <a data-toggle="tooltip" title="Visualizar produtos a vencer" href="?P=ListaProdutos&Pers=1&praVencer=1" class="btn btn-xs btn-system"><i class="far fa-search"></i></a>
                 </div>
                 </div>
             </span>
@@ -422,11 +422,11 @@ if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
             <span class="fs11">
             <div class="row">
                 <div class="col-md-10">
-                    <i class="fa fa-exclamation-circle pr5"></i> CONTAS A
+                    <i class="far fa-exclamation-circle pr5"></i> CONTAS A
                     <b>PAGAR</b>
                 </div>
                 <div class="col-md-2">
-                    <a data-toggle="tooltip" title="Visualizar contas" href="?P=ContasCD&T=D&Pers=1&Pagto=N" class="btn btn-xs btn-system"><i class="fa fa-search"></i></a>
+                    <a data-toggle="tooltip" title="Visualizar contas" href="?P=ContasCD&T=D&Pers=1&Pagto=N" class="btn btn-xs btn-system"><i class="far fa-search"></i></a>
                 </div>
             </div>
             </span>
@@ -451,10 +451,10 @@ if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
             <span class="fs11">
             <div class="row">
                 <div class="col-md-10">
-                    <i class="fa fa-exclamation-circle pr5"></i> CONTROLE DE ESTOQUE
+                    <i class="far fa-exclamation-circle pr5"></i> CONTROLE DE ESTOQUE
                 </div>
                 <div class="col-md-2">
-                    <a data-toggle="tooltip" title="Visualizar contas" href="?P=ListaProdutos&Pers=1&AbaixoMinimo=S" class="btn btn-xs btn-system"><i class="fa fa-search"></i></a>
+                    <a data-toggle="tooltip" title="Visualizar contas" href="?P=ListaProdutos&Pers=1&AbaixoMinimo=S" class="btn btn-xs btn-system"><i class="far fa-search"></i></a>
                 </div>
             </div>
             
@@ -478,9 +478,9 @@ if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
         </div>
         <div class="panel-footer br-t p12">
             <span class="fs11">
-            <i class="fa fa-male pr5 text-primary"></i> <%=Masc %> HOMENS
+            <i class="far fa-male pr5 text-primary"></i> <%=Masc %> HOMENS
                 &nbsp;&nbsp;&nbsp;
-            <i class="fa fa-female pr5 text-danger"></i> <%=Femi %> MULHERES
+            <i class="far fa-female pr5 text-danger"></i> <%=Femi %> MULHERES
             </span>
         </div>
         </div>
@@ -505,10 +505,10 @@ if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
             <span class="fs11">
             <div class="row">
                 <div class="col-md-10">
-                    <i class="fa fa-exclamation-circle pr5"></i> VER BOLETOS
+                    <i class="far fa-exclamation-circle pr5"></i> VER BOLETOS
                 </div>
                 <div class="col-md-2">
-                    <a data-toggle="tooltip" title="Ver Boletos" href="?P=BoletosEmitidos&Pers=1" class="btn btn-xs btn-system"><i class="fa fa-search"></i></a>
+                    <a data-toggle="tooltip" title="Ver Boletos" href="?P=BoletosEmitidos&Pers=1" class="btn btn-xs btn-system"><i class="far fa-search"></i></a>
                 </div>
             </div>
 
@@ -648,7 +648,7 @@ if aut("agendaI") and false then
                     Confirmações de Agendamento <code>E-mail e SMS</code>
                 </span>
                 <span class="panel-controls">
-                    <button class="btn btn-sm btn-default" type="button" onclick="location.href='./?P=Confirmacoes&Pers=1'"><i class="fa fa-list"></i> Ver todas</button>
+                    <button class="btn btn-sm btn-default" type="button" onclick="location.href='./?P=Confirmacoes&Pers=1'"><i class="far fa-list"></i> Ver todas</button>
                 </span>
 
             </div>
@@ -680,7 +680,7 @@ if aut("agendaI") and false then
                                     <div><%=conf("NomePaciente")%> <small>&raquo; em <%=conf("DataHora")%></small></div>
                                     <em><%=conf("Resposta")%></em>
                                 </td>
-                                <td width="32"><a href="./?P=Agenda-1&Pers=1&Conf=<%=conf("id")%>" class="btn btn-xs btn-white"><i class="fa fa-search-plus"></i></a></td>
+                                <td width="32"><a href="./?P=Agenda-1&Pers=1&Conf=<%=conf("id")%>" class="btn btn-xs btn-white"><i class="far fa-search-plus"></i></a></td>
                             </tr>
                             <%
 						conf.movenext
@@ -705,7 +705,7 @@ end if
         <div class="col-md-6 admin-grid">
             <div class="panel panel-widget">
                 <div class="panel-heading ui-sortable-handle">
-                    <span class="panel-title"><i class="fa fa-birthday-cake"></i> Aniversariantes de hoje</span>
+                    <span class="panel-title"><i class="far fa-birthday-cake"></i> Aniversariantes de hoje</span>
                 </div>
                 <div class="panel-body bg-white p15" style="height:431px!important; overflow-y:auto">
                     <%
@@ -748,8 +748,8 @@ end if
         <div class="col-md-6 admin-grid">
             <div class="panel panel-widget">
                 <div class="panel-heading ui-sortable-handle">
-                    <span class="panel-title"><i class="fa fa-calendar"></i> Últimos Agendamentos Online</span>
-                    <span class="panel-controls"><button type="button" onclick="location.href='./?P=AgendamentosOnline&Pers=1'" class="btn btn-sm btn-default"><i class="fa fa-list"></i> Ver todos</button></span>
+                    <span class="panel-title"><i class="far fa-calendar"></i> Últimos Agendamentos Online</span>
+                    <span class="panel-controls"><button type="button" onclick="location.href='./?P=AgendamentosOnline&Pers=1'" class="btn btn-sm btn-default"><i class="far fa-list"></i> Ver todos</button></span>
                 </div>
                 <div class="panel-body bg-white p15" style="height:431px!important">
                     <table class="table table-striped table-condensed">
@@ -812,8 +812,8 @@ end if
         <div class="col-md-6 admin-grid">
             <div class="panel panel-widget">
                 <div class="panel-heading ui-sortable-handle">
-                    <span class="panel-title"><i class="fa fa-calendar"></i> Próximas Aplicações de Vacina</span>
-                    <span class="panel-controls"><button type="button" onclick="openReport()" class="btn btn-sm btn-default" formtarget="_blank"><i class="fa fa-list"></i> Ver todos</button></span>
+                    <span class="panel-title"><i class="far fa-calendar"></i> Próximas Aplicações de Vacina</span>
+                    <span class="panel-controls"><button type="button" onclick="openReport()" class="btn btn-sm btn-default" formtarget="_blank"><i class="far fa-list"></i> Ver todos</button></span>
                 </div>
                 <div class="panel-body bg-white p15" style="height:431px!important">
                     <table class="table table-striped table-condensed">

@@ -33,7 +33,7 @@ end if
 
 <div class="widget-box transparent">
     <div class="widget-header widget-header-flat">
-        <h4><i class="fa fa-hospital-o blue"></i> CADASTRO DE LICENÇA</h4>
+        <h4><i class="far fa-hospital-o blue"></i> CADASTRO DE LICENÇA</h4>
     </div>
 </div>
 
@@ -51,7 +51,7 @@ end if
             <%=quickField("simpleSelect", "Status", "Status", 12, Status, "select 'C' id, 'Ativo' NomeSta UNION ALL select 'B', 'Bloqueado'", "NomeSta", "")%>
             <div class="col-md-12 text-center">
             	<label>&nbsp;</label><br>
-            	<button class="btn btn-sm btn-primary"><i class="fa fa-save"></i> SALVAR</button>
+            	<button class="btn btn-sm btn-primary"><i class="far fa-save"></i> SALVAR</button>
             </div>
             <%
             else

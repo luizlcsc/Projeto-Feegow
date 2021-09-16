@@ -30,8 +30,8 @@ while not un.eof
     <table class="table table-condensed table-bordered mt5 table-hover unidade <%= Regiao %> <% if Regiao<>replace(req("Regiao"), " ", "_") and req("Regiao")<>"" then response.write(" hidden ") end if %>">
         <thead>
             <tr class="preto">
-                <th width="13%" onclick="expand(<%= UnidadeID %>, '')"><i id="icoU<%= UnidadeID %>" class="fa fa-plus"></i></th>
-                <th class="bg-primary"><i class="fa fa-map-marker"></i> <%= NomeFantasia %></th>
+                <th width="13%" onclick="expand(<%= UnidadeID %>, '')"><i id="icoU<%= UnidadeID %>" class="far fa-plus"></i></th>
+                <th class="bg-primary"><i class="far fa-map-marker"></i> <%= NomeFantasia %></th>
                 <%
                 DataAtu = Data
                 while DataAtu<DataFinal
@@ -53,7 +53,7 @@ while not un.eof
 '                ProcedimentoID = esp("ProcedimentoID")
                 %>
                 <tr class="dark">
-                    <th onclick="expand(<%= UnidadeID %>, '<%= ProcedimentoID %>')"><i id="icoUP<%= UnidadeID&"_"& ProcedimentoID %>" class="fa fa-plus"></i>
+                    <th onclick="expand(<%= UnidadeID %>, '<%= ProcedimentoID %>')"><i id="icoUP<%= UnidadeID&"_"& ProcedimentoID %>" class="far fa-plus"></i>
                         
                         <span class="pull-right label label-dark label-xs">R$</span></th>
                     <th><%= NomeProcedimento %></th>

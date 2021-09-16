@@ -70,7 +70,7 @@
                 <tr data-id="<%=ag("id")%>">
                     <td>
                     <%
-                    StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'><img data-toggle='tooltip' title='"&ag("StaConsulta")&"' src='assets/img/"&ag("StaID")&".png' /></span>  <i class='fa fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
+                    StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'><img data-toggle='tooltip' title='"&ag("StaConsulta")&"' src='assets/img/"&ag("StaID")&".png' /></span>  <i class='far fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
                     set StatusSQL=db.execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (101,6)")
                     while not StatusSQL.eof
                         Active=""
@@ -101,9 +101,9 @@
                     <td>
                         <button style="width: 100%;" id="btn<%= ag("id") %>" class="btn btn-sm <% if ag("StaID")=4 then response.Write(" btn-warning ") else response.write(" btn-system ") end if  %>" type="button" onclick="abreAgenda('<%= replace(ft(ag("Hora"))&"", ":", "") %>', <%= ag("id") %>, '<%= date() %>', '<%= ag("LocalID") %>', '<%= ag("ProfissionalID") %>', '')">
                         <% if ag("StaID")=4 then %>
-                        <i class=" fa fa-clock-o"></i>
+                        <i class=" far fa-clock-o"></i>
                         <% else %>
-                        <i class=" fa fa-check"></i>
+                        <i class=" far fa-check"></i>
                         <% end if %>
 
                             <small> <% if ag("StaID")=4 then response.Write(" AGUARDANDO ") else response.write(" CHECKIN ") end if  %></small></button>

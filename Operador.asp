@@ -21,7 +21,7 @@ end if
 
 <div class="widget-box transparent">
     <div class="widget-header widget-header-flat">
-        <h4><i class="fa fa-user blue"></i> CADASTRO DE OPERADOR</h4>
+        <h4><i class="far fa-user blue"></i> CADASTRO DE OPERADOR</h4>
     </div>
 </div>
 
@@ -34,7 +34,7 @@ end if
             <%=quickField("password", "Senha", "Senha", 12, Senha, "", "", "")%>
             <div class="col-md-12 text-center">
             	<label>&nbsp;</label><br>
-            	<button class="btn btn-sm btn-primary"><i class="fa fa-save"></i> SALVAR</button>
+            	<button class="btn btn-sm btn-primary"><i class="far fa-save"></i> SALVAR</button>
             </div>
         </div>
       </div>

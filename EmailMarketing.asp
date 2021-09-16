@@ -65,7 +65,7 @@ if ref("Enviar")="" then
                         <div class="clearfix navbar-form text-center">
             ATENÇÃO: Será cobrada em sua próxima fatura a quantia de R$ 0,01 (um centavo) por cada e-mail enviado.
 <hr>
-                            <button class="btn btn-primary"><i class="fa fa-send"></i> ENVIAR</button>
+                            <button class="btn btn-primary"><i class="far fa-send"></i> ENVIAR</button>
                         </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@ if ref("Enviar")="" then
 	</form>
 <script >
     $(".crumb-active a").html("E-mail marketing");
-    $(".crumb-icon a span").attr("class", "fa fa-envelope");
+    $(".crumb-icon a span").attr("class", "far fa-envelope");
     $(".crumb-icon").removeClass("hidden");
 </script>
 	<%

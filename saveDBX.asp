@@ -69,7 +69,7 @@ if not getResource.EOF then
 	dbx(sql)
 	%>
         $.gritter.add({
-            title: '<i class="fa fa-save"></i> Dados gravados com sucesso.',
+            title: '<i class="far fa-save"></i> Dados gravados com sucesso.',
             text: '',
             class_name: 'gritter-success gritter-light'
         });
@@ -230,7 +230,7 @@ if lcase(tableName)="pacientes" then
 		if erro<>"" then
 			%>
 			$.gritter.add({
-				title: '<i class="fa fa-error"></i> Erro!',
+				title: '<i class="far fa-error"></i> Erro!',
 				text: '<%=erro%>',
 				class_name: 'gritter-error'
 			});

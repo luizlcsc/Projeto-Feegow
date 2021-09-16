@@ -6,8 +6,8 @@
     	<th>Nome</th>
         <th>Nascimento</th>
         <th>CPF</th>
-    	<th colspan="2" class="text-center"><i class="fa fa-eye "></i>Compare</th>
-    	<th><i class="fa fa-compress"></i> Mesclar</th>
+    	<th colspan="2" class="text-center"><i class="far fa-eye "></i>Compare</th>
+    	<th><i class="far fa-compress"></i> Mesclar</th>
         <th width="1"><label><input class="ace hidden" onclick="$('input[type=checkbox]').prop('checked', $(this).prop('checked') )" checked type="checkbox"><span class="lbl"></span></label></th>
     </tr>
 </thead>
@@ -35,9 +35,9 @@ while not pacs.eof
                 <td><%=pacs("NomePaciente")%></td>
                 <td><%=Nascimento%></td>
                 <td><%=pacs("CPF")%></td>
-                <td><a class="btn btn-xs btn-info" target="_blank" href="?P=Pacientes&Pers=1&I=<%=Paciente0%>"><i class="fa fa-user"></i> Prontuário <%=Paciente0%></a></td>
-                <td><a class="btn btn-xs btn-info" target="_blank" href="?P=Pacientes&Pers=1&I=<%=Paciente1%>"><i class="fa fa-user"></i> Prontuário <%=Paciente1%></a></td>
-                <td><a class="btn btn-xs btn-success" target="_blank" href="mesclar.asp?p1=<%=Paciente0%>&p2=<%=Paciente1%>"><i class="fa fa-compress"></i> MESCLAR</a></td>
+                <td><a class="btn btn-xs btn-info" target="_blank" href="?P=Pacientes&Pers=1&I=<%=Paciente0%>"><i class="far fa-user"></i> Prontuário <%=Paciente0%></a></td>
+                <td><a class="btn btn-xs btn-info" target="_blank" href="?P=Pacientes&Pers=1&I=<%=Paciente1%>"><i class="far fa-user"></i> Prontuário <%=Paciente1%></a></td>
+                <td><a class="btn btn-xs btn-success" target="_blank" href="mesclar.asp?p1=<%=Paciente0%>&p2=<%=Paciente1%>"><i class="far fa-compress"></i> MESCLAR</a></td>
                 <td><label><input class="ace hidden" checked type="checkbox" name="dupla" value="<%=Paciente0&"|"&Paciente1%>"><span class="lbl"></span></label></td>
             </tr>
             <%
@@ -55,7 +55,7 @@ set pacs=nothing
 <tfoot>
 	<tr>
     	<td></td>
-        <td colspan="4"><button class="btn btn-warning btn-sm btn-block"><i class="fa fa-compress"></i> MESCLAR PACIENTES</button></td>
+        <td colspan="4"><button class="btn btn-warning btn-sm btn-block"><i class="far fa-compress"></i> MESCLAR PACIENTES</button></td>
     </tr>
 </tfoot>
 </table>

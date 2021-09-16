@@ -24,12 +24,12 @@ end if
     <%=quickfield("simpleSelect", "FiltroStatusID", "Status", 3, StatusID, "select 'T' id, 'Todos' StaConsulta union all select id, StaConsulta from staconsulta WHERE ID IN (1, 2, 3, 6, 7) order by StaConsulta", "StaConsulta", " semVazio no-select2 ") %>
     <div class="col-md-3">
         <br>
-        <button class="btn btn-primary" type="button" onclick="FiltrarAgendamentosFaturar()"><i class="fa fa-search"></i> Filtrar</button>
+        <button class="btn btn-primary" type="button" onclick="FiltrarAgendamentosFaturar()"><i class="far fa-search"></i> Filtrar</button>
     </div>
 
     <div class="col-md-12">
         <br>
-        <h4 class="lighter blue no-margin header"><i class="fa fa-calendar" id="icon-Agendamentos"></i> Agendamentos</h4>
+        <h4 class="lighter blue no-margin header"><i class="far fa-calendar" id="icon-Agendamentos"></i> Agendamentos</h4>
 
             <table class="table table-striped table-condesed">
                 <thead>
@@ -85,7 +85,7 @@ end if
                     badgeFaturado = ""
 
                     if ItemInvoiceID&""<>"" then
-                        badgeFaturado = "<div class='badge badge-warning'><i class='fa fa-exclamation-circle'></i> Faturado</div>"
+                        badgeFaturado = "<div class='badge badge-warning'><i class='far fa-exclamation-circle'></i> Faturado</div>"
                     end if
 
                     %><tr>

@@ -63,7 +63,7 @@ end if
     <div class="col-md-4">
         <br>
         <button class="btn btn-warning" onclick="AlterarNumeracaoDasGuias()">
-            <i class="fa fa-exclamation-triangle"></i> Alterar sequência
+            <i class="far fa-exclamation-triangle"></i> Alterar sequência
         </button>
     </div>
 </div>

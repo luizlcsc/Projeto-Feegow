@@ -50,9 +50,9 @@ id = ItemID
 end if
 %>
 <div style="float: right;margin-top: 15px">
-	<button class="btn btn-success btn-sm"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-success btn-sm"><i class="far fa-save"></i> Salvar</button>
     <button class="btn btn-sm btn-default" type="button" onclick="itemQuimioterapia('<%=Tipo %>', 0, <%=ItemID %>, 'Cancela');">
-    	<i class="fa fa-remove"></i> Cancelar
+    	<i class="far fa-remove"></i> Cancelar
     </button>
 </div>
 </form>

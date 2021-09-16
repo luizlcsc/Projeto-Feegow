@@ -18,7 +18,7 @@ end if
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Ponto Eletrônico");
-    $(".crumb-icon a span").attr("class", "fa fa-hand-o-up");
+    $(".crumb-icon a span").attr("class", "far fa-hand-o-up");
 </script>
 
 <br>

@@ -62,13 +62,13 @@ end function
 if req("DetalharEntradas")<>"S" then
 %>
         <a class="hidden-print btn btn-default btn-sm" href="?P=PreFechaCaixa&Pers=1&DetalharEntradas=S">
-            <i class="fa fa-info-circle"></i> Detalhar entradas
+            <i class="far fa-info-circle"></i> Detalhar entradas
         </a>
 <%
 end if
 %>
         <a class="hidden-print btn btn-info btn-sm" href="javascript:print()">
-            <i class="fa fa-print"></i> Imprimir
+            <i class="far fa-print"></i> Imprimir
         </a>
     </div>
 </div>
@@ -527,7 +527,7 @@ end if
                <div class="panel-body">
                    <%= quickfield("currency", "DinheiroInformado", "Quantia em dinheiro", 2, "0,00", "", "", "  ") %>
                    <div class="col-md-2">
-                       <button class="btn btn-success mt25"><i class="fa fa-check"></i> FECHAR CAIXA</button>
+                       <button class="btn btn-success mt25"><i class="far fa-check"></i> FECHAR CAIXA</button>
                    </div>
                </div>
             </div>
@@ -544,8 +544,8 @@ end if
     $(".crumb-active a").html("Fechamento de Caixa");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("");
-    $(".crumb-icon a span").attr("class", "fa fa-inbox");
-    $("#rbtns").html('<a onclick="print();" class="btn btn-sm btn-info pull-right"><i class="fa fa-print"></i><span class="menu-text"> Imprimir</span></a>');
+    $(".crumb-icon a span").attr("class", "far fa-inbox");
+    $("#rbtns").html('<a onclick="print();" class="btn btn-sm btn-info pull-right"><i class="far fa-print"></i><span class="menu-text"> Imprimir</span></a>');
 
     $("#frmCx").submit(function(){
         $.post("fechaCaixa.asp", $(this).serialize(), function(data){ eval(data) });

@@ -50,7 +50,7 @@ while not loc.eof
                          <thead>
                             <tr>
                                 <th colspan="3" style="min-width:200px" class="text-center danger">
-                                    <i title="Configurações do Local" alt="Configurações do Local" style="cursor:pointer" onclick="location.href='?P=EdiProfQD&Pers=1&LId=<%=LocalID %>&Data=<%=Data %>';" class="fa fa-cog"></i>
+                                    <i title="Configurações do Local" alt="Configurações do Local" style="cursor:pointer" onclick="location.href='?P=EdiProfQD&Pers=1&LId=<%=LocalID %>&Data=<%=Data %>';" class="far fa-cog"></i>
                                     <%=left(ucase(loc("NomeLocal")),20)%><%=getNomeLocalUnidade(loc("UnidadeID"))%>
                                 </th>
                             </tr>
@@ -135,7 +135,7 @@ while not loc.eof
                                     {
                                         $(this).removeClass("btn-default");
                                         $(this).addClass("btn-danger");
-                                        $(this).html( $(this).html() + ' <i class="fa fa-lock"></i>' );
+                                        $(this).html( $(this).html() + ' <i class="far fa-lock"></i>' );
                                     }
                                 });
                                 <%

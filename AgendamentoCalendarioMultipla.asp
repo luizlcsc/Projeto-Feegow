@@ -63,9 +63,9 @@ set feriados=nothing
 <table width="100%" class="panel pn bs-component table table-condensed hidden-print" id="tblCalendario">
 <thead>
       <tr>
-        <th colspan="2" class="hand" onClick="changeMonth('<%=dateadd("m", -1, Data)%>');"><i class="fa fa-arrow-left"></i></th>
+        <th colspan="2" class="hand" onClick="changeMonth('<%=dateadd("m", -1, Data)%>');"><i class="far fa-arrow-left"></i></th>
         <th colspan="3" class="text-center"><%= ucase(left(monthname(MesX),3)) & " - " & Year(Data) %></th>
-        <th colspan="2" class="hand text-right" onClick="changeMonth('<%=dateadd("m", 1, Data)%>');" class="text-right"><i class="fa fa-arrow-right"></i></th>
+        <th colspan="2" class="hand text-right" onClick="changeMonth('<%=dateadd("m", 1, Data)%>');" class="text-right"><i class="far fa-arrow-right"></i></th>
       </tr>
       <tr>
         <th>DO</th>

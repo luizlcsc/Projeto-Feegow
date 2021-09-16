@@ -49,9 +49,9 @@
                                 <th><%=PendenciasSQL("NomeStatus")%></th>
                                 <th></th>
                                 <th>
-                                    <button type="button" class="btn btn-xs btn-primary"><i class="fa fa-edit"></i></button>
-                                    <button type="button" class="btn btn-success btn-xs"><i class="fa fa-check"></i></button>
-                                    <button type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                    <button type="button" class="btn btn-xs btn-primary"><i class="far fa-edit"></i></button>
+                                    <button type="button" class="btn btn-success btn-xs"><i class="far fa-check"></i></button>
+                                    <button type="button" class="btn btn-xs btn-danger"><i class="far fa-trash"></i></button>
                                 </th>
                             </tr>
 
@@ -73,6 +73,6 @@
     $(".crumb-active a").html("Pendências");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("");
-    $(".crumb-icon a span").attr("class", "fa fa-exclamation-circle");
+    $(".crumb-icon a span").attr("class", "far fa-exclamation-circle");
 
 </script>

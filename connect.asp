@@ -14,7 +14,7 @@ set db = newConnection(session("Banco"), sServidor)
 LicenseID=replace(session("Banco"), "clinic", "")
 PorteClinica = session("PorteClinica") 
 
-if PorteClinica="" or True then
+if PorteClinica="" then
     set LicencaSQL = db.execute("select COALESCE(PorteClinica,-1) PorteClinica FROM cliniccentral.licencas WHERE id="&treatvalzero(LicenseId))
     if not LicencaSQL.eof then
         PorteClinica = ccur(LicencaSQL("PorteClinica"))
@@ -6022,7 +6022,6 @@ end function
 
 
 ModoFranquia        = getConfig("ModoFranquia") = "1"
-PorteClinica = 1
 if ModoFranquia then
     PorteClinica = 5
 end if

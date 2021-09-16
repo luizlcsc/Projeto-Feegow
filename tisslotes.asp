@@ -467,9 +467,4 @@ $(".data-enviada").on('change', (arg) => {
 $(".guia, #marca").click(function(){
 	$("#selecionadas").html( $("input.guia:checked").length );
 });
-$(document).ready(function() {
-  setTimeout(function() {
-    $("#toggle_sidemenu_l").click()
-  }, 500);
-})
 </script>

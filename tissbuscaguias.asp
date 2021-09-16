@@ -174,7 +174,7 @@ end if
         <%
         if aut("loteX")=1 then
         %>
-            <button type="button" disabled class="btn-acao-guias btn btn-sm btn-warning" onclick="retiraGuia( $('.guia:checked').serialize() )"><i class="far fa-arrow-circle-o-left"></i> Retirar do Lote</button>
+            <button type="button" disabled class="btn-acao-guias btn btn-sm btn-warning" onclick="retiraGuia( $('.guia:checked').serialize() )"><i class="far fa-arrow-circle-left"></i> Retirar do Lote</button>
         <%
         end if
         %>
@@ -386,7 +386,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
 					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""far fa-arrow-circle-o-right""></i></button> FORA DE LOTE")
 				else
                     if aut("loteX")=1 then
-					    response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""far fa-arrow-circle-o-left""></i></button>")
+					    response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""far fa-arrow-circle-left""></i></button>")
 					end if
 					response.Write("<strong>Lote: </strong> "&guias("Lote"))
 				end if
@@ -684,7 +684,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""far fa-arrow-circle-o-right""></i></button> FORA DE LOTE")
 				else
                     if aut("loteX")=1 then
-                        response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""far fa-arrow-circle-o-left""></i></button>")
+                        response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""far fa-arrow-circle-left""></i></button>")
 				    end if
                         response.Write("<strong> Lote: </strong> "&guias("Lote")&"")
 

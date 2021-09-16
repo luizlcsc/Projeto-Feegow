@@ -700,6 +700,25 @@ min-width: 150px;
    <div class="panel heading-border panel-<%=ClasseStatus%>">
         <div class="panel-body">
 
+            <% if True then %>
+                <% if reg("GuiaSimplificada") = 1 then%>
+                    <script>
+                        $(document).ready(function(){
+                            guiaSimplificada();
+                        });
+                    </script>
+                <% end if %>
+                <div class="row">
+                    <div class="text-right">
+                        <label for="check-guia-simplificada">
+                            <input id="check-guia-simplificada" name="GuiaSimplificada" class="form-control" type="checkbox" value="1" style="height: 25px" <% if reg("GuiaSimplificada") = 1 then%>checked="checked"<% end if %>/> Convênio Simplificado
+                        </label>
+                    </div>
+                </div>
+            <% else %>
+                <input id="check-guia-simplificada" name="GuiaSimplificada" type="hidden" value="0" />
+            <% end if %>
+
             <input type="hidden" name="tipo" value="GuiaSADT" />
             <input type="hidden" name="GuiaID" value="<%=req("I")%>" />
 
@@ -1124,13 +1143,18 @@ function tissCompletaDados(T, I){
 		data:$("#GuiaSADT, #frmModal").serialize(),
 		success:function(data){
 			eval(data);
-			var convenio = $("#gConvenioID").val();
-            $.get(
-                'CamposObrigatoriosConvenio.asp?ConvenioID=' + convenio,
-                function(data){
-                    eval(data)
-                }
-            );
+
+			//não processa campos obrigatórios se for convênio simplificado
+            if (!$('#check-guia-simplificada').prop('checked')) {
+                var convenio = $("#gConvenioID").val();
+                $.get(
+                    'CamposObrigatoriosConvenio.asp?ConvenioID=' + convenio,
+                    function(data){
+                        eval(data)
+                    }
+                );
+            }
+
 		}
 	});
     if(T === "Plano"){
@@ -1140,6 +1164,75 @@ function tissCompletaDados(T, I){
 		atualizaTabela("tissprocedimentossadt", `tissprocedimentossadt.asp?I=${GuiadID}&T=${T}&setPlano=${setPlano}&setConvenio=${setConvenio}`)
     }
 }
+
+function simplificaElemento(el)
+{
+    let oldRequired =  $(el).attr('data-oldrequired');
+    if (!oldRequired) {
+        oldRequired = typeof $(el).attr('required') !== 'undefined' ? 1 : 0;
+    }
+    $(el).hide().attr('data-oldrequired', oldRequired).removeAttr('required').find('input, select').each(function() {
+        simplificaElemento(this);
+    });
+}
+
+function restauraElemento(el)
+{
+    const oldRequired = $(el).attr('data-oldrequired');
+    if (oldRequired === 1 || oldRequired === '1') {
+        $(el).attr('required', 'required');
+    }
+    $(el).show().removeAttr('data-oldrequired').find('input, select').each(function() {
+        restauraElemento(this);
+    });
+}
+
+function guiaSimplificada(restore)
+{
+    const isSimplificada = $('#check-guia-simplificada').prop('checked');
+
+    const elements = [
+        $('#qfnumerocarteira'),
+        $('#qfvalidadecarteira'),
+        $('#qfregistroans'),
+        $('#qfdataautorizacao'),
+        $('#qfsenha'),
+        $('#qfdatavalidadesenha'),
+        $('#qfnguiaoperadora'),
+        $('#qfnguiaprincipal'),
+        $('#qfcns'),
+        $('#qfcontratadosolicitantecodigonaoperadora'),
+        $('#qfdatasolicitacao'),
+        $('#qfindicacaoclinica'),
+        $('#qfconselhoprofissionalsolicitanteid'),
+        $('#qfnumeronoconselhosolicitante'),
+        $('#qfufconselhosolicitante'),
+        $('#qfcodigocbosolicitante'),
+        $('#qfcodigonaoperadora'),
+        $('#qfcodigocnes'),
+        $('#qftipoatendimentoid'),
+        $('#qfatendimentorn'),
+        $('#qfindicacaoacidenteid'),
+        $('#qftipoconsultaid'),
+        $('#qfcarateratendimentoid'),
+        $('#qfmotivoencerramentoid'),
+    ]
+
+    if (isSimplificada && !restore) {
+        for (let el of elements) {
+            simplificaElemento(el);
+        }
+    } else {
+        for (let el of elements) {
+            restauraElemento(el);
+        }
+    }
+
+}
+
+$('#check-guia-simplificada').on('change', function() {
+    guiaSimplificada();
+});
 
 $("#gConvenioID, #UnidadeID").change(function(){
     tissCompletaDados("Convenio", $("#gConvenioID").val());
@@ -1292,7 +1385,8 @@ function itemSADT(T, I, II, A){
 	        success:function(data){
                 $("#"+T+II).fadeIn();
                 $("#"+T+II).html(data);
-	            $("#Fator").trigger("keyup")
+	            $("#Fator").trigger("keyup");
+	            guiaSimplificada();
 	        }
 	    });
 	}

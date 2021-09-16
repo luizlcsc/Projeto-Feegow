@@ -1,8 +1,45 @@
 <!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
 <!--#include file="modal.asp"-->
+<% function formSaveSimplificado(FormID, btnSaveID, AcaoSeguinte)
+	%>
+    $("#<%=FormID%>").submit(function() {
+		$("#<%=btnSaveID%>").html('salvando');
+		$("#<%=btnSaveID%>").attr('disabled', 'disabled');
+        $.post("ConveniosSimplificadoSave.asp", $("#<%=FormID%>").serialize())
+        .done(function(data) {
+          $("#<%=btnSaveID%>").html('<i class="fa fa-save"></i> Salvar');
+		  $("#<%=btnSaveID%>").removeAttr('disabled');
+          eval(data);
+
+		  if(data.toLowerCase().indexOf("erro") <= 0){
+            <%=AcaoSeguinte%>
+          }
+        });
+        return false;
+    })
+	<%
+end function
+
+
+AlteraTipo = req("AlteraTipo")
+if AlteraTipo<>"" then
+    registroAns = ""
+    if AlteraTipo="simplificado" then
+        registroAns="simplificado"
+    end if
+
+    db_execute("UPDATE convenios SET RegistroANS='"&registroAns &"' WHERE id="&req("I"))
+
+    if AlteraTipo="simplificado" then
+        response.redirect("?P=ConveniosSimplificado&I="&req("I")&"&Pers=1")
+    end if
+
+end if
+%>
+
 <script>
-<% if req("I") <> "N" then %>
+<% if request.QueryString("I") <> "N" then %>
     function addRow() {
         $("#newQtd").val(parseInt($("#newQtd").val())+1);
         let num = $("#newQtd").val();
@@ -23,7 +60,7 @@
                         <td class="text-center">
                             <select class="form-control multisel tag-input-style" multiple name="NewPlanos${num}" id="NewPlanos${num}">
                                 <%
-                                    set sqlPlanos = db.execute("SELECT id, NomePlano FROM ConveniosPlanos WHERE sysActive = 1 AND ConvenioID = "&req("I"))
+                                    set sqlPlanos = db.execute("SELECT id, NomePlano FROM ConveniosPlanos WHERE sysActive = 1 AND ConvenioID = "&request.QueryString("I"))
                                     while not sqlPlanos.EOF
                                         response.write("<option value='"&sqlPlanos("id")&"'>"&sqlPlanos("NomePlano"))
                                         sqlPlanos.movenext
@@ -37,7 +74,7 @@
                             <div class="input-group">
                                 <input id="NewVigenciaInicio${num}" autocomplete="off" class="form-control input-mask-date date-picker" type="text" value="" name="NewVigenciaInicio${num}" data-date-format="dd/mm/yyyy" />
                                 <span class="input-group-addon">
-                                <i class="far fa-calendar bigger-110"></i>
+                                <i class="fa fa-calendar bigger-110"></i>
                                 </span>
                             </div>
                         </td>
@@ -45,7 +82,7 @@
                             <div class="input-group">
                                 <input id="NewVigenciaFim${num}" autocomplete="off" class="form-control input-mask-date date-picker" type="text" value="" name="NewVigenciaFim${num}" data-date-format="dd/mm/yyyy" />
                                 <span class="input-group-addon">
-                                <i class="far fa-calendar bigger-110"></i>
+                                <i class="fa fa-calendar bigger-110"></i>
                                 </span>
                             </div>
                         </td>
@@ -117,7 +154,7 @@
                     });
                   }
 
-                  $.post("ConveniosObservacoesUsuario.asp?Action=insert&I=<%=req("I")%>&Usuarios="+Usuarios+"&DataInicio="+VigenciaInicio+"&DataFim="+VigenciaFim+"&Planos="+Planos, {
+                  $.post("ConveniosObservacoesUsuario.asp?Action=insert&I=<%=request.QueryString("I")%>&Usuarios="+Usuarios+"&DataInicio="+VigenciaInicio+"&DataFim="+VigenciaFim+"&Planos="+Planos, {
                       Obs: Obs
                   }, function(data){
                        eval(data);
@@ -156,7 +193,7 @@
                       });
                   }
 
-                  $.post("ConveniosObservacoesUsuario.asp?Action=update&I=<%=req("I")%>&Usuarios="+Usuarios+"&DataInicio="+VigenciaInicio+"&DataFim="+VigenciaFim+"&id="+codigo+"&Planos="+Planos, {
+                  $.post("ConveniosObservacoesUsuario.asp?Action=update&I=<%=request.QueryString("I")%>&Usuarios="+Usuarios+"&DataInicio="+VigenciaInicio+"&DataFim="+VigenciaFim+"&id="+codigo+"&Planos="+Planos, {
                       Obs: Obs
                   }, function(data){
                        eval(data);
@@ -186,39 +223,18 @@
             delay: 1000
         });
     }
-    
+
     function abrirModalObs() {
-        $.get("ConveniosObservacoesUsuario.asp?Action=getAll&I=<%=req("I")%>", function(data) {
+        $.get("ConveniosObservacoesUsuario.asp?Action=getAll&I=<%=request.QueryString("I")%>", function(data) {
             $('#conveniosObs').children('tbody').html(data);
         });
     }
 </script>
 
 <%
-call insertRedir("Convenios", req("I"))
-set reg = db.execute("select * from convenios where id="&req("I"))
+call insertRedir("Convenios", request.QueryString("I"))
+set reg = db.execute("select * from convenios where id="&request.QueryString("I"))
 LimitarEscalonamento = reg("LimitarEscalonamento")&""
-
-registroAns = reg("registroAns")
-
-AlteraTipo = req("AlteraTipo")
-if AlteraTipo<>"" then
-    registroAns = ""
-    if AlteraTipo="simplificado" then
-        registroAns="simplificado"
-    end if
-
-    db_execute("UPDATE convenios SET RegistroANS='"&registroAns &"' WHERE id="&req("I"))
-
-    if AlteraTipo="normal" then
-        response.redirect("?P=Convenios&I="&req("I")&"&Pers=1")
-    end if
-
-end if
-
-if (registroAns="simplificado") then
-    response.redirect("?P=ConveniosSimplificado&I="&req("I")&"&Pers=1")
-end if
 
 
 function coalesce(valor1,valor2)
@@ -238,17 +254,16 @@ end function
 
 %>
 
-<%=header("Convenios", "Cadastro de Convênio: "&reg("NomeConvenio"), reg("sysActive"), req("I"), req("Pers"), "Follow")%>
+<%=header("Convenios", "Cadastro de Convênio Simplificado: "&reg("NomeConvenio"), reg("sysActive"), req("I"), req("Pers"), "Follow")%>
 
 <br />
 <div class="tabbable panel">
     <div class="tab-content panel-body">
         <div id="divCadastroConvenio" class="tab-pane in active">
-            <form method="post" id="frm" name="frm" action="save.asp">
-
-
-                <input type="hidden" name="I" value="<%=req("I")%>" />
-                <input type="hidden" name="P" value="<%=req("P")%>" />
+            <form method="post" id="frm" name="frm" action="ConveniosSimplificadoSave.asp">
+                <input type="hidden" name="I" value="<%=request.QueryString("I")%>" />
+                <input type="hidden" name="P" value="<%=request.QueryString("P")%>" />
+                <input type="hidden" name="registroans" value="simplificado" />
 
                 <div class="row">
                     <div class="col-md-2" id="divAvatar">
@@ -268,7 +283,7 @@ end function
                                 </div>
                                 <div id="divDisplayFoto" style="display: <%= divDisplayFoto %>">
                                     <img id="avatarFoto" src="<%=arqEx(reg("Foto"), "Perfil")%>" class="img-thumbnail" width="100%" />
-                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position: absolute; left: 18px; bottom: 6px;"><i class="far fa-trash"></i></button>
+                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position: absolute; left: 18px; bottom: 6px;"><i class="fa fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -291,26 +306,8 @@ end function
                               </div>
                         </div>
                         <div class="row">
-                            <%=quickField("text", "RegistroANS", "Reg. na ANS", 2, reg("RegistroANS"), "", "", "")%>
-                            <%'=quickField("text", "NumeroContrato", "C&oacute;digo na Operadora", 3, reg("NumeroContrato"), "", "", "")%>
                             <%= quickField("number", "RetornoConsulta", "Retorno Consulta", 2, reg("RetornoConsulta"), "", "", " placeholder='Dias'") %>
-                            <div class="col-md-2 qf">
-                                <label>Tipo Recebimento</label>
-                                <select class="form-control" id="DiasReceb" name="DiasReceb">
-                                    <option value="1">Dias corridos</option>
-                                    <option value="2">Dia do Mês Fixos</option>
-                                </select>
-                            </div>
-                            <%= quickField("number", "DiasRecebimento", "Dias para Recebimento", 3, reg("DiasRecebimento"), "", "", " placeholder='Dias'") %>
-                            <%= quickfield("number", "DataRecebimentoEspecifico", "Dia do Recebimento", 3, reg("DataRecebimentoEspecifico"), "", "", "") %>
-                            <%'= quickField("text", "FaturaAtual", "Fatura Atual", 2, reg("FaturaAtual"), "", "", " placeholder='N&uacute;mero'") %>
-
-                            <%= quickField("simpleSelect", "VersaoTISS", "Versão da TISS", 2, reg("VersaoTISS"), "select * from cliniccentral.tissversao", "Versao", "") %>
-
-                            <%'= quickField("contratado", "Contratado", "Contratado", 3 , reg("Contratado"), "", "", "") %>
-                            <%'= quickField("simpleSelect", "ContaRecebimento", "Conta para Recebimento", 3, reg("ContaRecebimento"), "select * from sys_financialcurrentaccounts where AccountType=2 order by AccountName", "AccountName", "") %>
-                        </div>
-                        <div class="row">
+                            <%= quickField("number", "DiasRecebimento", "Dias para Recebimento", 2, reg("DiasRecebimento"), "", "", " placeholder='Dias'") %>
                             <%= quickField("text", "NumeroGuiaAtual", "Nº da Guia Atual",2 , reg("NumeroGuiaAtual"), "", "", "") %>
                             <%=quickField("empresaMultiIgnore", "Unidades", "Limitar Unidades", 2, reg("Unidades"), "", "", "")%>
                         </div>
@@ -333,65 +330,18 @@ end function
                     <%= quickField("email", "Email", "E-mail", 4, reg("email"), "", "", "") %>
                     <%= quickField("text", "Contato", "Pessoa de Contato", 2, reg("Contato"), "", "", "") %>
                 </div>
-                <hr class="short alt" />
                 <div class="row">
-                    <%= quickField("number", "segundoProcedimento", "% do 2&deg; Procedimento", 2, reg("segundoProcedimento"), "", "", "") %>
-                    <%= quickField("number", "terceiroProcedimento", "% do 3&deg; Procedimento", 2, reg("terceiroProcedimento"), "", "", "") %>
-                    <%= quickField("number", "quartoProcedimento", "% do 4&deg; Procedimento", 2, reg("quartoProcedimento"), "", "", "") %>
-                    <%= quickField("multiple", "LimitarEscalonamento", "Limitar Grupo de Escalonamento", 2, LimitarEscalonamento, "SELECT ID,NomeGrupo FROM procedimentosgrupos WHERE sysActive = 1 ORDER BY  2", "NomeGrupo", " semVazio no-select2") %>
-
-                </div>
-                <div class="row mt15">
-                    <%= quickField("multiple", "ModoDeCalculo", "Unidade de Cálculo", 2, reg("ModoDeCalculo"), "select 'R$' id, 'R$' Descricao UNION ALL select 'CH', 'CH' UNION ALL SELECT 'UCO', 'UCO' UNION ALL SELECT 'PORTE', 'PORTE' UNION ALL SELECT 'FILME', 'FILME'", "Descricao", " semVazio no-select2") %>
-                    <%= quickField("currency", "ValorCH", "Valor do CH", 2, reg("ValorCH"), " sql-mask-4-digits " , "", "") %>
-                    <%= quickField("currency", "ValorUCO", "Valor da UCO", 2, reg("ValorUCO"), " sql-mask-4-digits " , "", "") %>
-                    <%= quickField("currency", "ValorFilme", "Valor m² do Filme", 2, reg("ValorFilme"), " sql-mask-4-digits ", "", "") %>
-
-                </div>
-                <hr class="short alt" />
-                <h4>Tabelas Padrão</h4>
-                <div class="row">
-                    <%= quickField("simpleSelect", "TabelaPadraoMateriais", "Materiais", 3, reg("TabelaPadraoMateriais"), "select * from cliniccentral.tabelasprocedimentos order by codigo", "descricao", " no-select2 semVazio ") %>
-                    <%= quickField("simpleSelect", "TabelaPadraoMedicamentos", "Medicamentos", 3, reg("TabelaPadraoMedicamentos"), "select * from cliniccentral.tabelasprocedimentos order by codigo", "descricao", " no-select2 semVazio ") %>
-                    <%= quickField("simpleSelect", "TabelaPadraoTaxas", "Taxas", 3, reg("TabelaPadraoTaxas"), "select * from cliniccentral.tabelasprocedimentos order by codigo", "descricao", " no-select2 semVazio ") %>
-                    <%= quickField("simpleSelect", "TabelaPadraoFilmes", "Filmes", 3, reg("TabelaPadraoFilmes"), "select * from cliniccentral.tabelasprocedimentos order by codigo", "descricao", " no-select2 semVazio ") %>
-                </div>
-                <div class="row">
-                     <%' quickField("simpleSelect", "TabelaCalculo", "Tabela de Cálculos",3, reg("TabelaCalculo"), "select * from tabelasconvenios order by Descricao", "Descricao", " no-select2 ") %>
-                     <%= quickField("simpleSelect", "TabelaPadrao", "Procedimentos", 3, coalesce(reg("TabelaPadrao"),"22"), "SELECT CONCAT(id*-1,'') as id,Descricao FROM tabelasconvenios union SELECT id,concat(id,' - ',Descricao,' (Central)') as Descricao FROM cliniccentral.tabelasconvenios", "descricao", " no-select2 ") %>
-                     <%' quickField("simpleSelect", "TabelaPadrao", "Procedimentos", 3, reg("TabelaPadrao"), "select * from tisstabelas order by descricao", "descricao", " no-select2 ") %>
-                     <%= quickField("simpleSelect", "TabelaCalculo", "Tabela de Cálculos",3, reg("TabelaCalculo"), "SELECT CONCAT(id*-1,'') as id,Descricao FROM tabelasconvenios union SELECT id,concat(Descricao,' (Central)') as Descricao FROM cliniccentral.tabelasconvenios WHERE id not in(22,0,90,94,98,99)", "Descricao", " no-select2 ") %>
-                     <%= quickField("simpleSelect", "TabelaPorte", "Tabela de Porte", 3, reg("TabelaPorte"), "SELECT concat(id*-1,'') id,Descricao FROM tabelasportes WHERE sysActive = 1 UNION SELECT id,Descricao FROM cliniccentral.tabelasportes WHERE UCO IS NOT NULL", "Descricao", " no-select2 ") %>
-                </div>
-                <div class="row">
-                    <div class="col-md-12"><br>
-                        <%call Subform("contratosconvenio", "ConvenioID", req("I"), "frm")%>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12" id="subformsPlanos">
-                        <%call Subform("ConveniosPlanos", "ConvenioID", req("I"), "frm")%>
-                    </div>
-                    <script>
-                        $("#subformsPlanos [name^='ValorPlanoCH'],#subformsPlanos [name^='ValorPlanoFilme'],#subformsPlanos [name^='ValorPlanoUCO']").addClass("sql-mask-4-digits")
-                    </script>
-                </div>
-<!--                <div class="row">-->
-                    <%'= quickField("memo", "Obs", "Observa&ccedil;&otilde;es "&"&nbsp;&nbsp;<button type=""button"" onclick="""" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""far fa-plus""></i></button>", 11, "", "", "", "") %>
-<!--                </div>-->
-                <div class="row">
-<!--                <button type="button" onclick="" class="btn btn-xs btn-success" data-toggle="modal" data-target="#modalConveniosObs"><i class="far fa-plus"></i></button>-->
-                    <%= quickField("editor", "Obs", "Observações "&"&nbsp;&nbsp;<button type=""button"" onclick=""abrirModalObs()"" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""far fa-plus""></i></button>", 12, reg("Obs"), "50", "", "")%>
+                    <%= quickField("editor", "Obs", "Observações "&"&nbsp;&nbsp;<button type=""button"" onclick=""abrirModalObs()"" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""fa fa-plus""></i></button>", 12, reg("Obs"), "50", "", "")%>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12" style="text-align: right; margin-bottom: 20px">
-                        <button type="button" class="btn btn-sm btn-warning" onclick="if(confirm('Tem certeza que deseja alterar este convênio para modo simples? Essa ação removerá o Registro ANS do convênio.')) { window.location.replace('?P=ConveniosSimplificado&AlteraTipo=simplificado&I=<%=req("I")%>&Pers=1') }"  style="margin: 2px;">
-                            <i class="far fa-exclamation-circle"></i> Alterar para convênio simplificado
+                        <button type="button" class="btn btn-sm btn-warning" onclick="window.location.replace('?P=Convenios&AlteraTipo=normal&I=<%=request.QueryString("I")%>&Pers=1');"  style="margin: 2px; ">
+                            <i class="far fa-exclamation-circle"></i> Ver convênio completo
                         </button>
                     </div>
-
                 </div>
+
               <button class="hidden" id="save" type="button"></button>
 
             </form>
@@ -437,12 +387,9 @@ end function
         <div id="divValores" class="tab-pane" style="overflow-x: scroll">
             Carregando...
         </div>
-        <div id="divValoresDespesas" class="tab-pane">
-            Carregando...
-        </div>
-        <div id="divValoresPlanos" class="tab-pane">
-            Carregando...
-        </div>
+          <div id="divValoresPlanos" class="tab-pane">
+                    Carregando...
+                </div>
         <div id="divValoresImpostos" class="tab-pane">
                             Carregando...
                         </div>
@@ -482,14 +429,10 @@ end function
                                     ValorMarcado=cint(ValorMarcado)
                                 end if
                             end if
-                            Valor = reg(Coluna)&""
-                            
-                            if Valor=true or Valor="" or Valor="Verdadeiro" or Valor = "1" then
+                            Valor = reg(Coluna)
+                            if Valor=true then
                                 Valor = 1
                             end if
-                            if Valor = "Falso" or Valor = false or valor = "0" then
-                                Valor = 0
-                            end if 
 
                             %>
                             <div class="checkbox-custom checkbox-primary">
@@ -510,100 +453,30 @@ end function
                 <br />
                 <div class="row">
                     <%=quickfield("select", "MesclagemMateriais", "Despesas anexas em guias com mais de um procedimento", 6, reg("MesclagemMateriais"), "select 'Somar' id, 'Inserir os materiais de todos os procedimentos' Valor UNION ALL select 'Maior', 'Inserir somente os materiais do primeiro procedimento'", "Valor", "") %>
-                
+                </div>
+                <div class="row">
                     <%=quickfield("simpleSelect", "SadtImpressao", "Tipo de impressão da SADT", 6, reg("SadtImpressao"), "select 'sadt' id, 'SP/SADT Padrão' Valor UNION ALL select 'sus', 'SUS' UNION ALL SELECT 'gto', 'Odontologia'", "Valor", " semVazio") %>
-                    <%=quickfield("simpleSelect", "EmissaoGuiaProtocolos", "Emissão de guia para os protocolos", 6, reg("EmissaoGuiaProtocolos"), "SELECT 'dia' AS id, 'Por dia' AS Valor UNION ALL SELECT 'mensal', 'Mensal' UNION ALL SELECT 'ciclo', 'Por Ciclo'", "Valor", " semVazio") %>
                 </div>
                 <div class="row">
-                    <%
-                    camposObrigatorios = reg("camposObrigatorios")
-                    XMLTagsOmitir = reg("XMLTagsOmitir")
-
-                    sqlFields = "SELECT 'Plano' id, 'Plano' Campo UNION ALL " &_
-                                " ( SELECT 'Data Validade da Carteira' id, 'Data Validade da Carteira' Campo ) UNION ALL "  &_
-                                " ( SELECT 'Data da Autorização' id, 'Data da Autorização' Campo) UNION ALL " &_
-                                " (SELECT 'Senha' id, 'Senha' Campo ) UNION ALL " &_
-                                " (SELECT 'Validade da Senha' id, 'Validade da Senha' Campo) UNION ALL " &_
-                                " (SELECT 'N° da Guia na Operadora' id, 'N° da Guia na Operadora' Campo) UNION ALL " &_
-                                " (SELECT 'N° da Guia Principal' id, 'N° da Guia Principal' Campo) UNION ALL " &_
-                                " (SELECT 'Observacoes' id, 'Observações' Campo) UNION ALL " &_
-                                " (SELECT 'CNS' id, 'CNS' Campo) UNION ALL " &_
-                                " (SELECT 'Identificador' id, 'Identificador' Campo) UNION ALL " &_
-                                " (SELECT 'Código na Operadora' id, 'Código na Operadora' Campo) UNION ALL " &_
-                                " (SELECT 'Data da Solicitação' id, 'Data da Solicitação' Campo) UNION ALL " &_
-                                " (SELECT 'Indicação Clínica' id, 'Indicação Clínica' Campo) UNION ALL " &_
-                                " (SELECT 'Profissional Solicitante' id, 'Profissional Solicitante' Campo) UNION ALL " &_
-                                " (SELECT 'Código de Barras' id, 'Código de Barras' Campo) UNION ALL " &_
-                                " (SELECT 'TipoConsultaID' id, 'Tipo de Consulta' Campo) UNION ALL " &_
-                                " (SELECT 'Via' id, 'Via' Campo) UNION ALL " &_
-                                " (SELECT 'Tec' id, 'Técnica' Campo) UNION ALL " &_
-                                " (SELECT 'Grau de participação' id, 'Grau de participação' Campo) UNION ALL " &_
-                                " (SELECT 'Nome do Contratado' id, 'Nome do Contratado' Campo) "
-
-                    %>
-
-                    <%=quickField("simpleSelect", "TipoAtendimentoID", "Tipo de Atendimento Padrão", 4, reg("TipoAtendimentoID"), "select * from tisstipoatendimento order by descricao", "descricao", "  ") %>
-                    <%=quickField("multiple", "camposObrigatorios", "Campos obrigatórios", 4, camposObrigatorios, sqlFields, "Campo", "")%>
-                    <%
-                    XMLTagsOmitirSQL = "SELECT id , Tag "&_
-                                       "FROM ( "&_
-                                       "SELECT 'procedimentosExecutados' AS id, 'procedimentosExecutados' AS Tag "&_
-                                       "UNION "&_
-                                       "SELECT 'outrasDespesas' AS id, 'outrasDespesas' AS Tag) AS t"
-                    response.write(quickField("multiple", "XMLTagsOmitir", "Omitir Tags - TISS 03.04.00", 4, XMLTagsOmitir, XMLTagsOmitirSQL, "Tag", ""))
-                    %>
-                </div>
-                <div class="row">
-                    <%= quickField("simpleSelect", "IndicacaoAcidenteID", "Indica&ccedil;&atilde;o de acidente Padrão", 4, reg("IndicacaoAcidenteID"), "select * from tissindicacaoacidente order by descricao", "descricao", "semVazio ") %>
+                    <%= quickField("simpleSelect", "TipoAtendimentoID", "Tipo de Atendimento Padrão", 6, reg("TipoAtendimentoID"), "select * from tisstipoatendimento order by descricao", "descricao", "  ") %>
                 </div>
             </form>
         </div>
     </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(e) {
-        <%call formSave("frm, #WS, #frmRegras", "save", "")%>
+    $(document).ready(function(e) {
+        <%call formSaveSimplificado("frm, #WS, #frmRegras", "save", "")%>
         $("#save").click(function() {
             $("#frm").submit();
         });
-
-        let DU = $("#qfdiasrecebimento");
-        let DE = $("#qfdatarecebimentoespecifico");
-        if($("#DiasRecebimento").val() == "" || $("#DiasRecebimento").val() == 0){
-            $('select[name="DiasReceb"]').find('option[value="2"]').attr("selected",true);
-            DU.hide();
-            DE.show();
-        }else{
-            $('select[name="DiasReceb"]').find('option[value="1"]').attr("selected",true);
-            DE.hide();
-            DU.show();
-        }
-});
-
-$("#DiasReceb").change(function()
-{
-    let DU = $("#qfdiasrecebimento");
-    let DE = $("#qfdatarecebimentoespecifico");
-    if($(this).val() == "2"){
-        DU.hide();
-        $("#DiasRecebimento").val("");
-        DE.show();
-    }
-    if($(this).val() == "1"){
-        DE.hide();
-        $("#DataRecebimentoEspecifico").val("");
-        DU.show();
-    }
-});
-
+    });
 
     $("#Cep").keyup(function(){
         getEndereco();
     });
     var resultadoCEP
     function getEndereco() {
-        //alert()
-        //	alert(($("#Cep").val() *= '_'));
         var temUnder = /_/i.test($("#Cep").val())
         if(temUnder == false){
             $.getScript("webservice-cep/cep.php?cep="+$("#Cep").val(), function(){
@@ -632,7 +505,7 @@ $("#DiasReceb").change(function()
 <script type="text/javascript">
     //js exclusivo avatar
     <%
-    Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
+    Parametros = "P="&request.QueryString("P")&"&I="&request.QueryString("I")&"&Col=Foto&L="& replace(session("Banco"), "clinic", "")
     %>
     function removeFoto(){
         if(confirm('Tem certeza de que deseja excluir esta imagem?')){
@@ -677,17 +550,6 @@ $("#DiasReceb").change(function()
                 }
                 else {
                     var type = $.trim(file.type);
-                    /*if( ( type.length > 0 && ! (/^image\/(jpe?g|png|gif)$/i).test(type) )
-							|| ( type.length == 0 && ! (/\.(jpe?g|png|gif)$/i).test(file.name) )//for android's default browser!
-						) {
-							alert('Please select an image file!');
-							return false;
-						}
-
-					if( file.size > 110000 ) {//~100Kb
-						alert('File size should not exceed 100Kb!');
-						return false;
-					}*/
                 }
 
                 return true;
@@ -720,7 +582,7 @@ $("#DiasReceb").change(function()
 
     function tissCompletaDados(T, I, N){
         $.post("tissCompletaDados.asp?I="+I+"&T="+T,{
-            ConvenioID:"<%=req("I")%>",
+            ConvenioID:"<%=request.QueryString("I")%>",
             Numero:N,
             },function(data,status){
                 eval(data);
@@ -765,7 +627,7 @@ $("#DiasReceb").change(function()
                     <th style="width: 10%" class="text-center">Início da Vigência</th>
                     <th style="width: 10%" class="text-center">Fim da Vigência</th>
                     <th class="text-center">Observações</th>
-                    <th style="width: 5%" class="text-center"><button type="button" class="btn btn-xs btn-success mn" onclick="addRow();"><i class="far fa-plus"></i></button></th>
+                    <th style="width: 5%" class="text-center"><button type="button" class="btn btn-xs btn-success mn" onclick="addRow();"><i class="fa fa-plus"></i></button></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -779,23 +641,5 @@ $("#DiasReceb").change(function()
     </div>
   </div>
 </div>
-<!--#include file="Classes/Logs.asp"-->
-<%
-if session("Admin")=1 then
-%>
-<div class="tabbable panel">
-    <div class="tab-content panel-body">
-        <%=dadosCadastro("convenios" , req("I"))%>
-    </div>
-</div>
-<%
-end if
-%>
-<script>
-$(document).ready(function(e) {
-    <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>
-          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="far fa-copy"></i> Replicar</button>`)
-    <% end if %>
-});
-</script>
+
 <!--#include file="disconnect.asp"-->

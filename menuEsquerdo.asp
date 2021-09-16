@@ -1410,7 +1410,7 @@ end if
                     <a href="?P=tabelasatualizacao&Pers=1"><span class="far fa-table"></span> <span class="sidebar-title">Atualizar Tabela MAT / MED</span></a>
                 </li>
             <%
-    case "convenios"
+    case "convenios", "conveniossimplificado"
         if not (isnumeric(req("I")) and req("I")<>"")then %>
                 <li>
                     <a href="?P=tabelasconvenios&Pers=Follow"><span class="far fa-credit-card"></span> <span class="sidebar-title">Tabelas de Conv&ecirc;nio</span></a>
@@ -1436,6 +1436,7 @@ end if
                 <a data-toggle="tab" href="#divValores" onclick="ajxContent('ConveniosValoresProcedimentos&ConvenioID=<%=req("I")%>', '', '1', 'divValores')">
                     <span class="far fa-usd"></span> <span class="sidebar-title">Valores por Procedimento</span></a>
             </li>
+            <% if  lcase(req("P")) <> "conveniossimplificado" THEN %>
             <li>
                 <a data-toggle="tab" href="#divValoresDespesas" onclick="ajxContent('ConveniosValoresDespesas&ConvenioID=<%=request.QueryString("I")%>', '', '1', 'divValoresDespesas')">
                 <span class="far fa-usd"></span> <span class="sidebar-title">Valores por Despesas anexas</span></a>
@@ -1467,6 +1468,10 @@ end if
                     </a>
                 </li>
             <% END IF %>
+
+            <%
+            end if
+            %>
             <%
         end if
     case "equipamentos"

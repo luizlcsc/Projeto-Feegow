@@ -30311,8 +30311,15 @@ select[tabindex="-1"], .multisel {
     border:none;
 }
 
+.select-insert-item{
+    font-size:10px;
+    padding-left:4px;
+    text-align:left;
+    width: 200px;
+}
+
 .ResultSelectContent .SelectMultipleTitle{
-    width:300px;
+    width: 200px;
     padding: 5px;
     font-weight: 600;
     margin: 2px;
@@ -30417,4 +30424,18 @@ select[tabindex="-1"], .multisel {
 
 .mfp-bg{
     background: rgba(128, 128, 128, 0.85) !important;
+}
+
+.btn-group-movement .btn{
+    font-size: 11px;
+}
+
+.modal-pagar{
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(225, 225, 225);
+    width: 900px;
+    z-index: 10000;
+    box-shadow: 0 3px 18px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    display:none;
 }

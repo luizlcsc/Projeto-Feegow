@@ -172,7 +172,7 @@ end if
 set recibosGerados = db.execute("SELECT * FROM recibos WHERE sysActive=1 AND InvoiceID="&InvoiceID)
 if not recibosGerados.eof then
     desabilitarReemitirRecibo = " disabled "
-    textButtom = "Gerar novamente o recibo"
+    textButtom = "Gerar novo recibo"
     classButtom = "warning"
     if aut("recibosA") = 1 or session("Admin") = 1 then
         desabilitarReemitirRecibo = " "

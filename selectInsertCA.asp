@@ -107,7 +107,7 @@ if session("Banco")="clinic5760" then
 end if
             if list("recurso")<>"Caixa" or (list("recurso")="Caixa" and instr(list("Coluna"), "Aberto")>0) then
 		    %>
-		    <div type="button" class="select-insert-item text-left" style="font-size:10px; padding-left:4px; text-align:left; width:300px" data-title="<%=list("coluna")%>" data-valor="<%=list("associacao")&"_"&list("id")%>" <%= replace(replace(ref("othersToSelect"), "onchange", "onclick"), "this.id", "'select-"&ref("selectID")&"'") %>>
+		    <div type="button" class="select-insert-item text-left" data-title="<%=list("coluna")%>" data-valor="<%=list("associacao")&"_"&list("id")%>" <%= replace(replace(ref("othersToSelect"), "onchange", "onclick"), "this.id", "'select-"&ref("selectID")&"'") %>>
                 <%=list("coluna")%></div>
 		    <%
             end if

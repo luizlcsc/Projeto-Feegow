@@ -2201,7 +2201,12 @@ function formSave(FormID, btnSaveID, AcaoSeguinte)
 		  if(data.toLowerCase().indexOf("erro") <= 0){
             <%=AcaoSeguinte%>
           }
-        });
+        }).fail(function(data) {
+            $("#<%=btnSaveID%>").html('<i class="far fa-save"></i> Salvar');
+            $("#<%=btnSaveID%>").removeAttr('disabled');
+
+            showMessageDialog("Os dados não foram salvos. Tente novamente mais tarde.", "danger");
+          });
         return false;
     })
 	<%
@@ -3567,7 +3572,7 @@ function btnParcela(MovimentacaoID, ValorPago, Valor, Vencimento, CD, CaixaID)
         spanVenc = ""
     end if
     if MovimentacaoID>0 then
-        zoom = "<a class='btn btn-xs btn-default' href=""javascript:modalPaymentDetails('"&MovimentacaoID&"');""> <i class=""far fa-search-plus bigger-140 white""></i></a>"
+        zoom = "<a class='btn btn-xs btn-default' title='Ver detalhes' href=""javascript:modalPaymentDetails('"&MovimentacaoID&"');""> <i class=""far fa-search-plus bigger-140 white""></i></a>"
         btnAnexo = "<a class='btn btn-xs btn-system' style='float:right' href=""javascript:modalPaymentAttachments('"&MovimentacaoID&"');"" title='Anexar um arquivo'> <i class=""far fa-paperclip bigger-140 white""></i></a>"
     else
         zoom = ""
@@ -3575,7 +3580,7 @@ function btnParcela(MovimentacaoID, ValorPago, Valor, Vencimento, CD, CaixaID)
         btnTef=""
     end if
 
-	btnParcela = "<div class='btn-group'><span "& spanVenc &" class='btn btn-xs btn-"&classe&" text-right'>"&txt &"</span>"&zoom& btnAnexo &"</div>"
+	btnParcela = "<div class='btn-group btn-group-movement'><span "& spanVenc &" class='btn btn-xs btn-"&classe&" text-right'>"&txt &"</span>"&zoom& btnAnexo &"</div>"
 
 	btnParcela = btnParcela
 end function

@@ -351,23 +351,24 @@ end if
 
         <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN )%>
 
+        <%=quickField("datepicker", "sysDate", "Data", 2, sysDate, "input-mask-date", "", ""&dateReadonly)%>
+
         <%
-        if scp()=1  then
-            call quickField("datepicker", "sysDate", "Data", 1, sysDate, "input-mask-date", "", ""&dateReadonly)
-            call quickField("text", "nroNFe", "N. Fiscal", 1, nroNFe, "text-right", "", "")
-            call quickField("datepicker", "dataNFe", "Data NF", 1, dataNFe, "text-right", "", "")
-            call quickField("text", "valorNFe", "Valor NF", 1, fn(valorNFe), "text-right input-mask-brl", "", "")
-        elseif scp()=2 then
-            %>
-            <div class="col-md-2">
-                <button type="button" class="btn btn-block btn-default mt25" onclick="nfiscal(<%= InvoiceID %>)">N. Fiscal</button>
-            </div>
-            <%
-        else
-            call quickField("datepicker", "sysDate", "Data", 2, sysDate, "input-mask-date", "", ""&dateReadonly)
-            call quickField("text", "nroNFe", "N. Fiscal", 2, nroNFe, "text-right", "", "")
+
+        sqlTabela = "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' "&franquiaUnidade(" AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),true) ")&" order by NomeTabela"
+
+        set ValorPagoSQL = db_execute("SELECT ii.*, left(md5(ii.id), 7) as senha, SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement sf LEFT JOIN itensinvoice ii ON ii.InvoiceID = sf.InvoiceID WHERE sf.InvoiceID="&InvoiceID)
+
+        if not ValorPagoSQL.eof then
+            Executado = ValorPagoSQL("Executado")
+            camposBloqueados = ""
+            if ValorPagoSQL("ValorPago")>0 and Executado = "S" then
+                camposBloqueados = "disabled"
+            end if
         end if
         %>
+        <%= quickfield("simpleSelect", "invTabelaID", "Tabela / Parceria", 2, TabelaID, sqlTabela , "NomeTabela", " no-select2 mn  onchange=""tabelaChange()"" data-row='no-server' "& camposRequired&camposBloqueados) %>
+
         <div class="col-md-3">
             <%=quickField("memo", "Description", "", 1, data("Description"), "", "", " rows='2' placeholder='Observa&ccedil;&otilde;es...'")%>
         </div>
@@ -418,20 +419,22 @@ end if
                 %>
             </div>
             <% end if %>
+
             <%
-                sqlTabela = "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' "&franquiaUnidade(" AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),true) ")&" order by NomeTabela"
-
-                set ValorPagoSQL = db_execute("SELECT ii.*, left(md5(ii.id), 7) as senha, SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement sf LEFT JOIN itensinvoice ii ON ii.InvoiceID = sf.InvoiceID WHERE sf.InvoiceID="&InvoiceID)
-
-                if not ValorPagoSQL.eof then
-                    Executado = ValorPagoSQL("Executado")
-                    camposBloqueados = ""
-                    if ValorPagoSQL("ValorPago")>0 and Executado = "S" then
-                        camposBloqueados = "disabled"
-                    end if
-                end if
+            if scp()=1 or True then
+                call quickField("text", "nroNFe", "N. Fiscal", 2, nroNFe, "text-right", "", "")
+                call quickField("datepicker", "dataNFe", "Data NF", 2, dataNFe, "text-right", "", "")
+                call quickField("text", "valorNFe", "Valor NF", 2, fn(valorNFe), "text-right input-mask-brl", "", "")
+            elseif scp()=2 then
+                %>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-block btn-default mt25" onclick="nfiscal(<%= InvoiceID %>)">N. Fiscal</button>
+                </div>
+                <%
+            else
+                call quickField("text", "nroNFe", "N. Fiscal", 2, nroNFe, "text-right", "", "")
+            end if
             %>
-            <%= quickfield("simpleSelect", "invTabelaID", "Tabela / Parceria", 2, TabelaID, sqlTabela , "NomeTabela", " no-select2 mn  onchange=""tabelaChange()"" data-row='no-server' "& camposRequired&camposBloqueados) %>
             <%
             if camposBloqueados<>"" then
                 %>
@@ -506,7 +509,7 @@ end if
     <%
     if CD="C" then
     %>
-        <div class=" mb15">
+        <div class="row mb15">
             <div class="col-md-2"><br/>
             <%
             if session("Banco")="clinic5459" then

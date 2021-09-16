@@ -159,7 +159,7 @@ else
             if GuiaStatus <> "" then 
                 GuiaStatus = "guiastatus="&GuiaStatus&" , "
             end if
-            if ref("GuiaSimplificada") = 1 then
+            if ref("GuiaSimplificada")&"" = "1" then
                 GuiaSimplificada = 1
             else
                 GuiaSimplificada = 0

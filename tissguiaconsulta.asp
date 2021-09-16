@@ -473,7 +473,7 @@ end if
                         });
                     </script>
                 <% end if %>
-                <div class="row">
+                <div class="row hidden">
                     <div class="text-right">
                         <label for="check-guia-simplificada">
                             <input id="check-guia-simplificada" name="GuiaSimplificada" class="form-control" type="checkbox" value="1" style="height: 25px" <% if reg("GuiaSimplificada") = 1 then%>checked="checked"<% end if %>/> Convênio Simplificado

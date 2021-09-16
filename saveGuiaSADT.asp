@@ -203,7 +203,7 @@ else
         if isnull(Contratado) then
             Contratado="FALSE"
         end if
-        if ref("GuiaSimplificada") = 1 then
+        if ref("GuiaSimplificada")&"" = "1" then
             GuiaSimplificada = 1
         else
             GuiaSimplificada = 0

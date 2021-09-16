@@ -666,7 +666,7 @@ if erro="" then
 else
 	%>
     new PNotify({
-        title: 'N&Atilde;O AGENDADO!',
+        title: 'Não agendado!',
         text: '<%=erro%>',
         type: 'danger',
         delay: 3000

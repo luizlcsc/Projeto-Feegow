@@ -509,7 +509,7 @@ end if
         <div class="row">
             <%= quickfield("datepicker", "Data", "Data", 2, Data, "", "", "") %>
             <div class="col-md-2">
-                <button type="button" class="btn btn-primary btn-block mt25" onclick="location.href='./?P=FechamentoData&Pers=1&Data='+$('#Data').val()">Mudar Data</button>
+                <button type="button" class="btn btn-primary btn-block mt25" onclick="location.href='./?P=FechamentoData&Pers=1&Data='+$('#Data').val()"><i class="far fa-search"></i> Buscar</button>
             </div>
         </div>
     <form method="post" id="frm">
@@ -588,7 +588,7 @@ end if
                             btnFDisabled = " disabled "
                         end if
 
-                        btnF = "<i "&btnFDisabled&" class='btn btn-warning btn-xs far fa-unlock' onclick='if(confirm(`Tem certeza de que deseja fechar esta data e as anteriores?`))aa(`fec`, `f`, `"& Data &"`)'></i>"
+                        btnF = "<i "&btnFDisabled&" class='btn btn-warning btn-xs far fa-unlock' title='Fechar data' data-toggle='tooltip' onclick='if(confirm(`Tem certeza de que deseja fechar esta data e as anteriores?`))aa(`fec`, `f`, `"& Data &"`)'></i>"
 
                         botaoFecharExibido = True
                     else
@@ -598,14 +598,14 @@ end if
                             disabledReaberturaDeCaixa = " disabled "
                         end if
 
-                        btnF = "<i class='btn btn-success btn-xs far fa-lock'"&disabledReaberturaDeCaixa&"onclick='if(confirm(`Tem certeza de que deseja reabrir esta data?`))aa(`fec`, `a`, `"& Data &"`)'></i>"
+                        btnF = "<i class='btn btn-success btn-xs far fa-lock'"&disabledReaberturaDeCaixa&" title='Reabrir data' data-toggle='tooltip' onclick='if(confirm(`Tem certeza de que deseja reabrir esta data?`))aa(`fec`, `a`, `"& Data &"`)'></i>"
                     end if
 
                     if aut("aprovarfinanciallock") and not isnull(sysUserBloqueio) then
                         if isnull(sysUserConfirmacao) then 'calcula os saldos manualmente
-                            btnA = "<i class='btn btn-default btn-xs far fa-check' onclick='if(confirm(`Tem certeza de que deseja aprovar esta data e as anteriores?`)) aa(`apr`, `a`, `"& Data &"`)'></i>"
+                            btnA = "<i class='btn btn-default btn-xs far fa-check' title='Aprovar fechamento' data-toggle='tooltip' onclick='if(confirm(`Tem certeza de que deseja aprovar esta data e as anteriores?`)) aa(`apr`, `a`, `"& Data &"`)'></i>"
                         else
-                            btnA = "<i class='btn btn-success btn-xs far fa-check' onclick='if(confirm(`Tem certeza de que deseja retirar a aprovação desta data e das anteriores?`)) aa(`apr`, `r`, `"& Data &"`)'></i>"
+                            btnA = "<i class='btn btn-success btn-xs far fa-check' title='Retirar aprovação' data-toggle='tooltip' onclick='if(confirm(`Tem certeza de que deseja retirar a aprovação desta data e das anteriores?`)) aa(`apr`, `r`, `"& Data &"`)'></i>"
                         end if
                     else
                         btnA = ""

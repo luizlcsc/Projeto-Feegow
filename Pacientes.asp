@@ -196,7 +196,39 @@ video {
 #TabelaID{
   /* margin-top: 0px !important;*/
 }
-
+.infoPreco{
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: -100%;
+    background-color: white;
+    border: 1px solid #217dbb;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 7px;
+    width: auto;
+    min-width: calc( 150% + 100px);
+    z-index: 10;
+}
+.infoPreco:after {
+	content: "";
+	height: 5px;
+	width: 5px;
+	position: absolute;
+	bottom: -11px;
+	left: 17%;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-top: 5px solid #217dbb;
+	border-bottom: 5px solid transparent;
+}
+.hoverPreco{
+	display:flex!important
+}
+i.infoBtnPreco {
+	float:left;
+	color: #217dbb;
+}
 </style>
 <%
 if req("Agenda")="" then
@@ -386,6 +418,18 @@ function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
         		}
         });
     }
+
+	const $assinaturaAuto = $("#AssinaturaAuto");
+
+	if($assinaturaAuto){
+		if($assinaturaAuto.prop("checked")){
+			assinarAtendimento(function(){
+				atenderF();
+			});
+
+			return
+		}
+	}
 
     if(validar){
          $.ajax({

@@ -347,11 +347,44 @@ function DefaultForm(tableName, id)
                         sqlNasc = " OR Nascimento="& mydatenull(q) &" "
                     end if
 					if lcase(tableName)="pacientes" then
+					if isnumeric(q) then
+					        sqlBuscaNumerica = " or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0) "
+					    end if
+					    sqlBuscaNome = " OR NomePaciente like '"&q&"%' or NomeSocial like '"&q&"%' "
+
+					    if PorteClinica > 3 then
+
+                           q = replace(UCASE(q),UCASE("José%"),"José ")
+                           q = replace(UCASE(q),UCASE("Jose%"),"Jose ")
+                           q = replace(UCASE(q),UCASE("Maria%"),"Maria ")
+                           q = replace(UCASE(q),UCASE("Mari%"),"Mari ")
+                           q = replace(UCASE(q),UCASE("Ana%"),"Ana ")
+                           q = replace(UCASE(q),UCASE("%Das%"),"%Das ")
+                           q = replace(UCASE(q),UCASE("%De%"),"%De ")
+                           q = replace(UCASE(q),UCASE("Antonio%"),"Antonio ")
+                           q = replace(UCASE(q),UCASE("Antônio%"),"Antônio ")
+                           q = replace(UCASE(q),UCASE("Francisco%"),"Francisco ")
+                           q = replace(UCASE(q),UCASE("Silva%"),"Silva ")
+
+					        sqlBuscaNome = " OR NomePaciente like '"&q&"%' "
+                            if isnumeric(q) then
+                                sqlBuscaNumerica = " OR CPF = '"&q&"' OR id = '"&q&"' "
+                                sqlBuscaNome = ""
+                            end if
+							if isdate(q) then
+								sqlBuscaNome = ""
+							end if
+					    end if
+
+
                         if session("SepararPacientes") and aut("vistodospacsV")=0 and lcase(session("Table"))="profissionais" then
-                            sqlReg = "select * from pacientes where ((NomePaciente) like '%"&q&"%' or (NomeSocial) like '"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0) "& sqlNasc &") and (Profissionais like '%|ALL|%' or Profissionais like '%|"& session("idInTable") &"|%') and sysActive=1 order by NomePaciente LIMIT 1000"
+                            sqlReg = "select * from pacientes where (trim(NomePaciente) like '%"&q&"%' or TRIM(NomeSocial) like '%"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0) "& sqlNasc &") and (Profissionais like '%|ALL|%' or Profissionais like '%|"& session("idInTable") &"|%') and sysActive=1 LIMIT 100"
                         else
-    						sqlReg = "select * from pacientes where (NomePaciente) like '%"&q&"%' or (NomeSocial) like '"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0) "& sqlNasc &" and sysActive=1 order by NomePaciente LIMIT 1000"
+    						sqlReg = "select * from pacientes where (False "&sqlBuscaNome&" "&sqlBuscaNumerica& sqlNasc &") and sysActive=1 LIMIT 100"
                         end if
+
+                        sqlReg = "SELECT * FROM ("&sqlReg&") as T ORDER BY 2"
+
                     elseif lcase(tableName)="profissionais" or lcase(tablename)="funcionarios" then
     					sqlReg = "select * from "&tableName&" where sysActive=1 and ("&initialOrder&" like '%"&q&"%' "& sqlNasc &") "&franquia(" AND Unidades like '%|[UnidadeID]|%' ")&" order by "&initialOrder
 						' response.write(sqlReg)

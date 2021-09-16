@@ -1145,6 +1145,21 @@ end if
             <a href="./?P=tipos_de_arquivos&Pers=Follow"><span class="far fa-file-o"></span> <span class="sidebar-title">Tipo de arquivos</span></a>
         </li>
         <%
+    case "sys_financialcurrentaccounts", "contasbancarias"
+            %>
+            <li <%if req("P")="sys_financialcurrentaccounts" then%>class="active"<%end if%>>
+                <a href="./?P=sys_financialcurrentaccounts&Pers=Follow"><span class="far fa-university"></span> <span class="sidebar-title">Contas Correntes</span></a>
+            </li>
+            <%
+            if aut("|sys_financialcurrentaccountsV|")=1  then
+            %>
+            <li <%if req("P")="contasbancarias" then%>class="active"<%end if%>>
+                <a href="./?P=contasbancarias&Pers=Follow"><span class="far fa-money-check-alt"></span> <span class="sidebar-title">Contas de fornecedores</span></a>
+            </li>
+            <%
+            end if
+            %>
+    <%
     case "fornecedores"
         if isnumeric(req("I")) and req("I")<>"" then
             %>

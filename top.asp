@@ -371,13 +371,7 @@ else
 
             if aut("|sys_financialcurrentaccountsV|")=1  then
             %>
-            <li><a class="sub-menu-click-cadastro-contas-correntes" href="./?P=sys_financialcurrentaccounts&Pers=Follow"><i class="far fa-money bigger-110"></i> Contas Correntes</a></li>
-            <%
-            end if
-
-            if aut("|sys_financialcurrentaccountsV|")=1  then
-            %>
-            <li><a class="sub-menu-click-cadastro-contas-fornecedores" href="./?P=contasbancarias&Pers=Follow"><i class="far fa-university bigger-110"></i> Contas de Fornecedores</a></li>
+            <li><a class="sub-menu-click-cadastro-contas-correntes" href="./?P=sys_financialcurrentaccounts&Pers=Follow"><i class="far fa-university bigger-110"></i> Contas Correntes</a></li>
             <%
             end if
 

@@ -387,11 +387,11 @@ function showMessageDialog(message, messageType, title, delay=3000) {
 
     if (!title) {
         if (messageType === "danger") {
-            title = "ERRO!"
+            title = "Ocorreu um erro!"
         } else if (messageType === "success") {
-            title = "SUCESSO!"
+            title = "Sucesso!"
         } else if (messageType === "warning") {
-            title = "ATENÇÃO!"
+            title = "Atenção!"
         }
     }
 

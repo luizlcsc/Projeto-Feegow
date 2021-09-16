@@ -341,14 +341,16 @@ end if
             set busca = db.execute("select distinct ii.InvoiceID, i.sysDate, (select count(id) from itensinvoice where InvoiceID=i.id and Executado='S' and Tipo='S') Executados, (select count(id) from itensinvoice where InvoiceID=i.id and Tipo='S') Total from itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID where (isnull(ii.Executado) OR ii.Executado='' OR ii.Executado='N') and i.AccountID="&PacienteID&" AND i.CD='C' AND Tipo='S' and i.AssociationAccountID=3")
             if not busca.EOF then
                 %>
-                <div class="alert alert-block alert-success">
+                <div class="alert alert-block alert-default">
                     <button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
-                    <p><strong>Execução de serviços:</strong></p>
+                    <p><strong><i class="far fa-exclamation-circle"></i> Atenção! </strong>Existem serviços em aberto para este paciente.</p>
+                    <br>
+
                     <%
                     while not busca.EOF
                         %>
                          <div class="btn-group">
-                             <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle" data-rel="tooltip" data-placement="top" title="Data: <%=busca("sysDate")%>">
+                             <button data-toggle="dropdown" class="btn btn-default btn-xs dropdown-toggle" data-rel="tooltip" data-placement="top" title="Data: <%=busca("sysDate")%>">
                                     <%=busca("Executados")%> executados de <%=busca("Total")%> contratados.
                              </button>
                              <div class="dropdown-menu dropdown-persist w350 animated animated-shorter fadeIn" role="menu">

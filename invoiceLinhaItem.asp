@@ -364,7 +364,7 @@ end if
                     <%
                 end if
 			    %>
-                <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutantesTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional&DisabledNaoAlterarExecutante)%>
+                <%=simpleSelectCurrentAccounts("ProfissionalID"&id, ExecutantesTipos, Associacao&"_"&ProfissionalID, ExecucaoRequired&" "&onchangeProfissional&DisabledNaoAlterarExecutante, "")%>
 			    <%'=selectInsertCA("", "ProfissionalID"&id, Associacao&"_"&ProfissionalID, "5, 8, 2", " onchange=""setTimeout(function()calcRepasse("& id &"), 500)""", "", "")%>
             </div>
             <%if Tipo="S" then

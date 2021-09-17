@@ -549,7 +549,7 @@ end function
 function simpleSelectCurrentAccountsFilterOption(id, associations, selectedValue, others,procedimento)
 
     IF procedimento = "" OR procedimento = "0" THEN
-        call simpleSelectCurrentAccounts(id,associations,selectedValue,others)
+        call simpleSelectCurrentAccounts(id,associations,selectedValue,others,"")
         exit function
     END IF
 
@@ -669,7 +669,7 @@ function simpleSelectCurrentAccountsFilterOption(id, associations, selectedValue
 end function
 
 
-function simpleSelectCurrentAccounts(id, associations, selectedValue, others)
+function simpleSelectCurrentAccounts(id, associations, selectedValue, others, selectText)
 	splAssociations = split(associations,", ")
 	%>
 		<select class="form-control select2-single" id="<%= id %>" name="<%= id %>"<%= others %>>

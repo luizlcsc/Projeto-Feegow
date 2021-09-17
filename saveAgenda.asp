@@ -235,7 +235,8 @@ if erro="" then
             valp = RemoveCaracters(valp,"-./")
             hasCpf = true
 
-            IF getConfig("NaoPermitirCPFduplicado") THEN
+            'desativado: Apresentando comportamento estranho. Precisa considerar se o paciente esta sendo adicionado ou nao
+            IF getConfig("NaoPermitirCPFduplicado") and False THEN
                 set PacienteDuplicadoSQL = db.execute("SELECT cpf,id, NomePaciente FROM pacientes WHERE ((cpf='"&valp&"' OR cpf='"&valp&"') and sysActive=1 and '"&valp&"'!='' and id!="&rfPaciente&") ")
                 IF not PacienteDuplicadoSQL.eof THEN
                         %>

@@ -693,7 +693,9 @@ end if
                         if session("Odonto")=1 and CD="C" then
                             %>
                         <div class="btn-group nao-mostrar-caso-pago">
-                            <button type="button" class="btn btn-primary btn-sm" id="btn-abrir-modal-odontograma">
+                            <button type="button" class="btn btn-system btn-sm" id="btn-abrir-modal-odontograma">
+                                <i class="far fa-tooth"></i>
+
                                 Odontograma
                             </button>
                         </div>

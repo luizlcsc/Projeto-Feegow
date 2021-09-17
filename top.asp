@@ -355,6 +355,12 @@ else
 
     end if 'fechando se device()=""
     if device="" or lcase(req("P"))="cadastros" then
+            if session("Admin")=1 and getConfig("GestaoDeAvisos")=1  then
+            %>
+            <li><a href="./?P=Avisos&Pers=Follow"  class="sub-menu-click-cadastro-avisos" ><i class="fa fa-exclamation-triangle"></i> Avisos</a></li>
+            <%
+            end if
+
             if aut("convenios")=1 then
             %>
             <li><a class="sub-menu-click-cadastro-convenio" href="./?P=Convenios&Pers=Follow"><i class="far fa-credit-card"></i> Conv&ecirc;nios</a></li>

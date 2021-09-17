@@ -209,7 +209,7 @@ end if
                             <%call odonto()%>
 <!--<a title="Histórico de Alterações" href="javascript:log()" class="btn btn-sm btn-default hidden-xs"><i class="far fa-history"></i></a>-->
                             <% if session("Odonto")=1 then %>
-                                <button type="button" class="btn btn-system btn-sm" id="btn-abrir-modal-odontograma" <%=desabilitarProposta%>> <span class="imoon imoon-grin2"></span> Odontograma </button>
+                                <button type="button" class="btn btn-system btn-sm" id="btn-abrir-modal-odontograma" <%=desabilitarProposta%>> <i class="far fa-tooth"></i> Odontograma </button>
                             <% end if %>
                             <button type="button" class="btn btn-sm " id="ListaProposta" onclick="<%=linkLista %>" title="Listas Propostas"><i class="far fa-list"></i></button>
                             <button type="button" class="btn btn-sm" title="Duplicar Proposta" onclick="window.location.href = '?P=DuplicarPacientesPropostas&Pers=1&PropostaID=<%=req("PropostaID")%>'"><i class="far fa-copy"></i> Duplicar Proposta</button>

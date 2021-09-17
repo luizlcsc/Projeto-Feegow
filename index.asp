@@ -2582,6 +2582,89 @@ if session("Status")="T" or session("Status")="F" then
 <%
 end if
 %>
+
+<%
+'-> GESTÃO DE AVISOS
+if getConfig("GestaoDeAvisos")=1 then
+  if session("AvisoCarregado")="" then
+    'Admin?
+    if session("Admin")=1 then
+      sqlAdmin = " OR a.Perfis LIKE '%|Administrador|%' "
+    end if
+    'Perfil
+    sqlPerfil = " OR a.Perfis LIKE '%|"& session("Table") &"|%' "
+
+    'RegraID
+    if session("ModoFranquia")=1 then
+      set pRegra = db.execute("select regra from usuarios_regras where unidade="& session("UnidadeID") &" and usuario="& session("User"))
+      if not pRegra.eof then
+        RegraID = pRegra("regra")
+        sqlRegra = " OR a.Perfis LIKE '%|"& RegraID &"|%' "
+      end if
+    else
+        set UserSQL = db.execute("SELECT RegraID FROM sys_users WHERE id="&session("User"))
+        if not UserSQL.eof then
+            sqlRegra = " OR a.Perfis LIKE '%|"& UserSQL("RegraID") &"|%' "
+        end if
+    end if
+
+    'EspecialidadeID
+    if lcase(session("Table")&"")="profissionais" then
+      set pesp = db.execute("select especialidadeID from profissionais WHERE id="& session("idInTable") &" UNION ALL select EspecialidadeID from profissionaisespecialidades where ProfissionalID="& session("idInTable"))
+      while not pesp.eof
+        sqlEsp = sqlEsp & " OR a.Especialidades LIKE '%|"& pesp("EspecialidadeID") &"|%' "
+      pesp.movenext
+      wend
+      pesp.close
+      set pesp = nothing
+    end if
+
+
+    sql = "select a.*, al.sysDate DataLeitura from avisos a "&_
+          "LEFT JOIN avisosleitura al ON (al.AvisoID=a.id AND al.sysUser="& session("User") &" AND al.UnidadeID="& session("UnidadeID") &") "&_
+          "WHERE UnidadesLicencas LIKE '%|"& session("UnidadeID") &"|%' AND CURDATE() BETWEEN DATE(a.Inicio) AND DATE(a.Fim) "&_
+          "AND (0 "& sqlAdmin & sqlRegra & sqlPerfil & sqlEsp &") AND ISNULL(al.id)"
+
+    dim divsAviso(10)
+    ShowAvisoID = 0
+
+    set vcaAviso = db.execute( sql )
+    while not vcaAviso.eof
+      TipoExibicao = vcaAviso("TipoExibicao")
+      if TipoExibicao=1 and req("P")<>"Home" then
+        response.redirect("./?P=Home&Pers=1")
+      else
+
+        divsAviso(vcaAviso("TipoExibicao")) = divsAviso(vcaAviso("TipoExibicao")) & "<div>"& vcaAviso("Texto") &"</div>"
+        ShowAvisoID = vcaAviso("id")
+
+        if vcaAviso("TipoExibicao")=2 then
+          divsAviso(vcaAviso("TipoExibicao")) = divsAviso(vcaAviso("TipoExibicao")) & "<hr class='short alt'><div class='text-right p10'><button type='button' class='btn btn-primary' onclick=""ajxContent('AvisosLido', "& vcaAviso("id") &", 1, '', ''); $(this).fadeOut(); $('#modal-table').modal('hide');""><i class='fa fa-check'></i> MARCAR COMO LIDO</button></div>"
+        end if
+
+        session("AvisoCarregado")=1
+      end if
+    vcaAviso.movenext
+    wend
+    vcaAviso.close
+    set vcaAviso = nothing
+
+  end if
+end if
+
+  '<- GESTÃO DE AVISOS
+  %>
+<script type="text/javascript">
+<%
+
+if ShowAvisoID&""<>"0" and ShowAvisoID&""<>"" then
+%>
+  openComponentsModal( 'CarregaAviso.asp', {AvisoID: '<%=ShowAvisoID%>'}, "Novo aviso");
+<%
+end if
+%>
+</script>
+
 </body>
 <%
 if device()<>"" then

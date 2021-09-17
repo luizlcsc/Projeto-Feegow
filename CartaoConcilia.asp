@@ -89,7 +89,7 @@ Adquirentes = adq("Adquirentes")
                     <span class="panel-title">NOVO ARQUIVO: </span>
                     <%
                     'config migrada para Cliniccentral
-                    if session("Admin")=1 and Falsethen
+                    if session("Admin")=1 and False then
                         %>
                         <span class="panel-controls">
                             <button type="button" class="btn btn-default" onclick="location.href='./?P=CartaoLayouts&Pers=Follow'">Editar Layouts</button>

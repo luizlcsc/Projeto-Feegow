@@ -353,7 +353,7 @@
                 </a>
             </li>
             <%
-            if recursoAdicional(25)=4 or True then
+            if recursoAdicional(25)=4 then
             %>
             <li <% If req("P")="CartaoConcilia" Then %> class="active"<% End If %>>
                 <a href="?P=CartaoConcilia&Pers=1">

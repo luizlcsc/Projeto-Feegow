@@ -1161,63 +1161,8 @@ $(".form-control").change(function(){
     <input id="photo-data" name="photo-data" type="hidden">
 </form>
 
-<%
-set memed = db.execute("select * from memed_tokens where sysActive='1' and sysUser ="&session("User"))
+<!--#include file="Classes/Memed.asp"-->
 
-if not memed.eof then
-%>
-
-<script
-    type="text/javascript"
-    src="https://memed.com.br/modulos/plataforma.sinapse-prescricao/build/sinapse-prescricao.min.js"
-    data-token="<%=memed("Token")%>"
-    data-color="#217dbb">
-</script>
-<script>
-    function openMemed () {
-        var endereco = $("#Endereco").val();
-        var numero = $("#Numero").val() ? " "+$("#Numero").val() : "";
-
-        var estado = $("#Estado").val() ? " "+$("#Estado").val() : "";
-
-        var fullEndereco = endereco+numero;
-
-
-        MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {
-          removePatient: false,
-          deletePatient: false
-        });
-
-
-       MdHub.command.send('plataforma.prescricao', 'setPaciente', {
-         nome: $("#NomePaciente").val(),
-         telefone: $("#Cel1").val().replace("-","").replace("(","").replace(")","").replace(" ",""),
-         endereco: fullEndereco,
-         cidade: $("#Cidade").val()+estado,
-         idExterno:'<%=session("Banco")%>' +  '-' + '<%=req("I")%>'
-       });
-
-       console.log('<%=session("Banco")%>' +  '-' + '<%=req("I")%>');
-       setTimeout(function() {
-         MdHub.module.show('plataforma.prescricao');
-         MdHub.event.add('prescricaoSalva', function prescricaoSalvaCallback(idPrescricao) {
-             postUrl('prescription/memed/save-prescription', {
-                 prescriptionId: idPrescricao,
-                 patientId: '<%=req("I")%>'
-             }, function (data) {
-				 console.log(data);
-    			pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
-
-             })
-         });
-       } , 500);
-    }
-
-
- 	
-
-</script>
-<% end if %>
 <script>
 	<%
 	FormularioNaTimeline = getConfig("FormularioNaTimeline")
@@ -1225,7 +1170,7 @@ if not memed.eof then
 	if FormularioNaTimeline then
 		InserirDinamico = "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|"
 	end if
-	
+
     IF FormularioNaTimeline THEN
     %>
     function iPront(t, p, m, i, a, FormID, CampoID) {

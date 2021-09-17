@@ -390,12 +390,12 @@ select case Tipo
                     <div class="row">
                         <div class="col-md-3">
                             <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
-                                <i class="fa fa-plus"></i> Inserir Prescrição
+                                <i class="far fa-plus"></i> Inserir Prescrição
                             </button>
                         </div>
                         <div class="col-md-3">
                             <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed()" <%end if%>>
-                                <i class="fa fa-plus"></i> Prescrição MEMED
+                                <i class="far fa-plus"></i> Prescrição MEMED
                             </button>
                         </div>
                 </div>
@@ -628,7 +628,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                     </div>
                     <div class="col-md-3">
                         <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed(true)" <%end if%>>
-                            <i class="fa fa-plus"></i> Exame MEMED
+                            <i class="far fa-plus"></i> Exame MEMED
                         </button>
                     </div>
                     <%

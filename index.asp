@@ -2586,7 +2586,7 @@ end if
 <%
 '-> GESTÃO DE AVISOS
 if getConfig("GestaoDeAvisos")=1 then
-  if session("AvisoCarregado")="" then
+  if session("AvisoCarregado")="" and session("UnidadeID")&""<>"-1" then
     'Admin?
     if session("Admin")=1 then
       sqlAdmin = " OR a.Perfis LIKE '%|Administrador|%' "

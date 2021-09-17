@@ -69,6 +69,10 @@ end if
     </div>
 </div>
 
+<div id="divCartaoLote" class="panel" style="display: none">
+    <div class="panel-body"></div>
+</div>
+
 <form id="formCartaoCredito" method="POST">
     <input type="hidden" name="html" id="htmlTable">
 </form>

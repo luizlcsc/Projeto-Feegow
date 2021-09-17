@@ -353,6 +353,18 @@
                 </a>
             </li>
             <%
+            if recursoAdicional(25)=4 or True then
+            %>
+            <li <% If req("P")="CartaoConcilia" Then %> class="active"<% End If %>>
+                <a href="?P=CartaoConcilia&Pers=1">
+                    <span class="fa fa-upload"></span>
+                    <span class="sidebar-title"> Importação CSV </span>
+                </a>
+            </li>
+
+           <%end if%>
+
+            <%
             if 0 then
             %>
             <li style="display: none" <% If req("P")="FaturaCartao" Then %> class="active"<% End If %>>

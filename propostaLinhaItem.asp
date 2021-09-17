@@ -59,8 +59,8 @@ END IF
         <td><div class="<%=hiddenValor%>"><%=quickField("currency", "ValorUnitario"&id, "", 4, formatnumber(ValorUnitario,2), " input-sm text-right ValorUnitario disable", "", " required onkeyup=""recalc($(this).attr('id'))"""&ValorUnitarioReadonly&desabilitarProposta)%></div></td>
         <td>
             <div class="input-group <%=hiddenValor%>">
-                <%=quickField("text", "Desconto"&id, "", 4, formatnumber(Desconto,2), " input-mask-brl PropostaDesconto text-right disable input-sm", "", " onkeyup=""recalc($(this).attr('id'))"" style=""width:55%;float:left;min-width:10px"""&desabilitarProposta)%>
-                <select onchange="recalc($(this).attr('id'))" style="width: 35%;padding:0;min-width: 10px;" name="DescontoTipo<%=id%>" id="DescontoTipo<%=id%>" class="form-control input-sm DescontoTipo" <%=desabilitarProposta%>>
+                <%=quickField("text", "Desconto"&id, "", 4, formatnumber(Desconto,2), " input-mask-brl PropostaDesconto text-right disable input-sm", "", " onkeyup=""recalc($(this).attr('id'))"" style=""width:55%; max-width: 85px;float:left;min-width:10px"""&desabilitarProposta)%>
+                <select onchange="recalc($(this).attr('id'))" style="max-width: 85px;width: 35%;padding:0;min-width: 10px;" name="DescontoTipo<%=id%>" id="DescontoTipo<%=id%>" class="form-control input-sm DescontoTipo" <%=desabilitarProposta%>>
                     <option value="V">R$</option>
                     <option <% if TipoDesconto="P" then %>selected<% end if %> value="P">%</option>
                 </select>

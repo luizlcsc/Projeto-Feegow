@@ -73,9 +73,6 @@
     position: relative;
     display: flex;
 }
-.proposta-item-procedimentos .form-control{
-    height: 35px!important;
-}
 </style>
 <% IF req("PacienteID")="" THEN %>
 <script src="../feegow_components/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
@@ -328,7 +325,7 @@ end if
                                                       <div class="col-md-3">
                                                            <label>Profissional Executante</label>
                                                            <% ExecucaoRequired = " required empty " %>
-                                                            <%=simpleSelectCurrentAccounts("ProfissionalExecutanteID", "5, 8, 2", ProfissionalExecutanteID, ExecucaoRequired&" "&onchangeProfissional&DisabledRepasse) %>
+                                                            <%=simpleSelectCurrentAccounts("ProfissionalExecutanteID", "5, 8, 2", ProfissionalExecutanteID, ExecucaoRequired&" "&onchangeProfissional&DisabledRepasse, "") %>
                                                        </div>
                                                    <% ELSE %>
                                                       <div class="col-md-3">
@@ -454,7 +451,7 @@ end if
                                                     <%
                                                     if isnull(data("InvoiceID")) then
                                                         %>
-                                                        <button id="btn-gerar-contrato" class="btn btn-default btn-block" onclick="GerarContrato()" type="button"> Gerar contrato </button>
+                                                        <button id="btn-gerar-contrato" class="btn btn-default btn-block" onclick="GerarContrato()" type="button"><i class="far fa-money"></i>  Gerar contrato </button>
                                                         <%
                                                     else
                                                         %>
@@ -942,31 +939,35 @@ $('.modal').click(function(){
     $('.error_msg').empty();
 });
 
+const validarTabela = "<% if ModoFranquia then response.write("true") else response.write("false") end if %>" == "true"
 
-$(idStr).change(function(){    
+$(idStr).change(function(){
+
+
         var id          = $('#TabelaID').val();
         var sysUser     = "<%= session("user") %>";
         var Nometable   = $('#TabelaID :selected').text();
         var regra = "|tabelaParticular12V|";
 
         $.ajax({
-        method: "POST",
-        url: "TabelaAutorization.asp",
-        data: {autorization:"buscartabela",id:id,sysUser:sysUser},
-        success:function(result){
-            if(result == "Tem regra") {
-                $("#desconto-password").attr("type","password");
-                $('#permissaoTabelaProposta').modal('show');
-                buscarNome(id,sysUser,regra);
+            method: "POST",
+            url: "TabelaAutorization.asp",
+            data: {autorization:"buscartabela",id:id,sysUser:sysUser},
+            success:function(result){
+                if(result == "Tem regra") {
+                    $("#desconto-password").attr("type","password");
+                    $('#permissaoTabelaProposta').modal('show');
+                    buscarNome(id,sysUser,regra);
+                }
             }
-        }
-    });
+        });
+
         $('.confirmar').click(function(){
                 var Usuario =  $('input[name="nome"]:checked').val();
                 var senha   =  $('#desconto-password').val();
                 liberar(Usuario , senha , id , Nometable);
                 $('.error_msg').empty(); 
-            });
+        });
     });
 
 
@@ -1117,7 +1118,6 @@ function checkParticularTableFields(){
 };
 
 function endpointFindValidationRules(idTable) {
-
     let url = domain+"medical-report-integration/verify-validation-type";
     return $.ajax({
         type: 'POST',
@@ -1166,18 +1166,24 @@ function openConsultaCartaoDeTodos(){
                     let texto = $('#TabelaID option[value='+tabelaID+']').html()
                     $('#qftabelaid .select2-selection__rendered').html(texto)
                     $('#qftabelaid .select2-selection__rendered').attr('title',texto)
-                    checkParticularTableFields()
+
+                    if(validarTabela){
+                        checkParticularTableFields()
+                    }
                 },
                 error:function(data){
                 }
             });
         })
-        $('#matricula').change(()=>{
-            checkParticularTableFields()
-        })
-        $("#TabelaID").change(()=>{
-            checkParticularTableFields()
-        })
+
+        if(validarTabela){
+            $('#matricula').change(()=>{
+                checkParticularTableFields()
+            })
+            $("#TabelaID").change(()=>{
+                checkParticularTableFields()
+            })
+        }
         Core && Core.init({})
     });
 function MarDes(Pro, Che){

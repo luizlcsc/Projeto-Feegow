@@ -202,13 +202,13 @@ if tipo="PacienteID" then
                               "ORDER BY Prioridade")
 
 		if not conv.EOF then
-			QueryGradeSQL = "SELECT Convenios FROM assperiodolocalxprofissional WHERE ProfissionalID="&ProfissionalID
+			QueryGradeSQL = "SELECT Convenios FROM assperiodolocalxprofissional WHERE ProfissionalID="&treatvalzero(ProfissionalID)
             set GradeSQL = db.execute(QueryGradeSQL)
             conveniosGrade = ""
             if not GradeSQL.eof then
                 conveniosGrade = GradeSQL("Convenios")
             else
-                QueryGradeSQL = "SELECT Convenios FROM assfixalocalxprofissional WHERE ProfissionalID="&ProfissionalID
+                QueryGradeSQL = "SELECT Convenios FROM assfixalocalxprofissional WHERE ProfissionalID="&treatvalzero(ProfissionalID)
                 set GradeSQL = db.execute(QueryGradeSQL)
                 if not GradeSQL.eof then
                     conveniosGrade = GradeSQL("Convenios")

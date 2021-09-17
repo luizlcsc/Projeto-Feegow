@@ -15,7 +15,7 @@ end if
 %>
 <!--#include file="Classes/WhatsApp.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
-        <div class="panel">
+        <div class="panel mt15">
         <%
         CallID = req("CallID")
 

@@ -1344,7 +1344,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             <%end if %>
 
                 <span class="input-group-addon">
-                    <i class="far fa-clock-o bigger-110"></i>
+                    <i class="far fa-clock bigger-110"></i>
                 </span>
             </div>
 			<%

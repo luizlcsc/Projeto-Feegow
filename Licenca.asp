@@ -33,7 +33,7 @@ end if
 
 <div class="widget-box transparent">
     <div class="widget-header widget-header-flat">
-        <h4><i class="far fa-hospital-o blue"></i> CADASTRO DE LICENÇA</h4>
+        <h4><i class="far fa-hospital blue"></i> CADASTRO DE LICENÇA</h4>
     </div>
 </div>
 

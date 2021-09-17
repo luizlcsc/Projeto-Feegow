@@ -432,6 +432,8 @@ if not getResource.EOF then
                 end if
             end if
 
+
+            logsJsonActive = True
   
             if tableName<>"sys_smsemail" and logsJsonActive=true then 'NOVA VERSÃO DE LOGS EM JSON SOMENTE NESTE(S) ARQUIVO(S)
                 call gravaLogs(sql, op, "", "")

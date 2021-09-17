@@ -380,7 +380,7 @@ function DefaultForm(tableName, id)
                         if session("SepararPacientes") and aut("vistodospacsV")=0 and lcase(session("Table"))="profissionais" then
                             sqlReg = "select * from pacientes where (trim(NomePaciente) like '%"&q&"%' or TRIM(NomeSocial) like '%"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0) "& sqlNasc &") and (Profissionais like '%|ALL|%' or Profissionais like '%|"& session("idInTable") &"|%') and sysActive=1 LIMIT 100"
                         else
-    						sqlReg = "select * from pacientes where (False "&sqlBuscaNome&" "&sqlBuscaNumerica& sqlNasc &") and sysActive=1 LIMIT 100"
+    						sqlReg = "select * from pacientes where (False "&sqlBuscaNome&" "&sqlBuscaNumerica& sqlNasc &") LIMIT 100"
                         end if
 
                         sqlReg = "SELECT * FROM ("&sqlReg&") as T ORDER BY 2"

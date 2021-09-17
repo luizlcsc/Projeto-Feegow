@@ -286,7 +286,7 @@ end if
                         <%
                         end if
                         %>
-                       <%= quickField("simpleSelect", "TabelaID", "Tabela", 4, TabelaID, "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' order by NomeTabela", "NomeTabela", desabilitarProposta ) %>
+                       <%= quickField("simpleSelect", "TabelaID", "Tabela", 4, TabelaID, "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' order by NomeTabela", "NomeTabela", " onchange='reloadItens()' " & desabilitarProposta ) %>
                        <%= quickField("datepicker", "DataProposta", "Data da Proposta", 4, DataProposta, "", "", desabilitarProposta) %>
                                                    </div>
                 <div class="row" style="margin-top: 10px">

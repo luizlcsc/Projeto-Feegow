@@ -92,7 +92,11 @@ if I="N" then
     'verifica se tem atendimento aberto
     set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&PacienteID&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
      if atendimentoReg.EOF  then
-         db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &")")
+        if getConfig("AutoSaveForms") = 1 then 'Nao permite salvar automaticamente
+            db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &")")
+        else
+            db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", 1, "& treatvalzero(Prior) &")")
+        end if
     else
         'salva com id do atendimento
          db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior, AtendimentoID) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &", "&atendimentoReg("id")&")")
@@ -163,7 +167,7 @@ while not pcampos.eof
                             convTags_itens = convTags_itens&"|PacienteID_"&req("p")
                         end if
 
-                        if linha<0 then
+                        if linha<0 or req("Inserir")="1" then
                             strInValLinha = TagsConverte(strInValLinha,convTags_itens,"")
                             sqlIn = "insert into buitabelasvalores (CampoID, FormPreenchidoID "& strInLinha &") values ("& pcampos("id") &", "& I & strInValLinha &")"
                             'response.Write( sqlIn )

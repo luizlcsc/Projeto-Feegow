@@ -25,7 +25,7 @@ if getConfig("OcultarTotaisFecharCaixa") = "1" then
 end if
 DetalharEntradas=req("DetalharEntradas")
 
-function linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
+function linhaTotais(Dinheiro, Cheque, Credito, Debito, Pix, Titulo, Classe)
     %>
     <table class="table table-condensed mt20">
         <thead>
@@ -34,6 +34,7 @@ function linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
                 <th class="text-center" width="20%">Total Cheque</th>
                 <th class="text-center" width="20%">Total Crédito</th>
                 <th class="text-center" width="20%">Total Débito</th>
+                <th class="text-center" width="20%">Total Pix</th>
                 <th class="text-center" width="20%">Total <%= Titulo %></th>
             </tr>
         </thead>
@@ -43,7 +44,8 @@ function linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
                 <th class="text-right" width="20%">R$ <%= fn(Cheque) %></th>
                 <th class="text-right" width="20%">R$ <%= fn(Credito) %></th>
                 <th class="text-right" width="20%">R$ <%= fn(Debito) %></th>
-                <th class="text-right" width="20%">R$ <%= fn(Dinheiro + Cheque + Credito + Debito) %></th>
+                <th class="text-right" width="20%">R$ <%= fn(Pix) %></th>
+                <th class="text-right" width="20%">R$ <%= fn(Dinheiro + Cheque + Credito + Debito + Pix) %></th>
             </tr>
         </tbody>
     </table>
@@ -118,6 +120,8 @@ Dinheiro = 0
 Cheque = 0
 Credito = 0
 Debito = 0
+Pix = 0
+
 Titulo = "ENTRADAS"
 Classe = "success"
 if req("DetalharEntradas")="" then
@@ -201,6 +205,8 @@ if not dist.eof then
                 Credito = Credito+Valor
             case 9
                 Debito = Debito+Valor
+            case 15
+                Pix = Pix+Valor
         end select
         %>
         <tr>
@@ -231,7 +237,7 @@ if not dist.eof then
     </tbody>
 </table>
     <%     if OcultarTotaisFecharCaixa<>"S" then
-        call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
+        call linhaTotais(Dinheiro, Cheque, Credito, Debito, Pix, Titulo, Classe)
         end if
 end if
 
@@ -301,7 +307,7 @@ if not dist.eof then
     </tbody>
 </table>
     <%     if OcultarTotaisFecharCaixa<>"S" then
-        call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
+        call linhaTotais(Dinheiro, Cheque, Credito, Debito, Pix, Titulo, Classe)
         end if %>
 <%
 end if
@@ -371,7 +377,7 @@ if not dist.eof then
     </tbody>
 </table>
     <%     if OcultarTotaisFecharCaixa<>"S" then
-      call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
+      call linhaTotais(Dinheiro, Cheque, Credito, Debito, Pix, Titulo, Classe)
             end if %>
 <%
 end if
@@ -442,7 +448,7 @@ if not dist.eof then
     </tbody>
 </table>
     <%      if OcultarTotaisFecharCaixa<>"S" then
-        call linhaTotais(Dinheiro, Cheque, Credito, Debito, Titulo, Classe)
+        call linhaTotais(Dinheiro, Cheque, Credito, Debito, Pix, Titulo, Classe)
         end if
 end if
 
@@ -502,7 +508,7 @@ end if
 
 <h5>FECHAMENTO DE CAIXA</h5>
 <%     if OcultarTotaisFecharCaixa<>"S" then
-        call    linhaTotais(Balanco, Cheque, Credito, Debito, "FECHAMENTO DE CAIXA", "alert")
+        call    linhaTotais(Balanco, Cheque, Credito, Debito, Pix, "FECHAMENTO DE CAIXA", "alert")
         end if %>
 
 
@@ -513,6 +519,8 @@ end if
     <input type="hidden" name="Cheque" value="<%= Cheque %>" />
     <input type="hidden" name="Credito" value="<%= Credito %>" />
     <input type="hidden" name="Debito" value="<%= Debito %>" />
+    <input type="hidden" name="Debito" value="<%= Pix %>" />
+
     <div class="row" id="divDinheiroInformado">
        <div class="col-md-12">
             <div class="panel">

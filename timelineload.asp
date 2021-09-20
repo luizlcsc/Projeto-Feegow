@@ -384,7 +384,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 var_permissoes = ""
                             end if
 
-                            if (ti("Tipo") = "AE" or ti("Tipo") = "L") or (ti("Tipo") = "Atestado" and aut("|atestadoX|")) or (ti("Tipo") = "Prescricao" and aut("|prescricaoX|"))  or (ti("Tipo") = "Pedido" and aut("|pedidosexamesX|")) or (ti("Tipo") = "Diagnostico" and aut("|diagnosticosX|"))  then
+                            if (ti("Tipo") = "AE" or ti("Tipo") = "L") or (ti("Tipo") = "Atestado" and aut("|atestadoX|")) or (ti("Tipo") = "Prescricao" and aut("|prescricaoX|"))  or ( ( ti("Tipo") = "Pedido" or ti("Tipo") ="PedidosSADT") and aut("|pedidosexamesX|")) or (ti("Tipo") = "Diagnostico" and aut("|diagnosticosX|"))  then
                                 if True then
                             %>
                                 <div title="Inativar" class="switch switch-sm switch-system switch-inline" style="position:relative;top: 6px;">

@@ -98,7 +98,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                           <div class="btn-group text-left">
                               <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
                                   Grupos
-                                  <span class="far fa-caret-down icon-on-right"></span>
+                                  <span class="caret ml5"></span>
                               </button>
 
                               <ul class="dropdown-menu btn-block dropdown-default">
@@ -160,8 +160,64 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                     </div>
 
                 </div>
+                <%
+                set PedidosNoMesmoDiaSQL = db.execute("SELECT id, GuiaID FROM pedidossadt ps "&_
+                        "WHERE ps.PacienteID="&PacienteID&" AND ps.sysUser="&session("User")&" AND ps.sysActive=1 AND date(ps.sysDate)=curdate() LIMIT 6")
+
+                set GruposExamesSQL = db.execute("SELECT tc.Capitulo, count(pp.id) qtd FROM pedidossadtprocedimentos pp "&_
+                "JOIN cliniccentral.tusscorrelacao tc ON tc.Codigo=pp.CodigoProcedimento and tc.Tabela=pp.TabelaID "&_
+                " WHERE pp.PedidoID="&treatvalzero(I)&" GROUP BY tc.Capitulo")
+
+                qtdGrupos = 0
+
+                while not GruposExamesSQL.eof
+                    qtdGrupos = qtdGrupos + 1
+                GruposExamesSQL.movenext
+                wend
+                GruposExamesSQL.close
+                set GruposExamesSQL=nothing
+
+                if qtdGrupos > 1 then
+                    HasGrupoDiferente = True
+                end if
+
+                if not PedidosNoMesmoDiaSQL.eof then
+                    %>
+                    <h4 class="mt15">Pedidos de exame recentes</h4>
+
+                    <div class="btn-group  mb15">
+                    <%
+                    while not PedidosNoMesmoDiaSQL.eof
+                    %>
+                        <button type="button" onclick="iPront('PedidosSADT', '<%=PacienteID%>', '', '<%=PedidosNoMesmoDiaSQL("id")%>', '');" class="btn btn-sm btn-<% if ccur(I)=PedidosNoMesmoDiaSQL("id") then response.write("primary") else response.write("default") end if %>">
+                            <%
+                            if isnull(PedidosNoMesmoDiaSQL("GuiaID")) then
+                                %>
+                                <i class="far fa-exclamation-circle text-warning" title="Guia não gerada"></i>
+                                <%
+                            else
+                                %>
+                                <i class="far fa-check-circle text-success" title="Guia gerada"></i>
+                                <%
+                            end if
+                            %>
+                            Pedido <span>#<%=PedidosNoMesmoDiaSQL("id")%></span>
+                        </button>
+                    <%
+                    PedidosNoMesmoDiaSQL.movenext
+                    wend
+                    PedidosNoMesmoDiaSQL.close
+                    set PedidosNoMesmoDiaSQL=nothing
+                    %>
+                    </div>
+                    <%
+                end if
+                %>
                 <br />
                 <div class="row">
+                    <div class="col-md-12">
+                        <h4 >Exames</h4>
+                    </div>
                     <div class="col-md-12" id="PedidoSADT">
                         <!--#include file="PedidoSADT.asp"-->
                     </div>
@@ -194,6 +250,8 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                       <button type="button" onclick="GerarGuiaSADT()" id="GerarGuiaSADT" class="btn btn-primary btn-md"><i class="far fa-external-link"></i> Gerar Guia</button>
                       <a class="btn btn-success btn-md" target="_blank" href="?P=tissguiasadt&I=<%=GuiaID%>&Pers=1" id="AbrirGuiaSADT" ><i class="far fa-expand"></i> Guia <%=GuiaID%></a>
                     <%end if %>
+
+                    <button style="display: <% if HasGrupoDiferente then response.write("inline") else response.write("none") end if %>" type="button" onclick="SepararPedidoPorGrupo()" id="SepararPedidoPorGrupo" class="btn btn-warning btn-md"><i class="far fa-copy"></i> Separar pedido por grupo</button>
                 </div>
             </div>
             <div class="col-xs-4 pn">
@@ -336,6 +394,13 @@ $("#savePedidoExameProtocolo").click(function () {
 $("#savePedidoExameProtocoloS").click(function () {
     window.open('guiaPedidoExamePrint.asp?I=0&cabecalho=0&maxRegistros=20&TipoExibicao=Pedido&PedidoSADTID='+ $("#PedidoSADTID").val() +'&ConvenioIDPedidoSADT='+ $("#ConvenioIDPedidoSADT").val() +'&IndicacaoClinicaPedidoSADT='+ $("#IndicacaoClinicaPedidoSADT").val() +'&ObservacoesPedidoSADT='+ $("#ObservacoesPedidoSADT").val()+'&ProfissionalExecutanteIDPedidoSADT='+ $("#ProfissionalExecutanteIDPedidoSADT").val()+'&ProfissionalID='+ $("#ProfissionalID").val()+'&DataSolicitacao='+ $("#DataSolicitacao").val(), "myWindow", "width=1000, height=800, top=50, left=50");
 });
+
+function SepararPedidoPorGrupo(){
+    $.post("SepararPedidoPorGrupo.asp", {PedidoID: "<%=I%>"}, function(data){
+        iPront('PedidosSADT', '<%=PacienteID%>', '', '<%=I%>', '');
+        showMessageDialog("Pedido de exame separar com sucesso", "success");
+    })
+}
 
 function GerarGuiaSADT(){
     var ConvenioIDPedidoSADT = $("#ConvenioIDPedidoSADT").val();

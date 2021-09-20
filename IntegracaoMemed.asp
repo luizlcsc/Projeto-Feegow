@@ -13,7 +13,7 @@
 
 <script type="text/javascript">
 var professionalId = "<%=req("I")%>";
-    getUrl("prescription/memed/professional-index", {professionalId: professionalId}, function(data) {
+    getUrl("prescription/memedv2/register", {professionalId: professionalId}, function(data) {
     $(".app").hide();
     $(".app").html(data);
     $(".app").fadeIn('slow');

@@ -1136,7 +1136,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     <aside id="sidebar_left" class="hidden-print nano nano-light affix sidebar-default has-scrollbar sidebar-light light">
 
       <!-- Start: Sidebar Left Content -->
-      <div class="sidebar-left-content nano-content">
+      <div class="sidebar-left-content ">
 
         <!-- Start: Sidebar Header -->
         <header class="sidebar-header">

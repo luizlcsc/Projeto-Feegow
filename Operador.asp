@@ -19,24 +19,29 @@ if ref("Email")<>"" and ref("Senha")<>"" then
 end if
 %>
 
-<div class="widget-box transparent">
-    <div class="widget-header widget-header-flat">
-        <h4><i class="far fa-user blue"></i> CADASTRO DE OPERADOR</h4>
+<script >
+$(".crumb-active a").html("Operadore");
+    $(".crumb-link").removeClass("hidden");
+    $(".crumb-link").html("Editar");
+    $(".crumb-icon a span").attr("class", "far fa-table");
+</script>
+<div class="panel mt15">
+
+    <div class="panel-body">
+        <form method="post" action="">
+            <div class="row">
+              <div class="col-md-4 col-md-offset-4">
+                <div class="row">
+                    <%=quickField("text", "Nome", "Nome", 12, Nome, "", "", "")%>
+                    <%=quickField("text", "Email", "E-mail", 12, Email, "", "", "")%>
+                    <%=quickField("password", "Senha", "Senha", 12, Senha, "", "", "")%>
+                    <div class="col-md-12 text-center">
+                        <label>&nbsp;</label><br>
+                        <button class="btn btn-sm btn-primary"><i class="far fa-save"></i> SALVAR</button>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </form>
     </div>
 </div>
-
-<form method="post" action="">
-    <div class="row">
-      <div class="col-md-4 col-md-offset-4">
-        <div class="row">
-            <%=quickField("text", "Nome", "Nome", 12, Nome, "", "", "")%>
-            <%=quickField("text", "Email", "E-mail", 12, Email, "", "", "")%>
-            <%=quickField("password", "Senha", "Senha", 12, Senha, "", "", "")%>
-            <div class="col-md-12 text-center">
-            	<label>&nbsp;</label><br>
-            	<button class="btn btn-sm btn-primary"><i class="far fa-save"></i> SALVAR</button>
-            </div>
-        </div>
-      </div>
-    </div>
-</form>

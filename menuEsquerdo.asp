@@ -1779,6 +1779,17 @@ end if
 
 
         <%
+    case "operadores", "operador","licenca", "licencas"
+            %>
+            <li <%if req("P")="Operadores" then%>class="active"<%end if%>>
+                <a href="./?P=Operadores&Pers=1"><span class="far fa-user-alt"></span> <span class="sidebar-title"> Operadores</span></a>
+            </li>
+            <li <%if req("P")="Licencas" then%>class="active"<%end if%>>
+                <a href="./?P=Licencas&Pers=1"><span class="far fa-hospital"></span> <span class="sidebar-title"> Licenças</span></a>
+            </li>
+
+
+        <%
     case "relatorios"
         %>
         <li class="sidebar-label pt20">Relatórios</li>

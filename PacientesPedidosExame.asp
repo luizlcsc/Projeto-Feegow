@@ -59,7 +59,7 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
             <div class="col-xs-12">
                         <div class="row">
                             <div class="col-md-2">
-                                <button type="button" onclick="NovoPedido();" class="btn btn-info btn-block"><i class="far fa-plus icon-plus"></i> Novo</button>
+                                <button type="button" onclick="NovoPedido();" class="btn btn-success btn-block"><i class="far fa-plus icon-plus"></i> Novo</button>
                             </div>
                             <div class="col-md-3">
                                 <button type="button" class="btn btn-primary btn-block" id="savePedido" style="<%=ArquivoAssinado%>"><i class="far fa-save icon-save"></i> Salvar e Imprimir</button>
@@ -253,7 +253,7 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
 
 
 <div class="text-left mt20">
-    <a href="#" class="btn btn-info btn-sm" id="showTimeline">Mostrar/Ocultar Histórico</a>
+    <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <span class="caret ml5"></span></a>
     </div>
     <div id="conteudo-timeline"></div>
 

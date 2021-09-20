@@ -859,7 +859,7 @@ end if
             if recursoAdicional(37) = 4 and aut("protocolosV")=1 then %>
             <li>
                 <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
-                    <span class="far fa-file-text-o bigger-110"></span>
+                    <span class="far fa-file-text bigger-110"></span>
                     <span class="sidebar-title">Protocolos</span>
                     <span class="sidebar-title-tray">
                         <span class="label label-xs bg-primary" id="totalprotocolos"></span>
@@ -1136,7 +1136,7 @@ end if
     case "protocolos", "protocolosgrupos", "tipos_de_arquivos"
         %>
         <li <%if req("P")="Protocolos" then%>class="active"<%end if%>>
-            <a href="./?P=Protocolos&Pers=Follow"><span class="far fa-file-text-o"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
+            <a href="./?P=Protocolos&Pers=Follow"><span class="far fa-file-text"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
         </li>
         <li <%if req("P")="ProtocolosGrupos" then%>class="active"<%end if%>>
             <a href="./?P=ProtocolosGrupos&Pers=Follow"><span class="far fa-files-o"></span> <span class="sidebar-title">Grupo de Protocolos</span></a>

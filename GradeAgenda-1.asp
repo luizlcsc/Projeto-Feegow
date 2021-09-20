@@ -699,7 +699,7 @@ end if
                         Conteudo = Conteudo & "<button type=""button"" onclick=""abreAgenda(\'"&HoraComp&"\', 0, \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')"" class=""btn btn-xs btn-system ml5""><i class=""far fa-plus""></i></button>"
                     end if
                     Conteudo = Conteudo & "</td>"&_
-                    "<td  nowrap "& linkAg &">"&pacientePrioridadeIcone&" <img src=""assets/img/"&comps("StaID")&".png""> "
+                    "<td  nowrap "& linkAg &">"&pacientePrioridadeIcone&"  "&imoon(comps("StaID"))
                     if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
                         Conteudo = Conteudo & "&nbsp;<span class=""label bg-alert label-sm arrowed-in mr10 arrowed-in-right"">Encaixe</span>"
                     end if

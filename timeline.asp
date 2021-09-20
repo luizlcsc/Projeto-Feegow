@@ -129,8 +129,15 @@ end if
     pointer-events:auto;
 }
 
-.compartilhamentoSelect{
+.dropdown-item-selected{
     background-color: #4198D5;
+    color: #FFFFFF !important;
+    border-radius: 6px;
+}
+
+
+
+.dropdown-item-selected i{
     color: #FFFFFF !important;
 }
 

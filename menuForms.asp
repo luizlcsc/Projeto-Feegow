@@ -71,7 +71,7 @@ FormularioNaTimeline = getConfig("FormularioNaTimeline")
                     <td><button type="button" onClick="addCampo(20, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="far fa-hospital-o bigger-200"></i><br>Pedidos</button></td>
                 </tr>
                 <tr>
-                    <td><button type="button" onClick="addCampo(21, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="far fa-file-text-o bigger-200"></i><br>Atestados</button></td>
+                    <td><button type="button" onClick="addCampo(21, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="far fa-file-text bigger-200"></i><br>Atestados</button></td>
                     <td><button type="button" onClick="addCampo(16, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="far fa-stethoscope bigger-200"></i><br>CID-10</button></td>
                 </tr>
                 <tr>

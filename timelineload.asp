@@ -4,6 +4,8 @@
 
 'ALTER TABLE `buiformspreenchidos`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `sysActive`
 'ALTER TABLE `buiforms`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `Versao`
+recursoUnimed = recursoAdicional(12)
+urlbmj = getConfig("urlbmj")
 
 SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
@@ -27,7 +29,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
     if aut("prescricoesV")>0 or session("Admin") = 1 then
         if instr(Tipo, "|Prescricao|")>0 then
-            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', IF(pp.MemedID IS NULL, 'Prescrição', 'Prescrição Memed'), 'flask', 'warning', `Data`, Prescricao,s.id, pp.sysActive, pp.MemedID from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
+            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', IF(pp.MemedID IS NULL, 'Prescrição', 'Prescrição Memed'), 'flask', 'warning', `Data`, Prescricao,s.id, pp.sysActive, pp.MemedID from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive in (1,-1) AND PacienteID="&PacienteID&") "
         end if
     end if
 
@@ -45,12 +47,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                          "   FROM pacientesdiagnosticos d "&_
                          "   LEFT JOIN cliniccentral.cid10 cid ON cid.id=d.CidID "&_
                          "   LEFT JOIN pacientesdiagnosticos_tnm tnm ON d.id = tnm.PacienteDiagnosticosID "&_
-                         "   WHERE PacienteID="&PacienteID&" and d.sysActive=1) "
+                         "   WHERE PacienteID="&PacienteID&" and d.sysActive in (1,-1)) "
 
     end if
 
     if instr(Tipo, "|Atestado|")>0 then
-        sqlAtestado = " union all (select 0, pa.id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text-o', 'success', `Data`, Atestado,s.id, pa.sysActive, '' from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive=1 AND PacienteID="&PacienteID&") "
+        sqlAtestado = " union all (select 0, pa.id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text', 'success', `Data`, Atestado,s.id, pa.sysActive, '' from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive in (1,-1) AND PacienteID="&PacienteID&") "
     end if
 
      if instr(Tipo, "|Tarefas|")>0 then
@@ -60,12 +62,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
 
     if instr(Tipo, "|Pedido|")>0 then
-        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive=1 AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
-        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '' from pedidossadt WHERE sysActive=1 and PacienteID="&PacienteID&") "
+        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive in (1,-1) AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
+        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '' from pedidossadt WHERE sysActive in (1,-1) and PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Protocolos|")>0 then
-        sqlProtocolos = " union all (select 0, po.id, '', sysUser, 'Protocolos', 'Protocolos', 'file-text-o', 'success', `Data`, '', '', po.sysActive, '' from pacientesprotocolos po WHERE po.sysActive=1 AND po.PacienteID="&PacienteID&") "
+        sqlProtocolos = " union all (select 0, po.id, '', sysUser, 'Protocolos', 'Protocolos', 'file-text', 'success', `Data`, '', '', po.sysActive, '' from pacientesprotocolos po WHERE po.sysActive in (1,-1) AND po.PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Imagens|")>0 then
@@ -273,31 +275,30 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                         %>
                         <span class="panel-controls hidden-xs">
                             <%
-                            if cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0 and (ti("Tipo")<>"AE" and ti("Tipo")<>"L")  then
+                            'and aut("prescricoesX")>0 and (ti("Tipo")<>"AE" and ti("Tipo")<>"L")
+                            if cstr(session("User"))=ti("sysUser")&""  then
                             %>
-                            <div class=" dropdown panel-controls" >
-                                <a data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+                                <a title="Compartilhamento" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
                                     <i class="far fa-share-alt "></i>
                                 </a>
                                 <ul class="dropdown-menu pull-right" role="menu" >
                                     <li>
-                                        <a <% if tipoCompartilhamento = 1  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(1,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" > <i class="far fa-users"></i> Publico </a>
+                                        <a <% if tipoCompartilhamento = 1  then %> class="dropdown-item-selected compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(1,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" > <i class="far fa-users"></i> Publico </a>
                                     </li>
                                     <li>
-                                        <a <% if tipoCompartilhamento = 2  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(2,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" ><i class="far fa-lock"></i> Privado</a>
+                                        <a <% if tipoCompartilhamento = 2  then %> class="dropdown-item-selected compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(2,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" ><i class="far fa-lock"></i> Privado</a>
                                     </li>
                                     <li>
-                                        <a <% if tipoCompartilhamento = 3  then %> class="compartilhamentoSelect" <% end if %> href="javascript:compartilhamentoRestrito('<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" ><i class="far fa-eye-slash"></i> Restrito</a>
+                                        <a <% if tipoCompartilhamento = 3  then %> class="dropdown-item-selected compartilhamentoSelect" <% end if %> href="javascript:compartilhamentoRestrito('<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" ><i class="far fa-eye-slash"></i> Restrito</a>
                                     </li>
                                         <li class="divider"></li>
                                     <li>
                                         <a href="javascript:saveCompartilhamento(0,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" > <i class="far fa-asterisk"></i> Padrão </a>
                                     </li>
                                 </ul>
-                            </div>
                             <%
                             end if
-                            recursoUnimed = recursoAdicional(12)
+
                             Assinado=""
                             if ti("Assinado")&"" <> "" then
                                 Assinado = "assinado"
@@ -337,7 +338,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
                                 if (ti("sysUser")<2 or cstr(session("User"))=ti("sysUser")&"" or lcase(session("Table"))="funcionarios") and recursoUnimed=4 then
                                 %>
-                                <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
+                                <a title="Ver mais" href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
                                     <i class="far fa-search-plus"></i>
                                 </a>
 
@@ -353,7 +354,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                     end if
                                     if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Imagens" then
                                     %>
-                                        <a href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
+                                        <a title="Imprimit" href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
                                             <i class="far fa-print"></i>
                                         </a>
                                     <%
@@ -364,7 +365,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                         ArquivosSQL.close
                                         set ArquivosSQL = nothing
                                         %>
-                                            <a href="./timelinePrint.asp?Tipo=I&IDs=<%=arquivosID%>" target="_blank">
+                                            <a title="Imprimir" href="./timelinePrint.asp?Tipo=I&IDs=<%=arquivosID%>" target="_blank">
                                                 <i class="far fa-print"></i>
                                             </a>
                                     <%
@@ -373,16 +374,16 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             end if
 
                             set perm = db.execute("select Permissoes from buipermissoes where FormID='"&ti("Modelo")&"'")
-                            if not perm.eof then 
+                            if not perm.eof then
                                 var_permissoes  = perm("Permissoes")
                             else
                                 var_permissoes = ""
-                            end if 
+                            end if
 
-                            if ti("Tipo") = "AE" or ti("Tipo") = "L" then
-                                if CheckInativo<>"" then
+                            if (ti("Tipo") = "AE" or ti("Tipo") = "L") or (ti("Tipo") = "Atestado" and aut("|atestadoX|")) or (ti("Tipo") = "Prescricao" and aut("|prescricaoX|"))  or (ti("Tipo") = "Pedido" and aut("|pedidosexamesX|")) or (ti("Tipo") = "Diagnostico" and aut("|diagnosticosX|"))  then
+                                if True then
                             %>
-                                <div class="switch switch-info switch-inline" style="position:relative;top: 10px;">
+                                <div title="Inativar" class="switch switch-sm switch-system switch-inline" style="position:relative;top: 10px;">
                                     <input <%=CheckInativo%>  name="TimelineRegistroAtivo" class="InativarRegistroTimeline" onchange="toogleInativarRegistroTimeline(this)" data-recurso="<%=ti("Tipo")%>" data-recurso-id="<%=ti("id")%>" id="TimelineRegistroAtivo<%=ti("id")%>" type="checkbox">
                                     <label style="height:25px" class="mn" for="TimelineRegistroAtivo<%=ti("id")%>"></label>
                                 </div>
@@ -391,7 +392,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             elseif cstr(session("User"))=ti("sysUser")&"" and ( aut("prescricoesX")>0 or instr(var_permissoes, "XP")>0 ) and ti("MemedID") = "" then %>
                                 <a href="javascript:if(confirm('Tem certeza de que deseja apagar esta prescrição?'))pront('timeline.asp?PacienteID=<%= PacienteID %>&Tipo=|<%= ti("Tipo") %>|&X=<%= ti("id") %>');">
 
-                                    <i class="far fa-remove"></i>
+                                    <i class="far fa-trash"></i>
                                 </a>
                             <% end if %>
                             <% if ti("Tipo") = "PedidosSADT" or ti("Tipo") = "Pedido" then %>
@@ -534,7 +535,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                     <iframe width="100%" scrolling="no" height="460" id="ifrCurva<%= ti("id") %>" frameborder="0" src="Curva.asp?CampoID=<%= pcampos("id") %>&FormPID=<%= reg("id") %>"></iframe>
                                                     <%
                                                 case 16
-                                                    urlbmj = getConfig("urlbmj")
+
                                                     IF urlbmj <> "" and pcampos("enviardadoscid") = 1 THEN
                                                         sqlBmj = " (SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'"" target=""_blank"" class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
                                                                 " FROM cliniccentral.cid10_bmj bmj" &_
@@ -701,7 +702,6 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 </ul>
                                 <%
                             else
-                                urlbmj = getConfig("urlbmj")
                                 IF urlbmj <> "" THEN
                                     response.Write("<small>" & replace(ti("Conteudo")&"","[linkbmj]",urlbmj) & "</small>")
                                 ELSE

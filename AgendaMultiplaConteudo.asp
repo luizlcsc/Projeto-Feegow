@@ -216,8 +216,7 @@ if Especialidades<>""  then
 end if
 
 refLocais = ref("Locais")
-
-
+RefLocaisSQL = ""
 'response.write(session("Unidades"))
 
 'if ref("Unidades")<>"" and ref("Unidades")<>"0" then
@@ -240,6 +239,26 @@ if instr(refLocais, "UNIDADE_ID")>0 then
         end if
     next
     sqlUnidades = " AND t.LocalID IN (select concat(l.id) from locais l where l.UnidadeID IN ("& UnidadesIDs &")) "
+
+elseif refLocais<>"" then
+
+    if instr(refLocais, "G") then
+        LocaisSplt = split(ref("Locais"), ", ")
+        for i=0 to ubound(LocaisSplt)
+            LocaisSplt(i) = replace(LocaisSplt(i),"|","")
+
+             if left(LocaisSplt(i),1)="G" then
+                set GrupoLocaisSQL = db.execute("SELECT Locais FROM locaisgrupos WHERE id="&replace(LocaisSplt(i),"G",""))
+                if not GrupoLocaisSQL.eof then
+                    refLocais = replace(refLocais, LocaisSplt(i), replace(GrupoLocaisSQL("Locais"),"|",""))
+                end if
+            end if
+        next
+    end if
+
+    if refLocais<>"" then
+        RefLocaisSQL = " AND LocalID IN ("&replace(refLocais,"|","")&") "
+    end if
 end if
 
 if aut("ageoutunidadesV")=0 and ref("Locais")="" then
@@ -351,7 +370,7 @@ sqlOrder = " ORDER BY NomeProfissional"
 if session("Banco") = "clinic935" then
     sqlOrder = " ORDER BY OrdemAgenda DESC"
 end if
-sql = "select t.ProfissionalID, p.EspecialidadeID, t.LocalID, IF (p.NomeSocial IS NULL OR p.NomeSocial='', p.NomeProfissional, p.NomeSocial) NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, ProfissionalID, LocalID from assfixalocalxprofissional WHERE HoraDe !='00:00:00' AND DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&") "&sqlProcedimentosGrade&sqlEspecialidadesGrade&sqlConveniosGrade&sqlProgramasGrade&") UNION ALL select '', ProfissionalID, LocalID from assperiodolocalxprofissional WHERE DataDe<="& mydatenull(Data) &" and DataA>="& mydatenull(Data) &sqlEspecialidadesGrade&sqlConveniosGrade&") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp & leftProgramas &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda))  "& sqlEspecialidadesSel & sqlProfissionais & sqlConvenios & sqlProgramas & sqlProfesp & sqlGradeEspecialidade & sqlUnidades &" GROUP BY t.ProfissionalID"&sqlOrder
+sql = "select t.ProfissionalID, p.EspecialidadeID, t.LocalID, IF (p.NomeSocial IS NULL OR p.NomeSocial='', p.NomeProfissional, p.NomeSocial) NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, ProfissionalID, LocalID from assfixalocalxprofissional WHERE HoraDe !='00:00:00' AND DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&") "&sqlProcedimentosGrade&sqlEspecialidadesGrade&sqlConveniosGrade&sqlProgramasGrade&") UNION ALL select '', ProfissionalID, LocalID from assperiodolocalxprofissional WHERE DataDe<="& mydatenull(Data) &" and DataA>="& mydatenull(Data) &sqlEspecialidadesGrade&sqlConveniosGrade&") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp & leftProgramas &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda))  "& sqlEspecialidadesSel & sqlProfissionais & sqlConvenios & sqlProgramas & sqlProfesp & sqlGradeEspecialidade & sqlUnidades & RefLocaisSQL&" GROUP BY t.ProfissionalID"&sqlOrder
 
 sqlVerme = "select t.FrequenciaSemanas, t.InicioVigencia, t.FimVigencia, t.ProfissionalID, p.EspecialidadeID, t.LocalID, p.NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, FrequenciaSemanas, InicioVigencia, FimVigencia, ProfissionalID, LocalID, Procedimentos from assfixalocalxprofissional WHERE DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR (DATE_FORMAT(InicioVigencia ,'%Y-%m-01') <= "&mydatenull(Data)&")) AND (FimVigencia IS NULL OR (DATE_FORMAT(FimVigencia ,'%Y-%m-30') >= "&mydatenull(Data)&" )))) t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp & leftProgramas &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda)) "&sqlProcedimentosLocal&sqlEspecialidadesSel & sqlConvenios & sqlProgramas & sqlProfissionais & sqlGradeEspecialidade &sqlProfesp & sqlUnidades &" "
 
@@ -409,6 +428,7 @@ while not comGrade.eof
                     NomeEspecialidade: '<%= NomeEspecialidade %>',
                     ProcedimentoID: "<%= ProcedimentoID %>",
                     Locais: "<%= ref("Locais") %>",
+                    LocalID: "<%= comGrade("LocalID") %>",
                     ObsAgenda: "<%= ObsAgenda %>",
                     strAB: '<%= strAB %>'
                 }, function (data) {

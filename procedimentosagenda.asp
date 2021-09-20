@@ -36,7 +36,7 @@ $(function(){
         dispEquipamento();
     })
     function dispEquipamento(){
-        $.post("agendaParametros.asp?tipo=Equipamento", $("#formAgenda").serialize(), function(data){
+        $.post("AgendaParametros.asp?tipo=Equipamento", $("#formAgenda").serialize(), function(data){
             eval(data);
         });
     }

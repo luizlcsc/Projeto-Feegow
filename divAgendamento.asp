@@ -1529,7 +1529,7 @@ function gravaWorklist () {
 }
 
 var saveAgenda = function(){
-        $("#btnSalvarAgenda").html('salvando');
+        $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
         //$("#btnSalvarAgenda").attr('disabled', 'disabled');
         $("#btnSalvarAgenda").prop("disabled", true);
 

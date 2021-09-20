@@ -964,7 +964,7 @@ LocalStorageRestoreHabilitar();
             scr = "iPront";
         }
         var pl = $("#ProfissionalLaudadorID").val();
-        $(divAff).html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
+        $(divAff).html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
         $.get(scr + ".asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
             $(divAff).html(data);
         });
@@ -974,7 +974,7 @@ LocalStorageRestoreHabilitar();
     ELSE
     %>
         function iPront(t, p, m, i, a) {
-            $("#modal-form .panel").html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
+            $("#modal-form .panel").html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
             if(t=='AE'||t=='L'){
                 try{
                     $.magnificPopup.open({

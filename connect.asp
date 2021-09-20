@@ -888,7 +888,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 	response.Write(abreDivBoot)
         if (fieldType="memo" or fieldType="editor") and instr(lcase(request.ServerVariables("HTTP_USER_AGENT")), "chrome")>0 then
 %>
-            <button type="button" onclick="mdSpee('<%=fieldName %>')" id="spee<%=fieldName %>" class="btn btn-sm btn-alert pull-right btn-spee"><i class="far fa-microphone"></i></button>
+            <button type="button" onclick="mdSpee('<%=fieldName %>')" id="spee<%=fieldName %>" class="btn btn-xs btn-record btn-danger btn-rounded pull-right btn-spee"><i class="fas fa-microphone"></i></button>
 
 <%
     end if
@@ -3121,7 +3121,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 
             if recurso="pacientes" then
 '                rbtns = rbtns & "<div class='switch switch-info switch-inline'>  <input id='exampleCheckboxSwitch1' type='checkbox' checked=''>  <label for='exampleCheckboxSwitch1'></label></div>"
-                rbtns = rbtns & "<div title='Ativar / Inativar paciente' class='mn hidden-xs' style='float:left'><div class='switch switch-info switch-inline'><input checked name='Ativo' id='Ativo' type='checkbox' /><label style='height:28px' class='mn' for='Ativo'></label></div></div> &nbsp; "
+                rbtns = rbtns & "<div title='Ativar / Inativar paciente' class='mn hidden-xs' style='float:left'><div class='switch switch-info switch-inline'><input checked name='Ativo' id='Ativo' type='checkbox' /><label style='height:26px' class='mn' for='Ativo'></label></div></div> &nbsp; "
             end if
 
             if aut("|profissionaisV|")=1 then

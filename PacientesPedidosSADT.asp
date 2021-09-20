@@ -80,17 +80,54 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
         <div class="row">
             <div class="col-xs-8">
                 <div class="row">
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-info btn-block" onClick="GerarNovo('PedidosSADT', '<%=PacienteID%>', '0', '', '');"><i class="far fa-plus"></i></button>
+                    <div>
+                        <%
+                        disabledProf = " required"
+                        if Solicitante&""<>"" then
+                            disabledProf = " disabled"
+                        end if
+                        if lcase(session("Table"))="profissionais" then
+                            Solicitante = session("IdInTable")
+                            disabledProf = " disabled"
+                        end if
+                        %>
+                        <%=quickField("simpleSelect", "ProfissionalID", " ", 3, Solicitante, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", "  empty='' "&disabledProf) %>
                     </div>
-                    <div class="col-md-2">
-                        <button type="button" onclick="saveConteudoPedidoSADT('E')" class="btn btn-primary btn-block"><i class="far fa-save"></i> Salvar</button>
-                    </div>
-                    <div class="col-md-3">
-                        <form method="post">
-                            <div class="btn-group btn-block">
 
-                                <button type="button" class="btn btn-info btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <div class="col-md-2 ">
+                          <div class="btn-group text-left">
+                              <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                                  Grupos
+                                  <span class="far fa-caret-down icon-on-right"></span>
+                              </button>
+
+                              <ul class="dropdown-menu btn-block dropdown-default">
+                                    <%
+                                    set g = db.execute("select distinct trim(NomeGrupo) NomeGrupo from procedimentosgrupos where not NomeGrupo like '' order by trim(NomeGrupo)")
+                                    while not g.eof
+                                    %>
+                                  <li>
+                                      <a href="javascript:grupo('<%=g("NomeGrupo") %>')"><small> <%=g("NomeGrupo") %></small></a>
+                                  </li>
+                                    <%
+                                    g.movenext
+                                    wend
+                                    g.close
+                                    set g=nothing
+                                    %>
+                              </ul>
+                          </div>
+
+                    </div>
+
+                    <div class="col-md-2">
+                    </div>
+
+                    <div class="col-md-2">
+                        <form method="post">
+                            <div class="btn-group ">
+
+                                <button type="button" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <i class="far fa-print"></i> Imprimir
                                     <span class="caret ml5"></span>
                                 </button>
@@ -114,63 +151,37 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
 
                         </form>
                     </div>
-                    <div class="col-md-3 text-right">
-                          <div class="btn-group text-left">
-                              <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-                                  Grupos
-                                  <span class="far fa-caret-down icon-on-right"></span>
-                              </button>
 
-                              <ul class="dropdown-menu dropdown-default">
-                                    <%
-                                    set g = db.execute("select distinct trim(NomeGrupo) NomeGrupo from procedimentosgrupos where not NomeGrupo like '' order by trim(NomeGrupo)")
-                                    while not g.eof
-                                    %>
-                                  <li>
-                                      <a href="javascript:grupo('<%=g("NomeGrupo") %>')"><small> <%=g("NomeGrupo") %></small></a>
-                                  </li>
-                                    <%
-                                    g.movenext
-                                    wend
-                                    g.close
-                                    set g=nothing
-                                    %>
-                              </ul>
-                          </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-success btn-block" onClick="GerarNovo('PedidosSADT', '<%=PacienteID%>', '0', '', '');"><i class="far fa-plus"></i></button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" onclick="saveConteudoPedidoSADT('E')" class="btn btn-primary btn-block"><i class="far fa-save"></i> Salvar</button>
+                    </div>
 
-                    </div>
-                    <div>
-                    <%
-                    disabledProf = " required"
-                    if Solicitante&""<>"" then
-                        disabledProf = " disabled"
-                    end if
-                    if lcase(session("Table"))="profissionais" then
-                        Solicitante = session("IdInTable")
-                        disabledProf = " disabled"
-                    end if
-                    %>
-                    <%=quickField("simpleSelect", "ProfissionalID", " ", 3, Solicitante, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", "  empty='' "&disabledProf) %>
-                    </div>
                 </div>
                 <br />
                 <div class="row">
                     <div class="col-md-12" id="PedidoSADT">
                         <!--#include file="PedidoSADT.asp"-->
                     </div>
-                    <div class="row">
-                        <%=quickfield("simpleSelect", "ConvenioIDPedidoSADT", "Convênio", 4, ConvenioID, "select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", "") %>
-                        <%=quickField("text", "IndicacaoClinicaPedidoSADT", "Indicação Clínica", 7, IndicacaoClinica, "", "", "")%>
-                        <input type="hidden" name="GuiaID" id="GuiaID" value="<%=GuiaID%>" />
+                    <div class="col-md-12">
+                        <div class="row">
+                            <%=quickfield("simpleSelect", "ConvenioIDPedidoSADT", "Convênio", 4, ConvenioID, "select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", "") %>
+                            <%=quickField("text", "IndicacaoClinicaPedidoSADT", "Indicação Clínica", 7, IndicacaoClinica, "", "", "")%>
+                            <input type="hidden" name="GuiaID" id="GuiaID" value="<%=GuiaID%>" />
+                        </div>
                     </div>
                     <br>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Executante</label><br>
-                            <%=simpleSelectCurrentAccounts("ProfissionalExecutanteIDPedidoSADT", "5, 8", Executante, "","")%>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Executante</label><br>
+                                <%=simpleSelectCurrentAccounts("ProfissionalExecutanteIDPedidoSADT", "5, 8", Executante, "","")%>
+                            </div>
+                            <%=quickfield("datepicker", "DataSolicitacao", "Data Solicitação", 3, DataSolicitacao, "", "", "")%>
+                            <%=quickField("memo", "ObservacoesPedidoSADT", "Observações", 4, Observacoes, "", "", "")%>
                         </div>
-                        <%=quickfield("datepicker", "DataSolicitacao", "Data Solicitação", 3, DataSolicitacao, "", "", "")%>
-                        <%=quickField("memo", "ObservacoesPedidoSADT", "Observações", 4, Observacoes, "", "", "")%>
                     </div>
                 </div>
                 <br />
@@ -238,7 +249,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
 
 
 <div class="text-left mt20">
-    <a href="#" class="btn btn-info btn-sm" id="showTimeline">Mostrar/Ocultar Histórico</a>
+    <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <span class="caret ml5"></span> </a>
     </div>
     <div id="conteudo-timeline"></div>
 

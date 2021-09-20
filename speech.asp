@@ -8,6 +8,11 @@
     animation-timing-function: linear;
 }
 
+.btn-record{
+    right: 15px;
+    bottom: 5px;
+}
+
 @keyframes pulse{
 	0%{
 		box-shadow: 0px 0px 5px 0px rgba(173,0,0,.3);
@@ -77,7 +82,7 @@
                   recognition.stop();
                   recognizing = false;
                   $speeBtn.removeClass("btn-recording");
-                  $speeBtn.find(".fa").removeClass("fa-stop").addClass("fa-microphone");
+                  $speeBtn.find("i").removeClass("fa-stop").addClass("fa-microphone");
           }
 
           function iniciaEscuta(cid){
@@ -87,7 +92,7 @@
                   recognizing = true;
 
                   let $speeBtn = $("#spee"+cid);
-                  $speeBtn.find(".fa").removeClass("fa-microphone").addClass("fa-stop");
+                  $speeBtn.find("i").removeClass("fa-microphone").addClass("fa-stop");
                   $speeBtn.addClass("btn-recording");
           }
 
@@ -134,8 +139,8 @@ if (!('webkitSpeechRecognition' in window)) {
     //recognizing = true;
     //showInfo('info_speak_now');
     //start_img.src = 'assets/img/speak.gif';
-    let inputmen  = document.getElementById($("#speeFLD").val() +"mem");
-    original_innerText = inputmen.innerText.trim() == ""? "" : inputmen.innerText+" ";
+    let $input  = $("#"+$("#speeFLD").val());
+    original_innerText = $input.val().trim() == ""? "" : $input.val() +" ";
 
   };
 
@@ -182,19 +187,20 @@ if (!('webkitSpeechRecognition' in window)) {
   };
 
   recognition.onresult = function(event) {
-    let input  = document.getElementById($("#speeFLD").val());
-    let inputmen  = document.getElementById($("#speeFLD").val() +"mem");
+    let $input  = $("#"+$("#speeFLD").val());
+    // let inputmen  = document.getElementById($("#speeFLD").val() +"mem");
     var final = "";
     let interim = "";
     for (var i = event.resultIndex; i < event.results.length; ++i) {
+
       if (event.results[i].isFinal) {
-        final += event.results[i][0].transcript;
-        inputmen.innerText = original_innerText + final;
-        original_innerText = inputmen.innerText;
-        input.innerHTML = inputmen.innerHTML;
+          final += event.results[i][0].transcript;
+        // inputmen.innerText = original_innerText + final;
+        // original_innerText = inputmen.innerText;
+        $input.val(original_innerText + final);
       }else{
         interim += event.results[i][0].transcript;
-        inputmen.innerText = original_innerText + interim;
+        $input.val(original_innerText + interim);
       }
     }
     /*

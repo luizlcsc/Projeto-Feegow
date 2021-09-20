@@ -30452,3 +30452,16 @@ select[tabindex="-1"], .multisel {
     border-radius: 8px;
     display:none;
 }
+
+.admin-form .gui-input{
+    height: 35px !important;
+    font-size: 13px !important;
+}
+
+.mfp-content #modal-form {
+    border-radius: 8px;
+}
+
+.modal-pre-loading{
+    padding: 25px;
+}

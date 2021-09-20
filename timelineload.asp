@@ -144,7 +144,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
                 set Compart = db.execute("select * from prontuariocompartilhamento where ProfissionalID="&idInTable&" and CategoriaID=(select id from cliniccentral.tipoprontuario t where sysActive=1 and t.Tipo='"&ti("Tipo")&"')")
                 set ArquivoCompart = db.execute("select * from arquivocompartilhamento where ProfissionalID="&idInTable&" and CategoriaID=(select id from cliniccentral.tipoprontuario t where sysActive=1 and t.Tipo='"&ti("Tipo")&"') and DocumentoID="&ti("id"))
-                tipocompartilhamento = 1
+                tipocompartilhamento = 0
 
                 if not Compart.EOF then
                     tipocompartilhamento = Compart("TipoCompartilhamentoID")
@@ -293,7 +293,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                     </li>
                                         <li class="divider"></li>
                                     <li>
-                                        <a href="javascript:saveCompartilhamento(0,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" > <i class="far fa-asterisk"></i> Padrão </a>
+                                        <a <% if tipoCompartilhamento = 0  then %> class="dropdown-item-selected compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(0,'<%=ti("Tipo") %>',<%=ti("id") %>,<%=session("idInTable") %>)" > <i class="far fa-asterisk"></i> Padrão </a>
                                     </li>
                                 </ul>
                             <%
@@ -335,6 +335,10 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 %>
                             <%
                             else
+
+                                if ti("Tipo") = "PedidosSADT" or ti("Tipo") = "Pedido" then %>
+                                    <a class='' href="javascript:modalInsuranceAttachments(<%=PacienteID%>, <%=ti("id")%>);" title='Anexar um arquivo'><i class="far fa-paperclip"></i></a>
+                                <% end if
 
                                 if (ti("sysUser")<2 or cstr(session("User"))=ti("sysUser")&"" or lcase(session("Table"))="funcionarios") and recursoUnimed=4 then
                                 %>
@@ -383,9 +387,9 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             if (ti("Tipo") = "AE" or ti("Tipo") = "L") or (ti("Tipo") = "Atestado" and aut("|atestadoX|")) or (ti("Tipo") = "Prescricao" and aut("|prescricaoX|"))  or (ti("Tipo") = "Pedido" and aut("|pedidosexamesX|")) or (ti("Tipo") = "Diagnostico" and aut("|diagnosticosX|"))  then
                                 if True then
                             %>
-                                <div title="Inativar" class="switch switch-sm switch-system switch-inline" style="position:relative;top: 10px;">
+                                <div title="Inativar" class="switch switch-sm switch-system switch-inline" style="position:relative;top: 6px;">
                                     <input <%=CheckInativo%>  name="TimelineRegistroAtivo" class="InativarRegistroTimeline" onchange="toogleInativarRegistroTimeline(this)" data-recurso="<%=ti("Tipo")%>" data-recurso-id="<%=ti("id")%>" id="TimelineRegistroAtivo<%=ti("id")%>" type="checkbox">
-                                    <label style="height:25px" class="mn" for="TimelineRegistroAtivo<%=ti("id")%>"></label>
+                                    <label style="height:22px" class="mn" for="TimelineRegistroAtivo<%=ti("id")%>"></label>
                                 </div>
                             <%
                                 end if
@@ -394,9 +398,6 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
                                     <i class="far fa-trash"></i>
                                 </a>
-                            <% end if %>
-                            <% if ti("Tipo") = "PedidosSADT" or ti("Tipo") = "Pedido" then %>
-                                <a class='' href="javascript:modalInsuranceAttachments(<%=PacienteID%>, <%=ti("id")%>);" title='Anexar um arquivo'><i class="far fa-paperclip"></i></a>
                             <% end if %>
                         </span>
                         <%

@@ -687,7 +687,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 						Logo = "https://cdn.feegow.com/logos/"&session("Logo")
 					end if
 					%>
-          <img class="logol" src="<%=Logo %>" height="42" />
+          <img class="logol" src="<%=Logo %>" height="36" />
         </a>
                   <i id="toggle_sidemenu_l" class="far fa-bars"></i>
 

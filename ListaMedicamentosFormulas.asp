@@ -72,9 +72,9 @@ while not listaFormulas.EOF
 
             <a href="#" class="btn btn-xs tooltip-info btnfavoritos" title="Favoritos" data-tipo="<%=listaFormulas("Tipo")%>" data-id="<%=listaFormulas("id")%>" data-placement="top" data-rel="tooltip" data-original-title="Favoritos">
             <% if listaFormulas("TipoID")<>"99999999" then %>
-                <i class="far fa-star bigger-125" data-favorito="0"></i>
+                <i class="fas fa-star bigger-125" data-favorito="0"></i>
             <% else %>
-                <i class="far fa-star-o bigger-125" data-favorito="1"></i>
+                <i class="far fa-star bigger-125" data-favorito="1"></i>
             <% end if %>
             </a>
             </div>

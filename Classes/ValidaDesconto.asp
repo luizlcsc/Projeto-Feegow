@@ -105,10 +105,11 @@ function ValidaDesconto(TipoRecurso, Procedimentos, UserID, UnidadeID, PercDesco
                 ProcedimentoID = ProcedimentoID(0)
 
                 ProcedimentoID = split(ProcedimentoID, "_")
-                ProcedimentoID = ProcedimentoID(0)
+
+                Procedimento = ProcedimentoID(0)
 
                 sqlMaximo = "SELECT id, DescontoMaximo, TipoDesconto FROM regrasdescontos WHERE RegraID="&RegraID&" AND "&_
-                            "(Procedimentos IS NULL OR Procedimentos ='' OR Procedimentos LIKE '%|"&ProcedimentoID&"%|') AND "&_
+                            "(Procedimentos IS NULL OR Procedimentos ='' OR Procedimentos LIKE '%|"&Procedimento&"%|') AND "&_
                             "(Unidades IS NULL OR Unidades ='' OR Unidades LIKE '%|"&UnidadeID&"|%' OR Unidades = '"&UnidadeID&"') AND "&_
                             "(Recursos LIKE '%|"&TipoRecurso&"|%' OR Recursos='' OR Recursos IS NULL) " &_
                             "ORDER BY DescontoMaximo DESC"
@@ -166,13 +167,15 @@ function ValidaDesconto(TipoRecurso, Procedimentos, UserID, UnidadeID, PercDesco
             RegraIdListString = ""
             For Each ProcedimentoID in dicProcedimentosValores.Keys
                 ProcedimentoID = split(ProcedimentoID, "_")
-                ProcedimentoID = ProcedimentoID(0)
+
+                Procedimento = ProcedimentoID(0)
+
                 sqlRegraSuperior = "SELECT IFNULL(group_concat(RegraID), '') regras FROM regrasdescontos WHERE " &_
                                    "(" &_
                                    "   (TipoDesconto = 'P' AND DescontoMaximo >= " & treatVal(PercDesconto) &") OR " &_
                                    "   (TipoDesconto = 'V' AND DescontoMaximo >= " & treatVal(ValorPercDesconto) &") " &_
                                    ") AND " &_
-                                   "(Procedimentos IS NULL OR Procedimentos ='' OR Procedimentos LIKE '%|"&ProcedimentoID&"|%') AND "&_
+                                   "(Procedimentos IS NULL OR Procedimentos ='' OR Procedimentos LIKE '%|"&Procedimento&"|%') AND "&_
                                    "(Unidades IS NULL OR Unidades ='' OR Unidades LIKE '%|"&UnidadeID&"|%' OR Unidades = '"&UnidadeID&"') AND "&_
                                    "(Recursos LIKE '%|"&TipoRecurso&"|%' OR Recursos='' OR Recursos IS NULL) AND RegraID IS NOT NULL"
                 set resRegraSuperior = db.execute(sqlRegraSuperior)

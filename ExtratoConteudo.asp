@@ -715,7 +715,7 @@ end if
 			<td>Boleto <img width="18" src="assets/img/4D.png"> R$ <%=formatnumber(entradasBoleto,2)%></td>
 		</tr>
 		<tr>
-			<td>Pix <img width="18" src="assets/img/6C.png"> R$ <%=formatnumber(entradasPix,2)%></td>
+			<td>Pix <img width="18" src="assets/img/pix.png"> R$ <%=formatnumber(entradasPix,2)%></td>
 		</tr>
 		<tr>
 		<%

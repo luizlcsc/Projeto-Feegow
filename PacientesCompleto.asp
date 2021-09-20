@@ -189,7 +189,7 @@ end if
             %>
             <script >
                 $("#NomePaciente").attr("readonly", true);
-                $("#NomePaciente").parent("div").parent("div").find("label").after("<button title='Editar nome do paciente' onclick='$(\"#NomePaciente\").attr(\"readonly\", false); $(this).fadeOut(); $(\"#NomePaciente\").focus();' type='button' class='btn btn-default btn-xs'><i class='far fa-edit'></i></button>");
+                $("#NomePaciente").parent("div").parent("div").find("label").after("<button title='Editar nome do paciente' onclick='$(\"#NomePaciente\").attr(\"readonly\", false); $(this).fadeOut(); $(\"#NomePaciente\").focus();' type='button' class='btn btn-link btn-xs'><i class='far fa-edit'></i></button>");
             </script>
             <%
             end if
@@ -461,7 +461,7 @@ end if
 						%>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-8 hidden">
                     <div class="row">
                         <%= quickField("text", "Endereco2", "Endereço 2", 4, reg("Endereco2"), "", "", "  ") %>
                         <%= quickField("text", "Numero2", "Número 2", 2, reg("Numero2"), "", "", "") %>

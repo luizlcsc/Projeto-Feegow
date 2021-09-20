@@ -650,14 +650,35 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
             </div><!-- /.modal-dialog -->
         </div>
 
-  <aside id="main">
+
     <%
     recursoUnimed = recursoAdicional(12)
+    classContext = ""
+
+    if recursoUnimed=4 then
+        classContext = "color-context-unimed"
+    %>
+    <style>
+        .color-context-unimed .bg-primary.darker{
+            border-image-source: linear-gradient(to right, #008654 0%, #00ac6c 100%) !important;
+        }
+        .color-context-unimed #sidebar_left.sidebar-light .sidebar-menu > li > a > span:nth-child(1){
+            color: #00ac6c;
+        }
+
+        .color-context-unimed .dropdown li i, .dropdown-menu li i{
+            color: #00ac6c
+        }
+    </style>
+
+    <%
+    end if
+    %>
+  <aside id="main" class="<%=classContext%>">
+    <%
     if device()="" then %>
-    <header class="navbar navbar-fixed-top navbar-shadow bg-primary darker" <% if recursoUnimed=4 then %>
-    style="background-color: #006600!important;"
- <%end if %> >
-      <div class="navbar-branding dark bg-primary" <% if recursoUnimed=4 then %> style="background-color: #005028!important;" <% end if %>>
+    <header class="navbar navbar-fixed-top navbar-shadow bg-primary darker">
+      <div class="navbar-branding dark bg-primary">
         <a class="navbar-brand" href="./?P=Home&Pers=1">
                     <%
 					if session("Logo")="" then
@@ -666,7 +687,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 						Logo = "https://cdn.feegow.com/logos/"&session("Logo")
 					end if
 					%>
-          <img class="logol" src="<%=Logo %>" height="32" />
+          <img class="logol" src="<%=Logo %>" height="36" />
         </a>
                   <i id="toggle_sidemenu_l" class="far fa-bars"></i>
 

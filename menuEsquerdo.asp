@@ -738,7 +738,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|L|`);'>
-                    <span class="far fa-align-justify bigger-110"></span>
+                    <span class="far fa-notes-medical bigger-110"></span>
                     <span class="sidebar-title">Laudos e Formul&aacute;rios</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totallf"></span>
@@ -833,7 +833,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaVacinas" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|VacinaPaciente|`);'>
-                    <span class="glyphicon glyphicon-pushpin"></span>
+                    <span class="far fa-syringe bigger-110"></span>
                     <span class="sidebar-title">Vacinas</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalvacinas"></span>
@@ -859,7 +859,7 @@ end if
             if recursoAdicional(37) = 4 and aut("protocolosV")=1 then %>
             <li>
                 <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
-                    <span class="far fa-file-text-o bigger-110"></span>
+                    <span class="far fa-file-text bigger-110"></span>
                     <span class="sidebar-title">Protocolos</span>
                     <span class="sidebar-title-tray">
                         <span class="label label-xs bg-primary" id="totalprotocolos"></span>
@@ -890,7 +890,7 @@ end if
 		    %>
 		    <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Tarefas|`);'>
-                    <span class="far fa-line-chart bigger-110"></span>
+                    <span class="far fa-book-medical bigger-110"></span>
                     <span class="sidebar-title">Linha do tempo</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary"></span>
@@ -1136,7 +1136,7 @@ end if
     case "protocolos", "protocolosgrupos", "tipos_de_arquivos"
         %>
         <li <%if req("P")="Protocolos" then%>class="active"<%end if%>>
-            <a href="./?P=Protocolos&Pers=Follow"><span class="far fa-file-text-o"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
+            <a href="./?P=Protocolos&Pers=Follow"><span class="far fa-file-text"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
         </li>
         <li <%if req("P")="ProtocolosGrupos" then%>class="active"<%end if%>>
             <a href="./?P=ProtocolosGrupos&Pers=Follow"><span class="far fa-files-o"></span> <span class="sidebar-title">Grupo de Protocolos</span></a>

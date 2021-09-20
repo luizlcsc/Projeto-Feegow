@@ -57,7 +57,7 @@ end if
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">
-                            <i class="far fa-file-text-o"></i>
+                            <i class="far fa-file-text"></i>
                             Modelos de Textos / Atestados
                         </span>
                         <% if aut("|modelosprontuarioI|")=1 then%>

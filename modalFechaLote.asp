@@ -103,25 +103,15 @@ end if
 			<span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu" role="menu">
-			<li><a href="#" onclick="" id="LancaConta"><i class="fa fa-plus"></i> Fechar Lote e Lançar no Contas a Receber</a></li>
+			<li><a href="#" onclick="" id="LancaConta"><i class="fa fa-plus"></i>Fechar Lote e Lançar no Contas a Receber</a></li>
 			<%
-
-			if req("T") = "GuiaConsulta" then
-				coluna = "ValorProcedimento"
-			elseif req("T") = "GuiaHonorarios" then
-				coluna = "Procedimentos"
-			else
-				coluna = "TotalGeral"
-			end if
-
-			set g = db.execute("select count(id) Qtd, sum("&coluna&") Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
+			set g = db.execute("select count(id) Qtd, sum(TotalGeral) Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
 
 			if not g.eof then
 				sqlcontas = " SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total "&_
 										" FROM sys_financialinvoices conta "&_
 										" LEFT JOIN itensinvoice ON itensinvoice.InvoiceID = conta.id "&_
-										" LEFT JOIN sys_financialmovement mov ON mov.InvoiceID = conta.id "&_
-										" WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND (mov.ValorPago=0 OR mov.ValorPago IS NULL) AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 180 DAY)"
+										" WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 180 DAY)"
 				' response.write(sqlcontas)
 				set ContasSQL = db.execute(sqlcontas)
 			end if

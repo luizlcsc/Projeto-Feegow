@@ -354,6 +354,14 @@ end function
                         $("#subformsPlanos [name^='ValorPlanoCH'],#subformsPlanos [name^='ValorPlanoFilme'],#subformsPlanos [name^='ValorPlanoUCO']").addClass("sql-mask-4-digits")
                     </script>
                 </div>
+                 <div class="row">
+                    <div class="col-md-12" id="subformsLocaisExternos">
+                        <%call Subform("convenios_local_externo", "convenioid", request.QueryString("I"), "frm")%>
+                    </div>
+                    <script>
+                        $("#subformsPlanos [name^='ValorPlanoCH'],#subformsPlanos [name^='ValorPlanoFilme'],#subformsPlanos [name^='ValorPlanoUCO']").addClass("sql-mask-4-digits")
+                    </script>
+                </div>
 <!--                <div class="row">-->
                     <%'= quickField("memo", "Obs", "Observa&ccedil;&otilde;es "&"&nbsp;&nbsp;<button type=""button"" onclick="""" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""fa fa-plus""></i></button>", 11, "", "", "", "") %>
 <!--                </div>-->

@@ -101,6 +101,8 @@ function ValidaDesconto(TipoRecurso, Procedimentos, UserID, UnidadeID, PercDesco
             For Each ProcedimentoID in dicProcedimentosValores.Keys
 
                 ProcedimentoValor = dicProcedimentosValores.Item(ProcedimentoID)
+                ProcedimentoID = split(ProcedimentoID, "_")
+                ProcedimentoID = ProcedimentoID(0)
 
                 ProcedimentoID = split(ProcedimentoID, "_")
                 ProcedimentoID = ProcedimentoID(0)
@@ -163,10 +165,8 @@ function ValidaDesconto(TipoRecurso, Procedimentos, UserID, UnidadeID, PercDesco
 
             RegraIdListString = ""
             For Each ProcedimentoID in dicProcedimentosValores.Keys
-
                 ProcedimentoID = split(ProcedimentoID, "_")
                 ProcedimentoID = ProcedimentoID(0)
-
                 sqlRegraSuperior = "SELECT IFNULL(group_concat(RegraID), '') regras FROM regrasdescontos WHERE " &_
                                    "(" &_
                                    "   (TipoDesconto = 'P' AND DescontoMaximo >= " & treatVal(PercDesconto) &") OR " &_

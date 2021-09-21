@@ -25,7 +25,7 @@ while not GruposExamesSQL.eof
         set PedidoAgrupadoSQL = db.execute("SELECT ps.id FROM pedidossadt ps WHERE Observacoes='"& CapituloDesc& "' AND ps.sysActive=1 AND ps.PacienteID="&PacienteID&" AND ps.sysUser="&session("User")&" AND date(ps.sysDate)=curdate() LIMIT 6")
 
         if PedidoAgrupadoSQL.eof then
-            db.execute("INSERT INTO pedidossadt (`PacienteID`, `ProfissionalID`, `ProfissionalExecutante`, `Data`, `sysUser`, `sysDate`, `IndicacaoClinica`, `Observacoes`, `ConvenioID`, `GuiaID`, `Resultado`) SELECT `PacienteID`, `ProfissionalID`, `ProfissionalExecutante`, `Data`, `sysUser`, `sysDate`, `IndicacaoClinica`, '"&CapituloDesc&"', `ConvenioID`, `GuiaID`, `Resultado` FROM pedidossadt WHERE id="&PedidoID)
+            db.execute("INSERT INTO pedidossadt (`PacienteID`, `ProfissionalID`, `ProfissionalExecutante`, `Data`, `sysUser`, `sysDate`, `IndicacaoClinica`, `Observacoes`, `ConvenioID`, `GuiaID`, `Resultado`) SELECT `PacienteID`, `ProfissionalID`, `ProfissionalExecutante`, `Data`, `sysUser`, `sysDate`, `IndicacaoClinica`, '"&CapituloDesc&"', `ConvenioID`, null, `Resultado` FROM pedidossadt WHERE id="&PedidoID)
             PedidoNovoID = getLastAdded("pedidossadt")
         else
             PedidoNovoID = PedidoAgrupadoSQL("id")

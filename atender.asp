@@ -788,7 +788,7 @@ if Conteudo="Play" then
                 <script>
                     $(document).ready(function(){
                         assinaturaAuto = localStorage.getItem("assinaturaAuto");
-                        if(assinaturaAuto !== "0"){
+                        if(assinaturaAuto == "1"){
                             $("#AssinaturaAuto").attr("checked", "checked")
                         }
                     })

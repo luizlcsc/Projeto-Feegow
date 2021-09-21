@@ -54,6 +54,6 @@ if posModalPagar="" then
     posModalPagar="absolute"
 end if
 %>
-<div id="pagar" style="display:none; position:<%=posModalPagar%>; " class="modal-pagar">
+<div class="modal-pagar" id="pagar" style="display:none;  width:900px; position:<%=posModalPagar%>; top:100px; left:20px; ">
 	Carregando...
 </div>

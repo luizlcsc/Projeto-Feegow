@@ -58,7 +58,7 @@ if req("Checkin")="1" then
     staPagto = "danger"
     %>
 <input id="AccountID" type="hidden" name="AccountID" value="<%= "3_"& PacienteID %>" />
-<div id="divLanctoCheckin"><!--#include file="invoiceEstilo.asp"--></div>
+<div id="divLanctoCheckin" class="mt5"><!--#include file="invoiceEstilo.asp"--></div>
     <table class="table table-condensed table-hover">
     <%
     sql = "SELECT ii.desconto, proc.TipoProcedimentoID, t.*, if(conv.registroans='0' or conv.registroans='simplificado' ,'Simplificada', if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia)) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal, COALESCE(conv.NaoPermitirGuiaDeConsulta, 0) NaoPermitirGuiaDeConsulta FROM ("&_

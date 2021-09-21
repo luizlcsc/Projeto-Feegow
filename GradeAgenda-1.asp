@@ -559,7 +559,7 @@ end if
                             podeVerAgendamento=False
                         end if
                     end if
-					NomeProcedimento = comps("NomeProcedimento")
+					NomeProcedimento = replace(comps("NomeProcedimento"), "`", "")
 					VariosProcedimentos = comps("ProcedimentosList")&""
 					if VariosProcedimentos<>"" then
 					    NomeProcedimento = VariosProcedimentos

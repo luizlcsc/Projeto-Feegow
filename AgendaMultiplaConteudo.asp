@@ -216,6 +216,7 @@ if Especialidades<>""  then
 end if
 
 refLocais = ref("Locais")
+RefLocaisSQL = ""
 
 'response.write(session("Unidades"))
 
@@ -238,6 +239,26 @@ if instr(refLocais, "UNIDADE_ID")>0 then
         end if
     next
     sqlUnidades = " AND t.LocalID IN (select concat(l.id) from locais l where l.UnidadeID IN ("& UnidadesIDs &")) "
+
+elseif refLocais<>"" then
+
+    if instr(refLocais, "G") then
+        LocaisSplt = split(ref("Locais"), ", ")
+        for i=0 to ubound(LocaisSplt)
+            LocaisSplt(i) = replace(LocaisSplt(i),"|","")
+
+             if left(LocaisSplt(i),1)="G" then
+                set GrupoLocaisSQL = db.execute("SELECT Locais FROM locaisgrupos WHERE id="&replace(LocaisSplt(i),"G",""))
+                if not GrupoLocaisSQL.eof then
+                    refLocais = replace(refLocais, LocaisSplt(i), replace(GrupoLocaisSQL("Locais"),"|",""))
+                end if
+            end if
+        next
+    end if
+
+    if refLocais<>"" then
+        RefLocaisSQL = " AND LocalID IN ("&replace(refLocais,"|","")&") "
+    end if
 end if
 
 if aut("ageoutunidadesV")=0 and ref("Locais")="" then
@@ -430,6 +451,7 @@ while not comGrade.eof
         </script>
 
 
+
              <td valign="top" align="center" id="pf<%= comGrade("ProfissionalID") %>"><i class="far fa-circle-o-notch fa-spin"></i></td>
 
             <script type="text/javascript">
@@ -444,21 +466,14 @@ while not comGrade.eof
                     NomeEspecialidade: '<%= NomeEspecialidade %>',
                     ProcedimentoID: "<%= ProcedimentoID %>",
                     Locais: "<%= ref("Locais") %>",
+                    LocalID: "<%= comGrade("LocalID") %>",
                     ObsAgenda: "<%= ObsAgenda %>",
                     strAB: '<%= strAB %>'
                 }, function (data) {
                         $('#pf<%= comGrade("ProfissionalID") %>').html(data)
 
-                        let conteudo = $($('#contQuadro  table  table  tr')[0]).text();
-                        conteudo = conteudo.trim();
-                        if(conteudo === ""){
-                            $('#contQuadro').html(`<div class="alert alert-warning text-center mt20"><i class="far fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>`)
-                        }
-                }));
-            </script>
-
-
-<%
+    <%
+    end if
 
 comGrade.movenext
 wend

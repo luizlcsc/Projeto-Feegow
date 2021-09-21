@@ -88,6 +88,7 @@ if not reg.eof then
     sysActive = reg("sysActive")
     sysDate = reg("sysDate")
     NomeHospitalSol = reg("NomeHospitalSol")
+    LocalExternoID = reg("LocalExternoID")
     DataSugInternacao = reg("DataSugInternacao")
     TipoInternacao = reg("TipoInternacao")
     RegimeInternacao = reg("RegimeInternacao")
@@ -451,7 +452,8 @@ width: 100%!important;
                 <span> Dados do Hospital / Local Solicitado / Dados da Internação </span>
             </div>
             <div class="row">
-                <%= quickField("text", "NomeHospitalSol", "Nome do Hospital / Local Solicitado", 5, NomeHospitalSol, "", "", "") %>
+                <input type="hidden" id="NomeHospitalSol" value="<%=NomeHospitalSol%>"/>
+                <%= quickField("simpleSelect", "LocalExternoID", "Nome do Hospital / Local Solicitado", 5, LocalExternoID, "select id, nomelocal from locaisexternos where sysActive=1 order by nomelocal", "nomelocal", " empty="""" ") %>
                 <%= quickField("text", "CodigoNaOperadora", "Código na Operadora / CNPJ", 2, CodigoNaOperadora, "", "", "") %>
                 <%= quickField("datepicker", "DataSugInternacao", "* Data sugerida para internação", 3, DataSugInternacao, "", "", "required='required'") %>
                 <%= quickField("simpleSelect", "AtendimentoRN", "* Atendimento RN", 2, AtendimentoRN, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
@@ -605,6 +607,10 @@ $("#Contratado, #UnidadeID").change(function(){
 $("#ContratadoSolicitanteID").change(function(){
     tissCompletaDados("ContratadoSolicitante", $(this).val());
 });
+
+    $("#LocalExternoID").change(function(){
+        tissCompletaDados("LocalExterno", $(this).val());
+    });
 
 function isPrint(value){
     $('#print').val(value);

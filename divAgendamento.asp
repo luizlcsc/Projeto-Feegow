@@ -744,7 +744,7 @@ end if
         <% end if %>
 
 
-        <div id="divAgendamentoCheckin">
+        <div id="divAgendamentoCheckin" class="row">
             <!--#include file="agendamentoProcedimentos.asp"-->
         </div>
 

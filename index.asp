@@ -217,7 +217,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css">
+  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?cache-control=1">
   <link rel="stylesheet" type="text/css" href="./assets/admin-tools/admin-forms/css/admin-forms.css">
   <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">
@@ -888,7 +888,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         </li>
         <li class="dropdown menu-merge">
           <a href="#" class="dropdown-toggle fw600 p15 menu-click-meu-perfil" data-toggle="dropdown">
-          	<img src="<%=session("photo") %>" class="mw30 br64">
+          	<img src="<%=session("photo") %>" class="mw30 br64" style="height: 30px;width: 100%;object-fit: cover;">
           	<span class="hidden-xs hidden-sm hidden-md pl15"> <%=left(session("NameUser"), 15) %> </span>
             <span class="caret caret-tp hidden-xs hidden-sm hidden-md"></span>
           </a>
@@ -1136,7 +1136,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     <aside id="sidebar_left" class="hidden-print nano nano-light affix sidebar-default has-scrollbar sidebar-light light">
 
       <!-- Start: Sidebar Left Content -->
-      <div class="sidebar-left-content ">
+      <div class="sidebar-left-content nano-content" style="margin-right: -17px;">
 
         <!-- Start: Sidebar Header -->
         <header class="sidebar-header">
@@ -2270,10 +2270,8 @@ function abreModalUnidade(backdrop=true){
         backdrop={};
     }
     $.post("LoginEscolheUnidade.asp", '', function(data){
-        $(document).ready(function() {
-            $("#modalCaixa").modal(backdrop);
-            $("#modalCaixaContent").html(data);
-        });
+        $("#modalCaixa").modal(backdrop);
+        $("#modalCaixaContent").html(data);
     });
 }
 </script>

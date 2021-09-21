@@ -304,21 +304,21 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                         <i class="fa fa-search-plus"></i>
                                     </a>
                                 <% end if %>
-                                <% 
-                                if not rsMemed.eof then 
+                                <%
+                                if not rsMemed.eof then
                                     if rsMemed("link_pdf_completo") <> "" then
                                 %>
                                     <a href="<%=rsMemed("link_pdf_completo")%>" target="_blank">
                                         <i class="fa fa-print"></i>
                                     </a>
-                                    <% 
+                                    <%
                                     end if
                                     if cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0  then %>
                                         <a href="javascript:deletePrescricaoMemed(<%=ti("id") %>, '<%=rsMemed("tipo")%>')">
                                             <i class="fa fa-remove"></i>
                                         </a>
                                 <%
-                                    end if 
+                                    end if
                                 end if
                                 rsMemed.close
                                 set rsMemed = nothing
@@ -331,7 +331,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 <a href="javascript:iPront('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
                                     <i class="fa fa-search-plus"></i>
                                 </a>
-                            
+
                                 <%
                                 elseif recursoUnimed<>4 then
 
@@ -341,7 +341,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                         <i class="fa fa-search-plus"></i>
                                     </a>
                                         <%
-                                    end if    
+                                    end if
                                     if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Imagens" then
                                     %>
                                         <a href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
@@ -565,8 +565,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             memedCount = 1
                             %>
                             <ul class="memed-items">
-                                <% 
-                                    while not rsPrescricaoMemed.eof 
+                                <%
+                                    while not rsPrescricaoMemed.eof
                                         memedTipo       = rsPrescricaoMemed("tipo")
                                         memedNome       = rsPrescricaoMemed("nome")
                                         memedPosologia  = rsPrescricaoMemed("posologia")
@@ -578,7 +578,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                         <p class="nome">
                                             <strong>
                                                 <%=memedCount%>. <%=memedNome%>
-                                            </strong> 
+                                            </strong>
                                             <span class="quantidade">
                                                 <% if memedTipoExame = "tuss" and memedTuss <> "" then %>
                                                 TUSS: <%=memedTuss%>
@@ -589,10 +589,10 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                         </p>
                                         <div class="posologia"><%=memedPosologia%></div>
                                     </li>
-                                <% 
+                                <%
                                     rsPrescricaoMemed.movenext
                                     memedCount = memedCount + 1
-                                wend 
+                                wend
                                 rsPrescricaoMemed.close
                                 set rsPrescricaoMemed = nothing
                                 %>
@@ -633,8 +633,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 memedCount = 1
                                 %>
                                 <ul class="memed-items">
-                                    <% 
-                                        while not rsPrescricaoMemed.eof 
+                                    <%
+                                        while not rsPrescricaoMemed.eof
                                             memedTipo       = rsPrescricaoMemed("tipo")
                                             memedNome       = rsPrescricaoMemed("nome")
                                             memedComposicao = rsPrescricaoMemed("composicao")
@@ -653,7 +653,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                         response.write(memedNome)
                                                     end if
                                                     %>
-                                                </strong> 
+                                                </strong>
                                                 <span class="quantidade">
                                                     <% if memedQuantidade <> 0 then response.write(memedQuantidade) end if%>
                                                     <%=" " & memedUnit%></span>
@@ -671,10 +671,10 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                             <% end if %>
                                             <div class="posologia"><%=memedPosologia%></div>
                                         </li>
-                                    <% 
+                                    <%
                                         rsPrescricaoMemed.movenext
                                         memedCount = memedCount + 1
-                                    wend 
+                                    wend
                                     rsPrescricaoMemed.close
                                     set rsPrescricaoMemed = nothing
                                     %>

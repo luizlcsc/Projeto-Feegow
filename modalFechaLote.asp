@@ -107,6 +107,16 @@ end if
 			<%
 			set g = db.execute("select count(id) Qtd, sum(TotalGeral) Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
 
+			if req("T") = "GuiaConsulta" then
+				coluna = "ValorProcedimento"
+			elseif req("T") = "GuiaHonorarios" then
+				coluna = "Procedimentos"
+			else
+				coluna = "TotalGeral"
+			end if
+
+			set g = db.execute("select count(id) Qtd, sum("&coluna&") Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
+
 			if not g.eof then
 				sqlcontas = " SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total "&_
 										" FROM sys_financialinvoices conta "&_

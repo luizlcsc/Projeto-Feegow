@@ -392,6 +392,13 @@ function treatValTISS(Val)
 	end if
 end function
 
+function nullToZero(val)
+    if reqf(Val)&"" = "" then
+        val = 0
+    end if 
+    nullToZero = val
+end function 
+
 function treatValNULL(Val)
 	if isnumeric(Val) and Val<>"" then
 		Val = formatnumber(Val,2)
